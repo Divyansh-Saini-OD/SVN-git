@@ -1,24 +1,4 @@
-SET SHOW OFF
-SET VERIFY OFF
-SET ECHO OFF
-SET TAB OFF
-SET FEEDBACK OFF
-SET TERM ON
-SET SCAN OFF
-
-PROMPT Creating Package Body XX_AR_EBL_TRANSMISSION_PKG
-
-PROMPT Program exits if the creation is not successful
-REM Added for ARU db drv auto generation
-REM dbdrv: sql ~PROD ~PATH ~FILE none none none package &phase=plb \
-REM dbdrv: checkfile:~PROD:~PATH:~FILE
-
-WHENEVER OSERROR EXIT FAILURE ROLLBACK;
-WHENEVER SQLERROR EXIT FAILURE ROLLBACK;
-
-
-create or replace 
-PACKAGE BODY XX_AR_EBL_TRANSMISSION_PKG AS
+create or replace PACKAGE BODY XX_AR_EBL_TRANSMISSION_PKG AS
 
 /*
 -- +====================================================================================================+
@@ -1422,8 +1402,7 @@ BEGIN
 			ls_invoice_length := LENGTH(ls_invoice_number);
 			IF NVL(ls_invoice_length,257)> 256
 			THEN
-			    ls_invoice_number := SUBSTR(ls_invoice_number,1,256);
-				EXIT;
+   			 EXIT;
 			END IF;
 		 END LOOP;
 		 FOR curs_rec IN cons_shipto_location(ln_file_id) LOOP 
@@ -1431,8 +1410,7 @@ BEGIN
 			ls_shiptoloc_length := LENGTH(ls_token_ship_to_location);
 			IF NVL(ls_shiptoloc_length,257)>256
 			THEN
-			    ls_token_ship_to_location := SUBSTR(ls_token_ship_to_location,1,256);
-				EXIT;
+			 EXIT;
 			END IF;
 		 END LOOP;
 	     ls_subject := REPLACE(ls_subject,'&CUSTOMERDOCID',lcbr.cust_doc_id ); 
@@ -1594,7 +1572,6 @@ BEGIN
   ls_invoice_number     := NULL;     --NAIT-96849
   ls_file_names         := NULL;     --NAIT-96849
   ls_subject_length     := NULL;     --NAIT-96849
- 
   --Loop to send multiple docs in a mail for parent and child cust docs
   FOR lmr IN (SELECT X.* FROM (SELECT DISTINCT M.parent_doc_id, T.transmission_id, T.dest_email_addr, T.billing_dt_from, T.billing_dt,
                                      D.email_subject, D.email_std_message, D.email_custom_message, D.email_signature,
@@ -1666,8 +1643,7 @@ BEGIN
 			ls_invoice_length := LENGTH(ls_invoice_number);
 			IF NVL(ls_invoice_length,257)>256
 			THEN
-			    ls_invoice_number := SUBSTR(ls_invoice_number,1,256);
-				EXIT;
+ 			 EXIT;
 			END IF;
 		 END LOOP;
 		 FOR curs_rec IN ind_shipto_location(ln_file_id) LOOP 
@@ -1675,8 +1651,7 @@ BEGIN
 	        ls_shiptoloc_length := LENGTH(ls_token_ship_to_location);
 			IF NVL(ls_shiptoloc_length,257)>256
 			THEN
-			    ls_token_ship_to_location := SUBSTR(ls_token_ship_to_location,1,256);			    
-				EXIT;
+			 EXIT;
 			END IF;
 		 END LOOP;
         ELSIF ls_invoice_type = 'CONS'
@@ -1686,8 +1661,7 @@ BEGIN
 			ls_invoice_length := LENGTH(ls_invoice_number);
 			IF NVL(ls_invoice_length,257)>256
 			THEN
-			    ls_invoice_number := SUBSTR(ls_invoice_number,1,256);
-				EXIT;
+			 EXIT;
 			END IF;			
 		 END LOOP;
 		 FOR curs_rec IN cons_shipto_location(ln_file_id) LOOP 
@@ -1695,8 +1669,7 @@ BEGIN
 	        ls_shiptoloc_length := LENGTH(ls_token_ship_to_location);
 			IF NVL(ls_shiptoloc_length,257)>256
 			THEN
-			    ls_token_ship_to_location := SUBSTR(ls_token_ship_to_location,1,256);			    
-				EXIT;
+			 EXIT;
 			END IF;
 		 END LOOP;
 		END IF;
@@ -1788,8 +1761,7 @@ BEGIN
 			ls_invoice_length := LENGTH(ls_invoice_number);
 			IF NVL(ls_invoice_length,257)>256
 			THEN
-			    ls_invoice_number := SUBSTR(ls_invoice_number,1,256);
-				EXIT;
+			 EXIT;
 			END IF;
 		 END LOOP;
 		 FOR curs_rec IN ind_shipto_location(ln_file_id) LOOP 
@@ -1797,8 +1769,7 @@ BEGIN
 	        ls_shiptoloc_length := LENGTH(ls_token_ship_to_location);
 			IF NVL(ls_shiptoloc_length,257)>256
 			THEN
-			    ls_token_ship_to_location := SUBSTR(ls_token_ship_to_location,1,256);			    
-				EXIT;
+			 EXIT;
 			END IF;
 		 END LOOP;
         ELSIF ls_invoice_type = 'CONS'
@@ -1807,16 +1778,14 @@ BEGIN
 		    ls_invoice_number := ls_invoice_number||curs_rec.invoice_number||',';
 			IF NVL(ls_invoice_length,257)>256
 			THEN
-			    ls_invoice_number := SUBSTR(ls_invoice_number,1,256);
-				EXIT;
+			 EXIT;
 			END IF;
 		 END LOOP;
 		 FOR curs_rec IN cons_shipto_location(ln_file_id) LOOP 
             ls_token_ship_to_location := ls_token_ship_to_location||curs_rec.location||',';
 			IF NVL(ls_shiptoloc_length,257)>256
 			THEN
-			    ls_token_ship_to_location := SUBSTR(ls_token_ship_to_location,1,256);			    
-				EXIT;
+			 EXIT;
 			END IF;
 		 END LOOP;
 		END IF;
@@ -1874,7 +1843,6 @@ BEGIN
 	 --NAIT-96849 start
 	 put_log_line('  Direct Customer email subject: ls_subject'||ls_subject);
 	 ls_subject_length := LENGTH (ls_subject);
-     put_log_line('  Direct Customer email subject: ls_subject length'||ls_subject_length);
 	 IF ls_subject_length > 2000 
 	 THEN 
       ls_subject := SUBSTR(ls_subject,1,2000);	 
@@ -1921,7 +1889,6 @@ BEGIN
 			   		      FROM XX_AR_EBL_FILE F
 					     WHERE F.transmission_id=T.transmission_id
 						   AND NVL(F.status,'X')='RENDERED')) LOOP
-				   
   --Loop to send multiple docs in a mail for parent and child cust docs
   FOR lmir IN (SELECT X.* FROM (SELECT DISTINCT M.parent_doc_id, T.cust_acct_site_id, T.transmission_id, T.dest_email_addr, T.billing_dt_from, T.billing_dt,
                                      D.email_subject, D.email_std_message, D.email_custom_message, D.email_signature,
@@ -2001,8 +1968,7 @@ BEGIN
 			ls_invoice_length := LENGTH(ls_invoice_number);
 			IF NVL(ls_invoice_length,257)>256
 			THEN
-			    ls_invoice_number := SUBSTR(ls_invoice_number,1,256);
-			    EXIT;
+			 EXIT;
 			END IF;
 		 END LOOP;
  		 FOR curs_rec IN ind_shipto_location(ln_file_id) LOOP 
@@ -2010,8 +1976,7 @@ BEGIN
 	        ls_shiptoloc_length := LENGTH(ls_token_ship_to_location);
 			IF NVL(ls_shiptoloc_length,257)>256
 			THEN
-			    ls_token_ship_to_location := SUBSTR(ls_token_ship_to_location,1,256);
-				EXIT;
+			 EXIT;
 			END IF;
 		 END LOOP;
 	    ELSIF ls_invoice_type = 'CONS'
@@ -2021,8 +1986,7 @@ BEGIN
 			ls_invoice_length := LENGTH(ls_invoice_number);
 			IF NVL(ls_invoice_length,257)> 256
 			THEN
-			    ls_invoice_number := SUBSTR(ls_invoice_number,1,256);			
-			    EXIT;
+			 EXIT;
 			END IF;
 		 END LOOP;
  		 FOR curs_rec IN cons_shipto_location(ln_file_id) LOOP 
@@ -2030,8 +1994,7 @@ BEGIN
 	        ls_shiptoloc_length := LENGTH(ls_token_ship_to_location);
 			IF NVL(ls_shiptoloc_length,257)> 256
 			THEN
-			    ls_token_ship_to_location := SUBSTR(ls_token_ship_to_location,1,256);
-				EXIT;
+			 EXIT;
 			END IF;
 		 END LOOP;
 		END IF;
@@ -2123,8 +2086,7 @@ BEGIN
 			ls_invoice_length := LENGTH(ls_invoice_number);
 			IF NVL(ls_invoice_length,257)>256
 			THEN
-			    ls_invoice_number := SUBSTR(ls_invoice_number,1,256);
-				EXIT;
+			 EXIT;
 			END IF;
 		 END LOOP;
  		 FOR curs_rec IN ind_shipto_location(ln_file_id) LOOP 
@@ -2132,8 +2094,7 @@ BEGIN
 	        ls_shiptoloc_length := LENGTH(ls_token_ship_to_location);
 			IF NVL(ls_shiptoloc_length,257)>256
 			THEN
-			    ls_token_ship_to_location := SUBSTR(ls_token_ship_to_location,1,256);
-				EXIT;
+			 EXIT;
 			END IF;
 		 END LOOP;
 	    ELSIF ls_invoice_type = 'CONS'
@@ -2143,8 +2104,7 @@ BEGIN
 			ls_invoice_length := LENGTH(ls_invoice_number);
 			IF NVL(ls_invoice_length,257)>256
 			THEN
-			    ls_invoice_number := SUBSTR(ls_invoice_number,1,256);
-			    EXIT;
+		         EXIT;
 			END IF;
 		 END LOOP;
  		 FOR curs_rec IN cons_shipto_location(ln_file_id) LOOP 
@@ -2152,8 +2112,7 @@ BEGIN
 	        ls_shiptoloc_length := LENGTH(ls_token_ship_to_location);
 			IF NVL(ls_shiptoloc_length,257)>256
 			THEN
-			    ls_token_ship_to_location := SUBSTR(ls_token_ship_to_location,1,256);
-				EXIT;
+			 EXIT;
 			END IF;
 		 END LOOP;
 		END IF;
@@ -2214,7 +2173,6 @@ BEGIN
       ls_subject := SUBSTR(ls_subject,1,2000);	 
 	 END IF;
 	 put_log_line('  Indirect Customer email subject: ls_subject'||ls_subject);
-     put_log_line('  Indirect Customer email subject: ls_subject length'||ls_subject_length);
 	 --NAIT-96849 end
      BEGIN
       TRANSMIT_EMAIL(NULL, ls_trans_ids, p_smtp_server, p_smtp_port, p_from_name, ls_dest_email_addr, ls_subject, ls_message_html, ls_message_text, ls_zip_required, ls_status_detail);
@@ -2336,8 +2294,7 @@ BEGIN
 			ls_invoice_length := LENGTH(ls_invoice_number);
 			IF NVL(ls_invoice_length,257)>256
 			THEN
-			    ls_invoice_number := SUBSTR(ls_invoice_number,1,256);
-				EXIT;
+			 EXIT;
 			END IF;			
 		 END LOOP;
 		 FOR curs_rec IN ind_shipto_location(ln_file_id) LOOP 
@@ -2345,8 +2302,7 @@ BEGIN
 	        ls_shiptoloc_length := LENGTH(ls_token_ship_to_location);
 			IF NVL(ls_shiptoloc_length,257)>256
 			THEN
-			    ls_token_ship_to_location := SUBSTR(ls_token_ship_to_location,1,256);			    
-				EXIT;
+ 			 EXIT;
 			END IF;
   		 END LOOP;
 		ELSIF ls_invoice_type = 'CONS'
@@ -2356,8 +2312,7 @@ BEGIN
 			ls_invoice_length := LENGTH(ls_invoice_number);
 			IF NVL(ls_invoice_length,257)>256
 			THEN
-			    ls_invoice_number := SUBSTR(ls_invoice_number,1,256);
-				EXIT;
+ 			 EXIT;
 			END IF;			
 		 END LOOP;
 		 FOR curs_rec IN cons_shipto_location(ln_file_id) LOOP 
@@ -2365,8 +2320,7 @@ BEGIN
 	        ls_shiptoloc_length := LENGTH(ls_token_ship_to_location);
 			IF NVL(ls_shiptoloc_length,257)>256
 			THEN
-			    ls_token_ship_to_location := SUBSTR(ls_token_ship_to_location,1,256);			    
-				EXIT;
+ 			 EXIT;
 			END IF;
   		 END LOOP;
 		END IF;
@@ -3121,7 +3075,7 @@ IS
   -- Get the transmission ids to be considered
   CURSOR transmission_ids(p_cust_doc_id IN NUMBER)
 	IS
-    SELECT transmission_id
+    SELECT DISTINCT transmission_id
 	 FROM xx_ar_ebl_file XAEF
 	WHERE cust_doc_id = p_cust_doc_id
 	  AND paydoc_flag = 'Y'
@@ -3547,8 +3501,7 @@ BEGIN
   			    ls_invoice_length := LENGTH(ls_invoice_number);
 			    IF NVL(ls_invoice_length,257)>256
 			    THEN
-			     ls_invoice_number := SUBSTR(ls_invoice_number,1,256);
-				 EXIT;
+			     EXIT;
 			    END IF;
 			END LOOP;
 		    END LOOP;
@@ -3560,8 +3513,7 @@ BEGIN
 	         ls_shiptoloc_length := LENGTH(ls_shipto_location);
 			 IF NVL(ls_shiptoloc_length,257)>256
 			 THEN
-			    ls_shipto_location := SUBSTR(ls_shipto_location,1,256);			    
-				EXIT;
+			    EXIT;
 			 END IF;
 			 END IF;
 	        END LOOP;
@@ -3812,7 +3764,3 @@ BEGIN
 END TRANSMIT_MERGE_PDF_EMAIL;
 
 END XX_AR_EBL_TRANSMISSION_PKG;
-/
-
-SHOW ERROR;
-EXIT;
