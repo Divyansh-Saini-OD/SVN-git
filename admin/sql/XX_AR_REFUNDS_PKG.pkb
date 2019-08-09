@@ -3800,7 +3800,7 @@ SELECT   SOURCE
         ,
                      'US_OD_EXP_NON_DISC',
                      'CHECK',
-                     lc_site_category,							-- Assigned Site Category for #6.8
+                     lc_site_category							-- Assigned Site Category for #6.8
                          ,
                      SYSDATE,
                      fnd_global.user_id,
