@@ -356,10 +356,10 @@ BEGIN
       FOR i IN c_concat
       LOOP
         BEGIN
-          SELECT target
+          SELECT source
           INTO v_entity
           FROM xx_gl_cld2ebs_mapping
-          WHERE source=i.entity
+          WHERE target=i.entity
           AND type    ='ENTITY';
         EXCEPTION
         WHEN OTHERS THEN
@@ -367,10 +367,10 @@ BEGIN
           v_entity:=-1;
         END;
         BEGIN
-          SELECT target
+          SELECT source
           INTO v_cost_center
           FROM xx_gl_cld2ebs_mapping
-          WHERE source=i.cost_center
+          WHERE target=i.cost_center
           AND type    ='COST_CENTER';
         EXCEPTION
         WHEN OTHERS THEN
@@ -378,10 +378,10 @@ BEGIN
           v_cost_center:=-1;
         END;
         BEGIN
-          SELECT target
+          SELECT source
           INTO v_account
           FROM xx_gl_cld2ebs_mapping
-          WHERE source=i.account
+          WHERE target=i.account
           AND type    ='ACCOUNT';
         EXCEPTION
         WHEN OTHERS THEN
@@ -389,10 +389,10 @@ BEGIN
           v_account:=-1;
         END;
         BEGIN
-          SELECT target
+          SELECT source
           INTO v_location
           FROM xx_gl_cld2ebs_mapping
-          WHERE source=i.location
+          WHERE target=i.location
           AND type    ='LOCATION';
         EXCEPTION
         WHEN OTHERS THEN
@@ -400,10 +400,10 @@ BEGIN
           v_location:=-1;
         END;
         BEGIN
-          SELECT target
+          SELECT source
           INTO v_lob
           FROM xx_gl_cld2ebs_mapping
-          WHERE source=i.lob
+          WHERE target=i.lob
           AND type    ='LOB';
         EXCEPTION
         WHEN OTHERS THEN
@@ -411,10 +411,10 @@ BEGIN
           v_lob:=-1;
         END;
         BEGIN
-          SELECT target
+          SELECT source
           INTO v_intercompany
           FROM xx_gl_cld2ebs_mapping
-          WHERE source=i.intercompany
+          WHERE target=i.intercompany
           AND type    ='ENTITY';
         EXCEPTION
         WHEN OTHERS THEN
