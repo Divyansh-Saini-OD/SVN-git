@@ -5229,11 +5229,10 @@ AS
         IF g_header_rec.invoicing_rule_id(ln_hdr_ind) IS NOT NULL
         THEN
           BEGIN
-            SELECT add_months(sysdate,Decode(od_billing_frequency,'M' ,1,'A', 12 ,'Q', 3, 0)) --od_contract_length)
-                      --add_months(sysdate,od_contract_length)
+            SELECT add_months(g_line_rec.ordered_date(i),Decode(od_billing_frequency,'M' ,1,'A', 12 ,'Q', 3, 0))-1
             INTO g_line_rec.service_end_date(i)
             FROM xx_rms_mv_ssb
-            WHERE item =  lc_item; --g_line_rec.inventory_item(i);
+            WHERE item =  lc_item; 
 
             g_line_rec.service_start_date(i) := g_line_rec.ordered_date(i);
             g_line_rec.accounting_rule_id(i) := g_header_rec.accounting_rule_id(ln_hdr_ind);
