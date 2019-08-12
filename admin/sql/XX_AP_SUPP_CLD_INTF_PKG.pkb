@@ -51,6 +51,8 @@ CREATE OR REPLACE PACKAGE BODY xx_ap_supp_cld_intf_pkg
 -- |                                           Added a new condition to exclude RTV sites to   |
 -- |                                           create custom tolerance                         |
 -- |  2.3    09-AUG-2019     Havish Kasina     Added supplier_notif_method                     |
+-- |  2.4    12-AUG-2019     Havish Kasina     Added gl info in update_supplier_site           |
+-- |  2.5    12-AUG-2019     Havish Kasina     Update_status procedure is added                |
 -- |===========================================================================================+
 AS
   /*********************************************************************
@@ -1677,7 +1679,9 @@ IS
   p_calling_prog   			VARCHAR2(200);
   l_program_step   			VARCHAR2 (100) := '';
   ln_msg_index_num 			NUMBER;
-
+  v_acct_pay                NUMBER;
+  v_prepay_cde              NUMBER;
+  
 CURSOR c_supplier_site
 IS
 SELECT *
@@ -1707,81 +1711,86 @@ BEGIN
       WHEN OTHERS THEN
         print_debug_msg(p_message=> l_program_step||'Unable to derive the supplier site information for site id:' || lr_existing_vendor_site_rec.vendor_site_id, p_force=>true);
     END;
+	
+	v_acct_pay  := get_cld_to_ebs_map(c_sup_site.accts_pay_concat_gl_segments);
+    v_prepay_cde:= get_cld_to_ebs_map(c_sup_site. prepay_code_gl_segments);
 
     -- Assign Vendor Site Details
-    lr_vendor_site_rec.vendor_site_id               := lr_existing_vendor_site_rec.vendor_site_id;
-    lr_vendor_site_rec.last_update_date             := SYSDATE;
-    lr_vendor_site_rec.vendor_id                    := lr_existing_vendor_site_rec.vendor_id;
-    lr_vendor_site_rec.org_id                       := lr_existing_vendor_site_rec.org_id;
-    lr_vendor_site_rec.rfq_only_site_flag           :=NVL(c_sup_site.rfq_only_site_flag, FND_API.G_MISS_CHAR);
-    lr_vendor_site_rec.purchasing_site_flag         :=NVL(c_sup_site.purchasing_site_flag, FND_API.G_MISS_CHAR);
-    lr_vendor_site_rec.pcard_site_flag              :=NVL(c_sup_site.pcard_site_flag, FND_API.G_MISS_CHAR);
-    lr_vendor_site_rec.pay_site_flag                :=NVL(c_sup_site.pay_site_flag, FND_API.G_MISS_CHAR);
-    lr_vendor_site_rec.primary_pay_site_flag        :=NVL(c_sup_site.primary_pay_site_flag, FND_API.G_MISS_CHAR);
-    lr_vendor_site_rec.fax_area_code                :=NVL(c_sup_site.fax_area_code, FND_API.G_MISS_CHAR);
-    lr_vendor_site_rec.fax                          :=NVL(c_sup_site.fax, FND_API.G_MISS_CHAR);
-    lr_vendor_site_rec.inactive_date                :=NVL(TO_DATE(c_sup_site.inactive_date,'YYYY/MM/DD'),FND_API.G_MISS_DATE); 
-    lr_vendor_site_rec.customer_num                 :=NVL(c_sup_site.customer_num, FND_API.G_MISS_CHAR);
-    lr_vendor_site_rec.ship_via_lookup_code         :=NVL(c_sup_site.ship_via_lookup_code, FND_API.G_MISS_CHAR);
-    lr_vendor_site_rec.freight_terms_lookup_code    :=NVL(c_sup_site.freight_terms_lookup_code, FND_API.G_MISS_CHAR);
-    lr_vendor_site_rec.fob_lookup_code              :=NVL(c_sup_site.fob_lookup_code, FND_API.G_MISS_CHAR);
-    lr_vendor_site_rec.terms_date_basis             :=NVL(c_sup_site.terms_date_basis, FND_API.G_MISS_CHAR);
-    lr_vendor_site_rec.pay_group_lookup_code        :=NVL(c_sup_site.pay_group_lookup_code, FND_API.G_MISS_CHAR);
-    lr_vendor_site_rec.payment_priority             :=NVL(c_sup_site.payment_priority,FND_API.G_MISS_NUM);
-    lr_vendor_site_rec.terms_id                     :=NVL(c_sup_site.terms_id,FND_API.G_MISS_NUM);
-    lr_vendor_site_rec.invoice_amount_limit         :=NVL(c_sup_site.invoice_amount_limit,FND_API.G_MISS_NUM);
-    lr_vendor_site_rec.pay_date_basis_lookup_code   :=NVL(c_sup_site.pay_date_basis_lookup_code, FND_API.G_MISS_CHAR);
-    lr_vendor_site_rec.always_take_disc_flag        :=NVL(c_sup_site.always_take_disc_flag, FND_API.G_MISS_CHAR);
-    lr_vendor_site_rec.invoice_currency_code        :=NVL(c_sup_site.invoice_currency_code, FND_API.G_MISS_CHAR);
-    lr_vendor_site_rec.payment_currency_code        :=NVL(c_sup_site.payment_currency_code, FND_API.G_MISS_CHAR);
-    lr_vendor_site_rec.hold_all_payments_flag       :=NVL(c_sup_site.hold_all_payments_flag, FND_API.G_MISS_CHAR);
-    lr_vendor_site_rec.hold_future_payments_flag    :=NVL(c_sup_site.hold_future_payments_flag, FND_API.G_MISS_CHAR);
-    lr_vendor_site_rec.hold_unmatched_invoices_flag :=NVL(c_sup_site.hold_unmatched_invoices_flag, FND_API.G_MISS_CHAR);
-    lr_vendor_site_rec.hold_reason                  :=NVL(c_sup_site.hold_reason, FND_API.G_MISS_CHAR);
-    lr_vendor_site_rec.hold_reason                  :=NVL(c_sup_site.purchasing_hold_reason, FND_API.G_MISS_CHAR);
-    lr_vendor_site_rec.tax_reporting_site_flag      :=NVL(c_sup_site.tax_reporting_site_flag, FND_API.G_MISS_CHAR);
-    lr_vendor_site_rec.exclude_freight_from_discount:=NVL(c_sup_site.exclude_freight_from_discount, FND_API.G_MISS_CHAR);
-    lr_vendor_site_rec.pay_on_code                  :=NVL(c_sup_site.pay_on_code, FND_API.G_MISS_CHAR);
-    lr_vendor_site_rec.pay_on_receipt_summary_code  :=NVL(c_sup_site.pay_on_receipt_summary_code, FND_API.G_MISS_CHAR);
-    lr_vendor_site_rec.match_option                 :=NVL(c_sup_site.match_option, FND_API.G_MISS_CHAR);
-    lr_vendor_site_rec.country_of_origin_code       :=NVL(c_sup_site.country_of_origin_code, FND_API.G_MISS_CHAR);
-    lr_vendor_site_rec.create_debit_memo_flag       :=NVL(c_sup_site.create_debit_memo_flag, FND_API.G_MISS_CHAR);
-    lr_vendor_site_rec.supplier_notif_method        :=NVL(c_sup_site.supplier_notif_method, FND_API.G_MISS_CHAR);
-    lr_vendor_site_rec.email_address                :=NVL(c_sup_site.email_address, FND_API.G_MISS_CHAR);
-    lr_vendor_site_rec.tolerance_name               :=NVL(c_sup_site.tolerance_name, FND_API.G_MISS_CHAR);
-    lr_vendor_site_rec.services_tolerance_name      :=NVL(c_sup_site.service_tolerance, FND_API.G_MISS_CHAR); -- Added as per Version 1.6
-    lr_vendor_site_rec.gapless_inv_num_flag         :=NVL(c_sup_site.gapless_inv_num_flag, FND_API.G_MISS_CHAR);
-    lr_vendor_site_rec.selling_company_identifier   :=NVL(c_sup_site.selling_company_identifier, FND_API.G_MISS_CHAR);
-    lr_vendor_site_rec.bank_charge_bearer           :=NVL(c_sup_site.bank_charge_bearer, FND_API.G_MISS_CHAR);
-    lr_vendor_site_rec.vat_code                     :=NVL(c_sup_site.vat_code, FND_API.G_MISS_CHAR);
-    lr_vendor_site_rec.vat_registration_num         :=NVL(c_sup_site.vat_registration_num, FND_API.G_MISS_CHAR);
-    lr_vendor_site_rec.remit_advice_delivery_method :=NVL(c_sup_site.remit_advice_delivery_method, FND_API.G_MISS_CHAR);
-    lr_vendor_site_rec.remittance_email             :=NVL(c_sup_site.remittance_email, FND_API.G_MISS_CHAR);
-    lr_vendor_site_rec.attribute_category           :=NVL(c_sup_site.attribute_category, FND_API.G_MISS_CHAR);
-    lr_vendor_site_rec.attribute1                   :=NVL(c_sup_site.attribute1, FND_API.G_MISS_CHAR);
-    lr_vendor_site_rec.attribute2                   :=NVL(c_sup_site.attribute2, FND_API.G_MISS_CHAR);
-    lr_vendor_site_rec.attribute3                   :=NVL(c_sup_site.attribute3, FND_API.G_MISS_CHAR);
-    lr_vendor_site_rec.attribute4                   :=NVL(c_sup_site.attribute4, FND_API.G_MISS_CHAR);
-    lr_vendor_site_rec.attribute5                   :=NVL(c_sup_site.attribute5, FND_API.G_MISS_CHAR);
-    lr_vendor_site_rec.attribute6                   :=NVL(c_sup_site.attribute6, FND_API.G_MISS_CHAR);
-    lr_vendor_site_rec.attribute7                   :=NVL(c_sup_site.attribute7, FND_API.G_MISS_CHAR);
-    lr_vendor_site_rec.attribute8                   :=NVL(c_sup_site.attribute8, FND_API.G_MISS_CHAR);
-    lr_vendor_site_rec.attribute9                   :=NVL(c_sup_site.attribute9, FND_API.G_MISS_CHAR);
-    lr_vendor_site_rec.attribute13                  :=NVL(c_sup_site.attribute13, FND_API.G_MISS_CHAR);
-    lr_vendor_site_rec.attribute14                  :=NVL(c_sup_site.attribute14, FND_API.G_MISS_CHAR);
-    lr_vendor_site_rec.phone                        :=NVL(c_sup_site.phone_number, FND_API.G_MISS_CHAR);
-    lr_vendor_site_rec.area_code                    :=NVL(c_sup_site.phone_area_code, FND_API.G_MISS_CHAR);
-    lr_vendor_site_rec.province                     :=NVL(c_sup_site.province, FND_API.G_MISS_CHAR);
-    lr_vendor_site_rec.state                        :=NVL(c_sup_site.state, FND_API.G_MISS_CHAR);
-    lr_vendor_site_rec.city                         :=NVL(c_sup_site.city, FND_API.G_MISS_CHAR);
-    lr_vendor_site_rec.address_line2                :=NVL(c_sup_site.address_line2, FND_API.G_MISS_CHAR);
-    lr_vendor_site_rec.address_line1                :=NVL(c_sup_site.address_line1, FND_API.G_MISS_CHAR);
-	lr_vendor_site_rec.address_line3                :=NVL(c_sup_site.address_line3, FND_API.G_MISS_CHAR);  -- Added as per Version 2.2
-    lr_vendor_site_rec.address_line4                :=NVL(c_sup_site.address_line4, FND_API.G_MISS_CHAR);  -- Added as per Version 2.2
-	lr_vendor_site_rec.county                       :=NVL(c_sup_site.county, FND_API.G_MISS_CHAR);         -- Added as per Version 2.2
-    lr_vendor_site_rec.country                      :=NVL(c_sup_site.country, FND_API.G_MISS_CHAR);
-	lr_vendor_site_rec.duns_number                  :=NVL(c_sup_site.attribute5, FND_API.G_MISS_CHAR); -- Added as per Version 1.9 by Havish Kasina
-
+    lr_vendor_site_rec.vendor_site_id                 := lr_existing_vendor_site_rec.vendor_site_id;
+    lr_vendor_site_rec.last_update_date               := SYSDATE;
+    lr_vendor_site_rec.vendor_id                      := lr_existing_vendor_site_rec.vendor_id;
+    lr_vendor_site_rec.org_id                         := lr_existing_vendor_site_rec.org_id;
+    lr_vendor_site_rec.rfq_only_site_flag             :=NVL(c_sup_site.rfq_only_site_flag, FND_API.G_MISS_CHAR);
+    lr_vendor_site_rec.purchasing_site_flag           :=NVL(c_sup_site.purchasing_site_flag, FND_API.G_MISS_CHAR);
+    lr_vendor_site_rec.pcard_site_flag                :=NVL(c_sup_site.pcard_site_flag, FND_API.G_MISS_CHAR);
+    lr_vendor_site_rec.pay_site_flag                  :=NVL(c_sup_site.pay_site_flag, FND_API.G_MISS_CHAR);
+    lr_vendor_site_rec.primary_pay_site_flag          :=NVL(c_sup_site.primary_pay_site_flag, FND_API.G_MISS_CHAR);
+    lr_vendor_site_rec.fax_area_code                  :=NVL(c_sup_site.fax_area_code, FND_API.G_MISS_CHAR);
+    lr_vendor_site_rec.fax                            :=NVL(c_sup_site.fax, FND_API.G_MISS_CHAR);
+    lr_vendor_site_rec.inactive_date                  :=NVL(TO_DATE(c_sup_site.inactive_date,'YYYY/MM/DD'),FND_API.G_MISS_DATE); 
+    lr_vendor_site_rec.customer_num                   :=NVL(c_sup_site.customer_num, FND_API.G_MISS_CHAR);
+    lr_vendor_site_rec.ship_via_lookup_code           :=NVL(c_sup_site.ship_via_lookup_code, FND_API.G_MISS_CHAR);
+    lr_vendor_site_rec.freight_terms_lookup_code      :=NVL(c_sup_site.freight_terms_lookup_code, FND_API.G_MISS_CHAR);
+    lr_vendor_site_rec.fob_lookup_code                :=NVL(c_sup_site.fob_lookup_code, FND_API.G_MISS_CHAR);
+    lr_vendor_site_rec.terms_date_basis               :=NVL(c_sup_site.terms_date_basis, FND_API.G_MISS_CHAR);
+    lr_vendor_site_rec.pay_group_lookup_code          :=NVL(c_sup_site.pay_group_lookup_code, FND_API.G_MISS_CHAR);
+    lr_vendor_site_rec.payment_priority               :=NVL(c_sup_site.payment_priority,FND_API.G_MISS_NUM);
+    lr_vendor_site_rec.terms_id                       :=NVL(c_sup_site.terms_id,FND_API.G_MISS_NUM);
+    lr_vendor_site_rec.invoice_amount_limit           :=NVL(c_sup_site.invoice_amount_limit,FND_API.G_MISS_NUM);
+    lr_vendor_site_rec.pay_date_basis_lookup_code     :=NVL(c_sup_site.pay_date_basis_lookup_code, FND_API.G_MISS_CHAR);
+    lr_vendor_site_rec.always_take_disc_flag          :=NVL(c_sup_site.always_take_disc_flag, FND_API.G_MISS_CHAR);
+    lr_vendor_site_rec.invoice_currency_code          :=NVL(c_sup_site.invoice_currency_code, FND_API.G_MISS_CHAR);
+    lr_vendor_site_rec.payment_currency_code          :=NVL(c_sup_site.payment_currency_code, FND_API.G_MISS_CHAR);
+    lr_vendor_site_rec.hold_all_payments_flag         :=NVL(c_sup_site.hold_all_payments_flag, FND_API.G_MISS_CHAR);
+    lr_vendor_site_rec.hold_future_payments_flag      :=NVL(c_sup_site.hold_future_payments_flag, FND_API.G_MISS_CHAR);
+    lr_vendor_site_rec.hold_unmatched_invoices_flag   :=NVL(c_sup_site.hold_unmatched_invoices_flag, FND_API.G_MISS_CHAR);
+    lr_vendor_site_rec.hold_reason                    :=NVL(c_sup_site.hold_reason, FND_API.G_MISS_CHAR);
+    lr_vendor_site_rec.hold_reason                    :=NVL(c_sup_site.purchasing_hold_reason, FND_API.G_MISS_CHAR);
+    lr_vendor_site_rec.tax_reporting_site_flag        :=NVL(c_sup_site.tax_reporting_site_flag, FND_API.G_MISS_CHAR);
+    lr_vendor_site_rec.exclude_freight_from_discount  :=NVL(c_sup_site.exclude_freight_from_discount, FND_API.G_MISS_CHAR);
+    lr_vendor_site_rec.pay_on_code                    :=NVL(c_sup_site.pay_on_code, FND_API.G_MISS_CHAR);
+    lr_vendor_site_rec.pay_on_receipt_summary_code    :=NVL(c_sup_site.pay_on_receipt_summary_code, FND_API.G_MISS_CHAR);
+    lr_vendor_site_rec.match_option                   :=NVL(c_sup_site.match_option, FND_API.G_MISS_CHAR);
+    lr_vendor_site_rec.country_of_origin_code         :=NVL(c_sup_site.country_of_origin_code, FND_API.G_MISS_CHAR);
+    lr_vendor_site_rec.create_debit_memo_flag         :=NVL(c_sup_site.create_debit_memo_flag, FND_API.G_MISS_CHAR);
+    lr_vendor_site_rec.supplier_notif_method          :=NVL(c_sup_site.supplier_notif_method, FND_API.G_MISS_CHAR);
+    lr_vendor_site_rec.email_address                  :=NVL(c_sup_site.email_address, FND_API.G_MISS_CHAR);
+    lr_vendor_site_rec.tolerance_name                 :=NVL(c_sup_site.tolerance_name, FND_API.G_MISS_CHAR);
+    lr_vendor_site_rec.services_tolerance_name        :=NVL(c_sup_site.service_tolerance, FND_API.G_MISS_CHAR); -- Added as per Version 1.6
+    lr_vendor_site_rec.gapless_inv_num_flag           :=NVL(c_sup_site.gapless_inv_num_flag, FND_API.G_MISS_CHAR);
+    lr_vendor_site_rec.selling_company_identifier     :=NVL(c_sup_site.selling_company_identifier, FND_API.G_MISS_CHAR);
+    lr_vendor_site_rec.bank_charge_bearer             :=NVL(c_sup_site.bank_charge_bearer, FND_API.G_MISS_CHAR);
+    lr_vendor_site_rec.vat_code                       :=NVL(c_sup_site.vat_code, FND_API.G_MISS_CHAR);
+    lr_vendor_site_rec.vat_registration_num           :=NVL(c_sup_site.vat_registration_num, FND_API.G_MISS_CHAR);
+    lr_vendor_site_rec.remit_advice_delivery_method   :=NVL(c_sup_site.remit_advice_delivery_method, FND_API.G_MISS_CHAR);
+    lr_vendor_site_rec.remittance_email               :=NVL(c_sup_site.remittance_email, FND_API.G_MISS_CHAR);
+    lr_vendor_site_rec.attribute_category             :=NVL(c_sup_site.attribute_category, FND_API.G_MISS_CHAR);
+    lr_vendor_site_rec.attribute1                     :=NVL(c_sup_site.attribute1, FND_API.G_MISS_CHAR);
+    lr_vendor_site_rec.attribute2                     :=NVL(c_sup_site.attribute2, FND_API.G_MISS_CHAR);
+    lr_vendor_site_rec.attribute3                     :=NVL(c_sup_site.attribute3, FND_API.G_MISS_CHAR);
+    lr_vendor_site_rec.attribute4                     :=NVL(c_sup_site.attribute4, FND_API.G_MISS_CHAR);
+    lr_vendor_site_rec.attribute5                     :=NVL(c_sup_site.attribute5, FND_API.G_MISS_CHAR);
+    lr_vendor_site_rec.attribute6                     :=NVL(c_sup_site.attribute6, FND_API.G_MISS_CHAR);
+    lr_vendor_site_rec.attribute7                     :=NVL(c_sup_site.attribute7, FND_API.G_MISS_CHAR);
+    lr_vendor_site_rec.attribute8                     :=NVL(c_sup_site.attribute8, FND_API.G_MISS_CHAR);
+    lr_vendor_site_rec.attribute9                     :=NVL(c_sup_site.attribute9, FND_API.G_MISS_CHAR);
+    lr_vendor_site_rec.attribute13                    :=NVL(c_sup_site.attribute13, FND_API.G_MISS_CHAR);
+    lr_vendor_site_rec.attribute14                    :=NVL(c_sup_site.attribute14, FND_API.G_MISS_CHAR);
+    lr_vendor_site_rec.phone                          :=NVL(c_sup_site.phone_number, FND_API.G_MISS_CHAR);
+    lr_vendor_site_rec.area_code                      :=NVL(c_sup_site.phone_area_code, FND_API.G_MISS_CHAR);
+    lr_vendor_site_rec.province                       :=NVL(c_sup_site.province, FND_API.G_MISS_CHAR);
+    lr_vendor_site_rec.state                          :=NVL(c_sup_site.state, FND_API.G_MISS_CHAR);
+    lr_vendor_site_rec.city                           :=NVL(c_sup_site.city, FND_API.G_MISS_CHAR);
+    lr_vendor_site_rec.address_line2                  :=NVL(c_sup_site.address_line2, FND_API.G_MISS_CHAR);
+    lr_vendor_site_rec.address_line1                  :=NVL(c_sup_site.address_line1, FND_API.G_MISS_CHAR);
+	lr_vendor_site_rec.address_line3                  :=NVL(c_sup_site.address_line3, FND_API.G_MISS_CHAR);  -- Added as per Version 2.2
+    lr_vendor_site_rec.address_line4                  :=NVL(c_sup_site.address_line4, FND_API.G_MISS_CHAR);  -- Added as per Version 2.2
+	lr_vendor_site_rec.county                         :=NVL(c_sup_site.county, FND_API.G_MISS_CHAR);         -- Added as per Version 2.2
+    lr_vendor_site_rec.country                        :=NVL(c_sup_site.country, FND_API.G_MISS_CHAR);
+	lr_vendor_site_rec.duns_number                    :=NVL(c_sup_site.attribute5, FND_API.G_MISS_CHAR); -- Added as per Version 1.9 by Havish Kasina
+	lr_vendor_site_rec.accts_pay_code_combination_id  :=v_acct_pay;   -- Added as per Version 2.4 by Havish Kasina
+    lr_vendor_site_rec.prepay_code_combination_id     :=v_prepay_cde; -- Added as per Version 2.4 by Havish Kasina
+	
     fnd_msg_pub.initialize; --to make msg_count 0
     x_return_status:=NULL;
     x_msg_count    :=NULL;
@@ -3650,7 +3659,7 @@ BEGIN
       FETCH c_sup_contact_exist INTO l_sup_cont_exist_cnt;
       CLOSE c_sup_contact_exist;
       IF l_sup_cont_exist_cnt             > 0 THEN
-        l_sup_create_flag                := 'n';--update the supplier
+        l_sup_create_flag                := 'N';--update the supplier
         l_sup_site_cont_type.create_flag := l_sup_create_flag;
       ELSE
         l_sup_create_flag                := 'Y';
@@ -4630,26 +4639,7 @@ BEGIN
           WHEN OTHERS THEN
             print_debug_msg(p_message => ' Error in update after import', p_force => true);
         END ;
-        BEGIN
-          UPDATE XX_AP_CLD_SUPPLIERS_STG stg
-             SET supp_process_flag = gn_process_status_imp_fail,
-                 process_flag        ='Y',
-                 error_flag          ='E',
-                 error_msg           =error_msg||',Import Error'
-           WHERE request_id = gn_request_id
-             AND EXISTS ( SELECT 1
-							FROM ap_suppliers_int aint
-					       WHERE aint.vendor_name      = stg.supplier_name
-						     AND aint.segment1           =STG.SEGMENT1
-							 AND aint.vendor_interface_id=stg.vendor_interface_id
-							 AND aint.status             = 'REJECTED'
-						)
-             AND request_id = gn_request_id;
-          COMMIT;
-        EXCEPTION
-          WHEN OTHERS THEN
-            print_debug_msg(p_message => ' Error in update after import', p_force => true);
-        END ;
+
         UPDATE xx_ap_cld_suppliers_stg a
            SET (vendor_id,party_id)=(SELECT vendor_id,party_id 
 									   FROM ap_suppliers 
@@ -4918,7 +4908,7 @@ BEGIN
                 l_sup_site_type(l_idx).attribute4 ,
                 l_sup_site_type(l_idx).attribute5 ,
                 l_sup_site_type(l_idx).attribute6 ,
-                l_sup_site_type(l_idx).ATTRIBUTE7 ,
+                l_sup_site_type(l_idx).attribute7 ,
                 l_sup_site_type(l_idx).attribute8 ,
                 l_sup_site_type(l_idx).attribute9 ,
                 NULL ,
@@ -5617,6 +5607,90 @@ EXCEPTION
     x_retcode := 2;
     x_errbuf  := 'Exception in XX_AP_SUPP_CLD_INTF_PKG.Update_supplier_telex() - '||SQLCODE||' - '||SUBSTR(SQLERRM,1,3500);
 END update_supplier_telex;
+
+--+============================================================================+
+--| Name          : update_status                                              |
+--| Description   : This procedure will update error message for all           |
+--|                 unprocessed records into EBS                               |
+--|                                                                            |
+--| Parameters    :                                                            |
+--|                                                                            |
+--| Returns       : N/A                                                        |
+--|                                                                            |
+--+============================================================================+
+PROCEDURE update_status
+IS
+BEGIN
+  UPDATE xx_ap_cld_supp_sites_stg ss
+     SET ss.error_msg ='Site not processed due to Supplier Error'
+   WHERE ss.request_id = gn_request_id
+     AND ss.site_process_flag = 2
+	 AND EXISTS ( SELECT 'x'
+					FROM xx_ap_cld_suppliers_stg
+				   WHERE request_id=ss.request_id
+				     AND create_flag = 'Y'
+					 AND supp_process_flag <> 7
+					 AND segment1=ss.supplier_number
+			    );
+  COMMIT;
+
+  UPDATE xx_ap_cld_supp_contact_stg ct
+     SET ct.error_msg = 'Contact not processed due to Site Error'
+   WHERE ct.request_id = gn_request_id
+     AND ct.contact_process_flag = 2
+	 AND EXISTS ( SELECT 'x'
+					FROM xx_ap_cld_supp_sites_stg
+				   WHERE request_id=ct.request_id
+				     AND create_flag = 'Y'
+					 AND site_process_flag <> 7
+					 AND supplier_number=ct.supplier_number
+					 AND vendor_site_code=ct.vendor_site_code
+			    );
+  COMMIT;  
+				
+  UPDATE xx_ap_cld_supp_bcls_stg bcls
+     SET bcls.error_msg = 'Business Classification Not processed due to Supplier Error'
+   WHERE bcls.request_id = gn_request_id
+     AND bcls.bcls_process_flag = 2
+	 AND EXISTS ( SELECT 'x'
+					FROM xx_ap_cld_suppliers_stg
+				   WHERE request_id=bcls.request_id
+				     AND create_flag = 'Y'
+					 AND supp_process_flag <> 7
+					 AND segment1=bcls.supplier_number
+			    );
+  COMMIT;				
+
+  UPDATE xx_ap_cld_site_dff_stg dff
+     SET dff.error_msg = 'Custom DFF not processed due to Site Error'
+   WHERE dff.request_id = gn_request_id
+     AND dff.dff_process_Flag = 2
+	 AND EXISTS ( SELECT 'x'
+					FROM xx_ap_cld_supp_sites_stg
+				   WHERE request_id=dff.request_id
+				     AND create_flag = 'Y'
+					 AND site_process_flag<>7
+					 AND vendor_site_code=dff.vendor_site_code
+			    );
+  COMMIT;    
+  
+  UPDATE xx_ap_cld_supp_bnkact_stg bnk
+     SET bnk.error_msg = 'Bank not processed due to Site Error'
+   WHERE bnk.request_id = gn_request_id
+     AND bnk.bnkact_process_flag=2
+	 AND EXISTS ( SELECT 'x'
+					FROM xx_ap_cld_supp_sites_stg
+				   WHERE request_id=bnk.request_id
+				     AND create_flag = 'Y'
+					 AND site_process_flag<>7
+					 AND vendor_site_code=bnk.vendor_site_code
+			    );
+  COMMIT;      
+EXCEPTION
+  WHEN OTHERS
+  THEN  
+    print_debug_msg(p_message => 'When others in Update Status : '|| SQLERRM, p_force => true);								 
+END update_status;	
 -- +============================================================================+
 -- | Procedure Name : display_status                                            |
 -- |                                                                            |
@@ -5896,6 +5970,14 @@ BEGIN
   print_debug_msg(p_message => 'Calling  Update_supplier_telex' , p_force => true);
   update_supplier_telex(x_errbuf =>l_err_buff , x_retcode=> l_ret_code);
   print_debug_msg(p_message => 'Exiting Update_supplier_telex' , p_force => true);
+  print_debug_msg(p_message => '+---------------------------------------------------------------------------+' , p_force => true);
+  
+  print_debug_msg(p_message => 'Calling  update_status' , p_force => true);
+  update_status;
+  print_debug_msg(p_message => 'Exiting update_status' , p_force => true);
+  print_debug_msg(p_message => '+---------------------------------------------------------------------------+' , p_force => true);
+  
+  print_debug_msg(p_message => '                                                                             ' , p_force => true);
   print_debug_msg(p_message => 'Submitting the Report Program to generate the Excel File', p_force => true);
 
   lb_layout     := fnd_request.add_layout('XXFIN', 'XXAPCLDINTR', 'en', 'US', 'EXCEL' );
