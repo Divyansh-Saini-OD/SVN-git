@@ -99,6 +99,7 @@ AS
 --   6.6       01/08/2019  Shanti Sethuraj    Changing supplier site category code from EX to EX-REF for the jira # NAIT-65243
 --   6.7       05/07/2019  Satheesh Suthari   Adding org_id condition at attribute10, attribute9 for ra_customer_trx_all table, defect# 89061 
 --   6.8       08/12/2019  Jitendra Atale     Adding site_category for POS Mailcheck vendors
+--   6.9       08/02/2019  Jitendra Atale     Changes to accommodate Supplier numbering when Supplier Master in Cloud
 -- =========================================================================================================================
 -------------------------------------------------
    --Start of changes for Defect #3340
@@ -3645,16 +3646,21 @@ SELECT   SOURCE
         x_vendor_interface_id  OUT NOCOPY     NUMBER,
         x_err_mesg             OUT NOCOPY     VARCHAR2)
     IS
+		lc_vendor_number VARCHAR2(30); -- Added variable for #6.9
     BEGIN
+		lc_vendor_number := NULL;      -- Initialize variable for #6.9
 -- Generate sequence for vendor_interface_id
         SELECT ap_suppliers_int_s.NEXTVAL
         INTO   x_vendor_interface_id
         FROM   DUAL;
+		lc_vendor_number    := xx_update_product_setup; -- assigned vendor number for #6.9
+		IF lc_vendor_number IS NOT NULL THEN      -- Added IF condition for #6.9
 
 -- Insert a record into ap_suppliers_int table
         INSERT INTO ap_suppliers_int
                     (vendor_interface_id,
                      vendor_name,
+					 segment1,							-- Added column segment1 for #6.9					 
                      customer_num,
                      vendor_type_lookup_code,
                      one_time_flag,
@@ -3672,6 +3678,7 @@ SELECT   SOURCE
                      last_update_login)
              VALUES (x_vendor_interface_id,
                      p_refund_hdr_rec.payee_name,
+					 lc_vendor_number,						-- assigned vendor number for #6.9					 
                      p_refund_hdr_rec.customer_number,
                      'CUSTOMER',
                      'Y',
@@ -3695,6 +3702,7 @@ SELECT   SOURCE
                      SYSDATE,
                      fnd_global.user_id,
                      fnd_global.conc_login_id);
+		END IF;  																-- Added ENDIF for #6.9					 
     EXCEPTION
         WHEN OTHERS
         THEN
@@ -6772,6 +6780,44 @@ END XX_AR_GET_CUSTOMER_ID_TYPE;*/
         END IF;
     END check_cust;
 -- Added for QC Defect 17501 - End
+-- +=========================================================================+
+-- |                  Office Depot - Project Beacon                        |
+-- |                                                       |
+-- +=========================================================================+
+-- | Name : xx_update_product_setup                                          |
+-- | Description : Function is added to get next supplier number             |
+-- |                                                                  .      |
+-- |                                                                         |
+-- | Parameters :               |
+-- |===============                                                          |
+-- |Version   Date          Author              Remarks                      |
+-- |=======   ==========   =============   ==================================|
+-- |   1      12-AUG-19     Jitendra A     Initial version--Added for #6.9    |
+-- |                                      automatic supplier numbering       |
+-- |                                      for avoiding locking contention    |
+-- |                                      for product setup table            |
+-- +=============================================================================+
+FUNCTION xx_update_product_setup
+  RETURN NUMBER
+IS
+  PRAGMA AUTONOMOUS_TRANSACTION;
+  CURSOR ap_product_setup_c
+  IS
+    SELECT next_auto_supplier_num
+    FROM ap_product_setup FOR UPDATE OF next_auto_supplier_num;
+  l_segment1 ap_product_setup.next_auto_supplier_num%type;
+BEGIN
+  OPEN ap_product_setup_c;
+  FETCH ap_product_setup_c INTO l_segment1;
+  IF(ap_product_setup_c%notfound) THEN
+    RAISE NO_DATA_FOUND;
+  END IF;
+  CLOSE ap_product_setup_c;
+  UPDATE ap_product_setup
+  SET next_auto_supplier_num = next_auto_supplier_num + 1;
+  COMMIT;
+  RETURN l_segment1;
+END xx_update_product_setup;
 END xx_ar_refunds_pkg;
 
 /
