@@ -10,7 +10,7 @@
 	</parameters>
 <dataQuery>
 <sqlStatement name="Q1" dataSourceRef="">
-<![CDATA[ SELECT 'SUPPLIER' ENTITY,
+<![CDATA[ SELECT 1 SEQ,'SUPPLIER'|| ' & ' || 'DFF' ENTITY,
                  (SELECT COUNT(*)
                     FROM XX_AP_CLD_SUPPLIERS_STG
                    WHERE 1 =1
@@ -25,12 +25,12 @@
                  (SELECT COUNT(*)
                     FROM XX_AP_CLD_SUPPLIERS_STG
                    WHERE 1 =1
-                     AND SUPP_PROCESS_FLAG IN (2,3,6)
+                     AND SUPP_PROCESS_FLAG NOT IN (7,8)
                      AND request_id = :P_REQUEST_ID
                  ) FAILURE_COUNT
             FROM DUAL
            UNION
-          SELECT 'SITE' ENTITY,
+          SELECT 2 SEQ,'Site, Address, Assignment'|| ' & ' || 'DFF' ENTITY,
                  (SELECT COUNT(*)
                     FROM XX_AP_CLD_SUPP_SITES_STG
                    WHERE 1 =1
@@ -45,12 +45,12 @@
                  (SELECT COUNT(*)
                     FROM XX_AP_CLD_SUPP_SITES_STG
                    WHERE 1 = 1
-                    AND SITE_PROCESS_FLAG IN (2,3,6)
+                    AND SITE_PROCESS_FLAG NOT IN (7,8)
                     AND request_id = :P_REQUEST_ID
                  ) FAILURE_COUNT
             FROM DUAL
            UNION
-          SELECT 'CONTACT' ENTITY,
+          SELECT 5 SEQ,'Contacts' ENTITY,
                  (SELECT COUNT(*)
                     FROM XX_AP_CLD_SUPP_CONTACT_STG
                    WHERE 1 =1
@@ -66,12 +66,12 @@
                  (SELECT COUNT(*)
                     FROM XX_AP_CLD_SUPP_CONTACT_STG
                    WHERE 1 = 1
-                     AND CONTACT_PROCESS_FLAG IN (2,3,6)
+                     AND CONTACT_PROCESS_FLAG NOT IN (7,8)
                      AND request_id = :P_REQUEST_ID
                  ) FAILURE_COUNT
             FROM DUAL
            UNION
-          SELECT 'CUSTOM DFF' ENTITY,
+          SELECT 03 SEQ, 'Custom DFF' ENTITY,
                  (SELECT COUNT(*)
                     FROM XX_AP_CLD_SITE_DFF_STG
                    WHERE 1 =1
@@ -80,18 +80,18 @@
                  (SELECT COUNT(*)
                     FROM XX_AP_CLD_SITE_DFF_STG
                    WHERE 1 = 1
-                     AND DFF_PROCESS_FLAG IN (7,8)
+                     AND DFF_PROCESS_FLAG=7
                      AND request_id = :P_REQUEST_ID
                  ) SUCCESS_COUNT,
                  (SELECT COUNT(*)
                     FROM XX_AP_CLD_SITE_DFF_STG
                    WHERE 1 = 1
-                     AND DFF_PROCESS_FLAG IN (2,3,6)
+                     AND DFF_PROCESS_FLAG <> 7
                      AND request_id = :P_REQUEST_ID
                  ) FAILURE_COUNT
             FROM DUAL
            UNION
-          SELECT 'BANK ACCOUNTS' ENTITY,
+          SELECT 6 SEQ, 'Bank Assignments' ENTITY,
                  (SELECT COUNT(*)
                     FROM XX_AP_CLD_SUPP_BNKACT_STG
                    WHERE 1 =1
@@ -107,12 +107,12 @@
                  (SELECT COUNT(*)
                     FROM XX_AP_CLD_SUPP_BNKACT_STG
                    WHERE 1 = 1
-                     AND BNKACT_PROCESS_FLAG IN (2,3,6)
+                     AND BNKACT_PROCESS_FLAG NOT IN (7,8)
                      AND request_id = :P_REQUEST_ID
                  ) FAILURE_COUNT
             FROM DUAL
            UNION
-          SELECT 'BUS CLASSIFICATION' ENTITY,
+          SELECT 4 SEQ,'Business Classification' ENTITY,
                  (SELECT COUNT(*)
                     FROM XX_AP_CLD_SUPP_BCLS_STG
                    WHERE 1 =1
@@ -128,95 +128,104 @@
                  (SELECT COUNT(*)
                     FROM XX_AP_CLD_SUPP_BCLS_STG
                    WHERE 1 = 1
-                     AND BCLS_PROCESS_FLAG IN (2,3,6)
+                     AND BCLS_PROCESS_FLAG NOT IN (7,8)
                      AND request_id = :P_REQUEST_ID
                  ) FAILURE_COUNT
             FROM DUAL
+            order by SEQ
 ]]>
 </sqlStatement>
 <sqlStatement name="Q2" dataSourceRef="">
 <![CDATA[ 
           SELECT ENTITY,
-		         SUPPLIER_NAME,
+       SUPPLIER_NAME,
 				 SITE,
 				 CONTACT,
 				 BANK_ACCOUNT,
+         GLOBAL_NUMBER,
 				 BUS_CLASSIFICATION,
-				 ERROR_MESSAGE
+				 ERROR_MESSAGE,
+         SEQ
 			FROM
-                 ( SELECT 'SUPPLIER' ENTITY,
+                 ( SELECT 1 SEQ,'SUPPLIER'|| ' & ' || 'DFF' ENTITY,
                            SUPPLIER_NAME,
                            NULL SITE,
                            NULL CONTACT,
                            NULL BANK_ACCOUNT,
+                           segment1 GLOBAL_NUMBER,
                            NULL BUS_CLASSIFICATION,
                            SUBSTR(ERROR_MSG,1,100) ERROR_MESSAGE
                       FROM XX_AP_CLD_SUPPLIERS_STG supp
                      WHERE 1=1
                        AND request_id = :P_REQUEST_ID
-                       AND SUPP_PROCESS_FLAG IN (2,3,6) 
+                       AND SUPP_PROCESS_FLAG NOT IN (7,8) 
                      UNION
-                    SELECT 'SITE' ENTITY,
+                    SELECT 2 SEQ,'Site, Address, Assignment'|| ' & ' || 'DFF' ENTITY,
                            SUPPLIER_NAME,
                            VENDOR_SITE_CODE SITE,
                            NULL CONTACT,
                            NULL BANK_ACCOUNT,
+                          SUPPLIER_NUMBER GLOBAL_NUMBER,
                            NULL BUS_CLASSIFICATION,
                            SUBSTR(ERROR_MSG,1,100) ERROR_MESSAGE
                       FROM XX_AP_CLD_SUPP_SITES_STG SITE
                      WHERE 1=1
                        AND request_id = :P_REQUEST_ID
-                       AND SITE_PROCESS_FLAG IN (2,3,6)  
+                       AND SITE_PROCESS_FLAG NOT IN (7,8)  
                      UNION
-                    SELECT 'CONTACT' ENTITY,
+                    SELECT 5 SEQ,'Contacts' ENTITY,
                            SUPPLIER_NAME,
                            VENDOR_SITE_CODE SITE,  
                            FIRST_NAME||' '||LAST_NAME CONTACT,
                            NULL BANK_ACCOUNT,
+                           SUPPLIER_NUMBER GLOBAL_NUMBER,
                            NULL BUS_CLASSIFICATION,
                            SUBSTR(ERROR_MSG,1,100) ERROR_MESSAGE
                       FROM XX_AP_CLD_SUPP_CONTACT_STG CONTACT
                      WHERE 1=1
                        AND request_id = :P_REQUEST_ID
-                       AND CONTACT_PROCESS_FLAG IN (2,3,6)
+                       AND CONTACT_PROCESS_FLAG NOT IN (7,8)
                      UNION 
-                    SELECT 'BANK ACCOUNT' ENTITY,
+                    SELECT 6 SEQ, 'Bank Assignments' ENTITY,
                            SUPPLIER_NAME,
                            VENDOR_SITE_CODE SITE,
                            NULL CONTACT,
                            BRANCH_NAME BANK_ACCOUNT,
+                           SUPPLIER_NUM GLOBAL_NUMBER,
                            NULL BUS_CLASSIFICATION,
                            SUBSTR(ERROR_MSG,1,100) ERROR_MESSAGE
                       FROM XX_AP_CLD_SUPP_BNKACT_STG BNKACT
                      WHERE 1=1
-                       AND BNKACT_PROCESS_FLAG IN (2,3,6)
+                       AND BNKACT_PROCESS_FLAG NOT IN (7,8)
                        AND request_id = :P_REQUEST_ID
                      UNION
-                    SELECT 'CUSTOM DFF' ENTITY,
+                    SELECT 03 SEQ, 'Custom DFF' ENTITY,
                            SUPPLIER_NAME,
                            NULL SITE,
                            NULL CONTACT,
                            NULL BANK_ACCOUNT,
+                           SUPPLIER_NUMBER GLOBAL_NUMBER,
                            NULL BUS_CLASSIFICATION,
                            SUBSTR(ERROR_MSG,1,100) ERROR_MESSAGE
                       FROM XX_AP_CLD_SITE_DFF_STG DFF
                      WHERE 1=1
                        AND request_id = :P_REQUEST_ID
-                       AND DFF_PROCESS_FLAG IN (2,3,6)  
+                       AND DFF_PROCESS_FLAG <> 7 
                      UNION  
-                    SELECT 'BUS_CLASSIFICATION' ENTITY,
+                    SELECT 4 SEQ,'Business Classification' ENTITY,
                            SUPPLIER_NAME,
                            NULL SITE,
                            NULL CONTACT,
                            NULL BANK_ACCOUNT,
+                           SUPPLIER_NUMBER GLOBAL_NUMBER,
                            CLASSIFICATION BUS_CLASSIFICATION,
                            SUBSTR(ERROR_MSG,1,100) ERROR_MESSAGE
                       FROM XX_AP_CLD_SUPP_BCLS_STG  BCLS
                      WHERE 1=1
-                       AND BCLS_PROCESS_FLAG IN (2,3,6)
+                       AND BCLS_PROCESS_FLAG NOT IN (7,8)
                        AND request_id = :P_REQUEST_ID
 				    )
-		      ORDER BY ENTITY
+		      ORDER BY SEQ
 ]]>
 </sqlStatement>
 </dataQuery>
@@ -233,39 +242,9 @@
      <element name="SITE"    value="SITE" function=""/>
 	 <element name="CONTACT"    value="CONTACT" function=""/>
 	 <element name="BANK_ACCOUNT"    value="BANK_ACCOUNT" function=""/>
+	 <element name="GLOBAL_NUMBER"    value="GLOBAL_NUMBER" function=""/>
 	 <element name="BUS_CLASSIFICATION"    value="BUS_CLASSIFICATION" function=""/>
 	 <element name="ERROR_MESSAGE"    value="ERROR_MESSAGE" function=""/>
 </group>
 </dataStructure>
 </dataTemplate>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
