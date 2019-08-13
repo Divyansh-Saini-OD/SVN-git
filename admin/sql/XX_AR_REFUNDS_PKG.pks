@@ -1,21 +1,13 @@
+SET VERIFY OFF;
+SET SHOW OFF;
+SET ECHO OFF;
+SET TAB OFF;
+SET FEEDBACK OFF;
+ 
+WHENEVER SQLERROR CONTINUE;
+ 
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
 
-	SET SHOW OFF		
-	SET VERIFY OFF		
-	SET ECHO OFF		
-	SET TAB OFF		
-	SET FEEDBACK OFF		
-	SET TERM ON		
-			
-	prompt creating package specification xx_ar_refunds_pkg	
-	
-	PROMPT Program exits if the creation is not successful		
-	REM Added for ARU db drv auto generation		
-	REM dbdrv: sql ~PROD ~PATH ~FILE none none none package &phase=plb \		
-	REM dbdrv: checkfile:~PROD:~PATH:~FILE		
-			
-	WHENEVER OSERROR EXIT FAILURE ROLLBACK;		
-	WHENEVER SQLERROR EXIT FAILURE ROLLBACK;	
-	
 CREATE OR REPLACE PACKAGE APPS.XX_AR_REFUNDS_PKG AS
 -- +=========================================================================+
 -- |		      Office Depot - Project Simplify			     |
@@ -255,7 +247,6 @@ FUNCTION check_cust( p_no_activity_in	 IN  NUMBER -- parameter
 		      RETURN NUMBER;
 
 END xx_ar_refunds_pkg;
-/
 
+/
 SHOW ERROR;
-EXIT;
