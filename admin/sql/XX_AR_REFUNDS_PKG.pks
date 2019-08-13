@@ -1,3 +1,21 @@
+
+	SET SHOW OFF		
+	SET VERIFY OFF		
+	SET ECHO OFF		
+	SET TAB OFF		
+	SET FEEDBACK OFF		
+	SET TERM ON		
+			
+	prompt creating package specification xx_ar_refunds_pkg	
+	
+	PROMPT Program exits if the creation is not successful		
+	REM Added for ARU db drv auto generation		
+	REM dbdrv: sql ~PROD ~PATH ~FILE none none none package &phase=plb \		
+	REM dbdrv: checkfile:~PROD:~PATH:~FILE		
+			
+	WHENEVER OSERROR EXIT FAILURE ROLLBACK;		
+	WHENEVER SQLERROR EXIT FAILURE ROLLBACK;	
+	
 CREATE OR REPLACE PACKAGE APPS.XX_AR_REFUNDS_PKG AS
 -- +=========================================================================+
 -- |		      Office Depot - Project Simplify			     |
@@ -15,9 +33,6 @@ CREATE OR REPLACE PACKAGE APPS.XX_AR_REFUNDS_PKG AS
 -- |   2      14-APR-10   Deepak       Edited create_refund proc. usedid made| 
 -- |                                   it default to null                    |
 -- |   3      12-AUG-19   Jitendra A   Added ref_mailcheck_id in idtrxrec    |
--- |   4      12-AUG-19   Jitendra A   AR Refund & POS mailcheck interface   |
--- |                                   changes to accommodate using Cloud    |
--- |                                  numbering when Supplier Master in Cloud|
 -- +==========================================================================+
 
    g_print_line  VARCHAR2 (120):= '-------------------------------------------------------------';
@@ -238,24 +253,9 @@ FUNCTION check_cust( p_no_activity_in	 IN  NUMBER -- parameter
 		    ,p_cash_receipt_id	 IN NUMBER
 		   )
 		      RETURN NUMBER;
-  -- +=========================================================================+
-  -- |                  Office Depot - Project Beacon                        |
-  -- |                                                       |
-  -- +=========================================================================+
-  -- | Name : xx_update_product_setup                                          |
-  -- | Description : Function is added to get next supplier number             |
-  -- |                                                                  .      |
-  -- |                                                                         |
-  -- | Parameters :               |
-  -- |===============                                                          |
-  -- |Version   Date          Author              Remarks                      |
-  -- |=======   ==========   =============   ==================================|
-  -- |   1      7-AUG-19     Jitendra A     Initial version--Added for #3      |
-  -- |                                      automatic supplier numbering       |
-  -- |                                      for avoiding locking contention    |
-  -- |                                      for product setup table            |
-  -- +=============================================================================+
-  FUNCTION xx_update_product_setup
-    RETURN NUMBER;
+
 END xx_ar_refunds_pkg;
 /
+
+SHOW ERROR;
+EXIT;
