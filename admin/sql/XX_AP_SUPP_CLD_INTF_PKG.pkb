@@ -53,6 +53,9 @@ CREATE OR REPLACE PACKAGE BODY xx_ap_supp_cld_intf_pkg
 -- |  2.3    09-AUG-2019     Havish Kasina     Added supplier_notif_method                     |
 -- |  2.4    12-AUG-2019     Havish Kasina     Added gl info in update_supplier_site           |
 -- |  2.5    12-AUG-2019     Havish Kasina     Update_status procedure is added                |
+-- |  2.6    14-AUG-2019     Havish Kasina     a.Added BANK_CHARGE_BEARER in the load_supp_site|
+-- |                                           b.Terms_id added in both update_supp_sites and  |
+-- |                                             load_supp_sites                               |
 -- |===========================================================================================+
 AS
   /*********************************************************************
@@ -516,6 +519,30 @@ THEN
    o_allow_unordered_rcpts_flag     := NULL;
 END get_receiving_details;
 
+/* Added as per Version 2.6 by Havish Kasina */
+--+============================================================================+
+--| Name          : get_terms_id                                               |
+--| Description   : This procedure will get the terms id                       |
+--| Parameters    :                                                            |
+--|                                                                            |
+--| Returns       : N/A                                                        |
+--|                                                                            |
+--+============================================================================+
+PROCEDURE get_terms_id(p_terms_name   IN  VARCHAR2,
+                       o_terms_id     OUT NUMBER)
+AS
+BEGIN
+    SELECT term_id
+	  INTO o_terms_id
+      FROM ap_terms_vl
+     WHERE name       = p_terms_name
+       AND enabled_flag = 'Y'
+       AND TRUNC(SYSDATE) BETWEEN TRUNC(NVL(start_date_active, SYSDATE-1)) AND TRUNC(NVL(end_date_active, SYSDATE+1));
+EXCEPTION
+WHEN OTHERS
+THEN
+    o_terms_id := NULL;
+END;
 --+============================================================================+
 --| Name          : insert_bus_class                                           |
 --| Description   : This Function will insert Business Classifications         |
@@ -1464,6 +1491,8 @@ SELECT *
   ln_receiving_routing_id	        NUMBER;
   lc_allow_substitute_rcpts_flag	VARCHAR2(200);
   lc_allow_unordered_rcpts_flag	    VARCHAR2(200);
+  lc_terms_name                     VARCHAR2(50):= 'N90'; -- Added as per Version 2.6
+  ln_terms_id                       NUMBER;               -- Added as per Version 2.6
 
 BEGIN
   /*Intializing Values**/
@@ -1488,6 +1517,10 @@ BEGIN
     lc_allow_substitute_rcpts_flag	 := NULL;
     lc_allow_unordered_rcpts_flag	 := NULL;
 	
+	-- To get the Terms Details -- Added as per Version 2.6
+	get_terms_id(p_terms_name  => lc_terms_name,
+                 o_terms_id    => ln_terms_id);
+					   
     BEGIN
       SELECT *
         INTO lr_existing_vendor_rec
@@ -1530,6 +1563,7 @@ BEGIN
 		  lr_vendor_rec.attribute13                  :=NVL(c_sup.attribute13, FND_API.G_MISS_CHAR);
 		  lr_vendor_rec.attribute14                  :=NVL(c_sup.attribute14, FND_API.G_MISS_CHAR);
 		  lr_vendor_rec.attribute15                  :=NVL(c_sup.attribute15, FND_API.G_MISS_CHAR);
+		  lr_vendor_rec.terms_id                     :=ln_terms_id; -- Added as per Version 2.6
 		  
 		  /* Added as per Version 2.1 by Havish Kasina */
 		  --==============================================================================
@@ -1689,6 +1723,7 @@ SELECT *
  WHERE xas.create_flag     ='N'
    AND xas.site_process_flag =gn_process_status_validated
    AND xas.request_id        = gn_request_id;
+   
 BEGIN
   -- Assign Basic Values
   p_api_version      := 1.0;
@@ -4254,7 +4289,7 @@ WHEN OTHERS THEN
   x_err_buf       := l_err_buff;
 END validate_bank_records;
 --+============================================================================+
---| Name          : load_Supplier_Interface                                        |
+--| Name          : load_Supplier_Interface                                    |
 --| Description   : This procedure will load the vendors into interface table  |
 --|                   for the validated records in staging table               |
 --|                                                                            |
@@ -4308,6 +4343,8 @@ IS
   ln_receiving_routing_id	             NUMBER;
   lc_allow_substitute_rcpts_flag	     VARCHAR2(200);
   lc_allow_unordered_rcpts_flag	         VARCHAR2(200);
+  lc_terms_name                          VARCHAR2(50):= 'N90'; -- Added as per Version 2.6
+  ln_terms_id                            NUMBER;               -- Added as per Version 2.6
   --==============================================================================
   -- Cursor Declarations for Suppliers
   --==============================================================================
@@ -4378,6 +4415,14 @@ BEGIN
           SELECT ap_suppliers_int_s.nextval
           INTO l_vendor_intf_id
           FROM dual;
+		  
+          /* Added as per Version 2.6 by Havish Kasina */
+		  --====================
+		  -- To get the terms 
+		  --====================				   
+		  get_terms_id(p_terms_name  => lc_terms_name,
+                       o_terms_id    => ln_terms_id);
+		  
 		  /* Added as per Version 2.1 by Havish Kasina */
 		  --==============================================================================
 		  -- To get the Receiving details from the Supplier Sites Staging table
@@ -4479,7 +4524,8 @@ BEGIN
 				  receipt_days_exception_code ,       -- Added as per Version 2.1 by Havish Kasina
 				  receiving_routing_id ,              -- Added as per Version 2.1 by Havish Kasina
 				  allow_substitute_receipts_flag,     -- Added as per Version 2.1 by Havish Kasina
-				  allow_unordered_receipts_flag       -- Added as per Version 2.1 by Havish Kasina
+				  allow_unordered_receipts_flag,      -- Added as per Version 2.1 by Havish Kasina
+				  terms_id                            -- Added as per Version 2.6 by Havish Kasina
                 )
                 VALUES
                 (
@@ -4524,17 +4570,18 @@ BEGIN
                   SYSDATE ,
                   g_user_id,
                   l_supplier_type (l_idx).organization_type,
-				  lc_inspection_required_flag,	   --Added as per Version 2.1 by Havish Kasina
-				  lc_receipt_required_flag,	       --Added as per Version 2.1 by Havish Kasina
-				  ln_qty_rcv_tolerance,	           --Added as per Version 2.1 by Havish Kasina
-				  lc_qty_rcv_exception_code,       --Added as per Version 2.1 by Havish Kasina
-				  lc_enforce_ship_to_loc_code,     --Added as per Version 2.1 by Havish Kasina
-				  ln_days_early_receipt_allowed,   --Added as per Version 2.1 by Havish Kasina
-				  ln_days_late_receipt_allowed,	   --Added as per Version 2.1 by Havish Kasina
-				  lc_receipt_days_exception_code,  --Added as per Version 2.1 by Havish Kasina
-				  ln_receiving_routing_id,	       --Added as per Version 2.1 by Havish Kasina
-				  lc_allow_substitute_rcpts_flag,  --Added as per Version 2.1 by Havish Kasina
-				  lc_allow_unordered_rcpts_flag	   --Added as per Version 2.1 by Havish Kasina
+				  lc_inspection_required_flag,	   -- Added as per Version 2.1 by Havish Kasina
+				  lc_receipt_required_flag,	       -- Added as per Version 2.1 by Havish Kasina
+				  ln_qty_rcv_tolerance,	           -- Added as per Version 2.1 by Havish Kasina
+				  lc_qty_rcv_exception_code,       -- Added as per Version 2.1 by Havish Kasina
+				  lc_enforce_ship_to_loc_code,     -- Added as per Version 2.1 by Havish Kasina
+				  ln_days_early_receipt_allowed,   -- Added as per Version 2.1 by Havish Kasina
+				  ln_days_late_receipt_allowed,	   -- Added as per Version 2.1 by Havish Kasina
+				  lc_receipt_days_exception_code,  -- Added as per Version 2.1 by Havish Kasina
+				  ln_receiving_routing_id,	       -- Added as per Version 2.1 by Havish Kasina
+				  lc_allow_substitute_rcpts_flag,  -- Added as per Version 2.1 by Havish Kasina
+				  lc_allow_unordered_rcpts_flag,   -- Added as per Version 2.1 by Havish Kasina
+				  ln_terms_id                      -- Added as per Version 2.6 by Havish Kasina
                 );
               print_debug_msg(p_message=> 'After successfully inserted the record for the supplier -'||l_supplier_type (l_idx).supplier_name ,p_force=> false);
             EXCEPTION
@@ -4847,7 +4894,8 @@ BEGIN
                 attribute14 ,
                 attribute15,
                 vendor_site_code_alt,
-				duns_number -- Added as per Version 1.9
+				duns_number,-- Added as per Version 1.9
+				bank_charge_bearer
               )
               VALUES
               (
@@ -4918,7 +4966,8 @@ BEGIN
                 l_sup_site_type(l_idx).attribute14 ,
                 L_SUP_SITE_TYPE(L_IDX).ATTRIBUTE15,
                 l_sup_site_type(l_idx).vendor_site_code_alt,
-                l_sup_site_type(l_idx).attribute5  -- Added as per Version 1.9
+                l_sup_site_type(l_idx).attribute5, -- Added as per Version 1.9
+				l_sup_site_type(l_idx).bank_charge_bearer
               );
           EXCEPTION
           WHEN OTHERS THEN
