@@ -34,7 +34,7 @@ TRAILING NULLCOLS
    PERSON_MIDDLE_NAME                    "LTRIM(RTRIM(:PERSON_MIDDLE_NAME, CHR(34)), CHR(34))",
    EMAIL                                 "LTRIM(RTRIM(:EMAIL, CHR(34)), CHR(34))",
    PERMISSION_FLAG                       "LTRIM(RTRIM(:PERMISSION_FLAG, CHR(34)), CHR(34))",
-   PWD_LAST_CHANGE                       "TO_DATE(SUBSTR(LTRIM(RTRIM(:PWD_LAST_CHANGE, CHR(34)), CHR(34)),1,10),'YYYY-MM-DD')",  
+   PWD_LAST_CHANGE                       "LTRIM(RTRIM(:PWD_LAST_CHANGE, CHR(34)), CHR(34))",  
    LOAD_STATUS                CONSTANT   'N',  
    CREATED_BY                            "FND_GLOBAL.USER_ID",        
    CREATION_DATE                         "SYSDATE",       
