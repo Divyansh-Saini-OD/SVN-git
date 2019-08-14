@@ -154,7 +154,7 @@
                            NULL BANK_ACCOUNT,
                            segment1 GLOBAL_NUMBER,
                            NULL BUS_CLASSIFICATION,
-                           SUBSTR(ERROR_MSG,1,100) ERROR_MESSAGE
+                           SUBSTR(ERROR_MSG,1,255) ERROR_MESSAGE
                       FROM XX_AP_CLD_SUPPLIERS_STG supp
                      WHERE 1=1
                        AND request_id = :P_REQUEST_ID
@@ -167,7 +167,7 @@
                            NULL BANK_ACCOUNT,
                           SUPPLIER_NUMBER GLOBAL_NUMBER,
                            NULL BUS_CLASSIFICATION,
-                           SUBSTR(ERROR_MSG,1,100) ERROR_MESSAGE
+                           SUBSTR(ERROR_MSG,1,255) ERROR_MESSAGE
                       FROM XX_AP_CLD_SUPP_SITES_STG SITE
                      WHERE 1=1
                        AND request_id = :P_REQUEST_ID
@@ -180,7 +180,7 @@
                            NULL BANK_ACCOUNT,
                            SUPPLIER_NUMBER GLOBAL_NUMBER,
                            NULL BUS_CLASSIFICATION,
-                           SUBSTR(ERROR_MSG,1,100) ERROR_MESSAGE
+                           SUBSTR(ERROR_MSG,1,255) ERROR_MESSAGE
                       FROM XX_AP_CLD_SUPP_CONTACT_STG CONTACT
                      WHERE 1=1
                        AND request_id = :P_REQUEST_ID
@@ -193,7 +193,7 @@
                            BRANCH_NAME BANK_ACCOUNT,
                            SUPPLIER_NUM GLOBAL_NUMBER,
                            NULL BUS_CLASSIFICATION,
-                           SUBSTR(ERROR_MSG,1,100) ERROR_MESSAGE
+                           SUBSTR(ERROR_MSG,1,255) ERROR_MESSAGE
                       FROM XX_AP_CLD_SUPP_BNKACT_STG BNKACT
                      WHERE 1=1
                        AND BNKACT_PROCESS_FLAG NOT IN (7,8)
@@ -206,7 +206,7 @@
                            NULL BANK_ACCOUNT,
                            SUPPLIER_NUMBER GLOBAL_NUMBER,
                            NULL BUS_CLASSIFICATION,
-                           SUBSTR(ERROR_MSG,1,100) ERROR_MESSAGE
+                           SUBSTR(ERROR_MSG,1,255) ERROR_MESSAGE
                       FROM XX_AP_CLD_SITE_DFF_STG DFF
                      WHERE 1=1
                        AND request_id = :P_REQUEST_ID
@@ -219,7 +219,7 @@
                            NULL BANK_ACCOUNT,
                            SUPPLIER_NUMBER GLOBAL_NUMBER,
                            CLASSIFICATION BUS_CLASSIFICATION,
-                           SUBSTR(ERROR_MSG,1,100) ERROR_MESSAGE
+                           SUBSTR(ERROR_MSG,1,255) ERROR_MESSAGE
                       FROM XX_AP_CLD_SUPP_BCLS_STG  BCLS
                      WHERE 1=1
                        AND BCLS_PROCESS_FLAG NOT IN (7,8)
