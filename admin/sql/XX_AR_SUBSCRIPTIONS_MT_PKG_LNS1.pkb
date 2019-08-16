@@ -4418,8 +4418,8 @@ AS
           lc_action := 'Calling get_acct_segment_info';
           
           get_acct_segment_info(p_ccid_id  => lr_invoice_dist_info.code_combination_id,
-                                x_segment  => lc_segment);
-
+                                x_segment  => lc_segment);        
+          
           /******************************
           * checking store closure status
           ******************************/
@@ -4430,6 +4430,9 @@ AS
           
           IF lc_segment != gc_store_number
           THEN
+            /*******************************************************************************
+            * Updating contracts table with new store# against store closed on initial order
+            *******************************************************************************/
             UPDATE xx_ar_contracts
             set    store_number       = gc_store_number
                   ,store_close_flag   = 'Y'
@@ -4438,7 +4441,17 @@ AS
                   ,last_update_login  = NVL(FND_GLOBAL.USER_ID, -1)
             WHERE  contract_id        = p_contract_info.contract_id;
             COMMIT;
-            
+          ELSE
+            /******************************************************
+            * Updating contracts table with store# on initial order
+            ******************************************************/
+            UPDATE xx_ar_contracts
+            set    store_number       = lc_segment
+                  ,last_update_date   = SYSDATE
+                  ,last_updated_by    = NVL(FND_GLOBAL.USER_ID, -1)
+                  ,last_update_login  = NVL(FND_GLOBAL.USER_ID, -1)
+            WHERE  contract_id        = p_contract_info.contract_id;
+            COMMIT;
           END IF;
             
           /**************************************
@@ -5564,6 +5577,8 @@ AS
     
     lc_email_sent_flag             xx_ar_subscriptions.email_sent_flag%TYPE;
     
+    lc_history_sent_flag           xx_ar_subscriptions.history_sent_flag%TYPE;
+    
     lc_payment_status              xx_ar_subscriptions.payment_status%TYPE;
 
     lc_contract_status             xx_ar_subscriptions.contract_status%TYPE;
@@ -5675,7 +5690,7 @@ AS
           
           --payment authorization should be done according to the days mentioned in translation
           IF l_day >= 0
-             OR (p_contract_info.payment_last_update_date > px_subscription_array(indx).last_auth_attempt_date )
+             OR (TRUNC(p_contract_info.payment_last_update_date) >= TRUNC(px_subscription_array(indx).last_auth_attempt_date) )
              OR (px_subscription_array(indx).cof_trans_id_flag = 'U')
           THEN
         
@@ -5706,6 +5721,24 @@ AS
                                     p_key_label         => p_contract_info.card_encryption_label,
                                     x_decrypted_value   => lc_decrypted_value);
                        
+              END IF;
+              
+              /*************************************************************************
+              * update the settlement_card, settlement_label and settlement_cc_mask     
+              * to subscription table, so that even if card authorization fails we will 
+              * able to capture card details for sending email for unsuccessful payments
+              *************************************************************************/
+            
+              lc_action := 'Updating credit card details';
+            
+              IF lc_decrypted_value IS NOT NULL 
+              THEN
+                px_subscription_array(indx).settlement_cc_mask  := SUBSTR(lc_decrypted_value, 1, 6) || SUBSTR(lc_decrypted_value, LENGTH(lc_decrypted_value) - 3, 4);
+            
+                lc_action := 'Calling update_subscription_info';
+            
+                update_subscription_info(px_subscription_info => px_subscription_array(indx));
+            
               END IF;
             
               /******************************
@@ -5783,7 +5816,7 @@ AS
               ****************************/
             
               lc_action := 'Building authorization payload';
-
+            
               SELECT    '{
                   "paymentAuthorizationRequest": {
                   "transactionHeader": {
@@ -5988,6 +6021,13 @@ AS
                 RAISE le_processing;
               END IF;
             
+              --BEGIN : JIRA#NAIT-92855:- EBS - Trigger AVS process -> Updating initial_auth_attempt_date with SYSDATE when auth for AVS code is done on DAY 1
+              IF px_subscription_array(indx).initial_auth_attempt_date IS NULL
+              THEN
+                 px_subscription_array(indx).initial_auth_attempt_date := TO_DATE(TO_CHAR(SYSDATE,'DD-MON-YYYY')||'00:00:00','DD-MON-YYYY HH24:MI:SS');
+              END IF;
+              --END : JIRA#NAIT-92855:- EBS - Trigger AVS process -> Updating initial_auth_attempt_date with SYSDATE when auth for AVS code is done on DAY 1
+              
               /**********************************
               * Get the authorization information
               **********************************/
@@ -5998,16 +6038,7 @@ AS
             
               retrieve_auth_response_info(p_payload_id            => lr_subscription_payload_info.payload_id,
                                           px_ar_subscription_info => lr_subscription_info);
-            
-              --BEGIN : JIRA#NAIT-92855:- EBS - Trigger AVS process -> Updating initial_auth_attempt_date with SYSDATE when auth for AVS code is done on DAY 1
-              IF px_subscription_array(indx).initial_auth_attempt_date IS NULL
-              THEN
-              
-                 px_subscription_array(indx).initial_auth_attempt_date := TO_DATE(TO_CHAR(SYSDATE,'DD-MON-YYYY')||'00:00:00','DD-MON-YYYY HH24:MI:SS');
-              
-              END IF;
-              --END : JIRA#NAIT-92855:- EBS - Trigger AVS process -> Updating initial_auth_attempt_date with SYSDATE when auth for AVS code is done on DAY 1
-            
+                        
               /**********************************************************
               * If authorization passed, record authorization information
               **********************************************************/
@@ -6018,8 +6049,8 @@ AS
                 IF (lr_subscription_info.auth_status = '0' AND lr_subscription_info.auth_avs_code = 'Y')
                 THEN            
                   lc_action := 'assigning the auth success result to subscription array';               
-                  px_subscription_array(indx).cof_trans_id                := lr_subscription_info.cof_trans_id;
-                  px_subscription_array(indx).cof_trans_id_flag           := 'Y';
+                  px_subscription_array(indx).cof_trans_id            := lr_subscription_info.cof_trans_id;
+                  px_subscription_array(indx).cof_trans_id_flag       := 'Y';
                   px_subscription_array(indx).last_auth_attempt_date  := SYSDATE;
 
                   
@@ -6062,8 +6093,8 @@ AS
                 IF lr_subscription_info.auth_status = '0' 
                 THEN            
                   lc_action := 'assigning the auth success result to subscription array';               
-                  px_subscription_array(indx).cof_trans_id                := lr_subscription_info.cof_trans_id;
-                  px_subscription_array(indx).cof_trans_id_flag           := 'Y';
+                  px_subscription_array(indx).cof_trans_id            := lr_subscription_info.cof_trans_id;
+                  px_subscription_array(indx).cof_trans_id_flag       := 'Y';
                   px_subscription_array(indx).last_auth_attempt_date  := SYSDATE;
                   
                   --call update contracts table with cc_trans_id and cc_trans_id_source
@@ -6106,15 +6137,16 @@ AS
               END IF;
             
             ELSE
-
-                --BEGIN : JIRA#NAIT-92855:- EBS - Trigger AVS process -> Updating initial_auth_attempt_date with SYSDATE when auth for AVS code is done on DAY 1	
-                IF px_subscription_array(indx).initial_auth_attempt_date IS NULL
-                THEN
-                
-                   px_subscription_array(indx).initial_auth_attempt_date := TO_DATE(TO_CHAR(SYSDATE,'DD-MON-YYYY')||'00:00:00','DD-MON-YYYY HH24:MI:SS');
-
-                END IF;
-                --END : JIRA#NAIT-92855:- EBS - Trigger AVS process -> Updating initial_auth_attempt_date with SYSDATE when auth for AVS code is done on DAY 1
+              lc_action := 'Updating credit card details';
+              
+              px_subscription_array(indx).settlement_cc_mask  := SUBSTR(lc_decrypted_value, 1, 6) || SUBSTR(lc_decrypted_value, LENGTH(lc_decrypted_value) - 3, 4);
+              
+              --BEGIN : JIRA#NAIT-92855:- EBS - Trigger AVS process -> Updating initial_auth_attempt_date with SYSDATE when auth for AVS code is done on DAY 1				  
+              IF px_subscription_array(indx).initial_auth_attempt_date IS NULL
+              THEN
+                 px_subscription_array(indx).initial_auth_attempt_date := TO_DATE(TO_CHAR(SYSDATE,'DD-MON-YYYY')||'00:00:00','DD-MON-YYYY HH24:MI:SS');
+              END IF;
+              --END : JIRA#NAIT-92855:- EBS - Trigger AVS process -> Updating initial_auth_attempt_date with SYSDATE when auth for AVS code is done on DAY 1
 
               /**********************************
               * Get the authorization information
@@ -6280,6 +6312,7 @@ AS
         lc_cof_trans_id_flag       := 'E';
         lc_last_auth_attempt_date  := SYSDATE;
         lc_email_sent_flag         := 'N';
+        lc_history_sent_flag       := 'N';
         lc_payment_status          := 'FAILURE';
         lc_contract_status         := NULL;
         lc_next_retry_day          := NULL;
@@ -6345,14 +6378,38 @@ AS
 
     FOR indx IN 1 .. px_subscription_array.COUNT
     LOOP
+    
+      /**********************************
+      * Get the authorization information
+      **********************************/
+      
+      lr_subscription_info := px_subscription_array(indx);
+      
+      lc_action := 'Calling retrieve_auth_response_info';
+      
+      retrieve_auth_response_info(p_payload_id            => lr_subscription_payload_info.payload_id,
+                                  px_ar_subscription_info => lr_subscription_info);
+      
+      px_subscription_array(indx)                           := lr_subscription_info;
+      
+      -- updating initial_auth_attempt_date with SYSDATE when auth is done on DAY 1
+      IF px_subscription_array(indx).initial_auth_attempt_date IS NULL
+      THEN
+        px_subscription_array(indx).initial_auth_attempt_date := TO_DATE(TO_CHAR(SYSDATE,'DD-MON-YYYY')||'00:00:00','DD-MON-YYYY HH24:MI:SS');
+      END IF;
 
       px_subscription_array(indx).cof_trans_id_flag       := lc_cof_trans_id_flag;
       px_subscription_array(indx).subscription_error      := lc_subscription_error;
-       px_subscription_array(indx).last_auth_attempt_date := lc_last_auth_attempt_date;
+      px_subscription_array(indx).last_auth_attempt_date  := lc_last_auth_attempt_date;
       px_subscription_array(indx).email_sent_flag         := lc_email_sent_flag;
       px_subscription_array(indx).payment_status          := lc_payment_status;
       px_subscription_array(indx).contract_status         := lc_contract_status;
       px_subscription_array(indx).next_retry_day          := lc_next_retry_day;
+      px_subscription_array(indx).history_sent_flag       := lc_history_sent_flag;
+      
+      lc_action := 'Updating credit card details';
+      
+      px_subscription_array(indx).settlement_cc_mask  := SUBSTR(lc_decrypted_value, 1, 6) || SUBSTR(lc_decrypted_value, LENGTH(lc_decrypted_value) - 3, 4);
 
       lc_action := 'Calling update_subscription_info to update with error info';
 
@@ -6605,7 +6662,7 @@ AS
           
           --payment authorization should be done according to the days mentioned in translation
           IF l_day >= 0
-             OR (p_contract_info.payment_last_update_date > px_subscription_array(indx).last_auth_attempt_date )
+             OR (TRUNC(p_contract_info.payment_last_update_date) >= TRUNC(px_subscription_array(indx).last_auth_attempt_date) )
              OR (px_subscription_array(indx).auth_completed_flag = 'U')
           THEN
 
@@ -10699,7 +10756,7 @@ AS
             lb_header_processed := TRUE;
 
             lc_action := 'Update xx_ar_contracts';
-
+            
             UPDATE xx_ar_contracts
             SET    contract_id                 = eligible_contract_line_rec.contract_id,
                    contract_number             = eligible_contract_line_rec.contract_number,
@@ -10714,9 +10771,7 @@ AS
                    bill_to_osr                 = eligible_contract_line_rec.bill_to_osr,
                    customer_email              = eligible_contract_line_rec.customer_email,
                    initial_order_number        = eligible_contract_line_rec.initial_order_number,
-                   store_number                = LPAD(NVL(eligible_contract_line_rec.store_number, lt_program_setups('default_store_name')),
-                                                      6,
-                                                      '0'),
+                   store_number                = eligible_contract_line_rec.store_number,
                    payment_type                = eligible_contract_line_rec.payment_type,
                    card_type                   = eligible_contract_line_rec.card_type,
                    card_tokenenized_flag       = eligible_contract_line_rec.card_tokenized_flag,
@@ -10765,9 +10820,7 @@ AS
               lr_contract_info.bill_to_osr                 := eligible_contract_line_rec.bill_to_osr;
               lr_contract_info.customer_email              := eligible_contract_line_rec.customer_email;
               lr_contract_info.initial_order_number        := eligible_contract_line_rec.initial_order_number;
-              lr_contract_info.store_number                := LPAD(NVL(eligible_contract_line_rec.store_number, lt_program_setups('default_store_name')),
-                                                                   6,
-                                                                   '0'); 
+              lr_contract_info.store_number                := eligible_contract_line_rec.store_number; 
               lr_contract_info.payment_type                := eligible_contract_line_rec.payment_type;
               lr_contract_info.card_type                   := eligible_contract_line_rec.card_type;
               lr_contract_info.card_tokenenized_flag       := eligible_contract_line_rec.card_tokenized_flag;
@@ -13736,7 +13789,7 @@ AS
 
     entering_sub(p_procedure_name  => lc_procedure_name,
                  p_parameters      => lt_parameters);
-    
+
     retcode := 0;
 
     /*****************
@@ -13744,15 +13797,15 @@ AS
     *****************/
     lc_action := 'Calling set_debug';
     
-    set_debug(p_debug_flag => p_debug_flag);   
-
+    set_debug(p_debug_flag => p_debug_flag);
+    
     /************************************
     * Get receivable activity information
     ************************************/
     lc_action := 'Calling get_payment_sch_info';
     
     get_rec_activity_info(x_activity_id => ln_activity_id);
-
+      
     /***********************************************
     *  Loop thru pending contracts/billing sequences
     ***********************************************/
@@ -13781,7 +13834,7 @@ AS
         lc_transaction := 'Processing invoice number: ' || inv_adjustment_rec.trx_number;
 
         logit(p_message => 'Transaction: ' || lc_transaction,
-              p_force   => TRUE);
+            p_force   => TRUE);
         
         /************************
         * Get invoice information
@@ -13844,7 +13897,7 @@ AS
                                         --, p_old_adjust_id        => ln_old_adjust_id
                                         );
                                         
-        logit(p_message => 'CREATE_ADJUSTMENT API return status: ' || lc_return_status,p_force   => TRUE);
+        logit(p_message => 'CREATE_ADJUSTMENT API return status: ' || lc_return_status);
         
         /**********************
         * Get api error message
@@ -13865,7 +13918,7 @@ AS
             END LOOP;
           END IF;
           
-          logit(p_message => 'CREATE_ADJUSTMENT API error message: ' || lc_error,p_force   => TRUE);
+          logit(p_message => 'CREATE_ADJUSTMENT API error message: ' || lc_error);
 
           RAISE le_processing;
                   
@@ -13928,12 +13981,13 @@ AS
                 lc_error := lc_error || ', ' || fnd_msg_pub.get(fnd_msg_pub.g_next, fnd_api.g_false);
               END LOOP;
             END IF;
-            logit(p_message => 'APPROVE_ADJUSTMENT API error message: ' || lc_error,p_force   => TRUE);
+            
+            logit(p_message => 'APPROVE_ADJUSTMENT API error message: ' || lc_error);
           
             RAISE le_processing;
+        
           END IF;
           
-        
         END IF;
           
       EXCEPTION
