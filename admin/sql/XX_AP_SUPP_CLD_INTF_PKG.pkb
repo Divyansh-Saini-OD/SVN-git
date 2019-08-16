@@ -56,6 +56,7 @@ CREATE OR REPLACE PACKAGE BODY xx_ap_supp_cld_intf_pkg
 -- |  2.6    14-AUG-2019     Havish Kasina     a.Added BANK_CHARGE_BEARER in the load_supp_site|
 -- |                                           b.Terms_id added in both update_supp_sites and  |
 -- |                                             load_supp_sites                               |
+-- |  2.7    16-AUG-2019     Havish Kasina     Added Debug Messages                            |
 -- |===========================================================================================+
 AS
   /*********************************************************************
@@ -1769,7 +1770,7 @@ BEGIN
     lr_vendor_site_rec.fob_lookup_code                :=NVL(c_sup_site.fob_lookup_code, FND_API.G_MISS_CHAR);
     lr_vendor_site_rec.terms_date_basis               :=NVL(c_sup_site.terms_date_basis, FND_API.G_MISS_CHAR);
     lr_vendor_site_rec.pay_group_lookup_code          :=NVL(c_sup_site.pay_group_lookup_code, FND_API.G_MISS_CHAR);
-    lr_vendor_site_rec.payment_priority               :=NVL(c_sup_site.payment_priority,FND_API.G_MISS_NUM);
+    lr_vendor_site_rec.payment_priority               :=NVL(TO_NUMBER(c_sup_site.payment_priority),99);
     lr_vendor_site_rec.terms_id                       :=NVL(c_sup_site.terms_id,FND_API.G_MISS_NUM);
     lr_vendor_site_rec.invoice_amount_limit           :=NVL(c_sup_site.invoice_amount_limit,FND_API.G_MISS_NUM);
     lr_vendor_site_rec.pay_date_basis_lookup_code     :=NVL(c_sup_site.pay_date_basis_lookup_code, FND_API.G_MISS_CHAR);
@@ -1794,7 +1795,7 @@ BEGIN
     lr_vendor_site_rec.services_tolerance_name        :=NVL(c_sup_site.service_tolerance, FND_API.G_MISS_CHAR); -- Added as per Version 1.6
     lr_vendor_site_rec.gapless_inv_num_flag           :=NVL(c_sup_site.gapless_inv_num_flag, FND_API.G_MISS_CHAR);
     lr_vendor_site_rec.selling_company_identifier     :=NVL(c_sup_site.selling_company_identifier, FND_API.G_MISS_CHAR);
-    lr_vendor_site_rec.bank_charge_bearer             :=NVL(c_sup_site.bank_charge_bearer, FND_API.G_MISS_CHAR);
+    lr_vendor_site_rec.bank_charge_bearer             :=NVL(c_sup_site.bank_charge_bearer,'D');
     lr_vendor_site_rec.vat_code                       :=NVL(c_sup_site.vat_code, FND_API.G_MISS_CHAR);
     lr_vendor_site_rec.vat_registration_num           :=NVL(c_sup_site.vat_registration_num, FND_API.G_MISS_CHAR);
     lr_vendor_site_rec.remit_advice_delivery_method   :=NVL(c_sup_site.remit_advice_delivery_method, FND_API.G_MISS_CHAR);
@@ -2586,9 +2587,9 @@ BEGIN
         FETCH c_get_fnd_lookup_code INTO l_org_type_code;
         CLOSE c_get_fnd_lookup_code;
         IF l_org_type_code     IS NULL THEN
-          gc_error_status_flag := 'Y';
-          print_debug_msg(p_message=> gc_step||' ERROR: ORGANIZATION_TYPE:'||l_organization_type||': XXOD_ORGANIZATION_TYPE_INVALID: Organization Type does not exist in the system.' ,p_force=> false);
-          insert_error (p_program_step => gc_step ,p_primary_key => l_supplier_type(l_sup_idx).supplier_name ,p_error_code => 'XXOD_ORGANIZATION_TYPE_INVALID' ,p_error_message => 'Organization Type '||l_organization_type||' does not exist in the system' ,p_stage_col1 => 'ORGANIZATION_TYPE' ,p_stage_val1 => l_organization_type ,p_stage_col2 => NULL ,p_stage_val2 => NULL ,p_table_name => g_sup_table );
+          gc_error_status_flag := 'Y'; 
+          print_debug_msg(p_message=> gc_step||'Organization Type : '||l_organization_type||' does not exist in the system' ,p_force=> false);
+		  gc_error_msg:='Organization Type : '||l_organization_type||' does not exist in the system';
         ELSE
           print_debug_msg(p_message=> gc_step||' Organization Type Code of Organization Type - '||l_supplier_type(l_sup_idx).organization_type||' is '||l_org_type_code ,p_force=> false);
           l_supplier_type(l_sup_idx).organization_type := l_org_type_code;
@@ -2598,40 +2599,40 @@ BEGIN
         --==============================================================
         IF l_supplier_type (l_sup_idx).supplier_name IS NULL THEN
           gc_error_status_flag                       := 'Y';
-          print_debug_msg(p_message=> l_program_step||' : ERROR: Supplier Name Cannot be NULL for the record '||l_sup_idx ,p_force=> false);
-          insert_error(P_PROGRAM_STEP => GC_STEP ,P_PRIMARY_KEY => L_SUPPLIER_TYPE (L_SUP_IDX).SUPPLIER_NAME ,P_ERROR_CODE => 'XXOD_SUPPLIER_NAME_NULL' ,P_ERROR_MESSAGE => 'Supplier Name Cannot be NULL' ,P_STAGE_COL1 => 'SUPPLIER_NAME' ,P_STAGE_VAL1 => L_SUPPLIER_TYPE (L_SUP_IDX).SUPPLIER_NAME ,P_STAGE_COL2 => 'VENDOR_NAME' ,P_STAGE_VAL2 => NULL ,P_TABLE_NAME => G_SUP_TABLE );
+          print_debug_msg(p_message=> l_program_step||' Supplier Name Cannot be BLANK' ,p_force=> false);
+		  gc_error_msg:=gc_error_msg||' , Supplier Name is BLANK ';
           l_supplier_type (l_sup_idx).SUPP_PROCESS_FLAG := gn_process_status_error;
           l_supplier_type (l_sup_idx).ERROR_FLAG        := gc_process_error_flag;
-          l_supplier_type (l_sup_idx).ERROR_MSG         := 'Supplier Name Cannot be NULL for the record '||l_sup_idx;
+          l_supplier_type (l_sup_idx).ERROR_MSG         := 'Supplier Name Cannot be BLANK';
           -- Skip the validation of this iteration/this supplier
           CONTINUE;
         END IF;
         IF ((find_special_chars(l_supplier_type(l_sup_idx).supplier_name) = 'JUNK_CHARS_EXIST')) THEN
           gc_error_status_flag                                           := 'Y';
-          print_debug_msg(p_message=> l_program_step||' : ERROR: Supplier Name'||l_supplier_type(l_sup_idx).supplier_name||' cannot contain junk characters and length must be less than 31' ,p_force=> false);
-          insert_error (p_program_step => gc_step ,p_primary_key => l_supplier_type (l_sup_idx).supplier_name ,p_error_code => 'XXOD_SUPPLIER_NAME_INVALID' ,p_error_message => 'Supplier Name'||l_supplier_type(l_sup_idx).supplier_name||' cannot contain junk characters and length must be less than 32' ,p_stage_col1 => 'SUPPLIER_NAME' ,p_stage_val1 => l_supplier_type (l_sup_idx).supplier_name ,p_stage_col2 => NULL ,p_stage_val2 => NULL ,p_table_name => g_sup_table );
+   	      gc_error_msg:=gc_error_msg||' , Supplier Name has junk characters';
+          print_debug_msg(p_message=> l_program_step||' Supplier Name'||l_supplier_type(l_sup_idx).supplier_name||' has junk characters' ,p_force=> false);
         END IF;
         --==============================================================
         -- Validating the SUPPLIER number
         --==============================================================
         IF l_supplier_type (l_sup_idx).segment1 IS NULL THEN
           gc_error_status_flag                  := 'Y';
-          print_debug_msg(p_message=> l_program_step||' : ERROR: Supplier number Cannot be NULL for the record '||l_sup_idx ,p_force=> true);
-          INSERT_ERROR (P_PROGRAM_STEP => GC_STEP ,P_PRIMARY_KEY => L_SUPPLIER_TYPE (L_SUP_IDX).SEGMENT1 ,P_ERROR_CODE => 'XXOD_SUPPLIER_NAME_NULL' ,P_ERROR_MESSAGE => 'Supplier Name Cannot be NULL' ,P_STAGE_COL1 => 'SUPPLIER_NAME' ,P_STAGE_VAL1 => L_SUPPLIER_TYPE (L_SUP_IDX).SEGMENT1 ,P_STAGE_COL2 => 'VENDOR_NAME' ,P_STAGE_VAL2 => NULL ,P_TABLE_NAME => G_SUP_TABLE );
+          print_debug_msg(p_message=> l_program_step||' Supplier number Cannot be BLANK'||l_sup_idx ,p_force=> true);
+		  gc_error_msg:=gc_error_msg||' , Supplier Number is BLANK ';		  
           l_supplier_type (l_sup_idx).supp_PROCESS_FLAG := gn_process_status_error;
           l_supplier_type (l_sup_idx).ERROR_FLAG        := gc_process_error_flag;
-          l_supplier_type (l_sup_idx).ERROR_MSG         := 'Supplier number Cannot be NULL for the record '||l_sup_idx;
+          l_supplier_type (l_sup_idx).ERROR_MSG         := 'Supplier number Cannot be BLANK'||l_sup_idx;
           -- Skip the validation of this iteration/this supplier
           CONTINUE;
         END IF;
         --==============================================================
         -- Validating the Supplier - Tax Payer ID
         --==============================================================
-        IF l_supplier_type(l_sup_idx).num_1099                                                                      IS NOT NULL THEN
+        IF l_supplier_type(l_sup_idx).num_1099 IS NOT NULL THEN
           IF ( NOT (isnumeric(l_supplier_type(l_sup_idx).num_1099)) OR (LENGTH(l_supplier_type(l_sup_idx).num_1099) <> 9)) THEN
-            gc_error_status_flag                                                                                    := 'Y';
-            print_debug_msg(p_message=> l_program_step||' : ERROR: '||l_supplier_type (l_sup_idx).num_1099||' - Tax Payer Id should be numeric and must have 9 digits ' ,p_force=> false);
-            insert_error (p_program_step => gc_step ,p_primary_key => l_supplier_type (l_sup_idx).supplier_name ,p_error_code => 'XXOD_TAX_PAYER_ID_INVALID' ,p_error_message => 'Tax Payer Id should be numeric and must have 9 digits' ,p_stage_col1 => 'TAX_PAYER_ID' ,p_stage_val1 => l_supplier_type (l_sup_idx).num_1099 ,p_stage_col2 => NULL ,p_stage_val2 => NULL ,p_table_name => g_sup_table );
+            gc_error_status_flag:= 'Y';
+            print_debug_msg(p_message=> l_program_step||' ,'||l_supplier_type (l_sup_idx).num_1099||' - Tax Payer Id should be numeric and must have 9 digits ' ,p_force=> false);
+			gc_error_msg:=gc_error_msg||' , Tax Payer Id should be numeric and must have 9 digits';
           END IF;
         END IF; -- IF l_supplier_type(l_sup_idx).TAX_PAYER_ID IS NOT NULL
         --====================================================================
@@ -2647,7 +2648,7 @@ BEGIN
           l_party_id,
           l_obj_ver_no;
         IF l_sup_name IS NULL THEN
-          print_debug_msg(p_message=> l_program_step||' : Supplier Name '||l_supplier_type (l_sup_idx).supplier_name||' in system does not exist. So, create it after checking interface table.' ,p_force=> false);
+          print_debug_msg(p_message=> l_program_step||' Supplier Name '||l_supplier_type (l_sup_idx).supplier_name||' does not exist. So, create it after checking interface table.' ,p_force=> false);
           l_int_sup_name := NULL;
           l_int_segment1 :=NULL;
           OPEN c_dup_supplier_chk_int(trim(upper(l_supplier_type (l_sup_idx).supplier_name)),l_supplier_type (l_sup_idx).segment1);
@@ -2658,11 +2659,11 @@ BEGIN
           CLOSE c_dup_supplier_chk_int;
           IF l_int_sup_name                         IS NULL THEN
             l_supplier_type (l_sup_idx).CREATE_FLAG := 'Y';
-            print_debug_msg(p_message=> l_program_step||' : Supplier Name '||l_supplier_type (l_sup_idx).supplier_name||' in interface does not exist. So, create it.' ,p_force=> false);
+            print_debug_msg(p_message=> l_program_step||' Supplier Name '||l_supplier_type (l_sup_idx).supplier_name||' in interface does not exist. So, create it.' ,p_force=> false);
           ELSE
             gc_error_status_flag := 'Y';
-            print_debug_msg(p_message=> l_program_step||' : ERROR: XXOD_SUP_EXISTS_IN_INT : Suppiler '||l_supplier_type (l_sup_idx).supplier_name||' already exist in Interface table with segment1 as '||l_int_segment1||' .' ,p_force=> true);
-            insert_error (p_program_step => gc_step ,p_primary_key => l_supplier_type (l_sup_idx).supplier_name ,p_error_code => 'XXOD_SUP_EXISTS_IN_INT' ,p_error_message => 'Suppiler '||l_supplier_type (l_sup_idx).supplier_name||' already exist in Interface table with tax payer id as '||l_int_segment1||' .' ,p_stage_col1 => 'SUPPLIER_NAME' ,p_stage_val1 => l_supplier_type (l_sup_idx).supplier_name ,p_stage_col2 => NULL ,p_stage_val2 => NULL ,p_table_name => g_sup_table );
+            print_debug_msg(p_message=> l_program_step||' Supplier '||l_supplier_type (l_sup_idx).supplier_name||' already exists in Interface table with segment1 as '||l_int_segment1||' .' ,p_force=> true);
+			gc_error_msg:=gc_error_msg||' ,	Supplier '||l_supplier_type (l_sup_idx).supplier_name||' already exists in the Interface table : '||l_int_segment1;
           END IF;
         ELSIF ( (l_sup_name                              =l_supplier_type (l_sup_idx).supplier_name)) THEN
           l_supplier_type (l_sup_idx).CREATE_FLAG       := 'N';--Update
@@ -2670,7 +2671,7 @@ BEGIN
           l_supplier_type (l_sup_idx).vendor_id         := l_vendor_id;
           l_supplier_type (l_sup_idx).party_id          := l_party_id;
           l_supplier_type (l_sup_idx).object_version_no := l_obj_ver_no;
-          print_debug_msg(p_message=> l_program_step||' : Imported Segment1 - '||l_supplier_type (l_sup_idx).segment1 ||' and System segment is  equal, so update this Supplier.' ,p_force=> false);
+          print_debug_msg(p_message=> l_program_step||' : Imported Segment1 - '||l_supplier_type (l_sup_idx).segment1 ||' and System segment are equal, so update this Supplier.' ,p_force=> false);
           print_debug_msg(p_message=> l_program_step||' l_supplier_type (l_sup_idx).CREATE_FLAG - '||l_supplier_type (l_sup_idx).CREATE_FLAG ,p_force=> false);
           print_debug_msg(p_message=> l_program_step||' l_vendor_id - '||l_vendor_id ,p_force=> false);
           print_debug_msg(p_message=> l_program_step||' l_party_id - '||l_party_id ,p_force=> false);
@@ -2683,17 +2684,17 @@ BEGIN
         l_sup_type_code                                        := NULL;
         IF l_supplier_type (l_sup_idx).vendor_type_lookup_code IS NULL THEN
           gc_error_status_flag                                 := 'Y';
-          print_debug_msg(p_message=> gc_step||' ERROR: SUPPLIER_TYPE:'||l_supplier_type (l_sup_idx).vendor_type_lookup_code||': XXOD_SUPPLIER_TYPE_NULL:Supplier Type cannot be NULL' ,p_force=> true);
-          insert_error (p_program_step => gc_step ,p_primary_key => l_supplier_type (l_sup_idx).SUPPLIER_NAME ,p_error_code => 'XXOD_SUPPLIER_TYPE_NULL' ,p_error_message => 'Supplier Type cannot be NULL' ,p_stage_col1 => 'SUPPLIER_TYPE' ,p_stage_val1 => l_supplier_type (l_sup_idx).vendor_type_lookup_code ,p_stage_col2 => 'VENDOR_NAME' ,p_stage_val2 => NULL ,p_table_name => g_sup_table );
+          print_debug_msg(p_message=> gc_step||l_supplier_type (l_sup_idx).vendor_type_lookup_code||' Supplier Type cannot be BLANK' ,p_force=> true);
+		  gc_error_msg:=gc_error_msg||' , Supplier Type is BLANK';			  
         ELSE -- Derive the Supplier Type Code
           l_sup_type_code := NULL;
           OPEN c_sup_type_code(l_supplier_type (l_sup_idx).vendor_type_lookup_code);
           FETCH c_sup_type_code INTO l_sup_type_code;
           CLOSE c_sup_type_code;
-          IF l_sup_type_code     IS NULL THEN
+          IF l_sup_type_code IS NULL THEN
             gc_error_status_flag := 'Y';
-            print_debug_msg(p_message=> gc_step||' ERROR: SUPPLIER_TYPE:'||l_supplier_type (l_sup_idx).vendor_type_lookup_code||': XXOD_SUPP_TYPE_INVALID: Supplier Type does not exist in System' ,p_force=> false);
-            insert_error (p_program_step => gc_step ,p_primary_key => l_supplier_type (l_sup_idx).SUPPLIER_NAME ,p_error_code => 'XXOD_SUPP_TYPE_INVALID' ,p_error_message => 'Supplier Type does not exist in System' ,p_stage_col1 => 'SUPPLIER_TYPE' ,p_stage_val1 => l_supplier_type (l_sup_idx).vendor_type_lookup_code ,p_stage_col2 => NULL ,p_stage_val2 => NULL ,p_table_name => g_sup_table );
+            print_debug_msg(p_message=> gc_step||l_supplier_type (l_sup_idx).vendor_type_lookup_code||'Invalid Supplier Type' ,p_force=> false);
+			gc_error_msg:=gc_error_msg||' , '||l_supplier_type (l_sup_idx).vendor_type_lookup_code||' Invalid Supplier Type';
           ELSE
             l_supplier_type (l_sup_idx).vendor_type_lookup_code := l_sup_type_code;
           END IF; -- IF l_sup_type_code IS NULL
@@ -2705,8 +2706,8 @@ BEGIN
           print_debug_msg(p_message=> gc_step||'Validating the Supplier - Customer Number ' ,p_force=> false);
           IF (NOT (isnumeric(l_supplier_type(l_sup_idx).customer_num))) THEN
             gc_error_status_flag := 'Y';
-            print_debug_msg(p_message=> gc_step||' ERROR: CUSTOMER_NUM:'||l_supplier_type (l_sup_idx).customer_num||': XXOD_CUSTOMER_NUM_INVALID: Customer Number should be Numeric' ,p_force=> true);
-            insert_error (p_program_step => gc_step ,p_primary_key => l_supplier_type (l_sup_idx).SUPPLIER_NAME ,p_error_code => 'XXOD_CUSTOMER_NUM_INVALID' ,p_error_message => 'Customer Number should be Numeric' ,p_stage_col1 => 'CUSTOMER_NUM' ,p_stage_val1 => l_supplier_type (l_sup_idx).customer_num ,p_stage_col2 => NULL ,p_stage_val2 => NULL ,p_table_name => g_sup_table );
+            print_debug_msg(p_message=> gc_step||l_supplier_type (l_sup_idx).customer_num||' Customer Number should be Numeric' ,p_force=> true);
+			gc_error_msg:=gc_error_msg||' , '||l_supplier_type (l_sup_idx).customer_num||' Customer Number should be Numeric';			
           END IF; -- IF (NOT (isNumeric(l_sup_site_type.CUSTOMER_NUM)))
         END IF;   -- IF (l_supplier_type(l_sup_idx).CUSTOMER_NUM IS NOT NULL)
         --====================================================================
@@ -2803,13 +2804,9 @@ EXCEPTION
 END;
 
 --+============================================================================+
---| Name          : validate_supplie_site_reocords                                           |
---| Description   : This procedure will validate  supplier sites details using valdiation  |
---|                                                                            |
---| Parameters    : p_vendor_is                            |
---|                                                                            |
---| Returns       : N/A                                                        |
---|                                                                            |
+--| Name          : validate_supplie_site_records                              |
+--| Description   : This procedure will validate  supplier sites details using |
+--|                 valdiation                                                 |
 --+============================================================================+
 PROCEDURE validate_supplier_site_records(
     x_ret_code OUT NUMBER,
@@ -3014,18 +3011,18 @@ BEGIN
     SET site_process_flag  = gn_process_status_error ,
       process_flag         = 'Y',
       error_flag           =gc_process_error_flag,
-      error_msg            ='No Supplier Exists'
+      error_msg            ='Supplier No / Supplier Name does not exists in AP Suppliers'
     WHERE site_process_flag=gn_process_status_inprocess
     AND request_id         =gn_request_id
     AND NOT EXISTS
       (SELECT 1
-      FROM ap_suppliers apsup
-      WHERE UPPER(apsup.vendor_name)=UPPER(xasc.supplier_name)
-      AND apsup.segment1            =xasc.supplier_number
+         FROM ap_suppliers apsup
+        WHERE UPPER(apsup.vendor_name)=UPPER(xasc.supplier_name)
+          AND apsup.segment1            =xasc.supplier_number
       );
     l_site_upd_cnt   := SQL%ROWCOUNT;
     IF l_site_upd_cnt >0 THEN
-      print_debug_msg(p_message => 'no supplier exists for this site', p_force => false);
+      print_debug_msg(p_message => 'Supplier No / Supplier Name does not exists in AP Suppliers', p_force => false);
     END IF;
   EXCEPTION
   WHEN OTHERS THEN
@@ -3079,32 +3076,32 @@ BEGIN
     ln_vendor_site_id         := NULL;
     --l_int_vend_code           :=NULL;
     SELECT COUNT(1)
-    INTO ln_cnt
-    FROM ap_supplier_sites_int xasi
-    WHERE xasi.status            ='NEW'
-    AND UPPER(vendor_site_code)  = TRIM(UPPER(l_sup_site_type.vendor_site_code))
-    AND xasi.vendor_id           =l_sup_site_type.supp_id
-    AND TO_CHAR(xasi.org_id)     =L_SUP_SITE_TYPE.ORG_ID;
-    IF ln_cnt                   <>0 THEN
-      gc_error_site_status_flag := 'Y';
-      print_debug_msg(p_message=> l_program_step||' : ERROR: XXOD_SUP_SITE_EXISTS_IN_INT : Suppiler ' ||l_sup_site_type.supplier_name||' already exist in Interface table .' ,p_force=> true);
-      insert_error (p_program_step => gc_step ,p_primary_key => l_sup_site_type.supplier_name ,p_error_code => 'XXOD_SUP_EXISTS_IN_INT' , p_error_message => 'Vendor Site Exists in interface' , p_stage_col1 => 'ADDRESS_LINE1' ,p_stage_val1 => l_sup_site_type.supplier_name ,p_table_name => g_sup_site_cont_table );
+      INTO ln_cnt
+      FROM ap_supplier_sites_int xasi
+     WHERE xasi.status            ='NEW'
+       AND UPPER(vendor_site_code)  = TRIM(UPPER(l_sup_site_type.vendor_site_code))
+       AND xasi.vendor_id           =l_sup_site_type.supp_id
+       AND TO_CHAR(xasi.org_id)     =L_SUP_SITE_TYPE.ORG_ID;
+    IF ln_cnt <>0 THEN
+       gc_error_site_status_flag := 'Y';
+       print_debug_msg(p_message=> 'Supplier Site ' ||l_sup_site_type.vendor_site_code ||' already exist in Interface table' ,p_force=> true);
+	   gc_error_msg:='Supplier Site ' ||l_sup_site_type.vendor_site_code ||' already exist in Interface table';
     END IF;
     --==============================================================================================================
     -- Validating the Supplier Site - Address Details -  Address Line 1
     --==============================================================================================================
     IF l_sup_site_type.address_line1 IS NULL THEN
       gc_error_site_status_flag      := 'Y';
-      print_debug_msg(p_message=> gc_step||' ERROR: ADDRESS_LINE1:'||l_sup_site_type.address_line1||': XXOD_SITE_ADDR_LINE1_NULL:Vendor Site Address Line 1 cannot be NULL' ,p_force=> false);
-      insert_error (p_program_step => gc_step ,p_primary_key => l_sup_site_type.supplier_name ,p_error_code => 'XXOD_SITE_ADDR_LINE1_NULL' ,p_error_message => 'Vendor Site Address Line 1 cannot be NULL' ,p_stage_col1 => 'ADDRESS_LINE1' ,p_stage_val1 => l_sup_site_type.address_line1 ,p_table_name => g_sup_site_cont_table );
+      print_debug_msg(p_message=> 'Vendor Site Address Line 1 is BLANK' ,p_force=> false);
+	  gc_error_msg:=gc_error_msg||' , Vendor Site Address Line 1 is BLANK';
     END IF;
     --==============================================================================================================
     -- Validating the Supplier Site - Address Details -  City
     --==============================================================================================================
     IF l_sup_site_type.city     IS NULL THEN
       gc_error_site_status_flag := 'Y';
-      print_debug_msg(p_message=> gc_step||' ERROR: CITY:'||l_sup_site_type.city||': XXOD_SITE_ADDR_CITY_NULL:Vendor Site Address Details City cannot be NULL' ,p_force=> false);
-      insert_error (p_program_step => gc_step ,p_primary_key => l_sup_site_type.supplier_name ,p_error_code => 'XXOD_SITE_ADDR_CITY_NULL' ,p_error_message => 'Vendor Site Address Details City cannot be NULL' ,p_stage_col1 => 'CITY' ,p_stage_val1 => l_sup_site_type.city ,p_table_name => g_sup_site_cont_table );
+      print_debug_msg(p_message=> 'Vendor Site Address City is BLANK' ,p_force=> false);
+      gc_error_msg:=gc_error_msg||' , Vendor Site Address City is BLANK';
     END IF;
     --==============================================================================================================
     -- Validating the Supplier Site - Country
@@ -3118,8 +3115,8 @@ BEGIN
       l_sup_site_and_add (l_sup_site_idx).country := l_site_country_code;
     ELSE
       gc_error_site_status_flag := 'Y';
-      print_debug_msg(p_message=> gc_step||' ERROR: COUNTRY:'||l_sup_site_type.country||': Site Country is Invalid' ,p_force=> false);
-      insert_error (p_program_step => gc_step ,p_primary_key => l_sup_site_type.country ,p_error_code => 'XXOD_SITE_COUNTRY_INVALID' ,p_error_message => 'Vendor Site Country is Invalid' ,p_stage_col1 => 'COUNTRY' ,p_stage_val1 => l_sup_site_type.country ,p_table_name => g_sup_site_cont_table );
+      print_debug_msg(p_message=> l_sup_site_type.country||'Invalid Country' ,p_force=> false);
+      gc_error_msg:=gc_error_msg||' ,Invalid Country';
     END IF; -- IF l_site_country_code IS NOT NULL
     --==============================================================================================================
     -- Validating the Supplier Site - Address Details -  State for US Country     and Province for Canada
@@ -3128,26 +3125,26 @@ BEGIN
     IF l_site_country_code         = 'US' THEN
       IF l_sup_site_type.state    IS NULL THEN
         gc_error_site_status_flag := 'Y';
-        print_debug_msg(p_message=> gc_step||' ERROR: STATE:'||l_sup_site_type.state||': XXOD_SITE_ADDR_STATE_NULL:Vendor Site Address Details State cannot be NULL' ,p_force=> false);
-        insert_error (p_program_step => gc_step ,p_primary_key => l_sup_site_type.supplier_name ,p_error_code => 'XXOD_SITE_ADDR_STATE_NULL' ,p_error_message => 'Vendor Site Address Details State cannot be NULL' ,p_stage_col1 => 'STATE' ,p_stage_val1 => l_sup_site_type.state ,p_table_name => g_sup_site_cont_table );
+        print_debug_msg(p_message=> 'Vendor Site Address State is BLANK' ,p_force=> false);
+		gc_error_msg:=gc_error_msg||' ,Vendor Site Address State is BLANK';
       ELSIF l_sup_site_type.province IS NOT NULL THEN
         gc_error_site_status_flag    := 'Y';
-        print_debug_msg(p_message=> gc_step||' ERROR: XXOD_SITE_ADDR_PROVINCE_INVALID: PROVINCE:'||l_sup_site_type.province||': should be NULL for the country '||l_sup_site_type.country ,p_force=> false);
-        insert_error (p_program_step => gc_step ,p_primary_key => l_sup_site_type.supplier_name ,p_error_code => 'XXOD_SITE_ADDR_PROVINCE_INVALID' ,p_error_message => 'Vendor Site Address Details - Province - should be NULL for the country '||l_sup_site_type.country ,p_stage_col1 => 'PROVINCE' ,p_stage_val1 => l_sup_site_type.province ,p_table_name => g_sup_site_cont_table );
+        print_debug_msg(p_message=> 'Vendor Site US Address has value for PROVINCE' ,p_force=> false);
+        gc_error_msg:=gc_error_msg||' , Vendor Site US Address has value for PROVINCE';
       END IF; -- IF l_sup_site_type.STATE IS NULL   -- ??? Do we need to validate the State Code in Oracle Seeded table
     ELSIF l_site_country_code      = 'CA' THEN
       IF l_sup_site_type.province IS NULL THEN
         gc_error_site_status_flag := 'Y';
-        print_debug_msg(p_message=> gc_step||' ERROR: PROVINCE:'||l_sup_site_type.province||': XXOD_SITE_ADDR_PROVINCE_NULL:Vendor Site Address Details - Province - cannot be NULL' ,p_force=> false);
-        insert_error (p_program_step => gc_step ,p_primary_key => l_sup_site_type.supplier_name ,p_error_code => 'XXOD_SITE_ADDR_PROVINCE_NULL' ,p_error_message => 'Vendor Site Address Details - Province - cannot be NULL' ,p_stage_col1 => 'PROVINCE' ,p_stage_val1 => l_sup_site_type.province ,p_table_name => g_sup_site_cont_table );
+        print_debug_msg(p_message=> 'Vendor Site CA Address Province is BLANK',p_force=> false);
+        gc_error_msg:=gc_error_msg||' ,Vendor Site CA Address Province is BLANK';
       ELSIF l_sup_site_type.state IS NOT NULL THEN
         gc_error_site_status_flag := 'Y';
-        print_debug_msg(p_message=> gc_step||' ERROR: XXOD_SITE_ADDR_STATE_INVALID: STATE:'||l_sup_site_type.state||': should be NULL for the country '||l_sup_site_type.country ,p_force=> false);
-        insert_error (p_program_step => gc_step ,p_primary_key => l_sup_site_type.supplier_name ,p_error_code => 'XXOD_SITE_ADDR_STATE_INVALID' ,p_error_message => 'Vendor Site Address Details - State - should be NULL for the country '||l_sup_site_type.country ,p_stage_col1 => 'STATE' ,p_stage_val1 => l_sup_site_type.state ,p_table_name => g_sup_site_cont_table );
-      END IF; -- IF l_sup_site_type.PROVINCE IS NULL      -- ??? Do we need to validate the State Code in Oracle Seeded table
+        print_debug_msg(p_message=> 'Vendor Site CA Address has value for STATE',p_force=> false);
+        gc_error_msg:=gc_error_msg||' ,Vendor Site CA Address has value for STATE';
+      END IF; -- IF l_sup_site_type.PROVINCE IS NULL      
     ELSE
       gc_error_site_status_flag := 'Y';
-      print_debug_msg(p_message=> gc_step||' ERROR: thrown already - COUNTRY:'||l_sup_site_type.country||': XXOD_SITE_COUNTRY_INVALID :Vendor Site Country is Invalid' ,p_force=> false);
+      print_debug_msg(p_message=> 'Invalid Country ',p_force=> false);
     END IF;
     --==============================================================================================================
     -- Validating the Supplier Site - Operating Unit
@@ -3155,8 +3152,8 @@ BEGIN
     ---Added by priyam as Org id is mandatory column for Site as well
     IF l_sup_site_type.org_id   IS NULL THEN
       gc_error_site_status_flag := 'Y';
-      print_debug_msg(p_message=> gc_step||' ERROR: OPERATING_UNIT:'||l_sup_site_type.org_id||' is null',p_force=> true);
-      insert_error (p_program_step => gc_step ,p_primary_key => l_sup_site_type.supplier_name ,p_error_code => 'XXOD_OPERATING_UNIT_NULL' ,p_error_message => 'Operating Unit cannot be NULL' ,p_stage_col1 => 'ORG ID' ,p_stage_val1 => l_sup_site_type.org_id ,p_stage_col2 => NULL ,p_stage_val2 => NULL ,p_table_name => g_sup_table );
+      print_debug_msg(p_message=> 'Org Id : '|| l_sup_site_type.org_id||' is BLANK',p_force=> true);
+      gc_error_msg:=gc_error_msg||' , Org ID is BLANK';
     END IF;
     print_debug_msg(p_message=> gc_step||' After basic validation of site - gc_error_site_status_flag is '||gc_error_site_status_flag ,p_force=> false);
     l_sup_create_flag           :='';
@@ -3183,32 +3180,42 @@ BEGIN
     print_debug_msg(p_message=> gc_step||' After supplier site existence check - gc_error_site_status_flag is '||gc_error_site_status_flag ,p_force=> false);
     print_debug_msg(p_message=> gc_step||' After supplier site existence check - l_sup_create_flag is '||l_sup_create_flag ,p_force=> false);
     set_step('Supplier Site Existence Check Completed');
-    IF gc_error_site_status_flag = 'N' THEN
       --==============================================================================================================
       -- Validating the Supplier Site - PostalCode Rename Psotal to Area
       --==============================================================================================================
-      IF l_sup_site_type.postal_code IS NULL THEN
+    IF l_sup_site_type.postal_code IS NULL THEN
         gc_error_site_status_flag    := 'Y';
-        print_debug_msg(p_message=> gc_step||' ERROR: POSTAL_CODE:'||l_sup_site_type.postal_code ||': XXOD_SITE_ADDR_POSTAL_CODE_NULL: Vendor Site Address Details - Postal Code - cannot be NULL' ,p_force=> false);
-        insert_error (p_program_step => gc_step ,p_primary_key => l_sup_site_type.supplier_name ,p_error_code => 'XXOD_SITE_ADDR_POSTAL_CODE_NULL' ,p_error_message => 'Vendor Site Address Details - Postal Code - cannot be NULL' ,p_stage_col1 => 'POSTAL_CODE' ,p_stage_val1 => l_sup_site_type.postal_code ,p_table_name => g_sup_site_cont_table );
-      ELSE
+        print_debug_msg(p_message=> 'Postal Code is BLANK' ,p_force=> false);
+        gc_error_msg:=gc_error_msg||' , Postal Code is BLANK';
+    ELSE
         IF l_site_country_code = 'US' THEN
           IF (NOT (ispostalcode(l_sup_site_type.postal_code )) OR (LENGTH(l_sup_site_type.postal_code) > 10 )) THEN
-            gc_error_site_status_flag                                                                 := 'Y';
-            print_debug_msg(p_message=> gc_step||' ERROR: POSTAL_CODE:'||l_sup_site_type.postal_code ||': XXOD_SITE_ADDR_POSTAL_CODE_INVA: For country '||l_sup_site_type.country||',Vendor Site Address Details - Postal Code - should contain only numeric and hypen(-) and length must be maximum upto 10' ,p_force=> false);
-            insert_error (p_program_step => gc_step ,p_primary_key => l_sup_site_type.supplier_name ,p_error_code => 'XXOD_SITE_ADDR_POSTAL_CODE_INVA' ,p_error_message => 'For country '||l_sup_site_type.country||',Vendor Site Address Details - Postal Code - should contain only numeric and hypen(-) and length must be maximum upto 10' ,p_stage_col1 => 'POSTAL_CODE' ,p_stage_val1 => l_sup_site_type.postal_code ,p_table_name => g_sup_site_cont_table );
+            gc_error_site_status_flag:= 'Y';
+            print_debug_msg(p_message=> l_sup_site_type.postal_code ||' Postal Code - should contain only numeric and hypen(-) and length must be maximum upto 10' ,p_force=> false);
+			gc_error_msg:=gc_error_msg||' ,'||l_sup_site_type.postal_code ||' Postal Code - should contain only numeric and hypen(-) and length must be maximum upto 10';
           END IF; -- IF (NOT (isPostalCode(l_sup_site_type.POSTAL_CODE))
         ELSIF l_site_country_code = 'CA' THEN
           IF (NOT (isalphanumeric(l_sup_site_type.postal_code ))) THEN
             gc_error_site_status_flag := 'Y';
-            print_debug_msg(p_message=> gc_step||' ERROR: POSTAL_CODE:'||l_sup_site_type.postal_code||': XXOD_SITE_ADDR_POSTAL_CODE_INVA: For country '||l_sup_site_type.country||',Vendor Site Address Details - Postal Code - should contain only alphanumeric ' ,p_force=> false);
-            insert_error (p_program_step => gc_step ,p_primary_key => l_sup_site_type.supplier_name ,p_error_code => 'XXOD_SITE_ADDR_POSTAL_CODE_INVA' ,p_error_message => 'For country '||l_sup_site_type.country||',Vendor Site Address Details - Postal Code - should contain only alphanumeric' ,p_stage_col1 => 'POSTAL_CODE' ,p_stage_val1 => l_sup_site_type.postal_code ,p_table_name => g_sup_site_cont_table );
+            print_debug_msg(p_message=> l_sup_site_type.postal_code||' Postal Code - should contain only alphanumeric ' ,p_force=> false);
+            gc_error_msg:=gc_error_msg||' , '|| l_sup_site_type.postal_code||' Postal Code - should contain only alphanumeric';
           END IF; -- IF l_sup_site_type.PROVINCE IS NULL      -- ??? Do we need to validate the State Code in Oracle Seeded table
         ELSE
           gc_error_site_status_flag := 'Y';
-          print_debug_msg(p_message=> gc_step||' ERROR: thrown already - COUNTRY:'||l_sup_site_type.country||': XXOD_SITE_COUNTRY_INVALID :Vendor Site Country is Invalid' ,p_force=> false);
+          print_debug_msg(p_message=> l_sup_site_type.country||' Vendor Site Country is Invalid' ,p_force=> false);
         END IF; -- IF IF l_sup_site_type.COUNTRY_CODE = 'US'
-      END IF;   -- IF l_sup_site_type.POSTAL_CODE IS NULL
+    END IF;   -- IF l_sup_site_type.POSTAL_CODE IS NULL
+    
+      --=============================================================================
+      -- Validating the Supplier Site Category
+      --=============================================================================	  
+	  
+      IF l_sup_site_type.attribute8 IS NULL THEN
+         gc_error_site_status_flag := 'Y';
+         print_debug_msg(p_message=> 'Site Category is BLANK' ,p_force=> true);
+   	     gc_error_msg:=gc_error_msg||' , Site Category is BLANK';
+      END IF;	  
+	  
       --=============================================================================
       -- Validating the Supplier Site - Ship to Location Code
       --=============================================================================
@@ -3219,8 +3226,8 @@ BEGIN
         CLOSE c_ship_to_location;
         IF l_ship_to_cnt             =0 THEN
           gc_error_site_status_flag := 'Y';
-          print_debug_msg(p_message=> gc_step||' ERROR: SHIP_TO_LOCATION:'||l_sup_site_type.ship_to_location||': XXOD_SHIP_TO_LOCATION_INVALID2: Ship to Location does not exist in the system.' ,p_force=> true);
-          insert_error (p_program_step => gc_step ,p_primary_key => l_sup_site_type.supplier_name ,p_error_code => 'XXOD_SHIP_TO_LOCATION_INVALID2' ,p_error_message => 'Ship to Location '||l_sup_site_type.ship_to_location||' does not exist in the system' ,p_stage_col1 => 'SHIP_TO_LOCATION' ,p_stage_val1 => l_sup_site_type.ship_to_location ,p_stage_col2 => NULL ,p_stage_val2 => NULL ,p_table_name => g_sup_site_cont_table );
+          print_debug_msg(p_message=> l_sup_site_type.ship_to_location||' Invalid Ship to Location' ,p_force=> true);
+		  gc_error_msg:=gc_error_msg||' ,'||l_sup_site_type.ship_to_location||' Invalid Ship to Location';
         ELSE
           print_debug_msg(p_message=> gc_step||' Ship to Location Id is available' ,p_force=> false);
         END IF; -- IF l_ship_to_location_id IS NULL
@@ -3235,8 +3242,8 @@ BEGIN
         CLOSE c_bill_to_location;
         IF l_bill_to_cnt             =0 THEN
           gc_error_site_status_flag := 'Y';
-          print_debug_msg(p_message=> gc_step||' ERROR: BILL_TO_LOCATION:'||l_sup_site_type.bill_to_location||': XXOD_BILL_TO_LOCATION_INVALID2: Bill to Location does not exist in the system.' ,p_force=> true);
-          insert_error (p_program_step => gc_step ,p_primary_key => l_sup_site_type.supplier_name ,p_error_code => 'XXOD_BILL_TO_LOCATION_INVALID2' ,p_error_message => 'Bill to Location '||l_sup_site_type.bill_to_location||' does not exist in the system' ,p_stage_col1 => 'SHIP_TO_LOCATION' ,p_stage_val1 => l_sup_site_type.bill_to_location ,p_stage_col2 => NULL ,p_stage_val2 => NULL ,p_table_name => g_sup_site_cont_table );
+          print_debug_msg(p_message=> l_sup_site_type.bill_to_location||' Invalid Bill to Location' ,p_force=> true);
+		  gc_error_msg:=gc_error_msg||' ,'||l_sup_site_type.bill_to_location||' Invalid Bill to Location';
         ELSE
           print_debug_msg(p_message=> gc_step||' Bill to Location Id is avilable ' ,p_force=> false);
         END IF; -- IF l_ship_to_location_id IS NULL
@@ -3248,17 +3255,10 @@ BEGIN
 	      OPEN c_get_term_id(xx_get_terms(l_sup_site_type.terms_name));
          FETCH c_get_term_id INTO ln_terms_id;
          CLOSE c_get_term_id;
-         IF NVL(ln_terms_id,0) = 0
-		 THEN
+         IF NVL(ln_terms_id,0) = 0 THEN
             gc_error_site_status_flag := 'Y';
-            print_debug_msg(p_message=> gc_step||' ERROR: TERMS :'||l_sup_site_type.terms_name||': Terms does not exist in the system.' ,p_force=> true);
-            insert_error (p_program_step => gc_step ,p_primary_key => l_sup_site_type.vendor_site_code,
-						  p_error_code => 'XXOD_TERMS_INVALID',
-						  p_error_message => 'Terms :'||l_sup_site_type.terms_name||' does not exist in the system' ,
-						  p_stage_col1 => 'TERMS' ,p_stage_val1 => l_sup_site_type.terms_name,p_stage_col2 => NULL ,
-						  p_stage_val2 => NULL ,p_table_name => g_sup_site_cont_table );
-         ELSE 
-            print_debug_msg(p_message=> gc_step||' Terms is available ' ,p_force=> false);
+            print_debug_msg(p_message=> l_sup_site_type.terms_name||' Invalid  Terms' ,p_force=> true);
+			gc_error_msg:=gc_error_msg||' ,'|| l_sup_site_type.terms_name||' Invalid  Terms';
          END IF; 
       END IF;
 	  
@@ -3273,10 +3273,8 @@ BEGIN
         CLOSE c_get_fnd_lookup_code_cnt;
         IF l_fob_code_cnt            =0 THEN
           gc_error_site_status_flag := 'Y';
-          print_debug_msg(p_message=> gc_step||' ERROR: FOB:' ||l_sup_site_type.fob_lookup_code||': XXOD_FOB_INVALID: FOB does not exist in the system.' ,p_force=> true);
-          insert_error (p_program_step => gc_step ,p_primary_key => l_sup_site_type.supplier_name ,p_error_code => 'XXOD_FOB_INVALID' , p_error_message => 'FOB '||l_sup_site_type.fob_lookup_code||' does not exist in the system' , p_stage_col1 => 'FOB' ,p_stage_val1 => l_sup_site_type.fob_lookup_code ,p_stage_col2 => NULL ,p_stage_val2 => NULL ,p_table_name => g_sup_site_cont_table );
-        ELSE
-          print_debug_msg(p_message=> gc_step||' FOB Code of FOB - ' ||l_sup_site_type.fob_lookup_code,p_force=> false);
+          print_debug_msg(p_message=> l_sup_site_type.fob_lookup_code||' Invalid FOB ' ,p_force=> true);
+		  gc_error_msg:=gc_error_msg||' ,'|| l_sup_site_type.fob_lookup_code||' Invalid FOB';
         END IF; -- IF l_fob_code IS NULL
       END IF;   -- IF l_sup_site_type.FOB IS NOT NULL
       --=============================================================================
@@ -3290,80 +3288,55 @@ BEGIN
         CLOSE c_get_fnd_lookup_code_cnt;
         IF l_freight_terms_code_cnt  =0 THEN
           gc_error_site_status_flag := 'Y';
-          print_debug_msg(p_message=> gc_step||' ERROR: FREIGHT_TERMS:'||l_sup_site_type.freight_terms_lookup_code||': XXOD_FREIGHT_TERMS_INVALID: FREIGHT TERMS does not exist in the system.' ,p_force=> true);
-          insert_error (p_program_step => gc_step ,p_primary_key => l_sup_site_type.supplier_name , p_error_code => 'XXOD_FREIGHT_TERMS_INVALID' ,p_error_message => 'FREIGHT TERMS ' ||l_sup_site_type.freight_terms_lookup_code||' does not exist in the system' ,p_stage_col1 => 'Freight Terms' , p_stage_val1 => l_sup_site_type.freight_terms_lookup_code ,p_stage_col2 => NULL ,p_stage_val2 => NULL ,p_table_name => g_sup_site_cont_table );
-        ELSE
-          print_debug_msg(p_message=> gc_step||' FREIGHT TERMS Code of FREIGHT TERMS - ' ||l_sup_site_type.freight_terms_lookup_code ,p_force=> false);
+          print_debug_msg(p_message=> l_sup_site_type.freight_terms_lookup_code||' Invalid Freight Terms' ,p_force=> true);
+		  gc_error_msg:=gc_error_msg||' ,'||l_sup_site_type.freight_terms_lookup_code||' Invalid Freight Terms';
         END IF; -- IF l_freight_terms_code IS NULL
       END IF;   -- IF l_sup_site_type.FREIGHT_TERMS IS NOT NULL
       --==============================================================================================================
       -- Validating the Supplier Site - Payment Method Check again priyam
       --==============================================================================================================
-      IF l_sup_site_type.payment_method_lookup_code IS NULL THEN
-        l_payment_method                            := 'CHECK';
-        print_debug_msg(p_message=> gc_step||' Default value set for l_payment_method is '||l_payment_method ,p_force=> false);
-      ELSE -- Check the existence of Payment Method
-        l_pay_method_cnt := 0;
-        OPEN c_pay_method_exist(l_sup_site_type.payment_method_lookup_code);
-        FETCH c_pay_method_exist INTO l_pay_method_cnt;
-        CLOSE c_pay_method_exist;
-        IF l_pay_method_cnt          = 0 THEN
-          gc_error_site_status_flag := 'Y';
-          print_debug_msg(p_message=> gc_step||' ERROR: PAYMENT_METHOD:'||l_sup_site_type.payment_method_lookup_code||': XXOD_PAYMENT_METHOD_INVALID: Payment Method does not exist in the system.' ,p_force=> true);
-          insert_error (p_program_step => gc_step ,p_primary_key => l_sup_site_type.supplier_name ,p_error_code => 'XXOD_PAYMENT_METHOD_INVALID' ,p_error_message => 'Payment Method does not exist in the system' ,p_stage_col1 => 'PAYMENT_METHOD' ,p_stage_val1 => l_sup_site_type.payment_method_lookup_code ,p_stage_col2 => NULL ,p_stage_val2 => NULL ,p_table_name => g_sup_table );
-        ELSE
-          print_debug_msg(p_message=> gc_step||' PAYMENT_METHOD:'||l_sup_site_type.payment_method_lookup_code||' exist in the system.' ,p_force=> false);
-          l_payment_method := l_sup_site_type.payment_method_lookup_code;
-        END IF; -- IF l_pay_method_cnt < 1
+      IF l_sup_site_type.payment_method_lookup_code IS NOT NULL THEN
+         l_pay_method_cnt := 0;
+          OPEN c_pay_method_exist(l_sup_site_type.payment_method_lookup_code);
+         FETCH c_pay_method_exist INTO l_pay_method_cnt;
+         CLOSE c_pay_method_exist;
+         IF l_pay_method_cnt          = 0 THEN
+            gc_error_site_status_flag := 'Y';
+            print_debug_msg(p_message=> l_sup_site_type.payment_method_lookup_code||' Invalid Payment Method' ,p_force=> true);
+		    gc_error_msg:=gc_error_msg||' ,'||l_sup_site_type.payment_method_lookup_code||' Invalid Payment Method';
+         END IF; -- IF l_pay_method_cnt < 1
       END IF;   -- IF l_sup_site_type.PAYMENT_METHOD IS NULL
 
        --=============================================================================
       -- Validating the Supplier Site - Service Tolerance
       --=============================================================================
-      IF l_sup_site_type.service_tolerance IS NULL THEN
-         l_service_tolerance_name                := 'US_OD_TOLERANCES_Default';
-      ELSE
-         l_service_tolerance_name := l_sup_site_type.service_tolerance;
-      END IF;
-      l_service_tolerance_cnt := 0;
+      IF l_sup_site_type.service_tolerance IS NOT NULL THEN
+         l_service_tolerance_cnt := 0;
   
-       OPEN c_get_tolerance(l_service_tolerance_name);
-      FETCH c_get_tolerance INTO l_service_tolerance_cnt;
-      CLOSE c_get_tolerance;
-      IF l_service_tolerance_cnt          =0 THEN
-         gc_error_site_status_flag := 'Y';
-         print_debug_msg(p_message=> gc_step||' ERROR: Service Tolerance :'||l_sup_site_type.service_tolerance||': XXOD_SERVICE_TOLERANCE_INVALID: Service Tolerance does not exist in the system.' ,p_force=> true);
-         insert_error (p_program_step => gc_step ,p_primary_key => l_sup_site_type.supplier_name ,p_error_code => 'XXOD_SERVICE_TOLERANCE_INVALID' ,p_error_message => 'Service Tolerance '||l_sup_site_type.service_tolerance||' does not exist in the system' ,p_stage_col1 => 'SERVICE_TOLERANCE' ,p_stage_val1 => l_sup_site_type.service_tolerance ,p_stage_col2 => NULL ,p_stage_val2 => NULL ,p_table_name => g_sup_site_cont_table );
-      ELSE
-         print_debug_msg(p_message=> gc_step||' Service Tolerance Id is available' ,p_force=> false);
-      END IF; -- IF l_service_tolerance_id IS NULL
+         OPEN c_get_tolerance(l_sup_site_type.service_tolerance);
+        FETCH c_get_tolerance INTO l_service_tolerance_cnt;
+        CLOSE c_get_tolerance;
+        IF l_service_tolerance_cnt          =0 THEN
+           gc_error_site_status_flag := 'Y';
+           print_debug_msg(p_message=>  l_sup_site_type.service_tolerance||' Invalid Service Tolerance' ,p_force=> true);
+		   gc_error_msg:=gc_error_msg||' ,'||  l_sup_site_type.service_tolerance|| ' Invalid Service Tolerance';
+        END IF; -- IF l_service_tolerance_id IS NULL
+	  END IF;
       --=============================================================================
       -- Validating the Supplier Site - Invoice Tolerance
       --=============================================================================
-      IF l_sup_site_type.tolerance_name IS NULL THEN
-        l_tolerance_name                := 'US_OD_TOLERANCES_Default';
-      ELSE
-        l_tolerance_name := l_sup_site_type.tolerance_name;
-      END IF;
-      l_tolerance_cnt := 0;
-      OPEN c_get_tolerance(l_tolerance_name);
-      FETCH c_get_tolerance INTO l_tolerance_cnt;
-      CLOSE c_get_tolerance;
-      IF l_tolerance_cnt           =0 THEN
-        gc_error_site_status_flag := 'Y';
-        print_debug_msg(p_message=> gc_step||' ERROR: INVOICE_TOLERANCE:'||l_sup_site_type.tolerance_name||': XXOD_INV_TOLERANCE_INVALID: Invoice Tolerance does not exist in the system.' ,p_force=> true);
-        insert_error (p_program_step => gc_step ,p_primary_key => l_sup_site_type.supplier_name ,p_error_code => 'XXOD_INV_TOLERANCE_INVALID' ,p_error_message => 'Invoice Tolerance '||l_sup_site_type.tolerance_name||' does not exist in the system' ,p_stage_col1 => 'INVOICE_TOLERANCE' ,p_stage_val1 => l_sup_site_type.tolerance_name ,p_stage_col2 => NULL ,p_stage_val2 => NULL ,p_table_name => g_sup_site_cont_table );
-      ELSE
-        print_debug_msg(p_message=> gc_step||' Invoice Tolerance Id is available' ,p_force=> false);
-      END IF; -- IF l_tolerance_id IS NULL
-      --=============================================================================
-      -- Defaulting the Supplier Site - Payment Priority
-      --=============================================================================
-      IF l_sup_site_type.payment_priority IS NULL THEN
-        l_payment_priority                := 99;
-      ELSE
-        l_payment_priority := l_sup_site_type.payment_priority;
-      END IF;
+      IF l_sup_site_type.tolerance_name IS NOT NULL THEN
+         l_tolerance_cnt := 0;
+         OPEN c_get_tolerance(l_sup_site_type.tolerance_name);
+        FETCH c_get_tolerance INTO l_tolerance_cnt;
+        CLOSE c_get_tolerance;
+        IF l_tolerance_cnt           =0 THEN
+           gc_error_site_status_flag := 'Y';
+           print_debug_msg(p_message=>  l_sup_site_type.tolerance_name||' Invalid Quantity Tolerance' ,p_force=> true);
+		   gc_error_msg:=gc_error_msg||' ,'|| l_sup_site_type.tolerance_name||' Invalid Quantity Tolerance';
+        END IF; -- IF l_tolerance_id IS NULL
+	  END IF;
+
       --==============================================================================================================
       -- Validating the Supplier Site - Pay Group
       --==============================================================================================================
@@ -3375,18 +3348,11 @@ BEGIN
         CLOSE c_get_fnd_lookup_code_cnt;
         IF l_pay_group_code_cnt      = 0 THEN
           gc_error_site_status_flag := 'Y';
-          print_debug_msg(p_message=> gc_step||' ERROR: PAY_GROUP:'||l_sup_site_type.pay_group_lookup_code||': XXOD_PAY_GROUP_INVALID: Pay Group does not exist in the system.' ,p_force=> true);
-          insert_error (p_program_step => gc_step ,p_primary_key => l_sup_site_type.supplier_name ,p_error_code => 'XXOD_PAY_GROUP_INVALID' ,p_error_message => 'Pay Group '||l_sup_site_type.pay_group_lookup_code||' does not exist in the system' ,p_stage_col1 => 'PAY_GROUP' ,p_stage_val1 => l_sup_site_type.pay_group_lookup_code ,p_stage_col2 => NULL ,p_stage_val2 => NULL ,p_table_name => g_sup_site_cont_table );
+          print_debug_msg(p_message=> l_sup_site_type.pay_group_lookup_code||' Invalid Paygroup' ,p_force=> true);
+		  gc_error_msg:=gc_error_msg||' ,'||l_sup_site_type.pay_group_lookup_code||' Invalid Paygroup';
         END IF;
       END IF; -- IF l_pay_group_code IS NULL
-      --=============================================================================
-      -- Defaulting the Supplier Site - Deduct Bank Charge
-      --=============================================================================
-      IF l_sup_site_type.bank_charge_deduction_type IS NULL THEN
-        l_deduct_bank_chrg                          := 'D';
-      ELSE
-        l_deduct_bank_chrg := l_sup_site_type.bank_charge_deduction_type;
-      END IF;
+
       --==============================================================================================================
       -- Validating the Supplier Site - Terms Date Basis TERMS_DATE_BASIS => use the value what is received
       --==============================================================================================================
@@ -3399,8 +3365,8 @@ BEGIN
         CLOSE c_get_fnd_lookup_code_cnt;
         IF l_terms_date_basis_code_cnt = 0 THEN
           gc_error_site_status_flag   := 'Y';
-          print_debug_msg(p_message=> gc_step||' ERROR: TERMS_DATE_BASIS:'||l_sup_site_type.terms_date_basis||': XXOD_TERMS_DATE_BASIS_INVALID: Terms Date Basis does not exist in the system.' ,p_force=> true);
-          insert_error (p_program_step => gc_step ,p_primary_key => l_sup_site_type.supplier_name ,p_error_code => 'XXOD_TERMS_DATE_BASIS_INVALID' ,p_error_message => 'Terms Date Basis value '||l_sup_site_type.terms_date_basis||' does not exist in the system' ,p_stage_col1 => 'TERMS_DATE_BASIS' ,p_stage_val1 => l_sup_site_type.terms_date_basis ,p_stage_col2 => NULL ,p_stage_val2 => NULL ,p_table_name => g_sup_site_cont_table );
+          print_debug_msg(p_message=> l_sup_site_type.terms_date_basis||' Invalid Terms Date Basis' ,p_force=> true);
+          gc_error_msg:=gc_error_msg||' ,'||l_sup_site_type.terms_date_basis||' Invalid Terms Date Basis';
         END IF; -- IF l_terms_date_basis_code IS NULL
       END IF;   -- IF l_sup_site_type.TERMS_DATE_BASIS is not NULL THEN
       --=============================================================================
@@ -3412,8 +3378,8 @@ BEGIN
         l_always_disc_flag := l_sup_site_type.always_take_disc_flag;
       END IF;
       l_sup_site_and_add(l_sup_site_idx).create_flag :=l_sup_create_flag;
-    END IF; -- IF  gc_error_site_status_flag = 'N' -- After Supplier Site Existence Check Completed
-    l_sup_site_and_add(l_sup_site_idx).supplier_name       := l_sup_site_type.supplier_name;
+
+	  l_sup_site_and_add(l_sup_site_idx).supplier_name       := l_sup_site_type.supplier_name;
     l_sup_site_and_add(l_sup_site_idx).supplier_number     := l_sup_site_type.supplier_number;
     l_sup_site_and_add(l_sup_site_idx).vendor_site_code    := l_sup_site_type.vendor_site_code;
     l_sup_site_and_add(l_sup_site_idx).vendor_id           := l_sup_site_type.supp_id;
@@ -3455,10 +3421,6 @@ BEGIN
     EXCEPTION
     WHEN OTHERS THEN
       l_error_message := 'When Others Exception  during the bulk update of site staging table' || SQLCODE || ' - ' || SUBSTR (sqlerrm ,1 ,3800 );
-      --============================================================================
-      -- To Insert into Common Error Table
-      --============================================================================
-      insert_error (p_program_step => 'SITE' ,p_primary_key => NULL ,p_error_code => 'XXOD_BULK_UPD_SITE' ,p_error_message => 'When Others Exception during the bulk update of site staging table' ,p_stage_col1 => NULL ,p_stage_val1 => NULL ,p_stage_col2 => NULL ,p_stage_val2 => NULL ,p_table_name => g_sup_site_cont_table );
       print_debug_msg(p_message=> l_program_step||': '||l_error_message ,p_force=> true);
     END;
   END IF; -- IF l_sup_site_and_add.COUNT > 0
@@ -3473,6 +3435,7 @@ WHEN OTHERS THEN
   x_return_status := 'E';
   x_err_buf       := l_err_buff;
 END validate_supplier_site_records;
+
 --+============================================================================+
 --| Name          : Validate_supp_contact_records                                           |
 --| Description   : This procedure will Validate Supplier Contact records  |
@@ -3651,39 +3614,37 @@ BEGIN
   --====================================================================
   -- Call the Vendor Site Validations
   --====================================================================
-  set_step( 'Start of Vendor Site conatct Loop Validations : ' || gc_error_status_flag);
-  --commented by Priyam
+  print_debug_msg(p_message=> gc_step||' : Validation of Supplier Site started' ,p_force=> TRUE);
   FOR l_sup_site_cont_type IN c_supplier_contact
   LOOP
-    print_debug_msg(p_message=> gc_step||' : Validation of Supplier Site started' ,p_force=> TRUE);
     l_sup_cont_idx := l_sup_cont_idx + 1;
-    print_debug_msg(p_message=> gc_step||' : l_sup_cont_idx - '||l_sup_cont_idx ,p_force=> TRUE);
     gc_error_site_status_flag := 'N';
     gc_step                   := 'SITE_CONT';
+	gc_error_msg		      := NULL;
     gc_error_msg              := '';
+	l_sup_create_flag         :=NULL;
     OPEN c_dup_supplier_chk_int( TRIM(UPPER(l_sup_site_cont_type.first_name)), TRIM(UPPER(l_sup_site_cont_type.last_name)), l_sup_site_cont_type.supp_id, l_sup_site_cont_type.supp_site_id );
     FETCH c_dup_supplier_chk_int INTO l_int_first_name, l_int_last_name;
     CLOSE c_dup_supplier_chk_int;
     IF l_int_first_name         IS NOT NULL THEN
       gc_error_site_status_flag := 'Y';
-      print_debug_msg(p_message => l_program_step||' : ERROR: XXOD_SUP_EXISTS_IN_INT : Suppiler '|| l_sup_site_cont_type.supplier_name ||' already exist in   Interface table with ' , p_force => TRUE);
-      insert_error ( p_program_step => gc_step , p_primary_key => l_sup_site_cont_type.supplier_name , p_error_code => 'XXOD_SUP_EXISTS_IN_INT' , p_error_message => 'Suppiler ' ||l_sup_site_cont_type.supplier_name||' already exist in Interface table ' ||' .' , p_stage_col1 => 'SUPPLIER_NAME' , p_stage_val1 => l_sup_site_cont_type.supplier_name , p_stage_col2 => NULL , p_stage_val2 => NULL , p_table_name => g_sup_cont_table );
+      print_debug_msg(p_message => 'Contact already exist in the Interface table' , p_force => TRUE);
+	  gc_error_msg:='Contact already exist in the Interface table';
     END IF;
     --====================================================================
     -- Note Required
     --====================================================================
     IF l_sup_site_cont_type.first_name IS NULL THEN
       gc_error_site_status_flag        := 'Y';
-      print_debug_msg(p_message => gc_step||' ERROR: FIRST_NAME:'||l_sup_site_cont_type.first_name|| ': XXOD_FIRST_NAME_NULL:FIRST_NAME cannot be NULL', p_force => FALSE);
-      insert_error ( p_program_step => gc_step , p_primary_key => l_sup_site_cont_type.supplier_name , p_error_code => 'XXOD_FIRST_NAME_NULL' , p_error_message => 'First Name cannot be NULL' , p_stage_col1 => 'LAST_NAME_PREFIX' , p_stage_val1 => l_sup_site_cont_type.first_name , p_table_name => g_sup_cont_table );
+      print_debug_msg(p_message => 'Contact First Name is BLANK', p_force => FALSE);
+      gc_error_msg:=gc_error_msg||' , Contact First Name is BLANK';     
     END IF;
     IF l_sup_site_cont_type.last_name IS NULL THEN
       gc_error_site_status_flag       := 'Y';
-      print_debug_msg(p_message=> gc_step||' ERROR: LAST_NAME:'||l_sup_site_cont_type.first_name|| ': XXOD_LAST_NAME_NULL:LAST_NAME cannot be NULL' , p_force=> FALSE);
-      insert_error (p_program_step => gc_step , p_primary_key => l_sup_site_cont_type.supplier_name , p_error_code => 'XXOD_LAST_NAME_NULL' , p_error_message => 'Last Name cannot be NULL' , p_stage_col1 => 'LAST_NAME_PREFIX' , p_stage_val1 => l_sup_site_cont_type.last_name , p_table_name => g_sup_cont_table );
+      print_debug_msg(p_message=> 'Contact Last Name is BLANK' , p_force=> FALSE);
+      gc_error_msg:=gc_error_msg||' , Contact Last Name is BLANK';     
     END IF;
     print_debug_msg(p_message=> gc_step||' After basic validation of Contact - gc_error_site_status_flag is '||gc_error_site_status_flag ,p_force=> FALSE);
-    l_sup_CREATE_FLAG           :='';
     IF gc_error_site_status_flag = 'N' THEN
       print_debug_msg(p_message=> gc_step||' l_sup_site_cont_type.update_flag is '||l_sup_site_cont_type.CREATE_FLAG , p_force => FALSE);
       print_debug_msg(p_message=> gc_step||' l_sup_site_cont_type.supplier_name is '||UPPER(l_sup_site_cont_type.supplier_name) , p_force => FALSE);
@@ -3694,66 +3655,15 @@ BEGIN
       FETCH c_sup_contact_exist INTO l_sup_cont_exist_cnt;
       CLOSE c_sup_contact_exist;
       IF l_sup_cont_exist_cnt             > 0 THEN
-        l_sup_create_flag                := 'N';--update the supplier
-        l_sup_site_cont_type.create_flag := l_sup_create_flag;
+         l_sup_create_flag := 'N';
       ELSE
-        l_sup_create_flag                := 'Y';
-        l_sup_site_cont_type.create_flag := l_sup_create_flag;
+         l_sup_create_flag := 'Y';
       END IF;
-    ELSE
-      l_sup_CREATE_FLAG               := '';
-      gc_error_site_status_flag       := 'Y';
-      l_sup_site_cont_type.create_flag:= l_sup_create_flag;
     END IF; -- gc_error_site_status_flag = 'N'
     print_debug_msg(p_message=> gc_step||' After supplier site existence check - gc_error_site_status_flag is '||gc_error_site_status_flag , p_force => FALSE);
     print_debug_msg(p_message=> gc_step||' After supplier site existence check - l_sup_create_flag is '||l_sup_CREATE_FLAG , p_force => FALSE);
     set_step('Supplier Contact Existence Check Completed');
-	/*  -- Commented as per Version 2.0
-	
-    IF gc_error_site_status_flag = 'N' THEN -- After Supplier Site Existence Check Completed
-      --===============================================================================================
-      -- Validating the Supplier Site - Address Details - Phone area code
-      --===============================================================================================
-      IF l_sup_site_cont_type.area_code                                                                IS NOT NULL THEN
-        IF (NOT (isnumeric(l_sup_site_cont_type.area_code)) OR (LENGTH(l_sup_site_cont_type.area_code) <> 3 )) THEN
-          gc_error_site_status_flag                                                                    := 'Y';
-          print_debug_msg(p_message=> gc_step||' ERROR: PHONE_AREA_CODE:'||l_sup_site_cont_type.area_code||': XXOD_PHONE_AREA_CODE_INVALID: Phone Area Code ' ||l_sup_site_cont_type.area_code||' should be numeric and 3 digits.' , p_force => TRUE);
-          insert_error (p_program_step => gc_step , p_primary_key => l_sup_site_cont_type.supplier_name , p_error_code => 'XXOD_PHONE_AREA_CODE_INVALID' , p_error_message => 'Phone Area Code '||l_sup_site_cont_type.area_code||' should be numeric and 3 digits.' , p_stage_col1 => 'PHONE_AREA_CODE' , p_stage_val1 => l_sup_site_cont_type.area_code , p_stage_col2 => NULL , p_stage_val2 => NULL , p_table_name => g_sup_cont_table );
-        END IF; -- IF (NOT (isNumeric(l_sup_site_type.PHONE_AREA_CODE))
-      END IF;   -- IF l_sup_site_type.PHONE_AREA_CODE IS NOT NULL
-      --===============================================================================================
-      -- Validating the Supplier Site - Address Details - Phone Number
-      --===============================================================================================
-      IF l_sup_site_cont_type.phone IS NOT NULL THEN
-        IF (LENGTH(l_sup_site_cont_type.phone) NOT IN (7,8) ) THEN -- Phone Number length is 7 and 1 digit count for '-'
-          gc_error_site_status_flag := 'Y';
-          print_debug_msg(p_message=> gc_step||' ERROR: PHONE_NUMBER:'||l_sup_site_cont_type.phone||': XXOD_PHONE_NUMBER_INVALID: Phone Number ' ||l_sup_site_cont_type.phone||' should be 7 digits.' , p_force => TRUE);
-          insert_error (p_program_step => gc_step , p_primary_key => l_sup_site_cont_type.supplier_name , p_error_code => 'XXOD_PHONE_NUMBER_INVALID' , p_error_message => 'Phone Number '||l_sup_site_cont_type.phone||' should be 7 digits.' , p_stage_col1 => 'PHONE_NUMBER' , p_stage_val1 => l_sup_site_cont_type.phone , p_stage_col2 => NULL , p_stage_val2 => NULL , p_table_name => g_sup_cont_table );
-        END IF; -- IF (NOT (isNumeric(l_sup_site_type.PHONE_NUMBER))
-      END IF;   -- IF l_sup_site_type.PHONE_NUMBER IS NOT NULL
-      --===============================================================================================
-      -- Validating the Supplier Site - Address Details - Fax area code
-      --===============================================================================================
-      IF l_sup_site_cont_type.fax_area_code                                                                    IS NOT NULL THEN
-        IF (NOT (isnumeric(l_sup_site_cont_type.fax_area_code)) OR (LENGTH(l_sup_site_cont_type.fax_area_code) <> 3 )) THEN
-          gc_error_site_status_flag                                                                            := 'Y';
-          print_debug_msg(p_message=> gc_step||' ERROR: FAX_AREA_CODE:'||l_sup_site_cont_type.fax_area_code||': XXOD_FAX_AREA_CODE_INVALID: Fax Area Code ' ||l_sup_site_cont_type.fax_area_code||' should be numeric and 3 digits.' , p_force=> true);
-          insert_error (p_program_step => gc_step , p_primary_key => l_sup_site_cont_type.supplier_name , p_error_code => 'XXOD_FAX_AREA_CODE_INVALID' , p_error_message => 'Fax Area Code '||l_sup_site_cont_type.fax_area_code||' should be numeric and 3 digits.' , p_stage_col1 => 'FAX_AREA_CODE' , p_stage_val1 => l_sup_site_cont_type.fax_area_code , p_stage_col2 => NULL , p_stage_val2 => NULL , p_table_name => g_sup_cont_table );
-        END IF; -- IF (NOT (isNumeric(l_sup_site_type.FAX_AREA_CODE))
-      END IF;   -- IF l_sup_site_type.FAX_AREA_CODE IS NOT NULL
-      --===============================================================================================
-      -- Validating the Supplier Site - Address Details - Fax Number/FAX updated by Priyam
-      --===============================================================================================
-      IF l_sup_site_cont_type.fax IS NOT NULL THEN
-        IF (LENGTH(l_sup_site_cont_type.fax) NOT IN (7,8) ) THEN -- Fax Number length is 7 and 1 digit count for '-'
-          gc_error_site_status_flag := 'Y';
-          print_debug_msg(p_message=> gc_step||' ERROR: FAX_NUMBER:'||l_sup_site_cont_type.fax||': XXOD_FAX_NUMBER_INVALID: Fax Number ' ||l_sup_site_cont_type.fax||' should be 7 digits.' , p_force=> true);
-          insert_error ( p_program_step => gc_step , p_primary_key => l_sup_site_cont_type.supplier_name , p_error_code => 'XXOD_FAX_NUMBER_INVALID' , p_error_message => 'Fax Number '||l_sup_site_cont_type.fax||' should be 7 digits.' , p_stage_col1 => 'FAX_NUMBER' , p_stage_val1 => l_sup_site_cont_type.fax , p_stage_col2 => NULL , p_stage_val2 => NULL , p_table_name => g_sup_cont_table );
-        END IF; -- IF (NOT (isNumeric(l_sup_site_type.FAX_NUMBER))
-      END IF;   -- IF l_sup_site_type.FAX_NUMBER IS NOT NULL
-    END IF;     -- IF  gc_error_site_status_flag = 'N' -- After Supplier Contact Existence Check Completed
-	*/ -- 
-    ------------------------Assigning values
+
     l_sup_cont(l_sup_cont_idx).create_flag            :=l_sup_create_flag;
     l_sup_cont(l_sup_cont_idx).vendor_site_code       :=l_sup_site_cont_type.vendor_site_code;
     l_sup_cont(l_sup_cont_idx).supplier_name          :=l_sup_site_cont_type.supplier_name;
@@ -4020,7 +3930,8 @@ IS
       hz_parties a
     WHERE a.party_name    =p_bank_name
     AND b.bank_party_id   =a.party_id
-    AND b.bank_branch_name=p_branch
+    -- AND b.bank_branch_name=p_branch
+	AND b.branch_number=p_branch 
     AND b.country         =p_country
     AND SYSDATE BETWEEN b.start_date AND NVL(end_date,sysdate+1);
   --==========================================================================================
@@ -4063,7 +3974,7 @@ BEGIN
     UPDATE xx_ap_cld_supp_bnkact_stg xassc1
     SET xassc1.bnkact_process_flag   = gn_process_status_error ,
       xassc1.error_flag              = gc_process_error_flag ,
-      xassc1.error_msg               = 'error: duplicate bank assignment in staging table'
+      xassc1.error_msg               = 'Duplicate bank Account'
     WHERE xassc1.bnkact_process_flag = gn_process_status_inprocess
     AND xassc1.REQUEST_ID            = gn_request_id
     AND 2                           <=
@@ -4093,17 +4004,17 @@ BEGIN
     SET xassc.bnkact_process_flag = gn_process_status_error ,
       xassc.error_flag            = gc_process_error_flag ,
       xassc.error_msg             = error_msg
-      ||',bank or branch information is null'
+      ||' ,bank or branch information is BLANK'
     WHERE xassc.bnkact_process_flag IN (gn_process_status_inprocess)
     AND xassc.request_id             = gn_request_id
     AND ( xassc.bank_name           IS NULL
     OR xassc.branch_name            IS NULL ) ;
     l_bank_upd_cnt                  := sql%rowcount;
-    print_debug_msg(p_message => 'After Bank or branch information is null', p_force => false);
+    print_debug_msg(p_message => 'After Bank or branch information is BLANK', p_force => false);
   EXCEPTION
   WHEN OTHERS THEN
     l_err_buff := SQLCODE || ' - '|| SUBSTR (sqlerrm,1,3500);
-    print_debug_msg(p_message => 'ERROR-EXCEPTION: Bank or branch information is null - '|| l_err_buff , p_force => false);
+    print_debug_msg(p_message => 'ERROR-EXCEPTION: Bank or branch information is BLANK - '|| l_err_buff , p_force => false);
   END;
   --====================================================================
   -- Call the Bank Account Validations
@@ -4124,26 +4035,25 @@ BEGIN
     IF l_sup_bank_type.supplier_name IS NULL THEN
       gc_error_site_status_flag      := 'Y';
       gc_error_msg                   :=gc_error_msg||' Supplier Name is NULL';
-      print_debug_msg(p_message=> gc_step||' ERROR: supplier_name:' ||l_sup_bank_type.supplier_name|| ': XXOD_supplier_NAME_NULL:FIRST_NAME cannot be NULL', p_force=> false);
-      insert_error (p_program_step => gc_step ,p_primary_key => l_sup_bank_type.supplier_name , p_error_code => 'XXOD_supplier_NAME_NULL' ,p_error_message => 'supplier_name cannot be NULL' , p_stage_col1 => 'XXOD_supplier_NAME_NULL' ,p_stage_val1 => l_sup_bank_type.supplier_name , p_table_name => g_sup_bank_table );
+      print_debug_msg(p_message=> 'Supplier Name is BLANK' , p_force=> FALSE);
+      gc_error_msg:=gc_error_msg||' , Supplier Name is BLANK';   
     END IF;
     IF l_sup_bank_type.supplier_num IS NULL THEN
       gc_error_site_status_flag     := 'Y';
-      gc_error_msg                  :=gc_error_msg||', Supplier Number is NULL';
-      print_debug_msg(p_message=> gc_step||' ERROR: supplier_num:' ||l_sup_bank_type.supplier_num|| ': XXOD_supplier_num_NULL:LAST_NAME cannot be NULL' ,p_force=> false);
-      insert_error (p_program_step => gc_step ,p_primary_key => l_sup_bank_type.supplier_num ,p_error_code => 'XXOD_supplier_num_NULL' , p_error_message => 'supplier Num cannot be NULL' ,p_stage_col1 => 'XXOD_supplier_num_NULL' , p_stage_val1 => l_sup_bank_type.supplier_num ,p_table_name => g_sup_bank_table );
-    END IF;
+      gc_error_msg                  :=gc_error_msg||', Supplier Number is BLANK';
+      print_debug_msg(p_message=> 'Supplier Number is BLANK' , p_force=> FALSE);
+	END IF;
+	  
     IF l_sup_bank_type.vendor_site_code IS NULL THEN
       gc_error_site_status_flag         := 'Y';
-      gc_error_msg                      :=gc_error_msg||', Vendor Site Code is NULL';
-      print_debug_msg(p_message=> gc_step||' ERROR: vendor_site_code:' ||l_sup_bank_type.vendor_site_code|| ': XXOD_vendor_site_code_NULL:LAST_NAME cannot be NULL' ,p_force=> false);
-      insert_error (p_program_step => gc_step ,p_primary_key => l_sup_bank_type.vendor_site_code ,p_error_code => 'XXOD_vendor_site_code_NULL' , p_error_message => 'vendor_site_code cannot be NULL' ,p_stage_col1 => 'XXOD_vendor_site_code_NULL' , p_stage_val1 => l_sup_bank_type.vendor_site_code ,p_table_name => g_sup_bank_table );
-    END IF;
+      gc_error_msg                      :=gc_error_msg||', Vendor Site Code is BLANK';
+	  print_debug_msg(p_message=> 'Vendor Site Code is BLANK' , p_force=> FALSE);
+      END IF;
     --==============================================================================================================
-    -- Validating the Supplier Site - Address Details -  Address Line 2
+    -- Validating the Supplier Bank - Address Details -  Address Line 2
     --==============================================================================================================
     print_debug_msg(p_message=> gc_step||' After basic validation of Contact - gc_error_site_status_flag is '||gc_error_site_status_flag ,p_force=> false);
-    l_bank_CREATE_FLAG          :='';
+    l_bank_create_flag          := '';
     IF gc_error_site_status_flag = 'N' THEN
       print_debug_msg(p_message=> gc_step||' l_sup_bank_type.update_flag is '||l_sup_bank_type.CREATE_FLAG ,p_force=> false);
       print_debug_msg(p_message=> gc_step||' upper(l_sup_bank_type.vendor_site_code) is '||upper(l_sup_bank_type.vendor_site_code) ,p_force=> false);
@@ -4152,8 +4062,8 @@ BEGIN
       CLOSE c_bank_branch;
       IF ( l_sup_bank_id          IS NULL OR l_sup_bank_branch_id IS NULL ) THEN
         gc_error_site_status_flag := 'Y';
-        gc_error_msg              :=gc_error_msg||', Bank OR Branch does not exists';
-        INSERT_ERROR (P_PROGRAM_STEP => GC_STEP , P_PRIMARY_KEY => L_SUP_BANK_TYPE.BANK_NAME , P_ERROR_CODE => 'XXOD_BANK_NULL' , P_ERROR_MESSAGE => 'Bank Information is null ' ||L_SUP_BANK_TYPE.BANK_NAME,P_STAGE_COL1 => 'XXOD_BANK_NULL' , P_STAGE_VAL1 => L_SUP_BANK_TYPE.BANK_NAME , P_TABLE_NAME => G_SUP_BANK_TABLE );
+        gc_error_msg              :=gc_error_msg||', Bank OR Branch does not exist';
+	    print_debug_msg(p_message=> 'Bank OR Branch does not exist' , p_force=> FALSE);
       ELSE
         l_sup_bank_type.bank_id   :=l_sup_bank_id;
         l_sup_bank_type.branch_id :=l_sup_bank_branch_id;
@@ -4216,7 +4126,7 @@ BEGIN
         l_bank_acct_start_date:=l_sup_bank_type.start_date;
       END IF;
       print_debug_msg(p_message=> gc_step||' After Bank Validation, Error Status Flag is : '||gc_error_site_status_flag ,p_force=> false);
-      print_debug_msg(p_message=> gc_step||' After Bank Validation, Bank Create  Flag is : '||l_bank_CREATE_FLAG ,p_force=> false);
+      print_debug_msg(p_message=> gc_step||' After Bank Validation, Bank Create  Flag is : '||l_bank_create_flag ,p_force=> false);
       ------------------------Assigning values
       l_sup_bank(l_sup_bank_idx).create_flag        :=l_bank_create_flag;
       l_sup_bank(l_sup_bank_idx).start_date         :=l_bank_acct_start_date;
@@ -4345,6 +4255,7 @@ IS
   lc_allow_unordered_rcpts_flag	         VARCHAR2(200);
   lc_terms_name                          VARCHAR2(50):= 'N90'; -- Added as per Version 2.6
   ln_terms_id                            NUMBER;               -- Added as per Version 2.6
+  lc_intf_ins_flag						 VARCHAR2(1):='N';
   --==============================================================================
   -- Cursor Declarations for Suppliers
   --==============================================================================
@@ -4390,6 +4301,7 @@ BEGIN
       print_debug_msg(p_message=> gc_step||' l_supplier_type records processing.' ,p_force=> false);
       FOR l_idx IN l_supplier_type.first .. l_supplier_type.last
       LOOP
+		gc_error_msg 					 := NULL;
 	    lc_inspection_required_flag	     := NULL;    
         lc_receipt_required_flag	     := NULL;     
         ln_qty_rcv_tolerance	         := NULL;         
@@ -4583,19 +4495,19 @@ BEGIN
 				  lc_allow_unordered_rcpts_flag,   -- Added as per Version 2.1 by Havish Kasina
 				  ln_terms_id                      -- Added as per Version 2.6 by Havish Kasina
                 );
+			  lc_intf_ins_flag:='Y';
               print_debug_msg(p_message=> 'After successfully inserted the record for the supplier -'||l_supplier_type (l_idx).supplier_name ,p_force=> false);
             EXCEPTION
             WHEN OTHERS THEN
               l_process_status_flag := 'Y';
               l_error_message       := SQLCODE || ' - '|| sqlerrm;
               print_debug_msg(p_message=> gc_step||' ERROR: while Inserting Records in Inteface Table- SUPPLIER_NAME:'||l_supplier_type (l_idx).supplier_name||': XXOD_SUPPLIER_INS_ERROR:'|| SQLCODE || ' - '||l_error_message ,p_force=> true);
-              insert_error (p_program_step => gc_step ,p_primary_key => l_supplier_type (l_idx).supplier_name ,p_error_code => 'XXOD_SUPPLIER_INS_ERROR'|| SQLCODE || ' - '|| SUBSTR (sqlerrm,1,2000) ,p_error_message => 'Error while Inserting Records in Inteface Table'|| SQLCODE || ' - '||l_error_message ,p_stage_col1 => 'SUPPLIER_NAME' ,p_stage_val1 => l_supplier_type (l_idx).supplier_name ,p_stage_col2 => NULL ,p_stage_val2 => NULL ,p_table_name => g_sup_table );
+			  gc_error_msg:='Error while Inserting Records in AP Suppliers INT : '|| SQLCODE || ' - '||sqlerrm;
             END;
             IF l_process_status_flag                       = 'N' THEN
-              l_supplier_type (l_idx).supp_process_flag   := gn_process_status_loaded;
-              l_sup_processed_recs                        := l_sup_processed_recs + 1;
-              l_supplier_type (l_idx).vendor_interface_id :=l_vendor_intf_id;---added
-              set_step ('Sup Stg Status P');
+               l_sup_processed_recs                        := l_sup_processed_recs + 1;
+               l_supplier_type (l_idx).vendor_interface_id :=l_vendor_intf_id;---added
+               set_step ('Sup Stg Status P');
             ELSIF l_process_status_flag                  = 'Y' THEN
               l_supplier_type (l_idx).supp_process_flag := gn_process_status_error;
               l_supplier_type (l_idx).ERROR_FLAG        := gc_process_error_flag;
@@ -4625,7 +4537,6 @@ BEGIN
         AND request_id        = gn_request_id;
       EXCEPTION
       WHEN OTHERS THEN
-        l_process_status_flag := 'Y';
         l_error_message       := 'When Others Exception ' || SQLCODE || ' - ' || SUBSTR (sqlerrm ,1 ,3850 );
       END;
     END IF; -- l_supplier_type.COUNT For Bulk Update of Supplier
@@ -4638,15 +4549,7 @@ BEGIN
   x_return_status := l_return_status;
   x_err_buf       := l_err_buff;
 
-  SELECT COUNT(1)
-    INTO l_sup_val_load_cnt
-    FROM xx_ap_cld_suppliers_stg
-   WHERE request_id     = gn_request_id
-     AND create_flag      = 'Y'
-     AND supp_process_flag=5;
-  print_out_msg(p_message => 'Before starting import program total Supplier eligible count '|| l_sup_val_load_cnt);
-  
-  IF l_sup_val_load_cnt >0 THEN
+  IF lc_intf_ins_flag='Y' THEN
      print_out_msg(p_message => '-------------------Starting Supplier Import Program-------------------------------------------------------------------------');
      fnd_global.apps_initialize ( user_id => l_user_id ,resp_id => l_resp_id ,resp_appl_id => l_resp_appl_id );
      l_rept_req_id := fnd_request.submit_request(application => 'SQLAP' , 
@@ -4715,6 +4618,7 @@ EXCEPTION
     x_return_status := 'E';
     x_err_buf       := l_error_message;
 END load_supplier_interface;
+
 --+============================================================================+
 --| Name          : load_Supplier_Site_Interface                                        |
 --| Description   : This procedure will load the vendors Sitee into interface table  |
@@ -4793,6 +4697,7 @@ IS
   l_vendor_site_code        VARCHAR2(50);
   v_acct_pay                NUMBER;
   v_prepay_cde              NUMBER;
+  lc_intf_ins_flag			VARCHAR2(1):='N';
 BEGIN
   print_debug_msg(p_message=> gc_step||' load_Supplier_Site_Interface() - BEGIN' ,p_force=> false);
   --==============================================================================
@@ -4815,6 +4720,7 @@ BEGIN
       LOOP
         l_process_site_error_flag  := 'N';
         l_vendor_site_code         := '';
+		gc_error_msg			   :=NULL;
         IF l_process_site_error_flag='N' THEN
           --==============================================================================
           -- Calling the Vendor Site Interface Id for Passing it to Interface Table
@@ -4932,7 +4838,7 @@ BEGIN
                 l_sup_site_type(l_idx).freight_terms_lookup_code,--freight_terms ,
                 l_sup_site_type(l_idx).fob_lookup_code,          --fob ,
                 l_sup_site_type(l_idx).pay_group_lookup_code,    --pay_group_code ,
-                TO_NUMBER(l_sup_site_type(l_idx).payment_priority),
+                NVL(TO_NUMBER(l_sup_site_type(l_idx).payment_priority),99),
                 l_sup_site_type(l_idx).pay_date_basis_lookup_code ,
                 l_sup_site_type(l_idx).always_take_disc_flag ,
                 l_sup_site_type(l_idx).hold_all_payments_flag,--hold_from_payment
@@ -4948,7 +4854,7 @@ BEGIN
                 sysdate ,
                 sysdate ,
                 g_user_id ,
-                l_sup_site_type(l_idx).payment_method_lookup_code,
+                NVL(l_sup_site_type(l_idx).payment_method_lookup_code,'CHECK'),
                 l_sup_site_type(l_idx).attribute_category ,
                 l_sup_site_type(l_idx).attribute1,
                 l_sup_site_type(l_idx).attribute2,
@@ -4967,19 +4873,17 @@ BEGIN
                 L_SUP_SITE_TYPE(L_IDX).ATTRIBUTE15,
                 l_sup_site_type(l_idx).vendor_site_code_alt,
                 l_sup_site_type(l_idx).attribute5, -- Added as per Version 1.9
-				l_sup_site_type(l_idx).bank_charge_bearer
+				NVL(l_sup_site_type(l_idx).bank_charge_bearer,'D')
               );
+			  lc_intf_ins_flag:='Y';
           EXCEPTION
           WHEN OTHERS THEN
             l_process_site_error_flag := 'Y';
             l_error_message           := SQLCODE || ' - '|| sqlerrm;
             print_debug_msg(p_message=> gc_step||' ERROR: while Inserting Records in Inteface Table- SUPPLIER_NAME:' ||l_sup_site_type(l_idx).supplier_name||': XXOD_SUPPLIER_INS_ERROR:'|| SQLCODE || ' - '|| l_error_message ,p_force=> true);
-            insert_error (p_program_step => gc_step ,p_primary_key => l_sup_site_type(l_idx).supplier_name ,p_error_code => 'XXOD_SUPPLIER_INS_ERROR'|| SQLCODE || ' - '|| SUBSTR (sqlerrm,1,2000) , p_error_message => 'Error while Inserting Records in Site Inteface Table'|| SQLCODE || ' - '||l_error_message ,p_stage_col1 => 'SUPPLIER_NAME' ,p_stage_val1 => l_sup_site_type(l_idx).supplier_name ,p_stage_col2 => NULL ,p_stage_val2 => NULL ,p_table_name => g_sup_site_cont_table );
+			gc_error_msg:=gc_error_msg||' ,'||l_error_message;
           END;
-          set_step ( 'Supplier Site Interface Before Assigning' ||'-' || l_process_site_error_flag);
-          set_step ('Supplier Site Interface After Assigning ' ||l_process_site_error_flag);
           IF l_process_site_error_flag                 = 'N' THEN
-            l_sup_site_type (l_idx).site_process_flag := gn_process_status_loaded;
             print_debug_msg(p_message=> gc_step||' l_sup_site (lp_loopcnt).stg_PROCESS_FLAG' ||l_sup_site_type (l_idx).site_process_flag ,p_force=> true);
             l_supsite_processed_recs                        := l_supsite_processed_recs + 1;
             l_sup_site_type (l_idx).vendor_site_interface_id:=l_vendor_site_intf_id;
@@ -5023,16 +4927,9 @@ BEGIN
   CLOSE c_supplier_site;
   l_sup_site_type.DELETE;
   COMMIT;
-  SELECT COUNT(1)
-  INTO l_supsite_val_load_cnt
-  FROM xx_ap_cld_supp_sites_stg
-  WHERE request_id          = gn_request_id
-  AND create_flag           ='Y'
-  AND site_process_flag     =5;
-  IF l_supsite_val_load_cnt >0 THEN
-    print_out_msg(p_message => '-------------------Starting Supplier Site Import Program-------------------------------------------------------------------------');
-    fnd_global.apps_initialize ( user_id => l_user_id ,resp_id => l_resp_id ,resp_appl_id => l_resp_appl_id );
-    l_rept_req_id := fnd_request.submit_request (application => 'SQLAP' , 
+  IF lc_intf_ins_flag='Y' THEN
+     fnd_global.apps_initialize ( user_id => l_user_id ,resp_id => l_resp_id ,resp_appl_id => l_resp_appl_id );
+     l_rept_req_id := fnd_request.submit_request (application => 'SQLAP' , 
 	                                             program => 'APXSSIMP' , 
 												 description => '' , 
 												 start_time => SYSDATE , 
@@ -5175,6 +5072,7 @@ IS
   l_vendor_site_id          NUMBER;
   l_org_id                  NUMBER;
   l_party_site_id           NUMBER;
+  lc_intf_ins_flag		    VARCHAR2(1):='N';
 BEGIN
   print_debug_msg(p_message=> gc_step||' load_Supplier_cont_Interface() - BEGIN' ,p_force=> false);
   set_step ('Start of Process Records Using API');
@@ -5274,6 +5172,7 @@ BEGIN
                   g_user_id,
                   l_supplier_cont_type (l_idx).title
                 );
+				lc_intf_ins_flag:='Y';
               print_debug_msg(p_message=> 'After successfully inserted the record for the supplier -' ||l_supplier_cont_type (l_idx).supplier_name ,p_force=> false);
             EXCEPTION
             WHEN OTHERS THEN
@@ -5283,9 +5182,8 @@ BEGIN
               insert_error (p_program_step => gc_step ,p_primary_key => l_supplier_cont_type (l_idx).supplier_name ,p_error_code => 'XXOD_SUPPLIER_INS_ERROR'|| SQLCODE || ' - '|| SUBSTR (sqlerrm,1,2000) ,p_error_message => 'Error while Inserting Records in Inteface Table'|| SQLCODE || ' - '||l_error_message ,p_stage_col1 => 'SUPPLIER_NAME' ,p_stage_val1 => l_supplier_cont_type (l_idx).supplier_name ,p_stage_col2 => NULL ,p_stage_val2 => NULL ,p_table_name => g_sup_table );
             END;
             IF l_cont_process_error_flag                               = 'N' THEN
-              l_supplier_cont_type (l_idx).contact_process_flag       := gn_process_status_loaded;
-              l_sup_processed_recs                                    := l_sup_processed_recs + 1;
-              l_supplier_cont_type (l_idx).vendor_contact_interface_id:=l_vendor_contact_intf_id;
+               l_sup_processed_recs                                    := l_sup_processed_recs + 1;
+               l_supplier_cont_type (l_idx).vendor_contact_interface_id:=l_vendor_contact_intf_id;
             ELSIF l_cont_process_error_flag                            = 'Y' THEN
               l_supplier_cont_type (l_idx).contact_process_flag       := gn_process_status_error;
               l_supplier_cont_type (l_idx).ERROR_FLAG                 := gc_process_error_flag;
@@ -5326,17 +5224,11 @@ BEGIN
   END LOOP; -- For Open c_supplier
   CLOSE c_supplier_contacts;
   l_supplier_cont_type.DELETE;
-  SELECT COUNT(1)
-  INTO l_sup_val_load_cnt
-  FROM xx_ap_cld_supp_contact_stg
-  WHERE request_id        = gn_request_id
-  AND cont_target         ='EBS'
-  AND create_flag         ='Y'
-  AND contact_process_flag=5;
-  IF l_sup_val_load_cnt   >0 THEN
-    print_out_msg(p_message => '-------------------Starting Supplier Contact Import Program-------------------------------------------------------------------------');
-    fnd_global.apps_initialize ( user_id => l_user_id ,resp_id => l_resp_id ,resp_appl_id => l_resp_appl_id );
-    l_rept_req_id := fnd_request.submit_request (application => 'SQLAP' ,
+
+  IF lc_intf_ins_flag='Y' THEN
+     print_out_msg(p_message => '-------------------Starting Supplier Contact Import Program-------------------------------------------------------------------------');
+     fnd_global.apps_initialize ( user_id => l_user_id ,resp_id => l_resp_id ,resp_appl_id => l_resp_appl_id );
+     l_rept_req_id := fnd_request.submit_request (application => 'SQLAP' ,
 	                                             program => 'APXSCIMP', 
 												 description => '' , 
 												 start_time => sysdate , 
@@ -5677,7 +5569,6 @@ BEGIN
 	 AND EXISTS ( SELECT 'x'
 					FROM xx_ap_cld_suppliers_stg
 				   WHERE request_id=ss.request_id
-				     AND create_flag = 'Y'
 					 AND supp_process_flag <> 7
 					 AND segment1=ss.supplier_number
 			    );
@@ -5690,7 +5581,6 @@ BEGIN
 	 AND EXISTS ( SELECT 'x'
 					FROM xx_ap_cld_supp_sites_stg
 				   WHERE request_id=ct.request_id
-				     AND create_flag = 'Y'
 					 AND site_process_flag <> 7
 					 AND supplier_number=ct.supplier_number
 					 AND vendor_site_code=ct.vendor_site_code
@@ -5704,7 +5594,6 @@ BEGIN
 	 AND EXISTS ( SELECT 'x'
 					FROM xx_ap_cld_suppliers_stg
 				   WHERE request_id=bcls.request_id
-				     AND create_flag = 'Y'
 					 AND supp_process_flag <> 7
 					 AND segment1=bcls.supplier_number
 			    );
@@ -5717,7 +5606,6 @@ BEGIN
 	 AND EXISTS ( SELECT 'x'
 					FROM xx_ap_cld_supp_sites_stg
 				   WHERE request_id=dff.request_id
-				     AND create_flag = 'Y'
 					 AND site_process_flag<>7
 					 AND vendor_site_code=dff.vendor_site_code
 			    );
@@ -5730,7 +5618,6 @@ BEGIN
 	 AND EXISTS ( SELECT 'x'
 					FROM xx_ap_cld_supp_sites_stg
 				   WHERE request_id=bnk.request_id
-				     AND create_flag = 'Y'
 					 AND site_process_flag<>7
 					 AND vendor_site_code=bnk.vendor_site_code
 			    );
