@@ -245,7 +245,25 @@ FUNCTION check_cust( p_no_activity_in	 IN  NUMBER -- parameter
 		    ,p_cash_receipt_id	 IN NUMBER
 		   )
 		      RETURN NUMBER;
-
+  -- +=========================================================================+
+  -- |                  Office Depot - Project Beacon                        |
+  -- |                                                       |
+  -- +=========================================================================+
+  -- | Name : xx_update_product_setup                                          |
+  -- | Description : Function is added to get next supplier number             |
+  -- |                                                                  .      |
+  -- |                                                                         |
+  -- | Parameters :               |
+  -- |===============                                                          |
+  -- |Version   Date          Author              Remarks                      |
+  -- |=======   ==========   =============   ==================================|
+  -- |   1      7-AUG-19     Jitendra A     Initial version--Added for #3      |
+  -- |                                      automatic supplier numbering       |
+  -- |                                      for avoiding locking contention    |
+  -- |                                      for product setup table            |
+  -- +=============================================================================+
+  FUNCTION xx_update_product_setup
+    RETURN NUMBER;
 END xx_ar_refunds_pkg;
 
 /
