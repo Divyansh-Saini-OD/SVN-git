@@ -63,7 +63,7 @@ AS
   g_user_id             NUMBER                            := fnd_global.user_id;
   G_LOGIN_ID            NUMBER                            := FND_GLOBAL.LOGIN_ID;
   gc_site_country_code ap_supplier_sites_all.COUNTRY%TYPE := 'US';
-  gc_process_error_flag VARCHAR2(1)                       := 'E';
+  gc_process_error_flag VARCHAR2(1)                       := 'Y';
   
   --=================================================================
   -- Declaring Table Types
