@@ -23,7 +23,7 @@ create or replace PACKAGE BODY AP_WEB_EXPORT_ER AS
   --   REVISIONS:
   --   Ver        Date        Author           Description
   --   ---------  ----------  ---------------  ------------------------------------
-  --   1.0        08/09/2019  Jitendra Atale   Created this package for AR Refund & POS mailcheck interface 
+  --   1.0        08/09/2019  Jitendra Atale   Created this package for AR Refund and POS mailcheck interface 
   --										   changes to accommodate using Cloud numbering when Supplier Master 
   --                                           in Cloud
   -- ==============================================================================================================
