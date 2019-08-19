@@ -57,6 +57,7 @@ CREATE OR REPLACE PACKAGE BODY xx_ap_supp_cld_intf_pkg
 -- |                                           b.Terms_id added in both update_supp_sites and  |
 -- |                                             load_supp_sites                               |
 -- |  2.7    16-AUG-2019     Havish Kasina     Added Debug Messages                            |
+-- |  2.8    19-AUG-2019     Havish Kasina     Modified Custom Tolerance procedure             |
 -- |===========================================================================================+
 AS
   /*********************************************************************
@@ -940,25 +941,22 @@ IS
       site.vendor_id ,
       site.vendor_site_id,
       site.org_id,
-	  site.attribute8   -- Added as per Version 2.0
+	  site.attribute8   
     FROM xx_ap_cld_site_dff_stg dff,
          xx_ap_cld_supp_sites_stg site
     WHERE 1                     =1
-    AND dff.process_Flag        = 'P'
-    AND dff.dff_process_Flag    = 2
     AND dff.request_id          = gn_request_id
-    AND dff.vendor_site_code    = site.vendor_site_code
+    AND site.vendor_site_code=dff.vendor_site_code
+	AND site.supplier_number=dff.supplier_number     
     AND site.site_process_flag IN (7,8)
     AND site.request_id         = dff.request_id
     AND site.vendor_id         IS NOT NULL
     AND site.vendor_site_id    IS NOT NULL
-    AND EXISTS
-      (SELECT 1
-      FROM ap_supplier_sites_all
-      WHERE 1            =1
-      AND vendor_id      = site.vendor_id
-      AND vendor_site_id = site.vendor_site_id
-      );
+    AND EXISTS  (SELECT 1
+				   FROM ap_supplier_sites_all
+				  WHERE vendor_id      = site.vendor_id
+				    AND vendor_site_id = site.vendor_site_id
+				);
   v_kff_id                NUMBER;
   ln_tol_count            NUMBER;
   ln_kff_count            NUMBER;
@@ -971,8 +969,24 @@ IS
   lc_error_msg            VARCHAR2(2000);
   lc_vendor_site_code_alt VARCHAR2(100);
 BEGIN
+  UPDATE xx_ap_cld_site_dff_stg dff
+     SET dff_process_flag=3,
+		 process_flag='Y',
+		 error_flag='Y',
+		 error_msg='Custom DFF not processed due to Site Error'
+   WHERE request_id=gn_request_id
+     AND EXISTS (SELECT 'x'
+			       FROM xx_ap_cld_supp_sites_stg
+				  WHERE request_id=dff.request_id
+				    AND supplier_number=dff.supplier_number
+					AND vendor_site_code=dff.vendor_site_code
+					AND site_process_flag<>7
+			    );
+  COMMIT;				
+
   FOR cur IN C1
   LOOP
+    print_debug_msg(p_message => 'Processing Custom DFF for the site : '||cur.vendor_site_code,p_force =>false);
     v_error_Flag            :='N';
     lc_attribute11          :=NULL;
     lc_attribute12          :=NULL;
@@ -1000,7 +1014,9 @@ BEGIN
     INTO ln_kff_count
     FROM xx_po_vendor_sites_kff
     WHERE vs_kff_id IN (lc_attribute10,lc_attribute11,lc_attribute12);
+
     print_debug_msg(p_message => 'Vendor Site KFF Record Count : '||ln_kff_count , p_force => true);
+
     IF ln_kff_count = 0 THEN
       print_debug_msg(p_message => ' Inserting group 1 KFF ', p_force => true);
       BEGIN
@@ -1180,7 +1196,6 @@ BEGIN
       --===============================================================
       -- Inserting into Custom Supplier Traits    --
       --===============================================================
-      print_debug_msg(p_message => ' Calling Cupplier Traits for Trait : '||cur.sup_trait||', Site : '||cur.vendor_site_code, p_force =>false);
       IF cur.sup_trait IS NOT NULL THEN
         v_trait_flag   := xx_custom_sup_traits(cur.sup_trait,NVL(TO_NUMBER(LTRIM(lc_vendor_site_code_alt,'0')),cur.vendor_site_id ) );
       END IF;
@@ -1220,7 +1235,7 @@ BEGIN
         AND structure_id    = 101;
         IF SQL%ROWCOUNT     =0 THEN
           v_error_Flag     :='Y';
-        lc_error_msg := lc_error_msg||SUBSTR(SQLERRM,1,50)||', Error in processing RMS PI PACK Custom DFF';
+          lc_error_msg := lc_error_msg||SUBSTR(SQLERRM,1,50)||', Error in processing RMS PI PACK Custom DFF';
         END IF;
       ELSIF lc_attribute10 IS NULL THEN
         BEGIN
@@ -1427,13 +1442,9 @@ BEGIN
             lc_error_msg := lc_error_msg||SUBSTR(SQLERRM,1,50)||', Error in processing RMS RTV Custom DFF';
         END;
       END IF;
-      --===============================================================
-      -- Inserting into Custom Supplier Traits    --
-      --===============================================================
-      print_debug_msg(p_message => ' Calling Cupplier Traits for Trait : '||cur.sup_trait||' cur.supplier_number : '||cur.supplier_number, p_force => true);
-      v_trait_flag := xx_custom_sup_traits(cur.sup_trait,NVL(TO_NUMBER(LTRIM(lc_vendor_site_code_alt,'0')),cur.vendor_site_id ) );
+
       UPDATE xx_ap_cld_site_dff_stg
-         SET dff_process_Flag = DECODE(v_error_Flag,'Y',6,'N',7),
+         SET dff_process_Flag   = DECODE(v_error_Flag,'Y',6,'N',7),
              error_msg          = DECODE(v_error_Flag,'Y',lc_error_msg,'N',NULL),
              error_flag         = DECODE(v_error_Flag,'Y','Y','N','N'),
              vendor_id          = cur.vendor_id,
@@ -1727,6 +1738,7 @@ SELECT *
    
 BEGIN
   -- Assign Basic Values
+  print_debug_msg(p_message=> 'Begin Update Supplier Site Procedure', p_force=>true);
   p_api_version      := 1.0;
   p_init_msg_list    := fnd_api.g_false;
   p_commit           := fnd_api.g_false;
@@ -1736,6 +1748,7 @@ BEGIN
   
   FOR c_sup_site IN c_supplier_site
   LOOP
+    print_debug_msg(p_message=> 'Update API call for the Site : '|| c_sup_site.vendor_site_code, p_force=>true);
     BEGIN
       SELECT *
         INTO lr_existing_vendor_site_rec
@@ -1845,12 +1858,9 @@ BEGIN
 											   );
     COMMIT;
 
-    print_debug_msg(p_message=> l_program_step||'X_RETURN_STATUS = ' || x_return_status, p_force=>true);
-    print_debug_msg(p_message=> l_program_step||'fnd_api.g_ret_sts_success ' || fnd_api.g_ret_sts_success , p_force=>true);
-    print_debug_msg(p_message=> l_program_step||'X_MSG_COUNT = ' || x_msg_count, p_force=>true);
+    print_debug_msg(p_message=> 'API Return Status / Msg Count : ' || x_return_status||' / '||x_msg_count, p_force=>true);
+
     IF x_msg_count > 0 THEN
-       print_debug_msg(p_message=> l_program_step||'x_return_status ' || x_return_status , p_force=>true);
-       print_debug_msg(p_message=> l_program_step||'fnd_api.g_ret_sts_success ' || fnd_api.g_ret_sts_success , p_force=>true);
        FOR i IN 1 .. x_msg_count--fnd_msg_pub.count_msg
        LOOP
          fnd_msg_pub.get ( p_msg_index => i , p_encoded => 'F' , p_data => l_msg , p_msg_index_out => ln_msg_index_num );
@@ -1858,20 +1868,17 @@ BEGIN
       END LOOP;
       l_process_flag:='E';
     ELSE
-      print_debug_msg(p_message=> l_program_step||'The API call ended with SUCESSS status', p_force=>true);
       l_process_flag:='Y';
       l_msg         :='';
     END IF;
     print_debug_msg(p_message=> l_program_step||'l_process_flag '||l_process_flag, p_force=>true);
-    print_debug_msg(p_message=> l_program_step||'c_sup_site.supplier_name '||c_sup_site.supplier_name, p_force=>true);
-    print_debug_msg(p_message=> l_program_step||'fnd_global.conc_request_id '||fnd_global.conc_request_id, p_force=>true);
-    print_debug_msg(p_message=> l_program_step||'c_sup_site.vendor_site_code '||c_sup_site.vendor_site_code, p_force=>true);
+
     BEGIN
       UPDATE xx_ap_cld_supp_sites_stg xas
-         SET xas.site_process_flag   =DECODE (l_process_flag,'Y',gn_process_status_imported ,'E',gn_process_status_imp_fail),---6 ,---6
+         SET xas.site_process_flag   =DECODE (l_process_flag,'Y',gn_process_status_imported ,'E',gn_process_status_imp_fail),
              xas.error_flag          =DECODE(l_process_flag,'Y',NULL,'E','Y'),
              xas.error_msg           =l_msg,
-             process_flag            =l_process_flag
+             process_flag            ='Y'
        WHERE xas.site_process_flag   =gn_process_status_validated
          AND xas.request_id          = gn_request_id
          AND xas.supplier_number     = c_sup_site.supplier_number
@@ -1912,10 +1919,9 @@ IS
   p_init_msg_list    		VARCHAR2(200);
   p_commit           		VARCHAR2(200);
   x_msg_data         		VARCHAR2(200);
-  p_calling_prog     		VARCHAR2(200);
-  l_program_step     		VARCHAR2 (100) := '';
   l_msg              		VARCHAR2(2000);
-  l_process_flag     		VARCHAR2(10);
+  lc_error_mesg			    VARCHAR2(2000);
+  l_process_flag     		VARCHAR2(1);
   l_email_address 			hz_contact_points.email_address%TYPE;
   l_phone_number 			hz_contact_points.phone_number%TYPE;
   l_fax_number 				hz_contact_points.phone_number%TYPE;
@@ -1923,6 +1929,8 @@ IS
   l_fax_area_code 			hz_contact_points.phone_area_code%TYPE;
   lv_vendor_contact_rec 	ap_vendor_pub_pkg.r_vendor_contact_rec_type;
   lv_contact_title_rec 		hz_party_contact_v2pub.org_contact_rec_type;
+  lc_error_status1		    VARCHAR2(1):='N';
+  lc_error_status2		    VARCHAR2(1):='N';  
   
 CURSOR c_cont
 IS
@@ -1999,16 +2007,17 @@ SELECT DISTINCT hoc.org_contact_id,
    AND hpc.person_first_name       = v_first_name
    AND hpc.person_last_name        = v_last_name;
 BEGIN
-  -- Initialize apps session
-  -- Assign Basic Values
   p_api_version      := 1.0;
   p_init_msg_list    := fnd_api.g_false;
   p_commit           := fnd_api.g_false;
   p_validation_level := fnd_api.g_valid_level_full;
-  p_calling_prog     := 'XXCUSTOM';
-  l_program_step     := 'START';
   FOR r_cont IN c_cont
   LOOP
+    lc_error_status1:='N';
+    lc_error_status2:='N';	
+	lc_error_mesg:=NULL;
+    print_debug_msg(p_message=> 'Vendor Site/First/Last Name  : '|| r_cont.vendor_site_code||'/'||r_cont.first_name||'/'||r_cont.last_name, 
+					p_force=>true);
     FOR r_cont_info IN c_contact_infor(r_cont.vendor_id , r_cont.vendor_site_id , r_cont.first_name, r_cont.last_name )
     LOOP
       BEGIN
@@ -2076,31 +2085,26 @@ BEGIN
 													   );
         
 		COMMIT;
-        print_debug_msg(p_message=> l_program_step||'X_RETURN_STATUS ap_vendor_pub_pkg = ' || x_return_status, p_force => TRUE);
-        print_debug_msg(p_message=> l_program_step||'fnd_api.g_ret_sts_success ap_vendor_pub_pkg ' || fnd_api.g_ret_sts_success , p_force => TRUE);
-        print_debug_msg(p_message=> l_program_step||'X_MSG_COUNT ap_vendor_pub_pkg = ' || x_msg_count, p_force => TRUE);
-        
+        print_debug_msg(p_message=> 'ap_vendor_pub_pkg.update_vendor_contact_public status :' || x_return_status , p_force => TRUE);        
 		IF x_return_status <>'S' AND x_msg_count > 0 THEN
-          print_debug_msg(p_message=> l_program_step||'x_return_status ap_vendor_pub_pkg' || x_return_status , p_force => TRUE);
-          print_debug_msg(p_message=> l_program_step||'fnd_api.g_ret_sts_success ap_vendor_pub_pkg ' || fnd_api.g_ret_sts_success , p_force => TRUE);
-          FOR i IN 1 .. x_msg_count--fnd_msg_pub.count_msg
-          LOOP
+		   lc_error_status1:='Y';
+           FOR i IN 1 .. x_msg_count--fnd_msg_pub.count_msg
+           LOOP
             fnd_msg_pub.get ( p_msg_index => i , p_encoded => 'F' , p_data => l_msg , p_msg_index_out => ln_msg_index_num);
-            print_debug_msg(p_message=> l_program_step||'The API call failed with error ap_vendor_pub_pkg ' || l_msg , p_force => TRUE);
-          END LOOP;
-          l_process_flag:='E';
-          ------Update for Tiebacking
+			lc_error_mesg:=lc_error_mesg||','||l_msg;
+            print_debug_msg(p_message=> 'The ap_vendor_pub_pkg.update_vendor_contact_public status call failed with error: ' || l_msg , p_force => TRUE);
+           END LOOP;
         ELSE
-          print_debug_msg(p_message=> l_program_step||'The API call ap_vendor_pub_pkg ended with SUCESSS status', p_force => TRUE);
-          l_process_flag := 'Y';
           l_msg          := '';
-          -----------------------Update the status if API successfully updated the record.
         END IF;
       END IF;
     END LOOP;
-    FOR r_cont_title IN c_cont_title (r_cont.vendor_id , r_cont.vendor_site_id ,r_cont.first_name,r_cont.last_name )
+	
+	print_debug_msg(p_message=>'Starting Calling c_cont_title',p_force=>TRUE);
+    
+	FOR r_cont_title IN c_cont_title (r_cont.vendor_id , r_cont.vendor_site_id ,r_cont.first_name,r_cont.last_name )
     LOOP
-      ------------------------Contact title API call
+      
       IF NVL(r_cont_title.job_title,'X')    <> NVL(r_cont.title,'X') THEN
         lv_contact_title_rec.org_contact_id := r_cont_title.org_contact_id;
         lv_contact_title_rec.job_title      := NVL(r_cont.title, FND_API.G_MISS_CHAR);
@@ -2118,34 +2122,37 @@ BEGIN
 													x_msg_data => x_msg_data 
 												  );
         COMMIT;
-        print_debug_msg(p_message=> l_program_step||'X_RETURN_STATUS HZ_PARTY_CONTACT_V2PUB = ' || x_return_status, p_force => TRUE);
-        print_debug_msg(p_message=> l_program_step||'fnd_api.g_ret_sts_success HZ_PARTY_CONTACT_V2PUB ' || fnd_api.g_ret_sts_success , p_force => TRUE);
-        print_debug_msg(p_message=> l_program_step||'X_MSG_COUNT HZ_PARTY_CONTACT_V2PUB = ' || x_msg_count, p_force => TRUE);
-        IF x_return_status <>'S' AND x_msg_count > 0 THEN
-          print_debug_msg(p_message=> l_program_step||'x_return_status  HZ_PARTY_CONTACT_V2PUB' || x_return_status , p_force => TRUE);
-          print_debug_msg(p_message=> l_program_step||'fnd_api.g_ret_sts_success HZ_PARTY_CONTACT_V2PUB ' || fnd_api.g_ret_sts_success , p_force => TRUE);
-          FOR i IN 1 .. x_msg_count--fnd_msg_pub.count_msg
-          LOOP
-            fnd_msg_pub.get ( p_msg_index => i , p_encoded => 'F' , p_data => l_msg , p_msg_index_out => ln_msg_index_num );
-            print_debug_msg(p_message=> l_program_step||'The API call failed with error ' || l_msg , p_force => TRUE);
-          END LOOP;
-          l_process_flag:='E';
-          ------Update for Tiebacking
+        print_debug_msg(p_message=> 'hz_party_contact_v2pub.update_org_contact, status :' || x_return_status, p_force => TRUE);
+      
+  	    IF x_return_status <>'S' AND x_msg_count > 0 THEN
+		   lc_error_status2:='Y';
+           FOR i IN 1 .. x_msg_count--fnd_msg_pub.count_msg
+           LOOP
+             fnd_msg_pub.get ( p_msg_index => i , p_encoded => 'F' , p_data => l_msg , p_msg_index_out => ln_msg_index_num );
+			 lc_error_mesg:=lc_error_mesg||','||l_msg;
+             print_debug_msg(p_message=> 'The API call failed with error ' || l_msg , p_force => TRUE);
+           END LOOP;
         ELSE
-          print_debug_msg(p_message=> l_program_step||'The API call HZ_PARTY_CONTACT_V2PUB ended with SUCESSS status', p_force => TRUE);
-          l_process_flag:='Y';
           l_msg         :='';
-          -----------------------Update the status if API successfully updated the record.
         END IF;
       END IF;
     END LOOP;
+
+	l_process_flag:=NULL;
+	IF lc_error_status1='N' and lc_error_status2='N' THEN
+	   l_process_flag:='Y';
+	ELSE
+	   l_process_flag:='E';
+	END IF;
+    print_debug_msg(p_message=>'Process status : '||l_process_flag, p_force => TRUE);	
+	
     BEGIN
       UPDATE xx_ap_cld_supp_contact_stg xas
          SET xas.contact_process_flag   = DECODE (l_process_flag,'Y',gn_process_status_imported ,'E',gn_process_status_imp_fail),
-             xas.error_flag               = DECODE( l_process_flag,'Y',NULL,'E','Y'),
-             xas.error_msg                = l_msg,
-             process_flag                 = l_process_flag
-       WHERE xas.contact_process_flag = gn_process_status_validated
+             xas.error_flag             = DECODE( l_process_flag,'Y',NULL,'E','Y'),
+             xas.error_msg              = lc_error_mesg,
+             process_flag               = 'Y'
+       WHERE xas.contact_process_flag   = gn_process_status_validated
          AND xas.request_id             = gn_request_id
          AND xas.supplier_number        = r_cont.supplier_number
          AND TRIM(xas.first_name)       = TRIM(r_cont.first_name)
@@ -2155,7 +2162,7 @@ BEGIN
     EXCEPTION
       WHEN OTHERS 
 	  THEN
-        print_debug_msg(p_message=> l_program_step||'In Exception to update records'||SQLERRM, p_force => TRUE);
+        print_debug_msg(p_message=> 'In Exception to update records'||SQLERRM, p_force => TRUE);
     END ;
   END LOOP;
 EXCEPTION
@@ -3008,26 +3015,21 @@ BEGIN
   l_err_buff                := NULL;
   BEGIN
     UPDATE xx_ap_cld_supp_sites_stg xasc
-    SET site_process_flag  = gn_process_status_error ,
-      process_flag         = 'Y',
-      error_flag           =gc_process_error_flag,
-      error_msg            ='Supplier No / Supplier Name does not exists in AP Suppliers'
-    WHERE site_process_flag=gn_process_status_inprocess
-    AND request_id         =gn_request_id
-    AND NOT EXISTS
-      (SELECT 1
-         FROM ap_suppliers apsup
-        WHERE UPPER(apsup.vendor_name)=UPPER(xasc.supplier_name)
-          AND apsup.segment1            =xasc.supplier_number
-      );
-    l_site_upd_cnt   := SQL%ROWCOUNT;
-    IF l_site_upd_cnt >0 THEN
-      print_debug_msg(p_message => 'Supplier No / Supplier Name does not exists in AP Suppliers', p_force => false);
-    END IF;
+       SET site_process_flag  = gn_process_status_error ,
+           process_flag         = 'Y',
+           error_flag           =gc_process_error_flag,
+           error_msg            ='Supplier No / Supplier Name does not exists in AP Suppliers'
+     WHERE site_process_flag=gn_process_status_inprocess
+       AND request_id         =gn_request_id
+       AND NOT EXISTS  (SELECT 1
+						  FROM ap_suppliers apsup
+						 WHERE UPPER(apsup.vendor_name)=UPPER(xasc.supplier_name)
+						   AND apsup.segment1            =xasc.supplier_number
+					   );
   EXCEPTION
-  WHEN OTHERS THEN
-    l_err_buff := SQLCODE || ' - '|| SUBSTR (SQLERRM,1,3500);
-    print_debug_msg(p_message => 'ERROR EXCEPTION: Updating the Supplier Site for no Supplier - '|| l_err_buff , p_force => true);
+    WHEN OTHERS THEN
+      l_err_buff := SQLCODE || ' - '|| SUBSTR (SQLERRM,1,3500);
+      print_debug_msg(p_message => 'ERROR EXCEPTION: Updating the Supplier Site for no Supplier - '|| l_err_buff , p_force => true);
   END;
   --==============================================================
   -- Check and Update the staging table for the Duplicate sites
@@ -3036,30 +3038,25 @@ BEGIN
     print_debug_msg(p_message => 'Check and udpate the staging table for the Duplicate Sites', p_force => false);
     l_site_upd_cnt := 0;
     UPDATE XX_AP_CLD_SUPP_SITES_STG xassc1
-    SET xassc1.site_process_flag = gn_process_status_error ,
-      XASSC1.ERROR_FLAG          = GC_PROCESS_ERROR_FLAG ,
-      xassc1.ERROR_MSG           = ERROR_MSG
-      ||',ERROR: Duplicate Site in Staging Table'
+       SET xassc1.site_process_flag = gn_process_status_error ,
+           XASSC1.ERROR_FLAG          = GC_PROCESS_ERROR_FLAG ,
+           xassc1.ERROR_MSG           = ERROR_MSG||',ERROR: Duplicate Site in Staging Table',
+		   xassc1.process_flag		  = 'Y'
     WHERE xassc1.site_process_flag = gn_process_status_inprocess
-    AND xassc1.REQUEST_ID          = gn_request_id
-    AND 2                         <=
-      (SELECT COUNT(1)
-      FROM XX_AP_CLD_SUPP_SITES_STG xassc2
-      WHERE XASSC2.SITE_PROCESS_FLAG          IN (GN_PROCESS_STATUS_INPROCESS)
-      AND xassc2.REQUEST_ID                    = gn_request_id
-      AND trim(upper(xassc2.supplier_name))    = trim(upper(xassc1.supplier_name))
-      AND trim(upper(xassc2.supplier_number))  = trim(upper(xassc1.supplier_number))
-      AND TRIM(UPPER(XASSC2.VENDOR_SITE_CODE)) = TRIM(UPPER(XASSC1.VENDOR_SITE_CODE))
-      AND xassc2.org_id                        =xassc1.org_id
-      );
-    l_site_upd_cnt   := sql%rowcount;
-    IF l_site_upd_cnt >0 THEN
-      print_debug_msg(p_message => 'check and updated '||l_site_upd_cnt||' records as error in the staging table for the duplicate sites', p_force => false);
-    END IF;
+      AND xassc1.REQUEST_ID          = gn_request_id
+      AND 2 <= (SELECT COUNT(1)
+				  FROM XX_AP_CLD_SUPP_SITES_STG xassc2
+				 WHERE XASSC2.SITE_PROCESS_FLAG          IN (GN_PROCESS_STATUS_INPROCESS)
+				   AND xassc2.REQUEST_ID                    = gn_request_id
+				   AND trim(upper(xassc2.supplier_name))    = trim(upper(xassc1.supplier_name))
+				   AND trim(upper(xassc2.supplier_number))  = trim(upper(xassc1.supplier_number))
+				   AND TRIM(UPPER(XASSC2.VENDOR_SITE_CODE)) = TRIM(UPPER(XASSC1.VENDOR_SITE_CODE))
+				   AND xassc2.org_id                        =xassc1.org_id
+			   );
   EXCEPTION
-  WHEN OTHERS THEN
-    l_err_buff := SQLCODE || ' - '|| SUBSTR (sqlerrm,1,3500);
-    print_debug_msg(p_message => 'ERROR EXCEPTION: Updating the Duplicate Site in Staging table - '|| l_err_buff , p_force => true);
+    WHEN OTHERS THEN
+      l_err_buff := SQLCODE || ' - '|| SUBSTR (sqlerrm,1,3500);
+      print_debug_msg(p_message => 'ERROR EXCEPTION: Updating the Duplicate Site in Staging table - '|| l_err_buff , p_force => true);
   END;
   --====================================================================
   -- Call the Vendor Site ValidationsStart of Vendor Site Loop Validations
@@ -3068,13 +3065,17 @@ BEGIN
   FOR l_sup_site_type IN c_supplier_site
   LOOP
     l_sup_site_idx := l_sup_site_idx + 1;
-    print_debug_msg(p_message=> gc_step||' : l_sup_site_idx - '||l_sup_site_idx ,p_force=> true);
     gc_error_site_status_flag := 'N';
     gc_step                   := 'SITE';
     gc_error_msg              := '';
 	ln_terms_id				  :=NULL;
     ln_vendor_site_id         := NULL;
-    --l_int_vend_code           :=NULL;
+
+    print_debug_msg(p_message=>'Supplier No/Name/Site : '||UPPER(l_sup_site_type.supplier_number)||'/'||
+														   UPPER(l_sup_site_type.supplier_name)||'/'||
+														   UPPER(l_sup_site_type.vendor_site_code),
+					p_force=> false
+				   );
     SELECT COUNT(1)
       INTO ln_cnt
       FROM ap_supplier_sites_int xasi
@@ -3110,7 +3111,7 @@ BEGIN
     OPEN c_get_country_code(NVL(l_sup_site_type.country,gc_site_country_code));
     FETCH c_get_country_code INTO l_site_country_code;
     CLOSE c_get_country_code;
-    print_debug_msg(p_message=> gc_step||' l_site_country_code '||l_site_country_code ,p_force=> false);
+    print_debug_msg(p_message=>'Country code : '||l_site_country_code ,p_force=> false);
     IF l_site_country_code                        IS NOT NULL THEN
       l_sup_site_and_add (l_sup_site_idx).country := l_site_country_code;
     ELSE
@@ -3155,12 +3156,8 @@ BEGIN
       print_debug_msg(p_message=> 'Org Id : '|| l_sup_site_type.org_id||' is BLANK',p_force=> true);
       gc_error_msg:=gc_error_msg||' , Org ID is BLANK';
     END IF;
-    print_debug_msg(p_message=> gc_step||' After basic validation of site - gc_error_site_status_flag is '||gc_error_site_status_flag ,p_force=> false);
-    l_sup_create_flag           :='';
+    l_sup_create_flag           :=NULL;
     IF gc_error_site_status_flag = 'N' THEN
-      print_debug_msg(p_message=> gc_step||' Supplier_name : '||UPPER(l_sup_site_type.supplier_name) ,p_force=> false);
-      print_debug_msg(p_message=> gc_step||' Supplier No   : '||UPPER(l_sup_site_type.supplier_number) ,p_force=> false);
-      print_debug_msg(p_message=> gc_step||' Supplier Site : '||UPPER(l_sup_site_type.vendor_site_code) ,p_force=> false);
       OPEN c_sup_site_exist(l_sup_site_type.supp_id,l_sup_site_type.vendor_site_code,l_sup_site_type.org_id);
       FETCH c_sup_site_exist INTO ln_vendor_site_id;
       CLOSE c_sup_site_exist;
@@ -3177,9 +3174,10 @@ BEGIN
       gc_error_site_status_flag  := 'Y';
       l_sup_site_type.create_flag:=l_sup_create_flag;
     END IF;
-    print_debug_msg(p_message=> gc_step||' After supplier site existence check - gc_error_site_status_flag is '||gc_error_site_status_flag ,p_force=> false);
-    print_debug_msg(p_message=> gc_step||' After supplier site existence check - l_sup_create_flag is '||l_sup_create_flag ,p_force=> false);
-    set_step('Supplier Site Existence Check Completed');
+    print_debug_msg(p_message=> 'After supplier site existence check Error Status/Create Flag : '||gc_error_site_status_flag||'/'||
+							     l_sup_create_flag, 
+					p_force=> false
+				   );
       --==============================================================================================================
       -- Validating the Supplier Site - PostalCode Rename Psotal to Area
       --==============================================================================================================
@@ -3228,8 +3226,6 @@ BEGIN
           gc_error_site_status_flag := 'Y';
           print_debug_msg(p_message=> l_sup_site_type.ship_to_location||' Invalid Ship to Location' ,p_force=> true);
 		  gc_error_msg:=gc_error_msg||' ,'||l_sup_site_type.ship_to_location||' Invalid Ship to Location';
-        ELSE
-          print_debug_msg(p_message=> gc_step||' Ship to Location Id is available' ,p_force=> false);
         END IF; -- IF l_ship_to_location_id IS NULL
       END IF;
       --=============================================================================
@@ -3244,8 +3240,6 @@ BEGIN
           gc_error_site_status_flag := 'Y';
           print_debug_msg(p_message=> l_sup_site_type.bill_to_location||' Invalid Bill to Location' ,p_force=> true);
 		  gc_error_msg:=gc_error_msg||' ,'||l_sup_site_type.bill_to_location||' Invalid Bill to Location';
-        ELSE
-          print_debug_msg(p_message=> gc_step||' Bill to Location Id is avilable ' ,p_force=> false);
         END IF; -- IF l_ship_to_location_id IS NULL
       END IF;
       --=============================================================================
@@ -3377,9 +3371,9 @@ BEGIN
       ELSE
         l_always_disc_flag := l_sup_site_type.always_take_disc_flag;
       END IF;
-      l_sup_site_and_add(l_sup_site_idx).create_flag :=l_sup_create_flag;
-
-	  l_sup_site_and_add(l_sup_site_idx).supplier_name       := l_sup_site_type.supplier_name;
+    
+	l_sup_site_and_add(l_sup_site_idx).create_flag :=l_sup_create_flag;
+    l_sup_site_and_add(l_sup_site_idx).supplier_name       := l_sup_site_type.supplier_name;
     l_sup_site_and_add(l_sup_site_idx).supplier_number     := l_sup_site_type.supplier_number;
     l_sup_site_and_add(l_sup_site_idx).vendor_site_code    := l_sup_site_type.vendor_site_code;
     l_sup_site_and_add(l_sup_site_idx).vendor_id           := l_sup_site_type.supp_id;
@@ -3390,17 +3384,18 @@ BEGIN
       l_sup_site_and_add(l_sup_site_idx).error_msg         := gc_error_msg;
     ELSE
       l_sup_site_and_add (l_sup_site_idx).site_process_flag := gn_process_status_validated;
-      print_debug_msg(p_message=> gc_step||' ELSE l_sup_site_idx).STG_PROCESS_FLAG ' || l_sup_site_and_add(l_sup_site_idx).site_process_flag);
     END IF;
+	print_debug_msg(p_message=> 'After validation, Site Process Flag : ' || l_sup_site_and_add(l_sup_site_idx).site_process_flag);
+
   END LOOP; --  FOR l_sup_site_type IN c_supplier_site
   --============================================================================
   -- For Doing the Bulk Update
   --============================================================================
-  print_debug_msg(p_message=> 'Do Bulk Update for all Site Records ' ,p_force=> true);
-  print_debug_msg(p_message=> 'l_sup_site_and_add.COUNT '||l_sup_site_and_add.count ,p_force=> true);
+  
+  print_debug_msg(p_message=> 'Bulk Update Site Records : '||l_sup_site_and_add.count ,p_force=> true);
+  
   IF l_sup_site_and_add.count > 0 THEN
     BEGIN
-      print_debug_msg(p_message=> l_program_step||'gn_request_id ' ||gn_request_id ,p_force=> true);
       FORALL l_idxs IN l_sup_site_and_add.FIRST .. l_sup_site_and_add.LAST
       UPDATE xx_ap_cld_supp_sites_stg
       SET site_process_flag = l_sup_site_and_add(l_idxs).site_process_flag ,
@@ -3409,7 +3404,6 @@ BEGIN
         create_flag         =l_sup_site_and_add(l_idxs).create_flag,
         last_updated_by     =g_user_id,
         last_update_date    =SYSDATE,
-        process_flag        ='P',
         vendor_id           =l_sup_site_and_add(l_idxs).vendor_id,
         vendor_site_id      =l_sup_site_and_add (l_idxs).vendor_site_id,
 		terms_id	        =l_sup_site_and_add (l_idxs).terms_id
@@ -3547,7 +3541,8 @@ BEGIN
     UPDATE xx_ap_cld_supp_contact_stg xassc1
     SET xassc1.contact_process_flag  = gn_process_status_error ,
       xassc1.ERROR_FLAG              = gc_process_error_flag ,
-      xassc1.ERROR_MSG               = 'ERROR: Duplicate Contact in Staging Table'
+      xassc1.ERROR_MSG               = 'ERROR: Duplicate Contact in Staging Table',
+	  xassc1.process_flag            = 'Y'
     WHERE xassc1.contact_process_flag= gn_process_status_inprocess
     AND xassc1.REQUEST_ID            = gn_request_id
     AND xassc1.cont_target           ='EBS'
@@ -3585,8 +3580,8 @@ BEGIN
     UPDATE xx_ap_cld_supp_contact_stg xassc
     SET xassc.contact_process_flag = gn_process_status_error ,
       xassc.error_flag             = gc_process_error_flag ,
-      xassc.error_msg              = error_msg
-      ||',All Contact Values are null'
+      xassc.error_msg              = error_msg||',All Contact Values are null',
+	  xassc.process_flag           = 'Y'
     WHERE xassc.contact_process_flag IN (gn_process_status_inprocess)
     AND xassc.request_id              = gn_request_id
     AND xassc.cont_target             = 'EBS'
@@ -3611,10 +3606,34 @@ BEGIN
     x_err_buf       := l_err_buff;
     RETURN;
   END;
+  --=======================================================
+  -- Check if Supplier Sites does not exist in the System
+  --=======================================================
+  BEGIN
+  l_site_upd_cnt := 0;
+  UPDATE xx_ap_cld_supp_contact_stg A
+     SET A.contact_process_flag   = 3 ,
+         A.error_flag             = 'Y' ,
+         A.error_msg              = error_msg||',Supplier Site does not exist in the System',
+	     A.process_flag		      = 'Y'
+   WHERE REQUEST_ID = gn_request_id
+     AND contact_process_flag = gn_process_status_inprocess
+     AND NOT EXISTS ( SELECT 1
+                        FROM AP_SUPPLIER_SITES_ALL SS,
+                             AP_SUPPLIERS S
+                       WHERE S.SEGMENT1 = A.SUPPLIER_NUMBER
+                         AND SS.VENDOR_ID = S.VENDOR_ID
+                         AND SS.VENDOR_SITE_CODE = A.VENDOR_SITE_CODE);
+   l_site_upd_cnt                   := SQL%ROWCOUNT;
+   IF l_site_upd_cnt > 0 THEN
+      print_debug_msg(p_message => 'Updated the contact Process Flag to Error for '||l_site_upd_cnt||' records as Supplier Site does not exist', p_force => FALSE);
+    END IF;
+  END;
+  COMMIT;
   --====================================================================
   -- Call the Vendor Site Validations
   --====================================================================
-  print_debug_msg(p_message=> gc_step||' : Validation of Supplier Site started' ,p_force=> TRUE);
+  print_debug_msg(p_message=> 'Validation of Contact started' ,p_force=> TRUE);
   FOR l_sup_site_cont_type IN c_supplier_contact
   LOOP
     l_sup_cont_idx := l_sup_cont_idx + 1;
@@ -3623,6 +3642,13 @@ BEGIN
 	gc_error_msg		      := NULL;
     gc_error_msg              := '';
 	l_sup_create_flag         :=NULL;
+
+    print_debug_msg(p_message=> 'Supplier/Site/Contact : '||l_sup_site_cont_type.supplier_number||'/'|| 
+							     UPPER(l_sup_site_cont_type.supplier_name)||'/'||
+								 l_sup_site_cont_type.vendor_site_code||'/'||
+								 l_sup_site_cont_type.first_name||'/'||l_sup_site_cont_type.last_name
+					, p_force => FALSE
+				   );
     OPEN c_dup_supplier_chk_int( TRIM(UPPER(l_sup_site_cont_type.first_name)), TRIM(UPPER(l_sup_site_cont_type.last_name)), l_sup_site_cont_type.supp_id, l_sup_site_cont_type.supp_site_id );
     FETCH c_dup_supplier_chk_int INTO l_int_first_name, l_int_last_name;
     CLOSE c_dup_supplier_chk_int;
@@ -3644,12 +3670,7 @@ BEGIN
       print_debug_msg(p_message=> 'Contact Last Name is BLANK' , p_force=> FALSE);
       gc_error_msg:=gc_error_msg||' , Contact Last Name is BLANK';     
     END IF;
-    print_debug_msg(p_message=> gc_step||' After basic validation of Contact - gc_error_site_status_flag is '||gc_error_site_status_flag ,p_force=> FALSE);
     IF gc_error_site_status_flag = 'N' THEN
-      print_debug_msg(p_message=> gc_step||' l_sup_site_cont_type.update_flag is '||l_sup_site_cont_type.CREATE_FLAG , p_force => FALSE);
-      print_debug_msg(p_message=> gc_step||' l_sup_site_cont_type.supplier_name is '||UPPER(l_sup_site_cont_type.supplier_name) , p_force => FALSE);
-      print_debug_msg(p_message=> gc_step||' l_sup_site_cont_type.supplier_number is '||UPPER(l_sup_site_cont_type.supplier_number) , p_force => FALSE);
-      print_debug_msg(p_message=> gc_step||' l_sup_site_cont_type.vendor_site_code is '||UPPER(l_sup_site_cont_type.vendor_site_code) , p_force => FALSE);
       l_sup_cont_exist_cnt := 0;
       OPEN c_sup_contact_exist( l_sup_site_cont_type.supp_id, l_sup_site_cont_type.supp_site_id, l_sup_site_cont_type.first_name, l_sup_site_cont_type.last_name );
       FETCH c_sup_contact_exist INTO l_sup_cont_exist_cnt;
@@ -3660,10 +3681,8 @@ BEGIN
          l_sup_create_flag := 'Y';
       END IF;
     END IF; -- gc_error_site_status_flag = 'N'
-    print_debug_msg(p_message=> gc_step||' After supplier site existence check - gc_error_site_status_flag is '||gc_error_site_status_flag , p_force => FALSE);
-    print_debug_msg(p_message=> gc_step||' After supplier site existence check - l_sup_create_flag is '||l_sup_CREATE_FLAG , p_force => FALSE);
-    set_step('Supplier Contact Existence Check Completed');
-
+    print_debug_msg(p_message=>'Supplier site existence check status/Create Flag :'||gc_error_site_status_flag||'/'||l_sup_CREATE_FLAG
+				    , p_force => FALSE);
     l_sup_cont(l_sup_cont_idx).create_flag            :=l_sup_create_flag;
     l_sup_cont(l_sup_cont_idx).vendor_site_code       :=l_sup_site_cont_type.vendor_site_code;
     l_sup_cont(l_sup_cont_idx).supplier_name          :=l_sup_site_cont_type.supplier_name;
@@ -3677,20 +3696,16 @@ BEGIN
       l_sup_cont(l_sup_cont_idx).error_flag           := gc_process_error_flag;
       l_sup_cont(l_sup_cont_idx).error_msg            := gc_error_msg;
       l_sup_site_cont_type.error_msg                  := l_sup_site_cont_type.error_msg||' Contact ERROR : '||gc_error_msg||';';
-      print_debug_msg(p_message=> gc_step||' IF l_sup_cont(l_sup_cont_idx).contact_process_flag' || l_sup_cont(l_sup_cont_idx).contact_process_flag);
     ELSE
       l_sup_cont(l_sup_cont_idx).contact_process_flag := gn_process_status_validated;
-      print_debug_msg(p_message=> gc_step||' ELSE l l_sup_cont(l_sup_cont_idx).contact_process_flag' || l_sup_cont(l_sup_cont_idx).contact_process_flag);
     END IF;
-    print_debug_msg(p_message=> gc_step||' ELSE l l_sup_cont(l_sup_cont_idx).contact_process_flag' || l_sup_cont(l_sup_cont_idx).contact_process_flag);
+    print_debug_msg(p_message=>'Contact Process / Error Flag :'||l_sup_cont(l_sup_cont_idx).contact_process_flag||'/'||gc_error_site_status_flag);
   END LOOP; --  FOR l_sup_site_type IN c_supplier_contact
-  --- print_debug_msg(p_message=> gc_step ||' List of the contact failed prefixes is '||l_error_prefix_list , p_force => TRUE);
-  l_program_step := '';
-  print_debug_msg(p_message=> l_program_step||': Do Bulk Update for all Contact Records ' , p_force => TRUE);
-  print_debug_msg(p_message=> l_program_step||'l_sup_cont.COUNT '||l_sup_cont.COUNT , p_force => TRUE);
+ 
+  print_debug_msg(p_message=> 'Bulk Update for all Contact Records :'|| l_sup_cont.COUNT , p_force => TRUE);
+
   IF l_sup_cont.COUNT > 0 THEN
     BEGIN
-      print_debug_msg(p_message=> l_program_step||'gn_request_id ' ||gn_request_id , p_force => TRUE);
       FORALL l_idxs IN l_sup_cont.FIRST .. l_sup_cont.LAST
       UPDATE xx_ap_cld_supp_contact_stg
       SET contact_process_flag          = l_sup_cont(l_idxs).contact_process_flag,
@@ -3711,26 +3726,15 @@ BEGIN
     EXCEPTION
     WHEN no_data_found THEN
       l_error_message := 'When No Data Found during the bulk update of Contact staging table';
-      --============================================================================
-      -- To Insert into Common Error Table
-      --============================================================================
-      insert_error (p_program_step => 'SITE_CONT' , p_primary_key => NULL , p_error_code => 'XXOD_BULK_UPD_Contact' , p_error_message => 'When No Data Found during the bulk update of site staging table' , p_stage_col1 => NULL , p_stage_val1 => NULL , p_stage_col2 => NULL , p_stage_val2 => NULL , p_table_name => g_sup_cont_table );
       print_debug_msg(p_message=> l_program_step||': '||l_error_message ,p_force=> TRUE);
     WHEN OTHERS THEN
       l_error_message := 'When Others Exception  during the bulk update of site staging table' || SQLCODE || ' - ' || SUBSTR (SQLERRM ,1 ,3800 );
-      --============================================================================
-      -- To Insert into Common Error Table
-      --============================================================================
-      insert_error (p_program_step => 'SITE_CONT' , p_primary_key => NULL , p_error_code => 'XXOD_BULK_UPD_SITE' , p_error_message => 'When Others Exception during the bulk update of site staging table' , p_stage_col1 => NULL , p_stage_val1 => NULL , p_stage_col2 => NULL , p_stage_val2 => NULL , p_table_name => g_sup_cont_table );
       print_debug_msg(p_message=> l_program_step||': '||l_error_message , p_force => TRUE);
     END;
   END IF;
   x_ret_code      := l_ret_code;
   x_return_status := l_return_status;
   x_err_buf       := l_err_buff;
-  print_debug_msg(p_message => '--------------------------------------------------------------------------------------------', p_force => TRUE);
-  print_debug_msg(p_message => '----------------------', p_force => TRUE);
-  print_debug_msg(p_message => '--------------------------------------------------------------------------------------------', p_force => TRUE);
 EXCEPTION
 WHEN OTHERS THEN
   l_err_buff := SQLCODE || ' - '|| SUBSTR (sqlerrm,1,3500);
@@ -4272,8 +4276,9 @@ IS
   CURSOR c_error
   IS
   SELECT a.rowid drowid,
-         c.reject_lookup_code
-    FROM ap_supplier_int_rejections c,
+         d.message_text reject_lookup_code
+    FROM fnd_new_messages d,
+	     ap_supplier_int_rejections c,
          ap_suppliers_int b,
          xx_ap_cld_suppliers_stg a 
    WHERE a.request_id=gn_request_id
@@ -4282,7 +4287,8 @@ IS
      AND b.vendor_interface_id=a.vendor_interface_id
 	 AND b.status='REJECTED'
      AND c.parent_id=b.vendor_interface_id
-     AND c.parent_table='AP_SUPPLIERS_INT';
+     AND c.parent_table='AP_SUPPLIERS_INT'
+	 AND d.message_name = c.reject_lookup_code;
   
 BEGIN
   print_debug_msg(p_message=> gc_step||' load_Supplier_Interface() - BEGIN' ,p_force=> false);
@@ -4602,7 +4608,7 @@ BEGIN
           UPDATE XX_AP_CLD_SUPPLIERS_STG stg
              SET supp_process_flag = gn_process_status_imp_fail,
                  process_flag        ='Y',
-                 error_flag          ='E',
+                 error_flag          ='Y',
                  error_msg           =error_msg||','||cur.reject_lookup_code
            WHERE rowid=cur.drowid;		
 		END LOOP;
@@ -4677,8 +4683,9 @@ IS
   CURSOR c_error
   IS
   SELECT a.rowid drowid,
-         c.reject_lookup_code
-    FROM ap_supplier_int_rejections c,
+         d.message_text reject_lookup_code
+    FROM fnd_new_messages d,
+	     ap_supplier_int_rejections c,
          ap_supplier_sites_int b,
          xx_ap_cld_supp_sites_stg a 
    WHERE a.request_id=gn_request_id
@@ -4687,7 +4694,8 @@ IS
      AND b.vendor_site_interface_id=a.vendor_site_interface_id
 	 AND b.status='REJECTED'
      AND c.parent_id=b.vendor_site_interface_id
-     AND c.parent_table='AP_SUPPLIER_SITES_INT';
+     AND c.parent_table='AP_SUPPLIER_SITES_INT'
+	 AND d.message_name = c.reject_lookup_code;
 	
   l_process_site_error_flag VARCHAR2(1) DEFAULT 'N';
   l_vendor_id               NUMBER;
@@ -4699,7 +4707,6 @@ IS
   v_prepay_cde              NUMBER;
   lc_intf_ins_flag			VARCHAR2(1):='N';
 BEGIN
-  print_debug_msg(p_message=> gc_step||' load_Supplier_Site_Interface() - BEGIN' ,p_force=> false);
   --==============================================================================
   -- Default Process Status Flag as N means No Error Exists
   --==============================================================================
@@ -4902,18 +4909,18 @@ BEGIN
     IF l_sup_site_type.count > 0 THEN
       BEGIN
         FORALL l_idxss IN l_sup_site_type.FIRST .. l_sup_site_type.LAST
-        UPDATE XX_AP_CLD_SUPP_SITES_STG
-        SET site_process_flag     = l_sup_site_type (l_idxss).site_process_flag,
-          LAST_UPDATED_BY         =g_user_id,
-          LAST_UPDATE_DATE        =sysdate,
-          ERROR_MSG               =L_SUP_SITE_TYPE (L_IDXSS).ERROR_MSG,
-          ERROR_FLAG              = L_SUP_SITE_TYPE (L_IDXSS).ERROR_FLAG,
-          vendor_site_interface_id=l_sup_site_type (l_idxss).vendor_site_interface_id
-        WHERE 1                   =1--supplier_name  = l_sup_site_type (l_idxss).supplier_name
-        AND supplier_number       = l_sup_site_type (l_idxss).supplier_number
-        AND vendor_site_code      = l_sup_site_type (l_idxss).vendor_site_code
-        AND org_id                =l_sup_site_type (l_idxss).org_id
-        AND REQUEST_ID            = gn_request_id;
+        UPDATE  xx_ap_cld_supp_sites_stg
+           SET  site_process_flag       = l_sup_site_type (l_idxss).site_process_flag,
+                last_updated_by         = g_user_id,
+				last_update_date        = sysdate,
+				error_msg               = l_sup_site_type (l_idxss).error_msg,
+				error_flag              = l_sup_site_type (l_idxss).error_flag,
+				vendor_site_interface_id= l_sup_site_type (l_idxss).vendor_site_interface_id
+         WHERE 1                   =1
+           AND supplier_number       = l_sup_site_type (l_idxss).supplier_number
+           AND vendor_site_code      = l_sup_site_type (l_idxss).vendor_site_code
+           AND org_id                =l_sup_site_type (l_idxss).org_id
+           AND request_id            = gn_request_id;
       EXCEPTION
       WHEN OTHERS THEN
         l_process_site_error_flag := 'Y';
@@ -4942,41 +4949,39 @@ BEGIN
 												 argument6 => 'N' );
     COMMIT;
     IF l_rept_req_id != 0 THEN
-      print_debug_msg(p_message => 'Standard Supplier  Import APXSSIMP  is submitted : l_rept_req_id :'||l_rept_req_id, p_force => true);
-      L_BFLAG := fnd_concurrent.wait_for_request (l_rept_req_id ,5 ,0 ,l_phas_out ,l_status_out , l_dev_phase_out ,l_dev_status_out ,l_message_out );
-      BEGIN
-        UPDATE XX_AP_CLD_SUPP_SITES_STG stg
-        SET site_process_flag = gn_process_status_imported,
-          PROCESS_FLAG        ='Y',
-          vendor_site_id      =
-          (SELECT VENDOR_SITE_ID
-          FROM AP_SUPPLIER_SITES_ALL B
-          WHERE STG.VENDOR_ID     =B.VENDOR_ID
-          AND STG.VENDOR_SITE_CODE=B.VENDOR_SITE_CODE
-          AND B.ORG_ID            =STG.ORG_ID
-          AND rownum             <=2
-          )
-        WHERE 1=1---REQUEST_ID = gn_request_id
-        AND EXISTS
-          (SELECT 1
-          FROM ap_supplier_sites_int aint
-          WHERE AINT.VENDOR_SITE_CODE      = STG.VENDOR_SITE_CODE
-          AND AINT.VENDOR_ID               =STG.VENDOR_ID
-          AND aint.org_id                  =stg.org_id
-          AND aint.status                  ='PROCESSED'
-          AND aint.vendor_site_interface_id=stg.vendor_site_interface_id
-          )
-        AND REQUEST_ID = gn_request_id;
-        COMMIT;
+       print_debug_msg(p_message => 'Standard Supplier  Import APXSSIMP  is submitted : l_rept_req_id :'||l_rept_req_id, p_force => true);
+       L_BFLAG := fnd_concurrent.wait_for_request (l_rept_req_id ,5 ,0 ,l_phas_out ,l_status_out , l_dev_phase_out ,l_dev_status_out ,l_message_out );
+       BEGIN
+         UPDATE XX_AP_CLD_SUPP_SITES_STG stg
+            SET site_process_flag = gn_process_status_imported,
+                process_flag        ='Y',
+                vendor_site_id      = (SELECT vendor_site_id
+										 FROM ap_supplier_sites_all b
+										WHERE stg.vendor_id     =b.vendor_id
+										  AND stg.vendor_site_code=b.vendor_site_code
+										  AND b.org_id            =stg.org_id
+										  AND ROWNUM             <=2
+									  )
+         WHERE 1=1
+           AND EXISTS (SELECT 1
+						 FROM ap_supplier_sites_int aint
+						WHERE aint.vendor_site_code      = stg.vendor_site_code
+						  AND aint.vendor_id               =stg.vendor_id
+						  AND aint.org_id                  =stg.org_id
+						  AND aint.status                  ='PROCESSED'
+						  AND aint.vendor_site_interface_id=stg.vendor_site_interface_id
+					  )
+          AND REQUEST_ID = gn_request_id;
+         COMMIT;
       EXCEPTION
-      WHEN OTHERS THEN
-        print_debug_msg(p_message => ' Error in update after import', p_force => true);
+        WHEN OTHERS THEN
+          print_debug_msg(p_message => ' Error in update after import', p_force => true);
       END ;
 	  FOR cur IN c_error LOOP
         UPDATE XX_AP_CLD_SUPP_SITES_STG stg
            SET site_process_flag = gn_process_status_imp_fail,
                process_flag        ='Y',
-               error_flag          ='E',
+               error_flag          ='Y',
                error_msg           =error_msg||','||cur.reject_lookup_code
 	     WHERE rowid=cur.drowid;				   
 	  END LOOP;
@@ -5053,8 +5058,9 @@ IS
   CURSOR c_error 
   IS   
   SELECT a.rowid drowid,
-         c.reject_lookup_code
-    FROM ap_supplier_int_rejections c,
+		 d.message_text reject_lookup_code
+    FROM fnd_new_messages d,
+	     ap_supplier_int_rejections c,
          ap_sup_site_contact_int b,
          xx_ap_cld_supp_contact_stg a 
    WHERE a.request_id=gn_request_id
@@ -5063,7 +5069,8 @@ IS
      AND b.vendor_contact_interface_id=a.vendor_contact_interface_id
 	 AND b.status='REJECTED'
      AND c.parent_id=b.vendor_contact_interface_id
-     AND c.parent_table='AP_SUPP_SITE_CONTACT_INT';
+     AND c.parent_table='AP_SUPP_SITE_CONTACT_INT'
+	 AND d.message_name = c.reject_lookup_code;
 	
   l_sup_rec_exists          NUMBER (10) DEFAULT 0;
   l_cont_process_error_flag VARCHAR2(1);
@@ -5563,7 +5570,10 @@ PROCEDURE update_status
 IS
 BEGIN
   UPDATE xx_ap_cld_supp_sites_stg ss
-     SET ss.error_msg ='Site not processed due to Supplier Error'
+     SET ss.error_msg ='Site not processed due to Supplier Error',
+		 ss.site_process_flag=3,
+		 ss.process_flag='Y',
+	     ss.error_Flag='Y'
    WHERE ss.request_id = gn_request_id
      AND ss.site_process_flag = 2
 	 AND EXISTS ( SELECT 'x'
@@ -5575,7 +5585,10 @@ BEGIN
   COMMIT;
 
   UPDATE xx_ap_cld_supp_contact_stg ct
-     SET ct.error_msg = 'Contact not processed due to Site Error'
+     SET ct.error_msg = 'Contact not processed due to Site Error',
+		 ct.contact_process_flag=3,
+		 ct.process_flag='Y',
+		 ct.error_Flag='Y'
    WHERE ct.request_id = gn_request_id
      AND ct.contact_process_flag = 2
 	 AND EXISTS ( SELECT 'x'
@@ -5588,7 +5601,10 @@ BEGIN
   COMMIT;  
 				
   UPDATE xx_ap_cld_supp_bcls_stg bcls
-     SET bcls.error_msg = 'Business Classification Not processed due to Supplier Error'
+     SET bcls.error_msg = 'Business Classification Not processed due to Supplier Error',
+	     bcls.bcls_process_flag =3,
+		 bcls.error_flag='Y',
+		 bcls.process_flag='Y'
    WHERE bcls.request_id = gn_request_id
      AND bcls.bcls_process_flag = 2
 	 AND EXISTS ( SELECT 'x'
@@ -5600,7 +5616,10 @@ BEGIN
   COMMIT;				
 
   UPDATE xx_ap_cld_site_dff_stg dff
-     SET dff.error_msg = 'Custom DFF not processed due to Site Error'
+     SET dff.error_msg = 'Custom DFF not processed due to Site Error',
+	     dff.dff_process_flag=3,
+		 dff.error_flag='Y',
+		 dff.process_flag='Y'
    WHERE dff.request_id = gn_request_id
      AND dff.dff_process_Flag = 2
 	 AND EXISTS ( SELECT 'x'
@@ -5612,7 +5631,10 @@ BEGIN
   COMMIT;    
   
   UPDATE xx_ap_cld_supp_bnkact_stg bnk
-     SET bnk.error_msg = 'Bank not processed due to Site Error'
+     SET bnk.error_msg = 'Bank not processed due to Site Error',
+	     bnk.bnkact_process_flag=3,
+		 bnk.error_flag='Y',
+		 bnk.process_flag='Y'
    WHERE bnk.request_id = gn_request_id
      AND bnk.bnkact_process_flag=2
 	 AND EXISTS ( SELECT 'x'
@@ -5774,13 +5796,20 @@ BEGIN
   WHERE supp_process_flag = '1'
   AND process_flag        ='N'
   AND request_id         IS NULL;
-  IF SQL%NOTFOUND THEN
+  
+  print_debug_msg(p_message => 'Records to be processed from the table XX_AP_CLD_SUPPLIERS_STG are '||SQL%ROWCOUNT , p_force => true);
+  print_out_msg(p_message => 'Total No. of Supplier records ready for validate and load are '||SQL%ROWCOUNT);
+  COMMIT;
+  /*
+  IF SQL%ROWCOUNT = 0 THEN
     print_debug_msg(p_message => 'No records exist to process in the table XX_AP_CLD_SUPPLIERS_STG.' , p_force => true);
     print_out_msg(p_message => 'Total No. of Supplier records ready for validate and load are 0');
-  ELSIF SQL%FOUND THEN
+  ELSE
     print_debug_msg(p_message => 'Records to be processed from the table XX_AP_CLD_SUPPLIERS_STG are '||sql%rowcount , p_force => true);
     print_out_msg(p_message => 'Total No. of Supplier records ready for validate and load are '||sql%rowcount);
   END IF;
+  */
+  
   --===============================================================
   --Updating Request Id into Supplier Site Staging table     --
   --===============================================================
@@ -5791,14 +5820,20 @@ BEGIN
   WHERE site_process_flag ='1'
   AND process_flag        ='N'
   AND request_id         IS NULL;
-  print_debug_msg(p_message => '+---------------------------------------------------------------------------+' , p_force => true);    
-  IF SQL%NOTFOUND THEN
+  
+  print_debug_msg(p_message => '+---------------------------------------------------------------------------+' , p_force => true); 
+  print_debug_msg(p_message => 'Records to be processed from the table XX_AP_SUP_CLOUD_SITES_STG are '||SQL%ROWCOUNT , p_force => true);
+  print_out_msg(p_message => 'Total No. of Supplier Site records ready for validate and load are '||SQL%ROWCOUNT);  
+  COMMIT;
+  /*
+  IF SQL%ROWCOUNT = 0 THEN
     print_debug_msg(p_message => 'No records exist to process in the table XX_AP_SUP_CLOUD_SITES_STG.' , p_force => true);
     print_out_msg(p_message => 'Total No. of Supplier Site records ready for validate and load are 0');
-  ELSIF SQL%FOUND THEN
+  ELSE
     print_debug_msg(p_message => 'Records to be processed from the table XX_AP_SUP_CLOUD_SITES_STG are '||sql%rowcount , p_force => true);
     print_out_msg(p_message => 'Total No. of Supplier Site records ready for validate and load are '||sql%rowcount);
   END IF;
+  */
   --===============================================================
   --Updating Request Id into Supplier Contact Staging table     --
   --===============================================================
@@ -5810,14 +5845,20 @@ BEGIN
   AND process_flag           ='N'
   AND request_id            IS NULL
   AND cont_target            ='EBS';
-  print_debug_msg(p_message => '+---------------------------------------------------------------------------+' , p_force => true);    
-  IF SQL%NOTFOUND THEN
+  
+  print_debug_msg(p_message => '+---------------------------------------------------------------------------+' , p_force => true);  
+  print_debug_msg(p_message => 'Records to be processed from the table XX_AP_SUP_CLOUD_CONTACT_STG are '||SQL%ROWCOUNT , p_force => true);
+  print_out_msg(P_MESSAGE => 'Total No. of Contact records ready for validate and load are '||SQL%ROWCOUNT);
+  COMMIT;
+  /*
+  IF SQL%ROWCOUNT = 0 THEN
     print_debug_msg(p_message => 'No records exist to process in the table XX_AP_SUP_CLOUD_CONTACT_STG.' , p_force => true);
     print_out_msg(p_message => 'Total No. of Contact records ready for validate and load are 0');
-  ELSIF SQL%FOUND THEN
+  ELSE 
     print_debug_msg(p_message => 'Records to be processed from the table XX_AP_SUP_CLOUD_CONTACT_STG are '||sql%rowcount , p_force => true);
     print_out_msg(P_MESSAGE => 'Total No. of Contact records ready for validate and load are '||SQL%ROWCOUNT);
   END IF;
+  */
   --===================================================================
   --Updating Request Id into Supplier Bank Account Staging table     --
   --===================================================================
@@ -5828,14 +5869,20 @@ BEGIN
   WHERE bnkact_process_flag = '1'
   AND process_flag          ='N'
   AND request_id           IS NULL;
+  
   print_debug_msg(p_message => '+---------------------------------------------------------------------------+' , p_force => true);    
-  IF SQL%NOTFOUND THEN
+  print_debug_msg(p_message => 'Records to be processed from the table XX_AP_CLD_SUPP_BNKACT_STG are '||SQL%ROWCOUNT , p_force => true);
+  print_out_msg(P_MESSAGE => 'Total No. of Bank records ready for validate and load are '||SQL%ROWCOUNT);
+  COMMIT;
+  /*
+  IF SQL%ROWCOUNT = 0 THEN
     print_debug_msg(p_message => 'No records exist to process in the table XX_AP_CLD_SUPP_BNKACT_STG.' , p_force => true);
     print_out_msg(p_message => 'Total No. of Bank records ready for validate and load are 0');
-  ELSIF SQL%FOUND THEN
+  ELSE
     print_debug_msg(p_message => 'Records to be processed from the table XX_AP_CLD_SUPP_BNKACT_STG are '||sql%rowcount , p_force => true);
     print_out_msg(P_MESSAGE => 'Total No. of Bank records ready for validate and load are '||SQL%ROWCOUNT);
   END IF;
+  */
   --===============================================================
   --Updating Request Id into Supplier Site DFF Staging table     --
   --===============================================================
@@ -5846,14 +5893,20 @@ BEGIN
   WHERE dff_process_flag = '1'
   AND process_flag       ='N'
   AND request_id        IS NULL;
-  print_debug_msg(p_message => '+---------------------------------------------------------------------------+' , p_force => true);    
-  IF sql%notfound THEN
+  
+  print_debug_msg(p_message => '+---------------------------------------------------------------------------+' , p_force => true);   
+  print_debug_msg(p_message => 'Records to be processed from the table XX_AP_CLD_SITE_DFF_STG are '||SQL%ROWCOUNT , p_force => true);
+  print_out_msg(P_MESSAGE => 'Total No. of DFF ready for validate and load are '||SQL%ROWCOUNT);  
+  COMMIT;
+  /*
+  IF SQL%ROWCOUNT = 0 THEN
     print_debug_msg(p_message => 'No records exist to process in the table XX_AP_CLD_SITE_DFF_STG.' , p_force => true);
     print_out_msg(p_message => 'Total No. of DFF ready for validate and load are 0');
-  ELSIF SQL%FOUND THEN
+  ELSE
     print_debug_msg(p_message => 'Records to be processed from the table XX_AP_CLD_SITE_DFF_STG are '||sql%rowcount , p_force => true);
     print_out_msg(P_MESSAGE => 'Total No. of DFF ready for validate and load are '||SQL%ROWCOUNT);
   END IF;
+  */
   --===============================================================================
   --Updating Request Id into Supplier Business Classification  Staging table     --
   --===============================================================================
@@ -5864,14 +5917,20 @@ BEGIN
   WHERE bcls_process_flag = '1'
   AND process_flag        ='N'
   AND request_id         IS NULL;
+  
   print_debug_msg(p_message => '+---------------------------------------------------------------------------+' , p_force => true);    
-  IF SQL%NOTFOUND THEN
-    print_debug_msg(p_message => 'No records exist to process in the table xx_ap_cld_supp_bcls_stg.' , p_force => true);
+  print_debug_msg(p_message => 'Records to be processed from the table XX_AP_CLD_SUPP_BCLS_STG are '||SQL%ROWCOUNT , p_force => true);
+  print_out_msg(P_MESSAGE => 'Total No. of Classification records ready for validate and load are '||SQL%ROWCOUNT);
+  COMMIT;
+  /*
+  IF SQL%ROWCOUNT = 0 THEN
+    print_debug_msg(p_message => 'No records exist to process in the table XX_AP_CLD_SUPP_BCLS_STG.' , p_force => true);
     print_out_msg(p_message => 'Total No. of Classification records ready for validate and load are 0');
-  ELSIF SQL%FOUND THEN
-    print_debug_msg(p_message => 'Records to be processed from the table xx_ap_cld_supp_bcls_stg are '||sql%rowcount , p_force => true);
+  ELSE
+    print_debug_msg(p_message => 'Records to be processed from the table XX_AP_CLD_SUPP_BCLS_STG are '||sql%rowcount , p_force => true);
     print_out_msg(P_MESSAGE => 'Total No. of Classification records ready for validate and load are '||SQL%ROWCOUNT);
   END IF;
+  */
   print_debug_msg(p_message => '+---------------------------------------------------------------------------+' , p_force => true);
   print_debug_msg(p_message => 'Calling Supplier Wrapper' , p_force => true);
   main_prc_supplier( X_ERRBUF =>l_err_buff , x_retcode=> l_ret_code);
@@ -5927,6 +5986,7 @@ BEGIN
   IF ln_request_id > 0 THEN
      COMMIT;
      print_debug_msg(p_message => 'Able to submit the Report Program', p_force => true);
+	 
   ELSE
      print_debug_msg(p_message => 'Failed to submit the Report Program to generate the output file - ' || SQLERRM , p_force => true);
   END IF;
