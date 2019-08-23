@@ -76,7 +76,6 @@ SELECT DISTINCT ('"'|| SUBSTR(p.segment1
    AND p.TEMPLATE_FLAG <> 'Y'
    AND t.project_id=p.project_id 
    AND t.chargeable_flag = 'Y'
-   and t.task_number NOT like '%IT%LB%'
    AND pei.expenditure_type NOT LIKE '%:Accrued%'
    AND pei.task_id=t.task_id
    AND prvr.organization_id=pei.cc_prvdr_organization_id
@@ -107,7 +106,7 @@ SELECT DISTINCT ('"'|| SUBSTR(p.segment1
                     and ppas.project_id = t1.project_id
                     and ppas.task_id = t1.task_id
                     and ppaa.project_asset_type <> 'ESTIMATED'
-                    and t1.task_number like '02%'
+					and t1.task_number like '02%%IT%LB%'
                     AND t1.project_id=t.project_id
                     AND t1.task_id=t.task_id
                      )
@@ -139,7 +138,6 @@ SELECT DISTINCT '"'||SUBSTR(p.segment1
    AND p.TEMPLATE_FLAG <> 'Y'
    AND t.project_id=p.project_id 
    AND t.chargeable_flag = 'Y'
-   and t.task_number NOT like '%IT%LB%'
    AND pei.expenditure_type NOT LIKE '%:Accrued%'
    AND pei.task_id=t.task_id
    AND prvr.organization_id=pei.cc_prvdr_organization_id
@@ -170,7 +168,7 @@ SELECT DISTINCT '"'||SUBSTR(p.segment1
                     and ppas.project_id = t1.project_id
                     and ppas.task_id = t1.task_id
                     and ppaa.project_asset_type <> 'ESTIMATED'
-                    and t1.task_number like '02%'
+                    and t1.task_number like '02%%IT%LB%'
                     AND t1.project_id=t.project_id
                     AND t1.task_id=t.task_id
                      )
