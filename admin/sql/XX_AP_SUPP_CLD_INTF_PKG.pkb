@@ -937,6 +937,12 @@ IS
       dff.damage_destroy_limit ,
       dff.rtv_related_site ,
       dff.dff_process_flag ,
+	  dff.favourable_price_pct ,
+	  dff.max_price_amt ,    
+	  dff.min_chargeback_amt ,
+	  dff.max_freight_amt  ,   
+	  dff.dist_var_neg_amt ,   
+	  dff.dist_var_pos_amt ,   	  
       site.create_flag ,
       site.vendor_id ,
       site.vendor_site_id,
@@ -1203,6 +1209,7 @@ BEGIN
       -- Processing Custom Tolerance    --
       --===============================================================
 	  IF (cur.attribute8 LIKE 'TR%' AND cur.attribute8 NOT LIKE '%RTV%' ) THEN   -- Added as per Version 2.2
+	  
          SELECT COUNT(1)
          INTO ln_tol_count
          FROM xx_ap_custom_tolerances
