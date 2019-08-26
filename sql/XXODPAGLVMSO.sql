@@ -78,7 +78,7 @@ SELECT DISTINCT ('"'|| SUBSTR(p.segment1
    AND t.project_id=p.project_id 
    AND t.chargeable_flag = 'Y'
    AND pei.expenditure_type NOT LIKE '%:Accrued%'
-   and t.task_number like '02%%IT%LB%'
+   and t.task_number NOT like '02%%IT%LB%'
    AND pei.task_id=t.task_id
    AND prvr.organization_id=pei.cc_prvdr_organization_id
    AND TRUNC(NVL(p.completion_date,TRUNC(SYSDATE) + 1)) > TRUNC(SYSDATE)
@@ -141,7 +141,7 @@ SELECT DISTINCT '"'||SUBSTR(p.segment1
    AND t.project_id=p.project_id 
    AND t.chargeable_flag = 'Y'
    AND pei.expenditure_type NOT LIKE '%:Accrued%'
-   and t.task_number like '02%%IT%LB%'
+   and t.task_number NOT like '02%%IT%LB%'
    AND pei.task_id=t.task_id
    AND prvr.organization_id=pei.cc_prvdr_organization_id
    AND TRUNC(NVL(p.completion_date,TRUNC(SYSDATE) + 1)) > TRUNC(SYSDATE)
