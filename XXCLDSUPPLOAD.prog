@@ -94,7 +94,7 @@ then
 elif [ "${p_process_name}" = "SUPPLIERSITES" ]
 then
    lc_check_file="$lc_custom_top"
-   p_filename="XX_AP_CLOUD_SUPP_SITES_XTRCT_$DATE_YYYYMMDD.dat"
+   p_filename="XX_AP_CLOUD_SUPSITE_XTRCT_$DATE_YYYYMMDD.dat"
    echo "File Name : "$p_filename
    p_control_file="XX_AP_CLD_SUPP_SITES_STG.ctl"
    echo "Control File name is  :" [$p_control_file]
