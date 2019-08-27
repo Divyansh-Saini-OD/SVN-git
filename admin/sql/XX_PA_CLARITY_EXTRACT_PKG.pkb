@@ -26,6 +26,8 @@ AS
   -- | 1.2         17-NOV-2015  Harvinder Rakhra     Retrofit R12.2
   -- | 1.3         13-Jun-2018  Priyam Parmar        Updated for NAIT# 38285
   -- | 1.4         03-JUN-2019 	Dinesh N        	 Replaced V$INSTANCE with DB_Name for LNS	  |
+  -- | 1.5         03-AUG-2019 	Narendra        	 add supplier number in PA Clarity            |  
+  -- | 1.6         25-AUG-2019 	Narendra        	 remove rpad for supplier Name                |    
   -- +============================================================================================+
 
 FUNCTION get_exp_comment(p_exp_item_id IN NUMBER) 
@@ -460,7 +462,7 @@ IS
           rpad(project_rec.task_name,30,' ')||'|'||
           --Changes for defect #22892 ends here
           --Changes for Defect 38285 Starts here
-          rpad(project_rec.supplier_name,30,' ')||'|'||
+          rpad(project_rec.supplier_name,65,' ')||'|'||
           rpad(project_rec.supplier_number,30,' ')||'|'|| ---Added by Narendra NAIT-101969
           rpad(project_rec.invoice_date,30,' ')||'|'|| 
           rpad(project_rec.invoice_num,30,' ')||'|'||
@@ -513,7 +515,7 @@ IS
           RPAD(project_dtl.expenditure_type,30,' ')||'|'|| RPAD(project_dtl.expenditure_Category,30,' ')||'|'|| rpad(project_dtl.project_name,30,' ')||'|'|| rpad(project_dtl.task_name,30,' ')||'|'||
           --Changes for defect #22892 ends here
           --Changes for Defect 38285 Starts here
-          rpad(project_dtl.supplier_name,30,' ')||'|'|| 
+          rpad(project_dtl.supplier_name,65,' ')||'|'|| 
           rpad(project_dtl.supplier_number,30,' ')||'|'||---Added by Narendra NAIT-101969
           rpad(project_dtl.invoice_date,30,' ')||'|'|| 
           rpad(project_dtl.invoice_num,30,' ')||'|'|| 
