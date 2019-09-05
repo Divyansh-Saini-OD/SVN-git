@@ -3,14 +3,9 @@
 --SET ECHO OFF;
 --SET TAB OFF;
 --SET FEEDBACK OFF;
- 
 --WHENEVER SQLERROR CONTINUE;
- 
 --WHENEVER OSERROR EXIT FAILURE ROLLBACK
-
-
-create or replace 
-PACKAGE BODY XX_AP_SUP_REAL_OUT_RMS_XML_PKG
+CREATE OR REPLACE PACKAGE BODY XX_AP_SUP_REAL_OUT_RMS_XML_PKG
 AS
   -- +============================================================================================+
   --   Office Depot - Project Simplify
@@ -37,8 +32,7 @@ AS
   --  1.9          05-Dec-18   Sunil Kalal       NAIT-74711  Added logic to check for Freight Terms PP and CC Only else NULL.
   --  2.0          26-Jun-19   Shanti Sethuraj   NAIT-90627  Added new logic for RTV payment terms
   --  2.1          10-Jul-19   Shanti Sethuraj   NAIT-101583 Removed space
-  --  2.1          27-Jul-19   Paddy Sanjeevi    Modified to derive vendor site id based on attribute13
-  --  2.2          31-Jul-19   Paddy Sanjeevi    Modified to derive rtv site based on segment58 from xx_po_vendor_sites_kff
+  --  2.2          05-Sep-19   Shanti Sethuraj   NAIT-104349 Added new logic to filter RTV sites
   -- +============================================================================================+
   ------------------------------------------------------------
   ------------------------------------------------------------
@@ -658,7 +652,6 @@ AS
   v_attribute12 VARCHAR2(500);
   --po_vendor_sites_all.attribute12%TYPE;
   v_attribute13 VARCHAR2(500);
-  v_attr13		VARCHAR2(500);
   --po_vendor_sites_all.attribute13%TYPE;
   v_attribute15 VARCHAR2(500);
   v_attribute16 VARCHAR2(500);
@@ -878,7 +871,6 @@ AS
   v_861_damage_shortage xx_po_vendor_sites_kff_v.blank99%type;
   v_852_sales xx_po_vendor_sites_kff_v.blank99%type;
   v_rtv_related_siteid xx_po_vendor_sites_kff_v.blank99%type;
-  v_rtv_related_site   xx_po_vendor_sites_kff_v.blank99%type;
   v_od_ven_sig_name xx_po_vendor_sites_kff_v.blank99%type;
   v_od_ven_sig_title xx_po_vendor_sites_kff_v.blank99%type;
   v_rms_count  NUMBER := 0;
@@ -932,8 +924,8 @@ AS
   v_site_exists_flag VARCHAR2(1) := 'Y';
   v_telex ap_supplier_sites_all.telex%type; --V4.0
   xml_output CLOB;
-  lv_rtv_vendor_site_code varchar2(100);                       ----- Added by Shanti for NAIT-90627  
-  /*-- Cursor to read the custom table            
+  lv_rtv_vendor_site_code VARCHAR2(100); ----- Added by Shanti for NAIT-90627
+  /*-- Cursor to read the custom table
   CURSOR extsupplupdate_cur IS
   SELECT v.ext_system,
   v.last_update_date,
@@ -1015,7 +1007,7 @@ AS
       iby_ext_party_pmt_mthds ieppm --V4.0
     WHERE a.vendor_site_id = b.vendor_site_id(+)
     AND a.vendor_id        = c.vendor_id(+)
-    AND a.org_id IN(xx_fin_country_defaults_pkg.f_org_id('CA'), xx_fin_country_defaults_pkg.f_org_id('US')) --= ou.organization_id
+    AND a.org_id          IN(xx_fin_country_defaults_pkg.f_org_id('CA'), xx_fin_country_defaults_pkg.f_org_id('US')) --= ou.organization_id
       -- V4.0
     AND a.vendor_site_id               = iepa.supplier_site_id
     AND iepa.ext_payee_id              = ieppm.ext_pmt_party_id(+)
@@ -1063,7 +1055,6 @@ BEGIN
   v_attribute11             := NULL;
   v_attribute12             := NULL;
   v_attribute13             := NULL;
-  v_attr13					:= NULL;
   v_attribute15             := NULL;
   v_attribute16             := NULL;
   v_site_contact_name       := NULL;
@@ -1314,11 +1305,11 @@ BEGIN
   IF l_wallet_location IS NOT NULL THEN
     utl_http.set_wallet(l_wallet_location,l_password);
   END IF;
-	  --  url:='http://5CG5222FFN:8080/eaiapi/supplier/publishsupplierdata';
-	  -- DEV url:= 'https://ch-kube-dev-min.uschecomrnd.net/services/stage-supplier-publishing-service/eaiapi/supplier/publishsupplierdata';
-	  --UAT url:='https://ch-kube-dev-min.uschecomrnd.net/services/dev-supplier-publishing-service/eaiapi/supplier/publishsupplierdata';
-	  --FND_FILE.PUT_LINE(FND_FILE.LOG, 'after URL' );
-	  --url :='https://ch-kube-rnd-min.uschecomrnd.net/services/supplier-publishing-service/eaiapi/supplier/publishsupplierdata';--hardcoded
+  --  url:='http://5CG5222FFN:8080/eaiapi/supplier/publishsupplierdata';
+  -- DEV url:= 'https://ch-kube-dev-min.uschecomrnd.net/services/stage-supplier-publishing-service/eaiapi/supplier/publishsupplierdata';
+  --UAT url:='https://ch-kube-dev-min.uschecomrnd.net/services/dev-supplier-publishing-service/eaiapi/supplier/publishsupplierdata';
+  --FND_FILE.PUT_LINE(FND_FILE.LOG, 'after URL' );
+  --url :='https://ch-kube-rnd-min.uschecomrnd.net/services/supplier-publishing-service/eaiapi/supplier/publishsupplierdata';--hardcoded
   req := utl_http.begin_request(url, 'POST',' HTTP/1.1');
   FND_FILE.PUT_LINE(FND_FILE.LOG,'Request URL: '||req.url);
   fnd_file.put_line(fnd_file.log,'Request Method: '||req.method);
@@ -1335,7 +1326,7 @@ BEGIN
     fnd_file.put_line(fnd_file.output,dbms_lob.substr(xml_output, 10000, l_offset )) ;
     l_offset := l_offset + 10000;
   END LOOP;
-  res := utl_http.get_response(req);
+  res                    := utl_http.get_response(req);
   v_response_status_code :=res.status_code;
   v_response_reason      := res.reason_phrase;
   fnd_file.put_line(fnd_file.log,'Response Status Code: '||res.status_code);
@@ -1375,8 +1366,7 @@ BEGIN
     fnd_file.put_line(fnd_file.log, 'Error while updating Telex as INTFCD for vendor_site_id = ' || v_vendor_site_id );
     retcode :=2;
   END;
-  xx_ap_supp_out_track( v_transaction_id, v_globalvendor_id , v_name , v_vendor_site_id , v_vendor_site_code , v_site_orgid , v_user_id , v_user_name , p_xml_payload
-  , v_request_id , v_response_status_code, v_response_reason , v_error_message );
+  xx_ap_supp_out_track( v_transaction_id, v_globalvendor_id , v_name , v_vendor_site_id , v_vendor_site_code , v_site_orgid , v_user_id , v_user_name , p_xml_payload , v_request_id , v_response_status_code, v_response_reason , v_error_message );
 END xx_ap_sup_invoke_xml_out;
 PROCEDURE create_data_line
 IS
@@ -2425,7 +2415,6 @@ BEGIN
   SELECT xx_ap_sup_trans_seq.nextval
   INTO v_transaction_id
   FROM dual;
-  
   --Insert into custom table for tracking purpose
   /*  INSERT
   INTO xx_ap_sup_outbound_track VALUES
@@ -2438,132 +2427,107 @@ BEGIN
   v_site_orgid,
   sysdate,1,1,'A',1,'A','A'
   );*/
-  
   IF v_site_orgid = 403 THEN
     v_orgcountry := 'CA';
   END IF;
   IF v_site_orgid = 404 THEN
     v_orgcountry := 'US';
   END IF;
-
   -- Create an empty XML document
   l_domdoc := dbms_xmldom.newdomdocument;
-
   -- Create a root node
   l_root_node                 := dbms_xmldom.makenode(l_domdoc);
   l_supplier_list_req_element :=dbms_xmldom.createelement(l_domdoc, 'sup:publishSupplierListRequest' );
   l_supplier_list_req_node    := dbms_xmldom.appendchild(l_root_node,dbms_xmldom.makenode(l_supplier_list_req_element));
   dbms_xmldom.setattribute(l_supplier_list_req_element, 'xmlns:sup', 'http://www.officedepot.com/service/SupplierSyncService');
   dbms_xmldom.setattribute(l_supplier_list_req_element, 'xmlns:odc', 'http://eai.officedepot.com/model/ODCommon');
-
   -- Create a new node Supplier and add it to the root node
   l_supplier_list_node := dbms_xmldom.appendchild( l_supplier_list_req_node--l_root_node
   , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'sup:supplierList' )) );
-
   -- Create a new node supplier and add it to the supplierList node
   l_supplier_node := dbms_xmldom.appendchild( l_supplier_list_node , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'sup:supplier' )) );
-
   -- Create a new node supplier header and add it to the supplier node
   l_supp_header_node := dbms_xmldom.appendchild( l_supplier_node , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'sup:supplierHeader' )) );
-
   -- Each Supp node will get a Name node which contains the Supplier name as text
   l_trans_id_node := dbms_xmldom.appendchild( l_supp_header_node--l_supplier_node
   , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'sup:transactionId' )) );
   l_trans_id_textnode := dbms_xmldom.appendchild( l_trans_id_node , dbms_xmldom.makenode(dbms_xmldom.createtextnode(l_domdoc, v_transaction_id )) );
-
   -- Each Supp node will get a globalvendorid
   l_globalvendor_id_n := dbms_xmldom.appendchild( l_supp_header_node--l_supplier_node
   , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'sup:globalVendorId' )) );
   l_globalvendor_id_tn := dbms_xmldom.appendchild( l_globalvendor_id_n , dbms_xmldom.makenode(dbms_xmldom.createtextnode(l_domdoc, v_globalvendor_id )) );
-
   -- Each Supp node will get a Supplier Number--Added for NAIT-56518
   l_suppliernumber_n := dbms_xmldom.appendchild( l_supp_header_node--l_supplier_node
   , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'sup:supplierNumber' )) );
   l_suppliernumber_tn := dbms_xmldom.appendchild( l_suppliernumber_n , dbms_xmldom.makenode(dbms_xmldom.createtextnode(l_domdoc, v_supplier_number )) );
-
   -- Each Supp node will get a Name node which contains the Supplier name as text
   l_name_node := dbms_xmldom.appendchild( l_supp_header_node--l_supplier_node
   , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'sup:vendorName' )) );
   l_name_textnode := dbms_xmldom.appendchild( l_name_node , dbms_xmldom.makenode(dbms_xmldom.createtextnode(l_domdoc, v_name )) );
-
   -- Each Site node will get a Vendor Site Id
   l_vendor_site_id_node := dbms_xmldom.appendchild( l_supp_header_node--l_supplier_node
   , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'sup:vendorSiteId' )) );
   l_vendor_site_id_textnode := dbms_xmldom.appendchild( l_vendor_site_id_node , dbms_xmldom.makenode(dbms_xmldom.createtextnode(l_domdoc, v_vendor_site_id)) );
-
   -- Each site node will get a Vendor Site Code
   l_vendor_site_code_node := dbms_xmldom.appendchild( l_supp_header_node--l_supplier_node
   , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'sup:vendorSiteCode' )) );
   l_vendor_site_code_textnode := dbms_xmldom.appendchild( l_vendor_site_code_node , dbms_xmldom.makenode(dbms_xmldom.createtextnode(l_domdoc, v_vendor_site_code)) );
-
   -- Each Site node will get a Inactive date
   l_v_inactive_date_n := dbms_xmldom.appendchild( l_supp_header_node--l_supplier_node
   , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'sup:inactiveDate' )) );
   l_v_inactive_date_tn := dbms_xmldom.appendchild( l_v_inactive_date_n , dbms_xmldom.makenode(dbms_xmldom.createtextnode(l_domdoc, v_inactive_date)) );
-
   -- Each Site node will get a Payment_Currency Code
   l_v_pay_cur_code_node := dbms_xmldom.appendchild( l_supp_header_node--l_supplier_node
   , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'sup:paymentCurrencyCode' )) );
   l_v_pay_cur_code_textnode := dbms_xmldom.appendchild( l_v_pay_cur_code_node , dbms_xmldom.makenode(dbms_xmldom.createtextnode(l_domdoc, v_payment_currency_code)) );
-
   -- Each Site node will get a Site Language
   l_v_site_lang_node := dbms_xmldom.appendchild( l_supp_header_node--l_supplier_node
   , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'sup:siteLanguage' )) );
   l_v_site_lang_textnode := dbms_xmldom.appendchild( l_v_site_lang_node , dbms_xmldom.makenode(dbms_xmldom.createtextnode(l_domdoc, v_site_lang)) );
-
   -- Each Site node will get a Pay Site Flag
   l_v_pay_site_flag_node := dbms_xmldom.appendchild( l_supp_header_node--l_supplier_node
   , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'sup:paySiteFlag' )) );
   l_v_pay_site_flag_textnode := dbms_xmldom.appendchild( l_v_pay_site_flag_node , dbms_xmldom.makenode(dbms_xmldom.createtextnode(l_domdoc, v_pay_site_flag)) );
-
   -- Each Site node will get a Purchasing Site Flag
   l_v_purch_site_flag_node := dbms_xmldom.appendchild( l_supp_header_node--l_supplier_node
   , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'sup:purchasingSiteFlag' )) );
   l_v_purch_site_flag_textnode := dbms_xmldom.appendchild( l_v_purch_site_flag_node , dbms_xmldom.makenode(dbms_xmldom.createtextnode(l_domdoc, v_purchasing_site_flag)) );
-
   --siteTermsNameEBS
   -- Each Site node will get a site Terms Name EBS
   l_v_site_terms_name_EBS_n := dbms_xmldom.appendchild( l_supp_header_node--l_supplier_node
   , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'sup:siteTermsNameEBS' )) );
   l_v_site_terms_name_EBS_tn := dbms_xmldom.appendchild( l_v_site_terms_name_EBS_n , dbms_xmldom.makenode(dbms_xmldom.createtextnode(l_domdoc, v_site_terms_name_1)) );
-
   -- Each Site node will get a site Terms Name
   l_v_site_terms_name_n := dbms_xmldom.appendchild( l_supp_header_node--l_supplier_node
   , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'sup:siteTermsName' )) );
   l_v_site_terms_name_tn := dbms_xmldom.appendchild( l_v_site_terms_name_n , dbms_xmldom.makenode(dbms_xmldom.createtextnode(l_domdoc, v_site_terms_name)) );
-
   -- Each Site node will get a site Terms Name Desc
   l_v_site_terms_name_desc_n := dbms_xmldom.appendchild( l_supp_header_node--l_supplier_node
   , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'sup:siteTermsNameDescription' )) );
   l_v_site_terms_name_desc_tn := dbms_xmldom.appendchild( l_v_site_terms_name_desc_n , dbms_xmldom.makenode(dbms_xmldom.createtextnode(l_domdoc, v_site_terms_name_desc)) );
-
   ----NAIT-64249 Added by Sunil below 3 tags.
   -- Each Site node will get a site Terms Discount Percent
   l_discount_percent_n := dbms_xmldom.appendchild( l_supp_header_node--l_supplier_node
   , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'sup:siteTermsDiscountPercent' )) );
   l_discount_percent_tn := dbms_xmldom.appendchild( l_discount_percent_n , dbms_xmldom.makenode(dbms_xmldom.createtextnode(l_domdoc, v_discount_percent)) );
-
   -- Each Site node will get a site Terms Discount Days
   l_discount_days_n := dbms_xmldom.appendchild( l_supp_header_node--l_supplier_node
   , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'sup:siteTermsDiscountDays' )) );
   l_discount_days_tn := dbms_xmldom.appendchild( l_discount_days_n , dbms_xmldom.makenode(dbms_xmldom.createtextnode(l_domdoc, v_discount_days)) );
-
   -- Each Site node will get a site Terms Due Days
   l_due_days_n := dbms_xmldom.appendchild( l_supp_header_node--l_supplier_node
   , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'sup:siteTermsDueDays' )) );
   l_due_days_tn := dbms_xmldom.appendchild( l_due_days_n , dbms_xmldom.makenode(dbms_xmldom.createtextnode(l_domdoc, v_due_days)) );
-
   -- Each Site node will get a site FReight Terms EBS --NAIT-64184--Added by Sunil
   l_v_freight_terms_code_n := dbms_xmldom.appendchild( l_supp_header_node--l_supplier_node
   , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'sup:siteFreightTermsEBS' )) );
-  IF v_site_freightterms NOT IN ('CC','PP') THEN--added by Sunil (NAIT-74711) 
+  IF v_site_freightterms NOT IN ('CC','PP') THEN--added by Sunil (NAIT-74711)
     v_site_freightterms:=NULL;
   END IF;
   l_v_freight_terms_code_tn := dbms_xmldom.appendchild( l_v_freight_terms_code_n , dbms_xmldom.makenode(dbms_xmldom.createtextnode(l_domdoc, v_site_freightterms)) );
-
   -- Each Site node will get a site Freight Terms----NAIT-64184--Added by Sunil
-  if (v_site_freightterms is not null and v_site_fob_lookup_code is not null) then
-    IF v_site_freightterms IN ('CC','PP') THEN---Added by sunil (NAIT-74711) 
+  IF (v_site_freightterms IS NOT NULL AND v_site_fob_lookup_code IS NOT NULL) THEN
+    IF v_site_freightterms IN ('CC','PP') THEN---Added by sunil (NAIT-74711)
       IF v_site_freightterms ='CC' AND v_site_fob_lookup_code='RECEIVING' THEN
         v_site_freightterms :='US-Collect/FOB Destination';
       END IF;
@@ -2582,72 +2546,57 @@ BEGIN
   ELSE
     v_site_freightterms := NULL;
   END IF;
-
   l_v_site_freightterms_n := dbms_xmldom.appendchild( l_supp_header_node--l_supplier_node
   , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'sup:siteFreightTerms' )) );
   l_v_site_freightterms_tn := dbms_xmldom.appendchild( l_v_site_freightterms_n , dbms_xmldom.makenode(dbms_xmldom.createtextnode(l_domdoc, v_site_freightterms)) );
-
   -- Each Site node will get a site FOB lookup Code --NAIT-64184--Added by Sunil
   l_v_site_fob_lookup_code_n := dbms_xmldom.appendchild( l_supp_header_node--l_supplier_node
   , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'sup:siteFobEBS' )) );
   l_v_site_fob_lookup_code_tn := dbms_xmldom.appendchild( l_v_site_fob_lookup_code_n , dbms_xmldom.makenode(dbms_xmldom.createtextnode(l_domdoc, v_site_fob_lookup_code)) );
-
   -- Each Site node will get a Debit Memo Flag
   l_v_debit_memo_flag_n := dbms_xmldom.appendchild( l_supp_header_node--l_supplier_node
   , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'sup:debitMemoFlag' )) );
   l_v_debit_memo_flag_tn := dbms_xmldom.appendchild( l_v_debit_memo_flag_n , dbms_xmldom.makenode(dbms_xmldom.createtextnode(l_domdoc, v_debit_memo_flag)) );
-
   -- Each Site node will get a DUNS Num
   l_v_duns_num_n := dbms_xmldom.appendchild( l_supp_header_node--l_supplier_node
   , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'sup:dunsNum' )) );
   l_v_duns_num_tn := dbms_xmldom.appendchild( l_v_duns_num_n , dbms_xmldom.makenode(dbms_xmldom.createtextnode(l_domdoc, v_duns_num)) );
-
   -- Each Site node will get a  Tax Reg Num
   l_v_tax_reg_num_n := dbms_xmldom.appendchild( l_supp_header_node--l_supplier_node
   , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'sup:taxRegNum' )) );
   l_v_tax_reg_num_tn := dbms_xmldom.appendchild( l_v_tax_reg_num_n , dbms_xmldom.makenode(dbms_xmldom.createtextnode(l_domdoc, v_tax_reg_num)) );
-
   -- Each Site node will get a  Primary Paysite Flag
   l_v_primary_paysite_flag_n := dbms_xmldom.appendchild( l_supp_header_node--l_supplier_node
   , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'sup:primaryPaySiteFlag' )) );
   l_v_primary_paysite_flag_tn := dbms_xmldom.appendchild( l_v_primary_paysite_flag_n , dbms_xmldom.makenode(dbms_xmldom.createtextnode(l_domdoc, v_primary_paysite_flag)) );
-
   -- Each Site node will get a site category
   l_v_site_category_n := dbms_xmldom.appendchild(l_supp_header_node-- l_supplier_node
   , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'sup:siteCategory' )) );
   l_v_site_category_tn := dbms_xmldom.appendchild( l_v_site_category_n , dbms_xmldom.makenode(dbms_xmldom.createtextnode(l_domdoc, v_attribute8)) );
-
   -- Each Site node will get a Bank Acc Num
   l_v_bank_account_num_n := dbms_xmldom.appendchild( l_supp_header_node--l_supplier_node
   , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'sup:bankAccountNumber' )) );
   l_v_bank_account_num_tn := dbms_xmldom.appendchild( l_v_bank_account_num_n , dbms_xmldom.makenode(dbms_xmldom.createtextnode(l_domdoc, v_bank_account_num)) );
-
   -- Each Site node will get a Bank Acc Name
   l_v_bank_account_name_n := dbms_xmldom.appendchild( l_supp_header_node--l_supplier_node
   , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'sup:bankAccountName' )) );
   l_v_bank_account_name_tn := dbms_xmldom.appendchild( l_v_bank_account_name_n , dbms_xmldom.makenode(dbms_xmldom.createtextnode(l_domdoc, v_bank_account_name)) );
-
   -- Each Site node will get a Bank Acc Name EBS--Added by SUnil for NAIT- 64721
   l_v_bank_name_n := dbms_xmldom.appendchild( l_supp_header_node--l_supplier_node
   , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'sup:bankAccountNameEBS' )) );
   l_v_bank_name_tn := dbms_xmldom.appendchild( l_v_bank_name_n , dbms_xmldom.makenode(dbms_xmldom.createtextnode(l_domdoc, v_bank_name)) );
-
   -- Each Site node will get a Bank Acc Name
   l_v_related_pay_site_n := dbms_xmldom.appendchild( l_supp_header_node--l_supplier_node
   , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'sup:relatedPaySite' )) );
   l_v_related_pay_site_tn := dbms_xmldom.appendchild( l_v_related_pay_site_n , dbms_xmldom.makenode(dbms_xmldom.createtextnode(l_domdoc, v_attribute13)) );
-
   -- Create a new node Business class and add it to the supplier node
   l_bus_class_node := dbms_xmldom.appendchild( l_supplier_node , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'sup:businessClass' )) );
-
   -- Each business class node will get a  Minority Class
   l_v_minority_class_n  := dbms_xmldom.appendchild( l_bus_class_node , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'sup:minorityClass' )) );
   l_v_minority_class_tn := dbms_xmldom.appendchild( l_v_minority_class_n , dbms_xmldom.makenode(dbms_xmldom.createtextnode(l_domdoc, v_minority_class)) );
-
   -- Each business class node will get a  Minority Code
   l_v_minority_cd_n  := dbms_xmldom.appendchild( l_bus_class_node , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'sup:minorityCode' )) );
   l_v_minority_cd_tn := dbms_xmldom.appendchild( l_v_minority_cd_n , dbms_xmldom.makenode(dbms_xmldom.createtextnode(l_domdoc, v_minority_cd)) );
-
   BEGIN
     IF v_minority_cd IS NOT NULL THEN
       SELECT meaning
@@ -2662,15 +2611,12 @@ BEGIN
     fnd_file.put_line(fnd_file.log,'Error getting minority_cd_desc'||sqlerrm);
     dbms_output.put_line('Error getting minority_cd_desc');
   END;
-
   -- Each business class node will get a  Minority Code desc
   l_v_minority_cd_desc_n  := dbms_xmldom.appendchild( l_bus_class_node , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'sup:minorityCodeDescription' )) );
   l_v_minority_cd_desc_tn := dbms_xmldom.appendchild( l_v_minority_cd_desc_n , dbms_xmldom.makenode(dbms_xmldom.createtextnode(l_domdoc, v_minority_cd_desc)) );
-
   SELECT SUBSTR(v_attribute16, instr(v_attribute16, ';',1,1)+1, instr(v_attribute16, ';',1,2)-(instr(v_attribute16, ';',1,1)+1))
   INTO v_mbe
   FROM dual;
-
   -- Each business class node will get a  MBE
   l_v_mbe_n  := dbms_xmldom.appendchild( l_bus_class_node , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'sup:mbe' )) );
   l_v_mbe_tn := dbms_xmldom.appendchild( l_v_mbe_n , dbms_xmldom.makenode(dbms_xmldom.createtextnode(l_domdoc, v_mbe)) );
@@ -2686,19 +2632,15 @@ BEGIN
     fnd_file.put_line(fnd_file.log,'Error getting v_mbe_desc'||sqlerrm);
     dbms_output.put_line('Error getting v_mbe_desc');
   END;
-
   -- Each business class node will get a  MBE desc
   l_v_mbe_desc_n  := dbms_xmldom.appendchild( l_bus_class_node , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'sup:mbeDescription' )) );
   l_v_mbe_desc_tn := dbms_xmldom.appendchild( l_v_mbe_desc_n , dbms_xmldom.makenode(dbms_xmldom.createtextnode(l_domdoc, v_mbe_desc)) );
-
   SELECT SUBSTR(v_attribute16, instr(v_attribute16, ';',1,2)+1, instr(v_attribute16, ';',1,3)-(instr(v_attribute16, ';',1,2)+1))
   INTO v_nmsdc
   FROM dual;
-
   -- Each business class node will get a nmsdc
   l_v_nmsdc_n  := dbms_xmldom.appendchild( l_bus_class_node , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'sup:nmsdc' )) );
   l_v_nmsdc_tn := dbms_xmldom.appendchild( l_v_nmsdc_n , dbms_xmldom.makenode(dbms_xmldom.createtextnode(l_domdoc, v_nmsdc)) );
-
   BEGIN
     SELECT meaning
     INTO v_nmsdc_desc
@@ -2711,19 +2653,15 @@ BEGIN
     fnd_file.put_line(fnd_file.log,'Error getting v_nmsdc_desc'||sqlerrm);
     dbms_output.put_line('Error getting v_nmsdc_desc');
   END;
-
   -- Each business class node will get a nmsdc desc
   l_v_nmsdc_desc_n  := dbms_xmldom.appendchild( l_bus_class_node , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'sup:nmsdcDescription' )) );
   l_v_nmsdc_desc_tn := dbms_xmldom.appendchild( l_v_nmsdc_desc_n , dbms_xmldom.makenode(dbms_xmldom.createtextnode(l_domdoc, v_nmsdc_desc)) );
-
   SELECT SUBSTR(v_attribute16, instr(v_attribute16, ';',1,3)+1, instr(v_attribute16, ';',1,4)-(instr(v_attribute16, ';',1,3)+1))
   INTO v_wbe
   FROM dual;
-
   -- Each business class node will get a wbe
   l_v_wbe_n  := dbms_xmldom.appendchild( l_bus_class_node , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'sup:wbe' )) );
   l_v_wbe_tn := dbms_xmldom.appendchild( l_v_wbe_n , dbms_xmldom.makenode(dbms_xmldom.createtextnode(l_domdoc, v_wbe)) );
-
   BEGIN
     SELECT meaning
     INTO v_wbe_desc
@@ -2736,19 +2674,15 @@ BEGIN
     fnd_file.put_line(fnd_file.log,'Error getting v_wbe_desc'||sqlerrm);
     dbms_output.put_line('Error getting v_wbe_desc');
   END;
-
   -- Each business class node will get a wbe desc
   l_v_wbe_desc_n  := dbms_xmldom.appendchild( l_bus_class_node , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'sup:wbeDescription' )) );
   l_v_wbe_desc_tn := dbms_xmldom.appendchild( l_v_wbe_desc_n , dbms_xmldom.makenode(dbms_xmldom.createtextnode(l_domdoc, v_wbe_desc)) );
-
   SELECT SUBSTR(v_attribute16, instr(v_attribute16, ';',1,4)+1, instr(v_attribute16, ';',1,5)-(instr(v_attribute16, ';',1,4)+1))
   INTO v_wbenc
   FROM dual;
-
   -- Each business class node will get a wbenc
   l_v_wbenc_n  := dbms_xmldom.appendchild( l_bus_class_node , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'sup:wbenc' )) );
   l_v_wbenc_tn := dbms_xmldom.appendchild( l_v_wbenc_n , dbms_xmldom.makenode(dbms_xmldom.createtextnode(l_domdoc, v_wbenc)) );
-
   BEGIN
     SELECT meaning
     INTO v_wbenc_desc
@@ -2761,19 +2695,15 @@ BEGIN
     fnd_file.put_line(fnd_file.log,'Error getting v_wbenc_desc'||sqlerrm);
     dbms_output.put_line('Error getting v_wbenc_desc');
   END;
-
   -- Each business class node will get a wbenc desc
   l_v_wbenc_desc_n  := dbms_xmldom.appendchild( l_bus_class_node , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'sup:wbencDescription' )) );
   l_v_wbenc_desc_tn := dbms_xmldom.appendchild( l_v_wbenc_desc_n , dbms_xmldom.makenode(dbms_xmldom.createtextnode(l_domdoc, v_wbenc_desc)) );
-
   SELECT SUBSTR(v_attribute16, instr(v_attribute16, ';',1,5)+1, instr(v_attribute16, ';',1,6)-(instr(v_attribute16, ';',1,5)+1))
   INTO v_vob
   FROM dual;
-
   -- Each business class node will get a vob
   l_v_vob_n  := dbms_xmldom.appendchild( l_bus_class_node , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'sup:vob' )) );
   l_v_vob_tn := dbms_xmldom.appendchild( l_v_vob_n , dbms_xmldom.makenode(dbms_xmldom.createtextnode(l_domdoc, v_vob)) );
-
   BEGIN
     SELECT meaning
     INTO v_vob_desc
@@ -2786,19 +2716,15 @@ BEGIN
     fnd_file.put_line(fnd_file.log,'Error getting v_vob_desc'||sqlerrm);
     dbms_output.put_line('Error getting v_vob_desc');
   END;
-
   -- Each business class node will get a vob desc
   l_v_vob_desc_n  := dbms_xmldom.appendchild( l_bus_class_node , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'sup:vobDescription' )) );
   l_v_vob_desc_tn := dbms_xmldom.appendchild( l_v_vob_desc_n , dbms_xmldom.makenode(dbms_xmldom.createtextnode(l_domdoc, v_vob_desc)) );
-
   SELECT SUBSTR(v_attribute16, instr(v_attribute16, ';',1,6)+1, instr(v_attribute16, ';',1,7)-(instr(v_attribute16, ';',1,6)+1))
   INTO v_dodva
   FROM dual;
-
   -- Each business class node will get a dodva
   l_v_dodva_n  := dbms_xmldom.appendchild( l_bus_class_node , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'sup:dodva' )) );
   l_v_dodva_tn := dbms_xmldom.appendchild( l_v_dodva_n , dbms_xmldom.makenode(dbms_xmldom.createtextnode(l_domdoc, v_dodva)) );
-
   BEGIN
     SELECT meaning
     INTO v_dodva_desc
@@ -2811,19 +2737,15 @@ BEGIN
     fnd_file.put_line(fnd_file.log,'Error getting v_dodva_desc'||sqlerrm);
     dbms_output.put_line('Error getting v_dodva_desc');
   END;
-
   -- Each business class node will get a dodva desc
   l_v_dodva_desc_n  := dbms_xmldom.appendchild( l_bus_class_node , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'sup:dodvaDescription' )) );
   l_v_dodva_desc_tn := dbms_xmldom.appendchild( l_v_dodva_desc_n , dbms_xmldom.makenode(dbms_xmldom.createtextnode(l_domdoc, v_dodva_desc)) );
-
   SELECT SUBSTR(v_attribute16, instr(v_attribute16, ';',1,7)+1, instr(v_attribute16, ';',1,8)-(instr(v_attribute16, ';',1,7)+1))
   INTO v_doe
   FROM dual;
-
   -- Each business class node will get a doe
   l_v_doe_n  := dbms_xmldom.appendchild( l_bus_class_node , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'sup:doe' )) );
   l_v_doe_tn := dbms_xmldom.appendchild( l_v_doe_n , dbms_xmldom.makenode(dbms_xmldom.createtextnode(l_domdoc, v_doe)) );
-
   BEGIN
     SELECT meaning
     INTO v_doe_desc
@@ -2836,19 +2758,15 @@ BEGIN
     fnd_file.put_line(fnd_file.log,'Error getting v_doe_desc'||sqlerrm);
     dbms_output.put_line('Error getting v_doe_desc');
   END;
-
   -- Each business class node will get a doe desc
   l_v_doe_desc_n  := dbms_xmldom.appendchild( l_bus_class_node , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'sup:doeDescription' )) );
   l_v_doe_desc_tn := dbms_xmldom.appendchild( l_v_doe_desc_n , dbms_xmldom.makenode(dbms_xmldom.createtextnode(l_domdoc, v_doe_desc)) );
-
   SELECT SUBSTR(v_attribute16, instr(v_attribute16, ';',1,8)+1, instr(v_attribute16, ';',1,9)-(instr(v_attribute16, ';',1,8)+1))
   INTO v_usbln
   FROM dual;
-
   -- Each business class node will get a usbln
   l_v_usbln_n  := dbms_xmldom.appendchild( l_bus_class_node , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'sup:usbln' )) );
   l_v_usbln_tn := dbms_xmldom.appendchild( l_v_usbln_n , dbms_xmldom.makenode(dbms_xmldom.createtextnode(l_domdoc, v_usbln)) );
-
   BEGIN
     SELECT meaning
     INTO v_usbln_desc
@@ -2861,19 +2779,15 @@ BEGIN
     fnd_file.put_line(fnd_file.log,'Error getting v_usbln_desc'||sqlerrm);
     dbms_output.put_line('Error getting v_usbln_desc');
   END;
-
   -- Each business class node will get a usbln desc
   l_v_usbln_desc_n  := dbms_xmldom.appendchild( l_bus_class_node , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'sup:usblnDescription' )) );
   l_v_usbln_desc_tn := dbms_xmldom.appendchild( l_v_usbln_desc_n , dbms_xmldom.makenode(dbms_xmldom.createtextnode(l_domdoc, v_usbln_desc)) );
-
   SELECT SUBSTR(v_attribute16, instr(v_attribute16, ';',1,9)+1, instr(v_attribute16, ';',1,10)-(instr(v_attribute16, ';',1,9)+1))
   INTO v_lgbt
   FROM dual;
-
   -- Each business class node will get a lgbt
   l_v_lgbt_n  := dbms_xmldom.appendchild( l_bus_class_node , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'sup:lgbt' )) );
   l_v_lgbt_tn := dbms_xmldom.appendchild( l_v_lgbt_n , dbms_xmldom.makenode(dbms_xmldom.createtextnode(l_domdoc, v_lgbt)) );
-
   BEGIN
     SELECT meaning
     INTO v_lgbt_desc
@@ -2886,19 +2800,15 @@ BEGIN
     fnd_file.put_line(fnd_file.log,'Error getting v_lgbt_desc'||sqlerrm);
     dbms_output.put_line('Error getting v_lgbt_desc');
   END;
-
   -- Each business class node will get a lgbt desc
   l_v_lgbt_desc_n  := dbms_xmldom.appendchild( l_bus_class_node , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'sup:lgbtDescription' )) );
   l_v_lgbt_desc_tn := dbms_xmldom.appendchild( l_v_lgbt_desc_n , dbms_xmldom.makenode(dbms_xmldom.createtextnode(l_domdoc, v_lgbt_desc)) );
-
   SELECT SUBSTR(v_attribute16, instr(v_attribute16, ';',1,10)+1, instr(v_attribute16, ';',1,11)-(instr(v_attribute16, ';',1,10)+1))
   INTO v_nglcc
   FROM dual;
-
   -- Each business class node will get a nglcc
   l_v_nglcc_n  := dbms_xmldom.appendchild( l_bus_class_node , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'sup:nglcc' )) );
   l_v_nglcc_tn := dbms_xmldom.appendchild( l_v_nglcc_n , dbms_xmldom.makenode(dbms_xmldom.createtextnode(l_domdoc, v_nglcc)) );
-
   BEGIN
     SELECT meaning
     INTO v_nglcc_desc
@@ -2911,18 +2821,15 @@ BEGIN
     fnd_file.put_line(fnd_file.log,'Error getting v_nglcc_desc'||sqlerrm);
     dbms_output.put_line('Error getting v_nglcc_desc');
   END;
-
   -- Each business class node will get a nglcc desc
   l_v_nglcc_desc_n  := dbms_xmldom.appendchild( l_bus_class_node , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'sup:nglccDescription' )) );
   l_v_nglcc_desc_tn := dbms_xmldom.appendchild( l_v_nglcc_desc_n , dbms_xmldom.makenode(dbms_xmldom.createtextnode(l_domdoc, v_nglcc_desc)) );
   SELECT SUBSTR(v_attribute16, instr(v_attribute16, ';',1,11)+1, instr(v_attribute16, ';',1,12)-(instr(v_attribute16, ';',1,11)+1))
   INTO v_nibnishablty
   FROM dual;
-
   -- Each business class node will get a nibnishablty
   l_v_nibnishablty_n  := dbms_xmldom.appendchild( l_bus_class_node , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'sup:nibnishablty' )) );
   l_v_nibnishablty_tn := dbms_xmldom.appendchild( l_v_nibnishablty_n , dbms_xmldom.makenode(dbms_xmldom.createtextnode(l_domdoc, v_nibnishablty)) );
-
   BEGIN
     SELECT meaning
     INTO v_nibnishablty_desc
@@ -2935,20 +2842,16 @@ BEGIN
     fnd_file.put_line(fnd_file.log,'Error getting v_nibnishablty_desc'||sqlerrm);
     dbms_output.put_line('Error getting v_nibnishablty_desc');
   END;
-
   -- Each business class node will get a nibnishablty desc
   l_v_nibnishablty_desc_n  := dbms_xmldom.appendchild( l_bus_class_node , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'sup:nibnishabltyDescription' )) );
   l_v_nibnishablty_desc_tn := dbms_xmldom.appendchild( l_v_nibnishablty_desc_n , dbms_xmldom.makenode(dbms_xmldom.createtextnode(l_domdoc, v_nibnishablty_desc)) );
-
   --FOB
   SELECT SUBSTR(v_attribute16, instr(v_attribute16,';',1,12)+1, instr(v_attribute16, ';',1,13)-(instr(v_attribute16, ';',1,12)+1))
   INTO v_fob
   FROM dual;
-
   -- Each business class node will get a fob
   l_v_fob_n  := dbms_xmldom.appendchild( l_bus_class_node , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'sup:fob' )) );
   l_v_fob_tn := dbms_xmldom.appendchild( l_v_fob_n , dbms_xmldom.makenode(dbms_xmldom.createtextnode(l_domdoc, v_fob)) );
-
   BEGIN
     IF v_fob <> 'N' THEN
       SELECT meaning
@@ -2970,19 +2873,15 @@ BEGIN
     fnd_file.put_line(fnd_file.log,'Error getting v_fob_desc'||sqlerrm);
     dbms_output.put_line('Error getting v_fob_desc');
   END;
-
   -- Each business class node will get a fob desc
   l_v_fob_desc_n  := dbms_xmldom.appendchild( l_bus_class_node , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'sup:fobDescription' )) );
   l_v_fob_desc_tn := dbms_xmldom.appendchild( l_v_fob_desc_n , dbms_xmldom.makenode(dbms_xmldom.createtextnode(l_domdoc, v_fob_desc)) );
-
   SELECT SUBSTR(v_attribute16, instr(v_attribute16,';',1,13)+1, instr(v_attribute16, ';',1,14)-(instr(v_attribute16, ';',1,13)+1))
   INTO v_sb
   FROM dual;
-
   -- Each business class node will get a sb
   l_v_sb_n  := dbms_xmldom.appendchild( l_bus_class_node , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'sup:sb' )) );
   l_v_sb_tn := dbms_xmldom.appendchild( l_v_sb_n , dbms_xmldom.makenode(dbms_xmldom.createtextnode(l_domdoc, v_sb)) );
-
   BEGIN
     SELECT meaning
     INTO v_sb_desc
@@ -2995,14 +2894,12 @@ BEGIN
     fnd_file.put_line(fnd_file.log,'Error getting v_sb_desc'||sqlerrm);
     dbms_output.put_line('Error getting v_sb_desc');
   END;
-
   -- Each business class node will get a sb desc
   l_v_sb_desc_n  := dbms_xmldom.appendchild( l_bus_class_node , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'sup:sbDescription' )) );
   l_v_sb_desc_tn := dbms_xmldom.appendchild( l_v_sb_desc_n , dbms_xmldom.makenode(dbms_xmldom.createtextnode(l_domdoc, v_sb_desc)) );
   SELECT SUBSTR(v_attribute16, instr(v_attribute16,';',1,14)+1, instr(v_attribute16, ';',1,15)-(instr(v_attribute16, ';',1,14)+1))
   INTO v_samgov
   FROM dual;
-
   -- Each business class node will get a samgov
   l_v_samgov_n  := dbms_xmldom.appendchild( l_bus_class_node , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'sup:samgov' )) );
   l_v_samgov_tn := dbms_xmldom.appendchild( l_v_samgov_n , dbms_xmldom.makenode(dbms_xmldom.createtextnode(l_domdoc, v_samgov)) );
@@ -3018,14 +2915,12 @@ BEGIN
     fnd_file.put_line(fnd_file.log,'Error getting v_samgov_desc'||sqlerrm);
     dbms_output.put_line('Error getting v_samgov_desc');
   END;
-
   -- Each business class node will get a samgov desc
   l_v_samgov_desc_n  := dbms_xmldom.appendchild( l_bus_class_node , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'sup:samgovDescription' )) );
   l_v_samgov_desc_tn := dbms_xmldom.appendchild( l_v_samgov_desc_n , dbms_xmldom.makenode(dbms_xmldom.createtextnode(l_domdoc, v_samgov_desc)) );
   SELECT SUBSTR(v_attribute16, instr(v_attribute16,';',1,15)+1, instr(v_attribute16, ';',1,16)-(instr(v_attribute16, ';',1,15)+1))
   INTO v_sba
   FROM dual;
-
   -- Each business class node will get a sba
   l_v_sba_n  := dbms_xmldom.appendchild( l_bus_class_node , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'sup:sba' )) );
   l_v_sba_tn := dbms_xmldom.appendchild( l_v_sba_n , dbms_xmldom.makenode(dbms_xmldom.createtextnode(l_domdoc, v_sba)) );
@@ -3041,14 +2936,12 @@ BEGIN
     fnd_file.put_line(fnd_file.log,'Error getting v_sba_desc'||sqlerrm);
     dbms_output.put_line('Error getting v_sba_desc');
   END;
-
   -- Each business class node will get a sba desc
   l_v_sba_desc_n  := dbms_xmldom.appendchild( l_bus_class_node , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'sup:sbaDescription' )) );
   l_v_sba_desc_tn := dbms_xmldom.appendchild( l_v_sba_desc_n , dbms_xmldom.makenode(dbms_xmldom.createtextnode(l_domdoc, v_sba_desc)) );
   SELECT SUBSTR(v_attribute16, instr(v_attribute16,';',1,16)+1, instr(v_attribute16, ';',1,17)-(instr(v_attribute16, ';',1,16)+1))
   INTO v_sbc
   FROM dual;
-
   -- Each business class node will get a sbc
   l_v_sbc_n  := dbms_xmldom.appendchild( l_bus_class_node , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'sup:sbc' )) );
   l_v_sbc_tn := dbms_xmldom.appendchild( l_v_sbc_n , dbms_xmldom.makenode(dbms_xmldom.createtextnode(l_domdoc, v_sbc)) );
@@ -3064,18 +2957,15 @@ BEGIN
     fnd_file.put_line(fnd_file.log,'Error getting v_sbc_desc'||sqlerrm);
     dbms_output.put_line('Error getting v_sbc_desc');
   END;
-
   -- Each business class node will get a sbc desc
   l_v_sbc_desc_n  := dbms_xmldom.appendchild( l_bus_class_node , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'sup:sbcDescription' )) );
   l_v_sbc_desc_tn := dbms_xmldom.appendchild( l_v_sbc_desc_n , dbms_xmldom.makenode(dbms_xmldom.createtextnode(l_domdoc, v_sbc_desc)) );
   SELECT SUBSTR(v_attribute16, instr(v_attribute16,';',1,17)+1, instr(v_attribute16, ';',1,18)-(instr(v_attribute16, ';',1,17)+1))
   INTO v_sdbe
   FROM dual;
-
   -- Each business class node will get a sdbe
   l_v_sdbe_n  := dbms_xmldom.appendchild( l_bus_class_node , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'sup:sdbe' )) );
   l_v_sdbe_tn := dbms_xmldom.appendchild( l_v_sdbe_n , dbms_xmldom.makenode(dbms_xmldom.createtextnode(l_domdoc, v_sdbe)) );
-
   BEGIN
     SELECT meaning
     INTO v_sdbe_desc
@@ -3088,18 +2978,15 @@ BEGIN
     fnd_file.put_line(fnd_file.log,'Error getting v_sdbe_desc'||sqlerrm);
     dbms_output.put_line('Error getting v_sdbe_desc');
   END;
-
   -- Each business class node will get a sdbe desc
   l_v_sdbe_desc_n  := dbms_xmldom.appendchild( l_bus_class_node , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'sup:sdbeDescription' )) );
   l_v_sdbe_desc_tn := dbms_xmldom.appendchild( l_v_sdbe_desc_n , dbms_xmldom.makenode(dbms_xmldom.createtextnode(l_domdoc, v_sdbe_desc)) );
   SELECT SUBSTR(v_attribute16, instr(v_attribute16,';',1,18)+1, instr(v_attribute16, ';',1,19)-(instr(v_attribute16, ';',1,18)+1))
   INTO v_sba8a
   FROM dual;
-
   -- Each business class node will get a sba8a
   l_v_sba8a_n  := dbms_xmldom.appendchild( l_bus_class_node , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'sup:sba8a' )) );
   l_v_sba8a_tn := dbms_xmldom.appendchild( l_v_sba8a_n , dbms_xmldom.makenode(dbms_xmldom.createtextnode(l_domdoc, v_sba8a)) );
-
   BEGIN
     SELECT meaning
     INTO v_sba8a_desc
@@ -3112,18 +2999,15 @@ BEGIN
     fnd_file.put_line(fnd_file.log,'Error getting v_sba8a_desc'||sqlerrm);
     dbms_output.put_line('Error getting v_sba8a_desc');
   END;
-
   -- Each business class node will get a sba8a desc
   l_v_sba8a_desc_n  := dbms_xmldom.appendchild( l_bus_class_node , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'sup:sba8aDescription' )) );
   l_v_sba8a_desc_tn := dbms_xmldom.appendchild( l_v_sba8a_desc_n , dbms_xmldom.makenode(dbms_xmldom.createtextnode(l_domdoc, v_sba8a_desc)) );
   SELECT SUBSTR(v_attribute16, instr(v_attribute16,';',1,19)+1, instr(v_attribute16, ';',1,20)-(instr(v_attribute16, ';',1,19)+1))
   INTO v_hubzone
   FROM dual;
-
   -- Each business class node will get a hubzone
   l_v_hubzone_n  := dbms_xmldom.appendchild( l_bus_class_node , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'sup:hubzone' )) );
   l_v_hubzone_tn := dbms_xmldom.appendchild( l_v_hubzone_n , dbms_xmldom.makenode(dbms_xmldom.createtextnode(l_domdoc, v_hubzone)) );
-
   BEGIN
     SELECT meaning
     INTO v_hubzone_desc
@@ -3136,19 +3020,15 @@ BEGIN
     fnd_file.put_line(fnd_file.log,'Error getting v_hubzone_desc'||sqlerrm);
     dbms_output.put_line('Error getting v_hubzone_desc');
   END;
-
   -- Each business class node will get a hubzone desc
   l_v_hubzone_desc_n  := dbms_xmldom.appendchild( l_bus_class_node , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'sup:hubzoneDescription' )) );
   l_v_hubzone_desc_tn := dbms_xmldom.appendchild( l_v_hubzone_desc_n , dbms_xmldom.makenode(dbms_xmldom.createtextnode(l_domdoc, v_hubzone_desc)) );
-
   SELECT SUBSTR(v_attribute16, instr(v_attribute16,';',1,20)+1, instr(v_attribute16, ';',1,21)-(instr(v_attribute16, ';',1,20)+1))
   INTO v_wosb
   FROM dual;
-
   -- Each business class node will get a wosb
   l_v_wosb_n  := dbms_xmldom.appendchild( l_bus_class_node , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'sup:wosb' )) );
   l_v_wosb_tn := dbms_xmldom.appendchild( l_v_wosb_n , dbms_xmldom.makenode(dbms_xmldom.createtextnode(l_domdoc, v_wosb)) );
-
   BEGIN
     SELECT meaning
     INTO v_wosb_desc
@@ -3161,18 +3041,15 @@ BEGIN
     fnd_file.put_line(fnd_file.log,'Error getting v_wosb_desc'||sqlerrm);
     dbms_output.put_line('Error getting v_wosb_desc');
   END;
-
   -- Each business class node will get a wosb desc
   l_v_wosb_desc_n  := dbms_xmldom.appendchild( l_bus_class_node , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'sup:wosbDescription' )) );
   l_v_wosb_desc_tn := dbms_xmldom.appendchild( l_v_wosb_desc_n , dbms_xmldom.makenode(dbms_xmldom.createtextnode(l_domdoc, v_wosb_desc)) );
-
   SELECT SUBSTR(v_attribute16, instr(v_attribute16,';',1,21)+1, instr(v_attribute16, ';',1,22)-(instr(v_attribute16, ';',1,21)+1))
   INTO v_wsbe
   FROM dual;
   -- Each business class node will get a wsbe
   l_v_wsbe_n  := dbms_xmldom.appendchild( l_bus_class_node , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'sup:wsbe' )) );
   l_v_wsbe_tn := dbms_xmldom.appendchild( l_v_wsbe_n , dbms_xmldom.makenode(dbms_xmldom.createtextnode(l_domdoc, v_wsbe)) );
-
   BEGIN
     SELECT meaning
     INTO v_wsbe_desc
@@ -3185,18 +3062,15 @@ BEGIN
     fnd_file.put_line(fnd_file.log,'Error getting v_wsbe_desc'||sqlerrm);
     dbms_output.put_line('Error getting v_wsbe_desc');
   END;
-
   -- Each business class node will get a wsbe desc
   l_v_wsbe_desc_n  := dbms_xmldom.appendchild( l_bus_class_node , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'sup:wsbeDescription' )) );
   l_v_wsbe_desc_tn := dbms_xmldom.appendchild( l_v_wsbe_desc_n , dbms_xmldom.makenode(dbms_xmldom.createtextnode(l_domdoc, v_wsbe_desc)) );
   SELECT SUBSTR(v_attribute16, instr(v_attribute16,';',1,22)+1, instr(v_attribute16, ';',1,23)-(instr(v_attribute16, ';',1,22)+1))
   INTO v_edwosb
   FROM dual;
-
   -- Each business class node will get a edwosb
   l_v_edwosb_n  := dbms_xmldom.appendchild( l_bus_class_node , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'sup:edwosb' )) );
   l_v_edwosb_tn := dbms_xmldom.appendchild( l_v_edwosb_n , dbms_xmldom.makenode(dbms_xmldom.createtextnode(l_domdoc, v_edwosb)) );
-
   BEGIN
     SELECT meaning
     INTO v_edwosb_desc
@@ -3209,19 +3083,15 @@ BEGIN
     fnd_file.put_line(fnd_file.log,'Error getting v_edwosb_desc'||sqlerrm);
     dbms_output.put_line('Error getting v_edwosb_desc');
   END;
-
   -- Each business class node will get a edwosb desc
   l_v_edwosb_desc_n  := dbms_xmldom.appendchild( l_bus_class_node , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'sup:edwosbDescription' )) );
   l_v_edwosb_desc_tn := dbms_xmldom.appendchild( l_v_edwosb_desc_n , dbms_xmldom.makenode(dbms_xmldom.createtextnode(l_domdoc, v_edwosb_desc)) );
-
   SELECT SUBSTR(v_attribute16, instr(v_attribute16,';',1,23)+1, instr(v_attribute16, ';',1,24)-(instr(v_attribute16, ';',1,23)+1))
   INTO v_vosb
   FROM dual;
-
   -- Each business class node will get a vosb
   l_v_vosb_n  := dbms_xmldom.appendchild( l_bus_class_node , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'sup:vosb' )) );
   l_v_vosb_tn := dbms_xmldom.appendchild( l_v_vosb_n , dbms_xmldom.makenode(dbms_xmldom.createtextnode(l_domdoc, v_vosb)) );
-
   BEGIN
     SELECT meaning
     INTO v_vosb_desc
@@ -3234,19 +3104,15 @@ BEGIN
     fnd_file.put_line(fnd_file.log,'Error getting v_vosb_desc'||sqlerrm);
     dbms_output.put_line('Error getting v_vosb_desc');
   END;
-
   -- Each business class node will get a vosb desc
   l_v_vosb_desc_n  := dbms_xmldom.appendchild( l_bus_class_node , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'sup:vosbDescription' )) );
   l_v_vosb_desc_tn := dbms_xmldom.appendchild( l_v_vosb_desc_n , dbms_xmldom.makenode(dbms_xmldom.createtextnode(l_domdoc, v_vosb_desc)) );
-
   SELECT SUBSTR(v_attribute16, instr(v_attribute16,';',1,24)+1, instr(v_attribute16, ';',1,25)-(instr(v_attribute16, ';',1,24)+1))
   INTO v_sdvosb
   FROM dual;
-
   -- Each business class node will get a sdvosb
   l_v_sdvosb_n  := dbms_xmldom.appendchild( l_bus_class_node , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'sup:sdvosb' )) );
   l_v_sdvosb_tn := dbms_xmldom.appendchild( l_v_sdvosb_n , dbms_xmldom.makenode(dbms_xmldom.createtextnode(l_domdoc, v_sdvosb)) );
-
   BEGIN
     SELECT meaning
     INTO v_sdvosb_desc
@@ -3259,19 +3125,15 @@ BEGIN
     fnd_file.put_line(fnd_file.log,'Error getting v_sdvosb_desc'||sqlerrm);
     dbms_output.put_line('Error getting v_sdvosb_desc');
   END;
-
   -- Each business class node will get a sdvosb desc
   l_v_sdvosb_desc_n  := dbms_xmldom.appendchild( l_bus_class_node , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'sup:sdvosbDescription' )) );
   l_v_sdvosb_desc_tn := dbms_xmldom.appendchild( l_v_sdvosb_desc_n , dbms_xmldom.makenode(dbms_xmldom.createtextnode(l_domdoc, v_sdvosb_desc)) );
-
   SELECT SUBSTR(v_attribute16, instr(v_attribute16,';',1,25)+1, instr(v_attribute16, ';',1,26)-(instr(v_attribute16, ';',1,25)+1))
   INTO v_hbcumi
   FROM dual;
-
   -- Each business class node will get a hbcumi
   l_v_hbcumi_n  := dbms_xmldom.appendchild( l_bus_class_node , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'sup:hbcumi' )) );
   l_v_hbcumi_tn := dbms_xmldom.appendchild( l_v_hbcumi_n , dbms_xmldom.makenode(dbms_xmldom.createtextnode(l_domdoc, v_hbcumi)) );
-
   BEGIN
     SELECT meaning
     INTO v_hbcumi_desc
@@ -3284,19 +3146,15 @@ BEGIN
     fnd_file.put_line(fnd_file.log,'Error getting v_hbcumi_desc'||sqlerrm);
     dbms_output.put_line('Error getting v_hbcumi_desc');
   END;
-
   -- Each business class node will get a hbcumi desc
   l_v_hbcumi_desc_n  := dbms_xmldom.appendchild( l_bus_class_node , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'sup:hbcumiDescription' )) );
   l_v_hbcumi_desc_tn := dbms_xmldom.appendchild( l_v_hbcumi_desc_n , dbms_xmldom.makenode(dbms_xmldom.createtextnode(l_domdoc, v_hbcumi_desc)) );
-
   SELECT SUBSTR(v_attribute16, instr(v_attribute16,';',1,26)+1, instr(v_attribute16, ';',1,27)-(instr(v_attribute16, ';',1,26)+1))
   INTO v_anc
   FROM dual;
-
   -- Each business class node will get a anc
   l_v_anc_n  := dbms_xmldom.appendchild( l_bus_class_node , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'sup:anc' )) );
   l_v_anc_tn := dbms_xmldom.appendchild( l_v_anc_n , dbms_xmldom.makenode(dbms_xmldom.createtextnode(l_domdoc, v_anc)) );
-
   BEGIN
     SELECT meaning
     INTO v_anc_desc
@@ -3309,19 +3167,15 @@ BEGIN
     fnd_file.put_line(fnd_file.log,'Error getting v_anc_desc'||sqlerrm);
     dbms_output.put_line('Error getting v_anc_desc');
   END;
-
   -- Each business class node will get a anc desc
   l_v_anc_desc_n  := dbms_xmldom.appendchild( l_bus_class_node , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'sup:ancDescription' )) );
   l_v_anc_desc_tn := dbms_xmldom.appendchild( l_v_anc_desc_n , dbms_xmldom.makenode(dbms_xmldom.createtextnode(l_domdoc, v_anc_desc)) );
-
   SELECT SUBSTR(v_attribute16, instr(v_attribute16,';',1,27)+1, instr(v_attribute16, ';',1,28)-(instr(v_attribute16, ';',1,27)+1))
   INTO v_ind
   FROM dual;
-
   -- Each business class node will get a ind
   l_v_ind_n  := dbms_xmldom.appendchild( l_bus_class_node , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'sup:ind' )) );
   l_v_ind_tn := dbms_xmldom.appendchild( l_v_ind_n , dbms_xmldom.makenode(dbms_xmldom.createtextnode(l_domdoc, v_ind)) );
-
   BEGIN
     SELECT meaning
     INTO v_ind_desc
@@ -3334,21 +3188,16 @@ BEGIN
     fnd_file.put_line(fnd_file.log,'Error getting v_ind_desc'||sqlerrm);
     dbms_output.put_line('Error getting v_ind_desc');
   END;
-
   -- Each business class node will get a ind desc
   l_v_ind_desc_n  := dbms_xmldom.appendchild( l_bus_class_node , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'sup:indDescription' )) );
   l_v_ind_desc_tn := dbms_xmldom.appendchild( l_v_ind_desc_n , dbms_xmldom.makenode(dbms_xmldom.createtextnode(l_domdoc, v_ind_desc)) );
-
   --Minority_owned
-
   SELECT SUBSTR(v_attribute16,instr(v_attribute16, ';',-1,1)+1, (LENGTH (v_attribute16)- instr(v_attribute16, ';',-1,1)))
   INTO v_minority_owned
   FROM dual;
-
   -- Each business class node will get a minority_owned
   l_v_minority_owned_n  := dbms_xmldom.appendchild( l_bus_class_node , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'sup:minority_owned' )) );
   l_v_minority_owned_tn := dbms_xmldom.appendchild( l_v_minority_owned_n , dbms_xmldom.makenode(dbms_xmldom.createtextnode(l_domdoc, v_minority_owned)) );
-
   BEGIN
     IF v_minority_owned <> 'N' THEN
       SELECT meaning
@@ -3370,31 +3219,29 @@ BEGIN
     fnd_file.put_line(fnd_file.log,'Error getting v_minority_owned_desc'||sqlerrm);
     dbms_output.put_line('Error getting v_minority_owned_desc');
   END;
-
   -- Each business class node will get a minority_owned desc
   l_v_minority_owned_desc_n  := dbms_xmldom.appendchild( l_bus_class_node , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'sup:minorityOwnedDescription' )) );
   l_v_minority_owned_desc_tn := dbms_xmldom.appendchild( l_v_minority_owned_desc_n , dbms_xmldom.makenode(dbms_xmldom.createtextnode(l_domdoc, v_minority_owned_desc)) );
-
-  l_addr_list_element:= dbms_xmldom.createelement(l_domdoc, 'sup:addressList' );
-  l_addr_list_node   := dbms_xmldom.appendchild( l_supplier_node , dbms_xmldom.makenode( l_addr_list_element) );
+  l_addr_list_element        := dbms_xmldom.createelement(l_domdoc, 'sup:addressList' );
+  l_addr_list_node           := dbms_xmldom.appendchild( l_supplier_node , dbms_xmldom.makenode( l_addr_list_element) );
   ---Purch Address
   IF v_site_purchaddr1 IS NOT NULL THEN
-    l_addr_element := dbms_xmldom.createelement(l_domdoc, 'sup:address' );
-    l_addr_node    := dbms_xmldom.appendchild( l_addr_list_node--l_supplier_node
+    l_addr_element     := dbms_xmldom.createelement(l_domdoc, 'sup:address' );
+    l_addr_node        := dbms_xmldom.appendchild( l_addr_list_node--l_supplier_node
     , dbms_xmldom.makenode( l_addr_element) );
     l_v_site_puraddr_type_n := dbms_xmldom.appendchild( l_addr_node--l_site_purch_addr_node
     , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'sup:addressType' )) );
     l_v_site_puraddr_type_tn := dbms_xmldom.appendchild( l_v_site_puraddr_type_n , dbms_xmldom.makenode(dbms_xmldom.createtextnode(l_domdoc, '99' )) );
-    l_v_site_purseqnum_n := dbms_xmldom.appendchild( l_addr_node--l_site_purch_addr_node
+    l_v_site_purseqnum_n     := dbms_xmldom.appendchild( l_addr_node--l_site_purch_addr_node
     , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'sup:sequenceNumber' )) );
-    l_v_site_purseqnum_tn := dbms_xmldom.appendchild( l_v_site_purseqnum_n , dbms_xmldom.makenode(dbms_xmldom.createtextnode(l_domdoc, v_addr_flag )) );
+    l_v_site_purseqnum_tn     := dbms_xmldom.appendchild( l_v_site_purseqnum_n , dbms_xmldom.makenode(dbms_xmldom.createtextnode(l_domdoc, v_addr_flag )) );
     l_v_site_puraction_type_n := dbms_xmldom.appendchild( l_addr_node--l_site_purch_addr_node
     , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'sup:actionType' )) );
     l_v_site_puraction_type_tn := dbms_xmldom.appendchild( l_v_site_puraction_type_n , dbms_xmldom.makenode(dbms_xmldom.createtextnode(l_domdoc, '' )) );
-    l_v_site_purpriaddrind_n := dbms_xmldom.appendchild( l_addr_node--l_site_purch_addr_node
+    l_v_site_purpriaddrind_n   := dbms_xmldom.appendchild( l_addr_node--l_site_purch_addr_node
     , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'sup:primaryAddressIndicator' )) );
     l_v_site_purpriaddrind_tn := dbms_xmldom.appendchild( l_v_site_purpriaddrind_n , dbms_xmldom.makenode(dbms_xmldom.createtextnode(l_domdoc,'' )) );
-    l_v_site_purchaddr1_node := dbms_xmldom.appendchild(l_addr_node-- l_site_purch_addr_node
+    l_v_site_purchaddr1_node  := dbms_xmldom.appendchild(l_addr_node-- l_site_purch_addr_node
     , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'sup:addressLine1' )) );
     l_v_site_purchaddr1_textnode := dbms_xmldom.appendchild( l_v_site_purchaddr1_node , dbms_xmldom.makenode(dbms_xmldom.createtextnode(l_domdoc, v_site_purchaddr1 )) );
     l_v_site_purchaddr2_node     := dbms_xmldom.appendchild( l_addr_node--l_site_purch_addr_node
@@ -3436,7 +3283,7 @@ BEGIN
     l_v_site_pur_add_spe_notes_n := dbms_xmldom.appendchild( l_addr_node--l_site_addr_node
     , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'sup:specialNote' )) );
     L_V_SITE_PUR_ADD_SPE_NOTES_TN := DBMS_XMLDOM.APPENDCHILD( L_V_SITE_PUR_ADD_SPE_NOTES_N , DBMS_XMLDOM.MAKENODE(DBMS_XMLDOM.CREATETEXTNODE(L_DOMDOC, '' )) );
-    L_V_SITE_pur_od_comment1_N := dbms_xmldom.appendchild( l_addr_node--l_site_addr_node
+    L_V_SITE_pur_od_comment1_N    := dbms_xmldom.appendchild( l_addr_node--l_site_addr_node
     , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'sup:odComment1' )) );
     L_V_SITE_pur_od_comment1_tn := DBMS_XMLDOM.APPENDCHILD( L_V_SITE_pur_od_comment1_N , DBMS_XMLDOM.MAKENODE(DBMS_XMLDOM.CREATETEXTNODE(L_DOMDOC,'' )) );
     L_V_SITE_pur_od_comment2_N  := dbms_xmldom.appendchild( l_addr_node--l_site_addr_node
@@ -3448,12 +3295,10 @@ BEGIN
     L_V_SITE_pur_od_comment4_N  := dbms_xmldom.appendchild( l_addr_node--l_site_addr_node
     , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'sup:odComment4' )) );
     L_V_SITE_pur_od_comment4_tn := DBMS_XMLDOM.APPENDCHILD( L_V_SITE_pur_od_comment4_N , DBMS_XMLDOM.MAKENODE(DBMS_XMLDOM.CREATETEXTNODE(L_DOMDOC,'' )) );
-
     ---od_ship_from_addr_id
     L_V_SITE_pur_SHIP_ADDR_ID_N := dbms_xmldom.appendchild( l_addr_node--l_site_addr_node
     , DBMS_XMLDOM.MAKENODE(DBMS_XMLDOM.CREATEELEMENT(L_DOMDOC, 'sup:odShipFromAddressId' )) );
     L_V_SITE_Pur_SHIP_ADDR_ID_TN := DBMS_XMLDOM.APPENDCHILD( L_V_SITE_Pur_SHIP_ADDR_ID_N , DBMS_XMLDOM.MAKENODE(DBMS_XMLDOM.CREATETEXTNODE(L_DOMDOC,'' )) );
-
     --Contact Node
     l_site_purch_cont_list_node := dbms_xmldom.appendchild( l_addr_node--l_site_purch_addr_node
     , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'sup:contactList' )) );
@@ -3485,38 +3330,32 @@ BEGIN
     l_v_site_con_purchphtype_tn  := dbms_xmldom.appendchild( l_v_site_con_purchphtype_n , dbms_xmldom.makenode(dbms_xmldom.createtextnode(l_domdoc, 'Phone' )) );
     l_v_site_con_purchphone_n    := dbms_xmldom.appendchild(l_site_pur_cont_phasso_node , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'odc:phone' )) );
     l_v_site_con_purphareacode_n := dbms_xmldom.appendchild(l_v_site_con_purchphone_n , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'odc:areaCode' )) );
-
     IF v_site_contact_purchphone IS NOT NULL THEN
       SELECT SUBSTR(v_site_contact_purchphone,1,3) INTO l_v_purareacode FROM dual;
     ELSE
       l_v_purareacode := '';
     END IF;
-
     l_v_site_con_purphareacode_tn := dbms_xmldom.appendchild( l_v_site_con_purphareacode_n , dbms_xmldom.makenode(dbms_xmldom.createtextnode(l_domdoc, l_v_purareacode ))--
     );
     l_v_site_con_purphcntrycode_n  := dbms_xmldom.appendchild(l_v_site_con_purchphone_n , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'odc:countryCode' )) );
     l_v_site_con_purphcntrycode_tn := dbms_xmldom.appendchild( l_v_site_con_purphcntrycode_n , dbms_xmldom.makenode(dbms_xmldom.createtextnode(l_domdoc, '' ))--
     );
     l_v_site_con_purchph_n       := dbms_xmldom.appendchild(l_v_site_con_purchphone_n , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'odc:phoneNumber' )) );
-
     IF v_site_contact_purchphone IS NOT NULL THEN
       SELECT SUBSTR(v_site_contact_purchphone,4,10) INTO l_v_purph FROM dual;
     ELSE
       l_v_purph := '';
     END IF;
-
     l_v_site_con_purchph_tn    := dbms_xmldom.appendchild( l_v_site_con_purchph_n , dbms_xmldom.makenode(dbms_xmldom.createtextnode(l_domdoc, l_v_purph )) );
     l_v_site_con_purchphext_n  := dbms_xmldom.appendchild(l_v_site_con_purchphone_n , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'odc:extension' )) );
     l_v_site_con_purchphext_tn := dbms_xmldom.appendchild( l_v_site_con_purchphext_n , dbms_xmldom.makenode(dbms_xmldom.createtextnode(l_domdoc, '' )) );
     l_v_site_con_purchphpri_n  := dbms_xmldom.appendchild(l_site_pur_cont_phasso_node , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'odc:isPrimary' )) );
     l_v_site_con_purchphpri_tn := dbms_xmldom.appendchild( l_v_site_con_purchphpri_n , dbms_xmldom.makenode(dbms_xmldom.createtextnode(l_domdoc, '' )) );
-
-    l_v_odphnbrext_n  := dbms_xmldom.appendchild(l_site_pur_cont_phasso_node , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'odc:odPhoneNumberExt' )) );
-    l_v_odphnbrext_tn := dbms_xmldom.appendchild( l_v_odphnbrext_n , dbms_xmldom.makenode(dbms_xmldom.createtextnode(l_domdoc, '' )) );
-    l_v_odph800nbr_n  := dbms_xmldom.appendchild(l_site_pur_cont_phasso_node , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'odc:odPhone800Number' )) );
-    l_v_odph800nbr_tn := dbms_xmldom.appendchild( l_v_odph800nbr_n , dbms_xmldom.makenode(dbms_xmldom.createtextnode(l_domdoc, '' )) );
-
-    l_site_pur_cont_fax_node := dbms_xmldom.appendchild( l_site_purch_contact_node--l_addr_node--l_site_addr_node
+    l_v_odphnbrext_n           := dbms_xmldom.appendchild(l_site_pur_cont_phasso_node , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'odc:odPhoneNumberExt' )) );
+    l_v_odphnbrext_tn          := dbms_xmldom.appendchild( l_v_odphnbrext_n , dbms_xmldom.makenode(dbms_xmldom.createtextnode(l_domdoc, '' )) );
+    l_v_odph800nbr_n           := dbms_xmldom.appendchild(l_site_pur_cont_phasso_node , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'odc:odPhone800Number' )) );
+    l_v_odph800nbr_tn          := dbms_xmldom.appendchild( l_v_odph800nbr_n , dbms_xmldom.makenode(dbms_xmldom.createtextnode(l_domdoc, '' )) );
+    l_site_pur_cont_fax_node   := dbms_xmldom.appendchild( l_site_purch_contact_node--l_addr_node--l_site_addr_node
     , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'sup:fax' )) );
     l_site_pur_cont_faxasso_node := dbms_xmldom.appendchild( l_site_pur_cont_fax_node--l_addr_node--l_site_addr_node
     , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'odc:phoneAssociation' )) );
@@ -3524,33 +3363,28 @@ BEGIN
     l_v_site_con_purchfaxtype_tn  := dbms_xmldom.appendchild( l_v_site_con_purchfaxtype_n , dbms_xmldom.makenode(dbms_xmldom.createtextnode(l_domdoc, 'fax' )) );
     l_v_site_con_purchfax_n       := dbms_xmldom.appendchild(l_site_pur_cont_faxasso_node , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'odc:phone' )) );
     l_v_site_con_purfaxareacode_n := dbms_xmldom.appendchild(l_v_site_con_purchfax_n , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'odc:areaCode' )) );
-
     IF v_site_contact_purchfax    IS NOT NULL THEN
       SELECT SUBSTR(v_site_contact_purchfax,1,3) INTO l_v_purfaxareacode FROM dual;
     ELSE
       l_v_purfaxareacode := '';
     END IF;
-
     l_v_site_con_purfaxareacode_tn := dbms_xmldom.appendchild( l_v_site_con_purfaxareacode_n , dbms_xmldom.makenode(dbms_xmldom.createtextnode(l_domdoc, l_v_purfaxareacode ))--
     );
     l_v_site_con_purfxcntrycode_n  := dbms_xmldom.appendchild(l_v_site_con_purchfax_n , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'odc:countryCode' )) );
     l_v_site_con_purfxcntrycode_tn := dbms_xmldom.appendchild( l_v_site_con_purfxcntrycode_n , dbms_xmldom.makenode(dbms_xmldom.createtextnode(l_domdoc, '' ))--
     );
-
     l_v_site_con_purchfx_n     := dbms_xmldom.appendchild(l_v_site_con_purchfax_n , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'odc:phoneNumber' )) );
     IF v_site_contact_purchfax IS NOT NULL THEN
       SELECT SUBSTR(v_site_contact_purchfax,4,10) INTO l_v_purfax FROM dual;
     ELSE
       l_v_purfax := '';
     END IF;
-
-    l_v_site_con_purchfx_tn := dbms_xmldom.appendchild( l_v_site_con_purchfax_n , dbms_xmldom.makenode(dbms_xmldom.createtextnode(l_domdoc, l_v_purfax )) );
-
+    l_v_site_con_purchfx_tn     := dbms_xmldom.appendchild( l_v_site_con_purchfax_n , dbms_xmldom.makenode(dbms_xmldom.createtextnode(l_domdoc, l_v_purfax )) );
     l_v_site_con_purchfaxext_n  := dbms_xmldom.appendchild(l_v_site_con_purchfax_n , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'odc:extension' )) );
     l_v_site_con_purchfaxext_tn := dbms_xmldom.appendchild( l_v_site_con_purchfaxext_n , dbms_xmldom.makenode(dbms_xmldom.createtextnode(l_domdoc, '' )) );
     l_v_site_con_purchfaxpri_n  := dbms_xmldom.appendchild(l_site_pur_cont_faxasso_node , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'odc:isPrimary' )) );
     l_v_site_con_purchfaxpri_tn := dbms_xmldom.appendchild( l_v_site_con_purchfaxpri_n , dbms_xmldom.makenode(dbms_xmldom.createtextnode(l_domdoc, '' )) );
-    l_site_pur_cont_email_node := dbms_xmldom.appendchild( l_site_purch_contact_node--l_addr_node--l_site_addr_node
+    l_site_pur_cont_email_node  := dbms_xmldom.appendchild( l_site_purch_contact_node--l_addr_node--l_site_addr_node
     , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'sup:emails' )) );
     l_site_pur_cont_emailasso_node := dbms_xmldom.appendchild( l_site_pur_cont_email_node--l_addr_node--l_site_addr_node
     , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'odc:emailAssociation' )) );
@@ -3560,24 +3394,18 @@ BEGIN
     l_v_site_con_purchemail_tn   := dbms_xmldom.appendchild( l_v_site_con_purchemail_n , dbms_xmldom.makenode(dbms_xmldom.createtextnode(l_domdoc, v_site_contact_purchemail )) );
     l_v_site_con_puremailpri_n   := dbms_xmldom.appendchild( l_site_pur_cont_emailasso_node , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'odc:isPrimary' )) );
     l_v_site_con_puremailpri_tn  := dbms_xmldom.appendchild( l_v_site_con_puremailpri_n , dbms_xmldom.makenode(dbms_xmldom.createtextnode(l_domdoc, '' )) );
-
-    l_v_purodemailindflg_n  := dbms_xmldom.appendchild( l_site_pur_cont_emailasso_node , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'odc:odEmailIndicatorFlag' )) );
-    l_v_purodemailindflg_tn := dbms_xmldom.appendchild( l_v_purodemailindflg_n , dbms_xmldom.makenode(dbms_xmldom.createtextnode(l_domdoc, '' )) );
-
+    l_v_purodemailindflg_n       := dbms_xmldom.appendchild( l_site_pur_cont_emailasso_node , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'odc:odEmailIndicatorFlag' )) );
+    l_v_purodemailindflg_tn      := dbms_xmldom.appendchild( l_v_purodemailindflg_n , dbms_xmldom.makenode(dbms_xmldom.createtextnode(l_domdoc, '' )) );
   END IF;
-
   ---Pay Address
-
   IF v_site_payaddr1 IS NOT NULL THEN
-    l_addr_element := dbms_xmldom.createelement(l_domdoc, 'sup:address' );
-    l_addr_node    := dbms_xmldom.appendchild( l_addr_list_node--l_supplier_node
+    l_addr_element   := dbms_xmldom.createelement(l_domdoc, 'sup:address' );
+    l_addr_node      := dbms_xmldom.appendchild( l_addr_list_node--l_supplier_node
     , dbms_xmldom.makenode( l_addr_element) );
-
     l_v_site_payaddr_type_n := dbms_xmldom.appendchild( l_addr_node--l_site_pay_addr_node
     , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'sup:addressType' )) );
     l_v_site_payaddr_type_tn := dbms_xmldom.appendchild( l_v_site_payaddr_type_n , dbms_xmldom.makenode(dbms_xmldom.createtextnode(l_domdoc, '99' )) );
-
-    l_v_site_payseqnum_n := dbms_xmldom.appendchild( l_addr_node--l_site_purch_addr_node
+    l_v_site_payseqnum_n     := dbms_xmldom.appendchild( l_addr_node--l_site_purch_addr_node
     , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'sup:sequenceNumber' )) );
     l_v_site_payseqnum_tn     := dbms_xmldom.appendchild( l_v_site_payseqnum_n , dbms_xmldom.makenode(dbms_xmldom.createtextnode(l_domdoc, v_addr_flag )) );
     l_v_site_payaction_type_n := dbms_xmldom.appendchild( l_addr_node--l_site_purch_addr_node
@@ -3586,8 +3414,7 @@ BEGIN
     l_v_site_purpriaddrind_n   := dbms_xmldom.appendchild( l_addr_node--l_site_purch_addr_node
     , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'sup:primaryAddressIndicator' )) );
     l_v_site_purpriaddrind_tn := dbms_xmldom.appendchild( l_v_site_purpriaddrind_n , dbms_xmldom.makenode(dbms_xmldom.createtextnode(l_domdoc,'' )) );
-
-    l_v_site_payaddr1_node := dbms_xmldom.appendchild( l_addr_node--l_site_pay_addr_node
+    l_v_site_payaddr1_node    := dbms_xmldom.appendchild( l_addr_node--l_site_pay_addr_node
     , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'sup:addressLine1' )) );
     l_v_site_payaddr1_textnode := dbms_xmldom.appendchild( l_v_site_payaddr1_node , dbms_xmldom.makenode(dbms_xmldom.createtextnode(l_domdoc, v_site_payaddr1 )) );
     l_v_site_payaddr2_node     := dbms_xmldom.appendchild( l_addr_node--l_site_pay_addr_node
@@ -3629,8 +3456,7 @@ BEGIN
     l_v_site_pay_add_spe_notes_n := dbms_xmldom.appendchild( l_addr_node--l_site_addr_node
     , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'sup:specialNote' )) );
     L_V_SITE_PAY_ADD_SPE_NOTES_TN := DBMS_XMLDOM.APPENDCHILD( L_V_SITE_PAY_ADD_SPE_NOTES_N , DBMS_XMLDOM.MAKENODE(DBMS_XMLDOM.CREATETEXTNODE(L_DOMDOC, '' )) );
-
-    L_V_SITE_pur_od_comment1_N := dbms_xmldom.appendchild( l_addr_node--l_site_addr_node
+    L_V_SITE_pur_od_comment1_N    := dbms_xmldom.appendchild( l_addr_node--l_site_addr_node
     , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'sup:odComment1' )) );
     L_V_SITE_pur_od_comment1_tn := DBMS_XMLDOM.APPENDCHILD( L_V_SITE_pur_od_comment1_N , DBMS_XMLDOM.MAKENODE(DBMS_XMLDOM.CREATETEXTNODE(L_DOMDOC,'' )) );
     L_V_SITE_pur_od_comment2_N  := dbms_xmldom.appendchild( l_addr_node--l_site_addr_node
@@ -3642,12 +3468,10 @@ BEGIN
     L_V_SITE_pur_od_comment4_N  := dbms_xmldom.appendchild( l_addr_node--l_site_addr_node
     , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'sup:odComment4' )) );
     L_V_SITE_pur_od_comment4_tn := DBMS_XMLDOM.APPENDCHILD( L_V_SITE_pur_od_comment4_N , DBMS_XMLDOM.MAKENODE(DBMS_XMLDOM.CREATETEXTNODE(L_DOMDOC,'' )) );
-
     ---od_ship_from_addr_id
     L_V_SITE_pay_SHIP_ADDR_ID_N := dbms_xmldom.appendchild( l_addr_node--l_site_addr_node
     , DBMS_XMLDOM.MAKENODE(DBMS_XMLDOM.CREATEELEMENT(L_DOMDOC, 'sup:odShipFromAddressId' )) );
     L_V_SITE_Pay_SHIP_ADDR_ID_TN := DBMS_XMLDOM.APPENDCHILD( L_V_SITE_Pay_SHIP_ADDR_ID_N , DBMS_XMLDOM.MAKENODE(DBMS_XMLDOM.CREATETEXTNODE(L_DOMDOC,'' )) );
-
     --Contact Node
     l_site_pay_cont_list_node := dbms_xmldom.appendchild( l_addr_node--l_site_purch_addr_node
     , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'sup:contactList' )) );
@@ -3655,7 +3479,6 @@ BEGIN
     , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'sup:contact' )) );
     l_site_pay_contact_pname_node := dbms_xmldom.appendchild( l_site_pay_contact_node--l_addr_node--l_site_addr_node
     , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'sup:name' )) );
-
     l_v_site_con_payfname_n     := dbms_xmldom.appendchild( l_site_pay_contact_pname_node , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'odc:firstName' )) );
     l_v_site_con_payfname_tn    := dbms_xmldom.appendchild( l_v_site_con_payfname_n , dbms_xmldom.makenode(dbms_xmldom.createtextnode(l_domdoc, '' )) );
     l_v_site_con_paymname_n     := dbms_xmldom.appendchild( l_site_pay_contact_pname_node , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'odc:middleName' )) );
@@ -3666,30 +3489,25 @@ BEGIN
     l_v_site_con_payname_tn     := dbms_xmldom.appendchild( l_v_site_con_payname_n , dbms_xmldom.makenode(dbms_xmldom.createtextnode(l_domdoc, v_site_contact_payname)) );
     l_site_pay_cont_ptitle_node := dbms_xmldom.appendchild( l_site_pay_contact_node--l_addr_node--l_site_addr_node
     , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'sup:title' )) );
-
     l_v_pay_con_salutation_n := dbms_xmldom.appendchild(l_site_pay_cont_ptitle_node--l_addr_node-- l_address_node
     , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'odc:salutation' )) );
     l_v_pay_con_salutation_tn := dbms_xmldom.appendchild( l_v_pay_con_salutation_n , dbms_xmldom.makenode(dbms_xmldom.createtextnode(l_domdoc, '')) );
     l_v_pay_con_jobtitle_n    := dbms_xmldom.appendchild(l_site_pay_cont_ptitle_node--l_addr_node-- l_address_node
     , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'odc:jobTitle' )) );
     l_v_pay_con_jobtitle_tn := dbms_xmldom.appendchild( l_v_pay_con_jobtitle_n , dbms_xmldom.makenode(dbms_xmldom.createtextnode(l_domdoc, '')) );
-
     l_site_pay_cont_ph_node := dbms_xmldom.appendchild( l_site_pay_contact_node--l_addr_node--l_site_addr_node
     , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'sup:phones' )) );
     l_site_pay_cont_phasso_node := dbms_xmldom.appendchild( l_site_pay_cont_ph_node--l_addr_node--l_site_addr_node
     , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'odc:phoneAssociation' )) );
-    l_v_site_con_payphtype_n  := dbms_xmldom.appendchild(l_site_pay_cont_phasso_node , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'odc:phoneType' )) );
-    l_v_site_con_payphtype_tn := dbms_xmldom.appendchild( l_v_site_con_payphtype_n , dbms_xmldom.makenode(dbms_xmldom.createtextnode(l_domdoc, 'Phone' )) );
-
+    l_v_site_con_payphtype_n     := dbms_xmldom.appendchild(l_site_pay_cont_phasso_node , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'odc:phoneType' )) );
+    l_v_site_con_payphtype_tn    := dbms_xmldom.appendchild( l_v_site_con_payphtype_n , dbms_xmldom.makenode(dbms_xmldom.createtextnode(l_domdoc, 'Phone' )) );
     l_v_site_con_payphone_n      := dbms_xmldom.appendchild(l_site_pay_cont_phasso_node , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'odc:phone' )) );
     l_v_site_con_payphareacode_n := dbms_xmldom.appendchild(l_v_site_con_payphone_n , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'odc:areaCode' )) );
-
     IF v_site_contact_payphone   IS NOT NULL THEN
       SELECT SUBSTR(v_site_contact_payphone,1,3) INTO l_v_payareacode FROM dual;
     ELSE
       l_v_payareacode := '';
     END IF;
-
     l_v_site_con_payphareacode_tn := dbms_xmldom.appendchild( l_v_site_con_payphareacode_n , dbms_xmldom.makenode(dbms_xmldom.createtextnode(l_domdoc, l_v_payareacode ))--
     );
     l_v_site_con_payphcntrycode_n  := dbms_xmldom.appendchild(l_v_site_con_payphone_n , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'odc:countryCode' )) );
@@ -3697,60 +3515,49 @@ BEGIN
     );
     l_v_site_con_payph_n := dbms_xmldom.appendchild( l_v_site_con_payphone_n--l_site_pay_contact_node
     , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'odc:phoneNumber' )) );
-
     IF v_site_contact_payphone IS NOT NULL THEN
       SELECT SUBSTR(v_site_contact_payphone,4,10) INTO l_v_payph FROM dual;
     ELSE
       l_v_payph := '';
     END IF;
-
-    l_v_site_con_payph_tn := dbms_xmldom.appendchild( l_v_site_con_payph_n , dbms_xmldom.makenode(dbms_xmldom.createtextnode(l_domdoc, l_v_payph )) );
-
+    l_v_site_con_payph_tn    := dbms_xmldom.appendchild( l_v_site_con_payph_n , dbms_xmldom.makenode(dbms_xmldom.createtextnode(l_domdoc, l_v_payph )) );
     l_v_site_con_payphext_n  := dbms_xmldom.appendchild(l_v_site_con_payphone_n , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'odc:extension' )) );
     l_v_site_con_payphext_tn := dbms_xmldom.appendchild( l_v_site_con_payphext_n , dbms_xmldom.makenode(dbms_xmldom.createtextnode(l_domdoc, '' )) );
     l_v_site_con_payphpri_n  := dbms_xmldom.appendchild(l_site_pay_cont_phasso_node , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'odc:isPrimary' )) );
     l_v_site_con_payphpri_tn := dbms_xmldom.appendchild( l_v_site_con_payphpri_n , dbms_xmldom.makenode(dbms_xmldom.createtextnode(l_domdoc, '' )) );
-
-    l_v_odphnbrext_n  := dbms_xmldom.appendchild(l_site_pay_cont_phasso_node , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'odc:odPhoneNumberExt' )) );
-    l_v_odphnbrext_tn := dbms_xmldom.appendchild( l_v_odphnbrext_n , dbms_xmldom.makenode(dbms_xmldom.createtextnode(l_domdoc, '' )) );
-    l_v_odph800nbr_n  := dbms_xmldom.appendchild(l_site_pay_cont_phasso_node , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'odc:odPhone800Number' )) );
-    l_v_odph800nbr_tn := dbms_xmldom.appendchild( l_v_odph800nbr_n , dbms_xmldom.makenode(dbms_xmldom.createtextnode(l_domdoc, '' )) );
-
+    l_v_odphnbrext_n         := dbms_xmldom.appendchild(l_site_pay_cont_phasso_node , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'odc:odPhoneNumberExt' )) );
+    l_v_odphnbrext_tn        := dbms_xmldom.appendchild( l_v_odphnbrext_n , dbms_xmldom.makenode(dbms_xmldom.createtextnode(l_domdoc, '' )) );
+    l_v_odph800nbr_n         := dbms_xmldom.appendchild(l_site_pay_cont_phasso_node , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'odc:odPhone800Number' )) );
+    l_v_odph800nbr_tn        := dbms_xmldom.appendchild( l_v_odph800nbr_n , dbms_xmldom.makenode(dbms_xmldom.createtextnode(l_domdoc, '' )) );
     l_site_pay_cont_fax_node := dbms_xmldom.appendchild( l_site_pay_contact_node--l_addr_node--l_site_addr_node
     , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'sup:fax' )) );
     l_site_pay_cont_faxasso_node := dbms_xmldom.appendchild( l_site_pay_cont_fax_node--l_addr_node--l_site_addr_node
     , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'odc:phoneAssociation' )) );
-    l_v_site_con_payfaxtype_n  := dbms_xmldom.appendchild(l_site_pay_cont_faxasso_node , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'odc:phoneType' )) );
-    l_v_site_con_payfaxtype_tn := dbms_xmldom.appendchild( l_v_site_con_payfaxtype_n , dbms_xmldom.makenode(dbms_xmldom.createtextnode(l_domdoc, 'fax' )) );
-
+    l_v_site_con_payfaxtype_n     := dbms_xmldom.appendchild(l_site_pay_cont_faxasso_node , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'odc:phoneType' )) );
+    l_v_site_con_payfaxtype_tn    := dbms_xmldom.appendchild( l_v_site_con_payfaxtype_n , dbms_xmldom.makenode(dbms_xmldom.createtextnode(l_domdoc, 'fax' )) );
     l_v_site_con_payfax_n         := dbms_xmldom.appendchild(l_site_pay_cont_faxasso_node , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'odc:phone' )) );
     l_v_site_con_payfaxareacode_n := dbms_xmldom.appendchild(l_v_site_con_payfax_n , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'odc:areaCode' )) );
-
     IF v_site_contact_payfax      IS NOT NULL THEN
       SELECT SUBSTR(v_site_contact_payfax,1,3) INTO l_v_payfaxareacode FROM dual;
     ELSE
       l_v_payfaxareacode := '';
     END IF;
-
     l_v_site_con_payfaxareacode_tn := dbms_xmldom.appendchild( l_v_site_con_payfaxareacode_n , dbms_xmldom.makenode(dbms_xmldom.createtextnode(l_domdoc, l_v_payfaxareacode ))--
     );
     l_v_site_con_payfxcntrycode_n  := dbms_xmldom.appendchild(l_v_site_con_payfax_n , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'odc:countryCode' )) );
     l_v_site_con_payfxcntrycode_tn := dbms_xmldom.appendchild( l_v_site_con_payfxcntrycode_n , dbms_xmldom.makenode(dbms_xmldom.createtextnode(l_domdoc, '' ))--
     );
     l_v_site_con_payfx_n     := dbms_xmldom.appendchild(l_v_site_con_payfax_n , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'odc:phoneNumber' )) );
-
     IF v_site_contact_payfax IS NOT NULL THEN
       SELECT SUBSTR(v_site_contact_payfax,4,10) INTO l_v_payfax FROM dual;
     ELSE
       l_v_payfax := '';
     END IF;
-
-    l_v_site_con_payfx_tn     := dbms_xmldom.appendchild( l_v_site_con_payfx_n , dbms_xmldom.makenode(dbms_xmldom.createtextnode(l_domdoc, l_v_payfax )) );
-    l_v_site_con_payfaxext_n  := dbms_xmldom.appendchild(l_v_site_con_payfax_n , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'odc:extension' )) );
-    l_v_site_con_payfaxext_tn := dbms_xmldom.appendchild( l_v_site_con_payfaxext_n , dbms_xmldom.makenode(dbms_xmldom.createtextnode(l_domdoc, '' )) );
-    l_v_site_con_payfaxpri_n  := dbms_xmldom.appendchild(l_site_pay_cont_faxasso_node , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'odc:isPrimary' )) );
-    l_v_site_con_payfaxpri_tn := dbms_xmldom.appendchild( l_v_site_con_payfaxpri_n , dbms_xmldom.makenode(dbms_xmldom.createtextnode(l_domdoc, '' )) );
-
+    l_v_site_con_payfx_tn      := dbms_xmldom.appendchild( l_v_site_con_payfx_n , dbms_xmldom.makenode(dbms_xmldom.createtextnode(l_domdoc, l_v_payfax )) );
+    l_v_site_con_payfaxext_n   := dbms_xmldom.appendchild(l_v_site_con_payfax_n , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'odc:extension' )) );
+    l_v_site_con_payfaxext_tn  := dbms_xmldom.appendchild( l_v_site_con_payfaxext_n , dbms_xmldom.makenode(dbms_xmldom.createtextnode(l_domdoc, '' )) );
+    l_v_site_con_payfaxpri_n   := dbms_xmldom.appendchild(l_site_pay_cont_faxasso_node , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'odc:isPrimary' )) );
+    l_v_site_con_payfaxpri_tn  := dbms_xmldom.appendchild( l_v_site_con_payfaxpri_n , dbms_xmldom.makenode(dbms_xmldom.createtextnode(l_domdoc, '' )) );
     l_site_pay_cont_email_node := dbms_xmldom.appendchild( l_site_pay_contact_node--l_addr_node--l_site_addr_node
     , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'sup:emails' )) );
     l_site_pay_cont_emailasso_node := dbms_xmldom.appendchild( l_site_pay_cont_email_node--l_addr_node--l_site_addr_node
@@ -3764,13 +3571,11 @@ BEGIN
     l_v_purodemailindflg_n       := dbms_xmldom.appendchild( l_site_pay_cont_emailasso_node , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'odc:odEmailIndicatorFlag' )) );
     l_v_purodemailindflg_tn      := dbms_xmldom.appendchild( l_v_purodemailindflg_n , dbms_xmldom.makenode(dbms_xmldom.createtextnode(l_domdoc, '' )) );
   END IF;
-
   --PP Address
   IF v_site_ppaddr1 IS NOT NULL THEN
-    l_addr_element := dbms_xmldom.createelement(l_domdoc, 'sup:address' );
-    l_addr_node    := dbms_xmldom.appendchild( l_addr_list_node--l_supplier_node
+    l_addr_element  := dbms_xmldom.createelement(l_domdoc, 'sup:address' );
+    l_addr_node     := dbms_xmldom.appendchild( l_addr_list_node--l_supplier_node
     , dbms_xmldom.makenode( l_addr_element) );
-
     l_v_site_ppaddr_type_n := dbms_xmldom.appendchild( l_addr_node--l_site_pp_addr_node
     , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'sup:addressType' )) );
     l_v_site_ppaddr_type_tn := dbms_xmldom.appendchild( l_v_site_ppaddr_type_n , dbms_xmldom.makenode(dbms_xmldom.createtextnode(l_domdoc, '99' )) );
@@ -3783,7 +3588,7 @@ BEGIN
     l_v_site_purpriaddrind_n  := dbms_xmldom.appendchild( l_addr_node--l_site_purch_addr_node
     , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'sup:primaryAddressIndicator' )) );
     l_v_site_purpriaddrind_tn := dbms_xmldom.appendchild( l_v_site_purpriaddrind_n , dbms_xmldom.makenode(dbms_xmldom.createtextnode(l_domdoc,'' )) );
-    l_v_site_ppaddr1_node := dbms_xmldom.appendchild( l_addr_node--l_site_pp_addr_node
+    l_v_site_ppaddr1_node     := dbms_xmldom.appendchild( l_addr_node--l_site_pp_addr_node
     , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'sup:addressLine1' )) );
     l_v_site_ppaddr1_textnode := dbms_xmldom.appendchild( l_v_site_ppaddr1_node , dbms_xmldom.makenode(dbms_xmldom.createtextnode(l_domdoc, v_site_ppaddr1 )) );
     l_v_site_ppaddr2_node     := dbms_xmldom.appendchild( l_addr_node--l_site_pp_addr_node
@@ -3825,8 +3630,7 @@ BEGIN
     l_v_site_pp_add_spe_notes_n := dbms_xmldom.appendchild( l_addr_node--l_site_addr_node
     , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'sup:specialNote' )) );
     L_V_SITE_PP_ADD_SPE_NOTES_TN := DBMS_XMLDOM.APPENDCHILD( L_V_SITE_PP_ADD_SPE_NOTES_N , DBMS_XMLDOM.MAKENODE(DBMS_XMLDOM.CREATETEXTNODE(L_DOMDOC, '' )) );
-
-    L_V_SITE_pur_od_comment1_N := dbms_xmldom.appendchild( l_addr_node--l_site_addr_node
+    L_V_SITE_pur_od_comment1_N   := dbms_xmldom.appendchild( l_addr_node--l_site_addr_node
     , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'sup:odComment1' )) );
     L_V_SITE_pur_od_comment1_tn := DBMS_XMLDOM.APPENDCHILD( L_V_SITE_pur_od_comment1_N , DBMS_XMLDOM.MAKENODE(DBMS_XMLDOM.CREATETEXTNODE(L_DOMDOC,'' )) );
     L_V_SITE_pur_od_comment2_N  := dbms_xmldom.appendchild( l_addr_node--l_site_addr_node
@@ -3838,12 +3642,10 @@ BEGIN
     L_V_SITE_pur_od_comment4_N  := dbms_xmldom.appendchild( l_addr_node--l_site_addr_node
     , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'sup:odComment4' )) );
     L_V_SITE_pur_od_comment4_tn := DBMS_XMLDOM.APPENDCHILD( L_V_SITE_pur_od_comment4_N , DBMS_XMLDOM.MAKENODE(DBMS_XMLDOM.CREATETEXTNODE(L_DOMDOC,'' )) );
-
     --od_ship_from_addr_id
     L_V_SITE_pp_SHIP_ADDR_ID_N := dbms_xmldom.appendchild( l_addr_node--l_site_addr_node
     , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'sup:odShipFromAddressId' )) );
     L_V_SITE_pp_SHIP_ADDR_ID_TN := DBMS_XMLDOM.APPENDCHILD( L_V_SITE_pp_SHIP_ADDR_ID_N , DBMS_XMLDOM.MAKENODE(DBMS_XMLDOM.CREATETEXTNODE(L_DOMDOC,'' )) );
-
     --Contact Node
     l_site_pp_cont_list_node := dbms_xmldom.appendchild( l_addr_node--l_site_purch_addr_node
     , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'sup:contactList' )) );
@@ -3851,106 +3653,85 @@ BEGIN
     , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'sup:contact' )) );
     l_site_pp_contact_pname_node := dbms_xmldom.appendchild( l_site_pp_contact_node--l_addr_node--l_site_addr_node
     , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'sup:name' )) );
-
-    l_v_site_con_ppfname_n  := dbms_xmldom.appendchild( l_site_pp_contact_pname_node , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'odc:firstName' )) );
-    l_v_site_con_ppfname_tn := dbms_xmldom.appendchild( l_v_site_con_ppfname_n , dbms_xmldom.makenode(dbms_xmldom.createtextnode(l_domdoc, '' )) );
-    l_v_site_con_ppmname_n  := dbms_xmldom.appendchild( l_site_pp_contact_pname_node , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'odc:middleName' )) );
-    l_v_site_con_ppmname_tn := dbms_xmldom.appendchild( l_v_site_con_ppmname_n , dbms_xmldom.makenode(dbms_xmldom.createtextnode(l_domdoc, '' )) );
-    l_v_site_con_pplname_n  := dbms_xmldom.appendchild( l_site_pp_contact_pname_node , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'odc:lastName' )) );
-    l_v_site_con_pplname_tn := dbms_xmldom.appendchild( l_v_site_con_pplname_n , dbms_xmldom.makenode(dbms_xmldom.createtextnode(l_domdoc, '' )) );
-    l_v_site_con_ppname_n   := dbms_xmldom.appendchild( l_site_pp_contact_pname_node , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'odc:fullName' )) );
-    l_v_site_con_ppname_tn  := dbms_xmldom.appendchild( l_v_site_con_ppname_n , dbms_xmldom.makenode(dbms_xmldom.createtextnode(l_domdoc, v_site_contact_ppname )) );
-
+    l_v_site_con_ppfname_n     := dbms_xmldom.appendchild( l_site_pp_contact_pname_node , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'odc:firstName' )) );
+    l_v_site_con_ppfname_tn    := dbms_xmldom.appendchild( l_v_site_con_ppfname_n , dbms_xmldom.makenode(dbms_xmldom.createtextnode(l_domdoc, '' )) );
+    l_v_site_con_ppmname_n     := dbms_xmldom.appendchild( l_site_pp_contact_pname_node , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'odc:middleName' )) );
+    l_v_site_con_ppmname_tn    := dbms_xmldom.appendchild( l_v_site_con_ppmname_n , dbms_xmldom.makenode(dbms_xmldom.createtextnode(l_domdoc, '' )) );
+    l_v_site_con_pplname_n     := dbms_xmldom.appendchild( l_site_pp_contact_pname_node , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'odc:lastName' )) );
+    l_v_site_con_pplname_tn    := dbms_xmldom.appendchild( l_v_site_con_pplname_n , dbms_xmldom.makenode(dbms_xmldom.createtextnode(l_domdoc, '' )) );
+    l_v_site_con_ppname_n      := dbms_xmldom.appendchild( l_site_pp_contact_pname_node , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'odc:fullName' )) );
+    l_v_site_con_ppname_tn     := dbms_xmldom.appendchild( l_v_site_con_ppname_n , dbms_xmldom.makenode(dbms_xmldom.createtextnode(l_domdoc, v_site_contact_ppname )) );
     l_site_pp_cont_ptitle_node := dbms_xmldom.appendchild( l_site_pp_contact_node--l_addr_node--l_site_addr_node
     , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'sup:title' )) );
-
     l_v_pp_con_salutation_n := dbms_xmldom.appendchild(l_site_pp_cont_ptitle_node--l_addr_node-- l_address_node
     , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'odc:salutation' )) );
     l_v_pp_con_salutation_tn := dbms_xmldom.appendchild( l_v_pp_con_salutation_n , dbms_xmldom.makenode(dbms_xmldom.createtextnode(l_domdoc, '')) );
     l_v_pp_con_jobtitle_n    := dbms_xmldom.appendchild(l_site_pp_cont_ptitle_node--l_addr_node-- l_address_node
     , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'odc:jobTitle' )) );
     l_v_pp_con_jobtitle_tn := dbms_xmldom.appendchild( l_v_pp_con_jobtitle_n , dbms_xmldom.makenode(dbms_xmldom.createtextnode(l_domdoc, '')) );
-
     l_site_pp_cont_ph_node := dbms_xmldom.appendchild( l_site_pp_contact_node--l_addr_node--l_site_addr_node
     , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'sup:phones' )) );
     l_site_pp_cont_phasso_node := dbms_xmldom.appendchild( l_site_pp_cont_ph_node--l_addr_node--l_site_addr_node
     , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'odc:phoneAssociation' )) );
-    l_v_site_con_ppphtype_n  := dbms_xmldom.appendchild(l_site_pp_cont_phasso_node , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'odc:phoneType' )) );
-    l_v_site_con_ppphtype_tn := dbms_xmldom.appendchild( l_v_site_con_ppphtype_n , dbms_xmldom.makenode(dbms_xmldom.createtextnode(l_domdoc, 'Phone' )) );
-
+    l_v_site_con_ppphtype_n     := dbms_xmldom.appendchild(l_site_pp_cont_phasso_node , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'odc:phoneType' )) );
+    l_v_site_con_ppphtype_tn    := dbms_xmldom.appendchild( l_v_site_con_ppphtype_n , dbms_xmldom.makenode(dbms_xmldom.createtextnode(l_domdoc, 'Phone' )) );
     l_v_site_con_ppphone_n      := dbms_xmldom.appendchild(l_site_pp_cont_phasso_node , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'odc:phone' )) );
     l_v_site_con_ppphareacode_n := dbms_xmldom.appendchild(l_v_site_con_ppphone_n , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'odc:areaCode' )) );
-
     IF v_site_contact_ppphone   IS NOT NULL THEN
       SELECT SUBSTR(v_site_contact_ppphone,1,3) INTO l_v_ppareacode FROM dual;
     ELSE
       l_v_ppareacode := '';
     END IF;
-
     l_v_site_con_ppphareacode_tn := dbms_xmldom.appendchild( l_v_site_con_ppphareacode_n , dbms_xmldom.makenode(dbms_xmldom.createtextnode(l_domdoc, l_v_ppareacode ))--
     );
     l_v_site_con_ppphcntrycode_n  := dbms_xmldom.appendchild(l_v_site_con_ppphone_n , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'odc:countryCode' )) );
     l_v_site_con_ppphcntrycode_tn := dbms_xmldom.appendchild( l_v_site_con_ppphcntrycode_n , dbms_xmldom.makenode(dbms_xmldom.createtextnode(l_domdoc, '' ))--
     );
-
     l_v_site_con_ppph_n := dbms_xmldom.appendchild( l_v_site_con_ppphone_n--l_site_pay_contact_node
     , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'odc:phoneNumber' )) );
-
     IF v_site_contact_ppphone IS NOT NULL THEN
       SELECT SUBSTR(v_site_contact_ppphone,4,10) INTO l_v_ppph FROM dual;
     ELSE
       l_v_ppph := '';
     END IF;
-
-    l_v_site_con_ppph_tn := dbms_xmldom.appendchild( l_v_site_con_ppph_n , dbms_xmldom.makenode(dbms_xmldom.createtextnode(l_domdoc, l_v_ppph )) );
-
+    l_v_site_con_ppph_tn    := dbms_xmldom.appendchild( l_v_site_con_ppph_n , dbms_xmldom.makenode(dbms_xmldom.createtextnode(l_domdoc, l_v_ppph )) );
     l_v_site_con_ppphext_n  := dbms_xmldom.appendchild(l_v_site_con_ppphone_n , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'odc:extension' )) );
     l_v_site_con_ppphext_tn := dbms_xmldom.appendchild( l_v_site_con_ppphext_n , dbms_xmldom.makenode(dbms_xmldom.createtextnode(l_domdoc, '' )) );
     l_v_site_con_ppphpri_n  := dbms_xmldom.appendchild(l_site_pp_cont_phasso_node , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'odc:isPrimary' )) );
     l_v_site_con_ppphpri_tn := dbms_xmldom.appendchild( l_v_site_con_ppphpri_n , dbms_xmldom.makenode(dbms_xmldom.createtextnode(l_domdoc, '' )) );
-
-    l_v_odphnbrext_n  := dbms_xmldom.appendchild(l_site_pp_cont_phasso_node , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'odc:odPhoneNumberExt' )) );
-    l_v_odphnbrext_tn := dbms_xmldom.appendchild( l_v_odphnbrext_n , dbms_xmldom.makenode(dbms_xmldom.createtextnode(l_domdoc, '' )) );
-    l_v_odph800nbr_n  := dbms_xmldom.appendchild(l_site_pp_cont_phasso_node , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'odc:odPhone800Number' )) );
-    l_v_odph800nbr_tn := dbms_xmldom.appendchild( l_v_odph800nbr_n , dbms_xmldom.makenode(dbms_xmldom.createtextnode(l_domdoc, '' )) );
-
+    l_v_odphnbrext_n        := dbms_xmldom.appendchild(l_site_pp_cont_phasso_node , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'odc:odPhoneNumberExt' )) );
+    l_v_odphnbrext_tn       := dbms_xmldom.appendchild( l_v_odphnbrext_n , dbms_xmldom.makenode(dbms_xmldom.createtextnode(l_domdoc, '' )) );
+    l_v_odph800nbr_n        := dbms_xmldom.appendchild(l_site_pp_cont_phasso_node , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'odc:odPhone800Number' )) );
+    l_v_odph800nbr_tn       := dbms_xmldom.appendchild( l_v_odph800nbr_n , dbms_xmldom.makenode(dbms_xmldom.createtextnode(l_domdoc, '' )) );
     l_site_pp_cont_fax_node := dbms_xmldom.appendchild( l_site_pp_contact_node--l_addr_node--l_site_addr_node
     , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'sup:fax' )) );
     l_site_pp_cont_faxasso_node := dbms_xmldom.appendchild( l_site_pp_cont_fax_node--l_addr_node--l_site_addr_node
     , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'odc:phoneAssociation' )) );
-    l_v_site_con_ppfaxtype_n  := dbms_xmldom.appendchild(l_site_pp_cont_faxasso_node , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'odc:phoneType' )) );
-    l_v_site_con_ppfaxtype_tn := dbms_xmldom.appendchild( l_v_site_con_ppfaxtype_n , dbms_xmldom.makenode(dbms_xmldom.createtextnode(l_domdoc, 'fax' )) );
-
+    l_v_site_con_ppfaxtype_n     := dbms_xmldom.appendchild(l_site_pp_cont_faxasso_node , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'odc:phoneType' )) );
+    l_v_site_con_ppfaxtype_tn    := dbms_xmldom.appendchild( l_v_site_con_ppfaxtype_n , dbms_xmldom.makenode(dbms_xmldom.createtextnode(l_domdoc, 'fax' )) );
     l_v_site_con_ppfax_n         := dbms_xmldom.appendchild(l_site_pp_cont_faxasso_node , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'odc:phone' )) );
     l_v_site_con_ppfaxareacode_n := dbms_xmldom.appendchild(l_v_site_con_ppfax_n , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'odc:areaCode' )) );
-
     IF v_site_contact_ppfax      IS NOT NULL THEN
       SELECT SUBSTR(v_site_contact_ppfax,1,3) INTO l_v_ppfaxareacode FROM dual;
     ELSE
       l_v_ppfaxareacode := '';
     END IF;
-
     l_v_site_con_ppfaxareacode_tn := dbms_xmldom.appendchild( l_v_site_con_ppfaxareacode_n , dbms_xmldom.makenode(dbms_xmldom.createtextnode(l_domdoc, l_v_ppfaxareacode ))--
     );
     l_v_site_con_ppfxcntrycode_n  := dbms_xmldom.appendchild(l_v_site_con_ppfax_n , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'odc:countryCode' )) );
     l_v_site_con_ppfxcntrycode_tn := dbms_xmldom.appendchild( l_v_site_con_ppfxcntrycode_n , dbms_xmldom.makenode(dbms_xmldom.createtextnode(l_domdoc, '' ))--
     );
-
     l_v_site_con_ppfx_n     := dbms_xmldom.appendchild(l_v_site_con_ppfax_n , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'odc:phoneNumber' )) );
-
     IF v_site_contact_ppfax IS NOT NULL THEN
       SELECT SUBSTR(v_site_contact_ppfax,4,10) INTO l_v_ppfax FROM dual;
     ELSE
       l_v_ppfax := '';
     END IF;
-
-    l_v_site_con_ppfx_tn := dbms_xmldom.appendchild( l_v_site_con_ppfx_n , dbms_xmldom.makenode(dbms_xmldom.createtextnode(l_domdoc, l_v_ppfax )) );
-
-    l_v_site_con_ppfaxext_n  := dbms_xmldom.appendchild(l_v_site_con_ppfax_n , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'odc:extension' )) );
-    l_v_site_con_ppfaxext_tn := dbms_xmldom.appendchild( l_v_site_con_ppfaxext_n , dbms_xmldom.makenode(dbms_xmldom.createtextnode(l_domdoc, '' )) );
-    l_v_site_con_ppfaxpri_n  := dbms_xmldom.appendchild(l_site_pp_cont_faxasso_node , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'odc:isPrimary' )) );
-    l_v_site_con_ppfaxpri_tn := dbms_xmldom.appendchild( l_v_site_con_ppfaxpri_n , dbms_xmldom.makenode(dbms_xmldom.createtextnode(l_domdoc, '' )) );
-
+    l_v_site_con_ppfx_tn      := dbms_xmldom.appendchild( l_v_site_con_ppfx_n , dbms_xmldom.makenode(dbms_xmldom.createtextnode(l_domdoc, l_v_ppfax )) );
+    l_v_site_con_ppfaxext_n   := dbms_xmldom.appendchild(l_v_site_con_ppfax_n , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'odc:extension' )) );
+    l_v_site_con_ppfaxext_tn  := dbms_xmldom.appendchild( l_v_site_con_ppfaxext_n , dbms_xmldom.makenode(dbms_xmldom.createtextnode(l_domdoc, '' )) );
+    l_v_site_con_ppfaxpri_n   := dbms_xmldom.appendchild(l_site_pp_cont_faxasso_node , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'odc:isPrimary' )) );
+    l_v_site_con_ppfaxpri_tn  := dbms_xmldom.appendchild( l_v_site_con_ppfaxpri_n , dbms_xmldom.makenode(dbms_xmldom.createtextnode(l_domdoc, '' )) );
     l_site_pp_cont_email_node := dbms_xmldom.appendchild( l_site_pp_contact_node--l_addr_node--l_site_addr_node
     , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'sup:emails' )) );
     l_site_pp_cont_emailasso_node := dbms_xmldom.appendchild( l_site_pp_cont_email_node--l_addr_node--l_site_addr_node
@@ -3964,13 +3745,11 @@ BEGIN
     l_v_purodemailindflg_n      := dbms_xmldom.appendchild( l_site_pp_cont_emailasso_node , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'odc:odEmailIndicatorFlag' )) );
     l_v_purodemailindflg_tn     := dbms_xmldom.appendchild( l_v_purodemailindflg_n , dbms_xmldom.makenode(dbms_xmldom.createtextnode(l_domdoc, '' )) );
   END IF;
-
   --RTV Address
   IF v_site_rtvaddr1 IS NOT NULL THEN
-    l_addr_element := dbms_xmldom.createelement(l_domdoc, 'sup:address' );
-    l_addr_node    := dbms_xmldom.appendchild( l_addr_list_node--l_supplier_node
+    l_addr_element   := dbms_xmldom.createelement(l_domdoc, 'sup:address' );
+    l_addr_node      := dbms_xmldom.appendchild( l_addr_list_node--l_supplier_node
     , dbms_xmldom.makenode( l_addr_element) );
-
     l_v_site_rtvaddr_type_n := dbms_xmldom.appendchild( l_addr_node--l_site_rtv_addr_node
     , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'sup:addressType' )) );
     l_v_site_rtvaddr_type_tn := dbms_xmldom.appendchild( l_v_site_rtvaddr_type_n , dbms_xmldom.makenode(dbms_xmldom.createtextnode(l_domdoc, '99' )) );
@@ -3983,7 +3762,7 @@ BEGIN
     l_v_site_purpriaddrind_n   := dbms_xmldom.appendchild( l_addr_node--l_site_purch_addr_node
     , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'sup:primaryAddressIndicator' )) );
     l_v_site_purpriaddrind_tn := dbms_xmldom.appendchild( l_v_site_purpriaddrind_n , dbms_xmldom.makenode(dbms_xmldom.createtextnode(l_domdoc,'' )) );
-    l_v_site_rtvaddr1_node := dbms_xmldom.appendchild( l_addr_node--l_site_rtv_addr_node
+    l_v_site_rtvaddr1_node    := dbms_xmldom.appendchild( l_addr_node--l_site_rtv_addr_node
     , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'sup:addressLine1' )) );
     l_v_site_rtvaddr1_textnode := dbms_xmldom.appendchild( l_v_site_rtvaddr1_node , dbms_xmldom.makenode(dbms_xmldom.createtextnode(l_domdoc, v_site_rtvaddr1 )) );
     l_v_site_rtvaddr2_node     := dbms_xmldom.appendchild( l_addr_node--l_site_rtv_addr_node
@@ -4025,8 +3804,7 @@ BEGIN
     l_v_site_rtv_add_spe_notes_n := dbms_xmldom.appendchild( l_addr_node--l_site_addr_node
     , DBMS_XMLDOM.MAKENODE(DBMS_XMLDOM.CREATEELEMENT(L_DOMDOC, 'sup:specialNote' )) );
     l_v_site_rtv_add_spe_notes_tn := dbms_xmldom.appendchild( l_v_site_rtv_add_spe_notes_n , dbms_xmldom.makenode(dbms_xmldom.createtextnode(l_domdoc, '' )) );
-
-    L_V_SITE_pur_od_comment1_N := dbms_xmldom.appendchild( l_addr_node--l_site_addr_node
+    L_V_SITE_pur_od_comment1_N    := dbms_xmldom.appendchild( l_addr_node--l_site_addr_node
     , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'sup:odComment1' )) );
     L_V_SITE_pur_od_comment1_tn := DBMS_XMLDOM.APPENDCHILD( L_V_SITE_pur_od_comment1_N , DBMS_XMLDOM.MAKENODE(DBMS_XMLDOM.CREATETEXTNODE(L_DOMDOC,'' )) );
     L_V_SITE_pur_od_comment2_N  := dbms_xmldom.appendchild( l_addr_node--l_site_addr_node
@@ -4038,12 +3816,10 @@ BEGIN
     L_V_SITE_pur_od_comment4_N  := dbms_xmldom.appendchild( l_addr_node--l_site_addr_node
     , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'sup:odComment4' )) );
     L_V_SITE_pur_od_comment4_tn := DBMS_XMLDOM.APPENDCHILD( L_V_SITE_pur_od_comment4_N , DBMS_XMLDOM.MAKENODE(DBMS_XMLDOM.CREATETEXTNODE(L_DOMDOC,'' )) );
-
     ---od_ship_from_addr_id
     L_V_SITE_RTV_SHIP_ADDR_ID_N := dbms_xmldom.appendchild( l_addr_node--l_site_addr_node
     , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'sup:odShipFromAddressId' )) );
     L_V_SITE_RTV_SHIP_ADDR_ID_tN := DBMS_XMLDOM.APPENDCHILD( L_V_SITE_RTV_SHIP_ADDR_ID_N , DBMS_XMLDOM.MAKENODE(DBMS_XMLDOM.CREATETEXTNODE(L_DOMDOC,'' )) );
-
     --Contact Node
     l_site_rtv_cont_list_node := dbms_xmldom.appendchild(l_addr_node-- l_site_rtv_addr_node
     , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'sup:contactList' )) );
@@ -4051,7 +3827,6 @@ BEGIN
     , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'sup:contact' )) );
     l_site_rtv_contact_pname_node := dbms_xmldom.appendchild( l_site_rtv_contact_node--l_addr_node--l_site_addr_node
     , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'sup:name' )) );
-
     l_v_site_con_rtvfname_n     := dbms_xmldom.appendchild( l_site_rtv_contact_pname_node , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'odc:firstName' )) );
     l_v_site_con_rtvfname_tn    := dbms_xmldom.appendchild( l_v_site_con_rtvfname_n , dbms_xmldom.makenode(dbms_xmldom.createtextnode(l_domdoc, '' )) );
     l_v_site_con_rtvmname_n     := dbms_xmldom.appendchild( l_site_rtv_contact_pname_node , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'odc:middleName' )) );
@@ -4062,21 +3837,18 @@ BEGIN
     l_v_site_con_rtvname_tn     := dbms_xmldom.appendchild( l_v_site_con_rtvname_n , dbms_xmldom.makenode(dbms_xmldom.createtextnode(l_domdoc, v_site_contact_rtvname )) );
     l_site_rtv_cont_ptitle_node := dbms_xmldom.appendchild( l_site_rtv_contact_node--l_addr_node--l_site_addr_node
     , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'sup:title' )) );
-
     l_v_rtv_con_salutation_n := dbms_xmldom.appendchild(l_site_rtv_cont_ptitle_node--l_addr_node-- l_address_node
     , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'odc:salutation' )) );
     l_v_rtv_con_salutation_tn := dbms_xmldom.appendchild( l_v_rtv_con_salutation_n , dbms_xmldom.makenode(dbms_xmldom.createtextnode(l_domdoc, '')) );
     l_v_rtv_con_jobtitle_n    := dbms_xmldom.appendchild(l_site_rtv_cont_ptitle_node--l_addr_node-- l_address_node
     , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'odc:jobTitle' )) );
     l_v_rtv_con_jobtitle_tn := dbms_xmldom.appendchild( l_v_rtv_con_jobtitle_n , dbms_xmldom.makenode(dbms_xmldom.createtextnode(l_domdoc, '')) );
-
     l_site_rtv_cont_ph_node := dbms_xmldom.appendchild( l_site_rtv_contact_node--l_addr_node--l_site_addr_node
     , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'sup:phones' )) );
     l_site_rtv_cont_phasso_node := dbms_xmldom.appendchild( l_site_rtv_cont_ph_node--l_addr_node--l_site_addr_node
     , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'odc:phoneAssociation' )) );
-    l_v_site_con_rtvphtype_n  := dbms_xmldom.appendchild(l_site_rtv_cont_phasso_node , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'odc:phoneType' )) );
-    l_v_site_con_rtvphtype_tn := dbms_xmldom.appendchild( l_v_site_con_rtvphtype_n , dbms_xmldom.makenode(dbms_xmldom.createtextnode(l_domdoc, 'Phone' )) );
-
+    l_v_site_con_rtvphtype_n     := dbms_xmldom.appendchild(l_site_rtv_cont_phasso_node , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'odc:phoneType' )) );
+    l_v_site_con_rtvphtype_tn    := dbms_xmldom.appendchild( l_v_site_con_rtvphtype_n , dbms_xmldom.makenode(dbms_xmldom.createtextnode(l_domdoc, 'Phone' )) );
     l_v_site_con_rtvphone_n      := dbms_xmldom.appendchild(l_site_rtv_cont_phasso_node , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'odc:phone' )) );
     l_v_site_con_rtvphareacode_n := dbms_xmldom.appendchild(l_v_site_con_rtvphone_n , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'odc:areaCode' )) );
     IF v_site_contact_rtvphone   IS NOT NULL THEN
@@ -4089,65 +3861,51 @@ BEGIN
     l_v_site_con_rtvphcntrycode_n  := dbms_xmldom.appendchild(l_v_site_con_rtvphone_n , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'odc:countryCode' )) );
     l_v_site_con_rtvphcntrycode_tn := dbms_xmldom.appendchild( l_v_site_con_rtvphcntrycode_n , dbms_xmldom.makenode(dbms_xmldom.createtextnode(l_domdoc, '' ))--
     );
-
     l_v_site_con_rtvph_n := dbms_xmldom.appendchild( l_v_site_con_rtvphone_n--l_site_pay_contact_node
     , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'odc:phoneNumber' )) );
-
     IF v_site_contact_rtvphone IS NOT NULL THEN
       SELECT SUBSTR(v_site_contact_rtvphone,4,10) INTO l_v_rtvph FROM dual;
     ELSE
       l_v_rtvph := '';
     END IF;
-
-    l_v_site_con_rtvph_tn := dbms_xmldom.appendchild( l_v_site_con_rtvph_n , dbms_xmldom.makenode(dbms_xmldom.createtextnode(l_domdoc, l_v_rtvph )) );
-
+    l_v_site_con_rtvph_tn    := dbms_xmldom.appendchild( l_v_site_con_rtvph_n , dbms_xmldom.makenode(dbms_xmldom.createtextnode(l_domdoc, l_v_rtvph )) );
     l_v_site_con_rtvphext_n  := dbms_xmldom.appendchild(l_v_site_con_rtvphone_n , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'odc:extension' )) );
     l_v_site_con_rtvphext_tn := dbms_xmldom.appendchild( l_v_site_con_rtvphext_n , dbms_xmldom.makenode(dbms_xmldom.createtextnode(l_domdoc, '' )) );
     l_v_site_con_rtvphpri_n  := dbms_xmldom.appendchild(l_site_rtv_cont_phasso_node , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'odc:isPrimary' )) );
     l_v_site_con_rtvphpri_tn := dbms_xmldom.appendchild( l_v_site_con_rtvphpri_n , dbms_xmldom.makenode(dbms_xmldom.createtextnode(l_domdoc, '' )) );
-
-    l_v_odphnbrext_n  := dbms_xmldom.appendchild(l_site_rtv_cont_phasso_node , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'odc:odPhoneNumberExt' )) );
-    l_v_odphnbrext_tn := dbms_xmldom.appendchild( l_v_odphnbrext_n , dbms_xmldom.makenode(dbms_xmldom.createtextnode(l_domdoc, '' )) );
-    l_v_odph800nbr_n  := dbms_xmldom.appendchild(l_site_rtv_cont_phasso_node , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'odc:odPhone800Number' )) );
-    l_v_odph800nbr_tn := dbms_xmldom.appendchild( l_v_odph800nbr_n , dbms_xmldom.makenode(dbms_xmldom.createtextnode(l_domdoc, '' )) );
-
+    l_v_odphnbrext_n         := dbms_xmldom.appendchild(l_site_rtv_cont_phasso_node , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'odc:odPhoneNumberExt' )) );
+    l_v_odphnbrext_tn        := dbms_xmldom.appendchild( l_v_odphnbrext_n , dbms_xmldom.makenode(dbms_xmldom.createtextnode(l_domdoc, '' )) );
+    l_v_odph800nbr_n         := dbms_xmldom.appendchild(l_site_rtv_cont_phasso_node , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'odc:odPhone800Number' )) );
+    l_v_odph800nbr_tn        := dbms_xmldom.appendchild( l_v_odph800nbr_n , dbms_xmldom.makenode(dbms_xmldom.createtextnode(l_domdoc, '' )) );
     l_site_rtv_cont_fax_node := dbms_xmldom.appendchild( l_site_rtv_contact_node--l_addr_node--l_site_addr_node
     , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'sup:fax' )) );
     l_site_rtv_cont_faxasso_node := dbms_xmldom.appendchild( l_site_rtv_cont_fax_node--l_addr_node--l_site_addr_node
     , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'odc:phoneAssociation' )) );
-    l_v_site_con_rtvfaxtype_n  := dbms_xmldom.appendchild(l_site_rtv_cont_faxasso_node , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'odc:phoneType' )) );
-    l_v_site_con_rtvfaxtype_tn := dbms_xmldom.appendchild( l_v_site_con_rtvfaxtype_n , dbms_xmldom.makenode(dbms_xmldom.createtextnode(l_domdoc, 'fax' )) );
-
+    l_v_site_con_rtvfaxtype_n     := dbms_xmldom.appendchild(l_site_rtv_cont_faxasso_node , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'odc:phoneType' )) );
+    l_v_site_con_rtvfaxtype_tn    := dbms_xmldom.appendchild( l_v_site_con_rtvfaxtype_n , dbms_xmldom.makenode(dbms_xmldom.createtextnode(l_domdoc, 'fax' )) );
     l_v_site_con_rtvfax_n         := dbms_xmldom.appendchild(l_site_rtv_cont_faxasso_node , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'odc:phone' )) );
     l_v_site_con_rtvfaxareacode_n := dbms_xmldom.appendchild(l_v_site_con_rtvfax_n , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'odc:areaCode' )) );
-
     IF v_site_contact_rtvfax      IS NOT NULL THEN
       SELECT SUBSTR(v_site_contact_rtvfax,1,3) INTO l_v_rtvfaxareacode FROM dual;
     ELSE
       l_v_rtvfaxareacode := '';
     END IF;
-
     l_v_site_con_rtvfaxareacode_tn := dbms_xmldom.appendchild( l_v_site_con_rtvfaxareacode_n , dbms_xmldom.makenode(dbms_xmldom.createtextnode(l_domdoc, l_v_rtvfaxareacode ))--
     );
     l_v_site_con_rtvfxcntrycode_n  := dbms_xmldom.appendchild(l_v_site_con_rtvfax_n , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'odc:countryCode' )) );
     l_v_site_con_rtvfxcntrycode_tn := dbms_xmldom.appendchild( l_v_site_con_rtvfxcntrycode_n , dbms_xmldom.makenode(dbms_xmldom.createtextnode(l_domdoc, '' ))--
     );
-
     l_v_site_con_rtvfx_n     := dbms_xmldom.appendchild(l_v_site_con_rtvfax_n , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'odc:phoneNumber' )) );
-
     IF v_site_contact_rtvfax IS NOT NULL THEN
       SELECT SUBSTR(v_site_contact_rtvfax,4,10) INTO l_v_rtvfax FROM dual;
     ELSE
       l_v_rtvfax := '';
     END IF;
-
-    l_v_site_con_rtvfx_tn := dbms_xmldom.appendchild( l_v_site_con_rtvfx_n , dbms_xmldom.makenode(dbms_xmldom.createtextnode(l_domdoc, l_v_rtvfax )) );
-
-    l_v_site_con_rtvfaxext_n  := dbms_xmldom.appendchild(l_v_site_con_rtvfax_n , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'odc:extension' )) );
-    l_v_site_con_rtvfaxext_tn := dbms_xmldom.appendchild( l_v_site_con_rtvfaxext_n , dbms_xmldom.makenode(dbms_xmldom.createtextnode(l_domdoc, '' )) );
-    l_v_site_con_rtvfaxpri_n  := dbms_xmldom.appendchild(l_site_rtv_cont_faxasso_node , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'odc:isPrimary' )) );
-    l_v_site_con_rtvfaxpri_tn := dbms_xmldom.appendchild( l_v_site_con_rtvfaxpri_n , dbms_xmldom.makenode(dbms_xmldom.createtextnode(l_domdoc, '' )) );
-
+    l_v_site_con_rtvfx_tn      := dbms_xmldom.appendchild( l_v_site_con_rtvfx_n , dbms_xmldom.makenode(dbms_xmldom.createtextnode(l_domdoc, l_v_rtvfax )) );
+    l_v_site_con_rtvfaxext_n   := dbms_xmldom.appendchild(l_v_site_con_rtvfax_n , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'odc:extension' )) );
+    l_v_site_con_rtvfaxext_tn  := dbms_xmldom.appendchild( l_v_site_con_rtvfaxext_n , dbms_xmldom.makenode(dbms_xmldom.createtextnode(l_domdoc, '' )) );
+    l_v_site_con_rtvfaxpri_n   := dbms_xmldom.appendchild(l_site_rtv_cont_faxasso_node , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'odc:isPrimary' )) );
+    l_v_site_con_rtvfaxpri_tn  := dbms_xmldom.appendchild( l_v_site_con_rtvfaxpri_n , dbms_xmldom.makenode(dbms_xmldom.createtextnode(l_domdoc, '' )) );
     l_site_rtv_cont_email_node := dbms_xmldom.appendchild( l_site_rtv_contact_node--l_addr_node--l_site_addr_node
     , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'sup:emails' )) );
     l_site_rtv_cont_emailasso_node := dbms_xmldom.appendchild( l_site_rtv_cont_email_node--l_addr_node--l_site_addr_node
@@ -4161,11 +3919,8 @@ BEGIN
     l_v_purodemailindflg_n       := dbms_xmldom.appendchild( l_site_rtv_cont_emailasso_node , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'odc:odEmailIndicatorFlag' )) );
     l_v_purodemailindflg_tn      := dbms_xmldom.appendchild( l_v_purodemailindflg_n , dbms_xmldom.makenode(dbms_xmldom.createtextnode(l_domdoc, '' )) );
   END IF;
-
   ---Address Type
-
   BEGIN
-
     FOR r_address_data IN c_address_data
     -- open cursor c_address_type
     LOOP
@@ -4174,7 +3929,6 @@ BEGIN
       , dbms_xmldom.makenode( l_addr_element) );
       l_v_addr_01_addr_type_node := dbms_xmldom.appendchild( l_addr_node--l_site_addr_node--l_addr_node--l_address_node
       , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'sup:addressType' )) );
-
       IF LENGTH(r_address_data.address_type)=1 THEN
         SELECT lpad(TO_CHAR(r_address_data.address_type),2,'0')
         INTO p_address_type1
@@ -4182,10 +3936,8 @@ BEGIN
       ELSE
         p_address_type1:=r_address_data.address_type;
       END IF;
-
       l_v_addr_01_addr_type_textnode := dbms_xmldom.appendchild( l_v_addr_01_addr_type_node , dbms_xmldom.makenode(dbms_xmldom.createtextnode(l_domdoc, p_address_type1 )) );
-
-      l_v_site_addr_01_seqnum_n := dbms_xmldom.appendchild( l_addr_node--l_site_purch_addr_node
+      l_v_site_addr_01_seqnum_n      := dbms_xmldom.appendchild( l_addr_node--l_site_purch_addr_node
       , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'sup:sequenceNumber' )) );
       l_v_site_addr_01_seqnum_tn  := dbms_xmldom.appendchild( l_v_site_addr_01_seqnum_n , dbms_xmldom.makenode(dbms_xmldom.createtextnode(l_domdoc, r_address_data.seq_no )) );
       l_v_site_addr_action_type_n := dbms_xmldom.appendchild( l_addr_node--l_site_purch_addr_node
@@ -4194,8 +3946,7 @@ BEGIN
       l_v_add_priaddrind_n         := dbms_xmldom.appendchild( l_addr_node--l_site_purch_addr_node
       , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'sup:primaryAddressIndicator' )) );
       l_v_add_priaddrind_tn := dbms_xmldom.appendchild( l_v_add_priaddrind_n , dbms_xmldom.makenode(dbms_xmldom.createtextnode(l_domdoc,r_address_data.primary_addr_ind )) );
-
-      l_v_addr1_node := dbms_xmldom.appendchild(l_addr_node --l_site_addr_node--l_addr_node--l_address_node
+      l_v_addr1_node        := dbms_xmldom.appendchild(l_addr_node --l_site_addr_node--l_addr_node--l_address_node
       , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'sup:addressLine1' )) );
       l_v_addr1_textnode := dbms_xmldom.appendchild( l_v_addr1_node , dbms_xmldom.makenode(dbms_xmldom.createtextnode(l_domdoc, NVL(r_address_data.add_1,'') )) );
       l_v_addr2_node     := dbms_xmldom.appendchild( l_addr_node--l_site_addr_node--l_addr_node--l_address_node
@@ -4237,8 +3988,7 @@ BEGIN
       l_v_add_district_tn := dbms_xmldom.appendchild( l_v_add_district_n , dbms_xmldom.makenode(dbms_xmldom.createtextnode(l_domdoc, '' )) );
       l_v_add_spe_notes_n := dbms_xmldom.appendchild( l_addr_node--l_site_addr_node
       , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'sup:specialNote' )) );
-      l_v_add_spe_notes_tn := dbms_xmldom.appendchild( l_v_add_spe_notes_n , dbms_xmldom.makenode(dbms_xmldom.createtextnode(l_domdoc, '' )) );
-
+      l_v_add_spe_notes_tn       := dbms_xmldom.appendchild( l_v_add_spe_notes_n , dbms_xmldom.makenode(dbms_xmldom.createtextnode(l_domdoc, '' )) );
       L_V_SITE_add_od_comment1_N := dbms_xmldom.appendchild( l_addr_node--l_site_addr_node
       , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'sup:odComment1' )) );
       L_V_SITE_add_od_comment1_tn := DBMS_XMLDOM.APPENDCHILD( L_V_SITE_add_od_comment1_N , DBMS_XMLDOM.MAKENODE(DBMS_XMLDOM.CREATETEXTNODE(L_DOMDOC,r_address_data.od_comment_1 )) );
@@ -4251,12 +4001,10 @@ BEGIN
       L_V_SITE_add_od_comment4_N  := dbms_xmldom.appendchild( l_addr_node--l_site_addr_node
       , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'sup:odComment4' )) );
       L_V_SITE_add_od_comment4_tn := DBMS_XMLDOM.APPENDCHILD( L_V_SITE_add_od_comment4_N , DBMS_XMLDOM.MAKENODE(DBMS_XMLDOM.CREATETEXTNODE(L_DOMDOC,r_address_data.od_comment_4 )) );
-
       ---od_ship_from_addr_id
       l_v_od_ship_from_addr_id_n := dbms_xmldom.appendchild( l_addr_node--l_site_addr_node
       , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'sup:odShipFromAddressId' )) );
       l_v_od_ship_from_addr_id_tn := DBMS_XMLDOM.APPENDCHILD( l_v_od_ship_from_addr_id_n , DBMS_XMLDOM.MAKENODE(DBMS_XMLDOM.CREATETEXTNODE(L_DOMDOC, r_address_data.od_ship_from_addr_id )) );
-
       --contact node
       l_site_addr_cont_list_node := dbms_xmldom.appendchild( l_addr_node--l_site_addr_node
       , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'sup:contactList' )) );
@@ -4264,32 +4012,27 @@ BEGIN
       , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'sup:contact' )) );
       l_site_addr_contact_pname_node := dbms_xmldom.appendchild( l_site_addr_contact_node--l_addr_node--l_site_addr_node
       , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'sup:name' )) );
-
       l_v_site_con_addfname_n  := dbms_xmldom.appendchild( l_site_addr_contact_pname_node , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'odc:firstName' )) );
       l_v_site_con_addfname_tn := dbms_xmldom.appendchild( l_v_site_con_addfname_n , dbms_xmldom.makenode(dbms_xmldom.createtextnode(l_domdoc, '' )) );
       l_v_site_con_addmname_n  := dbms_xmldom.appendchild( l_site_addr_contact_pname_node , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'odc:middleName' )) );
       l_v_site_con_addmname_tn := dbms_xmldom.appendchild( l_v_site_con_addmname_n , dbms_xmldom.makenode(dbms_xmldom.createtextnode(l_domdoc, '' )) );
       l_v_site_con_addlname_n  := dbms_xmldom.appendchild( l_site_addr_contact_pname_node , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'odc:lastName' )) );
       l_v_site_con_addlname_tn := dbms_xmldom.appendchild( l_v_site_con_addlname_n , dbms_xmldom.makenode(dbms_xmldom.createtextnode(l_domdoc, '' )) );
-
-      l_v_addr_con_name_node := dbms_xmldom.appendchild(l_site_addr_contact_pname_node--l_addr_node-- l_address_node
+      l_v_addr_con_name_node   := dbms_xmldom.appendchild(l_site_addr_contact_pname_node--l_addr_node-- l_address_node
       , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'odc:fullName' )) );
       l_v_addr_con_name_textnode   := dbms_xmldom.appendchild( l_v_addr_con_name_node , dbms_xmldom.makenode(dbms_xmldom.createtextnode(l_domdoc, NVL(r_address_data.contact_name,''))) );
       l_site_addr_cont_ptitle_node := dbms_xmldom.appendchild( l_site_addr_contact_node--l_addr_node--l_site_addr_node
       , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'sup:title' )) );
-
-      l_v_addr_con_salutation_n    := dbms_xmldom.appendchild(l_site_addr_cont_ptitle_node , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'odc:salutation' )) );
-      l_v_addr_con_salutation_tn   := dbms_xmldom.appendchild( l_v_addr_con_salutation_n , dbms_xmldom.makenode(dbms_xmldom.createtextnode(l_domdoc, '')) );
-      l_v_addr_con_jobtitle_n      := dbms_xmldom.appendchild(l_site_addr_cont_ptitle_node , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'odc:jobTitle' )) );
-      l_v_addr_con_jobtitle_tn     := dbms_xmldom.appendchild( l_v_addr_con_jobtitle_n , dbms_xmldom.makenode(dbms_xmldom.createtextnode(l_domdoc, '')) );
-      l_site_addr_cont_ph_node     := dbms_xmldom.appendchild( l_site_addr_contact_node , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'sup:phones' )) );
-      l_site_addr_cont_phasso_node := dbms_xmldom.appendchild( l_site_addr_cont_ph_node , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'odc:phoneAssociation' )) );
-      l_v_site_con_addrphtype_n    := dbms_xmldom.appendchild(l_site_addr_cont_phasso_node , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'odc:phoneType' )) );
-      l_v_site_con_addrphtype_tn   := dbms_xmldom.appendchild( l_v_site_con_addrphtype_n , dbms_xmldom.makenode(dbms_xmldom.createtextnode(l_domdoc, 'Phone' )) );
-
+      l_v_addr_con_salutation_n       := dbms_xmldom.appendchild(l_site_addr_cont_ptitle_node , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'odc:salutation' )) );
+      l_v_addr_con_salutation_tn      := dbms_xmldom.appendchild( l_v_addr_con_salutation_n , dbms_xmldom.makenode(dbms_xmldom.createtextnode(l_domdoc, '')) );
+      l_v_addr_con_jobtitle_n         := dbms_xmldom.appendchild(l_site_addr_cont_ptitle_node , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'odc:jobTitle' )) );
+      l_v_addr_con_jobtitle_tn        := dbms_xmldom.appendchild( l_v_addr_con_jobtitle_n , dbms_xmldom.makenode(dbms_xmldom.createtextnode(l_domdoc, '')) );
+      l_site_addr_cont_ph_node        := dbms_xmldom.appendchild( l_site_addr_contact_node , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'sup:phones' )) );
+      l_site_addr_cont_phasso_node    := dbms_xmldom.appendchild( l_site_addr_cont_ph_node , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'odc:phoneAssociation' )) );
+      l_v_site_con_addrphtype_n       := dbms_xmldom.appendchild(l_site_addr_cont_phasso_node , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'odc:phoneType' )) );
+      l_v_site_con_addrphtype_tn      := dbms_xmldom.appendchild( l_v_site_con_addrphtype_n , dbms_xmldom.makenode(dbms_xmldom.createtextnode(l_domdoc, 'Phone' )) );
       l_v_site_con_addrphone_n        := dbms_xmldom.appendchild(l_site_addr_cont_phasso_node , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'odc:phone' )) );
       l_v_site_con_addrphareacode_n   := dbms_xmldom.appendchild(l_v_site_con_addrphone_n , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'odc:areaCode' )) );
-
       IF r_address_data.contact_phone IS NOT NULL THEN
         SELECT SUBSTR(r_address_data.contact_phone,1,3)
         INTO l_v_addrareacode
@@ -4297,70 +4040,66 @@ BEGIN
       ELSE
         l_v_addrareacode := '';
       END IF;
-
       l_v_site_con_addrphareacode_tn := dbms_xmldom.appendchild( l_v_site_con_addrphareacode_n , dbms_xmldom.makenode(dbms_xmldom.createtextnode(l_domdoc, l_v_addrareacode ))--
       );
       l_v_site_con_addrphcntrycd_n  := dbms_xmldom.appendchild(l_v_site_con_addrphone_n , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'odc:countryCode' )) );
       l_v_site_con_addrphcntrycd_tn := dbms_xmldom.appendchild( l_v_site_con_addrphcntrycd_n , dbms_xmldom.makenode(dbms_xmldom.createtextnode(l_domdoc, '' ))--
       );
-
       l_v_addr_con_ph_node := dbms_xmldom.appendchild( l_v_site_con_addrphone_n--l_site_pay_contact_node
       , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'odc:phoneNumber' )) );
-
       IF r_address_data.contact_phone IS NOT NULL THEN
         SELECT SUBSTR(r_address_data.contact_phone,4,10) INTO l_v_addrph FROM dual;
       ELSE
         l_v_addrph := '';
       END IF;
-
-      l_v_addr_con_ph_textnode := dbms_xmldom.appendchild( l_v_addr_con_ph_node , dbms_xmldom.makenode(dbms_xmldom.createtextnode(l_domdoc, l_v_addrph )) );
-
-      l_v_site_con_addrphext_n  := dbms_xmldom.appendchild(l_v_site_con_addrphone_n , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'odc:extension' )) );
-      l_v_site_con_addrphext_tn := dbms_xmldom.appendchild( l_v_site_con_addrphext_n , dbms_xmldom.makenode(dbms_xmldom.createtextnode(l_domdoc, '' )) );
-      l_v_site_con_addrphpri_n  := dbms_xmldom.appendchild(l_site_addr_cont_phasso_node , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'odc:isPrimary' )) );
-      l_v_site_con_addrphpri_tn := dbms_xmldom.appendchild( l_v_site_con_addrphpri_n , dbms_xmldom.makenode(dbms_xmldom.createtextnode(l_domdoc, '' )) );
-
-      l_v_add_odphnbrext_n  := dbms_xmldom.appendchild(l_site_addr_cont_phasso_node , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'odc:odPhoneNumberExt' )) );
-      l_v_add_odphnbrext_tn := dbms_xmldom.appendchild( l_v_add_odphnbrext_n , dbms_xmldom.makenode(dbms_xmldom.createtextnode(l_domdoc, r_address_data.od_phone_nbr_ext )) );
-      l_v_add_odph800nbr_n  := dbms_xmldom.appendchild(l_site_addr_cont_phasso_node , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'odc:odPhone800Number' )) );
-      l_v_add_odph800nbr_tn := dbms_xmldom.appendchild( l_v_add_odph800nbr_n , dbms_xmldom.makenode(dbms_xmldom.createtextnode(l_domdoc, r_address_data.od_phone_800_nbr )) );
-
-      l_site_addr_cont_fax_node     := dbms_xmldom.appendchild( l_site_addr_contact_node , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'sup:fax' )) );
-      l_site_addr_cont_faxasso_node := dbms_xmldom.appendchild( l_site_addr_cont_fax_node , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'odc:phoneAssociation' )) );
-      l_v_site_con_addrfaxtype_n    := dbms_xmldom.appendchild(l_site_addr_cont_faxasso_node , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'odc:phoneType' )) );
-      l_v_site_con_addrfaxtype_tn   := dbms_xmldom.appendchild( l_v_site_con_addrfaxtype_n , dbms_xmldom.makenode(dbms_xmldom.createtextnode(l_domdoc, 'fax' )) );
-      l_v_site_con_addrfax_n        := dbms_xmldom.appendchild(l_site_addr_cont_faxasso_node , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'odc:phone' )) );
-      l_v_site_con_addrfaxareacd_n  := dbms_xmldom.appendchild(l_v_site_con_addrfax_n , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'odc:areaCode' )) );
-
-      IF r_address_data.contact_fax IS NOT NULL THEN
-        SELECT SUBSTR(r_address_data.contact_fax,1,3)
-        INTO l_v_addrfaxareacode
-        FROM dual;
+      l_v_addr_con_ph_textnode        := dbms_xmldom.appendchild( l_v_addr_con_ph_node , dbms_xmldom.makenode(dbms_xmldom.createtextnode(l_domdoc, l_v_addrph )) );
+      l_v_site_con_addrphext_n        := dbms_xmldom.appendchild(l_v_site_con_addrphone_n , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'odc:extension' )) );
+      l_v_site_con_addrphext_tn       := dbms_xmldom.appendchild( l_v_site_con_addrphext_n , dbms_xmldom.makenode(dbms_xmldom.createtextnode(l_domdoc, '' )) );
+      l_v_site_con_addrphpri_n        := dbms_xmldom.appendchild(l_site_addr_cont_phasso_node , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'odc:isPrimary' )) );
+      l_v_site_con_addrphpri_tn       := dbms_xmldom.appendchild( l_v_site_con_addrphpri_n , dbms_xmldom.makenode(dbms_xmldom.createtextnode(l_domdoc, '' )) );
+      l_v_add_odphnbrext_n            := dbms_xmldom.appendchild(l_site_addr_cont_phasso_node , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'odc:odPhoneNumberExt' )) );
+      l_v_add_odphnbrext_tn           := dbms_xmldom.appendchild( l_v_add_odphnbrext_n , dbms_xmldom.makenode(dbms_xmldom.createtextnode(l_domdoc, r_address_data.od_phone_nbr_ext )) );
+      l_v_add_odph800nbr_n            := dbms_xmldom.appendchild(l_site_addr_cont_phasso_node , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'odc:odPhone800Number' )) );
+      l_v_add_odph800nbr_tn           := dbms_xmldom.appendchild( l_v_add_odph800nbr_n , dbms_xmldom.makenode(dbms_xmldom.createtextnode(l_domdoc, r_address_data.od_phone_800_nbr )) );
+      l_site_addr_cont_fax_node       := dbms_xmldom.appendchild( l_site_addr_contact_node , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'sup:fax' )) );
+      l_site_addr_cont_faxasso_node   := dbms_xmldom.appendchild( l_site_addr_cont_fax_node , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'odc:phoneAssociation' )) );
+      l_v_site_con_addrfaxtype_n      := dbms_xmldom.appendchild(l_site_addr_cont_faxasso_node , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'odc:phoneType' )) );
+      l_v_site_con_addrfaxtype_tn     := dbms_xmldom.appendchild( l_v_site_con_addrfaxtype_n , dbms_xmldom.makenode(dbms_xmldom.createtextnode(l_domdoc, 'fax' )) );
+      l_v_site_con_addrfax_n          := dbms_xmldom.appendchild(l_site_addr_cont_faxasso_node , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'odc:phone' )) );
+      l_v_site_con_addrfaxareacd_n    := dbms_xmldom.appendchild(l_v_site_con_addrfax_n , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'odc:areaCode' )) );
+      lv_rtv_vendor_site_code         :=SUBSTR(v_vendor_site_code,1,3); -- Added by shanti for Jira NAIT-101583
+      IF lv_rtv_vendor_site_code      <> 'RTV' THEN                     -- Added by shanti for Jira NAIT-101583
+        IF r_address_data.contact_fax IS NOT NULL THEN
+          SELECT SUBSTR(r_address_data.contact_fax,1,3)
+          INTO l_v_addrfaxareacode
+          FROM dual;
+        ELSE
+          l_v_addrfaxareacode := '0'; -- removed space by shanti for Jira NAIT-101583
+        END IF;
       ELSE
-        l_v_addrfaxareacode := '';    -- removed space by shanti for Jira NAIT-101583
-      END IF;
-
+        l_v_addrfaxareacode := '';                                                                                                                                             -- Added by shanti for Jira NAIT-101583
+      END IF;                                                                                                                                                                  -- Added by shanti for Jira NAIT-101583
       l_v_site_con_addrfaxareacd_tn := dbms_xmldom.appendchild( l_v_site_con_addrfaxareacd_n , dbms_xmldom.makenode(dbms_xmldom.createtextnode(l_domdoc, l_v_addrfaxareacode ))--
       );
       l_v_site_con_addrfxcntrycd_n  := dbms_xmldom.appendchild(l_v_site_con_addrfax_n , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'odc:countryCode' )) );
       l_v_site_con_addrfxcntrycd_tn := dbms_xmldom.appendchild( l_v_site_con_addrfxcntrycd_n , dbms_xmldom.makenode(dbms_xmldom.createtextnode(l_domdoc, '' ))--
       );
-
-      l_v_addr_con_fax_node         := dbms_xmldom.appendchild(l_v_site_con_addrfax_n , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'odc:phoneNumber' )) );
-
-      IF r_address_data.contact_fax IS NOT NULL THEN
-        SELECT SUBSTR(r_address_data.contact_fax,4,10) INTO l_v_addrfax FROM dual;
-      ELSE
-        l_v_addrfax := '';
-      END IF;
-
-      l_v_addr_con_fax_textnode := dbms_xmldom.appendchild( l_v_addr_con_fax_node , dbms_xmldom.makenode(dbms_xmldom.createtextnode(l_domdoc, l_v_addrfax )) );
-
-      l_v_site_con_addrfaxext_n  := dbms_xmldom.appendchild(l_v_site_con_addrfax_n , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'odc:extension' )) );
-      l_v_site_con_addrfaxext_tn := dbms_xmldom.appendchild( l_v_site_con_addrfaxext_n , dbms_xmldom.makenode(dbms_xmldom.createtextnode(l_domdoc, '' )) );
-      l_v_site_con_addrfaxpri_n  := dbms_xmldom.appendchild(l_site_addr_cont_faxasso_node , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'odc:isPrimary' )) );
-      l_v_site_con_addrfaxpri_tn := dbms_xmldom.appendchild( l_v_site_con_addrfaxpri_n , dbms_xmldom.makenode(dbms_xmldom.createtextnode(l_domdoc, '' )) );
-
+      l_v_addr_con_fax_node           := dbms_xmldom.appendchild(l_v_site_con_addrfax_n , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'odc:phoneNumber' )) );
+      lv_rtv_vendor_site_code         :=SUBSTR(v_vendor_site_code,1,3); -- Added by shanti for Jira NAIT-101583
+      IF lv_rtv_vendor_site_code      <> 'RTV' THEN                     -- Added by shanti for Jira NAIT-101583
+        IF r_address_data.contact_fax IS NOT NULL THEN
+          SELECT SUBSTR(r_address_data.contact_fax,4,10) INTO l_v_addrfax FROM dual;
+        ELSE
+          l_v_addrfax := '';
+        END IF;
+      ELSE                 -- Added by shanti for Jira NAIT-101583
+        l_v_addrfax := ''; -- Added by shanti for Jira NAIT-101583
+      END IF;              -- Added by shanti for Jira NAIT-101583
+      l_v_addr_con_fax_textnode     := dbms_xmldom.appendchild( l_v_addr_con_fax_node , dbms_xmldom.makenode(dbms_xmldom.createtextnode(l_domdoc, l_v_addrfax )) );
+      l_v_site_con_addrfaxext_n     := dbms_xmldom.appendchild(l_v_site_con_addrfax_n , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'odc:extension' )) );
+      l_v_site_con_addrfaxext_tn    := dbms_xmldom.appendchild( l_v_site_con_addrfaxext_n , dbms_xmldom.makenode(dbms_xmldom.createtextnode(l_domdoc, '' )) );
+      l_v_site_con_addrfaxpri_n     := dbms_xmldom.appendchild(l_site_addr_cont_faxasso_node , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'odc:isPrimary' )) );
+      l_v_site_con_addrfaxpri_tn    := dbms_xmldom.appendchild( l_v_site_con_addrfaxpri_n , dbms_xmldom.makenode(dbms_xmldom.createtextnode(l_domdoc, '' )) );
       l_site_addr_cont_email_node   := dbms_xmldom.appendchild( l_site_addr_contact_node , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'sup:emails' )) );
       l_site_addr_cont_emailasso_n  := dbms_xmldom.appendchild( l_site_addr_cont_email_node , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'odc:emailAssociation' )) );
       l_v_site_con_addremailtype_n  := dbms_xmldom.appendchild(l_site_addr_cont_emailasso_n , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'odc:emailType' )) );
@@ -4373,12 +4112,10 @@ BEGIN
       l_v_addodemailindflg_tn       := dbms_xmldom.appendchild( l_v_addodemailindflg_n , dbms_xmldom.makenode(dbms_xmldom.createtextnode(l_domdoc, r_address_data.od_email_ind_flg )) );
     END LOOP;
   END;
-
   --Supplier Traits
   BEGIN
     -- Create a new node supplier traits node  and add it to the supplier node
     l_supplier_traits_node := dbms_xmldom.appendchild( l_supplier_node , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'sup:supplierTraitList' )) );
-
     FOR r_sup_traits IN c_sup_traits
     LOOP
       l_supplier_trait_node     := dbms_xmldom.appendchild( l_supplier_traits_node , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'sup:supplierTrait')) );
@@ -4396,7 +4133,6 @@ BEGIN
       l_sup_master_sup_ind_textnode := dbms_xmldom.appendchild( l_sup_master_sup_ind_node , dbms_xmldom.makenode(dbms_xmldom.createtextnode(l_domdoc, r_sup_traits.master_sup_ind )) );
       sup_trait_rows                := c_sup_traits %rowcount;
     END LOOP;
-
     IF sup_trait_rows            =0 THEN
       l_supplier_trait_node     := dbms_xmldom.appendchild( l_supplier_traits_node , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'sup:supplierTrait')) );
       l_sup_trait_action_type_n := dbms_xmldom.appendchild( l_supplier_trait_node--l_addr_node--l_address_node
@@ -4412,276 +4148,210 @@ BEGIN
       , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'sup:masterSuppIndicator' )) );
       l_sup_master_sup_ind_textnode := dbms_xmldom.appendchild( l_sup_master_sup_ind_node , dbms_xmldom.makenode(dbms_xmldom.createtextnode(l_domdoc, '' )) );
     END IF;
-
   END;
-
   --Custom Attributes
   -- Create a new node Custom Attributes  and add it to the supplier node
   l_cust_attributes_node := dbms_xmldom.appendchild( l_supplier_node , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'sup:customAttributes' )) );
-
   --KFF
-
   -- Each Site node will get Lead Time
   l_v_lead_time_node     := dbms_xmldom.appendchild( l_cust_attributes_node , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'sup:leadTime' )) );
   l_v_lead_time_textnode := dbms_xmldom.appendchild( l_v_lead_time_node , dbms_xmldom.makenode(dbms_xmldom.createtextnode(l_domdoc,v_lead_time)) );
-
   -- Each Site node will get Back Order Flag
   l_v_back_order_flag_node     := dbms_xmldom.appendchild( l_cust_attributes_node , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'sup:backOrderFlag' )) );
   l_v_back_order_flag_textnode := dbms_xmldom.appendchild( l_v_back_order_flag_node , dbms_xmldom.makenode(dbms_xmldom.createtextnode(l_domdoc,v_back_order_flag)) );
-
   -- Each Site node will get Delivery Policy
   l_v_delivery_policy_node     := dbms_xmldom.appendchild( l_cust_attributes_node , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'sup:deliveryPolicy' )) );
   l_v_delivery_policy_textnode := dbms_xmldom.appendchild( l_v_delivery_policy_node , dbms_xmldom.makenode(dbms_xmldom.createtextnode(l_domdoc,v_delivery_policy)) );
-
   -- Each Site node will get Min Prepaid Code
   l_v_min_prepaid_code_node     := dbms_xmldom.appendchild( l_cust_attributes_node , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'sup:minPrepaidCode' )) );
   l_v_min_prepaid_code_textnode := dbms_xmldom.appendchild( l_v_min_prepaid_code_node , dbms_xmldom.makenode(dbms_xmldom.createtextnode(l_domdoc,v_min_prepaid_code)) );
-
   -- Each Site node will get Min  Amount
   l_v_vendor_min_amount_node     := dbms_xmldom.appendchild( l_cust_attributes_node , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'sup:vendorMinAmount' )) );
   l_v_vendor_min_amount_textnode := dbms_xmldom.appendchild( l_v_vendor_min_amount_node , dbms_xmldom.makenode(dbms_xmldom.createtextnode(l_domdoc,v_vendor_min_amount)) );
-
   -- Each Site node will get Supplier ship-to
   l_v_supplier_ship_to_node     := dbms_xmldom.appendchild( l_cust_attributes_node , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'sup:supplierShipTo' )) );
   l_v_supplier_ship_to_textnode := dbms_xmldom.appendchild( l_v_supplier_ship_to_node , dbms_xmldom.makenode(dbms_xmldom.createtextnode(l_domdoc,v_supplier_ship_to)) );
-
   -- Each Site node will get Inventory Type Code
   l_v_inventory_type_code_n  := dbms_xmldom.appendchild( l_cust_attributes_node , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'sup:inventoryTypeCode' )) );
   l_v_inventory_type_code_tn := dbms_xmldom.appendchild( l_v_inventory_type_code_n , dbms_xmldom.makenode(dbms_xmldom.createtextnode(l_domdoc,v_inventory_type_code)) );
-
   -- Each Site node will get Vertical Market Indicator
   l_v_ver_market_indicator_n  := dbms_xmldom.appendchild( l_cust_attributes_node , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'sup:verticalMarketIndicator' )) );
   l_v_ver_market_indicator_tn := dbms_xmldom.appendchild( l_v_ver_market_indicator_n , dbms_xmldom.makenode(dbms_xmldom.createtextnode(l_domdoc,v_vertical_market_indicator)) );
-
   -- Each Site node will get Allow Auto-Receipt
   l_v_allow_auto_receipt_n  := dbms_xmldom.appendchild( l_cust_attributes_node , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'sup:allowAutoReceipt' )) );
   l_v_allow_auto_receipt_tn := dbms_xmldom.appendchild( l_v_allow_auto_receipt_n , dbms_xmldom.makenode(dbms_xmldom.createtextnode(l_domdoc,v_allow_auto_receipt)) );
-
   -- Each Site node will get Handling
   l_v_handling_node     := dbms_xmldom.appendchild( l_cust_attributes_node , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'sup:handling' )) );
   l_v_handling_textnode := dbms_xmldom.appendchild( l_v_handling_node , dbms_xmldom.makenode(dbms_xmldom.createtextnode(l_domdoc,v_handling)) );
-
   -- Each Site node will get Eft Settle Days
   l_v_eft_settle_days_node     := dbms_xmldom.appendchild( l_cust_attributes_node , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'sup:effectiveSettleDays' )) );
   l_v_eft_settle_days_textnode := dbms_xmldom.appendchild( l_v_eft_settle_days_node , dbms_xmldom.makenode(dbms_xmldom.createtextnode(l_domdoc,v_eft_settle_days)) );
-
   -- Each Site node will get Split File Flag
   l_v_split_file_flag_node     := dbms_xmldom.appendchild( l_cust_attributes_node , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'sup:splitFileFlag' )) );
   l_v_split_file_flag_textnode := dbms_xmldom.appendchild( l_v_split_file_flag_node , dbms_xmldom.makenode(dbms_xmldom.createtextnode(l_domdoc,v_split_file_flag)) );
-
   -- Each Site node will get Master Vendor Id
   l_v_master_vendor_id_node     := dbms_xmldom.appendchild( l_cust_attributes_node , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'sup:masterVendorId' )) );
   l_v_master_vendor_id_textnode := dbms_xmldom.appendchild( l_v_master_vendor_id_node , dbms_xmldom.makenode(dbms_xmldom.createtextnode(l_domdoc,v_master_vendor_id)) );
-
   -- Each Site node will get Pi Pack Year
   l_v_pi_pack_year_node     := dbms_xmldom.appendchild( l_cust_attributes_node , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'sup:piPackYear' )) );
   l_v_pi_pack_year_textnode := dbms_xmldom.appendchild( l_v_pi_pack_year_node , dbms_xmldom.makenode(dbms_xmldom.createtextnode(l_domdoc,v_pi_pack_year)) );
-
   -- Each Site node will get OD Date Signed
   l_v_od_date_signed_n  := dbms_xmldom.appendchild( l_cust_attributes_node , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'sup:odDateSigned' )) );
   l_v_od_date_signed_tn := dbms_xmldom.appendchild( l_v_od_date_signed_n , dbms_xmldom.makenode(dbms_xmldom.createtextnode(l_domdoc,v_od_date_signed)) );
-
   -- Each Site node will get Vendor Date Signed
   l_v_ven_date_signed_n  := dbms_xmldom.appendchild( l_cust_attributes_node , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'sup:vendorDateSigned' )) );
   l_v_ven_date_signed_tn := dbms_xmldom.appendchild( l_v_ven_date_signed_n , dbms_xmldom.makenode(dbms_xmldom.createtextnode(l_domdoc,v_vendor_date_signed)) );
-
   -- Each Site node will get deduct from Invoice Flag
   l_v_deduct_from_inv_flag_n  := dbms_xmldom.appendchild( l_cust_attributes_node , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'sup:deductFromInvoiceFlag' )) );
   l_v_deduct_from_inv_flag_tn := dbms_xmldom.appendchild( l_v_deduct_from_inv_flag_n , dbms_xmldom.makenode(dbms_xmldom.createtextnode(l_domdoc,v_deduct_from_invoice_flag)) );
-
   -- Each Site node will get New Store Flag
   l_v_new_store_flag_node     := dbms_xmldom.appendchild( l_cust_attributes_node , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'sup:newStoreFlag' )) );
   l_v_new_store_flag_textnode := dbms_xmldom.appendchild( l_v_new_store_flag_node , dbms_xmldom.makenode(dbms_xmldom.createtextnode(l_domdoc,v_new_store_flag)) );
-
   -- Each Site node will get New Store Terms
   l_v_new_store_terms_node     := dbms_xmldom.appendchild( l_cust_attributes_node , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'sup:newStoreTerms' )) );
   l_v_new_store_terms_textnode := dbms_xmldom.appendchild( l_v_new_store_terms_node , dbms_xmldom.makenode(dbms_xmldom.createtextnode(l_domdoc,v_new_store_terms)) );
-
   -- Each Site node will get Seasonal Flag
   l_v_seasonal_flag_node     := dbms_xmldom.appendchild( l_cust_attributes_node , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'sup:seasonalFlag' )) );
   l_v_seasonal_flag_textnode := dbms_xmldom.appendchild( l_v_seasonal_flag_node , dbms_xmldom.makenode(dbms_xmldom.createtextnode(l_domdoc,v_seasonal_flag)) );
-
   -- Each Site node will get Start Date
   l_v_start_date_node     := dbms_xmldom.appendchild( l_cust_attributes_node , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'sup:startDate' )) );
   l_v_start_date_textnode := dbms_xmldom.appendchild( l_v_start_date_node , dbms_xmldom.makenode(dbms_xmldom.createtextnode(l_domdoc,v_start_date)) );
-
   -- Each Site node will get End Date
   l_v_end_date_node     := dbms_xmldom.appendchild( l_cust_attributes_node , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'sup:endDate' )) );
   l_v_end_date_textnode := dbms_xmldom.appendchild( l_v_end_date_node , dbms_xmldom.makenode(dbms_xmldom.createtextnode(l_domdoc,v_end_date)) );
-
   -- Each Site node will get Seasonal Terms
   l_v_seasonal_terms_node     := dbms_xmldom.appendchild( l_cust_attributes_node , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'sup:seasonalTerms' )) );
   l_v_seasonal_terms_textnode := dbms_xmldom.appendchild( l_v_seasonal_terms_node , dbms_xmldom.makenode(dbms_xmldom.createtextnode(l_domdoc,v_seasonal_terms)) );
-
   -- Each Site node will get Late Ship Flag
   l_v_late_ship_flag_node     := dbms_xmldom.appendchild( l_cust_attributes_node , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'sup:lateShipFlag' )) );
   l_v_late_ship_flag_textnode := dbms_xmldom.appendchild( l_v_late_ship_flag_node , dbms_xmldom.makenode(dbms_xmldom.createtextnode(l_domdoc,v_late_ship_flag)) );
   l_edi_attributes_node       := dbms_xmldom.appendchild( l_cust_attributes_node--l_supplier_node
   , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'sup:ediAttributes' )) );
-
   -- Each Site node will get EDI Distribution Code
   l_v_edi_distri_code_n := dbms_xmldom.appendchild( l_edi_attributes_node--l_cust_attributes_node
   , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'sup:ediDistributionCode' )) );
   l_v_edi_distri_code_tn := dbms_xmldom.appendchild( l_v_edi_distri_code_n , dbms_xmldom.makenode(dbms_xmldom.createtextnode(l_domdoc,v_edi_distribution_code)) );
-
   -- Each Site node will get 850 PO
   l_v_850_po_node := dbms_xmldom.appendchild( l_edi_attributes_node--l_cust_attributes_node
   , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'sup:po850Flag' )) );
   l_v_850_po_textnode := dbms_xmldom.appendchild( l_v_850_po_node , dbms_xmldom.makenode(dbms_xmldom.createtextnode(l_domdoc,v_850_po)) );
-
   -- Each Site node will get 846 Availability
   l_v_846_availability_node := dbms_xmldom.appendchild(l_edi_attributes_node-- l_cust_attributes_node
   , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'sup:availability846Flag' )) );
   l_v_846_availability_textnode := dbms_xmldom.appendchild( l_v_846_availability_node , dbms_xmldom.makenode(dbms_xmldom.createtextnode(l_domdoc,v_846_availability)) );
-
   -- Each Site node will get 810 Invoice
   l_v_810_invoice_node := dbms_xmldom.appendchild( l_edi_attributes_node--l_cust_attributes_node
   , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'sup:invoice810Flag' )) );
   l_v_810_invoice_textnode := dbms_xmldom.appendchild( l_v_810_invoice_node , dbms_xmldom.makenode(dbms_xmldom.createtextnode(l_domdoc,v_810_invoice)) );
-
   -- Each Site node will get 820 EFT
   l_v_820_eft_node := dbms_xmldom.appendchild( l_edi_attributes_node--l_cust_attributes_node
   , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'sup:eft820' )) );
   l_v_820_eft_textnode := dbms_xmldom.appendchild( l_v_820_eft_node , dbms_xmldom.makenode(dbms_xmldom.createtextnode(l_domdoc,v_820_eft)) );
-
   -- Each Site node will get 852 Sales
   l_v_852_sales_node := dbms_xmldom.appendchild( l_edi_attributes_node--l_cust_attributes_node
   , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'sup:sales852' )) );
   l_v_852_sales_textnode := dbms_xmldom.appendchild( l_v_852_sales_node , dbms_xmldom.makenode(dbms_xmldom.createtextnode(l_domdoc,v_852_sales)) );
-
   -- Each Site node will get 855 Confirm PO
   l_v_855_confirm_po_n := dbms_xmldom.appendchild( l_edi_attributes_node--l_cust_attributes_node
   , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'sup:poConfirm855Flag' )) );
   l_v_855_confirm_po_tn := dbms_xmldom.appendchild( l_v_855_confirm_po_n , dbms_xmldom.makenode(dbms_xmldom.createtextnode(l_domdoc,v_855_confirm_po)) );
-
   -- Each Site node will get 856 ASN
   l_v_856_asn_node := dbms_xmldom.appendchild( l_edi_attributes_node--l_cust_attributes_node
   , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'sup:asn856Flag' )) );
   l_v_856_asn_textnode := dbms_xmldom.appendchild( l_v_856_asn_node , dbms_xmldom.makenode(dbms_xmldom.createtextnode(l_domdoc,v_856_asn)) );
-
   -- Each Site node will get 860 PO Change
   l_v_860_po_change_n := dbms_xmldom.appendchild( l_edi_attributes_node--l_cust_attributes_node
   , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'sup:poChange860Flag' )) );
   l_v_860_po_change_tn := dbms_xmldom.appendchild( l_v_860_po_change_n , dbms_xmldom.makenode(dbms_xmldom.createtextnode(l_domdoc,v_860_po_change)) );
-
   -- Each Site node will get 861 Damage Shortage
   l_v_861_damage_shortage_n := dbms_xmldom.appendchild( l_edi_attributes_node--l_cust_attributes_node
   , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'sup:damageShortage861Flag' )) );
   l_v_861_damage_shortage_tn := dbms_xmldom.appendchild( l_v_861_damage_shortage_n , dbms_xmldom.makenode(dbms_xmldom.createtextnode(l_domdoc,v_861_damage_shortage)) );
-
   -- Each Site node will get 832 Price Sales Cat
   l_v_832_price_sales_cat_n  := dbms_xmldom.appendchild( l_cust_attributes_node , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'sup:priceSalesCat832' )) );
   l_v_832_price_sales_cat_tn := dbms_xmldom.appendchild( l_v_832_price_sales_cat_n , dbms_xmldom.makenode(dbms_xmldom.createtextnode(l_domdoc,v_832_price_sales_cat)) );
-
   -- Each Site node will get RTV Option
   l_v_rtv_option_node     := dbms_xmldom.appendchild( l_cust_attributes_node , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'sup:rtvOption' )) );
   l_v_rtv_option_textnode := dbms_xmldom.appendchild( l_v_rtv_option_node , dbms_xmldom.makenode(dbms_xmldom.createtextnode(l_domdoc,v_rtv_option)) );
-
   -- Each Site node will get RTV Freight Payment Method
   l_v_rtv_freight_pay_method_n  := dbms_xmldom.appendchild( l_cust_attributes_node , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'sup:rtvFreightPaymentMethod' )) );
   l_v_rtv_freight_pay_method_tn := dbms_xmldom.appendchild( l_v_rtv_freight_pay_method_n , dbms_xmldom.makenode(dbms_xmldom.createtextnode(l_domdoc,v_rtv_freight_payment_method)) );
-
   -- Each Site node will get Permanent RGA
   l_v_permanent_rga_node     := dbms_xmldom.appendchild( l_cust_attributes_node , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'sup:permanentRga' )) );
   l_v_permanent_rga_textnode := dbms_xmldom.appendchild( l_v_permanent_rga_node , dbms_xmldom.makenode(dbms_xmldom.createtextnode(l_domdoc,v_permanent_rga)) );
-
   -- Each Site node will get Destroy Allow amount
   l_v_destroy_allow_amt_n  := dbms_xmldom.appendchild( l_cust_attributes_node , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'sup:destroyAllowAmount' )) );
   l_v_destroy_allow_amt_tn := dbms_xmldom.appendchild( l_v_destroy_allow_amt_n , dbms_xmldom.makenode(dbms_xmldom.createtextnode(l_domdoc,v_destroy_allow_amount)) );
-
   -- Each Site node will get Payment Frequency
   l_v_payment_freq_n  := dbms_xmldom.appendchild( l_cust_attributes_node , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'sup:paymentFrequency' )) );
   l_v_payment_freq_tn := dbms_xmldom.appendchild( l_v_payment_freq_n , dbms_xmldom.makenode(dbms_xmldom.createtextnode(l_domdoc,v_payment_frequency)) );
-
   -- Each Site node will get Min Return Qty
   l_v_min_return_qty_node     := dbms_xmldom.appendchild( l_cust_attributes_node , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'sup:minimumReturnQuantity')) );
   l_v_min_return_qty_textnode := dbms_xmldom.appendchild( l_v_min_return_qty_node , dbms_xmldom.makenode(dbms_xmldom.createtextnode(l_domdoc,v_min_return_qty)) );
-
   -- Each Site node will get Min Return Amt
   l_v_min_return_amount_node     := dbms_xmldom.appendchild( l_cust_attributes_node , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'sup:minimumReturnAmount')) );
   l_v_min_return_amount_textnode := dbms_xmldom.appendchild( l_v_min_return_amount_node , dbms_xmldom.makenode(dbms_xmldom.createtextnode(l_domdoc,v_min_return_amount)) );
-
   -- Each Site node will get Damage Destroy Limit
   l_v_damage_dest_limit_n  := dbms_xmldom.appendchild( l_cust_attributes_node , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'sup:damageDestroyLimit')) );
   l_v_damage_dest_limit_tn := dbms_xmldom.appendchild( l_v_damage_dest_limit_n , dbms_xmldom.makenode(dbms_xmldom.createtextnode(l_domdoc,v_damage_destroy_limit)) );
-
   -- Each Site node will get RTV Instructions
   l_v_rtv_instr_n  := dbms_xmldom.appendchild( l_cust_attributes_node , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'sup:rtvInstructions')) );
   l_v_rtv_instr_tn := dbms_xmldom.appendchild( l_v_rtv_instr_n , dbms_xmldom.makenode(dbms_xmldom.createtextnode(l_domdoc,v_rtv_instructions)) );
-
   -- Each Site node will get Addi.RTV Instructions
   l_v_addl_rtv_instr_n  := dbms_xmldom.appendchild( l_cust_attributes_node , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'sup:additionalRtvInstructions')) );
   l_v_addl_rtv_instr_tn := dbms_xmldom.appendchild( l_v_addl_rtv_instr_n , dbms_xmldom.makenode(dbms_xmldom.createtextnode(l_domdoc,v_addl_rtv_instructions)) );
-
   -- Each Site node will get RGA Marked Flag
   l_v_rga_marked_flag_n  := dbms_xmldom.appendchild( l_cust_attributes_node , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'sup:rgaMarkedFlag')) );
   l_v_rga_marked_flag_tn := dbms_xmldom.appendchild( l_v_rga_marked_flag_n , dbms_xmldom.makenode(dbms_xmldom.createtextnode(l_domdoc,v_rga_marked_flag)) );
-
   -- Each Site node will get Remove Price Sticker Flag
   l_v_rmv_price_sticker_flag_n  := dbms_xmldom.appendchild( l_cust_attributes_node , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'sup:removePriceStickerFlag')) );
   l_v_rmv_price_sticker_flag_tn := dbms_xmldom.appendchild( l_v_rmv_price_sticker_flag_n , dbms_xmldom.makenode(dbms_xmldom.createtextnode(l_domdoc,v_remove_price_sticker_flag)) );
-
   -- Each Site node will get Contact Supplier RGA Flag
   l_v_con_supp_rga_flag_n  := dbms_xmldom.appendchild( l_cust_attributes_node , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'sup:contactSupplierRgaFlag')) );
   l_v_con_supp_rga_flag_tn := dbms_xmldom.appendchild( l_v_con_supp_rga_flag_n , dbms_xmldom.makenode(dbms_xmldom.createtextnode(l_domdoc,v_contact_supplier_rga_flag)) );
-
   -- Each Site node will get Destroy Flag
   l_v_destroy_flag_node     := dbms_xmldom.appendchild( l_cust_attributes_node , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'sup:destroyFlag')) );
   l_v_destroy_flag_textnode := dbms_xmldom.appendchild( l_v_destroy_flag_node , dbms_xmldom.makenode(dbms_xmldom.createtextnode(l_domdoc,v_destroy_flag)) );
-
   -- Each Site node will get Serial Num reqd. Flag
   l_v_ser_num_req_flag_n  := dbms_xmldom.appendchild( l_cust_attributes_node , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'sup:serialNumRequiredFlag')) );
   l_v_ser_num_req_flag_tn := dbms_xmldom.appendchild( l_v_ser_num_req_flag_n , dbms_xmldom.makenode(dbms_xmldom.createtextnode(l_domdoc,v_serial_num_required_flag)) );
-
   -- Each Site node will get Obsolete item
   l_v_obsolete_item_n  := dbms_xmldom.appendchild( l_cust_attributes_node , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'sup:obsoleteItem')) );
   l_v_obsolete_item_tn := dbms_xmldom.appendchild( l_v_obsolete_item_n , dbms_xmldom.makenode(dbms_xmldom.createtextnode(l_domdoc,v_obsolete_item)) );
-
   -- Each Site node will get Obsolete item
   l_v_obso_allow_pct_n  := dbms_xmldom.appendchild( l_cust_attributes_node , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'sup:obsoleteAllowancePercent')) );
   l_v_obso_allow_pct_tn := dbms_xmldom.appendchild( l_v_obso_allow_pct_n , dbms_xmldom.makenode(dbms_xmldom.createtextnode(l_domdoc,v_obsolete_allowance_pct)) );
-
   -- Each Site node will get Obsolete item
   l_v_obso_allow_days_n  := dbms_xmldom.appendchild( l_cust_attributes_node , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'sup:obsoleteAllowanceDays')) );
   l_v_obso_allow_days_tn := dbms_xmldom.appendchild( l_v_obso_allow_days_n , dbms_xmldom.makenode(dbms_xmldom.createtextnode(l_domdoc,v_obsolete_allowance_days)) );
-
   -- Each Site node will get OD contractor signature
   l_v_od_cont_sig_n  := dbms_xmldom.appendchild( l_cust_attributes_node , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'sup:odContSig')) );
   l_v_od_cont_sig_tn := dbms_xmldom.appendchild( l_v_od_cont_sig_n , dbms_xmldom.makenode(dbms_xmldom.createtextnode(l_domdoc,v_od_cont_sig)) );
-
   -- Each Site node will get OD contractor title
   l_v_od_cont_title_n  := dbms_xmldom.appendchild( l_cust_attributes_node , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'sup:odContTitle')) );
   l_v_od_cont_title_tn := dbms_xmldom.appendchild( l_v_od_cont_title_n , dbms_xmldom.makenode(dbms_xmldom.createtextnode(l_domdoc,v_od_cont_title)) );
-
   -- Each Site node will get OD vendor sig name
   l_v_od_ven_sig_name_n  := dbms_xmldom.appendchild( l_cust_attributes_node , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'sup:odVenSigName')) );
   l_v_od_ven_sig_name_tn := dbms_xmldom.appendchild( l_v_od_ven_sig_name_n , dbms_xmldom.makenode(dbms_xmldom.createtextnode(l_domdoc,v_od_ven_sig_name)) );
-
   -- Each Site node will get OD vendor sig title
   l_v_od_ven_sig_title_n  := dbms_xmldom.appendchild( l_cust_attributes_node , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'sup:odVenSigTitle')) );
   l_v_od_ven_sig_title_tn := dbms_xmldom.appendchild( l_v_od_ven_sig_title_n , dbms_xmldom.makenode(dbms_xmldom.createtextnode(l_domdoc,v_od_ven_sig_title)) );
-
   -- Each Site node will get gss mfg id
   l_v_gss_mfg_id_n  := dbms_xmldom.appendchild( l_cust_attributes_node , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'sup:gssMfgId')) );
   l_v_gss_mfg_id_tn := dbms_xmldom.appendchild( l_v_gss_mfg_id_n , dbms_xmldom.makenode(dbms_xmldom.createtextnode(l_domdoc,v_gss_mfg_id)) );
-
   -- Each Site node will get gss buying agent id
   l_v_gss_buying_agent_id_n  := dbms_xmldom.appendchild( l_cust_attributes_node , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'sup:gssBuyingAgentId')) );
   l_v_gss_buying_agent_id_tn := dbms_xmldom.appendchild( l_v_gss_buying_agent_id_n , dbms_xmldom.makenode(dbms_xmldom.createtextnode(l_domdoc,v_gss_buying_agent_id)) );
-
   -- Each Site node will get gss_freight_id
   l_v_gss_freight_id_n  := dbms_xmldom.appendchild( l_cust_attributes_node , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'sup:gssFreightId')) );
   l_v_gss_freight_id_tn := dbms_xmldom.appendchild( l_v_gss_freight_id_n , dbms_xmldom.makenode(dbms_xmldom.createtextnode(l_domdoc,v_gss_freight_id)) );
-
   -- Each Site node will get gss_freight_id
   l_v_gss_ship_id_n  := dbms_xmldom.appendchild( l_cust_attributes_node , dbms_xmldom.makenode(dbms_xmldom.createelement(l_domdoc, 'sup:gssShipId')) );
   l_v_gss_ship_id_tn := dbms_xmldom.appendchild( l_v_gss_ship_id_n , dbms_xmldom.makenode(dbms_xmldom.createtextnode(l_domdoc,v_gss_ship_id)) );
-
   --KFF end
   l_xmltype := dbms_xmldom.getxmltype(l_domdoc);
   dbms_xmldom.freedocument(l_domdoc);
-  xml_output:=l_xmltype.getclobval;
-
+  xml_output   :=l_xmltype.getclobval;
   p_request_id := fnd_global.conc_request_id;
   p_user_id    := fnd_global.user_id;
   p_user_name  := fnd_global.user_name;
@@ -4689,20 +4359,18 @@ BEGIN
   fnd_file.put_line(fnd_file.log, 'User id is '||p_user_id );
   fnd_file.put_line(fnd_file.log, 'User Name is '||p_user_name );
   xx_ap_sup_invoke_xml_out ( v_transaction_id=>v_transaction_id, v_globalvendor_id =>v_globalvendor_id , v_name =>v_name, v_vendor_site_id =>v_vendor_site_id, v_vendor_site_code =>v_vendor_site_code, v_site_orgid =>v_site_orgid , v_user_id =>p_user_id, v_user_name =>p_user_name, p_xml_payload => xml_output, v_request_id =>p_request_id, v_error_message => v_error_message, p_response_code => p_response_code );
+  
 END create_data_line;
-
 /*Defect# 29479 Added for BUSS_CLASS_ATTR_FUNC for RMS type*/
-
 FUNCTION buss_class_attr_func(
     p_vendor_site_id IN NUMBER)
-  RETURN VARCHAR2 IS
-
+  RETURN VARCHAR2
+IS
   lv_attribute16 VARCHAR2(4000);
   lv_vend_id     NUMBER;
   lv_attr        VARCHAR2(10);
   lv_ext_attr_1  VARCHAR2(10);
   lv_separator   VARCHAR2(10) := ';';
-
   CURSOR c_buss_attr
   IS
     SELECT *
@@ -4710,16 +4378,13 @@ FUNCTION buss_class_attr_func(
     WHERE lookup_type      ='POS_BUSINESS_CLASSIFICATIONS'
     AND attribute_category = 'POS_BUSINESS_CLASSIFICATIONS'
     ORDER BY to_number(attribute1);
-
 BEGIN
   SELECT vendor_id
   INTO lv_vend_id
   FROM ap_supplier_sites_all apss
   WHERE apss.vendor_site_id = p_vendor_site_id;
-
   FOR r_buss_attr IN c_buss_attr
   LOOP
-
     BEGIN
       SELECT 'Y',
         ext_attr_1
@@ -4730,12 +4395,10 @@ BEGIN
       AND lookup_code                    = r_buss_attr.lookup_code
       AND status                         = 'A'
       AND NVL(end_date_active,sysdate+1) > sysdate;
-
       IF r_buss_attr.lookup_code         = 'FOB' THEN
         lv_attribute16                  := lv_attribute16||lv_separator||lv_ext_attr_1;
       elsif r_buss_attr.lookup_code      = 'MINORITY_OWNED' THEN
         lv_attribute16                  := lv_attribute16||lv_separator||lv_ext_attr_1;
-
       ELSE
         lv_attribute16 := lv_attribute16||lv_separator||lv_attr;
       END IF;
@@ -4743,44 +4406,33 @@ BEGIN
     WHEN OTHERS THEN
       lv_attribute16 := lv_attribute16||lv_separator||'N';
     END;
-
   END LOOP;
   RETURN lv_attribute16;
 EXCEPTION
 WHEN OTHERS THEN
   fnd_file.put_line(fnd_file.log,'MAIN EXCEPTION :'||sqlerrm);
 END buss_class_attr_func;
-
 --=========
 BEGIN
-
   v_extract_time := sysdate;
-
   -- Add code for File open
   dbms_output.put_line('Current Extract Time is:' || TO_CHAR(v_extract_time, 'DD-MON-YY HH24:Mi:SS'));
   ---+===============================================================================================
   ---|  Select the directory path for XXFIN_OUTBOUND directory
   ---+===============================================================================================
-
   fnd_file.put_line(fnd_file.log, '****************************************************************************');
   fnd_file.put_line(fnd_file.log, '          ');
-
   IF v_exit_flag = 'N' THEN
-
     OPEN mainsupplupdate_cur;
-
     -- Main Cursor to read all the data ;
-
     LOOP
-
       v_rms_flag := 'N';
       init_variables;
       init_kffvariables;
       FETCH mainsupplupdate_cur
       INTO v_vendor_site_id,
         v_attribute8,
-        --v_attribute13,
-		v_attr13,			-- added for cloud change
+        v_attribute13,
         v_vendor_site_code,
         v_vendor_site_code_alt, --NAIT-64664 Added by Sunil
         v_site_last_update,
@@ -4837,33 +4489,28 @@ BEGIN
         v_site_orgid,
         v_telex; -- V4.0, added
       -- use vendor_type_lookup_code = 'GARNISHMENT' to identify Garnishment suppliers
-      EXIT WHEN NOT mainsupplupdate_cur % found;
+      EXIT
+    WHEN NOT mainsupplupdate_cur % found;
       -- Identify the System
       -- GSS: Paysites for Expense Suppliers where the VENDOR_SITE_CODE starts with ?EX? and site category with 'EX'
       -- RMS: Trade Suppliers with site code starting with TR and Expense Suppliers VENDOR_SITE_CODE like ?EXP-IMP%?
       -- PSFT: Vendor_type_lookup_code = 'GARNISHMENT'
-
       g_vendor_site_id:=NULL;
-
       /*Defect# 29479 calling BUSS_CLASS_ATTR_FUNC for RMS type*/
       v_attribute16 := buss_class_attr_func(v_vendor_site_id);
       v_site_phone  := v_site_contact_areacode || v_site_contact_phone;
       v_site_phone  := SUBSTR(REPLACE(v_site_phone, '-', ''), 1, 11);
       v_site_fax    := v_site_contact_fareacode || v_site_contact_fphone;
       v_site_fax    := SUBSTR(REPLACE(v_site_fax, '-', ''), 1, 11);
-
       IF((v_country <> 'US') AND v_state IS NULL) THEN
         v_state     := v_province;
       END IF;
-
       -- All Expense vendors with Site Category of EX-IMP will be sent.
-
       IF((SUBSTR(v_attribute8, 1, 2) = 'TR')) -- Defect 6547             OR (SUBSTR (v_attribute8, 1, 6) = 'EX-IMP'))
         THEN
         v_rms_flag      := 'Y';
         g_vendor_site_id:=v_vendor_site_id;
       END IF;
-
       IF v_rms_flag = 'Y' THEN
         ---- NAIT-64721 Added by Sunil
         BEGIN
@@ -4893,7 +4540,6 @@ BEGIN
         WHEN OTHERS THEN
           v_bank_name :=NULL;
         END;
-
         -- Defect 7007 CR395
         BEGIN
           --------------------------------------------
@@ -4920,19 +4566,6 @@ BEGIN
         WHEN OTHERS THEN
           fnd_file.put_line(fnd_file.log, 'Error retreiving Bank Code for Site ID:' || v_vendor_site_id || ' ' || v_payment_method_lookup_code || ' ' || v_payment_currency_code || v_country);
         END;
-		-- BEGIN Added to derive vendor_site_id for the pay site vendor site code for cloud change
-		IF v_attr13 IS NOT NULL THEN
-		   BEGIN
-		     SELECT vendor_site_id
-			   INTO v_attribute13
-			   FROM ap_supplier_sites_all
-			  WHERE vendor_site_code=v_attr13;
-		   EXCEPTION
-		     WHEN others THEN
-			   v_attribute13:=NULL;
-		   END;
-		END IF;
-		-- END Added to derive vendor_site_id for the pay site vendor site code for Cloud change	
         -- end of Defect 7007 CR395
         -- Purchase Site with Paysite specified.
         --check attribute13 for Purchase sites to get the Pay site
@@ -4958,32 +4591,33 @@ BEGIN
                 v_province,
                 v_site_terms,
                 v_site_orgid
-                FROM (
-              SELECT  a.inactive_date,
-                a.pay_group_lookup_code,
-                NVL(ieppm.payment_method_code,'CHECK'),--Added for defect 33188
-                a.payment_currency_code,
-                a.primary_pay_site_flag,
-                a.freight_terms_lookup_code,--NAIT-64184--Added by Sunil
-                a.fob_lookup_code,          --NAIT-64184--Added by Sunil
-                a.vat_registration_num,
-                a.language,
-                a.attribute5,--Added for NAIT-69405
-                NVL(a.create_debit_memo_flag, 'N'),
-                a.province,
-                a.terms_id,
-                a.org_id
-              FROM ap_supplier_sites_all a,   -- V4.0 po_vendor_sites_all a
-                iby_external_payees_all iepa, --V4.0
-                iby_ext_party_pmt_mthds ieppm --V4.0
-              WHERE a.vendor_site_id = v_vendor_site_id
-                -- V4.0
-              AND a.vendor_site_id       = iepa.supplier_site_id
-              AND iepa.ext_payee_id      = ieppm.ext_pmt_party_id(+)
-              AND( (ieppm.inactive_date IS NULL)
-              OR (ieppm.inactive_date    > sysdate))
-           ORDER BY NVL(ieppm.primary_flag,'Y') DESC)
-           WHERE ROWNUM < 2;
+              FROM
+                (SELECT a.inactive_date,
+                  a.pay_group_lookup_code,
+                  NVL(ieppm.payment_method_code,'CHECK'),--Added for defect 33188
+                  a.payment_currency_code,
+                  a.primary_pay_site_flag,
+                  a.freight_terms_lookup_code,--NAIT-64184--Added by Sunil
+                  a.fob_lookup_code,          --NAIT-64184--Added by Sunil
+                  a.vat_registration_num,
+                  a.language,
+                  a.attribute5,--Added for NAIT-69405
+                  NVL(a.create_debit_memo_flag, 'N'),
+                  a.province,
+                  a.terms_id,
+                  a.org_id
+                FROM ap_supplier_sites_all a,   -- V4.0 po_vendor_sites_all a
+                  iby_external_payees_all iepa, --V4.0
+                  iby_ext_party_pmt_mthds ieppm --V4.0
+                WHERE a.vendor_site_id = v_vendor_site_id
+                  -- V4.0
+                AND a.vendor_site_id       = iepa.supplier_site_id
+                AND iepa.ext_payee_id      = ieppm.ext_pmt_party_id(+)
+                AND( (ieppm.inactive_date IS NULL)
+                OR (ieppm.inactive_date    > sysdate))
+                ORDER BY NVL(ieppm.primary_flag,'Y') DESC
+                )
+              WHERE ROWNUM < 2;
             EXCEPTION
             WHEN OTHERS THEN
               fnd_file.put_line(fnd_file.log, 'Error retreiving Site data: for ' || v_vendor_site_id);
@@ -5084,42 +4718,35 @@ BEGIN
           IF v_site_terms IS NOT NULL THEN
             --                     fnd_file.put_line (fnd_file.LOG, 'Site Terms:' || v_site_terms || ' ' || v_terms_date_basis);
             BEGIN
-              v_site_terms_name      := NULL;
-              v_site_terms_name_desc := NULL;
-              v_discount_percent     :=0;
-              v_discount_days        :=0;
-              v_due_days             :=0;
-			  
-			  
-			  lv_rtv_vendor_site_code   :=SUBSTR(v_vendor_site_code,1,3);   ----- Added by Shanti for NAIT-90627
-                 IF lv_rtv_vendor_site_code <> 'RTV' THEN                   ----- Added by Shanti for NAIT-90627
-			  
-              ----New query added by Sunil for NAIT-64249
-              SELECT aph.name ,
-                aph.description ,
-                NVL(apt.discount_percent,0) discount_percent ,
-                NVL(apt.discount_days,0) discount_days ,
-                NVL(apt.due_days,0) due_days
-              INTO v_site_terms_name,
-                v_site_terms_name_desc,
-                v_discount_percent,
-                v_discount_days,
-                v_due_days
-              FROM ap_terms_lines apt ,
-                ap_terms_tl aph
-              WHERE NVL(TRUNC(aph.end_date_active),sysdate+1) >= TRUNC(sysdate)
-              AND aph.term_id                                  = apt.term_id
-              AND aph.term_id                                  = v_site_terms
-              AND aph.enabled_flag                             = 'Y';
-			  
-			  
-			  else                                 ----- Added by Shanti for NAIT-90627
-			  v_discount_percent:='';               ----- Added by Shanti for NAIT-90627
-			  v_discount_days:='';                  ----- Added by Shanti for NAIT-90627
-			  v_due_days:='';                         ----- Added by Shanti for NAIT-90627
-			  end if;                                 ----- Added by Shanti for NAIT-90627
-			  
-			  
+              v_site_terms_name          := NULL;
+              v_site_terms_name_desc     := NULL;
+              v_discount_percent         :=0;
+              v_discount_days            :=0;
+              v_due_days                 :=0;
+              lv_rtv_vendor_site_code    :=SUBSTR(v_vendor_site_code,1,3); ----- Added by Shanti for NAIT-90627
+              IF lv_rtv_vendor_site_code <> 'RTV' THEN                     ----- Added by Shanti for NAIT-90627
+                ----New query added by Sunil for NAIT-64249
+                SELECT aph.name ,
+                  aph.description ,
+                  NVL(apt.discount_percent,0) discount_percent ,
+                  NVL(apt.discount_days,0) discount_days ,
+                  NVL(apt.due_days,0) due_days
+                INTO v_site_terms_name,
+                  v_site_terms_name_desc,
+                  v_discount_percent,
+                  v_discount_days,
+                  v_due_days
+                FROM ap_terms_lines apt ,
+                  ap_terms_tl aph
+                WHERE NVL(TRUNC(aph.end_date_active),sysdate+1) >= TRUNC(sysdate)
+                AND aph.term_id                                  = apt.term_id
+                AND aph.term_id                                  = v_site_terms
+                AND aph.enabled_flag                             = 'Y';
+              ELSE                      ----- Added by Shanti for NAIT-90627
+                v_discount_percent:=''; ----- Added by Shanti for NAIT-90627
+                v_discount_days   :=''; ----- Added by Shanti for NAIT-90627
+                v_due_days        :=''; ----- Added by Shanti for NAIT-90627
+              END IF;                   ----- Added by Shanti for NAIT-90627
             EXCEPTION
             WHEN OTHERS THEN
               v_site_terms_name      := NULL;
@@ -5142,7 +4769,6 @@ BEGIN
             , NULL                                                                 --source_value10
             ,x_target_value1, x_target_value2, x_target_value3, x_target_value4, x_target_value5, x_target_value6, x_target_value7, x_target_value8, x_target_value9, x_target_value10, x_target_value11, x_target_value12, x_target_value13, x_target_value14, x_target_value15, x_target_value16, x_target_value17, x_target_value18, x_target_value19, x_target_value20, x_error_message);
             v_site_terms_name := x_target_value1;
-
             BEGIN--Added by Sunil for terms_name_description from Translation table.
               IF v_site_terms_name IS NOT NULL AND v_terms_date_basis IS NOT NULL THEN
                 BEGIN
@@ -5177,154 +4803,227 @@ BEGIN
           v_site_terms_name      := NULL;
           v_site_terms_name_desc := NULL;
         END;
-
         BEGIN
           BEGIN
-            SELECT k.lead_time,
-              NVL(k.back_order_flag, 'N'),
-              DECODE(k.delivery_policy, 'NEXT DAY', 'NEXT', 'NEXT VALID DELIVERY DAY', 'NDD'),
-              --defect 2192
-              k.min_prepaid_code,
-              k.vendor_min_amount,
-              k.supplier_ship_to,
-              k.inventory_type_code,
-              k.vertical_market_indicator,
-              NVL(k.allow_auto_receipt, 'N'),
-              k.handling,
-              k.eft_settle_days,
-              NVL(k.split_file_flag, 'N'),
-              k.master_vendor_id,
-              k.pi_pack_year,
-              k.od_date_signed,
-              k.vendor_date_signed,
-              NVL(k.deduct_from_invoice_flag, 'N'),
-              k.min_bus_category,
-              NVL(k.new_store_flag, 'N'),
-              k.new_store_terms,
-              NVL(k.seasonal_flag, 'N'),
-              k.start_date,
-              k.end_date,
-              k.seasonal_terms,
-              NVL(k.late_ship_flag, 'N'),
-              k.edi_distribution_code,
-              k.od_contract_signature,
-              k.od_contract_title,
-              NVL(k.rtv_option, '1'),
-              DECODE(k.rtv_freight_payment_method, 'COLLECT', 'CC', 'PREPAID', 'PP', 'NEITHER', 'NN'),
-              --defect 2192
-              k.permanent_rga,
-              k.destroy_allow_amount,
-              DECODE(k.payment_frequency, 'WEEKLY', 'W', 'DAILY', 'D', 'MONTHLY', 'M', 'QUARTERLY', 'Q', ''), -- Defect 6517
-              k.min_return_qty,
-              k.min_return_amount,
-              k.damage_destroy_limit,
-              k.rtv_instructions,
-              k.addl_rtv_instructions,
-              NVL(k.rga_marked_flag, 'N'),
-              NVL(k.remove_price_sticker_flag, 'N'),
-              NVL(k.contact_supplier_for_rga_flag, 'N'),
-              NVL(k.destroy_flag, 'N'),
-              DECODE(k.serial_num_required_flag, 'N', 'N', 'Y', 'Y', 'N'),
-              -- if field edit not created in EBS
-              k.obsolete_item,
-              k.obsolete_allowance_pct,
-              k.obsolete_allowance_days,
-              NVL(k."850_PO", 'N'),
-              NVL(k."860_PO_CHANGE", 'N'),
-              NVL(k."855_CONFIRM_PO", 'N'),
-              NVL(k."856_ASN", 'N'),
-              NVL(k."846_AVAILABILITY", 'N'),
-              NVL(k."810_INVOICE", 'N'),
-              NVL(k."832_PRICE_SALES_CAT", 'N'),
-              NVL(k."820_EFT", 'N'),
-              NVL(k."861_DAMAGE_SHORTAGE", 'N'),
-              DECODE(k."852_SALES", 'WEEKLY', 'W', 'DAILY', 'D', 'MONTHLY', 'M', 'W'),
-              k.rtv_related_site,
-              k.od_vendor_signature_name,
-              k.od_vendor_signature_title,
-              k.manufacturing_site_id,
-              k.buying_agent_site_id,
-              k.freight_forwarder_site_id,
-              k.ship_from_port_id
-            INTO v_lead_time,
-              v_back_order_flag,
-              v_delivery_policy,
-              v_min_prepaid_code,
-              v_vendor_min_amount,
-              v_supplier_ship_to,
-              v_inventory_type_code,
-              v_vertical_market_indicator,
-              v_allow_auto_receipt,
-              v_handling,
-              v_eft_settle_days,
-              v_split_file_flag,
-              v_master_vendor_id,
-              v_pi_pack_year,
-              v_od_date_signed,
-              v_vendor_date_signed,
-              v_deduct_from_invoice_flag,
-              v_min_bus_category,
-              v_new_store_flag,
-              v_new_store_terms,
-              v_seasonal_flag,
-              v_start_date,
-              v_end_date,
-              v_seasonal_terms,
-              v_late_ship_flag,
-              v_edi_distribution_code,
-              v_od_cont_sig,
-              v_od_cont_title,
-              v_rtv_option,
-              v_rtv_freight_payment_method,
-              v_permanent_rga,
-              v_destroy_allow_amount,
-              v_payment_frequency,
-              v_min_return_qty,
-              v_min_return_amount,
-              v_damage_destroy_limit,
-              v_rtv_instructions,
-              v_addl_rtv_instructions,
-              v_rga_marked_flag,
-              v_remove_price_sticker_flag,
-              v_contact_supplier_rga_flag,
-              v_destroy_flag,
-              v_serial_num_required_flag,
-              v_obsolete_item,
-              v_obsolete_allowance_pct,
-              v_obsolete_allowance_days,
-              v_850_po,
-              v_860_po_change,
-              v_855_confirm_po,
-              v_856_asn,
-              v_846_availability,
-              v_810_invoice,
-              v_832_price_sales_cat,
-              v_820_eft,
-              v_861_damage_shortage,
-              v_852_sales,
-              --v_rtv_related_siteid,
-			  v_rtv_related_site,
-              v_od_ven_sig_name,
-              v_od_ven_sig_title,
-              v_gss_mfg_id,
-              v_gss_buying_agent_id,
-              v_gss_freight_id,
-              v_gss_ship_id
-            FROM xx_po_vendor_sites_kff_v k--, xx_ap_sup_addl_attributes j
-            WHERE k.vendor_site_id = v_vendor_site_id;
+            lv_rtv_vendor_site_code    :=SUBSTR(v_vendor_site_code,1,3); --added the by Shanti for the jira NAIT-104349
+            IF lv_rtv_vendor_site_code <> 'RTV' THEN                     --added the condition for the jira NAIT-104349
+              SELECT k.lead_time,
+                NVL(k.back_order_flag, 'N'),
+                DECODE(k.delivery_policy, 'NEXT DAY', 'NEXT', 'NEXT VALID DELIVERY DAY', 'NDD'),
+                --defect 2192
+                k.min_prepaid_code,
+                k.vendor_min_amount,
+                k.supplier_ship_to,
+                k.inventory_type_code,
+                k.vertical_market_indicator,
+                NVL(k.allow_auto_receipt, 'N'),
+                k.handling,
+                k.eft_settle_days,
+                NVL(k.split_file_flag, 'N'),
+                k.master_vendor_id,
+                k.pi_pack_year,
+                k.od_date_signed,
+                k.vendor_date_signed,
+                NVL(k.deduct_from_invoice_flag, 'N'),
+                k.min_bus_category,
+                NVL(k.new_store_flag, 'N'),
+                k.new_store_terms,
+                NVL(k.seasonal_flag, 'N'),
+                k.start_date,
+                k.end_date,
+                k.seasonal_terms,
+                NVL(k.late_ship_flag, 'N'),
+                k.edi_distribution_code,
+                k.od_contract_signature,
+                k.od_contract_title,
+                NVL(k.rtv_option, '1'),
+                DECODE(k.rtv_freight_payment_method, 'COLLECT', 'CC', 'PREPAID', 'PP', 'NEITHER', 'NN'),
+                --defect 2192
+                k.permanent_rga,
+                k.destroy_allow_amount,
+                DECODE(k.payment_frequency, 'WEEKLY', 'W', 'DAILY', 'D', 'MONTHLY', 'M', 'QUARTERLY', 'Q', ''), -- Defect 6517
+                k.min_return_qty,
+                k.min_return_amount,
+                k.damage_destroy_limit,
+                k.rtv_instructions,
+                k.addl_rtv_instructions,
+                NVL(k.rga_marked_flag, 'N'),
+                NVL(k.remove_price_sticker_flag, 'N'),
+                NVL(k.contact_supplier_for_rga_flag, 'N'),
+                NVL(k.destroy_flag, 'N'),
+                DECODE(k.serial_num_required_flag, 'N', 'N', 'Y', 'Y', 'N'),
+                -- if field edit not created in EBS
+                k.obsolete_item,
+                k.obsolete_allowance_pct,
+                k.obsolete_allowance_days,
+                NVL(k."850_PO", 'N'),
+                NVL(k."860_PO_CHANGE", 'N'),
+                NVL(k."855_CONFIRM_PO", 'N'),
+                NVL(k."856_ASN", 'N'),
+                NVL(k."846_AVAILABILITY", 'N'),
+                NVL(k."810_INVOICE", 'N'),
+                NVL(k."832_PRICE_SALES_CAT", 'N'),
+                NVL(k."820_EFT", 'N'),
+                NVL(k."861_DAMAGE_SHORTAGE", 'N'),
+                DECODE(k."852_SALES", 'WEEKLY', 'W', 'DAILY', 'D', 'MONTHLY', 'M', 'W'),
+                k.rtv_related_site,
+                k.od_vendor_signature_name,
+                k.od_vendor_signature_title,
+                k.manufacturing_site_id,
+                k.buying_agent_site_id,
+                k.freight_forwarder_site_id,
+                k.ship_from_port_id
+              INTO v_lead_time,
+                v_back_order_flag,
+                v_delivery_policy,
+                v_min_prepaid_code,
+                v_vendor_min_amount,
+                v_supplier_ship_to,
+                v_inventory_type_code,
+                v_vertical_market_indicator,
+                v_allow_auto_receipt,
+                v_handling,
+                v_eft_settle_days,
+                v_split_file_flag,
+                v_master_vendor_id,
+                v_pi_pack_year,
+                v_od_date_signed,
+                v_vendor_date_signed,
+                v_deduct_from_invoice_flag,
+                v_min_bus_category,
+                v_new_store_flag,
+                v_new_store_terms,
+                v_seasonal_flag,
+                v_start_date,
+                v_end_date,
+                v_seasonal_terms,
+                v_late_ship_flag,
+                v_edi_distribution_code,
+                v_od_cont_sig,
+                v_od_cont_title,
+                v_rtv_option,
+                v_rtv_freight_payment_method,
+                v_permanent_rga,
+                v_destroy_allow_amount,
+                v_payment_frequency,
+                v_min_return_qty,
+                v_min_return_amount,
+                v_damage_destroy_limit,
+                v_rtv_instructions,
+                v_addl_rtv_instructions,
+                v_rga_marked_flag,
+                v_remove_price_sticker_flag,
+                v_contact_supplier_rga_flag,
+                v_destroy_flag,
+                v_serial_num_required_flag,
+                v_obsolete_item,
+                v_obsolete_allowance_pct,
+                v_obsolete_allowance_days,
+                v_850_po,
+                v_860_po_change,
+                v_855_confirm_po,
+                v_856_asn,
+                v_846_availability,
+                v_810_invoice,
+                v_832_price_sales_cat,
+                v_820_eft,
+                v_861_damage_shortage,
+                v_852_sales,
+                v_rtv_related_siteid,
+                v_od_ven_sig_name,
+                v_od_ven_sig_title,
+                v_gss_mfg_id,
+                v_gss_buying_agent_id,
+                v_gss_freight_id,
+                v_gss_ship_id
+              FROM xx_po_vendor_sites_kff_v k--, xx_ap_sup_addl_attributes j
+              WHERE k.vendor_site_id = v_vendor_site_id;
+              -- Added below else part for the jira NAIT-104349
+            ELSE
+              v_lead_time                 :='';
+              v_back_order_flag           :='';
+              v_delivery_policy           :='';
+              v_min_prepaid_code          :='';
+              v_vendor_min_amount         :='';
+              v_supplier_ship_to          :='';
+              v_inventory_type_code       :='';
+              v_vertical_market_indicator :='';
+              v_allow_auto_receipt        :='';
+              v_handling                  :='';
+              v_eft_settle_days           :='';
+              v_split_file_flag           :='';
+              v_master_vendor_id          :='';
+              v_pi_pack_year              :='';
+              v_od_date_signed            :='';
+              v_vendor_date_signed        :='';
+              v_deduct_from_invoice_flag  :='';
+              v_min_bus_category          :='';
+              v_new_store_flag            :='';
+              v_new_store_terms           :='';
+              v_seasonal_flag             :='';
+              v_start_date                :='';
+              v_end_date                  :='';
+              v_seasonal_terms            :='';
+              v_late_ship_flag            :='';
+              v_edi_distribution_code     :='';
+              v_od_cont_sig               :='';
+              v_od_cont_title             :='';
+              v_rtv_option                :='';
+              v_rtv_freight_payment_method:='';
+              v_permanent_rga             :='';
+              v_destroy_allow_amount      :='';
+              v_payment_frequency         :='';
+              v_min_return_qty            :='';
+              v_min_return_amount         :='';
+              v_damage_destroy_limit      :='';
+              v_rtv_instructions          :='';
+              v_addl_rtv_instructions     :='';
+              v_rga_marked_flag           :='';
+              v_remove_price_sticker_flag :='';
+              v_contact_supplier_rga_flag :='';
+              v_destroy_flag              :='';
+              v_serial_num_required_flag  :='';
+              v_obsolete_item             :='';
+              v_obsolete_allowance_pct    :='';
+              v_obsolete_allowance_days   :='';
+              v_850_po                    :='';
+              v_860_po_change             :='';
+              v_855_confirm_po            :='';
+              v_856_asn                   :='';
+              v_846_availability          :='';
+              v_810_invoice               :='';
+              v_832_price_sales_cat       :='';
+              v_820_eft                   :='';
+              v_861_damage_shortage       :='';
+              v_852_sales                 :='';
+              v_rtv_related_siteid        :='';
+              v_od_ven_sig_name           :='';
+              v_od_ven_sig_title          :='';
+              v_gss_mfg_id                :='';
+              v_gss_buying_agent_id       :='';
+              v_gss_freight_id            :='';
+              v_gss_ship_id               :='';
+            END IF;
           EXCEPTION
           WHEN OTHERS THEN
             fnd_file.put_line(fnd_file.log, 'Error retreiving KFF Site data: for ' || v_vendor_site_id);
           END;
-
           -- Following is the default value for testing till we get Translation setup
           BEGIN
-            IF v_delivery_policy IS NULL THEN
-              v_delivery_policy  := 'NEXT';
-            END IF;
-            IF v_rtv_freight_payment_method IS NULL THEN
-              v_rtv_freight_payment_method  := 'CC';
-            END IF;
+            IF lv_rtv_vendor_site_code <> 'RTV' THEN --- modified by Shanti NAIT-104349
+              IF v_delivery_policy     IS NULL THEN
+                v_delivery_policy      := 'NEXT';
+              END IF;
+            ELSE
+              v_delivery_policy:='';                 --- modified by Shanti NAIT-104349
+            END IF;                                  --- modified by Shanti NAIT-104349
+            IF lv_rtv_vendor_site_code        <> 'RTV' THEN --- modified by Shanti NAIT-104349
+              IF v_rtv_freight_payment_method IS NULL THEN
+                v_rtv_freight_payment_method  := 'CC';
+              END IF;
+            ELSE
+              v_rtv_freight_payment_method :=''; --- modified by Shanti NAIT-104349
+            END IF;                              --- modified by Shanti NAIT-104349
             IF v_new_store_terms IS NOT NULL THEN
               BEGIN
                 v_terms_name := NULL;
@@ -5358,7 +5057,6 @@ BEGIN
           WHEN OTHERS THEN
             fnd_file.put_line(fnd_file.log, 'Error deriving the RMS Payment Terms for ' || v_new_store_terms || ' ' || x_error_message);
           END;
-
           BEGIN
             IF v_seasonal_terms IS NOT NULL THEN
               BEGIN
@@ -5375,7 +5073,6 @@ BEGIN
               WHEN OTHERS THEN
                 v_terms_name := NULL;
               END;
-
               xx_fin_translate_pkg.xx_fin_translatevalue_proc('AP_PAYMENT_TERMS_RMS' --translation_name
               , sysdate, v_terms_name                                                --source_value1
               , v_terms_date_basis                                                   --source_value2
@@ -5394,9 +5091,7 @@ BEGIN
           WHEN OTHERS THEN
             fnd_file.put_line(fnd_file.log, 'Error deriving the RMS Payment Terms for (Seasonal Terms) ' || v_seasonal_terms || ' ' || x_error_message);
           END;
-
           IF(v_od_date_signed IS NOT NULL) THEN
-
             BEGIN
               --incorrect date format
               v_od_date_signed := TO_CHAR(to_date(v_od_date_signed ,'DD-MON-YY'),'DD-MM-YYYY');--Added by Sunil
@@ -5404,31 +5099,23 @@ BEGIN
             WHEN OTHERS THEN
               v_od_date_signed := TO_CHAR(to_date(TRUNC(sysdate) ,'DD-MON-YY'),'DD-MM-YYYY');
             END;
-
           END IF;
-
           IF(v_vendor_date_signed IS NOT NULL) THEN
-
             BEGIN
               v_vendor_date_signed := TO_CHAR(to_date(v_vendor_date_signed ,'DD-MON-YY'),'DD-MM-YYYY');--Added by Sunil
             EXCEPTION
             WHEN OTHERS THEN
               v_vendor_date_signed := TO_CHAR(to_date(TRUNC(sysdate) ,'DD-MON-YY'),'DD-MM-YYYY');
             END;
-
           END IF;
-  
-        IF(v_start_date IS NOT NULL) THEN
-
+          IF(v_start_date IS NOT NULL) THEN
             BEGIN
               v_start_date := TO_CHAR(to_date(v_start_date ,'DD-MON-YY'),'DD-MM-YYYY');--Added by Sunil
             EXCEPTION
             WHEN OTHERS THEN
               v_start_date := TO_CHAR(to_date(TRUNC(sysdate) ,'DD-MON-YY'),'DD-MM-YYYY');
             END;
-
           END IF;
-
           IF(v_end_date IS NOT NULL) THEN
             BEGIN
               v_end_date := TO_CHAR(to_date(v_end_date ,'DD-MON-YY'),'DD-MM-YYYY');--Added by Sunil
@@ -5436,53 +5123,33 @@ BEGIN
             WHEN OTHERS THEN
               v_end_date := TO_CHAR(to_date(TRUNC(sysdate) ,'DD-MON-YY'),'DD-MM-YYYY');
             END;
-
           END IF;
-
         END;
--- APPARENTLY THIS IS NOT BEEN USED
--- Start
---        IF v_supp_attribute7 = 'Y' THEN
---          v_minority_class  := 'MBE';
---        END IF;
---        IF v_supp_attribute8 = 'Y' THEN
---          v_minority_class  := 'WBE';
---        END IF;
---        IF v_supp_attribute9 = 'Y' THEN
---          v_minority_class  := 'DVB';
---        END IF;
---        IF v_supp_attribute10 = 'Y' THEN
---          v_minority_class   := 'SBC';
---        END IF;
---        IF v_supp_attribute11 = 'Y' -- defect 2192
---          THEN
---          v_minority_class := 'BSD';
---        END IF;
--- End
+        -- APPARENTLY THIS IS NOT BEEN USED
+        -- Start
+        --        IF v_supp_attribute7 = 'Y' THEN
+        --          v_minority_class  := 'MBE';
+        --        END IF;
+        --        IF v_supp_attribute8 = 'Y' THEN
+        --          v_minority_class  := 'WBE';
+        --        END IF;
+        --        IF v_supp_attribute9 = 'Y' THEN
+        --          v_minority_class  := 'DVB';
+        --        END IF;
+        --        IF v_supp_attribute10 = 'Y' THEN
+        --          v_minority_class   := 'SBC';
+        --        END IF;
+        --        IF v_supp_attribute11 = 'Y' -- defect 2192
+        --          THEN
+        --          v_minority_class := 'BSD';
+        --        END IF;
+        -- End
         v_globalvendor_id := xx_po_global_vendor_pkg.f_get_outbound(v_vendor_site_id);--added by sunil
         create_data_line;                                                             --added by sunil
       END IF;
-
-      IF(v_rms_flag = 'Y') THEN
-
-        v_rms_count := v_rms_count + 1;
-		-- BEGIN Added to derive vendor_site_id for the rtv site for cloud change		
-		IF v_rtv_related_site IS NOT NULL THEN  
-		   BEGIN
-		     SELECT vendor_site_id
-			   INTO v_rtv_related_siteid
-			   FROM ap_supplier_sites_all
-			  WHERE vendor_site_code=v_rtv_related_site;
-		   EXCEPTION
-		     WHEN others THEN
-			   v_rtv_related_siteid:=NULL;
-		   END;
-		ELSE
-		  v_rtv_related_siteid:=NULL;
-		END IF;
-		-- END Added to derive vendor_site_id for the rtv site for cloud change		
+      IF(v_rms_flag               = 'Y') THEN
+        v_rms_count              := v_rms_count + 1;
         IF((v_rtv_related_siteid IS NOT NULL) AND(v_pay_site_flag = 'Y')) THEN
-
           BEGIN
             SELECT a.vendor_site_code,
               a.address_line1,
@@ -5522,12 +5189,10 @@ BEGIN
             AND a.vendor_site_id   = b.vendor_site_id(+)
             AND a.org_id          IN(xx_fin_country_defaults_pkg.f_org_id('CA'), xx_fin_country_defaults_pkg.f_org_id('US')) --= ou.organization_id
             ORDER BY a.vendor_site_id;
-
           EXCEPTION
           WHEN OTHERS THEN
             fnd_file.put_line(fnd_file.log, 'Error retreiving RTV Site address data: for ' || to_number(v_rtv_related_siteid));
           END;
-
           v_site_contact_name       := NULL;
           v_site_contact_payphone   := NULL;
           v_site_contact_purchphone := NULL;
@@ -5580,14 +5245,12 @@ BEGIN
           v_site_fax                := v_site_contact_fareacode || v_site_contact_fphone;
           v_site_fax                := SUBSTR(REPLACE(v_site_fax, '-', ''), 1, 11);
           v_site_contact_name       := v_site_contact_fname || ' ' || v_site_contact_lname;
-
           IF v_site_contact_name     = ' ' THEN
             v_site_contact_name     := NULL;
           END IF;
           IF((v_country <> 'US') AND v_state IS NULL) THEN
             v_state     := v_province;
           END IF;
-
           v_addr_flag             := 0;
           v_site_rtvaddr1         := v_address_line1;
           v_site_rtvaddr2         := v_address_line2;
@@ -5603,11 +5266,9 @@ BEGIN
           create_data_line;
           v_rms_count := v_rms_count + 1;
         END IF;
-
         v_rms_flag := 'N';
       END IF;
     END LOOP;
-
     CLOSE mainsupplupdate_cur;
     -- Transfer the File to FTP directory
   ELSE
@@ -5622,4 +5283,4 @@ BEGIN
 END;
 END XX_AP_SUP_REAL_OUT_RMS_XML_PKG;
 /
-SHOW ERROR;
+show errors;
