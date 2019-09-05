@@ -5283,4 +5283,3 @@ BEGIN
 END;
 END XX_AP_SUP_REAL_OUT_RMS_XML_PKG;
 /
-show errors;
