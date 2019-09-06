@@ -106,6 +106,7 @@ TYPE rowid_tab IS   	 TABLE OF ROWID INDEX BY BINARY_INTEGER;
 								x_retcode OUT nocopy NUMBER ,
 								p_debug_level IN VARCHAR2
  							   );
+  
 END XX_AP_SUPP_CLD_INTF_PKG;
 
 /

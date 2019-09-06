@@ -616,46 +616,69 @@ END insert_bus_class;
 --+============================================================================+
 FUNCTION xx_custom_tolerance
   (
-    p_vendor_id      IN NUMBER,
-    p_vendor_site_id IN NUMBER,
-    p_org_id         IN NUMBER
+    p_vendor_id             IN NUMBER,
+    p_vendor_site_id        IN NUMBER,
+    p_org_id                IN NUMBER,
+	p_insert_flag           IN VARCHAR2,
+	p_favourable_price_pct  IN NUMBER,
+	p_max_price_amt         IN NUMBER,
+	p_min_chargeback_amt    IN NUMBER,
+	p_max_freight_amt       IN NUMBER,
+	p_dist_var_neg_amt      IN NUMBER,
+	p_dist_var_pos_amt      IN NUMBER
   )
   RETURN VARCHAR2
 IS
 BEGIN
-  INSERT
-  INTO xx_ap_custom_tolerances
-    (
-      supplier_id,
-      supplier_site_id,
-      org_id,
-      favourable_price_pct,
-      max_price_amt,
-      min_chargeback_amt,
-      max_freight_amt,
-      dist_var_neg_amt,
-      dist_var_pos_amt,
-      created_by,
-      creation_date,
-      last_updated_by,
-      last_update_date
-    )
-    VALUES
-    (
-      p_vendor_id,
-      p_vendor_site_id,
-      p_org_id,
-      30,
-      50,
-      2,
-      0,
-      1,
-      1,
-      fnd_global.user_id,
-      SYSDATE,
-      fnd_global.user_id,
-      SYSDATE
-    );
+  IF p_insert_flag = 'Y'
+  THEN 
+     INSERT INTO xx_ap_custom_tolerances
+             (
+              supplier_id,
+              supplier_site_id,
+              org_id,
+              favourable_price_pct,
+              max_price_amt,
+              min_chargeback_amt,
+              max_freight_amt,
+              dist_var_neg_amt,
+              dist_var_pos_amt,
+              created_by,
+              creation_date,
+              last_updated_by,
+              last_update_date
+             )
+        VALUES
+            (
+              p_vendor_id,
+              p_vendor_site_id,
+              p_org_id,
+              NVL(p_favourable_price_pct,30),
+              NVL(p_max_price_amt,50),
+              NVL(p_min_chargeback_amt,2),
+              NVL(p_max_freight_amt,0),
+              NVL(p_dist_var_neg_amt,1),
+              NVL(p_dist_var_pos_amt,1),
+              fnd_global.user_id,
+              SYSDATE,
+              fnd_global.user_id,
+              SYSDATE
+            );
+  ELSE
+      UPDATE xx_ap_custom_tolerances
+	     SET favourable_price_pct = NVL(p_favourable_price_pct,30),
+		     max_price_amt        = NVL(p_max_price_amt,50),
+		     min_chargeback_amt   = NVL(p_min_chargeback_amt,2),
+		     max_freight_amt      = NVL(p_max_freight_amt,0),
+		     dist_var_neg_amt     = NVL(p_dist_var_neg_amt,1),
+		     dist_var_pos_amt     = NVL(p_dist_var_pos_amt,1),
+		     last_updated_by      = fnd_global.user_id,
+		     last_update_date     = SYSDATE
+	   WHERE supplier_id = p_vendor_id
+	     AND supplier_site_id = p_vendor_site_id
+		 AND org_id = p_org_id;
+	
+  END IF;
   RETURN('Y');
 EXCEPTION
 WHEN OTHERS THEN
@@ -1218,7 +1241,29 @@ BEGIN
          AND supplier_site_id = cur.vendor_site_id ;
          print_debug_msg(p_message => 'Custom Tolerance for the vendor : '||cur.supplier_number||', Site : '||cur.vendor_site_code, p_force => false);
          IF ln_tol_count = 0 THEN
-            v_tol_flag   := xx_custom_tolerance(cur.vendor_id, cur.vendor_site_id,cur.org_id);
+            v_tol_flag   := xx_custom_tolerance(cur.vendor_id, 
+			                                    cur.vendor_site_id,
+												cur.org_id,
+												'Y',
+												TO_NUMBER(cur.favourable_price_pct) ,
+												TO_NUMBER(cur.max_price_amt) ,      
+												TO_NUMBER(cur.min_chargeback_amt) ,
+												TO_NUMBER(cur.max_freight_amt) ,   
+												TO_NUMBER(cur.dist_var_neg_amt) ,   
+												TO_NUMBER(cur.dist_var_pos_amt) 												
+												);
+		 ELSE
+		    v_tol_flag   := xx_custom_tolerance(cur.vendor_id, 
+			                                    cur.vendor_site_id,
+												cur.org_id,
+												'N',
+												TO_NUMBER(cur.favourable_price_pct) ,
+												TO_NUMBER(cur.max_price_amt) ,      
+												TO_NUMBER(cur.min_chargeback_amt) ,
+												TO_NUMBER(cur.max_freight_amt) ,   
+												TO_NUMBER(cur.dist_var_neg_amt) ,   
+												TO_NUMBER(cur.dist_var_pos_amt)    												
+												);
          END IF;
          COMMIT;
 	  END IF;
@@ -5764,6 +5809,7 @@ IS
   l_ret_code       NUMBER;
   l_err_buff       VARCHAR2 (4000);
   ln_request_id    NUMBER;
+  ln_request_id1   NUMBER;
   lb_complete      BOOLEAN;
   lc_phase         VARCHAR2 (100);
   lc_status        VARCHAR2 (100);
@@ -5990,18 +6036,16 @@ BEGIN
 												sub_request => FALSE, 
 												argument1 => gn_request_id 
 											  );
-  IF ln_request_id > 0 THEN
+  IF ln_request_id > 0 
+  THEN
      COMMIT;
      print_debug_msg(p_message => 'Able to submit the Report Program', p_force => true);
 	 
-  ELSE
-     print_debug_msg(p_message => 'Failed to submit the Report Program to generate the output file - ' || SQLERRM , p_force => true);
-  END IF;
-  print_debug_msg(p_message => 'While Waiting Report Request to Finish');
+	 print_debug_msg(p_message => 'While Waiting Report Request to Finish');
 
-  -- wait for request to finish
+     -- wait for request to finish
 
-  lb_complete :=fnd_concurrent.wait_for_request ( request_id => ln_request_id, 
+     lb_complete :=fnd_concurrent.wait_for_request ( request_id => ln_request_id, 
 												  interval => 15, 
 												  max_wait => 0, 
 												  phase => lc_phase, 
@@ -6010,6 +6054,11 @@ BEGIN
 												  dev_status => lc_dev_status, 
 												  message => lc_message  
                                                 );
+	 
+  ELSE
+     print_debug_msg(p_message => 'Failed to submit the Report Program to generate the output file - ' || SQLERRM , p_force => true);
+  END IF;												
+   
   display_status;
   IF (l_ret_code IS NULL OR l_ret_code <> 0) THEN
     x_retcode    := l_ret_code;
@@ -6020,6 +6069,57 @@ WHEN OTHERS THEN
   x_retcode := 2;
   x_errbuf  := 'Exception in xx_ap_supp_cld_intf_pkg.xx_ap_supp_cld_intf - '||SQLCODE||' - '||SUBSTR(SQLERRM,1,3500);
 END xx_ap_supp_cld_intf;
+
+ -- +============================================================================================+
+  -- |  Office Depot - Project Simplify                                                           |
+  -- |                                                                                            |
+  -- +============================================================================================+
+  -- |  Name  :  afterReport                                                                      |
+  -- |                                                                                            |
+  -- |  Description:  Common Report for XML bursting                                              |
+  -- |  Change Record:                                                                            |
+  -- +============================================================================================+
+  
+FUNCTION beforeReport RETURN BOOLEAN
+IS
+BEGIN
+   RETURN TRUE;
+END beforeReport;
+
+FUNCTION afterReport RETURN BOOLEAN
+IS
+  ln_request_id1        NUMBER := 0;
+BEGIN
+  P_CONC_REQUEST_ID := FND_GLOBAL.CONC_REQUEST_ID;
+  fnd_file.put_line(fnd_file.log, 'OD: AP Cloud Supplier Interface Report Request ID: '||P_CONC_REQUEST_ID);
+  IF P_CONC_REQUEST_ID > 0
+  THEN
+      fnd_file.put_line(fnd_file.log, 'Submitting : XML Publisher Report Bursting Program');
+      ln_request_id1 := FND_REQUEST.SUBMIT_REQUEST('XDO',  -- Application short name
+	                                              'XDOBURSTREP', --- conc program short name
+												  NULL, 
+												  NULL, 
+												  FALSE, 
+												  'N', 
+												  P_CONC_REQUEST_ID, 
+												  'Y');
+												  
+	  IF ln_request_id1 > 0
+      THEN
+         COMMIT;
+	     fnd_file.put_line(fnd_file.log,'Able to submit the XML Bursting Program to e-mail the output file');
+      ELSE
+         fnd_file.put_line(fnd_file.log,'Failed to submit the XML Bursting Program to e-mail the file - ' || SQLERRM);
+      END IF;
+  ELSE
+      fnd_file.put_line(fnd_file.log,'Failed to submit the Report Program to generate the output file - ' || SQLERRM);
+  END IF;
+  RETURN(TRUE);
+EXCEPTION
+WHEN OTHERS THEN
+  FND_FILE.PUT_LINE(FND_FILE.LOG, 'Unable to submit burst request ' || SQLERRM);
+END afterReport;
+
 END xx_ap_supp_cld_intf_pkg;
 /
 SHOW ERROR;
