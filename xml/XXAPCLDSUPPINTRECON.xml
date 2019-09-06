@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<dataTemplate name="XXAPCLDINTR" defaultPackage="" dataSourceRef="1.0">
+<dataTemplate name="XXAPCLDINTR" defaultPackage="XX_AP_SUPP_CLD_INTF_PKG" dataSourceRef="1.0">
 	<properties>
 		<property name="include_parameters" value="true"/>
 		<property name="include_null_Element" value="true"/>
@@ -155,7 +155,7 @@
                            segment1 GLOBAL_NUMBER,
                            NULL BUS_CLASSIFICATION,
                            SUBSTR(ERROR_MSG,1,100) ERROR_MESSAGE
-                      FROM apps.XX_AP_CLD_SUPPLIERS_STG supp
+                      FROM XX_AP_CLD_SUPPLIERS_STG supp
                      WHERE 1=1
                        AND request_id = :P_REQUEST_ID
                        AND SUPP_PROCESS_FLAG IN (2,3,6) 
@@ -168,7 +168,7 @@
                            SUPPLIER_NUMBER GLOBAL_NUMBER,
                            CLASSIFICATION BUS_CLASSIFICATION,
                            SUBSTR(ERROR_MSG,1,100) ERROR_MESSAGE
-                      FROM apps.XX_AP_CLD_SUPP_BCLS_STG  BCLS
+                      FROM XX_AP_CLD_SUPP_BCLS_STG  BCLS
                      WHERE 1=1
                        AND BCLS_PROCESS_FLAG IN (2,3,6)
                        AND request_id = :P_REQUEST_ID
@@ -181,7 +181,7 @@
                           SUPPLIER_NUMBER GLOBAL_NUMBER,
                            NULL BUS_CLASSIFICATION,
                            SUBSTR(ERROR_MSG,1,100) ERROR_MESSAGE
-                      FROM apps.XX_AP_CLD_SUPP_SITES_STG SITE
+                      FROM XX_AP_CLD_SUPP_SITES_STG SITE
                      WHERE 1=1
                        AND request_id = :P_REQUEST_ID
                        AND SITE_PROCESS_FLAG IN (2,3,6)  
@@ -195,7 +195,7 @@
                            SUPPLIER_NUMBER GLOBAL_NUMBER,
                            NULL BUS_CLASSIFICATION,
                            SUBSTR(ERROR_MSG,1,100) ERROR_MESSAGE
-                      FROM apps.XX_AP_CLD_SITE_DFF_STG DFF
+                      FROM XX_AP_CLD_SITE_DFF_STG DFF
                      WHERE 1=1
                        AND request_id = :P_REQUEST_ID
                        AND DFF_PROCESS_FLAG IN (2,3,6)
@@ -208,7 +208,7 @@
                            SUPPLIER_NUMBER GLOBAL_NUMBER,
                            NULL BUS_CLASSIFICATION,
                            SUBSTR(ERROR_MSG,1,100) ERROR_MESSAGE
-                      FROM apps.XX_AP_CLD_SUPP_CONTACT_STG CONTACT
+                      FROM XX_AP_CLD_SUPP_CONTACT_STG CONTACT
                      WHERE 1=1
                        AND request_id = :P_REQUEST_ID
                        AND CONTACT_PROCESS_FLAG IN (2,3,6)
@@ -221,7 +221,7 @@
                            SUPPLIER_NUM GLOBAL_NUMBER,
                            NULL BUS_CLASSIFICATION,
                            SUBSTR(ERROR_MSG,1,100) ERROR_MESSAGE
-                      FROM apps.XX_AP_CLD_SUPP_BNKACT_STG BNKACT
+                      FROM XX_AP_CLD_SUPP_BNKACT_STG BNKACT
                      WHERE 1=1
                        AND BNKACT_PROCESS_FLAG IN (2,3,6)
                        AND request_id = :P_REQUEST_ID
@@ -229,7 +229,27 @@
 		      ORDER BY GLOBAL_NUMBER,SEQ
 ]]>
 </sqlStatement>
+<sqlStatement name="Q3" dataSourceRef="">
+<![CDATA[ SELECT  (SELECT FND_PROFILE.VALUE('XX_COMN_SMTP_MAIL_SERVER') 
+                     FROM DUAL) SMTP_SERVER,
+                  XFTV.TARGET_VALUE1 MAIL_FROM,
+				  XFTV.TARGET_VALUE2 MAIL_TO,
+				  (SELECT SUBSTR(UPPER(SYS_CONTEXT('USERENV','DB_NAME') ), 4,8)
+                     FROM DUAL  ) INSTANCE_NAME,
+				  TO_CHAR(SYSDATE,'DD-MON-YYYY') TO_DATE
+            FROM  XX_FIN_TRANSLATEDEFINITION XFTD ,
+                  XX_FIN_TRANSLATEVALUES XFTV
+            WHERE XFTD.translate_id   = xftv.translate_id
+              AND XFTD.translation_name = 'XX_AP_CLOUD_SUPP_ERR_RPT'
+              AND XFTV.source_value1    = 'SUPPLIER_ERROR_REPORT'
+              AND SYSDATE BETWEEN XFTV.start_date_active AND NVL(XFTV.end_date_active, sysdate+1)
+              AND SYSDATE BETWEEN XFTD.start_date_active AND NVL(XFTD.end_date_active, sysdate+1)
+              AND XFTV.enabled_flag = 'Y'
+              AND XFTD.enabled_flag = 'Y'
+]]>
+</sqlStatement>
 </dataQuery>
+<dataTrigger name="beforeReport" source="XX_AP_SUPP_CLD_INTF_PKG.beforeReport" /> 
 <dataStructure>
 <group name="G1" source="Q1" groupFilter="">
 	 <element name="ENTITY" value="ENTITY" function=""/>
@@ -247,5 +267,14 @@
 	 <element name="BUS_CLASSIFICATION"    value="BUS_CLASSIFICATION" function=""/>
 	 <element name="ERROR_MESSAGE"    value="ERROR_MESSAGE" function=""/>
 </group>
+<group name="G3" source="Q3" groupFilter="">
+     <element name="C_SMTP_SERVER" value="SMTP_SERVER" function=""/>
+     <element name="C_MAIL_FROM"  value="MAIL_FROM" function=""/>
+     <element name="C_MAIL_TO"    value="MAIL_TO" function=""/>
+	 <element name="C_INSTANCE_NAME"    value="INSTANCE_NAME" function=""/>
+	 <element name="C_TO_DATE"    value="TO_DATE" function=""/>
+</group>
 </dataStructure>
+<dataTrigger name="afterReport" source="XX_AP_SUPP_CLD_INTF_PKG.afterReport"/>
+
 </dataTemplate>
