@@ -1,51 +1,52 @@
 CREATE OR REPLACE PACKAGE BODY XX_AR_CREATE_ACCT_CHILD_PKG
 AS
    -- +=====================================================================================+
-   -- |                  Office Depot - Project Simplify                    				|
-   -- |                       WIPRO Technologies                            				|
+   -- |                  Office Depot - Project Simplify                                    |
+   -- |                       WIPRO Technologies                                            |
    -- +=====================================================================================+
-   -- | Name       : XX_AR_CREATE_ACCT_CHILD_PKG                            				|
-   -- | RICE ID    : E0080                                                  				|
-   -- | Description: Child package to extend the existing Oracle process    				|
-   -- |              of creating accounting segments based on the           				|
-   -- |              business rules of office depot                         				|
-   -- |                                                                     				|
-   -- |Change Record:                                                       				|
-   -- |===============                                                      				|
-   -- |Version    Date         Author         Remarks                       				|
-   -- |=========  ===========  =============  ============================= 				|
-   -- |1.0 - 3.2  Various      Various        See Code revision #?????      				|
-   -- |                                                                     				|
-   -- |3.3        27-MAR-2011                 R11.3 - Summarization of      				|
-   -- |                                       POS invoices                  				|
-   -- |3.4        22-JUL-2011  Peter Marco    Defect 12725                  				|
-   -- |3.5        16-SEP-2011  Abdul Khan     Defect 13438                  				|
-   -- |3.6        25-JUN-2012  Jay Gupta      defect 13153 using hint       				|
-   -- |4.0        24-OCT-2012  R.Aldridge     Defect 20687 - Enable batch   				|
-   -- |                                       group processing              				|
-   -- |4.1	  	  04-JUL-2013  Manasa         E0080 -R12 Upgrade Retrofit   				|
-   -- |                                       changes                       				|
-   -- |4.2        11-Sep-2013  Manasa         E0080 - Changed the approach  				|
-   -- |                                       to update the tax columns     				|
-   -- |4.3        16-SEP-2013  Manasa         E0080 - R12 Upgrade change    				|
-   -- |                                       to set taxable_flag to 'N'    				|
-   -- |4.4        10-DEC-2013  Deepak V       Changes for R12 retrofit.     				|
-   -- |                                       AR_VAT_TAX_ALL is now obsolete				|
-   -- |                                       in R12, hence replaced by     				|
-   -- |                                       zx_rates_b. QC Defect : 26781 				|
-   -- |4.5        11-Feb-2014  Avinash B      For defect 27985		        				|
-   -- |4.6        23-Jul-2015  Madhan Sanjeevi Defect# 35156                				|
-   -- |If condition included for FND_LOG messages inserted for R12 Retrofit 				|
-   -- |4.7        21-OCT-2015  Vasu Raparla   Removed Schema References     				|
-   -- |4.8        02-MAR-2016  Arun Gannarapu Defect# 2072/37352 rebates location 			|
-   -- |                                        issue                        				|
-   -- |4.9        13-Jun-2016  Arun Gannarapu Made changes for Kitting 37676 				|
-   -- |5.0        26-JUL-2016  Arun Gannarapu Made changes fix the defect 2381 				|
-   -- |5.1        11-JAN-2018  Atul Khard     Made changes for Defect 43851 				|
-   -- |5.2        05-NOV-2018  Dinesh N       Made Changes for Bill Complete NAIT-67165 	|
+   -- | Name       : XX_AR_CREATE_ACCT_CHILD_PKG                                            |
+   -- | RICE ID    : E0080                                                                  |
+   -- | Description: Child package to extend the existing Oracle process                    |
+   -- |              of creating accounting segments based on the                           |
+   -- |              business rules of office depot                                         |
+   -- |                                                                                     |
+   -- |Change Record:                                                                       |
+   -- |===============                                                                      |
+   -- |Version    Date         Author         Remarks                                       |
+   -- |=========  ===========  =============  =============================                 |
+   -- |1.0 - 3.2  Various      Various        See Code revision #?????                      |
+   -- |                                                                                     |
+   -- |3.3        27-MAR-2011                 R11.3 - Summarization of                      |
+   -- |                                       POS invoices                                  |
+   -- |3.4        22-JUL-2011  Peter Marco    Defect 12725                                  |
+   -- |3.5        16-SEP-2011  Abdul Khan     Defect 13438                                  |
+   -- |3.6        25-JUN-2012  Jay Gupta      defect 13153 using hint                       |
+   -- |4.0        24-OCT-2012  R.Aldridge     Defect 20687 - Enable batch                   |
+   -- |                                       group processing                              |
+   -- |4.1        04-JUL-2013  Manasa         E0080 -R12 Upgrade Retrofit                   |
+   -- |                                       changes                                       |
+   -- |4.2        11-Sep-2013  Manasa         E0080 - Changed the approach                  |
+   -- |                                       to update the tax columns                     |
+   -- |4.3        16-SEP-2013  Manasa         E0080 - R12 Upgrade change                    |
+   -- |                                       to set taxable_flag to 'N'                    |
+   -- |4.4        10-DEC-2013  Deepak V       Changes for R12 retrofit.                     |
+   -- |                                       AR_VAT_TAX_ALL is now obsolete                |
+   -- |                                       in R12, hence replaced by                     |
+   -- |                                       zx_rates_b. QC Defect : 26781                 |
+   -- |4.5        11-Feb-2014  Avinash B      For defect 27985                              |
+   -- |4.6        23-Jul-2015  Madhan Sanjeevi Defect# 35156                                |
+   -- |If condition included for FND_LOG messages inserted for R12 Retrofit                 |
+   -- |4.7        21-OCT-2015  Vasu Raparla   Removed Schema References                     |
+   -- |4.8        02-MAR-2016  Arun Gannarapu Defect# 2072/37352 rebates location           |
+   -- |                                        issue                                        |
+   -- |4.9        13-Jun-2016  Arun Gannarapu Made changes for Kitting 37676                |
+   -- |5.0        26-JUL-2016  Arun Gannarapu Made changes fix the defect 2381              |
+   -- |5.1        11-JAN-2018  Atul Khard     Made changes for Defect 43851                 |
+   -- |5.2        05-NOV-2018  Dinesh N       Made Changes for Bill Complete NAIT-67165     |
    -- |5.3        02-JAN-2019  Havish K       Made Changes for Defect NAIT-75351            |
-   -- |5.4		  04-APR-2019  Dinesh N		  Made Changes for Defect NAIT-86554			|
-   -- +=====================================================================================+
+   -- |5.4        04-APR-2019  Dinesh N       Made Changes for Defect NAIT-86554            |
+   -- |5.5        20-Aug-2019  Nitin Tugave   Made Changes for Defect NAIT-86554            |   
+      -- +=====================================================================================+
 
    ------------------------
    -- GLOBAL VARIABLES   --
@@ -60,8 +61,8 @@ AS
    gc_ou_name                   hr_operating_units.name%TYPE;
    gc_country_value             VARCHAR2(2);
    gc_sob_name                  VARCHAR2(240);
-   gn_sob_id                    gl_ledgers.ledger_id%TYPE;					-- Changed for R12 Retrofit gl_sets_of_books.set_of_books_id%TYPE;
-   gn_coa_id                    gl_ledgers.chart_of_accounts_id%TYPE;	-- Changed for R12 Retrofit gl_sets_of_books.chart_of_accounts_id%TYPE;
+   gn_sob_id                    gl_ledgers.ledger_id%TYPE;                  -- Changed for R12 Retrofit gl_sets_of_books.set_of_books_id%TYPE;
+   gn_coa_id                    gl_ledgers.chart_of_accounts_id%TYPE;   -- Changed for R12 Retrofit gl_sets_of_books.chart_of_accounts_id%TYPE;
 
    gc_line_type_LINE_hc        ra_interface_lines_all.line_type%TYPE := 'LINE';
    gc_line_type_TAX_hc         ra_interface_lines_all.line_type%TYPE := 'TAX';
@@ -69,8 +70,8 @@ AS
    gc_tax_type_PST_hc          ra_interface_lines_all.interface_line_attribute9%TYPE := 'PST';
    gc_order_source_spc         oe_order_sources.name%TYPE := 'SPC';
    gc_ln_orgid                 VARCHAR2(30) := FND_PROFILE.VALUE('ORG_ID');  --Added for Defect # 43851
-   gn_ln_loginid               NUMBER	    := fnd_profile.VALUE('LOGIN_ID'); --Added for Bill Complete NAIT-67165
-   gn_bill_date				   NUMBER;
+   gn_ln_loginid               NUMBER       := fnd_profile.VALUE('LOGIN_ID'); --Added for Bill Complete NAIT-67165
+   gn_bill_date                NUMBER;
 
    --------------------------------------
    --Added for R12 Retrofit for tax lines
@@ -215,13 +216,13 @@ AS
            ,ship_date_actual                ra_interface_lines_all.ship_date_actual%TYPE
            ,tax_code                        ra_interface_lines_all.tax_code%TYPE
            ,request_id                      ra_interface_lines_all.request_id%TYPE
-           ,tax_rate                        ra_interface_lines_all.tax_rate%TYPE               			 --Added for R12 Retrofit to include new tax cols
-           ,tax_regime_code                 ra_interface_lines_all.tax_regime_code%TYPE        			 --Added for R12 Retrofit to include new tax cols
-           ,tax                             ra_interface_lines_all.tax%TYPE                    			 --Added for R12 Retrofit to include new tax cols
-           ,tax_status_code                 ra_interface_lines_all.tax_status_code%TYPE        			 --Added for R12 Retrofit to include new tax cols
-           ,tax_rate_code                   ra_interface_lines_all.tax_rate_code%TYPE          			 --Added for R12 Retrofit to include new tax cols
-           ,line_number                     ra_interface_lines_all.line_number%TYPE            			 --Added for R12 Retrofit to include new tax cols
-		   );
+           ,tax_rate                        ra_interface_lines_all.tax_rate%TYPE                         --Added for R12 Retrofit to include new tax cols
+           ,tax_regime_code                 ra_interface_lines_all.tax_regime_code%TYPE                  --Added for R12 Retrofit to include new tax cols
+           ,tax                             ra_interface_lines_all.tax%TYPE                              --Added for R12 Retrofit to include new tax cols
+           ,tax_status_code                 ra_interface_lines_all.tax_status_code%TYPE                  --Added for R12 Retrofit to include new tax cols
+           ,tax_rate_code                   ra_interface_lines_all.tax_rate_code%TYPE                    --Added for R12 Retrofit to include new tax cols
+           ,line_number                     ra_interface_lines_all.line_number%TYPE                      --Added for R12 Retrofit to include new tax cols
+           );
 
       --  Variables of the record type ra_interface_lines_rec_type
       lcu_process_interface_lines       ra_interface_lines_rec_type;
@@ -255,7 +256,7 @@ AS
           ||',interface_line_attribute14'
           ||',interface_line_attribute15'
           ||',orig_system_bill_customer_id'
-		  ||',amount'
+          ||',amount'
           ||',reference_line_id'
           ||',attribute6'
           ||',attribute7'
@@ -326,7 +327,7 @@ AS
       lc_interface_CURR  VARCHAR2(1000);
 
       -- Local Variable Declaration
-      lc_customer_type          hz_cust_accounts.attribute18%TYPE;				-- Changed for R12 Retrofit ar_customers_v.attribute18%TYPE;
+      lc_customer_type          hz_cust_accounts.attribute18%TYPE;              -- Changed for R12 Retrofit ar_customers_v.attribute18%TYPE;
       lc_trx_type               ra_interface_lines_all.CUST_TRX_TYPE_ID%TYPE;
 
       lc_line_type              ra_interface_lines_all.LINE_TYPE%TYPE;
@@ -353,7 +354,7 @@ AS
       ls_disc_description       ra_interface_lines_all.description%TYPE;
       lc_item_source            xx_om_line_attributes_all.item_source%TYPE;
       lc_dept                   mtl_item_categories_v.category_concat_segs%TYPE;
-      lc_item                   mtl_system_items_b.segment1%TYPE;						-- Changed for R12 Retrofit mtl_system_items.segment1%TYPE;
+      lc_item                   mtl_system_items_b.segment1%TYPE;                       -- Changed for R12 Retrofit mtl_system_items.segment1%TYPE;
       lc_item_type              mtl_system_items_fvl.item_type%TYPE;
       lc_coupon_code            oe_price_adjustments_v.attribute8%type;
       lc_coupon_owner           oe_price_adjustments_v.attribute9%type;
@@ -368,7 +369,7 @@ AS
       ln_inventory_item_id      oe_order_lines_all.inventory_item_id%TYPE;
       ln_request_id             fnd_concurrent_requests.request_id%TYPE;
       --ln_ccid                   ar_vat_tax_all.tax_account_id%TYPE; Commented by for R12 Retrofit Defect 26781
-	  ln_ccid					NUMBER;	-- Added for R12retrofit      
+      ln_ccid                   NUMBER; -- Added for R12retrofit      
       ln_category_strucutre_id  mtl_item_categories_v.category_structure_id%TYPE;
       ln_mtl_org_id             mtl_parameters.master_organization_id%TYPE;
       lc_error_flag_val         VARCHAR2(1) := 'N';
@@ -488,10 +489,10 @@ AS
       ln_summary_inv_line_cnt    NUMBER;
       ln_detail_inv_line_cnt     NUMBER;
       lc_pos_summary_flg         VARCHAR2(1);
-	  lc_Bill_comp_flag          VARCHAR2(1);
-	  lc_bill_comp_upd_flag		 VARCHAR2(1) := 'N';	  
-	  ln_bill_comp_ln_cnt		 NUMBER := 0;
-	  ln_bill_comp_cnt			 NUMBER := 0;
+      lc_Bill_comp_flag          VARCHAR2(1);
+      lc_bill_comp_upd_flag      VARCHAR2(1) := 'N';      
+      ln_bill_comp_ln_cnt        NUMBER := 0;
+      ln_bill_comp_cnt           NUMBER := 0;
       ln_ra_rows_ins_cnt         NUMBER := 0;
       ln_ra_rows_del_cnt         NUMBER := 0;
       ln_ra_rows_ins_int_cnt     NUMBER := 0;
@@ -504,13 +505,18 @@ AS
       ln_ra_rows_del_dist_cnt_gt NUMBER := 0;
       ln_ra_rows_del_sales_cnt   NUMBER := 0;
       ln_ra_rows_del_sales_cnt_gt NUMBER := 0;
-	  ln_site_use_id			 oe_order_headers_all.invoice_to_org_id%TYPE;					-- Added for Bill Complete NAIT-67165
-      lc_prev_order			     VARCHAR2(50):='1';	                                            -- Added for Bill Complete NAIT-67165
-	  lc_parent_order_num	   xx_om_header_attributes_all.parent_order_num%TYPE := NULL;		-- Added for Bill Complete NAIT-67165
+      ln_site_use_id             oe_order_headers_all.invoice_to_org_id%TYPE;                   -- Added for Bill Complete NAIT-67165
+      lc_prev_order              VARCHAR2(50):='1';                                             -- Added for Bill Complete NAIT-67165
+      lc_parent_order_num      xx_om_header_attributes_all.parent_order_num%TYPE := NULL;       -- Added for Bill Complete NAIT-67165
       lc_kit_sku               ra_interface_lines_all.attribute6%TYPE := NULL;
       lc_bill_level            ra_interface_lines_all.attribute6%TYPE := NULL;
       lc_kit_parent            ra_interface_lines_all.attribute6%TYPE := NULL;
 
+      ln_orig_sysref_len        NUMBER := 0;  -- Added for NAIT-86554
+      ln_trx_num_len            NUMBER := 0;  -- Added for NAIT-86554
+      ln_bill_comp_check_count  NUMBER := 0;  -- Added for NAIT-86554
+      lc_bc_spc_flag            VARCHAR2(1);  -- Added for NAIT-86554
+      
 
       lc_err_location            VARCHAR2(250);
 
@@ -786,33 +792,33 @@ AS
             AND VAL.source_value1    = gc_country_value;
 
          -- Retrieve Ledger ID based on SOB name
-         SELECT GLL.ledger_id							-- Changed for R12 Retrofit GSB.set_of_books_id
+         SELECT GLL.ledger_id                           -- Changed for R12 Retrofit GSB.set_of_books_id
            INTO gn_sob_id
-           FROM gl_ledgers	GLL						-- Changed for R12 Retrofitgl_sets_of_books GSB
-          WHERE GLL.short_name = gc_sob_name;	-- Changed for R12 Retrofit GSB.short_name = gc_sob_name;
+           FROM gl_ledgers  GLL                     -- Changed for R12 Retrofitgl_sets_of_books GSB
+          WHERE GLL.short_name = gc_sob_name;   -- Changed for R12 Retrofit GSB.short_name = gc_sob_name;
 
          -- Retrieve Chart of Accounts ID based on SOB ID
          SELECT GLL.chart_of_accounts_id
            INTO gn_coa_id
-           FROM gl_ledgers	GLL														-- Changed for R12 Retrofit gl_sets_of_books GSB
+           FROM gl_ledgers  GLL                                                     -- Changed for R12 Retrofit gl_sets_of_books GSB
           WHERE GLL.ledger_id = FND_PROFILE.VALUE('GL_SET_OF_BKS_ID');  -- Changed for R12 Retrofit GSB.set_of_books_id = FND_PROFILE.VALUE('GL_SET_OF_BKS_ID');
 
-		 -- Added for Bill Complete Dinesh NAIT-86554
-			BEGIN
-				SELECT target_value1
-				INTO gn_bill_date
-				FROM xx_fin_translatedefinition xftd ,
-					 xx_fin_translatevalues xftv
-				WHERE xftv.translate_id          = xftd.translate_id
-				AND xftd.translation_name        ='OD_BC_BILLING_DATE'
-				AND source_value1                ='Bill Complete'
-				AND NVL (xftv.enabled_flag, 'N') = 'Y';
-			EXCEPTION
-			WHEN NO_DATA_FOUND THEN
-				gn_bill_date	:=NULL;
-			WHEN OTHERS THEN
-				gn_bill_date	:=NULL;
-			END;
+         -- Added for Bill Complete Dinesh NAIT-86554
+            BEGIN
+                SELECT target_value1
+                INTO gn_bill_date
+                FROM xx_fin_translatedefinition xftd ,
+                     xx_fin_translatevalues xftv
+                WHERE xftv.translate_id          = xftd.translate_id
+                AND xftd.translation_name        ='OD_BC_BILLING_DATE'
+                AND source_value1                ='Bill Complete'
+                AND NVL (xftv.enabled_flag, 'N') = 'Y';
+            EXCEPTION
+            WHEN NO_DATA_FOUND THEN
+                gn_bill_date    :=NULL;
+            WHEN OTHERS THEN
+                gn_bill_date    :=NULL;
+            END;
 
 
          ------------------------------------------------
@@ -821,12 +827,12 @@ AS
          BEGIN
          IF (p_display_log ='Y') THEN  -- Added IF Condition for Defect# 35156
               FND_FILE.PUT_LINE(FND_FILE.LOG,' before Derive Tax rate code and Tax Regime code');
-		 END IF;
+         END IF;
 
             IF  gc_country_value = 'US' THEN
                   IF (p_display_log ='Y') THEN  -- Added IF Condition for Defect# 35156
                       FND_FILE.PUT_LINE(FND_FILE.LOG,' inside US Derive Tax rate code and Tax Regime code');
-				  END IF;
+                  END IF;
 
                   --Retrive Tax regime code, tax_status_code for US FOR LINE1
                   SELECT zrb.tax_status_code,
@@ -842,7 +848,7 @@ AS
                   AND    TRUNC(SYSDATE) BETWEEN zrb.effective_from AND NVL(zrb.effective_to,TRUNC(SYSDATE));
                   IF (p_display_log ='Y') THEN  -- Added IF Condition for Defect# 35156
                      FND_FILE.PUT_LINE(FND_FILE.LOG,' Derived Tax rate code and Tax Regime code - ' || gc_tax_regime_code_us || ' - ' || gc_tax_status_code_us );
-				  END IF;
+                  END IF;
 
                   --Retrive Tax regime code, tax_status_code for US FOR LINE2
                   SELECT zrb.tax_status_code,
@@ -858,7 +864,7 @@ AS
                   AND    TRUNC(SYSDATE) BETWEEN zrb.effective_from AND NVL(zrb.effective_to,TRUNC(SYSDATE));
                   IF (p_display_log ='Y') THEN  -- Added IF Condition for Defect# 35156
                       FND_FILE.PUT_LINE(FND_FILE.LOG,' Derived Tax rate code and Tax Regime code for line2 - ' || gc_tax_regime_code_us1 || ' - ' || gc_tax_status_code_us1 );
-				  END IF;
+                  END IF;
 
             ELSIF gc_country_value = 'CA' THEN
 
@@ -876,7 +882,7 @@ AS
                   AND     TRUNC(SYSDATE) BETWEEN zrb.effective_from AND NVL(zrb.effective_to,TRUNC(SYSDATE));
                   IF (p_display_log ='Y') THEN  -- Added IF Condition for Defect# 35156
                                     FND_FILE.PUT_LINE(FND_FILE.LOG,' Derived Tax rate code and Tax Regime code county - ' || gc_tax_status_code_ca1 || ' - ' || gc_tax_rate_county );
-			      END IF;
+                  END IF;
 
                   --Retrive tax, tax_status_code for CA for STATE
                   SELECT  zrb.tax_status_code,
@@ -892,7 +898,7 @@ AS
                   AND     TRUNC(SYSDATE) BETWEEN zrb.effective_from AND NVL(zrb.effective_to,TRUNC(SYSDATE));
                   IF (p_display_log ='Y') THEN  -- Added IF Condition for Defect# 35156
                     FND_FILE.PUT_LINE(FND_FILE.LOG,' Derived Tax rate code and Tax Regime code state - ' || gc_tax_status_code_ca || ' - ' || gc_tax_rate_state );
-				  END IF;
+                  END IF;
 
             END IF;
          EXCEPTION
@@ -1057,6 +1063,7 @@ AS
 
             BEGIN
                IF gc_country_value IN ('US','CA') THEN
+			               
                   XX_AR_INSERT_TAX_LINES(p_sales_order_low
                                         ,p_sales_order_high
                                         ,gc_country_value
@@ -1080,6 +1087,7 @@ AS
          ***************************************************/
          BEGIN
             IF p_sales_order_low IS NOT NULL AND p_sales_order_high is NOT NULL AND p_sales_order_low = p_sales_order_high THEN
+			
                OPEN c_interface_lines FOR
                   lc_cursor_query || ' ' || lc_where_clause
                                   ||' AND (interface_status IS NULL '
@@ -1091,6 +1099,7 @@ AS
                                   ||',line_type';
 
             ELSIF p_sales_order_low IS NOT NULL AND p_sales_order_high IS NOT NULL THEN
+			
                OPEN c_interface_lines FOR
                   lc_cursor_query || ' ' || lc_where_clause
                                   ||' AND (interface_status IS NULL '
@@ -1103,15 +1112,19 @@ AS
                                   ||',line_type';
 
             ELSIF p_sales_order_low IS NOT NULL AND p_sales_order_high IS NULL THEN
+			
                -- If above condition is satisfied then EX_SALES_ORDER user defined exception is raised and make the requestset error out
                RAISE EX_SALES_ORDER;
 
             ELSIF p_sales_order_low IS NULL AND p_sales_order_high IS NOT NULL THEN
+			
                -- If above condition is satisfied then EX_SALES_ORDER user defined exception is raised and make the requestset error out
                RAISE EX_SALES_ORDER;
 
             ELSIF p_sales_order_low IS NULL AND p_sales_order_high IS NULL THEN
+			
                FND_FILE.PUT_LINE(FND_FILE.LOG,'CONC_REQUEST_ID:' || gn_request_id);
+			   
                OPEN c_interface_lines FOR
                   lc_cursor_query || ' ' || lc_where_clause
                                   ||'AND   request_id = ' || gn_request_id
@@ -1121,7 +1134,8 @@ AS
                                   ||',line_type';
             END IF;
          END;
-
+         
+		 
          ln_detail_inv_line_cnt  :=0;                                           --added counters 11.3 POS SDR
          ln_summary_inv_line_cnt :=0;
 
@@ -1154,7 +1168,7 @@ AS
                END;
          END IF;
 
-
+         
          /**************************************************
          ** Step #7 ? Begin Processing Interface Lines    **
          **************************************************/
@@ -1204,11 +1218,11 @@ AS
             lc_cogs_flag             := 'N';
             lc_order_type_mixed      := 'N';
             lc_mixed_credit          := 'N';
-			lc_bill_comp_flag        := 'N';							-- Added for Bill Complete NAIT-67165
-			lc_parent_order_num		 := NULL;							-- Added for Bill Complete NAIT-67165
-			ln_site_use_id			 := NULL;							-- Added for Bill Complete NAIT-67165
-			lc_bill_comp_upd_flag	 := 'Y';
-			ln_bill_comp_cnt		 :=-1;
+            lc_bill_comp_flag        := 'N';                            -- Added for Bill Complete NAIT-67165
+            lc_parent_order_num      := NULL;                           -- Added for Bill Complete NAIT-67165
+            ln_site_use_id           := NULL;                           -- Added for Bill Complete NAIT-67165
+            lc_bill_comp_upd_flag    := 'Y';
+            ln_bill_comp_cnt         :=-1;
             lc_ret_org_order_num     := NULL;
             ln_cust_trx_line_id      := NULL;
             lc_rev_cons_location     := NULL;
@@ -1216,7 +1230,14 @@ AS
             lc_bill_level            := NULL;
             lc_kit_parent            := NULL;
 
+            ln_orig_sysref_len       := -1;  -- Added for NAIT-86554
+            ln_trx_num_len           := 0 ;  -- Added for NAIT-86554
+            ln_bill_comp_check_count := 0 ;  -- Added for NAIT-86554
+            lc_bc_spc_flag           :='N';  -- Added for NAIT-86554
+
+
             IF  p_invoice_source IS NULL  THEN
+		
                BEGIN
                   SELECT NVL(tv.target_value2,' ')
                         ,NVL(tv.target_value3,'N')
@@ -1246,7 +1267,6 @@ AS
                END;
 
             END IF;
-
             ----------------------------------------------
             -- Track total of summary and detail invoices
             ----------------------------------------------
@@ -1255,153 +1275,233 @@ AS
             ELSE
                ln_detail_inv_line_cnt := ln_detail_inv_line_cnt + 1;
             END IF;
-				---------------------------------------------------------------
-				-- Getting Bill Comp Flag for Bill Complete Customers NAIT-67165
-				---------------------------------------------------------------
-				---/* Start for Bill Comp Change NAIT-67165 /
-				BEGIN						
-					SELECT xoha.bill_comp_flag
-						,ooh.invoice_to_org_id
-						,NVL(xoha.parent_order_num,ooh.order_number)
-					INTO lc_Bill_Comp_Flag,
-						 ln_site_use_id,
-						 lc_parent_order_num
-					FROM oe_order_headers_all ooh,
-						 xx_om_header_attributes_all xoha
-					Where ooh.order_number = lcu_process_interface_lines.sales_order
-					-- AND parent_order_num     IS NOT NULL -- Commented for Defect NAIT-75351
-					AND xoha.bill_comp_flag IN ('B','Y') -- Added for Defect NAIT-75351
-					AND ooh.header_id      = xoha.header_id
-					AND ROWNUM        <2; 						
-				EXCEPTION
-				WHEN NO_DATA_FOUND THEN
-					 lc_Bill_Comp_Flag	:='N';
-				WHEN OTHERS THEN
-					lc_Bill_Comp_Flag	:='N';
-				END;
-				
-				-----------------------------------------------------------------------------------------
-				-- If Bill Complete and no SCM Signal push billing date of invoice to future + 90 days.
-				-----------------------------------------------------------------------------------------
-				IF NVL(lc_Bill_Comp_Flag,'N') IN ('B','Y')  THEN
-					IF (p_display_log ='Y') THEN  -- Added IF Condition for Defect# 35156
-						FND_FILE.PUT_LINE(FND_FILE.LOG,'Bill Complete Customer : '||lcu_process_interface_lines.sales_order ||' with Amount : '||lcu_process_interface_lines.amount||' lc_prev_order : '||lc_prev_order);
-					END IF;
-					IF  lc_prev_order <>	lcu_process_interface_lines.sales_order
-					THEN
-						lc_bill_comp_upd_flag	:='N';
-						-- Inserting Credit Memos into Bill Signal table
-						IF (p_display_log ='Y') THEN  -- Added IF Condition for Defect# 35156
-							FND_FILE.PUT_LINE(FND_FILE.LOG,'Bill Complete Customer : before xx_scm_bill_signal order : '||lcu_process_interface_lines.sales_order ||' attribute2 : '||NVL(UPPER(lcu_process_interface_lines.interface_line_attribute2),'XX'));
-						END IF;
-						IF NVL(UPPER(lcu_process_interface_lines.interface_line_attribute2),'XX') like '%RETURN%'
-						THEN
-						
-							UPDATE xx_om_header_attributes_all
-							SET parent_order_num =lc_parent_order_num,
-							bill_comp_flag   = 'B'
-							WHERE header_id      =
-							(SELECT max(header_id)
-							FROM oe_order_headers_all
-							WHERE order_number = lcu_process_interface_lines.sales_order	--'2282501742'
-							--AND LENGTH(orig_sys_document_ref)	=20	
-							)
-							AND parent_order_num IS NULL 
-							AND NVL(bill_comp_flag,'X')  NOT IN ('B','Y')										
-							;								
-							
-							BEGIN
-								INSERT
-								INTO xx_scm_bill_signal
-								  (
-									Parent_Order_Number,
-									Child_Order_Number,
-									billing_date_flag,
-									Creation_Date,
-									Created_By,
-									Last_Update_Date,
-									Last_Updated_By,
-									Last_Update_Login
-								  )
-								  VALUES
-								  (
-									lc_parent_order_num,
-									lcu_process_interface_lines.sales_order,
-									'N',
-									SYSDATE,
-									FND_PROFILE.VALUE('USER_ID'),
-									SYSDATE,
-									FND_PROFILE.VALUE('USER_ID'),
-									gn_ln_loginid
-								  );
-								IF (p_display_log ='Y') THEN  -- Added IF Condition for Defect# 35156
-									FND_FILE.PUT_LINE(FND_FILE.LOG,'Inserted Return Order into Bill Signal Table for Order : '||lcu_process_interface_lines.sales_order );
-								END IF;
-							EXCEPTION
-							WHEN OTHERS THEN
-								FND_FILE.PUT_LINE(FND_FILE.LOG,'Insertion Failed for Bill Complete customer into xx_scm_bill_signal '||SUBSTR(SQLERRM,1,255));
-							END;	  
-						END IF;
-					END IF;
-					IF lc_bill_comp_upd_flag = 'N' 
-					THEN								
-						BEGIN
-							SELECT COUNT(1)
-							INTO ln_bill_comp_cnt
-							FROM xx_scm_bill_signal
-							WHERE child_order_number =	lcu_process_interface_lines.sales_order
-							AND billing_date_flag    = 'N' ;
-							IF (p_display_log ='Y') THEN  -- Added IF Condition for Defect# 35156
-								FND_FILE.PUT_LINE(FND_FILE.LOG,'Bill_Comp_Flag Exists Count : '|| ln_bill_comp_cnt ||' for Order : '||lcu_process_interface_lines.sales_order);
-							END IF;
-						END;	
-					END IF;
-					IF ln_bill_comp_cnt =0
-					THEN
-						BEGIN
-							UPDATE ra_interface_lines_all RIL
-							SET billing_date			= trunc(sysdate)+NVL(TO_NUMBER(gn_bill_date),37)
-							WHERE ril.sales_order       = lcu_process_interface_lines.sales_order
-							AND ril.batch_source_name 	= NVL(p_invoice_source,batch_source_name)
-							AND ril.org_id            	= gc_ln_orgid;
-							IF (p_display_log ='Y') THEN  -- Added IF Condition for Defect# 35156
-								FND_FILE.PUT_LINE(FND_FILE.LOG,'Billing Date updated to future since no signal from SCM for order : '|| lcu_process_interface_lines.sales_order ||' for Count '||SQL%ROWCOUNT);
-							END IF;
-						EXCEPTION
-						WHEN NO_DATA_FOUND THEN
-							 FND_FILE.PUT_LINE(FND_FILE.LOG,'NO_DATA_FOUND: TO Update to future for Bill Complete order : '||lcu_process_interface_lines.sales_order);
-						WHEN OTHERS THEN
-							FND_FILE.PUT_LINE(FND_FILE.LOG,'Other EXCEPTION: TO Update to future for Bill Complete Order: '||lcu_process_interface_lines.sales_order||' '||SUBSTR(SQLERRM,1,255) );
-						END;
-					ELSE 
-						IF lc_bill_comp_upd_flag ='N'
-						THEN
-							BEGIN
-								UPDATE  xx_scm_bill_signal
-								SET 	billing_date_flag    = 'C'
-									,	customer_id			 = lcu_process_interface_lines.orig_system_bill_customer_id
-									,	site_use_id			 = ln_site_use_id
-									,   shipped_flag		 = 'Y'
-									, 	last_update_date	 = sysdate
-									,	last_updated_by		 = gn_ln_loginid
-								WHERE child_order_number 	 = lcu_process_interface_lines.sales_order
-								AND billing_date_flag    	 = 'N';	
-								lc_bill_comp_upd_flag		 :='C';
-							IF (p_display_log ='Y') THEN  -- Added IF Condition for Defect# 35156
-								FND_FILE.PUT_LINE(FND_FILE.LOG,'Bill Complete Customer Updated Customer id and Site Use Id for Order : '||lcu_process_interface_lines.sales_order);
-							END IF;
-							EXCEPTION
-							WHEN NO_DATA_FOUND THEN
-								 FND_FILE.PUT_LINE(FND_FILE.LOG,'NO_DATA_FOUND: TO Update in xx_scm_bill_signal for order : '||lcu_process_interface_lines.sales_order);
-							WHEN OTHERS THEN
-								FND_FILE.PUT_LINE(FND_FILE.LOG,'Other EXCEPTION: TO Update in xx_scm_bill_signal for order : '||lcu_process_interface_lines.sales_order||SUBSTR(SQLERRM,1,255));
-							END;
-						END IF;
-					END IF;
-					lc_prev_order	:=	lcu_process_interface_lines.sales_order;
-				END IF;
-				---/* End for Bill Comp Change NAIT-67165 /
-			
+            ---------------------------------------------------------------
+            -- Getting Bill Comp Flag for Bill Complete Customers NAIT-67165
+            ---------------------------------------------------------------
+            ---/* Start for Bill Comp Change NAIT-67165 /
+            
+            IF lc_prev_order <> lcu_process_interface_lines.sales_order
+            THEN
+            
+
+                IF (p_display_log ='Y') THEN  -- Added IF Condition for Defect# 35156
+                 FND_FILE.PUT_LINE(FND_FILE.LOG,'Processing for Customer'||lcu_process_interface_lines.orig_system_bill_customer_id);
+                END IF;
+                BEGIN
+                     SELECT COUNT(1)
+                     INTO ln_bill_comp_check_count
+                     FROM Hz_Customer_Profiles HCP
+                     WHERE 1                  =1
+                     AND Hcp.Site_Use_Id     IS NULL
+                     AND Hcp.Cons_Inv_Flag     = 'Y'
+                     AND Hcp.Cust_Account_Id   = lcu_process_interface_lines.orig_system_bill_customer_id --33059690
+                     AND Hcp.attribute6        in ('Y','B');
+                EXCEPTION
+                WHEN NO_DATA_FOUND THEN
+                 ln_bill_comp_check_count := 0;
+                 FND_FILE.PUT_LINE(FND_FILE.LOG,'No data found while getting Bill Complete Customer from Hz_Customer_Profiles');
+                WHEN OTHERS THEN
+                 ln_bill_comp_check_count := 0;
+                 FND_FILE.PUT_LINE(FND_FILE.LOG,'When others while getting Bill Complete Customer from Hz_Customer_Profiles');
+                END;
+                
+                ln_trx_num_len:= LENGTH(lcu_process_interface_lines.sales_order);     
+                ---------------------------------------------------------------
+                -- Checking if this is Bill Complete or not
+                ---------------------------------------------------------------
+                BEGIN      
+                 SELECT  xoha.bill_comp_flag
+                       , ooh.invoice_to_org_id
+                       , NVL(xoha.parent_order_num,ooh.order_number)
+                       , LENGTH(orig_sys_document_ref) 
+                 INTO lc_Bill_Comp_Flag,
+                      ln_site_use_id,
+                      lc_parent_order_num,
+                      ln_orig_sysref_len
+                 FROM oe_order_headers_all ooh,
+                      xx_om_header_attributes_all xoha
+                 WHERE ooh.order_number = lcu_process_interface_lines.sales_order
+                 -- AND parent_order_num     IS NOT NULL -- Commented for Defect NAIT-75351
+				   AND SPC_CARD_NUMBER IS NOT NULL -- Added for NAIT-86554 NITIN
+                   AND (xoha.bill_comp_flag IN ('B','Y') OR (ln_trx_num_len =10 AND ln_bill_comp_check_count >0)) -- Added for Defect NAIT-75351
+                   AND ooh.header_id      = xoha.header_id
+                   AND ROWNUM        <2;       
+                EXCEPTION
+                WHEN NO_DATA_FOUND THEN
+                  lc_Bill_Comp_Flag :='N';
+                WHEN OTHERS THEN
+                 lc_Bill_Comp_Flag :='N';
+                END;
+    
+                IF (p_display_log ='Y') THEN  -- Added IF Condition for Defect# 35156
+                 FND_FILE.PUT_LINE(FND_FILE.LOG,'SPC Order : ln_orig_sysref_len : '||ln_orig_sysref_len ||' ln_trx_num_len : '||ln_trx_num_len||' ln_bill_comp_check_count : '||ln_bill_comp_check_count);
+                END IF;
+    
+                ---------------------------------------------------------------
+                -- Checking if this is Bill Complete Customer and SPC Order
+                ---------------------------------------------------------------
+                IF ln_orig_sysref_len=20 AND ln_trx_num_len =10 AND ln_bill_comp_check_count > 0
+                THEN
+                    lc_bc_spc_flag := 'Y';
+                    IF (p_display_log ='Y') THEN  -- Added IF Condition for Defect# 35156
+                       FND_FILE.PUT_LINE(FND_FILE.LOG,'Bill Complete Customer with SPC Order : '||lcu_process_interface_lines.sales_order ||' with Amount : '||lcu_process_interface_lines.amount||' lc_prev_order : '||lc_prev_order);
+                    END IF;
+                END IF;
+                
+                
+                -----------------------------------------------------------------------------------------
+                -- If Bill Complete and no SCM Signal push billing date of invoice to future + 90 days.
+                -----------------------------------------------------------------------------------------
+                IF NVL(lc_Bill_Comp_Flag,'N') IN ('B','Y')  OR lc_bc_spc_flag = 'Y'                 
+                THEN
+
+                    
+                
+                    IF (p_display_log ='Y') THEN  -- Added IF Condition for Defect# 35156
+                       FND_FILE.PUT_LINE(FND_FILE.LOG,'Bill Complete Customer: '||lcu_process_interface_lines.sales_order ||' with Amount : '||lcu_process_interface_lines.amount||' lc_prev_order : '||lc_prev_order);
+                    END IF;
+                    lc_bill_comp_upd_flag :='N';
+                      -- Inserting Credit Memos into Bill Signal table
+                    IF (p_display_log ='Y') THEN  -- Added IF Condition for Defect# 35156
+                       FND_FILE.PUT_LINE(FND_FILE.LOG,'Bill Complete Customer : before xx_scm_bill_signal order : '||lcu_process_interface_lines.sales_order ||' attribute2 : '||NVL(UPPER(lcu_process_interface_lines.interface_line_attribute2),'XX'));
+                    END IF;
+                    IF NVL(UPPER(lcu_process_interface_lines.interface_line_attribute2),'XX') like '%RETURN%' OR (lc_bc_spc_flag = 'Y')                    
+                    THEN
+                          
+                          IF lc_bc_spc_flag ='Y'
+                          THEN
+                          lc_parent_order_num :=lcu_process_interface_lines.sales_order;
+                          IF (p_display_log ='Y') THEN  -- Added IF Condition for Defect# 35156
+                             FND_FILE.PUT_LINE(FND_FILE.LOG,'Bill Complete Customer SPC Order : '||lc_parent_order_num);
+                          END IF;
+                          
+                    END IF;
+                    BEGIN       
+                        IF (p_display_log ='Y') THEN  -- Added IF Condition for Defect# 35156
+                             FND_FILE.PUT_LINE(FND_FILE.LOG,'Updating BC Flag in Header_Attributes for order : '||lcu_process_interface_lines.sales_order||' to parent_order_num : '||lc_parent_order_num);
+                        END IF;
+        
+                        ---------------------------------------------------------------
+                        -- Updating Parent Order NUmber, and Bill Complete Flag if it is Bill COmplete SPC Order
+                        ---------------------------------------------------------------
+                       
+                        UPDATE xx_om_header_attributes_all
+                        SET parent_order_num =lc_parent_order_num,
+                         bill_comp_flag   = 'B'
+                        WHERE header_id      =
+                          (SELECT max(header_id)
+                          FROM oe_order_headers_all
+                          WHERE order_number = lcu_process_interface_lines.sales_order --'2282501742'
+                          --AND LENGTH(orig_sys_document_ref) =20 
+                          )
+                        AND parent_order_num IS NULL 
+                        AND NVL(bill_comp_flag,'X')  NOT IN ('B','Y')          
+                         ;     
+
+                        IF (p_display_log ='Y') THEN  -- Added IF Condition for Defect# 35156
+                         FND_FILE.PUT_LINE(FND_FILE.LOG,' After Update Count : '||SQL%ROWCOUNT);
+                        END IF;
+                        ---------------------------------------------------------------
+                        -- Inserting into signal table for Bill Complete Customer for SPC Order and return orders
+                        ---------------------------------------------------------------
+                        
+                        INSERT
+                        INTO xx_scm_bill_signal
+                        (
+                            Parent_Order_Number,
+                            Child_Order_Number,
+                            billing_date_flag,
+                            Creation_Date,
+                            Created_By,
+                            Last_Update_Date,
+                            Last_Updated_By,
+                            Last_Update_Login
+                        )
+                        VALUES
+                        (
+                            lc_parent_order_num,
+                            lcu_process_interface_lines.sales_order,
+                            'N',
+                            SYSDATE,
+                            FND_PROFILE.VALUE('USER_ID'),
+                            SYSDATE,
+                            FND_PROFILE.VALUE('USER_ID'),
+                            gn_ln_loginid
+                        );
+                        IF (p_display_log ='Y') THEN  -- Added IF Condition for Defect# 35156
+                         FND_FILE.PUT_LINE(FND_FILE.LOG,'Inserted Return Order into Bill Signal Table for Order: '||lcu_process_interface_lines.sales_order );
+                        END IF;
+                    EXCEPTION
+                        WHEN OTHERS THEN
+                        FND_FILE.PUT_LINE(FND_FILE.LOG,'Insertion Failed for Bill Complete customer into xx_scm_bill_signal '||SUBSTR(SQLERRM,1,255));
+                    END;   
+                END IF;
+                IF lc_bill_comp_upd_flag = 'N' 
+                THEN        
+                
+                  BEGIN
+                       SELECT COUNT(1)
+                       INTO ln_bill_comp_cnt
+                       FROM xx_scm_bill_signal
+                       WHERE child_order_number = lcu_process_interface_lines.sales_order
+                       AND billing_date_flag    = 'N' ;
+                       IF (p_display_log ='Y') THEN  -- Added IF Condition for Defect# 35156
+                        FND_FILE.PUT_LINE(FND_FILE.LOG,'Bill_Comp_Flag Exists Count : '|| ln_bill_comp_cnt ||' for Order : '||lcu_process_interface_lines.sales_order);
+                       END IF;
+                  END; 
+                END IF;
+                    
+                IF ln_bill_comp_cnt =0
+                THEN
+                    
+                BEGIN
+                       UPDATE ra_interface_lines_all RIL
+                       SET billing_date   = trunc(sysdate)+NVL(TO_NUMBER(gn_bill_date),90)
+                       WHERE ril.sales_order       = lcu_process_interface_lines.sales_order
+                       AND ril.batch_source_name  = NVL(p_invoice_source,batch_source_name)
+                       AND ril.org_id             = gc_ln_orgid;
+                       IF (p_display_log ='Y') THEN  -- Added IF Condition for Defect# 35156
+                        FND_FILE.PUT_LINE(FND_FILE.LOG,'Billing Date updated to future since no signal from SCM for order : '|| lcu_process_interface_lines.sales_order ||' TO : '||gn_bill_date||' Days. '||' for Count '||SQL%ROWCOUNT);
+                    END IF;
+                EXCEPTION
+                  WHEN NO_DATA_FOUND THEN
+                    FND_FILE.PUT_LINE(FND_FILE.LOG,'NO_DATA_FOUND: TO Update to future for Bill Complete order : '||lcu_process_interface_lines.sales_order);
+                  WHEN OTHERS THEN
+                   FND_FILE.PUT_LINE(FND_FILE.LOG,'Other EXCEPTION: TO Update to future for Bill Complete Order: '||lcu_process_interface_lines.sales_order||' '||SUBSTR(SQLERRM,1,255) );
+                END;
+            ELSE 
+                  IF lc_bill_comp_upd_flag ='N'
+                  THEN
+     
+                   BEGIN
+                    UPDATE  xx_scm_bill_signal
+                    SET  billing_date_flag    = 'C'
+                     , customer_id    = lcu_process_interface_lines.orig_system_bill_customer_id
+                     , site_use_id    = ln_site_use_id
+                     ,   shipped_flag   = 'Y'
+                     ,  last_update_date  = sysdate
+                     , last_updated_by   = gn_ln_loginid
+                    WHERE child_order_number   = lcu_process_interface_lines.sales_order
+                    AND billing_date_flag      = 'N'; 
+                    lc_bill_comp_upd_flag   :='C';
+                   IF (p_display_log ='Y') THEN  -- Added IF Condition for Defect# 35156
+                    FND_FILE.PUT_LINE(FND_FILE.LOG,'Bill Complete Customer Updated Customer id and Site Use Id for Order : '||lcu_process_interface_lines.sales_order);
+                   END IF;
+                   EXCEPTION
+                   WHEN NO_DATA_FOUND THEN
+                     FND_FILE.PUT_LINE(FND_FILE.LOG,'NO_DATA_FOUND: TO Update in xx_scm_bill_signal for order : '||lcu_process_interface_lines.sales_order);
+                   WHEN OTHERS THEN
+                    FND_FILE.PUT_LINE(FND_FILE.LOG,'Other EXCEPTION: TO Update in xx_scm_bill_signal for order : '||lcu_process_interface_lines.sales_order||SUBSTR(SQLERRM,1,255));
+                   END;
+                  END IF;
+                 END IF;
+                END IF;
+            END IF;
+            
+            ---/* End for Bill Comp Change NAIT-67165 /
+            
+            lc_prev_order := lcu_process_interface_lines.sales_order; 
+            
             ---------------------------------------------------------------
             -- Update TRX_NUMBER for Services Invoices (Defect 20687 V4.0)
             ---------------------------------------------------------------
@@ -1512,7 +1612,7 @@ AS
                ***********************************************************************************/
                  IF (p_display_log ='Y') THEN  -- Added IF Condition for Defect# 35156
                   FND_FILE.PUT_LINE(FND_FILE.LOG,'Before updating LINE line type taxable_flag to N : ');
-				  END IF;
+                  END IF;
 
                   UPDATE ra_interface_lines_all
                   SET taxable_flag   = 'N'
@@ -1522,7 +1622,7 @@ AS
                   AND org_id            = FND_PROFILE.VALUE('ORG_ID');
                   IF (p_display_log ='Y') THEN
                   FND_FILE.PUT_LINE(FND_FILE.LOG,'Number of LINE line type taxable_flag updates are : ' || SQL%ROWCOUNT);
-				  END IF;
+                  END IF;
 
                /********************************************************************************
                ** Step #7.8 ? Update taxable_flag to 'N' for LINE Line type R12 Retrofit End  **
@@ -1531,9 +1631,9 @@ AS
                /*********************************************************
                ** Step #7.9 ? Update tax cols  for R12 Retrofit Start  **
                **********************************************************/
-			   IF (p_display_log ='Y') THEN  -- Added IF Condition for Defect# 35156
+               IF (p_display_log ='Y') THEN  -- Added IF Condition for Defect# 35156
                FND_FILE.PUT_LINE(FND_FILE.LOG,'BEFORE CALLING update US/CANADA TAX lines  in RA_INTERFACE_LINES : ' );
-			   END IF;
+               END IF;
 
                IF  gc_country_value = 'US' THEN
                   IF (p_display_log ='Y') THEN  -- Added IF Condition for Defect# 35156
@@ -1546,7 +1646,7 @@ AS
                   FND_FILE.PUT_LINE(FND_FILE.LOG,'gc_tax_rate_code : ' || gc_tax_rate_code);
                   FND_FILE.PUT_LINE(FND_FILE.LOG,'gc_rate_percent : ' || gc_rate_percent);
                   FND_FILE.PUT_LINE(FND_FILE.LOG,'lcu_process_interface_lines.sales_order : ' || lcu_process_interface_lines.sales_order);
-				  END IF;
+                  END IF;
 
                   lc_interface_PREV := NULL;
                   lc_interface_CURR := NULL;
@@ -1562,7 +1662,7 @@ AS
                      IF (p_display_log ='Y') THEN
                      fnd_file.put_line(FND_FILE.LOG,'lc_interface_PREV ' || lc_interface_PREV);
                      fnd_file.put_line(FND_FILE.LOG,'ln_interface_CURR ' || lc_interface_CURR);
-					 END IF;
+                     END IF;
 
                      --If Check if interface line type is TAX for US
                      IF ln_disc_cnt.line_type = gc_line_type_TAX_hc
@@ -1606,7 +1706,7 @@ AS
                         fnd_file.put_line(FND_FILE.LOG,'updated lines ' || SQL%ROWCOUNT);
                         fnd_file.put_line(FND_FILE.LOG,'lc_interface_PREV ' || lc_interface_PREV);
                         fnd_file.put_line(FND_FILE.LOG,'lc_interface_CURR ' || lc_interface_CURR);
-						END IF;
+                        END IF;
                      END IF;
 
                   END LOOP;
@@ -1614,7 +1714,7 @@ AS
                ELSIF gc_country_value = 'CA' THEN
                   IF (p_display_log ='Y') THEN  -- Added IF Condition for Defect# 35156
                   FND_FILE.PUT_LINE(FND_FILE.LOG,'update CANADA TAX lines  in RA_INTERFACE_LINES : ' );
-				  END IF;
+                  END IF;
 
                   UPDATE ra_interface_lines_all
                   SET tax_regime_code   = gc_tax_regime_code_ca,
@@ -1629,7 +1729,7 @@ AS
                   AND tax_code          = gc_tax_code_county;
                   IF (p_display_log ='Y') THEN  -- Added IF Condition for Defect# 35156
                   FND_FILE.PUT_LINE(FND_FILE.LOG,'Number of TAX lines updated for CA County in RA_INTERFACE_LINES : ' || SQL%ROWCOUNT);
-				  END IF;
+                  END IF;
 
                   UPDATE ra_interface_lines_all
                   SET tax_regime_code   = gc_tax_regime_code_ca,
@@ -1644,7 +1744,7 @@ AS
                   AND tax_code          = gc_tax_code_state;
                   IF (p_display_log ='Y') THEN  -- Added IF Condition for Defect# 35156
                   FND_FILE.PUT_LINE(FND_FILE.LOG,'Number of TAX lines updated for CA State in RA_INTERFACE_LINES : ' || SQL%ROWCOUNT);
-				  END IF;
+                  END IF;
 
                END IF;
 
@@ -2622,7 +2722,7 @@ AS
                        SELECT GCC.code_combination_id
                        INTO ln_rev_ccid
                        FROM gl_code_combinations GCC
-                           ,gl_ledgers     GLL	--Changed for R12 Retrofit gl_sets_of_books     GSB
+                           ,gl_ledgers     GLL  --Changed for R12 Retrofit gl_sets_of_books     GSB
                        WHERE GCC.segment1 = lc_rev_company
                        AND GCC.segment2   = lc_rev_costcenter
                        AND GCC.segment3   = lc_rev_account
@@ -2826,12 +2926,12 @@ AS
                               
                            select ffv.flex_value 
                              into lc_tax_location
-			     from fnd_flex_values ffv,
-			          fnd_flex_value_sets ffvs
-			   where ffv.flex_value_set_id = ffvs.flex_value_set_id
-			     and ffvs.flex_value_set_name = 'OD_GL_GLOBAL_LOCATION'
-			     and ffv.flex_value like '8%'
-  			     and ffv.attribute4 = lc_tax_state;   
+                 from fnd_flex_values ffv,
+                      fnd_flex_value_sets ffvs
+               where ffv.flex_value_set_id = ffvs.flex_value_set_id
+                 and ffvs.flex_value_set_name = 'OD_GL_GLOBAL_LOCATION'
+                 and ffv.flex_value like '8%'
+                 and ffv.attribute4 = lc_tax_state;   
                               
                         EXCEPTION
                            WHEN NO_DATA_FOUND THEN
@@ -3497,7 +3597,7 @@ AS
                                    FROM ra_customer_trx_lines_all RCTL
                                        ,ra_customer_trx_lines_all RCTL1
                                        --,ar_vat_tax_all AVTA Commented for R12 upgrade retrofit. QC Defect 26781
-									   ,zx_rates_b AVTA -- Added for R12 upgrade retrofit. QC Defect 26781                                       
+                                       ,zx_rates_b AVTA -- Added for R12 upgrade retrofit. QC Defect 26781                                       
                                   WHERE RCTL.line_type=gc_line_type_LINE_hc
                                     AND RCTL.interface_line_attribute6 = TO_CHAR(ln_ret_ref_line_id)
                                     AND RCTL.interface_line_context    = 'ORDER ENTRY'
@@ -3506,16 +3606,16 @@ AS
                                     AND RCTL1.line_type = gc_line_type_TAX_hc
                                     AND ((RCTL.VAT_TAX_ID IS NOT NULL AND RCTL1.link_to_cust_trx_line_id = RCTL.customer_trx_line_id) OR (RCTL.VAT_TAX_ID IS NULL))
                                     --AND AVTA.vat_tax_id = RCTL1.vat_tax_id Commented for R12 upgrade retrofit. QC Defect 26781
-									AND AVTA.tax_rate_id = RCTL1.vat_tax_id --Added for R12 upgrade retrofit. QC Defect 26781
+                                    AND AVTA.tax_rate_id = RCTL1.vat_tax_id --Added for R12 upgrade retrofit. QC Defect 26781
                                     AND (
                                           --(gc_country_value = 'CA' AND AVTA.tax_code = NVL(lcu_process_interface_lines.tax_code, AVTA.tax_code))
-										  (gc_country_value = 'CA' AND AVTA.tax_rate_code = NVL(lcu_process_interface_lines.tax_code, AVTA.tax_rate_code))
+                                          (gc_country_value = 'CA' AND AVTA.tax_rate_code = NVL(lcu_process_interface_lines.tax_code, AVTA.tax_rate_code))
                                           OR
                                           --(gc_country_value = 'US' AND AVTA.tax_code IN ('SALES', 'STATE')) -- Added Sales and State condition for US to take care of both Old and New Tax Codes
-										  (gc_country_value = 'US' AND AVTA.tax_rate_code IN ('SALES', 'STATE')) -- Added for R12 upgrade retrofit. QC Defect 26781
+                                          (gc_country_value = 'US' AND AVTA.tax_rate_code IN ('SALES', 'STATE')) -- Added for R12 upgrade retrofit. QC Defect 26781
                                         );
 
-									EXCEPTION
+                                    EXCEPTION
                                  WHEN NO_DATA_FOUND THEN
                                     ln_cust_trx_line_id  := NULL;
                                  WHEN OTHERS THEN
@@ -3533,8 +3633,8 @@ AS
                                    INTO ln_cust_trx_line_id
                                    FROM ra_customer_trx_lines_all RCTL
                                        ,ra_customer_trx_lines_all RCTL1
-                                       --,ar_vat_tax_all AVTA	Commented for R12 upgrade retrofit. QC Defect 26781
-									   ,zx_rates_b AVTA -- Added for R12 upgrade retrofit. QC Defect 26781                                       
+                                       --,ar_vat_tax_all AVTA   Commented for R12 upgrade retrofit. QC Defect 26781
+                                       ,zx_rates_b AVTA -- Added for R12 upgrade retrofit. QC Defect 26781                                       
                                   WHERE RCTL.line_type=gc_line_type_LINE_hc
                                     AND RCTL.interface_line_attribute6 = TO_CHAR(ln_ret_ref_line_id)
                                     AND RCTL.interface_line_context    = 'ORDER ENTRY'
@@ -3543,15 +3643,15 @@ AS
                                     AND RCTL1.line_type = gc_line_type_TAX_hc
                                     AND ((RCTL.VAT_TAX_ID IS NOT NULL AND RCTL1.link_to_cust_trx_line_id = RCTL.customer_trx_line_id) OR (RCTL.VAT_TAX_ID IS NULL))
                                     --AND AVTA.vat_tax_id = RCTL1.vat_tax_id  Commented for R12 upgrade retrofit. QC Defect 26781
-									AND AVTA.tax_rate_id = RCTL1.vat_tax_id -- Added for R12 upgrade retrofit. QC Defect 26781
+                                    AND AVTA.tax_rate_id = RCTL1.vat_tax_id -- Added for R12 upgrade retrofit. QC Defect 26781
                                     AND (
                                           --(gc_country_value = 'CA' AND AVTA.tax_code = NVL(lcu_process_interface_lines.tax_code, AVTA.tax_code)) --Commented for QC Defect 26781.
-										  (gc_country_value = 'CA' AND AVTA.tax_rate_code = NVL(lcu_process_interface_lines.tax_code, AVTA.tax_rate_code)) -- Added for R12 upgrade retrofit QC Defect 26781.
+                                          (gc_country_value = 'CA' AND AVTA.tax_rate_code = NVL(lcu_process_interface_lines.tax_code, AVTA.tax_rate_code)) -- Added for R12 upgrade retrofit QC Defect 26781.
                                           OR
                                           --(gc_country_value = 'US' AND AVTA.tax_code IN ('SALES', 'STATE')) -- Added Sales and State condition for US to take care of both Old and New Tax Codes
-										  (gc_country_value = 'US' AND AVTA.tax_rate_code IN ('SALES', 'STATE'))  -- Added for R12 upgrade retrofit QC Defect 26781.
+                                          (gc_country_value = 'US' AND AVTA.tax_rate_code IN ('SALES', 'STATE'))  -- Added for R12 upgrade retrofit QC Defect 26781.
                                         );
-									EXCEPTION
+                                    EXCEPTION
                                  WHEN NO_DATA_FOUND THEN
                                     ln_cust_trx_line_id  := NULL;
                                  WHEN OTHERS THEN
@@ -3766,7 +3866,7 @@ AS
                ln_no_tax_lines_RIL := SQL%ROWCOUNT;
                IF (p_display_log ='Y') THEN  -- Added IF Condition for Defect# 35156
                FND_FILE.PUT_LINE(FND_FILE.LOG,'Updated Invoices with NO tax amt TEST' || SQL%ROWCOUNT);
-			   END IF;
+               END IF;
                 -----------------------------------------------------------------
                 -- Open BULK insert for updating POS exception invoices to a
                 -- interface status of X
@@ -3783,7 +3883,7 @@ AS
                      IF (p_display_log ='Y') THEN  -- Added IF Condition for Defect# 35156
                      FND_FILE.PUT_LINE(FND_FILE.LOG,'Updating POS Invoices to X for  '
                                          ||'Exceptions found');
-					 END IF;
+                     END IF;
                      -----------------------------------------
                      -- Bulk Update for POS exceptions
                      -----------------------------------------
@@ -3845,7 +3945,7 @@ AS
                     IF (p_display_log ='Y') THEN  -- Added IF Condition for Defect# 35156
                      FND_FILE.PUT_LINE(FND_FILE.LOG,'Updating POS Invoices to X for  '
                                          ||'Exceptions found');
-					END IF;
+                    END IF;
                      -----------------------------------------
                      -- Bulk Update for POS exceptions
                      -----------------------------------------
@@ -3956,9 +4056,9 @@ AS
                           WHERE interface_line_attribute1 = lt_trx_number(i)
                           AND INTERFACE_LINE_CONTEXT = 'ORDER ENTRY');*/
 
-						  --Changed for R12 Retrofit
-						  INSERT INTO XX_RA_INT_LINES_ALL
-							 (interface_line_id,
+                          --Changed for R12 Retrofit
+                          INSERT INTO XX_RA_INT_LINES_ALL
+                             (interface_line_id,
                        interface_line_context,
                        interface_line_attribute1,
                        interface_line_attribute2,
@@ -4269,7 +4369,7 @@ AS
                        tax_rate_code                          --Added for R12 Retrofit Changes
                        )
                     SELECT
-                    	  interface_line_id,
+                          interface_line_id,
                        interface_line_context,
                        interface_line_attribute1,
                        interface_line_attribute2,
@@ -4578,9 +4678,9 @@ AS
                        DECODE(LINE_TYPE,'TAX',(decode(INTERFACE_LINE_ATTRIBUTE9,'TAX',gc_tax_line1,'GST',gc_tax_state,'PST',gc_tax_county))),                                   --Added for R12 Retrofit Changes
                        DECODE(LINE_TYPE,'TAX',(decode(INTERFACE_LINE_ATTRIBUTE9,'TAX',gc_tax_status_code_us,'GST',gc_tax_status_code_ca,'PST',gc_tax_status_code_ca1))),                       --Added for R12 Retrofit Changes
                        DECODE(LINE_TYPE,'TAX',(decode(INTERFACE_LINE_ATTRIBUTE9,'TAX',gc_tax_rate_code,'GST',gc_tax_rate_state,'PST',gc_tax_rate_county)))                          --Added for R12 Retrofit Changes
-                    FROM	RA_INTERFACE_LINES_ALL
-                    WHERE 	interface_line_attribute1 = lt_trx_number(i)
-                    AND 	INTERFACE_LINE_CONTEXT = 'ORDER ENTRY';
+                    FROM    RA_INTERFACE_LINES_ALL
+                    WHERE   interface_line_attribute1 = lt_trx_number(i)
+                    AND     INTERFACE_LINE_CONTEXT = 'ORDER ENTRY';
 
                  ln_ra_rows_ins_int_cnt    := SQL%ROWCOUNT;
                  ln_ra_rows_ins_int_cnt_gt := ln_ra_rows_ins_int_cnt_gt + ln_ra_rows_ins_int_cnt;
@@ -4594,116 +4694,116 @@ AS
 
                   FORALL i IN 1 .. lt_pos_trx.count
                       INSERT INTO  XX_RA_INT_DISTRIBUTIONS_ALL
-                         (SELECT 	-- Added column names for defect#32991, as additional global attribute columns added in the table RA_INTERFACE_DISTRIBUTIONS_ALL by the patch#19891654 				
-							INTERFACE_DISTRIBUTION_ID,
-							INTERFACE_LINE_ID,
-							INTERFACE_LINE_CONTEXT,
-							INTERFACE_LINE_ATTRIBUTE1,
-							INTERFACE_LINE_ATTRIBUTE2,
-							INTERFACE_LINE_ATTRIBUTE3,
-							INTERFACE_LINE_ATTRIBUTE4,
-							INTERFACE_LINE_ATTRIBUTE5,
-							INTERFACE_LINE_ATTRIBUTE6,
-							INTERFACE_LINE_ATTRIBUTE7,
-							INTERFACE_LINE_ATTRIBUTE8,
-							ACCOUNT_CLASS,
-							AMOUNT,
-							PERCENT,
-							INTERFACE_STATUS,
-							REQUEST_ID,
-							CODE_COMBINATION_ID,
-							SEGMENT1,
-							SEGMENT2,
-							SEGMENT3,
-							SEGMENT4,
-							SEGMENT5,
-							SEGMENT6,
-							SEGMENT7,
-							SEGMENT8,
-							SEGMENT9,
-							SEGMENT10,
-							SEGMENT11,
-							SEGMENT12,
-							SEGMENT13,
-							SEGMENT14,
-							SEGMENT15,
-							SEGMENT16,
-							SEGMENT17,
-							SEGMENT18,
-							SEGMENT19,
-							SEGMENT20,
-							SEGMENT21,
-							SEGMENT22,
-							SEGMENT23,
-							SEGMENT24,
-							SEGMENT25,
-							SEGMENT26,
-							SEGMENT27,
-							SEGMENT28,
-							SEGMENT29,
-							SEGMENT30,
-							COMMENTS,
-							ATTRIBUTE_CATEGORY,
-							ATTRIBUTE1,
-							ATTRIBUTE2,
-							ATTRIBUTE3,
-							ATTRIBUTE4,
-							ATTRIBUTE5,
-							ATTRIBUTE6,
-							ATTRIBUTE7,
-							ATTRIBUTE8,
-							ATTRIBUTE9,
-							ATTRIBUTE10,
-							ATTRIBUTE11,
-							ATTRIBUTE12,
-							ATTRIBUTE13,
-							ATTRIBUTE14,
-							ATTRIBUTE15,
-							ACCTD_AMOUNT,
-							INTERFACE_LINE_ATTRIBUTE10,
-							INTERFACE_LINE_ATTRIBUTE11,
-							INTERFACE_LINE_ATTRIBUTE12,
-							INTERFACE_LINE_ATTRIBUTE13,
-							INTERFACE_LINE_ATTRIBUTE14,
-							INTERFACE_LINE_ATTRIBUTE15,
-							INTERFACE_LINE_ATTRIBUTE9,
-							CREATED_BY,
-							CREATION_DATE,
-							LAST_UPDATED_BY,
-							LAST_UPDATE_DATE,
-							LAST_UPDATE_LOGIN,
-							ORG_ID,
-							INTERIM_TAX_CCID,
-							INTERIM_TAX_SEGMENT1,
-							INTERIM_TAX_SEGMENT2,
-							INTERIM_TAX_SEGMENT3,
-							INTERIM_TAX_SEGMENT4,
-							INTERIM_TAX_SEGMENT5,
-							INTERIM_TAX_SEGMENT6,
-							INTERIM_TAX_SEGMENT7,
-							INTERIM_TAX_SEGMENT8,
-							INTERIM_TAX_SEGMENT9,
-							INTERIM_TAX_SEGMENT10,
-							INTERIM_TAX_SEGMENT11,
-							INTERIM_TAX_SEGMENT12,
-							INTERIM_TAX_SEGMENT13,
-							INTERIM_TAX_SEGMENT14,
-							INTERIM_TAX_SEGMENT15,
-							INTERIM_TAX_SEGMENT16,
-							INTERIM_TAX_SEGMENT17,
-							INTERIM_TAX_SEGMENT18,
-							INTERIM_TAX_SEGMENT19,
-							INTERIM_TAX_SEGMENT20,
-							INTERIM_TAX_SEGMENT21,
-							INTERIM_TAX_SEGMENT22,
-							INTERIM_TAX_SEGMENT23,
-							INTERIM_TAX_SEGMENT24,
-							INTERIM_TAX_SEGMENT25,
-							INTERIM_TAX_SEGMENT26,
-							INTERIM_TAX_SEGMENT27,
-							INTERIM_TAX_SEGMENT28,
-							INTERIM_TAX_SEGMENT29,
-							INTERIM_TAX_SEGMENT30						 
+                         (SELECT    -- Added column names for defect#32991, as additional global attribute columns added in the table RA_INTERFACE_DISTRIBUTIONS_ALL by the patch#19891654              
+                            INTERFACE_DISTRIBUTION_ID,
+                            INTERFACE_LINE_ID,
+                            INTERFACE_LINE_CONTEXT,
+                            INTERFACE_LINE_ATTRIBUTE1,
+                            INTERFACE_LINE_ATTRIBUTE2,
+                            INTERFACE_LINE_ATTRIBUTE3,
+                            INTERFACE_LINE_ATTRIBUTE4,
+                            INTERFACE_LINE_ATTRIBUTE5,
+                            INTERFACE_LINE_ATTRIBUTE6,
+                            INTERFACE_LINE_ATTRIBUTE7,
+                            INTERFACE_LINE_ATTRIBUTE8,
+                            ACCOUNT_CLASS,
+                            AMOUNT,
+                            PERCENT,
+                            INTERFACE_STATUS,
+                            REQUEST_ID,
+                            CODE_COMBINATION_ID,
+                            SEGMENT1,
+                            SEGMENT2,
+                            SEGMENT3,
+                            SEGMENT4,
+                            SEGMENT5,
+                            SEGMENT6,
+                            SEGMENT7,
+                            SEGMENT8,
+                            SEGMENT9,
+                            SEGMENT10,
+                            SEGMENT11,
+                            SEGMENT12,
+                            SEGMENT13,
+                            SEGMENT14,
+                            SEGMENT15,
+                            SEGMENT16,
+                            SEGMENT17,
+                            SEGMENT18,
+                            SEGMENT19,
+                            SEGMENT20,
+                            SEGMENT21,
+                            SEGMENT22,
+                            SEGMENT23,
+                            SEGMENT24,
+                            SEGMENT25,
+                            SEGMENT26,
+                            SEGMENT27,
+                            SEGMENT28,
+                            SEGMENT29,
+                            SEGMENT30,
+                            COMMENTS,
+                            ATTRIBUTE_CATEGORY,
+                            ATTRIBUTE1,
+                            ATTRIBUTE2,
+                            ATTRIBUTE3,
+                            ATTRIBUTE4,
+                            ATTRIBUTE5,
+                            ATTRIBUTE6,
+                            ATTRIBUTE7,
+                            ATTRIBUTE8,
+                            ATTRIBUTE9,
+                            ATTRIBUTE10,
+                            ATTRIBUTE11,
+                            ATTRIBUTE12,
+                            ATTRIBUTE13,
+                            ATTRIBUTE14,
+                            ATTRIBUTE15,
+                            ACCTD_AMOUNT,
+                            INTERFACE_LINE_ATTRIBUTE10,
+                            INTERFACE_LINE_ATTRIBUTE11,
+                            INTERFACE_LINE_ATTRIBUTE12,
+                            INTERFACE_LINE_ATTRIBUTE13,
+                            INTERFACE_LINE_ATTRIBUTE14,
+                            INTERFACE_LINE_ATTRIBUTE15,
+                            INTERFACE_LINE_ATTRIBUTE9,
+                            CREATED_BY,
+                            CREATION_DATE,
+                            LAST_UPDATED_BY,
+                            LAST_UPDATE_DATE,
+                            LAST_UPDATE_LOGIN,
+                            ORG_ID,
+                            INTERIM_TAX_CCID,
+                            INTERIM_TAX_SEGMENT1,
+                            INTERIM_TAX_SEGMENT2,
+                            INTERIM_TAX_SEGMENT3,
+                            INTERIM_TAX_SEGMENT4,
+                            INTERIM_TAX_SEGMENT5,
+                            INTERIM_TAX_SEGMENT6,
+                            INTERIM_TAX_SEGMENT7,
+                            INTERIM_TAX_SEGMENT8,
+                            INTERIM_TAX_SEGMENT9,
+                            INTERIM_TAX_SEGMENT10,
+                            INTERIM_TAX_SEGMENT11,
+                            INTERIM_TAX_SEGMENT12,
+                            INTERIM_TAX_SEGMENT13,
+                            INTERIM_TAX_SEGMENT14,
+                            INTERIM_TAX_SEGMENT15,
+                            INTERIM_TAX_SEGMENT16,
+                            INTERIM_TAX_SEGMENT17,
+                            INTERIM_TAX_SEGMENT18,
+                            INTERIM_TAX_SEGMENT19,
+                            INTERIM_TAX_SEGMENT20,
+                            INTERIM_TAX_SEGMENT21,
+                            INTERIM_TAX_SEGMENT22,
+                            INTERIM_TAX_SEGMENT23,
+                            INTERIM_TAX_SEGMENT24,
+                            INTERIM_TAX_SEGMENT25,
+                            INTERIM_TAX_SEGMENT26,
+                            INTERIM_TAX_SEGMENT27,
+                            INTERIM_TAX_SEGMENT28,
+                            INTERIM_TAX_SEGMENT29,
+                            INTERIM_TAX_SEGMENT30                        
                             FROM RA_INTERFACE_DISTRIBUTIONS_ALL
                             WHERE interface_line_attribute1 = lt_trx_number(i)
                             AND INTERFACE_LINE_CONTEXT = 'ORDER ENTRY');
@@ -5163,7 +5263,7 @@ AS
       lc_CC6                        xx_fin_translatevalues.target_value6%TYPE;
       lc_CC7                        xx_fin_translatevalues.target_value7%TYPE;
       lc_CC9                        xx_fin_translatevalues.target_value8%TYPE;
-	  
+      
 
       -- Added below procedure as part of Defect #2549 V 2.92 by RK
       PROCEDURE XX_GET_LOC_SYS_PARAMS (
@@ -5180,7 +5280,7 @@ AS
            INTO x_sys_account
                ,x_sys_location
            FROM gl_code_combinations GCC
-               ,ar_system_parameters_all ASP		-- Changed for R12 Retrofit ar_system_parameters ASP
+               ,ar_system_parameters_all ASP        -- Changed for R12 Retrofit ar_system_parameters ASP
           WHERE GCC.code_combination_id = ASP.location_tax_account
             and SET_OF_BOOKS_ID = GN_SOB_ID
             AND ASP.ORG_ID = gc_ln_orgid;   --Added for Defect # 43851
@@ -5247,8 +5347,8 @@ AS
 
                   IF INSTR(p_description,gc_tax_type_PST_hc) > 0 THEN -- Replace hard coded value for Defect#2569-V-2.84
                      --Added the below query for the defect#9040 on 21-JUL-08 by Manovinayak
-					 					 --Commented below query for R12 upgrade
-					 /*
+                                         --Commented below query for R12 upgrade
+                     /*
                      SELECT gcc1.segment3
                        INTO lc_ora_account
                        FROM ar_vat_tax_all VAT
@@ -5256,41 +5356,41 @@ AS
                       WHERE vat.set_of_books_id = gn_sob_id
                         AND vat.tax_code = 'PST_SALES_' || p_tax_state
                         AND    gcc1.code_combination_id = vat.tax_account_id;
-					*/
-					
-					--Added below query for R12 upgrade
+                    */
+                    
+                    --Added below query for R12 upgrade
 
                      /*SELECT gcc1.segment3
                        INTO lc_ora_account
                        FROM zx_rates_b VAT
-					       ,zx_accounts ACC
+                           ,zx_accounts ACC
                            ,gl_code_combinations GCC1
-						   ,hr_operating_units HOU
+                           ,hr_operating_units HOU
                       WHERE hou.set_of_books_id = gn_sob_id
-					    AND acc.internal_organization_id = hou.organization_id						
-						AND vat.tax_rate_code = 'PST_SALES_' || p_tax_state
-						AND acc.tax_account_entity_id = vat.tax_rate_id
-						AND acc.tax_account_entity_code = 'RATES'
+                        AND acc.internal_organization_id = hou.organization_id                      
+                        AND vat.tax_rate_code = 'PST_SALES_' || p_tax_state
+                        AND acc.tax_account_entity_id = vat.tax_rate_id
+                        AND acc.tax_account_entity_code = 'RATES'
                         AND acc.tax_account_id = gcc1.code_combination_id;*/
                         
                        --For defect 27985 
                        SELECT gcc.segment3
                          INTO lc_ora_account
-		         FROM zx_taxes_b ztb,
-		              zx_rates_b zrb,
-		              zx_accounts za,
-		              gl_code_combinations gcc
-		        WHERE zrb.tax_rate_code = 'COUNTY'
-		          AND ztb.tax = zrb.tax
-		          AND za.tax_account_entity_id = zrb.tax_rate_id
-		          AND ztb.tax_regime_code= zrb.tax_regime_code
-		          AND zrb.tax_regime_code in ('OD_CA_SALES_TAX')
-		          AND za.internal_organization_id =  FND_PROFILE.VALUE('ORG_ID')
+                 FROM zx_taxes_b ztb,
+                      zx_rates_b zrb,
+                      zx_accounts za,
+                      gl_code_combinations gcc
+                WHERE zrb.tax_rate_code = 'COUNTY'
+                  AND ztb.tax = zrb.tax
+                  AND za.tax_account_entity_id = zrb.tax_rate_id
+                  AND ztb.tax_regime_code= zrb.tax_regime_code
+                  AND zrb.tax_regime_code in ('OD_CA_SALES_TAX')
+                  AND za.internal_organization_id =  FND_PROFILE.VALUE('ORG_ID')
                           AND gcc.code_combination_id = za.tax_account_ccid;  
                         
-						
-						/*DEEPAK REMOVE THE NEXT LINE LATER. FOR TESTING PURPOSE*/
-						FND_FILE.PUT_LINE(FND_FILE.LOG, 'lc_ora_account = ' || lc_ora_account);
+                        
+                        /*DEEPAK REMOVE THE NEXT LINE LATER. FOR TESTING PURPOSE*/
+                        FND_FILE.PUT_LINE(FND_FILE.LOG, 'lc_ora_account = ' || lc_ora_account);
 
                   ELSIF INSTR(p_description,gc_tax_type_GST_hc) > 0 THEN
                      /*SELECT GCC.segment3
@@ -5304,16 +5404,16 @@ AS
                         --For defect 27985 
                        SELECT gcc.segment3
                          INTO lc_ora_account
-		         FROM zx_taxes_b ztb,
-		              zx_rates_b zrb,
-		              zx_accounts za,
-		              gl_code_combinations gcc
-		        WHERE zrb.tax_rate_code = 'STATE'
-		          AND ztb.tax = zrb.tax
-		          AND za.tax_account_entity_id = zrb.tax_rate_id
-		          AND ztb.tax_regime_code= zrb.tax_regime_code
-		          AND zrb.tax_regime_code in ('OD_CA_SALES_TAX')
-		          AND za.internal_organization_id =  FND_PROFILE.VALUE('ORG_ID')
+                 FROM zx_taxes_b ztb,
+                      zx_rates_b zrb,
+                      zx_accounts za,
+                      gl_code_combinations gcc
+                WHERE zrb.tax_rate_code = 'STATE'
+                  AND ztb.tax = zrb.tax
+                  AND za.tax_account_entity_id = zrb.tax_rate_id
+                  AND ztb.tax_regime_code= zrb.tax_regime_code
+                  AND zrb.tax_regime_code in ('OD_CA_SALES_TAX')
+                  AND za.internal_organization_id =  FND_PROFILE.VALUE('ORG_ID')
                           AND gcc.code_combination_id = za.tax_account_ccid;                          
                         
                         
@@ -5331,11 +5431,11 @@ AS
                      AND GCC.code_combination_id = ARLV.tax_account_ccid;*/
                      
                   --for defect 27985
-             	  SELECT segment3
-          	    INTO lc_ora_account
-	            FROM gl_code_combinations GCC
-              		 ,ar_system_parameters_all ASP		-- Changed for R12 Retrofit ar_system_parameters ASP
-          	   WHERE GCC.code_combination_id = ASP.location_tax_account
+                  SELECT segment3
+                INTO lc_ora_account
+                FROM gl_code_combinations GCC
+                     ,ar_system_parameters_all ASP      -- Changed for R12 Retrofit ar_system_parameters ASP
+               WHERE GCC.code_combination_id = ASP.location_tax_account
                      AND set_of_books_id = gn_sob_id
                      AND ASP.ORG_ID = gc_ln_orgid;  ---Added for Defect # 43851            
                      
@@ -5574,7 +5674,7 @@ AS
               INTO ln_ccid
                   ,lc_ccid_enabled_flag
               FROM gl_code_combinations GCC
-                  ,gl_ledgers     GLL													--Changed for R12 Retrofit gl_sets_of_books     GSB
+                  ,gl_ledgers     GLL                                                   --Changed for R12 Retrofit gl_sets_of_books     GSB
              WHERE GCC.segment1 = lc_ora_company
                AND GCC.segment2 = lc_ora_cost_center
                AND GCC.segment3 = lc_ora_account
@@ -5583,7 +5683,7 @@ AS
                AND GCC.segment6 = lc_ora_lob
                AND GCC.segment7 = lc_ora_future
                AND GCC.chart_of_accounts_id = GLL.chart_of_accounts_id
-               AND GLL.ledger_id = FND_PROFILE.VALUE('GL_SET_OF_BKS_ID'); 	--Changed for R12 Retrofit GSB.set_of_books_id = FND_PROFILE.VALUE('GL_SET_OF_BKS_ID');
+               AND GLL.ledger_id = FND_PROFILE.VALUE('GL_SET_OF_BKS_ID');   --Changed for R12 Retrofit GSB.set_of_books_id = FND_PROFILE.VALUE('GL_SET_OF_BKS_ID');
 
             lc_ccid_exist_flag := 'Y';
 
@@ -6851,14 +6951,14 @@ AS
                                                       FROM ra_customer_trx_all rct
                                                           ,ra_customer_trx_lines_all rctl
                                                           --,ar_vat_tax_all vat Commented for R12 upgrade QC Defect 16781
-														  ,zx_rates_b vat                                                           
+                                                          ,zx_rates_b vat                                                           
                                                      WHERE rct.trx_number = lineattr.ret_orig_order_num
                                                        AND rctl.customer_trx_id = rct.customer_trx_id
                                                        AND rctl.line_type = 'TAX'
                                                        --AND vat.vat_tax_id = rctl.vat_tax_id Commented for R12upgrade QC Defect 16781
-													   AND vat.tax_rate_id = rctl.vat_tax_id -- Added for QC Defect 16781
+                                                       AND vat.tax_rate_id = rctl.vat_tax_id -- Added for QC Defect 16781
                                                        --AND vat.tax_code = 'STATE'); Commented for QC Defect 16781
-													   AND vat.tax_rate_code = 'STATE'); -- Added for QC Defect 16781                                                       
+                                                       AND vat.tax_rate_code = 'STATE'); -- Added for QC Defect 16781                                                       
 
          FND_FILE.PUT_LINE(FND_FILE.LOG,'Number of 0$ TAX lines for GST inserted for CANADA in RA_INTERFACE_LINES which has original order reference with 0$ tax on Return Line from OM: ' || SQL%ROWCOUNT); -- Removed log, Defect#2569  -- Added GST for V2.97
 
@@ -7077,16 +7177,16 @@ AS
                                                       FROM ra_customer_trx_all rct
                                                           ,ra_customer_trx_lines_all rctl
                                                           --,ar_vat_tax_all vat
-														  ,zx_rates_b vat                                                          
+                                                          ,zx_rates_b vat                                                          
                                                      WHERE rct.trx_number = lineattr.ret_orig_order_num
                                                        AND rctl.customer_trx_id = rct.customer_trx_id
                                                        AND rctl.line_type = 'TAX'
                                                        --AND vat.vat_tax_id = rctl.vat_tax_id Commented for QC Defect 16781
-													   AND vat.tax_rate_id = rctl.vat_tax_id -- Added for QC Defect 16781
+                                                       AND vat.tax_rate_id = rctl.vat_tax_id -- Added for QC Defect 16781
                                                        --AND vat.tax_code = 'COUNTY'); Commented for QC Defect 16781
-													   AND vat.tax_rate_code = 'COUNTY'); --Added for QC Defect 16781
+                                                       AND vat.tax_rate_code = 'COUNTY'); --Added for QC Defect 16781
 
-													   
+                                                       
          FND_FILE.PUT_LINE(FND_FILE.LOG,'Number of 0$ TAX lines for PST inserted for CANADA in RA_INTERFACE_LINES which has original order reference with 0$ tax on Return Line from OM: ' || SQL%ROWCOUNT); -- Removed log,Defect#2569  -- Added GST for V2.97
 
          END IF;
