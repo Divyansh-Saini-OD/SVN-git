@@ -54,6 +54,7 @@ AS
 -- |  13.0  18-Jan-2018 Arun G            Made changes for TECZONE Defect#44139|  
 -- |  14.0  14-Nov-2018 Arun G            Made changes for Bill complete       |
 -- |  15.0  28-NOV-2019 Arun G            Made changes for Service contracts   |
+-- |  16.0  05-SEP-2019 Arun G            Made changes for Card on File
 -- +===========================================================================+
 -- +===========================================================================+
 
@@ -666,7 +667,8 @@ AS
         emv_fallback                 t_v1,  
         emv_tvr                      t_v10,
         wallet_type                  t_v2,
-        wallet_id                    t_v30
+        wallet_id                    t_v30,
+        credit_card_approval_code    t_v30
     );
 
 /* Tender Global Record Declaration */

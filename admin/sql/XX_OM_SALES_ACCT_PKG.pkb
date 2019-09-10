@@ -60,6 +60,7 @@ AS
 -- |32.0       02-JUL-2018  Shalu George       Made changes for Walmart, Rakuten and NewEgg Market Place(MPL) | 
 -- |33.0       07-JUL-2018  Suresh Naragam     Made Changes to check the payment methods from translations    |
 -- |34.0       14-Nov-2018  Arun Gannarapu     Made changes for Bill Complete|
+-- |35.0       05-SEP-2019  Arun Gannarapu     Made changes to add return auth code for card on file          |
 -- +==========================================================================================================+
     g_pkg_name  CONSTANT VARCHAR2(30) := 'XX_OM_SALES_ACCT_PKG';
 
@@ -2937,7 +2938,8 @@ AS
                      emv_fallback,
                      emv_tvr,
                      wallet_type,
-                     wallet_id)
+                     wallet_id,
+                     credit_card_approval_code)
             SELECT h.orig_sys_document_ref,
                    i.orig_sys_payment_ref,
                    h.request_id,
@@ -2976,7 +2978,8 @@ AS
                    i.emv_fallback,
                    i.emv_tvr,
                    i.wallet_type,
-                   i.wallet_id
+                   i.wallet_id,
+                   i.credit_card_approval_code
             FROM   xx_om_ret_tenders_iface_all i,
                    oe_order_headers_all h,
                    oe_order_sources s
@@ -4560,7 +4563,8 @@ AS
                     FROM   hr_all_organization_units a
                     WHERE  a.organization_id = NVL(xoh.paid_at_store_id,
                                                    ship_from_org_id)) ship_from,
-                   NULL credit_card_approval_code,
+                    --NULL credit_card_approval_code,
+                   oop.credit_card_approval_code credit_card_approval_code,
                    NULL credit_card_approval_date,
                    ooh.invoice_to_org_id customer_site_billto_id,
                    (SELECT TRUNC(actual_shipment_date)

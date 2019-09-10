@@ -128,6 +128,7 @@ AS
 -- |     41.0     14-NOV-2018  Arun G     Made changes for Bill Complete Project                                            |
 -- |     42.0     19-MAY-2019  Arun G     Made changes for Service contract project  JIRA 90510                             |  
 -- |     43.0     31-JUL-2019  Arun G     Made changes to fix Service contract project bug                                  |
+-- |     44.0     05-SEP-2019  Arun G     Made changes to for capture Authcode for Returns                                  |
 -- +========================================================================================================================+
     PROCEDURE process_current_order(
         p_order_tbl   IN  order_tbl_type,
@@ -6051,7 +6052,9 @@ AS
             g_return_tender_rec.credit_card_code(i) := lc_cc_code;
             g_return_tender_rec.credit_card_number(i) := lc_cc_number_cust_enc;
             g_return_tender_rec.IDENTIFIER(i) := lc_identifier;
-
+            g_return_tender_rec.credit_card_approval_code(i) := LTRIM(RTRIM(SUBSTR(p_order_rec.file_line,
+                                                                                 75,
+                                                                                 6)));
 
             IF lc_cc_number_enc IS NOT NULL
             THEN
@@ -6172,7 +6175,8 @@ AS
                                  || g_return_tender_rec.wallet_type(i));
                 oe_debug_pub.ADD(   'wallet id = '
                                  || g_return_tender_rec.wallet_id(i));
-
+                oe_debug_pub.ADD(   'Return Auth code = '
+                                 || g_return_tender_rec.credit_card_approval_code(i));
 
             END IF;
         END IF;
@@ -9352,6 +9356,7 @@ EXCEPTION
         g_return_tender_rec.emv_tvr.DELETE;
         g_return_tender_rec.wallet_type.DELETE;
         g_return_tender_rec.wallet_id.DELETE;
+        g_return_tender_rec.credit_card_approval_code.DELETE;
 
 /* tender record related to record 41*/   
         g_tender_rec.Orig_Sys_Document_Ref.Delete;
@@ -10144,7 +10149,8 @@ EXCEPTION
                              emv_fallback,
                              emv_tvr,
                              wallet_type,
-                             wallet_id)
+                             wallet_id,
+                             credit_card_approval_code)
                      VALUES (g_return_tender_rec.orig_sys_document_ref(i_pay),
                              g_return_tender_rec.order_source_id(i_pay),
                              g_return_tender_rec.orig_sys_payment_ref(i_pay),
@@ -10178,7 +10184,8 @@ EXCEPTION
                              g_return_tender_rec.emv_fallback(i_pay),
                              g_return_tender_rec.emv_tvr(i_pay),
                              g_return_tender_rec.wallet_type(i_pay),
-                             g_return_tender_rec.wallet_id(i_pay)
+                             g_return_tender_rec.wallet_id(i_pay),
+                             g_return_tender_rec.credit_card_approval_code(i_pay)
                              );
         EXCEPTION
             WHEN OTHERS
