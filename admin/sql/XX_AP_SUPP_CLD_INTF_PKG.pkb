@@ -1764,21 +1764,24 @@ PROCEDURE update_supplier_sites( x_ret_code 	 OUT NUMBER ,
 								 x_err_buf 		 OUT VARCHAR2
 							   )
 IS
-  p_api_version      		NUMBER;
-  p_init_msg_list    		VARCHAR2(200);
-  p_commit           		VARCHAR2(200);
-  p_validation_level 		NUMBER;
-  x_msg_count        		NUMBER;
-  x_msg_data         		VARCHAR2(200);
-  l_msg              		VARCHAR2(2000);
-  l_process_flag     		VARCHAR2(10);
+  p_api_version      		       NUMBER;
+  p_init_msg_list    		       VARCHAR2(200);
+  p_commit           		       VARCHAR2(200);
+  p_validation_level 		       NUMBER;
+  x_msg_count        		       NUMBER;
+  x_msg_data         		       VARCHAR2(200);
+  l_msg              		       VARCHAR2(2000);
+  l_process_flag     		       VARCHAR2(10);
   lr_vendor_site_rec 		ap_vendor_pub_pkg.r_vendor_site_rec_type;
   lr_existing_vendor_site_rec ap_supplier_sites_all%rowtype;
-  p_calling_prog   			VARCHAR2(200);
-  l_program_step   			VARCHAR2 (100) := '';
-  ln_msg_index_num 			NUMBER;
-  v_acct_pay                NUMBER;
-  v_prepay_cde              NUMBER;
+  p_calling_prog   		       	   VARCHAR2(200);
+  l_program_step   		       	   VARCHAR2 (100) := '';
+  ln_msg_index_num 		       	   NUMBER;
+  v_acct_pay                       NUMBER;
+  v_prepay_cde                     NUMBER;
+  l_service_tolerance_name         VARCHAR2(100);
+  l_qty_tolerance_name             VARCHAR2(100);
+  lc_fob_value                     VARCHAR2(100);
   
 CURSOR c_supplier_site
 IS
@@ -1787,6 +1790,19 @@ SELECT *
  WHERE xas.create_flag     ='N'
    AND xas.site_process_flag =gn_process_status_validated
    AND xas.request_id        = gn_request_id;
+   
+ CURSOR c_get_tolerance_name(c_cloud_tolerance VARCHAR2)
+ IS
+    SELECT LTRIM(RTRIM(tv.target_value1))
+      FROM xx_fin_translatevalues tv,
+           xx_fin_translatedefinition td
+     WHERE tv.translate_id  = td.translate_id
+       AND translation_name = 'XX_AP_CLOUD_TOLERANCES'  
+	   AND SYSDATE BETWEEN NVL(tv.start_date_active,SYSDATE) AND NVL(tv.end_date_active,SYSDATE + 1)
+       AND SYSDATE BETWEEN NVL(td.start_date_active,SYSDATE) AND NVL(td.end_date_active,SYSDATE + 1)
+	   AND tv.source_value1 = c_cloud_tolerance
+       AND tv.enabled_flag = 'Y'
+       AND td.enabled_flag = 'Y';
    
 BEGIN
   -- Assign Basic Values
@@ -1813,8 +1829,33 @@ BEGIN
         print_debug_msg(p_message=> l_program_step||'Unable to derive the supplier site information for site id:' || lr_existing_vendor_site_rec.vendor_site_id, p_force=>true);
     END;
 	
+	l_service_tolerance_name  := NULL;
+	l_qty_tolerance_name      := NULL;  
+	lc_fob_value              := NULL;     
+	
 	v_acct_pay  := get_cld_to_ebs_map(c_sup_site.accts_pay_concat_gl_segments);
     v_prepay_cde:= get_cld_to_ebs_map(c_sup_site. prepay_code_gl_segments);
+	
+	-- To get the Service Tolerance
+	OPEN c_get_tolerance_name(c_sup_site.service_tolerance);
+	FETCH c_get_tolerance_name INTO l_service_tolerance_name;
+    CLOSE c_get_tolerance_name;
+		  
+	-- To get the Quantity Tolerance
+	OPEN c_get_tolerance_name(c_sup_site.tolerance_name);
+	FETCH c_get_tolerance_name INTO l_qty_tolerance_name;
+    CLOSE c_get_tolerance_name;
+		  
+	-- To get the FOB Code
+	IF c_sup_site.fob_lookup_code = 'ORIGIN'
+	THEN 
+	     lc_fob_value := 'SHIPPING';
+	ELSIF c_sup_site.fob_lookup_code = 'DESTINATION'
+	THEN 
+	     lc_fob_value := 'RECEIVING';
+	ELSE
+	     lc_fob_value := c_sup_site.fob_lookup_code;
+	END IF;
 
     -- Assign Vendor Site Details
     lr_vendor_site_rec.vendor_site_id                 := lr_existing_vendor_site_rec.vendor_site_id;
@@ -1832,7 +1873,7 @@ BEGIN
     lr_vendor_site_rec.customer_num                   :=NVL(c_sup_site.customer_num, FND_API.G_MISS_CHAR);
     lr_vendor_site_rec.ship_via_lookup_code           :=NVL(c_sup_site.ship_via_lookup_code, FND_API.G_MISS_CHAR);
     lr_vendor_site_rec.freight_terms_lookup_code      :=NVL(c_sup_site.freight_terms_lookup_code, FND_API.G_MISS_CHAR);
-    lr_vendor_site_rec.fob_lookup_code                :=NVL(c_sup_site.fob_lookup_code, FND_API.G_MISS_CHAR);
+    lr_vendor_site_rec.fob_lookup_code                :=NVL(lc_fob_value, FND_API.G_MISS_CHAR);
     lr_vendor_site_rec.terms_date_basis               :=NVL(c_sup_site.terms_date_basis, FND_API.G_MISS_CHAR);
     lr_vendor_site_rec.pay_group_lookup_code          :=NVL(c_sup_site.pay_group_lookup_code, FND_API.G_MISS_CHAR);
     lr_vendor_site_rec.payment_priority               :=NVL(TO_NUMBER(c_sup_site.payment_priority),99);
@@ -1856,8 +1897,8 @@ BEGIN
     lr_vendor_site_rec.create_debit_memo_flag         :=NVL(c_sup_site.create_debit_memo_flag, FND_API.G_MISS_CHAR);
     lr_vendor_site_rec.supplier_notif_method          :=NVL(c_sup_site.supplier_notif_method, FND_API.G_MISS_CHAR);
     lr_vendor_site_rec.email_address                  :=NVL(c_sup_site.email_address, FND_API.G_MISS_CHAR);
-    lr_vendor_site_rec.tolerance_name                 :=NVL(c_sup_site.tolerance_name, FND_API.G_MISS_CHAR);
-    lr_vendor_site_rec.services_tolerance_name        :=NVL(c_sup_site.service_tolerance, FND_API.G_MISS_CHAR); -- Added as per Version 1.6
+    lr_vendor_site_rec.tolerance_name                 :=NVL(l_qty_tolerance_name, FND_API.G_MISS_CHAR);
+    lr_vendor_site_rec.services_tolerance_name        :=NVL(l_service_tolerance_name, FND_API.G_MISS_CHAR); -- Added as per Version 1.6
     lr_vendor_site_rec.gapless_inv_num_flag           :=NVL(c_sup_site.gapless_inv_num_flag, FND_API.G_MISS_CHAR);
     lr_vendor_site_rec.selling_company_identifier     :=NVL(c_sup_site.selling_company_identifier, FND_API.G_MISS_CHAR);
     lr_vendor_site_rec.bank_charge_bearer             :=NVL(c_sup_site.bank_charge_bearer,'D');
@@ -4798,6 +4839,22 @@ IS
      WHERE xsup_site.site_process_flag = gn_process_status_validated
        AND xsup_site.request_id          = gn_request_id
        AND create_flag                   ='Y';
+	   
+   --=================================================================
+  -- Cursor Declarations for Tolerance mapping from Cloud to EBS
+  --=================================================================	
+  CURSOR c_get_tolerance_name(c_cloud_tolerance VARCHAR2)
+  IS
+    SELECT LTRIM(RTRIM(tv.target_value1))
+      FROM xx_fin_translatevalues tv,
+           xx_fin_translatedefinition td
+     WHERE tv.translate_id  = td.translate_id
+       AND translation_name = 'XX_AP_CLOUD_TOLERANCES'  
+	   AND SYSDATE BETWEEN NVL(tv.start_date_active,SYSDATE) AND NVL(tv.end_date_active,SYSDATE + 1)
+       AND SYSDATE BETWEEN NVL(td.start_date_active,SYSDATE) AND NVL(td.end_date_active,SYSDATE + 1)
+	   AND tv.source_value1 = c_cloud_tolerance
+       AND tv.enabled_flag = 'Y'
+       AND td.enabled_flag = 'Y';
 
   CURSOR c_error
   IS
@@ -4816,15 +4873,18 @@ IS
      AND c.parent_table='AP_SUPPLIER_SITES_INT'
 	 AND d.message_name = c.reject_lookup_code;
 	
-  l_process_site_error_flag VARCHAR2(1) DEFAULT 'N';
-  l_vendor_id               NUMBER;
-  l_vendor_site_id          NUMBER;
-  l_party_site_id           NUMBER;
-  l_party_id                NUMBER;
-  l_vendor_site_code        VARCHAR2(50);
-  v_acct_pay                NUMBER;
-  v_prepay_cde              NUMBER;
-  lc_intf_ins_flag			VARCHAR2(1):='N';
+  l_process_site_error_flag     VARCHAR2(1) DEFAULT 'N';
+  l_vendor_id                   NUMBER;
+  l_vendor_site_id              NUMBER;
+  l_party_site_id               NUMBER;
+  l_party_id                    NUMBER;
+  l_vendor_site_code            VARCHAR2(50);
+  v_acct_pay                    NUMBER;
+  v_prepay_cde                  NUMBER;
+  lc_intf_ins_flag			    VARCHAR2(1):='N';
+  l_service_tolerance_name      VARCHAR2(100);
+  l_qty_tolerance_name          VARCHAR2(100);
+  lc_fob_value                  VARCHAR2(100);
 BEGIN
   --==============================================================================
   -- Default Process Status Flag as N means No Error Exists
@@ -4846,7 +4906,11 @@ BEGIN
       LOOP
         l_process_site_error_flag  := 'N';
         l_vendor_site_code         := '';
-		gc_error_msg			   :=NULL;
+		gc_error_msg			   := NULL;
+		l_service_tolerance_name   := NULL;
+		l_qty_tolerance_name       := NULL;
+		lc_fob_value               := NULL;
+		
         IF l_process_site_error_flag='N' THEN
           --==============================================================================
           -- Calling the Vendor Site Interface Id for Passing it to Interface Table
@@ -4856,6 +4920,28 @@ BEGIN
           FROM sys.dual;
           v_acct_pay  :=get_cld_to_ebs_map(l_sup_site_type(l_idx).accts_pay_concat_gl_segments);
           v_prepay_cde:=get_cld_to_ebs_map(l_sup_site_type(l_idx). PREPAY_CODE_GL_SEGMENTS);
+		  
+		  -- To get the Service Tolerance
+		  OPEN c_get_tolerance_name(l_sup_site_type(l_idx).service_tolerance);
+		  FETCH c_get_tolerance_name INTO l_service_tolerance_name;
+          CLOSE c_get_tolerance_name;
+		  
+		  -- To get the Quantity Tolerance
+		  OPEN c_get_tolerance_name(l_sup_site_type(l_idx).tolerance_name);
+		  FETCH c_get_tolerance_name INTO l_qty_tolerance_name;
+          CLOSE c_get_tolerance_name;
+		  
+		  -- To get the FOB Code
+		  IF l_sup_site_type(l_idx).fob_lookup_code = 'ORIGIN'
+		  THEN 
+		       lc_fob_value := 'SHIPPING';
+		  ELSIF l_sup_site_type(l_idx).fob_lookup_code = 'DESTINATION'
+		  THEN 
+		       lc_fob_value := 'RECEIVING';
+		  ELSE
+		       lc_fob_value := l_sup_site_type(l_idx).fob_lookup_code;
+		  END IF;
+		  
           BEGIN
             INSERT
             INTO ap_supplier_sites_int
@@ -4962,7 +5048,7 @@ BEGIN
                 TO_NUMBER(l_sup_site_type(l_idx).org_id),
                 g_process_status_new,
                 l_sup_site_type(l_idx).freight_terms_lookup_code,--freight_terms ,
-                l_sup_site_type(l_idx).fob_lookup_code,          --fob ,
+				lc_fob_value,                                    --fob ,
                 l_sup_site_type(l_idx).pay_group_lookup_code,    --pay_group_code ,
                 NVL(TO_NUMBER(l_sup_site_type(l_idx).payment_priority),99),
                 l_sup_site_type(l_idx).pay_date_basis_lookup_code ,
@@ -4972,8 +5058,8 @@ BEGIN
                 l_sup_site_type(l_idx).email_address ,
 				l_sup_site_type(l_idx).supplier_notif_method,  -- Added as per Version 2.3
                 l_sup_site_type(l_idx).primary_pay_site_flag, --primary_pay_flag
-                l_sup_site_type(l_idx).tolerance_name,
-                l_sup_site_type(l_idx).service_tolerance,
+                l_qty_tolerance_name,
+                l_service_tolerance_name,
                 UPPER(l_sup_site_type(l_idx).bill_to_location),
                 UPPER(l_sup_site_type(l_idx).ship_to_location),
                 g_user_id ,
