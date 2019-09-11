@@ -67,7 +67,7 @@ from apps.oe_order_headers_All ooha
    , apps.xx_cdh_cust_acct_ext_b xce 
    , apps.hz_cust_accounts hca 
    , apps.hz_parties hp
-   , apps.hz_customer_profiles hcp
+--   , apps.hz_customer_profiles hcp
    , apps.ra_cust_trx_types_all rctt
    , apps.ar_payment_schedules_all ar_pay 
 WHERE 1=1
@@ -78,21 +78,20 @@ AND rct.attribute14        = ooha.header_id
 AND rct.batch_source_id = rbsa.batch_source_id 
 AND xce.cust_account_id=rct.bill_to_customer_id
 AND hca.party_id = hp.party_id
-AND hca.cust_account_id = hcp.cust_account_id
-AND hcp.attribute6 IN ('B','Y')
-AND hcp.site_use_id is null
+--AND hca.cust_account_id = hcp.cust_account_id
+--AND hcp.attribute6 IN ('B','Y')
+--AND hcp.site_use_id is null
 AND rctt.cust_trx_type_id(+) = rct.cust_trx_type_id
 AND xoha.bill_comp_flag   IN( 'Y','B')
 AND NVL(xce.c_ext_attr1,'Consolidated Bill')  = 'Consolidated Bill'
 AND NVL(xce.c_ext_attr2 ,'Y')                 = 'Y'
-AND xce.attr_group_id (+)                     = 166
+AND xce.attr_group_id                      = 166
 AND xce.d_ext_attr1 <= SYSDATE 
 AND NVL(xce.d_ext_attr2,SYSDATE)  >= SYSDATE
 AND TRUNC(NVL(rct.billing_date,SYSDATE+37))>=TRUNC(SYSDATE+37)
 AND TRUNC(ooha.creation_date) <= TRUNC (TO_DATE ( :P_DATE, 'YYYY/MM/DD HH24:MI:SS')) -7
 AND hca.cust_account_id       = rct.bill_to_customer_id
 And Parent_Order_Num     IS NOT NULL
---and ooha.header_id > 1692921448
 AND ar_pay.customer_trx_id = rct.customer_trx_id
 AND ar_pay.amount_due_original = ar_pay.amount_due_remaining
 AND ar_pay.status = 'OP'
@@ -101,92 +100,8 @@ AND NOT EXISTS
   FROM apps.xx_scm_bill_signal
   WHERE 1                =1
   AND child_order_number = ooha.order_number
-  )
-UNION ALL 
-SELECT 
-	   hp.party_name CUST_NAME
-     , hca.orig_system_reference LEGACY_CUST_NAME
-     , xce.n_ext_attr2 CUST_DOC_ID
-     , xce.n_ext_attr1 MBS_DOC_ID
-     , xce.c_ext_attr14  BILLING_FREQUENCY 
-     , 'DOC_TYPE' DOC_TYPE
-	 , DECODE(xce.c_ext_attr2,'Y','Pay Doc','') ORI_PAY_DOC
-     , DECODE(xce.c_ext_attr3
-         ,'ELEC' ,'EBILL'
-         ,'PRINT', DECODE( xce.c_ext_attr4
-                         , NULL , 'CERTEGY'
-                         , 'SPL Handle'
-                         )
-         ,xce.c_ext_attr3                                      
-	     ) DELIVERY_METHOD
-     , rct.trx_number TRX_NUMBER
-      , TO_CHAR(rct.trx_date,'DD-MON-YYYY') TRX_DATE
-     , TO_CHAR(ooha.ordered_date,'DD-MON-YYYY') ORDERED_DATE
-     , TO_CHAR(rct.billing_date,'DD-MON-YYYY') BILLING_DATE
-     , rctt.name TRX_TYPE_NAME
-     , rctt.type TRX_CLASS
-     , rbsa.name BATCH_SOURCE_NAME
-	 , ar_pay.amount_due_original  AMOUNT_DUE_ORIGINAL
-	 , ar_pay.amount_due_remaining AMOUNT_DUE_REMAINING
-	 , xoha.parent_order_num PARENT_ORDER_NUM
-   , 1 X
-FROM apps.oe_order_headers_all ooha 
-     , apps.oe_order_sources oos 
-	 , apps.ra_customer_trx_all rct 
-	 , apps.ra_batch_sources_all rbsa
-     , apps.xx_om_header_attributes_all xoha 
-	 , apps.xx_cdh_cust_acct_ext_b xce 
-	 , apps.hz_cust_accounts hca 
-	 , apps.hz_parties hp
-	 , apps.hz_customer_profiles hcp
-	 --, apps.ar_cons_inv_trx_all acit
-	 --, apps.ar_cons_inv_all aci
-	 , apps.ra_cust_trx_types_all rctt
-	 --, apps.ar_batch_sources_all absa
-	 , apps.AR_PAYMENT_SCHEDULES_ALL ar_pay
-WHERE ooha.order_source_id = oos.order_source_id
-AND oos.name <> 'HED'
-AND rbsa.name = 'SALES_ACCT_US'
-AND TRUNC(NVL(rct.billing_date,SYSDATE+37))>=TRUNC(SYSDATE+37)
---AND ooha.header_id > 1692921448 
-AND xoha.header_id = ooha.header_id
-AND xoha.Bill_Comp_Flag IN ( 'Y','B')
-AND hca.cust_account_id = hcp.cust_account_id
-AND hcp.attribute6 IN ('B','Y')
-AND TO_CHAR(ooha.order_number) = (rct.interface_header_attribute1)
-AND rct.batch_source_id = rbsa.batch_source_id 
-AND xce.cust_account_id=rct.bill_to_customer_id
-AND rct.bill_to_customer_id=hca.cust_account_id
-AND hca.party_id = hp.party_id
---AND acit.trx_number = rct.trx_number
---AND aci.cons_inv_id = acit.cons_inv_id
---AND aci.status IN ('ACCEPTED','REJECTED')
-AND rctt.cust_trx_type_id(+) = rct.cust_trx_type_id
-AND NVL(xce.c_ext_attr1,'Consolidated Bill')  = 'Consolidated Bill'
-AND NVL(xce.c_ext_attr2 ,'Y')                 = 'Y'
-AND xce.attr_group_id (+)                     = 166
-AND xce.d_ext_attr1 <= SYSDATE 
-AND NVL(xce.d_ext_attr2,SYSDATE)  >= SYSDATE
-AND TRUNC(ooha.creation_date) <= TRUNC (TO_DATE ( :P_DATE, 'YYYY/MM/DD HH24:MI:SS')) -7
-AND hcp.site_use_id IS NULL
-AND ar_pay.customer_trx_id = rct.customer_trx_id 
-AND ar_pay.amount_due_original = ar_pay.amount_due_remaining
-AND ar_pay.status = 'OP'
-AND EXISTS (
-    SELECT 1 
-    FROM apps.ar_cons_inv_trx_all acit
-       , apps.ar_cons_inv_all aci
-    WHERE acit.trx_number = rct.trx_number
-    AND aci.cons_inv_id = acit.cons_inv_id
-    AND aci.customer_id = rct.bill_to_customer_id
-    AND aci.status IN ('ACCEPTED','REJECTED')
-)
-AND EXISTS (
-	SELECT 1 FROM apps.XX_SCM_BILL_SIGNAL xsb
-	WHERE xsb.child_order_number = ooha.order_number 
-	AND NVL(xsb.shipped_flag,'N') = 'N'
-)
-) a , (SELECT  
+  )) a 
+  , (SELECT  
 			 target_value1 FROM_MAIL
 			, target_value2 TO_MAIL
 			, target_value3 CC 
