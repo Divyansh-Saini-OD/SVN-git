@@ -3013,6 +3013,37 @@ IS
     AND UPPER(VENDOR_SITE_CODE) = UPPER(C_VENDOR_SITE_CODE)
     AND XASI.VENDOR_ID          =C_VENDOR_ID
     AND TO_CHAR(xasi.org_id)    =c_org_id;
+  --=================================================================
+  -- Cursor Declarations for Tolerance mapping from Cloud to EBS
+  --=================================================================	
+  CURSOR c_get_tolerance_name(c_cloud_tolerance VARCHAR2)
+  IS
+    SELECT LTRIM(RTRIM(tv.target_value1))
+      FROM xx_fin_translatevalues tv,
+           xx_fin_translatedefinition td
+     WHERE tv.translate_id  = td.translate_id
+       AND translation_name = 'XX_AP_CLOUD_TOLERANCES'  
+	   AND SYSDATE BETWEEN NVL(tv.start_date_active,SYSDATE) AND NVL(tv.end_date_active,SYSDATE + 1)
+       AND SYSDATE BETWEEN NVL(td.start_date_active,SYSDATE) AND NVL(td.end_date_active,SYSDATE + 1)
+	   AND tv.source_value1 = c_cloud_tolerance
+       AND tv.enabled_flag = 'Y'
+       AND td.enabled_flag = 'Y';
+  --=================================================================
+  -- Cursor Declarations for FOB mapping from Cloud to EBS
+  --=================================================================	
+  CURSOR c_get_fob_value(c_cloud_fob VARCHAR2)
+  IS
+    SELECT LTRIM(RTRIM(tv.target_value1))
+      FROM xx_fin_translatevalues tv,
+           xx_fin_translatedefinition td
+     WHERE tv.translate_id  = td.translate_id
+       AND translation_name = 'XX_AP_CLOUD_FOB_VALUES'  
+	   AND SYSDATE BETWEEN NVL(tv.start_date_active,SYSDATE) AND NVL(tv.end_date_active,SYSDATE + 1)
+       AND SYSDATE BETWEEN NVL(td.start_date_active,SYSDATE) AND NVL(td.end_date_active,SYSDATE + 1)
+	   AND tv.source_value1 = c_cloud_fob
+       AND tv.enabled_flag = 'Y'
+       AND td.enabled_flag = 'Y';
+
   --==========================================================================================
   -- Declaring Local variables
   --==========================================================================================
@@ -3053,6 +3084,7 @@ IS
   l_service_tolerance_name ap_tolerance_templates.tolerance_name%type;
   l_service_tolerance_cnt      NUMBER :=0;
   ln_terms_id				   NUMBER;
+  lc_fob_value                VARCHAR2(100);
 BEGIN
   l_program_step := 'START';
   print_debug_msg(p_message=> l_program_step||': assigning defaults' ,p_force=>true);
@@ -3230,9 +3262,9 @@ BEGIN
 							     l_sup_create_flag, 
 					p_force=> false
 				   );
-      --==============================================================================================================
-      -- Validating the Supplier Site - PostalCode Rename Psotal to Area
-      --==============================================================================================================
+    --==============================================================================================================
+    -- Validating the Supplier Site - PostalCode Rename Postal to Area
+    --==============================================================================================================
     IF l_sup_site_type.postal_code IS NULL THEN
         gc_error_site_status_flag    := 'Y';
         print_debug_msg(p_message=> 'Postal Code is BLANK' ,p_force=> false);
@@ -3297,10 +3329,19 @@ BEGIN
       --=============================================================================
       -- Validating Terms 
       --=============================================================================
-      IF l_sup_site_type.terms_name IS NOT NULL THEN	  
-	      OPEN c_get_term_id(xx_get_terms(l_sup_site_type.terms_name));
-         FETCH c_get_term_id INTO ln_terms_id;
-         CLOSE c_get_term_id;
+      IF l_sup_site_type.terms_name IS NOT NULL 
+	  THEN	
+
+         IF l_sup_site_type.terms_name = '0/0N0'
+         THEN
+            OPEN c_get_term_id('00');
+           FETCH c_get_term_id INTO ln_terms_id;
+           CLOSE c_get_term_id;
+         ELSE		 
+	       OPEN c_get_term_id(xx_get_terms(l_sup_site_type.terms_name));
+           FETCH c_get_term_id INTO ln_terms_id;
+           CLOSE c_get_term_id;
+		 END IF;
          IF NVL(ln_terms_id,0) = 0 THEN
             gc_error_site_status_flag := 'Y';
             print_debug_msg(p_message=> l_sup_site_type.terms_name||' Invalid  Terms' ,p_force=> true);
@@ -3312,16 +3353,29 @@ BEGIN
       -- Validating the Supplier Site - FOB Lookup value
       --=============================================================================
       l_fob_code_cnt                     := NULL;
-      IF l_sup_site_type.fob_lookup_code IS NOT NULL THEN -- Derive the FOB Code
-        l_fob_code_cnt                   := 0;
-        OPEN c_get_fnd_lookup_code_cnt('FOB', l_sup_site_type.fob_lookup_code);
-        FETCH c_get_fnd_lookup_code_cnt INTO l_fob_code_cnt;
-        CLOSE c_get_fnd_lookup_code_cnt;
-        IF l_fob_code_cnt            =0 THEN
-          gc_error_site_status_flag := 'Y';
-          print_debug_msg(p_message=> l_sup_site_type.fob_lookup_code||' Invalid FOB ' ,p_force=> true);
-		  gc_error_msg:=gc_error_msg||' ,'|| l_sup_site_type.fob_lookup_code||' Invalid FOB';
-        END IF; -- IF l_fob_code IS NULL
+      IF l_sup_site_type.fob_lookup_code IS NOT NULL 
+	  THEN -- Derive the FOB Code
+         l_fob_code_cnt                   := 0;
+		 
+	     IF l_sup_site_type.fob_lookup_code = 'ORIGIN'
+		   THEN 
+		       lc_fob_value := 'SHIPPING';
+		 ELSIF l_sup_site_type.fob_lookup_code = 'DESTINATION'
+		   THEN 
+		       lc_fob_value := 'RECEIVING';
+		 ELSE
+		       lc_fob_value := l_sup_site_type.fob_lookup_code;
+		 END IF;
+		 
+         OPEN c_get_fnd_lookup_code_cnt('FOB', lc_fob_value);
+         FETCH c_get_fnd_lookup_code_cnt INTO l_fob_code_cnt;
+         CLOSE c_get_fnd_lookup_code_cnt;
+         IF l_fob_code_cnt            =0 
+		 THEN
+            gc_error_site_status_flag := 'Y';
+            print_debug_msg(p_message=> l_sup_site_type.fob_lookup_code||' Invalid FOB ' ,p_force=> true);
+		    gc_error_msg:=gc_error_msg||' ,'|| l_sup_site_type.fob_lookup_code||' Invalid FOB';
+         END IF; -- IF l_fob_code IS NULL
       END IF;   -- IF l_sup_site_type.FOB IS NOT NULL
       --=============================================================================
       -- Validating the Supplier Site - FREIGHT_TERMS Lookup value
@@ -3356,13 +3410,19 @@ BEGIN
        --=============================================================================
       -- Validating the Supplier Site - Service Tolerance
       --=============================================================================
-      IF l_sup_site_type.service_tolerance IS NOT NULL THEN
-         l_service_tolerance_cnt := 0;
-  
-         OPEN c_get_tolerance(l_sup_site_type.service_tolerance);
+      IF l_sup_site_type.service_tolerance IS NOT NULL
+	  THEN
+        l_service_tolerance_cnt := 0;
+		 
+		OPEN c_get_tolerance_name(l_sup_site_type.service_tolerance);
+		FETCH c_get_tolerance_name INTO l_service_tolerance_name;
+        CLOSE c_get_tolerance_name;
+		
+        OPEN c_get_tolerance(l_service_tolerance_name);
         FETCH c_get_tolerance INTO l_service_tolerance_cnt;
         CLOSE c_get_tolerance;
-        IF l_service_tolerance_cnt          =0 THEN
+        IF l_service_tolerance_cnt = 0 
+		THEN
            gc_error_site_status_flag := 'Y';
            print_debug_msg(p_message=>  l_sup_site_type.service_tolerance||' Invalid Service Tolerance' ,p_force=> true);
 		   gc_error_msg:=gc_error_msg||' ,'||  l_sup_site_type.service_tolerance|| ' Invalid Service Tolerance';
@@ -3371,12 +3431,19 @@ BEGIN
       --=============================================================================
       -- Validating the Supplier Site - Invoice Tolerance
       --=============================================================================
-      IF l_sup_site_type.tolerance_name IS NOT NULL THEN
-         l_tolerance_cnt := 0;
-         OPEN c_get_tolerance(l_sup_site_type.tolerance_name);
+      IF l_sup_site_type.tolerance_name IS NOT NULL 
+	  THEN
+        l_tolerance_cnt := 0;
+		 
+		OPEN c_get_tolerance_name(l_sup_site_type.tolerance_name);
+		FETCH c_get_tolerance_name INTO l_tolerance_name;
+        CLOSE c_get_tolerance_name;
+		
+        OPEN c_get_tolerance(l_tolerance_name);
         FETCH c_get_tolerance INTO l_tolerance_cnt;
         CLOSE c_get_tolerance;
-        IF l_tolerance_cnt           =0 THEN
+        IF l_tolerance_cnt =0 
+		THEN
            gc_error_site_status_flag := 'Y';
            print_debug_msg(p_message=>  l_sup_site_type.tolerance_name||' Invalid Quantity Tolerance' ,p_force=> true);
 		   gc_error_msg:=gc_error_msg||' ,'|| l_sup_site_type.tolerance_name||' Invalid Quantity Tolerance';
