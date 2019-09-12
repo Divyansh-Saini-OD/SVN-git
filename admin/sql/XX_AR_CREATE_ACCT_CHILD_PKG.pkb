@@ -46,7 +46,9 @@ AS
    -- |5.3        02-JAN-2019  Havish K       Made Changes for Defect NAIT-75351            |
    -- |5.4        04-APR-2019  Dinesh N       Made Changes for Defect NAIT-86554            |
    -- |5.5        20-Aug-2019  Nitin Tugave   Made Changes for Defect NAIT-86554            |   
-      -- +=====================================================================================+
+   -- |5.6        09-Sep-2019  Sahithi K      NAIT-105768 - code modified to read unearned  |
+   -- |                                       account instead of unbilled account           |
+   -- +=====================================================================================+
 
    ------------------------
    -- GLOBAL VARIABLES   --
@@ -5464,7 +5466,7 @@ AS
                   ,gl_code_combinations  GCC
              WHERE RCTA.cust_trx_type_id = p_trx_type
                AND GCC.chart_of_accounts_id = gn_coa_id
-              AND RCTA.gl_id_unbilled = GCC.code_combination_id;
+              AND RCTA.gl_id_unearned = GCC.code_combination_id; --NAIT-105768 - code modified to read unearned account instead of unbilled account
          EXCEPTION
             WHEN OTHERS THEN
                FND_MESSAGE.SET_NAME('XXFIN','XX_AR_0011_CREATE_ACT_OTHERS');
