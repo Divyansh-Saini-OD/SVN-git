@@ -58,6 +58,12 @@ CREATE OR REPLACE PACKAGE BODY xx_ap_supp_cld_intf_pkg
 -- |                                             load_supp_sites                               |
 -- |  2.7    16-AUG-2019     Havish Kasina     Added Debug Messages                            |
 -- |  2.8    19-AUG-2019     Havish Kasina     Modified Custom Tolerance procedure             |
+-- |  2.9    12-SEP-2019     Havish Kasina     a. Added Tolerance and FOB mapping              |
+-- |                                           b. Added logic to handle Immediate pay term     |
+-- |                                           c. Added end_date_active in the insert script   |
+-- |                                              for table ap_suppliers_int                   |
+-- |                                           d. Added inactive_date in the insert script for |
+-- |                                              table ap_supplier_sites_int                  | 
 -- |===========================================================================================+
 AS
   /*********************************************************************
@@ -4587,6 +4593,7 @@ BEGIN
                   attribute14 ,
                   attribute15 ,
                   start_date_active ,
+				  end_date_active,
                   created_by ,
                   creation_date ,
                   last_update_date ,
@@ -4643,6 +4650,7 @@ BEGIN
                   l_supplier_type (l_idx).attribute14 ,
                   l_supplier_type (l_idx).attribute15 ,
                   SYSDATE ,
+				  NVL(TO_DATE(l_supplier_type (l_idx).end_date_active,'YYYY/MM/DD'),NULL),
                   g_user_id ,
                   SYSDATE ,
                   SYSDATE ,
@@ -5013,7 +5021,8 @@ BEGIN
                 attribute15,
                 vendor_site_code_alt,
 				duns_number,-- Added as per Version 1.9
-				bank_charge_bearer
+				bank_charge_bearer,
+				inactive_date
               )
               VALUES
               (
@@ -5085,7 +5094,8 @@ BEGIN
                 L_SUP_SITE_TYPE(L_IDX).ATTRIBUTE15,
                 l_sup_site_type(l_idx).vendor_site_code_alt,
                 l_sup_site_type(l_idx).attribute5, -- Added as per Version 1.9
-				NVL(l_sup_site_type(l_idx).bank_charge_bearer,'D')
+				NVL(l_sup_site_type(l_idx).bank_charge_bearer,'D'),
+				NVL(TO_DATE(l_sup_site_type(l_idx).inactive_date,'YYYY/MM/DD'),NULL)
               );
 			  lc_intf_ins_flag:='Y';
           EXCEPTION
