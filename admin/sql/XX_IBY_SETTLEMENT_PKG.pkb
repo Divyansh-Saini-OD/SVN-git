@@ -130,6 +130,7 @@ PACKAGE BODY      xx_iby_settlement_pkg
 	-- |47.3       14-MAR-2018 M K Pramod Kumar    Modified to derive gc_ixreserved31 to default to *ECI for SERVICE-CONTRACTS  |
 	-- |48.0       21-FEB-2019 M K Pramod Kumar    Modified  code for COF changes per NAIT-83065 |
 	-- |48.1       10-MAY-2019 M K Pramod Kumar    Modified to to derive Instance Name for LNS
+	-- |48.2       12-SEP-2019 M K Pramod Kumar    Modified for Return Mandate per NAIT-106896
 	-- +===========================================================================+
 
 		g_package_name              CONSTANT all_objects.object_name%TYPE                        := 'xx_iby_settlement_pkg';
@@ -4026,7 +4027,8 @@ PACKAGE BODY      xx_iby_settlement_pkg
 					gc_ixauthorizationnumber := gc_approval_code;
 				ELSIF gc_sale_type = g_refund
 				THEN
-					gc_ixauthorizationnumber := NULL;   -- Approval code is not specified for returns
+					--gc_ixauthorizationnumber := NULL;   -- Approval code is not specified for returns--Commented for V48.2
+					gc_ixauthorizationnumber := gc_approval_code;   --Added for V48.2
 				END IF;
 
 				xx_location_and_log(g_log,
