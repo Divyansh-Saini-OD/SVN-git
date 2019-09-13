@@ -55,7 +55,7 @@ then
    echo "Control File name is  :" [$p_control_file]
    lc_data_file="$lc_custom_top/$p_filename"
    echo "Data File Location : "$lc_data_file
-   dos2unix $lc_data_file
+   dos2unix -n $lc_data_file
    echo "dos2unix is completed"
 
    echo "=========================================================================="
@@ -100,7 +100,7 @@ then
    echo "Control File name is  :" [$p_control_file]
    lc_data_file="$lc_custom_top/$p_filename"
    echo "Data File Location : "$lc_data_file
-   dos2unix $lc_data_file
+   dos2unix -n $lc_data_file
    echo "dos2unix is completed"
    
    echo "=========================================================================="
@@ -145,7 +145,7 @@ then
    echo "Control File name is  :" [$p_control_file]
    lc_data_file="$lc_custom_top/$p_filename"
    echo "Data File Location : "$lc_data_file
-   dos2unix $lc_data_file
+   dos2unix -n $lc_data_file
    echo "dos2unix is completed"
    
    echo "=========================================================================="
@@ -190,7 +190,7 @@ then
    echo "Control File name is  :" [$p_control_file]
    lc_data_file="$lc_custom_top/$p_filename"
    echo "Data File Location : "$lc_data_file
-   dos2unix $lc_data_file
+   dos2unix -n $lc_data_file
    echo "dos2unix is completed"
    
    echo "=========================================================================="
@@ -235,7 +235,7 @@ then
    echo "Control File name is  :" [$p_control_file]
    lc_data_file="$lc_custom_top/$p_filename"
    echo "Data File Location : "$lc_data_file
-   dos2unix $lc_data_file
+   dos2unix -n $lc_data_file
    echo "dos2unix is completed"
    
    echo "=========================================================================="
@@ -280,7 +280,7 @@ then
    echo "Control File name is  :" [$p_control_file]
    lc_data_file="$lc_custom_top/$p_filename"
    echo "Data File Location : "$lc_data_file
-   dos2unix $lc_data_file
+   dos2unix -n $lc_data_file
    echo "dos2unix is completed"
    
    echo "=========================================================================="
