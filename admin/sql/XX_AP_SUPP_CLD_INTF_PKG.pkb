@@ -4100,8 +4100,8 @@ IS
       hz_parties a
     WHERE a.party_name    =p_bank_name
     AND b.bank_party_id   =a.party_id
-    -- AND b.bank_branch_name=p_branch
-	AND b.branch_number=p_branch 
+    AND b.bank_branch_name=p_branch
+	-- AND b.branch_number=p_branch 
     AND b.country         =p_country
     AND SYSDATE BETWEEN b.start_date AND NVL(end_date,sysdate+1);
   --==========================================================================================
