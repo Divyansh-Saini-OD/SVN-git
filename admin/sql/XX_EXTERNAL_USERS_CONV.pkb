@@ -33,7 +33,9 @@ AS
 -- |1.6       26-Feb-2019 Havish Kasina      Made code changes for Lift and Shift to extract AOPS       |
 -- |                                         External users information from the new custom table       |
 -- |                                         XX_CDH_AOPS_EXTERNAL_USERS                                 |  
--- |1.7       27-JAN-2019 BIAS               Changed to replace user_lock to dbms_lock                                              |                
+-- |1.7       27-JAN-2019 BIAS               Changed to replace user_lock to dbms_lock                  |
+-- |1.8       17-SEP-2019 Sahithi Kunuru     NAIT-103309 POPULATING LAST_UPDATE_DATE column             |
+-- |                                         in XX_EXTERNAL_USERS_STG                                   |
 -- +====================================================================================================+
 */
 
@@ -422,6 +424,7 @@ AS
                            , LOAD_STATUS
                            , BATCH_ID
                            , CREATION_DATE
+                           , LAST_UPDATE_DATE -- NAIT-103309 POPULATING LAST_UPDATE_DATE column in XX_EXTERNAL_USERS_STG
                            , EXT_UPD_TIMESTAMP
                            , PROCESS_NAME
                            )
@@ -442,6 +445,7 @@ AS
                            , ext.ORIG_SYSTEM
                            , ext.LOAD_STATUS
                            , ext.BATCH_ID
+                           , to_date(sysdate,'DD-MON-RRRR HH24:MI:SS')
                            , to_date(sysdate,'DD-MON-RRRR HH24:MI:SS')
                            , ext.PWD_LAST_CHANGE
                            , ext.PROCESS_NAME
