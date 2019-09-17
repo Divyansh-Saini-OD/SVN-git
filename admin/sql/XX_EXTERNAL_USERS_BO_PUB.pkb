@@ -53,6 +53,8 @@ AS
 -- |          30-Sep-2008 Kathirvel.P        Changed the code to set the apps context for ODCRMBPEL if  |
 -- |                                         the context is missing                                     |
 -- |2.0       22-OCT-2015 Manikant Kasu      Webuser Password Sync Changes                              |
+-- |2.1       17-SEP-2019 Sahithi Kunuru     NAIT-103309 Commented logic to update password regardless  |
+-- |                                         of process_name UpdateExtUserPwd /SaveiReceivables         |
 -- +====================================================================================================+
 */
 
@@ -513,7 +515,7 @@ PROCEDURE log_error     ( p_error_pkg      IN  VARCHAR2
                    WHERE  1 = 1 
                      and  x.userid = p_userid
                      --and  record_flag = 'E'  -- commented - we need to get latest password, when user updates multiple times, the record_flag will be U
-                     and  process_name='UpdateExtUserPwd'
+                     --and  process_name='UpdateExtUserPwd' --commented as it should pick records of SaveiReceivables NAIT-103309
                   )
             where rank_1=1
             ;
@@ -599,7 +601,7 @@ PROCEDURE log_error     ( p_error_pkg      IN  VARCHAR2
                       FROM  xx_external_users_stg x
                      WHERE  1 = 1 
                        and  x.userid = p_userid
-                       and  process_name='UpdateExtUserPwd'
+                      -- and  process_name='UpdateExtUserPwd'--commented as it should pick records of SaveiReceivables NAIT-103309
                     )
              where rank_1=1
             ;
