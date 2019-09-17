@@ -46,9 +46,7 @@ AS
    -- |5.3        02-JAN-2019  Havish K       Made Changes for Defect NAIT-75351            |
    -- |5.4        04-APR-2019  Dinesh N       Made Changes for Defect NAIT-86554            |
    -- |5.5        20-Aug-2019  Nitin Tugave   Made Changes for Defect NAIT-86554            |   
-   -- |5.6        09-Sep-2019  Sahithi K      NAIT-105768 - code modified to read unearned  |
-   -- |                                       account instead of unbilled account           |
-   -- +=====================================================================================+
+      -- +=====================================================================================+
 
    ------------------------
    -- GLOBAL VARIABLES   --
@@ -1324,8 +1322,7 @@ AS
                       xx_om_header_attributes_all xoha
                  WHERE ooh.order_number = lcu_process_interface_lines.sales_order
                  -- AND parent_order_num     IS NOT NULL -- Commented for Defect NAIT-75351
-				   AND SPC_CARD_NUMBER IS NOT NULL -- Added for NAIT-86554 NITIN
-                   AND (xoha.bill_comp_flag IN ('B','Y') OR (ln_trx_num_len =10 AND ln_bill_comp_check_count >0)) -- Added for Defect NAIT-75351
+                   AND (xoha.bill_comp_flag IN ('B','Y') OR (ln_trx_num_len =10 AND ln_bill_comp_check_count >0 AND SPC_CARD_NUMBER IS NOT NULL )) -- Added for Defect NAIT-75351
                    AND ooh.header_id      = xoha.header_id
                    AND ROWNUM        <2;       
                 EXCEPTION
@@ -5466,7 +5463,7 @@ AS
                   ,gl_code_combinations  GCC
              WHERE RCTA.cust_trx_type_id = p_trx_type
                AND GCC.chart_of_accounts_id = gn_coa_id
-              AND RCTA.gl_id_unearned = GCC.code_combination_id; --NAIT-105768 - code modified to read unearned account instead of unbilled account
+              AND RCTA.gl_id_unbilled = GCC.code_combination_id;
          EXCEPTION
             WHEN OTHERS THEN
                FND_MESSAGE.SET_NAME('XXFIN','XX_AR_0011_CREATE_ACT_OTHERS');
