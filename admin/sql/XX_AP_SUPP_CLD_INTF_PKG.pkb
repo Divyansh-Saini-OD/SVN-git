@@ -64,6 +64,11 @@ CREATE OR REPLACE PACKAGE BODY xx_ap_supp_cld_intf_pkg
 -- |                                              for table ap_suppliers_int                   |
 -- |                                           d. Added inactive_date in the insert script for |
 -- |                                              table ap_supplier_sites_int                  | 
+-- |  3.0    19-SEP-2019     Havish Kasina     a. Added hold_reason field in ap_suppliers_int  |
+-- |                                              table                                        |
+-- |                                           b. Added hz_party_site_v2pub.update_party_site  |
+-- |                                              api to inactivate the party site when suppli-|
+-- |                                              er site gets inactive                        |
 -- |===========================================================================================+
 AS
   /*********************************************************************
@@ -1778,8 +1783,8 @@ IS
   x_msg_data         		       VARCHAR2(200);
   l_msg              		       VARCHAR2(2000);
   l_process_flag     		       VARCHAR2(10);
-  lr_vendor_site_rec 		ap_vendor_pub_pkg.r_vendor_site_rec_type;
-  lr_existing_vendor_site_rec ap_supplier_sites_all%rowtype;
+  lr_vendor_site_rec 		       ap_vendor_pub_pkg.r_vendor_site_rec_type;
+  lr_existing_vendor_site_rec      ap_supplier_sites_all%rowtype;
   p_calling_prog   		       	   VARCHAR2(200);
   l_program_step   		       	   VARCHAR2 (100) := '';
   ln_msg_index_num 		       	   NUMBER;
@@ -1788,6 +1793,14 @@ IS
   l_service_tolerance_name         VARCHAR2(100);
   l_qty_tolerance_name             VARCHAR2(100);
   lc_fob_value                     VARCHAR2(100);
+  l_party_site_rec                 hz_party_site_v2pub.PARTY_SITE_REC_TYPE;
+  ln_obj_num                       NUMBER;
+  lc_return_status                 VARCHAR2(1);
+  ln_msg_count                     NUMBER;
+  lc_msg_data                      VARCHAR2(2000);
+  ln_user_id                       NUMBER;
+  ln_responsibility_id             NUMBER;
+  ln_responsibility_appl_id        NUMBER;
   
 CURSOR c_supplier_site
 IS
@@ -1893,7 +1906,6 @@ BEGIN
     lr_vendor_site_rec.hold_future_payments_flag      :=NVL(c_sup_site.hold_future_payments_flag, FND_API.G_MISS_CHAR);
     lr_vendor_site_rec.hold_unmatched_invoices_flag   :=NVL(c_sup_site.hold_unmatched_invoices_flag, FND_API.G_MISS_CHAR);
     lr_vendor_site_rec.hold_reason                    :=NVL(c_sup_site.hold_reason, FND_API.G_MISS_CHAR);
-    lr_vendor_site_rec.hold_reason                    :=NVL(c_sup_site.purchasing_hold_reason, FND_API.G_MISS_CHAR);
     lr_vendor_site_rec.tax_reporting_site_flag        :=NVL(c_sup_site.tax_reporting_site_flag, FND_API.G_MISS_CHAR);
     lr_vendor_site_rec.exclude_freight_from_discount  :=NVL(c_sup_site.exclude_freight_from_discount, FND_API.G_MISS_CHAR);
     lr_vendor_site_rec.pay_on_code                    :=NVL(c_sup_site.pay_on_code, FND_API.G_MISS_CHAR);
@@ -1971,7 +1983,83 @@ BEGIN
       l_msg         :='';
     END IF;
     print_debug_msg(p_message=> l_program_step||'l_process_flag '||l_process_flag, p_force=>true);
-
+	
+	/* Added as per Version 3.0 */
+	IF lr_vendor_site_rec.inactive_date IS NOT NULL
+	THEN
+	    BEGIN
+          SELECT user_id,
+                 responsibility_id,
+                 responsibility_application_id
+            INTO ln_user_id,                      
+                 ln_responsibility_id,            
+                 ln_responsibility_appl_id
+            FROM fnd_user_resp_groups 
+           WHERE user_id=(SELECT user_id 
+                            FROM fnd_user 
+                           WHERE user_name='ODCDH')
+             AND responsibility_id=(SELECT responsibility_id 
+                                      FROM FND_RESPONSIBILITY 
+                                     WHERE responsibility_key = 'XX_US_CNV_CDH_CONVERSION');   -- need to confirm
+        EXCEPTION
+        WHEN OTHERS 
+        THEN
+			print_debug_msg(p_message=> l_program_step||'Exception in WHEN OTHERS for SET_CONTEXT_ERROR: '||SQLERRM, p_force=>true);
+        END;
+		
+		BEGIN
+		  SELECT party_site_id, 
+				 party_site_number,
+				 object_version_number,
+                 'I'				 
+			INTO l_party_site_rec.party_site_id,
+			     l_party_site_rec.party_site_number,
+                 l_party_site_rec.status,
+                 ln_obj_num				 
+            FROM hz_party_sites A
+           WHERE 1 =1 
+             AND party_site_id = lr_existing_vendor_site_rec.party_site_id;
+		
+		EXCEPTION
+		  WHEN OTHERS
+		  THEN
+		      print_debug_msg(p_message=> l_program_step||'Unable to derive the party site information for site id:' || lr_existing_vendor_site_rec.vendor_site_id, p_force=>true);
+        END;
+        
+		FND_GLOBAL.apps_initialize( ln_user_id,
+                                    ln_responsibility_id,
+                                    ln_responsibility_appl_id
+                                  );
+		lc_return_status := NULL;
+		ln_msg_count     := NULL;
+		lc_msg_data      := NULL;
+		-------------------------Calling Party Site API
+		hz_party_site_v2pub.update_party_site( p_init_msg_list         =>  FND_API.G_FALSE
+                                             , p_party_site_rec        =>  l_party_site_rec
+                                             , p_object_version_number =>  ln_obj_num
+                                             , x_return_status         =>  lc_return_status
+                                             , x_msg_count             =>  ln_msg_count
+                                             , x_msg_data              =>  lc_msg_data
+                                             ) ;
+											 
+		IF lc_return_status = fnd_api.g_ret_sts_success 
+        THEN
+           print_debug_msg(p_message=> l_program_step||'Update of Party Site is Successful ');
+        ELSE
+           print_debug_msg(p_message=> l_program_step||'Update of Party Site got failed:'||lc_msg_data);
+           IF ln_msg_count > 0 
+            THEN
+                print_debug_msg(p_message=> l_program_step||'Error while updating .. ');
+                FOR counter IN 1..ln_msg_count
+                LOOP
+                      print_debug_msg(p_message=> l_program_step||'Error - '|| FND_MSG_PUB.Get(counter, FND_API.G_TRUE));
+                END LOOP;
+                FND_MSG_PUB.Delete_Msg;
+           END IF;
+        END IF;
+        print_debug_msg(p_message=> l_program_step||'Update Party Site Return Status:' || lc_return_status);	
+	END IF;
+	
     BEGIN
       UPDATE xx_ap_cld_supp_sites_stg xas
          SET xas.site_process_flag   =DECODE (l_process_flag,'Y',gn_process_status_imported ,'E',gn_process_status_imp_fail),
@@ -5010,19 +5098,37 @@ BEGIN
                 attribute4 ,
                 attribute5 ,
                 attribute6 ,
-                ATTRIBUTE7 ,
+                attribute7 ,
                 attribute8 ,
                 attribute9 ,
                 attribute10 ,
                 attribute11 ,
                 attribute12 ,
-                ATTRIBUTE13 ,
+                attribute13 ,
                 attribute14 ,
                 attribute15,
                 vendor_site_code_alt,
 				duns_number,-- Added as per Version 1.9
 				bank_charge_bearer,
-				inactive_date
+				inactive_date,
+				pcard_site_flag,               -- Added as per Version 3.0
+				customer_num,                  -- Added as per Version 3.0
+				ship_via_lookup_code,          -- Added as per Version 3.0
+				invoice_amount_limit,          -- Added as per Version 3.0
+				hold_future_payments_flag,     -- Added as per Version 3.0
+				hold_unmatched_invoices_flag,  -- Added as per Version 3.0
+				hold_reason,                   -- Added as per Version 3.0
+				exclude_freight_from_discount, -- Added as per Version 3.0
+				pay_on_code,                   -- Added as per Version 3.0
+				pay_on_receipt_summary_code,   -- Added as per Version 3.0
+				country_of_origin_code,        -- Added as per Version 3.0
+				create_debit_memo_flag,        -- Added as per Version 3.0
+				gapless_inv_num_flag,          -- Added as per Version 3.0
+				selling_company_identifier,    -- Added as per Version 3.0
+				vat_code,                      -- Added as per Version 3.0
+				vat_registration_num,          -- Added as per Version 3.0
+				remit_advice_delivery_method,  -- Added as per Version 3.0
+				remittance_email               -- Added as per Version 3.0
               )
               VALUES
               (
@@ -5089,13 +5195,31 @@ BEGIN
                 NULL ,
                 NULL ,
                 NULL ,
-                l_sup_site_type(l_idx).ATTRIBUTE13 ,
+                l_sup_site_type(l_idx).attribute13 ,
                 l_sup_site_type(l_idx).attribute14 ,
-                L_SUP_SITE_TYPE(L_IDX).ATTRIBUTE15,
+                L_SUP_SITE_TYPE(L_IDX).attribute15,
                 l_sup_site_type(l_idx).vendor_site_code_alt,
                 l_sup_site_type(l_idx).attribute5, -- Added as per Version 1.9
 				NVL(l_sup_site_type(l_idx).bank_charge_bearer,'D'),
-				NVL(TO_DATE(l_sup_site_type(l_idx).inactive_date,'YYYY/MM/DD'),NULL)
+				NVL(TO_DATE(l_sup_site_type(l_idx).inactive_date,'YYYY/MM/DD'),NULL),
+				l_sup_site_type(l_idx).pcard_site_flag,               -- Added as per Version 3.0
+				l_sup_site_type(l_idx).customer_num,                  -- Added as per Version 3.0
+				l_sup_site_type(l_idx).ship_via_lookup_code,          -- Added as per Version 3.0
+				l_sup_site_type(l_idx).invoice_amount_limit,          -- Added as per Version 3.0
+				l_sup_site_type(l_idx).hold_future_payments_flag,     -- Added as per Version 3.0
+				l_sup_site_type(l_idx).hold_unmatched_invoices_flag,  -- Added as per Version 3.0
+				l_sup_site_type(l_idx).hold_reason,                   -- Added as per Version 3.0
+				l_sup_site_type(l_idx).exclude_freight_from_discount, -- Added as per Version 3.0
+				l_sup_site_type(l_idx).pay_on_code,                   -- Added as per Version 3.0
+				l_sup_site_type(l_idx).pay_on_receipt_summary_code,   -- Added as per Version 3.0
+				l_sup_site_type(l_idx).country_of_origin_code,        -- Added as per Version 3.0
+				l_sup_site_type(l_idx).create_debit_memo_flag,        -- Added as per Version 3.0
+				l_sup_site_type(l_idx).gapless_inv_num_flag,          -- Added as per Version 3.0
+				l_sup_site_type(l_idx).selling_company_identifier,    -- Added as per Version 3.0
+				l_sup_site_type(l_idx).vat_code,                      -- Added as per Version 3.0
+				l_sup_site_type(l_idx).vat_registration_num,          -- Added as per Version 3.0
+				l_sup_site_type(l_idx).remit_advice_delivery_method,  -- Added as per Version 3.0
+				l_sup_site_type(l_idx).remittance_email               -- Added as per Version 3.0
               );
 			  lc_intf_ins_flag:='Y';
           EXCEPTION
