@@ -69,6 +69,8 @@ CREATE OR REPLACE PACKAGE BODY xx_ap_supp_cld_intf_pkg
 -- |                                           b. Added hz_party_site_v2pub.update_party_site  |
 -- |                                              api to inactivate the party site when suppli-|
 -- |                                              er site gets inactive                        |
+-- |  3.1    23-SEP-2019     Havish Kasina     a. Added a new procedure to create and update   |
+-- |                                              the address contact for the Sites            |
 -- |===========================================================================================+
 AS
   /*********************************************************************
@@ -1762,10 +1764,10 @@ EXCEPTION
 END update_supplier;
 
 --+============================================================================+
---| Name          : udpate_records for Supplier SIte                                          |
---| Description   : This procedure will update supplier Site details using API  |
+--| Name          : update_supplier_sites                                      |
+--| Description   : This procedure will update supplier Site details using API |
 --|                                                                            |
---| Parameters    : p_vendor_is                            |
+--| Parameters    :                                                            |
 --|                                                                            |
 --| Returns       : N/A                                                        |
 --|                                                                            |
@@ -1983,6 +1985,7 @@ BEGIN
       l_msg         :='';
     END IF;
     print_debug_msg(p_message=> l_program_step||'l_process_flag '||l_process_flag, p_force=>true);
+	print_debug_msg(p_message=> l_program_step||'lr_vendor_site_rec.inactive_date '||lr_vendor_site_rec.inactive_date, p_force=>true);
 	
 	/* Added as per Version 3.0 */
 	IF lr_vendor_site_rec.inactive_date IS NOT NULL
@@ -2007,6 +2010,7 @@ BEGIN
 			print_debug_msg(p_message=> l_program_step||'Exception in WHEN OTHERS for SET_CONTEXT_ERROR: '||SQLERRM, p_force=>true);
         END;
 		
+		print_debug_msg(p_message=> l_program_step||'To fetch the Party Site Information', p_force=>true);
 		BEGIN
 		  SELECT party_site_id, 
 				 party_site_number,
@@ -2014,8 +2018,8 @@ BEGIN
                  'I'				 
 			INTO l_party_site_rec.party_site_id,
 			     l_party_site_rec.party_site_number,
-                 l_party_site_rec.status,
-                 ln_obj_num				 
+                 ln_obj_num,
+                 l_party_site_rec.status				 
             FROM hz_party_sites A
            WHERE 1 =1 
              AND party_site_id = lr_existing_vendor_site_rec.party_site_id;
@@ -2041,23 +2045,24 @@ BEGIN
                                              , x_msg_count             =>  ln_msg_count
                                              , x_msg_data              =>  lc_msg_data
                                              ) ;
-											 
+		COMMIT;
+		
 		IF lc_return_status = fnd_api.g_ret_sts_success 
         THEN
-           print_debug_msg(p_message=> l_program_step||'Update of Party Site is Successful ');
+           print_debug_msg(p_message=> l_program_step||'Update of Party Site is Successful ', p_force=>true);
         ELSE
-           print_debug_msg(p_message=> l_program_step||'Update of Party Site got failed:'||lc_msg_data);
+           print_debug_msg(p_message=> l_program_step||'Update of Party Site got failed:'||lc_msg_data, p_force=>true);
            IF ln_msg_count > 0 
             THEN
-                print_debug_msg(p_message=> l_program_step||'Error while updating .. ');
+                print_debug_msg(p_message=> l_program_step||'Error while updating .. ', p_force=>true);
                 FOR counter IN 1..ln_msg_count
                 LOOP
-                      print_debug_msg(p_message=> l_program_step||'Error - '|| FND_MSG_PUB.Get(counter, FND_API.G_TRUE));
+                      print_debug_msg(p_message=> l_program_step||'Error - '|| FND_MSG_PUB.Get(counter, FND_API.G_TRUE), p_force=>true);
                 END LOOP;
                 FND_MSG_PUB.Delete_Msg;
            END IF;
         END IF;
-        print_debug_msg(p_message=> l_program_step||'Update Party Site Return Status:' || lc_return_status);	
+        print_debug_msg(p_message=> l_program_step||'Update Party Site Return Status:' || lc_return_status, p_force=>true);	
 	END IF;
 	
     BEGIN
@@ -2083,17 +2088,17 @@ EXCEPTION
     x_return_status := 'E';
     x_err_buf       := 'In exception for procedure update_Supplier' ;
 END update_supplier_sites;
---+============================================================================+
---| Name          :Update_supplier_contact for Supplier                                     |
---| Description   : This procedure will update supplier conatct details using API  |
---|                                                                            |
---| Parameters    :x_ret_code OUT NUMBER ,
---|                 x_return_status OUT VARCHAR2 ,
---|                 x_err_buf OUT VARCHAR2                           |
---|                                                                            |
---| Returns       : N/A                                                        |
---|                                                                            |
---+============================================================================+
+--+==============================================================================+
+--| Name          :Update_supplier_contact for Supplier                          |
+--| Description   : This procedure will update supplier conatct details using API|
+--|                                                                              |
+--| Parameters    : x_ret_code OUT NUMBER ,                                      |
+--|                 x_return_status OUT VARCHAR2 ,                               |
+--|                 x_err_buf OUT VARCHAR2                                       |
+--|                                                                              |
+--| Returns       : N/A                                                          |
+--|                                                                              |
+--+==============================================================================+
 PROCEDURE update_supplier_contact( x_ret_code 		OUT NUMBER ,
 								   x_return_status 	OUT VARCHAR2 ,
 								   x_err_buf 		OUT VARCHAR2 
@@ -2358,6 +2363,483 @@ EXCEPTION
     fnd_file.put_line(fnd_file.LOG,SQLCODE||','||SQLERRM);
 END update_supplier_contact;
 --+============================================================================+
+--| Name          : update_address_contact                                     |
+--| Description   : This procedure will update address contact point using API |
+--|                                                                            |
+--| Parameters    :                                                            |
+--|                                                                            |
+--| Returns       : N/A                                                        |
+--+============================================================================+
+PROCEDURE update_address_contact( x_ret_code 	     OUT NUMBER ,
+								  x_return_status    OUT VARCHAR2 ,
+								  x_err_buf 		 OUT VARCHAR2
+							    )
+IS
+  p_api_version      		       NUMBER;
+  p_init_msg_list    		       VARCHAR2(200);
+  p_commit           		       VARCHAR2(200);
+  p_validation_level 		       NUMBER;
+  l_msg              		       VARCHAR2(2000);
+  l_process_flag     		       VARCHAR2(10);
+  lr_existing_vendor_site_rec      ap_supplier_sites_all%rowtype;
+  p_calling_prog   		       	   VARCHAR2(200);
+  l_program_step   		       	   VARCHAR2 (100) := '';
+  ln_msg_index_num 		       	   NUMBER; 
+  lr_contact_point_rec             hz_contact_point_v2pub.contact_point_rec_type;
+  lr_edi_rec                       hz_contact_point_v2pub.edi_rec_type;
+  lr_email_rec                     hz_contact_point_v2pub.email_rec_type;
+  lr_phone_rec                     hz_contact_point_v2pub.phone_rec_type;
+  lr_telex_rec                     hz_contact_point_v2pub.telex_rec_type;
+  lr_web_rec                       hz_contact_point_v2pub.web_rec_type;
+  x_msg_count                      NUMBER;
+  x_msg_data                       VARCHAR2(2000);
+  ln_user_id                       NUMBER;
+  ln_responsibility_id             NUMBER;
+  ln_responsibility_appl_id        NUMBER;
+  ln_object_version_number         NUMBER :=1;      
+  x_contact_point_id               NUMBER;
+  
+  CURSOR c_supplier_site
+  IS
+    SELECT *
+      FROM xx_ap_cld_supp_sites_stg xas
+     WHERE 1 =1 
+       AND xas.site_process_flag = gn_process_status_imported
+       AND xas.request_id        = gn_request_id
+       AND (   xas.fax_area_code IS NOT NULL 
+	        OR xas.fax IS NOT NULL 
+			OR xas.email_address IS NOT NULL 
+	        OR xas.phone_number IS NOT NULL 
+	        OR xas.phone_area_code IS NOT NULL);
+   
+  CURSOR c_contact_details(c_party_site_id NUMBER)
+  IS
+    SELECT hps.party_site_id,
+           phone.object_version_number phone_obj_version,
+           email.object_version_number email_obj_version,
+           fax.object_version_number fax_obj_version,
+           phone.contact_point_id phone_cont_point_id,
+           email.contact_point_id email_cont_point_id,
+           fax.contact_point_id fax_cont_point_id,
+           hps.party_site_name      AS address_name,
+           hzl.address1             AS loc_address1,
+           hzl.address2             AS loc_address2,
+           hzl.address3             AS loc_address3,
+           hzl.city                 AS loc_city,
+           hzl.county               AS loc_county,
+           hzl.state                AS loc_state,
+           hzl.province             AS loc_province,
+           hzl.postal_code          AS loc_postal_code,
+           hzl.country              AS loc_country,
+           fvl.territory_short_name AS country_name ,
+           hzl.address4             AS loc_address4,
+           email.email_address,
+           email.contact_point_type AS email_contact_point_type,
+           phone.raw_phone_number AS phone_number,
+           phone.contact_point_type AS phone_contact_point_type,
+           fax.raw_phone_number   AS fax_number,
+           fax.contact_point_type AS fax_contact_point_type
+      FROM hz_party_sites hps,
+           hz_locations hzl,
+           fnd_territories_vl fvl,
+           hz_contact_points email,
+           hz_contact_points phone,
+           hz_contact_points fax
+     WHERE 1 = 1 
+       -- AND hps.status     = 'A'
+       AND hps.party_site_id = c_party_site_id
+       AND hzl.country                 = fvl.territory_code
+       AND email.owner_table_id(+)     = hps.party_site_id
+       AND email.owner_table_name(+)   = 'HZ_PARTY_SITES'
+       AND email.status(+)             = 'A'
+       AND email.contact_point_type(+) = 'EMAIL'
+       AND email.primary_flag(+)       = 'Y'
+       AND phone.owner_table_id(+)     = hps.party_site_id
+       AND phone.owner_table_name(+)   = 'HZ_PARTY_SITES'
+       AND phone.status(+)             = 'A'
+       AND phone.contact_point_type(+) = 'PHONE'
+       AND phone.phone_line_type (+)   = 'GEN'
+       AND phone.primary_flag(+)       = 'Y'
+       AND fax.owner_table_id(+)       = hps.party_site_id
+       AND fax.owner_table_name(+)     = 'HZ_PARTY_SITES'
+       AND fax.status(+)               = 'A'
+       AND fax.contact_point_type(+)   = 'PHONE'
+       AND fax.phone_line_type (+)     = 'FAX'
+       AND hps.location_id             = hzl.location_id;
+   
+BEGIN
+  -- Assign Basic Values
+  print_debug_msg(p_message=> 'Begin Update Supplier Site Address Contact Procedure', p_force=>true);
+  p_api_version      := 1.0;
+  p_init_msg_list    := fnd_api.g_false;
+  p_commit           := fnd_api.g_false;
+  p_validation_level := fnd_api.g_valid_level_full;
+  p_calling_prog     := 'XXCUSTOM';
+  l_program_step     := 'START';
+  
+  BEGIN
+       SELECT user_id,
+              responsibility_id,
+              responsibility_application_id
+         INTO ln_user_id,                      
+              ln_responsibility_id,            
+              ln_responsibility_appl_id
+         FROM fnd_user_resp_groups 
+        WHERE user_id=(SELECT user_id 
+                         FROM fnd_user 
+                        WHERE user_name = 'ODCDH')
+          AND responsibility_id=(SELECT responsibility_id 
+                                   FROM fnd_responsibility 
+                                  WHERE responsibility_key = 'XX_US_CNV_CDH_CONVERSION'); 
+  EXCEPTION
+       WHEN OTHERS 
+       THEN
+			print_debug_msg(p_message=> l_program_step||'Exception in WHEN OTHERS for SET_CONTEXT_ERROR: '||SQLERRM, p_force=>true);
+  END;
+
+  fnd_global.apps_initialize( ln_user_id,
+                              ln_responsibility_id,
+                              ln_responsibility_appl_id
+                            );
+  fnd_global.set_nls_context('AMERICAN');
+  
+  FOR c_sup_site IN c_supplier_site
+  LOOP
+    print_debug_msg(p_message=> 'Address Contact for the Site : '|| c_sup_site.vendor_site_code, p_force=>true);
+	print_debug_msg(p_message=> 'Email Address : '|| c_sup_site.email_address, p_force=>true);
+	print_debug_msg(p_message=> 'Phone Area Code : '|| c_sup_site.phone_area_code, p_force=>true);
+	print_debug_msg(p_message=> 'Phone Number : '|| c_sup_site.phone_number, p_force=>true);
+	print_debug_msg(p_message=> 'Fax Area Code : '|| c_sup_site.fax_area_code, p_force=>true);
+	print_debug_msg(p_message=> 'Fax Number : '|| c_sup_site.fax, p_force=>true);
+    BEGIN
+      SELECT *
+        INTO lr_existing_vendor_site_rec
+        FROM ap_supplier_sites_all assa
+       WHERE assa.vendor_site_code = c_sup_site.vendor_site_code;
+	   
+    EXCEPTION
+      WHEN OTHERS THEN
+        print_debug_msg(p_message=> l_program_step||'Unable to derive the supplier site information for site id:' || lr_existing_vendor_site_rec.vendor_site_id, p_force=>true);
+    END;
+	
+	FOR c_sup_contact IN c_contact_details(lr_existing_vendor_site_rec.party_site_id)
+	LOOP
+	    print_debug_msg(p_message=> 'lr_existing_vendor_site_rec.party_site_id : '|| lr_existing_vendor_site_rec.party_site_id, p_force=>true); 
+		-- Initializing the Mandatory API parameters
+	    -- Update Email Address
+	    IF c_sup_site.email_address IS NOT NULL
+	    THEN
+			print_debug_msg(p_message=> 'c_sup_site.email_address: '|| c_sup_site.email_address, p_force=>true);
+		    IF c_sup_contact.email_cont_point_id IS NOT NULL
+			THEN
+			    print_debug_msg(p_message=> 'Update the EMAIL Address Contact for the Site: '|| c_sup_site.vendor_site_code, p_force=>true);
+	            lr_contact_point_rec := NULL;
+		        lr_phone_rec := NULL;
+		        lr_email_rec := NULL;
+	            lr_contact_point_rec.owner_table_id         := lr_existing_vendor_site_rec.party_site_id;
+	            lr_contact_point_rec.owner_table_name       := 'HZ_PARTY_SITES';
+	            lr_contact_point_rec.contact_point_id       := c_sup_contact.email_cont_point_id;
+		        lr_contact_point_rec.contact_point_type     := 'EMAIL';
+		        lr_email_rec.email_address                  := c_sup_site.email_address;
+				ln_object_version_number                    := c_sup_contact.email_obj_version;
+    	        fnd_msg_pub.initialize;
+		        x_return_status    := NULL;
+                x_msg_count        := NULL;
+                x_msg_data         := NULL;
+                -------------------------Calling Address Contact API
+											   
+		        hz_contact_point_v2pub.update_contact_point ( p_init_msg_list => fnd_api.g_false, 
+		                                                      p_contact_point_rec => lr_contact_point_rec, 
+													          p_edi_rec => lr_edi_rec, 
+													          p_email_rec => lr_email_rec, 
+													          p_phone_rec => lr_phone_rec,
+                                                              p_telex_rec => lr_telex_rec, 
+													          p_web_rec => lr_web_rec, 
+                                                              p_object_version_number => ln_object_version_number,
+                                                              x_return_status => x_return_status, 
+													          x_msg_count => x_msg_count, 
+													          x_msg_data => x_msg_data );
+
+                print_debug_msg(p_message=> 'API Return Status / Msg Count : ' || x_return_status||' / '||x_msg_count, p_force=>true);
+		
+		        IF x_return_status = 'S' 
+		        THEN
+                   COMMIT;
+                   print_debug_msg(p_message=> 'Update of EMAIL Contact Point is Successful ', p_force=>true);
+                   print_debug_msg(p_message=> 'Output information ....', p_force=>true);
+                ELSE
+                   print_debug_msg(p_message=> 'Update of EMAIL Contact Point got failed:'||x_msg_data, p_force=>true);
+                   ROLLBACK;
+                   FOR i IN 1 .. x_msg_count
+                   LOOP
+                      x_msg_data := fnd_msg_pub.get( p_msg_index => i, p_encoded => 'F');
+                      print_debug_msg(p_message=>  i|| ') '|| x_msg_data, p_force=>true);
+                   END LOOP;
+                END IF; 
+			ELSE
+			    print_debug_msg(p_message=> 'Creation of the EMAIL Address Contact for the Site: '|| c_sup_site.vendor_site_code, p_force=>true);
+			    lr_contact_point_rec := NULL;
+		        lr_phone_rec := NULL;
+		        lr_email_rec := NULL;
+	            lr_contact_point_rec.owner_table_id         := lr_existing_vendor_site_rec.party_site_id;
+	            lr_contact_point_rec.owner_table_name       := 'HZ_PARTY_SITES';
+                lr_contact_point_rec.created_by_module      := 'AP_SUPPLIERS_API';
+	            lr_contact_point_rec.primary_flag           := 'Y';
+		        lr_contact_point_rec.contact_point_type     := 'EMAIL';
+		        lr_email_rec.email_address                  := c_sup_site.email_address;
+    	        fnd_msg_pub.initialize;
+                x_contact_point_id := NULL;
+		        x_return_status    := NULL;
+                x_msg_count        := NULL;
+                x_msg_data         := NULL;
+                -------------------------Calling Address Contact API
+											   
+		        hz_contact_point_v2pub.create_contact_point ( p_init_msg_list => fnd_api.g_false, 
+		                                                      p_contact_point_rec => lr_contact_point_rec, 
+													          p_edi_rec => lr_edi_rec, 
+													          p_email_rec => lr_email_rec, 
+													          p_phone_rec => lr_phone_rec,
+                                                              p_telex_rec => lr_telex_rec, 
+													          p_web_rec => lr_web_rec, 
+													          x_contact_point_id => x_contact_point_id, 
+													          x_return_status => x_return_status, 
+													          x_msg_count => x_msg_count, 
+													          x_msg_data => x_msg_data );
+
+                print_debug_msg(p_message=> 'API Return Status / Msg Count : ' || x_return_status||' / '||x_msg_count, p_force=>true);
+		
+		        IF x_return_status = 'S'
+		        THEN
+                   COMMIT;
+                   print_debug_msg(p_message=> 'Creation of EMAIL Contact Point is Successful ', p_force=>true);
+                   print_debug_msg(p_message=> 'Output information ....', p_force=>true);
+                   print_debug_msg(p_message=> 'x_contact_point_id = '||x_contact_point_id, p_force=>true);
+                ELSE
+                   print_debug_msg(p_message=> 'Creation of Contact Point got failed:'||x_msg_data, p_force=>true);
+                   ROLLBACK;
+                   FOR i IN 1 .. x_msg_count
+                   LOOP
+                      x_msg_data := fnd_msg_pub.get( p_msg_index => i, p_encoded => 'F');
+                      print_debug_msg(p_message=>  i|| ') '|| x_msg_data, p_force=>true);
+                      END LOOP;
+                END IF;
+			END IF; -- c_sup_contact.email_cont_point_id IS NOT NULL
+		END IF; -- c_sup_site.email_address IS NOT NULL
+            -- Update PHONE Address
+        IF c_sup_site.phone_number IS NOT NULL
+	    THEN
+		    print_debug_msg(p_message=> 'c_sup_site.phone_number: '|| c_sup_site.phone_number, p_force=>true);
+		    IF c_sup_contact.phone_cont_point_id IS NOT NULL
+			THEN
+			    print_debug_msg(p_message=> 'Update the PHONE Address Contact for the Site: '|| c_sup_site.vendor_site_code, p_force=>true);
+	            lr_contact_point_rec := NULL;
+		        lr_phone_rec := NULL;
+		        lr_email_rec := NULL;
+		        lr_contact_point_rec.owner_table_id         := lr_existing_vendor_site_rec.party_site_id;
+	            lr_contact_point_rec.owner_table_name       := 'HZ_PARTY_SITES';
+	            lr_contact_point_rec.contact_point_id       := c_sup_contact.phone_cont_point_id;
+		        lr_contact_point_rec.contact_point_type     := 'PHONE';
+		        lr_phone_rec.phone_area_code                := c_sup_site.phone_area_code;
+                lr_phone_rec.phone_number                   := c_sup_site.phone_number;
+                lr_phone_rec.phone_line_type                := 'GEN';
+				ln_object_version_number                    := c_sup_contact.phone_obj_version;
+    	        fnd_msg_pub.initialize;
+		        x_return_status    := NULL;
+                x_msg_count        := NULL;
+                x_msg_data         := NULL;
+                -------------------------Calling Address Contact API
+											   
+		        hz_contact_point_v2pub.update_contact_point ( p_init_msg_list => fnd_api.g_false, 
+		                                                      p_contact_point_rec => lr_contact_point_rec, 
+													          p_edi_rec => lr_edi_rec, 
+													          p_email_rec => lr_email_rec, 
+													          p_phone_rec => lr_phone_rec,
+                                                              p_telex_rec => lr_telex_rec, 
+													          p_web_rec => lr_web_rec, 
+                                                              p_object_version_number => ln_object_version_number,
+                                                              x_return_status => x_return_status, 
+													          x_msg_count =>x_msg_count, 
+													          x_msg_data => x_msg_data );
+
+                print_debug_msg(p_message=> 'API Return Status / Msg Count : ' || x_return_status||' / '||x_msg_count, p_force=>true);
+		
+		        IF x_return_status = 'S'
+		        THEN
+                    COMMIT;
+                    print_debug_msg(p_message=> 'Update of PHONE Contact Point is Successful ', p_force=>true);
+                    print_debug_msg(p_message=> 'Output information ....', p_force=>true);
+                ELSE
+                    print_debug_msg(p_message=> 'Update of PHONE Contact Point got failed:'||x_msg_data, p_force=>true);
+                    ROLLBACK;
+                    FOR i IN 1 .. x_msg_count
+                    LOOP
+                       x_msg_data := fnd_msg_pub.get( p_msg_index => i, p_encoded => 'F');
+                       print_debug_msg(p_message=>  i|| ') '|| x_msg_data, p_force=>true);
+                       END LOOP;
+                END IF;
+			ELSE
+			    print_debug_msg(p_message=> 'Creation of the PHONE Address Contact for the Site: '|| c_sup_site.vendor_site_code, p_force=>true);
+			    lr_contact_point_rec := NULL;
+		        lr_phone_rec := NULL;
+		        lr_email_rec := NULL;
+		        lr_contact_point_rec.owner_table_id         := lr_existing_vendor_site_rec.party_site_id;
+	            lr_contact_point_rec.owner_table_name       := 'HZ_PARTY_SITES';
+                lr_contact_point_rec.created_by_module      := 'AP_SUPPLIERS_API';
+	            lr_contact_point_rec.primary_flag           := 'Y';
+		        lr_contact_point_rec.contact_point_type     := 'PHONE';
+		        lr_phone_rec.phone_area_code                := c_sup_site.phone_area_code;
+                lr_phone_rec.phone_number                   := c_sup_site.phone_number;
+                lr_phone_rec.phone_line_type                := 'GEN';
+    	        fnd_msg_pub.initialize;
+                x_contact_point_id := NULL;
+		        x_return_status    := NULL;
+                x_msg_count        := NULL;
+                x_msg_data         := NULL;
+                -------------------------Calling Address Contact API
+											   
+		        hz_contact_point_v2pub.create_contact_point ( p_init_msg_list => fnd_api.g_false, 
+		                                                      p_contact_point_rec => lr_contact_point_rec, 
+													          p_edi_rec => lr_edi_rec, 
+													          p_email_rec => lr_email_rec, 
+													          p_phone_rec => lr_phone_rec,
+                                                              p_telex_rec => lr_telex_rec, 
+													          p_web_rec => lr_web_rec, 
+													          x_contact_point_id => x_contact_point_id, 
+													          x_return_status => x_return_status, 
+													          x_msg_count => x_msg_count, 
+													          x_msg_data => x_msg_data );
+
+                print_debug_msg(p_message=> 'API Return Status / Msg Count : ' || x_return_status||' / '||x_msg_count, p_force=>true);
+		
+		        IF x_return_status = 'S'
+		        THEN
+                   COMMIT;
+                   print_debug_msg(p_message=> 'Creation of PHONE Contact Point is Successful ', p_force=>true);
+                   print_debug_msg(p_message=> 'Output information ....', p_force=>true);
+                   print_debug_msg(p_message=> 'x_contact_point_id = '||x_contact_point_id, p_force=>true);
+                ELSE
+                   print_debug_msg(p_message=> 'Creation of Contact Point got failed:'||x_msg_data, p_force=>true);
+                   ROLLBACK;
+                   FOR i IN 1 .. x_msg_count
+                   LOOP
+                      x_msg_data := fnd_msg_pub.get( p_msg_index => i, p_encoded => 'F');
+                      print_debug_msg(p_message=>  i|| ') '|| x_msg_data, p_force=>true);
+                      END LOOP;
+                END IF;
+			END IF; -- c_sup_contact.phone_cont_point_id IS NOT NULL
+		END IF; -- c_sup_site.phone_number IS NOT NULL
+		-- Update FAX Address
+	    IF c_sup_site.fax IS NOT NULL
+	    THEN
+		    print_debug_msg(p_message=> 'c_sup_site.fax: '|| c_sup_site.fax, p_force=>true);
+		    IF c_sup_contact.fax_cont_point_id IS NOT NULL
+			THEN
+			    print_debug_msg(p_message=> 'Update the FAX Address Contact for the Site: '|| c_sup_site.vendor_site_code, p_force=>true);
+	            lr_contact_point_rec := NULL;
+		        lr_phone_rec := NULL;
+		        lr_email_rec := NULL;
+		        lr_contact_point_rec.owner_table_id         := lr_existing_vendor_site_rec.party_site_id;
+	            lr_contact_point_rec.owner_table_name       := 'HZ_PARTY_SITES';
+	            lr_contact_point_rec.contact_point_id       := c_sup_contact.fax_cont_point_id;
+		        lr_contact_point_rec.contact_point_type     := 'PHONE';
+		        lr_phone_rec.phone_area_code                := c_sup_site.fax_area_code;
+                lr_phone_rec.phone_number                   := c_sup_site.fax;
+                lr_phone_rec.phone_line_type                := 'FAX';
+				ln_object_version_number                    := c_sup_contact.fax_obj_version;
+    	        fnd_msg_pub.initialize;
+		        x_return_status    := NULL;
+                x_msg_count        := NULL;
+                x_msg_data         := NULL;
+                -------------------------Calling Address Contact API
+											   
+		        hz_contact_point_v2pub.update_contact_point ( p_init_msg_list => fnd_api.g_false, 
+		                                                      p_contact_point_rec => lr_contact_point_rec, 
+													          p_edi_rec => lr_edi_rec, 
+													          p_email_rec => lr_email_rec, 
+													          p_phone_rec => lr_phone_rec,
+                                                              p_telex_rec => lr_telex_rec, 
+													          p_web_rec => lr_web_rec, 
+                                                              p_object_version_number => ln_object_version_number,
+                                                              x_return_status => x_return_status, 
+													          x_msg_count =>x_msg_count, 
+													          x_msg_data => x_msg_data );
+
+                print_debug_msg(p_message=> 'API Return Status / Msg Count : ' || x_return_status||' / '||x_msg_count, p_force=>true);
+		
+		        IF x_return_status = 'S' 
+		        THEN
+                   COMMIT;
+                   print_debug_msg(p_message=> 'Update of FAX Contact Point is Successful ', p_force=>true);
+                   print_debug_msg(p_message=> 'Output information ....', p_force=>true);
+                ELSE
+                   print_debug_msg(p_message=> 'Update of FAX Contact Point got failed:'||x_msg_data, p_force=>true);
+                   ROLLBACK;
+                   FOR i IN 1 .. x_msg_count
+                   LOOP
+                      x_msg_data := fnd_msg_pub.get( p_msg_index => i, p_encoded => 'F');
+                      print_debug_msg(p_message=>  i|| ') '|| x_msg_data, p_force=>true);
+                      END LOOP;
+                END IF;
+			ELSE
+			    print_debug_msg(p_message=> 'Creation of the FAX Address Contact for the Site: '|| c_sup_site.vendor_site_code, p_force=>true);
+			    lr_contact_point_rec := NULL;
+		        lr_phone_rec := NULL;
+		        lr_email_rec := NULL;
+	            lr_contact_point_rec.owner_table_id         := lr_existing_vendor_site_rec.party_site_id;
+	            lr_contact_point_rec.owner_table_name       := 'HZ_PARTY_SITES';
+                lr_contact_point_rec.created_by_module      := 'AP_SUPPLIERS_API';
+	            lr_contact_point_rec.primary_flag           := 'N';
+		        lr_contact_point_rec.contact_point_type     := 'PHONE';
+		        lr_phone_rec.phone_area_code                := c_sup_site.fax_area_code;
+                lr_phone_rec.phone_number                   := c_sup_site.fax;
+                lr_phone_rec.phone_line_type                := 'FAX';
+    	        fnd_msg_pub.initialize;
+                x_contact_point_id := NULL;
+		        x_return_status:= NULL;
+                x_msg_count    := NULL;
+                x_msg_data     := NULL;
+                -------------------------Calling Address Contact API
+		        									   
+		        hz_contact_point_v2pub.create_contact_point ( p_init_msg_list => fnd_api.g_false, 
+		                                                      p_contact_point_rec => lr_contact_point_rec, 
+													          p_edi_rec => lr_edi_rec, 
+													          p_email_rec => lr_email_rec, 
+													          p_phone_rec => lr_phone_rec,
+                                                              p_telex_rec => lr_telex_rec, 
+													          p_web_rec => lr_web_rec, 
+													          x_contact_point_id => x_contact_point_id, 
+													          x_return_status => x_return_status, 
+													          x_msg_count => x_msg_count, 
+													          x_msg_data => x_msg_data );
+
+                print_debug_msg(p_message=> 'API Return Status / Msg Count : ' || x_return_status||' / '||x_msg_count, p_force=>true);
+		
+		        IF x_return_status = 'S' 
+		        THEN
+                   COMMIT;
+                   print_debug_msg(p_message=> 'Creation of FAX Contact Point is Successful ', p_force=>true);
+                   print_debug_msg(p_message=> 'Output information ....', p_force=>true);
+                   print_debug_msg(p_message=> 'x_contact_point_id = '||x_contact_point_id, p_force=>true);
+                ELSE
+                   print_debug_msg(p_message=> 'Creation of Contact Point got failed:'||x_msg_data, p_force=>true);
+                   ROLLBACK;
+                   FOR i IN 1 .. x_msg_count
+                   LOOP
+                      x_msg_data := fnd_msg_pub.get( p_msg_index => i, p_encoded => 'F');
+                      print_debug_msg(p_message=>  i|| ') '|| x_msg_data, p_force=>true);
+                      END LOOP;
+                END IF;
+			END IF; -- c_sup_contact.fax_cont_point_id IS NOT NULL
+		END IF; -- c_sup_site.fax IS NOT NULL
+	END LOOP; -- c_contact_details
+  END LOOP; -- c_supplier_site
+EXCEPTION
+  WHEN OTHERS THEN
+    x_ret_code      := 1;
+    x_return_status := 'E';
+    x_err_buf       := 'In exception for procedure update_address_contact' ;
+END update_address_contact;
+--+============================================================================+
 --| Name          : Attach_bank_assignments                                    |
 --| Description   : This procedure will attach_bank_assignments using API      |
 --|                                                                            |
@@ -2404,7 +2886,8 @@ IS
     WHERE 1                     =1
     AND xas.create_flag         ='Y'
     AND xas.bnkact_process_flag =gn_process_status_validated
-    AND xas.request_id          = gn_request_id;
+    AND xas.request_id          = gn_request_id
+  ORDER BY primary_flag DESC;
   ----
 BEGIN
   -- Initialize apps session
@@ -2452,7 +2935,11 @@ BEGIN
       print_debug_msg(p_message=> l_program_step||'L_ACCOUNT_ID '||l_account_id, p_force=>true);
       p_assignment_attribs.instrument.instrument_id:=r_sup_bank.account_id;
       -- External Bank Account ID
-      p_assignment_attribs.priority   := 1;
+      -- p_assignment_attribs.priority   := 1;
+	  IF r_sup_bank.primary_flag = 'Y'
+	  THEN
+	      p_assignment_attribs.priority := 1;
+	  END IF;
       p_assignment_attribs.start_date := sysdate;
       ------------------Calling API to check Joint Owner exists or no
       fnd_msg_pub.initialize; --to make msg_count 0
@@ -2479,7 +2966,7 @@ BEGIN
       x_msg_count    :=NULL;
       x_msg_data     :=NULL;
       x_response     :=NULL;
-      --------------------Call the API for istr assignemtn
+      --------------------Call the API for istr assignment
       iby_disbursement_setup_pub.set_payee_instr_assignment (p_api_version => p_api_version, p_init_msg_list => p_init_msg_list, p_commit => p_commit, x_return_status => x_return_status, x_msg_count => x_msg_count, x_msg_data => x_msg_data, p_payee => p_payee, p_assignment_attribs => p_assignment_attribs, x_assign_id => l_assign_id, x_response => x_response );
       COMMIT;
       print_debug_msg(p_message=> l_program_step||' SET_PAYEE_INSTR_ASSIGNMENT X_ASSIGN_ID = ' || l_assign_id, p_force=>true);
@@ -2509,7 +2996,7 @@ BEGIN
       x_bank_branch_rec.acct_owner_party_id:=lv_acct_owner_party_id;
       x_bank_branch_rec.country_code       :=r_sup_bank.country_code;
       x_bank_branch_rec.bank_account_name  := r_sup_bank.bank_account_name;
-      x_bank_branch_rec.bank_account_num   :=r_sup_bank.bank_account_num;
+      x_bank_branch_rec.bank_account_num   :=r_sup_bank.bank_account_num;  
       fnd_msg_pub.initialize; --to make msg_count 0
       x_return_status:=NULL;
       x_msg_count    :=NULL;
@@ -4045,7 +4532,8 @@ IS
     WHERE 1                     =1
     AND xas.create_flag         ='N'
     AND xas.bnkact_process_flag =gn_process_status_validated
-    AND xas.request_id          = gn_request_id;
+    AND xas.request_id          = gn_request_id
+	ORDER BY primary_flag DESC;
   ----
 BEGIN
   p_api_version      := 1.0;
@@ -4088,9 +4576,16 @@ BEGIN
     print_debug_msg(p_message=> l_program_step||'L_ACCOUNT_ID '||l_account_id, p_force=>true);
     p_assignment_attribs.instrument.instrument_id:=l_account_id;
     p_assignment_attribs.Assignment_Id           :=r_sup_bank.instrument_uses_id;
-    p_assignment_attribs.priority                := 1;
+    -- p_assignment_attribs.priority                := 1;
+	IF r_sup_bank.primary_flag = 'Y'
+	THEN
+	      p_assignment_attribs.priority := 1;
+	END IF;
     p_assignment_attribs.start_date              := TO_DATE(r_sup_bank.start_date,'YYYY/MM/DD');
-    p_assignment_attribs.end_date                := TO_DATE(r_sup_bank.end_date,'YYYY/MM/DD');
+    IF r_sup_bank.end_date IS NOT NULL
+	THEN 
+	    p_assignment_attribs.end_date            := TO_DATE(r_sup_bank.end_date,'YYYY/MM/DD');
+	END IF;
     fnd_msg_pub.initialize; --to make msg_count 0
     x_return_status:=NULL;
     x_msg_count    :=NULL;
@@ -4099,7 +4594,7 @@ BEGIN
     --------------------Call the API for istr assignemtn
     iby_disbursement_setup_pub.set_payee_instr_assignment (p_api_version => p_api_version, p_init_msg_list => p_init_msg_list, p_commit => p_commit, x_return_status => x_return_status, x_msg_count => x_msg_count, x_msg_data => x_msg_data, p_payee => p_payee, p_assignment_attribs => p_assignment_attribs, x_assign_id => l_assign_id, x_response => x_response );
     COMMIT;
-    print_debug_msg(p_message=> l_program_step||' SET_PAYEE_INSTR_ASSIGNMENT END_DATE X_ASSIGN_ID = ' || l_assign_id, p_force=>true);
+    print_debug_msg(p_message=> l_program_step||'SET_PAYEE_INSTR_ASSIGNMENT END_DATE X_ASSIGN_ID = ' || l_assign_id, p_force=>true);
     print_debug_msg(p_message=> l_program_step||'SET_PAYEE_INSTR_ASSIGNMENT END_DATE X_RETURN_STATUS = ' || x_return_status, p_force=>true);
     print_debug_msg(p_message=> l_program_step||'SET_PAYEE_INSTR_ASSIGNMENT END_DATE fnd_api.g_ret_sts_success ' || fnd_api.g_ret_sts_success , p_force=>true);
     print_debug_msg(p_message=> l_program_step||'SET_PAYEE_INSTR_ASSIGNMENT END_DATE X_MSG_COUNT = ' || x_msg_count, p_force=>true);
@@ -4227,7 +4722,7 @@ BEGIN
   -- Check and Update the staging table for the Duplicate bank accounts
   --====================================================================
   BEGIN
-    print_debug_msg(p_message => 'Check and udpate the staging table for the Duplicate bank', p_force => false);
+    print_debug_msg(p_message => 'Check and udpate the staging table for the Duplicate bank', p_force => true);
     l_bank_upd_cnt := 0;
     UPDATE xx_ap_cld_supp_bnkact_stg xassc1
     SET xassc1.bnkact_process_flag   = gn_process_status_error ,
@@ -4247,11 +4742,11 @@ BEGIN
       AND xassc2.bank_account_num              = xassc1.bank_account_num
       );
     l_bank_upd_cnt := sql%rowcount;
-    print_debug_msg(p_message => 'Check and updated '||l_bank_upd_cnt||' records as error in the staging table for the Duplicate Bank', p_force => false);
+    print_debug_msg(p_message => 'Check and updated '||l_bank_upd_cnt||' records as error in the staging table for the Duplicate Bank', p_force => true);
   EXCEPTION
   WHEN OTHERS THEN
     l_err_buff := SQLCODE || ' - '|| SUBSTR (sqlerrm,1,3500);
-    print_debug_msg(p_message => 'ERROR EXCEPTION: Updating the Duplicate bank assignment in Staging table - '|| l_err_buff , p_force => false);
+    print_debug_msg(p_message => 'ERROR EXCEPTION: Updating the Duplicate bank assignment in Staging table - '|| l_err_buff , p_force => true);
   END;
   --=====================================================================================
   -- Check and Update the Bank process flag to '7' if all Bank Information are NULL
@@ -4268,11 +4763,11 @@ BEGIN
     AND ( xassc.bank_name           IS NULL
     OR xassc.branch_name            IS NULL ) ;
     l_bank_upd_cnt                  := sql%rowcount;
-    print_debug_msg(p_message => 'After Bank or branch information is BLANK', p_force => false);
+    print_debug_msg(p_message => 'After Bank or branch information is BLANK', p_force => true);
   EXCEPTION
   WHEN OTHERS THEN
     l_err_buff := SQLCODE || ' - '|| SUBSTR (sqlerrm,1,3500);
-    print_debug_msg(p_message => 'ERROR-EXCEPTION: Bank or branch information is BLANK - '|| l_err_buff , p_force => false);
+    print_debug_msg(p_message => 'ERROR-EXCEPTION: Bank or branch information is BLANK - '|| l_err_buff , p_force => true);
   END;
   --====================================================================
   -- Call the Bank Account Validations
@@ -4280,10 +4775,10 @@ BEGIN
   l_site_cnt_for_bank := 0;
   FOR l_sup_bank_type IN c_supplier_bank
   LOOP
-    print_debug_msg(p_message=> gc_step||' : Validation of Bank Assignment started' ,p_force=> false);
+    print_debug_msg(p_message=> gc_step||' : Validation of Bank Assignment started' ,p_force=> true);
     l_sup_bank_idx      := l_sup_bank_idx      + 1;
     l_site_cnt_for_bank := l_site_cnt_for_bank + 1;
-    print_debug_msg(p_message=> gc_step||' : l_sup_bank_idx - '||l_sup_bank_idx ,p_force=> false);
+    print_debug_msg(p_message=> gc_step||' : l_sup_bank_idx - '||l_sup_bank_idx ,p_force=> true);
     gc_error_site_status_flag := 'N';
     gc_step                   := 'BANK_ASSI';
     gc_error_msg              := '';
@@ -4293,35 +4788,48 @@ BEGIN
     IF l_sup_bank_type.supplier_name IS NULL THEN
       gc_error_site_status_flag      := 'Y';
       gc_error_msg                   :=gc_error_msg||' Supplier Name is NULL';
-      print_debug_msg(p_message=> 'Supplier Name is BLANK' , p_force=> FALSE);
+      print_debug_msg(p_message=> 'Supplier Name is BLANK' , p_force=> true);
       gc_error_msg:=gc_error_msg||' , Supplier Name is BLANK';   
     END IF;
     IF l_sup_bank_type.supplier_num IS NULL THEN
       gc_error_site_status_flag     := 'Y';
       gc_error_msg                  :=gc_error_msg||', Supplier Number is BLANK';
-      print_debug_msg(p_message=> 'Supplier Number is BLANK' , p_force=> FALSE);
+      print_debug_msg(p_message=> 'Supplier Number is BLANK' , p_force=> true);
 	END IF;
 	  
     IF l_sup_bank_type.vendor_site_code IS NULL THEN
       gc_error_site_status_flag         := 'Y';
       gc_error_msg                      :=gc_error_msg||', Vendor Site Code is BLANK';
-	  print_debug_msg(p_message=> 'Vendor Site Code is BLANK' , p_force=> FALSE);
-      END IF;
+	  print_debug_msg(p_message=> 'Vendor Site Code is BLANK' , p_force=> true);
+    END IF;
+	
+	IF l_sup_bank_type.bank_account_name IS NULL THEN
+      gc_error_site_status_flag         := 'Y';
+      gc_error_msg                      :=gc_error_msg||', Bank Account Name is BLANK';
+	  print_debug_msg(p_message=> 'Bank Account Name is BLANK' , p_force=> true);
+    END IF;
+	
+	IF l_sup_bank_type.currency_code IS NULL THEN
+      gc_error_site_status_flag         := 'Y';
+      gc_error_msg                      :=gc_error_msg||', Currency Code is BLANK';
+	  print_debug_msg(p_message=> 'Currency Code is BLANK' , p_force=> true);
+    END IF;
+	
     --==============================================================================================================
     -- Validating the Supplier Bank - Address Details -  Address Line 2
     --==============================================================================================================
-    print_debug_msg(p_message=> gc_step||' After basic validation of Contact - gc_error_site_status_flag is '||gc_error_site_status_flag ,p_force=> false);
+    print_debug_msg(p_message=> gc_step||' After basic validation of Contact - gc_error_site_status_flag is '||gc_error_site_status_flag ,p_force=> true);
     l_bank_create_flag          := '';
     IF gc_error_site_status_flag = 'N' THEN
-      print_debug_msg(p_message=> gc_step||' l_sup_bank_type.update_flag is '||l_sup_bank_type.CREATE_FLAG ,p_force=> false);
-      print_debug_msg(p_message=> gc_step||' upper(l_sup_bank_type.vendor_site_code) is '||upper(l_sup_bank_type.vendor_site_code) ,p_force=> false);
+      print_debug_msg(p_message=> gc_step||' l_sup_bank_type.update_flag is '||l_sup_bank_type.CREATE_FLAG ,p_force=> true);
+      print_debug_msg(p_message=> gc_step||' upper(l_sup_bank_type.vendor_site_code) is '||upper(l_sup_bank_type.vendor_site_code) ,p_force=> true);
       OPEN c_bank_branch(l_sup_bank_type.bank_name, l_sup_bank_type.country_code,l_sup_bank_type.branch_name);
       FETCH c_bank_branch INTO l_sup_bank_id,l_sup_bank_branch_id;
       CLOSE c_bank_branch;
       IF ( l_sup_bank_id          IS NULL OR l_sup_bank_branch_id IS NULL ) THEN
         gc_error_site_status_flag := 'Y';
         gc_error_msg              :=gc_error_msg||', Bank OR Branch does not exist';
-	    print_debug_msg(p_message=> 'Bank OR Branch does not exist' , p_force=> FALSE);
+	    print_debug_msg(p_message=> 'Bank OR Branch does not exist' , p_force=> true);
       ELSE
         l_sup_bank_type.bank_id   :=l_sup_bank_id;
         l_sup_bank_type.branch_id :=l_sup_bank_branch_id;
@@ -4378,13 +4886,15 @@ BEGIN
           l_sup_bank_type.instrument_uses_id :=l_instrument_id;
         END IF;
       END IF;
-      IF l_instrument_id    > 0 AND l_sup_bank_type.end_date IS NOT NULL THEN
+      IF l_instrument_id    > 0 
+	  -- AND l_sup_bank_type.end_date IS NOT NULL 
+	  THEN
         l_bank_create_flag :='N';--Update for Bank assignment end Date
       ELSE
         l_bank_acct_start_date:=l_sup_bank_type.start_date;
       END IF;
-      print_debug_msg(p_message=> gc_step||' After Bank Validation, Error Status Flag is : '||gc_error_site_status_flag ,p_force=> false);
-      print_debug_msg(p_message=> gc_step||' After Bank Validation, Bank Create  Flag is : '||l_bank_create_flag ,p_force=> false);
+      print_debug_msg(p_message=> gc_step||' After Bank Validation, Error Status Flag is : '||gc_error_site_status_flag ,p_force=> true);
+      print_debug_msg(p_message=> gc_step||' After Bank Validation, Bank Create  Flag is : '||l_bank_create_flag ,p_force=> true);
       ------------------------Assigning values
       l_sup_bank(l_sup_bank_idx).create_flag        :=l_bank_create_flag;
       l_sup_bank(l_sup_bank_idx).start_date         :=l_bank_acct_start_date;
@@ -4407,12 +4917,12 @@ BEGIN
       l_sup_bank(l_sup_bank_idx).ERROR_MSG           := gc_error_msg;
     ELSE
       l_sup_bank(l_sup_bank_idx).bnkact_process_flag := gn_process_status_validated;
-      print_debug_msg(p_message=> 'Process Flag ' ||gn_process_status_validated, p_force=> false);
-      print_debug_msg(p_message=> 'Bank Status Flag : '|| l_sup_bank(l_sup_bank_idx).bnkact_process_flag,p_force=> false);
+      print_debug_msg(p_message=> 'Process Flag ' ||gn_process_status_validated, p_force=> true);
+      print_debug_msg(p_message=> 'Bank Status Flag : '|| l_sup_bank(l_sup_bank_idx).bnkact_process_flag,p_force=> true);
     END IF;
   END LOOP;
-  print_debug_msg(p_message=> 'Do Bulk Update for all BANK Records ' ,p_force=> false);
-  print_debug_msg(p_message=> 'l_sup_bank.COUNT : '|| l_sup_bank.count ,p_force=> false);
+  print_debug_msg(p_message=> 'Do Bulk Update for all BANK Records ' ,p_force=> true);
+  print_debug_msg(p_message=> 'l_sup_bank.COUNT : '|| l_sup_bank.count ,p_force=> true);
   IF l_sup_bank.count > 0 THEN
     BEGIN
       FORALL l_idxs IN l_sup_bank.FIRST .. l_sup_bank.LAST
@@ -4442,7 +4952,7 @@ BEGIN
     WHEN OTHERS THEN
       l_error_message := 'When Others Exception  during the bulk update of Bank staging table' || SQLCODE || ' - ' || SUBSTR (sqlerrm ,1 ,3800 );
       insert_error (p_program_step => 'SITE_BANK' ,p_primary_key => NULL ,p_error_code => 'XXOD_BULK_UPD_SITE' ,p_error_message => 'When Others Exception during the bulk update of bank staging table' ,p_stage_col1 => NULL ,p_stage_val1 => NULL ,p_stage_col2 => NULL ,p_stage_val2 => NULL ,p_table_name => g_sup_bank_table );
-      print_debug_msg(p_message=> l_program_step||': '||l_error_message ,p_force=> false);
+      print_debug_msg(p_message=> l_program_step||': '||l_error_message ,p_force=> true);
     END;
   END IF;
   x_ret_code      := l_ret_code;
@@ -5636,6 +6146,262 @@ WHEN OTHERS THEN
   x_err_buf       := l_error_message;
 END load_supplier_cont_interface;
 --+============================================================================+
+--| Name          : create_address_contact                                     |
+--| Description   : This procedure will create the address contacts for the    |
+--|                 vendor site                                                |
+--| Parameters    : N/A                                                        |
+--|                                                                            |
+--| Returns       : N/A                                                        |
+--+============================================================================+
+/*
+PROCEDURE create_address_contact( x_ret_code OUT NUMBER ,
+                                  x_return_status OUT VARCHAR2 ,
+                                  x_err_buf OUT VARCHAR2 )
+IS
+  --==============================
+  -- Declaring Local variables
+  --==============================
+  p_api_version      		       NUMBER;
+  p_init_msg_list    		       VARCHAR2(200);
+  p_commit           		       VARCHAR2(200);
+  p_validation_level 		       NUMBER;
+  l_msg              		       VARCHAR2(2000);
+  l_process_flag     		       VARCHAR2(10);
+  lr_existing_vendor_site_rec      ap_supplier_sites_all%rowtype;
+  p_calling_prog   		       	   VARCHAR2(200);
+  l_program_step   		       	   VARCHAR2 (100) := '';
+  ln_msg_index_num 		       	   NUMBER; 
+  lr_contact_point_rec             hz_contact_point_v2pub.contact_point_rec_type;
+  lr_edi_rec                       hz_contact_point_v2pub.edi_rec_type;
+  lr_email_rec                     hz_contact_point_v2pub.email_rec_type;
+  lr_phone_rec                     hz_contact_point_v2pub.phone_rec_type;
+  lr_telex_rec                     hz_contact_point_v2pub.telex_rec_type;
+  lr_web_rec                       hz_contact_point_v2pub.web_rec_type;
+  x_msg_count                      NUMBER;
+  x_msg_data                       VARCHAR2(2000);
+  ln_user_id                       NUMBER;
+  ln_responsibility_id             NUMBER;
+  ln_responsibility_appl_id        NUMBER;
+  ln_object_version_number         NUMBER :=1;
+  x_contact_point_id               NUMBER;
+  
+  --==============================================================================
+  -- Cursor Declarations for Suppliers
+  --==============================================================================
+  CURSOR c_supplier_site
+  IS
+  SELECT *
+    FROM xx_ap_cld_supp_sites_stg xas
+   WHERE xas.create_flag     ='Y'
+     AND xas.site_process_flag = gn_process_status_imported
+     AND xas.request_id        = gn_request_id
+	 AND xas.fax_area_code IS NOT NULL OR xas.fax IS NOT NULL OR xas.email_address IS NOT NULL OR xas.phone_number IS NOT NULL OR xas.phone_area_code IS NOT NULL;
+ BEGIN
+  -- Assign Basic Values
+  print_debug_msg(p_message=> 'Begin Create Supplier Site Address Contact Procedure', p_force=>true);
+  p_api_version      := 1.0;
+  p_init_msg_list    := fnd_api.g_false;
+  p_commit           := fnd_api.g_false;
+  p_validation_level := fnd_api.g_valid_level_full;
+  p_calling_prog     := 'XXCUSTOM';
+  l_program_step     := 'START';
+  
+  BEGIN
+       SELECT user_id,
+              responsibility_id,
+              responsibility_application_id
+         INTO ln_user_id,                      
+              ln_responsibility_id,            
+              ln_responsibility_appl_id
+         FROM fnd_user_resp_groups 
+        WHERE user_id=(SELECT user_id 
+                         FROM fnd_user 
+                        WHERE user_name = 'ODCDH')
+          AND responsibility_id=(SELECT responsibility_id 
+                                   FROM fnd_responsibility 
+                                  WHERE responsibility_key = 'XX_US_CNV_CDH_CONVERSION'); 
+  EXCEPTION
+       WHEN OTHERS 
+       THEN
+			print_debug_msg(p_message=> l_program_step||'Exception in WHEN OTHERS for SET_CONTEXT_ERROR: '||SQLERRM, p_force=>true);
+  END;
+
+  fnd_global.apps_initialize( ln_user_id,
+                              ln_responsibility_id,
+                              ln_responsibility_appl_id
+                            );
+  fnd_global.set_nls_context('AMERICAN');
+  
+  FOR c_sup_site IN c_supplier_site
+  LOOP
+    print_debug_msg(p_message=> 'Creation of Address Contact for the Site : '|| c_sup_site.vendor_site_code, p_force=>true);
+    BEGIN
+      SELECT *
+        INTO lr_existing_vendor_site_rec
+        FROM ap_supplier_sites_all assa
+       WHERE assa.vendor_site_code = c_sup_site.vendor_site_code
+         AND assa.vendor_id        = c_sup_site.vendor_id
+         AND assa.org_id           = c_sup_site.org_id;
+    EXCEPTION
+      WHEN OTHERS THEN
+        print_debug_msg(p_message=> l_program_step||'Unable to derive the supplier site information for site id:' || lr_existing_vendor_site_rec.vendor_site_id, p_force=>true);
+    END;
+	
+	IF c_sup_site.email_address IS NOT NULL
+	THEN
+	    lr_contact_point_rec := NULL;
+		lr_phone_rec := NULL;
+		lr_email_rec := NULL;
+	    lr_contact_point_rec.owner_table_id         := lr_existing_vendor_site_rec.party_site_id;
+	    lr_contact_point_rec.owner_table_name       := 'HZ_PARTY_SITES';
+        lr_contact_point_rec.created_by_module      := 'AP_SUPPLIERS_API';
+	    lr_contact_point_rec.primary_flag           := 'Y';
+		lr_contact_point_rec.contact_point_type     := 'EMAIL';
+		lr_email_rec.email_address                  := c_sup_site.email_address;
+    	
+        x_contact_point_id := NULL;
+		x_return_status    := NULL;
+        x_msg_count        := NULL;
+        x_msg_data         := NULL;
+        -------------------------Calling Address Contact API
+											   
+		hz_contact_point_v2pub.create_contact_point ( p_init_msg_list => FND_API.G_TRUE, 
+		                                              p_contact_point_rec => lr_contact_point_rec, 
+													  p_edi_rec => lr_edi_rec, 
+													  p_email_rec => lr_email_rec, 
+													  p_phone_rec => lr_phone_rec,
+                                                      p_telex_rec => lr_telex_rec, 
+													  p_web_rec => lr_web_rec, 
+													  x_contact_point_id => x_contact_point_id, 
+													  x_return_status => x_return_status, 
+													  x_msg_count => x_msg_count, 
+													  x_msg_data => x_msg_data );
+
+        print_debug_msg(p_message=> 'API Return Status / Msg Count : ' || x_return_status||' / '||x_msg_count, p_force=>true);
+		
+		IF x_return_status = fnd_api.g_ret_sts_success 
+		THEN
+           COMMIT;
+           print_debug_msg(p_message=> 'Creation of EMAIL Contact Point is Successful ', p_force=>true);
+           print_debug_msg(p_message=> 'Output information ....', p_force=>true);
+           print_debug_msg(p_message=> 'x_contact_point_id = '||x_contact_point_id, p_force=>true);
+        ELSE
+           print_debug_msg(p_message=> 'Creation of Contact Point got failed:'||x_msg_data, p_force=>true);
+           ROLLBACK;
+           FOR i IN 1 .. x_msg_count
+           LOOP
+              x_msg_data := fnd_msg_pub.get( p_msg_index => i, p_encoded => 'F');
+              print_debug_msg(p_message=>  i|| ') '|| x_msg_data, p_force=>true);
+              END LOOP;
+        END IF;
+    ELSIF c_sup_site.phone_number IS NOT NULL
+	THEN
+	    lr_contact_point_rec := NULL;
+		lr_phone_rec := NULL;
+		lr_email_rec := NULL;
+		lr_contact_point_rec.owner_table_id         := lr_existing_vendor_site_rec.party_site_id;
+	    lr_contact_point_rec.owner_table_name       := 'HZ_PARTY_SITES';
+        lr_contact_point_rec.created_by_module      := 'AP_SUPPLIERS_API';
+	    lr_contact_point_rec.primary_flag           := 'Y';
+		lr_contact_point_rec.contact_point_type     := 'PHONE';
+		lr_phone_rec.phone_area_code                := c_sup_site.phone_area_code;
+        lr_phone_rec.phone_number                   := c_sup_site.phone_number;
+        lr_phone_rec.phone_line_type                := 'GEN';
+    	
+        x_contact_point_id := NULL;
+		x_return_status    := NULL;
+        x_msg_count        := NULL;
+        x_msg_data         := NULL;
+        -------------------------Calling Address Contact API
+											   
+		hz_contact_point_v2pub.create_contact_point ( p_init_msg_list => FND_API.G_TRUE, 
+		                                              p_contact_point_rec => lr_contact_point_rec, 
+													  p_edi_rec => lr_edi_rec, 
+													  p_email_rec => lr_email_rec, 
+													  p_phone_rec => lr_phone_rec,
+                                                      p_telex_rec => lr_telex_rec, 
+													  p_web_rec => lr_web_rec, 
+													  x_contact_point_id => x_contact_point_id, 
+													  x_return_status => x_return_status, 
+													  x_msg_count => x_msg_count, 
+													  x_msg_data => x_msg_data );
+
+        print_debug_msg(p_message=> 'API Return Status / Msg Count : ' || x_return_status||' / '||x_msg_count, p_force=>true);
+		
+		IF x_return_status = fnd_api.g_ret_sts_success 
+		THEN
+           COMMIT;
+           print_debug_msg(p_message=> 'Creation of PHONE Contact Point is Successful ', p_force=>true);
+           print_debug_msg(p_message=> 'Output information ....', p_force=>true);
+           print_debug_msg(p_message=> 'x_contact_point_id = '||x_contact_point_id, p_force=>true);
+        ELSE
+           print_debug_msg(p_message=> 'Creation of Contact Point got failed:'||x_msg_data, p_force=>true);
+           ROLLBACK;
+           FOR i IN 1 .. x_msg_count
+           LOOP
+              x_msg_data := fnd_msg_pub.get( p_msg_index => i, p_encoded => 'F');
+              print_debug_msg(p_message=>  i|| ') '|| x_msg_data, p_force=>true);
+              END LOOP;
+        END IF;
+	ELSIF c_sup_site.fax IS NOT NULL
+	THEN
+	    lr_contact_point_rec := NULL;
+		lr_phone_rec := NULL;
+		lr_email_rec := NULL;
+	    lr_contact_point_rec.owner_table_id         := lr_existing_vendor_site_rec.party_site_id;
+	    lr_contact_point_rec.owner_table_name       := 'HZ_PARTY_SITES';
+        lr_contact_point_rec.created_by_module      := 'AP_SUPPLIERS_API';
+	    lr_contact_point_rec.primary_flag           := 'N';
+		lr_contact_point_rec.contact_point_type     := 'PHONE';
+		lr_phone_rec.phone_area_code                := c_sup_site.fax_area_code;
+        lr_phone_rec.phone_number                   := c_sup_site.fax;
+        lr_phone_rec.phone_line_type                := 'FAX';
+    	
+        x_contact_point_id := NULL;
+		x_return_status:= NULL;
+        x_msg_count    := NULL;
+        x_msg_data     := NULL;
+        -------------------------Calling Address Contact API
+											   
+		hz_contact_point_v2pub.create_contact_point ( p_init_msg_list => FND_API.G_TRUE, 
+		                                              p_contact_point_rec => lr_contact_point_rec, 
+													  p_edi_rec => lr_edi_rec, 
+													  p_email_rec => lr_email_rec, 
+													  p_phone_rec => lr_phone_rec,
+                                                      p_telex_rec => lr_telex_rec, 
+													  p_web_rec => lr_web_rec, 
+													  x_contact_point_id => x_contact_point_id, 
+													  x_return_status => x_return_status, 
+													  x_msg_count => x_msg_count, 
+													  x_msg_data => x_msg_data );
+
+        print_debug_msg(p_message=> 'API Return Status / Msg Count : ' || x_return_status||' / '||x_msg_count, p_force=>true);
+		
+		IF x_return_status = fnd_api.g_ret_sts_success 
+		THEN
+           COMMIT;
+           print_debug_msg(p_message=> 'Creation of FAX Contact Point is Successful ', p_force=>true);
+           print_debug_msg(p_message=> 'Output information ....', p_force=>true);
+           print_debug_msg(p_message=> 'x_contact_point_id = '||x_contact_point_id, p_force=>true);
+        ELSE
+           print_debug_msg(p_message=> 'Creation of Contact Point got failed:'||x_msg_data, p_force=>true);
+           ROLLBACK;
+           FOR i IN 1 .. x_msg_count
+           LOOP
+              x_msg_data := fnd_msg_pub.get( p_msg_index => i, p_encoded => 'F');
+              print_debug_msg(p_message=>  i|| ') '|| x_msg_data, p_force=>true);
+              END LOOP;
+        END IF;
+	END IF;
+  END LOOP;
+EXCEPTION
+  WHEN OTHERS THEN
+    x_ret_code      := 1;
+    x_return_status := 'E';
+    x_err_buf       := 'In exception for procedure create_address_contact' ;
+END create_address_contact;
+*/
+--+============================================================================+
 --| Name          : main_prc_supplier                                          |
 --| Description   : This procedure will be called from the concurrent program  |
 --|                 for Suppliers Interface                                    |
@@ -5842,6 +6608,44 @@ EXCEPTION
     x_retcode := 2;
     x_errbuf  := 'Exception in XX_AP_SUPP_CLD_INTF_PKG.main_prc_supplier_bank() - '||SQLCODE||' - '||SUBSTR(sqlerrm,1,3500);
 END main_prc_supplier_bank;
+--+============================================================================+
+--| Name          : main_prc_supplier_Contact                                  |
+--| Description   : This procedure will be called from the concurrent program  |
+--|                 for Suppliers Site Contact Interface                       |
+--| Parameters    :                                                            |
+--| Returns       :                                                            |
+--|                   x_errbuf                  OUT      VARCHAR2              |
+--|                   x_retcode                 OUT      NUMBER                |
+--|                                                                            |
+--|                                                                            |
+--+============================================================================+
+PROCEDURE main_prc_address_contact( x_errbuf OUT nocopy  VARCHAR2 ,
+                                    x_retcode OUT nocopy NUMBER )
+IS
+  --================================================================
+  --Declaring local variables
+  --================================================================
+  l_ret_code            NUMBER;
+  l_return_status       VARCHAR2 (100);
+  l_err_buff            VARCHAR2 (4000);
+BEGIN
+  l_ret_code      := 0;
+  l_return_status := 'S';
+  l_err_buff      := NULL;
+ 
+  --===========================================================================
+  -- Update Address Contacts for the Supplier Sites --
+  --===========================================================================
+  print_debug_msg(p_message => 'Invoking the procedure update_address_contact()' , p_force => true);
+  update_address_contact( x_ret_code => l_ret_code , x_return_status => l_return_status , x_err_buf => l_err_buff);
+  print_debug_msg(p_message => '===========================================================================' , p_force => true);
+  print_debug_msg(p_message => 'Completed the execution of the procedure update_address_contact()' , p_force => true);
+  print_debug_msg(p_message => '===========================================================================' , p_force => true);
+EXCEPTION
+  WHEN OTHERS THEN
+    x_retcode := 2;
+    x_errbuf  := 'Exception in XX_AP_SUPP_CLD_INTF_PKG.main_prc_address_contact() - '||SQLCODE||' - '||SUBSTR(SQLERRM,1,3500);
+END main_prc_address_contact;
 --+============================================================================+
 --| Name          : update_supplier_telex                                      |
 --| Description   : This procedure will set telex in ap_supplier_sites_all     |
@@ -6301,6 +7105,11 @@ BEGIN
   xx_supp_dff(gn_request_id);
   print_debug_msg(p_message => 'exiting custom dff process' , p_force => true);
   print_debug_msg(p_message => '+---------------------------------------------------------------------------+' , p_force => true);
+  
+  print_debug_msg(p_message => 'Calling Create and Update Address Contact Point Process' , p_force => true);
+  main_prc_address_contact(x_errbuf =>l_err_buff , x_retcode=> l_ret_code);
+  print_debug_msg(p_message => 'exiting Create and Update Address Contact Point Process' , p_force => true);
+  print_debug_msg(p_message => '+---------------------------------------------------------------------------+' , p_force => true);
 
   print_debug_msg(p_message => 'Calling  Update_supplier_telex' , p_force => true);
   update_supplier_telex(x_errbuf =>l_err_buff , x_retcode=> l_ret_code);
@@ -6394,9 +7203,9 @@ BEGIN
 	  IF ln_request_id1 > 0
       THEN
          COMMIT;
-	     fnd_file.put_line(fnd_file.log,'Able to submit the XML Bursting Program to e-mail the output file');
+	     fnd_file.put_line(fnd_file.log,'Able to submit the XML Bursting Program to email the output file');
       ELSE
-         fnd_file.put_line(fnd_file.log,'Failed to submit the XML Bursting Program to e-mail the file - ' || SQLERRM);
+         fnd_file.put_line(fnd_file.log,'Failed to submit the XML Bursting Program to email the file - ' || SQLERRM);
       END IF;
   ELSE
       fnd_file.put_line(fnd_file.log,'Failed to submit the Report Program to generate the output file - ' || SQLERRM);
