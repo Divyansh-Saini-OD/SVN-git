@@ -149,8 +149,7 @@ IS
       PA_EXPENDITURE_ITEMS_ALL E,
       PA_COST_DISTRIBUTION_LINES_ALL G
     WHERE 1               =1
-    --AND G.gl_period_name IN (TO_CHAR(SYSDATE, 'MON-YY'), TO_CHAR(SYSDATE - 30, 'MON-YY'))
-     AND G.gl_period_name between 'DEC-2018' and 'JAN-2018'
+    AND G.gl_period_name IN (TO_CHAR(SYSDATE, 'MON-YY'), TO_CHAR(SYSDATE - 30, 'MON-YY'))
     AND G.line_type       = 'R'
     AND G.line_num        =
       (SELECT MAX(line_num)
@@ -212,8 +211,7 @@ IS
       PA_EXPENDITURE_ITEMS_ALL E,
       PA_COST_DISTRIBUTION_LINES_ALL G
     WHERE 1               =1
-   -- AND G.gl_period_name IN (TO_CHAR(SYSDATE, 'MON-YY'), TO_CHAR(SYSDATE - 30, 'MON-YY'))
-    AND G.gl_period_name between 'DEC-2018' and 'JAN-2018'
+    AND G.gl_period_name IN (TO_CHAR(SYSDATE, 'MON-YY'), TO_CHAR(SYSDATE - 30, 'MON-YY'))
     AND G.line_type       = 'R'
     AND G.line_num        =
       (SELECT MAX(line_num)
