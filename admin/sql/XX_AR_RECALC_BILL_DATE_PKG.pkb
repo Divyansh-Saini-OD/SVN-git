@@ -183,7 +183,7 @@ AS
        AND hcp.cust_account_id = hca.cust_account_id
        AND hca.cust_account_id = rct.bill_to_customer_id   
        AND xoha.header_id      = TO_NUMBER(rct.attribute14)        
-       AND TRUNC(rct.billing_date) <= TRUNC(NVL(TO_DATE(p_billing_date,'YYYY/MM/DD HH24:MI:SS'),sysdate))
+       AND TRUNC(NVL(rct.billing_date,sysdate)) <= TRUNC(NVL(TO_DATE(p_billing_date,'YYYY/MM/DD HH24:MI:SS'),sysdate)) 
        AND NOT EXISTS (
            SELECT 1 FROM xx_scm_bill_signal xsbs
             WHERE 1=1
