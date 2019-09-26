@@ -214,12 +214,12 @@ BEGIN
   END IF;
 END isalpha;
 -- +===================================================================+
--- | FUNCTION   : isNumeric                                       |
+-- | FUNCTION   : isNumeric                                            |
 -- |                                                                   |
--- | DESCRIPTION: Checks if only Numeric in a string              |
+-- | DESCRIPTION: Checks if only Numeric in a string                   |
 -- |                                                                   |
 -- |                                                                   |
--- | RETURNS    : Boolean (if numeric exists or not)             |
+-- | RETURNS    : Boolean (if numeric exists or not)                   |
 -- +===================================================================+
 FUNCTION isnumeric(
     p_string IN VARCHAR2)
@@ -1803,6 +1803,10 @@ IS
   ln_user_id                       NUMBER;
   ln_responsibility_id             NUMBER;
   ln_responsibility_appl_id        NUMBER;
+  lr_location_rec                  hz_location_v2pub.location_rec_type;
+  p_object_version_number          NUMBER;
+  p_object_version_number1         NUMBER;
+  p_party_site_use_rec             hz_party_site_v2pub.party_site_use_rec_type; 
   
 CURSOR c_supplier_site
 IS
@@ -1952,6 +1956,7 @@ BEGIN
 	lr_vendor_site_rec.duns_number                    :=NVL(c_sup_site.attribute5, FND_API.G_MISS_CHAR); -- Added as per Version 1.9 by Havish Kasina
 	lr_vendor_site_rec.accts_pay_code_combination_id  :=v_acct_pay;   -- Added as per Version 2.4 by Havish Kasina
     lr_vendor_site_rec.prepay_code_combination_id     :=v_prepay_cde; -- Added as per Version 2.4 by Havish Kasina
+	lr_vendor_site_rec.language                       := 'US';
 	
     fnd_msg_pub.initialize; --to make msg_count 0
     x_return_status:=NULL;
@@ -1988,57 +1993,64 @@ BEGIN
 	print_debug_msg(p_message=> l_program_step||'lr_vendor_site_rec.inactive_date '||lr_vendor_site_rec.inactive_date, p_force=>true);
 	
 	/* Added as per Version 3.0 */
-	IF lr_vendor_site_rec.inactive_date IS NOT NULL
-	THEN
-	    BEGIN
-          SELECT user_id,
-                 responsibility_id,
-                 responsibility_application_id
-            INTO ln_user_id,                      
-                 ln_responsibility_id,            
-                 ln_responsibility_appl_id
-            FROM fnd_user_resp_groups 
-           WHERE user_id=(SELECT user_id 
-                            FROM fnd_user 
-                           WHERE user_name='ODCDH')
-             AND responsibility_id=(SELECT responsibility_id 
-                                      FROM FND_RESPONSIBILITY 
-                                     WHERE responsibility_key = 'XX_US_CNV_CDH_CONVERSION');   -- need to confirm
-        EXCEPTION
-        WHEN OTHERS 
+	-- Update the Party Site    
+	BEGIN
+        SELECT user_id,
+               responsibility_id,
+               responsibility_application_id
+          INTO ln_user_id,                      
+               ln_responsibility_id,            
+               ln_responsibility_appl_id
+          FROM fnd_user_resp_groups 
+         WHERE user_id=(SELECT user_id 
+                          FROM fnd_user 
+                         WHERE user_name='ODCDH')
+           AND responsibility_id=(SELECT responsibility_id 
+                                    FROM FND_RESPONSIBILITY 
+                                   WHERE responsibility_key = 'XX_US_CNV_CDH_CONVERSION');   -- need to confirm
+    EXCEPTION
+         WHEN OTHERS 
         THEN
 			print_debug_msg(p_message=> l_program_step||'Exception in WHEN OTHERS for SET_CONTEXT_ERROR: '||SQLERRM, p_force=>true);
-        END;
+    END;
 		
-		print_debug_msg(p_message=> l_program_step||'To fetch the Party Site Information', p_force=>true);
-		BEGIN
-		  SELECT party_site_id, 
-				 party_site_number,
-				 object_version_number,
-                 'I'				 
-			INTO l_party_site_rec.party_site_id,
-			     l_party_site_rec.party_site_number,
-                 ln_obj_num,
-                 l_party_site_rec.status				 
-            FROM hz_party_sites A
-           WHERE 1 =1 
-             AND party_site_id = lr_existing_vendor_site_rec.party_site_id;
-		
-		EXCEPTION
-		  WHEN OTHERS
-		  THEN
-		      print_debug_msg(p_message=> l_program_step||'Unable to derive the party site information for site id:' || lr_existing_vendor_site_rec.vendor_site_id, p_force=>true);
-        END;
+	print_debug_msg(p_message=> l_program_step||'To fetch the Party Site Information', p_force=>true);
+	BEGIN
+	  SELECT party_site_id, 
+			 party_site_number,
+			 object_version_number,
+             location_id			 
+		INTO l_party_site_rec.party_site_id,
+		     l_party_site_rec.party_site_number,
+             ln_obj_num,
+             lr_location_rec.location_id			 
+        FROM hz_party_sites A
+       WHERE 1 =1 
+         AND party_site_id = lr_existing_vendor_site_rec.party_site_id;
+	
+	EXCEPTION
+	  WHEN OTHERS
+	  THEN
+	      print_debug_msg(p_message=> l_program_step||'Unable to derive the party site information for site id:' || lr_existing_vendor_site_rec.vendor_site_id, p_force=>true);
+    END;
+	
+    IF TRIM(c_sup_site.inactive_date) IS NOT NULL
+	THEN
+	    l_party_site_rec.status := 'I';
+	ELSE
+	    l_party_site_rec.status := 'A';
+    END IF;
         
-		FND_GLOBAL.apps_initialize( ln_user_id,
-                                    ln_responsibility_id,
-                                    ln_responsibility_appl_id
-                                  );
-		lc_return_status := NULL;
-		ln_msg_count     := NULL;
-		lc_msg_data      := NULL;
-		-------------------------Calling Party Site API
-		hz_party_site_v2pub.update_party_site( p_init_msg_list         =>  FND_API.G_FALSE
+	FND_GLOBAL.apps_initialize( ln_user_id,
+                                ln_responsibility_id,
+                                ln_responsibility_appl_id
+                              );
+	lc_return_status := NULL;
+	ln_msg_count     := NULL;
+	lc_msg_data      := NULL;
+	-------------------------Calling Party Site API
+	    print_debug_msg(p_message=> l_program_step||' Start of Calling Update Party Site API', p_force=>true);
+		hz_party_site_v2pub.update_party_site( p_init_msg_list         =>  fnd_api.g_false
                                              , p_party_site_rec        =>  l_party_site_rec
                                              , p_object_version_number =>  ln_obj_num
                                              , x_return_status         =>  lc_return_status
@@ -2046,24 +2058,119 @@ BEGIN
                                              , x_msg_data              =>  lc_msg_data
                                              ) ;
 		COMMIT;
+		print_debug_msg(p_message=> l_program_step||' End of Calling Update Party Site API', p_force=>true);
 		
 		IF lc_return_status = fnd_api.g_ret_sts_success 
         THEN
            print_debug_msg(p_message=> l_program_step||'Update of Party Site is Successful ', p_force=>true);
+		   		   
+		   SELECT object_version_number			 
+		     INTO p_object_version_number		 
+             FROM hz_locations A
+            WHERE 1 =1 
+              AND location_id = lr_location_rec.location_id;
+			  		  
+		   lr_location_rec.country          :=   NVL(c_sup_site.country, FND_API.G_MISS_CHAR);        
+           lr_location_rec.address1         :=   NVL(c_sup_site.address_line1, FND_API.G_MISS_CHAR);      
+           lr_location_rec.address2         :=   NVL(c_sup_site.address_line2, FND_API.G_MISS_CHAR);       
+           lr_location_rec.address3         :=   NVL(c_sup_site.address_line3, FND_API.G_MISS_CHAR);        
+           lr_location_rec.address4         :=   NVL(c_sup_site.address_line4, FND_API.G_MISS_CHAR);        
+           lr_location_rec.city             :=   NVL(c_sup_site.city, FND_API.G_MISS_CHAR);        
+           lr_location_rec.postal_code      :=   NVL(c_sup_site.postal_code, FND_API.G_MISS_CHAR);        
+           lr_location_rec.state            :=   NVL(c_sup_site.state, FND_API.G_MISS_CHAR);        
+           lr_location_rec.province         :=   NVL(c_sup_site.province, FND_API.G_MISS_CHAR);       
+           lr_location_rec.county           :=   NVL(c_sup_site.county, FND_API.G_MISS_CHAR); 
+		   lr_location_rec.language         :=   'US';
+		   x_return_status                  :=   NULL;
+           x_msg_count                      :=   NULL;
+           x_msg_data                       :=   NULL;
+		   print_debug_msg(p_message=> l_program_step||' Start of Calling update_location API', p_force=>true);
+		   hz_location_v2pub.update_location(p_init_msg_list              => fnd_api.g_true,
+                                             p_location_rec               => lr_location_rec,
+                                             p_object_version_number      => p_object_version_number,
+                                             x_return_status              => x_return_status,
+                                             x_msg_count                  => x_msg_count,
+                                             x_msg_data                   => x_msg_data
+                                            );
+											
+		   COMMIT;
+		   print_debug_msg(p_message=> l_program_step||' End of Calling update_location API', p_force=>true);
+		   
+		   IF x_return_status <> 'S'
+		   THEN
+		       print_debug_msg(p_message=> 'Update of Location got failed:'||x_msg_data, p_force=>true);
+               FOR i IN 1 .. x_msg_count
+               LOOP
+                   x_msg_data := fnd_msg_pub.get( p_msg_index => i, p_encoded => 'F');
+                   print_debug_msg(p_message=>  i|| ') '|| x_msg_data, p_force=>true);
+               END LOOP;
+		   ELSE
+		       -- Update the Party Site Use to Active when 
+			   
+			   IF TRIM(c_sup_site.inactive_date) IS NULL
+			   THEN
+			      -- To get thte Party Site Use information for the Party Site ID
+				  BEGIN
+				      print_debug_msg(p_message=> ' To get thte Party Site Use information for the Party Site ID: '||lr_existing_vendor_site_rec.party_site_id, p_force=>true);
+			          SELECT party_site_id,
+                             party_site_use_id,
+                             object_version_number
+				        INTO p_party_site_use_rec.party_site_id,
+					         p_party_site_use_rec.party_site_use_id,
+					    	 p_object_version_number1
+                        FROM hz_party_site_uses
+                       WHERE party_site_id = lr_existing_vendor_site_rec.party_site_id; 
+					   print_debug_msg(p_message=> l_program_step||' p_party_site_use_rec.party_site_id :'||p_party_site_use_rec.party_site_id, p_force=>true);
+					   print_debug_msg(p_message=> l_program_step||' p_party_site_use_rec.party_site_use_id :'||p_party_site_use_rec.party_site_use_id, p_force=>true);
+					   print_debug_msg(p_message=> l_program_step||' p_object_version_number1 :'|| p_object_version_number1, p_force=>true);
+				  EXCEPTION
+				  WHEN OTHERS
+				  THEN
+				      print_debug_msg(p_message=> ' Unable to get the Party Site Use information for the Party Site ID: '||lr_existing_vendor_site_rec.party_site_id, p_force=>true);
+					  print_debug_msg(p_message=> ' Error Message : '||SUBSTR(SQLERRM,1,255), p_force=>true);
+				  END;
+
+                  p_party_site_use_rec.status := 'A';
+				  
+                  print_debug_msg(p_message=> ' Start of Calling Update Party Site Use API', p_force=>true);
+                  hz_party_site_v2pub.update_party_site_use( p_init_msg_list            =>  FND_API.G_FALSE,
+                                                             p_party_site_use_rec       =>  p_party_site_use_rec,
+                                                             p_object_version_number    =>  p_object_version_number1,
+                                                             x_return_status            =>  x_return_status,
+                                                             x_msg_count                =>  x_msg_count,
+                                                             x_msg_data                 =>  x_msg_data
+                                                            );
+				  print_debug_msg(p_message=> ' End of Calling Update Party Site Use API', p_force=>true);					   
+                  COMMIT;
+                   print_debug_msg(p_message=> 'x_return_status = ' ||SUBSTR(x_return_status, 1, 255)); 
+                   print_debug_msg(p_message=> 'x_msg_count = ' ||TO_CHAR(x_msg_count)); 
+                   print_debug_msg(p_message=> 'x_msg_data = ' ||SUBSTR(x_msg_data, 1, 255)); 
+ 
+                   IF x_msg_count > 1 
+                   THEN 
+                       FOR i IN 1 .. x_msg_count
+                       LOOP
+                          x_msg_data := fnd_msg_pub.get( p_msg_index => i, p_encoded => 'F');
+                          print_debug_msg(p_message=>  i|| ') '|| x_msg_data, p_force=>true);
+                       END LOOP;
+                   END IF; 
+			    END IF;   
+			   			   
+           END IF;
+											
         ELSE
            print_debug_msg(p_message=> l_program_step||'Update of Party Site got failed:'||lc_msg_data, p_force=>true);
            IF ln_msg_count > 0 
             THEN
                 print_debug_msg(p_message=> l_program_step||'Error while updating .. ', p_force=>true);
-                FOR counter IN 1..ln_msg_count
+                FOR i IN 1..ln_msg_count
                 LOOP
-                      print_debug_msg(p_message=> l_program_step||'Error - '|| FND_MSG_PUB.Get(counter, FND_API.G_TRUE), p_force=>true);
+                    lc_msg_data := fnd_msg_pub.get( p_msg_index => i, p_encoded => 'F');
+                    print_debug_msg(p_message=>  i|| ') '|| lc_msg_data, p_force=>true);
                 END LOOP;
-                FND_MSG_PUB.Delete_Msg;
            END IF;
         END IF;
-        print_debug_msg(p_message=> l_program_step||'Update Party Site Return Status:' || lc_return_status, p_force=>true);	
-	END IF;
+    print_debug_msg(p_message=> l_program_step||'Update Party Site Return Status:' || lc_return_status, p_force=>true);	
 	
     BEGIN
       UPDATE xx_ap_cld_supp_sites_stg xas
@@ -2261,6 +2368,7 @@ BEGIN
         lv_vendor_contact_rec.fax_phone         := NVL(r_cont.fax,FND_API.G_MISS_CHAR);
         lv_vendor_contact_rec.fax_area_code     := NVL(r_cont.fax_area_code,FND_API.G_MISS_CHAR);
         lv_vendor_contact_rec.area_code         := NVL(r_cont.area_code,FND_API.G_MISS_CHAR);
+		lv_vendor_contact_rec.inactive_date     :=NVL(TO_DATE(r_cont.inactive_date,'YYYY/MM/DD'),FND_API.G_MISS_DATE); 
         fnd_msg_pub.initialize; --to make msg_count 0
         x_return_status := NULL;
         x_msg_count     := NULL;
@@ -2675,7 +2783,7 @@ BEGIN
                     LOOP
                        x_msg_data := fnd_msg_pub.get( p_msg_index => i, p_encoded => 'F');
                        print_debug_msg(p_message=>  i|| ') '|| x_msg_data, p_force=>true);
-                       END LOOP;
+                    END LOOP;
                 END IF;
 			ELSE
 			    print_debug_msg(p_message=> 'Creation of the PHONE Address Contact for the Site: '|| c_sup_site.vendor_site_code, p_force=>true);
@@ -2902,6 +3010,7 @@ BEGIN
   FOR r_sup_bank IN c_sup_bank
   LOOP
     print_debug_msg(p_message=> l_program_step||'Inside Cursor', p_force=>true);
+	print_debug_msg(p_message=> l_program_step||'Vendor Site Code : '||r_sup_bank.vendor_site_code, p_force=>true);
     BEGIN
       SELECT assa.vendor_site_id,
         assa.party_site_id,
@@ -2921,7 +3030,9 @@ BEGIN
     WHEN OTHERS THEN
       print_debug_msg(p_message=> l_program_step||'Error- Get supp_site_id and supp_party_site_id' || SQLCODE || sqlerrm, p_force=>true);
     END;
-    IF r_sup_bank.account_id >0 AND r_sup_bank.instrument_uses_id IS NULL THEN
+    IF r_sup_bank.account_id >0 AND r_sup_bank.instrument_uses_id IS NULL 
+	THEN
+	  print_debug_msg(p_message=> l_program_step||'Account ID exists and Instrument Uses ID is NULL', p_force=>true);
       ----------------------Assigning Attributes
       p_payee.supplier_site_id := lv_supp_site_id;
       p_payee.party_id         := lv_acct_owner_party_id;
@@ -2936,6 +3047,7 @@ BEGIN
       p_assignment_attribs.instrument.instrument_id:=r_sup_bank.account_id;
       -- External Bank Account ID
       -- p_assignment_attribs.priority   := 1;
+	  print_debug_msg(p_message=> l_program_step||'Primary Flag :'||r_sup_bank.primary_flag, p_force=>true);
 	  IF r_sup_bank.primary_flag = 'Y'
 	  THEN
 	      p_assignment_attribs.priority := 1;
@@ -2947,15 +3059,51 @@ BEGIN
       x_msg_count    :=NULL;
       x_msg_data     :=NULL;
       x_response     :=NULL;
-      iby_ext_bankacct_pub.check_bank_acct_owner ( p_api_version =>p_api_version, p_init_msg_list=>p_init_msg_list, p_bank_acct_id=>r_sup_bank.account_id, p_acct_owner_party_id =>lv_acct_owner_party_id, x_return_status=>x_return_status, x_msg_count=>x_msg_count, x_msg_data=>x_msg_data, x_response=>x_response );
-      IF x_return_status <>'S' THEN --------------No join owner exists
+	  print_debug_msg(p_message=> l_program_step||'Start of Calling API to check Joint Owner exists or not', p_force=>true);
+      iby_ext_bankacct_pub.check_bank_acct_owner ( p_api_version =>p_api_version, 
+	                                               p_init_msg_list=>p_init_msg_list, 
+												   p_bank_acct_id=>r_sup_bank.account_id, 
+												   p_acct_owner_party_id =>lv_acct_owner_party_id, 
+												   x_return_status=>x_return_status, 
+												   x_msg_count=>x_msg_count, 
+												   x_msg_data=>x_msg_data, 
+												   x_response=>x_response );
+	  print_debug_msg(p_message=> l_program_step||'End of Calling API to check Joint Owner exists or not', p_force=>true);
+      IF x_return_status <>'S' 
+	  THEN --------------No join owner exists
+	    print_debug_msg(p_message=> l_program_step||'No join owner exists', p_force=>true);
+        print_debug_msg(p_message=> l_program_step||'x_return_status ' || x_return_status , p_force=>true);
+        FOR i IN 1 .. x_msg_count--fnd_msg_pub.count_msg
+        LOOP
+            fnd_msg_pub.get ( p_msg_index => i , p_encoded => 'F' , p_data => l_msg , p_msg_index_out => ln_msg_index_num );
+            print_debug_msg(p_message=> l_program_step||'The API call failed with error ' || l_msg , p_force=>true);
+        END LOOP;
         fnd_msg_pub.initialize;                 --to make msg_count 0
         x_return_status:=NULL;
         x_msg_count    :=NULL;
         x_msg_data     :=NULL;
         x_response     :=NULL;
         -------------------------Calling Joint Account Owner API
-        iby_ext_bankacct_pub.add_joint_account_owner ( p_api_version =>p_api_version, p_init_msg_list=>p_init_msg_list, p_bank_account_id=>r_sup_bank.account_id, p_acct_owner_party_id =>lv_acct_owner_party_id, x_joint_acct_owner_id=>l_joint_acct_owner_id, x_return_status=>x_return_status, x_msg_count=>x_msg_count, x_msg_data=>x_msg_data, x_response=>x_response );
+		print_debug_msg(p_message=> l_program_step||'Start of Calling Joint Account Owner API', p_force=>true);
+        iby_ext_bankacct_pub.add_joint_account_owner ( p_api_version =>p_api_version, 
+		                                               p_init_msg_list=>p_init_msg_list, 
+													   p_bank_account_id=>r_sup_bank.account_id, 
+													   p_acct_owner_party_id =>lv_acct_owner_party_id, 
+													   x_joint_acct_owner_id=>l_joint_acct_owner_id, 
+													   x_return_status=>x_return_status, 
+													   x_msg_count=>x_msg_count, 
+													   x_msg_data=>x_msg_data, 
+													   x_response=>x_response );
+		print_debug_msg(p_message=> l_program_step||'End of Calling Joint Account Owner API', p_force=>true);
+		IF x_return_status <>'S' 
+	    THEN 
+	        print_debug_msg(p_message=> l_program_step||'Unable to Add Joint Account Owner', p_force=>true);
+            FOR i IN 1 .. x_msg_count--fnd_msg_pub.count_msg
+            LOOP
+               fnd_msg_pub.get ( p_msg_index => i , p_encoded => 'F' , p_data => l_msg , p_msg_index_out => ln_msg_index_num );
+               print_debug_msg(p_message=> l_program_step||'The API call failed with error ' || l_msg , p_force=>true);
+            END LOOP;
+		END IF;
         print_debug_msg(p_message=> l_program_step||'L_JOINT_ACCT_OWNER_ID = ' || l_joint_acct_owner_id, p_force=>true);
         print_debug_msg(p_message=> l_program_step||' ADD_JOINT_ACCOUNT_OWNER X_RETURN_STATUS = ' || x_return_status, p_force=>true);
         print_debug_msg(p_message=> l_program_step||'ADD_JOINT_ACCOUNT_OWNER fnd_api.g_ret_sts_success ' || fnd_api.g_ret_sts_success , p_force=>true);
@@ -2966,8 +3114,17 @@ BEGIN
       x_msg_count    :=NULL;
       x_msg_data     :=NULL;
       x_response     :=NULL;
-      --------------------Call the API for istr assignment
-      iby_disbursement_setup_pub.set_payee_instr_assignment (p_api_version => p_api_version, p_init_msg_list => p_init_msg_list, p_commit => p_commit, x_return_status => x_return_status, x_msg_count => x_msg_count, x_msg_data => x_msg_data, p_payee => p_payee, p_assignment_attribs => p_assignment_attribs, x_assign_id => l_assign_id, x_response => x_response );
+      --------------------Call the API for instr assignment
+      iby_disbursement_setup_pub.set_payee_instr_assignment (p_api_version => p_api_version, 
+	                                                         p_init_msg_list => p_init_msg_list, 
+															 p_commit => p_commit,
+															 x_return_status => x_return_status, 
+															 x_msg_count => x_msg_count, 
+															 x_msg_data => x_msg_data, 
+															 p_payee => p_payee, 
+															 p_assignment_attribs => p_assignment_attribs, 
+															 x_assign_id => l_assign_id, 
+															 x_response => x_response );
       COMMIT;
       print_debug_msg(p_message=> l_program_step||' SET_PAYEE_INSTR_ASSIGNMENT X_ASSIGN_ID = ' || l_assign_id, p_force=>true);
       print_debug_msg(p_message=> l_program_step||'SET_PAYEE_INSTR_ASSIGNMENT X_RETURN_STATUS = ' || x_return_status, p_force=>true);
@@ -2996,13 +3153,27 @@ BEGIN
       x_bank_branch_rec.acct_owner_party_id:=lv_acct_owner_party_id;
       x_bank_branch_rec.country_code       :=r_sup_bank.country_code;
       x_bank_branch_rec.bank_account_name  := r_sup_bank.bank_account_name;
-      x_bank_branch_rec.bank_account_num   :=r_sup_bank.bank_account_num;  
+      x_bank_branch_rec.bank_account_num   :=r_sup_bank.bank_account_num; 
+      x_bank_branch_rec.acct_type          := 'Supplier';	 
+	  
       fnd_msg_pub.initialize; --to make msg_count 0
       x_return_status:=NULL;
       x_msg_count    :=NULL;
       x_msg_data     :=NULL;
       x_response     :=NULL;
-      iby_ext_bankacct_pub.create_ext_bank_acct ( p_api_version => 1.0, p_init_msg_list => fnd_api.g_true, p_ext_bank_acct_rec => x_bank_branch_rec, p_association_level => 'SS', p_supplier_site_id => lv_supp_site_id, p_party_site_id => lv_supp_party_site_id, p_org_id => lv_org_id, p_org_type => 'OPERATING_UNIT', x_acct_id => l_account_id, x_return_status => x_return_status, x_msg_count => x_msg_count, x_msg_data =>x_msg_data, x_response => x_response );
+      iby_ext_bankacct_pub.create_ext_bank_acct ( p_api_version => 1.0, 
+	                                              p_init_msg_list => fnd_api.g_true, 
+												  p_ext_bank_acct_rec => x_bank_branch_rec, 
+												  p_association_level => 'SS',
+												  p_supplier_site_id => lv_supp_site_id, 
+												  p_party_site_id => lv_supp_party_site_id, 
+												  p_org_id => lv_org_id, 
+												  p_org_type => 'OPERATING_UNIT', 
+												  x_acct_id => l_account_id,
+												  x_return_status => x_return_status, 
+												  x_msg_count => x_msg_count, 
+												  x_msg_data =>x_msg_data, 
+												  x_response => x_response );
       print_debug_msg(p_message=> l_program_step||'create_ext_bank_acct l_account_id = ' || l_account_id, p_force=>true);
       print_debug_msg(p_message=> l_program_step||'create_ext_bank_acct X_RETURN_STATUS = ' || x_return_status, p_force=>true);
       print_debug_msg(p_message=> l_program_step||'create_ext_bank_acct fnd_api.g_ret_sts_success ' || fnd_api.g_ret_sts_success , p_force=>true);
@@ -4546,6 +4717,7 @@ BEGIN
   FOR r_sup_bank IN c_sup_bank
   LOOP
     print_debug_msg(p_message=> l_program_step||'Inside Cursor', p_force=>true);
+	print_debug_msg(p_message=> l_program_step||'Vendor Site : '||r_sup_bank.vendor_site_code, p_force=>true);
     BEGIN
       SELECT assa.vendor_site_id,
         assa.party_site_id,
@@ -4586,21 +4758,34 @@ BEGIN
 	THEN 
 	    p_assignment_attribs.end_date            := TO_DATE(r_sup_bank.end_date,'YYYY/MM/DD');
 	END IF;
+    print_debug_msg(p_message=> l_program_step||'Primary Flag : '||r_sup_bank.primary_flag, p_force=>true);
+	print_debug_msg(p_message=> l_program_step||'Start Date : '||p_assignment_attribs.start_date, p_force=>true);
+	print_debug_msg(p_message=> l_program_step||'End Date : '||p_assignment_attribs.end_date, p_force=>true);
     fnd_msg_pub.initialize; --to make msg_count 0
     x_return_status:=NULL;
     x_msg_count    :=NULL;
     x_msg_data     :=NULL;
     x_response     :=NULL;
-    --------------------Call the API for istr assignemtn
-    iby_disbursement_setup_pub.set_payee_instr_assignment (p_api_version => p_api_version, p_init_msg_list => p_init_msg_list, p_commit => p_commit, x_return_status => x_return_status, x_msg_count => x_msg_count, x_msg_data => x_msg_data, p_payee => p_payee, p_assignment_attribs => p_assignment_attribs, x_assign_id => l_assign_id, x_response => x_response );
+    --------------------Call the API for instr assignment
+	print_debug_msg(p_message=> l_program_step||'Start of calling API Instr Assignment', p_force=>true);
+    iby_disbursement_setup_pub.set_payee_instr_assignment (p_api_version => p_api_version, 
+	                                                       p_init_msg_list => p_init_msg_list,
+														   p_commit => p_commit,
+														   x_return_status => x_return_status, 
+														   x_msg_count => x_msg_count, 
+														   x_msg_data => x_msg_data, 
+														   p_payee => p_payee, 
+														   p_assignment_attribs => p_assignment_attribs, 
+														   x_assign_id => l_assign_id, 
+														   x_response => x_response );
     COMMIT;
+	print_debug_msg(p_message=> l_program_step||'End of calling API Instr Assignment', p_force=>true);
     print_debug_msg(p_message=> l_program_step||'SET_PAYEE_INSTR_ASSIGNMENT END_DATE X_ASSIGN_ID = ' || l_assign_id, p_force=>true);
     print_debug_msg(p_message=> l_program_step||'SET_PAYEE_INSTR_ASSIGNMENT END_DATE X_RETURN_STATUS = ' || x_return_status, p_force=>true);
-    print_debug_msg(p_message=> l_program_step||'SET_PAYEE_INSTR_ASSIGNMENT END_DATE fnd_api.g_ret_sts_success ' || fnd_api.g_ret_sts_success , p_force=>true);
     print_debug_msg(p_message=> l_program_step||'SET_PAYEE_INSTR_ASSIGNMENT END_DATE X_MSG_COUNT = ' || x_msg_count, p_force=>true);
     IF x_return_status = 'E' THEN
       print_debug_msg(p_message=> l_program_step||'x_return_status ' || x_return_status , p_force=>true);
-      print_debug_msg(p_message=> l_program_step||'fnd_api.g_ret_sts_success ' || fnd_api.g_ret_sts_success , p_force=>true);
+      print_debug_msg(p_message=> l_program_step||'x_msg_data ' || x_msg_data , p_force=>true);
       FOR i IN 1 .. x_msg_count--fnd_msg_pub.count_msg
       LOOP
         fnd_msg_pub.get ( p_msg_index => i , p_encoded => 'F' , p_data => l_msg , p_msg_index_out => ln_msg_index_num );
@@ -4843,6 +5028,7 @@ BEGIN
           WHERE bank_id       =l_sup_bank_id
           AND branch_id       =l_sup_bank_branch_id
           AND bank_account_num=l_sup_bank_type.bank_account_num
+		  AND bank_account_type = 'Supplier'
           AND SYSDATE BETWEEN NVL(start_date,SYSDATE-1) AND NVL(end_date,SYSDATE+1);
           l_sup_bank_type.account_id :=l_bank_account_id;
         EXCEPTION
@@ -5638,7 +5824,8 @@ BEGIN
 				vat_code,                      -- Added as per Version 3.0
 				vat_registration_num,          -- Added as per Version 3.0
 				remit_advice_delivery_method,  -- Added as per Version 3.0
-				remittance_email               -- Added as per Version 3.0
+				remittance_email,              -- Added as per Version 3.0
+				language
               )
               VALUES
               (
@@ -5729,7 +5916,8 @@ BEGIN
 				l_sup_site_type(l_idx).vat_code,                      -- Added as per Version 3.0
 				l_sup_site_type(l_idx).vat_registration_num,          -- Added as per Version 3.0
 				l_sup_site_type(l_idx).remit_advice_delivery_method,  -- Added as per Version 3.0
-				l_sup_site_type(l_idx).remittance_email               -- Added as per Version 3.0
+				l_sup_site_type(l_idx).remittance_email,              -- Added as per Version 3.0
+				'AMERICAN'
               );
 			  lc_intf_ins_flag:='Y';
           EXCEPTION
