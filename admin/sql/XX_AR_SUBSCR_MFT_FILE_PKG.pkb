@@ -3,7 +3,7 @@ WHENEVER SQLERROR CONTINUE;
 WHENEVER OSERROR EXIT FAILURE ROLLBACK;
 
 
-create or replace PACKAGE BODY xx_ar_subscr_mft_file_pkg
+CREATE OR REPLACE PACKAGE BODY xx_ar_subscr_mft_file_pkg
 AS
   -- +=========================================================================
   -- ====================+
@@ -37,6 +37,7 @@ AS
   -- clause                 |
   -- | 1.1         17-SEP-19    Priyam P         added wrapper program to be
   -- called from Shell script
+  --|  1.2         26-SEP-19     Priyam P        Changed Cursor c_get_mft_data
   -- +=========================================================================
   -- ===================+
   gc_package_name CONSTANT all_objects.object_name%TYPE :=
@@ -111,6 +112,7 @@ AS
     SELECT
       XAS.contract_number,
       XAS.contract_id,
+      xas.billing_sequence_number,
       XAS.initial_order_number,
       XAS.contract_name,
       XAC.card_type,
@@ -120,7 +122,8 @@ AS
       XAC.card_encryption_hash,
       XAS.authorization_code auth_status,
       NVL(XAS.auth_message,'UNDEFINED') auth_message,
-      TO_CHAR(XAS.last_auth_attempt_date,'DDMMYYYY') error_date
+      TO_CHAR(XAS.last_auth_attempt_date,'DDMMYYYY') error_date,
+      MAX(xas.contract_line_number)
     FROM
       xx_ar_subscriptions XAS,
       xx_ar_contracts XAC
@@ -136,17 +139,32 @@ AS
         WHERE
           XAS1.contract_id = XAS.contract_id
       )
-  AND XAS.contract_line_number IN
+    /* AND XAS.contract_line_number IN
     (
-      SELECT
-        MAX(XAS2.contract_line_number)
-      FROM
-        xx_ar_subscriptions XAS2
-      WHERE
-        XAS2.contract_id = XAS.contract_id
-    )
+    SELECT
+    MAX(XAS2.contract_line_number)
+    FROM
+    xx_ar_subscriptions XAS2
+    WHERE
+    XAS2.contract_id = XAS.contract_id
+    )*/
   AND TRUNC(XAS.initial_auth_attempt_date) = TRUNC(fnd_date.canonical_to_date(
-    NVL(p_as_of_date,SYSDATE)));
+    NVL(p_as_of_date,SYSDATE)))
+  GROUP BY
+    XAS.contract_number,
+    XAS.contract_id,
+    xas.billing_sequence_number,
+    XAS.initial_order_number,
+    XAS.contract_name,
+    XAC.card_type,
+    XAC.card_token,
+    TO_CHAR(XAC.card_expiration_date,'YYMM'),
+    XAC.card_encryption_label,
+    XAC.card_encryption_hash,
+    XAS.authorization_code,
+    NVL(XAS.auth_message,'UNDEFINED'),
+    TO_CHAR(XAS.last_auth_attempt_date,'DDMMYYYY');
+  
 TYPE LC_MFT_DATA_TAB
 IS
   TABLE OF c_get_mft_data%ROWTYPE INDEX BY PLS_INTEGER;
