@@ -164,7 +164,7 @@ AS
            rct.trx_number,
            rct.customer_trx_id ,
            rct.attribute14  ,
-           NVL(xoha.parent_order_num,rct.trx_number) parent_order_num      
+           rct.trx_number parent_order_num      
       FROM hz_customer_profiles hcp ,
            hz_cust_accounts hca,
            ra_customer_trx_all rct,
@@ -183,7 +183,7 @@ AS
        AND hcp.cust_account_id = hca.cust_account_id
        AND hca.cust_account_id = rct.bill_to_customer_id   
        AND xoha.header_id      = TO_NUMBER(rct.attribute14)        
-       AND TRUNC(NVL(rct.billing_date,TO_DATE(p_billing_date,'YYYY/MM/DD HH24:MI:SS'))) <= TRUNC(NVL(TO_DATE(p_billing_date,'YYYY/MM/DD HH24:MI:SS'),sysdate)) 
+       AND TRUNC(NVL(rct.billing_date,TO_DATE(p_billing_date,'YYYY/MM/DD HH24:MI:SS'))) <= TRUNC(NVL(TO_DATE(p_billing_date,'YYYY/MM/DD HH24:MI:SS'),sysdate))
        AND NOT EXISTS (
            SELECT 1 FROM xx_scm_bill_signal xsbs
             WHERE 1=1
