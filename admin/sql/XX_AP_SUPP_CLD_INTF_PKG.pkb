@@ -1828,6 +1828,15 @@ SELECT *
 	   AND tv.source_value1 = c_cloud_tolerance
        AND tv.enabled_flag = 'Y'
        AND td.enabled_flag = 'Y';
+	   
+ CURSOR c_get_party_site_use(c_party_site_id NUMBER)
+ IS 
+   SELECT party_site_id,
+          party_site_use_id,
+          object_version_number,
+		  site_use_type
+     FROM hz_party_site_uses
+    WHERE party_site_id = c_party_site_id; 
    
 BEGIN
   -- Assign Basic Values
@@ -2110,51 +2119,42 @@ BEGIN
 			   IF TRIM(c_sup_site.inactive_date) IS NULL
 			   THEN
 			      -- To get thte Party Site Use information for the Party Site ID
-				  BEGIN
-				      print_debug_msg(p_message=> ' To get thte Party Site Use information for the Party Site ID: '||lr_existing_vendor_site_rec.party_site_id, p_force=>true);
-			          SELECT party_site_id,
-                             party_site_use_id,
-                             object_version_number
-				        INTO p_party_site_use_rec.party_site_id,
-					         p_party_site_use_rec.party_site_use_id,
-					    	 p_object_version_number1
-                        FROM hz_party_site_uses
-                       WHERE party_site_id = lr_existing_vendor_site_rec.party_site_id; 
-					   print_debug_msg(p_message=> l_program_step||' p_party_site_use_rec.party_site_id :'||p_party_site_use_rec.party_site_id, p_force=>true);
-					   print_debug_msg(p_message=> l_program_step||' p_party_site_use_rec.party_site_use_id :'||p_party_site_use_rec.party_site_use_id, p_force=>true);
-					   print_debug_msg(p_message=> l_program_step||' p_object_version_number1 :'|| p_object_version_number1, p_force=>true);
-				  EXCEPTION
-				  WHEN OTHERS
-				  THEN
-				      print_debug_msg(p_message=> ' Unable to get the Party Site Use information for the Party Site ID: '||lr_existing_vendor_site_rec.party_site_id, p_force=>true);
-					  print_debug_msg(p_message=> ' Error Message : '||SUBSTR(SQLERRM,1,255), p_force=>true);
-				  END;
-
-                  p_party_site_use_rec.status := 'A';
-				  
-                  print_debug_msg(p_message=> ' Start of Calling Update Party Site Use API', p_force=>true);
-                  hz_party_site_v2pub.update_party_site_use( p_init_msg_list            =>  FND_API.G_FALSE,
-                                                             p_party_site_use_rec       =>  p_party_site_use_rec,
-                                                             p_object_version_number    =>  p_object_version_number1,
-                                                             x_return_status            =>  x_return_status,
-                                                             x_msg_count                =>  x_msg_count,
-                                                             x_msg_data                 =>  x_msg_data
-                                                            );
-				  print_debug_msg(p_message=> ' End of Calling Update Party Site Use API', p_force=>true);					   
-                  COMMIT;
-                   print_debug_msg(p_message=> 'x_return_status = ' ||SUBSTR(x_return_status, 1, 255)); 
-                   print_debug_msg(p_message=> 'x_msg_count = ' ||TO_CHAR(x_msg_count)); 
-                   print_debug_msg(p_message=> 'x_msg_data = ' ||SUBSTR(x_msg_data, 1, 255)); 
+				  FOR c_party_use IN c_get_party_site_use(lr_existing_vendor_site_rec.party_site_id)
+				  LOOP
+				      p_party_site_use_rec.party_site_id     := c_party_use.party_site_id;
+					  p_party_site_use_rec.party_site_use_id := c_party_use.party_site_use_id;
+					  p_object_version_number1               := c_party_use.object_version_number;
+					  p_party_site_use_rec.status            := 'A';
+					  
+					  print_debug_msg(p_message=> l_program_step||' p_party_site_use_rec.party_site_id :'||p_party_site_use_rec.party_site_id, p_force=>true);
+					  print_debug_msg(p_message=> l_program_step||' p_party_site_use_rec.party_site_use_id :'||p_party_site_use_rec.party_site_use_id, p_force=>true);
+					  print_debug_msg(p_message=> l_program_step||' p_object_version_number1 :'|| p_object_version_number1, p_force=>true);
+					  print_debug_msg(p_message=> l_program_step||' site_use_type :'|| c_party_use.site_use_type, p_force=>true);
+			  
+                      print_debug_msg(p_message=> ' Start of Calling Update Party Site Use API', p_force=>true);
+                      hz_party_site_v2pub.update_party_site_use( p_init_msg_list            =>  FND_API.G_FALSE,
+                                                                 p_party_site_use_rec       =>  p_party_site_use_rec,
+                                                                 p_object_version_number    =>  p_object_version_number1,
+                                                                 x_return_status            =>  x_return_status,
+                                                                 x_msg_count                =>  x_msg_count,
+                                                                 x_msg_data                 =>  x_msg_data
+                                                               );
+				      print_debug_msg(p_message=> ' End of Calling Update Party Site Use API', p_force=>true);					   
+                      COMMIT;
+                      print_debug_msg(p_message=> 'x_return_status = ' ||SUBSTR(x_return_status, 1, 255)); 
+                      print_debug_msg(p_message=> 'x_msg_count = ' ||TO_CHAR(x_msg_count)); 
+                      print_debug_msg(p_message=> 'x_msg_data = ' ||SUBSTR(x_msg_data, 1, 255)); 
  
-                   IF x_msg_count > 1 
-                   THEN 
-                       FOR i IN 1 .. x_msg_count
-                       LOOP
-                          x_msg_data := fnd_msg_pub.get( p_msg_index => i, p_encoded => 'F');
-                          print_debug_msg(p_message=>  i|| ') '|| x_msg_data, p_force=>true);
-                       END LOOP;
-                   END IF; 
-			    END IF;   
+                      IF x_msg_count > 1 
+                      THEN 
+                          FOR i IN 1 .. x_msg_count
+                          LOOP
+                             x_msg_data := fnd_msg_pub.get( p_msg_index => i, p_encoded => 'F');
+                             print_debug_msg(p_message=>  i|| ') '|| x_msg_data, p_force=>true);
+                          END LOOP;
+                      END IF; 
+				  END LOOP; -- c_party_use
+			   END IF;  --  IF TRIM(c_sup_site.inactive_date) IS NULL
 			   			   
            END IF;
 											
