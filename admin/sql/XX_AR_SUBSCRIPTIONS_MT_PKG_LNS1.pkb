@@ -4,86 +4,92 @@ WHENEVER OSERROR EXIT FAILURE ROLLBACK;
 
 CREATE OR REPLACE PACKAGE BODY xx_ar_subscriptions_mt_pkg
 AS
--- +=============================================================================================+
--- |  Office Depot                                                                               |
--- +=============================================================================================+
--- |  Name:  XX_AR_SUBSCRIPTIONS_MT_PKG                                                          |
--- |                                                                                             |
--- |  Description:  This package body is to process subscription billing                         |
--- |                                                                                             |
--- |  Change Record:                                                                             |
--- +=============================================================================================+
--- | Version     Date         Author              Remarks                                        |
--- | =========   ===========  =============       ===============================================|
--- | 1.0         11-DEC-2017  Sreedhar Mohan      Initial version                                |
--- | 2.0         03-JAN-2018  Jai Shankar Kumar   Changed incorporated as per MD70               |
--- | 3.0         07-MAR-2018  Sahithi Kunuru      Code fixes                                     |
--- | 4.0         04-APR-2018  JAI_CG              Modified as per JIRA# 20153                    |
--- | 5.0         06-JUN-2018  Sahithi K           Modified history payload as per NAIT-42103     |
--- | 6.0         15-JUN-2018  Sahithi K           Modified email service to trigger for BS       |
--- |                                              SKUs as per NAIT-30598                         |
--- | 7.0         26-JULY-2018 Sahithi K           adding SKU# and amount fields to               |
--- |                                              contract email payload NAIT-52868              |
--- | 8.0         06-AUG-2018  Sahithi K           added new procedure to fetch SALES             |
--- |                                              ACCOUNTING MATRIX information NAIT-55057       |
--- | 9.0         14-SEP-2018  Sahithi K           code changes to automate card failure flow     |
--- |                                              NAIT-59644                                     |
--- | 10.0        17-OCT-2018  Sahithi K           code changes to remove initial order           |
--- |                                              dependency for termination SKU NAIT-65525      |
--- | 11.0        23-OCT-2018  Sahithi K           code changes for AB customers NAIT-68178       |
--- | 12.0        26-OCT-2018  Sahithi K           modified payload of recurring email to         |
--- |                                              include cancelContractRequest NAIT-69296       |
--- | 13.0        26-DEC-2018  Sahithi K           AB billing code changes -NAIT-68178            |
--- |                                              1.checking credit limit of AB customer         |
--- |                                              2.send email to credit dept if credit limit    |
--- |                                                is reached                                   |
--- | 14.0        16-JAN-2019  Punit Gupta         Added new Procedure for NAIT-78415             |
--- | 15.0        04-FEB-2019  Sahithi K           1.code modification to use contract_id as      | 
--- |                                              unique instead of contract# NAIT-77723         |
--- |                                              2.charge seq =1 for auto renewed SS            |
--- |                                              SKU's NAIT-79218                               |
--- | 16.0        07-MAR-2019  Sahithi K           modified program_id logic in UPSERT script     |
--- |                                              from req_id to con_program_id NAIT-87055       |
--- | 17.0        09-APR-2019  Sahithi K           modified interface_line_attribute1 with        |
--- |                                              order#-inv_seq_counter NAIT-91124              |
--- | 18.0        15-APR-2019  Sahithi K           trigger payment failure for business select    |
--- |                                              customer same as SS SKU's NAIT-84277           |
--- | 19.0        15-APR-2019  Sahithi K           trigger recurring SUCCESS/FAILURE email        |
--- |                                              for auto renewed BS2 contracts NAIT-90173      |
--- | 20.0        24-APR-2019  Sahithi K           NAIT-85914 1.pass trans_id in payment auth     |
--- |                                                           payload                           |
--- |                                              2.pass wallet_type while inserting data        |
--- |                                                into ORDT table based on translation         |
--- | 21.0        24-APR-2019  Sahithi K           Perform AVS check to get trans_id for          |
--- |                                              existing contracts in SCM NAIT-89230           |
--- | 22.0        24-APR-2019  Sahithi K           Update SCM with trans_id for existing          |
--- |                                              contracts NAIT-89231                           |
--- | 23.0        24-APR-2019  Sahithi K           add close_date field which is received         |
--- |                                              from SCM extract NAIT-90255                    |
--- | 24.0        25-APR-2019  Punit Gupta         Made changes in the send_email_autorenew       |
--- |                                              Procedure for NAIT-90171                       |
--- | 25.0        22-APR-2019  Dattatray Bachate   Added Procedure-xx_ar_subs_payload_purge_prc   |
--- |                                              for NAIT-83868-> To purge Subscriptions Payload|
--- |                                              and Error table more than 30 days older data   |
--- | 26.0        03-MAY-2019  Kayeed Ahmed        Added Procedure-get_store_close_info NAIT-93356|
--- |                                              TO Closed Stores Accounting Remapping          |
--- | 27.0        13-MAY-2019  Dattatray Bachate   Added Procedure-xx_relocation_store_vald_prc   |
--- |                                              Procedure to validate the location in HR       |
--- | 28.0        20-JUN-2019  Punit Gupta         Added Procedure for Defect# NAIT- 72201        |
--- |                                              to update the receipt number for AB customers  |
--- | 29.0        24-JUL-2019  Arvind K            Modified procedure get_pos_info Added parameter|
--- |                                              p_orig_sys_doc_ref for validating POS orders   |
--- |                                              when data is not available in procedure        |
--- |                                              xx_ar_pos_inv_order_ref for NAIT-87805         |
--- | 30.0        24-JUL-2019  Arvind K            Modified procedure get_invoice_line_info Added |
--- |                                              parameter p_cont_line_amt for validating POS   |
--- |                                              orders when getting discount amount for the    |
--- |                                              same invoice and same item for NAIT-87805      |
--- | 31.0        25-JUL-2019  Dattatray Bachate   Added Logic to handle AVS check for NAIT-92855 |
--- |                                              get_cc_trans_id_information, send_billing_email|
--- | 31.0        25-JUL-2019  Sahithi K           write off INV related to TERMINATED and CLOSED |
--- |                                              contracts in SCM - NAIT-101994                 |
--- +=============================================================================================+
+-- +====================================================================================================+
+-- |  Office Depot                                                                                      |
+-- +====================================================================================================+
+-- |  Name:  XX_AR_SUBSCRIPTIONS_MT_PKG                                                                 |
+-- |                                                                                                    |
+-- |  Description:  This package body is to process subscription billing                                |
+-- |                                                                                                    |
+-- |  Change Record:                                                                                    |
+-- +====================================================================================================+
+-- | Version     Date         Author                 Remarks                                            |
+-- | =========   ===========  =============          ===================================================|
+-- | 1.0         11-DEC-2017  Sreedhar Mohan         Initial version                                    |
+-- | 2.0         03-JAN-2018  Jai Shankar Kumar      Changed incorporated as per MD70                   |
+-- | 3.0         07-MAR-2018  Sahithi Kunuru         Code fixes                                         |
+-- | 4.0         04-APR-2018  JAI_CG                 Modified as per JIRA# 20153                        |
+-- | 5.0         06-JUN-2018  Sahithi K              Modified history payload as per NAIT-42103         |
+-- | 6.0         15-JUN-2018  Sahithi K              Modified email service to trigger for BS           |
+-- |                                                 SKUs as per NAIT-30598                             |
+-- | 7.0         26-JULY-2018 Sahithi K              adding SKU# and amount fields to                   |
+-- |                                                 contract email payload NAIT-52868                  |
+-- | 8.0         06-AUG-2018  Sahithi K              added new procedure to fetch SALES                 |
+-- |                                                 ACCOUNTING MATRIX information NAIT-55057           |
+-- | 9.0         14-SEP-2018  Sahithi K              code changes to automate card failure flow         |
+-- |                                                 NAIT-59644                                         |
+-- | 10.0        17-OCT-2018  Sahithi K              code changes to remove initial order               |
+-- |                                                 dependency for termination SKU NAIT-65525          |
+-- | 11.0        23-OCT-2018  Sahithi K              code changes for AB customers NAIT-68178           |
+-- | 12.0        26-OCT-2018  Sahithi K              modified payload of recurring email to             |
+-- |                                                 include cancelContractRequest NAIT-69296           |
+-- | 13.0        26-DEC-2018  Sahithi K              AB billing code changes -NAIT-68178                |
+-- |                                                 1.checking credit limit of AB customer             |
+-- |                                                 2.send email to credit dept if credit limit        |
+-- |                                                   is reached                                       |
+-- | 14.0        16-JAN-2019  Punit Gupta            Added new Procedure for NAIT-78415                 |
+-- | 15.0        04-FEB-2019  Sahithi K              1.code modification to use contract_id as          | 
+-- |                                                 unique instead of contract# NAIT-77723             |
+-- |                                                 2.charge seq =1 for auto renewed SS                |
+-- |                                                 SKU's NAIT-79218                                   |
+-- | 16.0        07-MAR-2019  Sahithi K              modified program_id logic in UPSERT script         |
+-- |                                                 from req_id to con_program_id NAIT-87055           |
+-- | 17.0        09-APR-2019  Sahithi K              modified interface_line_attribute1 with            |
+-- |                                                 order#-inv_seq_counter NAIT-91124                  |
+-- | 18.0        15-APR-2019  Sahithi K              trigger payment failure for business select        |
+-- |                                                 customer same as SS SKU's NAIT-84277               |
+-- | 19.0        15-APR-2019  Sahithi K              trigger recurring SUCCESS/FAILURE email            |
+-- |                                                 for auto renewed BS2 contracts NAIT-90173          |
+-- | 20.0        24-APR-2019  Sahithi K              NAIT-85914 1.pass trans_id in payment auth         |
+-- |                                                              payload                               |
+-- |                                                 2.pass wallet_type while inserting data            |
+-- |                                                   into ORDT table based on translation             |
+-- | 21.0        24-APR-2019  Sahithi K              Perform AVS check to get trans_id for              |
+-- |                                                 existing contracts in SCM NAIT-89230               |
+-- | 22.0        24-APR-2019  Sahithi K              Update SCM with trans_id for existing              |
+-- |                                                 contracts NAIT-89231                               |
+-- | 23.0        24-APR-2019  Sahithi K              add close_date field which is received             |
+-- |                                                 from SCM extract NAIT-90255                        |
+-- | 24.0        25-APR-2019  Punit Gupta            Made changes in the send_email_autorenew           |
+-- |                                                 Procedure for NAIT-90171                           |
+-- | 25.0        22-APR-2019  Dattatray Bachate      Added Procedure-xx_ar_subs_payload_purge_prc       |
+-- |                                                 for NAIT-83868-> To purge Subscriptions Payload    |
+-- |                                                 and Error table more than 30 days older data       |
+-- | 26.0        03-MAY-2019  Kayeed Ahmed           Added Procedure-get_store_close_info NAIT-93356    |
+-- |                                                 TO Closed Stores Accounting Remapping              |
+-- | 27.0        13-MAY-2019  Dattatray Bachate      Added Procedure-xx_relocation_store_vald_prc       |
+-- |                                                 Procedure to validate the location in HR           |
+-- | 28.0        20-JUN-2019  Punit Gupta            Added Procedure for Defect# NAIT- 72201            |
+-- |                                                 to update the receipt number for AB customers      |
+-- | 29.0        24-JUL-2019  Arvind K               Modified procedure get_pos_info Added parameter    |
+-- |                                                 p_orig_sys_doc_ref for validating POS orders       |
+-- |                                                 when data is not available in procedure            |
+-- |                                                 xx_ar_pos_inv_order_ref for NAIT-87805             |
+-- | 30.0        24-JUL-2019  Arvind K               Modified procedure get_invoice_line_info Added     |
+-- |                                                 parameter p_cont_line_amt for validating POS       |
+-- |                                                 orders when getting discount amount for the        |
+-- |                                                 same invoice and same item for NAIT-87805          |
+-- | 31.0        25-JUL-2019  Dattatray B/Sahithi K  Added Logic to handle AVS check for NAIT-92855     |
+-- |                                                 get_cc_trans_id_information, send_billing_email    |
+-- | 32.0        25-JUL-2019  Sahithi K              write off INV related to TERMINATED and CLOSED     |
+-- |                                                 contracts in SCM - NAIT-101994                     |
+-- | 33.0        16-AUG-2019  Sahithi K              derive store# based on initial order NAIT-101932   |
+-- | 34.0        25-SEP-2019  Sahithi K              roll back changes for sending AVS decline email    |
+-- |                                                 NAIT-107547                                        |
+-- | 35.0        27-SEP-2019  Sahithi K              Recurring Payment Auth without COF Tran ID         |
+-- |                                                 Handling and storing COF Tran ID of first(INITIAL) |
+-- |                                                 successful auth NAIT-107551                        |
+-- +====================================================================================================+
 
   gc_package_name        CONSTANT all_objects.object_name%TYPE   := 'xx_ar_subscriptions_mt_pkg';
   gc_ret_success         CONSTANT VARCHAR2(20)                   := 'SUCCESS';
@@ -4418,8 +4424,8 @@ AS
           lc_action := 'Calling get_acct_segment_info';
           
           get_acct_segment_info(p_ccid_id  => lr_invoice_dist_info.code_combination_id,
-                                x_segment  => lc_segment);        
-          
+                                x_segment  => lc_segment);
+
           /******************************
           * checking store closure status
           ******************************/
@@ -6576,15 +6582,7 @@ AS
         lc_error := 'Payment Type is: ' || p_contract_info.payment_type;
         RAISE le_skip;
       END IF;
-      
-      /*************************************
-      * Validate we are read to perform auth
-      *************************************/
-      IF (p_contract_info.cc_trans_id IS NULL AND p_contract_info.payment_type = 'CreditCard')
-      THEN
-        lc_error := 'cc_trans_id is NULL for payment_type : '||p_contract_info.payment_type;
-        RAISE le_skip;
-      END IF; 
+
       /*************************************
       * Validate INVOICE status - OPEN/CLOSE
       *************************************/
@@ -6649,7 +6647,7 @@ AS
         THEN
         
           /*****************************************************
-          * Get day information when do we need to authorizaiton
+          * Get day information when do we need to authorization
           *****************************************************/
           
           lc_action := 'Calling get_auth_day_info';
@@ -7071,6 +7069,16 @@ AS
                 px_subscription_array(indx).payment_status          := 'SUCCESS';
                 px_subscription_array(indx).contract_status         := NULL;
                 px_subscription_array(indx).next_retry_day          := NULL;
+                
+                IF p_contract_info.cc_trans_id IS NULL
+                THEN
+                  --call update contracts table with cc_trans_id and cc_trans_id_source
+                  update_contracts_info(p_contract_id           => px_subscription_array(indx).contract_id
+                                       ,p_cc_trans_id           => lr_subscription_info.cof_trans_id
+                                       ,p_cc_trans_id_source    => 'EBS'
+                                       ,p_cof_trans_id_scm_flag => 'N'
+                                       );
+                END IF;
               ELSIF lr_subscription_info.auth_status IS NOT NULL
               THEN
                 lc_action := 'assigning the auth failure result to subscription array';
@@ -7106,7 +7114,7 @@ AS
                                           px_ar_subscription_info => lr_subscription_info);
                          
               /**********************************************************
-              * If authorizaiton passed, record authorization information
+              * If authorization passed, record authorization information
               **********************************************************/
             
               IF (lr_subscription_info.auth_status = '0')
@@ -7119,6 +7127,17 @@ AS
                 px_subscription_array(indx).payment_status          := 'SUCCESS';
                 px_subscription_array(indx).contract_status         := NULL;
                 px_subscription_array(indx).next_retry_day          := NULL;
+                
+                IF p_contract_info.cc_trans_id IS NULL
+                THEN
+                  --call update contracts table with cc_trans_id and cc_trans_id_source
+                  update_contracts_info(p_contract_id           => px_subscription_array(indx).contract_id
+                                       ,p_cc_trans_id           => lr_subscription_info.cof_trans_id
+                                       ,p_cc_trans_id_source    => 'EBS'
+                                       ,p_cof_trans_id_scm_flag => 'N'
+                                       );
+                END IF;
+
               END IF;
             
               lc_action := 'Updating credit card details';
@@ -7447,8 +7466,6 @@ AS
     
     lc_contract_number_modifier    xx_ar_contracts.contract_number_modifier%TYPE;
 
-    lc_avs_status                  VARCHAR2(25);
-
 
   BEGIN
 
@@ -7480,28 +7497,10 @@ AS
       /***************************
       * Validate for authorization
       ***************************/
-       -- Temporary comment to send mail for AVS decline
-      /*IF px_subscription_array(indx).auth_completed_flag NOT IN ('Y', 'E')
+      IF px_subscription_array(indx).auth_completed_flag NOT IN ('Y', 'E')
       THEN
         lc_error := 'Authorization is not completed';
         RAISE le_skip;
-      END IF;*/
-     
-      IF   ((p_contract_info.payment_type != 'CreditCard')
-         OR (p_contract_info.CC_TRANS_ID IS NOT NULL AND p_contract_info.payment_type = 'CreditCard'))
-      THEN
-        IF px_subscription_array(indx).auth_completed_flag NOT IN ('Y', 'E')
-        THEN
-          lc_error := 'Authorization is not completed';
-          RAISE le_skip;
-        END IF;
-      ELSIF (p_contract_info.CC_TRANS_ID IS NULL AND p_contract_info.payment_type = 'CreditCard')
-      THEN
-        IF px_subscription_array(indx).cof_trans_id_flag != 'E'
-        THEN
-          lc_error := 'cof_trans_id_flag : '||px_subscription_array(indx).cof_trans_id_flag;
-          RAISE le_skip;
-        END IF;
       END IF;
 
       /***********************************
@@ -7932,17 +7931,6 @@ AS
               lc_contract_number_modifier := NULL;
             END IF;
 
-            --BEGIN : JIRA#NAIT-92855:- EBS - Trigger AVS process -> Need to add logic check if its for payment failure or AVS Code check
-            IF   ((p_contract_info.payment_type != 'CreditCard')
-               OR (p_contract_info.CC_TRANS_ID IS NOT NULL AND p_contract_info.payment_type = 'CreditCard'))
-            THEN
-              lc_avs_status := 'false';
-            ELSIF (p_contract_info.CC_TRANS_ID IS NULL AND p_contract_info.payment_type = 'CreditCard' AND px_subscription_array(indx).cof_trans_id_flag = 'E')
-            THEN
-              lc_avs_status := 'true';
-            END IF;
-            --END : JIRA#NAIT-92855:- EBS - Trigger AVS process -> Need to add logic check if its for payment failure or AVS Code check
-           
            /********************
             * Build email payload
             ********************/
@@ -7970,17 +7958,6 @@ AS
                                 || '",
                         "middleName": null,
                         "lastName": "",
-                        "paymentDetails": {
-                                "avsOnly": '
-                                      || lc_avs_status
-                                      || ',
-                                "avsCheckResponseCode":"'
-                                      || SUBSTR(px_subscription_array(indx).auth_message,1,1)
-                                      || '",
-                                "avsCheckResponseDesc": "'
-                                      || SUBSTR(px_subscription_array(indx).auth_message,3)
-                                      || '"
-                        },
                         "accountNumber": "'
                                 || p_contract_info.bill_to_osr
                                 || '",
@@ -8479,28 +8456,11 @@ AS
           lc_error := 'Receipt creation is not completed';
           RAISE le_skip;
         END IF;
-     /* ELSE -- Temporary comment to send mail for AVS decline
+      ELSE 
         IF px_subscription_array(indx).auth_completed_flag NOT IN ('Y', 'E')
         THEN
           lc_error := 'Authorization is not completed';
           RAISE le_skip;
-        END IF;*/
-      ELSE
-        IF   ((p_contract_info.payment_type != 'CreditCard')
-         OR (p_contract_info.CC_TRANS_ID IS NOT NULL AND p_contract_info.payment_type = 'CreditCard'))
-        THEN
-          IF px_subscription_array(indx).auth_completed_flag NOT IN ('Y', 'E')
-          THEN
-            lc_error := 'Authorization is not completed';
-            RAISE le_skip;
-          END IF;
-        ELSIF (p_contract_info.CC_TRANS_ID IS NULL AND p_contract_info.payment_type = 'CreditCard')
-        THEN
-          IF px_subscription_array(indx).cof_trans_id_flag != 'E'
-          THEN
-            lc_error := 'cof_trans_id_flag : '||px_subscription_array(indx).cof_trans_id_flag;
-            RAISE le_skip;
-          END IF;
         END IF;
       END IF;
 
@@ -10496,28 +10456,28 @@ AS
      
           get_invoice_information(p_contract_info       => lr_contract_info,
                                   px_subscription_array => lt_subscription_array);
-     
+
           /*************************
           * Get trans id information
           *************************/
 
-          IF lt_program_setups('cof_check_flag') = 'Y'
+          /*IF lt_program_setups('cof_check_flag') = 'Y'
           THEN
             lc_action := 'Calling get_cc_trans_id_information';
             
             get_cc_trans_id_information(p_program_setups      => lt_program_setups,
                                         p_contract_info       => lr_contract_info,
                                         px_subscription_array => lt_subscription_array);
-          END IF;
+          END IF;*/
                                   
           /**************************************
           * Get contract header level information
           **************************************/
           
-          lc_action := 'Calling get_contract_info';
+          /*lc_action := 'Calling get_contract_info';
           
           get_contract_info(p_contract_id     => eligible_contract_rec.contract_id,
-                            x_contract_info   => lr_contract_info);
+                            x_contract_info   => lr_contract_info);*/
 
           /**********************
           * Process authorization
@@ -10528,6 +10488,15 @@ AS
           process_authorization(p_program_setups      => lt_program_setups,
                                 p_contract_info       => lr_contract_info,
                                 px_subscription_array => lt_subscription_array);
+                                
+          /**************************************
+          * Get contract header level information
+          **************************************/
+          
+          lc_action := 'Calling get_contract_info';
+          
+          get_contract_info(p_contract_id     => eligible_contract_rec.contract_id,
+                            x_contract_info   => lr_contract_info);
 
           /****************
           * Process receipt
@@ -10757,46 +10726,89 @@ AS
 
             lc_action := 'Update xx_ar_contracts';
             
-            UPDATE xx_ar_contracts
-            SET    contract_id                 = eligible_contract_line_rec.contract_id,
-                   contract_number             = eligible_contract_line_rec.contract_number,
-                   contract_name               = eligible_contract_line_rec.contract_name,
-                   contract_status             = eligible_contract_line_rec.contract_status,
-                   contract_major_version      = eligible_contract_line_rec.contract_major_version,
-                   contract_start_date         = eligible_contract_line_rec.contract_start_date,
-                   contract_end_date           = eligible_contract_line_rec.contract_end_date,
-                   contract_billing_freq       = eligible_contract_line_rec.contract_billing_freq,
-                   bill_to_cust_account_number = eligible_contract_line_rec.bill_cust_account_number,
-                   bill_to_customer_name       = eligible_contract_line_rec.bill_cust_name,
-                   bill_to_osr                 = eligible_contract_line_rec.bill_to_osr,
-                   customer_email              = eligible_contract_line_rec.customer_email,
-                   initial_order_number        = eligible_contract_line_rec.initial_order_number,
-                   store_number                = eligible_contract_line_rec.store_number,
-                   payment_type                = eligible_contract_line_rec.payment_type,
-                   card_type                   = eligible_contract_line_rec.card_type,
-                   card_tokenenized_flag       = eligible_contract_line_rec.card_tokenized_flag,
-                   card_token                  = eligible_contract_line_rec.card_token,
-                   card_encryption_hash        = eligible_contract_line_rec.card_encryption_hash,
-                   card_holder_name            = eligible_contract_line_rec.card_holder_name,
-                   card_expiration_date        = eligible_contract_line_rec.card_expiration_date,
-                   card_encryption_label       = eligible_contract_line_rec.card_encryption_label,
-                   ref_associate_number        = eligible_contract_line_rec.ref_associate_number,
-                   sales_representative        = eligible_contract_line_rec.sales_representative,
-                   loyalty_member_number       = eligible_contract_line_rec.loyalty_member_number,
-                   total_contract_amount       = eligible_contract_rec.total_contract_amount,
-                   payment_term                = eligible_contract_line_rec.payment_term,
-                   payment_identifier          = eligible_contract_line_rec.payment_identifier,
-                   payment_last_update_date    = eligible_contract_line_rec.payment_last_update_date,
-                   contract_user_status        = eligible_contract_line_rec.contract_user_status,
-                   external_source             = eligible_contract_line_rec.external_source,
-                   contract_number_modifier    = eligible_contract_line_rec.contract_number_modifier,
-                   cc_trans_id                 = eligible_contract_line_rec.cc_trans_id,
-                   last_update_date            = SYSDATE,
-                   last_updated_by             = FND_GLOBAL.USER_ID,
-                   last_update_login           = FND_GLOBAL.USER_ID,
-                   program_id                  = NVL(FND_GLOBAL.CONC_PROGRAM_ID,-1) --NVL(FND_GLOBAL.CONC_REQUEST_ID, -1)
-            WHERE  contract_id                 = eligible_contract_line_rec.contract_id
-            AND    contract_number             = eligible_contract_line_rec.contract_number;
+            IF eligible_contract_line_rec.cc_trans_id IS NOT NULL
+            THEN
+              UPDATE xx_ar_contracts
+              SET    contract_id                 = eligible_contract_line_rec.contract_id,
+                     contract_number             = eligible_contract_line_rec.contract_number,
+                     contract_name               = eligible_contract_line_rec.contract_name,
+                     contract_status             = eligible_contract_line_rec.contract_status,
+                     contract_major_version      = eligible_contract_line_rec.contract_major_version,
+                     contract_start_date         = eligible_contract_line_rec.contract_start_date,
+                     contract_end_date           = eligible_contract_line_rec.contract_end_date,
+                     contract_billing_freq       = eligible_contract_line_rec.contract_billing_freq,
+                     bill_to_cust_account_number = eligible_contract_line_rec.bill_cust_account_number,
+                     bill_to_customer_name       = eligible_contract_line_rec.bill_cust_name,
+                     bill_to_osr                 = eligible_contract_line_rec.bill_to_osr,
+                     customer_email              = eligible_contract_line_rec.customer_email,
+                     initial_order_number        = eligible_contract_line_rec.initial_order_number,
+                     store_number                = eligible_contract_line_rec.store_number,
+                     payment_type                = eligible_contract_line_rec.payment_type,
+                     card_type                   = eligible_contract_line_rec.card_type,
+                     card_tokenenized_flag       = eligible_contract_line_rec.card_tokenized_flag,
+                     card_token                  = eligible_contract_line_rec.card_token,
+                     card_encryption_hash        = eligible_contract_line_rec.card_encryption_hash,
+                     card_holder_name            = eligible_contract_line_rec.card_holder_name,
+                     card_expiration_date        = eligible_contract_line_rec.card_expiration_date,
+                     card_encryption_label       = eligible_contract_line_rec.card_encryption_label,
+                     ref_associate_number        = eligible_contract_line_rec.ref_associate_number,
+                     sales_representative        = eligible_contract_line_rec.sales_representative,
+                     loyalty_member_number       = eligible_contract_line_rec.loyalty_member_number,
+                     total_contract_amount       = eligible_contract_rec.total_contract_amount,
+                     payment_term                = eligible_contract_line_rec.payment_term,
+                     payment_identifier          = eligible_contract_line_rec.payment_identifier,
+                     payment_last_update_date    = eligible_contract_line_rec.payment_last_update_date,
+                     contract_user_status        = eligible_contract_line_rec.contract_user_status,
+                     external_source             = eligible_contract_line_rec.external_source,
+                     contract_number_modifier    = eligible_contract_line_rec.contract_number_modifier,
+                     cc_trans_id                 = eligible_contract_line_rec.cc_trans_id,
+                     last_update_date            = SYSDATE,
+                     last_updated_by             = FND_GLOBAL.USER_ID,
+                     last_update_login           = FND_GLOBAL.USER_ID,
+                     program_id                  = NVL(FND_GLOBAL.CONC_PROGRAM_ID,-1) --NVL(FND_GLOBAL.CONC_REQUEST_ID, -1)
+              WHERE  contract_id                 = eligible_contract_line_rec.contract_id
+              AND    contract_number             = eligible_contract_line_rec.contract_number;
+            ELSE
+              UPDATE xx_ar_contracts
+              SET    contract_id                 = eligible_contract_line_rec.contract_id,
+                     contract_number             = eligible_contract_line_rec.contract_number,
+                     contract_name               = eligible_contract_line_rec.contract_name,
+                     contract_status             = eligible_contract_line_rec.contract_status,
+                     contract_major_version      = eligible_contract_line_rec.contract_major_version,
+                     contract_start_date         = eligible_contract_line_rec.contract_start_date,
+                     contract_end_date           = eligible_contract_line_rec.contract_end_date,
+                     contract_billing_freq       = eligible_contract_line_rec.contract_billing_freq,
+                     bill_to_cust_account_number = eligible_contract_line_rec.bill_cust_account_number,
+                     bill_to_customer_name       = eligible_contract_line_rec.bill_cust_name,
+                     bill_to_osr                 = eligible_contract_line_rec.bill_to_osr,
+                     customer_email              = eligible_contract_line_rec.customer_email,
+                     initial_order_number        = eligible_contract_line_rec.initial_order_number,
+                     store_number                = eligible_contract_line_rec.store_number,
+                     payment_type                = eligible_contract_line_rec.payment_type,
+                     card_type                   = eligible_contract_line_rec.card_type,
+                     card_tokenenized_flag       = eligible_contract_line_rec.card_tokenized_flag,
+                     card_token                  = eligible_contract_line_rec.card_token,
+                     card_encryption_hash        = eligible_contract_line_rec.card_encryption_hash,
+                     card_holder_name            = eligible_contract_line_rec.card_holder_name,
+                     card_expiration_date        = eligible_contract_line_rec.card_expiration_date,
+                     card_encryption_label       = eligible_contract_line_rec.card_encryption_label,
+                     ref_associate_number        = eligible_contract_line_rec.ref_associate_number,
+                     sales_representative        = eligible_contract_line_rec.sales_representative,
+                     loyalty_member_number       = eligible_contract_line_rec.loyalty_member_number,
+                     total_contract_amount       = eligible_contract_rec.total_contract_amount,
+                     payment_term                = eligible_contract_line_rec.payment_term,
+                     payment_identifier          = eligible_contract_line_rec.payment_identifier,
+                     payment_last_update_date    = eligible_contract_line_rec.payment_last_update_date,
+                     contract_user_status        = eligible_contract_line_rec.contract_user_status,
+                     external_source             = eligible_contract_line_rec.external_source,
+                     contract_number_modifier    = eligible_contract_line_rec.contract_number_modifier,
+                     last_update_date            = SYSDATE,
+                     last_updated_by             = FND_GLOBAL.USER_ID,
+                     last_update_login           = FND_GLOBAL.USER_ID,
+                     program_id                  = NVL(FND_GLOBAL.CONC_PROGRAM_ID,-1) --NVL(FND_GLOBAL.CONC_REQUEST_ID, -1)
+              WHERE  contract_id                 = eligible_contract_line_rec.contract_id
+              AND    contract_number             = eligible_contract_line_rec.contract_number;
+            END IF;
 
             logit(p_message => lc_action || ' row counts ' || SQL%ROWCOUNT);
 
@@ -10839,13 +10851,17 @@ AS
               lr_contract_info.contract_user_status        := eligible_contract_line_rec.contract_user_status;
               lr_contract_info.external_source             := eligible_contract_line_rec.external_source;
               lr_contract_info.contract_number_modifier    := eligible_contract_line_rec.contract_number_modifier;
-              lr_contract_info.cc_trans_id                 := eligible_contract_line_rec.cc_trans_id;
               lr_contract_info.last_update_date            := SYSDATE;
               lr_contract_info.last_updated_by             := FND_GLOBAL.USER_ID;
               lr_contract_info.last_update_login           := FND_GLOBAL.USER_ID;
               lr_contract_info.program_id                  := NVL(FND_GLOBAL.CONC_PROGRAM_ID,-1);--NVL(FND_GLOBAL.CONC_REQUEST_ID, -1);
               lr_contract_info.creation_date               := SYSDATE;
               lr_contract_info.created_by                  := FND_GLOBAL.USER_ID;
+              
+              IF eligible_contract_line_rec.cc_trans_id IS NOT NULL
+              THEN
+                lr_contract_info.cc_trans_id  := eligible_contract_line_rec.cc_trans_id;
+              END IF;
               
               lr_contract_info.cof_trans_id_scm_flag       := 'N';
               lr_contract_info.store_close_flag            := 'N';
