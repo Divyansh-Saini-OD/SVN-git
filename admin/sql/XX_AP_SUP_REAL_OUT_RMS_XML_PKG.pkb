@@ -4574,16 +4574,22 @@ BEGIN
           fnd_file.put_line(fnd_file.log, 'Error retreiving Bank Code for Site ID:' || v_vendor_site_id || ' ' || v_payment_method_lookup_code || ' ' || v_payment_currency_code || v_country);
         END;
 		-- BEGIN Added to derive vendor_site_id for the pay site vendor site code for cloud change
-		IF v_attr13 IS NOT NULL THEN
-		   BEGIN
-		     SELECT vendor_site_id
-			   INTO v_attribute13
-			   FROM ap_supplier_sites_all
-			  WHERE vendor_site_code=v_attr13;
-		   EXCEPTION
-		     WHEN others THEN
-			   v_attribute13:=NULL;
-		   END;
+		IF v_attr13 IS NOT NULL 
+		THEN
+		   IF SUBSTR(v_attr13,1,1) NOT IN ('0','1','2','3','4','5','6','7','8','9')
+		   THEN
+		       BEGIN
+		          SELECT vendor_site_id
+			        INTO v_attribute13
+			        FROM ap_supplier_sites_all
+			       WHERE vendor_site_code=v_attr13;
+		       EXCEPTION
+		       WHEN others THEN
+			       v_attribute13:=NULL;
+		       END;
+		   ELSE
+		      v_attribute13 := v_attr13;
+		   END IF; 
 		END IF;
 		-- END Added to derive vendor_site_id for the pay site vendor site code for Cloud change	
 
@@ -4950,7 +4956,7 @@ BEGIN
                 v_820_eft,
                 v_861_damage_shortage,
                 v_852_sales,
-                v_rtv_related_siteid,
+                v_rtv_related_site,
                 v_od_ven_sig_name,
                 v_od_ven_sig_title,
                 v_gss_mfg_id,
@@ -5017,7 +5023,7 @@ BEGIN
               v_820_eft                   :='';
               v_861_damage_shortage       :='';
               v_852_sales                 :='';
-              v_rtv_related_siteid        :='';
+              v_rtv_related_site          :='';
               v_od_ven_sig_name           :='';
               v_od_ven_sig_title          :='';
               v_gss_mfg_id                :='';
@@ -5171,16 +5177,22 @@ BEGIN
       IF(v_rms_flag               = 'Y') THEN
         v_rms_count              := v_rms_count + 1;
 		-- BEGIN Added to derive vendor_site_id for the rtv site for cloud change		
-		IF v_rtv_related_site IS NOT NULL THEN  
-		   BEGIN
-		     SELECT vendor_site_id
-			   INTO v_rtv_related_siteid
-			   FROM ap_supplier_sites_all
-			  WHERE vendor_site_code=v_rtv_related_site;
-		   EXCEPTION
-		     WHEN others THEN
-			   v_rtv_related_siteid:=NULL;
-		   END;
+		IF v_rtv_related_site IS NOT NULL 
+		THEN  
+		   IF SUBSTR(v_rtv_related_site,1,1) NOT IN ('0','1','2','3','4','5','6','7','8','9')
+		   THEN
+		       BEGIN
+		         SELECT vendor_site_id
+		     	    INTO v_rtv_related_siteid
+		     	    FROM ap_supplier_sites_all
+		     	   WHERE vendor_site_code=v_rtv_related_site;
+		       EXCEPTION
+		         WHEN others THEN
+		     	    v_rtv_related_siteid:=NULL;
+		       END;
+		   ELSE
+		      v_rtv_related_siteid := v_rtv_related_site;
+		   END IF;
 		ELSE
 		  v_rtv_related_siteid:=NULL;
 		END IF;
