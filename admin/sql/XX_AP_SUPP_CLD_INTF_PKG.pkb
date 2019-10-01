@@ -2331,10 +2331,10 @@ BEGIN
              ln_responsibility_appl_id
        FROM  fnd_user_resp_groups 
       WHERE user_id=(SELECT user_id 
-                       FROM apps.fnd_user 
+                       FROM fnd_user 
                       WHERE user_name='ODCDH')
                         AND responsibility_id=(SELECT responsibility_id 
-                                                 FROM apps.FND_RESPONSIBILITY 
+                                                 FROM FND_RESPONSIBILITY 
                                                 WHERE responsibility_key = 'XX_US_CNV_CDH_CONVERSION');
        FND_GLOBAL.apps_initialize(ln_user_id,
                                   ln_responsibility_id,
@@ -3056,6 +3056,7 @@ BEGIN
   print_debug_msg(p_message=> l_program_step||'Attach Bank Assignment' , p_force=>true);
   FOR r_sup_bank IN c_sup_bank
   LOOP
+    p_assignment_attribs.priority := NULL;
     print_debug_msg(p_message=> l_program_step||'Inside Cursor', p_force=>true);
 	print_debug_msg(p_message=> l_program_step||'Vendor Site Code : '||r_sup_bank.vendor_site_code, p_force=>true);
     BEGIN
@@ -3100,6 +3101,9 @@ BEGIN
 	      p_assignment_attribs.priority := 1;
 	  END IF;
       p_assignment_attribs.start_date := sysdate;
+	  print_debug_msg(p_message=> l_program_step||'Priority :'||p_assignment_attribs.priority, p_force=>true);
+	  print_debug_msg(p_message=> l_program_step||'Start Date :'||TO_CHAR(p_assignment_attribs.start_date,'DD-MON-YYYY'), p_force=>true);
+	  
       ------------------Calling API to check Joint Owner exists or no
       fnd_msg_pub.initialize; --to make msg_count 0
       x_return_status:=NULL;
@@ -4764,6 +4768,7 @@ BEGIN
   print_debug_msg(p_message=> l_program_step||'Update Bank Assignment Dates' , p_force=>true);
   FOR r_sup_bank IN c_sup_bank
   LOOP
+    p_assignment_attribs.priority := NULL;
     print_debug_msg(p_message=> l_program_step||'Inside Cursor', p_force=>true);
 	print_debug_msg(p_message=> l_program_step||'Vendor Site : '||r_sup_bank.vendor_site_code, p_force=>true);
     BEGIN
@@ -4812,6 +4817,7 @@ BEGIN
     print_debug_msg(p_message=> l_program_step||'Primary Flag : '||r_sup_bank.primary_flag, p_force=>true);
 	print_debug_msg(p_message=> l_program_step||'Start Date : '||p_assignment_attribs.start_date, p_force=>true);
 	print_debug_msg(p_message=> l_program_step||'End Date : '||p_assignment_attribs.end_date, p_force=>true);
+	print_debug_msg(p_message=> l_program_step||'Priority : '||p_assignment_attribs.priority, p_force=>true); 
     fnd_msg_pub.initialize; --to make msg_count 0
     x_return_status:=NULL;
     x_msg_count    :=NULL;
