@@ -2995,6 +2995,148 @@ EXCEPTION
     x_err_buf       := 'In exception for procedure update_address_contact' ;
 END update_address_contact;
 --+============================================================================+
+--| Name          : update_remittance_email                                    |
+--| Description   : This procedure will update the remittance email in the IBY |
+--|                 External Party Payment Methods Table                       |
+--| Parameters    : x_ret_code OUT NUMBER ,                                    |
+--|                 x_return_status OUT VARCHAR2 ,                             |
+--|                 x_err_buf OUT VARCHAR2                                     |
+--|                                                                            |
+--| Returns       : N/A                                                        |
+--|                                                                            |
+--+============================================================================+
+PROCEDURE update_remittance_email( x_ret_code 	     OUT NUMBER ,
+								   x_return_status   OUT VARCHAR2 ,
+								   x_err_buf 		 OUT VARCHAR2
+							     )
+IS
+   x_msg_count                     NUMBER := 0;
+   x_msg_data                      VARCHAR2 (200) := NULL;
+   l_payee_upd_status              iby_disbursement_setup_pub.ext_payee_update_tab_type;
+   p_external_payee_tab_type       iby_disbursement_setup_pub.external_payee_tab_type;
+   p_ext_payee_id_tab_type         iby_disbursement_setup_pub.ext_payee_id_tab_type;
+   p_ext_payee_id_rec              iby_disbursement_setup_pub.ext_payee_id_rec_type;
+   l_ext_payee_rec                 iby_disbursement_setup_pub.external_payee_rec_type;
+   i                               NUMBER := 0;
+   ln_user_id                      NUMBER;
+   ln_responsibility_id            NUMBER;
+   ln_responsibility_appl_id       NUMBER;
+   
+   CURSOR get_stg_remit_email
+   IS
+     SELECT * 
+       FROM XX_AP_CLD_SUPP_SITES_STG 
+      WHERE 1 =1 
+        AND request_id  = gn_request_id
+        AND site_process_flag  = 7
+        AND remittance_email IS NOT NULL; 
+   
+   CURSOR c_site_remit_email(p_vendor_id    NUMBER,
+                             p_vend_site_id NUMBER) 
+   IS
+      SELECT  ieppm.payment_method_code,
+              iepa.payee_party_id,
+              assa.vendor_site_id,
+              iepa.ext_payee_id,
+              assa.org_id,
+              iepa.supplier_site_id,
+              assa.party_site_id,
+			  iepa.remit_advice_email
+        FROM  ap_supplier_sites_all assa,
+              ap_suppliers sup,
+              iby_external_payees_all iepa,
+              iby_ext_party_pmt_mthds ieppm,
+              hr_operating_units ou
+        WHERE sup.vendor_id = assa.vendor_id
+          -- AND assa.pay_site_flag = 'Y'
+          AND assa.vendor_site_id = iepa.supplier_site_id
+          AND iepa.ext_payee_id = ieppm.ext_pmt_party_id(+)
+          AND assa.org_id = ou.organization_id
+          AND assa.vendor_site_id = p_vend_site_id
+          AND assa.vendor_id = p_vendor_id;
+   
+BEGIN
+   print_debug_msg('To Update the Remittance Email' ,p_force=> true); 
+   print_debug_msg('update_remittance_email() - BEGIN' ,p_force=> true);
+   BEGIN
+        SELECT user_id,
+               responsibility_id,
+               responsibility_application_id
+          INTO ln_user_id,                      
+               ln_responsibility_id,            
+               ln_responsibility_appl_id
+          FROM fnd_user_resp_groups 
+         WHERE user_id=(SELECT user_id 
+                          FROM fnd_user 
+                         WHERE user_name='ODCDH')
+           AND responsibility_id=(SELECT responsibility_id 
+                                    FROM fnd_responsibility 
+                                   WHERE responsibility_key = 'XX_US_CNV_CDH_CONVERSION'); 
+   EXCEPTION
+   WHEN OTHERS 
+   THEN
+	   print_debug_msg('Exception in WHEN OTHERS for SET_CONTEXT_ERROR: '||SQLERRM,p_force=> true);
+   END;
+      
+   fnd_global.apps_initialize (user_id        => ln_user_id,
+                               resp_id        => ln_responsibility_id,
+                               resp_appl_id   => ln_responsibility_appl_id);
+   
+   print_debug_msg('Call get_remit_email cursor to get IBY External Party Payment Methods details',p_force=> true);
+   FOR cur IN get_stg_remit_email 
+   LOOP
+     print_debug_msg('Processing the Vendor Site :'||cur.vendor_site_code ,p_force=> true);
+	 print_debug_msg('Call c_site_remit_email cursor to get the Remittance Email Details from Staging Table',p_force=> true);
+	 FOR cr IN c_site_remit_email(cur.vendor_id,
+	                              cur.vendor_site_id) 
+     LOOP
+	    print_debug_msg('Remit Advice Email From the IBY External Party Table :'||cr.remit_advice_email ,p_force=> true);
+		print_debug_msg('Remittance Email from the Staging Table :'||cur.remittance_email ,p_force=> true);
+	    IF NVL(cr.remit_advice_email,'X') <> cur.remittance_email 
+		THEN
+		   print_debug_msg('Remit Advice Email and Remittance Email are not Same',p_force=> true);
+           p_external_payee_tab_type (i).payment_function := 'PAYABLES_DISB';
+           p_external_payee_tab_type (i).exclusive_pay_flag := 'N';
+           p_external_payee_tab_type (i).payee_party_id := cr.payee_party_id;
+           p_external_payee_tab_type (i).payer_org_id := cr.org_id;
+           p_external_payee_tab_type (i).payer_org_type := 'OPERATING_UNIT';
+           p_external_payee_tab_type (i).supplier_site_id := cr.supplier_site_id;
+           p_external_payee_tab_type (i).Payee_Party_Site_Id := cr.party_site_id;
+           p_external_payee_tab_type (i).Remit_advice_delivery_method:='EMAIL';
+           p_external_payee_tab_type (i).Remit_advice_email:=cur.remittance_email;
+           p_ext_payee_id_tab_type (i).ext_payee_id := cr.ext_payee_id;
+       
+           iby_disbursement_setup_pub.update_external_payee (p_api_version            => 1.0,
+			                                                 p_init_msg_list          => 'T',
+			                                                 p_ext_payee_tab          => p_external_payee_tab_type,
+			                                                 p_ext_payee_id_tab       => p_ext_payee_id_tab_type,
+			                                                 x_return_status          => x_return_status,
+			                                                 x_msg_count              => x_msg_count,
+			                                                 x_msg_data               => x_msg_data,
+			                                                 x_ext_payee_status_tab   => l_payee_upd_status
+		                                                    );
+
+           COMMIT;
+           IF x_return_status = 'E' 
+		   THEN
+            FOR k IN l_payee_upd_status.FIRST .. l_payee_upd_status.LAST
+            LOOP
+               print_debug_msg('Error Message : '|| l_payee_upd_status(k).payee_update_msg,p_force=> true);
+            END LOOP;
+           END IF; -- x_return_status = 'E' 
+		  
+		  i := 0;
+		END IF; -- NVL(cr.remit_advice_email,'X') <> cur.remittance_email 
+	 END LOOP; -- c_site_remit_email
+   END LOOP; -- get_stg_remit_email
+EXCEPTION
+  WHEN OTHERS 
+  THEN
+      x_ret_code      := 1;
+      x_return_status := 'E';
+      x_err_buf       := 'In exception for procedure update_remittance_email' ;
+END update_remittance_email;  
+--+============================================================================+
 --| Name          : Attach_bank_assignments                                    |
 --| Description   : This procedure will attach_bank_assignments using API      |
 --|                                                                            |
@@ -6933,6 +7075,45 @@ EXCEPTION
     x_errbuf  := 'Exception in XX_AP_SUPP_CLD_INTF_PKG.main_prc_address_contact() - '||SQLCODE||' - '||SUBSTR(SQLERRM,1,3500);
 END main_prc_address_contact;
 --+============================================================================+
+--| Name          : main_prc_remittance_email                                  |
+--| Description   : This procedure will be called from the concurrent program  |
+--|                 to update the remit advice email                           |
+--| Parameters    :                                                            |
+--| Returns       :                                                            |
+--|                   x_errbuf                  OUT      VARCHAR2              |
+--|                   x_retcode                 OUT      NUMBER                |
+--|                                                                            |
+--|                                                                            |
+--+============================================================================+
+PROCEDURE main_prc_remittance_email( x_errbuf OUT nocopy  VARCHAR2 ,
+                                     x_retcode OUT nocopy NUMBER )
+IS
+  --================================================================
+  --Declaring local variables
+  --================================================================
+  l_ret_code            NUMBER;
+  l_return_status       VARCHAR2 (100);
+  l_err_buff            VARCHAR2 (4000);
+BEGIN
+  l_ret_code      := 0;
+  l_return_status := 'S';
+  l_err_buff      := NULL;
+ 
+  --===========================================================================
+  -- Update Address Contacts for the Supplier Sites --
+  --===========================================================================
+  print_debug_msg(p_message => 'Invoking the procedure update_remittance_email()' , p_force => true);
+  update_remittance_email( x_ret_code => l_ret_code , x_return_status => l_return_status , x_err_buf => l_err_buff);
+  print_debug_msg(p_message => '===========================================================================' , p_force => true);
+  print_debug_msg(p_message => 'Completed the execution of the procedure update_remittance_email()' , p_force => true);
+  print_debug_msg(p_message => '===========================================================================' , p_force => true);
+EXCEPTION
+  WHEN OTHERS THEN
+    x_retcode := 2;
+    x_errbuf  := 'Exception in XX_AP_SUPP_CLD_INTF_PKG.main_prc_remittance_email() - '||SQLCODE||' - '||SUBSTR(SQLERRM,1,3500);
+END main_prc_remittance_email;
+  
+--+============================================================================+
 --| Name          : update_supplier_telex                                      |
 --| Description   : This procedure will set telex in ap_supplier_sites_all     |
 --|                 to interface to RMS legacy systems                         |
@@ -7395,6 +7576,11 @@ BEGIN
   print_debug_msg(p_message => 'Calling Create and Update Address Contact Point Process' , p_force => true);
   main_prc_address_contact(x_errbuf =>l_err_buff , x_retcode=> l_ret_code);
   print_debug_msg(p_message => 'exiting Create and Update Address Contact Point Process' , p_force => true);
+  print_debug_msg(p_message => '+---------------------------------------------------------------------------+' , p_force => true);
+  
+  print_debug_msg(p_message => 'Calling Remittance Email Procedure' , p_force => true);
+  main_prc_remittance_email(x_errbuf =>l_err_buff , x_retcode=> l_ret_code);
+  print_debug_msg(p_message => 'exiting Remittance Email Procedure' , p_force => true);
   print_debug_msg(p_message => '+---------------------------------------------------------------------------+' , p_force => true);
 
   print_debug_msg(p_message => 'Calling  Update_supplier_telex' , p_force => true);
