@@ -1499,8 +1499,8 @@ BEGIN
               cur.rtv_related_site
             );
           UPDATE ap_supplier_sites_all
-             SET attribute12     =v_kff_id
-           WHERE vendor_site_id=cur.vendor_site_id;
+             SET attribute12     = v_kff_id
+           WHERE vendor_site_id= cur.vendor_site_id;
         EXCEPTION
           WHEN OTHERS THEN
             v_error_flag :='Y';
@@ -2230,6 +2230,9 @@ IS
   lv_contact_title_rec 		hz_party_contact_v2pub.org_contact_rec_type;
   lc_error_status1		    VARCHAR2(1):='N';
   lc_error_status2		    VARCHAR2(1):='N';  
+  ln_user_id                NUMBER;
+  ln_responsibility_id      NUMBER;
+  ln_responsibility_appl_id NUMBER;
   
 CURSOR c_cont
 IS
@@ -2246,6 +2249,7 @@ SELECT DISTINCT
 	   hpr.party_id,
        asu.segment1 supp_num ,
        asu.vendor_name ,
+	   asu.vendor_id,
        hpc.party_name contact_name ,
        hpr.primary_phone_country_code cnt_cntry ,
        hpr.primary_phone_area_code cnt_area ,
@@ -2254,7 +2258,13 @@ SELECT DISTINCT
        assa.vendor_site_id ,
        asco.vendor_contact_id,
        hpc.person_first_name first_name,
-       hpc.person_last_name last_name
+       hpc.person_last_name last_name ,
+	   asco.per_party_id ,	
+       asco.relationship_id	,	
+       asco.rel_party_id ,	
+       asco.party_site_id  ,		
+       asco.org_contact_id ,		
+       asco.org_party_site_id	
   FROM hz_relationships hr ,
        ap_suppliers asu ,
        ap_supplier_sites_all assa ,
@@ -2283,7 +2293,8 @@ SELECT DISTINCT hoc.org_contact_id,
        hoc.job_title,
        hoc.object_version_number cont_object_version_number,
        hr.object_version_number rel_object_version_number,
-       hpc.object_version_number party_object_version_number
+       hpc.object_version_number party_object_version_number,
+	   assa.party_site_id
   FROM hz_relationships hr ,
        ap_suppliers asu ,
        ap_supplier_sites_all assa ,
@@ -2310,6 +2321,27 @@ BEGIN
   p_init_msg_list    := fnd_api.g_false;
   p_commit           := fnd_api.g_false;
   p_validation_level := fnd_api.g_valid_level_full;
+  
+  BEGIN
+      SELECT user_id,
+             responsibility_id,
+             responsibility_application_id
+       INTO  ln_user_id,                      
+             ln_responsibility_id,            
+             ln_responsibility_appl_id
+       FROM  fnd_user_resp_groups 
+      WHERE user_id=(SELECT user_id 
+                       FROM apps.fnd_user 
+                      WHERE user_name='ODCDH')
+                        AND responsibility_id=(SELECT responsibility_id 
+                                                 FROM apps.FND_RESPONSIBILITY 
+                                                WHERE responsibility_key = 'XX_US_CNV_CDH_CONVERSION');
+       FND_GLOBAL.apps_initialize(ln_user_id,
+                                  ln_responsibility_id,
+                                  ln_responsibility_appl_id
+                                 );
+  END;
+  
   FOR r_cont IN c_cont
   LOOP
     lc_error_status1:='N';
@@ -2361,15 +2393,28 @@ BEGIN
 		THEN
           l_email_address := NULL;
       END;
-      IF NVL(l_phone_number,'X')                <> NVL(r_cont.phone,'X') OR NVL(l_email_address,'X') <> NVL(r_cont.email_address,'X') OR NVL(l_fax_number,'X') <> NVL(r_cont.fax,'X') OR NVL(l_phone_area_code,'X') <> NVL(r_cont.area_code,'X') OR NVL(l_fax_area_code,'X') <> NVL(r_cont.fax_area_code,'X') THEN
+      IF NVL(l_phone_number,'X')                <> NVL(r_cont.phone,'X') OR NVL(l_email_address,'X') <> NVL(r_cont.email_address,'X') OR NVL(l_fax_number,'X') <> NVL(r_cont.fax,'X') OR NVL(l_phone_area_code,'X') <> NVL(r_cont.area_code,'X') OR NVL(l_fax_area_code,'X') <> NVL(r_cont.fax_area_code,'X') 
+	  THEN
+	    lv_vendor_contact_rec.vendor_id         := r_cont.vendor_id;
+		lv_vendor_contact_rec.vendor_site_id    := r_cont.vendor_site_id;
+		lv_vendor_contact_rec.vendor_site_code  := r_cont.vendor_site_code;
         lv_vendor_contact_rec.vendor_contact_id := r_cont_info.vendor_contact_id;
         lv_vendor_contact_rec.phone             := NVL(r_cont.phone,FND_API.G_MISS_CHAR);
         lv_vendor_contact_rec.email_address     := NVL(r_cont.email_address,FND_API.G_MISS_CHAR);
         lv_vendor_contact_rec.fax_phone         := NVL(r_cont.fax,FND_API.G_MISS_CHAR);
         lv_vendor_contact_rec.fax_area_code     := NVL(r_cont.fax_area_code,FND_API.G_MISS_CHAR);
         lv_vendor_contact_rec.area_code         := NVL(r_cont.area_code,FND_API.G_MISS_CHAR);
-		lv_vendor_contact_rec.inactive_date     :=NVL(TO_DATE(r_cont.inactive_date,'YYYY/MM/DD'),FND_API.G_MISS_DATE); 
-        fnd_msg_pub.initialize; --to make msg_count 0
+		-- lv_vendor_contact_rec.inactive_date     := NVL(TO_DATE(r_cont.inactive_date,'YYYY/MM/DD'),FND_API.G_MISS_DATE); 
+		lv_vendor_contact_rec.per_party_id      := r_cont_info.per_party_id;
+        lv_vendor_contact_rec.relationship_id   := r_cont_info.relationship_id;
+        lv_vendor_contact_rec.rel_party_id      := r_cont_info.rel_party_id;
+        lv_vendor_contact_rec.party_site_id     := r_cont_info.party_site_id;
+		lv_vendor_contact_rec.org_contact_id    := r_cont_info.org_contact_id;
+		lv_vendor_contact_rec.org_party_site_id := r_cont_info.org_party_site_id;		
+		lv_vendor_contact_rec.person_first_name := r_cont.first_name;
+        lv_vendor_contact_rec.person_last_name  := r_cont.last_name;
+		
+		fnd_msg_pub.initialize; --to make msg_count 0
         x_return_status := NULL;
         x_msg_count     := NULL;
         x_msg_data      := NULL;
@@ -2405,7 +2450,9 @@ BEGIN
 	FOR r_cont_title IN c_cont_title (r_cont.vendor_id , r_cont.vendor_site_id ,r_cont.first_name,r_cont.last_name )
     LOOP
       
-      IF NVL(r_cont_title.job_title,'X')    <> NVL(r_cont.title,'X') THEN
+      IF NVL(r_cont_title.job_title,'X')    <> NVL(r_cont.title,'X') 
+	  THEN
+	    -- lv_contact_title_rec.party_site_id  := r_cont_title.party_site_id;
         lv_contact_title_rec.org_contact_id := r_cont_title.org_contact_id;
         lv_contact_title_rec.job_title      := NVL(r_cont.title, FND_API.G_MISS_CHAR);
         fnd_msg_pub.initialize; --to make msg_count 0
@@ -3146,8 +3193,9 @@ BEGIN
       END IF;
     END IF;--R_SUP_BANK.account_id IS NOT NULL AND R_SUP_BANK.INSTRUMENT_USES_ID IS NULL
     ------------------------------When Account ID is null create new Account and instrumnets
-    IF r_sup_bank.account_id               IS NULL OR r_sup_bank.account_id=-1 THEN
-      x_bank_branch_rec.currency           :=r_sup_bank.currency_code;
+    IF r_sup_bank.account_id               IS NULL OR r_sup_bank.account_id=-1 
+	THEN
+      x_bank_branch_rec.currency           :=NVL(r_sup_bank.currency_code,'USD');
       x_bank_branch_rec.branch_id          :=r_sup_bank.branch_id;
       x_bank_branch_rec.bank_id            :=r_sup_bank.bank_id;
       x_bank_branch_rec.acct_owner_party_id:=lv_acct_owner_party_id;
@@ -4757,7 +4805,10 @@ BEGIN
     IF r_sup_bank.end_date IS NOT NULL
 	THEN 
 	    p_assignment_attribs.end_date            := TO_DATE(r_sup_bank.end_date,'YYYY/MM/DD');
+	ELSE
+	    p_assignment_attribs.end_date            := TO_DATE('4712/12/31','YYYY/MM/DD'); 
 	END IF;
+	
     print_debug_msg(p_message=> l_program_step||'Primary Flag : '||r_sup_bank.primary_flag, p_force=>true);
 	print_debug_msg(p_message=> l_program_step||'Start Date : '||p_assignment_attribs.start_date, p_force=>true);
 	print_debug_msg(p_message=> l_program_step||'End Date : '||p_assignment_attribs.end_date, p_force=>true);
@@ -4960,6 +5011,7 @@ BEGIN
   l_site_cnt_for_bank := 0;
   FOR l_sup_bank_type IN c_supplier_bank
   LOOP
+    print_debug_msg(p_message=> 'Vendor Site Code :'||l_sup_bank_type.vendor_site_code , p_force=> true);
     print_debug_msg(p_message=> gc_step||' : Validation of Bank Assignment started' ,p_force=> true);
     l_sup_bank_idx      := l_sup_bank_idx      + 1;
     l_site_cnt_for_bank := l_site_cnt_for_bank + 1;
@@ -4970,42 +5022,43 @@ BEGIN
     --====================================================================
     -- Checking Required Columns validation
     --====================================================================
-    IF l_sup_bank_type.supplier_name IS NULL THEN
+    IF l_sup_bank_type.supplier_name IS NULL 
+	THEN
       gc_error_site_status_flag      := 'Y';
       gc_error_msg                   :=gc_error_msg||' Supplier Name is NULL';
       print_debug_msg(p_message=> 'Supplier Name is BLANK' , p_force=> true);
-      gc_error_msg:=gc_error_msg||' , Supplier Name is BLANK';   
+      gc_error_msg:=gc_error_msg||' , Supplier Name is BLANK'; 
     END IF;
-    IF l_sup_bank_type.supplier_num IS NULL THEN
+    IF l_sup_bank_type.supplier_num IS NULL 
+	THEN
       gc_error_site_status_flag     := 'Y';
       gc_error_msg                  :=gc_error_msg||', Supplier Number is BLANK';
       print_debug_msg(p_message=> 'Supplier Number is BLANK' , p_force=> true);
 	END IF;
 	  
-    IF l_sup_bank_type.vendor_site_code IS NULL THEN
+    IF l_sup_bank_type.vendor_site_code IS NULL 
+	THEN
       gc_error_site_status_flag         := 'Y';
       gc_error_msg                      :=gc_error_msg||', Vendor Site Code is BLANK';
 	  print_debug_msg(p_message=> 'Vendor Site Code is BLANK' , p_force=> true);
     END IF;
 	
-	IF l_sup_bank_type.bank_account_name IS NULL THEN
+	IF l_sup_bank_type.bank_account_name IS NULL 
+	THEN
       gc_error_site_status_flag         := 'Y';
       gc_error_msg                      :=gc_error_msg||', Bank Account Name is BLANK';
 	  print_debug_msg(p_message=> 'Bank Account Name is BLANK' , p_force=> true);
     END IF;
 	
-	IF l_sup_bank_type.currency_code IS NULL THEN
-      gc_error_site_status_flag         := 'Y';
-      gc_error_msg                      :=gc_error_msg||', Currency Code is BLANK';
-	  print_debug_msg(p_message=> 'Currency Code is BLANK' , p_force=> true);
-    END IF;
-	
+	print_debug_msg(p_message=> 'Error Message :'||gc_error_msg , p_force=> true);	  
+
     --==============================================================================================================
     -- Validating the Supplier Bank - Address Details -  Address Line 2
     --==============================================================================================================
     print_debug_msg(p_message=> gc_step||' After basic validation of Contact - gc_error_site_status_flag is '||gc_error_site_status_flag ,p_force=> true);
     l_bank_create_flag          := '';
-    IF gc_error_site_status_flag = 'N' THEN
+    IF gc_error_site_status_flag = 'N' 
+	THEN
       print_debug_msg(p_message=> gc_step||' l_sup_bank_type.update_flag is '||l_sup_bank_type.CREATE_FLAG ,p_force=> true);
       print_debug_msg(p_message=> gc_step||' upper(l_sup_bank_type.vendor_site_code) is '||upper(l_sup_bank_type.vendor_site_code) ,p_force=> true);
       OPEN c_bank_branch(l_sup_bank_type.bank_name, l_sup_bank_type.country_code,l_sup_bank_type.branch_name);
@@ -5028,16 +5081,43 @@ BEGIN
           WHERE bank_id       =l_sup_bank_id
           AND branch_id       =l_sup_bank_branch_id
           AND bank_account_num=l_sup_bank_type.bank_account_num
-		  AND bank_account_type = 'Supplier'
           AND SYSDATE BETWEEN NVL(start_date,SYSDATE-1) AND NVL(end_date,SYSDATE+1);
           l_sup_bank_type.account_id :=l_bank_account_id;
         EXCEPTION
-        WHEN OTHERS THEN
+		WHEN TOO_MANY_ROWS
+		THEN
+		    BEGIN
+		    SELECT ext_bank_account_id
+              INTO l_bank_account_id
+              FROM iby_ext_bank_accounts
+             WHERE bank_id       =l_sup_bank_id
+               AND branch_id       =l_sup_bank_branch_id
+               AND bank_account_num=l_sup_bank_type.bank_account_num
+			   AND UPPER(SUBSTR(bank_account_type,1,2)) = 'SU'
+               AND SYSDATE BETWEEN NVL(start_date,SYSDATE-1) AND NVL(end_date,SYSDATE+1);
+               l_sup_bank_type.account_id :=l_bank_account_id;
+			EXCEPTION
+			WHEN OTHERS
+			THEN
+			    SELECT ext_bank_account_id
+                  INTO l_bank_account_id
+                  FROM iby_ext_bank_accounts
+                 WHERE bank_id       = l_sup_bank_id
+                   AND branch_id       = l_sup_bank_branch_id
+                   AND bank_account_num= l_sup_bank_type.bank_account_num
+				   AND (UPPER(SUBSTR(bank_account_type,1,2)) = 'SU' OR bank_account_type IS NULL)
+                   AND SYSDATE BETWEEN NVL(start_date,SYSDATE-1) AND NVL(end_date,SYSDATE+1)
+				   AND ROWNUM = 1;
+				l_sup_bank_type.account_id :=l_bank_account_id;
+			END;
+        WHEN OTHERS 
+		THEN
           l_bank_account_id           :=-1;
           l_bank_create_flag          :='Y';--Insert for Bank
           l_sup_bank_type.create_flag :=l_bank_create_flag;
         END;
-        IF l_bank_account_id > 0 THEN
+		
+        IF NVL(l_bank_account_id,-1) > 0 THEN
           BEGIN
             SELECT uses.instrument_payment_use_id,
               TO_CHAR(uses.start_date,'YYYY/MM/DD')
@@ -5097,10 +5177,21 @@ BEGIN
       l_sup_bank(l_sup_bank_idx).branch_id          :=l_sup_bank_branch_id;
       l_sup_bank(l_sup_bank_idx).account_id         :=l_bank_account_id;
     END IF;
-    IF gc_error_site_status_flag                      = 'Y' THEN
+    IF gc_error_site_status_flag                      = 'Y' 
+	THEN
       l_sup_bank(l_sup_bank_idx).bnkact_process_flag := gn_process_status_error;
       l_sup_bank(l_sup_bank_idx).ERROR_FLAG          := gc_process_error_flag;
       l_sup_bank(l_sup_bank_idx).ERROR_MSG           := gc_error_msg;
+	  l_sup_bank(l_sup_bank_idx).vendor_id           := NULL;
+      l_sup_bank(l_sup_bank_idx).vendor_site_id      := NULL;
+      l_sup_bank(l_sup_bank_idx).instrument_uses_id  := NULL;
+      l_sup_bank(l_sup_bank_idx).bank_id             := NULL;
+      l_sup_bank(l_sup_bank_idx).branch_id           := NULL;
+      l_sup_bank(l_sup_bank_idx).account_id          := NULL;
+	  
+	  print_debug_msg(p_message=> 'bnkact_process_flag :'||l_sup_bank(l_sup_bank_idx).bnkact_process_flag , p_force=> true);	
+	  print_debug_msg(p_message=> 'error_flag :'||l_sup_bank(l_sup_bank_idx).error_flag , p_force=> true);	
+	  print_debug_msg(p_message=> 'error_msg :'||l_sup_bank(l_sup_bank_idx).error_msg , p_force=> true);	
     ELSE
       l_sup_bank(l_sup_bank_idx).bnkact_process_flag := gn_process_status_validated;
       print_debug_msg(p_message=> 'Process Flag ' ||gn_process_status_validated, p_force=> true);
@@ -5116,23 +5207,23 @@ BEGIN
       SET bnkact_process_flag          = l_sup_bank(l_idxs).bnkact_process_flag ,
         error_flag                     = l_sup_bank(l_idxs).error_flag ,
         error_msg                      = l_sup_bank(l_idxs).error_msg,
-        create_flag                    =l_sup_bank(l_idxs).create_flag,
-        last_updated_by                =g_user_id,
-        last_update_date               =SYSDATE,
-        vendor_id                      =l_sup_bank(l_idxs).vendor_id,
-        vendor_site_id                 =l_sup_bank(l_idxs).vendor_site_id,
-        instrument_uses_id             =l_sup_bank(l_idxs).instrument_uses_id,
-        bank_id                        =l_sup_bank(l_idxs).bank_id,
-        branch_id                      =l_sup_bank(l_idxs).branch_id,
-        account_id                     =l_sup_bank(l_idxs).account_id ,
-        start_date                     =l_sup_bank(l_idxs).start_date
-      WHERE 1                          =1
-      AND TRIM(UPPER(vendor_site_code))=TRIM(UPPER(l_sup_bank(l_idxs).vendor_site_code))
-      AND UPPER(supplier_num)          =UPPER(l_sup_bank(l_idxs).supplier_num)
-      AND UPPER(bank_name)             =UPPER(l_sup_bank(l_idxs).bank_name)
-      AND UPPER(BRANCH_NAME)           =UPPER(l_sup_bank(l_idxs).branch_name)
-      AND bank_account_num             =l_sup_bank(l_idxs).bank_account_num
-      AND request_id                   =gn_request_id;
+        create_flag                    = l_sup_bank(l_idxs).create_flag,
+        last_updated_by                = g_user_id,
+        last_update_date               = SYSDATE,
+        vendor_id                      = l_sup_bank(l_idxs).vendor_id,
+        vendor_site_id                 = l_sup_bank(l_idxs).vendor_site_id,
+        instrument_uses_id             = l_sup_bank(l_idxs).instrument_uses_id,
+        bank_id                        = l_sup_bank(l_idxs).bank_id,
+        branch_id                      = l_sup_bank(l_idxs).branch_id,
+        account_id                     = l_sup_bank(l_idxs).account_id,
+        start_date                     = l_sup_bank(l_idxs).start_date
+      WHERE 1                          = 1
+      AND TRIM(UPPER(vendor_site_code))= TRIM(UPPER(l_sup_bank(l_idxs).vendor_site_code))
+      AND UPPER(supplier_num)          = UPPER(l_sup_bank(l_idxs).supplier_num)
+      AND UPPER(bank_name)             = UPPER(l_sup_bank(l_idxs).bank_name)
+      AND UPPER(BRANCH_NAME)           = UPPER(l_sup_bank(l_idxs).branch_name)
+      AND bank_account_num             = l_sup_bank(l_idxs).bank_account_num
+      AND request_id                   = gn_request_id;
       COMMIT;
     EXCEPTION
     WHEN OTHERS THEN
@@ -6779,6 +6870,12 @@ BEGIN
   print_debug_msg(p_message => '===========================================================================' , p_force => true);
   print_debug_msg(p_message => 'Completion of validate_bank_records' , p_force => true);
   print_debug_msg(p_message => '===========================================================================' , p_force => true);
+  
+  print_debug_msg(p_message => 'Invoking the procedure attach_bank_assignments()' , p_force => true);
+  attach_bank_assignments( x_ret_code => l_ret_code , x_return_status => l_return_status , x_err_buf => l_err_buff);
+  print_debug_msg(p_message => '===========================================================================' , p_force => true);
+  print_debug_msg(p_message => 'Completion of attach_bank_assignments' , p_force => true);
+  print_debug_msg(p_message => '===========================================================================' , p_force => true);
 
   print_debug_msg(p_message => 'Invoking the procedure Update_bank_assignment_date()' , p_force => true);
   update_bank_assignment_date( x_ret_code => l_ret_code , x_return_status => l_return_status , x_err_buf => l_err_buff);
@@ -6786,11 +6883,6 @@ BEGIN
   print_debug_msg(p_message => 'Completion of Update_bank_assignment_date' , p_force => true);
   print_debug_msg(p_message => '===========================================================================' , p_force => true);
 
-  print_debug_msg(p_message => 'Invoking the procedure attach_bank_assignments()' , p_force => true);
-  attach_bank_assignments( x_ret_code => l_ret_code , x_return_status => l_return_status , x_err_buf => l_err_buff);
-  print_debug_msg(p_message => '===========================================================================' , p_force => true);
-  print_debug_msg(p_message => 'Completion of attach_bank_assignments' , p_force => true);
-  print_debug_msg(p_message => '===========================================================================' , p_force => true);
 EXCEPTION
   WHEN OTHERS THEN
     x_retcode := 2;
