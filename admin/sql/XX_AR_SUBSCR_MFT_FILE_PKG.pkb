@@ -163,7 +163,7 @@ AS
     XAC.card_encryption_hash,
     XAS.authorization_code,
     NVL(XAS.auth_message,'UNDEFINED'),
-    TO_CHAR(XAS.last_auth_attempt_date,'DDMMYYYY');
+    TO_CHAR(XAS.last_auth_attempt_date,'MMDDYYYY');
   
 TYPE LC_MFT_DATA_TAB
 IS
