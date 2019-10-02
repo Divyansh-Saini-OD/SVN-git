@@ -14,7 +14,7 @@ AS
 -- |======   ==========     =============        ======================= |
 -- |Draft 1A  31-JAN-12     Saikumar Reddy       Initial version         |
 -- |      1B  02-JUN-14     Pravedra Lohiya      Defect 29050            |
--- |      1C  02-Feb-16     Avinash  Baddam      Defect#37204–Masterpass |  
+-- |      1C  02-Feb-16     Avinash  Baddam      Defect#37204â€“Masterpass |  
 -- +=====================================================================+
 
 -- +=====================================================================+
@@ -80,8 +80,8 @@ BEGIN
                                                   ,FALSE
                                                   ,P_MODE
 						  ,P_HIDDEN
-                                                  ,to_date(P_RECEIPT_DATE_FROM,'DD-MON-YYYY')
-                                                  ,to_date(P_RECEIPT_DATE_TO, 'DD-MON-YYYY')
+                                                  ,to_date(P_RECEIPT_DATE_FROM,'YYYY/MM/DD HH24:MI:SS')--Added for defect# NAIT-96694
+                                                  ,to_date(P_RECEIPT_DATE_TO, 'YYYY/MM/DD HH24:MI:SS')--Added for defect# NAIT-96694
                                                   ,to_date(P_CREATION_DATE_FROM,'DD-MON-YYYY') -- Added by P Lohiya For Defect 29050
                                                   ,to_date(P_CREATION_DATE_TO,'DD-MON-YYYY')   
                                                   ,P_CARD_TYPE
