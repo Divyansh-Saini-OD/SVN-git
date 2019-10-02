@@ -122,7 +122,7 @@ AS
       XAC.card_encryption_hash,
       XAS.authorization_code auth_status,
       NVL(XAS.auth_message,'UNDEFINED') auth_message,
-      TO_CHAR(XAS.last_auth_attempt_date,'DDMMYYYY') error_date,
+      TO_CHAR(XAS.last_auth_attempt_date,'MMDDYYYY') error_date,
       MAX(xas.contract_line_number)
     FROM
       xx_ar_subscriptions XAS,
