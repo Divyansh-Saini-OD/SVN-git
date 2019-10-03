@@ -77,7 +77,14 @@ SELECT 'USD' || C.currency_code ||'_Curncy' || chr(13)
  WHERE C.enabled_flag ='Y'
    AND C.currency_flag='Y'
    AND C.currency_code<>'USD'
- ORDER BY C.currency_code;
+union
+SELECT 'CAD' || C.currency_code ||'_Curncy' || chr(13)
+FROM fnd_currencies C
+WHERE C.enabled_flag ='Y'
+AND C.currency_flag='Y'
+AND C.currency_code<>'CAD'
+AND C.CURRENCY_CODE IN ('INR','USD')
+ORDER BY 1
 exit
 EOF`
 echo $req_id | sed s/' '/''/g | tr '\r_' '\n ' | sed '$d' >>$lc_file_name
