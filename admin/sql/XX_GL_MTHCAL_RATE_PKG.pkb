@@ -26,7 +26,8 @@ AS
 	  -- | 1.2         03/12/2019   Paddy Sanjeevi       Modified to add CC Averate and Month End     |
 	  -- | 1.3         04/18/2019   Paddy Sanjeevi       Modified to add GSO Requirements BEAC 12167  |
 	  -- | 1.4         06/04/2019   Narasimha S          Code change to get INSTANCE_NAME to DB_NAME  |
-	  -- | 1.4                                           for LNS Instance                        	  |
+	  -- | 1.4                                           for LNS Instance                             | 
+      -- | 1.5	  |    10/03/2019    Faiyaz                Addition for the CAD currency extract      |
 	  -- +============================================================================================+
 	  lc_Saturday        VARCHAR2(1)   := TO_CHAR(to_date('20000101','RRRRMMDD'),'D');
 	  lc_Sunday          VARCHAR2(1)   := TO_CHAR(to_date('20000102','RRRRMMDD'),'D');
@@ -308,19 +309,34 @@ BEGIN
   lc_file_name:=lc_file_name1||lc_filename_part1||lc_filename_part2;
   l_filehandle := UTL_FILE.fopen(gc_file_path,lc_file_name ,'w',ln_buffer);
   FOR r IN
-	  (SELECT b.from_currency,
-			  b.to_currency,
-			  TO_CHAR(b.conversion_date,'YYYY/MM/DD') conversion_date,
-			  DECODE(a.user_conversion_type,'Ending Rate','Corporate',a.user_conversion_type) conversion_type,
-			  TO_CHAR(ROUND(b.conversion_rate,6)) conversion_rate
-	     FROM gl_daily_rates b,
-			  gl_daily_conversion_types a
-	    WHERE a.user_conversion_type IN ('Average Rate','Ending Rate','CC Period End','CC Period Average')
-		  AND b.conversion_type=a.conversion_type
-		  AND b.conversion_date=TRUNC(p_date)
-	      AND b.from_currency    ='USD'
-		  AND b.to_currency<>'LTL'
-	    ORDER BY 4,2
+		(SELECT b.from_currency,
+		  b.to_currency,
+		  TO_CHAR(b.conversion_date,'YYYY/MM/DD') conversion_date,
+		  DECODE(a.user_conversion_type,'Ending Rate','Corporate',a.user_conversion_type) conversion_type,
+		  TO_CHAR(ROUND(b.conversion_rate,6)) conversion_rate
+		FROM gl_daily_rates b,
+		  gl_daily_conversion_types a
+		WHERE a.user_conversion_type IN ('Average Rate','Ending Rate','CC Period End','CC Period Average')
+		AND b.conversion_type         =a.conversion_type
+		AND b.conversion_date         =TRUNC(p_date)
+		AND b.from_currency           ='USD'
+		AND b.to_currency            <>'LTL'
+		--start 1.5 Addition of the CAD currency extract
+		UNION 
+		SELECT b.from_currency,
+		  b.to_currency,
+		  TO_CHAR(b.conversion_date,'YYYY/MM/DD') conversion_date,
+		  DECODE(a.user_conversion_type,'Ending Rate','Corporate',a.user_conversion_type) conversion_type,
+		  TO_CHAR(ROUND(b.conversion_rate,6)) conversion_rate
+		FROM gl_daily_rates b,
+			 gl_daily_conversion_types a
+		WHERE a.user_conversion_type IN ('Average Rate','Ending Rate','CC Period End','CC Period Average')
+		AND b.conversion_type         =a.conversion_type
+		AND b.conversion_date         =TRUNC(p_date)
+		AND b.from_currency ='CAD'
+		AND b.to_currency  IN ('INR','USD')
+		ORDER BY 4,1,2
+		-- End 1.5 Addition of the CAD currency extract
 	  )
   LOOP
 	l_data:=r.from_currency||','||r.to_currency||','||r.conversion_date||','||r.conversion_date||','|| r.conversion_type||','||r.conversion_rate;
