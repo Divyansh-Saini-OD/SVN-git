@@ -37,7 +37,9 @@
 # |                                                                   |
 # |      9  20-Jul-2018 Ramya Venkatesh   Defect#43812 -  EFGL1300    |
 # |                                       failing for OD: Common Put  |
-# |                                       Program                     |
+# |                                       Program                     |   
+# |     10  03-OCT-2019 Yashwanth SC	  NAIT-109141 - Applications  |
+# |                                       Slowdown due to common ftp  |
 # +===================================================================+
 
 # Displaying program arguments
@@ -236,7 +238,7 @@ elif [ "$lftpflag" = "Y" ]
   	 echo "Executing LFTP"
  	 echo "user $user"
 	 echo "server $server"
-	 if [ "$destfile" != "" ]
+	 if [ "${destfile}" != "" ]    #NAIT-109141 - Applications Slowdown due to common ftp
 	 then
 	 mv $source$filename $source$destfile
 	 $XXFIN_TOP/bin/./XXPROCESSLFTP.sh $user $passwd $server $source $dest $destfile $TMPFILE
