@@ -1,5 +1,5 @@
 #!/bin/sh
-	 echo "Executing New Arun LFTP in Process LFTP File"
+	 echo "Executing LFTP in Process LFTP File"
 	 echo "user $1"
 	 echo "port $3"
 	 echo "server $4"
@@ -11,6 +11,7 @@
 success=`/usr/bin/lftp -u $1,$2 -p $3 $4 <<EOF
 lcd $5
 cd  $6
+mput $7 
 quit
 EOF
 `
