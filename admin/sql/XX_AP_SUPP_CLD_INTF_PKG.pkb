@@ -3880,6 +3880,18 @@ IS
     AND UPPER(apsup.vendor_name)  =UPPER(xasc.supplier_name)
     AND apsup.segment1            =xasc.supplier_number ;
   --==========================================================================================
+  -- Cursor Declarations to get the Site Email Address
+  --==========================================================================================
+  CURSOR c_sup_site_email (c_supplier_number  VARCHAR2,
+                           c_vendor_site_code VARCHAR2)
+  IS
+    SELECT site_email_address
+      FROM xx_ap_cld_site_dff_stg
+     WHERE 1 = 1
+       AND request_id       = gn_request_id
+       AND TRIM(supplier_number) = TRIM(c_supplier_number)
+       AND TRIM(vendor_site_code) = TRIM(c_vendor_site_code) ;
+  --==========================================================================================
   -- Cursor Declarations for Country Code
   --==========================================================================================
   CURSOR c_get_country_code (c_country VARCHAR2)
@@ -4069,9 +4081,10 @@ IS
   ln_cnt                      NUMBER;
   ln_vendor_site_id           NUMBER;
   l_service_tolerance_name ap_tolerance_templates.tolerance_name%type;
-  l_service_tolerance_cnt      NUMBER :=0;
-  ln_terms_id				   NUMBER;
+  l_service_tolerance_cnt     NUMBER :=0;
+  ln_terms_id				  NUMBER;
   lc_fob_value                VARCHAR2(100);
+  lc_site_email_address       VARCHAR2(100):= NULL;
 BEGIN
   l_program_step := 'START';
   print_debug_msg(p_message=> l_program_step||': assigning defaults' ,p_force=>true);
@@ -4159,6 +4172,16 @@ BEGIN
        print_debug_msg(p_message=> 'Supplier Site ' ||l_sup_site_type.vendor_site_code ||' already exist in Interface table' ,p_force=> true);
 	   gc_error_msg:='Supplier Site ' ||l_sup_site_type.vendor_site_code ||' already exist in Interface table';
     END IF;
+	--==============================================================================================================
+    -- Get the Site Email Address
+    --==============================================================================================================
+    lc_site_email_address := NULL;
+    OPEN  c_sup_site_email(l_sup_site_type.supplier_number,l_sup_site_type.vendor_site_code);
+    FETCH c_sup_site_email INTO lc_site_email_address;
+    CLOSE c_sup_site_email;
+    print_debug_msg(p_message=>'Supplier Site Email Address : '||lc_site_email_address ,p_force=> false);
+    
+	l_sup_site_and_add (l_sup_site_idx).site_email_address := lc_site_email_address;
     --==============================================================================================================
     -- Validating the Supplier Site - Address Details -  Address Line 1
     --==============================================================================================================
@@ -4512,7 +4535,8 @@ BEGIN
         last_update_date    =SYSDATE,
         vendor_id           =l_sup_site_and_add(l_idxs).vendor_id,
         vendor_site_id      =l_sup_site_and_add (l_idxs).vendor_site_id,
-		terms_id	        =l_sup_site_and_add (l_idxs).terms_id
+		terms_id	        =l_sup_site_and_add (l_idxs).terms_id ,
+		site_email_address  = l_sup_site_and_add (l_idxs).site_email_address
       WHERE 1               =1
       AND vendor_site_code  =l_sup_site_and_add(l_idxs).vendor_site_code
       AND supplier_number   = l_sup_site_and_add(l_idxs).supplier_number
