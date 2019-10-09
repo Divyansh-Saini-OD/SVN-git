@@ -16,6 +16,7 @@
 # 1.3      Jude Felix Antony A      Modified for QC6796  19-JUL-2010
 # 1.4      Bushrod Thomas           Updated for CR759    19-AUG-2010
 # | 1.5      09-SEP-2016    Praveen Vanga          Defect 39261     |
+#   1.6    09-OCT-2019       Faiyaz Ahmad  Added for CAD currency    
 # ----------------------------------------------------------------------------------------
 
 lc_file_name="/usr/tmp/OfficeDepot_fxrates.req"
@@ -72,19 +73,19 @@ set linesize 255
 set sqlprompt ""
 set serveroutput on 
 set verify off
-SELECT 'USD' || C.currency_code ||'_Curncy' || chr(13)
-  FROM fnd_currencies C
+
+select a from (SELECT 'USD' || C.currency_code ||'_Curncy' || chr(13) a  FROM fnd_currencies C
  WHERE C.enabled_flag ='Y'
    AND C.currency_flag='Y'
    AND C.currency_code<>'USD'
-union
-SELECT 'CAD' || C.currency_code ||'_Curncy' || chr(13)
+   UNION
+   SELECT 'CAD' || C.currency_code ||'_Curncy' || chr(13)  a
 FROM fnd_currencies C
 WHERE C.enabled_flag ='Y'
 AND C.currency_flag='Y'
 AND C.currency_code<>'CAD'
-AND C.CURRENCY_CODE IN ('INR','USD')
-ORDER BY 1
+AND C.CURRENCY_CODE IN ('INR','USD')) order by a ;
+
 exit
 EOF`
 echo $req_id | sed s/' '/''/g | tr '\r_' '\n ' | sed '$d' >>$lc_file_name
