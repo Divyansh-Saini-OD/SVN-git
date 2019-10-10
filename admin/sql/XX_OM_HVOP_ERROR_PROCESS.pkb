@@ -28,7 +28,8 @@ AS
 -- |DRAFT1F 02-NOV-2015 Vasu Raparla     Removed Schema References for 12.2  |
 -- |DRAFT1G 18-NOV-2015 Sai Kiran -SCM Team      Modified for QC 36473       |
 -- |DRAFT1H 25-AUG-2017 Venkata Battu      Modified for Defect#42629         |
--- |DRAFT1I 25-AUG-2017 Venkata Battu      Modified for Defect#43138         |   
+-- |DRAFT1I 25-AUG-2017 Venkata Battu      Modified for Defect#43138 
+-- |DRAFT1I 10-OCT-2019 Shalu George      Modified for Account type erroe    |   
 -- +=========================================================================+
 PROCEDURE ship_to_activate
     IS
@@ -2014,6 +2015,57 @@ EXCEPTION
                         ||SQLERRM);
       ROLLBACK;
 END reset_order_type_records;
+
+
+PROCEDURE reset_account_type_error        
+IS
+-- +===========================================================================+
+-- |                  Office Depot - Project Simplify                          |
+-- |                  Office Depot                                             |
+-- +===========================================================================+
+-- | Name  : reset_account_type_error                                          |
+-- | Description      : This Procedure will look for Orders stuck in Interface |
+-- |                    with Validation failed for the field - Account Type    |
+-- |                    this procedure will reset the request_id,error_flag    |
+-- |                    to process the next run                                | 
+-- |                                                                           |   
+-- |                                                                           |
+-- |                                                                           |
+-- +===========================================================================+
+BEGIN
+fnd_file.put_line(fnd_file.output,
+                                 'Begin reset_account_type_error');
+    UPDATE oe_headers_iface_all h
+       SET error_flag  = NULL,
+           request_id  = NULL
+     WHERE NVL(h.error_flag,'N') = 'Y'
+       AND EXISTS( SELECT 1
+                         FROM oe_processing_msgs_vl m
+                             ,oe_headers_iface_all h
+                        WHERE h.orig_sys_document_ref = m.original_sys_document_ref
+                          AND h.order_source_id = m.order_source_id
+                          AND NVL(h.error_flag,'N') = 'Y'
+                          AND m.MESSAGE_TEXT LIKE 'Validation failed for the field%Account%'
+                          AND h.orig_sys_document_ref  = l.orig_sys_document_ref);
+     
+        fnd_file.put_line(fnd_file.output,
+                          'Total No of orders updated for Validation failed for the field - Account Type '
+                          || SQL%ROWCOUNT);
+        fnd_file.put_line(fnd_file.output,
+                          'END OF reset_account_type_error');
+        -- Commit the changes
+        COMMIT;
+EXCEPTION
+  WHEN OTHERS
+  THEN
+      fnd_file.put_line(fnd_file.LOG,
+                        'WHEN OTHERS RAISED FOR reset_account_type_error : '
+                        ||SQLERRM);
+      ROLLBACK;
+END reset_account_type_error;
+
+
+
     PROCEDURE process_errors(
         errbuf                  OUT NOCOPY  VARCHAR2,
         retcode                 OUT NOCOPY  NUMBER,
