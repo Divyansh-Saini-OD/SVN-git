@@ -52,6 +52,7 @@ PACKAGE BODY XX_AR_EBL_TRANSMISSION_PKG AS
 -- |                                                CUSTOMERDOCID                                       |
 -- |                                                FILENAME                                            |
 -- |2.3       09-Sep-2019 Nitin              Changes for NAIT-106371                                    |
+-- |2.4       07-Oct-2019 Atul Khard         Changes for NAIT-104657                                    |
 -- +====================================================================================================+
 */
 
@@ -3112,6 +3113,11 @@ IS
   ls_filenames_length   VARCHAR2(500);
   ls_shiptoloc_length   VARCHAR2(500);
   ls_consbill_length    VARCHAR2(500);
+  /* Variables for NAIT-104657 starts */
+  ls_email_smush_subject 	VARCHAR2(240);
+  ls_send_notify_to 		VARCHAR2(240);
+  ls_email_smush_body 		VARCHAR2(4000);
+  /* Variables for NAIT-104657 ends */
   TYPE lcu_consbill_inv  IS REF CURSOR;
   get_consbill_inv       lcu_consbill_inv;  
   TYPE lcu_shipto_location  IS REF CURSOR;
@@ -3310,6 +3316,55 @@ BEGIN
           WHEN UPPER (lc_phase) = 'COMPLETED' OR UPPER (lc_status) IN ('CANCELLED', 'ERROR', 'TERMINATED');
         END LOOP;
         --
+		/* Changes for NAIT-104657 starts */
+		IF UPPER (lc_phase) = 'COMPLETED' AND UPPER (lc_status) IN ('CANCELLED', 'ERROR', 'TERMINATED','WARNING') THEN
+			
+			ls_email_smush_subject := NULL;
+			ls_send_notify_to := NULL;
+			ls_email_smush_body := NULL;
+
+			get_translation('AR_EBL_CONFIG','SMUSH_ERROR_EMAIL','SUBJECT_TEXT',ls_email_smush_subject);
+			get_translation('AR_EBL_CONFIG','SMUSH_ERROR_EMAIL','SEND_TO',ls_send_notify_to);
+			get_translation('AR_EBL_CONFIG','SMUSH_ERROR_EMAIL','BODY_TEXT',ls_email_smush_body);
+			
+			ls_email_smush_subject := REPLACE(ls_email_smush_subject,'&BILLINGDATE',ld_billing_dt);
+			ls_email_smush_subject := REPLACE(ls_email_smush_subject,'&AOPSNUMBER',lc_aops_cust_number);
+			ls_email_smush_subject := REPLACE(ls_email_smush_subject,'&CUSTDOCID',lcr.cust_doc_id);
+			
+			SEND_SIMPLE_EMAIL(p_smtp_server, p_smtp_port, p_from_name, ls_send_notify_to, ls_email_smush_subject, ls_email_smush_body);
+			
+			UPDATE xx_ar_ebl_file XAEF
+				SET STATUS ='MERGE_ERROR',
+				LAST_UPDATE_DATE = SYSDATE,
+				LAST_UPDATED_BY = ln_user_id
+			WHERE cust_account_id = lcr.customer_id
+			  AND cust_doc_id = lcr.cust_doc_id
+			  AND paydoc_flag = 'Y'
+			  AND file_type = 'PDF'
+			  AND status = 'RENDERED'
+			  AND EXISTS
+			 (SELECT 1
+				FROM XX_AR_EBL_TRANSMISSION XAET
+			   WHERE XAET.status = 'SEND'
+				 AND XAET.customer_doc_id = XAEF.cust_doc_id
+				 AND XAET.transmission_id = XAEF.transmission_id);
+				
+			UPDATE XX_AR_EBL_TRANSMISSION XAET
+				SET STATUS ='MERGE_ERROR',
+				LAST_UPDATE_DATE = SYSDATE,
+				LAST_UPDATED_BY = ln_user_id
+			WHERE XAET.customer_doc_id = lcr.cust_doc_id
+			  AND XAET.status = 'SEND'
+			  AND XAET.transmission_id IN 
+			 (SELECT XAEF.transmission_id
+				FROM xx_ar_ebl_file XAEF
+			   WHERE XAEF.status = 'MERGE_ERROR'
+				 AND XAEF.cust_doc_id = lcr.cust_doc_id
+				 AND XAEF.cust_account_id = lcr.customer_id);
+				 
+			COMMIT;
+		END IF;
+			/* Changes for NAIT-104657 ends */
         --
         IF UPPER (lc_phase) = 'COMPLETED' AND UPPER (lc_status) = 'ERROR' THEN
           FND_FILE.PUT_LINE(FND_FILE.LOG,'XXAREBLPDFMERGE completed in error while processing cust doc id:'||lcr.cust_doc_id||'.Oracle request id: '||ln_request_id ||' '||SQLERRM);
