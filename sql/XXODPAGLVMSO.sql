@@ -1,4 +1,4 @@
-REM	_______________________________________________________________________________________________________________________________
+REM	______________________________________________________________________________________________________
 REM
 REM     TITLE                   :  XXODPAVMSO.sql
 REM     USED BY APPLICATION     :  PA , GL
@@ -7,13 +7,10 @@ REM     CREATED BY              :  Praveen Vanga, Developer - EBS, Office Depot
 REM     INPUTS                  :  
 REM     OUTPUTS                 :  generates .txt and .csv files
 REM     HISTORY                 :  WHO -                 WHAT -          DATE -
-REM     NOTES                   :  Praveen Vanga		RICE I3101       02/27/2017   Intial version
-REM     NOTES                   :  Arun Dsouza 		    RICE I3101       09/27/2018   Modified to archive the files
-REM     NOTES 					:  Priyam               RICE I301        04/15/2019   Modified to remove Task Number having IT and LB	
-REM     NOTES 					:  Narendra             RICE I301        07/19/2019   Condition to Add Task Number having IT and LB and Project Asset Type as                                                                                    "ESTIMATED"		
-REM     NOTES 					:  Narendra             RICE I301        08/02/2019   Add Condition to check Asset status should be estimated for capitalized Task        
-REM     NOTES 					:  Narendra             RICE I301        08/25/2019   Filter out ALL tasks with code 02.IT.LB and with code 02.IT.PF that status As Built only.      
-REM _______________________________________________________________________________________________________________________________
+REM     NOTES                   :  Praveen Vanga		RICE I3101    02/27/2017   Intial version
+REM     NOTES                   :  Arun Dsouza 		    RICE I3101    09/27/2018   Modified to archive the files
+REM     NOTES 					:  Priyam                   RICE I301 04/15/2019  Modified to remove Task Number having IT and LB	
+REM	_____________________________________________________________________________________________________
 
 set concat .
 set echo off
@@ -72,21 +69,21 @@ SELECT DISTINCT ('"'|| SUBSTR(p.segment1
        pa_expenditure_items_all   pei,
        pa_tasks t,
        pa_projects_all p
-   WHERE p.enabled_flag = 'Y'
+ WHERE p.enabled_flag = 'Y'
    and p.project_status_code = 'APPROVED'
    AND p.TEMPLATE_FLAG <> 'Y'
    AND t.project_id=p.project_id 
    AND t.chargeable_flag = 'Y'
+   and t.task_number not like '%IT%LB%'
    AND pei.expenditure_type NOT LIKE '%:Accrued%'
-   and t.task_number NOT like '02%%IT%LB%'
    AND pei.task_id=t.task_id
    AND prvr.organization_id=pei.cc_prvdr_organization_id
    AND TRUNC(NVL(p.completion_date,TRUNC(SYSDATE) + 1)) > TRUNC(SYSDATE)
    AND TRUNC(NVL(t.completion_date,TRUNC(SYSDATE) + 1)) > TRUNC(SYSDATE)
    AND EXISTS (SELECT 'x'
-                 FROM  xx_fin_translatevalues      xftv,
+                 FROM   xx_fin_translatevalues      xftv,
                        xx_fin_translatedefinition  xftd,
-                       pa_segment_value_lookups l,
+                        pa_segment_value_lookups l,
                        pa_segment_value_lookup_sets s
                WHERE xftv.translate_id = xftd.translate_id
                   AND SYSDATE BETWEEN xftv.start_date_active AND NVL(xftv.end_date_active,SYSDATE+1)
@@ -100,18 +97,6 @@ SELECT DISTINCT ('"'|| SUBSTR(p.segment1
                  AND UPPER(RTRIM(s.segment_value_lookup_set_name)) = 'EXPENDITURE TYPE TO ACCOUNT'
                  AND l.segment_value_lookup = pei.expenditure_type
                 )
-   AND NOT EXISTS (SELECT 'X'
-                    FROM PA_PROJECT_ASSETS_ALL ppaa,
-                         PA_PROJECT_ASSET_ASSIGNMENTS ppas,
-                         pa_tasks t1                         
-                    WHERE ppaa.project_asset_id = ppas.project_asset_id
-                    and ppas.project_id = t1.project_id
-                    and ppas.task_id = t1.task_id
-                    and ppaa.project_asset_type <> 'ESTIMATED'
-					and t1.task_number like '02%%IT%PF%'
-                    AND t1.project_id=t.project_id
-                    AND t1.task_id=t.task_id
-                     )
    ORDER BY 1;
 
 
@@ -140,16 +125,16 @@ SELECT DISTINCT '"'||SUBSTR(p.segment1
    AND p.TEMPLATE_FLAG <> 'Y'
    AND t.project_id=p.project_id 
    AND t.chargeable_flag = 'Y'
+   and t.task_number not like '%IT%LB%'
    AND pei.expenditure_type NOT LIKE '%:Accrued%'
-   and t.task_number NOT like '02%%IT%LB%'
    AND pei.task_id=t.task_id
    AND prvr.organization_id=pei.cc_prvdr_organization_id
    AND TRUNC(NVL(p.completion_date,TRUNC(SYSDATE) + 1)) > TRUNC(SYSDATE)
    AND TRUNC(NVL(t.completion_date,TRUNC(SYSDATE) + 1)) > TRUNC(SYSDATE)
    AND EXISTS (SELECT 'x'
-                 FROM  xx_fin_translatevalues      xftv,
+                 FROM   xx_fin_translatevalues      xftv,
                        xx_fin_translatedefinition  xftd,
-                       pa_segment_value_lookups l,
+                        pa_segment_value_lookups l,
                        pa_segment_value_lookup_sets s
                WHERE xftv.translate_id = xftd.translate_id
                   AND SYSDATE BETWEEN xftv.start_date_active AND NVL(xftv.end_date_active,SYSDATE+1)
@@ -163,18 +148,6 @@ SELECT DISTINCT '"'||SUBSTR(p.segment1
                  AND UPPER(RTRIM(s.segment_value_lookup_set_name)) = 'EXPENDITURE TYPE TO ACCOUNT'
                  AND l.segment_value_lookup = pei.expenditure_type
                 )
-   AND NOT EXISTS (SELECT 'X'
-                    FROM PA_PROJECT_ASSETS_ALL ppaa,
-                         PA_PROJECT_ASSET_ASSIGNMENTS ppas,
-                         pa_tasks t1                         
-                    WHERE ppaa.project_asset_id = ppas.project_asset_id
-                    and ppas.project_id = t1.project_id
-                    and ppas.task_id = t1.task_id
-                    and ppaa.project_asset_type <> 'ESTIMATED'
-                    and t1.task_number like '02%%IT%PF%'
-                    AND t1.project_id=t.project_id
-                    AND t1.task_id=t.task_id
-                     )
    ORDER BY 1;
 
 
