@@ -7234,6 +7234,64 @@ EXCEPTION
  WHEN OTHERS THEN
    print_debug_msg(p_message => 'When others in display status : '|| SQLERRM, p_force => true);
 END display_status;
+-- +=================================================================================|
+-- | Procedure Name : main_prc_staging_purge                                         |
+-- | Description    : Main procedure for Supplier Interface to Purge staging tables  |
+-- |                  xx_ap_cld_suppliers_stg                                        |
+-- |                  xx_ap_cld_supp_sites_stg                                       |
+-- |                  xx_ap_cld_supp_contact_stg                                     |
+-- |                  xx_ap_cld_supp_bnkact_stg                                      |
+-- |                  xx_ap_cld_supp_bcls_stg                                        |
+-- |                  xx_ap_cld_site_dff_stg                                         |
+-- +=================================================================================|
+PROCEDURE main_prc_staging_purge
+IS
+BEGIN
+  print_debug_msg(p_message =>'--------------------------------------------------------------------------------------------', p_force => true);
+  print_debug_msg(p_message => 'Starting Purge Process', p_force => true);
+  
+  DELETE FROM xx_ap_cld_suppliers_stg
+   WHERE process_flag  = 'Y'
+     AND creation_date < SYSDATE-30;
+  print_debug_msg(p_message =>'No. of Rows deleted in xx_ap_cld_suppliers_stg table :'||sql%rowcount,p_force => true);
+  COMMIT;
+  
+  DELETE FROM xx_ap_cld_supp_sites_stg
+   WHERE process_flag  = 'Y'
+     AND creation_date < SYSDATE-30;
+  print_debug_msg(p_message =>'No. of Rows deleted in xx_ap_cld_supp_sites_stg table :'||sql%rowcount,p_force => true);
+  COMMIT;
+  
+  DELETE FROM xx_ap_cld_supp_contact_stg
+   WHERE process_flag    ='Y'
+     AND creation_date < SYSDATE-30;
+  print_debug_msg(p_message =>'No. of Rows deleted in xx_ap_cld_supp_contact_stg table :'||sql%rowcount,p_force => true);
+  COMMIT;
+  
+  DELETE FROM xx_ap_cld_supp_bnkact_stg
+   WHERE process_flag    ='Y'
+     AND creation_date < sysdate-30;
+  print_debug_msg(p_message =>'No. of Rows deleted in xx_ap_cld_supp_bnkact_stg table :'||sql%rowcount,p_force => true);
+  COMMIT;
+  
+  DELETE FROM xx_ap_cld_supp_bcls_stg
+   WHERE process_flag    ='Y'
+     AND creation_date < sysdate-30;
+  print_debug_msg(p_message =>'No. of Rows deleted in xx_ap_cld_supp_bcls_stg table :'||sql%rowcount,p_force => true);
+  COMMIT;
+  
+  DELETE FROM xx_ap_cld_site_dff_stg
+   WHERE process_flag    ='Y'
+     AND creation_date < sysdate-30;
+  print_debug_msg(p_message =>'No. of Rows deleted in xx_ap_cld_site_dff_stg table :'||sql%rowcount,p_force => true);
+  COMMIT;
+  
+  print_debug_msg(p_message =>'--------------------------------------------------------------------------------------------', p_force => true);
+EXCEPTION
+WHEN OTHERS 
+THEN
+  print_debug_msg(p_message => 'Error Message - main_prc_staging_purge : '|| SQLERRM, p_force=> true);
+END main_prc_staging_purge;
 -- +============================================================================+
 -- | Procedure Name : xx_ap_supp_cld_intf                                       |
 -- |                                                                            |
@@ -7503,20 +7561,24 @@ BEGIN
      -- wait for request to finish
 
      lb_complete :=fnd_concurrent.wait_for_request ( request_id => ln_request_id, 
-												  interval => 15, 
-												  max_wait => 0, 
-												  phase => lc_phase, 
-												  status => lc_status, 
-												  dev_phase => lc_dev_phase, 
-												  dev_status => lc_dev_status, 
-												  message => lc_message  
-                                                );
+												     interval => 15, 
+												     max_wait => 0, 
+												     phase => lc_phase, 
+												     status => lc_status, 
+												     dev_phase => lc_dev_phase, 
+												     dev_status => lc_dev_status, 
+												     message => lc_message  
+                                                   );
 	 
   ELSE
      print_debug_msg(p_message => 'Failed to submit the Report Program to generate the output file - ' || SQLERRM , p_force => true);
   END IF;												
-   
+  
+  -- Process the Purge Staging Tables for the records more than 30 days
+  main_prc_staging_purge;
+  
   display_status;
+  
   IF (l_ret_code IS NULL OR l_ret_code <> 0) THEN
     x_retcode    := l_ret_code;
     x_errbuf     := l_err_buff;
