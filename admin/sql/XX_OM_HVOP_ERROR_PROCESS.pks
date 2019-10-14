@@ -14,6 +14,7 @@ PROCEDURE OFF_LINE_DEPOSITS;
 PROCEDURE unapply_and_apply_rct;
 PROCEDURE update_default_salesrep; 
 PROCEDURE reset_order_type_records;
+PROCEDURE reset_account_type_error;
 
 PROCEDURE PROCESS_ERRORS  (errbuf       OUT NOCOPY VARCHAR2
                           , retcode     OUT NOCOPY NUMBER
@@ -29,7 +30,9 @@ PROCEDURE PROCESS_ERRORS  (errbuf       OUT NOCOPY VARCHAR2
                           , p_offline_deposits     VARCHAR2
                           , p_unapply_apply        VARCHAR2
                           , p_default_salesrep     VARCHAR2
-			  , p_order_type           VARCHAR2 );
+			              , p_order_type           VARCHAR2
+                          , p_process_subscription_orders VARCHAR2 
+						  );
 END XX_OM_HVOP_ERROR_PROCESS;
 /
 SHOW ERRORS PACKAGE XX_OM_HVOP_ERROR_PROCESS;
