@@ -21,6 +21,7 @@ AS
    -- | 1.2      18-APR-2017  Suresh Naragam          Defect #41426                               |
    -- | 1.3      28-APR-2018  Atul Khard              Defect #44465 Labels not outputing correctly|
    -- | 1.4      18-May-2018  Aniket J    CG          Changes for Requirement  #NAIT-36070        |
+   -- | 1.5      29-Sep-2019  Atul Khard              Bug fix identified in #NAIT-106275          |
    -- +===========================================================================================+
    PROCEDURE GET_TRANSLATION (p_translation_name   IN            VARCHAR2,
                               p_source_value1      IN            VARCHAR2,
@@ -917,16 +918,20 @@ AS
 		    -- Added by Thilak CG on 05-JAN-18 for Defect# NAIT-22703
 		    lc_nodecimal := NULL;
 			lc_decimal_flag := 'N';
+			
+			
 		    IF p_data_format = '9900'
 			THEN
 			lc_decimal_flag := 'Y';
 		    lc_nodecimal := '*100';
-			lc_column := 'SUBSTR('||lc_column||',1,(INSTR('||lc_column||',''.'')+2))';
+			--lc_column := 'SUBSTR('||lc_column||',1,(INSTR('||lc_column||',''.'')+2))';
+			lc_column := 'ltrim(rtrim(TO_CHAR('||lc_column||','||'''99999990.00'''||')))'; --added to fix bug NAIT-106275
 			ELSIF p_data_format = '999000'
 			THEN
 			lc_decimal_flag := 'Y';
 			lc_nodecimal := '*1000';
-	        lc_column := 'SUBSTR('||lc_column||',1,(INSTR('||lc_column||',''.'')+3))';
+	        --lc_column := 'SUBSTR('||lc_column||',1,(INSTR('||lc_column||',''.'')+3))';
+			lc_column := 'ltrim(rtrim(TO_CHAR('||lc_column||','||'''99999990.000'''||')))'; --added to fix bug NAIT-106275
 			END IF;
 			
 			IF lc_decimal_flag = 'Y'
@@ -946,7 +951,7 @@ AS
                || ')))'; 
 			END IF;
             -- End of Defect# NAIT-22703			-- Changes for the defect#41371
-         --lc_column := 'ltrim(rtrim(TO_CHAR('||lc_column||','||'''999,990.00'''||')))';
+        
          END IF;
       END IF;
 
