@@ -8,9 +8,7 @@
  PROMPT Creating Package Body XX_WSH_SHIPPING_LABEL_PKG 
  PROMPT Program exits if the creation is not successful
  WHENEVER SQLERROR CONTINUE
-
-CREATE OR REPLACE
-PACKAGE BODY XX_WSH_SHIPPING_LABEL_PKG AS
+create or replace PACKAGE BODY XX_WSH_SHIPPING_LABEL_PKG AS
  -- +============================================================================================+
  -- |                  Office Depot - Project Simplify                                           |
  -- |                       WIPRO Technologies                                                   |
@@ -53,7 +51,8 @@ PACKAGE BODY XX_WSH_SHIPPING_LABEL_PKG AS
  -- |1.11     06-JAN-2017 Avinash Baddam        Changes for Defect 38317                         |
  -- |1.12     28-MAR-2017 Avinash Baddam        Changes for Defect 41357                         |
  -- |1.13     03-APR-2017 Suresh Ponnambalam    Changes for Defect 41357                         |
- -- |1.14     03-APR-2017 Avinash Baddam        Added del_detail_id to the tracking table        | 
+ -- |1.14     03-APR-2017 Avinash Baddam        Added del_detail_id to the tracking table        |
+-- |1.15     01-OCT-2019 Venkateshwar Panduga  Added Walet location/Certification logic          |
  -- +============================================================================================+
  -- +===================================================================+
  -- | Name        : LABELS_DATA                                         |
@@ -70,6 +69,54 @@ PACKAGE BODY XX_WSH_SHIPPING_LABEL_PKG AS
 -- global variables declaration
 g_def_debug    VARCHAR2(1)  :='N';
 g_debug_lvl    VARCHAR2(1);
+
+/* Below variable is added for V1.15 */
+gc_package_name  VARCHAR2(30) := 'XX_WSH_SHIPPING_LABEL_PKG';
+
+/* Below Procedure is added for V1.15 */
+ PROCEDURE get_translation_info(p_translation_name  IN            xx_fin_translatedefinition.translation_name%TYPE,
+                                 px_translation_info IN OUT NOCOPY xx_fin_translatevalues%ROWTYPE)
+  IS
+
+    lc_procedure_name  CONSTANT VARCHAR2(61) := gc_package_name || '.' || 'get_translation_info';
+
+    lr_translation_info xx_fin_translatevalues%ROWTYPE;
+
+  BEGIN
+
+    SELECT  vals.*
+    INTO    lr_translation_info
+    FROM    xx_fin_translatevalues vals,
+            xx_fin_translatedefinition defn
+    WHERE   defn.translate_id                        = vals.translate_id
+    AND     defn.translation_name                    = p_translation_name
+    AND     NVL(vals.source_value1, '-X')            = NVL(px_translation_info.source_value1, NVL(vals.source_value1, '-X'))
+    AND     NVL(vals.source_value2, '-X')            = NVL(px_translation_info.source_value2, NVL(vals.source_value2, '-X'))
+    AND     NVL(vals.source_value3, '-X')            = NVL(px_translation_info.source_value3, NVL(vals.source_value3, '-X'))
+    AND     NVL(vals.source_value4, '-X')            = NVL(px_translation_info.source_value4, NVL(vals.source_value4, '-X'))
+    AND     NVL(vals.source_value5, '-X')            = NVL(px_translation_info.source_value5, NVL(vals.source_value5, '-X'))
+    AND     NVL(vals.source_value6, '-X')            = NVL(px_translation_info.source_value6, NVL(vals.source_value6, '-X'))
+    AND     NVL(vals.source_value7, '-X')            = NVL(px_translation_info.source_value7, NVL(vals.source_value7, '-X'))
+    AND     NVL(vals.source_value8, '-X')            = NVL(px_translation_info.source_value8, NVL(vals.source_value8, '-X'))
+    AND     SYSDATE BETWEEN vals.start_date_active AND NVL(vals.end_date_active, SYSDATE + 1)
+    AND     SYSDATE BETWEEN defn.start_date_active AND NVL(defn.end_date_active, SYSDATE + 1)
+    AND     vals.enabled_flag                        = 'Y'
+    AND     defn.enabled_flag                        = 'Y';
+
+    px_translation_info := lr_translation_info;
+    
+      
+     FND_FILE.PUT_LINE (FND_FILE.LOG,'RESULT target_value1: ' || px_translation_info.target_value1);
+
+    EXCEPTION
+    WHEN OTHERS
+    THEN
+    FND_FILE.PUT_LINE (FND_FILE.LOG,'Exception while getting WALLET_LOCATION -'|| substr(sqlerrm,1,250));
+      RAISE_APPLICATION_ERROR(-20101, 'PROCEDURE: ' || lc_procedure_name || ' SQLCODE: ' || SQLCODE || ' SQLERRM: ' || SQLERRM);
+
+  END get_translation_info;
+  
+  ----- End for V1.15
    PROCEDURE LABEL_OUTLINE;
 
    PROCEDURE LABELS_DATA (
@@ -153,7 +200,11 @@ g_debug_lvl    VARCHAR2(1);
    lc_resp_statusdesc         VARCHAR2(2000) := null;
    insert_exception	      EXCEPTION;
    Invoke_exception           EXCEPTION;
-   
+   ---- Added for V1.15
+   lt_translation_info            xx_fin_translatevalues%ROWTYPE;  ---- Added for V1.15
+   lc_wallet_location             xx_fin_translatevalues.target_value1%TYPE;
+   lc_wallet_password             xx_fin_translatevalues.target_value1%TYPE;
+  --- End V1.15 
    CURSOR order_cur(p_order_header_id NUMBER) IS
       SELECT orig_sys_document_ref
 	    ,order_number
@@ -678,6 +729,29 @@ g_debug_lvl    VARCHAR2(1);
 				</soapenv:Envelope>';
 				
              FND_FILE.PUT_LINE (FND_FILE.LOG,'Request Message:'|| lc_soap_request);
+-----/*   Below code is added for V1.15 
+  /***********************
+   * Get wallet information
+   ***********************/
+                 
+           lt_translation_info := NULL;
+         
+           lt_translation_info.source_value1 := 'WALLET_LOCATION';
+         
+           get_translation_info(p_translation_name  => 'XX_FIN_IREC_TOKEN_PARAMS',
+                                px_translation_info => lt_translation_info);
+                                
+           lc_wallet_location  := lt_translation_info.target_value1;
+           lc_wallet_password  := lt_translation_info.target_value2;
+            IF lc_wallet_location IS NOT NULL
+            THEN
+
+              UTL_HTTP.SET_WALLET(lc_wallet_location, lc_wallet_password);
+			  
+            END IF;
+			
+            UTL_HTTP.set_response_error_check(FALSE);
+---- END V1.15             
 	     lr_http_request :=  UTL_HTTP.begin_request (lc_hosturl, 'POST', 'HTTP/1.1');
 
 	     
@@ -1446,6 +1520,11 @@ lc_resp_statusdesc             VARCHAR2(2000) := null;
 lc_location_code               VARCHAR2(20);     					  
 Invoke_exception               EXCEPTION;  
 ln_user_id   	               NUMBER :=  FND_GLOBAL.USER_ID;
+---- Added for V1.15
+lt_translation_info            xx_fin_translatevalues%ROWTYPE;  ---- Added for V1.15
+lc_wallet_location             xx_fin_translatevalues.target_value1%TYPE;
+lc_wallet_password             xx_fin_translatevalues.target_value1%TYPE;
+--- End V1.15
 CURSOR tracking_cur                                                                                                         
     IS                                                                                 
     SELECT xt.tracking_id                                   
@@ -1538,7 +1617,32 @@ BEGIN
 				</soapenv:Envelope>';
 			write_debug('SOAP Request :');	
             write_debug(lc_soap_request);
-			write_log('L','Before SOAP request call' ); 
+			write_log('L','Before SOAP request call' );
+      
+      -----/*   Below code is added for V1.15 
+  /***********************
+   * Get wallet information
+   ***********************/
+                 
+           lt_translation_info := NULL;
+         
+           lt_translation_info.source_value1 := 'WALLET_LOCATION';
+         
+           get_translation_info(p_translation_name  => 'XX_FIN_IREC_TOKEN_PARAMS',
+                                px_translation_info => lt_translation_info);
+                                
+           lc_wallet_location  := lt_translation_info.target_value1;
+           lc_wallet_password  := lt_translation_info.target_value2;
+            IF lc_wallet_location IS NOT NULL
+            THEN
+
+              UTL_HTTP.SET_WALLET(lc_wallet_location, lc_wallet_password);
+			  
+            END IF;
+			
+            UTL_HTTP.set_response_error_check(FALSE);
+---- END V1.15  
+
 			lr_http_request :=  UTL_HTTP.begin_request (lc_hosturl, 'POST', 'HTTP/1.1');
 			write_debug(' After lr_http_request: ');
             IF lc_username IS NOT NULL THEN
@@ -1636,4 +1740,3 @@ THEN
 END;
 END XX_WSH_SHIPPING_LABEL_PKG;
 /
-SHOW ERR
