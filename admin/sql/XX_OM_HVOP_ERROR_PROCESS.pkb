@@ -2015,7 +2015,145 @@ EXCEPTION
                         ||SQLERRM);
       ROLLBACK;
 END reset_order_type_records;
+<<<<<<< .mine
 
+PROCEDURE reset_account_type_error
+IS
+  -- +===========================================================================+
+  -- |                  Office Depot - Project Simplify                          |
+  -- |                  Office Depot                                             |
+  -- +===========================================================================+
+  -- | Name  : reset_account_type_error                                          |
+  -- | Description      : This Procedure will look for Orders stuck in Interface |
+  -- |                    with Validation failed for the field - Account Type    |
+  -- |                    this procedure will reset the request_id,error_flag    |
+  -- |                    to process the next run                                |
+  -- |                                                                           |
+  -- |                                                                           |
+  -- |                                                                           |
+  -- +===========================================================================+
+  l_request_id            NUMBER := 0 ;
+  l_reponsibility_name    xx_fin_translatevalues.target_value2%TYPE;
+  l_username              xx_fin_translatevalues.target_value1%TYPE;
+  l_user_id               fnd_user.user_id%TYPE;
+  l_responsibility_id     fnd_responsibility_tl.responsibility_id%TYPE;
+  l_application_id        fnd_responsibility_tl.application_id%TYPE;
+  l_organization_id       xx_fin_translatevalues.target_value4%TYPE;
+
+BEGIN
+  fnd_file.put_line(fnd_file.output, 'Begin procedure reset_account_type_error');
+
+  UPDATE oe_headers_iface_all h
+  SET error_flag              = NULL,
+    request_id                = NULL
+  WHERE NVL(h.error_flag,'N') = 'Y'
+  AND EXISTS
+    (SELECT 1
+    FROM oe_processing_msgs_vl m
+    WHERE h.orig_sys_document_ref = m.original_sys_document_ref
+    AND h.order_source_id         = m.order_source_id
+    AND m.MESSAGE_TEXT LIKE 'Validation failed for the field%Account%'
+    );
+
+  fnd_file.put_line(fnd_file.output, 'Total No of orders updated for Validation failed for the field - Account Type ' || SQL%ROWCOUNT);
+
+  COMMIT;
+
+  IF SQL%ROWCOUNT >0
+  THEN
+
+    SELECT xftv.target_value1,
+           xftv.target_value2,
+           xftv.target_value4
+    INTO l_username,
+         l_reponsibility_name,
+         l_organization_id
+    FROM xx_fin_translatevalues xftv,
+         xx_fin_translatedefinition xftd
+    WHERE xftv.translate_id   = xftd.translate_id
+    AND xftd.translation_name = 'XX_HVOP_ERROR_REPROCESS'
+    AND xftv.source_value1    = 'RESET_ACCOUNT_TYPE'
+    AND SYSDATE BETWEEN xftv.start_date_active AND NVL (xftv.end_date_active, SYSDATE + 1)
+    AND SYSDATE BETWEEN xftd.start_date_active AND NVL (xftd.end_date_active, SYSDATE + 1)
+    AND xftv.enabled_flag = 'Y'
+    AND xftd.enabled_flag = 'Y';
+
+    fnd_file.put_line(fnd_file.LOG,'Username:'||l_username);
+    fnd_file.put_line(fnd_file.LOG,'Responsibility'||l_reponsibility_name);
+
+    SELECT frt.responsibility_id,
+           fu.user_id,
+           frt.application_id
+    INTO l_responsibility_id,
+         l_user_id,
+         l_application_id
+    FROM fnd_user fu,
+         fnd_user_resp_groups_all furga,
+         fnd_responsibility_tl frt
+    WHERE frt.LANGUAGE        = USERENV('LANG')
+    AND frt.responsibility_id = furga.responsibility_id
+    AND furga.user_id         = fu.user_id
+    AND fu.user_name          = l_username
+    AND responsibility_name   = l_reponsibility_name
+    AND (fu.start_date       <= SYSDATE
+    OR fu.start_date         IS NULL)
+    AND (fu.end_date         >= SYSDATE
+    OR fu.end_date           IS NULL)
+    AND (furga.start_date    <= SYSDATE
+    OR furga.start_date      IS NULL)
+    AND (furga.end_date      >= SYSDATE
+    OR furga.end_date        IS NULL);
+
+    fnd_file.put_line(fnd_file.LOG,'Userid:'||l_user_id);
+    fnd_file.put_line(fnd_file.LOG, 'Responsibility_ID'||l_responsibility_id);
+    fnd_file.put_line(fnd_file.LOG, 'Responsibility_Application_ID'||l_application_id);
+    fnd_file.put_line(fnd_file.LOG, 'organization_ID'||l_organization_id);
+
+    FND_GLOBAL.APPS_INITIALIZE( user_id => l_user_id -- User ID -- SVC-ESP_OM1..
+                               ,resp_id => l_responsibility_id                  -- OD (US) HVOP Super User
+                               ,resp_appl_id => l_application_id                -- Oracle Order Management
+                                 );
+    mo_global.init('ONT');
+    MO_GLOBAL.SET_POLICY_CONTEXT('S', l_organization_id);
+
+    l_request_id:=fnd_request.submit_request
+               ( application =>'ONT' ,
+                 program => 'OEOIMP' ,
+                 argument1 => NULL -- Operating Unit
+                ,argument2 => NULL                                                                                     -- Order Source
+                ,argument3 => NULL                                                                                     -- Original System Document Ref
+                ,argument4 => NULL                                                                                     -- Operation Code
+                ,argument5 =>'N'                                                                                       -- Validate Only?
+                ,argument6 => 1                                                                                        -- Debug Level
+                ,argument7 => 4                                                                                        -- Number of Order Import instances
+                ,argument8 => NULL                                                                                     -- Sold To Org Id
+                ,argument9 => NULL                                                                                     -- Sold To Org
+                ,argument10 => NULL                                                                                    -- Change Sequence
+                ,argument11 => 'Y'                                                                                     -- Enable Single Line Queue for Instances
+                ,argument12 => 'N'                                                                                     -- Trim Trailing Blanks
+                ,argument13 => 'Y'                                                                                     -- Process Orders With No Org Specified
+                ,argument14 => l_organization_id                                                                       -- Default Operating Unit
+                ,argument15 => 'Y'                                                                                     -- Validate Description Flexfields?
+         );
+    fnd_file.put_line(fnd_file.LOG,'Submitted RequestID='||l_request_id);
+
+   IF l_request_id>0
+   THEN
+     COMMIT;
+   ELSE
+     ROLLBACK;
+   END IF;
+ END IF;
+
+EXCEPTION
+  WHEN OTHERS
+  THEN
+    fnd_file.put_line(fnd_file.LOG, 'WHEN OTHERS RAISED FOR reset_account_type_error : ' ||SQLERRM);
+    ROLLBACK;
+END reset_account_type_error;
+
+
+=======
 
 PROCEDURE reset_account_type_error
 IS
@@ -2136,7 +2274,7 @@ WHEN OTHERS THEN
 END reset_account_type_error;
 
 
-    PROCEDURE process_errors(
+>>>>>>> .theirs    PROCEDURE process_errors(
         errbuf                  OUT NOCOPY  VARCHAR2,
         retcode                 OUT NOCOPY  NUMBER,
         p_ship_to_activate                  VARCHAR2,
@@ -2152,8 +2290,9 @@ END reset_account_type_error;
         p_unapply_apply                     VARCHAR2,
         p_default_salesrep                  VARCHAR2,
         p_order_type                        VARCHAR2,
-		p_process_subscription_orders       VARCHAR2)
-    IS
+<<<<<<< .mine        p_process_subscription_orders       VARCHAR2)
+=======		p_process_subscription_orders       VARCHAR2)
+>>>>>>> .theirs    IS
 -- +=========================================================================+
 -- |                  Office Depot - Project Simplify                        |
 -- |                  Office Depot                                           |
@@ -2284,7 +2423,15 @@ END reset_account_type_error;
                               'Rest Order Type Records:::');
             reset_order_type_records;
         END IF;
-		
+<<<<<<< .mine		
+        IF lc_process_subscription_orders = 'Y'
+        THEN
+          fnd_file.put_line(fnd_file.output,
+                             'Reset Account type error:::');
+           reset_account_type_error;
+        END IF; 
+	
+=======		
 		IF lc_process_subscription_orders = 'Y'
         THEN
             fnd_file.put_line(fnd_file.output,
@@ -2298,7 +2445,7 @@ END reset_account_type_error;
            reset_account_type_error;
         END IF;
   
-    EXCEPTION
+>>>>>>> .theirs    EXCEPTION
         WHEN OTHERS
         THEN
             fnd_file.put_line(fnd_file.LOG,
