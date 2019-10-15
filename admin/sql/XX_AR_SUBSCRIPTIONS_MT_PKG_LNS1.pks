@@ -124,5 +124,12 @@ AS
                                ,retcode        OUT NUMBER
                                ,p_debug_flag   IN  VARCHAR2 DEFAULT 'N'
                                );
+
+  /********************************************
+  * Procedure to check eligible SKU for REV REC
+  ********************************************/
+  FUNCTION is_rev_rec_item(p_sku_name IN VARCHAR2)
+  RETURN VARCHAR2;
+
 END;
 /

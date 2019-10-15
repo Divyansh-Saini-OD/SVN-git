@@ -89,6 +89,10 @@ AS
 -- | 35.0        27-SEP-2019  Sahithi K              Recurring Payment Auth without COF Tran ID         |
 -- |                                                 Handling and storing COF Tran ID of first(INITIAL) |
 -- |                                                 successful auth NAIT-107551                        |
+-- | 36.0        07-OCT-2019  Sahithi K              added contractStatus field to contractEmailRequest |
+-- |                                                 NAIT-108527                                        |
+-- | 37.0        10-OCT-2019  Sahithi K              Modified cancel_date while triggering TERMINATE    |
+-- |                                                 email - NAIT-110748                                |
 -- +====================================================================================================+
 
   gc_package_name        CONSTANT all_objects.object_name%TYPE   := 'xx_ar_subscriptions_mt_pkg';
@@ -7577,6 +7581,44 @@ AS
 
             ln_loop_counter := ln_loop_counter + 1;
             
+            /*******************************************************
+            * getting information of next retry day from translation
+            *******************************************************/
+            IF px_subscription_array(indx).contract_status IS NULL
+            THEN
+
+              lc_action := 'fetching next Retry Day information';
+  
+              lc_day := TO_DATE(TO_CHAR(SYSDATE,'DD-MON-YYYY')||'00:00:00','DD-MON-YYYY HH24:MI:SS') - NVL(TO_DATE(px_subscription_array(indx).initial_auth_attempt_date,'DD-MON-YYYY HH24:MI:SS')
+                                                                                        ,TO_DATE(TO_CHAR(SYSDATE,'DD-MON-YYYY')||'00:00:00','DD-MON-YYYY HH24:MI:SS'));
+           
+              get_auth_fail_info(p_payment_status    => px_subscription_array(indx).payment_status,
+                                 p_auth_day          => lc_day,
+                                 px_translation_info => lr_translation_info); 
+              
+              IF p_contract_info.contract_user_status = 'HOLD' and px_subscription_array(indx).payment_status = 'SUCCESS'
+              THEN
+                px_subscription_array(indx).contract_status  := 'REMOVE_HOLD';  
+                px_subscription_array(indx).next_retry_day   := TO_NUMBER(lr_translation_info.target_value2);
+                
+                lc_contract_status := 'REMOVE_HOLD';
+                lc_next_retry_day  := TO_NUMBER(lr_translation_info.target_value2);		
+              
+              ELSE
+                px_subscription_array(indx).contract_status  := lr_translation_info.target_value1;  
+                px_subscription_array(indx).next_retry_day   := TO_NUMBER(lr_translation_info.target_value2);
+                
+                lc_contract_status := lr_translation_info.target_value1;  
+                lc_next_retry_day  := TO_NUMBER(lr_translation_info.target_value2);		
+              
+              END IF;
+
+              lc_action := 'Calling update_subscription_info';
+              
+              update_subscription_info(px_subscription_info => px_subscription_array(indx));
+
+            END IF;
+            
             /******************************************
             * Build contract confirmation email payload
             ******************************************/
@@ -7625,6 +7667,9 @@ AS
                         "serviceType": "' 
                                       || lr_contract_line_info.program
                                       || '",
+                        "contractStatus": "'
+                                      || px_subscription_array(indx).contract_status
+                                      || '", 
                         "startDate": "' 
                                       || TO_CHAR(px_subscription_array(indx).service_period_start_date,'MM/DD/YYYY')
                                       || '",
@@ -7750,7 +7795,7 @@ AS
               
               px_subscription_array(indx).email_sent_flag             := 'Y';
               px_subscription_array(indx).email_sent_date             := SYSDATE;
-              px_subscription_array(indx).contract_status             := 'SUCCESS';
+              --px_subscription_array(indx).contract_status             := 'SUCCESS';
               px_subscription_array(indx).last_update_date            := SYSDATE;
               px_subscription_array(indx).last_updated_by             := FND_GLOBAL.USER_ID;
 
@@ -7768,9 +7813,17 @@ AS
 
               px_subscription_array(indx).email_sent_flag             := 'Y';
               px_subscription_array(indx).email_sent_date             := SYSDATE;
-              px_subscription_array(indx).contract_status             := 'SUCCESS';
+              --px_subscription_array(indx).contract_status             := 'SUCCESS';
               px_subscription_array(indx).last_update_date            := SYSDATE;
               px_subscription_array(indx).last_updated_by             := FND_GLOBAL.USER_ID;
+              
+              IF px_subscription_array(indx).contract_status IS NULL
+              THEN
+    
+                px_subscription_array(indx).contract_status  := lc_contract_status;  
+                px_subscription_array(indx).next_retry_day   := lc_next_retry_day;   
+
+               END IF;
 
           END IF;--ln_loop_counter end if  
           
@@ -7895,7 +7948,7 @@ AS
             IF px_subscription_array(indx).contract_status = gc_contract_status
             THEN
   
-              lc_cancel_date     := SYSDATE;
+              lc_cancel_date     := NVL(px_subscription_array(indx).NEXT_BILLING_DATE-1,SYSDATE);
               lc_reason_code     := 'TERMINATED_Non-Payment';
 
             END IF;
@@ -9338,12 +9391,12 @@ AS
           /************************
           * Get invoice information
           ************************/
-
-          IF (lr_invoice_header_info.customer_trx_id IS NULL)
+          
+          /*IF (lr_invoice_header_info.customer_trx_id IS NULL)
           THEN
-
+          
             lc_action := 'Calling get_invoice_header_info';
-
+          
             IF p_contract_info.external_source = 'POS'
             THEN
               get_pos_ordt_info(p_order_number => p_contract_info.initial_order_number,
@@ -9359,38 +9412,37 @@ AS
               get_invoice_header_info(p_invoice_number      => p_contract_info.initial_order_number,
                                       x_invoice_header_info => lr_invoice_header_info);
             END IF;
-
-          END IF;
-
+          
+          END IF;*/
+          
           /****************************************
           * Get receivables application information
           ****************************************/
-
-          IF (lr_rec_application_info.cash_receipt_id IS NULL)
+          
+          /*IF (lr_rec_application_info.cash_receipt_id IS NULL)
           THEN
-
+          
             lc_action := 'Calling get_receivable_application_info';
-
+          
             get_rec_application_info(p_customer_trx_id             => lr_invoice_header_info.customer_trx_id,
                                      x_receivable_application_info => lr_rec_application_info);
-          END IF;
-
+          END IF;*/
+          
           /************************
           * Get receipt information
           ************************/
-
-          IF (lr_receipt_info.cash_receipt_id IS NULL)
+          
+          /*IF (lr_receipt_info.cash_receipt_id IS NULL)
           THEN
-
+          
             lc_action := 'Calling get_receipt_info';
-
+          
             get_receipt_info(p_cash_receipt_id => lr_rec_application_info.cash_receipt_id,
                              x_receipt_info    => lr_receipt_info);
-          END IF;
-
-
+          END IF;*/
+            
           px_subscription_array(indx).receipt_created_flag := 'Y';
-          px_subscription_array(indx).receipt_number       := lr_receipt_info.receipt_number;
+          --px_subscription_array(indx).receipt_number       := lr_receipt_info.receipt_number;
 
         ELSIF px_subscription_array(indx).billing_sequence_number >= lr_contract_line_info.initial_billing_sequence
         THEN
@@ -9838,12 +9890,12 @@ AS
           /************************
           * Get invoice information
           ************************/
-
-          IF (lr_invoice_header_info.customer_trx_id IS NULL)
+          
+          /*IF (lr_invoice_header_info.customer_trx_id IS NULL)
           THEN
-
+          
             lc_action := 'Calling get_invoice_header_info';
-
+          
             IF p_contract_info.external_source = 'POS'
             THEN
               get_pos_ordt_info(p_order_number => p_contract_info.initial_order_number,
@@ -9859,36 +9911,36 @@ AS
               get_invoice_header_info(p_invoice_number      => p_contract_info.initial_order_number,
                                       x_invoice_header_info => lr_invoice_header_info);
             END IF;
-
-          END IF;
-
+          
+          END IF;*/
+          
           /****************************************
           * Get receivables application information
           ****************************************/
-
-          IF (lr_rec_application_info.cash_receipt_id IS NULL)
+          
+          /*IF (lr_rec_application_info.cash_receipt_id IS NULL)
           THEN
-
+          
             lc_action := 'Calling get_receivable_application_info';
-
+          
             get_rec_application_info(p_customer_trx_id             => lr_invoice_header_info.customer_trx_id,
                                      x_receivable_application_info => lr_rec_application_info);
-          END IF;
-
+          END IF;*/
+          
           /*********************
           * Get ORDT information
           *********************/
           
-          IF (lr_ordt_info.order_payment_id IS NULL)
+          /*IF (lr_ordt_info.order_payment_id IS NULL)
           THEN
             lc_action := 'Calling get_ordt_info';
             
             get_ordt_info(p_cash_receipt_id  => lr_rec_application_info.cash_receipt_id,
                           x_ordt_info        => lr_ordt_info);
-          END IF;
-
+          END IF;*/
+            
           px_subscription_array(indx).ordt_staged_flag := 'Y';
-          px_subscription_array(indx).order_payment_id  := lr_ordt_info.order_payment_id;
+          --px_subscription_array(indx).order_payment_id  := lr_ordt_info.order_payment_id;
 
         ELSIF px_subscription_array(indx).billing_sequence_number >= lr_contract_line_info.initial_billing_sequence
         THEN
@@ -14048,6 +14100,106 @@ AS
       exiting_sub(p_procedure_name => lc_procedure_name, p_exception_flag => TRUE);
 
   END process_adjustments;
+  
+  /********************************************
+  * Procedure to check eligible SKU for REV REC
+  ********************************************/
+  FUNCTION is_rev_rec_item(p_sku_name IN VARCHAR2)
+  RETURN VARCHAR2 AS
+    
+    lc_net_sales_revenue_account    VARCHAR2(20);
+    lc_subscriptions_rev_account    VARCHAR2(20);
+    lc_rev_rec VARCHAR2(1);
+  
+  BEGIN
+ 
+    BEGIN
+      SELECT xft.target_value1  
+      INTO   lc_net_sales_revenue_account
+      FROM   xx_fin_translatevalues       xft
+           , xx_fin_translatedefinition   xfd                             
+           , mtl_item_categories          mic
+           , mtl_categories_b             mc
+           , mtl_category_sets            mcs
+           , mtl_system_items             msi
+           , mtl_parameters               mp
+      WHERE   mic.category_set_id        = mcs.category_set_id
+      AND   mic.category_id            = mc.category_id
+      AND   msi.segment1               = p_sku_name
+      AND   msi.organization_id        = mp.organization_id
+      AND   mp.organization_id         = mp.master_organization_id
+      AND   mic.inventory_item_id      = msi.inventory_item_id
+      AND   mic.organization_id        = mp.organization_id
+      AND   mcs.category_set_name      = 'Inventory'
+      AND   xft.translate_id           = xfd.translate_id
+      AND   (xft.source_value1           IS NULL)
+      AND   (xft.source_value2         = msi.item_type) 
+      AND   (xft.source_value3         = mc.segment3)
+      AND   xft.enabled_flag           = 'Y'
+      AND  (xft.start_date_active     <= SYSDATE
+      AND  (xft.end_date_active >= SYSDATE
+        OR  xft.end_date_active IS NULL) 
+   		    )
+      AND  xfd.translation_name       = 'SALES ACCOUNTING MATRIX'
+      AND  xfd.enabled_flag           = 'Y'
+      AND (xfd.start_date_active     <= SYSDATE
+      AND (xfd.end_date_active       >= SYSDATE
+        OR xfd.end_date_active       IS NULL
+   		   ) 
+   		   );
+    EXCEPTION
+   	  WHEN NO_DATA_FOUND
+      THEN
+	    logit(p_message => 'RESULT lc_net_sales_revenue_account: ' || lc_net_sales_revenue_account);
+	    lc_rev_rec := 'N';
+        lc_net_sales_revenue_account := '00';
+   	END;	
+ 
+  	BEGIN
+      SELECT xft2.TARGET_VALUE1
+      INTO   lc_subscriptions_rev_account
+      FROM  xx_fin_translatevalues      xft2,
+            xx_fin_translatedefinition  xfd2
+      WHERE xft2.translate_id           = xfd2.translate_id
+      AND   xfd2.translation_name       = 'XX_AR_SUBSCRIPTIONS'
+      AND  (xft2.SOURCE_VALUE1          = 'REV_SPREAD_SALES_ACCT')
+      AND   xft2.enabled_flag           = 'Y'
+      AND  (xft2.start_date_active     <= SYSDATE
+      AND  (xft2.end_date_active       >= SYSDATE
+       OR   xft2.end_date_active IS NULL
+            )
+            )
+      AND  xfd2.enabled_flag               = 'Y'
+      AND (xfd2.start_date_active        <= SYSDATE
+      AND (xfd2.end_date_active          >= SYSDATE
+       OR  xfd2.end_date_active IS NULL
+           )
+           );
+    EXCEPTION
+      WHEN NO_DATA_FOUND 
+      THEN
+	    lc_rev_rec := 'N';
+	    logit(p_message => 'RESULT lc_subscriptions_rev_account: ' || lc_subscriptions_rev_account);
+        lc_subscriptions_rev_account := '00';
+    END;
+  	
+	IF ((lc_subscriptions_rev_account!= '00') OR (lc_net_sales_revenue_account!= '00'))
+	THEN
+	    IF lc_net_sales_revenue_account	= lc_subscriptions_rev_account THEN
+  	       lc_rev_rec := 'Y';
+  	    ELSE
+  	       lc_rev_rec := 'N'; 
+        END IF;
+        
+        RETURN lc_rev_rec;
+        
+	END IF;
+
+  EXCEPTION
+    WHEN OTHERS 
+    THEN
+      logit(p_message => 'Exception while getting the revenue eligible sku: ' || SQLERRM);
+END is_rev_rec_item;
     
 END xx_ar_subscriptions_mt_pkg;
 /
