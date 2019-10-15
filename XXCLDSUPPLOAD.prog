@@ -1,13 +1,13 @@
 # +===================================================================+
-# |		     Office Depot - Project Beacon                            |
+# |		     Office Depot - Project Beacon                    |
 # +===================================================================+
-# | Name  :	  XXCLDSUPPLOAD (Shell Script)	                          |
+# | Name  :	  XXCLDSUPPLOAD (Shell Script)	                      |
 # | Description : To Load the Supplier Data from the Cloud to On-Prem |
-# |   EBS tables	                                                  |
-# |								                                      |
-# |Change Record:						                              |
-# |===============						                              |
-# |Version   Date	      Author	          Remarks		          |
+# |   EBS tables	                                              |
+# |								      |
+# |Change Record:						      |
+# |===============						      |
+# |Version   Date	      Author	          Remarks             |
 # |=======   ===========  ================    ========================|
 # |1.0	     27-JUN-2019  Havish Kasina	      Initial version         |
 # |-------------------------------------------------------------------|
@@ -33,7 +33,7 @@ p_request_id=$FCP_REQID
 FILE_DIR="$XXFIN_DATA/ftp/in/cloudsupplier"
 FILE_ARCHIVE="$XXFIN_DATA/archive/inbound"
 DATE_YYYYMMDD=`date +%Y%m%d`; 
-echo " DATE_YYYYMMDD :" [$DATE_YYYYMMDD]
+echo " DATE_YYYYMMDD :"$DATE_YYYYMMDD
 DAT=`date '+_%y%m%d%H%M%S_%N'`
 
 echo "Process Name:"$p_process_name
@@ -59,7 +59,7 @@ then
    p_filename="XX_AP_CLOUD_SUPP_XTRCT_$DATE_YYYYMMDD.dat"
    echo "File Name : "$p_filename
    p_control_file="XX_AP_CLD_SUPPLIERS_STG.ctl"
-   echo "Control File name is  :" [$p_control_file]
+   echo "Control File name is  :"$p_control_file
    lc_data_file="$lc_custom_top/$p_filename"
    echo "Data File Location : "$lc_data_file
    dos2unix -n $lc_data_file $lc_data_file
@@ -91,7 +91,7 @@ then
    p_filename="XX_AP_CLOUD_SUPSITE_XTRCT_$DATE_YYYYMMDD.dat"
    echo "File Name : "$p_filename
    p_control_file="XX_AP_CLD_SUPP_SITES_STG.ctl"
-   echo "Control File name is  :" [$p_control_file]
+   echo "Control File name is  : "$p_control_file
    lc_data_file="$lc_custom_top/$p_filename"
    echo "Data File Location : "$lc_data_file
    dos2unix -n $lc_data_file $lc_data_file
@@ -120,11 +120,11 @@ then
    lc_process="Supplier Contacts"
    lc_check_file="$lc_custom_top"
    p_filename="XX_AP_CLOUD_SUPP_CONTACTS_XTRCT_$DATE_YYYYMMDD.dat"
-   echo "File Name : "$p_filename
+   echo "File Name : " $p_filename
    p_control_file="XX_AP_CLD_SUPP_CONTACT_STG.ctl"
-   echo "Control File name is  :" [$p_control_file]
+   echo "Control File name is  :" $p_control_file
    lc_data_file="$lc_custom_top/$p_filename"
-   echo "Data File Location : "$lc_data_file
+   echo "Data File Location : " $lc_data_file
    dos2unix -n $lc_data_file $lc_data_file
    echo "dos2unix is completed"
    
@@ -153,7 +153,7 @@ then
    p_filename="XX_AP_CLOUD_SUPP_BANK_ACCTS_XTRCT_$DATE_YYYYMMDD.dat"
    echo "File Name : "$p_filename
    p_control_file="XX_AP_CLD_SUPP_BNKACT_STG.ctl"
-   echo "Control File name is  :" [$p_control_file]
+   echo "Control File name is  :"$p_control_file
    lc_data_file="$lc_custom_top/$p_filename"
    echo "Data File Location : "$lc_data_file
    dos2unix -n $lc_data_file $lc_data_file
@@ -184,7 +184,7 @@ then
    p_filename="XX_AP_CLOUD_SUPP_CUSTOM_DFF_XTRCT_$DATE_YYYYMMDD.dat"
    echo "File Name : "$p_filename
    p_control_file="XX_AP_CLD_SITE_DFF_STG.ctl"
-   echo "Control File name is  :" [$p_control_file]
+   echo "Control File name is  :" $p_control_file
    lc_data_file="$lc_custom_top/$p_filename"
    echo "Data File Location : "$lc_data_file
    dos2unix -n $lc_data_file $lc_data_file
@@ -215,7 +215,7 @@ then
    p_filename="XX_AP_CLOUD_SUPP_BUS_CLASS_XTRCT_$DATE_YYYYMMDD.dat"
    echo "File Name : "$p_filename
    p_control_file="XX_AP_CLD_SUPP_BCLS_STG.ctl"
-   echo "Control File name is  :" [$p_control_file]
+   echo "Control File name is  :" $p_control_file
    lc_data_file="$lc_custom_top/$p_filename"
    echo "Data File Location : "$lc_data_file
    dos2unix -n $lc_data_file $lc_data_file
@@ -278,7 +278,7 @@ data_issues=`grep 'Rejected - Error on table' $p_filename.log|wc -l`;
 
 echo "Error Count :"$data_issues
 
-if [ $data_issues -gt 1 ]; then
+if [ ${data_issues} -gt 1 ]; then
   echo "Data issue found in the Data File"
 echo "Hi,
 
