@@ -129,6 +129,7 @@ AS
 -- |     42.0     19-MAY-2019  Arun G     Made changes for Service contract project  JIRA 90510                             |  
 -- |     43.0     31-JUL-2019  Arun G     Made changes to fix Service contract project bug                                  |
 -- |     44.0     05-SEP-2019  Arun G     Made changes to for capture Authcode for Returns                                  |
+-- |     45.0     05-Oct-2019  Arun G     Made changes for rev recog project JIRA 106576
 -- +========================================================================================================================+
     PROCEDURE process_current_order(
         p_order_tbl   IN  order_tbl_type,
@@ -4421,8 +4422,13 @@ AS
         lc_order_source          VARCHAR2(80);
         l_int_customer           NUMBER        := 0;
         ln_mps_retail            NUMBER;
+        lc_rev_rec_item          VARCHAR2(1):= 'N';
+
+
     BEGIN
         x_return_status := 'S';
+        lc_rev_rec_item := 'N';
+
         -- Line number counter per order
         g_line_nbr_counter :=   g_line_nbr_counter
                               + 1;
@@ -5230,27 +5236,36 @@ AS
         IF g_header_rec.invoicing_rule_id(ln_hdr_ind) IS NOT NULL
         THEN
           BEGIN
-            SELECT add_months(g_line_rec.ordered_date(i),Decode(od_billing_frequency,'M' ,1,'A', 12 ,'Q', 3, 0))-1
-            INTO g_line_rec.service_end_date(i)
-            FROM xx_rms_mv_ssb
-            WHERE item =  lc_item; 
+             oe_debug_pub.ADD( 'check if SKU eligible for REV RECOG :'||lc_item);
+             oe_debug_pub.ADD( 'calling XX_ar_subscriptions_mt_pkg');
 
-            g_line_rec.service_start_date(i) := g_line_rec.ordered_date(i);
-            g_line_rec.accounting_rule_id(i) := g_header_rec.accounting_rule_id(ln_hdr_ind);
-            g_line_rec.invoicing_rule_id(i)  := g_header_rec.invoicing_rule_id(ln_hdr_ind);
+             lc_rev_rec_item := XX_AR_SUBSCRIPTIONS_MT_PKG.is_rev_rec_item(lc_item);
+           
+             IF lc_rev_rec_item = 'Y'
+             THEN 
+               SELECT add_months(g_line_rec.ordered_date(i),Decode(od_billing_frequency,'M' ,1,'A', 12 ,'Q', 3, 0))-1
+               INTO g_line_rec.service_end_date(i)
+               FROM xx_rms_mv_ssb
+               WHERE item =  lc_item; 
 
-            EXCEPTION
-              WHEN OTHERS 
-              THEN 
-         	IF ln_debug_level >0 
-		THEN 
-		  oe_debug_pub.ADD( 'No Contract details found SSB for Item..'||lc_item);
-		END IF;
-	        g_line_rec.service_end_date(i) := null;
-                g_line_rec.service_start_date(i) := NULL;
-                g_line_rec.accounting_rule_id(i) := NULL;
-                g_line_rec.invoicing_rule_id(i)  := NULL;
- 
+               g_line_rec.service_start_date(i) := g_line_rec.ordered_date(i);
+               g_line_rec.accounting_rule_id(i) := g_header_rec.accounting_rule_id(ln_hdr_ind);
+               g_line_rec.invoicing_rule_id(i)  := g_header_rec.invoicing_rule_id(ln_hdr_ind);
+             ELSE
+               oe_debug_pub.ADD( 'SKU is not eligible for REV RECOG setting the invoicing rule id to blank');
+               g_header_rec.invoicing_rule_id(i) := NULL;
+             END IF;
+           EXCEPTION
+             WHEN OTHERS 
+             THEN
+               IF ln_debug_level >0 
+               THEN 
+		 oe_debug_pub.ADD( 'No Contract details found SSB for Item..'||lc_item);
+               END IF;
+	       g_line_rec.service_end_date(i) := null;
+               g_line_rec.service_start_date(i) := NULL;
+               g_line_rec.accounting_rule_id(i) := NULL;
+               g_line_rec.invoicing_rule_id(i)  := NULL;
             END;
         END IF;
 
