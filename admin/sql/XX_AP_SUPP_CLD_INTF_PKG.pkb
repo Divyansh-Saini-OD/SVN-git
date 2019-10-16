@@ -2300,7 +2300,12 @@ BEGIN
 					p_force=>true);
     FOR r_cont_info IN c_contact_infor(r_cont.vendor_id , r_cont.vendor_site_id) -- , r_cont.first_name, r_cont.last_name )
     LOOP
-      BEGIN
+	  l_phone_number    := NULL;
+      l_phone_area_code := NULL;
+	  l_fax_number      := NULL;
+	  l_fax_area_code   := NULL;
+	  l_email_address   := NULL;
+	  BEGIN
         SELECT phone_number,
                phone_area_code
           INTO l_phone_number,
@@ -2348,8 +2353,7 @@ BEGIN
 		 OR NVL(l_phone_area_code,'X') <> NVL(r_cont.area_code,'X')
 		 OR NVL(l_fax_area_code,'X') <> NVL(r_cont.fax_area_code,'X') 
 		 OR NVL(r_cont_info.hz_first_name,'X') <> NVL(r_cont.first_name,'X')
-		 OR NVL(r_cont_info.hz_last_name,'X') <> NVL(r_cont.last_name,'X')		 
-		 
+		 OR NVL(r_cont_info.hz_last_name,'X') <> NVL(r_cont.last_name,'X')		 		 
 	  THEN
 	    lv_vendor_contact_rec.vendor_id         := r_cont.vendor_id;
 		lv_vendor_contact_rec.vendor_site_id    := r_cont.vendor_site_id;
@@ -3156,6 +3160,10 @@ BEGIN
   print_debug_msg(p_message=> l_program_step||'Attach Bank Assignment' , p_force=>true);
   FOR r_sup_bank IN c_sup_bank
   LOOP
+    lv_supp_site_id        := NULL;
+    lv_supp_party_site_id  := NULL;
+    lv_acct_owner_party_id := NULL;
+    lv_org_id              := NULL;	 
     p_assignment_attribs.priority := NULL;
     print_debug_msg(p_message=> l_program_step||'Inside Cursor', p_force=>true);
 	print_debug_msg(p_message=> l_program_step||'Vendor Site Code : '||r_sup_bank.vendor_site_code, p_force=>true);
@@ -3175,8 +3183,13 @@ BEGIN
       AND assa.vendor_site_id = r_sup_bank.vendor_site_id;
       ---  AND assa.vendor_site_code = r_sup_bank.vendor_site_code;
     EXCEPTION
-    WHEN OTHERS THEN
-      print_debug_msg(p_message=> l_program_step||'Error- Get supp_site_id and supp_party_site_id' || SQLCODE || sqlerrm, p_force=>true);
+    WHEN OTHERS 
+	THEN
+	    lv_supp_site_id        := NULL;
+        lv_supp_party_site_id  := NULL;
+        lv_acct_owner_party_id := NULL;
+        lv_org_id              := NULL;	  
+        print_debug_msg(p_message=> l_program_step||'Error- Get supp_site_id and supp_party_site_id' || SQLCODE || sqlerrm, p_force=>true);
     END;
     IF r_sup_bank.account_id >0 AND r_sup_bank.instrument_uses_id IS NULL 
 	THEN
@@ -3277,7 +3290,7 @@ BEGIN
 															 x_assign_id => l_assign_id, 
 															 x_response => x_response );
       COMMIT;
-      print_debug_msg(p_message=> l_program_step||' SET_PAYEE_INSTR_ASSIGNMENT X_ASSIGN_ID = ' || l_assign_id, p_force=>true);
+      print_debug_msg(p_message=> l_program_step||'SET_PAYEE_INSTR_ASSIGNMENT X_ASSIGN_ID = ' || l_assign_id, p_force=>true);
       print_debug_msg(p_message=> l_program_step||'SET_PAYEE_INSTR_ASSIGNMENT X_RETURN_STATUS = ' || x_return_status, p_force=>true);
       print_debug_msg(p_message=> l_program_step||'SET_PAYEE_INSTR_ASSIGNMENT fnd_api.g_ret_sts_success ' || fnd_api.g_ret_sts_success , p_force=>true);
       print_debug_msg(p_message=> l_program_step||'SET_PAYEE_INSTR_ASSIGNMENT X_MSG_COUNT = ' || x_msg_count, p_force=>true);
@@ -4867,6 +4880,10 @@ BEGIN
   print_debug_msg(p_message=> l_program_step||'Update Bank Assignment Dates' , p_force=>true);
   FOR r_sup_bank IN c_sup_bank
   LOOP
+    lv_supp_site_id          := NULL;
+    lv_supp_party_site_id    := NULL;
+    lv_acct_owner_party_id   := NULL;
+    lv_org_id                := NULL;  
     p_assignment_attribs.priority := NULL;
     print_debug_msg(p_message=> l_program_step||'Inside Cursor', p_force=>true);
 	print_debug_msg(p_message=> l_program_step||'Vendor Site : '||r_sup_bank.vendor_site_code, p_force=>true);
@@ -4885,74 +4902,86 @@ BEGIN
       AND aps.vendor_id       =r_sup_bank.vendor_id
       AND assa.vendor_site_id = r_sup_bank.vendor_site_id;
     EXCEPTION
-    WHEN OTHERS THEN
-      print_debug_msg(p_message=> l_program_step||'Error- Get supp_site_id and supp_party_site_id' || SQLCODE || sqlerrm, p_force=>true);
-    END;
-    p_payee.supplier_site_id := lv_supp_site_id;
-    p_payee.party_id         := lv_acct_owner_party_id;
-    p_payee.party_site_id    := lv_supp_party_site_id;
-    p_payee.payment_function := 'PAYABLES_DISB';
-    p_payee.org_id           := lv_org_id;
-    p_payee.org_type         := 'OPERATING_UNIT';
-    -- Assignment Values
-    p_assignment_attribs.instrument.instrument_type := 'BANKACCOUNT';
-    l_account_id                                    :=r_sup_bank.account_id;
-    print_debug_msg(p_message=> l_program_step||'L_ACCOUNT_ID '||l_account_id, p_force=>true);
-    p_assignment_attribs.instrument.instrument_id:=l_account_id;
-    p_assignment_attribs.Assignment_Id           :=r_sup_bank.instrument_uses_id;
-    -- p_assignment_attribs.priority                := 1;
-	IF r_sup_bank.primary_flag = 'Y'
+    WHEN OTHERS 
 	THEN
-	      p_assignment_attribs.priority := 1;
-	END IF;
-    p_assignment_attribs.start_date              := TO_DATE(r_sup_bank.start_date,'YYYY/MM/DD');
-    IF r_sup_bank.end_date IS NOT NULL
-	THEN 
-	    p_assignment_attribs.end_date            := TO_DATE(r_sup_bank.end_date,'YYYY/MM/DD');
-	ELSE
-	    p_assignment_attribs.end_date            := TO_DATE('4712/12/31','YYYY/MM/DD'); 
-	END IF;
+	     lv_supp_site_id          := NULL;
+	     lv_supp_party_site_id    := NULL;
+	     lv_acct_owner_party_id   := NULL;
+	     lv_org_id                := NULL;
+         print_debug_msg(p_message=> l_program_step||'Error- Get supp_site_id and supp_party_site_id' || SQLCODE || sqlerrm, p_force=>true);
+    END;
 	
-    print_debug_msg(p_message=> l_program_step||'Primary Flag : '||r_sup_bank.primary_flag, p_force=>true);
-	print_debug_msg(p_message=> l_program_step||'Start Date : '||p_assignment_attribs.start_date, p_force=>true);
-	print_debug_msg(p_message=> l_program_step||'End Date : '||p_assignment_attribs.end_date, p_force=>true);
-	print_debug_msg(p_message=> l_program_step||'Priority : '||p_assignment_attribs.priority, p_force=>true); 
-    fnd_msg_pub.initialize; --to make msg_count 0
-    x_return_status:=NULL;
-    x_msg_count    :=NULL;
-    x_msg_data     :=NULL;
-    x_response     :=NULL;
-    --------------------Call the API for instr assignment
-	print_debug_msg(p_message=> l_program_step||'Start of calling API Instr Assignment', p_force=>true);
-    iby_disbursement_setup_pub.set_payee_instr_assignment (p_api_version => p_api_version, 
-	                                                       p_init_msg_list => p_init_msg_list,
-														   p_commit => p_commit,
-														   x_return_status => x_return_status, 
-														   x_msg_count => x_msg_count, 
-														   x_msg_data => x_msg_data, 
-														   p_payee => p_payee, 
-														   p_assignment_attribs => p_assignment_attribs, 
-														   x_assign_id => l_assign_id, 
-														   x_response => x_response );
-    COMMIT;
-	print_debug_msg(p_message=> l_program_step||'End of calling API Instr Assignment', p_force=>true);
-    print_debug_msg(p_message=> l_program_step||'SET_PAYEE_INSTR_ASSIGNMENT END_DATE X_ASSIGN_ID = ' || l_assign_id, p_force=>true);
-    print_debug_msg(p_message=> l_program_step||'SET_PAYEE_INSTR_ASSIGNMENT END_DATE X_RETURN_STATUS = ' || x_return_status, p_force=>true);
-    print_debug_msg(p_message=> l_program_step||'SET_PAYEE_INSTR_ASSIGNMENT END_DATE X_MSG_COUNT = ' || x_msg_count, p_force=>true);
-    IF x_return_status = 'E' THEN
-      print_debug_msg(p_message=> l_program_step||'x_return_status ' || x_return_status , p_force=>true);
-      print_debug_msg(p_message=> l_program_step||'x_msg_data ' || x_msg_data , p_force=>true);
-      FOR i IN 1 .. x_msg_count--fnd_msg_pub.count_msg
-      LOOP
-        fnd_msg_pub.get ( p_msg_index => i , p_encoded => 'F' , p_data => l_msg , p_msg_index_out => ln_msg_index_num );
-        print_debug_msg(p_message=> l_program_step||'The API SET_PAYEE_INSTR_ASSIGNMENT END_DATE call failed with error ' || l_msg , p_force=>true);
-      END LOOP;
-      l_process_flag:='E';
-    ELSE
-      print_debug_msg(p_message=> l_program_step||'The API SET_PAYEE_INSTR_ASSIGNMENT END_DATE call ended with SUCESSS status' , p_force=>true);
-      l_process_flag:='Y';
-      l_msg         :='';
-    END IF;
+	IF lv_supp_site_id IS NOT NULL
+	THEN
+        p_payee.supplier_site_id := lv_supp_site_id;
+        p_payee.party_id         := lv_acct_owner_party_id;
+        p_payee.party_site_id    := lv_supp_party_site_id;
+        p_payee.payment_function := 'PAYABLES_DISB';
+        p_payee.org_id           := lv_org_id;
+        p_payee.org_type         := 'OPERATING_UNIT';
+        -- Assignment Values
+        p_assignment_attribs.instrument.instrument_type := 'BANKACCOUNT';
+        l_account_id                                    :=r_sup_bank.account_id;
+        print_debug_msg(p_message=> l_program_step||'L_ACCOUNT_ID '||l_account_id, p_force=>true);
+        p_assignment_attribs.instrument.instrument_id:=l_account_id;
+        p_assignment_attribs.Assignment_Id           :=r_sup_bank.instrument_uses_id;
+        -- p_assignment_attribs.priority                := 1;
+	    IF r_sup_bank.primary_flag = 'Y'
+	    THEN
+	          p_assignment_attribs.priority := 1;
+	    END IF;
+        p_assignment_attribs.start_date              := TO_DATE(r_sup_bank.start_date,'YYYY/MM/DD');
+        IF r_sup_bank.end_date IS NOT NULL
+	    THEN 
+	        p_assignment_attribs.end_date            := TO_DATE(r_sup_bank.end_date,'YYYY/MM/DD');
+	    ELSE
+	        p_assignment_attribs.end_date            := TO_DATE('4712/12/31','YYYY/MM/DD'); 
+	    END IF;
+	
+        print_debug_msg(p_message=> l_program_step||'Primary Flag : '||r_sup_bank.primary_flag, p_force=>true);
+	    print_debug_msg(p_message=> l_program_step||'Start Date : '||p_assignment_attribs.start_date, p_force=>true);
+	    print_debug_msg(p_message=> l_program_step||'End Date : '||p_assignment_attribs.end_date, p_force=>true);
+	    print_debug_msg(p_message=> l_program_step||'Priority : '||p_assignment_attribs.priority, p_force=>true); 
+        fnd_msg_pub.initialize; --to make msg_count 0
+        x_return_status:=NULL;
+        x_msg_count    :=NULL;
+        x_msg_data     :=NULL;
+        x_response     :=NULL;
+        --------------------Call the API for instr assignment
+	    print_debug_msg(p_message=> l_program_step||'Start of calling API Instr Assignment', p_force=>true);
+        iby_disbursement_setup_pub.set_payee_instr_assignment (p_api_version => p_api_version, 
+	                                                           p_init_msg_list => p_init_msg_list,
+														       p_commit => p_commit,
+														       x_return_status => x_return_status, 
+														       x_msg_count => x_msg_count, 
+														       x_msg_data => x_msg_data, 
+														       p_payee => p_payee, 
+														       p_assignment_attribs => p_assignment_attribs, 
+														       x_assign_id => l_assign_id, 
+														       x_response => x_response );
+        COMMIT;
+	    print_debug_msg(p_message=> l_program_step||'End of calling API Instr Assignment', p_force=>true);
+        print_debug_msg(p_message=> l_program_step||'SET_PAYEE_INSTR_ASSIGNMENT END_DATE X_ASSIGN_ID = ' || l_assign_id, p_force=>true);
+        print_debug_msg(p_message=> l_program_step||'SET_PAYEE_INSTR_ASSIGNMENT END_DATE X_RETURN_STATUS = ' || x_return_status, p_force=>true);
+        print_debug_msg(p_message=> l_program_step||'SET_PAYEE_INSTR_ASSIGNMENT END_DATE X_MSG_COUNT = ' || x_msg_count, p_force=>true);
+        IF x_return_status = 'E' THEN
+          print_debug_msg(p_message=> l_program_step||'x_return_status ' || x_return_status , p_force=>true);
+          print_debug_msg(p_message=> l_program_step||'x_msg_data ' || x_msg_data , p_force=>true);
+          FOR i IN 1 .. x_msg_count--fnd_msg_pub.count_msg
+          LOOP
+            fnd_msg_pub.get ( p_msg_index => i , p_encoded => 'F' , p_data => l_msg , p_msg_index_out => ln_msg_index_num );
+            print_debug_msg(p_message=> l_program_step||'The API SET_PAYEE_INSTR_ASSIGNMENT END_DATE call failed with error ' || l_msg , p_force=>true);
+          END LOOP;
+          l_process_flag:='E';
+        ELSE
+          print_debug_msg(p_message=> l_program_step||'The API SET_PAYEE_INSTR_ASSIGNMENT END_DATE call ended with SUCESSS status' , p_force=>true);
+          l_process_flag:='Y';
+          l_msg         :='';
+        END IF;
+	ELSE
+	    l_process_flag := 'E';
+		l_msg := 'Unable to retrieve the Vendor Site Code';
+	END IF; -- lv_supp_site_id IS NOT NULL
     BEGIN
       UPDATE xx_ap_cld_supp_bnkact_stg xas
       SET xas.bnkact_process_flag    =DECODE (l_process_flag,'Y',gn_process_status_imported ,'E',gn_process_status_imp_fail),---6
@@ -5124,6 +5153,9 @@ BEGIN
     gc_error_site_status_flag := 'N';
     gc_step                   := 'BANK_ASSI';
     gc_error_msg              := '';
+	l_sup_bank_id             := NULL;
+	l_sup_bank_branch_id      := NULL;
+	
     --====================================================================
     -- Checking Required Columns validation
     --====================================================================
@@ -6802,13 +6834,7 @@ BEGIN
   validate_supplier_site_records(x_ret_code => l_ret_code ,x_return_status => l_return_status ,x_err_buf => l_err_buff);
   print_debug_msg(p_message => 'Completed the execution of the procedure validate_supplier_site_records()' , p_force => true);
   print_debug_msg(p_message => '===========================================================================' , p_force => true);
-  
-  print_debug_msg(p_message => 'Invoking the procedure load update_suppliers_sites()' , p_force => true);
-  update_supplier_sites( x_ret_code => l_ret_code , x_return_status => l_return_status , x_err_buf => l_err_buff);
-  print_debug_msg(p_message => '===========================================================================' , p_force => true);
-  print_debug_msg(p_message => 'Completed the execution of the procedure update_supplier_sites()' , p_force => true);
-  print_debug_msg(p_message => '===========================================================================' , p_force => true);
-  
+
   --===========================================================================
   -- Load the validated records in staging table into interface table    --
   --===========================================================================
@@ -6817,6 +6843,13 @@ BEGIN
   print_debug_msg(p_message => '===========================================================================' , p_force => true);
   print_debug_msg(p_message => 'Completed the execution of the procedure load_supplier_site_interface()' , p_force => true);
   print_debug_msg(p_message => '===========================================================================' , p_force => true);
+  
+  print_debug_msg(p_message => 'Invoking the procedure load update_suppliers_sites()' , p_force => true);
+  update_supplier_sites( x_ret_code => l_ret_code , x_return_status => l_return_status , x_err_buf => l_err_buff);
+  print_debug_msg(p_message => '===========================================================================' , p_force => true);
+  print_debug_msg(p_message => 'Completed the execution of the procedure update_supplier_sites()' , p_force => true);
+  print_debug_msg(p_message => '===========================================================================' , p_force => true);
+  
 EXCEPTION
   WHEN OTHERS THEN
     x_retcode := 2;
@@ -7310,18 +7343,21 @@ IS
   --================================================================
   --Declaring local variables
   --================================================================
-  l_procedure      VARCHAR2 (30) := 'xx_ap_supp_cld_intf';
-  l_ret_code       NUMBER;
-  l_err_buff       VARCHAR2 (4000);
-  ln_request_id    NUMBER;
-  ln_request_id1   NUMBER;
-  lb_complete      BOOLEAN;
-  lc_phase         VARCHAR2 (100);
-  lc_status        VARCHAR2 (100);
-  lc_dev_phase     VARCHAR2 (100);
-  lc_dev_status    VARCHAR2 (100);
-  lc_message       VARCHAR2 (100);
-  lb_layout        BOOLEAN;
+  l_procedure                  VARCHAR2 (30) := 'xx_ap_supp_cld_intf';
+  l_ret_code                   NUMBER;
+  l_err_buff                   VARCHAR2 (4000);
+  ln_request_id                NUMBER;
+  ln_request_id1               NUMBER;
+  lb_complete                  BOOLEAN;
+  lc_phase                     VARCHAR2 (100);
+  lc_status                    VARCHAR2 (100);
+  lc_dev_phase                 VARCHAR2 (100);
+  lc_dev_status                VARCHAR2 (100);
+  lc_message                   VARCHAR2 (100);
+  lb_layout                    BOOLEAN;
+  ln_user_id                   NUMBER;
+  ln_responsibility_id         NUMBER;
+  ln_responsibility_appl_id    NUMBER;
 BEGIN
   --================================================================
   --Initializing Global variables
@@ -7539,6 +7575,32 @@ BEGIN
   update_status;
   print_debug_msg(p_message => 'Exiting update_status' , p_force => true);
   print_debug_msg(p_message => '+---------------------------------------------------------------------------+' , p_force => true);
+  
+  BEGIN
+       SELECT user_id,
+              responsibility_id,
+              responsibility_application_id
+         INTO ln_user_id,                      
+              ln_responsibility_id,            
+              ln_responsibility_appl_id
+         FROM fnd_user_resp_groups 
+        WHERE user_id=(SELECT user_id 
+                         FROM fnd_user 
+                        WHERE user_name = 'SVC_ESP_FIN')
+          AND responsibility_id=(SELECT responsibility_id 
+                                   FROM fnd_responsibility 
+                                  WHERE responsibility_key = 'OD_US_BATCH_JOBS'); 
+  EXCEPTION
+       WHEN OTHERS 
+       THEN
+			print_debug_msg(p_message=> 'Exception in WHEN OTHERS for SET_CONTEXT_ERROR: '||SQLERRM, p_force=>true);
+  END;
+
+  fnd_global.apps_initialize( ln_user_id,
+                              ln_responsibility_id,
+                              ln_responsibility_appl_id
+                            );
+  fnd_global.set_nls_context('AMERICAN');
   
   print_debug_msg(p_message => '                                                                             ' , p_force => true);
   print_debug_msg(p_message => 'Submitting the Report Program to generate the Excel File', p_force => true);
