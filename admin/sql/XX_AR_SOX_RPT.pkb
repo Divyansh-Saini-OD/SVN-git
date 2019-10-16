@@ -37,9 +37,9 @@ AS
 -- | 1.6     29-APR-2016  Suresh Naragam        Changes as part of Mod 4B          |
 -- |                                            Release 4 (SIT Defect#2177)        |
 -- | 1.7     06-JUL-2018  M Rakesh Reddy		Modified for Defect #44270		   |
--- | 1.8     17-SEP-2018  Sangita Deshmukh      Defect (NAIT-56624)    			   |
--- | 1.9     02-AUG-2019  M Rakesh Reddy        Added CR/DB Logic Defect           |
--- | 												(NAIT-102550)				   |
+-- | 1.8     17-SEP-2018  Sangita Deshmukh      Defect (NAIT-56624) 			   |
+-- | 1.9     10-OCT-2019  M Rakesh Reddy        Modified to include SKU 		   |	
+-- |											Defect#105482                      |
 -- +===============================================================================+
 
 -- +====================================================================+
@@ -67,6 +67,7 @@ lc_prog_name          fnd_concurrent_programs_vl.concurrent_program_name%TYPE;
 lc_child_prog_name1     fnd_concurrent_programs_vl.concurrent_program_name%TYPE;
 lc_child_prog_name2    fnd_concurrent_programs_vl.concurrent_program_name%TYPE;
 lc_child_prog_name3     fnd_concurrent_programs_vl.concurrent_program_name%TYPE;
+lc_child_prog_name4    fnd_concurrent_programs_vl.concurrent_program_name%TYPE;  --added for SKU lines NAIT-105482
 
 ln_invoice_total      NUMBER:=0;
 ln_total_amount       NUMBER:=0;
@@ -82,8 +83,6 @@ ln_org_id             NUMBER;
 ln_this_request_id    NUMBER;
 ld_print_date         DATE;
 lv_conc_prog_name     fnd_concurrent_programs_vl.user_concurrent_program_name%TYPE;
-lc_req_id			  VARCHAR2(250); --added for CR/DB
-ln_count_rec 		  NUMBER:=0;    --added for CR/DB
 
 ln_first_cbi_id       NUMBER:=0;
 ln_first_cbi_pd       NUMBER:=0;
@@ -1270,10 +1269,12 @@ BEGIN
                       ,XFTV.target_value3
                       ,XFTV.target_value4
                       ,XFTV.target_value5
+					  ,XFTV.target_value6 --added for SKU 
                 INTO lc_prog_name
                      ,lc_child_prog_name1
                      ,lc_child_prog_name2
                      ,lc_child_prog_name3
+					 ,lc_child_prog_name4 --added for SKU
                 FROM   xx_fin_translatedefinition XFTD
                        ,xx_fin_translatevalues XFTV
                 WHERE  XFTD.translate_id = XFTV.translate_id
@@ -1305,7 +1306,7 @@ BEGIN
                 AND    FCR.concurrent_program_id = FCP.concurrent_program_id
                 AND    FCR1.concurrent_program_id = FCP1.concurrent_program_id
                 AND    FCP.concurrent_program_name = lc_prog_name
-                AND    FCP1.concurrent_program_name IN (lc_child_prog_name1,lc_child_prog_name2,lc_child_prog_name3)
+                AND    FCP1.concurrent_program_name IN (lc_child_prog_name1,lc_child_prog_name2,lc_child_prog_name3,lc_child_prog_name4)  --lc_child_prog_name4 added for SKU
                 AND    FCP.application_id = FA.application_id
                 AND    FA.application_short_name = 'XXFIN'
                 AND    FLOV.level_value = fcr.responsibility_id
@@ -1339,27 +1340,6 @@ BEGIN
                                         ln_rec_cbi_id := ln_rec_cbi_id + 1;
                                         ln_cbi_id_flg:=1;
                                    ELSIF (lc_qry.inv_type='CBI' AND lc_qry.doc_type='PD' AND lc_qry.tot_cust <> 0) THEN
-								   
-										-- ADDED FOR CR/DB ISSUE
-										
-										select count(DISTINCT HIST.cons_inv_id) 
-										into ln_count_rec
-										FROM      xx_ar_ebl_cons_hdr_hist HIST
-										WHERE  HIST.request_id = ln_req_id(i)
-										AND    HIST.org_id     = ln_org_id
-										AND    HIST.billdocs_delivery_method  = 'ePDF'
-										AND    HIST.document_type='Paydoc'
-										and 	HIST.cons_inv_id
-											in	(SELECT  DISTINCT HIST.cons_inv_id
-											   FROM      xx_ar_ebl_cons_hdr_hist HIST
-											   WHERE  HIST.request_id in (lc_req_id)
-											   AND    HIST.org_id     = ln_org_id
-											   AND    HIST.billdocs_delivery_method  = 'ePDF'
-											   AND    HIST.document_type='Paydoc');
-										
-										
-										-- LOGIC END
-										
                                         lr_sox_cbi_pd_op.EXTEND();
                                         lr_sox_cbi_pd_op(ln_rec_cbi_pd).ou          := lv_country;
                                         lr_sox_cbi_pd_op(ln_rec_cbi_pd).inv_type    := lc_qry.inv_type;
@@ -1369,26 +1349,13 @@ BEGIN
                                         lr_sox_cbi_pd_op(ln_rec_cbi_pd).start_time  := lv_req_start(i);
                                         lr_sox_cbi_pd_op(ln_rec_cbi_pd).end_time    := lv_req_end(i);
                                         lr_sox_cbi_pd_op(ln_rec_cbi_pd).total_cust  := lc_qry.tot_cust;
-                                        lr_sox_cbi_pd_op(ln_rec_cbi_pd).total_inv   := lc_qry.tot_inv - ln_count_rec;
+                                        lr_sox_cbi_pd_op(ln_rec_cbi_pd).total_inv   := lc_qry.tot_inv;
                                         lr_sox_cbi_pd_op(ln_rec_cbi_pd).total_amount:= lc_qry.tot_amount;
                                         ln_rec_cbi_pd := ln_rec_cbi_pd + 1;
                                         ln_cbi_pd_flg:=1;
-										
-										-- ADDED FOR CR/DB ISSUE
-										
-										if( lc_req_id is NULL) then
-											lc_req_id:= ln_req_id(i);
-										else
-										    lc_req_id:= lc_req_id || ',' ||ln_req_id(i) ;
-										end if;
-									    ln_count_rec :=0;
-										
-										-- LOGIC END
                                    END IF;
                                 END LOOP;
-								
                         END LOOP;
-						lc_req_id := NULL;
                 ELSE
                lc_error_loc  := 'XX_AR_SOX_PRINT_NULL - ELSE - for ePDF-Consolidated';
                         XX_AR_SOX_PRINT_NULL(lv_country,lc_prog_name,'CBI',ln_cbi_id_flg,ln_cbi_pd_flg);
@@ -1641,25 +1608,6 @@ BEGIN
                                         ln_rec_cbi_id := ln_rec_cbi_id + 1;
                                         ln_cbi_id_flg:=1;
                                    ELSIF (lc_qry.inv_type='CBI' AND lc_qry.doc_type='PD' AND lc_qry.tot_cust <> 0) THEN
-								   
-								   
-										-- ADDED FOR CR/DB ISSUE
-										SELECT  count(DISTINCT hist.cons_inv_id) 
-										into ln_count_rec
-										FROM      xx_ar_ebl_cons_hdr_hist HIST
-										WHERE  HIST.request_id = ln_req_id(i)
-										AND    HIST.org_id     = ln_org_id
-										AND    HIST.billdocs_delivery_method  = p_delivery_method
-										AND    HIST.document_type='Paydoc'
-										and hist.cons_inv_id in (
-											SELECT  distinct hist.cons_inv_id
-											FROM      xx_ar_ebl_cons_hdr_hist HIST
-											WHERE  HIST.request_id in (lc_req_id)
-											AND    HIST.org_id     = ln_org_id
-											AND    HIST.billdocs_delivery_method  = p_delivery_method
-											AND    HIST.document_type='Paydoc');
-										-- END OF LOGIC
-									
                                         lr_sox_cbi_pd_op.EXTEND();
                                         lr_sox_cbi_pd_op(ln_rec_cbi_pd).ou          := lv_country;
                                         lr_sox_cbi_pd_op(ln_rec_cbi_pd).inv_type    := lc_qry.inv_type;
@@ -1669,25 +1617,13 @@ BEGIN
                                         lr_sox_cbi_pd_op(ln_rec_cbi_pd).start_time  := lv_req_start(i);
                                         lr_sox_cbi_pd_op(ln_rec_cbi_pd).end_time    := lv_req_end(i);
                                         lr_sox_cbi_pd_op(ln_rec_cbi_pd).total_cust  := lc_qry.tot_cust;
-                                        lr_sox_cbi_pd_op(ln_rec_cbi_pd).total_inv   := lc_qry.tot_inv - ln_count_rec;
+                                        lr_sox_cbi_pd_op(ln_rec_cbi_pd).total_inv   := lc_qry.tot_inv;
                                         lr_sox_cbi_pd_op(ln_rec_cbi_pd).total_amount:= lc_qry.tot_amount;
                                         ln_rec_cbi_pd := ln_rec_cbi_pd + 1;
                                         ln_cbi_pd_flg:=1;
-										
-										--Added for CR/DB issue
-										if( lc_req_id is NULL) then
-											lc_req_id:= ln_req_id(i);
-										else
-										    lc_req_id:= lc_req_id || ',' ||ln_req_id(i) ;
-										end if;
-									    ln_count_rec :=0;
-										
-										-- End of Logic
-										
                                    END IF;
                                 END LOOP;
                         END LOOP;
-						lc_req_id :=NULL;
                 ELSE
                         XX_AR_SOX_PRINT_NULL(lv_country,lc_prog_name,'CBI',ln_cbi_id_flg,ln_cbi_pd_flg);
                         ln_cbi_id_flg:=1;
