@@ -364,16 +364,18 @@ BEGIN
     IF p_segments IS NOT NULL 
 	THEN
       v_target    :=NULL;
-	  
-	  SELECT regexp_substr(p_segments, '[^.]+', 1, 1) ||'.'||
-             regexp_substr(p_segments, '[^.]+', 1, 2) ||'.'||
-             regexp_substr(p_segments, '[^.]+', 1, 3) ||'.'||
-             regexp_substr(p_segments, '[^.]+', 1, 4) ||'.'||
-             regexp_substr(p_segments, '[^.]+', 1, 5) ||'.'||
-             regexp_substr(p_segments, '[^.]+', 1, 6) ||'.'||
-	         NVL(regexp_substr(p_segments, '[^.]+', 1, 7),'000000')
-		INTO v_target
-        FROM DUAL;
+		
+	  SELECT LTRIM(RTRIM(tv.target_value1))
+        INTO v_target
+        FROM xx_fin_translatevalues tv,
+             xx_fin_translatedefinition td
+       WHERE tv.translate_id  = td.translate_id
+         AND translation_name = 'XX_GL_CLD2EBS_MAPPING'  
+	     AND SYSDATE BETWEEN NVL(tv.start_date_active,SYSDATE) AND NVL(tv.end_date_active,SYSDATE + 1)
+         AND SYSDATE BETWEEN NVL(td.start_date_active,SYSDATE) AND NVL(td.end_date_active,SYSDATE + 1)
+	     AND tv.source_value1 = p_segments
+         AND tv.enabled_flag = 'Y'
+         AND td.enabled_flag = 'Y';
 	  
       print_debug_msg(p_message=> 'New EBs Code Combination ID is '||v_target , p_force=>true);
 	  
@@ -387,7 +389,7 @@ BEGIN
       WHEN OTHERS 
 	  THEN
         v_ccid :=NULL;
-        print_debug_msg(p_message=> 'CCID doesnot exists in EBS for  '||v_target , p_force=>true);
+        print_debug_msg(p_message=> 'CCID does not exist in EBS for  '||v_target , p_force=>true);
       END ;
     END IF;
   EXCEPTION
@@ -396,6 +398,34 @@ BEGIN
   END;
   RETURN v_ccid;
 END get_cc_id;
+
+-- +===================================================================+
+-- | FUNCTION   : xx_get_terms                                         |
+-- |                                                                   |
+-- | DESCRIPTION: To get the EBS payment terms for Cloud Payment terms |
+-- |                                                                   |
+-- +===================================================================+
+FUNCTION xx_get_terms(p_cloud_terms IN VARCHAR2)
+RETURN VARCHAR2
+IS
+v_terms VARCHAR2(50);
+BEGIN
+  SELECT LTRIM(RTRIM(tv.target_value1))
+    INTO v_terms
+    FROM xx_fin_translatevalues tv,
+         xx_fin_translatedefinition td
+   WHERE tv.translate_id  = td.translate_id
+     AND translation_name = 'XX_AP_CLOUD_PAYMENT_TERMS'  
+	 AND SYSDATE BETWEEN NVL(tv.start_date_active,SYSDATE) AND NVL(tv.end_date_active,SYSDATE + 1)
+     AND SYSDATE BETWEEN NVL(td.start_date_active,SYSDATE) AND NVL(td.end_date_active,SYSDATE + 1)
+	 AND tv.source_value1 = p_cloud_terms
+     AND tv.enabled_flag = 'Y'
+     AND td.enabled_flag = 'Y';
+  RETURN(v_terms);
+EXCEPTION
+  WHEN others THEN
+    RETURN('X');
+END;
 
 /* Added as per Version 2.1 by Havish Kasina */
 --+============================================================================+
@@ -4288,13 +4318,15 @@ BEGIN
       --=============================================================================
       -- Validating Terms 
       --=============================================================================
-      IF l_sup_site_type.terms_name IS NOT NULL 
-	  THEN	
-           OPEN  c_get_term_id(l_sup_site_type.terms_name);
+	  
+	  IF l_sup_site_type.terms_name IS NOT NULL 
+	  THEN		 
+	       OPEN c_get_term_id(xx_get_terms(l_sup_site_type.terms_name));
            FETCH c_get_term_id INTO ln_terms_id;
            CLOSE c_get_term_id;
-
-         IF NVL(ln_terms_id,0) = 0 THEN
+		   
+         IF NVL(ln_terms_id,0) = 0 
+		 THEN
             gc_error_site_status_flag := 'Y';
             print_debug_msg(p_message=> l_sup_site_type.terms_name||' Invalid  Terms' ,p_force=> true);
 			gc_error_msg:=gc_error_msg||' ,'|| l_sup_site_type.terms_name||' Invalid  Terms';
