@@ -1,13 +1,13 @@
 # +===================================================================+
-# |		     Office Depot - Project Beacon                    |
+# |		     Office Depot - Project Beacon                            |
 # +===================================================================+
-# | Name  :	  XXCLDSUPPLOAD (Shell Script)	                      |
+# | Name  :	  XXCLDSUPPLOAD (Shell Script)	                          |
 # | Description : To Load the Supplier Data from the Cloud to On-Prem |
-# |   EBS tables	                                              |
-# |								      |
-# |Change Record:						      |
-# |===============						      |
-# |Version   Date	      Author	          Remarks             |
+# |   EBS tables	                                                  |
+# |								                                      |
+# |Change Record:						                              |
+# |===============						                              |
+# |Version   Date	      Author	          Remarks                 |
 # |=======   ===========  ================    ========================|
 # |1.0	     27-JUN-2019  Havish Kasina	      Initial version         |
 # |-------------------------------------------------------------------|
@@ -140,7 +140,10 @@ then
        cat $p_filename.log
        echo "-------------Bad Data file----------"
        cat $p_filename.bad
-   fi 
+     else
+       echo "No Data File to process" 
+       echo "program aborting .."   
+	 fi 
 #BankAccounts
 elif [ "${p_process_name}" = "BANKACCOUNTS" ]
 then
@@ -170,7 +173,6 @@ then
    else
        echo "No Data File to process" 
        echo "program aborting .."
-       exit 1
    fi 
 #CustomDFF
 elif [ "${p_process_name}" = "SUPPLIERDFF" ]
@@ -198,6 +200,9 @@ then
        cat $p_filename.log
        echo "-------------Bad Data file----------"
        cat $p_filename.bad
+   else
+       echo "No Data File to process" 
+       echo "program aborting .."
    fi 
 #BusinessClassification
 elif [ "${p_process_name}" = "BUSCLASS" ]
@@ -225,6 +230,9 @@ then
        cat $p_filename.log
        echo "-------------Bad Data file----------"
        cat $p_filename.bad
+   else
+       echo "No Data File to process" 
+       echo "program aborting .."
    fi
 fi
 
