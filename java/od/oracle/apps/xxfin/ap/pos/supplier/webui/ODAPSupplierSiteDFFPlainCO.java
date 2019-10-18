@@ -124,9 +124,9 @@ public class ODAPSupplierSiteDFFPlainCO extends OAControllerImpl {
             suppSitesAllVORow.setAttribute("Attribute7", strVendorSiteID);
         }
 
-        OAMessageChoiceBean relPSChoice = 
-            (OAMessageChoiceBean)webBean.findChildRecursive("relPSChoice");
-        relPSChoice.setPickListCacheEnabled(false);
+       // OAMessageChoiceBean relPSChoice = 
+           // (OAMessageChoiceBean)webBean.findChildRecursive("relPSChoice");
+        //relPSChoice.setPickListCacheEnabled(false);
 
         System.out.println("VS_KFF_ID1: " + VS_KFF_ID1);
         System.out.println("VS_KFF_ID2: " + VS_KFF_ID2);
@@ -209,9 +209,9 @@ public class ODAPSupplierSiteDFFPlainCO extends OAControllerImpl {
             supplierSiteKFF2VO1.executeQuery();
 
         }
-        OAMessageChoiceBean venRTVChoice = 
-            (OAMessageChoiceBean)webBean.findChildRecursive("chSegment58");
-        venRTVChoice.setPickListCacheEnabled(false);
+       // OAMessageChoiceBean venRTVChoice = 
+           // (OAMessageChoiceBean)webBean.findChildRecursive("chSegment58");
+        //venRTVChoice.setPickListCacheEnabled(false);
 
         if (VS_KFF_ID3 == null) {
             VS_KFF_ID3 = 
@@ -268,20 +268,29 @@ public class ODAPSupplierSiteDFFPlainCO extends OAControllerImpl {
 
 
         String relPSChoiceVal = null;
-        if (pageContext.getParameter("relPSChoice") != null)
-            relPSChoiceVal = (String)pageContext.getParameter("relPSChoice");
+        if (pageContext.getParameter("relPSChoiceT") != null)
+            relPSChoiceVal = (String)pageContext.getParameter("relPSChoiceT");
         System.out.println("In PFR relPSChoice: " + relPSChoiceVal);
+        pageContext.writeDiagnostics(this, 
+                                     "relPSChoiceT value 1: " + pageContext.getParameter("relPSChoiceT"), 
+                                     1);
 
         if (row1 != null) {
             System.out.println("PFR Attribute8: " + 
                                row1.getAttribute("Attribute8"));
             System.out.println("PFR Attribute13: " + 
                                row1.getAttribute("Attribute13"));
-            row1.setAttribute("Attribute13", relPSChoiceVal);
+           // row1.setAttribute("Attribute13", relPSChoiceVal);
             System.out.println("PFR After.. Attribute13: " + 
                                row1.getAttribute("Attribute13"));
+            pageContext.writeDiagnostics(this, 
+                                         "relPSChoiceT value 2: " + pageContext.getParameter("relPSChoiceT"), 
+                                         1);
         }
         if (pageContext.getParameter("btnSubmit") != null) {
+            pageContext.writeDiagnostics(this, 
+                                         "relPSChoiceT value in submit button: " + pageContext.getParameter("relPSChoiceT"), 
+                                         1);
             System.out.println("In btnSubmit");
             am.getOADBTransaction().commit();
             OAException msg1 = 
