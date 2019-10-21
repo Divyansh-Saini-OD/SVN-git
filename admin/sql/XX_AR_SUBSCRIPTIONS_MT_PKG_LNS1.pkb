@@ -7506,7 +7506,7 @@ AS
       /***************************
       * Validate for authorization
       ***************************/
-      IF px_subscription_array(indx).auth_completed_flag NOT IN ('Y', 'E')
+      IF px_subscription_array(indx).auth_completed_flag NOT IN ('Y', 'E','T')
       THEN
         lc_error := 'Authorization is not completed';
         RAISE le_skip;
