@@ -22,6 +22,7 @@ CREATE OR REPLACE PACKAGE BODY xx_arp_bf_bill AS
 -- |    1.4             09-AUG-2016     Arun Gannarapu        12.2.5 Retrofit 								|
 -- |    1.5             05-NOV-2018     Dinesh Nagapuri       Made Changes for Bill Complete NAIT-61963. 				|
 -- |    1.6		14-MAR-2019	Dinesh Nagapuri	      Added Bill Doc level check to reduce the performance  			|	
+-- |    1.7     15-OCT-2019 Nitin Tugave          Added NAIT- 109439 AB Subscription Recurring billing on Bill Complete account | 
 ---+====================================================================================================================================+
 
 /*REM Added for ARU db drv auto generation
@@ -798,7 +799,8 @@ CURSOR C_inv_parent (C_site_use_id NUMBER, C_customer_id NUMBER) IS
 		/* this cursor will pick up all transactions for given site/currency 
 		
 			this cursor will pick up all transactions for given site/currency */
-	CURSOR C_inv_trx_parent (C_site_use_id NUMBER, C_billing_date DATE, C_use_currency VARCHAR2, c_parent_num VARCHAR2, c_bill_print_flag  VARCHAR2) IS
+	CURSOR C_inv_trx_parent (C_site_use_id NUMBER, C_billing_date DATE, C_use_currency VARCHAR2, c_parent_num VARCHAR2, c_bill_print_flag  VARCHAR2,c_trx_type_id NUMBER) -- Added parameter For NAIT- 109439
+	IS 
 		SELECT /*+  index(CT RA_CUSTOMER_TRX_U1)*/   -- Added for Defect # 35571
 			   CT.customer_trx_id              trx_id,
 			   CT.trx_date                     trx_date,
@@ -833,6 +835,7 @@ CURSOR C_inv_parent (C_site_use_id NUMBER, C_customer_id NUMBER) IS
 				OR  	
 				   --(Ooh.Order_Number = c_parent_num AND c_bill_print_flag='Y')		-- Removed Jira 72552
 					( Ct.Trx_Number = c_parent_num AND c_bill_print_flag='Y') 			-- Added Jira 72552
+				OR  (Ct.Trx_Number = c_parent_num AND c_bill_print_flag ='N' and CT.CUST_TRX_TYPE_ID = c_trx_type_id) -- Added For NAIT- 109439	
 				) 	
 		AND    xoha.Bill_Comp_Flag		IN ('B','Y')
 		--AND    Ooh.Header_Id      = Xoha.Header_Id									-- Removed Jira 72552
@@ -983,6 +986,7 @@ l_bucket_amount_6       NUMBER;
 l_error_message  VARCHAR2(2000);
 l_cycle_start_date     DATE;
 l_org_id               NUMBER;
+l_trx_type_id          NUMBER:=0;  -- Added For NAIT- 109439
 BEGIN
 
    write_debug_and_log('And so it begins...');
@@ -1597,15 +1601,28 @@ BEGIN
 					AND api.customer_site_use_id	= l_sites.site_id
 					AND api.customer_id     		= l_sites.customer_id
 					AND ROWNUM < 2 
-					AND EXISTS 
-						(
-						  SELECT 1
-						  FROM oe_order_headers_all ooh,
-							   xx_om_header_attributes_all xoha
-						  WHERE ooh.Order_Number = TO_NUMBER(api.trx_number)
-						  AND ooh.Header_Id      = Xoha.Header_Id
-						  AND NVL(BILL_COMP_FLAG,'N')     IN ('B','Y'))	
-						;						
+                    AND ( EXISTS 
+                        (
+                          SELECT 1
+                          FROM oe_order_headers_all ooh,
+                               xx_om_header_attributes_all xoha
+                          WHERE ooh.Order_Number = TO_NUMBER(api.trx_number)
+                          AND ooh.Header_Id      = Xoha.Header_Id
+                          AND NVL(BILL_COMP_FLAG,'N')     IN ('B','Y')
+						)
+                        OR EXISTS  -- Added For NAIT- 109439
+                        (
+                         SELECT 1
+                           FROM oe_order_headers_all ooh,
+                                xx_om_header_attributes_all xoha ,
+                                ra_customer_trx_all rct
+                           WHERE 1=1
+                             AND ooh.Header_Id      = Xoha.Header_Id
+                             AND rct.CUSTOMER_TRX_ID = api.CUSTOMER_TRX_ID
+                             AND Xoha.header_id      = to_number(rct.attribute14) 
+                             AND NVL(xoha.BILL_COMP_FLAG,'N')     IN ('B','Y')
+                        ) 
+                        );						
                 END IF;  
 				
 				IF ln_bill_comp_cust_cnt >0
@@ -1690,6 +1707,7 @@ BEGIN
 			  FOR L_inv_trx IN C_inv_trx(L_sites.site_id, l_billing_date, P_currency) LOOP
 
 				 write_debug_and_log(' ');
+				 write_debug_and_log(' System');
 				 write_debug_and_log('.........Loop C_inv_trx for site = ' || to_char(L_sites.site_id));
 				 write_debug_and_log('.........trx_id       :'||TO_CHAR(L_inv_trx.trx_id));
 				 write_debug_and_log('.........trx_date     :'||TO_CHAR(L_inv_trx.trx_date));
@@ -2997,7 +3015,7 @@ BEGIN
 		
 		--Added for Bill Complete. If Bill Complete Customer has Consolidating bills to parent bill NAIT-61963.
 		ELSIF	ln_bill_comp_cust_cnt >0 AND ln_bill_signal_cnt > 0 THEN --Recommend Jira 72552	
-
+ write_debug_and_log(' cons');
 				BEGIN
 					SELECT  sum(total_trx_amt), max(beginning_balance)
 					INTO    l_tota_trx_max_balance, l_beginning_max_balance
@@ -3085,7 +3103,24 @@ BEGIN
 									   l_last_bill_date,
 									   P_billing_cycle_id,
 									   l_remit_to_address_id);
-			  FOR L_inv_trx IN C_inv_trx_parent(L_sites.site_id, l_billing_date, P_currency, lc_cons_bill_num, L_inv_parent.bill_print_flag) 
+			  -- Added For NAIT- 109439
+			  l_trx_type_id:=0;	
+			  BEGIN
+			    SELECT rct.CUST_TRX_TYPE_ID 
+				  INTO l_trx_type_id
+				  FROM RA_CUST_TRX_TYPES_ALL rct
+                 WHERE 1=1 
+                   AND rct.name = 'US_SERVICE_AOPS_OD'
+                  ;
+			  EXCEPTION
+			      WHEN OTHERS THEN
+				  l_trx_type_id:=0;				  
+			  END;		
+
+write_debug_and_log('L_sites.site_id '||L_sites.site_id||'l_billing_date '||l_billing_date);	
+write_debug_and_log('lc_cons_bill_num '||lc_cons_bill_num||'P_currency '||P_currency);	
+write_debug_and_log('L_inv_parent.bill_print_flag '||L_inv_parent.bill_print_flag||'l_trx_type_id '||l_trx_type_id);				  
+			  FOR L_inv_trx IN C_inv_trx_parent(L_sites.site_id, l_billing_date, P_currency, lc_cons_bill_num, L_inv_parent.bill_print_flag,l_trx_type_id) -- Added parameter For NAIT- 109439
 			  LOOP		
 				 write_debug_and_log(' ');
 				 write_debug_and_log('.........Loop C_inv_trx for site = ' || to_char(L_sites.site_id));
