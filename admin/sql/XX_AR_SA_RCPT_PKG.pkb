@@ -478,7 +478,7 @@ AS
                  xort.credit_card_holder_name,
                  xort.credit_card_expiration_date,
                  xort.credit_card_approval_code,
-                 credit_card_approval_date,
+                 TO_DATE(NULL) credit_card_approval_date,
                  xort.line_id,
                  qlh.currency_code,
                  xort.receipt_method_id,
