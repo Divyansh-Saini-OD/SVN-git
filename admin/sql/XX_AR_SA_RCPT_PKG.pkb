@@ -90,14 +90,15 @@ AS
 -- | 10.0        23-JUL-2015  Arun Gannarapu        Made changes to default N for                        |
 -- |                                                tokenization fields 35134                            |
 -- | 11.0        09-SEP-2015  Rakesh Polepalli      Modified create_refund_receipts for defect 25731     |
--- | 12.0	 	 12-NOV-2015  Vasu Raparla	    	Removed Schema References for R12.2                  |
+-- | 12.0	 	 12-NOV-2015  Vasu Raparla	    	Removed Schema References for R12.2      |
 -- | 13.0        03-MAR-2016  Arun Gannarapu        Made changes to support Master Pass 37172            |
 -- | 14.0        05-JUL-2016  Rakesh Polepalli      Modified create_refund_receipts for defect 38421     |
 -- | 15.0        07-FEB-2017  Havish Kasina         Added hint to improve the performance                |
--- | 16.0        03-MAY-2018  Theja Rajula			EBAY Market Place									 |
+-- | 16.0        03-MAY-2018  Theja Rajula			EBAY Market Place			 |
 -- | 17.0        17-MAY-2018  Havish Kasina         Market Place Expansion - AR Changes for adding new   |
 -- |                                                translations.To make the code configurable for future| 
 -- |                                                market places(Defect NAIT-42023)                     |
+-- | 18.0        22-OCT-2019  Arun Gannarapu        Made changes to populate return auth code            |
 -- +=====================================================================================================+
     gb_debug                           BOOLEAN                        DEFAULT TRUE;   -- print debug/log output
     gn_return_code                     NUMBER                         DEFAULT 0;   -- master program conc status
@@ -476,8 +477,8 @@ AS
                  xort.credit_card_number,
                  xort.credit_card_holder_name,
                  xort.credit_card_expiration_date,
-                 NULL credit_card_approval_code,
-                 TO_DATE(NULL) credit_card_approval_date,
+                 xort.credit_card_approval_code,
+                 credit_card_approval_date,
                  xort.line_id,
                  qlh.currency_code,
                  xort.receipt_method_id,
@@ -1335,7 +1336,7 @@ AS
                     FROM   hr_all_organization_units a
                     WHERE  a.organization_id = NVL(xoh.paid_at_store_id,
                                                    ship_from_org_id) ) ship_from,
-                   NULL credit_card_approval_code,
+                   oop.credit_card_approval_code,
                    NULL credit_card_approval_date,
                    ooh.invoice_to_org_id customer_site_billto_id,
                    ooh.ordered_date receipt_date,
