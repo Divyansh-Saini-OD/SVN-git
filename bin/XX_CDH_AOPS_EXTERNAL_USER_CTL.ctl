@@ -10,6 +10,7 @@
 -- |Version   Date         Author         Remarks                                      |
 -- |========  ===========  =============  =============================================|
 -- |1.0       31-DEC-2018  Havish Kasina  Initial draft version                        |
+-- |1.1       14-OCT-2019  Sridhar Pamu   Modified pwd_last_change to to_timestamp format |
 -- +===================================================================================+
 
 LOAD DATA
@@ -34,7 +35,7 @@ TRAILING NULLCOLS
    PERSON_MIDDLE_NAME                    "LTRIM(RTRIM(:PERSON_MIDDLE_NAME, CHR(34)), CHR(34))",
    EMAIL                                 "LTRIM(RTRIM(:EMAIL, CHR(34)), CHR(34))",
    PERMISSION_FLAG                       "LTRIM(RTRIM(:PERMISSION_FLAG, CHR(34)), CHR(34))",
-   PWD_LAST_CHANGE                       "LTRIM(RTRIM(:PWD_LAST_CHANGE, CHR(34)), CHR(34))",  
+   PWD_LAST_CHANGE                       "TO_TIMESTAMP(LTRIM(RTRIM(:PWD_LAST_CHANGE, CHR(34)), CHR(34)),'YYYY-MM-DD HH24:MI:SS.FF')", 
    LOAD_STATUS                CONSTANT   'N',  
    CREATED_BY                            "FND_GLOBAL.USER_ID",        
    CREATION_DATE                         "SYSDATE",       
