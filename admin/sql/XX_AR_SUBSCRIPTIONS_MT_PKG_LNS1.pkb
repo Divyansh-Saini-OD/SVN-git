@@ -4445,9 +4445,6 @@ AS
           
           IF lc_segment != gc_store_number
           THEN
-            /*******************************************************************************
-            * Updating contracts table with new store# against store closed on initial order
-            *******************************************************************************/
             UPDATE xx_ar_contracts
             set    store_number       = gc_store_number
                   ,store_close_flag   = 'Y'
@@ -4456,17 +4453,7 @@ AS
                   ,last_update_login  = NVL(FND_GLOBAL.USER_ID, -1)
             WHERE  contract_id        = p_contract_info.contract_id;
             COMMIT;
-          ELSE
-            /******************************************************
-            * Updating contracts table with store# on initial order
-            ******************************************************/
-            UPDATE xx_ar_contracts
-            set    store_number       = lc_segment
-                  ,last_update_date   = SYSDATE
-                  ,last_updated_by    = NVL(FND_GLOBAL.USER_ID, -1)
-                  ,last_update_login  = NVL(FND_GLOBAL.USER_ID, -1)
-            WHERE  contract_id        = p_contract_info.contract_id;
-            COMMIT;
+            
           END IF;
             
           /**************************************
@@ -10799,7 +10786,9 @@ AS
                      bill_to_osr                 = eligible_contract_line_rec.bill_to_osr,
                      customer_email              = eligible_contract_line_rec.customer_email,
                      initial_order_number        = eligible_contract_line_rec.initial_order_number,
-                     store_number                = eligible_contract_line_rec.store_number,
+                     store_number                = LPAD(NVL(eligible_contract_line_rec.store_number, lt_program_setups('default_store_name')),
+                                                      6,
+                                                      '0'),
                      payment_type                = eligible_contract_line_rec.payment_type,
                      card_type                   = eligible_contract_line_rec.card_type,
                      card_tokenenized_flag       = eligible_contract_line_rec.card_tokenized_flag,
@@ -10840,7 +10829,9 @@ AS
                      bill_to_osr                 = eligible_contract_line_rec.bill_to_osr,
                      customer_email              = eligible_contract_line_rec.customer_email,
                      initial_order_number        = eligible_contract_line_rec.initial_order_number,
-                     store_number                = eligible_contract_line_rec.store_number,
+                     store_number                = LPAD(NVL(eligible_contract_line_rec.store_number, lt_program_setups('default_store_name')),
+                                                      6,
+                                                      '0'),
                      payment_type                = eligible_contract_line_rec.payment_type,
                      card_type                   = eligible_contract_line_rec.card_type,
                      card_tokenenized_flag       = eligible_contract_line_rec.card_tokenized_flag,
@@ -10889,7 +10880,9 @@ AS
               lr_contract_info.bill_to_osr                 := eligible_contract_line_rec.bill_to_osr;
               lr_contract_info.customer_email              := eligible_contract_line_rec.customer_email;
               lr_contract_info.initial_order_number        := eligible_contract_line_rec.initial_order_number;
-              lr_contract_info.store_number                := eligible_contract_line_rec.store_number; 
+              lr_contract_info.store_number                := LPAD(NVL(eligible_contract_line_rec.store_number, lt_program_setups('default_store_name')),
+                                                                   6,
+                                                                   '0');
               lr_contract_info.payment_type                := eligible_contract_line_rec.payment_type;
               lr_contract_info.card_type                   := eligible_contract_line_rec.card_type;
               lr_contract_info.card_tokenenized_flag       := eligible_contract_line_rec.card_tokenized_flag;
