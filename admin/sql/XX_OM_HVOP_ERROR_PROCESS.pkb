@@ -2172,8 +2172,8 @@ SELECT distinct oh.orig_sys_document_ref
 FROM
     apps.oe_headers_iface_all           oh,
     apps.oe_processing_msgs             er,
-    hz_cust_site_uses_all               hzu,
-    hz_cust_accounts_all                hza
+    apps.hz_cust_site_uses_all               hzu,
+    apps.hz_cust_accounts_all                hza
 WHERE
     1=1
     and er.message_text IS NUll
