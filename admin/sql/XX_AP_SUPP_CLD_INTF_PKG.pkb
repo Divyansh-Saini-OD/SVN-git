@@ -78,6 +78,7 @@ CREATE OR REPLACE PACKAGE BODY xx_ap_supp_cld_intf_pkg
 -- |                                            a. Create the site in EBS without the Legacy   |
 -- |                                               number ( This is because, in EBS today, new | 
 -- |                                               sites do not have Legacy Suppler number)    |
+-- | 3.5     23-OCT-2019    Paddy Sanjeevi     Added xx_tolerance_trait procedure              |
 -- |===========================================================================================+
 AS
   /*********************************************************************
@@ -887,6 +888,125 @@ EXCEPTION
   WHEN OTHERS THEN
     print_debug_msg(p_message =>'When others in process bus class :'||SQLERRM, p_force => false);
 END process_bus_class;
+
+--+=============================================================================+
+--| Name          : xx_process_supp_trait                                       |
+--| Description   : This procedure will Create supplier traits                  |
+--|                                                                             |
+--| Parameters    : gn_request_id                                               |
+--|                                                                             |
+--| Returns       : N/A                                                         |
+--|                                                                             |
+--+=============================================================================+
+PROCEDURE xx_tolerance_trait(gn_request_id IN NUMBER)
+IS
+  CURSOR C1
+  IS
+    SELECT dff.rowid drowid,
+           dff.supplier_number ,
+           dff.supplier_name ,
+           dff.vendor_site_code,
+           dff.sup_trait,
+	       dff.favourable_price_pct ,
+	       dff.max_price_amt ,    
+	       dff.min_chargeback_amt ,
+	       dff.max_freight_amt  ,   
+	       dff.dist_var_neg_amt ,   
+	       dff.dist_var_pos_amt ,   	  
+           site.vendor_id ,
+           site.vendor_site_id,
+           site.org_id,
+	       site.attribute8   		   
+      FROM xx_ap_cld_site_dff_stg dff,
+           xx_ap_cld_supp_sites_stg site
+     WHERE 1                     =1
+       AND dff.request_id          = gn_request_id
+       AND site.vendor_site_code=dff.vendor_site_code
+	   AND site.supplier_number=dff.supplier_number     
+       AND site.site_process_flag IN (7,8)
+       AND site.request_id         = dff.request_id
+       AND site.vendor_id         IS NOT NULL
+       AND site.vendor_site_id    IS NOT NULL
+       AND EXISTS (SELECT 1
+				     FROM ap_supplier_sites_all
+				    WHERE vendor_id      = site.vendor_id
+				      AND vendor_site_id = site.vendor_site_id
+				  );
+
+  v_trait_flag            VARCHAR2(1);
+  lc_error_msg            VARCHAR2(2000);
+  lc_vendor_site_code_alt VARCHAR2(100);
+  ln_tol_count			  NUMBER;
+  v_tol_flag              VARCHAR2(1);
+BEGIN
+  print_debug_msg(p_message => 'Begin Supplier Trait and Custom Tolerance Processing ', p_force => true);
+  FOR cur IN C1
+  LOOP
+    lc_vendor_site_code_alt:=NULL;
+    BEGIN
+      SELECT vendor_site_code_alt
+        INTO lc_vendor_site_code_alt
+        FROM ap_supplier_sites_all
+       WHERE vendor_site_id = cur.vendor_site_id;
+    EXCEPTION
+      WHEN OTHERS THEN
+        print_debug_msg(p_message => 'Error in Deriving Kff Values for site : '||cur.vendor_site_code||','|| SQLERRM ,p_force =>false);
+    END;
+	IF lc_vendor_site_code_alt IS NOT NULL THEN
+       IF cur.sup_trait IS NOT NULL THEN
+          v_trait_flag   := xx_custom_sup_traits(cur.sup_trait,NVL(TO_NUMBER(LTRIM(lc_vendor_site_code_alt,'0')),cur.vendor_site_id ) );
+       END IF;
+	END IF;
+
+    --===============================================================
+    -- Processing Custom Tolerance    --
+    --===============================================================
+	IF (cur.attribute8 LIKE 'TR%' AND cur.attribute8 NOT LIKE '%RTV%' ) THEN   -- Added as per Version 2.2
+	  
+        SELECT COUNT(1)
+          INTO ln_tol_count
+          FROM xx_ap_custom_tolerances
+         WHERE 1              =1
+           AND supplier_id      = cur.vendor_id
+           AND supplier_site_id = cur.vendor_site_id ;
+        print_debug_msg(p_message => 'Custom Tolerance for the vendor : '||cur.supplier_number||', Site : '||cur.vendor_site_code, p_force => false);
+
+        IF ln_tol_count = 0 THEN
+		
+            v_tol_flag   := xx_custom_tolerance(cur.vendor_id, 
+			                                    cur.vendor_site_id,
+												cur.org_id,
+												'Y',
+												TO_NUMBER(cur.favourable_price_pct) ,
+												TO_NUMBER(cur.max_price_amt) ,      
+												TO_NUMBER(cur.min_chargeback_amt) ,
+												TO_NUMBER(cur.max_freight_amt) ,   
+												TO_NUMBER(cur.dist_var_neg_amt) ,   
+												TO_NUMBER(cur.dist_var_pos_amt) 												
+												);
+		ELSE
+		    v_tol_flag   := xx_custom_tolerance(cur.vendor_id, 
+			                                    cur.vendor_site_id,
+												cur.org_id,
+												'N',
+												TO_NUMBER(cur.favourable_price_pct) ,
+												TO_NUMBER(cur.max_price_amt) ,      
+												TO_NUMBER(cur.min_chargeback_amt) ,
+												TO_NUMBER(cur.max_freight_amt) ,   
+												TO_NUMBER(cur.dist_var_neg_amt) ,   
+												TO_NUMBER(cur.dist_var_pos_amt)    												
+												);
+        END IF;
+        COMMIT;
+	END IF;
+  END LOOP;
+  COMMIT;
+  print_debug_msg(p_message => 'Begin Custom Tolerance Processing ', p_force => true);	
+EXCEPTION
+  WHEN OTHERS THEN
+    print_debug_msg(p_message => 'Error in processing xx_tolerance_trait '||SQLERRM, p_force => true);
+END xx_tolerance_trait;
+
 --+=============================================================================+
 --| Name          : xx_supp_dff                                                 |
 --| Description   : This procedure will Create Custom DFF Attributes to 3 groups|
@@ -969,8 +1089,6 @@ IS
   lc_attribute11          VARCHAR2(100);
   lc_attribute12          VARCHAR2(100);
   v_error_flag            VARCHAR2(1);
-  v_trait_flag            VARCHAR2(1);
-  v_tol_flag              VARCHAR2(1);
   lc_error_msg            VARCHAR2(2000);
   lc_vendor_site_code_alt VARCHAR2(100);
 BEGIN
@@ -1207,51 +1325,7 @@ BEGIN
         vendor_site_id     = cur.vendor_site_id,
         process_Flag       = 'Y'
       WHERE rowid          =cur.drowid;
-      --===============================================================
-      -- Inserting into Custom Supplier Traits    --
-      --===============================================================
-      IF cur.sup_trait IS NOT NULL THEN
-        v_trait_flag   := xx_custom_sup_traits(cur.sup_trait,NVL(TO_NUMBER(LTRIM(lc_vendor_site_code_alt,'0')),cur.vendor_site_id ) );
-      END IF;
-      --===============================================================
-      -- Processing Custom Tolerance    --
-      --===============================================================
-	  IF (cur.attribute8 LIKE 'TR%' AND cur.attribute8 NOT LIKE '%RTV%' ) THEN   -- Added as per Version 2.2
-	  
-         SELECT COUNT(1)
-         INTO ln_tol_count
-         FROM xx_ap_custom_tolerances
-         WHERE 1              =1
-         AND supplier_id      = cur.vendor_id
-         AND supplier_site_id = cur.vendor_site_id ;
-         print_debug_msg(p_message => 'Custom Tolerance for the vendor : '||cur.supplier_number||', Site : '||cur.vendor_site_code, p_force => false);
-         IF ln_tol_count = 0 THEN
-            v_tol_flag   := xx_custom_tolerance(cur.vendor_id, 
-			                                    cur.vendor_site_id,
-												cur.org_id,
-												'Y',
-												TO_NUMBER(cur.favourable_price_pct) ,
-												TO_NUMBER(cur.max_price_amt) ,      
-												TO_NUMBER(cur.min_chargeback_amt) ,
-												TO_NUMBER(cur.max_freight_amt) ,   
-												TO_NUMBER(cur.dist_var_neg_amt) ,   
-												TO_NUMBER(cur.dist_var_pos_amt) 												
-												);
-		 ELSE
-		    v_tol_flag   := xx_custom_tolerance(cur.vendor_id, 
-			                                    cur.vendor_site_id,
-												cur.org_id,
-												'N',
-												TO_NUMBER(cur.favourable_price_pct) ,
-												TO_NUMBER(cur.max_price_amt) ,      
-												TO_NUMBER(cur.min_chargeback_amt) ,
-												TO_NUMBER(cur.max_freight_amt) ,   
-												TO_NUMBER(cur.dist_var_neg_amt) ,   
-												TO_NUMBER(cur.dist_var_pos_amt)    												
-												);
-         END IF;
-         COMMIT;
-	  END IF;
+
     ELSIF ln_kff_count   >0 AND ( lc_attribute10 IS NOT NULL OR lc_attribute11 IS NOT NULL OR lc_attribute12 IS NOT NULL) THEN
       IF lc_attribute10 IS NOT NULL THEN
         UPDATE xx_po_vendor_sites_kff
@@ -7586,6 +7660,11 @@ BEGIN
   print_debug_msg(p_message => 'Calling Custom DFF Process' , p_force => true);
   xx_supp_dff(gn_request_id);
   print_debug_msg(p_message => 'exiting custom dff process' , p_force => true);
+  print_debug_msg(p_message => '+---------------------------------------------------------------------------+' , p_force => true);
+  
+  print_debug_msg(p_message => 'Calling Custom Tolerance and Traits' , p_force => true);
+  xx_tolerance_trait(gn_request_id);
+  print_debug_msg(p_message => 'exiting custom Tolerance and Traits' , p_force => true);
   print_debug_msg(p_message => '+---------------------------------------------------------------------------+' , p_force => true);
   
   print_debug_msg(p_message => 'Calling Create and Update Address Contact Point Process' , p_force => true);
