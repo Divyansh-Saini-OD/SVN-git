@@ -2160,20 +2160,20 @@ END reset_order_type_records;
             reset_order_type_records;
         END IF;
 		
------Start of below update script Added by Sairam for NAIT-112425
+-----Start of below update script Added by Sairam for  
 -----Removing the Request id and Error Flag for the orders stucked in interface
 
 	
-		update apps.oe_headers_iface_all
+		update oe_headers_iface_all
 set request_id = null, error_flag = null
 where orig_sys_document_ref in (
 SELECT distinct oh.orig_sys_document_ref
      --er.message_text, substr(er.message_text,1,8), oh.ship_to_org_id,oh.ship_to_org
 FROM
-    apps.oe_headers_iface_all           oh,
-    apps.oe_processing_msgs             er,
-    apps.hz_cust_site_uses_all               hzu,
-    apps.hz_cust_accounts_all                hza
+    oe_headers_iface_all           oh,
+    oe_processing_msgs             er,
+    hz_cust_site_uses_all               hzu,
+    ahz_cust_accounts_all                hza
 WHERE
     1=1
     and er.message_text IS NUll
@@ -2189,7 +2189,7 @@ WHERE
 	
 	commit;
 	
------End of Script
+-----End of Script NAIT-112425
 	
     EXCEPTION
         WHEN OTHERS
