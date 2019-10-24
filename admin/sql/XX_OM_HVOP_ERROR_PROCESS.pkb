@@ -2173,7 +2173,7 @@ FROM
     oe_headers_iface_all           oh,
     oe_processing_msgs             er,
     hz_cust_site_uses_all               hzu,
-    ahz_cust_accounts_all                hza
+    hz_cust_accounts_all                hza
 WHERE
     1=1
     and er.message_text IS NUll
@@ -2199,3 +2199,4 @@ WHERE
                               || SQLERRM);
     End Process_Errors;
 END xx_om_hvop_error_process;
+/
