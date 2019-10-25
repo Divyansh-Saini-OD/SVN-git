@@ -1,4 +1,5 @@
-create or replace PACKAGE BODY      xx_om_hvop_error_process
+create or replace 
+PACKAGE BODY      xx_om_hvop_error_process
 AS
 -- +=========================================================================+
 -- |                  Office Depot - Project Simplify                        |
@@ -28,6 +29,7 @@ AS
 -- |DRAFT1G 18-NOV-2015 Sai Kiran -SCM Team      Modified for QC 36473       |
 -- |DRAFT1H 25-AUG-2017 Venkata Battu      Modified for Defect#42629         |
 -- |DRAFT1I 25-AUG-2017 Venkata Battu      Modified for Defect#43138         |
+-- |DRAFT1I 10-OCT-2019 Shalu George      Modified for Account type error    |
 -- |DRAFT1J 24-OCT-2019 Sairam Guddati     Modified for Defect#NAIT-112425   |
 -- +=========================================================================+
 PROCEDURE ship_to_activate
@@ -1882,7 +1884,7 @@ DECLARE
                                  'WHEN OTHERS RAISED '
                               || SQLERRM);
     END unapply_and_apply_rct;
-PROCEDURE update_default_salesrep    -- Defect#42629
+PROCEDURE update_default_salesrep    -- Defect#42629         
 IS
 -- +===========================================================================+
 -- |                  Office Depot - Project Simplify                          |
@@ -1892,8 +1894,8 @@ IS
 -- | Description      : This Procedure will look for Orders stuck in Interface |
 -- |                    with Validation failed for the field -Salesperson      |
 -- |                    this procedure will update default sales rep as        |
--- |                    "Depot Office"                                         |
--- |                                                                           |
+-- |                    "Depot Office"                                         | 
+-- |                                                                           |   
 -- |                                                                           |
 -- |                                                                           |
 -- +===========================================================================+
@@ -1903,15 +1905,15 @@ BEGIN
         fnd_file.put_line(fnd_file.output,
                          'Begin update_default_salesrep');
         fnd_file.put_line(fnd_file.output,
-                         ' Salesrep value is -  '||ln_sales_rep );
+                         ' Salesrep value is -  '||ln_sales_rep );				  
         fnd_file.put_line(fnd_file.output,
-                         ' Org Id -  '||ln_org_id );
+                         ' Org Id -  '||ln_org_id );	
     IF ln_sales_rep IS NULL
     THEN
         fnd_file.put_line(fnd_file.output,
                          'Sales rep value is null from profile option now deriving from jtf tables');
         BEGIN
-            SELECT salesrep_id
+            SELECT salesrep_id 
               INTO ln_sales_rep
               FROM jtf_rs_salesreps
              WHERE name    = 'Depot, Office'
@@ -1922,11 +1924,11 @@ BEGIN
             ln_sales_rep := NULL;
             fnd_file.put_line(fnd_file.output,
             'Exception to derive default sales rep from jtf table - '||SQLERRM);
-        END;
+        END;		
     END IF;
     IF ln_sales_rep IS NOT NULL
-    THEN
-
+    THEN	
+        
         UPDATE oe_lines_iface_all l
            SET salesrep_id = ln_sales_rep
          WHERE EXISTS( SELECT 1
@@ -1938,7 +1940,7 @@ BEGIN
                           AND m.MESSAGE_TEXT LIKE 'Validation failed for the field -Salesperson%'
                           AND h.orig_sys_document_ref  = l.orig_sys_document_ref
                       );
-
+		
         UPDATE oe_headers_iface_all h
            SET error_flag  = NULL,
                request_id  = NULL,
@@ -1950,7 +1952,7 @@ BEGIN
                           AND h.order_source_id = m.order_source_id
                           AND m.MESSAGE_TEXT LIKE 'Validation failed for the field -Salesperson%'
                      );
-
+        				  
         fnd_file.put_line(fnd_file.output,
                           'Total No of orders updated for Validation failed for the field -Salesperson '
                           || SQL%ROWCOUNT);
@@ -1960,8 +1962,8 @@ BEGIN
         COMMIT;
     ELSE
         fnd_file.put_line(fnd_file.output,
-                         'Unable to derive the Sales rep');
-    END IF;
+                         'Unable to derive the Sales rep');   
+    END IF;	
 EXCEPTION
   WHEN OTHERS
   THEN
@@ -1971,7 +1973,7 @@ EXCEPTION
       ROLLBACK;
 END update_default_salesrep;
 
-PROCEDURE reset_order_type_records   --Defect#43138
+PROCEDURE reset_order_type_records   --Defect#43138         
 IS
 -- +===========================================================================+
 -- |                  Office Depot - Project Simplify                          |
@@ -1981,8 +1983,8 @@ IS
 -- | Description      : This Procedure will look for Orders stuck in Interface |
 -- |                    with Validation failed for the field - Order Type      |
 -- |                    this procedure will reset the request_id,error_flag    |
--- |                    to process the next run                                |
--- |                                                                           |
+-- |                    to process the next run                                | 
+-- |                                                                           |   
 -- |                                                                           |
 -- |                                                                           |
 -- +===========================================================================+
@@ -1998,7 +2000,7 @@ fnd_file.put_line(fnd_file.output,
                     WHERE h.orig_sys_document_ref = m.original_sys_document_ref
                       AND h.order_source_id = m.order_source_id
                       AND m.MESSAGE_TEXT LIKE 'Validation failed for the field - Order Type%');
-
+     
         fnd_file.put_line(fnd_file.output,
                           'Total No of orders updated for Validation failed for the field - Order Type '
                           || SQL%ROWCOUNT);
@@ -2014,6 +2016,144 @@ EXCEPTION
                         ||SQLERRM);
       ROLLBACK;
 END reset_order_type_records;
+
+
+PROCEDURE reset_account_type_error
+IS
+  -- +===========================================================================+
+  -- |                  Office Depot - Project Simplify                          |
+  -- |                  Office Depot                                             |
+  -- +===========================================================================+
+  -- | Name  : reset_account_type_error                                          |
+  -- | Description      : This Procedure will look for Orders stuck in Interface |
+  -- |                    with Validation failed for the field - Account Type    |
+  -- |                    this procedure will reset the request_id,error_flag    |
+  -- |                    to process the next run                                |
+  -- |                                                                           |
+  -- |                                                                           |
+  -- |                                                                           |
+  -- +===========================================================================+
+  l_request_id            NUMBER := 0 ;
+  l_reponsibility_name    xx_fin_translatevalues.target_value2%TYPE;
+  l_username              xx_fin_translatevalues.target_value1%TYPE;
+  l_user_id               fnd_user.user_id%TYPE;
+  l_responsibility_id     fnd_responsibility_tl.responsibility_id%TYPE;
+  l_application_id        fnd_responsibility_tl.application_id%TYPE;
+  l_organization_id       xx_fin_translatevalues.target_value4%TYPE;
+
+BEGIN
+  fnd_file.put_line(fnd_file.output, 'Begin procedure reset_account_type_error');
+
+  UPDATE oe_headers_iface_all h
+  SET error_flag              = NULL,
+    request_id                = NULL
+  WHERE NVL(h.error_flag,'N') = 'Y'
+  AND EXISTS
+    (SELECT 1
+    FROM oe_processing_msgs_vl m
+    WHERE h.orig_sys_document_ref = m.original_sys_document_ref
+    AND h.order_source_id         = m.order_source_id
+    AND m.MESSAGE_TEXT LIKE 'Validation failed for the field%Account%'
+    );
+
+  fnd_file.put_line(fnd_file.output, 'Total No of orders updated for Validation failed for the field - Account Type ' || SQL%ROWCOUNT);
+
+  COMMIT;
+
+  IF SQL%ROWCOUNT >0
+  THEN
+
+    SELECT xftv.target_value1,
+           xftv.target_value2,
+           xftv.target_value4
+    INTO l_username,
+         l_reponsibility_name,
+         l_organization_id
+    FROM xx_fin_translatevalues xftv,
+         xx_fin_translatedefinition xftd
+    WHERE xftv.translate_id   = xftd.translate_id
+    AND xftd.translation_name = 'XX_HVOP_ERROR_REPROCESS'
+    AND xftv.source_value1    = 'RESET_ACCOUNT_TYPE'
+    AND SYSDATE BETWEEN xftv.start_date_active AND NVL (xftv.end_date_active, SYSDATE + 1)
+    AND SYSDATE BETWEEN xftd.start_date_active AND NVL (xftd.end_date_active, SYSDATE + 1)
+    AND xftv.enabled_flag = 'Y'
+    AND xftd.enabled_flag = 'Y';
+
+    fnd_file.put_line(fnd_file.LOG,'Username:'||l_username);
+    fnd_file.put_line(fnd_file.LOG,'Responsibility'||l_reponsibility_name);
+
+    SELECT frt.responsibility_id,
+           fu.user_id,
+           frt.application_id
+    INTO l_responsibility_id,
+         l_user_id,
+         l_application_id
+    FROM fnd_user fu,
+         fnd_user_resp_groups_all furga,
+         fnd_responsibility_tl frt
+    WHERE frt.LANGUAGE        = USERENV('LANG')
+    AND frt.responsibility_id = furga.responsibility_id
+    AND furga.user_id         = fu.user_id
+    AND fu.user_name          = l_username
+    AND responsibility_name   = l_reponsibility_name
+    AND (fu.start_date       <= SYSDATE
+    OR fu.start_date         IS NULL)
+    AND (fu.end_date         >= SYSDATE
+    OR fu.end_date           IS NULL)
+    AND (furga.start_date    <= SYSDATE
+    OR furga.start_date      IS NULL)
+    AND (furga.end_date      >= SYSDATE
+    OR furga.end_date        IS NULL);
+
+    fnd_file.put_line(fnd_file.LOG,'Userid:'||l_user_id);
+    fnd_file.put_line(fnd_file.LOG, 'Responsibility_ID'||l_responsibility_id);
+    fnd_file.put_line(fnd_file.LOG, 'Responsibility_Application_ID'||l_application_id);
+    fnd_file.put_line(fnd_file.LOG, 'organization_ID'||l_organization_id);
+
+    FND_GLOBAL.APPS_INITIALIZE( user_id => l_user_id -- User ID -- SVC-ESP_OM1..
+                               ,resp_id => l_responsibility_id                  -- OD (US) HVOP Super User
+                               ,resp_appl_id => l_application_id                -- Oracle Order Management
+                                 );
+    mo_global.init('ONT');
+    MO_GLOBAL.SET_POLICY_CONTEXT('S', l_organization_id);
+
+    l_request_id:=fnd_request.submit_request
+               ( application =>'ONT' ,
+                 program => 'OEOIMP' ,
+                 argument1 => NULL -- Operating Unit
+                ,argument2 => NULL                                                                                     -- Order Source
+                ,argument3 => NULL                                                                                     -- Original System Document Ref
+                ,argument4 => NULL                                                                                     -- Operation Code
+                ,argument5 =>'N'                                                                                       -- Validate Only?
+                ,argument6 => 1                                                                                        -- Debug Level
+                ,argument7 => 4                                                                                        -- Number of Order Import instances
+                ,argument8 => NULL                                                                                     -- Sold To Org Id
+                ,argument9 => NULL                                                                                     -- Sold To Org
+                ,argument10 => NULL                                                                                    -- Change Sequence
+                ,argument11 => 'Y'                                                                                     -- Enable Single Line Queue for Instances
+                ,argument12 => 'N'                                                                                     -- Trim Trailing Blanks
+                ,argument13 => 'Y'                                                                                     -- Process Orders With No Org Specified
+                ,argument14 => l_organization_id                                                                       -- Default Operating Unit
+                ,argument15 => 'Y'                                                                                     -- Validate Description Flexfields?
+         );
+    fnd_file.put_line(fnd_file.LOG,'Submitted RequestID='||l_request_id);
+
+   IF l_request_id>0
+   THEN
+     COMMIT;
+   ELSE
+     ROLLBACK;
+   END IF;
+ END IF;
+
+EXCEPTION
+  WHEN OTHERS
+  THEN
+    fnd_file.put_line(fnd_file.LOG, 'WHEN OTHERS RAISED FOR reset_account_type_error : ' ||SQLERRM);
+    ROLLBACK;
+END reset_account_type_error;
+
+
     PROCEDURE process_errors(
         errbuf                  OUT NOCOPY  VARCHAR2,
         retcode                 OUT NOCOPY  NUMBER,
@@ -2029,7 +2169,8 @@ END reset_order_type_records;
         p_offline_deposits                  VARCHAR2,
         p_unapply_apply                     VARCHAR2,
         p_default_salesrep                  VARCHAR2,
-        p_order_type                        VARCHAR2)
+        p_order_type                        VARCHAR2,
+        p_process_subscription_orders       VARCHAR2)
     IS
 -- +=========================================================================+
 -- |                  Office Depot - Project Simplify                        |
@@ -2041,34 +2182,36 @@ END reset_order_type_records;
 -- |                                                                         |
 -- |                                                                         |
 -- +=========================================================================+
-        lc_ship_to_activate      VARCHAR2(20) := 'N';
-        lc_customer_activate     VARCHAR2(20) := 'N';
-        lc_item_validation       VARCHAR2(20) := 'N';
-        lc_item_assignment       VARCHAR2(20) := 'N';
-        lc_depo_cust_validation  VARCHAR2(20) := 'N';
-        lc_customer_validation   VARCHAR2(20) := 'N';
-        lc_process_c_stat_depo   VARCHAR2(20) := 'N';
-        lc_wrong_location        VARCHAR2(20) := 'N';
-        lc_nhv_order             VARCHAR2(20) := 'N';
-        lc_offline_deposits      VARCHAR2(20) := 'N';
-        lc_unapply_apply         VARCHAR2(20) := 'N';
-        lc_default_salesrep      VARCHAR2(20) := 'N';
-        lc_order_type            VARCHAR2(20) := 'N';
+        lc_ship_to_activate            VARCHAR2(20) := 'N';
+        lc_customer_activate           VARCHAR2(20) := 'N';
+        lc_item_validation             VARCHAR2(20) := 'N';
+        lc_item_assignment             VARCHAR2(20) := 'N';
+        lc_depo_cust_validation        VARCHAR2(20) := 'N';
+        lc_customer_validation         VARCHAR2(20) := 'N';
+        lc_process_c_stat_depo         VARCHAR2(20) := 'N';
+        lc_wrong_location              VARCHAR2(20) := 'N';
+        lc_nhv_order                   VARCHAR2(20) := 'N';
+        lc_offline_deposits            VARCHAR2(20) := 'N';
+        lc_unapply_apply               VARCHAR2(20) := 'N';
+        lc_default_salesrep            VARCHAR2(20) := 'N';
+        lc_order_type                  VARCHAR2(20) := 'N'; 
+		lc_process_subscription_orders VARCHAR2(20)  := 'N';
     BEGIN
-        lc_ship_to_activate := p_ship_to_activate;
-        lc_customer_activate := p_customer_activate;
-        lc_item_validation := p_item_validation;
-        lc_item_assignment := p_item_assignment;
-        lc_depo_cust_validation := p_depo_cust_validation;
-        lc_customer_validation := p_customer_validation;
-        lc_process_c_stat_depo := p_process_c_stat_depo;
-        lc_wrong_location := p_wrong_location;
-        lc_nhv_order := p_nhv_order;
-        lc_offline_deposits := p_offline_deposits;
-        lc_unapply_apply := p_unapply_apply;
-        lc_default_salesrep   := p_default_salesrep;
-        lc_order_type         := p_order_type;
-
+        lc_ship_to_activate            := p_ship_to_activate;
+        lc_customer_activate           := p_customer_activate;
+        lc_item_validation             := p_item_validation;
+        lc_item_assignment             := p_item_assignment;
+        lc_depo_cust_validation        := p_depo_cust_validation;
+        lc_customer_validation         := p_customer_validation;
+        lc_process_c_stat_depo         := p_process_c_stat_depo;
+        lc_wrong_location              := p_wrong_location;
+        lc_nhv_order                   := p_nhv_order;
+        lc_offline_deposits            := p_offline_deposits;
+        lc_unapply_apply               := p_unapply_apply;
+        lc_default_salesrep            := p_default_salesrep;
+        lc_order_type                  := p_order_type;
+        lc_process_subscription_orders := p_process_subscription_orders;
+		
         IF lc_ship_to_activate = 'Y'
         THEN
             fnd_file.put_line(fnd_file.output,
@@ -2145,14 +2288,14 @@ END reset_order_type_records;
                               'UNAPPLY_AND_APPLY_RCT:::');
             unapply_and_apply_rct;
         END IF;
-
-        IF lc_default_salesrep = 'Y'
+        
+        IF lc_default_salesrep = 'Y' 
         THEN
 	    fnd_file.put_line(fnd_file.output,
                               'Update Default Sales Rep:::');
-	    update_default_salesrep;
+	    update_default_salesrep;				  
         END IF;
-
+        
         IF lc_order_type  = 'Y'
         THEN
             fnd_file.put_line(fnd_file.output,
@@ -2160,10 +2303,17 @@ END reset_order_type_records;
             reset_order_type_records;
         END IF;
 		
------Start of below update script Added by Sairam for  
+        IF lc_process_subscription_orders = 'Y'
+        THEN
+          fnd_file.put_line(fnd_file.output,
+                             'Reset Account type error:::');
+           reset_account_type_error;
+        END IF; 
+		
+				
+-----Start of below update script Added by Sairam for  NAIT-112425
 -----Removing the Request id and Error Flag for the orders stucked in interface
 
-	
 		update oe_headers_iface_all
 set request_id = null, error_flag = null
 where orig_sys_document_ref in (
@@ -2199,3 +2349,5 @@ WHERE
                               || SQLERRM);
     End Process_Errors;
 END xx_om_hvop_error_process;
+/
+exit;
