@@ -3096,8 +3096,7 @@ IS
        FROM XX_AP_CLD_SUPP_SITES_STG 
       WHERE 1 =1 
         AND request_id  = gn_request_id
-        AND site_process_flag  = 7
-        AND remittance_email IS NOT NULL; 
+        AND site_process_flag  = 7;
    
    CURSOR c_site_remit_email(p_vendor_id    NUMBER,
                              p_vend_site_id NUMBER) 
