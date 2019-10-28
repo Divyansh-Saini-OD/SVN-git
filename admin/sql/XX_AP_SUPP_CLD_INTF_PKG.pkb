@@ -79,6 +79,7 @@ CREATE OR REPLACE PACKAGE BODY xx_ap_supp_cld_intf_pkg
 -- |                                               number ( This is because, in EBS today, new | 
 -- |                                               sites do not have Legacy Suppler number)    |
 -- | 3.5     23-OCT-2019    Paddy Sanjeevi     Added xx_tolerance_trait procedure              |
+-- | 3.6     26-OCT-2019    Paddy Sanjeevi     Added to update payment method at site level    |
 -- |===========================================================================================+
 AS
   /*********************************************************************
@@ -2009,6 +2010,7 @@ BEGIN
     lr_vendor_site_rec.province                       :=NVL(c_sup_site.province, FND_API.G_MISS_CHAR);
     lr_vendor_site_rec.state                          :=NVL(c_sup_site.state, FND_API.G_MISS_CHAR);
     lr_vendor_site_rec.city                           :=NVL(c_sup_site.city, FND_API.G_MISS_CHAR);
+    lr_vendor_site_rec.zip                            :=NVL(c_sup_site.postal_code, FND_API.G_MISS_CHAR);	
     lr_vendor_site_rec.address_line2                  :=NVL(c_sup_site.address_line2, FND_API.G_MISS_CHAR);
     lr_vendor_site_rec.address_line1                  :=NVL(c_sup_site.address_line1, FND_API.G_MISS_CHAR);
 	lr_vendor_site_rec.address_line3                  :=NVL(c_sup_site.address_line3, FND_API.G_MISS_CHAR);  -- Added as per Version 2.2
@@ -3158,20 +3160,19 @@ BEGIN
      LOOP
 	    print_debug_msg('Remit Advice Email From the IBY External Party Table :'||cr.remit_advice_email ,p_force=> true);
 		print_debug_msg('Remittance Email from the Staging Table :'||cur.remittance_email ,p_force=> true);
-	    IF NVL(cr.remit_advice_email,'X') <> cur.remittance_email 
-		THEN
-		   print_debug_msg('Remit Advice Email and Remittance Email are not Same',p_force=> true);
-           p_external_payee_tab_type (i).payment_function := 'PAYABLES_DISB';
-           p_external_payee_tab_type (i).exclusive_pay_flag := 'N';
-           p_external_payee_tab_type (i).payee_party_id := cr.payee_party_id;
-           p_external_payee_tab_type (i).payer_org_id := cr.org_id;
-           p_external_payee_tab_type (i).payer_org_type := 'OPERATING_UNIT';
-           p_external_payee_tab_type (i).supplier_site_id := cr.supplier_site_id;
-           p_external_payee_tab_type (i).Payee_Party_Site_Id := cr.party_site_id;
-           p_external_payee_tab_type (i).Remit_advice_delivery_method:='EMAIL';
-           p_external_payee_tab_type (i).Remit_advice_email:=cur.remittance_email;
-           p_ext_payee_id_tab_type (i).ext_payee_id := cr.ext_payee_id;
-       
+
+		print_debug_msg('Remit Advice Email and Remittance Email are not Same',p_force=> true);
+        p_external_payee_tab_type (i).exclusive_pay_flag := 'N';
+        p_external_payee_tab_type (i).payee_party_id := cr.payee_party_id;
+        p_external_payee_tab_type (i).payment_function := 'PAYABLES_DISB';
+        p_external_payee_tab_type (i).payer_org_id := cr.org_id;
+        p_external_payee_tab_type (i).payer_org_type := 'OPERATING_UNIT';
+        p_external_payee_tab_type (i).supplier_site_id := cr.supplier_site_id;
+        p_external_payee_tab_type (i).Payee_Party_Site_Id := cr.party_site_id;
+        p_external_payee_tab_type (i).Remit_advice_delivery_method:='EMAIL';
+        p_external_payee_tab_type (i).Remit_advice_email:=cur.remittance_email;
+        p_ext_payee_id_tab_type (i).ext_payee_id := cr.ext_payee_id;
+        p_external_payee_tab_type (i).Default_Pmt_method:=cur.payment_method_lookup_code;
            iby_disbursement_setup_pub.update_external_payee (p_api_version            => 1.0,
 			                                                 p_init_msg_list          => 'T',
 			                                                 p_ext_payee_tab          => p_external_payee_tab_type,
@@ -3182,17 +3183,16 @@ BEGIN
 			                                                 x_ext_payee_status_tab   => l_payee_upd_status
 		                                                    );
 
-           COMMIT;
-           IF x_return_status = 'E' 
-		   THEN
+        COMMIT;
+        IF x_return_status = 'E' 
+		THEN
             FOR k IN l_payee_upd_status.FIRST .. l_payee_upd_status.LAST
             LOOP
                print_debug_msg('Error Message : '|| l_payee_upd_status(k).payee_update_msg,p_force=> true);
             END LOOP;
-           END IF; -- x_return_status = 'E' 
+        END IF; -- x_return_status = 'E' 
 		  
-		  i := 0;
-		END IF; -- NVL(cr.remit_advice_email,'X') <> cur.remittance_email 
+ 	    i := 0;
 	 END LOOP; -- c_site_remit_email
    END LOOP; -- get_stg_remit_email
 EXCEPTION
