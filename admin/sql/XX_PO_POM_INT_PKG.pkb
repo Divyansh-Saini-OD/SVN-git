@@ -19,8 +19,10 @@ AS
   -- | 1.3         04/18/2018   Madhu Bolli        add_po_line : max line number should start from 9001|
   -- |											   NAIT-37481 and corrected receipt required flag |
   -- | 1.4         04/20/2018   Madhu Bolli        Skip CLOSE_API if line already closed.         |
-  -- | 1.5         01/24/2019   BIAS               INSTANCE_NAME is replaced with DB_NAME for OCI   |  
-  -- |                                             Migration Project  
+  -- | 1.5         01/24/2019   BIAS               INSTANCE_NAME is replaced with DB_NAME for OCI   |
+  -- |                                             Migration Project
+  -- | 1.6         10/23/2019 Venkateshwar Panduga NAIT-22174 - PROD P99: Phase 2: P34 TM - Interface  |
+  -- |                        - Purge exceptions from the Purchase Order_Interface_Output after 90 days  |  
   -- +============================================================================================+
   -- +============================================================================================+
   -- |  Name  : Log Exception                                                              		  |
@@ -156,8 +158,46 @@ BEGIN
 			print_debug_msg ('Error in send_output_email: '||substr(SQLERRM, 1, 500),TRUE);
 END send_output_email;
 
+------- Below procedure added for V1.6
+/*********************************************************************
+* Procedure used to purge error records from purchase order report.
+* instead of deleting records we are updating record_status flag.
+*********************************************************************/
+PROCEDURE purge_report_records
+IS
+ln_days number :=90;
+ln_header_cnt number :=0;
+ln_lines_cnt number :=0;
+BEGIN
+
+UPDATE xxfin.xx_po_pom_hdr_int_Stg
+SET record_Status ='NAIT-22174'
+-- ,error_description = 'Updated record status because these records will not pick and dispaly in the PO interface reprot on user request'
+ WHERE record_status in ('E','IE')
+ AND creation_DAte <= SYSDATE-ln_days ;
+ 
+ ln_header_cnt := sql%rowcount; 
+ 
+ UPDATE xxfin.xx_po_pom_lines_int_Stg
+SET record_Status ='NAIT-22174'
+-- ,error_description = 'Updated record status because these records will not pick and dispaly in the PO interface reprot on user request'
+ WHERE record_status in ('E','IE')
+ AND creation_DAte <=SYSDATE-ln_days;
+ 
+ln_lines_cnt := sql%rowcount; 
+
+print_debug_msg ('No. of header reocrd purged : '||ln_header_cnt,TRUE);
+print_debug_msg ('No. of lines reocrd purged : '||ln_lines_cnt,TRUE);
+
+COMMIT;
+
+	EXCEPTION
+		WHEN OTHERS THEN
+			print_debug_msg ('Error while purging records: '||substr(SQLERRM, 1, 500),TRUE);
+END purge_report_records;
 
 
+------ End V1.6
 /**************************************************************************
  *									  									  *
  *  Validate the PO in the PO interface staging xx_po_pom_lines_int_stg   *
@@ -3503,6 +3543,9 @@ BEGIN
 
 	-- Sennds the Master program output as attachment in email
 	send_output_email(fnd_global.conc_request_id, p_retcode);
+  ----Below code is added for V1.6
+  purge_report_records;
+  ----End V1.6
 
   END IF;
 EXCEPTION
@@ -3833,4 +3876,3 @@ END is_trade_po;
 
 END XX_PO_POM_INT_PKG;
 /
-SHOW ERRORS;
