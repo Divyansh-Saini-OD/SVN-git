@@ -170,7 +170,7 @@ ln_header_cnt number :=0;
 ln_lines_cnt number :=0;
 BEGIN
 
-UPDATE xxfin.xx_po_pom_hdr_int_Stg
+UPDATE xx_po_pom_hdr_int_Stg
 SET record_Status ='NAIT-22174'
 -- ,error_description = 'Updated record status because these records will not pick and dispaly in the PO interface reprot on user request'
  WHERE record_status in ('E','IE')
@@ -178,7 +178,7 @@ SET record_Status ='NAIT-22174'
  
  ln_header_cnt := sql%rowcount; 
  
- UPDATE xxfin.xx_po_pom_lines_int_Stg
+ UPDATE xx_po_pom_lines_int_Stg
 SET record_Status ='NAIT-22174'
 -- ,error_description = 'Updated record status because these records will not pick and dispaly in the PO interface reprot on user request'
  WHERE record_status in ('E','IE')
@@ -3876,3 +3876,4 @@ END is_trade_po;
 
 END XX_PO_POM_INT_PKG;
 /
+SHOW ERRORS;
