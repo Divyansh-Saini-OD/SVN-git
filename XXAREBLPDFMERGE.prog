@@ -15,8 +15,6 @@
 # |                                       changed the linesize from   |
 # |                                       255 to 32676 and added long |
 # |                                       and longc                   |
-# |2.1       15-OCT-2019 Atul Khard       Added exception handling    |
-# |                                       in the code for NAIT-104657 |
 # +===================================================================+
 
 
@@ -73,18 +71,6 @@
  echo " debug 30"
  #gs -dBATCH -dNOPAUSE -q  -sDEVICE=pdfwrite -sOutputFile="Output_FileTest17Apr.PDF" $dest_file_name1
  gs -dBATCH -dNOPAUSE -q  -sDEVICE=pdfwrite -sOutputFile=$5 $file_name_pdf
- 
- if [ $? -ne 0 ]
- # $? will contain the result of previously executed statement.
- # It will be 0 if success and 1 if fail
- then
- echo "Exception while merging the files. Error in gs command."
- exit 1
- # exit 1 represents concurrent program status. 1 for error, 2 for warning 0 for success
- else
- echo "File Merged Successfully"
- fi
- 
  mv $5 MERGE_BC
 
  echo " File created and moved to dest folder MERGE_BC"
