@@ -131,6 +131,7 @@ PACKAGE BODY      xx_iby_settlement_pkg
 	-- |48.0       21-FEB-2019 M K Pramod Kumar    Modified  code for COF changes per NAIT-83065 |
 	-- |48.1       10-MAY-2019 M K Pramod Kumar    Modified to to derive Instance Name for LNS
 	-- |48.2       12-SEP-2019 M K Pramod Kumar    Modified for Return Mandate per NAIT-106896
+	-- |48.3       11-Nov-2019 M K Pramod Kumar    Modified to default ixregisternumber to 95 for SERVICE-CONTRACTS-NAIT-103187.
 	-- +===========================================================================+
 
 		g_package_name              CONSTANT all_objects.object_name%TYPE                        := 'xx_iby_settlement_pkg';
@@ -4752,7 +4753,8 @@ PACKAGE BODY      xx_iby_settlement_pkg
 
 					BEGIN
 						gc_source := 'AR';
-						gc_ixregisternumber := '56';
+						--gc_ixregisternumber := '56';--Commented code for V48.3
+						gc_ixregisternumber := '95';--Added code for V48.3
 						--gc_ixreserved31 := gc_mo_value; Modified for V47.3 14/Mar/2018
 						--------------------------------------------------------------------------
 						-- Retrieve AOPS Auth Entry-Defaulted to *ECE for Service Contracts
