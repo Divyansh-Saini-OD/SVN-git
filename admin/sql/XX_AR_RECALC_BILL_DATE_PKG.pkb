@@ -14,6 +14,7 @@ AS
 -- | 1.0         18-OCT-2018  Havish Kasina   Initial version                                   |  
 -- | 1.1         21-JAN-2019  Havish Kasina   Added new parameter p_billing_date                |
 -- | 1.2         27-Aug-2019  Nitin Tugave    Made Changes for Defect NAIT-86554                |
+-- | 1.3         04-Nov-2019  Nitin Tugave    Made Changes for Defect NAIT-113013               |
 -- +============================================================================================+
 
 gc_debug                    VARCHAR2(2);
@@ -147,10 +148,12 @@ AS
        AND hcp.status = 'A'
        AND hca.status = 'A'
        AND hcp.attribute6 IN ('B','Y')
+       AND nvl(hcp.attribute3,'N') <> 'N' -- Added condition for NAIT-113013 to handle credit type customer
        AND rct.term_id  IS NOT NULL
        AND hcp.cust_account_id = hca.cust_account_id
        AND hca.cust_account_id = rct.bill_to_customer_id
-       AND rct.trx_number = xsbs.child_order_number;
+       AND rct.trx_number = xsbs.child_order_number       
+       ;
 
 -- Added below cursore for NAIT-86554 
   /* Declaration */
@@ -164,7 +167,7 @@ AS
            rct.trx_number,
            rct.customer_trx_id ,
            rct.attribute14  ,
-           rct.trx_number parent_order_num      
+           rct.trx_number parent_order_num
       FROM hz_customer_profiles hcp ,
            hz_cust_accounts hca,
            ra_customer_trx_all rct,
@@ -176,6 +179,7 @@ AS
        AND hcp.status = 'A'
        AND hca.status = 'A'
        AND hcp.attribute6 IN ('B','Y')
+       AND nvl(hcp.attribute3,'N') <> 'N' -- Added condition for NAIT-113013 to handle credit type customer
        AND APS.customer_id     = HCP.cust_Account_id
        AND APS.status          ='OP'
        AND APS.customer_trx_id = RCT.customer_trx_id
@@ -188,7 +192,7 @@ AS
            SELECT 1 FROM xx_scm_bill_signal xsbs
             WHERE 1=1
               AND xsbs.child_order_number = rct.trx_number
-       )
+       )    
        ;
 
        
@@ -554,32 +558,37 @@ BEGIN
                 IF l_trx_dtls_tab(indx).bill_to_customer_id IS NOT NULL
                 THEN
                     print_debug_msg('Updating AR_PAYMENT_SCHEDULES_ALL');
-                    -- update AR_PAYMENT_SCHEDULES_ALL          
-                    UPDATE ar_payment_schedules_all
-                       SET due_date = l_trx_dtls_tab(indx).due_date
-                    WHERE customer_trx_id = l_trx_dtls_tab(indx).customer_trx_id;
                     
-                    print_debug_msg('Updating RA_CUSTOMER_TRX_ALL');
-                    -- update RA_CUSTOMER_TRX_ALL 
-                    UPDATE ra_customer_trx_all
-                       SET billing_date = l_trx_dtls_tab(indx).billing_date,
-                           term_due_date = l_trx_dtls_tab(indx).due_date,
-                           last_updated_by = gn_user_id,
-                           last_update_date = SYSDATE,
-                           last_update_login = gn_login_id
-                     WHERE customer_trx_id = l_trx_dtls_tab(indx).customer_trx_id;
-                    
-                    print_debug_msg('Updating XX_SCM_BILL_SIGNAL');
-                    -- update XX_SCM_BILL_SIGNAL            
-                    UPDATE xx_scm_bill_signal
-                       SET billing_date_flag = l_trx_dtls_tab(indx).billing_date_flag,
-                           error_message = l_trx_dtls_tab(indx).error_message, 
-                           customer_id = l_trx_dtls_tab(indx).bill_to_customer_id,
-                           site_use_id = l_trx_dtls_tab(indx).bill_to_site_use_id,
-                           last_update_date  = SYSDATE,
-                           last_updated_by   = gn_user_id,
-                           last_update_login = gn_login_id
-                     WHERE child_order_number = l_trx_dtls_tab(indx).child_order_number; 
+                    IF l_trx_dtls_tab(indx).due_date IS NOT NULL THEN -- Added for NAIT-113013
+                        -- update AR_PAYMENT_SCHEDULES_ALL          
+                        UPDATE ar_payment_schedules_all
+                           SET due_date = l_trx_dtls_tab(indx).due_date
+                        WHERE customer_trx_id = l_trx_dtls_tab(indx).customer_trx_id;
+                        
+                        print_debug_msg('Updating RA_CUSTOMER_TRX_ALL');
+                        -- update RA_CUSTOMER_TRX_ALL 
+                        UPDATE ra_customer_trx_all
+                           SET billing_date = l_trx_dtls_tab(indx).billing_date,
+                               term_due_date = l_trx_dtls_tab(indx).due_date,
+                               last_updated_by = gn_user_id,
+                               last_update_date = SYSDATE,
+                               last_update_login = gn_login_id
+                         WHERE customer_trx_id = l_trx_dtls_tab(indx).customer_trx_id;
+                        
+                        print_debug_msg('Updating XX_SCM_BILL_SIGNAL');
+                        -- update XX_SCM_BILL_SIGNAL            
+                        UPDATE xx_scm_bill_signal
+                           SET billing_date_flag = l_trx_dtls_tab(indx).billing_date_flag,
+                               error_message = l_trx_dtls_tab(indx).error_message, 
+                               customer_id = l_trx_dtls_tab(indx).bill_to_customer_id,
+                               site_use_id = l_trx_dtls_tab(indx).bill_to_site_use_id,
+                               last_update_date  = SYSDATE,
+                               last_updated_by   = gn_user_id,
+                               last_update_login = gn_login_id
+                         WHERE child_order_number = l_trx_dtls_tab(indx).child_order_number; 
+                    ELSE
+                        print_debug_msg('Due Date is NULL ...');
+                    END IF;    -- Added for NAIT-113013              
                 ELSE
                     print_debug_msg('Unable to update the Payment Schedules, Transactions and Bill Signals Tables');
                 END IF; -- l_trx_dtls_tab(indx).bill_to_customer_id IS NOT NULL
