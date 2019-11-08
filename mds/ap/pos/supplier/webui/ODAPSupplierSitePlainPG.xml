@@ -31,7 +31,7 @@
                   <oa:messageChoice id="matchApprovalType" viewName="ODAPSupplierSitesAllVO1" viewAttr="Attribute4" prompt="Consignment Frequency" pickListViewDef="od.oracle.apps.xxfin.ap.pos.supplier.server.ODMatchApprovalTypeVO" pickListDispAttr="Description" pickListValAttr="FlexValue"/>
                   <oa:messageChoice id="siteCatChoice" required="yes" viewName="ODAPSupplierSitesAllVO1" viewAttr="Attribute8" prompt="Site Category" pickListViewDef="od.oracle.apps.xxfin.ap.pos.supplier.server.ODAPSuppSiteCatChoiceVO" pickListDispAttr="ValDescription" pickListValAttr="FlexValue"/>
                   <oa:messageTextInput id="relPSChoiceT" prompt="Related Party Site" viewName="ODAPSupplierSitesAllVO1" viewAttr="Attribute13" maximumLength="150"/>
-                  <oa:messageTextInput id="txtFutureUse" viewName="ODAPSupplierSitesAllVO1" viewAttr="Attribute6" prompt="Future Use" maximumLength="150"/>
+                  <oa:messageTextInput id="vendAsst" viewName="ODAPSupplierSitesAllVO1" viewAttr="Attribute6" prompt="Vendor Assistant" maximumLength="150" readOnly="true"/>
                </ui:contents>
             </oa:messageComponentLayout>
             <oa:separator id="seperator2"/>
