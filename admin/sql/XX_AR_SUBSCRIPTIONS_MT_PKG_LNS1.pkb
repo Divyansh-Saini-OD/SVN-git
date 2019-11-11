@@ -95,6 +95,8 @@ AS
 -- |                                                 email - NAIT-110748                                |
 -- | 38.0        29-OCT-2019  Sahithi K              NAIT-112450 Modified code to populate Rev Rec rules|
 -- |                                                 on recurring invoice derived from initial invoice  |
+-- | 39.0        06-NOV-2019  Sahithi K              NAIT-113127 Modified code to update rev_rec_ind    |
+-- |                                                 for all eligible rev rec records                   |
 -- +====================================================================================================+
 
   gc_package_name        CONSTANT all_objects.object_name%TYPE   := 'xx_ar_subscriptions_mt_pkg';
@@ -243,7 +245,7 @@ AS
   END entering_main;
 
   /****************************************************************
-  * Helper procedure to log the exiting of a subprocedure.
+  * Helper procedure to log the exiting of a sub procedure.
   * This is useful for debugging and for tracking how long a given
   * procedure is taking.
   ****************************************************************/
@@ -876,6 +878,36 @@ AS
                          px_translation_info => lt_translation_info);
 
     x_program_setups('rec_activity_name')  := lt_translation_info.target_value1;
+    
+    /**********************
+    * Get Invoice rule name
+    **********************/
+
+    lc_action :=  'Calling get_translation_info for Invoice rule name';
+
+    lt_translation_info := NULL;
+
+    lt_translation_info.source_value1 := 'INVOICE_RULE_NAME';
+
+    get_translation_info(p_translation_name  => 'XX_AR_SUBSCRIPTIONS',
+                         px_translation_info => lt_translation_info);
+
+    x_program_setups('invoice_rule_name') := lt_translation_info.target_value1;
+    
+    /*************************
+    * Get Accounting rule name
+    *************************/
+
+    lc_action :=  'Calling get_translation_info for Accounting rule name';
+
+    lt_translation_info := NULL;
+
+    lt_translation_info.source_value1 := 'ACCT_RULE_NAME';
+
+    get_translation_info(p_translation_name  => 'XX_AR_SUBSCRIPTIONS',
+                         px_translation_info => lt_translation_info);
+
+    x_program_setups('acct_rule_name') := lt_translation_info.target_value1;
 
     exiting_sub(p_procedure_name => lc_procedure_name);
 
@@ -3599,6 +3631,45 @@ AS
   END get_payment_sch_info;
   
   /****************************************************
+  * Helper procedure to get auto accounting information
+  ****************************************************/
+
+  PROCEDURE get_rule_info(p_rule_name IN         ra_rules.name%TYPE,
+                          x_rule_id   OUT NOCOPY ra_rules.rule_id%TYPE)
+  IS
+
+    lc_procedure_name  CONSTANT VARCHAR2(61) := gc_package_name || '.' || 'get_rule_info';
+    lt_parameters      gt_input_parameters;
+
+  BEGIN
+
+    lt_parameters('p_rule_name')          := p_rule_name;
+
+    entering_sub(p_procedure_name  => lc_procedure_name,
+                 p_parameters      => lt_parameters);
+    SELECT rule_id
+    INTO   x_rule_id
+    FROM   ra_rules
+    WHERE  name = p_rule_name
+    and    status    = 'A';
+
+    logit(p_message => 'RESULT rule_id: ' || x_rule_id);
+
+    exiting_sub(p_procedure_name => lc_procedure_name);
+
+    EXCEPTION
+    WHEN NO_DATA_FOUND
+    THEN
+      x_rule_id := NULL;
+      exiting_sub(p_procedure_name => lc_procedure_name, p_exception_flag => TRUE);
+    WHEN OTHERS
+    THEN
+      x_rule_id := NULL;
+      exiting_sub(p_procedure_name => lc_procedure_name, p_exception_flag => TRUE);
+      --RAISE_APPLICATION_ERROR(-20101, 'PROCEDURE: ' || lc_procedure_name || ' SQLCODE: ' || SQLCODE || ' SQLERRM: ' || SQLERRM);
+  END get_rule_info;
+  
+  /****************************************************
   * Helper procedure to populate ra_interface_lines_all
   ****************************************************/
 
@@ -3748,6 +3819,16 @@ AS
     lc_new_loc_type                hr_lookups.meaning%TYPE;
 
     lc_segment                     gl_code_combinations.segment4%TYPE;
+    
+    lc_invoicing_rule_id           ra_rules.rule_id%TYPE;
+    
+    lc_accounting_rule_id          ra_rules.rule_id%TYPE;
+    
+    lc_rule_start_date             xx_ar_subscriptions.service_period_start_date%TYPE;
+    
+    lc_rule_end_date               xx_ar_subscriptions.service_period_end_date%TYPE;
+    
+    lc_rev_rec_eligibility         VARCHAR2(2);
 
   BEGIN
 
@@ -3862,6 +3943,29 @@ AS
             END LOOP;
           END IF;  
           
+          /**********************************
+          * Check for REV REC SKU eligibility
+          **********************************/
+          lc_action := 'Calling is_rev_rec_item';
+          lc_rev_rec_eligibility := is_rev_rec_item(lr_contract_line_info.item_name);
+          
+          /***********************
+          * get accounting_rule_id
+          ***********************/
+          
+          IF lc_accounting_rule_id IS NULL
+          THEN
+            lc_action := 'Calling get_rule_info';
+          
+            get_rule_info(p_rule_name => p_program_setups('acct_rule_name'),
+                          x_rule_id   => lc_accounting_rule_id); 
+          END IF; 
+                                                  
+          IF lc_rev_rec_eligibility = 'Y' AND lc_accounting_rule_id IS NOT NULL
+          THEN
+            px_subscription_array(indx).rev_rec_ind := 'Y';
+            update_subscription_info(px_subscription_info => px_subscription_array(indx));
+          END IF;
           /**************************************
           * Get initial order header invoice info
           **************************************/
@@ -4092,7 +4196,7 @@ AS
                                  x_item_category_info  => lr_item_category_info);
 
           /*******************************************
-          * Get sales account matrix information
+          *   Get sales account matrix information
           *   target_value1 contains revenue account.
           *   target_value2 contains cogs
           *   target_value3 contains inventory
@@ -4241,6 +4345,61 @@ AS
             END IF;
           END IF;  
 
+          /****************** ***************
+          * Check for REV REC SKU eligibility
+          **********************************/
+          lc_action := 'Calling is_rev_rec_item';
+          
+          lc_rev_rec_eligibility := is_rev_rec_item(p_sku_name => lr_contract_line_info.item_name);
+
+          IF lc_rev_rec_eligibility = 'Y'
+          THEN
+            
+            --check if rule info is on initial order
+            IF lr_invoice_line_info.accounting_rule_id IS NOT NULL
+            THEN
+              lc_accounting_rule_id   := lr_invoice_line_info.accounting_rule_id;
+              lc_invoicing_rule_id    := lr_invoice_header_info.invoicing_rule_id;
+              lc_rule_start_date      := px_subscription_array(indx).service_period_start_date;
+              lc_rule_end_date        := px_subscription_array(indx).service_period_end_date;
+            
+            ELSE
+              /***********************
+              * get accounting_rule_id
+              ***********************/
+              
+              IF lc_accounting_rule_id IS NULL
+              THEN
+                lc_action := 'Calling get_rule_info';
+              
+                get_rule_info(p_rule_name => p_program_setups('acct_rule_name'),
+                              x_rule_id   => lc_accounting_rule_id); 
+              END IF;   
+              
+              /***********************
+              * get invoicing_rule_id
+              ***********************/
+              
+              IF lc_accounting_rule_id IS NOT NULL
+              THEN
+                lc_action := 'Calling get_rule_info';
+              
+                get_rule_info(p_rule_name => p_program_setups('invoice_rule_name'),
+                              x_rule_id   => lc_invoicing_rule_id); 
+                 lc_rule_start_date  := px_subscription_array(indx).service_period_start_date;
+                 lc_rule_end_date    := px_subscription_array(indx).service_period_end_date;
+              END IF;
+            
+            END IF;
+
+            --update subscriptions table with rev_rec_ind flag
+            IF lc_accounting_rule_id IS NOT NULL
+            THEN
+              px_subscription_array(indx).rev_rec_ind := 'Y';
+              update_subscription_info(px_subscription_info => px_subscription_array(indx));
+            END IF; 
+          END IF;
+
           /***************************************
           * Populate ra_interface_lines_all record
           ***************************************/
@@ -4348,14 +4507,11 @@ AS
           lr_ra_intf_lines_info.translated_description        := lr_item_master_info.segment1;
           
           lr_ra_intf_lines_info.purchase_order                := lr_contract_line_info.purchase_order;
-          
-          lr_ra_intf_lines_info.accounting_rule_id            := lr_invoice_line_info.accounting_rule_id;
-          lr_ra_intf_lines_info.invoicing_rule_id             := lr_invoice_header_info.invoicing_rule_id;
-          IF lr_invoice_header_info.invoicing_rule_id IS NOT NULL
-          THEN
-            lr_ra_intf_lines_info.rule_start_date               := px_subscription_array(indx).service_period_start_date;
-            lr_ra_intf_lines_info.rule_end_date                 := px_subscription_array(indx).service_period_end_date;
-          END IF;
+
+          lr_ra_intf_lines_info.accounting_rule_id            := lc_accounting_rule_id;
+          lr_ra_intf_lines_info.invoicing_rule_id             := lc_invoicing_rule_id;
+          lr_ra_intf_lines_info.rule_start_date               := lc_rule_start_date;
+          lr_ra_intf_lines_info.rule_end_date                 := lc_rule_end_date;
 
           lc_action :=  'Calling insert_ra_interface_lines_all';
 
@@ -11251,7 +11407,8 @@ AS
           lr_subscription_info.receipt_created_flag        := 'N';
           lr_subscription_info.auth_completed_flag         := 'N';
           lr_subscription_info.email_autorenew_sent_flag   := 'N';
-          lr_subscription_info.cof_trans_id_flag           := 'N';          
+          lr_subscription_info.cof_trans_id_flag           := 'N';
+          lr_subscription_info.rev_rec_ind                 := 'N';         
 
           lc_action := 'Insert into xx_ar_subscriptions';
 
@@ -11768,7 +11925,7 @@ AS
             lc_action := 'Calling get_invoice_header_info';
              
             get_invoice_header_info(p_invoice_number      => lt_subscription_array(indx).invoice_number,
-                                    x_invoice_header_info => lr_invoice_header_info);	  
+                                    x_invoice_header_info => lr_invoice_header_info);  
             
             /******************************
             * Get invoice total information
