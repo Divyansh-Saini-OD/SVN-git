@@ -19,6 +19,7 @@ DECODE(trans_status,'STAGED','FILE STAGED FOR TRANSMISSION'
                                           ,'SENT','FILE TRANSMITTED SUCCESFULLY'
                                           ,'TOOBIG','FILE TOO BIG TO BE TRANSMITTED'
                                           ,'SENTBYCD','FILE SENT BY CD'
+										  ,'MERGE_ERROR','ERROR DURING BILL COMPLETE PDF MERGE PROGRAM'
                                           ,trans_status
                            ) as Trans_Status,Trans_Status_Detail as Trans_Status_Detail,
 DECODE(status,     'RENDER','FILE YET TO BE RENDERED'
@@ -28,6 +29,7 @@ DECODE(status,     'RENDER','FILE YET TO BE RENDERED'
                                         ,'DATAEXTRACT_FAILED','DATA EXTRACT FAILED'
                                         ,'RENDER_ERROR','ERROR DURING RENDERING'
                                         ,'MANIP_ERROR','DATA MANIPULATION ERROR'
+										,'MERGE_ERROR','ERROR DURING BILL COMPLETE PDF MERGE PROGRAM'
                                         ,status
                            ) as File_Status ,Status_Detail as Reason_For_Failure,
 Billing_Associate_Name as Billing_Associate_Name,File_Name as File_Name from (select  xaef.account_number Account_Number
