@@ -1,21 +1,22 @@
 create or replace PACKAGE BODY XX_AR_RECALC_BILL_DATE_PKG
 AS
--- +============================================================================================+
--- |  Office Depot - Project Simplify                                                           |
--- |                                                                                            |
--- +============================================================================================+
--- |  Name   :  XX_AR_RECALC_BILL_DATE_PKG                                                      |
--- |  RICE ID    : I3126                                                                        |
--- |  Description:                                                                              |
--- |  Change Record:                                                                            |      
--- +============================================================================================+
--- | Version     Date         Author          Remarks                                           |
--- | =========   ===========  =============   ==================================================|
--- | 1.0         18-OCT-2018  Havish Kasina   Initial version                                   |  
--- | 1.1         21-JAN-2019  Havish Kasina   Added new parameter p_billing_date                |
--- | 1.2         27-Aug-2019  Nitin Tugave    Made Changes for Defect NAIT-86554                |
--- | 1.3         04-Nov-2019  Nitin Tugave    Made Changes for Defect NAIT-113013               |
--- +============================================================================================+
+-- +====================================================================================================+
+-- |  Office Depot - Project Simplify                                                                   |
+-- |                                                                                                    |
+-- +====================================================================================================+
+-- |  Name   :  XX_AR_RECALC_BILL_DATE_PKG                                                              |
+-- |  RICE ID    : I3126                                                                                |
+-- |  Description:                                                                                      |
+-- |  Change Record:                                                                                    |      
+-- +====================================================================================================+
+-- | Version     Date         Author          Remarks                                                   |
+-- | =========   ===========  =============   ==========================================================|
+-- | 1.0         18-OCT-2018  Havish Kasina   Initial version                                           |  
+-- | 1.1         21-JAN-2019  Havish Kasina   Added new parameter p_billing_date                        |
+-- | 1.2         27-Aug-2019  Nitin Tugave    Made Changes for Defect NAIT-86554                        |
+-- | 1.3         04-Nov-2019  Nitin Tugave    Made Changes for Defect NAIT-113013                       |
+-- | 1.4         18-Nov-2019  Nitin Tugave    Updating parent_order_num in XX OM header attribute table |
+-- +====================================================================================================+
 
 gc_debug                    VARCHAR2(2);
 gn_request_id               fnd_concurrent_requests.request_id%TYPE;
@@ -167,7 +168,7 @@ AS
            rct.trx_number,
            rct.customer_trx_id ,
            rct.attribute14  ,
-           rct.trx_number parent_order_num
+           NVL(xoha.parent_order_num,rct.trx_number) parent_order_num
       FROM hz_customer_profiles hcp ,
            hz_cust_accounts hca,
            ra_customer_trx_all rct,
@@ -253,19 +254,16 @@ BEGIN
    END;
    
    -- Added For NAIT-86554
-   print_debug_msg('                          ',TRUE);
-   print_debug_msg('                          ',TRUE);
-   print_debug_msg('Before Bill Signals Insert',TRUE); 
    
    FOR I in get_expire_billsignal_trx_dtls
    LOOP
    BEGIN
    
-            print_debug_msg('Start Bill Signals Insert',TRUE); 
+            print_debug_msg('Start Bill Signals Insert Child_Order_Number '||i.trx_number||' parent order Num '||i.parent_order_num); 
             ---------------------------------------------------------------
             -- Inserting into signal table for Bill Complete Customer 
             ---------------------------------------------------------------
-            print_debug_msg('before insert ');
+
             INSERT
             INTO xx_scm_bill_signal
             (
@@ -292,6 +290,12 @@ BEGIN
                 gn_ln_loginid
             );      
         
+            -- Added Below condition for UAT issue for 37 days Cons Bill no generating 
+            UPDATE xx_om_header_attributes_all
+               SET parent_order_num =i.trx_number
+             WHERE header_id = i.attribute14
+            ;
+    
    
    EXCEPTION
        WHEN OTHERS THEN
