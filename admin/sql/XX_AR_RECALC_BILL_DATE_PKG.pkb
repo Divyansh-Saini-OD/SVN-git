@@ -15,7 +15,7 @@ AS
 -- | 1.1         21-JAN-2019  Havish Kasina   Added new parameter p_billing_date                        |
 -- | 1.2         27-Aug-2019  Nitin Tugave    Made Changes for Defect NAIT-86554                        |
 -- | 1.3         04-Nov-2019  Nitin Tugave    Made Changes for Defect NAIT-113013                       |
--- | 1.4         18-Nov-2019  Nitin Tugave    Updating parent_order_num in XX OM header attribute table |
+-- | 1.4         18-Nov-2019  Nitin Tugave    Added parent NVL condition                                |
 -- +====================================================================================================+
 
 gc_debug                    VARCHAR2(2);
@@ -290,12 +290,6 @@ BEGIN
                 gn_ln_loginid
             );      
         
-            -- Added Below condition for UAT issue for 37 days Cons Bill no generating 
-            UPDATE xx_om_header_attributes_all
-               SET parent_order_num =i.trx_number
-             WHERE header_id = i.attribute14
-            ;
-    
    
    EXCEPTION
        WHEN OTHERS THEN
