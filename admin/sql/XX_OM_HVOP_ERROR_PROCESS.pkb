@@ -2061,8 +2061,8 @@ BEGIN
 
   COMMIT;
 
-  IF SQL%ROWCOUNT > 0
-  THEN
+  /*IF SQL%ROWCOUNT > 0
+  THEN*/
 
   fnd_file.put_line(fnd_file.log,' Getting the responsibility , user and org details ..');
 
@@ -2147,7 +2147,7 @@ BEGIN
    ELSE
      ROLLBACK;
    END IF;
- END IF;
+ /*END IF;*/
 
 EXCEPTION
   WHEN OTHERS
