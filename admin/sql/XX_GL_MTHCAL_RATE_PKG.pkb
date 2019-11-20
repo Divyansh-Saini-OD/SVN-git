@@ -334,7 +334,7 @@ BEGIN
 		AND b.conversion_type         =a.conversion_type
 		AND b.conversion_date         =TRUNC(p_date)
 		AND b.from_currency ='CAD'
-		AND b.to_currency  IN ('INR','USD','MXN')
+		AND b.to_currency  IN ('INR','MXN')
 		ORDER BY 4,1,2
 		-- End 1.5 Addition of the CAD currency extract
 	  )
