@@ -84,7 +84,7 @@ FROM fnd_currencies C
 WHERE C.enabled_flag ='Y'
 AND C.currency_flag='Y'
 AND C.currency_code<>'CAD'
-AND C.CURRENCY_CODE IN ('INR','USD','MXN')) order by a ;
+AND C.CURRENCY_CODE IN ('INR','MXN')) order by a ;
 
 exit
 EOF`
