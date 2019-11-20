@@ -2041,6 +2041,7 @@ IS
   l_responsibility_id     fnd_responsibility_tl.responsibility_id%TYPE;
   l_application_id        fnd_responsibility_tl.application_id%TYPE;
   l_organization_id       xx_fin_translatevalues.target_value4%TYPE;
+  l_test_var			  NUMBER :=0;
 
 BEGIN
   fnd_file.put_line(fnd_file.output, 'Begin procedure reset_account_type_error');
@@ -2060,6 +2061,7 @@ BEGIN
   fnd_file.put_line(fnd_file.output, 'Total No of orders updated for Validation failed for the field - Account Type ' || SQL%ROWCOUNT);
 
   COMMIT;
+l_test_var = SQL%ROWCOUNT;
 
   /*IF SQL%ROWCOUNT > 0
   THEN*/
