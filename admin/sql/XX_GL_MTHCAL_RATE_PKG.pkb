@@ -28,6 +28,7 @@ AS
 	  -- | 1.4         06/04/2019   Narasimha S          Code change to get INSTANCE_NAME to DB_NAME  |
 	  -- | 1.4                                           for LNS Instance                             | 
       -- | 1.5	  |    10/03/2019    Faiyaz                Addition for the CAD currency extract      |
+	  -- | 1.6         11/25/2019   Paddy Sanjeevi       Modified xx_daily_extract to get ending rate |
 	  -- +============================================================================================+
 	  lc_Saturday        VARCHAR2(1)   := TO_CHAR(to_date('20000101','RRRRMMDD'),'D');
 	  lc_Sunday          VARCHAR2(1)   := TO_CHAR(to_date('20000102','RRRRMMDD'),'D');
@@ -316,7 +317,8 @@ BEGIN
 		  TO_CHAR(ROUND(b.conversion_rate,6)) conversion_rate
 		FROM gl_daily_rates b,
 		  gl_daily_conversion_types a
-		WHERE a.user_conversion_type IN ('Average Rate','Ending Rate','CC Period End','CC Period Average')
+		WHERE --a.user_conversion_type IN ('Average Rate','Ending Rate','CC Period End','CC Period Average')
+		a.user_conversion_type IN ('Ending Rate')
 		AND b.conversion_type         =a.conversion_type
 		AND b.conversion_date         =TRUNC(p_date)
 		AND b.from_currency           ='USD'
@@ -330,7 +332,8 @@ BEGIN
 		  TO_CHAR(ROUND(b.conversion_rate,6)) conversion_rate
 		FROM gl_daily_rates b,
 			 gl_daily_conversion_types a
-		WHERE a.user_conversion_type IN ('Average Rate','Ending Rate','CC Period End','CC Period Average')
+		WHERE --a.user_conversion_type IN ('Average Rate','Ending Rate','CC Period End','CC Period Average')
+		a.user_conversion_type IN ('Ending Rate')
 		AND b.conversion_type         =a.conversion_type
 		AND b.conversion_date         =TRUNC(p_date)
 		AND b.from_currency ='CAD'
