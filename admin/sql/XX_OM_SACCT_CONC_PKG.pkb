@@ -550,6 +550,7 @@ AS
         g_line_rec.service_start_date.DELETE(p_idx);
         g_line_rec.invoicing_rule_id.DELETE(p_idx);
         g_line_rec.accounting_rule_id.DELETE(p_idx);
+        g_line_rec.fee_reference_line_num.DELETE(p_idx);
 
     EXCEPTION
         WHEN OTHERS
@@ -4814,6 +4815,7 @@ AS
          g_line_rec.service_start_date(i) := NULL;
          g_line_rec.accounting_rule_id(i) := NULL;
          g_line_rec.invoicing_rule_id(i)  := NULL;
+         g_line_rec.fee_reference_line_num(i) := NULL;
 
 
      /*     Commented   as per defect 36885 ver 25.0
@@ -6333,6 +6335,7 @@ AS
         g_line_rec.service_end_date(p_line_idx) := NULL;
         g_line_rec.service_start_date(p_line_idx) := NULL;
         g_line_rec.accounting_rule_id(p_line_idx) := NULL;
+        g_line_rec.fee_reference_line_num(p_line_idx) := NULL;
         g_line_rec.invoicing_rule_id(p_line_idx) := NULL;
 
         IF g_header_rec.order_category(p_hdr_idx) = 'ORDER'
@@ -7374,11 +7377,14 @@ EXCEPTION
         lc_rec_type := SUBSTR(p_order_rec.file_line,
                               108,
                               2);
+
         lc_line_nbr := SUBSTR(p_order_rec.file_line,
                               33,
                               5);
+
         lb_adj_idx :=   g_line_adj_rec.orig_sys_document_ref.COUNT
                       + 1;
+
         lb_hdr_idx := g_header_rec.orig_sys_document_ref.COUNT;
         lb_curr_line_idx := g_line_rec.orig_sys_document_ref.COUNT;
 
@@ -7483,6 +7489,7 @@ EXCEPTION
 
             g_line_adj_rec.orig_sys_document_ref(lb_adj_idx) := g_header_rec.orig_sys_document_ref(lb_hdr_idx);
             g_line_adj_rec.order_source_id(lb_adj_idx) := g_header_rec.order_source_id(lb_hdr_idx);
+
             g_line_adj_rec.orig_sys_line_ref(lb_adj_idx) := SUBSTR(p_order_rec.file_line,
                                                                    33,
                                                                    5);
@@ -7664,6 +7671,13 @@ EXCEPTION
             g_line_rec.order_source_id(lb_line_idx) := g_header_rec.order_source_id(lb_hdr_idx);
             lc_order_source := get_ord_source_name(p_order_source_id      => g_line_rec.order_source_id(lb_line_idx));
 
+            -- Set the original line reference number on fee line.
+            IF ln_debug_level > 0
+            THEN
+              oe_debug_pub.ADD('setting fee line reference number');
+            END IF;
+            g_line_rec.fee_reference_line_num(lb_line_idx) := lc_line_nbr;
+
             IF lc_adj_sign = '-'
             THEN
                 IF lc_order_source = 'POE'
@@ -7770,6 +7784,8 @@ EXCEPTION
             THEN
                 oe_debug_pub.ADD(   'Orig Sys Line Ref is '
                                  || g_line_rec.orig_sys_line_ref(lb_line_idx));
+                oe_debug_pub.ADD(   ' Fee Reference Line Number '
+                                     || g_line_rec.fee_reference_line_num(lb_line_idx));
                 oe_debug_pub.ADD(   'Error Flag is '
                                  || g_header_rec.error_flag(lb_hdr_idx));
             END IF;
@@ -9275,6 +9291,7 @@ EXCEPTION
         g_line_rec.service_start_date.DELETE;
         g_line_rec.invoicing_rule_id.DELETE;
         g_line_rec.accounting_rule_id.DELETE;
+        g_line_rec.fee_reference_line_num.DELETE;
 
 /* Discount Record */
         g_line_adj_rec.orig_sys_document_ref.DELETE;
@@ -9723,7 +9740,8 @@ EXCEPTION
                              service_start_date,
                              service_end_date,
                              invoicing_rule_id,
-                             accounting_rule_id)
+                             accounting_rule_id,
+                             attribute12)
                      VALUES (g_line_rec.orig_sys_document_ref(i_lin),
                              g_line_rec.order_source_id(i_lin),
                              g_line_rec.change_sequence(i_lin),
@@ -9785,7 +9803,8 @@ EXCEPTION
                              g_line_rec.service_start_date(i_lin),
                              g_line_rec.service_end_date(i_lin),
                              g_line_rec.invoicing_rule_id(i_lin),
-                             g_line_rec.accounting_rule_id(i_lin)
+                             g_line_rec.accounting_rule_id(i_lin),
+                             g_line_rec.fee_reference_line_num(i_lin)
                              );
         EXCEPTION
             WHEN OTHERS
