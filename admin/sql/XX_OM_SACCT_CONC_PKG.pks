@@ -54,7 +54,8 @@ AS
 -- |  13.0  18-Jan-2018 Arun G            Made changes for TECZONE Defect#44139|  
 -- |  14.0  14-Nov-2018 Arun G            Made changes for Bill complete       |
 -- |  15.0  28-NOV-2019 Arun G            Made changes for Service contracts   |
--- |  16.0  05-SEP-2019 Arun G            Made changes for Card on File
+-- |  16.0  05-SEP-2019 Arun G            Made changes for Card on File        |
+-- |  17.0  15-OCT-2019 Arun G            Made changes for Tariff phase 2      |
 -- +===========================================================================+
 -- +===========================================================================+
 
@@ -510,7 +511,8 @@ AS
         service_end_date         t_date,
         service_start_date       t_date,
         accounting_rule_id       t_num,
-        invoicing_rule_id        t_num
+        invoicing_rule_id        t_num,
+        fee_reference_line_num   t_num
     );
 
 /* Global Record Declaration for  Line */
