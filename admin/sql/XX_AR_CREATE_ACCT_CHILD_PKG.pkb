@@ -48,6 +48,7 @@ AS
    -- |5.5        20-Aug-2019  Nitin Tugave   Made Changes for Defect NAIT-86554            |   
    -- |5.6        21-SEP-2019  Sahithi K      NAIT-105768 changing form GL_ID_UNBILLED      |
    -- |                                        to GL_ID_UNEARNED                            |
+   -- |5.5        29-Oct-2019  Nitin Tugave   NAIT-113005 EDI Tariff DESCRIPTION            |     
    -- +=====================================================================================+
 
    ------------------------
@@ -324,6 +325,42 @@ AS
             AND RILA.line_type                    = gc_line_type_TAX_hc
             AND RILA.sales_order                  = p_sales_order
           ORDER BY RILA.sales_order,ROWNUM;
+
+      --Added for NAIT-113005 EDI Tariff changes
+      CURSOR lcu_edi_tariff(p_sales_order  IN VARCHAR2,p_batch_source_name  IN VARCHAR2,P_intline_attribute6 IN VARCHAR2)
+      IS
+      SELECT ROWID row_id ,org_id
+             ,ril.DESCRIPTION||' - '||DECODE(NVL((SELECT lookup_code 
+                                                    FROM fnd_lookup_values b 
+                                                   WHERE b.lookup_type = 'OD_FEES_ITEMS'
+                                                     AND b.LANGUAGE='US'
+                                                     AND b.attribute7 <>'HEADER'
+                                                     AND b.enabled_flag = 'Y'             
+                                                     AND SYSDATE BETWEEN NVL(b.start_date_active,SYSDATE) AND NVL(b.end_date_active,SYSDATE+1)                                               
+                                                     AND b.attribute6 = ril.INVENTORY_ITEM_ID),'X'),'X'
+             ,ril.DESCRIPTION
+             ,(SELECT d.segment1
+                 FROM ra_interface_lines_all ril1
+                     ,mtl_system_items_b d
+                WHERE 1=1
+                  AND d.INVENTORY_ITEM_ID=ril1.INVENTORY_ITEM_ID
+                  AND ril1.sales_order_line=ril.ATTRIBUTE12
+                  AND ril1.sales_order=ril.sales_order
+                  AND rownum<2
+             )
+             ) new_desc
+       FROM ra_interface_lines_all ril
+      WHERE ril.SALES_ORDER=p_sales_order
+        AND ril.batch_source_name   = NVL(p_batch_source_name,ril.batch_source_name)
+        AND ril.interface_line_attribute6 = P_intline_attribute6
+        AND EXISTS (SELECT lookup_code FROM fnd_lookup_values b 
+                     WHERE b.lookup_type = 'OD_FEES_ITEMS'
+                       AND b.LANGUAGE='US'
+                       AND b.attribute7 <>'HEADER'
+                       AND b.enabled_flag = 'Y'             
+                       AND SYSDATE BETWEEN NVL(b.start_date_active,SYSDATE) AND NVL(b.end_date_active,SYSDATE+1)                       
+                       AND b.attribute6 = ril.INVENTORY_ITEM_ID)				   
+      ;
 
       lc_interface_PREV  VARCHAR2(1000);
       lc_interface_CURR  VARCHAR2(1000);
@@ -1065,7 +1102,7 @@ AS
 
             BEGIN
                IF gc_country_value IN ('US','CA') THEN
-			               
+                           
                   XX_AR_INSERT_TAX_LINES(p_sales_order_low
                                         ,p_sales_order_high
                                         ,gc_country_value
@@ -1089,7 +1126,7 @@ AS
          ***************************************************/
          BEGIN
             IF p_sales_order_low IS NOT NULL AND p_sales_order_high is NOT NULL AND p_sales_order_low = p_sales_order_high THEN
-			
+            
                OPEN c_interface_lines FOR
                   lc_cursor_query || ' ' || lc_where_clause
                                   ||' AND (interface_status IS NULL '
@@ -1101,7 +1138,7 @@ AS
                                   ||',line_type';
 
             ELSIF p_sales_order_low IS NOT NULL AND p_sales_order_high IS NOT NULL THEN
-			
+            
                OPEN c_interface_lines FOR
                   lc_cursor_query || ' ' || lc_where_clause
                                   ||' AND (interface_status IS NULL '
@@ -1114,19 +1151,19 @@ AS
                                   ||',line_type';
 
             ELSIF p_sales_order_low IS NOT NULL AND p_sales_order_high IS NULL THEN
-			
+            
                -- If above condition is satisfied then EX_SALES_ORDER user defined exception is raised and make the requestset error out
                RAISE EX_SALES_ORDER;
 
             ELSIF p_sales_order_low IS NULL AND p_sales_order_high IS NOT NULL THEN
-			
+            
                -- If above condition is satisfied then EX_SALES_ORDER user defined exception is raised and make the requestset error out
                RAISE EX_SALES_ORDER;
 
             ELSIF p_sales_order_low IS NULL AND p_sales_order_high IS NULL THEN
-			
+            
                FND_FILE.PUT_LINE(FND_FILE.LOG,'CONC_REQUEST_ID:' || gn_request_id);
-			   
+               
                OPEN c_interface_lines FOR
                   lc_cursor_query || ' ' || lc_where_clause
                                   ||'AND   request_id = ' || gn_request_id
@@ -1137,7 +1174,7 @@ AS
             END IF;
          END;
          
-		 
+         
          ln_detail_inv_line_cnt  :=0;                                           --added counters 11.3 POS SDR
          ln_summary_inv_line_cnt :=0;
 
@@ -1237,9 +1274,22 @@ AS
             ln_bill_comp_check_count := 0 ;  -- Added for NAIT-86554
             lc_bc_spc_flag           :='N';  -- Added for NAIT-86554
 
-
+            --Added for NAIT-113005 EDI Tariff changes
+            FND_FILE.PUT_LINE(FND_FILE.LOG,'..EDI Tariff Changes...' );
+            FOR i in  lcu_edi_tariff(lcu_process_interface_lines.sales_order,lcu_process_interface_lines.batch_source_name,lcu_process_interface_lines.interface_line_attribute6)
+            LOOP
+                FND_FILE.PUT_LINE(FND_FILE.LOG,'..EDI Tariff Changes...'||lcu_process_interface_lines.sales_order||' DESC '||i.new_desc );
+                UPDATE ra_interface_lines_all
+                  SET DESCRIPTION = i.new_desc
+                WHERE ROWID = i.row_id
+                  AND org_id            = FND_PROFILE.VALUE('ORG_ID')
+                ;
+            
+            END LOOP;
+            -- EDI Tariff changes ends
+            
             IF  p_invoice_source IS NULL  THEN
-		
+        
                BEGIN
                   SELECT NVL(tv.target_value2,' ')
                         ,NVL(tv.target_value3,'N')
