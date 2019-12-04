@@ -8,7 +8,7 @@ WHENEVER SQLERROR CONTINUE
 
 CREATE OR REPLACE PACKAGE BODY XX_GL_MTHCAL_RATE_PKG
 AS
-	  -- +============================================================================================|
+	 	  -- +============================================================================================|
 	  -- |  Office Depot                                                                              |
 	  -- +============================================================================================|
 	  -- |  Name:  XX_GL_MTHCAL_RATE_PKG                                                              |
@@ -27,8 +27,10 @@ AS
 	  -- | 1.3         04/18/2019   Paddy Sanjeevi       Modified to add GSO Requirements BEAC 12167  |
 	  -- | 1.4         06/04/2019   Narasimha S          Code change to get INSTANCE_NAME to DB_NAME  |
 	  -- | 1.4                                           for LNS Instance                             | 
-      -- | 1.5	  |    10/03/2019    Faiyaz                Addition for the CAD currency extract      |
-	  -- | 1.6         11/25/2019   Paddy Sanjeevi       Modified xx_daily_extract to exclude avg rate| 
+      -- | 1.5	  |    10/03/2019   Faiyaz Ahmad         Modified for the CAD currency extract        |
+	  -- | 1.6         11/25/2019   Paddy Sanjeevi       Modified xx_daily_extract to exclude avg rate|
+      -- | 1.7         03/12/2019 	Faiyaz Ahmad         Addition of procedure xx_file_copy_dims      |
+	  -- |                                               for DIMS                                    |
 	  -- +============================================================================================+
 	  lc_Saturday        VARCHAR2(1)   := TO_CHAR(to_date('20000101','RRRRMMDD'),'D');
 	  lc_Sunday          VARCHAR2(1)   := TO_CHAR(to_date('20000102','RRRRMMDD'),'D');
@@ -187,6 +189,58 @@ EXCEPTION
 END xx_archive_file;
 
 
+/**********************************************************************************
+	* Procedure to File Copy 
+	* This procedure is called by xx_daily_extract for the DIMS
+***********************************************************************************/
+PROCEDURE xx_file_copy_dims(p_request_type IN VARCHAR2, p_copy_file IN VARCHAR2)
+IS
+	  lc_dest_file_name   VARCHAR2(200);
+	  lc_source_file_name VARCHAR2(200);
+	  lc_source_dir_path  VARCHAR2(4000);
+	  lc_instance_name    VARCHAR2(30);
+	  lb_complete         BOOLEAN;
+	  lc_phase            VARCHAR2(100);
+	  lc_status           VARCHAR2(100);
+	  lc_dev_phase        VARCHAR2(100);
+	  lc_dev_status       VARCHAR2(100);
+	  lc_message          VARCHAR2(100);
+	  ln_request_id       NUMBER;
+BEGIN
+  SELECT SUBSTR(LOWER(SYS_CONTEXT('USERENV', 'DB_NAME') ), 1, 8)
+    INTO lc_instance_name
+	FROM DUAL;
+  BEGIN
+	SELECT directory_path
+	  INTO lc_source_dir_path
+	  FROM dba_directories
+	 WHERE directory_name = gc_file_path;
+  EXCEPTION
+    WHEN OTHERS THEN
+	  logit(p_message =>'Exception raised while getting directory path '|| SQLERRM, p_force => TRUE);
+  END;
+  lc_source_file_name := lc_source_dir_path||'/'||p_copy_file;
+  lc_dest_file_name   := '/app/ebs/ct' || lc_instance_name || '/xxfin/ftp/out/rates/'|| p_copy_file;
+  ln_request_id       := fnd_request.submit_request('XXFIN', 'XXCOMFILCOPY', '', '', FALSE, lc_source_file_name, lc_dest_file_name, '', '', 'N' );
+  IF ln_request_id     > 0 THEN
+  	 COMMIT;
+	 logit(p_message => 'Submitted request '|| TO_CHAR (ln_request_id)||' to Copy File Generated', p_force => TRUE);	
+	 lb_complete := fnd_concurrent.wait_for_request(request_id => ln_request_id, 
+													interval => 10, 
+													max_wait => 0, 
+													phase => lc_phase, 
+													status => lc_status, 
+													dev_phase => lc_dev_phase, 
+													dev_status => lc_dev_status, 
+													MESSAGE => lc_message
+												   );
+  END IF;
+  COMMIT;
+EXCEPTION
+  WHEN OTHERS THEN
+    logit(p_message =>'When Others Exception Raised in xx_file_copy procedure that Copy the Exchange Rates File' || SQLERRM, p_force => TRUE);
+END xx_file_copy_dims;
+
 
 /**********************************************************************************
 	* Procedure to File Copy 
@@ -344,6 +398,7 @@ BEGIN
 	UTL_FILE.PUT_LINE(l_filehandle,l_data);
   END LOOP;
   UTL_FILE.fclose(l_filehandle);
+  xx_file_copy_dims(p_request_type,lc_file_name);
   xx_file_copy(p_request_type,lc_file_name);
   zip_file(lc_file_name1||lc_filename_part1);
   xx_archive_file(p_request_type,lc_file_name1||lc_filename_part1);
