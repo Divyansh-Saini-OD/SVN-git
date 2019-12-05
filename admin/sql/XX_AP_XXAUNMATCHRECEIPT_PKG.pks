@@ -1,5 +1,4 @@
-create or replace 
-PACKAGE XX_AP_XXAUNMATCHRECEIPT_PKG
+create or replace PACKAGE XX_AP_XXAUNMATCHRECEIPT_PKG
   -- +===================================================================+
   -- |                  Office Depot - Project Simplify                  |
   -- +===================================================================+
@@ -96,4 +95,3 @@ IS
     );
 end;
 /
-
