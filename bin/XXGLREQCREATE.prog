@@ -95,33 +95,7 @@ FROM
   AND C.currency_flag  ='Y'
   AND C.currency_code <>'CAD'
   AND C.CURRENCY_CODE IN ('INR','MXN','CRC')
-  UNION
-  SELECT 'MXN'
-    || C.currency_code
-    ||'_Curncy'
-    || chr(13) a
-  FROM fnd_currencies C
-  WHERE C.enabled_flag ='Y'
-  AND C.currency_flag  ='Y'
-  AND C.currency_code  ='CAD'
-  UNION
-  SELECT 'INR'
-    || C.currency_code
-    ||'_Curncy'
-    || chr(13) a
-  FROM fnd_currencies C
-  WHERE C.enabled_flag ='Y'
-  AND C.currency_flag  ='Y'
-  AND C.currency_code  ='CAD'
-  UNION
-  SELECT 'CRC'
-    || C.currency_code
-    ||'_Curncy'
-    || chr(13) a
-  FROM fnd_currencies C
-  WHERE C.enabled_flag ='Y'
-  AND C.currency_flag  ='Y'
-  AND C.currency_code  ='CAD') ORDER BY a ;
+) ORDER BY a ;
 
 exit
 EOF`
