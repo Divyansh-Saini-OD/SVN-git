@@ -385,8 +385,8 @@ SELECT b.from_currency,
   TO_CHAR(b.conversion_date,'YYYY/MM/DD') conversion_date,
   DECODE(a.user_conversion_type,'Ending Rate','Corporate',a.user_conversion_type) conversion_type,
   TO_CHAR(ROUND(b.conversion_rate,6)) conversion_rate
-FROM apps.gl_daily_rates b,
-  apps.gl_daily_conversion_types a
+FROM gl_daily_rates b,
+     gl_daily_conversion_types a
 WHERE a.user_conversion_type IN ('Ending Rate','CC Period End','CC Period Average')
 AND b.conversion_type         =a.conversion_type
 AND b.conversion_date         = TRUNC(p_date)
