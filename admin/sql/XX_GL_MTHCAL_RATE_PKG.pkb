@@ -392,19 +392,6 @@ AND b.conversion_type         =a.conversion_type
 AND b.conversion_date         = TRUNC(p_date)
 AND b.from_currency           ='CAD'
 AND b.to_currency            IN ('INR','MXN','CRC')
-UNION
-SELECT b.from_currency,
-  b.to_currency,
-  TO_CHAR(b.conversion_date,'YYYY/MM/DD') conversion_date,
-  DECODE(a.user_conversion_type,'Ending Rate','Corporate',a.user_conversion_type) conversion_type,
-  TO_CHAR(ROUND(b.conversion_rate,6)) conversion_rate
-FROM gl_daily_rates b,
-   gl_daily_conversion_types a
-WHERE a.user_conversion_type IN ('Ending Rate','CC Period End','CC Period Average')
-AND b.conversion_type         =a.conversion_type
-AND b.conversion_date         = TRUNC(p_date)
-AND b.to_currency             ='CAD'
-AND b.from_currency          IN ('INR','MXN','CRC')
 ORDER BY 4,1,2
 	  )
   LOOP
