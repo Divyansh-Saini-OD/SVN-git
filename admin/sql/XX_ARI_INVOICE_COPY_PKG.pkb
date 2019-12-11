@@ -2862,3 +2862,4 @@ BEGIN
 END save_pdf_invoice_copy;
 
 END XX_ARI_INVOICE_COPY_PKG;
+/
