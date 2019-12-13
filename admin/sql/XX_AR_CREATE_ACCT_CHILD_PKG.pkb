@@ -330,14 +330,7 @@ AS
       CURSOR lcu_edi_tariff(p_sales_order  IN VARCHAR2,p_batch_source_name  IN VARCHAR2,P_intline_attribute6 IN VARCHAR2)
       IS
       SELECT ROWID row_id ,org_id
-             ,ril.DESCRIPTION||' - '||DECODE(NVL((SELECT lookup_code 
-                                                    FROM fnd_lookup_values b 
-                                                   WHERE b.lookup_type = 'OD_FEES_ITEMS'
-                                                     AND b.LANGUAGE='US'
-                                                     AND b.attribute7 <>'HEADER'
-                                                     AND b.enabled_flag = 'Y'             
-                                                     AND SYSDATE BETWEEN NVL(b.start_date_active,SYSDATE) AND NVL(b.end_date_active,SYSDATE+1)                                               
-                                                     AND b.attribute6 = ril.INVENTORY_ITEM_ID),'X'),'X'
+             ,ril.DESCRIPTION||' - '||DECODE(NVL(ril.ATTRIBUTE12,'X'),'X'
              ,ril.DESCRIPTION
              ,(SELECT d.segment1
                  FROM ra_interface_lines_all ril1
@@ -356,7 +349,6 @@ AS
         AND EXISTS (SELECT lookup_code FROM fnd_lookup_values b 
                      WHERE b.lookup_type = 'OD_FEES_ITEMS'
                        AND b.LANGUAGE='US'
-                       AND b.attribute7 <>'HEADER'
                        AND b.enabled_flag = 'Y'             
                        AND SYSDATE BETWEEN NVL(b.start_date_active,SYSDATE) AND NVL(b.end_date_active,SYSDATE+1)                       
                        AND b.attribute6 = ril.INVENTORY_ITEM_ID)				   
