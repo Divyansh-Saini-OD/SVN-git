@@ -7,8 +7,6 @@ SET FEEDBACK OFF;
 WHENEVER SQLERROR CONTINUE;
  
 WHENEVER OSERROR EXIT FAILURE ROLLBACK;
-
-
 create or replace 
 PACKAGE BODY      XX_AP_CONSIGN_RTV_UI_PKG
 AS
@@ -25,8 +23,10 @@ AS
   -- | Version     Date         Author           Remarks                                          |
   -- | =========   ===========  =============    ===============================================  |
   -- | 1.0         11/1/2017   Ragni Gupta       Initial version                                  |
+  -- | 1.1         01/12/2019  Shanti Sethuraj   Modified for jira NAIT-106318
   -- +============================================================================================+
 FUNCTION CONSIGN_PIPE(
+
     P_VENDOR_ID    NUMBER,
     P_VEND_SITE_ID NUMBER ,
     P_ITEM_ID      NUMBER,   
@@ -49,8 +49,10 @@ IS
       MMT.TRANSACTION_DATE TRANSACTION_DATE,      
       SUBSTR(HR.LOCATION_CODE,INSTR(HR.LOCATION_CODE,':')-4,4) LOCATION ,
       MSIB.SEGMENT1 SKU ,
-      MMT.ATTRIBUTE5 FREIGHT_CARRIER ,
-      MMT.ATTRIBUTE4 FREIGHT_BILL ,
+      --MMT.ATTRIBUTE5 FREIGHT_CARRIER ,   -- commented for jira NAIT-106318
+      --MMT.ATTRIBUTE4 FREIGHT_BILL ,     -- commented for jira NAIT-106318
+	  MMT.ATTRIBUTE4 FREIGHT_CARRIER ,    -- Added for jira NAIT-106318
+	  MMT.ATTRIBUTE5 FREIGHT_BILL ,      -- Added for jira NAIT-106318
       MMT.ATTRIBUTE3 RGA ,
       MMT.ATTRIBUTE6 VENDOR_PRODUCT ,
       MSIB.DESCRIPTION ,
@@ -151,4 +153,3 @@ END CONSIGN_PIPE;
 END;
 /
 
-SHOW ERRORS;
