@@ -12144,7 +12144,7 @@ AS
                                     || lr_contract_info.card_type
                                     || '",
                             "amount": "'
-                                    || ln_invoice_total_amount_info
+                                    || sum(lr_contract_line_info.contract_line_amount) --ln_invoice_total_amount_info
                                     || '",
                             "cardnumber": "'
                                     || lc_masked_credit_card_number
