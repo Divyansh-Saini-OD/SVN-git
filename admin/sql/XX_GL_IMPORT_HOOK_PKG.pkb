@@ -203,6 +203,21 @@ CREATE OR REPLACE PACKAGE BODY APPS.gl_import_hook_pkg AS
   BEGIN
 
          fnd_file.put_line(fnd_file.log , 'in post hook  ');
+---Code changes added by Divyansh for NAIT-112432
+    fnd_file.put_line(fnd_file.log , 'Check for spreadsheet batches');
+      FOR rec in ( select je_batch_id from gl_je_headers
+                    where STATUS     ='U'
+                      AND JE_SOURCE IN ('Spreadsheet')
+                      AND je_batch_id in( select  trim(regexp_substr(batch_ids,'[^'||separator||']+', 1, level) ) value 
+                       from dual
+                     connect by regexp_substr(batch_ids, '[^'||separator||']+', 1, level) is not null)) LOOP
+         
+         fnd_file.put_line(fnd_file.log , 'Calling XX_GL_UNPOSTED_JRS.od_send_approval_mail ');
+         fnd_file.put_line(fnd_file.log , 'Parameters batch_id '||batch_ids ||' separator: '||separator);
+         XX_GL_UNPOSTED_JRS.od_send_approval_mail(rec.je_batch_id,separator);
+      
+      END LOOP;
+---Code changes end by Divyansh for NAIT-112432
 
       if (nvl(g_cta_flag, 'N') = 'N') then
         fnd_file.put_line(fnd_file.log , 'No need to call CTA post hook ' );
