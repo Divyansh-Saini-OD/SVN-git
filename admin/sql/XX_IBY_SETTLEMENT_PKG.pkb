@@ -1,12 +1,11 @@
-create or replace 
-PACKAGE BODY      xx_iby_settlement_pkg
+create or replace PACKAGE BODY      xx_iby_settlement_pkg
 	AS
 	-- +===========================================================================+
 	-- |                  Office Depot - Project Simplify                          |
 	-- +===========================================================================+
 	-- | Name        : Settlement and Payment Processing                           |
 	-- | RICE ID     : I0349 settlement                                            |
-	-- | Description : To populate the XX_IBY_BATCH_TRXNS 101, 201                 |
+	-- | Description : To populate the XX_IBY_BATCH_TRXNS 101, 201                  |
 	-- |               tables.                                                     |
 	-- |                                                                           |
 	-- |Change Record:                                                             |
@@ -94,9 +93,9 @@ PACKAGE BODY      xx_iby_settlement_pkg
         -- |                                            on EMV fields.                 |
         -- |                                            Tokenization Changes. Defect#35087   |
 	-- |27.1       06-AUG-2015 Harvinder Rakhra     Space Delimiter added for EMV fields |
-	-- |27.2       11-AUG-2015 Harvinder Rakhra     gc_ixswipe value updated based | 
+	-- |27.2       11-AUG-2015 Harvinder Rakhra     gc_ixswipe value updated based |
         -- |                                            on ixswipe value               |
-	-- |27.3       19-AUG-2015 Harvinder Rakhra     Defect in gc_ixoptions logic changed| 
+	-- |27.3       19-AUG-2015 Harvinder Rakhra     Defect in gc_ixoptions logic changed|
 	-- |28.0       27-AUG-2014 Suresh Ponnambalam   Defect 35495. Added exception  |
 	-- |                                            to xx_ar_invoice_ods.          |
         -- |29.0       28-AUG-2015 Shubhashree R       Modified xx_set_post_trx_variables|
@@ -111,7 +110,7 @@ PACKAGE BODY      xx_iby_settlement_pkg
 	-- |35.0	   23-JUN-2016 Rakesh Polepalli    Changes for the defect# 38244   |
 	-- |36.0       24-JUN-2016 Avinash Baddam      Defect#38215 - amex to vantiv conv   |
 	-- |37.0       23-AUG-2016 Suresh Ponnambalam  Defect 38243 - AMEX Instrsubtype|
-	-- |38.0       30-AUG-2016 Suresh Ponnambalam  Defect 39040 - Removed : from   | 
+	-- |38.0       30-AUG-2016 Suresh Ponnambalam  Defect 39040 - Removed : from   |
 	-- |                                           ixcustcountrycode.              |
 	-- |39.0       16-SEP-2016 Suresh Ponnambalam  Defect 39341 - Remapped ixreleasenumber |
 	-- |                                           to ixothertaxamount3 and remove |
@@ -131,7 +130,7 @@ PACKAGE BODY      xx_iby_settlement_pkg
 	-- |48.0       21-FEB-2019 M K Pramod Kumar    Modified  code for COF changes per NAIT-83065 |
 	-- |48.1       10-MAY-2019 M K Pramod Kumar    Modified to to derive Instance Name for LNS
 	-- |48.2       12-SEP-2019 M K Pramod Kumar    Modified for Return Mandate per NAIT-106896
-	-- |48.3       11-Nov-2019 M K Pramod Kumar    Modified to default ixregisternumber to 95 for SERVICE-CONTRACTS-NAIT-103187.
+        -- |48.3       07-JAN-2019 Sripal Reddy        Modified for sglpmt_multi_settlement refund issue NAIT-115171  |
 	-- +===========================================================================+
 
 		g_package_name              CONSTANT all_objects.object_name%TYPE                        := 'xx_iby_settlement_pkg';
@@ -1223,8 +1222,8 @@ PACKAGE BODY      xx_iby_settlement_pkg
 									   'Error in xx_od_security_key_pkg.decrypt: '
 									|| lc_decrypt_error_msg);
 				gc_error_loc   := 'decrypt_credit_card';
-				gc_error_debug := lc_decrypt_error_msg;					
-				RAISE ex_raise_cc_decrytpt;	--Defect 29951				
+				gc_error_debug := lc_decrypt_error_msg;
+				RAISE ex_raise_cc_decrytpt;	--Defect 29951
 			END IF;
 		EXCEPTION
 			WHEN OTHERS
@@ -1233,7 +1232,7 @@ PACKAGE BODY      xx_iby_settlement_pkg
 									   'Error decrypting: '
 									|| SQLERRM);
 				gc_error_loc   := 'decrypt_credit_card';
-				gc_error_debug := SQLERRM;					
+				gc_error_debug := SQLERRM;
 				RAISE ex_raise_cc_decrytpt;   --Defect 29951
 		END decrypt_credit_card;
 
@@ -1323,7 +1322,7 @@ PACKAGE BODY      xx_iby_settlement_pkg
 				END IF;
 			END LOOP;
 		END amex_cpc;
-	
+
 	--Start changes for defect 38215
         -- +===================================================================+
 	-- | PROCEDURE  : PROCESS_AMEX_DATA                                    |
@@ -1336,7 +1335,7 @@ PACKAGE BODY      xx_iby_settlement_pkg
 	-- | RETURNS    : None                                                 |
 	-- +===================================================================+
 	      PROCEDURE process_amex_data
-	      IS 
+	      IS
 	      BEGIN
   	      	 xx_location_and_log(g_loc,'Processing AMEX');
 		 gc_error_debug :=    'PROCESS_AMEX_DATA - Credit Card Type: '
@@ -1345,59 +1344,59 @@ PACKAGE BODY      xx_iby_settlement_pkg
 		 xx_location_and_log(g_loc,'Processing Data for AMEX CPC CARD. ' || gc_error_debug);
 		 xx_location_and_log(g_loc,'gc_credit_card_vendor: '||gc_credit_card_vendor);
 		 xx_location_and_log(g_loc,'gc_is_amex: '||gc_is_amex);
-		 
+
 		 xx_location_and_log(g_loc,'Mapping for AMEX and AMEX CPC ');
 
-		 IF gc_ixinvoice IS NULL 
+		 IF gc_ixinvoice IS NULL
 		 THEN
 		       xx_location_and_log(g_loc,'ixinvoice:Default Value');
 		       gc_ixinvoice := '000000000000000';
 		 END IF;
-			   
-		 IF gc_ixauthorizationnumber IS NULL 
+
+		 IF gc_ixauthorizationnumber IS NULL
 		 THEN
 		       xx_location_and_log(g_loc,'ixauthorizationnumber:Default Value');
 		       gc_ixauthorizationnumber := '00000';
 		 END IF;
-			   
-		 IF gc_ixreserved43 IS NULL 
+
+		 IF gc_ixreserved43 IS NULL
 		 THEN
 		       xx_location_and_log(g_loc,'ixreserved43:Default Value');
 		       gc_ixreserved43 := '000000000000';
 		 END IF;
-		    
+
 		 xx_location_and_log(g_loc,'gn_amex_cpc: '||to_char(gn_amex_cpc));
 
-		 
+
 		 -- Defect 39341 commented and added below code gc_ixccnumber := gc_ixreleasenumber;
 		 gc_ixothertaxamount3 := gc_ixreleasenumber;
 		 xx_location_and_log(g_loc,'ixccnumber: '||gc_ixccnumber);
-		    
+
 		     /* sample format for ixcustcountrycode defect#38723
-		          <Requester> 
-				<Name> 006133:BOCA RATON FL </Name> 
-				<State> FL </State> 
-				<PostalCode> 33498 </PostalCode> 
-				<Country> US <Country> 
-			 <Requester> 
+		          <Requester>
+				<Name> 006133:BOCA RATON FL </Name>
+				<State> FL </State>
+				<PostalCode> 33498 </PostalCode>
+				<Country> US <Country>
+			 <Requester>
 		     */
-                          
+
 		 /*gc_ixcustcountrycode :=  '<ShipTo><Addr><Name>'||gc_customer_name
 		                              ||'</Name><PostalAddress><State>'
 		                              || gc_ixshiptostate || '</State><PostalCode>'
 		                              || gc_ixshiptozipcode || '</PostalCode></PostalAddress><Contact><Name>'
 		                              || NVL(gc_ixpurchasername,gc_customer_name) || '</Name>'
 		                              || '<PhoneNumber><Number></Number></PhoneNumber></Contact></Addr></ShipTo>';*/
-		                              
+
 		 gc_ixcustcountrycode :=  '<Requester><Name>'||gc_customer_name
 		                              ||'</Name><State>'
 		                              || gc_ixshiptostate || '</State><PostalCode>'
 		                              || gc_ixshiptozipcode || '</PostalCode><Country>'
 		                              || gc_ixshiptocountry || '</Country></Requester>';
-		                              
-		                              
+
+
 		 xx_location_and_log(g_loc,'gc_ixcustcountrycode: '||gc_ixcustcountrycode);
-		    
+
 		    SELECT COUNT(1)
 		      INTO   gn_amex_except11
 		      FROM   xx_fin_translatedefinition xftd, xx_fin_translatevalues xftv
@@ -1411,7 +1410,7 @@ PACKAGE BODY      xx_iby_settlement_pkg
 		       AND    xftd.enabled_flag = 'Y';
 
 		     xx_location_and_log(g_log,'Amex Except11             : '|| gn_amex_except11);
-		     
+
 		    SELECT COUNT(1)
 		      INTO   gn_amex_except12
 		      FROM   xx_fin_translatedefinition xftd, xx_fin_translatevalues xftv
@@ -1425,7 +1424,7 @@ PACKAGE BODY      xx_iby_settlement_pkg
 		       AND    xftd.enabled_flag = 'Y';
 
 		     xx_location_and_log(g_log,'Amex Except12             : '|| gn_amex_except12);
-		     
+
 		    SELECT COUNT(1)
 		      INTO   gn_amex_except13
 		      FROM   xx_fin_translatedefinition xftd, xx_fin_translatevalues xftv
@@ -1439,7 +1438,7 @@ PACKAGE BODY      xx_iby_settlement_pkg
 		       AND    xftd.enabled_flag = 'Y';
 
 		     xx_location_and_log(g_log,'Amex Except13             : '|| gn_amex_except13);
-		     
+
 		    SELECT COUNT(1)
 		      INTO   gn_amex_except15
 		      FROM   xx_fin_translatedefinition xftd, xx_fin_translatevalues xftv
@@ -1453,45 +1452,45 @@ PACKAGE BODY      xx_iby_settlement_pkg
 		       AND    xftd.enabled_flag = 'Y';
 
 		     xx_location_and_log(g_log,'Amex Except14             : '|| gn_amex_except15);
-		     xx_location_and_log(g_loc,'Check AMEX Exception Counts and Set fields. ');	
-		     
+		     xx_location_and_log(g_loc,'Check AMEX Exception Counts and Set fields. ');
+
 		    IF (gn_amex_except11 > 0)
 		    THEN
 		       gc_ixcustomerreferenceid := gc_ixcostcenter;
-                       xx_location_and_log(g_loc,'gc_ixcustomerreferenceid-11: '||gc_ixcostcenter); 
+                       xx_location_and_log(g_loc,'gc_ixcustomerreferenceid-11: '||gc_ixcostcenter);
 		    END IF;
-		    
+
 		    IF (gn_amex_except12 > 0)
 		    THEN
                        gc_ixcustomerreferenceid := gc_ixreleasenumber;
-                       xx_location_and_log(g_loc,'gc_ixcustomerreferenceid-12: '||gc_ixreleasenumber); 
+                       xx_location_and_log(g_loc,'gc_ixcustomerreferenceid-12: '||gc_ixreleasenumber);
 		    END IF;
-		    
+
 		    IF (gn_amex_except13 > 0)
 		    THEN
-                       gc_ixcustomerreferenceid := SUBSTR(gc_ixcostcenter,1,3) || SUBSTR(gc_ixcostcenter,18,2); 
-                       xx_location_and_log(g_loc,'gc_ixcustomerreferenceid-13: '||SUBSTR(gc_ixcostcenter,1,3) || SUBSTR(gc_ixcostcenter,18,2)); 
+                       gc_ixcustomerreferenceid := SUBSTR(gc_ixcostcenter,1,3) || SUBSTR(gc_ixcostcenter,18,2);
+                       xx_location_and_log(g_loc,'gc_ixcustomerreferenceid-13: '||SUBSTR(gc_ixcostcenter,1,3) || SUBSTR(gc_ixcostcenter,18,2));
 		    END IF;
-		    
+
 		    IF (gn_amex_except15 > 0)
 		    THEN
-		    
+
 		        /* gc_ixcustcountrycode :=  '<ShipTo><Addr><Name>'||gc_customer_name
 						      ||'</Name><PostalAddress><State>'
 						      || gc_ixshiptostate || '</State><PostalCode>'
 						      || gc_ixshiptozipcode || '</PostalCode></PostalAddress><Contact><Name>'
 						      || gc_cust_po_number || '</Name>'
 						      || '<PhoneNumber><Number></Number></PhoneNumber></Contact></Addr></ShipTo>';*/
-						      
+
 		         gc_ixcustcountrycode :=  '<Requester><Name>'||gc_cust_po_number
 		                              ||'</Name><State>'
 		                              || gc_ixshiptostate || '</State><PostalCode>'
 		                              || gc_ixshiptozipcode || '</PostalCode><Country>'
-		                              || gc_ixshiptocountry || '</Country></Requester>';						      
-		       		                              
+		                              || gc_ixshiptocountry || '</Country></Requester>';
+
 		       xx_location_and_log(g_loc,'gc_ixcustcountrycode-2: '||gc_ixcustcountrycode);
-		    END IF;		    
-	      END process_amex_data;	   
+		    END IF;
+	      END process_amex_data;
 
         -- +===================================================================+
 	-- | PROCEDURE  : PROCESS_AMEX_LINE_DATA                               |
@@ -1510,7 +1509,7 @@ PACKAGE BODY      xx_iby_settlement_pkg
 	                                       p_ixinvoicelinenum IN OUT VARCHAR2,
 	                                       p_ixcustitemnum 	IN OUT VARCHAR2,
 	                                       p_ixcustitemdesc	IN OUT VARCHAR2)
-	      IS 
+	      IS
 	         lc_ixunitmeasure   xx_iby_batch_trxns_det.ixunitmeasure%TYPE;
 	         lc_ixitemquantity  xx_iby_batch_trxns_det.ixitemquantity%TYPE;
 	         lc_ixunitcost      xx_iby_batch_trxns_det.ixunitcost%TYPE;
@@ -1523,12 +1522,12 @@ PACKAGE BODY      xx_iby_settlement_pkg
 		 xx_location_and_log(g_loc,'Processing Line Data for AMEX CPC CARD. ' || gc_error_debug);
 		 xx_location_and_log(g_loc,'gc_credit_card_vendor: '||gc_credit_card_vendor);
 		 xx_location_and_log(g_loc,'gc_is_amex: '||gc_is_amex);
-		 
+
 		 xx_location_and_log(g_loc,'Mapping for AMEX CPC Line Data');
 		 lc_ixunitmeasure := p_ixunitmeasure;
-		 
 
-		 xx_location_and_log(g_loc,'lc_ixunitmeasure: '||lc_ixunitmeasure); 
+
+		 xx_location_and_log(g_loc,'lc_ixunitmeasure: '||lc_ixunitmeasure);
 		 IF lc_ixunitmeasure = '2-'
 		 THEN
 			lc_ixunitmeasure := 'OP';
@@ -1543,39 +1542,39 @@ PACKAGE BODY      xx_iby_settlement_pkg
 		 	lc_ixunitmeasure := 'P6';
 		 ELSIF lc_ixunitmeasure IS NULL
 		 THEN
-			lc_ixunitmeasure := 'EA'; 
+			lc_ixunitmeasure := 'EA';
 		 END IF;
 
-		 xx_location_and_log(g_loc,'lc_ixunitmeasure: '||lc_ixunitmeasure); 
-		 p_ixunitmeasure := lc_ixunitmeasure; 
-		 
+		 xx_location_and_log(g_loc,'lc_ixunitmeasure: '||lc_ixunitmeasure);
+		 p_ixunitmeasure := lc_ixunitmeasure;
+
 		 lc_ixitemquantity := p_ixitemquantity;
 		 lc_ixunitcost     := p_ixunitcost;
-		 IF SIGN(lc_ixitemquantity) < 0 
+		 IF SIGN(lc_ixitemquantity) < 0
 		 THEN
 		    lc_ixitemquantity := ABS(lc_ixitemquantity);
 		    lc_ixunitcost     := (-1) * ABS(p_ixunitcost);
 	         END IF;
-	         
+
 	         lc_ixinvoicelinenum :=  p_ixinvoicelinenum;
-	         IF lc_ixinvoicelinenum IS NULL AND p_linenumber > 0 
-	         THEN 
+	         IF lc_ixinvoicelinenum IS NULL AND p_linenumber > 0
+	         THEN
 	            p_ixinvoicelinenum := '0000'||to_char(p_linenumber);
 	         END IF;
-	         
+
 		 IF (gn_amex_except13 > 0)
 		 THEN
-                       p_ixcustitemnum := SUBSTR(gc_ixcostcenter,14,4); 
-                       xx_location_and_log(g_loc,'ixcustitemnum-13: '||SUBSTR(gc_ixcostcenter,14,4)); 
+                       p_ixcustitemnum := SUBSTR(gc_ixcostcenter,14,4);
+                       xx_location_and_log(g_loc,'ixcustitemnum-13: '||SUBSTR(gc_ixcostcenter,14,4));
                        p_ixcustitemdesc := SUBSTR(SUBSTR(gc_ixcostcenter,1,5)||'-'||SUBSTR(gc_ixcostcenter,6,3)
                                            ||'-'||SUBSTR(gc_ixcostcenter,9,2)||'-'||SUBSTR(gc_ixcostcenter,11),4,13);
                        xx_location_and_log(g_loc,'ixcustitemdesc-13: '||SUBSTR(SUBSTR(gc_ixcostcenter,1,5)||'-'||SUBSTR(gc_ixcostcenter,6,3)
-                                           ||'-'||SUBSTR(gc_ixcostcenter,9,2)||'-'||SUBSTR(gc_ixcostcenter,11),4,13));                                            
-		 END IF;	         
+                                           ||'-'||SUBSTR(gc_ixcostcenter,9,2)||'-'||SUBSTR(gc_ixcostcenter,11),4,13));
+		 END IF;
 	      END process_amex_line_data;
         --End changes for defect 38215
-        
-        
+
+
 	-- +===================================================================+
 	-- | PROCEDURE  : PROCESS_NET_DATA                                     |
 	-- |                                                                   |
@@ -1711,7 +1710,7 @@ PACKAGE BODY      xx_iby_settlement_pkg
 											  12);
 				END IF;
 			END IF;
-			
+
 
 			xx_location_and_log(g_log,
 								   'AMEX CPC                 : '
@@ -1744,7 +1743,7 @@ PACKAGE BODY      xx_iby_settlement_pkg
 					(g_loc,
 					 'Entering WHEN OTHERS Exception in XX_SET_POST_RECEIPT_VARIABLES for Process NET_DATA AMEX CPC CARD - ex_raise_cc_decrytpt');
 				fnd_file.put_line(fnd_file.LOG, ' Error ex_raise_cc_decrytpt - Raise ex_cc_decrytpt for order payment id ' || gn_order_payment_id);
-				RAISE ex_cc_decrytpt; 
+				RAISE ex_cc_decrytpt;
 			WHEN OTHERS
 			THEN
 				xx_location_and_log
@@ -1814,7 +1813,7 @@ PACKAGE BODY      xx_iby_settlement_pkg
 				x_order_payment_id := NULL;
 				x_error_message := NULL;
 		END xx_retrieve_order_pmt_id;
-		
+
 			-- +====================================================================+
 	-- | PROCEDURE  : XX_UPDATE_COF_TRANS                              |
 	-- |                                                                    |
@@ -1829,10 +1828,10 @@ PACKAGE BODY      xx_iby_settlement_pkg
 		PROCEDURE XX_UPDATE_COF_TRANS
 		is
 		BEGIN
-			
+
 
 				if gc_ixwallet_type='1' then
-				
+
 					if gc_ixoptions is not null then
 						gc_ixoptions := gc_ixoptions||' '|| '*COF';
 						gc_ixreserved32:='<COF><Schedule>N</Schedule><Reason>Initial</Reason></COF>';
@@ -1840,11 +1839,11 @@ PACKAGE BODY      xx_iby_settlement_pkg
 						gc_ixoptions := gc_ixoptions||'*COF';
 						gc_ixreserved32:='<COF><Schedule>N</Schedule><Reason>Initial</Reason></COF>';
 					end if;
-						
+
 				end if;
-				
-				if gc_ixwallet_type='2' then		
-				
+
+				if gc_ixwallet_type='2' then
+
 					if gc_ixoptions is not null then
 						gc_ixoptions := gc_ixoptions||' '|| '*COF';
 						gc_ixreserved32:='<COF><Schedule>N</Schedule><Reason>Subsequent</Reason></COF>';
@@ -1853,8 +1852,8 @@ PACKAGE BODY      xx_iby_settlement_pkg
 						gc_ixreserved32:='<COF><Schedule>N</Schedule><Reason>Subsequent</Reason></COF>';
 					end if;
 				end if;
-				
-				if gc_ixwallet_type='3' then				
+
+				if gc_ixwallet_type='3' then
 					if gc_ixoptions is not null then
 						gc_ixoptions := gc_ixoptions||' '|| '*COF';
 						gc_ixreserved32:='<COF><Schedule>N</Schedule><Reason>Reauth</Reason></COF>';
@@ -1863,8 +1862,8 @@ PACKAGE BODY      xx_iby_settlement_pkg
 						gc_ixreserved32:='<COF><Schedule>N</Schedule><Reason>Reauth</Reason></COF>';
 					end if;
 				end if;
-				
-				if gc_ixwallet_type='4' then				
+
+				if gc_ixwallet_type='4' then
 					if gc_ixoptions is not null then
 						gc_ixoptions := gc_ixoptions||' '|| '*COF *Recurring_Payment';
 						gc_ixreserved32:='<COF><Schedule>Y</Schedule><Reason>Initial</Reason></COF>';
@@ -1873,8 +1872,8 @@ PACKAGE BODY      xx_iby_settlement_pkg
 						gc_ixreserved32:='<COF><Schedule>Y</Schedule><Reason>Initial</Reason></COF>';
 					end if;
 				end if;
-				
-				if gc_ixwallet_type='5' then				
+
+				if gc_ixwallet_type='5' then
 					if gc_ixoptions is not null then
 						gc_ixoptions := gc_ixoptions||' '|| '*COF *Recurring_Payment';
 						gc_ixreserved32:='<COF><Schedule>Y</Schedule><Reason>Subsequent</Reason></COF>';
@@ -1883,8 +1882,8 @@ PACKAGE BODY      xx_iby_settlement_pkg
 						gc_ixreserved32:='<COF><Schedule>Y</Schedule><Reason>Subsequent</Reason></COF>';
 					end if;
 				end if;
-				
-				if gc_ixwallet_type='6' then				
+
+				if gc_ixwallet_type='6' then
 					if gc_ixoptions is not null then
 						gc_ixoptions := gc_ixoptions||' '|| '*COF *Recurring_Payment';
 						gc_ixreserved32:='<COF><Schedule>Y</Schedule><Reason>Resubmit</Reason></COF>';
@@ -1899,10 +1898,10 @@ PACKAGE BODY      xx_iby_settlement_pkg
 				xx_location_and_log(g_log,
 								   'ixreserved32: '
 								|| gc_ixreserved32);
-				
-				
-		EXCEPTION						
-			WHEN OTHERS 
+
+
+		EXCEPTION
+			WHEN OTHERS
 			THEN
 			 xx_location_and_log(g_loc,
 									'Entering OTHERS Exception in XX_UPDATE_COF_TRANS.' || ' '
@@ -2228,7 +2227,7 @@ PACKAGE BODY      xx_iby_settlement_pkg
 			p_order_payment_id  IN  NUMBER)
 			RETURN BOOLEAN
 		IS
-			
+
 			ln_rec_count    NUMBER;
 		BEGIN
 			xx_location_and_log(g_loc,
@@ -2957,7 +2956,7 @@ PACKAGE BODY      xx_iby_settlement_pkg
 				AND    ara.amount_applied < 0
 				AND    ara.display = 'Y';
 			ELSIF gc_remit_processing_type=g_service_contracts then --Added for V47.0 5/Mar/2018
-			
+
 				xx_location_and_log
 							  (g_loc,
 							   'Retrieving the Receipt information for Service Contracts Remittance Processing Type. ');
@@ -2974,7 +2973,7 @@ PACKAGE BODY      xx_iby_settlement_pkg
 					   acr.attribute_category recp_attr_category,
 					   acr.attribute3 voice_auth,
 					   xaord.credit_card_approval_code approval_code,
-					   NVL(acr.attribute1,g_servc_contract_store_number) "STORE"   
+					   NVL(acr.attribute1,g_servc_contract_store_number) "STORE"
 													 ,
 					   acr.attribute2 shiploc,
 					   acr.attribute4 net_data,
@@ -3284,7 +3283,7 @@ PACKAGE BODY      xx_iby_settlement_pkg
 			la_addl_auth_codes_tab  stringarray    DEFAULT stringarray();
 			lc_err_msg              VARCHAR2(2000);
             --Version 27.0
-            lc_emv_card             xx_ar_order_receipt_dtl.emv_card%TYPE; 
+            lc_emv_card             xx_ar_order_receipt_dtl.emv_card%TYPE;
             lc_emv_terminal         xx_ar_order_receipt_dtl.emv_terminal%TYPE;
             lc_emv_transaction      xx_ar_order_receipt_dtl.emv_transaction%TYPE;
             lc_emv_offline          xx_ar_order_receipt_dtl.emv_offline%TYPE;
@@ -3853,14 +3852,14 @@ PACKAGE BODY      xx_iby_settlement_pkg
 					xx_location_and_log(g_loc,
 										'Set Credit Card Vendor for POE_INT_STORE_CUST Remittance Processing Type. ');
 					gc_credit_card_vendor := gc_card_name;
-					
+
 				Elsif 	gc_remit_processing_type = g_service_contracts--Added for V47.0 5/Mar/2018
 				THEN
-				
+
 				xx_location_and_log(g_loc,
 										'Set Credit Card Vendor for SERVICE-CONTRACTS Remittance Processing Type. ');
 					gc_credit_card_vendor := gc_card_name;
-				
+
 				ELSE
 					xx_location_and_log
 						 (g_loc,
@@ -3935,7 +3934,7 @@ PACKAGE BODY      xx_iby_settlement_pkg
 				xx_location_and_log(g_loc,
 									'Retrieving IXISSUENUMBER based on Remittance Processing Type. ');
 
-				-- MOD 4A 
+				-- MOD 4A
 				IF gc_remit_processing_type = g_poe_int_store_cust
 				THEN
 					xx_location_and_log(g_loc,
@@ -3958,14 +3957,14 @@ PACKAGE BODY      xx_iby_settlement_pkg
 					AND    attribute14 LIKE 'CITI%';
 				END IF;
 				MOD 4A --
-				-- MOD 4A : Added below SQL to retrieve cust_po_number 
-				
+				-- MOD 4A : Added below SQL to retrieve cust_po_number
+
 				SELECT   cust_po_number
 				  INTO   gc_ixissuenumber
 				  FROM   oe_order_headers_all
 				 WHERE   order_number      = gn_order_number
 				  AND    rownum            = 1;
-				 
+
 				xx_location_and_log(g_log,
 									   'ixissuenumber            : '
 									|| gc_ixissuenumber);
@@ -4217,13 +4216,13 @@ PACKAGE BODY      xx_iby_settlement_pkg
 					END;
 				END IF;
 			END;
-			
+
 	--------------------------------------------------------------Version 26.4
         -- Set gc_ixreserved33 for CC information for AJB file
         -- Set variables gc_ixtokenflag
         -- Set variable gc_ixcreditcardcode --Version 32.0
         -- Set variable gc_ixwallet_type,gc_ixwallet_id --Version 33.0
-        --------------------------------------------------------------			
+        --------------------------------------------------------------
             BEGIN
                 SELECT   DECODE (  NVL (xaord.token_flag, 'N'), 'Y'
                                  , xaord.credit_card_number , NULL) credit_card_number,
@@ -4233,23 +4232,23 @@ PACKAGE BODY      xx_iby_settlement_pkg
                          xaord.credit_card_code,  --Version 32.0
                          xaord.wallet_type,       --Version 33.0
                          xaord.wallet_id,         --Version 33.0
-                         emv_card, 
-                         emv_terminal, 
-                         emv_transaction, 
-                         emv_offline, 
-                         emv_fallback, 
-                         emv_tvr 
+                         emv_card,
+                         emv_terminal,
+                         emv_transaction,
+                         emv_offline,
+                         emv_fallback,
+                         emv_tvr
                 INTO     gc_ixreserved33,
                         -- gc_ixoptions,
                          gc_ixtokenflag,
                          gc_ixcreditcardcode,
                          gc_ixwallet_type,
                          gc_ixwallet_id,
-                         lc_emv_card, 
-                         lc_emv_terminal, 
-                         lc_emv_transaction, 
-                         lc_emv_offline, 
-                         lc_emv_fallback, 
+                         lc_emv_card,
+                         lc_emv_terminal,
+                         lc_emv_transaction,
+                         lc_emv_offline,
+                         lc_emv_fallback,
                          lc_emv_tvr
                 FROM     xx_ar_order_receipt_dtl xaord
                 WHERE    xaord.order_payment_id = gn_order_payment_id;
@@ -4265,25 +4264,25 @@ PACKAGE BODY      xx_iby_settlement_pkg
 			IF gc_credit_card_vendor IS NULL THEN
 			   gc_credit_card_vendor := gc_ixcreditcardcode;
 			END IF;
-			
+
             IF gc_ixtokenflag = 'Y' THEN  --Added in version 26.9
                 IF NVL (gc_ixoptions , '-1') <> '-1' THEN  --Version 27.1, 27.3
                     gc_ixoptions := gc_ixoptions||' '|| gc_tokenization;
-                ELSE 
+                ELSE
                     gc_ixoptions := gc_ixoptions||gc_tokenization;
                 END IF;
             END IF;
 
-	    --Start changes for version 33.0 
+	    --Start changes for version 33.0
 	    IF gc_ixwallet_type = 'P' THEN
-	       IF NVL (gc_ixoptions , '-1') <> '-1' THEN  
+	       IF NVL (gc_ixoptions , '-1') <> '-1' THEN
 	            gc_ixoptions := gc_ixoptions||' '|| '*Masterpass_'||gc_ixwallet_id;
-	       ELSE 
+	       ELSE
 	            gc_ixoptions := gc_ixoptions||'*Masterpass_'||gc_ixwallet_id;
                END IF;
 	    END IF;
 	    --End Version 33.0
-	    
+
 	--------------------------------------------------------------Version 27.0
         -- Set variables gc_ixtokenflag based on EMV columns of ORDT table
         --EMV Card - Do nothing
@@ -4292,36 +4291,36 @@ PACKAGE BODY      xx_iby_settlement_pkg
         --EMV Offline -  If Y, then put "Referral" in Field 21
         --EMV Fallback - If Y, then put *FALLBACK_EMV   in  field 21
         --EMV TVR - Put "<95>" + Field Value + "</95>" in Field 56
-	--------------------------------------------------------------	
-	
+	--------------------------------------------------------------
+
             IF NVL (lc_emv_fallback, 'N') = 'Y' THEN
-			
+
                 IF NVL (gc_ixswipe , '-1') <> '-1' THEN   --Version 27.1
                    gc_ixoptions := '*CEM_Swiped *FALLBACK_EMV '||gc_ixoptions;
                 ELSE
                    gc_ixoptions := '*CEM_Manual *FALLBACK_EMV '||gc_ixoptions;
                 END IF;
             END IF;
-			
+
             IF NVL (lc_emv_offline, 'N') = 'Y' THEN
                 gc_ixoptions := '*REFERRAL '||gc_ixoptions;
             END IF;
-			
+
             IF NVL (lc_emv_transaction, 'N') = 'Y' THEN
                 gc_ixoptions := '*CEM_Insert *EMV '||gc_ixoptions;   --Version 27.1
             END IF;
-       
+
             IF NVL (lc_emv_terminal, 'N') <> 'N' THEN
                 gc_ixoptions := '*DEVCAP='||lc_emv_terminal||' '||gc_ixoptions;
             END IF;
-			
+
             IF NVL (lc_emv_tvr, 'N') <> 'N' THEN
                 gc_ixreserved56 := '<95>'||lc_emv_tvr||'</95>';
             END IF;
-			
+
             xx_location_and_log(g_loc, 'gc_ixoptions :: '||gc_ixoptions);
             xx_location_and_log(g_loc, 'gc_ixreserved56 :: '||gc_ixreserved56);
-			
+
 	END xx_set_post_receipt_variables;
 
 	-- +====================================================================+
@@ -4434,16 +4433,16 @@ PACKAGE BODY      xx_iby_settlement_pkg
 					END;
           --Start Changes for BIZBOX
 			BEGIN
-				IF gc_order_source = 'BBOX' THEN 
+				IF gc_order_source = 'BBOX' THEN
                   SELECT  MPL_ORDER_ID
                     INTO l_mpl_order_id
                     FROM xx_ar_order_receipt_dtl
-                   WHERE order_payment_id = gn_order_payment_id;	
-							
+                   WHERE order_payment_id = gn_order_payment_id;
+
                   xx_location_and_log(g_log,
                                       'BBOX MPL_ORDER_ID from Receipts          : '
                                       || l_mpl_order_id);
-				 END IF;           
+				 END IF;
 			EXCEPTION
 				WHEN NO_DATA_FOUND
 				THEN
@@ -4451,12 +4450,12 @@ PACKAGE BODY      xx_iby_settlement_pkg
 								(g_loc,
 								 'Entering NO_DATA_FOUND Exception in XX_SET_POST_TRX_VARIABLES for Retrieve MPL_ORDER_ID Information. ');
                 l_mpl_order_id := NULL;
-			END;	
+			END;
         --End Changes for BIZBOX
-					
+
           --Defect# 35181 - Order date for payment against single invoice should be retrieved from Receipt date. BEGIN
-					--If the receipt is from iRec,populate the ixorderdate with receipt_date 
-					
+					--If the receipt is from iRec,populate the ixorderdate with receipt_date
+
 					BEGIN
 					    IF (gc_remit_processing_type = g_irec) then
 						    --
@@ -4464,35 +4463,11 @@ PACKAGE BODY      xx_iby_settlement_pkg
 									   'MMDDYYYY')
 							  INTO gc_ixorderdate
 							  FROM xx_ar_order_receipt_dtl
-							 WHERE order_payment_id = gn_order_payment_id;	
+							 WHERE order_payment_id = gn_order_payment_id;
 							xx_location_and_log(g_log,
 											   'Order Date from Receipts          : '
 											|| gc_ixorderdate);
 					    END IF;
-					EXCEPTION
-						WHEN NO_DATA_FOUND
-						THEN
-							xx_location_and_log
-								(g_loc,
-								 'Entering NO_DATA_FOUND Exception in XX_SET_POST_TRX_VARIABLES for Retrieve Order Date Information. ');
-							gc_ixorderdate := NULL;
-					END;	
-					
-					BEGIN
-					    IF  (gc_remit_processing_type = g_service_contracts) THEN  --Modified for V47.0 5/Mar/2018
-						    --
-							gc_orig_sys_document_ref:=gc_trx_number;
-							SELECT  TO_CHAR(receipt_date,
-									   'MMDDYYYY')
-							  INTO gc_ixorderdate
-							  FROM xx_ar_order_receipt_dtl
-							 WHERE order_payment_id = gn_order_payment_id;	
-							xx_location_and_log(g_log,
-											   'Order Date from Receipts          : '
-											|| gc_ixorderdate);
-											
-					    END IF;
-						
 					EXCEPTION
 						WHEN NO_DATA_FOUND
 						THEN
@@ -4501,9 +4476,33 @@ PACKAGE BODY      xx_iby_settlement_pkg
 								 'Entering NO_DATA_FOUND Exception in XX_SET_POST_TRX_VARIABLES for Retrieve Order Date Information. ');
 							gc_ixorderdate := NULL;
 					END;
-					
-					
-          --Defect# 35181 - Order date for payment against single invoice should be retrieved from Receipt date. END					
+
+					BEGIN
+					    IF  (gc_remit_processing_type = g_service_contracts) THEN  --Modified for V47.0 5/Mar/2018
+						    --
+							gc_orig_sys_document_ref:=gc_trx_number;
+							SELECT  TO_CHAR(receipt_date,
+									   'MMDDYYYY')
+							  INTO gc_ixorderdate
+							  FROM xx_ar_order_receipt_dtl
+							 WHERE order_payment_id = gn_order_payment_id;
+							xx_location_and_log(g_log,
+											   'Order Date from Receipts          : '
+											|| gc_ixorderdate);
+
+					    END IF;
+
+					EXCEPTION
+						WHEN NO_DATA_FOUND
+						THEN
+							xx_location_and_log
+								(g_loc,
+								 'Entering NO_DATA_FOUND Exception in XX_SET_POST_TRX_VARIABLES for Retrieve Order Date Information. ');
+							gc_ixorderdate := NULL;
+					END;
+
+
+          --Defect# 35181 - Order date for payment against single invoice should be retrieved from Receipt date. END
 
 					IF (gc_orig_sys_document_ref LIKE 'OE_ORDER_HEADERS_ALL%')
 					THEN
@@ -4753,8 +4752,7 @@ PACKAGE BODY      xx_iby_settlement_pkg
 
 					BEGIN
 						gc_source := 'AR';
-						--gc_ixregisternumber := '56';--Commented code for V48.3
-						gc_ixregisternumber := '95';--Added code for V48.3
+						gc_ixregisternumber := '56';
 						--gc_ixreserved31 := gc_mo_value; Modified for V47.3 14/Mar/2018
 						--------------------------------------------------------------------------
 						-- Retrieve AOPS Auth Entry-Defaulted to *ECE for Service Contracts
@@ -4784,26 +4782,26 @@ PACKAGE BODY      xx_iby_settlement_pkg
 									(g_loc,
 									 'Entering WHEN OTHERS Exception in XX_SET_POST_RECEIPT_VARIABLES for Retrieve AOPS and POS Auth Entry for Service-Contracts.');
 								gc_aops_auth_entry := NULL;
-								
+
 						END;
 
 						xx_location_and_log(g_log,
 											   'AOPS Auth Entry          : '
 											|| gc_aops_auth_entry);
-						
-						gc_ixreserved31 := gc_aops_auth_entry;								
-						
-						--Modified End for V47.3 14/Mar/2018		
-						
-						
-						gc_ixstorenumber :=  NVL(gc_oapfstoreid,NVL(gc_store,g_servc_contract_store_number));--gc_oapfstoreid;						
-						gc_pre2 :=  NVL(gc_oapfstoreid,NVL(gc_store,g_servc_contract_store_number));--gc_oapfstoreid;						
+
+						gc_ixreserved31 := gc_aops_auth_entry;
+
+						--Modified End for V47.3 14/Mar/2018
+
+
+						gc_ixstorenumber :=  NVL(gc_oapfstoreid,NVL(gc_store,g_servc_contract_store_number));--gc_oapfstoreid;
+						gc_pre2 :=  NVL(gc_oapfstoreid,NVL(gc_store,g_servc_contract_store_number));--gc_oapfstoreid;
 						IF gc_sale_type = g_sale
 						THEN
 							gc_ixinvoice := gc_trx_number; -- Added for V47.0 5/Mar/2018
 						END IF;
 					END;
-				
+
 				ELSIF(    gc_remit_processing_type = g_default
 					  AND gc_sale_type = g_sale
 					  AND gb_is_deposit_receipt = TRUE)
@@ -4962,11 +4960,11 @@ PACKAGE BODY      xx_iby_settlement_pkg
                                           || SUBSTR(gc_orig_sys_document_ref,
                                           -3);
               -- Start Changes for Bizbox order
-              IF (gc_order_source='BBOX') 
+              IF (gc_order_source='BBOX')
               THEN
                 --gc_source := 'BBOX';
-                gc_ixinvoice := l_mpl_order_id;   
-			  END IF;  
+                gc_ixinvoice := l_mpl_order_id;
+			  END IF;
              --- End
 							gc_ixstorenumber := gc_shiploc;
 							gc_pre2 := gc_ixstorenumber;
@@ -5451,13 +5449,13 @@ PACKAGE BODY      xx_iby_settlement_pkg
 							gc_ixshiptozipcode := gc_aops_dep_shipto_zipcode;
 							gc_ixshiptostate := gc_aops_dep_shipto_state;
 						END IF;
-						
+
 						--Start of changes of Defect# 34612
-					
+
 						BEGIN
 							IF (gc_ixshiptozipcode  is null)
 							then
-							
+
 								SELECT	attribute1 shiptozipcode,
 										attribute2 shiptostate
 								INTO 	gc_ixshiptozipcode,
@@ -5469,9 +5467,9 @@ PACKAGE BODY      xx_iby_settlement_pkg
 												WHERE order_payment_id = gn_order_payment_id
 												)
 								GROUP BY attribute1, attribute2;
-								
+
 							END IF;
-							
+
 						EXCEPTION
 							WHEN NO_DATA_FOUND
 							THEN
@@ -5492,7 +5490,7 @@ PACKAGE BODY      xx_iby_settlement_pkg
 													|| 'Error Message: '
 													|| SQLERRM);
 						END;
-					
+
 						--End of changes of Defect# 34612
 					EXCEPTION
 						WHEN NO_DATA_FOUND
@@ -5636,7 +5634,7 @@ PACKAGE BODY      xx_iby_settlement_pkg
 									  || gn_order_number
 									  || '#'
 									  || gn_order_payment_id;
-				ELSIF    (gc_sale_type = g_sale)     
+				ELSIF    (gc_sale_type = g_sale)
 					  OR (    gc_sale_type = g_refund
 						  AND gc_ixreserved43 IS NULL)
 				THEN
@@ -5663,14 +5661,14 @@ PACKAGE BODY      xx_iby_settlement_pkg
 										|| gc_ixreference);
 				END IF;
 			END;
-			
+
 	--------------------------------------------------------------------------
 	-- Change Value of gc_ixoptions based on gc_ixswipe value
 	--------------------------------------------------------------------------Version 27.2
             IF NVL (gc_ixswipe ,'-1') <> '-1' THEN
                gc_ixoptions := REPLACE ( gc_ixoptions , '*CEM_Manual', '*CEM_Swiped');
             END IF;
-			
+
 		END xx_set_post_trx_variables;
 
 	-- +====================================================================+
@@ -6336,8 +6334,8 @@ PACKAGE BODY      xx_iby_settlement_pkg
 					AND    rctl.inventory_item_id = msi.inventory_item_id
 					AND    msi.organization_id = gn_master_org_id
 					AND    msi.segment1 = 'AC';
-					
-					
+
+
 
 					xx_location_and_log(g_log,
 										   'Misc Charge - AR         : '
@@ -6930,7 +6928,7 @@ PACKAGE BODY      xx_iby_settlement_pkg
 				xx_location_and_log(g_loc,
 									'Check Cust Override of 0. ');
 
-								
+
 				IF (gc_cust_code_override = 'O')
 				THEN
 					gc_ixcustomerreferenceid := gc_ixinvoice;
@@ -6938,7 +6936,7 @@ PACKAGE BODY      xx_iby_settlement_pkg
 										   'Customer Reference ID    : '
 										|| gc_ixcustomerreferenceid);
 				END IF;
-				
+
 				--START 35.0
 				BEGIN
 					xx_location_and_log(g_loc,
@@ -6948,7 +6946,7 @@ PACKAGE BODY      xx_iby_settlement_pkg
 					THEN
 						xx_location_and_log(g_loc,
 											'Retrieving IXISSUENUMBER for POE_INT_STORE_CUST Remittance Processing Type. ');
-		
+
 						SELECT cc_auth_ps2000
 						INTO   gc_cc_auth_ps2000
 						FROM   xx_ar_order_receipt_dtl
@@ -6958,7 +6956,7 @@ PACKAGE BODY      xx_iby_settlement_pkg
 						xx_location_and_log
 										(g_loc,
 											'Retrieving IXISSUENUMBER for NON-POE_INT_STORE_CUST ORemittance Processing Type. ');
-		
+
 						SELECT attribute4
 						INTO   gc_cc_auth_ps2000
 						FROM   ar_cash_receipts_all
@@ -6973,12 +6971,12 @@ PACKAGE BODY      xx_iby_settlement_pkg
 								'Entering NO_DATA_FOUND Exception in XX_PROCESS_CUST_EXCEPTIONS for Set gc_cc_auth_ps2000. ');
 								gc_cc_auth_ps2000 := NULL;
 				END;
-				
+
 				IF(gc_cc_auth_ps2000 IS NOT NULL)
 				THEN
 						gc_ixissuenumber := gc_cc_auth_ps2000;
 				ELSE
-			
+
 					IF (gc_sec_po_override = 'D')
 					THEN
 						gc_ixissuenumber := gc_ixcostcenter;
@@ -6995,16 +6993,16 @@ PACKAGE BODY      xx_iby_settlement_pkg
 					xx_location_and_log(g_log,
 											'Field 25 Issue Number gc_ixissuenumber : '
 											|| gc_ixissuenumber);
-	
+
 					xx_location_and_log(g_loc,
 										'Check Customer Override. ' || gc_cust_code_override);
-				END IF;	--END 35.0						
-										
-					IF gc_sec_po_override IS NOT NULL 
+				END IF;	--END 35.0
+
+					IF gc_sec_po_override IS NOT NULL
 					THEN
 						-- gc_ixreserved39 := gc_ixissuenumber || '/' || gc_ixinvoice;  --Commented in version 26.9
 						gc_ixreserved39 := gc_ixinvoice || '/' || gc_ixissuenumber;
-					END IF; 
+					END IF;
 -- End 26.5
 
 				IF    (UPPER(gc_credit_card_vendor) = 'MASTERCARD')
@@ -7077,12 +7075,12 @@ PACKAGE BODY      xx_iby_settlement_pkg
 					  AND gc_cust_po_number IS NOT NULL)
 				THEN
 					gc_ixshiptoname := gc_cust_po_number;
-				--Start of changes for defect #44299				
+				--Start of changes for defect #44299
 				ELSIF(    gn_other_cust_exp > 0
 					   AND gc_other_cust = 'SWIFT TRANSPORTATION')
 				THEN
 					gc_ixcustomerreferenceid := gc_cust_po_number || gc_ixcostcenter;
-				--End of changes for defect #44299	
+				--End of changes for defect #44299
 				END IF;
 			EXCEPTION
 				WHEN NO_DATA_FOUND
@@ -7260,6 +7258,8 @@ PACKAGE BODY      xx_iby_settlement_pkg
 			THEN
 				RAISE ex_mandatory_fields;
 			END IF;
+			
+			
 
 			xx_location_and_log(g_loc,
 								'Inserting into XX_IBY_BATCH_TRXNS (101). ');
@@ -7448,7 +7448,7 @@ PACKAGE BODY      xx_iby_settlement_pkg
 						 gc_key_label,
 						 gn_order_payment_id,
 						 gc_ixreserved33,    --Version 26.4
-						 gc_ixreserved39,    --Version 26.5 
+						 gc_ixreserved39,    --Version 26.5
 						 gc_ixreserved56,    --Version 27.0
 						 gc_ixtokenflag,     --Version 32.0
 						 gc_ixcreditcardcode, --Version 32.0
@@ -7656,7 +7656,7 @@ PACKAGE BODY      xx_iby_settlement_pkg
 				BEGIN
 					xx_location_and_log(g_loc,
 										'Inserting XX_IBY_BATCH_TRXNS_DET table for IREC Multi Invoice Pmt. ');
-					
+
 					--Defect#38215
 					lc_ixcustitemnum := '1';
 					lc_ixcustitemdesc := NULL;
@@ -7666,8 +7666,8 @@ PACKAGE BODY      xx_iby_settlement_pkg
 								'***** Executing PROCESS_AMEX_LINE_DATA from XX_CREATE_201_SETTLEMENT_REC ***** ');
 					   ln_line_number := 0;
                                            process_amex_line_data(ln_line_number,lc_ixunitmeasure,lc_ixitemquantity,
-                                           lc_ixunitcost,lc_ixinvoicelinenum,lc_ixcustitemnum,lc_ixcustitemdesc);	
-                                        END IF;                                           
+                                           lc_ixunitcost,lc_ixinvoicelinenum,lc_ixcustitemnum,lc_ixcustitemdesc);
+                                        END IF;
 
 					INSERT INTO xx_iby_batch_trxns_det
 								(pre1,
@@ -8259,8 +8259,8 @@ PACKAGE BODY      xx_iby_settlement_pkg
 									lc_ixcustuom := NULL;
 							END;
 						END IF;   -- gc_inv_flag check
-                                                
-                                                
+
+
 						--Start of Customer Exception
 						IF gc_credit_card_vendor = 'AMEX'
 						THEN
@@ -8296,9 +8296,9 @@ PACKAGE BODY      xx_iby_settlement_pkg
 								lc_ixitemdescription := 'OFFICE SUPPLY';
 							END IF;
 						END IF;
-						--End of Customer Exception 
-						
-						
+						--End of Customer Exception
+
+
 						IF (    (    lc_line_category = 'RETURN'
 								 AND gc_inv_flag = 'N')
 							OR (    SIGN(lc_actual_qty) = -1
@@ -8366,14 +8366,14 @@ PACKAGE BODY      xx_iby_settlement_pkg
 		                                THEN
 		                                   xx_location_and_log(g_loc,
 								'***** Executing PROCESS_AMEX_LINE_DATA from XX_CREATE_201_SETTLEMENT_REC ***** ');
-						   IF lc_ixinvoicelinenum IS NULL 
-						   THEN 
+						   IF lc_ixinvoicelinenum IS NULL
+						   THEN
 						      ln_line_number := c_invoice_line%ROWCOUNT;
 						   END IF;
                                                    process_amex_line_data(ln_line_number,lc_ixunitmeasure,lc_ixitemquantity,
                                                    lc_ixunitcost,lc_ixinvoicelinenum,lc_ixcustitemnum,lc_ixcustitemdesc);
                                                 END IF;
-                                                
+
 						BEGIN
 							xx_location_and_log(g_loc,
 												'Inserting into XX_IBY_BATCH_TRXNS_DET (201) for Invoice/Order. ');
@@ -8386,7 +8386,7 @@ PACKAGE BODY      xx_iby_settlement_pkg
 								|| gn_order_payment_id
 								|| 'SKU Number: '
 								|| lc_ixskunumber;
-								
+
 							INSERT INTO xx_iby_batch_trxns_det
 										(pre1,
 										 pre2,
@@ -8590,17 +8590,17 @@ PACKAGE BODY      xx_iby_settlement_pkg
 						THEN
 							lc_ixproductcode := lc_ixskunumber;
 						END IF;
-						
+
 						--Defect#38215
 						lc_ixunitcost := ABS(ROUND(lc_ixunitcost,5));
 						IF gn_amex_cpc > 0 and NVL(gc_ixtokenflag,'N') = 'Y'
 		                                THEN
 		                                    xx_location_and_log(g_loc,
-								'***** Executing PROCESS_AMEX_LINE_DATA from XX_CREATE_201_SETTLEMENT_REC ***** ');	
-						    IF lc_ixinvoicelinenum IS NULL 
-						    THEN 
+								'***** Executing PROCESS_AMEX_LINE_DATA from XX_CREATE_201_SETTLEMENT_REC ***** ');
+						    IF lc_ixinvoicelinenum IS NULL
+						    THEN
 						      ln_line_number := c_invoice_line%ROWCOUNT;
-						    END IF;								
+						    END IF;
                                                     process_amex_line_data(ln_line_number,lc_ixunitmeasure,lc_ixitemquantity,
                                                     lc_ixunitcost,lc_ixinvoicelinenum,lc_ixcustitemnum,lc_ixcustitemdesc);
                                                 END IF;
@@ -8984,19 +8984,19 @@ PACKAGE BODY      xx_iby_settlement_pkg
 	                   process_amex_data;
 	                END IF;
 	                --END Defect#38215 - amex to vantiv conv
-					
+
 					    --Start code Changes for V48.0
 			xx_location_and_log(g_log,
 								   'COF Transactions Update for Wallet Type            : '
 								|| gc_ixwallet_type);
-	                IF gc_ixwallet_type is not null 
+	                IF gc_ixwallet_type is not null
 		        THEN
 			   xx_location_and_log(g_loc,
 								'***** Executing XX_UPDATE_COF_TRANS from XX_SINGLE_TRX_SETTLEMENT ***** ');
 	                   XX_UPDATE_COF_TRANS;
 	                END IF;
 	                --End code Changes for V48.0
-	                
+
 			xx_location_and_log(g_loc,
 								'***** Executing XX_CREATE_101_SETTLEMENT_REC from XX_SINGLE_TRX_SETTLEMENT ***** ');
 			xx_create_101_settlement_rec;
@@ -9273,7 +9273,7 @@ PACKAGE BODY      xx_iby_settlement_pkg
 				gc_ixtransnumber := NULL;
 				gc_ixrecptnumber := gc_receipt_number;
 			END;
-			
+
 	--------------------------------------------------------------------
 	-- Step #5 - Create Settlement Records for IREC Multi Inv Payment
 	--------------------------------------------------------------------
@@ -9285,19 +9285,19 @@ PACKAGE BODY      xx_iby_settlement_pkg
 	                   process_amex_data;
 	                END IF;
 	                --END Defect#38215 - amex to vantiv conv
-					
+
 					  --Start code Changes for V48.0
 			xx_location_and_log(g_log,
 								   'COF Transactions Update for Wallet Type            : '
 								|| gc_ixwallet_type);
-	                IF gc_ixwallet_type is not null 
+	                IF gc_ixwallet_type is not null
 		        THEN
 			   xx_location_and_log(g_loc,
 								'***** Executing XX_UPDATE_COF_TRANS from xx_irec_multi_trx_settlement ***** ');
 	                   XX_UPDATE_COF_TRANS;
 	                END IF;
 	                --End code Changes for V48.0
-	                
+
 			xx_location_and_log(g_loc,
 								'***** Executing XX_CREATE_101_SETTLEMENT_REC from XX_IREC_MULTI_TRX_SETTLEMENT ***** ');
 			xx_create_101_settlement_rec;
@@ -9394,8 +9394,8 @@ PACKAGE BODY      xx_iby_settlement_pkg
 
 				IF (gc_sale_type = g_sale)
 				THEN
-				
-				
+
+
 					IF (gc_remit_processing_type = g_irec)
 					THEN   -- IF statement added for defect 13110
 	----------------------------------------------------------
@@ -9465,9 +9465,9 @@ PACKAGE BODY      xx_iby_settlement_pkg
 													'Encountered NO_DATA_FOUND in XX_RETRIEVE_INVOICE_INFO (SALE). ');
 								x_inv_retrieval_status := g_zero;
 						END;   -- Retrieve Invoice Information (SALE) for iRec
-						
+
 				    ELSIF(gc_remit_processing_type = g_service_contracts)  ----Added for V47.0/47.1 9/Mar/2018 to Fix UnApplied Invoices Scenario
-					THEN   
+					THEN
 	----------------------------------------------------------
 	-- Retrieve Invoice Information (SALE) for SERVICE-CONTRACTS
 	----------------------------------------------------------
@@ -9476,10 +9476,10 @@ PACKAGE BODY      xx_iby_settlement_pkg
 											  (g_loc,
 											   'Retrieving AR Invoice information (NON-POE_SINGLE_PMT_MULTI_ORD -> SALE and SERVICE-CONTRACTS). ');
 											   --Modified for V47.0/V47.2 10/Mar/2018
-										Begin			   
-										select  customer_receipt_reference into lv_invoice_num 
+										Begin
+										select  customer_receipt_reference into lv_invoice_num
 										from xx_ar_order_receipt_dtl where order_payment_id=gn_order_payment_id;
-										Exception 
+										Exception
 										WHEN TOO_MANY_ROWS
 										THEN
 										lv_invoice_num:=null;
@@ -9487,7 +9487,7 @@ PACKAGE BODY      xx_iby_settlement_pkg
 													'Encountered TOO_MANY_ROWS in XX_RETRIEVE_INVOICE_INFO (SALE-SERVICE-CONTRACTS) to derive Invoice Num# from ORDT.');
 										WHEN OTHERS
 										THEN
-										lv_invoice_num:=null;										
+										lv_invoice_num:=null;
 										xx_location_and_log(g_loc,
 													'Encountered OTHERS in XX_RETRIEVE_INVOICE_INFO (SALE-SERVICE-CONTRACTS) to derive Invoice Num# from ORDT.');
 										end;
@@ -9525,7 +9525,7 @@ PACKAGE BODY      xx_iby_settlement_pkg
 								   gc_cust_orig_system_ref,
 								   gc_cust_trx_type,
 								   gn_cust_account_id,
-								   gc_ixcustaccountno							
+								   gc_ixcustaccountno
 							FROM   ra_customer_trx_all rct, ra_cust_trx_types_all rctt, hz_cust_accounts hca
 							WHERE  rct.trx_number = to_char(lv_invoice_num)
 							AND    rct.cust_trx_type_id = rctt.cust_trx_type_id
@@ -9545,10 +9545,10 @@ PACKAGE BODY      xx_iby_settlement_pkg
 													'Encountered NO_DATA_FOUND in XX_RETRIEVE_INVOICE_INFO (SALE-SERVICE-CONTRACTS). ');
 								x_inv_retrieval_status := g_zero;
 						END;   -- Retrieve Invoice Information (SALE) for SERVICE-CONTRACTS
-						
-						
-						
-						
+
+
+
+
 					ELSE   -- else statement added for defect 13110
 	----------------------------------------------------------
 	-- Retrieve Invoice Information (SALE) for non-iRec
@@ -10988,29 +10988,51 @@ PACKAGE BODY      xx_iby_settlement_pkg
 	------------------------------------------------------------
 	-- Create 101 Settlement Record for single payment
 	------------------------------------------------------------
-	                --START Defect#38215 - amex to vantiv conv 
+	                --START Defect#38215 - amex to vantiv conv
 	                IF gn_amex_cpc > 0 and NVL(gc_ixtokenflag,'N') = 'Y'
-		        THEN	                
+		        THEN
 			   xx_location_and_log(g_loc,
 								'***** Executing PROCESS_AMEX_DATA from XX_POE_SGLPMT_MULTI_SETTLEMENT ***** ');
 	                   process_amex_data;
 	                END IF;
 	                --END Defect#38215 - amex to vantiv conv
-					
+
 					--Start code Changes for V48.0
 			xx_location_and_log(g_log,
 								   'COF Transactions Update for Wallet Type            : '
 								|| gc_ixwallet_type);
-	                IF gc_ixwallet_type is not null 
+	                IF gc_ixwallet_type is not null
 		        THEN
 			   xx_location_and_log(g_loc,
 								'***** Executing XX_UPDATE_COF_TRANS from xx_poe_sglpmt_multi_settlement ***** ');
 	                   XX_UPDATE_COF_TRANS;
 	                END IF;
 	                --End code Changes for V48.0
-	                
+
 			xx_location_and_log(g_loc,
-								'***** Executing XX_CREATE_101_SETTLEMENT_REC from XX_POE_SGLPMT_MULTI_SETTLEMENT ***** ');
+								'***** Executing XX_CREATE_101_SETTLEMENT_REC from XX_POE_SGLPMT_MULTI_SETTLEMENT ***** ');								
+								
+	---------------------------------------------------------------------------------------------------
+	-- Set gc_ixtransactiontype based on legacy_deposits Amount sign  --added by sripal for NAIT-115171
+	---------------------------------------------------------------------------------------------------
+          BEGIN
+	      SELECT decode(sign(xold.PREPAID_AMOUNT),-1,'Refund','Sale')
+          INTO gc_ixtransactiontype
+          FROM xx_ar_order_receipt_dtl xaord,
+               xx_om_legacy_deposits xold
+         WHERE  xaord.order_payment_id = gn_order_payment_id
+         AND    xaord.cash_receipt_id    = xold.cash_receipt_id
+		 AND    ROWNUM < 2;
+		 EXCEPTION
+		 WHEN NO_DATA_FOUND
+		 THEN
+		 xx_location_and_log
+		(g_loc,
+		'ENTERING NO_DATA_FOUND EXCEPTION FOR GC_IXTRANSACTIONTYPE IN XX_POE_SGLPMT_MULTI_SETTLEMENT. ');
+			NULL;
+END;	
+				
+								
 			xx_create_101_settlement_rec;
 		END xx_poe_sglpmt_multi_settlement;
 
@@ -11090,8 +11112,8 @@ PACKAGE BODY      xx_iby_settlement_pkg
 			xx_location_and_log(g_loc,
 								'***** Executing XX_RETRIEVE_PROCESSING_TYPE from XX_STG_RECEIPT_FOR_SETTLEMENT ***** ');
 			xx_retrieve_processing_type;   ---default
-			
-			
+
+
 		 /*   if (gc_remit_processing_type != g_poe_int_store_cust)
 			Then
 
@@ -12009,7 +12031,7 @@ PACKAGE BODY      xx_iby_settlement_pkg
  						 token_flag,     --Version 26.3
  						 emv_card,       --Version 26.3
  						 emv_terminal,   --Version 26.3
- 						 emv_transaction,--Version 26.3 
+ 						 emv_transaction,--Version 26.3
  						 emv_offline,    --Version 26.3
  						 emv_fallback,   --Version 26.3
  						 emv_tvr)        --Version 26.3
@@ -12072,7 +12094,7 @@ PACKAGE BODY      xx_iby_settlement_pkg
 						 'N',    --emv_card         --Version 26.3
 						 NULL,   --emv_terminal     --Version 27.0
 						 'N',    --emv_transaction  --Version 26.3
-						 'N',    --emv_offline      --Version 26.3 
+						 'N',    --emv_offline      --Version 26.3
 						 'N',    --emv_fallback     --Version 26.3
 						 NULL    --emv_tvr          --Version 27.0
 						 );
@@ -12341,7 +12363,7 @@ PACKAGE BODY      xx_iby_settlement_pkg
 						 'N',    --emv_card         --Version 27.0
 						 NULL,   --emv_terminal     --Version 27.0
 						 'N',    --emv_transaction  --Version 27.0
-						 'N',    --emv_offline      --Version 27.0 
+						 'N',    --emv_offline      --Version 27.0
 						 'N',    --emv_fallback     --Version 27.0
 						 NULL    --emv_tvr          --Version 27.0
 						 );
@@ -12964,11 +12986,11 @@ PACKAGE BODY      xx_iby_settlement_pkg
 			WHERE  oapforderid = p_oapforderid;
 	        EXCEPTION -- Defect 35495
                 WHEN OTHERS THEN
-                     NULL;     
+                     NULL;
             END;
-            
+
 			BEGIN
-			
+
 			xx_location_and_log(g_loc,
 								'Retrieving field_31 from OD_IBY_AUTH_TRANSACTIONS translation definition. ');
 
@@ -12988,9 +13010,9 @@ PACKAGE BODY      xx_iby_settlement_pkg
 
 			EXCEPTION
             WHEN OTHERS THEN
-                 NULL;     
+                 NULL;
             END;
-        
+
             SELECT icc.attribute7
               INTO x_token_flag
               FROM IBY_TRXN_SUMMARIES_ALL its,
@@ -12998,7 +13020,7 @@ PACKAGE BODY      xx_iby_settlement_pkg
              WHERE its.tangibleid= p_oapforderid
                AND its.payerinstrid = icc.instrid
                AND its.reqtype = 'ORAPMTREQ';
-		   
+
 		EXCEPTION
 			WHEN OTHERS
 			THEN
@@ -13242,7 +13264,7 @@ PACKAGE BODY      xx_iby_settlement_pkg
 					|| 'Error Debug: '
 					|| lc_error_debug;
 		END update_process_indicator;
-		
+
 --START of Defect# 35839, to send email
 -- +===================================================================+
 -- | Name  :DUP_STLM_RECORDS_MAIL                                      |
@@ -13255,11 +13277,11 @@ PACKAGE BODY      xx_iby_settlement_pkg
 -- +===================================================================+
 PROCEDURE DUP_STLM_RECORDS_MAIL
 IS
-		  l_mail_subject     VARCHAR2(2000);	
+		  l_mail_subject     VARCHAR2(2000);
 		  l_mail_body        VARCHAR2(4000):=NULL;
 		  l_mail_body1       VARCHAR2(4000):=NULL;
 		  l_mail_header      VARCHAR2(1000);
-		  l_debug_msg		 VARCHAR2(3000);	
+		  l_debug_msg		 VARCHAR2(3000);
 		  l_conc_id			 NUMBER;
           l_no_of_groups_ids NUMBER;
 		  lc_first_rec		 VARCHAR(1);
@@ -13275,14 +13297,14 @@ IS
 		  x_mail_sent_status VARCHAR2(1);
 		  l_count_prgms 	 NUMBER;
 		  l_rid				 Number(10) := 0;
-		  
+
 cursor stuck_records
 IS
-select distinct ixipaymentbatchnumber, count(1) count		
+select distinct ixipaymentbatchnumber, count(1) count
 from xx_iby_batch_trxns
 where ixipaymentbatchnumber is not null
 group by ixipaymentbatchnumber;
-		
+
 
 		-----------------------------
          --Define temp table of emails
@@ -13292,10 +13314,10 @@ group by ixipaymentbatchnumber;
                  BY BINARY_INTEGER ;
 
          EMAIL_TBL TYPE_TAB_EMAIL;
-BEGIN		
+BEGIN
 
 
-               
+
                     ------------------------------------------
                     -- Selecting emails from translation table
                     ------------------------------------------
@@ -13351,24 +13373,24 @@ BEGIN
         --l_count_prgms :=1;
         l_mail_subject :='Please Ignore this Email Alert: 101 or 201 tables already had data with ixipaymentbatchnumber populated - '||lc_instance;
         END IF;*/
-		
+
 		l_mail_subject := lc_instance||' - 101 or 201 tables already had data with ixipaymentbatchnumber populated';
-				
+
 FOR stk in stuck_records
 LOOP
 	l_mail_header := '<TABLE border="1"><TR align="left"><TH><B>Payment Batch ID</B></TH><TH><B>Count</B></TH></TR>';
 	l_mail_body :=l_mail_body||'<TR><TD>'||stk.ixipaymentbatchnumber||'</TD><TD>'||stk.count||'</TD></TR>';
 	l_mail_body1 := l_mail_body1||rpad(stk.ixipaymentbatchnumber,50)||rpad(stk.count,32)||crlf;
-	                                        
-END LOOP;	
-								
+
+END LOOP;
+
 	l_debug_msg := l_mail_subject|| crlf||crlf;
-	
-	lc_mail_conn := UTL_SMTP.open_connection (lc_mail_host, 25);	
-	
+
+	lc_mail_conn := UTL_SMTP.open_connection (lc_mail_host, 25);
+
 	UTL_SMTP.helo (lc_mail_conn, lc_mail_host);
 	UTL_SMTP.mail (lc_mail_conn, lc_mail_from);
-	
+
 	           ------------------------------------
                --Building string of email addresses
                ------------------------------------
@@ -13378,9 +13400,9 @@ END LOOP;
                For ln_cnt in 1..3 Loop
 
                     IF EMAIL_TBL(ln_cnt) IS NOT NULL THEN
-						
+
                         IF lc_first_rec = 'Y' THEN
-										
+
                            lc_mail_recipient :=  EMAIL_TBL(ln_cnt);
                            lc_first_rec := 'N';
                         ELSE
@@ -13389,12 +13411,12 @@ END LOOP;
                                              ||' , ' || EMAIL_TBL(ln_cnt);
 						END IF;
 						UTL_SMTP.rcpt (lc_mail_conn, EMAIL_TBL(ln_cnt));
-						
+
                     END IF;
 
                END LOOP;
 			   FND_FILE.PUT_LINE(FND_FILE.LOG,'EMAIL_TBL(ln_cnt)::  '||lc_mail_recipient);
-			   
+
 			l_rid := fnd_global.conc_request_id;
 
 	IF (lc_mail_recipient is not null)
@@ -13418,7 +13440,7 @@ END LOOP;
           || 'The program OD: AR IBY Settlement Close Batch Program ('||l_rid||') failed as 101 or 201 tables already had data with ixipaymentbatchnumber populated or had duplicate data. Below are the Details:<BR><BR>'
           || crlf
 		  || crlf
-		  ||l_mail_header					
+		  ||l_mail_header
           || l_mail_body
 		  ||'</TABLE><BR>'
           || crlf
@@ -13437,14 +13459,14 @@ END LOOP;
 	  UTL_SMTP.quit (lc_mail_conn);
 	  x_mail_sent_status := 'N';
 	END IF;
- 
+
    IF x_mail_sent_status = 'Y'
 	THEN
 		fnd_file.put_line (fnd_file.LOG,'Email Sent successfully');
    ELSE
-		fnd_file.put_line (fnd_file.LOG,'No email sent for duplicate data stuck in 101 and 201 tables'|| SQLERRM);   
+		fnd_file.put_line (fnd_file.LOG,'No email sent for duplicate data stuck in 101 and 201 tables'|| SQLERRM);
 	END IF;
-	
+
    EXCEPTION
       WHEN UTL_SMTP.transient_error OR UTL_SMTP.permanent_error
       THEN
@@ -13455,7 +13477,7 @@ END LOOP;
 END DUP_STLM_RECORDS_MAIL;
 --END of defect#35839 , to send mail
 
-	
+
 --START of Defect# 37763, to send ORDT alert email
 -- +===================================================================+
 -- | Name  			  : ORDT_RECORDS_MAIL                              |
@@ -13468,11 +13490,11 @@ END DUP_STLM_RECORDS_MAIL;
 -- +===================================================================+
 PROCEDURE ORDT_RECORDS_MAIL
 IS
-		  l_mail_subject     VARCHAR2(2000);	
+		  l_mail_subject     VARCHAR2(2000);
 		  l_mail_body        VARCHAR2(4000):=NULL;
 		  --l_mail_body1       VARCHAR2(4000):=NULL;
 		  l_mail_header      VARCHAR2(1000);
-		  l_debug_msg		 VARCHAR2(3000);	
+		  l_debug_msg		 VARCHAR2(3000);
           l_no_of_groups_ids NUMBER;
 		  lc_first_rec		 VARCHAR(1);
 		  ln_cnt             NUMBER ;
@@ -13483,8 +13505,8 @@ IS
 		  crlf               VARCHAR2(10)   := CHR (13) || CHR (10);
 		  lc_instance        VARCHAR2(100);
 		  x_mail_sent_status VARCHAR2(1);
-		  
-		  
+
+
 		  l_new_status		 VARCHAR2(20) := NULL;
 		  l_stage_status	 VARCHAR2(20) := NULL;
 		  l_error_status	 VARCHAR2(20) := NULL;
@@ -13495,8 +13517,8 @@ IS
 		  l_stage_amount	 VARCHAR2(20) := NULL;
 		  l_error_amount	 VARCHAR2(20) := NULL;
 		  l_date			 VARCHAR2(20) := to_char(sysdate-1, 'DD-MON-YY HH24:MI');		--Modified for the Defect#37866
-		  
-		  
+
+
 		-----------------------------
          --Define temp table of emails
          -----------------------------
@@ -13505,10 +13527,10 @@ IS
                  BY BINARY_INTEGER ;
 
          EMAIL_TBL TYPE_TAB_EMAIL;
-BEGIN		
+BEGIN
 
 
-               
+
                     ------------------------------------------
                     -- Selecting emails from translation table
                     ------------------------------------------
@@ -13516,12 +13538,12 @@ BEGIN
                     SELECT xftv.target_value1
                           ,xftv.target_value2
                           ,xftv.target_value3
-                       
+
                     INTO
                            EMAIL_TBL(1)
                           ,EMAIL_TBL(2)
                           ,EMAIL_TBL(3)
-                        
+
                     FROM   xx_fin_translatevalues xftv, xx_fin_translatedefinition xftd
 					WHERE  xftv.translate_id = xftd.translate_id
 					AND    xftd.translation_name = 'FTP_DETAILS_AJB'
@@ -13557,9 +13579,9 @@ BEGIN
         ELSE
         l_mail_subject :='Please Ignore this Email Alert: Remittance Status Alert as of cycle date '||l_date ||' - '||lc_instance;
         END IF;*/
-		
+
 		l_mail_subject := lc_instance||' - Remittance Status Alert as of cycle date '||l_date;
-		
+
 	SELECT   /*+ index(ORDT XX_AR_ORDER_RECEIPT_DTL_N3)*/
 			'New', TO_CHAR(COUNT(1),'99,999,999') ,  TO_CHAR(NVL(SUM(ORDT.PAYMENT_AMOUNT),0),'$999,999,999,999.99')
 	into 	l_new_status, l_new_count, l_new_amount
@@ -13567,7 +13589,7 @@ BEGIN
 	WHERE 	1=1
 	AND 	ORDT.remitted = 'N'
 	AND		ORDT.creation_date> sysdate-120;		--Modified for the Defect#37866
-	
+
 	SELECT   /*+ index(ORDT XX_AR_ORDER_RECEIPT_DTL_N3)*/
 			'Staged', TO_CHAR(COUNT(1),'99,999,999') ,  TO_CHAR(NVL(SUM(ORDT.PAYMENT_AMOUNT),0),'$999,999,999,999.99')
 	into 	l_stage_status, l_stage_count, l_stage_amount
@@ -13575,8 +13597,8 @@ BEGIN
 	WHERE 	1=1
 	AND 	ORDT.remitted = 'S'
 	AND		ORDT.creation_date> sysdate-120;		--Modified for the Defect#37866
-	
-	
+
+
 	SELECT   /*+ index(ORDT XX_AR_ORDER_RECEIPT_DTL_N3)*/
 			'Error', TO_CHAR(COUNT(1),'99,999,999') ,  TO_CHAR(NVL(SUM(ORDT.PAYMENT_AMOUNT),0),'$999,999,999,999.99')
 	into 	l_error_status, l_error_count, l_error_amount
@@ -13584,19 +13606,19 @@ BEGIN
 	WHERE 	1=1
 	AND 	ORDT.remitted = 'E'
 	AND		ORDT.creation_date> sysdate-120;		--Modified for the Defect#37866
-	
-	
+
+
 	L_MAIL_HEADER := '<TABLE border="1" width = "250"><TR align="center"><TH height="20"><B>Status</B></TH><TH height="20"><B>Count</B></TH><TH height="20"><B>Amount</B></TH></TR>';
 	L_MAIL_BODY :=L_MAIL_BODY||'<TR><TD align="left" height="15">'||L_NEW_STATUS||'</TD><TD align="right" height="15">'||L_NEW_COUNT||'</TD><TD align="right" height="15">'||L_NEW_AMOUNT||'</TD></TR>';
 	L_MAIL_BODY :=L_MAIL_BODY||'<TR><TD align="left" height="15">'||L_STAGE_STATUS||'</TD><TD align="right" height="15">'||L_STAGE_COUNT||'</TD><TD align="right" height="15">'||L_STAGE_AMOUNT||'</TD></TR>';
 	l_mail_body :=l_mail_body||'<TR><TD align="left" height="15">'||l_error_status||'</TD><TD align="right" height="15">'||l_error_count||'</TD><TD align="right" height="15">'||l_error_amount||'</TD></TR>';
 
-	
-	lc_mail_conn := UTL_SMTP.open_connection (lc_mail_host, 25);	
-	
+
+	lc_mail_conn := UTL_SMTP.open_connection (lc_mail_host, 25);
+
 	UTL_SMTP.helo (lc_mail_conn, lc_mail_host);
 	UTL_SMTP.mail (lc_mail_conn, lc_mail_from);
-	
+
 	           ------------------------------------
                --Building string of email addresses
                ------------------------------------
@@ -13606,9 +13628,9 @@ BEGIN
                For ln_cnt in 1..3 Loop
 
                     IF EMAIL_TBL(ln_cnt) IS NOT NULL THEN
-						
+
                         IF lc_first_rec = 'Y' THEN
-										
+
                            lc_mail_recipient :=  EMAIL_TBL(ln_cnt);
                            lc_first_rec := 'N';
                         ELSE
@@ -13617,12 +13639,12 @@ BEGIN
                                              ||' , ' || EMAIL_TBL(ln_cnt);
 						END IF;
 						UTL_SMTP.rcpt (lc_mail_conn, EMAIL_TBL(ln_cnt));
-						
+
                     END IF;
 
                END LOOP;
 			   FND_FILE.PUT_LINE(FND_FILE.LOG,'EMAIL recipients::  '||lc_mail_recipient);
-			   
+
 
 	IF (lc_mail_recipient is not null)
 	THEN
@@ -13647,7 +13669,7 @@ BEGIN
           || 'Below is the count of records in ORDT that are yet to be processed: <BR><BR>'
           || crlf
 		  || crlf
-		  ||l_mail_header					
+		  ||l_mail_header
           || l_mail_body
 		  ||'</TABLE><BR>'
           || crlf
@@ -13661,14 +13683,14 @@ BEGIN
 	  UTL_SMTP.quit (lc_mail_conn);
 	  x_mail_sent_status := 'N';
 	END IF;
- 
+
    IF x_mail_sent_status = 'Y'
 	THEN
 		fnd_file.put_line (fnd_file.LOG,'Email Sent successfully for ORDT alert');
    ELSE
-		fnd_file.put_line (fnd_file.LOG,'No email sent for ORDT alert'|| SQLERRM);   
+		fnd_file.put_line (fnd_file.LOG,'No email sent for ORDT alert'|| SQLERRM);
 	END IF;
-	
+
    EXCEPTION
       WHEN UTL_SMTP.transient_error OR UTL_SMTP.permanent_error
       THEN
@@ -13747,7 +13769,7 @@ END ORDT_RECORDS_MAIL;
 			lc_ixbankuserdata_format       VARCHAR2(242);
 			lc_ixshipfromzipcode_format    VARCHAR2(242);
 			lc_ixshiptozipcode_format      VARCHAR2(242);
-			lc_ixreleasenumber_format      VARCHAR2(242); 
+			lc_ixreleasenumber_format      VARCHAR2(242);
 			lc_ixccnumber_format           VARCHAR2(242); --Defect 38215
 			lc_ixcustcountrycode_format    VARCHAR2(2000);--Defect 38215
 			--Version 26.3
@@ -13850,10 +13872,10 @@ END ORDT_RECORDS_MAIL;
 
 			SELECT identifier, credit_card_number
 			  INTO lc_identifier, lc_credit_card_number
-			  FROM XX_AR_ORDER_RECEIPT_DTL 
+			  FROM XX_AR_ORDER_RECEIPT_DTL
 			 WHERE c_rec.order_payment_id = order_payment_id;
-		   
-			IF lc_credit_card_number is not null THEN 
+
+			IF lc_credit_card_number is not null THEN
 
 			  DBMS_SESSION.set_context(
 				NAMESPACE =>   'XX_IBY_CONTEXT',
@@ -13867,20 +13889,20 @@ END ORDT_RECORDS_MAIL;
 											  p_algorithm =>          '3DES',
 											  p_encrypted_val =>      lc_credit_card_number,
 											  p_format =>             'BASE64');
-	 
+
 			  IF lc_decrypt_error_msg IS NOT NULL THEN
 				xx_location_and_log(g_loc, 'Error in xx_od_security_key_pkg.decrypt: '
 									|| lc_decrypt_error_msg);
 					  gc_error_loc   := 'decrypt_credit_card';
-				gc_error_debug := lc_decrypt_error_msg;					
-				   
+				gc_error_debug := lc_decrypt_error_msg;
+
 				DELETE from xx_iby_batch_trxns
 				 WHERE order_payment_id = c_rec.order_payment_id;
-				 
+
 				DELETE from xx_iby_batch_trxns_det
 				 WHERE order_payment_id = c_rec.order_payment_id;
-				 
-				UPDATE XX_AR_ORDER_RECEIPT_DTL 
+
+				UPDATE XX_AR_ORDER_RECEIPT_DTL
 				   SET remitted = 'E', settlement_error_message = 'Did not pass CC Decrypt: '
 									|| lc_decrypt_error_msg
 				WHERE order_payment_id = c_rec.order_payment_id;
@@ -13988,7 +14010,7 @@ END ORDT_RECORDS_MAIL;
 			/*SELECT NAME
 			INTO   lc_file_name_instance
 			FROM   v$database;*/
-			
+
 			select SUBSTR(sys_context('USERENV', 'DB_NAME'),1,8) into lc_file_name_instance  from dual;--Modified for v48.1
 
 			lc_file_name_instance := REPLACE(lc_file_name_instance,
@@ -14091,30 +14113,30 @@ END ORDT_RECORDS_MAIL;
 				SET attribute1 = lc_file_name_amex
 				WHERE  ixinstrsubtype = 'AMEX';
 			END IF;   -- check if we need to create the Amex File
-		
+
 			--START of Defect# 35839, to check the duplicate data in 101 and 201 tables
 			BEGIN
-			
+
 			select count(1) into Dup_count_101
-			from xx_iby_batch_trxns 
+			from xx_iby_batch_trxns
 			where ixipaymentbatchnumber is not null;
-			
+
 			select count(1) into Dup_count_201
 			from xx_iby_batch_trxns_det
 			where ixipaymentbatchnumber is not null;
-			
-			
-				
-			
+
+
+
+
 			IF(Dup_count_101 > 0 or Dup_count_201 > 0)
 			THEN
 				lc_error_loc := '101 or 201 tables already had data with ixipaymentbatchnumber populated';
 				--calling procedure to send mail
 				DUP_STLM_RECORDS_MAIL;
- 
+
 				Raise Duplicate_issue;
 			END IF;
-			
+
 			EXCEPTION
 			WHEN OTHERS
 			THEN
@@ -14124,7 +14146,7 @@ END ORDT_RECORDS_MAIL;
 				Raise Duplicate_issue;
 			END;
 			--END of the defect# 35839
-			
+
 			--Updating 101 with IXIPAYMENTBATCHNUMBER
 			UPDATE xx_iby_batch_trxns
 			SET ixipaymentbatchnumber = lc_file_name,
@@ -14190,7 +14212,7 @@ END ORDT_RECORDS_MAIL;
 
 			FOR lcu_trxn_101 IN c_trxn_101
 			LOOP
-		        
+
 				IF (lc_create_file_ajb = 'N')
 				THEN
 					lc_error_loc :=    'Writing to the File Name : '
@@ -14371,8 +14393,8 @@ END ORDT_RECORDS_MAIL;
 								   lc_comma_esc_char_format)
 						|| lc_comma_esc_char;
 				END IF;
-				
-				--START Defect#38215 - amex to vantiv conv  
+
+				--START Defect#38215 - amex to vantiv conv
 				IF    (INSTR(lcu_trxn_101.ixcustcountrycode,
 							 ',') > 0)
 				   OR (INSTR(lcu_trxn_101.ixcustcountrycode,
@@ -14385,10 +14407,10 @@ END ORDT_RECORDS_MAIL;
 								   lc_comma_esc_char_format)
 						|| lc_comma_esc_char;
 				END IF;
-				
+
 				-- Defect 39040
 				lc_ixcustcountrycode_format := REPLACE (lc_ixcustcountrycode_format,':');
-				
+
 				IF    (INSTR(lcu_trxn_101.ixccnumber,
 							 ',') > 0)
 				   OR (INSTR(lcu_trxn_101.ixccnumber,
@@ -14400,9 +14422,9 @@ END ORDT_RECORDS_MAIL;
 								   lc_comma_esc_char,
 								   lc_comma_esc_char_format)
 						|| lc_comma_esc_char;
-				END IF;			
+				END IF;
 	                        --END Defect#38215 - amex to vantiv conv
-				
+
 				lc_file101_content1 :=
 					   lcu_trxn_101.pre1
 					|| lcu_trxn_101.pre2
@@ -14584,7 +14606,7 @@ END ORDT_RECORDS_MAIL;
 					|| ','
 					|| lcu_trxn_101.ixmerchandiseshipped
 					|| ','
-					|| lc_ixcustcountrycode_format --Defect#38215 
+					|| lc_ixcustcountrycode_format --Defect#38215
 					|| ','
 					|| lcu_trxn_101.ixcustaccountno
 					|| ','
@@ -14597,7 +14619,7 @@ END ORDT_RECORDS_MAIL;
 					   ','
 					|| lc_ixreleasenumber_format
 					|| ','
-					-- Defect 39341 || lcu_trxn_101.ixoriginalinvoiceno 
+					-- Defect 39341 || lcu_trxn_101.ixoriginalinvoiceno
 					|| ','
 					|| lcu_trxn_101.ixothertaxamount2
 					|| ','
@@ -14605,9 +14627,9 @@ END ORDT_RECORDS_MAIL;
 					|| ','
 					|| lcu_trxn_101.ixmisccharge
 					|| ','
-					|| lcu_trxn_101.ixccnumber --Defect#38215 
+					|| lcu_trxn_101.ixccnumber --Defect#38215
 					|| ','
-					|| lcu_trxn_101.attribute8; 
+					|| lcu_trxn_101.attribute8;
 
 				UTL_FILE.put(lf_out_file,
 							 lc_file101_content1);
@@ -14628,9 +14650,9 @@ END ORDT_RECORDS_MAIL;
 
 				FOR lcu_trxn_201 IN c_trxn_201(lcu_trxn_101.ixreceiptnumber)
 				LOOP
-				
-					/*Start Defect#38215 skip sending record if amex cpc 
-					and customer(in except14 translation) and if unit price = 0.00*/ 
+
+					/*Start Defect#38215 skip sending record if amex cpc
+					and customer(in except14 translation) and if unit price = 0.00*/
 					IF lcu_trxn_101.ixinstrsubtype = 'AMEX' AND lcu_trxn_201.ixunitcost = 0
 					THEN
 					   ln_amex_except14 := 0;
@@ -14645,12 +14667,12 @@ END ORDT_RECORDS_MAIL;
 					      AND    SYSDATE BETWEEN xftd.start_date_active AND NVL(xftd.end_date_active,SYSDATE + 1)
 					      AND    xftv.enabled_flag = 'Y'
 					      AND    xftd.enabled_flag = 'Y';
-					   fnd_file.put_line(fnd_file.LOG,'Amex Except14             : '|| to_char(ln_amex_except14));   
+					   fnd_file.put_line(fnd_file.LOG,'Amex Except14             : '|| to_char(ln_amex_except14));
 
 					   CONTINUE WHEN ln_amex_except14 > 0;
 					END IF;
 					--End Defect#38215
-				
+
 					lc_ixproductcode_format := lcu_trxn_201.ixproductcode;
 					lc_ixskunumber_format := lcu_trxn_201.ixskunumber;
 					lc_ixitemdescription_format := lcu_trxn_201.ixitemdescription;
@@ -15491,7 +15513,7 @@ END ORDT_RECORDS_MAIL;
 
 					FOR lcu_trxn_201 IN c_trxn_201_amex(lcu_trxn_101.ixreceiptnumber)
 					LOOP
-					
+
 						lc_ixinvoice_amex_201 := NULL;
 						lc_ixproductcode_format := lcu_trxn_201.ixproductcode;
 						lc_ixskunumber_format := lcu_trxn_201.ixskunumber;
@@ -16028,9 +16050,9 @@ END ORDT_RECORDS_MAIL;
 												lc_devphase,
 												lc_devstatus,
 												lc_message);
-												
+
 			ORDT_RECORDS_MAIL;  --Defect# 37763 - to send ORDT alert mail
-			
+
 		EXCEPTION
 			--START of Defect# 35839, to handle duplicate record exception
 			WHEN Duplicate_issue
@@ -16038,7 +16060,7 @@ END ORDT_RECORDS_MAIL;
 				x_ret_code := 2;
 				x_error_buff := lc_error_loc|| '  Error Message: '
 					|| SQLERRM;
-				
+
 				xx_com_error_log_pub.log_error(p_program_type =>                'CLOSE BATCH',
 											   p_program_name =>                'CLOSE BATCH CALL',
 											   p_program_id =>                  NULL,
@@ -16309,9 +16331,9 @@ END ORDT_RECORDS_MAIL;
 				fnd_file.put_line(fnd_file.LOG,
 									 'Error Msg: '
 								  || SQLERRM);
-				
+
 				DUP_STLM_RECORDS_MAIL;  --For Defect#35839 ,to send mail when history prog fails
-								  
+
 				xx_com_error_log_pub.log_error(p_program_type =>                'Bulk Insert',
 											   p_program_name =>                'Bulk Insert',
 											   p_program_id =>                  NULL,
@@ -16395,7 +16417,7 @@ END ORDT_RECORDS_MAIL;
 			lc_mail_body2       		 VARCHAR2(5000):=NULL;
 			x_mail_sent_status 			 VARCHAR2(1);
 			inst_count					 NUMBER := 0;
-			
+
 		BEGIN
 			SELECT   NVL(SUM(xibt.ixamount),
 						 0)
@@ -16453,14 +16475,14 @@ END ORDT_RECORDS_MAIL;
 																  + 1)
 			AND    xftv.enabled_flag = 'Y'
 			AND    xftd.enabled_flag = 'Y';
-			
+
 			--Added for QC 39910
-		BEGIN	
-			
+		BEGIN
+
 			lc_mail_conn := utl_smtp.open_connection(lc_mail_host,25);
 			utl_smtp.helo(lc_mail_conn, lc_mail_host);
 			utl_smtp.mail(lc_mail_conn, lc_mail_from);
-			
+
 			SELECT xftv.target_value1
 			INTO   lc_avg_cnt_days
 			FROM   xx_fin_translatedefinition xftd, xx_fin_translatevalues xftv
@@ -16475,7 +16497,7 @@ END ORDT_RECORDS_MAIL;
 																  + 1)
 			AND    xftv.enabled_flag = 'Y'
 			AND    xftd.enabled_flag = 'Y';
-			
+
 			SELECT xftv.target_value1
 			INTO   lc_avg_email_address
 			FROM   xx_fin_translatedefinition xftd, xx_fin_translatevalues xftv
@@ -16490,7 +16512,7 @@ END ORDT_RECORDS_MAIL;
 																  + 1)
 			AND    xftv.enabled_flag = 'Y'
 			AND    xftd.enabled_flag = 'Y';
-			
+
 			SELECT NVL(ROUND(SUM(TOTAL_AMOUNT) /COUNT(1),2),0) AVG_AMOUNT,
 			NVL(ROUND(SUM(TOTAL_TRANSACTIONS)/COUNT(1),0),0) AVG_TRANSACTIONS
 			INTO ln_avg_amt, ln_avg_cnt
@@ -16505,7 +16527,7 @@ END ORDT_RECORDS_MAIL;
 			GROUP BY IXIPAYMENTBATCHNUMBER
 			);
 
-			
+
 			if (instr(lc_avg_email_address,',') = 0) then
 				v_addr:= lc_avg_email_address;
 				utl_smtp.rcpt(lc_mail_conn,v_addr);
@@ -16517,7 +16539,7 @@ END ORDT_RECORDS_MAIL;
 				utl_smtp.rcpt(lc_mail_conn,v_addr);
 				end loop;
 			end if;
-			
+
 			--SELECT NAME INTO lc_instance FROM v$database;
 			select SUBSTR(sys_context('USERENV', 'DB_NAME'),1,8) into lc_instance  from dual;--Modified for v48.1
 
@@ -16528,17 +16550,17 @@ END ORDT_RECORDS_MAIL;
 			ELSE
 			lc_mail_subject :='Please Ignore: Settlement: Amount and Count - '||lc_instance||' - '||p_batch_date;
 			END IF;*/
-			
+
 			lc_mail_subject := lc_instance||' - Settlement: Amount and Count for '||p_batch_date;
-			
+
 			--lc_mail_body1 := 'Average Transaction Volume (last '||lc_avg_cnt_days||' days) : '|| TRIM(TO_CHAR(ln_avg_cnt,'999,999,999,990') );
 			--lc_mail_body2 := 'Average Dollar Amount      (last '||lc_avg_cnt_days||' days) : $'|| TRIM(TO_CHAR(ln_avg_amt,'999,999,999,990.99') );
-			
+
 			lc_mail_body1 := 'Today''s Settlement Amount: $'|| TRIM(TO_CHAR(ln_tot_amount,'999,999,999,990.99'))||'  for  '
 								|| TRIM(TO_CHAR(ln_tot_trxns,'999,999,999,990'))||'  Transactions.' ;
 			lc_mail_body2 := lc_avg_cnt_days||' Days Running Average: $'|| TRIM(TO_CHAR(ln_avg_amt,'999,999,999,990.99'))||'  for  '
 								|| TRIM(TO_CHAR(ln_avg_cnt,'999,999,999,990'))||'  Transactions.';
-			
+
 			IF (lc_avg_email_address is not null)
 			THEN
 			UTL_SMTP.DATA
@@ -16571,14 +16593,14 @@ END ORDT_RECORDS_MAIL;
 			UTL_SMTP.quit (lc_mail_conn);
 			x_mail_sent_status := 'N';
 			END IF;
-			
+
 			IF x_mail_sent_status = 'Y'
 			THEN
 				fnd_file.put_line (fnd_file.LOG,'Email Sent successfully');
 			ELSE
-				fnd_file.put_line (fnd_file.LOG,'No email sent for '|| SQLERRM);   
+				fnd_file.put_line (fnd_file.LOG,'No email sent for '|| SQLERRM);
 			END IF;
-			
+
 			EXCEPTION
 			WHEN UTL_SMTP.transient_error OR UTL_SMTP.permanent_error
 			THEN
@@ -16586,9 +16608,9 @@ END ORDT_RECORDS_MAIL;
 			WHEN OTHERS
 			THEN
 				fnd_file.put_line (fnd_file.LOG,'Unable to send mail..:'|| SQLERRM);
-			
-		END;	
-			
+
+		END;
+
 			--END of 39910
 
 			fnd_file.put_line(fnd_file.output,
@@ -16798,7 +16820,7 @@ END ORDT_RECORDS_MAIL;
 								 'Total Refund Transaction Volume that was processed : '
 							  || TRIM(TO_CHAR(ln_tot_refund_vol_amex,
 											  '999,999,999,990') ) );
-			
+
 		EXCEPTION
 			WHEN OTHERS
 			THEN
@@ -17306,7 +17328,7 @@ END ORDT_RECORDS_MAIL;
 			lt_parameters('p_max_cash_receipt_info.translate_value_id') := p_max_cash_receipt_info.translate_value_id;
 			lt_parameters('p_max_cash_receipt_info.source_value1') := p_max_cash_receipt_info.source_value1;
 			lt_parameters('p_max_cash_receipt_info.source_value2') := p_max_cash_receipt_info.source_value2;
-			lt_parameters('p_max_cash_receipt_info.source_value3') := p_max_cash_receipt_info.source_value3;       
+			lt_parameters('p_max_cash_receipt_info.source_value3') := p_max_cash_receipt_info.source_value3;
 			entering_sub(p_procedure_name =>      lc_procedure_name,
 						 p_parameters =>          lt_parameters);
 
@@ -17426,24 +17448,24 @@ END ORDT_RECORDS_MAIL;
 			lr_return_order_receipt_dtl.payment_amount := ln_payment_amount;
 			lr_return_order_receipt_dtl.credit_card_holder_name := lc_party_name;
 			lr_return_order_receipt_dtl.token_flag := lr_orig_order_receipt_dtl.token_flag;             --Version 27.0
-			lr_return_order_receipt_dtl.emv_card := lr_orig_order_receipt_dtl.emv_card;                 --Version 27.0 
-			lr_return_order_receipt_dtl.emv_terminal := lr_orig_order_receipt_dtl.emv_terminal;         --Version 27.0 
-			lr_return_order_receipt_dtl.emv_transaction := lr_orig_order_receipt_dtl.emv_transaction;   --Version 27.0 
-			lr_return_order_receipt_dtl.emv_offline := lr_orig_order_receipt_dtl.emv_offline;           --Version 27.0 
-			lr_return_order_receipt_dtl.emv_fallback := lr_orig_order_receipt_dtl.emv_fallback;         --Version 27.0 
-			lr_return_order_receipt_dtl.emv_tvr := lr_orig_order_receipt_dtl.emv_tvr;                   --Version 27.0 
+			lr_return_order_receipt_dtl.emv_card := lr_orig_order_receipt_dtl.emv_card;                 --Version 27.0
+			lr_return_order_receipt_dtl.emv_terminal := lr_orig_order_receipt_dtl.emv_terminal;         --Version 27.0
+			lr_return_order_receipt_dtl.emv_transaction := lr_orig_order_receipt_dtl.emv_transaction;   --Version 27.0
+			lr_return_order_receipt_dtl.emv_offline := lr_orig_order_receipt_dtl.emv_offline;           --Version 27.0
+			lr_return_order_receipt_dtl.emv_fallback := lr_orig_order_receipt_dtl.emv_fallback;         --Version 27.0
+			lr_return_order_receipt_dtl.emv_tvr := lr_orig_order_receipt_dtl.emv_tvr;                   --Version 27.0
 			lc_action :=
 				   'Inserting new xx_ar_order_receipt_dtl record with order_payment_id: '
 				|| lr_return_order_receipt_dtl.order_payment_id;
 			logit(p_message =>      lc_action);
-			
+
 			--changes start for defect #32588
 			IF lr_return_order_receipt_dtl.customer_receipt_reference IS NULL
 			   THEN
 				lr_return_order_receipt_dtl.customer_receipt_reference := lr_orig_order_receipt_dtl.receipt_number;
 			END IF;
-			
-			--Start Changes for Version 32.0 
+
+			--Start Changes for Version 32.0
 			IF lr_return_order_receipt_dtl.credit_card_number IS NULL THEN
 			   BEGIN
 			      SELECT nvl(xibth.ixaccount,substr(xibth.ixswipe,1,decode(instr(xibth.ixswipe,'=',-1),0,length(xibth.ixswipe),instr(xibth.ixswipe,'=',-1)-1))),
@@ -17459,7 +17481,7 @@ END ORDT_RECORDS_MAIL;
 			   END;
 			END IF;
 			--End Changes for Version 32.0
-				
+
 			SELECT NVL(MAX(Payment_number),0)
 			INTO   ln_pmt_num_count
 			FROM   xx_ar_order_receipt_dtl
@@ -17842,7 +17864,7 @@ END ORDT_RECORDS_MAIL;
 					IF lc_oapforder_id IS NOT NULL
 					THEN
 						IF (    NVL(r_payment_info.remitted,
-									'X')IN ( 'E','N') --= 'E' 
+									'X')IN ( 'E','N') --= 'E'
 							AND NVL(lc_status,
 									'N/A') IN('REMITTED', 'CLEARED') )
 						THEN
@@ -18128,7 +18150,7 @@ END ORDT_RECORDS_MAIL;
 						  FROM   xx_pending_payments)
 				GROUP BY thread_number
 				ORDER BY thread_number;
-				
+
 			--Added for the defect# 38223
 			CURSOR c_zero_dollar
 			IS
@@ -18138,7 +18160,7 @@ END ORDT_RECORDS_MAIL;
 				AND 	ORDT.PAYMENT_AMOUNT      = 0
 				AND 	ORDT.REMITTED            = 'N'
 				AND 	ORDT.CREATION_DATE >= SYSDATE-2;
-				
+
 		BEGIN
 			mo_global.set_policy_context('S',
 										 p_org_id);
@@ -18221,7 +18243,7 @@ END ORDT_RECORDS_MAIL;
 					LOOP
 						l_req_id :=
 							fnd_request.submit_request('XXFIN',
-													   
+
 													   -- Application
 													   'XX_IBY_SETTLE_RETRY_ERRORS_C',   -- Concurrent Program
 													   '',   -- description
@@ -18276,21 +18298,21 @@ END ORDT_RECORDS_MAIL;
 					logit(p_message =>      'No pending payments found.',
 						  p_force =>        TRUE);
 				END IF;
-				
+
 				--Added For the Defect# 38223
 				FOR I IN c_zero_dollar
 				LOOP
 					UPDATE XX_AR_ORDER_RECEIPT_DTL
 					SET REMITTED = 'I', MATCHED = 'Y', RECEIPT_STATUS = 'CLEARED'
 					WHERE ORDER_PAYMENT_ID = I.ORDER_PAYMENT_ID;
-				END LOOP;	
-				
+				END LOOP;
+
 				IF(sql%Rowcount > 0)
 				THEN
 					logit(p_message =>      'Updated the Remitted status for 0$ credit card payments.',
 						  p_force =>        TRUE);
 				END IF;
-				
+
 			ELSE
 				x_ret_code := TO_NUMBER(req_data);
 
@@ -18334,13 +18356,13 @@ END ORDT_RECORDS_MAIL;
 			END IF;
 
 			exiting_sub(p_procedure_name =>      lc_procedure_name);
-			
+
 			--Added for the Defect#37866
-			IF (req_data IS NOT NULL and p_org_id = 404 and p_remit_status_flag = 'E') 
-			THEN	
+			IF (req_data IS NOT NULL and p_org_id = 404 and p_remit_status_flag = 'E')
+			THEN
 				ORDT_RECORDS_MAIL;		--To send ORDT alert mail
 			END IF;
-			
+
 		EXCEPTION
 			WHEN le_process_exception
 			THEN
@@ -18378,4 +18400,3 @@ END ORDT_RECORDS_MAIL;
 							p_exception_flag =>      TRUE);
 		END retry_errors;
 	END xx_iby_settlement_pkg;
-/
