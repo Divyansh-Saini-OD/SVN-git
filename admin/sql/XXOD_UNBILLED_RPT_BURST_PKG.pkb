@@ -7,8 +7,8 @@ AS
 	FUNCTION get_parent_order_num(p_child_order_num VARCHAR2)
 	RETURN VARCHAR2
 	IS 
-		l_parent_order_num apps.xx_scm_bill_signal.PARENT_ORDER_NUMBER%TYPE;
-		l_bill_forward_flag  apps.xx_scm_bill_signal.bill_forward_flag%TYPE;
+		l_parent_order_num xx_scm_bill_signal.PARENT_ORDER_NUMBER%TYPE;
+		l_bill_forward_flag  xx_scm_bill_signal.bill_forward_flag%TYPE;
 	BEGIN
 		SELECT PARENT_ORDER_NUMBER , NVL(bill_forward_flag,'N')
 		INTO l_parent_order_num , l_bill_forward_flag
