@@ -102,7 +102,7 @@ AS
 		AND ar_pay.status = 'OP'
 		AND NOT EXISTS
 		  (SELECT 1
-		  FROM apps.xx_scm_bill_signal
+		  FROM xx_scm_bill_signal
 		  WHERE 1                =1
 		  AND child_order_number = ooha.order_number
 		  );
@@ -197,7 +197,7 @@ AS
 	L_UNBILLED_DATA_REC UNBILLED_RPT_DATA_TAB ;--:= UNBILLED_RPT_DATA_TAB();
 	N NUMBER := 0;
 	--L_UNBILLED_DATA_REC := 
-	l_parent_order_num apps.xx_scm_bill_signal.PARENT_ORDER_NUMBER%TYPE;
+	l_parent_order_num xx_scm_bill_signal.PARENT_ORDER_NUMBER%TYPE;
 
 
 
@@ -279,7 +279,7 @@ AS
 			AND rct.attribute14 = oe.header_id 
 			AND oe.order_source_id = 1029 
 			AND oe.creation_date <= sysdate -7
-      AND EXISTS ( SELECT 1 FROM apps.hz_customer_profiles hcp 
+      AND EXISTS ( SELECT 1 FROM hz_customer_profiles hcp 
       WHERE 1=1
       AND hcp.cust_account_id = hca.cust_account_id 
       AND hcp.attribute6 IN ('B','Y')
@@ -403,7 +403,7 @@ AS
 			AND rctt.name = 'US_SERVICE_AOPS_OD'
 			AND rbsa.name  = 'SUBSCRIPTION_BILLING_US'
 			AND ooha.creation_date <= TO_DATE(P_DATE,'RRRR/MM/DD HH24:MI:SS') -7
-			AND EXISTS ( SELECT 1 FROM apps.hz_customer_profiles hcp 
+			AND EXISTS ( SELECT 1 FROM hz_customer_profiles hcp 
 			WHERE 1=1
 			AND hcp.cust_account_id = hca.cust_account_id 
 			AND hcp.attribute6 IN ('B','Y')
