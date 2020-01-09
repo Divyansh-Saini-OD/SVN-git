@@ -12,7 +12,7 @@ AS
 	BEGIN
 		SELECT PARENT_ORDER_NUMBER , NVL(bill_forward_flag,'N')
 		INTO l_parent_order_num , l_bill_forward_flag
-		FROM apps.xx_scm_bill_signal xsb
+		FROM xx_scm_bill_signal xsb
 		WHERE child_order_number = p_child_order_num;
     
 	IF l_bill_forward_flag = 'C' THEN
@@ -63,17 +63,17 @@ AS
 		 , ar_pay.amount_due_remaining AMOUNT_DUE_REMAINING
 		 , xoha.parent_order_num PARENT_ORDER_NUM
 		 , 1 X
-		from apps.oe_order_headers_All ooha 
-		   , apps.oe_order_sources oos 
-		   , apps.ra_customer_trx_all rct 
-		   , apps.ra_batch_sources_all rbsa
-		   , apps.xx_om_header_attributes_all xoha 
-		   , apps.xx_cdh_cust_acct_ext_b xce 
-		   , apps.hz_cust_accounts hca 
-		   , apps.hz_parties hp
-		   , apps.hz_customer_profiles hcp
-		   , apps.ra_cust_trx_types_all rctt
-		   , apps.ar_payment_schedules_all ar_pay 
+		from oe_order_headers_All ooha 
+		   , oe_order_sources oos 
+		   , ra_customer_trx_all rct 
+		   , ra_batch_sources_all rbsa
+		   , xx_om_header_attributes_all xoha 
+		   , xx_cdh_cust_acct_ext_b xce 
+		   , hz_cust_accounts hca 
+		   , hz_parties hp
+		   , hz_customer_profiles hcp
+		   , ra_cust_trx_types_all rctt
+		   , ar_payment_schedules_all ar_pay 
 		WHERE 1=1
 		AND ooha.order_source_id = oos.order_source_id
 		AND xoha.header_id = ooha.header_id
@@ -125,12 +125,12 @@ AS
 		 , rct.bill_to_customer_id
 	from 
 		oe_ordeR_headers_all  oe
-	  , apps.ra_customer_trx_all rct 
-	  , apps.ra_batch_sources_all rbsa
-	  , apps.hz_cust_accounts hca 
-	  , apps.hz_parties hp
-	  , apps.ra_cust_trx_types_all rctt
-	  , apps.ar_payment_schedules_all ar_pay  
+	  , ra_customer_trx_all rct 
+	  , ra_batch_sources_all rbsa
+	  , hz_cust_accounts hca 
+	  , hz_parties hp
+	  , ra_cust_trx_types_all rctt
+	  , ar_payment_schedules_all ar_pay  
 	where 1=1
 	AND rct.batch_source_id = rbsa.batch_source_id 
 	AND hca.cust_account_id       = rct.bill_to_customer_id
@@ -159,14 +159,14 @@ AS
 		 , ar_pay.amount_due_remaining AMOUNT_DUE_REMAINING
 		 , ooha.order_number
 		 , rct.bill_to_customer_id
-	from apps.oe_order_headers_All ooha 
-	   , apps.oe_order_sources oos 
-	   , apps.ra_customer_trx_all rct 
-	   , apps.ra_batch_sources_all rbsa
-	   , apps.hz_cust_accounts hca 
-	   , apps.hz_parties hp
-	   , apps.ra_cust_trx_types_all rctt
-	   , apps.ar_payment_schedules_all ar_pay 
+	from oe_order_headers_All ooha 
+	   , oe_order_sources oos 
+	   , ra_customer_trx_all rct 
+	   , ra_batch_sources_all rbsa
+	   , hz_cust_accounts hca 
+	   , hz_parties hp
+	   , ra_cust_trx_types_all rctt
+	   , ar_payment_schedules_all ar_pay 
 	WHERE 1=1
 	AND ooha.order_source_id = oos.order_source_id
 	AND rct.attribute14        = ooha.header_id
@@ -244,7 +244,7 @@ AS
 		Fnd_File.PUT_LINE (Fnd_File.LOG, 'SPC Trx Begin- ' || 4);
 		
 			WITH C1  AS  (SELECT /*+ MATERIALIZE */ trx_number ,trx_date , billing_date, bill_to_customer_id , batch_source_id , cust_trx_type_id , customer_trx_id , attribute14 
-				FROM apps.ra_customer_trx_all rct 
+				FROM ra_customer_trx_all rct 
 				WHERE (NVL(rct.billing_date,SYSDATE+37))>=(SYSDATE+37)
 				AND rct.attribute14 is not null)
 			select  hp.party_name CUST_NAME
@@ -264,11 +264,11 @@ AS
 			from 
 				oe_ordeR_headers_all  oe
 			  , C1 rct 
-			  , apps.ra_batch_sources_all rbsa
-			  , apps.hz_cust_accounts hca 
-			  , apps.hz_parties hp
-			  , apps.ra_cust_trx_types_all rctt
-			  , apps.ar_payment_schedules_all ar_pay  
+			  , ra_batch_sources_all rbsa
+			  , hz_cust_accounts hca 
+			  , hz_parties hp
+			  , ra_cust_trx_types_all rctt
+			  , ar_payment_schedules_all ar_pay  
 			where 1=1
 			AND rct.batch_source_id = rbsa.batch_source_id
 			AND hca.cust_account_id       = rct.bill_to_customer_id
@@ -316,7 +316,7 @@ AS
 							,L_UNBILLED_DATA_REC(N).BILLING_FREQUENCY  	   
 							,L_UNBILLED_DATA_REC(N).ORI_PAY_DOC 			   
 							,L_UNBILLED_DATA_REC(N).DELIVERY_METHOD		   
-							FROM apps.xx_cdh_cust_acct_ext_b xce
+							FROM xx_cdh_cust_acct_ext_b xce
 							WHERE 1=1 
 							AND  (c_ext_attr1 IS NULL OR c_ext_attr1 = 'Consolidated Bill')
 							AND  (c_ext_attr2 IS NULL OR  c_ext_attr2 = 'Y')
@@ -365,7 +365,7 @@ AS
 		Fnd_File.PUT_LINE (Fnd_File.LOG, 'ABS Trx Begin- ' || 4);
 		
 			WITH C1  AS  (SELECT /*+ MATERIALIZE */ trx_number ,trx_date , billing_date, bill_to_customer_id , batch_source_id , cust_trx_type_id , customer_trx_id , attribute14 
-				FROM apps.ra_customer_trx_all rct 
+				FROM ra_customer_trx_all rct 
 				WHERE (NVL(rct.billing_date,SYSDATE+37))>=(SYSDATE+37)
 				AND rct.attribute14 is not null)
 			SELECT 
@@ -383,14 +383,14 @@ AS
 				 , ooha.order_number
 				 , rct.bill_to_customer_id
 			BULK COLLECT INTO l_abs_data	 
-			from apps.oe_order_headers_All ooha 
-			   , apps.oe_order_sources oos 
+			from oe_order_headers_All ooha 
+			   , oe_order_sources oos 
 			   , C1 rct 
-			   , apps.ra_batch_sources_all rbsa
-			   , apps.hz_cust_accounts hca 
-			   , apps.hz_parties hp
-			   , apps.ra_cust_trx_types_all rctt
-			   , apps.ar_payment_schedules_all ar_pay 
+			   , ra_batch_sources_all rbsa
+			   , hz_cust_accounts hca 
+			   , hz_parties hp
+			   , ra_cust_trx_types_all rctt
+			   , ar_payment_schedules_all ar_pay 
 			WHERE 1=1
 			AND ooha.order_source_id = oos.order_source_id
 			AND rct.attribute14        = ooha.header_id
@@ -441,7 +441,7 @@ AS
 							,L_UNBILLED_DATA_REC(N).BILLING_FREQUENCY  	   
 							,L_UNBILLED_DATA_REC(N).ORI_PAY_DOC 			   
 							,L_UNBILLED_DATA_REC(N).DELIVERY_METHOD		   
-							FROM apps.xx_cdh_cust_acct_ext_b xce
+							FROM xx_cdh_cust_acct_ext_b xce
 							WHERE 1=1 
 							AND  (c_ext_attr1 IS NULL OR c_ext_attr1 = 'Consolidated Bill')
 							AND  (c_ext_attr2 IS NULL OR  c_ext_attr2 = 'Y')
