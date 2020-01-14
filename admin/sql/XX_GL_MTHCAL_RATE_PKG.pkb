@@ -126,6 +126,65 @@ AS
 	END SUBMIT_GLDRICCP;
 
 /**********************************************************************************
+ * Procedure to Archive the File extracted to DIMS
+ * This procedure is called by xx_daily_extract, xx_calendar_extract,xx_fiscal_extract procedure
+***********************************************************************************/
+PROCEDURE xx_archive_file_DIMS(p_request_type IN VARCHAR2, p_file IN VARCHAR2)
+IS
+   lc_dest_file_name   VARCHAR2(200);
+   lc_source_file_name VARCHAR2(200);
+   lc_source_dir_path  VARCHAR2(4000);
+   lc_target_dir_path  VARCHAR2(4000);
+   lb_complete         BOOLEAN;
+   lc_phase            VARCHAR2(100);
+   lc_status           VARCHAR2(100);
+   lc_dev_phase        VARCHAR2(100);
+   lc_dev_status       VARCHAR2(100);
+   lc_message          VARCHAR2(100);
+   ln_request_id       NUMBER;
+BEGIN
+  BEGIN
+ SELECT directory_path
+   INTO lc_target_dir_path
+   FROM dba_directories
+  WHERE directory_name = 'XXFIN_OUTBOUND_ARCH';
+  EXCEPTION
+ WHEN OTHERS THEN
+   logit(p_message =>'Exception raised while getting Archive directory path '|| SQLERRM, p_force => TRUE);
+  END;
+  BEGIN
+ SELECT directory_path
+     INTO lc_source_dir_path
+   FROM dba_directories
+  WHERE directory_name = 'XXFIN_OUT';
+  EXCEPTION
+    WHEN OTHERS THEN
+    logit(p_message =>'Exception raised while getting Source directory path '|| SQLERRM, p_force => TRUE);
+  END;
+  lc_source_file_name := lc_source_dir_path||'/rates/'||p_file||'.txt';
+  lc_dest_file_name   := lc_target_dir_path||'/'||p_file ||'.txt';
+  ln_request_id       := fnd_request.submit_request('XXFIN', 'XXCOMFILCOPY', '', '', FALSE, lc_source_file_name, lc_dest_file_name, '', '', 'N' );
+  IF ln_request_id     > 0 THEN
+    COMMIT;
+  logit(p_message => 'Submitted request '|| TO_CHAR (ln_request_id)||' to Archive File Generated', p_force => TRUE);
+
+  lb_complete := fnd_concurrent.wait_for_request(request_id => ln_request_id,
+                interval => 10,
+             max_wait => 0,
+             phase => lc_phase,
+             status => lc_status,
+             dev_phase => lc_dev_phase,
+             dev_status => lc_dev_status,
+             MESSAGE => lc_message
+               );
+  END IF;
+  COMMIT;
+EXCEPTION
+  WHEN OTHERS THEN
+ logit(p_message =>'When Others Exception Raised in xx_archive_file_DIMS procedure that Archives the Exchange Rates File' || SQLERRM, p_force => TRUE);
+END xx_archive_file_DIMS;
+	
+/**********************************************************************************
 	* Procedure to Archive the File extracted
 	* This procedure is called by xx_daily_extract, xx_calendar_extract,xx_fiscal_extract procedure
 ***********************************************************************************/
@@ -402,6 +461,7 @@ ORDER BY 4,1,2
   xx_file_copy_dims(p_request_type,lc_file_name);
   xx_file_copy(p_request_type,lc_file_name);
   zip_file(lc_file_name1||lc_filename_part1);
+  xx_archive_file_DIMS(p_request_type,lc_file_name1||lc_filename_part1);
   xx_archive_file(p_request_type,lc_file_name1||lc_filename_part1);
 EXCEPTION
   WHEN utl_file.invalid_operation THEN
