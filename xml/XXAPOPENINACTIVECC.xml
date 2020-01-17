@@ -5,86 +5,92 @@
   </properties>
   <dataQuery>
     <sqlStatement name="Q1">
-       <![CDATA[SELECT   WN.TO_USER ,
-  papf.full_name ,
-  PAPF.EMPLOYEE_NUMBER,
-  WN.SUBJECT,
-  TO_CHAR(PPFS.ACTUAL_TERMINATION_DATE,'MM/DD/YYYY') 	ACTUAL_TERMINATION_DATE,
-  TO_CHAR(ppfs.final_process_date,'MM/DD/YYYY')FINAL_PROCESS_DATE, 
-  MAX(WN.NOTIFICATION_ID) NOTIFICATION_ID,
-  WN.MESSAGE_TYPE ,
-  WN.MESSAGE_NAME,
-  WN.RECIPIENT_ROLE,
-  WN.CONTEXT ,
-  WN.ITEM_KEY ,
-  NVL(TO_CHAR(SENT_DATE ,'MM/DD/YYYY'), NULL)SENT_DATE,
- WN.STATUS 
-FROM WF_NOTIFICATIONS WN,
-  WF_ITEM_ACTIVITY_STATUSES WIAS ,
-  WF_ITEM_ATTRIBUTE_VALUES WIAV ,
-  PER_ALL_PEOPLE_F PAPF,
-  per_periods_of_service ppfs,
-  ap_credit_card_trxns_all accta,
-  AP_CARDS_ALL ACA
-WHERE wn.item_key        =wias.item_key
-AND wias.item_key        =wiav.item_key
-AND wias.item_type       =wiav.item_type
-AND papf.employee_number =wiav.text_value
-AND papf.person_id       =aca.employee_id
-AND accta.card_id        =aca.card_id
-AND accta.card_program_id=aca.card_program_id
-AND papf.person_id       =ppfs.person_id
-AND WN.MESSAGE_TYPE      ='APCCARD'
-AND WIAS.ACTIVITY_STATUS ='ACTIVE'
-AND WIAV.NAME            ='INACT_EMP_NAME'
-AND TRUNC (SYSDATE) BETWEEN PAPF.EFFECTIVE_START_DATE AND PAPF.EFFECTIVE_END_DATE
-AND WN.MESSAGE_NAME = 'OIE_MSG_MGR_INACTIVE_EMPL_EX_1'
-AND WN.STATUS NOT  IN ('CANCELED','CLOSED')
-GROUP BY WN.TO_USER ,
-  papf.full_name ,
-  PAPF.EMPLOYEE_NUMBER,
-  WN.SUBJECT,
-ppfs.ACTUAL_TERMINATION_DATE,
-  ppfs.FINAL_PROCESS_DATE,
-  WN.NOTIFICATION_ID,
-  WN.MESSAGE_TYPE ,
-  WN.MESSAGE_NAME,
-  WN.RECIPIENT_ROLE,
-  WN.CONTEXT ,
-  WN.ITEM_KEY ,
-  SENT_DATE,
-  WN.STATUS]]>
+       <![CDATA[SELECT
+    papf.employee_number,
+    papf.full_name,
+    wn.message_type,
+    wn.recipient_role,
+    wn.to_user,
+    wn.subject,
+    wn.message_name,
+    wn.status,
+    max(wn.context) wf_context,
+    TO_CHAR(MAX(ppfs.actual_termination_date), 'MM/DD/YYYY') actual_termination_date,
+    TO_CHAR(MAX(ppfs.final_process_date), 'MM/DD/YYYY') final_process_date,
+MAX(ppfs.period_of_service_id) period_of_service_id,
+MAX(wn.notification_id) notification_id,
+MAX(wn.item_key) item_key,
+nvl(TO_CHAR(MAX(SENT_DATE), 'MM/DD/YYYY'), NULL) sent_date
+FROM
+    per_all_people_f            papf,
+    per_periods_of_service      ppfs,
+    ap_Cards_all                aca,
+    ap_credit_card_trxns_all    accta,
+    wf_notifications            wn,
+    wf_item_activity_statuses   wias,
+    wf_item_attribute_values    wiav
+WHERE
+    papf.person_id = ppfs.person_id
+    AND papf.person_id = aca.employee_id
+        AND aca.card_id = accta.card_id
+            AND aca.card_program_id = accta.card_program_id
+                AND trunc(SYSDATE) BETWEEN papf.effective_start_date AND papf.effective_end_date
+                    AND wn.item_key = wias.item_key
+                        AND wias.item_key = wiav.item_key
+                            AND wias.item_type = wiav.item_type
+                                AND wn.message_name IN (
+        'OIE_MSG_MGR_INACTIVE_EMPL_EX_1'
+    )
+                                    AND wn.message_type = 'APCCARD'
+                                        AND wiav.name = 'INACT_EMP_NAME'
+                                            AND wiav.text_value = papf.employee_number
+                                                AND wn.status NOT IN (
+        'CANCELED',
+        'CLOSED'
+    )
+GROUP BY
+    papf.employee_number,
+    papf.full_name,
+    wn.message_type,
+    wn.recipient_role,
+    wn.to_user,
+    wn.subject,
+    wn.message_name,
+     wn.status]]>
     </sqlStatement>
-	 <sqlStatement name="Q2">
-	 <![CDATA[
-select to_char(SYSDATE,'MM/DD/YYYY') CURRENT_DATE,
-FND_PROFILE.VALUE('XX_XDO_SMTP_HOST') SMTP_SERVER,
-(SELECT FD.instance_name FROM v$instance FD)INSTANCE_NAME1
-from dual]]>
-	  </sqlStatement>
+<sqlStatement name="Q2" dataSourceRef="">
+<![CDATA[ SELECT  (SELECT FND_PROFILE.VALUE('XX_COMN_SMTP_MAIL_SERVER') 
+                     FROM dual)    SMTP_SERVER,
+                  (SELECT instance_name 
+				     FROM v$instance) INSTANCE_NAME,
+				  (SELECT to_char(SYSDATE,'MM/DD/YYYY') FROM dual) CURRENT_DATE
+            FROM DUAL
+]]>
+</sqlStatement>
   </dataQuery>
   <dataStructure>
     <group name="G_RESULTS" source="Q1">
-        <element name="TO_USER"     value="to_user"/>
+	   <element name="EMPLOYEE_NUMBER"   value="employee_number"/>
 	   <element name="FULL_NAME"   value="full_name"/>
-	   <element name="EMPLOYEE_NUMBER"   value="EMPLOYEE_NUMBER"/>
-       <element name="SUBJECT"   value="subject"/>
-	   <element name="ACTUAL_TERMINATION_DATE"   value="ACTUAL_TERMINATION_DATE"/>
-	   <element name="FINAL_PROCESS_DATE"   value="FINAL_PROCESS_DATE"/> 
-	   <element name="NOTIFICATION_ID"     value="notification_id"/>
-       <element name="MESSAGE_TYPE"       value="message_type"/>
-	   <element name="MESSAGE_NAME"       value="MESSAGE_NAME"/>
+	   <element name="MESSAGE_TYPE"       value="message_type"/>
 	   <element name="RECIPIENT_ROLE"   value="recipient_role"/>
-	   <element name="CONTEXT" value="context"/>
+	   <element name="TO_USER"     value="to_user"/>
+       <element name="SUBJECT"   value="subject"/>
+       <element name="MESSAGE_NAME"       value="message_name"/>
+	   <element name="STATUS"       value="status"/>
+	   <element name="CONTEXT" value="wf_context"/>
+	   <element name="ACTUAL_TERMINATION_DATE"   value="actual_termination_date"/>
+	   <element name="FINAL_PROCESS_DATE"   value="final_process_date"/> 
+	   <element name="PERIOD_OF_SERVICE_ID"     value="period_of_service_id"/>
+	   <element name="NOTIFICATION_ID"     value="notification_id"/>
 	   <element name="ITEM_KEY"  value="item_key"/>
        <element name="SENT_DATE"         value="sent_date"/>
-       <element name="STATUS"       value="status"/>
-	    </group>
-		<group name="G_RESULTS1" source="Q2">
-	   <element name="CURRENT_DATE"   value="CURRENT_DATE"/>
-       <element name="SMTP_SERVER" value="SMTP_SERVER"/>
-       <element name="INSTANCE_NAME1"     value="INSTANCE_NAME1"/>
 	 </group>
+<group name="G2" source="Q2" groupFilter="">
+     <element name="C_SMTP_SERVER" value="SMTP_SERVER" function=""/>
+     <element name="C_INSTANCE_NAME"    value="INSTANCE_NAME" function=""/>
+	 <element name="C_CURRENT_DATE"    value="CURRENT_DATE" function=""/>
+</group>
   </dataStructure> 
   <dataTrigger name="afterReport"  source="XX_AP_OPINACCC_BURST.afterReport()"/>
 </dataTemplate>
