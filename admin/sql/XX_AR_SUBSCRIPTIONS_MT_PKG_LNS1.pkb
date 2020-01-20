@@ -95,6 +95,14 @@ AS
 -- |                                                 email - NAIT-110748                                |
 -- | 38.0        18-DEC-2019  Sahithi K              NAIT-117540 45 Day Renewal Notification Email      |
 -- |                                                 Logic Fix                                          |
+-- | 39.0        16-JAN-2020  Arvind K               NAIT-118527 OD AR Recurring Billing Contract Line  |
+-- |                                                 Auto Renewal Failed-EBS PROD                       |
+-- | 40.0        16-JAN-2020  Arvind K               ODNA-164065 EBS Trigger Email For AutoRenew -      |
+-- |                                                 On7DayPaymentFailure,added 'notificationDay' in    |
+-- |                                                 send_billing_email, payload for failure case       |
+-- | 41.0        17-JAN-2020  Kayeed A               NAIT-119054 EBS- To modify the subscription billing|
+-- |                                                 code such that recurring invoice will be created   |
+-- |                                                 after successful payment.    
 -- +====================================================================================================+
 
   gc_package_name        CONSTANT all_objects.object_name%TYPE   := 'xx_ar_subscriptions_mt_pkg';
@@ -8064,8 +8072,11 @@ AS
                     "action": "'
                                 || lr_translation_info.target_value3 --future use
                                 || '", 
+					"notificationDays":"'
+                                || px_subscription_array(indx).next_retry_day
+                                || '",
                     "nextRetryDate": "'
-                                || TO_CHAR(lc_next_retry_date,'DD-MON-YYYY')
+                                || TO_CHAR(lc_next_retry_date,'DD-MON-YYYY')  
                                 || '",
                     "failureMessage": "'
                                 || lc_failure_message
@@ -11752,21 +11763,24 @@ AS
             /************************
             * Get invoice information
             ************************/
-
-            lc_action := 'Calling get_invoice_header_info';
+           
+		   -- Commented the below code : NAIT-118527 : Program - OD: AR Recurring Billing Contract Line Auto Renewal Failed In EBS Production.
+		   
+          /*  lc_action := 'Calling get_invoice_header_info';
              
             get_invoice_header_info(p_invoice_number      => lt_subscription_array(indx).invoice_number,
-                                    x_invoice_header_info => lr_invoice_header_info);  
+                                    x_invoice_header_info => lr_invoice_header_info);  */
             
             /******************************
             * Get invoice total information
             ******************************/
 
-
-            lc_action := 'Calling get_invoice_total_amount_info';
+            -- Commented the below code : NAIT-118527 : Program - OD: AR Recurring Billing Contract Line Auto Renewal Failed In EBS Production.
+           /* lc_action := 'Calling get_invoice_total_amount_info';
 
             get_invoice_total_amount_info(p_customer_trx_id           => lr_invoice_header_info.customer_trx_id,
-                                          x_invoice_total_amount_info => ln_invoice_total_amount_info);
+                                          x_invoice_total_amount_info => ln_invoice_total_amount_info);*/ 
+                                          x_invoice_total_amount_info => ln_invoice_total_amount_info);*/ 
 
            
             /************************************************
