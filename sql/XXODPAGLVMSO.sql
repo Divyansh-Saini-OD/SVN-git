@@ -9,7 +9,7 @@ REM     OUTPUTS                 :  generates .txt and .csv files
 REM     HISTORY                 :  WHO -                 WHAT -          DATE -
 REM     NOTES                   :  Praveen Vanga		RICE I3101    02/27/2017   Intial version
 REM     NOTES                   :  Arun Dsouza 		    RICE I3101    09/27/2018   Modified to archive the files
-REM     NOTES 					:  Priyam                   RICE I301 04/15/2019  Modified to remove Task Number having IT and LB	
+REM     NOTES                   :  Kirubha Samuel 		RICE I3101    01/13/2020   changed the logic for ODPAPOET1, task Name
 REM	_____________________________________________________________________________________________________
 
 set concat .
@@ -58,13 +58,20 @@ SELECT DISTINCT ('"'|| SUBSTR(p.segment1
        pei.expenditure_type
 	   ||'_'||
        PRVR.NAME,1,100)||'"' )||','||
-       ('"'|| SUBSTR(p.segment1
+--       ('"'|| SUBSTR(p.segment1
+--       ||'_'||     
+--       t.task_number
+--	   ||'_'||
+--       pei.expenditure_type
+--	   ||'_'||
+--       prvr.name,1,100)||'"' ) b	 
+       ('"'|| SUBSTR(p.name
        ||'_'||     
-       t.task_number
+       t.task_name
 	   ||'_'||
-       pei.expenditure_type
+       decode(substr(t.task_number,1,2), '01' , 'EXPENSE', '02' , 'CAPITAL', 'OTHER')
 	   ||'_'||
-       prvr.name,1,100)||'"' ) b	   
+       prvr.name,1,100)||'"' ) b	  
   FROM hr_all_organization_units prvr,
        pa_expenditure_items_all   pei,
        pa_tasks t,
@@ -74,7 +81,6 @@ SELECT DISTINCT ('"'|| SUBSTR(p.segment1
    AND p.TEMPLATE_FLAG <> 'Y'
    AND t.project_id=p.project_id 
    AND t.chargeable_flag = 'Y'
-   and t.task_number not like '%IT%LB%'
    AND pei.expenditure_type NOT LIKE '%:Accrued%'
    AND pei.task_id=t.task_id
    AND prvr.organization_id=pei.cc_prvdr_organization_id
@@ -125,7 +131,6 @@ SELECT DISTINCT '"'||SUBSTR(p.segment1
    AND p.TEMPLATE_FLAG <> 'Y'
    AND t.project_id=p.project_id 
    AND t.chargeable_flag = 'Y'
-   and t.task_number not like '%IT%LB%'
    AND pei.expenditure_type NOT LIKE '%:Accrued%'
    AND pei.task_id=t.task_id
    AND prvr.organization_id=pei.cc_prvdr_organization_id
