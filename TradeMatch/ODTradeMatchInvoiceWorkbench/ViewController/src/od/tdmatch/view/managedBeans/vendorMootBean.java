@@ -515,6 +515,7 @@ public class vendorMootBean {
            //   (JUCtrlRangeBinding)bc.getControlBinding(getTableBindingName());
 
         //  DCIteratorBinding iter = tableBinding.getIteratorBinding();
+        // Added GL Date as part of Jira# NAIT-29712
         DCBindingContainer bindings = (DCBindingContainer)BindingContext.getCurrent().getCurrentBindingsEntry();
         DCIteratorBinding iter=bindings.findIteratorBinding("VendMootDtVO1Iterator");
         //  DCBindingContainer bindings = (DCBindingContainer)BindingContext.getCurrent().getCurrentBindingsEntry();
@@ -616,22 +617,24 @@ public class vendorMootBean {
                            cellA1 = excelrow.createCell((short) 7);
                            cellA1.setCellValue("Invoice Date");
                            cellA1 = excelrow.createCell((short) 8);
-                           cellA1.setCellValue("PO#");
+                           cellA1.setCellValue("GL Date");
                            cellA1 = excelrow.createCell((short) 9);
-                           cellA1.setCellValue("Location");
+                           cellA1.setCellValue("PO#");
                            cellA1 = excelrow.createCell((short) 10);
-                           cellA1.setCellValue("Due Date");
+                           cellA1.setCellValue("Location");
                            cellA1 = excelrow.createCell((short) 11);
-                           cellA1.setCellValue("Invoice Amount $");
+                           cellA1.setCellValue("Due Date");
                            cellA1 = excelrow.createCell((short) 12);
-                           cellA1.setCellValue("Qty Hold Amt $");
+                           cellA1.setCellValue("Invoice Amount $");
                            cellA1 = excelrow.createCell((short) 13);
-                           cellA1.setCellValue("Price Hold Amt $");
+                           cellA1.setCellValue("Qty Hold Amt $");
                            cellA1 = excelrow.createCell((short) 14);
-                           cellA1.setCellValue("FD");
+                           cellA1.setCellValue("Price Hold Amt $");
                            cellA1 = excelrow.createCell((short) 15);
-                           cellA1.setCellValue("NC");
+                           cellA1.setCellValue("FD");
                            cellA1 = excelrow.createCell((short) 16);
+                           cellA1.setCellValue("NC");
+                           cellA1 = excelrow.createCell((short) 17);
                            cellA1.setCellValue("Freight Hold");
                                
                            
@@ -685,46 +688,51 @@ public class vendorMootBean {
                           else
                               cellA1.setCellValue("");
                           cellA1 = excelrow.createCell((short) 8);
+                          if(row.getAttribute("GlDate")!=null)
+                              cellA1.setCellValue(getSimpleDate((oracle.jbo.domain.Date)row.getAttribute("GlDate")));
+                          else
+                              cellA1.setCellValue("");
+                          cellA1 = excelrow.createCell((short) 9);
                           if(row.getAttribute("PoNumber")!=null)
                               cellA1.setCellValue(row.getAttribute("PoNumber").toString());
                           else
                               cellA1.setCellValue("");
-                          cellA1 = excelrow.createCell((short) 9);
+                          cellA1 = excelrow.createCell((short) 10);
                           if(row.getAttribute("Location")!=null)
                               cellA1.setCellValue(row.getAttribute("Location").toString());
                           else
                               cellA1.setCellValue("");
-                          cellA1 = excelrow.createCell((short) 10);
+                          cellA1 = excelrow.createCell((short) 11);
                           if(row.getAttribute("DueDate")!=null)
                               cellA1.setCellValue(getSimpleDate((oracle.jbo.domain.Date)row.getAttribute("DueDate")));
                           else
                               cellA1.setCellValue("");
-                          cellA1 = excelrow.createCell((short) 11);
+                          cellA1 = excelrow.createCell((short) 12);
                           if(row.getAttribute("InvoiceAmount")!=null)
                               cellA1.setCellValue(row.getAttribute("InvoiceAmount").toString());
                           else
                               cellA1.setCellValue("");
-                          cellA1 = excelrow.createCell((short) 12);
+                          cellA1 = excelrow.createCell((short) 13);
                           if(row.getAttribute("QtyHoldAmt")!=null)
                               cellA1.setCellValue(row.getAttribute("QtyHoldAmt").toString());
                           else
                               cellA1.setCellValue("");
-                          cellA1 = excelrow.createCell((short) 13);
+                          cellA1 = excelrow.createCell((short) 14);
                           if(row.getAttribute("PriceHoldAmt")!=null)
                               cellA1.setCellValue(row.getAttribute("PriceHoldAmt").toString());
                           else
                               cellA1.setCellValue("");
-                          cellA1 = excelrow.createCell((short) 14);
+                          cellA1 = excelrow.createCell((short) 15);
                           if(row.getAttribute("FrontDoorc")!=null)
                               cellA1.setCellValue(row.getAttribute("FrontDoorc").toString());
                           else
                               cellA1.setCellValue("");
-                          cellA1 = excelrow.createCell((short) 15);
+                          cellA1 = excelrow.createCell((short) 16);
                           if(row.getAttribute("NonCodec")!=null)
                               cellA1.setCellValue(row.getAttribute("NonCodec").toString());
                           else
                               cellA1.setCellValue("");
-                          cellA1 = excelrow.createCell((short) 16);
+                          cellA1 = excelrow.createCell((short) 17);
                           if(row.getAttribute("FrtHold")!=null)
                               cellA1.setCellValue(row.getAttribute("FrtHold").toString());
                           else
@@ -763,22 +771,24 @@ public class vendorMootBean {
                                                         cellA1 = excelrow.createCell((short) 7);
                                                         cellA1.setCellValue("Invoice Date");
                                                         cellA1 = excelrow.createCell((short) 8);
-                                                        cellA1.setCellValue("PO#");
+                                                        cellA1.setCellValue("GL Date");
                                                         cellA1 = excelrow.createCell((short) 9);
-                                                        cellA1.setCellValue("Location");
+                                                        cellA1.setCellValue("PO#");
                                                         cellA1 = excelrow.createCell((short) 10);
-                                                        cellA1.setCellValue("Due Date");
+                                                        cellA1.setCellValue("Location");
                                                         cellA1 = excelrow.createCell((short) 11);
-                                                        cellA1.setCellValue("Invoice Amount $");
+                                                        cellA1.setCellValue("Due Date");
                                                         cellA1 = excelrow.createCell((short) 12);
-                                                        cellA1.setCellValue("Qty Hold Amt $");
+                                                        cellA1.setCellValue("Invoice Amount $");
                                                         cellA1 = excelrow.createCell((short) 13);
-                                                        cellA1.setCellValue("Price Hold Amt $");
+                                                        cellA1.setCellValue("Qty Hold Amt $");
                                                         cellA1 = excelrow.createCell((short) 14);
-                                                        cellA1.setCellValue("FD");
+                                                        cellA1.setCellValue("Price Hold Amt $");
                                                         cellA1 = excelrow.createCell((short) 15);
-                                                        cellA1.setCellValue("NC");
+                                                        cellA1.setCellValue("FD");
                                                         cellA1 = excelrow.createCell((short) 16);
+                                                        cellA1.setCellValue("NC");
+                                                        cellA1 = excelrow.createCell((short) 17);
                                                         cellA1.setCellValue("Freight Hold");
                                                             
                                                         
@@ -832,46 +842,51 @@ public class vendorMootBean {
                                                        else
                                                            cellA1.setCellValue("");
                                                        cellA1 = excelrow.createCell((short) 8);
+                                                       if(row.getAttribute("GlDate")!=null)
+                                                           cellA1.setCellValue(getSimpleDate((oracle.jbo.domain.Date)row.getAttribute("GlDate")));
+                                                       else
+                                                           cellA1.setCellValue("");
+                                                       cellA1 = excelrow.createCell((short) 9);
                                                        if(row.getAttribute("PoNumber")!=null)
                                                            cellA1.setCellValue(row.getAttribute("PoNumber").toString());
                                                        else
                                                            cellA1.setCellValue("");
-                                                       cellA1 = excelrow.createCell((short) 9);
+                                                       cellA1 = excelrow.createCell((short) 10);
                                                        if(row.getAttribute("Location")!=null)
                                                            cellA1.setCellValue(row.getAttribute("Location").toString());
                                                        else
                                                            cellA1.setCellValue("");
-                                                       cellA1 = excelrow.createCell((short) 10);
+                                                       cellA1 = excelrow.createCell((short) 11);
                                                        if(row.getAttribute("DueDate")!=null)
                                                            cellA1.setCellValue(getSimpleDate((oracle.jbo.domain.Date)row.getAttribute("DueDate")));
                                                        else
                                                            cellA1.setCellValue("");
-                                                       cellA1 = excelrow.createCell((short) 11);
+                                                       cellA1 = excelrow.createCell((short) 12);
                                                        if(row.getAttribute("InvoiceAmount")!=null)
                                                            cellA1.setCellValue(row.getAttribute("InvoiceAmount").toString());
                                                        else
                                                            cellA1.setCellValue("");
-                                                       cellA1 = excelrow.createCell((short) 12);
+                                                       cellA1 = excelrow.createCell((short) 13);
                                                        if(row.getAttribute("QtyHoldAmt")!=null)
                                                            cellA1.setCellValue(row.getAttribute("QtyHoldAmt").toString());
                                                        else
                                                            cellA1.setCellValue("");
-                                                       cellA1 = excelrow.createCell((short) 13);
+                                                       cellA1 = excelrow.createCell((short) 14);
                                                        if(row.getAttribute("PriceHoldAmt")!=null)
                                                            cellA1.setCellValue(row.getAttribute("PriceHoldAmt").toString());
                                                        else
                                                            cellA1.setCellValue("");
-                                                       cellA1 = excelrow.createCell((short) 14);
+                                                       cellA1 = excelrow.createCell((short) 15);
                                                        if(row.getAttribute("FrontDoorc")!=null)
                                                            cellA1.setCellValue(row.getAttribute("FrontDoorc").toString());
                                                        else
                                                            cellA1.setCellValue("");
-                                                       cellA1 = excelrow.createCell((short) 15);
+                                                       cellA1 = excelrow.createCell((short) 16);
                                                        if(row.getAttribute("NonCodec")!=null)
                                                            cellA1.setCellValue(row.getAttribute("NonCodec").toString());
                                                        else
                                                            cellA1.setCellValue("");
-                                                       cellA1 = excelrow.createCell((short) 16);
+                                                       cellA1 = excelrow.createCell((short) 17);
                                                        if(row.getAttribute("FrtHold")!=null)
                                                            cellA1.setCellValue(row.getAttribute("FrtHold").toString());
                                                        else
@@ -935,22 +950,24 @@ public class vendorMootBean {
                            cellA1 = excelrow.createCell((short) 7);
                            cellA1.setCellValue("Invoice Date");
                            cellA1 = excelrow.createCell((short) 8);
-                           cellA1.setCellValue("PO#");
+                           cellA1.setCellValue("GL Date");
                            cellA1 = excelrow.createCell((short) 9);
-                           cellA1.setCellValue("Location");
+                           cellA1.setCellValue("PO#");
                            cellA1 = excelrow.createCell((short) 10);
-                           cellA1.setCellValue("Due Date");
+                           cellA1.setCellValue("Location");
                            cellA1 = excelrow.createCell((short) 11);
-                           cellA1.setCellValue("Invoice Amount $");
+                           cellA1.setCellValue("Due Date");
                            cellA1 = excelrow.createCell((short) 12);
-                           cellA1.setCellValue("Qty Hold Amt $");
+                           cellA1.setCellValue("Invoice Amount $");
                            cellA1 = excelrow.createCell((short) 13);
-                           cellA1.setCellValue("Price Hold Amt $");
+                           cellA1.setCellValue("Qty Hold Amt $");
                            cellA1 = excelrow.createCell((short) 14);
-                           cellA1.setCellValue("FD");
+                           cellA1.setCellValue("Price Hold Amt $");
                            cellA1 = excelrow.createCell((short) 15);
-                           cellA1.setCellValue("NC");
+                           cellA1.setCellValue("FD");
                            cellA1 = excelrow.createCell((short) 16);
+                           cellA1.setCellValue("NC");
+                           cellA1 = excelrow.createCell((short) 17);
                            cellA1.setCellValue("Freight Hold");
                                
                            
@@ -1004,46 +1021,51 @@ public class vendorMootBean {
                           else
                               cellA1.setCellValue("");
                           cellA1 = excelrow.createCell((short) 8);
+                          if(row.getAttribute("GlDate")!=null)
+                              cellA1.setCellValue(getSimpleDate((oracle.jbo.domain.Date)row.getAttribute("GlDate")));
+                          else
+                              cellA1.setCellValue("");
+                          cellA1 = excelrow.createCell((short) 9);
                           if(row.getAttribute("PoNumber")!=null)
                               cellA1.setCellValue(row.getAttribute("PoNumber").toString());
                           else
                               cellA1.setCellValue("");
-                          cellA1 = excelrow.createCell((short) 9);
+                          cellA1 = excelrow.createCell((short) 10);
                           if(row.getAttribute("Location")!=null)
                               cellA1.setCellValue(row.getAttribute("Location").toString());
                           else
                               cellA1.setCellValue("");
-                          cellA1 = excelrow.createCell((short) 10);
+                          cellA1 = excelrow.createCell((short) 11);
                           if(row.getAttribute("DueDate")!=null)
                               cellA1.setCellValue(getSimpleDate((oracle.jbo.domain.Date)row.getAttribute("DueDate")));
                           else
                               cellA1.setCellValue("");
-                          cellA1 = excelrow.createCell((short) 11);
+                          cellA1 = excelrow.createCell((short) 12);
                           if(row.getAttribute("InvoiceAmount")!=null)
                               cellA1.setCellValue(row.getAttribute("InvoiceAmount").toString());
                           else
                               cellA1.setCellValue("");
-                          cellA1 = excelrow.createCell((short) 12);
+                          cellA1 = excelrow.createCell((short) 13);
                           if(row.getAttribute("QtyHoldAmt")!=null)
                               cellA1.setCellValue(row.getAttribute("QtyHoldAmt").toString());
                           else
                               cellA1.setCellValue("");
-                          cellA1 = excelrow.createCell((short) 13);
+                          cellA1 = excelrow.createCell((short) 14);
                           if(row.getAttribute("PriceHoldAmt")!=null)
                               cellA1.setCellValue(row.getAttribute("PriceHoldAmt").toString());
                           else
                               cellA1.setCellValue("");
-                          cellA1 = excelrow.createCell((short) 14);
+                          cellA1 = excelrow.createCell((short) 15);
                           if(row.getAttribute("FrontDoorc")!=null)
                               cellA1.setCellValue(row.getAttribute("FrontDoorc").toString());
                           else
                               cellA1.setCellValue("");
-                          cellA1 = excelrow.createCell((short) 15);
+                          cellA1 = excelrow.createCell((short) 16);
                           if(row.getAttribute("NonCodec")!=null)
                               cellA1.setCellValue(row.getAttribute("NonCodec").toString());
                           else
                               cellA1.setCellValue("");
-                          cellA1 = excelrow.createCell((short) 16);
+                          cellA1 = excelrow.createCell((short) 17);
                           if(row.getAttribute("FrtHold")!=null)
                               cellA1.setCellValue(row.getAttribute("FrtHold").toString());
                           else
@@ -1082,22 +1104,24 @@ public class vendorMootBean {
                                                         cellA1 = excelrow.createCell((short) 7);
                                                         cellA1.setCellValue("Invoice Date");
                                                         cellA1 = excelrow.createCell((short) 8);
-                                                        cellA1.setCellValue("PO#");
+                                                        cellA1.setCellValue("GL Date");
                                                         cellA1 = excelrow.createCell((short) 9);
-                                                        cellA1.setCellValue("Location");
+                                                        cellA1.setCellValue("PO#");
                                                         cellA1 = excelrow.createCell((short) 10);
-                                                        cellA1.setCellValue("Due Date");
+                                                        cellA1.setCellValue("Location");
                                                         cellA1 = excelrow.createCell((short) 11);
-                                                        cellA1.setCellValue("Invoice Amount $");
+                                                        cellA1.setCellValue("Due Date");
                                                         cellA1 = excelrow.createCell((short) 12);
-                                                        cellA1.setCellValue("Qty Hold Amt $");
+                                                        cellA1.setCellValue("Invoice Amount $");
                                                         cellA1 = excelrow.createCell((short) 13);
-                                                        cellA1.setCellValue("Price Hold Amt $");
+                                                        cellA1.setCellValue("Qty Hold Amt $");
                                                         cellA1 = excelrow.createCell((short) 14);
-                                                        cellA1.setCellValue("FD");
+                                                        cellA1.setCellValue("Price Hold Amt $");
                                                         cellA1 = excelrow.createCell((short) 15);
-                                                        cellA1.setCellValue("NC");
+                                                        cellA1.setCellValue("FD");
                                                         cellA1 = excelrow.createCell((short) 16);
+                                                        cellA1.setCellValue("NC");
+                                                        cellA1 = excelrow.createCell((short) 17);
                                                         cellA1.setCellValue("Freight Hold");
                                                             
                                                         
@@ -1151,46 +1175,51 @@ public class vendorMootBean {
                                                        else
                                                            cellA1.setCellValue("");
                                                        cellA1 = excelrow.createCell((short) 8);
+                                                       if(row.getAttribute("GlDate")!=null)
+                                                           cellA1.setCellValue(getSimpleDate((oracle.jbo.domain.Date)row.getAttribute("GlDate")));
+                                                       else
+                                                           cellA1.setCellValue("");
+                                                       cellA1 = excelrow.createCell((short) 9);
                                                        if(row.getAttribute("PoNumber")!=null)
                                                            cellA1.setCellValue(row.getAttribute("PoNumber").toString());
                                                        else
                                                            cellA1.setCellValue("");
-                                                       cellA1 = excelrow.createCell((short) 9);
+                                                       cellA1 = excelrow.createCell((short) 10);
                                                        if(row.getAttribute("Location")!=null)
                                                            cellA1.setCellValue(row.getAttribute("Location").toString());
                                                        else
                                                            cellA1.setCellValue("");
-                                                       cellA1 = excelrow.createCell((short) 10);
+                                                       cellA1 = excelrow.createCell((short) 11);
                                                        if(row.getAttribute("DueDate")!=null)
                                                            cellA1.setCellValue(getSimpleDate((oracle.jbo.domain.Date)row.getAttribute("DueDate")));
                                                        else
                                                            cellA1.setCellValue("");
-                                                       cellA1 = excelrow.createCell((short) 11);
+                                                       cellA1 = excelrow.createCell((short) 12);
                                                        if(row.getAttribute("InvoiceAmount")!=null)
                                                            cellA1.setCellValue(row.getAttribute("InvoiceAmount").toString());
                                                        else
                                                            cellA1.setCellValue("");
-                                                       cellA1 = excelrow.createCell((short) 12);
+                                                       cellA1 = excelrow.createCell((short) 13);
                                                        if(row.getAttribute("QtyHoldAmt")!=null)
                                                            cellA1.setCellValue(row.getAttribute("QtyHoldAmt").toString());
                                                        else
                                                            cellA1.setCellValue("");
-                                                       cellA1 = excelrow.createCell((short) 13);
+                                                       cellA1 = excelrow.createCell((short) 14);
                                                        if(row.getAttribute("PriceHoldAmt")!=null)
                                                            cellA1.setCellValue(row.getAttribute("PriceHoldAmt").toString());
                                                        else
                                                            cellA1.setCellValue("");
-                                                       cellA1 = excelrow.createCell((short) 14);
+                                                       cellA1 = excelrow.createCell((short) 15);
                                                        if(row.getAttribute("FrontDoorc")!=null)
                                                            cellA1.setCellValue(row.getAttribute("FrontDoorc").toString());
                                                        else
                                                            cellA1.setCellValue("");
-                                                       cellA1 = excelrow.createCell((short) 15);
+                                                       cellA1 = excelrow.createCell((short) 16);
                                                        if(row.getAttribute("NonCodec")!=null)
                                                            cellA1.setCellValue(row.getAttribute("NonCodec").toString());
                                                        else
                                                            cellA1.setCellValue("");
-                                                       cellA1 = excelrow.createCell((short) 16);
+                                                       cellA1 = excelrow.createCell((short) 17);
                                                        if(row.getAttribute("FrtHold")!=null)
                                                            cellA1.setCellValue(row.getAttribute("FrtHold").toString());
                                                        else
