@@ -80,6 +80,8 @@ CREATE OR REPLACE PACKAGE BODY xx_ap_supp_cld_intf_pkg
 -- |                                               sites do not have Legacy Suppler number)    |
 -- | 3.5     23-OCT-2019    Paddy Sanjeevi     Added xx_tolerance_trait procedure              |
 -- | 3.6     26-OCT-2019    Paddy Sanjeevi     Added to update payment method at site level    |
+-- | 3.7     23-Jan-2020    Shanti Sethuraj    Modified for jira NAIT-118785                   |
+-- | 3.8     23-Jan-2020    Shanti Sethuraj    Modified for jira NAIT-118444	               |
 -- |===========================================================================================+
 AS
   /*********************************************************************
@@ -634,7 +636,8 @@ BEGIN
               NVL(p_favourable_price_pct,30),
               NVL(p_max_price_amt,50),
               NVL(p_min_chargeback_amt,2),
-              NVL(p_max_freight_amt,0),
+            --  NVL(p_max_freight_amt,0),  -- commented by Shanti for NAIT-118785
+			  p_max_freight_amt,              -- Added by Shanti for NAIT-118785
               NVL(p_dist_var_neg_amt,1),
               NVL(p_dist_var_pos_amt,1),
               fnd_global.user_id,
@@ -647,7 +650,8 @@ BEGIN
 	     SET favourable_price_pct = NVL(p_favourable_price_pct,30),
 		     max_price_amt        = NVL(p_max_price_amt,50),
 		     min_chargeback_amt   = NVL(p_min_chargeback_amt,2),
-		     max_freight_amt      = NVL(p_max_freight_amt,0),
+		   --  max_freight_amt      = NVL(p_max_freight_amt,0),    -- commented by Shanti for NAIT-118785
+		     max_freight_amt      = p_max_freight_amt,     -- Added by Shanti for NAIT-118785
 		     dist_var_neg_amt     = NVL(p_dist_var_neg_amt,1),
 		     dist_var_pos_amt     = NVL(p_dist_var_pos_amt,1),
 		     last_updated_by      = fnd_global.user_id,
@@ -2098,7 +2102,8 @@ BEGIN
 	      print_debug_msg(p_message=> l_program_step||'Unable to derive the party site information for site id:' || lr_existing_vendor_site_rec.vendor_site_id, p_force=>true);
     END;
 	
-    IF TRIM(c_sup_site.inactive_date) IS NOT NULL
+  --  IF TRIM(c_sup_site.inactive_date) IS NOT NULL    -- commented by Shanti for jira NAIT-118444	
+	 IF (TRIM(c_sup_site.inactive_date) IS NOT NULL and TRIM(c_sup_site.inactive_date)<sysdate)  ---- Added by Shanti for jira NAIT-118444	
 	THEN
 	    l_party_site_rec.status := 'I';
 	ELSE
