@@ -1973,7 +1973,7 @@ SELECT to_char(gps.START_DATE ,'mm/dd/yy') into l_adj_date
 			AND (sysdate BETWEEN TRUNC(start_date) AND TRUNC (end_date))
       and rownum<2; 
       
- update  XXFIN.XX_PO_RCV_ADJ_INT_STG 
+ update  XX_PO_RCV_ADJ_INT_STG 
 SET AP_ADJ_DATE = l_adj_date
     ,RECORD_STATUS = NULL
     ,ERROR_DESCRIPTION  = NULL
@@ -1981,12 +1981,12 @@ WHERE 1=1
 and ERROR_DESCRIPTION in ('GL Period is not Open for US_USD_P]','PO Period is not Open for US_USD_P]') ;
 
 COMMIT; 
-update  XXFIN.XX_PO_RCV_TRANS_INT_STG 
+update  XX_PO_RCV_TRANS_INT_STG 
 SET AP_RCVD_DATE = l_adj_date ----'12/30/19'
     ,RECORD_STATUS = NULL
     ,ERROR_DESCRIPTION  = NULL
 WHERE (AP_PO_NUMBER,AP_RECEIPT_NUM) in (select distinct  AP_PO_NUMBER, AP_RECEIPT_NUM
-										from XXFIN.XX_PO_RCV_TRANS_INT_STG 
+										from XX_PO_RCV_TRANS_INT_STG 
 										where 1=1
 										AND ERROR_DESCRIPTION IN ('GL Period is not Open for US_USD_P','PO Period is not Open for US_USD_P') );
 COMMIT;
