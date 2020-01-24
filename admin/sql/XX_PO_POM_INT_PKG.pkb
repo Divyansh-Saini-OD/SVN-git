@@ -165,10 +165,25 @@ END send_output_email;
 *********************************************************************/
 PROCEDURE purge_report_records
 IS
-ln_days number :=90;
+ln_days number ;
 ln_header_cnt number :=0;
 ln_lines_cnt number :=0;
 BEGIN
+
+BEGIN
+SELECT target_value6 INTO ln_days
+                 FROM  xx_fin_translatedefinition xtd
+					   ,xx_fin_translatevalues xtv
+                WHERE xtd.translation_name = 'XX_AP_TRADE_INV_EMAIL'
+                AND xtd.translate_id       = xtv.translate_id
+                AND xtv.source_value1 = 'PURCHASEORDER';
+                
+EXCEPTION                
+WHEN OTHERS THEN
+ln_days := 90;
+END;
+
+
 
 UPDATE xx_po_pom_hdr_int_Stg
 SET record_Status ='NAIT-22174'
