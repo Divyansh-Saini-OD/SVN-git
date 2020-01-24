@@ -1,5 +1,4 @@
-create or replace 
-PACKAGE BODY XX_PO_RCV_ADJ_INT_PKG
+create or replace PACKAGE BODY XX_PO_RCV_ADJ_INT_PKG
 AS
   -- +============================================================================================+
   -- |  Office Depot - Project Simplify                                                           |
@@ -15,9 +14,11 @@ AS
   -- | Version     Date         Author           Remarks                                          |
   -- | =========   ===========  =============    ===============================================  |
   -- | 1.0         04/24/2017   Avinash Baddam   Initial version                                  |
-  -- | 2.0         01/24/2019   BIAS             INSTANCE_NAME is replaced with DB_NAME for OCI   |  
+  -- | 2.0         01/24/2019   BIAS             INSTANCE_NAME is replaced with DB_NAME for OCI   |
   -- |                                           Migration Project                                |
-  -- | 3.0         12/19/2018   Venkateshwar Panduga      Receipt Adjustment Issue                | 
+  -- | 3.0         12/19/2018   Venkateshwar Panduga      Receipt Adjustment Issue                |
+  -- | 4.0         01/19/2020   Venkateshwar Panduga      Submiting RTI program for -ve qty and   |
+  -- |                                                   removing duplicate condition for CONS rec|
   -- +============================================================================================+
   -- +============================================================================================+
   -- |  Name  : Log Exception                                                              |
@@ -1236,12 +1237,14 @@ AS
 									||'|'
 									||to_number(l_adj_tab(indx).ap_po_lineno) ;
 								--Check records exist in interface
-								IF ln_int_cnt                        >0 THEN
+								-----Below code is commented for V 4.0
+								/*IF ln_int_cnt                        >0 THEN
 									l_adj_tab(indx).record_status     := 'E';
 									l_adj_tab(indx).error_description := l_adj_tab(indx).error_description||'Misc Transaction already exist in Interface for PO Number=['||l_adj_tab(indx).ap_po_number||']';
 									print_debug_msg ('Record_id=['||TO_CHAR(l_adj_tab(indx).record_id)|| '] PO Number=['||l_adj_tab(indx).ap_po_number||']',FALSE);
 									RAISE data_exception;
-								END IF;
+								END IF;*/
+								-----END for V 4.0
 								--Get the existing misc transaction qty get first 3 values delimited by |
 								BEGIN
 									ln_trx_qty := NULL;
@@ -1266,7 +1269,7 @@ AS
 								/*ln_adj_qty := l_adj_tab(indx).ap_adj_qty-NVL(ln_trx_qty,0); */
 								------------------------------End comment for V1.1
 								--------------------Below code is added for V1.1
-								LN_ADJ_QTY := L_ADJ_TAB(INDX).AP_ADJ_QTY;																		 
+								LN_ADJ_QTY := L_ADJ_TAB(INDX).AP_ADJ_QTY;
 								-----------------------------End V3.0
 								-- assign transaction type and source based on qty
 								IF ln_adj_qty>0 THEN
@@ -1391,18 +1394,18 @@ AS
 							)
 						LOOP
 ------------   Below code is commented for V3.0
-           /* 
+           /*
 							ln_adj_qty :=(
 											l_adj_tab(indx).ap_adj_qty
 										 )
 										-NVL(
 											r.quantity_received,0
 										    );
-            */ 
+            */
 ------------------------------End comment for V1.1
 --------------------Below code is added for V1.1
 ln_adj_qty := l_adj_tab(indx).ap_adj_qty;
-										 
+
 -----------------------------End V3.0
 						IF ln_adj_qty>0 THEN
 							OPEN receipt_details_asc_cur(l_adj_tab(indx).po_header_id
@@ -1592,13 +1595,13 @@ ln_adj_qty := l_adj_tab(indx).ap_adj_qty;
 			END LOOP; --adj_cur
 			CLOSE adj_cur;
 			PRINT_DEBUG_MSG('Submitting Receiving Transaction Processor',false);
-        ----- Below logic added for V3.0		
+        ----- Below logic added for V3.0
 			update RCV_TRANSACTIONS_INTERFACE
 			set GROUP_ID =-p_batch_id
 			where group_id =p_batch_id
-			and quantity <0 ; 
+			and quantity <0 ;
 			commit;
-    --------- End V3.0 
+    --------- End V3.0
 			OPEN org_cur;
 			FETCH org_cur BULK COLLECT INTO l_org_tab;
 			CLOSE org_cur;
@@ -1643,13 +1646,13 @@ ln_adj_qty := l_adj_tab(indx).ap_adj_qty;
 				p_errbuf                   := 'One or more child program completed in error or warning';
 			END IF;
 		end if;
---  ----- Added for V3.0 
+--  ----- Added for V3.0
 --   		update RCV_TRANSACTIONS_INTERFACE
 --			set GROUP_ID =p_batch_id
 --			where group_id =-p_batch_id
---			and QUANTITY <0 ; 
---			commit;   
---   ----- End for V3.0 
+--			and QUANTITY <0 ;
+--			commit;
+--   ----- End for V3.0
 	EXCEPTION
 	WHEN OTHERS THEN
 		lc_error_msg := SUBSTR(sqlerrm,1,250);
@@ -1899,6 +1902,19 @@ ln_adj_qty := l_adj_tab(indx).ap_adj_qty;
 		lc_uretcode             VARCHAR2(3) := NULL;
 		lc_req_data             VARCHAR2(30);
 		ln_child_request_status VARCHAR2(1) := NULL;
+------Below cursor is added for V4.0		
+CURSOR RTI_CUR
+Is
+select distinct group_id,org_id
+from rcv_transactions_interface
+where 1=1 
+---and creation_Date>=sysdate-2
+--and transaction_type = 'CORRECT'
+and processing_status_code = 'PENDING' 
+and quantity <0;
+ln_job_id number :=0;
+l_adj_date varchar2(10);
+-----end V4.0		
 	BEGIN
 		gc_debug      := p_debug;
 		gn_request_id := fnd_global.conc_request_id;
@@ -1910,7 +1926,7 @@ ln_adj_qty := l_adj_tab(indx).ap_adj_qty;
 		IF (lc_req_data IS NULL) THEN
 			-- Derive and update the receipt_number if it is not yet derived
 			update_receipt_num;
-----Commented for V3.0			
+----Commented for V3.0
 	/*		BEGIN
 				UPDATE xx_po_rcv_adj_int_stg ra
 				SET ra.record_status    = 'D' ,
@@ -1943,7 +1959,44 @@ ln_adj_qty := l_adj_tab(indx).ap_adj_qty;
 				RETURN;
 			END;
 			*/
-----End for V3.0				
+      
+----End for V3.0
+---Added for V4.0
+BEGIN
+SELECT to_char(gps.START_DATE ,'mm/dd/yy') into l_adj_date
+			FROM  gl_period_statuses gps
+				, gl_ledgers gl
+			WHERE application_id	=101 --in(101,201)
+			AND gl.short_name		= 'US_USD_P' --p_short_name
+			AND gps.ledger_id		=gl.ledger_id 
+      and gps.closing_status ='O'
+			AND (sysdate BETWEEN TRUNC(start_date) AND TRUNC (end_date))
+      and rownum<2; 
+      
+ update  XXFIN.XX_PO_RCV_ADJ_INT_STG 
+SET AP_ADJ_DATE = l_adj_date
+    ,RECORD_STATUS = NULL
+    ,ERROR_DESCRIPTION  = NULL
+WHERE 1=1
+and ERROR_DESCRIPTION in ('GL Period is not Open for US_USD_P]','PO Period is not Open for US_USD_P]') ;
+
+COMMIT; 
+update  XXFIN.XX_PO_RCV_TRANS_INT_STG 
+SET AP_RCVD_DATE = l_adj_date ----'12/30/19'
+    ,RECORD_STATUS = NULL
+    ,ERROR_DESCRIPTION  = NULL
+WHERE (AP_PO_NUMBER,AP_RECEIPT_NUM) in (select distinct  AP_PO_NUMBER, AP_RECEIPT_NUM
+										from XXFIN.XX_PO_RCV_TRANS_INT_STG 
+										where 1=1
+										AND ERROR_DESCRIPTION IN ('GL Period is not Open for US_USD_P','PO Period is not Open for US_USD_P') );
+COMMIT;
+
+EXCEPTION
+WHEN OTHERS THEN
+fnd_file.put_line('Error while updating the adjustment date :');
+END;
+
+--end for V4.0
 			print_debug_msg('Check Retry Errors',TRUE);
 			IF p_retry_errors = 'Y' THEN
 				print_debug_msg('Updating rcv adjustment staging records for retry',FALSE);
@@ -2009,13 +2062,30 @@ ln_adj_qty := l_adj_tab(indx).ap_adj_qty;
 		p_retcode                  := '1'; --Warning
 		p_errbuf                   := 'One or more child program completed in error or warning';
     end if;
-    
-      ----- Added for V3.0 
+
+      ----- Added for V3.0
    		update RCV_TRANSACTIONS_INTERFACE
 			set GROUP_ID = ltrim(GROUP_ID,'-')  -----GROUP_ID
-			where  group_id  <0 ; 
-			commit;   
-   ----- End for V3.0 
+			where  group_id  <0 ;
+			commit;
+   ----- End for V3.0
+ -----Added for V4.0  
+   for i in RTI_CUR
+   loop
+     mo_global.set_policy_context('S',i.org_id);
+	 mo_global.init ('PO');
+	 ln_job_id := fnd_request.submit_request( application => 'PO'
+											 ,program => 'RVCTP'
+											 ,sub_request => TRUE
+											 ,argument1 => 'BATCH' 		-- Node
+											 ,argument2 => i.group_id ----p_batch_id    -- Group Id
+											 ,argument3 => i.org_id                                                                                     -- org_id
+														);
+				COMMIT;
+  print_debug_msg('Submitted RTI program for group id...'||i.group_id||', request id : '||ln_job_id ,TRUE); 
+   
+   end loop;
+------ End V4.0   
 		-- Sends the program output in email
 		send_output_email(fnd_global.conc_request_id, p_retcode);
 	END IF;
@@ -2027,4 +2097,3 @@ ln_adj_qty := l_adj_tab(indx).ap_adj_qty;
 		p_retcode := 2;
 	END interface_master;
 END XX_PO_RCV_ADJ_INT_PKG;
-/
