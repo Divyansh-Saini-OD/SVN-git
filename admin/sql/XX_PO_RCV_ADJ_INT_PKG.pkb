@@ -1993,7 +1993,7 @@ COMMIT;
 
 EXCEPTION
 WHEN OTHERS THEN
-fnd_file.put_line('Error while updating the adjustment date :');
+fnd_file.put_line(fnd_file.log,'Error while updating the adjustment date :');
 END;
 
 --end for V4.0
