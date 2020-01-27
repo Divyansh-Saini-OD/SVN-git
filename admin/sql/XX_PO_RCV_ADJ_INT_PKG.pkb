@@ -2097,3 +2097,5 @@ END;
 		p_retcode := 2;
 	END interface_master;
 END XX_PO_RCV_ADJ_INT_PKG;
+/
+SHOW ERRORS;
