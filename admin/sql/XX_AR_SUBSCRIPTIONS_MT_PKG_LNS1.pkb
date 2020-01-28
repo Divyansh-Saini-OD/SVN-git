@@ -11779,7 +11779,7 @@ AS
            /* lc_action := 'Calling get_invoice_total_amount_info';
 
             get_invoice_total_amount_info(p_customer_trx_id           => lr_invoice_header_info.customer_trx_id,
-                                          x_invoice_total_amount_info => ln_invoice_total_amount_info);*/ 
+                                          x_invoice_total_amount_info => ln_invoice_total_amount_info);
                                           x_invoice_total_amount_info => ln_invoice_total_amount_info);*/ 
 
            
