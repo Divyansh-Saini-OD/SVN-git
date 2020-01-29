@@ -93,7 +93,8 @@ AS
 		AND xce.d_ext_attr1 <= SYSDATE 
 		AND NVL(xce.d_ext_attr2,SYSDATE)  >= SYSDATE
 		AND TRUNC(NVL(rct.billing_date,SYSDATE+37))>=TRUNC(SYSDATE+37)
-		AND ooha.creation_date <= TO_DATE(P_DATE,'RRRR/MM/DD HH24:MI:SS') -7
+		--AND ooha.creation_date <= TO_DATE(P_DATE,'RRRR/MM/DD HH24:MI:SS') -7
+		AND ooha.creation_date BETWEEN  (SYSDATE-180) AND  (TO_DATE(P_DATE,'RRRR/MM/DD HH24:MI:SS') -7 )
 		AND hca.cust_account_id       = rct.bill_to_customer_id
 		And Parent_Order_Num     IS NOT NULL
 		--and ooha.header_id > 1692921448
@@ -141,7 +142,8 @@ AS
 	AND rct.attribute14 = oe.header_id 
 	AND (NVL(rct.billing_date,SYSDATE+37))>=(SYSDATE+37)
 	AND oe.order_source_id = 1029 
-	AND oe.creation_date <= TO_DATE(P_DATE,'RRRR/MM/DD HH24:MI:SS') -7;
+	--AND oe.creation_date <= TO_DATE(P_DATE,'RRRR/MM/DD HH24:MI:SS') -7
+	AND oe.creation_date BETWEEN  (SYSDATE-180) AND  (TO_DATE(P_DATE,'RRRR/MM/DD HH24:MI:SS') -7 );
 	
 	CURSOR C_DATA_ABS (P_DATE VARCHAR2) IS
 	  --AB Recurring Trx -- 197 sec
@@ -179,7 +181,8 @@ AS
 	AND ar_pay.status = 'OP'
 	AND rctt.name = 'US_SERVICE_AOPS_OD'
 	AND rbsa.name  = 'SUBSCRIPTION_BILLING_US'
-	AND ooha.creation_date <= TO_DATE(P_DATE,'RRRR/MM/DD HH24:MI:SS') -7;
+	--AND ooha.creation_date <= TO_DATE(P_DATE,'RRRR/MM/DD HH24:MI:SS') -7
+	AND ooha.creation_date BETWEEN  (SYSDATE-180) AND  (TO_DATE(P_DATE,'RRRR/MM/DD HH24:MI:SS') -7 );
 		
 	TYPE rpt_data_1 IS TABLE OF C_DATA_1%ROWTYPE INDEX BY BINARY_INTEGER;
 	l_rpt_data_1 rpt_data_1;
@@ -278,7 +281,8 @@ AS
 			AND ar_pay.status = 'OP'
 			AND rct.attribute14 = oe.header_id 
 			AND oe.order_source_id = 1029 
-			AND oe.creation_date <= sysdate -7
+			--AND oe.creation_date <= sysdate -7
+			AND oe.creation_date BETWEEN  (SYSDATE-180) AND  (TO_DATE(P_DATE,'RRRR/MM/DD HH24:MI:SS') -7 )
       AND EXISTS ( SELECT 1 FROM hz_customer_profiles hcp 
       WHERE 1=1
       AND hcp.cust_account_id = hca.cust_account_id 
@@ -402,7 +406,8 @@ AS
 			AND ar_pay.status = 'OP'
 			AND rctt.name = 'US_SERVICE_AOPS_OD'
 			AND rbsa.name  = 'SUBSCRIPTION_BILLING_US'
-			AND ooha.creation_date <= TO_DATE(P_DATE,'RRRR/MM/DD HH24:MI:SS') -7
+			--AND ooha.creation_date <= TO_DATE(P_DATE,'RRRR/MM/DD HH24:MI:SS') -7
+			AND ooha.creation_date  BETWEEN  (SYSDATE-180) AND  (TO_DATE(P_DATE,'RRRR/MM/DD HH24:MI:SS') -7 )
 			AND EXISTS ( SELECT 1 FROM hz_customer_profiles hcp 
 			WHERE 1=1
 			AND hcp.cust_account_id = hca.cust_account_id 
