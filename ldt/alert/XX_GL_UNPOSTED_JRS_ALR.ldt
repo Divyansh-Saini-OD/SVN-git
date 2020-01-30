@@ -389,7 +389,7 @@ BEGIN ALR_ALERTS "SQLGL" "OD: Send Email Notif for Manual Journal Approval"
     TO_RECIPIENTS = "&supvisor_email"
     CC_RECIPIENTS = "&employee_email"
     SUBJECT =
- "Please Approve & Post &JOURNAL_NAME/&BATCH_NAME – &description in &DB_NAME"
+ "Please Review & Post &JOURNAL_NAME/&BATCH_NAME – &description in &DB_NAME"
     COLUMN_WRAP_FLAG = "Y"
     BODY =
  "Journal/Batch &JOURNAL_NAME/&BATCH_NAME – &description submitted by &employee_name on &DATE_CREATED is awaiting your Review & Approval.\n\

@@ -141,7 +141,7 @@ BEGIN
    Fnd_File.PUT_LINE (Fnd_File.LOG,'Start fetching data');
    FOR rec_fetchemp_details IN c_fetchemp_details(p_batch_ids) LOOP
       FOR rec_fetch_jdr_data IN c_fetch_jdr_data(p_batch_ids,rec_fetchemp_details.user_id) LOOP
-         lv_subject :='Please Approve '||'&'||' Post '||rec_fetch_jdr_data.journal_name||'/'||rec_fetch_jdr_data.batch_name--||' – '||rec_fetch_jdr_data.description 
+         lv_subject :='Please review '||'&'||' Post '||rec_fetch_jdr_data.journal_name||'/'||rec_fetch_jdr_data.batch_name--||' – '||rec_fetch_jdr_data.description 
                       ||' in '||rec_fetchemp_details.db_name;
          lv_email_body:= lv_email_body||'Journal/Batch <B>'||rec_fetch_jdr_data.journal_name||'/'||rec_fetch_jdr_data.batch_name||' – '||rec_fetch_jdr_data.description
                          ||'</B> submitted by <B>'||rec_fetchemp_details.employee_name||'</B> on <B>'||rec_fetch_jdr_data.date_created||'</B> is awaiting your Review '||'&'||' Approval.'||chr(13);
