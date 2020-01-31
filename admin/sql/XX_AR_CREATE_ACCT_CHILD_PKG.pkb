@@ -48,7 +48,8 @@ AS
    -- |5.5        20-Aug-2019  Nitin Tugave   Made Changes for Defect NAIT-86554            |   
    -- |5.6        21-SEP-2019  Sahithi K      NAIT-105768 changing form GL_ID_UNBILLED      |
    -- |                                        to GL_ID_UNEARNED                            |
-   -- |5.5        29-Oct-2019  Nitin Tugave   NAIT-113005 EDI Tariff DESCRIPTION            |     
+   -- |5.7        29-Oct-2019  Nitin Tugave   NAIT-113005 EDI Tariff DESCRIPTION            |     
+   -- |5.8        31-Jan-2020  Shreyas Thorat NAIT-121574 Tariff Changes- Line Number Change|  
    -- +=====================================================================================+
 
    ------------------------
@@ -327,8 +328,77 @@ AS
           ORDER BY RILA.sales_order,ROWNUM;
 
       --Added for NAIT-113005 EDI Tariff changes
+	  --Corrected Cursor NAIT-121574
       CURSOR lcu_edi_tariff(p_sales_order  IN VARCHAR2,p_batch_source_name  IN VARCHAR2,P_intline_attribute6 IN VARCHAR2)
       IS
+	  SELECT ROWID row_id ,
+  org_id ,
+  ril.DESCRIPTION
+  ||' - '
+  ||DECODE (NVL(
+  (SELECT lookup_code
+  FROM fnd_lookup_values b
+  WHERE b.lookup_type = 'OD_FEES_ITEMS'
+  AND b.LANGUAGE      ='US'
+  AND b.enabled_flag  = 'Y'
+  AND b.attribute7    = 'LINE'
+  AND ROWNUM          <2
+  AND SYSDATE BETWEEN NVL(b.start_date_active,SYSDATE) AND NVL(b.end_date_active,SYSDATE+1)
+  AND b.attribute6 = ril.INVENTORY_ITEM_ID
+  ),'X'),'X' ,ril.DESCRIPTION ,
+  (SELECT d.segment1
+  FROM ra_interface_lines_all ril1 ,
+    mtl_system_items_b d
+  WHERE 1                  =1
+  AND d.INVENTORY_ITEM_ID  =ril1.INVENTORY_ITEM_ID
+  --AND ril1.sales_order_line=ril.ATTRIBUTE12
+  AND ril.ATTRIBUTE12=(select REPLACE(LTRIM(REPLACE(orig_sys_line_ref, '0', ' ')), ' ', '0')
+                        from oe_order_lines_all ol, oe_order_headers_all oh
+                        where ol.header_id=oh.header_id
+                        and oh.order_number=ril.sales_order )
+  AND EXISTS (SELECT 1
+                        from oe_order_lines_all ol, oe_order_headers_all oh
+                        where ol.header_id=oh.header_id
+                        and oh.order_number=ril.sales_order
+            and ol.line_number=sales_order_line)
+  AND ril1.sales_order     =ril.sales_order
+  AND rownum               <2
+  ) ) new_desc
+  ,
+  (SELECT ril2.sales_order_line
+  FROM ra_interface_lines_all ril2 ,
+    mtl_system_items_b d1
+  WHERE 1                  =1
+  AND d1.INVENTORY_ITEM_ID  =ril2.INVENTORY_ITEM_ID
+  --AND ril2.sales_order_line=ril.ATTRIBUTE12
+  AND ril.ATTRIBUTE12=(select REPLACE(LTRIM(REPLACE(orig_sys_line_ref, '0', ' ')), ' ', '0')
+                        from oe_order_lines_all ol, oe_order_headers_all oh
+                        where ol.header_id=oh.header_id
+                        and oh.order_number=ril.sales_order )
+  AND EXISTS (SELECT 1
+                        from oe_order_lines_all ol, oe_order_headers_all oh
+                        where ol.header_id=oh.header_id
+                        and oh.order_number=ril.sales_order
+            and ol.line_number=sales_order_line)
+  AND ril2.sales_order     =ril.sales_order
+  AND rownum               <2
+  )  so_line_number
+FROM ra_interface_lines_all ril
+WHERE 1=1--ril.SALES_ORDER             ='412922787001'
+AND ril.batch_source_name         = NVL(p_batch_source_name,ril.batch_source_name)
+AND ril.interface_line_attribute6 = P_intline_attribute6
+AND instr(ril.description,' - ')  = 0
+AND EXISTS
+  (SELECT lookup_code
+  FROM fnd_lookup_values b
+  WHERE b.lookup_type = 'OD_FEES_ITEMS'
+  AND b.LANGUAGE      ='US'
+  AND b.enabled_flag  = 'Y'
+  AND b.attribute7    = 'LINE'
+  AND SYSDATE BETWEEN NVL(b.start_date_active,SYSDATE) AND NVL(b.end_date_active,SYSDATE+1)
+  AND b.attribute6 = ril.INVENTORY_ITEM_ID
+  ) ;
+	  /*
       SELECT ROWID row_id ,org_id
              ,ril.DESCRIPTION||' - '||DECODE(NVL((SELECT lookup_code
        FROM fnd_lookup_values b 
@@ -364,6 +434,7 @@ AS
                        AND SYSDATE BETWEEN NVL(b.start_date_active,SYSDATE) AND NVL(b.end_date_active,SYSDATE+1)                       
                        AND b.attribute6 = ril.INVENTORY_ITEM_ID)                   
       ;
+	  */
 
       lc_interface_PREV  VARCHAR2(1000);
       lc_interface_CURR  VARCHAR2(1000);
@@ -1283,7 +1354,7 @@ AS
             LOOP
                 FND_FILE.PUT_LINE(FND_FILE.LOG,'..EDI Tariff Changes...'||lcu_process_interface_lines.sales_order||' DESC '||i.new_desc );
                 UPDATE ra_interface_lines_all
-                  SET DESCRIPTION = i.new_desc
+                  SET DESCRIPTION = i.new_desc , interface_line_attribute12 = i.so_line_number -- Added Attr12 under NAIT-121574
                 WHERE ROWID = i.row_id
                   AND org_id            = FND_PROFILE.VALUE('ORG_ID')
                 ;
