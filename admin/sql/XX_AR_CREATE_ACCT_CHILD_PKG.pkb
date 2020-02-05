@@ -394,7 +394,7 @@ AS
 	)
 	UNION 
 	select line_number 
-	from .oe_order_lines_all ol, oe_order_headers_all oh
+	from oe_order_lines_all ol, oe_order_headers_all oh
 	where oh.header_id = ol.header_id
 	AND oh.order_number = p_sales_order
 	AND EXISTS (
