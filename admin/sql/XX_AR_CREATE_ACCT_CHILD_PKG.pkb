@@ -329,7 +329,7 @@ AS
 
       --Added for NAIT-113005 EDI Tariff changes
 	  --Corrected Cursor NAIT-121574
-      CURSOR lcu_edi_tariff(p_sales_order  IN VARCHAR2,p_batch_source_name  IN VARCHAR2,P_intline_attribute6 IN VARCHAR2)
+       CURSOR lcu_edi_tariff(p_sales_order  IN VARCHAR2,p_batch_source_name  IN VARCHAR2,P_intline_attribute6 IN VARCHAR2)
       IS
 	  SELECT ROWID row_id ,
   org_id ,
@@ -352,7 +352,7 @@ AS
   WHERE 1                  =1
   AND d.INVENTORY_ITEM_ID  =ril1.INVENTORY_ITEM_ID
   --AND ril1.sales_order_line=ril.ATTRIBUTE12
-  AND ril.ATTRIBUTE12=(select REPLACE(LTRIM(REPLACE(orig_sys_line_ref, '0', ' ')), ' ', '0')
+  AND ril.ATTRIBUTE12 IN (select REPLACE(LTRIM(REPLACE(orig_sys_line_ref, '0', ' ')), ' ', '0')
                         from oe_order_lines_all ol, oe_order_headers_all oh
                         where ol.header_id=oh.header_id
                         and oh.order_number=ril.sales_order )
@@ -365,24 +365,48 @@ AS
   AND rownum               <2
   ) ) new_desc
   ,
-  (SELECT ril2.sales_order_line
-  FROM ra_interface_lines_all ril2 ,
-    mtl_system_items_b d1
-  WHERE 1                  =1
-  AND d1.INVENTORY_ITEM_ID  =ril2.INVENTORY_ITEM_ID
-  --AND ril2.sales_order_line=ril.ATTRIBUTE12
-  AND ril.ATTRIBUTE12=(select REPLACE(LTRIM(REPLACE(orig_sys_line_ref, '0', ' ')), ' ', '0')
-                        from oe_order_lines_all ol, oe_order_headers_all oh
-                        where ol.header_id=oh.header_id
-                        and oh.order_number=ril.sales_order )
-  AND EXISTS (SELECT 1
-                        from oe_order_lines_all ol, oe_order_headers_all oh
-                        where ol.header_id=oh.header_id
-                        and oh.order_number=ril.sales_order
-            and ol.line_number=sales_order_line)
-  AND ril2.sales_order     =ril.sales_order
-  AND rownum               <2
-  )  so_line_number
+  (select line_number  
+	from apps.oe_order_lines_all ol , apps.oe_order_headers_all oh
+	where oh.header_id = ol.header_id
+	AND oh.order_number = p_sales_order
+	AND EXISTS (
+	select 1 -- a.attribute12 , a.header_id
+	from apps.oe_order_lines_all a
+	where a.line_id = P_intline_attribute6 --29492844656 
+	and REPLACE(LTRIM(REPLACE(ol.orig_sys_line_ref, '0', ' ')), ' ', '0') = a.attribute12 
+	and ol.line_number = a.attribute12 
+	and ol.attribute12 IS NULL
+	AND rownum               <2
+	)
+	UNION
+	select line_number 
+	from apps.oe_order_lines_all ol, apps.oe_order_headers_all oh
+	where oh.header_id = ol.header_id
+	AND oh.order_number = p_sales_order
+	AND EXISTS (
+	select 1 -- a.attribute12 , a.header_id
+	from apps.oe_order_lines_all a
+	where a.line_id = P_intline_attribute6 --29492844656 
+	and REPLACE(LTRIM(REPLACE(ol.orig_sys_line_ref, '0', ' ')), ' ', '0') = a.attribute12 
+	and ol.line_number != a.attribute12 
+	and ol.attribute12 IS NULL
+	AND rownum               <2
+	)
+	UNION 
+	select line_number 
+	from apps.oe_order_lines_all ol, apps.oe_order_headers_all oh
+	where oh.header_id = ol.header_id
+	AND oh.order_number = p_sales_order
+	AND EXISTS (
+	select 1 -- a.attribute12 , a.header_id
+	from apps.oe_order_lines_all a
+	where a.line_id = P_intline_attribute6 --29492844656 
+	and REPLACE(LTRIM(REPLACE(ol.orig_sys_line_ref, '0', ' ')), ' ', '0') != a.attribute12 
+	and ol.line_number = a.attribute12 
+	and ol.attribute12 IS NULL
+	AND rownum               <2
+	)
+	) so_line_number
 FROM ra_interface_lines_all ril
 WHERE 1=1--ril.SALES_ORDER             ='412922787001'
 AND ril.batch_source_name         = NVL(p_batch_source_name,ril.batch_source_name)
