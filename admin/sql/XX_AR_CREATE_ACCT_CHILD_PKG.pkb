@@ -366,12 +366,12 @@ AS
   ) ) new_desc
   ,
   (select line_number  
-	from apps.oe_order_lines_all ol , apps.oe_order_headers_all oh
+	from oe_order_lines_all ol , oe_order_headers_all oh
 	where oh.header_id = ol.header_id
 	AND oh.order_number = p_sales_order
 	AND EXISTS (
 	select 1 -- a.attribute12 , a.header_id
-	from apps.oe_order_lines_all a
+	from oe_order_lines_all a
 	where a.line_id = P_intline_attribute6 --29492844656 
 	and REPLACE(LTRIM(REPLACE(ol.orig_sys_line_ref, '0', ' ')), ' ', '0') = a.attribute12 
 	and ol.line_number = a.attribute12 
@@ -380,12 +380,12 @@ AS
 	)
 	UNION
 	select line_number 
-	from apps.oe_order_lines_all ol, apps.oe_order_headers_all oh
+	from oe_order_lines_all ol, oe_order_headers_all oh
 	where oh.header_id = ol.header_id
 	AND oh.order_number = p_sales_order
 	AND EXISTS (
 	select 1 -- a.attribute12 , a.header_id
-	from apps.oe_order_lines_all a
+	from oe_order_lines_all a
 	where a.line_id = P_intline_attribute6 --29492844656 
 	and REPLACE(LTRIM(REPLACE(ol.orig_sys_line_ref, '0', ' ')), ' ', '0') = a.attribute12 
 	and ol.line_number != a.attribute12 
@@ -394,12 +394,12 @@ AS
 	)
 	UNION 
 	select line_number 
-	from apps.oe_order_lines_all ol, apps.oe_order_headers_all oh
+	from .oe_order_lines_all ol, oe_order_headers_all oh
 	where oh.header_id = ol.header_id
 	AND oh.order_number = p_sales_order
 	AND EXISTS (
 	select 1 -- a.attribute12 , a.header_id
-	from apps.oe_order_lines_all a
+	from oe_order_lines_all a
 	where a.line_id = P_intline_attribute6 --29492844656 
 	and REPLACE(LTRIM(REPLACE(ol.orig_sys_line_ref, '0', ' ')), ' ', '0') != a.attribute12 
 	and ol.line_number = a.attribute12 
