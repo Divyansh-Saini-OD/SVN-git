@@ -142,7 +142,7 @@ PROCESS_FLAG      CONSTANT "N",
  created_by       CONSTANT "-1",
  creation_date    SYSDATE,
  last_update_date SYSDATE,
- last_updated_by  CONSTANT  "-1"
+ last_updated_by  CONSTANT  "-1",
 PAY_ALONE_FLAG   CHAR"TRIM(:PAY_ALONE_FLAG)"
 )
 
