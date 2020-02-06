@@ -82,6 +82,7 @@ CREATE OR REPLACE PACKAGE BODY xx_ap_supp_cld_intf_pkg
 -- | 3.6     26-OCT-2019    Paddy Sanjeevi     Added to update payment method at site level    |
 -- | 3.7     23-Jan-2020    Shanti Sethuraj    Modified for jira NAIT-118785                   |
 -- | 3.8     23-Jan-2020    Shanti Sethuraj    Modified for jira NAIT-118444	               |
+-- | 3.9     06-Feb-2020    Shanti Sethuraj    Modified for jira NAIT-112927                   |
 -- |===========================================================================================+
 AS
   /*********************************************************************
@@ -3166,7 +3167,7 @@ BEGIN
 		print_debug_msg('Remittance Email from the Staging Table :'||cur.remittance_email ,p_force=> true);
 
 		print_debug_msg('Remit Advice Email and Remittance Email are not Same',p_force=> true);
-        p_external_payee_tab_type (i).exclusive_pay_flag := 'N';
+        p_external_payee_tab_type (i).exclusive_pay_flag := cur.pay_alone_flag;   --Modified by Shanti for jira NAIT-112927
         p_external_payee_tab_type (i).payee_party_id := cr.payee_party_id;
         p_external_payee_tab_type (i).payment_function := 'PAYABLES_DISB';
         p_external_payee_tab_type (i).payer_org_id := cr.org_id;
@@ -7818,5 +7819,3 @@ END afterReport;
 
 END xx_ap_supp_cld_intf_pkg;
 /
-show error;
-exit;
