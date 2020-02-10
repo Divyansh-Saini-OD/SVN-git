@@ -333,63 +333,20 @@ AS
 	  select line_number  new_line_num , ol.inventory_item_id
 		from oe_order_lines_all ol , oe_order_headers_all oh
 		where oh.header_id = ol.header_id
-		AND oh.order_number = p_sales_order
+		AND oh.order_number = p_sales_order --'412862013001'
 		AND EXISTS (
 		select 1 -- a.attribute12 , a.header_id
 		from oe_order_lines_all a
 		where a.line_id = P_intline_attribute6 --29492844656 
-		and REPLACE(LTRIM(REPLACE(ol.orig_sys_line_ref, '0', ' ')), ' ', '0') = a.attribute12 
-		and ol.line_number = a.attribute12 
-		and ol.attribute12 IS NULL
-		AND rownum               <2
-		AND EXISTS
-		(SELECT lookup_code
-		  FROM fnd_lookup_values b
-		  WHERE b.lookup_type = 'OD_FEES_ITEMS'
-		  AND b.LANGUAGE      ='US'
-		  AND b.enabled_flag  = 'Y'
-		  AND b.attribute7    = 'LINE'
-		  AND SYSDATE BETWEEN NVL(b.start_date_active,SYSDATE) AND NVL(b.end_date_active,SYSDATE+1)
-		  AND b.attribute6 = a.INVENTORY_ITEM_ID
-		 ) 
+		AND ((REPLACE(LTRIM(REPLACE(ol.orig_sys_line_ref, '0', ' ')), ' ', '0') = a.attribute12 
+			and ol.line_number = a.attribute12 )
+		OR ( REPLACE(LTRIM(REPLACE(ol.orig_sys_line_ref, '0', ' ')), ' ', '0') = a.attribute12 
+			and ol.line_number != a.attribute12 )
+		OR ( REPLACE(LTRIM(REPLACE(ol.orig_sys_line_ref, '0', ' ')), ' ', '0') != a.attribute12 
+			and ol.line_number = a.attribute12 )
 		)
-		UNION
-		select line_number new_line_num , ol.inventory_item_id
-		from oe_order_lines_all ol, oe_order_headers_all oh
-		where oh.header_id = ol.header_id
-		AND oh.order_number = p_sales_order
-		AND EXISTS (
-		select 1 -- a.attribute12 , a.header_id
-		from oe_order_lines_all a
-		where a.line_id = P_intline_attribute6 --29492844656 
-		and REPLACE(LTRIM(REPLACE(ol.orig_sys_line_ref, '0', ' ')), ' ', '0') = a.attribute12 
-		and ol.line_number != a.attribute12 
 		and ol.attribute12 IS NULL
-		AND rownum               <2
-		AND EXISTS
-		(SELECT lookup_code
-		  FROM fnd_lookup_values b
-		  WHERE b.lookup_type = 'OD_FEES_ITEMS'
-		  AND b.LANGUAGE      ='US'
-		  AND b.enabled_flag  = 'Y'
-		  AND b.attribute7    = 'LINE'
-		  AND SYSDATE BETWEEN NVL(b.start_date_active,SYSDATE) AND NVL(b.end_date_active,SYSDATE+1)
-		  AND b.attribute6 = a.INVENTORY_ITEM_ID
-		 ) 
-		)
-		UNION 
-		select line_number new_line_num , ol.inventory_item_id
-		from oe_order_lines_all ol, oe_order_headers_all oh
-		where oh.header_id = ol.header_id
-		AND oh.order_number = p_sales_order
-		AND EXISTS (
-		select 1 -- a.attribute12 , a.header_id
-		from oe_order_lines_all a
-		where a.line_id = P_intline_attribute6 --29492844656 
-		and REPLACE(LTRIM(REPLACE(ol.orig_sys_line_ref, '0', ' ')), ' ', '0') != a.attribute12 
-		and ol.line_number = a.attribute12 
-		and ol.attribute12 IS NULL
-		AND rownum               <2
+		AND rownum < 2
 		AND EXISTS
 		(SELECT lookup_code
 		  FROM fnd_lookup_values b
@@ -1422,7 +1379,7 @@ AS
                 FND_FILE.PUT_LINE(FND_FILE.LOG,'..EDI Tariff NEW Changes... Before Update statement Line Num : '|| lc_line_num);
 				FND_FILE.PUT_LINE(FND_FILE.LOG,'..EDI Tariff NEW Changes... Before Update statement description : '|| i.new_desc);
 				UPDATE ra_interface_lines_all
-                  SET DESCRIPTION = i.new_desc , interface_line_attribute12 = lc_line_num -- Added Attr12 under NAIT-121574
+                  SET DESCRIPTION = i.new_desc , attribute12 = lc_line_num -- Added Attr12 under NAIT-121574
                 WHERE ROWID = i.row_id
                   AND org_id            = FND_PROFILE.VALUE('ORG_ID')
                 ;
