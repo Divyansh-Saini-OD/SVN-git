@@ -4455,6 +4455,9 @@ AS
           
           IF lc_segment != gc_store_number
           THEN
+			/*******************************************************************************
+            * Updating contracts table with new store# against store closed on initial order
+            *******************************************************************************/
             UPDATE xx_ar_contracts
             set    store_number       = gc_store_number
                   ,store_close_flag   = 'Y'
@@ -4463,7 +4466,17 @@ AS
                   ,last_update_login  = NVL(FND_GLOBAL.USER_ID, -1)
             WHERE  contract_id        = p_contract_info.contract_id;
             COMMIT;
-            
+            ELSE
+            /******************************************************
+            * Updating contracts table with store# on initial order
+            ******************************************************/
+            UPDATE xx_ar_contracts
+            set    store_number       = lc_segment
+                  ,last_update_date   = SYSDATE
+                  ,last_updated_by    = NVL(FND_GLOBAL.USER_ID, -1)
+                  ,last_update_login  = NVL(FND_GLOBAL.USER_ID, -1)
+            WHERE  contract_id        = p_contract_info.contract_id;
+            COMMIT;	   
           END IF;
             
           /**************************************
