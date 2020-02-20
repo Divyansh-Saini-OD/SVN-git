@@ -1,0 +1,40 @@
+-- +==========================================================================+
+-- |                  Office Depot - Project Simplify                         |
+-- +==========================================================================+
+-- | Name :XXFIN.XX_PO_VDSITES_ADD_AUD                                         |
+-- | Description :   This table is used to store all the Vendor site information   |
+-- |                 for audit.                                               |
+-- |                                                                          |
+-- |Change Record:                                                            |
+-- |===============                                                           |
+-- |Version      Date           Author               Remarks                  |
+-- |=======    ==========     =============        ===========================|
+-- | DRAFT 1.0 09-FEB-2020     Bhargavi Ankolekar Initial draft version       |
+-- |                                                                          |
+-- +==========================================================================+
+SET SHOW OFF
+SET VERIFY OFF
+SET ECHO OFF
+SET TAB OFF
+SET FEEDBACK ON
+
+CREATE TABLE XXFIN.XX_PO_VDSITES_ADD_AUD(
+VENDOR_SITE_ID_AUD	NUMBER default XXFIN.XX_PO_VDSITES_ADD_AUD_SEQ.nextval
+,VERSIONS_OPERATION	VARCHAR2(1)
+,VERSION_TIMESTAMP	TIMESTAMP(6)
+,VENDOR_SITE_ID	NUMBER
+,LAST_UPDATE_DATE	DATE
+,LAST_UPDATED_BY	NUMBER
+,VENDOR_ID	NUMBER
+,LAST_UPDATE_LOGIN	NUMBER
+,CREATION_DATE	DATE
+,CREATED_BY	NUMBER
+,ATTRIBUTE4	VARCHAR2(150)
+,ATTRIBUTE5	VARCHAR2(150)
+,ATTRIBUTE8	VARCHAR2(150)
+,ORG_ID	NUMBER
+,TELEX	VARCHAR2(15)
+,VENDOR_SITE_CODE_ALT	VARCHAR2(320)
+,LANGUAGE	VARCHAR2(30));
+/
+SHOW ERROR
