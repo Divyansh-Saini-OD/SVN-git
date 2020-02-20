@@ -1,0 +1,58 @@
+-- +==========================================================================+
+-- |                  Office Depot - Project Simplify                         |
+-- +==========================================================================+
+-- | Name :XXFIN.XX_PO_VEND_SITES_KFF_AUD                                         |
+-- | Description :   This table is used to store all the vendor site kff value  |
+-- |                 for audit.                                               |
+-- |                                                                          |
+-- |Change Record:                                                            |
+-- |===============                                                           |
+-- |Version      Date           Author               Remarks                  |
+-- |=======    ==========     =============        ===========================|
+-- | DRAFT 1.0 09-FEB-2020     Bhargavi Ankolekar Initial draft version       |
+-- |                                                                          |
+-- +==========================================================================+
+SET SHOW OFF
+SET VERIFY OFF
+SET ECHO OFF
+SET TAB OFF
+SET FEEDBACK ON
+
+
+CREATE TABLE XXFIN.XX_PO_VEND_SITES_KFF_AUD
+(VS_KFF_AUD_ID 	NUMBER default XXFIN.XX_PO_VEND_SITES_KFF_AUD_SEG.NEXTVAL
+,VERSIONS_OPERATION	VARCHAR2(1)
+,VERSION_TIMESTAMP	TIMESTAMP(6)
+,LAST_UPDATE_DATE	DATE
+,LAST_UPDATED_BY	NUMBER(15)
+,LAST_UPDATE_LOGIN	NUMBER(15)
+,CREATION_DATE	DATE
+,CREATED_BY	NUMBER(15)
+,VS_KFF_ID	NUMBER(15)
+,SEGMENT1	VARCHAR2(150)
+,SEGMENT2	VARCHAR2(150)
+,SEGMENT3	VARCHAR2(150)
+,SEGMENT4	VARCHAR2(150)
+,SEGMENT5	VARCHAR2(150)
+,SEGMENT11	VARCHAR2(150)
+,SEGMENT13	VARCHAR2(150)
+,SEGMENT14	VARCHAR2(150)
+,SEGMENT15	VARCHAR2(150)
+,SEGMENT16	VARCHAR2(150)
+,SEGMENT17	VARCHAR2(150)
+,SEGMENT37	VARCHAR2(150)
+,SEGMENT40	VARCHAR2(150)
+,SEGMENT42	VARCHAR2(150)
+,SEGMENT43	VARCHAR2(150)
+,SEGMENT44	VARCHAR2(150)
+,SEGMENT47	VARCHAR2(150)
+,SEGMENT50	VARCHAR2(150)
+,SEGMENT51	VARCHAR2(150)
+,SEGMENT52	VARCHAR2(150)
+,SEGMENT53	VARCHAR2(150)
+,SEGMENT54	VARCHAR2(150)
+,SEGMENT55	VARCHAR2(150)
+,SEGMENT58	VARCHAR2(150)
+,SEGMENT60	VARCHAR2(150));
+/
+SHOW ERROR;
