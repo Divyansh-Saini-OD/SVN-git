@@ -1,4 +1,4 @@
-CREATE OR REPLACE PACKAGE BODY APPS.XXOD_AP_SUPPLIER_AUDIT_PKG AS
+create or replace PACKAGE BODY   APPS.XXOD_AP_SUPPLIER_AUDIT_PKG AS
 gc_no_site_change   CONSTANT  VARCHAR2(200) DEFAULT 'No Site Change';
 -- +=====================================================================================+
 -- |                  Office Depot - Project Simplify                                    |
@@ -14,7 +14,9 @@ gc_no_site_change   CONSTANT  VARCHAR2(200) DEFAULT 'No Site Change';
 -- | DRAFT 1A  31-AUG-2007  Kantharaja       Initial draft version                       |
 -- | V1.1      13-JAN-08    Aravind A.       Fixed defect 4345                           |
 -- | V1.2      01-JULY-2013 Sravanthi Surya  Modified Table names as part of R12 Upgrade |
--- | V1.3      03-JULY-2014 Avinash Baddam   Changes for defect 30042 			 |
+-- | V1.3      03-JULY-2014 Avinash Baddam   Changes for defect 30042 			         |	
+-- | V1.4      22-JAN-2020 Bhargavi Ankolekar Added                                      |
+-- |                                         jira NAIT-103952  		 					 |
 -- +=====================================================================================+
 
 PROCEDURE PROCESS_VENDORS(p_begin_date DATE,p_end_date DATE)
@@ -52,11 +54,36 @@ WHERE va.vendor_id = p_vendor_id
   BETWEEN p_begin_date AND p_end_date
   ORDER BY last_update_date;
 
+-------Adding this cursor for ap_suppliers additional column audit jira NAIT-103952.Added by Bhargavi Ankolekar.
+CURSOR lcu_vendor_add_aud(p_vendor_id NUMBER)
+IS
+SELECT * FROM
+(SELECT  TAX_REPORTING_NAME   TAX_REPORTING_NAME_cur
+         ,lag(TAX_REPORTING_NAME,1,null)  over (order by last_update_date) TAX_REPORTING_NAME_prev
+         ,TAX_VERIFICATION_DATE   TAX_VERIFICATION_DATE_cur
+         ,lag(TAX_VERIFICATION_DATE ,1,null)  over (order by last_update_date) TAX_VERIFICATION_DATE_prev
+         ,ORGANIZATION_TYPE_LOOKUP_CODE  ORG_TYPE_LOOKUP_CODE_cur
+         ,lag(ORGANIZATION_TYPE_LOOKUP_CODE,1,null)  over (order by last_update_date) ORG_TYPE_LOOKUP_CODE_prev
+		 ,INDIVIDUAL_1099  INDIVIDUAL_1099_cur
+         ,lag(INDIVIDUAL_1099,1,null)  over (order by last_update_date) INDIVIDUAL_1099_prev
+      ,last_updated_by
+      ,last_update_date
+      ,1 order_by_col
+FROM XX_PO_VENDOR_ADD_AUD va
+WHERE va.vendor_id = p_vendor_id
+) where last_update_date
+  BETWEEN p_begin_date AND p_end_date
+  ORDER BY last_update_date;
+
 
 lr_vendor_rec        lcu_changed_vendors%ROWTYPE;
 lr_vendor_aud_rec    lcu_vendor_aud%ROWTYPE;
+lr_vendor_add_aud_rec lcu_vendor_add_aud%ROWTYPE;
 
 BEGIN
+
+
+
 FOR lr_vendor_rec IN lcu_changed_vendors
 LOOP
 FOR lr_vendor_aud_rec IN lcu_vendor_aud(lr_vendor_rec.vendor_id)
@@ -200,6 +227,122 @@ END IF;
 END LOOP;
 END LOOP;
 
+-------Adding this loop for ap_supplier additonal column audit jira NAIT-103952.Added by Bhargavi Ankolekar.
+FOR lr_vendor_rec IN lcu_changed_vendors
+LOOP
+FOR lr_vendor_add_aud_rec IN lcu_vendor_add_aud(lr_vendor_rec.vendor_id)
+LOOP
+
+IF (NVL(lr_vendor_add_aud_rec.TAX_REPORTING_NAME_cur,'X') <> NVL(lr_vendor_add_aud_rec.TAX_REPORTING_NAME_prev,'X')) THEN
+
+INSERT INTO xx_ap_supplier_temp(supplier_number,
+                           supplier_name,
+                           site_id_num,
+                           legacy_num,
+                           changed_by,
+                           date_changed,
+                           changed_field,
+                           changed_from,
+                           changed_to,
+                              flag,
+                           order_by_col)
+             VALUES       ( lr_vendor_rec.vendor_num
+                            ,lr_vendor_rec.vendor_name
+                            ,gc_no_site_change
+                            ,NULL
+                            ,lr_vendor_add_aud_rec.last_updated_by
+                            ,lr_vendor_add_aud_rec.last_update_date
+                            ,'TAX_REPORTING_NAME'
+                            ,lr_vendor_add_aud_rec.TAX_REPORTING_NAME_prev
+                            ,lr_vendor_add_aud_rec.TAX_REPORTING_NAME_cur
+                               ,'AUDIT'
+                            ,lr_vendor_add_aud_rec.order_by_col);
+END IF;
+
+IF (NVL(lr_vendor_add_aud_rec.TAX_VERIFICATION_DATE_cur,NULL) <> NVL(lr_vendor_add_aud_rec.TAX_VERIFICATION_DATE_prev,NULL)) THEN
+
+INSERT INTO xx_ap_supplier_temp(supplier_number,
+                           supplier_name,
+                           site_id_num,
+                           legacy_num,
+                           changed_by,
+                           date_changed,
+                           changed_field,
+                           changed_from,
+                           changed_to,
+                              flag,
+                           order_by_col)
+             VALUES       ( lr_vendor_rec.vendor_num
+                            ,lr_vendor_rec.vendor_name
+                            ,gc_no_site_change
+                            ,NULL
+                            ,lr_vendor_add_aud_rec.last_updated_by
+                            ,lr_vendor_add_aud_rec.last_update_date
+                            ,'TAX_VERIFICATION_DATE'
+                            ,lr_vendor_add_aud_rec.TAX_VERIFICATION_DATE_prev
+                            ,lr_vendor_add_aud_rec.TAX_VERIFICATION_DATE_cur
+                               ,'AUDIT'
+                            ,lr_vendor_add_aud_rec.order_by_col);
+END IF;
+
+IF (NVL(lr_vendor_add_aud_rec.ORG_TYPE_LOOKUP_CODE_cur,'X') <> NVL(lr_vendor_add_aud_rec.ORG_TYPE_LOOKUP_CODE_prev,'X')) THEN
+
+INSERT INTO xx_ap_supplier_temp(supplier_number,
+                           supplier_name,
+                           site_id_num,
+                           legacy_num,
+                           changed_by,
+                           date_changed,
+                           changed_field,
+                           changed_from,
+                           changed_to,
+                              flag,
+                           order_by_col)
+             VALUES       ( lr_vendor_rec.vendor_num
+                            ,lr_vendor_rec.vendor_name
+                            ,gc_no_site_change
+                            ,NULL
+                            ,lr_vendor_add_aud_rec.last_updated_by
+                            ,lr_vendor_add_aud_rec.last_update_date
+                            ,'ORGANIZATION_TYPE_LOOKUP_CODE'
+                            ,lr_vendor_add_aud_rec.ORG_TYPE_LOOKUP_CODE_prev
+                            ,lr_vendor_add_aud_rec.ORG_TYPE_LOOKUP_CODE_cur
+                               ,'AUDIT'
+                            ,lr_vendor_add_aud_rec.order_by_col);
+END IF;
+
+IF (NVL(lr_vendor_add_aud_rec.INDIVIDUAL_1099_cur,'X') <> NVL(lr_vendor_add_aud_rec.INDIVIDUAL_1099_prev,'X')) THEN
+
+INSERT INTO xx_ap_supplier_temp(supplier_number,
+                           supplier_name,
+                           site_id_num,
+                           legacy_num,
+                           changed_by,
+                           date_changed,
+                           changed_field,
+                           changed_from,
+                           changed_to,
+                              flag,
+                           order_by_col)
+             VALUES       ( lr_vendor_rec.vendor_num
+                            ,lr_vendor_rec.vendor_name
+                            ,gc_no_site_change
+                            ,NULL
+                            ,lr_vendor_add_aud_rec.last_updated_by
+                            ,lr_vendor_add_aud_rec.last_update_date
+                            ,'INDIVIDUAL_1099'
+                            ,lr_vendor_add_aud_rec.INDIVIDUAL_1099_prev
+                            ,lr_vendor_add_aud_rec.INDIVIDUAL_1099_cur
+                               ,'AUDIT'
+                            ,lr_vendor_add_aud_rec.order_by_col);
+END IF;
+
+END LOOP;
+
+END LOOP;
+------ loop for jira NAIT-103952 ends here.Added by Bhargavi Ankolekar.
+
+
 END PROCESS_VENDORS;
 
 PROCEDURE PROCESS_VENDOR_SITES(p_begin_date DATE,p_end_date DATE)
@@ -212,9 +355,9 @@ SELECT PVSA.vendor_site_id
        ,PV.segment1   vendor_num
        ,PV.vendor_name
        ,PVSA.attribute9 legacy_num
-FROM   -- Changed Table Name on 7/1/2013 by Sravanthi Surya as part of R12 Upgrade 
-       -- po_vendors pv
-       -- ,po_vendor_sites_all PVSA
+FROM   -- Changed Table Name on 7/1/2013 by Sravanthi Surya as part of R12 Upgrade 	
+	       -- po_vendors pv	
+	       -- ,po_vendor_sites_all PVSA
           ap_suppliers PV,
       ap_supplier_sites_all PVSA
 WHERE PV.vendor_id = PVSA.vendor_id
@@ -236,6 +379,212 @@ SELECT PVSA.vendor_site_id
       AND iepa.supplier_site_id = pvsa.vendor_site_id
       AND pvsa.vendor_id = pv.vendor_id
       AND ieppm.last_update_date BETWEEN p_begin_date AND p_end_date;
+	 
+-------Adding below curosr for  column audit of XX_PO_VENDOR_SITES_KFF requested for jira NAIT-103952.Added by Bhargavi Ankolekar.	  
+
+CURSOR lcu_po_vend_site_kff is 
+select PVSA.vendor_site_id
+         ,PVSA.vendor_site_code
+         ,PV.segment1   vendor_num
+         ,PV.vendor_name
+         ,PVSA.attribute9 legacy_num
+		 ,pvsa.attribute10
+		 ,pvsa.attribute11
+		 ,pvsa.attribute12
+from ap_supplier_sites_all PVSA,
+ap_suppliers PV,
+XX_PO_VENDOR_SITES_KFF xpvsk
+where  PV.vendor_id=PVSA.vendor_id
+and PVSA.attribute10=xpvsk.VS_KFF_ID
+AND xpvsk.last_update_date BETWEEN p_begin_date AND p_end_date;
+
+-------Adding below curosr for column audit of XX_PO_VEND_SITES_KFF_AUD requested for jira NAIT-103952.Added by Bhargavi Ankolekar.	  
+CURSOR lcu_po_vdsite_aud_kff(p_attribute10 number, p_attribute11 number , p_attribute12 number)is 
+SELECT * FROM (
+select pvs.SEGMENT1   SEGMENT1_cur
+         ,lag(pvs.SEGMENT1,1,null)  over (order by last_update_date) SEGMENT1_prev
+         ,pvs.SEGMENT2   SEGMENT2_cur
+         ,lag(pvs.SEGMENT2 ,1,null)  over (order by last_update_date) SEGMENT2_prev
+        ,pvs.SEGMENT3  SEGMENT3_cur
+         ,lag(pvs.SEGMENT3,1,null)  over (order by last_update_date) SEGMENT3_prev
+		 ,pvs.SEGMENT4 SEGMENT4_cur
+         ,lag(pvs.SEGMENT4,1,null)  over (order by last_update_date) SEGMENT4_prev
+		 ,pvs.SEGMENT5  SEGMENT5_cur
+         ,lag(pvs.SEGMENT5,1,null)  over (order by last_update_date) SEGMENT5_prev
+		 ,pvs.SEGMENT11  SEGMENT11_cur
+         ,lag(pvs.SEGMENT11,1,null)  over (order by last_update_date) SEGMENT11_prev
+		 ,pvs.SEGMENT13  SEGMENT13_cur
+         ,lag(pvs.SEGMENT13,1,null)  over (order by last_update_date) SEGMENT13_prev
+		 ,pvs.SEGMENT14  SEGMENT14_cur
+         ,lag(pvs.SEGMENT14,1,null)  over (order by last_update_date) SEGMENT14_prev
+		 ,pvs.SEGMENT15  SEGMENT15_cur
+         ,lag(pvs.SEGMENT15,1,null)  over (order by last_update_date) SEGMENT15_prev
+		 ,pvs.SEGMENT16  SEGMENT16_cur
+         ,lag(pvs.SEGMENT16,1,null)  over (order by last_update_date) SEGMENT16_prev
+		 ,pvs.SEGMENT17  SEGMENT17_cur
+         ,lag(pvs.SEGMENT17,1,null)  over (order by last_update_date) SEGMENT17_prev
+		 ,pvs.SEGMENT37  SEGMENT37_cur
+         ,lag(pvs.SEGMENT37,1,null)  over (order by last_update_date) SEGMENT37_prev
+		 ,pvs.SEGMENT40  SEGMENT40_cur
+         ,lag(pvs.SEGMENT40,1,null)  over (order by last_update_date) SEGMENT40_prev
+		 ,pvs.SEGMENT42  SEGMENT42_cur
+         ,lag(pvs.SEGMENT42,1,null)  over (order by last_update_date) SEGMENT42_prev
+		 ,pvs.SEGMENT43  SEGMENT43_cur
+         ,lag(pvs.SEGMENT43,1,null)  over (order by last_update_date) SEGMENT43_prev
+		 ,pvs.SEGMENT44  SEGMENT44_cur
+         ,lag(pvs.SEGMENT44,1,null)  over (order by last_update_date) SEGMENT44_prev
+		 ,pvs.SEGMENT47  SEGMENT47_cur
+         ,lag(pvs.SEGMENT47,1,null)  over (order by last_update_date) SEGMENT47_prev
+		 ,pvs.SEGMENT50  SEGMENT50_cur
+         ,lag(pvs.SEGMENT50,1,null)  over (order by last_update_date) SEGMENT50_prev
+		 ,pvs.SEGMENT51  SEGMENT51_cur
+         ,lag(pvs.SEGMENT51,1,null)  over (order by last_update_date) SEGMENT51_prev
+		 ,pvs.SEGMENT52  SEGMENT52_cur
+         ,lag(pvs.SEGMENT52,1,null)  over (order by last_update_date) SEGMENT52_prev
+		 ,pvs.SEGMENT53  SEGMENT53_cur
+         ,lag(pvs.SEGMENT53,1,null)  over (order by last_update_date) SEGMENT53_prev
+		 ,pvs.SEGMENT54  SEGMENT54_cur
+         ,lag(pvs.SEGMENT54,1,null)  over (order by last_update_date) SEGMENT54_prev
+		 ,pvs.SEGMENT55  SEGMENT55_cur
+         ,lag(pvs.SEGMENT55,1,null)  over (order by last_update_date) SEGMENT55_prev
+		 ,pvs.SEGMENT58  SEGMENT58_cur
+         ,lag(pvs.SEGMENT58,1,null)  over (order by last_update_date) SEGMENT58_prev
+		 ,pvs.SEGMENT60  SEGMENT60_cur
+         ,lag(pvs.SEGMENT60,1,null)  over (order by last_update_date) SEGMENT60_prev 
+,last_updated_by
+      ,last_update_date
+      ,1 order_by_col
+from XX_PO_VEND_SITES_KFF_AUD pvs
+WHERE pvs.VS_KFF_ID in (p_attribute10 , p_attribute11, p_attribute12))
+WHERE last_update_date BETWEEN p_begin_date AND p_end_date
+ORDER BY last_update_date;
+
+------Adding below cursor for xx ap custom tolerance as per the request for jira NAIT-103952.This is added by Bhargavi Ankolekar.
+
+CURSOR lcu_xxap_cust_tol_aud
+IS
+select PVSA.vendor_site_id
+         ,PVSA.vendor_site_code
+         ,PV.segment1   vendor_num
+         ,PV.vendor_name
+         ,PVSA.attribute9 legacy_num
+         ,xact.SUPPLIER_SITE_ID
+from ap_supplier_sites_all PVSA,
+ap_suppliers PV,
+xx_ap_custom_tolerances xact
+where  PV.vendor_id=PVSA.vendor_id
+and xact.SUPPLIER_SITE_ID=PVSA.VENDOR_SITE_ID
+and xact.supplier_id=pv.vendor_id
+AND xact.last_update_date BETWEEN p_begin_date AND p_end_date;
+
+------Adding below cursor for xx ap custom tolerance of new trigger table created  as per the request for jira NAIT-103952.This is added by Bhargavi Ankolekar.
+
+CURSOR LCU_XXAP_CUST_TOL_AUD_COMP(p1_supplier_site_id NUMBER)
+IS
+SELECT * FROM
+(SELECT  
+FAVOURABLE_PRICE_PCT FAVOURABLE_PRICE_PCT_Cur
+	  ,lag(FAVOURABLE_PRICE_PCT,1,null)  over (order by last_update_date) FAVOURABLE_PRICE_PCT_Prev
+	  ,MAX_PRICE_AMT MAX_PRICE_AMT_Cur
+	  ,lag(MAX_PRICE_AMT,1,null)  over (order by last_update_date) MAX_PRICE_AMT_Prev
+	  ,MIN_CHARGEBACK_AMT   MIN_CHARGEBACK_AMT_cur
+         ,lag(MIN_CHARGEBACK_AMT,1,null)  over (order by last_update_date) MIN_CHARGEBACK_AMT_prev
+         ,MAX_FREIGHT_AMT   MAX_FREIGHT_AM_cur
+         ,lag(MAX_FREIGHT_AMT ,1,null)  over (order by last_update_date) MAX_FREIGHT_AMT_prev
+         ,DIST_VAR_NEG_AMT  DIST_VAR_NEG_AMT_cur
+         ,lag(DIST_VAR_NEG_AMT,1,null)  over (order by last_update_date) DIST_VAR_NEG_AMT_prev
+		 ,DIST_VAR_POS_AMT  DIST_VAR_POS_AMT_cur
+         ,lag(DIST_VAR_POS_AMT,1,null)  over (order by last_update_date) DIST_VAR_POS_AMT_prev
+	    ,last_updated_by
+      ,last_update_date
+      ,2 order_by_col
+FROM XX_AP_CUST_TOLERANCE_AUD xpc
+WHERE xpc.supplier_site_id = p1_supplier_site_id
+) where last_update_date
+  BETWEEN p_begin_date AND p_end_date
+  ORDER BY last_update_date;
+
+-------------------Cursor added for the additional column audit from the supplier sites all table as for jira NAIT-103952.Added by Bhargavi Ankolekar.
+CURSOR lcu_vend_sites_add_aud
+IS
+select PVSA.vendor_site_id
+         ,PVSA.vendor_site_code
+         ,PV.segment1   vendor_num
+         ,PV.vendor_name
+         ,PVSA.attribute9 legacy_num
+from ap_supplier_sites_all PVSA,
+ap_suppliers PV
+where  PV.vendor_id=PVSA.vendor_id
+AND PVSA.last_update_date BETWEEN p_begin_date AND p_end_date;
+
+-------------------Cursor added for the additional column audit at the new trigger table created from the supplier sites all table as for jira NAIT-103952.Added by Bhargavi Ankolekar.
+
+--- below not working------ this is for supplier site additional column---
+CURSOR lcu_vd_sites_add_aud(p1_vendor_site_id NUMBER)
+IS
+SELECT * FROM
+(SELECT  ATTRIBUTE4   ATTRIBUTE4_cur
+         ,lag(ATTRIBUTE4,1,null)  over (order by last_update_date) ATTRIBUTE4_prev
+         ,ATTRIBUTE5   ATTRIBUTE5_cur
+         ,lag(ATTRIBUTE5 ,1,null)  over (order by last_update_date) ATTRIBUTE5_prev
+         ,ATTRIBUTE8  ATTRIBUTE8_cur
+         ,lag(ATTRIBUTE8,1,null)  over (order by last_update_date) ATTRIBUTE8_prev
+		 ,ORG_ID  ORG_ID_cur
+         ,lag(ORG_ID,1,null)  over (order by last_update_date) ORG_ID_prev
+		 ,TELEX  TELEX_cur
+         ,lag(TELEX,1,null)  over (order by last_update_date) TELEX_prev
+		 ,VENDOR_SITE_CODE_ALT  VENDOR_SITE_CODE_ALT_cur
+         ,lag(VENDOR_SITE_CODE_ALT,1,null)  over (order by last_update_date) VENDOR_SITE_CODE_ALT_prev
+		  ,LANGUAGE  LANGUAGE_cur
+         ,lag(LANGUAGE,1,null)  over (order by last_update_date) LANGUAGE_prev
+      ,last_updated_by
+      ,last_update_date
+      ,1 order_by_col
+FROM XX_PO_VDSITES_ADD_AUD va
+WHERE va.vendor_site_id = p1_vendor_site_id
+) where last_update_date
+  BETWEEN p_begin_date AND p_end_date
+  ORDER BY last_update_date;
+
+
+------Adding below curosr for additional column audit requested for jira NAIT-103952.Added by Bhargavi Ankolekar.
+cursor lcu_vdsite_iby_col_aud is 
+SELECT iepa.supplier_site_id
+         ,PVSA.vendor_site_code
+         ,PV.segment1   vendor_num
+         ,PV.vendor_name
+         ,PVSA.attribute9 legacy_num
+     FROM iby_external_payees_all iepa,
+          ap_suppliers pv,
+          ap_supplier_sites_all pvsa
+    WHERE iepa.supplier_site_id = pvsa.vendor_site_id
+      AND pvsa.vendor_id = pv.vendor_id
+      AND iepa.last_update_date BETWEEN p_begin_date AND p_end_date;
+	  
+-------Adding below curosr for additional column audit requested for jira NAIT-103952.Added by Bhargavi Ankolekar.
+CURSOR lcu_vdsite_add_col_aud(p_supplier_site_id NUMBER) is
+SELECT * FROM (
+SELECT
+PAYMENT_FORMAT_CODE PAYMENT_FORMAT_CODE_CURRENT
+	  ,lag(PAYMENT_FORMAT_CODE,1,null)  over (order by last_update_date) PAYMENT_FORMAT_CODE_PREV
+	  ,PAYMENT_REASON_CODE PAYMENT_REASON_CODE_Current
+	  ,lag(PAYMENT_REASON_CODE,1,null)  over (order by last_update_date) PAYMENT_REASON_CODE_Prev
+      ,PAYMENT_REASON_COMMENTS PAYMENT_REASON_COMMENTS_Curr
+      ,lag(PAYMENT_REASON_COMMENTS,1,null)  over (order by last_update_date) PAYMENT_REASON_COMMENTS_Prev
+	  ,REMIT_ADVICE_DELIVERY_METHOD REMIT_ADVICE_DELIVERY_METHOD_C
+      ,lag(REMIT_ADVICE_DELIVERY_METHOD,1,null)  over (order by last_update_date) REMIT_ADVICE_DELIVERY_METHOD_P
+	  ,REMIT_ADVICE_EMAIL REMIT_ADVICE_EMAIL_Current
+	  ,lag(REMIT_ADVICE_EMAIL,1,null)  over (order by last_update_date) REMIT_ADVICE_EMAIL_Prev
+	  ,REMIT_ADVICE_FAX REMIT_ADVICE_FAX_Current
+	  ,lag(REMIT_ADVICE_FAX,1,null)  over (order by last_update_date) REMIT_ADVICE_FAX_Prev
+,last_updated_by
+      ,last_update_date
+      ,2 order_by_col
+FROM XX_IBY_EXT_PAYEES_ALL_AUD va
+WHERE va.SUPPLIER_SITE_ID = p_supplier_site_id)
+WHERE last_update_date BETWEEN p_begin_date AND p_end_date
+ORDER BY last_update_date;
+
 
 CURSOR lcu_vendor_sites_aud(p_vendor_site_id NUMBER)
 IS
@@ -304,8 +653,52 @@ WHERE va.vendor_site_id = p_vendor_site_id)
 WHERE last_update_date BETWEEN p_begin_date AND p_end_date
 ORDER BY last_update_date;
 
+-------Adding below curosr for ap_tolerance template column audit as requested for jira NAIT-103952.Added by Bhargavi Ankolekar.
+
+CURSOR lcu_ap_tolerance_temp_aud
+IS
+select PVSA.vendor_site_id
+         ,PVSA.vendor_site_code
+         ,PV.segment1   vendor_num
+         ,PV.vendor_name
+         ,PVSA.attribute9 legacy_num
+         ,att.tolerance_id
+from ap_supplier_sites_all PVSA,
+ap_suppliers PV,
+ap_tolerance_templates att
+where  PV.vendor_id=PVSA.vendor_id
+and att.tolerance_id= pvsa.tolerance_id
+AND PVSA.last_update_date BETWEEN p_begin_date AND p_end_date;
+
+-------Adding below curosr for ap_tolerance template new trigger table created as requested for jira NAIT-103952.Added by Bhargavi Ankolekar.
+CURSOR lcu_ap_tol_template_aud(p_tolerance_id NUMBER) is
+SELECT * FROM (
+SELECT
+TOLERANCE_NAME TOLERANCE_NAME_CURRENT
+	  ,lag(TOLERANCE_NAME,1,null)  over (order by last_update_date) TOLERANCE_NAME_PREV
+,last_updated_by
+      ,last_update_date
+      ,2 order_by_col
+FROM XX_AP_TOLERANCE_TEMP_AUD xata
+WHERE  xata.TOLERANCE_ID= p_tolerance_id)
+WHERE last_update_date BETWEEN p_begin_date AND p_end_date
+ORDER BY last_update_date;
+
+
 lr_vendor_rec        lcu_changed_vendor_sites%ROWTYPE;
 lr_vendor_aud_rec    lcu_vendor_sites_aud%ROWTYPE;
+lcu_vend_sites_add_aud_rec lcu_vend_sites_add_aud%ROWTYPE;
+lcu_vd_sites_add_aud_rec lcu_vd_sites_add_aud%ROWTYPE;
+lcu_vdsite_iby_col_rec lcu_vdsite_iby_col_aud%ROWTYPE;
+lcu_vdsite_add_colpay lcu_vdsite_add_col_aud%ROWTYPE;
+lcu_po_vdsite_kff_rec lcu_po_vend_site_kff%rowtype;
+lcu_po_vdsite_aud_kff_rec lcu_po_vdsite_aud_kff%rowtype;
+
+lcu_xxap_cust_tol_aud_rec lcu_xxap_cust_tol_aud%rowtype;
+lcu_xxap_cust_tol_aud_comp_rec lcu_xxap_cust_tol_aud_comp%rowtype;
+lcu_ap_tol_temp_aud_rec lcu_ap_tolerance_temp_aud%ROWTYPE;
+lcu_ap_tol_template_aud_rec lcu_ap_tol_template_aud%ROWTYPE;
+
 
 lc_terms_name_pre             ap_terms.name%TYPE;
 lc_terms_name_cur             ap_terms.name%TYPE;
@@ -314,6 +707,1166 @@ lc_liability_acct_num_pre gl_code_combinations.segment3%TYPE;
 lc_liability_acct_num_cur gl_code_combinations.segment3%TYPE;
 
 BEGIN
+--------for loop added for ap tolerance column audit for jira NAIT-103952.Added by Bhargavi Ankolekar.
+FOR lcu_ap_tol_temp_aud_rec IN lcu_ap_tolerance_temp_aud
+LOOP
+FOR lcu_ap_tol_template_aud_rec IN lcu_ap_tol_template_aud(lcu_ap_tol_temp_aud_rec.tolerance_id)
+LOOP
+
+IF (NVL(lcu_ap_tol_template_aud_rec.TOLERANCE_NAME_CURRENT,'X') <> NVL(lcu_ap_tol_template_aud_rec.TOLERANCE_NAME_PREV,'X')) THEN
+
+INSERT INTO xx_ap_supplier_temp(supplier_number,
+                           supplier_name,
+                           site_id_num,
+                           legacy_num,
+                           changed_by,
+                           date_changed,
+                           changed_field,
+                           changed_from,
+                           changed_to,
+                                 flag,
+                           order_by_col)
+             VALUES       ( lcu_ap_tol_temp_aud_rec.vendor_num
+                            ,lcu_ap_tol_temp_aud_rec.vendor_name
+                            ,lcu_ap_tol_temp_aud_rec.vendor_site_code
+                            ,lcu_ap_tol_temp_aud_rec.legacy_num
+                            ,lcu_ap_tol_template_aud_rec.last_updated_by
+                            ,lcu_ap_tol_template_aud_rec.last_update_date
+                            ,'TOLERANCE_NAME'
+                            ,lcu_ap_tol_template_aud_rec.TOLERANCE_NAME_PREV
+                            ,lcu_ap_tol_template_aud_rec.TOLERANCE_NAME_CURRENT
+                               ,'AUDIT'
+                            ,lcu_ap_tol_template_aud_rec.order_by_col);					
+
+END IF;
+
+end loop;
+end loop;
+-----------for loop ends here.Added for ap tolerance column audit for jira NAIT-103952.Added by Bhargavi Ankolekar.
+
+--------for loop added for ap custom tolerance column audit for jira NAIT-103952.Added by Bhargavi Ankolekar.
+
+FOR lcu_xxap_cust_tol_aud_rec IN lcu_xxap_cust_tol_aud
+LOOP
+FOR lcu_xxap_cust_tol_aud_comp_rec IN lcu_xxap_cust_tol_aud_comp(lcu_xxap_cust_tol_aud_rec.supplier_site_id)
+LOOP
+
+IF (NVL(lcu_xxap_cust_tol_aud_comp_rec.FAVOURABLE_PRICE_PCT_Cur,'0') <> NVL(lcu_xxap_cust_tol_aud_comp_rec.FAVOURABLE_PRICE_PCT_Prev,'0')) THEN
+
+INSERT INTO xx_ap_supplier_temp(supplier_number,
+                           supplier_name,
+                           site_id_num,
+                           legacy_num,
+                           changed_by,
+                           date_changed,
+                           changed_field,
+                           changed_from,
+                           changed_to,
+                                 flag,
+                           order_by_col)
+             VALUES       ( lcu_xxap_cust_tol_aud_rec.vendor_num
+                            ,lcu_xxap_cust_tol_aud_rec.vendor_name
+                            ,lcu_xxap_cust_tol_aud_rec.vendor_site_code
+                            ,lcu_xxap_cust_tol_aud_rec.legacy_num
+                            ,lcu_xxap_cust_tol_aud_comp_rec.last_updated_by
+                            ,lcu_xxap_cust_tol_aud_comp_rec.last_update_date
+                            ,'FAVOURABLE_PRICE_PCT'
+                            ,lcu_xxap_cust_tol_aud_comp_rec.FAVOURABLE_PRICE_PCT_Prev
+                            ,lcu_xxap_cust_tol_aud_comp_rec.FAVOURABLE_PRICE_PCT_Cur
+                               ,'AUDIT'
+                            ,lcu_xxap_cust_tol_aud_comp_rec.order_by_col);					
+
+END IF;
+
+IF (NVL(lcu_xxap_cust_tol_aud_comp_rec.MAX_PRICE_AMT_Cur,'0') <> NVL(lcu_xxap_cust_tol_aud_comp_rec.MAX_PRICE_AMT_Prev,'0')) THEN
+
+INSERT INTO xx_ap_supplier_temp(supplier_number,
+                           supplier_name,
+                           site_id_num,
+                           legacy_num,
+                           changed_by,
+                           date_changed,
+                           changed_field,
+                           changed_from,
+                           changed_to,
+                                 flag,
+                           order_by_col)
+             VALUES       ( lcu_xxap_cust_tol_aud_rec.vendor_num
+                            ,lcu_xxap_cust_tol_aud_rec.vendor_name
+                            ,lcu_xxap_cust_tol_aud_rec.vendor_site_code
+                            ,lcu_xxap_cust_tol_aud_rec.legacy_num
+                            ,lcu_xxap_cust_tol_aud_comp_rec.last_updated_by
+                            ,lcu_xxap_cust_tol_aud_comp_rec.last_update_date
+                            ,'MAX_PRICE_AMT'
+                            ,lcu_xxap_cust_tol_aud_comp_rec.MAX_PRICE_AMT_Prev
+                            ,lcu_xxap_cust_tol_aud_comp_rec.MAX_PRICE_AMT_Cur
+                               ,'AUDIT'
+                            ,lcu_xxap_cust_tol_aud_comp_rec.order_by_col);					
+
+END IF;
+
+end loop;
+end loop;
+-----------for loop ends here.Added for ap custom tolerance column audit for jira NAIT-103952.Added by Bhargavi Ankolekar.
+
+-------Adding for loop for vendor kff column audit.This is added for jira NAIT-103952.Added by Bhargavi Ankolekar.
+
+FOR lcu_po_vdsite_kff_rec IN lcu_po_vend_site_kff
+LOOP
+FOR lcu_po_vdsite_aud_kff_rec IN lcu_po_vdsite_aud_kff(lcu_po_vdsite_kff_rec.attribute10 , null, null)
+LOOP
+if (NVL(lcu_po_vdsite_aud_kff_rec.SEGMENT1_cur,'X') <> NVL(lcu_po_vdsite_aud_kff_rec.SEGMENT1_prev,'X')) THEN
+
+INSERT INTO xx_ap_supplier_temp(supplier_number,
+                           supplier_name,
+                           site_id_num,
+                           legacy_num,
+                           changed_by,
+                           date_changed,
+                           changed_field,
+                           changed_from,
+                           changed_to,
+                                 flag,
+                           order_by_col)
+             VALUES       ( lcu_po_vdsite_kff_rec.vendor_num
+                            ,lcu_po_vdsite_kff_rec.vendor_name
+                            ,lcu_po_vdsite_kff_rec.vendor_site_code
+                            ,lcu_po_vdsite_kff_rec.legacy_num
+                            ,lcu_po_vdsite_aud_kff_rec.last_updated_by
+                            ,lcu_po_vdsite_aud_kff_rec.last_update_date
+                            ,'Lead Time'
+                            ,lcu_po_vdsite_aud_kff_rec.SEGMENT1_prev
+                            ,lcu_po_vdsite_aud_kff_rec.SEGMENT1_cur
+                               ,'AUDIT'
+                            ,lcu_po_vdsite_aud_kff_rec.order_by_col);					
+
+END IF;
+
+if (NVL(lcu_po_vdsite_aud_kff_rec.SEGMENT2_cur,'X') <> NVL(lcu_po_vdsite_aud_kff_rec.SEGMENT2_prev,'X')) THEN
+
+INSERT INTO xx_ap_supplier_temp(supplier_number,
+                           supplier_name,
+                           site_id_num,
+                           legacy_num,
+                           changed_by,
+                           date_changed,
+                           changed_field,
+                           changed_from,
+                           changed_to,
+                                 flag,
+                           order_by_col)
+             VALUES       ( lcu_po_vdsite_kff_rec.vendor_num
+                            ,lcu_po_vdsite_kff_rec.vendor_name
+                            ,lcu_po_vdsite_kff_rec.vendor_site_code
+                            ,lcu_po_vdsite_kff_rec.legacy_num
+                            ,lcu_po_vdsite_aud_kff_rec.last_updated_by
+                            ,lcu_po_vdsite_aud_kff_rec.last_update_date
+                            ,'Back Order Flag'
+                            ,lcu_po_vdsite_aud_kff_rec.SEGMENT2_prev
+                            ,lcu_po_vdsite_aud_kff_rec.SEGMENT2_cur
+                               ,'AUDIT'
+                            ,lcu_po_vdsite_aud_kff_rec.order_by_col);					
+
+END IF;
+
+
+if (NVL(lcu_po_vdsite_aud_kff_rec.SEGMENT3_cur,'X') <> NVL(lcu_po_vdsite_aud_kff_rec.SEGMENT3_prev,'X')) THEN
+
+INSERT INTO xx_ap_supplier_temp(supplier_number,
+                           supplier_name,
+                           site_id_num,
+                           legacy_num,
+                           changed_by,
+                           date_changed,
+                           changed_field,
+                           changed_from,
+                           changed_to,
+                                 flag,
+                           order_by_col)
+             VALUES       ( lcu_po_vdsite_kff_rec.vendor_num
+                            ,lcu_po_vdsite_kff_rec.vendor_name
+                            ,lcu_po_vdsite_kff_rec.vendor_site_code
+                            ,lcu_po_vdsite_kff_rec.legacy_num
+                            ,lcu_po_vdsite_aud_kff_rec.last_updated_by
+                            ,lcu_po_vdsite_aud_kff_rec.last_update_date
+                            ,'Deliver Policy'
+                            ,lcu_po_vdsite_aud_kff_rec.SEGMENT3_prev
+                            ,lcu_po_vdsite_aud_kff_rec.SEGMENT3_cur
+                               ,'AUDIT'
+                            ,lcu_po_vdsite_aud_kff_rec.order_by_col);					
+
+END IF;
+
+if (NVL(lcu_po_vdsite_aud_kff_rec.SEGMENT4_cur,'X') <> NVL(lcu_po_vdsite_aud_kff_rec.SEGMENT4_prev,'X')) THEN
+
+INSERT INTO xx_ap_supplier_temp(supplier_number,
+                           supplier_name,
+                           site_id_num,
+                           legacy_num,
+                           changed_by,
+                           date_changed,
+                           changed_field,
+                           changed_from,
+                           changed_to,
+                                 flag,
+                           order_by_col)
+             VALUES       ( lcu_po_vdsite_kff_rec.vendor_num
+                            ,lcu_po_vdsite_kff_rec.vendor_name
+                            ,lcu_po_vdsite_kff_rec.vendor_site_code
+                            ,lcu_po_vdsite_kff_rec.legacy_num
+                            ,lcu_po_vdsite_aud_kff_rec.last_updated_by
+                            ,lcu_po_vdsite_aud_kff_rec.last_update_date
+                            ,'Mini Prepaid Code'
+                            ,lcu_po_vdsite_aud_kff_rec.SEGMENT4_prev
+                            ,lcu_po_vdsite_aud_kff_rec.SEGMENT4_cur
+                               ,'AUDIT'
+                            ,lcu_po_vdsite_aud_kff_rec.order_by_col);					
+
+END IF;
+
+
+if (NVL(lcu_po_vdsite_aud_kff_rec.SEGMENT5_cur,'X') <> NVL(lcu_po_vdsite_aud_kff_rec.SEGMENT5_prev,'X')) THEN
+
+INSERT INTO xx_ap_supplier_temp(supplier_number,
+                           supplier_name,
+                           site_id_num,
+                           legacy_num,
+                           changed_by,
+                           date_changed,
+                           changed_field,
+                           changed_from,
+                           changed_to,
+                                 flag,
+                           order_by_col)
+             VALUES       ( lcu_po_vdsite_kff_rec.vendor_num
+                            ,lcu_po_vdsite_kff_rec.vendor_name
+                            ,lcu_po_vdsite_kff_rec.vendor_site_code
+                            ,lcu_po_vdsite_kff_rec.legacy_num
+                            ,lcu_po_vdsite_aud_kff_rec.last_updated_by
+                            ,lcu_po_vdsite_aud_kff_rec.last_update_date
+                            ,'Vendor Min Amount'
+                            ,lcu_po_vdsite_aud_kff_rec.SEGMENT5_prev
+                            ,lcu_po_vdsite_aud_kff_rec.SEGMENT5_cur
+                               ,'AUDIT'
+                            ,lcu_po_vdsite_aud_kff_rec.order_by_col);					
+
+END IF;
+
+if (NVL(lcu_po_vdsite_aud_kff_rec.SEGMENT11_cur,'X') <> NVL(lcu_po_vdsite_aud_kff_rec.SEGMENT11_prev,'X')) THEN
+
+INSERT INTO xx_ap_supplier_temp(supplier_number,
+                           supplier_name,
+                           site_id_num,
+                           legacy_num,
+                           changed_by,
+                           date_changed,
+                           changed_field,
+                           changed_from,
+                           changed_to,
+                                 flag,
+                           order_by_col)
+             VALUES       ( lcu_po_vdsite_kff_rec.vendor_num
+                            ,lcu_po_vdsite_kff_rec.vendor_name
+                            ,lcu_po_vdsite_kff_rec.vendor_site_code
+                            ,lcu_po_vdsite_kff_rec.legacy_num
+                            ,lcu_po_vdsite_aud_kff_rec.last_updated_by
+                            ,lcu_po_vdsite_aud_kff_rec.last_update_date
+                            ,'EFT Settle Days'
+                            ,lcu_po_vdsite_aud_kff_rec.SEGMENT11_prev
+                            ,lcu_po_vdsite_aud_kff_rec.SEGMENT11_cur
+                               ,'AUDIT'
+                            ,lcu_po_vdsite_aud_kff_rec.order_by_col);					
+
+END IF;
+
+if (NVL(lcu_po_vdsite_aud_kff_rec.SEGMENT13_cur,'X') <> NVL(lcu_po_vdsite_aud_kff_rec.SEGMENT13_prev,'X')) THEN
+
+INSERT INTO xx_ap_supplier_temp(supplier_number,
+                           supplier_name,
+                           site_id_num,
+                           legacy_num,
+                           changed_by,
+                           date_changed,
+                           changed_field,
+                           changed_from,
+                           changed_to,
+                                 flag,
+                           order_by_col)
+             VALUES       ( lcu_po_vdsite_kff_rec.vendor_num
+                            ,lcu_po_vdsite_kff_rec.vendor_name
+                            ,lcu_po_vdsite_kff_rec.vendor_site_code
+                            ,lcu_po_vdsite_kff_rec.legacy_num
+                            ,lcu_po_vdsite_aud_kff_rec.last_updated_by
+                            ,lcu_po_vdsite_aud_kff_rec.last_update_date
+                            ,'Master Vendor ID'
+                            ,lcu_po_vdsite_aud_kff_rec.SEGMENT13_prev
+                            ,lcu_po_vdsite_aud_kff_rec.SEGMENT13_cur
+                               ,'AUDIT'
+                            ,lcu_po_vdsite_aud_kff_rec.order_by_col);					
+
+END IF;
+
+if (NVL(lcu_po_vdsite_aud_kff_rec.SEGMENT14_cur,'X') <> NVL(lcu_po_vdsite_aud_kff_rec.SEGMENT14_prev,'X')) THEN
+
+INSERT INTO xx_ap_supplier_temp(supplier_number,
+                           supplier_name,
+                           site_id_num,
+                           legacy_num,
+                           changed_by,
+                           date_changed,
+                           changed_field,
+                           changed_from,
+                           changed_to,
+                                 flag,
+                           order_by_col)
+             VALUES       ( lcu_po_vdsite_kff_rec.vendor_num
+                            ,lcu_po_vdsite_kff_rec.vendor_name
+                            ,lcu_po_vdsite_kff_rec.vendor_site_code
+                            ,lcu_po_vdsite_kff_rec.legacy_num
+                            ,lcu_po_vdsite_aud_kff_rec.last_updated_by
+                            ,lcu_po_vdsite_aud_kff_rec.last_update_date
+                            ,'PI Pack Year'
+                            ,lcu_po_vdsite_aud_kff_rec.SEGMENT14_prev
+                            ,lcu_po_vdsite_aud_kff_rec.SEGMENT14_cur
+                               ,'AUDIT'
+                            ,lcu_po_vdsite_aud_kff_rec.order_by_col);					
+
+END IF;
+
+if (NVL(lcu_po_vdsite_aud_kff_rec.SEGMENT15_cur,'X') <> NVL(lcu_po_vdsite_aud_kff_rec.SEGMENT15_prev,'X')) THEN
+
+INSERT INTO xx_ap_supplier_temp(supplier_number,
+                           supplier_name,
+                           site_id_num,
+                           legacy_num,
+                           changed_by,
+                           date_changed,
+                           changed_field,
+                           changed_from,
+                           changed_to,
+                                 flag,
+                           order_by_col)
+             VALUES       ( lcu_po_vdsite_kff_rec.vendor_num
+                            ,lcu_po_vdsite_kff_rec.vendor_name
+                            ,lcu_po_vdsite_kff_rec.vendor_site_code
+                            ,lcu_po_vdsite_kff_rec.legacy_num
+                            ,lcu_po_vdsite_aud_kff_rec.last_updated_by
+                            ,lcu_po_vdsite_aud_kff_rec.last_update_date
+                            ,'OD Date Signed'
+                            ,lcu_po_vdsite_aud_kff_rec.SEGMENT15_prev
+                            ,lcu_po_vdsite_aud_kff_rec.SEGMENT15_cur
+                               ,'AUDIT'
+                            ,lcu_po_vdsite_aud_kff_rec.order_by_col);					
+
+END IF;
+
+if (NVL(lcu_po_vdsite_aud_kff_rec.SEGMENT16_cur,'X') <> NVL(lcu_po_vdsite_aud_kff_rec.SEGMENT16_prev,'X')) THEN
+
+INSERT INTO xx_ap_supplier_temp(supplier_number,
+                           supplier_name,
+                           site_id_num,
+                           legacy_num,
+                           changed_by,
+                           date_changed,
+                           changed_field,
+                           changed_from,
+                           changed_to,
+                                 flag,
+                           order_by_col)
+             VALUES       ( lcu_po_vdsite_kff_rec.vendor_num
+                            ,lcu_po_vdsite_kff_rec.vendor_name
+                            ,lcu_po_vdsite_kff_rec.vendor_site_code
+                            ,lcu_po_vdsite_kff_rec.legacy_num
+                            ,lcu_po_vdsite_aud_kff_rec.last_updated_by
+                            ,lcu_po_vdsite_aud_kff_rec.last_update_date
+                            ,'Vendor Date Signed'
+                            ,lcu_po_vdsite_aud_kff_rec.SEGMENT16_prev
+                            ,lcu_po_vdsite_aud_kff_rec.SEGMENT16_cur
+                               ,'AUDIT'
+                            ,lcu_po_vdsite_aud_kff_rec.order_by_col);					
+
+END IF;
+
+if (NVL(lcu_po_vdsite_aud_kff_rec.SEGMENT17_cur,'X') <> NVL(lcu_po_vdsite_aud_kff_rec.SEGMENT17_prev,'X')) THEN
+
+INSERT INTO xx_ap_supplier_temp(supplier_number,
+                           supplier_name,
+                           site_id_num,
+                           legacy_num,
+                           changed_by,
+                           date_changed,
+                           changed_field,
+                           changed_from,
+                           changed_to,
+                                 flag,
+                           order_by_col)
+             VALUES       ( lcu_po_vdsite_kff_rec.vendor_num
+                            ,lcu_po_vdsite_kff_rec.vendor_name
+                            ,lcu_po_vdsite_kff_rec.vendor_site_code
+                            ,lcu_po_vdsite_kff_rec.legacy_num
+                            ,lcu_po_vdsite_aud_kff_rec.last_updated_by
+                            ,lcu_po_vdsite_aud_kff_rec.last_update_date
+                            ,'Dedut from Invoice Flag'
+                            ,lcu_po_vdsite_aud_kff_rec.SEGMENT17_prev
+                            ,lcu_po_vdsite_aud_kff_rec.SEGMENT17_cur
+                               ,'AUDIT'
+                            ,lcu_po_vdsite_aud_kff_rec.order_by_col);					
+
+END IF;
+
+end loop;
+
+FOR lcu_po_vdsite_aud_kff_rec IN lcu_po_vdsite_aud_kff(null,null,lcu_po_vdsite_kff_rec.attribute12)
+loop
+if (NVL(lcu_po_vdsite_aud_kff_rec.SEGMENT60_cur,'X') <> NVL(lcu_po_vdsite_aud_kff_rec.SEGMENT60_prev,'X')) THEN
+
+INSERT INTO xx_ap_supplier_temp(supplier_number,
+                           supplier_name,
+                           site_id_num,
+                           legacy_num,
+                           changed_by,
+                           date_changed,
+                           changed_field,
+                           changed_from,
+                           changed_to,
+                                 flag,
+                           order_by_col)
+             VALUES       ( lcu_po_vdsite_kff_rec.vendor_num
+                            ,lcu_po_vdsite_kff_rec.vendor_name
+                            ,lcu_po_vdsite_kff_rec.vendor_site_code
+                            ,lcu_po_vdsite_kff_rec.legacy_num
+                            ,lcu_po_vdsite_aud_kff_rec.last_updated_by
+                            ,lcu_po_vdsite_aud_kff_rec.last_update_date
+                            ,'OD Vendor Sign Title'
+                            ,lcu_po_vdsite_aud_kff_rec.SEGMENT60_prev
+                            ,lcu_po_vdsite_aud_kff_rec.SEGMENT60_cur
+                               ,'AUDIT'
+                            ,lcu_po_vdsite_aud_kff_rec.order_by_col);					
+
+END IF;
+
+if (NVL(lcu_po_vdsite_aud_kff_rec.SEGMENT40_cur,'X') <> NVL(lcu_po_vdsite_aud_kff_rec.SEGMENT40_prev,'X')) THEN
+
+INSERT INTO xx_ap_supplier_temp(supplier_number,
+                           supplier_name,
+                           site_id_num,
+                           legacy_num,
+                           changed_by,
+                           date_changed,
+                           changed_field,
+                           changed_from,
+                           changed_to,
+                                 flag,
+                           order_by_col)
+             VALUES       ( lcu_po_vdsite_kff_rec.vendor_num
+                            ,lcu_po_vdsite_kff_rec.vendor_name
+                            ,lcu_po_vdsite_kff_rec.vendor_site_code
+                            ,lcu_po_vdsite_kff_rec.legacy_num
+                            ,lcu_po_vdsite_aud_kff_rec.last_updated_by
+                            ,lcu_po_vdsite_aud_kff_rec.last_update_date
+                            ,'RTV option'
+                            ,lcu_po_vdsite_aud_kff_rec.SEGMENT40_prev
+                            ,lcu_po_vdsite_aud_kff_rec.SEGMENT40_cur
+                               ,'AUDIT'
+                            ,lcu_po_vdsite_aud_kff_rec.order_by_col);					
+
+END IF;
+
+
+if (NVL(lcu_po_vdsite_aud_kff_rec.SEGMENT42_cur,'X') <> NVL(lcu_po_vdsite_aud_kff_rec.SEGMENT42_prev,'X')) THEN
+
+INSERT INTO xx_ap_supplier_temp(supplier_number,
+                           supplier_name,
+                           site_id_num,
+                           legacy_num,
+                           changed_by,
+                           date_changed,
+                           changed_field,
+                           changed_from,
+                           changed_to,
+                                 flag,
+                           order_by_col)
+             VALUES       ( lcu_po_vdsite_kff_rec.vendor_num
+                            ,lcu_po_vdsite_kff_rec.vendor_name
+                            ,lcu_po_vdsite_kff_rec.vendor_site_code
+                            ,lcu_po_vdsite_kff_rec.legacy_num
+                            ,lcu_po_vdsite_aud_kff_rec.last_updated_by
+                            ,lcu_po_vdsite_aud_kff_rec.last_update_date
+                            ,'Permanent RGA'
+                            ,lcu_po_vdsite_aud_kff_rec.SEGMENT42_prev
+                            ,lcu_po_vdsite_aud_kff_rec.SEGMENT42_cur
+                               ,'AUDIT'
+                            ,lcu_po_vdsite_aud_kff_rec.order_by_col);					
+
+END IF;
+
+if (NVL(lcu_po_vdsite_aud_kff_rec.SEGMENT43_cur,'X') <> NVL(lcu_po_vdsite_aud_kff_rec.SEGMENT43_prev,'X')) THEN
+
+INSERT INTO xx_ap_supplier_temp(supplier_number,
+                           supplier_name,
+                           site_id_num,
+                           legacy_num,
+                           changed_by,
+                           date_changed,
+                           changed_field,
+                           changed_from,
+                           changed_to,
+                                 flag,
+                           order_by_col)
+             VALUES       ( lcu_po_vdsite_kff_rec.vendor_num
+                            ,lcu_po_vdsite_kff_rec.vendor_name
+                            ,lcu_po_vdsite_kff_rec.vendor_site_code
+                            ,lcu_po_vdsite_kff_rec.legacy_num
+                            ,lcu_po_vdsite_aud_kff_rec.last_updated_by
+                            ,lcu_po_vdsite_aud_kff_rec.last_update_date
+                            ,'Destroy Allow Amount'
+                            ,lcu_po_vdsite_aud_kff_rec.SEGMENT43_prev
+                            ,lcu_po_vdsite_aud_kff_rec.SEGMENT43_cur
+                               ,'AUDIT'
+                            ,lcu_po_vdsite_aud_kff_rec.order_by_col);					
+
+END IF;
+
+if (NVL(lcu_po_vdsite_aud_kff_rec.SEGMENT44_cur,'X') <> NVL(lcu_po_vdsite_aud_kff_rec.SEGMENT44_prev,'X')) THEN
+
+INSERT INTO xx_ap_supplier_temp(supplier_number,
+                           supplier_name,
+                           site_id_num,
+                           legacy_num,
+                           changed_by,
+                           date_changed,
+                           changed_field,
+                           changed_from,
+                           changed_to,
+                                 flag,
+                           order_by_col)
+             VALUES       ( lcu_po_vdsite_kff_rec.vendor_num
+                            ,lcu_po_vdsite_kff_rec.vendor_name
+                            ,lcu_po_vdsite_kff_rec.vendor_site_code
+                            ,lcu_po_vdsite_kff_rec.legacy_num
+                            ,lcu_po_vdsite_aud_kff_rec.last_updated_by
+                            ,lcu_po_vdsite_aud_kff_rec.last_update_date
+                            ,'Payment Frequency'
+                            ,lcu_po_vdsite_aud_kff_rec.SEGMENT44_prev
+                            ,lcu_po_vdsite_aud_kff_rec.SEGMENT44_cur
+                               ,'AUDIT'
+                            ,lcu_po_vdsite_aud_kff_rec.order_by_col);					
+
+END IF;
+if (NVL(lcu_po_vdsite_aud_kff_rec.SEGMENT47_cur,'X') <> NVL(lcu_po_vdsite_aud_kff_rec.SEGMENT47_prev,'X')) THEN
+
+INSERT INTO xx_ap_supplier_temp(supplier_number,
+                           supplier_name,
+                           site_id_num,
+                           legacy_num,
+                           changed_by,
+                           date_changed,
+                           changed_field,
+                           changed_from,
+                           changed_to,
+                                 flag,
+                           order_by_col)
+             VALUES       ( lcu_po_vdsite_kff_rec.vendor_num
+                            ,lcu_po_vdsite_kff_rec.vendor_name
+                            ,lcu_po_vdsite_kff_rec.vendor_site_code
+                            ,lcu_po_vdsite_kff_rec.legacy_num
+                            ,lcu_po_vdsite_aud_kff_rec.last_updated_by
+                            ,lcu_po_vdsite_aud_kff_rec.last_update_date
+                            ,'Damage/Destroy Limit'
+                            ,lcu_po_vdsite_aud_kff_rec.SEGMENT47_prev
+                            ,lcu_po_vdsite_aud_kff_rec.SEGMENT47_cur
+                               ,'AUDIT'
+                            ,lcu_po_vdsite_aud_kff_rec.order_by_col);					
+
+END IF;
+
+if (NVL(lcu_po_vdsite_aud_kff_rec.SEGMENT50_cur,'X') <> NVL(lcu_po_vdsite_aud_kff_rec.SEGMENT50_prev,'X')) THEN
+
+INSERT INTO xx_ap_supplier_temp(supplier_number,
+                           supplier_name,
+                           site_id_num,
+                           legacy_num,
+                           changed_by,
+                           date_changed,
+                           changed_field,
+                           changed_from,
+                           changed_to,
+                                 flag,
+                           order_by_col)
+             VALUES       ( lcu_po_vdsite_kff_rec.vendor_num
+                            ,lcu_po_vdsite_kff_rec.vendor_name
+                            ,lcu_po_vdsite_kff_rec.vendor_site_code
+                            ,lcu_po_vdsite_kff_rec.legacy_num
+                            ,lcu_po_vdsite_aud_kff_rec.last_updated_by
+                            ,lcu_po_vdsite_aud_kff_rec.last_update_date
+                            ,'RGA Marked Flag'
+                            ,lcu_po_vdsite_aud_kff_rec.SEGMENT50_prev
+                            ,lcu_po_vdsite_aud_kff_rec.SEGMENT50_cur
+                               ,'AUDIT'
+                            ,lcu_po_vdsite_aud_kff_rec.order_by_col);					
+
+END IF;
+if (NVL(lcu_po_vdsite_aud_kff_rec.SEGMENT51_cur,'X') <> NVL(lcu_po_vdsite_aud_kff_rec.SEGMENT51_prev,'X')) THEN
+
+INSERT INTO xx_ap_supplier_temp(supplier_number,
+                           supplier_name,
+                           site_id_num,
+                           legacy_num,
+                           changed_by,
+                           date_changed,
+                           changed_field,
+                           changed_from,
+                           changed_to,
+                                 flag,
+                           order_by_col)
+             VALUES       ( lcu_po_vdsite_kff_rec.vendor_num
+                            ,lcu_po_vdsite_kff_rec.vendor_name
+                            ,lcu_po_vdsite_kff_rec.vendor_site_code
+                            ,lcu_po_vdsite_kff_rec.legacy_num
+                            ,lcu_po_vdsite_aud_kff_rec.last_updated_by
+                            ,lcu_po_vdsite_aud_kff_rec.last_update_date
+                            ,'Remove Price Sticker Flag'
+                            ,lcu_po_vdsite_aud_kff_rec.SEGMENT51_prev
+                            ,lcu_po_vdsite_aud_kff_rec.SEGMENT51_cur
+                               ,'AUDIT'
+                            ,lcu_po_vdsite_aud_kff_rec.order_by_col);					
+
+END IF;
+if (NVL(lcu_po_vdsite_aud_kff_rec.SEGMENT52_cur,'X') <> NVL(lcu_po_vdsite_aud_kff_rec.SEGMENT52_prev,'X')) THEN
+
+INSERT INTO xx_ap_supplier_temp(supplier_number,
+                           supplier_name,
+                           site_id_num,
+                           legacy_num,
+                           changed_by,
+                           date_changed,
+                           changed_field,
+                           changed_from,
+                           changed_to,
+                                 flag,
+                           order_by_col)
+             VALUES       ( lcu_po_vdsite_kff_rec.vendor_num
+                            ,lcu_po_vdsite_kff_rec.vendor_name
+                            ,lcu_po_vdsite_kff_rec.vendor_site_code
+                            ,lcu_po_vdsite_kff_rec.legacy_num
+                            ,lcu_po_vdsite_aud_kff_rec.last_updated_by
+                            ,lcu_po_vdsite_aud_kff_rec.last_update_date
+                            ,'Contact Supplier for RGA'
+                            ,lcu_po_vdsite_aud_kff_rec.SEGMENT52_prev
+                            ,lcu_po_vdsite_aud_kff_rec.SEGMENT52_cur
+                               ,'AUDIT'
+                            ,lcu_po_vdsite_aud_kff_rec.order_by_col);					
+
+END IF;
+if (NVL(lcu_po_vdsite_aud_kff_rec.SEGMENT53_cur,'X') <> NVL(lcu_po_vdsite_aud_kff_rec.SEGMENT53_prev,'X')) THEN
+
+INSERT INTO xx_ap_supplier_temp(supplier_number,
+                           supplier_name,
+                           site_id_num,
+                           legacy_num,
+                           changed_by,
+                           date_changed,
+                           changed_field,
+                           changed_from,
+                           changed_to,
+                                 flag,
+                           order_by_col)
+             VALUES       ( lcu_po_vdsite_kff_rec.vendor_num
+                            ,lcu_po_vdsite_kff_rec.vendor_name
+                            ,lcu_po_vdsite_kff_rec.vendor_site_code
+                            ,lcu_po_vdsite_kff_rec.legacy_num
+                            ,lcu_po_vdsite_aud_kff_rec.last_updated_by
+                            ,lcu_po_vdsite_aud_kff_rec.last_update_date
+                            ,'Destroy Flag'
+                            ,lcu_po_vdsite_aud_kff_rec.SEGMENT53_prev
+                            ,lcu_po_vdsite_aud_kff_rec.SEGMENT53_cur
+                               ,'AUDIT'
+                            ,lcu_po_vdsite_aud_kff_rec.order_by_col);					
+
+END IF;
+if (NVL(lcu_po_vdsite_aud_kff_rec.SEGMENT54_cur,'X') <> NVL(lcu_po_vdsite_aud_kff_rec.SEGMENT54_prev,'X')) THEN
+
+INSERT INTO xx_ap_supplier_temp(supplier_number,
+                           supplier_name,
+                           site_id_num,
+                           legacy_num,
+                           changed_by,
+                           date_changed,
+                           changed_field,
+                           changed_from,
+                           changed_to,
+                                 flag,
+                           order_by_col)
+             VALUES       ( lcu_po_vdsite_kff_rec.vendor_num
+                            ,lcu_po_vdsite_kff_rec.vendor_name
+                            ,lcu_po_vdsite_kff_rec.vendor_site_code
+                            ,lcu_po_vdsite_kff_rec.legacy_num
+                            ,lcu_po_vdsite_aud_kff_rec.last_updated_by
+                            ,lcu_po_vdsite_aud_kff_rec.last_update_date
+                            ,'Serial # Required Flag'
+                            ,lcu_po_vdsite_aud_kff_rec.SEGMENT54_prev
+                            ,lcu_po_vdsite_aud_kff_rec.SEGMENT54_cur
+                               ,'AUDIT'
+                            ,lcu_po_vdsite_aud_kff_rec.order_by_col);					
+
+END IF;
+if (NVL(lcu_po_vdsite_aud_kff_rec.SEGMENT55_cur,'X') <> NVL(lcu_po_vdsite_aud_kff_rec.SEGMENT55_prev,'X')) THEN
+
+INSERT INTO xx_ap_supplier_temp(supplier_number,
+                           supplier_name,
+                           site_id_num,
+                           legacy_num,
+                           changed_by,
+                           date_changed,
+                           changed_field,
+                           changed_from,
+                           changed_to,
+                                 flag,
+                           order_by_col)
+             VALUES       ( lcu_po_vdsite_kff_rec.vendor_num
+                            ,lcu_po_vdsite_kff_rec.vendor_name
+                            ,lcu_po_vdsite_kff_rec.vendor_site_code
+                            ,lcu_po_vdsite_kff_rec.legacy_num
+                            ,lcu_po_vdsite_aud_kff_rec.last_updated_by
+                            ,lcu_po_vdsite_aud_kff_rec.last_update_date
+                            ,'Obsolute Item'
+                            ,lcu_po_vdsite_aud_kff_rec.SEGMENT55_prev
+                            ,lcu_po_vdsite_aud_kff_rec.SEGMENT55_cur
+                               ,'AUDIT'
+                            ,lcu_po_vdsite_aud_kff_rec.order_by_col);					
+
+END IF;
+if (NVL(lcu_po_vdsite_aud_kff_rec.SEGMENT58_cur,'X') <> NVL(lcu_po_vdsite_aud_kff_rec.SEGMENT58_prev,'X')) THEN
+
+INSERT INTO xx_ap_supplier_temp(supplier_number,
+                           supplier_name,
+                           site_id_num,
+                           legacy_num,
+                           changed_by,
+                           date_changed,
+                           changed_field,
+                           changed_from,
+                           changed_to,
+                                 flag,
+                           order_by_col)
+             VALUES       ( lcu_po_vdsite_kff_rec.vendor_num
+                            ,lcu_po_vdsite_kff_rec.vendor_name
+                            ,lcu_po_vdsite_kff_rec.vendor_site_code
+                            ,lcu_po_vdsite_kff_rec.legacy_num
+                            ,lcu_po_vdsite_aud_kff_rec.last_updated_by
+                            ,lcu_po_vdsite_aud_kff_rec.last_update_date
+                            ,'RTV Related Site'
+                            ,lcu_po_vdsite_aud_kff_rec.SEGMENT58_prev
+                            ,lcu_po_vdsite_aud_kff_rec.SEGMENT58_cur
+                               ,'AUDIT'
+                            ,lcu_po_vdsite_aud_kff_rec.order_by_col);					
+
+END IF;
+end loop;
+
+FOR lcu_po_vdsite_aud_kff_rec IN lcu_po_vdsite_aud_kff(null, lcu_po_vdsite_kff_rec.attribute11, null)
+loop
+if (NVL(lcu_po_vdsite_aud_kff_rec.SEGMENT37_cur,'X') <> NVL(lcu_po_vdsite_aud_kff_rec.SEGMENT37_prev,'X')) THEN
+
+INSERT INTO xx_ap_supplier_temp(supplier_number,
+                           supplier_name,
+                           site_id_num,
+                           legacy_num,
+                           changed_by,
+                           date_changed,
+                           changed_field,
+                           changed_from,
+                           changed_to,
+                                 flag,
+                           order_by_col)
+             VALUES       ( lcu_po_vdsite_kff_rec.vendor_num
+                            ,lcu_po_vdsite_kff_rec.vendor_name
+                            ,lcu_po_vdsite_kff_rec.vendor_site_code
+                            ,lcu_po_vdsite_kff_rec.legacy_num
+                            ,lcu_po_vdsite_aud_kff_rec.last_updated_by
+                            ,lcu_po_vdsite_aud_kff_rec.last_update_date
+                            ,'EDI Distribution code'
+                            ,lcu_po_vdsite_aud_kff_rec.SEGMENT37_prev
+                            ,lcu_po_vdsite_aud_kff_rec.SEGMENT37_cur
+                               ,'AUDIT'
+                            ,lcu_po_vdsite_aud_kff_rec.order_by_col);					
+
+END IF;
+
+end loop;
+end loop;
+
+
+-------for loop for vendor kff column audit ends here.This is added for jira NAIT-103952.Added by Bhargavi Ankolekar.
+
+
+
+-------Adding for loop for iby external payees column audit.This is added for jira NAIT-103952.Added by Bhargavi Ankolekar.
+
+FOR lcu_vdsite_iby_col_rec IN lcu_vdsite_iby_col_aud
+LOOP
+FOR lcu_vdsite_add_colpay IN lcu_vdsite_add_col_aud(lcu_vdsite_iby_col_rec.supplier_site_id)
+LOOP
+
+IF (NVL(lcu_vdsite_add_colpay.PAYMENT_FORMAT_CODE_CURRENT,'X') <> NVL(lcu_vdsite_add_colpay.PAYMENT_FORMAT_CODE_PREV,'X')) THEN
+
+INSERT INTO xx_ap_supplier_temp(supplier_number,
+                           supplier_name,
+                           site_id_num,
+                           legacy_num,
+                           changed_by,
+                           date_changed,
+                           changed_field,
+                           changed_from,
+                           changed_to,
+                                 flag,
+                           order_by_col)
+             VALUES       ( lcu_vdsite_iby_col_rec.vendor_num
+                            ,lcu_vdsite_iby_col_rec.vendor_name
+                            ,lcu_vdsite_iby_col_rec.vendor_site_code
+                            ,lcu_vdsite_iby_col_rec.legacy_num
+                            ,lcu_vdsite_add_colpay.last_updated_by
+                            ,lcu_vdsite_add_colpay.last_update_date
+                            ,'PAYMENT_FORMAT_CODE'
+                            ,lcu_vdsite_add_colpay.PAYMENT_FORMAT_CODE_PREV
+                            ,lcu_vdsite_add_colpay.PAYMENT_FORMAT_CODE_CURRENT
+                               ,'AUDIT'
+                            ,lcu_vdsite_add_colpay.order_by_col);					
+
+END IF;
+
+IF (NVL(lcu_vdsite_add_colpay.PAYMENT_REASON_CODE_CURRENT,'X') <> NVL(lcu_vdsite_add_colpay.PAYMENT_REASON_CODE_PREV,'X')) THEN
+
+INSERT INTO xx_ap_supplier_temp(supplier_number,
+                           supplier_name,
+                           site_id_num,
+                           legacy_num,
+                           changed_by,
+                           date_changed,
+                           changed_field,
+                           changed_from,
+                           changed_to,
+                                 flag,
+                           order_by_col)
+             VALUES       ( lcu_vdsite_iby_col_rec.vendor_num
+                            ,lcu_vdsite_iby_col_rec.vendor_name
+                            ,lcu_vdsite_iby_col_rec.vendor_site_code
+                            ,lcu_vdsite_iby_col_rec.legacy_num
+                            ,lcu_vdsite_add_colpay.last_updated_by
+                            ,lcu_vdsite_add_colpay.last_update_date
+                            ,'PAYMENT_REASON_CODE'
+                            ,lcu_vdsite_add_colpay.PAYMENT_REASON_CODE_PREV
+                            ,lcu_vdsite_add_colpay.PAYMENT_REASON_CODE_CURRENT
+                               ,'AUDIT'
+                            ,lcu_vdsite_add_colpay.order_by_col);					
+
+END IF;
+
+IF (NVL(lcu_vdsite_add_colpay.PAYMENT_REASON_COMMENTS_CURR,'X') <> NVL(lcu_vdsite_add_colpay.PAYMENT_REASON_COMMENTS_PREV,'X')) THEN
+
+INSERT INTO xx_ap_supplier_temp(supplier_number,
+                           supplier_name,
+                           site_id_num,
+                           legacy_num,
+                           changed_by,
+                           date_changed,
+                           changed_field,
+                           changed_from,
+                           changed_to,
+                                 flag,
+                           order_by_col)
+             VALUES       ( lcu_vdsite_iby_col_rec.vendor_num
+                            ,lcu_vdsite_iby_col_rec.vendor_name
+                            ,lcu_vdsite_iby_col_rec.vendor_site_code
+                            ,lcu_vdsite_iby_col_rec.legacy_num
+                            ,lcu_vdsite_add_colpay.last_updated_by
+                            ,lcu_vdsite_add_colpay.last_update_date
+                            ,'PAYMENT_REASON_COMMENTS'
+                            ,lcu_vdsite_add_colpay.PAYMENT_REASON_COMMENTS_PREV
+                            ,lcu_vdsite_add_colpay.PAYMENT_REASON_COMMENTS_CURR
+                               ,'AUDIT'
+                            ,lcu_vdsite_add_colpay.order_by_col);					
+
+END IF;
+
+IF (NVL(lcu_vdsite_add_colpay.REMIT_ADVICE_DELIVERY_METHOD_C,'X') <> NVL(lcu_vdsite_add_colpay.REMIT_ADVICE_DELIVERY_METHOD_P,'X')) THEN
+
+INSERT INTO xx_ap_supplier_temp(supplier_number,
+                           supplier_name,
+                           site_id_num,
+                           legacy_num,
+                           changed_by,
+                           date_changed,
+                           changed_field,
+                           changed_from,
+                           changed_to,
+                                 flag,
+                           order_by_col)
+             VALUES       ( lcu_vdsite_iby_col_rec.vendor_num
+                            ,lcu_vdsite_iby_col_rec.vendor_name
+                            ,lcu_vdsite_iby_col_rec.vendor_site_code
+                            ,lcu_vdsite_iby_col_rec.legacy_num
+                            ,lcu_vdsite_add_colpay.last_updated_by
+                            ,lcu_vdsite_add_colpay.last_update_date
+                            ,'REMIT_ADVICE_DELIVERY_METHOD'
+                            ,lcu_vdsite_add_colpay.REMIT_ADVICE_DELIVERY_METHOD_P
+                            ,lcu_vdsite_add_colpay.REMIT_ADVICE_DELIVERY_METHOD_C
+                               ,'AUDIT'
+                            ,lcu_vdsite_add_colpay.order_by_col);					
+
+END IF;
+
+IF (NVL(lcu_vdsite_add_colpay.REMIT_ADVICE_EMAIL_Current,'X') <> NVL(lcu_vdsite_add_colpay.REMIT_ADVICE_EMAIL_Prev,'X')) THEN
+
+INSERT INTO xx_ap_supplier_temp(supplier_number,
+                           supplier_name,
+                           site_id_num,
+                           legacy_num,
+                           changed_by,
+                           date_changed,
+                           changed_field,
+                           changed_from,
+                           changed_to,
+                                 flag,
+                           order_by_col)
+             VALUES       ( lcu_vdsite_iby_col_rec.vendor_num
+                            ,lcu_vdsite_iby_col_rec.vendor_name
+                            ,lcu_vdsite_iby_col_rec.vendor_site_code
+                            ,lcu_vdsite_iby_col_rec.legacy_num
+                            ,lcu_vdsite_add_colpay.last_updated_by
+                            ,lcu_vdsite_add_colpay.last_update_date
+                            ,'REMIT_ADVICE_EMAIL'
+                            ,lcu_vdsite_add_colpay.REMIT_ADVICE_EMAIL_Prev
+                            ,lcu_vdsite_add_colpay.REMIT_ADVICE_EMAIL_Current
+                               ,'AUDIT'
+                            ,lcu_vdsite_add_colpay.order_by_col);					
+
+END IF;
+
+IF (NVL(lcu_vdsite_add_colpay.REMIT_ADVICE_FAX_Current,'X') <> NVL(lcu_vdsite_add_colpay.REMIT_ADVICE_FAX_Prev,'X')) THEN
+
+INSERT INTO xx_ap_supplier_temp(supplier_number,
+                           supplier_name,
+                           site_id_num,
+                           legacy_num,
+                           changed_by,
+                           date_changed,
+                           changed_field,
+                           changed_from,
+                           changed_to,
+                                 flag,
+                           order_by_col)
+             VALUES       ( lcu_vdsite_iby_col_rec.vendor_num
+                            ,lcu_vdsite_iby_col_rec.vendor_name
+                            ,lcu_vdsite_iby_col_rec.vendor_site_code
+                            ,lcu_vdsite_iby_col_rec.legacy_num
+                            ,lcu_vdsite_add_colpay.last_updated_by
+                            ,lcu_vdsite_add_colpay.last_update_date
+                            ,'REMIT_ADVICE_FAX'
+                            ,lcu_vdsite_add_colpay.REMIT_ADVICE_FAX_Prev
+                            ,lcu_vdsite_add_colpay.REMIT_ADVICE_FAX_Current
+                               ,'AUDIT'
+                            ,lcu_vdsite_add_colpay.order_by_col);					
+
+END IF;
+end loop;
+end loop;
+-------loop ends here.This is for jira NAIT-103952.Added by Bhargavi Ankolekar.
+
+
+-------Adding loop as requested for jira NAIT-103952.Added by Bhargavi Ankolekar.
+FOR lcu_vend_sites_add_aud_rec IN lcu_vend_sites_add_aud
+LOOP
+FOR lcu_vd_sites_add_aud_rec IN lcu_vd_sites_add_aud(lcu_vend_sites_add_aud_rec.vendor_site_id)
+LOOP
+
+IF (NVL(lcu_vd_sites_add_aud_rec.ATTRIBUTE4_cur,'X') <> NVL(lcu_vd_sites_add_aud_rec.ATTRIBUTE4_prev,'X')) THEN
+
+INSERT INTO xx_ap_supplier_temp(supplier_number,
+                           supplier_name,
+                           site_id_num,
+                           legacy_num,
+                           changed_by,
+                           date_changed,
+                           changed_field,
+                           changed_from,
+                           changed_to,
+                                 flag,
+                           order_by_col)
+             VALUES       ( lcu_vend_sites_add_aud_rec.vendor_num
+                            ,lcu_vend_sites_add_aud_rec.vendor_name
+                            ,lcu_vend_sites_add_aud_rec.vendor_site_code
+                            ,lcu_vend_sites_add_aud_rec.legacy_num
+                            ,lcu_vd_sites_add_aud_rec.last_updated_by
+                            ,lcu_vd_sites_add_aud_rec.last_update_date
+                            ,'Consignment Frequency'
+                            ,lcu_vd_sites_add_aud_rec.ATTRIBUTE4_prev
+                            ,lcu_vd_sites_add_aud_rec.ATTRIBUTE4_cur
+                               ,'AUDIT'
+                            ,lcu_vd_sites_add_aud_rec.order_by_col);
+END IF;
+
+IF (NVL(lcu_vd_sites_add_aud_rec.ATTRIBUTE5_cur,'X') <> NVL(lcu_vd_sites_add_aud_rec.ATTRIBUTE5_prev,'X')) THEN
+
+INSERT INTO xx_ap_supplier_temp(supplier_number,
+                           supplier_name,
+                           site_id_num,
+                           legacy_num,
+                           changed_by,
+                           date_changed,
+                           changed_field,
+                           changed_from,
+                           changed_to,
+                                 flag,
+                           order_by_col)
+             VALUES       ( lcu_vend_sites_add_aud_rec.vendor_num
+                            ,lcu_vend_sites_add_aud_rec.vendor_name
+                            ,lcu_vend_sites_add_aud_rec.vendor_site_code
+                            ,lcu_vend_sites_add_aud_rec.legacy_num
+                            ,lcu_vd_sites_add_aud_rec.last_updated_by
+                            ,lcu_vd_sites_add_aud_rec.last_update_date
+                            ,'DUNS#'
+                            ,lcu_vd_sites_add_aud_rec.ATTRIBUTE5_prev
+                            ,lcu_vd_sites_add_aud_rec.ATTRIBUTE5_cur
+                               ,'AUDIT'
+                            ,lcu_vd_sites_add_aud_rec.order_by_col);
+END IF;
+
+IF (NVL(lcu_vd_sites_add_aud_rec.ATTRIBUTE8_cur,'X') <> NVL(lcu_vd_sites_add_aud_rec.ATTRIBUTE8_prev,'X')) THEN
+
+INSERT INTO xx_ap_supplier_temp(supplier_number,
+                           supplier_name,
+                           site_id_num,
+                           legacy_num,
+                           changed_by,
+                           date_changed,
+                           changed_field,
+                           changed_from,
+                           changed_to,
+                                 flag,
+                           order_by_col)
+             VALUES       ( lcu_vend_sites_add_aud_rec.vendor_num
+                            ,lcu_vend_sites_add_aud_rec.vendor_name
+                            ,lcu_vend_sites_add_aud_rec.vendor_site_code
+                            ,lcu_vend_sites_add_aud_rec.legacy_num
+                            ,lcu_vd_sites_add_aud_rec.last_updated_by
+                            ,lcu_vd_sites_add_aud_rec.last_update_date
+                            ,'Site category'
+                            ,lcu_vd_sites_add_aud_rec.ATTRIBUTE8_prev
+                            ,lcu_vd_sites_add_aud_rec.ATTRIBUTE8_cur
+                               ,'AUDIT'
+                            ,lcu_vd_sites_add_aud_rec.order_by_col);
+END IF;
+
+IF (NVL(lcu_vd_sites_add_aud_rec.ORG_ID_cur,0) <> NVL(lcu_vd_sites_add_aud_rec.ORG_ID_prev,0)) THEN
+
+INSERT INTO xx_ap_supplier_temp(supplier_number,
+                           supplier_name,
+                           site_id_num,
+                           legacy_num,
+                           changed_by,
+                           date_changed,
+                           changed_field,
+                           changed_from,
+                           changed_to,
+                                 flag,
+                           order_by_col)
+             VALUES       ( lcu_vend_sites_add_aud_rec.vendor_num
+                            ,lcu_vend_sites_add_aud_rec.vendor_name
+                            ,lcu_vend_sites_add_aud_rec.vendor_site_code
+                            ,lcu_vend_sites_add_aud_rec.legacy_num
+                            ,lcu_vd_sites_add_aud_rec.last_updated_by
+                            ,lcu_vd_sites_add_aud_rec.last_update_date
+                            ,'Operating Unit'
+                            ,lcu_vd_sites_add_aud_rec.ORG_ID_prev
+                            ,lcu_vd_sites_add_aud_rec.ORG_ID_cur
+                               ,'AUDIT'
+                            ,lcu_vd_sites_add_aud_rec.order_by_col);
+END IF;
+
+IF (NVL(lcu_vd_sites_add_aud_rec.TELEX_cur,'X') <> NVL(lcu_vd_sites_add_aud_rec.TELEX_prev,'X')) THEN
+
+INSERT INTO xx_ap_supplier_temp(supplier_number,
+                           supplier_name,
+                           site_id_num,
+                           legacy_num,
+                           changed_by,
+                           date_changed,
+                           changed_field,
+                           changed_from,
+                           changed_to,
+                                 flag,
+                           order_by_col)
+             VALUES       ( lcu_vend_sites_add_aud_rec.vendor_num
+                            ,lcu_vend_sites_add_aud_rec.vendor_name
+                            ,lcu_vend_sites_add_aud_rec.vendor_site_code
+                            ,lcu_vend_sites_add_aud_rec.legacy_num
+                            ,lcu_vd_sites_add_aud_rec.last_updated_by
+                            ,lcu_vd_sites_add_aud_rec.last_update_date
+                            ,'TELEX'
+                            ,lcu_vd_sites_add_aud_rec.TELEX_prev
+                            ,lcu_vd_sites_add_aud_rec.TELEX_cur
+                               ,'AUDIT'
+                            ,lcu_vd_sites_add_aud_rec.order_by_col);
+END IF;
+
+IF (NVL(lcu_vd_sites_add_aud_rec.VENDOR_SITE_CODE_ALT_cur,'X') <> NVL(lcu_vd_sites_add_aud_rec.VENDOR_SITE_CODE_ALT_prev,'X')) THEN
+
+INSERT INTO xx_ap_supplier_temp(supplier_number,
+                           supplier_name,
+                           site_id_num,
+                           legacy_num,
+                           changed_by,
+                           date_changed,
+                           changed_field,
+                           changed_from,
+                           changed_to,
+                                 flag,
+                           order_by_col)
+             VALUES       ( lcu_vend_sites_add_aud_rec.vendor_num
+                            ,lcu_vend_sites_add_aud_rec.vendor_name
+                            ,lcu_vend_sites_add_aud_rec.vendor_site_code
+                            ,lcu_vend_sites_add_aud_rec.legacy_num
+                            ,lcu_vd_sites_add_aud_rec.last_updated_by
+                            ,lcu_vd_sites_add_aud_rec.last_update_date
+                            ,'VENDOR_SITE_CODE_ALT'
+                            ,lcu_vd_sites_add_aud_rec.VENDOR_SITE_CODE_ALT_prev
+                            ,lcu_vd_sites_add_aud_rec.VENDOR_SITE_CODE_ALT_cur
+                               ,'AUDIT'
+                            ,lcu_vd_sites_add_aud_rec.order_by_col);
+END IF;
+
+IF (NVL(lcu_vd_sites_add_aud_rec.LANGUAGE_cur,'X') <> NVL(lcu_vd_sites_add_aud_rec.LANGUAGE_prev,'X')) THEN
+
+INSERT INTO xx_ap_supplier_temp(supplier_number,
+                           supplier_name,
+                           site_id_num,
+                           legacy_num,
+                           changed_by,
+                           date_changed,
+                           changed_field,
+                           changed_from,
+                           changed_to,
+                                 flag,
+                           order_by_col)
+             VALUES       ( lcu_vend_sites_add_aud_rec.vendor_num
+                            ,lcu_vend_sites_add_aud_rec.vendor_name
+                            ,lcu_vend_sites_add_aud_rec.vendor_site_code
+                            ,lcu_vend_sites_add_aud_rec.legacy_num
+                            ,lcu_vd_sites_add_aud_rec.last_updated_by
+                            ,lcu_vd_sites_add_aud_rec.last_update_date
+                            ,'LANGUAGE'
+                            ,lcu_vd_sites_add_aud_rec.LANGUAGE_prev
+                            ,lcu_vd_sites_add_aud_rec.LANGUAGE_cur
+                               ,'AUDIT'
+                            ,lcu_vd_sites_add_aud_rec.order_by_col);
+END IF;
+
+END LOOP;
+END LOOP;
+
+------ loop for jira NAIT-103952 ends here.Added by Bhargavi Ankolekar.
+
 FOR lr_vendor_rec IN lcu_changed_vendor_sites
 LOOP
 FOR lr_vendor_aud_rec IN lcu_vendor_sites_aud(lr_vendor_rec.vendor_site_id)
@@ -1812,3 +3365,4 @@ END;
 
 END xxod_ap_supplier_audit_pkg;
 /
+show errors;
