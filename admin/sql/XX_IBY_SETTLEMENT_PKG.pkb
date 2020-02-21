@@ -5,7 +5,7 @@ create or replace PACKAGE BODY      xx_iby_settlement_pkg
 	-- +===========================================================================+
 	-- | Name        : Settlement and Payment Processing                           |
 	-- | RICE ID     : I0349 settlement                                            |
-	-- | Description : To populate the XX_IBY_BATCH_TRXNS 101, 201                  |
+	-- | Description : To populate the XX_IBY_BATCH_TRXNS 101, 201                 |
 	-- |               tables.                                                     |
 	-- |                                                                           |
 	-- |Change Record:                                                             |
@@ -120,7 +120,7 @@ create or replace PACKAGE BODY      xx_iby_settlement_pkg
 	-- |41.0	   03-NOV-2016 Rakesh Polepalli    Changes for defects# 37866,39910 |
 	-- |42.0	   03-NOV-2016 Rakesh Polepalli    Changes for defects# 38223,40149 |
 	-- |43.0       27-DEC-2016 Suresh Ponnambalam  Defect 40377 AMEX SKU order change|
-  -- |44.0     02-SEP-2017  Uday Jadhav         Changes done for BIZBOX Rollout to pass MPL_ORDER_ID to IXINVOICE|
+        -- |44.0     02-SEP-2017  Uday Jadhav         Changes done for BIZBOX Rollout to pass MPL_ORDER_ID to IXINVOICE|
 	-- |45.0       05-FEB-2018 Atul Khard  		   Defect 44326 Adding HINT /*+ index(OOH,OE_ORDER_HEADERS_U2) */|
 	-- |46.0       21-FEB-2018 Rohit Gupta         Modified code for defect #44299 |
 	-- |47.0       05-MAR-2018 M K Pramod Kumar    Modified code for defect NAIT-31107 |
@@ -130,8 +130,8 @@ create or replace PACKAGE BODY      xx_iby_settlement_pkg
 	-- |48.0       21-FEB-2019 M K Pramod Kumar    Modified  code for COF changes per NAIT-83065 |
 	-- |48.1       10-MAY-2019 M K Pramod Kumar    Modified to to derive Instance Name for LNS
 	-- |48.2       12-SEP-2019 M K Pramod Kumar    Modified for Return Mandate per NAIT-106896
-    -- |48.3       07-JAN-2019 Sripal Reddy        Modified for sglpmt_multi_settlement refund issue NAIT-115171  |
-	-- |48.4       11-Nov-2019 M K Pramod Kumar    Modified to default ixregisternumber to 95 for SERVICE-CONTRACTS-NAIT-103187.
+    -- |48.3       07-JAN-2020 Sripal Reddy        Modified for sglpmt_multi_settlement refund issue NAIT-115171  |
+	-- |48.4       18-FEB-2020 Sripal reddy        Modified for POC: Customer PO line number NAIT 123195 by sripal  | 
 	-- +===========================================================================+
 
 		g_package_name              CONSTANT all_objects.object_name%TYPE                        := 'xx_iby_settlement_pkg';
@@ -4753,8 +4753,7 @@ create or replace PACKAGE BODY      xx_iby_settlement_pkg
 
 					BEGIN
 						gc_source := 'AR';
-						--gc_ixregisternumber := '56';--Commented code for V48.4
-						gc_ixregisternumber := '95';--Added code for V48.4
+						gc_ixregisternumber := '56';
 						--gc_ixreserved31 := gc_mo_value; Modified for V47.3 14/Mar/2018
 						--------------------------------------------------------------------------
 						-- Retrieve AOPS Auth Entry-Defaulted to *ECE for Service Contracts
@@ -7519,6 +7518,7 @@ create or replace PACKAGE BODY      xx_iby_settlement_pkg
 			ln_inserted_201_count     NUMBER                                             := 0;
 			ln_inserted_201_count_gt  NUMBER                                             := 0;
 			ln_line_number            NUMBER					     := 0;
+			lc_ixinvoice_temp       xx_iby_batch_trxns_det.ixinvoicelinenum%TYPE;    -- added by sripal for NAIT 123195
 
 			CURSOR c_invoice_line
 			IS
@@ -8365,7 +8365,7 @@ create or replace PACKAGE BODY      xx_iby_settlement_pkg
 					        --Defect#38215
 					        lc_ixunitcost := ABS(ROUND(lc_ixunitcost,5));
 					        IF gn_amex_cpc > 0 and NVL(gc_ixtokenflag,'N') = 'Y'
-		                                THEN
+		                    THEN
 		                                   xx_location_and_log(g_loc,
 								'***** Executing PROCESS_AMEX_LINE_DATA from XX_CREATE_201_SETTLEMENT_REC ***** ');
 						   IF lc_ixinvoicelinenum IS NULL
@@ -8374,9 +8374,45 @@ create or replace PACKAGE BODY      xx_iby_settlement_pkg
 						   END IF;
                                                    process_amex_line_data(ln_line_number,lc_ixunitmeasure,lc_ixitemquantity,
                                                    lc_ixunitcost,lc_ixinvoicelinenum,lc_ixcustitemnum,lc_ixcustitemdesc);
-                                                END IF;
+                            END IF;
 
-						BEGIN
+			                    BEGIN     --- Code added for NAIT 123195 by sripal ---- 
+				                     xx_location_and_log
+								     (g_loc,'Retrieving Customer Exceptions from OD_AR_SETTLE_CUST_EXCEPT2 translation definition. ');
+				                      gc_error_debug :=    'Cust Orig System Ref: '
+								     || gc_cust_orig_system_ref;
+
+				                     SELECT COUNT(1),
+									        xftv.source_value1
+				                     INTO   gn_other_cust_exp,
+						                    gc_other_cust
+				                     FROM   xx_fin_translatedefinition xftd, xx_fin_translatevalues xftv
+				                     WHERE  xftd.translate_id = xftv.translate_id
+				                     AND    xftd.translation_name = 'OD_AR_SETTLE_CUST_EXCEPT2'
+				                     AND    (SUBSTR(gc_cust_orig_system_ref, 1,8) BETWEEN xftv.target_value1 AND xftv.target_value2)
+				                     AND    SYSDATE BETWEEN xftv.start_date_active AND NVL(xftv.end_date_active, SYSDATE + 1)
+				                     AND    SYSDATE BETWEEN xftd.start_date_active AND NVL(xftd.end_date_active, SYSDATE + 1)
+									 AND    xftv.enabled_flag = 'Y'
+									 AND    xftd.enabled_flag = 'Y'
+									 GROUP BY xftv.source_value1;
+									 xx_location_and_log(g_loc,'Check OD_AR_SETTLE_CUST_EXCEPT2 customer exceptions3. ');
+									
+									IF ( gn_other_cust_exp > 0 AND gc_other_cust = 'NESTLE')
+								    THEN
+									 lc_ixinvoice_temp   :=lc_ixinvoicelinenum ;
+									 lc_ixinvoicelinenum :=lc_ixcustpolinenum ;
+									 lc_ixcustpolinenum  := lc_ixinvoice_temp;
+									END IF;
+								
+								EXCEPTION
+								    WHEN NO_DATA_FOUND
+									THEN
+									xx_location_and_log
+									(g_loc,'Entering NO_DATA_FOUND Exception in XX_PROCESS_CUST_EXCEPTIONS for Customer Exceptions3. ');
+									gn_other_cust_exp := 0;								
+								END;       ---  end of code changes for NAIT 123195
+
+						    BEGIN
 							xx_location_and_log(g_loc,
 												'Inserting into XX_IBY_BATCH_TRXNS_DET (201) for Invoice/Order. ');
 							gc_error_debug :=
@@ -18403,3 +18439,5 @@ END ORDT_RECORDS_MAIL;
 		END retry_errors;
 	END xx_iby_settlement_pkg;
 	/
+show errors;
+EXIT;
