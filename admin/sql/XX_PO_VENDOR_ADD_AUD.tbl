@@ -9,7 +9,7 @@
 -- |===============                                                           |
 -- |Version      Date           Author               Remarks                  |
 -- |=======    ==========     =============        ===========================|
--- | DRAFT 1.0 09-FEB-2020     Bhargavi Ankolekar Initial draft 			  |
+-- | DRAFT 1.0 09-FEB-2020     Bhargavi Ankolekar Initial draft version       |
 -- |                                                                          |
 -- +==========================================================================+
 SET SHOW OFF
@@ -33,4 +33,6 @@ CREATE TABLE XXFIN.XX_PO_VENDOR_ADD_AUD
     ORGANIZATION_TYPE_LOOKUP_CODE VARCHAR2(25),
 	INDIVIDUAL_1099	        	  VARCHAR2(30)
 );
+
+GRANT SELECT ON XXFIN.XX_PO_VENDOR_ADD_AUD TO APPS;
 /
