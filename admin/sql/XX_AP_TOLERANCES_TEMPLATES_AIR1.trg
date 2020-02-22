@@ -60,3 +60,4 @@ VALUES (XX_AP_TOLERANCE_TEMP_SEQ.nextval
 
 
 END;
+/
