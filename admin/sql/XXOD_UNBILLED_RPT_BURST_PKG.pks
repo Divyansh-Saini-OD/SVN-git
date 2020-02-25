@@ -2,11 +2,25 @@ SET VERIFY OFF;
 WHENEVER SQLERROR CONTINUE;
 WHENEVER OSERROR EXIT FAILURE ROLLBACK;
 create or replace PACKAGE      XXOD_UNBILLED_RPT_BURST_PKG
+-- +============================================================================================+
+-- |                      Office Depot - Project Simplify                                       |
+-- +============================================================================================+
+-- |  Name              :  XXOD_UNBILLED_RPT_BURST_PKG                                          |
+-- |  Description       :  Package to Extract Unbilled Transactions         				    |
+-- |  Change Record     :                                                                       |
+-- +============================================================================================+
+-- | Version     Date         Author           Remarks                                          |
+-- | =========   ===========  =============    =================================================|
+-- | 1.0           			  Shreyas Thorat   Initial draft version                            |
+-- | 1.1         21-Feb-2020  Shreyas Thorat   NAIT-114496 - Change to include SPC 				|
+-- | 										   and AB Subscription Invoices   					|
+-- +============================================================================================+
 AS
 
   P_DATE VARCHAR2(50);
    FUNCTION AfterReport
       RETURN BOOLEAN;
+	  --Added Under NAIT-114496
 TYPE UNBILLED_RPT_DATA
 IS
   RECORD
@@ -31,9 +45,11 @@ IS
 	 , PARENT_ORDER_NUM 		apps.xx_scm_bill_signal.parent_order_number%TYPE
 	 , X 						NUMBER 
   );
+--Added Under NAIT-114496
 TYPE UNBILLED_RPT_DATA_TAB
 IS
   TABLE OF XXOD_UNBILLED_RPT_BURST_PKG.UNBILLED_RPT_DATA;
+  --Added Under NAIT-114496
   FUNCTION UNBILLED_GET_RPT_DATA(
       P_DATE     VARCHAR2
        )RETURN XXOD_UNBILLED_RPT_BURST_PKG.UNBILLED_RPT_DATA_TAB PIPELINED;

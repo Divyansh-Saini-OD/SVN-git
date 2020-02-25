@@ -2,17 +2,32 @@ SET VERIFY OFF;
 WHENEVER SQLERROR CONTINUE;
 WHENEVER OSERROR EXIT FAILURE ROLLBACK;
 create or replace package body      XXOD_UNBILLED_RPT_BURST_PKG
+-- +============================================================================================+
+-- |                      Office Depot - Project Simplify                                       |
+-- +============================================================================================+
+-- |  Name              :  XXOD_UNBILLED_RPT_BURST_PKG                                          |
+-- |  Description       :  Package to Extract Unbilled Transactions         				    |
+-- |  Change Record     :                                                                       |
+-- +============================================================================================+
+-- | Version     Date         Author           Remarks                                          |
+-- | =========   ===========  =============    =================================================|
+-- | 1.0           			  Shreyas Thorat   Initial draft version                            |
+-- | 1.1                      AMS Team         NAIT-114375 - Logic Change   
+-- | 1.2         21-Feb-2020  Shreyas Thorat   NAIT-114496 - Change to include SPC 				|
+-- | 										   and AB Subscription Invoices   					|
+-- +============================================================================================+
 AS
 
+	--Added Under NAIT-114496
 	FUNCTION get_parent_order_num(p_child_order_num VARCHAR2)
 	RETURN VARCHAR2
 	IS 
-		l_parent_order_num xx_scm_bill_signal.PARENT_ORDER_NUMBER%TYPE;
-		l_bill_forward_flag  xx_scm_bill_signal.bill_forward_flag%TYPE;
+		l_parent_order_num apps.xx_scm_bill_signal.PARENT_ORDER_NUMBER%TYPE;
+		l_bill_forward_flag  apps.xx_scm_bill_signal.bill_forward_flag%TYPE;
 	BEGIN
 		SELECT PARENT_ORDER_NUMBER , NVL(bill_forward_flag,'N')
 		INTO l_parent_order_num , l_bill_forward_flag
-		FROM xx_scm_bill_signal xsb
+		FROM apps.xx_scm_bill_signal xsb
 		WHERE child_order_number = p_child_order_num;
     
 	IF l_bill_forward_flag = 'C' THEN
@@ -28,7 +43,7 @@ AS
 		RETURN NULL;
 	END get_parent_order_num;
 	
-	
+   --Added Under NAIT-114496
    FUNCTION UNBILLED_GET_RPT_DATA(
       P_DATE      VARCHAR2
        )
@@ -63,51 +78,50 @@ AS
 		 , ar_pay.amount_due_remaining AMOUNT_DUE_REMAINING
 		 , xoha.parent_order_num PARENT_ORDER_NUM
 		 , 1 X
-		from oe_order_headers_All ooha 
-		   , oe_order_sources oos 
-		   , ra_customer_trx_all rct 
-		   , ra_batch_sources_all rbsa
-		   , xx_om_header_attributes_all xoha 
-		   , xx_cdh_cust_acct_ext_b xce 
-		   , hz_cust_accounts hca 
-		   , hz_parties hp
-		   , hz_customer_profiles hcp
-		   , ra_cust_trx_types_all rctt
-		   , ar_payment_schedules_all ar_pay 
-		WHERE 1=1
-		AND ooha.order_source_id = oos.order_source_id
-		AND xoha.header_id = ooha.header_id
-		--AND TO_CHAR(ooha.order_number) = (rct.interface_header_attribute1)
-		AND rct.attribute14        = ooha.header_id
-		AND rct.batch_source_id = rbsa.batch_source_id 
-		AND xce.cust_account_id=rct.bill_to_customer_id
-		AND hca.party_id = hp.party_id
-		AND hca.cust_account_id = hcp.cust_account_id
-		AND hcp.attribute6 IN ('B','Y')
-		AND hcp.site_use_id is null
-		AND rctt.cust_trx_type_id(+) = rct.cust_trx_type_id
-		AND xoha.bill_comp_flag   IN( 'Y','B')
-		AND NVL(xce.c_ext_attr1,'Consolidated Bill')  = 'Consolidated Bill'
-		AND NVL(xce.c_ext_attr2 ,'Y')                 = 'Y'
-		AND xce.attr_group_id (+)                     = 166
-		AND xce.d_ext_attr1 <= SYSDATE 
-		AND NVL(xce.d_ext_attr2,SYSDATE)  >= SYSDATE
-		AND TRUNC(NVL(rct.billing_date,SYSDATE+37))>=TRUNC(SYSDATE+37)
-		--AND ooha.creation_date <= TO_DATE(P_DATE,'RRRR/MM/DD HH24:MI:SS') -7
-		AND ooha.creation_date BETWEEN  (SYSDATE-180) AND  (TO_DATE(P_DATE,'RRRR/MM/DD HH24:MI:SS') -7 )
-		AND hca.cust_account_id       = rct.bill_to_customer_id
-		And Parent_Order_Num     IS NOT NULL
-		--and ooha.header_id > 1692921448
-		AND ar_pay.customer_trx_id = rct.customer_trx_id
-		AND ar_pay.amount_due_original = ar_pay.amount_due_remaining
-		AND ar_pay.status = 'OP'
-		AND NOT EXISTS
-		  (SELECT 1
-		  FROM xx_scm_bill_signal
-		  WHERE 1                =1
-		  AND child_order_number = ooha.order_number
-		  );
-	
+	from apps.oe_order_headers_All ooha 
+	   , apps.oe_order_sources oos 
+	   , apps.ra_customer_trx_all rct 
+	   , apps.ra_batch_sources_all rbsa
+	   , apps.xx_om_header_attributes_all xoha 
+	   , apps.xx_cdh_cust_acct_ext_b xce 
+	   , apps.hz_cust_accounts hca 
+	   , apps.hz_parties hp
+	--   , apps.hz_customer_profiles hcp
+	   , apps.ra_cust_trx_types_all rctt
+	   , apps.ar_payment_schedules_all ar_pay 
+	WHERE 1=1
+	AND ooha.order_source_id = oos.order_source_id
+	AND xoha.header_id = ooha.header_id
+	AND TO_CHAR(ooha.order_number) = (rct.interface_header_attribute1)
+	AND rct.attribute14        = ooha.header_id
+	AND rct.batch_source_id = rbsa.batch_source_id 
+	AND xce.cust_account_id=rct.bill_to_customer_id
+	AND hca.party_id = hp.party_id
+	--AND hca.cust_account_id = hcp.cust_account_id
+	--AND hcp.attribute6 IN ('B','Y')
+	--AND hcp.site_use_id is null
+	AND rctt.cust_trx_type_id(+) = rct.cust_trx_type_id
+	AND xoha.bill_comp_flag   IN( 'Y','B')
+	AND xce.c_ext_attr1  = 'Consolidated Bill' --Modified for NAIT-114375
+	AND xce.c_ext_attr2               = 'Y' --Modified for NAIT-114375
+	AND xce.attr_group_id                      = 166
+	AND xce.d_ext_attr1 <= SYSDATE 
+	AND NVL(xce.d_ext_attr2,SYSDATE)  >= SYSDATE
+	AND xce.BC_POD_FLAG IN ('Y','P','B') --Added for NAIT-114375
+	--AND TRUNC(NVL(rct.billing_date,SYSDATE+37))>=TRUNC(SYSDATE+37) --Commented for NAIT-114375
+	AND TRUNC(ooha.creation_date) <= TRUNC (TO_DATE ( P_DATE, 'YYYY/MM/DD HH24:MI:SS')) -7
+	AND hca.cust_account_id       = rct.bill_to_customer_id
+	And Parent_Order_Num     IS NOT NULL
+	AND ar_pay.customer_trx_id = rct.customer_trx_id
+	AND ar_pay.amount_due_original = ar_pay.amount_due_remaining
+	AND ar_pay.status = 'OP'
+	AND NOT EXISTS
+	  (SELECT 1
+	  FROM apps.xx_scm_bill_signal
+	  WHERE 1                =1
+	  AND child_order_number = ooha.order_number
+	  );
+		
 	CURSOR C_DATA_SPC (P_DATE VARCHAR2)
 	IS
 	--SPC Trx --295 sec
@@ -126,12 +140,12 @@ AS
 		 , rct.bill_to_customer_id
 	from 
 		oe_ordeR_headers_all  oe
-	  , ra_customer_trx_all rct 
-	  , ra_batch_sources_all rbsa
-	  , hz_cust_accounts hca 
-	  , hz_parties hp
-	  , ra_cust_trx_types_all rctt
-	  , ar_payment_schedules_all ar_pay  
+	  , apps.ra_customer_trx_all rct 
+	  , apps.ra_batch_sources_all rbsa
+	  , apps.hz_cust_accounts hca 
+	  , apps.hz_parties hp
+	  , apps.ra_cust_trx_types_all rctt
+	  , apps.ar_payment_schedules_all ar_pay  
 	where 1=1
 	AND rct.batch_source_id = rbsa.batch_source_id 
 	AND hca.cust_account_id       = rct.bill_to_customer_id
@@ -142,8 +156,7 @@ AS
 	AND rct.attribute14 = oe.header_id 
 	AND (NVL(rct.billing_date,SYSDATE+37))>=(SYSDATE+37)
 	AND oe.order_source_id = 1029 
-	--AND oe.creation_date <= TO_DATE(P_DATE,'RRRR/MM/DD HH24:MI:SS') -7
-	AND oe.creation_date BETWEEN  (SYSDATE-180) AND  (TO_DATE(P_DATE,'RRRR/MM/DD HH24:MI:SS') -7 );
+	AND oe.creation_date <= TO_DATE(P_DATE,'RRRR/MM/DD HH24:MI:SS') -7;
 	
 	CURSOR C_DATA_ABS (P_DATE VARCHAR2) IS
 	  --AB Recurring Trx -- 197 sec
@@ -161,14 +174,14 @@ AS
 		 , ar_pay.amount_due_remaining AMOUNT_DUE_REMAINING
 		 , ooha.order_number
 		 , rct.bill_to_customer_id
-	from oe_order_headers_All ooha 
-	   , oe_order_sources oos 
-	   , ra_customer_trx_all rct 
-	   , ra_batch_sources_all rbsa
-	   , hz_cust_accounts hca 
-	   , hz_parties hp
-	   , ra_cust_trx_types_all rctt
-	   , ar_payment_schedules_all ar_pay 
+	from apps.oe_order_headers_All ooha 
+	   , apps.oe_order_sources oos 
+	   , apps.ra_customer_trx_all rct 
+	   , apps.ra_batch_sources_all rbsa
+	   , apps.hz_cust_accounts hca 
+	   , apps.hz_parties hp
+	   , apps.ra_cust_trx_types_all rctt
+	   , apps.ar_payment_schedules_all ar_pay 
 	WHERE 1=1
 	AND ooha.order_source_id = oos.order_source_id
 	AND rct.attribute14        = ooha.header_id
@@ -181,8 +194,7 @@ AS
 	AND ar_pay.status = 'OP'
 	AND rctt.name = 'US_SERVICE_AOPS_OD'
 	AND rbsa.name  = 'SUBSCRIPTION_BILLING_US'
-	--AND ooha.creation_date <= TO_DATE(P_DATE,'RRRR/MM/DD HH24:MI:SS') -7
-	AND ooha.creation_date BETWEEN  (SYSDATE-180) AND  (TO_DATE(P_DATE,'RRRR/MM/DD HH24:MI:SS') -7 );
+	AND ooha.creation_date <= TO_DATE(P_DATE,'RRRR/MM/DD HH24:MI:SS') -7;
 		
 	TYPE rpt_data_1 IS TABLE OF C_DATA_1%ROWTYPE INDEX BY BINARY_INTEGER;
 	l_rpt_data_1 rpt_data_1;
@@ -200,9 +212,7 @@ AS
 	L_UNBILLED_DATA_REC UNBILLED_RPT_DATA_TAB ;--:= UNBILLED_RPT_DATA_TAB();
 	N NUMBER := 0;
 	--L_UNBILLED_DATA_REC := 
-	l_parent_order_num xx_scm_bill_signal.PARENT_ORDER_NUMBER%TYPE;
-
-
+	l_parent_order_num apps.xx_scm_bill_signal.PARENT_ORDER_NUMBER%TYPE;
 
 	BEGIN
 	
@@ -247,7 +257,7 @@ AS
 		Fnd_File.PUT_LINE (Fnd_File.LOG, 'SPC Trx Begin- ' || 4);
 		
 			WITH C1  AS  (SELECT /*+ MATERIALIZE */ trx_number ,trx_date , billing_date, bill_to_customer_id , batch_source_id , cust_trx_type_id , customer_trx_id , attribute14 
-				FROM ra_customer_trx_all rct 
+				FROM apps.ra_customer_trx_all rct 
 				WHERE (NVL(rct.billing_date,SYSDATE+37))>=(SYSDATE+37)
 				AND rct.attribute14 is not null)
 			select  hp.party_name CUST_NAME
@@ -267,11 +277,11 @@ AS
 			from 
 				oe_ordeR_headers_all  oe
 			  , C1 rct 
-			  , ra_batch_sources_all rbsa
-			  , hz_cust_accounts hca 
-			  , hz_parties hp
-			  , ra_cust_trx_types_all rctt
-			  , ar_payment_schedules_all ar_pay  
+			  , apps.ra_batch_sources_all rbsa
+			  , apps.hz_cust_accounts hca 
+			  , apps.hz_parties hp
+			  , apps.ra_cust_trx_types_all rctt
+			  , apps.ar_payment_schedules_all ar_pay  
 			where 1=1
 			AND rct.batch_source_id = rbsa.batch_source_id
 			AND hca.cust_account_id       = rct.bill_to_customer_id
@@ -281,9 +291,8 @@ AS
 			AND ar_pay.status = 'OP'
 			AND rct.attribute14 = oe.header_id 
 			AND oe.order_source_id = 1029 
-			--AND oe.creation_date <= sysdate -7
-			AND oe.creation_date BETWEEN  (SYSDATE-180) AND  (TO_DATE(P_DATE,'RRRR/MM/DD HH24:MI:SS') -7 )
-      AND EXISTS ( SELECT 1 FROM hz_customer_profiles hcp 
+			AND oe.creation_date <= sysdate -7
+      AND EXISTS ( SELECT 1 FROM apps.hz_customer_profiles hcp 
       WHERE 1=1
       AND hcp.cust_account_id = hca.cust_account_id 
       AND hcp.attribute6 IN ('B','Y')
@@ -320,7 +329,7 @@ AS
 							,L_UNBILLED_DATA_REC(N).BILLING_FREQUENCY  	   
 							,L_UNBILLED_DATA_REC(N).ORI_PAY_DOC 			   
 							,L_UNBILLED_DATA_REC(N).DELIVERY_METHOD		   
-							FROM xx_cdh_cust_acct_ext_b xce
+							FROM apps.xx_cdh_cust_acct_ext_b xce
 							WHERE 1=1 
 							AND  (c_ext_attr1 IS NULL OR c_ext_attr1 = 'Consolidated Bill')
 							AND  (c_ext_attr2 IS NULL OR  c_ext_attr2 = 'Y')
@@ -369,7 +378,7 @@ AS
 		Fnd_File.PUT_LINE (Fnd_File.LOG, 'ABS Trx Begin- ' || 4);
 		
 			WITH C1  AS  (SELECT /*+ MATERIALIZE */ trx_number ,trx_date , billing_date, bill_to_customer_id , batch_source_id , cust_trx_type_id , customer_trx_id , attribute14 
-				FROM ra_customer_trx_all rct 
+				FROM apps.ra_customer_trx_all rct 
 				WHERE (NVL(rct.billing_date,SYSDATE+37))>=(SYSDATE+37)
 				AND rct.attribute14 is not null)
 			SELECT 
@@ -387,14 +396,14 @@ AS
 				 , ooha.order_number
 				 , rct.bill_to_customer_id
 			BULK COLLECT INTO l_abs_data	 
-			from oe_order_headers_All ooha 
-			   , oe_order_sources oos 
+			from apps.oe_order_headers_All ooha 
+			   , apps.oe_order_sources oos 
 			   , C1 rct 
-			   , ra_batch_sources_all rbsa
-			   , hz_cust_accounts hca 
-			   , hz_parties hp
-			   , ra_cust_trx_types_all rctt
-			   , ar_payment_schedules_all ar_pay 
+			   , apps.ra_batch_sources_all rbsa
+			   , apps.hz_cust_accounts hca 
+			   , apps.hz_parties hp
+			   , apps.ra_cust_trx_types_all rctt
+			   , apps.ar_payment_schedules_all ar_pay 
 			WHERE 1=1
 			AND ooha.order_source_id = oos.order_source_id
 			AND rct.attribute14        = ooha.header_id
@@ -406,9 +415,8 @@ AS
 			AND ar_pay.status = 'OP'
 			AND rctt.name = 'US_SERVICE_AOPS_OD'
 			AND rbsa.name  = 'SUBSCRIPTION_BILLING_US'
-			--AND ooha.creation_date <= TO_DATE(P_DATE,'RRRR/MM/DD HH24:MI:SS') -7
-			AND ooha.creation_date  BETWEEN  (SYSDATE-180) AND  (TO_DATE(P_DATE,'RRRR/MM/DD HH24:MI:SS') -7 )
-			AND EXISTS ( SELECT 1 FROM hz_customer_profiles hcp 
+			AND ooha.creation_date <= TO_DATE(P_DATE,'RRRR/MM/DD HH24:MI:SS') -7
+			AND EXISTS ( SELECT 1 FROM apps.hz_customer_profiles hcp 
 			WHERE 1=1
 			AND hcp.cust_account_id = hca.cust_account_id 
 			AND hcp.attribute6 IN ('B','Y')
@@ -446,7 +454,7 @@ AS
 							,L_UNBILLED_DATA_REC(N).BILLING_FREQUENCY  	   
 							,L_UNBILLED_DATA_REC(N).ORI_PAY_DOC 			   
 							,L_UNBILLED_DATA_REC(N).DELIVERY_METHOD		   
-							FROM xx_cdh_cust_acct_ext_b xce
+							FROM apps.xx_cdh_cust_acct_ext_b xce
 							WHERE 1=1 
 							AND  (c_ext_attr1 IS NULL OR c_ext_attr1 = 'Consolidated Bill')
 							AND  (c_ext_attr2 IS NULL OR  c_ext_attr2 = 'Y')
@@ -492,11 +500,11 @@ AS
 		
 		-- ABS Trx End 
 
-FOR I IN L_UNBILLED_DATA_REC.FIRST .. L_UNBILLED_DATA_REC.LAST
-  LOOP
-    PIPE ROW ( L_UNBILLED_DATA_REC(I) ) ;
-  END LOOP;
-  RETURN;
+	FOR I IN L_UNBILLED_DATA_REC.FIRST .. L_UNBILLED_DATA_REC.LAST
+	LOOP
+		PIPE ROW ( L_UNBILLED_DATA_REC(I) ) ;
+	END LOOP;
+	RETURN;
 
 	EXCEPTION
       WHEN OTHERS
