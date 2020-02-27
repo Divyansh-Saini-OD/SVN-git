@@ -21,8 +21,10 @@ AS
 	-- | 1.4         09/12/2018   Veera Reddy      Added unit Cost and extended cost to report      |
 	-- |                                            output(NAIT-49797)
 	-- | 1.5		 10/05/2018	  Shalu George	   Fixed GSCC Violation bug.						|
-	 -- | 1.6         01/24/2019   BIAS             INSTANCE_NAME is replaced with DB_NAME for OCI   |	
-	-- |                                           Migration Project   
+  -- | 1.6         01/24/2019   BIAS             INSTANCE_NAME is replaced with DB_NAME for OCI   |
+	-- |                                           Migration Project
+  -- | 1.7         02/26/2020 Venkateshwar Panduga  JIRA#NAIT-124619Added AP Received date and    |
+  -- |                                               AP Received qty to report out                |  
 	-- +============================================================================================+
 
 	-- +============================================================================================+
@@ -672,6 +674,8 @@ AS
 				,ap_sku
 				,stg1.UNIT_PRICE unit_cost
 				,stg1.EXTENDED_COST line_cost
+				,AP_RCVD_DATE     ---Added for V1.7
+                ,AP_RCVD_QUANTITY  -----Added for V1.7
 				,stg.ap_location||stg.ap_keyrec||stg.ap_seq_no||gn_current_year ap_receipt_num
 				,stg.error_description
 				,stg.attribute1 vendor_site_category
@@ -844,8 +848,8 @@ GROUP BY unit_price,
 		print_out_msg(' ');
 		print_out_msg('OD PO Receipt Interface Exception Details');
 		print_out_msg('=========================================');
-		print_out_msg(RPAD('Created On',10)||' '||RPAD('Supplier Type',13)||' '||RPAD('PO Number',15)||' '||RPAD('Key Rec',10)||' '||RPAD('Receipt Num',15)||' '||RPAD('Vendor',12)||' '||RPAD('PO Date',12)||' '||RPAD('Line',4)||' '||RPAD('Sku',15)||' '||RPAD('Cost',10)||''||RPAD('line Cost',10)||''||RPAD('Error Details',150));
-		print_out_msg(RPAD('=',10,'=')||' '||RPAD('=',13,'=')||' '||RPAD('=',15,'=')||' '||RPAD('=',10,'=')||' '||RPAD('=',15,'=')||' '||RPAD('=',12,'=')||' '||RPAD('=',12,'=')||' '||RPAD('=',4,'=')||' '||RPAD('=',15,'=')||' '||RPAD('=',10,'=')||' '||RPAD('=',10,'=')||' '||RPAD('=',150,'='));
+		print_out_msg(RPAD('Created On',10)||' '||RPAD('Supplier Type',13)||' '||RPAD('PO Number',15)||' '||RPAD('Key Rec',10)||' '||RPAD('Receipt Num',15)||' '||RPAD('AP Receipt Date',16)||' '||RPAD('AP Receipt quantity',20)||' '||RPAD('Vendor',12)||' '||RPAD('PO Date',12)||' '||RPAD('Line',4)||' '||RPAD('Sku',15)||' '||RPAD('Cost',10)||''||RPAD('line Cost',10)||''||RPAD('Error Details',150));
+		print_out_msg(RPAD('=',10,'=')||' '||RPAD('=',13,'=')||' '||RPAD('=',15,'=')||' '||RPAD('=',10,'=')||' '||RPAD('=',15,'=')||' '||RPAD('=',16,'=')||' '||RPAD('=',20,'=')||' '||RPAD('=',12,'=')||' '||RPAD('=',12,'=')||' '||RPAD('=',4,'=')||' '||RPAD('=',15,'=')||' '||RPAD('=',10,'=')||' '||RPAD('=',10,'=')||' '||RPAD('=',150,'='));
 		OPEN trans_detail_cur;
 		FETCH trans_detail_cur BULK COLLECT INTO trans_detail_tab;
 		CLOSE trans_detail_cur;
@@ -855,6 +859,8 @@ GROUP BY unit_price,
 						  RPAD(trans_detail_tab(t_indx).vendor_site_category,13)||' '||
 						  RPAD(trans_detail_tab(t_indx).ap_po_number,15)||' '||
 						  RPAD(trans_detail_tab(t_indx).ap_keyrec,10)||' '||RPAD(trans_detail_tab(t_indx).ap_receipt_num,15)||' '||
+						  RPAD(trans_detail_tab(t_indx).AP_RCVD_DATE,16)||' '||  ---added for V1.7
+						  RPAD(trans_detail_tab(t_indx).AP_RCVD_QUANTITY,20)||' '|| ---added for V1.7
 						  RPAD(trans_detail_tab(t_indx).ap_po_vendor,13)||' '||
 						  NVL(RPAD(trans_detail_tab(t_indx).ap_po_date,10),CHR(9)||'    ')||'  '||
 						  RPAD(trans_detail_tab(t_indx).ap_po_line_no,4,' ')||' '||RPAD(trans_detail_tab(t_indx).ap_sku,15,' ')||' '||
