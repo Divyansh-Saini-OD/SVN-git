@@ -19,6 +19,8 @@ AS
   -- | 3.0         12/19/2018   Venkateshwar Panduga      Receipt Adjustment Issue                |
   -- | 4.0         01/19/2020   Venkateshwar Panduga      Submiting RTI program for -ve qty and   |
   -- |                                                   removing duplicate condition for CONS rec|
+  -- | 5.0         02/26/2020   Venkateshwar Panduga     JIRA#NAIT-124619Added AP adj date,       |
+  -- |                                                    AP adj qty and Ap adj cost to report out|  
   -- +============================================================================================+
   -- +============================================================================================+
   -- |  Name  : Log Exception                                                              |
@@ -504,6 +506,9 @@ AS
 					,stg.attribute1 vendor_site_category
 					,stg.ap_po_lineno
 					,stg.ap_sku
+					,stg.AP_ADJ_DATE     ---Added for V 5.0
+					,stg.AP_ADJ_QTY      ---Added for V 5.0
+					,stg.AP_ADJ_COST     ---Added for V 5.0
 					,stg.error_description
 					,stg.creation_date
 			FROM xx_po_rcv_adj_int_stg stg
@@ -690,14 +695,24 @@ AS
 			print_out_msg(' ');
 			print_out_msg('OD PO Receipt Adjustment Interface Exception Details');
 			print_out_msg('====================================================');
-			print_out_msg(RPAD('Created On',10)||' '||RPAD('Supplier Type',13)||' '||RPAD('PO Number',15)||' '||RPAD('Key Rec',10)||' '||RPAD('Receipt Num',15)||' '||RPAD('Line',4,' ')||' '||RPAD('Sku',15,' ')||' '||RPAD('Error Details',150));
-			print_out_msg(RPAD('=',10,'=')||' '||RPAD('=',13,'=')||' '||RPAD('=',15,'=')||' '||RPAD('=',10,'=')||' '||RPAD('=',15,'=')||' '||RPAD('=',4,'=')||' '||RPAD('=',15,'=')||' '||RPAD('=',150,'='));
+			print_out_msg(RPAD('Created On',10)||' '||RPAD('Supplier Type',13)||' '||RPAD('PO Number',15)||' '||RPAD('Key Rec',10)||' '||RPAD('Receipt Num',15)||' '||RPAD('AP Adjustment Date',19)||' '||RPAD('AP Adjustment Quantity',23)||' '||RPAD('AP Adjustment Cost',19)||' '||RPAD('Line',4,' ')||' '||RPAD('Sku',15,' ')||' '||RPAD('Error Details',150));
+			print_out_msg(RPAD('=',10,'=')||' '||RPAD('=',13,'=')||' '||RPAD('=',15,'=')||' '||RPAD('=',10,'=')||' '||RPAD('=',15,'=')||' '||RPAD('=',19,'=')||' '||RPAD('=',23,'=')||' '||RPAD('=',19,'=')||' '||RPAD('=',4,'=')||' '||RPAD('=',15,'=')||' '||RPAD('=',150,'='));
 			OPEN trans_detail_cur;
 			FETCH trans_detail_cur BULK COLLECT INTO trans_detail_tab;
 			CLOSE trans_detail_cur;
 			FOR t_indx IN 1..trans_detail_tab.COUNT
 			LOOP
-				print_out_msg(RPAD(trans_detail_tab(t_indx).creation_date,10)||' '|| RPAD(NVL(trans_detail_tab(t_indx).vendor_site_category,' '),13)||' '|| RPAD(trans_detail_tab(t_indx).ap_po_number,15)||' '|| RPAD(trans_detail_tab(t_indx).ap_keyrec,10)||' '||RPAD(NVL(trans_detail_tab(t_indx).ap_receipt_num,' '),15)||' '|| RPAD(trans_detail_tab(t_indx).ap_po_lineno,4,' ')||' '||RPAD(trans_detail_tab(t_indx).ap_sku,15,' ')||' '|| RPAD(trans_detail_tab(t_indx).error_description,150));
+				print_out_msg(RPAD(trans_detail_tab(t_indx).creation_date,10)||' '||
+               				  RPAD(NVL(trans_detail_tab(t_indx).vendor_site_category,' '),13)||' '||
+							  RPAD(trans_detail_tab(t_indx).ap_po_number,15)||' '|| 
+							  RPAD(trans_detail_tab(t_indx).ap_keyrec,10)||' '||
+							  RPAD(NVL(trans_detail_tab(t_indx).ap_receipt_num,' '),15)||' '||
+                              RPAD(trans_detail_tab(t_indx).AP_ADJ_DATE,19)||' '||        ---Added for V 5.0	
+                              RPAD(trans_detail_tab(t_indx).AP_ADJ_QTY,23)||' '||	      ---Added for V 5.0
+                              RPAD(trans_detail_tab(t_indx).AP_ADJ_COST,19)||' '||		  ---Added for V 5.0						  
+							  RPAD(trans_detail_tab(t_indx).ap_po_lineno,4,' ')||' '||
+							  RPAD(trans_detail_tab(t_indx).ap_sku,15,' ')||' '|| 
+							  RPAD(trans_detail_tab(t_indx).error_description,150));
 			END LOOP;
 			print_out_msg(' ');
 			print_out_msg(' ');
@@ -2098,3 +2113,4 @@ END;
 	END interface_master;
 END XX_PO_RCV_ADJ_INT_PKG;
 /
+SHOW ERRORS;
