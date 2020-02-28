@@ -1,7 +1,7 @@
 -- +==========================================================================+
 -- |                  Office Depot - Project Simplify                         |
 -- +==========================================================================+
--- | Name :XXFIN.XX_AP_TOLERANCE_TEMP_AUD                                     |
+-- | Name :XXFIN.XX_AP_CUST_TOLERANCE_AUD                                     |
 -- | Description :   This table is used to store all the custom  tolerance    |
 -- |                 for audit.                                               |
 -- |                                                                          |
@@ -18,18 +18,24 @@ SET ECHO OFF
 SET TAB OFF
 SET FEEDBACK ON
 
-CREATE TABLE XXFIN.XX_AP_TOLERANCE_TEMP_AUD(
-TOLERANCE_AUDIT_ID	NUMBER default XXFIN.XX_AP_TOLERANCE_TEMP_SEQ.nextval
+
+CREATE TABLE XXFIN.XX_AP_CUST_TOLERANCE_AUD(
+CUST_TOL_AUD_ID NUMBER default XXFIN.XX_AP_CUST_TOLERANCE_AUD_SEQ.nextval
 ,VERSIONS_OPERATION	VARCHAR2(1)
 ,VERSION_TIMESTAMP	TIMESTAMP(6)
-,TOLERANCE_ID	NUMBER(15)
+,SUPPLIER_SITE_ID	NUMBER
 ,LAST_UPDATE_DATE	DATE
 ,LAST_UPDATED_BY	NUMBER(15)
 ,LAST_UPDATE_LOGIN	NUMBER(15)
 ,CREATION_DATE	DATE
 ,CREATED_BY	NUMBER(15)
-,TOLERANCE_NAME	VARCHAR2(255));
+,FAVOURABLE_PRICE_PCT	NUMBER
+,MAX_PRICE_AMT	NUMBER
+,MIN_CHARGEBACK_AMT	NUMBER
+,MAX_FREIGHT_AMT	NUMBER
+,DIST_VAR_NEG_AMT	NUMBER
+,DIST_VAR_POS_AMT	NUMBER);
 
-Grant select on xxfin.XX_AP_TOLERANCE_TEMP_AUD to APPS;
 
+Grant select on xxfin.XX_AP_CUST_TOLERANCE_AUD to APPS;
 /
