@@ -24,6 +24,7 @@ AS
   -- | 1.0         10/08/2018   Arun D'Souza        Initial Version-    SMB Internal Marketplace  |
   -- | 1.01        11/28/2018   Arun D'Souza        Eliminate IBAN code fields from record layout |
   -- |                                               as Office depot uses only ABA American Banks |
+  -- | 1.02        02/25/2020   Shanti Sethuraj     Modified for jira NAIT-124096                 |
   -- +============================================================================================+
   -- +============================================================================================+
   -- |  Name  : Log Exception                                                                     |
@@ -902,8 +903,16 @@ BEGIN
         stg_hdr_rec.invoice_date := to_date(ld_dt_created_trunc,'yyyy-mm-dd hh24:mi:ss');
       EXCEPTION
       WHEN OTHERS THEN
-        lc_error_mesg := 'ERROR : INVOICE DATE FORMAT ERROR :' || stg_hdr_rec.invoice_date ;
-        RAISE RECORD_ERROR;
+	  --Start  : added by Shanti for the version 1.02 - Jira NAIT-124096	
+        BEGIN
+          ld_dt_created_trunc      := REPLACE(SUBSTR(ltrim(rtrim(smb_rec.date_created)),1,instr(ltrim(rtrim(smb_rec.date_created)),'.')-1 ),'T',' ');
+          stg_hdr_rec.invoice_date := to_date(ld_dt_created_trunc,'yyyy-mm-dd hh24:mi:ss');
+        EXCEPTION
+        WHEN OTHERS THEN
+          lc_error_mesg := 'ERROR : INVOICE DATE FORMAT ERROR :' || stg_hdr_rec.invoice_date ;
+          RAISE RECORD_ERROR;
+        END;
+		-- End Version 1.02 - Jira NAIT-124096	
       END;
       stg_hdr_rec.po_number      := NULL;
       stg_hdr_rec.invoice_amount := smb_rec.transfer_amount;
@@ -1663,5 +1672,3 @@ WHEN OTHERS THEN
 END load_prestaging;
 END XX_AP_SMB_INT_MKTPLACE_PKG;
 /
-
-SHOW ERRORS;
