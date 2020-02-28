@@ -132,6 +132,8 @@ create or replace PACKAGE BODY      xx_iby_settlement_pkg
 	-- |48.2       12-SEP-2019 M K Pramod Kumar    Modified for Return Mandate per NAIT-106896
     -- |48.3       07-JAN-2020 Sripal Reddy        Modified for sglpmt_multi_settlement refund issue NAIT-115171  |
 	-- |48.4       18-FEB-2020 Sripal reddy        Modified for POC: Customer PO line number NAIT 123195 by sripal  | 
+	-- |48.5       28-Feb-2020 M K Pramod Kumar    Modified to default ixregisternumber to 95 for SERVICE-CONTRACTS-NAIT-103187. (on to of V48.4)
+	-- |48.6       28-FEB-2020 M K Pramod Kumar    As part of NAIT-103187, ixoptions,ixreserved31,ixreserved32 should skip COF changes(on to of V48.4)
 	-- +===========================================================================+
 
 		g_package_name              CONSTANT all_objects.object_name%TYPE                        := 'xx_iby_settlement_pkg';
@@ -1829,7 +1831,11 @@ create or replace PACKAGE BODY      xx_iby_settlement_pkg
 		PROCEDURE XX_UPDATE_COF_TRANS
 		is
 		BEGIN
-
+			/*Added below if condition for V48.6, for Service Contracts and PLCC Card types-(Citi_Con and Citi_Com Credit Cards)-ixoptions,ixreserved31,ixreserved32 should skip COF changes*/            
+			if gc_remit_processing_type = g_service_contracts and gc_credit_card_type ='PLCC' then 
+			      null;
+				  
+			else
 
 				if gc_ixwallet_type='1' then
 
@@ -1893,6 +1899,8 @@ create or replace PACKAGE BODY      xx_iby_settlement_pkg
 						gc_ixreserved32:='<COF><Schedule>Y</Schedule><Reason>Resubmit</Reason></COF>';
 					end if;
 				end if;
+				
+			End if;
 				xx_location_and_log(g_log,
 								   'ixoptions   : '
 								|| gc_ixoptions);
@@ -4753,7 +4761,8 @@ create or replace PACKAGE BODY      xx_iby_settlement_pkg
 
 					BEGIN
 						gc_source := 'AR';
-						gc_ixregisternumber := '56';
+						--gc_ixregisternumber := '56';--Commented code for V48.5
+						gc_ixregisternumber := '95';--Added code for V48.5
 						--gc_ixreserved31 := gc_mo_value; Modified for V47.3 14/Mar/2018
 						--------------------------------------------------------------------------
 						-- Retrieve AOPS Auth Entry-Defaulted to *ECE for Service Contracts
@@ -4790,7 +4799,13 @@ create or replace PACKAGE BODY      xx_iby_settlement_pkg
 											   'AOPS Auth Entry          : '
 											|| gc_aops_auth_entry);
 
-						gc_ixreserved31 := gc_aops_auth_entry;
+						--gc_ixreserved31 := gc_aops_auth_entry;--Commented for V48.6
+						
+						IF  gc_credit_card_type ='PLCC'  then --Added If for V48.6
+			                   gc_ixreserved31 := null;
+						ELSE
+						   gc_ixreserved31 := gc_aops_auth_entry;
+						END IF;
 
 						--Modified End for V47.3 14/Mar/2018
 
