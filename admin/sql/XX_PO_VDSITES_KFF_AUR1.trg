@@ -5,7 +5,7 @@ AFTER UPDATE ON "APPS"."XX_PO_VENDOR_SITES_KFF" FOR EACH ROW
   -- +===============================================================================+
     -- |                  Office Depot - Project Simplify                              |
     -- +===============================================================================+
-    -- | Name        : XX_PO_VEND_SITES_KFF_AUR1.trg                              |
+    -- | Name        : XX_PO_VDSITES_KFF_AUR1.trg                              |
     -- | Description : Trigger created per jira NAIT-103952                            |
     -- |Change Record:                                                                 |
     -- |===============                                                                |
@@ -23,10 +23,9 @@ AFTER UPDATE ON "APPS"."XX_PO_VENDOR_SITES_KFF" FOR EACH ROW
   
   SELECT COUNT(*) INTO L_COUNT FROM XX_PO_VEND_SITES_KFF_AUD
 WHERE 
- NVL(VS_KFF_ID,0)=NVL(:NEW.VS_KFF_ID,0)
- AND   LAST_UPDATED_BY =:new.LAST_UPDATED_BY
+    LAST_UPDATED_BY =:NEW.LAST_UPDATED_BY
  AND   NVL(LAST_UPDATE_LOGIN,0)=NVL(:NEW.LAST_UPDATE_LOGIN,0)
-AND   CREATED_BY=:new.CREATED_BY
+AND   CREATED_BY=:NEW.CREATED_BY
   AND   NVL(SEGMENT1,'N')= NVL(:NEW.SEGMENT1,'N')
   AND   NVL(SEGMENT2,'N')= NVL(:NEW.SEGMENT2,'N')
   AND   NVL(SEGMENT3,'N')= NVL(:NEW.SEGMENT3,'N')
@@ -55,7 +54,7 @@ AND   CREATED_BY=:new.CREATED_BY
 							
   IF l_count=0 THEN 
  
-   IF trunc(:new.last_update_date) = trunc(sysdate) THEN
+   IF trunc(:NEW.last_update_date) = trunc(sysdate) THEN
    
   INSERT INTO XX_PO_VEND_SITES_KFF_AUD (VS_KFF_AUD_ID 
 ,VERSIONS_OPERATION
@@ -131,3 +130,4 @@ END IF;
 END IF;
 
 END;
+/
