@@ -5,7 +5,7 @@ AFTER INSERT ON "APPS"."XX_PO_VENDOR_SITES_KFF" FOR EACH ROW
   -- +===============================================================================+
     -- |                  Office Depot - Project Simplify                              |
     -- +===============================================================================+
-    -- | Name        : XX_PO_VEND_SITES_KFF_AUR1.trg                              |
+    -- | Name        : XX_PO_VDSITES_KFF_AIR1.trg                              |
     -- | Description : Trigger created per jira NAIT-103952                            |
     -- |Change Record:                                                                 |
     -- |===============                                                                |
@@ -90,3 +90,4 @@ VALUES (XX_PO_VEND_SITES_KFF_AUD_SEG.NEXTVAL
 ,:NEW.SEGMENT60);
 
 END;
+/
