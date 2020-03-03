@@ -28,9 +28,9 @@ AS
   -- | 2.8         11/26/2018   M K Pramod Kumar     Modified to derive Bank Rec ID for EBAY MPL for partial transactinos.
   -- | 2.8.1       11/26/2018   M K Pramod Kumar     Modified to Include only Not null Order Id for RAKUTEN MPL
   -- | 2.9         04/01/2019   M K Pramod Kumar     Modified to fix Ebay Tax Issue for Multiple SKU scenario -NAIT-87324
-  -- | 2.9.1       02/19/2019   M K Pramod Kumar     Modified to process NEWEGG Marketplace Transactions|
-  -- | 2.9.2       02/19/2019   M K Pramod Kumar     Commented Bank Deposit Date Logic for Rakuten and Walmart MPL|
-  -- | 2.9.3       02/19/2019   M K Pramod Kumar     Modified to fix NEWEGG Marketplace Transactions processing issue|
+  -- | 2.9.1       02/24/2020   M K Pramod Kumar     Modified to process NEWEGG Marketplace Transactions|
+  -- | 2.9.2       02/24/2020   M K Pramod Kumar     Commented Bank Deposit Date Logic for Rakuten and Walmart MPL|
+  -- | 2.9.3       02/24/2020   M K Pramod Kumar     Modified to fix NEWEGG Marketplace Transactions processing issue|
   -- +============================================================================================+
   gc_package_name      CONSTANT all_objects.object_name%TYPE := 'XX_CE_MRKTPLC_RECON_PKG';
   gc_ret_success       CONSTANT VARCHAR2(20)                 := 'SUCCESS';
@@ -1307,7 +1307,6 @@ IS
     FROM xx_ce_newegg_sum_pre_stg_v negg
     WHERE 1                = 1
     AND negg.process_flag IN ( 'N','E' )
-	and negg.settlement_id_neggs='2000759603'
     GROUP BY filename,
       settlement_id_neggs,
       settlement_date,
