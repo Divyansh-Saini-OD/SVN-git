@@ -30,6 +30,7 @@ AS
   -- | 2.9         04/01/2019   M K Pramod Kumar     Modified to fix Ebay Tax Issue for Multiple SKU scenario -NAIT-87324
   -- | 2.9.1       02/19/2019   M K Pramod Kumar     Modified to process NEWEGG Marketplace Transactions|
   -- | 2.9.2       02/19/2019   M K Pramod Kumar     Commented Bank Deposit Date Logic for Rakuten and Walmart MPL|
+  -- | 2.9.3       02/19/2019   M K Pramod Kumar     Modified to fix NEWEGG Marketplace Transactions processing issue|
   -- +============================================================================================+
   gc_package_name      CONSTANT all_objects.object_name%TYPE := 'XX_CE_MRKTPLC_RECON_PKG';
   gc_ret_success       CONSTANT VARCHAR2(20)                 := 'SUCCESS';
@@ -360,6 +361,8 @@ BEGIN
   END;
   RETURN l_process_flag;
 END dup_check_transaction_type;
+
+
 /**********************************************************************************
 * Procedure to trigger AJB Preprocessor Program for distinct unprocessed MPL Filenames.
 * This procedure is called by MAIN_MPL_SETTLEMENT_PROCESS.
@@ -1304,6 +1307,7 @@ IS
     FROM xx_ce_newegg_sum_pre_stg_v negg
     WHERE 1                = 1
     AND negg.process_flag IN ( 'N','E' )
+	and negg.settlement_id_neggs='2000759603'
     GROUP BY filename,
       settlement_id_neggs,
       settlement_date,
@@ -1311,8 +1315,7 @@ IS
   CURSOR cur_settlement_pre_stage_hdr ( p_filename VARCHAR2, p_newegg_settlmnt_id VARCHAR2 )
   IS
     SELECT DISTINCT order_id orderid,
-      transaction_type transaction_type,
-      invoice_id
+      transaction_type transaction_type
     FROM xx_ce_newegg_tran_pre_stg_v hdr,
       xx_ce_newegg_sum_pre_stg_v sttl
     WHERE 1                      = 1
@@ -1328,7 +1331,7 @@ IS
     FROM xx_ce_mpl_settlement_hdr
     WHERE settlement_id = lc_settlement_id
     AND ROWNUM          < 2;
-  CURSOR cur_settlement_pre_stage_dtl ( p_newegg_orderid VARCHAR2, p_transaction_type VARCHAR2, p_invoice_id VARCHAR2, p_newegg_settlmnt_id VARCHAR2 )
+  CURSOR cur_settlement_pre_stage_dtl ( p_newegg_orderid VARCHAR2, p_transaction_type VARCHAR2,  p_newegg_settlmnt_id VARCHAR2 )
   IS
     SELECT tdr.*
     FROM xx_ce_newegg_tran_pre_stg_v tdr
@@ -1336,7 +1339,6 @@ IS
     AND tdr.order_id            = p_newegg_orderid
     AND tdr.transaction_type   IN ( p_transaction_type,'Sales Tax' )
     AND tdr.process_flag       IN ( 'N','E' )
-    AND tdr.invoice_id          = p_invoice_id
     AND tdr.settlement_id_negg  = p_newegg_settlmnt_id;
   lv_line_tax_flag VARCHAR2(1) := 'N';
 BEGIN
@@ -1380,7 +1382,7 @@ BEGIN
         SELECT xx_ce_mpl_header_id_seq.NEXTVAL INTO lc_mpl_header_id FROM dual;
         IF dup_check_transaction_type( p_process_name, rec_hdr.orderid, lc_transaction_type ) = 'N' THEN
          
-          FOR rec_dtl IN cur_settlement_pre_stage_dtl( rec_hdr.orderid, rec_hdr.transaction_type, rec_hdr.invoice_id, rec_file.settlement_id_neggs )
+          FOR rec_dtl IN cur_settlement_pre_stage_dtl( rec_hdr.orderid, rec_hdr.transaction_type,  rec_file.settlement_id_neggs )
           LOOP
             lc_action := 'Processing NEWEGG PreStage Detail Data';
             BEGIN
@@ -1421,7 +1423,9 @@ BEGIN
               lc_ce_mpl_settlement_dtl.last_update_date             := SYSDATE;
               lc_ce_mpl_settlement_dtl.last_update_login            := NVL( fnd_global.user_id, -1 );
               lc_ce_mpl_settlement_dtl.attribute1                   := rec_dtl.order_id;
-              FOR j IN 1..4
+			  
+			  if rec_dtl.transaction_type != 'Sales Tax' then
+              FOR j IN 1..3
               LOOP
                 lc_action                  := 'Generate  NEWEGG Record into Multiple Transactions';
                 lc_quantity_purchased      := NULL;
@@ -1431,39 +1435,18 @@ BEGIN
                 lc_item_related_fee_type   := NULL;
                 lc_item_related_fee_amount := NULL;
                 
-                IF j                          = 1 THEN
-                  IF rec_dtl.transaction_type = 'Sales Tax' THEN
-                    CONTINUE;
-                  END IF;
+                IF j                          = 1 THEN                 
                   lc_action      := 'Generate NEWEGG Record for Principal Price Type';
                   lc_price_type  := 'Principal';
-                  l_price_amount := rec_dtl.amount;
+                  l_price_amount := NVL(rec_dtl.amount,0);
                 END IF;
-                IF j                          = 2 THEN
-                  IF rec_dtl.transaction_type = 'Sales Tax' THEN
-                    CONTINUE;
-                  END IF;
+                IF j                          = 2 THEN                 
                   lc_action                   := 'Generate NEWEGG Record for Shipping Price Type';
                   lc_price_type               := 'Shipping';
-                  IF rec_dtl.transaction_type <> 'Sales Tax' THEN
-                    l_price_amount            := NVL( rec_dtl.shipping, 0 );
-                  END IF;
-                  IF j = 3 THEN
-                    CONTINUE;
-                  END IF;
-                  IF lv_line_tax_flag = 'Y' THEN
-                    CONTINUE;
-                  END IF;
-                  lv_line_tax_flag := 'Y';
-                  lc_action        := 'Generate NEWEGG Record for Sales Tax Service Price Type';
-                  lv_line_tax_flag := 'Y';
-                  lc_price_type    := 'Tax';
-                  l_price_amount   := NVL( rec_dtl.amount, 0 );
+				  l_price_amount := NVL(rec_dtl.shipping,0);          				  
+               
                 END IF;
-                IF j                          = 4 THEN
-                  IF rec_dtl.transaction_type = 'Sales Tax' THEN
-                    CONTINUE;
-                  END IF;
+                IF j                          =3 THEN
                   lc_action                  := 'Generate NEWEGG Record for Sales,Tax,Service Fee Price Type';
                   lc_item_related_fee_type   := 'Commission';
                   lc_item_related_fee_amount := NVL( rec_dtl.commission_fee, 0 ) *-1;
@@ -1478,6 +1461,30 @@ BEGIN
                 INSERT INTO xx_ce_mpl_settlement_dtl VALUES lc_ce_mpl_settlement_dtl;
                 
               END LOOP;
+			  
+			  end if;
+			  
+			  if rec_dtl.transaction_type = 'Sales Tax' THEN 
+			    lc_quantity_purchased      := NULL;
+                lc_unit_price              := NULL;
+                lc_price_type              := NULL;
+                l_price_amount             := NULL;
+                lc_item_related_fee_type   := NULL;
+                lc_item_related_fee_amount := NULL;
+				lc_action      := 'Generate NEWEGG Record for Tax Type';
+                lc_price_type  := 'Tax';
+                l_price_amount := NVL(rec_dtl.amount,0);			  
+                lc_ce_mpl_settlement_dtl.quantity_purchased      := lc_quantity_purchased;
+                lc_ce_mpl_settlement_dtl.unit_price              := lc_unit_price;
+                lc_ce_mpl_settlement_dtl.price_type              := lc_price_type;
+                lc_ce_mpl_settlement_dtl.price_amount            := l_price_amount;
+                lc_ce_mpl_settlement_dtl.item_related_fee_type   := lc_item_related_fee_type;
+                lc_ce_mpl_settlement_dtl.item_related_fee_amount := lc_item_related_fee_amount;
+                INSERT INTO xx_ce_mpl_settlement_dtl VALUES lc_ce_mpl_settlement_dtl;
+			  end if;
+			  
+			  
+			  
             EXCEPTION
             WHEN OTHERS THEN
               raise_application_error( -20101, 'PROCEDURE: ' || lc_procedure_name || ' ACTION: ' || lc_action || ' SQLCODE: ' || SQLCODE || ' SQLERRM: ' || sqlerrm );
@@ -1528,7 +1535,6 @@ BEGIN
           WHERE a.order_id         = rec_hdr.orderid
           AND a.process_flag      IN ( 'N','E' )
           AND a.transaction_type  IN ( rec_hdr.transaction_type,'Sales Tax' )
-          AND a.invoice_id         = rec_hdr.invoice_id
           AND a.settlement_id_negg = rec_file.settlement_id_neggs;
           gc_success_count        := gc_success_count + 1;
         ELSE
@@ -1539,7 +1545,6 @@ BEGIN
           WHERE a.order_id         = rec_hdr.orderid
           AND a.process_flag      IN ( 'N','E' )
           AND a.transaction_type  IN ( rec_hdr.transaction_type,'Sales Tax' )
-          AND a.invoice_id         = rec_hdr.invoice_id
           AND a.settlement_id_negg = rec_file.settlement_id_neggs;
           gc_failure_count        := gc_failure_count + 1;
         END IF;
@@ -1555,7 +1560,6 @@ BEGIN
         WHERE a.order_id         = rec_hdr.orderid
         AND a.process_flag      IN ( 'N','E' )
         AND a.transaction_type   = rec_hdr.transaction_type
-        AND a.invoice_id         = rec_hdr.invoice_id
         AND a.settlement_id_negg = rec_file.settlement_id_neggs;
         COMMIT;
       END;
