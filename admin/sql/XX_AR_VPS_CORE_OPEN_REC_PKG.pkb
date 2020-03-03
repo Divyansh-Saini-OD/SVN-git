@@ -121,13 +121,15 @@ AS
 				  AND trim(rcta.attribute9) IN ('CDM', 'MDM')
 				  AND araa.applied_customer_trx_id = rcta.customer_trx_id
 				  AND araa.status                  = 'APP'
+				  AND araa.display = 'Y'
 				  AND acra.cash_receipt_id         = araa.cash_receipt_id
 				  AND rcta.org_id = p_org_id
 				  --AND acra.creation_date > (SYSDATE-731)
 				  AND arm.receipt_method_id        = acra.receipt_method_id
 				) X
 			WHERE RN = 1
-			AND transaction_type like '%_CORE%';
+			AND transaction_type like '%_CORE%'
+			AND SUBSTR(APPLIED_TRX_NUMBER,1,2) >= (SUBSTR(TO_CHAR(SYSDATE,'YYYY'),3,2)-1);
 
 
         TYPE vps_core_open_rec_tab_type IS TABLE OF vps_core_open_rec_cur%ROWTYPE;
