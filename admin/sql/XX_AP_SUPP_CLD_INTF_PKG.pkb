@@ -83,6 +83,7 @@ CREATE OR REPLACE PACKAGE BODY xx_ap_supp_cld_intf_pkg
 -- | 3.7     23-Jan-2020    Shanti Sethuraj    Modified for jira NAIT-118785                   |
 -- | 3.8     23-Jan-2020    Shanti Sethuraj    Modified for jira NAIT-118444	               |
 -- | 3.9     06-Feb-2020    Shanti Sethuraj    Modified for jira NAIT-112927                   |
+-- | 4.0     03-Mar-2020    Shanti Sethuraj    Modified for jira NAIT-118027                   |
 -- |===========================================================================================+
 AS
   /*********************************************************************
@@ -1945,10 +1946,10 @@ BEGIN
 	
 	/* Added as per Version 3.4 */
 	-- To get the legacy Supplier Number
-	IF lr_vendor_site_rec.inactive_date IS NOT NULL
+	/*IF lr_vendor_site_rec.inactive_date IS NOT NULL
 	THEN
 	    lr_vendor_site_rec.attribute9   :=  NVL(c_sup_site.attribute9, FND_API.G_MISS_CHAR);
-	END IF;
+	END IF;*/   -- commented by Shanti for jira NAIT-118027
 
     -- Assign Vendor Site Details
     lr_vendor_site_rec.vendor_site_id                 := lr_existing_vendor_site_rec.vendor_site_id;
@@ -2104,7 +2105,7 @@ BEGIN
     END;
 	
   --  IF TRIM(c_sup_site.inactive_date) IS NOT NULL    -- commented by Shanti for jira NAIT-118444	
-	 IF (TRIM(c_sup_site.inactive_date) IS NOT NULL and TRIM(c_sup_site.inactive_date)<sysdate)  ---- Added by Shanti for jira NAIT-118444	
+	 IF TRIM(c_sup_site.inactive_date) IS NOT NULL AND to_date(c_sup_site.inactive_date,'yyyy/mm/dd')<=sysdate   ---- Added by Shanti for jira NAIT-118444	
 	THEN
 	    l_party_site_rec.status := 'I';
 	ELSE
