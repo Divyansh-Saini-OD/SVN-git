@@ -2,7 +2,7 @@ SET VERIFY OFF;
 WHENEVER SQLERROR CONTINUE;
 WHENEVER OSERROR EXIT FAILURE ROLLBACK;
 
-CREATE OR REPLACE PACKAGE BODY xx_ar_subscriptions_mt_pkg
+create or replace PACKAGE BODY xx_ar_subscriptions_mt_pkg
 AS
 -- +====================================================================================================+
 -- |  Office Depot                                                                                      |
@@ -100,9 +100,11 @@ AS
 -- | 40.0        16-JAN-2020  Arvind K               ODNA-164065 EBS Trigger Email For AutoRenew -      |
 -- |                                                 On7DayPaymentFailure,added 'notificationDay' in    |
 -- |                                                 send_billing_email, payload for failure case       |
--- | 41.0        17-JAN-2020  Kayeed A               NAIT-119054 EBS- To modify the subscription billing|
--- |                                                 code such that recurring invoice will be created   |
--- |                                                 after successful payment.    
+-- | 41.0        28-FEB-2020  Kayeed A               NAIT-125675-DataDiscrepancies with renewals billing|
+-- |                                                 add the fix into get_pos_ordt_info                 |
+-- |                                                                                                   
+-- | 41.0        03-MARCH-2020  Kayeed A             NAIT-125836-Invoice creation is failing with       |
+-- |                                                 no_data_found trying to find the initial POS order |
 -- +====================================================================================================+
 
   gc_package_name        CONSTANT all_objects.object_name%TYPE   := 'xx_ar_subscriptions_mt_pkg';
@@ -1337,6 +1339,16 @@ AS
     exiting_sub(p_procedure_name => lc_procedure_name);
 
     EXCEPTION
+	--Begin : added for NAIT-125836-Invoice creation is failing with no_data_found trying to find the initial POS order
+	WHEN NO_DATA_FOUND THEN
+         SELECT * 
+           INTO   x_order_header_info 
+           FROM   XXAPPS_HISTORY_QUERY.oe_order_headers_all
+           WHERE  order_number = p_order_number;
+
+        logit(p_message => 'RESULT order_number from XXAPPS_HISTORY_QUERY: ' || x_order_header_info.order_number);
+        exiting_sub(p_procedure_name => lc_procedure_name); 
+	 --End : added for NAIT-125836-Invoice creation is failing with no_data_found trying to find the initial POS order
     WHEN OTHERS
     THEN
       exiting_sub(p_procedure_name => lc_procedure_name, p_exception_flag => TRUE);
@@ -1374,6 +1386,18 @@ AS
     exiting_sub(p_procedure_name => lc_procedure_name);
 
     EXCEPTION
+    --Begin : added for NAIT-125836-Invoice creation is failing with no_data_found trying to find the initial POS order	
+	WHEN NO_DATA_FOUND THEN
+         SELECT * 
+           INTO   x_order_line_info 
+           FROM   XXAPPS_HISTORY_QUERY.oe_order_lines_all
+          WHERE   header_id   = p_header_id
+            AND   line_number = p_line_number;
+
+        logit(p_message => 'RESULT header_id  XXAPPS_HISTORY_QUERY: ' || x_order_line_info.header_id);
+		logit(p_message => 'RESULT line_number XXAPPS_HISTORY_QUERY: ' || x_order_line_info.line_number);
+        exiting_sub(p_procedure_name => lc_procedure_name);
+	 --End : added for NAIT-125836-Invoice creation is failing with no_data_found trying to find the initial POS order
     WHEN OTHERS
     THEN
       exiting_sub(p_procedure_name => lc_procedure_name, p_exception_flag => TRUE);
@@ -2409,7 +2433,7 @@ AS
         IF px_subscription_array(indx).item_unit_cost IS NULL
         THEN
 
-          lc_action := 'Calling get_contract_line_info';
+          lc_action := 'Calling get_contract_line_info at process_item_cost';
 
           get_contract_line_info(p_contract_id          => px_subscription_array(indx).contract_id,
                                  p_contract_line_number => px_subscription_array(indx).contract_line_number,
@@ -2615,7 +2639,8 @@ AS
     SELECT *
     INTO   x_ordt_info
     FROM   xx_ar_order_receipt_dtl
-    WHERE  orig_sys_document_ref = p_order_number;
+    WHERE  orig_sys_document_ref = p_order_number 
+	  AND  payment_type_code     = 'CREDIT_CARD'; --Added to fix -> NAIT-125675-DataDiscrepancies with renewals billing
 
     logit(p_message => 'RESULT header_id: ' || x_ordt_info.header_id);
 
@@ -2660,14 +2685,21 @@ AS
     exiting_sub(p_procedure_name => lc_procedure_name);
 
     EXCEPTION
-
-    WHEN NO_DATA_FOUND THEN
-
-      SELECT header_id,order_number 
-      INTO x_pos_info.oe_header_id,x_pos_info.sales_order 
-      FROM oe_order_headers_all
-      WHERE orig_sys_document_ref = p_orig_sys_doc_ref;
-
+     WHEN NO_DATA_FOUND THEN
+      BEGIN
+        SELECT header_id,order_number 
+        INTO x_pos_info.oe_header_id,x_pos_info.sales_order 
+        FROM oe_order_headers_all
+        WHERE orig_sys_document_ref = p_orig_sys_doc_ref;
+        -- Added for NAIT-125836-Invoice creation is failing with no_data_found trying to find the initial POS order
+      EXCEPTION
+        WHEN NO_DATA_FOUND THEN
+          SELECT header_id,order_number 
+          INTO x_pos_info.oe_header_id,x_pos_info.sales_order 
+          FROM XXAPPS_HISTORY_QUERY.oe_order_headers_all 
+          WHERE orig_sys_document_ref = p_orig_sys_doc_ref;
+      END;
+	   -- END for NAIT-125836-Invoice creation is failing with no_data_found trying to find the initial POS order      
       BEGIN
         SELECT trx_number 
         INTO x_pos_info.summary_trx_number 
@@ -3833,7 +3865,7 @@ AS
         * Get contract line information
         ******************************/
 
-        lc_action := 'Calling get_contract_line_info';
+        lc_action := 'Calling get_contract_line_info at populate_invoice_interface';
 
         get_contract_line_info(p_contract_id          => px_subscription_array(indx).contract_id,
                                p_contract_line_number => px_subscription_array(indx).contract_line_number,
@@ -3930,7 +3962,16 @@ AS
           /******************************
           * Get initial order header info
           ******************************/
-
+          /*
+          BEGIN
+              get_order_header_info(p_order_number      => p_contract_info.initial_order_number,
+                                    x_order_header_info => lr_order_header_info);
+          EXCEPTION
+            WHEN OTHERS THEN
+                exiting_sub(p_procedure_name => lc_procedure_name, p_exception_flag => TRUE);
+                RAISE_APPLICATION_ERROR(-20101, 'PROCEDURE: ' || lc_procedure_name || ' SQLCODE: ' || SQLCODE || ' SQLERRM: ' || SQLERRM);
+          END;
+          */
           IF (lr_order_header_info.header_id IS NULL) 
           THEN
             lc_action := 'Calling get_order_header_info';
@@ -4039,7 +4080,12 @@ AS
           * Get invoice line information
           *****************************/
 
-          lc_action := 'Calling get_invoice_line_info';
+          lc_action := 'Calling get_invoice_line_info ' || lr_invoice_header_info.customer_trx_id
+                                                || ', ' || lr_contract_line_info.initial_order_line
+                                                || ', ' || lr_item_master_info.inventory_item_id
+                                                || ', ' || px_subscription_array(indx).contract_line_amount
+                                                || ', ' || p_contract_info.external_source
+          ;
           
           IF lr_contract_line_info.item_name != p_program_setups('termination_sku')
           THEN 
@@ -4370,7 +4416,7 @@ AS
 
           IF (lr_om_hdr_attribute_info.header_id IS NULL)
           THEN
-            lc_action := 'Calling get_om_hdr_attribute_info';
+            lc_action := 'Calling get_om_hdr_attribute_info order_header: ' || lr_order_header_info.header_id || ', ' || lr_order_header_info.header_id;
 
             get_om_hdr_attribute_info(p_header_id             => lr_order_header_info.header_id,
                                       x_om_hdr_attribute_info => lr_om_hdr_attribute_info);
@@ -4395,7 +4441,7 @@ AS
           * Get order line info
           ********************/
 
-          lc_action := 'Calling get_om_line_attribute_info';
+          lc_action := 'Calling get_om_line_attribute_info line_id: ' || lr_order_line_info.line_id;
 
           IF lr_contract_line_info.item_name != p_program_setups('termination_sku')
           THEN
@@ -5692,7 +5738,7 @@ AS
         * Get contract line information
         ******************************/
 
-        lc_action := 'Calling get_contract_line_info';
+        lc_action := 'Calling get_contract_line_info at get_cc_trans_id_information :';
 
         get_contract_line_info(p_contract_id          => px_subscription_array(indx).contract_id,
                                p_contract_line_number => px_subscription_array(indx).contract_line_number,
@@ -6650,7 +6696,7 @@ AS
         * Get contract line information
         ******************************/
 
-        lc_action := 'Calling get_contract_line_info';
+        lc_action := 'Calling get_contract_line_info at process_authorization :';
 
         get_contract_line_info(p_contract_id          => px_subscription_array(indx).contract_id,
                                p_contract_line_number => px_subscription_array(indx).contract_line_number,
@@ -7536,7 +7582,7 @@ AS
       * Get contract line information
       ******************************/
 
-      lc_action := 'Calling get_contract_line_info';
+      lc_action := 'Calling get_contract_line_info send_billing_email';
 
       get_contract_line_info(p_contract_id          => px_subscription_array(indx).contract_id,
                              p_contract_line_number => px_subscription_array(indx).contract_line_number,
@@ -7569,7 +7615,7 @@ AS
         * Get contract line level information
         ************************************/
 
-        lc_action := 'Calling get_contract_line_info';
+        lc_action := 'Calling get_contract_line_info send_billing_email2';
 
         get_contract_line_info(p_contract_id          => px_subscription_array(indx).contract_id,
                                p_contract_line_number => px_subscription_array(indx).contract_line_number,
@@ -8551,7 +8597,7 @@ AS
       * Get contract line information
       ******************************/
 
-      lc_action := 'Calling get_contract_line_info';
+      lc_action := 'Calling get_contract_line_info send_billing_history';
 
       get_contract_line_info(p_contract_id          => px_subscription_array(indx).contract_id,
                              p_contract_line_number => px_subscription_array(indx).contract_line_number,
@@ -8590,7 +8636,7 @@ AS
         * Get contract line level information
         ************************************/
         
-        lc_action := 'Calling get_contract_line_info';
+        lc_action := 'Calling get_contract_line_info send_billing_history2';
         
         get_contract_line_info(p_contract_id          => px_subscription_array(indx).contract_id,
                                p_contract_line_number => px_subscription_array(indx).contract_line_number,
@@ -9396,7 +9442,7 @@ AS
         * Get contract line information
         ******************************/
 
-        lc_action := 'Calling get_contract_line_info';
+        lc_action := 'Calling get_contract_line_info process_receipt';
 
         get_contract_line_info(p_contract_id          => px_subscription_array(indx).contract_id,
                                p_contract_line_number => px_subscription_array(indx).contract_line_number,
@@ -9895,7 +9941,7 @@ AS
         * Get contract line information
         ******************************/
 
-        lc_action := 'Calling get_contract_line_info';
+        lc_action := 'Calling get_contract_line_info process_ordt_info';
 
         get_contract_line_info(p_contract_id          => px_subscription_array(indx).contract_id,
                                p_contract_line_number => px_subscription_array(indx).contract_line_number,
@@ -11762,7 +11808,7 @@ AS
           * Get contract line information
           ******************************/
           
-          lc_action := 'Calling get_contract_line_info';
+          lc_action := 'Calling get_contract_line_info send_email_autorenew';
           
           get_contract_line_info(p_contract_id          => lt_subscription_array(indx).contract_id,
                                  p_contract_line_number => lt_subscription_array(indx).contract_line_number,
@@ -12498,7 +12544,7 @@ AS
           * Get contract line level information
           ************************************/
           
-          lc_action := 'Calling get_contract_line_info';
+          lc_action := 'Calling get_contract_line_info generate_bill_history_payload';
           
           get_contract_line_info(p_contract_id          => lt_subscription_array(indx).contract_id,
                                  p_contract_line_number => lt_subscription_array(indx).contract_line_number,
