@@ -206,7 +206,7 @@
                   )                            SFHDR
 				  ,xx_disc_info													 		--Added for Defect 37807
          WHERE  XAECHM.cons_inv_id             = SFHDR.cons_inv_id
-		 AND	XAECHM.cons_inv_id			   = xx_disc_info.cons_inv_id 				--Added for Defect 37807
+		 AND	XAECHM.cons_inv_id			   = xx_disc_info.cons_inv_id(+) 				--Added for Defect 37807 --Added for Bugfix of NAIT-125369
          AND    XAECHM.cust_doc_id             = SFHDR.cust_doc_id
          AND    XAECHM.parent_cust_doc_id      = :parent_cust_doc_id
          AND    XAECHM.batch_id                = :p_batch_id
