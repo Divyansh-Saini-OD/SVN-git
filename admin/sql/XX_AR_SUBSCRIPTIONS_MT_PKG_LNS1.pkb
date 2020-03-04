@@ -102,8 +102,8 @@ AS
 -- |                                                 send_billing_email, payload for failure case       |
 -- | 41.0        28-FEB-2020  Kayeed A               NAIT-125675-DataDiscrepancies with renewals billing|
 -- |                                                 add the fix into get_pos_ordt_info                 |
--- |                                                                                                   
--- | 42.0        03-MARCH-2020  Kayeed A             NAIT-125836-Invoice creation is failing with       |
+-- |                                                                                                    |                      
+-- | 42.0        03-MAR-2020  Kayeed A               NAIT-125836-Invoice creation is failing with       |
 -- |                                                 no_data_found trying to find the initial POS order |
 -- +====================================================================================================+
 
@@ -1065,13 +1065,26 @@ AS
 
     IF p_source ='POS'
     THEN
-      SELECT *
-      INTO   x_invoice_line_info
-      FROM   ra_customer_trx_lines_all
-      WHERE  customer_trx_id    = p_customer_trx_id
-      AND    inventory_item_id  = p_inventory_item_id
-      AND    unit_selling_price = p_cont_line_amt
-      AND    line_type          = 'LINE';
+	  BEGIN
+         SELECT *
+         INTO   x_invoice_line_info
+         FROM   ra_customer_trx_lines_all
+         WHERE  customer_trx_id    = p_customer_trx_id
+         AND    inventory_item_id  = p_inventory_item_id
+         AND    unit_selling_price = p_cont_line_amt
+         AND    line_type          = 'LINE';
+		-----begin get_invoice_line_info Error: -20101 ORA-20101: PROCEDURE: xx_ar_subscriptions_mt_pkg.get_invoice_line_info SQLCODE: 100 SQLERRM: ORA-01403: no data found
+	  EXCEPTION
+	  WHEN NO_DATA_FOUND THEN
+	    SELECT *
+        INTO   x_invoice_line_info
+        FROM   ra_customer_trx_lines_all
+        WHERE  customer_trx_id    = p_customer_trx_id
+        AND    inventory_item_id  = p_inventory_item_id
+         --  AND    unit_selling_price = p_cont_line_amt
+        AND    line_type          = 'LINE';
+	  END;
+	  -----end get_invoice_line_info Error: -20101 ORA-20101: PROCEDURE: xx_ar_subscriptions_mt_pkg.get_invoice_line_info SQLCODE: 100 SQLERRM: ORA-01403: no data found
     ELSE
       SELECT *
       INTO   x_invoice_line_info
@@ -2696,7 +2709,7 @@ AS
         WHEN NO_DATA_FOUND THEN
           SELECT header_id,order_number 
           INTO x_pos_info.oe_header_id,x_pos_info.sales_order 
-          FROM XXAPPS_HISTORY_QUERY.oe_order_headers_all 
+          FROM xxapps_history_query.oe_order_headers_all 
           WHERE orig_sys_document_ref = p_orig_sys_doc_ref;
       END;
    -- END for NAIT-125836-Invoice creation is failing with no_data_found trying to find the initial POS order      
