@@ -5,7 +5,7 @@ WHENEVER OSERROR EXIT FAILURE ROLLBACK;
 -- +============================================================================================+
 -- |                                     Office Depot                                           |
 -- +============================================================================================+
--- | Name        : XXOM_OE_ORDER_LINES_ALL_LINES.syn                                     	    |
+-- | Name        : XXOM_OE_ORDER_LINES_ALL_HIST.syn                                     	    |
 -- | Description : Script to create synonym for OE_ORDER_LINES_ALL    in History database       |
 -- |                                                                                            |
 -- |Change Record:                                                                              |
@@ -21,12 +21,12 @@ PROMPT Synonym for OE_ORDER_LINES_ALL in history database
 PROMPT   
 
 BEGIN
-  EXECUTE IMMEDIATE 'DROP SYNONYM APPS.XXOM_OE_ORDER_LINES_ALL_LINES';
+  EXECUTE IMMEDIATE 'DROP SYNONYM APPS.XXOM_OE_ORDER_LINES_ALL_HIST';
 EXCEPTION
   WHEN OTHERS THEN NULL;
 END;
 /
-CREATE OR REPLACE SYNONYM APPS.XXOM_OE_ORDER_LINES_ALL_LINES FOR XXAPPS_HISTORY_QUERY.OE_ORDER_LINES_ALL;           
+CREATE OR REPLACE SYNONYM APPS.XXOM_OE_ORDER_LINES_ALL_HIST FOR XXAPPS_HISTORY_QUERY.OE_ORDER_LINES_ALL;           
 
 SHOW ERRORS;
 EXIT;
