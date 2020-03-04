@@ -103,7 +103,7 @@ AS
 -- | 41.0        28-FEB-2020  Kayeed A               NAIT-125675-DataDiscrepancies with renewals billing|
 -- |                                                 add the fix into get_pos_ordt_info                 |
 -- |                                                                                                   
--- | 41.0        03-MARCH-2020  Kayeed A             NAIT-125836-Invoice creation is failing with       |
+-- | 42.0        03-MARCH-2020  Kayeed A             NAIT-125836-Invoice creation is failing with       |
 -- |                                                 no_data_found trying to find the initial POS order |
 -- +====================================================================================================+
 
@@ -1339,8 +1339,8 @@ AS
     exiting_sub(p_procedure_name => lc_procedure_name);
 
     EXCEPTION
-	--Begin : added for NAIT-125836-Invoice creation is failing with no_data_found trying to find the initial POS order
-	WHEN NO_DATA_FOUND THEN
+  --Begin : added for NAIT-125836-Invoice creation is failing with no_data_found trying to find the initial POS order
+    WHEN NO_DATA_FOUND THEN
          SELECT * 
            INTO   x_order_header_info 
            FROM   XXAPPS_HISTORY_QUERY.oe_order_headers_all
@@ -1348,7 +1348,7 @@ AS
 
         logit(p_message => 'RESULT order_number from XXAPPS_HISTORY_QUERY: ' || x_order_header_info.order_number);
         exiting_sub(p_procedure_name => lc_procedure_name); 
-	 --End : added for NAIT-125836-Invoice creation is failing with no_data_found trying to find the initial POS order
+   --End : added for NAIT-125836-Invoice creation is failing with no_data_found trying to find the initial POS order
     WHEN OTHERS
     THEN
       exiting_sub(p_procedure_name => lc_procedure_name, p_exception_flag => TRUE);
@@ -1386,8 +1386,8 @@ AS
     exiting_sub(p_procedure_name => lc_procedure_name);
 
     EXCEPTION
-    --Begin : added for NAIT-125836-Invoice creation is failing with no_data_found trying to find the initial POS order	
-	WHEN NO_DATA_FOUND THEN
+    --Begin : added for NAIT-125836-Invoice creation is failing with no_data_found trying to find the initial POS order     
+    WHEN NO_DATA_FOUND THEN
          SELECT * 
            INTO   x_order_line_info 
            FROM   XXAPPS_HISTORY_QUERY.oe_order_lines_all
@@ -1395,9 +1395,9 @@ AS
             AND   line_number = p_line_number;
 
         logit(p_message => 'RESULT header_id  XXAPPS_HISTORY_QUERY: ' || x_order_line_info.header_id);
-		logit(p_message => 'RESULT line_number XXAPPS_HISTORY_QUERY: ' || x_order_line_info.line_number);
+        logit(p_message => 'RESULT line_number XXAPPS_HISTORY_QUERY: ' || x_order_line_info.line_number);
         exiting_sub(p_procedure_name => lc_procedure_name);
-	 --End : added for NAIT-125836-Invoice creation is failing with no_data_found trying to find the initial POS order
+    --End : added for NAIT-125836-Invoice creation is failing with no_data_found trying to find the initial POS order
     WHEN OTHERS
     THEN
       exiting_sub(p_procedure_name => lc_procedure_name, p_exception_flag => TRUE);
@@ -2640,7 +2640,7 @@ AS
     INTO   x_ordt_info
     FROM   xx_ar_order_receipt_dtl
     WHERE  orig_sys_document_ref = p_order_number 
-	  AND  payment_type_code     = 'CREDIT_CARD'; --Added to fix -> NAIT-125675-DataDiscrepancies with renewals billing
+      AND  payment_type_code     = 'CREDIT_CARD'; --Added to fix -> NAIT-125675-DataDiscrepancies with renewals billing
 
     logit(p_message => 'RESULT header_id: ' || x_ordt_info.header_id);
 
@@ -2699,7 +2699,7 @@ AS
           FROM XXAPPS_HISTORY_QUERY.oe_order_headers_all 
           WHERE orig_sys_document_ref = p_orig_sys_doc_ref;
       END;
-	   -- END for NAIT-125836-Invoice creation is failing with no_data_found trying to find the initial POS order      
+   -- END for NAIT-125836-Invoice creation is failing with no_data_found trying to find the initial POS order      
       BEGIN
         SELECT trx_number 
         INTO x_pos_info.summary_trx_number 
@@ -3460,7 +3460,7 @@ AS
     WHERE   defn.translate_id                        = vals.translate_id
     AND   defn.translation_name                    = 'SUBSCRIPTION_STORE_CLOSE'
     AND   lpad(vals.source_value3,6,'0')             = p_store_number
-    AND   SYSDATE BETWEEN vals.start_date_active AND NVL(vals.end_date_active, SYSDATE + 1)	  
+    AND   SYSDATE BETWEEN vals.start_date_active AND NVL(vals.end_date_active, SYSDATE + 1)       
     AND   SYSDATE BETWEEN defn.start_date_active AND NVL(defn.end_date_active, SYSDATE + 1)
     AND   SYSDATE                                  >= to_date(vals.target_value4,'MM-DD-YYYY')
     AND   vals.enabled_flag                        = 'Y'
@@ -4501,7 +4501,7 @@ AS
           
           IF lc_segment != gc_store_number
           THEN
-			/*******************************************************************************
+           /*******************************************************************************
             * Updating contracts table with new store# against store closed on initial order
             *******************************************************************************/
             UPDATE xx_ar_contracts
@@ -4522,7 +4522,7 @@ AS
                   ,last_updated_by    = NVL(FND_GLOBAL.USER_ID, -1)
                   ,last_update_login  = NVL(FND_GLOBAL.USER_ID, -1)
             WHERE  contract_id        = p_contract_info.contract_id;
-            COMMIT;	   
+            COMMIT;    
           END IF;
             
           /**************************************
@@ -6212,7 +6212,7 @@ AS
               
               px_subscription_array(indx).settlement_cc_mask  := SUBSTR(lc_decrypted_value, 1, 6) || SUBSTR(lc_decrypted_value, LENGTH(lc_decrypted_value) - 3, 4);
               
-              --BEGIN : JIRA#NAIT-92855:- EBS - Trigger AVS process -> Updating initial_auth_attempt_date with SYSDATE when auth for AVS code is done on DAY 1				  
+              --BEGIN : JIRA#NAIT-92855:- EBS - Trigger AVS process -> Updating initial_auth_attempt_date with SYSDATE when auth for AVS code is done on DAY 1  
               IF px_subscription_array(indx).initial_auth_attempt_date IS NULL
               THEN
                  px_subscription_array(indx).initial_auth_attempt_date := TO_DATE(TO_CHAR(SYSDATE,'DD-MON-YYYY')||'00:00:00','DD-MON-YYYY HH24:MI:SS');
@@ -6391,7 +6391,7 @@ AS
 
         RAISE le_avs_exception;      
 
-      --END : JIRA#NAIT-92855:- EBS - Trigger AVS process -> AVS EXCEPTION	
+      --END : JIRA#NAIT-92855:- EBS - Trigger AVS process -> AVS EXCEPTION     
       
       WHEN OTHERS
       THEN
@@ -7663,14 +7663,14 @@ AS
                 px_subscription_array(indx).next_retry_day   := TO_NUMBER(lr_translation_info.target_value2);
                 
                 lc_contract_status := 'REMOVE_HOLD';
-                lc_next_retry_day  := TO_NUMBER(lr_translation_info.target_value2);		
+                lc_next_retry_day  := TO_NUMBER(lr_translation_info.target_value2);
               
               ELSE
                 px_subscription_array(indx).contract_status  := lr_translation_info.target_value1;  
                 px_subscription_array(indx).next_retry_day   := TO_NUMBER(lr_translation_info.target_value2);
                 
                 lc_contract_status := lr_translation_info.target_value1;  
-                lc_next_retry_day  := TO_NUMBER(lr_translation_info.target_value2);		
+                lc_next_retry_day  := TO_NUMBER(lr_translation_info.target_value2); 
               
               END IF;
 
@@ -7989,14 +7989,14 @@ AS
                 px_subscription_array(indx).next_retry_day   := TO_NUMBER(lr_translation_info.target_value2);
                 
                 lc_contract_status := 'REMOVE_HOLD';
-                lc_next_retry_day  := TO_NUMBER(lr_translation_info.target_value2);		
+                lc_next_retry_day  := TO_NUMBER(lr_translation_info.target_value2); 
               
               ELSE
                 px_subscription_array(indx).contract_status  := lr_translation_info.target_value1;  
                 px_subscription_array(indx).next_retry_day   := TO_NUMBER(lr_translation_info.target_value2);
                 
                 lc_contract_status := lr_translation_info.target_value1;  
-                lc_next_retry_day  := TO_NUMBER(lr_translation_info.target_value2);		
+                lc_next_retry_day  := TO_NUMBER(lr_translation_info.target_value2);          
               
               END IF;
 
@@ -8131,7 +8131,7 @@ AS
                     "action": "'
                                 || lr_translation_info.target_value3 --future use
                                 || '", 
-					"notificationDays":"'
+                         "notificationDays":"'
                                 || px_subscription_array(indx).next_retry_day
                                 || '",
                     "nextRetryDate": "'
@@ -8343,7 +8343,7 @@ AS
               THEN
     
                 px_subscription_array(indx).contract_status  := lc_contract_status;  
-                px_subscription_array(indx).next_retry_day   := lc_next_retry_day;  			  
+                px_subscription_array(indx).next_retry_day   := lc_next_retry_day;                   
 
                END IF;
 
@@ -11823,8 +11823,8 @@ AS
             * Get invoice information
             ************************/
            
-		   -- Commented the below code : NAIT-118527 : Program - OD: AR Recurring Billing Contract Line Auto Renewal Failed In EBS Production.
-		   
+             -- Commented the below code : NAIT-118527 : Program - OD: AR Recurring Billing Contract Line Auto Renewal Failed In EBS Production.
+             
           /*  lc_action := 'Calling get_invoice_header_info';
              
             get_invoice_header_info(p_invoice_number      => lt_subscription_array(indx).invoice_number,
@@ -12433,7 +12433,7 @@ AS
     
     lt_file_name    := 'XX_SUBSCR_BILLHISTORY'||'_'||TO_CHAR (SYSDATE,'DDMONYYYYHH24MISS')||'.txt';
 
-    logit(p_message =>'VALUE OF lt_file_name is'||lt_file_name);	
+    logit(p_message =>'VALUE OF lt_file_name is'||lt_file_name);     
       
     lt_file_handle := UTL_FILE.fopen (p_file_path,lt_file_name,'W',ln_max_linesize);
        
@@ -12883,7 +12883,7 @@ AS
       
       BEGIN
 
-        UTL_FILE.PUT_LINE(lt_file_handle,lc_history_payload);	
+        UTL_FILE.PUT_LINE(lt_file_handle,lc_history_payload);     
 
       EXCEPTION
         WHEN OTHERS THEN
@@ -13518,7 +13518,7 @@ AS
               xx_fin_translatedefinition                 defn
        WHERE   defn.translate_id                        = vals.translate_id
        AND   defn.translation_name                    = 'SUBSCRIPTION_STORE_CLOSE'
-       AND   SYSDATE BETWEEN vals.start_date_active AND NVL(vals.end_date_active, SYSDATE + 1)	  
+       AND   SYSDATE BETWEEN vals.start_date_active AND NVL(vals.end_date_active, SYSDATE + 1)       
        AND   SYSDATE BETWEEN defn.start_date_active AND NVL(defn.end_date_active, SYSDATE + 1)
        AND   SYSDATE                                 >= to_date(vals.target_value4,'MM-DD-YYYY')
 
@@ -13557,7 +13557,7 @@ AS
 
     END LOOP;
 
-    logit(p_message =>' END : Relocation Store Validation : ');	
+    logit(p_message =>' END : Relocation Store Validation : ');     
 
   EXCEPTION
     WHEN OTHERS
@@ -14036,7 +14036,7 @@ AS
         ar_adjust_pub.create_adjustment ( p_api_name             => 'AR_ADJUST_PUB'
                                         , p_api_version          => 1.0
                                         , p_init_msg_list        => lc_init_msg_list
-                                        , p_commit_flag	         => lc_commit_flag
+                                        , p_commit_flag              => lc_commit_flag
                                         , p_validation_level     => lc_validation_level
                                         , p_msg_count            => ln_msg_count
                                         , p_msg_data             => lc_msg_data
@@ -14225,23 +14225,23 @@ AS
       AND  (xft.start_date_active     <= SYSDATE
       AND  (xft.end_date_active >= SYSDATE
         OR  xft.end_date_active IS NULL) 
-   		    )
+                 )
       AND  xfd.translation_name       = 'SALES ACCOUNTING MATRIX'
       AND  xfd.enabled_flag           = 'Y'
       AND (xfd.start_date_active     <= SYSDATE
       AND (xfd.end_date_active       >= SYSDATE
         OR xfd.end_date_active       IS NULL
-   		   ) 
-   		   );
+                ) 
+                );
     EXCEPTION
-   	  WHEN NO_DATA_FOUND
+          WHEN NO_DATA_FOUND
       THEN
-	    logit(p_message => 'RESULT lc_net_sales_revenue_account: ' || lc_net_sales_revenue_account);
-	    lc_rev_rec := 'N';
+         logit(p_message => 'RESULT lc_net_sales_revenue_account: ' || lc_net_sales_revenue_account);
+         lc_rev_rec := 'N';
         lc_net_sales_revenue_account := '00';
-   	END;	
+        END;     
  
-  	BEGIN
+       BEGIN
       SELECT xft2.TARGET_VALUE1
       INTO   lc_subscriptions_rev_account
       FROM  xx_fin_translatevalues      xft2,
@@ -14264,22 +14264,22 @@ AS
     EXCEPTION
       WHEN NO_DATA_FOUND 
       THEN
-	    lc_rev_rec := 'N';
-	    logit(p_message => 'RESULT lc_subscriptions_rev_account: ' || lc_subscriptions_rev_account);
+         lc_rev_rec := 'N';
+         logit(p_message => 'RESULT lc_subscriptions_rev_account: ' || lc_subscriptions_rev_account);
         lc_subscriptions_rev_account := '00';
     END;
-  	
-	IF ((lc_subscriptions_rev_account!= '00') OR (lc_net_sales_revenue_account!= '00'))
-	THEN
-	    IF lc_net_sales_revenue_account	= lc_subscriptions_rev_account THEN
-  	       lc_rev_rec := 'Y';
-  	    ELSE
-  	       lc_rev_rec := 'N'; 
+       
+     IF ((lc_subscriptions_rev_account!= '00') OR (lc_net_sales_revenue_account!= '00'))
+     THEN
+         IF lc_net_sales_revenue_account     = lc_subscriptions_rev_account THEN
+              lc_rev_rec := 'Y';
+           ELSE
+              lc_rev_rec := 'N'; 
         END IF;
         
         RETURN lc_rev_rec;
         
-	END IF;
+     END IF;
 
   EXCEPTION
     WHEN OTHERS 
