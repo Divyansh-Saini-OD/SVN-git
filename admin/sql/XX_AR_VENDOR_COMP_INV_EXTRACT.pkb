@@ -1,16 +1,18 @@
 CREATE OR REPLACE PACKAGE BODY XX_AR_VENDOR_COMP_INV_EXTRACT
--- +============================================================================================+
--- |                      Office Depot - Project Simplify                                       |
--- +============================================================================================+
--- |  Name              :  XX_AR_VENDOR_COMP_INV_EXTRACT                                        |
--- |  Description       :  Package to extract AR Vendor Compliance Invoice Extract				|
--- |  Change Record     :                                                                       |
--- +============================================================================================+
--- | Version     Date         Author           Remarks                                          |
--- | =========   ===========  =============    ===============================================  |
--- | 1.0         1/29/2018    Dinesh Nagapuri  Initial version                                  |
--- | 1.1         7/9/2019     Havish Kasina    Changed the INSTANCE_NAME to DB_NAME             | 
--- +============================================================================================+
+-- +================================================================================================+
+-- |                      Office Depot - Project Simplify                                       	|
+-- +================================================================================================+
+-- |  Name              :  XX_AR_VENDOR_COMP_INV_EXTRACT                                        	|
+-- |  Description       :  Package to extract AR Vendor Compliance Invoice Extract					|
+-- |  Change Record     :                                                                       	|
+-- +================================================================================================+
+-- | Version     Date         Author           Remarks                                          	|
+-- | =========   ===========  =============    =====================================================|
+-- | 1.0         1/29/2018    Dinesh Nagapuri  Initial version                                  	|
+-- | 1.1         7/9/2019     Havish Kasina    Changed the INSTANCE_NAME to DB_NAME             	| 
+-- | 1.2         1/9/2020     Atul Khard       Bug fix for NAIT-118582. Changed logic to fetch  	|
+-- |										   period start and end date. NAIT-124914 for migrating.| 
+-- +================================================================================================+
 AS
     gc_debug       VARCHAR2(2)                               := 'N';
     gn_request_id  fnd_concurrent_requests.request_id%TYPE;
@@ -191,7 +193,7 @@ AS
         FROM   v$database;
 
         BEGIN
-			SELECT start_date,	--	TO_CHAR(start_date,'YYYY-MM-DD') start_date,
+			/*SELECT start_date,	--	TO_CHAR(start_date,'YYYY-MM-DD') start_date,
 				   end_date		--	TO_CHAR(end_date,'YYYY-MM-DD') end_date
 			INTO   p_start_date,
                    p_end_date
@@ -203,7 +205,26 @@ AS
 				FROM GL_PERIODS gp
 				WHERE 1=1
 				AND p_run_date BETWEEN START_DATE AND END_DATE
-				);
+				);*/-- commented for bug fix of NAIT-118582
+				
+				
+			SELECT
+				MAX(gp1.start_date),
+				MAX(gp1.end_date)
+			INTO	p_start_date,
+					p_end_date
+			FROM
+				gl_periods gp1
+			WHERE
+				gp1.start_date < (
+					SELECT
+						gp2.start_date
+					FROM
+						gl_periods gp2
+					WHERE
+						1 = 1
+						AND p_run_date BETWEEN gp2.start_date AND gp2.end_date
+				);-- added for bug fix of NAIT-118582
 		
         EXCEPTION
             WHEN OTHERS
