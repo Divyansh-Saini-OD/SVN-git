@@ -1330,7 +1330,7 @@ AS
   * Helper procedure to get order header information
   *************************************************/
 
-  PROCEDURE get_order_header_info(p_order_number      IN         oe_order_headers_all.order_number%TYPE,
+  PROCEDURE get_order_header_info(p_order_number      IN         oe_order_headers_all.orig_sys_document_ref%TYPE,
                                   x_order_header_info OUT NOCOPY oe_order_headers_all%ROWTYPE)
   IS
 
@@ -1347,8 +1347,7 @@ AS
     SELECT *
     INTO   x_order_header_info
     FROM   oe_order_headers_all
-    WHERE  --order_number         = p_order_number; --Commented for NAIT-126620
-	       orig_sys_document_ref  = p_order_number; --Added for NAIT-126620
+    WHERE  orig_sys_document_ref  = p_order_number; --Added for NAIT-126620
 
     logit(p_message => 'RESULT header_id: ' || x_order_header_info.header_id);
 
@@ -1357,13 +1356,18 @@ AS
     EXCEPTION
   --Begin : added for NAIT-125836-Invoice creation is failing with no_data_found trying to find the initial POS order
     WHEN NO_DATA_FOUND THEN
+	  BEGIN
          SELECT * 
            INTO   x_order_header_info 
            FROM   xxom_oe_order_headers_all_hist
-           WHERE  --order_number         = p_order_number; --Commented for NAIT-126620
-		          orig_sys_document_ref  = p_order_number; --Added for NAIT-126620
+           WHERE  orig_sys_document_ref  = p_order_number; --Added for NAIT-126620
 		          
-
+      EXCEPTION
+       WHEN OTHERS
+       THEN
+         exiting_sub(p_procedure_name => lc_procedure_name, p_exception_flag => TRUE);
+         RAISE_APPLICATION_ERROR(-20101, 'PROCEDURE: ' || lc_procedure_name || ' SQLCODE: ' || SQLCODE || ' SQLERRM: ' || SQLERRM);
+      END;
         logit(p_message => 'RESULT order_number from XXAPPS_HISTORY_QUERY: ' || x_order_header_info.order_number);
         exiting_sub(p_procedure_name => lc_procedure_name); 
    --End : added for NAIT-125836-Invoice creation is failing with no_data_found trying to find the initial POS order
@@ -1406,11 +1410,19 @@ AS
     EXCEPTION
     --Begin : added for NAIT-125836-Invoice creation is failing with no_data_found trying to find the initial POS order     
     WHEN NO_DATA_FOUND THEN
+	  BEGIN
          SELECT * 
            INTO   x_order_line_info 
            FROM   xxom_oe_order_lines_all_hist
           WHERE   header_id   = p_header_id
             AND   line_number = p_line_number;
+		          
+      EXCEPTION
+       WHEN OTHERS
+       THEN
+         exiting_sub(p_procedure_name => lc_procedure_name, p_exception_flag => TRUE);
+         RAISE_APPLICATION_ERROR(-20101, 'PROCEDURE: ' || lc_procedure_name || ' SQLCODE: ' || SQLCODE || ' SQLERRM: ' || SQLERRM);
+      END;
 
         logit(p_message => 'RESULT header_id  XXAPPS_HISTORY_QUERY: ' || x_order_line_info.header_id);
         logit(p_message => 'RESULT line_number XXAPPS_HISTORY_QUERY: ' || x_order_line_info.line_number);
@@ -1451,6 +1463,22 @@ AS
     exiting_sub(p_procedure_name => lc_procedure_name);
 
     EXCEPTION
+
+    WHEN NO_DATA_FOUND THEN
+	  BEGIN
+	  
+         SELECT *
+         INTO   x_om_hdr_attribute_info
+         FROM   XXOM_OM_HEADER_ATTRIBUTES_HIST
+         WHERE  header_id = p_header_id;	  
+		          
+      EXCEPTION
+       WHEN OTHERS
+       THEN
+         exiting_sub(p_procedure_name => lc_procedure_name, p_exception_flag => TRUE);
+         RAISE_APPLICATION_ERROR(-20101, 'PROCEDURE: ' || lc_procedure_name || ' SQLCODE: ' || SQLCODE || ' SQLERRM: ' || SQLERRM);
+      END;	
+	
     WHEN OTHERS
     THEN
       exiting_sub(p_procedure_name => lc_procedure_name, p_exception_flag => TRUE);
@@ -1486,6 +1514,20 @@ AS
     exiting_sub(p_procedure_name => lc_procedure_name);
 
     EXCEPTION
+    WHEN NO_DATA_FOUND THEN
+	  BEGIN
+	  
+        SELECT *
+        INTO   x_om_line_attribute_info
+        FROM   XXOM_OM_LINE_ATTRIBUTES_HIST
+        WHERE  line_id = p_line_id;	  
+		          
+      EXCEPTION
+       WHEN OTHERS
+       THEN
+         exiting_sub(p_procedure_name => lc_procedure_name, p_exception_flag => TRUE);
+         RAISE_APPLICATION_ERROR(-20101, 'PROCEDURE: ' || lc_procedure_name || ' SQLCODE: ' || SQLCODE || ' SQLERRM: ' || SQLERRM);
+      END;	
     WHEN OTHERS
     THEN
       exiting_sub(p_procedure_name => lc_procedure_name, p_exception_flag => TRUE);
