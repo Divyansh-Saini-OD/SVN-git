@@ -102,9 +102,11 @@ AS
 -- |                                                 send_billing_email, payload for failure case       |
 -- | 41.0        28-FEB-2020  Kayeed A               NAIT-125675-DataDiscrepancies with renewals billing|
 -- |                                                 add the fix into get_pos_ordt_info                 |
--- |                                                                                                    |                      
+-- |                                                                                                    |
 -- | 42.0        03-MAR-2020  Kayeed A               NAIT-125836-Invoice creation is failing with       |
 -- |                                                 no_data_found trying to find the initial POS order |
+-- | 43.0        06-MAR-2020  Kayeed A               NAIT-126620-We need to pass p_contract_info.       |
+-- |                                                 initial_order_number instead of lr_pos_info.sales_order |
 -- +====================================================================================================+
 
   gc_package_name        CONSTANT all_objects.object_name%TYPE   := 'xx_ar_subscriptions_mt_pkg';
@@ -1345,7 +1347,8 @@ AS
     SELECT *
     INTO   x_order_header_info
     FROM   oe_order_headers_all
-    WHERE  order_number = p_order_number;
+    WHERE  --order_number         = p_order_number; --Commented for NAIT-126620
+	       orig_sys_document_ref  = p_order_number; --Added for NAIT-126620
 
     logit(p_message => 'RESULT header_id: ' || x_order_header_info.header_id);
 
@@ -1356,8 +1359,10 @@ AS
     WHEN NO_DATA_FOUND THEN
          SELECT * 
            INTO   x_order_header_info 
-           FROM   XXOM_OE_ORDER_HEADERS_ALL_HIST
-           WHERE  order_number = p_order_number;
+           FROM   xxom_oe_order_headers_all_hist
+           WHERE  --order_number         = p_order_number; --Commented for NAIT-126620
+		          orig_sys_document_ref  = p_order_number; --Added for NAIT-126620
+		          
 
         logit(p_message => 'RESULT order_number from XXAPPS_HISTORY_QUERY: ' || x_order_header_info.order_number);
         exiting_sub(p_procedure_name => lc_procedure_name); 
@@ -1403,7 +1408,7 @@ AS
     WHEN NO_DATA_FOUND THEN
          SELECT * 
            INTO   x_order_line_info 
-           FROM   XXOM_OE_ORDER_LINES_ALL_HIST
+           FROM   xxom_oe_order_lines_all_hist
           WHERE   header_id   = p_header_id
             AND   line_number = p_line_number;
 
@@ -2653,7 +2658,8 @@ AS
     INTO   x_ordt_info
     FROM   xx_ar_order_receipt_dtl
     WHERE  orig_sys_document_ref = p_order_number 
-      AND  payment_type_code     = 'CREDIT_CARD'; --Added to fix -> NAIT-125675-DataDiscrepancies with renewals billing
+      AND  payment_type_code     = 'CREDIT_CARD'
+      AND  rownum                = 1;--Added to fix -> NAIT-125675 and NAIT-126620
 
     logit(p_message => 'RESULT header_id: ' || x_ordt_info.header_id);
 
@@ -3998,7 +4004,9 @@ AS
                            p_orig_sys_doc_ref => p_contract_info.initial_order_number,
                            x_pos_info         => lr_pos_info);
                            
-              get_order_header_info(p_order_number      => lr_pos_info.sales_order,
+              get_order_header_info(
+			                      --p_order_number      => lr_pos_info.sales_order,              --Commented for NAIT-126620
+			                        p_order_number      => p_contract_info.initial_order_number, --Added for NAIT-126620
                                     x_order_header_info => lr_order_header_info);
             ELSE
               get_order_header_info(p_order_number      => p_contract_info.initial_order_number,
@@ -5840,7 +5848,8 @@ AS
                              p_orig_sys_doc_ref => p_contract_info.initial_order_number,
                              x_pos_info         => lr_pos_info);
                              
-                get_order_header_info(p_order_number      => lr_pos_info.sales_order,
+                get_order_header_info(--p_order_number      => lr_pos_info.sales_order,            --Commented for NAIT-126620.
+									  p_order_number      => p_contract_info.initial_order_number, --Added for NAIT-126620
                                       x_order_header_info => lr_order_header_info);
               ELSE
                 get_order_header_info(p_order_number      => p_contract_info.initial_order_number,
@@ -6822,7 +6831,8 @@ AS
                              p_orig_sys_doc_ref => p_contract_info.initial_order_number,
                              x_pos_info         => lr_pos_info);
                              
-                get_order_header_info(p_order_number      => lr_pos_info.sales_order,
+                get_order_header_info(--p_order_number      => lr_pos_info.sales_order,            --Commented for NAIT-126620.
+									  p_order_number      => p_contract_info.initial_order_number, --Added for NAIT-126620
                                       x_order_header_info => lr_order_header_info);
               ELSE
                 get_order_header_info(p_order_number      => p_contract_info.initial_order_number,
@@ -8704,7 +8714,8 @@ AS
                            p_orig_sys_doc_ref => p_contract_info.initial_order_number,
                            x_pos_info         => lr_pos_info);
                            
-              get_order_header_info(p_order_number      => lr_pos_info.sales_order,
+              get_order_header_info(--p_order_number      => lr_pos_info.sales_order,            --Commented for NAIT-126620.
+									p_order_number      => p_contract_info.initial_order_number, --Added for NAIT-126620
                                     x_order_header_info => lr_order_header_info);
             ELSE
               get_order_header_info(p_order_number      => p_contract_info.initial_order_number,
@@ -9544,7 +9555,8 @@ AS
                            p_orig_sys_doc_ref => p_contract_info.initial_order_number,
                            x_pos_info         => lr_pos_info);
                            
-              get_order_header_info(p_order_number      => lr_pos_info.sales_order,
+              get_order_header_info(--p_order_number      => lr_pos_info.sales_order,            --Commented for NAIT-126620.
+									p_order_number      => p_contract_info.initial_order_number, --Added for NAIT-126620
                                     x_order_header_info => lr_order_header_info);
             ELSE
               get_order_header_info(p_order_number      => p_contract_info.initial_order_number,
@@ -10042,7 +10054,8 @@ AS
                            p_orig_sys_doc_ref => p_contract_info.initial_order_number,
                            x_pos_info         => lr_pos_info);
                            
-              get_order_header_info(p_order_number      => lr_pos_info.sales_order,
+              get_order_header_info(--p_order_number      => lr_pos_info.sales_order,            --Commented for NAIT-126620.
+									p_order_number      => p_contract_info.initial_order_number, --Added for NAIT-126620
                                     x_order_header_info => lr_order_header_info);
             ELSE
               get_order_header_info(p_order_number      => p_contract_info.initial_order_number,
@@ -11000,16 +11013,19 @@ AS
               
               lr_contract_info.cof_trans_id_scm_flag       := 'N';
               lr_contract_info.store_close_flag            := 'N';
-
-              lc_action := 'Insert into xx_ar_contracts';
-
+             
+            --Begin Added for NAIT-126620 4. In the contracts loader program, if the intial_order_number is 20 characters, then always update the external_source as POS
+              IF Length(lr_contract_info.initial_order_number)=20
+              THEN
+               lr_contract_info.external_source := 'POS';
+              END IF;
+            --End for NAIT-126620
+             lc_action := 'Insert into xx_ar_contracts';
               INSERT INTO xx_ar_contracts
               VALUES lr_contract_info;
 
               logit(p_message => lc_action || ' row counts ' || SQL%ROWCOUNT);
-
             END IF;
-
           END IF;
 
           lc_action := 'Update xx_ar_contract_lines';
@@ -12608,7 +12624,8 @@ AS
                              p_orig_sys_doc_ref => lr_contract_info.initial_order_number,
                              x_pos_info         => lr_pos_info);
                              
-                get_order_header_info(p_order_number      => lr_pos_info.sales_order,
+                get_order_header_info(--p_order_number      => lr_pos_info.sales_order,            --Commented for NAIT-126620.
+									  p_order_number      => lr_contract_info.initial_order_number, --Added for NAIT-126620
                                       x_order_header_info => lr_order_header_info);
               ELSE
                 get_order_header_info(p_order_number      => lr_contract_info.initial_order_number,
