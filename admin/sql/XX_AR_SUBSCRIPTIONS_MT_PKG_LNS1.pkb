@@ -1467,8 +1467,17 @@ AS
     WHEN NO_DATA_FOUND THEN
 	  BEGIN
 	  
-         SELECT *
-         INTO   x_om_hdr_attribute_info
+	     --NAIT-125836 As we are not getting entire view from history, limiting to what ever we need	  
+         SELECT   header_id
+                 ,created_by_store_id
+                 ,od_order_type
+                 ,delivery_code
+                 ,ship_to_state
+           INTO   x_om_hdr_attribute_info.header_id
+                 ,x_om_hdr_attribute_info.created_by_store_id
+                 ,x_om_hdr_attribute_info.od_order_type
+                 ,x_om_hdr_attribute_info.delivery_code
+                 ,x_om_hdr_attribute_info.ship_to_state
          FROM   XXOM_OM_HEADER_ATTRIBUTES_HIST
          WHERE  header_id = p_header_id;	  
 		          
@@ -1516,9 +1525,9 @@ AS
     EXCEPTION
     WHEN NO_DATA_FOUND THEN
 	  BEGIN
-	  
-        SELECT *
-        INTO   x_om_line_attribute_info
+	    --NAIT-125836 As we are not getting entire view from history, limiting to what ever we need	  
+        SELECT line_id, consignment_bank_code
+        INTO   x_om_line_attribute_info.line_id, x_om_line_attribute_info.consignment_bank_code
         FROM   XXOM_OM_LINE_ATTRIBUTES_HIST
         WHERE  line_id = p_line_id;	  
 		          
