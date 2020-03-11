@@ -1560,8 +1560,8 @@ IS
   lc_invoice_trx_list   varchar2(4000) default null;
 BEGIN
   -- error if sending more than the allowed number of invoices (the length of trx list should not exceed 150 chars - about 10 invoices)
-  IF (LENGTH(p_invoice_trx_list) > 150) THEN
-    FND_MESSAGE.set_name('XXFIN','XX_ARI_0013_TRX_LIST_SIZE');
+  IF (LENGTH(p_invoice_trx_list) > 2000) THEN
+    FND_MESSAGE.set_name('XXFIN','XX_ARI_0013_001_TRX_LIST_SIZE');
     RAISE_APPLICATION_ERROR(-20013, FND_MESSAGE.get() );
   END IF;
 
