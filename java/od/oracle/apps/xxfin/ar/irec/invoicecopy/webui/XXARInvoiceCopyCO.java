@@ -12,6 +12,7 @@
 // |1.0       26-JUN-2007   BLooman            Initial version                            |
 // |1.1       22-OCT-2009   BThomas            Updated for R1.2 CR619 for consol bills    |
 // |1.3       14-FEB-2017   Madhu Bolli        Defect#40953 - Close all Callablestatements|
+// |1.4       13-FEB-2020   M K Pramod Kumar   Modified for NAIT-119893 to send 50 Invoices for Copy
 // |                                                                                      |
 // +======================================================================================+
 package od.oracle.apps.xxfin.ar.irec.invoicecopy.webui;
@@ -317,7 +318,8 @@ public class XXARInvoiceCopyCO extends OAControllerImpl
         if (consBillNumbersBean!=null) consBillNumbersBean.setText(pageContext,custConsBillList);
 
         String[] trxArray = custConsBillList.split(",");
-        if (trxArray.length > 10) throw new OAException("XXFIN", "XX_ARI_0013_TRX_LIST_SIZE"); // The consolidated bill list contains more than 10.
+        //if (trxArray.length > 10) throw new OAException("XXFIN", "XX_ARI_0013_TRX_LIST_SIZE"); // The consolidated bill list contains more than 10.--Commented for V1.3
+		if (trxArray.length > 50) throw new OAException("XXFIN", "XX_ARI_0013_001_TRX_LIST_SIZE"); // Added for V1.4 NAIT-119893
       }
     }
 
@@ -330,7 +332,8 @@ public class XXARInvoiceCopyCO extends OAControllerImpl
     if ((!bConsolidatedBillCustomer || custConsBillList==null || custConsBillList.equals("")) && custTrxList!=null && !(custTrxList.equals(""))) {
 
       String[] trxArray = custTrxList.split(",");
-      if (trxArray.length > 10) throw new OAException("XXFIN", "XX_ARI_0013_TRX_LIST_SIZE"); // The transaction list contains more than 10 invoices.
+     // if (trxArray.length > 10) throw new OAException("XXFIN", "XX_ARI_0013_TRX_LIST_SIZE"); // The transaction list contains more than 10 invoices.--Commented for V1.3
+	  if (trxArray.length > 50) throw new OAException("XXFIN", "XX_ARI_0013_001_TRX_LIST_SIZE");// Added for V1.4 NAIT-119893
 
       String unreprintedTrxList = getUnreprintableTrxs(acctDetailsAM.getOADBTransaction(), custAccountId, custTrxList);
       if ( unreprintedTrxList != null && unreprintedTrxList.length() > 0 ) throw new OAException("XXFIN", "XX_ARI_0014_CONVERTED_TRXS"); // There is at least one unreprintable trx in the customer trx list.
@@ -386,7 +389,8 @@ public class XXARInvoiceCopyCO extends OAControllerImpl
         if (custConsBillListBean != null && custConsBillListBean.getText(pageContext) != null) custConsBillList = custConsBillListBean.getText(pageContext);
 
         String[] trxArray = custConsBillList.split(",");
-        if (trxArray.length > 10) throw new OAException("XXFIN", "XX_ARI_0013_TRX_LIST_SIZE"); // The transaction list contains more than 10 invoices.
+       // if (trxArray.length > 10) throw new OAException("XXFIN", "XX_ARI_0013_TRX_LIST_SIZE"); // The transaction list contains more than 10 invoices.--Commented for V1.3
+		if (trxArray.length > 50) throw new OAException("XXFIN", "XX_ARI_0013_001_TRX_LIST_SIZE");// Added for V1.4 NAIT-119893
       }
       else {
         // get the Customer Transaction List from the Text Input field
@@ -394,7 +398,8 @@ public class XXARInvoiceCopyCO extends OAControllerImpl
         if (custTrxListBean != null && custTrxListBean.getText(pageContext) != null) custTrxList = custTrxListBean.getText(pageContext);
 
         String[] trxArray = custTrxList.split(",");
-        if (trxArray.length > 10) throw new OAException("XXFIN", "XX_ARI_0013_TRX_LIST_SIZE"); // The transaction list contains more than 10 invoices.
+        //if (trxArray.length > 10) throw new OAException("XXFIN", "XX_ARI_0013_TRX_LIST_SIZE"); // The transaction list contains more than 10 invoices.--Commented for V1.3
+		if (trxArray.length > 50) throw new OAException("XXFIN", "XX_ARI_0013_001_TRX_LIST_SIZE");// Added for V1.4 NAIT-119893
 
         String unreprintedTrxList = getUnreprintableTrxs(acctDetailsAM.getOADBTransaction(), custAccountId, custTrxList);
         if ( unreprintedTrxList != null && unreprintedTrxList.length() > 0 ) throw new OAException("XXFIN", "XX_ARI_0014_CONVERTED_TRXS"); // There is at least one unreprintable trx in the customer trx list.
