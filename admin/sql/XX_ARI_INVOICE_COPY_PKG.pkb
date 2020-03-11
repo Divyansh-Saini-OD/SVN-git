@@ -31,10 +31,12 @@ create or replace PACKAGE BODY      XX_ARI_INVOICE_COPY_PKG AS
 -- | 2.3		 03-MAR-2016  Suresh Naragam   Changes done for the defect#41197                 |
 -- | 2.4		 10-MAR-2016  Madhu Bolli      Defect#41197 - Added new procedure get_invoice(3 params) |
 -- |                                           so that we can return request_id without waiting for Request Complete |
--- | 2.5         21-Apr-2017  Madhu Bolli      Added new proc save_pdf_invoice_copy to store PDF Copy| 
--- | 2.6         25-Apr-2017  Havish Kasina    Replacing the existing program XXCOMFILCOPY with new program XXCOMIRECFILCOPY| 
+-- | 2.5         21-Apr-2017  Madhu Bolli      Added new proc save_pdf_invoice_copy to store PDF Copy|
+-- | 2.6         25-Apr-2017  Havish Kasina    Replacing the existing program XXCOMFILCOPY with new program XXCOMIRECFILCOPY|
 -- | 2.7 		 29-JAN-2019  Havish Kasina    Made changes as per Bill Complete NAIT-81131		|
 -- | 2.8         23-JUN-2019  Dinesh Nagapuri  Replaced DB_Name with V$instance for LNS   		|
+-- | 2.9         10-DEC-2019  Deepak V         Defect-116102 Change made to identify payments from ORDT if record does not exist in OE_PAYMENTS 
+-- | 2.10        11-FEB-2020  M K Pramod Kumar Code Changes to allow 50 Invoices and Consolidated Bills to Email/Fax copy -NAIT-119893
 -- +============================================================================================+
 
 GC_XDO_TEMPLATE_FORMAT      CONSTANT VARCHAR2(30)     := 'PDF';
@@ -393,6 +395,7 @@ RETURN VARCHAR2
 IS
   ln_exists                     NUMBER           DEFAULT NULL;
   lc_undelivered_consbill_list  VARCHAR2(4000)   DEFAULT NULL;
+  lc_invoice_consbill_list VARCHAR2(4000)   DEFAULT NULL;
 
   a_cons_inv_id_array           STRINGARRAY      DEFAULT STRINGARRAY();
 
@@ -408,7 +411,20 @@ BEGIN
   -- ===========================================================================
   -- get the transaction list as an array from the comma-delimited values
   -- ===========================================================================
-  a_cons_inv_id_array := explode( p_string => p_invoice_consbill_list, p_delimiter  => ',' );
+  /*Added for NAIT-119893-To handle 50 Invoices trx list*/
+        BEGIN
+  			select consolidate_bill_list 
+				into lc_invoice_consbill_list
+				from XX_AR_INVOICE_COPY_LIST 
+    		where group_id= p_invoice_consbill_list;
+  		Exception when others then 
+  			lc_invoice_consbill_list:=p_invoice_consbill_list;
+  		end;
+  
+  
+  
+ -- a_cons_inv_id_array := explode( p_string => p_invoice_consbill_list, p_delimiter  => ',' );
+    a_cons_inv_id_array := explode( p_string => lc_invoice_consbill_list, p_delimiter  => ',' );
 
   -- ===========================================================================
   -- for each transaction build the undelivered trx list to return
@@ -442,6 +458,7 @@ END get_not_yet_delivered_conbills;
 -- ===========================================================================
 -- function that evaluates a comma delimited list of transaction numbers and
 -- returns the subset that is not re-printable
+--function modified for V2.10 to handle 50 Invoices list. Parameter p_invoice_trx_list is used as Group Id to get Transaction list from table.
 -- ===========================================================================
 FUNCTION get_unreprintable_trxs
 ( p_cust_account_id        IN   NUMBER    := NULL,
@@ -457,12 +474,25 @@ IS
   lb_reprintable                BOOLEAN;
 
   a_trx_number_array            STRINGARRAY                          := STRINGARRAY();
+  lv_trx_number_array           VARCHAR2(4000);
 
 BEGIN
   -- ===========================================================================
   -- get the transaction list as an array from the comma-delimited values
-  -- ===========================================================================
-  a_trx_number_array := explode( p_string => p_invoice_trx_list, p_delimiter  => ',' );
+  -- =========================================================================== 
+  --Code modified for V2.10--
+  BEGIN
+  select INVOICE_TRX_LIST 
+	into lv_trx_number_array 
+	from XX_AR_INVOICE_COPY_LIST 
+    where group_id= p_invoice_trx_list;
+  Exception when others then 
+  lv_trx_number_array:=p_invoice_trx_list;
+  end;
+  
+  
+  --a_trx_number_array := explode( p_string => p_invoice_trx_list, p_delimiter  => ',' );
+  a_trx_number_array := explode( p_string => lv_trx_number_array, p_delimiter  => ',' );
 
   -- ===========================================================================
   -- for each transaction, build the undelivered trx list to return
@@ -508,9 +538,18 @@ BEGIN
             IF ls_class='INV' THEN
               SELECT COUNT(*)
                 INTO ln_exists
-                FROM OE_PAYMENTS		
+                FROM OE_PAYMENTS
                WHERE header_id      = ls_om_header_id
                  AND prepaid_amount = ln_amount_due_original;
+              
+              -- Condition added as a workaround oe_payment purge     
+              IF ln_exists =0 THEN 
+                select count(1) INTO ln_exists
+                from xx_ar_order_receipt_dtl a                
+                where header_id = ls_om_header_id
+                group by header_id
+                having sum(payment_amount) = ln_amount_due_original;  
+              END IF;
             ELSE -- CM
               SELECT COUNT(*)
                 INTO ln_exists
@@ -585,7 +624,7 @@ IS
 
   v_tab                    FND_CONCURRENT.REQUESTS_TAB_TYPE;
   n_issue_Date             AR_CONS_INV.issue_date%type;   --added for defect 23007
-  
+
   CURSOR c_cust_doc
   ( cp_cust_account_id    IN    NUMBER,cp_issue_Date IN DATE ) -- cp_issue_Date is added for defect 23007
   IS
@@ -838,7 +877,7 @@ BEGIN
       argument3      => '',                          -- Source string
       argument4      => '',                          -- Destination string
       argument5      => 'Y',                         -- Delete Flag
-      argument6      => '$XXFIN_DATA/archive/inbound');  -- Archive File Path                      
+      argument6      => '$XXFIN_DATA/archive/inbound');  -- Archive File Path
   -- ===========================================================================
   -- if request was successful
   -- ===========================================================================
@@ -941,7 +980,7 @@ BEGIN
     DBMS_LOB.FILEOPEN(xmlFile, DBMS_LOB.FILE_READONLY); -- added for defect#31115
 
     put_log_line( 'Write the file to the temporary BLOB' );
-	
+
 	DBMS_LOB.LOADCLOBFROMFILE(l_result, xmlFile, DBMS_LOB.LOBMAXSIZE, src_offset, dest_offset, DBMS_LOB.DEFAULT_CSID, lang_ctx, warning); -- added for defect#31115
 
  /*   BEGIN -- Commented for defect#31115
@@ -1026,11 +1065,11 @@ IS
   n_mbs_document_id        NUMBER              DEFAULT NULL;
 
   l_result                 CLOB;
-  
+
   b_set_print_options      boolean             default false;
   b_send_fax               boolean             default false;
   l_is_valid_non_prod_fax  VARCHAR2(1)         DEFAULT NULL;
-  
+
   l_fax_printer            VARCHAR2(60)        DEFAULT NULL;
   l_fax_print_style        VARCHAR2(60)        DEFAULT NULL;
   l_instance_name          VARCHAR2(15)        DEFAULT NULL;
@@ -1056,8 +1095,8 @@ IS
     SELECT outfile_name
       FROM fnd_concurrent_requests
      WHERE request_id = cp_conc_request_id;
-     
-  CURSOR c_non_prod_fax_check ( p_fax_number IN VARCHAR2) 
+
+  CURSOR c_non_prod_fax_check ( p_fax_number IN VARCHAR2)
   IS
    SELECT 'Y' from (select XFT.target_value1
     FROM   xx_fin_translatedefinition XFTD
@@ -1065,9 +1104,9 @@ IS
     WHERE  XFTD.translate_id = XFT.translate_id
     AND    XFTD.translation_name = 'XX_IREC_FAX_SETTINGS'
     AND    XFT.enabled_flag = 'Y'
-    AND    XFT.source_value1 = 'NON_PROD_FAX_NUMBER') qrlst 
+    AND    XFT.source_value1 = 'NON_PROD_FAX_NUMBER') qrlst
     WHERE  TRIM(TARGET_VALUE1)= p_fax_number;
-     
+
 BEGIN
   put_log_line('Run the Invoice Reprint Program and copy the output.  ');
   put_log_line(' Customer Account Id   = ' || p_cust_account_id );
@@ -1135,7 +1174,7 @@ BEGIN
   --ALSO, A CONTROL HAS BEEN PLACED TO SAFEGAURD NOT TO SEND ANY FAX TO REAL CUSTOMERS
   --FROM ANY NON-PROD INSTANCE. IF ANY ONE WANTS TO TEST A FAX IN NON-PROD INSTANCE,
   --THEY NEED TO SET THAT FAX NUMBER IN 'NON_PROD_FAX_NUMBER' OF 'XX_IREC_FAX_SETTINGS' TRANSLATION
-  IF ( (p_fax_number IS NOT NULL ) OR (trim(p_fax_number) != '')) THEN 
+  IF ( (p_fax_number IS NOT NULL ) OR (trim(p_fax_number) != '')) THEN
       BEGIN
         SELECT XFT.target_value1
         INTO   l_fax_printer
@@ -1156,43 +1195,43 @@ BEGIN
         AND    XFT.enabled_flag = 'Y'
         AND    XFT.source_value1 = 'IREC_FAX_PRINT_STYLE'
         ;
-        
+
         /*
         SELECT INSTANCE_NAME
         INTO   l_instance_name
-        FROM   GV$INSTANCE 
+        FROM   GV$INSTANCE
         ;
         */
-		
+
 		/*
-        select name 
+        select name
         INTO   l_instance_name
-        from v$database; 
+        from v$database;
 		*/
-		
+
 		SELECT SUBSTR(SYS_CONTEXT('USERENV','DB_NAME'),1,8) 		-- Changed from INSTANCE_NAME to DB_NAME
 		INTO l_instance_name
 		FROM dual;
-        
+
         OPEN c_non_prod_fax_check (p_fax_number);
         FETCH c_non_prod_fax_check INTO l_is_valid_non_prod_fax;
-        
+
         IF (c_non_prod_fax_check%ROWCOUNT = 0) THEN
           l_is_valid_non_prod_fax := 'N';
         END IF;
-        
+
         EXCEPTION
         WHEN OTHERS THEN
           put_log_line( 'Cannot Retrieve Fax Printer and style details: ' || n_conc_request_id || '.' );
       END;
-      
+
       IF (l_instance_name = 'GSIPRDGB') THEN
          b_send_fax := true;
       ELSIF ( l_is_valid_non_prod_fax = 'Y') THEN
          b_send_fax := true;
-      ELSE     
+      ELSE
          b_send_fax := false;
-      END IF;  
+      END IF;
 
       IF (b_send_fax) THEN
         b_set_print_options := FND_REQUEST.set_print_options (
@@ -1200,10 +1239,10 @@ BEGIN
                                   style          => l_fax_print_style, --'PDF Publisher Fax',
                                   copies         => 1
                                );
-      END IF;  
-  END IF;  
+      END IF;
+  END IF;
   --END IF DEFECT 41430 CHANGE
-  
+
   put_log_line( 'Submit the Invoice Reprint program (XXFIN, XXARINVIND).' );
 
   -- ===========================================================================
@@ -1422,7 +1461,7 @@ BEGIN
   src_offset number := 1 ;
   dest_offset number := 1 ;
   lang_ctx number := DBMS_LOB.DEFAULT_LANG_CTX;
-  warning integer;	
+  warning integer;
   BEGIN
     -- ===========================================================================
     -- check that the dba directory name exists for utl tmp out
@@ -1439,7 +1478,7 @@ BEGIN
     -- open and read the XML data file
     -- ===========================================================================
     l_file := UTL_FILE.fopen(GC_UTL_TMP_OUT_DIR_NAME,v_copied_xml_file_name,'r');
-	
+
     put_log_line( 'Write the file to the temporary BLOB' );
 
     BEGIN
@@ -1518,6 +1557,7 @@ IS
   x_xdo_request               XX_XDO_REQUESTS%ROWTYPE;
   x_xdo_request_docs_tab      XX_XDO_REQUESTS_API_PKG.gt_xdo_request_docs_tab;
   x_xdo_request_dests_tab     XX_XDO_REQUESTS_API_PKG.gt_xdo_request_dests_tab;
+  lc_invoice_trx_list   varchar2(4000) default null;
 BEGIN
   -- error if sending more than the allowed number of invoices (the length of trx list should not exceed 150 chars - about 10 invoices)
   IF (LENGTH(p_invoice_trx_list) > 150) THEN
@@ -1541,7 +1581,18 @@ BEGIN
   r_xdo_request.xdo_request_name   := GC_CONC_REQUEST_NAME || ' (' || TO_CHAR(SYSDATE,'YYYY/MM/DD HH24:MI:SS') || ')';
 
   -- get the transaction list as an array from the comma-delimited values
-  a_trx_number_array := explode( p_string => p_invoice_trx_list, p_delimiter => ',' );
+  	/*Added for NAIT-119893-To handle 50 Invoices trx list*/
+   	  BEGIN
+  			select consolidate_bill_list 
+				into lc_invoice_trx_list
+				from XX_AR_INVOICE_COPY_LIST 
+    		where group_id= p_invoice_trx_list;
+  		Exception when others then 
+  			lc_invoice_trx_list:=p_invoice_trx_list;
+  		end;
+  
+  --a_trx_number_array := explode( p_string => p_invoice_trx_list, p_delimiter => ',' );
+  a_trx_number_array := explode( p_string => lc_invoice_trx_list, p_delimiter => ',' );
 
   -- for each transaction build the document data and insert the record
   IF (a_trx_number_array.COUNT <= 0) THEN
@@ -1695,6 +1746,7 @@ IS
   x_xdo_request               XX_XDO_REQUESTS%ROWTYPE;
   x_xdo_request_docs_tab      XX_XDO_REQUESTS_API_PKG.gt_xdo_request_docs_tab;
   x_xdo_request_dests_tab     XX_XDO_REQUESTS_API_PKG.gt_xdo_request_dests_tab;
+  lc_invoicelist varchar2(4000);
 BEGIN
 
   -- Validate the fax number starts with the corrent Fax prefix (i.e. 9,1...)
@@ -1725,7 +1777,26 @@ BEGIN
   r_xdo_request_docs_tab(1).xdo_template_code      := p_xdo_template_name;
   r_xdo_request_docs_tab(1).source_key1            := p_invoice_trx_list;
   --r_xdo_request_docs_tab(1).store_document_flag    := 'N';
+  if substr(p_invoice_trx_list,1,6)='INVCPY' then 
+	
+	BEGIN
+		select INVOICE_TRX_LIST 
+			into lc_invoicelist
+			from XX_AR_INVOICE_COPY_LIST 
+		where group_id= p_invoice_trx_list; 
+		r_xdo_request_docs_tab(1).document_file_name     := 'inv-' || REPLACE(REPLACE(SUBSTR(lc_invoicelist,1,28),',','-'),' ');
+		
+	Exception 
+	when others then 
+	put_log_line( 'Multiple Invoice List not found in XX_AR_INVOICE_COPY_LIST for Inv Group ID-' ||p_invoice_trx_list );
+	r_xdo_request_docs_tab(1).document_file_name     := 'inv-' || REPLACE(REPLACE(SUBSTR(p_invoice_trx_list,1,28),',','-'),' ');
+	end;
+	
+  else
   r_xdo_request_docs_tab(1).document_file_name     := 'inv-' || REPLACE(REPLACE(SUBSTR(p_invoice_trx_list,1,28),',','-'),' ');
+  end if;
+  
+  --r_xdo_request_docs_tab(1).document_file_name     := 'inv-' || REPLACE(REPLACE(SUBSTR(p_invoice_trx_list,1,28),',','-'),' ');
   r_xdo_request_docs_tab(1).document_file_type     := 'pdf';
   r_xdo_request_docs_tab(1).document_content_type  := 'application/pdf';
 
@@ -1859,6 +1930,67 @@ BEGIN
   END IF;
 END send_invoices;
 
+-- ===========================================================================
+-- procedure that inserts Transaction list into table for V
+--   it is deferred so that the user does not have to wait on the request.
+--
+--  Assumes checks have already been made to ensure trx/consbill request valid.
+--  The length of the lists should not exceed 150 chars - about 10 invoices.
+--Code changes made to this procedure to allow 50 Transactions for Invoice Copy--NAIT-119893
+-- ===========================================================================
+procedure insert_transaciton_list
+( p_cust_account_id        IN   NUMBER,
+  p_invoice_trx_list       IN   VARCHAR2 ,   
+  p_cons_bill_list         IN   VARCHAR2 ,  
+  p_email_flag             IN   VARCHAR2 ,  
+  p_email_address          IN   VARCHAR2 ,  
+  p_fax_flag               IN   VARCHAR2 ,  
+  p_fax_number             IN   VARCHAR2 ,  
+  p_print_flag             IN   VARCHAR2 ,  
+  p_printer_location       IN   VARCHAR2 ,
+  p_group_id               OUT  VARCHAR2
+  )
+IS
+lv_group_id_seq number;
+
+Begin
+
+lv_group_id_seq:=XX_AR_INVOICE_COPY_LIST_S.nextval;
+p_group_id:=lv_group_id_seq;
+
+		insert into XX_AR_INVOICE_COPY_LIST( 
+			GROUP_ID	               ,
+			CUST_ACCOUNT_ID            ,
+			INVOICE_TRX_LIST           ,
+			CONSOLIDATE_BILL_LIST      ,
+			EMAIL_FLAG                 ,
+			EMAIL_ADDRESS 			   ,
+			FAX_FLAG 				   ,
+			FAX_NUMBER 				   ,
+			PRINT_FLAG 				   ,
+			PRINTER_LOCATION 		   ,
+			CREATION_DATE 			   ,
+			CREATED_BY  )
+		values
+			(lv_group_id_seq           ,
+			p_cust_account_id          ,
+			p_invoice_trx_list         ,
+			p_cons_bill_list           ,
+			p_email_flag               ,
+			p_email_address            ,
+			p_fax_flag                 ,
+			p_fax_number               ,
+			p_print_flag               ,
+			p_printer_location         ,
+			sysdate                    ,
+			FND_GLOBAL.user_id		                
+			);            
+   
+Exception when others  then 
+  	p_group_id:=null;		 
+END  insert_transaciton_list;
+  
+  
 
 -- ===========================================================================
 -- function that sends invoices to the customer (returns conc request id)
@@ -1866,6 +1998,7 @@ END send_invoices;
 --
 --  Assumes checks have already been made to ensure trx/consbill request valid.
 --  The length of the lists should not exceed 150 chars - about 10 invoices.
+--Code changes made to this procedure to allow 50 Transactions for Invoice Copy--NAIT-119893
 -- ===========================================================================
 FUNCTION send_invoices_deferred
 ( p_cust_account_id        IN   NUMBER,
@@ -1894,20 +2027,43 @@ IS
 
   v_request_name           VARCHAR2(200)       DEFAULT NULL;
   l_dup_req                NUMBER;
-  
+
   b_add_layout             boolean             default false;
   b_set_print_options      boolean             default false;
+  lv_group_id number;
+  lvp_invoice_trx_list  varchar2(4000) default null;
+  lvp_cons_bill_list  varchar2(4000) default null;
 
+	
+	cursor cr_inv_copy_list
+	is
+	select request_id From 
+	XX_AR_INVOICE_COPY_LIST
+	where 1=1
+	and created_by=FND_GLOBAL.user_id
+	and creation_date>sysdate-1
+	and NVL(CUST_ACCOUNT_ID , -1) = NVL(p_cust_account_id, -1)
+	and NVL(invoice_trx_list,-1)=NVL(p_invoice_trx_list, -1)
+	and NVL(consolidate_bill_list,-1)=NVL(p_cons_bill_list, -1)
+	and NVL(EMAIL_FLAG, -1) = NVL(p_email_flag, -1)
+    and NVL(EMAIL_ADDRESS, -1) = NVL(p_email_address, -1)
+    and NVL(FAX_FLAG, -1) = NVL(p_fax_flag, -1)
+    and NVL(FAX_NUMBER , -1) = NVL(p_fax_number, -1)
+    and NVL(PRINT_FLAG , -1) = NVL(p_print_flag, -1)
+    and NVL(PRINTER_LOCATION, -1) = NVL(p_printer_location, -1) ;
+  
 BEGIN
       --- Validate that the similar request raised before and still not completed.
-  
-  l_dup_req := 0;
-  select count(1) INTO l_dup_req
-  from fnd_concurrent_requests 
+
+    
+	  
+   /* Commented for NAIT-119893, V2.10*/
+  /*select count(1) INTO l_dup_req
+  from fnd_concurrent_requests
   where 1=1
     and concurrent_program_id = (select concurrent_program_id from fnd_concurrent_programs_vl where concurrent_program_name = 'XX_AR_SEND_INV_COPY' and application_id = 20043)
     and phase_code <> 'C'
-    and requested_by = FND_GLOBAL.user_id 
+    and requested_by = FND_GLOBAL.user_id
     and NVL(argument1, -1) = NVL(p_cust_account_id, -1)
     and NVL(argument2, -1) = NVL(p_invoice_trx_list, -1)
     and NVL(argument3, -1) = NVL(p_cons_bill_list, -1)
@@ -1917,29 +2073,68 @@ BEGIN
     and NVL(argument7, -1) = NVL(p_fax_number, -1)
     and NVL(argument8, -1) = NVL(p_print_flag, -1)
     and NVL(argument9, -1) = NVL(p_printer_location, -1)
-	and actual_start_date > sysdate-1;
-    
-    IF l_dup_req > 0 THEN
+	and actual_start_date > sysdate-1; 
+	    IF l_dup_req > 0 THEN
 		-- Catch this exception in Java file 'InvoiceCopyAMImpl.java'  -- 2.2
         RAISE_APPLICATION_ERROR( -20300, 'XX_ARI_0020_DUP_REQ_INV_EML' );
-    END IF;
+    END IF;*/
+	
+
+	l_dup_req := 0;
+	for inv_list in cr_inv_copy_list loop
+	   
+	        
+	    select count(1) INTO l_dup_req
+		from fnd_concurrent_requests
+		where 1=1
+		and request_id=inv_list.request_id
+		and concurrent_program_id = (select concurrent_program_id from fnd_concurrent_programs_vl where concurrent_program_name = 'XX_AR_SEND_INV_COPY' and application_id = 20043)
+		and phase_code <> 'C'
+		and requested_by = FND_GLOBAL.user_id
+		and actual_start_date > sysdate-1; 
+		
+	    IF l_dup_req > 0 THEN
+		-- Catch this exception in Java file 'InvoiceCopyAMImpl.java'  -- 2.2
+        RAISE_APPLICATION_ERROR( -20300, 'XX_ARI_0020_DUP_REQ_INV_EML' );
+        END IF;
+		
+		select count(1) INTO l_dup_req
+		from fnd_concurrent_requests
+		where 1=1
+		and concurrent_program_id = (select concurrent_program_id from fnd_concurrent_programs_vl where concurrent_program_name = 'XX_XDO_REQUEST' and application_id = 20043)
+		and phase_code <> 'C'
+		and requested_by = FND_GLOBAL.user_id
+		and parent_request_id =inv_list.request_id;
+		
+	    IF l_dup_req > 0 THEN
+		-- Catch this exception in Java file 'InvoiceCopyAMImpl.java'
+        RAISE_APPLICATION_ERROR( -20301, 'XX_ARI_0020_DUP_REQ_INV_EML' );
+		END IF;
+		
+	 end loop;
+	   
+
+	
+	
+
+
 
 	--- Validate that if the child request not yet completed and parent request completes.
 	-- In the above case, throw validation error
-	
-	l_dup_req := 0;	
+
+/*	l_dup_req := 0;
 	select count(1) INTO l_dup_req
 	from fnd_concurrent_requests
 	where 1=1
 	  and concurrent_program_id = (select concurrent_program_id from fnd_concurrent_programs_vl where concurrent_program_name = 'XX_XDO_REQUEST' and application_id = 20043)
 	  and phase_code <> 'C'
-	  and requested_by = FND_GLOBAL.user_id 
+	  and requested_by = FND_GLOBAL.user_id
 	  and parent_request_id in (
 	  select request_id
-	  from fnd_concurrent_requests 
+	  from fnd_concurrent_requests
 	  where 1=1
 		and concurrent_program_id = (select concurrent_program_id from fnd_concurrent_programs_vl where concurrent_program_name = 'XX_AR_SEND_INV_COPY' and application_id = 20043)
-		and requested_by = FND_GLOBAL.user_id 
+		and requested_by = FND_GLOBAL.user_id
 	    and NVL(argument1, -1) = NVL(p_cust_account_id, -1)
 		and NVL(argument2, -1) = NVL(p_invoice_trx_list, -1)
 		and NVL(argument3, -1) = NVL(p_cons_bill_list, -1)
@@ -1948,19 +2143,48 @@ BEGIN
 		and NVL(argument6, -1) = NVL(p_fax_flag, -1)
 		and NVL(argument7, -1) = NVL(p_fax_number, -1)
 		and NVL(argument8, -1) = NVL(p_print_flag, -1)
-		and NVL(argument9, -1) = NVL(p_printer_location, -1)  
+		and NVL(argument9, -1) = NVL(p_printer_location, -1)
 		and actual_start_date > sysdate-1
-	  );  
+	  );
     IF l_dup_req > 0 THEN
 		-- Catch this exception in Java file 'InvoiceCopyAMImpl.java'
         RAISE_APPLICATION_ERROR( -20301, 'XX_ARI_0020_DUP_REQ_INV_EML' );
-    END IF;	  
+    END IF; */
 
 
   IF (FND_GLOBAL.CONC_REQUEST_ID IS NOT NULL) THEN -- set child flag if this is a child request
     b_sub_request := TRUE;
   END IF;
 
+   /* Added code changes to allow 50 Transactions for Invoice Copy--NAIT-119893*/
+  
+  insert_transaciton_list(p_cust_account_id    , 
+                          p_invoice_trx_list   , 
+                          p_cons_bill_list     , 
+                          p_email_flag         , 
+                          p_email_address      , 
+                          p_fax_flag           , 
+                          p_fax_number         , 
+                          p_print_flag         , 
+                          p_printer_location    ,
+						  lv_group_id);
+		commit;			  
+			
+
+   
+   if lv_group_id is not null and p_invoice_trx_list is not null 
+   then    
+		lvp_invoice_trx_list:=lv_group_id;
+   end if;
+   
+   if lv_group_id is not null and p_cons_bill_list is not null 
+   then    
+		lvp_cons_bill_list:=lv_group_id;
+   end if;
+   
+ /* Added code changes to allow 50 Transactions for Invoice Copy--NAIT-119893*/  
+  
+  
   -- ===========================================================================
   -- submit the request (OD: AR Send Invoice Copy)
   -- ===========================================================================
@@ -1972,14 +2196,14 @@ BEGIN
       start_time     => NULL,                    -- request submit time
       sub_request    => b_sub_request,           -- is this a sub-request?
       argument1      => p_cust_account_id,       -- Customer Account Id
-      argument2      => p_invoice_trx_list,      -- Invoice Trx List
-      argument3      => p_cons_bill_list,        -- Consolidated Bill List
+      argument2      => lvp_invoice_trx_list , ---p_invoice_trx_list,      -- Invoice Trx List--Modified for V2.10 
+      argument3      => lvp_cons_bill_list, --p_cons_bill_list,        -- Consolidated Bill List--Modified for V2.10 
       argument4      => p_email_flag,            -- Email Flag (Y/N)
       argument5      => p_email_address,         -- Email Address
       argument6      => p_fax_flag,              -- Fax Flag (Y/N)
       argument7      => p_fax_number,            -- Fax Number
       argument8      => p_print_flag,            -- Print Flag (Y/N)
-      argument9      => p_printer_location );    -- Printer Queue - Linux Location    
+      argument9      => p_printer_location );    -- Printer Queue - Linux Location
   IF (n_conc_request_id > 0) THEN -- request was successful
 
     IF (b_sub_request) THEN -- if a child request, then update it for concurrent mgr to process
@@ -1988,6 +2212,9 @@ BEGIN
              status_code = 'I'
        WHERE request_id = n_conc_request_id;
     END IF;
+	
+	Update XX_AR_INVOICE_COPY_LIST set request_id=n_conc_request_id
+	where group_id=lv_group_id;
 
     COMMIT; -- must commit work so that the concurrent manager polls the request
 
@@ -2108,9 +2335,9 @@ IS
   v_status_desc            VARCHAR2(80)   := NULL;
   v_tab                    FND_CONCURRENT.REQUESTS_TAB_TYPE;
   ln_request_wait_time     NUMBER;
-  
+
   l_dup_req_id			   NUMBER;
-  
+
 BEGIN
 
   x_url := NULL;
@@ -2121,7 +2348,7 @@ BEGIN
     INTO n_cust_account_id,
 	     n_issue_Date  -- Added for 23007
     FROM AR_CONS_INV
-   WHERE 1 =1 
+   WHERE 1 =1
      -- AND cons_inv_id=p_cons_inv_id -- Commented for Bill Complete as per Version 2.7
 	 AND cons_billing_number = p_cons_inv_id; -- Added for Bill Complete as per Version 2.7
 
@@ -2140,17 +2367,17 @@ BEGIN
 
 
   -- Begin of Duplicate Request Validation
-  
+
   l_dup_req_id := -1;
-  
+
   BEGIN
 
   select request_id INTO l_dup_req_id
-  from fnd_concurrent_requests 
+  from fnd_concurrent_requests
   where 1=1
     and concurrent_program_id = (select concurrent_program_id from fnd_concurrent_programs_vl where concurrent_program_name = 'XXARRPSUMMBILL' and application_id = 20043)
     and phase_code <> 'C'
-    and requested_by = FND_GLOBAL.user_id 
+    and requested_by = FND_GLOBAL.user_id
     and argument1  = 'N'
 	and argument3  = n_cust_account_id
     and argument9  = p_cons_inv_id
@@ -2161,21 +2388,21 @@ BEGIN
     and argument20 = 1
 	and request_date > sysdate-1
 	and rownum <= 1;
-   
+
    EXCEPTION
-	WHEN NO_DATA_FOUND THEN    
-		l_dup_req_id := -2; 
-	WHEN OTHERS THEN    
-		l_dup_req_id := -3;  
+	WHEN NO_DATA_FOUND THEN
+		l_dup_req_id := -2;
+	WHEN OTHERS THEN
+		l_dup_req_id := -3;
    END;
-   
+
     IF l_dup_req_id > 0 THEN
 		x_request_id := l_dup_req_id;
 		GC_OD_IS_DUPLICATE_CONC_REQ := 'Y';
-		return;		
-    END IF;  
-  
-  -- End of Duplicate Request Validation  
+		return;
+    END IF;
+
+  -- End of Duplicate Request Validation
 
 
   n_conc_request_id :=
@@ -2215,18 +2442,18 @@ BEGIN
 
   IF (n_conc_request_id > 0) THEN
     COMMIT; -- must commit work so that the concurrent manager polls the request
-	
+
 	IF GC_OD_GET_INV_WAIT_FLAG = 'N' THEN
 		x_request_id := n_conc_request_id;
 		return;
-	END IF;	
+	END IF;
   ELSE
     PUT_ERR_LINE('Failed to launch concurrent program XXARRPSUMMBILL-- user:' || fnd_global.user_id || ' resp: ' || fnd_global.resp_id || ' appl: ' || fnd_global.resp_appl_id, n_cust_account_id);
     FND_MESSAGE.raise_error;
   END IF;
 
   ln_request_wait_time := NVL(FND_PROFILE.VALUE('OD_EBILL_PDF_COPY_WAIT_REQUEST_TIME'),4);
-  
+
   IF NOT FND_CONCURRENT.wait_for_request
     ( request_id    => n_conc_request_id,
       interval      => 5,                      -- check every 5 secs
@@ -2325,7 +2552,7 @@ IS
   v_status_code            VARCHAR2(30)   := NULL;
   v_status_desc            VARCHAR2(80)   := NULL;
   ln_request_wait_time     NUMBER;
-  
+
   l_dup_req_id			   NUMBER;
 BEGIN
 
@@ -2352,19 +2579,19 @@ BEGIN
   EXCEPTION WHEN NO_DATA_FOUND THEN
     n_mbs_document_id := GN_DEFAULT_DOCUMENT_ID;
   END;
-  
+
   -- Begin of Duplicate Request Validation
-  
+
   l_dup_req_id := -1;
-  
+
   BEGIN
-  
+
   select request_id INTO l_dup_req_id
-  from fnd_concurrent_requests 
+  from fnd_concurrent_requests
   where 1=1
     and concurrent_program_id = (select concurrent_program_id from fnd_concurrent_programs_vl where concurrent_program_name = 'XXARINVIND' and application_id = 20043)
     and phase_code <> 'C'
-    and requested_by = FND_GLOBAL.user_id 
+    and requested_by = FND_GLOBAL.user_id
     and argument1 = n_cust_account_id
     and argument5 = 'N'
     and argument6 = n_mbs_document_id
@@ -2372,23 +2599,23 @@ BEGIN
     and argument9 = 'HED'
 	and request_date > sysdate-1
 	and rownum <= 1;
-   
+
    EXCEPTION
-	WHEN NO_DATA_FOUND THEN    
-		l_dup_req_id := -2; 
+	WHEN NO_DATA_FOUND THEN
+		l_dup_req_id := -2;
 	WHEN OTHERS THEN
-        l_dup_req_id := -3;  
+        l_dup_req_id := -3;
    END;
-   
+
     IF l_dup_req_id > 0 THEN
 		x_request_id := l_dup_req_id;
 		GC_OD_IS_DUPLICATE_CONC_REQ := 'Y';
-		return;		
-    END IF;  
-  
+		return;
+    END IF;
+
   -- End of Duplicate Request Validation
-  
-  
+
+
 
   SELECT LOWER(iso_language) user_language,
          iso_territory user_territory
@@ -2424,7 +2651,7 @@ BEGIN
 
   IF (n_conc_request_id > 0) THEN
     COMMIT; -- must commit work so that the concurrent manager polls the request
-	
+
 	IF GC_OD_GET_INV_WAIT_FLAG = 'N' THEN
 		x_request_id := n_conc_request_id;
 		return;
@@ -2433,7 +2660,7 @@ BEGIN
     PUT_ERR_LINE('Failed to launch concurrent program XXARINVIND-- user:' || fnd_global.user_id || ' resp: ' || fnd_global.resp_id || ' appl: ' || fnd_global.resp_appl_id, n_cust_account_id);
     FND_MESSAGE.raise_error;
   END IF;
-  
+
   ln_request_wait_time := NVL(FND_PROFILE.VALUE('OD_EBILL_PDF_COPY_WAIT_REQUEST_TIME'),4);
 
   IF NOT FND_CONCURRENT.wait_for_request
@@ -2497,19 +2724,19 @@ BEGIN
     ELSE                        -- Consolidated Bill
       run_prog_to_get_cons_bill(-p_customer_trx_id, sURL, n_request_id);
     END IF;
-	
+
 	IF n_request_id > 0 AND sURL is NULL THEN
 		GN_OD_GET_INV_CONC_REQ_ID := n_request_id;
 		return;
 	END IF;
-	
+
 
     IF n_request_id>0 AND length(sURL)>0 THEN BEGIN
       DBMS_LOB.createtemporary(x_blob, FALSE);
 
       -- Changes for SSL/TSL Upgrade Start
         BEGIN
-          SELECT 
+          SELECT
              TARGET_VALUE1
             ,TARGET_VALUE2
             into
@@ -2520,9 +2747,9 @@ BEGIN
           WHERE 1=1
           and   DEF.TRANSLATE_ID = VAL.TRANSLATE_ID
           and   DEF.TRANSLATION_NAME='XX_FIN_IREC_TOKEN_PARAMS'
-          and   VAL.SOURCE_VALUE1 = 'WALLET_LOCATION'     
+          and   VAL.SOURCE_VALUE1 = 'WALLET_LOCATION'
           and   VAL.ENABLED_FLAG = 'Y'
-          and   SYSDATE between VAL.START_DATE_ACTIVE and nvl(VAL.END_DATE_ACTIVE, SYSDATE+1); 
+          and   SYSDATE between VAL.START_DATE_ACTIVE and nvl(VAL.END_DATE_ACTIVE, SYSDATE+1);
         EXCEPTION WHEN OTHERS THEN
           fnd_log.STRING (fnd_log.level_statement, 'XX_FIN_IREC_CC_TOKEN_PKG.GET_TOKEN', 'Wallet Location Not Found' );
           l_wallet_location := NULL;
@@ -2603,7 +2830,7 @@ BEGIN
 		x_request_id := GN_OD_GET_INV_CONC_REQ_ID;
 		x_is_duplicate_creq := GC_OD_IS_DUPLICATE_CONC_REQ;
 	END IF;
-	
+
 	GC_OD_GET_INV_WAIT_FLAG := NULL;
 	GN_OD_GET_INV_CONC_REQ_ID := NULL;
 	GC_OD_IS_DUPLICATE_CONC_REQ  := NULL;
@@ -2629,19 +2856,19 @@ END;
 -- |                                                                                            |
 -- |  Parameters:                                                                               |
 -- |    p_no_of_days              IN -- number days                                             |
--- +============================================================================================+		
+-- +============================================================================================+
 PROCEDURE purge_xdo_requests_data(
 	p_error_buff  OUT  VARCHAR2,
 	p_ret_code    OUT  NUMBER,
 	p_no_of_days  IN   NUMBER
 	)
 IS
-    CURSOR c_xdo_requests 
+    CURSOR c_xdo_requests
 	IS
 	SELECT XDO_REQUEST_ID
 	FROM XX_XDO_REQUESTS
 	WHERE creation_date < trunc(sysdate) - p_no_of_days;
-	
+
 	ln_xdo_request_docs_count   NUMBER := 0;
 	ln_xdo_request_dests_count 	NUMBER := 0;
 	ln_xdo_requests_count       NUMBER := 0;
@@ -2658,12 +2885,12 @@ BEGIN
 
 			DELETE FROM XX_XDO_REQUEST_DOCS
 			WHERE xdo_request_id = i.xdo_request_id;
-		
+
 			ln_xdo_request_docs_count := ln_xdo_request_docs_count + SQL%ROWCOUNT;
-		
+
 			DELETE FROM XX_XDO_REQUESTS
 			WHERE xdo_request_id = i.xdo_request_id;
-		
+
 			ln_xdo_requests_count := ln_xdo_requests_count + SQL%ROWCOUNT;
 		EXCEPTION WHEN OTHERS THEN
 			fnd_file.put_line(fnd_file.LOG, 'Exception raised when deleting the xdo request id : '||i.xdo_request_id||' Error : '||SQLERRM);
@@ -2671,17 +2898,17 @@ BEGIN
 	END LOOP;
 
 	COMMIT;
-	
+
 	fnd_file.put_line(fnd_file.LOG, 'Number of records deleted from XX_XDO_REQUEST_DESTS : '||ln_xdo_request_dests_count);
 	fnd_file.put_line(fnd_file.LOG, 'Number of records deleted from XX_XDO_REQUEST_DOCS : '||ln_xdo_request_docs_count);
 	fnd_file.put_line(fnd_file.LOG, 'Number of records deleted from XX_XDO_REQUESTS : '||ln_xdo_requests_count);
-	
+
 	fnd_file.put_line(fnd_file.LOG,
 					  'Deleting the records from XX_XDO_REQUEST_DOCS_WEB');
 	BEGIN
 	  DELETE FROM XX_XDO_REQUEST_DOCS_WEB
 	  WHERE creation_date < trunc(sysdate) - p_no_of_days;
-	
+
 	  fnd_file.put_line(fnd_file.LOG, 'Number of records deleted from XX_XDO_REQUEST_DOCS_WEB : '||SQL%ROWCOUNT);
 	END;
 
@@ -2707,7 +2934,7 @@ PROCEDURE save_pdf_invoice_copy(
   x_ret_code    OUT  NUMBER,
 	p_customer_trx_id      IN   VARCHAR2,
 	p_request_id           IN   NUMBER
-) 
+)
 IS
 	l_blob      BLOB;
 	l_status_code VARCHAR2(1);
@@ -2715,15 +2942,15 @@ IS
 	l_url 		VARCHAR2(500);
 	l_is_already_exist VARCHAR2(1) := 'Y';
 	l_request_id NUMBER;
-  
+
   v_tab FND_CONCURRENT.REQUESTS_TAB_TYPE;
 
   l_raw                  RAW(32767);
   l_http_request         UTL_HTTP.req;
   l_http_response        UTL_HTTP.resp;
   l_wallet_location     VARCHAR2(256)   := NULL;
-  l_password            VARCHAR2(256)   := NULL;  
-  
+  l_password            VARCHAR2(256)   := NULL;
+
 
 
 BEGIN
@@ -2736,7 +2963,7 @@ BEGIN
   END;
 **/l_is_already_exist := 'N';
   IF l_is_already_exist = 'N' THEN
-  
+
 	  IF p_customer_trx_id > 0 THEN
 		l_request_id := p_request_id;
 	  ELSE  -- Consolidated Invoice
@@ -2749,11 +2976,11 @@ BEGIN
 			l_request_id := v_tab(1).request_id;
 		  END IF;
 	  END IF;
-  
+
 	  SELECT phase_code, status_code INTO l_phase_code, l_status_code
 	  FROM fnd_concurrent_requests
-	  WHERE request_id = l_request_id; 
-	  
+	  WHERE request_id = l_request_id;
+
 	  l_url := null;
 	  --IF (l_status_code <> 'NORMAL') THEN
 	  IF (l_phase_code <> 'C' or l_status_code <> 'C') THEN
@@ -2763,7 +2990,7 @@ BEGIN
 
 	  ELSE
       l_url := FND_WEBFILE.GET_URL( FND_WEBFILE.REQUEST_OUT, l_request_id, null, null, 10, null, null, null, null );
-  
+
       IF (NOT fnd_profile.defined('APPS_CGI_AGENT')) THEN -- external iRec server not accessible inside firewall; need to target internal server
         SELECT substr(V.profile_option_value, 1,  instr(V.profile_option_value, '/', 1, 3)-1) || substr(l_url, instr(l_url, '/', 1, 3))
         INTO l_url
@@ -2773,7 +3000,7 @@ BEGIN
          AND O.profile_option_name='APPS_WEB_AGENT'
         WHERE level_id=10001 AND level_value=0 AND rownum=1;
       END IF;
-  
+
 	  END IF;
 
     BEGIN
@@ -2781,7 +3008,7 @@ BEGIN
 
 		  -- Changes for SSL/TSL Upgrade Start
 			BEGIN
-			  SELECT 
+			  SELECT
 				 TARGET_VALUE1
 				,TARGET_VALUE2
 				into
@@ -2792,9 +3019,9 @@ BEGIN
 			  WHERE 1=1
 			  and   DEF.TRANSLATE_ID = VAL.TRANSLATE_ID
 			  and   DEF.TRANSLATION_NAME='XX_FIN_IREC_TOKEN_PARAMS'
-			  and   VAL.SOURCE_VALUE1 = 'WALLET_LOCATION'     
+			  and   VAL.SOURCE_VALUE1 = 'WALLET_LOCATION'
 			  and   VAL.ENABLED_FLAG = 'Y'
-			  and   SYSDATE between VAL.START_DATE_ACTIVE and nvl(VAL.END_DATE_ACTIVE, SYSDATE+1); 
+			  and   SYSDATE between VAL.START_DATE_ACTIVE and nvl(VAL.END_DATE_ACTIVE, SYSDATE+1);
 			EXCEPTION WHEN OTHERS THEN
 			  fnd_log.STRING (fnd_log.level_statement, 'XX_FIN_IREC_CC_TOKEN_PKG.GET_TOKEN', 'Wallet Location Not Found' );
 			  l_wallet_location := NULL;
@@ -2839,7 +3066,7 @@ BEGIN
           NULL; -- cache and purge are not critical so do not fail
         END;
 		  END IF;
-      
+
 		  EXCEPTION WHEN OTHERS THEN
 			PUT_ERR_LINE('Other exception in get_invoice: ' || SQLERRM,p_customer_trx_id,fnd_global.user_id,l_url);
 			UTL_HTTP.end_response(l_http_response);
@@ -2853,4 +3080,5 @@ END save_pdf_invoice_copy;
 
 END XX_ARI_INVOICE_COPY_PKG;
 /
-SHOW ERRORS;
+show errors;
+exit;
