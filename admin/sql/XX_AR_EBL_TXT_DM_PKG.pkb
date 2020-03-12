@@ -37,6 +37,7 @@ AS
   -- |      1.16 15-May-2018  Aniket J     CG         Changes for Requirement  #NAIT-29364|
   -- |      1.17 09-JUN-2018  Thilak       CG         Changes for Requirement#NAIT-17796  |
   -- |      1.18 16-JUL-2018  Aniket J     CG         Changes for Requirement#NAIT-50280  |
+  -- |      1.19 13-MAR-2020  Abhishek Kumar          Modification in order by-NAIT-119176|
   -- +====================================================================================+
 PROCEDURE XX_AR_EBL_TXT_MASTER_PROG(
     x_error_buff OUT VARCHAR2 ,
@@ -3366,12 +3367,12 @@ IS
             -- Framing the SQL to update the line number in the staging table
             IF lc_get_dist_record_type = 'HDR' THEN
             --  lc_hdr_sort_columns     := xx_ar_ebl_render_txt_pkg.get_sort_columns(p_cust_doc_id,lc_get_dist_record_type);
-              lc_hdr_stg_query        := 'SELECT STG_ID, CUSTOMER_TRX_ID FROM XX_AR_EBL_TXT_DTL_STG WHERE file_id = '||p_file_id||' AND cust_doc_id = '||p_cust_doc_id||' AND REC_TYPE != '||'''FID'''||' AND TRX_TYPE = '||''''||lc_get_dist_record_type||''''||' ORDER BY '||lc_hdr_sort_columns||' CUSTOMER_TRX_ID, STG_ID, trx_line_number';
+              lc_hdr_stg_query        := 'SELECT STG_ID, CUSTOMER_TRX_ID FROM XX_AR_EBL_TXT_DTL_STG WHERE file_id = '||p_file_id||' AND cust_doc_id = '||p_cust_doc_id||' AND REC_TYPE != '||'''FID'''||' AND TRX_TYPE = '||''''||lc_get_dist_record_type||''''||' ORDER BY '||lc_hdr_sort_columns||' CUSTOMER_TRX_ID, trx_line_number';  --Changed for NAIT-119176
               lc_err_location_msg     := 'Staging table Query for Header '||lc_hdr_stg_query;
               XX_AR_EBL_COMMON_UTIL_PKG.PUT_LOG_LINE(lb_debug_flag ,FALSE ,lc_err_location_msg );
             ELSIF lc_get_dist_record_type = 'LINE' THEN
             --  lc_line_sort_columns       := xx_ar_ebl_render_txt_pkg.get_sort_columns(p_cust_doc_id,lc_get_dist_record_type);
-              lc_line_stg_query          := 'SELECT STG_ID, CUSTOMER_TRX_ID, CUSTOMER_TRX_LINE_ID FROM XX_AR_EBL_TXT_DTL_STG WHERE file_id = '||p_file_id||' AND cust_doc_id = '||p_cust_doc_id||' AND REC_TYPE != '||'''FID'''||' AND TRX_TYPE = '||''''||lc_get_dist_record_type||''''||' AND customer_trx_id=nvl(:pcustomer_trx_id,customer_trx_id)'||' ORDER BY '||lc_line_sort_columns||' CUSTOMER_TRX_ID, STG_ID, trx_line_number';
+              lc_line_stg_query          := 'SELECT STG_ID, CUSTOMER_TRX_ID, CUSTOMER_TRX_LINE_ID FROM XX_AR_EBL_TXT_DTL_STG WHERE file_id = '||p_file_id||' AND cust_doc_id = '||p_cust_doc_id||' AND REC_TYPE != '||'''FID'''||' AND TRX_TYPE = '||''''||lc_get_dist_record_type||''''||' AND customer_trx_id=nvl(:pcustomer_trx_id,customer_trx_id)'||' ORDER BY '||lc_line_sort_columns||' CUSTOMER_TRX_ID, trx_line_number'; --Changed for NAIT-119176
          -- Start Commented by Thilak CG on 01-MAR-2018 for Defect#29739
 		    /*IF lc_target_value3         = 'Y' THEN
                 lc_line_stg_query        := 'SELECT STG_ID, CUSTOMER_TRX_ID, CUSTOMER_TRX_LINE_ID FROM XX_AR_EBL_TXT_DTL_STG WHERE file_id = '||p_file_id||' AND cust_doc_id = '||p_cust_doc_id||' AND REC_TYPE != '||'''FID'''||' AND REC_TYPE = '||'''DT'''||' AND TRX_TYPE = '||''''||lc_get_dist_record_type||''''||' AND customer_trx_id=nvl(:pcustomer_trx_id,customer_trx_id)'||' ORDER BY '||lc_line_sort_columns||' CUSTOMER_TRX_ID, STG_ID, trx_line_number';
@@ -3381,7 +3382,7 @@ IS
               XX_AR_EBL_COMMON_UTIL_PKG.PUT_LOG_LINE(lb_debug_flag ,FALSE ,lc_err_location_msg );
             ELSIF lc_get_dist_record_type = 'DIST' THEN
             --  lc_dist_line_sort_columns  := xx_ar_ebl_render_txt_pkg.get_sort_columns(p_cust_doc_id,lc_get_dist_record_type);
-              lc_dist_stg_query          := 'SELECT STG_ID FROM XX_AR_EBL_TXT_DTL_STG WHERE file_id = '||p_file_id||' AND cust_doc_id = '||p_cust_doc_id||' AND REC_TYPE != '||'''FID'''||' AND TRX_TYPE = '||''''||lc_get_dist_record_type||''''||' AND customer_trx_id=nvl(:pcustomer_trx_id,customer_trx_id)'||' AND customer_trx_line_id=:pcustomer_trx_line_id'||' ORDER BY '||lc_dist_line_sort_columns||' STG_ID, trx_line_number';
+              lc_dist_stg_query          := 'SELECT STG_ID FROM XX_AR_EBL_TXT_DTL_STG WHERE file_id = '||p_file_id||' AND cust_doc_id = '||p_cust_doc_id||' AND REC_TYPE != '||'''FID'''||' AND TRX_TYPE = '||''''||lc_get_dist_record_type||''''||' AND customer_trx_id=nvl(:pcustomer_trx_id,customer_trx_id)'||' AND customer_trx_line_id=:pcustomer_trx_line_id'||' ORDER BY '||lc_dist_line_sort_columns||'trx_line_number'; --Changed for NAIT-119176
               lc_err_location_msg        := 'Staging table Query for Dist Line'||lc_dist_stg_query;
               XX_AR_EBL_COMMON_UTIL_PKG.PUT_LOG_LINE(lb_debug_flag ,FALSE ,lc_err_location_msg );
             END IF;
