@@ -21,7 +21,8 @@ AS
    -- | 1.2      18-APR-2017  Suresh Naragam          Defect #41426                               |
    -- | 1.3      28-APR-2018  Atul Khard              Defect #44465 Labels not outputing correctly|
    -- | 1.4      18-May-2018  Aniket J    CG          Changes for Requirement  #NAIT-36070        |
-   -- | 1.5      29-Sep-2019  Atul Khard              Bug fix identified in #NAIT-106275          |
+   -- | 1.5      29-Sep-2019  Atul Khard              Bug fix identified in #NAIT-106275          |  
+   -- | 1.6      13-MAR-2020  Abhishek Kumar           changing Order by for NAIT- 119176         |
    -- +===========================================================================================+
    PROCEDURE GET_TRANSLATION (p_translation_name   IN            VARCHAR2,
                               p_source_value1      IN            VARCHAR2,
@@ -1978,7 +1979,7 @@ AS
                   lc_dtl_lines_sql
                || ' ORDER BY '
                || lc_dtl_line_sort_columns
-               || ' CUSTOMER_TRX_ID, stg_id, trx_line_number';
+               || ' CUSTOMER_TRX_ID, trx_line_number'; --Changed for NAIT-119176
             lc_dtl_dist_lines_sql :=
                lc_dtl_dist_lines_sql
                || ' AND customer_trx_id=nvl(:pcustomer_trx_id,customer_trx_id)'
@@ -1987,7 +1988,7 @@ AS
                   lc_dtl_dist_lines_sql
                || ' ORDER BY '
                || lc_dtl_dist_sort_columns
-               || ' stg_id, trx_line_number';
+               || ' trx_line_number'; --Changed for NAIT-119176
 
             OPEN c_dtl_hdr_cursor FOR lc_dtl_hdr_sql;           -- hdr cursor.
 
@@ -2106,7 +2107,7 @@ AS
                   lc_dtl_lines_sql
                || ' ORDER BY '
                || lc_dtl_line_sort_columns
-               || ' customer_trx_id, stg_id, trx_line_number';
+               || ' customer_trx_id, trx_line_number';  --Changed for NAIT-119176
             lc_dtl_dist_lines_sql :=
                lc_dtl_dist_lines_sql
                || ' AND customer_trx_id=nvl(:pcustomer_trx_id,customer_trx_id)'
@@ -2115,7 +2116,7 @@ AS
                   lc_dtl_dist_lines_sql
                || ' ORDER BY '
                || lc_dtl_dist_sort_columns
-               || ' stg_id, trx_line_number';
+               || ' trx_line_number';  --Changed for NAIT-119176
             lc_err_location_msg :=
                'Opening the Lines Cursor, Query :' || lc_dtl_lines_sql;
             XX_AR_EBL_COMMON_UTIL_PKG.
@@ -2218,7 +2219,7 @@ AS
                   lc_dtl_lines_sql
                || ' ORDER BY '
                || lc_dtl_line_sort_columns
-               || ' customer_trx_id, stg_id, trx_line_number';
+               || ' customer_trx_id, trx_line_number';  --Changed for NAIT-119176
             lc_dtl_lines_sql :=
                   'SELECT customer_trx_id, lc_text FROM ('
                || lc_dtl_lines_sql
@@ -2305,7 +2306,7 @@ AS
                   lc_dtl_lines_sql
                || ' ORDER BY '
                || lc_dtl_line_sort_columns
-               || ' customer_trx_id, stg_id, trx_line_number ';
+               || ' customer_trx_id, trx_line_number ';  --Changed for NAIT-119176
             --lc_dtl_lines_sql := 'SELECT DISTINCT lc_text FROM ('||lc_dtl_lines_sql||')';
             lc_dtl_lines_sql :=
                'SELECT lc_text FROM (' || lc_dtl_lines_sql || ')';
@@ -2675,7 +2676,7 @@ AS
                         lc_dtl_hdr_sql
                      || ' ORDER BY '
                      || lc_dtl_hdr_sort_columns
-                     || ' CUSTOMER_TRX_ID, STG_ID, trx_line_number';
+                     || ' CUSTOMER_TRX_ID, trx_line_number';  --Changed for NAIT-119176
                   lc_err_location_msg :=
                      'Detail Header SQL : ' || lc_dtl_hdr_sql;
                   XX_AR_EBL_COMMON_UTIL_PKG.
@@ -2806,7 +2807,7 @@ AS
                      lc_dtl_lines_sql
                   || ' ORDER BY '
                   || lc_dtl_line_sort_columns
-                  || ' CUSTOMER_TRX_ID, STG_ID, trx_line_number';
+                  || ' CUSTOMER_TRX_ID , trx_line_number';  --Changed for NAIT-119176
                lc_dtl_dist_lines_sql :=
                   lc_dtl_dist_lines_sql
                   || ' AND customer_trx_id=nvl(:pcustomer_trx_id,customer_trx_id)'
@@ -2815,7 +2816,7 @@ AS
                      lc_dtl_dist_lines_sql
                   || ' ORDER BY '
                   || lc_dtl_dist_sort_columns
-                  || ' STG_ID, trx_line_number';
+                  || 'trx_line_number';  --Changed for NAIT-119176
 
                OPEN c_dtl_hdr_cursor FOR lc_dtl_hdr_sql;        -- hdr cursor.
 
@@ -2962,7 +2963,7 @@ AS
                      lc_dtl_lines_sql
                   || ' ORDER BY '
                   || lc_dtl_line_sort_columns
-                  || ' customer_trx_id, stg_id, trx_line_number';
+                  || ' customer_trx_id, trx_line_number';  --Changed for NAIT-119176
                lc_dtl_dist_lines_sql :=
                   lc_dtl_dist_lines_sql
                   || ' AND customer_trx_id=nvl(:pcustomer_trx_id,customer_trx_id)'
@@ -2971,7 +2972,7 @@ AS
                      lc_dtl_dist_lines_sql
                   || ' ORDER BY '
                   || lc_dtl_dist_sort_columns
-                  || ' stg_id, trx_line_number';
+                  || 'trx_line_number';  --Changed for NAIT-119176
                lc_err_location_msg :=
                   'Opening the Lines Cursor, Query :' || lc_dtl_lines_sql;
                XX_AR_EBL_COMMON_UTIL_PKG.
@@ -3116,7 +3117,7 @@ AS
                      lc_dtl_lines_sql
                   || ' ORDER BY '
                   || lc_dtl_line_sort_columns
-                  || ' customer_trx_id, stg_id, trx_line_number';
+                  || ' customer_trx_id,trx_line_number';  --Changed for NAIT-119176
                lc_dtl_lines_sql :=
                      'SELECT customer_trx_id, lc_text FROM ('
                   || lc_dtl_lines_sql
@@ -3218,7 +3219,7 @@ AS
                      lc_dtl_lines_sql
                   || ' ORDER BY '
                   || lc_dtl_line_sort_columns
-                  || ' customer_trx_id, stg_id, trx_line_number ';
+                  || ' customer_trx_id, trx_line_number ';  --Changed for NAIT-119176
                --lc_dtl_lines_sql := 'SELECT DISTINCT lc_text FROM ('||lc_dtl_lines_sql||')';
                lc_dtl_lines_sql :=
                   'SELECT lc_text FROM (' || lc_dtl_lines_sql || ')';
