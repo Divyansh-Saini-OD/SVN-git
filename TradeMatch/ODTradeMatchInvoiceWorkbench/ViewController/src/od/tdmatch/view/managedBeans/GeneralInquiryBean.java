@@ -122,6 +122,8 @@ public class GeneralInquiryBean implements Serializable{
 
     public void employeeVLC(ValueChangeEvent valueChangeEvent) {
         // Add event code here...
+       // System.out.println("New Name : " + valueChangeEvent.getNewValue());  
+       // valueChangeEvent.getComponent().processUpdates(FacesContext.getCurrentInstance()); 
         DCBindingContainer binding=(DCBindingContainer)BindingContext.getCurrent().getCurrentBindingsEntry();
         DCIteratorBinding generalIter=binding.findIteratorBinding("GeneralInquiryQueryVO1Iterator");
         generalIter.getCurrentRow().setAttribute("EmployeeSelect", true);
@@ -332,9 +334,9 @@ public class GeneralInquiryBean implements Serializable{
                            HSSFCell cellA1=null;
                            
                            cellA1 = excelrow.createCell((short) 0);
-                           cellA1.setCellValue("Supplier Name");
-                           cellA1 = excelrow.createCell((short) 1);
                            cellA1.setCellValue("Supplier #");
+                           cellA1 = excelrow.createCell((short) 1);
+                           cellA1.setCellValue("Supplier Name");
                            cellA1 = excelrow.createCell((short) 2);
                            cellA1.setCellValue("Supplier Site");
                            cellA1 = excelrow.createCell((short) 3);
@@ -452,9 +454,9 @@ public class GeneralInquiryBean implements Serializable{
                                                         HSSFCell cellA1=null;
                                                         
                                                         cellA1 = excelrow.createCell((short) 0);
-                                                        cellA1.setCellValue("Supplier Name");
-                                                        cellA1 = excelrow.createCell((short) 1);
                                                         cellA1.setCellValue("Supplier #");
+                                                        cellA1 = excelrow.createCell((short) 1);
+                                                        cellA1.setCellValue("Supplier Name");
                                                         cellA1 = excelrow.createCell((short) 2);
                                                         cellA1.setCellValue("Supplier Site");
                                                         cellA1 = excelrow.createCell((short) 3);
