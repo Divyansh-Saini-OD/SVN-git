@@ -1,24 +1,4 @@
-SET SHOW OFF
-SET VERIFY OFF
-SET ECHO OFF
-SET TAB OFF
-SET FEEDBACK OFF
-SET TERM ON
-SET SCAN OFF
-
-PROMPT Creating Package Body XX_AR_EBL_TRANSMISSION_PKG
-
-PROMPT Program exits if the creation is not successful
-REM Added for ARU db drv auto generation
-REM dbdrv: sql ~PROD ~PATH ~FILE none none none package &phase=plb \
-REM dbdrv: checkfile:~PROD:~PATH:~FILE
-
-WHENEVER OSERROR EXIT FAILURE ROLLBACK;
-WHENEVER SQLERROR EXIT FAILURE ROLLBACK;
-
-
-create or replace
-PACKAGE BODY XX_AR_EBL_TRANSMISSION_PKG AS
+create or replace PACKAGE BODY XX_AR_EBL_TRANSMISSION_PKG AS
 
 /*
 -- +====================================================================================================+
@@ -54,6 +34,7 @@ PACKAGE BODY XX_AR_EBL_TRANSMISSION_PKG AS
 -- |2.3       09-Sep-2019 Nitin              Changes for NAIT-106371                                    |
 -- |2.4       07-Oct-2019 Atul Khard         Changes for NAIT-104657                                    |
 -- |2.5       27-Nov-2019 Atul Khard         Bug Fix for NAIT-114038. Changes made under NAIT-121480.   |
+-- |2.6       12-Mar-2020 Divyansh Saini     Changes made for NAIT-109342
 -- +====================================================================================================+
 */
 
@@ -541,9 +522,9 @@ BEGIN
   FOR i_index IN a_file_id_array.FIRST..a_file_id_array.LAST LOOP
     file_id_in := TO_NUMBER(a_file_id_array(i_index));
 
-    IF file_id_in>0 THEN
-      FETCH_ARCHIVED_BLOB_INTO_GT(file_id_in);
-    END IF;
+    /*IF file_id_in>0 THEN
+     -- FETCH_ARCHIVED_BLOB_INTO_GT(file_id_in);
+    END IF; */
 
     FOR curs_rec IN attachment(file_id_in) LOOP BEGIN
 
@@ -823,6 +804,8 @@ BEGIN
 
   FOR lr IN (SELECT DISTINCT TO_CHAR(T.billing_dt,'YYYY-MM-DD') || '\' || A.account_number path, A.account_number, A.account_name, D.cd_send_to_address,
                              D.comments, NVL(L.meaning,'Invalid') ebill_associate, CASE WHEN T.status='SENDBYCD' THEN 'OVERSIZE File' ELSE 'File' END notif_type
+                             ,TO_CHAR(T.billing_dt,'YYYY-MM-DD') billing_dt
+							               ,T.customer_doc_id
                FROM XX_AR_EBL_TRANSMISSION T
                JOIN HZ_CUST_ACCOUNTS_ALL A
                  ON T.customer_id=A.cust_account_id
@@ -841,8 +824,14 @@ BEGIN
                 AND L.enabled_flag='Y'
                 AND SYSDATE BETWEEN NVL(L.start_date_active,SYSDATE) AND NVL(L.end_date_active,SYSDATE)) LOOP
     BEGIN
-      ls_subject := TRIM(GET_MESSAGE('CD_NOTIF_SUBJECT','ACCOUNT_NUMBER', lr.account_number, 'TYPE', lr.notif_type, 'ASSOCIATE', lr.ebill_associate));
-      ls_message := GET_MESSAGE('CD_NOTIF_BODY', 'INSTANCE', ls_instance, 'FOLDER', lr.path , 'ADDRESS', lr.cd_send_to_address, 'COMMENTS', lr.comments);
+      --Changes Start for NAIT-109342
+      /*ls_subject := TRIM(GET_MESSAGE('CD_NOTIF_SUBJECT','ACCOUNT_NUMBER', lr.account_number, 'TYPE', lr.notif_type, 'ASSOCIATE', lr.ebill_associate));
+      ls_message := GET_MESSAGE('CD_NOTIF_BODY', 'INSTANCE', ls_instance, 'FOLDER', lr.path , 'ADDRESS', lr.cd_send_to_address, 'COMMENTS', lr.comments);*/
+
+      ls_subject := TRIM(GET_MESSAGE('CD_NOTIF_SUBJECT','ACCOUNT_NUMBER', lr.account_number, 'CUST_DOC_NUMBER', lr.customer_doc_id, 'BILLING_DATE', lr.billing_dt));
+      ls_message := GET_MESSAGE('CD_NOTIF_BODY');
+      
+      --Changes End for NAIT-109342
 
       PUT_LOG_LINE('eMailing CD notification for account ' || lr.account_number || ': ' || lr.account_name);
       PUT_LOG_LINE('  ' || lr.notif_type || ' path: ' || lr.path || '    associate: ' || lr.ebill_associate);
@@ -1416,6 +1405,9 @@ BEGIN
        
        ls_subject := REPLACE(REPLACE(lcmr.email_subject,'&DATEFROM',TO_CHAR(lcmr.billing_dt_from, 'MM/DD/RRRR')),'&DATETO',TO_CHAR(lcmr.billing_dt, 'MM/DD/RRRR'));
        ls_subject := REPLACE(ls_subject,'&AOPSNUMBER',lcmr.aops_number);
+	   
+	   FND_FILE.put_line(FND_FILE.LOG,'ls_subject:' || ls_subject); --Added for testing 121480
+	   
        --NAIT-96849 start
        -- initialize variables
        ls_file_name          := NULL; 
@@ -1433,6 +1425,8 @@ BEGIN
 		 
 		 ln_file_id := lcmr.file_id; --Added for NAIT-114038
 		 
+		 FND_FILE.put_line(FND_FILE.LOG,'ls_consbill_length :' || ls_consbill_length); --Added for testing 121480
+		 
 		 IF ls_consbill_length < 256 THEN --Added for NAIT-114038
             
          FOR cons_bill in cur_cons_bill(ln_file_id) LOOP
@@ -1442,16 +1436,22 @@ BEGIN
             IF ls_consbill_length > 256 THEN
                 EXIT;
             END IF;
-         
+         FND_FILE.put_line(FND_FILE.LOG,'ls_cons_bill_number:' || ls_cons_bill_number); --Added for testing 121480
+		 FND_FILE.put_line(FND_FILE.LOG,'ls_token_cons_bill_number:' || ls_token_cons_bill_number); --Added for testing 121480
+		 FND_FILE.put_line(FND_FILE.LOG,'ls_consbill_length 1:' || ls_consbill_length); --Added for testing 121480
+		 
          END LOOP;
 		 
 		 END IF; --Added for NAIT-114038
-		 
+		 FND_FILE.put_line(FND_FILE.LOG,'ls_invoice_length:' || ls_invoice_length); --Added for testing 121480
 		 IF ls_invoice_length < 256 THEN --Added for NAIT-114038
          
          FOR curs_rec IN invoice_number(ln_file_id) LOOP 
             ls_invoice_number := ls_invoice_number||curs_rec.invoice_number||',';
             ls_invoice_length := LENGTH(ls_invoice_number);
+			
+			FND_FILE.put_line(FND_FILE.LOG,'ls_invoice_number:' || ls_invoice_number); --Added for testing 121480
+			FND_FILE.put_line(FND_FILE.LOG,'ls_invoice_length:1' || ls_invoice_length); --Added for testing 121480
             IF NVL(ls_invoice_length,257)> 256
             THEN
              EXIT;
@@ -1460,11 +1460,14 @@ BEGIN
 		 
 		 END IF; --Added for NAIT-114038
 		 
+		 FND_FILE.put_line(FND_FILE.LOG,'ls_shiptoloc_length:' || ls_shiptoloc_length); --Added for testing 121480
 		 IF ls_shiptoloc_length < 256 THEN --Added for NAIT-114038
 		 
          FOR curs_rec IN cons_shipto_location(ln_file_id) LOOP 
           ls_token_ship_to_location := ls_token_ship_to_location||curs_rec.location||',';
             ls_shiptoloc_length := LENGTH(ls_token_ship_to_location);
+			FND_FILE.put_line(FND_FILE.LOG,'ls_token_ship_to_location:' || ls_token_ship_to_location); --Added for testing 121480
+			FND_FILE.put_line(FND_FILE.LOG,'ls_shiptoloc_length 1:' || ls_shiptoloc_length); --Added for testing 121480
             IF NVL(ls_shiptoloc_length,257)>256
             THEN
              EXIT;
@@ -1478,9 +1481,9 @@ BEGIN
        ls_file_name        := NULL; 
        ln_file_id          := NULL;
        ls_cons_bill_number := NULL; 
-       /*ls_invoice_length   := NULL;
+       ls_invoice_length   := NULL;
        ls_shiptoloc_length := NULL;
-       ls_consbill_length  := NULL;     */ --commented for NAIT-114038 
+       ls_consbill_length  := NULL;    
        --NAIT-96849 end
       IF lcmr.email_logo_required='Y' AND lcmr.email_logo_file_name IS NOT NULL THEN
         get_logo_details(lcmr.email_logo_file_name, ls_logo_url, ls_hyperlink, ls_alt);
@@ -1510,10 +1513,22 @@ BEGIN
                          lcmr.email_std_disclaimer || '</body></html>';
 
       ls_trans_ids := ls_trans_ids || lcmr.transmission_id || ',';
+	  FND_FILE.put_line(FND_FILE.LOG,'Trans ID :' || ls_trans_ids); --Added for testing 121480
+	  FND_FILE.put_line(FND_FILE.LOG,'Length Trans ID :' || LENGTH(ls_trans_ids)); --Added for testing 121480
+	  
       ls_dest_email_addr := ls_dest_email_addr || lcmr.dest_email_addr || ';';
+	  FND_FILE.put_line(FND_FILE.LOG,'Dest EMAIL ADDR :'|| ls_dest_email_addr);--Added for testing 121480
       ls_zip_required := lcmr.zip_required;
+	  FND_FILE.put_line(FND_FILE.LOG,'ls_zip_required :'|| ls_zip_required);--Added for testing 121480
       ls_file_names := ls_file_names||lcmr.file_name|| ',';
+	  FND_FILE.put_line(FND_FILE.LOG,'File Name :' || ls_file_names);--Added for testing 121480
       ls_filenames_length := LENGTH(ls_file_names); 
+	  FND_FILE.put_line(FND_FILE.LOG,'File length :'|| ls_filenames_length);--Added for testing 121480
+	  
+	  
+	  --FND_FILE.put_line(FND_FILE.LOG,'File Name :' || ls_file_names);--Added for testing 121480
+	  --FND_FILE.put_line(FND_FILE.LOG,'File length :'|| ls_filenames_length);--Added for testing 121480
+	  
       IF NVL(ls_filenames_length,257) > 256 --NAIT-96849
       THEN 
          ls_file_names := SUBSTR(ls_file_names,1,256);
@@ -1534,7 +1549,9 @@ BEGIN
      ls_file_names := SUBSTR(ls_file_names,1,LENGTH(ls_file_names)-1);
      ls_subject := REPLACE(ls_subject,'&FILENAME',ls_file_names);
      --NAIT-96849
-
+	 FND_FILE.put_line(FND_FILE.LOG,'Subject :'|| ls_subject); --Added for testing 121480
+	FND_FILE.put_line(FND_FILE.LOG,'Length Subject :' || LENGTH (ls_subject));--Added for testing 121480
+	  
      ls_trans_ids := SUBSTR(ls_trans_ids,1,LENGTH(ls_trans_ids)-1);
      FND_FILE.put_line(FND_FILE.LOG,'Bill complete batch email Transmission IDs:'||ls_trans_ids);
      ls_dest_email_addr := SUBSTR(ls_dest_email_addr,1,LENGTH(ls_dest_email_addr)-1);
@@ -3144,7 +3161,7 @@ BEGIN
 END UPDATE_FTP_PUSH_STATUS;
 
 
-PROCEDURE ARCHIVE_N_PURGE_FILES (
+/*PROCEDURE ARCHIVE_N_PURGE_FILES (
     Errbuf            OUT NOCOPY VARCHAR2
    ,Retcode           OUT NOCOPY VARCHAR2
 )
@@ -3163,7 +3180,7 @@ BEGIN
                         AND F.status='RENDERED'
                         AND F.file_type='ZIP');
 */
-  UPDATE XX_AR_EBL_FILE
+  /*UPDATE XX_AR_EBL_FILE
      SET status='PURGED',file_data=NULL,file_length=NULL
    WHERE file_id IN (SELECT F.file_id
                        FROM XX_AR_EBL_FILE F
@@ -3222,10 +3239,10 @@ BEGIN
   put_log_line('Updated status to ARCHIVED and file_data to null on ' || SQL%ROWCOUNT || ' XX_AR_EBL_FILE rows.');
 
 END ARCHIVE_N_PURGE_FILES;
+ */
 
 
-
-PROCEDURE FETCH_ARCHIVED_BLOB_INTO_GT (
+/*PROCEDURE FETCH_ARCHIVED_BLOB_INTO_GT (
     p_file_id         IN NUMBER
 )
 IS
@@ -3243,14 +3260,14 @@ BEGIN
       SELECT A.file_id,s_file_name,A.file_data FROM XX_AR_EBL_FILE_BLOB_ARCHIVE A WHERE A.file_id=p_file_id;
     END IF;
   END IF;
-END FETCH_ARCHIVED_BLOB_INTO_GT;
+END FETCH_ARCHIVED_BLOB_INTO_GT; */
 
 PROCEDURE GET_FILE_DATA_CURSOR (
     p_file_id        IN  NUMBER
    ,x_cursor         OUT SYS_REFCURSOR
 ) IS
 BEGIN
-  FETCH_ARCHIVED_BLOB_INTO_GT(p_file_id);
+  --FETCH_ARCHIVED_BLOB_INTO_GT(p_file_id);
 
   OPEN x_cursor FOR
   SELECT file_name,file_data FROM XX_AR_EBL_FILE WHERE file_id=p_file_id AND file_length IS NULL UNION ALL SELECT file_name,file_data FROM XX_AR_EBL_FILE_GT WHERE file_id=p_file_id;
@@ -3509,7 +3526,7 @@ BEGIN
       IF ln_request_id = 0 THEN
         FND_FILE.put_line(FND_FILE.LOG,'Request Not Submitted due to "' || fnd_message.get || '". Cust doc id:'||lcr.cust_doc_id);
       ELSE
-        FND_FILE.put_line(FND_FILE.LOG,'The Program PROGRAM_1 submitted successfully – Request id :' || ln_request_id||'. Cust doc id:'||lcr.cust_doc_id);
+        FND_FILE.put_line(FND_FILE.LOG,'The Program PROGRAM_1 submitted successfully â€“ Request id :' || ln_request_id||'. Cust doc id:'||lcr.cust_doc_id);
       END IF;
       IF ln_request_id > 0 THEN
         LOOP
@@ -4126,6 +4143,3 @@ END TRANSMIT_MERGE_PDF_EMAIL;
 
 END XX_AR_EBL_TRANSMISSION_PKG;
 /
-
-SHOW ERROR;
-EXIT;
