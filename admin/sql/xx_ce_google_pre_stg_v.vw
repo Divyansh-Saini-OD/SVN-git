@@ -11,7 +11,7 @@
 -- | V1.0     16-Jan-2020  Amit Kumar           Initial version                       |
 -- +==================================================================================+
 
-CREATE OR REPLACE FORCE EDITIONABLE VIEW  XX_CE_GOOGLE_PRE_STG_V AS
+CREATE OR REPLACE FORCE VIEW  XX_CE_GOOGLE_PRE_STG_V AS
 SELECT REC_ID,
   REPORT_DATE,
   PROCESS_NAME,
