@@ -1,4 +1,17 @@
-CREATE VIEW xx_ce_google_pre_stg_v AS
+-- +==================================================================================+
+-- |                  Office Depot						                             |
+-- +==================================================================================+
+-- | Name :APPS.XX_CE_GOOGLE_PRE_STG_V                                           |
+-- | Description : Returns the data from XX_CE_MARKETPLACE_PRE_STG for GOOGLE_MPL    |
+-- |                                                                                  |
+-- |Change Record:                                                                    |
+-- |===============                                                                   |
+-- |Version   Date         Author               Remarks                               |
+-- |=======   ==========   =============        ======================================|
+-- | V1.0     16-Jan-2020  Amit Kumar           Initial version                       |
+-- +==================================================================================+
+
+CREATE OR REPLACE FORCE EDITIONABLE VIEW  XX_CE_GOOGLE_PRE_STG_V AS
 SELECT REC_ID,
   REPORT_DATE,
   PROCESS_NAME,
@@ -36,3 +49,5 @@ FROM xx_ce_marketplace_pre_stg
 WHERE process_name = 'GOOGLE_MPL'
 AND FILE_TYPE      ='GOOGLE'
 order by id , transfer_date;
+/
+SHOW ERROR
