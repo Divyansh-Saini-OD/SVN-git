@@ -1,13 +1,4 @@
-SET VERIFY OFF;
-SET SHOW OFF;
-SET ECHO OFF;
-SET TAB OFF;
-SET FEEDBACK OFF;
- 
-WHENEVER SQLERROR CONTINUE;
-
-create or replace 
-PACKAGE body xx_ce_mrktplc_prestg_pkg
+create or replace PACKAGE body xx_ce_mrktplc_prestg_pkg
 AS
   -- +============================================================================================|
   -- |  Office Depot                                                                              |
@@ -15,7 +6,7 @@ AS
   -- |  Name:  XX_CE_MRKTPLC_PRESTG_PKG                                                           |
   -- |                                                                                            |
   -- |  Description: This package body is for uploading files into MarketPlaces Pre-staging Area  |
-  -- |  RICE ID   :  I3123_CM MarketPlaces Expansion               | 
+  -- |  RICE ID   :  I3123_CM MarketPlaces Expansion               |
   -- |  Description: Insert file Data  into Pre-staging Table XX_CE_MARKETPLACE_PRE_STG           |
   -- |  Change Record:                                                                            |
   -- +============================================================================================|
@@ -23,7 +14,7 @@ AS
   -- | =========   ===========  =============        =============================================|
   -- | 1.0         06/27/2018   Digamber S           Initial Version
   --   | 1.1         12-Dec-18   Priyam P             Code change added for Email program to AMS Team
-  --|  1.2         07-JAN-19    Priyam P            Code changes added for NEWEGG_MPl Marketplace
+  -- | 1.2		   20/Dec/2020	Amit Kumar			 NAIT-102710: Modified logic of Parse procedure to be able to handle Google MPL 
   -- +============================================================================================+
   gc_package_name      CONSTANT all_objects.object_name%type := 'XX_CE_MRKTPLC_PRESTG_PKG';
   gc_ret_success       CONSTANT VARCHAR2(20)                 := 'SUCCESS';
@@ -1044,6 +1035,60 @@ WHEN OTHERS THEN
   p_retcode   := '2';
   p_error_msg := 'Error in parse - record:'||SUBSTR(p_delimstring,150)||SUBSTR(sqlerrm,1,150);
 END parse;
+
+-- +============================================================================================+
+-- |  Name  : parse_googlempl  ----NAIT-102710--start                                                                 |
+-- |  Description: Procedure to parse delimited string and load them into table                 |
+-- =============================================================================================|
+PROCEDURE parse_googlempl(
+    p_delimstring IN VARCHAR2 ,
+    p_table OUT varchar2_table ,
+    p_nfields OUT INTEGER ,
+    p_delim IN VARCHAR2 DEFAULT chr(9) ,
+	p_translation VARCHAR2,
+	p_file_type VARCHAR2,
+    p_error_msg OUT VARCHAR2 ,
+    p_retcode OUT VARCHAR2 )
+IS
+  l_string VARCHAR2(32767) := p_delimstring;
+  l_nfields pls_integer    := 1;
+  l_table varchar2_table;
+  l_pattern    VARCHAR2(30) := '(("[^"]*")+|[^,]*)(,|$)'; 
+  l_fieldvalue VARCHAR2(1000); 
+  c_csv_cur sys_refcursor; 
+BEGIN
+  
+  OPEN c_csv_cur FOR 
+  SELECT level AS nfields,
+  regexp_substr(l_string, l_pattern, 1, level,NULL,1) split
+	FROM dual
+	  CONNECT BY level <=
+	  (SELECT COUNT (b.target_value1)
+	  FROM xx_fin_translatevalues b ,
+		xx_fin_translatedefinition a
+	  WHERE a.translation_name  = p_translation 
+	  AND upper(b.source_value3)=upper(p_file_type)
+	  AND b.translate_id        = a.translate_id
+	  AND b.enabled_flag        ='Y'
+	  AND sysdate BETWEEN b.start_date_active AND NVL(b.end_date_active,sysdate)
+	  ) ;   
+	-- nfields, regexp_substr(l_string, l_pattern, 1, level,NULL,1) split FROM dual connect by level <= regexp_count(l_string, l_pattern) -1 ;
+    LOOP
+      FETCH c_csv_cur INTO l_nfields, l_fieldvalue;
+      EXIT
+    WHEN c_csv_cur%notfound;
+      l_table(l_nfields) := REPLACE(l_fieldvalue, '"');  
+    END LOOP;
+    CLOSE c_csv_cur;
+    p_nfields := l_nfields;
+    p_table   := l_table;	
+	
+EXCEPTION
+WHEN OTHERS THEN
+  p_retcode   := '2';
+  p_error_msg := 'Error in parse_googlempl - record:'||SUBSTR(p_delimstring,150)||SUBSTR(sqlerrm,1,150);
+END parse_googlempl;
+--NAIT-102710--end
 /**********************************************************************
 * Procedure CHECK_DUP_REC to check duplicate records for marketplace
 * updated XX_CE_MARKETPLACE_PRE_STG
@@ -1205,87 +1250,77 @@ BEGIN
       p_retcode :=0;
       BEGIN
         logit(p_message =>'Start Procedure :'|| i.process_name);
-        IF p_process_name <> 'NEWEGG_MPL' THEN
-          l_filehandle    := utl_file.fopen(l_filedir, p_file_name,'r',l_max_linesize);
-          logit(p_message =>'File Directory path' || l_filedir);
-        END IF;
+        l_filehandle := utl_file.fopen(l_filedir, p_file_name,'r',l_max_linesize);
+        logit(p_message =>'File Directory path' || l_filedir);
         logit(p_message =>'File open successfull');
         l := 0;
         ----  logit(p_message =>'i.file_seperator'|| i.file_seperator);
-        ---------------------Sears and NeweEgg-----------------------------
-        IF i.file_seperator ='XML' THEN
-          IF p_process_name = 'NEWEGG_MPL' THEN
-            --- logit(p_message =>'p_file_name in prestage '|| p_file_name);
-            ----------------------Call for NEWEGG API----------------
-            xx_ce_mrktplc_file_download.xx_ce_newegg_utl_https(p_process_name=>p_process_name,p_request_id=>p_request_id,p_debug_flag=>'Y',p_file_name=>p_file_name);
-            ----------------------------------------------------------
-          ELSE
-            LOOP
-              BEGIN
-                l           := l+1;
-                l_retcode   := NULL;
-                l_error_msg :=NULL;
-                utl_file.get_line(l_filehandle,l_newline);
-                -- Skip last line
-                IF p_process_name ='SEARS_MPL' THEN
-                  SELECT instr(l_newline,'<remittance-response',1,1),
-                    instr(l_newline,'>',instr(l_newline,'<remittance-response',1,1),1)
-                  INTO l_xml_hdr_start,
-                    l_xml_hdr_end
-                  FROM dual;
-                  l_newline:= REPLACE(l_newline,SUBSTR(l_newline,l_xml_hdr_start,l_xml_hdr_end-l_xml_hdr_start),'<remittance-response');
-                  /*  IF l_newline LIKE '<remittance-response%' THEN
-                  last_line := l ;
-                  l_newline := '<remittance-response>'||chr(10)||chr(13);
-                  END IF;*/
-                END IF;
-                l_xml_file := l_xml_file||' '||l_newline;
-              EXCEPTION
-              WHEN no_data_found THEN
-                EXIT;
-              END;
-            END LOOP;
-            utl_file.fclose(l_filehandle);
+        IF i.file_seperator='XML' THEN
+          LOOP
             BEGIN
-              INSERT
-              INTO xx_ce_mktplc_pre_stg_files
-                (
-                  rec_id ,
-                  file_name ,
-                  file_data ,
-                  status ,
-                  sqlldr_request_id ,
-                  creation_date ,
-                  created_by ,
-                  last_update_date ,
-                  last_update_login ,
-                  last_updated_by
-                )
-                VALUES
-                (
-                  xx_ce_mkt_pre_stg_rec_s.nextval,
-                  p_file_name,
-                  xmltype(l_xml_file),
-                  'N',
-                  p_request_id,
-                  sysdate,
-                  fnd_global.user_id,
-                  sysdate,
-                  fnd_global.user_id,
-                  fnd_global.user_id
-                );
-              IF sql%rowcount > 0 THEN
-                logit(p_message =>'File '''||p_file_name||''' loaded successfully to xx_ce_mktplc_pre_stg_files table ');
-              ELSE
-                logit(p_message =>'File '''||p_file_name||''' load failed');
+              l           := l+1;
+              l_retcode   := NULL;
+              l_error_msg :=NULL;
+              utl_file.get_line(l_filehandle,l_newline);
+              -- Skip last line
+              IF p_process_name ='SEARS_MPL' THEN
+                SELECT instr(l_newline,'<remittance-response',1,1),
+                  instr(l_newline,'>',instr(l_newline,'<remittance-response',1,1),1)
+                INTO l_xml_hdr_start,
+                  l_xml_hdr_end
+                FROM dual;
+                l_newline:= REPLACE(l_newline,SUBSTR(l_newline,l_xml_hdr_start,l_xml_hdr_end-l_xml_hdr_start),'<remittance-response');
+                /*  IF l_newline LIKE '<remittance-response%' THEN
+                last_line := l ;
+                l_newline := '<remittance-response>'||chr(10)||chr(13);
+                END IF;*/
               END IF;
-              COMMIT;
+              l_xml_file := l_xml_file||' '||l_newline;
             EXCEPTION
-            WHEN OTHERS THEN
-              logit(p_message =>'Exception while insert into XX_CE_MKTPLC_PRE_STG_FILES  '|| SUBSTR(sqlerrm,1,150));
-              insert_file_rec( p_process_name => p_process_name, p_file_name => p_file_name,p_err_msg => 'Exception while insert into XX_CE_MKTPLC_PRE_STG_FILES  '|| SUBSTR(sqlerrm,1,150),p_process_flag=>'E',p_requestid=>p_request_id) ;
+            WHEN no_data_found THEN
+              EXIT;
             END;
-          END IF;
+          END LOOP;
+          utl_file.fclose(l_filehandle);
+          BEGIN
+            INSERT
+            INTO xx_ce_mktplc_pre_stg_files
+              (
+                rec_id ,
+                file_name ,
+                file_data ,
+                status ,
+                sqlldr_request_id ,
+                creation_date ,
+                created_by ,
+                last_update_date ,
+                last_update_login ,
+                last_updated_by
+              )
+              VALUES
+              (
+                xx_ce_mkt_pre_stg_rec_s.nextval,
+                p_file_name,
+                xmltype(l_xml_file),
+                'N',
+                p_request_id,
+                sysdate,
+                fnd_global.user_id,
+                sysdate,
+                fnd_global.user_id,
+                fnd_global.user_id
+              );
+            IF sql%rowcount > 0 THEN
+              logit(p_message =>'File '''||p_file_name||''' loaded successfully to xx_ce_mktplc_pre_stg_files table ');
+            ELSE
+              logit(p_message =>'File '''||p_file_name||''' load failed');
+            END IF;
+            COMMIT;
+          EXCEPTION
+          WHEN OTHERS THEN
+            logit(p_message =>'Exception while insert into XX_CE_MKTPLC_PRE_STG_FILES  '|| SUBSTR(sqlerrm,1,150));
+            insert_file_rec( p_process_name => p_process_name, p_file_name => p_file_name,p_err_msg => 'Exception while insert into XX_CE_MKTPLC_PRE_STG_FILES  '|| SUBSTR(sqlerrm,1,150),p_process_flag=>'E',p_requestid=>p_request_id) ;
+          END;
           BEGIN
             plsql_block := '';
             node_blk    := '';
@@ -1302,10 +1337,10 @@ BEGIN
             node_blk            := node_blk ||' '||' FROM XX_CE_MKTPLC_PRE_STG_FILES A,';
             IF p_process_name    ='SEARS_MPL' THEN
               node_blk          := node_blk ||' '||' TABLE(xmlsequence(EXTRACT(A.file_data,''remittance-response//remittance''))) b';
-            elsif p_process_name ='NEWEGG_MPL' AND i.file_short_name='NEGGT' THEN
+           /* elsif p_process_name ='NEWEGG_MPL' AND i.file_short_name='NEGGT' THEN
               node_blk          := node_blk ||' '||' TABLE(xmlsequence(EXTRACT(A.file_data,''NeweggAPIResponse//SettlementTransactionInfo''))) b';
             elsif p_process_name ='NEWEGG_MPL' AND i.file_short_name='NEGGS' THEN
-              node_blk          := node_blk ||' '||' TABLE(xmlsequence(EXTRACT(A.file_data,''NeweggAPIResponse//SettlementSummary''))) b';
+              node_blk          := node_blk ||' '||' TABLE(xmlsequence(EXTRACT(A.file_data,''NeweggAPIResponse//SettlementSummary''))) b';*/
             END IF;
             node_blk    := node_blk ||' '||' WHERE status = ''N''';
             plsql_block := plsql_block||')';
@@ -1313,8 +1348,7 @@ BEGIN
             plsql_block := plsql_block||' XX_CE_MKT_PRE_STG_REC_S.nextval ';
             plsql_block := plsql_block||', NULL';
             plsql_block := plsql_block||', '''|| p_process_name||'''';
-            plsql_block := plsql_block||', a.file_name';
-            --- plsql_block := plsql_block||', '''|| p_file_name||'''';
+            plsql_block := plsql_block||', '''|| p_file_name||'''';
             plsql_block := plsql_block||', '''|| i.file_short_name||'''';
             plsql_block := plsql_block||', '''|| p_request_id||'''';
             plsql_block := plsql_block||', '''|| sysdate||'''';
@@ -1324,38 +1358,23 @@ BEGIN
             BEGIN
               EXECUTE immediate plsql_block;
               -- Mark reord processed
-              l_rec_cnt        := l_rec_cnt+NVL(sql%rowcount,0);
-              IF p_process_name = 'NEWEGG_MPL' THEN
-                UPDATE xx_ce_mktplc_pre_stg_files
-                SET status = 'P'
-                WHERE file_name LIKE 'NEGG%'
-                AND status='N';
-              ELSE
-                UPDATE xx_ce_mktplc_pre_stg_files
-                SET status      = 'P'
-                WHERE file_name = p_file_name;
-              END IF;
+              l_rec_cnt := l_rec_cnt+NVL(sql%rowcount,0);
+              UPDATE xx_ce_mktplc_pre_stg_files
+              SET status      = 'P'
+              WHERE file_name = p_file_name;
             EXCEPTION
             WHEN OTHERS THEN
               logit(p_message =>'In exception for Execute Immediate');
               p_errbuf := SUBSTR(sqlerrm,1,150);
               xx_ce_mrktplc_prestg_pkg.insert_pre_stg_excpn ( p_process_name , p_request_id, sysdate, p_errbuf , p_file_name, 'D');
               insert_file_rec( p_process_name => p_process_name, p_file_name => p_file_name,p_err_msg => p_errbuf,p_process_flag=>'E',p_requestid=>p_request_id) ;
-              plsql_block      := NULL;
-              IF p_process_name = 'NEWEGG_MPL' THEN
-                UPDATE xx_ce_mktplc_pre_stg_files
-                SET status = 'E'
-                WHERE file_name LIKE 'NEGG%'
-                AND status='N';
-              ELSE
-                UPDATE xx_ce_mktplc_pre_stg_files
-                SET status      = 'E'
-                WHERE file_name = p_file_name;
-              END IF;
+              plsql_block := NULL;
+              UPDATE xx_ce_mktplc_pre_stg_files
+              SET status      = 'E'
+              WHERE file_name = p_file_name;
             END;
             ---END LOOP;
           END;
-          ---------------------For Walmart and Rakuten------------------------------
         ELSE
           LOOP
             l:= l+1;
@@ -1366,6 +1385,11 @@ BEGIN
               utl_file.get_line(l_filehandle,l_newline);
               IF l_newline IS NULL THEN
                 EXIT;
+			  --NAIT-102710 start
+			  ELSIF i.process_name='GOOGLE_MPL'
+			  THEN
+			  l_newline := l_newline; 
+			  --NAIT-102710 end
               ELSE
                 l_newline := REPLACE(l_newline,'"','');
               END IF;
@@ -1373,9 +1397,17 @@ BEGIN
               CONTINUE
             WHEN l = 1;
               ---  logit(p_message =>SUBSTR(l_newline,1,199));
-              IF i.col_separator = 'COMMA' THEN
+			  --NAIT-102710 start
+			  /*IF i.col_separator = 'COMMA' THEN
+                parse(l_newline,l_table,l_nfields,chr(44),l_error_msg,l_retcode);
+              END IF;*/ --commented for --NAIT-102710 			  
+              IF i.col_separator = 'COMMA' and i.process_name='GOOGLE_MPL' THEN 
+			    parse_googlempl(l_newline,l_table,l_nfields,chr(44),i.filemap_translation,i.file_short_name , l_error_msg,l_retcode);	
+							
+			  ELSIF i.col_separator = 'COMMA' and i.process_name<>'GOOGLE_MPL' THEN
                 parse(l_newline,l_table,l_nfields,chr(44),l_error_msg,l_retcode);
               END IF;
+			  --NAIT-102710 end
               IF i.col_separator = 'TAB' THEN
                 parse(l_newline,l_table,l_nfields,chr(9),l_error_msg,l_retcode);
               END IF;
@@ -1397,16 +1429,23 @@ BEGIN
               plsql_block := plsql_block ||' '||''''||i.file_short_name ||''''||',';
               plsql_block := plsql_block ||' '||''''||p_request_id ||''''||',';
               -- file attributes are mapped in translation
+			  
+			 
+			  
               FOR j IN c_file_map (i.filemap_translation,i.file_short_name)
               LOOP
+			 
                 n           := n +1;
                 plsql_block := plsql_block ||' '||''''||trim(REPLACE(l_table(n),'''','"'))||''''||',';
+				
               END LOOP;
               plsql_block := rtrim(plsql_block,',') ||');   END;';
+			  
               BEGIN
                 EXECUTE immediate plsql_block;
                 l_rec_cnt   := l_rec_cnt+NVL(sql%rowcount,0);
                 plsql_block := NULL;
+				
               EXCEPTION
               WHEN OTHERS THEN
                 p_errbuf:=SUBSTR(sqlerrm,1,150);
@@ -1435,14 +1474,6 @@ BEGIN
             logit(p_message =>l_total_cnt||' Records successfully inserted in XX_CE_MARKETPLACE_PRE_STG Table');
             ---  logit(p_message =>'Records uploaded :'||l_total_cnt);
             insert_file_rec( p_process_name => i.process_name, p_file_name => p_file_name,p_err_msg => NULL,p_process_flag=>'P',p_requestid=>p_request_id);
-          ELSIF p_process_name='NEWEGG_MPL' THEN
-            SELECT COUNT(1)
-            INTO l_rec_cnt
-            FROM xx_ce_marketplace_pre_stg
-            WHERE process_name=i.process_name
-            AND request_id    =p_request_id;
-            ---and filename      =p_file_name ;
-            logit(p_message =>l_rec_cnt||' Records successfully inserted in XX_CE_MARKETPLACE_PRE_STG Table');
           ELSE
             SELECT COUNT(1)
             INTO l_rec_cnt
@@ -1452,9 +1483,7 @@ BEGIN
             AND filename      =p_file_name ;
             logit(p_message =>l_rec_cnt||' Records successfully inserted in XX_CE_MARKETPLACE_PRE_STG Table');
             ------call procesdure to insert processed file into XX_CE_MPL_FILES
-            IF P_PROCESS_NAME <> 'NEWEGG_MPL' THEN
-              insert_file_rec( p_process_name => i.process_name, p_file_name => p_file_name,p_err_msg => NULL,p_process_flag=>'P',p_requestid=>p_request_id);
-            END IF;
+            insert_file_rec( p_process_name => i.process_name, p_file_name => p_file_name,p_err_msg => NULL,p_process_flag=>'P',p_requestid=>p_request_id);
           END IF;
         ELSE
           logit(p_message =>'Error while parsing the file');
@@ -1572,17 +1601,10 @@ BEGIN
     AND xftd.enabled_flag       ='Y'
     AND sysdate BETWEEN xftv.start_date_active AND NVL(xftv.end_date_active,sysdate);
     -----------Pre-stage max report_date as per process name
-    IF p_process_name='NEWEGG_MPL' THEN
-      SELECT MAX(to_date(settlement_date,'MM/DD/YYYY HH24:MI:SS'))+1
-      INTO l_max_recd_date
-      FROM xx_ce_newegg_sum_pre_stg_v
-      WHERE report_date >=l_start_date_durtn;
-    ELSE
-      SELECT MAX(report_date)
-      INTO l_max_recd_date
-      FROM xx_ce_marketplace_pre_stg
-      WHERE process_name =p_process_name;
-    END IF;
+    SELECT MAX(report_date)
+    INTO l_max_recd_date
+    FROM xx_ce_marketplace_pre_stg
+    WHERE process_name =p_process_name;
     IF l_max_recd_date > l_start_date_durtn THEN
       l_start_date    :=l_max_recd_date;
     ELSE
@@ -1597,4 +1619,4 @@ BEGIN
 END get_start_date;
 END xx_ce_mrktplc_prestg_pkg;
 /
-show errors;
+show err
