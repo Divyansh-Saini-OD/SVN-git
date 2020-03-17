@@ -2607,3 +2607,5 @@ WHEN OTHERS THEN
   exiting_sub(p_procedure_name => lc_procedure_name, p_exception_flag => TRUE);
 END MAIN_MPL_SETTLEMENT_PROCESS;
 END XX_CE_MRKTPLC_RECON_PKG;
+/
+show err
