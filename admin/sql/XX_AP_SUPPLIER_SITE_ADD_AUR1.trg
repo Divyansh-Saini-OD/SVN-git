@@ -24,7 +24,7 @@ BEGIN
 
                                                                         
 
-SELECT COUNT(*) INTO L_COUNT FROM XX_PO_VDSITES_ADD_AUD
+SELECT COUNT(*) INTO L_COUNT FROM XX_PO_VDSITES_ADD_AUD_V1
 WHERE 
  NVL(VENDOR_SITE_ID,0)=NVL(:NEW.VENDOR_SITE_ID,0)
  AND   LAST_UPDATED_BY =:new.LAST_UPDATED_BY
@@ -43,7 +43,7 @@ AND NVL(LANGUAGE,'N')=NVL(:NEW.LANGUAGE,'N');
    IF trunc(:new.last_update_date) = trunc(sysdate) THEN
 
 INSERT
-  INTO XX_PO_VDSITES_ADD_AUD
+  INTO XX_PO_VDSITES_ADD_AUD_V1
     (
       VENDOR_SITE_ID_AUD,
       VERSIONS_OPERATION,
@@ -65,7 +65,7 @@ INSERT
     )
     VALUES
     (
-      XXFIN.XX_PO_VDSITES_ADD_AUD_SEQ.NEXTVAL ,
+      XXFIN.XX_PO_VDSITES_ADD_AUD_SEQ_V1.NEXTVAL ,
       'U' ,
       CAST(:new.LAST_UPDATE_DATE AS TIMESTAMP(6)) ,
       :old.VENDOR_SITE_ID ,
@@ -88,7 +88,4 @@ INSERT
  END IF;
 
 END;
-
-/
-
   
