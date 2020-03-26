@@ -803,7 +803,9 @@ BEGIN
 
   FOR lr IN (SELECT DISTINCT TO_CHAR(T.billing_dt,'YYYY-MM-DD') || '\' || A.account_number path, A.account_number, A.account_name, D.cd_send_to_address,
                              D.comments, NVL(L.meaning,'Invalid') ebill_associate, CASE WHEN T.status='SENDBYCD' THEN 'OVERSIZE File' ELSE 'File' END notif_type
-               FROM XX_AR_EBL_TRANSMISSION T
+                             ,T.customer_doc_id
+							 ,T.billing_dt
+			   FROM XX_AR_EBL_TRANSMISSION T
                JOIN HZ_CUST_ACCOUNTS_ALL A
                  ON T.customer_id=A.cust_account_id
                JOIN XX_CDH_EBL_TRANSMISSION_DTL D
