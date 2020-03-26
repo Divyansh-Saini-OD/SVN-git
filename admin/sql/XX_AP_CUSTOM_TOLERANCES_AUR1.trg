@@ -1,5 +1,5 @@
 
-  CREATE OR REPLACE  TRIGGER "APPS"."XX_AP_CUSTOM_TOLERANCES_AIR1" AFTER
+  CREATE OR REPLACE  TRIGGER "APPS"."XX_AP_CUSTOM_TOLERANCES_AUR1" AFTER
 UPDATE
  ON  "APPS"."XX_AP_CUSTOM_TOLERANCES" FOR EACH ROW 
 
@@ -7,7 +7,7 @@ UPDATE
   -- +===============================================================================+
     -- |                  Office Depot - Project Simplify                              |
     -- +===============================================================================+
-    -- | Name        : XX_AP_CUSTOM_TOLERANCES_AIR1.trg                              |
+    -- | Name        : XX_AP_CUSTOM_TOLERANCES_AUR1.trg                              |
     -- | Description : Trigger created per jira NAIT-103952                            |
     -- |Change Record:                                                                 |
     -- |===============                                                                |
@@ -21,7 +21,7 @@ UPDATE
   DECLARE
   
   BEGIN
-INSERT INTO XX_AP_CUST_TOLERANCE_AUD (CUST_TOL_AUD_ID,
+INSERT INTO XX_AP_CUST_TOLERANCE_AUD_V1 (CUST_TOL_AUD_ID,
 VERSIONS_OPERATION,
 VERSION_TIMESTAMP,
 SUPPLIER_SITE_ID,
@@ -36,7 +36,7 @@ MAX_FREIGHT_AMT,
 DIST_VAR_NEG_AMT,
 DIST_VAR_POS_AMT
 ) 
-VALUES (XX_AP_CUST_TOLERANCE_AUD_SEQ.NEXTVAL
+VALUES (XXFIN.XX_AP_CUST_TOL_AUD_SEQ_V1.NEXTVAL
 ,'U'
 ,systimestamp
 ,:new.SUPPLIER_SITE_ID
@@ -53,6 +53,6 @@ VALUES (XX_AP_CUST_TOLERANCE_AUD_SEQ.NEXTVAL
 
 
 END;
-/
+
 
 
