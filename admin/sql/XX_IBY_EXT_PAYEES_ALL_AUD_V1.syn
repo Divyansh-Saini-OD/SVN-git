@@ -1,0 +1,27 @@
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     ON
+
+PROMPT SYNONYMTABLE XX_IBY_EXT_PAYEES_ALL_AUD_V1
+
+PROMPT Program exits IF the creation IS NOT SUCCESSFUL
+
+WHENEVER SQLERROR CONTINUE
+
+-- +==========================================================================+
+-- |                  Office Depot - Project Simplify                         |
+-- +==========================================================================+
+-- | Name :APPS.XX_IBY_EXT_PAYEES_ALL_AUD_V1                                       |
+-- | Description :   This is for sequence of table XX_IBY_EXT_PAYEES_ALL_AUD_V1       |
+-- |                                                                          |
+-- |Change Record:                                                            |
+-- |===============                                                           |
+-- |Version      Date           Author               Remarks                  |
+-- |=======    ==========     =============        ===========================|
+-- | DRAFT 1.0 09-FEB-2020     Bhargavi Ankolekar   Initial draft version     |
+-- |                                                                          |
+-- +==========================================================================+
+
+create synonym APPS.XX_IBY_EXT_PAYEES_ALL_AUD_V1 for XXFIN.XX_IBY_EXT_PAYEES_ALL_AUD_V1;
