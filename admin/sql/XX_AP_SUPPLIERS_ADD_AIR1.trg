@@ -55,3 +55,4 @@ INSERT
 	  :NEW.INDIVIDUAL_1099
     );
 END;
+/
