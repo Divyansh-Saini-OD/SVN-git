@@ -56,3 +56,4 @@ VALUES (XXFIN.XX_AP_TOLERANCE_TEMP_SEQ_V1.nextval
 ,l_tol_name);
 
 END;
+/
