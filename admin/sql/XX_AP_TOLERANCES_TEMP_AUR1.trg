@@ -72,3 +72,4 @@ VALUES (XXFIN.XX_AP_TOLERANCE_TEMP_SEQ_V1.nextval
  end if;
 		
 END;
+/
