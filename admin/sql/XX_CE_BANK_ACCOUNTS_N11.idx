@@ -2,7 +2,7 @@
 -- |                        				Office Depot 		                                |
 -- |                                                                                            |
 -- +============================================================================================+
--- | Name         : XX_CE_STORE_BANK_DEPOSITS_F1.idx                                            |
+-- | Name         : XX_CE_BANK_ACCOUNTS_N11.idx                                            |
 -- | Rice Id      :                                                                             | 
 -- | Description  :                                                                             |  
 -- | Purpose      :                                                                             |
@@ -22,9 +22,9 @@ SET SHOW        OFF
 SET ECHO        OFF
 SET TAB         OFF
 
-CREATE INDEX XXFIN.XX_CE_BANK_ACCOUNTS_N11 ON CE.CE_BANK_ACCOUNTS (SUBSTR (agency_location_code, 3));
+drop index XXFIN.XX_CE_BANK_ACCOUNTS_N11;
 
-WHENEVER SQLERROR EXIT 1
+CREATE INDEX XXFIN.XX_CE_BANK_ACCOUNTS_N11 ON CE.CE_BANK_ACCOUNTS (SUBSTR (agency_location_code, 3));
 
 EXIT;
 
