@@ -1,4 +1,4 @@
-CREATE OR REPLACE EDITIONABLE PACKAGE BODY APPS.XX_CE_STORE_OS_WLFG_PKG 
+CREATE OR REPLACE PACKAGE BODY APPS.XX_CE_STORE_OS_WLFG_PKG 
 AS
 /*
 -- +=================================================================================+
