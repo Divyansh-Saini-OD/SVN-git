@@ -2243,3 +2243,4 @@ AS
    END store_os_cc_main;
 END XX_CE_STORE_OS_WLFG_PKG;
 /
+show err
