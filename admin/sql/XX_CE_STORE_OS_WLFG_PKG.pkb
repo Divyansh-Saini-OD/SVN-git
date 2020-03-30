@@ -1,5 +1,6 @@
 CREATE OR REPLACE EDITIONABLE PACKAGE BODY APPS.XX_CE_STORE_OS_WLFG_PKG 
 AS
+/*
 -- +=================================================================================+
 -- |                       Office Depot							                     |
 -- |                          					                 	                 |
@@ -15,7 +16,7 @@ AS
 -- |=======  ===========  ===============    ============================            |
 -- |1.0      30-Mar-2020  Amit Kumar        Initial version 						 |
 -- |                                                                                 |
--- +=================================================================================+
+-- |=================================================================================|
 -- | Name        : OD: CM Store Over/Short and Cash Concentration WF                 |
 -- | Description : This procedure will be used to process the                        |
 -- |               OD Cash Management Store Deposit Over/Short                       |
@@ -32,9 +33,10 @@ AS
 -- |               x_retcode                                                         |
 -- |                                                                                 |
 -- +=================================================================================+
+*/
 
-   gc_line   VARCHAR2 (80)
-              := '------------------------------------------------------------';
+   gc_line   VARCHAR2 (100)       := '------------------------------------------------------------' ;
+   
    gc_trans_name   VARCHAR2 (50)  := 'XX_CM_E1319_STORE_OS_CC';
 
    FUNCTION pf_derive_lob (pfv_location IN VARCHAR2, pfv_cost_center IN VARCHAR2)
