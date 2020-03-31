@@ -2,7 +2,7 @@
 -- |                        				Office Depot 		                                |
 -- |                                                                                            |
 -- +============================================================================================+
--- | Name         : XX_CE_STORE_BANK_DEPOSITS_N2.idx                                            |
+-- | Name         : XX_CE_BANK_ACCOUNTS_F11.idx                                            |
 -- | Rice Id      :                                                                             | 
 -- | Description  :                                                                             |  
 -- | Purpose      :                                                                             |
@@ -22,6 +22,9 @@ SET SHOW        OFF
 SET ECHO        OFF
 SET TAB         OFF
 
-CREATE INDEX XX_CE_STORE_BANK_DEPOSITS_N2 ON XXFIN.XX_CE_STORE_BANK_DEPOSITS ( STATUS_CD );
+drop INDEX XXFIN.XX_CE_BANK_ACCOUNTS_F11;
+drop INDEX XXFIN.XX_CE_STORE_BANK_DEPOSITS_F2;
+drop INDEX XXFIN.XX_CE_STORE_BANK_DEPOSITS_N3;
 
 EXIT;
+
