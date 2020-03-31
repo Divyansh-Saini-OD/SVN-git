@@ -384,8 +384,7 @@ BEGIN EXECUTABLE "XX_CE_STORE_OS_WF" "XXFIN"
   EXECUTION_METHOD_CODE = "I"
   EXECUTION_FILE_NAME = "XX_CE_STORE_OS_WLFG_PKG.STORE_OS_CC_MAIN"
   USER_EXECUTABLE_NAME = "XX_CE_STORE_OS_WF"
-  DESCRIPTION =
- "OD: CM Store Over/Short and Cash Concentration Wells Fargo Bank"
+  DESCRIPTION = "E1319-Store Over/Short & Cash Concentration WellsFargo Bank"
 END EXECUTABLE
 
 BEGIN VALUE_SET "XXCE_WELLS_FARGO_CORP_ACC"
@@ -457,8 +456,7 @@ BEGIN DESC_FLEX "XXFIN" "$SRS$.XX_CE_STORE_OS_CC_WF"
   CONTEXT_OVERRIDE_VALUE_SET_NAM = ""
   TITLE = "$SRS$.XX_CE_STORE_OS_CC_WF"
   FORM_CONTEXT_PROMPT = "Context Value"
-  DESCRIPTION =
- "E1319 - OD: CM Store Over/Short and Cash Concentration Wells Fargo Bank"
+  DESCRIPTION = "E1319 - OD: CM Store Over/Short and Cash Concentration Wells Fargo Bank"
 
 
 
@@ -505,8 +503,7 @@ BEGIN PROGRAM "XX_CE_STORE_OS_CC_WF" "XXFIN"
   PRINT_FLAG = "Y"
   RUN_ALONE_FLAG = "N"
   SRS_FLAG = "Y"
-  DESCRIPTION =
- "E1319 - OD: CM Store Over/Short and Cash Concentration Wells Fargo Bank"
+  DESCRIPTION = "E1319 - OD: CM Store Over/Short and Cash Concentration Wells Fargo Bank"
   SAVE_OUTPUT_FLAG = "Y"
   REQUIRED_STYLE = "N"
   OUTPUT_FILE_TYPE = "TEXT"
