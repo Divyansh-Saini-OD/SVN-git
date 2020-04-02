@@ -1,4 +1,4 @@
-create or replace PACKAGE BODY   APPS.XXOD_AP_SUPPLIER_AUDIT_PKG AS
+create or replace PACKAGE BODY      XXOD_AP_SUPPLIER_AUDIT_PKG AS
 gc_no_site_change   CONSTANT  VARCHAR2(200) DEFAULT 'No Site Change';
 -- +=====================================================================================+
 -- |                  Office Depot - Project Simplify                                    |
@@ -15,8 +15,8 @@ gc_no_site_change   CONSTANT  VARCHAR2(200) DEFAULT 'No Site Change';
 -- | V1.1      13-JAN-08    Aravind A.       Fixed defect 4345                           |
 -- | V1.2      01-JULY-2013 Sravanthi Surya  Modified Table names as part of R12 Upgrade |
 -- | V1.3      03-JULY-2014 Avinash Baddam   Changes for defect 30042 			         |	
--- | V1.4      22-JAN-2020 Bhargavi Ankolekar Added                                      |
--- |                                         jira NAIT-103952  		 					 |
+-- | V1.4      22-JAN-2020 Bhargavi Ankolekar Added for jira NAIT-103952                 |
+-- |                                         		 					 |
 -- +=====================================================================================+
 
 PROCEDURE PROCESS_VENDORS(p_begin_date DATE,p_end_date DATE)
@@ -69,7 +69,7 @@ SELECT * FROM
       ,last_updated_by
       ,last_update_date
       ,1 order_by_col
-FROM XX_PO_VENDOR_ADD_AUD va
+FROM XX_PO_VENDOR_ADD_AUD_V1 va
 WHERE va.vendor_id = p_vendor_id
 ) where last_update_date
   BETWEEN p_begin_date AND p_end_date
@@ -355,9 +355,9 @@ SELECT PVSA.vendor_site_id
        ,PV.segment1   vendor_num
        ,PV.vendor_name
        ,PVSA.attribute9 legacy_num
-FROM   -- Changed Table Name on 7/1/2013 by Sravanthi Surya as part of R12 Upgrade 	
-	       -- po_vendors pv	
-	       -- ,po_vendor_sites_all PVSA
+FROM   -- Changed Table Name on 7/1/2013 by Sravanthi Surya as part of R12 Upgrade 		
+		       -- po_vendors pv		
+		       -- ,po_vendor_sites_all PVSA
           ap_suppliers PV,
       ap_supplier_sites_all PVSA
 WHERE PV.vendor_id = PVSA.vendor_id
@@ -380,7 +380,7 @@ SELECT PVSA.vendor_site_id
       AND pvsa.vendor_id = pv.vendor_id
       AND ieppm.last_update_date BETWEEN p_begin_date AND p_end_date;
 	 
--------Adding below curosr for  column audit of XX_PO_VENDOR_SITES_KFF requested for jira NAIT-103952.Added by Bhargavi Ankolekar.	  
+-------Adding below CURSOR for  column audit of XX_PO_VENDOR_SITES_KFF requested for jira NAIT-103952.Added by Bhargavi Ankolekar.	  
 
 CURSOR lcu_po_vend_site_kff is 
 select PVSA.vendor_site_id
@@ -398,7 +398,7 @@ where  PV.vendor_id=PVSA.vendor_id
 and PVSA.attribute10=xpvsk.VS_KFF_ID
 AND xpvsk.last_update_date BETWEEN p_begin_date AND p_end_date;
 
--------Adding below curosr for column audit of XX_PO_VEND_SITES_KFF_AUD requested for jira NAIT-103952.Added by Bhargavi Ankolekar.	  
+-------Adding below CURSOR for column audit of XX_PO_VEND_SITES_KFF_AUD requested for jira NAIT-103952.Added by Bhargavi Ankolekar.	  
 CURSOR lcu_po_vdsite_aud_kff(p_attribute10 number, p_attribute11 number , p_attribute12 number)is 
 SELECT * FROM (
 select pvs.SEGMENT1   SEGMENT1_cur
@@ -454,7 +454,7 @@ select pvs.SEGMENT1   SEGMENT1_cur
 ,last_updated_by
       ,last_update_date
       ,1 order_by_col
-from XX_PO_VEND_SITES_KFF_AUD pvs
+from XX_PO_VEND_SITES_KFF_AUD_V1 pvs
 WHERE pvs.VS_KFF_ID in (p_attribute10 , p_attribute11, p_attribute12))
 WHERE last_update_date BETWEEN p_begin_date AND p_end_date
 ORDER BY last_update_date;
@@ -498,7 +498,7 @@ FAVOURABLE_PRICE_PCT FAVOURABLE_PRICE_PCT_Cur
 	    ,last_updated_by
       ,last_update_date
       ,2 order_by_col
-FROM XX_AP_CUST_TOLERANCE_AUD xpc
+FROM XX_AP_CUST_TOLERANCE_AUD_V1 xpc
 WHERE xpc.supplier_site_id = p1_supplier_site_id
 ) where last_update_date
   BETWEEN p_begin_date AND p_end_date
@@ -540,14 +540,14 @@ SELECT * FROM
       ,last_updated_by
       ,last_update_date
       ,1 order_by_col
-FROM XX_PO_VDSITES_ADD_AUD va
+FROM XX_PO_VDSITES_ADD_AUD_V1 va
 WHERE va.vendor_site_id = p1_vendor_site_id
 ) where last_update_date
   BETWEEN p_begin_date AND p_end_date
   ORDER BY last_update_date;
 
 
-------Adding below curosr for additional column audit requested for jira NAIT-103952.Added by Bhargavi Ankolekar.
+------Adding below CURSOR for additional column audit requested for jira NAIT-103952.Added by Bhargavi Ankolekar.
 cursor lcu_vdsite_iby_col_aud is 
 SELECT iepa.supplier_site_id
          ,PVSA.vendor_site_code
@@ -561,7 +561,7 @@ SELECT iepa.supplier_site_id
       AND pvsa.vendor_id = pv.vendor_id
       AND iepa.last_update_date BETWEEN p_begin_date AND p_end_date;
 	  
--------Adding below curosr for additional column audit requested for jira NAIT-103952.Added by Bhargavi Ankolekar.
+-------Adding below CURSOR for additional column audit requested for jira NAIT-103952.Added by Bhargavi Ankolekar.
 CURSOR lcu_vdsite_add_col_aud(p_supplier_site_id NUMBER) is
 SELECT * FROM (
 SELECT
@@ -580,7 +580,7 @@ PAYMENT_FORMAT_CODE PAYMENT_FORMAT_CODE_CURRENT
 ,last_updated_by
       ,last_update_date
       ,2 order_by_col
-FROM XX_IBY_EXT_PAYEES_ALL_AUD va
+FROM XX_IBY_EXT_PAYEES_ALL_AUD_V1 va
 WHERE va.SUPPLIER_SITE_ID = p_supplier_site_id)
 WHERE last_update_date BETWEEN p_begin_date AND p_end_date
 ORDER BY last_update_date;
@@ -653,7 +653,7 @@ WHERE va.vendor_site_id = p_vendor_site_id)
 WHERE last_update_date BETWEEN p_begin_date AND p_end_date
 ORDER BY last_update_date;
 
--------Adding below curosr for ap_tolerance template column audit as requested for jira NAIT-103952.Added by Bhargavi Ankolekar.
+-------Adding below CURSOR for ap_tolerance template column audit as requested for jira NAIT-103952.Added by Bhargavi Ankolekar.
 
 CURSOR lcu_ap_tolerance_temp_aud
 IS
@@ -670,7 +670,7 @@ where  PV.vendor_id=PVSA.vendor_id
 and att.tolerance_id= pvsa.tolerance_id
 AND PVSA.last_update_date BETWEEN p_begin_date AND p_end_date;
 
--------Adding below curosr for ap_tolerance template new trigger table created as requested for jira NAIT-103952.Added by Bhargavi Ankolekar.
+-------Adding below CURSOR for ap_tolerance template new trigger table created as requested for jira NAIT-103952.Added by Bhargavi Ankolekar.
 CURSOR lcu_ap_tol_template_aud(p_tolerance_id NUMBER) is
 SELECT * FROM (
 SELECT
@@ -679,7 +679,7 @@ TOLERANCE_NAME TOLERANCE_NAME_CURRENT
 ,last_updated_by
       ,last_update_date
       ,2 order_by_col
-FROM XX_AP_TOLERANCE_TEMP_AUD xata
+FROM XX_AP_TOLERANCE_TEMP_AUD_V1 xata
 WHERE  xata.TOLERANCE_ID= p_tolerance_id)
 WHERE last_update_date BETWEEN p_begin_date AND p_end_date
 ORDER BY last_update_date;
