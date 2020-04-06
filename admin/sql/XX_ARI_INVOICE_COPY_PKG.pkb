@@ -1930,6 +1930,37 @@ BEGIN
   END IF;
 END send_invoices;
 
+-- +============================================================================================+
+-- |  Name: purge_invcopy_requests_data                                                         |
+-- |  Description: This procedure delete the Invoice Copy Requests data from XX_AR_INVOICE_COPY_LIST table|
+-- |                                                                                            |
+-- |  Parameters:                                                                               |
+-- |  p_no_of_days              IN -- number days                                               | 
+-- +============================================================================================+
+
+PROCEDURE purge_invcopy_requests_data(
+  x_error_buff  OUT  VARCHAR2,
+  x_ret_code    OUT  NUMBER,
+  p_no_of_days  IN   NUMBER
+)
+is
+BEGIN
+
+	  DELETE FROM XX_AR_INVOICE_COPY_LIST
+	  WHERE creation_date < trunc(sysdate) - p_no_of_days;
+	  fnd_file.put_line(fnd_file.LOG, 'Number of records deleted from XX_AR_INVOICE_COPY_LIST : '||SQL%ROWCOUNT);
+
+	COMMIT;
+EXCEPTION
+WHEN OTHERS THEN
+	fnd_file.put_line(fnd_file.LOG, 'Purging Table XX_AR_INVOICE_COPY_LIST Failed   '||SQLERRM);
+	ROLLBACK;
+	x_ret_code := 1;
+END purge_invcopy_requests_data;
+
+
+
+
 -- ===========================================================================
 -- procedure that inserts Transaction list into table for V
 --   it is deferred so that the user does not have to wait on the request.
@@ -1951,12 +1982,12 @@ procedure insert_transaciton_list
   p_group_id               OUT  VARCHAR2
   )
 IS
-lv_group_id_seq number;
+
 
 Begin
 
-lv_group_id_seq:=XX_AR_INVOICE_COPY_LIST_S.nextval;
-p_group_id:=lv_group_id_seq;
+
+p_group_id:='INVCPY'||XX_AR_INVOICE_COPY_LIST_S.nextval;
 
 		insert into XX_AR_INVOICE_COPY_LIST( 
 			GROUP_ID	               ,
@@ -1972,7 +2003,7 @@ p_group_id:=lv_group_id_seq;
 			CREATION_DATE 			   ,
 			CREATED_BY  )
 		values
-			(lv_group_id_seq           ,
+			(p_group_id           ,
 			p_cust_account_id          ,
 			p_invoice_trx_list         ,
 			p_cons_bill_list           ,
@@ -2030,7 +2061,7 @@ IS
 
   b_add_layout             boolean             default false;
   b_set_print_options      boolean             default false;
-  lv_group_id number;
+  lv_group_id varchar2(150);
   lvp_invoice_trx_list  varchar2(4000) default null;
   lvp_cons_bill_list  varchar2(4000) default null;
 

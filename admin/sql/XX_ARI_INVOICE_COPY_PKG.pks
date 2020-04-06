@@ -20,6 +20,7 @@ PACKAGE      XX_ARI_INVOICE_COPY_PKG AS
 -- |                                           data Defect#39482                                |
 -- | 1.6		 10-MAR-2016  Madhu Bolli      Defect#41197 - Added 2 new global variables      |
 -- | 1.7         21-Apr-2017  Madhu Bolli      Added new proc save_pdf_invoice_copy to store PDF Copy| 
+-- | 1.8         21-Apr-2017  M K Pramod Kumar Added new proc to delete data for 50 Invoices Copy Requirement- NAIT-119893| 
 -- +============================================================================================+
 
 
@@ -234,6 +235,17 @@ PROCEDURE save_pdf_invoice_copy(
   x_ret_code    OUT  NUMBER,
   p_customer_trx_id      IN   VARCHAR2,
   p_request_id           IN   NUMBER
+);
+
+-- +============================================================================================+
+-- |  Name: delete_invcopy_run_records                                                               |
+-- |  Description: This procedure delete the Invoice Copy records from XX_AR_INVOICE_COPY_LIST table|
+-- |                                                                                            |-- |  
+-- +============================================================================================+
+PROCEDURE purge_invcopy_requests_data(
+  x_error_buff  OUT  VARCHAR2,
+  x_ret_code    OUT  NUMBER,
+  p_no_of_days  IN   NUMBER
 );
 
 
