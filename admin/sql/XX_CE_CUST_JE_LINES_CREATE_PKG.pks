@@ -84,3 +84,4 @@ PROCEDURE CREATE_GL_INTRF_STG_LINE_MAIN (
     ,p_gl_date                IN VARCHAR2
    );
 END;
+/

@@ -39,3 +39,4 @@ function   PF_DERIVE_LOB ( pfv_location      IN  VARCHAR2
    return varchar2 ;
 
 END XX_CE_STORE_OS_WLFG_PKG ;
+/
