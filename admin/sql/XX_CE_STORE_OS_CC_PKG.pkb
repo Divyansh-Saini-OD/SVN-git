@@ -1,5 +1,4 @@
-create or replace
-PACKAGE BODY xx_ce_store_os_cc_pkg
+create or replace PACKAGE BODY xx_ce_store_os_cc_pkg
 AS
 -- +=================================================================================+
 -- |                       Office Depot - Project Simplify                           |
@@ -101,12 +100,14 @@ AS
 -- |4.0      16-Sep-2013 Aradhna Sharma     E1318-Made changes for R12 retrofit      |
 -- |                                        Adding trx_code in ce_stamements_lines   |
 -- |4.1      12-Dec-2013 Aradhna Sharma     Added for R12 retrofit defect#26545      |
--- |4.2      22-Oct-2014 Shereen Colaco     Including account type lookup'DEPOSIT'#  | 
+-- |4.2      22-Oct-2014 Shereen Colaco     Including account type lookup'DEPOSIT'#  |
 -- |                                        for defect# 32125						 |
 -- |4.3      29-OCT-2015 Avinash            R12.2 Compliance Changes                 |
 -- |4.4      02-Nov-2015 Rakesh Polepalli   Modified for the defect# 36086		     |
 -- |4.5      27-Mar-2017 Pritidarshini Jena	Modified for the Defect# 41450           |
 -- |4.6      30-May-2017 Rohit Nanda	    Modified for the Defect# 42107           |
+-- |5.1      30-Mar-2020 Amit Kumar	    	E1319 changes to not consider Wells Fargo|
+-- |											Records in main cursors.		     |
 -- +=================================================================================+
 -- |Name        :                                                                    |
 -- | Description : This procedure will be used to process the                        |
@@ -168,10 +169,10 @@ AS
       ln_csl_deposit_amt             ce_statement_lines.amount%TYPE;
       ln_csl_statement_line_id       ce_statement_lines.statement_line_id%TYPE;
       ln_csl_statement_header_id     ce_statement_lines.statement_header_id%TYPE;
-      ln_csl_trx_code_id             ce_statement_lines.trx_code_id%TYPE;            
-      ln_csl_trx_code                ce_statement_lines.trx_code%TYPE;                     ----Added for R12 retrofit by Aradhna Sharma on 19-Sep-2013 for Defect #25480 
-      ln_csl_trx_code_001_id         NUMBER;                                                   
-      ln_csl_trx_code_001            ce_statement_lines.trx_code%TYPE;                      ----Added for R12 retrofit by Aradhna Sharma on 19-Sep-2013 for Defect #25480 
+      ln_csl_trx_code_id             ce_statement_lines.trx_code_id%TYPE;
+      ln_csl_trx_code                ce_statement_lines.trx_code%TYPE;                     ----Added for R12 retrofit by Aradhna Sharma on 19-Sep-2013 for Defect #25480
+      ln_csl_trx_code_001_id         NUMBER;
+      ln_csl_trx_code_001            ce_statement_lines.trx_code%TYPE;                      ----Added for R12 retrofit by Aradhna Sharma on 19-Sep-2013 for Defect #25480
       ld_csl_trx_date                ce_statement_lines.trx_date%TYPE;
     ----------  lc_currency_code               ap_bank_accounts_all.currency_code%TYPE;   ----Commented for R12 retrofit by Aradhna Sharma on 8-July-2013
       lc_currency_code               ce_bank_accounts.currency_code%TYPE;                   ----added for R12 retrofit by Aradhna Sharma on 8-July-2013
@@ -259,14 +260,15 @@ AS
       ln_days                        NUMBER;
 /*****************R 1.2 CR 559 Fix****************Ends****************/
 
-      CURSOR c_store_deposit
+/****************************** R1.5 Cursur changes to exclude Wells Fargo Records Starts  *****************************/
+/*      CURSOR c_store_deposit
       IS
          SELECT DISTINCT sales_date, loc_id, status_cd
                     FROM xx_ce_store_bank_deposits xcs
 /*****************R 1.2 CR 559 Fix****************Starts****************/
  -- Commented Hard Coded Values and Added Translation
              --      WHERE NVL (status_cd, '~') NOT IN ('B', 'S')
-                   WHERE NVL (status_cd, '~') NOT IN (
+ /*                  WHERE NVL (status_cd, '~') NOT IN (
                                                  SELECT XFTV.TARGET_value1
                                                    FROM xx_fin_translatedefinition XFTD
                                                         ,xx_fin_translatevalues XFTV
@@ -278,7 +280,7 @@ AS
                                                     AND XFTV.enabled_flag = 'Y'
                                                     AND XFTD.enabled_flag = 'Y')
 /*****************R 1.2 CR 559 Fix****************Ends****************/
-                     AND EXISTS (
+  /*                   AND EXISTS (
                            SELECT 1
                              FROM hr_all_organization_units hro
                             WHERE hro.attribute1 = xcs.loc_id
@@ -290,7 +292,7 @@ AS
 /*****************R 1.2 CR 559 Fix****************Starts****************/
  -- Commented Hard Coded Values and Added Translation
                                       --        AND hro.TYPE IN ('STORESTDT','STORESTRG','STORESTMG')) -- Added for defect 14677
-                                              AND hro.TYPE IN (
+ /*                                             AND hro.TYPE IN (
                                                  SELECT XFTV.TARGET_value1
                                                    FROM xx_fin_translatedefinition XFTD
                                                         ,xx_fin_translatevalues XFTV
@@ -302,9 +304,9 @@ AS
                                                     AND XFTV.enabled_flag = 'Y'
                                                     AND XFTD.enabled_flag = 'Y'))
 /*****************R 1.2 CR 559 Fix****************Ends****************/
-                ORDER BY 1, 2;
+ /*               ORDER BY 1, 2;
 
-      CURSOR c_store_deposit_bank
+ /*     CURSOR c_store_deposit_bank
       IS
          SELECT DISTINCT sales_date, loc_id, status_cd, serial_num, amount
                        , seq_nbr, deposit_type
@@ -312,7 +314,7 @@ AS
 /*****************R 1.2 CR 559 Fix****************Starts****************/
  -- Commented Hard Coded Values and Added Translation
              --      WHERE NVL (status_cd, '~') = 'S'
-                   WHERE NVL (status_cd, '~') = (
+ /*                  WHERE NVL (status_cd, '~') = (
                                          SELECT XFTV.TARGET_value1
                                            FROM xx_fin_translatedefinition XFTD
                                                 ,xx_fin_translatevalues XFTV
@@ -328,8 +330,8 @@ AS
                      --  Don't do if store/AR .
                      --  failed because setup of
                      --  store is probably bad
-                     AND deposit_type NOT IN ('PTY','CHG')
-                     AND EXISTS (
+ /*                    AND deposit_type NOT IN ('PTY','CHG')
+ /*                    AND EXISTS (
                            SELECT 1
                              FROM hr_all_organization_units hro
                             WHERE hro.attribute1 = xcs.loc_id
@@ -340,7 +342,7 @@ AS
                    --           AND hro.TYPE IN ('STORESTDT','STORESTRG')) -- Commented for defect 14677
 /*****************R 1.2 CR 559 Fix****************Starts****************/
  -- Commented Hard Coded Values and Added Translation
-                                         --     AND hro.TYPE IN ('STORESTDT','STORESTRG','STORESTMG'))  -- Added for defect 14677
+  /*                                       --     AND hro.TYPE IN ('STORESTDT','STORESTRG','STORESTMG'))  -- Added for defect 14677
                                             AND hro.TYPE IN (
                                                  SELECT XFTV.TARGET_value1
                                                    FROM xx_fin_translatedefinition XFTD
@@ -353,7 +355,139 @@ AS
                                                     AND XFTV.enabled_flag = 'Y'
                                                     AND XFTD.enabled_flag = 'Y'))
 /*****************R 1.2 CR 559 Fix****************Ends****************/
-                ORDER BY 1, 2;
+ /*              ORDER BY 1, 2;
+*/
+
+		CURSOR c_store_deposit
+		IS
+		   SELECT sales_Date,
+			  loc_id,
+			  status_cd,
+			  serial_num,
+			  amount,
+			  seq_nbr,
+			  deposit_type,
+			  location_id
+			FROM
+			  (SELECT DISTINCT sales_date,
+				loc_id,
+				status_cd,
+				serial_num,
+				amount ,
+				seq_nbr,
+				deposit_type,
+				LPAD (TO_CHAR (xcs.loc_id), 6, '0') location_id
+			  FROM xx_ce_store_bank_deposits xcs
+			  WHERE NVL (status_cd, '~') not in
+				(SELECT XFTV.TARGET_value1
+						FROM xx_fin_translatedefinition XFTD ,
+						  xx_fin_translatevalues XFTV
+						WHERE XFTD.translate_id   = XFTV.translate_id
+						AND XFTD.translation_name = gc_trans_name
+						AND XFTV.source_value1    = 'EX_STATUS_CODE'
+						AND SYSDATE BETWEEN XFTV.start_date_active AND NVL(XFTV.end_date_active,SYSDATE+1)
+						AND SYSDATE BETWEEN XFTD.start_date_active AND NVL(XFTD.end_date_active,SYSDATE+1)
+						AND XFTV.enabled_flag = 'Y'
+						AND XFTD.enabled_flag = 'Y'
+						)
+			  AND  EXISTS
+					  (SELECT 1
+					  FROM hr_all_organization_units hro
+					  WHERE hro.attribute1                                      = to_char(xcs.loc_id)
+					  AND xx_fin_country_defaults_pkg.f_org_id (hro.attribute5) = gn_org_id
+					  AND hro.TYPE                                             IN
+						(SELECT XFTV.TARGET_value1
+						FROM xx_fin_translatedefinition XFTD ,
+						  xx_fin_translatevalues XFTV
+						WHERE XFTD.translate_id   = XFTV.translate_id
+						AND XFTD.translation_name = gc_trans_name
+						AND XFTV.source_value1    = 'ORG_TYPE'
+						AND SYSDATE BETWEEN XFTV.start_date_active AND NVL(XFTV.end_date_active,SYSDATE+1)
+						AND SYSDATE BETWEEN XFTD.start_date_active AND NVL(XFTD.end_date_active,SYSDATE+1)
+						AND XFTV.enabled_flag = 'Y'
+						AND XFTD.enabled_flag = 'Y'
+						)
+					  )
+			  )
+			WHERE location_id NOT IN
+			  (SELECT SUBSTR (cba.agency_location_code, 3)
+			  FROM CE_BANK_ACCOUNTS CBA,
+				HZ_PARTIES HP
+			  WHERE hp.party_id =cba.bank_id
+			  AND hp.party_name ='WELLS FARGO BANK'
+			  AND hp.party_type ='ORGANIZATION'
+			  AND HP.STATUS     ='A'
+			  AND upper(cba.bank_Account_name) LIKE '%WELLS%'
+			  AND cba.agency_location_code IS NOT NULL
+			  )
+			ORDER BY 1,  2;
+			
+
+		CURSOR c_store_deposit_bank
+		IS
+		SELECT sales_Date,
+		  loc_id,
+		  status_cd,
+		  serial_num,
+		  amount,
+		  seq_nbr,
+		  deposit_type,
+		  location_id
+		FROM
+		  (SELECT DISTINCT sales_date,
+			loc_id,
+			status_cd,
+			serial_num,
+			amount ,
+			seq_nbr,
+			deposit_type,
+			LPAD (TO_CHAR (xcs.loc_id), 6, '0') location_id
+		  FROM xx_ce_store_bank_deposits xcs
+		  WHERE NVL (status_cd, '~') =
+			(SELECT XFTV.TARGET_value1
+			FROM xx_fin_translatedefinition XFTD ,
+			  xx_fin_translatevalues XFTV
+			WHERE XFTD.translate_id   = XFTV.translate_id
+			AND XFTD.translation_name = gc_trans_name
+			AND XFTV.source_value1    = 'IN_STATUS_CODE'
+			AND SYSDATE BETWEEN XFTV.start_date_active AND NVL(XFTV.end_date_active,SYSDATE+1)
+			AND SYSDATE BETWEEN XFTD.start_date_active AND NVL(XFTD.end_date_active,SYSDATE+1)
+			AND XFTV.enabled_flag = 'Y'
+			AND XFTD.enabled_flag = 'Y'
+			)
+		  AND deposit_type NOT IN ('PTY','CHG')
+		  AND EXISTS
+			(SELECT 1
+			FROM hr_all_organization_units hro
+			WHERE hro.attribute1                                      = TO_CHAR(xcs.loc_id)
+			AND xx_fin_country_defaults_pkg.f_org_id (hro.attribute5) = gn_org_id
+			AND hro.TYPE                                             IN
+			  (SELECT XFTV.TARGET_value1
+			  FROM xx_fin_translatedefinition XFTD ,
+				xx_fin_translatevalues XFTV
+			  WHERE XFTD.translate_id   = XFTV.translate_id
+			  AND XFTD.translation_name = gc_trans_name
+			  AND XFTV.source_value1    = 'ORG_TYPE'
+			  AND SYSDATE BETWEEN XFTV.start_date_active AND NVL(XFTV.end_date_active,SYSDATE+1)
+			  AND SYSDATE BETWEEN XFTD.start_date_active AND NVL(XFTD.end_date_active,SYSDATE+1)
+			  AND XFTV.enabled_flag = 'Y'
+			  AND XFTD.enabled_flag = 'Y'
+			  )
+			)
+		  )
+		WHERE location_id NOT IN
+			  (SELECT SUBSTR (cba.agency_location_code, 3)
+			  FROM CE_BANK_ACCOUNTS CBA,
+				HZ_PARTIES HP
+			  WHERE hp.party_id =cba.bank_id
+			  AND hp.party_name ='WELLS FARGO BANK'
+			  AND hp.party_type ='ORGANIZATION'
+			  AND HP.STATUS     ='A'
+			  AND upper(cba.bank_Account_name) LIKE '%WELLS%'
+			  AND cba.agency_location_code IS NOT NULL
+			  )
+	    ORDER BY 1,  2;
+/****************************** R1.5 Cursur changes to exclude Wells Fargo Records Ends  *****************************/
 
 /*****************R 1.2 CR 559 Fix****************Starts****************/
  -- Added Translation to Check the Starting Value of MIS Income Account
@@ -514,14 +648,14 @@ AS
                     FROM ap_bank_accounts
                    WHERE attribute3 IS NOT NULL
                      AND UPPER (bank_account_type) LIKE '%DEPOSIT%'; */  --Commented for CR 559A--Ends here--
---Defect 11531                     
-      CURSOR c_check_db_status(lp_sales_date DATE, lp_loc_id NUMBER 
+--Defect 11531
+      CURSOR c_check_db_status(lp_sales_date DATE, lp_loc_id NUMBER
       , lp_status_cd VARCHAR2, lp_serial_num VARCHAR2, lp_amount NUMBER
       , lp_seq_nbr NUMBER, lp_deposit_type VARCHAR2)
       IS
-         SELECT 1 
-                       
-                    FROM xx_ce_store_bank_deposits xcs 
+         SELECT 1
+
+                    FROM xx_ce_store_bank_deposits xcs
                     WHERE xcs.sales_date = lp_sales_date
                       AND xcs.loc_id=lp_loc_id
                       AND xcs.status_cd=lp_status_cd
@@ -853,7 +987,7 @@ AS
             AND application_id = ln_appl_id;
 
                   --- If only one period is open, pass Accounting Date as Sales Date
-            
+
 	    IF (ln_status_count=1)
             THEN
             ld_accounting_date := lpv_accounting_date;
@@ -1019,8 +1153,8 @@ AS
       PROCEDURE create_open_interface (
          x_errbuf                OUT NOCOPY      VARCHAR2
        , x_retcode               OUT NOCOPY      NUMBER
-       , p_trx_code_id           IN              NUMBER         
-       , p_trx_code              IN              VARCHAR2             ----Added for R12 retrofit by Aradhna Sharma on 19-Sep-2013 for Defect #25480 
+       , p_trx_code_id           IN              NUMBER
+       , p_trx_code              IN              VARCHAR2             ----Added for R12 retrofit by Aradhna Sharma on 19-Sep-2013 for Defect #25480
        , p_bank_trx_number_org   IN              VARCHAR2
        , p_statement_header_id   IN              NUMBER
        , p_statement_line_id     IN              NUMBER
@@ -1039,10 +1173,10 @@ AS
                lp_print (' ln_seq_999 :: '||ln_seq_999, 'LOG'); --Defect #41450
          BEGIN                             --  Get 001 trx_code_id for this bank
             SELECT
-	        transaction_code_id   
-	       ,trx_code                            ----Added for R12 retrofit by Aradhna Sharma on 19-Sep-2013 for Defect #25480  
-                INTO ln_csl_trx_code_001_id    
-	             ,ln_csl_trx_code_001              ----Added for R12 retrofit by Aradhna Sharma on 19-Sep-2013 for Defect #25480  
+	        transaction_code_id
+	       ,trx_code                            ----Added for R12 retrofit by Aradhna Sharma on 19-Sep-2013 for Defect #25480
+                INTO ln_csl_trx_code_001_id
+	             ,ln_csl_trx_code_001              ----Added for R12 retrofit by Aradhna Sharma on 19-Sep-2013 for Defect #25480
               FROM ce_transaction_codes
              WHERE bank_account_id = ln_bank_account_id
                AND trx_code = '001'
@@ -1055,7 +1189,7 @@ AS
                x_retcode := ln_error;
                lc_error_loc := 'Get TrxCode:' || lc_error_loc;
                lc_oracle_error_msg := SQLERRM;
-			   
+
                lp_print (' ln_bank_account_id :: '||ln_bank_account_id, 'LOG'); --Defect #41450
                lp_print (' lc_oracle_error_msg :: '||lc_oracle_error_msg, 'LOG'); --Defect #41450
                lc_print_line :=
@@ -1083,7 +1217,7 @@ AS
                lp_print (' xx_ce_999_interface :: ', 'LOG'); --Defect #41450
          INSERT INTO xx_ce_999_interface
                      (trx_id, trx_number, bank_trx_code_id_original
-		    , bank_trx_code_original                          ----Added for R12 retrofit by Aradhna Sharma on 19-Sep-2013 for Defect #25480  
+		    , bank_trx_code_original                          ----Added for R12 retrofit by Aradhna Sharma on 19-Sep-2013 for Defect #25480
 		    , bank_trx_number_original, statement_header_id
                     , statement_line_id, record_type, creation_date
                     , created_by, last_update_date, last_updated_by, trx_type
@@ -1091,9 +1225,9 @@ AS
                     , trx_date, amount, match_amount, deposits_matched
                     , expenses_complete
                      )
-              VALUES (ln_seq_999, ln_seq_999, 
-	              p_trx_code_id     
-		    ,  p_trx_code                                      ----Added for R12 retrofit by Aradhna Sharma on 19-Sep-2013 for Defect #25480   
+              VALUES (ln_seq_999, ln_seq_999,
+	              p_trx_code_id
+		    ,  p_trx_code                                      ----Added for R12 retrofit by Aradhna Sharma on 19-Sep-2013 for Defect #25480
                     , p_bank_trx_number_org, p_statement_header_id
                     , p_statement_line_id, p_record_type, SYSDATE
                     , ln_user_id, SYSDATE, ln_user_id, 'CASH'
@@ -1109,8 +1243,8 @@ AS
                lp_print (' ce_statement_lines :: ', 'LOG'); --Defect #41450
          UPDATE ce_statement_lines csl
             SET csl.attribute15 = 'PROC-E1318-YES'
-              , csl.trx_code_id = ln_csl_trx_code_001_id   
-	      , csl.trx_code = ln_csl_trx_code_001   ----Added for R12 retrofit by Aradhna Sharma on 19-Sep-2013 for Defect #25480   
+              , csl.trx_code_id = ln_csl_trx_code_001_id
+	      , csl.trx_code = ln_csl_trx_code_001   ----Added for R12 retrofit by Aradhna Sharma on 19-Sep-2013 for Defect #25480
               , csl.bank_trx_number = ln_seq_999
           WHERE csl.statement_line_id = ln_csl_statement_line_id;
                lp_print (' updated :: ', 'LOG'); --Defect #41450
@@ -2006,10 +2140,10 @@ AS
         , 'OUT'
          );
       lp_print (' ', 'BOTH');
-   
+
    ----Added for R12 retrofit by Aradhna Sharma on 8-July-2013
         BEGIN
-          mo_global.set_policy_context('S',FND_PROFILE.VALUE('ORG_ID')); 
+          mo_global.set_policy_context('S',FND_PROFILE.VALUE('ORG_ID'));
         END;
 
 
@@ -2155,7 +2289,7 @@ AS
                         );
                ROLLBACK TO lc_st_dep_savepoint;
          END;                                          -- End Process Store Data
-      
+
       END LOOP;                                                                --
 
       --  Process Bank to Store (Manual) Over/Shorts
@@ -2190,13 +2324,13 @@ AS
       FOR sdb IN c_store_deposit_bank       -- All POS/SA deposit lines that are
       LOOP                                    -- not 'PTY' or 'CHG' deposit type
                                               -- and status code = 'S'
---Defect #11531                                              
-      FOR cds IN c_check_db_status(sdb.sales_date , sdb.loc_id  
-      , sdb.status_cd , sdb.serial_num , sdb.amount 
+--Defect #11531
+      FOR cds IN c_check_db_status(sdb.sales_date , sdb.loc_id
+      , sdb.status_cd , sdb.serial_num , sdb.amount
       , sdb.seq_nbr , sdb.deposit_type )
       LOOP
-         
-         
+
+
          BEGIN
 /*****************R 1.2 CR 559 Fix****************Starts****************/
  -- Added Local Variable to check whether the record has passed to the matching criteria
@@ -2371,8 +2505,8 @@ AS
                   BEGIN
                      SELECT csl.amount
                            ,csl.statement_line_id
-                           ,csl.trx_code_id  
-                           ,csl.trx_code               ----Added for R12 retrofit by Aradhna Sharma on 19-Sep-2013 for Defect #25480   
+                           ,csl.trx_code_id
+                           ,csl.trx_code               ----Added for R12 retrofit by Aradhna Sharma on 19-Sep-2013 for Defect #25480
                            ,csl.bank_trx_number
                            ,csl.statement_header_id
                            ,csl.invoice_text
@@ -2382,8 +2516,8 @@ AS
                            ,csh.statement_date
                        INTO ln_csl_deposit_amt
                            ,ln_csl_statement_line_id
-                           ,ln_csl_trx_code_id     
-			   ,ln_csl_trx_code             ----Added for R12 retrofit by Aradhna Sharma on 19-Sep-2013 for Defect #25480   
+                           ,ln_csl_trx_code_id
+			   ,ln_csl_trx_code             ----Added for R12 retrofit by Aradhna Sharma on 19-Sep-2013 for Defect #25480
                            ,lc_csl_bank_trx_number
                            ,ln_csl_statement_header_id
                            ,lc_csl_invoice_text
@@ -2409,8 +2543,8 @@ AS
                        AND LPAD(TO_CHAR(ln_loc_id),6,'0') = SUBSTR (aba.bank_account_name
                                                              ,LENGTH (aba.bank_account_name)-5)
                        AND csh.bank_account_id = ln_bank_account_id
-                        --------------AND csl.trx_code_id = ctc.transaction_code_id          ----Commented  for R12 retrofit by Aradhna Sharma on 19-Sep-2013 for Defect #25480   
-		       AND csl.trx_code = ctc.trx_code                                        --------Added for R12 retrofit by Aradhna Sharma on 19-Sep-2013 for Defect #25480   
+                        --------------AND csl.trx_code_id = ctc.transaction_code_id          ----Commented  for R12 retrofit by Aradhna Sharma on 19-Sep-2013 for Defect #25480
+		       AND csl.trx_code = ctc.trx_code                                        --------Added for R12 retrofit by Aradhna Sharma on 19-Sep-2013 for Defect #25480
                        AND csl.status!='RECONCILED'                                 --Added for defect#7656
                        AND ctc.bank_account_id = csh.bank_account_id
                        AND ctc.reconcile_flag = 'OI'
@@ -2422,7 +2556,7 @@ AS
                   EXCEPTION
                      WHEN OTHERS
                      THEN
-                        
+
 						lp_print (' Exact MAtch :: '||SQLERRM, 'LOG');--Defect #41450
                   END;
                END IF;
@@ -2459,12 +2593,12 @@ AS
 						AND pd.sales_date = ld_sales_date;
 
                      lp_print (' ld_sales_date :: '||ld_sales_date, 'LOG'); --Defect #41450
-					 
+
                     lp_print ('lc flag is N :: '||lc_error_loc, 'LOG'); --Defect #41450
                      SELECT csl.amount
                            ,csl.statement_line_id
-                           ,csl.trx_code_id          
-			   ,csl.trx_code                     ----Added for R12 retrofit by Aradhna Sharma on 19-Sep-2013 for Defect #25480   
+                           ,csl.trx_code_id
+			   ,csl.trx_code                     ----Added for R12 retrofit by Aradhna Sharma on 19-Sep-2013 for Defect #25480
                            ,csl.bank_trx_number
                            ,csl.statement_header_id
                            ,csl.invoice_text
@@ -2474,7 +2608,7 @@ AS
                            ,csh.statement_date
                        INTO ln_csl_deposit_amt
                            ,ln_csl_statement_line_id
-                           ,ln_csl_trx_code_id        
+                           ,ln_csl_trx_code_id
 			   ,ln_csl_trx_code           ----Added for R12 retrofit by Aradhna Sharma on 16-Sep-2013
                            ,lc_csl_bank_trx_number
                            ,ln_csl_statement_header_id
@@ -2501,8 +2635,8 @@ AS
                         AND LPAD(TO_CHAR(ln_loc_id),6,'0') = SUBSTR (aba.bank_account_name
                                                              ,LENGTH (aba.bank_account_name)-5)
                         AND csh.bank_account_id = ln_bank_account_id
-                     ---------   AND csl.trx_code_id = ctc.transaction_code_id    ----Commented for R12 retrofit by Aradhna Sharma on 19-Sep-2013 for Defect #25480   
-			AND csl.trx_code = ctc.trx_code    ----Added for R12 retrofit by Aradhna Sharma on 19-Sep-2013 for Defect #25480   
+                     ---------   AND csl.trx_code_id = ctc.transaction_code_id    ----Commented for R12 retrofit by Aradhna Sharma on 19-Sep-2013 for Defect #25480
+			AND csl.trx_code = ctc.trx_code    ----Added for R12 retrofit by Aradhna Sharma on 19-Sep-2013 for Defect #25480
                         AND csl.status!='RECONCILED'                          --Added for defect#7656
                         AND ctc.bank_account_id = csh.bank_account_id
                         AND ctc.reconcile_flag = 'OI'
@@ -2511,12 +2645,12 @@ AS
                         AND rownum = 1;
                        lc_flag := 'Y';
                        lc_match_type := 'Multi Amount Match!';
-					   
+
             lp_print (' lc_match_type 1 :: '||lc_match_type, 'LOG'); --Defect #41450
                   EXCEPTION
                      WHEN OTHERS
                      THEN
-					 
+
 						lp_print (' error Finding Multi Match :: '||SQLERRM, 'LOG'); --Defect #41450
                         NULL;
                   END;
@@ -2527,8 +2661,8 @@ AS
                   BEGIN
                      SELECT csl.amount
                            ,csl.statement_line_id
-                           ,csl.trx_code_id            
-			   ,csl.trx_code                     ----Added for R12 retrofit by Aradhna Sharma on 19-Sep-2013 for Defect #25480   
+                           ,csl.trx_code_id
+			   ,csl.trx_code                     ----Added for R12 retrofit by Aradhna Sharma on 19-Sep-2013 for Defect #25480
                            ,csl.bank_trx_number
                            ,csl.statement_header_id
                            ,csl.invoice_text
@@ -2538,8 +2672,8 @@ AS
                            ,csh.statement_date
                        INTO ln_csl_deposit_amt
                            ,ln_csl_statement_line_id
-                           ,ln_csl_trx_code_id               
-			   ,ln_csl_trx_code                 ----Added for R12 retrofit by Aradhna Sharma on 19-Sep-2013 for Defect #25480   
+                           ,ln_csl_trx_code_id
+			   ,ln_csl_trx_code                 ----Added for R12 retrofit by Aradhna Sharma on 19-Sep-2013 for Defect #25480
                            ,lc_csl_bank_trx_number
                            ,ln_csl_statement_header_id
                            ,lc_csl_invoice_text
@@ -2557,7 +2691,7 @@ AS
                         AND csh.bank_account_id = aba.bank_account_id
                         AND csh.bank_account_id = ln_bank_account_id
                     ---------    AND csl.trx_code_id = ctc.transaction_code_id          ----Commented for R12 retrofit by Aradhna Sharma on 16-Sep-2013
-                 	AND csl.trx_code = ctc.trx_code                                   ----Added for R12 retrofit by Aradhna Sharma on 19-Sep-2013 for Defect #25480   
+                 	AND csl.trx_code = ctc.trx_code                                   ----Added for R12 retrofit by Aradhna Sharma on 19-Sep-2013 for Defect #25480
                         AND csl.status!='RECONCILED'                          --Added for defect#7656
                         AND ctc.bank_account_id = csh.bank_account_id
                         AND ctc.reconcile_flag = 'OI'
@@ -2662,7 +2796,7 @@ lp_print (' lc_aba_key :: '||lc_aba_key, 'LOG'); --Defect #41450
                            || '/'
                            || ' BK2 POS OvrShrt';
                         --lp_create_gl (0, ABS (ln_deposit_bank_difference),ld_sales_date);
-						
+
 						lp_print (' Before lp_create_gl 2 :: '||lc_error_loc, 'LOG');--Defect #41450
                         lp_create_gl (0
                                     , ABS (ln_deposit_bank_difference)
@@ -2700,8 +2834,8 @@ lp_print (' lc_aba_key :: '||lc_aba_key, 'LOG'); --Defect #41450
                lp_print (' create_open_interface :: ', 'LOG'); --Defect #41450
                create_open_interface
                            (
-			    p_trx_code_id => ln_csl_trx_code_id  
-			  ,  p_trx_code => ln_csl_trx_code               ----Added for R12 retrofit by Aradhna Sharma on 19-Sep-2013 for Defect #25480   
+			    p_trx_code_id => ln_csl_trx_code_id
+			  ,  p_trx_code => ln_csl_trx_code               ----Added for R12 retrofit by Aradhna Sharma on 19-Sep-2013 for Defect #25480
                           , p_bank_trx_number_org => lc_csl_bank_trx_number
                           , p_statement_header_id => ln_csl_statement_header_id
                           , p_statement_line_id => ln_csl_statement_line_id
@@ -2819,7 +2953,7 @@ lp_print (' lc_aba_key :: '||lc_aba_key, 'LOG'); --Defect #41450
                         );
                ROLLBACK TO lc_sdb_savepoint;
          END;              -- End of process block for c_store_bank_deposit loop
-      END LOOP;   
+      END LOOP;
       END LOOP;                             --  End of c_store_bank_deposit loop
 
      /* --  Process the change bank statement lines deposits  -- Commented as per the CR 559A--starts here--
@@ -3245,4 +3379,3 @@ lp_print (' lc_aba_key :: '||lc_aba_key, 'LOG'); --Defect #41450
          lp_log_comn_error ('STORE OVER/SHORT - CC', 'Unresolved');
    END store_os_cc_main;
 END xx_ce_store_os_cc_pkg;
-/

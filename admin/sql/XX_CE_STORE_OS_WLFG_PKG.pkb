@@ -1,11 +1,11 @@
-CREATE OR REPLACE PACKAGE BODY APPS.XX_CE_STORE_OS_WLFG_PKG 
+create or replace PACKAGE BODY      XX_CE_STORE_OS_WLFG_PKG 
 AS
 /*
 -- +=================================================================================+
 -- |                       Office Depot							                     |
 -- |                          					                 	                 |
 -- +=================================================================================+
--- | Name       : XX_CE_STORE_OS_CC_PKG.pks                                          |
+-- | Name       : XX_CE_STORE_OS_WLFG_PKG.pkb                                        |
 -- | Description: OD Cash Management Store Over/Short and Cash Sweep Extension 		 |
 -- |			  for Wells FargoBank    	  										 |
 -- |                                                                                 |
@@ -59,9 +59,10 @@ AS
       RETURN (NVL (pfv_lob, -1));
    END;
 
-   PROCEDURE store_os_cc_main (p_corpbank_acct_id IN NUMBER,
+   PROCEDURE store_os_cc_main (
       x_errbuf    OUT NOCOPY   VARCHAR2
     , x_retcode   OUT NOCOPY   NUMBER
+	, p_corpbank_acct_id IN NUMBER
    )
    AS
       n1                             NUMBER;
@@ -164,6 +165,7 @@ AS
       lc_match_type                  VARCHAR2(20);
       ln_appl_id                     fnd_application.application_id%TYPE;
       ln_days                        NUMBER;
+	  LN_CORPBANK_ACCT_ID            NUMBER := NVL(P_CORPBANK_ACCT_ID,11640);
 
       CURSOR c_store_deposit
 		IS
@@ -842,7 +844,7 @@ AS
 					ln_user_id,
 					'CASH' ,
 					'FLOAT',
-					ln_bank_account_id,
+					LN_CORPBANK_ACCT_ID,
 					lc_currency_code ,
 					p_trx_date,
 					p_amount,
@@ -1543,6 +1545,8 @@ AS
         , 'OUT'
          );
       lp_print (' ', 'BOTH');
+	  lp_print ('P_CORPBANK_ACCT_ID '||P_CORPBANK_ACCT_ID, 'LOG');
+	  lp_print ('LN_CORPBANK_ACCT_ID '||LN_CORPBANK_ACCT_ID, 'LOG');
 
         BEGIN
           mo_global.set_policy_context('S',FND_PROFILE.VALUE('ORG_ID'));
@@ -1600,7 +1604,7 @@ AS
                    || ld_sales_date
                  , 'LOG'
                   );
-		 fnd_file.put_line (fnd_file.LOG, 'p_corpbank_acct_id : '||p_corpbank_acct_id );
+		 fnd_file.put_line (fnd_file.LOG, 'LN_CORPBANK_ACCT_ID : '||LN_CORPBANK_ACCT_ID );
          ln_rec_count := NVL (ln_rec_count, 0) + 1;
 
          IF ln_rec_count = 1
@@ -1736,7 +1740,7 @@ AS
 			  
 
 		lp_print ( 'MAIN starting c_store_deposit_bank and c_check_db_status cursors ','LOG');
-		lp_print ( 'P_CORPBANK_ACCT_ID : '||p_corpbank_acct_id, 'LOG' );
+		lp_print ( 'LN_CORPBANK_ACCT_ID : '||LN_CORPBANK_ACCT_ID, 'LOG' );
 
          BEGIN
             lc_flag := 'N';
@@ -1822,7 +1826,8 @@ AS
 
                IF lc_flag = 'N' THEN
                   BEGIN
-                     SELECT csl.amount
+                     SELECT /*+ leading(csh) ordered use_nl(csh,csl,ctc) index(csl,CE_STATEMENT_LINES_N1) */
+					        csl.amount
                            ,csl.statement_line_id
                            ,csl.trx_code_id
                            ,csl.trx_code               
@@ -1849,8 +1854,8 @@ AS
                           ,ce_transaction_codes ctc
                      WHERE csl.attribute15 is null
                        AND csl.statement_header_id = csh.statement_header_id
-					   AND csh.bank_account_id =p_corpbank_acct_id					   
-                       AND LPAD(TO_CHAR(ln_loc_id),8,'0') = SUBSTR (csl.CUSTOMER_TEXT,3)					   
+					   AND csh.bank_account_id =LN_CORPBANK_ACCT_ID					   
+                       AND LPAD(TO_CHAR(ln_loc_id),9,'0') = SUBSTR (csl.CUSTOMER_TEXT,3)					   
 					   AND csl.status!='RECONCILED'
 					   AND csl.trx_code = ctc.trx_code  
                        AND ctc.bank_account_id = ln_bank_account_id
@@ -1903,7 +1908,8 @@ AS
                      lp_print (' ld_sales_date :: '||ld_sales_date, 'LOG'); 
 
                     lp_print ('lc flag is N :: '||lc_error_loc, 'LOG'); 
-                     SELECT csl.amount
+                     SELECT  /*+ leading(csh) ordered use_nl(csh,csl,ctc) index(csl,CE_STATEMENT_LINES_N1) */
+					        csl.amount
                            ,csl.statement_line_id
                            ,csl.trx_code_id
 						   ,csl.trx_code                    
@@ -1930,8 +1936,8 @@ AS
                            ,ce_transaction_codes ctc
                       WHERE csl.attribute15 is null
                         AND csl.statement_header_id = csh.statement_header_id
-						AND csh.bank_account_id =p_corpbank_acct_id						
-                        AND LPAD(TO_CHAR(ln_loc_id),8,'0') = SUBSTR (csl.CUSTOMER_TEXT,3)
+						AND csh.bank_account_id =LN_CORPBANK_ACCT_ID						
+                        AND LPAD(TO_CHAR(ln_loc_id),9,'0') = SUBSTR (csl.CUSTOMER_TEXT,3)
 						AND csl.status!='RECONCILED' 
 						AND csl.trx_code = ctc.trx_code						
                         AND ctc.bank_account_id = ln_bank_account_id
@@ -1954,7 +1960,8 @@ AS
             lp_print (' lc_flag 2 :: '||lc_flag, 'LOG'); 
                IF lc_flag = 'N' THEN
                   BEGIN
-                     SELECT csl.amount
+                     SELECT  /*+ leading(csh) ordered use_nl(csh,csl,ctc) index(csl,CE_STATEMENT_LINES_N1) */
+					        csl.amount
                            ,csl.statement_line_id
                            ,csl.trx_code_id
 						   ,csl.trx_code                     
@@ -1981,7 +1988,7 @@ AS
                            ,ce_transaction_codes ctc
                       WHERE csl.attribute15 is null
                         AND csl.statement_header_id = csh.statement_header_id
-						AND csh.bank_account_id =p_corpbank_acct_id
+						AND csh.bank_account_id =LN_CORPBANK_ACCT_ID
 						AND csl.status!='RECONCILED'  
                        	AND csl.trx_code = ctc.trx_code                                                 
                         AND ctc.bank_account_id = ln_bank_account_id
@@ -2244,5 +2251,3 @@ AS
          lp_log_comn_error ('STORE OVER/SHORT - CC', 'Unresolved');
    END store_os_cc_main;
 END XX_CE_STORE_OS_WLFG_PKG;
-/
-show err

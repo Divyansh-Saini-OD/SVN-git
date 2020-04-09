@@ -1,9 +1,9 @@
-CREATE OR REPLACE  PACKAGE APPS.XX_CE_STORE_OS_WLFG_PKG AS
+create or replace PACKAGE      XX_CE_STORE_OS_WLFG_PKG AS
 -- +=================================================================================+
 -- |                       Office Depot							                     |
 -- |                          					                 	                 |
 -- +=================================================================================+
--- | Name       : XX_CE_STORE_OS_CC_PKG.pks                                          |
+-- | Name       : XX_CE_STORE_OS_WLFG_PKG.pks                                        |
 -- | Description: OD Cash Management Store Over/Short and Cash Sweep Extension 		 |
 -- |			  for Wells FargoBank    	  										 |
 -- |                                                                                 |
@@ -28,9 +28,10 @@ CREATE OR REPLACE  PACKAGE APPS.XX_CE_STORE_OS_WLFG_PKG AS
 -- |                                                                                 |
 -- +=================================================================================+
 PROCEDURE  STORE_OS_CC_MAIN
-                        (p_corpbank_acct_id IN NUMBER,
+                        (
 						 x_errbuf        OUT NOCOPY VARCHAR2
                         ,x_retcode       OUT NOCOPY NUMBER
+						, p_corpbank_acct_id IN NUMBER
                         ) ;
 function   PF_DERIVE_LOB ( pfv_location      IN  VARCHAR2
                          , pfv_cost_center   IN  VARCHAR2
@@ -38,4 +39,3 @@ function   PF_DERIVE_LOB ( pfv_location      IN  VARCHAR2
    return varchar2 ;
 
 END XX_CE_STORE_OS_WLFG_PKG ;
-/
