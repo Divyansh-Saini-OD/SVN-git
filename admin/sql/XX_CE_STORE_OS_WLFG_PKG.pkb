@@ -165,7 +165,7 @@ AS
       lc_match_type                  VARCHAR2(20);
       ln_appl_id                     fnd_application.application_id%TYPE;
       ln_days                        NUMBER;
-      LN_CORPBANK_ACCT_ID            NUMBER := NVL(P_CORPBANK_ACCT_ID,11640);
+      LN_CORPBANK_ACCT_ID            NUMBER := P_CORPBANK_ACCT_ID;
 
       CURSOR c_store_deposit
       IS
