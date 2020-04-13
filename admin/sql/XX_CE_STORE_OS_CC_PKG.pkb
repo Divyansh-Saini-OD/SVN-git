@@ -369,7 +369,7 @@ AS
 			  deposit_type,
 			  location_id
 			FROM
-			  (SELECT DISTINCT sales_date,
+			  (SELECT /*+ INDEX(xcs,XX_CE_STORE_BANK_DEPOSITS_F3) */ DISTINCT sales_date,
 				loc_id,
 				status_cd,
 				serial_num,
@@ -378,18 +378,7 @@ AS
 				deposit_type,
 				LPAD (TO_CHAR (xcs.loc_id), 6, '0') location_id
 			  FROM xx_ce_store_bank_deposits xcs
-			  WHERE NVL (status_cd, '~') not in
-				(SELECT XFTV.TARGET_value1
-						FROM xx_fin_translatedefinition XFTD ,
-						  xx_fin_translatevalues XFTV
-						WHERE XFTD.translate_id   = XFTV.translate_id
-						AND XFTD.translation_name = gc_trans_name
-						AND XFTV.source_value1    = 'EX_STATUS_CODE'
-						AND SYSDATE BETWEEN XFTV.start_date_active AND NVL(XFTV.end_date_active,SYSDATE+1)
-						AND SYSDATE BETWEEN XFTD.start_date_active AND NVL(XFTD.end_date_active,SYSDATE+1)
-						AND XFTV.enabled_flag = 'Y'
-						AND XFTD.enabled_flag = 'Y'
-						)
+			  WHERE status_cd ='N'
 			  AND  EXISTS
 					  (SELECT 1
 					  FROM hr_all_organization_units hro
@@ -434,7 +423,7 @@ AS
 		  deposit_type,
 		  location_id
 		FROM
-		  (SELECT DISTINCT sales_date,
+		  (SELECT DISTINCT /*+ INDEX(xcs,XX_CE_STORE_BANK_DEPOSITS_F3) */ sales_date,
 			loc_id,
 			status_cd,
 			serial_num,
@@ -2503,7 +2492,8 @@ AS
 
                IF lc_flag = 'N' THEN
                   BEGIN
-                     SELECT csl.amount
+                     SELECT /*+ leading(csh) ordered use_nl(csh,csl,ctc) index(csl,CE_STATEMENT_LINES_N1) index(CSH,CE_STATEMENT_HEADERS_U2) */
+							csl.amount
                            ,csl.statement_line_id
                            ,csl.trx_code_id
                            ,csl.trx_code               ----Added for R12 retrofit by Aradhna Sharma on 19-Sep-2013 for Defect #25480
@@ -2595,7 +2585,8 @@ AS
                      lp_print (' ld_sales_date :: '||ld_sales_date, 'LOG'); --Defect #41450
 
                     lp_print ('lc flag is N :: '||lc_error_loc, 'LOG'); --Defect #41450
-                     SELECT csl.amount
+                     SELECT /*+ leading(csh) ordered use_nl(csh,csl,ctc) index(csl,CE_STATEMENT_LINES_N1) index(CSH,CE_STATEMENT_HEADERS_U2) */
+					        csl.amount
                            ,csl.statement_line_id
                            ,csl.trx_code_id
 			   ,csl.trx_code                     ----Added for R12 retrofit by Aradhna Sharma on 19-Sep-2013 for Defect #25480
@@ -2659,7 +2650,8 @@ AS
             lp_print (' lc_flag 2 :: '||lc_flag, 'LOG'); --Defect #41450
                IF lc_flag = 'N' THEN
                   BEGIN
-                     SELECT csl.amount
+                     SELECT /*+ leading(csh) ordered use_nl(csh,csl,ctc) index(csl,CE_STATEMENT_LINES_N1) index(CSH,CE_STATEMENT_HEADERS_U2) */
+							csl.amount
                            ,csl.statement_line_id
                            ,csl.trx_code_id
 			   ,csl.trx_code                     ----Added for R12 retrofit by Aradhna Sharma on 19-Sep-2013 for Defect #25480
