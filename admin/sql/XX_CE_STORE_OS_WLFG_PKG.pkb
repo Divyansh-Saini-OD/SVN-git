@@ -6,25 +6,25 @@ AS
 -- |                                                                                                                                                      |
 -- +=================================================================================+
 -- | Name       : XX_CE_STORE_OS_WLFG_PKG.pkb                                        |
--- | Description: OD Cash Management Store Over/Short and Cash Sweep Extension                          |
--- |                                            for Wells FargoBank                                                                                                                                                                     |
+-- | Description: OD Cash Management Store Over/Short and Cash Sweep Extension       |
+-- |                                            for Wells FargoBank                  |                                                                                                          |
 -- |                                                                                 |
 -- |                                                                                 |
 -- |Change Record                                                                    |
 -- |==============                                                                   |
 -- |Version  Date         Authors            Remarks                                 |
 -- |=======  ===========  ===============    ============================            |
--- |1.0      30-Mar-2020  Amit Kumar        Initial version                                                                                      |
+-- |1.0      30-Mar-2020  Amit Kumar        Initial version                          |
 -- |                                                                                 |
 -- |=================================================================================|
 -- | Name        : OD: CM Store Over/Short and Cash Concentration WF                 |
 -- | Description : This procedure will be used to process the                        |
 -- |               OD Cash Management Store Deposit Over/Short                       |
--- |               and Cash Concentration extention for Wells Fargo Bank                                           |
--- |(E1318 Copy Modified )                                                                                                                                                                                                                           |
--- |                                                                                                                                                                                                                                                                                                                          |
--- | Exection File Name: XX_CE_STORE_OS_WLFG_PKG.STORE_OS_CC_MAIN                                                                       |
--- |                                                                                                                                                                                                                                                                                                                          |
+-- |               and Cash Concentration extention for Wells Fargo Bank             |
+-- |(E1318 Copy Modified )                                                           |                                                                          |
+-- |                                                                                 |                                                                                                                                                                                                            |
+-- | Exection File Name: XX_CE_STORE_OS_WLFG_PKG.STORE_OS_CC_MAIN                    |      
+-- |                                                                                 |                                                                                                                                                                                                                                         |
 -- |                                                                                 |
 -- | Parameters  : None                                                              |
 -- |                                                                                 |

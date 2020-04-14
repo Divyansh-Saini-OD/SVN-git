@@ -101,7 +101,7 @@ AS
 -- |                                        Adding trx_code in ce_stamements_lines   |
 -- |4.1      12-Dec-2013 Aradhna Sharma     Added for R12 retrofit defect#26545      |
 -- |4.2      22-Oct-2014 Shereen Colaco     Including account type lookup'DEPOSIT'#  |
--- |                                        for defect# 32125						 |
+-- |                                        for defect# 32125			     |
 -- |4.3      29-OCT-2015 Avinash            R12.2 Compliance Changes                 |
 -- |4.4      02-Nov-2015 Rakesh Polepalli   Modified for the defect# 36086		     |
 -- |4.5      27-Mar-2017 Pritidarshini Jena	Modified for the Defect# 41450           |

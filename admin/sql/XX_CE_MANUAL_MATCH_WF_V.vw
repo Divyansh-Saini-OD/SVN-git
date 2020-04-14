@@ -75,12 +75,14 @@ FROM ce_statement_headers CSH ,
   ce_transaction_codes CTC,
   hz_parties hp
 WHERE CSH.statement_header_id = CSL.statement_header_id
-AND CSH.bank_account_id       =
-  (SELECT BANK_ACCOUNT_ID
-  FROM ce_bank_Accounts
-  WHERE bank_account_name='Wells Fargo - Corp-Conc'
-  AND description        ='Corporate - Concentration'
-  AND rownum             =1
+AND CSH.bank_account_id       in
+  (SELECT bank_Account_id
+	FROM ce_bank_accounts cba,
+	  ce_bank_branches_v cbb
+	WHERE cba.bank_branch_id                                       =cbb.branch_party_id
+	AND cbb.bank_name                                              = 'WELLS FARGO BANK'
+	AND upper(cbb.bank_branch_name)                                ='STORE DEPOSITORY'
+	AND regexp_replace(cba.bank_account_name, '[^[:digit:]]', '') IS NULL
   )
 AND csh.bank_Account_id                                        = cba1.bank_Account_id
 AND cba1.bank_branch_id                                        = cbb.branch_party_id
