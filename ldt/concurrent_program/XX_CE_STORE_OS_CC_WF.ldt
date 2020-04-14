@@ -404,7 +404,7 @@ BEGIN VALUE_SET "XXCE_WELLS_FARGO_CORP_ACC"
 
   BEGIN VSET_TABLE
     OWNER = "344195"
-    LAST_UPDATE_DATE = "2020/03/30 02:28:05"
+    LAST_UPDATE_DATE = "2020/04/14 05:08:47"
     TABLE_APPLICATION_SHORT_NAME = "CE"
     APPLICATION_TABLE_NAME = "CE_BANK_ACCOUNTS"
     SUMMARY_ALLOWED_FLAG = "N"
@@ -424,15 +424,13 @@ BEGIN VALUE_SET "XXCE_WELLS_FARGO_CORP_ACC"
     END_DATE_COLUMN_NAME = "to_date(null)"
     SUMMARY_COLUMN_NAME = "'N'"
     ADDITIONAL_WHERE_CLAUSE =
- "upper(bank_account_name) LIKE 'WELLS%FARGO%CORP%'\n\
-AND bank_id IN\n\
-  (SELECT party_id\n\
-  FROM hz_parties\n\
-  WHERE party_name ='WELLS FARGO BANK'\n\
-  AND party_type   ='ORGANIZATION'\n\
-  AND status       ='A'\n\
+ "bank_branch_id IN\n\
+  (SELECT branch_party_id\n\
+  FROM ce_bank_branches_v\n\
+  WHERE bank_name             = 'WELLS FARGO BANK'\n\
+  AND upper(bank_branch_name) like '%STORE DEPOSITORY%'\n\
   )\n\
-AND NVL (end_date, SYSDATE + 1) > TRUNC (SYSDATE)"
+AND regexp_replace(bank_account_name, '[^[:digit:]]', '') IS NULL"
   END VSET_TABLE
   
 
@@ -469,7 +467,7 @@ BEGIN DESC_FLEX "XXFIN" "$SRS$.XX_CE_STORE_OS_CC_WF"
   
     BEGIN DFF_SEGMENT "p_corpbank_acct_id" "ATTRIBUTE1"
       OWNER = "344195"
-      LAST_UPDATE_DATE = "2020/03/30 06:05:03"
+      LAST_UPDATE_DATE = "2020/04/13 12:36:49"
       COLUMN_SEQ_NUM = "10"
       ENABLED_FLAG = "Y"
       DISPLAY_FLAG = "Y"
@@ -479,9 +477,9 @@ BEGIN DESC_FLEX "XXFIN" "$SRS$.XX_CE_STORE_OS_CC_WF"
       DISPLAY_SIZE = "10"
       MAXIMUM_DESCRIPTION_LEN = "20"
       CONCATENATION_DESCRIPTION_LEN = "20"
-      FORM_LEFT_PROMPT = "Wells Fargo Corp Account"
-      FORM_ABOVE_PROMPT = "Wells Fargo Corp Account"
-      DESCRIPTION = "Wells Fargo Corp Account"
+      FORM_LEFT_PROMPT = "Wells Fargo New Master Account"
+      FORM_ABOVE_PROMPT = "Wells Fargo New Master Account"
+      DESCRIPTION = "p_corpbank_acct_id"
     END DFF_SEGMENT
     
   END DFF_CONTEXT
@@ -514,7 +512,7 @@ BEGIN PROGRAM "XX_CE_STORE_OS_CC_WF" "XXFIN"
   SRS_FLEX = "XXFIN" "$SRS$.XX_CE_STORE_OS_CC_WF"
   AUTO_ANNOTATION =
  "/**\n\
-  * @param p_corpbank_acct_id Wells Fargo Corp Account\n\
+  * @param p_corpbank_acct_id p_corpbank_acct_id\n\
   * @rep:paraminfo {@rep:type XXCE_WELLS_FARGO_CORP_ACC} {@rep:displayed Y} {@rep:required}\n\
   */"
   RECALC_PARAMETERS = "N"
