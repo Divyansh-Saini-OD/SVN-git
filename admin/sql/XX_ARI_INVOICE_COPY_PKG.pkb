@@ -36,6 +36,7 @@ create or replace PACKAGE BODY      XX_ARI_INVOICE_COPY_PKG AS
 -- | 2.7 		 29-JAN-2019  Havish Kasina    Made changes as per Bill Complete NAIT-81131		|
 -- | 2.8         23-JUN-2019  Dinesh Nagapuri  Replaced DB_Name with V$instance for LNS   		|
 -- | 2.9         11-FEB-2020  M K Pramod Kumar Code Changes to allow 50 Invoices and Consolidated Bills to Email/Fax copy -NAIT-119893
+-- | 2.10        11-FEB-2020  M K Pramod Kumar Code Changes to increase variable size increase for Trx list -NAIT-119893
 -- +============================================================================================+
 
 GC_XDO_TEMPLATE_FORMAT      CONSTANT VARCHAR2(30)     := 'PDF';
@@ -227,7 +228,8 @@ FUNCTION get_temp_selected_trx_list
 ( p_cust_account_id        IN   NUMBER    DEFAULT NULL )
 RETURN VARCHAR2
 IS
-  lc_trx_list         VARCHAR2(2000)        DEFAULT NULL;
+  --lc_trx_list         VARCHAR2(2000)        DEFAULT NULL;
+  lc_trx_list         VARCHAR2(10000)        DEFAULT NULL;--changes for V2.10
 
   CURSOR c_trx IS
     SELECT trx_number
@@ -301,7 +303,8 @@ IS
   TYPE t_trx_tbl IS TABLE OF c_trx%ROWTYPE
     INDEX BY PLS_INTEGER;
 
-  lc_trx_list         VARCHAR2(2000)        DEFAULT NULL;
+  --lc_trx_list         VARCHAR2(2000)        DEFAULT NULL;
+  lc_trx_list         VARCHAR2(10000)        DEFAULT NULL;--Changes for V2.10
   l_trx_tbl           t_trx_tbl;
 BEGIN
   OPEN c_trx;
