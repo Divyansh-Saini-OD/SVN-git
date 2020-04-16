@@ -36,6 +36,8 @@ CREATE TABLE XX_AR_SUBSCRIPTION_ITEMS
 	COST                       NUMBER       ,
 	OD_BILLING_FREQUENCY       VARCHAR2(30) ,
 	OD_CONTRACT_LENGTH         NUMBER       ,
+	NUMBER_OF_PERIODS          NUMBER ,
+	IS_REV_REC_ELIGIBLE        VARCHAR2(1)  ,
 	IS_REV_REC_ELIGIBLE        VARCHAR2(1)  ,
 	item_revnue_account        VARCHAR2(30) ,
 	INVENTORY_ITEM_ID          NUMBER       ,
