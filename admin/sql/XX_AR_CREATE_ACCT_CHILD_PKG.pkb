@@ -1,4 +1,4 @@
-CREATE OR REPLACE PACKAGE BODY XX_AR_CREATE_ACCT_CHILD_PKG
+create or replace PACKAGE BODY XX_AR_CREATE_ACCT_CHILD_PKG
 AS
    -- +=====================================================================================+
    -- |                  Office Depot - Project Simplify                                    |
@@ -50,6 +50,7 @@ AS
    -- |                                        to GL_ID_UNEARNED                            |
    -- |5.7        29-Oct-2019  Nitin Tugave   NAIT-113005 EDI Tariff DESCRIPTION            |     
    -- |5.8        31-Jan-2020  Shreyas Thorat NAIT-121574 Tariff Changes- Line Number Change|  
+   -- |5.9        01-Apr-2020  Pramod Kumar   NAIT-11880 Rev Rec Code changes 
    -- +=====================================================================================+
 
    ------------------------
@@ -644,19 +645,61 @@ AS
       lc_err_location            VARCHAR2(250);
 
       ----------------------------------------------------------
+      -- NAIT-11880 Cursor to find distinct POS trx numbers from RA interface table
+      -- which contain service subscription order line
+      ----------------------------------------------------------
+      CURSOR lcu_pos_subs_inv (p_batch_source_name VARCHAR2, p_master_org_id NUMBER)
+      IS
+	  select distinct RIM.INTERFACE_LINE_ATTRIBUTE1, RIM.SALES_ORDER_DATE,RIM.inventory_item_id,XAC.Is_Rev_Rec_Eligible,XAC.number_of_periods
+	  
+	  from RA_INTERFACE_LINES_ALL RIM, XX_AR_SUBSCRIPTION_ITEMS XAC
+	  where interface_line_attribute1 in 
+         (SELECT   INTERFACE_LINE_ATTRIBUTE1
+            FROM RA_INTERFACE_LINES_ALL RI
+           WHERE RI.request_id    = gn_request_id
+             AND RI.batch_source_name = p_batch_source_name
+             AND EXISTS (SELECT 1
+                           FROM XX_AR_INTSTORECUST_OTC OTC
+                          WHERE RI.orig_system_bill_customer_id = OTC.cust_account_id)
+			AND EXISTS ( SELECT 1 
+                                    FROM   xx_ar_subscription_items xxasi where 1=1
+									and xxasi.inventory_item_id=RI.inventory_item_id
+									and xxasi.organization_id=p_master_org_id
+									and xxasi.Is_Rev_Rec_Eligible='Y')
+			AND interface_status is null)
+			
+			and xac.inventory_item_id(+)=rim.inventory_item_id;							
+			
+      ----------------------------------------------------------
       -- Cursor to delete POS summerized invoices from RA tables
       -- and insert into the XX tables
       ----------------------------------------------------------
-      CURSOR lcu_pos_inv
+      CURSOR lcu_pos_inv (p_batch_source_name VARCHAR2, p_master_org_id NUMBER)
       IS
          SELECT  DISTINCT INTERFACE_LINE_ATTRIBUTE1
             FROM RA_INTERFACE_LINES_ALL RI
            WHERE RI.request_id    = gn_request_id
-             AND RI.batch_source_name = lc_trans_batch_name
+             AND RI.batch_source_name = p_batch_source_name
              AND EXISTS (SELECT *
                            FROM XX_AR_INTSTORECUST_OTC OTC
-                          WHERE RI.orig_system_bill_customer_id = OTC.cust_account_id)
-             AND interface_status is null;
+                          WHERE RI.orig_system_bill_customer_id = OTC.cust_account_id)                           
+             AND interface_status is null 
+			 and NOT EXISTS (
+                              SELECT  1
+                                 FROM RA_INTERFACE_LINES_ALL RIC
+                                WHERE RIC.batch_source_name = p_batch_source_name
+                                  AND EXISTS (SELECT 1
+                                                FROM XX_AR_INTSTORECUST_OTC OTC
+                                               WHERE RIC.orig_system_bill_customer_id = OTC.cust_account_id)
+                                   AND EXISTS ( SELECT 1 
+													FROM   xx_ar_subscription_items xxasi 
+													where 1=1
+													and xxasi.inventory_item_id=RIC.inventory_item_id
+													and xxasi.organization_id=p_master_org_id
+													and xxasi.Is_Rev_Rec_Eligible='Y')											  
+                                  AND interface_status is null
+                                  AND RIC.INTERFACE_LINE_ATTRIBUTE1 = RI.INTERFACE_LINE_ATTRIBUTE1
+                            );
 
 
       ------------------------------------------------------------
@@ -717,11 +760,35 @@ AS
       TYPE l_trx_tbl_type2    IS TABLE OF lcu_pos_exp_inv%ROWTYPE INDEX BY PLS_INTEGER;
       TYPE l_trx_number_type  IS TABLE OF xx_ra_int_lines_all.interface_line_attribute1%TYPE INDEX BY PLS_INTEGER;
       TYPE l_trx_number_type2 IS TABLE OF xx_ra_int_lines_all.interface_line_attribute1%TYPE INDEX BY PLS_INTEGER;
-
+      
       lt_pos_trx             l_trx_tbl_type;
       lt_pos_trx2            l_trx_tbl_type2;
       lt_trx_number          l_trx_number_type;
       lt_trx_number2          l_trx_number_type2;
+      
+      --NAIT-11880 variable declaration start
+	    ln_cust_trx_type_id		ra_cust_trx_types_all.cust_trx_type_id%TYPE;
+	    lv_cust_trx_name			ra_cust_trx_types_all.name%TYPE := null ; --'US_SERVICE_POS_OD';
+    
+      --TYPE l_subs_trx_tbl_type     IS TABLE OF lcu_pos_subs_inv%ROWTYPE INDEX BY PLS_INTEGER;      
+      TYPE l_subs_trx_number_type  IS TABLE OF xx_ra_int_lines_all.interface_line_attribute1%TYPE INDEX BY PLS_INTEGER;  
+
+
+     type l_subs_trx_row is record(
+        interface_line_attribute1 RA_INTERFACE_LINES_ALL.interface_line_attribute1%TYPE,
+        sales_order_date RA_INTERFACE_LINES_ALL.sales_order_date%TYPE, 
+		inventory_item_id RA_INTERFACE_LINES_ALL.inventory_item_id%TYPE,
+		Is_Rev_Rec_Eligible XX_AR_SUBSCRIPTION_ITEMS.Is_Rev_Rec_Eligible%TYPE,
+		number_of_periods XX_AR_SUBSCRIPTION_ITEMS.number_of_periods%TYPE);
+    type l_subs_trx_tbl_type is table of l_subs_trx_row index by  pls_integer;  
+
+      lt_pos_subs_trx             l_subs_trx_tbl_type;
+      lt_subs_trx_number          l_subs_trx_tbl_type;
+      ln_inv_rule_id              number;
+      ln_acc_rule_id              number;
+      ln_reg_acc_rule_id              number;
+      lt_sales_order_date         date;
+      --NAIT-11880 variable declaration end      
 
    BEGIN
       /***************************************
@@ -4182,13 +4249,118 @@ AS
                       RAISE EX_XX_BATCH_NAME_ERR;
 
             END;
+            ----------------------------------------------------------------
+            --NAIT-11880 Start - POS Summarization exclusion for POS service
+            --subscriptioon invoices --code changes for V5.9
+            ----------------------------------------------------------------
 
+            BEGIN
+              BEGIN
+                SELECT cust_trx_type_id
+                INTO ln_cust_trx_type_id
+                FROM ra_cust_trx_types_all
+                WHERE name = decode(lc_trans_batch_name,'POS_US','US_SERVICE_POS_OD','SALES_ACCT_US','US_SERVICE_AOPS_OD','POS_SVCS_US','US_SERVICE_POS_OD','US_SERVICE_AOPS_OD');
+              EXCEPTION
+                WHEN OTHERS THEN
+                  lc_error_loc := 'Error in Getting trx_type_id for Service Subscription trx name';
+                  RAISE EX_XX_BATCH_NAME_ERR;              
+              END;
+              BEGIN
+                select rule_id
+                into    ln_inv_rule_id
+                from   ra_rules
+                where  name='Advance Invoice';
+
+              EXCEPTION
+                WHEN OTHERS THEN
+                  lc_error_loc := 'Error in Getting rule_id for - Advance Invoice';
+                  RAISE EX_XX_BATCH_NAME_ERR;              
+              END;       
+              BEGIN
+                select rule_id
+                into    ln_acc_rule_id
+                from   ra_rules
+                where  name='OD Daily Rev Rate';
+
+              EXCEPTION
+                WHEN OTHERS THEN
+                  lc_error_loc := 'Error in Getting rule_id for - OD Daily Rev Rate';
+                  RAISE EX_XX_BATCH_NAME_ERR;              
+              END;  
+              BEGIN
+                select rule_id
+                into    ln_reg_acc_rule_id
+                from   ra_rules
+                where  name='Immediate';
+
+              EXCEPTION
+                WHEN OTHERS THEN
+                  lc_error_loc := 'Error in Getting rule_id for - Immediate';
+                  RAISE EX_XX_BATCH_NAME_ERR;              
+              END;  
+             
+              OPEN lcu_pos_subs_inv(lc_trans_batch_name, ln_master_organization_id);
+              LOOP
+                 FETCH lcu_pos_subs_inv BULK COLLECT INTO lt_pos_subs_trx LIMIT 5000;
+                 EXIT WHEN lt_pos_subs_trx.COUNT = 0;    
+                 
+                 /*FOR i IN 1 .. lt_pos_subs_trx.COUNT
+                 LOOP
+                    lt_subs_trx_number(i).INTERFACE_LINE_ATTRIBUTE1 := lt_pos_subs_trx(i).INTERFACE_LINE_ATTRIBUTE1;
+					lt_subs_trx_number(i).sales_order_date := lt_pos_subs_trx(i).sales_order_date;
+					lt_subs_trx_number(i).inventory_item_id := lt_pos_subs_trx(i).inventory_item_id;
+                 END LOOP; */
+                 
+                 FOR i IN 1 .. lt_pos_subs_trx.count
+				 Loop
+				 
+				  if lt_pos_subs_trx(i).Is_Rev_Rec_Eligible='Y' then 
+                   FND_FILE.PUT_LINE(FND_FILE.log,'Item to be updated for Sub Rev REc Item'||lt_pos_subs_trx(i).INTERFACE_LINE_ATTRIBUTE1||'~'||lt_pos_subs_trx(i).inventory_item_id);
+                   update ra_interface_lines_all
+                   set    batch_source_name = decode(lc_trans_batch_name,'POS_US','POS_SVCS_US','SALES_ACCT_US','SALES_ACCT_US','SALES_ACCT_US')
+                         ,cust_trx_type_id = ln_cust_trx_type_id
+						 ,ATTRIBUTE_CATEGORY = decode(lc_trans_batch_name,'POS_US','POS','SALES_ACCT_US','SALES_ACCT','SALES_ACCT')
+                         ,invoicing_rule_id=ln_inv_rule_id
+                         ,accounting_rule_id = ln_acc_rule_id
+                         ,rule_start_date=lt_pos_subs_trx(i).sales_order_date
+                         ,rule_end_date= add_months(lt_pos_subs_trx(i).sales_order_date, lt_pos_subs_trx(i).number_of_periods)-1
+                    where  INTERFACE_LINE_ATTRIBUTE1 = lt_pos_subs_trx(i).INTERFACE_LINE_ATTRIBUTE1
+					and  inventory_item_id=lt_pos_subs_trx(i).inventory_item_id ;
+	
+				  else	 
+				  FND_FILE.PUT_LINE(FND_FILE.log,'Item to be updated for Sub Non Rev REc Item'||lt_pos_subs_trx(i).INTERFACE_LINE_ATTRIBUTE1||'~'||lt_pos_subs_trx(i).inventory_item_id);
+				--	  FORALL i IN 1 .. lt_pos_subs_trx.count                   
+                    update ra_interface_lines_all RI
+					   set  batch_source_name = decode(lc_trans_batch_name,'POS_US','POS_SVCS_US','SALES_ACCT_US','SALES_ACCT_US','SALES_ACCT_US')
+                           ,cust_trx_type_id = ln_cust_trx_type_id
+						   ,ATTRIBUTE_CATEGORY =  decode(lc_trans_batch_name,'POS_US','POS','SALES_ACCT_US','SALES_ACCT','SALES_ACCT')
+                           ,invoicing_rule_id=ln_inv_rule_id
+                           ,accounting_rule_id = ln_reg_acc_rule_id
+                           ,rule_start_date=lt_pos_subs_trx(i).sales_order_date
+                           ,rule_end_date=null
+                  where  INTERFACE_LINE_ATTRIBUTE1 = lt_pos_subs_trx(i).INTERFACE_LINE_ATTRIBUTE1
+				  and inventory_item_id=lt_pos_subs_trx(i).inventory_item_id ;     
+                  end if;				  
+                    END Loop;    
+               END LOOP;
+               CLOSE lcu_pos_subs_inv;
+              
+            EXCEPTION
+              WHEN OTHERS THEN
+                lc_error_loc := 'Exception in Updating batch source name for service subscription invoice lines';
+                 RAISE EX_XX_BATCH_NAME_ERR;                 
+            END;
+
+
+            ----------------------------------------------------------------
+            --NAIT-11880 End----code changes for V5.9
+            ----------------------------------------------------------------               
             -----------------------------------------------------------------
             -- Open BULK insert for inserting POS invoices to the XX tables
             -- and deleting from the RA tables
             -----------------------------------------------------------------
             FND_FILE.PUT_LINE(FND_FILE.LOG,'Parameters for POS cursor' || lc_trans_batch_name  || gn_request_id);
-            OPEN lcu_pos_inv;
+            OPEN lcu_pos_inv(lc_trans_batch_name, ln_master_organization_id);
             LOOP
                FETCH lcu_pos_inv BULK COLLECT INTO lt_pos_trx LIMIT 5000;
                EXIT WHEN lt_pos_trx.COUNT = 0;
@@ -4959,7 +5131,8 @@ AS
                             INTERIM_TAX_SEGMENT30                        
                             FROM RA_INTERFACE_DISTRIBUTIONS_ALL
                             WHERE interface_line_attribute1 = lt_trx_number(i)
-                            AND INTERFACE_LINE_CONTEXT = 'ORDER ENTRY');
+                            AND INTERFACE_LINE_CONTEXT = 'ORDER ENTRY'
+							);
 
                  ln_ra_rows_ins_dist_cnt  := SQL%ROWCOUNT;
                  ln_ra_rows_ins_dist_cnt_gt := ln_ra_rows_ins_dist_cnt_gt + ln_ra_rows_ins_dist_cnt;
@@ -5003,7 +5176,8 @@ AS
                  FORALL i IN 1 .. lt_pos_trx.count
                    DELETE  FROM RA_INTERFACE_LINES_ALL
                     WHERE INTERFACE_LINE_ATTRIBUTE1 = lt_trx_number(i)
-                      AND INTERFACE_LINE_CONTEXT = 'ORDER ENTRY';
+                      AND INTERFACE_LINE_CONTEXT = 'ORDER ENTRY'
+					  AND BATCH_SOURCE_NAME = lc_trans_batch_name;
 
                 ln_ra_rows_del_int_cnt := SQL%ROWCOUNT;
                 ln_ra_rows_del_int_cnt_gt := ln_ra_rows_del_int_cnt_gt + ln_ra_rows_del_int_cnt;
@@ -7355,3 +7529,5 @@ AS
 
 END XX_AR_CREATE_ACCT_CHILD_PKG;
 /
+show errors;
+exit;

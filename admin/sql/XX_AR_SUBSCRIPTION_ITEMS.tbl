@@ -1,0 +1,65 @@
+SET VERIFY OFF;
+SET SHOW OFF;
+SET ECHO OFF;
+SET TAB OFF;
+SET FEEDBACK OFF;
+ 
+WHENEVER SQLERROR CONTINUE;
+ 
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+-- +==================================================================================+  
+-- | Office Depot - Project Simplify                                                  |
+-- |                                                              |
+-- +==================================================================================+
+-- | SQL Script to create the table:  XX_AR_SUBSCRIPTION_ITEMS                         |
+-- |                                                                                  |
+-- |
+-- |                                                                                  |
+-- |                                                                                  |
+-- |Change Record:                                                                    |
+-- |===============                                                                   |
+-- |Version   Date          Author               Remarks                              |
+-- |=======   ===========   =============        =====================================|
+-- |1.0       26-APR-2019   M K Pramod Kumar     Initial DRAFT version for NAIT-119893 |
+-- |                                                                                  |
+-- +==================================================================================+
+
+--+=====================================================================+
+--+               CREATE TABLE XX_AR_SUBSCRIPTION_ITEMS
+--+=====================================================================+
+
+
+CREATE TABLE XX_AR_SUBSCRIPTION_ITEMS
+  (  
+    ITEM                       VARCHAR2(30) ,
+	COST                       NUMBER       ,
+	OD_BILLING_FREQUENCY       VARCHAR2(30) ,
+	OD_CONTRACT_LENGTH         NUMBER       ,
+	IS_REV_REC_ELIGIBLE        VARCHAR2(1)  ,
+	IS_REV_REC_ELIGIBLE        VARCHAR2(1)  ,
+	item_revnue_account        VARCHAR2(30) ,
+	INVENTORY_ITEM_ID          NUMBER       ,
+	ORGANIZATION_id			   NUMBER       ,    
+    CREATION_DATE 			 DATE,
+    CREATED_BY    			 NUMBER,
+	REQUEST_ID               NUMBER,
+	LAST_UPDATE_DATE         NUMBER,
+	LAST_UPDATE_BY 			 NUMBER,
+	ATTRIBUTE1               VARCHAR2(150),
+	ATTRIBUTE2               VARCHAR2(150),
+	ATTRIBUTE3               VARCHAR2(150),
+	ATTRIBUTE4               VARCHAR2(150),
+	ATTRIBUTE5               VARCHAR2(150),
+	ATTRIBUTE_DATE1          DATE,
+	ATTRIBUTE_DATE2          DATE,
+	ATTRIBUTE_NUMBER1        NUMBER,
+	ATTRIBUTE_NUMBER2        NUMBER
+  );
+  
+  
+
+GRANT  ALL ON XX_AR_SUBSCRIPTION_ITEMS TO APPS;
+
+   /
+Show error

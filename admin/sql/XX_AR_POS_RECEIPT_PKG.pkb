@@ -36,6 +36,7 @@ AS
 -- | 5.2         11-NOV-2015  Vasu Raparla          Removed Schema References for R12.2                  |
 -- | 5.2         08-MAR-2016  Shubhashree R        Modified the proc create_summary_receipt for QC 36905 |
 -- | 5.3         03-JUN-2019  Havish Kasina        Changed the v$database to DB_NAME                     |
+-- | 5.4         14-APR-2020  M K Pramod Kumar      Modified for Rev Rec Changes                   |
 -- +=====================================================================================================+
     PROCEDURE create_summary_receipt(
         errbuf        OUT NOCOPY     VARCHAR2,
@@ -120,6 +121,10 @@ AS
                                            r.receipt_date)
             AND      r.payment_type_code = NVL(p_pay_type,
                                                r.payment_type_code)
+			and not exists (select 1 from oe_order_headers_all ooha, oe_order_lines_all oola 
+									where ooha.ORIG_SYS_DOCUMENT_REF=r.ORIG_SYS_DOCUMENT_REF
+									and  oola.header_id=ooha.header_id
+									and oola.inventory_item_id in (select inventory_item_id from xx_ar_subscription_items where is_rev_rec_eligible='Y'))
             GROUP BY r.customer_id,
                      r.store_number,
                      TRUNC(r.receipt_date),
