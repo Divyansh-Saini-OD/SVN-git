@@ -2,75 +2,121 @@ SET VERIFY OFF;
 WHENEVER SQLERROR CONTINUE;
 WHENEVER OSERROR EXIT FAILURE ROLLBACK;
 
-CREATE OR REPLACE PACKAGE BODY xx_ar_subscriptions_mt_pkg
+create or replace PACKAGE BODY xx_ar_subscriptions_mt_pkg
 AS
--- +=============================================================================================+
--- |  Office Depot                                                                               |
--- +=============================================================================================+
--- |  Name:  XX_AR_SUBSCRIPTIONS_MT_PKG                                                          |
--- |                                                                                             |
--- |  Description:  This package body is to process subscription billing                         |
--- |                                                                                             |
--- |  Change Record:                                                                             |
--- +=============================================================================================+
--- | Version     Date         Author              Remarks                                        |
--- | =========   ===========  =============       ===============================================|
--- | 1.0         11-DEC-2017  Sreedhar Mohan      Initial version                                |
--- | 2.0         03-JAN-2018  Jai Shankar Kumar   Changed incorporated as per MD70               |
--- | 3.0         07-MAR-2018  Sahithi Kunuru      Code fixes                                     |
--- | 4.0         04-APR-2018  JAI_CG              Modified as per JIRA# 20153                    |
--- | 5.0         06-JUN-2018  Sahithi K           Modified history payload as per NAIT-42103     |
--- | 6.0         15-JUN-2018  Sahithi K           Modified email service to trigger for BS       |
--- |                                              SKUs as per NAIT-30598                         |
--- | 7.0         26-JULY-2018 Sahithi K           adding SKU# and amount fields to               |
--- |                                              contract email payload NAIT-52868              |
--- | 8.0         06-AUG-2018  Sahithi K           added new procedure to fetch SALES             |
--- |                                              ACCOUNTING MATRIX information NAIT-55057       |
--- | 9.0         14-SEP-2018  Sahithi K           code changes to automate card failure flow     |
--- |                                              NAIT-59644                                     |
--- | 10.0        17-OCT-2018  Sahithi K           code changes to remove initial order           |
--- |                                              dependency for termination SKU NAIT-65525      |
--- | 11.0        23-OCT-2018  Sahithi K           code changes for AB customers NAIT-68178       |
--- | 12.0        26-OCT-2018  Sahithi K           modified payload of recurring email to         |
--- |                                              include cancelContractRequest NAIT-69296       |
--- | 13.0        26-DEC-2018  Sahithi K           AB billing code changes -NAIT-68178            |
--- |                                              1.checking credit limit of AB customer         |
--- |                                              2.send email to credit dept if credit limit    |
--- |                                                is reached                                   |
--- | 14.0        16-JAN-2019  Punit Gupta         Added new Procedure for NAIT-78415             |
--- | 15.0        04-FEB-2019  Sahithi K           1.code modification to use contract_id as      | 
--- |                                              unique instead of contract# NAIT-77723         |
--- |                                              2.charge seq =1 for auto renewed SS            |
--- |                                              SKU's NAIT-79218                               |
--- | 16.0        07-MAR-2019  Sahithi K           modified program_id logic in UPSERT script     |
--- |                                              from req_id to con_program_id NAIT-87055       |
--- | 17.0        09-APR-2019  Sahithi K           modified interface_line_attribute1 with        |
--- |                                              order#-inv_seq_counter NAIT-91124              |
--- | 18.0        15-APR-2019  Sahithi K           trigger payment failure for business select    |
--- |                                              customer same as SS SKU's NAIT-84277           |
--- | 19.0        15-APR-2019  Sahithi K           trigger recurring SUCCESS/FAILURE email        |
--- |                                              for auto renewed BS2 contracts NAIT-90173      |
--- | 20.0        24-APR-2019  Sahithi K           NAIT-85914 1.pass trans_id in payment auth     |
--- |                                                           payload                           |
--- |                                              2.pass wallet_type while inserting data        |
--- |                                                into ORDT table based on translation         |
--- | 21.0        24-APR-2019  Sahithi K           Perform AVS check to get trans_id for          |
--- |                                              existing contracts in SCM NAIT-89230           |
--- | 22.0        24-APR-2019  Sahithi K           Update SCM with trans_id for existing          |
--- |                                              contracts NAIT-89231                           |
--- | 23.0        24-APR-2019  Sahithi K           add close_date field which is received         |
--- |                                              from SCM extract NAIT-90255                    |
--- | 24.0        25-APR-2019  Punit Gupta         Made changes in the send_email_autorenew       |
--- |                                              Procedure for NAIT-90171                       |
--- | 25.0        22-APR-2019  Dattatray B         Added Procedure-xx_ar_subs_payload_purge_prc   |
--- |                                              for NAIT-83868-> To purge Subscriptions Payload|
--- |                                              and Error table more than 30 days older data   |
--- | 26.0        03-MAY-2019  Kayeed Ahmed        Added Procedure-get_store_close_info NAIT-93356|
--- |                                              TO Closed Stores Accounting Remapping          |
--- | 27.0        13-MAY-2019  Dattatray Bachate   Added Procedure-xx_relocation_store_vald_prc   |
--- |                                              Procedure to validate the location in HR       |
--- +=============================================================================================+
- 
+-- +=======================================================================================================+
+-- |  Office Depot                                                                                         |
+-- +=======================================================================================================+
+-- |  Name:  XX_AR_SUBSCRIPTIONS_MT_PKG                                                                    |
+-- |                                                                                                       |
+-- |  Description:  This package body is to process subscription billing                                   |
+-- |                                                                                                       |
+-- |  Change Record:                                                                                       |
+-- +=======================================================================================================+
+-- | Version     Date         Author                 Remarks                                               |
+-- | =========   ===========  =============          ======================================================|
+-- | 1.0         11-DEC-2017  Sreedhar Mohan         Initial version                                       |
+-- | 2.0         03-JAN-2018  Jai Shankar Kumar      Changed incorporated as per MD70                      |
+-- | 3.0         07-MAR-2018  Sahithi Kunuru         Code fixes                                            |
+-- | 4.0         04-APR-2018  JAI_CG                 Modified as per JIRA# 20153                           |
+-- | 5.0         06-JUN-2018  Sahithi K              Modified history payload as per NAIT-42103            |
+-- | 6.0         15-JUN-2018  Sahithi K              Modified email service to trigger for BS              |
+-- |                                                 SKUs as per NAIT-30598                                |
+-- | 7.0         26-JULY-2018 Sahithi K              adding SKU# and amount fields to                      |
+-- |                                                 contract email payload NAIT-52868                     |
+-- | 8.0         06-AUG-2018  Sahithi K              added new procedure to fetch SALES                    |
+-- |                                                 ACCOUNTING MATRIX information NAIT-55057              |
+-- | 9.0         14-SEP-2018  Sahithi K              code changes to automate card failure flow            |
+-- |                                                 NAIT-59644                                            |
+-- | 10.0        17-OCT-2018  Sahithi K              code changes to remove initial order                  |
+-- |                                                 dependency for termination SKU NAIT-65525             |
+-- | 11.0        23-OCT-2018  Sahithi K              code changes for AB customers NAIT-68178              |
+-- | 12.0        26-OCT-2018  Sahithi K              modified payload of recurring email to                |
+-- |                                                 include cancelContractRequest NAIT-69296              |
+-- | 13.0        26-DEC-2018  Sahithi K              AB billing code changes -NAIT-68178                   |
+-- |                                                 1.checking credit limit of AB customer                |
+-- |                                                 2.send email to credit dept if credit limit           |
+-- |                                                   is reached                                          |
+-- | 14.0        16-JAN-2019  Punit Gupta            Added new Procedure for NAIT-78415                    |
+-- | 15.0        04-FEB-2019  Sahithi K              1.code modification to use contract_id as             | 
+-- |                                                 unique instead of contract# NAIT-77723                |
+-- |                                                 2.charge seq =1 for auto renewed SS                   |
+-- |                                                 SKU's NAIT-79218                                      |
+-- | 16.0        07-MAR-2019  Sahithi K              modified program_id logic in UPSERT script            |
+-- |                                                 from req_id to con_program_id NAIT-87055              |
+-- | 17.0        09-APR-2019  Sahithi K              modified interface_line_attribute1 with               |
+-- |                                                 order#-inv_seq_counter NAIT-91124                     |
+-- | 18.0        15-APR-2019  Sahithi K              trigger payment failure for business select           |
+-- |                                                 customer same as SS SKU's NAIT-84277                  |
+-- | 19.0        15-APR-2019  Sahithi K              trigger recurring SUCCESS/FAILURE email               |
+-- |                                                 for auto renewed BS2 contracts NAIT-90173             |
+-- | 20.0        24-APR-2019  Sahithi K              NAIT-85914 1.pass trans_id in payment auth            |
+-- |                                                              payload                                  |
+-- |                                                 2.pass wallet_type while inserting data               |
+-- |                                                   into ORDT table based on translation                |
+-- | 21.0        24-APR-2019  Sahithi K              Perform AVS check to get trans_id for                 |
+-- |                                                 existing contracts in SCM NAIT-89230                  |
+-- | 22.0        24-APR-2019  Sahithi K              Update SCM with trans_id for existing                 |
+-- |                                                 contracts NAIT-89231                                  |
+-- | 23.0        24-APR-2019  Sahithi K              add close_date field which is received                |
+-- |                                                 from SCM extract NAIT-90255                           |
+-- | 24.0        25-APR-2019  Punit Gupta            Made changes in the send_email_autorenew              |
+-- |                                                 Procedure for NAIT-90171                              |
+-- | 25.0        22-APR-2019  Dattatray Bachate      Added Procedure-xx_ar_subs_payload_purge_prc          |
+-- |                                                 for NAIT-83868-> To purge Subscriptions Payload       |
+-- |                                                 and Error table more than 30 days older data          |
+-- | 26.0        03-MAY-2019  Kayeed Ahmed           Added Procedure-get_store_close_info NAIT-93356       |
+-- |                                                 TO Closed Stores Accounting Remapping                 |
+-- | 27.0        13-MAY-2019  Dattatray Bachate      Added Procedure-xx_relocation_store_vald_prc          |
+-- |                                                 Procedure to validate the location in HR              |
+-- | 28.0        20-JUN-2019  Punit Gupta            Added Procedure for Defect# NAIT- 72201               |
+-- |                                                 to update the receipt number for AB customers         |
+-- | 29.0        24-JUL-2019  Arvind K               Modified procedure get_pos_info Added parameter       |
+-- |                                                 p_orig_sys_doc_ref for validating POS orders          |
+-- |                                                 when data is not available in procedure               |
+-- |                                                 xx_ar_pos_inv_order_ref for NAIT-87805                |
+-- | 30.0        24-JUL-2019  Arvind K               Modified procedure get_invoice_line_info Added        |
+-- |                                                 parameter p_cont_line_amt for validating POS          |
+-- |                                                 orders when getting discount amount for the           |
+-- |                                                 same invoice and same item for NAIT-87805             |
+-- | 31.0        25-JUL-2019  Dattatray B/Sahithi K  Added Logic to handle AVS check for NAIT-92855        |
+-- |                                                 get_cc_trans_id_information, send_billing_email       |
+-- | 32.0        25-JUL-2019  Sahithi K              write off INV related to TERMINATED and CLOSED        |
+-- |                                                 contracts in SCM - NAIT-101994                        |
+-- | 33.0        16-AUG-2019  Sahithi K              derive store# based on initial order NAIT-101932      |
+-- | 34.0        25-SEP-2019  Sahithi K              roll back changes for sending AVS decline email       |
+-- |                                                 NAIT-107547                                           |
+-- | 35.0        27-SEP-2019  Sahithi K              Recurring Payment Auth without COF Tran ID            |
+-- |                                                 Handling and storing COF Tran ID of first(INITIAL)    |
+-- |                                                 successful auth NAIT-107551                           |
+-- | 36.0        07-OCT-2019  Sahithi K              added contractStatus field to contractEmailRequest    |
+-- |                                                 NAIT-108527                                           |
+-- | 37.0        10-OCT-2019  Sahithi K              Modified cancel_date while triggering TERMINATE       |
+-- |                                                 email - NAIT-110748                                   |
+-- | 38.0        18-DEC-2019  Sahithi K              NAIT-117540 45 Day Renewal Notification Email         |
+-- |                                                 Logic Fix                                             |
+-- | 39.0        16-JAN-2020  Arvind K               NAIT-118527 OD AR Recurring Billing Contract Line     |
+-- |                                                 Auto Renewal Failed-EBS PROD                          |
+-- | 40.0        16-JAN-2020  Arvind K               ODNA-164065 EBS Trigger Email For AutoRenew -         |
+-- |                                                 On7DayPaymentFailure,added 'notificationDay' in       |
+-- |                                                 send_billing_email, payload for failure case          |
+-- | 41.0        28-FEB-2020  Kayeed A               NAIT-125675-DataDiscrepancies with renewals billing   |
+-- |                                                 add the fix into get_pos_ordt_info                    |
+-- | 42.0        03-MAR-2020  Kayeed A               NAIT-125836-Invoice creation is failing with          |
+-- |                                                 no_data_found trying to find the initial POS order    |
+-- | 43.0        06-MAR-2020  Kayeed A               NAIT-126620-We need to pass p_contract_info.          |
+-- |                                                 initial_order_number,instead lr_pos_info.sales_order  |
+-- | 44.0        17-JAN-2020  Kayeed A               NAIT-119054 EBS- To modify the subscription billing   |
+-- |                                                 code such that recurring invoice will be created      |
+-- |                                                 after successful payment.                             |
+-- | 45.0        10-FEB-2020  Arvind K               NAIT-112450 Modified code to populate Rev Rec rules   |
+-- |                                                 on recurring invoice derived from initial invoice     |
+-- |                                                 NAIT-113127 Modified code to update rev_rec_ind       |
+-- |                                                 for all eligible rev rec records                      |
+-- | 46.0        11-FEB-2020  Dattatray B.           NAIT-120608 to fix multi rows return error in get_    |
+-- |                                                 invoice_dist_info proc while creating rec invoice     |
+-- +=======================================================================================================+
+
   gc_package_name        CONSTANT all_objects.object_name%TYPE   := 'xx_ar_subscriptions_mt_pkg';
   gc_ret_success         CONSTANT VARCHAR2(20)                   := 'SUCCESS';
   gc_ret_no_data_found   CONSTANT VARCHAR2(20)                   := 'NO_DATA_FOUND';
@@ -85,6 +131,7 @@ AS
   gc_order_source_spc             oe_order_sources.name%TYPE     := 'SPC';
   gc_contract_status     CONSTANT VARCHAR2(20)                   := 'TERMINATE';
   gc_store_number        VARCHAR2(50);
+  gc_max_print_size      CONSTANT NUMBER                         := 2000;
   
   TYPE gt_input_parameters IS TABLE OF VARCHAR2(32000)
    INDEX BY VARCHAR2(255);
@@ -484,6 +531,36 @@ AS
                          px_translation_info => lt_translation_info);
 
     x_program_setups('enable_debug') := lt_translation_info.target_value1;
+	
+	 /*************************
+    * Get Accounting Rule Name
+    ***************************/
+
+    lc_action :=  'Calling get_translation_info for ACCT_RULE_NAME';
+
+    lt_translation_info := NULL;
+
+    lt_translation_info.source_value1 := 'ACCT_RULE_NAME';
+
+    get_translation_info(p_translation_name  => 'XX_AR_SUBSCRIPTIONS',
+                         px_translation_info => lt_translation_info);
+
+    x_program_setups('acct_rule_name')  := lt_translation_info.target_value1;
+
+    /***********************
+    * Get Invoice Rule Name
+    ************************/
+
+    lc_action :=  'Calling get_translation_info for invoice_rule_name';
+
+    lt_translation_info := NULL;
+
+    lt_translation_info.source_value1 := 'INVOICE_RULE_NAME';
+
+    get_translation_info(p_translation_name  => 'XX_AR_SUBSCRIPTIONS',
+                         px_translation_info => lt_translation_info);
+
+    x_program_setups('invoice_rule_name')  := lt_translation_info.target_value1;
 
     /****************
     * Get RMS DB LINK
@@ -615,10 +692,10 @@ AS
     x_program_setups('email_service_url')  := lt_translation_info.target_value1;
     x_program_setups('email_service_user') := lt_translation_info.target_value2;
     x_program_setups('email_service_pwd')  := lt_translation_info.target_value3;
-	
-	/********************************************
+
+    /*******************************************
     * Get auto renewal email service information
-    **********************************************/
+    *******************************************/
 
     lc_action :=  'Calling get_translation_info for auto renewal email service info';
 
@@ -834,6 +911,21 @@ AS
                          px_translation_info => lt_translation_info);
 
     x_program_setups('cof_check_flag')  := lt_translation_info.target_value1;
+    
+    /**********************
+    * Get rec activity name
+    **********************/
+
+    lc_action :=  'Calling get_translation_info for receivable activity name';
+
+    lt_translation_info := NULL;
+
+    lt_translation_info.source_value1 := 'REC_ACTIVITY_NAME';
+
+    get_translation_info(p_translation_name  => 'XX_AR_SUBSCRIPTIONS',
+                         px_translation_info => lt_translation_info);
+
+    x_program_setups('rec_activity_name')  := lt_translation_info.target_value1;
 
     exiting_sub(p_procedure_name => lc_procedure_name);
 
@@ -993,6 +1085,7 @@ AS
   PROCEDURE get_invoice_line_info(p_customer_trx_id   IN         ra_customer_trx_lines_all.customer_trx_id%TYPE,
                                   p_line_number       IN         ra_customer_trx_lines_all.line_number%TYPE,
                                   p_inventory_item_id IN         mtl_system_items_b.inventory_item_id%TYPE,
+                                  p_cont_line_amt     IN         xx_ar_subscriptions.contract_line_amount%TYPE,
                                   p_source            IN         xx_ar_contracts.external_source%TYPE,
                                   x_invoice_line_info OUT NOCOPY ra_customer_trx_lines_all%ROWTYPE)
   IS
@@ -1012,12 +1105,26 @@ AS
 
     IF p_source ='POS'
     THEN
-      SELECT *
-      INTO   x_invoice_line_info
-      FROM   ra_customer_trx_lines_all
-      WHERE  customer_trx_id   = p_customer_trx_id
-      AND    inventory_item_id = p_inventory_item_id
-      AND    line_type         = 'LINE';
+      BEGIN
+         SELECT *
+         INTO   x_invoice_line_info
+         FROM   ra_customer_trx_lines_all
+         WHERE  customer_trx_id    = p_customer_trx_id
+         AND    inventory_item_id  = p_inventory_item_id
+         AND    unit_selling_price = p_cont_line_amt
+         AND    line_type          = 'LINE';
+        -----begin get_invoice_line_info Error: -20101 ORA-20101: PROCEDURE: xx_ar_subscriptions_mt_pkg.get_invoice_line_info SQLCODE: 100 SQLERRM: ORA-01403: no data found
+      EXCEPTION
+      WHEN NO_DATA_FOUND THEN
+        SELECT *
+        INTO   x_invoice_line_info
+        FROM   ra_customer_trx_lines_all
+        WHERE  customer_trx_id    = p_customer_trx_id
+        AND    inventory_item_id  = p_inventory_item_id
+         --  AND    unit_selling_price = p_cont_line_amt
+        AND    line_type          = 'LINE';
+      END;
+      -----end get_invoice_line_info Error: -20101 ORA-20101: PROCEDURE: xx_ar_subscriptions_mt_pkg.get_invoice_line_info SQLCODE: 100 SQLERRM: ORA-01403: no data found
     ELSE
       SELECT *
       INTO   x_invoice_line_info
@@ -1064,7 +1171,8 @@ AS
     INTO   x_invoice_dist_info
     FROM   ra_cust_trx_line_gl_dist_all
     WHERE  customer_trx_line_id = p_customer_trx_line_id
-    AND    account_class        = p_account_class;
+    AND    account_class        = p_account_class
+	AND    attribute_category   = 'SALES_ACCT'; -- Added for NAIT-120608
 
     logit(p_message => 'RESULT attribute6: '  || x_invoice_dist_info.attribute6);
     logit(p_message => 'RESULT attributel1: ' || x_invoice_dist_info.attribute11);
@@ -1079,7 +1187,7 @@ AS
 
   END get_invoice_dist_info;
 
-  /*****************************************************
+  /***************************************************
   * Helper procedure to get receipt method information
   ***************************************************/
 
@@ -1222,9 +1330,9 @@ AS
 
   END get_rec_application_info;
 
-  /*********************************************************
+  /********************************************************
   * Helper procedure to get receipt application information
-  *********************************************************/
+  ********************************************************/
 
   PROCEDURE get_ordt_info(p_cash_receipt_id             IN         ar_cash_receipts_all.cash_receipt_id%TYPE,
                           x_ordt_info                   OUT NOCOPY xx_ar_order_receipt_dtl%ROWTYPE)
@@ -1261,7 +1369,7 @@ AS
   * Helper procedure to get order header information
   *************************************************/
 
-  PROCEDURE get_order_header_info(p_order_number      IN         oe_order_headers_all.order_number%TYPE,
+  PROCEDURE get_order_header_info(p_order_number      IN         oe_order_headers_all.orig_sys_document_ref%TYPE,
                                   x_order_header_info OUT NOCOPY oe_order_headers_all%ROWTYPE)
   IS
 
@@ -1278,13 +1386,30 @@ AS
     SELECT *
     INTO   x_order_header_info
     FROM   oe_order_headers_all
-    WHERE  order_number = p_order_number;
+    WHERE  orig_sys_document_ref  = p_order_number; --Added for NAIT-126620
 
     logit(p_message => 'RESULT header_id: ' || x_order_header_info.header_id);
 
     exiting_sub(p_procedure_name => lc_procedure_name);
 
     EXCEPTION
+  --Begin : added for NAIT-125836-Invoice creation is failing with no_data_found trying to find the initial POS order
+    WHEN NO_DATA_FOUND THEN
+	  BEGIN
+         SELECT * 
+           INTO   x_order_header_info 
+           FROM   xxom_oe_order_headers_all_hist
+           WHERE  orig_sys_document_ref  = p_order_number; --Added for NAIT-126620
+		          
+      EXCEPTION
+       WHEN OTHERS
+       THEN
+         exiting_sub(p_procedure_name => lc_procedure_name, p_exception_flag => TRUE);
+         RAISE_APPLICATION_ERROR(-20101, 'PROCEDURE: ' || lc_procedure_name || ' SQLCODE: ' || SQLCODE || ' SQLERRM: ' || SQLERRM);
+      END;
+        logit(p_message => 'RESULT order_number from XXAPPS_HISTORY_QUERY: ' || x_order_header_info.order_number);
+        exiting_sub(p_procedure_name => lc_procedure_name); 
+   --End : added for NAIT-125836-Invoice creation is failing with no_data_found trying to find the initial POS order
     WHEN OTHERS
     THEN
       exiting_sub(p_procedure_name => lc_procedure_name, p_exception_flag => TRUE);
@@ -1322,6 +1447,26 @@ AS
     exiting_sub(p_procedure_name => lc_procedure_name);
 
     EXCEPTION
+    --Begin : added for NAIT-125836-Invoice creation is failing with no_data_found trying to find the initial POS order     
+    WHEN NO_DATA_FOUND THEN
+	  BEGIN
+         SELECT * 
+           INTO   x_order_line_info 
+           FROM   xxom_oe_order_lines_all_hist
+          WHERE   header_id   = p_header_id
+            AND   line_number = p_line_number;
+		          
+      EXCEPTION
+       WHEN OTHERS
+       THEN
+         exiting_sub(p_procedure_name => lc_procedure_name, p_exception_flag => TRUE);
+         RAISE_APPLICATION_ERROR(-20101, 'PROCEDURE: ' || lc_procedure_name || ' SQLCODE: ' || SQLCODE || ' SQLERRM: ' || SQLERRM);
+      END;
+
+        logit(p_message => 'RESULT header_id  XXAPPS_HISTORY_QUERY: ' || x_order_line_info.header_id);
+        logit(p_message => 'RESULT line_number XXAPPS_HISTORY_QUERY: ' || x_order_line_info.line_number);
+        exiting_sub(p_procedure_name => lc_procedure_name);
+    --End : added for NAIT-125836-Invoice creation is failing with no_data_found trying to find the initial POS order
     WHEN OTHERS
     THEN
       exiting_sub(p_procedure_name => lc_procedure_name, p_exception_flag => TRUE);
@@ -1357,6 +1502,31 @@ AS
     exiting_sub(p_procedure_name => lc_procedure_name);
 
     EXCEPTION
+
+    WHEN NO_DATA_FOUND THEN
+	  BEGIN
+	  
+	     --NAIT-125836 As we are not getting entire view from history, limiting to what ever we need	  
+         SELECT   header_id
+                 ,created_by_store_id
+                 ,od_order_type
+                 ,delivery_code
+                 ,ship_to_state
+           INTO   x_om_hdr_attribute_info.header_id
+                 ,x_om_hdr_attribute_info.created_by_store_id
+                 ,x_om_hdr_attribute_info.od_order_type
+                 ,x_om_hdr_attribute_info.delivery_code
+                 ,x_om_hdr_attribute_info.ship_to_state
+         FROM   XXOM_OM_HEADER_ATTRIBUTES_HIST
+         WHERE  header_id = p_header_id;	  
+		          
+      EXCEPTION
+       WHEN OTHERS
+       THEN
+         exiting_sub(p_procedure_name => lc_procedure_name, p_exception_flag => TRUE);
+         RAISE_APPLICATION_ERROR(-20101, 'PROCEDURE: ' || lc_procedure_name || ' SQLCODE: ' || SQLCODE || ' SQLERRM: ' || SQLERRM);
+      END;	
+	
     WHEN OTHERS
     THEN
       exiting_sub(p_procedure_name => lc_procedure_name, p_exception_flag => TRUE);
@@ -1392,6 +1562,20 @@ AS
     exiting_sub(p_procedure_name => lc_procedure_name);
 
     EXCEPTION
+    WHEN NO_DATA_FOUND THEN
+	  BEGIN
+	    --NAIT-125836 As we are not getting entire view from history, limiting to what ever we need	  
+        SELECT line_id, consignment_bank_code
+        INTO   x_om_line_attribute_info.line_id, x_om_line_attribute_info.consignment_bank_code
+        FROM   XXOM_OM_LINE_ATTRIBUTES_HIST
+        WHERE  line_id = p_line_id;	  
+		          
+      EXCEPTION
+       WHEN OTHERS
+       THEN
+         exiting_sub(p_procedure_name => lc_procedure_name, p_exception_flag => TRUE);
+         RAISE_APPLICATION_ERROR(-20101, 'PROCEDURE: ' || lc_procedure_name || ' SQLCODE: ' || SQLCODE || ' SQLERRM: ' || SQLERRM);
+      END;	
     WHEN OTHERS
     THEN
       exiting_sub(p_procedure_name => lc_procedure_name, p_exception_flag => TRUE);
@@ -1472,7 +1656,7 @@ AS
 
   END get_order_source_id_info;
  
-  /******************************************************
+  /*****************************************************
   * Helper procedure to get location info for accounting
   *****************************************************/
 
@@ -1849,7 +2033,7 @@ AS
   END get_cust_site_osr_info;
 
   /***************************************
-  * Helper procedure to get pllc card code
+  * Helper procedure to get plcc card code
   ***************************************/
 
   PROCEDURE get_plcc_card_code(p_card_bin_number IN         xx_ar_order_receipt_dtl.credit_card_number%TYPE,
@@ -2176,7 +2360,7 @@ AS
            px_ar_subscription_info.auth_code,
            px_ar_subscription_info.cof_trans_id
     FROM   xx_ar_subscription_payloads auth_response,
-           JSON_TABLE ( auth_response.response_data, '$.paymentAuthorizationResponse.transactionHeader' COLUMNS ( "TransactionId"    VARCHAR2(60) PATH '$.consumerTransactionId' ,"TransactionDateTime" VARCHAR2(30) PATH '$.consumerTransactionDateTime' )) "JT0" ,
+           JSON_TABLE ( auth_response.response_data, '$.paymentAuthorizationResponse.transactionHeader' COLUMNS ( "TRANSACTIONID"    VARCHAR2(60) PATH '$.consumerTransactionId' ,"TRANSACTIONDATETIME" VARCHAR2(30) PATH '$.consumerTransactionDateTime' )) "JT0" ,
            JSON_TABLE ( auth_response.response_data, '$.paymentAuthorizationResponse.transactionStatus' COLUMNS ( "TRANSACTION_CODE" VARCHAR2(60) PATH '$.code' ,"TRANSACTION_MESSAGE" VARCHAR2(256) PATH '$.message' )) "JT1" ,
            JSON_TABLE ( auth_response.response_data, '$.paymentAuthorizationResponse.authorizationResult' COLUMNS ( "AUTH_STATUS"    VARCHAR2(60) PATH '$.code' ,"AUTH_MESSAGE" VARCHAR2(256) PATH '$.message' ,"AVS_CODE" VARCHAR2(60) PATH '$.avsCode' ,"AUTH_CODE" VARCHAR2(60) PATH '$.authCode',"COF_TRANS_ID" VARCHAR2(256) PATH '$.cofTransactionId'  )) "JT2"
     WHERE  auth_response.payload_id = p_payload_id;
@@ -2199,7 +2383,7 @@ AS
                px_ar_subscription_info.authorization_code,
                px_ar_subscription_info.auth_transaction_message
         FROM   xx_ar_subscription_payloads auth_response,
-               JSON_TABLE ( auth_response.response_data, '$.paymentAuthorizationResponse.transactionHeader' COLUMNS ( "TransactionId"    VARCHAR2(60) PATH '$.consumerTransactionId' ,"TransactionDateTime" VARCHAR2(30) PATH '$.consumerTransactionDateTime' )) "JT0" ,
+               JSON_TABLE ( auth_response.response_data, '$.paymentAuthorizationResponse.transactionHeader' COLUMNS ( "TRANSACTIONID"    VARCHAR2(60) PATH '$.consumerTransactionId' ,"TRANSACTIONDATETIME" VARCHAR2(30) PATH '$.consumerTransactionDateTime' )) "JT0" ,
                JSON_TABLE ( auth_response.response_data, '$.paymentAuthorizationResponse.transactionStatus' COLUMNS ( "TRANSACTION_CODE" VARCHAR2(60) PATH '$.code' ,"TRANSACTION_MESSAGE" VARCHAR2(256) PATH '$.message' )) "JT1" 
         WHERE  auth_response.payload_id = p_payload_id;
       
@@ -2254,7 +2438,7 @@ AS
 
   /*****************************************************************
   * Helper procedure to insert ra_interface_distributions_all table.
-  ******************************************************************/
+  *****************************************************************/
 
   PROCEDURE insert_ra_interface_dists_all(p_ra_interface_dists_all_info  IN  ra_interface_distributions_all%ROWTYPE)
   IS
@@ -2285,7 +2469,7 @@ AS
   END insert_ra_interface_dists_all;
 
   /*********************************************************
-  * Helper procedure to insert xx_ar_order_receipt_dtl table.
+  * Helper procedure to insert xx_ar_order_receipt_dtl table
   *********************************************************/
 
   PROCEDURE insert_ordt_info(p_ordt_info  IN  xx_ar_order_receipt_dtl%ROWTYPE)
@@ -2357,7 +2541,7 @@ AS
         IF px_subscription_array(indx).item_unit_cost IS NULL
         THEN
 
-          lc_action := 'Calling get_contract_line_info';
+          lc_action := 'Calling get_contract_line_info at process_item_cost';
 
           get_contract_line_info(p_contract_id          => px_subscription_array(indx).contract_id,
                                  p_contract_line_number => px_subscription_array(indx).contract_line_number,
@@ -2386,8 +2570,9 @@ AS
             
               logit(p_message => lc_action);
             
-              lc_query := 'SELECT cost FROM MV_SSB@' || p_rms_db_link || ' WHERE item = '|| lr_contract_line_info.item_name;
+              lc_query := 'SELECT cost FROM XX_RMS_MV_SSB ' || ' WHERE item = '|| lr_contract_line_info.item_name;
             
+           
               EXECUTE IMMEDIATE lc_query INTO px_item_cost_tab(lr_contract_line_info.item_name);
 
               px_subscription_array(indx).item_unit_cost := px_item_cost_tab(lr_contract_line_info.item_name);
@@ -2562,7 +2747,9 @@ AS
     SELECT *
     INTO   x_ordt_info
     FROM   xx_ar_order_receipt_dtl
-    WHERE  orig_sys_document_ref = p_order_number;
+    WHERE  orig_sys_document_ref = p_order_number 
+      AND  payment_type_code     = 'CREDIT_CARD'
+      AND  rownum                = 1;--Added to fix -> NAIT-125675 and NAIT-126620
 
     logit(p_message => 'RESULT header_id: ' || x_ordt_info.header_id);
 
@@ -2580,8 +2767,9 @@ AS
   * Helper procedure to get POS information
   ****************************************/
 
-  PROCEDURE get_pos_info(p_header_id IN         oe_order_headers_all.header_id%TYPE,
-                         x_pos_info    OUT NOCOPY xx_ar_pos_inv_order_ref%ROWTYPE)
+  PROCEDURE get_pos_info(p_header_id        IN         oe_order_headers_all.header_id%TYPE,
+                         p_orig_sys_doc_ref IN         xx_ar_order_receipt_dtl.orig_sys_document_ref%TYPE,
+                         x_pos_info         OUT NOCOPY xx_ar_pos_inv_order_ref%ROWTYPE)
   IS
 
     lc_procedure_name  CONSTANT VARCHAR2(61) := gc_package_name || '.' || 'get_pos_info';
@@ -2601,11 +2789,41 @@ AS
 
     logit(p_message => 'RESULT trx_number: ' || x_pos_info.summary_trx_number);
     logit(p_message => 'RESULT order_number: ' || x_pos_info.sales_order);
-    
+
 
     exiting_sub(p_procedure_name => lc_procedure_name);
 
     EXCEPTION
+     WHEN NO_DATA_FOUND THEN
+      BEGIN
+        SELECT header_id,order_number 
+        INTO x_pos_info.oe_header_id,x_pos_info.sales_order 
+        FROM oe_order_headers_all
+        WHERE orig_sys_document_ref = p_orig_sys_doc_ref;
+        -- Added for NAIT-125836-Invoice creation is failing with no_data_found trying to find the initial POS order
+      EXCEPTION
+        WHEN NO_DATA_FOUND THEN
+          SELECT header_id,order_number 
+          INTO x_pos_info.oe_header_id,x_pos_info.sales_order 
+          FROM XXOM_OE_ORDER_HEADERS_ALL_HIST
+          WHERE orig_sys_document_ref = p_orig_sys_doc_ref;
+      END;
+   -- END for NAIT-125836-Invoice creation is failing with no_data_found trying to find the initial POS order      
+      BEGIN
+        SELECT trx_number 
+        INTO x_pos_info.summary_trx_number 
+        FROM ra_customer_trx_all
+        WHERE interface_header_attribute1 = x_pos_info.sales_order ;
+      EXCEPTION
+        WHEN NO_DATA_FOUND THEN
+          x_pos_info.summary_trx_number := NULL;
+          logit(p_message => 'Invoice not yet created ' || x_pos_info.summary_trx_number);
+      END;
+    logit(p_message => 'RESULT POS trx_number: ' || x_pos_info.summary_trx_number);
+    logit(p_message => 'RESULT POS order_number: ' || x_pos_info.sales_order);
+
+    exiting_sub(p_procedure_name => lc_procedure_name);
+
     WHEN OTHERS
     THEN
       exiting_sub(p_procedure_name => lc_procedure_name, p_exception_flag => TRUE);
@@ -3351,7 +3569,7 @@ AS
     WHERE   defn.translate_id                        = vals.translate_id
     AND   defn.translation_name                    = 'SUBSCRIPTION_STORE_CLOSE'
     AND   lpad(vals.source_value3,6,'0')             = p_store_number
-    AND   SYSDATE BETWEEN vals.start_date_active AND NVL(vals.end_date_active, SYSDATE + 1)	  
+    AND   SYSDATE BETWEEN vals.start_date_active AND NVL(vals.end_date_active, SYSDATE + 1)       
     AND   SYSDATE BETWEEN defn.start_date_active AND NVL(defn.end_date_active, SYSDATE + 1)
     AND   SYSDATE                                  >= to_date(vals.target_value4,'MM-DD-YYYY')
     AND   vals.enabled_flag                        = 'Y'
@@ -3444,6 +3662,130 @@ AS
       RAISE_APPLICATION_ERROR(-20101, 'PROCEDURE: ' || lc_procedure_name || ' SQLCODE: ' || SQLCODE || ' SQLERRM: ' || SQLERRM);
 
   END get_store_close_info;
+  
+  /*****************************************************
+  * Helper procedure to get payment schedule information
+  *****************************************************/
+
+  PROCEDURE get_rec_activity_info(x_activity_id  OUT NOCOPY ar_receivables_trx.receivables_trx_id%TYPE)
+  IS
+
+    lc_procedure_name  CONSTANT VARCHAR2(61) := gc_package_name || '.' || 'get_rec_activity_info';
+    lt_parameters               gt_input_parameters;
+    lt_translation_info         xx_fin_translatevalues%ROWTYPE;
+    lc_rec_activity_name        xx_fin_translatevalues.target_value1%TYPE;
+
+  BEGIN
+
+    entering_sub(p_procedure_name  => lc_procedure_name,
+                 p_parameters      => lt_parameters);
+
+    /**********************
+    * Get rec activity name
+    **********************/
+
+    lt_translation_info := NULL;
+
+    lt_translation_info.source_value1 := 'REC_ACTIVITY_NAME';
+
+    get_translation_info(p_translation_name  => 'XX_AR_SUBSCRIPTIONS',
+                         px_translation_info => lt_translation_info);
+
+    lc_rec_activity_name  := lt_translation_info.target_value1;
+    
+    SELECT receivables_trx_id
+    INTO   x_activity_id
+    FROM   ar_receivables_trx_all
+    WHERE  name   = lc_rec_activity_name
+    AND    status = 'A';
+
+    logit(p_message => 'RESULT activity_id: ' || x_activity_id);
+
+    exiting_sub(p_procedure_name => lc_procedure_name);
+
+    EXCEPTION
+    WHEN OTHERS
+    THEN
+      exiting_sub(p_procedure_name => lc_procedure_name, p_exception_flag => TRUE);
+      RAISE_APPLICATION_ERROR(-20101, 'PROCEDURE: ' || lc_procedure_name || ' SQLCODE: ' || SQLCODE || ' SQLERRM: ' || SQLERRM);
+
+  END get_rec_activity_info;
+  
+  /*****************************************************
+  * Helper procedure to get payment schedule information
+  *****************************************************/
+
+  PROCEDURE get_payment_sch_info(p_cust_trx_id       IN         ra_customer_trx_all.customer_trx_id%TYPE,
+                                 x_payment_sch_info  OUT NOCOPY ar_payment_schedules_all%ROWTYPE)
+  IS
+
+    lc_procedure_name  CONSTANT VARCHAR2(61) := gc_package_name || '.' || 'get_payment_sch_info';
+    lt_parameters      gt_input_parameters;
+
+  BEGIN
+
+    lt_parameters('p_cust_trx_id') := p_cust_trx_id;
+
+    entering_sub(p_procedure_name  => lc_procedure_name,
+                 p_parameters      => lt_parameters);
+
+    SELECT *
+    INTO   x_payment_sch_info
+    FROM   ar_payment_schedules_all
+    WHERE  customer_trx_id = p_cust_trx_id;
+
+    logit(p_message => 'RESULT payment_schedule_id: ' || x_payment_sch_info.payment_schedule_id);
+
+    exiting_sub(p_procedure_name => lc_procedure_name);
+
+    EXCEPTION
+    WHEN OTHERS
+    THEN
+      exiting_sub(p_procedure_name => lc_procedure_name, p_exception_flag => TRUE);
+      RAISE_APPLICATION_ERROR(-20101, 'PROCEDURE: ' || lc_procedure_name || ' SQLCODE: ' || SQLCODE || ' SQLERRM: ' || SQLERRM);
+
+  END get_payment_sch_info;
+  
+    --Start RevRec code Change - NAIT-112450
+   /****************************************************
+  * Helper procedure to get auto accounting information
+  ****************************************************/
+
+  PROCEDURE get_rule_info(p_rule_name IN         ra_rules.name%TYPE,
+                          x_rule_id   OUT NOCOPY ra_rules.rule_id%TYPE)
+  IS
+
+    lc_procedure_name  CONSTANT VARCHAR2(61) := gc_package_name || '.' || 'get_rule_info';
+    lt_parameters      gt_input_parameters;
+
+  BEGIN
+
+    lt_parameters('p_rule_name')          := p_rule_name;
+
+    entering_sub(p_procedure_name  => lc_procedure_name,
+                 p_parameters      => lt_parameters);
+    SELECT rule_id
+    INTO   x_rule_id
+    FROM   ra_rules
+    WHERE  name = p_rule_name
+    and    status    = 'A';
+
+    logit(p_message => 'RESULT rule_id: ' || x_rule_id);
+
+    exiting_sub(p_procedure_name => lc_procedure_name);
+
+    EXCEPTION
+    WHEN NO_DATA_FOUND
+    THEN
+      x_rule_id := NULL;
+      exiting_sub(p_procedure_name => lc_procedure_name, p_exception_flag => TRUE);
+    WHEN OTHERS
+    THEN
+      x_rule_id := NULL;
+      exiting_sub(p_procedure_name => lc_procedure_name, p_exception_flag => TRUE);
+      --RAISE_APPLICATION_ERROR(-20101, 'PROCEDURE: ' || lc_procedure_name || ' SQLCODE: ' || SQLCODE || ' SQLERRM: ' || SQLERRM);
+  END get_rule_info;
+  -- End RevRec Change - NAIT-112450
   
   /****************************************************
   * Helper procedure to populate ra_interface_lines_all
@@ -3595,6 +3937,17 @@ AS
     lc_new_loc_type                hr_lookups.meaning%TYPE;
 
     lc_segment                     gl_code_combinations.segment4%TYPE;
+	--Begin RevRec Rule id - NAIT-112450
+    lc_invoicing_rule_id           ra_rules.rule_id%TYPE;
+
+    lc_accounting_rule_id          ra_rules.rule_id%TYPE;
+
+    lc_rule_start_date             xx_ar_subscriptions.service_period_start_date%TYPE;
+
+    lc_rule_end_date               xx_ar_subscriptions.service_period_end_date%TYPE;
+
+    lc_rev_rec_eligibility         VARCHAR2(2);
+    -- End RevRec - NAIT-112450
 
   BEGIN
 
@@ -3673,7 +4026,7 @@ AS
         * Get contract line information
         ******************************/
 
-        lc_action := 'Calling get_contract_line_info';
+        lc_action := 'Calling get_contract_line_info at populate_invoice_interface';
 
         get_contract_line_info(p_contract_id          => px_subscription_array(indx).contract_id,
                                p_contract_line_number => px_subscription_array(indx).contract_line_number,
@@ -3709,6 +4062,25 @@ AS
             END LOOP;
           END IF;  
           
+		  --Begin RevRec Rule id - NAIT-112450
+          /***********************
+          * get accounting_rule_id
+          ***********************/
+
+          IF lc_accounting_rule_id IS NULL
+          THEN
+            lc_action := 'Calling get_rule_info';
+
+            get_rule_info(p_rule_name => p_program_setups('acct_rule_name'),
+                          x_rule_id   => lc_accounting_rule_id);
+          END IF;
+
+          IF lc_rev_rec_eligibility = 'Y' AND lc_accounting_rule_id IS NOT NULL
+          THEN
+            px_subscription_array(indx).rev_rec_ind := 'Y';
+            update_subscription_info(px_subscription_info => px_subscription_array(indx));
+          END IF;
+          --- End RevRec - NAIT-112450
           /**************************************
           * Get initial order header invoice info
           **************************************/
@@ -3722,8 +4094,9 @@ AS
               get_pos_ordt_info(p_order_number => p_contract_info.initial_order_number,
                                 x_ordt_info    => lr_pos_ordt_info);
                     
-              get_pos_info(p_header_id => lr_pos_ordt_info.header_id,
-                           x_pos_info  => lr_pos_info);
+              get_pos_info(p_header_id        => lr_pos_ordt_info.header_id,
+                           p_orig_sys_doc_ref => p_contract_info.initial_order_number,
+                           x_pos_info         => lr_pos_info);
                            
               get_invoice_header_info(p_invoice_number      => lr_pos_info.summary_trx_number,
                                       x_invoice_header_info => lr_invoice_header_info);
@@ -3769,7 +4142,16 @@ AS
           /******************************
           * Get initial order header info
           ******************************/
-
+          /*
+          BEGIN
+              get_order_header_info(p_order_number      => p_contract_info.initial_order_number,
+                                    x_order_header_info => lr_order_header_info);
+          EXCEPTION
+            WHEN OTHERS THEN
+                exiting_sub(p_procedure_name => lc_procedure_name, p_exception_flag => TRUE);
+                RAISE_APPLICATION_ERROR(-20101, 'PROCEDURE: ' || lc_procedure_name || ' SQLCODE: ' || SQLCODE || ' SQLERRM: ' || SQLERRM);
+          END;
+          */
           IF (lr_order_header_info.header_id IS NULL) 
           THEN
             lc_action := 'Calling get_order_header_info';
@@ -3779,10 +4161,13 @@ AS
               get_pos_ordt_info(p_order_number => p_contract_info.initial_order_number,
                     x_ordt_info    => lr_pos_ordt_info);
                     
-              get_pos_info(p_header_id => lr_pos_ordt_info.header_id,
-                           x_pos_info  => lr_pos_info);
+              get_pos_info(p_header_id        => lr_pos_ordt_info.header_id, 
+                           p_orig_sys_doc_ref => p_contract_info.initial_order_number,
+                           x_pos_info         => lr_pos_info);
                            
-              get_order_header_info(p_order_number      => lr_pos_info.sales_order,
+              get_order_header_info(
+			                      --p_order_number      => lr_pos_info.sales_order,              --Commented for NAIT-126620
+			                        p_order_number      => p_contract_info.initial_order_number, --Added for NAIT-126620
                                     x_order_header_info => lr_order_header_info);
             ELSE
               get_order_header_info(p_order_number      => p_contract_info.initial_order_number,
@@ -3861,6 +4246,7 @@ AS
                                 x_ordt_info    => lr_pos_ordt_info);
                     
               get_pos_info(p_header_id => lr_pos_ordt_info.header_id,
+                           p_orig_sys_doc_ref => p_contract_info.initial_order_number,
                            x_pos_info  => lr_pos_info);
                            
               get_invoice_header_info(p_invoice_number      => lr_pos_info.summary_trx_number,
@@ -3876,13 +4262,19 @@ AS
           * Get invoice line information
           *****************************/
 
-          lc_action := 'Calling get_invoice_line_info';
+          lc_action := 'Calling get_invoice_line_info ' || lr_invoice_header_info.customer_trx_id
+                                                || ', ' || lr_contract_line_info.initial_order_line
+                                                || ', ' || lr_item_master_info.inventory_item_id
+                                                || ', ' || px_subscription_array(indx).contract_line_amount
+                                                || ', ' || p_contract_info.external_source
+          ;
           
           IF lr_contract_line_info.item_name != p_program_setups('termination_sku')
           THEN 
             get_invoice_line_info(p_customer_trx_id     => lr_invoice_header_info.customer_trx_id,
                                   p_line_number         => lr_contract_line_info.initial_order_line,
                                   p_inventory_item_id   => lr_item_master_info.inventory_item_id,
+                                  p_cont_line_amt       => px_subscription_array(indx).contract_line_amount,
                                   p_source              => p_contract_info.external_source,
                                   x_invoice_line_info   => lr_invoice_line_info);
           END IF;
@@ -4084,6 +4476,65 @@ AS
             END IF;
           END IF;  
 
+    -- Begin RevRec CHANGE - NAIT-112450
+
+          /* ***************** ***************
+          * Check for REV REC SKU eligibility
+          ********************************* */
+          lc_action := 'Calling is_rev_rec_item';
+
+          lc_rev_rec_eligibility := is_rev_rec_item(p_sku_name => lr_contract_line_info.item_name);
+
+          IF lc_rev_rec_eligibility = 'Y'
+          THEN
+
+            --check if rule info is on initial order
+            IF lr_invoice_line_info.accounting_rule_id IS NOT NULL
+            THEN
+              lc_accounting_rule_id   := lr_invoice_line_info.accounting_rule_id;
+              lc_invoicing_rule_id    := lr_invoice_header_info.invoicing_rule_id;
+              lc_rule_start_date      := px_subscription_array(indx).service_period_start_date;
+              lc_rule_end_date        := px_subscription_array(indx).service_period_end_date;
+
+            ELSE
+              /***********************
+              * get accounting_rule_id
+              ***********************/
+
+              IF lc_accounting_rule_id IS NULL
+              THEN
+                lc_action := 'Calling get_rule_info';
+
+                get_rule_info(p_rule_name => p_program_setups('acct_rule_name'),
+                              x_rule_id   => lc_accounting_rule_id);
+              END IF;
+
+              /***********************
+              * get invoicing_rule_id
+              ***********************/
+
+              IF lc_accounting_rule_id IS NOT NULL
+              THEN
+                lc_action := 'Calling get_rule_info';
+
+                get_rule_info(p_rule_name => p_program_setups('invoice_rule_name'),
+                              x_rule_id   => lc_invoicing_rule_id);
+                 lc_rule_start_date  := px_subscription_array(indx).service_period_start_date;
+                 lc_rule_end_date    := px_subscription_array(indx).service_period_end_date;
+              END IF;
+
+            END IF;
+
+            --update subscriptions table with rev_rec_ind flag
+            IF lc_accounting_rule_id IS NOT NULL
+            THEN
+              px_subscription_array(indx).rev_rec_ind := 'Y';
+              update_subscription_info(px_subscription_info => px_subscription_array(indx));
+            END IF;
+          END IF;
+
+    --End RevRec Change - NAIT-112450
+
           /***************************************
           * Populate ra_interface_lines_all record
           ***************************************/
@@ -4091,9 +4542,24 @@ AS
           IF ln_trx_number IS NULL
           THEN
           
-            lc_action :=  'Getting xx_ar_trx_subscriptions_ab_s.NEXTVAL';
+            --lc_action :=  'Getting xx_ar_trx_subscriptions_ab_s.NEXTVAL'; --NAIT-119054 Commented
 
-            ln_trx_number := xx_ar_trx_subscriptions_ab_s.NEXTVAL;
+            --ln_trx_number := xx_ar_trx_subscriptions_ab_s.NEXTVAL;  --NAIT-119054 Commented
+			
+			--Adding for NAIT-119054
+            IF px_subscription_array(indx).auth_completed_flag = 'Y'
+            THEN
+			
+			SELECT xx_ar_trx_subscriptions_ab_s.NEXTVAL INTO ln_trx_number 
+			FROM dual; 															
+			logit(p_message => 'xx_ar_trx_subscriptions_ab_s.NEXTVAL  ' || ln_trx_number);
+            
+			lc_action :=  'Getting xx_ar_trx_subscriptions_ab_s.CURRVAL';
+            ln_trx_number := xx_ar_trx_subscriptions_ab_s.CURRVAL;
+            logit(p_message => 'Getting xx_ar_trx_subscriptions_ab_s.CURRVAL ' || ln_trx_number);
+            END IF;
+            --END Addition of NAIT-119054
+
               
             IF p_contract_info.payment_type = 'AB'
             THEN
@@ -4206,7 +4672,7 @@ AS
 
           IF (lr_om_hdr_attribute_info.header_id IS NULL)
           THEN
-            lc_action := 'Calling get_om_hdr_attribute_info';
+            lc_action := 'Calling get_om_hdr_attribute_info order_header: ' || lr_order_header_info.header_id || ', ' || lr_order_header_info.header_id;
 
             get_om_hdr_attribute_info(p_header_id             => lr_order_header_info.header_id,
                                       x_om_hdr_attribute_info => lr_om_hdr_attribute_info);
@@ -4231,7 +4697,7 @@ AS
           * Get order line info
           ********************/
 
-          lc_action := 'Calling get_om_line_attribute_info';
+          lc_action := 'Calling get_om_line_attribute_info line_id: ' || lr_order_line_info.line_id;
 
           IF lr_contract_line_info.item_name != p_program_setups('termination_sku')
           THEN
@@ -4291,6 +4757,9 @@ AS
           
           IF lc_segment != gc_store_number
           THEN
+           /*******************************************************************************
+            * Updating contracts table with new store# against store closed on initial order
+            *******************************************************************************/
             UPDATE xx_ar_contracts
             set    store_number       = gc_store_number
                   ,store_close_flag   = 'Y'
@@ -4299,7 +4768,17 @@ AS
                   ,last_update_login  = NVL(FND_GLOBAL.USER_ID, -1)
             WHERE  contract_id        = p_contract_info.contract_id;
             COMMIT;
-            
+            ELSE
+            /******************************************************
+            * Updating contracts table with store# on initial order
+            ******************************************************/
+            UPDATE xx_ar_contracts
+            set    store_number       = lc_segment
+                  ,last_update_date   = SYSDATE
+                  ,last_updated_by    = NVL(FND_GLOBAL.USER_ID, -1)
+                  ,last_update_login  = NVL(FND_GLOBAL.USER_ID, -1)
+            WHERE  contract_id        = p_contract_info.contract_id;
+            COMMIT;    
           END IF;
             
           /**************************************
@@ -5400,6 +5879,8 @@ AS
     le_skip                        EXCEPTION;
 
     le_processing                  EXCEPTION;
+
+    le_avs_exception                EXCEPTION;
        
     le_invalid_card                EXCEPTION;
     
@@ -5422,6 +5903,8 @@ AS
     lc_last_auth_attempt_date      xx_ar_subscriptions.last_auth_attempt_date%TYPE;
     
     lc_email_sent_flag             xx_ar_subscriptions.email_sent_flag%TYPE;
+    
+    lc_history_sent_flag           xx_ar_subscriptions.history_sent_flag%TYPE;
     
     lc_payment_status              xx_ar_subscriptions.payment_status%TYPE;
 
@@ -5446,15 +5929,15 @@ AS
       /*****************************
       * Validate invoice was created
       *****************************/
-
-      IF px_subscription_array(indx).invoice_created_flag != 'Y'
+      -- Begin : Commenting For NAIT-119054
+    /*IF px_subscription_array(indx).invoice_created_flag != 'Y'
       THEN
 
         lc_error := 'Invoice not created';
         RAISE le_skip;
 
-      END IF;
-      
+      END IF; */
+      -- End : Commenting For NAIT-119054
       /******************************
       * Validate trans id information
       ******************************/
@@ -5476,7 +5959,7 @@ AS
       /*************************************
       * Validate we are read to perform auth
       *************************************/
-      IF px_subscription_array(indx).cof_trans_id_flag NOT IN ('E','N') 
+      IF px_subscription_array(indx).cof_trans_id_flag NOT IN ('E','N','U') 
       THEN
         lc_error := 'Trans ID flag: ' || px_subscription_array(indx).cof_trans_id_flag;
         RAISE le_skip;
@@ -5511,7 +5994,7 @@ AS
         * Get contract line information
         ******************************/
 
-        lc_action := 'Calling get_contract_line_info';
+        lc_action := 'Calling get_contract_line_info at get_cc_trans_id_information :';
 
         get_contract_line_info(p_contract_id          => px_subscription_array(indx).contract_id,
                                p_contract_line_number => px_subscription_array(indx).contract_line_number,
@@ -5534,7 +6017,7 @@ AS
           
           --payment authorization should be done according to the days mentioned in translation
           IF l_day >= 0
-             OR (p_contract_info.payment_last_update_date > px_subscription_array(indx).last_auth_attempt_date )
+             OR (TRUNC(p_contract_info.payment_last_update_date) >= TRUNC(px_subscription_array(indx).last_auth_attempt_date) )
              OR (px_subscription_array(indx).cof_trans_id_flag = 'U')
           THEN
         
@@ -5566,6 +6049,24 @@ AS
                                     x_decrypted_value   => lc_decrypted_value);
                        
               END IF;
+              
+              /*************************************************************************
+              * update the settlement_card, settlement_label and settlement_cc_mask     
+              * to subscription table, so that even if card authorization fails we will 
+              * able to capture card details for sending email for unsuccessful payments
+              *************************************************************************/
+            
+              lc_action := 'Updating credit card details';
+            
+              IF lc_decrypted_value IS NOT NULL 
+              THEN
+                px_subscription_array(indx).settlement_cc_mask  := SUBSTR(lc_decrypted_value, 1, 6) || SUBSTR(lc_decrypted_value, LENGTH(lc_decrypted_value) - 3, 4);
+            
+                lc_action := 'Calling update_subscription_info';
+            
+                update_subscription_info(px_subscription_info => px_subscription_array(indx));
+            
+              END IF;
             
               /******************************
               * Get initial order header info
@@ -5578,10 +6079,12 @@ AS
                 get_pos_ordt_info(p_order_number => p_contract_info.initial_order_number,
                       x_ordt_info    => lr_pos_ordt_info);
                       
-                get_pos_info(p_header_id => lr_pos_ordt_info.header_id,
-                             x_pos_info  => lr_pos_info);
+                get_pos_info(p_header_id        => lr_pos_ordt_info.header_id,
+                             p_orig_sys_doc_ref => p_contract_info.initial_order_number,
+                             x_pos_info         => lr_pos_info);
                              
-                get_order_header_info(p_order_number      => lr_pos_info.sales_order,
+                get_order_header_info(--p_order_number      => lr_pos_info.sales_order,            --Commented for NAIT-126620.
+									  p_order_number      => p_contract_info.initial_order_number, --Added for NAIT-126620
                                       x_order_header_info => lr_order_header_info);
               ELSE
                 get_order_header_info(p_order_number      => p_contract_info.initial_order_number,
@@ -5846,6 +6349,13 @@ AS
                 RAISE le_processing;
               END IF;
             
+              --BEGIN : JIRA#NAIT-92855:- EBS - Trigger AVS process -> Updating initial_auth_attempt_date with SYSDATE when auth for AVS code is done on DAY 1
+              IF px_subscription_array(indx).initial_auth_attempt_date IS NULL
+              THEN
+                 px_subscription_array(indx).initial_auth_attempt_date := TO_DATE(TO_CHAR(SYSDATE,'DD-MON-YYYY')||'00:00:00','DD-MON-YYYY HH24:MI:SS');
+              END IF;
+              --END : JIRA#NAIT-92855:- EBS - Trigger AVS process -> Updating initial_auth_attempt_date with SYSDATE when auth for AVS code is done on DAY 1
+              
               /**********************************
               * Get the authorization information
               **********************************/
@@ -5856,8 +6366,7 @@ AS
             
               retrieve_auth_response_info(p_payload_id            => lr_subscription_payload_info.payload_id,
                                           px_ar_subscription_info => lr_subscription_info);
-            
-            
+                        
               /**********************************************************
               * If authorization passed, record authorization information
               **********************************************************/
@@ -5868,8 +6377,10 @@ AS
                 IF (lr_subscription_info.auth_status = '0' AND lr_subscription_info.auth_avs_code = 'Y')
                 THEN            
                   lc_action := 'assigning the auth success result to subscription array';               
-                  px_subscription_array(indx).cof_trans_id                := lr_subscription_info.cof_trans_id;
-                  px_subscription_array(indx).cof_trans_id_flag           := 'Y';
+                  px_subscription_array(indx).cof_trans_id            := lr_subscription_info.cof_trans_id;
+                  px_subscription_array(indx).cof_trans_id_flag       := 'Y';
+                  px_subscription_array(indx).last_auth_attempt_date  := SYSDATE;
+
                   
                   --call update contracts table with cc_trans_id and cc_trans_id_source
                   update_contracts_info(p_contract_id           => px_subscription_array(indx).contract_id
@@ -5880,17 +6391,39 @@ AS
                 ELSE
                   lc_action := 'assigning the auth failure result to subscription array';
                   px_subscription_array(indx).subscription_error      := lr_subscription_info.auth_message;
-                  lc_error                                            := 'Invalid Card';
-                  lc_cof_trans_id_flag                                := 'E';
-                  RAISE le_processing;
+
+                  --BEGIN : JIRA#NAIT-92855:- EBS - Trigger AVS process -> AVS CODE Change 1
+
+                  px_subscription_array(indx)                         := lr_subscription_info;
+                  px_subscription_array(indx).auth_status             := lr_subscription_info.auth_status;
+                  px_subscription_array(indx).auth_message            := lr_subscription_info.auth_message;
+
+                  IF SUBSTR(lr_subscription_info.auth_message,1,1) IN ('R','S')
+                  THEN
+                    lc_error             := 'Connectivity Isuue';
+                    lc_cof_trans_id_flag := 'U';                    
+                    RAISE le_processing;
+                  ELSE
+                    lc_error                                            := 'Invalid Card';
+                    lc_cof_trans_id_flag                                := 'E';
+                    px_subscription_array(indx).last_auth_attempt_date  := SYSDATE;
+                    px_subscription_array(indx).payment_status          := 'FAILURE';
+                    px_subscription_array(indx).contract_status         := NULL;
+                    px_subscription_array(indx).next_retry_day          := NULL;
+                    px_subscription_array(indx).email_sent_flag         := 'N';
+                    px_subscription_array(indx).history_sent_flag       := 'N';
+                    RAISE le_avs_exception;
+                  END IF;
+                  --END : JIRA#NAIT-92855:- EBS - Trigger AVS process -> AVS CODE Change 1
                 END IF;
               ELSIF p_contract_info.external_source = 'POS' AND p_program_setups('pos_avs_check_flag') != 'Y'
               THEN
                 IF lr_subscription_info.auth_status = '0' 
                 THEN            
                   lc_action := 'assigning the auth success result to subscription array';               
-                  px_subscription_array(indx).cof_trans_id                := lr_subscription_info.cof_trans_id;
-                  px_subscription_array(indx).cof_trans_id_flag           := 'Y';
+                  px_subscription_array(indx).cof_trans_id            := lr_subscription_info.cof_trans_id;
+                  px_subscription_array(indx).cof_trans_id_flag       := 'Y';
+                  px_subscription_array(indx).last_auth_attempt_date  := SYSDATE;
                   
                   --call update contracts table with cc_trans_id and cc_trans_id_source
                   update_contracts_info(p_contract_id           => px_subscription_array(indx).contract_id
@@ -5901,14 +6434,48 @@ AS
                 ELSE
                   lc_action := 'assigning the auth failure result to subscription array';
                   px_subscription_array(indx).subscription_error      := lr_subscription_info.auth_message;
-                  lc_error                                            := 'Invalid Card';
-                  lc_cof_trans_id_flag                                := 'E';
-                  RAISE le_processing;
+
+                  --BEGIN : JIRA#NAIT-92855:- EBS - Trigger AVS process -> AVS CODE Change 2
+
+                  lc_action := 'assigning the auth failure result to subscription array';
+                
+                  px_subscription_array(indx)                         := lr_subscription_info;
+                  px_subscription_array(indx).auth_status             := lr_subscription_info.auth_status;
+                  px_subscription_array(indx).auth_message            := lr_subscription_info.auth_message;
+
+                  IF SUBSTR(lr_subscription_info.auth_message,1,1) IN ('R','S')
+                  THEN
+                    lc_error             := 'Connectivity Isuue';
+                    lc_cof_trans_id_flag := 'U';                    
+                    RAISE le_processing;
+                  ELSE
+                    lc_error                                            := 'Invalid Card';
+                    lc_cof_trans_id_flag                                := 'E';
+                    px_subscription_array(indx).last_auth_attempt_date  := SYSDATE;
+                    px_subscription_array(indx).payment_status          := 'FAILURE';
+                    px_subscription_array(indx).contract_status         := NULL;
+                    px_subscription_array(indx).next_retry_day          := NULL;
+                    px_subscription_array(indx).email_sent_flag         := 'N';
+                    px_subscription_array(indx).history_sent_flag       := 'N';
+                    RAISE le_avs_exception;
+                  END IF;
+
+                  --END : JIRA#NAIT-92855:- EBS - Trigger AVS process -> AVS CODE Change 2
                 END IF;
               END IF;
             
             ELSE
+              lc_action := 'Updating credit card details';
               
+              px_subscription_array(indx).settlement_cc_mask  := SUBSTR(lc_decrypted_value, 1, 6) || SUBSTR(lc_decrypted_value, LENGTH(lc_decrypted_value) - 3, 4);
+              
+              --BEGIN : JIRA#NAIT-92855:- EBS - Trigger AVS process -> Updating initial_auth_attempt_date with SYSDATE when auth for AVS code is done on DAY 1  
+              IF px_subscription_array(indx).initial_auth_attempt_date IS NULL
+              THEN
+                 px_subscription_array(indx).initial_auth_attempt_date := TO_DATE(TO_CHAR(SYSDATE,'DD-MON-YYYY')||'00:00:00','DD-MON-YYYY HH24:MI:SS');
+              END IF;
+              --END : JIRA#NAIT-92855:- EBS - Trigger AVS process -> Updating initial_auth_attempt_date with SYSDATE when auth for AVS code is done on DAY 1
+
               /**********************************
               * Get the authorization information
               **********************************/
@@ -5932,7 +6499,8 @@ AS
                   lc_action := 'assigning the auth success result to subscription array';               
                   px_subscription_array(indx).cof_trans_id                := lr_subscription_info.cof_trans_id;
                   px_subscription_array(indx).cof_trans_id_flag           := 'Y';
-                  
+                  px_subscription_array(indx).last_auth_attempt_date      := SYSDATE;
+
                   --call update contracts table with cc_trans_id and cc_trans_id_source
                   update_contracts_info(p_contract_id           => px_subscription_array(indx).contract_id
                                        ,p_cc_trans_id           => lr_subscription_info.cof_trans_id
@@ -5942,9 +6510,33 @@ AS
                 ELSE
                   lc_action := 'assigning the auth failure result to subscription array';
                   px_subscription_array(indx).subscription_error      := lr_subscription_info.auth_message;
-                  lc_error                                            := 'Invalid Card';
-                  lc_cof_trans_id_flag                                := 'E';
-                  RAISE le_processing;
+
+                  --BEGIN : JIRA#NAIT-92855:- EBS - Trigger AVS process -> AVS CODE Change 3
+
+                  lc_action := 'assigning the auth failure result to subscription array';
+                
+                  px_subscription_array(indx)                         := lr_subscription_info;
+                  px_subscription_array(indx).auth_status             := lr_subscription_info.auth_status;
+                  px_subscription_array(indx).auth_message            := lr_subscription_info.auth_message;
+
+                  IF SUBSTR(lr_subscription_info.auth_message,1,1) IN ('R','S')
+                  THEN
+                    lc_error             := 'Connectivity Isuue';
+                    lc_cof_trans_id_flag := 'U';                    
+                    RAISE le_processing;
+                  ELSE
+                    lc_error                                            := 'Invalid Card';
+                    lc_cof_trans_id_flag                                := 'E';
+                    px_subscription_array(indx).last_auth_attempt_date  := SYSDATE;
+                    px_subscription_array(indx).payment_status          := 'FAILURE';
+                    px_subscription_array(indx).contract_status         := NULL;
+                    px_subscription_array(indx).next_retry_day          := NULL;
+                    px_subscription_array(indx).email_sent_flag         := 'N';
+                    px_subscription_array(indx).history_sent_flag       := 'N';
+                    RAISE le_avs_exception;
+                  END IF;
+
+                  --END : JIRA#NAIT-92855:- EBS - Trigger AVS process -> AVS CODE Change 3
                 END IF;
               ELSIF p_contract_info.external_source = 'POS' AND p_program_setups('pos_avs_check_flag') != 'Y'
               THEN
@@ -5953,6 +6545,8 @@ AS
                   lc_action := 'assigning the auth success result to subscription array';               
                   px_subscription_array(indx).cof_trans_id                := lr_subscription_info.cof_trans_id;
                   px_subscription_array(indx).cof_trans_id_flag           := 'Y';
+                  px_subscription_array(indx).last_auth_attempt_date      := SYSDATE;
+
                  
                   --call update contracts table with cc_trans_id and cc_trans_id_source
                   update_contracts_info(p_contract_id           => px_subscription_array(indx).contract_id
@@ -5963,9 +6557,34 @@ AS
                 ELSE
                   lc_action := 'assigning the auth failure result to subscription array';
                   px_subscription_array(indx).subscription_error      := lr_subscription_info.auth_message;
-                  lc_error                                            := 'Invalid Card';
-                  lc_cof_trans_id_flag                                := 'E';
-                  RAISE le_processing;
+
+                  --BEGIN : JIRA#NAIT-92855:- EBS - Trigger AVS process -> AVS CODE Change 4
+
+                  lc_action := 'assigning the auth failure result to subscription array';
+                
+                  px_subscription_array(indx)                         := lr_subscription_info;
+                  px_subscription_array(indx).auth_status             := lr_subscription_info.auth_status;
+                  px_subscription_array(indx).auth_message            := lr_subscription_info.auth_message;
+
+                  IF SUBSTR(lr_subscription_info.auth_message,1,1) IN ('R','S')
+                  THEN
+                    lc_error             := 'Connectivity Isuue';
+                    lc_cof_trans_id_flag := 'U';                    
+                    RAISE le_processing;
+                  ELSE
+                    lc_error                                            := 'Invalid Card';
+                    lc_cof_trans_id_flag                                := 'E';
+                    px_subscription_array(indx).last_auth_attempt_date  := SYSDATE;
+                    px_subscription_array(indx).payment_status          := 'FAILURE';
+                    px_subscription_array(indx).contract_status         := NULL;
+                    px_subscription_array(indx).next_retry_day          := NULL;
+                    px_subscription_array(indx).email_sent_flag         := 'N';
+                    px_subscription_array(indx).history_sent_flag       := 'N';
+                    RAISE le_avs_exception;
+                  END IF;
+
+                  --END : JIRA#NAIT-92855:- EBS - Trigger AVS process -> AVS CODE Change 4
+
                 END IF;
               END IF;
             
@@ -5996,10 +6615,40 @@ AS
 
         insert_subscription_error_info(p_subscription_error_info => lr_subscription_error_info);
        
-        lc_cof_trans_id_flag := 'E';
+        lc_cof_trans_id_flag := 'U';
         lc_subscription_error := SUBSTR(lr_subscription_error_info.error_message, 1, gc_max_sub_err_size);
 
         RAISE le_processing;
+
+        --BEGIN : JIRA#NAIT-92855:- EBS - Trigger AVS process -> AVS EXCEPTION
+        WHEN le_avs_exception
+        THEN
+
+        lr_subscription_error_info                         := NULL;
+        lr_subscription_error_info.contract_id             := px_subscription_array(indx).contract_id;
+        lr_subscription_error_info.contract_number         := px_subscription_array(indx).contract_number;
+        lr_subscription_error_info.contract_line_number    := NULL;
+        lr_subscription_error_info.billing_sequence_number := px_subscription_array(indx).billing_sequence_number;
+        lr_subscription_error_info.error_module            := lc_procedure_name;
+        lr_subscription_error_info.error_message           := SUBSTR('Action: ' || lc_action || ' Error: ' || lc_error, 1, gc_max_err_size);
+        lr_subscription_error_info.creation_date           := SYSDATE;
+
+        lc_action := 'Calling insert_subscription_error_info';
+
+        insert_subscription_error_info(p_subscription_error_info => lr_subscription_error_info);
+
+        lc_cof_trans_id_flag       := 'E';
+        lc_last_auth_attempt_date  := SYSDATE;
+        lc_email_sent_flag         := 'N';
+        lc_history_sent_flag       := 'N';
+        lc_payment_status          := 'FAILURE';
+        lc_contract_status         := NULL;
+        lc_next_retry_day          := NULL;
+        lc_subscription_error      := SUBSTR(lr_subscription_error_info.error_message, 1, gc_max_sub_err_size);    
+
+        RAISE le_avs_exception;      
+
+      --END : JIRA#NAIT-92855:- EBS - Trigger AVS process -> AVS EXCEPTION     
       
       WHEN OTHERS
       THEN
@@ -6017,7 +6666,7 @@ AS
 
         insert_subscription_error_info(p_subscription_error_info => lr_subscription_error_info);
 
-        lc_cof_trans_id_flag := 'E';
+        lc_cof_trans_id_flag := 'U';
         lc_subscription_error := SUBSTR(lr_subscription_error_info.error_message, 1, gc_max_sub_err_size);
 
         RAISE le_processing;
@@ -6049,7 +6698,56 @@ AS
     END LOOP;
 
     exiting_sub(p_procedure_name => lc_procedure_name, p_exception_flag => TRUE);
-    --RAISE_APPLICATION_ERROR(-20101, lc_subscription_error);
+    RAISE_APPLICATION_ERROR(-20101, lc_subscription_error);
+
+  --BEGIN : JIRA#NAIT-92855:- EBS - Trigger AVS process -> AVS EXCEPTION
+  WHEN le_avs_exception
+  THEN
+
+    FOR indx IN 1 .. px_subscription_array.COUNT
+    LOOP
+    
+      /**********************************
+      * Get the authorization information
+      **********************************/
+      
+      lr_subscription_info := px_subscription_array(indx);
+      
+      lc_action := 'Calling retrieve_auth_response_info';
+      
+      retrieve_auth_response_info(p_payload_id            => lr_subscription_payload_info.payload_id,
+                                  px_ar_subscription_info => lr_subscription_info);
+      
+      px_subscription_array(indx)                           := lr_subscription_info;
+      
+      -- updating initial_auth_attempt_date with SYSDATE when auth is done on DAY 1
+      IF px_subscription_array(indx).initial_auth_attempt_date IS NULL
+      THEN
+        px_subscription_array(indx).initial_auth_attempt_date := TO_DATE(TO_CHAR(SYSDATE,'DD-MON-YYYY')||'00:00:00','DD-MON-YYYY HH24:MI:SS');
+      END IF;
+
+      px_subscription_array(indx).cof_trans_id_flag       := lc_cof_trans_id_flag;
+      px_subscription_array(indx).subscription_error      := lc_subscription_error;
+      px_subscription_array(indx).last_auth_attempt_date  := lc_last_auth_attempt_date;
+      px_subscription_array(indx).email_sent_flag         := lc_email_sent_flag;
+      px_subscription_array(indx).payment_status          := lc_payment_status;
+      px_subscription_array(indx).contract_status         := lc_contract_status;
+      px_subscription_array(indx).next_retry_day          := lc_next_retry_day;
+      px_subscription_array(indx).history_sent_flag       := lc_history_sent_flag;
+      
+      lc_action := 'Updating credit card details';
+      
+      px_subscription_array(indx).settlement_cc_mask  := SUBSTR(lc_decrypted_value, 1, 6) || SUBSTR(lc_decrypted_value, LENGTH(lc_decrypted_value) - 3, 4);
+
+      lc_action := 'Calling update_subscription_info to update with error info';
+
+      update_subscription_info(px_subscription_info => px_subscription_array(indx));
+
+    END LOOP;  
+
+    exiting_sub(p_procedure_name => lc_procedure_name, p_exception_flag => TRUE);
+    RAISE_APPLICATION_ERROR(-20101, lc_subscription_error);
+--END : JIRA#NAIT-92855:- EBS - Trigger AVS process -> AVS EXCEPTION
 
   WHEN OTHERS
   THEN
@@ -6057,7 +6755,7 @@ AS
     FOR indx IN 1 .. px_subscription_array.COUNT
     LOOP
 
-      px_subscription_array(indx).cof_trans_id_flag  := 'E';
+      px_subscription_array(indx).cof_trans_id_flag  := 'U';
       px_subscription_array(indx).subscription_error := SUBSTR('Action: ' || lc_action || 'SQLCODE: ' || SQLCODE || ' SQLERRM: ' || SQLERRM, 1, gc_max_sub_err_size);
 
       lc_action := 'Calling update_subscription_info to update with error info';
@@ -6066,7 +6764,7 @@ AS
     END LOOP;
 
     exiting_sub(p_procedure_name => lc_procedure_name, p_exception_flag => TRUE);
-    --RAISE_APPLICATION_ERROR(-20101, 'PROCEDURE: ' || lc_procedure_name || ' Action: ' || lc_action || ' SQLCODE: ' || SQLCODE || ' SQLERRM: ' || SQLERRM);
+    RAISE_APPLICATION_ERROR(-20101, 'PROCEDURE: ' || lc_procedure_name || ' Action: ' || lc_action || ' SQLCODE: ' || SQLCODE || ' SQLERRM: ' || SQLERRM);
 
   END get_cc_trans_id_information;
 
@@ -6161,6 +6859,10 @@ AS
     
     lr_customer_info               hz_cust_accounts%ROWTYPE;
     
+    lr_inv_pymt_sch_info           ar_payment_schedules_all%ROWTYPE;
+	
+	ln_trx_number                  NUMBER;
+    
   BEGIN
 
     entering_sub(p_procedure_name  => lc_procedure_name,
@@ -6204,7 +6906,38 @@ AS
         lc_error := 'Payment Type is: ' || p_contract_info.payment_type;
         RAISE le_skip;
       END IF;
- 
+
+      /*************************************
+      * Validate INVOICE status - OPEN/CLOSE
+      *************************************/
+	  -- Begin : Commenting For NAIT-119054
+   /* IF px_subscription_array(indx).invoice_number IS NOT NULL
+      THEN
+        /************************
+        * Get invoice information
+        ************************/
+        
+      /*  lc_action := 'Calling get_invoice_header_info';
+        
+        get_invoice_header_info(p_invoice_number      => px_subscription_array(indx).invoice_number,
+                                x_invoice_header_info => lr_invoice_header_info);
+         /*****************************************
+        * Get invoice payment schedule information
+        *****************************************/
+      /*  lc_action := 'Calling get_payment_sch_info';
+        
+        get_payment_sch_info(p_cust_trx_id       => lr_invoice_header_info.customer_trx_id,
+                             x_payment_sch_info  => lr_inv_pymt_sch_info);
+                             
+         IF lr_inv_pymt_sch_info.status = 'CL'
+         THEN
+           lc_error := 'INVOICE status is closed ';
+           RAISE le_skip;
+         END IF;
+      END IF; 
+	 */
+	 -- End : Commenting For NAIT-119054
+	  
     END LOOP;
 
     lc_action := 'Setting transaction savepoint';
@@ -6225,7 +6958,7 @@ AS
         * Get contract line information
         ******************************/
 
-        lc_action := 'Calling get_contract_line_info';
+        lc_action := 'Calling get_contract_line_info at process_authorization :';
 
         get_contract_line_info(p_contract_id          => px_subscription_array(indx).contract_id,
                                p_contract_line_number => px_subscription_array(indx).contract_line_number,
@@ -6241,7 +6974,7 @@ AS
         THEN
         
           /*****************************************************
-          * Get day information when do we need to authorizaiton
+          * Get day information when do we need to authorization
           *****************************************************/
           
           lc_action := 'Calling get_auth_day_info';
@@ -6254,7 +6987,7 @@ AS
           
           --payment authorization should be done according to the days mentioned in translation
           IF l_day >= 0
-             OR (p_contract_info.payment_last_update_date > px_subscription_array(indx).last_auth_attempt_date )
+             OR (TRUNC(p_contract_info.payment_last_update_date) >= TRUNC(px_subscription_array(indx).last_auth_attempt_date) )
              OR (px_subscription_array(indx).auth_completed_flag = 'U')
           THEN
 
@@ -6334,10 +7067,12 @@ AS
                 get_pos_ordt_info(p_order_number => p_contract_info.initial_order_number,
                       x_ordt_info    => lr_pos_ordt_info);
                       
-                get_pos_info(p_header_id => lr_pos_ordt_info.header_id,
-                             x_pos_info  => lr_pos_info);
+                get_pos_info(p_header_id        => lr_pos_ordt_info.header_id,
+                             p_orig_sys_doc_ref => p_contract_info.initial_order_number,
+                             x_pos_info         => lr_pos_info);
                              
-                get_order_header_info(p_order_number      => lr_pos_info.sales_order,
+                get_order_header_info(--p_order_number      => lr_pos_info.sales_order,            --Commented for NAIT-126620.
+									  p_order_number      => p_contract_info.initial_order_number, --Added for NAIT-126620
                                       x_order_header_info => lr_order_header_info);
               ELSE
                 get_order_header_info(p_order_number      => p_contract_info.initial_order_number,
@@ -6375,21 +7110,21 @@ AS
               /************************
               * Get invoice information
               ************************/
-            
-              lc_action := 'Calling get_invoice_header_info';
+            -- Begin : Commenting For NAIT-119054
+            /*  lc_action := 'Calling get_invoice_header_info';
             
               get_invoice_header_info(p_invoice_number      => px_subscription_array(indx).invoice_number,
-                                      x_invoice_header_info => lr_invoice_header_info);
+                                      x_invoice_header_info => lr_invoice_header_info);  */
             
               /******************************
               * Get invoice total information
               ******************************/
             
-              lc_action := 'Calling get_invoice_total_amount_info';
+            /*  lc_action := 'Calling get_invoice_total_amount_info';
             
               get_invoice_total_amount_info(p_customer_trx_id           => lr_invoice_header_info.customer_trx_id,
-                                            x_invoice_total_amount_info => ln_invoice_total_amount_info);
-            
+                                            x_invoice_total_amount_info => ln_invoice_total_amount_info); */
+            -- End : Commenting For NAIT-119054
               /**********************************************************************
               * If paypal, pass billing application id, if masterpass, pass wallet id
               **********************************************************************/
@@ -6452,13 +7187,15 @@ AS
                              || lc_expiration_date
                              || '",
                   "amount": "'
-                             || ln_invoice_total_amount_info
+                             --|| ln_invoice_total_amount_info                   -- Begin : Commenting For NAIT-119054
+							 ||px_subscription_array(indx).contract_line_amount  -- Added : For NAIT-119054
                              || '",
                   "cardType": "'
                              || p_contract_info.card_type
                              || '",
                   "applicationTransactionNumber": "'
-                             || px_subscription_array(indx).invoice_number
+                             --|| px_subscription_array(indx).invoice_number  -- Begin : Commenting For NAIT-119054
+							 || ln_trx_number                                 -- Added : For NAIT-119054
                              || '",
                   "billingAddress": {
                   "name": "'
@@ -6662,6 +7399,16 @@ AS
                 px_subscription_array(indx).payment_status          := 'SUCCESS';
                 px_subscription_array(indx).contract_status         := NULL;
                 px_subscription_array(indx).next_retry_day          := NULL;
+                
+                IF p_contract_info.cc_trans_id IS NULL
+                THEN
+                  --call update contracts table with cc_trans_id and cc_trans_id_source
+                  update_contracts_info(p_contract_id           => px_subscription_array(indx).contract_id
+                                       ,p_cc_trans_id           => lr_subscription_info.cof_trans_id
+                                       ,p_cc_trans_id_source    => 'EBS'
+                                       ,p_cof_trans_id_scm_flag => 'N'
+                                       );
+                END IF;
               ELSIF lr_subscription_info.auth_status IS NOT NULL
               THEN
                 lc_action := 'assigning the auth failure result to subscription array';
@@ -6697,7 +7444,7 @@ AS
                                           px_ar_subscription_info => lr_subscription_info);
                          
               /**********************************************************
-              * If authorizaiton passed, record authorization information
+              * If authorization passed, record authorization information
               **********************************************************/
             
               IF (lr_subscription_info.auth_status = '0')
@@ -6710,6 +7457,17 @@ AS
                 px_subscription_array(indx).payment_status          := 'SUCCESS';
                 px_subscription_array(indx).contract_status         := NULL;
                 px_subscription_array(indx).next_retry_day          := NULL;
+                
+                IF p_contract_info.cc_trans_id IS NULL
+                THEN
+                  --call update contracts table with cc_trans_id and cc_trans_id_source
+                  update_contracts_info(p_contract_id           => px_subscription_array(indx).contract_id
+                                       ,p_cc_trans_id           => lr_subscription_info.cof_trans_id
+                                       ,p_cc_trans_id_source    => 'EBS'
+                                       ,p_cof_trans_id_scm_flag => 'N'
+                                       );
+                END IF;
+
               END IF;
             
               lc_action := 'Updating credit card details';
@@ -7069,12 +7827,12 @@ AS
       /***************************
       * Validate for authorization
       ***************************/
-      IF px_subscription_array(indx).auth_completed_flag NOT IN ('Y', 'E')
+      IF px_subscription_array(indx).auth_completed_flag NOT IN ('Y', 'E','T')
       THEN
         lc_error := 'Authorization is not completed';
         RAISE le_skip;
       END IF;
-     
+
       /***********************************
       * Validate we are read to send email
       ***********************************/
@@ -7089,7 +7847,7 @@ AS
       * Get contract line information
       ******************************/
 
-      lc_action := 'Calling get_contract_line_info';
+      lc_action := 'Calling get_contract_line_info send_billing_email';
 
       get_contract_line_info(p_contract_id          => px_subscription_array(indx).contract_id,
                              p_contract_line_number => px_subscription_array(indx).contract_line_number,
@@ -7122,7 +7880,7 @@ AS
         * Get contract line level information
         ************************************/
 
-        lc_action := 'Calling get_contract_line_info';
+        lc_action := 'Calling get_contract_line_info send_billing_email2';
 
         get_contract_line_info(p_contract_id          => px_subscription_array(indx).contract_id,
                                p_contract_line_number => px_subscription_array(indx).contract_line_number,
@@ -7148,6 +7906,44 @@ AS
           THEN
 
             ln_loop_counter := ln_loop_counter + 1;
+            
+            /*******************************************************
+            * getting information of next retry day from translation
+            *******************************************************/
+            IF px_subscription_array(indx).contract_status IS NULL
+            THEN
+
+              lc_action := 'fetching next Retry Day information';
+  
+              lc_day := TO_DATE(TO_CHAR(SYSDATE,'DD-MON-YYYY')||'00:00:00','DD-MON-YYYY HH24:MI:SS') - NVL(TO_DATE(px_subscription_array(indx).initial_auth_attempt_date,'DD-MON-YYYY HH24:MI:SS')
+                                                                                        ,TO_DATE(TO_CHAR(SYSDATE,'DD-MON-YYYY')||'00:00:00','DD-MON-YYYY HH24:MI:SS'));
+           
+              get_auth_fail_info(p_payment_status    => px_subscription_array(indx).payment_status,
+                                 p_auth_day          => lc_day,
+                                 px_translation_info => lr_translation_info); 
+              
+              IF p_contract_info.contract_user_status = 'HOLD' and px_subscription_array(indx).payment_status = 'SUCCESS'
+              THEN
+                px_subscription_array(indx).contract_status  := 'REMOVE_HOLD';  
+                px_subscription_array(indx).next_retry_day   := TO_NUMBER(lr_translation_info.target_value2);
+                
+                lc_contract_status := 'REMOVE_HOLD';
+                lc_next_retry_day  := TO_NUMBER(lr_translation_info.target_value2);
+              
+              ELSE
+                px_subscription_array(indx).contract_status  := lr_translation_info.target_value1;  
+                px_subscription_array(indx).next_retry_day   := TO_NUMBER(lr_translation_info.target_value2);
+                
+                lc_contract_status := lr_translation_info.target_value1;  
+                lc_next_retry_day  := TO_NUMBER(lr_translation_info.target_value2); 
+              
+              END IF;
+
+              lc_action := 'Calling update_subscription_info';
+              
+              update_subscription_info(px_subscription_info => px_subscription_array(indx));
+
+            END IF;
             
             /******************************************
             * Build contract confirmation email payload
@@ -7197,6 +7993,9 @@ AS
                         "serviceType": "' 
                                       || lr_contract_line_info.program
                                       || '",
+                        "contractStatus": "'
+                                      || px_subscription_array(indx).contract_status
+                                      || '", 
                         "startDate": "' 
                                       || TO_CHAR(px_subscription_array(indx).service_period_start_date,'MM/DD/YYYY')
                                       || '",
@@ -7322,7 +8121,7 @@ AS
               
               px_subscription_array(indx).email_sent_flag             := 'Y';
               px_subscription_array(indx).email_sent_date             := SYSDATE;
-              px_subscription_array(indx).contract_status             := 'SUCCESS';
+              --px_subscription_array(indx).contract_status             := 'SUCCESS';
               px_subscription_array(indx).last_update_date            := SYSDATE;
               px_subscription_array(indx).last_updated_by             := FND_GLOBAL.USER_ID;
 
@@ -7340,9 +8139,17 @@ AS
 
               px_subscription_array(indx).email_sent_flag             := 'Y';
               px_subscription_array(indx).email_sent_date             := SYSDATE;
-              px_subscription_array(indx).contract_status             := 'SUCCESS';
+              --px_subscription_array(indx).contract_status             := 'SUCCESS';
               px_subscription_array(indx).last_update_date            := SYSDATE;
               px_subscription_array(indx).last_updated_by             := FND_GLOBAL.USER_ID;
+              
+              IF px_subscription_array(indx).contract_status IS NULL
+              THEN
+    
+                px_subscription_array(indx).contract_status  := lc_contract_status;  
+                px_subscription_array(indx).next_retry_day   := lc_next_retry_day;   
+
+               END IF;
 
           END IF;--ln_loop_counter end if  
           
@@ -7447,14 +8254,14 @@ AS
                 px_subscription_array(indx).next_retry_day   := TO_NUMBER(lr_translation_info.target_value2);
                 
                 lc_contract_status := 'REMOVE_HOLD';
-                lc_next_retry_day  := TO_NUMBER(lr_translation_info.target_value2);		
+                lc_next_retry_day  := TO_NUMBER(lr_translation_info.target_value2); 
               
               ELSE
                 px_subscription_array(indx).contract_status  := lr_translation_info.target_value1;  
                 px_subscription_array(indx).next_retry_day   := TO_NUMBER(lr_translation_info.target_value2);
                 
                 lc_contract_status := lr_translation_info.target_value1;  
-                lc_next_retry_day  := TO_NUMBER(lr_translation_info.target_value2);		
+                lc_next_retry_day  := TO_NUMBER(lr_translation_info.target_value2);          
               
               END IF;
 
@@ -7467,7 +8274,7 @@ AS
             IF px_subscription_array(indx).contract_status = gc_contract_status
             THEN
   
-              lc_cancel_date     := SYSDATE;
+              lc_cancel_date     := NVL(px_subscription_array(indx).NEXT_BILLING_DATE-1,SYSDATE);
               lc_reason_code     := 'TERMINATED_Non-Payment';
 
             END IF;
@@ -7502,7 +8309,7 @@ AS
             ELSE
               lc_contract_number_modifier := NULL;
             END IF;
-           
+
            /********************
             * Build email payload
             ********************/
@@ -7589,8 +8396,11 @@ AS
                     "action": "'
                                 || lr_translation_info.target_value3 --future use
                                 || '", 
+                         "notificationDays":"'
+                                || px_subscription_array(indx).next_retry_day
+                                || '",
                     "nextRetryDate": "'
-                                || TO_CHAR(lc_next_retry_date,'DD-MON-YYYY')
+                                || TO_CHAR(lc_next_retry_date,'DD-MON-YYYY')  
                                 || '",
                     "failureMessage": "'
                                 || lc_failure_message
@@ -7606,7 +8416,7 @@ AS
                                 || '",
                     "reasonCode": "'
                                 || lc_reason_code
-                                || '",								
+                                || '",
                     "nextInvoiceDate": "'
                                 ||  TO_CHAR(px_subscription_array(indx).next_billing_date,'DD-MON-YYYY HH24:MI:SS')
                                 || '",
@@ -7798,7 +8608,7 @@ AS
               THEN
     
                 px_subscription_array(indx).contract_status  := lc_contract_status;  
-                px_subscription_array(indx).next_retry_day   := lc_next_retry_day;  			  
+                px_subscription_array(indx).next_retry_day   := lc_next_retry_day;                   
 
                END IF;
 
@@ -8028,7 +8838,7 @@ AS
           lc_error := 'Receipt creation is not completed';
           RAISE le_skip;
         END IF;
-      ELSE
+      ELSE 
         IF px_subscription_array(indx).auth_completed_flag NOT IN ('Y', 'E')
         THEN
           lc_error := 'Authorization is not completed';
@@ -8052,7 +8862,7 @@ AS
       * Get contract line information
       ******************************/
 
-      lc_action := 'Calling get_contract_line_info';
+      lc_action := 'Calling get_contract_line_info send_billing_history';
 
       get_contract_line_info(p_contract_id          => px_subscription_array(indx).contract_id,
                              p_contract_line_number => px_subscription_array(indx).contract_line_number,
@@ -8091,7 +8901,7 @@ AS
         * Get contract line level information
         ************************************/
         
-        lc_action := 'Calling get_contract_line_info';
+        lc_action := 'Calling get_contract_line_info send_billing_history2';
         
         get_contract_line_info(p_contract_id          => px_subscription_array(indx).contract_id,
                                p_contract_line_number => px_subscription_array(indx).contract_line_number,
@@ -8142,10 +8952,12 @@ AS
               get_pos_ordt_info(p_order_number => p_contract_info.initial_order_number,
                     x_ordt_info    => lr_pos_ordt_info);
                     
-              get_pos_info(p_header_id => lr_pos_ordt_info.header_id,
-                           x_pos_info  => lr_pos_info);
+              get_pos_info(p_header_id        => lr_pos_ordt_info.header_id,
+                           p_orig_sys_doc_ref => p_contract_info.initial_order_number,
+                           x_pos_info         => lr_pos_info);
                            
-              get_order_header_info(p_order_number      => lr_pos_info.sales_order,
+              get_order_header_info(--p_order_number      => lr_pos_info.sales_order,            --Commented for NAIT-126620.
+									p_order_number      => p_contract_info.initial_order_number, --Added for NAIT-126620
                                     x_order_header_info => lr_order_header_info);
             ELSE
               get_order_header_info(p_order_number      => p_contract_info.initial_order_number,
@@ -8896,7 +9708,7 @@ AS
         * Get contract line information
         ******************************/
 
-        lc_action := 'Calling get_contract_line_info';
+        lc_action := 'Calling get_contract_line_info process_receipt';
 
         get_contract_line_info(p_contract_id          => px_subscription_array(indx).contract_id,
                                p_contract_line_number => px_subscription_array(indx).contract_line_number,
@@ -8909,19 +9721,20 @@ AS
           /************************
           * Get invoice information
           ************************/
-
-          IF (lr_invoice_header_info.customer_trx_id IS NULL)
+          
+          /*IF (lr_invoice_header_info.customer_trx_id IS NULL)
           THEN
-
+          
             lc_action := 'Calling get_invoice_header_info';
-
+          
             IF p_contract_info.external_source = 'POS'
             THEN
               get_pos_ordt_info(p_order_number => p_contract_info.initial_order_number,
                     x_ordt_info    => lr_pos_ordt_info);
                     
-              get_pos_info(p_header_id => lr_pos_ordt_info.header_id,
-                           x_pos_info  => lr_pos_info);
+              get_pos_info(p_header_id        => lr_pos_ordt_info.header_id,
+                           p_orig_sys_doc_ref => p_contract_info.initial_order_number,
+                           x_pos_info         => lr_pos_info);
                            
               get_invoice_header_info(p_invoice_number      => lr_pos_info.summary_trx_number,
                                       x_invoice_header_info => lr_invoice_header_info);
@@ -8929,38 +9742,37 @@ AS
               get_invoice_header_info(p_invoice_number      => p_contract_info.initial_order_number,
                                       x_invoice_header_info => lr_invoice_header_info);
             END IF;
-
-          END IF;
-
+          
+          END IF;*/
+          
           /****************************************
           * Get receivables application information
           ****************************************/
-
-          IF (lr_rec_application_info.cash_receipt_id IS NULL)
+          
+          /*IF (lr_rec_application_info.cash_receipt_id IS NULL)
           THEN
-
+          
             lc_action := 'Calling get_receivable_application_info';
-
+          
             get_rec_application_info(p_customer_trx_id             => lr_invoice_header_info.customer_trx_id,
                                      x_receivable_application_info => lr_rec_application_info);
-          END IF;
-
+          END IF;*/
+          
           /************************
           * Get receipt information
           ************************/
-
-          IF (lr_receipt_info.cash_receipt_id IS NULL)
+          
+          /*IF (lr_receipt_info.cash_receipt_id IS NULL)
           THEN
-
+          
             lc_action := 'Calling get_receipt_info';
-
+          
             get_receipt_info(p_cash_receipt_id => lr_rec_application_info.cash_receipt_id,
                              x_receipt_info    => lr_receipt_info);
-          END IF;
-
-
+          END IF;*/
+            
           px_subscription_array(indx).receipt_created_flag := 'Y';
-          px_subscription_array(indx).receipt_number       := lr_receipt_info.receipt_number;
+          --px_subscription_array(indx).receipt_number       := lr_receipt_info.receipt_number;
 
         ELSIF px_subscription_array(indx).billing_sequence_number >= lr_contract_line_info.initial_billing_sequence
         THEN
@@ -8981,10 +9793,12 @@ AS
               get_pos_ordt_info(p_order_number => p_contract_info.initial_order_number,
                     x_ordt_info    => lr_pos_ordt_info);
                     
-              get_pos_info(p_header_id => lr_pos_ordt_info.header_id,
-                           x_pos_info  => lr_pos_info);
+              get_pos_info(p_header_id        => lr_pos_ordt_info.header_id,
+                           p_orig_sys_doc_ref => p_contract_info.initial_order_number,
+                           x_pos_info         => lr_pos_info);
                            
-              get_order_header_info(p_order_number      => lr_pos_info.sales_order,
+              get_order_header_info(--p_order_number      => lr_pos_info.sales_order,            --Commented for NAIT-126620.
+									p_order_number      => p_contract_info.initial_order_number, --Added for NAIT-126620
                                     x_order_header_info => lr_order_header_info);
             ELSE
               get_order_header_info(p_order_number      => p_contract_info.initial_order_number,
@@ -9394,7 +10208,7 @@ AS
         * Get contract line information
         ******************************/
 
-        lc_action := 'Calling get_contract_line_info';
+        lc_action := 'Calling get_contract_line_info process_ordt_info';
 
         get_contract_line_info(p_contract_id          => px_subscription_array(indx).contract_id,
                                p_contract_line_number => px_subscription_array(indx).contract_line_number,
@@ -9407,19 +10221,20 @@ AS
           /************************
           * Get invoice information
           ************************/
-
-          IF (lr_invoice_header_info.customer_trx_id IS NULL)
+          
+          /*IF (lr_invoice_header_info.customer_trx_id IS NULL)
           THEN
-
+          
             lc_action := 'Calling get_invoice_header_info';
-
+          
             IF p_contract_info.external_source = 'POS'
             THEN
               get_pos_ordt_info(p_order_number => p_contract_info.initial_order_number,
                     x_ordt_info    => lr_pos_ordt_info);
                     
-              get_pos_info(p_header_id => lr_pos_ordt_info.header_id,
-                           x_pos_info  => lr_pos_info);
+              get_pos_info(p_header_id        => lr_pos_ordt_info.header_id,
+                           p_orig_sys_doc_ref => p_contract_info.initial_order_number,
+                           x_pos_info         => lr_pos_info);
                            
               get_invoice_header_info(p_invoice_number      => lr_pos_info.summary_trx_number,
                                       x_invoice_header_info => lr_invoice_header_info);
@@ -9427,36 +10242,36 @@ AS
               get_invoice_header_info(p_invoice_number      => p_contract_info.initial_order_number,
                                       x_invoice_header_info => lr_invoice_header_info);
             END IF;
-
-          END IF;
-
+          
+          END IF;*/
+          
           /****************************************
           * Get receivables application information
           ****************************************/
-
-          IF (lr_rec_application_info.cash_receipt_id IS NULL)
+          
+          /*IF (lr_rec_application_info.cash_receipt_id IS NULL)
           THEN
-
+          
             lc_action := 'Calling get_receivable_application_info';
-
+          
             get_rec_application_info(p_customer_trx_id             => lr_invoice_header_info.customer_trx_id,
                                      x_receivable_application_info => lr_rec_application_info);
-          END IF;
-
+          END IF;*/
+          
           /*********************
           * Get ORDT information
           *********************/
           
-          IF (lr_ordt_info.order_payment_id IS NULL)
+          /*IF (lr_ordt_info.order_payment_id IS NULL)
           THEN
             lc_action := 'Calling get_ordt_info';
             
             get_ordt_info(p_cash_receipt_id  => lr_rec_application_info.cash_receipt_id,
                           x_ordt_info        => lr_ordt_info);
-          END IF;
-
+          END IF;*/
+            
           px_subscription_array(indx).ordt_staged_flag := 'Y';
-          px_subscription_array(indx).order_payment_id  := lr_ordt_info.order_payment_id;
+          --px_subscription_array(indx).order_payment_id  := lr_ordt_info.order_payment_id;
 
         ELSIF px_subscription_array(indx).billing_sequence_number >= lr_contract_line_info.initial_billing_sequence
         THEN
@@ -9477,10 +10292,12 @@ AS
               get_pos_ordt_info(p_order_number => p_contract_info.initial_order_number,
                                 x_ordt_info    => lr_pos_ordt_info);
                     
-              get_pos_info(p_header_id => lr_pos_ordt_info.header_id,
-                           x_pos_info  => lr_pos_info);
+              get_pos_info(p_header_id        => lr_pos_ordt_info.header_id,
+                           p_orig_sys_doc_ref => p_contract_info.initial_order_number,
+                           x_pos_info         => lr_pos_info);
                            
-              get_order_header_info(p_order_number      => lr_pos_info.sales_order,
+              get_order_header_info(--p_order_number      => lr_pos_info.sales_order,            --Commented for NAIT-126620.
+									p_order_number      => p_contract_info.initial_order_number, --Added for NAIT-126620
                                     x_order_header_info => lr_order_header_info);
             ELSE
               get_order_header_info(p_order_number      => p_contract_info.initial_order_number,
@@ -10003,7 +10820,19 @@ AS
 
         IF p_populate_invoice = 'Y'
         THEN
+          
+		  /**********************
+          * Process authorization
+          **********************/
+          -- Begin : Commenting / added For NAIT-119054
+		  lc_action := 'Calling process_authorization';
 
+          process_authorization(p_program_setups      => lt_program_setups,
+                                p_contract_info       => lr_contract_info,
+                                px_subscription_array => lt_subscription_array);
+								
+		  -- End : Commenting / addition For NAIT-119054
+		  
           lc_action := 'Calling populate_invoice_interface';
 
           populate_invoice_interface(p_program_setups      => lt_program_setups,
@@ -10023,20 +10852,39 @@ AS
      
           get_invoice_information(p_contract_info       => lr_contract_info,
                                   px_subscription_array => lt_subscription_array);
-     
+
           /*************************
           * Get trans id information
           *************************/
 
-          IF lt_program_setups('cof_check_flag') = 'Y'
+          /*IF lt_program_setups('cof_check_flag') = 'Y'
           THEN
             lc_action := 'Calling get_cc_trans_id_information';
             
             get_cc_trans_id_information(p_program_setups      => lt_program_setups,
                                         p_contract_info       => lr_contract_info,
                                         px_subscription_array => lt_subscription_array);
-          END IF;
+          END IF;*/
                                   
+          /**************************************
+          * Get contract header level information
+          **************************************/
+          
+          /*lc_action := 'Calling get_contract_info';
+          
+          get_contract_info(p_contract_id     => eligible_contract_rec.contract_id,
+                            x_contract_info   => lr_contract_info);*/
+
+          /**********************
+          * Process authorization
+          **********************/
+          -- Begin : Commenting For NAIT-119054
+        /*  lc_action := 'Calling process_authorization';
+
+          process_authorization(p_program_setups      => lt_program_setups,
+                                p_contract_info       => lr_contract_info,
+                                px_subscription_array => lt_subscription_array);  */
+          -- End : Commenting For NAIT-119054                      
           /**************************************
           * Get contract header level information
           **************************************/
@@ -10045,16 +10893,6 @@ AS
           
           get_contract_info(p_contract_id     => eligible_contract_rec.contract_id,
                             x_contract_info   => lr_contract_info);
-
-          /**********************
-          * Process authorization
-          **********************/
-
-          lc_action := 'Calling process_authorization';
-
-          process_authorization(p_program_setups      => lt_program_setups,
-                                p_contract_info       => lr_contract_info,
-                                px_subscription_array => lt_subscription_array);
 
           /****************
           * Process receipt
@@ -10283,54 +11121,100 @@ AS
             lb_header_processed := TRUE;
 
             lc_action := 'Update xx_ar_contracts';
-
-            UPDATE xx_ar_contracts
-            SET    contract_id                 = eligible_contract_line_rec.contract_id,
-                   contract_number             = eligible_contract_line_rec.contract_number,
-                   contract_name               = eligible_contract_line_rec.contract_name,
-                   contract_status             = eligible_contract_line_rec.contract_status,
-                   contract_major_version      = eligible_contract_line_rec.contract_major_version,
-                   contract_start_date         = eligible_contract_line_rec.contract_start_date,
-                   contract_end_date           = eligible_contract_line_rec.contract_end_date,
-                   contract_billing_freq       = eligible_contract_line_rec.contract_billing_freq,
-                   bill_to_cust_account_number = eligible_contract_line_rec.bill_cust_account_number,
-                   bill_to_customer_name       = eligible_contract_line_rec.bill_cust_name,
-                   bill_to_osr                 = eligible_contract_line_rec.bill_to_osr,
-                   customer_email              = eligible_contract_line_rec.customer_email,
-                   initial_order_number        = eligible_contract_line_rec.initial_order_number,
-                   store_number                = LPAD(NVL(eligible_contract_line_rec.store_number, lt_program_setups('default_store_name')),
+            
+            IF eligible_contract_line_rec.cc_trans_id IS NOT NULL
+            THEN
+              UPDATE xx_ar_contracts
+              SET    contract_id                 = eligible_contract_line_rec.contract_id,
+                     contract_number             = eligible_contract_line_rec.contract_number,
+                     contract_name               = eligible_contract_line_rec.contract_name,
+                     contract_status             = eligible_contract_line_rec.contract_status,
+                     contract_major_version      = eligible_contract_line_rec.contract_major_version,
+                     contract_start_date         = eligible_contract_line_rec.contract_start_date,
+                     contract_end_date           = eligible_contract_line_rec.contract_end_date,
+                     contract_billing_freq       = eligible_contract_line_rec.contract_billing_freq,
+                     bill_to_cust_account_number = eligible_contract_line_rec.bill_cust_account_number,
+                     bill_to_customer_name       = eligible_contract_line_rec.bill_cust_name,
+                     bill_to_osr                 = eligible_contract_line_rec.bill_to_osr,
+                     customer_email              = eligible_contract_line_rec.customer_email,
+                     initial_order_number        = eligible_contract_line_rec.initial_order_number,
+                     store_number                = LPAD(NVL(eligible_contract_line_rec.store_number, lt_program_setups('default_store_name')),
                                                       6,
                                                       '0'),
-                   payment_type                = eligible_contract_line_rec.payment_type,
-                   card_type                   = eligible_contract_line_rec.card_type,
-                   card_tokenenized_flag       = eligible_contract_line_rec.card_tokenized_flag,
-                   card_token                  = eligible_contract_line_rec.card_token,
-                   card_encryption_hash        = eligible_contract_line_rec.card_encryption_hash,
-                   card_holder_name            = eligible_contract_line_rec.card_holder_name,
-                   card_expiration_date        = eligible_contract_line_rec.card_expiration_date,
-                   card_encryption_label       = eligible_contract_line_rec.card_encryption_label,
-                   ref_associate_number        = eligible_contract_line_rec.ref_associate_number,
-                   sales_representative        = eligible_contract_line_rec.sales_representative,
-                   loyalty_member_number       = eligible_contract_line_rec.loyalty_member_number,
-                   total_contract_amount       = eligible_contract_rec.total_contract_amount,
-                   payment_term                = eligible_contract_line_rec.payment_term,
-                   payment_identifier          = eligible_contract_line_rec.payment_identifier,
-                   payment_last_update_date    = eligible_contract_line_rec.payment_last_update_date,
-                   contract_user_status        = eligible_contract_line_rec.contract_user_status,
-                   external_source             = eligible_contract_line_rec.external_source,
-                   contract_number_modifier    = eligible_contract_line_rec.contract_number_modifier,
-                   cc_trans_id                 = eligible_contract_line_rec.cc_trans_id,
-                   last_update_date            = SYSDATE,
-                   last_updated_by             = FND_GLOBAL.USER_ID,
-                   last_update_login           = FND_GLOBAL.USER_ID,
-                   program_id                  = NVL(FND_GLOBAL.CONC_PROGRAM_ID,-1) --NVL(FND_GLOBAL.CONC_REQUEST_ID, -1)
-            WHERE  contract_id                 = eligible_contract_line_rec.contract_id
-            AND    contract_number             = eligible_contract_line_rec.contract_number;
+                     payment_type                = eligible_contract_line_rec.payment_type,
+                     card_type                   = eligible_contract_line_rec.card_type,
+                     card_tokenenized_flag       = eligible_contract_line_rec.card_tokenized_flag,
+                     card_token                  = eligible_contract_line_rec.card_token,
+                     card_encryption_hash        = eligible_contract_line_rec.card_encryption_hash,
+                     card_holder_name            = eligible_contract_line_rec.card_holder_name,
+                     card_expiration_date        = eligible_contract_line_rec.card_expiration_date,
+                     card_encryption_label       = eligible_contract_line_rec.card_encryption_label,
+                     ref_associate_number        = eligible_contract_line_rec.ref_associate_number,
+                     sales_representative        = eligible_contract_line_rec.sales_representative,
+                     loyalty_member_number       = eligible_contract_line_rec.loyalty_member_number,
+                     total_contract_amount       = eligible_contract_rec.total_contract_amount,
+                     payment_term                = eligible_contract_line_rec.payment_term,
+                     payment_identifier          = eligible_contract_line_rec.payment_identifier,
+                     payment_last_update_date    = eligible_contract_line_rec.payment_last_update_date,
+                     contract_user_status        = eligible_contract_line_rec.contract_user_status,
+                     external_source             = eligible_contract_line_rec.external_source,
+                     contract_number_modifier    = eligible_contract_line_rec.contract_number_modifier,
+                     cc_trans_id                 = eligible_contract_line_rec.cc_trans_id,
+                     last_update_date            = SYSDATE,
+                     last_updated_by             = FND_GLOBAL.USER_ID,
+                     last_update_login           = FND_GLOBAL.USER_ID,
+                     program_id                  = NVL(FND_GLOBAL.CONC_PROGRAM_ID,-1) --NVL(FND_GLOBAL.CONC_REQUEST_ID, -1)
+              WHERE  contract_id                 = eligible_contract_line_rec.contract_id
+              AND    contract_number             = eligible_contract_line_rec.contract_number;
+            ELSE
+              UPDATE xx_ar_contracts
+              SET    contract_id                 = eligible_contract_line_rec.contract_id,
+                     contract_number             = eligible_contract_line_rec.contract_number,
+                     contract_name               = eligible_contract_line_rec.contract_name,
+                     contract_status             = eligible_contract_line_rec.contract_status,
+                     contract_major_version      = eligible_contract_line_rec.contract_major_version,
+                     contract_start_date         = eligible_contract_line_rec.contract_start_date,
+                     contract_end_date           = eligible_contract_line_rec.contract_end_date,
+                     contract_billing_freq       = eligible_contract_line_rec.contract_billing_freq,
+                     bill_to_cust_account_number = eligible_contract_line_rec.bill_cust_account_number,
+                     bill_to_customer_name       = eligible_contract_line_rec.bill_cust_name,
+                     bill_to_osr                 = eligible_contract_line_rec.bill_to_osr,
+                     customer_email              = eligible_contract_line_rec.customer_email,
+                     initial_order_number        = eligible_contract_line_rec.initial_order_number,
+                     store_number                = LPAD(NVL(eligible_contract_line_rec.store_number, lt_program_setups('default_store_name')),
+                                                      6,
+                                                      '0'),
+                     payment_type                = eligible_contract_line_rec.payment_type,
+                     card_type                   = eligible_contract_line_rec.card_type,
+                     card_tokenenized_flag       = eligible_contract_line_rec.card_tokenized_flag,
+                     card_token                  = eligible_contract_line_rec.card_token,
+                     card_encryption_hash        = eligible_contract_line_rec.card_encryption_hash,
+                     card_holder_name            = eligible_contract_line_rec.card_holder_name,
+                     card_expiration_date        = eligible_contract_line_rec.card_expiration_date,
+                     card_encryption_label       = eligible_contract_line_rec.card_encryption_label,
+                     ref_associate_number        = eligible_contract_line_rec.ref_associate_number,
+                     sales_representative        = eligible_contract_line_rec.sales_representative,
+                     loyalty_member_number       = eligible_contract_line_rec.loyalty_member_number,
+                     total_contract_amount       = eligible_contract_rec.total_contract_amount,
+                     payment_term                = eligible_contract_line_rec.payment_term,
+                     payment_identifier          = eligible_contract_line_rec.payment_identifier,
+                     payment_last_update_date    = eligible_contract_line_rec.payment_last_update_date,
+                     contract_user_status        = eligible_contract_line_rec.contract_user_status,
+                     external_source             = eligible_contract_line_rec.external_source,
+                     contract_number_modifier    = eligible_contract_line_rec.contract_number_modifier,
+                     last_update_date            = SYSDATE,
+                     last_updated_by             = FND_GLOBAL.USER_ID,
+                     last_update_login           = FND_GLOBAL.USER_ID,
+                     program_id                  = NVL(FND_GLOBAL.CONC_PROGRAM_ID,-1) --NVL(FND_GLOBAL.CONC_REQUEST_ID, -1)
+              WHERE  contract_id                 = eligible_contract_line_rec.contract_id
+              AND    contract_number             = eligible_contract_line_rec.contract_number;
+            END IF;
 
             logit(p_message => lc_action || ' row counts ' || SQL%ROWCOUNT);
 
             IF SQL%ROWCOUNT = 0
             THEN
+
 
               lc_action := 'Building xx_ar_contracts record';
 
@@ -10369,7 +11253,6 @@ AS
               lr_contract_info.contract_user_status        := eligible_contract_line_rec.contract_user_status;
               lr_contract_info.external_source             := eligible_contract_line_rec.external_source;
               lr_contract_info.contract_number_modifier    := eligible_contract_line_rec.contract_number_modifier;
-              lr_contract_info.cc_trans_id                 := eligible_contract_line_rec.cc_trans_id;
               lr_contract_info.last_update_date            := SYSDATE;
               lr_contract_info.last_updated_by             := FND_GLOBAL.USER_ID;
               lr_contract_info.last_update_login           := FND_GLOBAL.USER_ID;
@@ -10377,18 +11260,26 @@ AS
               lr_contract_info.creation_date               := SYSDATE;
               lr_contract_info.created_by                  := FND_GLOBAL.USER_ID;
               
+              IF eligible_contract_line_rec.cc_trans_id IS NOT NULL
+              THEN
+                lr_contract_info.cc_trans_id  := eligible_contract_line_rec.cc_trans_id;
+              END IF;
+              
               lr_contract_info.cof_trans_id_scm_flag       := 'N';
               lr_contract_info.store_close_flag            := 'N';
-
-              lc_action := 'Insert into xx_ar_contracts';
-
+             
+            --Begin Added for NAIT-126620 4. In the contracts loader program, if the intial_order_number is 20 characters, then always update the external_source as POS
+              IF Length(lr_contract_info.initial_order_number)=20
+              THEN
+               lr_contract_info.external_source := 'POS';
+              END IF;
+            --End for NAIT-126620
+             lc_action := 'Insert into xx_ar_contracts';
               INSERT INTO xx_ar_contracts
               VALUES lr_contract_info;
 
               logit(p_message => lc_action || ' row counts ' || SQL%ROWCOUNT);
-
             END IF;
-
           END IF;
 
           lc_action := 'Update xx_ar_contract_lines';
@@ -10991,10 +11882,10 @@ AS
    CURSOR c_autorenew_contract_lines 
    IS
 
-     SELECT contract_id,contract_number,billing_sequence_number,notification_days
+     SELECT contract_id,contract_number,billing_sequence_number,notification_days,total_contract_amount
      FROM
      (
-         SELECT XACL.contract_id,XAC.contract_number,XAS.billing_sequence_number,45 notification_days
+         SELECT XACL.contract_id,XAC.contract_number,XAS.billing_sequence_number,45 notification_days,sum(xacl.contract_line_amount) total_contract_amount
          FROM   xx_ar_contract_lines XACL,
                 xx_ar_contracts XAC,
                 xx_ar_subscriptions XAS
@@ -11011,8 +11902,9 @@ AS
                                                 WHERE XAS1.contract_id = XAS.contract_id
                                                 AND   XAS1.contract_line_number = XAS.contract_line_number
                                                 )
+         GROUP BY XACL.contract_id,XAC.contract_number,XAS.billing_sequence_number,45                                                  
          UNION
-         SELECT XACL.contract_id,XAC.contract_number,XAS.billing_sequence_number,45 notification_days
+         SELECT XACL.contract_id,XAC.contract_number,XAS.billing_sequence_number,45 notification_days,sum(xacl.contract_line_amount) total_contract_amount
          FROM   xx_ar_contract_lines XACL,
                 xx_ar_contracts XAC,
                 xx_ar_subscriptions XAS
@@ -11029,8 +11921,9 @@ AS
                                                 WHERE XAS1.contract_id = XAS.contract_id
                                                 AND   XAS1.contract_line_number = XAS.contract_line_number
                                                 )
+         GROUP BY XACL.contract_id,XAC.contract_number,XAS.billing_sequence_number,45                                                  
          UNION   
-         SELECT XACL.contract_id,XAC.contract_number,XAS.billing_sequence_number,7 notification_days
+         SELECT XACL.contract_id,XAC.contract_number,XAS.billing_sequence_number,7 notification_days,sum(xacl.contract_line_amount) total_contract_amount
          FROM   xx_ar_contract_lines XACL,
                 xx_ar_contracts XAC,
                 xx_ar_subscriptions XAS
@@ -11047,13 +11940,15 @@ AS
                                                 WHERE  XAS1.contract_id = XAS.contract_id
                                                 AND    XAS1.contract_line_number = XAS.contract_line_number
                                                )
+        GROUP BY XACL.contract_id,XAC.contract_number,XAS.billing_sequence_number,7                                                
+
      )
-     GROUP BY contract_id,contract_number,billing_sequence_number,notification_days
+     GROUP BY contract_id,contract_number,billing_sequence_number,notification_days,total_contract_amount
      ORDER BY contract_id;
 
     lc_procedure_name    CONSTANT  VARCHAR2(61) := gc_package_name || '.' || 'send_email_autorenew';
 
-    lt_program_setups           gt_translation_values;
+    lt_program_setups              gt_translation_values;
 
     lt_parameters                  gt_input_parameters;
 
@@ -11063,11 +11958,11 @@ AS
 
     ln_loop_counter                NUMBER := 0;
 
-    lr_contract_info            xx_ar_contracts%ROWTYPE;
+    lr_contract_info               xx_ar_contracts%ROWTYPE;
 
     lr_contract_line_info          xx_ar_contract_lines%ROWTYPE;
 
-    lt_subscription_array         subscription_table;
+    lt_subscription_array          subscription_table;
 
     lc_wallet_id                   xx_ar_contracts.payment_identifier%TYPE;
 
@@ -11079,7 +11974,7 @@ AS
 
     lc_billing_agreement_id        xx_ar_contracts.payment_identifier%TYPE;
 
-    lc_email_autorenew_payload    VARCHAR2(32000) := NULL;
+    lc_email_autorenew_payload     VARCHAR2(32000) := NULL;
 
     lc_card_expiration_date        VARCHAR2(4);
 
@@ -11095,7 +11990,7 @@ AS
 
     lr_subscription_error_info     xx_ar_subscriptions_error%ROWTYPE;
 
-    lc_email_autorenew_sent_flag             VARCHAR2(2)  := 'N';
+    lc_email_autorenew_sent_flag   VARCHAR2(2)  := 'N';
 
     lc_email_sent_counter          NUMBER := 0;
 
@@ -11173,7 +12068,7 @@ AS
         get_contract_info(p_contract_id     => autorenew_contract_lines_rec.contract_id,
                           x_contract_info   => lr_contract_info);
 
-      /********************************************
+        /********************************************
         * Get all the associated subscription records
         ********************************************/
 
@@ -11187,40 +12082,47 @@ AS
 
         ln_loop_counter := 0;
 
-        FOR indx IN 1 .. lt_subscription_array.COUNT
-        LOOP
-         BEGIN
+      FOR indx IN 1 .. lt_subscription_array.COUNT
+      LOOP
+       
+        BEGIN
 
-     /******************************
-      * Get contract line information
-      ******************************/
+          /******************************
+          * Get contract line information
+          ******************************/
+          
+          lc_action := 'Calling get_contract_line_info send_email_autorenew';
+          
+          get_contract_line_info(p_contract_id          => lt_subscription_array(indx).contract_id,
+                                 p_contract_line_number => lt_subscription_array(indx).contract_line_number,
+                                 x_contract_line_info   => lr_contract_line_info);
 
-      lc_action := 'Calling get_contract_line_info';
-
-      get_contract_line_info(p_contract_id          => lt_subscription_array(indx).contract_id,
-                             p_contract_line_number => lt_subscription_array(indx).contract_line_number,
-                             x_contract_line_info   => lr_contract_line_info);
           IF ln_loop_counter = 0
-              THEN
-              ln_loop_counter := ln_loop_counter + 1;  
+          THEN
+              
+            ln_loop_counter := ln_loop_counter + 1;  
 
-             /************************
+            /************************
             * Get invoice information
             ************************/
-
-            lc_action := 'Calling get_invoice_header_info';
+           
+             -- Commented the below code : NAIT-118527 : Program - OD: AR Recurring Billing Contract Line Auto Renewal Failed In EBS Production.
+             
+          /*  lc_action := 'Calling get_invoice_header_info';
              
             get_invoice_header_info(p_invoice_number      => lt_subscription_array(indx).invoice_number,
-                                    x_invoice_header_info => lr_invoice_header_info);			  
+                                    x_invoice_header_info => lr_invoice_header_info);  */
+            
             /******************************
             * Get invoice total information
             ******************************/
 
-
-            lc_action := 'Calling get_invoice_total_amount_info';
+            -- Commented the below code : NAIT-118527 : Program - OD: AR Recurring Billing Contract Line Auto Renewal Failed In EBS Production.
+           /* lc_action := 'Calling get_invoice_total_amount_info';
 
             get_invoice_total_amount_info(p_customer_trx_id           => lr_invoice_header_info.customer_trx_id,
                                           x_invoice_total_amount_info => ln_invoice_total_amount_info);
+                                          x_invoice_total_amount_info => ln_invoice_total_amount_info);*/ 
 
            
             /************************************************
@@ -11251,7 +12153,7 @@ AS
 
             END IF;
 
-           /***************************************
+            /***************************************
             * Masking card details except for PAYPAL
             ***************************************/
             lc_action := 'Masking credit card';
@@ -11306,9 +12208,9 @@ AS
  
             
  
-            /***********************************
+            /*******************************
             * Build auto renew email payload
-            ************************************/
+            *******************************/
 
 
             lc_action := 'Building auto renew email payload';
@@ -11429,7 +12331,7 @@ AS
                                     || lr_contract_info.card_type
                                     || '",
                             "amount": "'
-                                    || ln_invoice_total_amount_info
+                                    || autorenew_contract_lines_rec.total_contract_amount--SUM(lr_contract_line_info.contract_line_amount) --ln_invoice_total_amount_info
                                     || '",
                             "cardnumber": "'
                                     || lc_masked_credit_card_number
@@ -11571,6 +12473,11 @@ AS
 
             END IF;
 
+         ELSE
+              lt_subscription_array(indx).email_autorenew_sent_flag  := 'Y';
+              lt_subscription_array(indx).email_autorenew_sent_date  := SYSDATE;
+              lt_subscription_array(indx).last_update_date := SYSDATE;
+              lt_subscription_array(indx).last_updated_by  := FND_GLOBAL.USER_ID;
          END IF;--ln_loop_counter end if
 
          lc_action := 'Calling update_subscription_info';
@@ -11804,12 +12711,12 @@ AS
                  p_parameters      => lt_parameters);
    
     ln_request_id := fnd_global.conc_request_id;
-	
-	lc_indx_value := '{"index":{"_index":';
-	      
+
+    lc_indx_value := '{"index":{"_index":';
+    
     lt_file_name    := 'XX_SUBSCR_BILLHISTORY'||'_'||TO_CHAR (SYSDATE,'DDMONYYYYHH24MISS')||'.txt';
-	
-    logit(p_message =>'VALUE OF lt_file_name is'||lt_file_name);	
+
+    logit(p_message =>'VALUE OF lt_file_name is'||lt_file_name);     
       
     lt_file_handle := UTL_FILE.fopen (p_file_path,lt_file_name,'W',ln_max_linesize);
        
@@ -11920,7 +12827,7 @@ AS
           * Get contract line level information
           ************************************/
           
-          lc_action := 'Calling get_contract_line_info';
+          lc_action := 'Calling get_contract_line_info generate_bill_history_payload';
           
           get_contract_line_info(p_contract_id          => lt_subscription_array(indx).contract_id,
                                  p_contract_line_number => lt_subscription_array(indx).contract_line_number,
@@ -11967,10 +12874,12 @@ AS
                 get_pos_ordt_info(p_order_number => lr_contract_info.initial_order_number,
                       x_ordt_info    => lr_pos_ordt_info);
                       
-                get_pos_info(p_header_id => lr_pos_ordt_info.header_id,
-                             x_pos_info  => lr_pos_info);
+                get_pos_info(p_header_id        => lr_pos_ordt_info.header_id,
+                             p_orig_sys_doc_ref => lr_contract_info.initial_order_number,
+                             x_pos_info         => lr_pos_info);
                              
-                get_order_header_info(p_order_number      => lr_pos_info.sales_order,
+                get_order_header_info(--p_order_number      => lr_pos_info.sales_order,            --Commented for NAIT-126620.
+									  p_order_number      => lr_contract_info.initial_order_number, --Added for NAIT-126620
                                       x_order_header_info => lr_order_header_info);
               ELSE
                 get_order_header_info(p_order_number      => lr_contract_info.initial_order_number,
@@ -12257,16 +13166,16 @@ AS
       END LOOP; --sub loop
       
       BEGIN
-	
-        UTL_FILE.PUT_LINE(lt_file_handle,lc_history_payload);	
-		
-	  EXCEPTION
-	    WHEN OTHERS THEN
+
+        UTL_FILE.PUT_LINE(lt_file_handle,lc_history_payload);     
+
+      EXCEPTION
+        WHEN OTHERS THEN
           fnd_file.put_line(fnd_file.LOG, 'Exception while writing data into file:' || SQLERRM);
-	      logit(p_message =>' Exception while writing data into file '|| SQLERRM || SQLCODE 
+          logit(p_message =>' Exception while writing data into file '|| SQLERRM || SQLCODE 
                ,p_force   => TRUE);
-	      --RAISE le_processing;
-	  END;
+         --RAISE le_processing;
+      END;
     
     END LOOP;--eligible contracts loop
     
@@ -12893,7 +13802,7 @@ AS
               xx_fin_translatedefinition                 defn
        WHERE   defn.translate_id                        = vals.translate_id
        AND   defn.translation_name                    = 'SUBSCRIPTION_STORE_CLOSE'
-       AND   SYSDATE BETWEEN vals.start_date_active AND NVL(vals.end_date_active, SYSDATE + 1)	  
+       AND   SYSDATE BETWEEN vals.start_date_active AND NVL(vals.end_date_active, SYSDATE + 1)       
        AND   SYSDATE BETWEEN defn.start_date_active AND NVL(defn.end_date_active, SYSDATE + 1)
        AND   SYSDATE                                 >= to_date(vals.target_value4,'MM-DD-YYYY')
 
@@ -12932,7 +13841,7 @@ AS
 
     END LOOP;
 
-    logit(p_message =>' END : Relocation Store Validation : ');	
+    logit(p_message =>' END : Relocation Store Validation : ');     
 
   EXCEPTION
     WHEN OTHERS
@@ -12942,5 +13851,669 @@ AS
       RAISE_APPLICATION_ERROR(-20101, 'PROCEDURE: ' || lc_procedure_name || ' SQLCODE: ' || SQLCODE || ' SQLERRM: ' || SQLERRM);
   END xx_relocation_store_vald_prc;
   
+  /**********************************************************************************************
+  * Helper Procedure to display the Invoices and the Receipt numbers as part of Receipt Updation
+  ***********************************************************************************************/
+  
+  PROCEDURE printit(p_out_message  IN  VARCHAR2)
+  IS
+    lc_out_message  VARCHAR2(2000) := NULL;
+  BEGIN
+      lc_out_message := SUBSTR(p_out_message,1, gc_max_print_size);
+      IF (fnd_global.conc_request_id > 0)
+      THEN
+        fnd_file.put_line(fnd_file.output, lc_out_message);
+      END IF;
+  EXCEPTION
+      WHEN OTHERS
+      THEN
+          NULL;
+  END printit;
+  
+  /********************************************************************************
+  * Helper procedure to update receipt number and required flags for AB Customers
+  *********************************************************************************/
+  
+  PROCEDURE txn_receiptnum_update(errbuff       OUT VARCHAR2,
+                                  retcode       OUT VARCHAR2,
+                                  p_debug_flag  IN  VARCHAR2)
+  AS
+    CURSOR c_ab_txnnum
+    IS
+      SELECT DISTINCT XAS.invoice_number,XAS.contract_number,XAS.contract_id,RCTA.customer_trx_id,XAS.billing_sequence_number,
+                      (SELECT SUM(RCTLA.extended_amount) 
+                       FROM   ra_customer_trx_lines_all RCTLA 
+                       WHERE  RCTLA.customer_trx_id = RCTA.customer_trx_id)txn_amount
+      FROM   xx_ar_subscriptions XAS,
+             ra_customer_trx_all RCTA,
+             xx_ar_contracts XAC,
+             xx_ar_contract_lines XACL
+      WHERE  XAC.payment_type            = 'AB'
+      AND    XAC.contract_id             = XAS.contract_id
+      AND    XAS.invoice_created_flag    = 'Y'
+      AND    XAS.invoice_number is not null
+      AND    XAS.receipt_created_flag    <> 'Y'
+      AND    XAS.billing_sequence_number > XACL.initial_billing_sequence
+      AND    XAS.contract_id             = XACL.contract_id
+      AND    XAS.contract_line_number    = XACL.contract_line_number
+      AND    XAC.contract_id             = XACL.contract_id
+      AND    XAS.invoice_number          = RCTA.trx_number;
+      
+
+    CURSOR c_contract_lines (p_invoice_number IN VARCHAR2,p_contract_id IN NUMBER)
+    IS 
+      SELECT XAS.subscriptions_id,XAS.contract_line_number
+      FROM   xx_ar_subscriptions XAS
+      WHERE  XAS.invoice_number          = p_invoice_number
+      AND    XAS.contract_id             = p_contract_id;
+
+    CURSOR c_cash_receiptid (p_customer_trx_id IN NUMBER)
+    IS 
+      SELECT ARAA.cash_receipt_id,ARAA.receivable_application_id 
+      FROM   ar_receivable_applications_all ARAA
+      WHERE  ARAA.applied_customer_trx_id = p_customer_trx_id
+      AND    ARAA.status = 'APP'
+      AND    ARAA.receivable_application_id IN (SELECT MAX(ARAA1.receivable_application_id)
+                                                FROM ar_receivable_applications_all ARAA1
+                                                WHERE ARAA1.applied_customer_trx_id = ARAA.applied_customer_trx_id 
+                                                AND   ARAA1.cash_receipt_id = ARAA.cash_receipt_id
+                                               )
+      ORDER  BY 1;
+
+    lt_program_setups       gt_translation_values;
+    lr_contract_info        xx_ar_contracts%ROWTYPE;
+    lt_subscription_array   subscription_table;    
+    lc_procedure_name       CONSTANT VARCHAR2(61)                               := gc_package_name || '.' || 'txn_receiptnum_update';
+    ln_cash_receipt_id      ar_receivable_applications_all.cash_receipt_id%TYPE := 0;
+    lc_receipt_num          ar_cash_receipts_all.receipt_number%TYPE            := NULL;
+    ln_cnt_cash_receipts    NUMBER                                              := 0;
+    lc_prev_receipt_num     ar_cash_receipts_all.receipt_number%TYPE            := NULL;
+    lc_curr_receipt_num     ar_cash_receipts_all.receipt_number%TYPE            := NULL;
+    ln_receipt_num_count    NUMBER                                              := 0;
+    ln_tot_receipt_amt      NUMBER                                              := 0;
+    lc_receipt_created_flag VARCHAR2(1)                                         := NULL;
+    ln_prev_receipt_amt     NUMBER                                              := 0;
+    lc_send_bill_hist_flag  VARCHAR2(1)                                         := 'N';
+    BEGIN
+    set_debug(p_debug_flag => p_debug_flag);
+    logit(p_message => '---------------------------------------------------',
+          p_force   => TRUE);
+    logit(p_message => 'Starting TXN_RECEIPTNUM_UPDATE routine. ',
+          p_force   => TRUE);
+    logit(p_message => '---------------------------------------------------',
+          p_force   => TRUE);
+    printit(p_out_message => RPAD ('-',180 , '-'));
+    printit(p_out_message => 'Details of the Contract, Invoice and the Receipt Numbers updated in the Subscriptions Table for AB Customers');
+    printit(p_out_message => RPAD ('-',180 , '-'));
+    printit(p_out_message => RPAD ('CONTRACT#', 20, ' ') || ' ' ||RPAD ('INVOICE#', 20, ' ') || ' ' || RPAD ('RECEIPT#', 20, ' '));
+    printit(p_out_message => RPAD ('-', 20, '-') || ' ' || RPAD ('-', 20, '-') || ' ' || RPAD ('-', 20, '-')); 
+    FOR ab_txnnum_rec IN c_ab_txnnum
+      LOOP
+      /**************************************************************************************
+      * LOOP Through the Transaction Number for which the Receipt Numbers have to be updated.
+      ***************************************************************************************/
+      ln_cash_receipt_id   := 0;
+      lc_receipt_num       := NULL;
+      ln_cnt_cash_receipts := 0;
+      lc_curr_receipt_num  := NULL;
+      logit(p_message => '--------------------------------------------------------------------------------------------------------------------------------',
+            p_force   => TRUE);
+      logit(p_message => 'START of updating Record of Invoice# : ' || ab_txnnum_rec.invoice_number || ' for Contract #: ' || ab_txnnum_rec.contract_number,
+            p_force   => TRUE);
+      logit(p_message => '--------------------------------------------------------------------------------------------------------------------------------',
+            p_force   => TRUE);
+      BEGIN
+          SELECT COUNT(ARAA.cash_receipt_id)
+          INTO   ln_cnt_cash_receipts
+          FROM   ar_receivable_applications_all ARAA
+          WHERE  ARAA.applied_customer_trx_id = ab_txnnum_rec.customer_trx_id;
+      EXCEPTION
+          WHEN OTHERS 
+          THEN
+            ln_cnt_cash_receipts := 0;
+      END;
+         IF ln_cnt_cash_receipts > 0 
+         THEN
+               
+               ln_receipt_num_count    := 0;
+               ln_tot_receipt_amt      := 0; 
+               lc_receipt_created_flag := NULL;
+
+               FOR cash_receiptid_rec IN c_cash_receiptid (ab_txnnum_rec.customer_trx_id)
+                  LOOP
+                    lc_prev_receipt_num  := NULL;
+                    ln_prev_receipt_amt  := 0;
+
+                    BEGIN
+                      SELECT ACRA.receipt_number,ARAA.amount_applied
+                      INTO   lc_prev_receipt_num,ln_prev_receipt_amt
+                      FROM   ar_cash_receipts_all ACRA,
+                             ar_receivable_applications_all ARAA
+                      WHERE  ACRA.cash_receipt_id = cash_receiptid_rec.cash_receipt_id
+                      AND    ARAA.receivable_application_id = cash_receiptid_rec.receivable_application_id
+                      AND    ACRA.cash_receipt_id = ARAA.cash_receipt_id
+                      AND    ARAA.applied_customer_trx_id = ab_txnnum_rec.customer_trx_id
+                      AND    ARAA.status = 'APP';
+                    EXCEPTION
+                    WHEN OTHERS
+                    THEN 
+                      lc_prev_receipt_num := NULL;
+                      ln_prev_receipt_amt := 0;
+                    END;
+                    
+                    IF  (lc_prev_receipt_num IS NOT NULL)
+                    THEN
+                      ln_tot_receipt_amt     := ln_tot_receipt_amt + ln_prev_receipt_amt;
+                    END IF;
+                  END LOOP;
+
+                BEGIN
+                     SELECT MAX(ACRA.receipt_number)
+                     INTO   lc_curr_receipt_num
+                     FROM   ar_cash_receipts_all ACRA,
+                            ar_receivable_applications_all ARAA
+                     WHERE  ARAA.applied_customer_trx_id = ab_txnnum_rec.customer_trx_id
+                     AND    ARAA.status = 'APP'
+                     AND    ARAA.receivable_application_id IN (SELECT MAX(ARAA1.receivable_application_id)
+                                                               FROM   ar_receivable_applications_all ARAA1
+                                                               WHERE  ARAA1.applied_customer_trx_id = ARAA.applied_customer_trx_id 
+                                                               AND    ARAA1.cash_receipt_id = ARAA.cash_receipt_id
+                                                               )
+                     AND    ACRA.cash_receipt_id = ARAA.cash_receipt_id;
+                EXCEPTION       
+                WHEN OTHERS
+                     THEN lc_curr_receipt_num := NULL;
+                END;
+                IF (ln_tot_receipt_amt < ab_txnnum_rec.txn_amount)
+                THEN
+                   lc_receipt_created_flag := 'P';
+                ELSIF(ln_tot_receipt_amt = ab_txnnum_rec.txn_amount)
+                THEN
+                   lc_receipt_created_flag := 'Y';   
+                END IF;
+               IF (lc_curr_receipt_num IS NOT NULL) 
+               THEN
+               FOR contract_lines_rec IN c_contract_lines (ab_txnnum_rec.invoice_number,ab_txnnum_rec.contract_id)
+                  LOOP
+                    logit(p_message => '--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------',
+                          p_force   => TRUE);
+                    logit(p_message => 'Updation of Receipt Number and other Flags for Contract id # : ' || ab_txnnum_rec.contract_id || ' Subscriptions id#: ' || contract_lines_rec.subscriptions_id || ' and  Contract Line#: ' || contract_lines_rec.contract_line_number,
+                          p_force   => TRUE);
+                    logit(p_message => '--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------',
+                          p_force   => TRUE); 
+                   
+                      UPDATE xx_ar_subscriptions XAS
+                      SET    XAS.receipt_number       = lc_curr_receipt_num,
+                             XAS.receipt_created_flag = lc_receipt_created_flag,
+                             XAS.ordt_staged_flag     = 'Y',
+                             XAS.email_sent_flag      = 'Y',
+                             XAS.last_update_date     = SYSDATE
+                      WHERE  XAS.contract_line_number = contract_lines_rec.contract_line_number
+                      AND    XAS.subscriptions_id     = contract_lines_rec.subscriptions_id;
+                   END LOOP;
+
+                 BEGIN
+
+                   get_contract_info(p_contract_id     => ab_txnnum_rec.contract_id,
+                                    x_contract_info   => lr_contract_info);
+
+
+                   lt_subscription_array.delete();
+
+                   get_subscription_array(p_contract_id             => ab_txnnum_rec.contract_id,
+                                         p_billing_sequence_number => ab_txnnum_rec.billing_sequence_number,
+                                         x_subscription_array      => lt_subscription_array);
+
+                   get_program_setups(x_program_setups => lt_program_setups);
+
+                   send_billing_history(p_program_setups      => lt_program_setups,
+                                       p_contract_info       => lr_contract_info,
+                                       px_subscription_array => lt_subscription_array);
+                EXCEPTION
+                    WHEN OTHERS THEN 
+                    NULL;
+                END;
+ 
+                FOR contract_lines_rec IN c_contract_lines (ab_txnnum_rec.invoice_number,ab_txnnum_rec.contract_id)
+                  LOOP
+                    logit(p_message => '--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------',
+                          p_force   => TRUE);
+                    logit(p_message => 'Updation of History Sent Flag for Contract id # : ' || ab_txnnum_rec.contract_id || ' Subscriptions id#: ' || contract_lines_rec.subscriptions_id || ' and  Contract Line#: ' || contract_lines_rec.contract_line_number,
+                          p_force   => TRUE);
+                    logit(p_message => '--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------',
+                          p_force   => TRUE); 
+                   
+                      UPDATE xx_ar_subscriptions XAS
+                      SET    XAS.history_sent_flag    = 'Y'
+                      WHERE  XAS.contract_line_number = contract_lines_rec.contract_line_number 
+                      AND    XAS.subscriptions_id     = contract_lines_rec.subscriptions_id;
+                   END LOOP;  
+
+                END IF; 
+          END IF;
+          IF (lc_curr_receipt_num IS NOT NULL) 
+          THEN
+            logit(p_message => '-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------',
+                  p_force   => TRUE);
+            logit(p_message => 'End of Updating Record of Invoice# : ' || ab_txnnum_rec.invoice_number || ' with Receipt #: ' || lc_curr_receipt_num || ' having total Receipt Amount: ' || ln_tot_receipt_amt,
+                  p_force   => TRUE);
+            logit(p_message => '-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------',
+                  p_force   => TRUE);
+            printit(p_out_message => RPAD (ab_txnnum_rec.contract_number, 20, ' ') || ' ' || RPAD (ab_txnnum_rec.invoice_number, 20, ' ') || ' ' || RPAD (lc_curr_receipt_num, 20, ' '));
+          ELSIF (lc_curr_receipt_num IS NULL)
+          THEN
+            lc_curr_receipt_num := 'No Receipt exists';
+            logit(p_message => '-----------------------------------------------------------------------',
+                  p_force   => TRUE);
+            logit(p_message => lc_curr_receipt_num ||' for Invoice# : ' || ab_txnnum_rec.invoice_number,
+                  p_force   => TRUE);
+            logit(p_message => '-----------------------------------------------------------------------',
+                  p_force   => TRUE);
+            printit(p_out_message => RPAD (ab_txnnum_rec.contract_number, 20, ' ') || ' ' || RPAD (ab_txnnum_rec.invoice_number, 20, ' ') || ' ' || RPAD (lc_curr_receipt_num, 20, ' '));
+          END IF;
+      END LOOP;
+     COMMIT;
+    EXCEPTION
+    WHEN OTHERS
+    THEN
+       logit(p_message => '---------------------------------------------------------------------------------------------------------------',
+             p_force   => TRUE);
+       logit(p_message => 'Exception while Submitting the Receipt Updation Program ' || ' SQLCODE: ' || SQLCODE || ' SQLERRM: ' || SQLERRM,
+             p_force   => TRUE);
+       logit(p_message => '---------------------------------------------------------------------------------------------------------------',
+             p_force   => TRUE);
+       RAISE_APPLICATION_ERROR(-20101, 'PROCEDURE: ' || lc_procedure_name || ' SQLCODE: ' || SQLCODE || ' SQLERRM: ' || SQLERRM);
+    END txn_receiptnum_update;
+  
+  /***********************************************************************************
+  * Procedure to write off invoice related to TERMINATED AND CLOSED contracts in SCM *
+  ***********************************************************************************/
+  PROCEDURE process_adjustments(errbuff        OUT VARCHAR2
+                               ,retcode        OUT NUMBER
+                               ,p_debug_flag   IN  VARCHAR2 DEFAULT 'N'
+                               )
+  IS
+
+    CURSOR c_inv_adjustment
+    IS
+    SELECT rct.customer_trx_id, aps.payment_schedule_id, aps.amount_due_remaining,rct.trx_number,aps.status
+    FROM   xx_ar_contracts xac
+          ,xx_ar_subscriptions xas
+          ,xx_ar_contract_lines xacl
+          ,ra_customer_trx_all rct
+          ,ar_payment_schedules_all aps
+    WHERE xac.contract_id              = xas.contract_id
+    AND   xac.contract_id              = xacl.contract_id
+    AND   xacl.contract_line_number    = xas.contract_line_number
+    AND   xas.billing_sequence_number >= xacl.initial_billing_sequence 
+    AND   xas.invoice_number           = rct.trx_number
+    AND   rct.customer_trx_id          = aps.customer_trx_id
+    and   xas.invoice_created_flag     = 'Y' 
+    AND   xas.auth_completed_flag     != 'Y'
+    and   xac.payment_type            != 'AB'
+    AND   aps.STATUS                   = 'OP'
+    AND   (xas.contract_status= 'TERMINATE' OR TRUNC(NVL(xacl.close_date,SYSDATE+1)) < TRUNC(SYSDATE))
+    UNION
+    SELECT rct.customer_trx_id, aps.payment_schedule_id, aps.amount_due_remaining,rct.trx_number,aps.status
+    FROM   xx_ar_contracts xac
+          ,xx_ar_subscriptions xas
+          ,xx_ar_contract_lines xacl
+          ,ra_customer_trx_all rct
+          ,ar_payment_schedules_all aps
+    WHERE xac.contract_id              = xas.contract_id
+    AND   xac.contract_id              = xacl.contract_id
+    AND   xacl.contract_line_number    = xas.contract_line_number
+    AND   xas.billing_sequence_number >= xacl.initial_billing_sequence 
+    AND   xas.invoice_number           = rct.trx_number
+    AND   rct.customer_trx_id          = aps.customer_trx_id
+    and   xas.invoice_created_flag     = 'Y' 
+    AND   xas.auth_completed_flag      = 'B'
+    AND   aps.STATUS                   = 'OP'
+    ;
+    
+    lc_procedure_name    CONSTANT  VARCHAR2(61) := gc_package_name || '.' || 'process_adjustments';
+
+    lt_parameters                  gt_input_parameters;
+
+    lc_action                      VARCHAR2(1000);
+
+    lc_error                       VARCHAR2(2000);
+    
+    lc_init_msg_list                VARCHAR2(1000);
+    
+    lc_commit_flag                  VARCHAR2(5)                                := 'F';
+                                                                               
+    lc_validation_level             NUMBER(4)                                  := fnd_api.g_valid_level_full;
+    
+    ln_msg_count                    NUMBER(4);
+    
+    lc_msg_data                     VARCHAR2(1000);
+    
+    lc_return_status                VARCHAR2(5);
+    
+    lr_adj_rec                      ar_adjustments%rowtype;
+    
+    lc_chk_approval_limits          VARCHAR2(5)                                := 'F';
+                                                                               
+    lc_check_amount                 VARCHAR2(5)                                := 'F';
+                                                                               
+    lc_move_deferred_tax           VARCHAR2(1)                                 := 'Y';
+    
+    ln_new_adjust_number           ar_adjustments.adjustment_number%TYPE;
+    
+    ln_new_adjust_id               ar_adjustments.adjustment_id%TYPE;
+    
+    lc_called_from                 VARCHAR2(25)                                := 'ADJ-API';
+    
+    ln_old_adjust_id               ar_adjustments.adjustment_id%TYPE;
+        
+    lr_invoice_header_info         ra_customer_trx_all%ROWTYPE;
+
+    ln_invoice_total_amount_info   ra_customer_trx_lines_all.extended_amount%TYPE;
+    
+    lr_inv_pymt_sch_info           ar_payment_schedules_all%ROWTYPE;
+    
+    ln_activity_id                 ar_receivables_trx_all.receivables_trx_id%TYPE;
+    
+    lc_transaction                 VARCHAR2(5000);
+     
+    lt_translation_info            xx_fin_translatevalues%ROWTYPE;
+    
+    lc_adj_status                  ar_adjustments_all.status%TYPE;
+       
+    le_processing                  EXCEPTION;
+
+  BEGIN
+
+    entering_sub(p_procedure_name  => lc_procedure_name,
+                 p_parameters      => lt_parameters);
+
+    retcode := 0;
+
+    /*****************
+    * Get enable debug
+    *****************/
+    lc_action := 'Calling set_debug';
+    
+    set_debug(p_debug_flag => p_debug_flag);
+    
+    /************************************
+    * Get receivable activity information
+    ************************************/
+    lc_action := 'Calling get_payment_sch_info';
+    
+    get_rec_activity_info(x_activity_id => ln_activity_id);
+      
+    /***********************************************
+    *  Loop thru pending contracts/billing sequences
+    ***********************************************/
+    
+    lc_action := 'Calling c_eligible_contracts cursor';
+    
+    FOR inv_adjustment_rec IN c_inv_adjustment
+    LOOP
+
+      BEGIN
+  
+        lr_invoice_header_info         := NULL;
+        ln_invoice_total_amount_info   := NULL;
+        lr_inv_pymt_sch_info           := NULL;
+        ln_msg_count                   := NULL;
+        lc_msg_data                    := NULL;
+        lc_return_status               := NULL;
+        lr_adj_rec                     := NULL;
+        ln_new_adjust_number           := NULL;
+        ln_new_adjust_id               := NULL;
+    
+        /************************************************************************
+        * Keep track of the contract number and billing sequence being worked on.
+        ************************************************************************/
+
+        lc_transaction := 'Processing invoice number: ' || inv_adjustment_rec.trx_number;
+
+        logit(p_message => 'Transaction: ' || lc_transaction,
+            p_force   => TRUE);
+        
+        /************************
+        * Get invoice information
+        ************************/
+        
+        lc_action := 'Calling get_invoice_header_info';
+        
+        get_invoice_header_info(p_invoice_number      => inv_adjustment_rec.trx_number,
+                                x_invoice_header_info => lr_invoice_header_info);
+        
+        /******************************
+        * Get invoice total information
+        ******************************/
+        
+        lc_action := 'Calling get_invoice_total_amount_info';
+        
+        get_invoice_total_amount_info(p_customer_trx_id           => lr_invoice_header_info.customer_trx_id,
+                                      x_invoice_total_amount_info => ln_invoice_total_amount_info);
+                                      
+        /*****************************************
+        * Get invoice payment schedule information
+        *****************************************/
+        lc_action := 'Calling get_payment_sch_info';
+        
+        get_payment_sch_info(p_cust_trx_id       => lr_invoice_header_info.customer_trx_id,
+                             x_payment_sch_info  => lr_inv_pymt_sch_info);
+        
+        /**************************
+        * Populate v_adj_rec record
+        **************************/
+        
+        lc_action := 'populating adj_rec records';
+        
+        lr_adj_rec.customer_trx_id     := lr_invoice_header_info.customer_trx_id;
+        lr_adj_rec.TYPE                :='INVOICE';
+        lr_adj_rec.payment_schedule_id := lr_inv_pymt_sch_info.payment_schedule_id;
+        lr_adj_rec.receivables_trx_id  := ln_activity_id;
+        lr_adj_rec.amount              := -ln_invoice_total_amount_info;
+        lr_adj_rec.apply_date          := TRUNC(SYSDATE);
+        lr_adj_rec.gl_date             := TRUNC(SYSDATE);
+        lr_adj_rec.created_from        := 'ADJ-API';
+        
+        lc_action := 'calling create_adjustment API';
+        
+        ar_adjust_pub.create_adjustment ( p_api_name             => 'AR_ADJUST_PUB'
+                                        , p_api_version          => 1.0
+                                        , p_init_msg_list        => lc_init_msg_list
+                                        , p_commit_flag              => lc_commit_flag
+                                        , p_validation_level     => lc_validation_level
+                                        , p_msg_count            => ln_msg_count
+                                        , p_msg_data             => lc_msg_data
+                                        , p_return_status        => lc_return_status
+                                        , p_adj_rec              => lr_adj_rec
+                                        , p_chk_approval_limits  => lc_chk_approval_limits
+                                        --, p_check_amount         => lc_check_amount
+                                        --, p_move_deferred_tax    => lc_move_deferred_tax
+                                        , p_new_adjust_number    => ln_new_adjust_number
+                                        , p_new_adjust_id        => ln_new_adjust_id
+                                        , p_called_from          => lc_called_from
+                                        --, p_old_adjust_id        => ln_old_adjust_id
+                                        );
+                                        
+        logit(p_message => 'CREATE_ADJUSTMENT API return status: ' || lc_return_status);
+        
+        /**********************
+        * Get api error message
+        **********************/
+        
+        IF lc_return_status != 'S'
+        THEN
+        
+          lc_error :=    'Error while creating adjustment-';
+        
+          IF ln_msg_count = 1
+          THEN
+            lc_error :=    lc_error || lc_msg_data;
+          ELSE
+            FOR r IN 1 .. ln_msg_count
+            LOOP
+              lc_error := lc_error || ', ' || fnd_msg_pub.get(fnd_msg_pub.g_next, fnd_api.g_false);
+            END LOOP;
+          END IF;
+          
+          logit(p_message => 'CREATE_ADJUSTMENT API error message: ' || lc_error);
+
+          RAISE le_processing;
+                  
+        END IF;
+        
+        IF ln_new_adjust_number IS NOT NULL
+        THEN
+        
+          lc_return_status := NULL;
+          ln_msg_count     := NULL;
+          lc_msg_data      := NULL;
+          lc_adj_status    := NULL;
+                  
+          BEGIN
+            SELECT NVL(status,
+                       'X')
+            INTO   lc_adj_status
+            FROM   ar_adjustments_all
+            WHERE  adjustment_number = ln_new_adjust_number;
+          
+            IF lc_adj_status != 'A'
+            THEN
+                lc_action := 'calling approve_adjustment API';
+                
+                ar_adjust_pub.approve_adjustment(p_api_name                 => 'AR_ADJUST_PUB',
+                                                 p_api_version              => 1.0,
+                                                 p_msg_count                => ln_msg_count,
+                                                 p_msg_data                 => lc_msg_data,
+                                                 p_return_status            => lc_return_status,
+                                                 p_adj_rec                  => NULL,
+                                                 p_chk_approval_limits      => fnd_api.g_false,
+                                                 p_old_adjust_id            => ln_new_adjust_id);
+            END IF;
+          EXCEPTION
+            WHEN NO_DATA_FOUND
+            THEN
+                
+                logit(p_message => 'Error Getting Status for Adjustment:' || ln_new_adjust_number);
+                
+                RAISE le_processing;
+          END;
+          
+          lc_error :=    'Error while approving adjustment-';
+        
+          /**********************
+          * Get api error message
+          **********************/
+          
+          IF lc_return_status != 'S'
+          THEN
+          
+            lc_error :=    'Error while approving adjustment-';
+          
+            IF ln_msg_count = 1
+            THEN
+              lc_error :=    lc_error || lc_msg_data;
+            ELSE
+              FOR r IN 1 .. ln_msg_count
+              LOOP
+                lc_error := lc_error || ', ' || fnd_msg_pub.get(fnd_msg_pub.g_next, fnd_api.g_false);
+              END LOOP;
+            END IF;
+            
+            logit(p_message => 'APPROVE_ADJUSTMENT API error message: ' || lc_error);
+          
+            RAISE le_processing;
+        
+          END IF;
+          
+        END IF;
+          
+      EXCEPTION
+        WHEN le_processing
+        THEN
+        
+          errbuff := 'Error encountered. Please check logs';
+        
+          logit(p_message => 'ERROR Transaction: ' || lc_transaction || ' Action: ' || lc_action || ' SQLCODE: ' || SQLCODE || ' SQLERRM: ' || SQLERRM,
+                p_force   => TRUE);
+          logit(p_message      => '-----------------------------------------------',
+                p_force   => TRUE);
+
+        WHEN OTHERS
+        THEN
+        
+          errbuff := 'Error encountered. Please check logs';
+        
+          logit(p_message => 'ERROR Transaction: ' || lc_transaction || ' Action: ' || lc_action || ' SQLCODE: ' || SQLCODE || ' SQLERRM: ' || SQLERRM,
+                p_force   => TRUE);
+          logit(p_message      => '-----------------------------------------------',
+                p_force   => TRUE);
+
+      END;
+    
+    END LOOP;
+
+    exiting_sub(p_procedure_name => lc_procedure_name);
+
+  EXCEPTION
+    WHEN OTHERS
+    THEN
+      retcode := 2;
+    
+      errbuff := 'Error encountered. Please check logs';
+    
+      logit(p_message => 'ERROR Transaction: ' || lc_transaction || ' Action: ' || lc_action || ' SQLCODE: ' || SQLCODE || ' SQLERRM: ' || SQLERRM,
+            p_force   => TRUE);
+      logit(p_message      => '-----------------------------------------------',
+            p_force   => TRUE);
+    
+      exiting_sub(p_procedure_name => lc_procedure_name, p_exception_flag => TRUE);
+
+  END process_adjustments;
+  
+  /* *******************************************
+  * Function to check eligible SKU for REV REC
+  ******************************************* */
+  FUNCTION is_rev_rec_item(p_sku_name IN VARCHAR2)
+  RETURN VARCHAR2 AS
+
+	lc_procedure_name   CONSTANT VARCHAR2(61) := gc_package_name || '.' || 'is_rev_rec_item';
+    lc_rev_rec          VARCHAR2(1):=NULL;
+    l_item              VARCHAR2(30);
+  
+  BEGIN
+      SELECT xasi.item 
+	    INTO l_item
+       FROM xx_ar_subscription_items   xasi
+           ,mtl_system_items_b         msib
+      WHERE 1                        = 1
+        AND  xasi.inventory_item_id  = msib.inventory_item_id
+        AND  xasi.organization_id    = msib.organization_id
+        AND  xasi.is_rev_rec_eligible= 'Y'
+        AND  msib.segment1           = p_sku_name;
+       
+	   logit(p_message => 'Revenue Eligible SKU: ' || l_item);
+	   
+	   IF l_item IS NOT NULL
+         THEN 
+            lc_rev_rec:='Y'; 
+         ELSE 
+            lc_rev_rec:='N';
+         END IF;
+
+        RETURN lc_rev_rec;
+      
+    EXCEPTION
+         WHEN NO_DATA_FOUND
+         THEN
+		 lc_rev_rec := 'N';
+		 RETURN lc_rev_rec;
+         logit(p_message => 'RESULT is_rev_rec_item in NO_DATA_FOUND : ' || lc_rev_rec);
+
+    WHEN OTHERS 
+    THEN
+	   exiting_sub(p_procedure_name => lc_procedure_name, p_exception_flag => TRUE);
+       logit(p_message => 'Exception while getting the revenue eligible sku: ' || SQLERRM);
+END is_rev_rec_item;    
 END xx_ar_subscriptions_mt_pkg;
 /
