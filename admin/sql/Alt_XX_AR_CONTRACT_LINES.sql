@@ -12,6 +12,12 @@
 -- |======== =========== ============= ========================================|
 -- |1.0      05-March-2020 Kayeed Ahmed  Initial draft version                 |
 -- +===========================================================================+
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     ON
+
 ALTER TABLE XXFIN.XX_AR_CONTRACT_LINES
 ADD 
 (  
@@ -31,18 +37,4 @@ ADD
   ATTRIBUTE10            VARCHAR2(100)
 );
 
-SHOW ERRORS;
-
-GRANT ALL ON XXFIN.XX_AR_CONTRACT_LINES TO APPS;
-
-CREATE OR REPLACE FORCE EDITIONABLE EDITIONING VIEW XXFIN.XX_AR_CONTRACT_LINES# 
-AS 
-  select * from XXFIN.XX_AR_CONTRACT_LINES;
-
-set linesize 200
-PROMPT
-PROMPT Object XX_AR_CONTRACT_LINES Status should be VALID
-select owner,object_name,object_type,status from all_objects where object_name like 'XX_AR_CONTRACT_LINES%';
-PROMPT ------------------------------------------------------------------
-
-EXIT;
+/
