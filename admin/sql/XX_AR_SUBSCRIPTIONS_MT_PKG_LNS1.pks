@@ -25,7 +25,8 @@ AS
 -- | 7.0         03-MAY-2019  Kayeed / Arvind     Added New Procedure - NAIT-93356  |
 -- | 8.0         03-MAY-2019  Dattatray Bachate   Added New Procedure - NAIT-93356  |
 -- | 9.0         20-JUN-2019  Punit Gupta         Added New Procedure - NAIT-72201  |
--- | 10.0        25-JUL-2019  Sahithi K           Added New Procedure - NAIT-101994 |
+-- | 10.0        25-JUL-2019  Sahithi K           Added New Procedure - NAIT-101994 
+-- | 11.0        12-MAR-2020  Arvind K            Added New Procedure - NAIT-112737 |
 -- +================================================================================+
 
   /******
@@ -130,6 +131,12 @@ AS
   ********************************************/
   FUNCTION is_rev_rec_item(p_sku_name IN VARCHAR2)
   RETURN VARCHAR2;
-
+  
+ /**************************************
+  *  contract_autorenew_process Program
+  **************************************/
+  PROCEDURE contract_autorenew_process(errbuff      OUT  VARCHAR2,
+                                       retcode      OUT  NUMBER,
+                                       p_debug_flag IN   VARCHAR2 DEFAULT 'N'); 
 END;
-/
+/ 
