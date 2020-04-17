@@ -12,7 +12,7 @@
 -- |======== =========== ============= ========================================|
 -- |1.0      17-March-2020 Kayeed Ahmed  Initial draft version                 |
 -- +===========================================================================+
-ALTER TABLE XXFIN.XX_AR_CONTRACTS_GTT
+ALTER TABLE XX_AR_CONTRACTS_GTT
 ADD 
 (  
   RENEWAL_TYPE           VARCHAR2(15),
