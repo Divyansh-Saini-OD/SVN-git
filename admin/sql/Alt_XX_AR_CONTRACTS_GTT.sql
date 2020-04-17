@@ -33,16 +33,6 @@ ADD
 
 SHOW ERRORS;
 
-GRANT ALL ON XXFIN.XX_AR_CONTRACTS_GTT TO APPS;
-
-CREATE OR REPLACE FORCE EDITIONABLE EDITIONING VIEW XXFIN.XX_AR_CONTRACTS_GTT# 
-AS 
-  select * from XXFIN.XX_AR_CONTRACTS_GTT;
-
-set linesize 200
-PROMPT
-PROMPT Object XX_AR_CONTRACTS_GTT Status should be VALID
-select owner,object_name,object_type,status from all_objects where object_name like 'XX_AR_CONTRACTS_GTT%';
-PROMPT ------------------------------------------------------------------
+exec ad_zd_table.upgrade('XXFIN','XX_AR_CONTRACTS_GTT');
 
 EXIT;
