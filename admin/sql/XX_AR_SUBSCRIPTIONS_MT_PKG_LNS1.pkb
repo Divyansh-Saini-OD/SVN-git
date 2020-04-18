@@ -51,13 +51,13 @@ AS
 -- | 19.0        15-APR-2019  Sahithi K              trigger recurring SUCCESS/FAILURE email                          |
 -- |                                                 for auto renewed BS2 contracts NAIT-90173                        |
 -- | 20.0        24-APR-2019  Sahithi K              NAIT-85914 1.pass trans_id in payment auth payload               |
--- |																										 
+-- |
 -- |                                                 2.pass wallet_type while inserting data                          |
 -- |                                                   into ORDT table based on translation                           |
 -- | 21.0        24-APR-2019  Sahithi K              Perform AVS check to get trans_id for                            |
 -- |                                                 existing contracts in SCM NAIT-89230                             |
 -- | 22.0        24-APR-2019  Sahithi K              Update SCM with trans_id for existing contracts NAIT-89231       |
--- |																										 
+-- |
 -- | 23.0        24-APR-2019  Sahithi K              add close_date field which is received                           |
 -- |                                                 from SCM extract NAIT-90255                                      |
 -- | 24.0        25-APR-2019  Punit Gupta            Made changes in the send_email_autorenew                         |
@@ -85,7 +85,7 @@ AS
 -- |                                                 contracts in SCM - NAIT-101994                                   |
 -- | 33.0        16-AUG-2019  Sahithi K              derive store# based on initial order NAIT-101932                 |
 -- | 34.0        25-SEP-2019  Sahithi K              roll back changes for sending AVS decline email NAIT-107547      |
--- |																										 
+-- |
 -- | 35.0        27-SEP-2019  Sahithi K              Recurring Payment Auth without COF Tran ID                       |
 -- |                                                 Handling and storing COF Tran ID of first(INITIAL)               |
 -- |                                                 successful auth NAIT-107551                                      |
@@ -4588,7 +4588,7 @@ AS
 
             ln_trx_number := xx_ar_trx_subscriptions_ab_s.NEXTVAL;
               
-			IF p_contract_info.payment_type = 'AB'
+            IF p_contract_info.payment_type = 'AB'
             THEN
 
               --lc_action :=  'Getting xx_ar_trx_subscriptions_ab_s.NEXTVAL';
@@ -12074,8 +12074,8 @@ AS
                          {
                           "contractId": "'||lr_contract_line_info.contract_id||'",
                           "lineNumber": "'||lr_contract_line_info.contract_line_number||'",
-						  "autoRenewal": "DO_NOT_RENEW",
-						  "isDiscontinued": "true",
+                          "autoRenewal": "DO_NOT_RENEW",
+                          "isDiscontinued": "true",
                           "renewalSkuDetails": 
                           {
                             "skuNumber": "'||lr_xx_od_oks_alt_sku_tbl.alt_sku||'",
@@ -12877,14 +12877,13 @@ AS
             
             --Before Calling ,checking the MFT SKU is available into ALT table
             
-			IF ((l_code='Discontinued'  AND l_type NOT LIKE 'Forced%') ---First Check
-			   OR(l_code='Discontinued' AND l_type LIKE 'Forced%'      ---Second Check
-			      AND(lr_contract_line_info.cancellation_date <>'31-MAR-2020' 
-				      OR lr_contract_line_info.renewal_type ='DO_NOT_RENEW'
-					  )
-			      )
-				)			
-			 THEN           
+            IF ((l_code='Discontinued'  AND l_type NOT LIKE 'Forced%') ---First Check
+              OR(l_code='Discontinued' AND l_type LIKE 'Forced%'      ---Second Check
+             AND(lr_contract_line_info.cancellation_date <>'31-MAR-2020' 
+              OR lr_contract_line_info.renewal_type ='DO_NOT_RENEW'
+                ))
+               )
+            THEN           
             /* ****************************
             * Calling set_dnr_contract_line
             ******************************/            
@@ -12892,9 +12891,9 @@ AS
                 set_dnr_contract_line(p_contract_id          =>  lr_contract_line_info.contract_id,
                                       p_contract_line_number =>  lr_contract_line_info.contract_line_number
                                       );
-			
-			
-			ELSIF (l_code='Discontinued' AND l_type LIKE 'Forced%' ) THEN
+
+
+          ELSIF (l_code='Discontinued' AND l_type LIKE 'Forced%' ) THEN
                 lc_action := 'Calling send forced SKU information procedure in send_email_autorenew';
                 send_forced_sku_info(
                                       p_contract_id          =>  lr_contract_line_info.contract_id,
@@ -15675,7 +15674,7 @@ END is_rev_rec_item;
     lr_bill_to_seq                 VARCHAR2(10) :='';
     lr_ship_to_seq                 VARCHAR2(10) :='';
     lr_xx_od_oks_alt_sku_tbl       xx_od_oks_alt_sku_tbl%ROWTYPE;   
-	
+
   BEGIN
     
     lt_parameters('p_debug_flag') := p_debug_flag;
@@ -15709,7 +15708,7 @@ END is_rev_rec_item;
         FOR autorenew_contract_lines_rec IN c_autorenew_contract_lines
         LOOP
         
-		BEGIN
+        BEGIN
        
       /*******************************************************
       * Validate we are ready to send the auto renewal email
@@ -15963,7 +15962,7 @@ END is_rev_rec_item;
                         || '",
                         "@id" : "'
                         || lr_contract_info.bill_to_osr
-                        || '"						
+                        || '"
                        }
                      }
                     },
@@ -16233,7 +16232,7 @@ END is_rev_rec_item;
           --RAISE le_processing;
          END;        
        END LOOP; -- indx IN 1 .. lt_subscription_array.COUNT
-	   
+
      EXCEPTION
       WHEN OTHERS
       THEN
@@ -16275,8 +16274,8 @@ END is_rev_rec_item;
         update_subscription_info(px_subscription_info => lt_subscription_array(indx));
 
       END LOOP;
-
       exiting_sub(p_procedure_name => lc_procedure_name, p_exception_flag => TRUE);
       RAISE_APPLICATION_ERROR(-20101, 'PROCEDURE: ' || lc_procedure_name || ' Action: ' || lc_action || ' SQLCODE: ' || SQLCODE || ' SQLERRM: ' || SQLERRM);
   END contract_autorenew_process;
 END xx_ar_subscriptions_mt_pkg;
+/
