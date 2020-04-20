@@ -1,8 +1,4 @@
-﻿SET VERIFY OFF;
-WHENEVER SQLERROR CONTINUE;
-WHENEVER OSERROR EXIT FAILURE ROLLBACK;
-
-CREATE OR REPLACE PACKAGE BODY APPS.XX_CE_MRKTPLC_RECON_PKG
+﻿CREATE OR REPLACE PACKAGE BODY APPS.XX_CE_MRKTPLC_RECON_PKG
 AS
   -- +============================================================================================|
   -- |  Office Depot                                                                              |
