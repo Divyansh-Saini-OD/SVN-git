@@ -1,4 +1,4 @@
-﻿CREATE OR REPLACE PACKAGE BODY APPS.XX_CE_MRKTPLC_RECON_PKG
+﻿create or replace PACKAGE BODY XX_CE_MRKTPLC_RECON_PKG
 AS
   -- +============================================================================================|
   -- |  Office Depot                                                                              |
@@ -2940,3 +2940,4 @@ WHEN OTHERS THEN
 END MAIN_MPL_SETTLEMENT_PROCESS;
 END XX_CE_MRKTPLC_RECON_PKG;
 /
+show err
