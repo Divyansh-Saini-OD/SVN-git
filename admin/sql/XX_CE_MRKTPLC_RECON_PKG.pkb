@@ -1,4 +1,4 @@
-﻿CREATE OR REPLACE PACKAGE BODY APPS.XX_CE_MRKTPLC_RECON_PKG
+create or replace PACKAGE BODY XX_CE_MRKTPLC_RECON_PKG
 AS
   -- +============================================================================================|
   -- |  Office Depot                                                                              |
@@ -814,7 +814,7 @@ IS
       provider_type,
       deposit_date,
       ajb_file_name,
-      CAST(to_timestamp_tz(MAX(hdr.posted_date), 'yyyy-mm-dd""T""hh24:mi:ss TZH:TZM') at TIME zone dbtimezone AS DATE) posted_date
+      CAST(to_timestamp_tz(MAX(hdr.posted_date), 'yyyy-mm-dd"T"hh24:mi:ss TZH:TZM') at TIME zone dbtimezone AS DATE) posted_date
     FROM XX_CE_MPL_SETTLEMENT_HDR hdr
     WHERE ajb_file_name    =p_ajb_file_name
     AND record_status     IN ('V','E')
@@ -2814,6 +2814,7 @@ WHEN OTHERS THEN
   exiting_sub(p_procedure_name => lc_procedure_name, p_exception_flag => TRUE);
   RAISE_APPLICATION_ERROR(-20101, 'PROCEDURE: ' || lc_procedure_name || ' SQLCODE: ' || SQLCODE || ' SQLERRM: ' || SQLERRM);
 END PROCESS_GOOGLE_PRESTG_DATA;
+
 /**********************************************************************
 * Main Procedure to Process MarketPlaces Transactions.
 * this procedure calls individual MarketPlace procedures to process them.
@@ -2866,6 +2867,7 @@ BEGIN
   IF p_market_place IN ('WALMART_MPL') THEN
     PROCESS_WALMART_PRESTG_DATA (p_market_place);
   END IF;
+  
   /******************************
   * Call Google Process. --NAIT-102710
   ******************************/
@@ -2939,7 +2941,4 @@ WHEN OTHERS THEN
   exiting_sub(p_procedure_name => lc_procedure_name, p_exception_flag => TRUE);
 END MAIN_MPL_SETTLEMENT_PROCESS;
 END XX_CE_MRKTPLC_RECON_PKG;
-
 /
-
-show err
