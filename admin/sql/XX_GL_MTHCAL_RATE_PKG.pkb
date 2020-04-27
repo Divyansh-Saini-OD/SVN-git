@@ -913,10 +913,10 @@ BEGIN
   ELSIF p_request_type='CALENDAR' THEN
     FND_FILE.PUT_LINE(FND_FILE.LOG,'Calendar Extract');
     xx_calendar_extract(p_request_type,to_date(p_date,'MM-DD-YYYY'));
-	
-	p_retcode:=gc_retcode;    ----NAIT-132879 Bug Fix for Error Handling
-	p_errbuf :=gc_errbuf;     ----NAIT-132879 Bug Fix for Error Handling
   END IF;
+  
+  	p_retcode:=gc_retcode;    ----NAIT-132879 Bug Fix for Error Handling
+	p_errbuf :=gc_errbuf;     ----NAIT-132879 Bug Fix for Error Handling
 EXCEPTION
 WHEN OTHERS THEN
   logit(p_message => 'ERROR-SQLCODE:'|| SQLCODE || ' SQLERRM: ' || SQLERRM, p_force => TRUE);
