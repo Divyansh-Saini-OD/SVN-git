@@ -4807,7 +4807,7 @@ AS
             /******************************************************
             * Updating contracts table with store# on initial order
             ******************************************************/
-            --Begin : Added NAIT-112423 || NAIT-101932 - Recurring Shred Orders - Sales Location Discrepancy between Service Contract & Sales Detail
+            --Begin : Added NAIT-112423 || NAIT-101932 - Recurring Shred Orders - Sales Location Discrepancy between Service Contract and Sales Detail
             UPDATE xx_ar_contracts
             set    store_number       = lc_segment
                   ,last_update_date   = SYSDATE
