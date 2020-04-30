@@ -15,15 +15,18 @@ AS
   -- |                       Office Depot - Project Simplify                           |
   -- +=================================================================================+
   -- | Name       : xx_gl_legacy_extract_pkg.pks                                      |
-  -- | Description: Extension I2131_Oracle_GL_Feed_to_FCC for                 |
+  -- | Description: Extension I2131_Oracle_GL_Feed_to_FCC for                          |
   -- |              OD: GL Monthly YTD Balance Extract Program                         |
   -- |                                                                                 |
   -- |Change Record                                                                    |
   -- |==============                                                                   |
   -- |Version   Date         Authors            Remarks                                |
   -- |========  ===========  ===============    ============================           |
-  -- |1.0      29-JAN-2019   Priyam P        Creation                               |
-  -- |  1.1   13-MAR-2019     Priyam P      Removed FTP program and zip to .dat common file copy                                                                               |
+  -- |1.0      29-JAN-2019   Priyam P        Creation                                  |
+  -- |1.1      13-MAR-2019   Priyam P        Removed FTP program and zip to .dat common|
+  -- |                                        file copy                                |
+  -- |1.2      27-APR-2020  Vivek Kumar      Added For Added for NAIT-127524,Replace   |
+  -- |                                       1000E to 1100E File                       |
   ---+=================================================================================+
   -- +=================================================================================+
   -- |                                                                                 |
@@ -153,7 +156,8 @@ AS
       gcc.segment7 Future,      ---Future
       SUM((NVL(gb.period_net_dr, 0) + NVL(gb.begin_balance_dr, 0))) - SUM( NVL( gb.period_net_cr, 0) + NVL(gb.begin_balance_cr, 0)) YTD_AMOUNT,
       SUM(NVL (gb.period_net_dr, 0) -NVL (gb.period_net_cr, 0)) periodic_balance,
-      DECODE(gcc.segment1,'1000E','5000E',gcc.segment1) Company_swap
+    --DECODE(gcc.segment1,'1000E','5000E',gcc.segment1) Company_swap
+	  DECODE(gcc.segment1,'1100E','5000E',gcc.segment1) Company_swap -- Added for NAIT-127524
     FROM GL_LOOKUPS GLLookups,
       gl_ledger_config_details glcd,
       gl_code_combinations gcc,
@@ -200,10 +204,12 @@ AS
       gcc.segment6,---LOB
       gcc.segment4,---Location
       gcc.segment7,
-      DECODE(gcc.segment1,'1000E','5000E',gcc.segment1)
+    --DECODE(gcc.segment1,'1000E','5000E',gcc.segment1)
+	  DECODE(gcc.segment1,'1100E','5000E',gcc.segment1) -- Added for NAIT-127524
     HAVING ((SUM((NVL(gb.period_net_dr, 0) + NVL(gb.begin_balance_dr, 0))) - SUM( NVL( gb.period_net_cr, 0) + NVL(gb.begin_balance_cr, 0))) <> 0
     OR SUM(NVL (gb.period_net_dr, 0)       -NVL (gb.period_net_cr, 0))                                                                      <>0)
-    ORDER BY DECODE(gcc.segment1,'1000E','5000E',gcc.segment1) ;
+  --ORDER BY DECODE(gcc.segment1,'1000E','5000E',gcc.segment1) ;
+	ORDER BY DECODE(gcc.segment1,'1100E','5000E',gcc.segment1) ;  -- Added for NAIT-127524
 BEGIN
   -- Get application_id
   BEGIN
