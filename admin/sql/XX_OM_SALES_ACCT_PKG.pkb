@@ -1,66 +1,67 @@
 CREATE OR REPLACE PACKAGE BODY APPS.xx_om_sales_acct_pkg
 AS
--- +======================================================================+
--- |                  Office Depot - Project Simplify                     |
--- |                Office Depot                                          |
--- +======================================================================+
--- | Name  : XX_OM_SALES_ACCT_PKG (XXOMWSACTB.pkb)                        |
--- | Rice ID: I1272                                                       |
--- | Description  : This package contains procedures related to the       |
--- | HVOP Sales Accounting Data processing. It includes pulling custom    |
--- | data from interface tables, processing Payments, Creating TAX        |
--- | records and pulling return tenders data from interface tables        |
--- |                                                                      |
--- |Change Record:                                                        |
--- |===============                                                       |
--- |Version    Date          Author            Remarks                    |
--- |=======    ==========    =============     ===========================|
--- |1.0        06-APR-2007   Manish Chavan     Initial version            |
--- |                                                                      |
--- |2.0        07-FEB-2011   Bapuji Nanapaneni Modified the code to       |
--- |                                           insert into xx_ar_order_   |
--- |                                           receipt_dtl table and stop |
--- |                                           creation of AR Receipts for|
--- |                                           SDR project Rel11.2        |
--- |3.0        11-JUN-2011   Bapuji N          Defect 12032               |
--- |4.0        16-JUN-2011   Bapuji N          Defect 12139               |
--- |5.0        28-JUL-2011   Bapuji N         11.4 rel added SR_number col|
--- |6.0        27-JUL-2012   Bapuji N         Added SAVE EXCEPTION.       |
--- |7.0        09-AUG-2012   Bapuji N         Added CUST_PREF_EMAIL Defect|
--- |                                           #19771                     |
--- |8.0        26-OCT-2012   Bapuji N         Added ATR Flag for service  |
--- |                                          ord validation              |
--- |9.0        25-JAN-2013   Bapuji N         Added Device Serial Num     |
--- |10.0       10-APR-2013   Bapuji N         Added PAYPAL to set remit   |
--- |                                          flag to 'Y'QC DEFECT # 23070|
--- |11.0       24-MAY-2013   Bapuji N         Amazon changes app_id       |
--- |12.0       12-JUL-2013   Bapuji N         Retrofit for 12i            |
--- |13.o      28-Aug-2013  Edson M          Added new encryption solution |
--- | -------------  Retrofitting ---------------------------------------- |
--- |14.0       24-AUG-2013   Raj J            MPS Toner Retail            |
--- |15.0       23-JAN-2014    Edson           Fixed per defect 27602      |
--- |16.0       04-Feb-2013  Edson M.         Changes for Defect 27883     |
--- |17.0       20-MAR-2014  Edson M.          Defect 29007                |
--- |18.0       14-JUL-2014  Suresh Ponnambalam OMX Gift Card Consolidation|
--- |19.0       02-JAN-2014  Avinash B          Changes for AMZ MPL        |
--- |20.0       17-MAR-2015  Saritha Mummaneni  Changes for Defect# 33817  |
--- |21.0       16-APR-2015  Arun Gannarapu     Made changes for Tonization project|
--- |                                           defect 34103
--- |22.0       23-JUL-2015  Arun Gannarapu     Made changes to default N for|
--- |                                           tokenization fields 35134|
--- |23.0       08-Aug-2015  Arun Gannarapu     Made changes to fix defect 35383|
--- |24.0       25-SEP-2015  Arun Gannarapu     Made changes for Line level tax Defect 35944|
--- |25.0       12-DEC-2015  Rakesh Polepalli   Made changes for Defect 36125|
--- |26.0       02-Feb-2016  Arun Gannarapu     Made changes for defect 37172|
--- |27.0       03-MAR-2016  Arun Gannarapu     Made changes to fix defect 37178 -performance issue for 12c |
--- |28.0       13-Jun-2016  Arun Gannarapu     Made changes for Kitting defect 37676 |
--- |29.0       07-DEC-2016  Surendra Oruganti  Made changes to fix defect 38223 -Bad data in settlement file |
+-- +==========================================================================================================+
+-- |                  Office Depot - Project Simplify                                                         |
+-- |                Office Depot                                                                              |
+-- +==========================================================================================================|
+-- | Name  : XX_OM_SALES_ACCT_PKG (XXOMWSACTB.pkb)                                                            |
+-- | Rice ID: I1272                                                                                           |
+-- | Description  : This package contains procedures related to the                                           |
+-- | HVOP Sales Accounting Data processing. It includes pulling custom                                        |
+-- | data from interface tables, processing Payments, Creating TAX                                            |
+-- | records and pulling return tenders data from interface tables                                            |
+-- |                                                                                                          |
+-- |Change Record:                                                                                            |
+-- |===============                                                                                           |
+-- |Version    Date          Author            Remarks                                                        |
+-- |=======    ==========    =============     ===============================================================|
+-- |1.0        06-APR-2007   Manish Chavan     Initial version                                                |
+-- |                                                                                                          |
+-- |2.0        07-FEB-2011   Bapuji Nanapaneni Modified the code to                                           |
+-- |                                           insert into xx_ar_order_                                       |
+-- |                                           receipt_dtl table and stop                                     |
+-- |                                           creation of AR Receipts for                                    |
+-- |                                           SDR project Rel11.2                                            |
+-- |3.0        11-JUN-2011   Bapuji N          Defect 12032                                                   |
+-- |4.0        16-JUN-2011   Bapuji N          Defect 12139                                                   |
+-- |5.0        28-JUL-2011   Bapuji N         11.4 rel added SR_number col                                    |
+-- |6.0        27-JUL-2012   Bapuji N         Added SAVE EXCEPTION.                                           |
+-- |7.0        09-AUG-2012   Bapuji N         Added CUST_PREF_EMAIL Defect                                    |
+-- |                                           #19771                                                         |
+-- |8.0        26-OCT-2012   Bapuji N         Added ATR Flag for service                                      |
+-- |                                          ord validation                                                  |
+-- |9.0        25-JAN-2013   Bapuji N         Added Device Serial Num                                         |
+-- |10.0       10-APR-2013   Bapuji N         Added PAYPAL to set remit                                       |
+-- |                                          flag to 'Y'QC DEFECT # 23070                                    |
+-- |11.0       24-MAY-2013   Bapuji N         Amazon changes app_id                                           |
+-- |12.0       12-JUL-2013   Bapuji N         Retrofit for 12i                                                |
+-- |13.o      28-Aug-2013  Edson M          Added new encryption solution                                     |
+-- | -------------  Retrofitting ---------------------------------------- ------------------------------------|
+-- |14.0       24-AUG-2013   Raj J            MPS Toner Retail                                                |
+-- |15.0       23-JAN-2014    Edson           Fixed per defect 27602                                          |
+-- |16.0       04-Feb-2013  Edson M.         Changes for Defect 27883                                         |
+-- |17.0       20-MAR-2014  Edson M.          Defect 29007                                                    |
+-- |18.0       14-JUL-2014  Suresh Ponnambalam OMX Gift Card Consolidation                                    |
+-- |19.0       02-JAN-2014  Avinash B          Changes for AMZ MPL                                            |
+-- |20.0       17-MAR-2015  Saritha Mummaneni  Changes for Defect# 33817                                      |
+-- |21.0       16-APR-2015  Arun Gannarapu     Made changes for Tonization project                            |
+-- |                                           defect 34103                                                   |
+-- |22.0       23-JUL-2015  Arun Gannarapu     Made changes to default N for                                  |
+-- |                                           tokenization fields 35134                                      |
+-- |23.0       08-Aug-2015  Arun Gannarapu     Made changes to fix defect 35383                               |
+-- |24.0       25-SEP-2015  Arun Gannarapu     Made changes for Line level tax Defect 35944                   |
+-- |25.0       12-DEC-2015  Rakesh Polepalli   Made changes for Defect 36125                                  |
+-- |26.0       02-Feb-2016  Arun Gannarapu     Made changes for defect 37172                                  |
+-- |27.0       03-MAR-2016  Arun Gannarapu     Made changes to fix defect 37178 -performance issue for 12c    |
+-- |28.0       13-Jun-2016  Arun Gannarapu     Made changes for Kitting defect 37676                          |
+-- |29.0       07-DEC-2016  Surendra Oruganti  Made changes to fix defect 38223 -Bad data in settlement file  |
 -- |30.0       02-MAY-2018  Suresh Naragam     Made Changes for eBay Market Place(MPL)                        |
--- |31.0       08-JUN-2018  Vijay Machavarapu  Made changes to fix defect 44321 on remit flag for AMAZON_4S 
+-- |31.0       08-JUN-2018  Vijay Machavarapu  Made changes to fix defect 44321 on remit flag for AMAZON_4S   |
 -- |32.0       02-JUL-2018  Shalu George       Made changes for Walmart, Rakuten and NewEgg Market Place(MPL) | 
 -- |33.0       07-JUL-2018  Suresh Naragam     Made Changes to check the payment methods from translations    |
--- |34.0       14-Nov-2018  Arun Gannarapu     Made changes for Bill Complete|
+-- |34.0       14-Nov-2018  Arun Gannarapu     Made changes for Bill Complete                                 |
 -- |35.0       05-SEP-2019  Arun Gannarapu     Made changes to add return auth code for card on file          |
+-- |36.0       07-MAY-2020  Shalu George       Added to get authorized amount for partially reversed orders   |
 -- +==========================================================================================================+
     g_pkg_name  CONSTANT VARCHAR2(30) := 'XX_OM_SALES_ACCT_PKG';
 
@@ -1639,7 +1640,8 @@ AS
                              attribute5,
                              attribute3,
                              attribute14,
-                             attribute2)
+                             attribute2,
+							 attribute1)
                      VALUES ('ORDER',
                              p_payment_rec.header_id(i),
                              SYSDATE,
@@ -1679,7 +1681,8 @@ AS
                              p_payment_rec.IDENTIFIER(i),
                              p_payment_rec.attribute3(i),
                              p_payment_rec.attribute14(i),
-                             p_payment_rec.attribute2(i)
+                             p_payment_rec.attribute2(i),
+							 p_payment_rec.attribute1(i)                    --added to get authorized amount for partialy reversed orders
                              );
 
             IF ln_debug_level > 0
