@@ -631,7 +631,8 @@ AS
         trxn_extension_id            t_num,
         attribute3                   t_v240,
         attribute14                  t_v240,
-        attribute2                   t_v240
+        attribute2                   t_v240,
+		attribute1                   t_v240
     );
 
 /* Payment Global Record Declaration */
