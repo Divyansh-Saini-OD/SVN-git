@@ -130,6 +130,7 @@ AS
 -- |     43.0     31-JUL-2019  Arun G     Made changes to fix Service contract project bug                                  |
 -- |     44.0     05-SEP-2019  Arun G     Made changes to for capture Authcode for Returns                                  |
 -- |     45.0     05-Oct-2019  Arun G     Made changes for rev recog project JIRA 106576
+-- |	 46.0	  08-May-2020  Shalu G    Made changes for Auth Amount JIRA 
 -- +========================================================================================================================+
     PROCEDURE process_current_order(
         p_order_tbl   IN  order_tbl_type,
@@ -657,6 +658,7 @@ AS
         g_payment_rec.attribute3.DELETE(p_idx);
         g_payment_rec.attribute14.DELETE(p_idx);
         g_payment_rec.attribute2.DELETE(p_idx);
+		g_payment_rec.attribute1.DELETE(p_idx);
 
     EXCEPTION
         WHEN OTHERS
@@ -2137,6 +2139,7 @@ AS
             g_payment_rec.attribute14(i)    := c1.emv_card||'.'||c1.emv_terminal||'.'||c1.emv_transaction||'.'||
                                                 c1.emv_offline||'.'||c1.emv_fallback||'.'||c1.emv_tvr;
             g_payment_rec.attribute2(i)     :=  NULL;
+			g_payment_rec.attribute1(i)     :=  NULL;
 
             --g_payment_rec.wallet_type(i)    := c1.wallet_type;
             --g_payment_rec.wallet_id(i)      := c1.wallet_id;
@@ -5937,6 +5940,7 @@ AS
                 g_payment_rec.attribute3(i) := NULL;
                 g_payment_rec.attribute14(i) := NULL;
                 g_payment_rec.attribute2(i)  := NULL;
+				g_payment_rec.attribute1(i)  :=NULL;
             END IF;
 
             g_payment_rec.check_number(i) := LTRIM(RTRIM(SUBSTR(p_order_rec.file_line,
@@ -5996,6 +6000,8 @@ AS
                                              SUBSTR(p_order_rec.file_line,290,10) ;       -- EMV TVR
             g_payment_rec.attribute2(i) :=  LTRIM(RTRIM(SUBSTR(p_order_rec.file_line,300,1)))||'.'||   -- Wallet type
                                             LTRIM(RTRIM(SUBSTR(p_order_rec.file_line,301,3)));
+			 g_payment_rec.attribute1(i) :=	LTRIM(RTRIM(SUBSTR(p_order_rec.file_line,304,11)));						
+											
             IF ln_debug_level > 0
             THEN
                 oe_debug_pub.ADD(   'lc_pay_type = '
@@ -6050,6 +6056,8 @@ AS
                                  || g_payment_rec.attribute14(i));
                 oe_debug_pub.ADD(   'attribute2 = '
                                  || g_payment_rec.attribute2(i));
+				oe_debug_pub.ADD(   'attribute1 = '
+                                 || g_payment_rec.attribute1(i));				 
 
             END IF;
         ELSE                                                      -- If Sign is -ve then it is return tender info record
@@ -9356,6 +9364,7 @@ EXCEPTION
         g_payment_rec.attribute3.DELETE;
         g_payment_rec.attribute14.DELETE;
         g_payment_rec.attribute2.DELETE;
+		g_payment_rec.attribute1.DELETE;
 
 /* tender record */
         g_return_tender_rec.orig_sys_document_ref.DELETE;
@@ -10091,7 +10100,8 @@ EXCEPTION
                              payment_set_id,
                              attribute3,
                              attribute14,
-                             attribute2)
+                             attribute2,
+							 attribute1)
                      VALUES (   g_payment_rec.orig_sys_document_ref(i_pay)
                              || '-BYPASS',
                              g_payment_rec.order_source_id(i_pay),
@@ -10133,7 +10143,8 @@ EXCEPTION
                              g_payment_rec.payment_set_id(i_pay),
                              g_payment_rec.attribute3(i_pay),
                              g_payment_rec.attribute14(i_pay),
-                             g_payment_rec.attribute2(i_pay)
+                             g_payment_rec.attribute2(i_pay),
+							 g_payment_rec.attribute1(i_pay)
                               );
             oe_debug_pub.ADD('Before Inserting data into Return tenders');
         EXCEPTION
