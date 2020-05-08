@@ -35,7 +35,7 @@ PROMPT
 PROMPT Creating Index....
 PROMPT
 
-create index xx_fa_status_n1 on xx_fa_status(asset_id);
+create index xx_fa_status_n1 on xxfin.xx_fa_status(asset_id);
 
 WHENEVER SQLERROR CONTINUE;
 
