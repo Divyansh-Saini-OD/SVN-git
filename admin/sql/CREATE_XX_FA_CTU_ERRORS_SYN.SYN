@@ -7,7 +7,7 @@ SET ECHO         OFF
 SET TAB          OFF
 SET FEEDBACK     OFF
 WHENEVER SQLERROR CONTINUE;
-WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK; 
 
 --+==============================================================================================+--
 --|                                                                                              |--
