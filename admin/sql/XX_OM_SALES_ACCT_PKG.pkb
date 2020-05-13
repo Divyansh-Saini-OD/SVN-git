@@ -3139,7 +3139,8 @@ AS
                      i.trxn_extension_id,
                      i.attribute3,
                      i.attribute14,
-                     i.attribute2
+                     i.attribute2,
+					 i.attribute1
             FROM     oe_payments_iface_all i,
                      oe_order_headers h,
                      xx_om_header_attributes_all ha
@@ -3209,7 +3210,8 @@ AS
                lc_payment_rec.trxn_extension_id,
                lc_payment_rec.attribute3,
                lc_payment_rec.attribute14,
-               lc_payment_rec.attribute2;
+               lc_payment_rec.attribute2,
+			   lc_payment_rec.attribute1;
 
         CLOSE c_payments;
 
