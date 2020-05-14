@@ -40,7 +40,7 @@ PROMPT Creating SYNONYM xx_fa_status
 PROMPT
 
 
-CREATE SYNONYM xx_fa_status FOR xxfin.xx_fa_status;
+CREATE or replace SYNONYM xx_fa_status FOR xxfin.xx_fa_status;
 
 
 WHENEVER SQLERROR CONTINUE
