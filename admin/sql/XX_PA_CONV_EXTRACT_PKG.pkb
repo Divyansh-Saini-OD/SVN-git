@@ -5002,9 +5002,9 @@ IS
       SELECT
         hrprorg.name
       FROM
-        apps.PA_ALL_ORGANIZATIONS paorg,
-        apps.HR_ALL_ORGANIZATION_UNITS hrorg,
-        apps.HR_ALL_ORGANIZATION_UNITS hrprorg
+        PA_ALL_ORGANIZATIONS paorg,
+        HR_ALL_ORGANIZATION_UNITS hrorg,
+        HR_ALL_ORGANIZATION_UNITS hrprorg
       WHERE
         1                         = 1
       AND paorg.org_id            = hrorg.organization_id
