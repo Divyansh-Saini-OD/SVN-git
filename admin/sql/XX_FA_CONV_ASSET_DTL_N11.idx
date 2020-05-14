@@ -37,8 +37,8 @@ PROMPT
 
 
 
-create index XX_FA_CONV_ASSET_HDR_N1 on xxfin.XX_FA_CONV_ASSET_DTL (book_type_code,asset_attribute_category,status);
-create index XX_FA_CONV_ASSET_HDR_N2 on xxfin.XX_FA_CONV_ASSET_DTL (asset_id,book_type_code);
+create index XX_FA_CONV_ASSET_DTL_N1 on xxfin.XX_FA_CONV_ASSET_DTL (book_type_code,asset_attribute_category,status);
+create index XX_FA_CONV_ASSET_DTL_N2 on xxfin.XX_FA_CONV_ASSET_DTL (asset_id,book_type_code);
 
 WHENEVER SQLERROR CONTINUE;
 
