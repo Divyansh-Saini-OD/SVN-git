@@ -1219,7 +1219,7 @@ AS
     WHERE  customer_trx_line_id = p_customer_trx_line_id
     AND    account_class        = p_account_class
     AND    percent              = 100 -- Added for NAIT-120608
-    --AND    attribute_category   = 'SALES_ACCT'; -- Commented for NAIT-120608
+  --AND    attribute_category   = 'SALES_ACCT'; -- Commented for NAIT-120608
     ;
     logit(p_message => 'RESULT attribute6: '  || x_invoice_dist_info.attribute6);
     logit(p_message => 'RESULT attributel1: ' || x_invoice_dist_info.attribute11);
@@ -15349,49 +15349,7 @@ END set_dnr_contract_line;
       exiting_sub(p_procedure_name => lc_procedure_name, p_exception_flag => TRUE);
 
   END process_adjustments;
-/* *******************************************
-  * Function to check eligible SKU for REV REC
-  ******************************************* */
-  FUNCTION is_rev_rec_item(p_sku_name IN VARCHAR2)
-  RETURN VARCHAR2 AS
 
-    lc_procedure_name   CONSTANT VARCHAR2(61) := gc_package_name || '.' || 'is_rev_rec_item';
-    lc_rev_rec          VARCHAR2(1):=NULL;
-    l_item              VARCHAR2(30);
-  
-  BEGIN 
-      SELECT xasi.item 
-        INTO l_item
-       FROM xx_ar_subscription_items   xasi 
-           ,mtl_system_items_b         msib 
-      WHERE 1                        = 1 
-        AND  xasi.inventory_item_id  = msib.inventory_item_id
-        AND  xasi.organization_id    = msib.organization_id
-        AND  xasi.is_rev_rec_eligible= 'Y'
-        AND  msib.segment1           = p_sku_name;
-       
-       logit(p_message => 'Revenue Eligible SKU: ' || l_item);
-       IF l_item IS NOT NULL
-         THEN 
-            lc_rev_rec:='Y'; 
-         ELSE 
-            lc_rev_rec:='N';
-         END IF;
-
-        RETURN lc_rev_rec;
-      
-    EXCEPTION
-         WHEN NO_DATA_FOUND
-         THEN
-         lc_rev_rec := 'N';
-         RETURN lc_rev_rec; 
-         logit(p_message => 'RESULT is_rev_rec_item in NO_DATA_FOUND : ' || lc_rev_rec);
-    WHEN OTHERS 
-    THEN
-       exiting_sub(p_procedure_name => lc_procedure_name, p_exception_flag => TRUE);
-       logit(p_message => 'Exception while getting the revenue eligible sku: ' || SQLERRM);
-END is_rev_rec_item;    
- 
 /* **********************************************************************************************
  Procedure for B2B to create a new Order in AOPS for proposed Renewal of a contract (for Alt SKU)
 ************************************************************************************************ */
