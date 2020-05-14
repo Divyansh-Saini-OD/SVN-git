@@ -1,8 +1,8 @@
 SET VERIFY OFF
 WHENEVER OSERROR EXIT FAILURE ROLLBACK;
 WHENEVER SQLERROR EXIT FAILURE ROLLBACK;
-create or replace 
-PACKAGE BODY XX_PA_CONV_EXTRACT_PKG
+
+create or replace PACKAGE BODY XX_PA_CONV_EXTRACT_PKG
 AS
   -- +============================================================================================|
   -- |  Office Depot                                                                              |
@@ -16,7 +16,15 @@ AS
   -- +============================================================================================|
   -- | Version     Date         Author               Remarks                                      |
   -- | =========   ===========  =============        =============================================|
-  -- | 1.0         01-JUL-2019   Priyam S           Initial Version  added                           |
+  -- | 1.0         01-JUL-2019   Priyam S           Initial Version  added       
+ --  | 1.1         25-SEP-19     Priyam S           Changes done in FBDI_PA_BUDGETS Quanity column to null
+ --  | 1.2         28-SEP-19     Priyam S           Changes done to xx_gl_beacon_mapping function
+ --  | 1.3         11-NOV-19     Paddy          Changes done to Transaction_source in Project Expenditure procedures
+ --  | 1.4         30-JAN-20     Paddy          Modified fbdi_proj_team_members procedure         |
+ --  | 1.5         11-FEB-20     Pramod         Changes done to Extract Project Fixed Assets and Asset Assignments for YY and YN
+ --  | 1.6         26-FEB-20     Paddy          Added Attribute Category for projects extract
+ --  | 1.7         03-MAR-20     Paddy          Modified for team members                         |
+  -- +============================================================================================|
   -- +============================================================================================|
   gc_debug        VARCHAR2(2)     := 'N';
   gc_max_log_size CONSTANT NUMBER := 2000;
@@ -108,6 +116,7 @@ IS
       regexp_substr(p_source, '[^.]+', 1, 2) cost_center,
       regexp_substr(p_source, '[^.]+', 1, 3) account,
       regexp_substr(p_source, '[^.]+', 1, 4) location,
+      regexp_substr(p_source, '[^.]+', 1, 5) inter_company,	  
       regexp_substr(p_source, '[^.]+', 1, 6) lob
     FROM dual;
   v_target       VARCHAR2(100);
@@ -117,6 +126,7 @@ IS
   v_location     VARCHAR2(50);
   v_intercompany VARCHAR2(50);
   v_lob          VARCHAR2(50);
+  ERR_MSG        VARCHAR2(2000);
 BEGIN
   IF p_source IS NOT NULL THEN
     IF p_flag  ='A' THEN
@@ -131,9 +141,18 @@ BEGIN
         v_target:=NULL;
       END;
     ELSE
-      v_target:=NULL;
+
       FOR i IN c_concat
       LOOP
+        ERR_MSG:=null;
+	    v_target    	:=NULL;
+		v_entity       	:=NULL;
+		v_cost_center  	:=NULL;
+		v_account      	:=NULL;
+		v_location     	:=NULL;
+		v_intercompany 	:=NULL;
+		v_lob          	:=NULL;
+	  
         BEGIN
           SELECT target
           INTO v_entity
@@ -144,6 +163,7 @@ BEGIN
         WHEN OTHERS THEN
           --v_entity:=i.entity;
           v_entity:=NULL;
+          ERR_MSG:=ERR_MSG||' Missing Entity '||i.entity;
         END;
         BEGIN
           SELECT target
@@ -155,6 +175,7 @@ BEGIN
         WHEN OTHERS THEN
           --v_cost_center:=i.cost_center;
           v_cost_center:=NULL;
+           ERR_MSG:=ERR_MSG||' Missing Cost Center '||i.cost_center;
         END;
         BEGIN
           SELECT target
@@ -166,6 +187,7 @@ BEGIN
         WHEN OTHERS THEN
           --v_account:=i.account;
           v_account:=NULL;
+           ERR_MSG:=ERR_MSG||' Missing Account '||i.account;
         END;
         BEGIN
           SELECT target
@@ -176,7 +198,7 @@ BEGIN
         EXCEPTION
         WHEN OTHERS THEN
           --v_location:=i.location;
-          v_location:=NULL;
+          v_location:='10000';
         END;
         BEGIN
           SELECT target
@@ -188,15 +210,38 @@ BEGIN
         WHEN OTHERS THEN
           --v_lob:=i.lob;
           v_lob:=NULL;
+           ERR_MSG:=ERR_MSG||' Missing LOB '||i.lob;
         END;
-        -- SELECT nvl(TARGET,source) INTO v_inter FROM XX_GL_BEACON_MAPPING WHERE source=i.inter;
+
+        BEGIN
+          SELECT target
+          INTO v_intercompany
+          FROM xx_gl_beacon_mapping
+          WHERE source=i.inter_company
+          AND type    ='ENTITY';
+        EXCEPTION
+        WHEN OTHERS THEN
+          v_intercompany:=NULL;
+           ERR_MSG:=ERR_MSG||' Missing Intercompany'||i.inter_company;
+        END;
+     
       END LOOP;
-      v_target:=v_entity||'.'||v_lob||'.'||v_cost_center||'.'||v_account||'.'||v_location||'.'||v_entity;
+      
+      IF ERR_MSG is not null then 
+          print_debug_msg ('Missing CTU Information details: '||ERR_MSG, true);
+          print_debug_msg ('Original String for Missing CTU is : '||p_source||CHR(13)||CHR(10), true);
+      
+      END IF;
+    
+      v_target:=v_entity||'.'||v_lob||'.'||v_cost_center||'.'||v_account||'.'||v_location||'.'||v_intercompany;
     END IF;
     RETURN v_target;
   ELSE
     RETURN p_source;
-  END IF;
+  END IF;/*
+  Change Location null to 10000
+  Print Log in each exception for Source which got failed and atlast print the Original string.
+  */
 END xx_gl_beacon_mapping_f1;
 
 PROCEDURE fbdi_project_assets
@@ -324,7 +369,7 @@ IS
     )
     END ) depreciation_expense_account,*/
     ---Added by Priyam for EBS to Cloud segment Change
-    (
+    nvl((
       CASE
         WHEN
           (
@@ -343,7 +388,7 @@ IS
             WHERE
               code_combination_id = ppa.depreciation_expense_ccid
           )
-      END ) depreciation_expense_account,
+      END ),'1150.12.60310.741107.10000.0000') depreciation_expense_account,
     ---Changes end
     ppa.amortize_flag,
     NULL overridecategoryanddesc,
@@ -379,7 +424,7 @@ IS
   WHERE
     1                               =1
   AND proj.template_flag            = 'N'
-  AND NVL(proj.closed_date,sysdate) > to_date('30-JUN-2018','dd-mon-yyyy')
+  AND NVL(proj.closed_date,sysdate) > to_date('31-DEC-2018','dd-mon-yyyy')
   AND
     (
       proj.segment1 NOT LIKE 'PB%'
@@ -412,6 +457,7 @@ IS
   lv_col_title VARCHAR2(5000);
   l_file_path  VARCHAR2(500):='XXFIN_OUTBOUND';
   lc_errormsg  VARCHAR2(1000);----            VARCHAR2(1000) := NULL;
+  lc_location VARCHAR2(100):='US.FL.PALM BEACH.DELRAY BEACH.33445.10000';
 BEGIN
   /* BEGIN
   SELECT directory_path
@@ -424,7 +470,7 @@ BEGIN
   END;*/
   print_debug_msg ('Package FBDI_PROJECT_ASSETS START', true);
   ---  print_debug_msg ('P_BOOK_TYPE_CODE '||P_BOOK_TYPE_CODE, TRUE);
-  l_file_name    := 'fbdi_project_assets' || '.csv';--GENERIC_TAX_CHILD_ASSET_HDR
+  l_file_name    := 'fbdi_project_assets' || '.csv';
   lc_file_handle := utl_file.fopen('XXFIN_OUTBOUND', l_file_name, 'W', 32767);
   lv_col_title   :='DEMO_CREATE'|| ','|| 'CREATE_MODE'|| ','|| 'PROJECT_ID'||
   ','|| 'PROJECT_NAME'|| ','|| 'PROJECT_NUMBER'|| ','|| 'PROJECT_ASSET_TYPE'||
@@ -456,7 +502,7 @@ BEGIN
     '","'|| i.asset_category_id|| '","'|| i.asset_category|| '","'||
     i.asset_key_ccid|| '","'|| i.asset_key|| '","'|| i.asset_units|| '","'||
     i.estimated_cost|| '","'|| i.estimated_asset_units|| '","'|| i.location_id
-    || '","'|| i.location|| '","'|| i.assigned_to_person_id|| '","'||
+    || '","'|| NVL(i.location,lc_location)|| '","'|| i.assigned_to_person_id|| '","'||
     i.assigned_to_person_name|| '","'|| i.assigned_to_person_number|| '","'||
     i.depreciate_flag|| '","'|| i.depreciation_expense_ccid|| '","'||
     i.depreciation_expense_account|| '","'|| i.amortize_flag|| '","'||
@@ -574,6 +620,1192 @@ WHEN OTHERS THEN
   lc_file_handle := utl_file.fopen (l_file_path, l_file_name, 'W', 32767);
   utl_file.fclose(lc_file_handle);
 END fbdi_project_assets;
+
+
+PROCEDURE fbdi_project_assets_yn(p_proj_template VARCHAR2)
+IS
+
+CURSOR c_fbdi_project_assets_yn
+IS
+SELECT DISTINCT
+      'Create' create_mode,
+      proj.segment1 project_number,
+      ppa.project_asset_type,
+      ppa.asset_number,
+      REPLACE(REPLACE(REPLACE(REPLACE(ppa.asset_description,chr(13), '' ), chr(10), ''),chr(39),''),chr(63),'') asset_description,
+      TO_CHAR(ppa.estimated_in_service_date,'YYYY/MM/DD') estimated_in_service_date,
+      TO_CHAR(ppa.date_placed_in_service,'YYYY/MM/DD') date_placed_in_service,
+      'N' reverse_flag,
+      ppa.book_type_code,
+      NULL asset_category_id,
+      (
+        SELECT
+          segment1
+          || '.'
+          || segment2
+          || '.'
+          || segment3
+        FROM
+          fa_categories
+        WHERE
+          category_id = ppa.asset_category_id
+      )
+      asset_category,
+      NULL asset_key_ccid,
+      NULL asset_key,
+      ppa.asset_units,
+      NULL estimated_cost,
+      NULL estimated_asset_units,
+      NULL location_id,
+      (
+      SELECT
+        segment1
+        || '.'
+        || segment2
+        || '.'
+        || segment3
+        || '.'
+        || segment4
+        || '.'
+        || segment6
+        || '.'
+        || SUBSTR(segment5,2)
+      FROM
+        fa_locations
+      WHERE
+        location_id = ppa.location_id
+      )
+      location,
+      -- per.full_name,        --(Add Fetch)
+      NULL assigned_to_person_id,
+      NULL assigned_to_person_name,
+      NULL assigned_to_person_number,
+      ppa.depreciate_flag,
+      NULL depreciation_expense_ccid,
+      ---Added by Priyam for EBS to Cloud segment Change
+      nvl((
+      CASE
+        WHEN
+          (
+            ppa.depreciate_flag              = 'Y'
+          AND ppa.depreciation_expense_ccid IS NULL
+          AND project_status_code           IN ('1000','CLOSED')
+          )
+        THEN (xx_gl_beacon_mapping_f1(
+          '1001.43002.73802000.010000.0000.10.000000',NULL,'P'))
+        ELSE
+          (
+            SELECT
+              xx_gl_beacon_mapping_f1(concatenated_segments,NULL,'P')
+            FROM
+              gl_code_combinations_kfv
+            WHERE
+              code_combination_id = ppa.depreciation_expense_ccid
+          )
+      END ),'1150.12.60310.741107.10000.0000') depreciation_expense_account,
+      ---Changes end
+      ppa.amortize_flag,
+     (
+      SELECT
+        asset_number
+      FROM
+        fa_additions_b fab
+      WHERE
+        asset_id = ppa.parent_asset_id
+     )
+    parent_asset_number	  ,
+      NULL overridecategoryanddesc,
+      NULL business_unit_id,
+      NULL parent_asset_id,
+      NULL manufacturer_name,
+      NULL model_number,
+      NULL tag_number,
+      NULL serial_number,
+      NULL ret_target_asset_id,
+      NULL ret_target_asset_number,
+      NULL pm_product_code,
+	  NULL pm_asset_reference    ,
+      NULL ATTRIBUTE_CATEGORY    ,
+      NULL ATTRIBUTE1            ,
+      NULL ATTRIBUTE2            ,
+      NULL ATTRIBUTE3            ,
+      NULL ATTRIBUTE4            ,
+      NULL ATTRIBUTE5            ,
+      NULL ATTRIBUTE6            ,
+      NULL ATTRIBUTE7            ,
+      NULL ATTRIBUTE8            ,
+      NULL ATTRIBUTE9            ,
+      NULL ATTRIBUTE10           ,
+      NULL ATTRIBUTE11           ,
+      NULL ATTRIBUTE12           ,
+      NULL ATTRIBUTE13           ,
+      NULL ATTRIBUTE14           ,
+      NULL ATTRIBUTE15           ,
+      NULL capital_event_id      ,
+      NULL capital_event_name    ,
+      NULL capital_event_number  
+  FROM pa_project_assets_all ppa,
+       pa_tasks tsk,
+       pa_projects_all proj
+ WHERE 1=1
+   AND proj.template_flag            = 'N'
+   AND NVL(proj.closed_date,sysdate) > to_date('31-DEC-2018','dd-mon-yyyy')
+   AND (
+		    proj.segment1 NOT LIKE 'PB%'
+		AND proj.segment1 NOT LIKE 'NB%'
+		AND proj.segment1 NOT LIKE 'TEM%'
+	   )
+   AND proj.project_type NOT    IN ('PB_PROJECT','DI_PB_PROJECT')
+   AND proj.project_status_code IN ('APPROVED','CLOSED','1000')
+   AND proj.org_id              <>403
+   AND tsk.project_id          = proj.project_id
+   AND tsk.billable_flag='Y'
+   AND proj.created_from_project_id IN  (SELECT project_id
+										  FROM pa_projects_all
+										 WHERE template_flag='Y'
+										   AND name=NVL(p_proj_template,name)
+									   )
+   AND ppa.project_id=proj.project_id
+   AND ppa.project_asset_type = 'ESTIMATED'	  
+ORDER 
+   BY proj.segment1;
+  
+  lc_file_handle utl_file.file_type;
+  lv_line_count NUMBER;
+  -- l_file_path   VARCHAR(200);
+  l_file_name  VARCHAR2(100);
+  lv_col_title VARCHAR2(5000);
+  l_file_path  VARCHAR2(500):='XXFIN_OUTBOUND';
+  lc_errormsg  VARCHAR2(1000);----            VARCHAR2(1000) := NULL;
+  lc_location VARCHAR2(100):='US.FL.PALM BEACH.DELRAY BEACH.33445.10000';
+  lv_proj_level_flg varchar2(1):='N';
+  lv_text varchar2(1):=NULL;
+BEGIN
+
+  print_debug_msg ('Package fbdi_project_assets_yn START', true);
+  l_file_name    := 'fbdi_project_assets_yn' || '.csv';
+  
+  lc_file_handle := utl_file.fopen('XXFIN_OUTBOUND', l_file_name, 'W', 32767);
+  lv_col_title   :='DEMO_CREATE'|| ','|| 'CREATE_MODE'|| ','|| 'PROJECT_ID'||
+  ','|| 'PROJECT_NAME'|| ','|| 'PROJECT_NUMBER'|| ','|| 'PROJECT_ASSET_TYPE'||
+  ','|| 'PROJECT_ASSET_ID'|| ','|| 'ASSET_NAME'|| ','|| 'ASSET_NUMBER'|| ','||
+  'ASSET_DESCRIPTION'|| ','|| 'ESTIMATED_IN_SERVICE_DATE'|| ','||
+  'DATE_PLACED_IN_SERVICE'|| ','|| 'REVERSE_FLAG'|| ','|| 'CAPITAL_HOLD_FLAG'||
+  ','|| 'BOOK_TYPE_CODE'|| ','|| 'ASSET_CATEGORY_ID'|| ','|| 'ASSET_CATEGORY'||
+  ','|| 'ASSET_KEY_CCID'|| ','|| 'ASSET_KEY'|| ','|| 'ASSET_UNITS'|| ','||
+  'ESTIMATED_COST'|| ','|| 'ESTIMATED_ASSET_UNITS'|| ','|| 'LOCATION_ID'|| ','
+  || 'LOCATION'|| ','|| 'ASSIGNED_TO_PERSON_ID'|| ','||
+  'ASSIGNED_TO_PERSON_NAME'|| ','|| 'ASSIGNED_TO_PERSON_NUMBER'|| ','||
+  'DEPRECIATE_FLAG'|| ','|| 'DEPRECIATION_EXPENSE_CCID'|| ','||
+  'DEPRECIATION_EXPENSE_ACCOUNT'|| ','|| 'AMORTIZE_FLAG'|| ','||
+  'OVERRIDECATEGORYANDDESC'|| ','|| 'BUSINESS_UNIT_ID'|| ','||
+  'PARENT_ASSET_ID'|| ','|| 'PARENT_ASSET_NUMBER'|| ','|| 'MANUFACTURER_NAME'||
+  ','|| 'MODEL_NUMBER'|| ','|| 'TAG_NUMBER'|| ','|| 'SERIAL_NUMBER'|| ','||
+  'RET_TARGET_ASSET_ID'|| ','|| 'RET_TARGET_ASSET_NUMBER'|| ','||
+  'PM_PRODUCT_CODE';
+  --utl_file.put_line(lc_file_handle,lv_col_title); commenting column as it is not required for FBDI Load
+  
+  FOR i IN c_fbdi_project_assets_yn
+  LOOP
+    utl_file.put_line(lc_file_handle, '"'||'YN_ASSET'||
+    '","'|| i.create_mode||
+    '","'|| lv_text||
+    '","'|| lv_text||
+    '","'|| i.project_number||
+    '","'|| i.project_asset_type||
+    '","'|| lv_text||
+    '","'|| i.asset_description||
+    '","'|| i.asset_number||
+    '","'|| i.asset_description||
+    '","'|| i.estimated_in_service_date||
+    '","'|| i.date_placed_in_service||
+    '","'||i.reverse_flag||
+    '","'|| lv_text||
+    '","'|| i.book_type_code||
+    '","'|| i.asset_category_id||
+    '","'|| i.asset_category||
+    '","'|| i.asset_key_ccid||
+    '","'|| i.asset_key||
+    '","'|| i.asset_units||
+    '","'|| i.estimated_cost||
+    '","'|| i.estimated_asset_units||
+    '","'|| i.location_id ||
+    '","'|| NVL(i.location,lc_location)||
+    '","'|| i.assigned_to_person_id||
+    '","'|| i.assigned_to_person_name||
+    '","'|| i.assigned_to_person_number||
+    '","'|| i.depreciate_flag||
+    '","'|| i.depreciation_expense_ccid||
+    '","'|| i.depreciation_expense_account||
+    '","'|| i.amortize_flag|| 
+    '","'|| i.overridecategoryanddesc||
+    '","'|| i.business_unit_id||
+    '","'|| i.parent_asset_id||
+    '","'|| i.parent_asset_number||
+    '","'|| i.manufacturer_name||
+    '","'|| i.model_number||
+    '","'|| i.tag_number||
+    '","'|| i.serial_number||
+    '","'|| i.ret_target_asset_id||
+    '","'||i.ret_target_asset_number||
+    '","'|| i.pm_product_code||
+    '"'|| i.pm_asset_reference||
+    '"'|| i.ATTRIBUTE_CATEGORY||
+    '","'|| i.ATTRIBUTE1||
+    '","'|| i.ATTRIBUTE2||
+    '","'|| i.ATTRIBUTE3||
+    '","'|| i.ATTRIBUTE4||
+    '","'|| i.ATTRIBUTE5||
+    '","'|| i.ATTRIBUTE6||
+    '","'|| i.ATTRIBUTE7||
+    '","'|| i.ATTRIBUTE8||
+    '","'|| i.ATTRIBUTE9||
+    '","'|| i.ATTRIBUTE10||
+    '","'|| i.ATTRIBUTE11||
+    '","'|| i.ATTRIBUTE12||
+    '","'|| i.ATTRIBUTE13||
+    '","'|| i.ATTRIBUTE14||
+    '","'|| i.ATTRIBUTE15|| 
+    '","'|| i.capital_event_id||
+    '","'|| i.capital_event_name||
+    '","'|| i.capital_event_number||
+    '","'|| 'END'||'"');
+  END LOOP;
+  utl_file.fclose(lc_file_handle);
+EXCEPTION
+  WHEN utl_file.access_denied THEN
+    lc_errormsg := ( 'Error in FBDI_PROJECT_ASSETS procedure :- ' ||
+    ' access_denied :: ' || SUBSTR (sqlerrm, 1, 3800) || SQLCODE );
+    print_debug_msg (lc_errormsg, true);
+    utl_file.fclose_all;
+    lc_file_handle := utl_file.fopen (l_file_path, l_file_name, 'W', 32767);
+    utl_file.fclose(lc_file_handle);
+  WHEN utl_file.delete_failed THEN
+    lc_errormsg := ( 'Error in FBDI_PROJECT_ASSETS procedure :- ' ||
+    ' delete_failed :: ' || SUBSTR (sqlerrm, 1, 3800) || SQLCODE );
+    print_debug_msg (lc_errormsg, true);
+    utl_file.fclose_all;
+    lc_file_handle := utl_file.fopen (l_file_path, l_file_name, 'W', 32767);
+    utl_file.fclose(lc_file_handle);
+  WHEN utl_file.file_open THEN
+    lc_errormsg := ( 'Error in FBDI_PROJECT_ASSETS procedure :- ' ||
+    ' file_open :: ' || SUBSTR (sqlerrm, 1, 3800) || SQLCODE );
+    print_debug_msg (lc_errormsg, true);
+    utl_file.fclose_all;
+    lc_file_handle := utl_file.fopen (l_file_path, l_file_name, 'W', 32767);
+    utl_file.fclose(lc_file_handle);
+  WHEN utl_file.internal_error THEN
+    lc_errormsg := ( 'Error in FBDI_PROJECT_ASSETS procedure :- ' ||
+    ' internal_error :: ' || SUBSTR (sqlerrm, 1, 3800) || SQLCODE );
+    print_debug_msg (lc_errormsg, true);
+    utl_file.fclose_all;
+    lc_file_handle := utl_file.fopen (l_file_path, l_file_name, 'W', 32767);
+    utl_file.fclose(lc_file_handle);
+  WHEN utl_file.invalid_filehandle THEN
+    lc_errormsg := ( 'Error in FBDI_PROJECT_ASSETS procedure:- ' ||
+    ' invalid_filehandle :: ' || SUBSTR (sqlerrm, 1, 3800) || SQLCODE );
+    print_debug_msg (lc_errormsg, true);
+    utl_file.fclose_all;
+    lc_file_handle := utl_file.fopen (l_file_path, l_file_name, 'W', 32767);
+    utl_file.fclose(lc_file_handle);
+  WHEN utl_file.invalid_filename THEN
+    lc_errormsg := ( 'Error in FBDI_PROJECT_ASSETS procedure :- ' ||
+    ' invalid_filename :: ' || SUBSTR (sqlerrm, 1, 3800) || SQLCODE );
+    print_debug_msg (lc_errormsg, true);
+    utl_file.fclose_all;
+    lc_file_handle := utl_file.fopen (l_file_path, l_file_name, 'W', 32767);
+    utl_file.fclose(lc_file_handle);
+  WHEN utl_file.invalid_maxlinesize THEN
+    lc_errormsg := ( 'Error in FBDI_PROJECT_ASSETS procedure :- ' ||
+    ' invalid_maxlinesize :: ' || SUBSTR (sqlerrm, 1, 3800) || SQLCODE );
+    print_debug_msg (lc_errormsg, true);
+    utl_file.fclose_all;
+    lc_file_handle := utl_file.fopen (l_file_path, l_file_name, 'W', 32767);
+    utl_file.fclose(lc_file_handle);
+  WHEN utl_file.invalid_mode THEN
+    lc_errormsg := ( 'Error in FBDI_PROJECT_ASSETS procedure :- ' ||
+    ' invalid_mode :: ' || SUBSTR (sqlerrm, 1, 3800) || SQLCODE );
+    print_debug_msg (lc_errormsg, true);
+    utl_file.fclose_all;
+    lc_file_handle := utl_file.fopen (l_file_path, l_file_name, 'W', 32767);
+    utl_file.fclose(lc_file_handle);
+  WHEN utl_file.invalid_offset THEN
+    lc_errormsg := ( 'Error in FBDI_PROJECT_ASSETS procedure :- ' ||
+    ' invalid_offset :: ' || SUBSTR (sqlerrm, 1, 3800) || SQLCODE );
+    print_debug_msg (lc_errormsg, true);
+    utl_file.fclose_all;
+    lc_file_handle := utl_file.fopen (l_file_path, l_file_name, 'W', 32767);
+    utl_file.fclose(lc_file_handle);
+  WHEN utl_file.invalid_operation THEN
+    lc_errormsg := ( 'Error in FBDI_PROJECT_ASSETS procedure :- ' ||
+    ' invalid_operation :: ' || SUBSTR (sqlerrm, 1, 3800) || SQLCODE );
+    print_debug_msg (lc_errormsg, true);
+    utl_file.fclose_all;
+    lc_file_handle := utl_file.fopen (l_file_path, l_file_name, 'W', 32767);
+    utl_file.fclose(lc_file_handle);
+  WHEN utl_file.invalid_path THEN
+    lc_errormsg := ( 'Error in FBDI_PROJECT_ASSETS procedure :- ' ||
+    ' invalid_path :: ' || SUBSTR (sqlerrm, 1, 3800) || SQLCODE );
+    print_debug_msg (lc_errormsg, true);
+    utl_file.fclose_all;
+    lc_file_handle := utl_file.fopen (l_file_path, l_file_name, 'W', 32767);
+    utl_file.fclose(lc_file_handle);
+  WHEN utl_file.read_error THEN
+    lc_errormsg := ( 'Error in FBDI_PROJECT_ASSETS procedure :- ' ||
+    ' read_error :: ' || SUBSTR (sqlerrm, 1, 3800) || SQLCODE );
+    print_debug_msg (lc_errormsg, true);
+    utl_file.fclose_all;
+    lc_file_handle := utl_file.fopen (l_file_path, l_file_name, 'W', 32767);
+    utl_file.fclose(lc_file_handle);
+  WHEN utl_file.rename_failed THEN
+    lc_errormsg := ( 'Error in FBDI_PROJECT_ASSETS procedure :- ' ||
+    ' rename_failed :: ' || SUBSTR (sqlerrm, 1, 3800) || SQLCODE );
+    print_debug_msg (lc_errormsg, true);
+    utl_file.fclose_all;
+    lc_file_handle := utl_file.fopen (l_file_path, l_file_name, 'W', 32767);
+    utl_file.fclose(lc_file_handle);
+  WHEN utl_file.write_error THEN
+    lc_errormsg := ( 'Error in FBDI_PROJECT_ASSETS procedure :- ' ||
+    ' write_error :: ' || SUBSTR (sqlerrm, 1, 3800) || SQLCODE );
+    print_debug_msg (lc_errormsg, true);
+    utl_file.fclose_all;
+    lc_file_handle := utl_file.fopen (l_file_path, l_file_name, 'W', 32767);
+    utl_file.fclose(lc_file_handle);
+  WHEN OTHERS THEN
+    lc_errormsg := ( 'Error in FBDI_PROJECT_ASSETS procedure :- ' ||
+    ' OTHERS :: ' || SUBSTR (sqlerrm, 1, 3800) || SQLCODE );
+    print_debug_msg (lc_errormsg, true);
+    utl_file.fclose_all;
+    lc_file_handle := utl_file.fopen (l_file_path, l_file_name, 'W', 32767);
+    utl_file.fclose(lc_file_handle);
+END fbdi_project_assets_yn;
+
+PROCEDURE fbdi_proj_asset_assignments_yn(p_proj_template VARCHAR2)
+IS
+ 
+CURSOR c_proj_asset_assign_yn
+IS
+SELECT DISTINCT
+       'YN_ASSET' demo_create,
+       'Create' create_mode,
+       ppa.asset_name asset_name,
+       'Task Level Assignment' asset_assigment_level,
+       prj.segment1 PROJECT_NUMBER,
+       tsk.task_number
+  FROM PA_Project_Asset_Assignments paa,
+	   pa_project_assets_all ppa,
+	   pa_tasks tsk,
+	   pa_projects_all prj
+ WHERE 1                              =1
+   AND prj.template_flag            = 'N'
+   AND NVL(prj.closed_date,sysdate) > to_date('31-DEC-2018','dd-mon-yyyy')
+   AND (
+		    prj.segment1 NOT LIKE 'PB%'
+		AND prj.segment1 NOT LIKE 'NB%'
+		AND prj.segment1 NOT LIKE 'TEM%'
+	   )
+   AND prj.project_type NOT    IN ('PB_PROJECT','DI_PB_PROJECT')
+   AND prj.project_status_code IN ('APPROVED','CLOSED','1000')
+   AND prj.org_id              <>403
+   AND prj.created_from_project_id IN  (SELECT project_id
+										  FROM pa_projects_all
+										 WHERE template_flag='Y'
+										   AND name=NVL(p_proj_template,name)
+									   )
+   AND tsk.project_id          = prj.project_id
+   AND tsk.billable_flag='Y'
+   AND ppa.project_id=prj.project_id   
+   AND paa.project_asset_id=ppa.project_asset_id
+   AND paa.task_id=tsk.task_id
+   AND paa.project_id=prj.project_id
+   AND ppa.project_asset_type = 'ESTIMATED'
+ORDER BY
+    prj.SEGMENT1;
+	
+  lc_file_handle utl_file.file_type;
+  lv_line_count NUMBER;
+  -- l_file_path   VARCHAR(200);
+  l_file_name  VARCHAR2(100);
+  lv_col_title VARCHAR2(5000);
+  l_file_path  VARCHAR2(500):='XXFIN_OUTBOUND';
+  lc_errormsg  VARCHAR2(1000);----            VARCHAR2(1000) := NULL;
+  lc_text VARCHAR2(1):=NULL;
+BEGIN
+  print_debug_msg ('Package fbdi_proj_asset_assignments START', true);
+  l_file_name := 'fbdi_proj_asset_assignments_yn' || '.csv';--
+  lc_file_handle := utl_file.fopen('XXFIN_OUTBOUND', l_file_name, 'W', 32767);
+  lv_col_title   :='DEMO_CREATE'|| ','|| 'CREATE_MODE'|| ','||
+  'ASSET_ASSIGNMENT_ID'|| ','|| 'PROJECT_ASSET_ID'|| ','|| 'ASSET_NAME'|| ','||
+  'ASSET_NUMBER'|| ','|| 'ASSET_ASSIGMENT_LEVEL'|| ','|| 'PROJECT_ID'|| ','||
+  'PROJECT_NAME'|| ','|| 'PROJECT_NUMBER'|| ','|| 'TASK_ID'|| ','|| 'TASK_NAME'
+  || ','|| 'TASK_NUMBER' ;
+  --utl_file.put_line(lc_file_handle,lv_col_title);commenting column as we are generating direct FDBI file
+  
+  FOR i IN c_proj_asset_assign_yn
+  LOOP
+    utl_file.put_line(lc_file_handle,'"'||i.DEMO_CREATE|| 
+    '","'|| i.CREATE_MODE||
+    '","'|| lc_text||
+    '","'|| lc_text||
+    '","'||i.ASSET_NAME||
+    '","'|| lc_text||
+    '","'|| i.ASSET_ASSIGMENT_LEVEL||
+    '","'|| lc_text||
+    '","'|| lc_text||
+    '","'|| i.PROJECT_NUMBER||
+    '","'|| lc_text||
+    '","'|| lc_text||
+    '","'|| i.task_number||
+    '","'|| lc_text||
+    '","'|| lc_text||
+    '","'|| lc_text||
+    '","'|| lc_text||
+    '","'|| lc_text||
+    '","'|| lc_text||
+    '","'|| lc_text||
+    '","'|| lc_text||
+    '","'|| lc_text||
+    '","'|| lc_text||
+    '","'|| lc_text||
+    '","'|| lc_text||
+    '","'|| lc_text||
+    '","'|| lc_text||
+    '","'|| lc_text||
+    '","'|| lc_text||
+     '","'|| 'END'||'"');
+  END LOOP;
+  
+  utl_file.fclose(lc_file_handle);
+EXCEPTION
+  WHEN utl_file.access_denied THEN
+    lc_errormsg := ( 'Error in fbdi_proj_asset_assignments procedure :- ' ||
+    ' access_denied :: ' || SUBSTR (sqlerrm, 1, 3800) || SQLCODE );
+    print_debug_msg (lc_errormsg, true);
+    utl_file.fclose_all;
+    lc_file_handle := utl_file.fopen (l_file_path, l_file_name, 'W', 32767);
+    utl_file.fclose(lc_file_handle);
+  WHEN utl_file.delete_failed THEN
+    lc_errormsg := ( 'Error in fbdi_proj_asset_assignments procedure :- ' ||
+    ' delete_failed :: ' || SUBSTR (sqlerrm, 1, 3800) || SQLCODE );
+    print_debug_msg (lc_errormsg, true);
+    utl_file.fclose_all;
+    lc_file_handle := utl_file.fopen (l_file_path, l_file_name, 'W', 32767);
+    utl_file.fclose(lc_file_handle);
+  WHEN utl_file.file_open THEN
+    lc_errormsg := ( 'Error in fbdi_proj_asset_assignments procedure :- ' ||
+    ' file_open :: ' || SUBSTR (sqlerrm, 1, 3800) || SQLCODE );
+    print_debug_msg (lc_errormsg, true);
+    utl_file.fclose_all;
+    lc_file_handle := utl_file.fopen (l_file_path, l_file_name, 'W', 32767);
+    utl_file.fclose(lc_file_handle);
+  WHEN utl_file.internal_error THEN
+    lc_errormsg := ( 'Error in fbdi_proj_asset_assignments procedure :- ' ||
+    ' internal_error :: ' || SUBSTR (sqlerrm, 1, 3800) || SQLCODE );
+    print_debug_msg (lc_errormsg, true);
+    utl_file.fclose_all;
+    lc_file_handle := utl_file.fopen (l_file_path, l_file_name, 'W', 32767);
+    utl_file.fclose(lc_file_handle);
+  WHEN utl_file.invalid_filehandle THEN
+    lc_errormsg := ( 'Error in fbdi_proj_asset_assignments procedure:- ' ||
+    ' invalid_filehandle :: ' || SUBSTR (sqlerrm, 1, 3800) || SQLCODE );
+    print_debug_msg (lc_errormsg, true);
+    utl_file.fclose_all;
+    lc_file_handle := utl_file.fopen (l_file_path, l_file_name, 'W', 32767);
+    utl_file.fclose(lc_file_handle);
+  WHEN utl_file.invalid_filename THEN
+    lc_errormsg := ( 'Error in fbdi_proj_asset_assignments procedure :- ' ||
+    ' invalid_filename :: ' || SUBSTR (sqlerrm, 1, 3800) || SQLCODE );
+    print_debug_msg (lc_errormsg, true);
+    utl_file.fclose_all;
+    lc_file_handle := utl_file.fopen (l_file_path, l_file_name, 'W', 32767);
+    utl_file.fclose(lc_file_handle);
+  WHEN utl_file.invalid_maxlinesize THEN
+    lc_errormsg := ( 'Error in fbdi_proj_asset_assignments procedure :- ' ||
+    ' invalid_maxlinesize :: ' || SUBSTR (sqlerrm, 1, 3800) || SQLCODE );
+    print_debug_msg (lc_errormsg, true);
+    utl_file.fclose_all;
+    lc_file_handle := utl_file.fopen (l_file_path, l_file_name, 'W', 32767);
+    utl_file.fclose(lc_file_handle);
+  WHEN utl_file.invalid_mode THEN
+    lc_errormsg := ( 'Error in fbdi_proj_asset_assignments procedure :- ' ||
+    ' invalid_mode :: ' || SUBSTR (sqlerrm, 1, 3800) || SQLCODE );
+    print_debug_msg (lc_errormsg, true);
+    utl_file.fclose_all;
+    lc_file_handle := utl_file.fopen (l_file_path, l_file_name, 'W', 32767);
+    utl_file.fclose(lc_file_handle);
+  WHEN utl_file.invalid_offset THEN
+    lc_errormsg := ( 'Error in fbdi_proj_asset_assignments procedure :- ' ||
+    ' invalid_offset :: ' || SUBSTR (sqlerrm, 1, 3800) || SQLCODE );
+    print_debug_msg (lc_errormsg, true);
+    utl_file.fclose_all;
+    lc_file_handle := utl_file.fopen (l_file_path, l_file_name, 'W', 32767);
+    utl_file.fclose(lc_file_handle);
+  WHEN utl_file.invalid_operation THEN
+    lc_errormsg := ( 'Error in fbdi_proj_asset_assignments procedure :- ' ||
+    ' invalid_operation :: ' || SUBSTR (sqlerrm, 1, 3800) || SQLCODE );
+    print_debug_msg (lc_errormsg, true);
+    utl_file.fclose_all;
+    lc_file_handle := utl_file.fopen (l_file_path, l_file_name, 'W', 32767);
+    utl_file.fclose(lc_file_handle);
+  WHEN utl_file.invalid_path THEN
+    lc_errormsg := ( 'Error in fbdi_proj_asset_assignments procedure :- ' ||
+    ' invalid_path :: ' || SUBSTR (sqlerrm, 1, 3800) || SQLCODE );
+    print_debug_msg (lc_errormsg, true);
+    utl_file.fclose_all;
+    lc_file_handle := utl_file.fopen (l_file_path, l_file_name, 'W', 32767);
+    utl_file.fclose(lc_file_handle);
+  WHEN utl_file.read_error THEN
+    lc_errormsg := ( 'Error in fbdi_proj_asset_assignments procedure :- ' ||
+    ' read_error :: ' || SUBSTR (sqlerrm, 1, 3800) || SQLCODE );
+    print_debug_msg (lc_errormsg, true);
+    utl_file.fclose_all;
+    lc_file_handle := utl_file.fopen (l_file_path, l_file_name, 'W', 32767);
+    utl_file.fclose(lc_file_handle);
+  WHEN utl_file.rename_failed THEN
+    lc_errormsg := ( 'Error in fbdi_proj_asset_assignments procedure :- ' ||
+    ' rename_failed :: ' || SUBSTR (sqlerrm, 1, 3800) || SQLCODE );
+    print_debug_msg (lc_errormsg, true);
+    utl_file.fclose_all;
+    lc_file_handle := utl_file.fopen (l_file_path, l_file_name, 'W', 32767);
+    utl_file.fclose(lc_file_handle);
+  WHEN utl_file.write_error THEN
+    lc_errormsg := ( 'Error in fbdi_proj_asset_assignments procedure :- ' ||
+    ' write_error :: ' || SUBSTR (sqlerrm, 1, 3800) || SQLCODE );
+    print_debug_msg (lc_errormsg, true);
+    utl_file.fclose_all;
+    lc_file_handle := utl_file.fopen (l_file_path, l_file_name, 'W', 32767);
+    utl_file.fclose(lc_file_handle);
+  WHEN OTHERS THEN
+    lc_errormsg := ( 'Error in fbdi_proj_asset_assignments procedure :- ' ||
+    ' OTHERS :: ' || SUBSTR (sqlerrm, 1, 3800) || SQLCODE );
+    print_debug_msg (lc_errormsg, true);
+    utl_file.fclose_all;
+    lc_file_handle := utl_file.fopen (l_file_path, l_file_name, 'W', 32767);
+    utl_file.fclose(lc_file_handle);
+END fbdi_proj_asset_assignments_yn;
+
+
+
+PROCEDURE fbdi_project_assets_yy(p_proj_template VARCHAR2)
+IS
+
+CURSOR c_fbdi_project_assets_yy_main
+IS
+SELECT DISTINCT
+       prj.segment1 proj_number
+  FROM pa_project_assets_all ppa,
+       pa_tasks tsk,
+       pa_projects_all prj
+ WHERE 1=1
+   AND prj.template_flag            = 'N'
+   AND NVL(prj.closed_date,sysdate) > to_date('31-DEC-2018','dd-mon-yyyy')
+   AND (
+		    prj.segment1 NOT LIKE 'PB%'
+		AND prj.segment1 NOT LIKE 'NB%'
+		AND prj.segment1 NOT LIKE 'TEM%'
+	   )
+   AND prj.project_type NOT    IN ('PB_PROJECT','DI_PB_PROJECT')
+   AND prj.project_status_code IN ('APPROVED','CLOSED','1000')
+   AND prj.org_id              <>403
+   AND tsk.project_id          = prj.project_id
+   AND tsk.billable_flag='Y'
+   AND prj.created_from_project_id IN  (SELECT project_id
+										  FROM pa_projects_all
+										 WHERE template_flag='Y'
+										   AND name=NVL(p_proj_template,name)
+									   )
+   AND ppa.project_id=prj.project_id
+   AND ppa.project_asset_type = 'AS-BUILT'
+ORDER 
+   BY prj.segment1;
+   
+	
+CURSOR c_fbdi_project_assets_yy(p_project_number varchar2)
+IS
+SELECT DISTINCT
+      'CONVERSION_ASSET' create_asset,
+      'Create' create_mode,
+       NULL project_id,
+       NULL project_name,
+       proj.segment1 project_number,
+       'AS-BUILT' project_asset_type,
+       NULL project_asset_id,
+       'CONVERSION ASSET' asset_name,
+       Null asset_number,
+       --REPLACE(REPLACE(REPLACE(REPLACE(ppa.asset_description,chr(13), '' ), chr(10), ''),chr(39),''),chr(63),'') asset_description,
+	   'CONVERSION ASSET' asset_description,
+       --TO_CHAR(ppa.estimated_in_service_date,'YYYY/MM/DD') estimated_in_service_date,
+	   Null estimated_in_service_date,
+       TO_CHAR(ppa.date_placed_in_service,'YYYY/MM/DD') date_placed_in_service,
+       'N' reverse_flag,
+       NULL capital_hold_flag,
+       'OD US CORP' book_type_code,
+       NULL asset_category_id,
+      (
+        SELECT
+          segment1
+          || '.'
+          || segment2
+          || '.'
+          || segment3
+        FROM
+          fa_categories
+        WHERE
+          category_id = ppa.asset_category_id
+      )
+      asset_category,
+      NULL asset_key_ccid,
+      NULL asset_key,
+      ppa.asset_units,
+      NULL estimated_cost,
+      NULL estimated_asset_units,
+      NULL location_id,
+     (
+      SELECT
+        segment1
+        || '.'
+        || segment2
+        || '.'
+        || segment3
+        || '.'
+        || segment4
+        || '.'
+        || segment6
+        || '.'
+        || SUBSTR(segment5,2)
+      FROM
+        fa_locations
+      WHERE
+        location_id = ppa.location_id
+     )location,
+     -- per.full_name,        --(Add Fetch)
+     NULL assigned_to_person_id,
+     NULL assigned_to_person_name,
+     NULL assigned_to_person_number,
+     'Y' depreciate_flag,
+     NULL depreciation_expense_ccid,
+     ---Added by Priyam for EBS to Cloud segment Change
+     nvl((
+      CASE
+        WHEN
+          (
+            ppa.depreciate_flag              = 'Y'
+          AND ppa.depreciation_expense_ccid IS NULL
+          AND project_status_code           IN ('1000','CLOSED')
+          )
+        THEN (xx_gl_beacon_mapping_f1(
+          '1001.43002.73802000.010000.0000.10.000000',NULL,'P'))
+        ELSE
+          (
+            SELECT
+              xx_gl_beacon_mapping_f1(concatenated_segments,NULL,'P')
+            FROM
+              gl_code_combinations_kfv
+            WHERE
+              code_combination_id = ppa.depreciation_expense_ccid
+          )
+      END ),'1150.12.60310.741107.10000.0000') depreciation_expense_account,
+      ---Changes end
+      'N' amortize_flag,
+      NULL overridecategoryanddesc,
+      NULL business_unit_id,
+      NULL parent_asset_id,
+	  NULL parent_asset_number,
+      NULL manufacturer_name,
+      NULL model_number,
+      NULL tag_number,
+      NULL serial_number,
+      NULL ret_target_asset_id,
+      NULL ret_target_asset_number,
+      NULL pm_product_code,
+	  NULL pm_asset_reference    ,
+      NULL ATTRIBUTE_CATEGORY    ,
+      NULL ATTRIBUTE1            ,
+      NULL ATTRIBUTE2            ,
+      NULL ATTRIBUTE3            ,
+      NULL ATTRIBUTE4            ,
+      NULL ATTRIBUTE5            ,
+      NULL ATTRIBUTE6            ,
+      NULL ATTRIBUTE7            ,
+      NULL ATTRIBUTE8            ,
+      NULL ATTRIBUTE9            ,
+      NULL ATTRIBUTE10           ,
+      NULL ATTRIBUTE11           ,
+      NULL ATTRIBUTE12           ,
+      NULL ATTRIBUTE13           ,
+      NULL ATTRIBUTE14           ,
+      NULL ATTRIBUTE15           ,
+      NULL capital_event_id      ,
+      NULL capital_event_name    ,
+      NULL capital_event_number  
+  FROM pa_project_assets_all ppa,
+       pa_tasks tsk,
+       pa_projects_all proj	
+ WHERE 1=1	
+   AND proj.segment1=p_project_number
+   AND tsk.project_id          = proj.project_id
+   AND tsk.billable_flag='Y'   
+   AND ppa.project_id=proj.project_id
+   AND ppa.project_asset_type = 'AS-BUILT' 
+ ORDER 
+    BY proj.segment1;
+  
+  lc_file_handle utl_file.file_type;
+  lv_line_count NUMBER;
+  -- l_file_path   VARCHAR(200);
+  l_file_name  VARCHAR2(100);
+  lv_col_title VARCHAR2(5000);
+  l_file_path  VARCHAR2(500):='XXFIN_OUTBOUND';
+  lc_errormsg  VARCHAR2(1000);----            VARCHAR2(1000) := NULL;
+  lc_location VARCHAR2(100):='US.FL.PALM BEACH.DELRAY BEACH.33445.10000';
+  lv_proj_level_flg varchar2(1):='N';
+BEGIN
+  /* BEGIN
+  SELECT directory_path
+    INTO l_file_path
+    FROM dba_directories
+   WHERE directory_name = 'XXFIN_OUTBOUND';
+  EXCEPTION
+    WHEN OTHERS THEN
+      l_file_path := NULL;
+  END;*/
+  
+  print_debug_msg ('Package FBDI_PROJECT_ASSETS_YY START', true);
+  l_file_name    := 'fbdi_project_assets_yy' || '.csv';
+  
+  lc_file_handle := utl_file.fopen('XXFIN_OUTBOUND', l_file_name, 'W', 32767);
+  lv_col_title   :='DEMO_CREATE'|| ','|| 'CREATE_MODE'|| ','|| 'PROJECT_ID'||
+  ','|| 'PROJECT_NAME'|| ','|| 'PROJECT_NUMBER'|| ','|| 'PROJECT_ASSET_TYPE'||
+  ','|| 'PROJECT_ASSET_ID'|| ','|| 'ASSET_NAME'|| ','|| 'ASSET_NUMBER'|| ','||
+  'ASSET_DESCRIPTION'|| ','|| 'ESTIMATED_IN_SERVICE_DATE'|| ','||
+  'DATE_PLACED_IN_SERVICE'|| ','|| 'REVERSE_FLAG'|| ','|| 'CAPITAL_HOLD_FLAG'||
+  ','|| 'BOOK_TYPE_CODE'|| ','|| 'ASSET_CATEGORY_ID'|| ','|| 'ASSET_CATEGORY'||
+  ','|| 'ASSET_KEY_CCID'|| ','|| 'ASSET_KEY'|| ','|| 'ASSET_UNITS'|| ','||
+  'ESTIMATED_COST'|| ','|| 'ESTIMATED_ASSET_UNITS'|| ','|| 'LOCATION_ID'|| ','
+  || 'LOCATION'|| ','|| 'ASSIGNED_TO_PERSON_ID'|| ','||
+  'ASSIGNED_TO_PERSON_NAME'|| ','|| 'ASSIGNED_TO_PERSON_NUMBER'|| ','||
+  'DEPRECIATE_FLAG'|| ','|| 'DEPRECIATION_EXPENSE_CCID'|| ','||
+  'DEPRECIATION_EXPENSE_ACCOUNT'|| ','|| 'AMORTIZE_FLAG'|| ','||
+  'OVERRIDECATEGORYANDDESC'|| ','|| 'BUSINESS_UNIT_ID'|| ','||
+  'PARENT_ASSET_ID'|| ','|| 'PARENT_ASSET_NUMBER'|| ','|| 'MANUFACTURER_NAME'||
+  ','|| 'MODEL_NUMBER'|| ','|| 'TAG_NUMBER'|| ','|| 'SERIAL_NUMBER'|| ','||
+  'RET_TARGET_ASSET_ID'|| ','|| 'RET_TARGET_ASSET_NUMBER'|| ','||
+  'PM_PRODUCT_CODE';
+  --utl_file.put_line(lc_file_handle,lv_col_title); commenting column as it is not required for FBDI Load
+  
+  FOR main_rec in c_fbdi_project_assets_yy_main LOOP
+	lv_proj_level_flg:='N';
+	FOR i IN c_fbdi_project_assets_yy(main_rec.proj_number)
+	LOOP
+     if lv_proj_level_flg='N' then 
+    
+		utl_file.put_line(lc_file_handle, '"'||i.create_asset||
+		'","'|| i.create_mode||
+		'","'|| i.project_id||
+		'","'|| i.project_name||
+		'","'|| i.project_number||
+		'","'|| i.project_asset_type||
+		'","'|| i.project_asset_id||
+		'","'|| i.asset_name||
+		'","'|| i.asset_number||
+		'","'|| i.asset_description||
+		'","'|| i.estimated_in_service_date||
+		'","'|| i.date_placed_in_service||
+		'","'||i.reverse_flag||
+		'","'|| i.capital_hold_flag||
+		'","'|| i.book_type_code||
+		'","'|| i.asset_category_id||
+		'","'|| i.asset_category||
+		'","'|| i.asset_key_ccid||
+		'","'|| i.asset_key||
+		'","'|| i.asset_units||
+		'","'|| i.estimated_cost||
+		'","'|| i.estimated_asset_units||
+		'","'|| i.location_id ||
+		'","'|| NVL(i.location,lc_location)||
+		'","'|| i.assigned_to_person_id||
+		'","'|| i.assigned_to_person_name||
+		'","'|| i.assigned_to_person_number||
+		'","'|| i.depreciate_flag||
+		'","'|| i.depreciation_expense_ccid||
+		'","'|| i.depreciation_expense_account||
+		'","'|| i.amortize_flag|| 
+		'","'|| i.overridecategoryanddesc||
+		'","'|| i.business_unit_id||
+		'","'|| i.parent_asset_id||
+		'","'|| i.parent_asset_number||
+		'","'|| i.manufacturer_name||
+		'","'|| i.model_number||
+		'","'|| i.tag_number||
+		'","'|| i.serial_number||
+		'","'|| i.ret_target_asset_id||
+		'","'||i.ret_target_asset_number||
+		'","'|| i.pm_product_code||
+		'"'|| i.pm_asset_reference||
+		'"'|| i.ATTRIBUTE_CATEGORY||
+		'","'|| i.ATTRIBUTE1||
+		'","'|| i.ATTRIBUTE2||
+		'","'|| i.ATTRIBUTE3||
+		'","'|| i.ATTRIBUTE4||
+		'","'|| i.ATTRIBUTE5||
+		'","'|| i.ATTRIBUTE6||
+		'","'|| i.ATTRIBUTE7||
+		'","'|| i.ATTRIBUTE8||
+		'","'|| i.ATTRIBUTE9||
+		'","'|| i.ATTRIBUTE10||
+		'","'|| i.ATTRIBUTE11||
+		'","'|| i.ATTRIBUTE12||
+		'","'|| i.ATTRIBUTE13||
+		'","'|| i.ATTRIBUTE14||
+		'","'|| i.ATTRIBUTE15|| 
+		'","'|| i.capital_event_id||
+		'","'|| i.capital_event_name||
+		'","'|| i.capital_event_number||
+		'","'|| 'END'||'"');
+	  end if;
+	  lv_proj_level_flg:='Y';
+	END LOOP;
+  END LOOP;
+  utl_file.fclose(lc_file_handle);
+EXCEPTION
+  WHEN utl_file.access_denied THEN
+    lc_errormsg := ( 'Error in FBDI_PROJECT_ASSETS procedure :- ' ||
+    ' access_denied :: ' || SUBSTR (sqlerrm, 1, 3800) || SQLCODE );
+    print_debug_msg (lc_errormsg, true);
+    utl_file.fclose_all;
+    lc_file_handle := utl_file.fopen (l_file_path, l_file_name, 'W', 32767);
+    utl_file.fclose(lc_file_handle);
+  WHEN utl_file.delete_failed THEN
+    lc_errormsg := ( 'Error in FBDI_PROJECT_ASSETS procedure :- ' ||
+    ' delete_failed :: ' || SUBSTR (sqlerrm, 1, 3800) || SQLCODE );
+    print_debug_msg (lc_errormsg, true);
+    utl_file.fclose_all;
+    lc_file_handle := utl_file.fopen (l_file_path, l_file_name, 'W', 32767);
+    utl_file.fclose(lc_file_handle);
+  WHEN utl_file.file_open THEN
+    lc_errormsg := ( 'Error in FBDI_PROJECT_ASSETS procedure :- ' ||
+    ' file_open :: ' || SUBSTR (sqlerrm, 1, 3800) || SQLCODE );
+    print_debug_msg (lc_errormsg, true);
+    utl_file.fclose_all;
+    lc_file_handle := utl_file.fopen (l_file_path, l_file_name, 'W', 32767);
+    utl_file.fclose(lc_file_handle);
+  WHEN utl_file.internal_error THEN
+    lc_errormsg := ( 'Error in FBDI_PROJECT_ASSETS procedure :- ' ||
+    ' internal_error :: ' || SUBSTR (sqlerrm, 1, 3800) || SQLCODE );
+    print_debug_msg (lc_errormsg, true);
+    utl_file.fclose_all;
+    lc_file_handle := utl_file.fopen (l_file_path, l_file_name, 'W', 32767);
+    utl_file.fclose(lc_file_handle);
+  WHEN utl_file.invalid_filehandle THEN
+    lc_errormsg := ( 'Error in FBDI_PROJECT_ASSETS procedure:- ' ||
+    ' invalid_filehandle :: ' || SUBSTR (sqlerrm, 1, 3800) || SQLCODE );
+    print_debug_msg (lc_errormsg, true);
+    utl_file.fclose_all;
+    lc_file_handle := utl_file.fopen (l_file_path, l_file_name, 'W', 32767);
+    utl_file.fclose(lc_file_handle);
+  WHEN utl_file.invalid_filename THEN
+    lc_errormsg := ( 'Error in FBDI_PROJECT_ASSETS procedure :- ' ||
+    ' invalid_filename :: ' || SUBSTR (sqlerrm, 1, 3800) || SQLCODE );
+    print_debug_msg (lc_errormsg, true);
+    utl_file.fclose_all;
+    lc_file_handle := utl_file.fopen (l_file_path, l_file_name, 'W', 32767);
+    utl_file.fclose(lc_file_handle);
+  WHEN utl_file.invalid_maxlinesize THEN
+    lc_errormsg := ( 'Error in FBDI_PROJECT_ASSETS procedure :- ' ||
+    ' invalid_maxlinesize :: ' || SUBSTR (sqlerrm, 1, 3800) || SQLCODE );
+    print_debug_msg (lc_errormsg, true);
+    utl_file.fclose_all;
+    lc_file_handle := utl_file.fopen (l_file_path, l_file_name, 'W', 32767);
+    utl_file.fclose(lc_file_handle);
+  WHEN utl_file.invalid_mode THEN
+    lc_errormsg := ( 'Error in FBDI_PROJECT_ASSETS procedure :- ' ||
+    ' invalid_mode :: ' || SUBSTR (sqlerrm, 1, 3800) || SQLCODE );
+    print_debug_msg (lc_errormsg, true);
+    utl_file.fclose_all;
+    lc_file_handle := utl_file.fopen (l_file_path, l_file_name, 'W', 32767);
+    utl_file.fclose(lc_file_handle);
+  WHEN utl_file.invalid_offset THEN
+    lc_errormsg := ( 'Error in FBDI_PROJECT_ASSETS procedure :- ' ||
+    ' invalid_offset :: ' || SUBSTR (sqlerrm, 1, 3800) || SQLCODE );
+    print_debug_msg (lc_errormsg, true);
+    utl_file.fclose_all;
+    lc_file_handle := utl_file.fopen (l_file_path, l_file_name, 'W', 32767);
+    utl_file.fclose(lc_file_handle);
+  WHEN utl_file.invalid_operation THEN
+    lc_errormsg := ( 'Error in FBDI_PROJECT_ASSETS procedure :- ' ||
+    ' invalid_operation :: ' || SUBSTR (sqlerrm, 1, 3800) || SQLCODE );
+    print_debug_msg (lc_errormsg, true);
+    utl_file.fclose_all;
+    lc_file_handle := utl_file.fopen (l_file_path, l_file_name, 'W', 32767);
+    utl_file.fclose(lc_file_handle);
+  WHEN utl_file.invalid_path THEN
+    lc_errormsg := ( 'Error in FBDI_PROJECT_ASSETS procedure :- ' ||
+    ' invalid_path :: ' || SUBSTR (sqlerrm, 1, 3800) || SQLCODE );
+    print_debug_msg (lc_errormsg, true);
+    utl_file.fclose_all;
+    lc_file_handle := utl_file.fopen (l_file_path, l_file_name, 'W', 32767);
+    utl_file.fclose(lc_file_handle);
+  WHEN utl_file.read_error THEN
+    lc_errormsg := ( 'Error in FBDI_PROJECT_ASSETS procedure :- ' ||
+    ' read_error :: ' || SUBSTR (sqlerrm, 1, 3800) || SQLCODE );
+    print_debug_msg (lc_errormsg, true);
+    utl_file.fclose_all;
+    lc_file_handle := utl_file.fopen (l_file_path, l_file_name, 'W', 32767);
+    utl_file.fclose(lc_file_handle);
+  WHEN utl_file.rename_failed THEN
+    lc_errormsg := ( 'Error in FBDI_PROJECT_ASSETS procedure :- ' ||
+    ' rename_failed :: ' || SUBSTR (sqlerrm, 1, 3800) || SQLCODE );
+    print_debug_msg (lc_errormsg, true);
+    utl_file.fclose_all;
+    lc_file_handle := utl_file.fopen (l_file_path, l_file_name, 'W', 32767);
+    utl_file.fclose(lc_file_handle);
+  WHEN utl_file.write_error THEN
+    lc_errormsg := ( 'Error in FBDI_PROJECT_ASSETS procedure :- ' ||
+    ' write_error :: ' || SUBSTR (sqlerrm, 1, 3800) || SQLCODE );
+    print_debug_msg (lc_errormsg, true);
+    utl_file.fclose_all;
+    lc_file_handle := utl_file.fopen (l_file_path, l_file_name, 'W', 32767);
+    utl_file.fclose(lc_file_handle);
+  WHEN OTHERS THEN
+    lc_errormsg := ( 'Error in FBDI_PROJECT_ASSETS procedure :- ' ||
+    ' OTHERS :: ' || SUBSTR (sqlerrm, 1, 3800) || SQLCODE );
+    print_debug_msg (lc_errormsg, true);
+    utl_file.fclose_all;
+    lc_file_handle := utl_file.fopen (l_file_path, l_file_name, 'W', 32767);
+    utl_file.fclose(lc_file_handle);
+END fbdi_project_assets_yy;
+
+PROCEDURE fbdi_proj_asset_assignments_yy(p_proj_template VARCHAR2)
+IS
+
+CURSOR c_proj_asset_assign_yy_main
+IS
+SELECT DISTINCT
+      'CREATE_ASSET_ASSIGN' demo_create,
+      'Create' create_mode,
+      NULL Asset_Assignment_Id,
+      NULL project_asset_id,
+      'CONVERSION ASSET' asset_name,
+      NULL  asset_number,
+      'Project Level Assignment' asset_assigment_level,
+      NULL project_id,
+      NULL Project_Name,
+      prj.SEGMENT1 Project_Number,
+      NULL Task_Id,
+      NULL task_Name,
+      NULL task_number,
+	  null ATTRIBUTE_CATEGORY ,
+	  null ATTRIBUTE1         ,
+	  null ATTRIBUTE2         ,
+	  null ATTRIBUTE3         ,
+	  null ATTRIBUTE4         ,
+	  null ATTRIBUTE5         ,
+	  null ATTRIBUTE6         ,
+	  null ATTRIBUTE7         ,
+	  null ATTRIBUTE8         ,
+	  null ATTRIBUTE9         ,
+	  null ATTRIBUTE10        ,
+	  null ATTRIBUTE11        ,
+	  null ATTRIBUTE12        ,
+	  null ATTRIBUTE13        ,
+	  null ATTRIBUTE14        ,
+	  null ATTRIBUTE15     
+  FROM pa_project_assets_all ppa,
+       pa_tasks tsk,
+       pa_projects_all prj
+ WHERE 1=1
+   AND prj.template_flag            = 'N'
+   AND NVL(prj.closed_date,sysdate) > to_date('31-DEC-2018','dd-mon-yyyy')
+   AND (
+		    prj.segment1 NOT LIKE 'PB%'
+		AND prj.segment1 NOT LIKE 'NB%'
+		AND prj.segment1 NOT LIKE 'TEM%'
+	   )
+   AND prj.project_type NOT    IN ('PB_PROJECT','DI_PB_PROJECT')
+   AND prj.project_status_code IN ('APPROVED','CLOSED','1000')
+   AND prj.org_id              <>403
+   AND tsk.project_id          = prj.project_id
+   AND tsk.billable_flag='Y'
+   AND prj.created_from_project_id IN  (SELECT project_id
+										  FROM pa_projects_all
+										 WHERE template_flag='Y'
+										   AND name=NVL(p_proj_template,name)
+									   )
+   AND ppa.project_id=prj.project_id
+   AND ppa.project_asset_type = 'AS-BUILT'
+   AND EXISTS ( SELECT 'x'
+	  		      FROM PA_Project_Asset_Assignments paa,
+					   pa_project_assets_all ppa
+			     WHERE ppa.project_id=prj.project_id
+				   AND paa.project_id=ppa.project_id
+				   AND paa.project_asset_id=ppa.project_asset_id
+				   AND paa.task_id=tsk.task_id
+			  )   
+ORDER 
+   BY prj.segment1;  
+   
+  lc_file_handle utl_file.file_type;
+  lv_line_count NUMBER;
+  -- l_file_path   VARCHAR(200);
+  l_file_name  VARCHAR2(100);
+  lv_col_title VARCHAR2(5000);
+  l_file_path  VARCHAR2(500):='XXFIN_OUTBOUND';
+  lc_errormsg  VARCHAR2(1000);----            VARCHAR2(1000) := NULL;
+  lv_proj_level_flg varchar2(1):='N';
+BEGIN
+  print_debug_msg ('Package fbdi_proj_asset_assignments START', true);
+  l_file_name := 'fbdi_proj_asset_assignments_yy' || '.csv';--
+  lc_file_handle := utl_file.fopen('XXFIN_OUTBOUND', l_file_name, 'W', 32767);
+  lv_col_title   :='DEMO_CREATE'|| ','|| 'CREATE_MODE'|| ','||
+  'ASSET_ASSIGNMENT_ID'|| ','|| 'PROJECT_ASSET_ID'|| ','|| 'ASSET_NAME'|| ','||
+  'ASSET_NUMBER'|| ','|| 'ASSET_ASSIGMENT_LEVEL'|| ','|| 'PROJECT_ID'|| ','||
+  'PROJECT_NAME'|| ','|| 'PROJECT_NUMBER'|| ','|| 'TASK_ID'|| ','|| 'TASK_NAME'
+  || ','|| 'TASK_NUMBER' ;
+  --utl_file.put_line(lc_file_handle,lv_col_title);commenting column as we are generating direct FDBI file
+  
+  FOR i in c_proj_asset_assign_yy_main LOOP
+    
+	utl_file.put_line(lc_file_handle,'"'||i.DEMO_CREATE|| 
+    '","'|| i.CREATE_MODE||
+    '","'|| i.ASSET_ASSIGNMENT_ID||
+    '","'|| i.PROJECT_ASSET_ID||
+    '","'||i.ASSET_NAME||
+    '","'|| i.ASSET_NUMBER||
+    '","'|| i.ASSET_ASSIGMENT_LEVEL||
+    '","'|| i.PROJECT_ID||
+    '","'|| i.PROJECT_NAME||
+    '","'|| i.PROJECT_NUMBER||
+    '","'|| i.TASK_ID||
+    '","'|| i.TASK_NAME||
+    '","'|| i.task_number||
+    '","'|| i.ATTRIBUTE_CATEGORY||
+    '","'|| i.ATTRIBUTE1||
+    '","'|| i.ATTRIBUTE2||
+    '","'|| i.ATTRIBUTE3||
+    '","'|| i.ATTRIBUTE4||
+    '","'|| i.ATTRIBUTE5||
+    '","'|| i.ATTRIBUTE6||
+    '","'|| i.ATTRIBUTE7||
+    '","'|| i.ATTRIBUTE8||
+    '","'|| i.ATTRIBUTE9||
+    '","'|| i.ATTRIBUTE10||
+    '","'|| i.ATTRIBUTE11||
+    '","'|| i.ATTRIBUTE12||
+    '","'|| i.ATTRIBUTE13||
+    '","'|| i.ATTRIBUTE14||
+    '","'|| i.ATTRIBUTE15||
+     '","'|| 'END'||'"');
+  END LOOP;
+  utl_file.fclose(lc_file_handle);
+EXCEPTION
+  WHEN utl_file.access_denied THEN
+    lc_errormsg := ( 'Error in fbdi_proj_asset_assignments procedure :- ' ||
+    ' access_denied :: ' || SUBSTR (sqlerrm, 1, 3800) || SQLCODE );
+    print_debug_msg (lc_errormsg, true);
+    utl_file.fclose_all;
+    lc_file_handle := utl_file.fopen (l_file_path, l_file_name, 'W', 32767);
+    utl_file.fclose(lc_file_handle);
+  WHEN utl_file.delete_failed THEN
+    lc_errormsg := ( 'Error in fbdi_proj_asset_assignments procedure :- ' ||
+    ' delete_failed :: ' || SUBSTR (sqlerrm, 1, 3800) || SQLCODE );
+    print_debug_msg (lc_errormsg, true);
+    utl_file.fclose_all;
+    lc_file_handle := utl_file.fopen (l_file_path, l_file_name, 'W', 32767);
+    utl_file.fclose(lc_file_handle);
+  WHEN utl_file.file_open THEN
+    lc_errormsg := ( 'Error in fbdi_proj_asset_assignments procedure :- ' ||
+    ' file_open :: ' || SUBSTR (sqlerrm, 1, 3800) || SQLCODE );
+    print_debug_msg (lc_errormsg, true);
+    utl_file.fclose_all;
+    lc_file_handle := utl_file.fopen (l_file_path, l_file_name, 'W', 32767);
+    utl_file.fclose(lc_file_handle);
+  WHEN utl_file.internal_error THEN
+    lc_errormsg := ( 'Error in fbdi_proj_asset_assignments procedure :- ' ||
+    ' internal_error :: ' || SUBSTR (sqlerrm, 1, 3800) || SQLCODE );
+    print_debug_msg (lc_errormsg, true);
+    utl_file.fclose_all;
+    lc_file_handle := utl_file.fopen (l_file_path, l_file_name, 'W', 32767);
+    utl_file.fclose(lc_file_handle);
+  WHEN utl_file.invalid_filehandle THEN
+    lc_errormsg := ( 'Error in fbdi_proj_asset_assignments procedure:- ' ||
+    ' invalid_filehandle :: ' || SUBSTR (sqlerrm, 1, 3800) || SQLCODE );
+    print_debug_msg (lc_errormsg, true);
+    utl_file.fclose_all;
+    lc_file_handle := utl_file.fopen (l_file_path, l_file_name, 'W', 32767);
+    utl_file.fclose(lc_file_handle);
+  WHEN utl_file.invalid_filename THEN
+    lc_errormsg := ( 'Error in fbdi_proj_asset_assignments procedure :- ' ||
+    ' invalid_filename :: ' || SUBSTR (sqlerrm, 1, 3800) || SQLCODE );
+    print_debug_msg (lc_errormsg, true);
+    utl_file.fclose_all;
+    lc_file_handle := utl_file.fopen (l_file_path, l_file_name, 'W', 32767);
+    utl_file.fclose(lc_file_handle);
+  WHEN utl_file.invalid_maxlinesize THEN
+    lc_errormsg := ( 'Error in fbdi_proj_asset_assignments procedure :- ' ||
+    ' invalid_maxlinesize :: ' || SUBSTR (sqlerrm, 1, 3800) || SQLCODE );
+    print_debug_msg (lc_errormsg, true);
+    utl_file.fclose_all;
+    lc_file_handle := utl_file.fopen (l_file_path, l_file_name, 'W', 32767);
+    utl_file.fclose(lc_file_handle);
+  WHEN utl_file.invalid_mode THEN
+    lc_errormsg := ( 'Error in fbdi_proj_asset_assignments procedure :- ' ||
+    ' invalid_mode :: ' || SUBSTR (sqlerrm, 1, 3800) || SQLCODE );
+    print_debug_msg (lc_errormsg, true);
+    utl_file.fclose_all;
+    lc_file_handle := utl_file.fopen (l_file_path, l_file_name, 'W', 32767);
+    utl_file.fclose(lc_file_handle);
+  WHEN utl_file.invalid_offset THEN
+    lc_errormsg := ( 'Error in fbdi_proj_asset_assignments procedure :- ' ||
+    ' invalid_offset :: ' || SUBSTR (sqlerrm, 1, 3800) || SQLCODE );
+    print_debug_msg (lc_errormsg, true);
+    utl_file.fclose_all;
+    lc_file_handle := utl_file.fopen (l_file_path, l_file_name, 'W', 32767);
+    utl_file.fclose(lc_file_handle);
+  WHEN utl_file.invalid_operation THEN
+    lc_errormsg := ( 'Error in fbdi_proj_asset_assignments procedure :- ' ||
+    ' invalid_operation :: ' || SUBSTR (sqlerrm, 1, 3800) || SQLCODE );
+    print_debug_msg (lc_errormsg, true);
+    utl_file.fclose_all;
+    lc_file_handle := utl_file.fopen (l_file_path, l_file_name, 'W', 32767);
+    utl_file.fclose(lc_file_handle);
+  WHEN utl_file.invalid_path THEN
+    lc_errormsg := ( 'Error in fbdi_proj_asset_assignments procedure :- ' ||
+    ' invalid_path :: ' || SUBSTR (sqlerrm, 1, 3800) || SQLCODE );
+    print_debug_msg (lc_errormsg, true);
+    utl_file.fclose_all;
+    lc_file_handle := utl_file.fopen (l_file_path, l_file_name, 'W', 32767);
+    utl_file.fclose(lc_file_handle);
+  WHEN utl_file.read_error THEN
+    lc_errormsg := ( 'Error in fbdi_proj_asset_assignments procedure :- ' ||
+    ' read_error :: ' || SUBSTR (sqlerrm, 1, 3800) || SQLCODE );
+    print_debug_msg (lc_errormsg, true);
+    utl_file.fclose_all;
+    lc_file_handle := utl_file.fopen (l_file_path, l_file_name, 'W', 32767);
+    utl_file.fclose(lc_file_handle);
+  WHEN utl_file.rename_failed THEN
+    lc_errormsg := ( 'Error in fbdi_proj_asset_assignments procedure :- ' ||
+    ' rename_failed :: ' || SUBSTR (sqlerrm, 1, 3800) || SQLCODE );
+    print_debug_msg (lc_errormsg, true);
+    utl_file.fclose_all;
+    lc_file_handle := utl_file.fopen (l_file_path, l_file_name, 'W', 32767);
+    utl_file.fclose(lc_file_handle);
+  WHEN utl_file.write_error THEN
+    lc_errormsg := ( 'Error in fbdi_proj_asset_assignments procedure :- ' ||
+    ' write_error :: ' || SUBSTR (sqlerrm, 1, 3800) || SQLCODE );
+    print_debug_msg (lc_errormsg, true);
+    utl_file.fclose_all;
+    lc_file_handle := utl_file.fopen (l_file_path, l_file_name, 'W', 32767);
+    utl_file.fclose(lc_file_handle);
+  WHEN OTHERS THEN
+    lc_errormsg := ( 'Error in fbdi_proj_asset_assignments procedure :- ' ||
+    ' OTHERS :: ' || SUBSTR (sqlerrm, 1, 3800) || SQLCODE );
+    print_debug_msg (lc_errormsg, true);
+    utl_file.fclose_all;
+    lc_file_handle := utl_file.fopen (l_file_path, l_file_name, 'W', 32767);
+    utl_file.fclose(lc_file_handle);
+END fbdi_proj_asset_assignments_yy;
+
+
 PROCEDURE fbdi_proj_exp_cap_yn(
     p_proj_template VARCHAR2)
 IS
@@ -586,9 +1818,9 @@ IS
       NULL businessunitid,
       user_transaction_source transactionsource,
       NULL transactionsourceid,
-      'Conversion' document,
+      user_transaction_source document,
       NULL documentid,
-      'Conversion' documententry,
+      user_transaction_source documententry,
       NULL documententryid,
       'Conversion' expenditurebatch,
       NULL batchendingdate,
@@ -626,22 +1858,25 @@ IS
     NULL funding_source_name ,
     '1' quantity,
     NULL unit_of_measure_name ,
-    NVL(expd.unit_of_measure,'DOLLARS') unit_of_measure_code,
+    NVL(expd.unit_of_measure,'USD') unit_of_measure_code,
     NULL worktype,
     NULL worktypeid,
-    expd.billable_flag billable,
-    DECODE(SUBSTR(task.task_number,1,2),'02','Y','N') capitalizable,
+    'N' billable,  -- changed as per Rebecca
+    DECODE(SUBSTR(task.task_number,1,2),'01','N','Y') capitalizable,
     NULL accrual_item ,
     expd.expenditure_item_id orig_transaction_reference,
-    NULL unmatchednegativetransaction,
+    --NULL unmatchednegativetransaction,
+	DECODE(SIGN(raw_cost),-1,'Y',NULL) unmatchednegativetransaction,
     NULL reversedoriginaltransaction,
     REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(ec.expenditure_comment,chr(13), ''), chr(10
     ), ''),chr(39),''),chr(63),''),CHR(34),'') AS expenditureitemcomment,
-    TO_CHAR(expd.expenditure_item_date,'YYYY/MM/DD') accountingdate,
+    -- for sit only TO_CHAR(expd.expenditure_item_date,'YYYY/MM/DD') accountingdate,
+	'2020/03/05' accountingdate,
     expd.project_currency_code transactioncurrencycode,
     NULL transactioncurrency,
     raw_cost rawcostintrxcurrency,
-    burden_cost_rate burdenedcostintrxcurrency,
+    --burden_cost_rate burdenedcostintrxcurrency,
+	NULL burdenedcostintrxcurrency,
     NULL rawcostcreditccid,
     /*Commented by Priyam for EBS to Cloud segment Change
     (SELECT gl_code_combinations.concatenated_segments
@@ -715,7 +1950,7 @@ IS
     NULL reservedattribute8,
     NULL reservedattribute9,
     NULL reservedattribute10,
-    expd.attribute_category attributecategory,
+    DECODE(expd.org_id,404,'OD US Fin BU',403, 'OD CA Fin BU') attributecategory ,
     expd.attribute1 attribute1,
     expd.attribute2 attribute2,
     expd.attribute3 attribute3,
@@ -772,7 +2007,7 @@ IS
   WHERE
     1                              =1
   AND prj.template_flag            = 'N'
-  AND NVL(prj.closed_date,sysdate) > to_date('30-JUN-2018','dd-mon-yyyy')
+  AND NVL(prj.closed_date,sysdate) > to_date('31-DEC-2018','dd-mon-yyyy')
   AND
     (
       prj.segment1 NOT LIKE 'PB%'
@@ -808,14 +2043,13 @@ IS
   AND ec.expenditure_item_id=expd.expenditure_item_id
     -- Begin Added for pstgb
   AND prj.created_from_project_id IN
-    (
+  (
       SELECT
         project_id
       FROM
         pa_projects_all
-      WHERE
-        template_flag='Y'
-      AND name       =NVL(p_proj_template,name)--'US IT Template - Labor Only'
+      WHERE template_flag='Y'
+        AND name       =NVL(p_proj_template,name)--'US IT Template - Labor Only'
     )
     -- End added for PSTGB
   ORDER BY
@@ -829,6 +2063,7 @@ IS
   lv_col_title VARCHAR2(5000);
   l_file_path  VARCHAR2(500):='XXFIN_OUTBOUND';
   lc_errormsg  VARCHAR2(1000);----            VARCHAR2(1000) := NULL;
+  lc_rawcostcreditaccount VARCHAR2(100);
 BEGIN
   /* BEGIN
   SELECT directory_path
@@ -840,9 +2075,7 @@ BEGIN
   l_file_path := NULL;
   END;*/
   print_debug_msg ('Package fbdi_Proj_Exp_Cap_YN START', true);
-  --- print_debug_msg ('P_BOOK_TYPE_CODE '||P_BOOK_TYPE_CODE, TRUE);
   l_file_name := 'fbdi_ProjectExpenditure_Capitalizable_YN' || '.csv';--
-  -- GENERIC_TAX_CHILD_ASSET_HDR
   lc_file_handle := utl_file.fopen('XXFIN_OUTBOUND', l_file_name, 'W', 32767);
   lv_col_title   :='TRANSACTIONTYPE'|| ','|| 'BUSINESSUNITNAME'|| ','||
   'BUSINESSUNITID'|| ','|| 'TRANSACTIONSOURCE'|| ','|| 'TRANSACTIONSOURCEID'||
@@ -890,6 +2123,12 @@ BEGIN
   utl_file.put_line(lc_file_handle,lv_col_title);
   FOR i IN c_fbdi_yn
   LOOP
+    lc_rawcostcreditaccount:=NULL;
+	IF i.transactionsource LIKE '%Payables%' THEN
+	   lc_rawcostcreditaccount:='1150.43.00000.211143.10000.0000';
+	ELSE
+	   lc_rawcostcreditaccount:=i.rawcostcreditaccount;
+	END IF;
     ---UTL_FILE.put_line(lc_file_handle,'HI');
     utl_file.put_line(lc_file_handle,'"'||i.transactiontype|| '","'||
     i.businessunitname|| '","'|| i.businessunitid|| '","'|| i.transactionsource
@@ -913,7 +2152,7 @@ BEGIN
     '","'|| i.accountingdate|| '","'|| i.transactioncurrencycode|| '","'||
     i.transactioncurrency|| '","'|| i.rawcostintrxcurrency|| '","'||
     i.burdenedcostintrxcurrency|| '","'|| i.rawcostcreditccid|| '","'||
-    i.rawcostcreditaccount|| '","'|| i.rawcostdebitccid|| '","'||
+    lc_rawcostcreditaccount|| '","'|| i.rawcostdebitccid|| '","'||
     i.rawcostdebitaccount|| '","'|| i.burdenedcostcreditccid|| '","'||
     i.burdenedcostcreditaccount|| '","'|| i.burdenedcostdebitccid|| '","'||
     i.burdenedcostdebitaccount|| '","'|| i.burdencostdebitccid|| '","'||
@@ -1059,9 +2298,9 @@ IS
       NULL businessunitid,
       user_transaction_source transactionsource,
       NULL transactionsourceid,
-      'Conversion' document,
+      user_transaction_source document,
       NULL documentid,
-      'Conversion' documententry,
+      user_transaction_source documententry,
       NULL documententryid,
       'Conversion' expenditurebatch,
       NULL batchendingdate,
@@ -1099,22 +2338,25 @@ IS
     NULL funding_source_name ,
     '1' quantity,
     NULL unit_of_measure_name ,
-    NVL(expd.unit_of_measure,'DOLLARS') unit_of_measure_code,
+    NVL(expd.unit_of_measure,'USD') unit_of_measure_code,
     NULL worktype,
     NULL worktypeid,
-    expd.billable_flag billable,
-    DECODE(SUBSTR(task.task_number,1,2),'02','Y','N') capitalizable,
+    'N' billable,   -- changed as per Rebecca
+    DECODE(SUBSTR(task.task_number,1,2),'01','N','Y') capitalizable,
     NULL accrual_item ,
     expd.expenditure_item_id orig_transaction_reference,
-    NULL unmatchednegativetransaction,
+    --NULL unmatchednegativetransaction,
+	DECODE(SIGN(raw_cost),-1,'Y',NULL) unmatchednegativetransaction,
     NULL reversedoriginaltransaction,
     REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(ec.expenditure_comment,chr(13), ''), chr(10
     ), ''),chr(39),''),chr(63),''),CHR(34),'') AS expenditureitemcomment,
-    TO_CHAR(expd.expenditure_item_date,'YYYY/MM/DD') accountingdate,
+    --For sit only TO_CHAR(expd.expenditure_item_date,'YYYY/MM/DD') accountingdate,
+	'2020/03/05' accountingdate,
     expd.project_currency_code transactioncurrencycode,
     NULL transactioncurrency,
     raw_cost rawcostintrxcurrency,
-    burden_cost_rate burdenedcostintrxcurrency,
+    --burden_cost_rate burdenedcostintrxcurrency,
+	NULL burdenedcostintrxcurrency,
     NULL rawcostcreditccid,
     /*Commented by Priyam for EBS to Cloud segment Change
     (SELECT gl_code_combinations.concatenated_segments
@@ -1190,7 +2432,7 @@ IS
     NULL reservedattribute8,
     NULL reservedattribute9,
     NULL reservedattribute10,
-    expd.attribute_category attributecategory,
+    DECODE(expd.org_id,404,'OD US Fin BU',403, 'OD CA Fin BU') attributecategory ,
     expd.attribute1 attribute1,
     expd.attribute2 attribute2,
     expd.attribute3 attribute3,
@@ -1247,7 +2489,7 @@ IS
   WHERE
     1                              =1
   AND prj.template_flag            = 'N'
-  AND NVL(prj.closed_date,sysdate) > to_date('30-JUN-2018','dd-mon-yyyy')
+  AND NVL(prj.closed_date,sysdate) > to_date('31-DEC-2018','dd-mon-yyyy')
   AND
     (
       prj.segment1 NOT LIKE 'PB%'
@@ -1283,14 +2525,13 @@ IS
   AND ec.expenditure_item_id=expd.expenditure_item_id
     -- Begin Added for pstgb
   AND prj.created_from_project_id IN
-    (
+  (
       SELECT
         project_id
       FROM
         pa_projects_all
-      WHERE
-        template_flag='Y'
-      AND name       =NVL(p_proj_template,name)--'US IT Template - Labor Only'
+      WHERE template_flag='Y'
+        AND name       =NVL(p_proj_template,name)--'US IT Template - Labor Only'
     )
     -- End added for PSTGB
   ORDER BY
@@ -1304,6 +2545,7 @@ IS
   lv_col_title VARCHAR2(5000);
   l_file_path  VARCHAR2(500):='XXFIN_OUTBOUND';
   lc_errormsg  VARCHAR2(1000);----            VARCHAR2(1000) := NULL;
+  lc_rawcostcreditaccount VARCHAR2(100);
 BEGIN
   /* BEGIN
   SELECT directory_path
@@ -1314,10 +2556,8 @@ BEGIN
   WHEN OTHERS THEN
   l_file_path := NULL;
   END;*/
-  print_debug_msg ('Package GENERIC_TAX_CHILD_ASSET_HDR START', true);
-  -- print_debug_msg ('P_BOOK_TYPE_CODE '||P_BOOK_TYPE_CODE, TRUE);
+  print_debug_msg ('Package fbdi_Proj_Exp_Cap_YY START', true);
   l_file_name := 'fbdi_ProjectExpenditure_capitalized_YY' || '.csv';--
-  -- GENERIC_TAX_CHILD_ASSET_HDR
   lc_file_handle := utl_file.fopen('XXFIN_OUTBOUND', l_file_name, 'W', 32767);
   lv_col_title   :='TRANSACTIONTYPE'|| ','|| 'BUSINESSUNITNAME'|| ','||
   'BUSINESSUNITID'|| ','|| 'TRANSACTIONSOURCE'|| ','|| 'TRANSACTIONSOURCEID'||
@@ -1365,7 +2605,14 @@ BEGIN
   utl_file.put_line(lc_file_handle,lv_col_title);
   FOR i IN c_proj_yy
   LOOP
-    ---UTL_FILE.put_line(lc_file_handle,'HI');
+
+    lc_rawcostcreditaccount:=NULL;
+	IF i.transactionsource LIKE '%Payables%' THEN
+	   lc_rawcostcreditaccount:='1150.43.00000.211143.10000.0000';
+	ELSE
+	   lc_rawcostcreditaccount:=i.rawcostcreditaccount;
+	END IF;
+	
     utl_file.put_line(lc_file_handle,'"'||i.transactiontype|| '","'||
     i.businessunitname|| '","'|| i.businessunitid|| '","'|| i.transactionsource
     || '","'|| i.transactionsourceid|| '","'|| i.document|| '","'||
@@ -1388,7 +2635,7 @@ BEGIN
     '","'|| i.accountingdate|| '","'|| i.transactioncurrencycode|| '","'||
     i.transactioncurrency|| '","'|| i.rawcostintrxcurrency|| '","'||
     i.burdenedcostintrxcurrency|| '","'|| i.rawcostcreditccid|| '","'||
-    i.rawcostcreditaccount|| '","'|| i.rawcostdebitccid|| '","'||
+    lc_rawcostcreditaccount|| '","'|| i.rawcostdebitccid|| '","'||
     i.rawcostdebitaccount|| '","'|| i.burdenedcostcreditccid|| '","'||
     i.burdenedcostcreditaccount|| '","'|| i.burdenedcostdebitccid|| '","'||
     i.burdenedcostdebitaccount|| '","'|| i.burdencostdebitccid|| '","'||
@@ -1534,9 +2781,9 @@ IS
       NULL businessunitid,
       user_transaction_source transactionsource,
       NULL transactionsourceid,
-      'Conversion' document,
+      user_transaction_source document,
       NULL documentid,
-      'Conversion' documententry,
+      user_transaction_source documententry,
       NULL documententryid,
       'Conversion' expenditurebatch,
       NULL batchendingdate,
@@ -1574,22 +2821,25 @@ IS
     NULL funding_source_name ,
     '1' quantity,
     NULL unit_of_measure_name ,
-    NVL(expd.unit_of_measure,'DOLLARS') unit_of_measure_code,
+    NVL(expd.unit_of_measure,'USD') unit_of_measure_code,
     NULL worktype,
     NULL worktypeid,
-    expd.billable_flag billable,
-    DECODE(SUBSTR(task.task_number,1,2),'02','Y','N') capitalizable,
-    NULL accrual_item ,
+    'N' billable,  -- change as per billable
+    DECODE(SUBSTR(task.task_number,1,2),'01','N','Y') capitalizable,
+    NULL accrual_item,
     expd.expenditure_item_id orig_transaction_reference,
-    NULL unmatchednegativetransaction,
+    --NULL unmatchednegativetransaction,   -- change
+	DECODE(SIGN(raw_cost),-1,'Y',NULL)  unmatchednegativetransaction,
     NULL reversedoriginaltransaction,
     REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(ec.expenditure_comment,chr(13), ''), chr(10
     ), ''),chr(39),''),chr(63),''),CHR(34),'') AS expenditureitemcomment,
-    TO_CHAR(expd.expenditure_item_date,'YYYY/MM/DD') accountingdate,
+    --For SIT Only TO_CHAR(expd.expenditure_item_date,'YYYY/MM/DD') accountingdate,
+	'2020/03/05' accountingdate,
     expd.project_currency_code transactioncurrencycode,
     NULL transactioncurrency,
-    raw_cost rawcostintrxcurrency,
-    burden_cost_rate burdenedcostintrxcurrency,
+    raw_cost rawcostintrxcurrency,  -- change
+    --burden_cost_rate burdenedcostintrxcurrency,
+	NULL burdenedcostintrxcurrency,
     NULL rawcostcreditccid,
     /*Commented by Priyam for EBS to Cloud segment Change
     (SELECT gl_code_combinations.concatenated_segments
@@ -1665,7 +2915,7 @@ IS
     NULL reservedattribute8,
     NULL reservedattribute9,
     NULL reservedattribute10,
-    expd.attribute_category attributecategory,
+    DECODE(expd.org_id,404,'OD US Fin BU',403, 'OD CA Fin BU') attributecategory ,
     expd.attribute1 attribute1,
     expd.attribute2 attribute2,
     expd.attribute3 attribute3,
@@ -1722,7 +2972,7 @@ IS
   WHERE
     1                              =1
   AND prj.template_flag            = 'N'
-  AND NVL(prj.closed_date,sysdate) > to_date('30-JUN-2018','dd-mon-yyyy')
+  AND NVL(prj.closed_date,sysdate) > to_date('31-DEC-2018','dd-mon-yyyy')
   AND
     (
       prj.segment1 NOT LIKE 'PB%'
@@ -1758,14 +3008,13 @@ IS
   AND ec.expenditure_item_id=expd.expenditure_item_id
     -- Begin Added for pstgb
   AND prj.created_from_project_id IN
-    (
+  (
       SELECT
         project_id
       FROM
         pa_projects_all
-      WHERE
-        template_flag='Y'
-      AND name       =NVL(p_proj_template,name)--'US IT Template - Labor Only'
+      WHERE template_flag='Y'
+        AND name       =NVL(p_proj_template,name)--'US IT Template - Labor Only'
     )
     -- End added for PSTGB
   ORDER BY
@@ -1779,6 +3028,7 @@ IS
   lv_col_title VARCHAR2(5000);
   l_file_path  VARCHAR2(500):='XXFIN_OUTBOUND';
   lc_errormsg  VARCHAR2(1000);----            VARCHAR2(1000) := NULL;
+  lc_rawcostcreditaccount VARCHAR2(100);
 BEGIN
   /* BEGIN
   SELECT directory_path
@@ -1789,10 +3039,8 @@ BEGIN
   WHEN OTHERS THEN
   l_file_path := NULL;
   END;*/
-  print_debug_msg ('Package GENERIC_TAX_CHILD_ASSET_HDR START', true);
-  ---  print_debug_msg ('P_BOOK_TYPE_CODE '||P_BOOK_TYPE_CODE, TRUE);
+  print_debug_msg ('Package fbdi_proj_exp_nei_nn START', true);
   l_file_name := 'fbdi_ProjectExpenditure_Neither_NN' || '.csv';--
-  -- GENERIC_TAX_CHILD_ASSET_HDR
   lc_file_handle := utl_file.fopen('XXFIN_OUTBOUND', l_file_name, 'W', 32767);
   lv_col_title   :='TRANSACTIONTYPE'|| ','|| 'BUSINESSUNITNAME'|| ','||
   'BUSINESSUNITID'|| ','|| 'TRANSACTIONSOURCE'|| ','|| 'TRANSACTIONSOURCEID'||
@@ -1840,7 +3088,14 @@ BEGIN
   utl_file.put_line(lc_file_handle,lv_col_title);
   FOR i IN c_proj_nn
   LOOP
-    ---UTL_FILE.put_line(lc_file_handle,'HI');
+	
+    lc_rawcostcreditaccount:=NULL;
+	IF i.transactionsource LIKE '%Payables%' THEN
+	   lc_rawcostcreditaccount:='1150.43.00000.211143.10000.0000';
+	ELSE
+	   lc_rawcostcreditaccount:=i.rawcostcreditaccount;
+	END IF;
+	
     utl_file.put_line(lc_file_handle,'"'||i.transactiontype|| '","'||
     i.businessunitname|| '","'|| i.businessunitid|| '","'|| i.transactionsource
     || '","'|| i.transactionsourceid|| '","'|| i.document|| '","'||
@@ -1863,7 +3118,7 @@ BEGIN
     '","'|| i.accountingdate|| '","'|| i.transactioncurrencycode|| '","'||
     i.transactioncurrency|| '","'|| i.rawcostintrxcurrency|| '","'||
     i.burdenedcostintrxcurrency|| '","'|| i.rawcostcreditccid|| '","'||
-    i.rawcostcreditaccount|| '","'|| i.rawcostdebitccid|| '","'||
+    lc_rawcostcreditaccount|| '","'|| i.rawcostdebitccid|| '","'||
     i.rawcostdebitaccount|| '","'|| i.burdenedcostcreditccid|| '","'||
     i.burdenedcostcreditaccount|| '","'|| i.burdenedcostdebitccid|| '","'||
     i.burdenedcostdebitaccount|| '","'|| i.burdencostdebitccid|| '","'||
@@ -2024,9 +3279,10 @@ IS
       TO_CHAR(i.Start_Date,'YYYY/MM/DD') start_date ,
       TO_CHAR(i.end_date,'YYYY/MM/DD') Finish_Date ,
       i.project_currency_code Planning_Currency ,
-      i.quantity ,
-      i.raw_cost Total_Raw_Cost ,
-      i.burdened_cost total_burdened_cost ,
+     -- i.quantity ,
+	  null quantity,
+      NVL(i.raw_cost,0) Total_Raw_Cost,
+      NULL total_burdened_cost ,    -- based on comments by PWC
       i.revenue Total_Revenue ,
       NULL Tot_Raw_Cost_Proj_Curr ,
       NULL Tot_Burden_Cost_Proj_Curr ,
@@ -2065,7 +3321,7 @@ IS
     WHERE
       1                              =1
     AND pap.template_flag            = 'N'
-    AND NVL(pap.closed_date,sysdate) > to_date('30-JUN-2018','dd-mon-yyyy')
+    AND NVL(pap.closed_date,sysdate) > to_date('31-DEC-2018','dd-mon-yyyy')
     AND
       (
         pap.segment1 NOT LIKE 'PB%'
@@ -2097,17 +3353,11 @@ IS
       )
     AND bv.fin_plan_type_id = pln.fin_plan_type_id (+)
       -- Begin Added for pstgb
-    AND pap.created_from_project_id IN
-      (
-        SELECT
-          project_id
-        FROM
-          pa_projects_all
-        WHERE
-          template_flag='Y'
-        AND name       =NVL(p_proj_template,name)--'US IT Template - Labor Only
-          -- '
-      )
+    AND pap.created_from_project_id IN ( SELECT project_id
+										   FROM pa_projects_all
+										  WHERE template_flag='Y'
+										    AND name=NVL(p_proj_template,name)--'US IT Template - Labor Only'
+									   )
     -- End added for PSTGB
   ORDER BY
     pap.segment1,
@@ -2121,8 +3371,7 @@ IS
   lc_errormsg  VARCHAR2(1000);----            VARCHAR2(1000) := NULL;
 BEGIN
   print_debug_msg ('Package fbdi_pa_budgets START', true);
-  ---  print_debug_msg ('P_BOOK_TYPE_CODE '||P_BOOK_TYPE_CODE, TRUE);
-  l_file_name    := 'fbdi_pa_budgets' || '.csv';--GENERIC_TAX_CHILD_ASSET_HDR
+  l_file_name    := 'fbdi_pa_budgets' || '.csv';
   lc_file_handle := utl_file.fopen('XXFIN_OUTBOUND', l_file_name, 'W', 32767);
   lv_col_title   :='AWARD_NUMBER'|| ','|| 'FINANCIAL_PLAN_TYPE'|| ','||
   'PROJECT_NUMBER'|| ','|| 'PROJECT_NAME'|| ','|| 'TASK_NUMBER'|| ','||
@@ -2143,7 +3392,7 @@ BEGIN
   utl_file.put_line(lc_file_handle,lv_col_title);
   FOR i IN c_proj_budget
   LOOP
-    ---UTL_FILE.put_line(lc_file_handle,'HI');
+    
     utl_file.put_line(lc_file_handle,'"'||i.award_number|| '","'||
     i.financial_plan_type|| '","'|| i.project_number|| '","'|| i.project_name||
     '","'|| i.task_number || '","'|| i.task_name|| '","'|| i.version_name||
@@ -2301,7 +3550,7 @@ IS
     WHERE
       1                               =1
     AND proj.template_flag            = 'N'
-    AND NVL(proj.closed_date,sysdate) > to_date('30-JUN-2018','dd-mon-yyyy')
+    AND NVL(proj.closed_date,sysdate) > to_date('31-DEC-2018','dd-mon-yyyy')
     AND
       (
         proj.segment1 NOT LIKE 'PB%'
@@ -2343,7 +3592,6 @@ BEGIN
   print_debug_msg ('Package fbdi_proj_asset_assignments START', true);
   ---  print_debug_msg ('P_BOOK_TYPE_CODE '||P_BOOK_TYPE_CODE, TRUE);
   l_file_name := 'fbdi_proj_asset_assignments' || '.csv';--
-  -- GENERIC_TAX_CHILD_ASSET_HDR
   lc_file_handle := utl_file.fopen('XXFIN_OUTBOUND', l_file_name, 'W', 32767);
   lv_col_title   :='DEMO_CREATE'|| ','|| 'CREATE_MODE'|| ','||
   'ASSET_ASSIGNMENT_ID'|| ','|| 'PROJECT_ASSET_ID'|| ','|| 'ASSET_NAME'|| ','||
@@ -2486,7 +3734,7 @@ IS
       1                   = 1
     AND pap.template_flag = 'N'
       --   and NVL(pap.closed_date,sysdate) > add_months(sysdate,-6)
-    AND NVL(pap.closed_date,sysdate) > to_date('30-JUN-2018','dd-mon-yyyy')
+    AND NVL(pap.closed_date,sysdate) > to_date('31-DEC-2018','dd-mon-yyyy')
     AND pap.template_flag            = 'N'
     AND
       (
@@ -2499,17 +3747,11 @@ IS
     AND pap.project_status_code IN ('APPROVED','CLOSED','1000')
     AND org.organization_id      =pap.carrying_out_organization_id
       -- Begin Added for pstgb
-    AND pap.created_from_project_id IN
-      (
-        SELECT
-          project_id
-        FROM
-          pa_projects_all
-        WHERE
-          template_flag='Y'
-        AND name       =NVL(p_proj_template,name)--'US IT Template - Labor Only
-          -- '
-      )
+    AND pap.created_from_project_id IN ( SELECT project_id
+										   FROM pa_projects_all
+                                          WHERE template_flag='Y'
+                                            AND name=NVL(p_proj_template,name)--'US IT Template - Labor Only'
+									   )
     -- End added for PSTGB
   ORDER BY
     pap.segment1;
@@ -2522,9 +3764,7 @@ IS
   lc_errormsg  VARCHAR2(1000);----            VARCHAR2(1000) := NULL;
 BEGIN
   print_debug_msg ('Package fbdi_proj_classif_lob START', true);
-  ---  print_debug_msg ('P_BOOK_TYPE_CODE '||P_BOOK_TYPE_CODE, TRUE);
   l_file_name := 'fbdi_proj_classif_lob' || '.csv';--
-  -- GENERIC_TAX_CHILD_ASSET_HDR
   lc_file_handle := utl_file.fopen('XXFIN_OUTBOUND', l_file_name, 'W', 32767);
   lv_col_title   :='PROJECT_NAME'|| ','|| 'CLASS_CATEGORY'|| ','|| 'CLASS_CODE'
   || ','|| 'CODE_PERCENTAGE';
@@ -2660,7 +3900,7 @@ IS
     WHERE
       1                              = 1
     AND pap.template_flag            = 'N'
-    AND NVL(pap.closed_date,sysdate) > to_date('30-JUN-2018','dd-mon-yyyy')
+    AND NVL(pap.closed_date,sysdate) > to_date('31-DEC-2018','dd-mon-yyyy')
     AND pap.template_flag            = 'N'
     AND
       (
@@ -2673,17 +3913,11 @@ IS
     AND pap.project_status_code IN ('APPROVED','CLOSED','1000')
     AND ppc.project_id           =pap.project_id
       -- Begin Added for pstgb
-    AND pap.created_from_project_id IN
-      (
-        SELECT
-          project_id
-        FROM
-          pa_projects_all
-        WHERE
-          template_flag='Y'
-        AND name       =NVL(p_proj_template,name)--'US IT Template - Labor Only
-          -- '
-      )
+    AND pap.created_from_project_id IN ( SELECT project_id
+                                           FROM pa_projects_all
+                                          WHERE template_flag='Y'
+                                            AND name       =NVL(p_proj_template,name)
+									   )
     -- End added for PSTGB
     --   and ppc.class_code is not null
   ORDER BY
@@ -2697,9 +3931,7 @@ IS
   lc_errormsg  VARCHAR2(1000);----            VARCHAR2(1000) := NULL;
 BEGIN
   print_debug_msg ('Package fbdi_proj_classification START', true);
-  ---  print_debug_msg ('P_BOOK_TYPE_CODE '||P_BOOK_TYPE_CODE, TRUE);
   l_file_name := 'fbdi_proj_classification' || '.csv';--
-  -- GENERIC_TAX_CHILD_ASSET_HDR
   lc_file_handle := utl_file.fopen('XXFIN_OUTBOUND', l_file_name, 'W', 32767);
   lv_col_title   :='PROJECT_NAME'|| ','|| 'CLASS_CATEGORY'|| ','|| 'CLASS_CODE'
   || ','|| 'CODE_PERCENTAGE';
@@ -2818,6 +4050,7 @@ WHEN OTHERS THEN
   lc_file_handle := utl_file.fopen (l_file_path, l_file_name, 'W', 32767);
   utl_file.fclose(lc_file_handle);
 END fbdi_proj_classification;
+/*
 PROCEDURE fbdi_proj_team_members(
     p_proj_template VARCHAR2)
 IS
@@ -2829,7 +4062,8 @@ IS
       pe.employee_number,
       --- PE.FULL_NAME employee_name, Commented by Priyam as confirmed from pwc
       NULL employee_name,
-      pe.EMAIL_ADDRESS,
+      --pe.EMAIL_ADDRESS,		-- Non prod only
+	  pe.employee_number||'@officedepot.com' email_address,  -- Non prod only
       DECODE( DECODE (PA.ASSIGNMENT_ID, NULL, PPRT.MEANING, PA.ASSIGNMENT_NAME)
       , 'Business Manager','Project Manager', 'Director Business Development',
       'Project Accounting', DECODE (PA.ASSIGNMENT_ID, NULL, PPRT.MEANING,
@@ -2839,12 +4073,13 @@ IS
       CASE
         WHEN PPP.START_DATE_ACTIVE < ppa.START_DATE
         THEN ( TO_CHAR(ppa.START_DATE,'YYYY/MM/DD') )
-        ELSE ( TO_CHAR(PPP.START_DATE_ACTIVE,'YYYY/MM/DD') )
+        --ELSE ( TO_CHAR(PPP.START_DATE_ACTIVE,'YYYY/MM/DD') )
+		ELSE ( TO_CHAR(SYSDATE,'YYYY/MM/DD') )
       END start_date_active,
       CASE
         WHEN PPP.END_DATE_ACTIVE > ppa.COMPLETION_DATE
         THEN ( TO_CHAR(ppa.COMPLETION_DATE,'YYYY/MM/DD') )
-        ELSE ( TO_CHAR(ppp.end_date_active,'YYYY/MM/DD') )
+		ELSE ( TO_CHAR(ppp.end_date_active,'YYYY/MM/DD') )
       END end_date_active,
       NULL Percent_Allocation,
       NULL Effort_in_Hours,
@@ -2874,7 +4109,7 @@ IS
           paf.effective_end_date)
         AND paf.primary_flag      = 'Y'
         AND paf.organization_id   = haou.organization_id
-        AND NVL (paf.job_id, -99) = pj.job_id(+)
+        AND NVL (paf.job_id, -99) = pj.job_id(+)  
       )
     prd
   WHERE
@@ -2887,7 +4122,7 @@ IS
         pa_projects_all
       WHERE
         1                          =1
-      AND NVL(closed_date,sysdate) > to_date('30-JUN-2018','dd-mon-yyyy')
+      AND NVL(closed_date,sysdate) > to_date('31-DEC-2018','dd-mon-yyyy')
       AND template_flag            = 'N'
       AND
         (
@@ -2948,9 +4183,7 @@ IS
   v_employee_num per_all_people_f.employee_number%Type;
 BEGIN
   print_debug_msg ('Package fbdi_proj_team_members START', true);
-  ---  print_debug_msg ('P_BOOK_TYPE_CODE '||P_BOOK_TYPE_CODE, TRUE);
   l_file_name := 'fbdi_proj_team_members' || '.csv';--
-  -- GENERIC_TAX_CHILD_ASSET_HDR
   lc_file_handle := utl_file.fopen('XXFIN_OUTBOUND', l_file_name, 'W', 32767);
   lv_col_title   :='PROJECT_NAME'|| ','||'EMPLOYEE_NUMBER'|| ','
   || 'EMPLOYEE_NAME'|| ','
@@ -2960,6 +4193,8 @@ BEGIN
   utl_file.put_line(lc_file_handle,lv_col_title);
   FOR i IN c_proj_team_members
   LOOP
+    --v_employee_num:='198158';  -- For SIT Only 
+   
     BEGIN
       SELECT
         COUNT(1)
@@ -2977,7 +4212,7 @@ BEGIN
         v_employee_num:=i.EMPLOYEE_NUMBER;
       END IF;
     END;
-    ---UTL_FILE.put_line(lc_file_handle,'HI');
+    
     utl_file.put_line(lc_file_handle,'"'||i.PROJECT_NAME|| '","'||
     v_employee_num|| '","'|| i.EMPLOYEE_NAME|| '","' || i.EMAIL_ADDRESS|| '","'
     || i.PROJECT_ROLE|| '","'|| i.START_DATE_ACTIVE|| '","'|| i.
@@ -3092,6 +4327,263 @@ WHEN OTHERS THEN
   lc_file_handle := utl_file.fopen (l_file_path, l_file_name, 'W', 32767);
   utl_file.fclose(lc_file_handle);
 END fbdi_proj_team_members;
+*/
+
+PROCEDURE fbdi_proj_team_members(p_proj_template VARCHAR2)
+IS
+
+CURSOR c_main 
+IS
+SELECT DISTINCT
+	   ppa.segment1
+  FROM
+       fnd_user u,
+       per_all_people_f pe,
+       pa_project_role_types pprt,
+       pa_project_parties ppp,
+       pa_projects_all ppa
+ WHERE ppp.resource_type_id = 101
+   AND ppa.project_id IN ( SELECT project_id
+                             FROM pa_projects_all
+                            WHERE 1=1
+                              AND NVL(closed_date,sysdate) > to_date('31-DEC-2018','dd-mon-yyyy')
+                              AND template_flag='N'
+                              AND (     segment1 NOT LIKE 'PB%'
+								    AND segment1 NOT LIKE 'NB%'
+									AND segment1 NOT LIKE 'TEM%'
+								  )
+                              AND project_type NOT    IN ('PB_PROJECT','DI_PB_PROJECT')
+                              AND project_status_code IN ('APPROVED','CLOSED','1000')
+                              AND org_id              <>403
+                         )
+   AND ppp.project_id          = ppa.project_id
+   AND pprt.project_role_id=ppp.project_role_id     
+   AND pe.person_id=ppp.resource_source_id
+   AND u.employee_id(+)       = ppp.resource_source_id
+   AND ppp.object_type        = 'PA_PROJECTS'
+   AND ppp.object_id          = ppa.project_id
+   AND ppa.created_from_project_id IN (SELECT project_id
+										 FROM pa_projects_all
+										WHERE template_flag='Y'
+										  AND name=NVL(p_proj_template,name)
+									  )
+ ORDER BY ppa.segment1;
+ 
+CURSOR c_proj_team_members(p_proj_no VARCHAR2)
+IS
+SELECT DISTINCT
+	   ppa.project_status_code,
+	   ppa.start_date,
+	   ppa.completion_date,
+       trim(REPLACE(REPLACE(REPLACE(REPLACE(ppa.name,chr(13), ''), chr(10), ''),
+       chr(39),''),chr(63),'')) Project_Name ,
+       DECODE(pe.employee_number,'950088','198158',pe.employee_number) employee_number,
+       --- PE.FULL_NAME employee_name, Commented by Priyam as confirmed from pwc
+       NULL employee_name,
+       --pe.EMAIL_ADDRESS,		-- Non prod only
+	   DECODE(pe.employee_number,'950088','198158',pe.employee_number)||'@officedepot.com' email_address,  -- Non prod only
+       DECODE( pprt.meaning,'Business Manager','Project Manager', 
+ 	                       'Director Business Development','Project Accounting', 
+			  pprt.meaning
+            ) project_role,
+       ppp.start_date_active start_date_active,
+       ppp.end_date_active   end_date_active,
+       NULL Percent_Allocation,
+       NULL Effort_in_Hours,
+       NULL Cost_Rate,
+       NULL Bill_Rate,
+       NULL track_time
+  FROM
+       fnd_user u,
+       per_all_people_f pe,
+       pa_project_role_types pprt,
+       pa_project_parties ppp,
+       pa_projects_all ppa
+ WHERE ppa.segment1=p_proj_no
+   AND ppp.resource_type_id = 101
+   AND ppp.project_id          = ppa.project_id
+   AND pprt.project_role_id=ppp.project_role_id     
+   AND pe.person_id=ppp.resource_source_id
+   AND u.employee_id(+)       = ppp.resource_source_id
+   AND ppp.object_type        = 'PA_PROJECTS'
+   AND ppp.object_id          = ppa.project_id;
+   
+  lc_file_handle 	utl_file.file_type;
+  lv_line_count 	NUMBER;
+  l_file_name  		VARCHAR2(100);
+  lv_col_title 		VARCHAR2(5000);
+  l_file_path  		VARCHAR2(500):='XXFIN_OUTBOUND';
+  lc_errormsg  		VARCHAR2(1000);
+  v_employee_num 	per_all_people_f.employee_number%Type;
+  lc_start_date	    VARCHAR2(20);
+  lc_end_date		VARCHAR2(20);
+  ln_emp_cnt    	NUMBER;
+  ln_term_cnt		NUMBER;
+  lc_email_address  VARCHAR2(100);
+
+BEGIN
+  print_debug_msg ('Package fbdi_proj_team_members START', true);
+
+  l_file_name := 'fbdi_proj_team_members' || '.csv';--
+  lc_file_handle := utl_file.fopen('XXFIN_OUTBOUND', l_file_name, 'W', 32767);
+  lv_col_title   :='PROJECT_NAME'|| ','||'EMPLOYEE_NUMBER'|| ','
+  || 'EMPLOYEE_NAME'|| ','
+  || 'EMAIL_ADDRESS'|| ','|| 'PROJECT_ROLE'|| ','|| 'START_DATE_ACTIVE'|| ','||
+  ' END_DATE_ACTIVE'|| ','|| 'PERCENT_ALLOCATION'|| ','|| 'EFFORT_IN_HOURS'||
+  ','|| 'COST_RATE'|| ','|| 'BILL_RATE'|| ','|| 'TRACK_TIME';
+
+  utl_file.put_line(lc_file_handle,lv_col_title);
+
+  lc_start_date := TO_CHAR(SYSDATE,'YYYY/MM/DD');
+  lc_end_date	 :=NULL;
+
+  FOR cur IN c_main LOOP
+    ln_term_cnt :=0;
+    FOR i IN c_proj_team_members(cur.segment1)
+    LOOP
+	  lc_email_address:=NULL;
+	  lc_email_address:=i.email_address;
+      SELECT COUNT(1)
+        INTO ln_emp_cnt
+        FROM per_all_people_f a
+       WHERE employee_number=i.employee_number
+	     AND person_type_id=6
+         AND SYSDATE BETWEEN effective_start_date and NVL(effective_end_date,SYSDATE);
+      
+      IF ln_emp_cnt=0 THEN
+         ln_term_cnt:=ln_term_cnt+1;
+         v_employee_num :='198158';
+		 lc_email_address:='198158@officedepot.com';
+      ELSE
+         v_employee_num:=i.EMPLOYEE_NUMBER;
+      END IF;
+	  
+	  IF ln_emp_cnt<>0 THEN
+	     utl_file.put_line(lc_file_handle,'"'||i.PROJECT_NAME|| '","'||
+         v_employee_num|| '","'|| i.employee_name|| '","' || lc_email_address|| '","'||
+	     i.project_role|| '","'|| lc_start_date|| '","'|| lc_end_date|| '","'||
+	     i.percent_allocation|| '","'|| i.effort_in_hours || '","'|| 
+	     i.cost_rate|| '","'|| i.bill_rate|| '","'|| i.track_time||'"');
+	  ELSE
+        IF ln_term_cnt=1 THEN
+  	      utl_file.put_line(lc_file_handle,'"'||i.PROJECT_NAME|| '","'||
+          v_employee_num|| '","'|| i.employee_name|| '","' || lc_email_address|| '","'||
+	      i.project_role|| '","'|| lc_start_date|| '","'|| lc_end_date|| '","'||
+	      i.percent_allocation|| '","'|| i.effort_in_hours || '","'|| 
+	      i.cost_rate|| '","'|| i.bill_rate|| '","'|| i.track_time||'"');
+		END IF; 
+	  END IF;
+    END LOOP;
+  END LOOP;
+  utl_file.fclose(lc_file_handle);
+EXCEPTION
+WHEN utl_file.access_denied THEN
+  lc_errormsg := ( 'Error in fbdi_proj_team_members procedure :- ' ||
+  ' access_denied :: ' || SUBSTR (sqlerrm, 1, 3800) || SQLCODE );
+  print_debug_msg (lc_errormsg, true);
+  utl_file.fclose_all;
+  lc_file_handle := utl_file.fopen (l_file_path, l_file_name, 'W', 32767);
+  utl_file.fclose(lc_file_handle);
+WHEN utl_file.delete_failed THEN
+  lc_errormsg := ( 'Error in fbdi_proj_team_members procedure :- ' ||
+  ' delete_failed :: ' || SUBSTR (sqlerrm, 1, 3800) || SQLCODE );
+  print_debug_msg (lc_errormsg, true);
+  utl_file.fclose_all;
+  lc_file_handle := utl_file.fopen (l_file_path, l_file_name, 'W', 32767);
+  utl_file.fclose(lc_file_handle);
+WHEN utl_file.file_open THEN
+  lc_errormsg := ( 'Error in fbdi_proj_team_members procedure :- ' ||
+  ' file_open :: ' || SUBSTR (sqlerrm, 1, 3800) || SQLCODE );
+  print_debug_msg (lc_errormsg, true);
+  utl_file.fclose_all;
+  lc_file_handle := utl_file.fopen (l_file_path, l_file_name, 'W', 32767);
+  utl_file.fclose(lc_file_handle);
+WHEN utl_file.internal_error THEN
+  lc_errormsg := ( 'Error in fbdi_proj_team_members procedure :- ' ||
+  ' internal_error :: ' || SUBSTR (sqlerrm, 1, 3800) || SQLCODE );
+  print_debug_msg (lc_errormsg, true);
+  utl_file.fclose_all;
+  lc_file_handle := utl_file.fopen (l_file_path, l_file_name, 'W', 32767);
+  utl_file.fclose(lc_file_handle);
+WHEN utl_file.invalid_filehandle THEN
+  lc_errormsg := ( 'Error in fbdi_proj_team_members procedure:- ' ||
+  ' invalid_filehandle :: ' || SUBSTR (sqlerrm, 1, 3800) || SQLCODE );
+  print_debug_msg (lc_errormsg, true);
+  utl_file.fclose_all;
+  lc_file_handle := utl_file.fopen (l_file_path, l_file_name, 'W', 32767);
+  utl_file.fclose(lc_file_handle);
+WHEN utl_file.invalid_filename THEN
+  lc_errormsg := ( 'Error in fbdi_proj_team_members procedure :- ' ||
+  ' invalid_filename :: ' || SUBSTR (sqlerrm, 1, 3800) || SQLCODE );
+  print_debug_msg (lc_errormsg, true);
+  utl_file.fclose_all;
+  lc_file_handle := utl_file.fopen (l_file_path, l_file_name, 'W', 32767);
+  utl_file.fclose(lc_file_handle);
+WHEN utl_file.invalid_maxlinesize THEN
+  lc_errormsg := ( 'Error in fbdi_proj_team_members procedure :- ' ||
+  ' invalid_maxlinesize :: ' || SUBSTR (sqlerrm, 1, 3800) || SQLCODE );
+  print_debug_msg (lc_errormsg, true);
+  utl_file.fclose_all;
+  lc_file_handle := utl_file.fopen (l_file_path, l_file_name, 'W', 32767);
+  utl_file.fclose(lc_file_handle);
+WHEN utl_file.invalid_mode THEN
+  lc_errormsg := ( 'Error in fbdi_proj_team_members procedure :- ' ||
+  ' invalid_mode :: ' || SUBSTR (sqlerrm, 1, 3800) || SQLCODE );
+  print_debug_msg (lc_errormsg, true);
+  utl_file.fclose_all;
+  lc_file_handle := utl_file.fopen (l_file_path, l_file_name, 'W', 32767);
+  utl_file.fclose(lc_file_handle);
+WHEN utl_file.invalid_offset THEN
+  lc_errormsg := ( 'Error in fbdi_proj_team_members procedure :- ' ||
+  ' invalid_offset :: ' || SUBSTR (sqlerrm, 1, 3800) || SQLCODE );
+  print_debug_msg (lc_errormsg, true);
+  utl_file.fclose_all;
+  lc_file_handle := utl_file.fopen (l_file_path, l_file_name, 'W', 32767);
+  utl_file.fclose(lc_file_handle);
+WHEN utl_file.invalid_operation THEN
+  lc_errormsg := ( 'Error in fbdi_proj_team_members procedure :- ' ||
+  ' invalid_operation :: ' || SUBSTR (sqlerrm, 1, 3800) || SQLCODE );
+  print_debug_msg (lc_errormsg, true);
+  utl_file.fclose_all;
+  lc_file_handle := utl_file.fopen (l_file_path, l_file_name, 'W', 32767);
+  utl_file.fclose(lc_file_handle);
+WHEN utl_file.invalid_path THEN
+  lc_errormsg := ( 'Error in fbdi_proj_team_members procedure :- ' ||
+  ' invalid_path :: ' || SUBSTR (sqlerrm, 1, 3800) || SQLCODE );
+  print_debug_msg (lc_errormsg, true);
+  utl_file.fclose_all;
+  lc_file_handle := utl_file.fopen (l_file_path, l_file_name, 'W', 32767);
+  utl_file.fclose(lc_file_handle);
+WHEN utl_file.read_error THEN
+  lc_errormsg := ( 'Error in fbdi_proj_team_members procedure :- ' ||
+  ' read_error :: ' || SUBSTR (sqlerrm, 1, 3800) || SQLCODE );
+  print_debug_msg (lc_errormsg, true);
+  utl_file.fclose_all;
+  lc_file_handle := utl_file.fopen (l_file_path, l_file_name, 'W', 32767);
+  utl_file.fclose(lc_file_handle);
+WHEN utl_file.rename_failed THEN
+  lc_errormsg := ( 'Error in fbdi_proj_team_members procedure :- ' ||
+  ' rename_failed :: ' || SUBSTR (sqlerrm, 1, 3800) || SQLCODE );
+  print_debug_msg (lc_errormsg, true);
+  utl_file.fclose_all;
+  lc_file_handle := utl_file.fopen (l_file_path, l_file_name, 'W', 32767);
+  utl_file.fclose(lc_file_handle);
+WHEN utl_file.write_error THEN
+  lc_errormsg := ( 'Error in fbdi_proj_team_members procedure :- ' ||
+  ' write_error :: ' || SUBSTR (sqlerrm, 1, 3800) || SQLCODE );
+  print_debug_msg (lc_errormsg, true);
+  utl_file.fclose_all;
+  lc_file_handle := utl_file.fopen (l_file_path, l_file_name, 'W', 32767);
+  utl_file.fclose(lc_file_handle);
+WHEN OTHERS THEN
+  lc_errormsg := ( 'Error in fbdi_proj_team_members procedure :- ' ||
+  ' OTHERS :: ' || SUBSTR (sqlerrm, 1, 3800) || SQLCODE );
+  print_debug_msg (lc_errormsg, true);
+  utl_file.fclose_all;
+  lc_file_handle := utl_file.fopen (l_file_path, l_file_name, 'W', 32767);
+  utl_file.fclose(lc_file_handle);
+END fbdi_proj_team_members;
+
 PROCEDURE fbdi_projects(
     p_proj_template VARCHAR2)
 IS
@@ -3111,7 +4603,7 @@ IS
       )
     SourceTemplateNumber ,
     NULL Source_Application_Code ,
-    pap.pm_project_reference source_project_reference ,
+    NVL(pap.pm_project_reference,'None') source_project_reference ,
     (
       SELECT
         hrprorg.name
@@ -3172,13 +4664,13 @@ IS
     NULL Cap_Interest_Stop_Date ,
     pap.ASSET_ALLOCATION_METHOD Asset_Cost_Alloc_Method_Code ,
     pap.CAPITAL_EVENT_PROCESSING Capital_Event_Method_Code ,
-    pap.ALLOW_CROSS_CHARGE_FLAG Allow_Charges_from_BU ,
-    pap.ALLOW_CROSS_CHARGE_FLAG Process_Cross_Charge_TRX ,
-    pap.LABOR_STD_BILL_RATE_SCHDL Labor_Traf_Price_Schedule ,
-    pap.LABOR_SCHEDULE_FIXED_DATE Labor_Traf_Price_Fixed_Date ,
-    pap.CC_PROCESS_NL_FLAG Process_X_Charge_TRX_Nonlabor ,
-    pap.NON_LABOR_STD_BILL_RATE_SCHDL Nonlabor_Tranf_Price_Schedule ,
-    pap.NON_LABOR_SCHEDULE_FIXED_DATE Nonlabor_Tranf_Price_Fix_Date ,
+    NULL Allow_Charges_from_BU ,  -- to be null 04132020
+    NULL Process_Cross_Charge_TRX ,
+    NULL Labor_Traf_Price_Schedule ,
+    NULL Labor_Traf_Price_Fixed_Date ,
+    NULL Process_X_Charge_TRX_Nonlabor ,
+    NULL Nonlabor_Tranf_Price_Schedule ,
+    NULL Nonlabor_Tranf_Price_Fix_Date ,  -- to be null
     NULL Burden_Schedule ,
     NULL Burden_Schedule_Fixed_Date ,
     NULL KPI_Notifications_Enabled ,
@@ -3197,7 +4689,7 @@ IS
     NULL Copy_Assets_from_T ,
     NULL Copy_Asset_Assignments_from_T ,
     NULL Copy_Costing_Overrides_from_T ,
-    NULL ATTRIBUTE_CATEGORY ,
+    DECODE(pap.org_id,404,'OD US Fin BU',403, 'OD CA Fin BU') ATTRIBUTE_CATEGORY ,
     SUBSTR(pap.Attribute1,2) Attribute1 ,
     pap.Attribute2 Attribute2 ,
     pap.Attribute3 Attribute3 ,
@@ -3239,7 +4731,7 @@ IS
   WHERE
     1                          = 1
   AND mgr.project_id(+)        = pap.project_id
-  AND NVL(closed_date,sysdate) > to_date('30-JUN-2018','dd-mon-yyyy')
+  AND NVL(closed_date,sysdate) > to_date('31-DEC-2018','dd-mon-yyyy')
   AND pap.template_flag        = 'N'
   AND
     (
@@ -3250,19 +4742,12 @@ IS
   AND pap.project_type NOT    IN ('PB_PROJECT','DI_PB_PROJECT')
   AND pap.org_id              <>403
   AND PAP.PROJECT_STATUS_CODE IN ('APPROVED','CLOSED','1000')
-    -- Begin Added for pstgb
-  AND pap.created_from_project_id IN
-    (
-      SELECT
-        project_id
-      FROM
-        pa_projects_all
-      WHERE
-        template_flag='Y'
-      AND name       =NVL(p_proj_template,name)--'US IT Template - Labor Only'
+  AND pap.created_from_project_id IN 
+    ( SELECT project_id
+        FROM pa_projects_all
+       WHERE template_flag='Y'
+         AND name       =NVL(p_proj_template,name)--'US IT Template - Labor Only'
     )
-    -- End added for PSTGB
-    --  and rownum < 10
   ORDER BY
     pap.project_id;
   lc_file_handle utl_file.file_type;
@@ -3275,7 +4760,7 @@ IS
 BEGIN
   print_debug_msg ('Package fbdi_projects START', true);
   ---  print_debug_msg ('P_BOOK_TYPE_CODE '||P_BOOK_TYPE_CODE, TRUE);
-  l_file_name    := 'fbdi_projects' || '.csv';--GENERIC_TAX_CHILD_ASSET_HDR
+  l_file_name    := 'fbdi_projects' || '.csv';
   lc_file_handle := utl_file.fopen('XXFIN_OUTBOUND', l_file_name, 'W', 32767);
   lv_col_title   :='PROJECT_NAME'|| ','|| 'PROJECT_NUMBER'|| ','||
   'SOURCETEMPLATENUMBER'|| ','|| 'SOURCE_APPLICATION_CODE'|| ','||
@@ -3492,7 +4977,7 @@ IS
     pat.Service_Type_Code ,
     NULL Work_Type ,
     NULL Task_Manager ,
-    pat.Allow_Cross_Charge_Flag ,
+    'Y' Allow_Cross_Charge_Flag ,  -- to be Y 04132020
     NULL X_Charge_Proc_Labor_Flag ,
     NULL X_Charge_Proc_Non_Labor_Flag ,
     NULL Receive_Project_Invoice_Flag ,
@@ -3536,7 +5021,7 @@ IS
   WHERE
     1                              = 1
   AND pap.template_flag            = 'N'
-  AND NVL(pap.closed_date,sysdate) > to_date('30-JUN-2018','dd-mon-yyyy')
+  AND NVL(pap.closed_date,sysdate) > to_date('31-DEC-2018','dd-mon-yyyy')
   AND
     (
       pap.segment1 NOT LIKE 'PB%'
@@ -3549,15 +5034,11 @@ IS
   AND pat.project_id           =pap.project_id
     -- Begin Added for pstgb
   AND pap.created_from_project_id IN
-    (
-      SELECT
-        project_id
-      FROM
-        pa_projects_all
-      WHERE
-        template_flag='Y'
-      AND name       =NVL(p_proj_template,name)--'US IT Template - Labor Only'
-    )
+     ( SELECT project_id
+         FROM pa_projects_all
+        WHERE template_flag='Y'
+          AND name       =NVL(p_proj_template,name)--'US IT Template - Labor Only'
+     )
     -- End added for PSTGB
   ORDER BY
     pap.segment1,
@@ -3572,7 +5053,7 @@ IS
 BEGIN
   print_debug_msg ('Package fbdi_tasks START', true);
   ---  print_debug_msg ('P_BOOK_TYPE_CODE '||P_BOOK_TYPE_CODE, TRUE);
-  l_file_name    := 'fbdi_tasks' || '.csv';--GENERIC_TAX_CHILD_ASSET_HDR
+  l_file_name    := 'fbdi_tasks' || '.csv';
   lc_file_handle := utl_file.fopen('XXFIN_OUTBOUND', l_file_name, 'W', 32767);
   lv_col_title   :='PROJECT_NAME'|| ','|| 'PROJECT_NUM'|| ','|| 'TASK_NAME'||
   ','|| 'TASK_NUMBER'|| ','|| 'TASK_DESCRIPTION'|| ','|| 'PARENT_TASK_NUMBER'||
@@ -3725,22 +5206,22 @@ PROCEDURE XX_OD_PA_CON_SCRIPT_wrapper(
 AS
   v_book_type_code VARCHAR2(50);
 BEGIN
-  
-      fbdi_project_assets(p_proj_template);
-      fbdi_proj_exp_cap_yn(p_proj_template);
-      fbdi_proj_exp_cap_yy(p_proj_template);
-      fbdi_proj_exp_nei_nn(p_proj_template);
-      fbdi_pa_budgets(p_proj_template);
-      fbdi_proj_asset_assignments(p_proj_template);
-      fbdi_proj_classif_lob(p_proj_template);
-      fbdi_proj_classification(p_proj_template);
-      fbdi_proj_team_members(p_proj_template);
       fbdi_projects(p_proj_template);
       fbdi_tasks(p_proj_template);
-   
+      fbdi_proj_team_members(p_proj_template);
+      fbdi_proj_classif_lob(p_proj_template);
+      fbdi_proj_classification(p_proj_template);
+      fbdi_pa_budgets(p_proj_template);
+	  fbdi_proj_exp_cap_yn(p_proj_template);
+      fbdi_proj_exp_cap_yy(p_proj_template);
+      fbdi_proj_exp_nei_nn(p_proj_template);
+	  fbdi_project_assets_yy(p_proj_template);
+	  fbdi_proj_asset_assignments_yy(p_proj_template);	 
+      fbdi_project_assets_yn(p_proj_template);
+	  fbdi_proj_asset_assignments_yn(p_proj_template);
+  	  
 EXCEPTION
 WHEN OTHERS THEN
-  --  LC_ERRORMSG := ( 'Error in XX_OD_PA_CON_SCRIPT_wrapper procedure :- ' || ' OTHERS :: ' || SUBSTR (SQLERRM, 1, 3800) || SQLCODE );
   print_debug_msg ('Error in XX_OD_PA_CON_SCRIPT_wrapper procedure :- ' || ' OTHERS :: ' || SUBSTR (sqlerrm, 1, 3800) || SQLCODE, TRUE);
 END XX_OD_PA_CON_SCRIPT_wrapper;
 
