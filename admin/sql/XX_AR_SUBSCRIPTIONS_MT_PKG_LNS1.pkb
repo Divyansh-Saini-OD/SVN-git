@@ -15350,6 +15350,105 @@ END set_dnr_contract_line;
 
   END process_adjustments;
 
+/********************************************
+  * Function to check eligible SKU for REV REC
+  ********************************************/
+  FUNCTION is_rev_rec_item(p_sku_name IN VARCHAR2)
+  RETURN VARCHAR2 AS
+    
+    lc_net_sales_revenue_account    VARCHAR2(20);
+    lc_subscriptions_rev_account    VARCHAR2(20);
+    lc_rev_rec VARCHAR2(1);
+  
+  BEGIN
+ 
+    BEGIN
+      SELECT xft.target_value1  
+      INTO   lc_net_sales_revenue_account
+      FROM   xx_fin_translatevalues       xft
+           , xx_fin_translatedefinition   xfd                             
+           , mtl_item_categories          mic
+           , mtl_categories_b             mc
+           , mtl_category_sets            mcs
+           , mtl_system_items             msi
+           , mtl_parameters               mp
+      WHERE   mic.category_set_id        = mcs.category_set_id
+      AND   mic.category_id            = mc.category_id
+      AND   msi.segment1               = p_sku_name
+      AND   msi.organization_id        = mp.organization_id
+      AND   mp.organization_id         = mp.master_organization_id
+      AND   mic.inventory_item_id      = msi.inventory_item_id
+      AND   mic.organization_id        = mp.organization_id
+      AND   mcs.category_set_name      = 'Inventory'
+      AND   xft.translate_id           = xfd.translate_id
+      AND   (xft.source_value1           IS NULL)
+      AND   (xft.source_value2         = msi.item_type) 
+      AND   (xft.source_value3         = mc.segment3)
+      AND   xft.enabled_flag           = 'Y'
+      AND  (xft.start_date_active     <= SYSDATE
+      AND  (xft.end_date_active >= SYSDATE
+        OR  xft.end_date_active IS NULL) 
+           )
+      AND  xfd.translation_name       = 'SALES ACCOUNTING MATRIX'
+      AND  xfd.enabled_flag           = 'Y'
+      AND (xfd.start_date_active     <= SYSDATE
+      AND (xfd.end_date_active       >= SYSDATE
+        OR xfd.end_date_active       IS NULL
+      ) 
+      );
+    EXCEPTION
+     WHEN NO_DATA_FOUND
+      THEN
+    logit(p_message => 'RESULT lc_net_sales_revenue_account: ' || lc_net_sales_revenue_account);
+    lc_rev_rec := 'N';
+        lc_net_sales_revenue_account := '00';
+    END;
+ 
+   BEGIN
+      SELECT xft2.TARGET_VALUE1
+      INTO   lc_subscriptions_rev_account
+      FROM  xx_fin_translatevalues      xft2,
+            xx_fin_translatedefinition  xfd2
+      WHERE xft2.translate_id           = xfd2.translate_id
+      AND   xfd2.translation_name       = 'XX_AR_SUBSCRIPTIONS'
+      AND  (xft2.SOURCE_VALUE1          = 'REV_SPREAD_SALES_ACCT')
+      AND   xft2.enabled_flag           = 'Y'
+      AND  (xft2.start_date_active     <= SYSDATE
+      AND  (xft2.end_date_active       >= SYSDATE
+       OR   xft2.end_date_active IS NULL
+            )
+            )
+      AND  xfd2.enabled_flag               = 'Y'
+      AND (xfd2.start_date_active        <= SYSDATE
+      AND (xfd2.end_date_active          >= SYSDATE
+       OR  xfd2.end_date_active IS NULL
+           )
+           );
+    EXCEPTION
+      WHEN NO_DATA_FOUND 
+      THEN
+      lc_rev_rec := 'N';
+      logit(p_message => 'RESULT lc_subscriptions_rev_account: ' || lc_subscriptions_rev_account);
+        lc_subscriptions_rev_account := '00';
+    END;
+    IF ((lc_subscriptions_rev_account!= '00') OR (lc_net_sales_revenue_account!= '00'))
+    THEN
+       IF lc_net_sales_revenue_account= lc_subscriptions_rev_account THEN
+          lc_rev_rec := 'Y';
+       ELSE
+          lc_rev_rec := 'N'; 
+        END IF;
+        
+        RETURN lc_rev_rec;
+        
+     END IF;
+
+  EXCEPTION
+    WHEN OTHERS 
+    THEN
+      logit(p_message => 'Exception while getting the revenue eligible sku: ' || SQLERRM);
+END is_rev_rec_item;
+
 /* **********************************************************************************************
  Procedure for B2B to create a new Order in AOPS for proposed Renewal of a contract (for Alt SKU)
 ************************************************************************************************ */
