@@ -25,7 +25,9 @@ AS
   -- |                                               for DIMS                                     |
   -- | 1.8         12/12/2019   Faiyaz Ahmad         Modified to get gl_daily_rates for MXN,INR,  |
   -- |                                                   AND CRC To CAD                           |
-  -- | 1.9      04/24/2020 Amit Kumar    NAIT-132879 Modified to send Calendar rates daily |
+  -- | 1.9         04/24/2020   Amit Kumar    NAIT-132879 Modified to send Calendar rates daily |
+  -- | 2.0         05/26/2020 	Amit Kumar    NAIT-138373 send current date and next day’s Daily  |
+ --  | 									      Fx Rates from EBS To Cloud.							|		
   -- +============================================================================================+
   lc_Saturday        VARCHAR2(1)   := TO_CHAR(to_date('20000101','RRRRMMDD'),'D');
   lc_Sunday          VARCHAR2(1)   := TO_CHAR(to_date('20000102','RRRRMMDD'),'D');
@@ -390,7 +392,8 @@ BEGIN
     gl_daily_conversion_types a
   WHERE a.user_conversion_type IN ('Ending Rate','CC Period End','CC Period Average')
   AND b.conversion_type         =a.conversion_type
-  AND b.conversion_date         =TRUNC(p_date)
+  --AND b.conversion_date         = TRUNC(p_date)
+  AND b.conversion_date          in (TRUNC(p_date), TRUNC(p_date+1))  --NAIT-138373
   AND b.from_currency           ='USD'
   AND b.to_currency            <>'LTL'
   --start 1.5 Addition of the CAD currency extract
@@ -404,7 +407,8 @@ BEGIN
     gl_daily_conversion_types a
   WHERE a.user_conversion_type IN ('Ending Rate','CC Period End','CC Period Average')
   AND b.conversion_type         =a.conversion_type
-  AND b.conversion_date         = TRUNC(p_date)
+  --AND b.conversion_date         = TRUNC(p_date)
+  AND b.conversion_date          in (TRUNC(p_date), TRUNC(p_date+1))  --NAIT-138373
   AND b.from_currency           ='CAD'
   AND b.to_currency            IN ('INR','MXN','CRC')
   ORDER BY 4,1,2
