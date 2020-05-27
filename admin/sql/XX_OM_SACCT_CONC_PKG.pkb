@@ -658,7 +658,7 @@ AS
         g_payment_rec.attribute3.DELETE(p_idx);
         g_payment_rec.attribute14.DELETE(p_idx);
         g_payment_rec.attribute2.DELETE(p_idx);
-		g_payment_rec.attribute1.DELETE(p_idx);
+		g_payment_rec.attribute1.DELETE(p_idx);   --for partially shipped auth amount
 
     EXCEPTION
         WHEN OTHERS
@@ -9364,7 +9364,7 @@ EXCEPTION
         g_payment_rec.attribute3.DELETE;
         g_payment_rec.attribute14.DELETE;
         g_payment_rec.attribute2.DELETE;
-		g_payment_rec.attribute1.DELETE;
+		g_payment_rec.attribute1.DELETE;                    --for partially reversed auth amount
 
 /* tender record */
         g_return_tender_rec.orig_sys_document_ref.DELETE;
@@ -10144,7 +10144,7 @@ EXCEPTION
                              g_payment_rec.attribute3(i_pay),
                              g_payment_rec.attribute14(i_pay),
                              g_payment_rec.attribute2(i_pay),
-							 g_payment_rec.attribute1(i_pay)
+							 g_payment_rec.attribute1(i_pay)      --for the partially reversed auth amount
                               );
             oe_debug_pub.ADD('Before Inserting data into Return tenders');
         EXCEPTION
