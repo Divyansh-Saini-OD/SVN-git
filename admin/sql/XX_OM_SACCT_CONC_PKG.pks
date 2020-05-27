@@ -56,6 +56,7 @@ AS
 -- |  15.0  28-NOV-2019 Arun G            Made changes for Service contracts   |
 -- |  16.0  05-SEP-2019 Arun G            Made changes for Card on File        |
 -- |  17.0  15-OCT-2019 Arun G            Made changes for Tariff phase 2      |
+-- |  18.0  27-MAY-2020 Shalu G           Added a column for partially reversed order auth amount|
 -- +===========================================================================+
 -- +===========================================================================+
 
@@ -632,7 +633,7 @@ AS
         attribute3                   t_v240,
         attribute14                  t_v240,
         attribute2                   t_v240,
-		attribute1                   t_v240
+		attribute1                   t_v240          --for partially reversed auth amount
     );
 
 /* Payment Global Record Declaration */
