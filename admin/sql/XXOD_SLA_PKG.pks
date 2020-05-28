@@ -205,3 +205,6 @@ AS
       p_transaction_id IN NUMBER)
     RETURN VARCHAR2;
 END;
+/
+show errors;
+Exit;

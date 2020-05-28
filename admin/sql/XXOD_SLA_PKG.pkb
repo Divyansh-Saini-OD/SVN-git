@@ -775,3 +775,5 @@ END DROPSHIP_ACCRUAL_ACCT;
 
 END;
 /
+show errors;
+Exit;
