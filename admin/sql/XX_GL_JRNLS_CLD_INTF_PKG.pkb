@@ -1757,8 +1757,8 @@ BEGIN
 		  Begin 
 		    SELECT 
 					xftv.target_value1 into lv_application_name
-				FROM apps.xx_fin_translatedefinition xftd,
-					 apps.xx_fin_translatevalues xftv
+				FROM xx_fin_translatedefinition xftd,
+					 xx_fin_translatevalues xftv
 				WHERE xftd.translation_name ='OD_CLD_GL_JRNLS_APP_MAP'
 				AND xftv.source_value1      = 'Application_Name'
 				AND xftv.source_value2      = l_table(2)
