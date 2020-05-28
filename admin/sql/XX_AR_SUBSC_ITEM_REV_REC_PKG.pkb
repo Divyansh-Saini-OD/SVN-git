@@ -17,6 +17,7 @@ AS
   -- | Version     Date         Author               Remarks                                      |
   -- | =========   ===========  =============        =============================================|
   -- | 1.0         08/Apr/2020   M K Pramod Kumar     Initial version                              |
+  -- | 1.1         11/May/2020   M K Pramod Kumar     Added code to derive Cogs,Consignment,Inventory Account|
   -- +============================================================================================+
   gc_package_name      CONSTANT all_objects.object_name%TYPE := 'XX_AR_SUBSC_ITEM_REV_REC_PKG';
   gc_translate_id      number;
@@ -84,11 +85,16 @@ IS
 lc_dept mtl_categories_b.segment3%type;
 lc_translation_id number;
 lc_rev_account varchar2(30):=null;
+lc_cogs_account varchar2(30):=null;
+lc_cons_account varchar2(30):=null;
+lc_inv_account varchar2(30):=null;
+
 lc_master_organization_id number;
 lv_inventory_item_id number;
 lv_organization_id   number;
 lv_IS_REV_REC_ELIGIBLE varchar2(1):='N';
 lv_item_count number:=0;
+lv_rev_rec_derive_text varchar2(100):=null;
 
 BEGIN
   
@@ -110,8 +116,12 @@ BEGIN
 	lc_item_type:=null;
     lc_dept:=null;
     lc_rev_account:=null;
+	lc_cogs_account :=null;
+	lc_cons_account :=null;
+	lc_inv_account  :=null;
 	lv_inventory_item_id:=null;
 	lv_organization_id:=null;
+	lv_rev_rec_derive_text:=null;
 	Begin
 		SELECT MSIB.item_type,inventory_item_id,organization_id
                     INTO lc_item_type,lv_inventory_item_id,lv_organization_id
@@ -145,12 +155,18 @@ BEGIN
 	logit('Error while getting item Dept for item-'||rec.item||'.SQLERRM'||sqlerrm);	
 	end;
 	
-	logit('Processing Item-'||rec.item||'      .Item Type-'||lc_item_type||'         .Item Dept-'||lc_dept);
+	
 	if lc_item_type IS NOT NULL AND lc_dept IS NOT NULL THEN
 	
 	    BEGIN
             SELECT target_value1
+                  ,target_value2
+                  ,target_value3
+                  ,target_value4
               INTO lc_rev_account
+                  ,lc_cogs_account
+                  ,lc_inv_account
+                  ,lc_cons_account
               FROM xx_fin_translatevalues
              WHERE translate_id = lc_translation_id
                AND (source_value1 IS NULL )
@@ -159,9 +175,13 @@ BEGIN
                AND enabled_flag   = 'Y'
                AND (start_date_active <= SYSDATE
                AND (end_date_active >= SYSDATE OR end_date_active IS NULL));
+			   lv_rev_rec_derive_text:='Derive Rev Rec Account from Item Type and Item DEPT';
         EXCEPTION
            WHEN OTHERS THEN
-              NULL; -- To Proceed Further
+		  
+		   
+		   select decode(lv_rev_rec_derive_text,null,null,lv_rev_rec_derive_text) into lv_rev_rec_derive_text from dual;
+              --NULL; -- To Proceed Further
         END;
 		
 		
@@ -169,7 +189,13 @@ BEGIN
 		-- Getting Sales Account For  DEPT Alone
                 BEGIN
                    SELECT target_value1
-                     INTO lc_rev_account
+                  ,target_value2
+                  ,target_value3
+                  ,target_value4
+                INTO lc_rev_account
+                  ,lc_cogs_account
+                  ,lc_inv_account
+                  ,lc_cons_account
                      FROM xx_fin_translatevalues
                     WHERE translate_id = lc_translation_id
                       AND (source_value1 IS NULL )
@@ -178,9 +204,12 @@ BEGIN
                       AND enabled_flag   = 'Y'
                       AND (start_date_active <= SYSDATE
                       AND (end_date_active >= SYSDATE OR end_date_active IS NULL));
+					  lv_rev_rec_derive_text:='Derive Rev Rec Account from Item DEPT';
                 EXCEPTION
                    WHEN OTHERS THEN
-                      NULL; -- To Proceed Further
+				    --lv_rev_rec_derive_text:=null;
+					select decode(lv_rev_rec_derive_text,null,null,lv_rev_rec_derive_text) into lv_rev_rec_derive_text from dual;
+                     -- NULL; -- To Proceed Further
                 END;
         END IF;
 		
@@ -188,8 +217,14 @@ BEGIN
 		IF lc_rev_account IS NULL THEN
 		-- Getting Sales Account For  Item Type Alone
                 BEGIN
-                   SELECT target_value1                        
-                     INTO lc_rev_account                        
+                   SELECT target_value1
+                  ,target_value2
+                  ,target_value3
+                  ,target_value4
+                INTO lc_rev_account
+                  ,lc_cogs_account
+                  ,lc_inv_account
+                  ,lc_cons_account                       
                     FROM xx_fin_translatevalues
                    WHERE translate_id = lc_translation_id
                      AND (source_value1 IS NULL )
@@ -198,17 +233,26 @@ BEGIN
                      AND enabled_flag   = 'Y'
                      AND (start_date_active <= SYSDATE
                      AND (end_date_active >= SYSDATE OR end_date_active IS NULL));
+					 lv_rev_rec_derive_text:='Derive Rev Rec Account from Item Type';
                 EXCEPTION
                    WHEN OTHERS THEN
-                      NULL; -- To Proceed Further
+				   --lv_rev_rec_derive_text:=null;
+				   select decode(lv_rev_rec_derive_text,null,null,lv_rev_rec_derive_text) into lv_rev_rec_derive_text from dual;
+                     -- NULL; -- To Proceed Further
                 END;
         END IF;
 		
 		if lc_rev_account is null then
 		-- Getting Sales Account For  Item Source=DEFAULT 
 				BEGIN
-                    SELECT target_value1                        
-                     INTO lc_rev_account                       
+                    SELECT target_value1
+                  ,target_value2
+                  ,target_value3
+                  ,target_value4
+                   INTO lc_rev_account
+                  ,lc_cogs_account
+                  ,lc_inv_account
+                  ,lc_cons_account                    
                      FROM xx_fin_translatevalues
                     WHERE translate_id = lc_translation_id
                       AND (source_value1 = 'DEFAULT')
@@ -217,9 +261,12 @@ BEGIN
                       AND enabled_flag   = 'Y'
                       AND (start_date_active <= SYSDATE
                       AND (end_date_active >= SYSDATE OR end_date_active IS NULL));
+					  lv_rev_rec_derive_text:='Derive Rev Rec Account from DEFAULT Item source';
                 EXCEPTION
                    WHEN OTHERS THEN
-                      NULL; -- To Proceed Further
+				   --lv_rev_rec_derive_text:=null;
+				   select decode(lv_rev_rec_derive_text,null,null,lv_rev_rec_derive_text) into lv_rev_rec_derive_text from dual;
+                     -- NULL; -- To Proceed Further
                 END;
 		
 		
@@ -229,8 +276,14 @@ BEGIN
 	
 	BEGIN
 	-- If the Item is found, Then Derive the REV Account and Overwrite it.
-        SELECT target_value1                      
-              INTO lc_rev_account                      
+       SELECT target_value1
+                  ,target_value2
+                  ,target_value3
+                  ,target_value4
+                INTO lc_rev_account
+                  ,lc_cogs_account
+                  ,lc_inv_account
+                  ,lc_cons_account                   
               FROM xx_fin_translatevalues
              WHERE translate_id = lc_translation_id
                AND (source_value1 IS NULL)
@@ -240,24 +293,36 @@ BEGIN
                AND enabled_flag   = 'Y'
                AND (start_date_active <= SYSDATE
                AND (end_date_active >= SYSDATE OR end_date_active IS NULL));
+			   lv_rev_rec_derive_text:='Derive Rev Rec Account from Item and Overwirte Rev Rec Account';
     EXCEPTION
         WHEN OTHERS THEN
-    NULL; -- To Proceed Further
+		--lv_rev_rec_derive_text:=null;
+		select decode(lv_rev_rec_derive_text,null,null,lv_rev_rec_derive_text) into lv_rev_rec_derive_text from dual;
+    --NULL; -- To Proceed Further
     END;
 	
 	--lv_IS_REV_REC_ELIGIBLE:=decode(NVL(lc_rev_account,'-1'), '41101000', 'Y', 'N');
     select decode(NVL(lc_rev_account,'-1'), '41101000', 'Y', 'N') into lv_IS_REV_REC_ELIGIBLE from dual;
 	
-	
+	logit('Processing Item-'||rec.item||'      .Item Type-'||lc_item_type||'         .Item Dept-'||lc_dept ||'      .Attribute5-'||lv_rev_rec_derive_text||'                    .Revenu Account-'||lc_rev_account  );
 	select count(1) into lv_item_count from xx_ar_subscription_items where item=rec.item;
 	 
+	
+				  
 	 if lv_item_count>0 then 
-		Update xx_ar_subscription_items set Is_Rev_Rec_Eligible=lv_IS_REV_REC_ELIGIBLE,
-		NUMBER_OF_PERIODS=rec.no_of_periods,
-		item_revnue_account=lc_rev_account,
-		                          last_update_date=sysdate,
-								  last_update_by=fnd_global.user_id,
-								  request_id=fnd_global.conc_request_id
+		Update xx_ar_subscription_items 
+		set Is_Rev_Rec_Eligible=lv_IS_REV_REC_ELIGIBLE,
+			NUMBER_OF_PERIODS=rec.no_of_periods,
+			item_revenue_account=lc_rev_account,
+			ITEM_COGS_ACCOUNT=lc_cogs_account,
+			ITEM_INVENTORY_ACCOUNT=lc_inv_account,
+			ITEM_CONSIGNMENT_ACCOUNT=lc_cons_account,
+			item_type =lc_item_type,
+			item_department=lc_dept,
+			ATTRIBUTE5=lv_rev_rec_derive_text,
+		    last_update_date=sysdate,
+			last_update_by=fnd_global.user_id,
+			request_id=fnd_global.conc_request_id
 			where item=rec.item;
 			
 	 else
@@ -271,7 +336,13 @@ BEGIN
 	 OD_CONTRACT_LENGTH     ,
 	 NUMBER_OF_PERIODS      ,
 	 IS_REV_REC_ELIGIBLE    ,
-	 item_revnue_account    ,
+	 item_revenue_account   ,
+	 ITEM_COGS_ACCOUNT       , 
+	 ITEM_INVENTORY_ACCOUNT  , 
+	 ITEM_CONSIGNMENT_ACCOUNT, 	 
+	 ITEM_TYPE              ,
+	 ITEM_DEPARTMENT        , 
+	 ATTRIBUTE5             ,
 	 INVENTORY_ITEM_ID      ,
 	 ORGANIZATION_id		, 
 	 CREATION_DATE 			,
@@ -287,6 +358,12 @@ BEGIN
 	  rec.no_of_periods          ,
 	  lv_IS_REV_REC_ELIGIBLE      ,
 	  lc_rev_account              ,
+	  lc_cogs_account             ,
+	  lc_inv_account              ,
+	  lc_cons_account             ,
+	  lc_item_type                ,
+	  lc_dept                     ,
+	  lv_rev_rec_derive_text      ,
 	  lv_inventory_item_id        ,
 	  lv_organization_id          ,
 	  sysdate                     ,
