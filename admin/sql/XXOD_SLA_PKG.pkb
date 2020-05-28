@@ -22,12 +22,14 @@ AS
   -- |1.3      16-Oct-2014  Gayathri.K      Defect#31379                 |
   -- |1.4      01-Aug-2017  Sridhar Gajjala Customizing the Write-Off    |
   -- |          Accounting                 								 |
-  -- |1.4      10-Nov-2017  Paddy Sanjeevi  Added INV_LOB                |  
+  -- |1.4      10-Nov-2017  Paddy Sanjeevi  Added INV_LOB                |
   -- |1.5      30-Nov-2017  Havish Kasina   Changed the input parameter  |
   -- |                                      from p_distribution_id to    |
-  -- |                                      p_write_off_id               |  
-  -- |1.6      23-Jan-2018  Paddy Sanjeevi  Added Dropship Accrual Acct  |    
-  -- |1.7      12-Feb-2018  Paddy Sanjeevi  Added for chargeback_acct    |  
+  -- |                                      p_write_off_id               |
+  -- |1.6      23-Jan-2018  Paddy Sanjeevi  Added Dropship Accrual Acct  |
+  -- |1.7      12-Feb-2018  Paddy Sanjeevi  Added for chargeback_acct    |
+  -- |1.8      24-May-2020  Sreedhar Mohan  new functions for service    |
+  -- |                                      subscription cogs and amount |
   -- +===================================================================+
   -- +==============================================================================+
   -- | Name         :chargeback_acct                                                |
@@ -35,12 +37,12 @@ AS
   -- |                                                                              |
   -- | Parameters   :p_invoice_dist_id                                              |
   -- |                                                                              |
-  -- +==============================================================================+    
- 
+  -- +==============================================================================+
+
   FUNCTION chargeback_acct(p_invoice_dist_id IN NUMBER)
   RETURN VARCHAR2
   IS
-  
+
   v_cnt 		NUMBER:=0;
   v_achbk		NUMBER:=0;
   v_oddbui      NUMBER:=0;
@@ -51,7 +53,7 @@ AS
       FROM po_headers_all po,
            ap_invoices_all ai,
            ap_invoice_lines_all ail,
-           ap_invoice_distributions_all d 
+           ap_invoice_distributions_all d
      WHERE d.invoice_distribution_id=p_invoice_dist_id
        AND ail.invoice_id=d.invoice_id
        AND ail.line_number=d.invoice_line_number
@@ -81,7 +83,7 @@ AS
          FROM po_headers_all po,
               ap_invoices_all ai,
               ap_invoice_lines_all ail,
-              ap_invoice_distributions_all d 
+              ap_invoice_distributions_all d
         WHERE d.invoice_distribution_id=p_invoice_dist_id
           AND ail.invoice_id=d.invoice_id
           AND ail.line_number=d.invoice_line_number
@@ -92,7 +94,7 @@ AS
           AND po.po_header_id=nvl(ai.po_header_id,ai.quick_po_header_id)
           AND po.attribute_category IN ('FrontDoor DC','FrontDoor Retail','Replenishment','New Store','Non-Code','Trade')
 	      AND EXISTS ( SELECT 'x'
-			  	         FROM 
+			  	         FROM
 					          ap_invoice_lines_all ol,
 						      ap_invoices_all oh
 				        WHERE oh.invoice_num=SUBSTR(ai.invoice_num,1,(LENGTH(ai.invoice_num)-2))
@@ -111,7 +113,7 @@ AS
 									   WHERE invoice_num like oh.invoice_num||'ODDBUIA%'
 									     AND vendor_id=oh.vendor_id
 										 AND vendor_site_id=oh.vendor_site_id
-									 )										 
+									 )
    			         );
 
   	END IF;
@@ -121,7 +123,7 @@ AS
          FROM po_headers_all po,
               ap_invoices_all ai,
               ap_invoice_lines_all ail,
-              ap_invoice_distributions_all d 
+              ap_invoice_distributions_all d
         WHERE d.invoice_distribution_id=p_invoice_dist_id
           AND ail.invoice_id=d.invoice_id
           AND ail.line_number=d.invoice_line_number
@@ -132,7 +134,7 @@ AS
           AND po.po_header_id=nvl(ai.po_header_id,ai.quick_po_header_id)
           AND po.attribute_category IN ('FrontDoor DC','FrontDoor Retail','Replenishment','New Store','Non-Code','Trade')
 	      AND EXISTS ( SELECT 'x'
-			  	         FROM 
+			  	         FROM
 					          ap_invoice_lines_all ol,
 						      ap_invoices_all oh
 				        WHERE oh.invoice_num=SUBSTR(ai.invoice_num,1,(LENGTH(ai.invoice_num)-2))
@@ -155,7 +157,7 @@ AS
    			         );
 
 	END IF;
-	IF v_cnt<>0 OR v_achbk<>0 THEN   
+	IF v_cnt<>0 OR v_achbk<>0 THEN
 	   BEGIN
 	     SELECT attribute2
 		   INTO v_acct
@@ -163,14 +165,14 @@ AS
 		  WHERE reason_name='L';
 		  RETURN(v_acct);
 	   EXCEPTION
-	     WHEN others THEN  
+	     WHEN others THEN
 		   RETURN('12210000');
 	   END;
 	ELSIF v_oddbui<>0 THEN
 	  RETURN(NULL);
 	ELSE
 	  RETURN(NULL);
-	END IF;   
+	END IF;
   END chargeback_acct;
 
   -- +===================================================================+
@@ -178,8 +180,8 @@ AS
   -- | Description  :This Procedure derive the LOB for the transaction_id|
   -- | Parameters   :p_transaction_id                                    |
   -- |                                                                   |
-  -- +===================================================================+  
-  FUNCTION INV_LOB (p_transaction_id IN NUMBER) 
+  -- +===================================================================+
+  FUNCTION INV_LOB (p_transaction_id IN NUMBER)
   RETURN VARCHAR2
   AS
 
@@ -199,8 +201,8 @@ AS
   EXCEPTION
     WHEN others THEN
       RETURN NULL;
-  END;  
-    
+  END;
+
   -- +===================================================================+
   -- | Name         :COGS                                                |
   -- | Description  :This Procedure derive the COGS Value attribute7     |
@@ -213,15 +215,36 @@ AS
     RETURN VARCHAR2
   IS
     lc_cogs VARCHAR2 (200) := '';
+
   BEGIN
+  
+      IF (fnd_log.level_statement >= fnd_log.g_current_runtime_level) THEN
+         fnd_log.STRING (fnd_log.level_statement, 'XXOD_SLA_PKG.cogs(+)', 'XXOD_SLA_PKG.cogs p_trx_line_id: ' || p_trx_line_id );
+      END IF;     
+
     BEGIN
       SELECT attribute7
       INTO lc_cogs
       FROM ra_cust_trx_line_gl_dist_all
-      WHERE customer_trx_line_id = p_trx_line_id;
+      WHERE customer_trx_line_id = p_trx_line_id
+      and   percent=100
+      and   ACCOUNT_CLASS = 'REV'
+	  and   attribute7 is not null
+      ;
+      IF (fnd_log.level_statement >= fnd_log.g_current_runtime_level) THEN
+         fnd_log.STRING (fnd_log.level_statement, 'XXOD_SLA_PKG.cogs', 'XXOD_SLA_PKG.cogs lc_cogs: ' || lc_cogs );
+      END IF;     
+
+    
     EXCEPTION
     WHEN OTHERS THEN
+
+      IF (fnd_log.level_statement >= fnd_log.g_current_runtime_level) THEN
+         fnd_log.STRING (fnd_log.level_statement, 'XXOD_SLA_PKG.cogs', 'EXCEPTION in XXOD_SLA_PKG.cogs Exception: ' || SQLERRM );
+      END IF;        
+
       lc_cogs := '';
+      
     END;
     RETURN lc_cogs;
   END;
@@ -237,14 +260,31 @@ AS
     RETURN VARCHAR2
   IS
     lc_inv VARCHAR2 (200) := '';
+  
   BEGIN
+    IF (fnd_log.level_statement >= fnd_log.g_current_runtime_level) THEN
+      fnd_log.STRING (fnd_log.level_statement, 'XXOD_SLA_PKG.inv(+)', 'XXOD_SLA_PKG.inv p_trx_line_id: ' || p_trx_line_id );
+    END IF;     
+ 
     BEGIN
       SELECT NVL (attribute10, attribute8)
       INTO lc_inv
       FROM ra_cust_trx_line_gl_dist_all
-      WHERE customer_trx_line_id = p_trx_line_id;
+      WHERE customer_trx_line_id = p_trx_line_id
+      and   percent=100
+      and   ACCOUNT_CLASS = 'REV'
+	  and   NVL (attribute10, attribute8) is not null
+      ;
+    IF (fnd_log.level_statement >= fnd_log.g_current_runtime_level) THEN
+      fnd_log.STRING (fnd_log.level_statement, 'XXOD_SLA_PKG.inv', 'XXOD_SLA_PKG.inv XXOD_SLA_PKG.inv lc_inv: ' || lc_inv );
+    END IF;       
+       
     EXCEPTION
     WHEN OTHERS THEN
+      IF (fnd_log.level_statement >= fnd_log.g_current_runtime_level) THEN
+        fnd_log.STRING (fnd_log.level_statement, 'XXOD_SLA_PKG.inv', 'EXCEPTION in XXOD_SLA_PKG.inv Exception: ' || SQLERRM );
+      END IF;      
+ 
       lc_inv := '';
     END;
     RETURN lc_inv;
@@ -260,22 +300,188 @@ AS
       p_trx_line_id IN NUMBER)
     RETURN NUMBER
   IS
-    ln_amt NUMBER;
+    ln_amt NUMBER; 
   BEGIN
+    IF (fnd_log.level_statement >= fnd_log.g_current_runtime_level) THEN
+      fnd_log.STRING (fnd_log.level_statement, 'XXOD_SLA_PKG.cogs_amount(+)', 'XXOD_SLA_PKG.cogs_amount p_trx_line_id: ' || p_trx_line_id );
+    END IF;   
+ 
     BEGIN
       SELECT ROUND((rctla.quantity_invoiced * rctlgda.attribute9),2) --Added the 'ROUND' function for Defect#26631
       INTO ln_amt
       FROM ra_cust_trx_line_gl_dist_all rctlgda,
         ra_customer_trx_lines_all rctla
       WHERE rctlgda.customer_trx_line_id = rctla.customer_trx_line_id
-      AND rctlgda.customer_trx_line_id   = p_trx_line_id;
+      AND rctlgda.customer_trx_line_id   = p_trx_line_id
+      and   percent=100
+      and   ACCOUNT_CLASS = 'REV'
+	  --and   rctla.attribute9 is not null
+      ;
+    IF (fnd_log.level_statement >= fnd_log.g_current_runtime_level) THEN
+      fnd_log.STRING (fnd_log.level_statement, 'XXOD_SLA_PKG.cogs_amount', 'XXOD_SLA_PKG.cogs_amount XXOD_SLA_PKG.cogs_amount ln_amt: ' || ln_amt );
+    END IF;         
+        
     EXCEPTION
     WHEN OTHERS THEN
       ln_amt := 0;
+      IF (fnd_log.level_statement >= fnd_log.g_current_runtime_level) THEN
+        fnd_log.STRING (fnd_log.level_statement, 'XXOD_SLA_PKG.cogs_amount', 'EXCEPTION in XXOD_SLA_PKG.cogs_amount Exception: ' || SQLERRM );
+      END IF;              
     END;
     RETURN ln_amt;
   END;
 -- +===================================================================+
+  -- | Name         :SUBS_COGS                                           |
+  -- | Description  :This Procedure derive the COGS Value attribute7     |
+  -- |               based on the interface line id  from the AR tables  |
+  -- | Parameters   :p_trx_line_id                                       |
+  -- |                                                                   |
+  -- +===================================================================+
+  FUNCTION subs_cogs(
+      p_trx_line_id IN NUMBER)
+    RETURN VARCHAR2
+  IS
+    lc_cogs VARCHAR2 (200) := '';
+
+  BEGIN
+
+      IF (fnd_log.level_statement >= fnd_log.g_current_runtime_level) THEN
+         fnd_log.STRING (fnd_log.level_statement, 'XXOD_SLA_PKG.subs_cogs(+)', 'XXOD_SLA_PKG.subs_cogs p_trx_line_id: ' || p_trx_line_id);
+      END IF; 
+    BEGIN
+      SELECT attribute7
+      INTO lc_cogs
+      FROM ra_cust_trx_line_gl_dist_all
+      WHERE customer_trx_line_id = p_trx_line_id
+      and   percent=100
+      and   ACCOUNT_CLASS = 'REV'
+	  and   attribute7 is not null
+      ;
+      IF (fnd_log.level_statement >= fnd_log.g_current_runtime_level) THEN
+         fnd_log.STRING (fnd_log.level_statement, 'XXOD_SLA_PKG.subs_cogs', 'XXOD_SLA_PKG.subs_cogs lc_cogs: ' || lc_cogs  );
+      END IF;        
+    
+    EXCEPTION
+    WHEN OTHERS THEN
+      IF (fnd_log.level_statement >= fnd_log.g_current_runtime_level) THEN
+         fnd_log.STRING (fnd_log.level_statement, 'XXOD_SLA_PKG.subs_cogs', 'EXCEPTION in XXOD_SLA_PKG.subs_cogs Exception: ' || SQLERRM);
+      END IF; 
+      lc_cogs := '';
+      
+    END;
+    RETURN lc_cogs;
+  END;
+  -- +===================================================================+
+  -- | Name         :SUBS_INV                                            |
+  -- | Description  :This Procedure derive the INV Value attribute8/10   |
+  -- |               based on the interface line id  from the AR tables  |
+  -- | Parameters   :p_trx_line_id                                       |
+  -- |                                                                   |
+  -- +===================================================================+
+  FUNCTION subs_inv(
+      p_trx_line_id IN NUMBER)
+    RETURN VARCHAR2
+  IS
+    lc_inv VARCHAR2 (200) := '';
+    err varchar2(1000) := '';    
+  BEGIN
+    IF (fnd_log.level_statement >= fnd_log.g_current_runtime_level) THEN
+      fnd_log.STRING (fnd_log.level_statement, 'XXOD_SLA_PKG.subs_inv(+)', 'XXOD_SLA_PKG.subs_inv p_trx_line_id: ' || p_trx_line_id );
+    END IF;  
+    BEGIN
+      SELECT attribute8
+      INTO lc_inv
+      FROM ra_cust_trx_line_gl_dist_all
+      WHERE customer_trx_line_id = p_trx_line_id
+      and   percent=100
+      and   ACCOUNT_CLASS = 'REV'
+	  and   attribute8 is not null
+      ;
+    IF (fnd_log.level_statement >= fnd_log.g_current_runtime_level) THEN
+      fnd_log.STRING (fnd_log.level_statement, 'XXOD_SLA_PKG.subs_inv',  'XXOD_SLA_PKG.subs_inv XXOD_SLA_PKG.subs_inv lc_inv: ' || lc_inv  );
+    END IF;         
+    EXCEPTION
+    WHEN OTHERS THEN
+      IF (fnd_log.level_statement >= fnd_log.g_current_runtime_level) THEN
+         fnd_log.STRING (fnd_log.level_statement, 'XXOD_SLA_PKG.subs_inv', 'EXCEPTION in XXOD_SLA_PKG.subs_inv Exception: ' || SQLERRM );
+      END IF; 
+      lc_inv := '';
+    END;
+    RETURN lc_inv;
+  END;
+  -- +===================================================================+
+  -- | Name         :SUBS_COGS_AMOUNT                                    |
+  -- | Description  :This Procedure derive the Amount for invoice        |
+  -- |               based on the interface line id  from the AR tables  |
+  -- | Parameters   :p_trx_line_id                                       |
+  -- |                                                                   |
+  -- +===================================================================+
+  FUNCTION subs_cogs_amount(
+      p_cust_trx_line_gl_dist_id IN NUMBER)
+    RETURN NUMBER
+  IS
+    ln_amt NUMBER;
+    ln_percent_amt NUMBER;
+    ln_trx_line_id number;
+  BEGIN
+    IF (fnd_log.level_statement >= fnd_log.g_current_runtime_level) THEN
+      fnd_log.STRING (fnd_log.level_statement, 'XXOD_SLA_PKG.subs_cogs_amount(+)' , 'XXOD_SLA_PKG.subs_cogs_amount p_cust_trx_line_gl_dist_id: ' || p_cust_trx_line_gl_dist_id );
+    END IF;    
+ 
+    BEGIN
+      SELECT  customer_trx_line_id
+      INTO    ln_trx_line_id
+      FROM    ra_cust_trx_line_gl_dist_all
+      WHERE   cust_trx_line_gl_dist_id = p_cust_trx_line_gl_dist_id;
+
+      IF (fnd_log.level_statement >= fnd_log.g_current_runtime_level) THEN
+        fnd_log.STRING (fnd_log.level_statement, 'XXOD_SLA_PKG.subs_cogs_amount', 'XXOD_SLA_PKG.subs_cogs_amount, XXOD_SLA_PKG.subs_cogs_amount ln_trx_line_id: ' || ln_trx_line_id );
+      END IF;   
+      
+      SELECT ROUND((rctla.quantity_invoiced * rctlgda.attribute9),2) --Added the 'ROUND' function for Defect#26631
+      INTO ln_amt
+      FROM ra_cust_trx_line_gl_dist_all rctlgda,
+        ra_customer_trx_lines_all rctla
+      WHERE rctlgda.customer_trx_line_id = rctla.customer_trx_line_id
+      AND rctlgda.customer_trx_line_id   = ln_trx_line_id
+      and   rctlgda.percent=100
+      and   rctlgda.ACCOUNT_CLASS = 'REV'
+	    and   rctlgda.attribute9 is not null; 
+
+      IF (fnd_log.level_statement >= fnd_log.g_current_runtime_level) THEN
+        fnd_log.STRING (fnd_log.level_statement, 'XXOD_SLA_PKG.subs_cogs_amount', 'XXOD_SLA_PKG.subs_cogs_amount XXOD_SLA_PKG.subs_cogs_amount ln_amt: ' || ln_amt );
+      END IF; 
+
+      SELECT case when ((rctl.rule_end_date - rctg.gl_date)  <= 31 ) then 
+                       (select ln_amt - sum(round((ln_amt*percent/100),2 ) )
+                          from ra_cust_trx_line_gl_dist_all
+                         where customer_trx_line_id = ln_trx_line_id
+                           and account_class='REV'
+                           and percent <> 100
+                           and trunc(gl_date) <> trunc(rctg.gl_date)
+                       ) 
+             else round((ln_amt*percent/100),2) 
+             end  cogs_rounded
+      INTO   ln_percent_amt
+      from   ra_customer_trx_lines_all       rctl
+            ,ra_cust_trx_line_gl_dist_all    rctg
+      WHERE  rctl.customer_trx_line_id     = rctg.customer_trx_line_id
+      and    rctg.cust_trx_line_gl_dist_id = p_cust_trx_line_gl_dist_id;
+      
+      IF (fnd_log.level_statement >= fnd_log.g_current_runtime_level) THEN
+        fnd_log.STRING (fnd_log.level_statement, 'XXOD_SLA_PKG.subs_cogs_amount', 'XXOD_SLA_PKG.subs_cogs_amount XXOD_SLA_PKG.subs_cogs_amount ln_percent_amt: ' || ln_percent_amt );
+      END IF; 
+              
+    EXCEPTION
+    WHEN OTHERS THEN
+      ln_percent_amt := 0;
+      IF (fnd_log.level_statement >= fnd_log.g_current_runtime_level) THEN
+         fnd_log.STRING (fnd_log.level_statement,'XXOD_SLA_PKG.subs_cogs_amount', 'EXCEPTION in XXOD_SLA_PKG.subs_cogs_amount Exception: ' || SQLERRM);
+      END IF;       
+    END;
+    RETURN ln_percent_amt;
+  END;
+  -- +===================================================================+
 -- | Name         :CM_COGS_AMOUNT                                      |
 -- | Description  :This Procedure derive the amount for Credit memo    |
 -- |               based on the interface line id  from the AR tables  |
@@ -303,6 +509,8 @@ AS
       FROM ra_cust_trx_line_gl_dist_all rctlgda,
         ra_customer_trx_lines_all rctla
       WHERE rctlgda.customer_trx_line_id            = rctla.customer_trx_line_id
+      and   rctlgda.percent=100
+      and   rctlgda.ACCOUNT_CLASS='REV'
       AND rctlgda.customer_trx_line_id              = p_trx_line_id;
       IF SIGN(NVL(lc_qty_invoiced,lc_qty_credited)) = '-1' OR SIGN(NVL(lc_unit_selling_price,'0')) = '-1' THEN
         ln_amt                                     := ln_amt* (-1);
@@ -415,7 +623,7 @@ AS
   WHEN OTHERS THEN
     RETURN NULL;
   END inv_company;
-  
+
   --  +=============================================================================+
   -- | Name         :ACCRUAL_WRITEOFF                                          |
   -- | Description  :This Function return the custom Account for the Write Off      |
@@ -424,12 +632,12 @@ AS
   -- |                                                                              |
   -- +==============================================================================+
   FUNCTION ACCRUAL_WRITEOFF(
-  p_write_off_id in number) 
-  return varchar2 
+  p_write_off_id in number)
+  return varchar2
   AS
   lc_account VARCHAR2(30);
   begin
-   
+
    SELECT mtr.attribute2
      INTO lc_account
      FROM cst_write_offs cwo,
@@ -442,8 +650,8 @@ exception
 when others then
 return null;
   END ACCRUAL_WRITEOFF;
-  
-  
+
+
   --  +=============================================================================+
   -- | Name         :ACCRUAL_WRITEOFF_LOCATION                                          |
   -- | Description  :This Function return the custom Account for the Write Off      |
@@ -451,29 +659,29 @@ return null;
   -- | Parameters   :p_write_off_id                                              |
   -- |                                                                              |
   -- +==============================================================================+
-  
+
  FUNCTION ACCRUAL_WRITEOFF_LOCATION(
     p_write_off_id IN NUMBER)
   RETURN VARCHAR2
 AS
   lc_location VARCHAR2(30);
 BEGIN
-  
+
   SELECT mtr.attribute6
   INTO lc_location
   FROM cst_write_offs cwo,
     mtl_transaction_reasons mtr
   WHERE cwo.write_off_id =p_write_off_id  -- Changes done as per Version 1.5
   AND cwo.reason_id            = mtr.reason_id;
-  
+
   RETURN lc_location;
 EXCEPTION
 WHEN OTHERS THEN
-  
+
   RETURN NULL;
 END ACCRUAL_WRITEOFF_LOCATION;
 
- 
+
   --  +=============================================================================+
   -- | Name         :ACCRUAL_WRITEOFF_LOB                                          |
   -- | Description  :This Function return the custom Account for the Write Off      |
@@ -488,20 +696,20 @@ FUNCTION ACCRUAL_WRITEOFF_LOB(
 AS
   lc_lOB VARCHAR2(30);
 BEGIN
-  
+
   SELECT mtr.attribute7
   INTO lc_lOB
   FROM cst_write_offs cwo,
     mtl_transaction_reasons mtr
   WHERE cwo.write_off_id =p_write_off_id  -- Changes done as per Version 1.5
   AND cwo.reason_id            = mtr.reason_id;
-  
+
   RETURN lc_lOB;
 EXCEPTION
 WHEN OTHERS THEN
   RETURN NULL;
 END ACCRUAL_WRITEOFF_LOB;
-  
+
   --  +=============================================================================+
   -- | Name         :CONSIGN_MATERIAL_ACCT                                          |
   -- | Description  :This Function return the custom Account for the Write Off      |
@@ -509,7 +717,7 @@ END ACCRUAL_WRITEOFF_LOB;
   -- |                Transaction Id                                                |
   -- | Parameters   :p_transaction_id                                               |
   -- |                                                                              |
-  -- +==============================================================================+  
+  -- +==============================================================================+
   FUNCTION CONSIGN_MATERIAL_ACCT(
       p_transaction_id IN NUMBER)
     RETURN VARCHAR2
@@ -537,24 +745,24 @@ END ACCRUAL_WRITEOFF_LOB;
     dbms_output.put_line('Error: '||SQLERRM);
     fnd_file.put_line(fnd_file.log,'Error: '||SQLERRM);
   END CONSIGN_MATERIAL_ACCT;
-  
+
   -- +==============================================================================+
   -- | Name         :dropship_accrual_acct                                          |
   -- | Description  :This Function return the accrual account for Dropship Source   |
   -- |                                                                              |
   -- | Parameters   :p_header_id                                                    |
   -- |                                                                              |
-  -- +==============================================================================+    
-  
+  -- +==============================================================================+
+
 FUNCTION DROPSHIP_ACCRUAL_ACCT(p_header_id IN NUMBER)
 RETURN VARCHAR2
 AS
   lc_ds_accrual_acct VARCHAR2(30);
 BEGIN
-  
+
   SELECT attribute_category
     INTO lc_ds_accrual_acct
-    FROM Po_headers_all 
+    FROM Po_headers_all
    WHERE po_header_id = p_header_id
      AND attribute_category in ('DropShip NonCode-SPL Order', 'DropShip VW');
 
@@ -563,8 +771,7 @@ BEGIN
 EXCEPTION
   WHEN OTHERS THEN
     RETURN NULL;
-END DROPSHIP_ACCRUAL_ACCT; 
-  
+END DROPSHIP_ACCRUAL_ACCT;
+
 END;
 /
-SHOW ERRORS;

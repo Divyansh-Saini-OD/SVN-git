@@ -19,12 +19,14 @@ AS
   -- |1.2      16-Oct-2014  Gayathri.K      Defect#31379                 |
   -- |1.3      01-Aug-2017  Sridhar Gajjala Customizing the Write-Off    |
   -- |                                      Accounting                   |
-  -- |1.4      10-Nov-2017  Paddy Sanjeevi  Added INV_LOB                | 
+  -- |1.4      10-Nov-2017  Paddy Sanjeevi  Added INV_LOB                |
   -- |1.5      30-Nov-2017  Havish Kasina   Changed the input parameter  |
   -- |                                      from p_distribution_id to    |
   -- |                                      p_write_off_id               |
-  -- |1.6      23-Jan-2018  Paddy Sanjeevi  Added Dropship Accrual Acct  |  
+  -- |1.6      23-Jan-2018  Paddy Sanjeevi  Added Dropship Accrual Acct  |
   -- |1.7      12-Feb-2018  Paddy Sanjeevi  Added for chargeback_acct    |
+  -- |1.8      24-May-2020  Sreedhar Mohan  new functions for service    |
+  -- |                                      subscription cogs and amount |
   -- +===================================================================+
 
   -- +==============================================================================+
@@ -33,30 +35,30 @@ AS
   -- |                                                                              |
   -- | Parameters   :p_invoice_dist_id                                              |
   -- |                                                                              |
-  -- +==============================================================================+    
- 
+  -- +==============================================================================+
+
   FUNCTION chargeback_acct(p_invoice_dist_id IN NUMBER) RETURN VARCHAR2;
-  
-  
-  
+
+
+
   -- +==============================================================================+
   -- | Name         :dropship_accrual_acct                                          |
   -- | Description  :This Function return the accrual account for Dropship Source   |
   -- |                                                                              |
   -- | Parameters   :p_header_id                                                    |
   -- |                                                                              |
-  -- +==============================================================================+    
- 
+  -- +==============================================================================+
+
   FUNCTION DROPSHIP_ACCRUAL_ACCT(p_header_id IN NUMBER) RETURN VARCHAR2;
-  
+
   -- +===================================================================+
   -- | Name         :INV_LOB                                             |
   -- | Description  :This Procedure derive the LOB for the transaction_id|
   -- | Parameters   :p_transaction_id                                    |
   -- |                                                                   |
-  -- +===================================================================+  
+  -- +===================================================================+
   FUNCTION INV_LOB (p_transaction_id IN NUMBER) RETURN VARCHAR2;
-      
+
   -- +===================================================================+
   -- | Name         :COGS                                                |
   -- | Description  :This Procedure derive the COGS Value attribute7     |
@@ -86,6 +88,36 @@ AS
   -- +===================================================================+
   FUNCTION cogs_amount(
       p_trx_line_id IN NUMBER)
+    RETURN NUMBER;
+  -- +===================================================================+
+  -- | Name         :SUBS_COGS                                           |
+  -- | Description  :This Procedure derive the COGS Value attribute7     |
+  -- |               based on the interface line id  from the AR tables  |
+  -- | Parameters   :p_trx_line_id                                       |
+  -- |                                                                   |
+  -- +===================================================================+
+  FUNCTION subs_cogs(
+      p_trx_line_id IN NUMBER)
+    RETURN VARCHAR2;
+  -- +===================================================================+
+  -- | Name         :SUBS_INV                                            |
+  -- | Description  :This Procedure derive the INV Value attribute8/10   |
+  -- |               based on the interface line id  from the AR tables  |
+  -- | Parameters   :p_trx_line_id                                       |
+  -- |                                                                   |
+  -- +===================================================================+
+  FUNCTION subs_inv(
+      p_trx_line_id IN NUMBER)
+    RETURN VARCHAR2;
+  -- +===================================================================+
+  -- | Name         :SUBS_COGS_AMOUNT                                    |
+  -- | Description  :This Procedure derive the Amount for invoice        |
+  -- |               based on the interface line id  from the AR tables  |
+  -- | Parameters   :p_trx_line_id                                       |
+  -- |                                                                   |
+  -- +===================================================================+
+  FUNCTION subs_cogs_amount(
+      p_cust_trx_line_gl_dist_id IN NUMBER)
     RETURN NUMBER;
   -- +===================================================================+
   -- | Name         :CM_COGS_AMOUNT                                      |
@@ -138,29 +170,29 @@ AS
   FUNCTION ACCRUAL_WRITEOFF(
       p_write_off_id IN NUMBER)
     RETURN VARCHAR2;
-	
-	
+
+
   -- +==============================================================================+
   -- | Name         :ACCRUAL_WRITEOFF_LOCATION                                         		|
   -- | Description  :This Function return the custom Account for the Write Off      |
   -- |                process                                                       |
   -- | Parameters   :p_write_off_id                                              |
   -- |                                                                              |
-  -- +==============================================================================+	
+  -- +==============================================================================+
   FUNCTION ACCRUAL_WRITEOFF_LOCATION (
-	  p_write_off_id in number) 
+	  p_write_off_id in number)
 	  return varchar2;
-	
+
   -- +==============================================================================+
   -- | Name         :ACCRUAL_WRITEOFF_LOB                                         		|
   -- | Description  :This Function return the custom Account for the Write Off      |
   -- |                process                                                       |
   -- | Parameters   :p_write_off_id                                              |
   -- |                                                                              |
-  -- +==============================================================================+	
+  -- +==============================================================================+
   FUNCTION ACCRUAL_WRITEOFF_LOB (
-		p_write_off_id in number) 
-		return varchar2;  	
+		p_write_off_id in number)
+		return varchar2;
   --  +=============================================================================+
   -- | Name         :CONSIGN_MATERIAL_ACCT                                          |
   -- | Description  :This Function return the custom Account for the Write Off      |
@@ -173,4 +205,3 @@ AS
       p_transaction_id IN NUMBER)
     RETURN VARCHAR2;
 END;
-/

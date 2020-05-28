@@ -24,6 +24,16 @@ AS
         p_rcpt_date   IN             DATE,
         p_pay_type    IN             VARCHAR2,
         p_debug_flag  IN             VARCHAR2);
+		
+		PROCEDURE CREATE_APPLY_SUBSC_REVREC_RCPT(
+        errbuf        OUT NOCOPY     VARCHAR2,
+        retcode       OUT NOCOPY     NUMBER,
+        p_org_id      IN             NUMBER,
+        p_store_num   IN             VARCHAR2,
+        p_rcpt_date   IN             DATE,
+        p_pay_type    IN             VARCHAR2,
+        p_debug_flag  IN             VARCHAR2);
+
 
     PROCEDURE apply_summary_receipt_child(
         errbuf              OUT NOCOPY     VARCHAR2,

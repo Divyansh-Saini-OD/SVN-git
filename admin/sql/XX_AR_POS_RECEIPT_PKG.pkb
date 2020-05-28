@@ -36,7 +36,7 @@ AS
 -- | 5.2         11-NOV-2015  Vasu Raparla          Removed Schema References for R12.2                  |
 -- | 5.2         08-MAR-2016  Shubhashree R        Modified the proc create_summary_receipt for QC 36905 |
 -- | 5.3         03-JUN-2019  Havish Kasina        Changed the v$database to DB_NAME                     |
--- | 5.4         14-APR-2020  M K Pramod Kumar      Modified for Rev Rec Changes                   |
+-- |5.9          30-Apr-2020  Pramod Kumar        NAIT-11880 Rev Rec Code changes
 -- +=====================================================================================================+
     PROCEDURE create_summary_receipt(
         errbuf        OUT NOCOPY     VARCHAR2,
@@ -121,7 +121,7 @@ AS
                                            r.receipt_date)
             AND      r.payment_type_code = NVL(p_pay_type,
                                                r.payment_type_code)
-			and not exists (select 1 from oe_order_headers_all ooha, oe_order_lines_all oola 
+		    AND     not  exists (select 1 from oe_order_headers_all ooha, oe_order_lines_all oola 
 									where ooha.ORIG_SYS_DOCUMENT_REF=r.ORIG_SYS_DOCUMENT_REF
 									and  oola.header_id=ooha.header_id
 									and oola.inventory_item_id in (select inventory_item_id from xx_ar_subscription_items where is_rev_rec_eligible='Y'))
@@ -722,6 +722,747 @@ AS
             ROLLBACK;
     END create_summary_receipt;
 
+	-- +=====================================================================================================+
+-- |                                                                                                     |
+-- |  PROCEDURE: CREATE_APPLY_SUBSC_REVREC_RECEIPT                                                                   |
+-- |                                                                                                     |
+-- |  PROCESSING ORDER:                |
+-- |  1. Process Credit Memo(s) to 0$ Receipts            |
+-- |  2. Process remaining Credit Memo(s) to any Receipt(s)          |
+-- |   only positive receipts              |
+-- |  3. Process Invoice(s)               |
+-- |   only positive receipts              |
+-- |  4. Write Off any remaining zero sum Receipts(s)           |
+-- |  5. Apply any remaining matching (netting) transactions         |
+-- |                    |
+-- +=====================================================================================================+
+
+	 PROCEDURE CREATE_APPLY_SUBSC_REVREC_RCPT(
+        errbuf        OUT NOCOPY     VARCHAR2,
+        retcode       OUT NOCOPY     NUMBER,
+        p_org_id      IN             NUMBER,
+        p_store_num   IN             VARCHAR2,
+        p_rcpt_date   IN             DATE,
+        p_pay_type    IN             VARCHAR2,
+        p_debug_flag  IN             VARCHAR2)
+    IS
+        p_receipt_method       xx_ar_pos_receipts.receipt_method%TYPE;
+        p_receipt_method_id    ar_receipt_methods.receipt_method_id%TYPE;
+        x_error_message        VARCHAR2(2000)                              DEFAULT NULL;
+        x_return_status        VARCHAR2(20)                                DEFAULT NULL;
+        x_msg_count            NUMBER                                      DEFAULT NULL;
+        x_msg_data             VARCHAR2(4000)                              DEFAULT NULL;
+        x_return_flag          VARCHAR2(1)                                 DEFAULT NULL;
+        lc_comments            VARCHAR2(4000)                              DEFAULT NULL;
+        lc_preauthorized_flag  VARCHAR2(1)                                 DEFAULT NULL;
+        lc_amount              NUMBER                                      DEFAULT NULL;
+        x_seq_num              NUMBER                                      DEFAULT NULL;
+        lc_rows_updt           NUMBER                                      DEFAULT NULL;
+        lc_store_num           xx_ar_order_receipt_dtl.store_number%TYPE;
+        x_attributes           ar_receipt_api_pub.attribute_rec_type;
+        x_bank_account_id      ce_bank_accounts.bank_account_id%TYPE;
+        p_start_date           DATE                                        DEFAULT NULL;
+        p_end_date             DATE                                        DEFAULT NULL;
+        p_cash_receipt_id      NUMBER                                      DEFAULT NULL;
+        p_receipt_number       NUMBER                                      := 53;
+        tot_receipt_cnt        NUMBER                                      := 0;
+        tot_receipt_amt        NUMBER                                      := 0;
+        tot_ar_amt             NUMBER                                      := 0;
+        gc_error_loc           VARCHAR2(80)                                DEFAULT NULL;
+        --QC36905
+        p_source_value3        VARCHAR2(1);
+        p_target_value1        VARCHAR2(20);
+		l_trx_number             ra_customer_trx_all.trx_number%TYPE;
+		l_customer_trx_id        ra_customer_trx_all.customer_trx_id%TYPE;
+		l_amount_due_remaining    NUMBER;
+		l_inv_status             ar_payment_schedules_all.status%TYPE;
+
+-- ==========================================================================
+-- primary cursor - Summarize POS receipts
+-- ==========================================================================
+        CURSOR pos_subsc_summary_cur
+        IS
+           
+			 SELECT    r.orig_sys_document_ref,
+			 r.customer_id,
+                  r.store_number,
+                  TRUNC(r.receipt_date) AS receipt_date,
+                  TO_DATE(   TRUNC(r.receipt_date)
+                          || ' 00:00:00',
+                          'DD-MON-YY HH24:MI:SS') AS rcpt_date_start,
+                  TO_DATE(   TRUNC(r.receipt_date)
+                          || ' 23:59:59',
+                          'DD-MON-YY HH24:MI:SS') AS rcpt_date_end,
+                  r.payment_type_code,
+                  r.credit_card_code,
+                  u.site_use_id,
+                  SUBSTR(h.NAME,
+                         4,
+                         2) AS NAME,
+                  r.currency_code,
+                  COUNT(*) AS receipt_cnt,
+                  SUM(r.payment_amount) AS payment_amount
+            FROM     xx_ar_order_receipt_dtl r,
+                     xx_ar_intstorecust_otc c,
+                     hr_operating_units h,
+                     hz_cust_acct_sites_all s,
+                     hz_cust_site_uses_all u
+            WHERE    c.cust_account_id = r.customer_id
+            AND      r.org_id = h.organization_id
+            AND      s.cust_account_id = c.cust_account_id
+            AND      s.cust_acct_site_id = u.cust_acct_site_id
+            AND      r.org_id = p_org_id
+--   AND    C.CUSTOMER_TYPE          = 'I'
+--   AND    C.CUSTOMER_CLASS_CODE    = 'TRADE - SH'
+            AND      r.cash_receipt_id = -3
+            AND      r.order_source = 'POE'
+            AND      u.site_use_code = 'BILL_TO'
+            AND      u.primary_flag = 'Y'
+            AND      r.store_number = NVL(p_store_num,
+                                          r.store_number)
+            AND      r.receipt_date >= NVL(p_start_date,
+                                           r.receipt_date)
+            AND      r.receipt_date <= NVL(p_end_date,
+                                           r.receipt_date)
+            AND      r.payment_type_code = NVL(p_pay_type,
+                                               r.payment_type_code)
+			and  exists (select 1 from oe_order_headers_all ooha, oe_order_lines_all oola 
+									where ooha.ORIG_SYS_DOCUMENT_REF=r.ORIG_SYS_DOCUMENT_REF
+									and  oola.header_id=ooha.header_id
+									and oola.inventory_item_id in (select inventory_item_id from xx_ar_subscription_items where is_rev_rec_eligible='Y'))
+            GROUP BY r.customer_id,
+                     r.store_number,
+                     TRUNC(r.receipt_date),
+                     r.payment_type_code,
+                     r.credit_card_code,
+                     u.site_use_id,
+                     SUBSTR(h.NAME,
+                            4,
+                            2),
+                     r.currency_code,
+					 r.orig_sys_document_ref
+            ORDER BY 1, 2, 3, 4, 5, 6, 7;
+-- ==========================================================================
+-- Main create summary process
+-- ==========================================================================
+    BEGIN
+        gc_error_loc := '1000- Main Process';
+
+        IF p_rcpt_date IS NULL
+        THEN
+            p_start_date := NULL;
+            p_end_date := NULL;
+        ELSE
+            p_start_date := TO_DATE(   p_rcpt_date
+                                    || ' 00:00:00',
+                                    'DD-MON-YY HH24:MI:SS');
+            p_end_date := TO_DATE(   p_rcpt_date
+                                  || ' 23:59:59',
+                                  'DD-MON-YY HH24:MI:SS');
+        END IF;
+
+        fnd_file.put_line(fnd_file.LOG,'XX_AR_POS_RECEIPT.CREATE_SUMMARY_RECEIPT START - parameters:      ');
+        fnd_file.put_line(fnd_file.LOG,'                                                 ORG_ID        = '|| p_org_id);
+        fnd_file.put_line(fnd_file.LOG,'                                                 STORE_NUMBER  = '|| p_store_num);
+        fnd_file.put_line(fnd_file.LOG,'                                                 START DATE    = '|| p_start_date);
+        fnd_file.put_line(fnd_file.LOG,'                                                 END DATE      = '|| p_end_date);
+        fnd_file.put_line(fnd_file.LOG,'                                                 PAYMENT_TYPE  = '|| p_pay_type);
+        fnd_file.put_line(fnd_file.LOG,'                                                 DEBUG_FLAG    = '|| p_debug_flag);
+        fnd_file.put_line(fnd_file.LOG,' ');
+        fnd_file.put_line(fnd_file.output,
+                             '                   '
+                          || 'STORE_NUMBER     '
+                          || '   '
+                          || 'RECEIPT_DATE     '
+                          || '   '
+                          || 'RECEIPT_NUMBER   '
+                          || '   '
+                          || 'CASH_RECEIPT_ID  '
+                          || '   '
+                          || 'AMOUNT'
+                          || '     '
+                          || 'RECEIPT_METHOD');
+        gc_error_loc := '2000- Create Summary Process';
+
+        FOR summary_rec IN pos_subsc_summary_cur
+        LOOP
+            IF p_debug_flag = 'Y'
+            THEN
+                fnd_file.put_line(fnd_file.LOG,
+                                     'DEBUG: Processing store = '
+                                  || summary_rec.store_number
+                                  || ' date = '
+                                  || summary_rec.receipt_date
+                                  || ' payment_type = '
+                                  || summary_rec.payment_type_code
+                                  || ' and credit_card = '
+                                  || summary_rec.credit_card_code);
+            END IF;
+
+            x_return_flag := ' ';
+            p_receipt_number :=   p_receipt_number
+                                + 1;
+                                
+           --QC36905
+           BEGIN
+              --Get the source_value3 value 
+              SELECT  v.source_Value3, v.target_value1
+                INTO  p_source_value3, p_target_value1
+                FROM  xx_fin_translatedefinition d, xx_fin_translatevalues v
+              WHERE  d.translate_id = v.translate_id
+                 AND  d.translation_name = 'AR_POS_RECEIPT_METHODS'
+                 AND  v.source_value1 = summary_rec.payment_type_code
+                 AND  v.source_value2 = summary_rec.credit_card_code
+                 AND  v.enabled_flag = 'Y'
+                 AND  d.enabled_flag = 'Y'
+                 AND  SYSDATE BETWEEN v.start_date_active AND NVL(v.end_date_active, SYSDATE);
+              --
+              IF p_debug_flag = 'Y' THEN
+                 fnd_file.put_line(fnd_file.LOG,'DEBUG: AR_POS_RECEIPT_METHODS.Source Value3 : '||p_source_value3 || '  Target_value1' ||p_target_value1);
+              END IF;
+              IF p_source_value3 = 'Y' THEN
+                  p_receipt_method := summary_rec.NAME || p_target_value1 || summary_rec.store_number;
+                  IF p_debug_flag = 'Y' THEN
+                     fnd_file.put_line(fnd_file.LOG,'DEBUG: p_receipt_method : '||p_receipt_method);   
+                  END IF;
+              ELSE
+                 p_receipt_method := summary_rec.NAME || p_target_value1 ;
+                 IF p_debug_flag = 'Y' THEN
+                     fnd_file.put_line(fnd_file.LOG,'DEBUG: In else part p_receipt_method : '||p_receipt_method);
+                 END IF;
+              END IF;
+           EXCEPTION
+              WHEN NO_DATA_FOUND
+              THEN
+                  x_return_flag := 'Y';
+                  x_error_message := SQLERRM;
+                  fnd_file.put_line(fnd_file.LOG,
+                                       'Error - Unable to derive store number flag from translations for store = '
+                                    || summary_rec.store_number
+                                    || ' date = '
+                                    || summary_rec.receipt_date
+                                    || ' payment_type = '
+                                    || summary_rec.payment_type_code
+                                    || ' and credit_card = '
+                                    || summary_rec.credit_card_code
+                                    || ' SQLCODE = '
+                                    || SQLCODE
+                                    || ' error = '
+                                    || x_error_message);
+              WHEN OTHERS
+              THEN
+                  x_return_flag := 'Y';
+                  x_error_message := SQLERRM;
+                  fnd_file.put_line(fnd_file.LOG,
+                                       'Error - Unable to derive store number flag from translations for store = '
+                                    || summary_rec.store_number
+                                    || ' date = '
+                                    || summary_rec.receipt_date
+                                    || ' payment_type = '
+                                    || summary_rec.payment_type_code
+                                    || ' and credit_card = '
+                                    || summary_rec.credit_card_code
+                                    || ' SQLCODE = '
+                                    || SQLCODE
+                                    || ' error = '
+                                    || x_error_message);
+          END;
+
+            BEGIN
+
+                SELECT r.receipt_method_id
+                INTO   p_receipt_method_id
+                FROM   ar_receipt_methods r
+                WHERE  r.NAME =    p_receipt_method
+                AND    SYSDATE BETWEEN r.start_date AND NVL(r.end_date,
+                                                            SYSDATE);
+                IF p_debug_flag = 'Y' THEN
+                   fnd_file.put_line(fnd_file.LOG,'DEBUG: Getting p_receipt_method_id : '||p_receipt_method_id); 
+                END IF;
+            EXCEPTION
+                WHEN NO_DATA_FOUND
+                THEN
+                    x_return_flag := 'Y';
+                    x_error_message := SQLERRM;
+                    fnd_file.put_line(fnd_file.LOG,
+                                         'Error - Receipt Method not found for store = '
+                                      || summary_rec.store_number
+                                      || ' date = '
+                                      || summary_rec.receipt_date
+                                      || ' payment_type = '
+                                      || summary_rec.payment_type_code
+                                      || ' and credit_card = '
+                                      || summary_rec.credit_card_code
+                                      || ' SQLCODE = '
+                                      || SQLCODE
+                                      || ' error = '
+                                      || x_error_message);
+                WHEN OTHERS
+                THEN
+                    x_return_flag := 'Y';
+                    x_error_message := SQLERRM;
+                    fnd_file.put_line(fnd_file.LOG,
+                                         'Error - Receipt Method Not found-unknown error for store = '
+                                      || summary_rec.store_number
+                                      || ' date = '
+                                      || summary_rec.receipt_date
+                                      || ' payment_type = '
+                                      || summary_rec.payment_type_code
+                                      || ' and credit_card = '
+                                      || summary_rec.credit_card_code
+                                      || ' SQLCODE = '
+                                      || SQLCODE
+                                      || ' error = '
+                                      || x_error_message);
+            END;
+
+            IF p_debug_flag = 'Y'
+            THEN
+                fnd_file.put_line(fnd_file.LOG,
+                                     'DEBUG: RECEIPT_METHOD = '
+                                  || p_receipt_method
+                                  || ' RECIPT_METHOD_ID = '
+                                  || p_receipt_method_id);
+            END IF;
+
+            IF x_return_flag != 'Y'
+            THEN
+-- ==========================================================================
+-- INSERT_AR(summary_rec)
+-- ==========================================================================
+                gc_error_loc := '3000- Insert Summary Process';
+                x_attributes.attribute7 := 'POS Summary Receipt';
+
+                IF summary_rec.payment_amount > 0
+                THEN
+                    lc_comments := 'POS Summary Receipt';
+                    x_attributes.attribute7 := 'POS Summary Receipt';
+                    lc_amount := summary_rec.payment_amount;
+                ELSE
+                    IF summary_rec.payment_amount < 0
+                    THEN
+                        lc_comments := 'POS Summary Receipt for Refund';
+                        x_attributes.attribute7 := 'POS Summary Receipt for Refund';
+                        lc_amount := 0;
+                    ELSE
+                        lc_comments := 'POS Net Zero Summary Receipt';
+                        x_attributes.attribute7 := 'POS Net Zero Summary Receipt';
+                        lc_amount := 0;
+                    END IF;
+                END IF;
+
+				 x_attributes.attribute14:=null; -- added by john for defect 35802
+                IF (summary_rec.payment_type_code = 'CREDIT_CARD')
+                THEN
+                    lc_preauthorized_flag := 'Y';
+                    x_attributes.attribute14 := summary_rec.credit_card_code;
+                ELSE
+                    lc_preauthorized_flag := 'N';
+					x_attributes.attribute14 := summary_rec.credit_card_code; -- added by john for defect 35802
+                END IF;
+
+                ar_receipt_api_pub.create_cash(p_api_version =>                     1.0,
+                                               p_init_msg_list =>                   fnd_api.g_true,
+                                               p_commit =>                          fnd_api.g_false,
+                                               p_validation_level =>                fnd_api.g_valid_level_full,
+                                               x_return_status =>                   x_return_status,
+                                               x_msg_count =>                       x_msg_count,
+                                               x_msg_data =>                        x_msg_data,
+                                               p_currency_code =>                   summary_rec.currency_code,
+                                               p_amount =>                          lc_amount,
+                                               p_receipt_date =>                    summary_rec.receipt_date,
+                                               p_receipt_method_id =>               p_receipt_method_id,
+                                               p_customer_id =>                     summary_rec.customer_id,
+                                               p_customer_site_use_id =>            summary_rec.site_use_id,
+                                               p_customer_receipt_reference =>      'RCT'||summary_rec.orig_sys_document_ref,--p_receipt_number, 
+                                               p_customer_bank_account_id =>        x_bank_account_id,
+                                               p_cr_id =>                           p_cash_receipt_id,
+                                               p_receipt_number =>                  'RCT'||summary_rec.orig_sys_document_ref, --p_receipt_number,
+                                               p_comments =>                        lc_comments,
+                                               p_called_from =>                     'E2074',
+                                               -- p_preauthorized_flag           => lc_preauthorized_flag,
+                                               p_attribute_rec =>                   x_attributes);
+
+                IF p_debug_flag = 'Y'
+                THEN
+                    x_error_message := x_msg_data;
+                    fnd_file.put_line(fnd_file.LOG,
+                                         'DEBUG: AR_RECEIPT_API return_status = '
+                                      || x_return_status
+                                      || ' msg_count = '
+                                      || x_msg_count
+                                      || ' msg_data = '
+                                      || x_error_message);
+                END IF;
+
+                IF (x_return_status != 'S')
+                THEN
+                    x_return_flag := 'Y';
+                    x_error_message := x_msg_data;
+                    fnd_file.put_line(fnd_file.LOG,
+                                         'Error - POS receipt AR_RECEIPT_API_PUB failed for store = '
+                                      || summary_rec.store_number
+                                      || ' date = '
+                                      || summary_rec.receipt_date
+                                      || ' receipt_method = '
+                                      || p_receipt_method
+                                      || ' error = '
+                                      || x_return_status
+                                      || ' msg = '
+                                      || x_error_message);
+
+                    FOR i IN 1 .. x_msg_count
+                    LOOP
+                        x_msg_data :=(   i
+                                      || '. '
+                                      || SUBSTR(fnd_msg_pub.get(p_encoded =>      fnd_api.g_false),
+                                                1,
+                                                255) );
+                        fnd_file.put_line(fnd_file.LOG,
+                                             '                  '
+                                          || x_msg_data);
+                    END LOOP;
+                ELSE
+                    tot_receipt_cnt :=   tot_receipt_cnt
+                                       + 1;
+                    tot_receipt_amt :=   tot_receipt_amt
+                                       + summary_rec.payment_amount;
+                    tot_ar_amt :=   tot_ar_amt
+                                  + lc_amount;
+-- ==========================================================================
+-- Apply receipt created to AR Invoice
+-- ==========================================================================								  
+		 BEGIN
+		 
+
+		 l_amount_due_remaining := NULL;
+		 l_trx_number          := NULL;
+		 l_customer_trx_id     := NULL;
+		 
+		 		 
+            SELECT rct.trx_number,rct.customer_trx_id,arp.amount_due_remaining,arp.status
+              INTO l_trx_number,l_customer_trx_id,l_amount_due_remaining,l_inv_status
+              FROM ra_customer_trx_all rct,
+                  ar_payment_schedules_all arp
+            WHERE 1=1
+			  AND rct.org_id=p_org_id
+              AND rct.trx_number=summary_rec.orig_sys_document_ref
+              AND rct.customer_trx_id=arp.customer_trx_id
+			  AND arp.status='OP'
+			 -- AND rct.trx_date >= p_start_date
+              --AND rct.trx_date <= p_start_date
+              AND rct.attribute_category = 'POS'
+              --AND rct.interface_header_attribute3 = 'SUMMARY'
+			  ;
+            EXCEPTION
+              WHEN NO_DATA_FOUND THEN 
+                l_trx_number:=NULL;
+                l_customer_trx_id:=NULL;
+              WHEN OTHERS THEN 
+                l_trx_number:=NULL;
+                l_customer_trx_id:=NULL;
+         END;
+        FND_FILE.PUT_LINE(FND_FILE.log,'Transaction Number:'||l_trx_number);
+        FND_FILE.PUT_LINE(FND_FILE.log,'Transaction Status:'||l_inv_status);	
+
+
+							AR_RECEIPT_API_PUB.APPLY
+                            (p_api_version                      => 1.0,
+                             p_init_msg_list                    => fnd_api.g_true,
+                             p_commit                           => fnd_api.g_false,
+                             p_validation_level                 => fnd_api.g_valid_level_full,
+                             x_return_status                    => x_return_status,
+                             x_msg_count                        => x_msg_count,
+                             x_msg_data                         => x_msg_data,
+                             p_cash_receipt_id                  => p_cash_receipt_id,
+                             p_customer_trx_id                  => l_customer_trx_id,
+                           --  p_installment                      => i_record.terms_sequence_number,
+                           --  p_applied_payment_schedule_id      => i_record.payment_schedule_id,
+                             p_show_closed_invoices              => 'Y',
+                             p_amount_applied                   => l_amount_due_remaining,
+                             p_discount                         => NULL,
+                             p_apply_date                       => sysdate
+                           );
+                  
+              IF x_return_status = 'S' THEN
+                           FND_FILE.PUT_LINE(FND_FILE.LOG,'Receipt Applied to transaction successfully: '||l_customer_trx_id); 
+                          
+               ELSE
+                          IF (x_return_status != 'S')
+                THEN
+                    x_return_flag := 'Y';
+                    x_error_message := x_msg_data;
+                    fnd_file.put_line(fnd_file.LOG,
+                                         'Error - POS receipt AR_RECEIPT_API_PUB failed for store = '
+                                      || summary_rec.store_number
+                                      || ' date = '
+                                      || summary_rec.receipt_date
+                                      || ' receipt_method = '
+                                      || p_receipt_method
+                                      || ' error = '
+                                      || x_return_status
+                                      || ' msg = '
+                                      || x_error_message);
+
+                    FOR i IN 1 .. x_msg_count
+                    LOOP
+                        x_msg_data :=(   i
+                                      || '. '
+                                      || SUBSTR(fnd_msg_pub.get(p_encoded =>      fnd_api.g_false),
+                                                1,
+                                                255) );
+                        fnd_file.put_line(fnd_file.LOG,
+                                             '                  '
+                                          || x_msg_data);
+                    END LOOP;
+                        
+                        END IF;                   
+              END IF; --end if for S Receipt Trx Apply		
+								  
+								  
+								  
+-- ==========================================================================
+-- INSERT_SUMMARY(summary_rec)
+-- ==========================================================================
+                    gc_error_loc := '4000- Create Summary Process';
+
+                    SELECT xx_ar_pos_receipts_s.NEXTVAL
+                    INTO   x_seq_num
+                    FROM   DUAL;
+
+                    IF p_debug_flag = 'Y'
+                    THEN
+                        fnd_file.put_line(fnd_file.LOG,
+                                             'DEBUG: Get POS seq = '
+                                          || x_seq_num
+                                          || ' SQLCODE = '
+                                          || SQLCODE
+                                          || ' SQLERRM = '
+                                          || SQLERRM);
+                    END IF;
+				
+
+                    INSERT INTO xx_ar_pos_receipts
+                                (summary_pos_receipt_id,
+                                 customer_id,
+                                 store_number,
+                                 receipt_date,
+                                 receipt_method,
+                                 payment_type_code,
+                                 credit_card_code,
+                                 receipt_type,
+                                 cash_receipt_id,
+                                 receipt_number,
+                                 org_id,
+                                 summary_count,
+                                 summary_amount,
+                                 unapplied_amount,
+                                 status,
+                                 last_update_date,
+                                 last_updated_by,
+                                 creation_date,
+                                 created_by,
+                                 last_update_login)
+                    VALUES      (x_seq_num,
+                                 summary_rec.customer_id,
+                                 summary_rec.store_number,
+                                 summary_rec.receipt_date,
+                                 p_receipt_method,
+                                 summary_rec.payment_type_code,
+                                 summary_rec.credit_card_code,
+                                 ' ',
+                                 p_cash_receipt_id,
+                                 'RCT'||summary_rec.orig_sys_document_ref,
+                                 p_org_id,
+                                 summary_rec.receipt_cnt,
+                                 summary_rec.payment_amount,
+                                 summary_rec.payment_amount,
+                                 'CL',
+                                 SYSDATE,
+                                 fnd_global.user_id,
+                                 SYSDATE,
+                                 fnd_global.user_id,
+                                 fnd_global.login_id);
+
+                    IF p_debug_flag = 'Y'
+                    THEN
+                        fnd_file.put_line(fnd_file.LOG,
+                                             'DEBUG: Insert POS SQLCODE = '
+                                          || SQLCODE
+                                          || ' SQLERRM = '
+                                          || SQLERRM);
+                    END IF;
+
+                    IF SQLCODE != 0
+                    THEN
+                        x_return_flag := 'Y';
+                        x_error_message := SQLERRM;
+                        fnd_file.put_line(fnd_file.LOG,
+                                             'Error - Insert summary receipt failed for store = '
+                                          || summary_rec.store_number
+                                          || ' date = '
+                                          || summary_rec.receipt_date
+                                          || ' receipt_method = '
+                                          || p_receipt_method
+                                          || ' SQLCODE = '
+                                          || SQLCODE
+                                          || ' error = '
+                                          || x_error_message);
+                    ELSE
+-- ==========================================================================
+-- UPDATE_DTLS(p_cash_receipt_id)
+-- ==========================================================================
+                        gc_error_loc := '5000- Update Details Process';
+
+                        IF p_debug_flag = 'Y'
+                        THEN
+                            fnd_file.put_line(fnd_file.LOG,
+                                                 'DEBUG: '
+                                              || summary_rec.rcpt_date_start
+                                              || ' '
+                                              || summary_rec.rcpt_date_end);
+                            fnd_file.put_line(fnd_file.LOG,
+                                                 'DEBUG: DTL updt conditions, customer_id = '
+                                              || summary_rec.customer_id
+                                              || ' store_number = '
+                                              || summary_rec.store_number
+                                              || ' receipt_date = '
+                                              || summary_rec.receipt_date
+                                              || ' payment_type = '
+                                              || summary_rec.payment_type_code
+                                              || ' credit_card = '
+                                              || summary_rec.payment_type_code
+                                              || ' org_id = '
+                                              || p_org_id);
+                        END IF;
+
+                        UPDATE xx_ar_order_receipt_dtl
+                        SET cash_receipt_id = p_cash_receipt_id,
+                            receipt_number = 'RCT'||summary_rec.orig_sys_document_ref,
+                            last_update_date = SYSDATE,
+                            last_updated_by = fnd_global.user_id
+                        WHERE  orig_sys_document_ref=summary_rec.orig_sys_document_ref
+						and    customer_id = summary_rec.customer_id
+                        AND    store_number = summary_rec.store_number
+                        AND    receipt_date >= summary_rec.rcpt_date_start
+                        AND    receipt_date <= summary_rec.rcpt_date_end
+                        AND    payment_type_code = summary_rec.payment_type_code
+                        AND    credit_card_code = summary_rec.credit_card_code
+                        AND    cash_receipt_id = -3
+                        AND    order_source = 'POE'
+                        AND    org_id = p_org_id;
+
+                        COMMIT;
+
+                        IF p_debug_flag = 'Y'
+                        THEN
+                            fnd_file.put_line(fnd_file.LOG,
+                                                 'DEBUG: Update DTL SQLCODE = '
+                                              || SQLCODE
+                                              || ' SQLERRM = '
+                                              || SQLERRM);
+                            fnd_file.put_line(fnd_file.LOG,
+                                                 'DEBUG: CUSTOMER_ID = '
+                                              || summary_rec.customer_id
+                                              || ' store_number = '
+                                              || summary_rec.store_number
+                                              || ' receipt_date = '
+                                              || summary_rec.receipt_date
+                                              || ' payment_type_code = '
+                                              || summary_rec.payment_type_code
+                                              || ' credit_card_code = '
+                                              || summary_rec.credit_card_code
+                                              || ' cash_receipt_id = '
+                                              || p_cash_receipt_id);
+                        END IF;
+
+                        IF SQLCODE != 0
+                        THEN
+                            x_return_flag := 'Y';
+                            x_error_message := SQLERRM;
+                            fnd_file.put_line(fnd_file.LOG,
+                                                 'Error - Update cash_receipt_id for DTLS failed for store = '
+                                              || summary_rec.store_number
+                                              || ' date = '
+                                              || summary_rec.receipt_date
+                                              || ' receipt_method = '
+                                              || p_receipt_method
+                                              || ' SQLCODE = '
+                                              || SQLCODE
+                                              || ' error = '
+                                              || x_error_message);
+                        ELSE
+-- ==========================================================================
+-- Report receipt created
+-- ==========================================================================
+                            fnd_file.put_line(fnd_file.LOG,
+                                                 'CREATED RECEIPT =>     '
+                                              || summary_rec.store_number
+                                              || '          '
+                                              || summary_rec.receipt_date
+                                              || '           '
+                                              || p_receipt_number
+                                              || '           '
+                                              || p_cash_receipt_id
+                                              || '    '
+                                              || TO_CHAR(summary_rec.payment_amount,
+                                                         '999,999,999.99')
+                                              || '       '
+                                              || p_receipt_method);
+                            fnd_file.put_line(fnd_file.output,
+                                                 '                   '
+                                              || summary_rec.store_number
+                                              || '              '
+                                              || summary_rec.receipt_date
+                                              || '     '
+                                              || TO_CHAR(p_receipt_number,
+                                                         '999999')
+                                              || '                  '
+                                              || p_cash_receipt_id
+                                              || '     '
+                                              || TO_CHAR(summary_rec.payment_amount,
+                                                         '999,999,999.99')
+                                              || '   '
+                                              || p_receipt_method);
+                        END IF;
+                    END IF;
+                END IF;
+            END IF;
+        END LOOP;
+
+        gc_error_loc := '6000- Report Totals Process';
+        fnd_file.put_line(fnd_file.LOG,' ');
+        fnd_file.put_line(fnd_file.LOG,'     TOTALS  :');
+        fnd_file.put_line(fnd_file.LOG,'     RECEIPTS CREATED = '|| TO_CHAR(tot_receipt_cnt,'999,999,999') );
+        fnd_file.put_line(fnd_file.LOG,'     POS TOTAL AMOUNT = '|| TO_CHAR(tot_receipt_amt,'999,999,999.99') );
+        fnd_file.put_line(fnd_file.LOG,'     AR  TOTAL AMOUNT = '|| TO_CHAR(tot_ar_amt,'999,999,999.99') );
+        fnd_file.put_line(fnd_file.LOG,'     ZERO $ RECEIPTS  = '|| TO_CHAR(  tot_ar_amt - tot_receipt_amt,'999,999,999.99') );
+        fnd_file.put_line(fnd_file.output,' ');
+        fnd_file.put_line(fnd_file.output,'     TOTALS  :');
+        fnd_file.put_line(fnd_file.output,'     RECEIPTS CREATED = '|| TO_CHAR(tot_receipt_cnt,'999,999,999') );
+        fnd_file.put_line(fnd_file.output,'     POS TOTAL AMOUNT = '|| TO_CHAR(tot_receipt_amt,'999,999,999.99') );
+        fnd_file.put_line(fnd_file.output,'     AR  TOTAL AMOUNT = '|| TO_CHAR(tot_ar_amt,'999,999,999.99') );
+        fnd_file.put_line(fnd_file.output, '     ZERO $ RECEIPTS  = '|| TO_CHAR(  tot_ar_amt - tot_receipt_amt,'999,999,999.99') );
+    EXCEPTION
+        WHEN OTHERS
+        THEN
+            fnd_file.put_line(fnd_file.LOG,'Error - Create_Summary_Receipt - Exception - Others '|| gc_error_loc);
+            xx_com_error_log_pub.log_error(p_program_type =>                'CONCURRENT PROGRAM',
+                                           p_program_name =>                'CREATE_SUMMARY_RECEIPT',
+                                           p_program_id =>                  fnd_global.conc_program_id,
+                                           p_module_name =>                 'AR',
+                                           p_error_location =>              'Error at OTHERS',
+                                           p_error_message_count =>         1,
+                                           p_error_message_code =>          'E',
+                                           p_error_message =>               'OTHERS',
+                                           p_error_message_severity =>      'Major',
+                                           p_notify_flag =>                 'N',
+                                           p_object_type =>                 'POS Create Receipts');
+            ROLLBACK;
+    END CREATE_APPLY_SUBSC_REVREC_RCPT;
+	
+	
+	
 -- +=====================================================================================================+
 -- |                                                                                                     |
 -- |  PROCEDURE: APPLY_SUMMARY_RECEIPT                                                                   |
@@ -3039,3 +3780,5 @@ AS
     END apply_summary_receipt;
 END xx_ar_pos_receipt_pkg;
 /
+show errors;
+exit;
