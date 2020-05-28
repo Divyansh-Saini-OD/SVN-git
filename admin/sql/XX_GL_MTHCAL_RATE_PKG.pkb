@@ -435,8 +435,42 @@ IS
   lc_filename_part1 VARCHAR2(10);
   lc_filename_part2 VARCHAR2(10):='.txt';
   ld_to_date   		DATE;
-  ln_conv_date           DATE ; --NAIT-132879 Last Date of Last month
-  ex_conv_date_exception EXCEPTION; --NAIT-132879 Last Date of Last month
+  --NAIT-132879 start
+  ln_conv_date           DATE ; 
+  ex_conv_date_exception EXCEPTION; 
+  ln_curr_date1 DATE	:=p_date+1;
+  ln_curr_date2 DATE    :=p_Date+2; 
+  ln_curr_date  DATE    :=p_Date;
+  ld_run_Date 	date ; 
+  
+  cursor c_cal_extract (p_curr_date date, p_conv_date date) is
+  SELECT b.from_currency,
+			    b.to_currency,
+			    TO_CHAR(p_curr_date,'YYYY/MM/DD') conversion_date,
+			    a.user_conversion_type conversion_type,
+			    TO_CHAR(ROUND(b.conversion_rate,6)) conversion_rate
+		   FROM gl_daily_rates b,
+			    gl_daily_conversion_types a
+		  WHERE a.user_conversion_type IN ('CC Period End','CC Period Average')
+		    AND b.conversion_type         =a.conversion_type
+		    AND b.conversion_date         = p_conv_date
+		    AND b.from_currency           ='USD'
+		    AND b.to_currency            <>'LTL'
+ 		 UNION
+		 SELECT b.from_currency,
+		     	b.to_currency,
+			    TO_CHAR(p_curr_date,'YYYY/MM/DD') conversion_date,
+			    a.user_conversion_type conversion_type,
+			    TO_CHAR(ROUND(b.conversion_rate,6)) conversion_rate
+		   FROM gl_daily_rates b,
+			    gl_daily_conversion_types a
+		  WHERE a.user_conversion_type IN ('CC Period End','CC Period Average')
+		    AND b.conversion_type         =a.conversion_type
+		    AND b.conversion_date         = p_conv_date
+  	   	    AND b.from_currency           ='CAD'
+		    AND b.to_currency            IN ('INR','MXN','CRC')
+			ORDER BY 4,1,2;
+	--NAIT-132879 end
 BEGIN
   SELECT LAST_DAY(p_date) INTO ld_to_date FROM DUAL;
   SELECT TO_CHAR(p_date,'YYYYMMDD')
@@ -452,7 +486,8 @@ BEGIN
             TO_CHAR(ROUND(b.conversion_rate,6)) conversion_rate
        FROM gl_daily_rates b,
             gl_daily_conversion_types a
-      WHERE a.user_conversion_type IN ('Ending Rate','CC Period End','CC Period Average')
+      WHERE   a.user_conversion_type IN ('Ending Rate')
+	   --a.user_conversion_type IN ('Ending Rate','CC Period End','CC Period Average')	       --NAIT-138373 commented
         AND b.conversion_type         =a.conversion_type
         AND b.conversion_date          in (TRUNC(p_date), TRUNC(p_date+1), TRUNC(p_date+2))  --NAIT-138373
         AND b.from_currency           ='USD'
@@ -466,7 +501,8 @@ BEGIN
             TO_CHAR(ROUND(b.conversion_rate,6)) conversion_rate
        FROM gl_daily_rates b,
             gl_daily_conversion_types a
-      WHERE a.user_conversion_type IN ('Ending Rate','CC Period End','CC Period Average')
+      WHERE a.user_conversion_type IN ('Ending Rate')
+	  --a.user_conversion_type IN ('Ending Rate','CC Period End','CC Period Average')	       --NAIT-138373 commented
         AND b.conversion_type         =a.conversion_type
         AND b.conversion_date          in (TRUNC(p_date), TRUNC(p_date+1),TRUNC(p_date+2))  --NAIT-138373
         AND b.from_currency           ='CAD'
@@ -476,9 +512,10 @@ BEGIN
   LOOP
     l_data:=r.from_currency||','||r.to_currency||','||r.conversion_date||','||r.conversion_date||','|| r.conversion_type||','||r.conversion_rate;
     UTL_FILE.PUT_LINE(l_filehandle,l_data);
+		
   END LOOP;
   
-  IF ld_to_date<>p_date THEN
+  --NAIT-132879 start
      BEGIN
   	   SELECT TRUNC(MAX(conversion_Date))
   	     INTO ln_conv_date
@@ -487,14 +524,11 @@ BEGIN
 			  (SELECT conversion_type
 			  FROM gl_daily_conversion_types
 			  WHERE user_conversion_type IN ('CC Period End','CC Period Average')
-			  )
-		  AND to_currency                     ='USD'
-		  AND TO_CHAR(conversion_Date, 'Mon') = TO_CHAR(LAST_DAY(ADD_MONTHS(p_date,-1)),'Mon')
-		  AND TO_CHAR(conversion_Date, 'RR')  = TO_CHAR(LAST_DAY(ADD_MONTHS(p_date,-1)),'RR');
+			  ) and conversion_Date <= p_date;
 		
 	   FND_FILE.PUT_LINE(FND_FILE.LOG,'Last Conversion Date: '|| ln_conv_date);
 		
-	   IF ln_conv_date IS NULL THEN
+	 IF ln_conv_date IS NULL THEN
           RAISE ex_conv_date_exception;
        END IF;
 	 EXCEPTION
@@ -502,39 +536,23 @@ BEGIN
 	 	 RAISE ex_conv_date_exception;
 	 END;
 	 
-     FOR r IN
-		(SELECT b.from_currency,
-			    b.to_currency,
-			    TO_CHAR(b.conversion_date,'YYYY/MM/DD') conversion_date,
-			    DECODE(a.user_conversion_type,'Ending Rate','Corporate',a.user_conversion_type) conversion_type,
-			    TO_CHAR(ROUND(b.conversion_rate,6)) conversion_rate
-		   FROM gl_daily_rates b,
-			    gl_daily_conversion_types a
-		  WHERE a.user_conversion_type IN ('CC Period End','CC Period Average')
-		    AND b.conversion_type         =a.conversion_type
-		    AND b.conversion_date         = ln_conv_date
-		    AND b.from_currency           ='USD'
-		    AND b.to_currency            <>'LTL'
- 		 UNION
-		 SELECT b.from_currency,
-		     	b.to_currency,
-			    TO_CHAR(b.conversion_date,'YYYY/MM/DD') conversion_date,
-			    DECODE(a.user_conversion_type,'Ending Rate','Corporate',a.user_conversion_type) conversion_type,
-			    TO_CHAR(ROUND(b.conversion_rate,6)) conversion_rate
-		   FROM gl_daily_rates b,
-			    gl_daily_conversion_types a
-		  WHERE a.user_conversion_type IN ('CC Period End','CC Period Average')
-		    AND b.conversion_type         =a.conversion_type
-		    AND b.conversion_date         = ln_conv_date
-  	   	    AND b.from_currency           ='CAD'
-		    AND b.to_currency            IN ('INR','MXN','CRC')
-		ORDER BY 4,1,2
-		)
+		FOR i IN 1..3
 		LOOP
+		  IF i         =1 THEN
+			ld_run_date:= ln_curr_date;
+		  elsif i      =2 THEN
+			ld_run_date:= ln_curr_date1;
+		  elsif i      =3 THEN
+			ld_run_date:= ln_curr_date2;
+		  END IF;
+		  FOR r IN c_cal_extract (ld_run_date, ln_conv_date)
+		  LOOP
 			l_data:=r.from_currency||','||r.to_currency||','||r.conversion_date||','||r.conversion_date||','|| r.conversion_type||','||r.conversion_rate;
 			UTL_FILE.PUT_LINE(l_filehandle,l_data);
-		END LOOP;	 
-  END IF;
+			
+		  END LOOP;
+		END LOOP;	
+  --NAIT-132879 end
   UTL_FILE.fclose(l_filehandle);
   xx_file_copy_dims(p_request_type,lc_file_name);
   xx_file_copy(p_request_type,lc_file_name);
