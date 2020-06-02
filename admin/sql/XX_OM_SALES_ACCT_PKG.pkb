@@ -946,7 +946,8 @@ AS
                      i.trxn_extension_id,
                      i.attribute3,
                      i.attribute14,
-                     i.attribute2
+                     i.attribute2,
+                     i.attribute1
             FROM     oe_payments_interface i,
                      oe_order_headers h,
                      oe_payment_types_vl pt,
@@ -1013,7 +1014,8 @@ AS
                lc_payment_rec.trxn_extension_id,
                lc_payment_rec.attribute3,
                lc_payment_rec.attribute14,
-               lc_payment_rec.attribute2;
+               lc_payment_rec.attribute2,
+               lc_payment_rec.attribute1;
 
         CLOSE c_payments;
 
@@ -1641,7 +1643,7 @@ AS
                              attribute3,
                              attribute14,
                              attribute2,
-							 attribute1)
+                             attribute1)
                      VALUES ('ORDER',
                              p_payment_rec.header_id(i),
                              SYSDATE,
@@ -1682,7 +1684,7 @@ AS
                              p_payment_rec.attribute3(i),
                              p_payment_rec.attribute14(i),
                              p_payment_rec.attribute2(i),
-							 p_payment_rec.attribute1(i)                    --added to get authorized amount for partialy reversed orders
+                             p_payment_rec.attribute1(i)
                              );
 
             IF ln_debug_level > 0
@@ -3140,7 +3142,7 @@ AS
                      i.attribute3,
                      i.attribute14,
                      i.attribute2,
-					 i.attribute1
+                     i.attribute1
             FROM     oe_payments_iface_all i,
                      oe_order_headers h,
                      xx_om_header_attributes_all ha
@@ -3211,7 +3213,7 @@ AS
                lc_payment_rec.attribute3,
                lc_payment_rec.attribute14,
                lc_payment_rec.attribute2,
-			   lc_payment_rec.attribute1;
+               lc_payment_rec.attribute1;
 
         CLOSE c_payments;
 
