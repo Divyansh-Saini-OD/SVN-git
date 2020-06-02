@@ -6000,7 +6000,7 @@ AS
                                              SUBSTR(p_order_rec.file_line,290,10) ;       -- EMV TVR
             g_payment_rec.attribute2(i) :=  LTRIM(RTRIM(SUBSTR(p_order_rec.file_line,300,1)))||'.'||   -- Wallet type
                                             LTRIM(RTRIM(SUBSTR(p_order_rec.file_line,301,3)));
-			 g_payment_rec.attribute1(i) :=	LTRIM(RTRIM(SUBSTR(p_order_rec.file_line,304,11)));						
+			 g_payment_rec.attribute1(i) :=	LTRIM(RTRIM(SUBSTR(p_order_rec.file_line,305,10)));		-- New authorized amount for partially reversed orders				
 											
             IF ln_debug_level > 0
             THEN
