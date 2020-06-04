@@ -247,3 +247,4 @@ AS
                                ) 
     RETURN NUMBER;
  END XX_AR_EBL_TXT_SPL_LOGIC_PKG;
+ /

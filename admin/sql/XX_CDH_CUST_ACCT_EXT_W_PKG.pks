@@ -474,3 +474,4 @@ FUNCTION GET_PAY_DOC_VALID_DATE(p_cust_acc_id NUMBER
                                ,p_combo_type  VARCHAR2) RETURN DATE;
 
 END XX_CDH_CUST_ACCT_EXT_W_PKG;
+/

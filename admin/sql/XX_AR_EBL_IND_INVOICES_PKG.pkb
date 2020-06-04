@@ -2884,3 +2884,4 @@ create or replace PACKAGE BODY XX_AR_EBL_IND_INVOICES_PKG AS
          RETURN lc_cust_acct_id;
    END;
 END xx_ar_ebl_ind_invoices_pkg;
+/

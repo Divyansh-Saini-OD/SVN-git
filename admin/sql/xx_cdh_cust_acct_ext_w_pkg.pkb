@@ -1536,3 +1536,4 @@ AS
          RETURN TRUNC (SYSDATE);
    END get_pay_doc_valid_date;
 END xx_cdh_cust_acct_ext_w_pkg;
+/

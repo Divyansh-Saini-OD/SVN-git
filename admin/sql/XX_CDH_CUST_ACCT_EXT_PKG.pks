@@ -426,3 +426,4 @@ procedure TRANSLATE_ROW (
   );
 
 END XX_CDH_CUST_ACCT_EXT_PKG;
+/

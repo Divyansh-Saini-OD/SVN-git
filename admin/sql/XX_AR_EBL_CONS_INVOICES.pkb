@@ -5237,3 +5237,4 @@ create or replace PACKAGE BODY XX_AR_EBL_CONS_INVOICES AS
    END;
 
 END xx_ar_ebl_cons_invoices;
+/
