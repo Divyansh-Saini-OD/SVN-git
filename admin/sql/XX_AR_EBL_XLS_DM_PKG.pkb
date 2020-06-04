@@ -1,13 +1,4 @@
-SET SHOW OFF
-SET VERIFY OFF
-SET ECHO OFF
-SET TAB OFF
-SET FEEDBACK OFF
-SET TERM ON
-PROMPT Creating PACKAGE BODY XX_AR_EBL_XLS_DM_PKG
-PROMPT Program exits IF the creation IS NOT SUCCESSFUL
-WHENEVER SQLERROR CONTINUE
-CREATE OR REPLACE PACKAGE BODY XX_AR_EBL_XLS_DM_PKG
+create or replace PACKAGE BODY XX_AR_EBL_XLS_DM_PKG
  AS
 -- +===================================================================================+
 -- |                  Office Depot - Project Simplify                                  |
@@ -36,6 +27,7 @@ CREATE OR REPLACE PACKAGE BODY XX_AR_EBL_XLS_DM_PKG
 -- |      1.7 05-DEC-2017  Thilak Kumar CG         Changes for the defect#14525        |
 -- |      1.8 12-DEC-2017  Thilak Kumar CG         Changes for the defect#42790,21270  |
 -- |      1.9 19-Dec-2017  Aniket J     CG         Changes for Requirement#22772       |
+-- |      2.0 27-MAY-2020  Divyansh                Added logic for JIRA NAIT-129167    |
 -- +===================================================================================+
     PROCEDURE XX_AR_EBL_XLS_MASTER_PROG ( x_error_buff         OUT VARCHAR2
                                          ,x_ret_code           OUT NUMBER
@@ -232,7 +224,7 @@ CREATE OR REPLACE PACKAGE BODY XX_AR_EBL_XLS_DM_PKG
              ,xcetd.cust_doc_id
              ,'NULL'   type--Module 4B Release 3
 			 --Added below columns for Defects# 40015 and 2282 by Thilak CG on 14-Feb-2017
-			 ,xcetd.repeat_total_flag repeat_total 
+			 ,xcetd.repeat_total_flag repeat_total
 			 --CG End
        FROM   xx_fin_translatedefinition xftd
              ,xx_fin_translatevalues xftv
@@ -241,7 +233,7 @@ CREATE OR REPLACE PACKAGE BODY XX_AR_EBL_XLS_DM_PKG
        AND    xftv.source_value1 = xcetd.field_id
        AND    xcetd.cust_doc_id = p_cust_doc_id
        AND    xftd.translation_name ='XX_CDH_EBILLING_FIELDS'
-       AND    xftv.target_value19 = 'DT'	   
+       AND    xftv.target_value19 = 'DT'
        AND    xftv.enabled_flag='Y'
        AND    TRUNC(SYSDATE) BETWEEN TRUNC(xftv.start_date_active) AND TRUNC(NVL(xftv.end_date_active,SYSDATE+1))
        --Module 4B Release 3 Changes Start
@@ -263,8 +255,8 @@ CREATE OR REPLACE PACKAGE BODY XX_AR_EBL_XLS_DM_PKG
              ,xcetd.base_field_id
              ,xcetd.cust_doc_id
              ,'CONCATENATE'   type--Module 4B Release 3
-			 ,NULL			 
-       FROM XX_CDH_EBL_TEMPL_DTL XCETD, 
+			 ,NULL
+       FROM XX_CDH_EBL_TEMPL_DTL XCETD,
            XX_CDH_EBL_CONCAT_FIELDS XCECF
        WHERE XCETD.FIELD_ID = XCECF.CONC_FIELD_ID
        AND XCETD.CUST_DOC_ID = XCECF.CUST_DOC_ID
@@ -287,21 +279,21 @@ CREATE OR REPLACE PACKAGE BODY XX_AR_EBL_XLS_DM_PKG
              ,BASE_FIELD_ID
              ,CUST_DOC_ID
              ,'SPLIT'    type--Module 4B Release 3
-			 ,NULL				 
-       FROM XX_CDH_EBL_TEMPL_DTL 
+			 ,NULL
+       FROM XX_CDH_EBL_TEMPL_DTL
        WHERE CUST_DOC_ID = p_cust_doc_id
        AND BASE_FIELD_ID IS NOT NULL
        AND attribute20 = 'Y'
        --ORDER BY sort_col, xcetd.seq; -- ordered by sequence so that the columns inserted in stagging will be in the same order as set up.
        ORDER BY sort_col, 4; -- ordered by sequence so that the columns inserted in stagging will be in the same order as set up.
        --Module 4B Release 3 Changes End
-	   
+
        ld_cycle_date          DATE   := FND_DATE.CANONICAL_TO_DATE(p_cycle_date);
        ln_org_id              NUMBER := fnd_profile.value('ORG_ID');
        lc_insert_const_cols   CONSTANT VARCHAR2(500)   := 'INSERT INTO xx_ar_ebl_xls_stg (stg_id,cust_doc_id,customer_trx_id,consolidated_bill_number,file_id,created_by,creation_date,last_updated_by,last_update_date,last_update_login,Batch_Id,NonDT_Value,trx_line_number,rec_type,rec_order,cycle_date,';
        lc_column              CONSTANT VARCHAR2(20)    := 'column';
        lc_insert_col_name     VARCHAR2(32767);
-       lc_update_cols         VARCHAR2(32767);	   
+       lc_update_cols         VARCHAR2(32767);
        lc_value_fid           VARCHAR2(32767);
        ln_inc                 NUMBER                   := 1;
 	   ln_repeat_cnt          NUMBER                   := 0;
@@ -312,7 +304,7 @@ CREATE OR REPLACE PACKAGE BODY XX_AR_EBL_XLS_DM_PKG
        lc_inter_update_dt     VARCHAR2(32767);
 	   lc_inter_extprice_dt   VARCHAR2(32767);
        lc_row_intersec_col    VARCHAR2(1000);
-       lc_intersec_update_query VARCHAR2(32767);	   
+       lc_intersec_update_query VARCHAR2(32767);
        lc_select_const_ind    CONSTANT VARCHAR2(32767) := ' (SELECT XX_AR_EBL_STG_ID_S.nextval,hdr.parent_cust_doc_id,hdr.customer_trx_id,NULL,hdr.file_id,fnd_global.user_id,sysdate,fnd_global.user_id,sysdate,fnd_global.user_id,';
        lc_select_const_cbi    CONSTANT VARCHAR2(32767) := ' (SELECT XX_AR_EBL_STG_ID_S.nextval,hdr.parent_cust_doc_id,hdr.customer_trx_id,hdr.consolidated_bill_number,hdr.file_id,fnd_global.user_id,sysdate,fnd_global.user_id,sysdate,fnd_global.user_id,';
        lc_select_const_cols   VARCHAR2(32767);
@@ -348,15 +340,15 @@ CREATE OR REPLACE PACKAGE BODY XX_AR_EBL_XLS_DM_PKG
        TYPE lcu_get_dist_doc IS REF CURSOR;
 	   get_dist_doc lcu_get_dist_doc;
 	   TYPE lcu_intersec_row_cursor IS REF CURSOR;
-	   c_intersec_row_cursor lcu_intersec_row_cursor; 
+	   c_intersec_row_cursor lcu_intersec_row_cursor;
        TYPE lcu_get_dist_fid IS REF CURSOR;
        get_dist_fid lcu_get_dist_fid;
        lc_get_dist_fid      xx_ar_ebl_cons_hdr_main.file_id%TYPE;
        lc_get_dist_docid    xx_ar_ebl_cons_hdr_main.parent_cust_doc_id%TYPE;
        lc_get_dist_ebatchid xx_ar_ebl_cons_hdr_main.extract_batch_id%TYPE;
-   
+
        lc_split_tabs           VARCHAR2(1);
-	   lc_repeat_total         VARCHAR2(1) := 'Y';  
+	   lc_repeat_total         VARCHAR2(1) := 'Y';
        lc_column_name          VARCHAR2(25);
 	   lc_spilt_label          VARCHAR2(1000);
        lc_column_select        VARCHAR2(1000);
@@ -388,7 +380,7 @@ CREATE OR REPLACE PACKAGE BODY XX_AR_EBL_XLS_DM_PKG
 
        TYPE lt_stg_tbl IS TABLE OF XX_AR_EBL_XLS_STG.COLUMN1%TYPE index by binary_integer;
        lt_stg_tbl_data lt_stg_tbl;
-	   
+
 	   -- Cursor to get the Summary Fields
 	   CURSOR c_get_summary_fields_info(p_cust_doc_id IN NUMBER) IS
        SELECT xftv.source_value1 field_id
@@ -418,35 +410,35 @@ CREATE OR REPLACE PACKAGE BODY XX_AR_EBL_XLS_DM_PKG
        AND    TRUNC(SYSDATE) BETWEEN TRUNC(xftv.start_date_active) AND TRUNC(NVL(xftv.end_date_active,SYSDATE+1))
        AND    xcetd.attribute20 = 'Y'
 	   ORDER BY rec_order;
-	   
+
 	   	lc_summary_bill_doc         VARCHAR2(1);
 	    lc_summary_var_cols         VARCHAR2(32767);
 	    lc_summary_value_fid        VARCHAR2(32767);
-	    lc_summary_insert_col_name  VARCHAR2(32767);		
+	    lc_summary_insert_col_name  VARCHAR2(32767);
 		ln_stg_id					NUMBER;
 		lc_function                 VARCHAR2(32767);
         lc_tot_inv_amt              VARCHAR2(32767);
 		lc_nondt_concat_cols        VARCHAR2(5000);
-		
+
 		lc_insert_summary_const_cols   CONSTANT VARCHAR2(500)   := 'INSERT INTO xx_ar_ebl_xls_stg (stg_id,cust_doc_id,file_id,created_by,creation_date,last_updated_by,last_update_date,last_update_login,rec_order,rec_type,cycle_date,batch_id,';
-    
-	    --Commented for Defect# 14525 by Thilak 
+
+	    --Commented for Defect# 14525 by Thilak
 		--lc_summary_from_cons     CONSTANT varchar2(1000)  := ' FROM xx_ar_ebl_cons_hdr_main hdr, xx_ar_ebl_cons_dtl_main dtl WHERE hdr.customer_trx_id = dtl.customer_trx_id AND hdr.parent_cust_doc_id = dtl.parent_cust_doc_id and dtl.trx_line_type = ''ITEM'' AND hdr.org_id='|| ln_org_id;/*||' AND hdr.cust_doc_id = '||p_cust_doc_id||' AND hdr.file_id = '||p_file_id;*/
         --End
-		
-        --Added for Defect# 14525 by Thilak 		
+
+        --Added for Defect# 14525 by Thilak
         lc_summary_from_cons       CONSTANT varchar2(1000)  := ' FROM xx_ar_ebl_cons_hdr_main hdr WHERE hdr.org_id='|| ln_org_id;/*||' AND hdr.cust_doc_id = '||p_cust_doc_id||' AND hdr.file_id = '||p_file_id;*/
-	    --End 
+	    --End
 		lc_summary_select_cons     CONSTANT VARCHAR2(32767) := ' hdr.parent_cust_doc_id,hdr.file_id,fnd_global.user_id,sysdate,fnd_global.user_id,sysdate,fnd_global.user_id,';
 		lc_summary_group_by        CONSTANT VARCHAR2(100) := ' GROUP BY ';
 		lc_summary_group_cols	   VARCHAR2(32767);
-    
-   --Added by Aniket CG #22772 on 19 Dec 2017     
-   --Start CG 
+
+   --Added by Aniket CG #22772 on 19 Dec 2017
+   --Start CG
     lc_transaction_type   VARCHAR2(2) := null;
     lc_combo_type_whr     VARCHAR2(1000) := null;
     lc_ar_ebl_update     VARCHAR2(32767) := null;
-    lc_fun_whr           VARCHAR2(100) := null; 
+    lc_fun_whr           VARCHAR2(100) := null;
     ln_total_merchandise_amt 	 NUMBER := 0;
     ln_total_misc_amt 		NUMBER := 0;
     ln_total_gift_card_amt 	NUMBER := 0;
@@ -456,8 +448,13 @@ CREATE OR REPLACE PACKAGE BODY XX_AR_EBL_XLS_DM_PKG
     lc_data       VARCHAR2(2) := null;
     lc_data_whr   VARCHAR2(100) := null;
    --End CG
-   
-   
+   -- Added for 2.0
+    lc_fee_option  VARCHAR2(20);
+	  lc_hide_flag   VARCHAR2(10):='N';
+  	lc_tot_fee_amt NUMBER := 0;
+  	lv_upd_str     VARCHAR2(2000) := NULL;
+
+
     BEGIN
          IF (p_debug_flag = 'Y') THEN
             lb_debug_flag := TRUE;
@@ -476,7 +473,14 @@ CREATE OR REPLACE PACKAGE BODY XX_AR_EBL_XLS_DM_PKG
        --Choosing the cursor based on the doc type parametr passed
        IF p_doc_type = 'IND' THEN
           OPEN get_dist_doc FOR SELECT DISTINCT parent_cust_doc_id, extract_batch_id
-                                           FROM  xx_ar_ebl_ind_hdr_main
+                                            -- Added fee_option for 2.0
+                                            ,NVL((SELECT fee_option 
+                                                    FROM xx_cdh_cust_acct_ext_b
+                                                     WHERE cust_account_id = a.cust_account_id
+                                                     AND N_EXT_ATTR1 = a.MBS_DOC_ID
+                                                     AND N_EXT_ATTR2 = a.CUST_DOC_ID 
+                                                     AND rownum =1),'X')
+                                           FROM  xx_ar_ebl_ind_hdr_main a
                                            WHERE batch_id = p_batch_id
                                            AND   org_id = ln_org_id;
           lc_sel_dist_fid      := 'SELECT DISTINCT file_id FROM  xx_ar_ebl_ind_hdr_main WHERE batch_id = :p_batch_id AND parent_cust_doc_id = :p_parent_cust_doc_id AND extract_batch_id = :p_ebatchid AND org_id = :ln_org_id';
@@ -486,7 +490,14 @@ CREATE OR REPLACE PACKAGE BODY XX_AR_EBL_XLS_DM_PKG
           lc_err_location_msg  := 'Opening Cursor for Individual document';
        ELSIF p_doc_type = 'CONS' THEN
           OPEN get_dist_doc FOR SELECT DISTINCT parent_cust_doc_id, extract_batch_id
-                                           FROM  xx_ar_ebl_cons_hdr_main
+		                                    -- Added fee_option for 2.0
+                                        ,NVL((SELECT fee_option 
+                                                FROM xx_cdh_cust_acct_ext_b
+                                               WHERE cust_account_id = a.cust_account_id
+                                                 AND N_EXT_ATTR1 = a.MBS_DOC_ID
+                                                 AND N_EXT_ATTR2 = a.CUST_DOC_ID 
+                                                 AND rownum =1),'X')
+                                           FROM  xx_ar_ebl_cons_hdr_main a
                                            WHERE batch_id = p_batch_id
                                            AND   org_id = ln_org_id;
           lc_sel_dist_fid      := 'SELECT DISTINCT file_id FROM  xx_ar_ebl_cons_hdr_main WHERE batch_id = :p_batch_id AND parent_cust_doc_id = :p_parent_cust_doc_id AND extract_batch_id = :p_ebatchid AND org_id = :ln_org_id';
@@ -497,18 +508,18 @@ CREATE OR REPLACE PACKAGE BODY XX_AR_EBL_XLS_DM_PKG
        END IF;
        BEGIN
        LOOP
-          FETCH get_dist_doc INTO lc_get_dist_docid, lc_get_dist_ebatchid;
+          FETCH get_dist_doc INTO lc_get_dist_docid, lc_get_dist_ebatchid,lc_fee_option;-- Added fee_option for 2.0
           EXIT WHEN get_dist_doc%NOTFOUND;
           SAVEPOINT ins_cust_doc_id;
           lc_err_location_msg := '1.' || lc_sel_dist_fid;
           OPEN get_dist_fid FOR lc_sel_dist_fid USING p_batch_id,lc_get_dist_docid,lc_get_dist_ebatchid,ln_org_id;
           LOOP
              FETCH get_dist_fid INTO lc_get_dist_fid;
-             EXIT WHEN get_dist_fid%NOTFOUND;	      
-        
-                        --Start  Added by Aniket CG #22772 on 15 Dec 2017                        
+             EXIT WHEN get_dist_fid%NOTFOUND;
+
+                        --Start  Added by Aniket CG #22772 on 15 Dec 2017
                         --Check customer level set up for combo type before inserting in to STG
-                      IF p_doc_type = 'CONS' then  
+                      IF p_doc_type = 'CONS' then
                         BEGIN
                           SELECT c_ext_attr13
                           INTO lc_transaction_type
@@ -534,30 +545,30 @@ CREATE OR REPLACE PACKAGE BODY XX_AR_EBL_XLS_DM_PKG
                           XX_AR_EBL_COMMON_UTIL_PKG.PUT_LOG_LINE(lb_debug_flag ,TRUE ,lc_err_location_msg );
                           lc_transaction_type := NULL;
                           lc_combo_type_whr   := NULL;
-                        END;   
-                        
-                        
-                      --START Added by Aniket CG 22 Jan 2018 
-                      -- Check Data in Header Source Table before proceeding 
+                        END;
+
+
+                      --START Added by Aniket CG 22 Jan 2018
+                      -- Check Data in Header Source Table before proceeding
                        IF lc_transaction_type is not null then
-                       BEGIN 
-                       
+                       BEGIN
+
                        lc_data_sel := ' select '||''''||'X'||''''||' from XX_AR_EBL_CONS_HDR_MAIN hdr
                        where 1=1    and cust_doc_id = ' || lc_get_dist_docid ||
                        ' and file_id =    '  ||  lc_get_dist_fid || lc_combo_type_whr || ' and rownum =1 ' ;
-                       
-                       XX_AR_EBL_COMMON_UTIL_PKG.PUT_LOG_LINE(lb_debug_flag ,TRUE ,lc_data_sel ); 
-                        
+
+                       XX_AR_EBL_COMMON_UTIL_PKG.PUT_LOG_LINE(lb_debug_flag ,TRUE ,lc_data_sel );
+
                        execute immediate  lc_data_sel INTO lc_data;
-                       
-                       EXCEPTION WHEN OTHERS THEN 
+
+                       EXCEPTION WHEN OTHERS THEN
                          x_ret_code := 1;
                          lc_data := null;
                          lc_err_location_msg := 'Data is not available for Combo type set up as  ' || lc_transaction_type || ' Cust Doc Id: ' || lc_get_dist_docid || ' File ID :' || lc_get_dist_fid || ' Erorr MSG: '||  SQLERRM;
-                         XX_AR_EBL_COMMON_UTIL_PKG.PUT_LOG_LINE(lb_debug_flag ,TRUE ,lc_err_location_msg ); 
-                
-                
-                --**Update errors for fid needs to review 
+                         XX_AR_EBL_COMMON_UTIL_PKG.PUT_LOG_LINE(lb_debug_flag ,TRUE ,lc_err_location_msg );
+
+
+                --**Update errors for fid needs to review
                                UPDATE xx_ar_ebl_cons_hdr_main
                                SET status             = lc_err_location_msg
                                   ,request_id         = fnd_global.conc_request_id
@@ -567,7 +578,7 @@ CREATE OR REPLACE PACKAGE BODY XX_AR_EBL_XLS_DM_PKG
                                WHERE parent_cust_doc_id = lc_get_dist_docid
                                AND   extract_batch_id   = lc_get_dist_ebatchid
                                AND   batch_id           = p_batch_id;
-            
+
                                UPDATE XX_AR_EBL_FILE
                                SET    status_detail      = lc_err_location_msg
                                      ,status             = 'MANIP_ERROR'
@@ -579,25 +590,25 @@ CREATE OR REPLACE PACKAGE BODY XX_AR_EBL_XLS_DM_PKG
                                                              WHERE  parent_cust_doc_id = lc_get_dist_docid
                                                              AND    extract_batch_id   = lc_get_dist_ebatchid
                                                              AND    batch_id           = p_batch_id);
-                         
+
                          EXIT;
                        END ;
                        END IF;
-                    -- END Added by Aniket CG 22 Jan 2018 
-                        
-                        
+                    -- END Added by Aniket CG 22 Jan 2018
+
+
                         --Since AR EBL FILE Table used in functions so we are updating it before.
                         --Considering save point ins_cust_doc_id so it will get revert in case any exception
-                                                
+
                          IF lc_combo_type_whr IS NOT NULL THEN
                           BEGIN
-                            lc_ar_ebl_update := '                            
-                        SELECT SUM(original_invoice_amount-total_gift_card_amount),              
-                        SUM(gross_sale_amount - total_coupon_amount - total_freight_amount - total_discount_amount),              
-                        SUM(total_coupon_amount + total_freight_amount + total_discount_amount),              
-                        SUM(total_gift_card_amount),              
-                        SUM(total_gst_amount + total_pst_amount + total_us_tax_amount)                 
-                        FROM   XX_AR_EBL_CONS_HDR_MAIN hdr              
+                            lc_ar_ebl_update := '
+                        SELECT SUM(original_invoice_amount-total_gift_card_amount),
+                        SUM(gross_sale_amount - total_coupon_amount - total_freight_amount - total_discount_amount),
+                        SUM(total_coupon_amount + total_freight_amount + total_discount_amount),
+                        SUM(total_gift_card_amount),
+                        SUM(total_gst_amount + total_pst_amount + total_us_tax_amount)
+                        FROM   XX_AR_EBL_CONS_HDR_MAIN hdr
                         WHERE  hdr.file_id = '|| lc_get_dist_fid || lc_combo_type_whr;
                             EXECUTE immediate lc_ar_ebl_update INTO ln_total_due, ln_total_merchandise_amt, ln_total_misc_amt, ln_total_gift_card_amt, ln_total_salestax_amt ;
                             UPDATE XX_AR_EBL_FILE
@@ -618,10 +629,10 @@ CREATE OR REPLACE PACKAGE BODY XX_AR_EBL_XLS_DM_PKG
                             ln_total_gift_card_amt   := 0;
                             ln_total_salestax_amt    := 0;
                           END;
-                        END IF;            
-                    END IF;    
-        --End  Added by Aniket CG #22772 on 15 Dec 2017 
-        
+                        END IF;
+                    END IF;
+        --End  Added by Aniket CG #22772 on 15 Dec 2017
+
        --Checking Summary Bill or Not
 		  BEGIN
 			SELECT NVL(SUMMARY_BILL,'N')
@@ -637,11 +648,11 @@ CREATE OR REPLACE PACKAGE BODY XX_AR_EBL_XLS_DM_PKG
                                                  ,lc_err_location_msg);
 		  IF lc_summary_bill_doc = 'Y' THEN
 			ln_count := 1;
-			  
-			SELECT XX_AR_EBL_TXT_STG_ID_S.nextval 
-			INTO ln_stg_id 
+
+			SELECT XX_AR_EBL_TXT_STG_ID_S.nextval
+			INTO ln_stg_id
 			FROM DUAL;
-			  
+
 			FOR lc_get_summary_fields_info IN c_get_summary_fields_info(lc_get_dist_docid)
 			LOOP
 			  IF ln_count = 1 THEN
@@ -650,6 +661,7 @@ CREATE OR REPLACE PACKAGE BODY XX_AR_EBL_XLS_DM_PKG
 				lc_summary_value_fid := lc_summary_value_fid||'''0'''||','||'''FID'''||','
 									  ||'TO_DATE('||''''||ld_cycle_date||''''||',''DD-MON-YY''),'||p_batch_id||',';
 			  END IF;
+        lc_hide_flag := 'N';  -- Added by 2.0
 			  IF (LOWER(lc_get_summary_fields_info.tab_name) = 'header') THEN
 				IF (UPPER(lc_get_summary_fields_info.data_type) = 'DATE') THEN
 				  IF lc_get_summary_fields_info.summary_field = 'Y' THEN
@@ -664,8 +676,38 @@ CREATE OR REPLACE PACKAGE BODY XX_AR_EBL_XLS_DM_PKG
 				  ELSE
 					lc_select_var_cols := lc_select_var_cols||'hdr.'||lc_get_summary_fields_info.col_name||',';
 					lc_summary_group_cols :=  lc_summary_group_cols ||'hdr.'|| lc_get_summary_fields_info.col_name || ',';
-				  END IF;		  
+				  END IF;
 				END IF;
+				  --Added for 2.0
+				  IF lc_get_summary_fields_info.summary_field = 'Y' AND lc_get_summary_fields_info.field_id = 10169 THEN
+					 
+					 IF p_doc_type = 'IND' THEN
+						 SELECT SUM(XX_AR_EBL_COMMON_UTIL_PKG.get_hea_fee_amount(customer_trx_id )+ XX_AR_EBL_COMMON_UTIL_PKG.get_line_fee_amount(customer_trx_id))
+						   INTO lc_tot_fee_amt
+						   FROM xx_ar_ebl_ind_hdr_main
+						  WHERE cust_doc_id = lc_get_dist_docid
+							AND file_id = lc_get_dist_fid
+							AND org_id = ln_org_id;
+                        lv_upd_str := 'update xx_ar_ebl_ind_hdr_main set TOTAL_MISCELLANEOUS_AMOUNT = TOTAL_MISCELLANEOUS_AMOUNT - '||lc_tot_fee_amt||' WHERE parent_cust_doc_id = '||lc_get_dist_docid||' AND extract_batch_id ='|| lc_get_dist_ebatchid ||' AND batch_id = '||p_batch_id;
+					 
+					 ELSE
+					 
+						 SELECT SUM(XX_AR_EBL_COMMON_UTIL_PKG.get_hea_fee_amount(customer_trx_id )+ XX_AR_EBL_COMMON_UTIL_PKG.get_line_fee_amount(customer_trx_id))
+						   INTO lc_tot_fee_amt
+						   FROM xx_ar_ebl_cons_hdr_main
+						  WHERE cust_doc_id = lc_get_dist_docid
+							AND file_id = lc_get_dist_fid
+							AND org_id = ln_org_id;
+						lv_upd_str := 'update xx_ar_ebl_cons_hdr_main set TOTAL_MISCELLANEOUS_AMOUNT = TOTAL_MISCELLANEOUS_AMOUNT - '||lc_tot_fee_amt||' WHERE parent_cust_doc_id = '||lc_get_dist_docid||' AND extract_batch_id ='|| lc_get_dist_ebatchid ||' AND batch_id = '||p_batch_id;
+				     END IF;
+						if lc_fee_option = 1007 THEN
+					       lc_select_var_cols:=lc_select_var_cols||lc_tot_fee_amt||',';
+						   execute immediate lv_upd_str;
+						else 
+						   lc_hide_flag :='Y';
+						end if;
+				  END IF;
+				  --Ended by 2.0
 			  ELSIF (LOWER(lc_get_summary_fields_info.tab_name) = 'lines') THEN
 			    --Commented for Defect# 14525 by Thilak
 				/*IF (UPPER(lc_get_summary_fields_info.data_type) = 'DATE') THEN
@@ -675,52 +717,52 @@ CREATE OR REPLACE PACKAGE BODY XX_AR_EBL_XLS_DM_PKG
 					lc_select_var_cols := lc_select_var_cols || 'TO_CHAR(dtl.' || lc_get_summary_fields_info.col_name || ',''YYYY-MM-DD''),';
 					lc_summary_group_cols :=  lc_summary_group_cols || 'TO_CHAR(dtl.' || lc_get_summary_fields_info.col_name || ',''YYYY-MM-DD''),';
 				  END IF;
-				ELSE         
+				ELSE
 				  IF lc_get_summary_fields_info.summary_field = 'Y' THEN
 					lc_select_var_cols := lc_select_var_cols|| 'SUM(dtl.' || lc_get_summary_fields_info.col_name ||'),';
 				  ELSE
 					lc_select_var_cols := lc_select_var_cols||'dtl.'||lc_get_summary_fields_info.col_name||',';
 					lc_summary_group_cols :=  lc_summary_group_cols || 'dtl.'||lc_get_summary_fields_info.col_name || ',';
-				  END IF;	
+				  END IF;
 				  END IF;*/
 				  --Comment End
-				  
+
 				  --Added for Defect# 14525 by Thilak
                   IF lc_get_summary_fields_info.summary_field = 'Y' AND lc_get_summary_fields_info.col_name = 'ext_price' THEN
 					lc_select_var_cols := lc_select_var_cols||'SUM(hdr.SKU_LINES_SUBTOTAL),';
                   END IF;
-				  
+
                   IF lc_get_summary_fields_info.summary_field = 'Y' AND lc_get_summary_fields_info.field_id = 10146 AND p_doc_type = 'CONS' THEN
                      --lc_function := 'SELECT xx_ar_ebl_txt_spl_logic_pkg.get_grand_total('||lc_get_dist_docid||','||lc_get_dist_fid||','||ln_org_id||','||'''ORIGINAL_INVOICE_AMOUNT'''||') FROM DUAL'; --Commented By Aniket CG
-                     -- start Added if and else for split the data by Aniket CG #22772 on 19 Dec 2017  
+                     -- start Added if and else for split the data by Aniket CG #22772 on 19 Dec 2017
                      IF lc_fun_whr IS NOT NULL THEN
                      lc_function := 'SELECT xx_ar_ebl_txt_spl_logic_pkg.get_grand_total('||lc_get_dist_docid||','||lc_get_dist_fid||','||ln_org_id||','||'''ORIGINAL_INVOICE_AMOUNT'''|| lc_fun_whr || ') FROM DUAL';
-                     ELSE                      
+                     ELSE
                      lc_function := 'SELECT xx_ar_ebl_txt_spl_logic_pkg.get_grand_total('||lc_get_dist_docid||','||lc_get_dist_fid||','||ln_org_id||','||'''ORIGINAL_INVOICE_AMOUNT'''||') FROM DUAL';
                      END IF;
-                    --  end Added if and else for split the data by Aniket CG #22772 on 19 Dec 2017                                       
+                    --  end Added if and else for split the data by Aniket CG #22772 on 19 Dec 2017
                     EXECUTE IMMEDIATE lc_function INTO lc_tot_inv_amt;
                     lc_select_var_cols := lc_select_var_cols||lc_tot_inv_amt||',';
 					-- Else if added for Defect# 14525 by Thilak CG on 24-MAR-2018
-                  ELSIF lc_get_summary_fields_info.summary_field = 'Y' AND lc_get_summary_fields_info.field_id = 10146 AND p_doc_type = 'IND' THEN			
+                  ELSIF lc_get_summary_fields_info.summary_field = 'Y' AND lc_get_summary_fields_info.field_id = 10146 AND p_doc_type = 'IND' THEN
 					lc_select_var_cols := lc_select_var_cols||'SUM(hdr.'||lc_get_summary_fields_info.col_name||'),';
                   END IF;
-                  --End			
-              --Added for Defect#NAIT-27809 by Thilak on 14-Feb-2018				  
-			  ELSIF (LOWER(lc_get_summary_fields_info.tab_name) = 'constant') THEN	  
+                  --End
+              --Added for Defect#NAIT-27809 by Thilak on 14-Feb-2018
+			  ELSIF (LOWER(lc_get_summary_fields_info.tab_name) = 'constant') THEN
 				  lc_select_var_cols     := lc_select_var_cols || '''' || REPLACE(lc_get_summary_fields_info.cons_val,'''','''''') || '''' || ',';
-			  --End    	  
+			  --End
 			  END IF;
 			  lc_summary_insert_col_name := lc_summary_insert_col_name||lc_column||ln_count||',';
 			  lc_summary_value_fid := lc_summary_value_fid||lc_get_summary_fields_info.field_id||',';
 			  ln_count := ln_count + 1;
 			END LOOP;
-	   
+
 			lc_summary_insert_col_name := lc_insert_summary_const_cols||SUBSTR(lc_summary_insert_col_name,1,length(lc_summary_insert_col_name)-1)||')';
-            -- Added where cluase by Aniket CG #22772 on 19 Dec 2017 
+            -- Added where cluase by Aniket CG #22772 on 19 Dec 2017
             lc_select_var_cols := '(SELECT '||ln_stg_id||', '||lc_summary_select_cons||substr(lc_select_var_cols,1,length(lc_select_var_cols)-1)||lc_summary_from_cons || lc_combo_type_whr ||' AND hdr.cust_doc_id = '||lc_get_dist_docid||' AND hdr.file_id = '||lc_get_dist_fid;
 			lc_summary_value_fid := ' VALUES ('||xx_ar_ebl_txt_stg_id_s.nextval||','||lc_get_dist_docid||','||lc_get_dist_fid||',fnd_global.user_id,sysdate,fnd_global.user_id,sysdate,fnd_global.user_id,'||SUBSTR(lc_summary_value_fid,1,length(lc_summary_value_fid)-1)||')';
-			  
+
 			lc_summary_group_cols := lc_summary_group_by||ln_stg_id||','||lc_summary_select_cons||SUBSTR(lc_summary_group_cols,1,length(lc_summary_group_cols)-1)||')';
 			lc_err_location_msg:= ' Summary Insert Statements for FID '||lc_summary_insert_col_name||lc_summary_value_fid;
 			XX_AR_EBL_COMMON_UTIL_PKG.PUT_LOG_LINE(lb_debug_flag
@@ -729,7 +771,7 @@ CREATE OR REPLACE PACKAGE BODY XX_AR_EBL_XLS_DM_PKG
             lc_err_location_msg:= ' Summary Insert Statements for DT '||lc_summary_insert_col_name||lc_select_var_cols||' '||lc_summary_group_cols;
 			XX_AR_EBL_COMMON_UTIL_PKG.PUT_LOG_LINE(lb_debug_flag
                                                  ,FALSE
-                                                 ,lc_err_location_msg);														
+                                                 ,lc_err_location_msg);
 			EXECUTE IMMEDIATE lc_summary_insert_col_name||lc_summary_value_fid;
 			EXECUTE IMMEDIATE lc_summary_insert_col_name||lc_select_var_cols||lc_summary_group_cols;
 			lc_summary_insert_col_name := NULL;
@@ -749,7 +791,7 @@ CREATE OR REPLACE PACKAGE BODY XX_AR_EBL_XLS_DM_PKG
                                                     ,TRUE
                                                     ,lc_err_location_msg
                                                    );
-			 --Added for Defect# NAIT-36037 by Thilak on 11-May-2018 
+			 --Added for Defect# NAIT-36037 by Thilak on 11-May-2018
 			 SELECT  COUNT(1)
 			   INTO  ln_nondt_count
 			   FROM  xx_fin_translatedefinition xftd
@@ -763,10 +805,10 @@ CREATE OR REPLACE PACKAGE BODY XX_AR_EBL_XLS_DM_PKG
 				AND  xftv.enabled_flag='Y'
 				AND  xcetd.attribute20 = 'Y'
 				AND  TRUNC(SYSDATE) BETWEEN xftv.start_date_active AND NVL(xftv.end_date_active,SYSDATE);
-			 --End 		   
-			 
+			 --End
+
              FOR lc_get_all_field_info IN lcu_get_all_field_info(lc_get_dist_docid)
-             LOOP	   
+             LOOP
 			    lc_value_fid := lc_value_fid || lc_get_all_field_info.field_id || ','; -- To concatenate the field id's for inserting the FID row
                 -- Framing the query to select from header table if the field id configured is a header level information
                 IF (LOWER(lc_get_all_field_info.tab_name) = 'header') THEN
@@ -778,18 +820,18 @@ CREATE OR REPLACE PACKAGE BODY XX_AR_EBL_XLS_DM_PKG
                       ln_current_cust_doc_id := lc_get_all_field_info.cust_doc_id;
                       ln_current_base_field_id := lc_get_all_field_info.base_field_id;
                       ln_current_file_id := lc_get_dist_fid;
-                      IF ln_current_cust_doc_id <> ln_previous_cust_doc_id 
-                         OR ln_current_base_field_id <> ln_previous_base_field_id 
+                      IF ln_current_cust_doc_id <> ln_previous_cust_doc_id
+                         OR ln_current_base_field_id <> ln_previous_base_field_id
                          OR ln_previous_file_id <> ln_current_file_id THEN
                             ln_count := 0; --resetting to zero for new base field id or new cust doc id or new file id.
                       END IF;
-					  
-					  --Added for Defect# 42790 and NAIT-21270 by Thilak  
+
+					  --Added for Defect# 42790 and NAIT-21270 by Thilak
 					  lc_spilt_label := NULL;
 				      ln_count := 0;
 					  lc_spilt_label := lc_get_all_field_info.label;
 
-					  BEGIN 
+					  BEGIN
 					  SELECT CASE WHEN split_field1_label = lc_spilt_label THEN 1
 								  WHEN split_field2_label = lc_spilt_label THEN 2
 								  WHEN split_field3_label = lc_spilt_label THEN 3
@@ -797,7 +839,7 @@ CREATE OR REPLACE PACKAGE BODY XX_AR_EBL_XLS_DM_PKG
 								  WHEN split_field5_label = lc_spilt_label THEN 5
 								  WHEN split_field6_label = lc_spilt_label THEN 6
 								  ELSE 0 END
-					   INTO ln_count 			
+					   INTO ln_count
 					   FROM XX_CDH_EBL_SPLIT_FIELDS
 					  WHERE cust_doc_id = lc_get_all_field_info.cust_doc_id
 					    AND split_base_field_id = lc_get_all_field_info.base_field_id;
@@ -806,9 +848,9 @@ CREATE OR REPLACE PACKAGE BODY XX_AR_EBL_XLS_DM_PKG
 					  ln_count := 0;
 					  END;
 					  -- End
-					  
+
                       --  ln_count := ln_count + 1;  --Commented for Defect# 42790 and NAIT-21270 by Thilak
-					
+
                       -- Call the function to get the split column
                       lc_err_location_msg := 'Getting Split Fields for the Cust Doc Id: '||lc_get_all_field_info.cust_doc_id||' Base Field Id: '||lc_get_all_field_info.base_field_id||' Count: '||ln_count;
                       XX_AR_EBL_COMMON_UTIL_PKG.PUT_LOG_LINE(lb_debug_flag
@@ -826,7 +868,7 @@ CREATE OR REPLACE PACKAGE BODY XX_AR_EBL_XLS_DM_PKG
                      lc_err_location_msg := 'Column Name '||lc_get_all_field_info.col_name||' Field Type is '||lc_get_all_field_info.type;
                      lc_select_var_cols := lc_select_var_cols || lc_get_all_field_info.col_name || ',';
 					 /*Added for Defect# NAIT-17796 by Thilak CG on 09-MAY-2018*/
-                     lc_nondt_concat_cols := NULL; 
+                     lc_nondt_concat_cols := NULL;
                      SELECT REPLACE(REPLACE(REPLACE(REPLACE(
 					        REPLACE(lc_get_all_field_info.col_name,'dtl.item_description','xftv.target_value7')
 					        ,'dtl.inventory_item_number','xftv.target_value9')
@@ -836,15 +878,55 @@ CREATE OR REPLACE PACKAGE BODY XX_AR_EBL_XLS_DM_PKG
 					   INTO lc_nondt_concat_cols
 					   FROM dual;
 					 lc_select_non_dt   := lc_select_non_dt || lc_nondt_concat_cols || ',';
-                     /*Commented for Defect# NAIT-17796 by Thilak CG on 09-MAY-2018*/					 
+                     /*Commented for Defect# NAIT-17796 by Thilak CG on 09-MAY-2018*/
                      --lc_select_non_dt   := lc_select_non_dt || lc_get_all_field_info.col_name || ',';
 				     /*End of Defect# NAIT-17796*/
-					 
+
                    --Module 4B Release 3 Changes End
                    ELSIF (lc_get_all_field_info.field_id = 10005 AND p_doc_type = 'IND') THEN -- To check if ind cust doc id has got cons billing number configured, if yes to store null in that column
                       lc_err_location_msg := 'Field Id '||lc_get_all_field_info.field_id||' Document Type '||p_doc_type;
                       lc_select_var_cols := lc_select_var_cols || 'NULL' || ',';
                       lc_select_non_dt   := lc_select_non_dt || 'NULL' || ',';
+				   --Added by 2.0
+                   ELSIF lc_get_all_field_info.field_id = 10169 THEN
+                    
+                    
+                   IF p_doc_type = 'IND' THEN
+                     SELECT SUM(XX_AR_EBL_COMMON_UTIL_PKG.get_hea_fee_amount(customer_trx_id )+ XX_AR_EBL_COMMON_UTIL_PKG.get_line_fee_amount(customer_trx_id))
+                       INTO lc_tot_fee_amt
+                       FROM xx_ar_ebl_ind_hdr_main
+                      WHERE cust_doc_id = lc_get_dist_docid
+                      AND file_id = lc_get_dist_fid
+                      AND org_id = ln_org_id;
+                    lv_upd_str := 'update xx_ar_ebl_ind_hdr_main set TOTAL_MISCELLANEOUS_AMOUNT = TOTAL_MISCELLANEOUS_AMOUNT - '||lc_tot_fee_amt||' WHERE parent_cust_doc_id = '||lc_get_dist_docid||' AND extract_batch_id ='|| lc_get_dist_ebatchid ||' AND batch_id = '||p_batch_id;
+                    
+        
+                   ELSE
+                   
+                     SELECT SUM(XX_AR_EBL_COMMON_UTIL_PKG.get_hea_fee_amount(customer_trx_id )+ XX_AR_EBL_COMMON_UTIL_PKG.get_line_fee_amount(customer_trx_id))
+                       INTO lc_tot_fee_amt
+                       FROM xx_ar_ebl_cons_hdr_main
+                      WHERE cust_doc_id = lc_get_dist_docid
+                      AND file_id = lc_get_dist_fid
+                      AND org_id = ln_org_id;
+                    lv_upd_str := 'update xx_ar_ebl_cons_hdr_main set TOTAL_MISCELLANEOUS_AMOUNT = TOTAL_MISCELLANEOUS_AMOUNT - '||lc_tot_fee_amt||' WHERE parent_cust_doc_id = '||lc_get_dist_docid||' AND extract_batch_id ='|| lc_get_dist_ebatchid ||' AND batch_id = '||p_batch_id;
+                     END IF;
+                     
+                    if lc_fee_option = 1007 THEN
+                         lc_select_var_cols := lc_select_var_cols||lc_tot_fee_amt||',';
+                         lc_select_non_dt   := lc_select_non_dt ||lc_tot_fee_amt||',';
+                       execute immediate lv_upd_str;
+                    else 
+                       lc_hide_flag :='Y';
+                       select replace (lc_value_fid,lc_get_all_field_info.field_id || ',','')
+                         INTO lc_value_fid
+                       FROM DUAL;
+                       
+                    end if;
+                   fnd_file.put_line(fnd_file.log,' lc_hide_flag '||lc_hide_flag);
+                   fnd_file.put_line(fnd_file.log,' lc_tot_fee_amt '||lc_tot_fee_amt);
+                   fnd_file.put_line(fnd_file.log,' ln_inc '||ln_inc);
+                   --Ended for 2.0
                    ELSE
                       lc_err_location_msg := 'Checking Data Type ';
                       IF (UPPER(lc_get_all_field_info.data_type) = 'DATE') THEN
@@ -858,10 +940,10 @@ CREATE OR REPLACE PACKAGE BODY XX_AR_EBL_XLS_DM_PKG
                          lc_select_non_dt   := lc_select_non_dt || 'hdr.' || lc_get_all_field_info.col_name || ',';
                       END IF;
                    END IF;
-				   
+
 				   --Added for Defect#36037 by Thilak CG on 11-MAY-2018
 				   IF ln_nondt_count != 0 AND (UPPER(lc_get_all_field_info.repeat_total) = 'N') THEN
-                      lc_err_location_msg := 'Checking intersection nondt columns in XX_AR_EBL_XLS_RPT_TOTAL_COLS lookup ';				   
+                      lc_err_location_msg := 'Checking intersection nondt columns in XX_AR_EBL_XLS_RPT_TOTAL_COLS lookup ';
 				      lc_intersec_total := 'N';
                       ln_intersec_cnt := 0;
                       BEGIN
@@ -896,7 +978,7 @@ CREATE OR REPLACE PACKAGE BODY XX_AR_EBL_XLS_DM_PKG
                             x_ret_code := 1;
                             RAISE ex_set_up_err_found;
                          END;
-					  
+
 				      IF (ln_intersec_cnt = 1) THEN
 					      lc_nondt_type := NULL;
 					      BEGIN
@@ -924,7 +1006,7 @@ CREATE OR REPLACE PACKAGE BODY XX_AR_EBL_XLS_DM_PKG
                             x_ret_code := 1;
                             RAISE ex_set_up_err_found;
                          END;
-						 
+
 					    lc_insec_update_cols := lc_insec_update_cols || lc_column || ln_inc || '-' || lc_nondt_type || ',';
 					    ln_insec_update_cnt := 1;
 					  END IF;
@@ -933,9 +1015,9 @@ CREATE OR REPLACE PACKAGE BODY XX_AR_EBL_XLS_DM_PKG
 
 				   /*Added for Defect# 40015 by Thilak CG on 08-FEB-2017*/
 				   IF (UPPER(lc_get_all_field_info.repeat_total) = 'N') THEN
-                      lc_err_location_msg := 'Checking repeat option columns in XX_AR_EBL_XLS_RPT_TOTAL_COLS lookup ';				   
+                      lc_err_location_msg := 'Checking repeat option columns in XX_AR_EBL_XLS_RPT_TOTAL_COLS lookup ';
 				      lc_repeat_total := 'N';
-                      ln_repeat_cnt := 0;																   
+                      ln_repeat_cnt := 0;
                       BEGIN
                          SELECT  COUNT(flv.lookup_code)
                          INTO    ln_repeat_cnt
@@ -954,14 +1036,14 @@ CREATE OR REPLACE PACKAGE BODY XX_AR_EBL_XLS_DM_PKG
                             x_ret_code := 1;
                             RAISE ex_set_up_err_found;
                          END;
-					  
+
 				      IF (ln_repeat_cnt = 1 AND ln_intersec_cnt = 0) THEN
 					    lc_update_cols := lc_update_cols || ' ' || lc_column || ln_inc || ' = ' || ln_total_default || ',';
 					    ln_update_cnt := 1;
 					  END IF;
 				   END IF;
    			    --CG End
-				
+
                    lc_insert_col_name_ndt := lc_insert_col_name_ndt || lc_column || ln_inc || ',';
                    lc_insert_col_name := lc_insert_col_name || lc_column || ln_inc || ','; -- To frame column names of staging table like (column1,column2)
                 -- Framing the query to select from detail table if the field id configured is a line level information
@@ -974,19 +1056,19 @@ CREATE OR REPLACE PACKAGE BODY XX_AR_EBL_XLS_DM_PKG
                    ELSE
 				   IF lc_get_all_field_info.field_id != 10146 THEN
                       lc_select_var_cols := lc_select_var_cols || 'dtl.' || lc_get_all_field_info.col_name || ',';
-				   END IF; 	  
+				   END IF;
                    END IF;
 
 				   --Added for Defect# 14525 by Thilak CG
                    IF lc_get_all_field_info.field_id = 10146 AND p_doc_type = 'CONS' THEN
-                   -- lc_function := 'SELECT xx_ar_ebl_txt_spl_logic_pkg.get_grand_total('||lc_get_dist_docid||','||lc_get_dist_fid||','||ln_org_id||','||'''ORIGINAL_INVOICE_AMOUNT'''||') FROM DUAL';--Commented by Aniket CG 
-                     -- start Added if and else for split the data by Aniket CG #22772 on 19 Dec 2017 
+                   -- lc_function := 'SELECT xx_ar_ebl_txt_spl_logic_pkg.get_grand_total('||lc_get_dist_docid||','||lc_get_dist_fid||','||ln_org_id||','||'''ORIGINAL_INVOICE_AMOUNT'''||') FROM DUAL';--Commented by Aniket CG
+                     -- start Added if and else for split the data by Aniket CG #22772 on 19 Dec 2017
                      IF lc_fun_whr IS NOT NULL THEN
                       lc_function := 'SELECT xx_ar_ebl_txt_spl_logic_pkg.get_grand_total('||lc_get_dist_docid||','||lc_get_dist_fid||','||ln_org_id||','||'''ORIGINAL_INVOICE_AMOUNT'''|| lc_fun_whr || ') FROM DUAL';
                      ELSE
                       lc_function := 'SELECT xx_ar_ebl_txt_spl_logic_pkg.get_grand_total('||lc_get_dist_docid||','||lc_get_dist_fid||','||ln_org_id||','||'''ORIGINAL_INVOICE_AMOUNT'''||') FROM DUAL';
                      END IF ;
-                     -- end Added if and else for split the data by Aniket CG #22772 on 19 Dec 2017 
+                     -- end Added if and else for split the data by Aniket CG #22772 on 19 Dec 2017
                     EXECUTE IMMEDIATE lc_function INTO lc_tot_inv_amt;
                     lc_select_var_cols := lc_select_var_cols||lc_tot_inv_amt||',';
 					lc_insert_col_name_ndt := lc_insert_col_name_ndt || lc_column || ln_inc || ',';
@@ -998,13 +1080,13 @@ CREATE OR REPLACE PACKAGE BODY XX_AR_EBL_XLS_DM_PKG
 					lc_select_non_dt   := lc_select_non_dt || 'hdr.' || lc_get_all_field_info.col_name || ',';
                    END IF;
 				   --End
-				   
-				   --Added for Defect# NAIT-36037 by Thilak on 11-MAY-2018 
+
+				   --Added for Defect# NAIT-36037 by Thilak on 11-MAY-2018
                    IF lc_get_all_field_info.col_name = 'ext_price' THEN
                       lc_inter_ext_price := lc_column || ln_inc || ' = ' || ln_total_default;
-				   END IF;				   
+				   END IF;
 				   --End
-				   
+
                    ---Framing the insert and select statement for NON-DT records
                    IF (UPPER(lc_get_all_field_info.spl_fields) = 'Y') THEN
                    lc_err_location_msg := 'Framing SQL for fetching from stagging detail table for a non-dt record';
@@ -1085,7 +1167,7 @@ CREATE OR REPLACE PACKAGE BODY XX_AR_EBL_XLS_DM_PKG
                                         ||''''||ld_cycle_date||''''||','|| SUBSTR(lc_select_var_cols,1,(length(lc_select_var_cols)-1))
                                         || lc_from_hdr_dtl || lc_combo_type_whr
                                         || ' AND hdr.parent_cust_doc_id = ' || lc_get_dist_docid || ' AND hdr.extract_batch_id = ' || lc_get_dist_ebatchid || ' AND hdr.file_id = ' || lc_get_dist_fid || ')';
-                  --Added lc_combo_type_whr by Aniket CG #22772 on 19 Dec 2017 
+                  --Added lc_combo_type_whr by Aniket CG #22772 on 19 Dec 2017
                    ELSIF (ln_check_dtl != 1) THEN
                    -- Framing the insert for an DT row if only header fields are configured for the respective cust doc
                       lc_err_location_msg := 'Framing SQL for  dt records having onli header fields';
@@ -1095,7 +1177,7 @@ CREATE OR REPLACE PACKAGE BODY XX_AR_EBL_XLS_DM_PKG
                                         ||''''||ld_cycle_date||''''||','|| SUBSTR(lc_select_var_cols,1,(length(lc_select_var_cols)-1))
                                         || lc_from_hdr || lc_combo_type_whr
                                         || ' AND hdr.parent_cust_doc_id =' || lc_get_dist_docid || ' AND hdr.extract_batch_id = ' || lc_get_dist_ebatchid || ' AND hdr.file_id= ' || lc_get_dist_fid || ')';
-                   --Added lc_combo_type_whr by Aniket CG #22772 on 19 Dec 2017 
+                   --Added lc_combo_type_whr by Aniket CG #22772 on 19 Dec 2017
                                       END IF;
                 -- Framing the insert and select for dt and non-dt fields
                 lc_err_location_msg := 'Framing SQL for non dt records';
@@ -1150,10 +1232,10 @@ CREATE OR REPLACE PACKAGE BODY XX_AR_EBL_XLS_DM_PKG
                                                       );
                 lc_err_location_msg := 'Calling XX_AR_EBL_XLS_CHILD_NON_DT';
 
-                --Added One Parametr to NON DT by Aniket CG #22772 on 19 Dec 2017       
+                --Added One Parametr to NON DT by Aniket CG #22772 on 19 Dec 2017
                 XX_AR_EBL_XLS_CHILD_NON_DT(lc_get_dist_docid,lc_get_dist_ebatchid,lc_get_dist_fid,lc_insert_select_ndt,lc_select_ndt,lc_seq_ndt,p_doc_type,p_debug_flag,lc_insert_status,ld_cycle_date,lc_combo_type_whr);
-                
-                
+
+
                 IF (lc_insert_status IS NOT NULL) THEN
                    x_ret_code := 1;
                    ROLLBACK TO ins_cust_doc_id;
@@ -1227,24 +1309,24 @@ CREATE OR REPLACE PACKAGE BODY XX_AR_EBL_XLS_DM_PKG
                 XX_AR_EBL_COMMON_UTIL_PKG.PUT_LOG_LINE( lb_debug_flag
                                                        ,FALSE
                                                        ,lc_err_location_msg||'-'||lc_update_dt
-                                                      );									
-                EXECUTE IMMEDIATE lc_update_dt;		
+                                                      );
+                EXECUTE IMMEDIATE lc_update_dt;
                 lc_err_location_msg := 'Executed Total Amount update in XX_AR_EBL_XLS_STG table';
                 XX_AR_EBL_COMMON_UTIL_PKG.PUT_LOG_LINE( lb_debug_flag
                                                        ,FALSE
                                                        ,lc_err_location_msg
-                                                      );					
+                                                      );
 				END IF;
 				--CG End
-				
+
 				--Added for Defect# 36037 by Thilak CG on 16-MAY-2018
 				IF ((lc_intersec_total = 'N') AND (ln_insec_update_cnt = 1) AND (ln_check_dtl = 1)) THEN
 				  lc_intersec_update_cols := SUBSTR(lc_insec_update_cols,1,(LENGTH(lc_insec_update_cols)-1));
-				  lc_intersec_update_query := 'select a.str from (WITH DATA AS                                              
-										( SELECT ' ||''''||lc_intersec_update_cols||''''|| ' str FROM dual                                              
-										)                                            
-										SELECT trim(regexp_substr(str, ''[^,]+'', 1, LEVEL)) str                                            
-										FROM DATA                                            
+				  lc_intersec_update_query := 'select a.str from (WITH DATA AS
+										( SELECT ' ||''''||lc_intersec_update_cols||''''|| ' str FROM dual
+										)
+										SELECT trim(regexp_substr(str, ''[^,]+'', 1, LEVEL)) str
+										FROM DATA
 										CONNECT BY instr(str, '','', 1, LEVEL - 1) > 0) a';
 				  -- Open the Cursor and update the intersection amount and ext price
 				  IF lc_intersec_update_cols IS NOT NULL THEN
@@ -1269,7 +1351,7 @@ CREATE OR REPLACE PACKAGE BODY XX_AR_EBL_XLS_DM_PKG
                                                        ,FALSE
                                                        ,lc_err_location_msg
                                                       );
-													  
+
                       IF lc_inter_ext_price IS NOT NULL THEN
 					  lc_inter_extprice_dt :=   'UPDATE XX_AR_EBL_XLS_STG SET '
                                     || lc_inter_ext_price
@@ -1284,8 +1366,8 @@ CREATE OR REPLACE PACKAGE BODY XX_AR_EBL_XLS_DM_PKG
                       XX_AR_EBL_COMMON_UTIL_PKG.PUT_LOG_LINE( lb_debug_flag
                                                        ,FALSE
                                                        ,lc_err_location_msg
-                                                      );					  
-					  END IF;	
+                                                      );
+					  END IF;
 					  END LOOP;
 				  END IF;
 				END IF;
@@ -1442,7 +1524,7 @@ CREATE OR REPLACE PACKAGE BODY XX_AR_EBL_XLS_DM_PKG
                                                       ,FALSE
                                                       ,'Error while getting the Split Tabs By Value for cust doc id '||lc_get_dist_docid);
             END;
-            
+
             lc_column_name := NULL;
             lc_column_number := NULL;
             lc_column_value := NULL;
@@ -1454,7 +1536,7 @@ CREATE OR REPLACE PACKAGE BODY XX_AR_EBL_XLS_DM_PKG
                 BEGIN
                     SELECT 'COLUMN'||column_number, column_number, header, source_column_name, field_id
                     INTO lc_column_name,lc_column_number,lc_column_value,lc_source_column_name, lc_field_id
-                    FROM ( 
+                    FROM (
                     SELECT rownum column_number,Q.* FROM (
                     SELECT C.field_id, C.cust_doc_id,
                         NVL(C.data_format,TL.format) format,TL.data_type, TL.source_column_name,
@@ -1462,7 +1544,7 @@ CREATE OR REPLACE PACKAGE BODY XX_AR_EBL_XLS_DM_PKG
                               WHEN C.field_id=10027 THEN NVL(INITCAP(SH.dept_report_header),NVL(C.label,'Department'))
                               WHEN C.field_id=10028 THEN NVL2(SH.dept_report_header,INITCAP(SH.dept_report_header) || ' Description',NVL(C.label,'Department Description'))
                               WHEN C.field_id=10029 THEN NVL(INITCAP(SH.release_report_header),NVL(C.label,'Release'))
-                              WHEN C.field_id=10030 THEN NVL(INITCAP(SH.desktop_report_header),NVL(C.label,'Desktop')) 
+                              WHEN C.field_id=10030 THEN NVL(INITCAP(SH.desktop_report_header),NVL(C.label,'Desktop'))
                               ELSE C.label END HEADER
                     FROM XX_CDH_EBL_TEMPL_DTL C
                     JOIN XX_AR_EBL_TRANSMISSION TM
@@ -1680,7 +1762,7 @@ CREATE OR REPLACE PACKAGE BODY XX_AR_EBL_XLS_DM_PKG
                    ,last_updated_by    = fnd_global.user_id
                    ,last_update_date   = sysdate
                    ,last_update_login  = fnd_global.user_id
-             WHERE  EXISTS ( SELECT 1 
+             WHERE  EXISTS ( SELECT 1
                              FROM   xx_ar_ebl_ind_hdr_main
                              WHERE  file_id            = XAEF.file_id
                              AND    batch_id           = p_batch_id )
@@ -1702,7 +1784,7 @@ CREATE OR REPLACE PACKAGE BODY XX_AR_EBL_XLS_DM_PKG
                    ,last_updated_by    = fnd_global.user_id
                    ,last_update_date   = sysdate
                    ,last_update_login  = fnd_global.user_id
-             WHERE  EXISTS ( SELECT 1 
+             WHERE  EXISTS ( SELECT 1
                              FROM   xx_ar_ebl_cons_hdr_main
                              WHERE  file_id            = XAEF.file_id
                              AND    batch_id           = p_batch_id )
@@ -1713,10 +1795,10 @@ CREATE OR REPLACE PACKAGE BODY XX_AR_EBL_XLS_DM_PKG
 
          -- Delete the Non-DT Rows whose values are 0.
          /* DELETE FROM XX_AR_EBL_XLS_STG XAEXS
-           WHERE XAEXS.batch_id = p_batch_id   
-             AND XAEXS.Rec_type NOT IN ('FID','DT') 
+           WHERE XAEXS.batch_id = p_batch_id
+             AND XAEXS.Rec_type NOT IN ('FID','DT')
              AND NVL(XAEXS.NonDT_Value,'0') = '0';*/
-         
+
        COMMIT;
        EXCEPTION
        WHEN OTHERS THEN
@@ -1791,10 +1873,10 @@ CREATE OR REPLACE PACKAGE BODY XX_AR_EBL_XLS_DM_PKG
        get_transactions lcu_get_transactions;
        lc_get_trans_id  xx_ar_ebl_cons_hdr_main.customer_trx_id%TYPE;
        lc_err_location_msg    VARCHAR2(1000);
-       --Added p_cmb_splt_whr in lc_ndt_cons_from by Aniket CG #22772 on 19 Dec 2017 
-       lc_ndt_cons_from  VARCHAR2(32767) := ' FROM xx_ar_ebl_cons_hdr_main hdr, xx_fin_translatedefinition xftd ,xx_fin_translatevalues xftv WHERE xftv.enabled_flag=''Y'' AND TRUNC(SYSDATE) BETWEEN xftv.start_date_active AND NVL(xftv.end_date_active,SYSDATE) AND hdr.parent_cust_doc_id ='||p_cust_doc_id || ' AND hdr.extract_batch_id = ' || p_ebatchid 
-                                                ||' and xftd.translate_id = xftv.translate_id and xftd.translation_name = ''XX_CDH_EBILLING_FIELDS'' and hdr.file_id ='||p_file_id||' and hdr.org_id='||ln_org_id|| p_cmb_splt_whr || ' and xftv.target_value19 = '; 
-       lc_ndt_ind_from   VARCHAR2(32767) := ' FROM xx_ar_ebl_ind_hdr_main hdr, xx_fin_translatedefinition xftd ,xx_fin_translatevalues xftv  WHERE xftv.enabled_flag=''Y'' AND TRUNC(SYSDATE) BETWEEN xftv.start_date_active AND NVL(xftv.end_date_active,SYSDATE) AND hdr.parent_cust_doc_id ='||p_cust_doc_id || ' AND hdr.extract_batch_id = ' || p_ebatchid 
+       --Added p_cmb_splt_whr in lc_ndt_cons_from by Aniket CG #22772 on 19 Dec 2017
+       lc_ndt_cons_from  VARCHAR2(32767) := ' FROM xx_ar_ebl_cons_hdr_main hdr, xx_fin_translatedefinition xftd ,xx_fin_translatevalues xftv WHERE xftv.enabled_flag=''Y'' AND TRUNC(SYSDATE) BETWEEN xftv.start_date_active AND NVL(xftv.end_date_active,SYSDATE) AND hdr.parent_cust_doc_id ='||p_cust_doc_id || ' AND hdr.extract_batch_id = ' || p_ebatchid
+                                                ||' and xftd.translate_id = xftv.translate_id and xftd.translation_name = ''XX_CDH_EBILLING_FIELDS'' and hdr.file_id ='||p_file_id||' and hdr.org_id='||ln_org_id|| p_cmb_splt_whr || ' and xftv.target_value19 = ';
+       lc_ndt_ind_from   VARCHAR2(32767) := ' FROM xx_ar_ebl_ind_hdr_main hdr, xx_fin_translatedefinition xftd ,xx_fin_translatevalues xftv  WHERE xftv.enabled_flag=''Y'' AND TRUNC(SYSDATE) BETWEEN xftv.start_date_active AND NVL(xftv.end_date_active,SYSDATE) AND hdr.parent_cust_doc_id ='||p_cust_doc_id || ' AND hdr.extract_batch_id = ' || p_ebatchid
                                                 ||' and xftd.translate_id = xftv.translate_id and xftd.translation_name =''XX_CDH_EBILLING_FIELDS'' and hdr.file_id ='||p_file_id||' and hdr.org_id='||ln_org_id||' and xftv.target_value19 = ';
        lc_decode_hdr_col VARCHAR2(1000)  := get_decode_ndt(p_debug_flag);           -- The value wiil be returned by the function will be similar to this 'TO_CHAR(DECODE(xxfv.Target_Value19,''CP'', hdr.TOTAL_COUPON_AMOUNT, ''GC'', hdr.TOTAL_GIFT_CARD_AMOUNT, ''TD'', hdr.TOTAL_TIERED_DISCOUNT_AMOUNT, ''MS'', hdr.TOTAL_MISCELLANEOUS_AMOUNT, ''DL'', hdr.TOTAL_FRIEGHT_AMOUNT, ''BD'', hdr.TOTAL_BULK_AMOUNT, ''PST'', hdr.TOTAL_PST_AMOUNT, ''GST'', hdr.TOTAL_GST_AMOUNT, ''QST'', hdr.TOTAL_QST_AMOUNT, ''TX'', hdr.TOTAL_US_TAX_AMOUNT, ''HST'', hdr.TOTAL_HST_AMOUNT, ''AD'', hdr.TOTAL_ASSOCIATION_DISCOUNT))';
 
@@ -1980,7 +2062,7 @@ CREATE OR REPLACE PACKAGE BODY XX_AR_EBL_XLS_DM_PKG
        END IF;
        FOR lcu_decode_ndt IN (SELECT  xftv.source_value4
                                      ,xftv.target_value19
-                                     ,xftv.target_value14 
+                                     ,xftv.target_value14
                               FROM   xx_fin_translatedefinition xftd
                                      ,xx_fin_translatevalues xftv
                               WHERE  xftd.translate_id = xftv.translate_id
@@ -2029,7 +2111,7 @@ FUNCTION get_column_name(p_field_id IN NUMBER
       FROM xx_fin_translatedefinition xftd
           ,xx_fin_translatevalues xftv
       WHERE XFTD.TRANSLATE_ID = XFTV.TRANSLATE_ID
-      AND XFTV.SOURCE_VALUE1 = p_field_id 
+      AND XFTV.SOURCE_VALUE1 = p_field_id
       AND xftd.translation_name ='XX_CDH_EBILLING_FIELDS'
       AND xftv.target_value19 = 'DT'
       AND XFTV.ENABLED_FLAG='Y'
@@ -2043,9 +2125,9 @@ FUNCTION get_column_name(p_field_id IN NUMBER
     ELSE
 	 --Added for Defect# NAIT-17796 by Thilak CG on 09-MAY-2018
      IF lc_col_type = 'Lines'
-     THEN	
+     THEN
       lc_col_name := 'dtl.'||lc_col_name;
-     ELSE 	  
+     ELSE
       lc_col_name := 'hdr.'||lc_col_name;
 	 END IF;
 	 -- End of Defect# NAIT-17796
@@ -2146,7 +2228,7 @@ FUNCTION get_column_name(p_field_id IN NUMBER
 -- |=======   ==========   =============           ====================================|
 -- |DRAFT 1.0 12-DEC-2015  Suresh N                Initial draft version               |
 -- +===================================================================================+
-  FUNCTION get_conc_field_names(p_cust_doc_id IN NUMBER 
+  FUNCTION get_conc_field_names(p_cust_doc_id IN NUMBER
                                ,p_conc_field_id IN NUMBER
                                ,p_debug_flag IN VARCHAR2)
   RETURN VARCHAR2 IS
@@ -2364,6 +2446,3 @@ FUNCTION get_column_name(p_field_id IN NUMBER
                                            ,lc_err_location_msg );
  END;
  END XX_AR_EBL_XLS_DM_PKG;
-/
-SHOW ERRORS;
-EXIT;

@@ -204,7 +204,8 @@ ORDER BY ArPaymentSchedulesV.TRX_DATE DESC
 		UNIT_SELLING_PRICE,
 		EXTENDED_AMOUNT
    FROM 
-    (SELECT lines.line_number line_number,
+    (SELECT --lines.line_number line_number,
+	    XX_AR_EBL_COMMON_UTIL_PKG.get_fee_line_number(lines.customer_trx_id,lines.description,items.organization_id,lines.line_number) line_number,
        /*Added for R12 upgrade retrofit
          nvl(AR_INVOICE_SQL_FUNC_PUB.get_description( lines.customer_trx_line_id ), 
            lines.description) item_description,*/
@@ -261,7 +262,8 @@ ORDER BY ArPaymentSchedulesV.TRX_DATE DESC
 FROM   ra_customer_trx_lines lines , fnd_currencies fc ,
    (SELECT
       L.customer_trx_line_id ,
-      I.segment1
+      I.segment1,
+	  I.organization_id
     FROM
       RA_CUSTOMER_TRX_LINES L ,
       MTL_SYSTEM_ITEMS_B I ,
@@ -272,9 +274,21 @@ FROM   ra_customer_trx_lines lines , fnd_currencies fc ,
       AND I.inventory_item_id=L.inventory_item_id
   )  items
 WHERE  line_type IN  ('LINE','CB')   /*ODInvoiceLineVO*/
-AND lines.customer_trx_line_id=items.customer_trx_line_id (+)) QRSLT  
+AND lines.customer_trx_line_id=items.customer_trx_line_id (+)
+AND NOT EXISTS ( SELECT 1
+               FROM fnd_lookup_values flv
+			  WHERE 1=1
+			    AND flv.lookup_type = 'OD_FEES_ITEMS'
+				AND flv.LANGUAGE='US'
+				AND flv.attribute6= lines.INVENTORY_ITEM_ID
+				AND FLV.enabled_flag = 'Y'                                   
+				AND SYSDATE BETWEEN NVL(FLV.start_date_active,SYSDATE) AND NVL(FLV.end_date_active,SYSDATE+1)  
+				AND FLV.attribute7 IN ('HEADER')  
+
+)) QRSLT  
 WHERE CUSTOMER_TRX_ID = :CUSTOMER_TRX_ID
   AND CURRENCY_CODE = 'USD'
+  ORDER BY line_number
 ]]>
 </sqlStatement>
 <sqlStatement name="Q_DATA2" dataSourceRef="">

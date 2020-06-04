@@ -1,4 +1,4 @@
-CREATE OR REPLACE PACKAGE XX_AR_EBL_TXT_SPL_LOGIC_PKG
+create or replace PACKAGE XX_AR_EBL_TXT_SPL_LOGIC_PKG
 AS
 -- +===================================================================================+
 -- |                  Office Depot - Project Simplify                                  |
@@ -15,6 +15,7 @@ AS
 -- |DRAFT 1.0 04-MAR-2016  Suresh N                Initial draft version               |
 -- |                                               (Master Defect#37585)               |
 -- |      1.1 15-Dec-2017  Aniket J      CG        Requirement# (22772)                |
+-- |1.2       27-MAY-2020  Divyansh                Added Finction for JIRA NAIT-129167 |
 -- +===================================================================================+
     FUNCTION get_grand_total (p_cust_doc_id IN NUMBER
                                ,p_file_id IN NUMBER
@@ -226,8 +227,23 @@ AS
                                ,p_field_name IN VARCHAR2
                                )
     RETURN NUMBER ;
-
+-- +===================================================================================+
+-- |                  Office Depot - Project Simplify                                  |
+-- +===================================================================================+
+-- | Name        : get_fee_amount                                                      |
+-- | Description : This function is used to get the total fee amount                   |
+-- |Parameters   : cust_doc_id, file_id                                                |
+-- |                                                                                   |
+-- |Change Record:                                                                     |
+-- |===============                                                                    |
+-- |Version   Date          Author                 Remarks                             |
+-- |=======   ==========   =============           ====================================|
+-- | 1.0      03-APR-2020  Divyansh Saini          Initial draft version #NAIT-129167  |
+-- +===================================================================================+
+	FUNCTION get_fee_amount (p_cust_doc_id IN NUMBER
+                               ,p_file_id IN NUMBER
+                               ,p_org_id  IN NUMBER
+                               ,p_field_name IN VARCHAR2
+                               ) 
+    RETURN NUMBER;
  END XX_AR_EBL_TXT_SPL_LOGIC_PKG;
-/
-SHOW ERRORS;
-EXIT;

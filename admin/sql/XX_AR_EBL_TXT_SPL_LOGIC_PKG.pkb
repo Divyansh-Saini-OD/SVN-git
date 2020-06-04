@@ -1,4 +1,4 @@
-CREATE OR REPLACE PACKAGE BODY XX_AR_EBL_TXT_SPL_LOGIC_PKG
+create or replace PACKAGE BODY XX_AR_EBL_TXT_SPL_LOGIC_PKG
 AS
 -- +===================================================================================+
 -- |                  Office Depot - Project Simplify                                  |
@@ -15,6 +15,7 @@ AS
 -- |DRAFT 1.0 04-MAR-2016  Suresh N                Initial draft version               |
 -- |                                               (Master Defect#37585)               |
 -- |      1.1 15-Dec-2017  Aniket J      CG        Requirement# (22772)                |
+-- |1.2       27-MAY-2020  Divyansh                Added Finction for JIRA NAIT-129167 |
 -- +===================================================================================+
     FUNCTION get_grand_total (p_cust_doc_id IN NUMBER
                                ,p_file_id IN NUMBER
@@ -26,7 +27,7 @@ AS
       ln_total_inv_amt NUMBER;
 
     BEGIN
-  
+
        SELECT SUM(original_invoice_amount)
       INTO ln_total_inv_amt
       FROM xx_ar_ebl_cons_hdr_main
@@ -34,9 +35,9 @@ AS
       AND file_id = p_file_id
       AND org_id = p_org_id
       -- start Added by Aniket CG #22772 on 15 Dec 2017
-      and (transaction_class =  nvl(regexp_substr(p_fun_combo_whr, '[^,]+', 1, 1) ,transaction_class ) 
+      and (transaction_class =  nvl(regexp_substr(p_fun_combo_whr, '[^,]+', 1, 1) ,transaction_class )
           or  transaction_class =  regexp_substr(p_fun_combo_whr, '[^,]+', 1, 2)) ;
-      -- end Added by Aniket CG #22772 on 15 Dec 2017          
+      -- end Added by Aniket CG #22772 on 15 Dec 2017
       RETURN ln_total_inv_amt;
     EXCEPTION WHEN OTHERS THEN
       RETURN 0;
@@ -72,7 +73,7 @@ AS
       AND file_id = p_file_id
       AND org_id = p_org_id
          -- start Added by Aniket CG #22772 on 15 Dec 2017
-      and (transaction_class =  nvl(regexp_substr(p_fun_combo_whr, '[^,]+', 1, 1) ,transaction_class ) 
+      and (transaction_class =  nvl(regexp_substr(p_fun_combo_whr, '[^,]+', 1, 1) ,transaction_class )
           or  transaction_class =  regexp_substr(p_fun_combo_whr, '[^,]+', 1, 2)) ;
          -- end Added by Aniket CG #22772 on 15 Dec 2017
       RETURN ln_total_freight_amt;
@@ -418,36 +419,69 @@ AS
       ln_total_dtl NUMBER;
       ln_total_trl NUMBER;
     BEGIN
-    
-   -- IF p_field_name is null then 
+
+   -- IF p_field_name is null then
       SELECT COUNT(1)
       INTO ln_total_dtl
       FROM xx_ar_ebl_txt_dtl_stg
       WHERE file_id = p_file_id
       AND cust_doc_id = p_cust_doc_id
       AND rec_type != 'FID';
-      
+
       SELECT COUNT(1)
       INTO ln_total_hdr
       FROM xx_ar_ebl_txt_hdr_stg
       WHERE file_id = p_file_id
       AND cust_doc_id = p_cust_doc_id
       AND rec_type != 'FID';
-      
+
       SELECT COUNT(1)
       INTO ln_total_trl
       FROM xx_ar_ebl_txt_trl_stg
       WHERE file_id = p_file_id
       AND cust_doc_id = p_cust_doc_id
       AND rec_type != 'FID';
-     
+
      ln_total_lines := ln_total_dtl +ln_total_hdr +ln_total_trl ;
-      
+
       RETURN ln_total_lines;
      EXCEPTION WHEN OTHERS THEN
       RETURN 0;
-    END;	
+    END;
+-- +===================================================================================+
+-- |                  Office Depot - Project Simplify                                  |
+-- +===================================================================================+
+-- | Name        : get_fee_amount                                                      |
+-- | Description : This function is used to get the total fee amount                   |
+-- |Parameters   : cust_doc_id, file_id                                                |
+-- |                                                                                   |
+-- |Change Record:                                                                     |
+-- |===============                                                                    |
+-- |Version   Date          Author                 Remarks                             |
+-- |=======   ==========   =============           ====================================|
+-- | 1.0      03-APR-2020  Divyansh Saini          Initial draft version #NAIT-129167  |
+-- +===================================================================================+
+	
+	FUNCTION get_fee_amount (p_cust_doc_id IN NUMBER
+                               ,p_file_id IN NUMBER
+                               ,p_org_id  IN NUMBER
+                               ,p_field_name IN VARCHAR2
+                               ) 
+    RETURN NUMBER IS
+		ln_total NUMBER :=0;
+	BEGIN
+
+		SELECT XX_AR_EBL_COMMON_UTIL_PKG.get_hea_fee_amount(customer_trx_id) + XX_AR_EBL_COMMON_UTIL_PKG.get_line_fee_amount(customer_trx_id)
+		  INTO ln_total
+		  FROM
+		   (SELECT distinct customer_trx_id 
+			 FROM xx_ar_ebl_cons_hdr_main
+			WHERE cust_doc_id   = p_cust_doc_id
+			  AND file_id       = p_file_id);
+		return ln_total;
+	
+
+    EXCEPTION WHEN OTHERS THEN
+      RETURN 0;
+	END;
  END XX_AR_EBL_TXT_SPL_LOGIC_PKG;
-/
-SHOW ERRORS;
-EXIT;

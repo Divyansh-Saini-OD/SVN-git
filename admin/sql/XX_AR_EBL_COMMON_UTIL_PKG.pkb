@@ -15,11 +15,11 @@ create or replace PACKAGE BODY      XX_AR_EBL_COMMON_UTIL_PKG
 -- |=======   ==========   =============           ====================================|
 -- |DRAFT 1.0 10-MAR-2010  Ranjith Prabu           Initial draft version               |
 -- |1.1       12-MAR-2013  Rajeshkumar M R         Moved department description        |
--- |                                               to header Defect# 15118             |   
+-- |                                               to header Defect# 15118             |
 -- |1.2       04-NOV-2013  Arun Gannarapu          Made changes to fix the bill_From_date|
--- |                                                with R12 changes                   |  
+-- |                                                with R12 changes                   |
 -- |1.3       20-NOV-2013  Arun Gannarapu          Made changes to fix the CA tax issue|
--- |                                               Defect # 26548                      |  
+-- |                                               Defect # 26548                      |
 -- |1.4       19-DEC-2013  Arun Gannarapu          Made changes to fix the bill from date|
 -- |                                                issue defect # 27239               |
 -- |1.5       17-FEB-2014  Arun Gannarapu          Made changes to fix the CA tax issue|
@@ -32,9 +32,9 @@ create or replace PACKAGE BODY      XX_AR_EBL_COMMON_UTIL_PKG
 -- |                                              (Module 4B Release 3)                |
 -- |1.2       08-DEC-2015  Havish Kasina          Added new column dept_code in        |
 -- |                                              xx_ar_ebl_cons_dtl_hist,             |
--- |                                              xx_ar_ebl_cons_hdr_hist,             |  
+-- |                                              xx_ar_ebl_cons_hdr_hist,             |
 -- |                                              xx_ar_ebl_ind_dtl_hist and           |
--- |                                              xx_ar_ebl_ind_hdr_hist tables        |          
+-- |                                              xx_ar_ebl_ind_hdr_hist tables        |
 -- |                                              -- Defect 36437                      |
 -- |                                              (MOD 4B Release 3)                   |
 -- |2.0		  24-MAY-2016  Rohit Gupta			  Changed the logic for 			   |
@@ -53,16 +53,18 @@ create or replace PACKAGE BODY      XX_AR_EBL_COMMON_UTIL_PKG
 -- |2.5       12-SEP-2018   Aarthi                NAIT - 58403  Added SKU level columns |
 -- |                                              to the history tables                 |
 -- |2.6       23-OCT-2018   SravanKumar           NAIT- 65564: Added new function to    |
--- |                                              display custom message for bill       | 
+-- |                                              display custom message for bill       |
 -- |                                              complete customer for delivery        |
 -- |                                              method ePDF and ePRINT.               |
 -- |2.7       14-NOV-2018   P Jadhav              NAIT- 65564: updated GET_CONS_MSG_BCC |
--- |                                              display  message for bill complete    | 
--- |                                              customer and Paydoc method only  	    | 
+-- |                                              display  message for bill complete    |
+-- |                                              customer and Paydoc method only  	    |
 -- |2.8       06-DEC-2018	P Jadhav 			  NAIT-74893: updated GET_CONS_MSG_BCC  |
 -- |											  changed custom message		        |
--- |2.9       11-MAR-2019	Aarthi                NAIT- 80452: Adding POD related blurb | 
--- |                                              messages to individual reprint reports| 
+-- |2.9       11-MAR-2019	Aarthi                NAIT- 80452: Adding POD related blurb |
+-- |                                              messages to individual reprint reports|
+-- |3.0       27-MAY-2020   Divyansh              Added new functions for Tariff Changes|
+-- |                                              JIRA NAIT-129167                      | 
 -- +===================================================================================+
 -- +===================================================================================+
 -- |                  Office Depot - Project Simplify                                  |
@@ -1754,12 +1756,12 @@ BEGIN
 -- |=======   ===========     =============           =================================|
 -- |DRAFT 1.0 29-APR-2010     Gokila Tamilselvam      Initial draft version            |
 -- |1.1       12-MAR-2013     Rajeshkumar M R         Moved department description     |
--- |                                                  to header Defect# 15118          |    
+-- |                                                  to header Defect# 15118          |
 -- |1.2       08-DEC-2015     Havish Kasina           Added new column dept_code in    |
 -- |                                                  xx_ar_ebl_cons_dtl_hist,         |
--- |                                                  xx_ar_ebl_cons_hdr_hist,         |       
+-- |                                                  xx_ar_ebl_cons_hdr_hist,         |
 -- |                                                  xx_ar_ebl_ind_dtl_hist and       |
--- |                                                  xx_ar_ebl_ind_hdr_hist tables    |       
+-- |                                                  xx_ar_ebl_ind_hdr_hist tables    |
 -- |                                                  -- Defect 36437                  |
 -- |                                                  (MOD 4B Release 3)               |
 -- |1.3       16-JUN-2016     Suresh Naragam          Mod 4B Release 4 changes         |
@@ -1836,7 +1838,7 @@ BEGIN
                                                ,c_ext_attr33,c_ext_attr34,c_ext_attr35,c_ext_attr36,c_ext_attr37,c_ext_attr38
                                                ,c_ext_attr39,c_ext_attr40,c_ext_attr41,c_ext_attr42,c_ext_attr43,c_ext_attr44
                                                ,c_ext_attr45,c_ext_attr46,c_ext_attr47,c_ext_attr48,c_ext_attr49,c_ext_attr50
-                                               ,batch_id,org_id,request_id,line_level_comment,dept_desc 
+                                               ,batch_id,org_id,request_id,line_level_comment,dept_desc
                                                ,dept_sft_hdr,dept_code, parent_cust_doc_id,extract_batch_id,line_tax_amt
 											   ,kit_sku  -- Added for Kitting, Defect# 37675
 											   ,kit_sku_desc  -- Added for Kitting, Defect# 37675
@@ -2168,7 +2170,7 @@ BEGIN
                                              ,customer_ref_date,customer_ref_number,sold_to_customer_number,transaction_source,transaction_type
                                              ,transaction_class,transaction_date,bill_to_name,bill_to_address1,bill_to_address2,bill_to_address3
                                              ,bill_to_address4,bill_to_city,bill_to_state,bill_to_country,bill_to_zip,bill_to_contact_name
-                                             ,bill_to_contact_phone,bill_to_contact_phone_ext,bill_to_contact_email,bill_to_abbreviation  
+                                             ,bill_to_contact_phone,bill_to_contact_phone_ext,bill_to_contact_email,bill_to_abbreviation
                                              ,carrier,ship_to_name,ship_to_abbreviation
                                              ,ship_to_address1,ship_to_address2,ship_to_address3,ship_to_address4,ship_to_city,ship_to_state,ship_to_country
                                              ,ship_to_zip,ship_to_sequence,shipment_ref_number,remit_address1,remit_address2,remit_address3,remit_address4
@@ -2200,7 +2202,7 @@ BEGIN
                  ,XAEIHM.customer_ref_date,XAEIHM.customer_ref_number,XAEIHM.sold_to_customer_number,XAEIHM.transaction_source,XAEIHM.transaction_type
                  ,XAEIHM.transaction_class,XAEIHM.transaction_date,XAEIHM.bill_to_name,XAEIHM.bill_to_address1,XAEIHM.bill_to_address2,XAEIHM.bill_to_address3
                  ,XAEIHM.bill_to_address4,XAEIHM.bill_to_city,XAEIHM.bill_to_state,XAEIHM.bill_to_country,XAEIHM.bill_to_zip,XAEIHM.bill_to_contact_name,XAEIHM.bill_to_contact_phone
-                 ,XAEIHM.bill_to_contact_phone_ext,XAEIHM.bill_to_contact_email,XAEIHM.bill_to_abbreviation 
+                 ,XAEIHM.bill_to_contact_phone_ext,XAEIHM.bill_to_contact_email,XAEIHM.bill_to_abbreviation
                  ,XAEIHM.carrier,XAEIHM.ship_to_name,XAEIHM.ship_to_abbreviation
                  ,XAEIHM.ship_to_address1,XAEIHM.ship_to_address2,XAEIHM.ship_to_address3,XAEIHM.ship_to_address4,XAEIHM.ship_to_city,XAEIHM.ship_to_state,XAEIHM.ship_to_country
                  ,XAEIHM.ship_to_zip,XAEIHM.ship_to_sequence,XAEIHM.shipment_ref_number,XAEIHM.remit_address1,XAEIHM.remit_address2,XAEIHM.remit_address3,XAEIHM.remit_address4
@@ -2313,7 +2315,7 @@ BEGIN
 -- |                                               Defect 37675  (Kitting Changes)     |
 -- |1.4      23-MAR-2018   Aniket J CG             Defect 22772  (Combo Type Changes)  |
 -- |2.5      12-SEP-2018   Aarthi                  NAIT - 58403 Added SKU level columns|
--- |                                               to the history tables               |                
+-- |                                               to the history tables               |
 -- +===================================================================================+
     PROCEDURE UPDATE_BILL_STATUS_eXLS ( p_file_id             NUMBER
                                        ,p_doc_type            VARCHAR2
@@ -2434,7 +2436,7 @@ BEGIN
           AND    XAECHM.billdocs_delivery_method =   XXCMB.c_ext_attr3
           AND    (XAECHM.TRANSACTION_CLASS = NVL(XXCMB.cmb1,XAECHM.TRANSACTION_CLASS)
           OR XAECHM.TRANSACTION_CLASS   = XXCMB.cmb2);
-          -- end 
+          -- end
           PUT_LOG_LINE ( lb_debug
                         ,TRUE
                         ,'Number of trx lines inserted into dtl hist table for the file ID : '||p_file_id||' are : '||SQL%ROWCOUNT
@@ -2538,7 +2540,7 @@ BEGIN
           AND    XAECHM.billdocs_delivery_method =   XXCMB.c_ext_attr3
           AND    (XAECHM.TRANSACTION_CLASS = NVL(XXCMB.cmb1,XAECHM.TRANSACTION_CLASS)
           OR XAECHM.TRANSACTION_CLASS   = XXCMB.cmb2);
-          -- end 
+          -- end
           PUT_LOG_LINE ( lb_debug
                         ,TRUE
                         ,'Number of trxs inserted into hdr hist table for the file ID : '||p_file_id||' are : '||SQL%ROWCOUNT
@@ -2756,7 +2758,7 @@ BEGIN
                                              ,file_name,org_id,bill_to_site_use_id,parent_cust_doc_id,epdf_doc_level,request_id,trx_number,desktop_sft_data
                                              ,po_number_sft_data,cost_center_sft_data,release_number_sft_data,account_contact,order_contact,total_delivery_amount
                                              ,batch_source_id,email_address,split_identifier,total_association_discount,remit_country,sales_order_number,status,extract_batch_id
-                                             ,trx_term_description,order_source_code,dept_desc    -- dept_desc added as per Defect # 15118 
+                                             ,trx_term_description,order_source_code,dept_desc    -- dept_desc added as per Defect # 15118
 											 ,dept_code -- Added for Defect 36437
                                              )
           SELECT  XAEIHM.customer_trx_id,XAEIHM.cust_doc_id,XAEIHM.mbs_doc_id,XAEIHM.billdocs_delivery_method,XAEIHM.document_type
@@ -3188,7 +3190,7 @@ FUNCTION get_email_details(p_cust_doc_id IN NUMBER
                                                     ,'Error For : '|| lc_error_debug || CHR(13)
                                                     );
     END insert_blob_file;
-    
+
 -- +===================================================================================+
 -- |                  Office Depot - Project Simplify                                  |
 -- |                       -- Made changes as part of R12 upgrade                                         |
@@ -3209,9 +3211,9 @@ FUNCTION get_email_details(p_cust_doc_id IN NUMBER
   )  RETURN DATE IS
 
    ld_billable_date ar_cons_bill_cycle_dates.billable_date%TYPE;
-  BEGIN 
-    SELECT MAX(bcd.billable_date)  -- +1 removed for defect #27239 
-    INTO ld_billable_date 
+  BEGIN
+    SELECT MAX(bcd.billable_date)  -- +1 removed for defect #27239
+    INTO ld_billable_date
     FROM ar_cons_bill_cycle_dates bcd,
          ar_cons_bill_cycles_b bc,
          ra_terms t
@@ -3220,7 +3222,7 @@ FUNCTION get_email_details(p_cust_doc_id IN NUMBER
     AND bc.bill_cycle_type = 'RECURRING'
     AND bcd.billing_cycle_id = t.billing_cycle_id
     AND bcd.billable_date < p_invoice_creation_date ;
-   
+
     RETURN(ld_billable_date);
 
   EXCEPTION
@@ -3229,8 +3231,8 @@ FUNCTION get_email_details(p_cust_doc_id IN NUMBER
       FND_FILE.PUT_LINE(FND_FILE.LOG,'Get the bill from date for payment term '||p_payment_term || 'P_invoice_creation_date '|| p_invoice_creation_date);
       FND_FILE.PUT_LINE(FND_FILE.LOG,'Error while getting Bill from date : '||SQLERRM);
       RETURN (NULL);
-  END BILL_FROM_DATE;        
-    
+  END BILL_FROM_DATE;
+
 -- +===================================================================================+
 -- |                  Office Depot - Project Simplify                                  |
 -- |                       WIPRO Technologies                                          |
@@ -5411,7 +5413,7 @@ PROCEDURE UPDATE_HDR_TABLE ( x_errbuf OUT VARCHAR2
                    );
               RETURN NULL;
       END;
-      
+
 -- +===================================================================================+
 -- |                  Office Depot - Project Simplify                                  |
 -- +===================================================================================+
@@ -5431,22 +5433,22 @@ FUNCTION GET_HEADER_DISCOUNT
       p_customer_trx_id     NUMBER )
     RETURN VARCHAR2
 AS
-  
+
    CURSOR c_discount_info IS
-   SELECT discount_percent, 
+   SELECT discount_percent,
           discount_date
-    FROM  AR_TRX_DISCOUNTS_V 
+    FROM  AR_TRX_DISCOUNTS_V
    WHERE  customer_trx_id = p_customer_trx_id;
-   
+
    l_config_details_rec    xx_fin_translatevalues%ROWTYPE;
    lc_translation_name     xx_fin_translatedefinition.translation_name%TYPE := 'XX_AR_EBL_DISCOUNT_TEXT';
    lc_discount_info        VARCHAR2(32000);
-   lc_discount_info1       VARCHAR2(32000); 
+   lc_discount_info1       VARCHAR2(32000);
    lc_discount             VARCHAR2(32000);
    i                       NUMBER := 0;
-   ln_discount_percent     NUMBER; 
+   ln_discount_percent     NUMBER;
    ld_discount_date        DATE;
-      
+
 BEGIN
       -- To get the Translation Values
       BEGIN
@@ -5459,19 +5461,19 @@ BEGIN
            AND SYSDATE BETWEEN xftv.start_date_active AND NVL (xftv.end_date_active, SYSDATE + 1)
            AND SYSDATE BETWEEN xftd.start_date_active AND NVL (xftd.end_date_active, SYSDATE + 1)
            AND xftv.enabled_flag = 'Y'
-           AND xftd.enabled_flag = 'Y';  
-       
-      EXCEPTION  
-        WHEN OTHERS THEN 
-          l_config_details_rec := NULL; 
-      END;  
-      
+           AND xftd.enabled_flag = 'Y';
+
+      EXCEPTION
+        WHEN OTHERS THEN
+          l_config_details_rec := NULL;
+      END;
+
       -- To get the Discount Information
     BEGIN
       lc_discount_info  := NULL;
       lc_discount_info1 := NULL;
       lc_discount       := NULL;
-                
+
       OPEN c_discount_info;
            LOOP
            ln_discount_percent := NULL;
@@ -5479,21 +5481,21 @@ BEGIN
            FETCH c_discount_info INTO ln_discount_percent,ld_discount_date;
            EXIT WHEN c_discount_info%NOTFOUND;
            i := i+ 1;
-           
+
            IF ln_discount_percent > 0
            THEN
-             IF i =1 
-             THEN 
-               lc_discount_info :=  l_config_details_rec.source_value1||' '||ln_discount_percent||l_config_details_rec.source_value2||' '||ld_discount_date; 
-             ELSE 
-               lc_discount_info1 := lc_discount_info1||' '||l_config_details_rec.source_value3||' '||ln_discount_percent||l_config_details_rec.source_value2||' '||ld_discount_date; 
+             IF i =1
+             THEN
+               lc_discount_info :=  l_config_details_rec.source_value1||' '||ln_discount_percent||l_config_details_rec.source_value2||' '||ld_discount_date;
+             ELSE
+               lc_discount_info1 := lc_discount_info1||' '||l_config_details_rec.source_value3||' '||ln_discount_percent||l_config_details_rec.source_value2||' '||ld_discount_date;
              END IF;
            END IF;
           END LOOP;
      CLOSE c_discount_info;
-  
+
      IF lc_discount_info IS NOT NULL
-     THEN 
+     THEN
           lc_discount := lc_discount_info || lc_discount_info1;
      ELSE
         lc_discount := NULL;
@@ -5503,8 +5505,8 @@ BEGIN
         lc_discount := NULL;
    END;
    RETURN lc_discount;
-   
-EXCEPTION 
+
+EXCEPTION
    WHEN OTHERS THEN
       lc_discount := NULL;
       RETURN lc_discount;
@@ -5535,11 +5537,11 @@ AS
    lc_discount_info        VARCHAR2(32000);
    ln_customer_trx_id      NUMBER;
 BEGIN
-     IF p_customer_trx_id IS NULL THEN 
+     IF p_customer_trx_id IS NULL THEN
      BEGIN
         /*SELECT customer_trx_id						--commented for defect #37807
 		INTO ln_customer_trx_id
-        FROM  AR_CONS_INV_TRX_ALL 
+        FROM  AR_CONS_INV_TRX_ALL
         WHERE  cons_inv_id = p_cons_inv_id
         AND rownum = 1;*/
 		SELECT 	max(ACIT.customer_trx_id)					--added for defect 37807
@@ -5555,8 +5557,8 @@ BEGIN
 												WHERE	ACIT1.cons_inv_id 			= p_cons_inv_id
 												AND 	ACIT1.transaction_type 		= 'INVOICE'
 												AND		ACIT1.customer_trx_id		= RCT1.customer_trx_id);
-		
-		
+
+
       EXCEPTION WHEN OTHERS THEN
         ln_customer_trx_id := NULL;
       END;
@@ -5565,7 +5567,7 @@ BEGIN
         lc_discount_info := XX_AR_EBL_COMMON_UTIL_PKG.GET_HEADER_DISCOUNT(p_customer_trx_id);
       END IF;
       RETURN lc_discount_info;
-EXCEPTION 
+EXCEPTION
    WHEN OTHERS THEN
       lc_discount_info := NULL;
       RETURN lc_discount_info;
@@ -5600,7 +5602,7 @@ BEGIN
 	  FROM ra_customer_trx_lines_all rctl
 	 WHERE rctl.customer_trx_id = p_customer_trx_id
 	   AND rctl.line_type <> 'TAX'
-	   AND rctl.interface_line_attribute6 IN ( SELECT line_id 
+	   AND rctl.interface_line_attribute6 IN ( SELECT line_id
 			                                     FROM xx_om_line_attributes_all xola
 												WHERE xola.link_to_kit_line_id = p_sales_order_line_id);
 	x_kit_unit_price := x_kit_extended_amt/p_kit_quantity;
@@ -5624,18 +5626,18 @@ END get_kit_extended_amount;
 -- |=======   ==========   =============        =======================================|
 -- |1.0       23-Oct-2018  SravanKumar           Initial draft version (NAIT-65564)    |
 -- |1.1       14-Nov-2018  P Jadhav              NAIT- 65564: updated GET_CONS_MSG_BCC |
--- |										  	 display  message for bill complete    | 	
+-- |										  	 display  message for bill complete    |
 -- |                                             customer and Paydoc method only       |
 -- |1.2       06-DEC-2018	P Jadhav 			 NAIT-74893: updated GET_CONS_MSG_BCC  |
--- |											 changed custom message		           | 
+-- |											 changed custom message		           |
 -- +===================================================================================+
-FUNCTION get_cons_msg_bcc 
+FUNCTION get_cons_msg_bcc
 	     ( p_cust_doc_id 		IN NUMBER
 		  ,p_cust_account_id 	IN NUMBER
 		  ,p_billing_number  	IN VARCHAR2
-	     ) 
-  RETURN VARCHAR2 
-AS 
+	     )
+  RETURN VARCHAR2
+AS
   lc_bill_flag 				VARCHAR2(5)    := 'N';
   lc_cons_msg_bcc   		VARCHAR2(2000) := TO_CHAR(NULL);
   lc_child_order_number 	VARCHAR2(300)  := NULL;
@@ -5643,11 +5645,11 @@ AS
   lb_debug               	BOOLEAN;
   ln_bill_cnt 				NUMBER:=0;
   ln_pay_doc_cnt  			NUMBER:=0;
- BEGIN   	
-	BEGIN	
+ BEGIN
+	BEGIN
           ln_pay_doc_cnt:= 0;
-	
-        SELECT COUNT(1) 
+
+        SELECT COUNT(1)
 			INTO ln_pay_doc_cnt
 			FROM xx_cdh_cust_acct_ext_b
           WHERE n_ext_attr2=p_cust_doc_id
@@ -5655,166 +5657,166 @@ AS
 		    AND attr_group_id=(SELECT attr_group_id
 								FROM   ego_attr_groups_v
 								WHERE  attr_group_type = 'XX_CDH_CUST_ACCOUNT'
-								AND    attr_group_name = 'BILLDOCS'); 
+								AND    attr_group_name = 'BILLDOCS');
 	EXCEPTION
 		WHEN OTHERS	THEN
 			ln_pay_doc_cnt:= 0;
-	END;    
+	END;
 	IF ln_pay_doc_cnt = 1	THEN
-		
+
 		--Condition to check Bill complete customer flag
-		BEGIN	
+		BEGIN
 			ln_bill_cnt := 0;
-			
-			SELECT COUNT(1) 
+
+			SELECT COUNT(1)
 			INTO ln_bill_cnt
 			FROM hz_customer_profiles
-				WHERE cust_account_id = p_cust_account_id	
-				AND cons_inv_flag     = 'Y' 
-				AND attribute6 IN ('Y','B')				   
+				WHERE cust_account_id = p_cust_account_id
+				AND cons_inv_flag     = 'Y'
+				AND attribute6 IN ('Y','B')
 				AND site_use_id IS NULL;
 		EXCEPTION
 			WHEN OTHERS	THEN
 			ln_bill_cnt := 0;
-		END; 
-		IF ln_bill_cnt = 1	THEN			
-		
-			BEGIN 
+		END;
+		IF ln_bill_cnt = 1	THEN
+
+			BEGIN
 			lc_child_order_number 	:= NULL;
-			lc_parent_order_number 	:= NULL;	
-			
-			IF LENGTH(p_billing_number) = 9 THEN						
+			lc_parent_order_number 	:= NULL;
+
+			IF LENGTH(p_billing_number) = 9 THEN
 					BEGIN
 						lc_cons_msg_bcc := NULL;
-						SELECT LISTAGG(child_order_number, ', ') within GROUP (ORDER BY child_order_number) AS child_order_number 
+						SELECT LISTAGG(child_order_number, ', ') within GROUP (ORDER BY child_order_number) AS child_order_number
 						  INTO lc_child_order_number
-						  FROM xx_scm_bill_signal 
+						  FROM xx_scm_bill_signal
 						 WHERE parent_order_number = p_billing_number
 						   AND shipped_flag='N'
-						   AND NOT EXISTS (SELECT 1 
-											 FROM ra_customer_trx_all 
+						   AND NOT EXISTS (SELECT 1
+											 FROM ra_customer_trx_all
 											WHERE trx_number = child_order_number
 										  );
-										  
-							   gc_put_log := 'lc_child_order_number : ' || lc_child_order_number; 
+
+							   gc_put_log := 'lc_child_order_number : ' || lc_child_order_number;
 							   PUT_LOG_LINE( lb_debug,FALSE,gc_put_log);
 					EXCEPTION
 						WHEN OTHERS	THEN
 							lc_child_order_number:= NULL;
 					END;
-					
-						IF lc_child_order_number IS NOT NULL THEN
-						    lc_cons_msg_bcc := 'Order '||lc_child_order_number ||' are pending shipment and will be billed separately, as an exception.';  	
-						ELSE
-						   lc_cons_msg_bcc:='X';
-						END IF;
-						
-					RETURN(lc_cons_msg_bcc);
-					
-			ELSIF LENGTH(p_billing_number) = 12 THEN
-			
-				BEGIN
-					lc_cons_msg_bcc := NULL;
-					SELECT parent_order_number
-					  INTO lc_parent_order_number
-					  FROM xx_scm_bill_signal 
-					 WHERE child_order_number = p_billing_number;			
-									
-					 gc_put_log := 'lc_parent_order_number : ' || lc_parent_order_number; 
-					 PUT_LOG_LINE(lb_debug,FALSE,gc_put_log );				
-				EXCEPTION
-					WHEN OTHERS THEN
-					lc_parent_order_number:= NULL;
-				END;
-				
-				IF lc_parent_order_number IS NOT NULL THEN
-				    lc_cons_msg_bcc := 'Order # '||p_billing_number ||' is part of Parent Order # '||lc_parent_order_number||'.';
-				ELSE
-				   lc_cons_msg_bcc:='X';
-				END IF;			
-					
-				RETURN(lc_cons_msg_bcc);
-			ELSE     
-				RETURN('X');
-			END IF;	
-				
-			EXCEPTION
-				WHEN OTHERS THEN 
-				RETURN('X');
-			END;
-			
-		ELSE
-		
-			BEGIN 
-			lc_child_order_number := NULL;
-			lc_parent_order_number:= NULL;	
-			
-			IF LENGTH(p_billing_number) = 9 THEN						
-					BEGIN
-						lc_cons_msg_bcc := NULL;
-						SELECT LISTAGG(child_order_number, ', ') within GROUP (ORDER BY child_order_number) AS child_order_number 
-						  INTO lc_child_order_number
-						  FROM xx_scm_bill_signal 
-						 WHERE parent_order_number = p_billing_number
-						   AND shipped_flag='N'
-						   AND NOT EXISTS (SELECT 1 
-											 FROM ra_customer_trx_all 
-											WHERE trx_number = child_order_number
-										  );
-										  
-							   gc_put_log := 'lc_child_order_number : ' || lc_child_order_number; 
-							   PUT_LOG_LINE( lb_debug,FALSE,gc_put_log);
-					EXCEPTION
-						WHEN OTHERS	THEN
-							lc_child_order_number:= NULL;
-					END;
-					
+
 						IF lc_child_order_number IS NOT NULL THEN
 						    lc_cons_msg_bcc := 'Order '||lc_child_order_number ||' are pending shipment and will be billed separately, as an exception.';
 						ELSE
 						   lc_cons_msg_bcc:='X';
 						END IF;
-						
+
 					RETURN(lc_cons_msg_bcc);
-					
+
 			ELSIF LENGTH(p_billing_number) = 12 THEN
-	
+
 				BEGIN
 					lc_cons_msg_bcc := NULL;
 					SELECT parent_order_number
 					  INTO lc_parent_order_number
-					  FROM xx_scm_bill_signal 
-					 WHERE child_order_number = p_billing_number;	
-											
-					 gc_put_log := 'lc_parent_order_number : ' || lc_parent_order_number; 
-					 PUT_LOG_LINE(lb_debug,FALSE,gc_put_log );				
+					  FROM xx_scm_bill_signal
+					 WHERE child_order_number = p_billing_number;
+
+					 gc_put_log := 'lc_parent_order_number : ' || lc_parent_order_number;
+					 PUT_LOG_LINE(lb_debug,FALSE,gc_put_log );
 				EXCEPTION
 					WHEN OTHERS THEN
 					lc_parent_order_number:= NULL;
 				END;
-				
+
+				IF lc_parent_order_number IS NOT NULL THEN
+				    lc_cons_msg_bcc := 'Order # '||p_billing_number ||' is part of Parent Order # '||lc_parent_order_number||'.';
+				ELSE
+				   lc_cons_msg_bcc:='X';
+				END IF;
+
+				RETURN(lc_cons_msg_bcc);
+			ELSE
+				RETURN('X');
+			END IF;
+
+			EXCEPTION
+				WHEN OTHERS THEN
+				RETURN('X');
+			END;
+
+		ELSE
+
+			BEGIN
+			lc_child_order_number := NULL;
+			lc_parent_order_number:= NULL;
+
+			IF LENGTH(p_billing_number) = 9 THEN
+					BEGIN
+						lc_cons_msg_bcc := NULL;
+						SELECT LISTAGG(child_order_number, ', ') within GROUP (ORDER BY child_order_number) AS child_order_number
+						  INTO lc_child_order_number
+						  FROM xx_scm_bill_signal
+						 WHERE parent_order_number = p_billing_number
+						   AND shipped_flag='N'
+						   AND NOT EXISTS (SELECT 1
+											 FROM ra_customer_trx_all
+											WHERE trx_number = child_order_number
+										  );
+
+							   gc_put_log := 'lc_child_order_number : ' || lc_child_order_number;
+							   PUT_LOG_LINE( lb_debug,FALSE,gc_put_log);
+					EXCEPTION
+						WHEN OTHERS	THEN
+							lc_child_order_number:= NULL;
+					END;
+
+						IF lc_child_order_number IS NOT NULL THEN
+						    lc_cons_msg_bcc := 'Order '||lc_child_order_number ||' are pending shipment and will be billed separately, as an exception.';
+						ELSE
+						   lc_cons_msg_bcc:='X';
+						END IF;
+
+					RETURN(lc_cons_msg_bcc);
+
+			ELSIF LENGTH(p_billing_number) = 12 THEN
+
+				BEGIN
+					lc_cons_msg_bcc := NULL;
+					SELECT parent_order_number
+					  INTO lc_parent_order_number
+					  FROM xx_scm_bill_signal
+					 WHERE child_order_number = p_billing_number;
+
+					 gc_put_log := 'lc_parent_order_number : ' || lc_parent_order_number;
+					 PUT_LOG_LINE(lb_debug,FALSE,gc_put_log );
+				EXCEPTION
+					WHEN OTHERS THEN
+					lc_parent_order_number:= NULL;
+				END;
+
 					IF lc_parent_order_number IS NOT NULL THEN
 					    lc_cons_msg_bcc:='Order # '||p_billing_number ||' is part of Parent Order # '||lc_parent_order_number||'.';
 					ELSE
 					   lc_cons_msg_bcc:='X';
-					END IF;			
-					
+					END IF;
+
 				RETURN(lc_cons_msg_bcc);
-			ELSE     
+			ELSE
 				RETURN('X');
-			END IF;	
-		
+			END IF;
+
 			EXCEPTION
-				WHEN OTHERS THEN 
+				WHEN OTHERS THEN
 				RETURN('X');
 		END;
 		END IF;
-	ELSE     
+	ELSE
 	RETURN('X');
 	END IF; --End of Main IF
-		  
+
  EXCEPTION
-	WHEN OTHERS THEN 
+	WHEN OTHERS THEN
 	RETURN('X');
  END get_cons_msg_bcc;
 -- +===================================================================================+
@@ -5833,36 +5835,36 @@ AS
 -- |                                            message for POD Ind Reprint report     |
 -- +===================================================================================+
 FUNCTION GET_POD_MSG_IND_REPRINT ( p_customer_trx_id      IN  NUMBER ,
-		                           p_bill_to_customer_id  IN  NUMBER 
+		                           p_bill_to_customer_id  IN  NUMBER
 							     )
-RETURN VARCHAR2 								 
-AS	
+RETURN VARCHAR2
+AS
     lc_pod_blurb_msg VARCHAR2(1000):= NULL;
-    ln_pod_cnt       NUMBER :=0; 
-	ln_pod_tab_cnt   NUMBER :=0; 
-	ln_pay_doc       NUMBER :=0; 
-	ln_pay_doc_cons  NUMBER :=0; 
-BEGIN	
-      
-	 ln_pod_cnt      := 0;	
+    ln_pod_cnt       NUMBER :=0;
+	ln_pod_tab_cnt   NUMBER :=0;
+	ln_pay_doc       NUMBER :=0;
+	ln_pay_doc_cons  NUMBER :=0;
+BEGIN
+
+	 ln_pod_cnt      := 0;
 	 ln_pod_tab_cnt	 := 0;
-	 ln_pay_doc      := 0; 
-		
+	 ln_pay_doc      := 0;
+
 	 BEGIN
-       SELECT COUNT(1) 
+       SELECT COUNT(1)
 		 INTO ln_pod_cnt
 		 FROM hz_customer_profiles HCP
-		WHERE HCP.cust_account_id = p_bill_to_customer_id	
+		WHERE HCP.cust_account_id = p_bill_to_customer_id
 		  AND HCP.site_use_id        IS NULL
 		  AND Hcp.Status              = 'A'
 		  AND HCP.attribute6         IN ('Y','P');
-	 
+
      EXCEPTION
 	   WHEN OTHERS THEN
 	     FND_FILE.PUT_LINE(FND_FILE.LOG,'XX_AR_EBL_COMMON_UTIL_PKG: Error while fetching the attribute6 value : '||Sqlerrm);
 		 ln_pod_cnt := 0;
-	 END;	 
-	
+	 END;
+
      BEGIN
        SELECT COUNT(1)
 		 INTO ln_pod_tab_cnt
@@ -5870,57 +5872,225 @@ BEGIN
 		WHERE 1                   =1
 		  AND customer_trx_id       = p_customer_trx_id
 		  AND ( pod_image           IS NOT NULL
-		        OR delivery_date    IS NOT NULL		
-		        OR consignee        IS NOT NULL); 	   
+		        OR delivery_date    IS NOT NULL
+		        OR consignee        IS NOT NULL);
 	 EXCEPTION
 	   WHEN OTHERS THEN
 	     FND_FILE.PUT_LINE(FND_FILE.LOG,'XX_AR_EBL_COMMON_UTIL_PKG: Error while fetching details from XX_AR_EBL_POD_DTL : '||Sqlerrm);
 		 ln_pod_tab_cnt := 0;
-	 END;	
-		
-     BEGIN	
+	 END;
+
+     BEGIN
 	   SELECT COUNT(1)
 		 INTO ln_pay_doc
 		 FROM xx_ar_ebl_ind_hdr_hist
 		WHERE document_type = 'Paydoc'
-		  AND billdocs_delivery_method IN ('ePDF','eXLS') 
+		  AND billdocs_delivery_method IN ('ePDF','eXLS')
 		  AND customer_trx_id = p_customer_trx_id;
 	 EXCEPTION
 	   WHEN OTHERS THEN
 	     FND_FILE.PUT_LINE(FND_FILE.LOG,'XX_AR_EBL_COMMON_UTIL_PKG: Error while fetching details from xx_ar_ebl_ind_hdr_hist table : '||Sqlerrm);
 		 ln_pay_doc := 0;
 	 END;
-     
-     BEGIN	
+
+     BEGIN
 	   SELECT COUNT(1)
 		 INTO ln_pay_doc_cons
 		 FROM xx_ar_ebl_cons_hdr_hist
 		WHERE document_type = 'Paydoc'
-		  AND billdocs_delivery_method IN ('ePDF','eTXT','eXLS')  
+		  AND billdocs_delivery_method IN ('ePDF','eTXT','eXLS')
 		  AND customer_trx_id = p_customer_trx_id;
 	 EXCEPTION
 	   WHEN OTHERS THEN
 	     FND_FILE.PUT_LINE(FND_FILE.LOG,'XX_AR_EBL_COMMON_UTIL_PKG: Error while fetching details from xx_ar_ebl_cons_hdr_hist table : '||Sqlerrm);
 		 ln_pay_doc_cons := 0;
-	 END;		 
-		  
-    IF ln_pod_cnt >= 1 AND ln_pod_tab_cnt = 0 AND (ln_pay_doc >= 1 OR ln_pay_doc_cons >= 1)  THEN 
+	 END;
+
+    IF ln_pod_cnt >= 1 AND ln_pod_tab_cnt = 0 AND (ln_pay_doc >= 1 OR ln_pay_doc_cons >= 1)  THEN
 	    lc_pod_blurb_msg:= 'Delivery Details Not Available.';
-    ELSE 
+    ELSE
         lc_pod_blurb_msg := NULL;
     END IF;
-    
 
-	RETURN(lc_pod_blurb_msg);		   
-   
-EXCEPTION	
+
+	RETURN(lc_pod_blurb_msg);
+
+EXCEPTION
 WHEN OTHERS	THEN
   FND_FILE.PUT_LINE(FND_FILE.LOG,'Error while returning l_pod_blurb_msg in GET_POD_MSG : '||Sqlerrm);
 	lc_pod_blurb_msg := NULL;
 	RETURN(lc_pod_blurb_msg);
-END GET_POD_MSG_IND_REPRINT;	
-	
+END GET_POD_MSG_IND_REPRINT;
+
+ -- +===================================================================================+
+-- |                  Office Depot - Project Simplify                                  |
+-- +===================================================================================+
+-- | Name        : GET_FEE_AMOUNT                                                      |
+-- | Description : To get fee amount for particular transaction                        |
+-- |                                                                                   |
+-- |                                                                                   |
+-- |                                                                                   |
+-- |Change Record:                                                                     |
+-- |===============                                                                    |
+-- |Version   Date          Author              Remarks                                |
+-- |=======   ==========   =============        =======================================|
+-- | 1.0      23-MAR-2020  Divyansh Saini       Initial draft version                  |
+-- +===================================================================================+
+FUNCTION get_line_fee_amount ( p_customer_trx_id      IN  NUMBER)
+RETURN NUMBER
+AS
+    ln_fee_amount       NUMBER :=0;
+BEGIN
+
+	 ln_fee_amount      := 0;
+
+	 BEGIN
+      SELECT NVL(sum(RCTL.unit_selling_price*rctl.QUANTITY_INVOICED),0) FEE_AMT
+		    INTO ln_fee_amount
+			  FROM ra_customer_trx_lines_All RCTL
+				     ,fnd_lookup_values flv
+		   WHERE 1=1
+			 AND flv.lookup_type = 'OD_FEES_ITEMS'
+			 AND flv.LANGUAGE='US'
+			 AND flv.attribute6= rctl.INVENTORY_ITEM_ID
+			 AND FLV.enabled_flag = 'Y'                                   
+			 AND SYSDATE BETWEEN NVL(FLV.start_date_active,SYSDATE) AND NVL(FLV.end_date_active,SYSDATE+1)  
+			 AND FLV.attribute7 NOT IN ('DELIVERY','MISCELLANEOUS','HEADER') 
+			 AND customer_trx_id = p_customer_trx_id;
+
+     EXCEPTION
+	   WHEN OTHERS THEN
+	     FND_FILE.PUT_LINE(FND_FILE.LOG,'XX_AR_EBL_COMMON_UTIL_PKG: Error while fetching the Fee Amount : '||Sqlerrm);
+		 ln_fee_amount := 0;
+	 END;
+
+
+	RETURN(ln_fee_amount);
+
+EXCEPTION
+WHEN OTHERS	THEN
+  FND_FILE.PUT_LINE(FND_FILE.LOG,'Error while returning fee_amount in get_line_fee_amount : '||Sqlerrm);
+	RETURN(0);
+END get_line_fee_amount;
+
+ -- +===================================================================================+
+-- |                  Office Depot - Project Simplify                                  |
+-- +===================================================================================+
+-- | Name        : GET_HEA_FEE_AMOUNT                                                      |
+-- | Description : To get fee amount for particular transaction                        |
+-- |                                                                                   |
+-- |                                                                                   |
+-- |                                                                                   |
+-- |Change Record:                                                                     |
+-- |===============                                                                    |
+-- |Version   Date          Author              Remarks                                |
+-- |=======   ==========   =============        =======================================|
+-- | 1.0      23-MAR-2020  Divyansh Saini       Initial draft version                  |
+-- +===================================================================================+
+FUNCTION get_hea_fee_amount ( p_customer_trx_id      IN  NUMBER)
+RETURN NUMBER
+AS
+    ln_fee_amount       NUMBER :=0;
+BEGIN
+
+	 ln_fee_amount      := 0;
+
+	 BEGIN
+      SELECT NVL(sum(RCTL.unit_selling_price*rctl.QUANTITY_INVOICED),0) FEE_AMT
+		    INTO ln_fee_amount
+			  FROM ra_customer_trx_lines_All RCTL
+				    ,fnd_lookup_values flv
+		   WHERE 1=1
+			 AND flv.lookup_type = 'OD_FEES_ITEMS'
+			 AND flv.LANGUAGE='US'
+			 AND flv.attribute6= rctl.INVENTORY_ITEM_ID
+			 AND FLV.enabled_flag = 'Y'                                   
+			 AND SYSDATE BETWEEN NVL(FLV.start_date_active,SYSDATE) AND NVL(FLV.end_date_active,SYSDATE+1)  
+			 AND FLV.attribute7 IN ('HEADER') 
+			 AND customer_trx_id = p_customer_trx_id;
+
+   EXCEPTION
+     WHEN NO_DATA_FOUND THEN
+       dbms_output.put_line('Data not present');
+       return 0;
+	   WHEN OTHERS THEN
+	     FND_FILE.PUT_LINE(FND_FILE.LOG,'XX_AR_EBL_COMMON_UTIL_PKG: Error while fetching the Fee Amount : '||Sqlerrm);
+		   ln_fee_amount := 0;
+	 END;
+
+
+	RETURN(ln_fee_amount);
+
+EXCEPTION
+WHEN OTHERS	THEN
+  FND_FILE.PUT_LINE(FND_FILE.LOG,'Error while returning fee_amount in get_hea_fee_amount : '||Sqlerrm);
+	RETURN(0);
+END get_hea_fee_amount;
+
+-- +===================================================================================+
+-- |                  Office Depot - Project Simplify                                  |
+-- +===================================================================================+
+-- | Name        : GET_FEE_LINE_NUMBER                                                 |
+-- | Description : To get line number for particular transaction                       |
+-- |                                                                                   |
+-- |                                                                                   |
+-- |                                                                                   |
+-- |Change Record:                                                                     |
+-- |===============                                                                    |
+-- |Version   Date          Author              Remarks                                |
+-- |=======   ==========   =============        =======================================|
+-- | 1.0      23-MAR-2020  Divyansh Saini       Initial draft version                  |
+-- +===================================================================================+
+
+FUNCTION get_fee_line_number(p_customer_trx_id NUMBER,p_description IN VARCHAR2,p_organization IN NUMBER,p_line_number IN NUMBER) RETURN NUMBER 
+IS
+
+ln_line_number NUMBER;
+ln_org_id      NUMBER;
+ln_organization NUMBER;
+
+BEGIN
+
+   IF p_organization IS NULL THEN
+	  BEGIN
+        SELECT organization_id 
+          INTO ln_organization
+          FROM org_organization_definitions
+         WHERE ORGANIZATION_NAME = 'OD_ITEM_MASTER'
+           AND rownum =1;		  
+	     
+      EXCEPTION WHEN OTHERS THEN
+	     ln_organization := 404 ;	  
+	  END;
+	  
+   ELSE
+      ln_organization := p_organization;
+   END IF;
+
+   BEGIN
+	   SELECT line_number
+		 INTO ln_line_number
+		 FROM ra_customer_trx_lines_all rctl,
+			  mtl_system_items_b msib 
+		WHERE rctl.inventory_item_id = msib.inventory_item_id
+		  AND msib.organization_id = ln_organization
+		  AND msib.segment1=trim(substr(p_description,INSTR(p_description,'-')+1))
+		  AND rctl.customer_trx_id = p_customer_trx_id
+		  AND rownum=1;
+   EXCEPTION WHEN OTHERS THEN
+      ln_line_number := 0 ;
+   END;
+
+   IF ln_line_number =0 THEN
+      RETURN p_line_number;
+   ELSE
+      RETURN ln_line_number||'.'||p_line_number;
+   END IF;
+   
+
+EXCEPTION
+WHEN OTHERS	THEN
+  FND_FILE.PUT_LINE(FND_FILE.LOG,'Error while returning fee_amount in get_fee_amount : '||Sqlerrm);
+	RETURN(p_line_number);
+END get_fee_line_number;
 END XX_AR_EBL_COMMON_UTIL_PKG;
-/
-SHOW ERRORS;
-EXIT;

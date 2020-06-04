@@ -1,16 +1,3 @@
-SET SHOW OFF
-SET VERIFY OFF
-SET ECHO OFF
-SET TAB OFF
-SET FEEDBACK OFF
-SET TERM ON
-
-PROMPT Creating PACKAGE BODY XX_AR_EBL_RENDER_XLS_PKG
-
-PROMPT Program exits IF the creation IS NOT SUCCESSFUL
-
-WHENEVER SQLERROR CONTINUE
-
 create or replace PACKAGE XX_AR_EBL_RENDER_XLS_PKG AS
 
 /*
@@ -31,9 +18,11 @@ create or replace PACKAGE XX_AR_EBL_RENDER_XLS_PKG AS
 -- |                                         Columns data (Module 4B Relase 1) (Proc : XLS_FILE_HEADER) |
 -- |1.2       20-Aug-2015 Suresh Naragam     Module 4B Release 2 Changes                                |
 -- |                                         (Proc : GET_XL_TABS_INFO)                                  |
+-- |1.3       27-MAY-2020 Divyansh           Added logic for JIRA NAIT-129167                           |
 -- +====================================================================================================+
 */
 
+g_fee_option VARCHAR2(20);--Added for 1.3
   -- Parent concurrent program; starts Java child threads
   PROCEDURE RENDER_XLS_P (
     Errbuf                  OUT NOCOPY VARCHAR2
@@ -46,7 +35,7 @@ create or replace PACKAGE XX_AR_EBL_RENDER_XLS_PKG AS
    ,p_thread_count          IN NUMBER
    ,x_cursor                OUT SYS_REFCURSOR
   );
-  
+
   PROCEDURE SHOW_XLS_FILES_TO_RENDER (
     p_thread_id             IN NUMBER
    ,p_thread_count          IN NUMBER
@@ -77,6 +66,8 @@ create or replace PACKAGE XX_AR_EBL_RENDER_XLS_PKG AS
    ,x_total_gift_card_amt   OUT VARCHAR2
    ,x_split_tabs_by         OUT VARCHAR2
    ,x_enable_xl_subtotal    OUT VARCHAR2
+   ,x_fee_label             OUT VARCHAR2-- Added for 1.3
+   ,x_fee_amount            OUT VARCHAR2-- Added for 1.3
   );
 
 
@@ -88,7 +79,7 @@ create or replace PACKAGE XX_AR_EBL_RENDER_XLS_PKG AS
     p_file_id               IN NUMBER
   );
 
-  
+
   PROCEDURE XLS_FILE_SORT_COLS (
     p_file_id               IN NUMBER
    ,x_cursor                OUT SYS_REFCURSOR
@@ -102,20 +93,16 @@ create or replace PACKAGE XX_AR_EBL_RENDER_XLS_PKG AS
     p_file_id               IN NUMBER
    ,x_cursor                OUT SYS_REFCURSOR
   );
-  
+
   PROCEDURE SHOW_XLS_FILE_AGGS (
     p_file_id               IN NUMBER
   );
-  
+
   PROCEDURE GET_XL_TABS_INFO (
     p_file_id               IN NUMBER
    ,p_cust_doc_id           IN NUMBER
    ,x_cursor                OUT SYS_REFCURSOR
    ,x_maxtabs               OUT NUMBER
   );
-  
+
 END XX_AR_EBL_RENDER_XLS_PKG;
-
-/
-
-SHOW ERR

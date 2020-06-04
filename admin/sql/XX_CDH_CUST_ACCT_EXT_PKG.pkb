@@ -1,0 +1,1240 @@
+create or replace package body XX_CDH_CUST_ACCT_EXT_PKG
+-- +======================================================================================+
+-- |                  Office Depot - Project Simplify                                     |
+-- |      Oracle NAIO/WIPRO/Office Depot/Consulting Organization                          |
+-- +======================================================================================|
+-- | Name       : XX_CDH_CUST_ACCT_EXT_PKG                                                |
+-- | Description: This package body provides table handlers for XX_CDH_CUST_ACCT_EXT_B and|
+-- |              and XX_CDH_CUST_ACCT_EXT_TL tables.                                     |
+-- |                                                                                      |
+-- |Change Record:                                                                        |
+-- |===============                                                                       |
+-- |Version     Date         Author               Remarks                                 |
+-- |=======   ===========  ==================   ==========================================|
+-- |DRAFT 1A  09-MAY-2007  Sathya Prabha Rani   Initial draft version                     |
+-- |1.0       20-Nov-2018    Reddy Sekhar K     Code changes for Req NAIT-61952 and 66520 |
+-- |1.2       08-APR-2020    Divyansh Saini     Code changes for tariff                   |
+-- |======================================================================================|
+-- | Subversion Info:                                                                     |
+-- | $HeadURL: file:///app/svnrepos/od/crm/trunk/xxcrm/admin/sql/XX_CDH_CUST_ACCT_EXT_PKG.pkb $                                                                          |
+-- | $Rev: 291512 $                                                                        |
+-- | $Date: 2018-11-21 03:38:19 -0500 (Wed, 21 Nov 2018) $                                                                             |
+-- |                                                                                      |
+-- +======================================================================================+
+AS
+
+-- +==================================================================================+
+-- | Name             : INSERT_ROW                                                    |
+-- | Description      : This procedure shall insert data into XX_CDH_CUST_ACCT_EXT_B  |
+-- |                    and XX_CDH_CUST_ACCT_EXT_TL tables.                           |
+-- |                                                                                  |
+-- +==================================================================================+
+
+procedure INSERT_ROW (
+  X_ROWID in out nocopy VARCHAR2,
+  X_EXTENSION_ID IN NUMBER,
+  X_CUST_ACCOUNT_ID IN NUMBER,
+  X_ATTR_GROUP_ID IN NUMBER,
+  X_C_EXT_ATTR1 IN VARCHAR2,
+  X_C_EXT_ATTR2 IN VARCHAR2,
+  X_C_EXT_ATTR3 IN VARCHAR2,
+  X_C_EXT_ATTR4 IN VARCHAR2,
+  X_C_EXT_ATTR5 IN VARCHAR2,
+  X_C_EXT_ATTR6 IN VARCHAR2,
+  X_C_EXT_ATTR7 IN VARCHAR2,
+  X_C_EXT_ATTR8 IN VARCHAR2,
+  X_C_EXT_ATTR9 IN VARCHAR2,
+  X_C_EXT_ATTR10 IN VARCHAR2,
+  X_C_EXT_ATTR11 IN VARCHAR2,
+  X_C_EXT_ATTR12 IN VARCHAR2,
+  X_C_EXT_ATTR13 IN VARCHAR2,
+  X_C_EXT_ATTR14 IN VARCHAR2,
+  X_C_EXT_ATTR15 IN VARCHAR2,
+  X_C_EXT_ATTR16 IN VARCHAR2,
+  X_C_EXT_ATTR17 IN VARCHAR2,
+  X_C_EXT_ATTR18 IN VARCHAR2,
+  X_C_EXT_ATTR19 IN VARCHAR2,
+  X_C_EXT_ATTR20 IN VARCHAR2,
+  X_N_EXT_ATTR1 IN NUMBER,
+  X_N_EXT_ATTR2 IN NUMBER,
+  X_N_EXT_ATTR3 IN NUMBER,
+  X_N_EXT_ATTR4 IN NUMBER,
+  X_N_EXT_ATTR5 IN NUMBER,
+  X_N_EXT_ATTR6 IN NUMBER,
+  X_N_EXT_ATTR7 IN NUMBER,
+  X_N_EXT_ATTR8 IN NUMBER,
+  X_N_EXT_ATTR9 IN NUMBER,
+  X_N_EXT_ATTR10 IN NUMBER,
+  X_N_EXT_ATTR11 IN NUMBER,
+  X_N_EXT_ATTR12 IN NUMBER,
+  X_N_EXT_ATTR13 IN NUMBER,
+  X_N_EXT_ATTR14 IN NUMBER,
+  X_N_EXT_ATTR15 IN NUMBER,
+  X_N_EXT_ATTR16 IN NUMBER,
+  X_N_EXT_ATTR17 IN NUMBER,
+  X_N_EXT_ATTR18 IN NUMBER,
+  X_N_EXT_ATTR19 IN NUMBER,
+  X_N_EXT_ATTR20 IN NUMBER,
+  X_D_EXT_ATTR1 IN DATE,
+  X_D_EXT_ATTR2 IN DATE,
+  X_D_EXT_ATTR3 IN DATE,
+  X_D_EXT_ATTR4 IN DATE,
+  X_D_EXT_ATTR5 IN DATE,
+  X_D_EXT_ATTR6 IN DATE,
+  X_D_EXT_ATTR7 IN DATE,
+  X_D_EXT_ATTR8 IN DATE,
+  X_D_EXT_ATTR9 IN DATE,
+  X_D_EXT_ATTR10 IN DATE,
+  X_TL_EXT_ATTR1 IN VARCHAR2,
+  X_TL_EXT_ATTR2 IN VARCHAR2,
+  X_TL_EXT_ATTR3 IN VARCHAR2,
+  X_TL_EXT_ATTR4 IN VARCHAR2,
+  X_TL_EXT_ATTR5 IN VARCHAR2,
+  X_TL_EXT_ATTR6 IN VARCHAR2,
+  X_TL_EXT_ATTR7 IN VARCHAR2,
+  X_TL_EXT_ATTR8 IN VARCHAR2,
+  X_TL_EXT_ATTR9 IN VARCHAR2,
+  X_TL_EXT_ATTR10 IN VARCHAR2,
+  X_TL_EXT_ATTR11 IN VARCHAR2,
+  X_TL_EXT_ATTR12 IN VARCHAR2,
+  X_TL_EXT_ATTR13 IN VARCHAR2,
+  X_TL_EXT_ATTR14 IN VARCHAR2,
+  X_TL_EXT_ATTR15 IN VARCHAR2,
+  X_TL_EXT_ATTR16 IN VARCHAR2,
+  X_TL_EXT_ATTR17 IN VARCHAR2,
+  X_TL_EXT_ATTR18 IN VARCHAR2,
+  X_TL_EXT_ATTR19 IN VARCHAR2,
+  X_TL_EXT_ATTR20 IN VARCHAR2,
+  X_CREATION_DATE in DATE,
+  X_CREATED_BY in NUMBER,
+  X_LAST_UPDATE_DATE in DATE,
+  X_LAST_UPDATED_BY in NUMBER,
+  X_LAST_UPDATE_LOGIN in NUMBER,
+  X_BC_POD_FLAG IN VARCHAR2 --code added by Reddy Sekhar on 20-Nov-2018 for NAIT-61952 and 66520
+  ,x_fee_option        IN VARCHAR2 -- code added for 1.2
+  )
+
+  IS
+
+  CURSOR C IS
+  SELECT ROWID
+  FROM   XX_CDH_CUST_ACCT_EXT_B
+  WHERE  EXTENSION_ID = X_EXTENSION_ID;
+
+BEGIN
+
+  INSERT INTO XX_CDH_CUST_ACCT_EXT_B (
+    EXTENSION_ID,
+    CUST_ACCOUNT_ID,
+    ATTR_GROUP_ID,
+    C_EXT_ATTR1,
+    C_EXT_ATTR2,
+    C_EXT_ATTR3,
+    C_EXT_ATTR4,
+    C_EXT_ATTR5,
+    C_EXT_ATTR6,
+    C_EXT_ATTR7,
+    C_EXT_ATTR8,
+    C_EXT_ATTR9,
+    C_EXT_ATTR10,
+    C_EXT_ATTR11,
+    C_EXT_ATTR12,
+    C_EXT_ATTR13,
+    C_EXT_ATTR14,
+    C_EXT_ATTR15,
+    C_EXT_ATTR16,
+    C_EXT_ATTR17,
+    C_EXT_ATTR18,
+    C_EXT_ATTR19,
+    C_EXT_ATTR20,
+    N_EXT_ATTR1,
+    N_EXT_ATTR2,
+    N_EXT_ATTR3,
+    N_EXT_ATTR4,
+    N_EXT_ATTR5,
+    N_EXT_ATTR6,
+    N_EXT_ATTR7,
+    N_EXT_ATTR8,
+    N_EXT_ATTR9,
+    N_EXT_ATTR10,
+    N_EXT_ATTR11,
+    N_EXT_ATTR12,
+    N_EXT_ATTR13,
+    N_EXT_ATTR14,
+    N_EXT_ATTR15,
+    N_EXT_ATTR16,
+    N_EXT_ATTR17,
+    N_EXT_ATTR18,
+    N_EXT_ATTR19,
+    N_EXT_ATTR20,
+    D_EXT_ATTR1,
+    D_EXT_ATTR2,
+    D_EXT_ATTR3,
+    D_EXT_ATTR4,
+    D_EXT_ATTR5,
+    D_EXT_ATTR6,
+    D_EXT_ATTR7,
+    D_EXT_ATTR8,
+    D_EXT_ATTR9,
+    D_EXT_ATTR10,
+    CREATION_DATE,
+    CREATED_BY,
+    LAST_UPDATE_DATE,
+    LAST_UPDATED_BY,
+    LAST_UPDATE_LOGIN,
+	BC_POD_FLAG --code added by Reddy Sekhar on 20-Nov-2018 for NAIT-61952 and 66520
+	,fee_option
+    ) values (
+    X_EXTENSION_ID,
+    X_CUST_ACCOUNT_ID,
+    X_ATTR_GROUP_ID,
+    X_C_EXT_ATTR1,
+    X_C_EXT_ATTR2,
+    X_C_EXT_ATTR3,
+    X_C_EXT_ATTR4,
+    X_C_EXT_ATTR5,
+    X_C_EXT_ATTR6,
+    X_C_EXT_ATTR7,
+    X_C_EXT_ATTR8,
+    X_C_EXT_ATTR9,
+    X_C_EXT_ATTR10,
+    X_C_EXT_ATTR11,
+    X_C_EXT_ATTR12,
+    X_C_EXT_ATTR13,
+    X_C_EXT_ATTR14,
+    X_C_EXT_ATTR15,
+    X_C_EXT_ATTR16,
+    X_C_EXT_ATTR17,
+    X_C_EXT_ATTR18,
+    X_C_EXT_ATTR19,
+    X_C_EXT_ATTR20,
+    X_N_EXT_ATTR1,
+    X_N_EXT_ATTR2,
+    X_N_EXT_ATTR3,
+    X_N_EXT_ATTR4,
+    X_N_EXT_ATTR5,
+    X_N_EXT_ATTR6,
+    X_N_EXT_ATTR7,
+    X_N_EXT_ATTR8,
+    X_N_EXT_ATTR9,
+    X_N_EXT_ATTR10,
+    X_N_EXT_ATTR11,
+    X_N_EXT_ATTR12,
+    X_N_EXT_ATTR13,
+    X_N_EXT_ATTR14,
+    X_N_EXT_ATTR15,
+    X_N_EXT_ATTR16,
+    X_N_EXT_ATTR17,
+    X_N_EXT_ATTR18,
+    X_N_EXT_ATTR19,
+    X_N_EXT_ATTR20,
+    X_D_EXT_ATTR1,
+    X_D_EXT_ATTR2,
+    X_D_EXT_ATTR3,
+    X_D_EXT_ATTR4,
+    X_D_EXT_ATTR5,
+    X_D_EXT_ATTR6,
+    X_D_EXT_ATTR7,
+    X_D_EXT_ATTR8,
+    X_D_EXT_ATTR9,
+    X_D_EXT_ATTR10,
+    X_CREATION_DATE,
+    X_CREATED_BY,
+    X_LAST_UPDATE_DATE,
+    X_LAST_UPDATED_BY,
+    X_LAST_UPDATE_LOGIN,
+	X_BC_POD_FLAG --code added by Reddy Sekhar on 20-Nov-2018 for NAIT-61952 and 66520
+	,x_fee_option
+    );
+
+  insert into XX_CDH_CUST_ACCT_EXT_TL (
+    TL_EXT_ATTR8,
+    TL_EXT_ATTR9,
+    TL_EXT_ATTR10,
+    TL_EXT_ATTR11,
+    TL_EXT_ATTR12,
+    TL_EXT_ATTR13,
+    TL_EXT_ATTR14,
+    TL_EXT_ATTR15,
+    TL_EXT_ATTR16,
+    TL_EXT_ATTR17,
+    TL_EXT_ATTR18,
+    TL_EXT_ATTR19,
+    TL_EXT_ATTR20,
+    EXTENSION_ID,
+    CUST_ACCOUNT_ID,
+    ATTR_GROUP_ID,
+    CREATED_BY,
+    CREATION_DATE,
+    LAST_UPDATED_BY,
+    LAST_UPDATE_DATE,
+    LAST_UPDATE_LOGIN,
+    TL_EXT_ATTR1,
+    TL_EXT_ATTR2,
+    TL_EXT_ATTR3,
+    TL_EXT_ATTR4,
+    TL_EXT_ATTR5,
+    TL_EXT_ATTR6,
+    TL_EXT_ATTR7,
+    LANGUAGE,
+    SOURCE_LANG
+  ) select
+    X_TL_EXT_ATTR8,
+    X_TL_EXT_ATTR9,
+    X_TL_EXT_ATTR10,
+    X_TL_EXT_ATTR11,
+    X_TL_EXT_ATTR12,
+    X_TL_EXT_ATTR13,
+    X_TL_EXT_ATTR14,
+    X_TL_EXT_ATTR15,
+    X_TL_EXT_ATTR16,
+    X_TL_EXT_ATTR17,
+    X_TL_EXT_ATTR18,
+    X_TL_EXT_ATTR19,
+    X_TL_EXT_ATTR20,
+    X_EXTENSION_ID,
+    X_CUST_ACCOUNT_ID,
+    X_ATTR_GROUP_ID,
+    X_CREATED_BY,
+    X_CREATION_DATE,
+    X_LAST_UPDATED_BY,
+    X_LAST_UPDATE_DATE,
+    X_LAST_UPDATE_LOGIN,
+    X_TL_EXT_ATTR1,
+    X_TL_EXT_ATTR2,
+    X_TL_EXT_ATTR3,
+    X_TL_EXT_ATTR4,
+    X_TL_EXT_ATTR5,
+    X_TL_EXT_ATTR6,
+    X_TL_EXT_ATTR7,
+    L.LANGUAGE_CODE,
+    userenv('LANG')
+  from FND_LANGUAGES L
+  where L.INSTALLED_FLAG in ('I', 'B')
+  and not exists
+    (select NULL
+    from XX_CDH_CUST_ACCT_EXT_TL T
+    where T.EXTENSION_ID = X_EXTENSION_ID
+    and T.LANGUAGE = L.LANGUAGE_CODE);
+
+  open c;
+  fetch c into X_ROWID;
+  if (c%notfound) then
+    close c;
+    raise no_data_found;
+  end if;
+  close c;
+
+end INSERT_ROW;
+
+-- +==============================================================================+
+-- | Name             : LOCK_ROW                                                  |
+-- | Description      : This procedure shall lock rows into XX_CDH_CUST_ACCT_EXT_B    |
+-- |                    and XX_CDH_CUST_ACCT_EXT_TL tables.                           |
+-- |                                                                              |
+-- |                                                                              |
+-- +==============================================================================+
+
+procedure LOCK_ROW (
+  X_EXTENSION_ID IN NUMBER,
+  X_CUST_ACCOUNT_ID IN NUMBER,
+  X_ATTR_GROUP_ID IN NUMBER,
+  X_C_EXT_ATTR1 IN VARCHAR2,
+  X_C_EXT_ATTR2 IN VARCHAR2,
+  X_C_EXT_ATTR3 IN VARCHAR2,
+  X_C_EXT_ATTR4 IN VARCHAR2,
+  X_C_EXT_ATTR5 IN VARCHAR2,
+  X_C_EXT_ATTR6 IN VARCHAR2,
+  X_C_EXT_ATTR7 IN VARCHAR2,
+  X_C_EXT_ATTR8 IN VARCHAR2,
+  X_C_EXT_ATTR9 IN VARCHAR2,
+  X_C_EXT_ATTR10 IN VARCHAR2,
+  X_C_EXT_ATTR11 IN VARCHAR2,
+  X_C_EXT_ATTR12 IN VARCHAR2,
+  X_C_EXT_ATTR13 IN VARCHAR2,
+  X_C_EXT_ATTR14 IN VARCHAR2,
+  X_C_EXT_ATTR15 IN VARCHAR2,
+  X_C_EXT_ATTR16 IN VARCHAR2,
+  X_C_EXT_ATTR17 IN VARCHAR2,
+  X_C_EXT_ATTR18 IN VARCHAR2,
+  X_C_EXT_ATTR19 IN VARCHAR2,
+  X_C_EXT_ATTR20 IN VARCHAR2,
+  X_N_EXT_ATTR1 IN NUMBER,
+  X_N_EXT_ATTR2 IN NUMBER,
+  X_N_EXT_ATTR3 IN NUMBER,
+  X_N_EXT_ATTR4 IN NUMBER,
+  X_N_EXT_ATTR5 IN NUMBER,
+  X_N_EXT_ATTR6 IN NUMBER,
+  X_N_EXT_ATTR7 IN NUMBER,
+  X_N_EXT_ATTR8 IN NUMBER,
+  X_N_EXT_ATTR9 IN NUMBER,
+  X_N_EXT_ATTR10 IN NUMBER,
+  X_N_EXT_ATTR11 IN NUMBER,
+  X_N_EXT_ATTR12 IN NUMBER,
+  X_N_EXT_ATTR13 IN NUMBER,
+  X_N_EXT_ATTR14 IN NUMBER,
+  X_N_EXT_ATTR15 IN NUMBER,
+  X_N_EXT_ATTR16 IN NUMBER,
+  X_N_EXT_ATTR17 IN NUMBER,
+  X_N_EXT_ATTR18 IN NUMBER,
+  X_N_EXT_ATTR19 IN NUMBER,
+  X_N_EXT_ATTR20 IN NUMBER,
+  X_D_EXT_ATTR1 IN DATE,
+  X_D_EXT_ATTR2 IN DATE,
+  X_D_EXT_ATTR3 IN DATE,
+  X_D_EXT_ATTR4 IN DATE,
+  X_D_EXT_ATTR5 IN DATE,
+  X_D_EXT_ATTR6 IN DATE,
+  X_D_EXT_ATTR7 IN DATE,
+  X_D_EXT_ATTR8 IN DATE,
+  X_D_EXT_ATTR9 IN DATE,
+  X_D_EXT_ATTR10 IN DATE,
+  X_TL_EXT_ATTR1 IN VARCHAR2,
+  X_TL_EXT_ATTR2 IN VARCHAR2,
+  X_TL_EXT_ATTR3 IN VARCHAR2,
+  X_TL_EXT_ATTR4 IN VARCHAR2,
+  X_TL_EXT_ATTR5 IN VARCHAR2,
+  X_TL_EXT_ATTR6 IN VARCHAR2,
+  X_TL_EXT_ATTR7 IN VARCHAR2,
+  X_TL_EXT_ATTR8 IN VARCHAR2,
+  X_TL_EXT_ATTR9 IN VARCHAR2,
+  X_TL_EXT_ATTR10 IN VARCHAR2,
+  X_TL_EXT_ATTR11 IN VARCHAR2,
+  X_TL_EXT_ATTR12 IN VARCHAR2,
+  X_TL_EXT_ATTR13 IN VARCHAR2,
+  X_TL_EXT_ATTR14 IN VARCHAR2,
+  X_TL_EXT_ATTR15 IN VARCHAR2,
+  X_TL_EXT_ATTR16 IN VARCHAR2,
+  X_TL_EXT_ATTR17 IN VARCHAR2,
+  X_TL_EXT_ATTR18 IN VARCHAR2,
+  X_TL_EXT_ATTR19 IN VARCHAR2,
+  X_TL_EXT_ATTR20 IN VARCHAR2,
+  X_BC_POD_FLAG IN VARCHAR2 --code added by Reddy Sekhar on 20-Nov-2018 for NAIT-61952 and 66520
+  ,x_fee_option        IN VARCHAR2 -- code added for 1.2
+  ) is
+  cursor c is select
+      CUST_ACCOUNT_ID,
+      ATTR_GROUP_ID,
+      C_EXT_ATTR1,
+      C_EXT_ATTR2,
+      C_EXT_ATTR3,
+      C_EXT_ATTR4,
+      C_EXT_ATTR5,
+      C_EXT_ATTR6,
+      C_EXT_ATTR7,
+      C_EXT_ATTR8,
+      C_EXT_ATTR9,
+      C_EXT_ATTR10,
+      C_EXT_ATTR11,
+      C_EXT_ATTR12,
+      C_EXT_ATTR13,
+      C_EXT_ATTR14,
+      C_EXT_ATTR15,
+      C_EXT_ATTR16,
+      C_EXT_ATTR17,
+      C_EXT_ATTR18,
+      C_EXT_ATTR19,
+      C_EXT_ATTR20,
+      N_EXT_ATTR1,
+      N_EXT_ATTR2,
+      N_EXT_ATTR3,
+      N_EXT_ATTR4,
+      N_EXT_ATTR5,
+      N_EXT_ATTR6,
+      N_EXT_ATTR7,
+      N_EXT_ATTR8,
+      N_EXT_ATTR9,
+      N_EXT_ATTR10,
+      N_EXT_ATTR11,
+      N_EXT_ATTR12,
+      N_EXT_ATTR13,
+      N_EXT_ATTR14,
+      N_EXT_ATTR15,
+      N_EXT_ATTR16,
+      N_EXT_ATTR17,
+      N_EXT_ATTR18,
+      N_EXT_ATTR19,
+      N_EXT_ATTR20,
+      D_EXT_ATTR1,
+      D_EXT_ATTR2,
+      D_EXT_ATTR3,
+      D_EXT_ATTR4,
+      D_EXT_ATTR5,
+      D_EXT_ATTR6,
+      D_EXT_ATTR7,
+      D_EXT_ATTR8,
+      D_EXT_ATTR9,
+      D_EXT_ATTR10,
+	  BC_POD_FLAG --code added by Reddy Sekhar on 20-Nov-2018 for NAIT-61952 and 66520
+	  ,fee_option
+      from XX_CDH_CUST_ACCT_EXT_B
+    where EXTENSION_ID = X_EXTENSION_ID
+    for update of EXTENSION_ID nowait;
+  recinfo c%rowtype;
+
+  cursor c1 is select
+      TL_EXT_ATTR1,
+      TL_EXT_ATTR2,
+      TL_EXT_ATTR3,
+      TL_EXT_ATTR4,
+      TL_EXT_ATTR5,
+      TL_EXT_ATTR6,
+      TL_EXT_ATTR7,
+      TL_EXT_ATTR8,
+      TL_EXT_ATTR9,
+      TL_EXT_ATTR10,
+      TL_EXT_ATTR11,
+      TL_EXT_ATTR12,
+      TL_EXT_ATTR13,
+      TL_EXT_ATTR14,
+      TL_EXT_ATTR15,
+      TL_EXT_ATTR16,
+      TL_EXT_ATTR17,
+      TL_EXT_ATTR18,
+      TL_EXT_ATTR19,
+      TL_EXT_ATTR20,
+      decode(LANGUAGE, userenv('LANG'), 'Y', 'N') BASELANG
+    from XX_CDH_CUST_ACCT_EXT_TL
+    where EXTENSION_ID = X_EXTENSION_ID
+    and userenv('LANG') in (LANGUAGE, SOURCE_LANG)
+    for update of EXTENSION_ID nowait;
+begin
+  open c;
+  fetch c into recinfo;
+  if (c%notfound) then
+    close c;
+    fnd_message.set_name('FND', 'FORM_RECORD_DELETED');
+    app_exception.raise_exception;
+  end if;
+  close c;
+  if (    (recinfo.CUST_ACCOUNT_ID = X_CUST_ACCOUNT_ID)
+      AND (recinfo.ATTR_GROUP_ID = X_ATTR_GROUP_ID)
+      AND ((recinfo.C_EXT_ATTR1 = X_C_EXT_ATTR1)
+           OR ((recinfo.C_EXT_ATTR1 is null) AND (X_C_EXT_ATTR1 is null)))
+      AND ((recinfo.C_EXT_ATTR2 = X_C_EXT_ATTR2)
+           OR ((recinfo.C_EXT_ATTR2 is null) AND (X_C_EXT_ATTR2 is null)))
+      AND ((recinfo.C_EXT_ATTR3 = X_C_EXT_ATTR3)
+           OR ((recinfo.C_EXT_ATTR3 is null) AND (X_C_EXT_ATTR3 is null)))
+      AND ((recinfo.C_EXT_ATTR4 = X_C_EXT_ATTR4)
+           OR ((recinfo.C_EXT_ATTR4 is null) AND (X_C_EXT_ATTR4 is null)))
+      AND ((recinfo.C_EXT_ATTR5 = X_C_EXT_ATTR5)
+           OR ((recinfo.C_EXT_ATTR5 is null) AND (X_C_EXT_ATTR5 is null)))
+      AND ((recinfo.C_EXT_ATTR6 = X_C_EXT_ATTR6)
+           OR ((recinfo.C_EXT_ATTR6 is null) AND (X_C_EXT_ATTR6 is null)))
+      AND ((recinfo.C_EXT_ATTR7 = X_C_EXT_ATTR7)
+           OR ((recinfo.C_EXT_ATTR7 is null) AND (X_C_EXT_ATTR7 is null)))
+      AND ((recinfo.C_EXT_ATTR8 = X_C_EXT_ATTR8)
+           OR ((recinfo.C_EXT_ATTR8 is null) AND (X_C_EXT_ATTR8 is null)))
+      AND ((recinfo.C_EXT_ATTR9 = X_C_EXT_ATTR9)
+           OR ((recinfo.C_EXT_ATTR9 is null) AND (X_C_EXT_ATTR9 is null)))
+      AND ((recinfo.C_EXT_ATTR10 = X_C_EXT_ATTR10)
+           OR ((recinfo.C_EXT_ATTR10 is null) AND (X_C_EXT_ATTR10 is null)))
+      AND ((recinfo.C_EXT_ATTR11 = X_C_EXT_ATTR11)
+           OR ((recinfo.C_EXT_ATTR11 is null) AND (X_C_EXT_ATTR11 is null)))
+      AND ((recinfo.C_EXT_ATTR12 = X_C_EXT_ATTR12)
+           OR ((recinfo.C_EXT_ATTR12 is null) AND (X_C_EXT_ATTR12 is null)))
+      AND ((recinfo.C_EXT_ATTR13 = X_C_EXT_ATTR13)
+           OR ((recinfo.C_EXT_ATTR13 is null) AND (X_C_EXT_ATTR13 is null)))
+      AND ((recinfo.C_EXT_ATTR14 = X_C_EXT_ATTR14)
+           OR ((recinfo.C_EXT_ATTR14 is null) AND (X_C_EXT_ATTR14 is null)))
+      AND ((recinfo.C_EXT_ATTR15 = X_C_EXT_ATTR15)
+           OR ((recinfo.C_EXT_ATTR15 is null) AND (X_C_EXT_ATTR15 is null)))
+      AND ((recinfo.C_EXT_ATTR16 = X_C_EXT_ATTR16)
+           OR ((recinfo.C_EXT_ATTR16 is null) AND (X_C_EXT_ATTR16 is null)))
+      AND ((recinfo.C_EXT_ATTR17 = X_C_EXT_ATTR17)
+           OR ((recinfo.C_EXT_ATTR17 is null) AND (X_C_EXT_ATTR17 is null)))
+      AND ((recinfo.C_EXT_ATTR18 = X_C_EXT_ATTR18)
+           OR ((recinfo.C_EXT_ATTR18 is null) AND (X_C_EXT_ATTR18 is null)))
+      AND ((recinfo.C_EXT_ATTR19 = X_C_EXT_ATTR19)
+           OR ((recinfo.C_EXT_ATTR19 is null) AND (X_C_EXT_ATTR19 is null)))
+      AND ((recinfo.C_EXT_ATTR20 = X_C_EXT_ATTR20)
+           OR ((recinfo.C_EXT_ATTR20 is null) AND (X_C_EXT_ATTR20 is null)))
+      AND ((recinfo.N_EXT_ATTR1 = X_N_EXT_ATTR1)
+           OR ((recinfo.N_EXT_ATTR1 is null) AND (X_N_EXT_ATTR1 is null)))
+      AND ((recinfo.N_EXT_ATTR2 = X_N_EXT_ATTR2)
+           OR ((recinfo.N_EXT_ATTR2 is null) AND (X_N_EXT_ATTR2 is null)))
+      AND ((recinfo.N_EXT_ATTR3 = X_N_EXT_ATTR3)
+           OR ((recinfo.N_EXT_ATTR3 is null) AND (X_N_EXT_ATTR3 is null)))
+      AND ((recinfo.N_EXT_ATTR4 = X_N_EXT_ATTR4)
+           OR ((recinfo.N_EXT_ATTR4 is null) AND (X_N_EXT_ATTR4 is null)))
+      AND ((recinfo.N_EXT_ATTR5 = X_N_EXT_ATTR5)
+           OR ((recinfo.N_EXT_ATTR5 is null) AND (X_N_EXT_ATTR5 is null)))
+      AND ((recinfo.N_EXT_ATTR6 = X_N_EXT_ATTR6)
+           OR ((recinfo.N_EXT_ATTR6 is null) AND (X_N_EXT_ATTR6 is null)))
+      AND ((recinfo.N_EXT_ATTR7 = X_N_EXT_ATTR7)
+           OR ((recinfo.N_EXT_ATTR7 is null) AND (X_N_EXT_ATTR7 is null)))
+      AND ((recinfo.N_EXT_ATTR8 = X_N_EXT_ATTR8)
+           OR ((recinfo.N_EXT_ATTR8 is null) AND (X_N_EXT_ATTR8 is null)))
+      AND ((recinfo.N_EXT_ATTR9 = X_N_EXT_ATTR9)
+           OR ((recinfo.N_EXT_ATTR9 is null) AND (X_N_EXT_ATTR9 is null)))
+      AND ((recinfo.N_EXT_ATTR10 = X_N_EXT_ATTR10)
+           OR ((recinfo.N_EXT_ATTR10 is null) AND (X_N_EXT_ATTR10 is null)))
+      AND ((recinfo.N_EXT_ATTR11 = X_N_EXT_ATTR11)
+           OR ((recinfo.N_EXT_ATTR11 is null) AND (X_N_EXT_ATTR11 is null)))
+      AND ((recinfo.N_EXT_ATTR12 = X_N_EXT_ATTR12)
+           OR ((recinfo.N_EXT_ATTR12 is null) AND (X_N_EXT_ATTR12 is null)))
+      AND ((recinfo.N_EXT_ATTR13 = X_N_EXT_ATTR13)
+           OR ((recinfo.N_EXT_ATTR13 is null) AND (X_N_EXT_ATTR13 is null)))
+      AND ((recinfo.N_EXT_ATTR14 = X_N_EXT_ATTR14)
+           OR ((recinfo.N_EXT_ATTR14 is null) AND (X_N_EXT_ATTR14 is null)))
+      AND ((recinfo.N_EXT_ATTR15 = X_N_EXT_ATTR15)
+           OR ((recinfo.N_EXT_ATTR15 is null) AND (X_N_EXT_ATTR15 is null)))
+      AND ((recinfo.N_EXT_ATTR16 = X_N_EXT_ATTR16)
+           OR ((recinfo.N_EXT_ATTR16 is null) AND (X_N_EXT_ATTR16 is null)))
+      AND ((recinfo.N_EXT_ATTR17 = X_N_EXT_ATTR17)
+           OR ((recinfo.N_EXT_ATTR17 is null) AND (X_N_EXT_ATTR17 is null)))
+      AND ((recinfo.N_EXT_ATTR18 = X_N_EXT_ATTR18)
+           OR ((recinfo.N_EXT_ATTR18 is null) AND (X_N_EXT_ATTR18 is null)))
+      AND ((recinfo.N_EXT_ATTR19 = X_N_EXT_ATTR19)
+           OR ((recinfo.N_EXT_ATTR19 is null) AND (X_N_EXT_ATTR19 is null)))
+      AND ((recinfo.N_EXT_ATTR20 = X_N_EXT_ATTR20)
+           OR ((recinfo.N_EXT_ATTR20 is null) AND (X_N_EXT_ATTR20 is null)))
+      AND ((recinfo.D_EXT_ATTR1 = X_D_EXT_ATTR1)
+           OR ((recinfo.D_EXT_ATTR1 is null) AND (X_D_EXT_ATTR1 is null)))
+      AND ((recinfo.D_EXT_ATTR2 = X_D_EXT_ATTR2)
+           OR ((recinfo.D_EXT_ATTR2 is null) AND (X_D_EXT_ATTR2 is null)))
+      AND ((recinfo.D_EXT_ATTR3 = X_D_EXT_ATTR3)
+           OR ((recinfo.D_EXT_ATTR3 is null) AND (X_D_EXT_ATTR3 is null)))
+      AND ((recinfo.D_EXT_ATTR4 = X_D_EXT_ATTR4)
+           OR ((recinfo.D_EXT_ATTR4 is null) AND (X_D_EXT_ATTR4 is null)))
+      AND ((recinfo.D_EXT_ATTR5 = X_D_EXT_ATTR5)
+           OR ((recinfo.D_EXT_ATTR5 is null) AND (X_D_EXT_ATTR5 is null)))
+      AND ((recinfo.D_EXT_ATTR6 = X_D_EXT_ATTR6)
+           OR ((recinfo.D_EXT_ATTR6 is null) AND (X_D_EXT_ATTR6 is null)))
+      AND ((recinfo.D_EXT_ATTR7 = X_D_EXT_ATTR7)
+           OR ((recinfo.D_EXT_ATTR7 is null) AND (X_D_EXT_ATTR7 is null)))
+      AND ((recinfo.D_EXT_ATTR8 = X_D_EXT_ATTR8)
+           OR ((recinfo.D_EXT_ATTR8 is null) AND (X_D_EXT_ATTR8 is null)))
+      AND ((recinfo.D_EXT_ATTR9 = X_D_EXT_ATTR9)
+           OR ((recinfo.D_EXT_ATTR9 is null) AND (X_D_EXT_ATTR9 is null)))
+      AND ((recinfo.D_EXT_ATTR10 = X_D_EXT_ATTR10)
+           OR ((recinfo.D_EXT_ATTR10 is null) AND (X_D_EXT_ATTR10 is null)))
+	   AND ((recinfo.BC_POD_FLAG = X_BC_POD_FLAG)
+	   OR ((recinfo.BC_POD_FLAG is null) AND (X_BC_POD_FLAG is null))) --code added by Reddy Sekhar on 20-Nov-2018 for NAIT-61952 and 66520
+	   AND ((recinfo.fee_option = X_BC_POD_FLAG)
+	   OR ((recinfo.fee_option is null) AND (X_fee_option is null))) --code added for 1.2
+	   )
+	   then
+    null;
+  else
+    fnd_message.set_name('FND', 'FORM_RECORD_CHANGED');
+    app_exception.raise_exception;
+  end if;
+
+  for tlinfo in c1 loop
+    if (tlinfo.BASELANG = 'Y') then
+      if (    ((tlinfo.TL_EXT_ATTR1 = X_TL_EXT_ATTR1)
+               OR ((tlinfo.TL_EXT_ATTR1 is null) AND (X_TL_EXT_ATTR1 is null)))
+          AND ((tlinfo.TL_EXT_ATTR2 = X_TL_EXT_ATTR2)
+               OR ((tlinfo.TL_EXT_ATTR2 is null) AND (X_TL_EXT_ATTR2 is null)))
+          AND ((tlinfo.TL_EXT_ATTR3 = X_TL_EXT_ATTR3)
+               OR ((tlinfo.TL_EXT_ATTR3 is null) AND (X_TL_EXT_ATTR3 is null)))
+          AND ((tlinfo.TL_EXT_ATTR4 = X_TL_EXT_ATTR4)
+               OR ((tlinfo.TL_EXT_ATTR4 is null) AND (X_TL_EXT_ATTR4 is null)))
+          AND ((tlinfo.TL_EXT_ATTR5 = X_TL_EXT_ATTR5)
+               OR ((tlinfo.TL_EXT_ATTR5 is null) AND (X_TL_EXT_ATTR5 is null)))
+          AND ((tlinfo.TL_EXT_ATTR6 = X_TL_EXT_ATTR6)
+               OR ((tlinfo.TL_EXT_ATTR6 is null) AND (X_TL_EXT_ATTR6 is null)))
+          AND ((tlinfo.TL_EXT_ATTR7 = X_TL_EXT_ATTR7)
+               OR ((tlinfo.TL_EXT_ATTR7 is null) AND (X_TL_EXT_ATTR7 is null)))
+          AND ((tlinfo.TL_EXT_ATTR8 = X_TL_EXT_ATTR8)
+               OR ((tlinfo.TL_EXT_ATTR8 is null) AND (X_TL_EXT_ATTR8 is null)))
+          AND ((tlinfo.TL_EXT_ATTR9 = X_TL_EXT_ATTR9)
+               OR ((tlinfo.TL_EXT_ATTR9 is null) AND (X_TL_EXT_ATTR9 is null)))
+          AND ((tlinfo.TL_EXT_ATTR10 = X_TL_EXT_ATTR10)
+               OR ((tlinfo.TL_EXT_ATTR10 is null) AND (X_TL_EXT_ATTR10 is null)))
+          AND ((tlinfo.TL_EXT_ATTR11 = X_TL_EXT_ATTR11)
+               OR ((tlinfo.TL_EXT_ATTR11 is null) AND (X_TL_EXT_ATTR11 is null)))
+          AND ((tlinfo.TL_EXT_ATTR12 = X_TL_EXT_ATTR12)
+               OR ((tlinfo.TL_EXT_ATTR12 is null) AND (X_TL_EXT_ATTR12 is null)))
+          AND ((tlinfo.TL_EXT_ATTR13 = X_TL_EXT_ATTR13)
+               OR ((tlinfo.TL_EXT_ATTR13 is null) AND (X_TL_EXT_ATTR13 is null)))
+          AND ((tlinfo.TL_EXT_ATTR14 = X_TL_EXT_ATTR14)
+               OR ((tlinfo.TL_EXT_ATTR14 is null) AND (X_TL_EXT_ATTR14 is null)))
+          AND ((tlinfo.TL_EXT_ATTR15 = X_TL_EXT_ATTR15)
+               OR ((tlinfo.TL_EXT_ATTR15 is null) AND (X_TL_EXT_ATTR15 is null)))
+          AND ((tlinfo.TL_EXT_ATTR16 = X_TL_EXT_ATTR16)
+               OR ((tlinfo.TL_EXT_ATTR16 is null) AND (X_TL_EXT_ATTR16 is null)))
+          AND ((tlinfo.TL_EXT_ATTR17 = X_TL_EXT_ATTR17)
+               OR ((tlinfo.TL_EXT_ATTR17 is null) AND (X_TL_EXT_ATTR17 is null)))
+          AND ((tlinfo.TL_EXT_ATTR18 = X_TL_EXT_ATTR18)
+               OR ((tlinfo.TL_EXT_ATTR18 is null) AND (X_TL_EXT_ATTR18 is null)))
+          AND ((tlinfo.TL_EXT_ATTR19 = X_TL_EXT_ATTR19)
+               OR ((tlinfo.TL_EXT_ATTR19 is null) AND (X_TL_EXT_ATTR19 is null)))
+          AND ((tlinfo.TL_EXT_ATTR20 = X_TL_EXT_ATTR20)
+               OR ((tlinfo.TL_EXT_ATTR20 is null) AND (X_TL_EXT_ATTR20 is null)))
+      ) then
+        null;
+      ELSE
+        fnd_message.set_name('FND', 'FORM_RECORD_CHANGED');
+        app_exception.raise_exception;
+      END IF;
+    END IF;
+  END LOOP;
+  RETURN;
+END LOCK_ROW;
+
+-- +==============================================================================+
+-- | Name             : UPDATE_ROW                                                |
+-- | Description      : This procedure shall update data into XX_CDH_CUST_ACCT_EXT_B  |
+-- |                    and XX_CDH_CUST_ACCT_EXT_TL tables.                           |
+-- |                                                                              |
+-- +==============================================================================+
+
+procedure UPDATE_ROW (
+  X_EXTENSION_ID       IN NUMBER,
+  X_CUST_ACCOUNT_ID    IN NUMBER,
+  X_ATTR_GROUP_ID      IN NUMBER,
+  X_C_EXT_ATTR1        IN VARCHAR2,
+  X_C_EXT_ATTR2        IN VARCHAR2,
+  X_C_EXT_ATTR3        IN VARCHAR2,
+  X_C_EXT_ATTR4        IN VARCHAR2,
+  X_C_EXT_ATTR5        IN VARCHAR2,
+  X_C_EXT_ATTR6        IN VARCHAR2,
+  X_C_EXT_ATTR7        IN VARCHAR2,
+  X_C_EXT_ATTR8        IN VARCHAR2,
+  X_C_EXT_ATTR9        IN VARCHAR2,
+  X_C_EXT_ATTR10       IN VARCHAR2,
+  X_C_EXT_ATTR11       IN VARCHAR2,
+  X_C_EXT_ATTR12       IN VARCHAR2,
+  X_C_EXT_ATTR13       IN VARCHAR2,
+  X_C_EXT_ATTR14       IN VARCHAR2,
+  X_C_EXT_ATTR15       IN VARCHAR2,
+  X_C_EXT_ATTR16       IN VARCHAR2,
+  X_C_EXT_ATTR17       IN VARCHAR2,
+  X_C_EXT_ATTR18       IN VARCHAR2,
+  X_C_EXT_ATTR19       IN VARCHAR2,
+  X_C_EXT_ATTR20       IN VARCHAR2,
+  X_N_EXT_ATTR1        IN NUMBER,
+  X_N_EXT_ATTR2        IN NUMBER,
+  X_N_EXT_ATTR3        IN NUMBER,
+  X_N_EXT_ATTR4        IN NUMBER,
+  X_N_EXT_ATTR5        IN NUMBER,
+  X_N_EXT_ATTR6        IN NUMBER,
+  X_N_EXT_ATTR7        IN NUMBER,
+  X_N_EXT_ATTR8        IN NUMBER,
+  X_N_EXT_ATTR9        IN NUMBER,
+  X_N_EXT_ATTR10       IN NUMBER,
+  X_N_EXT_ATTR11       IN NUMBER,
+  X_N_EXT_ATTR12       IN NUMBER,
+  X_N_EXT_ATTR13       IN NUMBER,
+  X_N_EXT_ATTR14       IN NUMBER,
+  X_N_EXT_ATTR15       IN NUMBER,
+  X_N_EXT_ATTR16       IN NUMBER,
+  X_N_EXT_ATTR17       IN NUMBER,
+  X_N_EXT_ATTR18       IN NUMBER,
+  X_N_EXT_ATTR19       IN NUMBER,
+  X_N_EXT_ATTR20       IN NUMBER,
+  X_D_EXT_ATTR1        IN DATE,
+  X_D_EXT_ATTR2        IN DATE,
+  X_D_EXT_ATTR3        IN DATE,
+  X_D_EXT_ATTR4        IN DATE,
+  X_D_EXT_ATTR5        IN DATE,
+  X_D_EXT_ATTR6        IN DATE,
+  X_D_EXT_ATTR7        IN DATE,
+  X_D_EXT_ATTR8        IN DATE,
+  X_D_EXT_ATTR9        IN DATE,
+  X_D_EXT_ATTR10       IN DATE,
+  X_TL_EXT_ATTR1       IN VARCHAR2,
+  X_TL_EXT_ATTR2       IN VARCHAR2,
+  X_TL_EXT_ATTR3       IN VARCHAR2,
+  X_TL_EXT_ATTR4       IN VARCHAR2,
+  X_TL_EXT_ATTR5       IN VARCHAR2,
+  X_TL_EXT_ATTR6       IN VARCHAR2,
+  X_TL_EXT_ATTR7       IN VARCHAR2,
+  X_TL_EXT_ATTR8       IN VARCHAR2,
+  X_TL_EXT_ATTR9       IN VARCHAR2,
+  X_TL_EXT_ATTR10      IN VARCHAR2,
+  X_TL_EXT_ATTR11      IN VARCHAR2,
+  X_TL_EXT_ATTR12      IN VARCHAR2,
+  X_TL_EXT_ATTR13      IN VARCHAR2,
+  X_TL_EXT_ATTR14      IN VARCHAR2,
+  X_TL_EXT_ATTR15      IN VARCHAR2,
+  X_TL_EXT_ATTR16      IN VARCHAR2,
+  X_TL_EXT_ATTR17      IN VARCHAR2,
+  X_TL_EXT_ATTR18      IN VARCHAR2,
+  X_TL_EXT_ATTR19      IN VARCHAR2,
+  X_TL_EXT_ATTR20      IN VARCHAR2,
+  X_LAST_UPDATE_DATE   IN DATE,
+  X_LAST_UPDATED_BY    IN NUMBER,
+  X_LAST_UPDATE_LOGIN  IN NUMBER,
+  X_BC_POD_FLAG        IN VARCHAR2 --code added by Reddy Sekhar on 20-Nov-2018 for NAIT-61952 and 66520
+  ,x_fee_option        IN VARCHAR2 -- code added for 1.2
+  )
+
+  IS
+
+ BEGIN
+
+  UPDATE XX_CDH_CUST_ACCT_EXT_B SET
+    CUST_ACCOUNT_ID   = X_CUST_ACCOUNT_ID,
+    ATTR_GROUP_ID     = X_ATTR_GROUP_ID,
+    C_EXT_ATTR1       = X_C_EXT_ATTR1,
+    C_EXT_ATTR2       = X_C_EXT_ATTR2,
+    C_EXT_ATTR3       = X_C_EXT_ATTR3,
+    C_EXT_ATTR4       = X_C_EXT_ATTR4,
+    C_EXT_ATTR5       = X_C_EXT_ATTR5,
+    C_EXT_ATTR6       = X_C_EXT_ATTR6,
+    C_EXT_ATTR7       = X_C_EXT_ATTR7,
+    C_EXT_ATTR8       = X_C_EXT_ATTR8,
+    C_EXT_ATTR9       = X_C_EXT_ATTR9,
+    C_EXT_ATTR10      = X_C_EXT_ATTR10,
+    C_EXT_ATTR11      = X_C_EXT_ATTR11,
+    C_EXT_ATTR12      = X_C_EXT_ATTR12,
+    C_EXT_ATTR13      = X_C_EXT_ATTR13,
+    C_EXT_ATTR14      = X_C_EXT_ATTR14,
+    C_EXT_ATTR15      = X_C_EXT_ATTR15,
+    C_EXT_ATTR16      = X_C_EXT_ATTR16,
+    C_EXT_ATTR17      = X_C_EXT_ATTR17,
+    C_EXT_ATTR18      = X_C_EXT_ATTR18,
+    C_EXT_ATTR19      = X_C_EXT_ATTR19,
+    C_EXT_ATTR20      = X_C_EXT_ATTR20,
+    N_EXT_ATTR1       = X_N_EXT_ATTR1,
+    N_EXT_ATTR2       = X_N_EXT_ATTR2,
+    N_EXT_ATTR3       = X_N_EXT_ATTR3,
+    N_EXT_ATTR4       = X_N_EXT_ATTR4,
+    N_EXT_ATTR5       = X_N_EXT_ATTR5,
+    N_EXT_ATTR6       = X_N_EXT_ATTR6,
+    N_EXT_ATTR7       = X_N_EXT_ATTR7,
+    N_EXT_ATTR8       = X_N_EXT_ATTR8,
+    N_EXT_ATTR9       = X_N_EXT_ATTR9,
+    N_EXT_ATTR10      = X_N_EXT_ATTR10,
+    N_EXT_ATTR11      = X_N_EXT_ATTR11,
+    N_EXT_ATTR12      = X_N_EXT_ATTR12,
+    N_EXT_ATTR13      = X_N_EXT_ATTR13,
+    N_EXT_ATTR14      = X_N_EXT_ATTR14,
+    N_EXT_ATTR15      = X_N_EXT_ATTR15,
+    N_EXT_ATTR16      = X_N_EXT_ATTR16,
+    N_EXT_ATTR17      = X_N_EXT_ATTR17,
+    N_EXT_ATTR18      = X_N_EXT_ATTR18,
+    N_EXT_ATTR19      = X_N_EXT_ATTR19,
+    N_EXT_ATTR20      = X_N_EXT_ATTR20,
+    D_EXT_ATTR1       = X_D_EXT_ATTR1,
+    D_EXT_ATTR2       = X_D_EXT_ATTR2,
+    D_EXT_ATTR3       = X_D_EXT_ATTR3,
+    D_EXT_ATTR4       = X_D_EXT_ATTR4,
+    D_EXT_ATTR5       = X_D_EXT_ATTR5,
+    D_EXT_ATTR6       = X_D_EXT_ATTR6,
+    D_EXT_ATTR7       = X_D_EXT_ATTR7,
+    D_EXT_ATTR8       = X_D_EXT_ATTR8,
+    D_EXT_ATTR9       = X_D_EXT_ATTR9,
+    D_EXT_ATTR10      = X_D_EXT_ATTR10,
+    LAST_UPDATE_DATE  = X_LAST_UPDATE_DATE,
+    LAST_UPDATED_BY   = X_LAST_UPDATED_BY,
+    LAST_UPDATE_LOGIN = X_LAST_UPDATE_LOGIN,
+	BC_POD_FLAG       = X_BC_POD_FLAG --code added by Reddy Sekhar on 20-Nov-2018 for NAIT-61952 and 66520
+	,fee_option = x_fee_option  -- code added for 1.2
+     WHERE EXTENSION_ID  = X_EXTENSION_ID;
+
+  IF (sql%notfound) THEN
+    RAISE no_data_found;
+  END IF;
+
+  UPDATE XX_CDH_CUST_ACCT_EXT_TL SET
+    TL_EXT_ATTR1      = X_TL_EXT_ATTR1,
+    TL_EXT_ATTR2      = X_TL_EXT_ATTR2,
+    TL_EXT_ATTR3      = X_TL_EXT_ATTR3,
+    TL_EXT_ATTR4      = X_TL_EXT_ATTR4,
+    TL_EXT_ATTR5      = X_TL_EXT_ATTR5,
+    TL_EXT_ATTR6      = X_TL_EXT_ATTR6,
+    TL_EXT_ATTR7      = X_TL_EXT_ATTR7,
+    TL_EXT_ATTR8      = X_TL_EXT_ATTR8,
+    TL_EXT_ATTR9      = X_TL_EXT_ATTR9,
+    TL_EXT_ATTR10     = X_TL_EXT_ATTR10,
+    TL_EXT_ATTR11     = X_TL_EXT_ATTR11,
+    TL_EXT_ATTR12     = X_TL_EXT_ATTR12,
+    TL_EXT_ATTR13     = X_TL_EXT_ATTR13,
+    TL_EXT_ATTR14     = X_TL_EXT_ATTR14,
+    TL_EXT_ATTR15     = X_TL_EXT_ATTR15,
+    TL_EXT_ATTR16     = X_TL_EXT_ATTR16,
+    TL_EXT_ATTR17     = X_TL_EXT_ATTR17,
+    TL_EXT_ATTR18     = X_TL_EXT_ATTR18,
+    TL_EXT_ATTR19     = X_TL_EXT_ATTR19,
+    TL_EXT_ATTR20     = X_TL_EXT_ATTR20,
+    LAST_UPDATE_DATE  = X_LAST_UPDATE_DATE,
+    LAST_UPDATED_BY   = X_LAST_UPDATED_BY,
+    LAST_UPDATE_LOGIN = X_LAST_UPDATE_LOGIN,
+    SOURCE_LANG       = userenv('LANG')
+  WHERE EXTENSION_ID  = X_EXTENSION_ID
+  AND userenv('LANG') IN (LANGUAGE, SOURCE_LANG);
+
+  IF (sql%notfound) THEN
+    RAISE no_data_found;
+  END IF;
+
+END UPDATE_ROW;
+
+-- +==============================================================================+
+-- | Name             : DELETE_ROW                                                |
+-- | Description      : This procedure shall delete data  in XX_CDH_CUST_ACCT_EXT_B   |
+-- |                    XX_CDH_CUST_ACCT_EXT_TL table for the given extension id.     |
+-- |                                                                              |
+-- +==============================================================================+
+
+procedure DELETE_ROW (
+  X_EXTENSION_ID IN NUMBER
+  )
+
+  IS
+
+ BEGIN
+
+  DELETE FROM XX_CDH_CUST_ACCT_EXT_TL
+  WHERE EXTENSION_ID = X_EXTENSION_ID;
+
+  IF (sql%notfound) THEN
+    RAISE no_data_found;
+  END IF;
+
+  DELETE FROM XX_CDH_CUST_ACCT_EXT_B
+  WHERE EXTENSION_ID = X_EXTENSION_ID;
+
+  IF (sql%notfound) THEN
+    RAISE no_data_found;
+  END IF;
+
+ END DELETE_ROW;
+
+-- +==============================================================================+
+-- | Name             : ADD_LANGUAGE                                              |
+-- | Description      : This procedure shall insert and update data  in           |
+-- |                    XX_CDH_CUST_ACCT_EXT_TL table.                                |
+-- |                                                                              |
+-- +==============================================================================+
+
+procedure ADD_LANGUAGE
+IS
+
+BEGIN
+
+  DELETE FROM XX_CDH_CUST_ACCT_EXT_TL T
+  WHERE NOT EXISTS
+    (SELECT NULL
+     FROM   XX_CDH_CUST_ACCT_EXT_B B
+     WHERE  B.EXTENSION_ID = T.EXTENSION_ID
+    );
+
+  UPDATE XX_CDH_CUST_ACCT_EXT_TL T SET (
+      TL_EXT_ATTR1,
+      TL_EXT_ATTR2,
+      TL_EXT_ATTR3,
+      TL_EXT_ATTR4,
+      TL_EXT_ATTR5,
+      TL_EXT_ATTR6,
+      TL_EXT_ATTR7,
+      TL_EXT_ATTR8,
+      TL_EXT_ATTR9,
+      TL_EXT_ATTR10,
+      TL_EXT_ATTR11,
+      TL_EXT_ATTR12,
+      TL_EXT_ATTR13,
+      TL_EXT_ATTR14,
+      TL_EXT_ATTR15,
+      TL_EXT_ATTR16,
+      TL_EXT_ATTR17,
+      TL_EXT_ATTR18,
+      TL_EXT_ATTR19,
+      TL_EXT_ATTR20
+    ) = (SELECT
+      B.TL_EXT_ATTR1,
+      B.TL_EXT_ATTR2,
+      B.TL_EXT_ATTR3,
+      B.TL_EXT_ATTR4,
+      B.TL_EXT_ATTR5,
+      B.TL_EXT_ATTR6,
+      B.TL_EXT_ATTR7,
+      B.TL_EXT_ATTR8,
+      B.TL_EXT_ATTR9,
+      B.TL_EXT_ATTR10,
+      B.TL_EXT_ATTR11,
+      B.TL_EXT_ATTR12,
+      B.TL_EXT_ATTR13,
+      B.TL_EXT_ATTR14,
+      B.TL_EXT_ATTR15,
+      B.TL_EXT_ATTR16,
+      B.TL_EXT_ATTR17,
+      B.TL_EXT_ATTR18,
+      B.TL_EXT_ATTR19,
+      B.TL_EXT_ATTR20
+    FROM XX_CDH_CUST_ACCT_EXT_TL B
+    WHERE B.EXTENSION_ID = T.EXTENSION_ID
+    AND B.LANGUAGE = T.SOURCE_LANG)
+  WHERE (
+      T.EXTENSION_ID,
+      T.LANGUAGE
+  ) IN (SELECT
+      SUBT.EXTENSION_ID,
+      SUBT.LANGUAGE
+    FROM XX_CDH_CUST_ACCT_EXT_TL SUBB, XX_CDH_CUST_ACCT_EXT_TL SUBT
+    WHERE SUBB.EXTENSION_ID = SUBT.EXTENSION_ID
+    AND SUBB.LANGUAGE = SUBT.SOURCE_LANG
+    AND (SUBB.TL_EXT_ATTR1 <> SUBT.TL_EXT_ATTR1
+      OR (SUBB.TL_EXT_ATTR1 is null and SUBT.TL_EXT_ATTR1 is not null)
+      OR (SUBB.TL_EXT_ATTR1 is not null and SUBT.TL_EXT_ATTR1 is null)
+      OR SUBB.TL_EXT_ATTR2 <> SUBT.TL_EXT_ATTR2
+      or (SUBB.TL_EXT_ATTR2 is null and SUBT.TL_EXT_ATTR2 is not null)
+      or (SUBB.TL_EXT_ATTR2 is not null and SUBT.TL_EXT_ATTR2 is null)
+      or SUBB.TL_EXT_ATTR3 <> SUBT.TL_EXT_ATTR3
+      or (SUBB.TL_EXT_ATTR3 is null and SUBT.TL_EXT_ATTR3 is not null)
+      or (SUBB.TL_EXT_ATTR3 is not null and SUBT.TL_EXT_ATTR3 is null)
+      or SUBB.TL_EXT_ATTR4 <> SUBT.TL_EXT_ATTR4
+      or (SUBB.TL_EXT_ATTR4 is null and SUBT.TL_EXT_ATTR4 is not null)
+      or (SUBB.TL_EXT_ATTR4 is not null and SUBT.TL_EXT_ATTR4 is null)
+      or SUBB.TL_EXT_ATTR5 <> SUBT.TL_EXT_ATTR5
+      or (SUBB.TL_EXT_ATTR5 is null and SUBT.TL_EXT_ATTR5 is not null)
+      or (SUBB.TL_EXT_ATTR5 is not null and SUBT.TL_EXT_ATTR5 is null)
+      or SUBB.TL_EXT_ATTR6 <> SUBT.TL_EXT_ATTR6
+      or (SUBB.TL_EXT_ATTR6 is null and SUBT.TL_EXT_ATTR6 is not null)
+      or (SUBB.TL_EXT_ATTR6 is not null and SUBT.TL_EXT_ATTR6 is null)
+      or SUBB.TL_EXT_ATTR7 <> SUBT.TL_EXT_ATTR7
+      or (SUBB.TL_EXT_ATTR7 is null and SUBT.TL_EXT_ATTR7 is not null)
+      or (SUBB.TL_EXT_ATTR7 is not null and SUBT.TL_EXT_ATTR7 is null)
+      or SUBB.TL_EXT_ATTR8 <> SUBT.TL_EXT_ATTR8
+      or (SUBB.TL_EXT_ATTR8 is null and SUBT.TL_EXT_ATTR8 is not null)
+      or (SUBB.TL_EXT_ATTR8 is not null and SUBT.TL_EXT_ATTR8 is null)
+      or SUBB.TL_EXT_ATTR9 <> SUBT.TL_EXT_ATTR9
+      or (SUBB.TL_EXT_ATTR9 is null and SUBT.TL_EXT_ATTR9 is not null)
+      or (SUBB.TL_EXT_ATTR9 is not null and SUBT.TL_EXT_ATTR9 is null)
+      or SUBB.TL_EXT_ATTR10 <> SUBT.TL_EXT_ATTR10
+      or (SUBB.TL_EXT_ATTR10 is null and SUBT.TL_EXT_ATTR10 is not null)
+      or (SUBB.TL_EXT_ATTR10 is not null and SUBT.TL_EXT_ATTR10 is null)
+      or SUBB.TL_EXT_ATTR11 <> SUBT.TL_EXT_ATTR11
+      or (SUBB.TL_EXT_ATTR11 is null and SUBT.TL_EXT_ATTR11 is not null)
+      or (SUBB.TL_EXT_ATTR11 is not null and SUBT.TL_EXT_ATTR11 is null)
+      or SUBB.TL_EXT_ATTR12 <> SUBT.TL_EXT_ATTR12
+      or (SUBB.TL_EXT_ATTR12 is null and SUBT.TL_EXT_ATTR12 is not null)
+      or (SUBB.TL_EXT_ATTR12 is not null and SUBT.TL_EXT_ATTR12 is null)
+      or SUBB.TL_EXT_ATTR13 <> SUBT.TL_EXT_ATTR13
+      or (SUBB.TL_EXT_ATTR13 is null and SUBT.TL_EXT_ATTR13 is not null)
+      or (SUBB.TL_EXT_ATTR13 is not null and SUBT.TL_EXT_ATTR13 is null)
+      or SUBB.TL_EXT_ATTR14 <> SUBT.TL_EXT_ATTR14
+      or (SUBB.TL_EXT_ATTR14 is null and SUBT.TL_EXT_ATTR14 is not null)
+      or (SUBB.TL_EXT_ATTR14 is not null and SUBT.TL_EXT_ATTR14 is null)
+      or SUBB.TL_EXT_ATTR15 <> SUBT.TL_EXT_ATTR15
+      or (SUBB.TL_EXT_ATTR15 is null and SUBT.TL_EXT_ATTR15 is not null)
+      or (SUBB.TL_EXT_ATTR15 is not null and SUBT.TL_EXT_ATTR15 is null)
+      or SUBB.TL_EXT_ATTR16 <> SUBT.TL_EXT_ATTR16
+      or (SUBB.TL_EXT_ATTR16 is null and SUBT.TL_EXT_ATTR16 is not null)
+      or (SUBB.TL_EXT_ATTR16 is not null and SUBT.TL_EXT_ATTR16 is null)
+      or SUBB.TL_EXT_ATTR17 <> SUBT.TL_EXT_ATTR17
+      or (SUBB.TL_EXT_ATTR17 is null and SUBT.TL_EXT_ATTR17 is not null)
+      or (SUBB.TL_EXT_ATTR17 is not null and SUBT.TL_EXT_ATTR17 is null)
+      or SUBB.TL_EXT_ATTR18 <> SUBT.TL_EXT_ATTR18
+      or (SUBB.TL_EXT_ATTR18 is null and SUBT.TL_EXT_ATTR18 is not null)
+      or (SUBB.TL_EXT_ATTR18 is not null and SUBT.TL_EXT_ATTR18 is null)
+      or SUBB.TL_EXT_ATTR19 <> SUBT.TL_EXT_ATTR19
+      or (SUBB.TL_EXT_ATTR19 is null and SUBT.TL_EXT_ATTR19 is not null)
+      or (SUBB.TL_EXT_ATTR19 is not null and SUBT.TL_EXT_ATTR19 is null)
+      or SUBB.TL_EXT_ATTR20 <> SUBT.TL_EXT_ATTR20
+      or (SUBB.TL_EXT_ATTR20 is null and SUBT.TL_EXT_ATTR20 is not null)
+      or (SUBB.TL_EXT_ATTR20 is not null and SUBT.TL_EXT_ATTR20 is null)
+  ));
+
+  INSERT INTO XX_CDH_CUST_ACCT_EXT_TL (
+    TL_EXT_ATTR8,
+    TL_EXT_ATTR9,
+    TL_EXT_ATTR10,
+    TL_EXT_ATTR11,
+    TL_EXT_ATTR12,
+    TL_EXT_ATTR13,
+    TL_EXT_ATTR14,
+    TL_EXT_ATTR15,
+    TL_EXT_ATTR16,
+    TL_EXT_ATTR17,
+    TL_EXT_ATTR18,
+    TL_EXT_ATTR19,
+    TL_EXT_ATTR20,
+    EXTENSION_ID,
+    CUST_ACCOUNT_ID,
+    ATTR_GROUP_ID,
+    CREATED_BY,
+    CREATION_DATE,
+    LAST_UPDATED_BY,
+    LAST_UPDATE_DATE,
+    LAST_UPDATE_LOGIN,
+    TL_EXT_ATTR1,
+    TL_EXT_ATTR2,
+    TL_EXT_ATTR3,
+    TL_EXT_ATTR4,
+    TL_EXT_ATTR5,
+    TL_EXT_ATTR6,
+    TL_EXT_ATTR7,
+    LANGUAGE,
+    SOURCE_LANG
+  ) select /*+ ORDERED */
+    B.TL_EXT_ATTR8,
+    B.TL_EXT_ATTR9,
+    B.TL_EXT_ATTR10,
+    B.TL_EXT_ATTR11,
+    B.TL_EXT_ATTR12,
+    B.TL_EXT_ATTR13,
+    B.TL_EXT_ATTR14,
+    B.TL_EXT_ATTR15,
+    B.TL_EXT_ATTR16,
+    B.TL_EXT_ATTR17,
+    B.TL_EXT_ATTR18,
+    B.TL_EXT_ATTR19,
+    B.TL_EXT_ATTR20,
+    B.EXTENSION_ID,
+    B.CUST_ACCOUNT_ID,
+    B.ATTR_GROUP_ID,
+    B.CREATED_BY,
+    B.CREATION_DATE,
+    B.LAST_UPDATED_BY,
+    B.LAST_UPDATE_DATE,
+    B.LAST_UPDATE_LOGIN,
+    B.TL_EXT_ATTR1,
+    B.TL_EXT_ATTR2,
+    B.TL_EXT_ATTR3,
+    B.TL_EXT_ATTR4,
+    B.TL_EXT_ATTR5,
+    B.TL_EXT_ATTR6,
+    B.TL_EXT_ATTR7,
+    L.LANGUAGE_CODE,
+    B.SOURCE_LANG
+  from XX_CDH_CUST_ACCT_EXT_TL B, FND_LANGUAGES L
+  where L.INSTALLED_FLAG in ('I', 'B')
+  and B.LANGUAGE = userenv('LANG')
+  and not exists
+    (select NULL
+    from XX_CDH_CUST_ACCT_EXT_TL T
+    where T.EXTENSION_ID = B.EXTENSION_ID
+    and T.LANGUAGE = L.LANGUAGE_CODE);
+end ADD_LANGUAGE;
+
+
+-- +==============================================================================+
+-- | Name             : LOAD_ROW                                                  |
+-- | Description      : This procedure is not being implemented.                  |
+-- |                                                                              |
+-- |                                                                              |
+-- +==============================================================================+
+
+procedure LOAD_ROW(
+  X_EXTENSION_ID       IN NUMBER,
+  X_CUST_ACCOUNT_ID    IN NUMBER,
+  X_ATTR_GROUP_ID      IN NUMBER,
+  X_C_EXT_ATTR1        IN VARCHAR2,
+  X_C_EXT_ATTR2        IN VARCHAR2,
+  X_C_EXT_ATTR3        IN VARCHAR2,
+  X_C_EXT_ATTR4        IN VARCHAR2,
+  X_C_EXT_ATTR5        IN VARCHAR2,
+  X_C_EXT_ATTR6        IN VARCHAR2,
+  X_C_EXT_ATTR7        IN VARCHAR2,
+  X_C_EXT_ATTR8        IN VARCHAR2,
+  X_C_EXT_ATTR9        IN VARCHAR2,
+  X_C_EXT_ATTR10       IN VARCHAR2,
+  X_C_EXT_ATTR11       IN VARCHAR2,
+  X_C_EXT_ATTR12       IN VARCHAR2,
+  X_C_EXT_ATTR13       IN VARCHAR2,
+  X_C_EXT_ATTR14       IN VARCHAR2,
+  X_C_EXT_ATTR15       IN VARCHAR2,
+  X_C_EXT_ATTR16       IN VARCHAR2,
+  X_C_EXT_ATTR17       IN VARCHAR2,
+  X_C_EXT_ATTR18       IN VARCHAR2,
+  X_C_EXT_ATTR19       IN VARCHAR2,
+  X_C_EXT_ATTR20       IN VARCHAR2,
+  X_N_EXT_ATTR1        IN NUMBER,
+  X_N_EXT_ATTR2        IN NUMBER,
+  X_N_EXT_ATTR3        IN NUMBER,
+  X_N_EXT_ATTR4        IN NUMBER,
+  X_N_EXT_ATTR5        IN NUMBER,
+  X_N_EXT_ATTR6        IN NUMBER,
+  X_N_EXT_ATTR7        IN NUMBER,
+  X_N_EXT_ATTR8        IN NUMBER,
+  X_N_EXT_ATTR9        IN NUMBER,
+  X_N_EXT_ATTR10       IN NUMBER,
+  X_N_EXT_ATTR11       IN NUMBER,
+  X_N_EXT_ATTR12       IN NUMBER,
+  X_N_EXT_ATTR13       IN NUMBER,
+  X_N_EXT_ATTR14       IN NUMBER,
+  X_N_EXT_ATTR15       IN NUMBER,
+  X_N_EXT_ATTR16       IN NUMBER,
+  X_N_EXT_ATTR17       IN NUMBER,
+  X_N_EXT_ATTR18       IN NUMBER,
+  X_N_EXT_ATTR19       IN NUMBER,
+  X_N_EXT_ATTR20       IN NUMBER,
+  X_D_EXT_ATTR1        IN DATE,
+  X_D_EXT_ATTR2        IN DATE,
+  X_D_EXT_ATTR3        IN DATE,
+  X_D_EXT_ATTR4        IN DATE,
+  X_D_EXT_ATTR5        IN DATE,
+  X_D_EXT_ATTR6        IN DATE,
+  X_D_EXT_ATTR7        IN DATE,
+  X_D_EXT_ATTR8        IN DATE,
+  X_D_EXT_ATTR9        IN DATE,
+  X_D_EXT_ATTR10       IN DATE,
+  X_TL_EXT_ATTR1       IN VARCHAR2,
+  X_TL_EXT_ATTR2       IN VARCHAR2,
+  X_TL_EXT_ATTR3       IN VARCHAR2,
+  X_TL_EXT_ATTR4       IN VARCHAR2,
+  X_TL_EXT_ATTR5       IN VARCHAR2,
+  X_TL_EXT_ATTR6       IN VARCHAR2,
+  X_TL_EXT_ATTR7       IN VARCHAR2,
+  X_TL_EXT_ATTR8       IN VARCHAR2,
+  X_TL_EXT_ATTR9       IN VARCHAR2,
+  X_TL_EXT_ATTR10      IN VARCHAR2,
+  X_TL_EXT_ATTR11      IN VARCHAR2,
+  X_TL_EXT_ATTR12      IN VARCHAR2,
+  X_TL_EXT_ATTR13      IN VARCHAR2,
+  X_TL_EXT_ATTR14      IN VARCHAR2,
+  X_TL_EXT_ATTR15      IN VARCHAR2,
+  X_TL_EXT_ATTR16      IN VARCHAR2,
+  X_TL_EXT_ATTR17      IN VARCHAR2,
+  X_TL_EXT_ATTR18      IN VARCHAR2,
+  X_TL_EXT_ATTR19      IN VARCHAR2,
+  X_TL_EXT_ATTR20      IN VARCHAR2,
+  X_OWNER              IN VARCHAR2
+  )
+
+ IS
+
+ BEGIN
+
+  null;
+
+ END LOAD_ROW;
+
+-- +==============================================================================+
+-- | Name             : TRANSLATE_ROW                                             |
+-- | Description      : This procedure is not being implemented.                  |
+-- |                                                                              |
+-- +==============================================================================+
+
+procedure TRANSLATE_ROW (
+    X_EXTENSION_ID       IN NUMBER,
+    X_CUST_ACCOUNT_ID    IN NUMBER,
+    X_ATTR_GROUP_ID      IN NUMBER,
+    X_TL_EXT_ATTR1       IN VARCHAR2,
+    X_TL_EXT_ATTR2       IN VARCHAR2,
+    X_TL_EXT_ATTR3       IN VARCHAR2,
+    X_TL_EXT_ATTR4       IN VARCHAR2,
+    X_TL_EXT_ATTR5       IN VARCHAR2,
+    X_TL_EXT_ATTR6       IN VARCHAR2,
+    X_TL_EXT_ATTR7       IN VARCHAR2,
+    X_TL_EXT_ATTR8       IN VARCHAR2,
+    X_TL_EXT_ATTR9       IN VARCHAR2,
+    X_TL_EXT_ATTR10      IN VARCHAR2,
+    X_TL_EXT_ATTR11      IN VARCHAR2,
+    X_TL_EXT_ATTR12      IN VARCHAR2,
+    X_TL_EXT_ATTR13      IN VARCHAR2,
+    X_TL_EXT_ATTR14      IN VARCHAR2,
+    X_TL_EXT_ATTR15      IN VARCHAR2,
+    X_TL_EXT_ATTR16      IN VARCHAR2,
+    X_TL_EXT_ATTR17      IN VARCHAR2,
+    X_TL_EXT_ATTR18      IN VARCHAR2,
+    X_TL_EXT_ATTR19      IN VARCHAR2,
+    X_TL_EXT_ATTR20      IN VARCHAR2,
+    X_OWNER              IN VARCHAR2
+   )
+
+  IS
+
+BEGIN
+
+  null;
+
+END TRANSLATE_ROW;
+
+
+END XX_CDH_CUST_ACCT_EXT_PKG;

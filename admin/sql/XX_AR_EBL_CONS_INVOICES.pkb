@@ -1,18 +1,4 @@
-SET SHOW OFF
-SET VERIFY OFF
-SET ECHO OFF
-SET TAB OFF
-SET FEEDBACK OFF
-SET TERM ON
-
-PROMPT Creating PACKAGE BODY xx_ar_ebl_cons_invoices
-
-PROMPT Program exits IF the creation IS NOT SUCCESSFUL
-
-WHENEVER SQLERROR CONTINUE
-
-create or replace
-PACKAGE BODY xx_ar_ebl_cons_invoices AS
+create or replace PACKAGE BODY XX_AR_EBL_CONS_INVOICES AS
    g_as_of_date DATE;
    gn_org_id    NUMBER := fnd_profile.VALUE('ORG_ID');
    -- +===================================================================================+
@@ -66,11 +52,12 @@ PACKAGE BODY xx_ar_ebl_cons_invoices AS
    -- |                                               NAIT - 58403                        |
    -- |1.14      09-SEP-2018  Atul Khard			  NAIT-63607 SKU Not Populating for   |
    -- |                                               SPC Invoices in eXLS Bills. Changed |
-   -- |                                               logic to populate 'productcdentered'|   
+   -- |                                               logic to populate 'productcdentered'|
    -- |1.15		 11-OCT-2018  Dinesh Nagapuri         Made Changes for Bill Complete      |
-   -- |                                               NAIT-61963                          | 
+   -- |                                               NAIT-61963                          |
    -- |1.16      25-JUL-2019  Abhishek Kumar          Made changes for NAIT - 79913 for   |
    -- |                                               remit page issue                    |
+   -- |1.17     27-MAY-2020  Divyansh           Added logic for JIRA NAIT-129167          |
    -- +===================================================================================+
    PROCEDURE cons_data_extract_main(x_errbuff     OUT VARCHAR2
                                    ,x_retcode     OUT NUMBER
@@ -332,8 +319,8 @@ PACKAGE BODY xx_ar_ebl_cons_invoices AS
    -- |1.2      17-Aug-2015   Suresh Naragam          Added bill to location column       |
    -- |                                               (Module 4B Release 2)               |
    -- |1.3		08-DEC-2015	  Havish Kasina	          Added Cost Center Dept              |
-   -- | 										       column(Module4B Release 3)         |	
-   -- |1.4      12-JUL-2018	  Aarthi                  Sales person updated to             | 
+   -- | 										       column(Module4B Release 3)         |
+   -- |1.4      12-JUL-2018	  Aarthi                  Sales person updated to             |
    -- |                                                NULL - Defect 45279                |
    -- +===================================================================================+
    PROCEDURE extract_cons_data(errbuff      OUT VARCHAR2
@@ -1327,22 +1314,22 @@ PACKAGE BODY xx_ar_ebl_cons_invoices AS
                   END IF;
 --defect 15118
                   BEGIN
-                                 
+
                 SELECT CUST_DEPT_DESCRIPTION,
-                       COST_CENTER_DEPT, --Added for Defect 36437 (MOD4B Release 3)				
-					   DECODE(BILL_COMP_FLAG,'B','Y','Y','Y',NULL)	
+                       COST_CENTER_DEPT, --Added for Defect 36437 (MOD4B Release 3)
+					   DECODE(BILL_COMP_FLAG,'B','Y','Y','Y',NULL)
                 INTO  paydoc_tab(pay_rec).cost_center_desc_hdr,
-				      paydoc_tab(pay_rec).cost_center_dept, --Added for Defect 36437 (MOD4B Release 3) 
+				      paydoc_tab(pay_rec).cost_center_dept, --Added for Defect 36437 (MOD4B Release 3)
 					  lc_bill_comp_flag							-- Added By Dinesh For Separate Bill Test for Bill Complete and Non-BillComplete
                 FROM XX_OM_HEADER_ATTRIBUTES_ALL XOHA,
-                     RA_CUSTOMER_TRX_ALL RCT 
+                     RA_CUSTOMER_TRX_ALL RCT
                 WHERE RCT.CUSTOMER_TRX_ID =paydoc_tab(pay_rec).customer_trx_id
-                AND RCT.ATTRIBUTE14= XOHA.HEADER_ID 
+                AND RCT.ATTRIBUTE14= XOHA.HEADER_ID
                AND    rownum < 2;
             EXCEPTION
                WHEN no_data_found THEN
                   paydoc_tab(pay_rec).cost_center_desc_hdr := NULL;
-				  paydoc_tab(pay_rec).cost_center_dept := NULL; --Added for Defect 36437 (MOD4B Release 3) 
+				  paydoc_tab(pay_rec).cost_center_dept := NULL; --Added for Defect 36437 (MOD4B Release 3)
                   END;
                   --defect 15118
                   --GET soft header detail
@@ -1381,12 +1368,12 @@ PACKAGE BODY xx_ar_ebl_cons_invoices AS
                      xx_ar_ebl_common_util_pkg.put_log_line(p_debug
                                                            ,FALSE
                                                            ,'   ' || '    ' || gc_debug_msg);
-                     /* Begin Modification  for ver 1.4 Defect Id: 45279 Updating sales person to null                                      
+                     /* Begin Modification  for ver 1.4 Defect Id: 45279 Updating sales person to null
                      lc_sales_person := arpt_sql_func_util.get_salesrep_name_number(paydoc_tab(pay_rec).sales_person_id
                                                                                    ,'NAME'
                                                                                    , gn_org_id); -- defect 26440*/
                      lc_sales_person := NULL;
-	                 /* End Modification  for ver 1.4 Defect Id: 45279 Updating sales person to null */                                      
+	                 /* End Modification  for ver 1.4 Defect Id: 45279 Updating sales person to null */
 
                   EXCEPTION
                      WHEN no_data_found THEN
@@ -1478,7 +1465,7 @@ PACKAGE BODY xx_ar_ebl_cons_invoices AS
                      ,bill_to_contact_phone
                      ,bill_to_contact_phone_ext
                      ,bill_to_contact_email
-		     ,bill_to_abbreviation	
+		     ,bill_to_abbreviation
                      ,carrier
                      ,ship_to_name
                      ,ship_to_abbreviation
@@ -1885,12 +1872,12 @@ PACKAGE BODY xx_ar_ebl_cons_invoices AS
             -- Getting customer Details
             --defect 15118
         /*    BEGIN
-                SELECT CUST_DEPT_DESCRIPTION 
+                SELECT CUST_DEPT_DESCRIPTION
                 INTO  cons_paydoc_ic(info_rec).cost_center_desc_hdr
                 FROM XX_OM_HEADER_ATTRIBUTES_ALL XOHA,
-                     RA_CUSTOMER_TRX_ALL RCT 
+                     RA_CUSTOMER_TRX_ALL RCT
                 WHERE RCT.CUSTOMER_TRX_ID =cons_paydoc_ic(info_rec).customer_trx_id
-                AND RCT.ATTRIBUTE14= XOHA.HEADER_ID 
+                AND RCT.ATTRIBUTE14= XOHA.HEADER_ID
                AND    rownum < 2;
             EXCEPTION
                WHEN no_data_found THEN
@@ -2112,9 +2099,9 @@ PACKAGE BODY xx_ar_ebl_cons_invoices AS
 				      paydoc_ic_tab(i).cost_center_dept, --Added for Defect 36437 (MOD4B Release 3)
 					  lc_bill_comp_flag							-- Added By Dinesh For Separate Bill Test for Bill Complete and Non-BillComplete
                 FROM XX_OM_HEADER_ATTRIBUTES_ALL XOHA,
-                     RA_CUSTOMER_TRX_ALL RCT 
+                     RA_CUSTOMER_TRX_ALL RCT
                 WHERE RCT.CUSTOMER_TRX_ID =paydoc_ic_tab(i).customer_trx_id
-                AND RCT.ATTRIBUTE14= XOHA.HEADER_ID 
+                AND RCT.ATTRIBUTE14= XOHA.HEADER_ID
                AND    rownum < 2;
             EXCEPTION
                WHEN no_data_found THEN
@@ -2155,7 +2142,7 @@ PACKAGE BODY xx_ar_ebl_cons_invoices AS
                                                                                    ,'NAME'
                                                                                    , gn_org_id);  -- defect 26440 */
 	                 lc_sales_person := NULL;
-	                 /* End Modification  for ver 1.6 Defect Id: 45279 Updating sales person to null */ 
+	                 /* End Modification  for ver 1.6 Defect Id: 45279 Updating sales person to null */
 
                   EXCEPTION
                      WHEN no_data_found THEN
@@ -2785,15 +2772,15 @@ PACKAGE BODY xx_ar_ebl_cons_invoices AS
                    --defect 15118
             BEGIN
                 SELECT CUST_DEPT_DESCRIPTION,
-                       COST_CENTER_DEPT, --Added for Defect 36437 (MOD4B Release 3)				
+                       COST_CENTER_DEPT, --Added for Defect 36437 (MOD4B Release 3)
 					   DECODE(BILL_COMP_FLAG,'B','Y','Y','Y',NULL)
                 INTO   inv_ic_tab(i).cost_center_desc_hdr,
 				       inv_ic_tab(i).cost_center_dept,  --Added for Defect 36437 (MOD4B Release 3)
 					   lc_bill_comp_flag					-- Added By Dinesh For Separate Bill Test for Bill Complete and Non-BillComplete
                 FROM XX_OM_HEADER_ATTRIBUTES_ALL XOHA,
-                     RA_CUSTOMER_TRX_ALL RCT 
+                     RA_CUSTOMER_TRX_ALL RCT
                 WHERE RCT.CUSTOMER_TRX_ID =inv_ic_tab(i).customer_trx_id
-                AND RCT.ATTRIBUTE14= XOHA.HEADER_ID 
+                AND RCT.ATTRIBUTE14= XOHA.HEADER_ID
                AND    rownum < 2;
             EXCEPTION
                WHEN no_data_found THEN
@@ -2813,7 +2800,7 @@ PACKAGE BODY xx_ar_ebl_cons_invoices AS
                                                         ,inv_ic_tab(i).desktop_sft_hdr
                                                         ,inv_ic_tab(i).release_number_sft_hdr
                                                         ,inv_ic_tab(i).po_number_sft_hdr);
-             
+
                -- Getting customer Details
                SELECT substr(orig_system_reference
                             ,1
@@ -2883,7 +2870,7 @@ PACKAGE BODY xx_ar_ebl_cons_invoices AS
                                                                                 ,'NAME'
                                                                                 , gn_org_id); -- defect  26440*/
 	              lc_sales_person := NULL;
-	              /* End Modification  for ver 1.6 Defect Id: 45279 Updating sales person to null */ 
+	              /* End Modification  for ver 1.6 Defect Id: 45279 Updating sales person to null */
 
                EXCEPTION
                   WHEN no_data_found THEN
@@ -3331,7 +3318,7 @@ PACKAGE BODY xx_ar_ebl_cons_invoices AS
   -- |                                               (Module 4B Release 4 Defect#2282)   |
   -- |1.3       23-JUN-2016  Havish Kasina           Kitting Changes Defect# 37675       |
   -- |1.4       20-AUG-2018  Aarthi                  Wave 5 - Adding TAX at SKU Level    |
-  -- |                                               for NAIT - 58403                    |                            
+  -- |                                               for NAIT - 58403                    |
   -- +===================================================================================+
    PROCEDURE insert_lines(p_cust_trx_id        IN NUMBER
                          ,p_trx_type           IN VARCHAR2
@@ -3366,7 +3353,8 @@ PACKAGE BODY xx_ar_ebl_cons_invoices AS
                ,rctl1.customer_trx_id customer_trx_id
                ,rctl1.customer_trx_line_id customer_trx_line_id
                ,msi.item_type item_type
-               ,rctl1.line_number line_number
+               --,rctl1.line_number line_number
+               ,XX_AR_EBL_COMMON_UTIL_PKG.get_fee_line_number(rctl1.customer_trx_id,rctl1.description,p_organization_id,rctl1.line_number) line_number  -- change 1.17
                ,rctl1.link_to_cust_trx_line_id link_to_cust_trx_line_id
                ,ool.line_id order_line_id
                ,ool.line_number order_line_number
@@ -3472,20 +3460,20 @@ PACKAGE BODY xx_ar_ebl_cons_invoices AS
                END IF;
 
          END IF;
- 
+
          BEGIN
-           SELECT NVL(SUM(rctl.extended_amount),0) 
+           SELECT NVL(SUM(rctl.extended_amount),0)
            INTO ln_line_tax_amt
            FROM  ra_customer_trx_lines_all rctl
            WHERE rctl.customer_trx_id = p_cust_trx_id
            AND rctl.link_to_cust_trx_line_id = cbi_line(j).customer_trx_line_id
-           AND rctl.line_type = 'TAX';  
-         EXCEPTION WHEN NO_DATA_FOUND THEN 
+           AND rctl.line_type = 'TAX';
+         EXCEPTION WHEN NO_DATA_FOUND THEN
            ln_line_tax_amt := 0;
          WHEN OTHERS THEN
            ln_line_tax_amt := 0;
          END;
-         
+
 		-- Added for Kitting, Defect# 37675
 		 IF cbi_line(j).attribute3 = 'K'
 			THEN
@@ -3497,11 +3485,11 @@ PACKAGE BODY xx_ar_ebl_cons_invoices AS
 																	x_kit_extended_amt     => ln_kit_extended_amt,
 																	x_kit_unit_price       => ln_kit_unit_price
 																  );
-				  
+
 				 cbi_line(j).unit_price         := ln_kit_unit_price;
-				 cbi_line(j).extended_amount    := ln_kit_extended_amt;				 
+				 cbi_line(j).extended_amount    := ln_kit_extended_amt;
 		 END IF;
-		 
+
 		 lc_kit_sku_desc := NULL;
 		 IF cbi_line(j).attribute4 IS NOT NULL AND cbi_line(j).attribute3 = 'D'
 		    THEN
@@ -3513,13 +3501,13 @@ PACKAGE BODY xx_ar_ebl_cons_invoices AS
 				   AND organization_id = NVL(cbi_line(j).whse_id,p_organization_id)
 				   ;
 			  EXCEPTION
-				WHEN OTHERS 
+				WHEN OTHERS
 				THEN
 				  lc_kit_sku_desc := NULL;
 			  END;
 	     END IF;
    -- End of Kitting Changes, Defect# 37675
-   
+
          INSERT INTO xx_ar_ebl_cons_dtl_main
             (cons_inv_id
             ,customer_trx_id
@@ -3566,7 +3554,7 @@ PACKAGE BODY xx_ar_ebl_cons_invoices AS
             ,dept_desc
             ,dept_sft_hdr
             ,dept_code -- Added for Defect 36437 (MOD4B Release 3)
-            ,line_tax_amt 
+            ,line_tax_amt
 			,kit_sku   -- Added for Kitting, Defect# 37675
 			,kit_sku_desc  -- Added for Kitting, Defect# 37675
             ,parent_cust_doc_id
@@ -3814,7 +3802,7 @@ PACKAGE BODY xx_ar_ebl_cons_invoices AS
                        AND    parent_cust_doc_id = cust_doc_id_rec.parent_cust_doc_id;
                     END LOOP;
                  END IF;
-				 
+
 				 -- Added For Bill Complete Loop By Dinesh For Separate Bill Test for Bill Complete and Non-BillComplete
                  FOR file_ids_rec IN (SELECT --- DISTINCT DISTINCT file_id
                                       DISTINCT email_address
@@ -3869,7 +3857,7 @@ PACKAGE BODY xx_ar_ebl_cons_invoices AS
                     AND    cust_acct_site_id = nvl(file_ids_rec.cust_acct_site_id,cust_acct_site_id)
     	            AND    extract_batch_id = p_batch_id;
                  END LOOP;
-				 
+
                  FOR trans_ids_rec IN (SELECT DISTINCT file_id
                                        FROM   xx_ar_ebl_cons_hdr_main
                                        WHERE  parent_cust_doc_id = cust_doc_id_rec.parent_cust_doc_id
@@ -4034,12 +4022,12 @@ PACKAGE BODY xx_ar_ebl_cons_invoices AS
                                           ,'X')
                     AND    extract_batch_id = p_batch_id;
                  END LOOP;
-				 
+
                  FOR trans_ids_rec IN (SELECT --- DISTINCT DISTINCT file_id
                                        DISTINCT email_address
 								       FROM   xx_ar_ebl_cons_hdr_main
                                        WHERE  parent_cust_doc_id = cust_doc_id_rec.parent_cust_doc_id
-									   AND    c_ext_attr1 IS NULL								 --Added by Dinesh For Separate Bill Test for Bill Complete and Non-BillComplete		
+									   AND    c_ext_attr1 IS NULL								 --Added by Dinesh For Separate Bill Test for Bill Complete and Non-BillComplete
                                        AND    extract_batch_id = p_batch_id)
                  LOOP
                     --      IF (cust_doc_id_rec.ebill_transmission_type = 'EMAIL') THEN
@@ -4254,15 +4242,15 @@ PACKAGE BODY xx_ar_ebl_cons_invoices AS
                ln_total_gift_card_amt := 0;
                ln_total_salestax_amt := 0;
                BEGIN
-                  SELECT SUM(original_invoice_amount-total_gift_card_amount), 
-                    SUM(gross_sale_amount - total_coupon_amount - total_freight_amount - total_discount_amount), 
+                  SELECT SUM(original_invoice_amount-total_gift_card_amount),
+                    SUM(gross_sale_amount - total_coupon_amount - total_freight_amount - total_discount_amount),
                     SUM(total_coupon_amount + total_freight_amount + total_discount_amount),
-                    SUM(total_gift_card_amount), 
+                    SUM(total_gift_card_amount),
                     SUM(total_gst_amount + total_pst_amount + total_us_tax_amount) --Module 4B Release 1
-                  INTO   ln_total_due, 
-                    ln_total_merchandise_amt, 
+                  INTO   ln_total_due,
+                    ln_total_merchandise_amt,
                     ln_total_misc_amt,
-                    ln_total_gift_card_amt, 
+                    ln_total_gift_card_amt,
                     ln_total_salestax_amt  --Module 4B Release 1
                   FROM   xx_ar_ebl_cons_hdr_main hdr
                   WHERE  hdr.file_id = file_rec.file_id;
@@ -4275,9 +4263,9 @@ PACKAGE BODY xx_ar_ebl_cons_invoices AS
                      ln_total_salestax_amt := 0;
                END;
                BEGIN
-                  SELECT MAX(bill_due_date), 
+                  SELECT MAX(bill_due_date),
                          MAX(payment_term_discount_date) --Module 4B Release 1
-                  INTO   ld_due_date, 
+                  INTO   ld_due_date,
                          ld_payment_term_disc_date       --Module 4B Release 1
                   FROM   xx_ar_ebl_cons_hdr_main hdr
                   WHERE  hdr.file_id = file_rec.file_id;
@@ -4290,7 +4278,7 @@ PACKAGE BODY xx_ar_ebl_cons_invoices AS
                BEGIN
                   SELECT DISTINCT consolidated_bill_number, 				--NAIT-61963
                          payment_term  --Module 4B Release 1
-                  INTO   ln_cons_inv_id, 
+                  INTO   ln_cons_inv_id,
                          lc_payment_terms  --Module 4B Release 1
                   FROM   xx_ar_ebl_cons_hdr_main hdr
                   WHERE  hdr.file_id = file_rec.file_id;
@@ -4486,42 +4474,42 @@ PACKAGE BODY xx_ar_ebl_cons_invoices AS
                                                ,aops_account_number
                                                ,customer_name
 											   ,consolidated_bill_number --Added consolidated_bill_number for Defect#NAIT-70500 by Thilak --NAIT-61963
-                                FROM   xx_ar_ebl_cons_hdr_main hdr, xx_cdh_cust_acct_ext_b caeb  -- join for changes for jira NAIT - 79913 
+                                FROM   xx_ar_ebl_cons_hdr_main hdr, xx_cdh_cust_acct_ext_b caeb  -- join for changes for jira NAIT - 79913
                                 WHERE  hdr.parent_cust_doc_id = trans_id.parent_cust_doc_id
 								AND    caeb.n_ext_attr2 = trans_id.parent_cust_doc_id
-								
+
                                 AND    hdr.transmission_id = trans_id.transmission_id
                                 AND    hdr.extract_batch_id = p_batch_id
 								-- Added below check for file split criteria defect # NAIT-29918
-								-- start 
-							
+								-- start
+
 								AND NOT EXISTS (SELECT 1
                                                     FROM xx_ar_ebl_file eb
                                                     WHERE eb.cons_billing_number = hdr.consolidated_bill_number
-                                                    AND eb.paydoc_flag IS NULL  
+                                                    AND eb.paydoc_flag IS NULL
                                                     AND eb.file_type             = 'STUB'
                                                     AND eb.status                = 'RENDER'
                                                     )
 								--End
 								-- start of changes for jira NAIT - 79913 - Adding check to only pick those cust_docs which has transactions in  XX_AR_EBL_CONS_HDR_MAIN
 								-- so that transmission id of only those records should be picked to update transmission_id of stub files.
-								AND 1 <= ( CASE WHEN caeb.c_ext_attr13 = 'DB' THEN(SELECT count(1) 
+								AND 1 <= ( CASE WHEN caeb.c_ext_attr13 = 'DB' THEN(SELECT count(1)
 													FROM XX_AR_EBL_CONS_HDR_MAIN hdr1
-													WHERE 1=1    
+													WHERE 1=1
 													AND hdr1.parent_cust_doc_id = trans_id.parent_cust_doc_id
 													AND hdr1.transaction_class IN ('Invoice','Debit Memo')
 													AND hdr1.cons_inv_id = hdr.cons_inv_id)
-												WHEN caeb.c_ext_attr13 = 'CR' THEN(SELECT count(1) 
+												WHEN caeb.c_ext_attr13 = 'CR' THEN(SELECT count(1)
 													FROM XX_AR_EBL_CONS_HDR_MAIN hdr1
-													WHERE 1=1    
+													WHERE 1=1
 													AND hdr1.parent_cust_doc_id = trans_id.parent_cust_doc_id
 													AND hdr1.transaction_class IN ('Credit Memo')
-													AND hdr1.cons_inv_id = hdr.cons_inv_id)	
-												ELSE    1 
+													AND hdr1.cons_inv_id = hdr.cons_inv_id)
+												ELSE    1
                                             END
 										 )
 							-- End of changes for jira NAIT -79913
-	
+
 								)
                LOOP
                     --Module 4B Release 1 Start
@@ -4534,12 +4522,12 @@ PACKAGE BODY xx_ar_ebl_cons_invoices AS
                     BEGIN
                         SELECT SUM(gross_sale_amount - total_coupon_amount - total_freight_amount - total_discount_amount),
                             SUM(total_coupon_amount + total_freight_amount + total_discount_amount),
-                            SUM(total_gift_card_amount), 
+                            SUM(total_gift_card_amount),
                             SUM(total_us_tax_amount + total_gst_amount + total_pst_amount)
-                        INTO   ln_total_merchandise_amt, 
+                        INTO   ln_total_merchandise_amt,
                             ln_total_misc_amt,
-                            ln_total_gift_card_amt, 
-                            ln_total_salestax_amt    
+                            ln_total_gift_card_amt,
+                            ln_total_salestax_amt
                         FROM   xx_ar_ebl_cons_hdr_main hdr
                         WHERE  hdr.cons_inv_id = stub_rec.cons_inv_id
 						 AND hdr.parent_cust_doc_id = trans_id.parent_cust_doc_id --Added Aniket CG defect # NAIT-29918
@@ -4575,7 +4563,7 @@ PACKAGE BODY xx_ar_ebl_cons_invoices AS
                         lc_payment_terms := NULL;
                     END;
                     --Module 4B Release 1 End
-                  
+
                     INSERT INTO xx_ar_ebl_file
                      (file_id
                      ,transmission_id
@@ -4778,7 +4766,7 @@ PACKAGE BODY xx_ar_ebl_cons_invoices AS
                                                      );
          IF doc_detail_rec.billdocs_delivery_method = 'eTXT' THEN
            lc_translation_name := 'XX_CDH_EBL_TXT_HDR_FIELDS';
-         ELSE 
+         ELSE
            lc_translation_name := 'XX_CDH_EBILLING_FIELDS';
          END IF;
          FOR fields_rec IN lcu_file_name(doc_detail_rec.parent_cust_doc_id,lc_translation_name)
@@ -5249,6 +5237,3 @@ PACKAGE BODY xx_ar_ebl_cons_invoices AS
    END;
 
 END xx_ar_ebl_cons_invoices;
-/
-SHOW ERRORS;
-EXIT;

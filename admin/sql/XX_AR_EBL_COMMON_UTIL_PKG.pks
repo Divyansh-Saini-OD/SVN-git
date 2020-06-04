@@ -1,16 +1,3 @@
-SET SHOW OFF
-SET VERIFY OFF
-SET ECHO OFF
-SET TAB OFF
-SET FEEDBACK OFF
-SET TERM ON
-
-PROMPT Creating PACKAGE BODY XX_AR_EBL_COMMON_UTIL_PKG
-
-PROMPT Program exits IF the creation IS NOT SUCCESSFUL
-
-WHENEVER SQLERROR CONTINUE
-
 create or replace PACKAGE XX_AR_EBL_COMMON_UTIL_PKG
 AS
 	-- +===================================================================================+
@@ -44,11 +31,11 @@ AS
 	-- |=======   ==========   =============           ====================================|
 	-- |DRAFT 1.0 10-MAR-2010  Ranjith Prabu           Initial draft version               |
 	-- |1.1       12-MAR-2013  Rajeshkumar M R         Moved department description        |
-	-- |                                               to header Defect# 15118             |   
+	-- |                                               to header Defect# 15118             |
 	-- |1.2       04-NOV-2013  Arun Gannarapu          Made changes to fix the bill_From_date|
-	-- |                                                with R12 changes                   |  
+	-- |                                                with R12 changes                   |
 	-- |1.3       20-NOV-2013  Arun Gannarapu          Made changes to fix the CA tax issue|
-	-- |                                               Defect # 26548                      |  
+	-- |                                               Defect # 26548                      |
 	-- |1.4       19-DEC-2013  Arun Gannarapu          Made changes to fix the bill from date|
 	-- |                                                issue defect # 27239               |
 	-- |1.5       17-FEB-2014  Arun Gannarapu          Made changes to fix the CA tax issue|
@@ -61,9 +48,9 @@ AS
 	-- |                                              (Module 4B Release 3)                |
 	-- |1.2       08-DEC-2015  Havish Kasina          Added new column dept_code in        |
 	-- |                                              xx_ar_ebl_cons_dtl_hist,             |
-	-- |                                              xx_ar_ebl_cons_hdr_hist,             |  
+	-- |                                              xx_ar_ebl_cons_hdr_hist,             |
 	-- |                                              xx_ar_ebl_ind_dtl_hist and           |
-	-- |                                              xx_ar_ebl_ind_hdr_hist tables        |          
+	-- |                                              xx_ar_ebl_ind_hdr_hist tables        |
 	-- |                                              -- Defect 36437                      |
 	-- |                                              (MOD 4B Release 3)                   |
 	-- |2.0		  24-MAY-2016  Rohit Gupta			  Changed the logic for 			   |
@@ -82,14 +69,16 @@ AS
 	-- |2.5       12-SEP-2018   Aarthi                NAIT - 58403 Added SKU level columns  |
 	-- |                                              to the history tables                 |
 	-- |2.6       23-OCT-2018   SravanKumar           NAIT- 65564 Added new function to     |
-	-- |                                              display custom message for bill       | 
+	-- |                                              display custom message for bill       |
 	-- |                                              complete customer for delivery        |
-	-- |                                              method ePDF and ePRINT.               | 
+	-- |                                              method ePDF and ePRINT.               |
 	-- |2.7       14-NOV-2018   Pjadhav               NAIT- 65564: updated GET_CONS_MSG_BCC |
-	-- |                                              display  message for bill complete    | 
-	-- |                                              customer and Paydoc method only  	    | 
-    -- |2.8       11-MAR-2019   Aarthi                NAIT- 80452: Adding POD related blurb | 
-	-- |                                              messages to individual reprint reports|           
+	-- |                                              display  message for bill complete    |
+	-- |                                              customer and Paydoc method only  	    |
+    -- |2.8       11-MAR-2019   Aarthi                NAIT- 80452: Adding POD related blurb |
+	-- |                                              messages to individual reprint reports|
+  -- |2.9       27-MAY-2020   Divyansh              Added new functions for Tariff Changes|
+  -- |                                              JIRA NAIT-129167                      | 
 	-- +===================================================================================+
 PROCEDURE PUT_LOG_LINE
   (
@@ -413,11 +402,11 @@ PROCEDURE GET_HDR_ATTR_DETAILS (p_header_id            IN  NUMBER
 -- |=======   ==========   =============        =======================================|
 -- |DRAFT 1.0 05-APR-2010  Bhuvaneswary S            Initial draft version             |
 -- |1.1       12-MAR-2013  Rajeshkumar M R         Moved department description        |
--- |                                               to header Defect# 15118             |   
+-- |                                               to header Defect# 15118             |
 -- |1.2       04-NOV-2013  Arun Gannarapu          Made changes to fix the bill_From_date|
--- |                                                with R12 changes                   |  
+-- |                                                with R12 changes                   |
 -- |1.3       20-NOV-2013  Arun Gannarapu          Made changes to fix the CA tax issue|
--- |                                               Defect # 26548                      |  
+-- |                                               Defect # 26548                      |
 -- |1.4       19-DEC-2013  Arun Gannarapu          Made changes to fix the bill from date|
 -- |                                                issue defect # 27239               |
 -- |1.5       17-FEB-2014  Arun Gannarapu          Made changes to fix the CA tax issue|
@@ -430,9 +419,9 @@ PROCEDURE GET_HDR_ATTR_DETAILS (p_header_id            IN  NUMBER
 -- |                                              (Module 4B Release 3)                |
 -- |1.2       08-DEC-2015  Havish Kasina          Added new column dept_code in        |
 -- |                                              xx_ar_ebl_cons_dtl_hist,             |
--- |                                              xx_ar_ebl_cons_hdr_hist,             |  
+-- |                                              xx_ar_ebl_cons_hdr_hist,             |
 -- |                                              xx_ar_ebl_ind_dtl_hist and           |
--- |                                              xx_ar_ebl_ind_hdr_hist tables        |          
+-- |                                              xx_ar_ebl_ind_hdr_hist tables        |
 -- |                                              -- Defect 36437                      |
 -- |                                              (MOD 4B Release 3)                   |
 -- |2.0		  24-MAY-2016  Rohit Gupta			  Changed the logic for 			   |
@@ -582,7 +571,7 @@ PROCEDURE GET_HDR_ATTR_DETAILS (p_header_id            IN  NUMBER
     PROCEDURE UPDATE_BILL_STATUS_eXLS ( p_file_id             NUMBER
                                        ,p_doc_type            VARCHAR2
                                        ,p_delivery_meth       VARCHAR2 DEFAULT 'eXLS'
-                                       ,p_request_id          NUMBER DEFAULT fnd_global.conc_request_id   
+                                       ,p_request_id          NUMBER DEFAULT fnd_global.conc_request_id
                                        ,p_debug_flag          VARCHAR2 DEFAULT 'N'
                                        );
 -- +===================================================================================+
@@ -746,7 +735,7 @@ RETURN VARCHAR2;
                                 ,p_cust_doc_id VARCHAR2
                                 ,p_batch_id VARCHAR2
                                 ,p_file_id  VARCHAR2
-                                ,p_transmission_id VARCHAR2                                
+                                ,p_transmission_id VARCHAR2
                                 ,p_status VARCHAR2
                                 );
 -- +===================================================================================+
@@ -761,7 +750,7 @@ RETURN VARCHAR2;
 -- |Version   Date          Author                 Remarks                             |
 -- |=======   ==========   =============           ====================================|
 -- |DRAFT 1.0 19-Jun-2010  Ranjith Thangasamay     Initial draft version               |
--- +===================================================================================+  
+-- +===================================================================================+
     PROCEDURE UPDATE_HDR_TABLE ( x_errbuf OUT VARCHAR2
                                 ,x_retcode OUT VARCHAR2
                                 ,p_type VARCHAR2
@@ -778,8 +767,8 @@ RETURN VARCHAR2;
 -- |===============                                                                    |
 -- |Version   Date          Author                 Remarks                             |
 -- |=======   ==========   =============           ====================================|
--- |DRAFT 1.0 19-Jun-2010  Ranjith Thangasamay     Initial draft version               |  
--- +===================================================================================+  
+-- |DRAFT 1.0 19-Jun-2010  Ranjith Thangasamay     Initial draft version               |
+-- +===================================================================================+
 
     PROCEDURE get_parent_details(p_customer_id IN NUMBER
                            ,p_account_number OUT VARCHAR2
@@ -797,11 +786,11 @@ RETURN VARCHAR2;
 -- |===============                                                                    |
 -- |Version   Date          Author                 Remarks                             |
 -- |=======   ==========   =============           ====================================|
--- |DRAFT 1.0 19-Jun-2010  Ranjith Thangasamay     Initial draft version               |  
--- +===================================================================================+  
+-- |DRAFT 1.0 19-Jun-2010  Ranjith Thangasamay     Initial draft version               |
+-- +===================================================================================+
 
-    FUNCTION get_discount_date (p_trx_id IN NUMBER) 
-    RETURN  DATE;       
+    FUNCTION get_discount_date (p_trx_id IN NUMBER)
+    RETURN  DATE;
 
 -- +===================================================================================+
 -- |                  Office Depot - Project Simplify                                  |
@@ -820,8 +809,8 @@ RETURN VARCHAR2;
   FUNCTION GET_HEADER_DISCOUNT
     (
       p_customer_trx_id IN    NUMBER )
-    RETURN VARCHAR2; 
-	
+    RETURN VARCHAR2;
+
 -- +===================================================================================+
 -- |                  Office Depot - Project Simplify                                  |
 -- +===================================================================================+
@@ -840,8 +829,8 @@ RETURN VARCHAR2;
     (
       p_cons_inv_id     IN    NUMBER,
       p_customer_trx_id IN    NUMBER )
-    RETURN VARCHAR2;  
-	
+    RETURN VARCHAR2;
+
 -- +===================================================================================+
 -- |                  Office Depot - Project Simplify                                  |
 -- +===================================================================================+
@@ -862,7 +851,7 @@ RETURN VARCHAR2;
 								       x_kit_extended_amt     OUT NUMBER ,
 									   x_kit_unit_price       OUT NUMBER
 								     );
-									 
+
 -- +===================================================================================+
 -- |                  Office Depot - Project Simplify                                  |
 -- +===================================================================================+
@@ -875,8 +864,8 @@ RETURN VARCHAR2;
 -- |=========   ==========   =============       ======================================|
 -- |DRAFT 1.0   23-OCT-2018  SravanKumar		Initial draft version        	       |
 -- |1.1        	14-Nov-2018	 Pjadhav            NAIT- 65564: updated GET_CONS_MSG_BCC  |
--- |										  	display  message for bill complete     | 	
--- |                                            customer and Paydoc method only        | 
+-- |										  	display  message for bill complete     |
+-- |                                            customer and Paydoc method only        |
 -- +===================================================================================+
 	FUNCTION get_cons_msg_bcc
 		(
@@ -884,7 +873,7 @@ RETURN VARCHAR2;
 		p_cust_account_id 	IN NUMBER,
 		p_billing_number  	IN VARCHAR2
 		)
-    RETURN VARCHAR2; 		
+    RETURN VARCHAR2;
 -- +===================================================================================+
 -- |                  Office Depot - Project Simplify                                  |
 -- +===================================================================================+
@@ -901,9 +890,60 @@ RETURN VARCHAR2;
 -- |                                            message for POD Ind Reprint report     |
 -- +===================================================================================+
 	FUNCTION get_pod_msg_ind_reprint ( p_customer_trx_id      IN  NUMBER ,
-		                               p_bill_to_customer_id  IN  NUMBER 
+		                               p_bill_to_customer_id  IN  NUMBER
 							         )
-    RETURN VARCHAR2; 
+    RETURN VARCHAR2;
+    
+-- +===================================================================================+
+-- |                  Office Depot - Project Simplify                                  |
+-- +===================================================================================+
+-- | Name        : get_line_fee_amount                                                      |
+-- | Description : To get fee amount for particular transaction                        |
+-- |                                                                                   |
+-- |                                                                                   |
+-- |                                                                                   |
+-- |Change Record:                                                                     |
+-- |===============                                                                    |
+-- |Version   Date          Author              Remarks                                |
+-- |=======   ==========   =============        =======================================|
+-- | 1.0      23-MAR-2020  Divyansh Saini       Initial draft version                  |
+-- +===================================================================================+
+	FUNCTION get_line_fee_amount ( p_customer_trx_id      IN  NUMBER)
+    RETURN NUMBER;
+
+-- +===================================================================================+
+-- |                  Office Depot - Project Simplify                                  |
+-- +===================================================================================+
+-- | Name        : get_hea_fee_amount                                                      |
+-- | Description : To get fee amount for particular transaction                        |
+-- |                                                                                   |
+-- |                                                                                   |
+-- |                                                                                   |
+-- |Change Record:                                                                     |
+-- |===============                                                                    |
+-- |Version   Date          Author              Remarks                                |
+-- |=======   ==========   =============        =======================================|
+-- | 1.0      23-MAR-2020  Divyansh Saini       Initial draft version                  |
+-- +===================================================================================+
+	FUNCTION get_hea_fee_amount ( p_customer_trx_id      IN  NUMBER)
+    RETURN NUMBER;
+-- +===================================================================================+
+-- |                  Office Depot - Project Simplify                                  |
+-- +===================================================================================+
+-- | Name        : get_fee_line_number                                                      |
+-- | Description : To get line number for particular transaction                        |
+-- |                                                                                   |
+-- |                                                                                   |
+-- |                                                                                   |
+-- |Change Record:                                                                     |
+-- |===============                                                                    |
+-- |Version   Date          Author              Remarks                                |
+-- |=======   ==========   =============        =======================================|
+-- | 1.0      23-MAR-2020  Divyansh Saini       Initial draft version                  |
+-- +===================================================================================+ 
+  FUNCTION get_fee_line_number(p_customer_trx_id NUMBER,
+                               p_description IN VARCHAR2,
+                               p_organization IN NUMBER,
+                               p_line_number IN NUMBER) 
+    RETURN NUMBER ;
  END XX_AR_EBL_COMMON_UTIL_PKG;
- /
-SHOW ERRORS;

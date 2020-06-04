@@ -1,24 +1,10 @@
-SET SHOW OFF
-SET VERIFY OFF
-SET ECHO OFF
-SET TAB OFF
-SET FEEDBACK OFF
-SET TERM ON
-
-PROMPT Creating PACKAGE  XX_AR_EBL_IND_INVOICES_PKG
-
-PROMPT Program exits IF the creation IS NOT SUCCESSFUL
-
-WHENEVER SQLERROR CONTINUE
-
-create or replace
-PACKAGE BODY xx_ar_ebl_ind_invoices_pkg AS
+create or replace PACKAGE BODY XX_AR_EBL_IND_INVOICES_PKG AS
 
    -- +=====================================================================================+
    -- |                  Office Depot - Project Simplify                                    |
    -- |                          Wipro-Office Depot                                         |
    -- +=====================================================================================+
-   -- | Name             :  XX_AR_EBL_INDIVIDUAL_INVOICES  E2059(CR 586)                    |    
+   -- | Name             :  XX_AR_EBL_INDIVIDUAL_INVOICES  E2059(CR 586)                    |
    -- | Description      :  This Package is used to fetch all the Distinct Customer Ids     |
    -- |                     and assign batch Id for the given Batch size and call the       |
    -- |                     Child Programs                                                  |
@@ -34,9 +20,9 @@ PACKAGE BODY xx_ar_ebl_ind_invoices_pkg AS
    -- |                                         to difference of original_invoice_amount    |
    -- |                                         and total_gift_card_amount per Defect# 14000|
    -- |1.3       12-MAR-2012  Rajeshkumar M R   Moved department description                |
-   -- |                                         to header Defect# 15118                     |   
+   -- |                                         to header Defect# 15118                     |
    -- |1.4      15-NOV-13    Arun Gannarapu     Made changes to pass org id to sales        |
-   -- |                                         function for R12 --Defect 26440             |   
+   -- |                                         function for R12 --Defect 26440             |
    -- |1.5      17-Aug-2015  Suresh Naragam	    Added bill to location column               |
    -- |                                         (Module 4B Release 2)                       |
    -- |1.6      15-Oct-2015  Suresh Naragam     Removed Schema References                   |
@@ -47,9 +33,10 @@ PACKAGE BODY xx_ar_ebl_ind_invoices_pkg AS
    -- |                                               (Module 4B Release 4)                 |
    -- |1.9      23-JUN-2016  Havish Kasina      Added for Kitting (Defect 37675)            |
    -- |1.10     12-JUL-2018  Aarthi             Sales person updated to NULL - Defect 45279 |
-   -- |1.11	    20-AUG-2018  Aarthi             Wave 5 Adding Tax at SKU level - NAIT 58403 |   
-   -- |1.12	    21-NOV-2018  Punit CG         Made changes in the Decode Script to fetch the|   
+   -- |1.11	    20-AUG-2018  Aarthi             Wave 5 Adding Tax at SKU level - NAIT 58403 |
+   -- |1.12	    21-NOV-2018  Punit CG         Made changes in the Decode Script to fetch the|
    -- |                                       Sales order# for recurring billing invoices   |
+   -- |1.13     27-MAY-2020  Divyansh           Added logic for JIRA NAIT-129167            |
    -- +=====================================================================================+
 
    ----------------------------------------
@@ -332,11 +319,11 @@ PACKAGE BODY xx_ar_ebl_ind_invoices_pkg AS
       -- |                                          id to sales function for |
       -- |                                          R12 --Defect 26440       |
 	  -- |1.3		17-Aug-2015	 Suresh Naragam	   Added bill to location    |
-	  -- | 										   column(Module4B Release 2)|	 
+	  -- | 										   column(Module4B Release 2)|
 	  -- |1.4		04-DEC-2015	 Havish Kasina	   Added Cost Center Dept    |
 	  -- | 										   column(Module4B Release 3)|
-	  -- |1.5       12-JUL-2018	 Aarthi            Sales person updated to   | 
-  	  -- |                                         NULL - Defect 45279       |	  
+	  -- |1.5       12-JUL-2018	 Aarthi            Sales person updated to   |
+  	  -- |                                         NULL - Defect 45279       |
       -- +===================================================================+
 
       ---------------------------------
@@ -923,22 +910,22 @@ PACKAGE BODY xx_ar_ebl_ind_invoices_pkg AS
                                                      ,trx_tab(trx_rec).po_number_sft_hdr);
             oe_profile.get('SO_ORGANIZATION_ID'
                           ,ln_organization_id);
-                          
+
                           --Added for defect 15118
             BEGIN
                 SELECT CUST_DEPT_DESCRIPTION,
-                       COST_CENTER_DEPT --Added for Defect 36437 (MOD4B Release 3) 
+                       COST_CENTER_DEPT --Added for Defect 36437 (MOD4B Release 3)
                 INTO  trx_tab(trx_rec).cost_center_desc_hdr,
-				              trx_tab(trx_rec).cost_center_dept --Added for Defect 36437 (MOD4B Release 3) 
+				              trx_tab(trx_rec).cost_center_dept --Added for Defect 36437 (MOD4B Release 3)
                 FROM XX_OM_HEADER_ATTRIBUTES_ALL XOHA,
-                     RA_CUSTOMER_TRX_ALL RCT 
+                     RA_CUSTOMER_TRX_ALL RCT
                 WHERE RCT.CUSTOMER_TRX_ID =trx_tab(trx_rec).customer_trx_id
-                AND RCT.ATTRIBUTE14= XOHA.HEADER_ID 
+                AND RCT.ATTRIBUTE14= XOHA.HEADER_ID
                AND    rownum < 2;
             EXCEPTION
                WHEN no_data_found THEN
                   trx_tab(trx_rec).cost_center_desc_hdr := NULL;
-				          trx_tab(trx_rec).cost_center_dept := NULL; --Added for Defect 36437 (MOD4B Release 3) 
+				          trx_tab(trx_rec).cost_center_dept := NULL; --Added for Defect 36437 (MOD4B Release 3)
             END;
 ---added for defect 15118
             BEGIN
@@ -964,7 +951,7 @@ PACKAGE BODY xx_ar_ebl_ind_invoices_pkg AS
                                                                              ,'NAME'
                                                                              , fnd_profile.VALUE('ORG_ID') );  -- defect 26440 */
 	           lc_sales_person := NULL;
-	           /* End Modification  for ver 1.5 Defect Id: 45279 Updating sales person to null */ 
+	           /* End Modification  for ver 1.5 Defect Id: 45279 Updating sales person to null */
 
             EXCEPTION
                WHEN no_data_found THEN
@@ -1238,8 +1225,8 @@ PACKAGE BODY xx_ar_ebl_ind_invoices_pkg AS
                          ,'COST CENTER'))
                 --,upper(nvl(trx_tab(trx_rec).cost_center_desc_hdr
                   --       ,'COST CENTER DESCRIPTION'))--Defect 15118
-                ,trx_tab(trx_rec).cost_center_desc_hdr--Defect 22582 
-                ,trx_tab(trx_rec).cost_center_dept -- Added for Defect 36437 (MOD4B Release 3) 				
+                ,trx_tab(trx_rec).cost_center_desc_hdr--Defect 22582
+                ,trx_tab(trx_rec).cost_center_dept -- Added for Defect 36437 (MOD4B Release 3)
                ,upper(nvl(trx_tab(trx_rec).po_number_sft_hdr
                          ,'PURCHASE ORDER'))
                ,upper(nvl(trx_tab(trx_rec).release_number_sft_hdr
@@ -1460,7 +1447,8 @@ PACKAGE BODY xx_ar_ebl_ind_invoices_pkg AS
                ,rctl1.customer_trx_id customer_trx_id
                ,rctl1.customer_trx_line_id customer_trx_line_id
                ,msi.item_type item_type
-               ,rctl1.line_number line_number
+               --,rctl1.line_number line_number
+               ,XX_AR_EBL_COMMON_UTIL_PKG.get_fee_line_number(rctl1.customer_trx_id,rctl1.description,p_organization_id,rctl1.line_number) line_number  -- change 1.13
                ,rctl1.link_to_cust_trx_line_id link_to_cust_trx_line_id
                ,ool.line_id order_line_id
                ,ool.line_number order_line_number
@@ -1559,7 +1547,7 @@ PACKAGE BODY xx_ar_ebl_ind_invoices_pkg AS
             lc_line_type  := 'ITEM';
             ln_seq_number := ln_seq_number + 1;
          END IF;
-		 
+
 		-- Adding the changes for Kitting, Defect# 37675
 		 IF inv_line(j).attribute3 = 'K'
 			THEN
@@ -1567,16 +1555,16 @@ PACKAGE BODY xx_ar_ebl_ind_invoices_pkg AS
 				 ln_kit_unit_price   := NULL;
 				 XX_AR_EBL_COMMON_UTIL_PKG.get_kit_extended_amount( p_customer_trx_id      => inv_line(j).customer_trx_id,
 																	p_sales_order_line_id  => inv_line(j).order_line_id,
-																	p_kit_quantity         => inv_line(j).quantity_shipped, 
+																	p_kit_quantity         => inv_line(j).quantity_shipped,
 																	x_kit_extended_amt     => ln_kit_extended_amt,
 																	x_kit_unit_price       => ln_kit_unit_price
 																  );
-				  
+
 				 inv_line(j).unit_price         := ln_kit_unit_price;
 				 inv_line(j).extended_amount    := ln_kit_extended_amt;
-				 
+
 		 END IF;
-         
+
 		 lc_kit_sku_desc := NULL;
 		 IF inv_line(j).attribute4 IS NOT NULL AND inv_line(j).attribute3 = 'D'
 			THEN
@@ -1588,21 +1576,21 @@ PACKAGE BODY xx_ar_ebl_ind_invoices_pkg AS
 				   AND organization_id = inv_line(j).whse_id
 				   ;
 			  EXCEPTION
-				WHEN OTHERS 
+				WHEN OTHERS
 				THEN
 				  lc_kit_sku_desc := NULL;
 			  END;
 		 END IF;
-	 -- End of Kitting Changes, Defect# 37675 
+	 -- End of Kitting Changes, Defect# 37675
 
          BEGIN
-           SELECT NVL(SUM(rctl.extended_amount),0) 
+           SELECT NVL(SUM(rctl.extended_amount),0)
            INTO ln_line_tax_amt
            FROM  ra_customer_trx_lines_all rctl
            WHERE rctl.customer_trx_id = p_cust_trx_id
            AND rctl.link_to_cust_trx_line_id = inv_line(j).customer_trx_line_id
-           AND rctl.line_type = 'TAX';  
-         EXCEPTION WHEN NO_DATA_FOUND THEN 
+           AND rctl.line_type = 'TAX';
+         EXCEPTION WHEN NO_DATA_FOUND THEN
            ln_line_tax_amt := 0;
          WHEN OTHERS THEN
            ln_line_tax_amt := 0;
@@ -2279,13 +2267,13 @@ PACKAGE BODY xx_ar_ebl_ind_invoices_pkg AS
                                                         );
 
             gc_debug_msg := 'Fetching site_use_id and cust_acct_site_id for transmission_id = ' || trans_id.transmission_id;
-				
+
             BEGIN
                SELECT DISTINCT bill_to_site_use_id, cust_acct_site_id --Added cust_acct_site_id for Defect#NAIT-27146 by Thilak CG on 04-SEP-2018
                INTO   ln_site_use_id, ln_cust_acct_site_id
                FROM   xx_ar_ebl_ind_hdr_main hdr
                WHERE  hdr.transmission_id = trans_id.transmission_id;
-            EXCEPTION	
+            EXCEPTION
                WHEN too_many_rows THEN
                   ln_site_use_id       := NULL;
 				  ln_cust_acct_site_id := NULL;
@@ -2332,7 +2320,7 @@ PACKAGE BODY xx_ar_ebl_ind_invoices_pkg AS
                ,fnd_global.login_id
                ,fnd_profile.VALUE('ORG_ID')
                ,lc_account_number);
-			   
+
             gc_debug_msg := 'File records fetch for transmission_id= ' || trans_id.transmission_id || ' and parent doc ID = ' || trans_id.parent_cust_doc_id;
             FOR file_rec IN (SELECT DISTINCT file_id
                                             ,file_name
@@ -2357,15 +2345,15 @@ PACKAGE BODY xx_ar_ebl_ind_invoices_pkg AS
               --Module 4B Release 1 End
                BEGIN
         /*changed the column from the amount_due_remaining to the difference of original_invoice_amount and total_gift_card_amount as per Defect# 14000*/
-                  SELECT SUM(original_invoice_amount-total_gift_card_amount), 
+                  SELECT SUM(original_invoice_amount-total_gift_card_amount),
                     SUM(gross_sale_amount - total_coupon_amount - total_freight_amount - total_discount_amount),
                     SUM(total_coupon_amount + total_freight_amount + total_discount_amount),
-                    SUM(total_gift_card_amount), 
+                    SUM(total_gift_card_amount),
                     SUM(total_gst_amount + total_pst_amount + total_us_tax_amount)    --Module 4B Release 1
-                  INTO   ln_total_due, 
-                    ln_total_merchandise_amt, 
+                  INTO   ln_total_due,
+                    ln_total_merchandise_amt,
                     ln_total_misc_amt,
-                    ln_total_gift_card_amt, 
+                    ln_total_gift_card_amt,
                     ln_total_salestax_amt           --Module 4B Release 1
                   FROM   xx_ar_ebl_ind_hdr_main hdr
                   WHERE  hdr.file_id = file_rec.file_id;
@@ -2378,9 +2366,9 @@ PACKAGE BODY xx_ar_ebl_ind_invoices_pkg AS
                      ln_total_salestax_amt := 0;
                END;
                BEGIN
-                  SELECT MAX(bill_due_date), 
+                  SELECT MAX(bill_due_date),
                   MAX(payment_term_discount_date)  --Module 4B Release 1
-                  INTO   ld_due_date, 
+                  INTO   ld_due_date,
                   ld_payment_term_disc_date        --Module 4B Release 1
                   FROM   xx_ar_ebl_ind_hdr_main hdr
                   WHERE  hdr.file_id = file_rec.file_id;
@@ -2896,5 +2884,3 @@ PACKAGE BODY xx_ar_ebl_ind_invoices_pkg AS
          RETURN lc_cust_acct_id;
    END;
 END xx_ar_ebl_ind_invoices_pkg;
-/
-SHOW ERRORS;

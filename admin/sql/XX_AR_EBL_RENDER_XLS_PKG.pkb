@@ -1,18 +1,4 @@
-SET SHOW OFF
-SET VERIFY OFF
-SET ECHO OFF
-SET TAB OFF
-SET FEEDBACK OFF
-SET TERM ON
-
-PROMPT Creating PACKAGE BODY XX_AR_EBL_RENDER_XLS_PKG
-
-PROMPT Program exits IF the creation IS NOT SUCCESSFUL
-
-WHENEVER SQLERROR CONTINUE
-
-create or replace
-PACKAGE BODY XX_AR_EBL_RENDER_XLS_PKG AS
+create or replace PACKAGE BODY XX_AR_EBL_RENDER_XLS_PKG AS
 
 /*
 -- +====================================================================================================+
@@ -36,6 +22,7 @@ PACKAGE BODY XX_AR_EBL_RENDER_XLS_PKG AS
 -- |1.5       25-Aug-2015 Suresh Naragam     Module 4B Release 2 Changes                                |
 -- |                                         (Proc : RENDER_XLS_P, Logic to delete custom tables data)  |
 -- |1.6       03-Dec-2015 Suresh Naragam     Module 4B Release 3 Changes                                |
+-- |1.7       27-MAY-2020 Divyansh           Added logic for JIRA NAIT-129167                           |
 -- +====================================================================================================+
 */
 
@@ -366,9 +353,55 @@ PROCEDURE XLS_FILE_HEADER (
    ,x_total_gift_card_amt   OUT VARCHAR2
    ,x_split_tabs_by         OUT VARCHAR2
    ,x_enable_xl_subtotal    OUT VARCHAR2
+   ,x_fee_label             OUT VARCHAR2-- Added for 1.7
+   ,x_fee_amount            OUT VARCHAR2-- Added for 1.7
 ) IS
+-- Added for 1.7
+ln_fee_amt  NUMBER:=0;
+lv_inv_type VARCHAR2(20);
+-- Ended for 1.7
 BEGIN
-
+--- Tariff changes start by 1.7
+   BEGIN
+      SELECT invoice_type 
+	    INTO lv_inv_type
+		FROM xx_ar_ebl_file 
+       WHERE file_id = p_file_id;
+   EXCEPTION WHEN OTHERS THEN
+      lv_inv_type := NULL;
+   END;
+   fnd_file.put_line(fnd_file.log,'lv_inv_type : '||lv_inv_type);
+   BEGIN
+	   IF lv_inv_type= 'IND' THEN
+		  
+		  SELECT SUM(XX_AR_EBL_COMMON_UTIL_PKG.get_hea_fee_amount(customer_trx_id ) + XX_AR_EBL_COMMON_UTIL_PKG.get_line_fee_amount(customer_trx_id)),
+			     MAX(NVL((SELECT fee_option 
+					FROM xx_cdh_cust_acct_ext_b
+				   WHERE cust_account_id = a.cust_account_id
+					 AND N_EXT_ATTR1 = a.MBS_DOC_ID
+					 AND N_EXT_ATTR2 = a.CUST_DOC_ID 
+					 AND rownum =1),'X'))
+			INTO ln_fee_amt,g_fee_option
+			FROM xx_ar_ebl_ind_hdr_main a
+           WHERE file_id = p_file_id;
+	   ELSIF lv_inv_type= 'CONS' THEN
+		  SELECT SUM(XX_AR_EBL_COMMON_UTIL_PKG.get_hea_fee_amount(customer_trx_id ) + XX_AR_EBL_COMMON_UTIL_PKG.get_line_fee_amount(customer_trx_id)),
+			     MAX(NVL((SELECT fee_option 
+					FROM xx_cdh_cust_acct_ext_b
+				   WHERE cust_account_id = a.cust_account_id
+					 AND N_EXT_ATTR1 = a.MBS_DOC_ID
+					 AND N_EXT_ATTR2 = a.CUST_DOC_ID 
+					 AND rownum =1),'X'))
+			INTO ln_fee_amt,g_fee_option
+			FROM xx_ar_ebl_cons_hdr_main a
+           WHERE file_id = p_file_id;
+	   END IF;
+   EXCEPTION WHEN OTHERS THEN
+      ln_fee_amt := NULL;
+   END;
+   
+   fnd_file.put_line(fnd_file.log,'ln_fee_amt : '||ln_fee_amt);
+--- Tariff changes end by 1.7
     SELECT TRIM(P.label_total_due || ' ' || F.total_due) cell_total_due, F.description,
            CASE WHEN F.invoice_type='IND' THEN P.label_cons_bill_number || ' ' || P.value_null_cons_bill_number ELSE P.label_cons_bill_number || ' ' || NVL(F.cons_billing_number, P.value_mult_cons_bills) END cell_cons_bill_number,
            TRIM(P.label_for_billing_period || ' ' || TO_CHAR(T.billing_dt_from,NVL(P.date_format,'MM/DD/RRRR')) || ' - ' || TO_CHAR(T.billing_dt,NVL(P.date_format,'MM/DD/RRRR'))) cell_billing_period,
@@ -381,27 +414,33 @@ BEGIN
            --Module 4B Release 1 Start
            TRIM(P.label_total_merchandise_amt || ' ') total_merchandise_label,
            --TRIM(LTRIM(TO_CHAR(F.total_merchandise_amt,'$999,999,999,999.00'))) total_merchandise_amt,
-           F.total_merchandise_amt total_merchandise_amt,
+           --F.total_merchandise_amt total_merchandise_amt,  -- Commented for 1.7
+           F.total_merchandise_amt - NVL(ln_fee_amt,0) total_merchandise_amt,  -- Added for 1.7
            TRIM(P.label_total_sales_tax_amt || ' ') total_sales_tax_label,
            --TRIM(LTRIM(TO_CHAR(F.total_sales_tax_amt,'$999,999,999,999.00'))) total_sales_tax_amt,
            F.total_sales_tax_amt total_sales_tax_amt,
            TRIM(P.label_total_misc_amt || ' ') total_misc_label,
            --TRIM(LTRIM(TO_CHAR(F.total_misc_amt,'$999,999,999,999.00'))) total_misc_amt,
-           F.total_misc_amt total_misc_amt,
+--           F.total_misc_amt total_misc_amt,-- Commented for 1.7
+           DECODE(g_fee_option,'Detail',F.total_misc_amt,F.total_misc_amt + NVL(ln_fee_amt,0)) total_misc_amt,  -- Added for 1.7
            DECODE(F.TOTAL_GIFT_CARD_AMT,0,NULL,NULL,NULL,LTRIM(P.label_total_gift_card_amt || ' ' )) total_gift_card_label,
            --DECODE(F.TOTAL_GIFT_CARD_AMT,0,NULL,NULL,NULL,LTRIM(TO_CHAR(F.total_gift_card_amt,'$999,999,999,999.00'))) total_gift_card_amt
            DECODE(F.TOTAL_GIFT_CARD_AMT,0,NULL,NULL,NULL,F.total_gift_card_amt) total_gift_card_amt
            --Module 4B Release 1 End
-           ,SPLIT_TABS_BY 
+           ,SPLIT_TABS_BY
            ,NVL(ENABLE_XL_SUBTOTAL,'N')
+		       ,label_fee_amt -- Added for 1.7
+		       ,DECODE(g_fee_option,'Detail',NVL(ln_fee_amt,0),NULL)-- Added for 1.7
       INTO X_CELL_TOTAL_DUE, X_DESCRIPTION, X_CELL_CONS_BILL_NUMBER, X_CELL_BILLING_PERIOD, X_CELL_PAY_TERMS, X_CELL_DUE_DATE
           ,X_BILLING_FOR, X_BILLING_ID, X_AOPS_ID, X_INCLUDE_HEADER, X_LOGO_HYPERLINK_URL, X_LOGO_ALT_TEXT, X_LOGO_PATH,
-          X_TOTAL_MERCHANDISE_LABEL, X_TOTAL_MERCHANDISE_AMT, 
-          X_TOTAL_SALESTAX_LABEL, X_TOTAL_SALESTAX_AMT, 
-          X_TOTAL_MISC_LABEL, X_TOTAL_MISC_AMT, 
+          X_TOTAL_MERCHANDISE_LABEL, X_TOTAL_MERCHANDISE_AMT,
+          X_TOTAL_SALESTAX_LABEL, X_TOTAL_SALESTAX_AMT,
+          X_TOTAL_MISC_LABEL, X_TOTAL_MISC_AMT,
           X_TOTAL_GIFT_CARD_LABEL, X_TOTAL_GIFT_CARD_AMT,
           X_SPLIT_TABS_BY,
-          X_ENABLE_XL_SUBTOTAL
+          X_ENABLE_XL_SUBTOTAL,
+          x_fee_label,
+		      x_fee_amount
       FROM XX_AR_EBL_FILE F
       JOIN XX_AR_EBL_TRANSMISSION T
         ON F.transmission_id=T.transmission_id
@@ -411,8 +450,9 @@ BEGIN
                (SELECT target_value1 label_billing_for, target_value2 label_account_number, target_value3 label_billing_id, target_value4 label_cons_bill_number,
                        target_value5 value_null_cons_bill_number, target_value6 label_for_billing_period, target_value7 label_pay_terms,
                        target_value8 label_bill_due_date, target_value9 label_total_due, target_value10 date_format, target_value11 value_mult_cons_bills,
-                       target_value12 label_total_merchandise_amt, target_value13 label_total_sales_tax_amt, 
+                       target_value12 label_total_merchandise_amt, target_value13 label_total_sales_tax_amt,
                        target_value14 label_total_misc_amt, target_value15 label_total_gift_card_amt
+                       ,target_value16 label_fee_amt-- Added for 1.7
                   FROM XX_FIN_TRANSLATEDEFINITION D
                   JOIN XX_FIN_TRANSLATEVALUES V
                     ON D.translate_id=V.translate_id
@@ -477,7 +517,7 @@ BEGIN
             ,'VARCHAR2'
             ,xcecf.conc_field_label
             ,seq
-       FROM XX_CDH_EBL_TEMPL_DTL xcetd, 
+       FROM XX_CDH_EBL_TEMPL_DTL xcetd,
            XX_CDH_EBL_CONCAT_FIELDS xcecf,
            XX_AR_EBL_FILE xaef
        WHERE xcetd.FIELD_ID = xcecf.CONC_FIELD_ID
@@ -553,7 +593,7 @@ BEGIN
              UNION  -- Query to get the concatenated Columns
              SELECT  xcetd.SORT_ORDER, xcetd.SORT_TYPE, 'VARCHAR2' data_type, xcetd.seq
                     ,CASE WHEN xcetd.seq>0 THEN 0 ELSE 1 END hide
-               FROM XX_CDH_EBL_TEMPL_DTL xcetd, 
+               FROM XX_CDH_EBL_TEMPL_DTL xcetd,
                     XX_CDH_EBL_CONCAT_FIELDS xcecf,
                     XX_AR_EBL_FILE xaef
               WHERE xcetd.FIELD_ID = xcecf.CONC_FIELD_ID
@@ -631,7 +671,7 @@ BEGIN
                           ,NULL
                           ,SEQ
                           ,CASE WHEN seq>0 THEN 0 ELSE 1 END hide
-                     FROM XX_CDH_EBL_TEMPL_DTL xcetd, 
+                     FROM XX_CDH_EBL_TEMPL_DTL xcetd,
                          XX_CDH_EBL_CONCAT_FIELDS xcecf,
                          XX_AR_EBL_FILE xaef
                      WHERE xcetd.FIELD_ID = xcecf.CONC_FIELD_ID
@@ -675,7 +715,7 @@ BEGIN
                      SELECT XCECF.CONC_FIELD_ID
                           ,seq
                           ,CASE WHEN seq>0 THEN 0 ELSE 1 END hide
-                     FROM XX_CDH_EBL_TEMPL_DTL xcetd, 
+                     FROM XX_CDH_EBL_TEMPL_DTL xcetd,
                          XX_CDH_EBL_CONCAT_FIELDS xcecf,
                          XX_AR_EBL_FILE xaef
                      WHERE xcetd.FIELD_ID = xcecf.CONC_FIELD_ID
@@ -759,18 +799,15 @@ BEGIN
   END;
 
   OPEN x_cursor FOR
-  
+
   SELECT DISTINCT tab_num, TRANSLATE(tab_name,lc_spl_chars,lc_replace_with) tab_name
   FROM XX_AR_EBL_XL_TAB_SPLIT_HDR H
   WHERE H.file_id = p_file_id
   AND H.cust_doc_id = NVL(p_cust_doc_id,H.cust_doc_id)
   ORDER BY tab_num;
-  
+
   x_maxtabs := ln_max_tabs;
 
 END GET_XL_TABS_INFO;
 
 END XX_AR_EBL_RENDER_XLS_PKG;
-/
-
-SHOW ERR
