@@ -1,0 +1,17 @@
+-- +==========================================================================+
+-- |                  Office Depot - Project Simplify                         |
+-- +==========================================================================+
+-- | RICE ID     :                                                            |
+-- | Name        :  Table Alter for Suppliers table                           |
+-- |                                                                          |
+-- | SQL Script to update the following object                                |
+-- |             Table       : XX_CDH_CUST_ACCT_EXT_B                       |
+-- |                                                                          |
+-- |Change Record:                                                            |
+-- |===============                                                           |
+-- |Version   Date         Author               Remarks                       |
+-- |=======   ==========   =============        ==============================|
+-- | 1.0      03-JUN-2020  Divyansh Saini        Added new columns           |
+-- +==========================================================================+
+alter table xxcrm.XX_CDH_CUST_ACCT_EXT_B
+add (fee_option NUMBER);
