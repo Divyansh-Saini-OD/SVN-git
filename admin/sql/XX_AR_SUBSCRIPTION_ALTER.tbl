@@ -1,0 +1,40 @@
+SET VERIFY OFF;
+SET SHOW OFF;
+SET ECHO OFF;
+SET TAB OFF;
+SET FEEDBACK OFF;
+ 
+WHENEVER SQLERROR CONTINUE;
+ 
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+-- +==================================================================================+  
+-- | Office Depot - Project Simplify                                                  |
+-- |                                                              |
+-- +==================================================================================+
+-- | SQL Script to Alter the table:  xx_ar_subscriptions                         |
+-- |                                                                                  |
+-- |
+-- |                                                                                  |
+-- |                                                                                  |
+-- |Change Record:                                                                    |
+-- |===============                                                                   |
+-- |Version   Date          Author               Remarks                              |
+-- |=======   ===========   =============        =====================================|
+-- |1.0       04-Jun-2020   M K Pramod Kumar     Initial DRAFT version for NAIT-119893 |
+-- |                                                                                  |
+-- +==================================================================================+
+
+--+=====================================================================+
+--+               Alter TABLE xx_ar_subscriptions
+--+=====================================================================+
+
+
+ALTER TABLE xx_ar_subscriptions
+ADD REV_REC_IND   VARCHAR2(1) ;
+  
+
+GRANT  ALL ON xx_ar_subscriptions TO APPS;
+
+   /
+EXIT;
