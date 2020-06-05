@@ -108,6 +108,7 @@ public class ODEbillCustDocVORowImpl extends OAViewRowImpl {
     public static final int PAYTERMLOV = 76;
     public static final int BCPODFLAG = 77;
     public static final int BCPODCASE = 78;
+    public static final int FEEOPTION = 79;
 
 
     /**
@@ -1434,6 +1435,8 @@ public class ODEbillCustDocVORowImpl extends OAViewRowImpl {
             return getBcPodFlag();
         case BCPODCASE:
             return getBcpodcase();
+        case FEEOPTION:
+            return getFeeOption();
         default:
             return super.getAttrInvokeAccessor(index, attrDef);
         }
@@ -1676,6 +1679,9 @@ public class ODEbillCustDocVORowImpl extends OAViewRowImpl {
             return;
         case BCPODCASE:
             setBcpodcase((String)value);
+            return;
+        case FEEOPTION:
+            setFeeOption((String)value);
             return;
         default:
             super.setAttrInvokeAccessor(index, value, attrDef);
@@ -2173,5 +2179,17 @@ public class ODEbillCustDocVORowImpl extends OAViewRowImpl {
      */
     public void setBcpodcase(String value) {
         setAttributeInternal(BCPODCASE, value);
+    }
+
+    /**Gets the attribute value for FEE_OPTION using the alias name FeeOption
+     */
+    public String getFeeOption() {
+        return (String) getAttributeInternal(FEEOPTION);
+    }
+
+    /**Sets <code>value</code> as attribute value for FEE_OPTION using the alias name FeeOption
+     */
+    public void setFeeOption(String value) {
+        setAttributeInternal(FEEOPTION, value);
     }
 }

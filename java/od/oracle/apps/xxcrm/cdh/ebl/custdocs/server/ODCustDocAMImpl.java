@@ -17,7 +17,7 @@ package od.oracle.apps.xxcrm.cdh.ebl.custdocs.server;
   -- |======== =========== ============= ========================================|
   -- |DRAFT 1A 24-FEB-2010 Vasan S        Initial draft version                   |
   -- |2.0      16-FEB-2017 Havish K       Closing the leaked connection/statement |
-  -- |3.0      13-Nov-2018 Reddy Sekhar K Code Added for Req# NAIT-61952 & 66520 | 
+  -- |3.0      13-Nov-2018 Reddy Sekhar K Code Added for Req# NAIT-61952 & 66520 |
   -- |                                                                           |
   -- |===========================================================================|
   -- | Subversion Info:                                                          |
@@ -28,6 +28,8 @@ package od.oracle.apps.xxcrm.cdh.ebl.custdocs.server;
   -- +===========================================================================+
 */
 
+
+import java.sql.PreparedStatement;
 
 import od.oracle.apps.xxcrm.cdh.ebl.poplist.server.ODEBillDelyMethodInvoicePVOImpl;
 import od.oracle.apps.xxcrm.cdh.ebl.poplist.server.ODEBillDelyMethodPVOImpl;
@@ -58,7 +60,6 @@ import od.oracle.apps.xxcrm.cdh.ebl.poplist.server.ODEBillPaymentFreqPVOImpl;
 
 import oracle.apps.fnd.framework.OAFwkConstants;
 import oracle.apps.fnd.framework.webui.beans.message.OAMessageChoiceBean;
-
 import oracle.jbo.RowSetIterator;
 
 //  ---------------------------------------------------------------
@@ -192,10 +193,44 @@ public class ODCustDocAMImpl extends OAApplicationModuleImpl {
   }//calculateEffDate
 
   /**
-   * execQuery to return Number
-   * Generic method to execute count(1) query
-   * @param pQuery -Query string as parameter
+   * 
+   *
    */
+   public String getDefaultFee(String doctype,String delmethod)
+   {
+      ODUtil utl = new ODUtil(this);
+      String retStr = null;
+      OADBTransaction db = this.getOADBTransaction();
+      String Feeoptstr = "SELECT xftv.SOURCE_VALUE1\n" + 
+                       "FROM xx_fin_translatedefinition xft,\n" + 
+                       "     xx_fin_translatevalues xftv\n" + 
+                       "WHERE xft.translate_id = xftv.translate_id\n" + 
+                       "AND xftv.ENABLED_FLAG = 'Y'\n" + 
+                       "AND sysdate between xftv.START_DATE_ACTIVE and  NVL(xftv.END_DATE_ACTIVE,sysdate+1)\n" + 
+                       "AND xft.translation_name = 'OD_IREC_BILL_DOC_DEFAULTS'\n"+
+                       "AND NVL(Source_value3,'"+doctype+"') = '"+doctype+"'" +
+                       "AND Source_value2 = '"+delmethod+"' " +
+                       "AND upper(target_value2)= 'YES'AND rownum =1";
+      PreparedStatement stmt = db.createPreparedStatement(Feeoptstr,1);
+
+        try {
+            ResultSet rset=stmt.executeQuery();
+            if (rset.next())
+            {
+               retStr =rset.getString(1);
+            }
+            
+        } catch (SQLException e) {
+             utl.log("getDefaultFee:Error:"+ e.toString());
+        }
+        return retStr;
+    }
+
+    /**
+     * execQuery to return Number
+     * Generic method to execute count(1) query
+     * @param pQuery -Query string as parameter
+     */
 
   public Number execQuery(String pQuery)
   {
@@ -307,7 +342,9 @@ public class ODCustDocAMImpl extends OAApplicationModuleImpl {
     //utl.log("ODEBillDocumentsCO:Query:"+lqry);
         
     Number attrGrpID = this.execQuery(lqry);
-        
+    
+     String FeeOpt = this.getDefaultFee("Invoice","ePDF");
+    
     utl.log("ODEBillAMImpl:Attribute Group id:"+attrGrpID.toString());
 
     OAViewObject CustDocVO = (OAViewObject) this.findViewObject("ODEbillCustDocVO");
@@ -342,7 +379,9 @@ public class ODCustDocAMImpl extends OAApplicationModuleImpl {
       cdRow.setAttribute("CExtAttr7","Y"); //Direct Flag
       cdRow.setAttribute("NExtAttr19",new Number(0));
       cdRow.setAttribute("Supusrend",Boolean.TRUE);
-       cdRow.setAttribute("BcPodFlag","N");//Added By Reddy Sekhar K on 13 Oct 2018 for the Req# NAIT-61952 & 66520 
+      cdRow.setAttribute("BcPodFlag","N");//Added By Reddy Sekhar K on 13 Oct 2018 for the Req# NAIT-61952 & 66520 
+      cdRow.setAttribute("FeeOption",FeeOpt); // Added by Divyansh
+       
        CustDocVO.insertRow(cdRow);
       cdRow.setNewRowState(cdRow.STATUS_INITIALIZED); 
       //Defect#40073 Bhagwan Rao  7March2017
@@ -902,4 +941,9 @@ public class ODCustDocAMImpl extends OAApplicationModuleImpl {
     }
 
 
+    /**Container's getter for feeoptionType1
+     */
+    public feeoptionTypeImpl getfeeoptionType1() {
+        return (feeoptionTypeImpl)findViewObject("feeoptionType1");
+    }
 }

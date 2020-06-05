@@ -1,0 +1,78 @@
+<?xml version='1.0' encoding='windows-1252' ?>
+<!DOCTYPE ViewObject SYSTEM "jbo_03_01.dtd">
+
+<ViewObject
+   Name="feeoptionType"
+   BindingStyle="OracleName"
+   CustomQuery="true"
+   RowClass="od.oracle.apps.xxcrm.cdh.ebl.custdocs.server.feeoptionTypeRowImpl"
+   ComponentClass="od.oracle.apps.xxcrm.cdh.ebl.custdocs.server.feeoptionTypeImpl"
+   FetchMode="FETCH_AS_NEEDED"
+   UseGlueCode="false" >
+   <SQLQuery><![CDATA[
+select xftv.TARGET_VALUE1 meaning,xftv.SOURCE_VALUE1 lookup_code,SOURCE_VALUE2,SOURCE_VALUE3
+FROM xx_fin_translatedefinition xft,
+     xx_fin_translatevalues xftv
+WHERE xft.translate_id = xftv.translate_id
+AND xftv.ENABLED_FLAG = 'Y'
+AND sysdate between xftv.START_DATE_ACTIVE and  NVL(xftv.END_DATE_ACTIVE,sysdate+1)
+AND xft.translation_name = 'OD_IREC_BILL_DOC_DEFAULTS'
+   ]]></SQLQuery>
+   <DesignTime>
+      <Attr Name="_isCodegen" Value="true" />
+      <Attr Name="_isExpertMode" Value="true" />
+      <Attr Name="_version" Value="10.1.3.43.6" />
+      <Attr Name="_codeGenFlag2" Value="Access|Coll|VarAccess" />
+   </DesignTime>
+   <ViewAttribute
+      Name="meaning"
+      IsPersistent="false"
+      IsNotNull="true"
+      Precision="80"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="MEANING"
+      Expression="MEANING"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="80" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="lookup_code"
+      IsUpdateable="false"
+      IsPersistent="false"
+      Precision="255"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="lookup_code"
+      Expression="lookup_code"
+      SQLType="VARCHAR" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="SourceValue2"
+      IsPersistent="false"
+      Precision="240"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="SOURCE_VALUE2"
+      Expression="SOURCE_VALUE2"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="240" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="SourceValue3"
+      IsPersistent="false"
+      Precision="240"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="SOURCE_VALUE3"
+      Expression="SOURCE_VALUE3"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="240" />
+      </DesignTime>
+   </ViewAttribute>
+</ViewObject>

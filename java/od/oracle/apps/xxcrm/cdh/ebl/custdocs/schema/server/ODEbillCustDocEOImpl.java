@@ -112,6 +112,7 @@ public class ODEbillCustDocEOImpl extends OAPlsqlEntityImpl {
     public static final int DEXTATTR10 = 57;
     public static final int ROWID = 58;
     public static final int BCPODFLAG = 59;
+    public static final int FEEOPTION = 60;
 
 
     private static oracle.apps.fnd.framework.server.OAEntityDefImpl mDefinitionObject;
@@ -1441,6 +1442,8 @@ public class ODEbillCustDocEOImpl extends OAPlsqlEntityImpl {
             return getRowID();
         case BCPODFLAG:
             return getBcPodFlag();
+        case FEEOPTION:
+            return getFeeOption();
         default:
             return super.getAttrInvokeAccessor(index, attrDef);
         }
@@ -1627,6 +1630,9 @@ public class ODEbillCustDocEOImpl extends OAPlsqlEntityImpl {
         case BCPODFLAG:
             setBcPodFlag((String)value);
             return;
+        case FEEOPTION:
+            setFeeOption((String)value);
+            return;
         default:
             super.setAttrInvokeAccessor(index, value, attrDef);
             return;
@@ -1701,8 +1707,9 @@ public class ODEbillCustDocEOImpl extends OAPlsqlEntityImpl {
 		      +"    ,p_last_update_date     =>   :57 "
 		      +"    ,p_last_updated_by      =>   :58 "
 		      +"    ,p_last_update_login    =>   :59 "
-                      +"    ,p_bc_pod_flag          =>   :60); "  //Code Added by Reddy Sekar for Req# NAIT-61952 and 66520 
-		      +" END; ";
+                      +"    ,p_bc_pod_flag          =>   :60 "  //Code Added by Reddy Sekar for Req# NAIT-61952 and 66520 
+	              +"    ,p_fee_option          =>   :61); "
+                      +" END; ";
 	     oraclecallablestatement = (OracleCallableStatement)oadbtransactionimpl.createCallableStatement(s, -1);
       oraclecallablestatement.registerOutParameter(1,Types.CHAR);
 	    oraclecallablestatement.setNUMBER(2,this.getExtensionId());
@@ -1764,6 +1771,7 @@ public class ODEbillCustDocEOImpl extends OAPlsqlEntityImpl {
       oraclecallablestatement.setNUMBER(58,this.getLastUpdatedBy());
       oraclecallablestatement.setNUMBER(59,this.getLastUpdateLogin());
       oraclecallablestatement.setString(60,this.getBcPodFlag()); //Code Added by Reddy Sekar for Req# NAIT-61952 and 66250
+      oraclecallablestatement.setString(61,this.getFeeOption());
         oraclecallablestatement.execute();
       x_rowid = oraclecallablestatement.getString(1);
 	}
@@ -1848,7 +1856,8 @@ public class ODEbillCustDocEOImpl extends OAPlsqlEntityImpl {
               +"    ,p_last_update_date     =>   :54 "
               +"    ,p_last_updated_by      =>   :55 "
               +"    ,p_last_update_login    =>   :56 "                      
-              +"    ,p_bc_pod_flag          =>   :57); "    //Code Added by Reddy Sekar for Req# NAIT-61952 and 66520
+              +"    ,p_bc_pod_flag          =>   :57 "    //Code Added by Reddy Sekar for Req# NAIT-61952 and 66520
+              +"    ,p_fee_option           =>   :58); " 
                +" END; ";
      oraclecallablestatement = (OracleCallableStatement)oadbtransactionimpl.createCallableStatement(s, -1);
       oraclecallablestatement.setNUMBER(1,this.getExtensionId());
@@ -1908,6 +1917,7 @@ public class ODEbillCustDocEOImpl extends OAPlsqlEntityImpl {
       oraclecallablestatement.setNUMBER(55,this.getLastUpdatedBy());
       oraclecallablestatement.setNUMBER(56,this.getLastUpdateLogin());
       oraclecallablestatement.setString(57,this.getBcPodFlag()); //Code Added by Reddy Sekar for Req# NAIT-61952 and 66520
+      oraclecallablestatement.setString(58,this.getFeeOption());
        oraclecallablestatement.execute();
     }
     catch(SQLException sqlexception)
@@ -1964,6 +1974,18 @@ public class ODEbillCustDocEOImpl extends OAPlsqlEntityImpl {
      */
     public void setBcPodFlag(String value) {
         setAttributeInternal(BCPODFLAG, value);
+    }
+
+    /**Gets the attribute value for FeeOption, using the alias name FeeOption
+     */
+    public String getFeeOption() {
+        return (String)getAttributeInternal(FEEOPTION);
+    }
+
+    /**Sets <code>value</code> as the attribute value for FeeOption
+     */
+    public void setFeeOption(String value) {
+        setAttributeInternal(FEEOPTION, value);
     }
 
     /**Creates a Key object based on given key constituents

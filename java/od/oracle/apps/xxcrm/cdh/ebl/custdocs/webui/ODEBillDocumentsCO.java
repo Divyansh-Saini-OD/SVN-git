@@ -7,6 +7,10 @@ import oracle.jbo.RowSetIterator;
 //import com.sun.rowset.internal.Row;
 import java.io.Serializable;
 
+import java.sql.PreparedStatement;
+
+import java.sql.SQLException;
+
 import java.text.SimpleDateFormat;
 
 import od.oracle.apps.xxcrm.cdh.ebl.custdocs.server.ODEBillingCompletePVORowImpl;
@@ -26,7 +30,6 @@ import oracle.apps.fnd.framework.webui.OAPageContext;
 import oracle.apps.fnd.framework.webui.OAWebBeanConstants;
 import oracle.apps.fnd.framework.webui.beans.OATipBean;
 import oracle.apps.fnd.framework.webui.beans.OAWebBean;
-import oracle.apps.fnd.framework.webui.beans.message.OAMessageLovInputBean;
 import oracle.apps.fnd.framework.webui.beans.message.OAMessageTextInputBean;
 import oracle.apps.fnd.framework.webui.beans.table.OAAdvancedTableBean;
 
@@ -35,6 +38,12 @@ import oracle.jbo.domain.Date;
 import oracle.jbo.domain.Number;
 import oracle.jbo.Row;
 import oracle.apps.fnd.framework.OARow;
+import oracle.apps.fnd.framework.server.OADBTransaction;
+
+import oracle.apps.fnd.framework.webui.beans.message.OAMessageChoiceBean;
+
+import oracle.cabo.data.jbo.ui.beans.message.MessageChoiceBean;
+import oracle.cabo.ui.beans.message.MessageStyledTextBean;
 
 /*
 -- +===========================================================================+
@@ -99,6 +108,7 @@ public class ODEBillDocumentsCO extends OAControllerImpl
     String CustAccountId = pageContext.getParameter("custAccountId");
      String custName = pageContext.getParameter("custName");
     String deliveryMethod = pageContext.getParameter("deliveryMethod");
+        //custName = (java.lang.String)'Test Cust';
     //pageContext.getPageLayoutBean().setTitle("Billing Documents For Customer:"+custName+" Account Number:"+ AccountNumber); 
     pageContext.getPageLayoutBean().setTitle("Customer Billing Documents");
     OAAdvancedTableBean advtableBean = (OAAdvancedTableBean)webBean.findIndexedChildRecursive("EbillCustDocAdvTblRN");
@@ -258,7 +268,6 @@ public class ODEBillDocumentsCO extends OAControllerImpl
     super.processFormRequest(pageContext, webBean);
     String AccountNumber = pageContext.getParameter("accountNumber"); 
     String CustAccountId = pageContext.getParameter("custAccountId");
-
     OAApplicationModule am=pageContext.getApplicationModule(webBean);
     ODUtil utl = new ODUtil(am);
     utl.log("ODEBillDocumentsCO:Process Form Request Begin");
@@ -267,6 +276,17 @@ public class ODEBillDocumentsCO extends OAControllerImpl
     pageContext.writeDiagnostics(this, "Inside PFR method CustAccountId : "+CustAccountId, 1);
       pageContext.writeDiagnostics(this, "sEvnParam : "+sEvnParam, 1);
     //MBS Doc ID Lov Clicked Bhagwan Rao 10March2017
+     
+     if (SHOW_EVENT.equals(pageContext.getParameter(EVENT_PARAM)))
+     {
+         OAViewObject vo= (OAViewObject)am.findViewObject("ODEbillCustDocVO");
+         ODEbillCustDocVORowImpl row = (ODEbillCustDocVORowImpl)vo.getRowAtRangeIndex(Integer.parseInt(pageContext.getParameter(VALUE_PARAM)));
+         String docType=row.getCExtAttr1();          
+         String printType =row.getCExtAttr3();
+         OAViewObject feevo = (OAViewObject)am.findViewObject("feeoptionType1");
+         feevo.setWhereClause("SOURCE_VALUE2 = '"+printType +"' AND NVL(SOURCE_VALUE3,'"+docType+"')= NVL('"+docType+"',SOURCE_VALUE3)");
+         feevo.executeQuery();
+     }
      if (pageContext.isLovEvent())
      {
      String lovInputSourceId = pageContext.getLovInputSourceId();
@@ -275,11 +295,20 @@ public class ODEBillDocumentsCO extends OAControllerImpl
            String rowRef = pageContext.getParameter(OAWebBeanConstants.EVENT_SOURCE_ROW_REFERENCE);
            ODEbillCustDocVORowImpl rowImpl= (ODEbillCustDocVORowImpl)am.findRowByRef(rowRef);
            String docType=rowImpl.getCExtAttr1();          
+        String printType =rowImpl.getCExtAttr3();
+         OAViewObject feevo = (OAViewObject)am.findViewObject("feeoptionType1");
+         feevo.setWhereClause("SOURCE_VALUE2 = '"+printType +"' AND NVL(SOURCE_VALUE3,'"+docType+"')= NVL('"+docType+"',SOURCE_VALUE3)");
+         feevo.executeQuery();
+                        OAMessageChoiceBean mcb = (OAMessageChoiceBean)webBean.findChildRecursive("FeeOption");
+                        Serializable prm[] = {docType,printType};
+                        String defval =(String)am.invokeMethod("getDefaultFee",prm);
+                        mcb.setSelectedValue(defval);
          //Added By Rafi on 31-Aug-2018 for SKU Level Tax to default ePDF Dely Method for Defect #NAIT-58403 -START
          String docId=rowImpl.getNExtAttr1().toString();         
          String ePDFConsMBSDocId =pageContext.getProfile("XXOD_EBL_SKU_LEVEL_CONS_EPDF"); 
          String ePDFIndMBSDocId =pageContext.getProfile("XXOD_EBL_SKU_LEVEL_INV_EPDF");  
            String opsTechDlyMthd = pageContext.getProfile("XXOD_EBL_CENTRAL_OPSTECH");//Added by Reddy Sekhar K on 11-Sept-2018 for the eBill Central Requirement NAIT-56624 
+           
            if(ePDFConsMBSDocId.equals(docId) || ePDFIndMBSDocId.equals(docId))
            {
              rowImpl.setDeliverymethod("Case3");
@@ -519,10 +548,22 @@ public class ODEBillDocumentsCO extends OAControllerImpl
     }
       
     //AddRow
-    //PPR for Dely method Change
+    //PPR for Dely me1thod Change
     if ( "DelyMtdUpdate".equals(pageContext.getParameter(OAWebBeanConstants.EVENT_PARAM)))
                                                       {
-       String dlyMtd = pageContext.getParameter("DelyMtdUpdate");
+        String rowRef1 = pageContext.getParameter(OAWebBeanConstants.EVENT_SOURCE_ROW_REFERENCE);
+        ODEbillCustDocVORowImpl rowImpl1= (ODEbillCustDocVORowImpl)am.findRowByRef(rowRef1);
+        System.out.println("Shoed rowRef "+rowRef1);
+        String docType=rowImpl1.getCExtAttr1();          
+        String printType =rowImpl1.getCExtAttr3();
+        OAViewObject feevo = (OAViewObject)am.findViewObject("feeoptionType1");
+        feevo.setWhereClause("SOURCE_VALUE2 = '"+printType +"' AND NVL(SOURCE_VALUE3,'"+docType+"')= NVL('"+docType+"',SOURCE_VALUE3)");
+        feevo.executeQuery();
+        Serializable prm[] = {docType,printType};
+        String defval =(String)am.invokeMethod("getDefaultFee",prm);
+        Row row = am.findRowByRef(rowRef1);
+        row.setAttribute("FeeOption",defval);
+        String dlyMtd = pageContext.getParameter("DelyMtdUpdate");
         String custDocId=pageContext.getParameter("CustDocId");
         
         utl.log("ODEBillDocumentsCO:Inside DelyMtdUpdate PPR for:"+custDocId);

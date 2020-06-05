@@ -16,7 +16,7 @@
       <Attr Name="_version" Value="10.1.3.43.6" />
       <AttrArray Name="_publishEvents">
       </AttrArray>
-      <Attr Name="_codeGenFlag2" Value="Init|Delete|Access|DML|Val" />
+      <Attr Name="_codeGenFlag2" Value="Init|Delete|Access|Val" />
    </DesignTime>
    <Attribute
       Name="ExtensionId"
@@ -760,6 +760,95 @@
          <Attr Name="_DisplaySize" Value="3" />
       </DesignTime>
    </Attribute>
+   <Attribute
+      Name="FeeOption"
+      Precision="30"
+      ColumnName="FEE_OPTION"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XX_CDH_CUST_ACCT_EXT_B" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="30" />
+      </DesignTime>
+   </Attribute>
+   <Key
+      Name="SysC0051040" >
+      <AttrArray Name="Attributes">
+         <Item Value="od.oracle.apps.xxcrm.cdh.ebl.custdocs.schema.server.ODEbillCustDocEO.ExtensionId" />
+      </AttrArray>
+      <DesignTime>
+         <Attr Name="_checkCondition" Value="&#34;EXTENSION_ID&#34; IS NOT NULL" />
+         <Attr Name="_isCheck" Value="true" />
+         <Attr Name="_DBObjectName" Value="SYS_C0051040" />
+      </DesignTime>
+   </Key>
+   <Key
+      Name="SysC0051041" >
+      <AttrArray Name="Attributes">
+         <Item Value="od.oracle.apps.xxcrm.cdh.ebl.custdocs.schema.server.ODEbillCustDocEO.CustAccountId" />
+      </AttrArray>
+      <DesignTime>
+         <Attr Name="_checkCondition" Value="&#34;CUST_ACCOUNT_ID&#34; IS NOT NULL" />
+         <Attr Name="_isCheck" Value="true" />
+         <Attr Name="_DBObjectName" Value="SYS_C0051041" />
+      </DesignTime>
+   </Key>
+   <Key
+      Name="SysC0051042" >
+      <AttrArray Name="Attributes">
+         <Item Value="od.oracle.apps.xxcrm.cdh.ebl.custdocs.schema.server.ODEbillCustDocEO.AttrGroupId" />
+      </AttrArray>
+      <DesignTime>
+         <Attr Name="_checkCondition" Value="&#34;ATTR_GROUP_ID&#34; IS NOT NULL" />
+         <Attr Name="_isCheck" Value="true" />
+         <Attr Name="_DBObjectName" Value="SYS_C0051042" />
+      </DesignTime>
+   </Key>
+   <Key
+      Name="SysC0051043" >
+      <AttrArray Name="Attributes">
+         <Item Value="od.oracle.apps.xxcrm.cdh.ebl.custdocs.schema.server.ODEbillCustDocEO.CreatedBy" />
+      </AttrArray>
+      <DesignTime>
+         <Attr Name="_checkCondition" Value="&#34;CREATED_BY&#34; IS NOT NULL" />
+         <Attr Name="_isCheck" Value="true" />
+         <Attr Name="_DBObjectName" Value="SYS_C0051043" />
+      </DesignTime>
+   </Key>
+   <Key
+      Name="SysC0051044" >
+      <AttrArray Name="Attributes">
+         <Item Value="od.oracle.apps.xxcrm.cdh.ebl.custdocs.schema.server.ODEbillCustDocEO.CreationDate" />
+      </AttrArray>
+      <DesignTime>
+         <Attr Name="_checkCondition" Value="&#34;CREATION_DATE&#34; IS NOT NULL" />
+         <Attr Name="_isCheck" Value="true" />
+         <Attr Name="_DBObjectName" Value="SYS_C0051044" />
+      </DesignTime>
+   </Key>
+   <Key
+      Name="SysC0051045" >
+      <AttrArray Name="Attributes">
+         <Item Value="od.oracle.apps.xxcrm.cdh.ebl.custdocs.schema.server.ODEbillCustDocEO.LastUpdatedBy" />
+      </AttrArray>
+      <DesignTime>
+         <Attr Name="_checkCondition" Value="&#34;LAST_UPDATED_BY&#34; IS NOT NULL" />
+         <Attr Name="_isCheck" Value="true" />
+         <Attr Name="_DBObjectName" Value="SYS_C0051045" />
+      </DesignTime>
+   </Key>
+   <Key
+      Name="SysC0051046" >
+      <AttrArray Name="Attributes">
+         <Item Value="od.oracle.apps.xxcrm.cdh.ebl.custdocs.schema.server.ODEbillCustDocEO.LastUpdateDate" />
+      </AttrArray>
+      <DesignTime>
+         <Attr Name="_checkCondition" Value="&#34;LAST_UPDATE_DATE&#34; IS NOT NULL" />
+         <Attr Name="_isCheck" Value="true" />
+         <Attr Name="_DBObjectName" Value="SYS_C0051046" />
+      </DesignTime>
+   </Key>
    <Key
       Name="SysC0074983" >
       <AttrArray Name="Attributes">

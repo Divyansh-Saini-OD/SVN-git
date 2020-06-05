@@ -8,6 +8,7 @@
    CustomQuery="true"
    RowClass="od.oracle.apps.xxcrm.cdh.ebl.custdocs.server.ODEbillCustDocVORowImpl"
    ComponentClass="od.oracle.apps.xxcrm.cdh.ebl.custdocs.server.ODEbillCustDocVOImpl"
+   FetchMode="FETCH_AS_NEEDED"
    UseGlueCode="false" >
    <SQLQuery><![CDATA[
 SELECT ODEbillCustDocEO.EXTENSION_ID, 
@@ -93,6 +94,7 @@ decode(N_EXT_ATTR1,fnd_profile.value('XXOD_EBL_CENTRAL_OPSTECH'),1,0) mailAttent
 decode(C_EXT_ATTR16,'COMPLETE',1,0) paytermLov, --Added by Reddy Sekhar K on 11-Sept-2018 for the eBill Central Requirement NAIT-56624
 ODEbillCustDocEO.BC_POD_FLAG,--Added by Reddy Sekhar K on 13-NOv-2018 for the Bill Complete Requirement NAIT-61952
 DECODE(BC_POD_FLAG,'Y','case1','B','case2','P','case3','N','case4','case5') bcpodcase----Added by Reddy Sekhar K on 13-NOv-2018 for the Bill Complete Requirement NAIT-61952 and POD NAIT-66520
+,fee_option
 FROM XX_CDH_CUST_ACCT_EXT_B ODEbillCustDocEO
 WHERE attr_group_id = (SELECT attr_group_id 
                        FROM   ego_attr_groups_v 
@@ -687,5 +689,11 @@ AND attr_group_name = 'BILLDOCS')
       <DesignTime>
          <Attr Name="_DisplaySize" Value="5" />
       </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="FeeOption"
+      EntityAttrName="FeeOption"
+      EntityUsage="ODEbillCustDocEO"
+      AliasName="FEE_OPTION" >
    </ViewAttribute>
 </ViewObject>
