@@ -53,7 +53,7 @@ AS
    -- |5.9        01-Apr-2020  Pramod Kumar   NAIT-11880 Rev Rec Code changes 
    -- |5.10       01-Apr-2020  Pramod Kumar   NAIT-11880 Code changes to make POS Subscription orders Trx Number as Orig_sys_document_ref
    -- |5.11       01-Apr-2020  Pramod Kumar   NAIT-11880 Code changes to call UNEARN Acc Class if REV REC eligible
-   -- |5.12       02-Jun-2020  Shani Singh    NAIT-125301 Fees Phase II – Quantity Shipped & Unit Price of Line Fees 
+   -- |5.12       02-Jun-2020  Shani Singh    NAIT-125301 Fees Phase II – Quantity Shipped and Unit Price of Line Fees 
    -- |										  (Beverage, Import Surcharge, Stamp Fees) calculation and display on billing
    -- +=====================================================================================+
 
