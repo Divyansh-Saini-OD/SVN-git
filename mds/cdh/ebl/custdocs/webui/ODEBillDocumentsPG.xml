@@ -240,6 +240,11 @@
                               <oa:messageTextInput id="CustReqEndDate" viewName="ODEbillCustDocVO" dataType="DATE" viewAttr="DExtAttr10" prompt="Request End Date" disabled="${oa.current.Paydocind}"/>
                               <oa:messageTextInput id="EffFromDate" dataType="DATE" viewName="ODEbillCustDocVO" viewAttr="DExtAttr1" prompt="Effective Start Date" readOnly="false" disabled="${oa.current.Supusr}"/>
                               <oa:messageTextInput id="EffToDate" dataType="DATE" viewName="ODEbillCustDocVO" viewAttr="DExtAttr2" prompt="Effective End Date" readOnly="false" disabled="${oa.current.Supusrend}"/>
+                              <oa:messageChoice id="FeeOption" prompt="Fee Option" viewName="ODEbillCustDocVO" viewAttr="FeeOption" pickListViewDef="od.oracle.apps.xxcrm.cdh.ebl.custdocs.server.feeoptionType" pickListDispAttr="meaning" pickListValAttr="lookup_code" pickListViewName="feeoptionType1">
+                                 <ui:primaryClientAction>
+                                    <ui:firePartialAction event="feeUpd"/>
+                                 </ui:primaryClientAction>
+                              </oa:messageChoice>
                            </ui:contents>
                         </oa:messageComponentLayout>
                         <oa:labeledFieldLayout id="LabeldlayoutFieldRN">
