@@ -1109,7 +1109,7 @@ public class XLSRenderer implements JavaConcurrentProgram {
         Cell c = null;
 
         CallableStatement cstmt = 
-            connection.prepareCall("BEGIN XX_AR_EBL_RENDER_XLS_PKG.XLS_FILE_HEADER(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?); END;");
+            connection.prepareCall("BEGIN XX_AR_EBL_RENDER_XLS_PKG.XLS_FILE_HEADER(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?); END;");
         cstmt.setInt(1, nFileID); // cstmt.setInt("p_file_id",nFileID);
         cstmt.registerOutParameter(2, 
                                    OracleTypes.VARCHAR); // cstmt.registerOutParameter("x_cell_total_due", OracleTypes.VARCHAR);
@@ -1156,6 +1156,8 @@ public class XLSRenderer implements JavaConcurrentProgram {
                                    OracleTypes.VARCHAR); // cstmt.registerOutParameter("x_total_gift_card_amt", OracleTypes.VARCHAR);
         cstmt.registerOutParameter(23, OracleTypes.VARCHAR);
         cstmt.registerOutParameter(24, OracleTypes.VARCHAR);
+		cstmt.registerOutParameter(25, OracleTypes.VARCHAR);//Added by Divyansh// cstmt.registerOutParameter("x_fee_label", OracleTypes.VARCHAR);
+		cstmt.registerOutParameter(26, OracleTypes.VARCHAR);//Added by Divyansh// cstmt.registerOutParameter("x_fee_amount", OracleTypes.VARCHAR);
 
         //Added to get additional columns as part of Module 4B Release 1 End
         cstmt.execute();
@@ -1231,7 +1233,16 @@ public class XLSRenderer implements JavaConcurrentProgram {
             c.setCellValue(cstmt.getString(4)); // c.setCellValue(cstmt.getString("x_cell_cons_bill_number"));
             c = r.createCell(3);
             c.setCellValue(cstmt.getString(2)); // c.setCellValue(cstmt.getString("x_cell_total_due"));
-            c = r.createCell(4); //Module 4B Release 1
+            // Added by Divyansh
+			if (cstmt.getString(26) != null) {
+			c = r.createCell(4);
+			c.setCellValue(cstmt.getString(25)); // c.setCellValue(cstmt.getString("x_fee_label"));
+			c = r.createCell(5);
+			c.setCellValue(cstmt.getString(26)); // c.setCellValue(cstmt.getString("x_fee_Amount"));			
+			r = s.createRow(4);
+			}
+			//Added By Divyansh
+			c = r.createCell(4); //Module 4B Release 1
             c.setCellValue(cstmt.getString(21)); // c.setCellValue(cstmt.getString("x_total_gift_card_label"));   //Module 4B Release 1
             c = r.createCell(5); //Module 4B Release 1
             //c.setCellValue(cstmt.getString(22)); // c.setCellValue(cstmt.getString("x_total_gift_card_amt"));   //Module 4B Release 1
