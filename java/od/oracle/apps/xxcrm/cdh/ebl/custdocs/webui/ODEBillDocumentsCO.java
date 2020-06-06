@@ -65,6 +65,7 @@ import oracle.cabo.ui.beans.message.MessageStyledTextBean;
   -- |1.1     11-Sep-2018 Reddy Sekhar K   code Added for Requirement NAIT-56624 |
   -- |1.2     13-Nov-2018 Reddy Sekhar K   Code Added for Req# NAIT-61952&66520  |
   -- |1.3     11-Jan-2018 Reddy Sekhar K   Code Added for NAIT-78901             |
+  -- |1.4     04-May-2020 Divyansh Saini   Code added for NAIT-129167
   -- |===========================================================================|
   -- | Subversion Info:                                                          |
   -- | $HeadURL$                                                               |
@@ -100,7 +101,7 @@ public class ODEBillDocumentsCO extends OAControllerImpl
     OAApplicationModule CustDocAM = (OAApplicationModule) pageContext.getApplicationModule(webBean);
         OAViewObject templHdrVO = 
             (OAViewObject)CustDocAM.findViewObject("ODEBillCustDocHeaderVO");
-        
+        System.out.println("Dir "+pageContext.getAppsHtmlDirectory());    
     ODUtil utl = new ODUtil(CustDocAM);
     utl.log("Event :"+event);
     utl.log("ODEBillDocumentsCO:Process Request Begin");
@@ -108,7 +109,6 @@ public class ODEBillDocumentsCO extends OAControllerImpl
     String CustAccountId = pageContext.getParameter("custAccountId");
      String custName = pageContext.getParameter("custName");
     String deliveryMethod = pageContext.getParameter("deliveryMethod");
-        //custName = (java.lang.String)'Test Cust';
     //pageContext.getPageLayoutBean().setTitle("Billing Documents For Customer:"+custName+" Account Number:"+ AccountNumber); 
     pageContext.getPageLayoutBean().setTitle("Customer Billing Documents");
     OAAdvancedTableBean advtableBean = (OAAdvancedTableBean)webBean.findIndexedChildRecursive("EbillCustDocAdvTblRN");
@@ -277,6 +277,7 @@ public class ODEBillDocumentsCO extends OAControllerImpl
       pageContext.writeDiagnostics(this, "sEvnParam : "+sEvnParam, 1);
     //MBS Doc ID Lov Clicked Bhagwan Rao 10March2017
      
+     // Added by Divyansh for NAIT-129167
      if (SHOW_EVENT.equals(pageContext.getParameter(EVENT_PARAM)))
      {
          OAViewObject vo= (OAViewObject)am.findViewObject("ODEbillCustDocVO");
@@ -287,6 +288,7 @@ public class ODEBillDocumentsCO extends OAControllerImpl
          feevo.setWhereClause("SOURCE_VALUE2 = '"+printType +"' AND NVL(SOURCE_VALUE3,'"+docType+"')= NVL('"+docType+"',SOURCE_VALUE3)");
          feevo.executeQuery();
      }
+      // Ended by Divyansh for NAIT-129167
      if (pageContext.isLovEvent())
      {
      String lovInputSourceId = pageContext.getLovInputSourceId();
@@ -295,14 +297,16 @@ public class ODEBillDocumentsCO extends OAControllerImpl
            String rowRef = pageContext.getParameter(OAWebBeanConstants.EVENT_SOURCE_ROW_REFERENCE);
            ODEbillCustDocVORowImpl rowImpl= (ODEbillCustDocVORowImpl)am.findRowByRef(rowRef);
            String docType=rowImpl.getCExtAttr1();          
-        String printType =rowImpl.getCExtAttr3();
+         // Added by Divyansh for NAIT-129167
+         String printType =rowImpl.getCExtAttr3();
          OAViewObject feevo = (OAViewObject)am.findViewObject("feeoptionType1");
          feevo.setWhereClause("SOURCE_VALUE2 = '"+printType +"' AND NVL(SOURCE_VALUE3,'"+docType+"')= NVL('"+docType+"',SOURCE_VALUE3)");
          feevo.executeQuery();
-                        OAMessageChoiceBean mcb = (OAMessageChoiceBean)webBean.findChildRecursive("FeeOption");
-                        Serializable prm[] = {docType,printType};
-                        String defval =(String)am.invokeMethod("getDefaultFee",prm);
-                        mcb.setSelectedValue(defval);
+        OAMessageChoiceBean mcb = (OAMessageChoiceBean)webBean.findChildRecursive("FeeOption");
+        Serializable prm[] = {docType,printType};
+        String defval =(String)am.invokeMethod("getDefaultFee",prm);
+        mcb.setSelectedValue(defval);
+         // Ended by Divyansh for NAIT-129167
          //Added By Rafi on 31-Aug-2018 for SKU Level Tax to default ePDF Dely Method for Defect #NAIT-58403 -START
          String docId=rowImpl.getNExtAttr1().toString();         
          String ePDFConsMBSDocId =pageContext.getProfile("XXOD_EBL_SKU_LEVEL_CONS_EPDF"); 
@@ -529,6 +533,9 @@ public class ODEBillDocumentsCO extends OAControllerImpl
     {
         String payTerm = pageContext.getProfile("XXOD_EBL_DEFAULT_PAYTERM");
         String curdate = pageContext.getCurrentDBDate().toString();
+        OAViewObject feevo = (OAViewObject)am.findViewObject("feeoptionType1");
+        feevo.setWhereClause("SOURCE_VALUE2 = 'ePDF' AND NVL(SOURCE_VALUE3,'Invoice')= NVL('Invoice',SOURCE_VALUE3)");
+        feevo.executeQuery();
 
         Serializable inputParams[] = {CustAccountId,payTerm,curdate};
         Object strGrpID = am.invokeMethod("addRow", inputParams);
@@ -553,7 +560,7 @@ public class ODEBillDocumentsCO extends OAControllerImpl
                                                       {
         String rowRef1 = pageContext.getParameter(OAWebBeanConstants.EVENT_SOURCE_ROW_REFERENCE);
         ODEbillCustDocVORowImpl rowImpl1= (ODEbillCustDocVORowImpl)am.findRowByRef(rowRef1);
-        System.out.println("Shoed rowRef "+rowRef1);
+        // Added by Divyansh for NAIT-129167
         String docType=rowImpl1.getCExtAttr1();          
         String printType =rowImpl1.getCExtAttr3();
         OAViewObject feevo = (OAViewObject)am.findViewObject("feeoptionType1");
@@ -563,6 +570,7 @@ public class ODEBillDocumentsCO extends OAControllerImpl
         String defval =(String)am.invokeMethod("getDefaultFee",prm);
         Row row = am.findRowByRef(rowRef1);
         row.setAttribute("FeeOption",defval);
+        // Ended by Divyansh for NAIT-129167
         String dlyMtd = pageContext.getParameter("DelyMtdUpdate");
         String custDocId=pageContext.getParameter("CustDocId");
         
