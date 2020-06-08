@@ -54,11 +54,78 @@ create or replace PACKAGE BODY XX_AP_NACHABOA_EFT_PKG
 -- |2.8      01-July-2018  Bhargavi Ankolekar Adding replace function to 
 -- |                      replace carriage return from the invoice     |
 -- | 						description and invoice number column for defect #45026 |
+-- |2.9      05-JUN-2020  Moving BOA file $XXFIN_DATA/ftp/out/boa  NAIT-139876 in eft_file_move
 -- +===================================================================+
 AS
 
    --ln_isa_seq_num           NUMBER := 0;  --V2.0
    --lc_st_cntrl_num          NUMBER := 1;  --V2.0
+   
+/**********************************************************************************
+ * Procedure to Archive the File extracted
+ * This procedure is called by xx_daily_extract, xx_calendar_extract,xx_fiscal_extract procedure
+***********************************************************************************/
+
+PROCEDURE xx_archive_file(p_file IN VARCHAR2)
+IS
+   lc_dest_file_name   VARCHAR2(200);
+   lc_source_file_name VARCHAR2(200);
+   lc_source_dir_path  VARCHAR2(4000);
+   lc_target_dir_path  VARCHAR2(4000);
+   lc_instance_name    VARCHAR2(30);
+   lb_complete         BOOLEAN;
+   lc_phase            VARCHAR2(100);
+   lc_status           VARCHAR2(100);
+   lc_dev_phase        VARCHAR2(100);
+   lc_dev_status       VARCHAR2(100);
+   lc_message          VARCHAR2(100);
+   ln_request_id       NUMBER;
+BEGIN
+  SELECT SUBSTR(LOWER(SYS_CONTEXT('USERENV', 'DB_NAME') ), 1, 8)
+    INTO lc_instance_name
+    FROM DUAL;
+  BEGIN
+ SELECT directory_path
+   INTO lc_target_dir_path
+   FROM dba_directories
+  WHERE directory_name = 'XXFIN_OUTBOUND_ARCH';
+  EXCEPTION
+ WHEN OTHERS THEN
+   fnd_file.put_line(fnd_file.LOG,'Exception raised while getting Archive directory path '|| SQLERRM);
+  END;
+  BEGIN
+ SELECT directory_path
+     INTO lc_source_dir_path
+   FROM dba_directories
+  WHERE directory_name = 'XXFIN_OUT';
+  EXCEPTION
+    WHEN OTHERS THEN
+      fnd_file.put_line(fnd_file.LOG,'Exception raised while getting Source directory path '|| SQLERRM);
+  END;
+  lc_source_file_name := lc_source_dir_path||'/boa/'||p_file;
+  lc_dest_file_name   := lc_target_dir_path||'/'||p_file;
+  ln_request_id       := fnd_request.submit_request('XXFIN', 
+													'XXCOMFILCOPY', '', '', FALSE, 
+													lc_source_file_name, 
+													lc_dest_file_name, '', '', 'N' 
+													);
+  IF ln_request_id     > 0 THEN
+    COMMIT;
+    lb_complete := fnd_concurrent.wait_for_request(request_id => ln_request_id,
+                        interval => 10,
+                        max_wait => 0,
+						phase => lc_phase,
+						status => lc_status,
+						dev_phase => lc_dev_phase,
+						dev_status => lc_dev_status,
+						MESSAGE => lc_message
+                      );
+  END IF;
+  COMMIT;
+EXCEPTION
+  WHEN OTHERS THEN
+    fnd_file.put_line(fnd_file.LOG,'When Others Exception Raised in xx_archive_file procedure that Archives the Exchange Rates File' || SQLERRM);
+END xx_archive_file;
    
 -- +===================================================================+
 -- | Name  : get_dec_ccno                                               |
@@ -1622,7 +1689,8 @@ lc_jpm_invoice_num    ap_invoices.invoice_num%TYPE;
       lc_encrypt_file_flag   VARCHAR2 (1);
       lc_temp_name           VARCHAR2 (45);
       lc_pay_instr_id        NUMBER;
-
+	  lc_filepath 			 VARCHAR2(100);
+      lc_boa_source_file     VARCHAR2(100);
 -- ------------------------------------------------
 -- Cursor to get output file name
 -- ------------------------------------------------
@@ -1671,6 +1739,15 @@ lc_jpm_invoice_num    ap_invoices.invoice_num%TYPE;
 
    IF lc_out_file_name IS NOT NULL THEN
 
+   -- BEGIN NAIT-139876 Assigning File path
+   
+      IF lc_out_file_name LIKE '%BOA_EFT_TRADE_EFT_NACHA%' THEN
+	     lc_filepath:='$XXFIN_DATA/ftp/out/boa/';
+	  ELSE 
+	     lc_filepath:='$XXFIN_DATA/ftp/out/nacha/';
+	  END IF;
+   
+   -- END NAIT-139876
    -- --------------------------------------------------------
    -- Derive the template name from the Payment Process request Name
    -- based on the assumption that the request name will start with 
@@ -1708,6 +1785,10 @@ lc_jpm_invoice_num    ap_invoices.invoice_num%TYPE;
         INTO lc_output_file_dest
         FROM DUAL;
 
+		IF lc_output_file_dest LIKE 'BOA_EFT_TRADE_EFT_NACHA%' THEN
+		   lc_boa_source_file:=lc_output_file_dest;
+		END IF;
+		
       fnd_global.apps_initialize (ln_user_id, ln_resp_id,
                                        ln_resp_appl_id);
 -- --------------------------------------------------------------------------------------------
@@ -1720,8 +1801,8 @@ lc_jpm_invoice_num    ap_invoices.invoice_num%TYPE;
                                      '01-OCT-04 00:00:00',
                                      FALSE,
                                      lc_out_file_name,
-                                        '$XXFIN_DATA/ftp/out/nacha/'
-                                     || lc_output_file_dest,
+                                     --'$XXFIN_DATA/ftp/out/nacha/'|| lc_output_file_dest,
+									 lc_filepath|| lc_output_file_dest, --  NAIT-139876
                                      NULL,
                                      NULL,
                                      'Y',
@@ -1753,6 +1834,7 @@ lc_jpm_invoice_num    ap_invoices.invoice_num%TYPE;
        -- THE XXCOMENPTFILE concurrent program will encrypt the  file in the
        -- directory  XXFIN/ftp/out/nacha directory where BPEL is monitoring
        -- for the file to arrive.
+	  
       IF lc_status != 'Normal'
       THEN
          fnd_file.put_line (fnd_file.LOG,
@@ -1780,8 +1862,8 @@ lc_jpm_invoice_num    ap_invoices.invoice_num%TYPE;
                   fnd_request.submit_request
                                (application      => lc_appl_name,
                                 program          => 'XXCOMENPTFILE',
-                                argument1        =>    '$XXFIN_DATA/ftp/out/nacha/'
-                                                    || lc_output_file_dest,
+                                --argument1      => '$XXFIN_DATA/ftp/out/nacha/'|| lc_output_file_dest,
+                                argument1        => lc_filepath|| lc_output_file_dest, -- NAIT-139876							
                                 argument2        => lc_key,
                                 argument3        => 'Y'
                                );
@@ -1802,6 +1884,7 @@ lc_jpm_invoice_num    ap_invoices.invoice_num%TYPE;
 			      EXIT
                     WHEN UPPER (lc_phase) = 'COMPLETED' OR UPPER (lc_status) IN ('CANCELLED', 'ERROR', 'TERMINATED');
                END LOOP;
+			   xx_archive_file(lc_boa_source_file||'.gpg');
 			   END IF;
 
                IF lc_status != 'Normal'
@@ -1813,10 +1896,6 @@ lc_jpm_invoice_num    ap_invoices.invoice_num%TYPE;
                ELSE
                   fnd_file.put_line (fnd_file.LOG, 'File is Encrypted ');
                END IF;
-               
-
-               
-                
                
             END IF;
             
