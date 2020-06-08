@@ -422,7 +422,7 @@ BEGIN
            TRIM(P.label_total_misc_amt || ' ') total_misc_label,
            --TRIM(LTRIM(TO_CHAR(F.total_misc_amt,'$999,999,999,999.00'))) total_misc_amt,
 --           F.total_misc_amt total_misc_amt,-- Commented for 1.7
-           DECODE(g_fee_option,'Detail',F.total_misc_amt,F.total_misc_amt + NVL(ln_fee_amt,0)) total_misc_amt,  -- Added for 1.7
+           DECODE(g_fee_option,1007,F.total_misc_amt,F.total_misc_amt + NVL(ln_fee_amt,0)) total_misc_amt,  -- Added for 1.7
            DECODE(F.TOTAL_GIFT_CARD_AMT,0,NULL,NULL,NULL,LTRIM(P.label_total_gift_card_amt || ' ' )) total_gift_card_label,
            --DECODE(F.TOTAL_GIFT_CARD_AMT,0,NULL,NULL,NULL,LTRIM(TO_CHAR(F.total_gift_card_amt,'$999,999,999,999.00'))) total_gift_card_amt
            DECODE(F.TOTAL_GIFT_CARD_AMT,0,NULL,NULL,NULL,F.total_gift_card_amt) total_gift_card_amt
@@ -430,7 +430,7 @@ BEGIN
            ,SPLIT_TABS_BY
            ,NVL(ENABLE_XL_SUBTOTAL,'N')
 		       ,label_fee_amt -- Added for 1.7
-		       ,DECODE(g_fee_option,'Detail',NVL(ln_fee_amt,0),NULL)-- Added for 1.7
+		       ,DECODE(g_fee_option,1007,NVL(ln_fee_amt,0),NULL)-- Added for 1.7
       INTO X_CELL_TOTAL_DUE, X_DESCRIPTION, X_CELL_CONS_BILL_NUMBER, X_CELL_BILLING_PERIOD, X_CELL_PAY_TERMS, X_CELL_DUE_DATE
           ,X_BILLING_FOR, X_BILLING_ID, X_AOPS_ID, X_INCLUDE_HEADER, X_LOGO_HYPERLINK_URL, X_LOGO_ALT_TEXT, X_LOGO_PATH,
           X_TOTAL_MERCHANDISE_LABEL, X_TOTAL_MERCHANDISE_AMT,
