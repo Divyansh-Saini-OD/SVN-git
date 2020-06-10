@@ -141,6 +141,10 @@
                        + XAECHM.total_pst_amount
                        + XAECHM.total_qst_amount
                        )                                                       cbi_tax
+			      ,SUM( NVL(( SELECT SUM(XX_AR_EBL_COMMON_UTIL_PKG.get_line_fee_amount(XAECHM.customer_trx_id) +
+				                   XX_AR_EBL_COMMON_UTIL_PKG.get_hea_fee_amount(XAECHM.customer_trx_id))
+                          FROM xx_ar_ebl_cons_hdr_main
+						 WHERE cons_inv_id = XAECHM.cons_inv_id),0) )           cbi_fee_amt
                   ,SUM(XAECHM.original_invoice_amount
                        - XAECHM.total_gift_card_amount
                        )                                                       cbi_amount_due
@@ -163,7 +167,14 @@
 				  --,DECODE(XAECHM.document_type,'Paydoc',xx_ar_ebl_common_util_pkg.get_header_discount(XAECHM.customer_trx_id),NULL) discount_info   -- Added for Defect 36437	--Commented for defect #37640
 				  --,NULL														DISCOUNT_INFO 		--Added for Defect 37640       --Commented for Defect 37807
 				  ,DECODE(XAECHM.document_type,'Paydoc',xx_ar_ebl_common_util_pkg.get_header_discount(xx_disc_info.customer_trx_id),NULL) DISCOUNT_INFO     --Added for Defect 37807
-          FROM     xx_ar_ebl_cons_trx_stg       XAECTS
+                  ,MAX((  SELECT fee_option 
+						FROM xx_cdh_cust_acct_ext_b
+					   WHERE cust_account_id = XAECHM.cust_account_id
+						 AND ATTR_GROUP_ID = 166
+						 AND N_EXT_ATTR1 = XAECHM.MBS_DOC_ID
+						 AND N_EXT_ATTR2 = XAECHM.CUST_DOC_ID 
+						 AND rownum =1)) FEE_OPTION
+		  FROM     xx_ar_ebl_cons_trx_stg       XAECTS
                   ,xx_ar_ebl_cons_hdr_main      XAECHM
 				  ,xx_disc_info													 		--Added for Defect 37807
           WHERE    XAECTS.request_id                   = XAECHM.batch_id
@@ -619,7 +630,7 @@
     </sqlStatement>
     <sqlStatement name="Q_DETAIL">
        <![CDATA[
-          SELECT item_code                                     item_no
+		  SELECT item_code                                     item_no
                 ,customer_product_code                         cust_prod_cd
                 ,item_description                              item_desc
                 ,manuf_code                                    manuf_code
@@ -631,7 +642,7 @@
                 ,gsa_comments                                  gsa_comments
 				,NVL2(ltrim(rtrim(dept_code||dept_desc)),NVL(dept_sft_hdr,'Department')||' : '||rtrim(ltrim(dept_code))||nvl2(rtrim(ltrim(dept_desc)),' - '||dept_desc,null),NULL) dept_desc  -- Added for Defect 36437
 				,DECODE( kit_sku,NULL,NULL,SUBSTR(('KIT'||'-'||kit_sku||'-'||kit_sku_desc),1,80) )   KIT_SKU  -- Added for Kitting, Defect# 37675
-          FROM   xx_ar_ebl_cons_lines_stg XAECLS
+		  FROM   xx_ar_ebl_cons_lines_stg XAECLS
           WHERE XAECLS.request_id           = :p_batch_id
           AND   XAECLS.cons_inv_id          = :cbi_id
           AND   XAECLS.customer_trx_id      = :trx_id
@@ -710,6 +721,27 @@
 		  FROM DUAL
        ]]>
     </sqlStatement>
+	<sqlStatement name="Q_CONS_FEE">
+       <![CDATA[	
+	SELECT 
+      flv.lookup_code FEE_CODE
+     ,upper(flv.meaning)  FEE_DESCRIPTION
+     ,TO_CHAR(sum(RCTL.unit_selling_price),'9999999999.999')       FEE_AMT      
+     ,RCTL.customer_trx_id
+FROM
+     ra_customer_trx_lines_All RCTL
+     ,fnd_lookup_values flv
+WHERE 1=1
+  AND flv.lookup_type = 'OD_FEES_ITEMS'
+  AND flv.LANGUAGE='US'
+  AND flv.attribute6= rctl.INVENTORY_ITEM_ID
+  AND FLV.enabled_flag = 'Y'                                   
+  AND SYSDATE BETWEEN NVL(FLV.start_date_active,SYSDATE) AND NVL(FLV.end_date_active,SYSDATE+1)  
+  AND FLV.attribute7 NOT IN ('DELIVERY','MISCELLANEOUS')  
+  AND customer_trx_id                           = :trx_id
+GROUP BY RCTL.customer_trx_id,flv.lookup_code,flv.meaning
+       ]]>
+    </sqlStatement>	
   </dataQuery>
   <dataTrigger name="beforeReportTrigger" source="xx_ar_ebl_cons_epdf_pkg.beforereport"/>
   <dataStructure>
@@ -743,10 +775,12 @@
           <element name = "CBI_EXTAMT_PLUS_DELVY"    value = "CBI_EXTAMT_PLUS_DELVY"/>
           <element name = "CBI_DISCOUNTS"            value = "CBI_DISCOUNTS"/>
           <element name = "CBI_TAX"                  value = "CBI_TAX"/>
-          <element name = "CBI_AMOUNT_DUE"           value = "CBI_AMOUNT_DUE"/>
+          <element name = "CBI_FEE_AMT"              value = "CBI_FEE_AMT"/>
+		  <element name = "CBI_AMOUNT_DUE"           value = "CBI_AMOUNT_DUE"/>
           <element name = "NO_PAYMENT_TEXT"          value = "NO_PAYMENT_TEXT"/>
           <element name = "DOCUMENT_TYPE"            value = "DOCUMENT_TYPE"/>
 		  <element name = "DISCOUNT_INFO"            value = "DISCOUNT_INFO"/> <!--Added for Defect # 36437-->
+		  <element name = "FEE_OPTION"               value = "FEE_OPTION"/>
           <group name = "G_INVOICE" source = "Q_INVOICE">
             <element name = "ORDER_NO"                 value = "ORDER_NO"/>
             <element name = "ORDER_DT"                 value = "ORDER_DT"/>
@@ -808,7 +842,11 @@
           </group>                                                           	
 		  <group name = "G_CONS_MSG_BCC" source = "Q_CONS_MSG_BCC">        	<!--Added this group for NAIT-65564-->
             <element name = "CONS_MSG_BCC"             value = "CONS_MSG_BCC"/>
-          </group>			  
+          </group>
+		  <group name="G_INV_FEE" source="Q_CONS_FEE">
+			<element name = "FEE_NAME"                value = "FEE_DESCRIPTION" />
+			<element name = "AMOUNT"                  value = "FEE_AMT" />
+		  </group>		  
         </group>
       </group>
     </group>
