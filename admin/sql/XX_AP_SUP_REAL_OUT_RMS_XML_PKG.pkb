@@ -35,7 +35,7 @@ AS
   --  2.2          05-Sep-19   Shanti Sethuraj   NAIT-104349 Added new logic to filter RTV sites
   --  2.3          27-Jul-19   Paddy Sanjeevi    Modified to derive vendor site id based on attribute13
   --  2.4          31-Jul-19   Paddy Sanjeevi    Modified to derive rtv site based on segment58 from xx_po_vendor_sites_kff
-  --  2.5          28-May-20   Shanti Sethuraj   NAIT-134067 Removed 1 from the nvl function
+ 
   -- +============================================================================================+
   ------------------------------------------------------------
   ------------------------------------------------------------
@@ -655,7 +655,7 @@ AS
   v_attribute12 VARCHAR2(500);
   --po_vendor_sites_all.attribute12%TYPE;
   v_attribute13 VARCHAR2(500);
-  v_attr13      VARCHAR2(500);
+  v_attr13		VARCHAR2(500);
   --po_vendor_sites_all.attribute13%TYPE;
   v_attribute15 VARCHAR2(500);
   v_attribute16 VARCHAR2(500);
@@ -875,7 +875,7 @@ AS
   v_861_damage_shortage xx_po_vendor_sites_kff_v.blank99%type;
   v_852_sales xx_po_vendor_sites_kff_v.blank99%type;
   v_rtv_related_siteid xx_po_vendor_sites_kff_v.blank99%type;
-  v_rtv_related_site xx_po_vendor_sites_kff_v.blank99%type;
+  v_rtv_related_site   xx_po_vendor_sites_kff_v.blank99%type;
   v_od_ven_sig_name xx_po_vendor_sites_kff_v.blank99%type;
   v_od_ven_sig_title xx_po_vendor_sites_kff_v.blank99%type;
   v_rms_count  NUMBER := 0;
@@ -1060,7 +1060,7 @@ BEGIN
   v_attribute11             := NULL;
   v_attribute12             := NULL;
   v_attribute13             := NULL;
-  v_attr13                  := NULL;
+  v_attr13					:= NULL;
   v_attribute15             := NULL;
   v_attribute16             := NULL;
   v_site_contact_name       := NULL;
@@ -4365,6 +4365,7 @@ BEGIN
   fnd_file.put_line(fnd_file.log, 'User id is '||p_user_id );
   fnd_file.put_line(fnd_file.log, 'User Name is '||p_user_name );
   xx_ap_sup_invoke_xml_out ( v_transaction_id=>v_transaction_id, v_globalvendor_id =>v_globalvendor_id , v_name =>v_name, v_vendor_site_id =>v_vendor_site_id, v_vendor_site_code =>v_vendor_site_code, v_site_orgid =>v_site_orgid , v_user_id =>p_user_id, v_user_name =>p_user_name, p_xml_payload => xml_output, v_request_id =>p_request_id, v_error_message => v_error_message, p_response_code => p_response_code );
+  
 END create_data_line;
 /*Defect# 29479 Added for BUSS_CLASS_ATTR_FUNC for RMS type*/
 FUNCTION buss_class_attr_func(
@@ -4438,7 +4439,7 @@ BEGIN
       INTO v_vendor_site_id,
         v_attribute8,
         -- v_attribute13,
-        v_attr13, -- added for cloud change
+		v_attr13,   -- added for cloud change
         v_vendor_site_code,
         v_vendor_site_code_alt, --NAIT-64664 Added by Sunil
         v_site_last_update,
@@ -4572,23 +4573,26 @@ BEGIN
         WHEN OTHERS THEN
           fnd_file.put_line(fnd_file.log, 'Error retreiving Bank Code for Site ID:' || v_vendor_site_id || ' ' || v_payment_method_lookup_code || ' ' || v_payment_currency_code || v_country);
         END;
-        -- BEGIN Added to derive vendor_site_id for the pay site vendor site code for cloud change
-        IF v_attr13 IS NOT NULL THEN
-          IF SUBSTR(v_attr13,1,1) NOT IN ('0','1','2','3','4','5','6','7','8','9') THEN
-            BEGIN
-              SELECT vendor_site_id
-              INTO v_attribute13
-              FROM ap_supplier_sites_all
-              WHERE vendor_site_code=v_attr13;
-            EXCEPTION
-            WHEN OTHERS THEN
-              v_attribute13:=NULL;
-            END;
-          ELSE
-            v_attribute13 := v_attr13;
-          END IF;
-        END IF;
-        -- END Added to derive vendor_site_id for the pay site vendor site code for Cloud change
+		-- BEGIN Added to derive vendor_site_id for the pay site vendor site code for cloud change
+		IF v_attr13 IS NOT NULL 
+		THEN
+		   IF SUBSTR(v_attr13,1,1) NOT IN ('0','1','2','3','4','5','6','7','8','9')
+		   THEN
+		       BEGIN
+		          SELECT vendor_site_id
+			        INTO v_attribute13
+			        FROM ap_supplier_sites_all
+			       WHERE vendor_site_code=v_attr13;
+		       EXCEPTION
+		       WHEN others THEN
+			       v_attribute13:=NULL;
+		       END;
+		   ELSE
+		      v_attribute13 := v_attr13;
+		   END IF; 
+		END IF;
+		-- END Added to derive vendor_site_id for the pay site vendor site code for Cloud change	
+
         -- end of Defect 7007 CR395
         -- Purchase Site with Paysite specified.
         --check attribute13 for Purchase sites to get the Pay site
@@ -4859,7 +4863,7 @@ BEGIN
                 k.edi_distribution_code,
                 k.od_contract_signature,
                 k.od_contract_title,
-                NVL(k.rtv_option, ''),    -- modifed for NAIT-134067
+                NVL(k.rtv_option, '1'),
                 DECODE(k.rtv_freight_payment_method, 'COLLECT', 'CC', 'PREPAID', 'PP', 'NEITHER', 'NN'),
                 --defect 2192
                 k.permanent_rga,
@@ -5170,27 +5174,30 @@ BEGIN
         v_globalvendor_id := xx_po_global_vendor_pkg.f_get_outbound(v_vendor_site_id);--added by sunil
         create_data_line;                                                             --added by sunil
       END IF;
-      IF(v_rms_flag  = 'Y') THEN
-        v_rms_count := v_rms_count + 1;
-        -- BEGIN Added to derive vendor_site_id for the rtv site for cloud change
-        IF v_rtv_related_site IS NOT NULL THEN
-          IF SUBSTR(v_rtv_related_site,1,1) NOT IN ('0','1','2','3','4','5','6','7','8','9') THEN
-            BEGIN
-              SELECT vendor_site_id
-              INTO v_rtv_related_siteid
-              FROM ap_supplier_sites_all
-              WHERE vendor_site_code=v_rtv_related_site;
-            EXCEPTION
-            WHEN OTHERS THEN
-              v_rtv_related_siteid:=NULL;
-            END;
-          ELSE
-            v_rtv_related_siteid := v_rtv_related_site;
-          END IF;
-        ELSE
-          v_rtv_related_siteid:=NULL;
-        END IF;
-        -- END Added to derive vendor_site_id for the rtv site for cloud change
+      IF(v_rms_flag               = 'Y') THEN
+        v_rms_count              := v_rms_count + 1;
+		-- BEGIN Added to derive vendor_site_id for the rtv site for cloud change		
+		IF v_rtv_related_site IS NOT NULL 
+		THEN  
+		   IF SUBSTR(v_rtv_related_site,1,1) NOT IN ('0','1','2','3','4','5','6','7','8','9')
+		   THEN
+		       BEGIN
+		         SELECT vendor_site_id
+		     	    INTO v_rtv_related_siteid
+		     	    FROM ap_supplier_sites_all
+		     	   WHERE vendor_site_code=v_rtv_related_site;
+		       EXCEPTION
+		         WHEN others THEN
+		     	    v_rtv_related_siteid:=NULL;
+		       END;
+		   ELSE
+		      v_rtv_related_siteid := v_rtv_related_site;
+		   END IF;
+		ELSE
+		  v_rtv_related_siteid:=NULL;
+		END IF;
+		-- END Added to derive vendor_site_id for the rtv site for cloud change		
+
         IF((v_rtv_related_siteid IS NOT NULL) AND(v_pay_site_flag = 'Y')) THEN
           BEGIN
             SELECT a.vendor_site_code,
