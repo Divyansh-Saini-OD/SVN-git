@@ -201,7 +201,7 @@ AS
 	gc_ixexpdate                         xx_iby_batch_trxns.ixexpdate%TYPE;
 	gc_ixswipe                           xx_iby_batch_trxns.ixswipe%TYPE;
 	gc_ixamount                          xx_iby_batch_trxns.ixamount%TYPE;
-    gc_ixreserved20                      xx_iby_batch_trxns.ixreserved20%TYPE;
+  gc_ixreserved20                      xx_iby_batch_trxns.ixreserved20%TYPE;
 	gc_ixinvoice                         xx_iby_batch_trxns.ixinvoice%TYPE;
 	gc_ixoptions                         xx_iby_batch_trxns.ixoptions%TYPE;
 	gc_ixbankuserdata                    xx_iby_batch_trxns.ixbankuserdata%TYPE;
@@ -871,7 +871,7 @@ AS
 		gc_ixexpdate := NULL;
 		gc_ixswipe := NULL;
 		gc_ixamount := NULL;
-        gc_ixreserved20 := NULL;
+    gc_ixreserved20 := NULL;
 		gc_ixinvoice := NULL;
 		gc_ixoptions := NULL;
 		gc_ixbankuserdata := NULL;
@@ -7295,7 +7295,15 @@ END xx_set_post_receipt_variables;
 			|| gn_cash_receipt_id
 			|| '.  Payment Order ID: '
 			|| gn_order_payment_id;
-
+    --
+    IF gc_ixreserved20 = '0' OR to_number(ABS(gc_ixreserved20)) = 0 -- NAIT-131811, v48.5
+    THEN
+      gc_ixreserved20 := NULL;
+    END IF;
+    --
+    xx_location_and_log(g_loc,
+							'Original Amount, Field20 - '||gc_ixreserved20);
+    --
 		INSERT INTO xx_iby_batch_trxns
 					(pre1,
 					 pre2,
