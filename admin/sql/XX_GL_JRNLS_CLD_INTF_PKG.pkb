@@ -14,7 +14,9 @@ AS
   -- +============================================================================================|
   -- | Version     Date         Author               Remarks                                      |
   -- | =========   ===========  =============        =============================================|
-  -- | 1.0         12/08/2018   M K Pramod Kumar     Initial version                              |
+  -- | 1.0         12/02/2020   M K Pramod Kumar     Initial version                              |
+  -- | 1.1         19/06/2020   M K Pramod Kumar     Code Changes to trigger Journal Import Parallely
+  --                                                 and remove logic to Create PA Batches based on Txn Number|
   -- +============================================================================================+
   gc_package_name      CONSTANT all_objects.object_name%TYPE := 'XX_GL_JRNLS_CLD_INTF_PKG';
   gc_ret_success       CONSTANT VARCHAR2(20)                 := 'SUCCESS';
@@ -344,46 +346,11 @@ IS
   and stg.file_batch_id=xfile.file_batch_id
   and stg.RECORD_STATUS in ('V')
   and stg.action in ('VALID')
-and stg.ebs_journal_source
-not in 
-(
-SELECT 
-      xftv.target_value1
-    FROM xx_fin_translatedefinition xftd,
-      xx_fin_translatevalues xftv
-    WHERE xftd.translation_name ='OD_CLD_GL_JRNLS_APP_MAP'
-    AND xftv.source_value1      = 'Application_Name'
-    AND xftd.translate_id       =xftv.translate_id
-    AND xftd.enabled_flag       ='Y'
-    AND sysdate BETWEEN xftv.start_date_active AND NVL(xftv.end_date_active,sysdate))
 	group by xfile.file_batch_id,stg.EBS_LEDGER_NAME,stg.EBS_JOURNAL_SOURCE
   ;
 
 
-    cursor cur_pa_file_batch is   
-  select  distinct xfile.file_batch_id,stg.EBS_LEDGER_NAME,stg.EBS_JOURNAL_SOURCE,stg.TRANSACTION_NUMBER
-  from  
-	XX_GL_JRNLS_CLD_INTF_STG stg,
-	XX_GL_JRNLS_CLD_INTF_FILES xfile
-  where xfile.record_status in ('V','I') --added I status as AP file can have PA transacitons.
-  and xfile.process_name=p_process_name
-  and stg.file_batch_id=xfile.file_batch_id
-  and stg.RECORD_STATUS in ('V')
-  and stg.action in ('VALID')
-and stg.ebs_journal_source
- in 
-(
-SELECT 
-      xftv.target_value1
-    FROM xx_fin_translatedefinition xftd,
-      xx_fin_translatevalues xftv
-    WHERE xftd.translation_name ='OD_CLD_GL_JRNLS_APP_MAP'
-   AND xftv.source_value1      = 'Application_Name'
-    AND xftd.translate_id       =xftv.translate_id
-    AND xftd.enabled_flag       ='Y'
-    AND sysdate BETWEEN xftv.start_date_active AND NVL(xftv.end_date_active,sysdate))
-	group by xfile.file_batch_id,stg.EBS_LEDGER_NAME,stg.EBS_JOURNAL_SOURCE,stg.TRANSACTION_NUMBER
-  ;
+
 
 
   cursor cur_gl_journals_batch(p_file_batch_id number,p_ledger_name varchar2,p_journal_source varchar2) is   
@@ -404,23 +371,6 @@ SELECT
 		 lv_gl_journals_batch_data                  lv_gl_journals_batch_tab;	
 
 
-		  cursor cur_pa_gl_journals_batch(p_file_batch_id number,p_ledger_name varchar2,p_journal_source varchar2,p_transaction_number varchar2) is   
-  select xfile.* ,rowid
-  from  
-     XX_GL_JRNLS_CLD_INTF_STG xfile
-  where 1=1
-  and file_batch_id=p_file_batch_id
-  and process_name=p_process_name
-  and RECORD_STATUS in ('V')
-  and action in ('VALID')
-  and ebs_ledger_name=p_ledger_name
-  and ebs_journal_source=p_journal_source
-   and transaction_number=p_transaction_number;
-
-  TYPE lv_pa_gl_journals_batch_tab IS TABLE OF cur_pa_gl_journals_batch%ROWTYPE 
-         INDEX BY BINARY_INTEGER;
-		 lv_pa_gl_journals_batch_data                  lv_pa_gl_journals_batch_tab;	
-
   ln_group_id           NUMBER;
   lc_dr_msg varchar2(1000);
   lc_cr_msg varchar2(1000);
@@ -431,6 +381,8 @@ SELECT
   ln_ap_ccid number;
   ex_recon_batch_exception Exception;
   lc_error_status_flag varchar2(1):='N';
+  lv_jrnl_line_desc XX_GL_JRNLS_CLD_INTF_STG.LINE_DESCRIPTION%type;
+  
 Begin
 
 
@@ -461,10 +413,18 @@ Begin
 
 					FOR idx IN lv_gl_journals_batch_data.FIRST .. lv_gl_journals_batch_data.LAST
 					LOOP
-
+						lv_jrnl_line_desc:=null;
 
 					if p_process_name='FIN' then
 						if lc_error_status_flag = 'N' then 
+						
+						if lv_gl_journals_batch_data(idx).transaction_number is not null then 
+							lv_jrnl_line_desc:=lv_gl_journals_batch_data(idx).transaction_number||'~'||lv_gl_journals_batch_data(idx).LINE_DESCRIPTION;
+						else
+							lv_jrnl_line_desc:=lv_gl_journals_batch_data(idx).LINE_DESCRIPTION;
+						end if;
+						
+						
 								xx_gl_interface_pkg.create_stg_jrnl_line(
                                                  p_status => 'NEW'
                                                , p_date_created => SYSDATE
@@ -490,7 +450,7 @@ Begin
                                                , p_entered_cr => lv_gl_journals_batch_data(idx).ENTERED_CR
                                                , p_je_name => NULL
                                                , p_je_reference => ln_group_id
-                                               , p_je_line_dsc =>lv_gl_journals_batch_data(idx).LINE_DESCRIPTION
+                                               , p_je_line_dsc =>lv_jrnl_line_desc
                                                , x_output_msg => lc_cr_msg
                                                );
 
@@ -582,114 +542,6 @@ Begin
 				and EBS_LEDGER_NAME=rec.EBS_LEDGER_NAME
 				and EBS_JOURNAL_SOURCE=rec.EBS_JOURNAL_SOURCE
 				;
-
-				Update XX_GL_JRNLS_CLD_INTF_FILES
-				set record_status='I',
-				error_description=ERROR_DESCRIPTION||'~Error occured while processing the file-There are errors in STG Table'
-				where file_batch_id=rec.file_batch_id;
-				commit;
-			end if;
-
-
-  END LOOP;
-
-
-
-   for rec in cur_pa_file_batch loop
-
-   print_debug_msg(p_message=> 'Processing File Batch Id:'||rec.file_batch_id||',EBS Ledger Name:'||rec.EBS_LEDGER_NAME||'Journal Source:'||rec.EBS_JOURNAL_SOURCE,p_force=> true);
-
-   lc_error_status_flag := 'N';
-
-		SELECT gl_interface_control_s.NEXTVAL
-		INTO ln_group_id
-		FROM DUAL;
-
-    OPEN cur_pa_gl_journals_batch(rec.file_batch_id,rec.EBS_LEDGER_NAME,rec.EBS_JOURNAL_SOURCE,rec.transaction_number);
-			Loop
-			FETCH cur_pa_gl_journals_batch
-				BULK COLLECT INTO lv_pa_gl_journals_batch_data LIMIT 5000;
-				EXIT WHEN lv_pa_gl_journals_batch_data.COUNT = 0;
-
-					FOR idx IN lv_pa_gl_journals_batch_data.FIRST .. lv_pa_gl_journals_batch_data.LAST
-					LOOP
-
-
-						if lc_error_status_flag = 'N' then 
-								xx_gl_interface_pkg.create_stg_jrnl_line(
-                                                 p_status => 'NEW'
-                                               , p_date_created => SYSDATE
-                                               , p_created_by => g_user_id
-                                               , p_actual_flag => 'A'
-                                               , p_group_id => ln_group_id
-                                               , p_batch_name => lv_pa_gl_journals_batch_data(idx).accounting_date
-                                               , p_batch_desc => ' '
-                                               , p_user_source_name => lv_pa_gl_journals_batch_data(idx).EBS_JOURNAL_SOURCE
-                                               , p_user_catgory_name => lv_pa_gl_journals_batch_data(idx).EBS_JOURNAL_CATEGORY
-                                               , p_set_of_books_id => gn_set_of_bks_id --cur.set_of_books_id
-                                               , p_accounting_date => NVL(lv_pa_gl_journals_batch_data(idx).accounting_date,SYSDATE)
-                                               , p_currency_code => lv_pa_gl_journals_batch_data(idx).currency_code
-                                               , p_company => lv_pa_gl_journals_batch_data(idx).segment1
-                                               , p_cost_center =>lv_pa_gl_journals_batch_data(idx).segment2
-                                               , p_account => lv_pa_gl_journals_batch_data(idx).segment3
-                                               , p_location => lv_pa_gl_journals_batch_data(idx).segment4
-                                               , p_intercompany => lv_pa_gl_journals_batch_data(idx).segment5
-                                               , p_channel => lv_pa_gl_journals_batch_data(idx).segment6
-                                               , p_future => lv_pa_gl_journals_batch_data(idx).segment7
-											   , p_ccid                   => null
-                                               , p_entered_dr => lv_pa_gl_journals_batch_data(idx).ENTERED_DR
-                                               , p_entered_cr => lv_pa_gl_journals_batch_data(idx).ENTERED_CR
-                                               , p_je_name => NULL
-                                               , p_je_reference => ln_group_id
-                                               , p_je_line_dsc =>lv_pa_gl_journals_batch_data(idx).transaction_number||'~'||lv_pa_gl_journals_batch_data(idx).LINE_DESCRIPTION
-                                               , x_output_msg => lc_cr_msg
-                                               );
-
-						end if;	
-
-						if  lc_cr_msg IS NOT NULL THEN
-							lc_error_status_flag := 'Y'; 
-							print_debug_msg(p_message => 'Error while creating Journal line during procedure call xx_gl_interface_pkg.create_stg_jrnl_line:'||lc_cr_msg , p_force => TRUE);
-
-							Update XX_GL_JRNLS_CLD_INTF_STG set record_status='E',
-							action='ERROR',
-							error_description=ERROR_DESCRIPTION||'~''Error while creating Journal line during procedure call xx_gl_interface_pkg.create_stg_jrnl_line-'||lc_cr_msg
-							where file_batch_id=gn_file_batch_id	
-							and rowid=lv_gl_journals_batch_data(idx).rowid;
-
-						END IF;                               
-
-
-
-                    END LOOP; 
-		    END LOOP;
-
-		close cur_pa_gl_journals_batch;
-
-			if lc_error_status_flag='N' then
-
-				print_debug_msg(p_message=> 'Processing complete for File Batch Id:'||rec.file_batch_id||',EBS Ledger Name:'||rec.EBS_LEDGER_NAME||'Journal Source:'||rec.EBS_JOURNAL_SOURCE,p_force=> true);			
-				Update XX_GL_JRNLS_CLD_INTF_STG set record_status='I',
-				action='INSERT'
-				where file_batch_id=rec.file_batch_id	
-				and EBS_LEDGER_NAME=rec.EBS_LEDGER_NAME
-				and EBS_JOURNAL_SOURCE=rec.EBS_JOURNAL_SOURCE				
-				and TRANSACTION_NUMBER=rec.transaction_number
-				;
-
-				Update XX_GL_JRNLS_CLD_INTF_FILES
-				set record_status='I'
-				where file_batch_id=rec.file_batch_id;
-				commit;
-
-			else
-			  Rollback;
-			    Update XX_GL_JRNLS_CLD_INTF_STG set record_status='E',
-				action='INSERT'
-				where file_batch_id=gn_file_batch_id	
-				and EBS_LEDGER_NAME=rec.EBS_LEDGER_NAME
-				and EBS_JOURNAL_SOURCE=rec.EBS_JOURNAL_SOURCE
-				and TRANSACTION_NUMBER=rec.transaction_number;
 
 				Update XX_GL_JRNLS_CLD_INTF_FILES
 				set record_status='I',
@@ -1927,11 +1779,11 @@ IS
   and xfile.process_name=p_process_name;
 
 
-  cursor cur_file_stg_batch(p_file_batch_id number) is 
+  cursor cur_file_stg_batch is 
   select distinct ebs_journal_source from 
   	XX_GL_JRNLS_CLD_INTF_STG stg
 	where 1=1	
-	 and stg.file_batch_id=p_file_batch_id
+	 and stg.process_name=p_process_name
   and stg.RECORD_STATUS in ('I')
   and stg.action in ('INSERT');
   l_err_buff      VARCHAR2 (4000);
@@ -1943,10 +1795,7 @@ BEGIN
   entering_sub(p_procedure_name => lc_procedure_name, p_parameters => lt_parameters);
   lc_action := 'Submitting GL Data File Load Program';
 
-  for rec in cur_file_batch loop
-  lv_file_status:='N';
-
-   for stg_rec in cur_file_stg_batch(rec.file_batch_id) loop
+   for stg_rec in cur_file_stg_batch loop
    lv_status:='N';
   BEGIN
     lc_conc_req_id := fnd_request.submit_request ( application => 'XXFIN' , program => 'XXGLJRNLSCLDGLTRANS' , description => NULL , start_time => sysdate , sub_request => false , argument1=>stg_rec.EBS_JOURNAL_SOURCE,argument2=>p_debug_flag);
@@ -1955,18 +1804,40 @@ BEGIN
 	lv_status:='Y';
 	lv_file_status:='Y';
       logit(p_message =>'Conc. Program  failed to submit OD: GL Interface for Cloud GL Transactions Program');
-	  Update XX_GL_JRNLS_CLD_INTF_STG set record_status='P',
-				action='PROCESSED'
-				where file_batch_id=rec.file_batch_id	
-				and EBS_JOURNAL_SOURCE=stg_rec.EBS_JOURNAL_SOURCE;
+	  	Update XX_GL_JRNLS_CLD_INTF_FILES xx
+				set xx.record_status='P',
+				ERROR_DESCRIPTION=ERROR_DESCRIPTION||'~'||'Failed to submit OD: GL Interface for Cloud GL Transactions Program'				
+				where xx.file_batch_id in 
+				(Select distinct file_batch_id from XX_GL_JRNLS_CLD_INTF_STG stg where EBS_JOURNAL_SOURCE=stg_rec.EBS_JOURNAL_SOURCE 
+				and stg.RECORD_STATUS in ('I')
+				and stg.action in ('INSERT'));
+				
+	  Update XX_GL_JRNLS_CLD_INTF_STG stg set record_status='P',
+				action='PROCESSED',
+				ERROR_DESCRIPTION=ERROR_DESCRIPTION||'~'||'Failed to submit OD: GL Interface for Cloud GL Transactions Program'
+				where 1=1
+				and EBS_JOURNAL_SOURCE=stg_rec.EBS_JOURNAL_SOURCE
+				and stg.RECORD_STATUS in ('I')
+				and stg.action in ('INSERT');
     ELSE
 	lv_status:='N';
-	Update XX_GL_JRNLS_CLD_INTF_STG set record_status='P',
-				action='PROCESSED'
-				where file_batch_id=rec.file_batch_id	
-				and EBS_JOURNAL_SOURCE=stg_rec.EBS_JOURNAL_SOURCE;
+	Update XX_GL_JRNLS_CLD_INTF_FILES xx
+				set xx.record_status='P'				
+				where xx.file_batch_id in 
+				(Select distinct file_batch_id from XX_GL_JRNLS_CLD_INTF_STG stg where EBS_JOURNAL_SOURCE=stg_rec.EBS_JOURNAL_SOURCE 
+				and stg.RECORD_STATUS in ('I')
+				and stg.action in ('INSERT'));
 				
-      lc_action              := 'Waiting for concurrent request OD: GL Interface for Cloud GL Transactions Program to complete';
+	Update XX_GL_JRNLS_CLD_INTF_STG stg set record_status='P',
+				action='PROCESSED'
+				where 	1=1
+				and EBS_JOURNAL_SOURCE=stg_rec.EBS_JOURNAL_SOURCE
+				and stg.RECORD_STATUS in ('I')
+				and stg.action in ('INSERT');
+				
+
+		--Commented code to trigger and forget.		
+    /*  lc_action              := 'Waiting for concurrent request OD: GL Interface for Cloud GL Transactions Program to complete';
       lc_wait_flag           := fnd_concurrent.wait_for_request(request_id => lc_conc_req_id, phase => lc_phase, status => lc_status, dev_phase => lc_dev_phase, dev_status => lc_dev_status, MESSAGE => lc_message);
       IF UPPER(lc_dev_status) = 'NORMAL' AND UPPER(lc_dev_phase) = 'COMPLETE' THEN
         logit(p_message =>'OD: GL Interface for Cloud GL Transactions Program successful for the Request Id: ' || lc_conc_req_id );
@@ -1974,7 +1845,9 @@ BEGIN
       ELSE
         logit(p_message =>'OD: GL Interface for Cloud GL Transactions Program did not complete normally. ');
 		
-      END IF;
+      END IF; */
+	  
+	   
     END IF;
 	
 	
@@ -1982,14 +1855,6 @@ BEGIN
   commit;
 
   end loop;
- if lv_file_status='N' then
-  Update XX_GL_JRNLS_CLD_INTF_FILES xx
-				set xx.record_status='P'				
-				where xx.file_batch_id=rec.file_batch_id;
-	commit;
- end if;
-  end loop;
-
 
 EXCEPTION
 WHEN OTHERS THEN
