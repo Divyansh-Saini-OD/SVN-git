@@ -7295,8 +7295,12 @@ END xx_set_post_receipt_variables;
 			|| gn_cash_receipt_id
 			|| '.  Payment Order ID: '
 			|| gn_order_payment_id;
-    --
-    IF gc_ixreserved20 = '0' OR to_number(ABS(gc_ixreserved20)) = 0 -- NAIT-131811, v48.5
+	--
+    IF gc_ixreserved20 = 0 OR
+        gc_ixreserved20 = '0' OR
+        ABS(gc_ixreserved20) = 0 OR
+        to_char(gc_ixreserved20) = '0' OR
+        to_number(ABS(gc_ixreserved20)) = 0 -- NAIT-131811, v48.5
     THEN
       gc_ixreserved20 := NULL;
     END IF;
