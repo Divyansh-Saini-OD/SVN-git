@@ -53,7 +53,7 @@ AS
    -- |5.9        01-Apr-2020  Pramod Kumar   NAIT-11880 Rev Rec Code changes 
    -- |5.10       01-Apr-2020  Pramod Kumar   NAIT-11880 Code changes to make POS Subscription orders Trx Number as Orig_sys_document_ref
    -- |5.11       01-Apr-2020  Pramod Kumar   NAIT-11880 Code changes to call UNEARN Acc Class if REV REC eligible
-   -- |5.12       02-Jun-2020  Shani Singh    NAIT-125301 Fees Phase II – Quantity Shipped and Unit Price of Line Fees 
+   -- |5.12       02-Jun-2020  Shani Singh    NAIT-125301 Fees Phase II â€“ Quantity Shipped and Unit Price of Line Fees 
    -- |										  (Beverage, Import Surcharge, Stamp Fees) calculation and display on billing
    -- +=====================================================================================+
 
@@ -399,7 +399,7 @@ AS
             mtl_system_items_b d
           WHERE 1                  =1
           AND d.INVENTORY_ITEM_ID  =ril1.INVENTORY_ITEM_ID
-          AND ril1.sales_order_line=ril.ATTRIBUTE12
+          AND ril1.sales_order_line= p_line_num -- Added under NAIT-121574
           AND ril1.sales_order     =ril.sales_order
           AND rownum               <2
           ) qty, -- NAIT-125301
@@ -409,7 +409,7 @@ AS
             mtl_system_items_b d
           WHERE 1                  =1
           AND d.INVENTORY_ITEM_ID  =ril1.INVENTORY_ITEM_ID
-          AND ril1.sales_order_line=ril.ATTRIBUTE12
+          AND ril1.sales_order_line= p_line_num -- Added under NAIT-121574
           AND ril1.sales_order     =ril.sales_order
           AND rownum               <2
           ) unit_price -- NAIT-125301
