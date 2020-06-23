@@ -445,6 +445,7 @@ AS
         AND d.INVENTORY_ITEM_ID  =ril1.INVENTORY_ITEM_ID
         AND ril1.sales_order_line= ril.attribute12 -- p_line_num -- Added under NAIT-121574
         AND ril1.sales_order     =ril.sales_order
+        AND upper(ril1.line_type) <> 'TAX'
         AND rownum               <2
         ) qty, -- NAIT-125301
         ril.unit_selling_price/
@@ -455,6 +456,7 @@ AS
         AND d.INVENTORY_ITEM_ID  =ril1.INVENTORY_ITEM_ID
         AND ril1.sales_order_line= ril.attribute12 -- p_line_num -- Added under NAIT-121574
         AND ril1.sales_order     =ril.sales_order
+        AND upper(ril1.line_type) <> 'TAX'
         AND rownum               <2
         ) unit_price -- NAIT-125301
       FROM ra_interface_lines_all ril
