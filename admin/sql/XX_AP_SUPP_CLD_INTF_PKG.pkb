@@ -84,6 +84,7 @@ CREATE OR REPLACE PACKAGE BODY xx_ap_supp_cld_intf_pkg
 -- | 3.8     23-Jan-2020    Shanti Sethuraj    Modified for jira NAIT-118444	               |
 -- | 3.9     06-Feb-2020    Shanti Sethuraj    Modified for jira NAIT-112927                   |
 -- | 4.0     03-Mar-2020    Shanti Sethuraj    Modified for jira NAIT-118027                   |
+-- | 4.1     23-Jun-2020    Harika N           Modified for jira NAIT-131300                   |
 -- |===========================================================================================+
 AS
   /*********************************************************************
@@ -5167,7 +5168,8 @@ IS
     AND b.bank_party_id   =a.party_id
     AND b.bank_branch_name=p_branch
 	-- AND b.branch_number=p_branch 
-    AND b.country         =p_country
+    --AND b.country         =p_country --commented by Harika N for NAIT-131300
+	AND NVL(b.country,b.bank_home_country)         =p_country --Added NVL condition by Harika N for NAIT-131300, as this is a standard bug as per metalink doc id: 2266256.1
     AND SYSDATE BETWEEN b.start_date AND NVL(end_date,sysdate+1);
   --==========================================================================================
   -- Declaring Local variables
