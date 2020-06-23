@@ -429,6 +429,50 @@ AS
           AND SYSDATE BETWEEN NVL(b.start_date_active,SYSDATE) AND NVL(b.end_date_active,SYSDATE+1)
           AND b.attribute6 = ril.INVENTORY_ITEM_ID
           ) ;
+        
+      --Added for NAIT-125301 EDI Tariff changes
+      --Corrected Cursor NAIT-121574      
+      CURSOR lcu_e80_tariff(p_sales_order  IN VARCHAR2,p_batch_source_name  IN VARCHAR2,P_intline_attribute6 IN VARCHAR2 ,p_line_num IN VARCHAR2)
+      IS
+      SELECT ROWID row_id ,
+        org_id ,
+        ril.DESCRIPTION,
+        ril.attribute12,
+        (SELECT ril1.quantity_ordered
+        FROM ra_interface_lines_all ril1 ,
+          mtl_system_items_b d
+        WHERE 1                  =1
+        AND d.INVENTORY_ITEM_ID  =ril1.INVENTORY_ITEM_ID
+        AND ril1.sales_order_line= ril.attribute12 -- p_line_num -- Added under NAIT-121574
+        AND ril1.sales_order     =ril.sales_order
+        AND rownum               <2
+        ) qty, -- NAIT-125301
+        ril.unit_selling_price/
+        (SELECT ril1.quantity_ordered
+        FROM ra_interface_lines_all ril1 ,
+          mtl_system_items_b d
+        WHERE 1                  =1
+        AND d.INVENTORY_ITEM_ID  =ril1.INVENTORY_ITEM_ID
+        AND ril1.sales_order_line= ril.attribute12 -- p_line_num -- Added under NAIT-121574
+        AND ril1.sales_order     =ril.sales_order
+        AND rownum               <2
+        ) unit_price -- NAIT-125301
+      FROM ra_interface_lines_all ril
+      WHERE 1                           =1
+      AND ril.SALES_ORDER               = p_sales_order
+      AND ril.batch_source_name         = NVL(p_batch_source_name,ril.batch_source_name)
+      AND ril.interface_line_attribute6 = P_intline_attribute6
+--      AND instr(ril.description,' - ')  = 0
+      AND EXISTS
+        (SELECT lookup_code
+        FROM fnd_lookup_values b
+        WHERE b.lookup_type = 'OD_FEES_ITEMS'
+        AND b.LANGUAGE      ='US'
+        AND b.enabled_flag  = 'Y'
+        AND b.attribute7    = 'LINE'
+        AND SYSDATE BETWEEN NVL(b.start_date_active,SYSDATE) AND NVL(b.end_date_active,SYSDATE+1)
+        AND b.attribute6 = ril.INVENTORY_ITEM_ID
+        );
       
       lc_line_num VARCHAR2(20);--Code Added Under NAIT-121574
       
@@ -1543,13 +1587,16 @@ HEADER_ATTRIBUTE13  RA_INTERFACE_LINES_ALL.HEADER_ATTRIBUTE13%TYPE,
                 FND_FILE.PUT_LINE(FND_FILE.LOG,'..EDI Tariff Changes...'||lcu_process_interface_lines.sales_order||' DESC '||i.new_desc );
                 FND_FILE.PUT_LINE(FND_FILE.LOG,'..EDI Tariff NEW Changes... Before Update statement Line Num : '|| lc_line_num);
                 FND_FILE.PUT_LINE(FND_FILE.LOG,'..EDI Tariff NEW Changes... Before Update statement description : '|| i.new_desc);
+                FND_FILE.PUT_LINE(FND_FILE.LOG,'..EDI Tariff NEW Changes... Before Update statement Qty : '|| i.qty);
+                FND_FILE.PUT_LINE(FND_FILE.LOG,'..EDI Tariff NEW Changes... Before Update statement unit price : '|| i.unit_price);
+
                 UPDATE ra_interface_lines_all
                 SET DESCRIPTION       = i.new_desc ,
-                  attribute12         = lc_line_num, -- Added Attr12 under NAIT-121574
-                  quantity            = i.qty, -- NAIT-125301
-                  quantity_ordered    = i.qty, -- NAIT-125301
-                  unit_selling_price  = i.unit_price, -- NAIT-125301
-                  unit_standard_price = i.unit_price -- NAIT-125301
+                  attribute12         = lc_line_num -- Added Attr12 under NAIT-121574
+                  --quantity            = i.qty, -- NAIT-125301
+                  --quantity_ordered    = i.qty, -- NAIT-125301
+                  --unit_selling_price  = i.unit_price, -- NAIT-125301
+                  --unit_standard_price = i.unit_price -- NAIT-125301
                 WHERE ROWID = i.row_id
                   AND org_id            = FND_PROFILE.VALUE('ORG_ID')
                 ;
@@ -1558,6 +1605,34 @@ HEADER_ATTRIBUTE13  RA_INTERFACE_LINES_ALL.HEADER_ATTRIBUTE13%TYPE,
             
             END LOOP;
             -- EDI Tariff changes ends
+            
+            --Added for NAIT-125301 E80 Tariff changes
+            FND_FILE.PUT_LINE(FND_FILE.LOG,'..E80 Tariff Changes...' );
+            FND_FILE.PUT_LINE(FND_FILE.LOG,'..E80 Tariff sales_order...' ||lcu_process_interface_lines.sales_order);
+            FND_FILE.PUT_LINE(FND_FILE.LOG,'..E80 Tariff batch_source_name...'|| lcu_process_interface_lines.batch_source_name);
+            FND_FILE.PUT_LINE(FND_FILE.LOG,'..E80 Tariff interface_line_attribute6...' ||lcu_process_interface_lines.interface_line_attribute6);
+            FND_FILE.PUT_LINE(FND_FILE.LOG,'..E80 Tariff lc_line_num...' ||lc_line_num);
+            FOR i in  lcu_e80_tariff(lcu_process_interface_lines.sales_order,lcu_process_interface_lines.batch_source_name,lcu_process_interface_lines.interface_line_attribute6,lc_line_num)
+            LOOP
+                FND_FILE.PUT_LINE(FND_FILE.LOG,'..E80 Tariff NEW Changes... Before Update statement Line Num : '|| lc_line_num);
+                FND_FILE.PUT_LINE(FND_FILE.LOG,'..E80 Tariff NEW Changes... Before Update statement Attribute12 : '|| i.attribute12);
+                FND_FILE.PUT_LINE(FND_FILE.LOG,'..E80 Tariff NEW Changes... Before Update statement Qty : '|| i.qty);
+                FND_FILE.PUT_LINE(FND_FILE.LOG,'..E80 Tariff NEW Changes... Before Update statement unit price : '|| i.unit_price);
+                --
+                UPDATE ra_interface_lines_all
+                SET quantity          = i.qty,        -- NAIT-125301
+                  quantity_ordered    = i.qty,        -- NAIT-125301
+                  unit_selling_price  = i.unit_price, -- NAIT-125301
+                  unit_standard_price = i.unit_price  -- NAIT-125301
+                WHERE ROWID           = i.row_id
+                AND org_id            = FND_PROFILE.VALUE('ORG_ID');
+                --
+                FND_FILE.PUT_LINE(FND_FILE.LOG,'..E80 Tariff NEW Changes... After Update statement Qty : '|| i.qty);
+                FND_FILE.PUT_LINE(FND_FILE.LOG,'..E80 Tariff NEW Changes... After Update statement Unit Price : '|| i.qty);
+                --
+            END LOOP;
+            -- E80 Tariff changes ends            
+            
             
             
             IF  p_invoice_source IS NULL  THEN
