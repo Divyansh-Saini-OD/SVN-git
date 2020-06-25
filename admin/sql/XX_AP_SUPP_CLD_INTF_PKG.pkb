@@ -85,6 +85,7 @@ CREATE OR REPLACE PACKAGE BODY xx_ap_supp_cld_intf_pkg
 -- | 3.9     06-Feb-2020    Shanti Sethuraj    Modified for jira NAIT-112927                   |
 -- | 4.0     03-Mar-2020    Shanti Sethuraj    Modified for jira NAIT-118027                   |
 -- | 4.1     23-Jun-2020    Harika N           Modified for jira NAIT-131300                   |
+-- | 4.2     25-Jun-2020    Shanti Sethuraj    Modified for jira NAIT-118338                   |
 -- |===========================================================================================+
 AS
   /*********************************************************************
@@ -1695,6 +1696,7 @@ BEGIN
 		  lr_vendor_rec.attribute14                  :=NVL(c_sup.attribute14, FND_API.G_MISS_CHAR);
 		  lr_vendor_rec.attribute15                  :=NVL(c_sup.attribute15, FND_API.G_MISS_CHAR);
 		  lr_vendor_rec.terms_id                     :=ln_terms_id; -- Added as per Version 2.6
+		  lr_vendor_rec.JGZZ_FISCAL_CODE             := c_sup.num_1099;  -- added by Shanti for Taxpayer_id update NAIT-118338
 		  
 		  /* Added as per Version 2.1 by Havish Kasina */
 		  --==============================================================================
@@ -1768,7 +1770,7 @@ BEGIN
 		  x_msg_count    :=NULL;
 		  x_msg_data     :=NULL;
 		  -------------------------------------------------Calling API
-		  ap_vendor_pub_pkg.update_vendor(  p_api_version => v_api_version, 
+		  ap_vendor_pub_pkg.update_vendor_public(  p_api_version => v_api_version, 
 											p_init_msg_list => v_init_msg_list, 
 											p_commit => v_commit, 
 											p_validation_level => v_validation_level, 
@@ -1777,8 +1779,8 @@ BEGIN
 											x_msg_data => x_msg_data, 
 											p_vendor_rec => lr_vendor_rec, 
 											p_vendor_id => lr_existing_vendor_rec.vendor_id 
-										 );
-      
+										 );    
+      --- modified the API from ap_vendor_pub_pkg.update_vendor to ap_vendor_pub_pkg.update_vendor_public by Shanti for NAIT-118338
 		  print_debug_msg(p_message=> l_program_step||'X_RETURN_STATUS = ' || x_return_status, p_force=>true);
           print_debug_msg(p_message=> l_program_step||'X_MSG_COUNT = ' || x_msg_count, p_force=>true);
           print_debug_msg(p_message=> l_program_step||'X_MSG_DATA = ' || x_msg_data , p_force=>true);
