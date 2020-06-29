@@ -1,15 +1,9 @@
 package od.oracle.apps.xxcrm.cdh.ebl.custdocs.webui;
 
 import com.sun.java.util.collections.HashMap;
-import com.sun.rowset.internal.*;
 
 import oracle.jbo.RowSetIterator;
-//import com.sun.rowset.internal.Row;
 import java.io.Serializable;
-
-import java.sql.PreparedStatement;
-
-import java.sql.SQLException;
 
 import java.text.SimpleDateFormat;
 
@@ -24,26 +18,20 @@ import oracle.apps.fnd.framework.OAException;
 import oracle.apps.fnd.framework.OAFwkConstants;
 import oracle.apps.fnd.framework.OARow;
 import oracle.apps.fnd.framework.OAViewObject;
+import oracle.apps.fnd.framework.server.OAViewObjectImpl;
 import oracle.apps.fnd.framework.webui.OAControllerImpl;
 import oracle.apps.fnd.framework.webui.OADialogPage;
 import oracle.apps.fnd.framework.webui.OAPageContext;
 import oracle.apps.fnd.framework.webui.OAWebBeanConstants;
-import oracle.apps.fnd.framework.webui.beans.OATipBean;
 import oracle.apps.fnd.framework.webui.beans.OAWebBean;
 import oracle.apps.fnd.framework.webui.beans.message.OAMessageTextInputBean;
 import oracle.apps.fnd.framework.webui.beans.table.OAAdvancedTableBean;
-
-import oracle.jbo.RowSetIterator;
 import oracle.jbo.domain.Date;
 import oracle.jbo.domain.Number;
 import oracle.jbo.Row;
-import oracle.apps.fnd.framework.OARow;
-import oracle.apps.fnd.framework.server.OADBTransaction;
 
-import oracle.apps.fnd.framework.webui.beans.message.OAMessageChoiceBean;
+import oracle.apps.fnd.framework.webui.beans.message.OAMessageLovInputBean;
 
-import oracle.cabo.data.jbo.ui.beans.message.MessageChoiceBean;
-import oracle.cabo.ui.beans.message.MessageStyledTextBean;
 
 /*
 -- +===========================================================================+
@@ -87,6 +75,7 @@ public class ODEBillDocumentsCO extends OAControllerImpl
   public static final String RCS_ID="$Header$";
   public static final boolean RCS_ID_RECORDED =
         VersionInfo.recordClassVersion(RCS_ID, "%packagename%");
+  public static String showAll = "Y";
 
   /**
    * Layout and page setup logic for a region.
@@ -101,7 +90,6 @@ public class ODEBillDocumentsCO extends OAControllerImpl
     OAApplicationModule CustDocAM = (OAApplicationModule) pageContext.getApplicationModule(webBean);
         OAViewObject templHdrVO = 
             (OAViewObject)CustDocAM.findViewObject("ODEBillCustDocHeaderVO");
-        System.out.println("Dir "+pageContext.getAppsHtmlDirectory());    
     ODUtil utl = new ODUtil(CustDocAM);
     utl.log("Event :"+event);
     utl.log("ODEBillDocumentsCO:Process Request Begin");
@@ -276,36 +264,66 @@ public class ODEBillDocumentsCO extends OAControllerImpl
     pageContext.writeDiagnostics(this, "Inside PFR method CustAccountId : "+CustAccountId, 1);
       pageContext.writeDiagnostics(this, "sEvnParam : "+sEvnParam, 1);
     //MBS Doc ID Lov Clicked Bhagwan Rao 10March2017
-     
+     System.out.println("pageContext.getParameter(EVENT_PARAM) "+pageContext.getParameter(EVENT_PARAM));
      // Added by Divyansh for NAIT-129167
-     if (SHOW_EVENT.equals(pageContext.getParameter(EVENT_PARAM)))
-     {
-         OAViewObject vo= (OAViewObject)am.findViewObject("ODEbillCustDocVO");
-         ODEbillCustDocVORowImpl row = (ODEbillCustDocVORowImpl)vo.getRowAtRangeIndex(Integer.parseInt(pageContext.getParameter(VALUE_PARAM)));
-         String docType=row.getCExtAttr1();          
-         String printType =row.getCExtAttr3();
-         OAViewObject feevo = (OAViewObject)am.findViewObject("feeoptionType1");
-         feevo.setWhereClause("SOURCE_VALUE2 = '"+printType +"' AND NVL(SOURCE_VALUE3,'"+docType+"')= NVL('"+docType+"',SOURCE_VALUE3)");
-         feevo.executeQuery();
-     }
+      String lovEvent = pageContext.getParameter(EVENT_PARAM);
+      if("lovValidate".equals(lovEvent)) {  
+            String lovInputSourceId = pageContext.getLovInputSourceId();  
+                System.out.println("validate event called");
+            if("FeeOption".equals(lovInputSourceId)) {  
+                String rowRef = pageContext.getParameter(OAWebBeanConstants.EVENT_SOURCE_ROW_REFERENCE);
+                ODEbillCustDocVORowImpl rowImpl= (ODEbillCustDocVORowImpl)am.findRowByRef(rowRef);
+                String docType=rowImpl.getCExtAttr1(); 
+                String printType =rowImpl.getCExtAttr3();
+                OAViewObject feevo = (OAViewObject)am.findViewObject("feeoptionType1");
+                feevo.setWhereClause("SOURCE_VALUE2 = '"+printType +"' AND NVL(SOURCE_VALUE3,'"+docType+"')= NVL('"+docType+"',SOURCE_VALUE3)");
+                feevo.executeQuery();
+            }
+            }
+      if("lovPrepare".equals(lovEvent)) {  
+            String lovInputSourceId = pageContext.getLovInputSourceId();  
+                System.out.println("validate event called");
+            if("FeeOption".equals(lovInputSourceId)) {  
+                String rowRef = pageContext.getParameter(OAWebBeanConstants.EVENT_SOURCE_ROW_REFERENCE);
+                ODEbillCustDocVORowImpl rowImpl= (ODEbillCustDocVORowImpl)am.findRowByRef(rowRef);
+                String docType=rowImpl.getCExtAttr1(); 
+                String printType =rowImpl.getCExtAttr3();
+                OAViewObject feevo = (OAViewObject)am.findViewObject("feeoptionType1");
+                feevo.setWhereClause("SOURCE_VALUE2 = '"+printType +"' AND NVL(SOURCE_VALUE3,'"+docType+"')= NVL('"+docType+"',SOURCE_VALUE3)");
+                feevo.executeQuery();
+            }
+            }
       // Ended by Divyansh for NAIT-129167
      if (pageContext.isLovEvent())
      {
      String lovInputSourceId = pageContext.getLovInputSourceId();
+        System.out.println("islov event called "+lovInputSourceId);
      if ("DocId".equals(lovInputSourceId))
      {
            String rowRef = pageContext.getParameter(OAWebBeanConstants.EVENT_SOURCE_ROW_REFERENCE);
            ODEbillCustDocVORowImpl rowImpl= (ODEbillCustDocVORowImpl)am.findRowByRef(rowRef);
            String docType=rowImpl.getCExtAttr1();          
          // Added by Divyansh for NAIT-129167
-         String printType =rowImpl.getCExtAttr3();
-         OAViewObject feevo = (OAViewObject)am.findViewObject("feeoptionType1");
-         feevo.setWhereClause("SOURCE_VALUE2 = '"+printType +"' AND NVL(SOURCE_VALUE3,'"+docType+"')= NVL('"+docType+"',SOURCE_VALUE3)");
-         feevo.executeQuery();
-        OAMessageChoiceBean mcb = (OAMessageChoiceBean)webBean.findChildRecursive("FeeOption");
-        Serializable prm[] = {docType,printType};
-        String defval =(String)am.invokeMethod("getDefaultFee",prm);
-        mcb.setSelectedValue(defval);
+           String printType =rowImpl.getCExtAttr3();
+           Serializable num[]={docType,printType};
+           Boolean s = (Boolean)am.invokeMethod("checkDelMethod",num);
+            rowImpl.setFeeflag(s);
+            //mcb.setReadOnly(s);
+            if(!s){
+                //mcb.setValue(pageContext,null);
+                OAViewObject feevo = (OAViewObject)am.findViewObject("feeoptionType1");
+                feevo.setWhereClause("SOURCE_VALUE2 = '"+printType +"' AND NVL(SOURCE_VALUE3,'"+docType+"')= NVL('"+docType+"',SOURCE_VALUE3)");
+                feevo.executeQuery();
+                Serializable prm[] = {docType,printType};
+                String defval =(String)am.invokeMethod("getDefaultFee",prm);
+                //mcb.setValue(pageContext,defval);
+                rowImpl.setFeeoptionfv(defval);
+            }
+            else
+            {
+                rowImpl.setAttribute("Feeoptionfv",null);
+                rowImpl.setAttribute("FeeOption",null);
+            }
          // Ended by Divyansh for NAIT-129167
          //Added By Rafi on 31-Aug-2018 for SKU Level Tax to default ePDF Dely Method for Defect #NAIT-58403 -START
          String docId=rowImpl.getNExtAttr1().toString();         
@@ -552,6 +570,11 @@ public class ODEBillDocumentsCO extends OAControllerImpl
            }
         }
         //Added By Reddy Sekhar K on 13 Nov 2018 for the Req# NAIT-61952 & 66520-----END
+         // Added by Divyansh for NAIT-129167
+         Serializable prm[] = {"Invoice","ePDF"};
+         String defval =(String)am.invokeMethod("getDefaultFee",prm);
+        CustDocVO1.getCurrentRow().setAttribute("Feeoptionfv",defval);
+        // Ended by Divyansh for NAIT-129167
     }
       
     //AddRow
@@ -561,15 +584,25 @@ public class ODEBillDocumentsCO extends OAControllerImpl
         String rowRef1 = pageContext.getParameter(OAWebBeanConstants.EVENT_SOURCE_ROW_REFERENCE);
         ODEbillCustDocVORowImpl rowImpl1= (ODEbillCustDocVORowImpl)am.findRowByRef(rowRef1);
         // Added by Divyansh for NAIT-129167
-        String docType=rowImpl1.getCExtAttr1();          
         String printType =rowImpl1.getCExtAttr3();
-        OAViewObject feevo = (OAViewObject)am.findViewObject("feeoptionType1");
-        feevo.setWhereClause("SOURCE_VALUE2 = '"+printType +"' AND NVL(SOURCE_VALUE3,'"+docType+"')= NVL('"+docType+"',SOURCE_VALUE3)");
-        feevo.executeQuery();
-        Serializable prm[] = {docType,printType};
-        String defval =(String)am.invokeMethod("getDefaultFee",prm);
-        Row row = am.findRowByRef(rowRef1);
-        row.setAttribute("FeeOption",defval);
+        String docType =rowImpl1.getCExtAttr1();
+        Serializable num[]={docType,printType};
+        Boolean s = (Boolean)am.invokeMethod("checkDelMethod",num);
+        rowImpl1.setFeeflag(s);
+        if(!s){
+            OAViewObject feevo = (OAViewObject)am.findViewObject("feeoptionType1");
+            feevo.setWhereClause("SOURCE_VALUE2 = '"+printType +"' AND NVL(SOURCE_VALUE3,'"+docType+"')= NVL('"+docType+"',SOURCE_VALUE3)");
+            feevo.executeQuery();
+            Serializable prm[] = {docType,printType};
+            String defval =(String)am.invokeMethod("getDefaultFee",prm);
+             rowImpl1.setFeeoptionfv(defval);
+        }
+        else
+        {
+            rowImpl1.setAttribute("Feeoptionfv",null);
+            rowImpl1.setAttribute("FeeOption",null);
+        }
+        
         // Ended by Divyansh for NAIT-129167
         String dlyMtd = pageContext.getParameter("DelyMtdUpdate");
         String custDocId=pageContext.getParameter("CustDocId");
@@ -1029,6 +1062,8 @@ public class ODEBillDocumentsCO extends OAControllerImpl
 
       Number nPCustdoc=(Number)CustDocVO.getCurrentRow().getAttribute("NExtAttr15");
       Number nPCustActId = (Number)CustDocVO.getCurrentRow().getAttribute("ParentCustDocID");
+      String feeOption = (String)CustDocVO.getCurrentRow().getAttribute("FeeOption");
+      String payDocType  = (String)CustDocVO.getCurrentRow().getAttribute("CExtAttr1");
       //Data Capture End
       //Local Variables
       String stmt;
@@ -1323,6 +1358,18 @@ public class ODEBillDocumentsCO extends OAControllerImpl
         }
             
       }
+        if (status.equals("IN_PROCESS")) {
+            Serializable[] prms={payDocType,dlyMtd,feeOption};
+            System.out.println("payDocType "+payDocType);
+            System.out.println("dlyMtd "+dlyMtd);
+            System.out.println("feeOption "+feeOption);
+            String val=(String)am.invokeMethod("ValidateFeeOption",prms);
+            if (("0").equals(val) || val==null)
+            {
+                throw new OAException("XXCRM","XXOD_EBL_INVALID_FEEOPT");
+            }
+        }
+      
       //Data Capture & Validation for Pay doc group validation End
       CustDocVO.previous();
     }//For loop

@@ -109,6 +109,8 @@ public class ODEbillCustDocVORowImpl extends OAViewRowImpl {
     public static final int BCPODFLAG = 77;
     public static final int BCPODCASE = 78;
     public static final int FEEOPTION = 79;
+    public static final int FEEFLAG = 80;
+    public static final int FEEOPTIONFV = 81;
 
 
     /**
@@ -1437,6 +1439,10 @@ public class ODEbillCustDocVORowImpl extends OAViewRowImpl {
             return getBcpodcase();
         case FEEOPTION:
             return getFeeOption();
+        case FEEFLAG:
+            return getFeeflag();
+        case FEEOPTIONFV:
+            return getFeeoptionfv();
         default:
             return super.getAttrInvokeAccessor(index, attrDef);
         }
@@ -1682,6 +1688,12 @@ public class ODEbillCustDocVORowImpl extends OAViewRowImpl {
             return;
         case FEEOPTION:
             setFeeOption((String)value);
+            return;
+        case FEEFLAG:
+            setFeeflag((Boolean)value);
+            return;
+        case FEEOPTIONFV:
+            setFeeoptionfv((String)value);
             return;
         default:
             super.setAttrInvokeAccessor(index, value, attrDef);
@@ -2191,5 +2203,30 @@ public class ODEbillCustDocVORowImpl extends OAViewRowImpl {
      */
     public void setFeeOption(String value) {
         setAttributeInternal(FEEOPTION, value);
+    }
+
+
+    /**Gets the attribute value for the calculated attribute Feeflag
+     */
+    public Boolean getFeeflag() {
+        return (Boolean) getAttributeInternal(FEEFLAG);
+    }
+
+    /**Sets <code>value</code> as the attribute value for the calculated attribute Feeflag
+     */
+    public void setFeeflag(Boolean value) {
+        setAttributeInternal(FEEFLAG, value);
+    }
+
+    /**Gets the attribute value for the calculated attribute Feeoptionfv
+     */
+    public String getFeeoptionfv() {
+        return (String) getAttributeInternal(FEEOPTIONFV);
+    }
+
+    /**Sets <code>value</code> as the attribute value for the calculated attribute Feeoptionfv
+     */
+    public void setFeeoptionfv(String value) {
+        setAttributeInternal(FEEOPTIONFV, value);
     }
 }

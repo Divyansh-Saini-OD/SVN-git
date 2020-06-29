@@ -18,7 +18,7 @@ package od.oracle.apps.xxcrm.cdh.ebl.custdocs.server;
   -- |DRAFT 1A 24-FEB-2010 Vasan S        Initial draft version                   |
   -- |2.0      16-FEB-2017 Havish K       Closing the leaked connection/statement |
   -- |3.0      13-Nov-2018 Reddy Sekhar K Code Added for Req# NAIT-61952 & 66520 |
-  -- |                                                                           |
+  -- |4.0      04-May-2020 Divyansh Saini Code added for NAIT-129167                                                                           |
   -- |===========================================================================|
   -- | Subversion Info:                                                          |
   -- | $HeadURL$                                                               |
@@ -192,8 +192,39 @@ public class ODCustDocAMImpl extends OAApplicationModuleImpl {
       return xd;
   }//calculateEffDate
 
+   /**
+    * Added by Divyansh for NAIT-129167
+    *
+    */
+    public Boolean checkDelMethod(String doctype,String delmethod)
+    {
+       ODUtil utl = new ODUtil(this);
+       Integer num =0;
+       OADBTransaction db = this.getOADBTransaction();
+       String query = "SELECT DECODE(count(0),0,1,0)" +
+                               "FROM xx_fin_translatedefinition xft,\n" + 
+                               "     xx_fin_translatevalues xftv\n" + 
+                               "WHERE xft.translate_id = xftv.translate_id\n" + 
+                               "AND xftv.ENABLED_FLAG = 'Y'\n" + 
+                               "AND sysdate between xftv.START_DATE_ACTIVE and  NVL(xftv.END_DATE_ACTIVE,sysdate+1)\n" + 
+                               "AND xft.translation_name = 'OD_IREC_BILL_DOC_DEFAULTS'\n"+
+                               "AND NVL(Source_value3,'"+doctype+"') = '"+doctype+"'" +
+                               "AND Source_value2 = '"+delmethod+"' ";
+       PreparedStatement stmt = db.createPreparedStatement(query,1);
+        try {
+            ResultSet rset = stmt.executeQuery();
+            while(rset.next())
+            {
+               num = rset.getInt(1);
+            }
+            
+        } catch (SQLException e) {
+             utl.log("getDefaultFee:Error:"+ e.toString());
+        }
+        return num==1;
+    }
   /**
-   * 
+   * Added by Divyansh for NAIT-129167
    *
    */
    public String getDefaultFee(String doctype,String delmethod)
@@ -201,7 +232,7 @@ public class ODCustDocAMImpl extends OAApplicationModuleImpl {
       ODUtil utl = new ODUtil(this);
       String retStr = null;
       OADBTransaction db = this.getOADBTransaction();
-      String Feeoptstr = "SELECT xftv.SOURCE_VALUE1\n" + 
+      String Feeoptstr = "SELECT xftv.TARGET_VALUE1\n" + 
                        "FROM xx_fin_translatedefinition xft,\n" + 
                        "     xx_fin_translatevalues xftv\n" + 
                        "WHERE xft.translate_id = xftv.translate_id\n" + 
@@ -225,7 +256,57 @@ public class ODCustDocAMImpl extends OAApplicationModuleImpl {
         }
         return retStr;
     }
+    /**
+     * Added by Divyansh for NAIT-129167
+     *
+     */
+     public String ValidateFeeOption(String doctype,String delmethod,String Feeopt)
+     {
+        ODUtil utl = new ODUtil(this);
+        String retStr = null;
+        OADBTransaction db = this.getOADBTransaction();
+          String Feeoptstr = null;
+        if (("").equals(Feeopt)|| Feeopt==null)
+        {
+            System.out.println(" for doctype "+doctype +" inside feopt null");
+             Feeoptstr = "SELECT decode(count(0),0,1,0)\n" + 
+                             "FROM xx_fin_translatedefinition xft,\n" + 
+                             "     xx_fin_translatevalues xftv\n" + 
+                             "WHERE xft.translate_id = xftv.translate_id\n" + 
+                             "AND xftv.ENABLED_FLAG = 'Y'\n" + 
+                             "AND sysdate between xftv.START_DATE_ACTIVE and  NVL(xftv.END_DATE_ACTIVE,sysdate+1)\n" + 
+                             "AND xft.translation_name = 'OD_IREC_BILL_DOC_DEFAULTS'\n"+
+                             "AND NVL(Source_value3,'"+doctype+"') = '"+doctype+"'" +
+                             "AND Source_value2 = '"+delmethod+"' ";
+        }
+        else 
+        { 
+            System.out.println(" for doctype "+doctype +" inside feopt not null");
+              Feeoptstr = "SELECT count(0)\n" + 
+                         "FROM xx_fin_translatedefinition xft,\n" + 
+                         "     xx_fin_translatevalues xftv\n" + 
+                         "WHERE xft.translate_id = xftv.translate_id\n" + 
+                         "AND xftv.ENABLED_FLAG = 'Y'\n" + 
+                         "AND sysdate between xftv.START_DATE_ACTIVE and  NVL(xftv.END_DATE_ACTIVE,sysdate+1)\n" + 
+                         "AND xft.translation_name = 'OD_IREC_BILL_DOC_DEFAULTS'\n"+
+                         "AND NVL(Source_value3,'"+doctype+"') = '"+doctype+"'" +
+                         "AND Source_value2 = '"+delmethod+"' " +
+                         "AND xftv.SOURCE_VALUE1= '"+Feeopt+"'";
+        }
+        PreparedStatement stmt = db.createPreparedStatement(Feeoptstr,1);
 
+          try {
+              ResultSet rset=stmt.executeQuery();
+              if (rset.next())
+              {
+                 retStr =rset.getString(1);
+              }
+              
+          } catch (SQLException e) {
+               utl.log("getDefaultFee:Error:"+ e.toString());
+          }
+          return retStr;
+      }
     /**
      * execQuery to return Number
      * Generic method to execute count(1) query
@@ -380,7 +461,7 @@ public class ODCustDocAMImpl extends OAApplicationModuleImpl {
       cdRow.setAttribute("NExtAttr19",new Number(0));
       cdRow.setAttribute("Supusrend",Boolean.TRUE);
       cdRow.setAttribute("BcPodFlag","N");//Added By Reddy Sekhar K on 13 Oct 2018 for the Req# NAIT-61952 & 66520 
-      cdRow.setAttribute("FeeOption",FeeOpt); // Added by Divyansh
+      cdRow.setAttribute("FeeOption",FeeOpt); // Added by Divyansh for NAIT-129167
        
        CustDocVO.insertRow(cdRow);
       cdRow.setNewRowState(cdRow.STATUS_INITIALIZED); 

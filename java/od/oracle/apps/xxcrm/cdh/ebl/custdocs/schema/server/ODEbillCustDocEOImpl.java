@@ -1771,7 +1771,10 @@ public class ODEbillCustDocEOImpl extends OAPlsqlEntityImpl {
       oraclecallablestatement.setNUMBER(58,this.getLastUpdatedBy());
       oraclecallablestatement.setNUMBER(59,this.getLastUpdateLogin());
       oraclecallablestatement.setString(60,this.getBcPodFlag()); //Code Added by Reddy Sekar for Req# NAIT-61952 and 66250
-      oraclecallablestatement.setString(61,this.getFeeOption());
+       if (!("").equals(this.getFeeOption())|| this.getFeeOption() != null) {
+       oraclecallablestatement.setString(61,this.getFeeOption());}
+       else {oraclecallablestatement.setString(61,null);}
+      System.out.println("this.getFeeOption() "+this.getFeeOption());
         oraclecallablestatement.execute();
       x_rowid = oraclecallablestatement.getString(1);
 	}
@@ -1917,7 +1920,9 @@ public class ODEbillCustDocEOImpl extends OAPlsqlEntityImpl {
       oraclecallablestatement.setNUMBER(55,this.getLastUpdatedBy());
       oraclecallablestatement.setNUMBER(56,this.getLastUpdateLogin());
       oraclecallablestatement.setString(57,this.getBcPodFlag()); //Code Added by Reddy Sekar for Req# NAIT-61952 and 66520
-      oraclecallablestatement.setString(58,this.getFeeOption());
+          if (!("").equals(this.getFeeOption())|| this.getFeeOption() != null){
+      oraclecallablestatement.setString(58,this.getFeeOption());}
+      else {oraclecallablestatement.setString(58,null);}
        oraclecallablestatement.execute();
     }
     catch(SQLException sqlexception)
@@ -1987,6 +1992,7 @@ public class ODEbillCustDocEOImpl extends OAPlsqlEntityImpl {
     public void setFeeOption(String value) {
         setAttributeInternal(FEEOPTION, value);
     }
+
 
     /**Creates a Key object based on given key constituents
      */

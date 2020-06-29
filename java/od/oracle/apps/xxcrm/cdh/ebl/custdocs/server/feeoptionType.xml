@@ -6,7 +6,7 @@
    BindingStyle="OracleName"
    CustomQuery="true"
    RowClass="od.oracle.apps.xxcrm.cdh.ebl.custdocs.server.feeoptionTypeRowImpl"
-   ComponentClass="od.oracle.apps.xxcrm.cdh.ebl.custdocs.server.feeoptionTypeImpl"
+   ComponentClass="oracle.apps.fnd.framework.server.OAViewObjectImpl"
    FetchMode="FETCH_AS_NEEDED"
    UseGlueCode="false" >
    <SQLQuery><![CDATA[
@@ -22,7 +22,7 @@ AND xft.translation_name = 'OD_IREC_BILL_DOC_DEFAULTS'
       <Attr Name="_isCodegen" Value="true" />
       <Attr Name="_isExpertMode" Value="true" />
       <Attr Name="_version" Value="10.1.3.43.6" />
-      <Attr Name="_codeGenFlag2" Value="Access|Coll|VarAccess" />
+      <Attr Name="_codeGenFlag2" Value="Access|VarAccess" />
    </DesignTime>
    <ViewAttribute
       Name="meaning"

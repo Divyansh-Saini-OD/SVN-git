@@ -95,6 +95,12 @@ decode(C_EXT_ATTR16,'COMPLETE',1,0) paytermLov, --Added by Reddy Sekhar K on 11-
 ODEbillCustDocEO.BC_POD_FLAG,--Added by Reddy Sekhar K on 13-NOv-2018 for the Bill Complete Requirement NAIT-61952
 DECODE(BC_POD_FLAG,'Y','case1','B','case2','P','case3','N','case4','case5') bcpodcase----Added by Reddy Sekhar K on 13-NOv-2018 for the Bill Complete Requirement NAIT-61952 and POD NAIT-66520
 ,fee_option
+, decode(C_EXT_ATTR16,'COMPLETE',1,0) FeeFlag
+,(SELECT xftv.target_value1
+FROM xx_fin_translatedefinition xftd ,xx_fin_translatevalues xftv
+ WHERE xftd.translate_id = xftv.translate_id
+AND xftd.translation_name ='OD_IREC_BILL_DOC_DEFAULTS'
+and source_value1 = fee_option and sysdate between xftv.START_DATE_ACTIVE and NVL(xftv.end_date_active,sysdate+1) and xftv.enabled_flag = 'Y' and rownum =1 ) FeeOptionFV
 FROM XX_CDH_CUST_ACCT_EXT_B ODEbillCustDocEO
 WHERE attr_group_id = (SELECT attr_group_id 
                        FROM   ego_attr_groups_v 
@@ -695,5 +701,30 @@ AND attr_group_name = 'BILLDOCS')
       EntityAttrName="FeeOption"
       EntityUsage="ODEbillCustDocEO"
       AliasName="FEE_OPTION" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Feeflag"
+      IsPersistent="false"
+      Type="java.lang.Boolean"
+      ColumnType="NUMBER"
+      AliasName="FEEFLAG"
+      Expression="FEEFLAG"
+      SQLType="BIT" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Feeoptionfv"
+      IsPersistent="false"
+      Precision="240"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="FEEOPTIONFV"
+      Expression="FEEOPTIONFV"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="240" />
+      </DesignTime>
    </ViewAttribute>
 </ViewObject>

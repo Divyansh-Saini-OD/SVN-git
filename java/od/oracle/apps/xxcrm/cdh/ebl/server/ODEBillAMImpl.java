@@ -5,6 +5,7 @@ import com.sun.java.util.collections.ArrayList;
 import java.io.Serializable;
 
 import java.sql.CallableStatement;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
@@ -563,6 +564,7 @@ getOADBTransaction().getJdbcConnection().prepareCall("{call XX_CRM_EBL_CONT_DOWN
         utl.log("********Inside ODEBillAM: populateStdVO: Level: " + StdCont);
 
 
+        System.out.println("********Inside ODEBillAM: populateStdVO: Level: " + StdCont);
         AppsLog myAppsLog = new AppsLog();                                    
         myAppsLog.write("ODEBillAMImpl", 
                         "XXOD: start populateStdVO StdCont:"+StdCont, 
@@ -632,7 +634,44 @@ getOADBTransaction().getJdbcConnection().prepareCall("{call XX_CRM_EBL_CONT_DOWN
                                 1);
                 value = "N";
             }
-
+			
+			
+			//Added by Divyansh for NAIT-129167
+                        System.out.println("fieldID "+stdFieldRow.getAttribute("FieldId"));
+            if (stdFieldRow.getAttribute("FieldId") == "10169" || "10169".equals(stdFieldRow.getAttribute("FieldId")))
+            {
+                String val="N";
+                String feeOpt = null;
+                OADBTransaction trx=this.getOADBTransaction();
+                System.out.println(" inside fieldID "+stdFieldRow.getAttribute("FieldId"));
+                String pquery = "select NVL(fee_option,0) from" +
+                " XXCRM.XX_CDH_CUST_ACCT_EXT_B where n_ext_attr2= '"+custDocId+"' and attr_group_id = 166 and rownum =1";
+                System.out.println("pquery "+pquery);
+                PreparedStatement stmt = trx.createPreparedStatement(pquery,1);
+                try{
+                    ResultSet rset = stmt.executeQuery();
+                    while (rset.next())
+                    {
+                        
+                        feeOpt= rset.getString(1);
+                        System.out.println("feeOpt "+feeOpt);
+                        if (feeOpt == "1009" || "1009".equals(feeOpt))
+                        {
+                           value="Y";
+                            System.out.println("value yea "+value);
+                        }
+                        else
+                        {
+                            value="N";
+                        }
+                    }
+                }
+                catch(Exception e)
+                {
+                    value = "N";
+                }
+            }
+            //Changes end by Divyansh for NAIT-129167
             templRow.setAttribute("Attribute1", value);
             
             //Start - Modified for Defect#1978 MOD4BR3
@@ -952,7 +991,7 @@ getOADBTransaction().getJdbcConnection().prepareCall("{call XX_CRM_EBL_CONT_DOWN
              ODUtil utl = new ODUtil(this);
              String sInitialFlag = "N";
              utl.log("Inside ODEBillAMImpl: populateTemplDtl for eXLS");
-             
+             System.out.println("populateTemplDtl start");
              AppsLog myAppsLog = new AppsLog();
              myAppsLog.write("fnd.common.WebAppsContext", 
                              "XXOD: Inside ODEBillAMImpl: populateTemplDtl for eXLS", 
@@ -971,6 +1010,7 @@ getOADBTransaction().getJdbcConnection().prepareCall("{call XX_CRM_EBL_CONT_DOWN
                                  "XXOD: row count 0", 
                                  1);
                  sInitialFlag = "Y"; //Added for MD4B R3 
+                 System.out.println("populateStdVO called");
                  populateStdVO(custDocId, "CORE");
                  getOADBTransaction().commit();
                  OAViewObject templDtlVO1 = 

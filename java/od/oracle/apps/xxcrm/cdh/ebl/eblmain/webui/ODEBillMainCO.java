@@ -11,6 +11,7 @@ import java.io.PrintWriter;
 import java.io.Serializable;
 
 import java.sql.CallableStatement;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
@@ -63,6 +64,8 @@ import java.util.regex.Pattern;
 import od.oracle.apps.xxcrm.cdh.ebl.eblmain.server.ODEBillMainVORowImpl;
 import od.oracle.apps.xxcrm.cdh.ebl.eblmain.server.ODEBillTemplDtlVORowImpl;
 
+import oracle.apps.fnd.framework.server.OADBTransaction;
+import oracle.apps.fnd.framework.server.OAViewRowImpl;
 import oracle.apps.fnd.framework.webui.beans.message.OAMessageStyledTextBean;
 import oracle.apps.fnd.framework.webui.beans.table.OAAdvancedTableBean;
 import oracle.apps.fnd.framework.webui.beans.table.OAColumnBean;
@@ -707,6 +710,8 @@ ODEBillMainCO extends OAControllerImpl {
                           (OAMessageCheckBoxBean)webBean.findChildRecursive("SummaryBillLabelCB");
                       if(summaryBill.getValue(pageContext)!=null)
                         sSummaryBill = (String)summaryBill.getValue(pageContext);
+                    
+                    System.out.println("Divyansh sSummaryBill "+sSummaryBill);
                         
                  //Code added by Rafi on 04-Dec-2017 for wave3 Defect#NAIT-21725 - END
                     if (sSummaryBill == null || "N".equals(sSummaryBill)) {
@@ -720,6 +725,7 @@ ODEBillMainCO extends OAControllerImpl {
                             templDtlVO.executeQuery();
                         if (templDtlVO.getRowCount() == 0) {    
                         Serializable templParams[] = { custDocId };
+                        System.out.println("Populate temp vo called");
                         mainAM.invokeMethod("populateTemplDtl", templParams);
                         
                         
@@ -743,7 +749,51 @@ ODEBillMainCO extends OAControllerImpl {
                             templDtlVO.executeQuery();                   
                     }//End of Summary Bill Config Dtl display
                     
-                   
+                     OAViewObject templDtlVO = (OAViewObject)mainAM.findViewObject("ODEBillTemplDtlVO");
+                     if (templDtlVO!=null)
+                     {
+                         templDtlVO.reset();
+                         while(templDtlVO.hasNext())
+                         {
+                            OAViewRowImpl row = (OAViewRowImpl)templDtlVO.next();
+                            Number fieldId = (Number)row.getAttribute("FieldId");
+                            if ("10169".equals(fieldId.toString()) || fieldId.toString()=="10169")
+                            {
+                                System.out.println("fieldId "+fieldId);
+                                OADBTransaction trx=mainAM.getOADBTransaction();
+                                String pQuery = "select NVL(fee_option,0) from" +
+                                                " XXCRM.XX_CDH_CUST_ACCT_EXT_B where n_ext_attr2= '"+custDocId+"' and attr_group_id = 166 and rownum =1";
+                                System.out.println("pQuery "+pQuery);
+                                PreparedStatement stmt = trx.createPreparedStatement(pQuery,1);
+                                try{
+                                    ResultSet rset = stmt.executeQuery();
+                                    while (rset.next())
+                                    {
+                                        String feeOpt= rset.getString(1);
+                                        System.out.println("feeOpt "+feeOpt);
+                                        if (feeOpt == "1009" || "1009".equals(feeOpt))
+                                        {
+                                            row.setAttribute("Attribute1", "Y");
+                                            System.out.println("value yea Yes ");
+                                        }
+                                        else
+                                        {
+                                            row.setAttribute("Attribute1", "N");
+                                        }
+                                    }
+                                    }
+                                catch(Exception e)
+                                    {
+                                        System.out.println("Error while checking fee option"+e);
+                                    }
+                            }
+                         }
+                         templDtlVO.reset();
+                         templDtlVO.setOrderByClause("decode(attribute1,'Y',seq),label asc");
+                         templDtlVO.executeQuery();
+                     }
+                    
+                    
                     // String stdCont = (String) mainAM.invokeMethod("populateTemplDtl", templParams);
                     // pageContext.putSessionValue("stdContVar", stdCont);
                      OAMessageChoiceBean AggrFieldPoplistBean = (OAMessageChoiceBean)webBean.findChildRecursive("AggrFieldName");  
@@ -1324,15 +1374,12 @@ ODEBillMainCO extends OAControllerImpl {
            String docuType = null;
            docuType = custDocVO.first().getAttribute("DocType").toString();
            OAMessageChoiceBean transmissionType = 
-              (OAMessageChoiceBean)webBean.findIndexedChildRecursive("EbillTransmission"); 
-            String statusF= custDocVO.first().getAttribute("StatusCode").toString();
-            if ("IN_PROCESS".equals(statusF))  {
+              (OAMessageChoiceBean)webBean.findIndexedChildRecursive("EbillTransmission");            
            if(("Email".equalsIgnoreCase(transmissionType.getValue(pageContext).toString())) && "ePDF".equalsIgnoreCase(deliveryMethod))
            {
               String custAccountId = custDocVO.first().getAttribute("CustAccountId").toString();
               validateFieProcMethod(pageContext,webBean,custAccountId,docuType,payDoc);                   
-            } 
-                     }
+            }            
          //Code added by Rafi for NAIT-91481 Rectify Billing Delivery Efficiency - END
           
                 if (deliveryMethod.equals("eXLS")) {
