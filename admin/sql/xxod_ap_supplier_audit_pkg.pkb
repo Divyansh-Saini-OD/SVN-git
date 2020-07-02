@@ -16,8 +16,9 @@ gc_no_site_change   CONSTANT  VARCHAR2(200) DEFAULT 'No Site Change';
 -- | V1.2      01-JULY-2013 Sravanthi Surya  Modified Table names as part of R12 Upgrade |
 -- | V1.3      03-JULY-2014 Avinash Baddam   Changes for defect 30042 			         |	
 -- | V1.4      22-JAN-2020 Bhargavi Ankolekar Added for jira NAIT-103952                 |
--- |                                         		 					 |
+-- | V1.5      03-JULY-2014 Rahul Y          Changes for JIRA # 133497 			         |
 -- +=====================================================================================+
+
 
 PROCEDURE PROCESS_VENDORS(p_begin_date DATE,p_end_date DATE)
 IS
@@ -36,15 +37,15 @@ CURSOR lcu_vendor_aud(p_vendor_id NUMBER)
 IS
 SELECT * FROM
 (SELECT  vendor_name Vendor_name_Current
-         ,lag(vendor_name,1,null)  over (order by last_update_date) Vendor_Name_Prev
+         ,lag(vendor_name,1,null)  over (order by version_timestamp) Vendor_Name_Prev ----- Changing the last_update_date to version_timestamp for the jira 133497 by Rahul Y
          ,num_1099 num_1099_Current
-         ,lag(num_1099,1,null)  over (order by last_update_date) num_1099_Prev
+         ,lag(num_1099,1,null)  over (order by version_timestamp) num_1099_Prev ----- Changing the last_update_date to version_timestamp for the jira 133497 by Rahul Y
          ,vat_registration_num vat_registration_num_Current
-         ,lag(vat_registration_num,1,null)  over (order by last_update_date) vat_registration_num_Prev
+         ,lag(vat_registration_num,1,null)  over (order by version_timestamp) vat_registration_num_Prev ----- Changing the last_update_date to version_timestamp for the jira 133497 by Rahul Y
          ,type_1099 type_1099_Current
-         ,lag(type_1099,1,null)  over (order by last_update_date) type_1099_Prev
+         ,lag(type_1099,1,null)  over (order by version_timestamp) type_1099_Prev ----- Changing the last_update_date to version_timestamp for the jira 133497 by Rahul Y
          ,employee_id employee_id_Current
-         ,lag(employee_id,1,null)  over (order by last_update_date) employee_id_Prev
+         ,lag(employee_id,1,null)  over (order by version_timestamp) employee_id_Prev ----- Changing the last_update_date to version_timestamp for the jira 133497 by Rahul Y
       ,last_updated_by
       ,last_update_date
       ,1 order_by_col
@@ -55,17 +56,19 @@ WHERE va.vendor_id = p_vendor_id
   ORDER BY last_update_date;
 
 -------Adding this cursor for ap_suppliers additional column audit jira NAIT-103952.Added by Bhargavi Ankolekar.
+----- Changing the last_update_date to version_timestamp for the jira 133497 by Rahul Y
 CURSOR lcu_vendor_add_aud(p_vendor_id NUMBER)
 IS
 SELECT * FROM
 (SELECT  TAX_REPORTING_NAME   TAX_REPORTING_NAME_cur
-         ,lag(TAX_REPORTING_NAME,1,null)  over (order by last_update_date) TAX_REPORTING_NAME_prev
+         ,lag(TAX_REPORTING_NAME,1,null)  over (order by version_timestamp) TAX_REPORTING_NAME_prev
          ,TAX_VERIFICATION_DATE   TAX_VERIFICATION_DATE_cur
-         ,lag(TAX_VERIFICATION_DATE ,1,null)  over (order by last_update_date) TAX_VERIFICATION_DATE_prev
+         ,lag(TAX_VERIFICATION_DATE ,1,null)  over (order by version_timestamp) TAX_VERIFICATION_DATE_prev
          ,ORGANIZATION_TYPE_LOOKUP_CODE  ORG_TYPE_LOOKUP_CODE_cur
-         ,lag(ORGANIZATION_TYPE_LOOKUP_CODE,1,null)  over (order by last_update_date) ORG_TYPE_LOOKUP_CODE_prev
+         ,lag(ORGANIZATION_TYPE_LOOKUP_CODE,1,null)  over (order by version_timestamp) ORG_TYPE_LOOKUP_CODE_prev
 		 ,INDIVIDUAL_1099  INDIVIDUAL_1099_cur
-         ,lag(INDIVIDUAL_1099,1,null)  over (order by last_update_date) INDIVIDUAL_1099_prev
+         ,lag(INDIVIDUAL_1099,1,null)  over (order by version_timestamp) INDIVIDUAL_1099_prev
+		 ----- End of changes for jira #133497
       ,last_updated_by
       ,last_update_date
       ,1 order_by_col
@@ -519,7 +522,6 @@ AND PVSA.last_update_date BETWEEN p_begin_date AND p_end_date;
 
 -------------------Cursor added for the additional column audit at the new trigger table created from the supplier sites all table as for jira NAIT-103952.Added by Bhargavi Ankolekar.
 
---- below not working------ this is for supplier site additional column---
 CURSOR lcu_vd_sites_add_aud(p1_vendor_site_id NUMBER)
 IS
 SELECT * FROM
