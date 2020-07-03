@@ -521,24 +521,25 @@ where  PV.vendor_id=PVSA.vendor_id
 AND PVSA.last_update_date BETWEEN p_begin_date AND p_end_date;
 
 -------------------Cursor added for the additional column audit at the new trigger table created from the supplier sites all table as for jira NAIT-103952.Added by Bhargavi Ankolekar.
-
+----- Changing the last_update_date to version_timestamp for the jira 133497 by Rahul Y
 CURSOR lcu_vd_sites_add_aud(p1_vendor_site_id NUMBER)
 IS
 SELECT * FROM
 (SELECT  ATTRIBUTE4   ATTRIBUTE4_cur
-         ,lag(ATTRIBUTE4,1,null)  over (order by last_update_date) ATTRIBUTE4_prev
+         ,lag(ATTRIBUTE4,1,null)  over (order by version_timestamp) ATTRIBUTE4_prev
          ,ATTRIBUTE5   ATTRIBUTE5_cur
-         ,lag(ATTRIBUTE5 ,1,null)  over (order by last_update_date) ATTRIBUTE5_prev
+         ,lag(ATTRIBUTE5 ,1,null)  over (order by version_timestamp) ATTRIBUTE5_prev
          ,ATTRIBUTE8  ATTRIBUTE8_cur
-         ,lag(ATTRIBUTE8,1,null)  over (order by last_update_date) ATTRIBUTE8_prev
+         ,lag(ATTRIBUTE8,1,null)  over (order by version_timestamp) ATTRIBUTE8_prev
 		 ,ORG_ID  ORG_ID_cur
-         ,lag(ORG_ID,1,null)  over (order by last_update_date) ORG_ID_prev
+         ,lag(ORG_ID,1,null)  over (order by version_timestamp) ORG_ID_prev
 		 ,TELEX  TELEX_cur
-         ,lag(TELEX,1,null)  over (order by last_update_date) TELEX_prev
+         ,lag(TELEX,1,null)  over (order by version_timestamp) TELEX_prev
 		 ,VENDOR_SITE_CODE_ALT  VENDOR_SITE_CODE_ALT_cur
-         ,lag(VENDOR_SITE_CODE_ALT,1,null)  over (order by last_update_date) VENDOR_SITE_CODE_ALT_prev
+         ,lag(VENDOR_SITE_CODE_ALT,1,null)  over (order by version_timestamp) VENDOR_SITE_CODE_ALT_prev
 		  ,LANGUAGE  LANGUAGE_cur
-         ,lag(LANGUAGE,1,null)  over (order by last_update_date) LANGUAGE_prev
+         ,lag(LANGUAGE,1,null)  over (order by version_timestamp) LANGUAGE_prev
+		------- End of changes for jira #133497
       ,last_updated_by
       ,last_update_date
       ,1 order_by_col
@@ -590,63 +591,65 @@ ORDER BY last_update_date;
 
 CURSOR lcu_vendor_sites_aud(p_vendor_site_id NUMBER)
 IS
+----- Changing the last_update_date to version_timestamp for the jira 133497 by Rahul Y
 SELECT * FROM (
 SELECT vendor_site_code vendor_site_code_Current
-       ,lag(vendor_site_code,1,null)  over (order by last_update_date) vendor_site_code_Prev
+       ,lag(vendor_site_code,1,null)  over (order by version_timestamp) vendor_site_code_Prev
       ,decode(NVL(purchasing_site_flag,'N'),'Y','PUR ') || decode(NVL(pay_site_flag,'N'),'Y','PAY') site_uses_flag_Current -- Added By Ganesan for defect 4878
-      ,decode(NVL(lag(purchasing_site_flag,1,null)  over (order by last_update_date),'N'),'Y','PUR ') || decode(NVL(lag(pay_site_flag,1,null)  over (order by last_update_date),'N'),'Y','PAY') site_uses_flag_prev  -- Added By Ganesan for defect 4878
+      ,decode(NVL(lag(purchasing_site_flag,1,null)  over (order by version_timestamp),'N'),'Y','PUR ') || decode(NVL(lag(pay_site_flag,1,null)  over (order by version_timestamp),'N'),'Y','PAY') site_uses_flag_prev  -- Added By Ganesan for defect 4878
       ,accts_pay_code_combination_id code_combination_id_Current
-       ,lag(accts_pay_code_combination_id,1,null)  over (order by last_update_date) code_combination_id_Prev
+       ,lag(accts_pay_code_combination_id,1,null)  over (order by version_timestamp) code_combination_id_Prev
       ,area_code||'-'||phone area_Current
-       ,lag(area_code||'-'||phone,1,null)  over (order by last_update_date) area_Prev
+       ,lag(area_code||'-'||phone,1,null)  over (order by version_timestamp) area_Prev
       ,address_line1 address_line1_Current
-       ,lag(address_line1,1,null)  over (order by last_update_date) address_line1_Prev
+       ,lag(address_line1,1,null)  over (order by version_timestamp) address_line1_Prev
       ,address_line2 address_line2_Current
-       ,lag(address_line2,1,null)  over (order by last_update_date) address_line2_Prev
+       ,lag(address_line2,1,null)  over (order by version_timestamp) address_line2_Prev
       ,address_line3 address_line3_Current
-       ,lag(address_line3,1,null)  over (order by last_update_date) address_line3_Prev
+       ,lag(address_line3,1,null)  over (order by version_timestamp) address_line3_Prev
       ,city city_Current
-       ,lag(city,1,null)  over (order by last_update_date) city_Prev
+       ,lag(city,1,null)  over (order by version_timestamp) city_Prev
       ,state state_Current
-       ,lag(state,1,null)  over (order by last_update_date) state_Prev
+       ,lag(state,1,null)  over (order by version_timestamp) state_Prev
       ,province province_Current
-       ,lag(province,1,null)  over (order by last_update_date) province_Prev
+       ,lag(province,1,null)  over (order by version_timestamp) province_Prev
       ,zip zip_Current
-       ,lag(zip,1,null)  over (order by last_update_date) zip_Prev
+       ,lag(zip,1,null)  over (order by version_timestamp) zip_Prev
       ,inactive_date inactive_date_Current
-       ,lag(inactive_date,1,null)  over (order by last_update_date) inactive_date_Prev
+       ,lag(inactive_date,1,null)  over (order by version_timestamp) inactive_date_Prev
       ,match_option match_option_Current
-       ,lag(match_option,1,null)  over (order by last_update_date) match_option_Prev
+       ,lag(match_option,1,null)  over (order by version_timestamp) match_option_Prev
       ,hold_all_payments_flag hold_all_payments_flag_Current
-       ,lag(hold_all_payments_flag,1,null)  over (order by last_update_date) hold_all_payments_flag_Prev
+       ,lag(hold_all_payments_flag,1,null)  over (order by version_timestamp) hold_all_payments_flag_Prev
       ,terms_id terms_id_Current
-       ,lag(terms_id,1,null)  over (order by last_update_date) terms_id_Prev
+       ,lag(terms_id,1,null)  over (order by version_timestamp) terms_id_Prev
       ,pay_group_lookup_code pay_group_lookup_code_Current
-       ,lag(pay_group_lookup_code,1,null)  over (order by last_update_date) pay_group_lookup_code_Prev
+       ,lag(pay_group_lookup_code,1,null)  over (order by version_timestamp) pay_group_lookup_code_Prev
       ,payment_priority payment_priority_Current
-       ,lag(payment_priority,1,null)  over (order by last_update_date) payment_priority_Prev
+       ,lag(payment_priority,1,null)  over (order by version_timestamp) payment_priority_Prev
       ,terms_date_basis terms_date_basis_Current
-       ,lag(terms_date_basis,1,null)  over (order by last_update_date) terms_date_basis_Prev
+       ,lag(terms_date_basis,1,null)  over (order by version_timestamp) terms_date_basis_Prev
       ,payment_currency_code payment_currency_code_Current
-       ,lag(payment_currency_code,1,null)  over (order by last_update_date) payment_currency_code_Prev
+       ,lag(payment_currency_code,1,null)  over (order by version_timestamp) payment_currency_code_Prev
       ,pay_date_basis_lookup_code pay_date_basis_code_Current
-       ,lag(pay_date_basis_lookup_code,1,null)  over (order by last_update_date) pay_date_basis_code_Prev
+       ,lag(pay_date_basis_lookup_code,1,null)  over (order by version_timestamp) pay_date_basis_code_Prev
       ,payment_method_lookup_code payment_method_code_Current
-       ,lag(payment_method_lookup_code,1,null)  over (order by last_update_date) payment_method_code_Prev
+       ,lag(payment_method_lookup_code,1,null)  over (order by version_timestamp) payment_method_code_Prev
       ,bank_account_name bank_account_name_Current
-       ,lag(bank_account_name,1,null)  over (order by last_update_date) bank_account_name_Prev
+       ,lag(bank_account_name,1,null)  over (order by version_timestamp) bank_account_name_Prev
       ,bank_account_num bank_account_num_Current
-       ,lag(bank_account_num,1,null)  over (order by last_update_date) bank_account_num_Prev
+       ,lag(bank_account_num,1,null)  over (order by version_timestamp) bank_account_num_Prev
       ,tax_reporting_site_flag tax_reporting_site_Current
-       ,lag(tax_reporting_site_flag,1,null)  over (order by last_update_date) tax_reporting_site_Prev
+       ,lag(tax_reporting_site_flag,1,null)  over (order by version_timestamp) tax_reporting_site_Prev
       ,always_take_disc_flag always_take_disc_flag_Current
-       ,lag(always_take_disc_flag,1,null)  over (order by last_update_date) always_take_disc_flag_Prev
+       ,lag(always_take_disc_flag,1,null)  over (order by version_timestamp) always_take_disc_flag_Prev
       ,create_debit_memo_flag create_debit_memo_flag_Current
-       ,lag(create_debit_memo_flag,1,null)  over (order by last_update_date) create_debit_memo_flag_Prev
+       ,lag(create_debit_memo_flag,1,null)  over (order by version_timestamp) create_debit_memo_flag_Prev
       ,attribute9 attribute9_Current
-       ,lag(attribute9,1,null)  over (order by last_update_date) attribute9_Prev
+       ,lag(attribute9,1,null)  over (order by version_timestamp) attribute9_Prev
       ,email_address email_address_Current                                                    -- Added by Ganesan for the defect 4878
-      ,lag(email_address,1,null)  over (order by last_update_date) email_address_Prev         -- Added by Ganesan for the defect 4878
+      ,lag(email_address,1,null)  over (order by version_timestamp) email_address_Prev         -- Added by Ganesan for the defect 4878
+	  ----- End of changes for jira #133497
       ,last_updated_by
       ,last_update_date
       ,2 order_by_col
@@ -677,7 +680,7 @@ CURSOR lcu_ap_tol_template_aud(p_tolerance_id NUMBER) is
 SELECT * FROM (
 SELECT
 TOLERANCE_NAME TOLERANCE_NAME_CURRENT
-	  ,lag(TOLERANCE_NAME,1,null)  over (order by last_update_date) TOLERANCE_NAME_PREV
+	  ,lag(TOLERANCE_NAME,1,null)  over (order by version_timestamp) TOLERANCE_NAME_PREV -- ----- Changing the last_update_date to version_timestamp for the jira 133497 by Rahul Y
 ,last_updated_by
       ,last_update_date
       ,2 order_by_col
