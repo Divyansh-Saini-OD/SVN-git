@@ -1,5 +1,4 @@
-create or replace 
-PACKAGE BODY  XX_CDH_EBL_COPY_PKG
+create or replace PACKAGE BODY  XX_CDH_EBL_COPY_PKG
   -- +======================================================================================+
   -- |                  Office Depot - Project Simplify                                     |
   -- |                  WIPRO/Office Depot/Consulting Organization                          |
@@ -20,12 +19,13 @@ PACKAGE BODY  XX_CDH_EBL_COPY_PKG
   -- |1.3       07-SEP-2010   Mangala       Code change to Fix Defect 7588, 7635            |
   -- |1.4       07-JAN-2016   Suresh N      Module 4B Release 3 Changes(Defect#36320)       |
   -- |1.5       30-MAR-2016   Havish K      Module 4B Release 4 Changes                     |
-  -- |1.6       25-MAR-2017   Thilak E      Defect#40015 and 2302 Changes                   |  
+  -- |1.6       25-MAR-2017   Thilak E      Defect#40015 and 2302 Changes                   |
   -- |1.7       10-Aug-2017   Reddy Sekhar  Defect#41307                                    |
   -- |1.8       23-Mar-2018   Thilak CG     Defect#33309                                    |
   -- |1.9       09-May-2018   Reddy Sekhar  Defect# NAIT-29364                              |
   -- |1.10      29-May-2018   Reddy Sekhar  Defect# NAIT-27146                              |
   -- |2.0       20-Nov-2018   Reddy Sekhar   code changes for Req NAIT-61952 and 66520      |
+  -- |2.1       20-Jun-2020   Divyansh Saini  code changes for Req NAIT-129167              |
   -- |======================================================================================|
   -- |                                                                                      |
   -- +======================================================================================+
@@ -302,7 +302,8 @@ BEGIN
                                           , p_last_update_date => SYSDATE
                                           , p_last_updated_by  => FND_GLOBAL.USER_ID
                                           , p_last_update_login=> FND_GLOBAL.USER_ID
-										  , p_bc_pod_flag      => lt_rec.BC_POD_FLAG --code added by Reddy Sekhar on 20-Nov-2018 for NAIT-61952 and 66520
+										                      , p_bc_pod_flag      => lt_rec.BC_POD_FLAG --code added by Reddy Sekhar on 20-Nov-2018 for NAIT-61952 and 66520
+                                          , p_fee_option       => lt_rec.fee_option  -- code added for 2.1
                                           );
 
 CLOSE lcu_cust_doc;
@@ -557,9 +558,9 @@ BEGIN
                                                 ,p_file_creation_type       =>lt_rec.file_creation_type -- Added for MOD4B Rel 4 Changes
 												,p_summary_bill             =>lt_rec.summary_bill
 												,p_nondt_qty                =>lt_rec.nondt_quantity
-												,p_parent_doc_id            =>lt_rec.parent_doc_id --Added by Reddy Sekhar K for the defect # NAIT-27146 on 29-May-2018 
+												,p_parent_doc_id            =>lt_rec.parent_doc_id --Added by Reddy Sekhar K for the defect # NAIT-27146 on 29-May-2018
                                                 );
-												
+
          END IF;
        END LOOP;
        CLOSE lcu_ebl_main;
@@ -799,7 +800,7 @@ BEGIN
                                                       ,p_append_char              => lcu_rec.append_char
                                                       ,p_absolute_value_flag      => lcu_rec.absolute_flag   ---Added by Bhagwan Rao on 23-AUG-2017 for Defect #40174
                                                       ,p_dcindicator              => lcu_rec.dc_indicator  ---Added by Bhagwan Rao on 23-AUG-2017 for Defect #40174
-													  ,p_db_cr_seperator          => lcu_rec.db_cr_seperator ---- Added By Reddy Sekhar K CG on 09-May-2018 for Defect# NAIT-29364 
+													  ,p_db_cr_seperator          => lcu_rec.db_cr_seperator ---- Added By Reddy Sekhar K CG on 09-May-2018 for Defect# NAIT-29364
                                                   );
         END LOOP;
 
@@ -1178,13 +1179,13 @@ BEGIN
 												   ,p_misc_up_flag           =>lcu_rec.misc_up_flag
 												   ,p_tax_ep_flag            =>lcu_rec.tax_ep_flag
 												   ,p_freight_ep_flag        =>lcu_rec.freight_ep_flag
-												   ,p_misc_ep_flag           =>lcu_rec.misc_ep_flag	
-                                                   ,p_rownumber              => lcu_rec.rownumber	-- Added by Reddy Sekhar K on 10-AUG-2017 for Defect#41307										   
+												   ,p_misc_ep_flag           =>lcu_rec.misc_ep_flag
+                                                   ,p_rownumber              => lcu_rec.rownumber	-- Added by Reddy Sekhar K on 10-AUG-2017 for Defect#41307
                                                    ,p_absolute_value_flag    =>lcu_rec.absolute_flag  ---Added by Bhagwan Rao on 23-AUG-2017 for Defect #40174
                                                    ,p_dcindicator            =>lcu_rec.dc_indicator   ---Added by Bhagwan Rao on 23-AUG-2017 for Defect #40174
 												   ,p_db_cr_seperator        => lcu_rec.db_cr_seperator  ---- Added By Reddy Sekhar K CG on 09-May-2018 for Defect# NAIT-29364
                                                   );
-				   	
+
         END LOOP;
       -- Loop through the records that have sequence value greater than 10000
       -- and each time replace them with max sequence +10
@@ -1616,8 +1617,8 @@ BEGIN
 															  ,p_misc_up_flag           =>lcu_rec_txt.misc_up_flag
 															  ,p_tax_ep_flag            =>lcu_rec_txt.tax_ep_flag
 															  ,p_freight_ep_flag        =>lcu_rec_txt.freight_ep_flag
-															  ,p_misc_ep_flag           =>lcu_rec_txt.misc_ep_flag	
-                                                              ,p_rownumber              =>lcu_rec_txt.rownumber	-- Added by Reddy Sekhar K on 10-AUG-2017 for Defect#41307														  
+															  ,p_misc_ep_flag           =>lcu_rec_txt.misc_ep_flag
+                                                              ,p_rownumber              =>lcu_rec_txt.rownumber	-- Added by Reddy Sekhar K on 10-AUG-2017 for Defect#41307
                                                               ,p_absolute_value_flag    =>lcu_rec_txt.absolute_flag	 ---Added by Bhagwan Rao on 23-AUG-2017 for Defect #40174
                                                               ,p_dcindicator            =>lcu_rec_txt.dc_indicator	 ---Added by Bhagwan Rao on 23-AUG-2017 for Defect #40174
                                                               ,p_db_cr_seperator        => lcu_rec_txt.db_cr_seperator ---Added By Reddy Sekhar K CG on 09-May-2018 for Defect# NAIT-29364
@@ -1693,7 +1694,7 @@ BEGIN
                                                                  ,p_append_char            =>lcu_rec_txt.append_char
                                                                  ,p_absolute_value_flag    =>lcu_rec_txt.absolute_flag
                                                                  ,p_dcindicator            =>lcu_rec_txt.dc_indicator
-                                                                 ,p_db_cr_seperator        =>lcu_rec_txt.db_cr_seperator  ---- Added By Reddy Sekhar K CG on 09-May-2018 for Defect# NAIT-29364																	 
+                                                                 ,p_db_cr_seperator        =>lcu_rec_txt.db_cr_seperator  ---- Added By Reddy Sekhar K CG on 09-May-2018 for Defect# NAIT-29364
                                                                 );
                  END LOOP;
 
@@ -2110,7 +2111,7 @@ BEGIN
 													    ,p_tax_ep_flag            =>lcu_rec_txt.tax_ep_flag
 													    ,p_freight_ep_flag        =>lcu_rec_txt.freight_ep_flag
 													    ,p_misc_ep_flag           =>lcu_rec_txt.misc_ep_flag
-                                                        ,p_rownumber              =>lcu_rec_txt.rownumber  --Added by Reddy Sekhar K on 10-AUG-2017 for Defect#41307														
+                                                        ,p_rownumber              =>lcu_rec_txt.rownumber  --Added by Reddy Sekhar K on 10-AUG-2017 for Defect#41307
                                                         ,p_absolute_value_flag    =>lcu_rec_txt.absolute_flag  --Added by Bhagwan Rao on 23-AUG-2017 for Defect #40174
                                                         ,p_dcindicator            =>lcu_rec_txt.dc_indicator,
 							                             p_db_cr_seperator        =>lcu_rec_txt.db_cr_seperator  --Added By Reddy Sekhar K CG on 09-May-2018 for Defect# NAIT-29364
@@ -2581,5 +2582,3 @@ END COPY_EBL_STD_AGGR_DTL;
 
 END XX_CDH_EBL_COPY_PKG;
 /
-SHOW ERRORS;
-EXIT;
