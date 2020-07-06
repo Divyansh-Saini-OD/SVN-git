@@ -1,4 +1,4 @@
-CREATE OR REPLACE PACKAGE BODY XX_AR_EBL_TXT_DM_PKG
+create or replace PACKAGE BODY XX_AR_EBL_TXT_DM_PKG
 AS
   -- +====================================================================================+
   -- |                  Office Depot - Project Simplify                                   |
@@ -29,15 +29,14 @@ AS
   -- |      1.8  21-JUN-2017  Punit Gupta CG          Changes for the Defect#42496        |
   -- |      1.9  05-JUL-2017  Punit Gupta CG          Changes for the Defect#39140        |
   -- |      1.10 25-JUL-2017  Thilak Kumar CG         Changes for the Defect#42380,40174  |
-  -- |      1.11 05-DEC-2017  Thilak Kumar CG         Changes for the Defect#14525        |  
+  -- |      1.11 05-DEC-2017  Thilak Kumar CG         Changes for the Defect#14525        |
   -- |      1.12 12-DEC-2017  Thilak Kumar CG         Changes for the Defect#42790,21270  |
   -- |      1.13 15-Dec-2017  Aniket J     CG         Changes for Defect#22772            |
   -- |      1.14 22-Jan-2018  Aniket J     CG         Changes for Defect#24883            |
-  -- |      1.15 01-Mar-2018  Thilak Kumar CG         Changes for Defect#29739            |  
+  -- |      1.15 01-Mar-2018  Thilak Kumar CG         Changes for Defect#29739            |
   -- |      1.16 15-May-2018  Aniket J     CG         Changes for Requirement  #NAIT-29364|
   -- |      1.17 09-JUN-2018  Thilak       CG         Changes for Requirement#NAIT-17796  |
   -- |      1.18 16-JUL-2018  Aniket J     CG         Changes for Requirement#NAIT-50280  |
-  -- |      1.19 13-MAR-2020  Abhishek Kumar          Modification in order by-NAIT-119176|
   -- +====================================================================================+
 PROCEDURE XX_AR_EBL_TXT_MASTER_PROG(
     x_error_buff OUT VARCHAR2 ,
@@ -522,9 +521,9 @@ IS
     lc_dtl_error_msg  VARCHAR2(2000);
     lc_trl_error_flag VARCHAR2(1);
     lc_trl_error_msg  VARCHAR2(2000);
-    
+
 --Added by Aniket CG #22772 on 15 Dec 2017
---start 
+--start
 					lc_transaction_type   VARCHAR2(2) := null;
 					lc_combo_type_whr     VARCHAR2(1000) := null;
 					lc_ar_ebl_update     VARCHAR2(32767) := null;
@@ -532,13 +531,13 @@ IS
 					ln_total_misc_amt 		NUMBER := 0;
 					ln_total_gift_card_amt 	NUMBER := 0;
 					ln_total_salestax_amt 	NUMBER := 0;
-					ln_total_due NUMBER := 0;    
+					ln_total_due NUMBER := 0;
           lc_fun_whr    VARCHAR2(100) := null;
           lc_data_sel     VARCHAR2(32767) := null;
           lc_data       VARCHAR2(2) := null;
           lc_data_whr   VARCHAR2(100) := null;
---end 
-    
+--end
+
   BEGIN
     IF (p_debug_flag = 'Y') THEN
       lb_debug_flag := TRUE;
@@ -573,7 +572,7 @@ IS
         EXIT
       WHEN get_dist_fid%NOTFOUND;
         BEGIN
-              
+
       --Start  Added by Aniket CG #22772 on 15 Dec 2017
       IF p_doc_type = 'CONS' THEN
       --Check customer level set up for combo type before inserting in to STG
@@ -582,7 +581,7 @@ IS
         INTO lc_transaction_type
         FROM XX_CDH_CUST_ACCT_EXT_B xxcust
         WHERE 1                     =1
-        AND xxcust.n_ext_attr2      = lc_get_dist_docid  ;  
+        AND xxcust.n_ext_attr2      = lc_get_dist_docid  ;
         IF lc_transaction_type     IS NOT NULL THEN
           IF lc_transaction_type    = 'CR' THEN
             lc_combo_type_whr      := ' AND  hdr.transaction_class =  ''Credit Memo'' ';
@@ -598,21 +597,21 @@ IS
           lc_fun_whr := NULL;
         END IF;
         XX_AR_EBL_COMMON_UTIL_PKG.PUT_LOG_LINE(lb_debug_flag ,FALSE ,' Print Combo type WHERE CLAUSE  --> ' || lc_combo_type_whr );
-        
-        --START Added by Aniket CG 22 Jan 2018 
-        -- Check Data in Header Source Table before proceeding 
+
+        --START Added by Aniket CG 22 Jan 2018
+        -- Check Data in Header Source Table before proceeding
          IF lc_transaction_type is not null then
-         BEGIN 
-         
+         BEGIN
+
          lc_data_sel := ' select '||''''||'X'||''''||' from XX_AR_EBL_CONS_HDR_MAIN hdr
          where 1=1    and cust_doc_id = ' || lc_get_dist_docid ||
          ' and file_id =    '  ||  lc_get_dist_fid || lc_combo_type_whr || ' and rownum =1 ' ;
-         
-         XX_AR_EBL_COMMON_UTIL_PKG.PUT_LOG_LINE(lb_debug_flag ,TRUE ,lc_data_sel ); 
-          
+
+         XX_AR_EBL_COMMON_UTIL_PKG.PUT_LOG_LINE(lb_debug_flag ,TRUE ,lc_data_sel );
+
          execute immediate  lc_data_sel INTO lc_data;
-         
-         EXCEPTION WHEN OTHERS THEN 
+
+         EXCEPTION WHEN OTHERS THEN
            x_ret_code := 1;
            lc_data := null;
            lc_err_location_msg := 'Data is not available for Combo type set up as  ' || lc_transaction_type || ' Cust Doc Id: ' || lc_get_dist_docid || ' File ID :' || lc_get_dist_fid || ' Erorr MSG: '||  SQLERRM;
@@ -621,8 +620,8 @@ IS
            EXIT;
          END ;
          END IF;
-      -- END Added by Aniket CG 22 Jan 2018 
-        
+      -- END Added by Aniket CG 22 Jan 2018
+
       EXCEPTION
       WHEN OTHERS THEN
         lc_err_location_msg := 'The exception in finding combo details for ' || lc_get_dist_docid || SQLERRM;
@@ -630,20 +629,20 @@ IS
         lc_transaction_type := NULL;
         lc_combo_type_whr   := NULL;
       END;
-      --End  Added by Aniket CG #22772 on 15 Dec 2017    
-      
-      --Start  Added by Aniket CG #22772 on 15 Dec 2017 
+      --End  Added by Aniket CG #22772 on 15 Dec 2017
+
+      --Start  Added by Aniket CG #22772 on 15 Dec 2017
       --Since AR EBL FILE Table used in functions so we are updating it before.
       --Considering save point ins_cust_doc_id so it will get revert in case any exception
       IF lc_combo_type_whr IS NOT NULL THEN
         BEGIN
-          lc_ar_ebl_update := '                            
-      SELECT SUM(original_invoice_amount-total_gift_card_amount),              
-      SUM(gross_sale_amount - total_coupon_amount - total_freight_amount - total_discount_amount),              
-      SUM(total_coupon_amount + total_freight_amount + total_discount_amount),              
-      SUM(total_gift_card_amount),              
-      SUM(total_gst_amount + total_pst_amount + total_us_tax_amount)                 
-      FROM   XX_AR_EBL_CONS_HDR_MAIN hdr              
+          lc_ar_ebl_update := '
+      SELECT SUM(original_invoice_amount-total_gift_card_amount),
+      SUM(gross_sale_amount - total_coupon_amount - total_freight_amount - total_discount_amount),
+      SUM(total_coupon_amount + total_freight_amount + total_discount_amount),
+      SUM(total_gift_card_amount),
+      SUM(total_gst_amount + total_pst_amount + total_us_tax_amount)
+      FROM   XX_AR_EBL_CONS_HDR_MAIN hdr
       WHERE  hdr.file_id = '|| lc_get_dist_fid || lc_combo_type_whr;
           EXECUTE immediate lc_ar_ebl_update INTO ln_total_due, ln_total_merchandise_amt, ln_total_misc_amt, ln_total_gift_card_amt, ln_total_salestax_amt ;
           UPDATE XX_AR_EBL_FILE
@@ -665,40 +664,40 @@ IS
           ln_total_salestax_amt    := 0;
         END;
       END IF;
-      
+
       END IF ;
       --End  Added by Aniket CG #22772 on 15 Dec 2017
-              
+
           lc_err_location_msg := 'Processing for the Parent cust doc ' || lc_get_dist_docid || ' File id ' || lc_get_dist_fid || ' Extract Batch id ' || lc_get_dist_ebatchid ;
           XX_AR_EBL_COMMON_UTIL_PKG.PUT_LOG_LINE(lb_debug_flag ,TRUE ,lc_err_location_msg );
           --'Build SQL and Process Header Summary/Dtl/Trailer Records'
           lc_err_location_msg := 'Calling Procedure to Process Detail Records Data...';
           XX_AR_EBL_COMMON_UTIL_PKG.PUT_LOG_LINE(lb_debug_flag ,TRUE ,lc_err_location_msg );
-          
-          --Start  Added 2 parameter by Aniket CG #22772 on 15 Dec 2017         
+
+          --Start  Added 2 parameter by Aniket CG #22772 on 15 Dec 2017
           process_txt_dtl_data(p_batch_id, lc_get_dist_docid, lc_get_dist_fid, ld_cycle_date, ln_org_id, p_debug_flag,lc_combo_type_whr, lc_fun_whr,lc_dtl_error_flag, lc_dtl_error_msg);
           --End    Added 2 parameter by Aniket CG #22772 on 15 Dec 2017
-          
+
           IF lc_dtl_error_flag = 'Y' THEN
             RAISE ex_dtl_err_record_found;
           END IF;
-          lc_err_location_msg := 'Calling Procedure to Process Header Summary Data...';          
-          XX_AR_EBL_COMMON_UTIL_PKG.PUT_LOG_LINE(lb_debug_flag ,TRUE ,lc_err_location_msg );       
-          
-          --Start  Added 2 parameter by Aniket CG #22772 on 15 Dec 2017  
+          lc_err_location_msg := 'Calling Procedure to Process Header Summary Data...';
+          XX_AR_EBL_COMMON_UTIL_PKG.PUT_LOG_LINE(lb_debug_flag ,TRUE ,lc_err_location_msg );
+
+          --Start  Added 2 parameter by Aniket CG #22772 on 15 Dec 2017
           process_txt_hdr_summary_data(p_batch_id, lc_get_dist_docid, lc_get_dist_fid, ld_cycle_date, ln_org_id, p_debug_flag, lc_combo_type_whr,lc_fun_whr, lc_hdr_error_flag, lc_hdr_error_msg);
           --End    Added 2 parameter by Aniket CG #22772 on 15 Dec 2017
-          
+
           IF lc_hdr_error_flag = 'Y' THEN
             RAISE ex_hdr_err_record_found;
           END IF;
           lc_err_location_msg := 'Calling Procedure to Process Trailer Records Data...';
           XX_AR_EBL_COMMON_UTIL_PKG.PUT_LOG_LINE(lb_debug_flag ,TRUE ,lc_err_location_msg );
-           
-         --Start  Added 2 parameter by Aniket CG #22772 on 15 Dec 2017     
+
+         --Start  Added 2 parameter by Aniket CG #22772 on 15 Dec 2017
            process_txt_trl_data(p_batch_id, lc_get_dist_docid, lc_get_dist_fid, ld_cycle_date, ln_org_id, p_debug_flag,lc_combo_type_whr,lc_fun_whr, lc_trl_error_flag, lc_trl_error_msg);
-         --End    Added 2 parameter by Aniket CG #22772 on 15 Dec 2017   
-         
+         --End    Added 2 parameter by Aniket CG #22772 on 15 Dec 2017
+
           IF lc_trl_error_flag = 'Y' THEN
             RAISE ex_trl_err_record_found;
           END IF;
@@ -813,9 +812,9 @@ IS
       xcetht.absolute_flag,
       xcetht.dc_indicator,
       -- End
-	    --Added by Aniket CG 15 May #NAIT-29364 
-      xcetht.db_cr_seperator 
-      --Added by Aniket CG 15 May #NAIT-29364 
+	    --Added by Aniket CG 15 May #NAIT-29364
+      xcetht.db_cr_seperator
+      --Added by Aniket CG 15 May #NAIT-29364
     FROM xx_fin_translatedefinition xftd ,
       xx_fin_translatevalues xftv ,
       xx_cdh_ebl_templ_hdr_txt xcetht
@@ -849,9 +848,9 @@ IS
     xcetht.absolute_flag,
     xcetht.dc_indicator ,
     -- End
-	  --Added by Aniket CG 15 May #NAIT-29364 
-    xcetht.db_cr_seperator 
-    --Added by Aniket CG 15 May #NAIT-29364 
+	  --Added by Aniket CG 15 May #NAIT-29364
+    xcetht.db_cr_seperator
+    --Added by Aniket CG 15 May #NAIT-29364
   FROM xx_cdh_ebl_templ_hdr_txt xcetht ,
     xx_cdh_ebl_concat_fields_txt xcecft
   WHERE xcetht.field_id  = xcecft.conc_field_id
@@ -936,16 +935,18 @@ IS
     lc_hs_upd_sign_query   VARCHAR2(32767);
     lc_sign_update_query   VARCHAR2(32767);
     -- End of Below variables added by Punit CG on 11-AUG-2017 for Defect#40174
-	-- Start Added by Aniket CG 15 May #NAIT-29364 
+	-- Start Added by Aniket CG 15 May #NAIT-29364
 	  lc_db_cr_nvl_value   VARCHAR2(10);
 	  lc_dc_col_orig_flgchk    VARCHAR2(15)  := 'N';
 	  lc_dc_amt_col_db          VARCHAR2(15)  :=  NULL;
-	  lc_dc_amt_col_cr          VARCHAR2(15)  :=  NULL;   
+	  lc_dc_amt_col_cr          VARCHAR2(15)  :=  NULL;
 	  lc_dc_amt_decode_db       VARCHAR2(1000) := NULL;
 	  lc_dc_amt_decode_cr       VARCHAR2(1000) := NULL;
 	  lc_dc_update_sql_db       VARCHAR2(32767);
 	  lc_dc_update_sql_cr       VARCHAR2(32767);
-    --End Added by Aniket CG 15 May #NAIT-29364	
+    --End Added by Aniket CG 15 May #NAIT-29364
+	lv_hide_flag                VARCHAR2(200) := NULL;
+	lv_fee_option               NUMBER := 0;
   BEGIN
     IF (p_debug_flag = 'Y') THEN
       lb_debug_flag := TRUE;
@@ -991,6 +992,20 @@ IS
     ln_sign_col_cnt      := 0;
     FOR lc_get_header_fields_info IN c_get_header_fields_info(ln_get_dist_rows)
     LOOP
+	  lv_hide_flag := 'N';
+	  BEGIN
+	    SELECT fee_option
+		  INTO lv_fee_option
+		  FROM xx_cdh_cust_acct_ext_b
+		 WHERE N_EXT_ATTR2 = p_cust_doc_id
+		   AND attr_group_id = 166 AND rownum =1;
+	  EXCEPTION WHEN OTHERS THEN
+	    lv_fee_option:= 0;
+	  END;
+	  IF lv_fee_option != 1009 AND UPPER(lc_get_header_fields_info.spl_function) = 'XX_AR_EBL_TXT_SPL_LOGIC_PKG.GET_FEE_AMOUNT' THEN
+	    lv_hide_flag := 'Y';
+	  END IF;
+	    
       IF ln_count           = 1 THEN
         lc_select_var_cols := lc_select_cons_hdr||''''||lc_get_header_fields_info.trx_type||''''||','||''''||lc_get_header_fields_info.rec_type||''''||','||lc_get_header_fields_info.rec_order||',' ||'TO_DATE('||''''||p_cycle_date||''''||',''DD-MON-YY''),'||p_batch_id||',';
         lc_hdr_value_fid   := lc_hdr_value_fid||''''||lc_get_header_fields_info.trx_type||''''||','||'''FID'''||','||lc_get_header_fields_info.rec_order||',' ||'TO_DATE('||''''||p_cycle_date||''''||',''DD-MON-YY''),'||p_batch_id||',';
@@ -1010,30 +1025,32 @@ IS
         IF lc_get_header_fields_info.spl_function     IS NOT NULL THEN
           --lc_function                                 := 'SELECT '||lc_get_header_fields_info.spl_function||'('||p_cust_doc_id||','||p_file_id||','||p_org_id||','||''''||lc_get_header_fields_info.col_name||''''||') FROM DUAL';-- commented by Aniket CG #22772 on 15 Dec 2017
           --fnd_file.put_line(fnd_file.log,lc_function);
-          
+		  
+--		  IF UPPER(lc_get_header_fields_info.spl_function) = 
+		  
           -- start Added by Aniket CG #22772 on 15 Dec 2017
-           IF  UPPER(lc_get_header_fields_info.spl_function) IN ( 'XX_AR_EBL_TXT_SPL_LOGIC_PKG.GET_GRAND_TOTAL' , 'XX_AR_EBL_TXT_SPL_LOGIC_PKG.GET_GRAND_FREIGHT_AMT') 
+           IF  UPPER(lc_get_header_fields_info.spl_function) IN ( 'XX_AR_EBL_TXT_SPL_LOGIC_PKG.GET_GRAND_TOTAL' , 'XX_AR_EBL_TXT_SPL_LOGIC_PKG.GET_GRAND_FREIGHT_AMT')
            AND p_cmb_splt_splfunc_whr IS NOT NULL THEN
            lc_function                                 := 'SELECT '||lc_get_header_fields_info.spl_function||'('||p_cust_doc_id||','||p_file_id||','||p_org_id||','||''''||lc_get_header_fields_info.col_name||''''||','|| p_cmb_splt_splfunc_whr || ') FROM DUAL';
-           ELSE 
+           ELSE
            lc_function                                 := 'SELECT '||lc_get_header_fields_info.spl_function||'('||p_cust_doc_id||','||p_file_id||','||p_org_id||','||''''||lc_get_header_fields_info.col_name||''''||') FROM DUAL';
            END IF;
-          -- end Added by Aniket CG #22772 on 15 Dec 2017            
+          -- end Added by Aniket CG #22772 on 15 Dec 2017
           EXECUTE IMMEDIATE lc_function INTO lc_function_return;
 		   --Added by Aniket CG 15 May #NAIT-29364  -- removed and used default as null lc_get_header_fields_info.db_cr_seperator IS NOT NULL AND
                 IF   UPPER(lc_get_header_fields_info.col_name) IN ('ORIG_INV_AMT_DB','ORIG_INV_AMT_CR') THEN
                   SELECT lc_get_header_fields_info.db_cr_seperator --,'NULL',NULL,lc_get_header_fields_info.db_cr_seperator)
                   INTO lc_db_cr_nvl_value
-                  FROM DUAL;                  
-                  
+                  FROM DUAL;
+
 				  lc_db_cr_nvl_value := nvl(lc_db_cr_nvl_value, 'NULL');
-				  
+
                   IF UPPER(lc_get_header_fields_info.col_name) IN ('ORIG_INV_AMT_DB') THEN
                     lc_select_var_cols := lc_select_var_cols|| ' DECODE (SIGN ('|| lc_function_return || ') ,0,0,1 ,' || lc_function_return || ' , ' || lc_db_cr_nvl_value || ')'|| ',';
                   ELSIF UPPER(lc_get_header_fields_info.col_name) IN ('ORIG_INV_AMT_CR') THEN
                     lc_select_var_cols := lc_select_var_cols|| ' DECODE (SIGN ('|| lc_function_return || ') ,-1 ,' || lc_function_return || ' , '||lc_db_cr_nvl_value|| ')'|| ',';
                   END IF;
-                           
+
                 ELSE
                   lc_select_var_cols := lc_select_var_cols||lc_function_return||',';
                 END IF;
@@ -1095,7 +1112,7 @@ IS
           p_hdr_error_msg  := lc_err_location_msg;
         END;
       END IF;
-	  
+
       IF (UPPER(lc_get_header_fields_info.absolute_flag) = 'Y') THEN
         lc_abs_flag                                     := 'Y';
         ln_abs_cnt                                      := 0;
@@ -1139,7 +1156,7 @@ IS
   	  IF UPPER(lc_get_header_fields_info.col_name) = 'DC_INDICATOR' THEN
 		lc_dc_indicator_col := lc_column||ln_count;
 	  END IF;
-	  -- End	  
+	  -- End
       -- Start of changes done by Punit CG for Defect #40174 on 11-AUG-2017
       IF (UPPER(lc_get_header_fields_info.col_name) = 'SIGN') THEN
         lc_get_sign_amt_cols                       := lc_get_sign_amt_cols || ' ' || lc_column || ln_count ||',';
@@ -1169,10 +1186,18 @@ IS
         p_hdr_error_msg  := lc_err_location_msg;
       END;
       -- End of changes done by Punit CG for Defect #40174 on 11-AUG-2017
-      lc_insert_col_name := lc_insert_col_name||lc_column||ln_count||',';
+    
+    IF lv_hide_flag = 'N' THEN
+   	  lc_insert_col_name := lc_insert_col_name||lc_column||ln_count||',';
       lc_hdr_value_fid   := lc_hdr_value_fid||lc_get_header_fields_info.field_id||',';
       ln_count           := ln_count + 1;
-    END LOOP;
+    ELSE
+      lc_select_var_cols := replace(lc_select_var_cols,lc_function_return||',','');
+--	  lv_upd_str := 'update xx_ar_ebl_cons_hdr_main set TOTAL_MISCELLANEOUS_AMOUNT = TOTAL_MISCELLANEOUS_AMOUNT - '||lc_tot_fee_amt||' WHERE parent_cust_doc_id = '||p_cust_doc_id||' AND batch_id = '||p_batch_id;
+--	  execute immediate lv_upd_str;
+    END IF;    
+	
+	END LOOP;
 
     lc_insert_col_name  := SUBSTR(lc_insert_col_name,1,LENGTH(lc_insert_col_name)                                                                                                                                                           -1)||')';
     --Added where cluase in below statement by Aniket CG requirement #22772
@@ -1196,13 +1221,13 @@ IS
       XX_AR_EBL_COMMON_UTIL_PKG.PUT_LOG_LINE(lb_debug_flag ,FALSE ,lc_err_location_msg );
       EXECUTE IMMEDIATE lc_dc_update_sql;
 	 --START Added by Aniket CG 15 May #NAIT-29364
-	ELSIF lc_dc_flag = 'Y' AND  ( lc_dc_amt_col_db IS NOT NULL OR lc_dc_amt_col_cr IS NOT NULL) AND lc_dc_indicator_col IS NOT NULL THEN 
+	ELSIF lc_dc_flag = 'Y' AND  ( lc_dc_amt_col_db IS NOT NULL OR lc_dc_amt_col_cr IS NOT NULL) AND lc_dc_indicator_col IS NOT NULL THEN
 	IF lc_dc_flag = 'Y' AND  lc_dc_amt_col_db IS NOT NULL AND lc_dc_indicator_col IS NOT NULL THEN
 		lc_dc_amt_decode_db    := 'DECODE(SIGN('||lc_dc_amt_col_db||'),''1'','||''''||lc_debit||''''||','||'''0'','||''''||lc_debit||''''||','||''''||lc_credit||''''||')';
 		lc_dc_update_sql_db    := 'UPDATE XX_AR_EBL_TXT_HDR_STG SET '||lc_dc_indicator_col||' = '||lc_dc_amt_decode_db||' WHERE rec_type != ''FID'' AND file_id = '||p_file_id||' AND cust_doc_id = '||p_cust_doc_id||' AND REC_ORDER = '||ln_get_dist_rows;
 		lc_err_location_msg := 'Updated Header Debit Indicator Column: '||lc_dc_update_sql_db;
 		XX_AR_EBL_COMMON_UTIL_PKG.PUT_LOG_LINE(lb_debug_flag ,FALSE ,lc_err_location_msg );
-		EXECUTE IMMEDIATE lc_dc_update_sql_db;            
+		EXECUTE IMMEDIATE lc_dc_update_sql_db;
 	END IF;
 	IF lc_dc_flag = 'Y' AND  lc_dc_amt_col_cr IS NOT NULL AND lc_dc_indicator_col IS NOT NULL THEN
 		lc_dc_amt_decode_cr    := 'DECODE(SIGN('||lc_dc_amt_col_cr||'),''1'','||''''||lc_debit||''''||','||'''0'','||''''||lc_debit||''''||','||''''||lc_credit||''''||')';
@@ -1211,8 +1236,8 @@ IS
 		XX_AR_EBL_COMMON_UTIL_PKG.PUT_LOG_LINE(lb_debug_flag ,FALSE ,lc_err_location_msg );
 		EXECUTE IMMEDIATE lc_dc_update_sql_cr;
 	END IF;
-	--END Added by Aniket CG 15 May #NAIT-29364  
-	  
+	--END Added by Aniket CG 15 May #NAIT-29364
+
     END IF;
     -- End
     IF lc_hs_print_line_num = 'Y' THEN
@@ -1220,11 +1245,11 @@ IS
       XX_AR_EBL_COMMON_UTIL_PKG.PUT_LOG_LINE(lb_debug_flag ,FALSE ,lc_err_location_msg );
       -- Added by Thilak CG on 25-JUL-2017 for Defect#42380
       lc_hdr_summary_cols := SUBSTR(lc_hdr_summary_col,1,(LENGTH(lc_hdr_summary_col)-1));
-      lc_stg_update_query := 'select a.str from (WITH DATA AS                                              
-							( SELECT ' ||''''||lc_hdr_summary_cols||''''|| ' str FROM dual                                              
-							)                                            
-							SELECT trim(regexp_substr(str, ''[^,]+'', 1, LEVEL)) str                                            
-							FROM DATA                                            
+      lc_stg_update_query := 'select a.str from (WITH DATA AS
+							( SELECT ' ||''''||lc_hdr_summary_cols||''''|| ' str FROM dual
+							)
+							SELECT trim(regexp_substr(str, ''[^,]+'', 1, LEVEL)) str
+							FROM DATA
 							CONNECT BY instr(str, '','', 1, LEVEL - 1) > 0) a';
       -- End
       -- Framing the SQL to update the line number in the header staging table
@@ -1254,11 +1279,11 @@ IS
     END IF;
     -- Added by Punit CG for defect#40174 on 11-AUG-2017
     lc_hdr_sign_cols     := SUBSTR(lc_get_sign_amt_cols,1,LENGTH(lc_get_sign_amt_cols)-1);
-    lc_sign_update_query := 'select a.str from (WITH DATA AS                                              
-							( SELECT ' ||''''||lc_hdr_sign_cols||''''|| ' str FROM dual                                              
-							)                                            
-							SELECT trim(regexp_substr(str, ''[^,]+'', 1, LEVEL)) str                                            
-							FROM DATA                                            
+    lc_sign_update_query := 'select a.str from (WITH DATA AS
+							( SELECT ' ||''''||lc_hdr_sign_cols||''''|| ' str FROM dual
+							)
+							SELECT trim(regexp_substr(str, ''[^,]+'', 1, LEVEL)) str
+							FROM DATA
 							CONNECT BY instr(str, '','', 1, LEVEL - 1) > 0) a';
     -- Framing the SQL to update the Sign columns in header staging table
     lc_hs_upd_sign_query:= 'SELECT DISTINCT FILE_ID,CUST_DOC_ID,REC_ORDER FROM XX_AR_EBL_TXT_HDR_STG WHERE file_id = '||p_file_id||' AND cust_doc_id = '||p_cust_doc_id||' AND REC_TYPE != '||'''FID'''||' AND REC_ORDER = '||ln_get_dist_rows;
@@ -1267,7 +1292,7 @@ IS
                   XX_AR_EBL_COMMON_UTIL_PKG.PUT_LOG_LINE( lb_debug_flag
                                                      ,FALSE
                                                      ,lc_err_location_msg
-                                                    ); 				              
+                                                    );
     IF ((lc_abs_flag = 'Y') AND (ln_sign_update_cnt = 1)) THEN
       OPEN c_hs_upd_sign_cursor FOR lc_hs_upd_sign_query;
       LOOP
@@ -1276,7 +1301,7 @@ IS
         INTO ln_hs_sign_file_id,
           ln_hs_sign_cust_doc_id,
           ln_hs_sign_rec_order;
-        
+
         EXIT
       WHEN c_hs_upd_sign_cursor%NOTFOUND;
         OPEN c_sign_row_cursor FOR lc_sign_update_query;
@@ -1479,9 +1504,9 @@ IS
       xcetdt.absolute_flag ,
       xcetdt.dc_indicator ,
       -- End
-	--Added by Aniket CG 15 May #NAIT-29364 
-    xcetdt.db_cr_seperator 
-    --Added by Aniket CG 15 May #NAIT-29364 
+	--Added by Aniket CG 15 May #NAIT-29364
+    xcetdt.db_cr_seperator
+    --Added by Aniket CG 15 May #NAIT-29364
     FROM xx_fin_translatedefinition xftd ,
       xx_fin_translatevalues xftv ,
       xx_cdh_ebl_templ_dtl_txt xcetdt
@@ -1531,9 +1556,9 @@ IS
     NULL ,
     NULL ,
     -- End
-	 --Added by Aniket CG 15 May #NAIT-29364 
-    xcetdt.db_cr_seperator 
-    --Added by Aniket CG 15 May #NAIT-29364 
+	 --Added by Aniket CG 15 May #NAIT-29364
+    xcetdt.db_cr_seperator
+    --Added by Aniket CG 15 May #NAIT-29364
   FROM xx_cdh_ebl_templ_dtl_txt xcetdt ,
     xx_cdh_ebl_concat_fields_txt xcecft
   WHERE xcetdt.field_id  = xcecft.conc_field_id
@@ -1577,9 +1602,9 @@ IS
     NULL ,
     NULL ,
     -- End
-	 --Added by Aniket CG 15 May #NAIT-29364 
-    xcetdt.db_cr_seperator 
-    --Added by Aniket CG 15 May #NAIT-29364 
+	 --Added by Aniket CG 15 May #NAIT-29364
+    xcetdt.db_cr_seperator
+    --Added by Aniket CG 15 May #NAIT-29364
   FROM xx_cdh_ebl_templ_dtl_txt xcetdt
   WHERE xcetdt.cust_doc_id = p_cust_doc_id
   AND xcetdt.record_type   = p_record_type
@@ -1634,10 +1659,10 @@ IS
   lc_insert_select_ndt         VARCHAR2(32767);
   lc_select_ndt                VARCHAR2(32767);
   lc_decode_non_dt             CONSTANT VARCHAR2(1000) := 'DECODE(INSTR(NVL(xxx,''xx''),''$value$''),0,xxx,SUBSTR(xxx,1,INSTR(xxx,''$value$'')-1)|| yyy ||SUBSTR(xxx,INSTR(xxx,''$value$'') + 7))';
---START Added by Aniket CG 15 May #NAIT-29364 
+--START Added by Aniket CG 15 May #NAIT-29364
   lc_decode_non_dt_db             CONSTANT VARCHAR2(1000) := 'DECODE(INSTR(NVL(xxx,''xx''),''$value1$''),0,xxx,SUBSTR(xxx,1,INSTR(xxx,''$value1$'')-1)|| yyy ||SUBSTR(xxx,INSTR(xxx,''$value1$'') + 8))';
   lc_decode_non_dt_cr             CONSTANT VARCHAR2(1000) := 'DECODE(INSTR(NVL(xxx,''xx''),''$value2$''),0,xxx,SUBSTR(xxx,1,INSTR(xxx,''$value2$'')-1)|| yyy ||SUBSTR(xxx,INSTR(xxx,''$value2$'') + 8))';
---END Added by Aniket CG 15 May #NAIT-29364   
+--END Added by Aniket CG 15 May #NAIT-29364
   lc_decode_product            CONSTANT VARCHAR2(1000) := 'DECODE(xftv.target_value19,''TX'',''TAX'',''DL'',''DELIVERY'',''MS'',''MISC'')';
   lc_decode_sku                CONSTANT VARCHAR2(1000) := 'DECODE(xftv.target_value19,''TX'',''Sales Tax'',''DL'',''Delivery'',''MS'',''Misc'')';
   lc_decode_verbiage           VARCHAR2(10000);
@@ -1791,7 +1816,7 @@ IS
     --lc_summary_from_cons         CONSTANT VARCHAR2(1000)  := ' FROM xx_ar_ebl_cons_hdr_main hdr, xx_ar_ebl_cons_dtl_main dtl WHERE hdr.customer_trx_id = dtl.customer_trx_id AND hdr.parent_cust_doc_id = dtl.parent_cust_doc_id and dtl.trx_line_type = ''ITEM'' AND hdr.org_id='|| p_org_id||' AND hdr.cust_doc_id = '||p_cust_doc_id||' AND hdr.file_id = '||p_file_id;
 	--Added for Defect# 14525 by Thilak CG
     lc_summary_from_cons         CONSTANT VARCHAR2(1000)  := ' FROM xx_ar_ebl_cons_hdr_main hdr WHERE hdr.org_id='|| p_org_id||' AND hdr.cust_doc_id = '||p_cust_doc_id||' AND hdr.file_id = '||p_file_id;
-    --End	
+    --End
     lc_summary_select_cons       CONSTANT VARCHAR2(32767) := ' hdr.parent_cust_doc_id,hdr.file_id,fnd_global.user_id,sysdate,fnd_global.user_id,sysdate,fnd_global.user_id,';
     lc_summary_group_by          CONSTANT VARCHAR2(100)   := ' GROUP BY ';
     lc_summary_group_cols        VARCHAR2(32767);
@@ -1838,7 +1863,7 @@ IS
     lc_dc_update_sql       VARCHAR2(32767);
     -- End
 	lc_nondt_concat_cols    VARCHAR2(10000);
-	 -- start Added by Aniket CG 15 May #NAIT-29364      
+	 -- start Added by Aniket CG 15 May #NAIT-29364
 	 lc_db_cr_nvl_value   VARCHAR2(10);
       lc_ext_col_db                   VARCHAR2(150)            := NULL;
       lc_ext_price_db                 VARCHAR2(5000)           := NULL;
@@ -1848,7 +1873,7 @@ IS
       lc_tax_ep_flag_db               VARCHAR2(15)   := NULL;
       lc_freight_ep_flag_db           VARCHAR2(15)   := NULL;
       lc_misc_ep_flag_db              VARCHAR2(15)   := NULL;
-      
+
       lc_ext_db_nvl_value   VARCHAR2(10);
       lc_ext_cr_nvl_value   VARCHAR2(10);
       lc_ext_col_cr                   VARCHAR2(150)            := NULL;
@@ -1859,7 +1884,7 @@ IS
       lc_tax_ep_flag_cr               VARCHAR2(15)   := NULL;
       lc_freight_ep_flag_cr           VARCHAR2(15)   := NULL;
       lc_misc_ep_flag_cr              VARCHAR2(15)   := NULL;
-      
+
       lc_dc_col_orig_flgchk    VARCHAR2(15)  := 'N';
       lc_dc_col_ext_flgchk    VARCHAR2(15)  := 'N';
       lc_dc_amt_col_db          VARCHAR2(15)  :=  NULL;
@@ -1868,13 +1893,24 @@ IS
       lc_dc_amt_decode_cr       VARCHAR2(1000) := NULL;
       lc_dc_update_sql_db       VARCHAR2(32767);
       lc_dc_update_sql_cr       VARCHAR2(32767);
-    --end Added by Aniket CG 15 May #NAIT-29364 	
+    --end Added by Aniket CG 15 May #NAIT-29364
+	  lv_fee_option    NUMBER := 0;
+	  lv_hide_flag     VARCHAR2(200);
   BEGIN
     IF (p_debug_flag = 'Y') THEN
       lb_debug_flag := TRUE;
     ELSE
       lb_debug_flag := FALSE;
     END IF;
+	  BEGIN
+	    SELECT fee_option
+		  INTO lv_fee_option
+		  FROM xx_cdh_cust_acct_ext_b
+		 WHERE N_EXT_ATTR2 = p_cust_doc_id AND Attr_group_id = 166 and rownum =1;
+	  EXCEPTION WHEN OTHERS THEN
+	    lv_fee_option:= 0;
+	  END;
+	
     BEGIN
       SELECT NVL(SUMMARY_BILL,'N')
       INTO lc_summary_bill_doc
@@ -1898,9 +1934,10 @@ IS
       lc_dc_amt_col          := NULL;
       lc_dc_amt_decode       := NULL;
       lc_dc_indicator_col    := NULL;
-      lc_dc_update_sql       := NULL;	  
+      lc_dc_update_sql       := NULL;
       FOR lc_get_summary_fields_info IN c_get_summary_fields_info
       LOOP
+	    lv_hide_flag := 'N';
         IF ln_count             = 1 THEN
           lc_select_var_cols   := '''SUMMARY'''||','||''''||lc_get_summary_fields_info.rec_type||''''||',' ||'TO_DATE('||''''||p_cycle_date||''''||',''DD-MON-YY''),'||p_batch_id||',';
           lc_summary_value_fid := lc_summary_value_fid||'''SUMMARY'''||','||'''FID'''||',' ||'TO_DATE('||''''||p_cycle_date||''''||',''DD-MON-YY''),'||p_batch_id||',';
@@ -1939,13 +1976,13 @@ IS
             END IF;
             END IF;*/
 		    --Comment End
-		
+
 		    --Added for Defect# 14525 by Thilak CG
             IF lc_get_summary_fields_info.summary_field = 'Y' AND lc_get_summary_fields_info.col_name = 'ext_price' THEN
 			  lc_select_var_cols                       := lc_select_var_cols||'SUM(hdr.SKU_LINES_SUBTOTAL),';
             END IF;
-            --End	
-				  
+            --End
+
           --- Added by Punit on 21-JUN-2017
         ELSIF (LOWER(lc_get_summary_fields_info.tab_name) = 'constant') THEN
           lc_select_var_cols                             := lc_select_var_cols|| '''' || REPLACE(lc_get_summary_fields_info.cons_val,'''','''''') || '''' || ',';
@@ -1953,20 +1990,24 @@ IS
         ELSIF (LOWER(lc_get_summary_fields_info.tab_name) = 'function') THEN
           IF lc_get_summary_fields_info.spl_function     IS NOT NULL THEN
           --  lc_function                                  := 'SELECT '||lc_get_summary_fields_info.spl_function||'('||p_cust_doc_id||','||p_file_id||','||p_org_id||','||''''||lc_get_summary_fields_info.col_name||''''||') FROM DUAL'; ----Comment by Aniket CG #22772 on 15 Dec 2017
-            
+
             -- start Added by Aniket CG #22772 on 15 Dec 2017
-           if  upper(lc_get_summary_fields_info.spl_function) IN ( 'XX_AR_EBL_TXT_SPL_LOGIC_PKG.GET_GRAND_TOTAL' , 'XX_AR_EBL_TXT_SPL_LOGIC_PKG.GET_GRAND_FREIGHT_AMT') 
+           if  upper(lc_get_summary_fields_info.spl_function) IN ( 'XX_AR_EBL_TXT_SPL_LOGIC_PKG.GET_GRAND_TOTAL' , 'XX_AR_EBL_TXT_SPL_LOGIC_PKG.GET_GRAND_FREIGHT_AMT')
            and p_cmb_splt_splfunc_whr is not null then
            lc_function                                    := 'SELECT '||lc_get_summary_fields_info.spl_function||'('||p_cust_doc_id||','||p_file_id||','||p_org_id||','||''''||lc_get_summary_fields_info.col_name||''''||','|| p_cmb_splt_splfunc_whr || ') FROM DUAL';
-           else 
+           else
              lc_function                                  := 'SELECT '||lc_get_summary_fields_info.spl_function||'('||p_cust_doc_id||','||p_file_id||','||p_org_id||','||''''||lc_get_summary_fields_info.col_name||''''||') FROM DUAL';
            end if;
-         -- end Added by Aniket CG #22772 on 15 Dec 2017  
-            
-            
+         -- end Added by Aniket CG #22772 on 15 Dec 2017
+
+
             EXECUTE IMMEDIATE lc_function INTO lc_function_return;
             lc_select_var_cols := lc_select_var_cols||lc_function_return||',';
-          ELSE
+          
+			  IF lv_fee_option != 1009 AND UPPER(lc_get_summary_fields_info.spl_function) = 'XX_AR_EBL_TXT_SPL_LOGIC_PKG.GET_FEE_AMOUNT' THEN
+				lv_hide_flag := 'Y';
+			  END IF;
+		  ELSE
             lc_select_var_cols := lc_select_var_cols||'NULL'||',';
             -- Checking to print line number field is selected for the cust doc id.
             BEGIN
@@ -2052,10 +2093,10 @@ IS
 		ELSIF UPPER(lc_get_summary_fields_info.col_name) = 'EXT_PRICE' THEN
 		   lc_dc_amt_col  := lc_column||ln_count;
 		END IF;
-		
+
    	    IF UPPER(lc_get_summary_fields_info.col_name) = 'DC_INDICATOR' THEN
 		   lc_dc_indicator_col := lc_column||ln_count;
-	    END IF;		
+	    END IF;
         -- End
         -- Start of changes done by Punit CG for Defect #40174 on 11-AUG-2017
         BEGIN
@@ -2095,12 +2136,19 @@ IS
 			     || ' '
 			     || lc_get_summary_fields_info.sort_type
 			     || ',';
-            END IF;				
+            END IF;
 		    -- End
         -- End of changes done by Punit CG for Defect #40174 on 11-AUG-2017
-        lc_summary_insert_col_name := lc_summary_insert_col_name||lc_column||ln_count||',';
-        lc_summary_value_fid       := lc_summary_value_fid||lc_get_summary_fields_info.field_id||',';
-        ln_count                   := ln_count + 1;
+        
+		IF lv_hide_flag = 'N' THEN
+		    lc_summary_insert_col_name := lc_summary_insert_col_name||lc_column||ln_count||',';
+		    lc_summary_value_fid       := lc_summary_value_fid||lc_get_summary_fields_info.field_id||',';
+		    ln_count                   := ln_count + 1;
+		ELSE
+           lc_select_var_cols := replace(lc_select_var_cols,lc_function_return||',','');
+--           lv_upd_str := 'update xx_ar_ebl_cons_hdr_main set TOTAL_MISCELLANEOUS_AMOUNT = TOTAL_MISCELLANEOUS_AMOUNT - '||lc_tot_fee_amt||' WHERE parent_cust_doc_id = '||p_cust_doc_id||' AND batch_id = '||p_batch_id;
+--           execute immediate lv_upd_str;
+		END IF;
       END LOOP;
 
       lc_summary_insert_col_name := lc_insert_summary_const_cols||SUBSTR(lc_summary_insert_col_name,1,LENGTH(lc_summary_insert_col_name)                                                                                                                     -1)||')';
@@ -2134,11 +2182,11 @@ IS
         ln_summary_line_num := 0;
         -- Added by Thilak CG on 25-JUL-2017 for Defect#42380
         lc_summary_cols     := SUBSTR(lc_summary_col,1,(LENGTH(lc_summary_col)-1));
-        lc_stg_update_query := 'select a.str from (WITH DATA AS                                              
-								( SELECT ' ||''''||lc_summary_cols||''''|| ' str FROM dual                                              
-								)                                            
-								SELECT trim(regexp_substr(str, ''[^,]+'', 1, LEVEL)) str                                            
-								FROM DATA                                            
+        lc_stg_update_query := 'select a.str from (WITH DATA AS
+								( SELECT ' ||''''||lc_summary_cols||''''|| ' str FROM dual
+								)
+								SELECT trim(regexp_substr(str, ''[^,]+'', 1, LEVEL)) str
+								FROM DATA
 								CONNECT BY instr(str, '','', 1, LEVEL - 1) > 0) a';
         -- End
         -- Changes for the defect#42322
@@ -2146,14 +2194,14 @@ IS
         INTO ln_summary_line_num
         FROM XX_CDH_EBL_TEMPL_HDR_TXT
         WHERE CUST_DOC_ID = p_cust_doc_id;*/
-		
+
 		  ln_hdr_sum_num_max := 0;
           -- Changes for the defect#42322
           SELECT NVL(MAX(ROWNUMBER),ln_summary_line_num)
           INTO ln_hdr_sum_num_max
           FROM XX_CDH_EBL_TEMPL_HDR_TXT
           WHERE CUST_DOC_ID = p_cust_doc_id;
-		  
+
         SELECT COUNT (DISTINCT xftv.source_value4)
         INTO ln_summary_line_num
         FROM xx_fin_translatedefinition xftd ,
@@ -2175,12 +2223,12 @@ IS
           AND XFTV.ENABLED_FLAG     = 'Y'
           AND TRUNC(sysdate) BETWEEN TRUNC(XFTV.START_DATE_ACTIVE) AND TRUNC(NVL(XFTV.END_DATE_ACTIVE,sysdate+1))
           );
-		  
+
           IF ln_hdr_sum_num_max > 1 AND ln_summary_line_num = 1
           THEN
 		   ln_summary_line_num := ln_hdr_sum_num_max;
           END IF;
-		  
+
         -- Open the Cursors and update the sequence number
         IF lc_summary_cols IS NOT NULL THEN
           OPEN c_summary_stg_cursor FOR lc_summary_stg_query; -- hdr cursor.
@@ -2206,17 +2254,17 @@ IS
       END IF;
       -- Added by Punit CG for defect#40174 on 11-AUG-2017
       lc_dtl_sign_cols     := SUBSTR(lc_get_sign_amt_cols,1,LENGTH(lc_get_sign_amt_cols)-1);
-      lc_sign_update_query := 'select a.str from (WITH DATA AS                                              
-								( SELECT ' ||''''||lc_dtl_sign_cols||''''|| ' str FROM dual                                              
-								)                                            
-								SELECT trim(regexp_substr(str, ''[^,]+'', 1, LEVEL)) str                                            
-								FROM DATA                                            
+      lc_sign_update_query := 'select a.str from (WITH DATA AS
+								( SELECT ' ||''''||lc_dtl_sign_cols||''''|| ' str FROM dual
+								)
+								SELECT trim(regexp_substr(str, ''[^,]+'', 1, LEVEL)) str
+								FROM DATA
 								CONNECT BY instr(str, '','', 1, LEVEL - 1) > 0) a';
       lc_err_location_msg  := 'Value of lc_sign_update_query is '||lc_sign_update_query;
       XX_AR_EBL_COMMON_UTIL_PKG.PUT_LOG_LINE( lb_debug_flag ,FALSE ,lc_err_location_msg );
       -- Framing the SQL to update the Sign columns in detail staging table
-      lc_dtl_upd_sign_query:= 'SELECT DISTINCT FILE_ID,CUST_DOC_ID,REC_ORDER                          
-								FROM XX_AR_EBL_TXT_DTL_STG                          
+      lc_dtl_upd_sign_query:= 'SELECT DISTINCT FILE_ID,CUST_DOC_ID,REC_ORDER
+								FROM XX_AR_EBL_TXT_DTL_STG
 								WHERE file_id = '||p_file_id ||' AND cust_doc_id = '||p_cust_doc_id ||' AND REC_TYPE != '||'''FID''';
       -- Open the Cursors and update the Sign columns
       lc_err_location_msg := 'Value of lc_abs_flag is '||lc_abs_flag||' and Value of ln_sign_update_cnt is '||ln_sign_update_cnt;
@@ -2348,7 +2396,7 @@ IS
         lc_dist_line_num_col    := NULL;
         lc_hdr_sort_columns     := NULL;
         lc_line_sort_columns    := NULL;
-        lc_dist_line_sort_columns := NULL;		
+        lc_dist_line_sort_columns := NULL;
         OPEN get_dist_record_type(ln_get_line_dist_rows);
         LOOP
           FETCH get_dist_record_type INTO lc_get_dist_record_type;
@@ -2373,14 +2421,14 @@ IS
           lc_debit               := NULL;
           lc_credit              := NULL;
           lc_dc_amt_col          := NULL;
-		   -- START Added by Aniket CG 15 May #NAIT-29364 	
+		   -- START Added by Aniket CG 15 May #NAIT-29364
           lc_dc_amt_col_db       := NULL;
           lc_dc_amt_col_cr       := NULL;
           lc_dc_amt_decode_db    := NULL;
           lc_dc_amt_decode_cr    := NULL;
-          lc_dc_update_sql_db    := NULL;	  
-          lc_dc_update_sql_cr    := NULL;	  
-          -- END Added by Aniket CG 15 May #NAIT-29364 	
+          lc_dc_update_sql_db    := NULL;
+          lc_dc_update_sql_cr    := NULL;
+          -- END Added by Aniket CG 15 May #NAIT-29364
           lc_dc_amt_decode       := NULL;
           lc_dc_indicator_col    := NULL;
           lc_dc_update_sql       := NULL;
@@ -2424,7 +2472,8 @@ IS
           XX_AR_EBL_COMMON_UTIL_PKG.PUT_LOG_LINE(lb_debug_flag ,TRUE ,lc_err_location_msg );
           FOR lc_get_dtl_fields_info IN c_get_dtl_fields_info(lc_get_dist_record_type,ln_get_line_dist_rows)
           LOOP
-            XX_AR_EBL_COMMON_UTIL_PKG.PUT_LOG_LINE(lb_debug_flag ,TRUE ,lc_err_location_msg );
+            lv_hide_flag := 'N';
+			XX_AR_EBL_COMMON_UTIL_PKG.PUT_LOG_LINE(lb_debug_flag ,TRUE ,lc_err_location_msg );
             lc_err_location_msg := 'CURRENT ROW NUMBER IS => '||ln_get_line_dist_rows||' AND CURRENT RECORD TYPE IS => '||lc_get_dist_record_type;
             XX_AR_EBL_COMMON_UTIL_PKG.PUT_LOG_LINE(lb_debug_flag ,TRUE ,lc_err_location_msg );
             lc_err_location_msg := '************************************************************************************';
@@ -2443,11 +2492,11 @@ IS
               IF (UPPER(lc_get_dtl_fields_info.record_type) = 'LINE') THEN
 			  --- Code added by Punit on 10-OCT-2017 for the Production Defect# 42877
 			    IF (UPPER(lc_get_dtl_fields_info.data_type) = 'DATE') THEN
-                  lc_select_non_dt := lc_select_non_dt || 'TO_CHAR(hdr.' || lc_get_dtl_fields_info.col_name || ',''YYYY-MM-DD''),'; 
-                ELSE 
+                  lc_select_non_dt := lc_select_non_dt || 'TO_CHAR(hdr.' || lc_get_dtl_fields_info.col_name || ',''YYYY-MM-DD''),';
+                ELSE
 				  lc_select_non_dt := lc_select_non_dt || 'hdr.' || lc_get_dtl_fields_info.col_name || ',';
                 END IF;
-		      --- End of Code added by Punit on 10-OCT-2017 for the Production Defect# 42877		
+		      --- End of Code added by Punit on 10-OCT-2017 for the Production Defect# 42877
                 lc_insert_col_name_ndt                     := lc_insert_col_name_ndt || lc_column || ln_count || ','; -- Added by Punit on 15-APR-2017
                 --lc_select_non_dt                           := lc_select_non_dt || 'hdr.' || lc_get_dtl_fields_info.col_name || ',';
                 --- End of Added by Punit for Req# 2302 and Defect# 41733 in SIT03 on 15-APR-2017
@@ -2475,12 +2524,12 @@ IS
               IF (UPPER(lc_get_dtl_fields_info.record_type) = 'LINE') THEN
 			  --- Code added by Punit on 10-OCT-2017 for the Production Defect# 42877
 			    IF (UPPER(lc_get_dtl_fields_info.data_type) = 'DATE') THEN
-                  --lc_select_non_dt := lc_select_non_dt || 'TO_CHAR(hdr.' || lc_get_dtl_fields_info.col_name || ',''YYYY-MM-DD''),'; 
-				  lc_select_non_dt := lc_select_non_dt || 'TO_CHAR(' || lc_get_dtl_fields_info.col_name || ',''YYYY-MM-DD''),'; 
-                ELSE 
+                  --lc_select_non_dt := lc_select_non_dt || 'TO_CHAR(hdr.' || lc_get_dtl_fields_info.col_name || ',''YYYY-MM-DD''),';
+				  lc_select_non_dt := lc_select_non_dt || 'TO_CHAR(' || lc_get_dtl_fields_info.col_name || ',''YYYY-MM-DD''),';
+                ELSE
                   --lc_select_non_dt := lc_select_non_dt || 'hdr.' || lc_get_dtl_fields_info.col_name || ',';
-				  --Added for Defect# NAIT-17796 by Thilak CG on 09-JUN-2018 
-                     lc_nondt_concat_cols := NULL; 
+				  --Added for Defect# NAIT-17796 by Thilak CG on 09-JUN-2018
+                     lc_nondt_concat_cols := NULL;
                      SELECT REPLACE(REPLACE(REPLACE(REPLACE(
 					        REPLACE(lc_get_dtl_fields_info.col_name,'dtl.item_description',lc_decode_sku)
 					        ,'dtl.inventory_item_number',lc_decode_product)
@@ -2488,14 +2537,14 @@ IS
 							,'dtl.customer_product_code',lc_decode_product)
 							,'dtl.vendor_product_code',lc_decode_product)
 					   INTO lc_nondt_concat_cols
-					   FROM dual;			
-                     lc_select_non_dt   := lc_select_non_dt || lc_nondt_concat_cols || ',';				   
-				 	
-                  /*Commented for Defect# NAIT-17796 by Thilak CG on 09-JUN-2018*/ 				 
+					   FROM dual;
+                     lc_select_non_dt   := lc_select_non_dt || lc_nondt_concat_cols || ',';
+
+                  /*Commented for Defect# NAIT-17796 by Thilak CG on 09-JUN-2018*/
 				  -- lc_select_non_dt   := lc_select_non_dt || lc_get_dtl_fields_info.col_name || ',';
 				  -- End of Defect# NAIT-17796				  lc_select_non_dt   := lc_select_non_dt || lc_get_dtl_fields_info.col_name || ',';
                 END IF;
-		      --- End of Code added by Punit on 10-OCT-2017 for the Production Defect# 42877		
+		      --- End of Code added by Punit on 10-OCT-2017 for the Production Defect# 42877
                 lc_insert_col_name_ndt                     := lc_insert_col_name_ndt || lc_column || ln_count || ','; -- Added by Punit on 15-APR-2017
               --  lc_select_non_dt                           := lc_select_non_dt || lc_get_dtl_fields_info.col_name || ',';
               END IF;
@@ -2508,11 +2557,11 @@ IS
               IF (UPPER(lc_get_dtl_fields_info.record_type) = 'LINE') THEN
                 --- Code added by Punit on 10-OCT-2017 for the Production Defect# 42877
 			    IF (UPPER(lc_get_dtl_fields_info.data_type) = 'DATE') THEN
-                  lc_select_non_dt := lc_select_non_dt || 'TO_CHAR(hdr.' || lc_get_dtl_fields_info.col_name || ',''YYYY-MM-DD''),'; 
-                ELSE 
+                  lc_select_non_dt := lc_select_non_dt || 'TO_CHAR(hdr.' || lc_get_dtl_fields_info.col_name || ',''YYYY-MM-DD''),';
+                ELSE
                   lc_select_non_dt := lc_select_non_dt || 'hdr.' || lc_get_dtl_fields_info.col_name || ',';
                 END IF;
-		      --- End of Code added by Punit on 10-OCT-2017 for the Production Defect# 42877		
+		      --- End of Code added by Punit on 10-OCT-2017 for the Production Defect# 42877
                 lc_insert_col_name_ndt                     := lc_insert_col_name_ndt || lc_column || ln_count || ','; -- Added by Punit on 15-APR-2017
                 --lc_select_non_dt                           := lc_select_non_dt || 'hdr.' || lc_get_dtl_fields_info.col_name || ',';
               END IF;
@@ -2520,13 +2569,13 @@ IS
               IF ln_current_cust_doc_id <> ln_previous_cust_doc_id OR ln_current_base_field_id <> ln_previous_base_field_id OR ln_previous_file_id <> ln_current_file_id THEN
                 ln_count1               := 0; --resetting to zero for new base field id or new cust doc id or new file id.
               END IF;
-			  
+
 			  --Added for Defect# 42790 and NAIT-21270 by Thilak CG
 			  lc_spilt_label := NULL;
 			  ln_count1 := 0;
 			  lc_spilt_label := lc_get_dtl_fields_info.label;
 
-			  BEGIN 
+			  BEGIN
 			   SELECT CASE WHEN split_field1_label = lc_spilt_label THEN 1
 			  	  		   WHEN split_field2_label = lc_spilt_label THEN 2
 						   WHEN split_field3_label = lc_spilt_label THEN 3
@@ -2534,7 +2583,7 @@ IS
 						   WHEN split_field5_label = lc_spilt_label THEN 5
 						   WHEN split_field6_label = lc_spilt_label THEN 6
 						   ELSE 0 END
-			     INTO ln_count1 			
+			     INTO ln_count1
 				 FROM XX_CDH_EBL_SPLIT_FIELDS_TXT
 			   WHERE cust_doc_id = lc_get_dtl_fields_info.cust_doc_id
 			     AND split_base_field_id = lc_get_dtl_fields_info.base_field_id;
@@ -2543,8 +2592,8 @@ IS
 			    ln_count1 := 0;
 			   END;
 			   -- End
-					  
-              --  ln_count1 := ln_count1 + 1;  --Commented for Defect# 42790 and NAIT-21270 by Thilak CG     
+
+              --  ln_count1 := ln_count1 + 1;  --Commented for Defect# 42790 and NAIT-21270 by Thilak CG
 			  -- Call the function to get the split column
               lc_err_location_msg := 'Getting Split Fields for the Cust Doc Id: '||lc_get_dtl_fields_info.cust_doc_id||' Base Field Id: '||lc_get_dtl_fields_info.base_field_id||' Count: '||ln_count1;
               XX_AR_EBL_COMMON_UTIL_PKG.PUT_LOG_LINE(lb_debug_flag ,TRUE ,lc_err_location_msg );
@@ -2553,7 +2602,7 @@ IS
               ln_previous_base_field_id       := lc_get_dtl_fields_info.base_field_id;
               ln_previous_file_id             := p_file_id;
               lc_select_var_cols              := lc_select_var_cols || lc_get_dtl_fields_info.col_name || ',';
-              --Added by Aniket CG UAT Defect#50280 
+              --Added by Aniket CG UAT Defect#50280
 			  lc_select_non_dt        := lc_select_non_dt || lc_get_dtl_fields_info.col_name ||',';
 			  lc_insert_col_name_ndt  := lc_insert_col_name_ndt || lc_column || ln_count || ',';
 			  --Ended by Aniket CG UAT Defect#50280
@@ -2579,21 +2628,25 @@ IS
               IF lc_get_dtl_fields_info.spl_function     IS NOT NULL THEN
                -- lc_function                              := 'SELECT '||lc_get_dtl_fields_info.spl_function||'('||p_cust_doc_id||','||p_file_id||','||p_org_id||','||''''||lc_get_dtl_fields_info.col_name||''''||') FROM DUAL'; --commented by Aniket CG #22772 on 15 Dec 2017
                 --fnd_file.put_line(fnd_file.log,lc_function);
-         
+
          -- start Added by Aniket CG #22772 on 15 Dec 2017
-           IF  UPPER( lc_get_dtl_fields_info.spl_function ) IN ( 'XX_AR_EBL_TXT_SPL_LOGIC_PKG.GET_GRAND_TOTAL' , 'XX_AR_EBL_TXT_SPL_LOGIC_PKG.GET_GRAND_FREIGHT_AMT') 
+           IF  UPPER( lc_get_dtl_fields_info.spl_function ) IN ( 'XX_AR_EBL_TXT_SPL_LOGIC_PKG.GET_GRAND_TOTAL' , 'XX_AR_EBL_TXT_SPL_LOGIC_PKG.GET_GRAND_FREIGHT_AMT')
            AND p_cmb_splt_splfunc_whr IS NOT NULL THEN
            lc_function                              := 'SELECT '||lc_get_dtl_fields_info.spl_function||'('||p_cust_doc_id||','||p_file_id||','||p_org_id||','||''''||lc_get_dtl_fields_info.col_name||''''||','|| p_cmb_splt_splfunc_whr || ') FROM DUAL';
-           ELSE 
+           ELSE
            lc_function                              := 'SELECT '||lc_get_dtl_fields_info.spl_function||'('||p_cust_doc_id||','||p_file_id||','||p_org_id||','||''''||lc_get_dtl_fields_info.col_name||''''||') FROM DUAL';
            END IF;
-         -- end Added by Aniket CG #22772 on 15 Dec 2017  
+         -- end Added by Aniket CG #22772 on 15 Dec 2017
                 EXECUTE IMMEDIATE lc_function INTO lc_function_return;
                 lc_select_var_cols := lc_select_var_cols||lc_function_return||',';
-              ELSE
+              
+			    IF lv_fee_option != 1009 AND UPPER(lc_get_dtl_fields_info.spl_function) = 'XX_AR_EBL_TXT_SPL_LOGIC_PKG.GET_FEE_AMOUNT' THEN
+				   lv_hide_flag := 'Y';
+			    END IF;
+			  ELSE
 			   --Added 2 Values in  by Aniket CG 15 May #NAIT-29364
                 IF UPPER(lc_get_dtl_fields_info.col_name) NOT IN ('SIGN','DC_INDICATOR','ORIG_INV_AMT_DB' , 'ORIG_INV_AMT_CR','EXT_PRICE_DB' ,'EXT_PRICE_CR')  THEN -- Added by Punit CG on 17th Aug 2017 for Defect # 40174
-			  --Added 2 Values in  by Aniket CG 15 May #NAIT-29364                   
+			  --Added 2 Values in  by Aniket CG 15 May #NAIT-29364
 				 lc_select_var_cols := lc_select_var_cols||'NULL'||',';
                   -- Checking to print line number in the file or not.
                   BEGIN
@@ -2631,15 +2684,15 @@ IS
                     XX_AR_EBL_COMMON_UTIL_PKG.PUT_LOG_LINE(lb_debug_flag ,FALSE ,lc_err_location_msg);
                   END;
                   -- Start of Added by Punit CG on 17th Aug 2017 for Defect # 40174
-                ELSE 
-				   --Added by Aniket CG 15 May #NAIT-29364  --lc_get_dtl_fields_info.db_cr_seperator IS NOT NULL AND 
+                ELSE
+				   --Added by Aniket CG 15 May #NAIT-29364  --lc_get_dtl_fields_info.db_cr_seperator IS NOT NULL AND
                       IF  UPPER(lc_get_dtl_fields_info.col_name) IN ('ORIG_INV_AMT_DB','ORIG_INV_AMT_CR','EXT_PRICE_DB','EXT_PRICE_CR')THEN
-                        SELECT lc_get_dtl_fields_info.db_cr_seperator  
+                        SELECT lc_get_dtl_fields_info.db_cr_seperator
                         INTO lc_db_cr_nvl_value
                         FROM DUAL;
-						
+
 						lc_db_cr_nvl_value:= nvl(lc_db_cr_nvl_value,'NULL');
-						
+
                         IF UPPER(lc_get_dtl_fields_info.col_name) = 'ORIG_INV_AMT_DB' THEN
                           lc_select_var_cols := lc_select_var_cols|| ' DECODE (SIGN (hdr.original_invoice_amount) ,0,0, 1 , hdr.original_invoice_amount ,'|| lc_db_cr_nvl_value ||' )'|| ',';
                         ELSIF UPPER(lc_get_dtl_fields_info.col_name) = 'ORIG_INV_AMT_CR' THEN
@@ -2653,7 +2706,7 @@ IS
                         lc_select_var_cols := lc_select_var_cols||'NULL'||',';
                       END IF;
                       --Added by Aniket CG 15 May #NAIT-29364
-				 
+
                   -- lc_select_var_cols := lc_select_var_cols||'NULL'||',';  --Commented by Aniket CG #NAIT-29364
                 END IF;
                 -- End of Added by Punit CG on 17th Aug 2017 for Defect # 40174
@@ -2669,7 +2722,7 @@ IS
                 ln_dist_seq_num_fid             := lc_get_dtl_fields_info.field_id;
               END IF;
             END IF;
-			
+
 		    -- Added by Thilak CG on 12-OCT-2017 for Wave2 UAT Defect#13836
             IF lc_get_dtl_fields_info.sort_order IS NOT NULL AND lc_get_dtl_fields_info.sort_type IS NOT NULL AND lc_get_dtl_fields_info.record_type = 'HDR'
             THEN
@@ -2688,7 +2741,7 @@ IS
 			     || ln_count
 			     || ' '
 			     || lc_get_dtl_fields_info.sort_type
-			     || ',';				
+			     || ',';
             ELSIF lc_get_dtl_fields_info.sort_order IS NOT NULL AND lc_get_dtl_fields_info.sort_type IS NOT NULL AND lc_get_dtl_fields_info.record_type = 'DIST'
             THEN
 		      lc_dist_line_sort_columns :=
@@ -2698,9 +2751,9 @@ IS
 			     || ' '
 			     || lc_get_dtl_fields_info.sort_type
 			     || ',';
-            END IF;				 
+            END IF;
 		    -- End
-			
+
             -- Start of changes done by Thilak CG for Defect #40174 on 07-AUG-2017
             IF (UPPER(lc_get_dtl_fields_info.dc_indicator) IS NOT NULL AND lc_dc_flag = 'N') THEN
               lc_dc_flag                                   := 'Y';
@@ -2844,14 +2897,14 @@ IS
                   p_dtl_error_flag := 'Y';
                   p_dtl_error_msg  := lc_err_location_msg;
                 END;
-				-- start Added by Aniket CG 15 May #NAIT-29364 
+				-- start Added by Aniket CG 15 May #NAIT-29364
                  IF (UPPER(lc_lkp_tag) = 'Y') and UPPER(lc_get_dtl_fields_info.col_name) in ('EXT_PRICE','LINE_LEVEL_COMMENT')THEN
-				-- end Added by Aniket CG 15 May #NAIT-29364 
-				-- IF (UPPER(lc_lkp_tag) = 'Y') THEN  -- Commented by Aniket #NAIT-29364 
+				-- end Added by Aniket CG 15 May #NAIT-29364
+				-- IF (UPPER(lc_lkp_tag) = 'Y') THEN  -- Commented by Aniket #NAIT-29364
                   lc_decode_verbiage := REPLACE(lc_decode_non_dt,'xxx',lc_lkp_meaning);
                   lc_decode_verbiage := REPLACE(lc_decode_verbiage,'yyy',lc_decode_hdr_col);
                   lc_select_non_dt   := lc_select_non_dt || lc_decode_verbiage || ',';
-				-- start Added by Aniket CG 15 May #NAIT-29364 
+				-- start Added by Aniket CG 15 May #NAIT-29364
                 ELSIF (UPPER(lc_lkp_tag) = 'Y') and UPPER(lc_get_dtl_fields_info.col_name) in ('EXT_PRICE_DB')THEN
                   lc_decode_verbiage := REPLACE(lc_decode_non_dt_db,'xxx',lc_lkp_meaning);
                   lc_decode_verbiage := REPLACE(lc_decode_verbiage,'yyy',lc_decode_hdr_col);
@@ -2859,8 +2912,8 @@ IS
                 ELSIF (UPPER(lc_lkp_tag) = 'Y') and UPPER(lc_get_dtl_fields_info.col_name) in ('EXT_PRICE_CR')THEN
                   lc_decode_verbiage := REPLACE(lc_decode_non_dt_cr,'xxx',lc_lkp_meaning);
                   lc_decode_verbiage := REPLACE(lc_decode_verbiage,'yyy',lc_decode_hdr_col);
-                  lc_select_non_dt   := lc_select_non_dt || lc_decode_verbiage || ',';  
-               --end Added by Aniket CG 15 May #NAIT-29364    
+                  lc_select_non_dt   := lc_select_non_dt || lc_decode_verbiage || ',';
+               --end Added by Aniket CG 15 May #NAIT-29364
                 ELSIF (lc_lkp_tag    IS NULL AND lc_lkp_lookup_code LIKE '%PRODUCT_CODE%') THEN
                   lc_select_non_dt   := lc_select_non_dt || lc_decode_product || ',';
                 ELSIF (lc_lkp_tag    IS NULL AND lc_lkp_lookup_code = 'ITEM_DESCRIPTION') THEN
@@ -2879,25 +2932,25 @@ IS
                 lc_misc_ep_flag                         := lc_get_dtl_fields_info.misc_ep_flag;
                 XX_AR_EBL_COMMON_UTIL_PKG.PUT_LOG_LINE(lb_debug_flag ,FALSE ,('Ext Price ' || lc_ext_col) );
               END IF;
-			    -- start Added by Aniket CG 15 May #NAIT-29364 
-               IF (UPPER(lc_get_dtl_fields_info.col_name) in ('EXT_PRICE_DB')) THEN  
+			    -- start Added by Aniket CG 15 May #NAIT-29364
+               IF (UPPER(lc_get_dtl_fields_info.col_name) in ('EXT_PRICE_DB')) THEN
                 lc_ext_col_db                              := lc_column || ln_count;
                 lc_tax_ep_flag_db                          := lc_get_dtl_fields_info.tax_ep_flag;
                 lc_freight_ep_flag_db                      := lc_get_dtl_fields_info.freight_ep_flag;
                 lc_misc_ep_flag_db                         := lc_get_dtl_fields_info.misc_ep_flag;
                 lc_ext_db_nvl_value                        := lc_get_dtl_fields_info.db_cr_seperator;
-                  XX_AR_EBL_COMMON_UTIL_PKG.PUT_LOG_LINE(lb_debug_flag ,FALSE ,('Ext Price DB' || lc_ext_col_db) );                
+                  XX_AR_EBL_COMMON_UTIL_PKG.PUT_LOG_LINE(lb_debug_flag ,FALSE ,('Ext Price DB' || lc_ext_col_db) );
               END IF;
-                IF (UPPER(lc_get_dtl_fields_info.col_name) in ('EXT_PRICE_CR')) THEN  
+                IF (UPPER(lc_get_dtl_fields_info.col_name) in ('EXT_PRICE_CR')) THEN
                 lc_ext_col_cr                              := lc_column || ln_count;
                 lc_tax_ep_flag_cr                          := lc_get_dtl_fields_info.tax_ep_flag;
                 lc_freight_ep_flag_cr                      := lc_get_dtl_fields_info.freight_ep_flag;
                 lc_misc_ep_flag_cr                         := lc_get_dtl_fields_info.misc_ep_flag;
                 lc_ext_cr_nvl_value                        := lc_get_dtl_fields_info.db_cr_seperator;
-                  XX_AR_EBL_COMMON_UTIL_PKG.PUT_LOG_LINE(lb_debug_flag ,FALSE ,('Ext Price CR' || lc_ext_col_cr) );                
+                  XX_AR_EBL_COMMON_UTIL_PKG.PUT_LOG_LINE(lb_debug_flag ,FALSE ,('Ext Price CR' || lc_ext_col_cr) );
               END IF;
-              -- end Added by Aniket CG 15 May #NAIT-29364 		  
-			  
+              -- end Added by Aniket CG 15 May #NAIT-29364
+
               IF (UPPER(lc_get_dtl_fields_info.col_name) = 'UNIT_PRICE') THEN
                 lc_unitprice_col                        := lc_column || ln_count;
                 lc_tax_up_flag                          := lc_get_dtl_fields_info.tax_up_flag;
@@ -2919,40 +2972,40 @@ IS
             END IF;
             -- End of Changes done by Punit CG for Requirement #2302 (I) on 17-MAR-2017
             -- Start of changes done by Thilak CG for Defect #40174 on 07-AUG-2017
-            -- Start Added by Aniket CG Defect#24883 
-           -- IF lc_get_dist_record_type    = 'HDR' AND UPPER(lc_get_dtl_fields_info.col_name) = 'ORIGINAL_INVOICE_AMOUNT' THEN Commented by Aniket CG Defect#24883 
+            -- Start Added by Aniket CG Defect#24883
+           -- IF lc_get_dist_record_type    = 'HDR' AND UPPER(lc_get_dtl_fields_info.col_name) = 'ORIGINAL_INVOICE_AMOUNT' THEN Commented by Aniket CG Defect#24883
             IF  UPPER(lc_get_dtl_fields_info.col_name) = 'ORIGINAL_INVOICE_AMOUNT' THEN
-           -- End Added by Aniket CG Defect#24883 
+           -- End Added by Aniket CG Defect#24883
               lc_dc_amt_col              := lc_column||ln_count;
-			     --start Added by Aniket CG 15 May #NAIT-29364 
+			     --start Added by Aniket CG 15 May #NAIT-29364
                     lc_dc_col_orig_flgchk := 'Y';
                     ELSIF UPPER(lc_get_dtl_fields_info.col_name) = 'ORIG_INV_AMT_DB' THEN
-                    IF lc_dc_col_orig_flgchk = 'N'  THEN 
-                    lc_dc_amt_col_db  := lc_column||ln_count;                    
+                    IF lc_dc_col_orig_flgchk = 'N'  THEN
+                    lc_dc_amt_col_db  := lc_column||ln_count;
                     END IF;
                     ELSIF UPPER(lc_get_dtl_fields_info.col_name) = 'ORIG_INV_AMT_CR' THEN
-                    IF lc_dc_col_orig_flgchk = 'N'  THEN 
-                    lc_dc_amt_col_cr  := lc_column||ln_count;                    
-                    END IF;   
-				--end Added by Aniket CG 15 May #NAIT-29364   			  
+                    IF lc_dc_col_orig_flgchk = 'N'  THEN
+                    lc_dc_amt_col_cr  := lc_column||ln_count;
+                    END IF;
+				--end Added by Aniket CG 15 May #NAIT-29364
             ELSIF lc_get_dist_record_type = 'LINE' AND UPPER(lc_get_dtl_fields_info.col_name) = 'EXT_PRICE' THEN
               lc_dc_amt_col              := lc_column||ln_count;
-		    --start Added by Aniket CG 15 May #NAIT-29364 
+		    --start Added by Aniket CG 15 May #NAIT-29364
                lc_dc_col_ext_flgchk := 'Y';
             ELSIF lc_get_dist_record_type = 'LINE' AND UPPER(lc_get_dtl_fields_info.col_name) = 'EXT_PRICE_DB' THEN
-                 IF lc_dc_col_ext_flgchk = 'N'  THEN 
+                 IF lc_dc_col_ext_flgchk = 'N'  THEN
                  lc_dc_amt_col_db  := lc_column||ln_count;
                  END IF;
-            ELSIF lc_get_dist_record_type = 'LINE' AND UPPER(lc_get_dtl_fields_info.col_name) = 'EXT_PRICE_CR' THEN   
-                IF lc_dc_col_ext_flgchk = 'N'  THEN 
+            ELSIF lc_get_dist_record_type = 'LINE' AND UPPER(lc_get_dtl_fields_info.col_name) = 'EXT_PRICE_CR' THEN
+                IF lc_dc_col_ext_flgchk = 'N'  THEN
                 lc_dc_amt_col_cr  := lc_column||ln_count;
-                 END IF;      
-                --end Added by Aniket CG 15 May #NAIT-29364 		  
+                 END IF;
+                --end Added by Aniket CG 15 May #NAIT-29364
             END IF;
-			
+
    	        IF UPPER(lc_get_dtl_fields_info.col_name) = 'DC_INDICATOR' THEN
 		      lc_dc_indicator_col := lc_column||ln_count;
-	        END IF;	
+	        END IF;
             -- End
             lc_insert_col_name := lc_insert_col_name||lc_column||ln_count||',';
             lc_dtl_value_fid   := lc_dtl_value_fid||lc_get_dtl_fields_info.field_id||',';
@@ -2993,11 +3046,11 @@ IS
             lc_err_location_msg := 'Calling Child NON_DT Procedure, value of lc_seq_ndt is '||lc_seq_ndt;
             XX_AR_EBL_COMMON_UTIL_PKG.PUT_LOG_LINE( lb_debug_flag ,TRUE ,lc_err_location_msg );
             -- ln_get_line_dist_rows parameter Added by Punit for Defect #41307 on 31-JUL-2017
-            
-          -- Start Added by Aniket CG #22772 on 15 Dec 2017       
+
+          -- Start Added by Aniket CG #22772 on 15 Dec 2017
            XX_AR_EBL_TXT_CHILD_NON_DT(p_cust_doc_id,p_batch_id,p_file_id,lc_insert_select_ndt,lc_select_ndt,lc_seq_ndt,ln_get_line_dist_rows,p_cmb_splt_whr,'CONS',p_debug_flag,lc_insert_status,p_cycle_date);
-          -- End Added by Aniket CG #22772 on 15 Dec 2017     
-          
+          -- End Added by Aniket CG #22772 on 15 Dec 2017
+
             IF (lc_insert_status  IS NOT NULL) THEN
               lc_err_location_msg := 'Error in inserting NON-DT records: '||lc_insert_status;
               XX_AR_EBL_COMMON_UTIL_PKG.PUT_LOG_LINE( lb_debug_flag ,TRUE ,lc_err_location_msg );
@@ -3103,9 +3156,9 @@ IS
                 p_dtl_error_flag := 'Y';
                 p_dtl_error_msg  := lc_err_location_msg;
               END;
-            END IF;			
+            END IF;
             -- End of Added by Punit for Requirement #2302 (C,D) on 21-FEB-2017
-			 -- start Added by Aniket CG 15 May #NAIT-29364  
+			 -- start Added by Aniket CG 15 May #NAIT-29364
               lc_ext_cr_nvl_value := nvl (lc_ext_cr_nvl_value , 'NULL');
               IF (lc_ext_col_db           IS NOT NULL) THEN
               lc_ext_price_db           := 'DECODE(rec_type,''TX'',DECODE('''||lc_tax_ep_flag_db||''',''N'',DECODE('''||lc_tax_col||''',NULL,'||lc_ext_col_db||','||''''||ln_total_default||''''||'),'||lc_ext_col_db||'),''DL'',DECODE('''||lc_freight_ep_flag_db||''',''N'',DECODE('''||lc_freight_col||''',NULL,'||lc_ext_col_db||','||''''||ln_total_default||''''||'),'||lc_ext_col_db||'),''MS'',DECODE('''||lc_misc_ep_flag_db||''',''N'',DECODE('''||lc_misc_col||''',NULL,'||lc_ext_col_db||','||''''||ln_total_default||''''||'),'||lc_ext_col_db||'),'||lc_ext_col_db||')';
@@ -3123,7 +3176,7 @@ IS
                 p_dtl_error_msg  := lc_err_location_msg;
               END;
             END IF;
-            
+
              IF (lc_ext_col_cr           IS NOT NULL) THEN
               lc_ext_price_cr           := 'DECODE(rec_type,''TX'',DECODE('''||lc_tax_ep_flag_cr||''',''N'',DECODE('''||lc_tax_col||''',NULL,'||lc_ext_col_cr||','||''''||ln_total_default||''''||'),'||lc_ext_col_cr||'),''DL'',DECODE('''||lc_freight_ep_flag_cr||''',''N'',DECODE('''||lc_freight_col||''',NULL,'||lc_ext_col_cr||','||''''||ln_total_default||''''||'),'||lc_ext_col_cr||'),''MS'',DECODE('''||lc_misc_ep_flag_cr||''',''N'',DECODE('''||lc_misc_col||''',NULL,'||lc_ext_col_cr||','||''''||ln_total_default||''''||'),'||lc_ext_col_cr||'),'||lc_ext_col_cr||')';
               lc_update_extprice_cr_ndt := 'UPDATE XX_AR_EBL_TXT_DTL_STG SET ' || lc_ext_col_cr || ' = ' || ' DECODE ( SIGN ( ' ||lc_ext_price_cr || ' ),-1,'||lc_ext_price_cr||', '|| lc_ext_cr_nvl_value ||')'  || ' WHERE rec_type != ''FID'' AND cust_doc_id = ' || p_cust_doc_id || ' AND file_id = ' || p_file_id || ' AND trx_line_number IS NULL AND rec_type IN (''TX'',''DL'',''MS'')' || ' AND REC_ORDER = '||ln_get_line_dist_rows -- Added by Punit on 17-AUG-2017 for Defect# 40174
@@ -3140,7 +3193,7 @@ IS
                 p_dtl_error_msg  := lc_err_location_msg;
               END;
             END IF;
-         --end Added by Aniket CG 15 May #NAIT-29364 			
+         --end Added by Aniket CG 15 May #NAIT-29364
             -- Start of Changes done by Punit CG for Requirement #2302 (I) on 17-MAR-2017
             IF (ln_nondt_qty IS NOT NULL AND(UPPER(lc_get_dist_record_type) = 'LINE')AND(lc_qty_ship_exists ='Y')) THEN -- Added on 21-JUN-2017
               BEGIN
@@ -3165,8 +3218,8 @@ IS
             lc_err_location_msg := 'Updated Detail DC Indicator Column: '||lc_dc_update_sql;
             XX_AR_EBL_COMMON_UTIL_PKG.PUT_LOG_LINE(lb_debug_flag ,FALSE ,lc_err_location_msg );
             EXECUTE IMMEDIATE lc_dc_update_sql;
-	     --start Added by Aniket CG 15 May #NAIT-29364       
-           ELSIF lc_dc_flag = 'Y' AND  ( lc_dc_amt_col_db IS NOT NULL OR lc_dc_amt_col_cr IS NOT NULL) AND lc_dc_indicator_col IS NOT NULL THEN 
+	     --start Added by Aniket CG 15 May #NAIT-29364
+           ELSIF lc_dc_flag = 'Y' AND  ( lc_dc_amt_col_db IS NOT NULL OR lc_dc_amt_col_cr IS NOT NULL) AND lc_dc_indicator_col IS NOT NULL THEN
             IF lc_dc_flag = 'Y' AND  lc_dc_amt_col_db IS NOT NULL AND lc_dc_indicator_col IS NOT NULL THEN
             lc_dc_amt_decode_db    := 'DECODE(SIGN('||lc_dc_amt_col_db||'),''1'','||''''||lc_debit||''''||','||'''0'','||''''||lc_debit||''''||','||''''||lc_credit||''''||')';
             lc_dc_update_sql_db    := 'UPDATE XX_AR_EBL_TXT_DTL_STG SET '||lc_dc_indicator_col||' = '||lc_dc_amt_decode_db||' WHERE rec_type != ''FID'' AND file_id = '||p_file_id||' AND cust_doc_id = '||p_cust_doc_id||' AND rec_order = '||ln_get_line_dist_rows||'AND '|| lc_dc_amt_col_db ||' IS NOT NULL  AND trx_type = '||''''||lc_get_dist_record_type||'''';
@@ -3181,22 +3234,22 @@ IS
             XX_AR_EBL_COMMON_UTIL_PKG.PUT_LOG_LINE(lb_debug_flag ,FALSE ,lc_err_location_msg );
             EXECUTE IMMEDIATE lc_dc_update_sql_cr;
             END IF;
-            --end Added by Aniket CG 15 May #NAIT-29364 		
+            --end Added by Aniket CG 15 May #NAIT-29364
           END IF;
           -- End
           -- Added by Punit CG for defect#40174 on 11-AUG-2017
           lc_dtl_sign_cols     := SUBSTR(lc_get_sign_amt_cols,1,LENGTH(lc_get_sign_amt_cols)-1);
-          lc_sign_update_query := 'select a.str from (WITH DATA AS                                              
-									( SELECT ' ||''''||lc_dtl_sign_cols||''''|| ' str FROM dual                                              
-									)                                            
-									SELECT trim(regexp_substr(str, ''[^,]+'', 1, LEVEL)) str                                            
-									FROM DATA                                            
+          lc_sign_update_query := 'select a.str from (WITH DATA AS
+									( SELECT ' ||''''||lc_dtl_sign_cols||''''|| ' str FROM dual
+									)
+									SELECT trim(regexp_substr(str, ''[^,]+'', 1, LEVEL)) str
+									FROM DATA
 									CONNECT BY instr(str, '','', 1, LEVEL - 1) > 0) a';
           lc_err_location_msg := 'Value of lc_sign_update_query is '||lc_sign_update_query;
           XX_AR_EBL_COMMON_UTIL_PKG.PUT_LOG_LINE( lb_debug_flag ,FALSE ,lc_err_location_msg );
           -- Framing the SQL to update the Sign columns in detail staging table
-          lc_dtl_upd_sign_query:= 'SELECT DISTINCT FILE_ID,CUST_DOC_ID,REC_ORDER                          
-								   FROM XX_AR_EBL_TXT_DTL_STG                          
+          lc_dtl_upd_sign_query:= 'SELECT DISTINCT FILE_ID,CUST_DOC_ID,REC_ORDER
+								   FROM XX_AR_EBL_TXT_DTL_STG
 								   WHERE file_id = '||p_file_id ||' AND cust_doc_id = '||p_cust_doc_id ||' AND REC_TYPE != '||'''FID''' ||' AND trx_type = '||''''||lc_get_dist_record_type||'''' ||' AND REC_ORDER = '||ln_get_line_dist_rows;
           -- Open the Cursors and update the Sign columns
           lc_err_location_msg := 'Value of lc_abs_flag is '||lc_abs_flag||' and Value of ln_sign_update_cnt is '||ln_sign_update_cnt;
@@ -3329,25 +3382,25 @@ IS
         IF lc_print_hdr_line_num = 'Y' OR lc_print_line_line_num = 'Y' OR lc_print_dist_line_num = 'Y' THEN
           -- Added by Thilak CG on 25-JUL-2017 for Defect#42380
           lc_hdr_line_num_cols     := SUBSTR(lc_hdr_line_num_col,1,(LENGTH(lc_hdr_line_num_col)-1));
-          lc_hdr_stg_update_query  := 'select a.str from (WITH DATA AS                                              
-										( SELECT ' ||''''||lc_hdr_line_num_cols||''''|| ' str FROM dual                                              
-										)                                            
-										SELECT trim(regexp_substr(str, ''[^,]+'', 1, LEVEL)) str                                            
-										FROM DATA                                            
+          lc_hdr_stg_update_query  := 'select a.str from (WITH DATA AS
+										( SELECT ' ||''''||lc_hdr_line_num_cols||''''|| ' str FROM dual
+										)
+										SELECT trim(regexp_substr(str, ''[^,]+'', 1, LEVEL)) str
+										FROM DATA
 										CONNECT BY instr(str, '','', 1, LEVEL - 1) > 0) a';
           lc_line_line_num_cols    := SUBSTR(lc_line_line_num_col,1,(LENGTH(lc_line_line_num_col)-1));
-          lc_line_stg_update_query := 'select a.str from (WITH DATA AS                                              
-										( SELECT ' ||''''||lc_line_line_num_cols||''''|| ' str FROM dual                                              
-										)                                            
-										SELECT trim(regexp_substr(str, ''[^,]+'', 1, LEVEL)) str                                            
-										FROM DATA                                            
+          lc_line_stg_update_query := 'select a.str from (WITH DATA AS
+										( SELECT ' ||''''||lc_line_line_num_cols||''''|| ' str FROM dual
+										)
+										SELECT trim(regexp_substr(str, ''[^,]+'', 1, LEVEL)) str
+										FROM DATA
 										CONNECT BY instr(str, '','', 1, LEVEL - 1) > 0) a';
           lc_dist_line_num_cols    := SUBSTR(lc_dist_line_num_col,1,(LENGTH(lc_dist_line_num_col)-1));
-          lc_dist_stg_update_query := 'select a.str from (WITH DATA AS                                              
-										( SELECT ' ||''''||lc_dist_line_num_cols||''''|| ' str FROM dual                                              
-										)                                            
-										SELECT trim(regexp_substr(str, ''[^,]+'', 1, LEVEL)) str                                            
-										FROM DATA                                            
+          lc_dist_stg_update_query := 'select a.str from (WITH DATA AS
+										( SELECT ' ||''''||lc_dist_line_num_cols||''''|| ' str FROM dual
+										)
+										SELECT trim(regexp_substr(str, ''[^,]+'', 1, LEVEL)) str
+										FROM DATA
 										CONNECT BY instr(str, '','', 1, LEVEL - 1) > 0) a';
           -- End
           -- Added and Commented by Punit on 12-JUL-2017 for Defect # 41307
@@ -3367,22 +3420,22 @@ IS
             -- Framing the SQL to update the line number in the staging table
             IF lc_get_dist_record_type = 'HDR' THEN
             --  lc_hdr_sort_columns     := xx_ar_ebl_render_txt_pkg.get_sort_columns(p_cust_doc_id,lc_get_dist_record_type);
-              lc_hdr_stg_query        := 'SELECT STG_ID, CUSTOMER_TRX_ID FROM XX_AR_EBL_TXT_DTL_STG WHERE file_id = '||p_file_id||' AND cust_doc_id = '||p_cust_doc_id||' AND REC_TYPE != '||'''FID'''||' AND TRX_TYPE = '||''''||lc_get_dist_record_type||''''||' ORDER BY '||lc_hdr_sort_columns||' CUSTOMER_TRX_ID, trx_line_number';  --Changed for NAIT-119176
+              lc_hdr_stg_query        := 'SELECT STG_ID, CUSTOMER_TRX_ID FROM XX_AR_EBL_TXT_DTL_STG WHERE file_id = '||p_file_id||' AND cust_doc_id = '||p_cust_doc_id||' AND REC_TYPE != '||'''FID'''||' AND TRX_TYPE = '||''''||lc_get_dist_record_type||''''||' ORDER BY '||lc_hdr_sort_columns||' CUSTOMER_TRX_ID, STG_ID, trx_line_number';
               lc_err_location_msg     := 'Staging table Query for Header '||lc_hdr_stg_query;
               XX_AR_EBL_COMMON_UTIL_PKG.PUT_LOG_LINE(lb_debug_flag ,FALSE ,lc_err_location_msg );
             ELSIF lc_get_dist_record_type = 'LINE' THEN
             --  lc_line_sort_columns       := xx_ar_ebl_render_txt_pkg.get_sort_columns(p_cust_doc_id,lc_get_dist_record_type);
-              lc_line_stg_query          := 'SELECT STG_ID, CUSTOMER_TRX_ID, CUSTOMER_TRX_LINE_ID FROM XX_AR_EBL_TXT_DTL_STG WHERE file_id = '||p_file_id||' AND cust_doc_id = '||p_cust_doc_id||' AND REC_TYPE != '||'''FID'''||' AND TRX_TYPE = '||''''||lc_get_dist_record_type||''''||' AND customer_trx_id=nvl(:pcustomer_trx_id,customer_trx_id)'||' ORDER BY '||lc_line_sort_columns||' CUSTOMER_TRX_ID, trx_line_number'; --Changed for NAIT-119176
+              lc_line_stg_query          := 'SELECT STG_ID, CUSTOMER_TRX_ID, CUSTOMER_TRX_LINE_ID FROM XX_AR_EBL_TXT_DTL_STG WHERE file_id = '||p_file_id||' AND cust_doc_id = '||p_cust_doc_id||' AND REC_TYPE != '||'''FID'''||' AND TRX_TYPE = '||''''||lc_get_dist_record_type||''''||' AND customer_trx_id=nvl(:pcustomer_trx_id,customer_trx_id)'||' ORDER BY '||lc_line_sort_columns||' CUSTOMER_TRX_ID, STG_ID, trx_line_number';
          -- Start Commented by Thilak CG on 01-MAR-2018 for Defect#29739
 		    /*IF lc_target_value3         = 'Y' THEN
                 lc_line_stg_query        := 'SELECT STG_ID, CUSTOMER_TRX_ID, CUSTOMER_TRX_LINE_ID FROM XX_AR_EBL_TXT_DTL_STG WHERE file_id = '||p_file_id||' AND cust_doc_id = '||p_cust_doc_id||' AND REC_TYPE != '||'''FID'''||' AND REC_TYPE = '||'''DT'''||' AND TRX_TYPE = '||''''||lc_get_dist_record_type||''''||' AND customer_trx_id=nvl(:pcustomer_trx_id,customer_trx_id)'||' ORDER BY '||lc_line_sort_columns||' CUSTOMER_TRX_ID, STG_ID, trx_line_number';
               END IF;*/
-		 -- End 
+		 -- End
               lc_err_location_msg := 'Staging table Query for Line'||lc_line_stg_query;
               XX_AR_EBL_COMMON_UTIL_PKG.PUT_LOG_LINE(lb_debug_flag ,FALSE ,lc_err_location_msg );
             ELSIF lc_get_dist_record_type = 'DIST' THEN
             --  lc_dist_line_sort_columns  := xx_ar_ebl_render_txt_pkg.get_sort_columns(p_cust_doc_id,lc_get_dist_record_type);
-              lc_dist_stg_query          := 'SELECT STG_ID FROM XX_AR_EBL_TXT_DTL_STG WHERE file_id = '||p_file_id||' AND cust_doc_id = '||p_cust_doc_id||' AND REC_TYPE != '||'''FID'''||' AND TRX_TYPE = '||''''||lc_get_dist_record_type||''''||' AND customer_trx_id=nvl(:pcustomer_trx_id,customer_trx_id)'||' AND customer_trx_line_id=:pcustomer_trx_line_id'||' ORDER BY '||lc_dist_line_sort_columns||'trx_line_number'; --Changed for NAIT-119176
+              lc_dist_stg_query          := 'SELECT STG_ID FROM XX_AR_EBL_TXT_DTL_STG WHERE file_id = '||p_file_id||' AND cust_doc_id = '||p_cust_doc_id||' AND REC_TYPE != '||'''FID'''||' AND TRX_TYPE = '||''''||lc_get_dist_record_type||''''||' AND customer_trx_id=nvl(:pcustomer_trx_id,customer_trx_id)'||' AND customer_trx_line_id=:pcustomer_trx_line_id'||' ORDER BY '||lc_dist_line_sort_columns||' STG_ID, trx_line_number';
               lc_err_location_msg        := 'Staging table Query for Dist Line'||lc_dist_stg_query;
               XX_AR_EBL_COMMON_UTIL_PKG.PUT_LOG_LINE(lb_debug_flag ,FALSE ,lc_err_location_msg );
             END IF;
@@ -3400,7 +3453,7 @@ IS
           INTO ln_hdr_line_num_max
           FROM XX_CDH_EBL_TEMPL_HDR_TXT
           WHERE CUST_DOC_ID = p_cust_doc_id;
-		  
+
           SELECT COUNT (DISTINCT xftv.source_value4)
           INTO ln_hdr_line_num
           FROM xx_fin_translatedefinition xftd ,
@@ -3422,12 +3475,12 @@ IS
             AND XFTV.ENABLED_FLAG     = 'Y'
             AND TRUNC(sysdate) BETWEEN TRUNC(XFTV.START_DATE_ACTIVE) AND TRUNC(NVL(XFTV.END_DATE_ACTIVE,sysdate+1))
             );
-			
+
           IF ln_hdr_line_num_max > 1 AND ln_hdr_line_num = 1
           THEN
 		   ln_hdr_line_num := ln_hdr_line_num_max;
           END IF;
-		  
+
           IF lc_hdr_stg_query IS NULL THEN
             lc_hdr_stg_query  := 'SELECT NULL, NULL FROM DUAL';
           END IF;
@@ -3655,10 +3708,10 @@ IS
       -- Added by Thilak CG for Defect#40174 on 07-AUG-2017
       xcetht.absolute_flag,
       xcetht.dc_indicator,
-		-- End     
-		--Added by Aniket CG 15 May #NAIT-29364 
-		xcetht.db_cr_seperator 
-		--Added by Aniket CG 15 May #NAIT-29364 
+		-- End
+		--Added by Aniket CG 15 May #NAIT-29364
+		xcetht.db_cr_seperator
+		--Added by Aniket CG 15 May #NAIT-29364
     FROM xx_fin_translatedefinition xftd ,
       xx_fin_translatevalues xftv ,
       xx_cdh_ebl_templ_trl_txt xcetht
@@ -3692,9 +3745,9 @@ IS
     xcetht.absolute_flag,
     xcetht.dc_indicator ,
     -- End
-	--Added by Aniket CG 15 May #NAIT-29364 
-    xcetht.db_cr_seperator 
-    --Added by Aniket CG 15 May #NAIT-29364 
+	--Added by Aniket CG 15 May #NAIT-29364
+    xcetht.db_cr_seperator
+    --Added by Aniket CG 15 May #NAIT-29364
   FROM xx_cdh_ebl_templ_trl_txt xcetht ,
     xx_cdh_ebl_concat_fields_txt xcecft
   WHERE xcetht.field_id  = xcecft.conc_field_id
@@ -3783,12 +3836,12 @@ IS
     lc_trl_upd_sign_query   VARCHAR2(32767);
     lc_sign_update_query    VARCHAR2(32767);
     -- End of Below variables added by Punit CG on 11-AUG-2017 for Defect#40174
-	  
-  -- Start Added by Aniket CG 15 May #NAIT-29364 
+
+  -- Start Added by Aniket CG 15 May #NAIT-29364
   lc_db_cr_nvl_value   VARCHAR2(10);
   lc_dc_col_orig_flgchk    VARCHAR2(15)  := 'N';
   lc_dc_amt_col_db          VARCHAR2(15)  :=  NULL;
-  lc_dc_amt_col_cr          VARCHAR2(15)  :=  NULL;   
+  lc_dc_amt_col_cr          VARCHAR2(15)  :=  NULL;
   lc_dc_amt_decode_db       VARCHAR2(1000) := NULL;
   lc_dc_amt_decode_cr       VARCHAR2(1000) := NULL;
   lc_dc_update_sql_db       VARCHAR2(32767);
@@ -3853,24 +3906,24 @@ IS
         lc_select_var_cols                             := lc_select_var_cols||''''||lc_get_trailer_fields_info.cons_val||''''||',';
       ELSIF (LOWER(lc_get_trailer_fields_info.tab_name) = 'function') THEN
         IF lc_get_trailer_fields_info.spl_function     IS NOT NULL THEN
-        --lc_function                                  := 'SELECT '||lc_get_trailer_fields_info.spl_function||'('||p_cust_doc_id||','||p_file_id||','||p_org_id||','||''''||lc_get_trailer_fields_info.col_name||''''||') FROM DUAL'; -- comment added by Aniket CG #22772 on 15 Dec 2017    
+        --lc_function                                  := 'SELECT '||lc_get_trailer_fields_info.spl_function||'('||p_cust_doc_id||','||p_file_id||','||p_org_id||','||''''||lc_get_trailer_fields_info.col_name||''''||') FROM DUAL'; -- comment added by Aniket CG #22772 on 15 Dec 2017
         -- start Added by Aniket CG #22772 on 15 Dec 2017
 				IF upper(lc_get_trailer_fields_info.spl_function) IN ( 'XX_AR_EBL_TXT_SPL_LOGIC_PKG.GET_GRAND_TOTAL' , 'XX_AR_EBL_TXT_SPL_LOGIC_PKG.GET_GRAND_FREIGHT_AMT') AND p_cmb_splt_splfunc_whr IS NOT NULL THEN
 				lc_function  := 'SELECT '||lc_get_trailer_fields_info.spl_function||'('||p_cust_doc_id||','||p_file_id||','||p_org_id||','||''''||lc_get_trailer_fields_info.col_name||''''||','|| p_cmb_splt_splfunc_whr || ') FROM DUAL';
 				ELSE
 				lc_function := 'SELECT '||lc_get_trailer_fields_info.spl_function||'('||p_cust_doc_id||','||p_file_id||','||p_org_id||','||''''||lc_get_trailer_fields_info.col_name||''''||') FROM DUAL';
 				END IF;
-         -- end Added by Aniket CG #22772 on 15 Dec 2017    
+         -- end Added by Aniket CG #22772 on 15 Dec 2017
           EXECUTE IMMEDIATE lc_function INTO lc_function_return;
-						  
+
 				--Added by Aniket CG 15 May #NAIT-29364 lc_get_trailer_fields_info.db_cr_seperator IS NOT NULL  AND
-				IF   UPPER(lc_get_trailer_fields_info.col_name) IN ('ORIG_INV_AMT_DB','ORIG_INV_AMT_CR')THEN 
+				IF   UPPER(lc_get_trailer_fields_info.col_name) IN ('ORIG_INV_AMT_DB','ORIG_INV_AMT_CR')THEN
 				  SELECT lc_get_trailer_fields_info.db_cr_seperator --,'NULL',NULL,lc_get_trailer_fields_info.db_cr_seperator)
 				  INTO lc_db_cr_nvl_value
 				  FROM DUAL;
-				  
+
 				  lc_db_cr_nvl_value := nvl( lc_db_cr_nvl_value , 'NULL');
-				  
+
 				  IF UPPER(lc_get_trailer_fields_info.col_name) IN ('ORIG_INV_AMT_DB') THEN
 					lc_select_var_cols := lc_select_var_cols|| ' DECODE (SIGN ('|| lc_function_return || ') , 0,0,1 ,' || lc_function_return || ' ,'||lc_db_cr_nvl_value ||')'|| ',';
 				  ELSIF UPPER(lc_get_trailer_fields_info.col_name) IN ('ORIG_INV_AMT_CR') THEN
@@ -3880,7 +3933,7 @@ IS
 				  lc_select_var_cols := lc_select_var_cols||lc_function_return||',';
 				END IF;
 				--Added by Aniket CG 15 May #NAIT-29364
-          --lc_select_var_cols := lc_select_var_cols||lc_function_return||',';  -- Commented by Aniket CG 15 May #NAIT-29364           
+          --lc_select_var_cols := lc_select_var_cols||lc_function_return||',';  -- Commented by Aniket CG 15 May #NAIT-29364
         ELSE
           lc_select_var_cols := lc_select_var_cols||'NULL'||',';
           -- Checking to print line number field is selected for the cust doc id.
@@ -3974,7 +4027,7 @@ IS
             IF lc_dc_col_orig_flgchk                      = 'N' THEN
               lc_dc_amt_col_cr                           := lc_column||ln_count;
             END IF;
-            --end Added by Aniket CG 15 May #NAIT-29364		
+            --end Added by Aniket CG 15 May #NAIT-29364
       END IF;
 
    	  IF UPPER(lc_get_trailer_fields_info.col_name) = 'DC_INDICATOR' THEN
@@ -4016,7 +4069,7 @@ IS
       ln_count           := ln_count + 1;
     END LOOP;
     lc_insert_col_name  := SUBSTR(lc_insert_col_name,1,LENGTH(lc_insert_col_name)                                                                                                                                                           -1)||')';
-    lc_select_var_cols  := SUBSTR(lc_select_var_cols,1,LENGTH(lc_select_var_cols)                                                                                                                                                           -1)||lc_from_cons_hdr|| p_cmb_splt_whr || ')'; -- Added by Aniket CG #22772 on 15 Dec 2017 
+    lc_select_var_cols  := SUBSTR(lc_select_var_cols,1,LENGTH(lc_select_var_cols)                                                                                                                                                           -1)||lc_from_cons_hdr|| p_cmb_splt_whr || ')'; -- Added by Aniket CG #22772 on 15 Dec 2017
     lc_hdr_value_fid    := ' VALUES ('||xx_ar_ebl_txt_stg_id_s.nextval||','||p_cust_doc_id||','||p_file_id||',fnd_global.user_id,sysdate,fnd_global.user_id,sysdate,fnd_global.user_id,'||SUBSTR(lc_hdr_value_fid,1,LENGTH(lc_hdr_value_fid)-1)||')';
     lc_err_location_msg := 'Select and Insert Statement for TRL record FID : '||lc_insert_col_name||lc_hdr_value_fid ;
     XX_AR_EBL_COMMON_UTIL_PKG.PUT_LOG_LINE(lb_debug_flag ,FALSE ,lc_err_location_msg );
@@ -4026,9 +4079,9 @@ IS
     fnd_file.put_line(fnd_file.log,lc_insert_col_name||lc_select_var_cols);
     EXECUTE IMMEDIATE lc_insert_col_name||lc_hdr_value_fid;
     EXECUTE IMMEDIATE lc_insert_col_name||lc_select_var_cols;
-    
+
        fnd_file.put_line(fnd_file.log, ' Combo Type '|| lc_insert_col_name||lc_select_var_cols);
-    
+
     -- Start of changes done by Thilak CG for Defect #40174 and 14188 on 07-AUG-2017
     lc_err_location_msg := 'Value of lc_dc_flag: '||lc_dc_flag||' and Value of lc_dc_amt_col: '||lc_dc_amt_col;
     XX_AR_EBL_COMMON_UTIL_PKG.PUT_LOG_LINE( lb_debug_flag ,FALSE ,lc_err_location_msg );
@@ -4039,7 +4092,7 @@ IS
       XX_AR_EBL_COMMON_UTIL_PKG.PUT_LOG_LINE(lb_debug_flag ,FALSE ,lc_err_location_msg );
       EXECUTE IMMEDIATE lc_dc_update_sql;
 	--START Added by Aniket CG 15 May #NAIT-29364
-        ELSIF lc_dc_flag = 'Y' AND  ( lc_dc_amt_col_db IS NOT NULL OR lc_dc_amt_col_cr IS NOT NULL) AND lc_dc_indicator_col IS NOT NULL THEN 
+        ELSIF lc_dc_flag = 'Y' AND  ( lc_dc_amt_col_db IS NOT NULL OR lc_dc_amt_col_cr IS NOT NULL) AND lc_dc_indicator_col IS NOT NULL THEN
             IF lc_dc_flag = 'Y' AND  lc_dc_amt_col_db IS NOT NULL AND lc_dc_indicator_col IS NOT NULL THEN
                   lc_dc_amt_decode_db    := 'DECODE(SIGN('||lc_dc_amt_col_db||'),''1'','||''''||lc_debit||''''||','||'''0'','||''''||lc_debit||''''||','||''''||lc_credit||''''||')';
                   lc_dc_update_sql_db    := 'UPDATE XX_AR_EBL_TXT_TRL_STG SET '||lc_dc_indicator_col||' = '||lc_dc_amt_decode_db||' WHERE rec_type != ''FID'' AND file_id = '||p_file_id||' AND cust_doc_id = '||p_cust_doc_id||' AND REC_ORDER = '||ln_get_dist_rows;
@@ -4054,7 +4107,7 @@ IS
                 XX_AR_EBL_COMMON_UTIL_PKG.PUT_LOG_LINE(lb_debug_flag ,FALSE ,lc_err_location_msg );
                 EXECUTE IMMEDIATE lc_dc_update_sql_cr;
             END IF;
-     --END Added by Aniket CG 15 May #NAIT-29364   
+     --END Added by Aniket CG 15 May #NAIT-29364
     END IF;
     -- End
     -- Updating the Line Number in the Detail Staging table.
@@ -4065,11 +4118,11 @@ IS
       ln_hdr_line_count := 0;
       -- Added by Thilak CG on 25-JUL-2017 for Defect#42380
       lc_trl_cols         := SUBSTR(lc_trl_col,1,(LENGTH(lc_trl_col)-1));
-      lc_stg_update_query := 'select a.str from (WITH DATA AS                                              
-							( SELECT ' ||''''||lc_trl_cols||''''|| ' str FROM dual                                              
-							)                                            
-							SELECT trim(regexp_substr(str, ''[^,]+'', 1, LEVEL)) str                                            
-							FROM DATA                                            
+      lc_stg_update_query := 'select a.str from (WITH DATA AS
+							( SELECT ' ||''''||lc_trl_cols||''''|| ' str FROM dual
+							)
+							SELECT trim(regexp_substr(str, ''[^,]+'', 1, LEVEL)) str
+							FROM DATA
 							CONNECT BY instr(str, '','', 1, LEVEL - 1) > 0) a';
       -- End
       -- Changes for the defect#42322
@@ -4077,14 +4130,14 @@ IS
       INTO ln_hdr_line_count
       FROM XX_CDH_EBL_TEMPL_HDR_TXT
       WHERE CUST_DOC_ID = p_cust_doc_id;*/
-	  
+
 	  ln_hdr_trl_num_max := 0;
        -- Changes for the defect#42322
       SELECT NVL(MAX(ROWNUMBER),ln_hdr_line_count)
         INTO ln_hdr_trl_num_max
         FROM XX_CDH_EBL_TEMPL_HDR_TXT
-       WHERE CUST_DOC_ID = p_cust_doc_id;	  
-	  
+       WHERE CUST_DOC_ID = p_cust_doc_id;
+
       SELECT COUNT (DISTINCT xftv.source_value4)
       INTO ln_hdr_line_count
       FROM xx_fin_translatedefinition xftd ,
@@ -4106,12 +4159,12 @@ IS
         AND XFTV.ENABLED_FLAG     = 'Y'
         AND TRUNC(sysdate) BETWEEN TRUNC(XFTV.START_DATE_ACTIVE) AND TRUNC(NVL(XFTV.END_DATE_ACTIVE,sysdate+1))
         );
-		
+
       IF ln_hdr_trl_num_max > 1 AND ln_hdr_line_count = 1
       THEN
 		ln_hdr_line_count := ln_hdr_trl_num_max;
       END IF;
-		  
+
       ln_dtl_line_count      := 0;
       IF lc_trl_target_value1 = 'Y' THEN
         SELECT COUNT(1)
@@ -4158,11 +4211,11 @@ IS
     -- End
     -- Added by Punit CG for defect#40174 on 11-AUG-2017
     lc_trl_sign_cols     := SUBSTR(lc_get_sign_amt_cols,1,LENGTH(lc_get_sign_amt_cols)-1);
-    lc_sign_update_query := 'select a.str from (WITH DATA AS                                              
-							( SELECT ' ||''''||lc_trl_sign_cols||''''|| ' str FROM dual                                              
-							)                                            
-							SELECT trim(regexp_substr(str, ''[^,]+'', 1, LEVEL)) str                                            
-							FROM DATA                                            
+    lc_sign_update_query := 'select a.str from (WITH DATA AS
+							( SELECT ' ||''''||lc_trl_sign_cols||''''|| ' str FROM dual
+							)
+							SELECT trim(regexp_substr(str, ''[^,]+'', 1, LEVEL)) str
+							FROM DATA
 							CONNECT BY instr(str, '','', 1, LEVEL - 1) > 0) a';
     lc_err_location_msg  := 'Value of lc_sign_update_query is '||lc_sign_update_query;
     XX_AR_EBL_COMMON_UTIL_PKG.PUT_LOG_LINE( lb_debug_flag ,FALSE ,lc_err_location_msg );
@@ -4353,16 +4406,16 @@ IS
     lc_get_trans_id xx_ar_ebl_cons_dtl_main.customer_trx_id%TYPE;
     lc_err_location_msg VARCHAR2(1000);
     --Added p_cmb_splt_whr by Aniket CG #22772 on 15 Dec 2017 IN FROM lc_ndt_cons_from
-    lc_ndt_cons_from    VARCHAR2(32767) := ' FROM xx_ar_ebl_cons_hdr_main hdr, xx_ar_ebl_cons_dtl_main dtl,                                                 
-xx_fin_translatedefinition xftd ,xx_fin_translatevalues xftv                                                 
-WHERE xftv.enabled_flag=''Y''                                                 
-AND TRUNC(SYSDATE) BETWEEN xftv.start_date_active AND NVL(xftv.end_date_active,SYSDATE)                                                
-AND hdr.customer_trx_id = dtl.customer_trx_id                                                
-AND hdr.parent_cust_doc_id = dtl.parent_cust_doc_id                                                 
-AND dtl.trx_line_type = ''ITEM''                                                
-AND hdr.parent_cust_doc_id ='||p_cust_doc_id || ' AND xftd.translate_id = xftv.translate_id and xftd.translation_name = ''XX_CDH_EBL_TXT_DET_FIELDS''                                                 
+    lc_ndt_cons_from    VARCHAR2(32767) := ' FROM xx_ar_ebl_cons_hdr_main hdr, xx_ar_ebl_cons_dtl_main dtl,
+xx_fin_translatedefinition xftd ,xx_fin_translatevalues xftv
+WHERE xftv.enabled_flag=''Y''
+AND TRUNC(SYSDATE) BETWEEN xftv.start_date_active AND NVL(xftv.end_date_active,SYSDATE)
+AND hdr.customer_trx_id = dtl.customer_trx_id
+AND hdr.parent_cust_doc_id = dtl.parent_cust_doc_id
+AND dtl.trx_line_type = ''ITEM''
+AND hdr.parent_cust_doc_id ='||p_cust_doc_id || ' AND xftd.translate_id = xftv.translate_id and xftd.translation_name = ''XX_CDH_EBL_TXT_DET_FIELDS''
 AND hdr.file_id ='||p_file_id||'
-AND hdr.org_id='||ln_org_id|| p_cmb_splt_whr||' 
+AND hdr.org_id='||ln_org_id|| p_cmb_splt_whr||'
 and xftv.target_value19 = ';
     lc_decode_hdr_col VARCHAR2(1000) := get_decode_ndt(p_debug_flag); -- The value will be returned by the function will be similar to this 'TO_CHAR(DECODE(xxfv.Target_Value19,''CP'', hdr.TOTAL_COUPON_AMOUNT, ''GC'', hdr.TOTAL_GIFT_CARD_AMOUNT, ''TD'', hdr.TOTAL_TIERED_DISCOUNT_AMOUNT, ''MS'', hdr.TOTAL_MISCELLANEOUS_AMOUNT, ''DL'', hdr.TOTAL_FRIEGHT_AMOUNT, ''BD'', hdr.TOTAL_BULK_AMOUNT, ''PST'', hdr.TOTAL_PST_AMOUNT, ''GST'', hdr.TOTAL_GST_AMOUNT, ''QST'', hdr.TOTAL_QST_AMOUNT, ''TX'', hdr.TOTAL_US_TAX_AMOUNT, ''HST'', hdr.TOTAL_HST_AMOUNT, ''AD'', hdr.TOTAL_ASSOCIATION_DISCOUNT))';
     -- +=============================================================================+
@@ -5158,5 +5211,3 @@ WHEN OTHERS THEN
 END;
 END XX_AR_EBL_TXT_DM_PKG;
 /
-SHOW ERRORS;
-EXIT;
