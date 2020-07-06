@@ -11,10 +11,11 @@ import oracle.jbo.server.AttributeDefImpl;
 public class feeoptionTypeRowImpl extends OAViewRowImpl {
 
 
-    public static final int MEANING = 0;
+    public static final int MEANING1 = 0;
     public static final int LOOKUP_CODE = 1;
     public static final int SOURCEVALUE2 = 2;
     public static final int SOURCEVALUE3 = 3;
+    public static final int CRITERIA = 4;
 
     /**This is the default constructor (do not remove)
      */
@@ -27,14 +28,16 @@ public class feeoptionTypeRowImpl extends OAViewRowImpl {
     protected Object getAttrInvokeAccessor(int index, 
                                            AttributeDefImpl attrDef) throws Exception {
         switch (index) {
-        case MEANING:
-            return getmeaning();
+        case MEANING1:
+            return getmeaning1();
         case LOOKUP_CODE:
             return getlookup_code();
         case SOURCEVALUE2:
             return getSourceValue2();
         case SOURCEVALUE3:
             return getSourceValue3();
+        case CRITERIA:
+            return getCriteria();
         default:
             return super.getAttrInvokeAccessor(index, attrDef);
         }
@@ -45,14 +48,17 @@ public class feeoptionTypeRowImpl extends OAViewRowImpl {
     protected void setAttrInvokeAccessor(int index, Object value, 
                                          AttributeDefImpl attrDef) throws Exception {
         switch (index) {
-        case MEANING:
-            setmeaning((String)value);
+        case MEANING1:
+            setmeaning1((String)value);
             return;
         case SOURCEVALUE2:
             setSourceValue2((String)value);
             return;
         case SOURCEVALUE3:
             setSourceValue3((String)value);
+            return;
+        case CRITERIA:
+            setCriteria((String)value);
             return;
         default:
             super.setAttrInvokeAccessor(index, value, attrDef);
@@ -70,18 +76,6 @@ public class feeoptionTypeRowImpl extends OAViewRowImpl {
      */
     public void setlookup_code(String value) {
         setAttributeInternal(LOOKUP_CODE, value);
-    }
-
-    /**Gets the attribute value for the calculated attribute meaning
-     */
-    public String getmeaning() {
-        return (String) getAttributeInternal(MEANING);
-    }
-
-    /**Sets <code>value</code> as the attribute value for the calculated attribute meaning
-     */
-    public void setmeaning(String value) {
-        setAttributeInternal(MEANING, value);
     }
 
 
@@ -107,5 +101,30 @@ public class feeoptionTypeRowImpl extends OAViewRowImpl {
      */
     public void setSourceValue3(String value) {
         setAttributeInternal(SOURCEVALUE3, value);
+    }
+
+
+    /**Gets the attribute value for the calculated attribute Criteria
+     */
+    public String getCriteria() {
+        return (String) getAttributeInternal(CRITERIA);
+    }
+
+    /**Sets <code>value</code> as the attribute value for the calculated attribute Criteria
+     */
+    public void setCriteria(String value) {
+        setAttributeInternal(CRITERIA, value);
+    }
+
+    /**Gets the attribute value for the calculated attribute meaning1
+     */
+    public String getmeaning1() {
+        return (String) getAttributeInternal(MEANING1);
+    }
+
+    /**Sets <code>value</code> as the attribute value for the calculated attribute meaning1
+     */
+    public void setmeaning1(String value) {
+        setAttributeInternal(MEANING1, value);
     }
 }

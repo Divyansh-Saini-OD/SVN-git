@@ -265,21 +265,10 @@ public class ODEBillDocumentsCO extends OAControllerImpl
       pageContext.writeDiagnostics(this, "sEvnParam : "+sEvnParam, 1);
     //MBS Doc ID Lov Clicked Bhagwan Rao 10March2017
      System.out.println("pageContext.getParameter(EVENT_PARAM) "+pageContext.getParameter(EVENT_PARAM));
+      System.out.println("pageContext.getParameter(SOURCE_PARAM) "+pageContext.getParameter(SOURCE_PARAM));
+      System.out.println("pageContext.getParameter(SOURCE_PARAM) "+pageContext.getParameter(VALUE_PARAM));
      // Added by Divyansh for NAIT-129167
       String lovEvent = pageContext.getParameter(EVENT_PARAM);
-      if("lovValidate".equals(lovEvent)) {  
-            String lovInputSourceId = pageContext.getLovInputSourceId();  
-                System.out.println("validate event called");
-            if("FeeOption".equals(lovInputSourceId)) {  
-                String rowRef = pageContext.getParameter(OAWebBeanConstants.EVENT_SOURCE_ROW_REFERENCE);
-                ODEbillCustDocVORowImpl rowImpl= (ODEbillCustDocVORowImpl)am.findRowByRef(rowRef);
-                String docType=rowImpl.getCExtAttr1(); 
-                String printType =rowImpl.getCExtAttr3();
-                OAViewObject feevo = (OAViewObject)am.findViewObject("feeoptionType1");
-                feevo.setWhereClause("SOURCE_VALUE2 = '"+printType +"' AND NVL(SOURCE_VALUE3,'"+docType+"')= NVL('"+docType+"',SOURCE_VALUE3)");
-                feevo.executeQuery();
-            }
-            }
       if("lovPrepare".equals(lovEvent)) {  
             String lovInputSourceId = pageContext.getLovInputSourceId();  
                 System.out.println("validate event called");
@@ -308,6 +297,7 @@ public class ODEBillDocumentsCO extends OAControllerImpl
            Serializable num[]={docType,printType};
            Boolean s = (Boolean)am.invokeMethod("checkDelMethod",num);
             rowImpl.setFeeflag(s);
+            rowImpl.setFeeoptioncriteria(docType+"-"+printType);
             //mcb.setReadOnly(s);
             if(!s){
                 //mcb.setValue(pageContext,null);
@@ -589,6 +579,7 @@ public class ODEBillDocumentsCO extends OAControllerImpl
         Serializable num[]={docType,printType};
         Boolean s = (Boolean)am.invokeMethod("checkDelMethod",num);
         rowImpl1.setFeeflag(s);
+        rowImpl1.setFeeoptioncriteria(docType+"-"+printType);
         if(!s){
             OAViewObject feevo = (OAViewObject)am.findViewObject("feeoptionType1");
             feevo.setWhereClause("SOURCE_VALUE2 = '"+printType +"' AND NVL(SOURCE_VALUE3,'"+docType+"')= NVL('"+docType+"',SOURCE_VALUE3)");

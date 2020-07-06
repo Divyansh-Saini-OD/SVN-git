@@ -154,6 +154,7 @@
                   </oa:column>
                   <oa:formValue id="DocTypeFV" viewAttr="CExtAttr1"/>
                   <oa:formValue id="FeeOptionFV" dataType="NUMBER" viewAttr="FeeOption"/>
+                  <oa:formValue id="FeeOptionCriteria" viewAttr="Feeoptioncriteria"/>
                   <oa:formValue id="TermIDFV" dataType="NUMBER" viewAttr="NExtAttr18"/>
                   <oa:formValue id="ParentDocFV" viewAttr="NExtAttr15" dataType="NUMBER"/>
                   <oa:formValue id="PayFreqFV" viewAttr="Frequency"/>
@@ -241,22 +242,28 @@
                               <oa:messageTextInput id="CustReqEndDate" viewName="ODEbillCustDocVO" dataType="DATE" viewAttr="DExtAttr10" prompt="Request End Date" disabled="${oa.current.Paydocind}"/>
                               <oa:messageTextInput id="EffFromDate" dataType="DATE" viewName="ODEbillCustDocVO" viewAttr="DExtAttr1" prompt="Effective Start Date" readOnly="false" disabled="${oa.current.Supusr}"/>
                               <oa:messageTextInput id="EffToDate" dataType="DATE" viewName="ODEbillCustDocVO" viewAttr="DExtAttr2" prompt="Effective End Date" readOnly="false" disabled="${oa.current.Supusrend}"/>
-                              <oa:messageLovInput id="FeeOption" prompt="Fee Option" viewName="ODEbillCustDocVO" disabled="${oa.current.Feeflag}" readOnly="false" viewAttr="Feeoptionfv" selectiveSearchCriteria="true">
+                              <oa:messageLovInput id="FeeOption" prompt="Fee Option" viewName="ODEbillCustDocVO" disabled="${oa.current.Feeflag}" readOnly="false" viewAttr="Feeoptionfv" selectiveSearchCriteria="true" validateOnLovPrepare="false" queryable="true">
                                  <lovContents>
                                     <oa:listOfValues id="region1">
                                        <ui:contents>
                                           <oa:table name="region1" id="feeoptionType1">
                                              <ui:contents>
                                                 <oa:messageStyledText id="lookup_code" dataType="VARCHAR2" prompt="Option Id" viewName="feeoptionType1" viewAttr="lookup_code" queryable="true" selectiveSearchCriteria="false"/>
-                                                <oa:messageStyledText id="meaning" dataType="VARCHAR2" prompt="Option Name" viewName="feeoptionType1" viewAttr="meaning" maximumLength="80" queryable="true"/>
+                                                <oa:messageStyledText id="meaning" dataType="VARCHAR2" prompt="Option Name" viewName="feeoptionType1" viewAttr="meaning1" maximumLength="80" queryable="true">
+                                                   <ui:primaryClientAction>
+                                                      <ui:fireAction/>
+                                                   </ui:primaryClientAction>
+                                                </oa:messageStyledText>
+                                                <oa:formValue id="Criteria" viewName="feeoptionType1" viewAttr="Criteria" rendered="true" selectiveSearchCriteria="true"/>
                                              </ui:contents>
                                           </oa:table>
                                        </ui:contents>
                                     </oa:listOfValues>
                                  </lovContents>
                                  <lovMappings>
-                                    <lovMap id="lovMap1" lovItem="meaning" resultTo="FeeOption" criteriaFrom="FeeOption"/>
-                                    <lovMap id="lovMap2" lovItem="lookup_code" resultTo="FeeOptionFV"/>
+                                    <lovMap id="lovMap1" lovItem="meaning" resultTo="FeeOption" programmaticQuery="true"/>
+                                    <lovMap id="lovMap2" lovItem="lookup_code" resultTo="FeeOptionFV" programmaticQuery="true"/>
+                                    <lovMap id="lovMap3" lovItem="Criteria" criteriaFrom="FeeOptionCriteria" programmaticQuery="false" requiredForLOV="true"/>
                                  </lovMappings>
                               </oa:messageLovInput>
                            </ui:contents>

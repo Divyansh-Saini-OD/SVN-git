@@ -101,6 +101,8 @@ FROM xx_fin_translatedefinition xftd ,xx_fin_translatevalues xftv
  WHERE xftd.translate_id = xftv.translate_id
 AND xftd.translation_name ='OD_IREC_BILL_DOC_DEFAULTS'
 and source_value1 = fee_option and sysdate between xftv.START_DATE_ACTIVE and NVL(xftv.end_date_active,sysdate+1) and xftv.enabled_flag = 'Y' and rownum =1 ) FeeOptionFV
+,c_ext_attr1||'-'||c_ext_attr3  FeeOptionCriteria
+
 FROM XX_CDH_CUST_ACCT_EXT_B ODEbillCustDocEO
 WHERE attr_group_id = (SELECT attr_group_id 
                        FROM   ego_attr_groups_v 
@@ -725,6 +727,19 @@ AND attr_group_name = 'BILLDOCS')
       SQLType="VARCHAR" >
       <DesignTime>
          <Attr Name="_DisplaySize" Value="240" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Feeoptioncriteria"
+      IsPersistent="false"
+      Precision="301"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="FEEOPTIONCRITERIA"
+      Expression="FEEOPTIONCRITERIA"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="301" />
       </DesignTime>
    </ViewAttribute>
 </ViewObject>

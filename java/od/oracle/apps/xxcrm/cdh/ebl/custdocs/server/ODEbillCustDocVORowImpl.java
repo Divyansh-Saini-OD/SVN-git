@@ -111,6 +111,7 @@ public class ODEbillCustDocVORowImpl extends OAViewRowImpl {
     public static final int FEEOPTION = 79;
     public static final int FEEFLAG = 80;
     public static final int FEEOPTIONFV = 81;
+    public static final int FEEOPTIONCRITERIA = 82;
 
 
     /**
@@ -1443,6 +1444,8 @@ public class ODEbillCustDocVORowImpl extends OAViewRowImpl {
             return getFeeflag();
         case FEEOPTIONFV:
             return getFeeoptionfv();
+        case FEEOPTIONCRITERIA:
+            return getFeeoptioncriteria();
         default:
             return super.getAttrInvokeAccessor(index, attrDef);
         }
@@ -1694,6 +1697,9 @@ public class ODEbillCustDocVORowImpl extends OAViewRowImpl {
             return;
         case FEEOPTIONFV:
             setFeeoptionfv((String)value);
+            return;
+        case FEEOPTIONCRITERIA:
+            setFeeoptioncriteria((String)value);
             return;
         default:
             super.setAttrInvokeAccessor(index, value, attrDef);
@@ -2228,5 +2234,17 @@ public class ODEbillCustDocVORowImpl extends OAViewRowImpl {
      */
     public void setFeeoptionfv(String value) {
         setAttributeInternal(FEEOPTIONFV, value);
+    }
+
+    /**Gets the attribute value for the calculated attribute Feeoptioncriteria
+     */
+    public String getFeeoptioncriteria() {
+        return (String) getAttributeInternal(FEEOPTIONCRITERIA);
+    }
+
+    /**Sets <code>value</code> as the attribute value for the calculated attribute Feeoptioncriteria
+     */
+    public void setFeeoptioncriteria(String value) {
+        setAttributeInternal(FEEOPTIONCRITERIA, value);
     }
 }

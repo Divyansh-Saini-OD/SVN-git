@@ -10,7 +10,8 @@
    FetchMode="FETCH_AS_NEEDED"
    UseGlueCode="false" >
    <SQLQuery><![CDATA[
-select xftv.TARGET_VALUE1 meaning,xftv.SOURCE_VALUE1 lookup_code,SOURCE_VALUE2,SOURCE_VALUE3
+select xftv.TARGET_VALUE1 meaning,xftv.SOURCE_VALUE1 lookup_code,SOURCE_VALUE2,SOURCE_VALUE3,
+SOURCE_VALUE3 || '-' || SOURCE_VALUE2 Criteria
 FROM xx_fin_translatedefinition xft,
      xx_fin_translatevalues xftv
 WHERE xft.translate_id = xftv.translate_id
@@ -25,7 +26,7 @@ AND xft.translation_name = 'OD_IREC_BILL_DOC_DEFAULTS'
       <Attr Name="_codeGenFlag2" Value="Access|VarAccess" />
    </DesignTime>
    <ViewAttribute
-      Name="meaning"
+      Name="meaning1"
       IsPersistent="false"
       IsNotNull="true"
       Precision="80"
@@ -73,6 +74,19 @@ AND xft.translation_name = 'OD_IREC_BILL_DOC_DEFAULTS'
       SQLType="VARCHAR" >
       <DesignTime>
          <Attr Name="_DisplaySize" Value="240" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Criteria"
+      IsPersistent="false"
+      Precision="481"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="CRITERIA"
+      Expression="CRITERIA"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="481" />
       </DesignTime>
    </ViewAttribute>
 </ViewObject>

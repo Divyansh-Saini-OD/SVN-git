@@ -711,8 +711,6 @@ ODEBillMainCO extends OAControllerImpl {
                       if(summaryBill.getValue(pageContext)!=null)
                         sSummaryBill = (String)summaryBill.getValue(pageContext);
                     
-                    System.out.println("Divyansh sSummaryBill "+sSummaryBill);
-                        
                  //Code added by Rafi on 04-Dec-2017 for wave3 Defect#NAIT-21725 - END
                     if (sSummaryBill == null || "N".equals(sSummaryBill)) {
                         OAViewObject templDtlVO = 
@@ -749,51 +747,11 @@ ODEBillMainCO extends OAControllerImpl {
                             templDtlVO.executeQuery();                   
                     }//End of Summary Bill Config Dtl display
                     
-                     OAViewObject templDtlVO = (OAViewObject)mainAM.findViewObject("ODEBillTemplDtlVO");
-                     if (templDtlVO!=null)
-                     {
-                         templDtlVO.reset();
-                         while(templDtlVO.hasNext())
-                         {
-                            OAViewRowImpl row = (OAViewRowImpl)templDtlVO.next();
-                            Number fieldId = (Number)row.getAttribute("FieldId");
-                            if ("10169".equals(fieldId.toString()) || fieldId.toString()=="10169")
-                            {
-                                System.out.println("fieldId "+fieldId);
-                                OADBTransaction trx=mainAM.getOADBTransaction();
-                                String pQuery = "select NVL(fee_option,0) from" +
-                                                " XXCRM.XX_CDH_CUST_ACCT_EXT_B where n_ext_attr2= '"+custDocId+"' and attr_group_id = 166 and rownum =1";
-                                System.out.println("pQuery "+pQuery);
-                                PreparedStatement stmt = trx.createPreparedStatement(pQuery,1);
-                                try{
-                                    ResultSet rset = stmt.executeQuery();
-                                    while (rset.next())
-                                    {
-                                        String feeOpt= rset.getString(1);
-                                        System.out.println("feeOpt "+feeOpt);
-                                        if (feeOpt == "1009" || "1009".equals(feeOpt))
-                                        {
-                                            row.setAttribute("Attribute1", "Y");
-                                            System.out.println("value yea Yes ");
-                                        }
-                                        else
-                                        {
-                                            row.setAttribute("Attribute1", "N");
-                                        }
-                                    }
-                                    }
-                                catch(Exception e)
-                                    {
-                                        System.out.println("Error while checking fee option"+e);
-                                    }
-                            }
-                         }
-                         templDtlVO.reset();
-                         templDtlVO.setOrderByClause("decode(attribute1,'Y',seq),label asc");
-                         templDtlVO.executeQuery();
-                     }
-                    
-                    
+                    OAMessageChoiceBean stdContLvlCB = 
+                        (OAMessageChoiceBean)webBean.findChildRecursive("StdContLvl");
+                    String stdContLvl = (String)stdContLvlCB.getValue(pageContext);
+                    Serializable prm[]={stdContLvl,custDocId};
+                    mainAM.invokeMethod("Fee_amount_default", prm);
                     // String stdCont = (String) mainAM.invokeMethod("populateTemplDtl", templParams);
                     // pageContext.putSessionValue("stdContVar", stdCont);
                      OAMessageChoiceBean AggrFieldPoplistBean = (OAMessageChoiceBean)webBean.findChildRecursive("AggrFieldName");  
@@ -2040,6 +1998,10 @@ ODEBillMainCO extends OAControllerImpl {
          //Added By Reddy Sekhar K on 22 June 2018 for the Defect# NAIT-27146-----Start
          mainAM.invokeMethod("parentDocIdDisabled");
          //Added By Reddy Sekhar K on 22 June 2018 for the Defect# NAIT-27146-----End 
+          String custDocId = pageContext.getParameter("custDocId");
+          String stdContLvl = pageContext.getParameter("stdContLvl");
+          Serializable prm[]={stdContLvl,custDocId};
+          mainAM.invokeMethod("Fee_amount_default", prm);
         }
         
         if ("AddStdRow".equals(pageContext.getParameter(EVENT_PARAM))) {

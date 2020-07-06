@@ -43,6 +43,8 @@ import oracle.apps.fnd.framework.server.OADBTransactionImpl;
 
 import oracle.apps.fnd.framework.server.OAViewObjectImpl;
 
+import oracle.apps.fnd.framework.server.OAViewRowImpl;
+
 import oracle.jbo.Row;
 import oracle.jbo.RowSetIterator;
 import oracle.jbo.Transaction;
@@ -87,6 +89,7 @@ import oracle.jdbc.OracleTypes;
   -- |4.5     20-Mar-2018  Rafi Mohammed     Code Added for Defect#NAIT-33309    | 
   -- |4.6     08-Jun-2018  Rafi Mohammed     Code Added for Defect#NAIT-40588    |
  --  |4.7     15-Apr-2019 Rafi Mohammed      NAIT-91481 Rectify Billing Delivery Efficiency|
+ --  |4.8     02-JUL-2020  Divyansh Saini    Changes done for tariff 128467
   -- |===========================================================================|
   -- | Subversion Info:                                                          |
   -- | $HeadURL: http://svn.na.odcorp.net/svn/od/common/branches/fix/xxcomn/java/od/oracle/apps/xxcrm/cdh/ebl/server/ODEBillAMImpl.java $                                                               |
@@ -634,44 +637,6 @@ getOADBTransaction().getJdbcConnection().prepareCall("{call XX_CRM_EBL_CONT_DOWN
                                 1);
                 value = "N";
             }
-			
-			
-			//Added by Divyansh for NAIT-129167
-                        System.out.println("fieldID "+stdFieldRow.getAttribute("FieldId"));
-            if (stdFieldRow.getAttribute("FieldId") == "10169" || "10169".equals(stdFieldRow.getAttribute("FieldId")))
-            {
-                String val="N";
-                String feeOpt = null;
-                OADBTransaction trx=this.getOADBTransaction();
-                System.out.println(" inside fieldID "+stdFieldRow.getAttribute("FieldId"));
-                String pquery = "select NVL(fee_option,0) from" +
-                " XXCRM.XX_CDH_CUST_ACCT_EXT_B where n_ext_attr2= '"+custDocId+"' and attr_group_id = 166 and rownum =1";
-                System.out.println("pquery "+pquery);
-                PreparedStatement stmt = trx.createPreparedStatement(pquery,1);
-                try{
-                    ResultSet rset = stmt.executeQuery();
-                    while (rset.next())
-                    {
-                        
-                        feeOpt= rset.getString(1);
-                        System.out.println("feeOpt "+feeOpt);
-                        if (feeOpt == "1009" || "1009".equals(feeOpt))
-                        {
-                           value="Y";
-                            System.out.println("value yea "+value);
-                        }
-                        else
-                        {
-                            value="N";
-                        }
-                    }
-                }
-                catch(Exception e)
-                {
-                    value = "N";
-                }
-            }
-            //Changes end by Divyansh for NAIT-129167
             templRow.setAttribute("Attribute1", value);
             
             //Start - Modified for Defect#1978 MOD4BR3
@@ -695,6 +660,7 @@ getOADBTransaction().getJdbcConnection().prepareCall("{call XX_CRM_EBL_CONT_DOWN
             templDtlVO.next();
 
         }
+        Fee_amount_default(StdCont,custDocId);
         templDtlVO.first();
         utl.log("********End of ODEBillAM: populateStdVO: Level: " + StdCont);
     } // End populateStdVO( OAViewObject templDtlVO, String custDocId, String StdCont)
@@ -6067,6 +6033,55 @@ getOADBTransaction().getJdbcConnection().prepareCall("{call XX_CRM_EBL_CONT_DOWN
         return rattr6PF;
      }
     //Code added by Rafi for NAIT-91481 Rectify Billing Delivery Efficiency - END
+    
+    public void Fee_amount_default(String StdCont,String custDocId)
+    {
+            
+                OAViewObject templDtlVO = (OAViewObject)this.findViewObject("ODEBillTemplDtlVO");
+            if (templDtlVO!=null)
+            {
+                templDtlVO.reset();
+                while(templDtlVO.hasNext())
+                {
+                   OAViewRowImpl row = (OAViewRowImpl)templDtlVO.next();
+                   Number fieldId = (Number)row.getAttribute("FieldId");
+                   if ("10169".equals(fieldId.toString()) || fieldId.toString()=="10169")
+                   {
+                       OADBTransaction trx=this.getOADBTransaction();
+                       String pQuery = "select NVL(fee_option,0) from" +
+                                       " XXCRM.XX_CDH_CUST_ACCT_EXT_B where n_ext_attr2= '"+custDocId+"' and attr_group_id = 166 and rownum =1";
+                       PreparedStatement stmt = trx.createPreparedStatement(pQuery,1);
+                       try{
+                           ResultSet rset = stmt.executeQuery();
+                           while (rset.next())
+                           {
+                               String feeOpt= rset.getString(1);
+                               if (StdCont.equals("CORE")||StdCont.equals("DETAIL"))
+                               {
+                               if (feeOpt == "1007" || "1007".equals(feeOpt))
+                               {
+                                   row.setAttribute("Attribute1", "Y");
+                               }
+                               else
+                               {
+                                   row.setAttribute("Attribute1", "N");
+                               }}
+                               else if (StdCont.equals("ALL"))
+                               {row.setAttribute("Attribute1", "Y");}
+                           }
+                           }
+                       catch(Exception e)
+                           {
+                               System.out.println("Error while checking fee option"+e);
+                           }
+                   }
+                }
+                templDtlVO.reset();
+                templDtlVO.setOrderByClause("decode(attribute1,'Y',seq),label asc");
+                templDtlVO.executeQuery();
+            }
+    }
+    
     /**Container's getter for ODEBillParentCustDocId
      */
     public OAViewObjectImpl getODEBillParentCustDocId() {
