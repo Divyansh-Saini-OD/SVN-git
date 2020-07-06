@@ -449,7 +449,7 @@ create or replace PACKAGE BODY XX_AR_EBL_XLS_DM_PKG
     lc_data_whr   VARCHAR2(100) := null;
    --End CG
    -- Added for 2.0
-    lc_fee_option  VARCHAR2(20);
+    lc_fee_option  NUMBER;
 	  lc_hide_flag   VARCHAR2(10):='N';
   	lc_tot_fee_amt NUMBER := 0;
   	lv_upd_str     VARCHAR2(2000) := NULL;
@@ -479,7 +479,7 @@ create or replace PACKAGE BODY XX_AR_EBL_XLS_DM_PKG
                                                      WHERE cust_account_id = a.cust_account_id
                                                      AND N_EXT_ATTR1 = a.MBS_DOC_ID
                                                      AND N_EXT_ATTR2 = a.CUST_DOC_ID 
-                                                     AND rownum =1),'X')
+                                                     AND rownum =1),0)
                                            FROM  xx_ar_ebl_ind_hdr_main a
                                            WHERE batch_id = p_batch_id
                                            AND   org_id = ln_org_id;
@@ -496,7 +496,7 @@ create or replace PACKAGE BODY XX_AR_EBL_XLS_DM_PKG
                                                WHERE cust_account_id = a.cust_account_id
                                                  AND N_EXT_ATTR1 = a.MBS_DOC_ID
                                                  AND N_EXT_ATTR2 = a.CUST_DOC_ID 
-                                                 AND rownum =1),'X')
+                                                 AND rownum =1),0)
                                            FROM  xx_ar_ebl_cons_hdr_main a
                                            WHERE batch_id = p_batch_id
                                            AND   org_id = ln_org_id;

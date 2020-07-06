@@ -380,7 +380,7 @@ BEGIN
 				   WHERE cust_account_id = a.cust_account_id
 					 AND N_EXT_ATTR1 = a.MBS_DOC_ID
 					 AND N_EXT_ATTR2 = a.CUST_DOC_ID 
-					 AND rownum =1),'X'))
+					 AND rownum =1),0))
 			INTO ln_fee_amt,g_fee_option
 			FROM xx_ar_ebl_ind_hdr_main a
            WHERE file_id = p_file_id;
@@ -391,7 +391,7 @@ BEGIN
 				   WHERE cust_account_id = a.cust_account_id
 					 AND N_EXT_ATTR1 = a.MBS_DOC_ID
 					 AND N_EXT_ATTR2 = a.CUST_DOC_ID 
-					 AND rownum =1),'X'))
+					 AND rownum =1),0))
 			INTO ln_fee_amt,g_fee_option
 			FROM xx_ar_ebl_cons_hdr_main a
            WHERE file_id = p_file_id;

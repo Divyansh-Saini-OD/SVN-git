@@ -6068,13 +6068,11 @@ BEGIN
    END IF;
 
    BEGIN
-	   SELECT line_number
+	   SELECT to_number(attribute12)
 		 INTO ln_line_number
-		 FROM ra_customer_trx_lines_all rctl,
-			  mtl_system_items_b msib 
-		WHERE rctl.inventory_item_id = msib.inventory_item_id
-		  AND msib.organization_id = ln_organization
-		  AND msib.segment1=trim(substr(p_description,INSTR(p_description,'-')+1))
+		 FROM ra_customer_trx_lines_all rctl
+		WHERE 1=1
+		  AND line_number = p_line_number
 		  AND rctl.customer_trx_id = p_customer_trx_id
 		  AND rownum=1;
    EXCEPTION WHEN OTHERS THEN
