@@ -95,7 +95,7 @@ public class ODEBillDocumentsCO extends OAControllerImpl
     utl.log("ODEBillDocumentsCO:Process Request Begin");
     String AccountNumber = pageContext.getParameter("accountNumber"); 
     String CustAccountId = pageContext.getParameter("custAccountId");
-       // CustAccountId= Integer.toString(35037949);
+        //CustAccountId= Integer.toString(153740);
      String custName = pageContext.getParameter("custName");
     String deliveryMethod = pageContext.getParameter("deliveryMethod");
     //pageContext.getPageLayoutBean().setTitle("Billing Documents For Customer:"+custName+" Account Number:"+ AccountNumber); 
@@ -257,7 +257,7 @@ public class ODEBillDocumentsCO extends OAControllerImpl
     super.processFormRequest(pageContext, webBean);
     String AccountNumber = pageContext.getParameter("accountNumber"); 
     String CustAccountId = pageContext.getParameter("custAccountId");
-    //CustAccountId= Integer.toString(35037949);
+    //CustAccountId= Integer.toString(153740);
     OAApplicationModule am=pageContext.getApplicationModule(webBean);
     ODUtil utl = new ODUtil(am);
     utl.log("ODEBillDocumentsCO:Process Form Request Begin");
@@ -321,8 +321,10 @@ public class ODEBillDocumentsCO extends OAControllerImpl
                 feevo.executeQuery();
                 Serializable prm[] = {docType,printType};
                 String defval =(String)am.invokeMethod("getDefaultFee",prm);
+                String defval1 =(String)am.invokeMethod("getDefaultFeeFV",prm);
                 //mcb.setValue(pageContext,defval);
                 rowImpl.setFeeoptionfv(defval);
+                rowImpl.setFeeOption(defval1);
             }
             else
             {
@@ -556,10 +558,6 @@ public class ODEBillDocumentsCO extends OAControllerImpl
     {
         String payTerm = pageContext.getProfile("XXOD_EBL_DEFAULT_PAYTERM");
         String curdate = pageContext.getCurrentDBDate().toString();
-        OAViewObject feevo = (OAViewObject)am.findViewObject("feeoptionType1");
-        feevo.setWhereClause("SOURCE_VALUE2 = 'ePDF' AND NVL(SOURCE_VALUE3,'Invoice')= NVL('Invoice',SOURCE_VALUE3)");
-        feevo.executeQuery();
-
         Serializable inputParams[] = {CustAccountId,payTerm,curdate};
         Object strGrpID = am.invokeMethod("addRow", inputParams);
         //Defect#40073 Bhagwan Rao 9March2017
@@ -579,7 +577,14 @@ public class ODEBillDocumentsCO extends OAControllerImpl
          Serializable prm[] = {"Invoice","ePDF"};
          String defval =(String)am.invokeMethod("getDefaultFee",prm);
         CustDocVO1.getCurrentRow().setAttribute("Feeoptionfv",defval);
+        String defval1 =(String)am.invokeMethod("getDefaultFeeFV",prm);
+        CustDocVO1.getCurrentRow().setAttribute("FeeOption",defval1);
         CustDocVO1.getCurrentRow().setAttribute("Feeoptioncriteria","Invoice-ePDF");
+        OAViewObject feevo = (OAViewObject)am.findViewObject("feeoptionType1");
+        feevo.setMaxFetchSize(-1);
+        feevo.executeQuery();
+        feevo.setWhereClause("SOURCE_VALUE2 = 'ePDF' AND NVL(SOURCE_VALUE3,'Invoice')= NVL('Invoice',SOURCE_VALUE3)");
+        feevo.executeQuery();
         // Ended by Divyansh for NAIT-129167
     }
       
@@ -603,6 +608,8 @@ public class ODEBillDocumentsCO extends OAControllerImpl
             Serializable prm[] = {docType,printType};
             String defval =(String)am.invokeMethod("getDefaultFee",prm);
              rowImpl1.setFeeoptionfv(defval);
+            String defval1 =(String)am.invokeMethod("getDefaultFeeFV",prm);
+            rowImpl1.setFeeOption(defval1);
         }
         else
         {

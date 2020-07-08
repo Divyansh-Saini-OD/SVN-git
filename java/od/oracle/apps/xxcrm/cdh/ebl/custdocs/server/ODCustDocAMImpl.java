@@ -223,6 +223,39 @@ public class ODCustDocAMImpl extends OAApplicationModuleImpl {
         }
         return num==1;
     }
+    /**
+     * Added by Divyansh for NAIT-129167
+     *
+     */
+     public String getDefaultFeeFV(String doctype,String delmethod)
+     {
+        ODUtil utl = new ODUtil(this);
+        String retStr = null;
+        OADBTransaction db = this.getOADBTransaction();
+        String Feeoptstr = "SELECT xftv.SOURCE_VALUE1\n" + 
+                         "FROM xx_fin_translatedefinition xft,\n" + 
+                         "     xx_fin_translatevalues xftv\n" + 
+                         "WHERE xft.translate_id = xftv.translate_id\n" + 
+                         "AND xftv.ENABLED_FLAG = 'Y'\n" + 
+                         "AND sysdate between xftv.START_DATE_ACTIVE and  NVL(xftv.END_DATE_ACTIVE,sysdate+1)\n" + 
+                         "AND xft.translation_name = 'OD_IREC_BILL_DOC_DEFAULTS'\n"+
+                         "AND NVL(Source_value3,'"+doctype+"') = '"+doctype+"'" +
+                         "AND Source_value2 = '"+delmethod+"' " +
+                         "AND upper(target_value2)= 'YES'AND rownum =1";
+        PreparedStatement stmt = db.createPreparedStatement(Feeoptstr,1);
+
+          try {
+              ResultSet rset=stmt.executeQuery();
+              if (rset.next())
+              {
+                 retStr =rset.getString(1);
+              }
+              
+          } catch (SQLException e) {
+               utl.log("getDefaultFee:Error:"+ e.toString());
+          }
+          return retStr;
+      }
   /**
    * Added by Divyansh for NAIT-129167
    *
