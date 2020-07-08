@@ -22,8 +22,8 @@ INSERT ON apps.ap_supplier_sites_all FOR EACH ROW     --Commented/Added for R12 
   -- |1.0       10-DEC-2013 Veronica Mairembam E1375: Changed table po_vendor_sites_all to|
   -- |                                         ap_supplier_sites_all for R12 upgrade retrofit |
   -- |2.0       17-JUN-2014 Avinash Baddam     For defect 30042
-  -- +===============================================================================+
-
+  -- | 3.0     06-JUL-2020 Rahul Y            Added for jira NAIT-133497               |		
+-- +=====================================================================================+		
 
 DECLARE 
 
@@ -105,7 +105,7 @@ BEGIN
                                            VALUES
                                            ( XX_PO_VENDOR_SITE_AUDIT_SEQ.NEXTVAL
                                             , 'I' 
-                                            , cast(:new.LAST_UPDATE_DATE as timestamp(6))--sysdate --systimestamp
+                                            , systimestamp ----cast(:new.LAST_UPDATE_DATE as timestamp(6))--sysdate --systimestamp--- changing cast(:new.LAST_UPDATE_DATE as timestamp(6)) to systimestamp as per the jira #133497
                                             , :new.VENDOR_SITE_ID
                                             , :new.LAST_UPDATE_DATE
                                             , :new.LAST_UPDATED_BY
