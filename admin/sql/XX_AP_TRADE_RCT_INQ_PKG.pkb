@@ -3,13 +3,9 @@ SET SHOW OFF;
 SET ECHO OFF;
 SET TAB OFF;
 SET FEEDBACK OFF;
- 
 WHENEVER SQLERROR CONTINUE;
- 
 WHENEVER OSERROR EXIT FAILURE ROLLBACK;
-
-create or replace 
-PACKAGE body xx_ap_trade_rct_inq_pkg
+CREATE OR REPLACE PACKAGE body xx_ap_trade_rct_inq_pkg
 AS
   -- +============================================================================================+
   -- |  Office Depot - Project Simplify                                                           |
@@ -28,9 +24,12 @@ AS
   -- | 1.2         11-Oct-18   Atul Khard        Changed Receipt Date column display value        |
   -- |                                           from rst.transaction_date to rsh.attribute1 for  |
   -- |                                           NAIT-61741                                       |
-  -- | 1.3        28-NOV-18    Priyam PArmar     Code changed for defect NAIT-29347 
+  -- | 1.3        28-NOV-18    Priyam Parmar     Code changed for defect NAIT-29347               |
+  -- | 1.4        24-APR-20    Mayur Palsokar    Modified Get_data_temp for defect NAIT-29347                   |
   -- +============================================================================================+
-  -- +===================================================================+
+ 
+
+ -- +===================================================================+
   -- | Name            : xx_ap_trade_rct_inquiry                         |
   -- | Description     : This pipline function will extract              |
   -- |                   details for invoice matched receipts
@@ -166,7 +165,7 @@ BEGIN
         MAX(rcp_date)
       INTO l_start_date,
         l_end_date
-      FROM xx_ap_receipt_po_temp_218 t----Table changed for NAIT-29347 
+      FROM xx_ap_receipt_po_temp_218 t----Table changed for NAIT-29347
       WHERE t.user_id   =p_user_id
       AND t.request_id IS NULL;
     EXCEPTION
@@ -263,6 +262,8 @@ WHEN ex_dml_errors THEN
     dbms_output.put_line ( 'Error: ' || i || ' Array Index: ' || sql%bulk_exceptions(i).error_index || ' Message: ' || sqlerrm(-sql%bulk_exceptions(i).error_code) ) ;
   END LOOP;
 END xx_ap_trade_rct_inquiry;
+
+
 -- +===================================================================+
 -- | Name  : F_INV_QTTY                                                                    |
 -- | Description     : Function to get_inv_status                                           |
@@ -302,6 +303,8 @@ EXCEPTION
 WHEN OTHERS THEN
   RETURN(v_status);
 END get_inv_status;
+
+
 -- +===================================================================+
 -- | Name  : F_INV_QTTY                                                                    |
 -- | Description     : Function to get invoice applied quantity from Temp table            |
@@ -335,6 +338,8 @@ WHEN no_data_found THEN
   v_inv_applied_amt:=0;
   RETURN v_inv_applied_amt;
 END f_inv_qtty;
+
+
 -- +===================================================================+
 -- | Name  : F_INV_QTTY                                                                    |
 -- | Description     : Function to get invoice applied quantity from Temp table            |
@@ -369,6 +374,8 @@ WHEN no_data_found THEN
   v_inv_applied_amt:=0;
   RETURN v_inv_applied_amt;
 END f_inv_qtty_request;
+
+
 -- +===================================================================+
 -- | Name  : F_INV_number                                                                    |
 -- | Description     : Function to get first invoice matched (FIFO invoice)                  |
@@ -409,6 +416,8 @@ WHEN no_data_found THEN
   v_inv_number:='XXX';
   RETURN v_inv_number;
 END f_inv_number;
+
+
 FUNCTION f_inv_number_request(
     p_po_num      VARCHAR2,
     p_po_line_id  NUMBER,
@@ -440,6 +449,8 @@ WHEN no_data_found THEN
   v_inv_number:='XXX';
   RETURN v_inv_number;
 END f_inv_number_request;
+
+
 -- +===================================================================+
 -- | Name  : Get_data_temp                                                                    |
 -- | Description     : Function to populate temp table with FIFO invoice details              |
@@ -498,7 +509,8 @@ IS
       --- Rst.QUANTITY RCP_QTY,
       rsl.quantity_received rcp_qty,--changed for receipt Correction
       to_date(rsh.attribute1,'MM/DD/YY') attribute1,
-      rst.transaction_date
+      rst.transaction_date,
+	  rst.shipment_line_id  -- Added by Mayur for NAIT-29347
     FROM hr_locations_all hrl,
       mtl_system_items_b msi,
       ap_suppliers aps,
@@ -547,114 +559,175 @@ IS
     pla.po_line_id,
     rsh.creation_date,
     rsh.receipt_num;
- 
-  CURSOR c_inv( v_po_header_id NUMBER, v_po_line_id NUMBER)
+  
+  /*  CURSOR c_inv( v_po_header_id NUMBER, v_po_line_id NUMBER)
   IS
-    SELECT a.invoice_num,
-      a.invoice_id,
-      a.inv_date,
-      a.inv_qty,
-      a.po_header_id,
-      a.po_line_id,
-      xx_ap_trade_rct_inq_pkg.get_inv_status(a.invoice_id) val_status
-    FROM
-      (SELECT aia.invoice_num,
-        aia.invoice_id,
-        aia.creation_date inv_date,
-        aila.po_header_id,
-        aila.po_line_id,
-        SUM(aila.quantity_invoiced) inv_qty
-      FROM ap_invoice_lines_all aila,
-        ap_invoices_all aia
-      WHERE aia.quick_po_header_id=v_po_header_id
-      AND aila.invoice_id         =aia.invoice_id
-      AND aila.po_line_id         =v_po_line_id
-      AND aila.quantity_invoiced  > 0
-      AND NOT EXISTS
-        (SELECT 1
-        FROM xx_ap_po_recinv_dashb_gtemp t
-        WHERE t.po_header_id = aila.po_header_id
-        AND aila.po_line_id  = t.po_line_id
-        AND t.invoice_num    = aia.invoice_num
-        AND t.inv_rem_qty   <= 0
-        AND t.user_id        =p_user_id
-        AND t.request_id    IS NULL
-        )
-    GROUP BY aia.invoice_num,
-      aia.invoice_id,
-      aia.creation_date,
-      aila.po_header_id,
-      aila.po_line_id
-      ) a
-    ORDER BY a.inv_date,
-      a.invoice_num;
-   
-    l_reciept_num        VARCHAR2(100) := 'X';
-    l_rec_rem_qty        NUMBER        := 0;
-    l_inv_rem_qty        NUMBER        := 0;
-    l_inv_appl_qty       NUMBER        := 0;
-    l_rcpt_consumed_flag VARCHAR2(1)   := 'N';
-    l_inv_consumed_flag  VARCHAR2(1)   := 'N';
-    v_inv_qty_rem        NUMBER        :=0 ;
-    v_val_status         VARCHAR2(1);
-    v_user_id            NUMBER;
-    v_invoice_fifo_num   NUMBER :=0;
-    l_start_date         DATE;
-    l_end_date           DATE;
-    l_header_id          NUMBER;
-    v_po_header_id       NUMBER;
-    v_data_218           NUMBER:=0;
-    v_data_gtemp         NUMBER:=0;
+  SELECT a.invoice_num,
+  a.invoice_id,
+  a.inv_date,
+  a.inv_qty,
+  a.po_header_id,
+  a.po_line_id,
+  xx_ap_trade_rct_inq_pkg.get_inv_status(a.invoice_id) val_status
+  FROM
+  (SELECT aia.invoice_num,
+  aia.invoice_id,
+  aia.creation_date inv_date,
+  aila.po_header_id,
+  aila.po_line_id,
+  SUM(aila.quantity_invoiced) inv_qty
+  FROM ap_invoice_lines_all aila,
+  ap_invoices_all aia
+  WHERE aia.quick_po_header_id=v_po_header_id
+  AND aila.invoice_id         =aia.invoice_id
+  AND aila.po_line_id         =v_po_line_id
+  AND aila.quantity_invoiced  > 0
+  AND NOT EXISTS
+  (SELECT 1
+  FROM xx_ap_po_recinv_dashb_gtemp t
+  WHERE t.po_header_id = aila.po_header_id
+  AND aila.po_line_id  = t.po_line_id
+  AND t.invoice_num    = aia.invoice_num
+  AND t.inv_rem_qty   <= 0
+  AND t.user_id        =p_user_id
+  AND t.request_id    IS NULL
+  )
+  GROUP BY aia.invoice_num,
+  aia.invoice_id,
+  aia.creation_date,
+  aila.po_header_id,
+  aila.po_line_id
+  ) a
+  ORDER BY a.inv_date,
+  a.invoice_num;
+  */
+  -- Commented by Mayur for NAIT-29347
+  
+  l_reciept_num        VARCHAR2(100) := 'X';
+  l_rec_rem_qty        NUMBER        := 0;
+  l_inv_rem_qty        NUMBER        := 0;
+  l_inv_appl_qty       NUMBER        := 0;
+  l_rcpt_consumed_flag VARCHAR2(1)   := 'N';
+  l_inv_consumed_flag  VARCHAR2(1)   := 'N';
+  v_inv_qty_rem        NUMBER        :=0 ;
+  v_val_status         VARCHAR2(1);
+  v_user_id            NUMBER;
+  v_invoice_fifo_num   NUMBER :=0;
+  l_start_date         DATE;
+  l_end_date           DATE;
+  l_header_id          NUMBER;
+  v_po_header_id       NUMBER;
+  v_data_218           NUMBER:=0;
+  v_data_gtemp         NUMBER:=0;
+ 
+ /* Start: Added by Mayur for NAIT-29347*/
+  l_inv_num      VARCHAR2(100);
+  l_inv_id       NUMBER;
+  l_inv_dt       DATE;
+  l_inv_qty      NUMBER;
+  l_po_header_id NUMBER;
+  l_po_line_id   NUMBER;
+  l_val_status   VARCHAR2(100);
+  l_ship_line_id NUMBER;
+  /* End: Added by Mayur for NAIT-29347*/
+BEGIN
+  v_user_id :=p_user_id;
+  DELETE
+  FROM xx_ap_po_recinv_dashb_gtemp
+  WHERE user_id   =v_user_id
+  AND request_id IS NULL;
+  DELETE
+  FROM xx_ap_receipt_po_temp_218
+  WHERE user_id   =v_user_id
+  AND request_id IS NULL;
+  COMMIT;
   BEGIN
-    v_user_id :=p_user_id;
-    DELETE
-    FROM xx_ap_po_recinv_dashb_gtemp
-    WHERE user_id   =v_user_id
-    AND request_id IS NULL;
-    DELETE
-    FROM xx_ap_receipt_po_temp_218
-    WHERE user_id   =v_user_id
-    AND request_id IS NULL;
-    COMMIT;
-    BEGIN
-      IF p_receipt_id IS NOT NULL THEN
-        BEGIN
-          SELECT b.po_header_id
-          INTO v_po_header_id
-          FROM rcv_shipment_headers a,
-            rcv_transactions b
-          WHERE a.shipment_header_id =p_receipt_id
-          AND a.shipment_header_id   =b.shipment_header_id
-          AND b.transaction_type     ='RECEIVE'
-          AND rownum                 <2---Changes suggested by paddy
+    IF p_receipt_id IS NOT NULL THEN
+      BEGIN
+        SELECT b.po_header_id
+        INTO v_po_header_id
+        FROM rcv_shipment_headers a,
+          rcv_transactions b
+        WHERE a.shipment_header_id =p_receipt_id
+        AND a.shipment_header_id   =b.shipment_header_id
+        AND b.transaction_type     ='RECEIVE'
+        AND rownum                 <2---Changes suggested by paddy
+        AND EXISTS
+          (SELECT 'x'
+          FROM ap_supplier_sites_all site
+          WHERE site.vendor_site_id=a.vendor_site_id
           AND EXISTS
             (SELECT 'x'
-            FROM ap_supplier_sites_all site
-            WHERE site.vendor_site_id=a.vendor_site_id
-            AND EXISTS
-              (SELECT 'x'
-              FROM xx_fin_translatevalues tv,
-                xx_fin_translatedefinition td
-              WHERE td.translation_name = 'XX_AP_TRADE_CATEGORIES'
-              AND tv.translate_id       = td.translate_id
-              AND tv.enabled_flag       = 'Y'
-              AND sysdate BETWEEN tv.start_date_active AND NVL(tv.end_date_active,sysdate)
-              AND tv.target_value1 = site.attribute8
-                ||''
-              )
-            );
-        EXCEPTION
-        WHEN OTHERS THEN
-          v_po_header_id:=NULL;---Changes suggested by paddy
-          p_result      :='E';
-          p_error       := SUBSTR(sqlerrm, 1, 200);
-        END ;
-      END IF;
-      IF p_po_header_id IS NOT NULL THEN
-        v_po_header_id  :=p_po_header_id;
-      END IF;
-      ---IF P_PO_NUM IS NOT NULL THEN
-      IF v_po_header_id IS NOT NULL THEN
+            FROM xx_fin_translatevalues tv,
+              xx_fin_translatedefinition td
+            WHERE td.translation_name = 'XX_AP_TRADE_CATEGORIES'
+            AND tv.translate_id       = td.translate_id
+            AND tv.enabled_flag       = 'Y'
+            AND sysdate BETWEEN tv.start_date_active AND NVL(tv.end_date_active,sysdate)
+            AND tv.target_value1 = site.attribute8
+              ||''
+            )
+          );
+      EXCEPTION
+      WHEN OTHERS THEN
+        v_po_header_id:=NULL;---Changes suggested by paddy
+        p_result      :='E';
+        p_error       := SUBSTR(sqlerrm, 1, 200);
+      END ;
+    END IF;
+    IF p_po_header_id IS NOT NULL THEN
+      v_po_header_id  :=p_po_header_id;
+    END IF;
+  
+  ---IF P_PO_NUM IS NOT NULL THEN
+    IF v_po_header_id IS NOT NULL THEN
+      BEGIN
+        SELECT MIN(rst.transaction_date)-1,
+          MAX(rst.transaction_date)     +1,
+          rst.po_header_id
+        INTO l_start_date,
+          l_end_date,
+          l_header_id
+        FROM rcv_shipment_headers rsh,
+          rcv_transactions rst
+        WHERE 1                   =1
+        AND rst.po_header_id      = v_po_header_id
+        AND rst.shipment_header_id=rsh.shipment_header_id
+        AND rst.transaction_type  ='RECEIVE'
+        GROUP BY rst.po_header_id;
+      EXCEPTION
+      WHEN OTHERS THEN
+        l_start_date:=sysdate+1;
+        l_end_date  :=l_start_date;
+      END ;
+    END IF;
+  
+  -----Changes suggested by paddy
+    IF p_invoice_id IS NOT NULL THEN
+      BEGIN
+        SELECT NVL(po_header_id,quick_po_header_id)
+        INTO v_po_header_id
+        FROM ap_supplier_sites_all b,
+          ap_invoices_all a
+        WHERE a.invoice_id  =p_invoice_id
+        AND b.vendor_site_id=a.vendor_site_id+0
+        AND EXISTS
+          (SELECT 'x'
+          FROM xx_fin_translatevalues tv,
+            xx_fin_translatedefinition td
+          WHERE td.translation_name = 'XX_AP_TRADE_CATEGORIES'
+          AND tv.translate_id       = td.translate_id
+          AND tv.enabled_flag       = 'Y'
+          AND sysdate BETWEEN tv.start_date_active AND NVL(tv.end_date_active,sysdate)
+          AND tv.target_value1 = b.attribute8
+            ||''
+          );
+      EXCEPTION
+      WHEN OTHERS THEN
+        v_po_header_id:=NULL;
+      END;
+    
+	IF v_po_header_id IS NOT NULL THEN
         BEGIN
           SELECT MIN(rst.transaction_date)-1,
             MAX(rst.transaction_date)     +1,
@@ -675,296 +748,355 @@ IS
           l_end_date  :=l_start_date;
         END ;
       END IF;
-      -----Changes suggested by paddy
-      IF p_invoice_id IS NOT NULL THEN
-        BEGIN
-          SELECT NVL(po_header_id,quick_po_header_id)
-          INTO v_po_header_id
-          FROM ap_supplier_sites_all b,
-            ap_invoices_all a
-          WHERE a.invoice_id  =p_invoice_id
-          AND b.vendor_site_id=a.vendor_site_id+0
-          AND EXISTS
-            (SELECT 'x'
-            FROM xx_fin_translatevalues tv,
-              xx_fin_translatedefinition td
-            WHERE td.translation_name = 'XX_AP_TRADE_CATEGORIES'
-            AND tv.translate_id       = td.translate_id
-            AND tv.enabled_flag       = 'Y'
-            AND sysdate BETWEEN tv.start_date_active AND NVL(tv.end_date_active,sysdate)
-            AND tv.target_value1 = b.attribute8
-              ||''
-            );
-        EXCEPTION
-        WHEN OTHERS THEN
-          v_po_header_id:=NULL;
-        END;
-        IF v_po_header_id IS NOT NULL THEN
-          BEGIN
-            SELECT MIN(rst.transaction_date)-1,
-              MAX(rst.transaction_date)     +1,
-              rst.po_header_id
-            INTO l_start_date,
-              l_end_date,
-              l_header_id
-            FROM rcv_shipment_headers rsh,
-              rcv_transactions rst
-            WHERE 1                   =1
-            AND rst.po_header_id      = v_po_header_id
-            AND rst.shipment_header_id=rsh.shipment_header_id
-            AND rst.transaction_type  ='RECEIVE'
-            GROUP BY rst.po_header_id;
-          EXCEPTION
-          WHEN OTHERS THEN
-            l_start_date:=sysdate+1;
-            l_end_date  :=l_start_date;
-          END ;
-        END IF;
-      END IF;
-      IF ( p_date_from IS NOT NULL AND p_date_to IS NOT NULL ) THEN
-        l_start_date   := p_date_from;
-        l_end_date     := p_date_to;
-      END IF;
-    END;
-    FOR i IN c_rcpt (l_start_date,l_end_date,l_header_id)
-    LOOP
-      BEGIN
-        INSERT
-        INTO xx_ap_receipt_po_temp_218
-          (
-            po ,
-            po_line_id ,
-            po_line_num ,
-            po_unit_price ,
-            po_qty ,
-            location ,
-            uom ,
-            unit_price ,
-            quantity_shipped ,
-            receipt_line_amt ,
-            rec_line_num ,
-            sku ,
-            supplier_num ,
-            supplier_name ,
-            supplier_site ,
-            receipt_qty ,
-            po_header_id ,---PO_NUM
-            rcp_date ,
-            receipt_num ,
-            shipment_header_id ,---RECEIPT_ID
-            rcp_qty ,
-            transaction_date,
-            attribute1,
-            user_id ,
-            po_vendor_id,   ---SUPPLIER NAME
-            item_id,        ---SKU
-            vendor_site_id,----SUPPLIER SITE
-            request_id
-          )
-          VALUES
-          (
-            i.po ,
-            i.po_line_id ,
-            i.po_line_num ,
-            i.unit_price ,
-            i.po_qty ,
-            i.location ,
-            i.uom ,
-            i.unit_price ,
-            i.rcp_qty ,
-            i.receipt_line_amt ,
-            i.rec_line_num ,
-            i.sku ,
-            i.supplier_num ,
-            i.supplier_name ,
-            i.supplier_site ,
-            i.receipt_qty ,--rsl
-            i.po_header_id ,
-            i.rcp_date ,
-            i.receipt_num ,
-            i.receipt_id ,
-            i.rcp_qty ,---rsl
-            i.transaction_date,
-            i.attribute1,
-            p_user_id ,
-            i.vendor_id,
-            i.item_id,
-            i.vendor_site_id,
-            NULL
-          );
-        COMMIT;
-      EXCEPTION
-      WHEN OTHERS THEN
-        p_result :='E';
-        p_error  := SUBSTR(sqlerrm, 1, 200);
-      END;
-      l_rec_rem_qty     := i.rcp_qty ;
-      l_inv_rem_qty     :=0;
-      l_inv_appl_qty    := 0;
-      v_invoice_fifo_num:=1;
-      FOR j IN c_inv
-      (
-        i.po_header_id,i.po_line_id
-      )
-      LOOP
-        IF l_rec_rem_qty > 0 THEN
-          BEGIN
-            SELECT SUM(t1.inv_rem_qty)
-            INTO v_inv_qty_rem
-            FROM xx_ap_po_recinv_dashb_gtemp t1
-            WHERE 1           =1
-            AND t1.receipt_id =
-              (SELECT MAX(t.receipt_id)
-              FROM xx_ap_po_recinv_dashb_gtemp t
-              WHERE t1.invoice_num  =t.invoice_num
-              AND t.invoice_num     =j.invoice_num
-              AND t.rcpt_remain_qty = 0
-              AND t.user_id         =p_user_id
-              AND t.request_id     IS NULL
-              )
-            AND t1.invoice_num =j.invoice_num
-            AND t1.user_id     =p_user_id
-            AND t1.request_id IS NULL;
-          EXCEPTION
-          WHEN no_data_found THEN
-            v_inv_qty_rem:=0;
-          END ;
-          IF v_inv_qty_rem >0 THEN
-            l_rec_rem_qty := l_rec_rem_qty - v_inv_qty_rem;
-          ELSE
-            l_rec_rem_qty := l_rec_rem_qty - j.inv_qty;
-          END IF;
-          IF l_rec_rem_qty <= 0 THEN
-            l_inv_rem_qty  := -1 * l_rec_rem_qty;
-            l_rec_rem_qty  := 0;
-          ELSE
-            l_inv_rem_qty :=0;
-          END IF;
-          IF v_inv_qty_rem  >0 THEN
-            l_inv_appl_qty :=v_inv_qty_rem - l_inv_rem_qty;
-          ELSE
-            l_inv_appl_qty := j.inv_qty - l_inv_rem_qty;
-          END IF;
-          INSERT
-          INTO xx_ap_po_recinv_dashb_gtemp
-            (
-              po,
-              po_line_id,
-              po_header_id,
-              rcp_date,
-              receipt_num,
-              receipt_id,
-              rcp_qty,
-              inv_date,
-              invoice_num,
-              inv_qty,
-              rcpt_remain_qty,
-              inv_rem_qty,
-              inv_applied_amt,
-              rcpt_consumed_flag,
-              inv_consumed_flag,
-              v_inv_qty_rem,
-              inv_val,
-              po_line_num,
-              po_qty,
-              location,
-              uom,
-              unit_price,
-              quantity_shipped,
-              receipt_line_amt,
-              rec_line_num,
-              sku,
-              supplier_num,
-              supplier_name,
-              supplier_site,
-              user_id,
-              invoice_fifo_num ,
-              receipt_qty,
-              creation_date ,
-              po_vendor_id,
-              item_id,
-              vendor_site_id,
-              invoice_id,
-              request_id
-            )
-            VALUES
-            (
-              i.po,
-              i.po_line_id,
-              i.po_header_id,
-              i.rcp_date,
-              i.receipt_num,
-              i.receipt_id,
-              i.rcp_qty,
-              j.inv_date,
-              j.invoice_num,
-              j.inv_qty,
-              l_rec_rem_qty,
-              l_inv_rem_qty,
-              l_inv_appl_qty,
-              l_rcpt_consumed_flag,
-              l_inv_consumed_flag,
-              v_inv_qty_rem,
-              j.val_status,
-              --- V_VAL_STATUS,
-              i.po_line_num,
-              i.po_qty,
-              i.location,
-              i.uom,
-              i.unit_price,
-              i.rcp_qty ,
-              i.receipt_line_amt,
-              i.rec_line_num,
-              i.sku,
-              i.supplier_num,
-              i.supplier_name,
-              i.supplier_site,
-              v_user_id,
-              v_invoice_fifo_num,
-              i.rcp_qty,
-              --- I.RECEIPT_QTY,--rsl changed for receipt correction
-              sysdate ,
-              i.vendor_id,
-              i.item_id,
-              i.vendor_site_id,
-              j.invoice_id,
-              NULL
-            );
-          v_invoice_fifo_num:=0;
-          COMMIT;
-        END IF;
-      END LOOP;
-    END LOOP;
-    ------------------Code added to restrict success status when no data is present for User search
+    END IF;
+
+    IF ( p_date_from IS NOT NULL AND p_date_to IS NOT NULL ) THEN
+      l_start_date   := p_date_from;
+      l_end_date     := p_date_to;
+    END IF;
+  END;
+ 
+ FOR i IN c_rcpt (l_start_date,l_end_date,l_header_id)
+  LOOP
     BEGIN
-      SELECT NVL(COUNT(po_header_id),0)
-      INTO v_data_gtemp
-      FROM xx_ap_po_recinv_dashb_gtemp
-      WHERE user_id   =p_user_id
-      AND request_id IS NULL;
-      SELECT NVL(COUNT(po_header_id),0)
-      INTO v_data_218
-      FROM xx_ap_receipt_po_temp_218
-      WHERE user_id   =p_user_id
-      AND request_id IS NULL;
-      IF v_data_gtemp > 0 OR v_data_218 > 0 THEN
-        p_result     :='S';
-      ELSE
-        p_result :='E';
-        p_error  :='No data inserted in Temp';
-      END IF;
+      INSERT
+      INTO xx_ap_receipt_po_temp_218
+        (
+          po ,
+          po_line_id ,
+          po_line_num ,
+          po_unit_price ,
+          po_qty ,
+          location ,
+          uom ,
+          unit_price ,
+          quantity_shipped ,
+          receipt_line_amt ,
+          rec_line_num ,
+          sku ,
+          supplier_num ,
+          supplier_name ,
+          supplier_site ,
+          receipt_qty ,
+          po_header_id ,---PO_NUM
+          rcp_date ,
+          receipt_num ,
+          shipment_header_id ,---RECEIPT_ID
+          rcp_qty ,
+          transaction_date,
+          attribute1,
+          user_id ,
+          po_vendor_id,   ---SUPPLIER NAME
+          item_id,        ---SKU
+          vendor_site_id,----SUPPLIER SITE
+          request_id
+        )
+        VALUES
+        (
+          i.po ,
+          i.po_line_id ,
+          i.po_line_num ,
+          i.unit_price ,
+          i.po_qty ,
+          i.location ,
+          i.uom ,
+          i.unit_price ,
+          i.rcp_qty ,
+          i.receipt_line_amt ,
+          i.rec_line_num ,
+          i.sku ,
+          i.supplier_num ,
+          i.supplier_name ,
+          i.supplier_site ,
+          i.receipt_qty ,--rsl
+          i.po_header_id ,
+          i.rcp_date ,
+          i.receipt_num ,
+          i.receipt_id ,
+          i.rcp_qty ,---rsl
+          i.transaction_date,
+          i.attribute1,
+          p_user_id ,
+          i.vendor_id,
+          i.item_id,
+          i.vendor_site_id,
+          NULL
+        );
+      COMMIT;
     EXCEPTION
     WHEN OTHERS THEN
       p_result :='E';
       p_error  := SUBSTR(sqlerrm, 1, 200);
-    END ;
-    --P_RESULT     :='S';
-    ---------
-  EXCEPTION
-  WHEN OTHERS THEN
+    END;
+    l_rec_rem_qty     := i.rcp_qty ;
+    l_inv_rem_qty     :=0;
+    l_inv_appl_qty    := 0;
+    v_invoice_fifo_num:=1;
+  
+  /*      FOR j IN c_inv
+    (
+    i.po_header_id,i.po_line_id
+    )
+    LOOP
+    */
+    -- Commented by Mayur for NAIT-29347
+
+    /* Start: Added by Mayur for NAIT-29347*/
+    BEGIN
+      SELECT a.invoice_num,
+        a.invoice_id,
+        a.inv_date,
+        a.inv_qty,
+        a.po_header_id,
+        a.po_line_id,
+        xx_ap_trade_rct_inq_pkg.get_inv_status(a.invoice_id) val_status,
+        a.shipment_line_id
+      INTO l_inv_num,
+        l_inv_id,
+        l_inv_dt,
+        l_inv_qty,
+        l_po_header_id,
+        l_po_line_id,
+        l_val_status,
+        l_ship_line_id
+      FROM
+        (SELECT aia.invoice_num,
+          aia.invoice_id,
+          aia.creation_date inv_date,
+          aila.po_header_id,
+          aila.po_line_id,
+          SUM(aila.quantity_invoiced) inv_qty,
+          rsl.shipment_line_id
+        FROM ap_invoice_lines_all aila,
+          ap_invoices_all aia,
+          po_lines_all pla,
+          rcv_shipment_lines rsl
+        WHERE aia.quick_po_header_id= i.po_header_id
+        AND pla.po_line_id          = aila.po_line_id
+        AND pla.po_line_id          = rsl.po_line_id
+        AND aila.invoice_id         = aia.invoice_id
+        AND aila.po_line_id         = i.po_line_id
+        AND aila.quantity_invoiced  > 0
+		AND rsl.shipment_line_id = i.shipment_line_id
+        AND NOT EXISTS
+          (SELECT 1
+          FROM xxfin.xx_ap_po_recinv_dashb_gtemp t
+          WHERE t.po_header_id = aila.po_header_id
+          AND aila.po_line_id  = t.po_line_id
+          AND t.invoice_num    = aia.invoice_num
+          AND t.inv_rem_qty   <= 0
+          AND t.user_id        = p_user_id
+          AND t.request_id    IS NULL
+		  AND t.shipment_line_id = rsl.shipment_line_id
+          )
+        GROUP BY aia.invoice_num,
+          aia.invoice_id,
+          aia.creation_date,
+          aila.po_header_id,
+          aila.po_line_id,
+          rsl.quantity_shipped,
+		  rsl.shipment_line_id
+        ) a;
+    EXCEPTION
+    WHEN no_data_found THEN
+      l_inv_num     := 'xx';
+      l_inv_id      := 0;
+      l_inv_dt      := sysdate;
+      l_inv_qty     := 0;
+      l_po_header_id:= 0;
+      l_po_line_id  := 0;
+      l_val_status  := 'xx';
+      l_ship_line_id:= 0;
+    END;
+    /* End: Added by Mayur for NAIT-29347*/
+ 
+ IF l_rec_rem_qty > 0 THEN
+ insert into xxtest values ('inside l_rec_rem_qty > 0','inside l_rec_rem_qty > 0');
+  insert into xxtest values ('inside i.po_header_id ',i.po_header_id);
+   insert into xxtest values ('inside i.po_line_id ',i.po_line_id);
+      BEGIN
+        SELECT SUM(t1.inv_rem_qty)
+        INTO v_inv_qty_rem
+        FROM xx_ap_po_recinv_dashb_gtemp t1
+        WHERE 1           =1
+        AND t1.receipt_id =
+          (SELECT MAX(t.receipt_id)
+          FROM xx_ap_po_recinv_dashb_gtemp t
+          WHERE t1.invoice_num =t.invoice_num
+            --   AND t.invoice_num     =j.invoice_num   -- Commented by Mayur for NAIT-29347
+          AND t.invoice_num     =l_inv_num              -- Added by Mayur for NAIT-29347
+        --  AND t.rcpt_remain_qty = 0  mayur
+		   AND t.rcpt_remain_qty <= 0
+          AND t.user_id         =p_user_id
+          AND t.request_id     IS NULL
+          )
+          --  AND t1.invoice_num =j.invoice_num    -- Commented by Mayur for NAIT-29347
+        AND t1.invoice_num =l_inv_num              -- Added by Mayur for NAIT-29347
+        AND t1.user_id     =p_user_id
+        AND t1.request_id IS NULL;
+      EXCEPTION
+      WHEN no_data_found THEN
+        v_inv_qty_rem:=0;
+      END ;
+	     insert into xxtest values ('v_inv_qty_rem ',v_inv_qty_rem);
+		 insert into xxtest values ('l_inv_qty ',l_inv_qty);
+		 insert into xxtest values ('l_rec_rem_qty ',l_rec_rem_qty);
+		 
+      IF v_inv_qty_rem >0 THEN
+        l_rec_rem_qty := l_rec_rem_qty - v_inv_qty_rem;
+		  insert into xxtest values ('l_rec_rem_qty 1 ',l_rec_rem_qty);
+      ELSE
+        --   l_rec_rem_qty := l_rec_rem_qty - j.inv_qty;  -- Commented by Mayur for NAIT-29347
+        l_rec_rem_qty := l_rec_rem_qty - l_inv_qty;       -- Added by Mayur for NAIT-29347
+		 insert into xxtest values ('l_rec_rem_qty 1 else ',l_rec_rem_qty);
+		
+      END IF;
+      IF l_rec_rem_qty <= 0 THEN
+        l_inv_rem_qty  := -1 * l_rec_rem_qty;
+        l_rec_rem_qty  := 0;
+		 insert into xxtest values ('l_inv_rem_qty 2 ',l_inv_rem_qty);
+      ELSE
+        l_inv_rem_qty :=0;
+		 insert into xxtest values ('l_inv_rem_qty 2 else ',l_inv_rem_qty);
+      END IF;
+      IF v_inv_qty_rem  >0 THEN
+        l_inv_appl_qty :=v_inv_qty_rem - l_inv_rem_qty;
+		 insert into xxtest values ('l_inv_appl_qty 3',l_inv_appl_qty);
+      ELSE
+        --  l_inv_appl_qty := j.inv_qty - l_inv_rem_qty;  -- Commented by Mayur for NAIT-29347
+        l_inv_appl_qty := l_inv_qty - l_inv_rem_qty;      -- Added by Mayur for NAIT-29347
+		 insert into xxtest values ('l_inv_appl_qty 3 else ',l_inv_appl_qty);
+      END IF;
+
+      INSERT
+      INTO xxfin.xx_ap_po_recinv_dashb_gtemp
+        (
+          po,
+          po_line_id,
+          po_header_id,
+          rcp_date,
+          receipt_num,
+          receipt_id,
+          rcp_qty,
+          inv_date,
+          invoice_num,
+          inv_qty,
+          rcpt_remain_qty,
+          inv_rem_qty,
+          inv_applied_amt,
+          rcpt_consumed_flag,
+          inv_consumed_flag,
+          v_inv_qty_rem,
+          inv_val,
+          po_line_num,
+          po_qty,
+          location,
+          uom,
+          unit_price,
+          quantity_shipped,
+          receipt_line_amt,
+          rec_line_num,
+          sku,
+          supplier_num,
+          supplier_name,
+          supplier_site,
+          user_id,
+          invoice_fifo_num ,
+          receipt_qty,
+          creation_date ,
+          po_vendor_id,
+          item_id,
+          vendor_site_id,
+          invoice_id,
+          request_id,
+		  shipment_line_id -- Added by Mayur for NAIT-29347
+        )
+        VALUES
+        (
+          i.po,
+          i.po_line_id,
+          i.po_header_id,
+          i.rcp_date,
+          i.receipt_num,
+          i.receipt_id,
+          i.rcp_qty,
+          /*  j.inv_date,
+          j.invoice_num,
+          j.inv_qty, */
+          -- Commented by Mayur for NAIT-29347
+          l_inv_dt,  -- Added by Mayur for NAIT-29347
+          l_inv_num, -- Added by Mayur for NAIT-29347
+          l_inv_qty, -- Added by Mayur for NAIT-29347
+          l_rec_rem_qty,
+          l_inv_rem_qty,
+          l_inv_appl_qty,
+          l_rcpt_consumed_flag,
+          l_inv_consumed_flag,
+          v_inv_qty_rem,
+          --      j.val_status,   -- Commented by Mayur for NAIT-29347
+          --- V_VAL_STATUS,
+          l_val_status, -- Added by Mayur for NAIT-29347
+          i.po_line_num,
+          i.po_qty,
+          i.location,
+          i.uom,
+          i.unit_price,
+          i.rcp_qty ,
+          i.receipt_line_amt,
+          i.rec_line_num,
+          i.sku,
+          i.supplier_num,
+          i.supplier_name,
+          i.supplier_site,
+          v_user_id,
+          v_invoice_fifo_num,
+          i.rcp_qty,
+          --- I.RECEIPT_QTY,--rsl changed for receipt correction
+          sysdate ,
+          i.vendor_id,
+          i.item_id,
+          i.vendor_site_id,
+          --   j.invoice_id,    -- Commented by Mayur for NAIT-29347
+          l_inv_id,             -- Added by Mayur for NAIT-29347
+          NULL,
+		  l_ship_line_id        -- Added by Mayur for NAIT-29347
+        );
+      v_invoice_fifo_num:=0;
+      COMMIT;
+    END IF;
+ -- END LOOP;   -- Commented by Mayur for NAIT-29347
+END LOOP;
+------------------Code added to restrict success status when no data is present for User search
+BEGIN
+  SELECT NVL(COUNT(po_header_id),0)
+  INTO v_data_gtemp
+  FROM xx_ap_po_recinv_dashb_gtemp
+  WHERE user_id   =p_user_id
+  AND request_id IS NULL;
+  SELECT NVL(COUNT(po_header_id),0)
+  INTO v_data_218
+  FROM xx_ap_receipt_po_temp_218
+  WHERE user_id   =p_user_id
+  AND request_id IS NULL;
+  IF v_data_gtemp > 0 OR v_data_218 > 0 THEN
+    p_result     :='S';
+  ELSE
     p_result :='E';
-    p_error  := SUBSTR(sqlerrm, 1, 200);
-  END get_data_temp;
+    p_error  :='No data inserted in Temp';
+  END IF;
+EXCEPTION
+WHEN OTHERS THEN
+  p_result :='E';
+  p_error  := SUBSTR(sqlerrm, 1, 200);
+END ;
+--P_RESULT     :='S';
+---------
+EXCEPTION
+WHEN OTHERS THEN
+  p_result :='E';
+  p_error  := SUBSTR(sqlerrm, 1, 200);
+END get_data_temp;
+
 FUNCTION get_sku(
     p_po_item_id NUMBER )
   RETURN VARCHAR2
@@ -991,6 +1123,7 @@ WHEN OTHERS THEN
   v_sku:=NULL;
   RETURN v_sku;
 END get_sku;
+
 PROCEDURE xxapreceitpdetinq_wrapper(
     p_date_from         DATE ,
     p_date_to           DATE ,
@@ -1054,6 +1187,7 @@ EXCEPTION
 WHEN OTHERS THEN
   fnd_file.put_line(fnd_file.output,'EXCEPTION : ' || sqlerrm);
 END xxapreceitpdetinq_wrapper;
+
 FUNCTION beforereport
   RETURN BOOLEAN
 IS
@@ -1135,7 +1269,6 @@ IS
     pla.po_line_id,
     rsh.creation_date,
     rsh.receipt_num;
-  
   CURSOR c_inv( v_po_header_id NUMBER, v_po_line_id NUMBER)
   IS
     SELECT a.invoice_num,
@@ -1176,7 +1309,6 @@ IS
       ) a
     ORDER BY a.inv_date,
       a.invoice_num;
-    
     l_reciept_num        VARCHAR2(100) := 'X';
     l_rec_rem_qty        NUMBER        := 0;
     l_inv_rem_qty        NUMBER        := 0;
@@ -1523,6 +1655,7 @@ IS
     --- G_ERROR  := SUBSTR(SQLERRM, 1, 200);
     RETURN false;
   END beforereport;
+
 FUNCTION xx_ap_trade_rct_inquiry_xml
   RETURN xx_ap_trade_rct_inq_pkg.ap_trade_rct_det_ctt pipelined
 IS
@@ -1721,6 +1854,7 @@ WHEN ex_dml_errors THEN
     dbms_output.put_line ( 'Error: ' || i || ' Array Index: ' || sql%bulk_exceptions(i).error_index || ' Message: ' || sqlerrm(-sql%bulk_exceptions(i).error_code) ) ;
   END LOOP;
 END xx_ap_trade_rct_inquiry_xml;
+
 FUNCTION afterreport
   RETURN BOOLEAN
 IS
@@ -1741,5 +1875,4 @@ WHEN OTHERS THEN
 END afterreport;
 END xx_ap_trade_rct_inq_pkg;
 /
-
 SHOW ERRORS;
