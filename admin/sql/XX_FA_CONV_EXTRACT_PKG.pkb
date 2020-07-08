@@ -5283,7 +5283,13 @@ AS
       FROM fa_transaction_headers fth1
       WHERE fth1.asset_id    =a.asset_id
       AND fth1.book_type_code=a.book_type_code
-      ) ;
+      ) 
+    AND NOT EXISTS (select 'x'
+            from fa_books fb
+            where fb.asset_id=a.asset_id
+            and fb.book_type_code='OD US CORP'
+            and fb.deprn_method_code='UOP'
+            );
   i                       NUMBER:=0;
   v_nbv                   NUMBER:=0;
   v_deprn_rsv             NUMBER;
