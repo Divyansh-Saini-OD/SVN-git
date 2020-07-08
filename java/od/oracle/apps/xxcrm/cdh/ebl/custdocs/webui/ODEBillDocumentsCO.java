@@ -95,6 +95,7 @@ public class ODEBillDocumentsCO extends OAControllerImpl
     utl.log("ODEBillDocumentsCO:Process Request Begin");
     String AccountNumber = pageContext.getParameter("accountNumber"); 
     String CustAccountId = pageContext.getParameter("custAccountId");
+       // CustAccountId= Integer.toString(35037949);
      String custName = pageContext.getParameter("custName");
     String deliveryMethod = pageContext.getParameter("deliveryMethod");
     //pageContext.getPageLayoutBean().setTitle("Billing Documents For Customer:"+custName+" Account Number:"+ AccountNumber); 
@@ -256,6 +257,7 @@ public class ODEBillDocumentsCO extends OAControllerImpl
     super.processFormRequest(pageContext, webBean);
     String AccountNumber = pageContext.getParameter("accountNumber"); 
     String CustAccountId = pageContext.getParameter("custAccountId");
+    //CustAccountId= Integer.toString(35037949);
     OAApplicationModule am=pageContext.getApplicationModule(webBean);
     ODUtil utl = new ODUtil(am);
     utl.log("ODEBillDocumentsCO:Process Form Request Begin");
@@ -269,6 +271,19 @@ public class ODEBillDocumentsCO extends OAControllerImpl
       System.out.println("pageContext.getParameter(SOURCE_PARAM) "+pageContext.getParameter(VALUE_PARAM));
      // Added by Divyansh for NAIT-129167
       String lovEvent = pageContext.getParameter(EVENT_PARAM);
+//      if("lovValidate".equals(lovEvent)) {  
+//            String lovInputSourceId = pageContext.getLovInputSourceId();  
+//                System.out.println("validate event called");
+//            if("FeeOption".equals(lovInputSourceId)) {  
+//                String rowRef = pageContext.getParameter(OAWebBeanConstants.EVENT_SOURCE_ROW_REFERENCE);
+//                ODEbillCustDocVORowImpl rowImpl= (ODEbillCustDocVORowImpl)am.findRowByRef(rowRef);
+//                String docType=rowImpl.getCExtAttr1(); 
+//                String printType =rowImpl.getCExtAttr3();
+//                OAViewObject feevo = (OAViewObject)am.findViewObject("feeoptionType1");
+//                feevo.setWhereClause("SOURCE_VALUE2 = '"+printType +"' AND NVL(SOURCE_VALUE3,'"+docType+"')= NVL('"+docType+"',SOURCE_VALUE3)");
+//                feevo.executeQuery();
+//            }
+//            }
       if("lovPrepare".equals(lovEvent)) {  
             String lovInputSourceId = pageContext.getLovInputSourceId();  
                 System.out.println("validate event called");
@@ -564,6 +579,7 @@ public class ODEBillDocumentsCO extends OAControllerImpl
          Serializable prm[] = {"Invoice","ePDF"};
          String defval =(String)am.invokeMethod("getDefaultFee",prm);
         CustDocVO1.getCurrentRow().setAttribute("Feeoptionfv",defval);
+        CustDocVO1.getCurrentRow().setAttribute("Feeoptioncriteria","Invoice-ePDF");
         // Ended by Divyansh for NAIT-129167
     }
       
