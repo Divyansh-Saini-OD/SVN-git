@@ -16,9 +16,8 @@ gc_no_site_change   CONSTANT  VARCHAR2(200) DEFAULT 'No Site Change';
 -- | V1.2      01-JULY-2013 Sravanthi Surya  Modified Table names as part of R12 Upgrade |
 -- | V1.3      03-JULY-2014 Avinash Baddam   Changes for defect 30042 			         |	
 -- | V1.4      22-JAN-2020 Bhargavi Ankolekar Added for jira NAIT-103952                 |
--- | V1.5      03-JULY-2014 Rahul Y          Changes for JIRA # 133497 			         |
--- +=====================================================================================+
-
+-- | V1.5      06-JUL-2020 Rahul Y            Added for jira NAIT-133497                 |	
+-- +=====================================================================================+	
 
 PROCEDURE PROCESS_VENDORS(p_begin_date DATE,p_end_date DATE)
 IS
@@ -35,17 +34,19 @@ WHERE PV.last_update_date BETWEEN p_begin_date AND p_end_date;
 
 CURSOR lcu_vendor_aud(p_vendor_id NUMBER)
 IS
+ --Adding change for NAIT-133497 by updating last_update_date in LAG function to version_timestamp
 SELECT * FROM
 (SELECT  vendor_name Vendor_name_Current
-         ,lag(vendor_name,1,null)  over (order by version_timestamp) Vendor_Name_Prev ----- Changing the last_update_date to version_timestamp for the jira 133497 by Rahul Y
+         ,lag(vendor_name,1,null)  over (order by version_timestamp) Vendor_Name_Prev
          ,num_1099 num_1099_Current
-         ,lag(num_1099,1,null)  over (order by version_timestamp) num_1099_Prev ----- Changing the last_update_date to version_timestamp for the jira 133497 by Rahul Y
+         ,lag(num_1099,1,null)  over (order by version_timestamp) num_1099_Prev
          ,vat_registration_num vat_registration_num_Current
-         ,lag(vat_registration_num,1,null)  over (order by version_timestamp) vat_registration_num_Prev ----- Changing the last_update_date to version_timestamp for the jira 133497 by Rahul Y
+         ,lag(vat_registration_num,1,null)  over (order by version_timestamp) vat_registration_num_Prev
          ,type_1099 type_1099_Current
-         ,lag(type_1099,1,null)  over (order by version_timestamp) type_1099_Prev ----- Changing the last_update_date to version_timestamp for the jira 133497 by Rahul Y
+         ,lag(type_1099,1,null)  over (order by version_timestamp) type_1099_Prev
          ,employee_id employee_id_Current
-         ,lag(employee_id,1,null)  over (order by version_timestamp) employee_id_Prev ----- Changing the last_update_date to version_timestamp for the jira 133497 by Rahul Y
+         ,lag(employee_id,1,null)  over (order by version_timestamp) employee_id_Prev
+		 	  --End of changes for NAIT-133497
       ,last_updated_by
       ,last_update_date
       ,1 order_by_col
@@ -56,9 +57,9 @@ WHERE va.vendor_id = p_vendor_id
   ORDER BY last_update_date;
 
 -------Adding this cursor for ap_suppliers additional column audit jira NAIT-103952.Added by Bhargavi Ankolekar.
------ Changing the last_update_date to version_timestamp for the jira 133497 by Rahul Y
 CURSOR lcu_vendor_add_aud(p_vendor_id NUMBER)
 IS
+ --Adding change for NAIT-133497 by updating last_update_date in LAG function to version_timestamp
 SELECT * FROM
 (SELECT  TAX_REPORTING_NAME   TAX_REPORTING_NAME_cur
          ,lag(TAX_REPORTING_NAME,1,null)  over (order by version_timestamp) TAX_REPORTING_NAME_prev
@@ -68,7 +69,7 @@ SELECT * FROM
          ,lag(ORGANIZATION_TYPE_LOOKUP_CODE,1,null)  over (order by version_timestamp) ORG_TYPE_LOOKUP_CODE_prev
 		 ,INDIVIDUAL_1099  INDIVIDUAL_1099_cur
          ,lag(INDIVIDUAL_1099,1,null)  over (order by version_timestamp) INDIVIDUAL_1099_prev
-		 ----- End of changes for jira #133497
+		 	  --End of changes for NAIT-133497
       ,last_updated_by
       ,last_update_date
       ,1 order_by_col
@@ -521,6 +522,7 @@ where  PV.vendor_id=PVSA.vendor_id
 AND PVSA.last_update_date BETWEEN p_begin_date AND p_end_date;
 
 -------------------Cursor added for the additional column audit at the new trigger table created from the supplier sites all table as for jira NAIT-103952.Added by Bhargavi Ankolekar.
+
 ----- Changing the last_update_date to version_timestamp for the jira 133497 by Rahul Y
 CURSOR lcu_vd_sites_add_aud(p1_vendor_site_id NUMBER)
 IS
@@ -539,7 +541,7 @@ SELECT * FROM
          ,lag(VENDOR_SITE_CODE_ALT,1,null)  over (order by version_timestamp) VENDOR_SITE_CODE_ALT_prev
 		  ,LANGUAGE  LANGUAGE_cur
          ,lag(LANGUAGE,1,null)  over (order by version_timestamp) LANGUAGE_prev
-		------- End of changes for jira #133497
+		 ------- End of changes for jira #133497
       ,last_updated_by
       ,last_update_date
       ,1 order_by_col
@@ -591,7 +593,7 @@ ORDER BY last_update_date;
 
 CURSOR lcu_vendor_sites_aud(p_vendor_site_id NUMBER)
 IS
------ Changing the last_update_date to version_timestamp for the jira 133497 by Rahul Y
+--Adding change for NAIT-133497 by updating last_update_date in LAG function to version_timestamp
 SELECT * FROM (
 SELECT vendor_site_code vendor_site_code_Current
        ,lag(vendor_site_code,1,null)  over (order by version_timestamp) vendor_site_code_Prev
@@ -649,7 +651,7 @@ SELECT vendor_site_code vendor_site_code_Current
        ,lag(attribute9,1,null)  over (order by version_timestamp) attribute9_Prev
       ,email_address email_address_Current                                                    -- Added by Ganesan for the defect 4878
       ,lag(email_address,1,null)  over (order by version_timestamp) email_address_Prev         -- Added by Ganesan for the defect 4878
-	  ----- End of changes for jira #133497
+	  		  --End of changes for NAIT-133497
       ,last_updated_by
       ,last_update_date
       ,2 order_by_col
@@ -676,11 +678,13 @@ and att.tolerance_id= pvsa.tolerance_id
 AND PVSA.last_update_date BETWEEN p_begin_date AND p_end_date;
 
 -------Adding below CURSOR for ap_tolerance template new trigger table created as requested for jira NAIT-103952.Added by Bhargavi Ankolekar.
+--Adding change for NAIT-133497 by updating last_update_date in LAG function to version_timestamp
 CURSOR lcu_ap_tol_template_aud(p_tolerance_id NUMBER) is
 SELECT * FROM (
 SELECT
 TOLERANCE_NAME TOLERANCE_NAME_CURRENT
-	  ,lag(TOLERANCE_NAME,1,null)  over (order by version_timestamp) TOLERANCE_NAME_PREV -- ----- Changing the last_update_date to version_timestamp for the jira 133497 by Rahul Y
+	  ,lag(TOLERANCE_NAME,1,null)  over (order by version_timestamp) TOLERANCE_NAME_PREV
+	    --End of changes for NAIT-133497
 ,last_updated_by
       ,last_update_date
       ,2 order_by_col
