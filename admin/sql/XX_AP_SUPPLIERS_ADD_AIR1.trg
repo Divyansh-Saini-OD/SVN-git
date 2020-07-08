@@ -42,7 +42,7 @@ INSERT
     (
       XXFIN.XX_PO_VENDOR_ADD_AUD_SEQ_V1.NEXTVAL ,
       'I',
-      CAST(:NEW.LAST_UPDATE_DATE AS TIMESTAMP(6)) ,
+      systimestamp,--CAST(:NEW.LAST_UPDATE_DATE AS TIMESTAMP(6))  --- changing cast(:new.LAST_UPDATE_DATE as timestamp(6)) to systimestamp as per the jira #133497
       :NEW.VENDOR_ID ,
       :NEW.LAST_UPDATE_DATE ,
       :NEW.LAST_UPDATED_BY ,
