@@ -21,8 +21,8 @@ INSERT ON apps.ap_suppliers FOR EACH ROW   --Commented/Added for R12 Upgrade ret
   -- |DRAFT 1a  05-APR-2009 Peter Marco        Initial draft version                 |
   -- |1.0       10-DEC-2013 Veronica Mairembam E1375: Changed table po_vendors to    |
   -- |                                         ap_suppliers for R12 upgrade retrofit |
-  -- +===============================================================================+
-
+   -- | 3.0     06-JUL-2020 Rahul Y            Added for jira NAIT-133497               |		
+-- +=====================================================================================+		
 
 DECLARE 
 
@@ -84,7 +84,7 @@ BEGIN
                                            VALUES
                                            ( XX_PO_VENDORS_AUD_SEQ.NEXTVAL
                                             , 'I' 
-                                            , cast(:new.LAST_UPDATE_DATE as timestamp(6))
+                                            , systimestamp --cast(:new.LAST_UPDATE_DATE as timestamp(6)) --- changing cast(:new.LAST_UPDATE_DATE as timestamp(6)) to systimestamp as per the jira #133497
                                             , :new.VENDOR_ID
                                             , :new.LAST_UPDATE_DATE
                                             , :new.LAST_UPDATED_BY
