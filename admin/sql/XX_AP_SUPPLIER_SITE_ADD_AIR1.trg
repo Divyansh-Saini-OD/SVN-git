@@ -43,7 +43,7 @@ CREATE OR REPLACE TRIGGER "APPS"."XX_AP_SUPPLIER_SITE_ADD_AIR1" AFTER
     (
       XXFIN.XX_PO_VDSITES_ADD_AUD_SEQ_V1.NEXTVAL ,
       'I' ,
-      CAST(:new.LAST_UPDATE_DATE AS TIMESTAMP(6)) ,
+      systimestamp,--CAST(:NEW.LAST_UPDATE_DATE AS TIMESTAMP(6))  --- changing cast(:new.LAST_UPDATE_DATE as timestamp(6)) to systimestamp as per the jira #133497
       :new.VENDOR_SITE_ID ,
       :new.LAST_UPDATE_DATE ,
       :new.LAST_UPDATED_BY ,
