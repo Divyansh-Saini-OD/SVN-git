@@ -10,7 +10,7 @@ PROMPT Program exits IF the creation IS NOT SUCCESSFUL
 WHENEVER SQLERROR CONTINUE
 --
 
-create or replace 
+CREATE OR REPLACE 
 PACKAGE xx_ap_inv_trade_dashboard_pkg
 AS
   -- +============================================================================================+
@@ -25,9 +25,10 @@ AS
   -- +============================================================================================+
   --  Version     Date         Author           Remarks
   --  =========   ===========  =============    ==================================================
-  --  1.0         15-Nov-17    Priyam Parmar       Initial version
-  --
+  --  1.0         15-Nov-17    Priyam Parmar    Initial version
+  --  1.1         04-May-20    Mayur Palsokar   Modified xx_ap_inv_pay_inq for NAIT-61763  
   -- +============================================================================================+
+  
   -------Function to calculate Vendor assistant-----------------------
   FUNCTION vendor_assistant(
       p_assistant_code VARCHAR2)
@@ -91,6 +92,8 @@ IS
       p_gl_date_to     DATE,
       p_po_date_from   DATE,
       p_po_date_to     DATE,
+	  p_pay_date_from  DATE,   --   Added by Mayur for NAIT-61763
+      p_pay_date_to    DATE,   --   Added by Mayur for NAIT-61763
       p_vendor_id      NUMBER,
       p_vendor_site_id NUMBER,
       p_assist_code    VARCHAR2,--CHECK THIS

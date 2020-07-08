@@ -1,15 +1,16 @@
-SET VERIFY OFF;
-SET SHOW OFF;
-SET ECHO OFF;
-SET TAB OFF;
-SET FEEDBACK OFF;
- 
-WHENEVER SQLERROR CONTINUE;
- 
-WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+SET SHOW OFF
+SET VERIFY OFF
+SET ECHO OFF
+SET TAB OFF
+SET FEEDBACK OFF
+SET TERM ON
 
-create or replace 
-PACKAGE body xx_ap_inv_trade_dashboard_pkg
+PROMPT Creating PACKAGE  XX_AP_INV_TRADE_DASHBOARD_PKG
+PROMPT Program exits IF the creation IS NOT SUCCESSFUL
+WHENEVER SQLERROR CONTINUE
+--
+
+CREATE OR REPLACE PACKAGE body XX_AP_INV_TRADE_DASHBOARD_PKG
 AS
   -- +============================================================================================+
   --   Office Depot - Project Simplify
@@ -23,9 +24,10 @@ AS
   -- +============================================================================================+
   --  Version     Date         Author           Remarks
   --  =========   ===========  =============    ===============================================
-  --  1.0         15-Nov-17    Priyam Parmar       Initial version
+  --  1.0         15-Nov-17    Priyam Parmar    Initial version
   --  1.0         03-Feb-18    Digamber
-  --   1.1       16-Feb-18		Priyam     code fix for NAIT-27229 
+  --  1.1         16-Feb-18    Priyam           Code fix for NAIT-27229
+  --  1.2         21-May-20    Mayur Palsokar   Modified XX_AP_INV_PAY_INQ and GET_INV_STATUSfor NAIT-61763
   -- +============================================================================================+
   ------------------------------------------------------------
   -- AP trade match Invoice and Payment Inquiry
@@ -54,38 +56,69 @@ BEGIN
   RETURN l_vendor_assistant;
 END vendor_assistant;
 -----------------
-FUNCTION get_inv_status(
-    p_invoice_id NUMBER)
+
+FUNCTION GET_INV_STATUS(
+    P_INVOICE_ID NUMBER)
   RETURN VARCHAR2
 IS
-  v_status VARCHAR2(1):='N';
+  V_STATUS   VARCHAR2(1) :='N';
+  INV_STATUS VARCHAR2(50):='N'; -- Added by Mayur for NAIT-61763
 BEGIN
-  xla_security_pkg.set_security_context(602);
+  XLA_SECURITY_PKG.SET_SECURITY_CONTEXT(602);
+  /*
   SELECT 'Y'
   INTO v_status
   FROM dual
   WHERE NOT EXISTS
-    (SELECT 'x'
-    FROM ap_holds_all
-    WHERE invoice_id         =p_invoice_id
-    AND release_lookup_code IS NULL
-    )
+  (SELECT 'x'
+  FROM ap_holds_all
+  WHERE invoice_id         =p_invoice_id
+  AND release_lookup_code IS NULL
+  )
   AND EXISTS
-    (SELECT 'x'
-    FROM xla_events xev,
-      xla_transaction_entities xte
-    WHERE xte.source_id_int_1=p_invoice_id
-    AND xte.application_id   = 200
-    AND xte.entity_code      = 'AP_INVOICES'
-    AND xev.entity_id        = xte.entity_id
-    AND xev.event_type_code LIKE '%VALIDATED%'
-    );
+  (SELECT 'x'
+  FROM xla_events xev,
+  xla_transaction_entities xte
+  WHERE xte.source_id_int_1=p_invoice_id
+  AND xte.application_id   = 200
+  AND xte.entity_code      = 'AP_INVOICES'
+  AND xev.entity_id        = xte.entity_id
+  AND xev.event_type_code LIKE '%VALIDATED%'
+  );
   RETURN(v_status);
+  */
+  -- Commented by Mayur for NAIT-61763
+  /*Start: Added by Mayur for NAIT-61763 */
+  BEGIN
+    SELECT DECODE(APPS.AP_INVOICES_PKG.GET_APPROVAL_STATUS(I.INVOICE_ID, I.INVOICE_AMOUNT,I.PAYMENT_STATUS_FLAG,I.INVOICE_TYPE_LOOKUP_CODE), 'NEVER APPROVED', 'Never Validated', 'NEEDS REAPPROVAL', 'Needs Revalidation', 'CANCELLED', 'Cancelled', 'Validated') INVOICE_STATUS
+    INTO INV_STATUS
+    FROM AP_INVOICES_ALL I
+    WHERE I.INVOICE_ID = P_INVOICE_ID
+    AND NOT EXISTS
+      (SELECT 'X'
+      FROM AP_HOLDS_ALL
+      WHERE INVOICE_ID         =P_INVOICE_ID
+      AND RELEASE_LOOKUP_CODE IS NULL
+      );
+  EXCEPTION
+  WHEN NO_DATA_FOUND THEN
+    INV_STATUS := 'N';
+  WHEN OTHERS THEN
+    INV_STATUS := 'N';
+  END;
+  IF (INV_STATUS   = 'Never Validated' OR INV_STATUS = 'Needs Revalidation') THEN
+    V_STATUS      := 'N';
+  ELSIF INV_STATUS = 'Validated' THEN
+    V_STATUS      := 'Y';
+  END IF;
+  RETURN(V_STATUS);
+  /*End: Added by Mayur for NAIT-61763 */
 EXCEPTION
 WHEN OTHERS THEN
-  RETURN(v_status);
-END get_inv_status;
+  RETURN(V_STATUS);
+END GET_INV_STATUS;
 ------
+
 FUNCTION xx_ap_hold_placed(
     p_invoice_id       NUMBER,
     p_line_location_id NUMBER,
@@ -193,6 +226,8 @@ EXCEPTION
 WHEN OTHERS THEN
   l_hold_concanated3 := NULL;
 END xx_ap_hold_placed ;
+
+
 ------------------------------------------------------------
 -- AP trade match Invoice and Payment Inquiry
 --PIPE Function to get Invoice Header and Lines information
@@ -204,6 +239,8 @@ FUNCTION xx_ap_inv_pay_inq(
     p_gl_date_to     DATE,
     p_po_date_from   DATE,
     p_po_date_to     DATE,
+    p_pay_date_from  DATE, --   Added by Mayur for NAIT-61763
+    p_pay_date_to    DATE, --   Added by Mayur for NAIT-61763
     p_vendor_id      NUMBER,
     p_vendor_site_id NUMBER,
     p_assist_code    VARCHAR2,
@@ -232,7 +269,8 @@ FUNCTION xx_ap_inv_pay_inq(
     p_excep_oth      VARCHAR2 )
   RETURN xx_ap_inv_trade_dashboard_pkg.ap_inv_trade_header_db_ctt pipelined
 IS
-  CURSOR c_inv(p_dt_from DATE,p_dt_to DATE, p_date_usage VARCHAR2)
+  -- CURSOR c_inv(p_dt_from DATE,p_dt_to DATE, p_date_usage VARCHAR2)  -- Commented by Mayur for NAIT-61763
+  CURSOR c_inv(p_date_usage VARCHAR2) -- Added by Mayur for NAIT-61763
   IS
     SELECT
       /*+ LEADING (ai) INDEX(ss AP_SUPPLIER_SITES_UI) */
@@ -278,23 +316,41 @@ IS
       ap_checks_all aca
     WHERE 1         =1
     AND p_date_usage='INV'
-    AND ai.invoice_date BETWEEN to_date(TO_CHAR(p_dt_from)
+      /* AND ai.invoice_date BETWEEN to_date(TO_CHAR(p_dt_from)
       ||' 00:00:00','DD-MON-RR HH24:MI:SS')
-    AND to_date(TO_CHAR(p_dt_to)
-      ||' 23:59:59','DD-MON-RR HH24:MI:SS')
+      AND to_date(TO_CHAR(p_dt_to)
+      ||' 23:59:59','DD-MON-RR HH24:MI:SS') */
+      -- Commented by Mayur for NAIT-61763
+      /*Start: Added by Mayur for NAIT-61763 */
+    AND (((p_date_from IS NOT NULL
+    AND p_date_to      IS NOT NULL)
+    AND (ai.invoice_date BETWEEN to_date(TO_CHAR(p_date_from)
+      ||' 00:00:00','DD-MON-RR HH24:MI:SS')
+    AND to_date(TO_CHAR(p_date_to)
+      ||' 23:59:59','DD-MON-RR HH24:MI:SS')))
+    OR ((p_invoice_num IS NOT NULL)
+    AND (p_date_from   IS NULL
+    AND p_date_to      IS NULL))
+    OR ((p_invoice_status IS NOT NULL AND p_invoice_status LIKE 'Y')
+    AND ((ai.invoice_date BETWEEN to_date(TO_CHAR(p_date_from)
+      ||' 00:00:00','DD-MON-RR HH24:MI:SS')
+    AND to_date(TO_CHAR(p_date_to)
+      ||' 23:59:59','DD-MON-RR HH24:MI:SS'))
+    OR (s.vendor_id = p_vendor_id) ) ) )
+      /*End: Added by Mayur for NAIT-61763 */
     AND ai.invoice_num NOT LIKE '%ODDBUIA%'
     AND ai.cancelled_date IS NULL
     AND ai.invoice_num LIKE NVL(p_invoice_num,ai.invoice_num)
       || '%'
     AND ai.org_id                                                   = NVL(p_org_id,ai.org_id)
     AND ai.source                                                   = NVL(p_invoice_source,ai.source)
-    AND xx_ap_inv_trade_dashboard_pkg.get_inv_status(ai.invoice_id) =p_invoice_status
+    AND xx_ap_inv_trade_dashboard_pkg.get_inv_status(ai.invoice_id) = p_invoice_status
     AND ai.invoice_type_lookup_code                                 = NVL(p_invoice_type,ai.invoice_type_lookup_code)
-    AND NVL(ai.payment_status_flag,'N')                             =NVL(p_pay_status,NVL(ai.payment_status_flag,'N'))
+    AND NVL(ai.payment_status_flag,'N')                             = NVL(p_pay_status,NVL(ai.payment_status_flag,'N'))
     AND s.vendor_id                                                 = NVL(p_vendor_id,s.vendor_id)
     AND ss.vendor_id                                                = s.vendor_id
     AND ss.vendor_site_id                                           = NVL(p_vendor_site_id,ss.vendor_site_id)
-    AND ss.vendor_site_id                                           =ai.vendor_site_id
+    AND ss.vendor_site_id                                           = ai.vendor_site_id
     AND ss.attribute6                                               = NVL(p_assist_code ,ss.attribute6)
     AND EXISTS
       (SELECT 1
@@ -352,8 +408,10 @@ IS
       -- Fright Tax Exception
     AND ( ail2.line_type_lookup_code = DECODE(p_freight,'Y',(nvl2('FREIGHT','FREIGHT',ail2.line_type_lookup_code)), (nvl2('X','X',ail2.line_type_lookup_code)))
     OR ail2.line_type_lookup_code    = DECODE(p_tax,'Y',(nvl2('TAX','TAX',ail2.line_type_lookup_code)), (nvl2('X','X',ail2.line_type_lookup_code)))
-    OR ail2.line_type_lookup_code    =DECODE(p_freight
-      ||p_tax ,'NN',ail2.line_type_lookup_code))
+      --OR ail2.line_type_lookup_code    =DECODE(p_freight||p_tax ,'NN',ail2.line_type_lookup_code) -- Commented by Mayur for NAIT-61763
+    OR ail2.line_type_lookup_code =DECODE(p_freight
+      ||p_tax ,'YY',ail2.line_type_lookup_code) -- Added by Mayur for NAIT-61763
+      )
       -- Debit Memo Exception
     AND ( NVL(ai.attribute12,'N')              = 'N'
     OR ( NVL(ai.attribute12,'N')               = 'Y'
@@ -380,11 +438,11 @@ IS
     AND upper(b.hold_lookup_code) LIKE 'QTY%')
     OR (p_excep_pricing ='Y'
     AND upper(hold_lookup_code) LIKE '%PRICE%')
-    OR (p_excep_freight          ='Y'
-    AND hold_lookup_code         = 'OD Max Freight')
-    OR (p_excep_oth              ='Y'
-   -- AND upper(hold_lookup_code) IN ('OD Favorable', 'OD Line Variance', 'OD MISC HOLD', 'OD NO Receipt', 'OD PO NO Ref') ) ) Commented for Defect NAIT-27229 
-   AND hold_lookup_code IN ('OD Favorable', 'OD Line Variance', 'OD MISC HOLD', 'OD NO Receipt', 'OD PO NO Ref') ) )
+    OR (p_excep_freight  ='Y'
+    AND hold_lookup_code = 'OD Max Freight')
+    OR (p_excep_oth      ='Y'
+      -- AND upper(hold_lookup_code) IN ('OD Favorable', 'OD Line Variance', 'OD MISC HOLD', 'OD NO Receipt', 'OD PO NO Ref') ) ) Commented for Defect NAIT-27229
+    AND hold_lookup_code IN ('OD Favorable', 'OD Line Variance', 'OD MISC HOLD', 'OD NO Receipt', 'OD PO NO Ref') ) )
     )
     -- First pass
   OR NOT EXISTS
@@ -395,8 +453,10 @@ IS
   AND (p_payment_num   IS NULL
   OR (p_payment_num    IS NOT NULL
   AND aca.check_number  = p_payment_num )) ;
+  
   -- GL Date Parameter
-  CURSOR c_gl(p_dt_from DATE,p_dt_to DATE, p_date_usage VARCHAR2)
+  -- CURSOR c_gl(p_dt_from DATE,p_dt_to DATE, p_date_usage VARCHAR2)     -- Commented by Mayur for NAIT-61763
+  CURSOR c_gl(p_date_usage VARCHAR2) -- Added by Mayur for NAIT-61763
   IS
     SELECT
       /*+ LEADING (ai) INDEX(ss AP_SUPPLIER_SITES_UI) */
@@ -442,10 +502,25 @@ IS
       ap_checks_all aca
     WHERE 1         =1
     AND p_date_usage='GL'
-    AND ai.gl_date BETWEEN to_date(TO_CHAR(p_dt_from)
+      /*  AND ai.gl_date BETWEEN to_date(TO_CHAR(p_dt_from)
       ||' 00:00:00','DD-MON-RR HH24:MI:SS')
-    AND to_date(TO_CHAR(p_dt_to)
-      ||' 23:59:59','DD-MON-RR HH24:MI:SS')
+      AND to_date(TO_CHAR(p_dt_to)
+      ||' 23:59:59','DD-MON-RR HH24:MI:SS')  */
+      -- Commented by Mayur for NAIT-61763
+      /*Start: Added by Mayur for NAIT-61763 */
+    AND (((p_gl_date_from IS NOT NULL
+    AND p_gl_date_to     IS NOT NULL)
+    AND (ai.gl_date BETWEEN to_date(TO_CHAR(p_gl_date_from)
+      ||' 00:00:00','DD-MON-RR HH24:MI:SS')
+    AND to_date(TO_CHAR(p_gl_date_to)
+      ||' 23:59:59','DD-MON-RR HH24:MI:SS')))
+    OR ((p_invoice_status IS NOT NULL AND p_invoice_status LIKE 'Y') AND (p_gl_date_from IS NOT NULL
+    AND p_gl_date_to     IS NOT NULL)
+    AND ((ai.gl_date BETWEEN to_date(TO_CHAR(p_date_from)
+      ||' 00:00:00','DD-MON-RR HH24:MI:SS')
+    AND to_date(TO_CHAR(p_date_to)
+      ||' 23:59:59','DD-MON-RR HH24:MI:SS')) ) ) )
+      /*End: Added by Mayur for NAIT-61763 */
     AND ai.invoice_num NOT LIKE '%ODDBUIA%'
     AND ai.cancelled_date IS NULL
     AND ai.invoice_num LIKE NVL(p_invoice_num,ai.invoice_num)
@@ -516,8 +591,10 @@ IS
       -- Fright Tax Exception
     AND ( ail2.line_type_lookup_code = DECODE(p_freight,'Y',(nvl2('FREIGHT','FREIGHT',ail2.line_type_lookup_code)), (nvl2('X','X',ail2.line_type_lookup_code)))
     OR ail2.line_type_lookup_code    = DECODE(p_tax,'Y',(nvl2('TAX','TAX',ail2.line_type_lookup_code)), (nvl2('X','X',ail2.line_type_lookup_code)))
-    OR ail2.line_type_lookup_code    =DECODE(p_freight
-      ||p_tax ,'NN',ail2.line_type_lookup_code))
+      --OR ail2.line_type_lookup_code    =DECODE(p_freight||p_tax ,'NN',ail2.line_type_lookup_code) -- Commented by Mayur for NAIT-61763
+    OR ail2.line_type_lookup_code =DECODE(p_freight
+      ||p_tax ,'YY',ail2.line_type_lookup_code) -- Added by Mayur for NAIT-61763
+      )
       -- Debit Memo Exception
     AND ( NVL(ai.attribute12,'N')              = 'N'
     OR ( NVL(ai.attribute12,'N')               = 'Y'
@@ -556,8 +633,8 @@ IS
       --  And Hold_Lookup_Code   <> 'QTY ORD'
       -- And Hold_Lookup_Code   <> 'OD Max Freight'
       -- And Upper(Hold_Lookup_Code) Not Like '%PRICE%'
-  ---  AND upper(hold_lookup_code) IN ('OD Favorable', 'OD Line Variance', 'OD MISC HOLD', 'OD NO Receipt', 'OD PO NO Ref') ) )
-  AND hold_lookup_code IN ('OD Favorable', 'OD Line Variance', 'OD MISC HOLD', 'OD NO Receipt', 'OD PO NO Ref') ) )
+      ---  AND upper(hold_lookup_code) IN ('OD Favorable', 'OD Line Variance', 'OD MISC HOLD', 'OD NO Receipt', 'OD PO NO Ref') ) )
+    AND hold_lookup_code IN ('OD Favorable', 'OD Line Variance', 'OD MISC HOLD', 'OD NO Receipt', 'OD PO NO Ref') ) )
     )
     /*OR ( NVL(b.hold_lookup_code,'X') =DECODE( :p_excep_qty
     ||:p_excep_pricing
@@ -573,8 +650,10 @@ IS
   AND (p_payment_num   IS NULL
   OR (p_payment_num    IS NOT NULL
   AND aca.check_number  = p_payment_num )) ;
-  -- PO Parameter
-  CURSOR c_po(p_dt_from DATE,p_dt_to DATE, p_date_usage VARCHAR2)
+ 
+ -- PO Parameter
+  -- CURSOR c_po(p_dt_from DATE,p_dt_to DATE, p_date_usage VARCHAR2)   -- Commented by Mayur for NAIT-61763
+  CURSOR c_po(p_date_usage VARCHAR2) -- Added by Mayur for NAIT-61763
   IS
     --
     SELECT
@@ -629,10 +708,20 @@ IS
     ap_payment_schedules_all py
   WHERE 1         =1
   AND p_date_usage='PO'
-  AND pha.creation_date BETWEEN to_date(TO_CHAR(p_dt_from)
+    /* AND pha.creation_date BETWEEN to_date(TO_CHAR(p_dt_from)
     ||' 00:00:00','DD-MON-RR HH24:MI:SS')
-  AND to_date(TO_CHAR(p_dt_to)
-    ||' 23:59:59','DD-MON-RR HH24:MI:SS')
+    AND to_date(TO_CHAR(p_dt_to)
+    ||' 23:59:59','DD-MON-RR HH24:MI:SS') */
+    -- Commented by Mayur for NAIT-61763
+    /*Start: Added by Mayur for NAIT-61763 */
+  AND (((p_po_date_from IS NOT NULL
+  AND p_po_date_to      IS NOT NULL)
+  AND (pha.creation_date BETWEEN to_date(TO_CHAR(p_po_date_from)
+    ||' 00:00:00','DD-MON-RR HH24:MI:SS')
+  AND to_date(TO_CHAR(p_po_date_to)
+    ||' 23:59:59','DD-MON-RR HH24:MI:SS')))
+  OR (p_po_header_id IS NOT NULL))
+    /*End: Added by Mayur for NAIT-61763 */
     --   AND PHA.SEGMENT1=:p_SEGMENT1
   AND (pha.attribute_category LIKE DECODE(p_dropship,'Y',(nvl2('DropShip%','DropShip%',pha.attribute_category)), (nvl2('X','X',pha.attribute_category)))
   OR pha.attribute_category LIKE DECODE(p_frontdoor,'Y',(nvl2('FrontDoor%','FrontDoor%',pha.attribute_category)), (nvl2('X','X',pha.attribute_category)))
@@ -688,7 +777,7 @@ IS
   AND sysdate BETWEEN tv.start_date_active AND NVL(tv.end_date_active,sysdate)
   AND tv.target_value1          =NVL(apsite.attribute6,'Open')
   AND NVL(ai.attribute12,'N')   = DECODE(p_chargeback, 'Y', 'Y', NVL(ai.attribute12,'N'))
-AND ( NVL(ai.attribute12,'N') = 'Y'
+  AND ( NVL(ai.attribute12,'N') = 'Y'
   OR ( NVL(ai.attribute12,'N')  = 'N'
   AND EXISTS
     (SELECT 1
@@ -699,28 +788,28 @@ AND ( NVL(ai.attribute12,'N') = 'Y'
     AND upper(b.hold_lookup_code) LIKE 'QTY%')
     OR (p_excep_pricing ='Y'
     AND upper(hold_lookup_code) LIKE '%PRICE%')
-    OR (p_excep_freight          ='Y'
-    AND hold_lookup_code         = 'OD Max Freight')
-    OR (p_excep_oth              ='Y'
-   -- AND upper(hold_lookup_code) IN ('OD Favorable', 'OD Line Variance', 'OD MISC HOLD', 'OD NO Receipt', 'OD PO NO Ref') ) ) Commented for Defect NAIT-27229 
-   AND hold_lookup_code IN ('OD Favorable', 'OD Line Variance', 'OD MISC HOLD', 'OD NO Receipt', 'OD PO NO Ref') ) )
+    OR (p_excep_freight  ='Y'
+    AND hold_lookup_code = 'OD Max Freight')
+    OR (p_excep_oth      ='Y'
+      -- AND upper(hold_lookup_code) IN ('OD Favorable', 'OD Line Variance', 'OD MISC HOLD', 'OD NO Receipt', 'OD PO NO Ref') ) ) Commented for Defect NAIT-27229
+    AND hold_lookup_code IN ('OD Favorable', 'OD Line Variance', 'OD MISC HOLD', 'OD NO Receipt', 'OD PO NO Ref') ) )
     )
     -- First pass
   OR NOT EXISTS
     (SELECT 1 FROM ap_holds_all b WHERE 1 =1 AND b.invoice_id = ai.invoice_id
     ) ) )
-    
-    
   AND EXISTS
-      (SELECT 1
+    (SELECT 1
     FROM ap_invoice_lines_all ail2
     WHERE 1             =1
     AND ail2.invoice_id = ai.invoice_id
       -- Fright Tax Exception
     AND ( ail2.line_type_lookup_code = DECODE(p_freight,'Y',(nvl2('FREIGHT','FREIGHT',ail2.line_type_lookup_code)), (nvl2('X','X',ail2.line_type_lookup_code)))
     OR ail2.line_type_lookup_code    = DECODE(p_tax,'Y',(nvl2('TAX','TAX',ail2.line_type_lookup_code)), (nvl2('X','X',ail2.line_type_lookup_code)))
-    OR ail2.line_type_lookup_code    =DECODE(p_freight
-      ||p_tax ,'NN',ail2.line_type_lookup_code))
+      --OR ail2.line_type_lookup_code    =DECODE(p_freight||p_tax ,'NN',ail2.line_type_lookup_code) -- Commented by Mayur for NAIT-61763
+    OR ail2.line_type_lookup_code =DECODE(p_freight
+      ||p_tax ,'YY',ail2.line_type_lookup_code) -- Added by Mayur for NAIT-61763
+      )
       -- Debit Memo Exception
     AND ( NVL(ai.attribute12,'N')              = 'N'
     OR ( NVL(ai.attribute12,'N')               = 'Y'
@@ -737,6 +826,179 @@ AND ( NVL(ai.attribute12,'N') = 'Y'
     )
   AND pterm.term_id      =ai.terms_id
   AND aipa.invoice_id(+) = ai.invoice_id ;
+ 
+ /*Start: Added by Mayur for NAIT-61763*/
+  -- Payment date parameter
+  CURSOR c_pay(p_date_usage VARCHAR2)
+  IS 
+  SELECT
+      /*+ LEADING (ai) INDEX(ss AP_SUPPLIER_SITES_UI) */
+      tv.target_value2 vendorasistant,
+      ai.invoice_id,
+      s.segment1 sup_num,
+      s.vendor_name sup_name,
+      ss.vendor_site_code sup_site,
+      ai.invoice_num invoice_num,
+      ai.invoice_date,
+      ai.invoice_amount,
+      xx_ap_inv_trade_dashboard_pkg.f_freight_amount(ai.invoice_id) freight_amount,
+      xx_ap_inv_trade_dashboard_pkg.f_tax_amount(ai.invoice_id) tax_amount,
+      pha.segment1 po_num,
+      pha.creation_date po_date,
+      pterm.name payment_term,
+      ai.terms_date,
+      NVL(ps.discount_date,ps.due_date) due_date,
+      ai.gl_date,
+      ai.invoice_currency_code inv_cur_code,
+      ai.payment_method_code payment_method,
+      ai.pay_group_lookup_code pay_group,
+      ai.source inv_source,
+      ai.invoice_type_lookup_code invoice_type,
+      p_invoice_status invoice_status,
+      pha.attribute_category po_type,
+      aca.check_number payment_numb , --aipa.PAYMENT_NUMB,
+      aca.check_date payment_date,    -- Aipa.Payment_Date,
+      ipa.amount amount_paid,
+      (ps.gross_amount-ps.amount_remaining) pyamount_paid,
+      DECODE(ps.payment_status_flag,'Y','Paid','N','Unpaid','P','Partially') payment_status,
+      ai.payment_status_flag payment_status_code,
+      NVL(ai.attribute12,'N') chargeback_flag
+    FROM ap_supplier_sites_all ss ,
+      ap_suppliers s,
+      ap_invoices_all ai ,
+      ap_terms pterm,
+      xx_fin_translatevalues tv,
+      xx_fin_translatedefinition td,
+      ap_payment_schedules_all ps,
+      po_headers_all pha,
+      ap_invoice_payments_all ipa,
+      ap_checks_all aca
+    WHERE 1         =1
+    AND p_date_usage='PAY'
+    AND   (((p_pay_date_from IS NOT NULL
+    AND p_pay_date_to      IS NOT NULL)
+    AND (ai.invoice_date BETWEEN to_date(TO_CHAR(p_pay_date_from)
+      ||' 00:00:00','DD-MON-RR HH24:MI:SS')
+    AND to_date(TO_CHAR(p_pay_date_to)
+      ||' 23:59:59','DD-MON-RR HH24:MI:SS')))
+    OR (p_payment_num IS NOT NULL AND aca.check_number  = p_payment_num)
+   -- OR (p_pay_status  IS NOT NULL AND p_pay_status  = 'Unpaid' )
+	)
+    AND ai.invoice_num NOT LIKE '%ODDBUIA%'
+    AND ai.cancelled_date IS NULL
+    AND ai.invoice_num LIKE NVL(p_invoice_num,ai.invoice_num)
+      || '%'
+    AND ai.org_id                                                   = NVL(p_org_id,ai.org_id)
+    AND ai.source                                                   = NVL(p_invoice_source,ai.source)
+    AND xx_ap_inv_trade_dashboard_pkg.get_inv_status(ai.invoice_id) = p_invoice_status
+    AND ai.invoice_type_lookup_code                                 = NVL(p_invoice_type,ai.invoice_type_lookup_code)
+    AND NVL(ai.payment_status_flag,'N')                             = NVL(p_pay_status,NVL(ai.payment_status_flag,'N'))
+    AND s.vendor_id                                                 = NVL(p_vendor_id,s.vendor_id)
+    AND ss.vendor_id                                                = s.vendor_id
+    AND ss.vendor_site_id                                           = NVL(p_vendor_site_id,ss.vendor_site_id)
+    AND ss.vendor_site_id                                           = ai.vendor_site_id
+    AND ss.attribute6                                               = NVL(p_assist_code ,ss.attribute6)
+    AND EXISTS
+      (SELECT 1
+      FROM xx_fin_translatevalues tv,
+        xx_fin_translatedefinition td
+      WHERE td.translation_name = 'XX_AP_TRADE_CATEGORIES'
+      AND tv.translate_id       = td.translate_id
+      AND tv.enabled_flag       = 'Y'
+      AND sysdate BETWEEN tv.start_date_active AND NVL(tv.end_date_active,sysdate)
+      AND tv.target_value1 = ss.attribute8
+        ||''
+      )
+  AND pterm.term_id       = ai.terms_id
+  AND td.translation_name = 'XX_AP_VENDOR_ASSISTANTS'
+  AND tv.translate_id     = td.translate_id
+  AND tv.enabled_flag     ='Y'
+  AND sysdate BETWEEN tv.start_date_active AND NVL(tv.end_date_active,sysdate)
+  AND tv.target_value1    = NVL(ss.attribute6,'Open')
+  AND ps.invoice_id       =ai.invoice_id
+  AND pha.po_header_id(+) = NVL(ai.po_header_id ,ai.quick_po_header_id)
+  AND ( p_po_header_id   IS NULL
+  OR ( p_po_header_id    IS NOT NULL
+  AND pha.po_header_id    = p_po_header_id ) )
+  AND ((pha.po_header_id IS NULL
+  AND p_dropship
+    ||p_frontdoor
+    ||p_noncode
+    ||p_consignment
+    ||p_trade
+    ||p_newstore
+    ||p_replenishment
+    ||p_directimport     = 'NNNNNNNN' )
+  OR ( pha.po_header_id IS NOT NULL
+  AND (pha.attribute_category LIKE DECODE(p_dropship,'Y',(nvl2('DropShip%','DropShip%',pha.attribute_category)), (nvl2('X','X',pha.attribute_category)))
+  OR pha.attribute_category LIKE DECODE(p_frontdoor,'Y',(nvl2('FrontDoor%','FrontDoor%',pha.attribute_category)), (nvl2('X','X',pha.attribute_category)))
+  OR pha.attribute_category          =DECODE(p_noncode,'Y',(nvl2('Non-Code','Non-Code',pha.attribute_category)), (nvl2('X','X',pha.attribute_category)))
+  OR pha.attribute_category          =DECODE(p_consignment,'Y',(nvl2('Consignment','Consignment',pha.attribute_category)), (nvl2('X','X',pha.attribute_category)))
+  OR pha.attribute_category          =DECODE(p_trade,'Y',(nvl2('Trade','Trade',pha.attribute_category)), (nvl2('X','X',pha.attribute_category)))
+  OR pha.attribute_category          =DECODE(p_newstore,'Y',(nvl2('New Store','New Store',pha.attribute_category)), (nvl2('X','X',pha.attribute_category)))
+  OR pha.attribute_category          =DECODE(p_replenishment,'Y',(nvl2('Replenishment','Replenishment',pha.attribute_category)), (nvl2('X','X',pha.attribute_category)))
+  OR pha.attribute_category          =DECODE(p_directimport,'Y',(nvl2('Direct Import','Direct Import',pha.attribute_category)), (nvl2('X','X',pha.attribute_category)))
+  OR NVL(pha.attribute_category,'X') =DECODE(p_dropship
+    ||p_frontdoor
+    ||p_noncode
+    ||p_consignment
+    ||p_trade
+    ||p_newstore
+    ||p_replenishment
+    ||p_directimport,'NNNNNNNN',NVL(pha.attribute_category,'X'))) ))
+  AND EXISTS
+    (SELECT 1
+    FROM ap_invoice_lines_all ail2
+    WHERE 1             =1
+    AND ail2.invoice_id = ai.invoice_id
+      -- Fright Tax Exception
+    AND ( ail2.line_type_lookup_code = DECODE(p_freight,'Y',(nvl2('FREIGHT','FREIGHT',ail2.line_type_lookup_code)), (nvl2('X','X',ail2.line_type_lookup_code)))
+    OR ail2.line_type_lookup_code    = DECODE(p_tax,'Y',(nvl2('TAX','TAX',ail2.line_type_lookup_code)), (nvl2('X','X',ail2.line_type_lookup_code)))
+      --OR ail2.line_type_lookup_code    =DECODE(p_freight||p_tax ,'NN',ail2.line_type_lookup_code) -- Commented by Mayur for NAIT-61763
+    OR ail2.line_type_lookup_code =DECODE(p_freight
+      ||p_tax ,'YY',ail2.line_type_lookup_code) -- Added by Mayur for NAIT-61763
+      )
+      -- Debit Memo Exception
+    AND ( NVL(ai.attribute12,'N')              = 'N'
+    OR ( NVL(ai.attribute12,'N')               = 'Y'
+    AND ( ( p_excep_qty                        = 'Y'
+    AND upper(SUBSTR(ail2.description,1,3))    ='QTY' )
+    OR (p_excep_pricing                        = 'Y'
+    AND upper(SUBSTR(ail2.description,1,3))    ='PRI' )
+    OR (p_excep_freight                        = 'Y'
+    AND upper(SUBSTR(ail2.description,1,3))    ='FRE' )
+    OR (p_excep_oth                            = 'Y'
+    AND ( upper(SUBSTR(ail2.description,1,3)) <> 'PRI'
+    AND upper(SUBSTR(ail2.description,1,3))   <> 'QTY'
+    AND upper(SUBSTR(ail2.description,1,3))   <> 'FRE'))) ) )
+    )
+  AND NVL(ai.attribute12,'N')   = DECODE(p_chargeback, 'Y', 'Y', NVL(ai.attribute12,'N'))
+  AND ( NVL(ai.attribute12,'N') = 'Y'
+  OR ( NVL(ai.attribute12,'N')  = 'N'
+  AND EXISTS
+    (SELECT 1
+    FROM ap_holds_all b
+    WHERE 1            =1
+    AND b.invoice_id   = ai.invoice_id
+    AND ( (p_excep_qty ='Y'
+    AND upper(b.hold_lookup_code) LIKE 'QTY%')
+    OR (p_excep_pricing ='Y'
+    AND upper(hold_lookup_code) LIKE '%PRICE%')
+    OR (p_excep_freight  ='Y'
+    AND hold_lookup_code = 'OD Max Freight')
+    OR (p_excep_oth      ='Y'
+      -- AND upper(hold_lookup_code) IN ('OD Favorable', 'OD Line Variance', 'OD MISC HOLD', 'OD NO Receipt', 'OD PO NO Ref') ) ) Commented for Defect NAIT-27229
+    AND hold_lookup_code IN ('OD Favorable', 'OD Line Variance', 'OD MISC HOLD', 'OD NO Receipt', 'OD PO NO Ref') ) )
+    )
+    -- First pass
+  OR NOT EXISTS
+    (SELECT 1 FROM ap_holds_all b WHERE 1 =1 AND b.invoice_id = ai.invoice_id
+    ) ) )
+  AND ipa.invoice_id(+) = ai.invoice_id
+  AND aca.check_id(+)   = ipa.check_id;
+  
+  /*End: Added by Mayur for NAIT-61763*/
+  
 type ap_inv_trade_header_db_ctt
 IS
   TABLE OF xx_ap_inv_trade_dashboard_pkg.ap_inv_trade_header_db INDEX BY pls_integer;
@@ -752,28 +1014,77 @@ IS
   l_po_num       VARCHAR2(50) :='X';
   l_po_header_id NUMBER;
   l_invoice_id   NUMBER;
+  
 BEGIN
+  /*  -- Start: Commented by Mayur for NAIT-61763
   IF ( p_date_from IS NOT NULL AND p_date_to IS NOT NULL ) THEN
-    l_start_date   := p_date_from;
-    l_end_date     := p_date_to;
-    l_date_usage   :='INV';
+  l_start_date   := p_date_from;
+  l_end_date     := p_date_to;
+  l_date_usage   :='INV';
   END IF;
   IF ( p_gl_date_from IS NOT NULL AND p_gl_date_to IS NOT NULL ) THEN
-    l_start_date      := p_gl_date_from;
-    l_end_date        := p_gl_date_to;
-    l_date_usage      :='GL';
+  l_start_date      := p_gl_date_from;
+  l_end_date        := p_gl_date_to;
+  l_date_usage      :='GL';
   END IF;
   IF ( p_po_date_from IS NOT NULL AND p_po_date_to IS NOT NULL ) THEN
-    l_start_date      := p_po_date_from;
-    l_end_date        := p_po_date_to;
-    l_date_usage      :='PO';
+  l_start_date      := p_po_date_from;
+  l_end_date        := p_po_date_to;
+  l_date_usage      :='PO';
   END IF;
+  -- End: Commented by Mayur for NAIT-61763*/
+  
+  /*Start: Added by Mayur for NAIT-61763*/
+  
+
+ IF  ((p_date_from IS NOT NULL
+  AND p_date_to      IS NOT NULL)
+    OR ((p_invoice_num IS NOT NULL)
+    AND (p_date_from   IS NULL
+    AND p_date_to      IS NULL))
+    OR ((p_invoice_status IS NOT NULL AND p_invoice_status LIKE 'Y')
+    AND ((p_date_from IS NOT NULL
+  AND p_date_to      IS NOT NULL)
+    OR (p_vendor_id IS NOT NULL) )))  THEN
+    l_date_usage   := 'INV';
+	
+  END IF;
+  
+  IF   
+  ( ((p_gl_date_from IS NOT NULL
+    AND p_gl_date_to     IS NOT NULL))
+    OR ((p_invoice_status IS NOT NULL AND p_invoice_status LIKE 'Y') AND (p_gl_date_from IS NOT NULL
+    AND p_gl_date_to     IS NOT NULL) ) ) THEN
+    l_date_usage      :='GL';
+	
+  END IF;
+  
+  IF (((p_po_date_from IS NOT NULL
+  AND p_po_date_to      IS NOT NULL))
+  OR (p_po_header_id IS NOT NULL)) THEN
+    l_date_usage      :='PO';
+		
+  END IF;
+	
+  IF   ((p_pay_date_from IS NOT NULL
+    AND p_pay_date_to      IS NOT NULL)
+    OR (p_payment_num  IS NOT NULL)
+    OR (p_pay_status  IS NOT NULL AND p_pay_status  = 'Unpaid' )) THEN
+    l_date_usage       :='PAY';
+	
+  END IF;
+
+  /*End: Added by Mayur for NAIT-61763*/
   IF l_trade_header_db.count > 0 THEN
     l_trade_header_db.delete;
   END IF;
-  IF l_date_usage IN ( 'INV') THEN
-    FOR i         IN c_inv (l_start_date,l_end_date,l_date_usage)
+  
+   
+  IF l_date_usage IN ('INV') THEN
+    --   FOR i IN c_inv (l_start_date,l_end_date,l_date_usage)   -- Commented by Mayur for NAIT-61763
+    FOR i IN c_inv (l_date_usage) -- Commented by Mayur for NAIT-61763
     LOOP
+  
       l_trade_header_db(n).vendorasistant      := i.vendorasistant;
       l_trade_header_db(n).sup_num             := i.sup_num;
       l_trade_header_db(n).sup_name            := i.sup_name;
@@ -806,8 +1117,11 @@ BEGIN
     END LOOP;
   END IF;
   IF l_date_usage = 'GL' THEN
-    FOR i IN c_gl (l_start_date,l_end_date,l_date_usage)
+    --   FOR i IN c_gl (l_start_date,l_end_date,l_date_usage)  -- Commented by Mayur for NAIT-61763
+    FOR i IN c_gl (l_date_usage) -- Added by Mayur for NAIT-61763
     LOOP
+	
+	 insert into xxtest values ('l_date_usage: ', 'GL');
       l_trade_header_db(n).vendorasistant := i.vendorasistant;
       ---L_TRADE_HEADER_DB(N).OU_NAME               := I.OU_NAME ;
       l_trade_header_db(n).sup_num             := i.sup_num;
@@ -841,8 +1155,11 @@ BEGIN
     END LOOP;
   END IF;
   IF l_date_usage = 'PO' THEN
-    FOR i IN c_po (l_start_date,l_end_date,l_date_usage)
+    --  FOR i IN c_po (l_start_date,l_end_date,l_date_usage)  -- Commented by Mayur for NAIT-61763
+    FOR i IN c_po (l_date_usage) -- Added by Mayur for NAIT-61763
     LOOP
+	
+	 insert into xxtest values ('l_date_usage: ', 'PO');
       l_trade_header_db(n).vendorasistant      := i.vendorasistant;
       l_trade_header_db(n).sup_num             := i.sup_num;
       l_trade_header_db(n).sup_name            := i.sup_name;
@@ -874,12 +1191,50 @@ BEGIN
       n                                        :=n+1;
     END LOOP;
   END IF;
+  /*Start: Added by Mayur for NAIT-61763*/
+  IF l_date_usage IN ('PAY') THEN
+    FOR i         IN c_pay (l_date_usage)
+    LOOP
+	 insert into xxtest values ('l_date_usage: ', 'PAY');
+      l_trade_header_db(n).vendorasistant      := i.vendorasistant;
+      l_trade_header_db(n).sup_num             := i.sup_num;
+      l_trade_header_db(n).sup_name            := i.sup_name;
+      l_trade_header_db(n).sup_site            := i.sup_site;
+      l_trade_header_db(n).invoice_num         := i.invoice_num;
+      l_trade_header_db(n).invoice_id          := i.invoice_id;
+      l_trade_header_db(n).invoice_date        := i.invoice_date;
+      l_trade_header_db(n).invoice_amount      := i.invoice_amount;
+      l_trade_header_db(n).freight_amount      := i.freight_amount;
+      l_trade_header_db(n).tax_amount          := i.tax_amount;
+      l_trade_header_db(n).po_num              := i.po_num;
+      l_trade_header_db(n).payment_term        := i.payment_term;
+      l_trade_header_db(n).terms_date          := i.terms_date;
+      l_trade_header_db(n).due_date            := i.due_date;
+      l_trade_header_db(n).gl_date             := i.gl_date;
+      l_trade_header_db(n).inv_cur_code        := i.inv_cur_code;
+      l_trade_header_db(n).payment_method      := i.payment_method;
+      l_trade_header_db(n).pay_group           := i.pay_group;
+      l_trade_header_db(n).inv_source          := i.inv_source;
+      l_trade_header_db(n).po_type             := i.po_type;
+      l_trade_header_db(n).invoice_status      := i.invoice_status;
+      l_trade_header_db(n).payment_numb        := i.payment_numb;
+      l_trade_header_db(n).payment_date        := i.payment_date;
+      l_trade_header_db(n).amount_paid         := i.amount_paid;
+      l_trade_header_db(n).payment_status      := i.payment_status;
+      l_trade_header_db(n).payment_status_code := i.payment_status_code;
+      l_trade_header_db(n).chargeback_flag     := i.chargeback_flag;
+      l_trade_header_db(n).invoice_type        := i.invoice_type;
+      n                                        :=n+1;
+    END LOOP;
+  END IF;
+  /*End: Added by Mayur for NAIT-61763*/
   IF l_trade_header_db.count > 0 THEN
     FOR i IN l_trade_header_db.first .. l_trade_header_db.last
     LOOP
       pipe row ( l_trade_header_db(i) ) ;
     END LOOP;
   END IF;
+	
   RETURN;
 EXCEPTION
 WHEN ex_dml_errors THEN
@@ -1510,5 +1865,4 @@ END;
 END xx_ap_inv_trade_dashboard_pkg;
 
 /
-
-SHOW ERRORS;
+show error
