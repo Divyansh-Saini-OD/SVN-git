@@ -258,8 +258,13 @@ AS
 		
 			WITH C1  AS  (SELECT /*+ MATERIALIZE */ trx_number ,trx_date , billing_date, bill_to_customer_id , batch_source_id , cust_trx_type_id , customer_trx_id , attribute14 
 				FROM ra_customer_trx_all rct 
-				WHERE (NVL(rct.billing_date,SYSDATE+37))>=(SYSDATE+37)
-				AND rct.attribute14 is not null)
+				WHERE 1=1
+				AND rct.attribute14 is not null
+				AND EXISTS (
+				SELECT 1 FROM oe_ordeR_headers_all ooha
+				WHERE rct.attribute14        = ooha.header_id
+				AND ooha.creation_date <= TO_DATE(P_DATE,'RRRR/MM/DD HH24:MI:SS') -7 
+				))
 			select  hp.party_name CUST_NAME
 				 , hca.orig_system_reference LEGACY_CUST_NAME
 				 , rct.trx_number TRX_NUMBER
@@ -291,7 +296,7 @@ AS
 			AND ar_pay.status = 'OP'
 			AND rct.attribute14 = oe.header_id 
 			AND oe.order_source_id = 1029 
-			AND oe.creation_date <= sysdate -7
+			AND oe.creation_date <= TO_DATE(P_DATE,'RRRR/MM/DD HH24:MI:SS') -7 
       AND EXISTS ( SELECT 1 FROM hz_customer_profiles hcp 
       WHERE 1=1
       AND hcp.cust_account_id = hca.cust_account_id 
@@ -379,8 +384,13 @@ AS
 		
 			WITH C1  AS  (SELECT /*+ MATERIALIZE */ trx_number ,trx_date , billing_date, bill_to_customer_id , batch_source_id , cust_trx_type_id , customer_trx_id , attribute14 
 				FROM ra_customer_trx_all rct 
-				WHERE (NVL(rct.billing_date,SYSDATE+37))>=(SYSDATE+37)
-				AND rct.attribute14 is not null)
+				WHERE 1=1
+				AND rct.attribute14 is not null
+				AND EXISTS (
+				SELECT 1 FROM oe_ordeR_headers_all ooha
+				WHERE rct.attribute14        = ooha.header_id
+				AND ooha.creation_date <= TO_DATE(P_DATE,'RRRR/MM/DD HH24:MI:SS') -7 
+				))
 			SELECT 
 				   hp.party_name CUST_NAME
 				 , hca.orig_system_reference LEGACY_CUST_NAME
