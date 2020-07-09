@@ -1624,8 +1624,8 @@ HEADER_ATTRIBUTE13  RA_INTERFACE_LINES_ALL.HEADER_ATTRIBUTE13%TYPE,
                 UPDATE ra_interface_lines_all
                 SET quantity          = i.qty,        -- NAIT-125301
                   quantity_ordered    = i.qty,        -- NAIT-125301
-                  unit_selling_price  = i.unit_price, -- NAIT-125301
-                  unit_standard_price = i.unit_price  -- NAIT-125301
+                  unit_selling_price  = ABS(i.unit_price), -- NAIT-125301
+                  unit_standard_price = ABS(i.unit_price)  -- NAIT-125301
                 WHERE ROWID           = i.row_id
                 AND org_id            = FND_PROFILE.VALUE('ORG_ID');
                 --
