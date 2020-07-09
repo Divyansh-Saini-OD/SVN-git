@@ -53,6 +53,9 @@ IS
       p_type   VARCHAR2,
       p_flag   VARCHAR2)
     RETURN VARCHAR2;
+	
+  FUNCTION xx_get_lob(p_organization_id IN number,p_org_id IN number)
+  RETURN VARCHAR2;
 END XX_PA_CONV_EXTRACT_PKG;
 /
 SHOW ERRORS;
