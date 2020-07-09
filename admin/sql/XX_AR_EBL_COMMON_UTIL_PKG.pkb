@@ -6047,25 +6047,8 @@ IS
 
 ln_line_number NUMBER;
 ln_org_id      NUMBER;
-ln_organization NUMBER;
 
 BEGIN
-
-   IF p_organization IS NULL THEN
-	  BEGIN
-        SELECT organization_id 
-          INTO ln_organization
-          FROM org_organization_definitions
-         WHERE ORGANIZATION_NAME = 'OD_ITEM_MASTER'
-           AND rownum =1;		  
-	     
-      EXCEPTION WHEN OTHERS THEN
-	     ln_organization := 404 ;	  
-	  END;
-	  
-   ELSE
-      ln_organization := p_organization;
-   END IF;
 
    BEGIN
 	   SELECT to_number(attribute12)
@@ -6081,6 +6064,8 @@ BEGIN
 
    IF ln_line_number =0 THEN
       RETURN p_line_number;
+   ELSIF ln_line_number IS NULL THEN
+      RETURN p_line_number;
    ELSE
       RETURN ln_line_number||'.'||p_line_number;
    END IF;
@@ -6091,5 +6076,92 @@ WHEN OTHERS	THEN
   FND_FILE.PUT_LINE(FND_FILE.LOG,'Error while returning fee_amount in get_fee_amount : '||Sqlerrm);
 	RETURN(p_line_number);
 END get_fee_line_number;
+
+-- +===================================================================================+
+-- |                  Office Depot - Project Simplify                                  |
+-- +===================================================================================+
+-- | Name        : GET_FEE_OPTION                                                 |
+-- | Description : To get fee option for particular transaction                       |
+-- |                                                                                   |
+-- |                                                                                   |
+-- |                                                                                   |
+-- |Change Record:                                                                     |
+-- |===============                                                                    |
+-- |Version   Date          Author              Remarks                                |
+-- |=======   ==========   =============        =======================================|
+-- | 1.0      23-MAR-2020  Divyansh Saini       Initial draft version                  |
+-- +===================================================================================+
+FUNCTION get_fee_option (p_cust_doc_id IN NUMBER,
+                         p_mbs_doc_type  IN VARCHAR2,
+						 p_cust_account_id IN NUMBER,
+						 p_del_method IN VARCHAR2 default 'ePDF') RETURN NUMBER IS
+
+ln_attr_group_id NUMBER := 0;
+ln_fee_option    NUMBER := 0;
+BEGIN
+
+	BEGIN
+		SELECT attr_group_id
+		INTO   ln_attr_group_id
+		FROM   ego_attr_groups_v
+		WHERE  attr_group_type = 'XX_CDH_CUST_ACCOUNT'
+		AND    attr_group_name = 'BILLDOCS' ;
+	 EXCEPTION
+		WHEN NO_DATA_FOUND THEN
+		   ln_attr_group_id := 0;
+		WHEN OTHERS THEN
+		   ln_attr_group_id := 0;
+	 END;
+	 
+	BEGIN
+		 SELECT fee_option
+		   INTO ln_fee_option
+		   FROM xx_cdh_cust_acct_ext_b
+		  WHERE n_ext_attr2   = p_cust_doc_id
+		    AND d_ext_attr2 is not null
+			and c_ext_attr1 = p_mbs_doc_type
+			AND attr_group_id = ln_attr_group_id;
+	 EXCEPTION
+		WHEN NO_DATA_FOUND THEN
+		   ln_fee_option := -1;
+		WHEN OTHERS THEN
+		   ln_fee_option := 0;
+	 END;
+
+   IF ln_fee_option = -1 THEN
+      BEGIN
+		 SELECT fee_option
+		   INTO ln_fee_option
+		   FROM xx_cdh_cust_acct_ext_b
+		  WHERE cust_account_id   = p_cust_account_id
+			AND c_ext_attr3 = p_del_method
+			AND attr_group_id = ln_attr_group_id
+            and c_ext_attr1 = p_mbs_doc_type
+			AND c_ext_attr16 = 'COMPLETE'
+			AND d_ext_attr2 is null
+			AND d_ext_attr1 = (select max(d_ext_attr1) 
+			                     FROM xx_cdh_cust_acct_ext_b
+			                     WHERE cust_account_id   = p_cust_account_id
+								   AND c_ext_attr3 = p_del_method
+								   AND attr_group_id = ln_attr_group_id
+                                   and c_ext_attr1 = p_mbs_doc_type
+								   AND c_ext_attr16 = 'COMPLETE'
+								   AND d_ext_attr2 is null);
+	 EXCEPTION
+		WHEN NO_DATA_FOUND THEN
+		   ln_fee_option := -1;
+		WHEN OTHERS THEN
+		   ln_fee_option := 0;
+	 END;
+   END IF;
+
+return ln_fee_option;
+
+EXCEPTION
+WHEN OTHERS	THEN
+  FND_FILE.PUT_LINE(FND_FILE.LOG,'Error while returning fee_option in get_fee_option : '||Sqlerrm);
+	RETURN(ln_fee_option);
+END;
+
 END XX_AR_EBL_COMMON_UTIL_PKG;
 /

@@ -946,5 +946,10 @@ RETURN VARCHAR2;
                                p_organization IN NUMBER,
                                p_line_number IN NUMBER) 
     RETURN NUMBER ;
+ FUNCTION get_fee_option (p_cust_doc_id IN NUMBER,
+                          p_mbs_doc_type  IN VARCHAR2,
+						  p_cust_account_id IN NUMBER,
+						  p_del_method IN VARCHAR2 default 'ePDF') 
+   RETURN NUMBER;
  END XX_AR_EBL_COMMON_UTIL_PKG;
  /
