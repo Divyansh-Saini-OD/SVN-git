@@ -140,10 +140,13 @@
                       + XAECHM.total_pst_amount
                       + XAECHM.total_qst_amount
                       )                                                      cbi_tax
-			     ,SUM(( SELECT SUM(XX_AR_EBL_COMMON_UTIL_PKG.get_line_fee_amount(XAECHM.customer_trx_id) +
+			     ,MAX( NVL(( SELECT SUM(XX_AR_EBL_COMMON_UTIL_PKG.get_line_fee_amount(XAECHM.customer_trx_id) +
 				                   XX_AR_EBL_COMMON_UTIL_PKG.get_hea_fee_amount(XAECHM.customer_trx_id))
                           FROM xx_ar_ebl_cons_hdr_main
-						 WHERE cons_inv_id = XAECHM.cons_inv_id) )           cbi_fee_amt	  
+						 WHERE cons_inv_id = XAECHM.cons_inv_id
+						   AND cust_doc_id = XAECHM.cust_doc_id
+						   AND batch_id    = :p_batch_id
+						   AND file_id     = :file_id),0) )           cbi_fee_amt	  
                  ,SUM(XAECHM.original_invoice_amount
                       - XAECHM.total_gift_card_amount
                       )                                                      cbi_amount_due
