@@ -911,9 +911,6 @@ BEGIN
     /* End: Added by Mayur for NAIT-29347*/
  
  IF l_rec_rem_qty > 0 THEN
- insert into xxtest values ('inside l_rec_rem_qty > 0','inside l_rec_rem_qty > 0');
-  insert into xxtest values ('inside i.po_header_id ',i.po_header_id);
-   insert into xxtest values ('inside i.po_line_id ',i.po_line_id);
       BEGIN
         SELECT SUM(t1.inv_rem_qty)
         INTO v_inv_qty_rem
@@ -938,34 +935,25 @@ BEGIN
       WHEN no_data_found THEN
         v_inv_qty_rem:=0;
       END ;
-	     insert into xxtest values ('v_inv_qty_rem ',v_inv_qty_rem);
-		 insert into xxtest values ('l_inv_qty ',l_inv_qty);
-		 insert into xxtest values ('l_rec_rem_qty ',l_rec_rem_qty);
 		 
       IF v_inv_qty_rem >0 THEN
         l_rec_rem_qty := l_rec_rem_qty - v_inv_qty_rem;
-		  insert into xxtest values ('l_rec_rem_qty 1 ',l_rec_rem_qty);
       ELSE
         --   l_rec_rem_qty := l_rec_rem_qty - j.inv_qty;  -- Commented by Mayur for NAIT-29347
         l_rec_rem_qty := l_rec_rem_qty - l_inv_qty;       -- Added by Mayur for NAIT-29347
-		 insert into xxtest values ('l_rec_rem_qty 1 else ',l_rec_rem_qty);
 		
       END IF;
       IF l_rec_rem_qty <= 0 THEN
         l_inv_rem_qty  := -1 * l_rec_rem_qty;
         l_rec_rem_qty  := 0;
-		 insert into xxtest values ('l_inv_rem_qty 2 ',l_inv_rem_qty);
       ELSE
         l_inv_rem_qty :=0;
-		 insert into xxtest values ('l_inv_rem_qty 2 else ',l_inv_rem_qty);
       END IF;
       IF v_inv_qty_rem  >0 THEN
         l_inv_appl_qty :=v_inv_qty_rem - l_inv_rem_qty;
-		 insert into xxtest values ('l_inv_appl_qty 3',l_inv_appl_qty);
       ELSE
         --  l_inv_appl_qty := j.inv_qty - l_inv_rem_qty;  -- Commented by Mayur for NAIT-29347
         l_inv_appl_qty := l_inv_qty - l_inv_rem_qty;      -- Added by Mayur for NAIT-29347
-		 insert into xxtest values ('l_inv_appl_qty 3 else ',l_inv_appl_qty);
       END IF;
 
       INSERT

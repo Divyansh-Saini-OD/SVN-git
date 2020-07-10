@@ -1121,7 +1121,7 @@ BEGIN
     FOR i IN c_gl (l_date_usage) -- Added by Mayur for NAIT-61763
     LOOP
 	
-	 insert into xxtest values ('l_date_usage: ', 'GL');
+
       l_trade_header_db(n).vendorasistant := i.vendorasistant;
       ---L_TRADE_HEADER_DB(N).OU_NAME               := I.OU_NAME ;
       l_trade_header_db(n).sup_num             := i.sup_num;
@@ -1158,8 +1158,6 @@ BEGIN
     --  FOR i IN c_po (l_start_date,l_end_date,l_date_usage)  -- Commented by Mayur for NAIT-61763
     FOR i IN c_po (l_date_usage) -- Added by Mayur for NAIT-61763
     LOOP
-	
-	 insert into xxtest values ('l_date_usage: ', 'PO');
       l_trade_header_db(n).vendorasistant      := i.vendorasistant;
       l_trade_header_db(n).sup_num             := i.sup_num;
       l_trade_header_db(n).sup_name            := i.sup_name;
@@ -1195,7 +1193,6 @@ BEGIN
   IF l_date_usage IN ('PAY') THEN
     FOR i         IN c_pay (l_date_usage)
     LOOP
-	 insert into xxtest values ('l_date_usage: ', 'PAY');
       l_trade_header_db(n).vendorasistant      := i.vendorasistant;
       l_trade_header_db(n).sup_num             := i.sup_num;
       l_trade_header_db(n).sup_name            := i.sup_name;
