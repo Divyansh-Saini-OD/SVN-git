@@ -729,7 +729,7 @@
 SELECT 
       flv.lookup_code FEE_CODE
      ,upper(flv.meaning)  FEE_DESCRIPTION
-     ,TO_CHAR(sum(RCTL.unit_selling_price),'9999999999.999')       FEE_AMT      
+     ,TO_CHAR(sum(RCTL.unit_selling_price*quantity_invoiced),'9999999999.999')       FEE_AMT      
 FROM
      ra_customer_trx_lines_All RCTL
 	 ,xx_ar_ebl_cons_hdr_main  XAECTRS
