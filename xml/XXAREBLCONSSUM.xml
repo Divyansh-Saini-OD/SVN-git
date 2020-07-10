@@ -516,6 +516,7 @@ line_seq
      ,RCTL.customer_trx_id
 FROM
      ra_customer_trx_lines_All RCTL
+	 ,xx_ar_ebl_cons_trx_rows_stg  XAECTRS
      ,fnd_lookup_values flv
 WHERE 1=1
   AND flv.lookup_type = 'OD_FEES_ITEMS'
@@ -524,7 +525,9 @@ WHERE 1=1
   AND FLV.enabled_flag = 'Y'                                   
   AND SYSDATE BETWEEN NVL(FLV.start_date_active,SYSDATE) AND NVL(FLV.end_date_active,SYSDATE+1)  
   AND FLV.attribute7 NOT IN ('DELIVERY','MISCELLANEOUS')  
-  AND customer_trx_id                           = :trx_id
+  AND RCTL.customer_trx_id                           = XAECTRS.attribute3
+  AND XAECTRS.cons_inv_id           = :cbi_id 
+  AND XAECTRS.request_id            = :p_batch_id
 GROUP BY RCTL.customer_trx_id,flv.lookup_code,flv.meaning
        ]]>
     </sqlStatement>	
