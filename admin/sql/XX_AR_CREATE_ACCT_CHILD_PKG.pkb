@@ -448,7 +448,7 @@ AS
         AND upper(ril1.line_type) <> 'TAX'
         AND rownum               <2
         ) qty, -- NAIT-125301
-        ril.unit_selling_price/
+        NVL(ril.amount,ril.unit_selling_price)/
         (SELECT ril1.quantity_ordered
         FROM ra_interface_lines_all ril1 ,
           mtl_system_items_b d
