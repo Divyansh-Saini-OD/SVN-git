@@ -1237,7 +1237,7 @@ PROCEDURE logitt(p_message  IN  CLOB,
     WHERE  customer_trx_line_id = p_customer_trx_line_id
     AND    account_class        = p_account_class
     AND    percent              = 100 -- Added for NAIT-120608
-	AND    account_set_flag     = 'Y'
+    AND    account_set_flag     = 'Y'
     ;
 
     logit(p_message => 'RESULT attribute6: '  || x_invoice_dist_info.attribute6);
@@ -4811,6 +4811,9 @@ PROCEDURE logitt(p_message  IN  CLOB,
                 
                 lc_accounting_rule_id := lc_imm_accounting_rule_id;
              END IF;
+            ELSE
+                px_subscription_array(indx).rev_rec_ind := 'N';
+                update_subscription_info(px_subscription_info => px_subscription_array(indx));
              
             END IF;
            --End RevRec Change - NAIT-112450
@@ -4898,7 +4901,7 @@ PROCEDURE logitt(p_message  IN  CLOB,
           
           lr_ra_intf_lines_info.term_id                       := lr_terms.term_id;
           lr_ra_intf_lines_info.term_name                     := lr_terms.name;
-		  lr_ra_intf_lines_info.warehouse_id                  := lr_invoice_line_info.warehouse_id; --lr_item_master_info.organization_id;																									 																															  
+          lr_ra_intf_lines_info.warehouse_id                  := lr_invoice_line_info.warehouse_id; --lr_item_master_info.organization_id;                                                                                                                                                                                                                                   
           
           lr_ra_intf_lines_info.org_id                        := lr_operating_unit_info.organization_id;
           --Begin : Added for POS and AOPS cust TRX Type
@@ -5134,7 +5137,15 @@ PROCEDURE logitt(p_message  IN  CLOB,
                             ,x_ccid           => ln_ccid
                             ,x_error_message  => lc_error_msg
                             );
-            
+
+          IF p_contract_info.external_source = 'POS' THEN
+            lc_ora_lob            := '10';
+          ELSIF p_contract_info.payment_type = 'AB' THEN
+            lc_ora_lob            := '40';  
+          ELSE  
+            lc_ora_lob            := '50';  
+          END IF;
+          
           lc_action := 'populating ra_interface_distributions_all';
           
           lr_ra_intf_dists_info                                 := NULL;
@@ -5319,7 +5330,15 @@ PROCEDURE logitt(p_message  IN  CLOB,
                             ,x_future         => lc_ora_future
                             ,x_ccid           => ln_ccid
                             ,x_error_message  => lc_error_msg
-                            );                              
+                            );         
+                            
+          IF p_contract_info.external_source = 'POS' THEN
+            lc_ora_lob            := '10';
+          ELSIF p_contract_info.payment_type = 'AB' THEN
+            lc_ora_lob            := '40';  
+          ELSE  
+            lc_ora_lob            := '50';  
+          END IF;                            
           
           lc_action := 'populating ra_interface_distributions_all';
           
@@ -5515,6 +5534,10 @@ PROCEDURE logitt(p_message  IN  CLOB,
                             );
           IF p_contract_info.external_source = 'POS' THEN
             lc_ora_lob            := '10';
+          ELSIF p_contract_info.payment_type = 'AB' THEN
+            lc_ora_lob            := '40';  
+          ELSE  
+            lc_ora_lob            := '50';  
           END IF;
 
           lc_action := 'populating ra_interface_distributions_all';
@@ -7909,7 +7932,7 @@ PROCEDURE logitt(p_message  IN  CLOB,
                   lclob_buffer := lclob_buffer || lc_buffer;
                 END LOOP;
             
-				logit(p_message => 'Response Clob: ' || lclob_buffer);          
+                logit(p_message => 'Response Clob: ' || lclob_buffer);          
                 UTL_HTTP.end_response(l_response);
             
               EXCEPTION
@@ -8019,6 +8042,8 @@ PROCEDURE logitt(p_message  IN  CLOB,
                 px_subscription_array(indx).contract_status         := NULL;
                 px_subscription_array(indx).next_retry_day          := NULL;
                 px_subscription_array(indx).auth_completed_flag     := 'E';
+                px_subscription_array(indx).email_sent_flag         := 'N';
+                px_subscription_array(indx).history_sent_flag       := 'N';
                 RAISE le_card_failure;
               ELSE
                 lc_action := 'assigning the auth failure result to subscription array';
@@ -8026,7 +8051,9 @@ PROCEDURE logitt(p_message  IN  CLOB,
                 px_subscription_array(indx)                     := lr_subscription_info;
                 px_subscription_array(indx).auth_status         := lr_subscription_info.auth_status;
                 px_subscription_array(indx).auth_message        := lr_subscription_info.auth_message;
-                px_subscription_array(indx).auth_completed_flag     := 'U';                
+                px_subscription_array(indx).auth_completed_flag := 'U'; 
+                px_subscription_array(indx).email_sent_flag     := 'N';
+                px_subscription_array(indx).history_sent_flag   := 'N';                
                 RAISE le_undefined_failure;
               END IF;
             
@@ -8109,6 +8136,8 @@ PROCEDURE logitt(p_message  IN  CLOB,
         insert_subscription_error_info(p_subscription_error_info => lr_subscription_error_info);
        
         lc_auth_completed_flag := 'U';
+        lc_email_Sent_flag     := 'N';
+        lc_history_sent_flag   := 'N';
         lc_authorization_error := SUBSTR(lr_subscription_error_info.error_message, 1, gc_max_sub_err_size);
 
         RAISE le_processing;
@@ -8130,6 +8159,8 @@ PROCEDURE logitt(p_message  IN  CLOB,
         insert_subscription_error_info(p_subscription_error_info => lr_subscription_error_info);
 
         lc_auth_completed_flag := 'U';
+        lc_email_Sent_flag     := 'N';
+        lc_history_sent_flag   := 'N';
         lc_authorization_error := SUBSTR(lr_subscription_error_info.error_message, 1, gc_max_sub_err_size);
         update_subscription_info(px_subscription_info => px_subscription_array(indx));
         RAISE le_undefined_failure;
@@ -8178,6 +8209,8 @@ PROCEDURE logitt(p_message  IN  CLOB,
         insert_subscription_error_info(p_subscription_error_info => lr_subscription_error_info);
 
         lc_auth_completed_flag := 'U';
+        lc_email_Sent_flag     := 'N';
+        lc_history_sent_flag   := 'N';
         lc_authorization_error := SUBSTR(lr_subscription_error_info.error_message, 1, gc_max_sub_err_size);
 
         RAISE le_processing;
@@ -8201,6 +8234,8 @@ PROCEDURE logitt(p_message  IN  CLOB,
 
       px_subscription_array(indx).auth_completed_flag := lc_auth_completed_flag;
       px_subscription_array(indx).authorization_error := lc_authorization_error;
+      px_subscription_array(indx).email_sent_flag     := lc_email_Sent_flag;
+      px_subscription_array(indx).history_sent_flag   := lc_history_sent_flag;
 
       lc_action := 'Calling update_subscription_info to update with error info';
 
@@ -8231,6 +8266,8 @@ PROCEDURE logitt(p_message  IN  CLOB,
 
       px_subscription_array(indx).auth_completed_flag := lc_auth_completed_flag;
       px_subscription_array(indx).authorization_error := lc_authorization_error;
+      px_subscription_array(indx).email_sent_flag     := lc_email_Sent_flag;
+      px_subscription_array(indx).history_sent_flag   := lc_history_sent_flag;
       
       lc_action := 'Updating credit card details';
 
@@ -8303,6 +8340,8 @@ PROCEDURE logitt(p_message  IN  CLOB,
     LOOP
 
       px_subscription_array(indx).auth_completed_flag := 'E';
+      px_subscription_array(indx).email_sent_flag     := 'N';
+      px_subscription_array(indx).history_sent_flag   := 'N';
       px_subscription_array(indx).authorization_error := SUBSTR('Action: ' || lc_action || 'SQLCODE: ' || SQLCODE || ' SQLERRM: ' || SQLERRM, 1, gc_max_sub_err_size);
 
       lc_action := 'Calling update_subscription_info to update with error info';
@@ -8762,19 +8801,21 @@ PROCEDURE logitt(p_message  IN  CLOB,
             * Get invoice information
             ************************/
 
+           /* Begin : Commented as per jira#NAIT-140574 
             lc_action := 'Calling get_invoice_header_info';
 
             get_invoice_header_info(p_invoice_number      => px_subscription_array(indx).invoice_number,
-                                    x_invoice_header_info => lr_invoice_header_info);
+                                    x_invoice_header_info => lr_invoice_header_info);*/
 
             /******************************
             * Get invoice total information
             ******************************/
 
-            lc_action := 'Calling get_invoice_total_amount_info';
+            /*Begin : Commented as per jira#NAIT-140574
+             lc_action := 'Calling get_invoice_total_amount_info';
 
             get_invoice_total_amount_info(p_customer_trx_id           => lr_invoice_header_info.customer_trx_id,
-                                          x_invoice_total_amount_info => ln_invoice_total_amount_info);
+                                          x_invoice_total_amount_info => ln_invoice_total_amount_info);*/
 
             /***************************************
             * Masking card details except for PAYPAL
@@ -8974,7 +9015,7 @@ PROCEDURE logitt(p_message  IN  CLOB,
                                 || '",
                     "billingTime": "",
                     "invoiceDate": "'
-                                || TO_CHAR(lr_invoice_header_info.trx_date,'DD-MON-YYYY HH24:MI:SS')
+                                ||TO_CHAR(px_subscription_array(indx).billing_date,'DD-MON-YYYY HH24:MI:SS') --TO_CHAR(lr_invoice_header_info.trx_date,'DD-MON-YYYY HH24:MI:SS') --Commented as per jira#NAIT-140574
                                 || '",
                     "invoiceTime": "",
                     "autoRenewalStatus": "'
@@ -9030,7 +9071,7 @@ PROCEDURE logitt(p_message  IN  CLOB,
                                 || '",
                     "totals": {
                             "subTotal": "'
-                                || (ln_invoice_total_amount_info - px_subscription_array(indx).tax_amount) 
+                                || (px_subscription_array(indx).contract_line_amount- px_subscription_array(indx).tax_amount) 
                                 || '",
                             "tax": "'
                                 || TO_CHAR(px_subscription_array(indx).tax_amount)
@@ -9039,7 +9080,7 @@ PROCEDURE logitt(p_message  IN  CLOB,
                             "discount": "String",
                             "misc": "String",
                             "total": "'
-                                || ln_invoice_total_amount_info
+                                || px_subscription_array(indx).contract_line_amount --ln_invoice_total_amount_info --Commented as per jira#NAIT-140574
                                 || '"
                     },
                     "tenders": {
@@ -9051,7 +9092,7 @@ PROCEDURE logitt(p_message  IN  CLOB,
                                     || p_contract_info.card_type
                                     || '",
                             "amount": "'
-                                    || ln_invoice_total_amount_info
+                                    || px_subscription_array(indx).contract_line_amount --ln_invoice_total_amount_info --Commented as per jira#NAIT-140574
                                     || '",
                             "cardnumber": "'
                                     || lc_masked_credit_card_number
@@ -9524,18 +9565,22 @@ PROCEDURE logitt(p_message  IN  CLOB,
             ************************/
 
             lc_action := 'Calling get_invoice_header_info';
-
+            IF px_subscription_array(indx).invoice_number IS NOT NULL
+            THEN
             get_invoice_header_info(p_invoice_number      => px_subscription_array(indx).invoice_number,
                                     x_invoice_header_info => lr_invoice_header_info);
+            END IF;
 
             /******************************
             * Get invoice total information
             ******************************/
 
             lc_action := 'Calling get_invoice_total_amount_info';
-
+            IF lr_invoice_header_info.customer_trx_id IS NOT NULL
+            THEN
             get_invoice_total_amount_info(p_customer_trx_id           => lr_invoice_header_info.customer_trx_id,
                                           x_invoice_total_amount_info => ln_invoice_total_amount_info);
+            END IF;
 
             /******************************
             * Get initial order header info
@@ -9746,7 +9791,7 @@ PROCEDURE logitt(p_message  IN  CLOB,
                                 || '",
                           "totals": {
                               "subTotal": "'
-                                    || (ln_invoice_total_amount_info - px_subscription_array(indx).tax_amount) 
+                                    || (NVL(ln_invoice_total_amount_info,px_subscription_array(indx).contract_line_amount) - px_subscription_array(indx).tax_amount) 
                                     || '",
                               "tax": "'
                                     || TO_CHAR(px_subscription_array(indx).tax_amount)
@@ -9755,7 +9800,7 @@ PROCEDURE logitt(p_message  IN  CLOB,
                               "discount": "String",
                               "misc": "String",
                               "total": "'
-                                    || ln_invoice_total_amount_info
+                                    || NVL(ln_invoice_total_amount_info,px_subscription_array(indx).contract_line_amount) -- ln_invoice_total_amount_info
                                     || '"
                           },
                          "invoiceLines": {
@@ -9772,7 +9817,7 @@ PROCEDURE logitt(p_message  IN  CLOB,
                                   || p_contract_info.card_type
                                   || '",
                              "amount": "'
-                                  || ln_invoice_total_amount_info
+                                  || NVL(ln_invoice_total_amount_info,px_subscription_array(indx).contract_line_amount)--ln_invoice_total_amount_info
                                   || '",
                              "cardnumber": "'
                                   || lc_masked_credit_card_number
@@ -10270,7 +10315,7 @@ PROCEDURE logitt(p_message  IN  CLOB,
         RAISE le_skip;
 
       END IF;
-	  
+      
       IF px_subscription_array(indx).auth_completed_flag != 'Y' 
       THEN
 
@@ -11293,6 +11338,7 @@ PROCEDURE logitt(p_message  IN  CLOB,
       WHERE  (       ordt_staged_flag  IN ('N', 'E')
               OR     email_sent_flag   IN ('N', 'E')
               OR     history_sent_flag IN ('N', 'E') )
+       AND  NVL(subs.auth_completed_flag, 'N')        <> 'T' --IN ('Y', 'N', 'E', 'U')
       ORDER BY contract_id             ASC,
                billing_sequence_number ASC;
 
@@ -11320,13 +11366,13 @@ PROCEDURE logitt(p_message  IN  CLOB,
 
     ln_process_flag             VARCHAR2(1) := 'N';    
     
-	lr_invoice_header_info      ra_customer_trx_all%ROWTYPE;   
+    lr_invoice_header_info      ra_customer_trx_all%ROWTYPE;   
 
-	le_skip                     EXCEPTION;
+    le_skip                     EXCEPTION;
 
     lc_error                    VARCHAR2(1000);
-	
-	ln_inv_count                NUMBER := 0;
+    
+    ln_inv_count                NUMBER := 0;
 
   BEGIN
 
@@ -11446,7 +11492,7 @@ PROCEDURE logitt(p_message  IN  CLOB,
         THEN
         --Added to process only auth not completed and inv null records
           IF eligible_contract_rec.auth_completed_flag <>'Y' 
-		  THEN
+          THEN
 
         --Begin : Commenting / added For NAIT-119054
          /**********************
@@ -11487,16 +11533,16 @@ PROCEDURE logitt(p_message  IN  CLOB,
                lt_subscription_array(indx).invoice_number      := ln_trx_number;
                update_subscription_info(px_subscription_info => lt_subscription_array(indx));
             END LOOP;
-			
+            
             IF eligible_contract_rec.auth_completed_flag <> 'Y'
-			THEN
+            THEN
               process_authorization(p_program_setups      => lt_program_setups,
                                     p_contract_info       => lr_contract_info,
                                     px_subscription_array => lt_subscription_array);                       
             END IF;  
-			
+            
           END IF;
-		 END IF; --IF eligible_contract_rec.auth_completed_flag <>'Y' 
+         END IF; --IF eligible_contract_rec.auth_completed_flag <>'Y' 
         --End : Commenting / addition For NAIT-119054
         END IF;
         /***************************
@@ -11513,23 +11559,23 @@ PROCEDURE logitt(p_message  IN  CLOB,
             lc_action := 'Calling get_invoice_header_info';
             IF eligible_contract_rec.auth_completed_flag = 'Y' 
             THEN 
-			BEGIN
-			
-			  SELECT COUNT(1)
-			  INTO   ln_inv_count
-			  FROM   ra_customer_trx_all
-			  WHERE  trx_number         =eligible_contract_rec.invoice_number;
+            BEGIN
+            
+              SELECT COUNT(1)
+              INTO   ln_inv_count
+              FROM   ra_customer_trx_all
+              WHERE  trx_number         =eligible_contract_rec.invoice_number;
 
-              IF (ln_inv_count > 1)	
+              IF (ln_inv_count > 1)    
               THEN
                   lc_error :='Invoice Already Created In Oracle ->' || lr_invoice_header_info.trx_number;
-			  	RAISE le_skip;
+                  RAISE le_skip;
               END IF;
-			
-			EXCEPTION
+            
+            EXCEPTION
               WHEN OTHERS THEN
-			    NULL;
-			END;
+                NULL;
+            END;
            END IF; 
           lc_action := 'Calling populate_invoice_interface';
 
