@@ -887,7 +887,7 @@ BEGIN
           AND t.inv_rem_qty   <= 0
           AND t.user_id        = p_user_id
           AND t.request_id    IS NULL
-		  AND t.shipment_line_id = rsl.shipment_line_id
+		--  AND t.shipment_line_id = rsl.shipment_line_id
           )
         GROUP BY aia.invoice_num,
           aia.invoice_id,
@@ -996,8 +996,8 @@ BEGIN
           item_id,
           vendor_site_id,
           invoice_id,
-          request_id,
-		  shipment_line_id -- Added by Mayur for NAIT-29347
+          request_id--,
+	--	  shipment_line_id -- Added by Mayur for NAIT-29347
         )
         VALUES
         (
@@ -1046,8 +1046,8 @@ BEGIN
           i.vendor_site_id,
           --   j.invoice_id,    -- Commented by Mayur for NAIT-29347
           l_inv_id,             -- Added by Mayur for NAIT-29347
-          NULL,
-		  l_ship_line_id        -- Added by Mayur for NAIT-29347
+          NULL--,
+		--  l_ship_line_id        -- Added by Mayur for NAIT-29347
         );
       v_invoice_fifo_num:=0;
       COMMIT;
