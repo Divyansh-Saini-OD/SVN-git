@@ -880,7 +880,7 @@ BEGIN
 		AND rsl.shipment_line_id = i.shipment_line_id
         AND NOT EXISTS
           (SELECT 1
-          FROM xxfin.xx_ap_po_recinv_dashb_gtemp t
+          FROM xx_ap_po_recinv_dashb_gtemp t
           WHERE t.po_header_id = aila.po_header_id
           AND aila.po_line_id  = t.po_line_id
           AND t.invoice_num    = aia.invoice_num
@@ -957,7 +957,7 @@ BEGIN
       END IF;
 
       INSERT
-      INTO xxfin.xx_ap_po_recinv_dashb_gtemp
+      INTO xx_ap_po_recinv_dashb_gtemp
         (
           po,
           po_line_id,
