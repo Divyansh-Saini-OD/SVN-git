@@ -726,11 +726,10 @@
     </sqlStatement>
 	<sqlStatement name="Q_CONS_FEE">
        <![CDATA[	
-	SELECT 
+SELECT 
       flv.lookup_code FEE_CODE
      ,upper(flv.meaning)  FEE_DESCRIPTION
      ,TO_CHAR(sum(RCTL.unit_selling_price),'9999999999.999')       FEE_AMT      
-     ,RCTL.customer_trx_id
 FROM
      ra_customer_trx_lines_All RCTL
 	 ,xx_ar_ebl_cons_hdr_main  XAECTRS
@@ -746,7 +745,7 @@ WHERE 1=1
   AND XAECTRS.cons_inv_id           = :cbi_id 
   AND XAECTRS.batch_id    = :p_batch_id
   AND XAECTRS.file_id     = :file_id
-GROUP BY RCTL.customer_trx_id,flv.lookup_code,flv.meaning
+GROUP BY flv.lookup_code,flv.meaning
        ]]>
     </sqlStatement>	
   </dataQuery>
