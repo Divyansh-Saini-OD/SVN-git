@@ -1,5 +1,4 @@
-CREATE OR REPLACE 
-PACKAGE BODY XX_AR_EBL_RENDER_TXT_PKG
+create or replace PACKAGE BODY XX_AR_EBL_RENDER_TXT_PKG
 AS
    -- +===========================================================================================+
    -- |                  Office Depot - Project Simplify                                          |
@@ -21,8 +20,7 @@ AS
    -- | 1.2      18-APR-2017  Suresh Naragam          Defect #41426                               |
    -- | 1.3      28-APR-2018  Atul Khard              Defect #44465 Labels not outputing correctly|
    -- | 1.4      18-May-2018  Aniket J    CG          Changes for Requirement  #NAIT-36070        |
-   -- | 1.5      29-Sep-2019  Atul Khard              Bug fix identified in #NAIT-106275          |  
-   -- | 1.6      13-MAR-2020  Abhishek Kumar           changing Order by for NAIT- 119176         |
+   -- | 1.5      29-Sep-2019  Atul Khard              Bug fix identified in #NAIT-106275          |
    -- +===========================================================================================+
    PROCEDURE GET_TRANSLATION (p_translation_name   IN            VARCHAR2,
                               p_source_value1      IN            VARCHAR2,
@@ -919,8 +917,8 @@ AS
 		    -- Added by Thilak CG on 05-JAN-18 for Defect# NAIT-22703
 		    lc_nodecimal := NULL;
 			lc_decimal_flag := 'N';
-			
-			
+
+
 		    IF p_data_format = '9900'
 			THEN
 			lc_decimal_flag := 'Y';
@@ -934,13 +932,13 @@ AS
 	        --lc_column := 'SUBSTR('||lc_column||',1,(INSTR('||lc_column||',''.'')+3))';
 			lc_column := 'ltrim(rtrim(TO_CHAR('||lc_column||','||'''99999990.000'''||')))'; --added to fix bug NAIT-106275
 			END IF;
-			
+
 			IF lc_decimal_flag = 'Y'
 			THEN
             lc_column :=
                   'ltrim(rtrim('
                || lc_column || lc_nodecimal
-               || '))';			
+               || '))';
 			ELSE
             lc_column :=
                   'ltrim(rtrim(TO_CHAR('
@@ -949,10 +947,10 @@ AS
                || ''''
                || p_data_format
                || ''''
-               || ')))'; 
+               || ')))';
 			END IF;
             -- End of Defect# NAIT-22703			-- Changes for the defect#41371
-        
+
          END IF;
       END IF;
 
@@ -1049,7 +1047,7 @@ AS
                                   AND xcetdt.record_type = p_record_type
 								  AND xcetdt.rownumber = 1
                                   AND xftd.translation_name = 'XX_CDH_EBL_TXT_DET_FIELDS'
-								  AND xftv.target_value19 = 'DT'		 
+								  AND xftv.target_value19 = 'DT'
                                   AND xftv.enabled_flag = 'Y'
                                   AND TRUNC (SYSDATE) BETWEEN TRUNC (
                                                                  xftv.
@@ -1275,7 +1273,7 @@ AS
          FOR lc_hdr_summary_fields IN c_hdr_summary_fields (lc_row_order)
          LOOP
             fnd_file.put_line (fnd_file.LOG, p_cust_doc_id);
-			
+
 			 --Start Added by Aniket CG 15 May #NAIT-36070
               BEGIN
                 IF LOWER(lc_hdr_summary_fields.target_value24) = 'xx_ar_ebl_txt_spl_logic_pkg.get_total_rec_count' AND UPPER(lc_hdr_summary_fields.source_value4) = 'TOTAL_REC_CNT_NBL' THEN
@@ -1503,9 +1501,9 @@ AS
                                   p_dtl_error_msg           OUT VARCHAR2)
    IS
       -- Added and Modified by Punit on 12-JUL-2017 for Defect # 41307
-     /* CURSOR get_dist_custtrx (p_sort_columns IN VARCHAR2) 
+     /* CURSOR get_dist_custtrx (p_sort_columns IN VARCHAR2)
       IS
-	       SELECT customer_trx_id FROM 
+	       SELECT customer_trx_id FROM
 		   (SELECT *
              FROM xx_ar_ebl_txt_dtl_stg
              WHERE file_id = p_file_id
@@ -1514,8 +1512,8 @@ AS
 			 AND trx_line_number = 1
 			 AND customer_trx_id IS NOT NULL
 		    ORDER BY p_sort_columns); */ -- Added by Thilak CG on 14-OCT-2017 for Defect#14189
-			
-       CURSOR c_get_dist_record_type (p_customer_trx_id IN NUMBER) 
+
+       CURSOR c_get_dist_record_type (p_customer_trx_id IN NUMBER)
       IS
            SELECT DISTINCT record_type
              FROM xx_cdh_ebl_templ_dtl_txt xcedt,
@@ -1523,40 +1521,40 @@ AS
             WHERE xcedt.cust_doc_id = xaebtds.cust_doc_id
 			AND   xcedt.attribute20 = 'Y'
             AND   xaebtds.file_id = p_file_id
-            AND   xcedt.cust_doc_id = p_cust_doc_id 
+            AND   xcedt.cust_doc_id = p_cust_doc_id
 			AND xaebtds.customer_trx_id = p_customer_trx_id
-         ORDER BY record_type;			
-			
+         ORDER BY record_type;
+
 		CURSOR get_dist_rows (p_record_type IN VARCHAR2)
       IS
-           SELECT DISTINCT xcedt.rownumber               
+           SELECT DISTINCT xcedt.rownumber
              FROM xx_cdh_ebl_templ_dtl_txt xcedt
             WHERE xcedt.attribute20 = 'Y'
-            AND   xcedt.cust_doc_id = p_cust_doc_id 
+            AND   xcedt.cust_doc_id = p_cust_doc_id
 			AND   xcedt.record_type = p_record_type
-         ORDER BY xcedt.rownumber; 
+         ORDER BY xcedt.rownumber;
 
       ln_get_line_dist_rows      NUMBER;
-         		 
+
       /*CURSOR get_dist_rows (p_customer_trx_id IN NUMBER)
       IS
-           SELECT DISTINCT xcedt.rownumber               
+           SELECT DISTINCT xcedt.rownumber
              FROM xx_cdh_ebl_templ_dtl_txt xcedt,
 			      xx_ar_ebl_txt_dtl_stg  xaebtds
             WHERE xcedt.cust_doc_id = xaebtds.cust_doc_id
 			AND xcedt.attribute20 = 'Y'
             AND xaebtds.file_id = p_file_id
-            AND xcedt.cust_doc_id = p_cust_doc_id 
+            AND xcedt.cust_doc_id = p_cust_doc_id
 			AND xaebtds.customer_trx_id = p_customer_trx_id
-         ORDER BY xcedt.rownumber; 
+         ORDER BY xcedt.rownumber;
 
       ln_get_line_dist_rows      NUMBER;
 
-      CURSOR c_get_dist_record_type (p_rownum IN NUMBER) 
+      CURSOR c_get_dist_record_type (p_rownum IN NUMBER)
       IS
            SELECT DISTINCT record_type
              FROM xx_cdh_ebl_templ_dtl_txt
-            WHERE cust_doc_id = p_cust_doc_id 
+            WHERE cust_doc_id = p_cust_doc_id
 			AND rownumber = p_rownum -- Added by Punit on 12-JUL-2017 for Defect # 41307
          ORDER BY record_type;*/
 
@@ -1677,7 +1675,7 @@ AS
 				  xcetdt.sort_order,
 				  xcetdt.sort_type,
 				  xcetdt.record_type,
-				  xftv.source_value4 col_name				  
+				  xftv.source_value4 col_name
              FROM xx_fin_translatedefinition xftd,
                   xx_fin_translatevalues xftv,
                   xx_cdh_ebl_templ_dtl_txt xcetdt
@@ -1704,8 +1702,8 @@ AS
       c_dtl_dist_line_cursor     lc_ref_cursor;
 	  c_get_dist_custtrx         lc_ref_cursor;
       lc_txt_line                VARCHAR2 (32767);
-	  ln_hdr_repeat_cnt          NUMBER := 0; 
-	  ln_dtl_repeat_cnt          NUMBER := 0; 
+	  ln_hdr_repeat_cnt          NUMBER := 0;
+	  ln_dtl_repeat_cnt          NUMBER := 0;
 	  ln_dist_repeat_cnt         NUMBER := 0;
       ln_max_rownum	             NUMBER := 0;
 	  ln_hdr_cnt                 NUMBER;
@@ -1804,14 +1802,14 @@ AS
 			     || ' '
 			     || lc_get_summary_fields_info.sort_type
 			     || ',';
-            END IF;				
-		    -- End		 
+            END IF;
+		    -- End
 		    -- Added by Thilak CG on 12-OCT-2017 for Wave2 UAT Defect#13836
-		    IF lc_get_summary_fields_info.col_name = 'ELEC_DETAIL_SEQ_NUMBER' 
+		    IF lc_get_summary_fields_info.col_name = 'ELEC_DETAIL_SEQ_NUMBER'
 			THEN
 			ln_count := ln_count + 1;
-            ELSE	
-            -- End			
+            ELSE
+            -- End
             IF p_file_creation_type = 'DELIMITED'
             THEN
                lc_summary_build_sql :=
@@ -1875,7 +1873,7 @@ AS
                   lc_summary_build_label || lc_dtl_col_label;
                ln_count := ln_count + 1;
             END IF;
-		   END IF;	
+		   END IF;
 
          END LOOP;                                     --c_get_dtl_fields_info
 
@@ -1925,7 +1923,7 @@ AS
         --    get_sort_columns (p_cust_doc_id, lc_trx_type);
          lc_err_location_msg := 'lc_dtl_line_sort_columns : ' || lc_dtl_line_sort_columns;
          XX_AR_EBL_COMMON_UTIL_PKG.
-         PUT_LOG_LINE (lb_debug_flag, FALSE, lc_err_location_msg);		
+         PUT_LOG_LINE (lb_debug_flag, FALSE, lc_err_location_msg);
          lc_err_location_msg := 'Detail Line SQL : ' || lc_dtl_lines_sql;
          XX_AR_EBL_COMMON_UTIL_PKG.
          PUT_LOG_LINE (lb_debug_flag, FALSE, lc_err_location_msg);
@@ -1979,7 +1977,7 @@ AS
                   lc_dtl_lines_sql
                || ' ORDER BY '
                || lc_dtl_line_sort_columns
-               || ' CUSTOMER_TRX_ID, trx_line_number'; --Changed for NAIT-119176
+               || ' CUSTOMER_TRX_ID, trx_line_number,stg_id';
             lc_dtl_dist_lines_sql :=
                lc_dtl_dist_lines_sql
                || ' AND customer_trx_id=nvl(:pcustomer_trx_id,customer_trx_id)'
@@ -1988,7 +1986,7 @@ AS
                   lc_dtl_dist_lines_sql
                || ' ORDER BY '
                || lc_dtl_dist_sort_columns
-               || ' trx_line_number'; --Changed for NAIT-119176
+               || ' trx_line_number,stg_id';
 
             OPEN c_dtl_hdr_cursor FOR lc_dtl_hdr_sql;           -- hdr cursor.
 
@@ -2015,13 +2013,13 @@ AS
                   'Opening the Lines Cursor, Query :' || lc_dtl_lines_sql;
                XX_AR_EBL_COMMON_UTIL_PKG.
                PUT_LOG_LINE (lb_debug_flag, TRUE, lc_err_location_msg);
- 
+
                IF lc_print_dtl_label = 'Y' AND lc_repeat_dtl_header = 'N' AND ln_dtl_repeat_cnt = 0
                THEN
                   UTL_FILE.
                   put_line (p_output_file,
                             lc_build_dtl_line_label || CHR (13));
-				  ln_dtl_repeat_cnt := 1;			
+				  ln_dtl_repeat_cnt := 1;
                END IF;
 
                OPEN c_dtl_line_cursor FOR lc_dtl_lines_sql
@@ -2061,7 +2059,7 @@ AS
                      UTL_FILE.
                      put_line (p_output_file,
                                lc_build_dtl_dist_label || CHR (13));
-					 ln_dist_repeat_cnt := 1;		   
+					 ln_dist_repeat_cnt := 1;
                   END IF;
 
                   OPEN c_dtl_dist_line_cursor FOR lc_dtl_dist_lines_sql
@@ -2107,7 +2105,7 @@ AS
                   lc_dtl_lines_sql
                || ' ORDER BY '
                || lc_dtl_line_sort_columns
-               || ' customer_trx_id, trx_line_number';  --Changed for NAIT-119176
+               || ' customer_trx_id, trx_line_number,stg_id';
             lc_dtl_dist_lines_sql :=
                lc_dtl_dist_lines_sql
                || ' AND customer_trx_id=nvl(:pcustomer_trx_id,customer_trx_id)'
@@ -2116,7 +2114,7 @@ AS
                   lc_dtl_dist_lines_sql
                || ' ORDER BY '
                || lc_dtl_dist_sort_columns
-               || ' trx_line_number';  --Changed for NAIT-119176
+               || ' trx_line_number, stg_id';
             lc_err_location_msg :=
                'Opening the Lines Cursor, Query :' || lc_dtl_lines_sql;
             XX_AR_EBL_COMMON_UTIL_PKG.
@@ -2161,7 +2159,7 @@ AS
                   UTL_FILE.
                   put_line (p_output_file,
                             lc_build_dtl_dist_label || CHR (13));
-				  ln_dist_repeat_cnt := 1;			
+				  ln_dist_repeat_cnt := 1;
                END IF;
 
                OPEN c_dtl_dist_line_cursor FOR lc_dtl_dist_lines_sql
@@ -2219,7 +2217,7 @@ AS
                   lc_dtl_lines_sql
                || ' ORDER BY '
                || lc_dtl_line_sort_columns
-               || ' customer_trx_id, trx_line_number';  --Changed for NAIT-119176
+               || ' customer_trx_id, trx_line_number ,stg_id';
             lc_dtl_lines_sql :=
                   'SELECT customer_trx_id, lc_text FROM ('
                || lc_dtl_lines_sql
@@ -2260,7 +2258,7 @@ AS
                   UTL_FILE.
                   put_line (p_output_file,
                             lc_build_dtl_line_label || CHR (13));
-				  ln_dtl_repeat_cnt := 1;			
+				  ln_dtl_repeat_cnt := 1;
                END IF;
 
                --lc_txt_line_previous := NULL;
@@ -2306,7 +2304,7 @@ AS
                   lc_dtl_lines_sql
                || ' ORDER BY '
                || lc_dtl_line_sort_columns
-               || ' customer_trx_id, trx_line_number ';  --Changed for NAIT-119176
+               || ' customer_trx_id, trx_line_number, stg_id ';
             --lc_dtl_lines_sql := 'SELECT DISTINCT lc_text FROM ('||lc_dtl_lines_sql||')';
             lc_dtl_lines_sql :=
                'SELECT lc_text FROM (' || lc_dtl_lines_sql || ')';
@@ -2422,11 +2420,11 @@ AS
          lc_line_exists := 'N';
          lc_dist_exists := 'N';
          ln_count := 1;
-         ln_hdr_cnt := 0;		 
+         ln_hdr_cnt := 0;
 
-        -- Added and Commented by Thilak on 27-OCT-2017 for Defect # 13836		 
-		BEGIN 
-         SELECT COUNT(1) 
+        -- Added and Commented by Thilak on 27-OCT-2017 for Defect # 13836
+		BEGIN
+         SELECT COUNT(1)
 		   INTO ln_hdr_cnt
          FROM xx_fin_translatedefinition xftd,
               xx_fin_translatevalues xftv,
@@ -2436,46 +2434,46 @@ AS
          AND xcetdt.cust_doc_id = p_cust_doc_id
          AND xcetdt.record_type = 'HDR'
          AND xftd.translation_name = 'XX_CDH_EBL_TXT_DET_FIELDS'
-		 AND xftv.target_value19 = 'DT'		 
+		 AND xftv.target_value19 = 'DT'
          AND xftv.enabled_flag = 'Y'
          AND TRUNC (SYSDATE) BETWEEN TRUNC(xftv.start_date_active) AND TRUNC(NVL(xftv.end_date_active,SYSDATE + 1))
-         AND xcetdt.attribute20 = 'Y';       
+         AND xcetdt.attribute20 = 'Y';
         EXCEPTION
          WHEN OTHERS
          THEN
             ln_hdr_cnt := 0;
-        END; 		 
+        END;
 
          lc_custtrx_hdr_sort_cols := get_sort_columns (p_cust_doc_id, 'HDR');
 		 lc_custtrx_line_sort_cols := get_sort_columns (p_cust_doc_id, 'LINE');
-		 
+
          IF lc_custtrx_hdr_sort_cols IS NOT NULL AND lc_custtrx_line_sort_cols IS NULL AND ln_hdr_cnt != 0
 		 THEN
-         lc_custtrx_sort_columns := lc_custtrx_hdr_sort_cols || 'customer_trx_id,stg_id,trx_line_number';
+         lc_custtrx_sort_columns := lc_custtrx_hdr_sort_cols || 'customer_trx_id,trx_line_number,stg_id';
          lc_err_location_msg := 'Header Level lc_custtrx_sort_columns : ' || lc_custtrx_sort_columns;
          XX_AR_EBL_COMMON_UTIL_PKG.PUT_LOG_LINE (lb_debug_flag, FALSE, lc_err_location_msg);
 		 ELSIF lc_custtrx_hdr_sort_cols IS NOT NULL AND lc_custtrx_line_sort_cols IS NOT NULL AND ln_hdr_cnt != 0
 		 THEN
-         lc_custtrx_sort_columns := lc_custtrx_hdr_sort_cols || 'customer_trx_id,stg_id,trx_line_number';
+         lc_custtrx_sort_columns := lc_custtrx_hdr_sort_cols || 'customer_trx_id,trx_line_number,stg_id';
          lc_err_location_msg := 'Header Level lc_custtrx_sort_columns : ' || lc_custtrx_sort_columns;
          XX_AR_EBL_COMMON_UTIL_PKG.PUT_LOG_LINE (lb_debug_flag, FALSE, lc_err_location_msg);
-		 ELSIF lc_custtrx_hdr_sort_cols IS NULL AND lc_custtrx_line_sort_cols IS NOT NULL AND ln_hdr_cnt = 0 
-		 THEN		 
-         lc_custtrx_sort_columns := lc_custtrx_line_sort_cols || 'customer_trx_id,stg_id,trx_line_number';
+		 ELSIF lc_custtrx_hdr_sort_cols IS NULL AND lc_custtrx_line_sort_cols IS NOT NULL AND ln_hdr_cnt = 0
+		 THEN
+         lc_custtrx_sort_columns := lc_custtrx_line_sort_cols || 'customer_trx_id,trx_line_number,stg_id';
          lc_err_location_msg := 'Line Level lc_custtrx_sort_columns : ' || lc_custtrx_sort_columns;
          XX_AR_EBL_COMMON_UTIL_PKG.PUT_LOG_LINE (lb_debug_flag, FALSE, lc_err_location_msg);
-		 ELSIF lc_custtrx_hdr_sort_cols IS NULL AND lc_custtrx_line_sort_cols IS NOT NULL AND ln_hdr_cnt != 0 
-		 THEN		 
-         lc_custtrx_sort_columns := 'customer_trx_id,stg_id,trx_line_number';
+		 ELSIF lc_custtrx_hdr_sort_cols IS NULL AND lc_custtrx_line_sort_cols IS NOT NULL AND ln_hdr_cnt != 0
+		 THEN
+         lc_custtrx_sort_columns := 'customer_trx_id,trx_line_number,stg_id';
          lc_err_location_msg := 'Line Level lc_custtrx_sort_columns : ' || lc_custtrx_sort_columns;
-         XX_AR_EBL_COMMON_UTIL_PKG.PUT_LOG_LINE (lb_debug_flag, FALSE, lc_err_location_msg);		 
+         XX_AR_EBL_COMMON_UTIL_PKG.PUT_LOG_LINE (lb_debug_flag, FALSE, lc_err_location_msg);
 		 ELSIF lc_custtrx_hdr_sort_cols IS NULL AND lc_custtrx_line_sort_cols IS NULL
-		 THEN		 
-         lc_custtrx_sort_columns := 'customer_trx_id,stg_id,trx_line_number';
+		 THEN
+         lc_custtrx_sort_columns := 'customer_trx_id,trx_line_number,stg_id';
          lc_err_location_msg := 'Default lc_custtrx_sort_columns : ' || lc_custtrx_sort_columns;
-         XX_AR_EBL_COMMON_UTIL_PKG.PUT_LOG_LINE (lb_debug_flag, FALSE, lc_err_location_msg);		 
-         END IF;		 		 
-		 
+         XX_AR_EBL_COMMON_UTIL_PKG.PUT_LOG_LINE (lb_debug_flag, FALSE, lc_err_location_msg);
+         END IF;
+
          OPEN c_get_dist_custtrx FOR 'SELECT xtds.customer_trx_id
 										FROM
 										(SELECT xtds.*,
@@ -2491,34 +2489,34 @@ AS
            -- Added by Punit on 12-OCT-2017
 		   lc_hdr_exists := 'N';
            lc_line_exists := 'N';
-           lc_dist_exists := 'N';         
-		   -- End of Added by Punit on 12-OCT-2017		 
+           lc_dist_exists := 'N';
+		   -- End of Added by Punit on 12-OCT-2017
            ln_get_customer_trx_id := 0;
-      	  
+
 		  FETCH c_get_dist_custtrx INTO ln_get_customer_trx_id;
 		  lc_err_location_msg := ' ln_get_customer_trx_id: ' || ln_get_customer_trx_id;
           XX_AR_EBL_COMMON_UTIL_PKG.PUT_LOG_LINE (lb_debug_flag, FALSE, lc_err_location_msg);
         -- Ended by Thilak on 27-OCT-2017 for Defect # 13836
-		
+
             EXIT WHEN c_get_dist_custtrx%NOTFOUND;
-         
+
 		 OPEN c_get_dist_record_type (ln_get_customer_trx_id);
 
             LOOP
                FETCH c_get_dist_record_type INTO lc_trx_type;
 
                EXIT WHEN c_get_dist_record_type%NOTFOUND;
-            
-		 
+
+
          OPEN get_dist_rows(lc_trx_type);
 
          LOOP
-           -- Added by Punit on 13-OCT-2017 
+           -- Added by Punit on 13-OCT-2017
 		   lc_hdr_exists  := 'N';
            lc_line_exists := 'N';
-           lc_dist_exists := 'N';         
+           lc_dist_exists := 'N';
 		   -- End of Added by Punit on 13-OCT-2017
-		   
+
             FETCH get_dist_rows INTO ln_get_line_dist_rows;
 
             EXIT WHEN get_dist_rows%NOTFOUND;
@@ -2532,7 +2530,7 @@ AS
                -- End of Added and Commented by Punit on 12-JUL-2017 for Defect # 41307
                LOOP
 				-- Added by Thilak CG on 12-OCT-2017 for Wave2 UAT Defect#13836
-                IF lc_get_dtl_fields_info.sort_order IS NOT NULL AND lc_get_dtl_fields_info.sort_type IS NOT NULL 
+                IF lc_get_dtl_fields_info.sort_order IS NOT NULL AND lc_get_dtl_fields_info.sort_type IS NOT NULL
                 THEN
 					lc_sort_columns :=
 						  lc_sort_columns
@@ -2541,14 +2539,14 @@ AS
 					   || ' '
 					   || lc_get_dtl_fields_info.sort_type
 					   || ',';
-                END IF;	
-                -- End			   
+                END IF;
+                -- End
 			    -- Added by Thilak CG on 12-OCT-2017 for Wave2 UAT Defect#13836
-				IF lc_get_dtl_fields_info.col_name = 'ELEC_DETAIL_SEQ_NUMBER' 
+				IF lc_get_dtl_fields_info.col_name = 'ELEC_DETAIL_SEQ_NUMBER'
 				THEN
 				ln_count := ln_count + 1;
 				ELSE
-                -- End 				
+                -- End
                   --fnd_file.put_line(fnd_file.log,p_cust_doc_id);
                   IF p_file_creation_type = 'DELIMITED'
                   THEN
@@ -2616,7 +2614,7 @@ AS
                      ln_count := ln_count + 1;
                   END IF;
 				END IF;
-				
+
                END LOOP;                               --c_get_dtl_fields_info
 
                IF p_file_creation_type = 'DELIMITED'
@@ -2650,7 +2648,7 @@ AS
                IF lc_trx_type = 'HDR'
                THEN
                   --lc_dtl_hdr_sql := 'SELECT DISTINCT CUSTOMER_TRX_ID,'||lc_build_dtl_sql||' FROM XX_AR_EBL_TXT_DTL_STG WHERE file_id = '||p_file_id||' AND cust_doc_id = '||p_cust_doc_id||' AND REC_TYPE != '||'''FID'''||' AND TRX_TYPE = '||''''||lc_trx_type||'''';
-                  
+
 				  lc_dtl_hdr_sql :=
                      'SELECT CUSTOMER_TRX_ID,' || lc_build_dtl_sql
                      || ' AS lc_text FROM XX_AR_EBL_TXT_DTL_STG WHERE file_id = '
@@ -2671,12 +2669,12 @@ AS
                  --    get_sort_columns (p_cust_doc_id, lc_trx_type);
                   lc_err_location_msg := 'lc_dtl_hdr_sort_columns : ' || lc_dtl_hdr_sort_columns;
 				  XX_AR_EBL_COMMON_UTIL_PKG.
-				  PUT_LOG_LINE (lb_debug_flag, FALSE, lc_err_location_msg);					 
+				  PUT_LOG_LINE (lb_debug_flag, FALSE, lc_err_location_msg);
                   lc_dtl_hdr_sql :=
                         lc_dtl_hdr_sql
                      || ' ORDER BY '
                      || lc_dtl_hdr_sort_columns
-                     || ' CUSTOMER_TRX_ID, trx_line_number';  --Changed for NAIT-119176
+                     || ' CUSTOMER_TRX_ID, trx_line_number,stg_id';
                   lc_err_location_msg :=
                      'Detail Header SQL : ' || lc_dtl_hdr_sql;
                   XX_AR_EBL_COMMON_UTIL_PKG.
@@ -2710,7 +2708,7 @@ AS
                 --     get_sort_columns (p_cust_doc_id, lc_trx_type);
 				  lc_err_location_msg := 'lc_dtl_line_sort_columns : ' || lc_dtl_line_sort_columns;
 				  XX_AR_EBL_COMMON_UTIL_PKG.
-				  PUT_LOG_LINE (lb_debug_flag, FALSE, lc_err_location_msg);					
+				  PUT_LOG_LINE (lb_debug_flag, FALSE, lc_err_location_msg);
                   lc_err_location_msg :=
                      'Detail Line SQL : ' || lc_dtl_lines_sql;
                   XX_AR_EBL_COMMON_UTIL_PKG.
@@ -2738,11 +2736,11 @@ AS
                      || '''';
                   lc_dtl_dist_sort_columns := lc_sort_columns;
                   XX_AR_EBL_COMMON_UTIL_PKG.
-                  PUT_LOG_LINE (lb_debug_flag, FALSE, lc_err_location_msg);				  
+                  PUT_LOG_LINE (lb_debug_flag, FALSE, lc_err_location_msg);
                 --     get_sort_columns (p_cust_doc_id, lc_trx_type);
 				  lc_err_location_msg := 'lc_dtl_dist_sort_columns : ' || lc_dtl_dist_sort_columns;
 				  XX_AR_EBL_COMMON_UTIL_PKG.
-				  PUT_LOG_LINE (lb_debug_flag, FALSE, lc_err_location_msg);				
+				  PUT_LOG_LINE (lb_debug_flag, FALSE, lc_err_location_msg);
 
                   lc_build_dtl_dist_label := lc_build_dtl_label;
                   ln_count := 1;
@@ -2784,20 +2782,20 @@ AS
                   UTL_FILE.
                   put_line (p_output_file,
                             lc_build_dtl_hdr_label || CHR (13));
-							
-				 ln_max_rownum := 0;			
+
+				 ln_max_rownum := 0;
 				 SELECT NVL(MAX(ROWNUMBER),1)
 				   INTO ln_max_rownum
 				   FROM xx_cdh_ebl_templ_dtl_txt
 				  WHERE cust_doc_id = p_cust_doc_id
 					AND attribute20 = 'Y'
-					AND record_type = lc_trx_type;		   
-				   
+					AND record_type = lc_trx_type;
+
 				  IF ln_max_rownum = ln_get_line_dist_rows
 				  THEN
 				  ln_hdr_repeat_cnt := 1;
-				  END IF;					
-				  			
+				  END IF;
+
                END IF;
 
                lc_dtl_lines_sql :=
@@ -2807,7 +2805,7 @@ AS
                      lc_dtl_lines_sql
                   || ' ORDER BY '
                   || lc_dtl_line_sort_columns
-                  || ' CUSTOMER_TRX_ID , trx_line_number';  --Changed for NAIT-119176
+                  || ' CUSTOMER_TRX_ID, trx_line_number,stg_id';
                lc_dtl_dist_lines_sql :=
                   lc_dtl_dist_lines_sql
                   || ' AND customer_trx_id=nvl(:pcustomer_trx_id,customer_trx_id)'
@@ -2816,7 +2814,7 @@ AS
                      lc_dtl_dist_lines_sql
                   || ' ORDER BY '
                   || lc_dtl_dist_sort_columns
-                  || 'trx_line_number';  --Changed for NAIT-119176
+                  || ' trx_line_number ,stg_id';
 
                OPEN c_dtl_hdr_cursor FOR lc_dtl_hdr_sql;        -- hdr cursor.
 
@@ -2850,19 +2848,19 @@ AS
                      UTL_FILE.
                      put_line (p_output_file,
                                lc_build_dtl_line_label || CHR (13));
-							   
-					 ln_max_rownum := 0; 
+
+					 ln_max_rownum := 0;
 					 SELECT NVL(MAX(ROWNUMBER),1)
 					   INTO ln_max_rownum
 					   FROM xx_cdh_ebl_templ_dtl_txt
 					  WHERE cust_doc_id = p_cust_doc_id
 						AND attribute20 = 'Y'
-						AND record_type = lc_trx_type;		   
-					   
+						AND record_type = lc_trx_type;
+
 					  IF ln_max_rownum = ln_get_line_dist_rows
 					  THEN
 					  ln_dtl_repeat_cnt := 1;
-					  END IF;								   
+					  END IF;
                   END IF;
 
                   OPEN c_dtl_line_cursor FOR lc_dtl_lines_sql
@@ -2903,19 +2901,19 @@ AS
                         UTL_FILE.
                         put_line (p_output_file,
                                   lc_build_dtl_dist_label || CHR (13));
-								  
-						 ln_max_rownum := 0; 
+
+						 ln_max_rownum := 0;
 						 SELECT NVL(MAX(ROWNUMBER),1)
 						   INTO ln_max_rownum
 						   FROM xx_cdh_ebl_templ_dtl_txt
 						  WHERE cust_doc_id = p_cust_doc_id
 							AND attribute20 = 'Y'
-							AND record_type = lc_trx_type;		   
-						   
+							AND record_type = lc_trx_type;
+
 						  IF ln_max_rownum = ln_get_line_dist_rows
 						  THEN
 						  ln_dist_repeat_cnt := 1;
-						  END IF;		  
+						  END IF;
                      END IF;
 
                      OPEN c_dtl_dist_line_cursor FOR lc_dtl_dist_lines_sql
@@ -2963,7 +2961,7 @@ AS
                      lc_dtl_lines_sql
                   || ' ORDER BY '
                   || lc_dtl_line_sort_columns
-                  || ' customer_trx_id, trx_line_number';  --Changed for NAIT-119176
+                  || ' customer_trx_id, trx_line_number,stg_id';
                lc_dtl_dist_lines_sql :=
                   lc_dtl_dist_lines_sql
                   || ' AND customer_trx_id=nvl(:pcustomer_trx_id,customer_trx_id)'
@@ -2972,7 +2970,7 @@ AS
                      lc_dtl_dist_lines_sql
                   || ' ORDER BY '
                   || lc_dtl_dist_sort_columns
-                  || 'trx_line_number';  --Changed for NAIT-119176
+                  || ' trx_line_number,stg_id';
                lc_err_location_msg :=
                   'Opening the Lines Cursor, Query :' || lc_dtl_lines_sql;
                XX_AR_EBL_COMMON_UTIL_PKG.
@@ -2983,19 +2981,19 @@ AS
                   UTL_FILE.
                   put_line (p_output_file,
                             lc_build_dtl_line_label || CHR (13));
-							
-                 ln_max_rownum := 0; 
+
+                 ln_max_rownum := 0;
 				 SELECT NVL(MAX(ROWNUMBER),1)
 				   INTO ln_max_rownum
 				   FROM xx_cdh_ebl_templ_dtl_txt
 				  WHERE cust_doc_id = p_cust_doc_id
 					AND attribute20 = 'Y'
-					AND record_type = lc_trx_type;		   
-				   
+					AND record_type = lc_trx_type;
+
 				  IF ln_max_rownum = ln_get_line_dist_rows
 				  THEN
 				  ln_dtl_repeat_cnt := 1;
-				  END IF;			
+				  END IF;
                END IF;
 
                OPEN c_dtl_line_cursor FOR lc_dtl_lines_sql;    -- line cursor.
@@ -3033,19 +3031,19 @@ AS
                      UTL_FILE.
                      put_line (p_output_file,
                                lc_build_dtl_dist_label || CHR (13));
-							   
-					 ln_max_rownum := 0; 
+
+					 ln_max_rownum := 0;
 					 SELECT NVL(MAX(ROWNUMBER),1)
 					   INTO ln_max_rownum
 					   FROM xx_cdh_ebl_templ_dtl_txt
 					  WHERE cust_doc_id = p_cust_doc_id
 						AND attribute20 = 'Y'
-						AND record_type = lc_trx_type;		   
-					   
+						AND record_type = lc_trx_type;
+
 					  IF ln_max_rownum = ln_get_line_dist_rows
 					  THEN
 					  ln_dist_repeat_cnt := 1;
-					  END IF;	   
+					  END IF;
                   END IF;
 
                   OPEN c_dtl_dist_line_cursor FOR lc_dtl_dist_lines_sql
@@ -3095,19 +3093,19 @@ AS
                   UTL_FILE.
                   put_line (p_output_file,
                             lc_build_dtl_hdr_label || CHR (13));
-							
-                 ln_max_rownum := 0; 
+
+                 ln_max_rownum := 0;
 				 SELECT NVL(MAX(ROWNUMBER),1)
 				   INTO ln_max_rownum
 				   FROM xx_cdh_ebl_templ_dtl_txt
 				  WHERE cust_doc_id = p_cust_doc_id
 					AND attribute20 = 'Y'
-					AND record_type = lc_trx_type;		   
-				   
+					AND record_type = lc_trx_type;
+
 				  IF ln_max_rownum = ln_get_line_dist_rows
 				  THEN
 				  ln_hdr_repeat_cnt := 1;
-				  END IF;			
+				  END IF;
                END IF;
 
                lc_dtl_lines_sql :=
@@ -3117,7 +3115,7 @@ AS
                      lc_dtl_lines_sql
                   || ' ORDER BY '
                   || lc_dtl_line_sort_columns
-                  || ' customer_trx_id,trx_line_number';  --Changed for NAIT-119176
+                  || ' customer_trx_id, trx_line_number,stg_id';
                lc_dtl_lines_sql :=
                      'SELECT customer_trx_id, lc_text FROM ('
                   || lc_dtl_lines_sql
@@ -3159,19 +3157,19 @@ AS
                      UTL_FILE.
                      put_line (p_output_file,
                                lc_build_dtl_line_label || CHR (13));
-							   
-					 ln_max_rownum := 0; 
+
+					 ln_max_rownum := 0;
 					 SELECT NVL(MAX(ROWNUMBER),1)
 					   INTO ln_max_rownum
 					   FROM xx_cdh_ebl_templ_dtl_txt
 					  WHERE cust_doc_id = p_cust_doc_id
 						AND attribute20 = 'Y'
-						AND record_type = lc_trx_type;		   
-					   
+						AND record_type = lc_trx_type;
+
 					  IF ln_max_rownum = ln_get_line_dist_rows
 					  THEN
 					  ln_dtl_repeat_cnt := 1;
-					  END IF;		   
+					  END IF;
                   END IF;
 
 			     --END LOOP;                                         -- hdr cursor     --- Added by Punit on 16-OCT-2017
@@ -3219,7 +3217,7 @@ AS
                      lc_dtl_lines_sql
                   || ' ORDER BY '
                   || lc_dtl_line_sort_columns
-                  || ' customer_trx_id, trx_line_number ';  --Changed for NAIT-119176
+                  || ' customer_trx_id, trx_line_number ,stg_id';
                --lc_dtl_lines_sql := 'SELECT DISTINCT lc_text FROM ('||lc_dtl_lines_sql||')';
                lc_dtl_lines_sql :=
                   'SELECT lc_text FROM (' || lc_dtl_lines_sql || ')';
@@ -3233,19 +3231,19 @@ AS
                   UTL_FILE.
                   put_line (p_output_file,
                             lc_build_dtl_line_label || CHR (13));
-							
-                 ln_max_rownum := 0; 
+
+                 ln_max_rownum := 0;
 				 SELECT NVL(MAX(ROWNUMBER),1)
 				   INTO ln_max_rownum
 				   FROM xx_cdh_ebl_templ_dtl_txt
 				  WHERE cust_doc_id = p_cust_doc_id
 					AND attribute20 = 'Y'
-					AND record_type = lc_trx_type;		   
-				   
+					AND record_type = lc_trx_type;
+
 				  IF ln_max_rownum = ln_get_line_dist_rows
 				  THEN
 				  ln_dtl_repeat_cnt := 1;
-				  END IF;			
+				  END IF;
                END IF;
 
                ln_customer_trx_id := NULL;
@@ -3296,19 +3294,19 @@ AS
                   UTL_FILE.
                   put_line (p_output_file,
                             lc_build_dtl_hdr_label || CHR (13));
-							
-                 ln_max_rownum := 0; 
+
+                 ln_max_rownum := 0;
 				 SELECT NVL(MAX(ROWNUMBER),1)
 				   INTO ln_max_rownum
 				   FROM xx_cdh_ebl_templ_dtl_txt
 				  WHERE cust_doc_id = p_cust_doc_id
 					AND attribute20 = 'Y'
-					AND record_type = lc_trx_type;		   
-				   
+					AND record_type = lc_trx_type;
+
 				  IF ln_max_rownum = ln_get_line_dist_rows
 				  THEN
 				  ln_hdr_repeat_cnt := 1;
-				  END IF;			
+				  END IF;
                END IF;
 
                --end of changes for defect 41016
@@ -3356,19 +3354,19 @@ AS
             END IF;           -----------> Opening Cursors based on setup End.
          -- Added on 12-JUL-2017 for Defect#41307
          END LOOP;                                             --get_dist_rows
-		 
+
          CLOSE get_dist_rows;
-		 
+
 
 	END LOOP;                                 --c_get_dist_record_type
 
   CLOSE c_get_dist_record_type;
-            
-		 	 
+
+
 		 END LOOP;                         --get_dist_rows
-		 
+
 		 CLOSE c_get_dist_custtrx;
-		 
+
          -- End of Added on 12-JUL-2017 for Defect#41307
          p_dtl_error_flag := 'N';
       END IF;                     -- Summary Bill
@@ -3605,7 +3603,7 @@ AS
                 fnd_file.put_line (fnd_file.LOG, ' Error In Updating Counts ' || SQLERRM );
               END;
               -- END Added by Aniket CG 15 May #NAIT-36070
-			
+
 
             IF p_file_creation_type = 'DELIMITED'
             THEN
@@ -4385,8 +4383,6 @@ EXCEPTION
 WHEN OTHERS THEN
   fnd_file.put_line (fnd_file.LOG, ' Error IN DTL Function ' || SQLERRM );
   RETURN 0;
-END RENDER_TXT_INV_CNT;      
+END RENDER_TXT_INV_CNT;
 END XX_AR_EBL_RENDER_TXT_PKG;
 /
-SHOW ERRORS;
-EXIT;

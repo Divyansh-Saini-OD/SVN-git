@@ -1,16 +1,3 @@
-SET SHOW OFF
-SET VERIFY OFF
-SET ECHO OFF
-SET TAB OFF
-SET FEEDBACK OFF
-SET TERM ON
-
-PROMPT Creating PACKAGE BODY xx_ar_ebl_cons_invoices
-
-PROMPT Program exits IF the creation IS NOT SUCCESSFUL
-
-WHENEVER SQLERROR CONTINUE
-
 create or replace
 PACKAGE BODY XX_AR_EBL_RENDER_STUB_PKG AS
 
@@ -35,6 +22,7 @@ PACKAGE BODY XX_AR_EBL_RENDER_STUB_PKG AS
 -- |                                           Defect : NAIT-65564                                        |        
 -- |1.4       01-Dec-2018 Thilak Kumar (CG)    Added to capture POD details in remit output               |
 -- |                                           Defects : NAIT-70500 and NAIT-75181                        |        												|
+-- |1.5       10-JUN-2020 Divyansh Saini       Changes done for NAIT-129167
 -- +======================================================================================================+
 */
 
@@ -366,6 +354,8 @@ PACKAGE BODY XX_AR_EBL_RENDER_STUB_PKG AS
 	ln_pod_flag_cnt             NUMBER := 0;
 	ln_customer_id              NUMBER := 0;
 	ln_transmission_id          NUMBER := 0;
+	ln_fee_amount               NUMBER := 0;
+	ln_fee_option               NUMBER := 0;
 
 
   -- Added below cursor for Defect#NAIT-70500 by Thilak 	 
@@ -382,6 +372,7 @@ PACKAGE BODY XX_AR_EBL_RENDER_STUB_PKG AS
 	 WHERE transmission_id = p_transmission_id 
 	   AND consolidated_bill_number = p_cons_inv
        AND cust_account_id = p_customer_id;
+
 	     
   BEGIN
 --  SELECT TO_CHAR(SYSDATE,'DD-MON-RR'), '46078', 'ARCH COAL INC', '379169', '8360.68', 'PO Box 88040' || utl_tcp.CRLF || 'Chicago IL  60680-1040', '000460782 0000003791696 00000007178 1 1'
@@ -499,6 +490,51 @@ PACKAGE BODY XX_AR_EBL_RENDER_STUB_PKG AS
     item_text := xmldom.createTextNode(doc,ln_total_gift_card_amt);
     item_node := xmldom.appendChild(item_node,xmldom.makeNode(item_text));
 	--Module 4B Release 1 End
+	
+	-- Added for tariff 1.5
+	
+	
+	SELECT SUM(XX_AR_EBL_COMMON_UTIL_PKG.get_hea_fee_amount(customer_trx_id) +
+	           XX_AR_EBL_COMMON_UTIL_PKG.get_line_fee_amount(customer_trx_id)   )
+	  INTO ln_fee_amount
+	  FROM (SELECT customer_trx_id
+	  FROM XX_AR_EBL_CONS_HDR_HIST 
+	 WHERE transmission_id = ln_transmission_id 
+	   AND consolidated_bill_number = ls_cons_bill_number
+       AND cust_account_id = ln_customer_id
+	UNION
+    SELECT customer_trx_id
+	  FROM XX_AR_EBL_CONS_HDR_MAIN 
+	 WHERE transmission_id = ln_transmission_id 
+	   AND consolidated_bill_number = ls_cons_bill_number
+       AND cust_account_id = ln_customer_id);
+	 
+	 
+	 SELECT XX_AR_EBL_COMMON_UTIL_PKG.get_fee_option(cust_doc_id,null,null,null) 
+	   INTO ln_fee_option
+	   FROM (SELECT cust_doc_id
+	  FROM XX_AR_EBL_CONS_HDR_HIST 
+	 WHERE transmission_id = ln_transmission_id 
+	   AND consolidated_bill_number = ls_cons_bill_number
+       AND cust_account_id = ln_customer_id
+	UNION
+    SELECT cust_doc_id
+	  FROM XX_AR_EBL_CONS_HDR_MAIN 
+	 WHERE transmission_id = ln_transmission_id 
+	   AND consolidated_bill_number = ls_cons_bill_number
+       AND cust_account_id = ln_customer_id);
+	
+	item_elmt := xmldom.createElement(doc,'FEE_OPTION');
+    item_node := xmldom.appendChild(stub_node,xmldom.makeNode(item_elmt));
+    item_text := xmldom.createTextNode(doc,ln_fee_option);
+    item_node := xmldom.appendChild(item_node,xmldom.makeNode(item_text));
+	
+	item_elmt := xmldom.createElement(doc,'TOTAL_FEE_AMT');
+    item_node := xmldom.appendChild(stub_node,xmldom.makeNode(item_elmt));
+    item_text := xmldom.createTextNode(doc,ln_fee_amount);
+    item_node := xmldom.appendChild(item_node,xmldom.makeNode(item_text));
+	
+	-- End for tariff 1.5
 	
    -- Added below loop for Defect#NAIT-70500 by Thilak	
    ln_pod_cnt := 0;

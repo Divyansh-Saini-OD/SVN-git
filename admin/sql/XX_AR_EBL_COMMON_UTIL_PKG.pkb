@@ -5945,7 +5945,7 @@ BEGIN
 	 ln_fee_amount      := 0;
 
 	 BEGIN
-      SELECT NVL(sum(RCTL.unit_selling_price*rctl.QUANTITY_INVOICED),0) FEE_AMT
+      SELECT NVL(sum(RCTL.unit_selling_price*rctl.QUANTITY_ORDERED),0) FEE_AMT
 		    INTO ln_fee_amount
 			  FROM ra_customer_trx_lines_All RCTL
 				     ,fnd_lookup_values flv
@@ -5996,7 +5996,7 @@ BEGIN
 	 ln_fee_amount      := 0;
 
 	 BEGIN
-      SELECT NVL(sum(RCTL.unit_selling_price*rctl.QUANTITY_INVOICED),0) FEE_AMT
+      SELECT NVL(sum(RCTL.unit_selling_price*rctl.QUANTITY_ORDERED),0) FEE_AMT
 		    INTO ln_fee_amount
 			  FROM ra_customer_trx_lines_All RCTL
 				    ,fnd_lookup_values flv
@@ -6047,6 +6047,7 @@ IS
 
 ln_line_number NUMBER;
 ln_org_id      NUMBER;
+lv_header_line VARCHAR2(2):= 'N';
 
 BEGIN
 
@@ -6061,6 +6062,35 @@ BEGIN
    EXCEPTION WHEN OTHERS THEN
       ln_line_number := 0 ;
    END;
+   
+   IF (ln_line_number =0 or ln_line_number is NULL) THEN
+      BEGIN
+	      SELECT 'Y'
+		    INTO lv_header_line
+			  FROM ra_customer_trx_lines_All RCTL
+				    ,fnd_lookup_values flv
+		   WHERE 1=1
+			 AND flv.lookup_type = 'OD_FEES_ITEMS'
+			 AND flv.LANGUAGE='US'
+			 AND flv.attribute6= rctl.INVENTORY_ITEM_ID
+			 AND FLV.enabled_flag = 'Y'                                   
+			 AND SYSDATE BETWEEN NVL(FLV.start_date_active,SYSDATE) AND NVL(FLV.end_date_active,SYSDATE+1)  
+			 AND FLV.attribute7 IN ('HEADER') 
+			 AND customer_trx_id = p_customer_trx_id
+			 AND line_number = p_line_number;
+	  
+      IF lv_header_line = 'Y' THEN
+	     SELECT count(0)
+		   INTO ln_line_number
+		   FROM ra_customer_trx_lines_All
+		  WHERE customer_trx_id = p_customer_trx_id;
+	  END IF;
+	  EXCEPTION WHEN NO_DATA_FOUND THEN
+	      ln_line_number :=0;
+		WHEN OTHERS THEN
+		  ln_line_number :=0;
+	  END;
+   END IF;
 
    IF ln_line_number =0 THEN
       RETURN p_line_number;
@@ -6118,9 +6148,10 @@ BEGIN
 		   INTO ln_fee_option
 		   FROM xx_cdh_cust_acct_ext_b
 		  WHERE n_ext_attr2   = p_cust_doc_id
-		    AND d_ext_attr2 is not null
-			and c_ext_attr1 = p_mbs_doc_type
-			AND attr_group_id = ln_attr_group_id;
+		    AND d_ext_attr2 is null
+			and c_ext_attr1 = NVL(p_mbs_doc_type,c_ext_attr1)
+			AND attr_group_id = ln_attr_group_id
+			AND rownum =1;
 	 EXCEPTION
 		WHEN NO_DATA_FOUND THEN
 		   ln_fee_option := -1;
@@ -6130,7 +6161,7 @@ BEGIN
 
    IF ln_fee_option = -1 THEN
       BEGIN
-		 SELECT fee_option
+		 SELECT NVL(fee_option,0)
 		   INTO ln_fee_option
 		   FROM xx_cdh_cust_acct_ext_b
 		  WHERE cust_account_id   = p_cust_account_id
@@ -6149,7 +6180,7 @@ BEGIN
 								   AND d_ext_attr2 is null);
 	 EXCEPTION
 		WHEN NO_DATA_FOUND THEN
-		   ln_fee_option := -1;
+		   ln_fee_option := 0;
 		WHEN OTHERS THEN
 		   ln_fee_option := 0;
 	 END;
@@ -6161,6 +6192,42 @@ EXCEPTION
 WHEN OTHERS	THEN
   FND_FILE.PUT_LINE(FND_FILE.LOG,'Error while returning fee_option in get_fee_option : '||Sqlerrm);
 	RETURN(ln_fee_option);
+END;
+
+
+FUNCTION get_softhdr_amount(p_line_type IN VARCHAR2,p_sft_text IN VARCHAR2,p_cons_id IN NUMBER,p_cust_doc_id IN NUMBER) RETURN NUMBER IS
+ln_fee_amount NUMBER :=0;
+lv_sft_txt    VARCHAR2(100);
+BEGIN
+
+   IF p_line_type = 'BILL_TO_TOTAL' THEN
+       SELECT SUM(XX_AR_EBL_COMMON_UTIL_PKG.get_line_fee_amount(customer_trx_id) + XX_AR_EBL_COMMON_UTIL_PKG.get_hea_fee_amount(customer_trx_id))
+         INTO ln_fee_amount
+         FROM xx_ar_ebl_cons_hdr_main
+        WHERE cons_inv_id = p_cons_id and cust_doc_id = p_cust_doc_id;
+   ELSIF p_line_type = 'SOFTHDR_TOTAL' THEN
+      SELECT trim(substr(p_sft_text,INSTR(p_sft_text,':')+1))
+        INTO lv_sft_txt
+        FROM DUAL;
+        IF lv_sft_txt IS NOT NULL THEN
+           SELECT SUM(XX_AR_EBL_COMMON_UTIL_PKG.get_line_fee_amount(customer_trx_id) + XX_AR_EBL_COMMON_UTIL_PKG.get_hea_fee_amount(customer_trx_id))
+             INTO ln_fee_amount
+             FROM xx_ar_ebl_cons_hdr_main
+            WHERE cons_inv_id = p_cons_id and cust_doc_id = p_cust_doc_id
+              AND COST_CENTER_SFT_DATA = lv_sft_txt;
+        ELSIF   lv_sft_txt IS NULL THEN
+           SELECT SUM(XX_AR_EBL_COMMON_UTIL_PKG.get_line_fee_amount(customer_trx_id) + XX_AR_EBL_COMMON_UTIL_PKG.get_hea_fee_amount(customer_trx_id))
+             INTO ln_fee_amount
+             FROM xx_ar_ebl_cons_hdr_main
+            WHERE cons_inv_id = p_cons_id and cust_doc_id = p_cust_doc_id
+              AND COST_CENTER_SFT_DATA IS NULL;
+        END IF;
+    END IF;
+    
+    return ln_fee_amount;
+
+EXCEPTION WHEN OTHERS THEN 
+return 0;
 END;
 
 END XX_AR_EBL_COMMON_UTIL_PKG;

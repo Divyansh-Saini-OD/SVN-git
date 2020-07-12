@@ -3374,7 +3374,7 @@ create or replace PACKAGE BODY XX_AR_EBL_CONS_INVOICES AS
                ,xola.wholesaler_item wholesaler_item
                ,rctl1.interface_line_context interface_line_context
                ,rctl1.interface_line_attribute11 oe_price_adjustment_id
-               ,nvl(to_char(to_number(ool.customer_line_number))
+               ,DECODE(Fee_item,'Y',null,nvl(to_char(to_number(ool.customer_line_number))
                    ,decode(substr(ool.orig_sys_line_ref
                                  ,1
                                  ,1)
@@ -3383,7 +3383,7 @@ create or replace PACKAGE BODY XX_AR_EBL_CONS_INVOICES AS
                                 ,'0')
                           ,substr(ool.orig_sys_line_ref
                                  ,1
-                                 ,9))) po_line_number
+                                 ,9)))) po_line_number
                --,xola.taxable_flag                      --Commented for Defect #7025
                ,NULL  taxable_flag                       --Added for Defect #7025
                ,xola.gsa_flag
@@ -3399,10 +3399,18 @@ create or replace PACKAGE BODY XX_AR_EBL_CONS_INVOICES AS
                ,xx_om_line_attributes_all xola
                ,mtl_units_of_measure      muom
                ,mtl_system_items          msi
+			   ,(select 'Y' Fee_item, attribute6,attribute7
+                                       FROM fnd_lookup_values flv
+                                      WHERE lookup_type =  'OD_FEES_ITEMS'
+                                        AND flv.LANGUAGE='US'
+                                        AND FLV.enabled_flag = 'Y'                                   
+                                        AND SYSDATE BETWEEN NVL(FLV.start_date_active,SYSDATE) AND NVL(FLV.end_date_active,SYSDATE+1)  
+                                        AND FLV.attribute7 NOT IN ('DELIVERY','MISCELLANEOUS')  ) Q_fee
          WHERE  rctl1.customer_trx_id = p_cust_trx_id
          AND    rctl1.uom_code = muom.uom_code(+)
          AND    rctl1.inventory_item_id = msi.inventory_item_id(+)
-         AND    ool.line_id = xola.line_id(+)
+         AND    rctl1.inventory_item_id = Q_fee.attribute6(+)
+		 AND    ool.line_id = xola.line_id(+)
          AND    rctl1.interface_line_attribute6 = ool.line_id(+)
          AND    msi.organization_id = p_organization_id
 		 AND    DECODE(rctl1.attribute3,'K',DECODE(rctl1.attribute5,'Y','1','2'),'1') = '1' -- Added for Kitting, Defect# 37675

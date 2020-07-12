@@ -951,5 +951,7 @@ RETURN VARCHAR2;
 						  p_cust_account_id IN NUMBER,
 						  p_del_method IN VARCHAR2 default 'ePDF') 
    RETURN NUMBER;
+   
+FUNCTION get_softhdr_amount(p_line_type IN VARCHAR2,p_sft_text IN VARCHAR2,p_cons_id IN NUMBER,p_cust_doc_id IN NUMBER) RETURN NUMBER;
  END XX_AR_EBL_COMMON_UTIL_PKG;
  /
