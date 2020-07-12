@@ -64,7 +64,7 @@ create or replace PACKAGE BODY      XX_AR_EBL_COMMON_UTIL_PKG
 -- |2.9       11-MAR-2019	Aarthi                NAIT- 80452: Adding POD related blurb |
 -- |                                              messages to individual reprint reports|
 -- |3.0       27-MAY-2020   Divyansh              Added new functions for Tariff Changes|
--- |                                              JIRA NAIT-129167                      | 
+-- |                                              JIRA NAIT-129167                      |
 -- +===================================================================================+
 -- +===================================================================================+
 -- |                  Office Depot - Project Simplify                                  |
@@ -5953,9 +5953,9 @@ BEGIN
 			 AND flv.lookup_type = 'OD_FEES_ITEMS'
 			 AND flv.LANGUAGE='US'
 			 AND flv.attribute6= rctl.INVENTORY_ITEM_ID
-			 AND FLV.enabled_flag = 'Y'                                   
-			 AND SYSDATE BETWEEN NVL(FLV.start_date_active,SYSDATE) AND NVL(FLV.end_date_active,SYSDATE+1)  
-			 AND FLV.attribute7 NOT IN ('DELIVERY','MISCELLANEOUS','HEADER') 
+			 AND FLV.enabled_flag = 'Y'
+			 AND SYSDATE BETWEEN NVL(FLV.start_date_active,SYSDATE) AND NVL(FLV.end_date_active,SYSDATE+1)
+			 AND FLV.attribute7 NOT IN ('DELIVERY','MISCELLANEOUS','HEADER')
 			 AND customer_trx_id = p_customer_trx_id;
 
      EXCEPTION
@@ -6004,9 +6004,9 @@ BEGIN
 			 AND flv.lookup_type = 'OD_FEES_ITEMS'
 			 AND flv.LANGUAGE='US'
 			 AND flv.attribute6= rctl.INVENTORY_ITEM_ID
-			 AND FLV.enabled_flag = 'Y'                                   
-			 AND SYSDATE BETWEEN NVL(FLV.start_date_active,SYSDATE) AND NVL(FLV.end_date_active,SYSDATE+1)  
-			 AND FLV.attribute7 IN ('HEADER') 
+			 AND FLV.enabled_flag = 'Y'
+			 AND SYSDATE BETWEEN NVL(FLV.start_date_active,SYSDATE) AND NVL(FLV.end_date_active,SYSDATE+1)
+			 AND FLV.attribute7 IN ('HEADER')
 			 AND customer_trx_id = p_customer_trx_id;
 
    EXCEPTION
@@ -6042,7 +6042,7 @@ END get_hea_fee_amount;
 -- | 1.0      23-MAR-2020  Divyansh Saini       Initial draft version                  |
 -- +===================================================================================+
 
-FUNCTION get_fee_line_number(p_customer_trx_id NUMBER,p_description IN VARCHAR2,p_organization IN NUMBER,p_line_number IN NUMBER) RETURN NUMBER 
+FUNCTION get_fee_line_number(p_customer_trx_id NUMBER,p_description IN VARCHAR2,p_organization IN NUMBER,p_line_number IN NUMBER) RETURN NUMBER
 IS
 
 ln_line_number NUMBER;
@@ -6062,7 +6062,7 @@ BEGIN
    EXCEPTION WHEN OTHERS THEN
       ln_line_number := 0 ;
    END;
-   
+
    IF (ln_line_number =0 or ln_line_number is NULL) THEN
       BEGIN
 	      SELECT 'Y'
@@ -6073,12 +6073,12 @@ BEGIN
 			 AND flv.lookup_type = 'OD_FEES_ITEMS'
 			 AND flv.LANGUAGE='US'
 			 AND flv.attribute6= rctl.INVENTORY_ITEM_ID
-			 AND FLV.enabled_flag = 'Y'                                   
-			 AND SYSDATE BETWEEN NVL(FLV.start_date_active,SYSDATE) AND NVL(FLV.end_date_active,SYSDATE+1)  
-			 AND FLV.attribute7 IN ('HEADER') 
+			 AND FLV.enabled_flag = 'Y'
+			 AND SYSDATE BETWEEN NVL(FLV.start_date_active,SYSDATE) AND NVL(FLV.end_date_active,SYSDATE+1)
+			 AND FLV.attribute7 IN ('HEADER')
 			 AND customer_trx_id = p_customer_trx_id
 			 AND line_number = p_line_number;
-	  
+
       IF lv_header_line = 'Y' THEN
 	     SELECT count(0)
 		   INTO ln_line_number
@@ -6099,7 +6099,7 @@ BEGIN
    ELSE
       RETURN ln_line_number||'.'||p_line_number;
    END IF;
-   
+
 
 EXCEPTION
 WHEN OTHERS	THEN
@@ -6142,7 +6142,7 @@ BEGIN
 		WHEN OTHERS THEN
 		   ln_attr_group_id := 0;
 	 END;
-	 
+
 	BEGIN
 		 SELECT fee_option
 		   INTO ln_fee_option
@@ -6170,7 +6170,7 @@ BEGIN
             and c_ext_attr1 = p_mbs_doc_type
 			AND c_ext_attr16 = 'COMPLETE'
 			AND d_ext_attr2 is null
-			AND d_ext_attr1 = (select max(d_ext_attr1) 
+			AND d_ext_attr1 = (select max(d_ext_attr1)
 			                     FROM xx_cdh_cust_acct_ext_b
 			                     WHERE cust_account_id   = p_cust_account_id
 								   AND c_ext_attr3 = p_del_method
@@ -6201,7 +6201,7 @@ lv_sft_txt    VARCHAR2(100);
 BEGIN
 
    IF p_line_type = 'BILL_TO_TOTAL' THEN
-       SELECT SUM(XX_AR_EBL_COMMON_UTIL_PKG.get_line_fee_amount(customer_trx_id) + XX_AR_EBL_COMMON_UTIL_PKG.get_hea_fee_amount(customer_trx_id))
+       SELECT NVL(SUM(XX_AR_EBL_COMMON_UTIL_PKG.get_line_fee_amount(customer_trx_id) + XX_AR_EBL_COMMON_UTIL_PKG.get_hea_fee_amount(customer_trx_id)),0)
          INTO ln_fee_amount
          FROM xx_ar_ebl_cons_hdr_main
         WHERE cons_inv_id = p_cons_id and cust_doc_id = p_cust_doc_id;
@@ -6210,23 +6210,23 @@ BEGIN
         INTO lv_sft_txt
         FROM DUAL;
         IF lv_sft_txt IS NOT NULL THEN
-           SELECT SUM(XX_AR_EBL_COMMON_UTIL_PKG.get_line_fee_amount(customer_trx_id) + XX_AR_EBL_COMMON_UTIL_PKG.get_hea_fee_amount(customer_trx_id))
+           SELECT NVL(SUM(XX_AR_EBL_COMMON_UTIL_PKG.get_line_fee_amount(customer_trx_id) + XX_AR_EBL_COMMON_UTIL_PKG.get_hea_fee_amount(customer_trx_id)),0)
              INTO ln_fee_amount
              FROM xx_ar_ebl_cons_hdr_main
             WHERE cons_inv_id = p_cons_id and cust_doc_id = p_cust_doc_id
               AND COST_CENTER_SFT_DATA = lv_sft_txt;
         ELSIF   lv_sft_txt IS NULL THEN
-           SELECT SUM(XX_AR_EBL_COMMON_UTIL_PKG.get_line_fee_amount(customer_trx_id) + XX_AR_EBL_COMMON_UTIL_PKG.get_hea_fee_amount(customer_trx_id))
+           SELECT NVL(SUM(XX_AR_EBL_COMMON_UTIL_PKG.get_line_fee_amount(customer_trx_id) + XX_AR_EBL_COMMON_UTIL_PKG.get_hea_fee_amount(customer_trx_id)),0)
              INTO ln_fee_amount
              FROM xx_ar_ebl_cons_hdr_main
             WHERE cons_inv_id = p_cons_id and cust_doc_id = p_cust_doc_id
               AND COST_CENTER_SFT_DATA IS NULL;
         END IF;
     END IF;
-    
+
     return ln_fee_amount;
 
-EXCEPTION WHEN OTHERS THEN 
+EXCEPTION WHEN OTHERS THEN
 return 0;
 END;
 
