@@ -11,7 +11,7 @@
    <xsl:param name="_XDOOUTPUTFORMAT">application/pdf</xsl:param>
    <xsl:param name="_XDOSVGFONTEMBED">true</xsl:param>
    <xsl:param name="_XDOCTX">#</xsl:param>
-   <xsl:variable name="_XDOXSLTCTX" select="xdoxslt:set_xslt_locale($_XDOCTX, $_XDOLOCALE, $_XDOTIMEZONE, $_XDOCALENDAR, concat($_XDODFOVERRIDE,'',$_XDOCURMASKS,'',$_XDONFSEPARATORS))"/>
+   <xsl:variable name="_XDOXSLTCTX" select="xdoxslt:set_xslt_locale($_XDOCTX, $_XDOLOCALE, $_XDOTIMEZONE, $_XDOCALENDAR, concat($_XDODFOVERRIDE,'',$_XDOCURMASKS,'',$_XDONFSEPARATORS))"/>
    <xsl:variable name="_XDOFOPOS" select="''"/>
    <xsl:variable name="_XDOFOPOS2" select="number(1)"/>
    <xsl:variable name="_XDOFOTOTAL" select="number(1)"/>
@@ -408,7 +408,12 @@ V7IbLHvo8wAAAABJRU5ErkJggg==</fo:instream-foreign-object>
                               <fo:block xdofo:xliff-note="     " padding-bottom="0.0pt" text-align="right" orphans="2" widows="2" padding-top="0.0pt" end-indent="9.0pt" linefeed-treatment="preserve" start-indent="0.0pt" height="0pt">
                                  <fo:inline height="8.0pt" font-family="Arial" white-space-collapse="false" font-size="8.0pt">
                                     <xsl:variable xdofo:ctx="17" xdofo:ctx2="wrapper" name="fv7">
-                                       <xsl:value-of select=".//TOTAL_MERCHANDISE_AMT" xdofo:field-name="TOTAL_MERCHANDISE_AMT"/>
+                                       <xsl:if xdofo:ctx="17" test=".//FEE_OPTION != '0'">
+										<xsl:value-of select="(.//TOTAL_MERCHANDISE_AMT) - (.//TOTAL_FEE_AMT)" xdofo:field-name="TOTAL_MERCHANDISE_AMT - TOTAL_FEE_AMT"/>
+										</xsl:if>
+										<xsl:if xdofo:ctx="17" test=".//FEE_OPTION = '0'">
+										<xsl:value-of select="(.//TOTAL_MERCHANDISE_AMT)" xdofo:field-name="TOTAL_MERCHANDISE_AMT"/>
+										</xsl:if>
                                     </xsl:variable>
                                     <xsl:value-of select="xdoxslt:ms_format_number($_XDOXSLTCTX, $fv7, '$#,##0.00')"/>
                                  </fo:inline>
@@ -425,7 +430,12 @@ V7IbLHvo8wAAAABJRU5ErkJggg==</fo:instream-foreign-object>
                               <fo:block xdofo:xliff-note="     " padding-bottom="0.0pt" text-align="right" orphans="2" widows="2" padding-top="0.0pt" end-indent="9.0pt" linefeed-treatment="preserve" start-indent="0.0pt" height="0pt">
                                  <fo:inline height="8.0pt" font-family="Arial" white-space-collapse="false" font-size="8.0pt">
                                     <xsl:variable xdofo:ctx="17" xdofo:ctx2="wrapper" name="fv8">
-                                       <xsl:value-of select=".//TOTAL_MISC_AMT" xdofo:field-name="TOTAL_MISC_AMT"/>
+										<xsl:if xdofo:ctx="17" test=".//FEE_OPTION = '1008' or .//FEE_OPTION = '1009'">
+										<xsl:value-of select="(.//TOTAL_MISC_AMT) + (.//TOTAL_FEE_AMT)" xdofo:field-name="TOTAL_MISC_AMT + TOTAL_FEE_AMT"/>
+										</xsl:if>
+										<xsl:if xdofo:ctx="17" test=".//FEE_OPTION = '1010' or .//FEE_OPTION = '1007' or .//FEE_OPTION = '0'">
+										<xsl:value-of select="(.//TOTAL_MISC_AMT)" xdofo:field-name="TOTAL_MISC_AMT"/>
+										</xsl:if>
                                     </xsl:variable>
                                     <xsl:value-of select="xdoxslt:ms_format_number($_XDOXSLTCTX, $fv8, '$#,##0.00')"/>
                                  </fo:inline>
@@ -469,6 +479,29 @@ V7IbLHvo8wAAAABJRU5ErkJggg==</fo:instream-foreign-object>
                               </fo:block>
                            </fo:table-cell>
                         </fo:table-row>
+						<xsl:if xdofo:ctx="17" test=".//FEE_OPTION = '1010' or .//FEE_OPTION = '1007'">
+						<fo:table-row xdo-banded-col="false" xdo-banded-row="true" xdo-last-col="false" xdo-first-col="true" xdo-last-row="false" xdo-first-row="true">
+							<fo:table-cell height="21.6pt" padding-top="0.0pt" padding-bottom="0.0pt" number-columns-spanned="1" vertical-align="top" padding-start="5.4pt" padding-end="5.4pt">
+								<fo:block height="0pt" start-indent="0.0pt" linefeed-treatment="preserve" end-indent="9.0pt" padding-top="0.0pt" widows="2" orphans="2" text-align="start" padding-bottom="0.0pt">
+								<xsl:variable name="fv11" height="0.0pt" xdofo:xliff-note="     " xdofo:ctx2="wrapper" xdofo:ctx="17">
+								
+								<fo:inline font-family="Arial" height="8.0pt" font-size="8.0pt" font-family-generic="swiss" style-name="Normal" white-space-collapse="false">FEE AMOUNT:</fo:inline>
+								
+								</xsl:variable>
+								</fo:block>
+							</fo:table-cell>
+							<fo:table-cell height="21.6pt" padding-top="0.0pt" padding-bottom="0.0pt" number-columns-spanned="1" vertical-align="top" padding-start="5.4pt" padding-end="5.4pt">
+								<fo:block height="0pt" start-indent="0.0pt" linefeed-treatment="preserve" end-indent="9.0pt" padding-top="0.0pt" widows="2" orphans="2" text-align="right" padding-bottom="0.0pt" xdofo:xliff-note="     ">
+									<fo:inline font-family="Arial" height="8.0pt" font-size="8.0pt" font-family-generic="swiss" style-name="Normal" white-space-collapse="false">
+										<xsl:variable name="fv12" xdofo:ctx2="wrapper" xdofo:ctx="17">
+										<xsl:value-of select="(.//TOTAL_FEE_AMT)" xdofo:field-name="TOTAL_FEE_AMT"/>
+										</xsl:variable>
+										<xsl:value-of select="xdoxslt:ms_format_number($_XDOXSLTCTX, xdoxslt:one($fv12), '$#,##0.00')"/>
+									</fo:inline>
+								</fo:block>
+							</fo:table-cell>
+						</fo:table-row>
+						</xsl:if>
                         <fo:table-row>
                            <fo:table-cell padding-end="5.4pt" padding-bottom="0.0pt" padding-start="5.4pt" padding-top="0.0pt" vertical-align="middle" height="43.2pt" number-columns-spanned="1">
                               <fo:block padding-bottom="0.0pt" text-align="start" orphans="2" widows="2" padding-top="0.0pt" end-indent="9.0pt" linefeed-treatment="preserve" start-indent="0.0pt">
@@ -595,7 +628,7 @@ V7IbLHvo8wAAAABJRU5ErkJggg==</fo:instream-foreign-object>
                                  <fo:inline height="8.0pt" font-family="Arial" white-space-collapse="false" font-size="8.0pt">
                                           <xsl:value-of select="./POD_CONSIGNEE" xdofo:field-name="POD_CONSIGNEE"/>
                                  </fo:inline>
-                              </fo:block>
+                              </fo:block> 
                            </fo:table-cell>						   
 						</fo:table-row>  
                        </xsl:for-each>						
