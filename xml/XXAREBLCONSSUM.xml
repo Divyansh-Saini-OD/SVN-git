@@ -142,9 +142,9 @@
                  ,SUM(XAECHM.original_invoice_amount
                       - XAECHM.total_gift_card_amount
                       )                                                      cbi_amount_due
-			    ,MAX( NVL(( SELECT SUM(XX_AR_EBL_COMMON_UTIL_PKG.get_line_fee_amount(XAECHM.customer_trx_id) +
-				                   XX_AR_EBL_COMMON_UTIL_PKG.get_hea_fee_amount(XAECHM.customer_trx_id))
-                          FROM xx_ar_ebl_cons_hdr_main
+			    ,MAX( NVL(( SELECT SUM(XX_AR_EBL_COMMON_UTIL_PKG.get_line_fee_amount(xx.customer_trx_id) +
+				                   XX_AR_EBL_COMMON_UTIL_PKG.get_hea_fee_amount(xx.customer_trx_id))
+                          FROM xx_ar_ebl_cons_hdr_main xx
 						 WHERE cons_inv_id = XAECHM.cons_inv_id
 						   AND cust_doc_id = XAECHM.cust_doc_id
 						   AND batch_id    = :p_batch_id
@@ -413,8 +413,7 @@ line_seq
                          ,NVL(XAECTRS.delivery ,0)       sf_delivery
                          ,NVL(XAECTRS.discounts ,0)      sf_discounts
                          ,NVL(XAECTRS.tax ,0)            sf_tax
-						 ,NVL(XX_AR_EBL_COMMON_UTIL_PKG.get_line_fee_amount(XAECTRS.attribute3),0)
-                          + NVL(XX_AR_EBL_COMMON_UTIL_PKG.get_hea_fee_amount(XAECTRS.attribute3),0) SF_FEE_AMT
+						 ,XX_AR_EBL_COMMON_UTIL_PKG.get_softhdr_amount(XAECTRS.line_type,XAECTRS.sf_text,XAECTRS.cons_inv_id,XAECTRS.cust_doc_id) SF_FEE_AMT
                          ,NVL(XAECTRS.total ,0)          sf_total
                          ,XAECTRS.line_seq               view_seq
                          ,NVL(XAECTRS.page_break ,'N')   pg_break
@@ -447,8 +446,7 @@ line_seq
                          ,NVL(XAECTRS.delivery ,0)      sf_delivery
                          ,NVL(XAECTRS.discounts ,0)     sf_discounts
                          ,NVL(XAECTRS.tax ,0)           sf_tax
-						 ,NVL(XX_AR_EBL_COMMON_UTIL_PKG.get_line_fee_amount(XAECTRS.attribute3),0)
-                          + NVL(XX_AR_EBL_COMMON_UTIL_PKG.get_hea_fee_amount(XAECTRS.attribute3),0) SF_FEE_AMT
+						 ,XX_AR_EBL_COMMON_UTIL_PKG.get_softhdr_amount(XAECTRS.line_type,XAECTRS.sf_text,XAECTRS.cons_inv_id,XAECTRS.cust_doc_id) SF_FEE_AMT
                          ,NVL(XAECTRS.total ,0)         sf_total
                          ,XAECTRS.line_seq              view_seq
                          ,'N'                           pg_break
