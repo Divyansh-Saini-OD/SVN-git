@@ -95,7 +95,6 @@ public class ODEBillDocumentsCO extends OAControllerImpl
     utl.log("ODEBillDocumentsCO:Process Request Begin");
     String AccountNumber = pageContext.getParameter("accountNumber"); 
     String CustAccountId = pageContext.getParameter("custAccountId");
-        //CustAccountId= Integer.toString(153740);
      String custName = pageContext.getParameter("custName");
     String deliveryMethod = pageContext.getParameter("deliveryMethod");
     //pageContext.getPageLayoutBean().setTitle("Billing Documents For Customer:"+custName+" Account Number:"+ AccountNumber); 
@@ -257,7 +256,6 @@ public class ODEBillDocumentsCO extends OAControllerImpl
     super.processFormRequest(pageContext, webBean);
     String AccountNumber = pageContext.getParameter("accountNumber"); 
     String CustAccountId = pageContext.getParameter("custAccountId");
-    //CustAccountId= Integer.toString(153740);
     OAApplicationModule am=pageContext.getApplicationModule(webBean);
     ODUtil utl = new ODUtil(am);
     utl.log("ODEBillDocumentsCO:Process Form Request Begin");
@@ -266,27 +264,10 @@ public class ODEBillDocumentsCO extends OAControllerImpl
     pageContext.writeDiagnostics(this, "Inside PFR method CustAccountId : "+CustAccountId, 1);
       pageContext.writeDiagnostics(this, "sEvnParam : "+sEvnParam, 1);
     //MBS Doc ID Lov Clicked Bhagwan Rao 10March2017
-     System.out.println("pageContext.getParameter(EVENT_PARAM) "+pageContext.getParameter(EVENT_PARAM));
-      System.out.println("pageContext.getParameter(SOURCE_PARAM) "+pageContext.getParameter(SOURCE_PARAM));
-      System.out.println("pageContext.getParameter(SOURCE_PARAM) "+pageContext.getParameter(VALUE_PARAM));
      // Added by Divyansh for NAIT-129167
       String lovEvent = pageContext.getParameter(EVENT_PARAM);
-//      if("lovValidate".equals(lovEvent)) {  
-//            String lovInputSourceId = pageContext.getLovInputSourceId();  
-//                System.out.println("validate event called");
-//            if("FeeOption".equals(lovInputSourceId)) {  
-//                String rowRef = pageContext.getParameter(OAWebBeanConstants.EVENT_SOURCE_ROW_REFERENCE);
-//                ODEbillCustDocVORowImpl rowImpl= (ODEbillCustDocVORowImpl)am.findRowByRef(rowRef);
-//                String docType=rowImpl.getCExtAttr1(); 
-//                String printType =rowImpl.getCExtAttr3();
-//                OAViewObject feevo = (OAViewObject)am.findViewObject("feeoptionType1");
-//                feevo.setWhereClause("SOURCE_VALUE2 = '"+printType +"' AND NVL(SOURCE_VALUE3,'"+docType+"')= NVL('"+docType+"',SOURCE_VALUE3)");
-//                feevo.executeQuery();
-//            }
-//            }
       if("lovPrepare".equals(lovEvent)) {  
             String lovInputSourceId = pageContext.getLovInputSourceId();  
-                System.out.println("validate event called");
             if("FeeOption".equals(lovInputSourceId)) {  
                 String rowRef = pageContext.getParameter(OAWebBeanConstants.EVENT_SOURCE_ROW_REFERENCE);
                 ODEbillCustDocVORowImpl rowImpl= (ODEbillCustDocVORowImpl)am.findRowByRef(rowRef);
@@ -308,15 +289,18 @@ public class ODEBillDocumentsCO extends OAControllerImpl
            ODEbillCustDocVORowImpl rowImpl= (ODEbillCustDocVORowImpl)am.findRowByRef(rowRef);
            String docType=rowImpl.getCExtAttr1();          
          // Added by Divyansh for NAIT-129167
+           OAViewObject feevo = (OAViewObject)am.findViewObject("feeoptionType1");
            String printType =rowImpl.getCExtAttr3();
            Serializable num[]={docType,printType};
            Boolean s = (Boolean)am.invokeMethod("checkDelMethod",num);
+//           System.out.println("islov event printType "+printType);
+//           System.out.println("islov event docType "+docType);
             rowImpl.setFeeflag(s);
             rowImpl.setFeeoptioncriteria(docType+"-"+printType);
             //mcb.setReadOnly(s);
             if(!s){
                 //mcb.setValue(pageContext,null);
-                OAViewObject feevo = (OAViewObject)am.findViewObject("feeoptionType1");
+                
                 feevo.setWhereClause("SOURCE_VALUE2 = '"+printType +"' AND NVL(SOURCE_VALUE3,'"+docType+"')= NVL('"+docType+"',SOURCE_VALUE3)");
                 feevo.executeQuery();
                 Serializable prm[] = {docType,printType};
@@ -343,6 +327,13 @@ public class ODEBillDocumentsCO extends OAControllerImpl
              rowImpl.setDeliverymethod("Case3");
              rowImpl.setReadonlyflag(Boolean.FALSE); 
              rowImpl.setCExtAttr2("N");
+             rowImpl.setCExtAttr3("ePDF");
+             Serializable num1[]={docType,"ePDF"};
+             Boolean s1 = (Boolean)am.invokeMethod("checkDelMethod",num1);
+             rowImpl.setFeeflag(s1);
+             rowImpl.setFeeoptioncriteria(docType+"-"+"ePDF");
+               feevo.setWhereClause("SOURCE_VALUE2 = '"+"ePDF" +"' AND NVL(SOURCE_VALUE3,'"+docType+"')= NVL('"+docType+"',SOURCE_VALUE3)");
+               feevo.executeQuery();
            }
            //Added By Rafi on 31-Aug-2018 for SKU Level Tax to default ePDF Dely Method for Defect #NAIT-58403 - END 
             //Added by Reddy Sekhar K on 11-Sept-2018 for the eBill Central Requirement NAIT-56624 --Start
@@ -353,6 +344,9 @@ public class ODEBillDocumentsCO extends OAControllerImpl
              rowImpl.setPaydocind(false);
              rowImpl.setMailattentionmsg(true);
              rowImpl.setReadonlyflag(Boolean.TRUE);
+             rowImpl.setFeeflag(Boolean.TRUE);
+              rowImpl.setAttribute("Feeoptionfv",null);
+              rowImpl.setAttribute("FeeOption",null);
           }
          //Added by Reddy Sekhar K on 11-Sept-2018 for the eBill Central Requirement NAIT-56624 ---END
             else if("Consolidated Bill".equals(docType)&& !opsTechDlyMthd.equals(docId))
@@ -361,17 +355,31 @@ public class ODEBillDocumentsCO extends OAControllerImpl
               rowImpl.setMailattentionmsg(false);
               rowImpl.setReadonlyflag(Boolean.FALSE); 
               rowImpl.setCExtAttr2("N");
+                rowImpl.setCExtAttr3("ePDF");
+                Serializable num1[]={docType,"ePDF"};
+                Boolean s1 = (Boolean)am.invokeMethod("checkDelMethod",num1);
+                rowImpl.setFeeflag(s1);
+                rowImpl.setFeeoptioncriteria(docType+"-"+"ePDF");
+                feevo.setWhereClause("SOURCE_VALUE2 = '"+"ePDF" +"' AND NVL(SOURCE_VALUE3,'"+docType+"')= NVL('"+docType+"',SOURCE_VALUE3)");
+                feevo.executeQuery();
             }
              else{                     
                     rowImpl.setDeliverymethod("Case2");
                     rowImpl.setMailattentionmsg(false);
                     rowImpl.setReadonlyflag(Boolean.FALSE);
-                    rowImpl.setCExtAttr2("N");                           
+                    rowImpl.setCExtAttr2("N");    
+                     rowImpl.setCExtAttr3("ePDF");
+                     Serializable num1[]={docType,"ePDF"};
+                     Boolean s1 = (Boolean)am.invokeMethod("checkDelMethod",num1);
+                     rowImpl.setFeeflag(s1);
+                     rowImpl.setFeeoptioncriteria(docType+"-"+"ePDF");
+                     feevo.setWhereClause("SOURCE_VALUE2 = '"+"ePDF" +"' AND NVL(SOURCE_VALUE3,'"+docType+"')= NVL('"+docType+"',SOURCE_VALUE3)");
+                     feevo.executeQuery();
              }  
                           rowImpl.setBcPodFlag("N");
                         rowImpl.setAttribute("Bcpodcase","case4");
-                       
                     }
+                    
     }
     
     //Cancel Button Clicked
