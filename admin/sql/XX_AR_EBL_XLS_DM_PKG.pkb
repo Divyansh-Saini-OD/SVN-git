@@ -688,7 +688,7 @@ create or replace PACKAGE BODY XX_AR_EBL_XLS_DM_PKG
 						  WHERE cust_doc_id = lc_get_dist_docid
 							AND file_id = lc_get_dist_fid
 							AND org_id = ln_org_id;
-                        lv_upd_str := 'update xx_ar_ebl_ind_hdr_main set TOTAL_MISCELLANEOUS_AMOUNT = TOTAL_MISCELLANEOUS_AMOUNT - '||lc_tot_fee_amt||' WHERE parent_cust_doc_id = '||lc_get_dist_docid||' AND extract_batch_id ='|| lc_get_dist_ebatchid ||' AND batch_id = '||p_batch_id;
+                        lv_upd_str := 'update xx_ar_ebl_ind_hdr_main set SKU_LINES_SUBTOTAL = SKU_LINES_SUBTOTAL - (XX_AR_EBL_COMMON_UTIL_PKG.get_hea_fee_amount(customer_trx_id )+ XX_AR_EBL_COMMON_UTIL_PKG.get_line_fee_amount(customer_trx_id)) WHERE parent_cust_doc_id = '||lc_get_dist_docid||' AND extract_batch_id ='|| lc_get_dist_ebatchid ||' AND batch_id = '||p_batch_id;
 					 
 					 ELSE
 					 
@@ -698,10 +698,14 @@ create or replace PACKAGE BODY XX_AR_EBL_XLS_DM_PKG
 						  WHERE cust_doc_id = lc_get_dist_docid
 							AND file_id = lc_get_dist_fid
 							AND org_id = ln_org_id;
-						lv_upd_str := 'update xx_ar_ebl_cons_hdr_main set TOTAL_MISCELLANEOUS_AMOUNT = TOTAL_MISCELLANEOUS_AMOUNT - '||lc_tot_fee_amt||' WHERE parent_cust_doc_id = '||lc_get_dist_docid||' AND extract_batch_id ='|| lc_get_dist_ebatchid ||' AND batch_id = '||p_batch_id;
+						lv_upd_str := 'update xx_ar_ebl_cons_hdr_main set SKU_LINES_SUBTOTAL = SKU_LINES_SUBTOTAL - (XX_AR_EBL_COMMON_UTIL_PKG.get_hea_fee_amount(customer_trx_id )+ XX_AR_EBL_COMMON_UTIL_PKG.get_line_fee_amount(customer_trx_id)) WHERE parent_cust_doc_id = '||lc_get_dist_docid||' AND extract_batch_id ='|| lc_get_dist_ebatchid ||' AND batch_id = '||p_batch_id;
 				     END IF;
 						if lc_fee_option = 1007 THEN
-					       lc_select_var_cols:=lc_select_var_cols||lc_tot_fee_amt||',';
+					       lc_select_var_cols:=lc_select_var_cols||'sum((
+																	SELECT XX_AR_EBL_COMMON_UTIL_PKG.get_hea_fee_amount(TRX )+ XX_AR_EBL_COMMON_UTIL_PKG.get_line_fee_amount(TRX)
+																	FROM ((select REGEXP_SUBSTR (dt, ''[^,]+'', 1, level) as TRX
+																	from (select listagg(customer_trx_id,'','') within group(order by cust_doc_id) dt from dual)
+																	connect by level <= length(regexp_replace(dt,''[^,]*''))+1))))'||',';
 						   execute immediate lv_upd_str;
 						else 
 						   lc_hide_flag :='Y';
