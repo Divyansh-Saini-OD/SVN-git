@@ -3422,7 +3422,8 @@ create or replace PACKAGE BODY XX_AR_EBL_CONS_INVOICES AS
                  AND    oea.attribute8 = flv.lookup_code
                  AND    flv.lookup_type = 'OD_DISCOUNT_ITEMS'
                  AND    flv.meaning IN ('Tiered Discount', 'Association Discount'))
-         AND    rctl1.line_type = 'LINE';
+         AND    rctl1.line_type = 'LINE'
+		 ORDER BY XX_AR_EBL_COMMON_UTIL_PKG.get_fee_line_number(rctl1.customer_trx_id,rctl1.description,null,rctl1.line_number);
       TYPE cbi_lines_tab IS TABLE OF lcu_cons_lines%ROWTYPE INDEX BY BINARY_INTEGER;
       cbi_line        cbi_lines_tab;
       lc_gsa_comments VARCHAR2(1000);
