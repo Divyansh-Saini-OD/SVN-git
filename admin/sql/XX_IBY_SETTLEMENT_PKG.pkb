@@ -1,4 +1,4 @@
-create or replace PACKAGE BODY XX_IBY_SETTLEMENT_PKG
+create or replace package body XX_IBY_SETTLEMENT_PKG
 AS
 -- +===========================================================================+
 -- |                  Office Depot - Project Simplify                          |
@@ -132,6 +132,7 @@ AS
 -- |48.2       12-SEP-2019 M K Pramod Kumar    Modified for Return Mandate per NAIT-106896
 -- |48.3       07-JAN-2020 Sripal Reddy        Modified for sglpmt_multi_settlement refund issue NAIT-115171  |
 -- |48.4       18-FEB-2020 Sripal reddy        Modified for POC: Customer PO line number NAIT 123195 by sripal  |
+-- |48.5       13-JUL-2020 Atul Khard          Modified for NAIT-131811: POS Settlement Changes for Partial Reversal   |
 -- +===========================================================================+
 
 	g_package_name              CONSTANT all_objects.object_name%TYPE                        := 'xx_iby_settlement_pkg';
@@ -142,7 +143,7 @@ AS
 	g_max_error_message_length  CONSTANT NUMBER                                                    := 2000;
 	g_debug                              BOOLEAN                                                   := FALSE;
 	g_max_err_buf_size          CONSTANT NUMBER                                                    := 250;
--------------------------------------
+	-------------------------------------
 -- Global Constants
 -------------------------------------
 -- Sale Types
@@ -200,6 +201,7 @@ AS
 	gc_ixexpdate                         xx_iby_batch_trxns.ixexpdate%TYPE;
 	gc_ixswipe                           xx_iby_batch_trxns.ixswipe%TYPE;
 	gc_ixamount                          xx_iby_batch_trxns.ixamount%TYPE;
+    gc_ixreserved20                      xx_iby_batch_trxns.ixreserved20%TYPE; --Addded for NAIT-131811
 	gc_ixinvoice                         xx_iby_batch_trxns.ixinvoice%TYPE;
 	gc_ixoptions                         xx_iby_batch_trxns.ixoptions%TYPE;
 	gc_ixbankuserdata                    xx_iby_batch_trxns.ixbankuserdata%TYPE;
@@ -869,6 +871,7 @@ AS
 		gc_ixexpdate := NULL;
 		gc_ixswipe := NULL;
 		gc_ixamount := NULL;
+		gc_ixreserved20 := NULL; --Added for NAIT-131811
 		gc_ixinvoice := NULL;
 		gc_ixoptions := NULL;
 		gc_ixbankuserdata := NULL;
@@ -2796,8 +2799,9 @@ AS
 				   '000000' ixtime,
 				   xaord.customer_id pay_from_customer,
 				   xaord.customer_site_billto_id customer_site_use_id,
-					 ABS(xaord.payment_amount)
+				   ABS(xaord.payment_amount)
 				   * 100 ixamount,
+				   ABS(op.attribute1)* 100 ixreserved20, --Added for NAIT-131811
 				   xaord.single_pay_ind single_pay_ind,
 				   xaord.order_source order_source,
 				   xaord.order_number order_number,
@@ -2842,6 +2846,7 @@ AS
 				   gn_pay_from_customer,
 				   gn_customer_site_use_id,
 				   gc_ixamount,
+				   gc_ixreserved20,--Added for NAIT-131811
 				   gc_single_pay_ind,
 				   gc_order_source,
 				   gn_order_number,
@@ -2860,8 +2865,11 @@ AS
 				   gc_ixcustaccountno,
 				   gc_key_label
 			FROM   xx_ar_order_receipt_dtl xaord, oe_order_headers_all ooha, hz_cust_accounts hca
+			,oe_payments op --Added for NAIT-131811
 			WHERE  xaord.order_payment_id = gn_order_payment_id
 			AND    xaord.header_id = ooha.header_id
+			AND    ooha.header_id = op.header_id(+) --Added for NAIT-131811
+			AND    xaord.payment_number = op.payment_number(+) --Added for NAIT-131811
 			AND    ooha.sold_to_org_id = hca.cust_account_id;
 		ELSIF gc_remit_processing_type = g_ccrefund
 		THEN
@@ -2902,6 +2910,7 @@ AS
 				   NVL(  ABS(ara.amount_applied)
 					   * 100,
 					   0) ixamount,
+				   NVL(ABS(op.attribute1)* 100 ,0) ixreserved20, --Added for NAIT-131811
 				   xaord.single_pay_ind single_pay_ind,
 				   xaord.order_source order_source,
 				   xaord.order_number order_number,
@@ -2937,6 +2946,7 @@ AS
 				   gn_pay_from_customer,
 				   gn_customer_site_use_id,
 				   gc_ixamount,
+				   gc_ixreserved20,--Added for NAIT-131811
 				   gc_single_pay_ind,
 				   gc_order_source,
 				   gn_order_number,
@@ -2948,11 +2958,14 @@ AS
 			FROM   xx_ar_order_receipt_dtl xaord,
 				   ar_cash_receipts_all acr,
 				   ar_receipt_methods arm,
-				   ar_receivable_applications_all ara
+				   ar_receivable_applications_all ara,
+				   oe_payments op --Added for NAIT-131811
 			WHERE  xaord.order_payment_id = gn_order_payment_id
 			AND    xaord.cash_receipt_id = acr.cash_receipt_id
 			AND    acr.receipt_method_id = arm.receipt_method_id
 			AND    ara.cash_receipt_id = acr.cash_receipt_id
+			AND    xaord.header_id = op.header_id(+) --Added for NAIT-131811
+			AND    xaord.payment_number = op.payment_number(+) --Added for NAIT-131811
 			AND    ara.status = 'APP'
 			AND    ara.amount_applied < 0
 			AND    ara.display = 'Y';
@@ -2993,8 +3006,9 @@ AS
 				   acr.customer_site_use_id customer_site_use_id,
 					 /*    ABS(gc_ixamount)
 					   * 100 ixamount                                                       -- receipt amount from servlet*/
-					 ABS(payment_amount)
+				   ABS(xaord.payment_amount)
 				   * 100 ixamount,
+				   ABS(op.attribute1)* 100 ixreserved20, --Added for NAIT-131811,
 				   xaord.single_pay_ind single_pay_ind,
 				   xaord.order_source order_source,
 				   xaord.order_number order_number,
@@ -3024,13 +3038,17 @@ AS
 				   gn_pay_from_customer,
 				   gn_customer_site_use_id,
 				   gc_ixamount,
+				   gc_ixreserved20,--Added for NAIT-131811
 				   gc_single_pay_ind,
 				   gc_order_source,
 				   gn_order_number,
 				   gc_key_label,
 				   vn_Payment_Trxn_Extension_Id
 			FROM   ar_cash_receipts_all acr, xx_ar_order_receipt_dtl xaord
+			,oe_payments op --Added for NAIT-131811
 			WHERE  xaord.order_payment_id = gn_order_payment_id
+			AND    xaord.header_id = op.header_id(+) --Added for NAIT-131811
+			AND    xaord.payment_number = op.payment_number(+) --Added for NAIT-131811
 			--acr.cash_receipt_id = gn_cash_receipt_id
 			AND    acr.cash_receipt_id = xaord.cash_receipt_id;
 		ELSE
@@ -3072,8 +3090,9 @@ AS
 				   acr.customer_site_use_id customer_site_use_id,
 					 /*    ABS(gc_ixamount)
 					   * 100 ixamount                                                       -- receipt amount from servlet*/
-					 ABS(payment_amount)
+				   ABS(xaord.payment_amount)
 				   * 100 ixamount,
+				   ABS(op.attribute1)* 100 ixreserved20, --Added for NAIT-131811
 				   xaord.single_pay_ind single_pay_ind,
 				   xaord.order_source order_source,
 				   xaord.order_number order_number,
@@ -3103,13 +3122,17 @@ AS
 				   gn_pay_from_customer,
 				   gn_customer_site_use_id,
 				   gc_ixamount,
+				   gc_ixreserved20,--Added for NAIT-131811
 				   gc_single_pay_ind,
 				   gc_order_source,
 				   gn_order_number,
 				   gc_key_label,
 				   vn_Payment_Trxn_Extension_Id
 			FROM   ar_cash_receipts_all acr, xx_ar_order_receipt_dtl xaord
+			,oe_payments op --Added for NAIT-131811
 			WHERE  xaord.order_payment_id = gn_order_payment_id
+			AND    xaord.header_id = op.header_id(+) --Added for NAIT-131811 
+			AND    xaord.payment_number = op.payment_number(+) --Added for NAIT-131811
 			--acr.cash_receipt_id = gn_cash_receipt_id
 			AND    acr.cash_receipt_id = xaord.cash_receipt_id;
 		END IF;
@@ -3148,6 +3171,9 @@ AS
 		xx_location_and_log(g_log,
 							   'Receipt Amount           : '
 							|| gc_ixamount);
+		xx_location_and_log(g_log,
+							   'Original Amount          : '
+							|| gc_ixreserved20);--Added for NAIT-131811
 		xx_location_and_log(g_log,
 							   'CC Exp Date              : '
 							|| gc_cc_exp_date);
@@ -7271,7 +7297,18 @@ END xx_set_post_receipt_variables;
 			|| gn_cash_receipt_id
 			|| '.  Payment Order ID: '
 			|| gn_order_payment_id;
-
+			
+	-- NAIT-131811 change starts
+	
+	xx_location_and_log(g_loc,
+							'Original Amount, Field20 - '||gc_ixreserved20);
+	
+    IF to_number(gc_ixreserved20) = 0
+    THEN
+      gc_ixreserved20 := NULL;
+    END IF;
+    --NAIT-131811 change ends
+	
 		INSERT INTO xx_iby_batch_trxns
 					(pre1,
 					 pre2,
@@ -7287,6 +7324,7 @@ END xx_set_post_receipt_variables;
 					 ixexpdate,
 					 ixswipe,
 					 ixamount,
+					 ixreserved20,
 					 ixinvoice,
 					 ixoptions,
 					 ixbankuserdata,
@@ -7378,6 +7416,7 @@ END xx_set_post_receipt_variables;
 					 gc_ixexpdate,
 					 gc_ixswipe,
 					 gc_ixamount,
+					 gc_ixreserved20,--Added for NAIT-131811
 					 gc_ixinvoice,
 					 gc_ixoptions,
 					 gc_ixbankuserdata,
