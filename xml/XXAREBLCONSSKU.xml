@@ -655,6 +655,7 @@
           AND  (XAECLS.item_code            IS NULL
                 OR XAECLS.item_code         NOT IN ('SPC_CARD_INFO' ,'TD','ACM','GIFT_CARD_CM','GIFT_CARD_INV')
                 )
+		  order by line_seq
        ]]>
     </sqlStatement>
     <sqlStatement name="Q_TD">
