@@ -237,10 +237,8 @@ SELECT   :BILL_TO_PROVINCE                                        BILL_TO_PROVIN
                                             ,'TOTAL'
                                             )
              )                                                       CBI_AMOUNT_DUE        
-		,SUM(( SELECT SUM(XX_AR_EBL_COMMON_UTIL_PKG.get_line_fee_amount(XACRT.customer_trx_id) +
-						   XX_AR_EBL_COMMON_UTIL_PKG.get_hea_fee_amount(XACRT.customer_trx_id))
-				  FROM xx_ar_cbi_rprn_trx
-				 WHERE cons_inv_id = XACRT.cons_inv_id) )           cbi_fee_amt
+		,SUM((NVL( XX_AR_EBL_COMMON_UTIL_PKG.get_line_fee_amount(XACRT.customer_trx_id) +
+						   XX_AR_EBL_COMMON_UTIL_PKG.get_hea_fee_amount(XACRT.customer_trx_id),0))) cbi_fee_amt
         ,DECODE( :P_INFOCOPY_FLAG
                 ,'Y','**DO NOT PAY**'
                 ,'N',DECODE(SIGN(SUM(xx_ar_cbi_infocopy_order_stmnt( XACRT.customer_trx_id
@@ -474,8 +472,7 @@ SELECT
      ,NVL(a.delivery ,0)     sf_delivery
      ,NVL(a.discounts ,0)    sf_discounts
      ,NVL(a.tax ,0)          sf_tax
-	 ,NVL(XX_AR_EBL_COMMON_UTIL_PKG.get_line_fee_amount(a.attribute3),0)
-                          + NVL(XX_AR_EBL_COMMON_UTIL_PKG.get_hea_fee_amount(a.attribute3),0) SF_FEE_AMT
+	 ,XX_AR_EBL_COMMON_UTIL_PKG.get_softhdr_rep_amount(a.line_type,a.sf_text,a.cons_inv_id,a.request_id,a.attribute3) SF_FEE_AMT
      ,NVL(a.total ,0)        sf_total
      ,line_seq               view_seq   
      --,DECODE(:trx_id, :last_trx_id ,'N', NVL(page_break ,'N')) pg_break   Defect 9556  
@@ -503,8 +500,7 @@ SELECT
      ,NVL(a.delivery ,0)    sf_delivery
      ,NVL(a.discounts ,0)   sf_discounts
      ,NVL(a.tax ,0)         sf_tax
-	 ,NVL(XX_AR_EBL_COMMON_UTIL_PKG.get_line_fee_amount(a.attribute3),0)
-                          + NVL(XX_AR_EBL_COMMON_UTIL_PKG.get_hea_fee_amount(a.attribute3),0) SF_FEE_AMT
+	 ,XX_AR_EBL_COMMON_UTIL_PKG.get_softhdr_rep_amount(a.line_type,a.sf_text,a.cons_inv_id,a.request_id,a.attribute3) SF_FEE_AMT
      ,NVL(a.total ,0)       sf_total
      ,line_seq              view_seq
      ,'N'                   pg_break
@@ -663,7 +659,7 @@ GROUP BY RCTL.customer_trx_id,flv.lookup_code,flv.meaning
 						<element name="SF_DELIVERY" value="SF_DELIVERY" />
 						<element name="SF_DISCOUNTS" value="SF_DISCOUNTS" />
 						<element name="SF_TAX" value="SF_TAX" />
-						<element name="SF_FEES" value="SF_FEE_AMT" />
+						<element name="SF_FEE_AMT" value="SF_FEE_AMT" />
 						<element name="SF_TOTAL" value="SF_TOTAL" />
 						<element name="PG_BREAK" value="PG_BREAK" />
 						<element name="SHOW_LINE" value="SHOW_LINE" />

@@ -143,10 +143,8 @@ SELECT   :BILL_TO_PROVINCE                                        BILL_TO_PROVIN
                                             ,'TAX'
                                             )
              )                                                       CBI_TAX
-	    ,SUM( NVL(( SELECT SUM(XX_AR_EBL_COMMON_UTIL_PKG.get_line_fee_amount(XACRT.customer_trx_id) +
-				                   XX_AR_EBL_COMMON_UTIL_PKG.get_hea_fee_amount(XACRT.customer_trx_id))
-                          FROM xx_ar_cbi_rprn_trx
-						 WHERE cons_inv_id = XACRT.cons_inv_id),0) )           CBI_FEE_AMT
+		,SUM( NVL(XX_AR_EBL_COMMON_UTIL_PKG.get_line_fee_amount(XACRT.customer_trx_id) +
+				                   XX_AR_EBL_COMMON_UTIL_PKG.get_hea_fee_amount(XACRT.customer_trx_id),0))                   CBI_FEE_AMT
         ,SUM(xx_ar_cbi_infocopy_order_stmnt( XACRT.customer_trx_id
                                             ,'TOTAL'
                                             )
@@ -698,11 +696,11 @@ WHERE a.request_id      =:p_request_id
 </sqlStatement>	
 <sqlStatement name="Q_CONS_FEE">
        <![CDATA[	
-	SELECT 
+       <![CDATA[	
+SELECT 
       flv.lookup_code FEE_CODE
      ,upper(flv.meaning)  FEE_DESCRIPTION
-     ,TO_CHAR(sum(RCTL.unit_selling_price*RCTL.QUANTITY_INVOICED),'9999999999.999')       FEE_AMT      
-     ,RCTL.customer_trx_id
+     ,TO_CHAR(sum(RCTL.unit_selling_price*quantity_invoiced),'9999999999.999')       FEE_AMT      
 FROM
      ra_customer_trx_lines_All RCTL
      ,fnd_lookup_values flv
@@ -713,8 +711,12 @@ WHERE 1=1
   AND FLV.enabled_flag = 'Y'                                   
   AND SYSDATE BETWEEN NVL(FLV.start_date_active,SYSDATE) AND NVL(FLV.end_date_active,SYSDATE+1)  
   AND FLV.attribute7 NOT IN ('DELIVERY','MISCELLANEOUS')  
-  AND customer_trx_id                           = :trx_id
-GROUP BY RCTL.customer_trx_id,flv.lookup_code,flv.meaning
+  AND RCTL.customer_trx_id    IN (SELECT XAECTRS.customer_trx_id
+                                   FROM xx_ar_cbi_rprn_trx  XAECTRS
+								  WHERE XAECTRS.request_id      =:p_request_id
+								  AND XAECTRS.cons_inv_id     =:cbi_id
+								  AND XAECTRS.customer_trx_id =:trx_id)
+GROUP BY flv.lookup_code,flv.meaning
        ]]>
     </sqlStatement>	
 </dataQuery>

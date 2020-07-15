@@ -146,10 +146,8 @@ SELECT   :BILL_TO_PROVINCE                                        BILL_TO_PROVIN
                                           ,'TAX'
                                           )
            )                                                       CBI_TAX
-	 ,SUM(( SELECT SUM(XX_AR_EBL_COMMON_UTIL_PKG.get_line_fee_amount(XACRT.customer_trx_id) +
-					   XX_AR_EBL_COMMON_UTIL_PKG.get_hea_fee_amount(XACRT.customer_trx_id))
-			  FROM xx_ar_cbi_rprn_trx
-			 WHERE cons_inv_id = XACRT.cons_inv_id) )           cbi_fee_amt
+	 ,SUM( NVL(( XX_AR_EBL_COMMON_UTIL_PKG.get_line_fee_amount(XACRT.customer_trx_id) +
+				                   XX_AR_EBL_COMMON_UTIL_PKG.get_hea_fee_amount(XACRT.customer_trx_id)),0))          cbi_fee_amt
       ,SUM(xx_ar_cbi_infocopy_order_stmnt( XACRT.customer_trx_id
                                           ,'TOTAL'
                                           )
@@ -254,8 +252,7 @@ SELECT
              ,TO_NUMBER(NULL)
              ,NVL(a.tax ,0) 
             )                       tax
-     ,NVL(XX_AR_EBL_COMMON_UTIL_PKG.get_line_fee_amount(a.attribute3),0)
-                  +NVL(XX_AR_EBL_COMMON_UTIL_PKG.get_hea_fee_amount(a.attribute3),0) FEE
+     ,XX_AR_EBL_COMMON_UTIL_PKG.get_softhdr_rep_amount(a.line_type,a.sf_text,a.cons_inv_id,a.request_id,a.attribute3) FEE
 	 ,NVL(a.total ,0)               total 
      ,NVL(a.page_break ,'N')        pg_break
 	 ,DECODE(a.line_type,'SOFTHDR_TOTAL','Y','BILL_TO_TOTAL','Y','N' ) SHOW_LINE

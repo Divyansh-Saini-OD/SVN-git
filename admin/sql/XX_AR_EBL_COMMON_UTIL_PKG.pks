@@ -78,7 +78,7 @@ AS
     -- |2.8       11-MAR-2019   Aarthi                NAIT- 80452: Adding POD related blurb |
 	-- |                                              messages to individual reprint reports|
   -- |2.9       27-MAY-2020   Divyansh              Added new functions for Tariff Changes|
-  -- |                                              JIRA NAIT-129167                      | 
+  -- |                                              JIRA NAIT-129167                      |
 	-- +===================================================================================+
 PROCEDURE PUT_LOG_LINE
   (
@@ -893,7 +893,7 @@ RETURN VARCHAR2;
 		                               p_bill_to_customer_id  IN  NUMBER
 							         )
     RETURN VARCHAR2;
-    
+
 -- +===================================================================================+
 -- |                  Office Depot - Project Simplify                                  |
 -- +===================================================================================+
@@ -940,18 +940,67 @@ RETURN VARCHAR2;
 -- |Version   Date          Author              Remarks                                |
 -- |=======   ==========   =============        =======================================|
 -- | 1.0      23-MAR-2020  Divyansh Saini       Initial draft version                  |
--- +===================================================================================+ 
+-- +===================================================================================+
   FUNCTION get_fee_line_number(p_customer_trx_id NUMBER,
                                p_description IN VARCHAR2,
                                p_organization IN NUMBER,
-                               p_line_number IN NUMBER) 
+                               p_line_number IN NUMBER)
     RETURN NUMBER ;
+-- +===================================================================================+
+-- |                  Office Depot - Project Simplify                                  |
+-- +===================================================================================+
+-- | Name        : get_fee_option                                                      |
+-- | Description : To get Fee Option for particular transaction                        |
+-- |                                                                                   |
+-- |                                                                                   |
+-- |                                                                                   |
+-- |Change Record:                                                                     |
+-- |===============                                                                    |
+-- |Version   Date          Author              Remarks                                |
+-- |=======   ==========   =============        =======================================|
+-- | 1.0      23-JUN-2020  Divyansh Saini       Initial draft version                  |
+-- +===================================================================================+
  FUNCTION get_fee_option (p_cust_doc_id IN NUMBER,
                           p_mbs_doc_type  IN VARCHAR2,
 						  p_cust_account_id IN NUMBER,
-						  p_del_method IN VARCHAR2 default 'ePDF') 
+						  p_del_method IN VARCHAR2 default 'ePDF')
    RETURN NUMBER;
-   
-FUNCTION get_softhdr_amount(p_line_type IN VARCHAR2,p_sft_text IN VARCHAR2,p_cons_id IN NUMBER,p_cust_doc_id IN NUMBER) RETURN NUMBER;
+-- +===================================================================================+
+-- |                  Office Depot - Project Simplify                                  |
+-- +===================================================================================+
+-- | Name        : get_softhdr_amount                                                  |
+-- | Description : To get Soft Header Amount for particular transaction                |
+-- |                                                                                   |
+-- |                                                                                   |
+-- |                                                                                   |
+-- |Change Record:                                                                     |
+-- |===============                                                                    |
+-- |Version   Date          Author              Remarks                                |
+-- |=======   ==========   =============        =======================================|
+-- | 1.0      23-JUN-2020  Divyansh Saini       Initial draft version                  |
+-- +===================================================================================+
+FUNCTION get_softhdr_amount(p_line_type IN VARCHAR2
+                            ,p_sft_text IN VARCHAR2
+                            ,p_cons_id IN NUMBER
+                            ,p_cust_doc_id IN NUMBER
+                            ,p_request_id IN NUMBER
+							              ,p_customer_trx_id IN VARCHAR2) RETURN NUMBER;
+-- +===================================================================================+
+-- |                  Office Depot - Project Simplify                                  |
+-- +===================================================================================+
+-- | Name        : get_softhdr_rep_amount                                              |
+-- | Description : To get Soft Header Amount for reprint    transaction                |
+-- |                                                                                   |
+-- |                                                                                   |
+-- |                                                                                   |
+-- |Change Record:                                                                     |
+-- |===============                                                                    |
+-- |Version   Date          Author              Remarks                                |
+-- |=======   ==========   =============        =======================================|
+-- | 1.0      23-JUN-2020  Divyansh Saini       Initial draft version                  |
+-- +===================================================================================+
+FUNCTION get_softhdr_rep_amount(p_line_type IN VARCHAR2,p_sft_text IN VARCHAR2,p_cons_id IN NUMBER
+                                ,p_request_id IN NUMBER
+							    ,p_customer_trx_id IN VARCHAR2) RETURN NUMBER ;
  END XX_AR_EBL_COMMON_UTIL_PKG;
  /
