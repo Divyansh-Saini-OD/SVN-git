@@ -18,6 +18,7 @@ AS
   -- | =========   ===========  =============        =============================================|
   -- | 1.0         08/Apr/2020   M K Pramod Kumar     Initial version                              |
   -- | 1.1         11/May/2020   M K Pramod Kumar     Added code to derive Cogs,Consignment,Inventory Account|
+  -- | 1.2         14/Jul/2020   M K Pramod Kumar     Code Changes to handle if OD_Billing_frequency or OD_CONTRACT_LENGTH is null in rms table |
   -- +============================================================================================+
   gc_package_name      CONSTANT all_objects.object_name%TYPE := 'XX_AR_SUBSC_ITEM_REV_REC_PKG';
   gc_translate_id      number;
@@ -79,7 +80,9 @@ PROCEDURE MAIN_ITEM_REV_REC_PROCESS(
 IS
   lc_procedure_name CONSTANT VARCHAR2(61) := gc_package_name || '.' || 'MAIN_ITEM_REV_REC_PROCESS';
 
-  cursor cr_rms_items is select rms.* ,decode(OD_Billing_frequency,'M',1,'A',12,'Q',3,OD_Billing_frequency) no_of_periods From xx_rms_mv_ssb rms;
+  cursor cr_rms_items is select rms.* ,decode(OD_Billing_frequency,'M',1,'A',12,'Q',3,OD_Billing_frequency) no_of_periods 
+  From xx_rms_mv_ssb rms
+  where OD_Billing_frequency is not null and OD_CONTRACT_LENGTH is not null ;
   
   lc_item_type mtl_system_items_b.item_type%type;
 lc_dept mtl_categories_b.segment3%type;

@@ -151,7 +151,6 @@ AS
   gc_ret_others          CONSTANT VARCHAR2(20)                   := 'OTHERS';
   gc_max_err_size        CONSTANT NUMBER                         := 2000;
   gc_max_sub_err_size    CONSTANT NUMBER                         := 256;
-  --gc_max_log_size        CONSTANT NUMBER                         := 2000;
   gc_max_log_size        CONSTANT NUMBER                         := 30000;
   gc_max_err_buf_size    CONSTANT NUMBER                         := 250;
   gb_debug                        BOOLEAN                        := FALSE;
@@ -211,12 +210,12 @@ AS
       -- if in concurrent program, print to log file
       IF (fnd_global.conc_request_id > 0)
       THEN
-       -- fnd_file.put_line(fnd_file.LOG, lc_message);
+        fnd_file.put_line(fnd_file.LOG, lc_message);
       -- else print to DBMS_OUTPUT
-      null;
+      --null;
       ELSE
-       -- DBMS_OUTPUT.put_line(lc_message);
-       null;
+         DBMS_OUTPUT.put_line(lc_message);
+       --null;
       END IF;
     END IF;
   EXCEPTION
@@ -239,10 +238,12 @@ PROCEDURE logitt(p_message  IN  CLOB,
       -- if in concurrent program, print to log file
       IF (fnd_global.conc_request_id > 0)
       THEN
-        fnd_file.put_line(fnd_file.LOG, lc_message);
+        --fnd_file.put_line(fnd_file.LOG, lc_message);
       -- else print to DBMS_OUTPUT
+	  null;
       ELSE
-        DBMS_OUTPUT.put_line(lc_message);
+        --DBMS_OUTPUT.put_line(lc_message);
+		null;
       END IF;
     END IF;
   EXCEPTION
@@ -1230,16 +1231,25 @@ PROCEDURE logitt(p_message  IN  CLOB,
 
     entering_sub(p_procedure_name  => lc_procedure_name,
                  p_parameters      => lt_parameters);
-
-    SELECT *
-    INTO   x_invoice_dist_info
-    FROM   ra_cust_trx_line_gl_dist_all
-    WHERE  customer_trx_line_id = p_customer_trx_line_id
-    AND    account_class        = p_account_class
-    AND    percent              = 100 -- Added for NAIT-120608
-    AND    account_set_flag     = 'Y'
-    ;
-
+    BEGIN 
+      SELECT *
+      INTO   x_invoice_dist_info
+      FROM   ra_cust_trx_line_gl_dist_all
+      WHERE  customer_trx_line_id = p_customer_trx_line_id
+      AND    account_class        = p_account_class
+      AND    percent              = 100 -- Added for NAIT-120608
+      ;
+    EXCEPTION
+      WHEN TOO_MANY_ROWS THEN
+          SELECT *
+          INTO   x_invoice_dist_info
+          FROM   ra_cust_trx_line_gl_dist_all
+          WHERE  customer_trx_line_id = p_customer_trx_line_id
+          AND    account_class        = p_account_class
+          AND    percent              = 100 
+          AND    account_set_flag     = 'Y'
+          ;
+    END;          
     logit(p_message => 'RESULT attribute6: '  || x_invoice_dist_info.attribute6);
     logit(p_message => 'RESULT attributel1: ' || x_invoice_dist_info.attribute11);
 
@@ -4932,6 +4942,7 @@ PROCEDURE logitt(p_message  IN  CLOB,
           lc_action :=  'Calling insert_ra_interface_lines_all';
           
           insert_ra_interface_lines_all(p_ra_interface_lines_all_info => lr_ra_intf_lines_info);
+          
 
           /************************************************
           * Populate ra_interface_distributions_all record
@@ -5112,7 +5123,8 @@ PROCEDURE logitt(p_message  IN  CLOB,
 
           
           lc_action := 'callling xx_ar_create_acct_child_pkg.xx_get_gl_coa for accounting - REV Class';
-        
+          
+
           xx_ar_create_acct_child_pkg.xx_get_gl_coa(
                              p_oloc           => lc_oloc
                             ,p_sloc           => lc_sloc
@@ -5140,10 +5152,12 @@ PROCEDURE logitt(p_message  IN  CLOB,
 
           IF p_contract_info.external_source = 'POS' THEN
             lc_ora_lob            := '10';
-          ELSIF p_contract_info.payment_type = 'AB' THEN
-            lc_ora_lob            := '40';  
-          ELSE  
-            lc_ora_lob            := '50';  
+          ELSE
+            IF lr_customer_info.attribute18='DIRECT' THEN
+               lc_ora_lob            := '50';  
+            ELSE  
+               lc_ora_lob            := '40'; 
+            END IF;
           END IF;
           
           lc_action := 'populating ra_interface_distributions_all';
@@ -5295,9 +5309,9 @@ PROCEDURE logitt(p_message  IN  CLOB,
           lr_ra_intf_dists_info.global_attribute_category       := NULL;
 
           lc_action :=  'Calling insert_ra_interface_dists_all';
-
+          
           insert_ra_interface_dists_all(p_ra_interface_dists_all_info => lr_ra_intf_dists_info);
-
+          
           ln_ccid             := null;
           lc_ora_company      := null;
           lc_ora_cost_center  := null;
@@ -5334,11 +5348,13 @@ PROCEDURE logitt(p_message  IN  CLOB,
                             
           IF p_contract_info.external_source = 'POS' THEN
             lc_ora_lob            := '10';
-          ELSIF p_contract_info.payment_type = 'AB' THEN
-            lc_ora_lob            := '40';  
-          ELSE  
-            lc_ora_lob            := '50';  
-          END IF;                            
+          ELSE
+            IF lr_customer_info.attribute18='DIRECT' THEN
+               lc_ora_lob            := '50';  
+            ELSE  
+               lc_ora_lob            := '40'; 
+            END IF;
+          END IF;
           
           lc_action := 'populating ra_interface_distributions_all';
           
@@ -5489,7 +5505,7 @@ PROCEDURE logitt(p_message  IN  CLOB,
           lr_ra_intf_dists_info.global_attribute_category       := NULL;
 
           lc_action :=  'Calling insert_ra_interface_dists_all';
-
+          
           insert_ra_interface_dists_all(p_ra_interface_dists_all_info => lr_ra_intf_dists_info);
           
           lc_action := 'callling xx_ar_create_acct_child_pkg.xx_get_gl_coa for accounting - UNEARN Class';
@@ -5534,12 +5550,13 @@ PROCEDURE logitt(p_message  IN  CLOB,
                             );
           IF p_contract_info.external_source = 'POS' THEN
             lc_ora_lob            := '10';
-          ELSIF p_contract_info.payment_type = 'AB' THEN
-            lc_ora_lob            := '40';  
-          ELSE  
-            lc_ora_lob            := '50';  
+          ELSE
+            IF lr_customer_info.attribute18='DIRECT' THEN
+               lc_ora_lob            := '50';  
+            ELSE  
+               lc_ora_lob            := '40'; 
+            END IF;
           END IF;
-
           lc_action := 'populating ra_interface_distributions_all';
 
           lc_action := 'Calling get_invoice_dist_info for UNEARN';
@@ -5690,7 +5707,7 @@ PROCEDURE logitt(p_message  IN  CLOB,
           lr_ra_intf_dists_info.global_attribute_category       := NULL;
 
           lc_action :=  'Calling insert_ra_interface_dists_all';
-
+          
           insert_ra_interface_dists_all(p_ra_interface_dists_all_info => lr_ra_intf_dists_info);
           
           END IF;
@@ -6156,7 +6173,7 @@ PROCEDURE logitt(p_message  IN  CLOB,
     /********************************************
     * Update subscription with error information.
     ********************************************/
-
+    
     FOR indx IN 1 .. px_subscription_array.COUNT
     LOOP
 
@@ -16448,6 +16465,8 @@ END is_rev_rec_item;
                                          p_encrypted_value   => lr_contract_info.card_token,
                                          p_key_label         => lr_contract_info.card_encryption_label,
                                          x_decrypted_value   => lc_decrypted_value);
+
+                     logit('Card Decrypted Value ->'||lc_decrypted_value);
                 EXCEPTION
                      WHEN OTHERS THEN
                           lc_decrypted_value := 'INVALID CARD';
