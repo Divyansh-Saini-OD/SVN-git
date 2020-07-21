@@ -1845,7 +1845,7 @@ PROCEDURE logitt(p_message  IN  CLOB,
   END get_new_location_info;
   
   /***********************************************
-  * Helper procedure to get segment info from CCID
+  * Helper procedure to get Acct segment info from CCID
   ***********************************************/
 
   PROCEDURE get_acct_segment_info(p_ccid_id    IN         gl_code_combinations.code_combination_id%TYPE,
@@ -1879,6 +1879,40 @@ PROCEDURE logitt(p_message  IN  CLOB,
 
   END get_acct_segment_info;
 
+    /***********************************************
+  * Helper procedure to get LOB segment info from CCID
+  ***********************************************/
+
+  PROCEDURE get_LOB_segment_info(p_ccid_id    IN          gl_code_combinations.code_combination_id%TYPE,
+                                  x_segment    OUT NOCOPY gl_code_combinations.segment6%TYPE)
+  IS
+
+    lc_procedure_name  CONSTANT VARCHAR2(61) := gc_package_name || '.' || 'get_acct_segment_info';
+    lt_parameters      gt_input_parameters;
+
+  BEGIN
+
+    lt_parameters('p_ccid_id') := p_ccid_id;
+
+    entering_sub(p_procedure_name => lc_procedure_name,
+                 p_parameters     => lt_parameters);
+
+    SELECT segment6
+    INTO   x_segment
+    FROM   gl_code_combinations
+    WHERE  code_combination_id = p_ccid_id;
+    
+    logit(p_message => 'RESULT location - segment6: ' || x_segment);
+
+    exiting_sub(p_procedure_name => lc_procedure_name);
+
+    EXCEPTION
+    WHEN OTHERS
+    THEN
+      exiting_sub(p_procedure_name => lc_procedure_name, p_exception_flag => TRUE);
+      RAISE_APPLICATION_ERROR(-20101, 'PROCEDURE: ' || lc_procedure_name || ' SQLCODE: ' || SQLCODE || ' SQLERRM: ' || SQLERRM);
+
+  END get_LOB_segment_info;
   /**********************************
   * Helper procedure to customer info
   **********************************/
@@ -5160,7 +5194,7 @@ PROCEDURE logitt(p_message  IN  CLOB,
                             ,x_error_message  => lc_error_msg
                             );
 
-          IF p_contract_info.external_source = 'POS' THEN
+          /*IF p_contract_info.external_source = 'POS' THEN
             lc_ora_lob            := '10';
           ELSE
             IF lr_customer_info.attribute18='DIRECT' THEN
@@ -5168,7 +5202,11 @@ PROCEDURE logitt(p_message  IN  CLOB,
             ELSE  
                lc_ora_lob            := '40'; 
             END IF;
-          END IF;
+          END IF;*/
+		  lc_ora_lob := null;
+         
+          get_LOB_segment_info (p_ccid_id    => lr_invoice_dist_info.code_combination_id,         
+                                 x_segment   => lc_ora_lob);
           
           lc_action := 'populating ra_interface_distributions_all';
           
@@ -5356,7 +5394,7 @@ PROCEDURE logitt(p_message  IN  CLOB,
                             ,x_error_message  => lc_error_msg
                             );         
                             
-          IF p_contract_info.external_source = 'POS' THEN
+          /*IF p_contract_info.external_source = 'POS' THEN
             lc_ora_lob            := '10';
           ELSE
             IF lr_customer_info.attribute18='DIRECT' THEN
@@ -5364,7 +5402,11 @@ PROCEDURE logitt(p_message  IN  CLOB,
             ELSE  
                lc_ora_lob            := '40'; 
             END IF;
-          END IF;
+          END IF;*/
+		  
+		  lc_ora_lob := null;
+          get_LOB_segment_info (p_ccid_id    => lr_invoice_dist_info.code_combination_id,         
+                                 x_segment   => lc_ora_lob);
           
           lc_action := 'populating ra_interface_distributions_all';
           
@@ -5558,7 +5600,7 @@ PROCEDURE logitt(p_message  IN  CLOB,
                             ,x_ccid           => ln_ccid
                             ,x_error_message  => lc_error_msg
                             );
-          IF p_contract_info.external_source = 'POS' THEN
+          /*IF p_contract_info.external_source = 'POS' THEN
             lc_ora_lob            := '10';
           ELSE
             IF lr_customer_info.attribute18='DIRECT' THEN
@@ -5566,7 +5608,12 @@ PROCEDURE logitt(p_message  IN  CLOB,
             ELSE  
                lc_ora_lob            := '40'; 
             END IF;
-          END IF;
+          END IF;*/
+
+		  lc_ora_lob := null;
+          get_LOB_segment_info (p_ccid_id    => lr_invoice_dist_info.code_combination_id,         
+                                 x_segment   => lc_ora_lob);
+
           lc_action := 'populating ra_interface_distributions_all';
 
           lc_action := 'Calling get_invoice_dist_info for UNEARN';
