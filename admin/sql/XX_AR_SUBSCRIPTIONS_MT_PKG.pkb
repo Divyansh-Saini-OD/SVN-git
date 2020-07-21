@@ -1179,18 +1179,28 @@ PROCEDURE logitt(p_message  IN  CLOB,
     --begin get_invoice_line_info Error: -20101 ORA-20101: PROCEDURE: xx_ar_subscriptions_mt_pkg.get_invoice_line_info SQLCODE: 100 SQLERRM: ORA-01403: no data found
       EXCEPTION
       WHEN NO_DATA_FOUND THEN
-        SELECT *
-        INTO   x_invoice_line_info
-        FROM   ra_customer_trx_lines_all
-        WHERE  customer_trx_id    = p_customer_trx_id
-        AND    inventory_item_id  = p_inventory_item_id
-    --  AND    unit_selling_price = p_cont_line_amt
-        AND    line_type          = 'LINE'
-        AND    line_number        = p_line_number
-       ;
-      END;
+        BEGIN
+          SELECT *
+          INTO   x_invoice_line_info
+          FROM   ra_customer_trx_lines_all
+          WHERE  customer_trx_id    = p_customer_trx_id
+          AND    inventory_item_id  = p_inventory_item_id
+          AND    line_type          = 'LINE'
+          AND    line_number        = p_line_number ;
+        EXCEPTION
+         WHEN NO_DATA_FOUND THEN
+              SELECT *
+              INTO   x_invoice_line_info
+              FROM   ra_customer_trx_lines_all
+              WHERE  customer_trx_id    = p_customer_trx_id
+              AND    inventory_item_id  = p_inventory_item_id
+              AND    unit_selling_price = p_cont_line_amt
+              AND    line_type          = 'LINE' ;
+     
+        END;
+    END;
     --end get_invoice_line_info Error: -20101 ORA-20101: PROCEDURE: xx_ar_subscriptions_mt_pkg.get_invoice_line_info SQLCODE: 100 SQLERRM: ORA-01403: no data found
-    ELSE
+   ELSE
       SELECT *
       INTO   x_invoice_line_info
       FROM   ra_customer_trx_lines_all
@@ -11610,7 +11620,9 @@ PROCEDURE logitt(p_message  IN  CLOB,
                 --lt_subscription_array(indx).invoice_number      := ln_trx_number;
                 ln_process_flag   := 'Y';
               ELSE
-                lt_subscription_array(indx).invoice_number      := NULL;
+                lt_subscription_array(indx).invoice_number           := NULL;
+                lt_subscription_array(indx).invoice_interfaced_flag  := 'N';
+                lt_subscription_array(indx).invoice_created_flag     := 'N';
               END IF;
               update_subscription_info(px_subscription_info => lt_subscription_array(indx));
              END LOOP;         
