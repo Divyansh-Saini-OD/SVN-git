@@ -440,7 +440,7 @@ BEGIN
           X_SPLIT_TABS_BY,
           X_ENABLE_XL_SUBTOTAL,
           x_fee_label,
-		      x_fee_amount
+		  x_fee_amount
       FROM XX_AR_EBL_FILE F
       JOIN XX_AR_EBL_TRANSMISSION T
         ON F.transmission_id=T.transmission_id
@@ -471,6 +471,10 @@ BEGIN
                    AND TRUNC(SYSDATE) BETWEEN V.start_date_active AND NVL(V.end_date_active,SYSDATE)) L
         ON H.logo_file_name=L.logo_key
      WHERE F.file_id=P_FILE_ID;
+
+    IF x_fee_amount=0 THEN
+	   x_fee_amount:=null;
+	END IF;
 
 END XLS_FILE_HEADER;
 

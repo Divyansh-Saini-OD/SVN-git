@@ -1,5 +1,4 @@
-create or replace
-PACKAGE BODY XX_AR_EBL_RENDER_STUB_PKG AS
+create or replace PACKAGE BODY XX_AR_EBL_RENDER_STUB_PKG AS
 
 /*
 -- +======================================================================================================+
@@ -493,7 +492,7 @@ PACKAGE BODY XX_AR_EBL_RENDER_STUB_PKG AS
 	
 	-- Added for tariff 1.5
 	
-	
+	BEGIN
 	SELECT SUM(XX_AR_EBL_COMMON_UTIL_PKG.get_hea_fee_amount(customer_trx_id) +
 	           XX_AR_EBL_COMMON_UTIL_PKG.get_line_fee_amount(customer_trx_id)   )
 	  INTO ln_fee_amount
@@ -508,8 +507,11 @@ PACKAGE BODY XX_AR_EBL_RENDER_STUB_PKG AS
 	 WHERE transmission_id = ln_transmission_id 
 	   AND consolidated_bill_number = ls_cons_bill_number
        AND cust_account_id = ln_customer_id);
-	 
-	 
+	EXCEPTION WHEN OTHERS THEN
+     ln_fee_amount :=0;
+  END;
+  
+	 BEGIN
 	 SELECT XX_AR_EBL_COMMON_UTIL_PKG.get_fee_option(cust_doc_id,null,null,null) 
 	   INTO ln_fee_option
 	   FROM (SELECT cust_doc_id
@@ -523,8 +525,16 @@ PACKAGE BODY XX_AR_EBL_RENDER_STUB_PKG AS
 	 WHERE transmission_id = ln_transmission_id 
 	   AND consolidated_bill_number = ls_cons_bill_number
        AND cust_account_id = ln_customer_id);
-	
-	item_elmt := xmldom.createElement(doc,'FEE_OPTION');
+	EXCEPTION WHEN OTHERS THEN
+     ln_fee_option :=0;
+  END;
+  IF ln_fee_amount IS NULL THEN
+     ln_fee_amount :=0;
+  END IF;
+  IF ln_fee_option IS NULL THEN
+     ln_fee_option :=0;
+  END IF;
+  item_elmt := xmldom.createElement(doc,'FEE_OPTION');
     item_node := xmldom.appendChild(stub_node,xmldom.makeNode(item_elmt));
     item_text := xmldom.createTextNode(doc,ln_fee_option);
     item_node := xmldom.appendChild(item_node,xmldom.makeNode(item_text));
@@ -708,7 +718,4 @@ PACKAGE BODY XX_AR_EBL_RENDER_STUB_PKG AS
   END SHOW_STUBS_TO_RENDER;
 
 END XX_AR_EBL_RENDER_STUB_PKG;
-
 /
-
-SHOW ERR

@@ -453,6 +453,7 @@ create or replace PACKAGE BODY XX_AR_EBL_XLS_DM_PKG
 	  lc_hide_flag   VARCHAR2(10):='N';
   	lc_tot_fee_amt NUMBER := 0;
   	lv_upd_str     VARCHAR2(2000) := NULL;
+    lv_check_type  VARCHAR2(10):='N';
 
 
     BEGIN
@@ -892,6 +893,17 @@ create or replace PACKAGE BODY XX_AR_EBL_XLS_DM_PKG
                       lc_select_var_cols := lc_select_var_cols || 'NULL' || ',';
                       lc_select_non_dt   := lc_select_non_dt || 'NULL' || ',';
 				   --Added by 2.0
+				   BEGIN
+				      SELECT 'Y'
+					      INTO lv_check_type
+						    FROM XX_CDH_EBL_MAIN 
+					     WHERE FILE_NAME_EXT = 'XLS' 
+					       AND CUST_DOC_ID = lc_get_dist_docid
+						     AND ATTRIBUTE1 = 'DETAIL'
+                 AND rownum = 1;
+				   EXCEPTION WHEN OTHERS THEN
+				      lv_check_type := 'Y';
+				   END;
                    ELSIF lc_get_all_field_info.field_id = 10169 THEN
                     
                     
@@ -902,7 +914,7 @@ create or replace PACKAGE BODY XX_AR_EBL_XLS_DM_PKG
                       WHERE cust_doc_id = lc_get_dist_docid
                       AND file_id = lc_get_dist_fid
                       AND org_id = ln_org_id;
-                    lv_upd_str := 'update xx_ar_ebl_ind_hdr_main set TOTAL_MISCELLANEOUS_AMOUNT = TOTAL_MISCELLANEOUS_AMOUNT - '||lc_tot_fee_amt||' WHERE parent_cust_doc_id = '||lc_get_dist_docid||' AND extract_batch_id ='|| lc_get_dist_ebatchid ||' AND batch_id = '||p_batch_id;
+                    --lv_upd_str := 'update xx_ar_ebl_ind_hdr_main set TOTAL_MISCELLANEOUS_AMOUNT = TOTAL_MISCELLANEOUS_AMOUNT - '||lc_tot_fee_amt||' WHERE parent_cust_doc_id = '||lc_get_dist_docid||' AND extract_batch_id ='|| lc_get_dist_ebatchid ||' AND batch_id = '||p_batch_id;
                     
         
                    ELSE
@@ -913,13 +925,13 @@ create or replace PACKAGE BODY XX_AR_EBL_XLS_DM_PKG
                       WHERE cust_doc_id = lc_get_dist_docid
                       AND file_id = lc_get_dist_fid
                       AND org_id = ln_org_id;
-                    lv_upd_str := 'update xx_ar_ebl_cons_hdr_main set TOTAL_MISCELLANEOUS_AMOUNT = TOTAL_MISCELLANEOUS_AMOUNT - '||lc_tot_fee_amt||' WHERE parent_cust_doc_id = '||lc_get_dist_docid||' AND extract_batch_id ='|| lc_get_dist_ebatchid ||' AND batch_id = '||p_batch_id;
+                    --lv_upd_str := 'update xx_ar_ebl_cons_hdr_main set TOTAL_MISCELLANEOUS_AMOUNT = TOTAL_MISCELLANEOUS_AMOUNT - '||lc_tot_fee_amt||' WHERE parent_cust_doc_id = '||lc_get_dist_docid||' AND extract_batch_id ='|| lc_get_dist_ebatchid ||' AND batch_id = '||p_batch_id;
                      END IF;
                      
-                    if lc_fee_option = 1007 THEN
+                    if lc_fee_option = 1007 and lv_check_type !='Y' THEN
                          lc_select_var_cols := lc_select_var_cols||lc_tot_fee_amt||',';
                          lc_select_non_dt   := lc_select_non_dt ||lc_tot_fee_amt||',';
-                       execute immediate lv_upd_str;
+                      -- execute immediate lv_upd_str;
                     else 
                        lc_hide_flag :='Y';
                        select replace (lc_value_fid,lc_get_all_field_info.field_id || ',','')
