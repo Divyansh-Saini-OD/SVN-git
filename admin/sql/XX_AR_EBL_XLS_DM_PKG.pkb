@@ -453,7 +453,8 @@ create or replace PACKAGE BODY XX_AR_EBL_XLS_DM_PKG
 	  lc_hide_flag   VARCHAR2(10):='N';
   	lc_tot_fee_amt NUMBER := 0;
   	lv_upd_str     VARCHAR2(2000) := NULL;
-    lv_check_type  VARCHAR2(10):='N';
+    lv_upd_str1    VARCHAR2(2000) := NULL;
+	lv_check_type  VARCHAR2(10):='N';
 
 
     BEGIN
@@ -671,7 +672,7 @@ create or replace PACKAGE BODY XX_AR_EBL_XLS_DM_PKG
 					lc_select_var_cols := lc_select_var_cols || 'TO_CHAR(hdr.' || lc_get_summary_fields_info.col_name || ',''YYYY-MM-DD''),';
 					lc_summary_group_cols :=  lc_summary_group_cols || 'TO_CHAR(hdr.' || lc_get_summary_fields_info.col_name || ',''YYYY-MM-DD''),';
 				  END IF;
-				ELSE
+				ELSIF lc_get_summary_fields_info.field_id != 10169 THEN
 				  IF lc_get_summary_fields_info.summary_field = 'Y' THEN
 					lc_select_var_cols := lc_select_var_cols||'SUM(hdr.'||lc_get_summary_fields_info.col_name||'),';
 				  ELSE
@@ -689,7 +690,8 @@ create or replace PACKAGE BODY XX_AR_EBL_XLS_DM_PKG
 						  WHERE cust_doc_id = lc_get_dist_docid
 							AND file_id = lc_get_dist_fid
 							AND org_id = ln_org_id;
-                        lv_upd_str := 'update xx_ar_ebl_ind_hdr_main set SKU_LINES_SUBTOTAL = SKU_LINES_SUBTOTAL - (XX_AR_EBL_COMMON_UTIL_PKG.get_hea_fee_amount(customer_trx_id )+ XX_AR_EBL_COMMON_UTIL_PKG.get_line_fee_amount(customer_trx_id)) WHERE parent_cust_doc_id = '||lc_get_dist_docid||' AND extract_batch_id ='|| lc_get_dist_ebatchid ||' AND batch_id = '||p_batch_id;
+						lv_upd_str := 'update xx_ar_ebl_ind_hdr_main set TOTAL_MISCELLANEOUS_AMOUNT = TOTAL_MISCELLANEOUS_AMOUNT + (XX_AR_EBL_COMMON_UTIL_PKG.get_hea_fee_amount(customer_trx_id )+ XX_AR_EBL_COMMON_UTIL_PKG.get_line_fee_amount(customer_trx_id))  WHERE parent_cust_doc_id = '||lc_get_dist_docid||' AND extract_batch_id ='|| lc_get_dist_ebatchid ||' AND batch_id = '||p_batch_id;
+                        lv_upd_str1 := 'update xx_ar_ebl_ind_hdr_main set SKU_LINES_SUBTOTAL = SKU_LINES_SUBTOTAL - (XX_AR_EBL_COMMON_UTIL_PKG.get_hea_fee_amount(customer_trx_id )+ XX_AR_EBL_COMMON_UTIL_PKG.get_line_fee_amount(customer_trx_id)) WHERE parent_cust_doc_id = '||lc_get_dist_docid||' AND extract_batch_id ='|| lc_get_dist_ebatchid ||' AND batch_id = '||p_batch_id;
 					 
 					 ELSE
 					 
@@ -699,7 +701,8 @@ create or replace PACKAGE BODY XX_AR_EBL_XLS_DM_PKG
 						  WHERE cust_doc_id = lc_get_dist_docid
 							AND file_id = lc_get_dist_fid
 							AND org_id = ln_org_id;
-						lv_upd_str := 'update xx_ar_ebl_cons_hdr_main set SKU_LINES_SUBTOTAL = SKU_LINES_SUBTOTAL - (XX_AR_EBL_COMMON_UTIL_PKG.get_hea_fee_amount(customer_trx_id )+ XX_AR_EBL_COMMON_UTIL_PKG.get_line_fee_amount(customer_trx_id)) WHERE parent_cust_doc_id = '||lc_get_dist_docid||' AND extract_batch_id ='|| lc_get_dist_ebatchid ||' AND batch_id = '||p_batch_id;
+						lv_upd_str := 'update xx_ar_ebl_cons_hdr_main set TOTAL_MISCELLANEOUS_AMOUNT = TOTAL_MISCELLANEOUS_AMOUNT + (XX_AR_EBL_COMMON_UTIL_PKG.get_hea_fee_amount(customer_trx_id )+ XX_AR_EBL_COMMON_UTIL_PKG.get_line_fee_amount(customer_trx_id)) WHERE parent_cust_doc_id = '||lc_get_dist_docid||' AND extract_batch_id ='|| lc_get_dist_ebatchid ||' AND batch_id = '||p_batch_id;
+						lv_upd_str1 := 'update xx_ar_ebl_cons_hdr_main set SKU_LINES_SUBTOTAL = SKU_LINES_SUBTOTAL - (XX_AR_EBL_COMMON_UTIL_PKG.get_hea_fee_amount(customer_trx_id )+ XX_AR_EBL_COMMON_UTIL_PKG.get_line_fee_amount(customer_trx_id)) WHERE parent_cust_doc_id = '||lc_get_dist_docid||' AND extract_batch_id ='|| lc_get_dist_ebatchid ||' AND batch_id = '||p_batch_id;
 				     END IF;
 						if lc_fee_option = 1007 THEN
 					       lc_select_var_cols:=lc_select_var_cols||'sum((
@@ -707,7 +710,11 @@ create or replace PACKAGE BODY XX_AR_EBL_XLS_DM_PKG
 																	FROM ((select REGEXP_SUBSTR (dt, ''[^,]+'', 1, level) as TRX
 																	from (select listagg(customer_trx_id,'','') within group(order by cust_doc_id) dt from dual)
 																	connect by level <= length(regexp_replace(dt,''[^,]*''))+1))))'||',';
+						   execute immediate lv_upd_str1;
+						elsif lc_fee_option = 1008 THEN
+						   execute immediate lv_upd_str1;
 						   execute immediate lv_upd_str;
+						   lc_hide_flag :='Y';
 						else 
 						   lc_hide_flag :='Y';
 						end if;
@@ -893,17 +900,6 @@ create or replace PACKAGE BODY XX_AR_EBL_XLS_DM_PKG
                       lc_select_var_cols := lc_select_var_cols || 'NULL' || ',';
                       lc_select_non_dt   := lc_select_non_dt || 'NULL' || ',';
 				   --Added by 2.0
-				   BEGIN
-				      SELECT 'Y'
-					      INTO lv_check_type
-						    FROM XX_CDH_EBL_MAIN 
-					     WHERE FILE_NAME_EXT = 'XLS' 
-					       AND CUST_DOC_ID = lc_get_dist_docid
-						     AND ATTRIBUTE1 = 'DETAIL'
-                 AND rownum = 1;
-				   EXCEPTION WHEN OTHERS THEN
-				      lv_check_type := 'Y';
-				   END;
                    ELSIF lc_get_all_field_info.field_id = 10169 THEN
                     
                     
@@ -914,7 +910,8 @@ create or replace PACKAGE BODY XX_AR_EBL_XLS_DM_PKG
                       WHERE cust_doc_id = lc_get_dist_docid
                       AND file_id = lc_get_dist_fid
                       AND org_id = ln_org_id;
-                    --lv_upd_str := 'update xx_ar_ebl_ind_hdr_main set TOTAL_MISCELLANEOUS_AMOUNT = TOTAL_MISCELLANEOUS_AMOUNT - '||lc_tot_fee_amt||' WHERE parent_cust_doc_id = '||lc_get_dist_docid||' AND extract_batch_id ='|| lc_get_dist_ebatchid ||' AND batch_id = '||p_batch_id;
+                    lv_upd_str := 'update xx_ar_ebl_ind_hdr_main set TOTAL_MISCELLANEOUS_AMOUNT = TOTAL_MISCELLANEOUS_AMOUNT + (XX_AR_EBL_COMMON_UTIL_PKG.get_hea_fee_amount(customer_trx_id )+ XX_AR_EBL_COMMON_UTIL_PKG.get_line_fee_amount(customer_trx_id)) WHERE parent_cust_doc_id = '||lc_get_dist_docid||' AND extract_batch_id ='|| lc_get_dist_ebatchid ||' AND batch_id = '||p_batch_id;
+					lv_upd_str1 := 'update xx_ar_ebl_ind_hdr_main set SKU_LINES_SUBTOTAL = SKU_LINES_SUBTOTAL - (XX_AR_EBL_COMMON_UTIL_PKG.get_hea_fee_amount(customer_trx_id )+ XX_AR_EBL_COMMON_UTIL_PKG.get_line_fee_amount(customer_trx_id)) WHERE parent_cust_doc_id = '||lc_get_dist_docid||' AND extract_batch_id ='|| lc_get_dist_ebatchid ||' AND batch_id = '||p_batch_id;
                     
         
                    ELSE
@@ -925,14 +922,22 @@ create or replace PACKAGE BODY XX_AR_EBL_XLS_DM_PKG
                       WHERE cust_doc_id = lc_get_dist_docid
                       AND file_id = lc_get_dist_fid
                       AND org_id = ln_org_id;
-                    --lv_upd_str := 'update xx_ar_ebl_cons_hdr_main set TOTAL_MISCELLANEOUS_AMOUNT = TOTAL_MISCELLANEOUS_AMOUNT - '||lc_tot_fee_amt||' WHERE parent_cust_doc_id = '||lc_get_dist_docid||' AND extract_batch_id ='|| lc_get_dist_ebatchid ||' AND batch_id = '||p_batch_id;
+                    lv_upd_str := 'update xx_ar_ebl_cons_hdr_main set TOTAL_MISCELLANEOUS_AMOUNT = TOTAL_MISCELLANEOUS_AMOUNT + (XX_AR_EBL_COMMON_UTIL_PKG.get_hea_fee_amount(customer_trx_id )+ XX_AR_EBL_COMMON_UTIL_PKG.get_line_fee_amount(customer_trx_id)) WHERE parent_cust_doc_id = '||lc_get_dist_docid||' AND extract_batch_id ='|| lc_get_dist_ebatchid ||' AND batch_id = '||p_batch_id;
+					lv_upd_str1 := 'update xx_ar_ebl_cons_hdr_main set SKU_LINES_SUBTOTAL = SKU_LINES_SUBTOTAL - (XX_AR_EBL_COMMON_UTIL_PKG.get_hea_fee_amount(customer_trx_id )+ XX_AR_EBL_COMMON_UTIL_PKG.get_line_fee_amount(customer_trx_id)) WHERE parent_cust_doc_id = '||lc_get_dist_docid||' AND extract_batch_id ='|| lc_get_dist_ebatchid ||' AND batch_id = '||p_batch_id;
                      END IF;
                      
-                    if lc_fee_option = 1007 and lv_check_type !='Y' THEN
-                         lc_select_var_cols := lc_select_var_cols||lc_tot_fee_amt||',';
-                         lc_select_non_dt   := lc_select_non_dt ||lc_tot_fee_amt||',';
-                      -- execute immediate lv_upd_str;
-                    else 
+                    if lc_fee_option = 1007 THEN
+                         lc_select_var_cols := lc_select_var_cols||' XX_AR_EBL_COMMON_UTIL_PKG.get_hea_fee_amount(hdr.customer_trx_id )+ XX_AR_EBL_COMMON_UTIL_PKG.get_line_fee_amount(hdr.customer_trx_id),';
+                         lc_select_non_dt   := lc_select_non_dt ||' XX_AR_EBL_COMMON_UTIL_PKG.get_hea_fee_amount(hdr.customer_trx_id )+ XX_AR_EBL_COMMON_UTIL_PKG.get_line_fee_amount(hdr.customer_trx_id),';
+                       execute immediate lv_upd_str1;
+                    elsif lc_fee_option = 1008 THEN
+                       execute immediate lv_upd_str;
+                       execute immediate lv_upd_str1;					   
+                       lc_hide_flag :='Y';
+                       select replace (lc_value_fid,lc_get_all_field_info.field_id || ',','')
+                         INTO lc_value_fid
+                       FROM DUAL;
+					else					
                        lc_hide_flag :='Y';
                        select replace (lc_value_fid,lc_get_all_field_info.field_id || ',','')
                          INTO lc_value_fid
@@ -2462,4 +2467,4 @@ FUNCTION get_column_name(p_field_id IN NUMBER
                                            ,lc_err_location_msg );
  END;
  END XX_AR_EBL_XLS_DM_PKG;
- /
+/

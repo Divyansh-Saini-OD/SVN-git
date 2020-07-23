@@ -5945,10 +5945,14 @@ BEGIN
 	 ln_fee_amount      := 0;
 
 	 BEGIN
-      SELECT NVL(sum(RCTL.unit_selling_price*rctl.QUANTITY_ORDERED),0) FEE_AMT
+          SELECT NVL(sum(RCTL.unit_selling_price*
+						 CASE WHEN aps.class = 'CM' THEN rctl.quantity_credited
+						 else NVL(rctl.quantity_ordered,rctl.quantity_invoiced) end
+						 ),0) FEE_AMT
 		    INTO ln_fee_amount
-			  FROM ra_customer_trx_lines_All RCTL
-				     ,fnd_lookup_values flv
+			FROM ra_customer_trx_lines_All RCTL
+				 ,fnd_lookup_values flv
+                 ,ar_payment_schedules_all aps
 		   WHERE 1=1
 			 AND flv.lookup_type = 'OD_FEES_ITEMS'
 			 AND flv.LANGUAGE='US'
@@ -5956,7 +5960,8 @@ BEGIN
 			 AND FLV.enabled_flag = 'Y'
 			 AND SYSDATE BETWEEN NVL(FLV.start_date_active,SYSDATE) AND NVL(FLV.end_date_active,SYSDATE+1)
 			 AND FLV.attribute7 NOT IN ('DELIVERY','MISCELLANEOUS','HEADER')
-			 AND customer_trx_id = p_customer_trx_id;
+			 AND aps.customer_trx_id = rctl.customer_trx_id
+			 AND rctl.customer_trx_id = p_customer_trx_id;
 
      EXCEPTION
 	   WHEN OTHERS THEN
@@ -5996,10 +6001,14 @@ BEGIN
 	 ln_fee_amount      := 0;
 
 	 BEGIN
-      SELECT NVL(sum(RCTL.unit_selling_price*rctl.QUANTITY_ORDERED),0) FEE_AMT
+          SELECT NVL(sum(RCTL.unit_selling_price*
+						 CASE WHEN aps.class = 'CM' THEN rctl.quantity_credited
+						 else NVL(rctl.quantity_ordered,rctl.quantity_invoiced) end
+						 ),0) FEE_AMT
 		    INTO ln_fee_amount
-			  FROM ra_customer_trx_lines_All RCTL
+			FROM ra_customer_trx_lines_All RCTL
 				    ,fnd_lookup_values flv
+					,ar_payment_schedules_all aps
 		   WHERE 1=1
 			 AND flv.lookup_type = 'OD_FEES_ITEMS'
 			 AND flv.LANGUAGE='US'
@@ -6007,7 +6016,8 @@ BEGIN
 			 AND FLV.enabled_flag = 'Y'
 			 AND SYSDATE BETWEEN NVL(FLV.start_date_active,SYSDATE) AND NVL(FLV.end_date_active,SYSDATE+1)
 			 AND FLV.attribute7 IN ('HEADER')
-			 AND customer_trx_id = p_customer_trx_id;
+			 AND aps.customer_trx_id = rctl.customer_trx_id
+			 AND rctl.customer_trx_id = p_customer_trx_id;
 
    EXCEPTION
      WHEN NO_DATA_FOUND THEN

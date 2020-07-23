@@ -37,6 +37,7 @@ AS
   -- |      1.16 15-May-2018  Aniket J     CG         Changes for Requirement  #NAIT-29364|
   -- |      1.17 09-JUN-2018  Thilak       CG         Changes for Requirement#NAIT-17796  |
   -- |      1.18 16-JUL-2018  Aniket J     CG         Changes for Requirement#NAIT-50280  |
+  -- |      1.19 20-JUN-2020  Divyansh Saini          Changes done for NAIT-129167        |
   -- +====================================================================================+
 PROCEDURE XX_AR_EBL_TXT_MASTER_PROG(
     x_error_buff OUT VARCHAR2 ,
@@ -1002,10 +1003,11 @@ IS
 	  EXCEPTION WHEN OTHERS THEN
 	    lv_fee_option:= 0;
 	  END;
+	  --Added for 1.19
 	  IF lv_fee_option != 1009 AND UPPER(lc_get_header_fields_info.spl_function) = 'XX_AR_EBL_TXT_SPL_LOGIC_PKG.GET_FEE_AMOUNT' THEN
 	    lv_hide_flag := 'Y';
 	  END IF;
-	    
+	  --End for 1.19  
       IF ln_count           = 1 THEN
         lc_select_var_cols := lc_select_cons_hdr||''''||lc_get_header_fields_info.trx_type||''''||','||''''||lc_get_header_fields_info.rec_type||''''||','||lc_get_header_fields_info.rec_order||',' ||'TO_DATE('||''''||p_cycle_date||''''||',''DD-MON-YY''),'||p_batch_id||',';
         lc_hdr_value_fid   := lc_hdr_value_fid||''''||lc_get_header_fields_info.trx_type||''''||','||'''FID'''||','||lc_get_header_fields_info.rec_order||',' ||'TO_DATE('||''''||p_cycle_date||''''||',''DD-MON-YY''),'||p_batch_id||',';
@@ -2003,10 +2005,11 @@ IS
 
             EXECUTE IMMEDIATE lc_function INTO lc_function_return;
             lc_select_var_cols := lc_select_var_cols||lc_function_return||',';
-          
+              --Added for 1.19
 			  IF lv_fee_option != 1009 AND UPPER(lc_get_summary_fields_info.spl_function) = 'XX_AR_EBL_TXT_SPL_LOGIC_PKG.GET_FEE_AMOUNT' THEN
 				lv_hide_flag := 'Y';
 			  END IF;
+			  --End for 1.19
 		  ELSE
             lc_select_var_cols := lc_select_var_cols||'NULL'||',';
             -- Checking to print line number field is selected for the cust doc id.
@@ -2640,9 +2643,11 @@ IS
                 EXECUTE IMMEDIATE lc_function INTO lc_function_return;
                 lc_select_var_cols := lc_select_var_cols||lc_function_return||',';
               
-			    IF lv_fee_option != 1009 AND UPPER(lc_get_dtl_fields_info.spl_function) = 'XX_AR_EBL_TXT_SPL_LOGIC_PKG.GET_FEE_AMOUNT' THEN
+			    --Added for 1.19
+				IF lv_fee_option != 1009 AND UPPER(lc_get_dtl_fields_info.spl_function) = 'XX_AR_EBL_TXT_SPL_LOGIC_PKG.GET_FEE_AMOUNT' THEN
 				   lv_hide_flag := 'Y';
 			    END IF;
+				--End for 1.19
 			  ELSE
 			   --Added 2 Values in  by Aniket CG 15 May #NAIT-29364
                 IF UPPER(lc_get_dtl_fields_info.col_name) NOT IN ('SIGN','DC_INDICATOR','ORIG_INV_AMT_DB' , 'ORIG_INV_AMT_CR','EXT_PRICE_DB' ,'EXT_PRICE_CR')  THEN -- Added by Punit CG on 17th Aug 2017 for Defect # 40174
@@ -3017,7 +3022,7 @@ IS
             lc_dtl_value_fid        := ' VALUES ('||xx_ar_ebl_txt_stg_id_s.nextval||','||p_cust_doc_id||',NULL,'||p_file_id||',fnd_global.user_id,sysdate,fnd_global.user_id,sysdate,fnd_global.user_id,'||SUBSTR(lc_dtl_value_fid,1,LENGTH(lc_dtl_value_fid)-1)||')';
           ELSE
             lc_insert_col_name := lc_insert_dtl_const_cols||SUBSTR(lc_insert_col_name,1,LENGTH(lc_insert_col_name)                                                                                                                                                     -1)||')';
-            lc_select_var_cols := lc_select_cons_dtl||SUBSTR(lc_select_var_cols,1,LENGTH(lc_select_var_cols)                                                                                                                                                           -1)||lc_from_cons_dtl|| p_cmb_splt_whr || ')'; --Added by Aniket CG #22772 on 15 Dec 2017
+            lc_select_var_cols := lc_select_cons_dtl||SUBSTR(lc_select_var_cols,1,LENGTH(lc_select_var_cols)                                                                                                                                                           -1)||lc_from_cons_dtl|| p_cmb_splt_whr || ' order by dtl.CUSTOMER_TRX_ID,dtl.trx_line_number)'; --Added by Aniket CG #22772 on 15 Dec 2017  --Added order by for 1.19
             lc_dtl_value_fid   := ' VALUES ('||xx_ar_ebl_txt_stg_id_s.nextval||','||p_cust_doc_id||',NULL,NULL,NULL,NULL,'||p_file_id||',fnd_global.user_id,sysdate,fnd_global.user_id,sysdate,fnd_global.user_id,'||SUBSTR(lc_dtl_value_fid,1,LENGTH(lc_dtl_value_fid)-1)||')';
           END IF;
           lc_err_location_msg := 'Select and Insert Statement for FID record for : '||lc_get_dist_record_type||' - '||lc_insert_col_name||lc_dtl_value_fid ;

@@ -415,14 +415,16 @@ BEGIN
            TRIM(P.label_total_merchandise_amt || ' ') total_merchandise_label,
            --TRIM(LTRIM(TO_CHAR(F.total_merchandise_amt,'$999,999,999,999.00'))) total_merchandise_amt,
            --F.total_merchandise_amt total_merchandise_amt,  -- Commented for 1.7
-           F.total_merchandise_amt - NVL(ln_fee_amt,0) total_merchandise_amt,  -- Added for 1.7
+           DECODE(g_fee_option,1007,F.total_merchandise_amt - NVL(ln_fee_amt,0)
+                              ,1008,F.total_merchandise_amt - NVL(ln_fee_amt,0)
+                              ,F.total_merchandise_amt) total_merchandise_amt,  -- Added for 1.7
            TRIM(P.label_total_sales_tax_amt || ' ') total_sales_tax_label,
            --TRIM(LTRIM(TO_CHAR(F.total_sales_tax_amt,'$999,999,999,999.00'))) total_sales_tax_amt,
            F.total_sales_tax_amt total_sales_tax_amt,
            TRIM(P.label_total_misc_amt || ' ') total_misc_label,
            --TRIM(LTRIM(TO_CHAR(F.total_misc_amt,'$999,999,999,999.00'))) total_misc_amt,
 --           F.total_misc_amt total_misc_amt,-- Commented for 1.7
-           DECODE(g_fee_option,1007,F.total_misc_amt,F.total_misc_amt + NVL(ln_fee_amt,0)) total_misc_amt,  -- Added for 1.7
+           DECODE(g_fee_option,1008,F.total_misc_amt + NVL(ln_fee_amt,0),F.total_misc_amt) total_misc_amt,  -- Added for 1.7
            DECODE(F.TOTAL_GIFT_CARD_AMT,0,NULL,NULL,NULL,LTRIM(P.label_total_gift_card_amt || ' ' )) total_gift_card_label,
            --DECODE(F.TOTAL_GIFT_CARD_AMT,0,NULL,NULL,NULL,LTRIM(TO_CHAR(F.total_gift_card_amt,'$999,999,999,999.00'))) total_gift_card_amt
            DECODE(F.TOTAL_GIFT_CARD_AMT,0,NULL,NULL,NULL,F.total_gift_card_amt) total_gift_card_amt
