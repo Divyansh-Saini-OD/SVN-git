@@ -1,5 +1,4 @@
-create or replace 
-PACKAGE BODY      xx_ar_pos_receipt_pkg
+create or replace PACKAGE BODY      xx_ar_pos_receipt_pkg
 AS
 -- +=====================================================================================================+
 -- |  Office Depot - Project Simplify                                                                    |
@@ -34,9 +33,8 @@ AS
 -- |												(Refund Receipt Write-Off')        				     |
 -- | 5.1         21-SEP-2015  John Wilson          Modified the code as per the defect 35802             |
 -- | 5.2         11-NOV-2015  Vasu Raparla          Removed Schema References for R12.2                  |
--- | 5.2         08-MAR-2016  Shubhashree R        Modified the proc create_summary_receipt for QC 36905 |
--- | 5.3         03-JUN-2019  Havish Kasina        Changed the v$database to DB_NAME                     |
 -- |5.9          30-Apr-2020  Pramod Kumar        NAIT-11880 Rev Rec Code changes
+-- |5.10         24-Jul-2020  Pramod Kumar        NAIT-11880 Rev Rec Code changes on top of PROD version-Reverting to old version
 -- +=====================================================================================================+
     PROCEDURE create_summary_receipt(
         errbuf        OUT NOCOPY     VARCHAR2,
@@ -70,9 +68,6 @@ AS
         tot_receipt_amt        NUMBER                                      := 0;
         tot_ar_amt             NUMBER                                      := 0;
         gc_error_loc           VARCHAR2(80)                                DEFAULT NULL;
-        --QC36905
-        p_source_value3        VARCHAR2(1);
-        p_target_value1        VARCHAR2(20);
 
 -- ==========================================================================
 -- primary cursor - Summarize POS receipts
@@ -121,10 +116,10 @@ AS
                                            r.receipt_date)
             AND      r.payment_type_code = NVL(p_pay_type,
                                                r.payment_type_code)
-		    AND     not  exists (select 1 from oe_order_headers_all ooha, oe_order_lines_all oola 
+			AND     not  exists (select 1 from oe_order_headers_all ooha, oe_order_lines_all oola 
 									where ooha.ORIG_SYS_DOCUMENT_REF=r.ORIG_SYS_DOCUMENT_REF
 									and  oola.header_id=ooha.header_id
-									and oola.inventory_item_id in (select inventory_item_id from xx_ar_subscription_items where is_rev_rec_eligible='Y'))
+									and oola.inventory_item_id in (select inventory_item_id from xx_ar_subscription_items where is_rev_rec_eligible='Y'))						
             GROUP BY r.customer_id,
                      r.store_number,
                      TRUNC(r.receipt_date),
@@ -210,74 +205,8 @@ AS
             x_return_flag := ' ';
             p_receipt_number :=   p_receipt_number
                                 + 1;
-                                
-           --QC36905
-           BEGIN
-              --Get the source_value3 value 
-              SELECT  v.source_Value3, v.target_value1
-                INTO  p_source_value3, p_target_value1
-                FROM  xx_fin_translatedefinition d, xx_fin_translatevalues v
-              WHERE  d.translate_id = v.translate_id
-                 AND  d.translation_name = 'AR_POS_RECEIPT_METHODS'
-                 AND  v.source_value1 = summary_rec.payment_type_code
-                 AND  v.source_value2 = summary_rec.credit_card_code
-                 AND  v.enabled_flag = 'Y'
-                 AND  d.enabled_flag = 'Y'
-                 AND  SYSDATE BETWEEN v.start_date_active AND NVL(v.end_date_active, SYSDATE);
-              --
-              IF p_debug_flag = 'Y' THEN
-                 fnd_file.put_line(fnd_file.LOG,' Source Value3 : '||p_source_value3 || '  Target_value1' ||p_target_value1);
-              END IF;
-              IF p_source_value3 = 'Y' THEN
-                  p_receipt_method := summary_rec.NAME || p_target_value1 || summary_rec.store_number;
-                  IF p_debug_flag = 'Y' THEN
-                     fnd_file.put_line(fnd_file.LOG,' p_receipt_method : '||p_receipt_method);   
-                  END IF;
-              ELSE
-                 p_receipt_method := summary_rec.NAME || p_target_value1 ;
-                 IF p_debug_flag = 'Y' THEN
-                     fnd_file.put_line(fnd_file.LOG,'In else part p_receipt_method : '||p_receipt_method);
-                 END IF;
-              END IF;
-           EXCEPTION
-              WHEN NO_DATA_FOUND
-              THEN
-                  x_return_flag := 'Y';
-                  x_error_message := SQLERRM;
-                  fnd_file.put_line(fnd_file.LOG,
-                                       'Error - Unable to derive store number flag from translations for store = '
-                                    || summary_rec.store_number
-                                    || ' date = '
-                                    || summary_rec.receipt_date
-                                    || ' payment_type = '
-                                    || summary_rec.payment_type_code
-                                    || ' and credit_card = '
-                                    || summary_rec.credit_card_code
-                                    || ' SQLCODE = '
-                                    || SQLCODE
-                                    || ' error = '
-                                    || x_error_message);
-              WHEN OTHERS
-              THEN
-                  x_return_flag := 'Y';
-                  x_error_message := SQLERRM;
-                  fnd_file.put_line(fnd_file.LOG,
-                                       'Error - Unable to derive store number flag from translations for store = '
-                                    || summary_rec.store_number
-                                    || ' date = '
-                                    || summary_rec.receipt_date
-                                    || ' payment_type = '
-                                    || summary_rec.payment_type_code
-                                    || ' and credit_card = '
-                                    || summary_rec.credit_card_code
-                                    || ' SQLCODE = '
-                                    || SQLCODE
-                                    || ' error = '
-                                    || x_error_message);
-          END;
 
             BEGIN
-            /*
                 IF    summary_rec.payment_type_code = 'CASH'
                    OR summary_rec.credit_card_code = 'TELECHECK PAPER'
                 THEN
@@ -289,19 +218,26 @@ AS
                     END IF;
                 ELSE
                     lc_store_num := '';
-                END IF; */
+                END IF;
 
-                SELECT r.receipt_method_id
-                INTO   p_receipt_method_id
-                FROM   ar_receipt_methods r
-                WHERE  r.NAME =    p_receipt_method
+                SELECT r.receipt_method_id,
+                       r.NAME
+                INTO   p_receipt_method_id,
+                       p_receipt_method
+                FROM   xx_fin_translatedefinition d, xx_fin_translatevalues v, ar_receipt_methods r
+                WHERE  d.translate_id = v.translate_id
+                AND    d.translation_name = 'AR_POS_RECEIPT_METHODS'
+                AND    r.NAME =    summary_rec.NAME
+                                || v.target_value1
+                                || lc_store_num
+                AND    v.source_value1 = summary_rec.payment_type_code
+                AND    v.source_value2 = summary_rec.credit_card_code
+                AND    v.enabled_flag = 'Y'
+                AND    d.enabled_flag = 'Y'
+                AND    SYSDATE BETWEEN v.start_date_active AND NVL(v.end_date_active,
+                                                                   SYSDATE)
                 AND    SYSDATE BETWEEN r.start_date AND NVL(r.end_date,
                                                             SYSDATE);
-                                                            
-                --print the p_receipt_method_id  
-                IF p_debug_flag = 'Y' THEN
-                   fnd_file.put_line(fnd_file.LOG,'Getting  p_receipt_method_id : '||p_receipt_method_id); 
-                END IF;
             EXCEPTION
                 WHEN NO_DATA_FOUND
                 THEN
@@ -721,8 +657,8 @@ AS
                                            p_object_type =>                 'POS Create Receipts');
             ROLLBACK;
     END create_summary_receipt;
-
-	-- +=====================================================================================================+
+	
+		-- +=====================================================================================================+
 -- |                                                                                                     |
 -- |  PROCEDURE: CREATE_APPLY_SUBSC_REVREC_RECEIPT                                                                   |
 -- |                                                                                                     |
@@ -1460,9 +1396,7 @@ AS
                                            p_object_type =>                 'POS Create Receipts');
             ROLLBACK;
     END CREATE_APPLY_SUBSC_REVREC_RCPT;
-	
-	
-	
+
 -- +=====================================================================================================+
 -- |                                                                                                     |
 -- |  PROCEDURE: APPLY_SUMMARY_RECEIPT                                                                   |
@@ -1883,17 +1817,9 @@ AS
                           ' ');
 
         BEGIN
-		    -- Commented by Havish Kasina as per Version 5.3
-			/*
             SELECT NAME
             INTO   ln_instance_name
             FROM   v$database;
-			*/
-			-- Added by Havish Kasina as per Version 5.3
-			SELECT SUBSTR(SYS_CONTEXT('USERENV','DB_NAME'),1,8) -- Changed from V$database to DB_NAME
-	          INTO ln_instance_name
-              FROM dual; 
-			  
         EXCEPTION
             WHEN NO_DATA_FOUND
             THEN
