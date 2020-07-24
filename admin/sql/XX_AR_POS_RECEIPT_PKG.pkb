@@ -33,8 +33,8 @@ AS
 -- |												(Refund Receipt Write-Off')        				     |
 -- | 5.1         21-SEP-2015  John Wilson          Modified the code as per the defect 35802             |
 -- | 5.2         11-NOV-2015  Vasu Raparla          Removed Schema References for R12.2                  |
--- |5.9          30-Apr-2020  Pramod Kumar        NAIT-11880 Rev Rec Code changes
--- |5.10         24-Jul-2020  Pramod Kumar        NAIT-11880 Rev Rec Code changes on top of PROD version-Reverting to old version
+-- |5.3          30-Apr-2020  Pramod Kumar        NAIT-11880 Rev Rec Code changes
+-- |5.4         24-Jul-2020  Pramod Kumar        NAIT-11880 Rev Rec Code changes on top of PROD version-Reverting to old version
 -- +=====================================================================================================+
     PROCEDURE create_summary_receipt(
         errbuf        OUT NOCOPY     VARCHAR2,
@@ -839,89 +839,45 @@ AS
             p_receipt_number :=   p_receipt_number
                                 + 1;
                                 
-           --QC36905
-           BEGIN
-              --Get the source_value3 value 
-              SELECT  v.source_Value3, v.target_value1
-                INTO  p_source_value3, p_target_value1
-                FROM  xx_fin_translatedefinition d, xx_fin_translatevalues v
-              WHERE  d.translate_id = v.translate_id
-                 AND  d.translation_name = 'AR_POS_RECEIPT_METHODS'
-                 AND  v.source_value1 = summary_rec.payment_type_code
-                 AND  v.source_value2 = summary_rec.credit_card_code
-                 AND  v.enabled_flag = 'Y'
-                 AND  d.enabled_flag = 'Y'
-                 AND  SYSDATE BETWEEN v.start_date_active AND NVL(v.end_date_active, SYSDATE);
-              --
-              IF p_debug_flag = 'Y' THEN
-                 fnd_file.put_line(fnd_file.LOG,'DEBUG: AR_POS_RECEIPT_METHODS.Source Value3 : '||p_source_value3 || '  Target_value1' ||p_target_value1);
-              END IF;
-              IF p_source_value3 = 'Y' THEN
-                  p_receipt_method := summary_rec.NAME || p_target_value1 || summary_rec.store_number;
-                  IF p_debug_flag = 'Y' THEN
-                     fnd_file.put_line(fnd_file.LOG,'DEBUG: p_receipt_method : '||p_receipt_method);   
-                  END IF;
-              ELSE
-                 p_receipt_method := summary_rec.NAME || p_target_value1 ;
-                 IF p_debug_flag = 'Y' THEN
-                     fnd_file.put_line(fnd_file.LOG,'DEBUG: In else part p_receipt_method : '||p_receipt_method);
-                 END IF;
-              END IF;
-           EXCEPTION
-              WHEN NO_DATA_FOUND
-              THEN
-                  x_return_flag := 'Y';
-                  x_error_message := SQLERRM;
-                  fnd_file.put_line(fnd_file.LOG,
-                                       'Error - Unable to derive store number flag from translations for store = '
-                                    || summary_rec.store_number
-                                    || ' date = '
-                                    || summary_rec.receipt_date
-                                    || ' payment_type = '
-                                    || summary_rec.payment_type_code
-                                    || ' and credit_card = '
-                                    || summary_rec.credit_card_code
-                                    || ' SQLCODE = '
-                                    || SQLCODE
-                                    || ' error = '
-                                    || x_error_message);
-              WHEN OTHERS
-              THEN
-                  x_return_flag := 'Y';
-                  x_error_message := SQLERRM;
-                  fnd_file.put_line(fnd_file.LOG,
-                                       'Error - Unable to derive store number flag from translations for store = '
-                                    || summary_rec.store_number
-                                    || ' date = '
-                                    || summary_rec.receipt_date
-                                    || ' payment_type = '
-                                    || summary_rec.payment_type_code
-                                    || ' and credit_card = '
-                                    || summary_rec.credit_card_code
-                                    || ' SQLCODE = '
-                                    || SQLCODE
-                                    || ' error = '
-                                    || x_error_message);
-          END;
+		BEGIN
+                IF    summary_rec.payment_type_code = 'CASH'
+                   OR summary_rec.credit_card_code = 'TELECHECK PAPER'
+                THEN
+                    IF summary_rec.credit_card_code = 'PAYPAL'
+                    THEN
+                        lc_store_num := '';
+                    ELSE
+                        lc_store_num := summary_rec.store_number;
+                    END IF;
+                ELSE
+                    lc_store_num := '';
+                END IF;
 
-            BEGIN
-
-                SELECT r.receipt_method_id
-                INTO   p_receipt_method_id
-                FROM   ar_receipt_methods r
-                WHERE  r.NAME =    p_receipt_method
+                SELECT r.receipt_method_id,
+                       r.NAME
+                INTO   p_receipt_method_id,
+                       p_receipt_method
+                FROM   xx_fin_translatedefinition d, xx_fin_translatevalues v, ar_receipt_methods r
+                WHERE  d.translate_id = v.translate_id
+                AND    d.translation_name = 'AR_POS_RECEIPT_METHODS'
+                AND    r.NAME =    summary_rec.NAME
+                                || v.target_value1
+                                || lc_store_num
+                AND    v.source_value1 = summary_rec.payment_type_code
+                AND    v.source_value2 = summary_rec.credit_card_code
+                AND    v.enabled_flag = 'Y'
+                AND    d.enabled_flag = 'Y'
+                AND    SYSDATE BETWEEN v.start_date_active AND NVL(v.end_date_active,
+                                                                   SYSDATE)
                 AND    SYSDATE BETWEEN r.start_date AND NVL(r.end_date,
                                                             SYSDATE);
-                IF p_debug_flag = 'Y' THEN
-                   fnd_file.put_line(fnd_file.LOG,'DEBUG: Getting p_receipt_method_id : '||p_receipt_method_id); 
-                END IF;
             EXCEPTION
                 WHEN NO_DATA_FOUND
                 THEN
                     x_return_flag := 'Y';
                     x_error_message := SQLERRM;
                     fnd_file.put_line(fnd_file.LOG,
-                                         'Error - Receipt Method not found for store = '
+                                         'Error - translation not found for store = '
                                       || summary_rec.store_number
                                       || ' date = '
                                       || summary_rec.receipt_date
@@ -938,7 +894,7 @@ AS
                     x_return_flag := 'Y';
                     x_error_message := SQLERRM;
                     fnd_file.put_line(fnd_file.LOG,
-                                         'Error - Receipt Method Not found-unknown error for store = '
+                                         'Error - translation unknown error for store = '
                                       || summary_rec.store_number
                                       || ' date = '
                                       || summary_rec.receipt_date
