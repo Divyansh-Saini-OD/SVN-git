@@ -332,8 +332,13 @@ public class ODEBillDocumentsCO extends OAControllerImpl
              Boolean s1 = (Boolean)am.invokeMethod("checkDelMethod",num1);
              rowImpl.setFeeflag(s1);
              rowImpl.setFeeoptioncriteria(docType+"-"+"ePDF");
-               feevo.setWhereClause("SOURCE_VALUE2 = '"+"ePDF" +"' AND NVL(SOURCE_VALUE3,'"+docType+"')= NVL('"+docType+"',SOURCE_VALUE3)");
-               feevo.executeQuery();
+             feevo.setWhereClause("SOURCE_VALUE2 = '"+"ePDF" +"' AND NVL(SOURCE_VALUE3,'"+docType+"')= NVL('"+docType+"',SOURCE_VALUE3)");
+             feevo.executeQuery();
+             String defval =(String)am.invokeMethod("getDefaultFee",num1);
+             String defval1 =(String)am.invokeMethod("getDefaultFeeFV",num1);
+             rowImpl.setFeeoptionfv(defval);
+             rowImpl.setFeeOption(defval1);
+             
            }
            //Added By Rafi on 31-Aug-2018 for SKU Level Tax to default ePDF Dely Method for Defect #NAIT-58403 - END 
             //Added by Reddy Sekhar K on 11-Sept-2018 for the eBill Central Requirement NAIT-56624 --Start
@@ -362,6 +367,10 @@ public class ODEBillDocumentsCO extends OAControllerImpl
                 rowImpl.setFeeoptioncriteria(docType+"-"+"ePDF");
                 feevo.setWhereClause("SOURCE_VALUE2 = '"+"ePDF" +"' AND NVL(SOURCE_VALUE3,'"+docType+"')= NVL('"+docType+"',SOURCE_VALUE3)");
                 feevo.executeQuery();
+                String defval =(String)am.invokeMethod("getDefaultFee",num1);
+                String defval1 =(String)am.invokeMethod("getDefaultFeeFV",num1);
+                rowImpl.setFeeoptionfv(defval);
+                rowImpl.setFeeOption(defval1);
             }
              else{                     
                     rowImpl.setDeliverymethod("Case2");
@@ -375,6 +384,10 @@ public class ODEBillDocumentsCO extends OAControllerImpl
                      rowImpl.setFeeoptioncriteria(docType+"-"+"ePDF");
                      feevo.setWhereClause("SOURCE_VALUE2 = '"+"ePDF" +"' AND NVL(SOURCE_VALUE3,'"+docType+"')= NVL('"+docType+"',SOURCE_VALUE3)");
                      feevo.executeQuery();
+                     String defval =(String)am.invokeMethod("getDefaultFee",num1);
+                     String defval1 =(String)am.invokeMethod("getDefaultFeeFV",num1);
+                     rowImpl.setFeeoptionfv(defval);
+                     rowImpl.setFeeOption(defval1);
              }  
                           rowImpl.setBcPodFlag("N");
                         rowImpl.setAttribute("Bcpodcase","case4");
@@ -599,14 +612,17 @@ public class ODEBillDocumentsCO extends OAControllerImpl
     //AddRow
     //PPR for Dely me1thod Change
     if ( "DelyMtdUpdate".equals(pageContext.getParameter(OAWebBeanConstants.EVENT_PARAM)))
-                                                      {
+        {
         String rowRef1 = pageContext.getParameter(OAWebBeanConstants.EVENT_SOURCE_ROW_REFERENCE);
         ODEbillCustDocVORowImpl rowImpl1= (ODEbillCustDocVORowImpl)am.findRowByRef(rowRef1);
         // Added by Divyansh for NAIT-129167
+        System.out.println("rowRef1 "+rowRef1);
         String printType =rowImpl1.getCExtAttr3();
         String docType =rowImpl1.getCExtAttr1();
         Serializable num[]={docType,printType};
         Boolean s = (Boolean)am.invokeMethod("checkDelMethod",num);
+        rowImpl1.setAttribute("FeeOption",null);
+        rowImpl1.setAttribute("Feeoptionfv",null);
         rowImpl1.setFeeflag(s);
         rowImpl1.setFeeoptioncriteria(docType+"-"+printType);
         if(!s){
@@ -618,11 +634,6 @@ public class ODEBillDocumentsCO extends OAControllerImpl
              rowImpl1.setFeeoptionfv(defval);
             String defval1 =(String)am.invokeMethod("getDefaultFeeFV",prm);
             rowImpl1.setFeeOption(defval1);
-        }
-        else
-        {
-            rowImpl1.setAttribute("Feeoptionfv",null);
-            rowImpl1.setAttribute("FeeOption",null);
         }
         
         // Ended by Divyansh for NAIT-129167
