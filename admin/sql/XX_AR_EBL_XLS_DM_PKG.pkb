@@ -711,11 +711,9 @@ create or replace PACKAGE BODY XX_AR_EBL_XLS_DM_PKG
 																	from (select listagg(customer_trx_id,'','') within group(order by cust_doc_id) dt from dual)
 																	connect by level <= length(regexp_replace(dt,''[^,]*''))+1))))'||',';
 						   execute immediate lv_upd_str1;
-						elsif lc_fee_option = 1008 THEN
+						else
 						   execute immediate lv_upd_str1;
 						   execute immediate lv_upd_str;
-						   lc_hide_flag :='Y';
-						else 
 						   lc_hide_flag :='Y';
 						end if;
 				  END IF;
@@ -765,9 +763,11 @@ create or replace PACKAGE BODY XX_AR_EBL_XLS_DM_PKG
 				  lc_select_var_cols     := lc_select_var_cols || '''' || REPLACE(lc_get_summary_fields_info.cons_val,'''','''''') || '''' || ',';
 			  --End
 			  END IF;
-			  lc_summary_insert_col_name := lc_summary_insert_col_name||lc_column||ln_count||',';
-			  lc_summary_value_fid := lc_summary_value_fid||lc_get_summary_fields_info.field_id||',';
-			  ln_count := ln_count + 1;
+			  IF lc_hide_flag = 'N' THEN
+				  lc_summary_insert_col_name := lc_summary_insert_col_name||lc_column||ln_count||',';
+				  lc_summary_value_fid := lc_summary_value_fid||lc_get_summary_fields_info.field_id||',';
+				  ln_count := ln_count + 1;
+              END IF;
 			END LOOP;
 
 			lc_summary_insert_col_name := lc_insert_summary_const_cols||SUBSTR(lc_summary_insert_col_name,1,length(lc_summary_insert_col_name)-1)||')';
@@ -821,7 +821,8 @@ create or replace PACKAGE BODY XX_AR_EBL_XLS_DM_PKG
 
              FOR lc_get_all_field_info IN lcu_get_all_field_info(lc_get_dist_docid)
              LOOP
-			    lc_value_fid := lc_value_fid || lc_get_all_field_info.field_id || ','; -- To concatenate the field id's for inserting the FID row
+			    lc_hide_flag :='N';
+				lc_value_fid := lc_value_fid || lc_get_all_field_info.field_id || ','; -- To concatenate the field id's for inserting the FID row
                 -- Framing the query to select from header table if the field id configured is a header level information
                 IF (LOWER(lc_get_all_field_info.tab_name) = 'header') THEN
                    lc_err_location_msg := 'Framing SQL for fetching from stagging header table';
@@ -930,14 +931,9 @@ create or replace PACKAGE BODY XX_AR_EBL_XLS_DM_PKG
                          lc_select_var_cols := lc_select_var_cols||' XX_AR_EBL_COMMON_UTIL_PKG.get_hea_fee_amount(hdr.customer_trx_id )+ XX_AR_EBL_COMMON_UTIL_PKG.get_line_fee_amount(hdr.customer_trx_id),';
                          lc_select_non_dt   := lc_select_non_dt ||' XX_AR_EBL_COMMON_UTIL_PKG.get_hea_fee_amount(hdr.customer_trx_id )+ XX_AR_EBL_COMMON_UTIL_PKG.get_line_fee_amount(hdr.customer_trx_id),';
                        execute immediate lv_upd_str1;
-                    elsif lc_fee_option = 1008 THEN
+                    else
                        execute immediate lv_upd_str;
                        execute immediate lv_upd_str1;					   
-                       lc_hide_flag :='Y';
-                       select replace (lc_value_fid,lc_get_all_field_info.field_id || ',','')
-                         INTO lc_value_fid
-                       FROM DUAL;
-					else					
                        lc_hide_flag :='Y';
                        select replace (lc_value_fid,lc_get_all_field_info.field_id || ',','')
                          INTO lc_value_fid
@@ -1065,8 +1061,10 @@ create or replace PACKAGE BODY XX_AR_EBL_XLS_DM_PKG
 				   END IF;
    			    --CG End
 
-                   lc_insert_col_name_ndt := lc_insert_col_name_ndt || lc_column || ln_inc || ',';
-                   lc_insert_col_name := lc_insert_col_name || lc_column || ln_inc || ','; -- To frame column names of staging table like (column1,column2)
+                   IF lc_hide_flag = 'N' THEN
+					   lc_insert_col_name_ndt := lc_insert_col_name_ndt || lc_column || ln_inc || ',';
+					   lc_insert_col_name := lc_insert_col_name || lc_column || ln_inc || ','; -- To frame column names of staging table like (column1,column2)
+                   END IF;
                 -- Framing the query to select from detail table if the field id configured is a line level information
                 ELSIF (LOWER(lc_get_all_field_info.tab_name) = 'lines') THEN
                    lc_err_location_msg := 'Framing SQL for fetching from stagging detail table';

@@ -5945,14 +5945,14 @@ BEGIN
 	 ln_fee_amount      := 0;
 
 	 BEGIN
-          SELECT NVL(sum(RCTL.unit_selling_price*
+      SELECT NVL(sum(RCTL.unit_selling_price*
 						 CASE WHEN aps.class = 'CM' THEN rctl.quantity_credited
 						 else NVL(rctl.quantity_ordered,rctl.quantity_invoiced) end
 						 ),0) FEE_AMT
 		    INTO ln_fee_amount
-			FROM ra_customer_trx_lines_All RCTL
-				 ,fnd_lookup_values flv
-                 ,ar_payment_schedules_all aps
+			  FROM ra_customer_trx_lines_All RCTL
+				     ,fnd_lookup_values flv
+             ,ar_payment_schedules_all aps
 		   WHERE 1=1
 			 AND flv.lookup_type = 'OD_FEES_ITEMS'
 			 AND flv.LANGUAGE='US'
@@ -6001,12 +6001,12 @@ BEGIN
 	 ln_fee_amount      := 0;
 
 	 BEGIN
-          SELECT NVL(sum(RCTL.unit_selling_price*
+      SELECT NVL(sum(RCTL.unit_selling_price*
 						 CASE WHEN aps.class = 'CM' THEN rctl.quantity_credited
 						 else NVL(rctl.quantity_ordered,rctl.quantity_invoiced) end
 						 ),0) FEE_AMT
 		    INTO ln_fee_amount
-			FROM ra_customer_trx_lines_All RCTL
+			  FROM ra_customer_trx_lines_All RCTL
 				    ,fnd_lookup_values flv
 					,ar_payment_schedules_all aps
 		   WHERE 1=1
@@ -6204,10 +6204,166 @@ WHEN OTHERS	THEN
 	RETURN(ln_fee_option);
 END;
 
+FUNCTION get_fee_option (p_cust_doc_id IN NUMBER,
+                         p_mbs_doc_type  IN VARCHAR2,
+						 p_cust_account_id IN NUMBER,
+						 p_del_method IN VARCHAR2 default 'ePDF',
+             p_cons_inv_id IN NUMBER,
+             p_customer_trx_id IN NUMBER) RETURN NUMBER IS
 
-FUNCTION get_softhdr_amount(p_line_type IN VARCHAR2,p_sft_text IN VARCHAR2,p_cons_id IN NUMBER,p_cust_doc_id IN NUMBER) RETURN NUMBER IS
+ln_attr_group_id NUMBER := 0;
+ln_fee_option    NUMBER := 0;
+ln_cust_doc_id   NUMBER :=0;
+BEGIN
+
+ln_cust_doc_id:= p_cust_doc_id;
+	BEGIN
+		SELECT attr_group_id
+		INTO   ln_attr_group_id
+		FROM   ego_attr_groups_v
+		WHERE  attr_group_type = 'XX_CDH_CUST_ACCOUNT'
+		AND    attr_group_name = 'BILLDOCS' ;
+	 EXCEPTION
+		WHEN NO_DATA_FOUND THEN
+		   ln_attr_group_id := 0;
+		WHEN OTHERS THEN
+		   ln_attr_group_id := 0;
+	 END;
+   IF ln_cust_doc_id IS NULL AND p_cons_inv_id IS NOT NULL THEN
+     BEGIN
+      SELECT cust_doc_id
+        INTO ln_cust_doc_id
+        FROM xx_ar_ebl_cons_hdr_hist
+       WHERE cons_inv_id = p_cons_inv_id
+         AND customer_trx_id = p_customer_trx_id
+         AND billdocs_delivery_method = 'ePDF' 
+         AND DOCUMENT_TYPE = 'Paydoc'
+         AND exists (SELECT 1
+                       FROM xx_cdh_cust_acct_ext_b
+                      WHERE n_ext_attr2 = cust_doc_id
+                        AND d_ext_attr2 is null);
+     EXCEPTION
+        WHEN NO_DATA_FOUND THEN
+           ln_cust_doc_id := null;
+        WHEN OTHERS THEN
+           ln_cust_doc_id := null;
+       END;
+   END IF;
+   
+   IF ln_cust_doc_id IS NULL AND p_customer_trx_id IS NOT NULL THEN
+   
+     BEGIN
+      SELECT cust_doc_id
+        INTO ln_cust_doc_id
+        FROM (
+          SELECT cust_doc_id
+            FROM xx_ar_ebl_cons_hdr_hist
+           WHERE customer_trx_id = p_customer_trx_id
+             AND billdocs_delivery_method = 'ePDF' 
+             AND DOCUMENT_TYPE = 'Paydoc'
+             AND exists (SELECT 1
+                           FROM xx_cdh_cust_acct_ext_b
+                          WHERE n_ext_attr2 = cust_doc_id
+                            AND d_ext_attr2 is null)
+             AND rownum=1
+          UNION
+          SELECT cust_doc_id
+            FROM xx_ar_ebl_ind_hdr_hist
+           WHERE customer_trx_id = p_customer_trx_id
+             AND billdocs_delivery_method = 'ePDF' 
+             AND DOCUMENT_TYPE = 'Paydoc'
+             AND exists (SELECT 1
+                           FROM xx_cdh_cust_acct_ext_b
+                          WHERE n_ext_attr2 = cust_doc_id
+                            AND d_ext_attr2 is null)
+             AND rownum=1 );
+     EXCEPTION
+        WHEN NO_DATA_FOUND THEN
+           ln_cust_doc_id := null;
+        WHEN OTHERS THEN
+           ln_cust_doc_id := null;
+       END;
+   
+   END IF;
+
+	BEGIN
+		 SELECT NVL(fee_option,0)
+		   INTO ln_fee_option
+		   FROM xx_cdh_cust_acct_ext_b
+		  WHERE n_ext_attr2   = ln_cust_doc_id
+		    AND d_ext_attr2 is null
+			and c_ext_attr1 = NVL(p_mbs_doc_type,c_ext_attr1)
+			AND attr_group_id = ln_attr_group_id
+			AND rownum =1;
+	 EXCEPTION
+		WHEN NO_DATA_FOUND THEN
+		   ln_fee_option := -1;
+		WHEN OTHERS THEN
+		   ln_fee_option := 0;
+	 END;
+
+   IF ln_fee_option = -1 THEN
+      BEGIN
+		 SELECT NVL(fee_option,0)
+		   INTO ln_fee_option
+		   FROM xx_cdh_cust_acct_ext_b
+		  WHERE cust_account_id   = p_cust_account_id
+			AND c_ext_attr3 = p_del_method
+			AND attr_group_id = ln_attr_group_id
+      and c_ext_attr1 = p_mbs_doc_type
+			AND c_ext_attr16 = 'COMPLETE'
+      AND C_EXT_ATTR2 = 'Y' --paydoc
+			AND d_ext_attr2 is null
+			AND d_ext_attr1 = (select max(d_ext_attr1)
+			                     FROM xx_cdh_cust_acct_ext_b
+			                     WHERE cust_account_id   = p_cust_account_id
+								   AND c_ext_attr3 = p_del_method
+								   AND attr_group_id = ln_attr_group_id
+                   and c_ext_attr1 = p_mbs_doc_type
+								   AND c_ext_attr16 = 'COMPLETE'
+                   AND C_EXT_ATTR2 = 'Y' --paydoc
+								   AND d_ext_attr2 is null);
+	 EXCEPTION
+		WHEN NO_DATA_FOUND THEN
+		   ln_fee_option := 0;
+		WHEN OTHERS THEN
+		   ln_fee_option := 0;
+	 END;
+   END IF;
+
+return ln_fee_option;
+
+EXCEPTION
+WHEN OTHERS	THEN
+  FND_FILE.PUT_LINE(FND_FILE.LOG,'Error while returning fee_option in get_fee_option : '||Sqlerrm);
+	RETURN(ln_fee_option);
+END;
+
+
+-- +===================================================================================+
+-- |                  Office Depot - Project Simplify                                  |
+-- +===================================================================================+
+-- | Name        : get_softhdr_amount                                                  |
+-- | Description : To get Soft Header Amount for particular transaction                |
+-- |                                                                                   |
+-- |                                                                                   |
+-- |                                                                                   |
+-- |Change Record:                                                                     |
+-- |===============                                                                    |
+-- |Version   Date          Author              Remarks                                |
+-- |=======   ==========   =============        =======================================|
+-- | 1.0      23-JUN-2020  Divyansh Saini       Initial draft version                  |
+-- +===================================================================================+
+FUNCTION get_softhdr_amount(p_line_type IN VARCHAR2
+                            ,p_sft_text IN VARCHAR2
+                            ,p_cons_id IN NUMBER
+                            ,p_cust_doc_id IN NUMBER
+                            ,p_request_id IN NUMBER
+							              ,p_customer_trx_id IN VARCHAR2) RETURN NUMBER IS
 ln_fee_amount NUMBER :=0;
 lv_sft_txt    VARCHAR2(100);
+lv_where      VARCHAR2(100);
+lv_sql        VARCHAR2(2000);
 BEGIN
 
    IF p_line_type = 'BILL_TO_TOTAL' THEN
@@ -6219,12 +6375,22 @@ BEGIN
       SELECT trim(substr(p_sft_text,INSTR(p_sft_text,':')+1))
         INTO lv_sft_txt
         FROM DUAL;
+		
         IF lv_sft_txt IS NOT NULL THEN
-           SELECT NVL(SUM(XX_AR_EBL_COMMON_UTIL_PKG.get_line_fee_amount(customer_trx_id) + XX_AR_EBL_COMMON_UTIL_PKG.get_hea_fee_amount(customer_trx_id)),0)
-             INTO ln_fee_amount
-             FROM xx_ar_ebl_cons_hdr_main
-            WHERE cons_inv_id = p_cons_id and cust_doc_id = p_cust_doc_id
-              AND COST_CENTER_SFT_DATA = lv_sft_txt;
+           
+		   		SELECT DECODE(lv_sft_txt,sfdata1, ' AND sfdata1 = '''||sfdata1||'''',
+			                     sfdata2, ' AND sfdata1 = '''||sfdata1||''' AND sfdata2='''||sfdata2||'''',
+								 sfdata3, ' AND sfdata1 = '''||sfdata1||''' AND sfdata2='''||sfdata2||''' AND sfdata3='''||sfdata3||'''',
+								 sfdata4, ' AND sfdata1 = '''||sfdata1||''' AND sfdata2='''||sfdata2||''' AND sfdata3='''||sfdata3||''' AND sfdata4='''||sfdata4||'''',
+								 sfdata5, ' AND sfdata1 = '''||sfdata1||''' AND sfdata2='''||sfdata2||''' AND sfdata3='''||sfdata3||''' AND sfdata4='''||sfdata4||''' AND sfdata5='''||sfdata5||'''',
+								 sfdata6, ' AND sfdata1 = '''||sfdata1||''' AND sfdata2='''||sfdata2||''' AND sfdata3='''||sfdata3||''' AND sfdata4='''||sfdata4||''' AND sfdata5='''||sfdata5||'''AND sfdata6='''||sfdata6||'''')
+				  INTO lv_where
+				  FROM XXFIN.xx_ar_ebl_cons_trx_stg 
+				 WHERE request_id = p_request_id and CUSTOMER_TRX_ID = p_customer_trx_id
+				   AND INV_TYPE not in ('SOFTHDR_TOTALS','BILLTO_TOTALS','GRAND_TOTAL');	
+		   
+		   lv_sql := 'SELECT NVL(SUM(XX_AR_EBL_COMMON_UTIL_PKG.get_line_fee_amount(customer_trx_id) + XX_AR_EBL_COMMON_UTIL_PKG.get_hea_fee_amount(customer_trx_id)),0) FROM xx_ar_ebl_cons_trx_stg where request_id = '||p_request_id||' AND INV_TYPE not in (''SOFTHDR_TOTALS'',''BILLTO_TOTALS'',''GRAND_TOTAL'')'||lv_where;
+		   EXECUTE IMMEDIATE lv_sql INTO ln_fee_amount;
         ELSIF   lv_sft_txt IS NULL THEN
            SELECT NVL(SUM(XX_AR_EBL_COMMON_UTIL_PKG.get_line_fee_amount(customer_trx_id) + XX_AR_EBL_COMMON_UTIL_PKG.get_hea_fee_amount(customer_trx_id)),0)
              INTO ln_fee_amount
@@ -6239,6 +6405,67 @@ BEGIN
 EXCEPTION WHEN OTHERS THEN
 return 0;
 END;
+-- +===================================================================================+
+-- |                  Office Depot - Project Simplify                                  |
+-- +===================================================================================+
+-- | Name        : get_softhdr_rep_amount                                              |
+-- | Description : To get Soft Header Amount for reprint    transaction                |
+-- |                                                                                   |
+-- |                                                                                   |
+-- |                                                                                   |
+-- |Change Record:                                                                     |
+-- |===============                                                                    |
+-- |Version   Date          Author              Remarks                                |
+-- |=======   ==========   =============        =======================================|
+-- | 1.0      23-JUN-2020  Divyansh Saini       Initial draft version                  |
+-- +===================================================================================+
+FUNCTION get_softhdr_rep_amount(p_line_type IN VARCHAR2,p_sft_text IN VARCHAR2,p_cons_id IN NUMBER
+                                ,p_request_id IN NUMBER
+							    ,p_customer_trx_id IN VARCHAR2) RETURN NUMBER IS
+ln_fee_amount NUMBER :=0;
+lv_sft_txt    VARCHAR2(100);
+lv_where      VARCHAR2(100);
+lv_sql        VARCHAR2(2000);
+BEGIN
+
+   IF p_line_type = 'BILL_TO_TOTAL' THEN
+       SELECT NVL(SUM(XX_AR_EBL_COMMON_UTIL_PKG.get_line_fee_amount(customer_trx_id) + XX_AR_EBL_COMMON_UTIL_PKG.get_hea_fee_amount(customer_trx_id)),0)
+         INTO ln_fee_amount
+         FROM (SELECT DISTINCT attribute3 customer_trx_id
+		 FROM xx_ar_cbi_rprn_rows
+        WHERE request_id = p_request_id 
+		  AND cons_inv_id = p_cons_id
+		  AND LINE_TYPE not in ('SOFTHDR_TOTALS','BILLTO_TOTALS','GRAND_TOTAL'));
+   ELSIF p_line_type = 'SOFTHDR_TOTAL' THEN
+      SELECT trim(substr(p_sft_text,INSTR(p_sft_text,':')+1))
+        INTO lv_sft_txt
+        FROM DUAL;
+		
+        IF lv_sft_txt IS NOT NULL THEN
+           
+		   		SELECT DECODE(lv_sft_txt,sfdata1, ' AND sfdata1 = '''||sfdata1||'''',
+			                     sfdata2, ' AND sfdata1 = '''||sfdata1||''' AND sfdata2='''||sfdata2||'''',
+								 sfdata3, ' AND sfdata1 = '''||sfdata1||''' AND sfdata2='''||sfdata2||''' AND sfdata3='''||sfdata3||'''',
+								 sfdata4, ' AND sfdata1 = '''||sfdata1||''' AND sfdata2='''||sfdata2||''' AND sfdata3='''||sfdata3||''' AND sfdata4='''||sfdata4||'''',
+								 sfdata5, ' AND sfdata1 = '''||sfdata1||''' AND sfdata2='''||sfdata2||''' AND sfdata3='''||sfdata3||''' AND sfdata4='''||sfdata4||''' AND sfdata5='''||sfdata5||'''')
+				  INTO lv_where
+				  FROM xx_ar_cbi_rprn_rows
+				 WHERE request_id = p_request_id and attribute3 = p_customer_trx_id
+				   AND LINE_TYPE not in ('SOFTHDR_TOTALS','BILLTO_TOTALS','GRAND_TOTAL');	
+		   
+		   lv_sql := 'SELECT NVL(SUM(XX_AR_EBL_COMMON_UTIL_PKG.get_line_fee_amount(customer_trx_id) + XX_AR_EBL_COMMON_UTIL_PKG.get_hea_fee_amount(customer_trx_id)),0) FROM xx_ar_cbi_rprn_rows where request_id = '||p_request_id||' AND LINE_TYPE not in (''SOFTHDR_TOTALS'',''BILLTO_TOTALS'',''GRAND_TOTAL'')'||lv_where;
+		   EXECUTE IMMEDIATE lv_sql INTO ln_fee_amount;
+        ELSIF   lv_sft_txt IS NULL THEN
+             ln_fee_amount := 0;
+        END IF;
+    END IF;
+
+    return ln_fee_amount;
+
+EXCEPTION WHEN OTHERS THEN
+return 0;
+END;
+
 
 END XX_AR_EBL_COMMON_UTIL_PKG;
 /

@@ -471,7 +471,7 @@ AS
 		ln_total NUMBER :=0;
 	BEGIN
 
-		SELECT XX_AR_EBL_COMMON_UTIL_PKG.get_hea_fee_amount(customer_trx_id) + XX_AR_EBL_COMMON_UTIL_PKG.get_line_fee_amount(customer_trx_id)
+		SELECT sum(XX_AR_EBL_COMMON_UTIL_PKG.get_hea_fee_amount(customer_trx_id) + XX_AR_EBL_COMMON_UTIL_PKG.get_line_fee_amount(customer_trx_id))
 		  INTO ln_total
 		  FROM
 		   (SELECT distinct customer_trx_id 

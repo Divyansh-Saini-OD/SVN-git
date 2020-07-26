@@ -1004,7 +1004,9 @@ IS
 	    lv_fee_option:= 0;
 	  END;
 	  --Added for 1.19
-	  IF lv_fee_option != 1009 AND UPPER(lc_get_header_fields_info.spl_function) = 'XX_AR_EBL_TXT_SPL_LOGIC_PKG.GET_FEE_AMOUNT' THEN
+	  IF lv_fee_option = 1010 AND UPPER(lc_get_header_fields_info.spl_function) = 'XX_AR_EBL_TXT_SPL_LOGIC_PKG.GET_FEE_AMOUNT' THEN
+	    lv_hide_flag := 'N';
+	  ELSIF UPPER(lc_get_header_fields_info.spl_function) = 'XX_AR_EBL_TXT_SPL_LOGIC_PKG.GET_FEE_AMOUNT' THEN
 	    lv_hide_flag := 'Y';
 	  END IF;
 	  --End for 1.19  
@@ -1898,6 +1900,8 @@ IS
     --end Added by Aniket CG 15 May #NAIT-29364
 	  lv_fee_option    NUMBER := 0;
 	  lv_hide_flag     VARCHAR2(200);
+  	lv_upd_str     VARCHAR2(2000) := NULL;
+    lv_upd_str1    VARCHAR2(2000) := NULL;
   BEGIN
     IF (p_debug_flag = 'Y') THEN
       lb_debug_flag := TRUE;
@@ -1953,9 +1957,32 @@ IS
               lc_summary_group_cols := lc_summary_group_cols || 'TO_CHAR(hdr.' || lc_get_summary_fields_info.col_name || ',''YYYY-MM-DD''),';
             END IF;
           ELSE
-            IF lc_get_summary_fields_info.summary_field = 'Y' THEN
+            IF lc_get_summary_fields_info.summary_field = 'Y' AND lc_get_summary_fields_info.field_id != 11142 THEN
               lc_select_var_cols                       := lc_select_var_cols||'SUM(hdr.'||lc_get_summary_fields_info.col_name||'),';
-            ELSE
+            --Added for 1.19
+			ELSIF lc_get_summary_fields_info.summary_field = 'Y' AND lc_get_summary_fields_info.field_id = 11142 THEN
+              lv_upd_str := 'update xx_ar_ebl_cons_hdr_main set TOTAL_MISCELLANEOUS_AMOUNT = TOTAL_MISCELLANEOUS_AMOUNT + (XX_AR_EBL_COMMON_UTIL_PKG.get_hea_fee_amount(customer_trx_id )+ XX_AR_EBL_COMMON_UTIL_PKG.get_line_fee_amount(customer_trx_id)) WHERE file_id = '||p_file_id||' AND cust_doc_id = '||p_cust_doc_id||' AND batch_id = '||p_batch_id;
+              lv_upd_str1 := 'update xx_ar_ebl_cons_hdr_main set SKU_LINES_SUBTOTAL = SKU_LINES_SUBTOTAL - (XX_AR_EBL_COMMON_UTIL_PKG.get_hea_fee_amount(customer_trx_id )+ XX_AR_EBL_COMMON_UTIL_PKG.get_line_fee_amount(customer_trx_id)) WHERE file_id = '||p_file_id||' AND cust_doc_id = '||p_cust_doc_id||' AND batch_id = '||p_batch_id;
+			  XX_AR_EBL_COMMON_UTIL_PKG.PUT_LOG_LINE(lb_debug_flag ,TRUE ,'In summary Fee ' );
+			  IF lv_fee_option =1010 THEN
+			     
+			     lc_select_var_cols                       := lc_select_var_cols||'sum((
+																	SELECT XX_AR_EBL_COMMON_UTIL_PKG.get_hea_fee_amount(TRX )+ XX_AR_EBL_COMMON_UTIL_PKG.get_line_fee_amount(TRX)
+																	FROM ((select REGEXP_SUBSTR (dt, ''[^,]+'', 1, level) as TRX
+																	from (select listagg(customer_trx_id,'','') within group(order by cust_doc_id) dt from dual)
+																	connect by level <= length(regexp_replace(dt,''[^,]*''))+1))))'||',';
+			     lv_hide_flag := 'N';
+				 execute immediate lv_upd_str1;
+				 XX_AR_EBL_COMMON_UTIL_PKG.PUT_LOG_LINE(lb_debug_flag ,TRUE ,'Fee no Hide ' );
+			   ELSE
+                 lv_hide_flag := 'Y';
+				 XX_AR_EBL_COMMON_UTIL_PKG.PUT_LOG_LINE(lb_debug_flag ,TRUE ,'Fee hide lv_upd_str1'||lv_upd_str1||' lv_upd_str '||lv_upd_str );
+				 execute immediate lv_upd_str1;
+                 execute immediate lv_upd_str;
+			     
+			  END IF;
+			  --End for 1.19
+			ELSE
               lc_select_var_cols    := lc_select_var_cols||'hdr.'||lc_get_summary_fields_info.col_name||',';
               lc_summary_group_cols := lc_summary_group_cols ||'hdr.'|| lc_get_summary_fields_info.col_name || ',';
             END IF;
@@ -2005,11 +2032,6 @@ IS
 
             EXECUTE IMMEDIATE lc_function INTO lc_function_return;
             lc_select_var_cols := lc_select_var_cols||lc_function_return||',';
-              --Added for 1.19
-			  IF lv_fee_option != 1009 AND UPPER(lc_get_summary_fields_info.spl_function) = 'XX_AR_EBL_TXT_SPL_LOGIC_PKG.GET_FEE_AMOUNT' THEN
-				lv_hide_flag := 'Y';
-			  END IF;
-			  --End for 1.19
 		  ELSE
             lc_select_var_cols := lc_select_var_cols||'NULL'||',';
             -- Checking to print line number field is selected for the cust doc id.
@@ -2492,7 +2514,7 @@ IS
             END IF;
             IF (LOWER(lc_get_dtl_fields_info.tab_name) = 'header') THEN
               --- Added by Punit for Req# 2302 and Defect# 41733 in SIT03 on 15-APR-2017
-              IF (UPPER(lc_get_dtl_fields_info.record_type) = 'LINE') THEN
+              IF (UPPER(lc_get_dtl_fields_info.record_type) = 'LINE') AND lc_get_dtl_fields_info.field_id != 11142 THEN
 			  --- Code added by Punit on 10-OCT-2017 for the Production Defect# 42877
 			    IF (UPPER(lc_get_dtl_fields_info.data_type) = 'DATE') THEN
                   lc_select_non_dt := lc_select_non_dt || 'TO_CHAR(hdr.' || lc_get_dtl_fields_info.col_name || ',''YYYY-MM-DD''),';
@@ -2506,7 +2528,23 @@ IS
               END IF;
               IF (UPPER(lc_get_dtl_fields_info.data_type) = 'DATE') THEN
                 lc_select_var_cols                       := lc_select_var_cols || 'TO_CHAR(hdr.' || lc_get_dtl_fields_info.col_name || ',''YYYY-MM-DD''),';
-              ELSE
+               --Added for 1.19
+			  ELSIF lc_get_dtl_fields_info.field_id = 11142 THEN
+				  lv_upd_str := 'update xx_ar_ebl_cons_hdr_main set TOTAL_MISCELLANEOUS_AMOUNT = TOTAL_MISCELLANEOUS_AMOUNT + (XX_AR_EBL_COMMON_UTIL_PKG.get_hea_fee_amount(customer_trx_id )+ XX_AR_EBL_COMMON_UTIL_PKG.get_line_fee_amount(customer_trx_id)) WHERE file_id = '||p_file_id||' AND cust_doc_id = '||p_cust_doc_id||' AND batch_id = '||p_batch_id;
+				  lv_upd_str1 := 'update xx_ar_ebl_cons_hdr_main set SKU_LINES_SUBTOTAL = SKU_LINES_SUBTOTAL - (XX_AR_EBL_COMMON_UTIL_PKG.get_hea_fee_amount(customer_trx_id )+ XX_AR_EBL_COMMON_UTIL_PKG.get_line_fee_amount(customer_trx_id)) WHERE file_id = '||p_file_id||' AND cust_doc_id = '||p_cust_doc_id||' AND batch_id = '||p_batch_id;
+				  IF lv_fee_option =1010 THEN
+					 
+					 lc_select_var_cols := lc_select_var_cols||'(XX_AR_EBL_COMMON_UTIL_PKG.get_hea_fee_amount(hdr.customer_trx_id )+ XX_AR_EBL_COMMON_UTIL_PKG.get_line_fee_amount(hdr.customer_trx_id))'||',';
+					 lv_hide_flag := 'N';
+					 execute immediate lv_upd_str1;
+				   ELSE
+					 lv_hide_flag := 'Y';
+					 execute immediate lv_upd_str1;
+					 execute immediate lv_upd_str;
+					 
+			  END IF;
+			  --End for 1.19
+			  ELSE
                 lc_select_var_cols := lc_select_var_cols||'hdr.'||lc_get_dtl_fields_info.col_name||',';
               END IF;
             ELSIF (LOWER(lc_get_dtl_fields_info.tab_name) = 'lines') THEN
@@ -2643,11 +2681,6 @@ IS
                 EXECUTE IMMEDIATE lc_function INTO lc_function_return;
                 lc_select_var_cols := lc_select_var_cols||lc_function_return||',';
               
-			    --Added for 1.19
-				IF lv_fee_option != 1009 AND UPPER(lc_get_dtl_fields_info.spl_function) = 'XX_AR_EBL_TXT_SPL_LOGIC_PKG.GET_FEE_AMOUNT' THEN
-				   lv_hide_flag := 'Y';
-			    END IF;
-				--End for 1.19
 			  ELSE
 			   --Added 2 Values in  by Aniket CG 15 May #NAIT-29364
                 IF UPPER(lc_get_dtl_fields_info.col_name) NOT IN ('SIGN','DC_INDICATOR','ORIG_INV_AMT_DB' , 'ORIG_INV_AMT_CR','EXT_PRICE_DB' ,'EXT_PRICE_CR')  THEN -- Added by Punit CG on 17th Aug 2017 for Defect # 40174
@@ -2859,10 +2892,15 @@ IS
                   p_dtl_error_flag := 'Y';
                   p_dtl_error_msg  := lc_err_location_msg;
                 END;
-                IF (ln_repeat_cnt        = 1 AND (UPPER(lc_get_dtl_fields_info.col_name) NOT IN ('TOTAL_US_TAX_AMOUNT','TOTAL_FREIGHT_AMOUNT','TOTAL_MISCELLANEOUS_AMOUNT'))) THEN
+                XX_AR_EBL_COMMON_UTIL_PKG.PUT_LOG_LINE(lb_debug_flag ,TRUE ,'lc_get_dtl_fields_info.col_name '||lc_get_dtl_fields_info.col_name );
+				IF (ln_repeat_cnt        = 1 AND (UPPER(lc_get_dtl_fields_info.col_name) NOT IN ('TOTAL_US_TAX_AMOUNT','TOTAL_FREIGHT_AMOUNT','TOTAL_MISCELLANEOUS_AMOUNT','TOTAL_FEE_AMOUNT'))) THEN
                   lc_get_total_amt_cols := lc_get_total_amt_cols || ' ' || lc_column || ln_count || ' = ' ||''''||ln_total_default||''''||',';
                   ln_update_cnt         := 1;
-                ELSIF (ln_repeat_cnt     = 1 AND (UPPER(lc_get_dtl_fields_info.col_name) = 'TOTAL_US_TAX_AMOUNT')) THEN
+                ELSIF (ln_repeat_cnt        = 1 AND (UPPER(lc_get_dtl_fields_info.col_name) IN ('TOTAL_FEE_AMOUNT')) AND lv_hide_flag = 'N') THEN
+                  lc_get_total_amt_cols := lc_get_total_amt_cols || ' ' || lc_column || ln_count || ' = ' ||''''||ln_total_default||''''||',';
+				  XX_AR_EBL_COMMON_UTIL_PKG.PUT_LOG_LINE(lb_debug_flag ,TRUE ,'lc_get_dtl_fields_info.lv_hide_flag '||lv_hide_flag);
+                  ln_update_cnt         := 1;
+				ELSIF (ln_repeat_cnt     = 1 AND (UPPER(lc_get_dtl_fields_info.col_name) = 'TOTAL_US_TAX_AMOUNT')) THEN
                   lc_tax_col            := lc_column || ln_count;
                   lc_tax_amt            := lc_tax_col || ' = DECODE(rec_type,''TX'','||lc_tax_col||','||''''||ln_total_default||''''||')' ;
                 ELSIF (ln_repeat_cnt     = 1 AND (UPPER(lc_get_dtl_fields_info.col_name) = 'TOTAL_FREIGHT_AMOUNT')) THEN
@@ -3012,9 +3050,11 @@ IS
 		      lc_dc_indicator_col := lc_column||ln_count;
 	        END IF;
             -- End
-            lc_insert_col_name := lc_insert_col_name||lc_column||ln_count||',';
-            lc_dtl_value_fid   := lc_dtl_value_fid||lc_get_dtl_fields_info.field_id||',';
-            ln_count           := ln_count + 1;
+            if lv_hide_flag = 'N' THEN 
+				lc_insert_col_name := lc_insert_col_name||lc_column||ln_count||',';
+				lc_dtl_value_fid   := lc_dtl_value_fid||lc_get_dtl_fields_info.field_id||',';
+				ln_count           := ln_count + 1;
+			END IF;
           END LOOP;
           IF lc_get_dist_record_type = 'HDR' THEN
             lc_insert_col_name      := lc_insert_hdr_const_cols||SUBSTR(lc_insert_col_name,1,LENGTH(lc_insert_col_name)                                                                                                                                      -1)||')';
@@ -3022,7 +3062,7 @@ IS
             lc_dtl_value_fid        := ' VALUES ('||xx_ar_ebl_txt_stg_id_s.nextval||','||p_cust_doc_id||',NULL,'||p_file_id||',fnd_global.user_id,sysdate,fnd_global.user_id,sysdate,fnd_global.user_id,'||SUBSTR(lc_dtl_value_fid,1,LENGTH(lc_dtl_value_fid)-1)||')';
           ELSE
             lc_insert_col_name := lc_insert_dtl_const_cols||SUBSTR(lc_insert_col_name,1,LENGTH(lc_insert_col_name)                                                                                                                                                     -1)||')';
-            lc_select_var_cols := lc_select_cons_dtl||SUBSTR(lc_select_var_cols,1,LENGTH(lc_select_var_cols)                                                                                                                                                           -1)||lc_from_cons_dtl|| p_cmb_splt_whr || ' order by dtl.CUSTOMER_TRX_ID,dtl.trx_line_number)'; --Added by Aniket CG #22772 on 15 Dec 2017  --Added order by for 1.19
+            lc_select_var_cols := lc_select_cons_dtl||SUBSTR(lc_select_var_cols,1,LENGTH(lc_select_var_cols)                                                                                                                                                           -1)||lc_from_cons_dtl|| p_cmb_splt_whr || ')'; --Added by Aniket CG #22772 on 15 Dec 2017
             lc_dtl_value_fid   := ' VALUES ('||xx_ar_ebl_txt_stg_id_s.nextval||','||p_cust_doc_id||',NULL,NULL,NULL,NULL,'||p_file_id||',fnd_global.user_id,sysdate,fnd_global.user_id,sysdate,fnd_global.user_id,'||SUBSTR(lc_dtl_value_fid,1,LENGTH(lc_dtl_value_fid)-1)||')';
           END IF;
           lc_err_location_msg := 'Select and Insert Statement for FID record for : '||lc_get_dist_record_type||' - '||lc_insert_col_name||lc_dtl_value_fid ;
@@ -3425,22 +3465,22 @@ IS
             -- Framing the SQL to update the line number in the staging table
             IF lc_get_dist_record_type = 'HDR' THEN
             --  lc_hdr_sort_columns     := xx_ar_ebl_render_txt_pkg.get_sort_columns(p_cust_doc_id,lc_get_dist_record_type);
-              lc_hdr_stg_query        := 'SELECT STG_ID, CUSTOMER_TRX_ID FROM XX_AR_EBL_TXT_DTL_STG WHERE file_id = '||p_file_id||' AND cust_doc_id = '||p_cust_doc_id||' AND REC_TYPE != '||'''FID'''||' AND TRX_TYPE = '||''''||lc_get_dist_record_type||''''||' ORDER BY '||lc_hdr_sort_columns||' CUSTOMER_TRX_ID, STG_ID, trx_line_number';
+              lc_hdr_stg_query        := 'SELECT STG_ID, CUSTOMER_TRX_ID FROM XX_AR_EBL_TXT_DTL_STG WHERE file_id = '||p_file_id||' AND cust_doc_id = '||p_cust_doc_id||' AND REC_TYPE != '||'''FID'''||' AND TRX_TYPE = '||''''||lc_get_dist_record_type||''''||' ORDER BY '||lc_hdr_sort_columns||' CUSTOMER_TRX_ID, trx_line_number,STG_ID';
               lc_err_location_msg     := 'Staging table Query for Header '||lc_hdr_stg_query;
               XX_AR_EBL_COMMON_UTIL_PKG.PUT_LOG_LINE(lb_debug_flag ,FALSE ,lc_err_location_msg );
             ELSIF lc_get_dist_record_type = 'LINE' THEN
             --  lc_line_sort_columns       := xx_ar_ebl_render_txt_pkg.get_sort_columns(p_cust_doc_id,lc_get_dist_record_type);
-              lc_line_stg_query          := 'SELECT STG_ID, CUSTOMER_TRX_ID, CUSTOMER_TRX_LINE_ID FROM XX_AR_EBL_TXT_DTL_STG WHERE file_id = '||p_file_id||' AND cust_doc_id = '||p_cust_doc_id||' AND REC_TYPE != '||'''FID'''||' AND TRX_TYPE = '||''''||lc_get_dist_record_type||''''||' AND customer_trx_id=nvl(:pcustomer_trx_id,customer_trx_id)'||' ORDER BY '||lc_line_sort_columns||' CUSTOMER_TRX_ID, STG_ID, trx_line_number';
+              lc_line_stg_query          := 'SELECT STG_ID, CUSTOMER_TRX_ID, CUSTOMER_TRX_LINE_ID FROM XX_AR_EBL_TXT_DTL_STG WHERE file_id = '||p_file_id||' AND cust_doc_id = '||p_cust_doc_id||' AND REC_TYPE != '||'''FID'''||' AND TRX_TYPE = '||''''||lc_get_dist_record_type||''''||' AND customer_trx_id=nvl(:pcustomer_trx_id,customer_trx_id)'||' ORDER BY '||lc_line_sort_columns||' CUSTOMER_TRX_ID, trx_line_number, STG_ID';
          -- Start Commented by Thilak CG on 01-MAR-2018 for Defect#29739
 		    /*IF lc_target_value3         = 'Y' THEN
-                lc_line_stg_query        := 'SELECT STG_ID, CUSTOMER_TRX_ID, CUSTOMER_TRX_LINE_ID FROM XX_AR_EBL_TXT_DTL_STG WHERE file_id = '||p_file_id||' AND cust_doc_id = '||p_cust_doc_id||' AND REC_TYPE != '||'''FID'''||' AND REC_TYPE = '||'''DT'''||' AND TRX_TYPE = '||''''||lc_get_dist_record_type||''''||' AND customer_trx_id=nvl(:pcustomer_trx_id,customer_trx_id)'||' ORDER BY '||lc_line_sort_columns||' CUSTOMER_TRX_ID, STG_ID, trx_line_number';
+                lc_line_stg_query        := 'SELECT STG_ID, CUSTOMER_TRX_ID, CUSTOMER_TRX_LINE_ID FROM XX_AR_EBL_TXT_DTL_STG WHERE file_id = '||p_file_id||' AND cust_doc_id = '||p_cust_doc_id||' AND REC_TYPE != '||'''FID'''||' AND REC_TYPE = '||'''DT'''||' AND TRX_TYPE = '||''''||lc_get_dist_record_type||''''||' AND customer_trx_id=nvl(:pcustomer_trx_id,customer_trx_id)'||' ORDER BY '||lc_line_sort_columns||' CUSTOMER_TRX_ID, trx_line_number, STG_ID';
               END IF;*/
 		 -- End
               lc_err_location_msg := 'Staging table Query for Line'||lc_line_stg_query;
               XX_AR_EBL_COMMON_UTIL_PKG.PUT_LOG_LINE(lb_debug_flag ,FALSE ,lc_err_location_msg );
             ELSIF lc_get_dist_record_type = 'DIST' THEN
             --  lc_dist_line_sort_columns  := xx_ar_ebl_render_txt_pkg.get_sort_columns(p_cust_doc_id,lc_get_dist_record_type);
-              lc_dist_stg_query          := 'SELECT STG_ID FROM XX_AR_EBL_TXT_DTL_STG WHERE file_id = '||p_file_id||' AND cust_doc_id = '||p_cust_doc_id||' AND REC_TYPE != '||'''FID'''||' AND TRX_TYPE = '||''''||lc_get_dist_record_type||''''||' AND customer_trx_id=nvl(:pcustomer_trx_id,customer_trx_id)'||' AND customer_trx_line_id=:pcustomer_trx_line_id'||' ORDER BY '||lc_dist_line_sort_columns||' STG_ID, trx_line_number';
+              lc_dist_stg_query          := 'SELECT STG_ID FROM XX_AR_EBL_TXT_DTL_STG WHERE file_id = '||p_file_id||' AND cust_doc_id = '||p_cust_doc_id||' AND REC_TYPE != '||'''FID'''||' AND TRX_TYPE = '||''''||lc_get_dist_record_type||''''||' AND customer_trx_id=nvl(:pcustomer_trx_id,customer_trx_id)'||' AND customer_trx_line_id=:pcustomer_trx_line_id'||' ORDER BY '||lc_dist_line_sort_columns||' trx_line_number, STG_ID';
               lc_err_location_msg        := 'Staging table Query for Dist Line'||lc_dist_stg_query;
               XX_AR_EBL_COMMON_UTIL_PKG.PUT_LOG_LINE(lb_debug_flag ,FALSE ,lc_err_location_msg );
             END IF;

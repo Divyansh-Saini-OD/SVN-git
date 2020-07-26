@@ -104,7 +104,6 @@ SELECT   :BILL_TO_PROVINCE                                        BILL_TO_PROVIN
         ,XACRT.cons_inv_id                                        cbi_id
         ,XACRT.attribute2                                         BILLING_NUMBER
         ,:CURRENCY_CODE                                           CURRENCY
-		,XACRT.attribute5
         ,TO_CHAR(xx_ar_reprint_summbill.get_bill_from_date( :CUST_ACCOUNT_ID
                                                             ,XACRT.attribute3
                                                             ,XACRT.attribute4
@@ -226,7 +225,7 @@ DECODE( :P_INFOCOPY_FLAG
 ,NO_PAYMENT_TEXT,DOC_TITLE	
 --,DISCOUNT_INFO  								 --Commented for defect #37807
 ,DECODE(:P_INFOCOPY_FLAG,'N',xx_ar_ebl_common_util_pkg.get_header_discount(xx_disc_info.customer_trx_id),NULL) DISCOUNT_INFO    -- Added for Defect 37807
-,MAX(NVL(XX_AR_EBL_COMMON_UTIL_PKG.get_fee_option(:P_CUST_DOC_ID,'Consolidated Bill',:cust_account_id),0)) FEE_OPTION
+,NVL(XX_AR_EBL_COMMON_UTIL_PKG.get_fee_option(:P_CUST_DOC_ID,'Consolidated Bill',:cust_account_id,'ePDF',null,XACRT.cbi_id),0) FEE_OPTION
 from XACRT
 	,xx_disc_info	--Added for defect 37807
 where XACRT.cbi_id = xx_disc_info.cons_inv_id(+)			--Added for defect 37807
@@ -627,6 +626,7 @@ WHERE a.request_id      =:p_request_id
   AND a.cons_inv_id     =:cbi_id
   AND a.customer_trx_id =:trx_id      
   AND (a.item_code IS NULL OR a.item_code NOT IN ('SPC_CARD_INFO' ,'TD','ACM','GIFT_CARD_CM','GIFT_CARD_INV'))   --Added 'GIFT_CARD_CM' and 'GIFT_CARD_INV' for R1.1 CR(626)
+  ORDER BY CUSTOMER_TRX_ID,LINE_SEQ
 ]]>
 </sqlStatement>   
 <sqlStatement name="Q_TD">
@@ -695,15 +695,21 @@ WHERE a.request_id      =:p_request_id
        ]]>
 </sqlStatement>	
 <sqlStatement name="Q_CONS_FEE">
-       <![CDATA[	
-       <![CDATA[	
+       <![CDATA[
 SELECT 
       flv.lookup_code FEE_CODE
      ,upper(flv.meaning)  FEE_DESCRIPTION
-     ,TO_CHAR(sum(RCTL.unit_selling_price*quantity_invoiced),'9999999999.999')       FEE_AMT      
+     ,TO_CHAR(sum(RCTL.unit_selling_price*
+	 CASE WHEN aps.class = 'CM' THEN
+	  quantity_credited
+	 ELSE 
+	  NVL(quantity_ordered,quantity_invoiced)
+	  END
+	  ),'9999999999.999')       FEE_AMT      
 FROM
      ra_customer_trx_lines_All RCTL
      ,fnd_lookup_values flv
+	 ,ar_payment_schedules aps
 WHERE 1=1
   AND flv.lookup_type = 'OD_FEES_ITEMS'
   AND flv.LANGUAGE='US'
@@ -711,11 +717,11 @@ WHERE 1=1
   AND FLV.enabled_flag = 'Y'                                   
   AND SYSDATE BETWEEN NVL(FLV.start_date_active,SYSDATE) AND NVL(FLV.end_date_active,SYSDATE+1)  
   AND FLV.attribute7 NOT IN ('DELIVERY','MISCELLANEOUS')  
+  AND RCTL.customer_trx_id = aps.customer_trx_id
   AND RCTL.customer_trx_id    IN (SELECT XAECTRS.customer_trx_id
                                    FROM xx_ar_cbi_rprn_trx  XAECTRS
 								  WHERE XAECTRS.request_id      =:p_request_id
-								  AND XAECTRS.cons_inv_id     =:cbi_id
-								  AND XAECTRS.customer_trx_id =:trx_id)
+								  AND XAECTRS.cons_inv_id     =:cbi_id)
 GROUP BY flv.lookup_code,flv.meaning
        ]]>
     </sqlStatement>	
