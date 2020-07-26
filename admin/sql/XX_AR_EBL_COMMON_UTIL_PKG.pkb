@@ -6385,7 +6385,7 @@ BEGIN
 								 sfdata5, ' AND sfdata1 = '''||sfdata1||''' AND sfdata2='''||sfdata2||''' AND sfdata3='''||sfdata3||''' AND sfdata4='''||sfdata4||''' AND sfdata5='''||sfdata5||'''',
 								 sfdata6, ' AND sfdata1 = '''||sfdata1||''' AND sfdata2='''||sfdata2||''' AND sfdata3='''||sfdata3||''' AND sfdata4='''||sfdata4||''' AND sfdata5='''||sfdata5||'''AND sfdata6='''||sfdata6||'''')
 				  INTO lv_where
-				  FROM XXFIN.xx_ar_ebl_cons_trx_stg 
+				  FROM xx_ar_ebl_cons_trx_stg 
 				 WHERE request_id = p_request_id and CUSTOMER_TRX_ID = p_customer_trx_id
 				   AND INV_TYPE not in ('SOFTHDR_TOTALS','BILLTO_TOTALS','GRAND_TOTAL');	
 		   
