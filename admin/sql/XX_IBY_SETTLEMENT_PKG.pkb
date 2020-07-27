@@ -133,6 +133,7 @@ AS
 -- |48.3       07-JAN-2020 Sripal Reddy        Modified for sglpmt_multi_settlement refund issue NAIT-115171  |
 -- |48.4       18-FEB-2020 Sripal reddy        Modified for POC: Customer PO line number NAIT 123195 by sripal  |
 -- |48.5       13-JUL-2020 Atul Khard          Modified for NAIT-131811: POS Settlement Changes for Partial Reversal   |
+-- |48.6       16-JUL-2020 Atul Khard          Modified for EMV Card changes   |
 -- +===========================================================================+
 
 	g_package_name              CONSTANT all_objects.object_name%TYPE                        := 'xx_iby_settlement_pkg';
@@ -4319,31 +4320,34 @@ AS
 	--EMV Fallback - If Y, then put *FALLBACK_EMV   in  field 21
 	--EMV TVR - Put "<95>" + Field Value + "</95>" in Field 56
 --------------------------------------------------------------
-
-		IF NVL (lc_emv_fallback, 'N') = 'Y' THEN
-
-			IF NVL (gc_ixswipe , '-1') <> '-1' THEN   --Version 27.1
-			   gc_ixoptions := '*CEM_Swiped *FALLBACK_EMV '||gc_ixoptions;
-			ELSE
-			   gc_ixoptions := '*CEM_Manual *FALLBACK_EMV '||gc_ixoptions;
-			END IF;
-		END IF;
-
-		IF NVL (lc_emv_offline, 'N') = 'Y' THEN
-			gc_ixoptions := '*REFERRAL '||gc_ixoptions;
-		END IF;
-
-		IF NVL (lc_emv_transaction, 'N') = 'Y' THEN
-			gc_ixoptions := '*CEM_Insert *EMV '||gc_ixoptions;   --Version 27.1
-		END IF;
-
 		IF NVL (lc_emv_terminal, 'N') <> 'N' THEN
 			gc_ixoptions := '*DEVCAP='||lc_emv_terminal||' '||gc_ixoptions;
-		END IF;
-
-		IF NVL (lc_emv_tvr, 'N') <> 'N' THEN
-			gc_ixreserved56 := '<95>'||lc_emv_tvr||'</95>';
-		END IF;
+		END IF; --Moved up for Version 48.6
+		
+		IF NVL(lc_emv_card,'T') <> 'T' THEN --Added for Version 48.6
+		
+			IF NVL (lc_emv_fallback, 'N') = 'Y' THEN
+	
+				IF NVL (gc_ixswipe , '-1') <> '-1' THEN   --Version 27.1
+				gc_ixoptions := '*CEM_Swiped *FALLBACK_EMV '||gc_ixoptions;
+				ELSE
+				gc_ixoptions := '*CEM_Manual *FALLBACK_EMV '||gc_ixoptions;
+				END IF;
+			END IF;
+	
+			IF NVL (lc_emv_offline, 'N') = 'Y' THEN
+				gc_ixoptions := '*REFERRAL '||gc_ixoptions;
+			END IF;
+	
+			IF NVL (lc_emv_transaction, 'N') = 'Y' THEN
+				gc_ixoptions := '*CEM_Insert *EMV '||gc_ixoptions;   --Version 27.1
+			END IF;
+	
+			IF NVL (lc_emv_tvr, 'N') <> 'N' THEN
+				gc_ixreserved56 := '<95>'||lc_emv_tvr||'</95>';
+			END IF;
+		
+		END IF;--Added for Version 48.6
 
 		xx_location_and_log(g_loc, 'gc_ixoptions :: '||gc_ixoptions);
 		xx_location_and_log(g_loc, 'gc_ixreserved56 :: '||gc_ixreserved56);
@@ -4363,6 +4367,7 @@ END xx_set_post_receipt_variables;
 	PROCEDURE xx_set_post_trx_variables
 	IS
   l_MPL_ORDER_ID  xx_ar_order_receipt_dtl.mpl_order_id%Type;
+  lc_emv_card  xx_ar_order_receipt_dtl.emv_card%Type;
 	BEGIN
 ------------------------------------------------------
 -- Retrieve Sales Order Type
@@ -4399,7 +4404,26 @@ END xx_set_post_receipt_variables;
 						'Entering NO_DATA_FOUND Exception in XX_SET_POST_TRX_VARIABLES for Retrieve Sales Order Type. ');
 				gc_sales_order_trans_type_desc := NULL;
 		END;
-
+		
+		BEGIN  -- For Version 48.6 starts here
+						
+			xx_location_and_log(g_log,'EMV Card Check in ORDT');
+			
+			lc_emv_card := NULL;
+						
+			SELECT  nvl(emv_card,'N')
+				INTO lc_emv_card
+			FROM xx_ar_order_receipt_dtl
+			WHERE order_payment_id = gn_order_payment_id; 
+							
+		EXCEPTION
+			WHEN NO_DATA_FOUND
+			THEN
+				xx_location_and_log
+					(g_loc,
+					'NO_DATA_FOUND for order_payment_id '|| gn_order_payment_id ||' in xx_ar_order_receipt_dtl ');
+				lc_emv_card :='N';
+		END;  -- For Version 48.6 ends here
 ------------------------------------------------------
 -- Retrieve Order Information
 ------------------------------------------------------
@@ -4458,6 +4482,7 @@ END xx_set_post_receipt_variables;
 						gn_ship_from_org_id := NULL;
 						gc_ixorderdate := NULL;
 				END;
+
 	  --Start Changes for BIZBOX
 		BEGIN
 			IF gc_order_source = 'BBOX' THEN
@@ -4583,7 +4608,7 @@ END xx_set_post_receipt_variables;
 													  13,
 													  3);
 
-						IF (gn_cc_entry_count > 0)
+						IF (gn_cc_entry_count > 0) OR (lc_emv_card <> 'T') -- Added for Version 48.6
 						THEN
 							gc_ixswipe := NULL;
 						ELSE
@@ -4621,7 +4646,7 @@ END xx_set_post_receipt_variables;
 												  3);
 					gc_source := 'POS';
 
-					IF (gn_cc_entry_count > 0)
+					IF (gn_cc_entry_count > 0) OR (lc_emv_card <> 'T') -- Added for Version 48.6
 					THEN
 						gc_ixswipe := NULL;
 					ELSE
@@ -4663,7 +4688,7 @@ END xx_set_post_receipt_variables;
 					gc_ixstorenumber := gc_store;
 					gc_pre2 := gc_ixstorenumber;
 
-					IF (gn_cc_entry_count > 0)
+					IF (gn_cc_entry_count > 0) OR (lc_emv_card <> 'T') -- Added for Version 48.6
 					THEN
 						gc_ixswipe := NULL;
 					ELSE
@@ -4879,7 +4904,7 @@ END xx_set_post_receipt_variables;
 					gc_pre2 := gc_ixstorenumber;
 					gc_ixinvoice := gc_transaction_number;
 
-					IF (gn_cc_entry_count > 0)
+					IF (gn_cc_entry_count > 0) OR (lc_emv_card <> 'T') -- Added for Version 48.6
 					THEN
 						gc_ixswipe := NULL;
 					ELSE
@@ -4953,7 +4978,7 @@ END xx_set_post_receipt_variables;
 						gc_pre2 := gc_ixstorenumber;
 						gc_ixinvoice := gc_transaction_number;   --DEFECT 12724 change BY NB
 
-						IF (gn_cc_entry_count > 0)
+						IF (gn_cc_entry_count > 0) OR (lc_emv_card <> 'T') -- Added for Version 48.6
 						THEN
 							gc_ixswipe := NULL;
 						ELSE
@@ -5016,7 +5041,7 @@ END xx_set_post_receipt_variables;
 													  3);
 						gc_source := 'POS';
 
-						IF (gn_cc_entry_count > 0)
+						IF (gn_cc_entry_count > 0) OR (lc_emv_card <> 'T') -- Added for Version 48.6
 						THEN
 							gc_ixswipe := NULL;
 						ELSE
@@ -5099,7 +5124,7 @@ END xx_set_post_receipt_variables;
 											  3);
 				gc_source := 'POS';
 
-				IF (gn_cc_entry_count > 0)
+				IF (gn_cc_entry_count > 0) OR (lc_emv_card <> 'T') -- Added for Version 48.6
 				THEN
 					gc_ixswipe := NULL;
 				ELSE
