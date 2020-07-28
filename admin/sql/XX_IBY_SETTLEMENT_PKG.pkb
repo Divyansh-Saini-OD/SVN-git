@@ -4608,7 +4608,7 @@ END xx_set_post_receipt_variables;
 													  13,
 													  3);
 
-						IF (gn_cc_entry_count > 0) OR (lc_emv_card <> 'T') -- Added for Version 48.6
+						IF (gn_cc_entry_count > 0) OR (lc_emv_card = 'T') -- Added for Version 48.6
 						THEN
 							gc_ixswipe := NULL;
 						ELSE
@@ -4646,7 +4646,7 @@ END xx_set_post_receipt_variables;
 												  3);
 					gc_source := 'POS';
 
-					IF (gn_cc_entry_count > 0) OR (lc_emv_card <> 'T') -- Added for Version 48.6
+					IF (gn_cc_entry_count > 0) OR (lc_emv_card = 'T') -- Added for Version 48.6
 					THEN
 						gc_ixswipe := NULL;
 					ELSE
@@ -4688,7 +4688,7 @@ END xx_set_post_receipt_variables;
 					gc_ixstorenumber := gc_store;
 					gc_pre2 := gc_ixstorenumber;
 
-					IF (gn_cc_entry_count > 0) OR (lc_emv_card <> 'T') -- Added for Version 48.6
+					IF (gn_cc_entry_count > 0) OR (lc_emv_card = 'T') -- Added for Version 48.6
 					THEN
 						gc_ixswipe := NULL;
 					ELSE
@@ -4904,7 +4904,7 @@ END xx_set_post_receipt_variables;
 					gc_pre2 := gc_ixstorenumber;
 					gc_ixinvoice := gc_transaction_number;
 
-					IF (gn_cc_entry_count > 0) OR (lc_emv_card <> 'T') -- Added for Version 48.6
+					IF (gn_cc_entry_count > 0) OR (lc_emv_card = 'T') -- Added for Version 48.6
 					THEN
 						gc_ixswipe := NULL;
 					ELSE
@@ -4978,7 +4978,7 @@ END xx_set_post_receipt_variables;
 						gc_pre2 := gc_ixstorenumber;
 						gc_ixinvoice := gc_transaction_number;   --DEFECT 12724 change BY NB
 
-						IF (gn_cc_entry_count > 0) OR (lc_emv_card <> 'T') -- Added for Version 48.6
+						IF (gn_cc_entry_count > 0) OR (lc_emv_card = 'T') -- Added for Version 48.6
 						THEN
 							gc_ixswipe := NULL;
 						ELSE
@@ -5041,7 +5041,7 @@ END xx_set_post_receipt_variables;
 													  3);
 						gc_source := 'POS';
 
-						IF (gn_cc_entry_count > 0) OR (lc_emv_card <> 'T') -- Added for Version 48.6
+						IF (gn_cc_entry_count > 0) OR (lc_emv_card = 'T') -- Added for Version 48.6
 						THEN
 							gc_ixswipe := NULL;
 						ELSE
@@ -5124,7 +5124,7 @@ END xx_set_post_receipt_variables;
 											  3);
 				gc_source := 'POS';
 
-				IF (gn_cc_entry_count > 0) OR (lc_emv_card <> 'T') -- Added for Version 48.6
+				IF (gn_cc_entry_count > 0) OR (lc_emv_card = 'T') -- Added for Version 48.6
 				THEN
 					gc_ixswipe := NULL;
 				ELSE
