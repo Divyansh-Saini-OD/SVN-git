@@ -14,6 +14,7 @@ create or replace PACKAGE BODY      XX_AP_VPS_EXTRACT_PKG
 -- | 1.3         05/29/18     Paddy Sanjeevi   Added group by xla sql to avoid duplicate        |
 -- | 1.4         01/24/19     BIAS             INSTANCE_NAME is replaced with DB_NAME for OCI   |  
 -- |                                           Migration Project
+-- | 1.5         07/28/20     Bhargavi Ankolekar    This is for jira#NAIT-146750                |
 -- +============================================================================================+
 AS
 
@@ -383,7 +384,7 @@ END xx_ap_get_gl_acct;
 				  NVL(APS.ATTRIBUTE9,NVL(APS.VENDOR_SITE_CODE_ALT,APS.VENDOR_SITE_ID))
 				  AP_VENDOR,
 				  AI.QUICK_PO_HEADER_ID,
-				  POL.LINE_NUM LINE_NUM,
+				  L.LINE_NUMBER LINE_NUM,----POL.LINE_NUM LINE_NUM, Changing the po line number to invoice line num as per the jira #NAIT-146750
 				  POL.UNIT_PRICE PO_PRICE,
 				  NULL AVG_COST,
 				  MSI.SEGMENT1	SKU,	--	DECODE(L.LINE_TYPE_LOOKUP_CODE, 'ITEM', MSI.SEGMENT1, NULL) SKU,
@@ -435,7 +436,7 @@ END xx_ap_get_gl_acct;
 				  NVL(APS.ATTRIBUTE9,NVL(APS.VENDOR_SITE_CODE_ALT,APS.VENDOR_SITE_ID))
 				  AP_VENDOR,
 				  AI.QUICK_PO_HEADER_ID,
-				  POL.LINE_NUM PO_LINE_NUM,
+				  L.LINE_NUMBER LINE_NUM,----POL.LINE_NUM LINE_NUM, Changing the po line number to invoice line num as per the jira #NAIT-146750
 				  POL.UNIT_PRICE PO_PRICE,
 				  NULL AVG_COST,
 				  MSI.SEGMENT1	SKU,
