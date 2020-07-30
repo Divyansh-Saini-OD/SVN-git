@@ -948,6 +948,8 @@ IS
     --End Added by Aniket CG 15 May #NAIT-29364
 	lv_hide_flag                VARCHAR2(200) := NULL;
 	lv_fee_option               NUMBER := 0;
+	lv_upd_str     VARCHAR2(2000) := NULL;
+    lv_upd_str1    VARCHAR2(2000) := NULL;
   BEGIN
     IF (p_debug_flag = 'Y') THEN
       lb_debug_flag := TRUE;
@@ -991,9 +993,6 @@ IS
     lc_sign_flag         := 'N';
     lc_amt_sign_flag     := 'N';
     ln_sign_col_cnt      := 0;
-    FOR lc_get_header_fields_info IN c_get_header_fields_info(ln_get_dist_rows)
-    LOOP
-	  lv_hide_flag := 'N';
 	  BEGIN
 	    SELECT fee_option
 		  INTO lv_fee_option
@@ -1003,6 +1002,10 @@ IS
 	  EXCEPTION WHEN OTHERS THEN
 	    lv_fee_option:= 0;
 	  END;
+    FOR lc_get_header_fields_info IN c_get_header_fields_info(ln_get_dist_rows)
+    LOOP
+	  lv_hide_flag := 'N';
+
 	  --Added for 1.19
 	  IF lv_fee_option = 1010 AND UPPER(lc_get_header_fields_info.spl_function) = 'XX_AR_EBL_TXT_SPL_LOGIC_PKG.GET_FEE_AMOUNT' THEN
 	    lv_hide_flag := 'N';
@@ -1199,10 +1202,9 @@ IS
       lc_select_var_cols := replace(lc_select_var_cols,lc_function_return||',','');
 --	  lv_upd_str := 'update xx_ar_ebl_cons_hdr_main set TOTAL_MISCELLANEOUS_AMOUNT = TOTAL_MISCELLANEOUS_AMOUNT - '||lc_tot_fee_amt||' WHERE parent_cust_doc_id = '||p_cust_doc_id||' AND batch_id = '||p_batch_id;
 --	  execute immediate lv_upd_str;
-    END IF;    
+    END IF;
 	
 	END LOOP;
-
     lc_insert_col_name  := SUBSTR(lc_insert_col_name,1,LENGTH(lc_insert_col_name)                                                                                                                                                           -1)||')';
     --Added where cluase in below statement by Aniket CG requirement #22772
     lc_select_var_cols  := SUBSTR(lc_select_var_cols,1,LENGTH(lc_select_var_cols)                                                                                                                                                           -1)||lc_from_cons_hdr|| p_cmb_splt_whr  || ')';
@@ -1902,6 +1904,8 @@ IS
 	  lv_hide_flag     VARCHAR2(200);
   	lv_upd_str     VARCHAR2(2000) := NULL;
     lv_upd_str1    VARCHAR2(2000) := NULL;
+	ln_hdr_fee     NUMBER := 0;
+	ln_hdr_cnt     NUMBER := 0;
   BEGIN
     IF (p_debug_flag = 'Y') THEN
       lb_debug_flag := TRUE;
@@ -1926,6 +1930,30 @@ IS
     WHEN OTHERS THEN
       lc_summary_bill_doc := 'N';
     END;
+	BEGIN
+	 
+	    SELECT count(0)
+		  INTO ln_hdr_fee
+		FROM xx_fin_translatedefinition xftd ,
+		  xx_fin_translatevalues xftv ,
+		  xx_cdh_ebl_templ_hdr_txt xcetht
+		WHERE xftd.translate_id   = xftv.translate_id
+		AND xftv.source_value1    = xcetht.field_id
+		AND xcetht.cust_doc_id    = p_cust_doc_id
+--		AND xcetht.rownumber      = p_rownum
+		AND xftd.translation_name ='XX_CDH_EBL_TXT_HDR_FIELDS'
+		AND xftv.target_value19   = 'DT' 
+		AND xftv.enabled_flag     ='Y'
+		AND UPPER(xftv.target_value24) = 'XX_AR_EBL_TXT_SPL_LOGIC_PKG.GET_FEE_AMOUNT'
+		AND TRUNC(SYSDATE) BETWEEN TRUNC(xftv.start_date_active) AND TRUNC(NVL(xftv.end_date_active,SYSDATE+1));
+	
+    EXCEPTION
+    WHEN OTHERS THEN
+      ln_hdr_fee := 0;	
+	END;
+	
+	
+	
     IF lc_summary_bill_doc = 'Y' THEN
       lc_err_location_msg := 'Selected Cust Doc Id : '||p_cust_doc_id||' is Summary Bill Doc';
       XX_AR_EBL_COMMON_UTIL_PKG.PUT_LOG_LINE(lb_debug_flag ,TRUE ,lc_err_location_msg );
@@ -1973,12 +2001,11 @@ IS
 																	connect by level <= length(regexp_replace(dt,''[^,]*''))+1))))'||',';
 			     lv_hide_flag := 'N';
 				 execute immediate lv_upd_str1;
-				 XX_AR_EBL_COMMON_UTIL_PKG.PUT_LOG_LINE(lb_debug_flag ,TRUE ,'Fee no Hide ' );
 			   ELSE
                  lv_hide_flag := 'Y';
 				 XX_AR_EBL_COMMON_UTIL_PKG.PUT_LOG_LINE(lb_debug_flag ,TRUE ,'Fee hide lv_upd_str1'||lv_upd_str1||' lv_upd_str '||lv_upd_str );
-				 execute immediate lv_upd_str1;
-                 execute immediate lv_upd_str;
+--				 execute immediate lv_upd_str1;
+--                 execute immediate lv_upd_str;
 			     
 			  END IF;
 			  --End for 1.19
@@ -2175,7 +2202,12 @@ IS
 --           execute immediate lv_upd_str;
 		END IF;
       END LOOP;
-
+		IF lv_fee_option !=1010 THEN
+			lv_upd_str := 'update xx_ar_ebl_cons_hdr_main set TOTAL_MISCELLANEOUS_AMOUNT = TOTAL_MISCELLANEOUS_AMOUNT + (XX_AR_EBL_COMMON_UTIL_PKG.get_hea_fee_amount(customer_trx_id )+ XX_AR_EBL_COMMON_UTIL_PKG.get_line_fee_amount(customer_trx_id)) WHERE file_id = '||p_file_id||' AND cust_doc_id = '||p_cust_doc_id||' AND batch_id = '||p_batch_id;
+			lv_upd_str1 := 'update xx_ar_ebl_cons_hdr_main set SKU_LINES_SUBTOTAL = SKU_LINES_SUBTOTAL - (XX_AR_EBL_COMMON_UTIL_PKG.get_hea_fee_amount(customer_trx_id )+ XX_AR_EBL_COMMON_UTIL_PKG.get_line_fee_amount(customer_trx_id)) WHERE file_id = '||p_file_id||' AND cust_doc_id = '||p_cust_doc_id||' AND batch_id = '||p_batch_id;
+			execute immediate lv_upd_str;
+			execute immediate lv_upd_str1;
+		END IF;
       lc_summary_insert_col_name := lc_insert_summary_const_cols||SUBSTR(lc_summary_insert_col_name,1,LENGTH(lc_summary_insert_col_name)                                                                                                                     -1)||')';
       lc_select_var_cols         := '(SELECT '||ln_stg_id||', '||lc_summary_select_cons||SUBSTR(lc_select_var_cols,1,LENGTH(lc_select_var_cols)                                                                                                              -1)||lc_summary_from_cons || p_cmb_splt_whr ; ----Added by Aniket CG #22772 on 15 Dec 2017
       lc_summary_value_fid       := ' VALUES ('||xx_ar_ebl_txt_stg_id_s.nextval||','||p_cust_doc_id||','||p_file_id||',fnd_global.user_id,sysdate,fnd_global.user_id,sysdate,fnd_global.user_id,'||SUBSTR(lc_summary_value_fid,1,LENGTH(lc_summary_value_fid)-1)||')';
@@ -2536,11 +2568,11 @@ IS
 					 
 					 lc_select_var_cols := lc_select_var_cols||'(XX_AR_EBL_COMMON_UTIL_PKG.get_hea_fee_amount(hdr.customer_trx_id )+ XX_AR_EBL_COMMON_UTIL_PKG.get_line_fee_amount(hdr.customer_trx_id))'||',';
 					 lv_hide_flag := 'N';
-					 execute immediate lv_upd_str1;
+                       execute immediate lv_upd_str1;
 				   ELSE
 					 lv_hide_flag := 'Y';
-					 execute immediate lv_upd_str1;
-					 execute immediate lv_upd_str;
+					 --execute immediate lv_upd_str1;
+					 --execute immediate lv_upd_str;
 					 
 			  END IF;
 			  --End for 1.19
@@ -3056,6 +3088,12 @@ IS
 				ln_count           := ln_count + 1;
 			END IF;
           END LOOP;
+			IF lv_fee_option !=1010 THEN
+				lv_upd_str := 'update xx_ar_ebl_cons_hdr_main set TOTAL_MISCELLANEOUS_AMOUNT = TOTAL_MISCELLANEOUS_AMOUNT + (XX_AR_EBL_COMMON_UTIL_PKG.get_hea_fee_amount(customer_trx_id )+ XX_AR_EBL_COMMON_UTIL_PKG.get_line_fee_amount(customer_trx_id)) WHERE file_id = '||p_file_id||' AND cust_doc_id = '||p_cust_doc_id||' AND batch_id = '||p_batch_id;
+				lv_upd_str1 := 'update xx_ar_ebl_cons_hdr_main set SKU_LINES_SUBTOTAL = SKU_LINES_SUBTOTAL - (XX_AR_EBL_COMMON_UTIL_PKG.get_hea_fee_amount(customer_trx_id )+ XX_AR_EBL_COMMON_UTIL_PKG.get_line_fee_amount(customer_trx_id)) WHERE file_id = '||p_file_id||' AND cust_doc_id = '||p_cust_doc_id||' AND batch_id = '||p_batch_id;
+				execute immediate lv_upd_str;
+				execute immediate lv_upd_str1;
+			END IF;
           IF lc_get_dist_record_type = 'HDR' THEN
             lc_insert_col_name      := lc_insert_hdr_const_cols||SUBSTR(lc_insert_col_name,1,LENGTH(lc_insert_col_name)                                                                                                                                      -1)||')';
             lc_select_var_cols      := lc_select_cons_hdr||SUBSTR(lc_select_var_cols,1,LENGTH(lc_select_var_cols)                                                                                                                                            -1)||lc_from_cons_hdr|| p_cmb_splt_whr || ')'; --Added by Aniket CG #22772 on 15 Dec 2017

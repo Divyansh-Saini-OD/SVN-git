@@ -712,8 +712,8 @@ create or replace PACKAGE BODY XX_AR_EBL_XLS_DM_PKG
 																	connect by level <= length(regexp_replace(dt,''[^,]*''))+1))))'||',';
 						   execute immediate lv_upd_str1;
 						else
-						   execute immediate lv_upd_str1;
-						   execute immediate lv_upd_str;
+						--   execute immediate lv_upd_str1;
+						--   execute immediate lv_upd_str;
 						   lc_hide_flag :='Y';
 						end if;
 				  END IF;
@@ -769,6 +769,18 @@ create or replace PACKAGE BODY XX_AR_EBL_XLS_DM_PKG
 				  ln_count := ln_count + 1;
               END IF;
 			END LOOP;
+            IF p_doc_type = 'IND' THEN
+				lv_upd_str := 'update xx_ar_ebl_ind_hdr_main set TOTAL_MISCELLANEOUS_AMOUNT = TOTAL_MISCELLANEOUS_AMOUNT + (XX_AR_EBL_COMMON_UTIL_PKG.get_hea_fee_amount(customer_trx_id )+ XX_AR_EBL_COMMON_UTIL_PKG.get_line_fee_amount(customer_trx_id))  WHERE parent_cust_doc_id = '||lc_get_dist_docid||' AND extract_batch_id ='|| lc_get_dist_ebatchid ||' AND batch_id = '||p_batch_id;
+				lv_upd_str1 := 'update xx_ar_ebl_ind_hdr_main set SKU_LINES_SUBTOTAL = SKU_LINES_SUBTOTAL - (XX_AR_EBL_COMMON_UTIL_PKG.get_hea_fee_amount(customer_trx_id )+ XX_AR_EBL_COMMON_UTIL_PKG.get_line_fee_amount(customer_trx_id)) WHERE parent_cust_doc_id = '||lc_get_dist_docid||' AND extract_batch_id ='|| lc_get_dist_ebatchid ||' AND batch_id = '||p_batch_id;			 
+			 ELSE
+				lv_upd_str := 'update xx_ar_ebl_cons_hdr_main set TOTAL_MISCELLANEOUS_AMOUNT = TOTAL_MISCELLANEOUS_AMOUNT + (XX_AR_EBL_COMMON_UTIL_PKG.get_hea_fee_amount(customer_trx_id )+ XX_AR_EBL_COMMON_UTIL_PKG.get_line_fee_amount(customer_trx_id)) WHERE parent_cust_doc_id = '||lc_get_dist_docid||' AND extract_batch_id ='|| lc_get_dist_ebatchid ||' AND batch_id = '||p_batch_id;
+				lv_upd_str1 := 'update xx_ar_ebl_cons_hdr_main set SKU_LINES_SUBTOTAL = SKU_LINES_SUBTOTAL - (XX_AR_EBL_COMMON_UTIL_PKG.get_hea_fee_amount(customer_trx_id )+ XX_AR_EBL_COMMON_UTIL_PKG.get_line_fee_amount(customer_trx_id)) WHERE parent_cust_doc_id = '||lc_get_dist_docid||' AND extract_batch_id ='|| lc_get_dist_ebatchid ||' AND batch_id = '||p_batch_id;
+			 END IF;
+			 IF lc_fee_option != 1007 THEN
+			    execute immediate lv_upd_str;
+				execute immediate lv_upd_str1;
+			 END IF;
+			
 
 			lc_summary_insert_col_name := lc_insert_summary_const_cols||SUBSTR(lc_summary_insert_col_name,1,length(lc_summary_insert_col_name)-1)||')';
             -- Added where cluase by Aniket CG #22772 on 19 Dec 2017
@@ -932,8 +944,8 @@ create or replace PACKAGE BODY XX_AR_EBL_XLS_DM_PKG
                          lc_select_non_dt   := lc_select_non_dt ||' XX_AR_EBL_COMMON_UTIL_PKG.get_hea_fee_amount(hdr.customer_trx_id )+ XX_AR_EBL_COMMON_UTIL_PKG.get_line_fee_amount(hdr.customer_trx_id),';
                        execute immediate lv_upd_str1;
                     else
-                       execute immediate lv_upd_str;
-                       execute immediate lv_upd_str1;					   
+                       --execute immediate lv_upd_str;
+                       --execute immediate lv_upd_str1;					   
                        lc_hide_flag :='Y';
                        select replace (lc_value_fid,lc_get_all_field_info.field_id || ',','')
                          INTO lc_value_fid
@@ -1168,6 +1180,17 @@ create or replace PACKAGE BODY XX_AR_EBL_XLS_DM_PKG
                 ln_check_cust := 1; --To indicate the cust doc has the set up in cdh table
                 ln_inc := ln_inc + 1;
              END LOOP;
+			 IF p_doc_type = 'IND' THEN
+				lv_upd_str := 'update xx_ar_ebl_ind_hdr_main set TOTAL_MISCELLANEOUS_AMOUNT = TOTAL_MISCELLANEOUS_AMOUNT + (XX_AR_EBL_COMMON_UTIL_PKG.get_hea_fee_amount(customer_trx_id )+ XX_AR_EBL_COMMON_UTIL_PKG.get_line_fee_amount(customer_trx_id))  WHERE parent_cust_doc_id = '||lc_get_dist_docid||' AND extract_batch_id ='|| lc_get_dist_ebatchid ||' AND batch_id = '||p_batch_id;
+				lv_upd_str1 := 'update xx_ar_ebl_ind_hdr_main set SKU_LINES_SUBTOTAL = SKU_LINES_SUBTOTAL - (XX_AR_EBL_COMMON_UTIL_PKG.get_hea_fee_amount(customer_trx_id )+ XX_AR_EBL_COMMON_UTIL_PKG.get_line_fee_amount(customer_trx_id)) WHERE parent_cust_doc_id = '||lc_get_dist_docid||' AND extract_batch_id ='|| lc_get_dist_ebatchid ||' AND batch_id = '||p_batch_id;			 
+			 ELSE
+				lv_upd_str := 'update xx_ar_ebl_cons_hdr_main set TOTAL_MISCELLANEOUS_AMOUNT = TOTAL_MISCELLANEOUS_AMOUNT + (XX_AR_EBL_COMMON_UTIL_PKG.get_hea_fee_amount(customer_trx_id )+ XX_AR_EBL_COMMON_UTIL_PKG.get_line_fee_amount(customer_trx_id)) WHERE parent_cust_doc_id = '||lc_get_dist_docid||' AND extract_batch_id ='|| lc_get_dist_ebatchid ||' AND batch_id = '||p_batch_id;
+				lv_upd_str1 := 'update xx_ar_ebl_cons_hdr_main set SKU_LINES_SUBTOTAL = SKU_LINES_SUBTOTAL - (XX_AR_EBL_COMMON_UTIL_PKG.get_hea_fee_amount(customer_trx_id )+ XX_AR_EBL_COMMON_UTIL_PKG.get_line_fee_amount(customer_trx_id)) WHERE parent_cust_doc_id = '||lc_get_dist_docid||' AND extract_batch_id ='|| lc_get_dist_ebatchid ||' AND batch_id = '||p_batch_id;
+			 END IF;
+			 IF lc_fee_option != 1007 THEN
+			    execute immediate lv_upd_str;
+				execute immediate lv_upd_str1;
+			 END IF;
 --             BEGIN
                 IF (ln_check_cust = 1) THEN
                    -- Framing the insert for an FID row
