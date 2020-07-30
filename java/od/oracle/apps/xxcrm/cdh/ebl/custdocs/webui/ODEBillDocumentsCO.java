@@ -95,6 +95,7 @@ public class ODEBillDocumentsCO extends OAControllerImpl
     utl.log("ODEBillDocumentsCO:Process Request Begin");
     String AccountNumber = pageContext.getParameter("accountNumber"); 
     String CustAccountId = pageContext.getParameter("custAccountId");
+        //CustAccountId= Integer.toString(153740);
      String custName = pageContext.getParameter("custName");
     String deliveryMethod = pageContext.getParameter("deliveryMethod");
     //pageContext.getPageLayoutBean().setTitle("Billing Documents For Customer:"+custName+" Account Number:"+ AccountNumber); 
@@ -256,6 +257,7 @@ public class ODEBillDocumentsCO extends OAControllerImpl
     super.processFormRequest(pageContext, webBean);
     String AccountNumber = pageContext.getParameter("accountNumber"); 
     String CustAccountId = pageContext.getParameter("custAccountId");
+    //CustAccountId= Integer.toString(153740);
     OAApplicationModule am=pageContext.getApplicationModule(webBean);
     ODUtil utl = new ODUtil(am);
     utl.log("ODEBillDocumentsCO:Process Form Request Begin");
@@ -417,6 +419,24 @@ public class ODEBillDocumentsCO extends OAControllerImpl
        {
          throw new OAException("XXCRM","XXOD_EBL_UNSAVED_DATA");
        }
+        
+        String rowRef = pageContext.getParameter(OAWebBeanConstants.EVENT_SOURCE_ROW_REFERENCE);
+        ODEbillCustDocVORowImpl rowImpl= (ODEbillCustDocVORowImpl)am.findRowByRef(rowRef);
+        String stat = rowImpl.getCExtAttr16();
+        String feeOption = rowImpl.getFeeOption();
+        String payDocType = rowImpl.getCExtAttr1();
+        String dlyMtd = rowImpl.getCExtAttr3();
+        if (stat.equals("IN_PROCESS")) {
+            Serializable[] prms={payDocType,dlyMtd,feeOption};
+            System.out.println("payDocType "+payDocType);
+            System.out.println("dlyMtd "+dlyMtd);
+            System.out.println("feeOption "+feeOption);
+            String val=(String)am.invokeMethod("ValidateFeeOption",prms);
+            if (("0").equals(val) || val==null)
+            {
+                throw new OAException("XXCRM","XXOD_EBL_INVALID_FEEOPT");
+            }
+        }
        HashMap params = new HashMap();
        String custDocID = pageContext.getParameter("CustDocID");
        String dlyMethod = pageContext.getParameter("DlyMtd");
@@ -443,6 +463,23 @@ public class ODEBillDocumentsCO extends OAControllerImpl
          {
            throw new OAException("XXCRM","XXOD_EBL_UNSAVED_DATA");
          }
+          String rowRef = pageContext.getParameter(OAWebBeanConstants.EVENT_SOURCE_ROW_REFERENCE);
+          ODEbillCustDocVORowImpl rowImpl= (ODEbillCustDocVORowImpl)am.findRowByRef(rowRef);
+          String stat = rowImpl.getCExtAttr16();
+          String feeOption = rowImpl.getFeeOption();
+          String payDocType = rowImpl.getCExtAttr1();
+          String dlyMtd = rowImpl.getCExtAttr3();
+          if (stat.equals("IN_PROCESS")) {
+              Serializable[] prms={payDocType,dlyMtd,feeOption};
+              System.out.println("payDocType "+payDocType);
+              System.out.println("dlyMtd "+dlyMtd);
+              System.out.println("feeOption "+feeOption);
+              String val=(String)am.invokeMethod("ValidateFeeOption",prms);
+              if (("0").equals(val) || val==null)
+              {
+                  throw new OAException("XXCRM","XXOD_EBL_INVALID_FEEOPT");
+              }
+          }
          HashMap params = new HashMap();
          String custDocID = pageContext.getParameter("CustDocID");
          String dlyMethod = pageContext.getParameter("DlyMtd");

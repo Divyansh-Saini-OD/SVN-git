@@ -242,7 +242,7 @@
                               <oa:messageTextInput id="CustReqEndDate" viewName="ODEbillCustDocVO" dataType="DATE" viewAttr="DExtAttr10" prompt="Request End Date" disabled="${oa.current.Paydocind}"/>
                               <oa:messageTextInput id="EffFromDate" dataType="DATE" viewName="ODEbillCustDocVO" viewAttr="DExtAttr1" prompt="Effective Start Date" readOnly="false" disabled="${oa.current.Supusr}"/>
                               <oa:messageTextInput id="EffToDate" dataType="DATE" viewName="ODEbillCustDocVO" viewAttr="DExtAttr2" prompt="Effective End Date" readOnly="false" disabled="${oa.current.Supusrend}"/>
-                              <oa:messageLovInput id="FeeOption" prompt="Fee Option" viewName="ODEbillCustDocVO" disabled="${oa.current.Feeflag}" readOnly="false" viewAttr="Feeoptionfv" selectiveSearchCriteria="false" validateOnLovPrepare="false" queryable="false">
+                              <oa:messageLovInput id="FeeOption" prompt="Fee Option" viewName="ODEbillCustDocVO" disabled="${oa.current.Feeflag}" readOnly="false" viewAttr="Feeoptionfv" selectiveSearchCriteria="false" validateOnLovPrepare="false" queryable="false" lookAheadSelectionEventEnabled="false" unvalidated="false">
                                  <lovContents>
                                     <oa:listOfValues id="region1">
                                        <ui:contents>
@@ -257,8 +257,8 @@
                                     </oa:listOfValues>
                                  </lovContents>
                                  <lovMappings>
-                                    <lovMap id="lovMap1" lovItem="meaning" resultTo="FeeOption" programmaticQuery="false" criteriaFrom="FeeOption"/>
-                                    <lovMap id="lovMap2" lovItem="lookup_code" resultTo="FeeOptionFV" programmaticQuery="false"/>
+                                    <lovMap id="lovMap1" lovItem="meaning" resultTo="FeeOption" programmaticQuery="false" criteriaFrom="FeeOption" useForValidation="no"/>
+                                    <lovMap id="lovMap2" lovItem="lookup_code" resultTo="FeeOptionFV" programmaticQuery="false" useForValidation="no"/>
                                     <lovMap id="lovMap3" lovItem="Criteria" criteriaFrom="FeeOptionCriteria" programmaticQuery="false" requiredForLOV="true"/>
                                  </lovMappings>
                               </oa:messageLovInput>
