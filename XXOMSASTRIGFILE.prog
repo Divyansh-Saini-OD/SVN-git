@@ -1,0 +1,66 @@
+#!/usr/bin/ksh
+# +========================================================================+
+# |                  Office Depot - Project Simplify                       |
+# |                                                                        |
+# +========================================================================+
+# +========================================================================+
+# | Name  :  XXOMSASTRIFILE.prog                                           |
+# | Description      :  This shell script is to create trigger files for   |
+# |                     HVOP SAS files                                     |
+# |                                                                        |
+# |Change Record:                                                          |
+# |===============                                                         |
+# |Version  Date         Author          Remarks                           |
+# |=======  ===========  ==============  ==================================|
+# |1.0      26-Jun-2020  Venkata Reddy                                     |
+#                                                                          |
+# +========================================================================+
+# +========================================================================+
+#  Input Parameters                                                        |
+#  WAVE - 0,1,2,3,5							   |
+# +========================================================================+
+if [ -z "$5" ]
+  then
+    echo "Please enter the parameter HVOP wave number, Destination Dir & Date"
+    exit 1
+fi
+
+DEST_DIR="$6"
+dt=$7
+
+HVOPUSTRIGFILE="SASUSHEOT$5.TXT"
+HVOPCATRIGFILE="SASCAHEOT$5.TXT"
+DEPOUSTRIGFILE="SASUSDEOT$5.TXT"
+DEPOCATRIGFILE="SASCADEOT$5.TXT"
+
+cd $DEST_DIR
+USHVOP=`ls -lrt SAS$dt*_US_HVOP_*.TXT |awk '{print $9}'|wc -l`
+CAHVOP=`ls -lrt SAS$dt*_CA_HVOP_*.TXT |awk '{print $9}'|wc -l`
+USDEPO=`ls -lrt SAS$dt*_US_DEPO_*.TXT |awk '{print $9}'|wc -l`
+CADEPO=`ls -lrt SAS$dt*_CA_DEPO_*.TXT |awk '{print $9}'|wc -l`
+
+touch $DEST_DIR/$HVOPUSTRIGFILE
+touch $DEST_DIR/$DEPOUSTRIGFILE
+touch $DEST_DIR/$HVOPCATRIGFILE
+touch $DEST_DIR/$DEPOCATRIGFILE
+
+if [ $USHVOP -gt 0 ]
+  then
+   echo $USHVOP
+   ls -lrt SAS$dt*US_HVOP_*.TXT |awk '{print $9}' > $DEST_DIR/$HVOPUSTRIGFILE
+fi
+if [ $USDEPO -gt 0 ]
+  then
+   echo $USDEPO
+   ls -lrt SAS$dt*US_DEPO_*.TXT |awk '{print $9}' > $DEST_DIR/$DEPOUSTRIGFILE
+fi
+if [ $CAHVOP -gt 0 ]
+  then
+   echo $CAHVOP
+   ls -lrt SAS$dt*CA_HVOP_*.TXT |awk '{print $9}' > $DEST_DIR/$HVOPCATRIGFILE
+fi
+if [ $CADEPO -gt 0 ]
+  then
+   echo $CADEPO
+   ls -lrt SAS$dt*CA_DEPO_*.TXT |awk '{print $9}' > $DEST_DIR/$DEPOCATRIGFILE
+fi
