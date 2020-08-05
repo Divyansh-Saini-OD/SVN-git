@@ -21,6 +21,7 @@ AS
    -- | 1.3      28-APR-2018  Atul Khard              Defect #44465 Labels not outputing correctly|
    -- | 1.4      18-May-2018  Aniket J    CG          Changes for Requirement  #NAIT-36070        |
    -- | 1.5      29-Sep-2019  Atul Khard              Bug fix identified in #NAIT-106275          |
+   -- | 1.6      01-Aug-2020  Divyansh Saini          Changes done for Tariff 129167              |
    -- +===========================================================================================+
    PROCEDURE GET_TRANSLATION (p_translation_name   IN            VARCHAR2,
                               p_source_value1      IN            VARCHAR2,
@@ -1739,6 +1740,7 @@ AS
 	  lc_sort_columns            VARCHAR2 (5000)  := NULL;
       lc_summary_build_sql       VARCHAR2 (32767) := NULL;
       lc_summary_build_label     VARCHAR2 (32767) := NULL;
+      ln_fee_option              NUMBER := 0;  --Added for 1.6
    BEGIN
       IF (p_debug_flag = 'Y')
       THEN
@@ -1762,7 +1764,17 @@ AS
             lc_print_dtl_label := 'N';
             lc_repeat_dtl_header := 'N';
       END;
-
+      --Added for 1.6
+      BEGIN
+         SELECT NVL (fee_option, 0)
+           INTO ln_fee_option
+           FROM xx_cdh_cust_acct_ext_b
+          WHERE n_ext_attr2 = p_cust_doc_id;
+      EXCEPTION
+         WHEN OTHERS
+         THEN
+            ln_fee_option := 0;
+      END;
       lc_err_location_msg :=
             'Include Header Flag : '
          || lc_print_dtl_label
@@ -1793,6 +1805,11 @@ AS
          FOR lc_get_summary_fields_info IN c_get_summary_fields_info
          LOOP
 		    -- Added by Thilak CG on 12-OCT-2017 for Wave2 UAT Defect#13836
+            --Added for 1.6
+            IF ln_fee_option = 1009 AND lc_get_summary_fields_info.field_id = 11142 THEN
+               CONTINUE;
+            END IF;
+            --Added for 1.6
             IF lc_get_summary_fields_info.sort_order IS NOT NULL AND lc_get_summary_fields_info.sort_type IS NOT NULL AND lc_get_summary_fields_info.record_type = 'LINE'
             THEN
 		      lc_sort_columns :=
@@ -2529,7 +2546,12 @@ AS
                                             ln_get_line_dist_rows)
                -- End of Added and Commented by Punit on 12-JUL-2017 for Defect # 41307
                LOOP
-				-- Added by Thilak CG on 12-OCT-2017 for Wave2 UAT Defect#13836
+				--Added for 1.6
+                IF ln_fee_option = 1009 AND lc_get_dtl_fields_info.field_id = 11142 THEN
+                    CONTINUE;
+                END IF;
+                --Added for 1.6
+                -- Added by Thilak CG on 12-OCT-2017 for Wave2 UAT Defect#13836
                 IF lc_get_dtl_fields_info.sort_order IS NOT NULL AND lc_get_dtl_fields_info.sort_type IS NOT NULL
                 THEN
 					lc_sort_columns :=
