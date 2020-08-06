@@ -131,6 +131,7 @@ AS
 -- |     44.0     05-SEP-2019  Arun G     Made changes to for capture Authcode for Returns                                  |
 -- |     45.0     05-Oct-2019  Arun G     Made changes for rev recog project JIRA 106576
 -- |	 46.0	  08-May-2020  Shalu G    Made changes for Auth Amount JIRA 
+-- |     47.0     08-Aug-2020  Arun G     Made changes to populate the cost center for feeline(s) JIRA # 144725             |
 -- +========================================================================================================================+
     PROCEDURE process_current_order(
         p_order_tbl   IN  order_tbl_type,
@@ -7068,6 +7069,123 @@ AS
        RAISE fnd_api.g_exc_unexpected_error;
   END create_kit_line;
 
+
+-- +===================================================================+
+-- | Name  : Update_fee_line                                           |
+-- | Description      : This Procedure will update fee line details    |
+-- |                                                                   |
+-- | Parameters:        p_Hdr_Idx IN Header Index                      |
+-- |                    p_amount  IN Line Amount                       |
+-- +===================================================================+
+    PROCEDURE update_fee_line
+    IS
+    lc_order_count           NUMBER := 0;
+    ln_debug_level           CONSTANT NUMBER      := oe_debug_pub.g_debug_level;
+    lc_row_count             NUMBER := 0;
+
+    CURSOR CUR_FEE_LINE
+    IS
+    SELECT  b.line_type_id , b.line_category_code,
+            b.orig_sys_document_ref, b.orig_sys_line_ref, b.line_number,b.line_id,
+            b.inventory_item_id,b.attribute12 sku_line_number,
+            a.cost_center_dept, xohi.imp_file_name
+    FROM xx_om_lines_attr_iface_all a,
+         oe_lines_iface_all b,
+         xx_om_headers_attr_iface_all xohi,
+         oe_headers_iface_all ohi
+    WHERE a.orig_sys_document_ref   = b.orig_sys_document_ref
+    AND a.orig_sys_line_ref         = b.orig_sys_line_ref
+    AND xohi.orig_sys_document_ref  = ohi.orig_sys_document_ref
+    AND xohi.imp_file_name          =  g_file_name 
+    AND ohi.orig_sys_document_ref   = b.orig_sys_document_ref
+    --AND a.cost_center_dept IS NOT NULL
+    AND b.attribute12 IS NOT NULL
+    AND EXISTS ( SELECT '1'
+                 FROM   fnd_lookup_values
+                 WHERE  lookup_type = 'OD_FEES_ITEMS' 
+                 AND attribute7 = 'LINE'
+                 AND attribute6 = b.inventory_item_id)
+    ORDER BY ohi.orig_sys_document_ref;
+
+    CURSOR cur_orig_line(p_orig_sys_document_ref IN xx_om_lines_attr_iface_all.orig_sys_document_ref%TYPE,
+                         p_sku_line_number       IN oe_lines_iface_all.orig_sys_line_ref%TYPE)
+    IS
+    SELECT cost_center_dept
+    FROM xx_om_lines_attr_iface_all a,
+         oe_lines_iface_all b
+    WHERE a.orig_sys_document_ref = p_orig_sys_document_Ref
+     AND  a.orig_sys_document_ref = b.orig_sys_document_ref
+     AND  a.orig_sys_line_ref     = b.orig_sys_line_ref
+     AND  a.orig_sys_line_ref     = lpad(p_sku_line_number,5,'0');
+
+    BEGIN 
+      IF ln_debug_level > 0
+      THEN
+        oe_debug_pub.ADD('Before Updating the fee line for order');
+      END IF;
+      lc_order_count := 0;
+      lc_row_count := 0;
+      FOR cur_fee_rec IN cur_fee_line
+      LOOP
+        BEGIN
+          
+          IF ln_debug_level > 0
+          THEN
+            oe_debug_pub.ADD('Before Updating the fee line for order :'|| cur_fee_rec.orig_sys_document_ref ||
+            'Original line :'||cur_fee_rec.sku_line_number || 'Fee line Ref :'||cur_fee_rec.orig_sys_line_ref);
+          END IF;
+          
+          FOR cur_orig_line_rec IN cur_orig_line(p_orig_sys_document_ref => cur_fee_rec.orig_sys_document_ref,
+                                                 p_sku_line_number       => cur_fee_rec.sku_line_number)
+          LOOP
+            BEGIN 
+              IF ln_debug_level > 0
+              THEN
+                oe_debug_pub.ADD('Before Updating the fee line for line number:'||cur_fee_rec.sku_line_number);
+              END IF;
+
+              UPDATE apps.xx_om_lines_attr_iface_all a
+              SET cost_center_dept = cur_orig_line_rec.cost_center_dept 
+              WHERE orig_sys_document_ref  = cur_fee_rec.orig_sys_document_Ref
+              AND orig_sys_line_ref        = cur_fee_rec.orig_sys_line_ref;
+   
+              lc_row_count := SQL%ROWCOUNT;
+              lc_order_count := lc_order_count + lc_row_count;
+            EXCEPTION 
+              WHEN OTHERS 
+              THEN 
+                fnd_file.put_line(fnd_file.log, 'Failed to update the fee line details :'|| cur_fee_rec.orig_sys_document_ref || 'Line :'||cur_fee_rec.orig_sys_line_ref);
+                fnd_file.put_line(fnd_file.log, ' the error is :'|| SQLERRM);
+            END;
+          END LOOP; -- line loop
+        EXCEPTION 
+        WHEN OTHERS 
+        THEN 
+          fnd_file.put_line(fnd_file.log, 'Failed to update the fee line details :'|| cur_fee_rec.orig_sys_document_ref);
+          fnd_file.put_line(fnd_file.log, ' the error is :'|| SQLERRM);
+        END;
+
+        IF ln_debug_level > 0
+        THEN
+          oe_debug_pub.ADD( lc_order_count||' fee lines updated');
+        END IF;
+     END LOOP;   -- header loop
+
+     IF ln_debug_level > 0
+     THEN
+       oe_debug_pub.ADD('After updating the fee lines');
+     END IF;
+   EXCEPTION
+     WHEN OTHERS
+     THEN
+       fnd_file.put_line(fnd_file.LOG,
+                       'Failed to update feeLine record for order ');
+       fnd_file.put_line(fnd_file.LOG,
+                        'The error is '
+                         || SQLERRM);
+       RAISE fnd_api.g_exc_unexpected_error;
+  END update_fee_line;
+
 -- +===================================================================+
 -- | Name  : Create_CashBack_Line                                      |
 -- | Description      : This Procedure will create cash-back line      |
@@ -9977,6 +10095,23 @@ EXCEPTION
                                             80));
                 RAISE fnd_api.g_exc_error;
         END;
+
+        oe_debug_pub.ADD('Before Calling the Updating the Fee lines ');
+
+        BEGIN
+          Update_fee_line;
+        EXCEPTION 
+          WHEN OTHERS 
+          THEN 
+            fnd_file.put_line(fnd_file.LOG,
+                                     'Failed in updating the FeeLine records :'
+                                  || SUBSTR(SQLERRM,
+                                            1,
+                                            80));
+                RAISE fnd_api.g_exc_error;
+        END;
+
+
 
         oe_debug_pub.ADD('Before Inserting data into price adjs');
 
