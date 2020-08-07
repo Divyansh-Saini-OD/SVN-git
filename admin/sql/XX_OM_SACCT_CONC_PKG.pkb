@@ -7144,7 +7144,7 @@ AS
                 oe_debug_pub.ADD('Before Updating the fee line for line number:'||cur_fee_rec.sku_line_number);
               END IF;
 
-              UPDATE apps.xx_om_lines_attr_iface_all a
+              UPDATE xx_om_lines_attr_iface_all a
               SET cost_center_dept = cur_orig_line_rec.cost_center_dept 
               WHERE orig_sys_document_ref  = cur_fee_rec.orig_sys_document_Ref
               AND orig_sys_line_ref        = cur_fee_rec.orig_sys_line_ref;
