@@ -1,0 +1,753 @@
+<?xml version = "1.0" encoding = "UTF-8" ?>
+<!--
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  Oracle JDeveloper BPEL Designer 
+  
+  Created: Thu Jun 14 20:01:15 IST 2012
+  Author:  velambil
+  Type: BPEL 2.0 Process
+  Purpose: One Way BPEL Process
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+-->
+<process name="SynchEmployeeEbizProvABCSImpl"
+         targetNamespace="http://xmlns.officedepot.com/PSFTEmployeeSynch/SynchEmployeeEbizProvABCS/SynchEmployeeEbizProvABCSImpl"
+         xmlns="http://docs.oasis-open.org/wsbpel/2.0/process/executable"
+         xmlns:client="http://xmlns.officedepot.com/PSFTEmployeeSynch/SynchEmployeeEbizProvABCS/SynchEmployeeEbizProvABCSImpl"
+         xmlns:ora="http://schemas.oracle.com/xpath/extension"
+         xmlns:bpel="http://docs.oasis-open.org/wsbpel/2.0/process/executable"
+         xmlns:ns1="http://xmlns.oracle.com/pcbpel/adapter/db/PSFTEmployeeSynch/SynchEmployeeEbizProvABCS/UpdateEmployeeEBizDBAdaptorV1"
+         xmlns:bpelx="http://schemas.oracle.com/bpel/extension"
+         xmlns:bpws="http://schemas.xmlsoap.org/ws/2003/03/business-process/"
+         xmlns:xp20="http://www.oracle.com/XSL/Transform/java/oracle.tip.pc.services.functions.Xpath20"
+         xmlns:ns3="http://xmlns.officedepot.com/EnterpriseObjects/Common/V1"
+         xmlns:ns2="http://xmlns.officedepot.com/EnterpriseObjects/Core/EBO/Employee/V1"
+         xmlns:oraext="http://www.oracle.com/XSL/Transform/java/oracle.tip.pc.services.functions.ExtFunc"
+         xmlns:dvm="http://www.oracle.com/XSL/Transform/java/oracle.tip.dvm.LookupValue"
+         xmlns:hwf="http://xmlns.oracle.com/bpel/workflow/xpath"
+         xmlns:ids="http://xmlns.oracle.com/bpel/services/IdentityService/xpath"
+         xmlns:bpm="http://xmlns.oracle.com/bpmn20/extensions"
+         xmlns:xdk="http://schemas.oracle.com/bpel/extension/xpath/function/xdk"
+         xmlns:xref="http://www.oracle.com/XSL/Transform/java/oracle.tip.xref.xpath.XRefXPathFunctions"
+         xmlns:ldap="http://schemas.oracle.com/xpath/extension/ldap"
+         xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+         xmlns:ns4="http://xmlns.officedepot.com/PSFTEmployeeSynch/Common"
+         xmlns:ns7="http://xmlns.oracle.com/pcbpel/adapter/jms/PSFTEmployeeSynch/SynchEmployeeEbizProvABCS/CommonErrorLoggingService"
+         xmlns:ns8="http://www.officedepot.com/officedepot/ODComnErrorStructure/1.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns:ns5="http://xmlns.oracle.com/pcbpel/adapter/jms/PSFTEmployeeSynch/SynchEmployeeEbizProvABCS/EBizSynchEmployeeJMSConsumerV1"
+         xmlns:ns6="http://xmlns.oracle.com/PeopleSoftMigration/UpdateEmployeeErrorCallBackPSFTProvABCS/UpdateEmployeeErrorCallBackPSFTProvABCS"
+         xmlns:ns9="http://xmlns.oracle.com/pcbpel/adapter/apps/PSFTEmployeeSynch/SynchEmployeeEbizProvABCS/UpdateEmployeeEBizAppsAdaptorV1"
+         xmlns:ns10="http://xmlns.oracle.com/pcbpel/adapter/apps/PSFTEmployeeSynch/SynchEmployeeEbizProvABCS/SyncEmployeeEBizAppAdaptorV1"
+         xmlns:ns11="http://xmlns.officedepot.com/EnterpriseObjects/Core/Common/V3"
+         xmlns:ns16="http://xmlns.officedepot.com/PeopleSoftMigration/UpdateEmployeeErrorCallBackPSFTProvABCS/UpdateEmployeeErrorToPSFTEBM"
+         xmlns:ns14="http://xmlns.officedepot.com/EnterpriseObjects/Core/Custom/Common/V3"
+         xmlns:ns12="http://schemas.xmlsoap.org/ws/2003/03/addressing"
+         xmlns:ns15="http://xmlns.oracle.com/pcbpel/adapter/db/APPS/XX_HR_EMP_PKG/SYNC_CHANGED_EMPLOYEES/"
+         xmlns:ns13="urn:oasis:names:tc:xacml:2.0:context:schema:cd:04"
+         xmlns:ns17="http://xmlns.oracle.com/pcbpel/adapter/db/APPS/XX_BPEL_INTEGRATION_PKG/SUBMIT_CONCURRENT_PROGRAM/"
+         xmlns:ns18="http://xmlns.oracle.com/pcbpel/adapter/db/APPS/XX_HR_PS_STG_INSERT_PKG/INSERT_PROC/"
+         xmlns:ns19="http://xmlns.oracle.com/pcbpel/adapter/jms/EmpSyncSIT/SynchEmployeeEbizProvABCS/InsertErrorLogger"
+         xmlns:ns20="ODError"
+         xmlns:ns21="ODError">
+  <import namespace="http://xmlns.officedepot.com/PSFTEmployeeSynch/Common"
+          location="xsd/Counter.xsd"
+          importType="http://www.w3.org/2001/XMLSchema"/>
+  <import namespace="http://xmlns.officedepot.com/PSFTEmployeeSynch/SynchEmployeeEbizProvABCS/SynchEmployeeEbizProvABCSImpl"
+          location="SynchEmployeeEbizProvABCSImpl.wsdl"
+          importType="http://schemas.xmlsoap.org/wsdl/"/>
+  <!-- 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+      PARTNERLINKS                                                      
+      List of services participating in this BPEL process               
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  -->
+  <partnerLinks>
+    <!-- 
+      The 'client' role represents the requester of this service. It is 
+      used for callback. The location and correlation information associated
+      with the client role are automatically set using WS-Addressing.
+    -->
+    <partnerLink name="EBizSynchEmployeeJMSConsumerV1"
+                 partnerLinkType="ns5:Consume_Message_plt"
+                 myRole="Consume_Message_role"/>
+    <partnerLink name="UpdateEmployeeEBizAppsAdaptorV1"
+                 partnerLinkType="ns9:UpdateEmployeeEBizAppsAdaptorV1_plt"
+                 partnerRole="UpdateEmployeeEBizAppsAdaptorV1_role"/>
+    <partnerLink name="SyncEmployeeEBizAppAdaptorV1"
+                 partnerLinkType="ns10:SyncEmployeeEBizAppAdaptorV1_plt"
+                 partnerRole="SyncEmployeeEBizAppAdaptorV1_role"/>
+    <partnerLink name="UpdateEmployeeErrorCallBackPSFTProvABCS"
+                 partnerLinkType="ns6:UpdateEmployeeErrorCallBackPSFTProvABCS"
+                 partnerRole="UpdateEmployeeErrorCallBackPSFTProvABCSProvider"/>
+    <partnerLink name="SynchEmployeeEbizProvService"
+                 partnerLinkType="client:SynchEmployeeEbizProvABCSImpl"
+                 myRole="SynchEmployeeEbizProvABCSImplProvider"/>
+    <partnerLink name="InsertErrorLogger"
+                 partnerLinkType="ns19:Produce_Message_plt"
+                 partnerRole="Produce_Message_role"/>
+  </partnerLinks>
+  <!-- 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+      VARIABLES                                                        
+      List of messages and XML documents used within this BPEL process 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  -->
+  <variables>
+    <!-- Reference to the message passed as input during initiation -->
+    <!-- <variable name="input_jms_Variable"
+              messageType="client:SynchEmployeeEbizProvABCSImplRequestMessage"/> -->
+    <variable name="inputVariable" messageType="ns5:Consume_Message_msg"/>
+    <variable name="EmpCount" element="ns4:counter"/>
+    <variable name="FailedEmpList" type="xsd:string"/>
+    <variable name="ApplicationTeamNotified" type="xsd:boolean"/>
+    <variable name="InvokeInsertErrorLogger_Produce_Message_InputVariable"
+              messageType="ns19:Produce_Message_msg"/>
+    <variable name="ErrorLoggerData" messageType="ns19:Produce_Message_msg"/>
+  </variables>
+  <!-- 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+     ORCHESTRATION LOGIC                                               
+     Set of activities coordinating the flow of messages across the    
+     services integrated within this business process                  
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  -->
+  <sequence name="main">
+    <!-- Receive input from requestor. (Note: This maps to operation defined in SynchEmployeeEbizProvABCSImpl.wsdl) -->
+    <receive name="receiveInput" partnerLink="EBizSynchEmployeeJMSConsumerV1"
+             portType="ns5:Consume_Message_ptt" operation="Consume_Message"
+             variable="inputVariable" createInstance="yes"/>
+    <scope name="Main_Scope" exitOnStandardFault="no">
+      <bpelx:annotation>
+        <bpelx:general>
+          <bpelx:property name="userLabel">Main_Scope</bpelx:property>
+        </bpelx:general>
+      </bpelx:annotation>
+      <variables>
+        <variable name="Invoke_SyncEmployeeEBizAppAdaptorV1_InputVariable"
+                  messageType="ns10:args_in_msg"/>
+        <variable name="Invoke_SyncEmployeeEBizAppAdaptorV1_OutputVariable"
+                  messageType="ns10:args_out_msg"/>
+        <variable name="Error_Counter" type="xsd:integer"/>
+        <variable name="Invoke_PSFT_Error_CB_Process_InputVariable"
+                  element="ns16:UpdateEmployeeErrorToPSFTEBM"/>
+      </variables>
+      <faultHandlers>
+        <catchAll>
+          <sequence name="Sequence5">
+            <scope name="Synch_Before_SB_Scope" exitOnStandardFault="no">
+              <bpelx:annotation>
+                <bpelx:general>
+                  <bpelx:property name="userLabel">Synch_Before_CB_Scope</bpelx:property>
+                </bpelx:general>
+              </bpelx:annotation>
+              <variables>
+                <variable name="Invoke_Synchronize_SyncEmployeeEBizAppAdaptorV1_InputVariable"
+                          messageType="ns10:args_in_msg"/>
+                <variable name="Invoke_Synchronize_SyncEmployeeEBizAppAdaptorV1_OutputVariable"
+                          messageType="ns10:args_out_msg"/>
+              </variables>
+              <faultHandlers>
+                <catchAll>
+                  <empty name="No_Operation"/>
+                </catchAll>
+              </faultHandlers>
+              <sequence name="Sequence13">
+                <assign name="AssignFailedEmpList">
+                  <copy>
+                    <from>oraext:create-delimited-string($Invoke_PSFT_Error_CB_Process_InputVariable/ns16:EmployeeErrorDetails/ns16:EmployeeID,',')</from>
+                    <to>$FailedEmpList</to>
+                  </copy>
+                  <copy>
+                    <from>false()</from>
+                    <to>$ApplicationTeamNotified</to>
+                  </copy>
+                </assign>
+                <if name="If_There_were_updates">
+                  <documentation>Synchronize</documentation>
+                  <condition>(($EmpCount/ns4:value &gt; 1) and ($Error_Counter &lt; $EmpCount/ns4:value))</condition>
+                  <sequence name="Sequence10">
+                    <assign name="Prepare_Synch_Request">
+                      <copy>
+                        <from>ora:getPreference('CP_USER_NAME')</from>
+                        <to>$Invoke_Synchronize_SyncEmployeeEBizAppAdaptorV1_InputVariable.InputParameters/ns17:P_USER_NAME</to>
+                      </copy>
+                      <copy>
+                        <from>ora:getPreference('CP_RESP_NAME')</from>
+                        <to>$Invoke_Synchronize_SyncEmployeeEBizAppAdaptorV1_InputVariable.InputParameters/ns17:P_RESP_NAME</to>
+                      </copy>
+                      <copy>
+                        <from>ora:getPreference('CP_APPL_SHORT_NAME')</from>
+                        <to>$Invoke_Synchronize_SyncEmployeeEBizAppAdaptorV1_InputVariable.InputParameters/ns17:P_APPL_SHORT_NAME</to>
+                      </copy>
+                      <copy>
+                        <from>ora:getPreference('CP_CONC_SHORT_NAME')</from>
+                        <to>$Invoke_Synchronize_SyncEmployeeEBizAppAdaptorV1_InputVariable.InputParameters/ns17:P_CONC_SHORT_NAME</to>
+                      </copy>
+                    </assign>
+                    <invoke name="Invoke_Synchronize_Emp_EBiz_APi"
+                            partnerLink="SyncEmployeeEBizAppAdaptorV1"
+                            portType="ns10:SyncEmployeeEBizAppAdaptorV1_ptt"
+                            operation="SyncEmployeeEBizAppAdaptorV1"
+                            inputVariable="Invoke_Synchronize_SyncEmployeeEBizAppAdaptorV1_InputVariable"
+                            bpelx:invokeAsDetail="no"
+                            outputVariable="Invoke_Synchronize_SyncEmployeeEBizAppAdaptorV1_OutputVariable"/>
+                  </sequence>
+                  <else>
+                    <empty name="Nothing_to_Commit"/>
+                  </else>
+                </if>
+              </sequence>
+            </scope>
+            <scope name="PSFTErrorCallBackScope" exitOnStandardFault="no">
+              <variables>
+                <variable name="Invoke_PSFT_Error_CB_Process_InputVariable1"
+                          element="ns16:UpdateEmployeeErrorToPSFTEBM"/>
+              </variables>
+              <faultHandlers>
+                <catchAll>
+                  <sequence name="Sequence12">
+                    <scope name="Scope6">
+                      <variables>
+                        <variable name="messagePayload" type="xsd:string"/>
+                        <variable name="emailSubject" type="xsd:string"/>
+                        <variable name="errorText" type="xsd:string"/>
+                        <variable name="systemName" type="xsd:string"/>
+                        <variable name="messageOperation" type="xsd:string"/>
+                        <variable name="applicationTeamErrorText"
+                                  type="xsd:string"/>
+                      </variables>
+                      <sequence>
+                        <assign name="AssignErrorRelatedData">
+                          <copy>
+                            <from>concat(ora:getPreference("SOA_ADMIN_ERROR_MESSAGE"),$inputVariable.body/ns2:DataArea/ns2:DateTimeCreated)</from>
+                            <to>$emailSubject</to>
+                          </copy>
+                          <copy>
+                            <from>substring(ora:getFaultAsString(),1,4000)</from>
+                            <to>$errorText</to>
+                          </copy>
+                          <copy>
+                            <from>string(' ')</from>
+                            <to>$messagePayload</to>
+                          </copy>
+                          <copy>
+                            <from>ora:getPreference('SOA_ADMIN_APP_NAME')</from>
+                            <to>$systemName</to>
+                          </copy>
+                          <copy>
+                            <from>concat(ora:getPreference('APPLICATION_EMAIL_SUBJECT'),$inputVariable.body/ns2:DataArea/ns2:DateTimeCreated)</from>
+                            <to>$applicationTeamErrorText</to>
+                          </copy>
+                        </assign>
+                        <assign name="AssignErrorLoggingData">
+                          <copy>
+                            <from>ora:getCompositeInstanceId()</from>
+                            <to>$ErrorLoggerData.body/ns21:ProcessInfo/ns21:BusinessProcessId</to>
+                          </copy>
+                          <copy>
+                            <from>ora:getPreference('ADMIN_PROCESS')</from>
+                            <to>$ErrorLoggerData.body/ns21:ProcessInfo/ns21:BusinessProcessName</to>
+                          </copy>
+                          <copy>
+                            <from>ora:getCompositeURL()</from>
+                            <to>$ErrorLoggerData.body/ns21:ProcessInfo/ns21:SystemName</to>
+                          </copy>
+                          <copy>
+                            <from>ora:getPreference('DOMAIN')</from>
+                            <to>$ErrorLoggerData.body/ns21:ProcessInfo/ns21:BusinessProcessDomain</to>
+                          </copy>
+                          <copy>
+                            <from>ora:getPreference('CATCH_ALL_PROCESS_STEP')</from>
+                            <to>$ErrorLoggerData.body/ns21:ProcessInfo/ns21:BusinessProcessStep</to>
+                          </copy>
+                          <copy>
+                            <from>ora:getPreference('ENTITY_ID')</from>
+                            <to>$ErrorLoggerData.body/ns21:Entity/ns21:EntityID</to>
+                          </copy>
+                          <copy>
+                            <from>ora:getPreference('ERROR_TYPE')</from>
+                            <to>$ErrorLoggerData.body/ns21:ErrorDetails/ns21:ErrorType</to>
+                          </copy>
+                          <copy>
+                            <from>ora:getPreference('ERROR_SEVERITY')</from>
+                            <to>$ErrorLoggerData.body/ns21:ErrorDetails/ns21:ErrorSeverity</to>
+                          </copy>
+                          <copy>
+                            <from>$errorText</from>
+                            <to>$ErrorLoggerData.body/ns21:ErrorDetails/ns21:ErrorText</to>
+                          </copy>
+                          <copy>
+                            <from>ora:getCurrentDateTime()</from>
+                            <to>$ErrorLoggerData.body/ns21:ErrorDetails/ns21:ErrorDateTime</to>
+                          </copy>
+                          <copy>
+                            <from>ora:getFaultName()</from>
+                            <to>$ErrorLoggerData.body/ns21:ErrorDetails/ns21:ErrorCode</to>
+                          </copy>
+                          <copy>
+                            <from>$emailSubject</from>
+                            <to>$ErrorLoggerData.body/ns21:ErrorDetails/ns21:ErrorDescription</to>
+                          </copy>
+                          <copy>
+                            <from>ora:getCompositeInstanceId()</from>
+                            <to>$ErrorLoggerData.body/ns21:MessageDetails/ns21:MessageId</to>
+                          </copy>
+                          <copy>
+                            <from>ora:getCurrentDateTime()</from>
+                            <to>$ErrorLoggerData.body/ns21:MessageDetails/ns21:MessageDateTime</to>
+                          </copy>
+                          <copy>
+                            <from>ora:getPreference('MESSAGE_TYPE')</from>
+                            <to>$ErrorLoggerData.body/ns21:MessageDetails/ns21:MessageType</to>
+                          </copy>
+                          <copy>
+                            <from>ora:getPreference('MESSAGE_VERSION')</from>
+                            <to>$ErrorLoggerData.body/ns21:MessageDetails/ns21:MessageVersion</to>
+                          </copy>
+                          <copy>
+                            <from>$messageOperation</from>
+                            <to>$ErrorLoggerData.body/ns21:MessageDetails/ns21:MessageOperation</to>
+                          </copy>
+                          <copy>
+                            <from>ora:getPreference('SOURCE_SYSTEM_NAME')</from>
+                            <to>$ErrorLoggerData.body/ns21:MessageDetails/ns21:MessageSourceSystem</to>
+                          </copy>
+                          <copy>
+                            <from>ora:getPreference('NOTIFICATION_FLAG')</from>
+                            <to>$ErrorLoggerData.body/ns21:Notification/ns21:sendNotification</to>
+                          </copy>
+                          <copy>
+                            <from>ora:getPreference('SOURCE_SYSTEM_NAME')</from>
+                            <to>$ErrorLoggerData.body/ns21:ProcessInfo/ns21:TradingPartnerDetails/ns21:TPFrom</to>
+                          </copy>
+                          <copy>
+                            <from>'EBS'</from>
+                            <to>$ErrorLoggerData.body/ns21:ProcessInfo/ns21:TradingPartnerDetails/ns21:TPTo</to>
+                          </copy>
+                        </assign>
+                        <invoke name="InvokeInsertErrorLogger"
+                                partnerLink="InsertErrorLogger"
+                                portType="ns19:Produce_Message_ptt"
+                                operation="Produce_Message"
+                                inputVariable="ErrorLoggerData"
+                                bpelx:invokeAsDetail="no"/>
+                        <assign name="AssignDetailsToApplicationTeam">
+                          <copy>
+                            <from>concat(ora:getPreference('APPLICATION_ACTION_ERROR_MESSAGE'),$FailedEmpList)</from>
+                            <to>$ErrorLoggerData.body/ns20:ErrorDetails/ns20:ErrorDescription</to>
+                          </copy>
+                          <copy>
+                            <from>$applicationTeamErrorText</from>
+                            <to>$ErrorLoggerData.body/ns20:ErrorDetails/ns20:ErrorText</to>
+                          </copy>
+                          <copy>
+                            <from>ora:getCompositeURL()</from>
+                            <to>$ErrorLoggerData.body/ns20:ProcessInfo/ns20:SystemName</to>
+                          </copy>
+                          <copy>
+                            <from>ora:getPreference('SYSTEM_NAME')</from>
+                            <to>$ErrorLoggerData.body/ns20:ProcessInfo/ns20:BusinessProcessName</to>
+                          </copy>
+                        </assign>
+                        <invoke name="InvokeErrorLoggerToSendEmailToPeopleSoftTeam"
+                                partnerLink="InsertErrorLogger"
+                                portType="ns19:Produce_Message_ptt"
+                                operation="Produce_Message"
+                                inputVariable="ErrorLoggerData"
+                                bpelx:invokeAsDetail="no"/>
+                      </sequence>
+                    </scope>
+                    <assign name="AssignNotified">
+                      <copy>
+                        <from>true()</from>
+                        <to>$ApplicationTeamNotified</to>
+                      </copy>
+                    </assign>
+                  </sequence>
+                </catchAll>
+              </faultHandlers>
+              <sequence name="Sequence6">
+                <!-- <assign name="Initialize_CB_Request">
+                  <bpelx:annotation>
+                    <bpelx:pattern patternName="bpelx:transformation"/>
+                  </bpelx:annotation>
+                  <copy>
+                    <from>ora:doXSLTransformForDoc("xsl/Canonical_to_PSFT_CB_Map1.xsl", $inputVariable.body)</from>
+                    <to variable="Invoke_PSFT_Error_CB_Process_InputVariable"/>
+                  </copy>
+                </assign> -->
+                <!-- <assign name="Assign1">
+                  <copy>
+                    <from><literal>1</literal></from>
+                    <to>$Invoke_PSFT_Error_CB_Process_InputVariable/ns16:EmployeeErrorList/ns16:EmployeeID</to>
+                  </copy>
+                </assign>-->
+                <invoke name="Invoke_PSFT_Error_CB_Process"
+                        partnerLink="UpdateEmployeeErrorCallBackPSFTProvABCS"
+                        portType="ns6:UpdateEmployeeErrorCallBackPSFTProvABCS"
+                        operation="updateEmployeeErrorDetailsToPSFT"
+                        inputVariable="Invoke_PSFT_Error_CB_Process_InputVariable"
+                        bpelx:invokeAsDetail="no"/>
+              </sequence>
+            </scope>
+            <scope name="ErrorHandlerScope" exitOnStandardFault="no">
+              <variables>
+                <variable name="messagePayload" type="xsd:string"/>
+                <variable name="emailSubject" type="xsd:string"/>
+                <variable name="errorText" type="xsd:string"/>
+                <variable name="systemName" type="xsd:string"/>
+                <variable name="messageOperation" type="xsd:string"/>
+                <variable name="applicationTeamErrorText" type="xsd:string"/>
+              </variables>
+              <sequence name="Sequence4">
+                <assign name="AssignRunTimeErrorRelatedData">
+                  <copy>
+                    <from>concat(ora:getPreference("SOA_ADMIN_ERROR_MESSAGE"),$inputVariable.body/ns2:DataArea/ns2:DateTimeCreated)</from>
+                    <to>$emailSubject</to>
+                  </copy>
+                  <copy>
+                    <from>substring(ora:getFaultAsString(),1,4000)</from>
+                    <to>$errorText</to>
+                  </copy>
+                  <copy>
+                    <from>string(' ')</from>
+                    <to>$messagePayload</to>
+                  </copy>
+                  <copy>
+                    <from>ora:getPreference('SOA_ADMIN_APP_NAME')</from>
+                    <to>$systemName</to>
+                  </copy>
+                  <copy>
+                    <from>concat(ora:getPreference('APPLICATION_EMAIL_SUBJECT'),$inputVariable.body/ns2:DataArea/ns2:DateTimeCreated)</from>
+                    <to>$applicationTeamErrorText</to>
+                  </copy>
+                </assign>
+                <assign name="AssignPopulateCommonErrorLoggingData">
+                  <copy>
+                    <from>ora:getCompositeInstanceId()</from>
+                    <to>$ErrorLoggerData.body/ns21:ProcessInfo/ns21:BusinessProcessId</to>
+                  </copy>
+                  <copy>
+                    <from>ora:getPreference('ADMIN_PROCESS')</from>
+                    <to>$ErrorLoggerData.body/ns21:ProcessInfo/ns21:BusinessProcessName</to>
+                  </copy>
+                  <copy>
+                    <from>ora:getCompositeURL()</from>
+                    <to>$ErrorLoggerData.body/ns21:ProcessInfo/ns21:SystemName</to>
+                  </copy>
+                  <copy>
+                    <from>ora:getPreference('DOMAIN')</from>
+                    <to>$ErrorLoggerData.body/ns21:ProcessInfo/ns21:BusinessProcessDomain</to>
+                  </copy>
+                  <copy>
+                    <from>ora:getPreference('CATCH_ALL_PROCESS_STEP')</from>
+                    <to>$ErrorLoggerData.body/ns21:ProcessInfo/ns21:BusinessProcessStep</to>
+                  </copy>
+                  <copy>
+                    <from>ora:getPreference('ENTITY_ID')</from>
+                    <to>$ErrorLoggerData.body/ns21:Entity/ns21:EntityID</to>
+                  </copy>
+                  <copy>
+                    <from>ora:getPreference('ERROR_TYPE')</from>
+                    <to>$ErrorLoggerData.body/ns21:ErrorDetails/ns21:ErrorType</to>
+                  </copy>
+                  <copy>
+                    <from>ora:getPreference('ERROR_SEVERITY')</from>
+                    <to>$ErrorLoggerData.body/ns21:ErrorDetails/ns21:ErrorSeverity</to>
+                  </copy>
+                  <copy>
+                    <from>$errorText</from>
+                    <to>$ErrorLoggerData.body/ns21:ErrorDetails/ns21:ErrorText</to>
+                  </copy>
+                  <copy>
+                    <from>ora:getCurrentDateTime()</from>
+                    <to>$ErrorLoggerData.body/ns21:ErrorDetails/ns21:ErrorDateTime</to>
+                  </copy>
+                  <copy>
+                    <from>ora:getFaultName()</from>
+                    <to>$ErrorLoggerData.body/ns21:ErrorDetails/ns21:ErrorCode</to>
+                  </copy>
+                  <copy>
+                    <from>$emailSubject</from>
+                    <to>$ErrorLoggerData.body/ns21:ErrorDetails/ns21:ErrorDescription</to>
+                  </copy>
+                  <copy>
+                    <from>ora:getCompositeInstanceId()</from>
+                    <to>$ErrorLoggerData.body/ns21:MessageDetails/ns21:MessageId</to>
+                  </copy>
+                  <copy>
+                    <from>ora:getCurrentDateTime()</from>
+                    <to>$ErrorLoggerData.body/ns21:MessageDetails/ns21:MessageDateTime</to>
+                  </copy>
+                  <copy>
+                    <from>ora:getPreference('MESSAGE_TYPE')</from>
+                    <to>$ErrorLoggerData.body/ns21:MessageDetails/ns21:MessageType</to>
+                  </copy>
+                  <copy>
+                    <from>ora:getPreference('MESSAGE_VERSION')</from>
+                    <to>$ErrorLoggerData.body/ns21:MessageDetails/ns21:MessageVersion</to>
+                  </copy>
+                  <copy>
+                    <from>$messageOperation</from>
+                    <to>$ErrorLoggerData.body/ns21:MessageDetails/ns21:MessageOperation</to>
+                  </copy>
+                  <copy>
+                    <from>ora:getPreference('SOURCE_SYSTEM_NAME')</from>
+                    <to>$ErrorLoggerData.body/ns21:MessageDetails/ns21:MessageSourceSystem</to>
+                  </copy>
+                  <copy>
+                    <from>ora:getPreference('NOTIFICATION_FLAG')</from>
+                    <to>$ErrorLoggerData.body/ns21:Notification/ns21:sendNotification</to>
+                  </copy>
+                  <copy>
+                    <from>ora:getPreference('SOURCE_SYSTEM_NAME')</from>
+                    <to>$ErrorLoggerData.body/ns21:ProcessInfo/ns21:TradingPartnerDetails/ns21:TPFrom</to>
+                  </copy>
+                  <copy>
+                    <from>'EBS'</from>
+                    <to>$ErrorLoggerData.body/ns21:ProcessInfo/ns21:TradingPartnerDetails/ns21:TPTo</to>
+                  </copy>
+                </assign>
+                <invoke name="InvokeErrorLoggerToSendErrorData"
+                        partnerLink="InsertErrorLogger"
+                        portType="ns19:Produce_Message_ptt"
+                        operation="Produce_Message"
+                        inputVariable="ErrorLoggerData"
+                        bpelx:invokeAsDetail="no"/>
+                <if name="Are_there_Remote_Errors">
+                  <documentation>Yes</documentation>
+                  <condition>$Error_Counter &gt; 0 and $ApplicationTeamNotified != true()</condition>
+                  <sequence>
+                    <assign name="AssignErrorDetailsToApplicationTeam">
+                      <copy>
+                        <from>concat(ora:getPreference('APPLICATION_ERROR_MESSAGE'),count($Invoke_PSFT_Error_CB_Process_InputVariable/ns16:EmployeeErrorDetails/ns16:EmployeeID))</from>
+                        <to>$ErrorLoggerData.body/ns20:ErrorDetails/ns20:ErrorDescription</to>
+                      </copy>
+                      <copy>
+                        <from>$applicationTeamErrorText</from>
+                        <to>$ErrorLoggerData.body/ns20:ErrorDetails/ns20:ErrorText</to>
+                      </copy>
+                      <copy>
+                        <from>ora:getPreference('SYSTEM_NAME')</from>
+                        <to>$ErrorLoggerData.body/ns20:ProcessInfo/ns20:BusinessProcessName</to>
+                      </copy>
+                    </assign>
+                    <invoke name="InvokeErrorLoggerToSendEmailToPeopleSoftTeam"
+                            partnerLink="InsertErrorLogger"
+                            portType="ns19:Produce_Message_ptt"
+                            operation="Produce_Message"
+                            inputVariable="ErrorLoggerData"
+                            bpelx:invokeAsDetail="no"/>
+                  </sequence>
+                  <else>
+                    <documentation>No</documentation>
+                    <empty name="No_Application_Notification"/>
+                  </else>
+                </if>
+              </sequence>
+            </scope>
+          </sequence>
+        </catchAll>
+      </faultHandlers>
+      <sequence name="Sequence7">
+        <assign name="Intialize_Error_Counter">
+          <copy>
+            <from><literal>0</literal></from>
+            <to>$Error_Counter</to>
+          </copy>
+        </assign>
+        <if name="Determine_If_There_are_Employees_to_Update">
+          <documentation>Employees_Exist</documentation>
+          <condition>count( $inputVariable.body/ns2:DataArea/ns2:EmployeeList/ns2:Employee) &gt; 0</condition>
+          <sequence>
+            <forEach parallel="no" counterName="ForEach1Counter"
+                     name="ForEachEmployee">
+              <startCounterValue>number('1')</startCounterValue>
+              <finalCounterValue>count( $inputVariable.body/ns2:DataArea/ns2:EmployeeList/ns2:Employee )</finalCounterValue>
+              <scope name="Loop_Scope" exitOnStandardFault="no">
+                <bpelx:annotation>
+                  <bpelx:general>
+                    <bpelx:property name="userLabel">Loop_Scope</bpelx:property>
+                  </bpelx:general>
+                </bpelx:annotation>
+                <variables>
+                  <variable name="Invoke_Update_Employee_EBiz_Data_UpdateEmployeeEBizAppsAdaptorV1_InputVariable"
+                            messageType="ns9:args_in_msg"/>
+                  <variable name="Invoke_Update_Employee_EBiz_Data_UpdateEmployeeEBizAppsAdaptorV1_OutputVariable"
+                            messageType="ns9:args_out_msg"/>
+                </variables>
+                <sequence name="Sequence1">
+                  <assign name="Assign_Counter">
+                    <copy>
+                      <from>$ForEach1Counter</from>
+                      <to>$EmpCount/ns4:value</to>
+                    </copy>
+                  </assign>
+                  <assign name="Transform_to_EBiz_Format">
+                    <bpelx:annotation>
+                      <bpelx:pattern patternName="bpelx:transformation"/>
+                    </bpelx:annotation>
+                    <copy>
+                      <from>ora:doXSLTransformForDoc("xsl/Transformation_Emp_Canonical_Ebiz_Map.xsl", $inputVariable.body, "EmpCount", $EmpCount)</from>
+                      <to variable="Invoke_Update_Employee_EBiz_Data_UpdateEmployeeEBizAppsAdaptorV1_InputVariable"
+                          part="InputParameters"/>
+                    </copy>
+                  </assign>
+                  <scope name="Scope4">
+                    <bpelx:annotation>
+                      <bpelx:general>
+                        <bpelx:property name="userLabel">Ebiz_Updte_scope</bpelx:property>
+                      </bpelx:general>
+                    </bpelx:annotation>
+                    <faultHandlers>
+                      <catchAll>
+                        <sequence name="Sequence9">
+                          <scope name="Scope5">
+                            <variables>
+                              <variable name="PS_CB_Non_Business_Faults_List"
+                                        element="ns16:UpdateEmployeeErrorToPSFTEBM"/>
+                            </variables>
+                            <sequence>
+                              <assign name="Prepare_Error_List">
+                                <bpelx:annotation>
+                                  <bpelx:pattern patternName="bpelx:transformation"/>
+                                </bpelx:annotation>
+                                <copy>
+                                  <from>ora:doXSLTransformForDoc("xsl/Cannonical_to_CB_Req_Map.xsl", $inputVariable.body, "EmpCount", $EmpCount)</from>
+                                  <to variable="PS_CB_Non_Business_Faults_List"/>
+                                </copy>
+                              </assign>
+                              <assign name="Append_to_existing_List">
+                                <extensionAssignOperation>
+                                  <bpelx:append>
+                                    <bpelx:from>$PS_CB_Non_Business_Faults_List/ns16:EmployeeErrorDetails</bpelx:from>
+                                    <bpelx:to>$Invoke_PSFT_Error_CB_Process_InputVariable</bpelx:to>
+                                  </bpelx:append>
+                                </extensionAssignOperation>
+                              </assign>
+                              <rethrow name="Rethrow_Fault"/>
+                            </sequence>
+                          </scope>
+                        </sequence>
+                      </catchAll>
+                    </faultHandlers>
+                    <invoke name="Invoke_Update_Employee_EBiz_Data"
+                            partnerLink="UpdateEmployeeEBizAppsAdaptorV1"
+                            portType="ns9:UpdateEmployeeEBizAppsAdaptorV1_ptt"
+                            operation="UpdateEmployeeEBizAppsAdaptorV1"
+                            inputVariable="Invoke_Update_Employee_EBiz_Data_UpdateEmployeeEBizAppsAdaptorV1_InputVariable"
+                            outputVariable="Invoke_Update_Employee_EBiz_Data_UpdateEmployeeEBizAppsAdaptorV1_OutputVariable"
+                            bpelx:invokeAsDetail="no"/>
+                  </scope>
+                  <if name="If_a_Data_Error_Occurs">
+                    <documentation>Error</documentation>
+                    <condition>($Invoke_Update_Employee_EBiz_Data_UpdateEmployeeEBizAppsAdaptorV1_OutputVariable.OutputParameters/ns18:P_ERRBUFF != '') or ($Invoke_Update_Employee_EBiz_Data_UpdateEmployeeEBizAppsAdaptorV1_OutputVariable.OutputParameters/ns18:P_RETCODE != '')</condition>
+                    <sequence name="Sequence8">
+                      <scope name="Scope3">
+                        <bpelx:annotation>
+                          <bpelx:general>
+                            <bpelx:property name="userLabel">EBiz_Sync_Scope</bpelx:property>
+                          </bpelx:general>
+                        </bpelx:annotation>
+                        <variables>
+                          <variable name="Emp_Error_Detail"
+                                    element="ns16:EmployeeErrorDetails"/>
+                        </variables>
+                        <sequence>
+                          <assign name="Assign_Error_Details">
+                            <copy>
+                              <from>$Invoke_Update_Employee_EBiz_Data_UpdateEmployeeEBizAppsAdaptorV1_InputVariable.InputParameters/ns18:P_EMPLID</from>
+                              <to>$Emp_Error_Detail/ns16:EmployeeID</to>
+                            </copy>
+                            <copy>
+                              <from><literal>E</literal></from>
+                              <to>$Emp_Error_Detail/ns16:ProcessFlag</to>
+                            </copy>
+                            <copy>
+                              <from>$Invoke_Update_Employee_EBiz_Data_UpdateEmployeeEBizAppsAdaptorV1_OutputVariable.OutputParameters/ns18:P_ERRBUFF</from>
+                              <to>$Emp_Error_Detail/ns16:ErrorDesc</to>
+                            </copy>
+                            <extensionAssignOperation>
+                              <bpelx:append>
+                                <bpelx:from>$Emp_Error_Detail</bpelx:from>
+                                <bpelx:to>$Invoke_PSFT_Error_CB_Process_InputVariable</bpelx:to>
+                              </bpelx:append>
+                            </extensionAssignOperation>
+                          </assign>
+                          <assign name="Increment_Error_Counter">
+                            <copy>
+                              <from>$Error_Counter  + 1</from>
+                              <to>$Error_Counter</to>
+                            </copy>
+                          </assign>
+                        </sequence>
+                      </scope>
+                    </sequence>
+                    <else>
+                      <empty name="No_Operation"/>
+                    </else>
+                  </if>
+                </sequence>
+              </scope>
+            </forEach>
+            <if name="Was_Data_Updated_to_EBiz">
+              <documentation>Commit_Possible</documentation>
+              <condition>$Error_Counter &lt; count($inputVariable.body/ns2:DataArea/ns2:EmployeeList/ns2:Employee)</condition>
+              <sequence>
+                <assign name="Prepare_Sync_EBiz_Request">
+                  <copy>
+                    <from>ora:getPreference('CP_USER_NAME')</from>
+                    <to>$Invoke_SyncEmployeeEBizAppAdaptorV1_InputVariable.InputParameters/ns17:P_USER_NAME</to>
+                  </copy>
+                  <copy>
+                    <from>ora:getPreference('CP_RESP_NAME')</from>
+                    <to>$Invoke_SyncEmployeeEBizAppAdaptorV1_InputVariable.InputParameters/ns17:P_RESP_NAME</to>
+                  </copy>
+                  <copy>
+                    <from>ora:getPreference('CP_APPL_SHORT_NAME')</from>
+                    <to>$Invoke_SyncEmployeeEBizAppAdaptorV1_InputVariable.InputParameters/ns17:P_APPL_SHORT_NAME</to>
+                  </copy>
+                  <copy>
+                    <from>ora:getPreference('CP_CONC_SHORT_NAME')</from>
+                    <to>$Invoke_SyncEmployeeEBizAppAdaptorV1_InputVariable.InputParameters/ns17:P_CONC_SHORT_NAME</to>
+                  </copy>
+                </assign>
+                <invoke name="Invoke_Sync_Employee_Ebiz_API"
+                        partnerLink="SyncEmployeeEBizAppAdaptorV1"
+                        portType="ns10:SyncEmployeeEBizAppAdaptorV1_ptt"
+                        operation="SyncEmployeeEBizAppAdaptorV1"
+                        inputVariable="Invoke_SyncEmployeeEBizAppAdaptorV1_InputVariable"
+                        outputVariable="Invoke_SyncEmployeeEBizAppAdaptorV1_OutputVariable"
+                        bpelx:invokeAsDetail="no"/>
+                <assign name="Reset_Counter">
+                  <copy>
+                    <from>0</from>
+                    <to>$EmpCount/ns4:value</to>
+                  </copy>
+                </assign>
+              </sequence>
+              <else>
+                <empty name="Nothing_to_Commit"/>
+              </else>
+            </if>
+            <if name="For_Data_Errors">
+              <documentation>Error_Count_greater_than_0</documentation>
+              <condition>$Error_Counter &gt; 0</condition>
+              <sequence name="Sequence11">
+                <throw name="Throw_Business_Fault"
+                       faultName="client:DataErrors"/>
+              </sequence>
+              <else>
+                <empty name="No_Operation"/>
+              </else>
+            </if>
+          </sequence>
+          <else>
+            <documentation>No_Employees</documentation>
+            <empty name="No_Operation"/>
+          </else>
+        </if>
+      </sequence>
+    </scope>
+  </sequence>
+</process>

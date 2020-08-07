@@ -1,0 +1,29 @@
+REM================================================================================================
+REM                                 Start Of Script
+REM================================================================================================
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     OFF
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+----------create index for XX_AP_PO_RECINV_DASHB_GTEMP--------------------
+
+PROMPT
+PROMPT Creating Index....
+PROMPT
+
+
+DROP INDEX XX_AP_PO_RECINV_GTEMP_N1;
+
+WHENEVER SQLERROR CONTINUE;
+
+PROMPT
+PROMPT Exiting....
+PROMPT 
+
+SET FEEDBACK ON
+
+EXIT;
+

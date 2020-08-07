@@ -1,0 +1,64 @@
+-- +===========================================================================+
+-- |                  Office Depot - SAS Modernization                         |
+-- |                                                                           |
+-- +===========================================================================+
+-- | Name        : XX_OM_HEADER_ATTRIBUTES_SCM_IDX.idx                         |
+-- | Description : Index for Custom Table XX_OM_HEADER_ATTRIBUTES_SCM          |
+-- |                                                                           |
+-- |Change Record:                                                             |
+-- |===============                                                            |
+-- |Version  Date        Author           Remarks                              |
+-- |======== =========== ================ =====================================|
+-- |1.0      20-MAR-2018 PUNIT_CG         Defect# NAIT-31470                   |
+-- |1.1      04-JUN-2018 PUNIT_CG         Added Partitioning                   |
+-- +===========================================================================+
+
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     ON
+WHENEVER SQLERROR CONTINUE
+
+PROMPT
+PROMPT Creation of Index on custom table XX_OM_HEADER_ATTRIBUTES_SCM.....
+PROMPT
+
+PROMPT
+PROMPT Creating non-unique index XX_OM_HEADER_ATTRIBUTES_SCM_N1 .....
+PROMPT
+
+CREATE INDEX XX_OM_HEADER_ATTRIBUTES_SCM_N1 ON XX_OM_HEADER_ATTRIBUTES_SCM(IMP_FILE_NAME);
+
+PROMPT
+PROMPT Creating non-unique index XX_OM_HEADER_ATTRIBUTES_SCM_N2 .....
+PROMPT
+
+CREATE INDEX XX_OM_HEADER_ATTRIBUTES_SCM_N2 ON XX_OM_HEADER_ATTRIBUTES_SCM(IMP_FILE_NAME, HEADER_ID);
+
+PROMPT
+PROMPT Creating non-unique index XX_OM_HEADER_ATTRIBUTES_SCM_N3 .....
+PROMPT
+
+CREATE INDEX XX_OM_HEADER_ATTRIBUTES_SCM_N3 ON XX_OM_HEADER_ATTRIBUTES_SCM(SR_NUMBER);
+
+PROMPT
+PROMPT Creating unique index XX_OM_HEADER_ATTRIBUTES_SCM_U1 .....
+PROMPT
+
+CREATE UNIQUE INDEX XX_OM_HEADER_ATTRIBUTES_SCM_U1 ON XX_OM_HEADER_ATTRIBUTES_SCM(HEADER_ID)
+PCTFREE 10 INITRANS 11 MAXTRANS 255  LOGGING 
+TABLESPACE "APPS_TS_TX_IDX_OM_16M"  LOCAL
+(
+PARTITION "XX_OM_HEADER_ATTR_OVRFL" 
+PCTFREE 10 INITRANS 11 MAXTRANS 255 NOLOGGING 
+TABLESPACE "APPS_TS_TX_IDX_OM_16M" 
+);
+
+WHENEVER SQLERROR EXIT 1
+
+PROMPT
+PROMPT Exiting....
+PROMPT
+
+EXIT;

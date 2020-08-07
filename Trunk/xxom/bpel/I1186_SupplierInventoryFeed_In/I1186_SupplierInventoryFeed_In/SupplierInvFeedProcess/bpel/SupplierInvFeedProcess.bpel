@@ -1,0 +1,356 @@
+<?xml version = "1.0" encoding = "UTF-8" ?>
+<!--
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  Oracle JDeveloper BPEL Designer 
+  
+  Created: Tue Jul 17 11:09:44 EDT 2007
+  Author:  Rizwan-Appees
+  Purpose: Asynchronous BPEL Process
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+-->
+<process name="SupplierInvFeedProcess"
+         targetNamespace="http://xmlns.oracle.com/SupplierInvFeedProcess"
+         xmlns="http://schemas.xmlsoap.org/ws/2003/03/business-process/"
+         xmlns:xp20="http://www.oracle.com/XSL/Transform/java/oracle.tip.pc.services.functions.Xpath20"
+         xmlns:bpws="http://schemas.xmlsoap.org/ws/2003/03/business-process/"
+         xmlns:ns4="http://xmlns.oracle.com/pcbpel/adapter/aq/EnqueueMessage/"
+         xmlns:ns7="ODError"
+         xmlns:ids="http://xmlns.oracle.com/bpel/services/IdentityService/xpath"
+         xmlns:ldap="http://schemas.oracle.com/xpath/extension/ldap"
+         xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+         xmlns:ns5="http://xmlns.oracle.com/pcbpel/adapter/aq/outbound/"
+         xmlns:client="http://xmlns.oracle.com/SupplierInvFeedProcess"
+         xmlns:ns6="http://xmlns.oracle.com/ODErrorLogger"
+         xmlns:ora="http://schemas.oracle.com/xpath/extension"
+         xmlns:hwf="http://xmlns.oracle.com/bpel/workflow/xpath"
+         xmlns:ns1="http://xmlns.oracle.com/pcbpel/adapter/db/DBInsert/"
+         xmlns:ehdr="http://www.oracle.com/XSL/Transform/java/oracle.tip.esb.server.headers.ESBHeaderFunctions"
+         xmlns:ns3="http://www.openapplications.org/oagis/9"
+         xmlns:ns2="http://xmlns.oracle.com/pcbpel/adapter/db/top/DBInsert"
+         xmlns:bpelx="http://schemas.oracle.com/bpel/extension"
+         xmlns:orcl="http://www.oracle.com/XSL/Transform/java/oracle.tip.pc.services.functions.ExtFunc"
+         xmlns:ns8="http://www.openapplications.org/oagis/9/officedepot/1">
+    <!-- 
+      ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        PARTNERLINKS                                                      
+        List of services participating in this BPEL process               
+      ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    -->
+    <partnerLinks>
+        <!-- 
+      The 'client' role represents the requester of this service. It is 
+      used for callback. The location and correlation information associated
+      with the client role are automatically set using WS-Addressing.
+    -->
+        <partnerLink name="client"
+                     partnerLinkType="client:SupplierInvFeedProcess"
+                     myRole="SupplierInvFeedProcessProvider"
+                     partnerRole="SupplierInvFeedProcessRequester"/>
+        <partnerLink name="DBInsert" partnerRole="DBInsert_role"
+                     partnerLinkType="ns1:DBInsert_plt"/>
+        <partnerLink name="ODErrorLogger" partnerRole="ODErrorLoggerProvider"
+                     partnerLinkType="ns6:ODErrorLogger"/>
+    </partnerLinks>
+    <!-- 
+      ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        VARIABLES                                                        
+        List of messages and XML documents used within this BPEL process 
+      ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    -->
+    <variables>
+        <!-- Reference to the message passed as input during initiation -->
+        <variable name="inputVariable"
+                  messageType="client:SupplierInvFeedProcessRequestMessage"/>
+        <!-- Reference to the message that will be sent back to the requester during callback -->
+        <variable name="outputVariable"
+                  messageType="client:SupplierInvFeedProcessResponseMessage"/>
+        <variable name="InvokeIn"
+                  messageType="ns1:XxOmSupplierInvfeedHdrIntCollection_msg"/>
+        <variable name="activityNameVar" type="xsd:string"/>
+        <variable name="activityDescriptionVar" type="xsd:string"/>
+        <variable name="RemoteFaultVar"
+                  messageType="bpelx:RuntimeFaultMessage"/>
+        <variable name="BindingFaultVar"
+                  messageType="bpelx:RuntimeFaultMessage"/>
+        <variable name="InvokeRemErrorLoggerIn"
+                  messageType="ns6:ODErrorLoggerRequestMessage"/>
+        <variable name="InvokeBindErrorLoggerIn"
+                  messageType="ns6:ODErrorLoggerRequestMessage"/>
+        <variable name="InvokeCatchAllErrorLoggerIn"
+                  messageType="ns6:ODErrorLoggerRequestMessage"/>
+    </variables>
+    <faultHandlers>
+        <catch faultName="bpelx:remoteFault" faultVariable="RemoteFaultVar">
+            <sequence name="Sequence_1">
+                <assign name="AssignRemEnqueueMsg">
+                    <copy>
+                        <from expression="ora:getProcessId()"/>
+                        <to variable="InvokeRemErrorLoggerIn" part="payload"
+                            query="/ns7:ErrorData/ns7:ProcessInfo/ns7:BusinessProcessName"/>
+                    </copy>
+                    <copy>
+                        <from expression="ora:getDomainId()"/>
+                        <to variable="InvokeRemErrorLoggerIn" part="payload"
+                            query="/ns7:ErrorData/ns7:ProcessInfo/ns7:BusinessProcessDomain"/>
+                    </copy>
+                    <copy>
+                        <from variable="RemoteFaultVar" part="code"/>
+                        <to variable="InvokeRemErrorLoggerIn" part="payload"
+                            query="/ns7:ErrorData/ns7:ErrorDetails/ns7:ErrorCode"/>
+                    </copy>
+                    <copy>
+                        <from variable="RemoteFaultVar" part="summary"/>
+                        <to variable="InvokeRemErrorLoggerIn" part="payload"
+                            query="/ns7:ErrorData/ns7:ErrorDetails/ns7:ErrorDescription"/>
+                    </copy>
+                    <copy>
+                        <from variable="RemoteFaultVar" part="detail"/>
+                        <to variable="InvokeRemErrorLoggerIn" part="payload"
+                            query="/ns7:ErrorData/ns7:ErrorDetails/ns7:ErrorText"/>
+                    </copy>
+                    <copy>
+                        <from expression="'Fatal'"/>
+                        <to variable="InvokeRemErrorLoggerIn" part="payload"
+                            query="/ns7:ErrorData/ns7:ErrorDetails/ns7:ErrorSeverity"/>
+                    </copy>
+                    <copy>
+                        <from expression="ora:getCurrentDateTime()"/>
+                        <to variable="InvokeRemErrorLoggerIn" part="payload"
+                            query="/ns7:ErrorData/ns7:ErrorDetails/ns7:ErrorDateTime"/>
+                    </copy>
+                    <copy>
+                        <from expression="ora:getCurrentDateTime()"/>
+                        <to variable="InvokeRemErrorLoggerIn" part="payload"
+                            query="/ns7:ErrorData/ns7:MessageDetails/ns7:MessageDateTime"/>
+                    </copy>
+                    <copy>
+                        <from expression="ids:getDefaultRealmName()"/>
+                        <to variable="InvokeRemErrorLoggerIn" part="payload"
+                            query="/ns7:ErrorData/ns7:ProcessInfo/ns7:SystemName"/>
+                    </copy>
+                    <copy>
+                        <from expression="ora:generateGUID()"/>
+                        <to variable="InvokeRemErrorLoggerIn" part="payload"
+                            query="/ns7:ErrorData/ns7:ProcessInfo/ns7:BusinessProcessId"/>
+                    </copy>
+                    <copy>
+                        <from variable="activityNameVar"/>
+                        <to variable="InvokeRemErrorLoggerIn" part="payload"
+                            query="/ns7:ErrorData/ns7:ProcessInfo/ns7:BusinessProcessStep"/>
+                    </copy>
+                    <copy>
+                        <from expression="ora:getContentAsString(bpws:getVariableData('inputVariable','payload','/ns3:ProcessInventoryBalance'))"/>
+                        <to variable="InvokeRemErrorLoggerIn" part="payload"
+                            query="/ns7:ErrorData/ns7:MessageDetails/ns7:MessageData"/>
+                    </copy>
+                </assign>
+                <invoke name="InvokeRemErrorLogger" partnerLink="ODErrorLogger"
+                        portType="ns6:ODErrorLogger" operation="initiate"
+                        inputVariable="InvokeRemErrorLoggerIn"/>
+            </sequence>
+        </catch>
+        <catch faultName="bpelx:bindingFault" faultVariable="BindingFaultVar">
+            <sequence name="Sequence_2">
+                <assign name="AssignBindEnqueueMsg">
+                    <copy>
+                        <from expression="ora:getProcessId()"/>
+                        <to variable="InvokeBindErrorLoggerIn" part="payload"
+                            query="/ns7:ErrorData/ns7:ProcessInfo/ns7:BusinessProcessName"/>
+                    </copy>
+                    <copy>
+                        <from expression="ora:getDomainId()"/>
+                        <to variable="InvokeBindErrorLoggerIn" part="payload"
+                            query="/ns7:ErrorData/ns7:ProcessInfo/ns7:BusinessProcessDomain"/>
+                    </copy>
+                    <copy>
+                        <from variable="BindingFaultVar" part="code"/>
+                        <to variable="InvokeBindErrorLoggerIn" part="payload"
+                            query="/ns7:ErrorData/ns7:ErrorDetails/ns7:ErrorCode"/>
+                    </copy>
+                    <copy>
+                        <from variable="BindingFaultVar" part="summary"/>
+                        <to variable="InvokeBindErrorLoggerIn" part="payload"
+                            query="/ns7:ErrorData/ns7:ErrorDetails/ns7:ErrorDescription"/>
+                    </copy>
+                    <copy>
+                        <from variable="BindingFaultVar" part="detail"/>
+                        <to variable="InvokeBindErrorLoggerIn" part="payload"
+                            query="/ns7:ErrorData/ns7:ErrorDetails/ns7:ErrorText"/>
+                    </copy>
+                    <copy>
+                        <from expression="'Fatal'"/>
+                        <to variable="InvokeBindErrorLoggerIn" part="payload"
+                            query="/ns7:ErrorData/ns7:ErrorDetails/ns7:ErrorSeverity"/>
+                    </copy>
+                    <copy>
+                        <from expression="ora:getCurrentDateTime()"/>
+                        <to variable="InvokeBindErrorLoggerIn" part="payload"
+                            query="/ns7:ErrorData/ns7:ErrorDetails/ns7:ErrorDateTime"/>
+                    </copy>
+                    <copy>
+                        <from expression="ora:getCurrentDateTime()"/>
+                        <to variable="InvokeBindErrorLoggerIn" part="payload"
+                            query="/ns7:ErrorData/ns7:MessageDetails/ns7:MessageDateTime"/>
+                    </copy>
+                    <copy>
+                        <from expression="ids:getDefaultRealmName()"/>
+                        <to variable="InvokeBindErrorLoggerIn" part="payload"
+                            query="/ns7:ErrorData/ns7:ProcessInfo/ns7:SystemName"/>
+                    </copy>
+                    <copy>
+                        <from expression="ora:generateGUID()"/>
+                        <to variable="InvokeBindErrorLoggerIn" part="payload"
+                            query="/ns7:ErrorData/ns7:ProcessInfo/ns7:BusinessProcessId"/>
+                    </copy>
+                    <copy>
+                        <from variable="activityNameVar"/>
+                        <to variable="InvokeBindErrorLoggerIn" part="payload"
+                            query="/ns7:ErrorData/ns7:ProcessInfo/ns7:BusinessProcessStep"/>
+                    </copy>
+                    <copy>
+                        <from expression="ora:getContentAsString(bpws:getVariableData('inputVariable','payload','/ns3:ProcessInventoryBalance'))"/>
+                        <to variable="InvokeBindErrorLoggerIn" part="payload"
+                            query="/ns7:ErrorData/ns7:MessageDetails/ns7:MessageData"/>
+                    </copy>
+                </assign>
+                <invoke name="InvokeBindErrorLogger" partnerLink="ODErrorLogger"
+                        portType="ns6:ODErrorLogger" operation="initiate"
+                        inputVariable="InvokeBindErrorLoggerIn"/>
+            </sequence>
+        </catch>
+        <catchAll>
+            <sequence name="Sequence_3">
+                <assign name="AssignCatchAllEnqueueMsg">
+                    <copy>
+                        <from expression="ora:getProcessId()"/>
+                        <to variable="InvokeCatchAllErrorLoggerIn"
+                            part="payload"
+                            query="/ns7:ErrorData/ns7:ProcessInfo/ns7:BusinessProcessName"/>
+                    </copy>
+                    <copy>
+                        <from expression="ora:getDomainId()"/>
+                        <to variable="InvokeCatchAllErrorLoggerIn"
+                            part="payload"
+                            query="/ns7:ErrorData/ns7:ProcessInfo/ns7:BusinessProcessDomain"/>
+                    </copy>
+                    <copy>
+                        <from expression="'Fatal'"/>
+                        <to variable="InvokeCatchAllErrorLoggerIn"
+                            part="payload"
+                            query="/ns7:ErrorData/ns7:ErrorDetails/ns7:ErrorSeverity"/>
+                    </copy>
+                    <copy>
+                        <from expression="ora:getCurrentDateTime()"/>
+                        <to variable="InvokeCatchAllErrorLoggerIn"
+                            part="payload"
+                            query="/ns7:ErrorData/ns7:ErrorDetails/ns7:ErrorDateTime"/>
+                    </copy>
+                    <copy>
+                        <from expression="ora:getCurrentDateTime()"/>
+                        <to variable="InvokeCatchAllErrorLoggerIn"
+                            part="payload"
+                            query="/ns7:ErrorData/ns7:MessageDetails/ns7:MessageDateTime"/>
+                    </copy>
+                    <copy>
+                        <from expression="ids:getDefaultRealmName()"/>
+                        <to variable="InvokeCatchAllErrorLoggerIn"
+                            part="payload"
+                            query="/ns7:ErrorData/ns7:ProcessInfo/ns7:SystemName"/>
+                    </copy>
+                    <copy>
+                        <from expression="ora:generateGUID()"/>
+                        <to variable="InvokeCatchAllErrorLoggerIn"
+                            part="payload"
+                            query="/ns7:ErrorData/ns7:ProcessInfo/ns7:BusinessProcessId"/>
+                    </copy>
+                    <copy>
+                        <from variable="activityNameVar"/>
+                        <to variable="InvokeCatchAllErrorLoggerIn"
+                            part="payload"
+                            query="/ns7:ErrorData/ns7:ProcessInfo/ns7:BusinessProcessStep"/>
+                    </copy>
+                    <copy>
+                        <from expression="ora:getContentAsString(bpws:getVariableData('inputVariable','payload','/ns3:ProcessInventoryBalance'))"/>
+                        <to variable="InvokeCatchAllErrorLoggerIn"
+                            part="payload"
+                            query="/ns7:ErrorData/ns7:MessageDetails/ns7:MessageData"/>
+                    </copy>
+                    <copy>
+                        <from expression="'0001'"/>
+                        <to variable="InvokeCatchAllErrorLoggerIn"
+                            part="payload"
+                            query="/ns7:ErrorData/ns7:ErrorDetails/ns7:ErrorCode"/>
+                    </copy>
+                    <copy>
+                        <from expression="concat('An error occurred while performing this acitvity ',bpws:getVariableData('activityNameVar'),bpws:getVariableData('activityDescriptionVar'))"/>
+                        <to variable="InvokeCatchAllErrorLoggerIn"
+                            part="payload"
+                            query="/ns7:ErrorData/ns7:ErrorDetails/ns7:ErrorDescription"/>
+                    </copy>
+                    <copy>
+                        <from expression="concat('An error occurred while performing this acitvity ',bpws:getVariableData('activityNameVar'),bpws:getVariableData('activityDescriptionVar'))"/>
+                        <to variable="InvokeCatchAllErrorLoggerIn"
+                            part="payload"
+                            query="/ns7:ErrorData/ns7:ErrorDetails/ns7:ErrorText"/>
+                    </copy>
+                </assign>
+                <invoke name="InvokeCatchAllErrorLogger"
+                        partnerLink="ODErrorLogger" portType="ns6:ODErrorLogger"
+                        operation="initiate"
+                        inputVariable="InvokeCatchAllErrorLoggerIn"/>
+            </sequence>
+        </catchAll>
+    </faultHandlers>
+    <!-- 
+      ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+       ORCHESTRATION LOGIC                                               
+       Set of activities coordinating the flow of messages across the    
+       services integrated within this business process                  
+      ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    -->
+    <sequence name="main">
+        <!-- Receive input from requestor. (Note: This maps to operation defined in SupplierInvFeedProcess.wsdl) -->
+        <receive name="receiveInput" partnerLink="client"
+                 portType="client:SupplierInvFeedProcess" operation="initiate"
+                 variable="inputVariable" createInstance="yes"/>
+        <!-- 
+          Asynchronous callback to the requester. (Note: the callback location and correlation id is transparently handled using WS-addressing.)
+        -->
+        <assign name="AssignErrMsg">
+            <copy>
+                <from expression="'TransformOAGISToDB'"/>
+                <to variable="activityNameVar"/>
+            </copy>
+            <copy>
+                <from expression="'(This activity transform OAGIS format data to DB format)'"/>
+                <to variable="activityDescriptionVar"/>
+            </copy>
+        </assign>
+        <assign name="TransformOAGISToDB">
+            <bpelx:annotation>
+                <bpelx:pattern>transformation</bpelx:pattern>
+            </bpelx:annotation>
+            <copy>
+                <from expression="ora:processXSLT('TransformOAGIStoDB.xsl',bpws:getVariableData('inputVariable','payload'))"/>
+                <to variable="InvokeIn"
+                    part="XxOmSupplierInvfeedHdrIntCollection"/>
+            </copy>
+        </assign>
+        <assign name="AssignErrMsg">
+            <copy>
+                <from expression="'InvokeDBInsert'"/>
+                <to variable="activityNameVar"/>
+            </copy>
+            <copy>
+                <from expression="'(This activity invoke a Database Adapter that insert feed into the worktable'"/>
+                <to variable="activityDescriptionVar"/>
+            </copy>
+        </assign>
+        <invoke name="InvokeDBInsert" partnerLink="DBInsert"
+                portType="ns1:DBInsert_ptt" operation="insert"
+                inputVariable="InvokeIn"/>
+        <invoke name="callbackClient" partnerLink="client"
+                portType="client:SupplierInvFeedProcessCallback"
+                operation="onResult" inputVariable="outputVariable"/>
+    </sequence>
+</process>

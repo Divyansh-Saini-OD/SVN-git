@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<pageDefinition xmlns="http://xmlns.oracle.com/adfm/uimodel" version="12.2.1.12.24"
+                id="mass_release_hold_btf_mass_release_hold_btf_initMassReleasePageDef"
+                Package="od.tdmatch.view.pageDefs" SkipValidation="true">
+  <parameters/>
+  <executables>
+    <variableIterator id="variables"/>
+  </executables>
+  <bindings>
+    <methodAction id="initMassRelease" RequiresUpdateModel="true" Action="invokeMethod" MethodName="initMassRelease"
+                  IsViewObjectMethod="false" DataControl="TradeMatchAMDataControl"
+                  InstanceName="bindings.initMassRelease.dataControl.dataProvider"
+                  ReturnName="data.TradeMatchAMDataControl.methodResults.initMassRelease_initMassRelease_dataControl_dataProvider_initMassRelease_result"/>
+  </bindings>
+</pageDefinition>

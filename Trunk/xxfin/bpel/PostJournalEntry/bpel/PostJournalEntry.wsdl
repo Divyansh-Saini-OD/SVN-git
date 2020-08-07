@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions name="PostJournalEntry"
+             targetNamespace="http://xmlns.oracle.com/PostJournalEntry"
+             xmlns="http://schemas.xmlsoap.org/wsdl/"
+             xmlns:client="http://xmlns.oracle.com/PostJournalEntry"
+             xmlns:plnk="http://schemas.xmlsoap.org/ws/2003/05/partner-link/">
+
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	TYPE DEFINITION - List of services participating in this BPEL process
+	The default output of the BPEL designer uses strings as input and 
+	output to the BPEL Process. But you can define or import any XML 
+	Schema type and use them as part of the message types.
+	~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ --> 
+        <import namespace="http://xmlns.oracle.com/pcbpel/adapter/file/" location="FileHeader.xsd" /> 
+        <import namespace="http://schemas.oracle.com/bpel/extension" location="RuntimeFault.wsdl"/>
+	<types>
+	<!--
+		<schema xmlns="http://www.w3.org/2001/XMLSchema">
+			<import namespace="http://xmlns.oracle.com/PostJournalEntry" schemaLocation="PostJournalEntry.xsd" />
+		</schema>		
+		-->
+	</types>
+
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	MESSAGE TYPE DEFINITION - Definition of the message types used as 
+	part of the port type defintions
+	~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->      
+	<message name="PostJournalEntryRequestMessage">
+		<part name="payload" element="client:fileHeader" />
+	</message>
+
+<!--
+	<message name="PostJournalEntryResponseMessage">
+		<part name="payload" element="client:PostJournalEntryProcessResponse"/>
+	</message>
+-->
+
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	PORT TYPE DEFINITION - A port type groups a set of operations into
+	a logical service unit.
+	~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<!-- portType implemented by the PostJournalEntry BPEL process -->
+	<portType name="PostJournalEntry">
+		<operation name="initiate">
+			<input message="client:PostJournalEntryRequestMessage"/>
+		</operation>
+	</portType>
+
+	<!-- portType implemented by the requester of PostJournalEntry BPEL process
+	for asynchronous callback purposes
+
+	<portType name="PostJournalEntryCallback">
+		<operation name="onResult">
+			<input message="client:PostJournalEntryResponseMessage"/>
+		</operation>
+	</portType>
+	-->
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	PARTNER LINK TYPE DEFINITION
+	the PostJournalEntry partnerLinkType binds the provider and
+	requester portType into an asynchronous conversation.
+	~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<plnk:partnerLinkType name="PostJournalEntry">
+		<plnk:role name="PostJournalEntryProvider">
+			<plnk:portType name="client:PostJournalEntry"/>
+		</plnk:role>
+
+<!--Commented the call back as per Cecilia Mail -->
+
+<!--		<plnk:role name="PostJournalEntryRequester">
+			<plnk:portType name="client:PostJournalEntryCallback"/>
+		</plnk:role>
+                
+-->
+        </plnk:partnerLinkType>
+        
+        
+</definitions>

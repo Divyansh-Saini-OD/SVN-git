@@ -1,0 +1,268 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<!-- dbdrv: exec java oracle/jrad/tools/xml/importer XMLImporter.class java &phase=dat+24 checkfile:~PROD:~PATH:~FILE &fullpath:~PROD:~PATH:~FILE -username &un_apps -password &pw_apps -dbconnection &jdbc_db_addr  -userId "1" -rootPackage /oracle/apps/~PROD  -rootdir &fullpath:~PROD:mds:directory  -->
+<page xmlns:jrad="http://xmlns.oracle.com/jrad" xmlns:oa="http://xmlns.oracle.com/oa" xmlns:ui="http://xmlns.oracle.com/uix/ui" version="9.0.3.8.12_1330" xml:lang="en-US" xmlns:user="http://xmlns.oracle.com/jrad/user" xmlns="http://xmlns.oracle.com/jrad" file-version="$Header$">
+   <content>
+      <oa:pageLayout id="PageLayoutRN" amDefName="od.oracle.apps.xxmer.odleadtimeoc.server.ODLeadTimeOCAM" windowTitle="Lead Time and Order Cycle" title="Lead Time and Order Cycle - View" adminCustomizable="true" quickLinksShown="true">
+         <ui:corporateBranding>
+            <oa:image id="corporateBrandingImage" source="/OA_MEDIA/FNDSSCORP.gif" userCustomizable="false"/>
+         </ui:corporateBranding>
+         <ui:productBranding>
+            <oa:image id="ProdBrand" source="FNDTAPPBRAND.gif" shortDesc="Text Here" userCustomizable="false"/>
+         </ui:productBranding>
+         <ui:contents>
+            <oa:query id="ODLeadTimeOCListRN" controllerClass="od.oracle.apps.xxmer.odleadtimeoc.webui.webui.ODLeadTimeOCCO" adminCustomizable="true" dispAdvanced="true" defaultPanel="advanced" mode="resultsBasedSearch" dispSimple="false" dispCustomized="false">
+               <ui:contents>
+                  <oa:advancedTable id="AdvanceResults" viewName="ODLeadTimeOCVO1" controllerClass="od.oracle.apps.xxmer.odleadtimeoc.webui.webui.ODLeadTimeOCCO" tableBanding="rowBanding" userCustomizable="true" alternateText="No records found" text="" regionName="Personalization">
+                     <ui:contents>
+                        <oa:columnGroup id="CGrpSource">
+                           <ui:columnHeader>
+                              <oa:sortableHeader id="sortableHeader118" prompt=""/>
+                           </ui:columnHeader>
+                           <ui:contents>
+                              <oa:column id="CName" cellNoWrapFormat="true">
+                                 <ui:columnHeader>
+                                    <oa:sortableHeader id="sortableHeader113" prompt="Source Name" sortState="yes"/>
+                                 </ui:columnHeader>
+                                 <ui:contents>
+                                    <oa:messageStyledText id="SName" viewAttr="VendorSiteCode" prompt="Name" maximumLength="30" columns="30" queryable="true"/>
+                                 </ui:contents>
+                              </oa:column>
+                              <oa:column id="CLegacy" columnDataFormat="numberFormat">
+                                 <ui:columnHeader>
+                                    <oa:sortableHeader id="sortableHeader115" prompt="Source ID" sortState="yes" shortDesc="Source add text" abbreviation="slegid"/>
+                                 </ui:columnHeader>
+                                 <ui:contents>
+                                    <oa:messageStyledText id="ILegacy_id" viewAttr="SourceLegacyId" queryable="true" dataType="NUMBER"/>
+                                 </ui:contents>
+                              </oa:column>
+                           </ui:contents>
+                        </oa:columnGroup>
+                        <oa:columnGroup id="CGrpDestination">
+                           <ui:columnHeader>
+                              <oa:sortableHeader id="sortableHeader117" prompt=""/>
+                           </ui:columnHeader>
+                           <ui:contents>
+                              <oa:column id="COrgCode">
+                                 <ui:columnHeader>
+                                    <oa:sortableHeader id="sortableHeader119" prompt="Destination Org. Code" sortState="yes" shortDesc="add. text code"/>
+                                 </ui:columnHeader>
+                                 <ui:contents>
+                                    <oa:messageStyledText id="IOrgCode" viewAttr="OrganizationCode" queryable="true"/>
+                                 </ui:contents>
+                              </oa:column>
+                              <oa:column id="CDestLegacyID" columnDataFormat="numberFormat">
+                                 <ui:columnHeader>
+                                    <oa:sortableHeader id="sortableHeader120" prompt="Destination Location ID" sortState="yes"/>
+                                 </ui:columnHeader>
+                                 <ui:contents>
+                                    <oa:messageStyledText id="IDestLegacyID" viewAttr="DestLegacyId" queryable="true" dataType="NUMBER"/>
+                                 </ui:contents>
+                              </oa:column>
+                           </ui:contents>
+                        </oa:columnGroup>
+                        <oa:columnGroup id="CGrpItem">
+                           <ui:columnHeader>
+                              <oa:sortableHeader id="sortableHeader122" prompt="ITEM"/>
+                           </ui:columnHeader>
+                           <ui:contents>
+                              <oa:column id="CIitemDesc" cellNoWrapFormat="true">
+                                 <ui:columnHeader>
+                                    <oa:sortableHeader id="sortableHeader123" prompt="Description" sortState="yes"/>
+                                 </ui:columnHeader>
+                                 <ui:contents>
+                                    <oa:messageStyledText id="Description" viewAttr="Description" queryable="true" maximumLength="30"/>
+                                 </ui:contents>
+                              </oa:column>
+                              <oa:column id="CLegID" columnDataFormat="numberFormat">
+                                 <ui:columnHeader>
+                                    <oa:sortableHeader id="sortableHeader121" sortState="yes" prompt="Legacy ID"/>
+                                 </ui:columnHeader>
+                                 <ui:contents>
+                                    <oa:messageStyledText id="ILegID" viewAttr="ItemLegacyId" queryable="true" dataType="NUMBER"/>
+                                 </ui:contents>
+                              </oa:column>
+                           </ui:contents>
+                        </oa:columnGroup>
+                        <oa:column id="ColProcLT" columnDataFormat="numberFormat" userCustomizable="true">
+                           <ui:columnHeader>
+                              <oa:sortableHeader id="sortableHeader41" prompt="Process Lead Time"/>
+                           </ui:columnHeader>
+                           <ui:contents>
+                              <oa:messageStyledText id="ProcLT" dataType="NUMBER" prompt="Ship Lead Time" viewAttr="Proclt" maximumLength="10" queryable="false" rendered="true" adminCustomizable="false"/>
+                           </ui:contents>
+                        </oa:column>
+                        <oa:column id="ColShipLT" columnDataFormat="numberFormat" userCustomizable="true">
+                           <ui:columnHeader>
+                              <oa:sortableHeader id="sortableHeader4" prompt="Ship Lead Time"/>
+                           </ui:columnHeader>
+                           <ui:contents>
+                              <oa:messageStyledText id="ShipLt1" dataType="NUMBER" prompt="Ship Lead Time" viewAttr="ShipLt" maximumLength="10" queryable="false" rendered="true" adminCustomizable="false"/>
+                           </ui:contents>
+                        </oa:column>
+                        <oa:columnGroup id="ColGrpOrderCycle" userCustomizable="true">
+                           <ui:columnHeader>
+                              <oa:sortableHeader id="sortableHeader12" prompt="O R D E R  -  C Y C L E"/>
+                           </ui:columnHeader>
+                           <ui:contents>
+                              <oa:column id="ColSun" bandingShade="none" columnDataFormat="iconButtonFormat">
+                                 <ui:columnHeader>
+                                    <oa:sortableHeader id="sortableHeader5" prompt="Su"/>
+                                 </ui:columnHeader>
+                                 <ui:contents>
+                                    <oa:messageStyledText id="Sun11" dataType="VARCHAR2" viewAttr="Sun1" adminCustomizable="false" vAlign="middle" prompt="Sun"/>
+                                 </ui:contents>
+                              </oa:column>
+                              <oa:column id="ColMon" columnDataFormat="iconButtonFormat">
+                                 <ui:columnHeader>
+                                    <oa:sortableHeader id="sortableHeader6" prompt="Mo"/>
+                                 </ui:columnHeader>
+                                 <ui:contents>
+                                    <oa:messageStyledText id="Mon11" dataType="VARCHAR2" prompt="Mon" viewAttr="Mon1" maximumLength="40" adminCustomizable="false"/>
+                                 </ui:contents>
+                              </oa:column>
+                              <oa:column id="ColTue" columnDataFormat="iconButtonFormat">
+                                 <ui:columnHeader>
+                                    <oa:sortableHeader id="sortableHeader7" prompt="Tu"/>
+                                 </ui:columnHeader>
+                                 <ui:contents>
+                                    <oa:messageStyledText id="Tue11" dataType="VARCHAR2" prompt="Tue" viewAttr="Tue1" maximumLength="40" adminCustomizable="false"/>
+                                 </ui:contents>
+                              </oa:column>
+                              <oa:column id="ColWed" columnDataFormat="iconButtonFormat">
+                                 <ui:columnHeader>
+                                    <oa:sortableHeader id="sortableHeader8" prompt="We"/>
+                                 </ui:columnHeader>
+                                 <ui:contents>
+                                    <oa:messageStyledText id="Wed11" dataType="VARCHAR2" prompt="Wed" viewAttr="Wed1" maximumLength="40" adminCustomizable="false"/>
+                                 </ui:contents>
+                              </oa:column>
+                              <oa:column id="ColThu" columnDataFormat="iconButtonFormat">
+                                 <ui:columnHeader>
+                                    <oa:sortableHeader id="sortableHeader9" prompt="Th"/>
+                                 </ui:columnHeader>
+                                 <ui:contents>
+                                    <oa:messageStyledText id="Thu11" dataType="VARCHAR2" prompt="Thu" viewAttr="Thu1" maximumLength="40" adminCustomizable="false"/>
+                                 </ui:contents>
+                              </oa:column>
+                              <oa:column id="ColFri" columnDataFormat="iconButtonFormat">
+                                 <ui:columnHeader>
+                                    <oa:sortableHeader id="sortableHeader10" prompt="Fr"/>
+                                 </ui:columnHeader>
+                                 <ui:contents>
+                                    <oa:messageStyledText id="Fri11" dataType="VARCHAR2" prompt="Fri" viewAttr="Fri1" maximumLength="40" adminCustomizable="false"/>
+                                 </ui:contents>
+                              </oa:column>
+                              <oa:column id="ColSat" columnDataFormat="iconButtonFormat">
+                                 <ui:columnHeader>
+                                    <oa:sortableHeader id="sortableHeader11" prompt="Sa"/>
+                                 </ui:columnHeader>
+                                 <ui:contents>
+                                    <oa:messageStyledText id="Sat11" dataType="VARCHAR2" prompt="Sat" viewAttr="Sat1" maximumLength="40" adminCustomizable="false"/>
+                                 </ui:contents>
+                              </oa:column>
+                              <oa:column id="ColSun1" columnDataFormat="iconButtonFormat">
+                                 <ui:columnHeader>
+                                    <oa:sortableHeader id="sortableHeader51" prompt="Su"/>
+                                 </ui:columnHeader>
+                                 <ui:contents>
+                                    <oa:messageStyledText id="Sun111" dataType="VARCHAR2" viewAttr="Sun2" adminCustomizable="false" vAlign="middle" prompt="Sun"/>
+                                 </ui:contents>
+                              </oa:column>
+                              <oa:column id="ColMon1" columnDataFormat="iconButtonFormat">
+                                 <ui:columnHeader>
+                                    <oa:sortableHeader id="sortableHeader61" prompt="Mo"/>
+                                 </ui:columnHeader>
+                                 <ui:contents>
+                                    <oa:messageStyledText id="Mon111" dataType="VARCHAR2" prompt="Mon" viewAttr="Mon2" maximumLength="40" adminCustomizable="false"/>
+                                 </ui:contents>
+                              </oa:column>
+                              <oa:column id="ColTue1" columnDataFormat="iconButtonFormat">
+                                 <ui:columnHeader>
+                                    <oa:sortableHeader id="sortableHeader71" prompt="Tu"/>
+                                 </ui:columnHeader>
+                                 <ui:contents>
+                                    <oa:messageStyledText id="Tue111" dataType="VARCHAR2" prompt="Tue" viewAttr="Tue2" maximumLength="40" adminCustomizable="false"/>
+                                 </ui:contents>
+                              </oa:column>
+                              <oa:column id="ColWed1" columnDataFormat="iconButtonFormat">
+                                 <ui:columnHeader>
+                                    <oa:sortableHeader id="sortableHeader81" prompt="We"/>
+                                 </ui:columnHeader>
+                                 <ui:contents>
+                                    <oa:messageStyledText id="Wed111" dataType="VARCHAR2" prompt="Wed" viewAttr="Wed2" maximumLength="40" adminCustomizable="false"/>
+                                 </ui:contents>
+                              </oa:column>
+                              <oa:column id="ColThu1" columnDataFormat="iconButtonFormat">
+                                 <ui:columnHeader>
+                                    <oa:sortableHeader id="sortableHeader91" prompt="Th"/>
+                                 </ui:columnHeader>
+                                 <ui:contents>
+                                    <oa:messageStyledText id="Thu111" dataType="VARCHAR2" prompt="Thu" viewAttr="Thu2" maximumLength="40" adminCustomizable="false"/>
+                                 </ui:contents>
+                              </oa:column>
+                              <oa:column id="ColFri1" columnDataFormat="iconButtonFormat">
+                                 <ui:columnHeader>
+                                    <oa:sortableHeader id="sortableHeader101" prompt="Fr"/>
+                                 </ui:columnHeader>
+                                 <ui:contents>
+                                    <oa:messageStyledText id="Fri111" dataType="VARCHAR2" prompt="Fri" viewAttr="Fri2" maximumLength="40" adminCustomizable="false"/>
+                                 </ui:contents>
+                              </oa:column>
+                              <oa:column id="ColSat1" columnDataFormat="iconButtonFormat">
+                                 <ui:columnHeader>
+                                    <oa:sortableHeader id="sortableHeader111" prompt="Sa"/>
+                                 </ui:columnHeader>
+                                 <ui:contents>
+                                    <oa:messageStyledText id="Sat111" dataType="VARCHAR2" prompt="Sat" viewAttr="Sat2" maximumLength="40" adminCustomizable="false"/>
+                                 </ui:contents>
+                              </oa:column>
+                           </ui:contents>
+                        </oa:columnGroup>
+                        <oa:column id="ColFreq" columnDataFormat="iconButtonFormat" userCustomizable="true">
+                           <ui:columnHeader>
+                              <oa:sortableHeader id="sortableHeader112" prompt="Frequency" sortState="yes"/>
+                           </ui:columnHeader>
+                           <ui:contents>
+                              <oa:messageStyledText id="OrdercycleFrequency" dataType="VARCHAR2" prompt="Frequency" viewAttr="OrdercycleFrequency" maximumLength="8" queryable="true" adminCustomizable="false"/>
+                           </ui:contents>
+                        </oa:column>
+                        <oa:column id="ColDteEnter" columnDataFormat="iconButtonFormat" userCustomizable="true" cellNoWrapFormat="true">
+                           <ui:columnHeader>
+                              <oa:sortableHeader id="sortableHeader1121" prompt="Date Entered" sortState="yes"/>
+                           </ui:columnHeader>
+                           <ui:contents>
+                              <oa:messageStyledText id="CreationDate" dataType="VARCHAR2" prompt="Frequency" viewAttr="CreationDate" maximumLength="8" queryable="true" adminCustomizable="false"/>
+                           </ui:contents>
+                        </oa:column>
+                        <oa:column id="ColEnteredBy" columnDataFormat="iconButtonFormat" userCustomizable="true" cellNoWrapFormat="true">
+                           <ui:columnHeader>
+                              <oa:sortableHeader id="sortableHeader11211" prompt="Entered By" sortState="yes"/>
+                           </ui:columnHeader>
+                           <ui:contents>
+                              <oa:messageStyledText id="EnteredBy" dataType="VARCHAR2" prompt="Frequency" viewAttr="CreatedBy" maximumLength="8" queryable="true" adminCustomizable="false"/>
+                           </ui:contents>
+                        </oa:column>
+                        <oa:column id="ColDateChanged" columnDataFormat="iconButtonFormat" userCustomizable="true" cellNoWrapFormat="true">
+                           <ui:columnHeader>
+                              <oa:sortableHeader id="sortableHeader112111" prompt="Date Changed" sortState="yes"/>
+                           </ui:columnHeader>
+                           <ui:contents>
+                              <oa:messageStyledText id="DateChanged" dataType="VARCHAR2" prompt="Frequency" viewAttr="LastUpdateDate" maximumLength="8" queryable="true" adminCustomizable="false"/>
+                           </ui:contents>
+                        </oa:column>
+                        <oa:column id="ColChangeBy" columnDataFormat="iconButtonFormat" userCustomizable="true" cellNoWrapFormat="true">
+                           <ui:columnHeader>
+                              <oa:sortableHeader id="sortableHeader1121111" prompt="Changed By" sortState="yes"/>
+                           </ui:columnHeader>
+                           <ui:contents>
+                              <oa:messageStyledText id="ChangedBy" dataType="VARCHAR2" prompt="Frequency" viewAttr="LastUpdatedBy" maximumLength="8" queryable="true" adminCustomizable="false"/>
+                           </ui:contents>
+                        </oa:column>
+                     </ui:contents>
+                  </oa:advancedTable>
+               </ui:contents>
+            </oa:query>
+         </ui:contents>
+      </oa:pageLayout>
+   </content>
+</page>

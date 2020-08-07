@@ -1,0 +1,43 @@
+-- +==========================================================================+
+-- |                  Office Depot - Project Simplify                         |
+-- +==========================================================================+
+-- | SQL Script to create                                                     |
+-- |                                                                          |
+-- |                      INDEXES: XXIBY_PMT_INSTR_USES_ALL_N4                        |
+-- |                                                                          |
+-- |                                                                          |
+-- |                                                                          |
+-- |Change Record:                                                            |
+-- |===============                                                           |
+-- |Version   Date         Author               Remarks                       |
+-- |=======   ===========  ================     ==============================|
+-- | V1.0     06-JAN-2013  Edson Morales        Initial version               |
+-- +==========================================================================+
+
+DROP INDEX XXFIN.XXIBY_PMT_INSTR_USES_ALL_N4;
+ 
+ CREATE INDEX XXFIN.XXIBY_PMT_INSTR_USES_ALL_N4 
+ ON IBY.IBY_PMT_INSTR_USES_ALL
+(
+PAYMENT_FLOW,
+EXT_PMT_PARTY_ID, 
+INSTRUMENT_TYPE, 
+START_DATE, 
+END_DATE, 
+ORDER_OF_PREFERENCE,
+INSTRUMENT_PAYMENT_USE_ID, 
+INSTRUMENT_ID) 
+INITRANS 11
+PARALLEL 16
+TABLESPACE APPS_TS_TX_DATA
+ONLINE;  
+
+ALTER INDEX XXFIN.XXIBY_PMT_INSTR_USES_ALL_N4 NOPARALLEL LOGGING;
+
+-- EXEC DBMS_STATS.UNLOCK_TABLE_STATS('IBY','IBY.IBY_PMT_INSTR_USES_ALL');
+EXEC FND_STATS.GATHER_INDEX_STATS('XXFIN','XXIBY_PMT_INSTR_USES_ALL_N4');
+-- EXEC DBMS_STATS.LOCK_TABLE_STATS('IBY','IBY.IBY_PMT_INSTR_USES_ALL');
+Exit;
+
+
+

@@ -1,0 +1,29 @@
+-- +==========================================================================+
+-- |                  Office Depot - Project Simplify                         |
+-- |                       Oracle India Pvt Ltd                               |
+-- +==========================================================================+
+-- | 
+-- |                                                                          |
+-- | SQL Script to drop index                                                 |
+-- |                                                                          |
+-- | Index name:  ap.AP_PAYMENT_HIST_DISTS_N4                                 |
+-- |                                                                          |
+-- |                                                                          |
+-- |                                                                          |
+-- |Change Record:                                                            |
+-- |===============                                                           |
+-- |Version   Date         Author               Remarks                       |
+-- |=======   ==========   ================     ==============================|
+-- |  1.0     17-JULY-2014  Diwakar Jwala       Initial version               |
+-- +==========================================================================+
+
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     ON
+
+drop index ap.AP_PAYMENT_HIST_DISTS_N4;
+/
+
+SHOW ERROR

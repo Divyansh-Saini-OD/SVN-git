@@ -1,0 +1,22 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<customization xmlns="http://xmlns.oracle.com/jrad" version="9.0.6.0.0_50" xml:lang="en-US" customizes="/oracle/apps/cs/csz/dashboard/webui/DashboardPG" xmlns:user="http://xmlns.oracle.com/jrad/user" user:responsibilityKey="od_csf_portal" user:responsibilityAppShortName="CSF">
+   <modifications>
+      <modify element="DashboardPG" windowTitle="Service Dashboard"/>
+      <modify element="topHeader" text="Services Dashboard"/>
+      <modify element="xGetNextWorkRN.GetNextWorkTip" rendered="false"/>
+      <modify element="xGetNextWorkRN.GetNextWorkButton" rendered="false"/>
+      <modify element="xAgentQueueRN" rendered="false"/>
+      <modify element="AgentToolHdr" rendered="true"/>
+      <modify element="xGroupQueueRN.Escalated" rendered="false"/>
+      <modify element="xGroupQueueRN.DueDate" rendered="false"/>
+      <modify element="xGroupQueueRN.Srgroup" rendered="false"/>
+      <modify element="xGroupQueueRN.Summary" rendered="true"/>
+      <modify element="xGroupQueueRN.Problemcode" rendered="false"/>
+      <modify element="xGroupQueueRN.GroupTableRN" blockSize="100"/>
+      <modify element="xKPIFC" rendered="false"/>
+      <modify element="xCreateBinFC" rendered="false"/>
+      <modify element="xAvailabilityRN" rendered="false"/>
+      <modify element="QuickLinksStackRN" rendered="false"/>
+   </modifications>
+</customization>
+

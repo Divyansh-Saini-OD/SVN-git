@@ -1,0 +1,58 @@
+<definitions
+     name="SyncZeroFileRead"
+     targetNamespace="http://xmlns.oracle.com/pcbpel/adapter/ftp/SyncZeroFileRead/"
+     xmlns="http://schemas.xmlsoap.org/wsdl/"
+     xmlns:tns="http://xmlns.oracle.com/pcbpel/adapter/ftp/SyncZeroFileRead/"
+     xmlns:plt="http://schemas.xmlsoap.org/ws/2003/05/partner-link/"
+     xmlns:jca="http://xmlns.oracle.com/pcbpel/wsdl/jca/"
+     xmlns:opaque="http://xmlns.oracle.com/pcbpel/adapter/opaque/"
+     xmlns:hdr="http://xmlns.oracle.com/pcbpel/adapter/ftp/"
+    >
+    <import namespace="http://xmlns.oracle.com/pcbpel/adapter/ftp/" location="ftpAdapterOutboundHeader.wsdl"/>
+    <types>
+    <schema targetNamespace="http://xmlns.oracle.com/pcbpel/adapter/opaque/"
+            xmlns="http://www.w3.org/2001/XMLSchema" >
+      <element name="opaqueElement" type="base64Binary" />
+      <element name="empty"><complexType/></element>
+    </schema>
+    </types>
+    <message name="Empty_msg">
+        <part name="Empty" element="opaque:empty"/>
+    </message>
+    <message name="SynchRead_msg">
+        <part name="opaque" element="opaque:opaqueElement"/>
+    </message>
+    <portType name="SynchRead_ptt">
+        <operation name="SynchRead">
+            <input message="tns:Empty_msg"/>
+            <output message="tns:SynchRead_msg"/>
+        </operation>
+    </portType>
+    <binding name="SynchRead_binding" type="tns:SynchRead_ptt">
+    <jca:binding  />
+        <operation name="SynchRead">
+      <jca:operation
+          FileType="binary"
+          LogicalDirectory="Inbound_Path"
+          InteractionSpec="oracle.tip.adapter.ftp.outbound.FTPReadInteractionSpec"
+          LogicalArchiveDirectory="Archive_Path"
+          DeleteFile="true"
+          FileName="Dummy"
+          OpaqueSchema="true" >
+      </jca:operation>
+      <input>
+        <jca:header message="hdr:OutboundHeader_msg" part="outboundHeader"/>
+      </input>
+        </operation>
+    </binding>
+    <service name="SyncZeroFileRead">
+        <port name="SynchRead_pt" binding="tns:SynchRead_binding">
+      <jca:address location="eis/ftp/EBSCentralExternal" />
+        </port>
+    </service>
+  <plt:partnerLinkType name="SynchRead_plt" >
+    <plt:role name="SynchRead_role" >
+      <plt:portType name="tns:SynchRead_ptt" />
+    </plt:role>
+  </plt:partnerLinkType>
+</definitions>

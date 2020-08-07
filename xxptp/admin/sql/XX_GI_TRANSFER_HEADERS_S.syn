@@ -1,0 +1,56 @@
+REM============================================================================================
+REM                                 Start Of Script
+REM============================================================================================
+
+--+=============================================================================================+--
+--|                                                                                             |--
+--| Object Name    : E0341 Inventory transfer                                                   |--
+--|                                                                                             |--
+--| Program Name   : XX_GI_TRANSFER_HEADERS_S.syn                                               |--
+--|                                                                                             |--
+--| Purpose        : Create custom sequence synonyms                                            |--
+--|                  The Objects created are:                                                   |--
+--|                                                                                             |--
+--|                  1. XX_GI_TRANSFER_HEADERS_S (Synonym for XX_GI_TRANSFER_HEADERS_S)         |--
+--|                                                                                             |--
+--| Change History  :                                                                           |--
+--| Version           Date             Changed By        Description                            |--
+--|=============================================================================================|--
+--| 1.0              06-Dec-2007      Arun Andavar       No previous version                    |--
+--+=============================================================================================|
+
+SET VERIFY   OFF
+SET TERM     ON
+SET FEEDBACK OFF
+SET SHOW     OFF
+SET ECHO     OFF
+SET TAB      OFF
+
+WHENEVER SQLERROR EXIT 1
+
+PROMPT
+PROMPT Creating SYNONYM XX_GI_TRANSFER_HEADERS_S
+PROMPT
+
+CREATE OR REPLACE SYNONYM XX_GI_TRANSFER_HEADERS_S FOR XXPTP.XX_GI_TRANSFER_HEADERS_S;
+
+
+PROMPT
+PROMPT Exiting....
+PROMPT
+
+SET FEEDBACK ON
+
+
+EXIT;
+
+
+REM=================================================================================================
+REM                                   End Of Script
+REM=================================================================================================
+
+
+
+
+
+

@@ -1,0 +1,18 @@
+-- +==========================================================================+
+-- |                  Office Depot - Project Simplify                         |
+-- +==========================================================================+
+-- | Name :XXFIN.XX_IBY_BATCH_TRXNS_HISTORY_alter1                            |
+-- | Description : Alter table XXFIN.XX_IBY_BATCH_TRXNS_HISTORY for I0349 11.3|
+-- |               SDR project.                                               |
+-- |                                                                          |
+-- |                                                                          |
+-- |Change Record:                                                            |
+-- |===============                                                           |
+-- |Version   Date         Author               Remarks                       |
+-- |=======   ==========   =============        ==============================|
+-- | 1.0      25-APR-2011  P. Marco            Initial version                |
+-- |==========================================================================|
+  
+ALTER TABLE XXFIN.XX_IBY_BATCH_TRXNS_HISTORY ADD
+( order_payment_id NUMBER);
+

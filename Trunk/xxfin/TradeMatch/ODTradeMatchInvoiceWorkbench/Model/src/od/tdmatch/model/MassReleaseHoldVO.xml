@@ -1,0 +1,1138 @@
+<?xml version="1.0" encoding="windows-1252" ?>
+<!DOCTYPE ViewObject SYSTEM "jbo_03_01.dtd">
+<!---->
+<ViewObject
+  xmlns="http://xmlns.oracle.com/bc4j"
+  Name="MassReleaseHoldVO"
+  Version="12.2.1.12.24"
+  InheritPersonalization="merge"
+  BindingStyle="OracleName"
+  CustomQuery="true"
+  RowClass="od.tdmatch.model.MassReleaseHoldVORowImpl"
+  ComponentClass="od.tdmatch.model.MassReleaseHoldVOImpl"
+  PageIterMode="Full">
+  <DesignTime>
+    <Attr Name="_codeGenFlag2" Value="Access|Coll"/>
+    <Attr Name="_isExpertMode" Value="true"/>
+    <Attr Name="_isCodegen" Value="true"/>
+  </DesignTime>
+  <Properties>
+    <SchemaBasedProperties>
+      <LABEL
+        ResId="od.tdmatch.model.MassReleaseHoldVO_LABEL"/>
+    </SchemaBasedProperties>
+  </Properties>
+  <Variable
+    Name="invoiceFrom"
+    Kind="viewcriteria"
+    Type="oracle.jbo.domain.Date"/>
+  <Variable
+    Name="invoiceTo"
+    Kind="viewcriteria"
+    Type="oracle.jbo.domain.Date"/>
+  <Variable
+    Name="dueFrom"
+    Kind="viewcriteria"
+    Type="oracle.jbo.domain.Date"/>
+  <Variable
+    Name="dueTo"
+    Kind="viewcriteria"
+    Type="oracle.jbo.domain.Date"/>
+  <Variable
+    Name="poFrom"
+    Kind="viewcriteria"
+    Type="oracle.jbo.domain.Date"/>
+  <Variable
+    Name="poTo"
+    Kind="viewcriteria"
+    Type="oracle.jbo.domain.Date"/>
+  <Variable
+    Name="frontDoorFlag"
+    Kind="viewcriteria"
+    Type="java.lang.String"/>
+  <Variable
+    Name="dropShipFlag"
+    Kind="viewcriteria"
+    Type="java.lang.String"/>
+  <Variable
+    Name="nonCodeFlag"
+    Kind="viewcriteria"
+    Type="java.lang.String"/>
+  <Variable
+    Name="pricingExcpFlag"
+    Kind="viewcriteria"
+    Type="java.lang.String"/>
+  <Variable
+    Name="quantityExcpFlag"
+    Kind="viewcriteria"
+    Type="java.lang.String"/>
+  <Variable
+    Name="freightExcpFlag"
+    Kind="viewcriteria"
+    Type="java.lang.String"/>
+  <Variable
+    Name="operatingId"
+    Kind="viewcriteria"
+    Type="java.lang.String"/>
+  <Variable
+    Name="skunum"
+    Kind="where"
+    Type="oracle.jbo.domain.Number"/>
+  <Variable
+    Name="p_vendor_site_id"
+    Kind="where"
+    Type="oracle.jbo.domain.Number"/>
+  <Variable
+    Name="p_vendor_id"
+    Kind="where"
+    Type="oracle.jbo.domain.Number"/>
+  <Variable
+    Name="p_po_header_id"
+    Kind="where"
+    Type="oracle.jbo.domain.Number"/>
+  <Variable
+    Name="p_employee_id"
+    Kind="where"
+    Type="java.lang.String"/>
+  <Variable
+    Name="p_frt_expt"
+    Kind="where"
+    Type="java.lang.String"/>
+  <Variable
+    Name="p_qty_expt"
+    Kind="where"
+    Type="java.lang.String"/>
+  <Variable
+    Name="p_price_expt"
+    Kind="where"
+    Type="java.lang.String"/>
+  <Variable
+    Name="p_front_door"
+    Kind="where"
+    Type="java.lang.String"/>
+  <Variable
+    Name="p_non_code"
+    Kind="where"
+    Type="java.lang.String"/>
+  <Variable
+    Name="p_drop_ship"
+    Kind="where"
+    Type="java.lang.String"/>
+  <Variable
+    Name="p_fr_gldate"
+    Kind="where"
+    Type="oracle.jbo.domain.Date"/>
+  <Variable
+    Name="p_to_gldate"
+    Kind="where"
+    Type="oracle.jbo.domain.Date"/>
+  <ViewAccessor
+    Name="MassReleaseReasonLovVO1"
+    ViewObjectName="od.tdmatch.model.lov.MassReleaseReasonLovVO"
+    RowLevelBinds="true"/>
+  <ListBinding
+    Name="LOV_QtyHoldReason"
+    ListVOName="MassReleaseReasonLovVO1"
+    NullValueFlag="start"
+    NullValueId="${adfBundle['oracle.javatools.resourcebundle.SystemBundle']['NULL_VALUE_RESID']}"
+    MRUCount="0">
+    <AttrArray Name="AttrNames">
+      <Item Value="QtyHoldReason"/>
+    </AttrArray>
+    <AttrArray Name="AttrExpressions"/>
+    <AttrArray Name="ListAttrNames">
+      <Item Value="HoldLookupCode"/>
+    </AttrArray>
+    <AttrArray Name="ListDisplayAttrNames">
+      <Item Value="HoldLookupCode"/>
+    </AttrArray>
+    <DisplayCriteria/>
+  </ListBinding>
+  <ListBinding
+    Name="LOV_PriceHoldReason"
+    ListVOName="MassReleaseReasonLovVO1"
+    NullValueFlag="start"
+    NullValueId="${adfBundle['oracle.javatools.resourcebundle.SystemBundle']['NULL_VALUE_RESID']}"
+    MRUCount="0">
+    <AttrArray Name="AttrNames">
+      <Item Value="PriceHoldReason"/>
+    </AttrArray>
+    <AttrArray Name="AttrExpressions"/>
+    <AttrArray Name="ListAttrNames">
+      <Item Value="HoldLookupCode"/>
+    </AttrArray>
+    <AttrArray Name="ListDisplayAttrNames">
+      <Item Value="HoldLookupCode"/>
+    </AttrArray>
+    <DisplayCriteria/>
+  </ListBinding>
+  <SQLQuery><![CDATA[SELECT /*+ (LEADING h) */                               
+        ai.invoice_id,                               
+       (SELECT tv.target_value2                                
+         FROM xx_fin_translatevalues tv,                                                                                  
+              xx_fin_translatedefinition td                                  
+        WHERE td.translation_name = 'XX_AP_VENDOR_ASSISTANTS'                                                                                   
+          AND tv.translate_id  = td.translate_id                                                                                  
+          AND tv.target_value1 = nvl(aps.attribute6,'Open')||''                                                                                  
+          AND tv.enabled_flag = 'Y'                                                                                  
+          AND sysdate between tv.start_date_active and nvl(tv.end_date_active,sysdate)) vendor_assistant,                               
+       ai.org_id,                                                      
+       ai.source,                                                      
+       ai.invoice_num,                                                      
+       ai.invoice_date,                                                             
+       nvl(ai.voucher_num,doc_sequence_value) voucher_num,                                                                      
+       ai.invoice_amount,                                                                                  
+       ai.attribute5 PO_Type,                                                               
+       NVL(py.discount_date,py.due_date) due_date,                                                             
+       ph.segment1 po_number,                                                      
+       asup.vendor_name supplier_name,                                                                                  
+       asup.segment1 supplier_no,                                                                                  
+       aps.vendor_site_code supplier_site,                                                           
+       DECODE(SIGN(instr(e.name,'/')),0,NULL,1,'D') discount,                                                                                  
+       ltrim(SUBSTR(hrl.location_code,1,6),'0') location,                                                                                  
+       XX_AP_TRADE_MATCH_UTL_PKG.xxod_tdmatch_quantity(ai.invoice_id) Qty_Hold_Amt,                                                                                             
+           XX_AP_TRADE_MATCH_UTL_PKG.xxod_tdmatch_price(ai.invoice_id) Price_Hold_Amt,                                                                                             
+           XX_AP_TRADE_MATCH_UTL_PKG.xx_ap_freight_invoice(ai.invoice_id) Frt_Hold,                                                                                        
+           'N' po_hold_chr,                                                                        
+                                              
+           DECODE(SUBSTR(ai.attribute5,1,1),'F','Y','N') front_doorC,                                   
+		   (CASE WHEN SUBSTR(ai.attribute5,1,1) = 'N' OR SUBSTR(ai.attribute5,10,1) = 'N' then 'Y' else 'N' end) non_codec,                                                                    
+           DECODE(SUBSTR(ai.attribute5,1,1),'D','Y','N') drop_shipc ,                              
+           ph.creation_date podate ,                           
+           1 sku,                          
+           'Y' pricingExcp,                          
+           'Y' quantityExcp,                          
+           XX_AP_TRADE_MATCH_UTL_PKG.xx_ap_freight_invoice(ai.invoice_id) freightExcp,      
+           ai.gl_date      
+  FROM ap_terms e,                                                                                  
+       hr_locations_all hrl,                                
+       po_headers_all ph,                               
+       ap_payment_schedules_all py,                               
+       ap_invoices_all ai,                               
+       ap_suppliers asup,                               
+       ap_supplier_sites_all aps,                               
+       (SELECT /*+ INDEX(aph XX_AP_HOLDS_N1) */                    
+          distinct aph.invoice_id                               
+          FROM ap_holds_all aph                               
+         WHERE aph.creation_date > '01-JAN-11'                                
+           AND NVL(aph.status_flag,'S')= 'S'                     
+           AND aph.hold_lookup_code IN ('MAX QTY ORD','QTY ORD','QTY REC','AMT ORD','MAX AMT REC','MAX AMT ORD','AMT REC','OD MAX PRICE','OD Favorable','PRICE','LINE VARIANCE','DIST VARIANCE')                     
+           AND aph.release_lookup_code is null                 
+        ) h                               
+WHERE                                
+  ai.invoice_id=h.invoice_id                      
+  AND py.invoice_id=ai.invoice_id                        
+  AND aps.vendor_id=ai.vendor_id  
+  AND NVL(ai.validation_request_id,1)<>-9999999999  
+  AND aps.vendor_id=nvl(:p_vendor_id,aps.vendor_id)               
+  AND aps.vendor_site_id=nvl(:p_vendor_site_id,aps.vendor_site_id)                
+  and NVL(ai.po_header_id,ai.quick_po_header_id)=nvl(:p_po_header_id,NVL(ai.po_header_id,ai.quick_po_header_id))              
+  and nvl(aps.attribute6,'Open')=nvl(:p_employee_id,nvl(aps.attribute6,'Open'))             
+  AND ai.gl_date BETWEEN NVL(:p_fr_gldate,ai.gl_date) AND NVL(:p_to_gldate,ai.gl_date)                                                      
+     
+  and aps.vendor_site_id=ai.vendor_site_id                        
+  AND asup.vendor_id = aps.vendor_id                             
+  AND ph.po_header_id = NVL(ai.po_header_id,ai.quick_po_header_id)                                
+  AND hrl.location_id = ph.ship_to_location_id                               
+  AND exists (SELECT 'x'                            
+         FROM xx_fin_translatevalues tv,                                                                                             
+              xx_fin_translatedefinition td                                             
+        WHERE td.translation_name = 'XX_AP_TRADE_CATEGORIES'                                                                                              
+          AND tv.translate_id  = td.translate_id                                                                                             
+          AND tv.enabled_flag = 'Y'                                                                                             
+          AND sysdate between tv.start_date_active and nvl(tv.end_date_active,sysdate)                            
+          AND tv.target_value1 = aps.attribute8)                                 
+  AND e.term_id=ai.terms_id                                                                                    
+  AND EXISTS (SELECT  'x'                                                                              
+                FROM ap_invoice_lines_all al                                                                             
+               WHERE  al.invoice_id=ai.invoice_id            
+               AND al.inventory_item_id=nvl(:skunum,al.inventory_item_id)            
+                                                                                                 
+                                              
+                                                  
+              )                               
+   AND EXISTS (SELECT 'x'                               
+                 FROM  xx_fin_translatevalues tv                               
+                      ,xx_fin_translatedefinition td                               
+                WHERE td.TRANSLATION_NAME = 'XX_AP_TR_MATCH_INVOICES'                               
+                  AND tv.TRANSLATE_ID  = td.TRANSLATE_ID                               
+                  AND tv.enabled_flag='Y'                               
+                  AND SYSDATE BETWEEN tv.start_date_active and NVL(tv.end_date_active,sysdate)                               
+                  AND tv.target_value1=ai.source                               
+                 )          
+                 AND ((EXISTS (SELECT 'x' from ap_holds_all aia                                                                   
+                           where aia.invoice_id=ai.invoice_id                                                                   
+                           AND aia.hold_lookup_code like 'OD Max Freight%'           
+                           AND aia.release_lookup_code IS NULL                                                                   
+                        ) AND (:p_frt_expt = 'Y' ))                                                                   
+        OR				                                                                  
+	(:p_frt_expt is null or :p_frt_expt = 'N'))                                             
+  AND ((:p_qty_expt is null or :p_qty_expt = 'N')                                             
+		OR                                             
+		(:p_qty_expt = 'Y' and exists (SELECT 'x'--distinct invoice_id                                               
+             FROM ap_holds_all                                                
+            WHERE creation_date > '01-JAN-11'                                                
+              AND NVL(status_flag,'S')= 'S'                                               
+              AND invoice_id = ai.invoice_id                                             
+              AND hold_lookup_code like 'QTY%'                                    
+              AND release_lookup_code||''  is null                                    
+          )))	                                             
+                                                      
+ AND ((:p_price_expt is null or :p_price_expt = 'N')                                             
+		OR                                             
+		(:p_price_expt = 'Y' and exists (SELECT 'x'--distinct invoice_id                                               
+             FROM ap_holds_all                                                
+            WHERE creation_date > '01-JAN-11'                                                
+              AND NVL(status_flag,'S')= 'S'                                               
+              AND invoice_id = ai.invoice_id                                             
+              AND hold_lookup_code = 'PRICE'                                    
+              AND release_lookup_code||''  is null                                    
+          )))	                                             
+        AND (((SUBSTR(ai.attribute5,1,1) ='F' AND :p_front_door = 'Y' )		                                             
+  OR (ai.attribute5= 'Non-Code'  AND :p_non_code = 'Y' )          
+  OR (ai.attribute5='DropShip VW' and :p_drop_ship='Y')         
+  )                                                             
+  OR  ((:p_front_door is null or :p_front_door = 'N')                                                            
+  AND (:p_non_code is null or :p_non_code = 'N')         
+  AND (:p_drop_ship is null or :p_drop_ship='N')         
+  ))]]></SQLQuery>
+  <ViewAttribute
+    Name="InvoiceId"
+    IsUpdateable="false"
+    IsPersistent="false"
+    PrecisionRule="true"
+    Precision="15"
+    Scale="0"
+    Type="oracle.jbo.domain.Number"
+    ColumnType="NUMBER"
+    AliasName="INVOICE_ID"
+    Expression="INVOICE_ID"
+    SQLType="NUMERIC"/>
+  <ViewAttribute
+    Name="VendorAssistant"
+    IsUpdateable="false"
+    IsPersistent="false"
+    PrecisionRule="true"
+    Precision="240"
+    Type="java.lang.String"
+    ColumnType="VARCHAR2"
+    AliasName="VENDOR_ASSISTANT"
+    Expression="VENDOR_ASSISTANT"
+    SQLType="VARCHAR">
+    <DesignTime>
+      <Attr Name="_DisplaySize" Value="240"/>
+    </DesignTime>
+    <Properties>
+      <SchemaBasedProperties>
+        <LABEL
+          ResId="od.tdmatch.model.MassReleaseHoldVO.VendorAssistant_LABEL"/>
+      </SchemaBasedProperties>
+    </Properties>
+  </ViewAttribute>
+  <ViewAttribute
+    Name="OrgId"
+    IsUpdateable="false"
+    IsPersistent="false"
+    PrecisionRule="true"
+    Precision="15"
+    Scale="0"
+    Type="oracle.jbo.domain.Number"
+    ColumnType="NUMBER"
+    AliasName="ORG_ID"
+    Expression="ORG_ID"
+    SQLType="NUMERIC"/>
+  <ViewAttribute
+    Name="Source"
+    IsUpdateable="false"
+    IsPersistent="false"
+    PrecisionRule="true"
+    Precision="25"
+    Type="java.lang.String"
+    ColumnType="VARCHAR2"
+    AliasName="SOURCE"
+    Expression="SOURCE"
+    SQLType="VARCHAR">
+    <DesignTime>
+      <Attr Name="_DisplaySize" Value="25"/>
+    </DesignTime>
+  </ViewAttribute>
+  <ViewAttribute
+    Name="InvoiceNum"
+    IsUpdateable="false"
+    IsPersistent="false"
+    PrecisionRule="true"
+    Precision="50"
+    Type="java.lang.String"
+    ColumnType="VARCHAR2"
+    AliasName="INVOICE_NUM"
+    Expression="INVOICE_NUM"
+    SQLType="VARCHAR">
+    <DesignTime>
+      <Attr Name="_DisplaySize" Value="50"/>
+    </DesignTime>
+    <Properties>
+      <SchemaBasedProperties>
+        <LABEL
+          ResId="od.tdmatch.model.MassReleaseHoldVO.InvoiceNum_LABEL"/>
+      </SchemaBasedProperties>
+    </Properties>
+  </ViewAttribute>
+  <ViewAttribute
+    Name="InvoiceDate"
+    IsUpdateable="false"
+    IsPersistent="false"
+    PrecisionRule="true"
+    Type="oracle.jbo.domain.Date"
+    ColumnType="DATE"
+    AliasName="INVOICE_DATE"
+    Expression="INVOICE_DATE"
+    SQLType="DATE">
+    <Properties>
+      <SchemaBasedProperties>
+        <LABEL
+          ResId="od.tdmatch.model.MassReleaseHoldVO.InvoiceDate_LABEL"/>
+      </SchemaBasedProperties>
+    </Properties>
+  </ViewAttribute>
+  <ViewAttribute
+    Name="VoucherNum"
+    IsUpdateable="false"
+    IsPersistent="false"
+    PrecisionRule="true"
+    Precision="50"
+    Type="java.lang.String"
+    ColumnType="VARCHAR2"
+    AliasName="VOUCHER_NUM"
+    Expression="VOUCHER_NUM"
+    SQLType="VARCHAR">
+    <DesignTime>
+      <Attr Name="_DisplaySize" Value="50"/>
+    </DesignTime>
+    <Properties>
+      <SchemaBasedProperties>
+        <LABEL
+          ResId="od.tdmatch.model.MassReleaseHoldVO.VoucherNum_LABEL"/>
+      </SchemaBasedProperties>
+    </Properties>
+  </ViewAttribute>
+  <ViewAttribute
+    Name="InvoiceAmount"
+    IsUpdateable="false"
+    IsPersistent="false"
+    PrecisionRule="true"
+    Type="oracle.jbo.domain.Number"
+    ColumnType="NUMBER"
+    AliasName="INVOICE_AMOUNT"
+    Expression="INVOICE_AMOUNT"
+    SQLType="NUMERIC">
+    <Properties>
+      <SchemaBasedProperties>
+        <FMT_FORMATTER
+          ResId="od.tdmatch.model.MassReleaseHoldVO.InvoiceAmount_FMT_FORMATTER"/>
+        <LABEL
+          ResId="od.tdmatch.model.MassReleaseHoldVO.InvoiceAmount_LABEL"/>
+        <FMT_FORMAT
+          ResId="od.tdmatch.model.MassReleaseHoldVO.InvoiceAmount_FMT_FORMAT"/>
+      </SchemaBasedProperties>
+    </Properties>
+  </ViewAttribute>
+  <ViewAttribute
+    Name="PoType"
+    IsUpdateable="false"
+    IsPersistent="false"
+    PrecisionRule="true"
+    Precision="150"
+    Type="java.lang.String"
+    ColumnType="VARCHAR2"
+    AliasName="PO_TYPE"
+    Expression="PO_TYPE"
+    SQLType="VARCHAR">
+    <DesignTime>
+      <Attr Name="_DisplaySize" Value="150"/>
+    </DesignTime>
+  </ViewAttribute>
+  <ViewAttribute
+    Name="DueDate"
+    IsUpdateable="false"
+    IsPersistent="false"
+    PrecisionRule="true"
+    Type="oracle.jbo.domain.Date"
+    ColumnType="DATE"
+    AliasName="DUE_DATE"
+    Expression="DUE_DATE"
+    SQLType="DATE">
+    <Properties>
+      <SchemaBasedProperties>
+        <LABEL
+          ResId="od.tdmatch.model.MassReleaseHoldVO.DueDate_LABEL"/>
+      </SchemaBasedProperties>
+    </Properties>
+  </ViewAttribute>
+  <ViewAttribute
+    Name="PoNumber"
+    IsUpdateable="false"
+    IsPersistent="false"
+    PrecisionRule="true"
+    Precision="20"
+    Type="java.lang.String"
+    ColumnType="VARCHAR2"
+    AliasName="PO_NUMBER"
+    Expression="PO_NUMBER"
+    SQLType="VARCHAR">
+    <DesignTime>
+      <Attr Name="_DisplaySize" Value="20"/>
+    </DesignTime>
+    <Properties>
+      <SchemaBasedProperties>
+        <LABEL
+          ResId="od.tdmatch.model.MassReleaseHoldVO.PoNumber_LABEL"/>
+      </SchemaBasedProperties>
+    </Properties>
+  </ViewAttribute>
+  <ViewAttribute
+    Name="SupplierName"
+    IsUpdateable="false"
+    IsPersistent="false"
+    PrecisionRule="true"
+    Precision="240"
+    Type="java.lang.String"
+    ColumnType="VARCHAR2"
+    AliasName="SUPPLIER_NAME"
+    Expression="SUPPLIER_NAME"
+    SQLType="VARCHAR">
+    <DesignTime>
+      <Attr Name="_DisplaySize" Value="240"/>
+    </DesignTime>
+    <Properties>
+      <SchemaBasedProperties>
+        <LABEL
+          ResId="od.tdmatch.model.MassReleaseHoldVO.SupplierName_LABEL"/>
+      </SchemaBasedProperties>
+    </Properties>
+  </ViewAttribute>
+  <ViewAttribute
+    Name="SupplierNo"
+    IsUpdateable="false"
+    IsPersistent="false"
+    PrecisionRule="true"
+    Precision="30"
+    Type="java.lang.String"
+    ColumnType="VARCHAR2"
+    AliasName="SUPPLIER_NO"
+    Expression="SUPPLIER_NO"
+    SQLType="VARCHAR">
+    <DesignTime>
+      <Attr Name="_DisplaySize" Value="30"/>
+    </DesignTime>
+    <Properties>
+      <SchemaBasedProperties>
+        <LABEL
+          ResId="od.tdmatch.model.MassReleaseHoldVO.SupplierNo_LABEL"/>
+      </SchemaBasedProperties>
+    </Properties>
+  </ViewAttribute>
+  <ViewAttribute
+    Name="SupplierSite"
+    IsUpdateable="false"
+    IsPersistent="false"
+    PrecisionRule="true"
+    Precision="15"
+    Type="java.lang.String"
+    ColumnType="VARCHAR2"
+    AliasName="SUPPLIER_SITE"
+    Expression="SUPPLIER_SITE"
+    SQLType="VARCHAR">
+    <DesignTime>
+      <Attr Name="_DisplaySize" Value="15"/>
+    </DesignTime>
+    <Properties>
+      <SchemaBasedProperties>
+        <LABEL
+          ResId="od.tdmatch.model.MassReleaseHoldVO.SupplierSite_LABEL"/>
+      </SchemaBasedProperties>
+    </Properties>
+  </ViewAttribute>
+  <ViewAttribute
+    Name="Discount"
+    IsUpdateable="false"
+    IsPersistent="false"
+    PrecisionRule="true"
+    Precision="1"
+    Type="java.lang.String"
+    ColumnType="VARCHAR2"
+    AliasName="DISCOUNT"
+    Expression="DISCOUNT"
+    SQLType="VARCHAR">
+    <DesignTime>
+      <Attr Name="_DisplaySize" Value="1"/>
+    </DesignTime>
+    <Properties>
+      <SchemaBasedProperties>
+        <LABEL
+          ResId="od.tdmatch.model.MassReleaseHoldVO.Discount_LABEL"/>
+      </SchemaBasedProperties>
+    </Properties>
+  </ViewAttribute>
+  <ViewAttribute
+    Name="Location"
+    IsUpdateable="false"
+    IsPersistent="false"
+    PrecisionRule="true"
+    Precision="6"
+    Type="java.lang.String"
+    ColumnType="VARCHAR2"
+    AliasName="LOCATION"
+    Expression="LOCATION"
+    SQLType="VARCHAR">
+    <DesignTime>
+      <Attr Name="_DisplaySize" Value="6"/>
+    </DesignTime>
+    <Properties>
+      <SchemaBasedProperties>
+        <LABEL
+          ResId="od.tdmatch.model.MassReleaseHoldVO.Location_LABEL"/>
+      </SchemaBasedProperties>
+    </Properties>
+  </ViewAttribute>
+  <ViewAttribute
+    Name="QtyHoldAmt"
+    IsUpdateable="false"
+    IsPersistent="false"
+    PrecisionRule="true"
+    Type="oracle.jbo.domain.Number"
+    ColumnType="NUMBER"
+    AliasName="QTY_HOLD_AMT"
+    Expression="QTY_HOLD_AMT"
+    SQLType="NUMERIC">
+    <Properties>
+      <SchemaBasedProperties>
+        <LABEL
+          ResId="od.tdmatch.model.MassReleaseHoldVO.QtyHoldAmt_LABEL"/>
+        <FMT_FORMATTER
+          ResId="od.tdmatch.model.MassReleaseHoldVO.QtyHoldAmt_FMT_FORMATTER"/>
+        <FMT_FORMAT
+          ResId="od.tdmatch.model.MassReleaseHoldVO.QtyHoldAmt_FMT_FORMAT"/>
+      </SchemaBasedProperties>
+    </Properties>
+  </ViewAttribute>
+  <ViewAttribute
+    Name="PriceHoldAmt"
+    IsUpdateable="false"
+    IsPersistent="false"
+    PrecisionRule="true"
+    Type="oracle.jbo.domain.Number"
+    ColumnType="NUMBER"
+    AliasName="PRICE_HOLD_AMT"
+    Expression="PRICE_HOLD_AMT"
+    SQLType="NUMERIC">
+    <Properties>
+      <SchemaBasedProperties>
+        <LABEL
+          ResId="od.tdmatch.model.MassReleaseHoldVO.PriceHoldAmt_LABEL"/>
+        <FMT_FORMAT
+          ResId="od.tdmatch.model.MassReleaseHoldVO.PriceHoldAmt_FMT_FORMAT"/>
+        <FMT_FORMATTER
+          ResId="od.tdmatch.model.MassReleaseHoldVO.PriceHoldAmt_FMT_FORMATTER"/>
+      </SchemaBasedProperties>
+    </Properties>
+  </ViewAttribute>
+  <ViewAttribute
+    Name="FrtHold"
+    IsUpdateable="false"
+    IsPersistent="false"
+    PrecisionRule="true"
+    Precision="4000"
+    Type="java.lang.String"
+    ColumnType="VARCHAR2"
+    AliasName="FRT_HOLD"
+    Expression="FRT_HOLD"
+    SQLType="VARCHAR">
+    <DesignTime>
+      <Attr Name="_DisplaySize" Value="4000"/>
+    </DesignTime>
+    <Properties>
+      <SchemaBasedProperties>
+        <LABEL
+          ResId="od.tdmatch.model.MassReleaseHoldVO.FrtHold_LABEL"/>
+      </SchemaBasedProperties>
+    </Properties>
+  </ViewAttribute>
+  <ViewAttribute
+    Name="PoHoldChr"
+    IsUpdateable="false"
+    IsPersistent="false"
+    PrecisionRule="true"
+    Precision="1"
+    Type="java.lang.String"
+    ColumnType="CHAR"
+    AliasName="PO_HOLD_CHR"
+    Expression="PO_HOLD_CHR"
+    SQLType="VARCHAR">
+    <DesignTime>
+      <Attr Name="_DisplaySize" Value="1"/>
+    </DesignTime>
+  </ViewAttribute>
+  <ViewAttribute
+    Name="FrontDoorc"
+    IsUpdateable="false"
+    IsPersistent="false"
+    PrecisionRule="true"
+    Precision="1"
+    Type="java.lang.String"
+    ColumnType="VARCHAR2"
+    AliasName="FRONT_DOORC"
+    Expression="FRONT_DOORC"
+    SQLType="VARCHAR">
+    <DesignTime>
+      <Attr Name="_DisplaySize" Value="1"/>
+    </DesignTime>
+    <Properties>
+      <SchemaBasedProperties>
+        <LABEL
+          ResId="od.tdmatch.model.MassReleaseHoldVO.FrontDoorc_LABEL"/>
+      </SchemaBasedProperties>
+    </Properties>
+  </ViewAttribute>
+  <ViewAttribute
+    Name="NonCodec"
+    IsUpdateable="false"
+    IsPersistent="false"
+    PrecisionRule="true"
+    Precision="1"
+    Type="java.lang.String"
+    ColumnType="CHAR"
+    AliasName="NON_CODEC"
+    Expression="NON_CODEC"
+    SQLType="VARCHAR">
+    <DesignTime>
+      <Attr Name="_DisplaySize" Value="1"/>
+    </DesignTime>
+    <Properties>
+      <SchemaBasedProperties>
+        <LABEL
+          ResId="od.tdmatch.model.MassReleaseHoldVO.NonCodec_LABEL"/>
+      </SchemaBasedProperties>
+    </Properties>
+  </ViewAttribute>
+  <ViewAttribute
+    Name="DropShipc"
+    IsUpdateable="false"
+    IsPersistent="false"
+    PrecisionRule="true"
+    Precision="1"
+    Type="java.lang.String"
+    ColumnType="VARCHAR2"
+    AliasName="DROP_SHIPC"
+    Expression="DROP_SHIPC"
+    SQLType="VARCHAR">
+    <DesignTime>
+      <Attr Name="_DisplaySize" Value="1"/>
+    </DesignTime>
+    <Properties>
+      <SchemaBasedProperties>
+        <LABEL
+          ResId="od.tdmatch.model.MassReleaseHoldVO.DropShipc_LABEL"/>
+      </SchemaBasedProperties>
+    </Properties>
+  </ViewAttribute>
+  <ViewAttribute
+    Name="Podate"
+    IsUpdateable="false"
+    IsPersistent="false"
+    PrecisionRule="true"
+    Type="oracle.jbo.domain.Date"
+    ColumnType="DATE"
+    AliasName="PODATE"
+    Expression="PODATE"
+    SQLType="DATE"/>
+  <ViewAttribute
+    Name="Sku"
+    IsUpdateable="false"
+    IsPersistent="false"
+    PrecisionRule="true"
+    Type="oracle.jbo.domain.Number"
+    ColumnType="NUMBER"
+    AliasName="SKU"
+    Expression="SKU"
+    SQLType="NUMERIC"/>
+  <ViewAttribute
+    Name="Pricingexcp"
+    IsUpdateable="false"
+    IsPersistent="false"
+    PrecisionRule="true"
+    Precision="1"
+    Type="java.lang.String"
+    ColumnType="CHAR"
+    AliasName="PRICINGEXCP"
+    Expression="PRICINGEXCP"
+    SQLType="VARCHAR">
+    <DesignTime>
+      <Attr Name="_DisplaySize" Value="1"/>
+    </DesignTime>
+    <Properties>
+      <SchemaBasedProperties>
+        <LABEL
+          ResId="od.tdmatch.model.MassReleaseHoldVO.Pricingexcp_LABEL"/>
+      </SchemaBasedProperties>
+    </Properties>
+  </ViewAttribute>
+  <ViewAttribute
+    Name="Quantityexcp"
+    IsUpdateable="false"
+    IsPersistent="false"
+    PrecisionRule="true"
+    Precision="1"
+    Type="java.lang.String"
+    ColumnType="CHAR"
+    AliasName="QUANTITYEXCP"
+    Expression="QUANTITYEXCP"
+    SQLType="VARCHAR">
+    <DesignTime>
+      <Attr Name="_DisplaySize" Value="1"/>
+    </DesignTime>
+    <Properties>
+      <SchemaBasedProperties>
+        <LABEL
+          ResId="od.tdmatch.model.MassReleaseHoldVO.Quantityexcp_LABEL"/>
+      </SchemaBasedProperties>
+    </Properties>
+  </ViewAttribute>
+  <ViewAttribute
+    Name="Freightexcp"
+    IsUpdateable="false"
+    IsPersistent="false"
+    PrecisionRule="true"
+    Precision="1"
+    Type="java.lang.String"
+    ColumnType="CHAR"
+    AliasName="FREIGHTEXCP"
+    Expression="FREIGHTEXCP"
+    SQLType="VARCHAR">
+    <DesignTime>
+      <Attr Name="_DisplaySize" Value="1"/>
+    </DesignTime>
+    <Properties>
+      <SchemaBasedProperties>
+        <LABEL
+          ResId="od.tdmatch.model.MassReleaseHoldVO.Freightexcp_LABEL"/>
+      </SchemaBasedProperties>
+    </Properties>
+  </ViewAttribute>
+  <ViewAttribute
+    Name="GlDate"
+    IsUpdateable="false"
+    IsPersistent="false"
+    PrecisionRule="true"
+    Type="oracle.jbo.domain.Date"
+    ColumnType="DATE"
+    AliasName="GL_DATE"
+    Expression="GL_DATE"
+    SQLType="DATE">
+    <Properties>
+      <SchemaBasedProperties>
+        <LABEL
+          ResId="od.tdmatch.model.MassReleaseHoldVO.GlDate_LABEL"/>
+      </SchemaBasedProperties>
+    </Properties>
+  </ViewAttribute>
+  <ViewAttribute
+    Name="EmployeeSelect"
+    IsSelected="false"
+    IsPersistent="false"
+    PrecisionRule="true"
+    Type="java.lang.Boolean"
+    ColumnType="NUMBER"
+    AliasName="VIEW_ATTR"
+    SQLType="BIT"
+    Passivate="true"/>
+  <ViewAttribute
+    Name="QtyHoldReason"
+    IsSelected="false"
+    IsPersistent="false"
+    PrecisionRule="true"
+    Precision="255"
+    Type="java.lang.String"
+    ColumnType="VARCHAR2"
+    AliasName="VIEW_ATTR"
+    SQLType="VARCHAR"
+    Passivate="true"
+    LOVName="LOV_QtyHoldReason">
+    <Properties>
+      <SchemaBasedProperties>
+        <LABEL
+          ResId="od.tdmatch.model.MassReleaseHoldVO.QtyHoldReason_LABEL"/>
+        <CONTROLTYPE
+          Value="choice"/>
+      </SchemaBasedProperties>
+    </Properties>
+  </ViewAttribute>
+  <ViewAttribute
+    Name="PriceHoldReason"
+    IsSelected="false"
+    IsPersistent="false"
+    PrecisionRule="true"
+    Precision="255"
+    Type="java.lang.String"
+    ColumnType="VARCHAR2"
+    AliasName="VIEW_ATTR"
+    SQLType="VARCHAR"
+    Passivate="true"
+    LOVName="LOV_PriceHoldReason">
+    <Properties>
+      <SchemaBasedProperties>
+        <LABEL
+          ResId="od.tdmatch.model.MassReleaseHoldVO.PriceHoldReason_LABEL"/>
+        <CONTROLTYPE
+          Value="choice"/>
+      </SchemaBasedProperties>
+    </Properties>
+  </ViewAttribute>
+  <ViewAttribute
+    Name="SumInvAmount"
+    IsSelected="false"
+    IsPersistent="false"
+    PrecisionRule="true"
+    Type="java.math.BigDecimal"
+    ColumnType="NUMBER"
+    AliasName="VIEW_ATTR"
+    SQLType="NUMERIC"
+    Passivate="true">
+    <Properties>
+      <SchemaBasedProperties>
+        <FMT_FORMAT
+          ResId="od.tdmatch.model.MassReleaseHoldVO.SumInvAmount_FMT_FORMAT"/>
+        <FMT_FORMATTER
+          ResId="od.tdmatch.model.MassReleaseHoldVO.SumInvAmount_FMT_FORMATTER"/>
+      </SchemaBasedProperties>
+    </Properties>
+  </ViewAttribute>
+  <ViewAttribute
+    Name="SumQtyAmount"
+    IsSelected="false"
+    IsPersistent="false"
+    PrecisionRule="true"
+    Type="java.math.BigDecimal"
+    ColumnType="NUMBER"
+    AliasName="VIEW_ATTR"
+    SQLType="NUMERIC"
+    Passivate="true">
+    <Properties>
+      <SchemaBasedProperties>
+        <FMT_FORMAT
+          ResId="od.tdmatch.model.MassReleaseHoldVO.SumQtyAmount_FMT_FORMAT"/>
+        <FMT_FORMATTER
+          ResId="od.tdmatch.model.MassReleaseHoldVO.SumQtyAmount_FMT_FORMATTER"/>
+      </SchemaBasedProperties>
+    </Properties>
+  </ViewAttribute>
+  <ViewAttribute
+    Name="SumPriceAmount"
+    IsSelected="false"
+    IsPersistent="false"
+    PrecisionRule="true"
+    Type="java.math.BigDecimal"
+    ColumnType="NUMBER"
+    AliasName="VIEW_ATTR"
+    SQLType="NUMERIC"
+    Passivate="true">
+    <Properties>
+      <SchemaBasedProperties>
+        <FMT_FORMATTER
+          ResId="od.tdmatch.model.MassReleaseHoldVO.SumPriceAmount_FMT_FORMATTER"/>
+        <FMT_FORMAT
+          ResId="od.tdmatch.model.MassReleaseHoldVO.SumPriceAmount_FMT_FORMAT"/>
+      </SchemaBasedProperties>
+    </Properties>
+  </ViewAttribute>
+  <ViewCriteria
+    Name="MassReleaseHoldVOCriteria"
+    ViewObjectName="od.tdmatch.model.MassReleaseHoldVO"
+    Conjunction="AND">
+    <Properties Name="_Props">
+      <CustomProperties>
+        <Property
+          Name="autoExecute"
+          Value="false"/>
+        <Property
+          Name="mode"
+          Value="Basic"/>
+        <Property
+          Name="allowConjunctionOverride"
+          Value="true"/>
+        <Property
+          Name="showInList"
+          Value="true"/>
+        <Property
+          Name="displayOperators"
+          Value="InAdvancedMode"/>
+      </CustomProperties>
+    </Properties>
+    <ViewCriteriaRow
+      Name="MassReleaseHoldVOCriteria_row_0"
+      UpperColumns="1"
+      Conjunction="AND">
+      <ViewCriteriaItem
+        Name="OrgId"
+        ViewAttribute="OrgId"
+        Operator="="
+        Conjunction="AND"
+        Value=":operatingId"
+        IsBindVarValue="true"
+        Required="Optional"/>
+      <ViewCriteriaItemCompound
+        Name="InvoiceDate"
+        ViewAttribute="InvoiceDate">
+        <ViewCriteria
+          Name="MassReleaseHoldVOCriteria_MassReleaseHoldVOCriteria_row_0_InvoiceDate_itemHolder"
+          ViewObjectName="od.tdmatch.model.MassReleaseHoldVO"
+          Conjunction="OR">
+          <ViewCriteriaRow
+            Name="MassReleaseHoldVOCriteria_MassReleaseHoldVOCriteria_row_0_InvoiceDate_itemHolder_row_0"
+            Conjunction="AND">
+            <ViewCriteriaItem
+              Name="InvoiceDate"
+              ViewAttribute="InvoiceDate"
+              Operator="ONORAFTER"
+              Conjunction="AND"
+              Value=":invoiceFrom"
+              IsBindVarValue="true"
+              Required="Optional"/>
+          </ViewCriteriaRow>
+          <ViewCriteriaRow
+            Name="MassReleaseHoldVOCriteria_MassReleaseHoldVOCriteria_row_0_InvoiceDate_itemHolder_row_1"
+            Conjunction="AND">
+            <ViewCriteriaItem
+              Name="MassReleaseHoldVOCriteria_MassReleaseHoldVOCriteria_row_0_InvoiceDate_MassReleaseHoldVOCriteria_MassReleaseHoldVOCriteria_row_0_InvoiceDate_itemHolder_MassReleaseHoldVOCriteria_MassReleaseHoldVOCriteria_row_0_InvoiceDate_itemHolder_row_1_InvoiceDate"
+              ViewAttribute="InvoiceDate"
+              Operator="ONORBEFORE"
+              Conjunction="AND"
+              Value=":invoiceTo"
+              IsBindVarValue="true"
+              Required="Optional"/>
+          </ViewCriteriaRow>
+        </ViewCriteria>
+      </ViewCriteriaItemCompound>
+      <ViewCriteriaItemCompound
+        Name="DueDate"
+        ViewAttribute="DueDate">
+        <ViewCriteria
+          Name="MassReleaseHoldVOCriteria_MassReleaseHoldVOCriteria_row_0_DueDate_itemHolder"
+          ViewObjectName="od.tdmatch.model.MassReleaseHoldVO"
+          Conjunction="OR">
+          <ViewCriteriaRow
+            Name="MassReleaseHoldVOCriteria_MassReleaseHoldVOCriteria_row_0_DueDate_itemHolder_row_0"
+            Conjunction="AND">
+            <ViewCriteriaItem
+              Name="DueDate"
+              ViewAttribute="DueDate"
+              Operator="ONORAFTER"
+              Conjunction="AND"
+              Value=":dueFrom"
+              IsBindVarValue="true"
+              Required="Optional"/>
+          </ViewCriteriaRow>
+          <ViewCriteriaRow
+            Name="MassReleaseHoldVOCriteria_MassReleaseHoldVOCriteria_row_0_DueDate_itemHolder_row_1"
+            Conjunction="AND">
+            <ViewCriteriaItem
+              Name="MassReleaseHoldVOCriteria_MassReleaseHoldVOCriteria_row_0_DueDate_MassReleaseHoldVOCriteria_MassReleaseHoldVOCriteria_row_0_DueDate_itemHolder_MassReleaseHoldVOCriteria_MassReleaseHoldVOCriteria_row_0_DueDate_itemHolder_row_1_DueDate"
+              ViewAttribute="DueDate"
+              Operator="ONORBEFORE"
+              Conjunction="AND"
+              Value=":dueTo"
+              IsBindVarValue="true"
+              Required="Optional"/>
+          </ViewCriteriaRow>
+        </ViewCriteria>
+      </ViewCriteriaItemCompound>
+      <ViewCriteriaItem
+        Name="FrontDoorc"
+        ViewAttribute="FrontDoorc"
+        Operator="="
+        Conjunction="AND"
+        Value=":frontDoorFlag"
+        IsBindVarValue="true"
+        Required="Optional"/>
+      <ViewCriteriaItem
+        Name="NonCodec"
+        ViewAttribute="NonCodec"
+        Operator="="
+        Conjunction="AND"
+        Value=":nonCodeFlag"
+        IsBindVarValue="true"
+        Required="Optional"/>
+      <ViewCriteriaItem
+        Name="DropShipc"
+        ViewAttribute="DropShipc"
+        Operator="="
+        Conjunction="AND"
+        Value=":dropShipFlag"
+        IsBindVarValue="true"
+        Required="Optional"/>
+      <ViewCriteriaItemCompound
+        Name="Podate"
+        ViewAttribute="Podate">
+        <ViewCriteria
+          Name="MassReleaseHoldVOCriteria_MassReleaseHoldVOCriteria_row_0_Podate_itemHolder"
+          ViewObjectName="od.tdmatch.model.MassReleaseHoldVO"
+          Conjunction="OR">
+          <ViewCriteriaRow
+            Name="MassReleaseHoldVOCriteria_MassReleaseHoldVOCriteria_row_0_Podate_itemHolder_row_0"
+            Conjunction="AND">
+            <ViewCriteriaItem
+              Name="Podate"
+              ViewAttribute="Podate"
+              Operator="ONORAFTER"
+              Conjunction="AND"
+              Required="Optional"
+              Value=":poFrom"
+              IsBindVarValue="true"/>
+          </ViewCriteriaRow>
+          <ViewCriteriaRow
+            Name="MassReleaseHoldVOCriteria_MassReleaseHoldVOCriteria_row_0_Podate_itemHolder_row_1"
+            Conjunction="AND">
+            <ViewCriteriaItem
+              Name="MassReleaseHoldVOCriteria_MassReleaseHoldVOCriteria_row_0_Podate_MassReleaseHoldVOCriteria_MassReleaseHoldVOCriteria_row_0_Podate_itemHolder_MassReleaseHoldVOCriteria_MassReleaseHoldVOCriteria_row_0_Podate_itemHolder_row_1_Podate"
+              ViewAttribute="Podate"
+              Operator="ONORBEFORE"
+              Conjunction="AND"
+              Value=":poTo"
+              IsBindVarValue="true"
+              Required="Optional"/>
+          </ViewCriteriaRow>
+        </ViewCriteria>
+      </ViewCriteriaItemCompound>
+      <ViewCriteriaItem
+        Name="Pricingexcp"
+        ViewAttribute="Pricingexcp"
+        Operator="="
+        Conjunction="AND"
+        Required="Optional"
+        Value=":pricingExcpFlag"
+        IsBindVarValue="true"/>
+      <ViewCriteriaItem
+        Name="Quantityexcp"
+        ViewAttribute="Quantityexcp"
+        Operator="="
+        Conjunction="AND"
+        Value=":quantityExcpFlag"
+        IsBindVarValue="true"
+        Required="Optional"/>
+      <ViewCriteriaItem
+        Name="Freightexcp"
+        ViewAttribute="Freightexcp"
+        Operator="="
+        Conjunction="AND"
+        Value=":freightExcpFlag"
+        IsBindVarValue="true"
+        Required="Optional"/>
+    </ViewCriteriaRow>
+  </ViewCriteria>
+  <AttrArray Name="KeyAttributes">
+    <Item Value="InvoiceId"/>
+  </AttrArray>
+  <ResourceBundle>
+    <PropertiesBundle
+      PropertiesFile="od.tdmatch.model.ModelBundle"/>
+  </ResourceBundle>
+</ViewObject>

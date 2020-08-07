@@ -1,0 +1,88 @@
+REM============================================================================================
+REM                                 Start Of Script
+REM============================================================================================
+--+=============================================================================================+--
+--|                                                                                             |--
+--| Object Name    : E0341 Inventory transfer                                                   |--
+--|                                                                                             |--
+--| Program Name   : CREATE_XX_GI_TRANSFER_LINES.tbl                                            |--
+--|                                                                                             |--
+--| Purpose        : Create Custom Tables .                                                     |--
+--|                  The Objects created are:                                                   |--
+--|                                                                                             |--
+--|                  1. XX_GI_TRANSFER_LINES (Inventory transfer lines staging table)           |--
+--|                                                                                             |--
+--| Change History  :                                                                           |--
+--| Version           Date             Changed By        Description                            |--
+--|=============================================================================================|--
+--| 1.0              06-Dec-2007      Arun Andavar       No previous version                    |--
+--| 1.1              07-Dec-2007      Arun Andavar       Added shipment number as per onsite's  |--
+--|                                                       comments.                             |--
+--| 1.2              19-Dec-2007      Arun Andavar       Added oracle_subinventory_code as per  |--
+--|                                                       onsite's comments.                    |--
+--+=============================================================================================|
+
+SET VERIFY   OFF
+SET TERM     ON
+SET FEEDBACK OFF
+SET SHOW     OFF
+SET ECHO     OFF
+SET TAB      OFF
+
+WHENEVER SQLERROR EXIT 1
+
+PROMPT
+PROMPT Creating the Custom Table XX_GI_TRANSFER_LINES......
+PROMPT
+
+ CREATE TABLE XX_GI_TRANSFER_LINES
+ (
+  LINE_ID                  NUMBER(12)     NOT NULL
+ ,HEADER_ID                NUMBER(12)     NOT NULL
+ ,ITEM                     VARCHAR2(15)   NOT NULL
+ ,ITEM_DESC                VARCHAR2(240)  NOT NULL
+ ,ITEM_ID                  NUMBER         NOT NULL
+ ,FROM_STORE_UOM           VARCHAR2(15)   NOT NULL
+ ,TRANSFER_QTY             NUMBER(12)     NOT NULL
+ ,SHIPPED_QTY              NUMBER(12)    
+ ,SHIPMENT_NUMBER          VARCHAR2(30)
+ ,ORACLE_SUBINVENTORY_CODE VARCHAR2(25)
+ ,RECEIVED_QTY             NUMBER(12)
+ ,FROM_STORE_UNIT_COST     NUMBER(12)
+ ,CURRENCY_CODE            VARCHAR2(3 )
+ ,STATUS                   VARCHAR2(25 )
+ ,ERROR_MESSAGE            VARCHAR2(1000)
+ ,RECEIPT_DATE             DATE
+ ,RECEIVED_BY              VARCHAR2(15 )
+ ,RCV_SHIPMENT_LINE_ID     NUMBER
+ ,MTL_TRANSACTION_ID       NUMBER
+ ,EBS_RECEIPT_NUMBER       VARCHAR2(30 )
+ ,FROM_ORG_ITEM_SERIALIZED VARCHAR2(1)
+ ,TO_ORG_ITEM_SERIALIZED   VARCHAR2(1)
+ ,KEYREC                   VARCHAR2(150)
+ ,CREATED_BY               NUMBER         NOT NULL
+ ,CREATION_DATE            DATE           NOT NULL
+ ,LAST_UPDATED_BY          NUMBER         NOT NULL
+ ,LAST_UPDATE_DATE         DATE           NOT NULL
+ ,LAST_UPDATE_LOGIN        NUMBER         NOT NULL
+ );                                       
+                                          
+PROMPT
+PROMPT Exiting....
+PROMPT
+
+SET FEEDBACK ON
+
+
+EXIT;
+
+
+REM=================================================================================================
+REM                                   End Of Script
+REM=================================================================================================
+
+
+
+
+
+

@@ -1,0 +1,94 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<BPELSuitcase>
+   <BPELProcess id="ProcessAPInvoiceFiles" src="ProcessAPInvoiceFiles.bpel">
+      <partnerLinkBindings>
+         <partnerLinkBinding name="client">
+            <property name="wsdlLocation">ProcessAPInvoiceFiles.wsdl</property>
+         </partnerLinkBinding>
+         <partnerLinkBinding name="IntegralFileChunkRead">
+            <property name="wsdlLocation">IntegralFileChunkRead.wsdl</property>
+            <property name="Inbound_Path" type="LogicalDirectory"></property>
+            <property name="retryInterval">60</property>
+         </partnerLinkBinding>
+         <partnerLinkBinding name="StgTableInsert">
+            <property name="wsdlLocation">StgTableInsert.wsdl</property>
+            <property name="retryInterval">60</property>
+            <property name="idempotent">false</property>
+         </partnerLinkBinding>
+         <partnerLinkBinding name="StgBatchTableInsert">
+            <property name="wsdlLocation">StgBatchTableInsert.wsdl</property>
+            <property name="retryInterval">60</property>
+            <property name="idempotent">false</property>
+         </partnerLinkBinding>
+         <partnerLinkBinding name="ODErrorLogger">
+            <property name="wsdlLocation">http://esbdev01.na.odcorp.net/orabpel/default/ODErrorLogger/ODErrorLogger?wsdl</property>
+         </partnerLinkBinding>
+         <partnerLinkBinding name="TDMChunkRead">
+            <property name="wsdlLocation">TDMChunkRead.wsdl</property>
+            <property name="Inbound_Path" type="LogicalDirectory"></property>
+            <property name="retryInterval">60</property>
+         </partnerLinkBinding>
+         <partnerLinkBinding name="PeopleSoftFileChunkRead">
+            <property name="wsdlLocation">PeopleSoftFileChunkRead.wsdl</property>
+            <property name="Inbound_Path" type="LogicalDirectory"></property>
+            <property name="retryInterval">60</property>
+         </partnerLinkBinding>
+         <partnerLinkBinding name="GSSFileChunkRead">
+            <property name="wsdlLocation">GSSFileChunkRead.wsdl</property>
+            <property name="Inbound_Path" type="LogicalDirectory"></property>
+            <property name="retryInterval">60</property>
+         </partnerLinkBinding>
+         <partnerLinkBinding name="StandardFileChunkRead">
+            <property name="wsdlLocation">StandardFileChunkRead.wsdl</property>
+            <property name="Inbound_Path" type="LogicalDirectory"></property>
+            <property name="retryInterval">60</property>
+         </partnerLinkBinding>
+         <partnerLinkBinding name="ExtensityChunkFileRead">
+            <property name="wsdlLocation">ExtensityChunkFileRead.wsdl</property>
+            <property name="Inbound_Path" type="LogicalDirectory"></property>
+            <property name="retryInterval">60</property>
+         </partnerLinkBinding>
+         <partnerLinkBinding name="RetailLeaseChunkRead">
+            <property name="wsdlLocation">RetailLeaseChunkRead.wsdl</property>
+            <property name="Inbound_Path" type="LogicalDirectory"></property>
+            <property name="retryInterval">60</property>
+            <property name="validateXML">true</property>
+         </partnerLinkBinding>
+         <partnerLinkBinding name="FileDelete">
+            <property name="wsdlLocation">FileDelete.wsdl</property>
+            <property name="retryInterval">60</property>
+         </partnerLinkBinding>
+         <partnerLinkBinding name="ODTransactionLogger">
+            <property name="wsdlLocation">http://esbdev01.na.odcorp.net/orabpel/default/ODTransactionLogger/ODTransactionLogger?wsdl</property>
+         </partnerLinkBinding>
+         <partnerLinkBinding name="BPELInvokeESP">
+            <property name="wsdlLocation">http://esbdev01.na.odcorp.net/orabpel/financebatch/BPELInvokeESP/BPELInvokeESP?wsdl</property>
+         </partnerLinkBinding>
+         <partnerLinkBinding name="NotificationService">
+            <property name="wsdlLocation">NotificationService.wsdl</property>
+         </partnerLinkBinding>
+         <partnerLinkBinding name="ZeroByte">
+            <property name="wsdlLocation">ZeroByte.wsdl</property>
+            <property name="Inbound_Path" type="LogicalDirectory"></property>
+            <property name="retryInterval">60</property>
+         </partnerLinkBinding>
+         <partnerLinkBinding name="DeletePartiallyLoadedRecords">
+            <property name="wsdlLocation">DeletePartiallyLoadedRecords.wsdl</property>
+            <property name="retryInterval">60</property>
+         </partnerLinkBinding>
+        <!-- <partnerLinkBinding name="PcardChunkedRead">
+            <property name="wsdlLocation">PcardChunkRead.wsdl</property>
+            <property name="Inbound_Path" type="LogicalDirectory"></property>
+            <property name="retryInterval">60</property>
+         </partnerLinkBinding> -->
+         <partnerLinkBinding name="OASrvcPCard">
+            <property name="wsdlLocation">OASrvcPCard.wsdl</property>
+            <property name="retryInterval">60</property>
+         </partnerLinkBinding>
+         <partnerLinkBinding name="PcardFileRead">
+            <property name="wsdlLocation">PcardFileRead.wsdl</property>
+            <property name="retryInterval">60</property>
+         </partnerLinkBinding>
+      </partnerLinkBindings>
+   </BPELProcess>
+</BPELSuitcase>

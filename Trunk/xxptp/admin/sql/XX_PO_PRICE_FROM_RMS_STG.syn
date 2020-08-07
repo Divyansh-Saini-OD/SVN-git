@@ -1,0 +1,52 @@
+REM================================================================================================
+REM                                 Start Of Script
+REM================================================================================================
+--+=============================================================================================+--
+--|                                                                                             |--
+--| Object Name    : I1078_PurchasePriceFromRms Staging Table's synonym creation                |--
+--|                                                                                             |--
+--| Program Name   : CREATE_XX_PO_PRICE_FROM_RMS_STG.syn                                        |--
+--|                                                                                             |--
+--| Purpose        : Create Custom Synonym                                                      |--
+--|                  The Objects created are:                                                   |--
+--|                1. XX_PO_PRICE_FROM_RMS_STG(Synonym for I1078_PurchasePriceFromRms 		|--
+--|                                                            Staging Table)                   |--
+--|                                                                                             |--
+--| Version           Date             Changed By              Description                      |--
+--+=============================================================================================+--
+--| 1.0              20-Jun-2007       Chandan U H             Baselined                        |--
+--+=============================================================================================+--
+SET VERIFY      OFF
+SET TERM        OFF
+SET FEEDBACK    OFF
+SET SHOW        OFF
+SET ECHO        OFF
+SET TAB         OFF
+
+SET TERM ON
+
+PROMPT
+PROMPT Creating Synonym in APPS...
+PROMPT
+
+PROMPT
+PROMPT Creating SYNONYM XX_PO_PRICE_FROM_RMS_STG
+PROMPT
+
+CREATE OR REPLACE SYNONYM XX_PO_PRICE_FROM_RMS_STG FOR XXPTP.XX_PO_PRICE_FROM_RMS_STG;
+                                	
+WHENEVER SQLERROR CONTINUE;
+
+SHOW ERRORS;
+
+PROMPT
+PROMPT Exiting....
+PROMPT
+
+SET FEEDBACK ON
+
+EXIT;
+
+REM=================================================================================================
+REM                                   End Of Script
+REM=================================================================================================

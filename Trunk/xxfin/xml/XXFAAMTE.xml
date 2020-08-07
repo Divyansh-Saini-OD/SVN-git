@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="WINDOWS-1252" ?>
+<dataTemplate name="XXFAAMTE" description="OD FA Mass Amortization Exception Report" Version="1.0">
+<parameters>
+ <parameter name="p_request_id" datatype="number" />
+</parameters>
+<dataQuery>
+<sqlStatement name="Q_AMTE">
+<![CDATA[
+   SELECT 
+	Asset_id,
+	Asset_no,
+	Description,
+	Book_type_code,
+	Process_mode,
+	Company,
+	Building,
+	CostCenter,
+	Lob,
+	Major,
+	Minor,
+	Subminor,
+	FA_period,
+	creation_date cdate,
+	date_placed_in_service,
+      asset_service_days,
+	asset_service_months,
+	life_in_months,
+	rem_life_months,
+	Cost,
+	deprn_amount,
+	ytd_deprn,
+	deprn_reserve,
+	NBV,
+	life_to_process,
+	amrtz_to_process,
+	amrtz_date_to_process,
+	current_months,
+	current_amrtz,
+	current_amrtz_date,
+	future_months,
+	future_amrtz,
+	future_amrtz_date,
+	error_message,
+	new_deprn,
+	months_to_adjust,
+	catch_up_adjmnt,
+	deprn_expense,
+	new_rem_life,
+	new_adj_nbv
+   FROM xx_fa_amortz_stg
+  WHERE request_id=:p_request_id
+    AND error_flag='Y'
+    AND error_message IS NOT NULL
+order by asset_id]]>
+</sqlStatement>
+</dataQuery>
+<dataStructure>
+<group name="G_AMTE" source="Q_AMTE">
+<element name="ASSET_ID" value="ASSET_ID" />
+<element name="ASSET_NO" value="ASSET_NO" />
+<element name="DESCRIPTION" value="DESCRIPTION" />
+<element name="BOOK_TYPE_CODE" value="BOOK_TYPE_CODE" />
+<element name="PROCESS_MODE" value="PROCESS_MODE" />
+<element name="COMPANY" value="COMPANY" />
+<element name="BUILDING" value="BUILDING" />
+<element name="COSTCENTER" value="COSTCENTER" />
+<element name="LOB" value="LOB" />
+<element name="MAJOR" value="MAJOR" />
+<element name="MINOR" value="MINOR" />
+<element name="SUBMINOR" value="SUBMINOR" />
+<element name="FA_PERIOD" value="FA_PERIOD" />
+<element name="CDATE" value="CDATE" />
+<element name="DATE_PLACED_IN_SERVICE" value="DATE_PLACED_IN_SERVICE" />
+<element name="ASSET_SERVICE_DAYS" value="ASSET_SERVICE_DAYS" />
+<element name="ASSET_SERVICE_MONTHS" value="ASSET_SERVICE_MONTHS" />
+<element name="LIFE_IN_MONTHS" value="LIFE_IN_MONTHS" />
+<element name="REM_LIFE_MONTHS" value="REM_LIFE_MONTHS" />
+<element name="COST" value="COST" />
+<element name="DEPRN_AMOUNT" value="DEPRN_AMOUNT" />
+<element name="YTD_DEPRN" value="YTD_DEPRN" />
+<element name="DEPRN_RESERVE" value="DEPRN_RESERVE" />
+<element name="NBV" value="NBV" />
+<element name="CURRENT_MONTHS" value="CURRENT_MONTHS" />
+<element name="CURRENT_AMRTZ" value="CURRENT_AMRTZ" />
+<element name="CURRENT_AMRTZ_DATE" value="CURRENT_AMRTZ_DATE" />
+<element name="FUTURE_MONTHS" value="FUTURE_MONTHS" />
+<element name="FUTURE_AMRTZ" value="FUTURE_AMRTZ" />
+<element name="FUTURE_AMRTZ_DATE" value="FUTURE_AMRTZ_DATE" />
+<element name="ERROR_MESSAGE" value="ERROR_MESSAGE" />
+<element name="LIFE_TO_PROCESS" value="LIFE_TO_PROCESS" />
+<element name="AMRTZ_TO_PROCESS" value="AMRTZ_TO_PROCESS" />
+<element name="AMRTZ_DATE_TO_PROCESS" value="AMRTZ_DATE_TO_PROCESS" />
+<element name="NEW_DEPRN" value="NEW_DEPRN" />
+<element name="MONTHS_TO_ADJUST" value="MONTHS_TO_ADJUST" />
+<element name="CATCH_UP_ADJMNT" value="CATCH_UP_ADJMNT" />
+<element name="DEPRN_EXPENSE" value="DEPRN_EXPENSE" />
+<element name="NEW_REM_LIFE" value="NEW_REM_LIFE" />
+<element name="NEW_ADJ_NBV" value="NEW_ADJ_NBV" />
+</group>
+</dataStructure>
+</dataTemplate>

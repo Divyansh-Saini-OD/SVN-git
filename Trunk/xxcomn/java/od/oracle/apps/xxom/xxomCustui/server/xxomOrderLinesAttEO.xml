@@ -1,0 +1,1093 @@
+<?xml version="1.0" encoding='windows-1252'?>
+<!DOCTYPE Entity SYSTEM "jbo_03_01.dtd">
+
+<Entity
+   Name="xxomOrderLinesAttEO"
+   DBObjectType="table"
+   DBObjectName="XX_OM_LINE_ATTRIBUTES_ALL"
+   AliasName="xxomOrderLinesAttEO"
+   BindingStyle="Oracle"
+   UseGlueCode="false"
+   CodeGenFlag="71"
+   RowClass="od.oracle.apps.xxom.xxomCustui.server.xxomOrderLinesAttEOImpl"
+   DefClass="oracle.apps.fnd.framework.server.OAEntityDefImpl"
+   CollClass="oracle.apps.fnd.framework.server.OAEntityCache" >
+   <DesignTime>
+      <Attr Name="_isCodegen" Value="true" />
+      <Attr Name="_version" Value="9.0.3.13.75" />
+      <AttrArray Name="_publishEvents">
+      </AttrArray>
+   </DesignTime>
+   <Attribute
+      Name="LineId"
+      IsNotNull="true"
+      Type="oracle.jbo.domain.Number"
+      ColumnName="LINE_ID"
+      ColumnType="NUMBER"
+      SQLType="NUMERIC"
+      TableName="XX_OM_LINE_ATTRIBUTES_ALL"
+      PrimaryKey="true" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="LicenceAddress"
+      Precision="240"
+      Type="java.lang.String"
+      ColumnName="LICENCE_ADDRESS"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XX_OM_LINE_ATTRIBUTES_ALL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="240" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="VendorConfigId"
+      Precision="30"
+      Type="java.lang.String"
+      ColumnName="VENDOR_CONFIG_ID"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XX_OM_LINE_ATTRIBUTES_ALL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="30" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="FulfillmentType"
+      Precision="30"
+      Type="java.lang.String"
+      ColumnName="FULFILLMENT_TYPE"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XX_OM_LINE_ATTRIBUTES_ALL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="30" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="LineType"
+      Precision="30"
+      Type="java.lang.String"
+      ColumnName="LINE_TYPE"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XX_OM_LINE_ATTRIBUTES_ALL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="30" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="LineModifier"
+      Precision="30"
+      Type="java.lang.String"
+      ColumnName="LINE_MODIFIER"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XX_OM_LINE_ATTRIBUTES_ALL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="30" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="ReleaseNum"
+      Precision="30"
+      Type="java.lang.String"
+      ColumnName="RELEASE_NUM"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XX_OM_LINE_ATTRIBUTES_ALL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="30" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="CostCenterDept"
+      Precision="30"
+      Type="java.lang.String"
+      ColumnName="COST_CENTER_DEPT"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XX_OM_LINE_ATTRIBUTES_ALL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="30" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="DesktopDelAddr"
+      Precision="240"
+      Type="java.lang.String"
+      ColumnName="DESKTOP_DEL_ADDR"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XX_OM_LINE_ATTRIBUTES_ALL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="240" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="VendorSiteId"
+      Type="oracle.jbo.domain.Number"
+      ColumnName="VENDOR_SITE_ID"
+      ColumnType="NUMBER"
+      SQLType="NUMERIC"
+      TableName="XX_OM_LINE_ATTRIBUTES_ALL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="PosTrxNum"
+      Precision="30"
+      Type="java.lang.String"
+      ColumnName="POS_TRX_NUM"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XX_OM_LINE_ATTRIBUTES_ALL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="30" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="OneTimeDeal"
+      Precision="30"
+      Type="java.lang.String"
+      ColumnName="ONE_TIME_DEAL"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XX_OM_LINE_ATTRIBUTES_ALL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="30" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="TransLineStatus"
+      Precision="30"
+      Type="java.lang.String"
+      ColumnName="TRANS_LINE_STATUS"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XX_OM_LINE_ATTRIBUTES_ALL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="30" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="CustPrice"
+      Type="oracle.jbo.domain.Number"
+      ColumnName="CUST_PRICE"
+      ColumnType="NUMBER"
+      SQLType="NUMERIC"
+      TableName="XX_OM_LINE_ATTRIBUTES_ALL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="CustUom"
+      Precision="30"
+      Type="java.lang.String"
+      ColumnName="CUST_UOM"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XX_OM_LINE_ATTRIBUTES_ALL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="30" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="CustComments"
+      Precision="2000"
+      Type="java.lang.String"
+      ColumnName="CUST_COMMENTS"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XX_OM_LINE_ATTRIBUTES_ALL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="2000" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="PipCampaignId"
+      Precision="30"
+      Type="java.lang.String"
+      ColumnName="PIP_CAMPAIGN_ID"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XX_OM_LINE_ATTRIBUTES_ALL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="30" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="ExtTopModelLineId"
+      Type="oracle.jbo.domain.Number"
+      ColumnName="EXT_TOP_MODEL_LINE_ID"
+      ColumnType="NUMBER"
+      SQLType="NUMERIC"
+      TableName="XX_OM_LINE_ATTRIBUTES_ALL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="ExtLinkToLineId"
+      Type="oracle.jbo.domain.Number"
+      ColumnName="EXT_LINK_TO_LINE_ID"
+      ColumnType="NUMBER"
+      SQLType="NUMERIC"
+      TableName="XX_OM_LINE_ATTRIBUTES_ALL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="ConfigCode"
+      Precision="30"
+      Type="java.lang.String"
+      ColumnName="CONFIG_CODE"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XX_OM_LINE_ATTRIBUTES_ALL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="30" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="GiftMessage"
+      Precision="240"
+      Type="java.lang.String"
+      ColumnName="GIFT_MESSAGE"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XX_OM_LINE_ATTRIBUTES_ALL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="240" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="GiftEmail"
+      Precision="240"
+      Type="java.lang.String"
+      ColumnName="GIFT_EMAIL"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XX_OM_LINE_ATTRIBUTES_ALL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="240" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="ReturnRgaNumber"
+      Precision="30"
+      Type="java.lang.String"
+      ColumnName="RETURN_RGA_NUMBER"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XX_OM_LINE_ATTRIBUTES_ALL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="30" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="DeliveryDateFrom"
+      Type="oracle.jbo.domain.Date"
+      ColumnName="DELIVERY_DATE_FROM"
+      ColumnType="DATE"
+      SQLType="TIMESTAMP"
+      TableName="XX_OM_LINE_ATTRIBUTES_ALL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="7" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="DeliveryDateTo"
+      Type="oracle.jbo.domain.Date"
+      ColumnName="DELIVERY_DATE_TO"
+      ColumnType="DATE"
+      SQLType="TIMESTAMP"
+      TableName="XX_OM_LINE_ATTRIBUTES_ALL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="7" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="WholesalerFacCd"
+      Precision="30"
+      Type="java.lang.String"
+      ColumnName="WHOLESALER_FAC_CD"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XX_OM_LINE_ATTRIBUTES_ALL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="30" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="WholesalerAcctNum"
+      Precision="30"
+      Type="java.lang.String"
+      ColumnName="WHOLESALER_ACCT_NUM"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XX_OM_LINE_ATTRIBUTES_ALL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="30" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="ReturnActCatCode"
+      Precision="30"
+      Type="java.lang.String"
+      ColumnName="RETURN_ACT_CAT_CODE"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XX_OM_LINE_ATTRIBUTES_ALL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="30" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="PoDelDetails"
+      Precision="240"
+      Type="java.lang.String"
+      ColumnName="PO_DEL_DETAILS"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XX_OM_LINE_ATTRIBUTES_ALL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="240" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="RetRefHeaderId"
+      Type="oracle.jbo.domain.Number"
+      ColumnName="RET_REF_HEADER_ID"
+      ColumnType="NUMBER"
+      SQLType="NUMERIC"
+      TableName="XX_OM_LINE_ATTRIBUTES_ALL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="RetRefLineId"
+      Type="oracle.jbo.domain.Number"
+      ColumnName="RET_REF_LINE_ID"
+      ColumnType="NUMBER"
+      SQLType="NUMERIC"
+      TableName="XX_OM_LINE_ATTRIBUTES_ALL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="ShipToFlag"
+      Precision="1"
+      Type="java.lang.String"
+      ColumnName="SHIP_TO_FLAG"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XX_OM_LINE_ATTRIBUTES_ALL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="1" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="ItemNote"
+      Precision="240"
+      Type="java.lang.String"
+      ColumnName="ITEM_NOTE"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XX_OM_LINE_ATTRIBUTES_ALL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="240" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="SpecialDesc"
+      Precision="240"
+      Type="java.lang.String"
+      ColumnName="SPECIAL_DESC"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XX_OM_LINE_ATTRIBUTES_ALL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="240" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="NonCdLineType"
+      Precision="30"
+      Type="java.lang.String"
+      ColumnName="NON_CD_LINE_TYPE"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XX_OM_LINE_ATTRIBUTES_ALL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="30" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="SupplierType"
+      Precision="30"
+      Type="java.lang.String"
+      ColumnName="SUPPLIER_TYPE"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XX_OM_LINE_ATTRIBUTES_ALL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="30" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="VendorProductCode"
+      Precision="240"
+      Type="java.lang.String"
+      ColumnName="VENDOR_PRODUCT_CODE"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XX_OM_LINE_ATTRIBUTES_ALL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="240" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="ContractDetails"
+      Precision="240"
+      Type="java.lang.String"
+      ColumnName="CONTRACT_DETAILS"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XX_OM_LINE_ATTRIBUTES_ALL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="240" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="RetOrigOrderNum"
+      Precision="50"
+      Type="java.lang.String"
+      ColumnName="RET_ORIG_ORDER_NUM"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XX_OM_LINE_ATTRIBUTES_ALL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="50" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="RetOrigOrderDate"
+      Type="oracle.jbo.domain.Date"
+      ColumnName="RET_ORIG_ORDER_DATE"
+      ColumnType="DATE"
+      SQLType="TIMESTAMP"
+      TableName="XX_OM_LINE_ATTRIBUTES_ALL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="7" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="LineComments"
+      Precision="2000"
+      Type="java.lang.String"
+      ColumnName="LINE_COMMENTS"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XX_OM_LINE_ATTRIBUTES_ALL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="2000" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="BackorderedQty"
+      Type="oracle.jbo.domain.Number"
+      ColumnName="BACKORDERED_QTY"
+      ColumnType="NUMBER"
+      SQLType="NUMERIC"
+      TableName="XX_OM_LINE_ATTRIBUTES_ALL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="TaxableFlag"
+      Precision="1"
+      Type="java.lang.String"
+      ColumnName="TAXABLE_FLAG"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XX_OM_LINE_ATTRIBUTES_ALL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="1" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="WacaParentId"
+      Type="oracle.jbo.domain.Number"
+      ColumnName="WACA_PARENT_ID"
+      ColumnType="NUMBER"
+      SQLType="NUMERIC"
+      TableName="XX_OM_LINE_ATTRIBUTES_ALL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="RetOrigOrderLineNum"
+      Precision="50"
+      Type="java.lang.String"
+      ColumnName="RET_ORIG_ORDER_LINE_NUM"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XX_OM_LINE_ATTRIBUTES_ALL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="50" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="SkuDept"
+      Precision="240"
+      Type="java.lang.String"
+      ColumnName="SKU_DEPT"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XX_OM_LINE_ATTRIBUTES_ALL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="240" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="ItemSource"
+      Precision="30"
+      Type="java.lang.String"
+      ColumnName="ITEM_SOURCE"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XX_OM_LINE_ATTRIBUTES_ALL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="30" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="AverageCost"
+      Type="oracle.jbo.domain.Number"
+      ColumnName="AVERAGE_COST"
+      ColumnType="NUMBER"
+      SQLType="NUMERIC"
+      TableName="XX_OM_LINE_ATTRIBUTES_ALL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="CanadaPstTax"
+      Type="oracle.jbo.domain.Number"
+      ColumnName="CANADA_PST_TAX"
+      ColumnType="NUMBER"
+      SQLType="NUMERIC"
+      TableName="XX_OM_LINE_ATTRIBUTES_ALL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="PoCost"
+      Type="oracle.jbo.domain.Number"
+      ColumnName="PO_COST"
+      ColumnType="NUMBER"
+      SQLType="NUMERIC"
+      TableName="XX_OM_LINE_ATTRIBUTES_ALL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="ResourcingFlag"
+      Precision="1"
+      Type="java.lang.String"
+      ColumnName="RESOURCING_FLAG"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XX_OM_LINE_ATTRIBUTES_ALL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="1" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="WacaStatus"
+      Precision="1"
+      Type="java.lang.String"
+      ColumnName="WACA_STATUS"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XX_OM_LINE_ATTRIBUTES_ALL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="1" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="CustItemNumber"
+      Precision="30"
+      Type="java.lang.String"
+      ColumnName="CUST_ITEM_NUMBER"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XX_OM_LINE_ATTRIBUTES_ALL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="30" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="PodDate"
+      Type="oracle.jbo.domain.Date"
+      ColumnName="POD_DATE"
+      ColumnType="DATE"
+      SQLType="TIMESTAMP"
+      TableName="XX_OM_LINE_ATTRIBUTES_ALL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="7" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="ReturnAuthId"
+      Type="oracle.jbo.domain.Number"
+      ColumnName="RETURN_AUTH_ID"
+      ColumnType="NUMBER"
+      SQLType="NUMERIC"
+      TableName="XX_OM_LINE_ATTRIBUTES_ALL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="ReturnCode"
+      Precision="30"
+      Type="java.lang.String"
+      ColumnName="RETURN_CODE"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XX_OM_LINE_ATTRIBUTES_ALL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="30" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="SkuListPrice"
+      Type="oracle.jbo.domain.Number"
+      ColumnName="SKU_LIST_PRICE"
+      ColumnType="NUMBER"
+      SQLType="NUMERIC"
+      TableName="XX_OM_LINE_ATTRIBUTES_ALL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="WacaItemCtrNum"
+      Precision="30"
+      Type="java.lang.String"
+      ColumnName="WACA_ITEM_CTR_NUM"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XX_OM_LINE_ATTRIBUTES_ALL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="30" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="NewScheduleShipDate"
+      Type="oracle.jbo.domain.Date"
+      ColumnName="NEW_SCHEDULE_SHIP_DATE"
+      ColumnType="DATE"
+      SQLType="TIMESTAMP"
+      TableName="XX_OM_LINE_ATTRIBUTES_ALL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="7" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="NewScheduleArrDate"
+      Type="oracle.jbo.domain.Date"
+      ColumnName="NEW_SCHEDULE_ARR_DATE"
+      ColumnType="DATE"
+      SQLType="TIMESTAMP"
+      TableName="XX_OM_LINE_ATTRIBUTES_ALL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="7" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="TaylorUnitPrice"
+      Type="oracle.jbo.domain.Number"
+      ColumnName="TAYLOR_UNIT_PRICE"
+      ColumnType="NUMBER"
+      SQLType="NUMERIC"
+      TableName="XX_OM_LINE_ATTRIBUTES_ALL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="TaylorUnitCost"
+      Type="oracle.jbo.domain.Number"
+      ColumnName="TAYLOR_UNIT_COST"
+      ColumnType="NUMBER"
+      SQLType="NUMERIC"
+      TableName="XX_OM_LINE_ATTRIBUTES_ALL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="XdockInvOrgId"
+      Type="oracle.jbo.domain.Number"
+      ColumnName="XDOCK_INV_ORG_ID"
+      ColumnType="NUMBER"
+      SQLType="NUMERIC"
+      TableName="XX_OM_LINE_ATTRIBUTES_ALL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="PaymentSubtypeCodInd"
+      Precision="40"
+      Type="java.lang.String"
+      ColumnName="PAYMENT_SUBTYPE_COD_IND"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XX_OM_LINE_ATTRIBUTES_ALL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="40" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="DelToPostOfficeInd"
+      Precision="40"
+      Type="java.lang.String"
+      ColumnName="DEL_TO_POST_OFFICE_IND"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XX_OM_LINE_ATTRIBUTES_ALL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="40" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="WholesalerItem"
+      Precision="240"
+      Type="java.lang.String"
+      ColumnName="WHOLESALER_ITEM"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XX_OM_LINE_ATTRIBUTES_ALL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="240" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="CustCommPref"
+      Precision="240"
+      Type="java.lang.String"
+      ColumnName="CUST_COMM_PREF"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XX_OM_LINE_ATTRIBUTES_ALL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="240" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="CustPrefEmail"
+      Precision="240"
+      Type="java.lang.String"
+      ColumnName="CUST_PREF_EMAIL"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XX_OM_LINE_ATTRIBUTES_ALL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="240" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="CustPrefFax"
+      Precision="240"
+      Type="java.lang.String"
+      ColumnName="CUST_PREF_FAX"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XX_OM_LINE_ATTRIBUTES_ALL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="240" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="CustPrefPhone"
+      Precision="240"
+      Type="java.lang.String"
+      ColumnName="CUST_PREF_PHONE"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XX_OM_LINE_ATTRIBUTES_ALL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="240" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="CustPrefPhextn"
+      Precision="240"
+      Type="java.lang.String"
+      ColumnName="CUST_PREF_PHEXTN"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XX_OM_LINE_ATTRIBUTES_ALL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="240" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="FreightLineId"
+      Type="oracle.jbo.domain.Number"
+      ColumnName="FREIGHT_LINE_ID"
+      ColumnType="NUMBER"
+      SQLType="NUMERIC"
+      TableName="XX_OM_LINE_ATTRIBUTES_ALL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="FreightPrimaryLineId"
+      Type="oracle.jbo.domain.Number"
+      ColumnName="FREIGHT_PRIMARY_LINE_ID"
+      ColumnType="NUMBER"
+      SQLType="NUMERIC"
+      TableName="XX_OM_LINE_ATTRIBUTES_ALL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="CreationDate"
+      IsNotNull="true"
+      Type="oracle.jbo.domain.Date"
+      ColumnName="CREATION_DATE"
+      ColumnType="DATE"
+      SQLType="TIMESTAMP"
+      TableName="XX_OM_LINE_ATTRIBUTES_ALL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="7" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="CreatedBy"
+      IsNotNull="true"
+      Type="oracle.jbo.domain.Number"
+      ColumnName="CREATED_BY"
+      ColumnType="NUMBER"
+      SQLType="NUMERIC"
+      TableName="XX_OM_LINE_ATTRIBUTES_ALL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="LastUpdateDate"
+      IsNotNull="true"
+      Type="oracle.jbo.domain.Date"
+      ColumnName="LAST_UPDATE_DATE"
+      ColumnType="DATE"
+      SQLType="TIMESTAMP"
+      TableName="XX_OM_LINE_ATTRIBUTES_ALL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="7" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="LastUpdatedBy"
+      IsNotNull="true"
+      Type="oracle.jbo.domain.Number"
+      ColumnName="LAST_UPDATED_BY"
+      ColumnType="NUMBER"
+      SQLType="NUMERIC"
+      TableName="XX_OM_LINE_ATTRIBUTES_ALL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="LastUpdateLogin"
+      Type="oracle.jbo.domain.Number"
+      ColumnName="LAST_UPDATE_LOGIN"
+      ColumnType="NUMBER"
+      SQLType="NUMERIC"
+      TableName="XX_OM_LINE_ATTRIBUTES_ALL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="GsaFlag"
+      Precision="1"
+      Type="java.lang.String"
+      ColumnName="GSA_FLAG"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XX_OM_LINE_ATTRIBUTES_ALL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="1" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="ConsignmentBankCode"
+      Precision="2"
+      Type="java.lang.String"
+      ColumnName="CONSIGNMENT_BANK_CODE"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XX_OM_LINE_ATTRIBUTES_ALL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="2" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="PriceCd"
+      Precision="1"
+      Type="java.lang.String"
+      ColumnName="PRICE_CD"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XX_OM_LINE_ATTRIBUTES_ALL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="1" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="PriceChangeReasonCd"
+      Precision="30"
+      Type="java.lang.String"
+      ColumnName="PRICE_CHANGE_REASON_CD"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XX_OM_LINE_ATTRIBUTES_ALL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="30" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="PricePrefixCd"
+      Precision="30"
+      Type="java.lang.String"
+      ColumnName="PRICE_PREFIX_CD"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XX_OM_LINE_ATTRIBUTES_ALL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="30" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="CommisionableInd"
+      Precision="1"
+      Type="java.lang.String"
+      ColumnName="COMMISIONABLE_IND"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XX_OM_LINE_ATTRIBUTES_ALL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="1" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="CustDeptDescription"
+      Precision="30"
+      Type="java.lang.String"
+      ColumnName="CUST_DEPT_DESCRIPTION"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XX_OM_LINE_ATTRIBUTES_ALL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="30" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="UnitOrigSellingPrice"
+      Type="oracle.jbo.domain.Number"
+      ColumnName="UNIT_ORIG_SELLING_PRICE"
+      ColumnType="NUMBER"
+      SQLType="NUMERIC"
+      TableName="XX_OM_LINE_ATTRIBUTES_ALL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </Attribute>
+   <Key
+      Name="SysC00269101" >
+      <AttrArray Name="Attributes">
+         <Item Value="od.oracle.apps.xxom.xxomCustui.server.xxomOrderLinesAttEO.CreationDate" />
+      </AttrArray>
+      <DesignTime>
+         <Attr Name="_DBObjectName" Value="SYS_C00269101" />
+         <Attr Name="_checkCondition" Value="&#34;CREATION_DATE&#34; IS NOT NULL" />
+         <Attr Name="_isCheck" Value="true" />
+      </DesignTime>
+   </Key>
+   <Key
+      Name="SysC00269103" >
+      <AttrArray Name="Attributes">
+         <Item Value="od.oracle.apps.xxom.xxomCustui.server.xxomOrderLinesAttEO.LastUpdateDate" />
+      </AttrArray>
+      <DesignTime>
+         <Attr Name="_DBObjectName" Value="SYS_C00269103" />
+         <Attr Name="_checkCondition" Value="&#34;LAST_UPDATE_DATE&#34; IS NOT NULL" />
+         <Attr Name="_isCheck" Value="true" />
+      </DesignTime>
+   </Key>
+   <Key
+      Name="XxomorderlinesatteoPrimaryKey" >
+      <AttrArray Name="Attributes">
+         <Item Value="od.oracle.apps.xxom.xxomCustui.server.xxomOrderLinesAttEO.LineId" />
+      </AttrArray>
+      <DesignTime>
+         <Attr Name="_DBObjectName" Value="XXOMORDERLINESATTEO_PRIMARY_KE" />
+         <Attr Name="_isPrimary" Value="true" />
+      </DesignTime>
+   </Key>
+   <Key
+      Name="SysC00269102" >
+      <AttrArray Name="Attributes">
+         <Item Value="od.oracle.apps.xxom.xxomCustui.server.xxomOrderLinesAttEO.CreatedBy" />
+      </AttrArray>
+      <DesignTime>
+         <Attr Name="_DBObjectName" Value="SYS_C00269102" />
+         <Attr Name="_checkCondition" Value="&#34;CREATED_BY&#34; IS NOT NULL" />
+         <Attr Name="_isCheck" Value="true" />
+      </DesignTime>
+   </Key>
+   <Key
+      Name="SysC00269100" >
+      <AttrArray Name="Attributes">
+         <Item Value="od.oracle.apps.xxom.xxomCustui.server.xxomOrderLinesAttEO.LineId" />
+      </AttrArray>
+      <DesignTime>
+         <Attr Name="_DBObjectName" Value="SYS_C00269100" />
+         <Attr Name="_checkCondition" Value="&#34;LINE_ID&#34; IS NOT NULL" />
+         <Attr Name="_isCheck" Value="true" />
+      </DesignTime>
+   </Key>
+   <Key
+      Name="SysC00269104" >
+      <AttrArray Name="Attributes">
+         <Item Value="od.oracle.apps.xxom.xxomCustui.server.xxomOrderLinesAttEO.LastUpdatedBy" />
+      </AttrArray>
+      <DesignTime>
+         <Attr Name="_DBObjectName" Value="SYS_C00269104" />
+         <Attr Name="_checkCondition" Value="&#34;LAST_UPDATED_BY&#34; IS NOT NULL" />
+         <Attr Name="_isCheck" Value="true" />
+      </DesignTime>
+   </Key>
+</Entity>

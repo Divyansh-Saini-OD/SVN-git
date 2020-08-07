@@ -1,0 +1,32 @@
+-- +============================================================================+
+-- | Office Depot - Project Simplify                                            |
+-- | Providge Consulting                                                        |
+-- +============================================================================+
+-- | SQL Script to alter table:  XX_CE_AJB998                                   |
+-- |                                                                            |
+-- |Change Record:                                                              |
+-- |===============                                                             |
+-- |Version   Date          Author         Remarks                              |
+-- |=======   ===========   =============  =====================================|
+-- |1.0       20-JAN-2010   Vinaykumar S   Defect 2610                          |
+-- |                                                                            |
+-- +============================================================================+
+
+  SET SHOW         OFF
+  SET VERIFY       OFF
+  SET ECHO         OFF
+  SET TAB          OFF
+  SET FEEDBACK     ON
+
+  CREATE INDEX XXFIN.XX_CE_AJB998_N13 ON XXFIN.XX_CE_AJB998 (PROCESSOR_ID, STATUS_1310)
+  PCTFREE 10 INITRANS 2 MAXTRANS 255 COMPUTE STATISTICS
+  STORAGE(INITIAL 16777216 NEXT 16777216 MINEXTENTS 1 MAXEXTENTS 2147483645
+  PCTINCREASE 0 FREELISTS 1 FREELIST GROUPS 1 BUFFER_POOL DEFAULT)
+  TABLESPACE APPS_TS_TX_IDX_16M PARALLEL 4 NOLOGGING;
+
+
+  ALTER INDEX XXFIN.XX_CE_AJB998_N13 LOGGING NOPARALLEL;
+
+/
+
+

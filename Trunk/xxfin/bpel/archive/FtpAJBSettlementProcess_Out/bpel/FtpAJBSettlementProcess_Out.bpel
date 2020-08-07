@@ -1,0 +1,335 @@
+<?xml version = "1.0" encoding = "UTF-8" ?>
+<!--
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  Oracle JDeveloper BPEL Designer 
+  
+  Created: Mon Oct 08 09:42:10 EDT 2007
+  Author:  Rajesh-Iyangar
+  Purpose: Empty BPEL Process
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+-->
+<process name="FtpAJBSettlementProcess_Out"
+         targetNamespace="http://xmlns.oracle.com/FtpAJBSettlementProcess_Out"
+         xmlns="http://schemas.xmlsoap.org/ws/2003/03/business-process/"
+         xmlns:xp20="http://www.oracle.com/XSL/Transform/java/oracle.tip.pc.services.functions.Xpath20"
+         xmlns:bpws="http://schemas.xmlsoap.org/ws/2003/03/business-process/"
+         xmlns:ns4="http://xmlns.oracle.com/pcbpel/adapter/opaque/"
+         xmlns:ids="http://xmlns.oracle.com/bpel/services/IdentityService/xpath"
+         xmlns:ldap="http://schemas.oracle.com/xpath/extension/ldap"
+         xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+         xmlns:ns5="http://xmlns.oracle.com/pcbpel/adapter/ftp/PutTriggerFileAJB/"
+         xmlns:client="http://xmlns.oracle.com/FtpAJBSettlementProcess_Out"
+         xmlns:ns6="http://xmlns.oracle.com/pcbpel/adapter/file/attachment/"
+         xmlns:ora="http://schemas.oracle.com/xpath/extension"
+         xmlns:xref="http://www.oracle.com/XSL/Transform/java/oracle.tip.xref.xpath.XRefXPathFunctions"
+         xmlns:ns9="http://xmlns.oracle.com/ODErrorLogger"
+         xmlns:hwf="http://xmlns.oracle.com/bpel/workflow/xpath"
+         xmlns:ns1="http://xmlns.oracle.com/pcbpel/adapter/ftp/AJBFileGet/"
+         xmlns:ehdr="http://www.oracle.com/XSL/Transform/java/oracle.tip.esb.server.headers.ESBHeaderFunctions"
+         xmlns:ns3="http://xmlns.oracle.com/pcbpel/adapter/ftp/"
+         xmlns:ns2="http://xmlns.oracle.com/pcbpel/adapter/ftp/AJBFilePut/"
+         xmlns:bpelx="http://schemas.oracle.com/bpel/extension"
+         xmlns:orcl="http://www.oracle.com/XSL/Transform/java/oracle.tip.pc.services.functions.ExtFunc"
+         xmlns:ns10="ODError">
+  <!-- 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+      PARTNERLINKS                                                      
+      List of services participating in this BPEL process               
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  -->
+  <partnerLinks>
+    <partnerLink myRole="Get_role" name="AJBFileGet"
+                 partnerLinkType="ns1:Get_plt"/>
+    <partnerLink name="AJBFilePut" partnerRole="Put_role"
+                 partnerLinkType="ns2:Put_plt"/>
+    <partnerLink name="ODErrorLogger" myRole="ODErrorLoggerRequester"
+                 partnerRole="ODErrorLoggerProvider"
+                 partnerLinkType="ns9:ODErrorLogger"/>
+    <partnerLink name="PutTriggerFileAJB" partnerRole="Put_role"
+                 partnerLinkType="ns5:Put_plt"/>
+  </partnerLinks>
+  <!-- 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+      VARIABLES                                                        
+      List of messages and XML documents used within this BPEL process 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  -->
+  <variables>
+    <variable name="FileNameIn" messageType="ns3:InboundHeader_msg"/>
+    <variable name="FileNameOut" messageType="ns3:OutboundHeader_msg"/>
+    <variable name="Exception" messageType="bpelx:RuntimeFaultMessage"/>
+    <variable name="invkSelectionFailure_initiate"
+              messageType="ns9:ODErrorLoggerRequestMessage"/>
+    <variable name="invkRemoteFault_initiate"
+              messageType="ns9:ODErrorLoggerRequestMessage"/>
+    <variable name="invkCatchAll_initiate"
+              messageType="ns9:ODErrorLoggerRequestMessage"/>
+    <variable name="invkBindingFault_initiate"
+              messageType="ns9:ODErrorLoggerRequestMessage"/>
+    <variable name="InvokeTriggerFile_Put_InputVariable"
+              messageType="ns5:Put_msg"/>
+    <variable name="File_Name_out_Trigger"
+              messageType="ns3:OutboundHeader_msg"/>
+    <variable name="ReceiveAJBFile_Get"
+              messageType="ns1:attachmentElement_msg"/>
+    <variable name="InvokeAJBFilePut_Put"
+              messageType="ns2:attachmentElement_msg"/>
+  </variables>
+  <faultHandlers>
+    <catch faultName="bpws:selectionFailure" faultVariable="Exception">
+      <sequence name="Sequence_3">
+        <assign name="asnSelectionFailure">
+          <copy>
+            <from expression="concat(ora:getProcessId(), ora:getProcessVersion())"/>
+            <to variable="invkSelectionFailure_initiate" part="payload"
+                query="/ns10:ErrorData/ns10:ProcessInfo/ns10:BusinessProcessName"/>
+          </copy>
+          <copy>
+            <from expression="ora:getInstanceId()"/>
+            <to variable="invkSelectionFailure_initiate" part="payload"
+                query="/ns10:ErrorData/ns10:ProcessInfo/ns10:BusinessProcessId"/>
+          </copy>
+          <copy>
+            <from expression="ora:getDomainId()"/>
+            <to variable="invkSelectionFailure_initiate" part="payload"
+                query="/ns10:ErrorData/ns10:ProcessInfo/ns10:BusinessProcessDomain"/>
+          </copy>
+          <copy>
+            <from expression="ora:getProcessURL()"/>
+            <to variable="invkSelectionFailure_initiate" part="payload"
+                query="/ns10:ErrorData/ns10:ProcessInfo/ns10:SystemName"/>
+          </copy>
+          <copy>
+            <from expression="xp20:current-dateTime()"/>
+            <to variable="invkSelectionFailure_initiate" part="payload"
+                query="/ns10:ErrorData/ns10:ErrorDetails/ns10:ErrorDateTime"/>
+          </copy>
+          <copy>
+            <from expression="'FTPAJBSettlementProcess_Out'"/>
+            <to variable="invkSelectionFailure_initiate" part="payload"
+                query="/ns10:ErrorData/ns10:ProcessInfo/ns10:BusinessProcessStep"/>
+          </copy>
+          <copy>
+            <from variable="Exception" part="code"/>
+            <to variable="invkSelectionFailure_initiate" part="payload"
+                query="/ns10:ErrorData/ns10:ErrorDetails/ns10:ErrorCode"/>
+          </copy>
+          <copy>
+            <from variable="Exception" part="summary"/>
+            <to variable="invkSelectionFailure_initiate" part="payload"
+                query="/ns10:ErrorData/ns10:ErrorDetails/ns10:ErrorDescription"/>
+          </copy>
+          <copy>
+            <from variable="Exception" part="detail"/>
+            <to variable="invkSelectionFailure_initiate" part="payload"
+                query="/ns10:ErrorData/ns10:ErrorDetails/ns10:ErrorText"/>
+          </copy>
+        </assign>
+        <invoke name="invkSelectionFailure" partnerLink="ODErrorLogger"
+                portType="ns9:ODErrorLogger" operation="initiate"
+                inputVariable="invkSelectionFailure_initiate"/>
+      </sequence>
+    </catch>
+    <catch faultName="bpelx:bindingFault" faultVariable="Exception">
+      <sequence name="Sequence_2">
+        <assign name="asnBindingFault">
+          <copy>
+            <from expression="concat(ora:getProcessId(), ora:getProcessVersion())"/>
+            <to variable="invkBindingFault_initiate" part="payload"
+                query="/ns10:ErrorData/ns10:ProcessInfo/ns10:BusinessProcessName"/>
+          </copy>
+          <copy>
+            <from expression="ora:getInstanceId()"/>
+            <to variable="invkBindingFault_initiate" part="payload"
+                query="/ns10:ErrorData/ns10:ProcessInfo/ns10:BusinessProcessId"/>
+          </copy>
+          <copy>
+            <from expression="ora:getDomainId()"/>
+            <to variable="invkBindingFault_initiate" part="payload"
+                query="/ns10:ErrorData/ns10:ProcessInfo/ns10:BusinessProcessDomain"/>
+          </copy>
+          <copy>
+            <from expression="ora:getProcessURL()"/>
+            <to variable="invkBindingFault_initiate" part="payload"
+                query="/ns10:ErrorData/ns10:ProcessInfo/ns10:SystemName"/>
+          </copy>
+          <copy>
+            <from expression="xp20:current-dateTime()"/>
+            <to variable="invkBindingFault_initiate" part="payload"
+                query="/ns10:ErrorData/ns10:ErrorDetails/ns10:ErrorDateTime"/>
+          </copy>
+          <copy>
+            <from expression="'FTPAJBSettlementProcess_Out'"/>
+            <to variable="invkBindingFault_initiate" part="payload"
+                query="/ns10:ErrorData/ns10:ProcessInfo/ns10:BusinessProcessStep"/>
+          </copy>
+          <copy>
+            <from variable="Exception" part="code"/>
+            <to variable="invkBindingFault_initiate" part="payload"
+                query="/ns10:ErrorData/ns10:ErrorDetails/ns10:ErrorCode"/>
+          </copy>
+          <copy>
+            <from variable="Exception" part="summary"/>
+            <to variable="invkBindingFault_initiate" part="payload"
+                query="/ns10:ErrorData/ns10:ErrorDetails/ns10:ErrorDescription"/>
+          </copy>
+          <copy>
+            <from variable="Exception" part="detail"/>
+            <to variable="invkBindingFault_initiate" part="payload"
+                query="/ns10:ErrorData/ns10:ErrorDetails/ns10:ErrorText"/>
+          </copy>
+        </assign>
+        <invoke name="invkBindingFault" partnerLink="ODErrorLogger"
+                portType="ns9:ODErrorLogger" operation="initiate"
+                inputVariable="invkBindingFault_initiate"/>
+      </sequence>
+    </catch>
+    <catch faultName="bpelx:remoteFault" faultVariable="Exception">
+      <sequence name="Sequence_5">
+        <assign name="asnRemoteFault">
+          <copy>
+            <from expression="concat(ora:getProcessId(), ora:getProcessVersion())"/>
+            <to variable="invkRemoteFault_initiate" part="payload"
+                query="/ns10:ErrorData/ns10:ProcessInfo/ns10:BusinessProcessName"/>
+          </copy>
+          <copy>
+            <from expression="ora:getInstanceId()"/>
+            <to variable="invkRemoteFault_initiate" part="payload"
+                query="/ns10:ErrorData/ns10:ProcessInfo/ns10:BusinessProcessId"/>
+          </copy>
+          <copy>
+            <from expression="ora:getDomainId()"/>
+            <to variable="invkRemoteFault_initiate" part="payload"
+                query="/ns10:ErrorData/ns10:ProcessInfo/ns10:BusinessProcessDomain"/>
+          </copy>
+          <copy>
+            <from expression="ora:getProcessURL()"/>
+            <to variable="invkSelectionFailure_initiate" part="payload"
+                query="/ns10:ErrorData/ns10:ProcessInfo/ns10:SystemName"/>
+          </copy>
+          <copy>
+            <from expression="xp20:current-dateTime()"/>
+            <to variable="invkRemoteFault_initiate" part="payload"
+                query="/ns10:ErrorData/ns10:ErrorDetails/ns10:ErrorDateTime"/>
+          </copy>
+          <copy>
+            <from expression="'FTPAJBSettlementProcess_Out'"/>
+            <to variable="invkRemoteFault_initiate" part="payload"
+                query="/ns10:ErrorData/ns10:ProcessInfo/ns10:BusinessProcessStep"/>
+          </copy>
+          <copy>
+            <from variable="Exception" part="code"/>
+            <to variable="invkRemoteFault_initiate" part="payload"
+                query="/ns10:ErrorData/ns10:ErrorDetails/ns10:ErrorCode"/>
+          </copy>
+          <copy>
+            <from variable="Exception" part="summary"/>
+            <to variable="invkRemoteFault_initiate" part="payload"
+                query="/ns10:ErrorData/ns10:ErrorDetails/ns10:ErrorDescription"/>
+          </copy>
+          <copy>
+            <from variable="Exception" part="detail"/>
+            <to variable="invkRemoteFault_initiate" part="payload"
+                query="/ns10:ErrorData/ns10:ErrorDetails/ns10:ErrorText"/>
+          </copy>
+        </assign>
+        <invoke name="invkRemoteFault" partnerLink="ODErrorLogger"
+                portType="ns9:ODErrorLogger" operation="initiate"
+                inputVariable="invkRemoteFault_initiate"/>
+      </sequence>
+    </catch>
+    <catchAll>
+      <sequence name="Sequence_4">
+        <assign name="asnCatchAll">
+          <copy>
+            <from expression="concat(ora:getProcessId(), ora:getProcessVersion())"/>
+            <to variable="invkCatchAll_initiate" part="payload"
+                query="/ns10:ErrorData/ns10:ProcessInfo/ns10:BusinessProcessName"/>
+          </copy>
+          <copy>
+            <from expression="ora:getInstanceId()"/>
+            <to variable="invkCatchAll_initiate" part="payload"
+                query="/ns10:ErrorData/ns10:ProcessInfo/ns10:BusinessProcessId"/>
+          </copy>
+          <copy>
+            <from expression="ora:getDomainId()"/>
+            <to variable="invkCatchAll_initiate" part="payload"
+                query="/ns10:ErrorData/ns10:ProcessInfo/ns10:BusinessProcessDomain"/>
+          </copy>
+          <copy>
+            <from expression="ora:getProcessURL()"/>
+            <to variable="invkCatchAll_initiate" part="payload"
+                query="/ns10:ErrorData/ns10:ProcessInfo/ns10:SystemName"/>
+          </copy>
+          <copy>
+            <from expression="xp20:current-dateTime()"/>
+            <to variable="invkCatchAll_initiate" part="payload"
+                query="/ns10:ErrorData/ns10:ErrorDetails/ns10:ErrorDateTime"/>
+          </copy>
+          <copy>
+            <from expression="'FTPAJBSettlementProcess_Out'"/>
+            <to variable="invkCatchAll_initiate" part="payload"
+                query="/ns10:ErrorData/ns10:ProcessInfo/ns10:BusinessProcessStep"/>
+          </copy>
+          <copy>
+            <from variable="Exception" part="code"/>
+            <to variable="invkCatchAll_initiate" part="payload"
+                query="/ns10:ErrorData/ns10:ErrorDetails/ns10:ErrorCode"/>
+          </copy>
+          <copy>
+            <from variable="Exception" part="summary"/>
+            <to variable="invkCatchAll_initiate" part="payload"
+                query="/ns10:ErrorData/ns10:ErrorDetails/ns10:ErrorDescription"/>
+          </copy>
+          <copy>
+            <from variable="Exception" part="detail"/>
+            <to variable="invkCatchAll_initiate" part="payload"
+                query="/ns10:ErrorData/ns10:ErrorDetails/ns10:ErrorText"/>
+          </copy>
+        </assign>
+        <invoke name="invkCatchAll" partnerLink="ODErrorLogger"
+                portType="ns9:ODErrorLogger" operation="initiate"
+                inputVariable="invkCatchAll_initiate"/>
+      </sequence>
+    </catchAll>
+  </faultHandlers>
+  <!-- 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+     ORCHESTRATION LOGIC                                               
+     Set of activities coordinating the flow of messages across the    
+     services integrated within this business process                  
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  -->
+  <sequence name="main">
+    <receive name="ReceiveAJBFile" partnerLink="AJBFileGet"
+             portType="ns1:Get_ptt" operation="Get"
+             variable="ReceiveAJBFile_Get" createInstance="yes"
+             bpelx:headerVariable="FileNameIn"/>
+    <assign name="Assign_1">
+      <copy>
+        <from expression="bpws:getVariableData('FileNameIn','inboundHeader','/ns3:InboundFTPHeaderType/ns3:fileName')"/>
+        <to variable="FileNameOut" part="outboundHeader"
+            query="/ns3:OutboundFTPHeaderType/ns3:fileName"/>
+      </copy>
+      <copy>
+        <from part="attachmentElement" query="/ns6:attachmentElement"
+              variable="ReceiveAJBFile_Get"/>
+        <to variable="InvokeAJBFilePut_Put" part="attachmentElement"
+            query="/ns6:attachmentElement"/>
+      </copy>
+      <copy>
+        <from expression="concat(substring-before(bpws:getVariableData('FileNameIn','inboundHeader','/ns3:InboundFTPHeaderType/ns3:fileName'),'.'),'.trg')"/>
+        <to variable="File_Name_out_Trigger" part="outboundHeader"
+            query="/ns3:OutboundFTPHeaderType/ns3:fileName"/>
+      </copy>
+    </assign>
+    <invoke name="InvokeAJBFilePut" partnerLink="AJBFilePut"
+            portType="ns2:Put_ptt" operation="Put"
+            inputVariable="InvokeAJBFilePut_Put"
+            bpelx:inputHeaderVariable="FileNameOut"/>
+    <invoke name="InvokeTriggerFilePut" partnerLink="PutTriggerFileAJB"
+            portType="ns5:Put_ptt" operation="Put"
+            inputVariable="InvokeTriggerFile_Put_InputVariable"
+            bpelx:inputHeaderVariable="File_Name_out_Trigger"/>
+  </sequence>
+</process>

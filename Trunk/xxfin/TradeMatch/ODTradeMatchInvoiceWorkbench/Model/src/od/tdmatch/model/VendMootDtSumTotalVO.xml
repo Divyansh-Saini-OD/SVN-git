@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="windows-1252" ?>
+<!DOCTYPE ViewObject SYSTEM "jbo_03_01.dtd">
+<!---->
+<ViewObject
+  xmlns="http://xmlns.oracle.com/bc4j"
+  Name="VendMootDtSumTotalVO"
+  Version="12.2.1.12.24"
+  InheritPersonalization="merge"
+  BindingStyle="OracleName"
+  CustomQuery="true"
+  RowClass="od.tdmatch.model.VendMootDtSumTotalVORowImpl"
+  ComponentClass="od.tdmatch.model.VendMootDtSumTotalVOImpl"
+  FetchMode="FETCH_AS_NEEDED"
+  PageIterMode="Full">
+  <DesignTime>
+    <Attr Name="_codeGenFlag2" Value="Coll"/>
+    <Attr Name="_isExpertMode" Value="true"/>
+    <Attr Name="_isCodegen" Value="true"/>
+  </DesignTime>
+  <Properties>
+    <SchemaBasedProperties>
+      <LABEL
+        ResId="od.tdmatch.model.VendMootDtSumTotalVO_LABEL"/>
+    </SchemaBasedProperties>
+  </Properties>
+  <SQLQuery><![CDATA[select sum(invoice_amount) sum_inv_amount, sum(Qty_Hold_Amt) sum_qty_hld_amount, sum(Price_Hold_Amt) sum_price_hld_amt  
+from (SELECT ai.org_id,      
+	   ai.source,      
+	   ai.invoice_num,      
+	   ph.segment1 po_number,      
+	   ai.invoice_date,      
+	   NVL(py.discount_date,py.due_date) due_date,      
+       a.vendor_name supplier_name,                                  
+       a.segment1 supplier_no,                                  
+       b.vendor_site_code supplier_site,           
+		'' SKU,      
+		tv.target_value2 vendor_assistant,       
+		DECODE('','Y',1,'N',0,0) all_pending_s,      
+       DECODE(SIGN(instr(e.name,'/')),0,NULL,1,'D') discount,                                  
+       ai.voucher_num,                      
+       SUBSTR(hrl.location_code,1,6) location,                                  
+       ai.invoice_amount,                                  
+       ai.attribute5 PO_Type,               
+           DECODE('','Y',1,'N',0,0) front_door_s,                    
+           DECODE('','Y',1,'N',0,0) non_code_s,                  
+           DECODE('','Y',1,'N',0,0) drop_ship_s,               
+           DECODE('','Y',1,'N',0,0) price_except_s,               
+           DECODE('','Y',1,'N',0,0) qty_except_s,               
+           DECODE('','Y',1,'N',0,0) fr_Except_s,          
+           0 Qty_Hold_Amt,         
+           0 Price_Hold_Amt,         
+           xx_ap_frt_invoice(ai.invoice_id) Frt_Hold  ,    
+           'N' po_hold_chr            
+  FROM  xx_fin_translatevalues tv                                  
+       ,xx_fin_translatedefinition td                                         
+                   ,hr_locations_all hrl                                  
+       ,ap_terms e                                  
+       ,po_headers_all ph                                  
+       ,ap_payment_schedules_all py                                  
+       ,ap_supplier_sites_all b                                  
+       ,ap_suppliers a                                  
+       ,ap_invoices_all ai                                  
+WHERE /*ai.invoice_num like 'SH%'                                  
+   AND*/ a.vendor_id=ai.vendor_id                                  
+   AND b.vendor_id=a.vendor_id                                  
+   AND b.vendor_site_id=ai.vendor_site_id                                  
+   AND py.invoice_id=ai.invoice_id                                  
+   AND e.term_id=ai.terms_id                                  
+   AND ph.po_header_id=NVL(ai.po_header_id,ai.quick_po_header_id)                                    
+   AND td.TRANSLATION_NAME = 'XX_AP_VENDOR_ASSISTANTS'                                   
+   AND tv.TRANSLATE_ID  = td.TRANSLATE_ID                                  
+   AND tv.target_value1=nvl(b.attribute6,'Open')||''                                  
+   AND tv.enabled_flag='Y'                                  
+   AND SYSDATE BETWEEN tv.start_date_active and NVL(tv.end_date_active,sysdate)                                  
+   AND hrl.location_id=ph.ship_to_location_id                                  
+   AND NVL(py.discount_date,py.due_date) BETWEEN SYSDATE AND SYSDATE+8                                   
+   --AND ai.org_id=NVL(:p_org_id,ai.org_id)                                  
+   --AND ai.invoice_num=NVL(:p_invoice_num,ai.invoice_num)                                  
+   --AND ph.segment1=NVL(:p_ponum,ph.segment1)                                  
+   --AND ai.invoice_date BETWEEN NVL(:p_fr_invdate,ai.invoice_date) AND NVL(:p_to_invdate,ai.invoice_date)                                  
+   --AND a.vendor_name=NVL(:p_vend_name,a.vendor_name)                                  
+   --AND a.segment1=NVL(:p_vend_no,a.segment1)                                  
+   --AND b.vendor_site_code=NVL(:p_vend_site,b.vendor_site_code)                                  
+   --AND tv.target_value1=NVL(:p_vend_ast,tv.target_value1)                                  
+   --AND ai.source=NVL(:p_source,ai.source)                                  
+   /*AND NVL(py.discount_date,py.due_date) BETWEEN NVL(:p_due_fdate,(NVL(py.discount_date,py.due_date)))                                  
+                                                AND NVL(:p_due_tdate,(NVL(py.discount_date,py.due_date))) */                                 
+   /*AND EXISTS ( select  'x'                              
+         from mtl_system_items_b msi,                              
+              po_lines_all pl                              
+        where pl.po_header_id=NVL(ai.po_header_id,ai.quick_po_header_id)                              
+          and msi.inventory_item_id=pl.item_id                                  
+          and msi.organization_id+0=441                              
+          and msi.segment1=NVL(:p_item,msi.segment1)                              
+     )*/)]]></SQLQuery>
+  <ViewAttribute
+    Name="SumInvAmount"
+    IsUpdateable="false"
+    IsPersistent="false"
+    PrecisionRule="true"
+    Type="oracle.jbo.domain.Number"
+    ColumnType="NUMBER"
+    AliasName="SUM_INV_AMOUNT"
+    Expression="SUM_INV_AMOUNT"
+    SQLType="NUMERIC">
+    <Properties>
+      <SchemaBasedProperties>
+        <FMT_FORMATTER
+          ResId="od.tdmatch.model.VendMootDtSumTotalVO.SumInvAmount_FMT_FORMATTER"/>
+        <FMT_FORMAT
+          ResId="od.tdmatch.model.VendMootDtSumTotalVO.SumInvAmount_FMT_FORMAT"/>
+      </SchemaBasedProperties>
+    </Properties>
+  </ViewAttribute>
+  <ViewAttribute
+    Name="SumQtyHldAmount"
+    IsUpdateable="false"
+    IsPersistent="false"
+    PrecisionRule="true"
+    Type="oracle.jbo.domain.Number"
+    ColumnType="NUMBER"
+    AliasName="SUM_QTY_HLD_AMOUNT"
+    Expression="SUM_QTY_HLD_AMOUNT"
+    SQLType="NUMERIC">
+    <Properties>
+      <SchemaBasedProperties>
+        <FMT_FORMATTER
+          ResId="od.tdmatch.model.VendMootDtSumTotalVO.SumQtyHldAmount_FMT_FORMATTER"/>
+        <FMT_FORMAT
+          ResId="od.tdmatch.model.VendMootDtSumTotalVO.SumQtyHldAmount_FMT_FORMAT"/>
+      </SchemaBasedProperties>
+    </Properties>
+  </ViewAttribute>
+  <ViewAttribute
+    Name="SumPriceHldAmt"
+    IsUpdateable="false"
+    IsPersistent="false"
+    PrecisionRule="true"
+    Type="oracle.jbo.domain.Number"
+    ColumnType="NUMBER"
+    AliasName="SUM_PRICE_HLD_AMT"
+    Expression="SUM_PRICE_HLD_AMT"
+    SQLType="NUMERIC">
+    <Properties>
+      <SchemaBasedProperties>
+        <FMT_FORMAT
+          ResId="od.tdmatch.model.VendMootDtSumTotalVO.SumPriceHldAmt_FMT_FORMAT"/>
+        <FMT_FORMATTER
+          ResId="od.tdmatch.model.VendMootDtSumTotalVO.SumPriceHldAmt_FMT_FORMATTER"/>
+      </SchemaBasedProperties>
+    </Properties>
+  </ViewAttribute>
+  <AttrArray Name="KeyAttributes">
+    <Item Value="SumInvAmount"/>
+  </AttrArray>
+  <ResourceBundle>
+    <PropertiesBundle
+      PropertiesFile="od.tdmatch.model.ModelBundle"/>
+  </ResourceBundle>
+</ViewObject>

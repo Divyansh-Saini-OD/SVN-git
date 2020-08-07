@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding='windows-1252'?>
+<!DOCTYPE ViewObject SYSTEM "jbo_03_01.dtd">
+
+<ViewObject
+   Name="ODEBillPVO"
+   BindingStyle="Oracle"
+   CustomQuery="true"
+   RowClass="od.oracle.apps.xxcrm.cdh.ebl.server.ODEBillPVORowImpl"
+   ComponentClass="oracle.apps.fnd.framework.server.OAViewObjectImpl"
+   MsgBundleClass="oracle.jbo.common.JboResourceBundle"
+   UseGlueCode="false" >
+   <DesignTime>
+      <Attr Name="_isCodegen" Value="true" />
+      <Attr Name="_version" Value="9.0.3.12.53" />
+      <Attr Name="_CodeGenFlagNew" Value="4" />
+   </DesignTime>
+   <ViewAttribute
+      Name="RowKey"
+      IsPersistent="false"
+      Precision="255"
+      Type="oracle.jbo.domain.Number"
+      AliasName="VIEW_ATTR"
+      ColumnType="VARCHAR2"
+      SQLType="NUMERIC" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Email"
+      IsPersistent="false"
+      DefaultValue="TRUE"
+      Precision="255"
+      Type="java.lang.Boolean"
+      AliasName="VIEW_ATTR"
+      ColumnType="VARCHAR2"
+      SQLType="BIT" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="CD"
+      IsPersistent="false"
+      Precision="255"
+      Type="java.lang.Boolean"
+      AliasName="VIEW_ATTR"
+      ColumnType="VARCHAR2"
+      SQLType="BIT" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="FTP"
+      IsPersistent="false"
+      Precision="255"
+      Type="java.lang.Boolean"
+      AliasName="VIEW_ATTR"
+      ColumnType="VARCHAR2"
+      SQLType="BIT" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Std"
+      IsPersistent="false"
+      DefaultValue="TRUE"
+      Precision="255"
+      Type="java.lang.Boolean"
+      AliasName="VIEW_ATTR"
+      ColumnType="VARCHAR2"
+      SQLType="BIT" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="NonStd"
+      IsPersistent="false"
+      DefaultValue="TRUE"
+      Precision="255"
+      Type="java.lang.Boolean"
+      AliasName="VIEW_ATTR"
+      ColumnType="VARCHAR2"
+      SQLType="BIT" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="NStd"
+      IsPersistent="false"
+      DefaultValue="FALSE"
+      Precision="255"
+      Type="java.lang.Boolean"
+      AliasName="VIEW_ATTR"
+      ColumnType="VARCHAR2"
+      SQLType="BIT" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Split"
+      IsPersistent="false"
+      Precision="255"
+      Type="java.lang.Boolean"
+      AliasName="VIEW_ATTR"
+      ColumnType="VARCHAR2"
+      SQLType="BIT" >
+   </ViewAttribute>
+   <AttrArray Name="KeyAttributes">
+      <Item Value="RowKey" />
+   </AttrArray>
+</ViewObject>

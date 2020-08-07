@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding='windows-1252'?>
+<!DOCTYPE ViewObject SYSTEM "jbo_03_01.dtd">
+<!--
+Subversion Info:
+$HeadURL: http://svn.na.odcorp.net/svn/od/common/trunk/xxcomn/java/od/oracle/apps/xxcrm/cdh/ebl/lov/server/ODEBillFromSiteLOVVO.xml $
+$Rev: 239410 $
+$Date: 2015-10-23 11:48:23 -0400 (Fri, 23 Oct 2015) $
+-->
+<ViewObject
+   Name="ODEBillFromSiteLOVVO"
+   BindingStyle="Oracle"
+   CustomQuery="true"
+   RowClass="od.oracle.apps.xxcrm.cdh.ebl.lov.server.ODEBillFromSiteLOVVORowImpl"
+   ComponentClass="oracle.apps.fnd.framework.server.OAViewObjectImpl"
+   MsgBundleClass="oracle.jbo.common.JboResourceBundle"
+   UseGlueCode="false" >
+   <SQLQuery><![CDATA[
+SELECT asites.orig_system_reference ,
+  asites.cust_acct_site_id
+  ,asites.cust_account_id
+  ,sites.party_site_id
+  ,uses.site_use_code
+  , loc.address1 || ', ' || loc.address2 || ', ' || loc.state address
+FROM hz_cust_acct_sites_all asites,
+  hz_party_sites sites,
+  hz_cust_site_uses_all uses,
+  hz_locations loc
+WHERE asites.party_site_id   = sites.party_site_id
+AND asites.cust_acct_site_id = uses.cust_acct_site_id
+AND sites.location_id        = loc.location_id
+AND uses.site_use_code       = 'SHIP_TO'
+   ]]></SQLQuery>
+   <DesignTime>
+      <Attr Name="_isCodegen" Value="true" />
+      <Attr Name="_version" Value="9.0.3.12.53" />
+      <Attr Name="_CodeGenFlagNew" Value="4" />
+   </DesignTime>
+   <ViewAttribute
+      Name="OrigSystemReference"
+      IsPersistent="false"
+      IsNotNull="true"
+      Precision="240"
+      Type="java.lang.String"
+      AliasName="ORIG_SYSTEM_REFERENCE"
+      ColumnType="VARCHAR2"
+      Expression="ORIG_SYSTEM_REFERENCE"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="240" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="CustAcctSiteId"
+      IsPersistent="false"
+      IsNotNull="true"
+      Precision="15"
+      Scale="0"
+      Type="oracle.jbo.domain.Number"
+      AliasName="CUST_ACCT_SITE_ID"
+      ColumnType="VARCHAR2"
+      Expression="CUST_ACCT_SITE_ID"
+      SQLType="NUMERIC" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="CustAccountId"
+      IsUpdateable="false"
+      IsPersistent="false"
+      Precision="15"
+      Scale="0"
+      Type="oracle.jbo.domain.Number"
+      AliasName="CUST_ACCOUNT_ID"
+      ColumnType="VARCHAR2"
+      Expression="CustAccountId"
+      SQLType="NUMERIC" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="PartySiteId"
+      IsUpdateable="false"
+      IsPersistent="false"
+      Precision="15"
+      Scale="0"
+      Type="java.lang.String"
+      AliasName="PARTY_SITE_ID"
+      ColumnType="VARCHAR2"
+      Expression="PartySiteId"
+      SQLType="VARCHAR" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="SiteUseCode"
+      IsUpdateable="false"
+      IsPersistent="false"
+      Precision="30"
+      Type="java.lang.String"
+      AliasName="SITE_USE_CODE"
+      ColumnType="VARCHAR2"
+      Expression="SiteUseCode"
+      SQLType="VARCHAR" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Address"
+      IsUpdateable="false"
+      IsPersistent="false"
+      Precision="544"
+      Type="java.lang.String"
+      AliasName="ADDRESS"
+      ColumnType="VARCHAR2"
+      Expression="Address"
+      SQLType="VARCHAR" >
+   </ViewAttribute>
+</ViewObject>

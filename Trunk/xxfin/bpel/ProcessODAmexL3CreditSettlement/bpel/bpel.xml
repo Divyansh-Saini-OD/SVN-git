@@ -1,0 +1,34 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<BPELSuitcase>
+   <BPELProcess id="ProcessODAmexL3CreditSettlement" src="ProcessODAmexL3CreditSettlement.bpel">
+      <partnerLinkBindings>
+         <partnerLinkBinding name="GetODAmexL3CpcSrvc">
+            <property name="wsdlLocation">GetODAmexL3CpcSrvc.wsdl</property>
+            <property name="batchNotificationHandler">default:22F7AFE6F6B967243012C62532463AF4D62D1A19DF561D1E|ODDefaultBatchNotificationHandler</property>
+         </partnerLinkBinding>
+         <partnerLinkBinding name="ODErrorLogger">
+            <property name="wsdlLocation">http://chilsoa01d.na.odcorp.net:7778/orabpel/default/ODErrorLogger/ODErrorLogger?wsdl</property>
+         </partnerLinkBinding>
+         <partnerLinkBinding name="B2BAmexCreditSettlementOutbound">
+            <property name="wsdlLocation">http://esbdev02.na.odcorp.net/orabpel/b2b/B2BAmexCreditSettlementOutbound/1.0/B2BAmexCreditSettlementOutbound?wsdl</property>
+         </partnerLinkBinding>
+         <partnerLinkBinding name="FilePutBack">
+            <property name="wsdlLocation">FilePut.wsdl</property>
+            <property name="retryInterval">60</property>
+            <property name="Outbound_Path" type="LogicalDirectory">null</property>
+         </partnerLinkBinding>
+         <partnerLinkBinding name="PutReprocessFile">
+            <property name="wsdlLocation">PutReprocessFile.wsdl</property>
+            <property name="archive_path" type="LogicalDirectory"></property>
+            <property name="retryInterval">60</property>
+         </partnerLinkBinding>
+      </partnerLinkBindings>
+      <activationAgents>
+         <activationAgent className="oracle.tip.adapter.fw.agent.jca.JCAActivationAgent" partnerLink="GetODAmexL3CpcSrvc">
+            <property name="Outbound_Path" type="LogicalDirectory">/app/ebs/ctgsidev02/xxfin/ftp/out/amexcpc</property>
+            <property name="portType">Get_ptt</property>
+            <property name="Archive_Path" type="LogicalArchiveDirectory">/app/ebs/ctgsidev02_archive/xxfin/outbound</property>
+         </activationAgent>
+      </activationAgents>
+   </BPELProcess>
+</BPELSuitcase>

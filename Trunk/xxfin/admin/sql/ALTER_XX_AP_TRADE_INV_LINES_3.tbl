@@ -1,0 +1,36 @@
+SET VERIFY      OFF
+SET TERM        OFF
+SET FEEDBACK    OFF
+SET SHOW        OFF
+SET ECHO        OFF
+SET TAB         OFF
+
+-- +===================================================================+
+-- |                        Office Depot                               |
+-- |                                                                   |
+-- +===================================================================+
+-- | Table Name  :  ALTER_XX_AP_TRADE_INV_LINES_3.tbl                  |
+-- | Description :  Alter the Invoice Pre-Staging table                |
+-- | Rice Id     :  E3522                                              |
+-- |                                                                   |
+-- |Change Record:                                                     |
+-- |===============                                                    |
+-- |Version   Date         Author             Remarks                  |
+-- |=======   ===========  =================  =========================|
+-- |1.0       08-APR-2018  Havish Kasina      Initial draft version    |
+-- +===================================================================+
+
+WHENEVER SQLERROR CONTINUE;
+
+SET TERM OFF
+
+SET TERM ON
+
+PROMPT
+PROMPT Altering the Table XXFIN.XX_AP_TRADE_INV_LINES 
+PROMPT
+
+ALTER TABLE XXFIN.XX_AP_TRADE_INV_LINES
+        ADD( misc_issue_flag  VARCHAR2(1));
+		   
+SHOW ERROR;

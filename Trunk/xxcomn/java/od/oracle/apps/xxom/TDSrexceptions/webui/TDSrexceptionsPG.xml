@@ -1,0 +1,41 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<!-- dbdrv: exec java oracle/jrad/tools/xml/importer XMLImporter.class java &phase=dat+24 checkfile:~PROD:~PATH:~FILE &fullpath:~PROD:~PATH:~FILE -username &un_apps -password &pw_apps -dbconnection &jdbc_db_addr  -userId "1" -rootPackage /oracle/apps/~PROD  -rootdir &fullpath:~PROD:mds:directory  -->
+<page xmlns:jrad="http://xmlns.oracle.com/jrad" xmlns:oa="http://xmlns.oracle.com/oa" xmlns:ui="http://xmlns.oracle.com/uix/ui" version="9.0.3.8.10_1080" xml:lang="en-US" xmlns:user="http://xmlns.oracle.com/jrad/user" xmlns="http://xmlns.oracle.com/jrad" file-version="$Header$">
+   <content>
+      <oa:pageLayout id="MainRN" amStateRequired="false" amDefName="od.oracle.apps.xxom.TDSrexceptions.server.TDSrexceptionsAM" windowTitle="TD SR Exceptions" title="TD SR Exceptions">
+         <ui:corporateBranding>
+            <oa:image id="corporateBrandingImage" source="/OA_MEDIA/FNDSSCORP.gif"/>
+         </ui:corporateBranding>
+         <ui:contents>
+            <oa:query id="QueryRN" mode="resultsBasedSearch" dispCustomized="true" dispAdvanced="true" dispSimple="true">
+               <ui:contents>
+                  <oa:table id="TDSrexceptions1" amDefName="od.oracle.apps.xxom.TDSrexceptions.server.TDSrexceptionsAM">
+                     <ui:contents>
+                        <oa:messageStyledText id="ExceptionId" dataType="NUMBER" prompt="Exception No#" viewName="TDSrexceptions1" viewAttr="ExceptionId" queryable="true" sortState="ascending" vAlign="middle"/>
+                        <oa:messageStyledText id="CreationDate" dataType="DATETIME" prompt="Exception Date" viewName="TDSrexceptions1" viewAttr="CreationDate" sortState="descending" queryable="true" vAlign="middle"/>
+                        <oa:messageStyledText id="ModuleName" dataType="VARCHAR2" prompt="Module Name" viewName="TDSrexceptions1" viewAttr="ModuleName" maximumLength="250" queryable="true" sortState="ascending" vAlign="middle"/>
+                        <oa:messageStyledText id="ProcessName" dataType="VARCHAR2" prompt="Process Name" viewName="TDSrexceptions1" viewAttr="ProcessName" queryable="false" sortState="no" vAlign="middle"/>
+                        <oa:messageStyledText id="ExceptionMsg" dataType="VARCHAR2" viewName="TDSrexceptions1" viewAttr="ExceptionMsg" prompt="Exception Message" vAlign="middle"/>
+                        <oa:messageTextInput id="ReprocessFlag" dataType="VARCHAR2" prompt="Reprocess Flag" viewName="TDSrexceptions1" viewAttr="ReprocessFlag" maximumLength="3" columns="3" vAlign="middle"/>
+                     </ui:contents>
+                  </oa:table>
+               </ui:contents>
+            </oa:query>
+            <oa:header id="ButtonRN" text="Actions" amDefName="od.oracle.apps.xxom.TDSrexceptions.server.TDSrexceptionsAM">
+               <ui:contents>
+                  <oa:submitButton id="updateRepFlag" text="Update" prompt="Update" hAlign="center" unvalidated="true">
+                     <ui:primaryClientAction>
+                        <ui:fireAction/>
+                     </ui:primaryClientAction>
+                  </oa:submitButton>
+                  <oa:submitButton id="clearRepFlag" text="Clear" prompt="Clear" hAlign="center" unvalidated="true">
+                     <ui:primaryClientAction>
+                        <ui:fireAction event="clear"/>
+                     </ui:primaryClientAction>
+                  </oa:submitButton>
+               </ui:contents>
+            </oa:header>
+         </ui:contents>
+      </oa:pageLayout>
+   </content>
+</page>

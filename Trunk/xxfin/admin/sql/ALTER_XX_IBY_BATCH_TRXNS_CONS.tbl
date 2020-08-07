@@ -1,0 +1,50 @@
+-- +==========================================================================+
+-- |                  Office Depot - Project Simplify                         |
+-- |                       WIPRO Technologies                                 |
+-- +==========================================================================+
+-- | RICE ID     :  I0349                                                     |
+-- | Name        :  Settlement and Payment Processing                         |
+-- |                                                                          |
+-- | SQL Script to create the following object                                |
+-- |             Table       : XX_IBY_BATCH_TRXNS                             |
+-- |                                                                          |
+-- |Change Record:                                                            |
+-- |===============                                                           |
+-- |Version   Date         Author               Remarks                       |
+-- |=======   ==========   =============        ==============================|
+-- | V1.0     23-FEB-2009  Anitha D             Initial version               |
+-- |                                            Added for the Defect 11482    |
+-- |                                                                          |
+-- |                                                                          |
+-- |                                                                          |
+-- +==========================================================================+
+
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     ON
+
+ALTER TABLE xxfin.xx_iby_batch_trxns
+        ADD( is_deposit        VARCHAR2(30)
+            ,is_custom_refund  VARCHAR2(30)
+            ,is_amex           VARCHAR2(30)
+            ,process_indicator    NUMBER
+            ,attribute16          VARCHAR2(255)
+            ,attribute17          VARCHAR2(255)
+            ,attribute18          VARCHAR2(255)
+            ,attribute19          VARCHAR2(255)
+            ,attribute20          VARCHAR2(255)
+            ,attribute21          VARCHAR2(255)
+            ,attribute22          VARCHAR2(255)
+            ,attribute23          VARCHAR2(255)
+            ,attribute24          VARCHAR2(255)
+            ,attribute25          VARCHAR2(255)
+            ,attribute26          VARCHAR2(255)
+            ,attribute27          VARCHAR2(255)
+            ,attribute28          VARCHAR2(255)
+            ,attribute29          VARCHAR2(255)
+            ,attribute30          VARCHAR2(255)
+            );
+
+SHOW ERROR;

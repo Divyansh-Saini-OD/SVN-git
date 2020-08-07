@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+            xmlns:nxsd="http://xmlns.oracle.com/pcbpel/nxsd"
+            targetNamespace="http://TargetNamespace.com/FTPGLJournalInvoice"
+            xmlns:tns="http://TargetNamespace.com/FTPGLJournalInvoice"
+            elementFormDefault="qualified" attributeFormDefault="unqualified"
+            nxsd:encoding="ASCII" nxsd:stream="chars" nxsd:version="NXSD">
+  <xsd:element name="GLJournalInvoice">
+    <xsd:complexType>
+      <xsd:choice minOccurs="1" maxOccurs="unbounded"
+                  nxsd:choiceCondition="fixedLength" nxsd:length="1">
+        <xsd:element ref="tns:Header" nxsd:conditionValue="H" nxsd:style="array"
+                     nxsd:cellSeparatedBy="${eol}"/>
+        <xsd:element ref="tns:Detail" nxsd:conditionValue="L" nxsd:style="array"
+                     nxsd:cellSeparatedBy="${eol}"/>
+      </xsd:choice>
+    </xsd:complexType>
+  </xsd:element>
+  <xsd:element name="Header" type="tns:HeaderType"/>
+  <xsd:complexType name="HeaderType">
+    <xsd:sequence>
+              <xsd:element name="PSBusinessUnit" type="xsd:string" nxsd:style="fixedLength" nxsd:length="5">
+              </xsd:element>
+              <xsd:element name="JournalID" type="xsd:string" nxsd:style="fixedLength" nxsd:length="10">
+              </xsd:element>
+              <xsd:element name="JournalHeaderDate" type="xsd:string" nxsd:style="fixedLength" nxsd:length="8">
+              </xsd:element>
+              <xsd:element name="UnknownValues1" type="xsd:string" nxsd:style="fixedLength" nxsd:length="4">
+              </xsd:element>
+              <xsd:element name="Blank1" type="xsd:string" nxsd:style="fixedLength" nxsd:length="8">
+              </xsd:element>
+              <xsd:element name="PSLedger" type="xsd:string" nxsd:style="fixedLength" nxsd:length="10">
+              </xsd:element>
+              <xsd:element name="UnknownValues2" type="xsd:string" nxsd:style="fixedLength" nxsd:length="1">
+              </xsd:element>
+              <xsd:element name="Blank2" type="xsd:string" nxsd:style="fixedLength" nxsd:length="17">
+              </xsd:element>
+              <xsd:element name="SourceCode" type="xsd:string" nxsd:style="fixedLength" nxsd:length="3">
+              </xsd:element>
+              <xsd:element name="JournalHeaderReference" type="xsd:string" nxsd:style="fixedLength" nxsd:length="8">
+              </xsd:element>
+              <xsd:element name="JournalHeaderDescription" type="xsd:string" nxsd:style="fixedLength" nxsd:length="30">
+              </xsd:element>
+              <xsd:element name="CurrencyCode" type="xsd:string" nxsd:style="fixedLength" nxsd:length="3">
+              </xsd:element>
+              <xsd:element name="CurrencyRateTypes" type="xsd:string" nxsd:style="fixedLength" nxsd:length="5">
+              </xsd:element>
+              <xsd:element name="Blank3" type="xsd:string" nxsd:style="fixedLength" nxsd:length="8">
+              </xsd:element>
+              <xsd:element name="UnknownValues3" type="xsd:decimal" nxsd:style="fixedLength" nxsd:length="17">
+              </xsd:element>
+              <xsd:element name="UnknownValues4" type="xsd:string" nxsd:style="fixedLength" nxsd:length="3">
+              </xsd:element>
+              <xsd:element name="Blank4" type="xsd:string" nxsd:style="fixedLength" nxsd:length="20">
+              </xsd:element>
+              <xsd:element name="UnknownValues5" type="xsd:string" nxsd:style="fixedLength" nxsd:length="2">
+              </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:element name="Detail" type="tns:DetailType"/>
+  <xsd:complexType name="DetailType">
+    <xsd:sequence>
+              <xsd:element name="PSBusinessUnit" type="xsd:string" nxsd:style="fixedLength" nxsd:length="5">
+              </xsd:element>
+              <xsd:element name="UnknownValues1" type="xsd:string" nxsd:style="fixedLength" nxsd:length="9">
+              </xsd:element>
+              <xsd:element name="Ledger" type="xsd:string" nxsd:style="fixedLength" nxsd:length="10">
+              </xsd:element>
+              <xsd:element name="PSAccount" type="xsd:string" nxsd:style="fixedLength" nxsd:length="10">
+              </xsd:element>
+              <xsd:element name="Blank1" type="xsd:string" nxsd:style="fixedLength" nxsd:length="10">
+              </xsd:element>
+              <xsd:element name="PSDepartment" type="xsd:string" nxsd:style="fixedLength" nxsd:length="4">
+              </xsd:element>
+              <xsd:element name="Blank2" type="xsd:string" nxsd:style="fixedLength" nxsd:length="6">
+              </xsd:element>
+              <xsd:element name="PSOperatingUnit" type="xsd:string" nxsd:style="fixedLength" nxsd:length="5">
+              </xsd:element>
+              <xsd:element name="Blank3" type="xsd:string" nxsd:style="fixedLength" nxsd:length="57">
+              </xsd:element>
+              <xsd:element name="PSSalesChannel" type="xsd:string" nxsd:style="fixedLength" nxsd:length="2">
+              </xsd:element>
+              <xsd:element name="Blank4" type="xsd:string" nxsd:style="fixedLength" nxsd:length="64">
+              </xsd:element>
+              <xsd:element name="UnknownValues2" type="xsd:string" nxsd:style="fixedLength" nxsd:length="46">
+              </xsd:element>
+              <xsd:element name="LineReference" type="xsd:string" nxsd:style="fixedLength" nxsd:length="10">
+              </xsd:element>
+              <xsd:element name="LineDescription" type="xsd:string" nxsd:style="fixedLength" nxsd:length="30">
+              </xsd:element>
+              <xsd:element name="CurrencyCode" type="xsd:string" nxsd:style="fixedLength" nxsd:length="3">
+              </xsd:element>
+              <xsd:element name="RateType" type="xsd:string" nxsd:style="fixedLength" nxsd:length="5">
+              </xsd:element>
+              <xsd:element name="TransactionAmountSign" type="xsd:string" nxsd:style="fixedLength" nxsd:length="1">
+              </xsd:element>
+              <xsd:element name="TransactionAmount" type="xsd:decimal" nxsd:style="fixedLength" nxsd:length="26">
+              </xsd:element>
+              <xsd:element name="UnknownValues3" type="xsd:decimal" nxsd:style="fixedLength" nxsd:length="18">
+              </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+</xsd:schema>
+<!--NXSDWIZ:C:\simplify\Finance\JIRA\GL Interface\SampleGLChunk.txt:-->
+<!--USE-HEADER:false:-->

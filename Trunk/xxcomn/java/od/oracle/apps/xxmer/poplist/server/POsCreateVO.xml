@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding='windows-1252'?>
+<!DOCTYPE ViewObject SYSTEM "jbo_03_01.dtd">
+
+<ViewObject
+   Name="POsCreateVO"
+   BindingStyle="Oracle"
+   CustomQuery="true"
+   RowClass="oracle.apps.fnd.framework.server.OAViewRowImpl"
+   ComponentClass="od.oracle.apps.xxmer.poplist.server.POsCreateVOImpl"
+   MsgBundleClass="oracle.jbo.common.JboResourceBundle"
+   UseGlueCode="false" >
+   <SQLQuery><![CDATA[
+select  distinct		
+		poh.segment1 as "PO", poh.segment1 as "POValue",  ah.batch_no,ad.po_header_id, ad.PO_LINE_ID, ad.LINE_LOCATION_ID, hr.attribute1 as ship_To, po.SHIP_TO_ORGANIZATION_ID
+		,poh.segment1 || '-' || pl.line_num	|| '-' || po.shipment_num as "POLINESHIP"	 
+		from xx_po_allocation_header ah
+			 ,xx_po_allocation_lines ad			
+			 ,po_line_locations_all po
+			 ,po_headers_all poh
+			 ,HR_ALL_ORGANIZATION_UNITS HR
+			 ,po_lines_all pl			
+	    where ah.allocation_header_id = ad.ALLOCATION_HEADER_ID		  
+		  and po.PO_HEADER_ID = ad.PO_HEADER_ID
+		  and poh.PO_HEADER_ID = ad.PO_HEADER_ID
+		  and po.PO_LINE_ID = ad.PO_LINE_ID
+		  and po.LINE_LOCATION_ID = ad.LINE_LOCATION_ID
+		  and po.SHIP_TO_ORGANIZATION_ID = hr.ORGANIZATION_ID
+		  and pl.PO_HEADER_ID = ad.PO_HEADER_ID
+		  and pl.PO_LINE_ID = ad.PO_LINE_ID
+	
+union
+select '< All POs>' as "PO", ' ' as "POValue",-1,-1,-1,-1,'1',1,'1' from dual
+   ]]></SQLQuery>
+   <DesignTime>
+      <Attr Name="_version" Value="9.0.3.13.75" />
+      <Attr Name="_CodeGenFlagNew" Value="36" />
+   </DesignTime>
+   <ViewAttribute
+      Name="Po"
+      IsPersistent="false"
+      Precision="20"
+      Type="java.lang.String"
+      AliasName="PO"
+      ColumnType="VARCHAR2"
+      Expression="PO"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="20" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Povalue"
+      IsPersistent="false"
+      Precision="20"
+      Type="java.lang.String"
+      AliasName="POValue"
+      ColumnType="VARCHAR2"
+      Expression="POValue"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="20" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="BatchNo"
+      IsPersistent="false"
+      Type="oracle.jbo.domain.Number"
+      AliasName="BATCH_NO"
+      ColumnType="VARCHAR2"
+      Expression="BATCH_NO"
+      SQLType="NUMERIC" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="PoHeaderId"
+      IsPersistent="false"
+      Type="oracle.jbo.domain.Number"
+      AliasName="PO_HEADER_ID"
+      ColumnType="VARCHAR2"
+      Expression="PO_HEADER_ID"
+      SQLType="NUMERIC" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="PoLineId"
+      IsPersistent="false"
+      Type="oracle.jbo.domain.Number"
+      AliasName="PO_LINE_ID"
+      ColumnType="VARCHAR2"
+      Expression="PO_LINE_ID"
+      SQLType="NUMERIC" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="LineLocationId"
+      IsPersistent="false"
+      Type="oracle.jbo.domain.Number"
+      AliasName="LINE_LOCATION_ID"
+      ColumnType="VARCHAR2"
+      Expression="LINE_LOCATION_ID"
+      SQLType="NUMERIC" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="ShipTo"
+      IsPersistent="false"
+      Precision="150"
+      Type="java.lang.String"
+      AliasName="SHIP_TO"
+      ColumnType="VARCHAR2"
+      Expression="SHIP_TO"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="150" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="ShipToOrganizationId"
+      IsPersistent="false"
+      Type="oracle.jbo.domain.Number"
+      AliasName="SHIP_TO_ORGANIZATION_ID"
+      ColumnType="VARCHAR2"
+      Expression="SHIP_TO_ORGANIZATION_ID"
+      SQLType="NUMERIC" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Polineship"
+      IsPersistent="false"
+      Precision="102"
+      Type="java.lang.String"
+      AliasName="POLINESHIP"
+      ColumnType="VARCHAR2"
+      Expression="POLINESHIP"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="102" />
+      </DesignTime>
+   </ViewAttribute>
+</ViewObject>

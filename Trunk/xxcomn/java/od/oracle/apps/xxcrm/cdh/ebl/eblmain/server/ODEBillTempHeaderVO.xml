@@ -1,0 +1,279 @@
+<?xml version="1.0" encoding='windows-1252'?>
+<!DOCTYPE ViewObject SYSTEM "jbo_03_01.dtd">
+
+<ViewObject
+   Name="ODEBillTempHeaderVO"
+   BindingStyle="Oracle"
+   CustomQuery="true"
+   RowClass="od.oracle.apps.xxcrm.cdh.ebl.eblmain.server.ODEBillTempHeaderVORowImpl"
+   ComponentClass="oracle.apps.fnd.framework.server.OAViewObjectImpl"
+   MsgBundleClass="oracle.jbo.common.JboResourceBundle"
+   UseGlueCode="false" >
+   <SQLQuery><![CDATA[
+SELECT ODEBillTemplHeaderEO.CUST_DOC_ID, 
+       ODEBillTemplHeaderEO.EBILL_FILE_CREATION_TYPE, 
+       ODEBillTemplHeaderEO.DELIMITER_CHAR, 
+       ODEBillTemplHeaderEO.LINE_FEED_STYLE, 
+       ODEBillTemplHeaderEO.INCLUDE_HEADER, 
+       ODEBillTemplHeaderEO.LOGO_FILE_NAME, 
+       ODEBillTemplHeaderEO.FILE_SPLIT_CRITERIA, 
+       ODEBillTemplHeaderEO.FILE_SPLIT_VALUE, 
+       ODEBillTemplHeaderEO.ATTRIBUTE1, 
+       ODEBillTemplHeaderEO.ATTRIBUTE2, 
+       ODEBillTemplHeaderEO.ATTRIBUTE3, 
+       ODEBillTemplHeaderEO.ATTRIBUTE4, 
+       ODEBillTemplHeaderEO.ATTRIBUTE5, 
+       ODEBillTemplHeaderEO.ATTRIBUTE6, 
+       ODEBillTemplHeaderEO.ATTRIBUTE7, 
+       ODEBillTemplHeaderEO.ATTRIBUTE8, 
+       ODEBillTemplHeaderEO.ATTRIBUTE9, 
+       ODEBillTemplHeaderEO.ATTRIBUTE10, 
+       ODEBillTemplHeaderEO.ATTRIBUTE11, 
+       ODEBillTemplHeaderEO.ATTRIBUTE12, 
+       ODEBillTemplHeaderEO.ATTRIBUTE13, 
+       ODEBillTemplHeaderEO.ATTRIBUTE14, 
+       ODEBillTemplHeaderEO.ATTRIBUTE15, 
+       ODEBillTemplHeaderEO.ATTRIBUTE16, 
+       ODEBillTemplHeaderEO.ATTRIBUTE17, 
+       ODEBillTemplHeaderEO.ATTRIBUTE18, 
+       ODEBillTemplHeaderEO.ATTRIBUTE19, 
+       ODEBillTemplHeaderEO.ATTRIBUTE20,
+       ODEBillTemplHeaderEO.SPLIT_TABS_BY,
+       ODEBillTemplHeaderEO.ENABLE_XL_SUBTOTAL,
+	   ODEBillTemplHeaderEO.CONCATSPLIT
+FROM XX_CDH_EBL_TEMPL_HEADER ODEBillTemplHeaderEO
+   ]]></SQLQuery>
+   <DesignTime>
+      <Attr Name="_isCodegen" Value="true" />
+      <Attr Name="_version" Value="9.0.3.12.53" />
+      <Attr Name="_CodeGenFlagNew" Value="4" />
+   </DesignTime>
+   <EntityUsage
+      Name="ODEBillTemplHeaderEO"
+      Entity="od.oracle.apps.xxcrm.cdh.ebl.eblmain.schema.server.ODEBillTemplHeaderEO" >
+      <DesignTime>
+         <Attr Name="_EntireObjectTable" Value="false" />
+         <Attr Name="_queryClause" Value="false" />
+      </DesignTime>
+   </EntityUsage>
+   <ViewAttribute
+      Name="CustDocId"
+      EntityAttrName="CustDocId"
+      EntityUsage="ODEBillTemplHeaderEO"
+      AliasName="CUST_DOC_ID"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="EbillFileCreationType"
+      EntityAttrName="EbillFileCreationType"
+      EntityUsage="ODEBillTemplHeaderEO"
+      AliasName="EBILL_FILE_CREATION_TYPE"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="DelimiterChar"
+      EntityAttrName="DelimiterChar"
+      EntityUsage="ODEBillTemplHeaderEO"
+      AliasName="DELIMITER_CHAR"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="LineFeedStyle"
+      EntityAttrName="LineFeedStyle"
+      EntityUsage="ODEBillTemplHeaderEO"
+      AliasName="LINE_FEED_STYLE"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="IncludeHeader"
+      EntityAttrName="IncludeHeader"
+      EntityUsage="ODEBillTemplHeaderEO"
+      AliasName="INCLUDE_HEADER"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="LogoFileName"
+      EntityAttrName="LogoFileName"
+      EntityUsage="ODEBillTemplHeaderEO"
+      AliasName="LOGO_FILE_NAME"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="FileSplitCriteria"
+      EntityAttrName="FileSplitCriteria"
+      EntityUsage="ODEBillTemplHeaderEO"
+      AliasName="FILE_SPLIT_CRITERIA"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="FileSplitValue"
+      EntityAttrName="FileSplitValue"
+      EntityUsage="ODEBillTemplHeaderEO"
+      AliasName="FILE_SPLIT_VALUE"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Attribute1"
+      EntityAttrName="Attribute1"
+      EntityUsage="ODEBillTemplHeaderEO"
+      AliasName="ATTRIBUTE1"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Attribute2"
+      EntityAttrName="Attribute2"
+      EntityUsage="ODEBillTemplHeaderEO"
+      AliasName="ATTRIBUTE2"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Attribute3"
+      EntityAttrName="Attribute3"
+      EntityUsage="ODEBillTemplHeaderEO"
+      AliasName="ATTRIBUTE3"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Attribute4"
+      EntityAttrName="Attribute4"
+      EntityUsage="ODEBillTemplHeaderEO"
+      AliasName="ATTRIBUTE4"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Attribute5"
+      EntityAttrName="Attribute5"
+      EntityUsage="ODEBillTemplHeaderEO"
+      AliasName="ATTRIBUTE5"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Attribute6"
+      EntityAttrName="Attribute6"
+      EntityUsage="ODEBillTemplHeaderEO"
+      AliasName="ATTRIBUTE6"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Attribute7"
+      EntityAttrName="Attribute7"
+      EntityUsage="ODEBillTemplHeaderEO"
+      AliasName="ATTRIBUTE7"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Attribute8"
+      EntityAttrName="Attribute8"
+      EntityUsage="ODEBillTemplHeaderEO"
+      AliasName="ATTRIBUTE8"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Attribute9"
+      EntityAttrName="Attribute9"
+      EntityUsage="ODEBillTemplHeaderEO"
+      AliasName="ATTRIBUTE9"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Attribute10"
+      EntityAttrName="Attribute10"
+      EntityUsage="ODEBillTemplHeaderEO"
+      AliasName="ATTRIBUTE10"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Attribute11"
+      EntityAttrName="Attribute11"
+      EntityUsage="ODEBillTemplHeaderEO"
+      AliasName="ATTRIBUTE11"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Attribute12"
+      EntityAttrName="Attribute12"
+      EntityUsage="ODEBillTemplHeaderEO"
+      AliasName="ATTRIBUTE12"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Attribute13"
+      EntityAttrName="Attribute13"
+      EntityUsage="ODEBillTemplHeaderEO"
+      AliasName="ATTRIBUTE13"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Attribute14"
+      EntityAttrName="Attribute14"
+      EntityUsage="ODEBillTemplHeaderEO"
+      AliasName="ATTRIBUTE14"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Attribute15"
+      EntityAttrName="Attribute15"
+      EntityUsage="ODEBillTemplHeaderEO"
+      AliasName="ATTRIBUTE15"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Attribute16"
+      EntityAttrName="Attribute16"
+      EntityUsage="ODEBillTemplHeaderEO"
+      AliasName="ATTRIBUTE16"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Attribute17"
+      EntityAttrName="Attribute17"
+      EntityUsage="ODEBillTemplHeaderEO"
+      AliasName="ATTRIBUTE17"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Attribute18"
+      EntityAttrName="Attribute18"
+      EntityUsage="ODEBillTemplHeaderEO"
+      AliasName="ATTRIBUTE18"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Attribute19"
+      EntityAttrName="Attribute19"
+      EntityUsage="ODEBillTemplHeaderEO"
+      AliasName="ATTRIBUTE19"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Attribute20"
+      EntityAttrName="Attribute20"
+      EntityUsage="ODEBillTemplHeaderEO"
+      AliasName="ATTRIBUTE20"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+
+
+   <ViewAttribute
+      Name="SplitTabsBy"
+      EntityAttrName="SplitTabsBy"
+      EntityUsage="ODEBillTemplHeaderEO"
+      AliasName="SPLITTABSBY"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+    <ViewAttribute
+      Name="EnableXLSubTotal"
+      EntityAttrName="EnableXLSubTotal"
+      EntityUsage="ODEBillTemplHeaderEO"
+      AliasName="ENABLEXLSUBTOTAL"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   
+    <ViewAttribute
+      Name="ConcatSplit"
+      EntityAttrName="ConcatSplit"
+      EntityUsage="ODEBillTemplHeaderEO"
+      AliasName="CONCATSPLIT"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+</ViewObject>

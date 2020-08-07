@@ -1,0 +1,442 @@
+<!--
+  ///////////////////////////////////////////////////////////////////////////////////////////// 
+  // Oracle JDeveloper BPEL Designer 
+  // 
+  // Created: Tue Feb 07 11:47:26 PST 2006
+  // Author:  nltan
+  // Purpose: Synchronous BPEL Process
+  ///////////////////////////////////////////////////////////////////////////////////////////// 
+-->
+<process name="XXOMWshSendTxnToOtmService" targetNamespace="http://xmlns.oracle.com/apps/wsh/outbound/txn/XXOMWshSendTxnToOtmService" xmlns="http://schemas.xmlsoap.org/ws/2003/03/business-process/" xmlns:xp20="http://www.oracle.com/XSL/Transform/java/oracle.tip.pc.services.functions.Xpath20" xmlns:bpws="http://schemas.xmlsoap.org/ws/2003/03/business-process/" xmlns:ns13="http://xmlns.oracle.com/pcbpel/adapter/db/APPS/WSH_OTM_REF_DATA_GEN_PKG/VALIDATE_TKT/" xmlns:ns4="http://xmlns.oracle.com/apps/wsh/outbound/txn/WshSendTripToOtmService" xmlns:ns7="http://xmlns.oracle.com/pcbpel/adapter/db/UpdateTxnData/" xmlns:ldap="http://schemas.oracle.com/xpath/extension/ldap" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:ns12="http://xmlns.oracle.com/pcbpel/adapter/db/AuthenticateTicket/" xmlns:ns5="http://xmlns.oracle.com/apps/wsh/outbound/ref/XXOMWshSendLocRefDataToOtm" xmlns:client="http://xmlns.oracle.com/apps/wsh/outbound/txn/XXOMWshSendTxnToOtmService" xmlns:ora="http://schemas.oracle.com/xpath/extension" xmlns:ns11="http://xmlns.oracle.com/apps/wsh/outbound/ref/XXOMWshSendItemRefDataToOtm" xmlns:ns9="http://xmlns.oracle.com/pcbpel/adapter/db/ReferenceLocationData/" xmlns:ns1="http://xmlns.oracle.com/apps/wsh/outbound/txn/XXOMWshSendDlvyToOtmService" xmlns:ns3="http://xmlns.oracle.com/apps/otm" xmlns:ns2="http://xmlns.oracle.com/apps/wsh/outbound/util/WshOtmGlobalOutbound" xmlns:bpelx="http://schemas.oracle.com/bpel/extension" xmlns:orcl="http://www.oracle.com/XSL/Transform/java/oracle.tip.pc.services.functions.ExtFunc" xmlns:ns10="http://xmlns.oracle.com/pcbpel/adapter/db/APPS/WSH_OTM_SYNC_REF_DATA_PKG/UPDATE_REF_DATA/" xmlns:ns8="http://xmlns.oracle.com/pcbpel/adapter/db/APPS/WSH_OTM_OUTBOUND/UPDATE_ENTITY_INTF_STATUS/"><!-- ================================================================= --><!-- PARTNERLINKS                                                      --><!-- List of services participating in this BPEL process               --><!-- ================================================================= -->
+  <partnerLinks><!-- 
+    The 'client' role represents the requester of this service. It is 
+    used for callback. The location and correlation information associated
+    with the client role are automatically set using WS-Addressing.
+    -->
+    <partnerLink name="client" partnerLinkType="client:XXOMWshSendTxnToOtmService" myRole="WshSendTxnToOtmServiceProvider"/>
+    <partnerLink name="getDeliveryService" partnerRole="WshSendDlvyToOtmServiceProvider" partnerLinkType="ns1:XXOMWshSendDlvyToOtmService"/>
+    <partnerLink name="getTripService" partnerRole="WshSendTripToOtmServiceProvider" partnerLinkType="ns4:WshSendTripToOtmService"/>
+    <partnerLink name="getRefLocationService" partnerRole="WshSendLocRefDataToOtmProvider" partnerLinkType="ns5:XXOMWshSendLocRefDataToOtm"/>
+    <partnerLink myRole="GLogServiceProvider" name="pushToOtm" partnerRole="GLogServiceProvider" partnerLinkType="ns3:GLogService"/>
+    <partnerLink name="getUpdateTxnData" partnerRole="UpdateTxnData_role" partnerLinkType="ns7:UpdateTxnData_plt"/>
+    <partnerLink name="updateRefLocationData" partnerRole="ReferenceLocationData_role" partnerLinkType="ns9:ReferenceLocationData_plt"/>
+    <partnerLink name="getItemRefService" partnerRole="WshSendItemRefDataToOtmProvider" partnerLinkType="ns11:XXOMWshSendItemRefDataToOtm"/>
+    <partnerLink name="getAuthenticateTicket" partnerRole="AuthenticateTicket_role" partnerLinkType="ns12:AuthenticateTicket_plt"/>
+  </partnerLinks><!-- ================================================================= --><!-- VARIABLES                                                         --><!-- List of messages and XML documents used within this BPEL process  --><!-- ================================================================= -->
+  <variables><!-- Reference to the message passed as input during initiation -->
+    <variable name="inputVariable" messageType="client:WshSendTxnToOtmServiceRequestMessage"/><!--  
+    Reference to the message that will be returned to the requester
+    -->
+    <variable name="outputVariable" messageType="client:WshSendTxnToOtmServiceResponseMessage"/>
+    <variable name="g_InvokeDeliveryServiceInput" messageType="ns1:WshSendDlvyToOtmServiceRequestMessage"/>
+    <variable name="g_InvokeDeliveryServiceOutput" messageType="ns1:WshSendDlvyToOtmServiceResponseMessage"/>
+    <variable name="g_faultVariable" messageType="client:WshSendTxnToOtmServiceFaultMessage"/>
+    <variable name="isAuthenticCaller" type="xsd:boolean"/>
+    <variable name="g_InvokeTripServiceInput" messageType="ns4:WshSendTripToOtmServiceRequestMessage"/>
+    <variable name="g_InvokeTripServiceOutput" messageType="ns4:WshSendTripToOtmServiceResponseMessage"/>
+    <variable name="g_InvokeRefLocationServiceInput" messageType="ns5:WshSendLocRefDataToOtmRequestMessage"/>
+    <variable name="g_InvokeRefLocationServiceOutput" messageType="ns5:WshSendLocRefDataToOtmResponseMessage"/>
+    <variable name="g_InvokeOtmInput" messageType="ns3:GLogServiceRequestMessage"/>
+    <variable name="g_InvokeOtmOutput" messageType="ns3:GLogServiceResponseMessage"/>
+    <variable name="g_getDataFault" messageType="client:WshSendTxnToOtmServiceFaultMessage"/>
+    <variable name="g_InvokeUpdateTxnInput" messageType="ns7:args_in_msg"/>
+    <variable name="g_InvokeUpdateTxnOutput" messageType="ns7:args_out_msg"/>
+    <variable name="txnVariable" messageType="client:WshSendTxnToOtmServiceResponseMessage"/>
+    <variable name="g_updateFault" messageType="client:WshSendTxnToOtmServiceFaultMessage"/>
+    <variable name="g_InvokeUpdRefLocationInput" messageType="ns9:args_in_msg"/>
+    <variable name="g_InvokeUpdRefLocationOutput" messageType="ns9:args_out_msg"/>
+    <variable name="g_InvokeRefItemServiceInput" messageType="ns11:WshSendItemRefDataToOtmRequestMessage"/>
+    <variable name="g_InvokeRefItemServiceOutput" messageType="ns11:WshSendItemRefDataToOtmResponseMessage"/>
+    <variable name="g_IinvokeUpdRefItemInput" messageType="ns9:args_in_msg"/>
+    <variable name="g_InvokeUpdRefItemOutput" messageType="ns9:args_out_msg"/>
+    <variable name="g_InvokeAuthenticateTicketInput" messageType="ns12:args_in_msg"/>
+    <variable name="g_InvokeAuthenticateTicketOutput" messageType="ns12:args_out_msg"/>
+  </variables>
+  <faultHandlers>
+    <catchAll>
+      <sequence name="Seq_ReturnError">
+        <assign name="assignErrorOutput">
+          <copy>
+            <from variable="inputVariable" part="payload" query="/client:WshSendTxnToOtmServiceProcessRequest/client:input/ns2:entityIdList"/>
+            <to variable="outputVariable" part="payload" query="/client:WshSendTxnToOtmServiceProcessResponse/client:result/ns2:errorIdList"/>
+          </copy>
+          <copy>
+            <from expression="'U'"/>
+            <to variable="outputVariable" part="payload" query="/client:WshSendTxnToOtmServiceProcessResponse/client:result/ns2:returnStatus"/>
+          </copy>
+          <copy>
+            <from expression="boolean(bpws:getVariableData('g_InvokeAuthenticateTicketOutput','OutputParameters','/ns13:OutputParameters/X_TKT_VALID')='T')"/>
+            <to variable="outputVariable" part="payload" query="/client:WshSendTxnToOtmServiceProcessResponse/client:result/ns2:authenticated"/>
+          </copy>
+          <copy>
+            <from expression="ora:getInstanceId()"/>
+            <to variable="outputVariable" part="payload" query="/client:WshSendTxnToOtmServiceProcessResponse/client:result/ns2:bpelInstanceId"/>
+          </copy>
+        </assign>
+        <switch name="hasOtmTxnNo">
+          <case condition="(string-length(bpws:getVariableData('g_InvokeOtmOutput','payload','/ns3:TransmissionAck/ns3:EchoedTransmissionHeader/ns3:TransmissionHeader/ns3:ReferenceTransmissionNo') )) &gt; 0.0">
+            <bpelx:annotation>
+              <bpelx:pattern>checkOtmTxnmissionId
+              </bpelx:pattern>
+            </bpelx:annotation>
+            <assign name="assignOtmTxnNo">
+              <copy>
+                <from variable="g_InvokeOtmOutput" part="payload" query="/ns3:TransmissionAck/ns3:EchoedTransmissionHeader/ns3:TransmissionHeader/ns3:ReferenceTransmissionNo"/>
+                <to variable="outputVariable" part="payload" query="/client:WshSendTxnToOtmServiceProcessResponse/client:result/ns2:otmTransmissionId"/>
+              </copy>
+            </assign>
+          </case>
+          <otherwise>
+            <empty name="noOtmTxnNo"/>
+          </otherwise>
+        </switch>
+        <reply name="replyErrorOutput" partnerLink="client" portType="client:XXOMWshSendTxnToOtmService" operation="process" variable="outputVariable"/>
+      </sequence>
+    </catchAll>
+  </faultHandlers><!-- ================================================================= --><!-- ORCHESTRATION LOGIC                                               --><!-- Set of activities coordinating the flow of messages across the    --><!-- services integrated within this business process                  --><!-- ================================================================= -->
+  <sequence name="main"><!-- Receive input from requestor. 
+    Note: This maps to operation defined in XXOMWshSendTxnToOtmService.wsdl
+    -->
+    <receive name="receiveInput" partnerLink="client" portType="client:XXOMWshSendTxnToOtmService" operation="process" variable="inputVariable" createInstance="yes"/><!-- Generate reply to synchronous request -->
+    <scope name="authenticateCaller">
+      <sequence name="Seq_AuthenticateCaller">
+        <assign name="assignAuthTktInput">
+          <copy>
+            <from variable="inputVariable" part="payload" query="/client:WshSendTxnToOtmServiceProcessRequest/client:input/ns2:securityContext/ns2:opCode"/>
+            <to variable="g_InvokeAuthenticateTicketInput" part="InputParameters" query="/ns13:InputParameters/P_OPERATION"/>
+          </copy>
+          <copy>
+            <from variable="inputVariable" part="payload" query="/client:WshSendTxnToOtmServiceProcessRequest/client:input/ns2:securityContext/ns2:argKey"/>
+            <to variable="g_InvokeAuthenticateTicketInput" part="InputParameters" query="/ns13:InputParameters/P_ARGUMENT"/>
+          </copy>
+          <copy>
+            <from variable="inputVariable" part="payload" query="/client:WshSendTxnToOtmServiceProcessRequest/client:input/ns2:securityContext/ns2:ticket"/>
+            <to variable="g_InvokeAuthenticateTicketInput" part="InputParameters" query="/ns13:InputParameters/P_TICKET"/>
+          </copy>
+        </assign>
+        <invoke name="invokeAuthenticateTicket" partnerLink="getAuthenticateTicket" portType="ns12:AuthenticateTicket_ptt" operation="AuthenticateTicket" inputVariable="g_InvokeAuthenticateTicketInput" outputVariable="g_InvokeAuthenticateTicketOutput"/>
+        <switch name="checkAuthenticateResult">
+          <case condition="upper-case(string(bpws:getVariableData('g_InvokeAuthenticateTicketOutput','OutputParameters','/ns13:OutputParameters/X_RETURN_STATUS')))='S' AND upper-case(string(bpws:getVariableData('g_InvokeAuthenticateTicketOutput','OutputParameters','/ns13:OutputParameters/X_TKT_VALID')bpws:getVariableData('isAuthenticCaller'))) = 'T'">
+            <bpelx:annotation>
+              <bpelx:pattern>authenticatePass
+              </bpelx:pattern>
+            </bpelx:annotation>
+            <assign name="assignTktOutput">
+              <copy>
+                <from expression="boolean(bpws:getVariableData('g_InvokeAuthenticateTicketOutput','OutputParameters','/ns13:OutputParameters/X_TKT_VALID')='T')"/>
+                <to variable="outputVariable" part="payload" query="/client:WshSendTxnToOtmServiceProcessResponse/client:result/ns2:authenticated"/>
+              </copy>
+            </assign>
+          </case>
+          <otherwise>
+            <throw name="throwAuthenticateFail" faultVariable="g_faultVariable" faultName="faultError"/>
+          </otherwise>
+        </switch>
+      </sequence>
+    </scope>
+    <flow name="getRefTxnData">
+      <sequence name="Seq_GetTxnData">
+        <switch name="checkEntityType">
+          <case condition="upper-case(string(bpws:getVariableData('inputVariable','payload','/client:WshSendTxnToOtmServiceProcessRequest/client:input/ns2:entityType')))='DELIVERY'">
+            <bpelx:annotation>
+              <bpelx:pattern>Delivery
+              </bpelx:pattern>
+            </bpelx:annotation>
+            <sequence name="Seq_GetTxnDelivery">
+              <assign name="assignDeliveryInput">
+                <copy>
+                  <from variable="inputVariable" part="payload" query="/client:WshSendTxnToOtmServiceProcessRequest/client:input/ns2:entityIdList"/>
+                  <to variable="g_InvokeDeliveryServiceInput" part="payload" query="/ns1:WshSendDlvyToOtmServiceProcessRequest/ns1:input/ns2:entityIdList"/>
+                </copy>
+                <copy>
+                  <from variable="inputVariable" part="payload" query="/client:WshSendTxnToOtmServiceProcessRequest/client:input/ns2:appsContext"/>
+                  <to variable="g_InvokeDeliveryServiceInput" part="payload" query="/ns1:WshSendDlvyToOtmServiceProcessRequest/ns1:input/ns2:appsContext"/>
+                </copy>
+              </assign>
+              <invoke name="invokeDeliveryService" partnerLink="getDeliveryService" portType="ns1:XXOMWshSendDlvyToOtmService" operation="process" inputVariable="g_InvokeDeliveryServiceInput" outputVariable="g_InvokeDeliveryServiceOutput"/>
+              <switch name="checkDeliveryResult">
+                <case condition="upper-case(string(bpws:getVariableData('g_InvokeDeliveryServiceOutput','payload','/ns1:WshSendDlvyToOtmServiceProcessResponse/ns1:result/ns2:returnStatus')))='S'">
+                  <bpelx:annotation>
+                    <bpelx:pattern>DeliveryService_Success
+                    </bpelx:pattern>
+                  </bpelx:annotation>
+                  <assign name="assignDlvyToTxn">
+                    <copy>
+                      <from variable="g_InvokeDeliveryServiceOutput" part="payload" query="/ns1:WshSendDlvyToOtmServiceProcessResponse/ns1:result/ns2:errorIdList"/>
+                      <to variable="txnVariable" part="payload" query="/client:WshSendTxnToOtmServiceProcessResponse/client:result/ns2:errorIdList"/>
+                    </copy>
+                    <copy>
+                      <from variable="g_InvokeDeliveryServiceOutput" part="payload" query="/ns1:WshSendDlvyToOtmServiceProcessResponse/ns1:result/ns3:Transmission"/>
+                      <to variable="g_InvokeOtmInput" part="payload" query="/ns3:Transmission"/>
+                    </copy>
+                    <copy>
+                      <from variable="g_InvokeDeliveryServiceOutput" part="payload" query="/ns1:WshSendDlvyToOtmServiceProcessResponse/ns1:result/ns2:entityidList"/>
+                      <to variable="outputVariable" part="payload" query="/client:WshSendTxnToOtmServiceProcessResponse/client:result/ns2:entityidList"/>
+                    </copy>
+                  </assign>
+                </case>
+                <otherwise>
+                  <throw name="throwDataFault" faultName="faultError" faultVariable="g_getDataFault"/>
+                </otherwise>
+              </switch>
+            </sequence>
+          </case>
+          <otherwise>
+            <sequence name="Seq_GetTxnTrip">
+              <assign name="assignTripInput">
+                <copy>
+                  <from variable="inputVariable" part="payload" query="/client:WshSendTxnToOtmServiceProcessRequest/client:input/ns2:entityIdList"/>
+                  <to variable="g_InvokeTripServiceInput" part="payload" query="/ns4:WshSendTripToOtmServiceProcessRequest/ns4:input/ns2:entityIdList"/>
+                </copy>
+                <copy>
+                  <from variable="inputVariable" part="payload" query="/client:WshSendTxnToOtmServiceProcessRequest/client:input/ns2:appsContext"/>
+                  <to variable="g_InvokeTripServiceInput" part="payload" query="/ns4:WshSendTripToOtmServiceProcessRequest/ns4:input/ns2:appsContext"/>
+                </copy>
+              </assign>
+              <invoke name="invokeTripService" partnerLink="getTripService" portType="ns4:WshSendTripToOtmService" operation="process" inputVariable="g_InvokeTripServiceInput" outputVariable="g_InvokeTripServiceOutput"/>
+              <switch name="checkTripResult">
+                <case condition="upper-case(string(bpws:getVariableData('g_InvokeTripServiceOutput','payload','/ns4:WshSendTripToOtmServiceProcessResponse/ns4:result/ns2:returnStatus')))='S'">
+                  <bpelx:annotation>
+                    <bpelx:pattern>TripService_Success
+                    </bpelx:pattern>
+                  </bpelx:annotation>
+                  <assign name="assignTripToTxn">
+                    <copy>
+                      <from variable="g_InvokeTripServiceOutput" part="payload" query="/ns4:WshSendTripToOtmServiceProcessResponse/ns4:result/ns2:errorIdList"/>
+                      <to variable="txnVariable" part="payload" query="/client:WshSendTxnToOtmServiceProcessResponse/client:result/ns2:errorIdList"/>
+                    </copy>
+                    <copy>
+                      <from variable="g_InvokeTripServiceOutput" part="payload" query="/ns4:WshSendTripToOtmServiceProcessResponse/ns4:result/ns3:Transmission"/>
+                      <to variable="g_InvokeOtmInput" part="payload" query="/ns3:Transmission"/>
+                    </copy>
+                    <copy>
+                      <from variable="g_InvokeTripServiceOutput" part="payload" query="/ns4:WshSendTripToOtmServiceProcessResponse/ns4:result/ns2:entityidList"/>
+                      <to variable="outputVariable" part="payload" query="/client:WshSendTxnToOtmServiceProcessResponse/client:result/ns2:entityidList"/>
+                    </copy>
+                  </assign>
+                </case>
+                <otherwise>
+                  <throw name="throwDataFault" faultName="faultError" faultVariable="g_getDataFault"/>
+                </otherwise>
+              </switch>
+            </sequence>
+          </otherwise>
+        </switch>
+      </sequence>
+      <sequence name="Seq_GetRefItem">
+        <assign name="assignRefItemInput">
+          <copy>
+            <from variable="inputVariable" part="payload" query="/client:WshSendTxnToOtmServiceProcessRequest/client:input/ns2:entityType"/>
+            <to variable="g_InvokeRefItemServiceInput" part="payload" query="/ns11:WshSendItemRefDataToOtmProcessRequest/ns11:input/ns2:entityType"/>
+          </copy>
+          <copy>
+            <from variable="inputVariable" part="payload" query="/client:WshSendTxnToOtmServiceProcessRequest/client:input/ns2:entityIdList"/>
+            <to variable="g_InvokeRefItemServiceInput" part="payload" query="/ns11:WshSendItemRefDataToOtmProcessRequest/ns11:input/ns2:entityIdList"/>
+          </copy>
+          <copy>
+            <from variable="inputVariable" part="payload" query="/client:WshSendTxnToOtmServiceProcessRequest/client:input/ns2:appsContext"/>
+            <to variable="g_InvokeRefItemServiceInput" part="payload" query="/ns11:WshSendItemRefDataToOtmProcessRequest/ns11:input/ns2:appsContext"/>
+          </copy>
+        </assign>
+        <invoke name="invokeRefItemService" partnerLink="getItemRefService" portType="ns11:XXOMWshSendItemRefDataToOtm" operation="process" inputVariable="g_InvokeRefItemServiceInput" outputVariable="g_InvokeRefItemServiceOutput"/>
+      </sequence>
+      <sequence name="Seq_GetRefLocation">
+        <assign name="assignRefLocationInput">
+          <copy>
+            <from variable="inputVariable" part="payload" query="/client:WshSendTxnToOtmServiceProcessRequest/client:input/ns2:entityType"/>
+            <to variable="g_InvokeRefLocationServiceInput" part="payload" query="/ns5:WshSendLocRefDataToOtmProcessRequest/ns5:input/ns2:entityType"/>
+          </copy>
+          <copy>
+            <from variable="inputVariable" part="payload" query="/client:WshSendTxnToOtmServiceProcessRequest/client:input/ns2:entityIdList"/>
+            <to variable="g_InvokeRefLocationServiceInput" part="payload" query="/ns5:WshSendLocRefDataToOtmProcessRequest/ns5:input/ns2:entityIdList"/>
+          </copy>
+          <copy>
+            <from variable="inputVariable" part="payload" query="/client:WshSendTxnToOtmServiceProcessRequest/client:input/ns2:appsContext"/>
+            <to variable="g_InvokeRefLocationServiceInput" part="payload" query="/ns5:WshSendLocRefDataToOtmProcessRequest/ns5:input/ns2:appsContext"/>
+          </copy>
+        </assign>
+        <invoke name="invokeRefLocationService" partnerLink="getRefLocationService" portType="ns5:XXOMWshSendLocRefDataToOtm" operation="process" inputVariable="g_InvokeRefLocationServiceInput" outputVariable="g_InvokeRefLocationServiceOutput"/>
+      </sequence>
+    </flow>
+    <switch name="checkRefLocTxnmissionId">
+      <case condition="(string-length(bpws:getVariableData('g_InvokeRefLocationServiceOutput','payload','/ns5:WshSendLocRefDataToOtmProcessResponse/ns5:result/ns2:transmissionId') )) &gt; 0.0">
+        <bpelx:annotation>
+          <bpelx:pattern>checkRefLocTxnmissionId
+          </bpelx:pattern>
+        </bpelx:annotation>
+        <assign name="appendLocToXMLDocument">
+          <copy>
+            <from variable="inputVariable" part="payload" query="/client:WshSendTxnToOtmServiceProcessRequest/client:input/ns2:entityIdList"/>
+            <to variable="inputVariable" part="payload" query="/client:WshSendTxnToOtmServiceProcessRequest/client:input/ns2:entityIdList"/>
+          </copy>
+          <bpelx:insertBefore>
+            <bpelx:from variable="g_InvokeRefLocationServiceOutput" part="payload" query="/ns5:WshSendLocRefDataToOtmProcessResponse/ns5:result/ns3:Transmission/ns3:TransmissionBody/ns3:GLogXMLElement"/>
+            <bpelx:to variable="g_InvokeOtmInput" part="payload" query="/ns3:Transmission/ns3:TransmissionBody/ns3:GLogXMLElement"/>
+          </bpelx:insertBefore>
+        </assign>
+      </case>
+      <otherwise>
+        <empty name="doNotAppendLocXML"/>
+      </otherwise>
+    </switch>
+    <switch name="checkRefItemTxnmissionId">
+      <case condition="(string-length(bpws:getVariableData('g_InvokeRefItemServiceOutput','payload','/ns11:WshSendItemRefDataToOtmProcessResponse/ns11:result/ns2:transmissionId') )) &gt; 0.0">
+        <bpelx:annotation>
+          <bpelx:pattern>checkRefItemTxnmissionId
+          </bpelx:pattern>
+        </bpelx:annotation>
+        <assign name="appendItemToXMLDocument">
+          <copy>
+            <from variable="inputVariable" part="payload" query="/client:WshSendTxnToOtmServiceProcessRequest/client:input/ns2:entityIdList"/>
+            <to variable="inputVariable" part="payload" query="/client:WshSendTxnToOtmServiceProcessRequest/client:input/ns2:entityIdList"/>
+          </copy>
+          <bpelx:insertBefore>
+            <bpelx:from variable="g_InvokeRefItemServiceOutput" part="payload" query="/ns11:WshSendItemRefDataToOtmProcessResponse/ns11:result/ns3:Transmission/ns3:TransmissionBody/ns3:GLogXMLElement"/>
+            <bpelx:to variable="g_InvokeOtmInput" part="payload" query="/ns3:Transmission/ns3:TransmissionBody/ns3:GLogXMLElement"/>
+          </bpelx:insertBefore>
+        </assign>
+      </case>
+      <otherwise>
+        <empty name="doNotAppendItemXML"/>
+      </otherwise>
+    </switch>
+    <assign name="removeEmptyNode">
+      <bpelx:annotation>
+        <bpelx:pattern>transformation
+        </bpelx:pattern>
+      </bpelx:annotation>
+      <copy>
+        <from expression="ora:processXSLT('WshXFormOutRemEmptyNode.xsl',bpws:getVariableData('g_InvokeOtmInput','payload'))"/>
+        <to variable="g_InvokeOtmInput" part="payload"/>
+      </copy>
+    </assign>
+    <invoke name="invokeOtmService" partnerLink="pushToOtm" portType="ns3:GLogService" operation="process" inputVariable="g_InvokeOtmInput" outputVariable="g_InvokeOtmOutput"/>
+    <switch name="checkOtmTransAck">
+      <case condition="count(bpws:getVariableData('g_InvokeOtmOutput','payload','/ns3:TransmissionAck/ns3:EchoedTransmissionHeader/ns3:TransmissionHeader/ns3:ReferenceTransmissionNo')) &gt; 0  and string-length(bpws:getVariableData('g_InvokeOtmOutput','payload','/ns3:TransmissionAck/ns3:EchoedTransmissionHeader/ns3:TransmissionHeader/ns3:ReferenceTransmissionNo') ) &gt; 0.0">
+        <bpelx:annotation>
+          <bpelx:pattern>hasValidOtmTransAck
+          </bpelx:pattern>
+        </bpelx:annotation>
+        <empty name="validOtmTransAck"/>
+      </case>
+      <otherwise>
+        <throw name="throwInvalidOtmTransAck" faultName="faultError" faultVariable="g_getDataFault"/>
+      </otherwise>
+    </switch>
+    <scope name="completeTxn">
+      <faultHandlers>
+        <catchAll>
+          <empty name="noError"/>
+        </catchAll>
+      </faultHandlers>
+      <flow name="completeRefTxnData">
+        <sequence name="Seq_UpdRefItemData">
+          <switch name="Switch_1">
+            <case condition="string-length(bpws:getVariableData('g_InvokeRefItemServiceOutput','payload','/ns11:WshSendItemRefDataToOtmProcessResponse/ns11:result/ns2:transmissionId')) &gt; 0.0">
+              <bpelx:annotation>
+                <bpelx:pattern>hasRefItemTransmissionId
+                </bpelx:pattern>
+              </bpelx:annotation>
+              <sequence name="Seq_UpdateRefItemData">
+                <assign name="assignRefItemTxnState">
+                  <copy>
+                    <from variable="g_InvokeRefItemServiceOutput" part="payload" query="/ns11:WshSendItemRefDataToOtmProcessResponse/ns11:result/ns2:transmissionId"/>
+                    <to variable="g_IinvokeUpdRefItemInput" part="InputParameters" query="/ns10:InputParameters/P_TRANSMISSION_ID"/>
+                  </copy>
+                  <copy>
+                    <from expression="'S'"/>
+                    <to variable="g_IinvokeUpdRefItemInput" part="InputParameters" query="/ns10:InputParameters/P_TRANSMISSION_STATUS"/>
+                  </copy>
+                </assign>
+                <invoke name="invokeUpdRefItem" partnerLink="updateRefLocationData" portType="ns9:ReferenceLocationData_ptt" operation="ReferenceLocationData" inputVariable="g_IinvokeUpdRefItemInput" outputVariable="g_InvokeUpdRefItemOutput"/>
+              </sequence>
+            </case>
+            <otherwise>
+              <sequence name="Seq_doNotUpdRefItem">
+                <empty name="doNotUpdRefItem"/>
+              </sequence>
+            </otherwise>
+          </switch>
+        </sequence>
+        <sequence name="Seq_UpdateTxnData">
+          <assign name="transformTxnData">
+            <bpelx:annotation>
+              <bpelx:pattern>transformation
+              </bpelx:pattern>
+            </bpelx:annotation>
+            <copy>
+              <from expression="ora:processXSLT('WshXFormOutTxnUpdateData.xsl',bpws:getVariableData('outputVariable','payload'))"/>
+              <to variable="g_InvokeUpdateTxnInput" part="InputParameters"/>
+            </copy>
+          </assign>
+          <assign name="assignTxnData">
+            <copy>
+              <from variable="inputVariable" part="payload" query="/client:WshSendTxnToOtmServiceProcessRequest/client:input/ns2:entityType"/>
+              <to variable="g_InvokeUpdateTxnInput" part="InputParameters" query="/ns8:InputParameters/P_ENTITY_TYPE"/>
+            </copy>
+            <copy>
+              <from variable="inputVariable" part="payload" query="/client:WshSendTxnToOtmServiceProcessRequest/client:input/ns2:appsContext/ns2:userId"/>
+              <to variable="g_InvokeUpdateTxnInput" part="InputParameters" query="/ns8:InputParameters/P_USERID"/>
+            </copy>
+            <copy>
+              <from variable="inputVariable" part="payload" query="/client:WshSendTxnToOtmServiceProcessRequest/client:input/ns2:appsContext/ns2:respId"/>
+              <to variable="g_InvokeUpdateTxnInput" part="InputParameters" query="/ns8:InputParameters/P_RESPID"/>
+            </copy>
+            <copy>
+              <from variable="inputVariable" part="payload" query="/client:WshSendTxnToOtmServiceProcessRequest/client:input/ns2:appsContext/ns2:respAppId"/>
+              <to variable="g_InvokeUpdateTxnInput" part="InputParameters" query="/ns8:InputParameters/P_RESP_APPL_ID"/>
+            </copy>
+          </assign>
+          <invoke name="invokeUpdateTxn" partnerLink="getUpdateTxnData" portType="ns7:UpdateTxnData_ptt" operation="UpdateTxnData" inputVariable="g_InvokeUpdateTxnInput" outputVariable="g_InvokeUpdateTxnOutput"/>
+        </sequence>
+        <sequence name="Seq_UpdateRefLocationData">
+          <switch name="checkRefLocTransmissionId">
+            <case condition="(string-length(bpws:getVariableData('g_InvokeRefLocationServiceOutput','payload','/ns5:WshSendLocRefDataToOtmProcessResponse/ns5:result/ns2:transmissionId') )) &gt; 0.0">
+              <bpelx:annotation>
+                <bpelx:pattern>hasRefLocationTransmissionId
+                </bpelx:pattern>
+              </bpelx:annotation>
+              <sequence name="Seq_UpdRefLocData">
+                <assign name="assignRefLocTxnState">
+                  <copy>
+                    <from variable="g_InvokeRefLocationServiceOutput" part="payload" query="/ns5:WshSendLocRefDataToOtmProcessResponse/ns5:result/ns2:transmissionId"/>
+                    <to variable="g_InvokeUpdRefLocationInput" part="InputParameters" query="/ns10:InputParameters/P_TRANSMISSION_ID"/>
+                  </copy>
+                  <copy>
+                    <from expression="'S'"/>
+                    <to variable="g_InvokeUpdRefLocationInput" part="InputParameters" query="/ns10:InputParameters/P_TRANSMISSION_STATUS"/>
+                  </copy>
+                </assign>
+                <invoke name="invokeUpdRefLocation" partnerLink="updateRefLocationData" portType="ns9:ReferenceLocationData_ptt" operation="ReferenceLocationData" inputVariable="g_InvokeUpdRefLocationInput" outputVariable="g_InvokeUpdRefLocationOutput"/>
+              </sequence>
+            </case>
+            <otherwise>
+              <sequence name="Seq_doNotUpdRefLoc">
+                <empty name="doNotUpdRefLoc"/>
+              </sequence>
+            </otherwise>
+          </switch>
+        </sequence>
+      </flow>
+    </scope>
+    <assign name="assignTxnOut">
+      <copy>
+        <from variable="txnVariable" part="payload" query="/client:WshSendTxnToOtmServiceProcessResponse/client:result/ns2:errorIdList"/>
+        <to variable="outputVariable" part="payload" query="/client:WshSendTxnToOtmServiceProcessResponse/client:result/ns2:errorIdList"/>
+      </copy>
+      <copy>
+        <from expression="'S'"/>
+        <to variable="outputVariable" part="payload" query="/client:WshSendTxnToOtmServiceProcessResponse/client:result/ns2:returnStatus"/>
+      </copy>
+      <copy>
+        <from expression="ora:getInstanceId()"/>
+        <to variable="outputVariable" part="payload" query="/client:WshSendTxnToOtmServiceProcessResponse/client:result/ns2:bpelInstanceId"/>
+      </copy>
+      <copy>
+        <from variable="g_InvokeOtmOutput" part="payload" query="/ns3:TransmissionAck/ns3:EchoedTransmissionHeader/ns3:TransmissionHeader/ns3:ReferenceTransmissionNo"/>
+        <to variable="outputVariable" part="payload" query="/client:WshSendTxnToOtmServiceProcessResponse/client:result/ns2:otmTransmissionId"/>
+      </copy>
+    </assign>
+    <reply name="replyOutput" partnerLink="client" portType="client:XXOMWshSendTxnToOtmService" operation="process" variable="outputVariable"/>
+  </sequence>
+</process>

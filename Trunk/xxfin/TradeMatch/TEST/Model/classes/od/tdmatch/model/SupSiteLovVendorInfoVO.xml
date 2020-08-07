@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="windows-1252" ?>
+<!DOCTYPE ViewObject SYSTEM "jbo_03_01.dtd">
+<!---->
+<ViewObject
+  xmlns="http://xmlns.oracle.com/bc4j"
+  Name="SupSiteLovVendorInfoVO"
+  Version="12.2.1.12.24"
+  InheritPersonalization="merge"
+  BindingStyle="OracleName"
+  CustomQuery="true"
+  RowClass="od.tdmatch.model.SupSiteLovVendorInfoVORowImpl"
+  ComponentClass="od.tdmatch.model.SupSiteLovVendorInfoVOImpl"
+  PageIterMode="Full">
+  <DesignTime>
+    <Attr Name="_codeGenFlag2" Value="Coll"/>
+    <Attr Name="_isExpertMode" Value="true"/>
+    <Attr Name="_isCodegen" Value="true"/>
+  </DesignTime>
+  <Properties>
+    <SchemaBasedProperties>
+      <LABEL
+        ResId="od.tdmatch.model.SupSiteLovVendorInfoVO_LABEL"/>
+    </SchemaBasedProperties>
+  </Properties>
+  <SQLQuery><![CDATA[SELECT vendor_site_code supplier_site_code        
+  FROM ap_supplier_sites_all site,        
+       ap_suppliers sup        
+ WHERE                  
+    site.vendor_id=sup.vendor_id                          
+   AND exists (SELECT 'x'         
+         FROM xx_fin_translatevalues tv,                                                                          
+              xx_fin_translatedefinition td                          
+        WHERE td.translation_name = 'XX_AP_TRADE_CATEGORIES'                                                                           
+          AND tv.translate_id  = td.translate_id                                                                          
+          AND tv.enabled_flag = 'Y'                                                                          
+          AND sysdate between tv.start_date_active and nvl(tv.end_date_active,sysdate)         
+          AND tv.target_value1 = site.attribute8)]]></SQLQuery>
+  <ViewAttribute
+    Name="SupplierSiteCode"
+    IsPersistent="false"
+    PrecisionRule="true"
+    Precision="255"
+    Type="java.lang.String"
+    ColumnType="VARCHAR2"
+    AliasName="SUPPLIER_SITE_CODE"
+    Expression="SUPPLIER_SITE_CODE"
+    SQLType="VARCHAR"
+    IsUpdateable="false">
+    <DesignTime>
+      <Attr Name="_DisplaySize" Value="15"/>
+    </DesignTime>
+    <Properties>
+      <SchemaBasedProperties>
+        <LABEL
+          ResId="od.tdmatch.model.SupSiteLovVendorInfoVO.SupplierSiteCode_LABEL"/>
+        <DISPLAYWIDTH
+          Value="25"/>
+      </SchemaBasedProperties>
+    </Properties>
+  </ViewAttribute>
+  <AttrArray Name="KeyAttributes">
+    <Item Value="SupplierSiteCode"/>
+  </AttrArray>
+  <ResourceBundle>
+    <PropertiesBundle
+      PropertiesFile="od.tdmatch.model.ModelBundle"/>
+  </ResourceBundle>
+</ViewObject>

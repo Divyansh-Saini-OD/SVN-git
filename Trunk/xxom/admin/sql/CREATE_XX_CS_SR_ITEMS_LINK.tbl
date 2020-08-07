@@ -1,0 +1,59 @@
+-- +============================================================================================+
+-- |                        Office Depot - Project Simplify                                     |
+-- |                                                                                            |
+-- +============================================================================================+
+-- | Name         : CREATE_XX_CS_SR_ITEMS_LINK.tbl                                              |
+-- | Description  : create table                                                                |  
+-- | Purpose      : Holding GMill Order detail Information                                      |
+-- |                                                                                            |
+-- |                                                                                            |
+-- |Change Record:                                                                              |
+-- |===============                                                                             |
+-- |Version    Date          Author                  Remarks                                    | 
+-- |=======    ==========    =================      ============================================+
+-- |DRAFT 1A   23-OCT-2007   Rajeswari Jagarlamudi    Initial Version                           |
+-- |                                                                                            |
+-- +============================================================================================+
+
+
+SET VERIFY      OFF
+SET TERM        ON
+SET FEEDBACK    OFF
+SET SHOW        OFF
+SET ECHO        OFF
+SET TAB         OFF
+
+
+PROMPT
+PROMPT CREATING Table XX_CS_SR_ITEMS_LINK.....
+PROMPT
+
+CREATE TABLE XX_CS_SR_ITEMS_LINK
+   (	SERVICE_REQUEST_ID  NUMBER NOT NULL , 
+	ITEM_NUMBER         VARCHAR2(50), 
+	ITEM_DESCRIPTION    VARCHAR2(200), 
+	QUANTITY            NUMBER, 
+	CREATION_DATE       DATE, 
+	CREATED_BY          VARCHAR2(50), 
+	LAST_UPDATE_DATE    DATE, 
+	LAST_UPDATED_BY     VARCHAR2(50), 
+	ORDER_LINK          VARCHAR2(2000), 
+	ATTRIBUTE1          VARCHAR2(1000), 
+	ATTRIBUTE2          VARCHAR2(1000), 
+	ATTRIBUTE3          VARCHAR2(1000), 
+	ATTRIBUTE4          VARCHAR2(1000), 
+	ATTRIBUTE5          VARCHAR2(1000)
+   ) 
+/
+
+
+WHENEVER SQLERROR EXIT 1
+
+PROMPT
+PROMPT Exiting....
+PROMPT
+
+SET FEEDBACK ON
+
+EXIT;
+

@@ -1,0 +1,70 @@
+REM================================================================================================
+REM                                 Start Of Script
+REM================================================================================================
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     OFF
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+--+=============================================================================================+--
+--|                                                                                             |--
+--| Object Name    : OD Average Cost Update Sequence Creation                                   |--
+--|                                                                                             |--
+--| Program Name   : XX_GI_AVERAGE_COST_S.seq                                                   |--        
+--|                                                                                             |--   
+--| Purpose        : Create Custom Sequences                                                    |--
+--|                  The Objects created are:                                                   |--
+--|                                                                                             |--
+--|                  1. XX_GI_AVERAGE_COST_S(Sequence for generation of source_header_id)       |--  
+--|                                                                                             |-- 
+--| Change History  :                                                                           |--
+--| Version           Date             Changed By              Description                      |--
+--+=============================================================================================+--
+--| Draft 1A          06-July-2007      Meenu Goyal             Original                        |--
+--| 1.0               21-SEP-2007      Jayshree                Baselined                        |--
+--+=============================================================================================+
+
+
+PROMPT
+PROMPT Dropping Sequence xx_gi_average_cost_s......
+PROMPT
+
+-- ---------------------------------------------------
+-- Dropping existing Sequence xx_gi_average_cost_s
+-- ---------------------------------------------------
+
+DROP SEQUENCE XXPTP.XX_GI_AVERAGE_COST_S;
+
+
+
+PROMPT
+PROMPT Creating Custom Sequence xx_gi_average_cost_s
+PROMPT
+
+-- ---------------------------------------------------
+-- Creating custom Sequence xx_gi_average_cost_s
+-- ---------------------------------------------------
+
+
+CREATE SEQUENCE XX_GI_AVERAGE_COST_S 
+INCREMENT BY 1 
+START WITH 1 
+NOCACHE 
+NOORDER;
+
+PROMPT
+PROMPT Exiting....
+PROMPT
+
+SHOW ERRORS;
+
+EXIT;
+REM=================================================================================================
+REM                                   End Of Script
+REM=================================================================================================
+
+
+

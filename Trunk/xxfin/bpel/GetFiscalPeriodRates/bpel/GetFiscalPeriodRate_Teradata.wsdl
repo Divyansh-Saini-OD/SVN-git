@@ -1,0 +1,88 @@
+<definitions
+     name="GetFiscalPeriodRate_Teradata"
+     targetNamespace="http://xmlns.oracle.com/pcbpel/adapter/db/GetFiscalPeriodRate_Teradata/"
+     xmlns="http://schemas.xmlsoap.org/wsdl/"
+     xmlns:tns="http://xmlns.oracle.com/pcbpel/adapter/db/GetFiscalPeriodRate_Teradata/"
+     xmlns:db="http://xmlns.oracle.com/pcbpel/adapter/db/GetFiscalPeriodRate_Teradata"
+     xmlns:plt="http://schemas.xmlsoap.org/ws/2003/05/partner-link/"
+     xmlns:jca="http://xmlns.oracle.com/pcbpel/wsdl/jca/"
+    >
+    <types>
+      <schema xmlns="http://www.w3.org/2001/XMLSchema" >
+        <import namespace="http://xmlns.oracle.com/pcbpel/adapter/db/GetFiscalPeriodRate_Teradata" schemaLocation="GetFiscalPeriodRate_Teradata.xsd" />
+      </schema>
+    </types>
+    <message name="GetFiscalPeriodRate_TeradataInput_msg">
+        <part name="GetFiscalPeriodRate_TeradataInput_msg" element="db:GetFiscalPeriodRate_TeradataInput"/>
+    </message>
+    <message name="GetFiscalPeriodRate_TeradataOutputCollection_msg">
+        <part name="GetFiscalPeriodRate_TeradataOutputCollection" element="db:GetFiscalPeriodRate_TeradataOutputCollection"/>
+    </message>
+    <portType name="GetFiscalPeriodRate_Teradata_ptt">
+        <operation name="GetFiscalPeriodRate_Teradata">
+            <input message="tns:GetFiscalPeriodRate_TeradataInput_msg"/>
+            <output message="tns:GetFiscalPeriodRate_TeradataOutputCollection_msg"/>
+        </operation>
+    </portType>
+    <binding name="GetFiscalPeriodRate_Teradata_binding" type="tns:GetFiscalPeriodRate_Teradata_ptt">
+    <jca:binding  />
+        <operation name="GetFiscalPeriodRate_Teradata">
+      <jca:operation
+          SqlString="(SELECT CAST(f.&quot;DLY_CONVERSION_RT&quot; AS CHAR(50)) &quot;DLY_CONVERSION_RT&quot;
+      , CAST(f.&quot;DLY_RT_TO_USD&quot; AS CHAR(50)) &quot;DLY_RT_TO_USD&quot;
+      , f.&quot;TO_CURRENCY_CD&quot; &quot;TO_CURRENCY_CD&quot;
+      , CAST(f.&quot;APA_RT_TO_USD&quot; AS CHAR(50)) &quot;APA_RT_TO_USD&quot;
+      , CAST(f.&quot;APA_CONVERSION_RT&quot; AS CHAR(50)) &quot;APA_CONVERSION_RT&quot;
+      , CAST(f.&quot;EPA_RT_TO_USD&quot; AS CHAR(50)) &quot;EPA_RT_TO_USD&quot;
+      , CAST(f.&quot;EPA_CONVERSION_RT&quot; AS CHAR(50)) &quot;EPA_CONVERSION_RT&quot;
+      , f.&quot;DT&quot; &quot;DT&quot;
+      , f.&quot;FISCAL_PERIOD_ID&quot; &quot;FISCAL_PERIOD_ID&quot;
+      , f.&quot;MONTHYEAR&quot; &quot;MONTHYEAR&quot;
+FROM finance_v.gdw_fxrates_actual_final f 
+WHERE f.&quot;fiscal_period_id&quot; = (
+                            SELECT DISTINCT b.&quot;fiscal_period_id&quot;
+                            FROM finance_v.GDW_FXRATES_ACTUAL_FINAL b 
+                            WHERE b.&quot;dt&quot; = #DateTime1
+                            )
+AND   f.&quot;APA_CONVERSION_RT&quot; &lt;&gt; 0)
+UNION ALL
+(SELECT CAST(f.&quot;DLY_CONVERSION_RT&quot; AS CHAR(50)) &quot;DLY_CONVERSION_RT&quot;
+      , CAST(f.&quot;DLY_RT_TO_USD&quot; AS CHAR(50)) &quot;DLY_RT_TO_USD&quot;
+      , f2.&quot;TO_CURRENCY_CD&quot; &quot;TO_CURRENCY_CD&quot;
+      , CAST(f.&quot;APA_RT_TO_USD&quot; AS CHAR(50)) &quot;APA_RT_TO_USD&quot;
+      , CAST(f.&quot;APA_CONVERSION_RT&quot; AS CHAR(50)) &quot;APA_CONVERSION_RT&quot;
+      , CAST(f.&quot;EPA_RT_TO_USD&quot; AS CHAR(50)) &quot;EPA_RT_TO_USD&quot;
+      , CAST(f.&quot;EPA_CONVERSION_RT&quot; AS CHAR(50)) &quot;EPA_CONVERSION_RT&quot;
+      , f2.&quot;DT&quot; &quot;DT&quot;
+      , f2.&quot;FISCAL_PERIOD_ID&quot; &quot;FISCAL_PERIOD_ID&quot;
+      , f2.&quot;MONTHYEAR&quot; &quot;MONTHYEAR&quot;
+FROM finance_v.gdw_fxrates_actual_final f 
+JOIN finance_v.gdw_fxrates_actual_final f2
+ON f.&quot;dt&quot; = f2.&quot;dt&quot; -1
+AND f.&quot;to_currency_cd&quot; = f2.&quot;to_currency_cd&quot;
+WHERE f2.&quot;dt&quot; = #DateTime2)"
+          InteractionSpec="oracle.tip.adapter.db.DBPureSQLInteractionSpec" >
+      </jca:operation>
+            <input/>
+            <output/>
+        </operation>
+    </binding>
+    <service name="GetFiscalPeriodRate_Teradata">
+        <port name="GetFiscalPeriodRate_Teradata_pt" binding="tns:GetFiscalPeriodRate_Teradata_binding">
+<!--Your runtime connection is declared in 
+J2EE_HOME/application-deployments/default/DbAdapter/oc4j-ra.xml 
+These mcf properties here are from your design time connection and 
+save you from having to edit that file and restart the application server 
+if eis/db/TdaSvc_fin_user is missing. 
+These mcf properties are safe to remove.-->
+      <jca:address location="eis/db/TdaSvc_fin_user" UIConnectionName="TeraDataCon"
+          ManagedConnectionFactory="oracle.tip.adapter.db.DBManagedConnectionFactory"
+           />
+        </port>
+    </service>
+  <plt:partnerLinkType name="GetFiscalPeriodRate_Teradata_plt" >
+    <plt:role name="GetFiscalPeriodRate_Teradata_role" >
+      <plt:portType name="tns:GetFiscalPeriodRate_Teradata_ptt" />
+    </plt:role>
+  </plt:partnerLinkType>
+</definitions>

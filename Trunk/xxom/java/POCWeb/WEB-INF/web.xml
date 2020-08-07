@@ -1,0 +1,50 @@
+<?xml version = '1.0' encoding = 'windows-1252'?>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd" version="2.4" xmlns="http://java.sun.com/xml/ns/j2ee">
+    <description>Empty web.xml file for Web Application</description>
+    <servlet>
+        <servlet-name>POCControllerServlet</servlet-name>
+        <servlet-class>od.otc.ui.POCControllerServlet</servlet-class>
+        <init-param>
+                    <param-name>InitialContext</param-name>
+                    <param-value>oracle.j2ee.rmi.RMIInitialContextFactory</param-value>
+        </init-param>
+        <init-param>
+                    <param-name>ProviderURL</param-name>
+                    <param-value>ormi://localhost:23791/EJBTest</param-value>
+        </init-param>
+        <init-param>
+                    <param-name>User</param-name>
+                    <param-value>oc4jadmin</param-value>
+        </init-param>
+        <init-param>
+                    <param-name>Pwd</param-name>
+                    <param-value>admin135</param-value>
+        </init-param>
+        <init-param>
+                    <param-name>MTServer</param-name>
+                    <param-value>localhost</param-value>
+        </init-param>
+        <init-param>
+                    <param-name>MTServerPort</param-name>
+                    <param-value>9100</param-value>
+        </init-param>
+
+        </servlet>
+
+    <servlet-mapping>
+        <servlet-name>POCControllerServlet</servlet-name>
+        <url-pattern>/POCControllerServlet</url-pattern>
+    </servlet-mapping>
+    
+    <session-config>
+        <session-timeout>35</session-timeout>
+    </session-config>
+    <mime-mapping>
+        <extension>html</extension>
+        <mime-type>text/html</mime-type>
+    </mime-mapping>
+    <mime-mapping>
+        <extension>txt</extension>
+        <mime-type>text/plain</mime-type>
+    </mime-mapping>
+</web-app>

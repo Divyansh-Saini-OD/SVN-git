@@ -1,0 +1,43 @@
+--+=====================================================================+
+--|                   Office Depot - Project FIT                        |
+--|          Capgemini/Office Depot/Consulting Organization             |
+--+=====================================================================+
+--|                                                                     |
+--|Rice        : 106313                                                 |
+--|File Name   : xx_ar_recon_trans_stg.tbl                              |
+--|File Path   : $XXFIN_TOP/admin/sql                                   |
+--|Schema      : xxfin                                                  |
+--|                                                                     |
+--|Version    Date           Author                       Remarks       |
+--|=======   ======        ====================          =========      |
+--|1.0      Maheswararao N   03-OCT-2011            Initial Creation.   |
+--|                                                                     |
+--+=====================================================================+
+
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+PROMPT Creation of table   xx_ar_recon_trans_stg
+CREATE TABLE   xxfin.xx_ar_recon_trans_stg
+(
+customer_number            VARCHAR2(30),
+cust_account_id            NUMBER(15),
+customer_site_use_id       NUMBER(15),
+customer_name              VARCHAR2(360),
+ap_dunning_contact         VARCHAR2(300),
+collector_id               NUMBER(15),
+collector_name             VARCHAR2(30),
+org_id                     NUMBER(15),
+currency                   VARCHAR2(15) NOT NULL,
+trx_number                 VARCHAR2(30),
+open_balance               NUMBER      NOT NULL ,
+type                       VARCHAR2(20) NOT NULL,
+cust_trx_id                NUMBER(15),
+cash_receipt_id            NUMBER(15),
+creation_date              DATE        NOT NULL,
+created_by                 NUMBER(15)  NOT NULL,
+request_id                 NUMBER(15)  NOT NULL
+);
+
+SHOW ERROR;

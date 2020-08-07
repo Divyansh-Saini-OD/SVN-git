@@ -1,0 +1,1231 @@
+<?xml version='1.0' encoding='windows-1252' ?>
+<!DOCTYPE ViewObject SYSTEM "jbo_03_01.dtd">
+
+<!--
+Subversion Info: 
+$HeadURL: http://svn.na.odcorp.net/svn/od/common/trunk/xxcomn/java/od/oracle/apps/xxcrm/asn/custsrch/common/customer/server/ODCustomerSearchResultsVO.xml $
+$Rev: 91799 $
+$Date: 2010-01-27 01:32:22 -0500 (Wed, 27 Jan 2010) $ 
+-->
+
+<ViewObject
+   Name="ODCustomerSearchResultsVO"
+   BindingStyle="Oracle"
+   CustomQuery="true"
+   RowClass="od.oracle.apps.xxcrm.asn.custsrch.common.customer.server.ODCustomerSearchResultsVORowImpl"
+   ComponentClass="od.oracle.apps.xxcrm.asn.custsrch.common.customer.server.ODCustomerSearchResultsVOImpl"
+   UseGlueCode="false" >
+   <SQLQuery><![CDATA[
+SELECT /*+ USE_NL(ps,hp,terr,hl) PUSH_PRED(sitedemov) */ 
+  ps.party_site_id,
+  hp.party_id,
+  hp.party_name,
+  (CASE (
+         	SELECT COUNT(1)	
+         	FROM DUAL	
+         	WHERE EXISTS
+		 	(SELECT 1
+         		FROM hz_cust_accounts hca
+         		WHERE hca.party_id = hp.party_id
+         		AND ROWNUM = 1
+         		AND status = 'A'))
+   	   	WHEN 0
+        	THEN hp.party_number
+   		ELSE (SELECT orig_system_reference
+         		FROM hz_cust_accounts
+         		WHERE party_id = hp.party_id
+		 	AND ROWNUM = 1
+         	AND status = 'A')
+   END) prospect,
+  (CASE (
+         	SELECT COUNT(1)	
+         	FROM DUAL	
+         	WHERE EXISTS
+		 	(SELECT 1
+         		FROM hz_cust_accounts hca
+         		WHERE hca.party_id = hp.party_id
+         		AND ROWNUM = 1))
+   		WHEN 0
+        	THEN 'Prospect'
+   		ELSE 'Customer'
+  END) prospect_cust,
+ (SELECT customer_type
+	FROM hz_cust_accounts hca
+	WHERE hca.party_id = hp.party_id
+	AND ROWNUM = 1) customer_type,
+  ps.party_site_number,
+  hz_utility_v2pub.get_all_purposes(ps.party_site_id) site_use_type,
+  ' ' address_key,
+            (SELECT (                
+                     CASE NVL(address_style,'-9X9Y9Z') WHEN 'AS_DEFAULT' THEN                
+                            address1
+                          || '.'
+                          || address2
+                          || '.'
+                          || address3
+                          || '.'
+                          || address4
+                          || '.'
+                          || state
+                          || '.'
+                          || county
+                          || '.'
+                          || city
+                          || '.'
+                          || postal_code                                       
+                     WHEN '-9X9Y9Z' THEN
+                             address1
+                          || '.'
+                          || address2
+                          || '.'
+                          || address3
+                          || '.'
+                          || address4
+                          || '.'
+                          || state
+                          || '.'
+                          || county
+                          || '.'
+                          || city
+                          || '.'
+                          || postal_code
+                     WHEN 'JP' THEN
+                             postal_code
+                          || '.'
+                          || state
+                          || '.'
+                          || city
+                          || '.'
+                          || address1
+                          || '.'
+                          || address2
+                          || '.'
+                          || address3
+                          || '.'
+                          || address_lines_phonetic
+                     WHEN 'NE' THEN
+                             address1
+                          || '.'
+                          || address2
+                          || '.'
+                          || address3
+                          || '.'
+                          || state
+                          || '.'
+                          || postal_code
+                          || '.'
+                          || city
+                     WHEN 'POSTAL_ADDR_DEF' THEN
+                             address1
+                          || '.'
+                          || address2
+                          || '.'
+                          || address3
+                          || '.'
+                          || address4
+                          || '.'
+                          || city
+                          || '.'
+                          || county
+                          || '.'
+                          || state
+                          || '.'
+                          || province
+                          || '.'
+                          || postal_code
+                     WHEN 'POSTAL_ADDR_US' THEN
+                             address1
+                          || '.'
+                          || address2
+                          || '.'
+                          || address3
+                          || '.'
+                          || address4
+                          || '.'
+                          || city
+                          || '.'
+                          || county
+                          || '.'
+                          || state
+                          || '.'
+                          || postal_code
+                     WHEN 'SA' THEN
+                             address1
+                          || '.'
+                          || address2
+                          || '.'
+                          || address3
+                          || '.'
+                          || city
+                          || '.'
+                          || province
+                          || '.'
+                          || state
+                          || '.'
+                          || county
+                          || '.'
+                          || postal_code
+                     WHEN 'SE' THEN
+                             address1
+                          || '.'
+                          || address2
+                          || '.'
+                          || address3
+                          || '.'
+                          || postal_code
+                          || '.'
+                          || city
+                          || '.'
+                          || state
+                     WHEN 'UAA' THEN
+                             address1
+                          || '.'
+                          || address2
+                          || '.'
+                          || address3
+                          || '.'
+                          || city
+                          || '.'
+                          || state
+                          || '.'
+                          || postal_code
+                 WHEN 'AS_DEFAULT_CA' THEN
+                             address1
+                          || '.'
+                          || address2
+                          || '.'
+                          || address3
+                          || '.'
+                          || city
+                          || '.'
+                          || province
+                          || '.'
+                          || postal_code
+                 ELSE
+                             address1
+                          || '.'
+                          || address2
+                          || '.'
+                          || address3
+                          || '.'
+                          || address4
+                          || '.'
+                          || state
+                          || '.'
+                          || county
+                          || '.'
+                          || city
+                          || '.'
+                          || postal_code
+                     END )
+            FROM hz_locations
+            WHERE location_id = ps.location_id) address,
+(CASE 
+(SELECT COUNT(1) FROM DUAL WHERE EXISTS (select 1 from hz_cust_accounts hca where hca.party_id =    hp.party_id and rownum = 1 and status = 'A'))
+ WHEN 0 THEN  ps.party_site_number  
+ ELSE 
+ (REGEXP_REPLACE((REGEXP_SUBSTR(ps.orig_system_reference,'-[^-]+-')),'[-]',''))
+ END) site_seq_num,
+  (select email_address
+   FROM hz_contact_points HZCP
+   WHERE  ps.party_site_id = HZCP.OWNER_TABLE_ID  AND
+          HZCP.PRIMARY_FLAG = 'Y' and HZCP.OWNER_TABLE_NAME = 'HZ_PARTY_SITES' and ((email_address is not null) or (email_address <> '')) and rownum = 1) email,
+  (select (PHONE_COUNTRY_CODE||PHONE_AREA_CODE||PHONE_NUMBER||PHONE_EXTENSION)pphone    
+   from  hz_contact_points HZCP   
+   where ps.party_site_id =  HZCP.OWNER_TABLE_ID AND
+         HZCP.PRIMARY_FLAG = 'Y'         and
+       HZCP.OWNER_TABLE_NAME = 'HZ_PARTY_SITES' and
+         PHONE_LINE_TYPE = 'GEN' and ((PHONE_NUMBER is not null) or (PHONE_NUMBER <> '')) and rownum = 1) pphone, 
+                     (CASE
+                        SIGN((SELECT COUNT(1) FROM DUAL WHERE EXISTS
+						          (SELECT 1
+                                   FROM
+                                        jtf_rs_resource_extns resource_det,
+                                        (SELECT 
+											terr.named_acct_terr_id, terr_ent.entity_type, terr_ent.entity_id,
+											terr_rsc.resource_id, terr_rsc.resource_role_id, terr_rsc.GROUP_ID,
+											terr_ent.full_access_flag
+										FROM xx_tm_nam_terr_rsc_dtls terr_rsc,
+											xx_tm_nam_terr_defn terr,
+											xx_tm_nam_terr_entity_dtls terr_ent
+										WHERE terr.named_acct_terr_id = terr_rsc.named_acct_terr_id
+											AND terr_ent.named_acct_terr_id = terr_rsc.named_acct_terr_id
+											AND terr_ent.named_acct_terr_id = terr.named_acct_terr_id
+											AND SYSDATE BETWEEN NVL (terr.start_date_active, SYSDATE - 1)
+									                   AND NVL (terr.end_date_active, SYSDATE + 1)
+											AND SYSDATE BETWEEN NVL (terr_ent.start_date_active, SYSDATE - 1)
+									                   AND NVL (terr_ent.end_date_active, SYSDATE + 1)
+											AND SYSDATE BETWEEN NVL (terr_rsc.start_date_active, SYSDATE - 1)
+									                   AND NVL (terr_rsc.end_date_active, SYSDATE + 1)
+											AND NVL (terr.status, 'A') = 'A'
+											AND NVL (terr_ent.status, 'A') = 'A'
+											AND NVL (terr_rsc.status, 'A') = 'A') terr_vw
+                                  WHERE  terr_vw.resource_id = resource_det.resource_id
+                                  AND terr_vw.entity_id = ps.party_site_id
+                                  AND terr_vw.entity_type = 'PARTY_SITE'
+                                  AND EXISTS (SELECT 1
+                                                FROM jtf_rs_roles_b        role_det
+                                                    ,jtf_rs_role_relations rassign
+                                                WHERE role_det.role_id = rassign.role_id
+                                                AND   role_det.attribute15 = 'BSD'
+                                                AND   rassign.role_resource_type = 'RS_INDIVIDUAL'
+                                                AND   rassign.role_resource_id = resource_det.resource_id 
+                                               )                              
+                                  AND  rownum = 1)
+                                ))
+                        WHEN 1  
+                        THEN (SELECT resource_det.source_name s_name
+                                   FROM
+                                        jtf_rs_resource_extns resource_det,
+                                        (SELECT 
+											terr.named_acct_terr_id, terr_ent.entity_type, terr_ent.entity_id,
+											terr_rsc.resource_id, terr_rsc.resource_role_id, terr_rsc.GROUP_ID,
+											terr_ent.full_access_flag
+										FROM xx_tm_nam_terr_rsc_dtls terr_rsc,
+											xx_tm_nam_terr_defn terr,
+											xx_tm_nam_terr_entity_dtls terr_ent
+										WHERE terr.named_acct_terr_id = terr_rsc.named_acct_terr_id
+											AND terr_ent.named_acct_terr_id = terr_rsc.named_acct_terr_id
+											AND terr_ent.named_acct_terr_id = terr.named_acct_terr_id
+											AND SYSDATE BETWEEN NVL (terr.start_date_active, SYSDATE - 1)
+									                   AND NVL (terr.end_date_active, SYSDATE + 1)
+											AND SYSDATE BETWEEN NVL (terr_ent.start_date_active, SYSDATE - 1)
+									                   AND NVL (terr_ent.end_date_active, SYSDATE + 1)
+											AND SYSDATE BETWEEN NVL (terr_rsc.start_date_active, SYSDATE - 1)
+									                   AND NVL (terr_rsc.end_date_active, SYSDATE + 1)
+											AND NVL (terr.status, 'A') = 'A'
+											AND NVL (terr_ent.status, 'A') = 'A'
+											AND NVL (terr_rsc.status, 'A') = 'A') terr_vw
+                                  WHERE  terr_vw.resource_id = resource_det.resource_id
+                                  AND terr_vw.entity_id = ps.party_site_id
+                                  AND terr_vw.entity_type = 'PARTY_SITE'
+                                  AND EXISTS (SELECT 1
+                                                FROM jtf_rs_roles_b        role_det
+                                                    ,jtf_rs_role_relations rassign
+                                                WHERE role_det.role_id = rassign.role_id
+                                                AND   role_det.attribute15 = 'BSD'
+                                                AND   rassign.role_resource_type = 'RS_INDIVIDUAL'
+                                                AND   rassign.role_resource_id = resource_det.resource_id 
+                                               )                              
+                                  AND  rownum = 1)
+                     ELSE
+                     (SELECT resource_det.source_name s_name
+                                   FROM
+                                        jtf_rs_resource_extns resource_det,
+                                        (SELECT 
+											terr.named_acct_terr_id, terr_ent.entity_type, terr_ent.entity_id,
+											terr_rsc.resource_id, terr_rsc.resource_role_id, terr_rsc.GROUP_ID,
+											terr_ent.full_access_flag
+										FROM xx_tm_nam_terr_rsc_dtls terr_rsc,
+											xx_tm_nam_terr_defn terr,
+											xx_tm_nam_terr_entity_dtls terr_ent
+										WHERE terr.named_acct_terr_id = terr_rsc.named_acct_terr_id
+											AND terr_ent.named_acct_terr_id = terr_rsc.named_acct_terr_id
+											AND terr_ent.named_acct_terr_id = terr.named_acct_terr_id
+											AND SYSDATE BETWEEN NVL (terr.start_date_active, SYSDATE - 1)
+									                   AND NVL (terr.end_date_active, SYSDATE + 1)
+											AND SYSDATE BETWEEN NVL (terr_ent.start_date_active, SYSDATE - 1)
+									                   AND NVL (terr_ent.end_date_active, SYSDATE + 1)
+											AND SYSDATE BETWEEN NVL (terr_rsc.start_date_active, SYSDATE - 1)
+									                   AND NVL (terr_rsc.end_date_active, SYSDATE + 1)
+											AND NVL (terr.status, 'A') = 'A'
+											AND NVL (terr_ent.status, 'A') = 'A'
+											AND NVL (terr_rsc.status, 'A') = 'A') terr_vw                                        
+                                  WHERE  terr_vw.resource_id = resource_det.resource_id
+                                  AND terr_vw.entity_id = ps.party_site_id
+                                  AND terr_vw.entity_type = 'PARTY_SITE'
+                                  AND EXISTS (SELECT 1
+                                                FROM jtf_rs_roles_b        role_det
+                                                    ,jtf_rs_role_relations rassign
+                                                WHERE role_det.role_id = rassign.role_id
+                                                AND   role_det.attribute14 = 'BDM'
+                                                AND   rassign.role_resource_type = 'RS_INDIVIDUAL'
+                                                AND   rassign.role_resource_id = resource_det.resource_id 
+                                               )                              
+                                  AND  rownum = 1)      
+                     END
+                    ) primary_sales_person,
+                    (CASE NVL(sitedemov.sitedemo_cancross,'-9X9Y9Z')
+                        WHEN '-9X9Y9Z'
+                           THEN '*' || hp.attribute1
+                        ELSE sitedemov.sitedemo_cancross
+                     END
+                    ) can_cross_sell,
+                    (CASE NVL(sitedemov.sitedemo_contactfreq,'-9X9Y9Z')
+                        WHEN '-9X9Y9Z'
+                           THEN '*' || hp.attribute2
+                        ELSE sitedemov.sitedemo_contactfreq
+                     END
+                    ) conct_freq,
+                    (CASE NVL(to_char(sitedemov.SITEDEMO_WCW),'-9X9Y9Z')
+                        WHEN '-9X9Y9Z'
+                           THEN '*' || hp.attribute10
+                        ELSE TO_CHAR (sitedemov.sitedemo_wcw)
+                     END
+                    ) white_collar_wrk,
+hp.party_type,  
+hp.party_number,  
+hp.tax_reference,  
+hp.jgzz_fiscal_code taxPayer_id,  
+hp.duns_number_c duns_number,  
+hp.known_as known_as,  
+hp.known_as2 known_as2,  
+hp.known_as3 known_as3,  
+hp.known_as4 known_as4,  
+hp.known_as5 known_as5,  
+hp.organization_name_phonetic,  
+hp.person_first_name_phonetic,  
+hp.person_last_name_phonetic,  
+ps.location_id,  
+terr.territory_short_name country,  
+hp.url primary_url,  
+'100%' percentage,  
+'N' Select_flag,  
+'N' disable_hgrid_flag,  
+'Y' enable_hgrid_flag,
+' ' source_system,
+hl.city,
+hl.state,
+hl.province,
+hl.postal_code,
+hp.sic_code,
+hp.sic_code_type,
+'' customer_category,
+(select XX_CDH_DQM_ACQUIRE_PKG.Get_Sales_Channel(hp.party_id,null,null,null) from dual) sales_channel,
+(select XX_CDH_DQM_ACQUIRE_PKG.Get_Micr_Num(hp.party_id,null,null,null) from dual) micr_number,
+'' od_customer_type,
+'' ship_to_sequence_num,
+'' billing_number,
+'' classification,
+'' relationship_role,
+ps.status site_status,
+hp.status party_status,
+ps.identifying_address_flag,
+hp.category_code,
+(select PHONE_COUNTRY_CODE    
+   from  hz_contact_points HZCP   
+   where ps.party_site_id =  HZCP.OWNER_TABLE_ID AND
+         HZCP.PRIMARY_FLAG = 'Y'         and
+       HZCP.OWNER_TABLE_NAME = 'HZ_PARTY_SITES' and
+         PHONE_LINE_TYPE = 'GEN' and ((PHONE_NUMBER is not null) or (PHONE_NUMBER <> '')) and rownum = 1) PHONE_COUNTRY_CODE,
+(select PHONE_AREA_CODE    
+   from  hz_contact_points HZCP   
+   where ps.party_site_id =  HZCP.OWNER_TABLE_ID AND
+         HZCP.PRIMARY_FLAG = 'Y'         and
+       HZCP.OWNER_TABLE_NAME = 'HZ_PARTY_SITES' and
+         PHONE_LINE_TYPE = 'GEN' and ((PHONE_NUMBER is not null) or (PHONE_NUMBER <> '')) and rownum = 1) PHONE_AREA_CODE,
+(select PHONE_NUMBER    
+   from  hz_contact_points HZCP   
+   where ps.party_site_id =  HZCP.OWNER_TABLE_ID AND
+         HZCP.PRIMARY_FLAG = 'Y'         and
+       HZCP.OWNER_TABLE_NAME = 'HZ_PARTY_SITES' and
+         PHONE_LINE_TYPE = 'GEN' and ((PHONE_NUMBER is not null) or (PHONE_NUMBER <> '')) and rownum = 1) PHONE_NUMBER,
+(select PHONE_EXTENSION
+   from  hz_contact_points HZCP   
+   where ps.party_site_id =  HZCP.OWNER_TABLE_ID AND
+         HZCP.PRIMARY_FLAG = 'Y'         and
+       HZCP.OWNER_TABLE_NAME = 'HZ_PARTY_SITES' and
+         PHONE_LINE_TYPE = 'GEN' and ((PHONE_NUMBER is not null) or (PHONE_NUMBER <> '')) and rownum = 1) PHONE_EXTENSION
+FROM 
+hz_parties hp,  
+hz_party_sites ps,  
+fnd_territories_vl terr,  
+XX_CDH_S_EXT_SITEDEMO_V sitedemov,
+hz_locations hl 
+WHERE   
+hp.party_type in ('PERSON', 'ORGANIZATION') and
+ps.party_id = hp.party_id and
+ps.party_site_id = sitedemov.party_site_id(+) and
+hp.country = terr.territory_code and
+ps.location_id = hl.location_id
+   ]]></SQLQuery>
+   <DesignTime>
+      <Attr Name="_isCodegen" Value="true" />
+      <Attr Name="_isExpertMode" Value="true" />
+      <Attr Name="_version" Value="10.1.3.41.57" />
+      <Attr Name="_codeGenFlag2" Value="Access|Coll" />
+   </DesignTime>
+   <ViewAttribute
+      Name="PartySiteId"
+      IsPersistent="false"
+      Precision="15"
+      Scale="0"
+      Type="oracle.jbo.domain.Number"
+      ColumnType="NUMBER"
+      AliasName="PARTY_SITE_ID"
+      Expression="PARTY_SITE_ID"
+      SQLType="NUMERIC" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="PartyId"
+      IsPersistent="false"
+      Precision="15"
+      Scale="0"
+      Type="oracle.jbo.domain.Number"
+      ColumnType="NUMBER"
+      AliasName="PARTY_ID"
+      Expression="PARTY_ID"
+      SQLType="NUMERIC" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="PartyName"
+      IsPersistent="false"
+      Precision="360"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="PARTY_NAME"
+      Expression="PARTY_NAME"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="360" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Prospect"
+      IsPersistent="false"
+      Precision="31"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="PROSPECT"
+      Expression="PROSPECT"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="31" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="ProspectCust"
+      IsPersistent="false"
+      Precision="8"
+      Type="java.lang.String"
+      ColumnType="CHAR"
+      AliasName="PROSPECT_CUST"
+      Expression="PROSPECT_CUST"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="8" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="CustomerType"
+      IsPersistent="false"
+      Precision="30"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="CUSTOMER_TYPE"
+      Expression="CUSTOMER_TYPE"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="30" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="PartySiteNumber"
+      IsPersistent="false"
+      Precision="30"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="PARTY_SITE_NUMBER"
+      Expression="PARTY_SITE_NUMBER"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="30" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="SiteUseType"
+      IsPersistent="false"
+      Precision="30"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="SITE_USE_TYPE"
+      Expression="SITE_USE_TYPE"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="30" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="AddressKey"
+      IsPersistent="false"
+      Precision="40"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="ADDRESS_KEY"
+      Expression="ADDRESS_KEY"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="40" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Address"
+      IsPersistent="false"
+      Precision="1860"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="ADDRESS"
+      Expression="ADDRESS"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="1860" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="SiteSeqNum"
+      IsPersistent="false"
+      Precision="765"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="SITE_SEQ_NUM"
+      Expression="SITE_SEQ_NUM"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="765" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Email"
+      IsPersistent="false"
+      Precision="2000"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="EMAIL"
+      Expression="EMAIL"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="2000" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Pphone"
+      IsPersistent="false"
+      Precision="80"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="PPHONE"
+      Expression="PPHONE"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="80" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="PrimarySalesPerson"
+      IsPersistent="false"
+      Precision="360"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="PRIMARY_SALES_PERSON"
+      Expression="PRIMARY_SALES_PERSON"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="360" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="CanCrossSell"
+      IsPersistent="false"
+      Precision="151"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="CAN_CROSS_SELL"
+      Expression="CAN_CROSS_SELL"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="151" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="ConctFreq"
+      IsPersistent="false"
+      Precision="151"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="CONCT_FREQ"
+      Expression="CONCT_FREQ"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="151" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="WhiteCollarWrk"
+      IsPersistent="false"
+      Precision="151"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="WHITE_COLLAR_WRK"
+      Expression="WHITE_COLLAR_WRK"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="151" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="PartyType"
+      IsPersistent="false"
+      Precision="30"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="PARTY_TYPE"
+      Expression="PARTY_TYPE"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="30" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="PartyNumber"
+      IsPersistent="false"
+      Precision="30"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="PARTY_NUMBER"
+      Expression="PARTY_NUMBER"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="30" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="TaxReference"
+      IsPersistent="false"
+      Precision="50"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="TAX_REFERENCE"
+      Expression="TAX_REFERENCE"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="50" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="TaxPayerId1"
+      IsPersistent="false"
+      Precision="20"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="TAXPAYER_ID"
+      Expression="TAXPAYER_ID"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="20" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="DunsNumber"
+      IsPersistent="false"
+      Precision="30"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="DUNS_NUMBER"
+      Expression="DUNS_NUMBER"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="30" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="KnownAs"
+      IsPersistent="false"
+      Precision="240"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="KNOWN_AS"
+      Expression="KNOWN_AS"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="240" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="KnownAs2"
+      IsPersistent="false"
+      Precision="240"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="KNOWN_AS2"
+      Expression="KNOWN_AS2"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="240" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="KnownAs3"
+      IsPersistent="false"
+      Precision="240"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="KNOWN_AS3"
+      Expression="KNOWN_AS3"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="240" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="KnownAs4"
+      IsPersistent="false"
+      Precision="240"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="KNOWN_AS4"
+      Expression="KNOWN_AS4"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="240" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="KnownAs5"
+      IsPersistent="false"
+      Precision="240"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="KNOWN_AS5"
+      Expression="KNOWN_AS5"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="240" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="OrganizationNamePhonetic"
+      IsPersistent="false"
+      Precision="320"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="ORGANIZATION_NAME_PHONETIC"
+      Expression="ORGANIZATION_NAME_PHONETIC"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="320" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="PersonFirstNamePhonetic"
+      IsPersistent="false"
+      Precision="60"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="PERSON_FIRST_NAME_PHONETIC"
+      Expression="PERSON_FIRST_NAME_PHONETIC"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="60" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="PersonLastNamePhonetic"
+      IsPersistent="false"
+      Precision="60"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="PERSON_LAST_NAME_PHONETIC"
+      Expression="PERSON_LAST_NAME_PHONETIC"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="60" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="LocationId"
+      IsPersistent="false"
+      Precision="15"
+      Scale="0"
+      Type="oracle.jbo.domain.Number"
+      ColumnType="NUMBER"
+      AliasName="LOCATION_ID"
+      Expression="LOCATION_ID"
+      SQLType="NUMERIC" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Country"
+      IsPersistent="false"
+      Precision="80"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="COUNTRY"
+      Expression="COUNTRY"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="80" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="PrimaryUrl"
+      IsPersistent="false"
+      Precision="2000"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="PRIMARY_URL"
+      Expression="PRIMARY_URL"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="2000" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Percentage"
+      IsPersistent="false"
+      Precision="41"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="PERCENTAGE"
+      Expression="PERCENTAGE"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="41" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="SelectFlag"
+      IsPersistent="false"
+      Precision="1"
+      Type="java.lang.String"
+      ColumnType="CHAR"
+      AliasName="SELECT_FLAG"
+      Expression="SELECT_FLAG"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="1" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="DisableHgridFlag"
+      IsPersistent="false"
+      Precision="1"
+      Type="java.lang.String"
+      ColumnType="CHAR"
+      AliasName="DISABLE_HGRID_FLAG"
+      Expression="DISABLE_HGRID_FLAG"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="1" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="EnableHgridFlag"
+      IsPersistent="false"
+      Precision="1"
+      Type="java.lang.String"
+      ColumnType="CHAR"
+      AliasName="ENABLE_HGRID_FLAG"
+      Expression="ENABLE_HGRID_FLAG"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="1" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="SourceSystem"
+      IsPersistent="false"
+      Precision="30"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="SOURCE_SYSTEM"
+      Expression="SOURCE_SYSTEM"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="30" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="City"
+      IsPersistent="false"
+      Precision="60"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="CITY"
+      Expression="CITY"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="60" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="State"
+      IsPersistent="false"
+      Precision="60"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="STATE"
+      Expression="STATE"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="60" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Province"
+      IsPersistent="false"
+      Precision="60"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="PROVINCE"
+      Expression="PROVINCE"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="60" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="PostalCode"
+      IsPersistent="false"
+      Precision="60"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="POSTAL_CODE"
+      Expression="POSTAL_CODE"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="60" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="SicCode"
+      IsPersistent="false"
+      Precision="30"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="SIC_CODE"
+      Expression="SIC_CODE"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="30" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="SicCodeType"
+      IsPersistent="false"
+      Precision="30"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="SIC_CODE_TYPE"
+      Expression="SIC_CODE_TYPE"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="30" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="CustomerCategory"
+      IsPersistent="false"
+      Precision="80"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="CUSTOMER_CATEGORY"
+      Expression="CUSTOMER_CATEGORY"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="80" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="SalesChannel"
+      IsPersistent="false"
+      Precision="2000"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="SALES_CHANNEL"
+      Expression="SALES_CHANNEL"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="2000" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="MicrNumber"
+      IsPersistent="false"
+      Precision="2000"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="MICR_NUMBER"
+      Expression="MICR_NUMBER"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="2000" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="OdCustomerType"
+      IsPersistent="false"
+      Precision="150"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="OD_CUSTOMER_TYPE"
+      Expression="OD_CUSTOMER_TYPE"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="150" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="ShipToSequenceNum"
+      IsPersistent="false"
+      Precision="240"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="SHIP_TO_SEQUENCE_NUM"
+      Expression="SHIP_TO_SEQUENCE_NUM"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="240" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="BillingNumber"
+      IsPersistent="false"
+      Precision="30"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="BILLING_NUMBER"
+      Expression="BILLING_NUMBER"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="30" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Classification"
+      IsPersistent="false"
+      Precision="30"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="CLASSIFICATION"
+      Expression="CLASSIFICATION"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="30" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="RelationshipRole"
+      IsPersistent="false"
+      Precision="30"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="RELATIONSHIP_ROLE"
+      Expression="RELATIONSHIP_ROLE"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="30" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="SiteStatus"
+      IsPersistent="false"
+      Precision="1"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="SITE_STATUS"
+      Expression="SITE_STATUS"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="1" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="PartyStatus"
+      IsPersistent="false"
+      Precision="1"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="PARTY_STATUS"
+      Expression="PARTY_STATUS"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="1" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="IdentifyingAddressFlag"
+      IsPersistent="false"
+      Precision="1"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="IDENTIFYING_ADDRESS_FLAG"
+      Expression="IDENTIFYING_ADDRESS_FLAG"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="1" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="CategoryCode"
+      IsPersistent="false"
+      Precision="30"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="CATEGORY_CODE"
+      Expression="CATEGORY_CODE"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="30" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="PhoneCountryCode"
+      IsPersistent="false"
+      Precision="10"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="PHONE_COUNTRY_CODE"
+      Expression="PHONE_COUNTRY_CODE"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="10" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="PhoneAreaCode"
+      IsPersistent="false"
+      Precision="10"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="PHONE_AREA_CODE"
+      Expression="PHONE_AREA_CODE"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="10" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="PhoneNumber"
+      IsPersistent="false"
+      Precision="40"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="PHONE_NUMBER"
+      Expression="PHONE_NUMBER"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="40" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="PhoneExtension"
+      IsPersistent="false"
+      Precision="20"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="PHONE_EXTENSION"
+      Expression="PHONE_EXTENSION"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="20" />
+      </DesignTime>
+   </ViewAttribute>
+</ViewObject>

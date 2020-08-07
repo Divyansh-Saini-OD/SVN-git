@@ -1,0 +1,339 @@
+<?xml version = "1.0" encoding = "UTF-8" ?>
+<!--
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  Oracle JDeveloper BPEL Designer 
+  
+  Created: Mon Nov 12 16:20:36 EST 2007
+  Author:  Rajesh-Iyangar
+  Purpose: Empty BPEL Process
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+-->
+<process name="SupplierConfirmedReceivablesEBSIn"
+         targetNamespace="http://xmlns.oracle.com/SupplierConfirmedReceivablesEBSIn"
+         xmlns="http://schemas.xmlsoap.org/ws/2003/03/business-process/"
+         xmlns:xp20="http://www.oracle.com/XSL/Transform/java/oracle.tip.pc.services.functions.Xpath20"
+         xmlns:bpws="http://schemas.xmlsoap.org/ws/2003/03/business-process/"
+         xmlns:ns4="http://xmlns.oracle.com/pcbpel/adapter/ftp/ReceiveSupplierReceivablesData/"
+         xmlns:ns7="http://xmlns.oracle.com/pcbpel/adapter/ftp/"
+         xmlns:ids="http://xmlns.oracle.com/bpel/services/IdentityService/xpath"
+         xmlns:ldap="http://schemas.oracle.com/xpath/extension/ldap"
+         xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+         xmlns:ns5="http://xmlns.oracle.com/pcbpel/adapter/ftp/SupplierReceivablesFileRead/"
+         xmlns:client="http://xmlns.oracle.com/SupplierConfirmedReceivablesEBSIn"
+         xmlns:ns6="http://xmlns.oracle.com/pcbpel/adapter/ftp/FilePutRemoteFault/"
+         xmlns:ora="http://schemas.oracle.com/xpath/extension"
+         xmlns:xref="http://www.oracle.com/XSL/Transform/java/oracle.tip.xref.xpath.XRefXPathFunctions"
+         xmlns:ns9="http://xmlns.oracle.com/ODErrorLogger"
+         xmlns:hwf="http://xmlns.oracle.com/bpel/workflow/xpath"
+         xmlns:ns1="http://xmlns.oracle.com/pcbpel/adapter/ftp/FileRead/"
+         xmlns:ehdr="http://www.oracle.com/XSL/Transform/java/oracle.tip.esb.server.headers.ESBHeaderFunctions"
+         xmlns:ns3="http://xmlns.oracle.com/pcbpel/adapter/db/XX_AP_SCR_RECEIVER_STGInsert/"
+         xmlns:ns2="OfficeDepot"
+         xmlns:bpelx="http://schemas.oracle.com/bpel/extension"
+         xmlns:orcl="http://www.oracle.com/XSL/Transform/java/oracle.tip.pc.services.functions.ExtFunc"
+         xmlns:ns10="ODError">
+  <!-- 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+      PARTNERLINKS                                                      
+      List of services participating in this BPEL process               
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  -->
+  <partnerLinks>
+    <partnerLink name="XX_AP_SCR_RECEIVER_STGInsert"
+                 partnerRole="XX_AP_SCR_RECEIVER_STGInsert_role"
+                 partnerLinkType="ns3:XX_AP_SCR_RECEIVER_STGInsert_plt"/>
+    <partnerLink myRole="Get_role" name="SupplierReceivablesFileRead"
+                 partnerLinkType="ns5:Get_plt"/>
+    <partnerLink myRole="ODErrorLoggerRequester" name="ODErrorLogger"
+                 partnerRole="ODErrorLoggerProvider"
+                 partnerLinkType="ns9:ODErrorLogger"/>
+    <partnerLink name="FilePutRemoteFault" partnerRole="Put_role"
+                 partnerLinkType="ns6:Put_plt"/>
+  </partnerLinks>
+  <variables>
+    <variable name="InvokeXX_AP_SCR_RECEIVER_STGInsert"
+              messageType="ns3:XxApScrReceiverStgCollection_msg"/>
+    <variable name="Receive_Get" messageType="ns5:Root-Element_msg"/>
+    <variable name="Exception" messageType="bpelx:RuntimeFaultMessage"/>
+    <variable name="invkSelectionFailure_initiate"
+              messageType="ns9:ODErrorLoggerRequestMessage"/>
+    <variable name="invkRemoteFault_initiate"
+              messageType="ns9:ODErrorLoggerRequestMessage"/>
+    <variable name="invkCatchAll_initiate"
+              messageType="ns9:ODErrorLoggerRequestMessage"/>
+    <variable name="invkBindingFault_initiate"
+              messageType="ns9:ODErrorLoggerRequestMessage"/>
+    <variable name="FileNameIn" messageType="ns7:InboundHeader_msg"/>
+    <variable name="InvokeFilePutRemoteFault"
+              messageType="ns6:Root-Element_msg"/>
+    <variable name="FileNameOut" messageType="ns7:OutboundHeader_msg"/>
+  </variables>
+  <faultHandlers>
+    <catch faultName="bpws:selectionFailure" faultVariable="Exception">
+      <sequence name="Sequence_3">
+        <assign name="asnSelectionFailure">
+          <copy>
+            <from expression="concat(ora:getProcessId(), ora:getProcessVersion())"/>
+            <to variable="invkSelectionFailure_initiate" part="payload"
+                query="/ns10:ErrorData/ns10:ProcessInfo/ns10:BusinessProcessName"/>
+          </copy>
+          <copy>
+            <from expression="ora:getInstanceId()"/>
+            <to variable="invkSelectionFailure_initiate" part="payload"
+                query="/ns10:ErrorData/ns10:ProcessInfo/ns10:BusinessProcessId"/>
+          </copy>
+          <copy>
+            <from expression="ora:getDomainId()"/>
+            <to variable="invkSelectionFailure_initiate" part="payload"
+                query="/ns10:ErrorData/ns10:ProcessInfo/ns10:BusinessProcessDomain"/>
+          </copy>
+          <copy>
+            <from expression="ora:getProcessURL()"/>
+            <to variable="invkSelectionFailure_initiate" part="payload"
+                query="/ns10:ErrorData/ns10:ProcessInfo/ns10:SystemName"/>
+          </copy>
+          <copy>
+            <from expression="xp20:current-dateTime()"/>
+            <to variable="invkSelectionFailure_initiate" part="payload"
+                query="/ns10:ErrorData/ns10:ErrorDetails/ns10:ErrorDateTime"/>
+          </copy>
+          <copy>
+            <from expression="'SupplierConfirmedReceivablesEBSIn'"/>
+            <to variable="invkSelectionFailure_initiate" part="payload"
+                query="/ns10:ErrorData/ns10:ProcessInfo/ns10:BusinessProcessStep"/>
+          </copy>
+          <copy>
+            <from variable="Exception" part="code"/>
+            <to variable="invkSelectionFailure_initiate" part="payload"
+                query="/ns10:ErrorData/ns10:ErrorDetails/ns10:ErrorCode"/>
+          </copy>
+          <copy>
+            <from variable="Exception" part="summary"/>
+            <to variable="invkSelectionFailure_initiate" part="payload"
+                query="/ns10:ErrorData/ns10:ErrorDetails/ns10:ErrorDescription"/>
+          </copy>
+          <copy>
+            <from variable="Exception" part="detail"/>
+            <to variable="invkSelectionFailure_initiate" part="payload"
+                query="/ns10:ErrorData/ns10:ErrorDetails/ns10:ErrorText"/>
+          </copy>
+        </assign>
+        <invoke name="invkSelectionFailure" partnerLink="ODErrorLogger"
+                portType="ns9:ODErrorLogger" operation="initiate"
+                inputVariable="invkSelectionFailure_initiate"/>
+      </sequence>
+    </catch>
+    <catch faultName="bpelx:bindingFault" faultVariable="Exception">
+      <sequence name="Sequence_2">
+        <assign name="asnBindingFault">
+          <copy>
+            <from expression="concat(ora:getProcessId(), ora:getProcessVersion())"/>
+            <to variable="invkBindingFault_initiate" part="payload"
+                query="/ns10:ErrorData/ns10:ProcessInfo/ns10:BusinessProcessName"/>
+          </copy>
+          <copy>
+            <from expression="ora:getInstanceId()"/>
+            <to variable="invkBindingFault_initiate" part="payload"
+                query="/ns10:ErrorData/ns10:ProcessInfo/ns10:BusinessProcessId"/>
+          </copy>
+          <copy>
+            <from expression="ora:getDomainId()"/>
+            <to variable="invkBindingFault_initiate" part="payload"
+                query="/ns10:ErrorData/ns10:ProcessInfo/ns10:BusinessProcessDomain"/>
+          </copy>
+          <copy>
+            <from expression="ora:getProcessURL()"/>
+            <to variable="invkBindingFault_initiate" part="payload"
+                query="/ns10:ErrorData/ns10:ProcessInfo/ns10:SystemName"/>
+          </copy>
+          <copy>
+            <from expression="xp20:current-dateTime()"/>
+            <to variable="invkBindingFault_initiate" part="payload"
+                query="/ns10:ErrorData/ns10:ErrorDetails/ns10:ErrorDateTime"/>
+          </copy>
+          <copy>
+            <from expression="'SupplierConfirmedReceivablesEBSIn'"/>
+            <to variable="invkBindingFault_initiate" part="payload"
+                query="/ns10:ErrorData/ns10:ProcessInfo/ns10:BusinessProcessStep"/>
+          </copy>
+          <copy>
+            <from variable="Exception" part="code"/>
+            <to variable="invkBindingFault_initiate" part="payload"
+                query="/ns10:ErrorData/ns10:ErrorDetails/ns10:ErrorCode"/>
+          </copy>
+          <copy>
+            <from variable="Exception" part="summary"/>
+            <to variable="invkBindingFault_initiate" part="payload"
+                query="/ns10:ErrorData/ns10:ErrorDetails/ns10:ErrorDescription"/>
+          </copy>
+          <copy>
+            <from variable="Exception" part="detail"/>
+            <to variable="invkBindingFault_initiate" part="payload"
+                query="/ns10:ErrorData/ns10:ErrorDetails/ns10:ErrorText"/>
+          </copy>
+        </assign>
+        <invoke name="invkBindingFault" partnerLink="ODErrorLogger"
+                portType="ns9:ODErrorLogger" operation="initiate"
+                inputVariable="invkBindingFault_initiate"/>
+      </sequence>
+    </catch>
+    <catch faultName="bpelx:remoteFault" faultVariable="Exception">
+      <sequence name="Sequence_5">
+        <assign name="asnRemoteFault">
+          <copy>
+            <from expression="concat(ora:getProcessId(), ora:getProcessVersion())"/>
+            <to variable="invkRemoteFault_initiate" part="payload"
+                query="/ns10:ErrorData/ns10:ProcessInfo/ns10:BusinessProcessName"/>
+          </copy>
+          <copy>
+            <from expression="ora:getInstanceId()"/>
+            <to variable="invkRemoteFault_initiate" part="payload"
+                query="/ns10:ErrorData/ns10:ProcessInfo/ns10:BusinessProcessId"/>
+          </copy>
+          <copy>
+            <from expression="ora:getDomainId()"/>
+            <to variable="invkRemoteFault_initiate" part="payload"
+                query="/ns10:ErrorData/ns10:ProcessInfo/ns10:BusinessProcessDomain"/>
+          </copy>
+          <copy>
+            <from expression="ora:getProcessURL()"/>
+            <to variable="invkSelectionFailure_initiate" part="payload"
+                query="/ns10:ErrorData/ns10:ProcessInfo/ns10:SystemName"/>
+          </copy>
+          <copy>
+            <from expression="xp20:current-dateTime()"/>
+            <to variable="invkRemoteFault_initiate" part="payload"
+                query="/ns10:ErrorData/ns10:ErrorDetails/ns10:ErrorDateTime"/>
+          </copy>
+          <copy>
+            <from expression="'SupplierConfirmedReceivablesEBSIn'"/>
+            <to variable="invkRemoteFault_initiate" part="payload"
+                query="/ns10:ErrorData/ns10:ProcessInfo/ns10:BusinessProcessStep"/>
+          </copy>
+          <copy>
+            <from variable="Exception" part="code"/>
+            <to variable="invkRemoteFault_initiate" part="payload"
+                query="/ns10:ErrorData/ns10:ErrorDetails/ns10:ErrorCode"/>
+          </copy>
+          <copy>
+            <from variable="Exception" part="summary"/>
+            <to variable="invkRemoteFault_initiate" part="payload"
+                query="/ns10:ErrorData/ns10:ErrorDetails/ns10:ErrorDescription"/>
+          </copy>
+          <copy>
+            <from variable="Exception" part="detail"/>
+            <to variable="invkRemoteFault_initiate" part="payload"
+                query="/ns10:ErrorData/ns10:ErrorDetails/ns10:ErrorText"/>
+          </copy>
+        </assign>
+        <invoke name="invkRemoteFault" partnerLink="ODErrorLogger"
+                portType="ns9:ODErrorLogger" operation="initiate"
+                inputVariable="invkRemoteFault_initiate"/>
+        <assign name="AssignPayload">
+          <copy>
+            <from variable="Receive_Get" part="Root-Element"
+                  query="/ns2:Root-Element"/>
+            <to variable="InvokeFilePutRemoteFault" part="Root-Element"
+                query="/ns2:Root-Element"/>
+          </copy>
+          <copy>
+            <from variable="FileNameIn" part="inboundHeader"
+                  query="/ns7:InboundFTPHeaderType/ns7:fileName"/>
+            <to variable="FileNameOut" part="outboundHeader"
+                query="/ns7:OutboundFTPHeaderType/ns7:fileName"/>
+          </copy>
+        </assign>
+        <invoke name="Invoke_1" partnerLink="FilePutRemoteFault"
+                portType="ns6:Put_ptt" operation="Put"
+                inputVariable="InvokeFilePutRemoteFault"
+                bpelx:inputHeaderVariable="FileNameOut"/>
+      </sequence>
+    </catch>
+    <catchAll>
+      <sequence name="Sequence_4">
+        <assign name="asnCatchAll">
+          <copy>
+            <from expression="concat(ora:getProcessId(), ora:getProcessVersion())"/>
+            <to variable="invkCatchAll_initiate" part="payload"
+                query="/ns10:ErrorData/ns10:ProcessInfo/ns10:BusinessProcessName"/>
+          </copy>
+          <copy>
+            <from expression="ora:getInstanceId()"/>
+            <to variable="invkCatchAll_initiate" part="payload"
+                query="/ns10:ErrorData/ns10:ProcessInfo/ns10:BusinessProcessId"/>
+          </copy>
+          <copy>
+            <from expression="ora:getDomainId()"/>
+            <to variable="invkCatchAll_initiate" part="payload"
+                query="/ns10:ErrorData/ns10:ProcessInfo/ns10:BusinessProcessDomain"/>
+          </copy>
+          <copy>
+            <from expression="ora:getProcessURL()"/>
+            <to variable="invkCatchAll_initiate" part="payload"
+                query="/ns10:ErrorData/ns10:ProcessInfo/ns10:SystemName"/>
+          </copy>
+          <copy>
+            <from expression="xp20:current-dateTime()"/>
+            <to variable="invkCatchAll_initiate" part="payload"
+                query="/ns10:ErrorData/ns10:ErrorDetails/ns10:ErrorDateTime"/>
+          </copy>
+          <copy>
+            <from expression="'SupplierConfirmedReceivablesEBSIn'"/>
+            <to variable="invkCatchAll_initiate" part="payload"
+                query="/ns10:ErrorData/ns10:ProcessInfo/ns10:BusinessProcessStep"/>
+          </copy>
+          <copy>
+            <from variable="Exception" part="code"/>
+            <to variable="invkCatchAll_initiate" part="payload"
+                query="/ns10:ErrorData/ns10:ErrorDetails/ns10:ErrorCode"/>
+          </copy>
+          <copy>
+            <from variable="Exception" part="summary"/>
+            <to variable="invkCatchAll_initiate" part="payload"
+                query="/ns10:ErrorData/ns10:ErrorDetails/ns10:ErrorDescription"/>
+          </copy>
+          <copy>
+            <from variable="Exception" part="detail"/>
+            <to variable="invkCatchAll_initiate" part="payload"
+                query="/ns10:ErrorData/ns10:ErrorDetails/ns10:ErrorText"/>
+          </copy>
+        </assign>
+        <invoke name="invkCatchAll" partnerLink="ODErrorLogger"
+                portType="ns9:ODErrorLogger" operation="initiate"
+                inputVariable="invkCatchAll_initiate"/>
+      </sequence>
+    </catchAll>
+  </faultHandlers>
+  <!-- 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+      VARIABLES                                                        
+      List of messages and XML documents used within this BPEL process 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  -->
+  <!-- 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+     ORCHESTRATION LOGIC                                               
+     Set of activities coordinating the flow of messages across the    
+     services integrated within this business process                  
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  -->
+  <sequence name="main">
+    <receive name="ReceiveFileGet" createInstance="yes" portType="ns5:Get_ptt"
+             variable="Receive_Get" partnerLink="SupplierReceivablesFileRead"
+             operation="Get" bpelx:headerVariable="FileNameIn"/>
+    <assign name="Transform">
+      <bpelx:annotation>
+        <bpelx:pattern>transformation</bpelx:pattern>
+      </bpelx:annotation>
+      <copy>
+        <from expression="ora:processXSLT('TransformationData.xsl',bpws:getVariableData('Receive_Get','Root-Element'))"/>
+        <to variable="InvokeXX_AP_SCR_RECEIVER_STGInsert"
+            part="XxApScrReceiverStgCollection"/>
+      </copy>
+    </assign>
+    <invoke name="InvokeXX_AP_SCR_RECEIVER_STGInsert"
+            partnerLink="XX_AP_SCR_RECEIVER_STGInsert"
+            portType="ns3:XX_AP_SCR_RECEIVER_STGInsert_ptt" operation="insert"
+            inputVariable="InvokeXX_AP_SCR_RECEIVER_STGInsert"/>
+  </sequence>
+</process>

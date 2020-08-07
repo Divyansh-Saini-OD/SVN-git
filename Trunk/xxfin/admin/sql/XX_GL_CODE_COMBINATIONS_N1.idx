@@ -1,0 +1,59 @@
+REM================================================================================================
+REM                                 Start Of Script
+REM================================================================================================
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     ON
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+-- +=======================================================================+
+-- |               Office Depot - Project Simplify                         |
+-- |      Oracle NAIO/Office Depot/Consulting Organization                 |
+-- +=======================================================================+
+-- | Name        : XX_GL_CODE_COMBINATIONS_N1	                           |
+-- | Description : Non-Unique Index on GL_CODE_COMBINATIONS                |
+-- |                                                                       |
+-- |Change History:                                                        |
+-- |---------------                                                        |
+-- |                                                                       |
+-- |Version  Date        Author             Remarks                        |
+-- |-------  ----------- -----------------  -------------------------------|
+-- | 1.0       29-JUL-2008   P.Suresh        Created.                      |
+-- +=======================================================================+
+WHENEVER SQLERROR CONTINUE
+
+-- ---------------------------------------------------
+-- Dropping existing index XX_GL_CODE_COMBINATIONS_N1
+-- ---------------------------------------------------
+
+-- DROP INDEX xxfin.XX_GL_CODE_COMBINATIONS_N1;
+
+WHENEVER SQLERROR CONTINUE
+
+PROMPT
+PROMPT Creating Index....
+PROMPT
+-- -------------------------------------------------
+-- Creating Index XX_GL_CODE_COMBINATIONS_N1
+-- -------------------------------------------------
+
+
+CREATE INDEX    XXFIN.XX_GL_CODE_COMBINATIONS_N1 
+ON              GL.GL_CODE_COMBINATIONS 
+                    (CODE_COMBINATION_ID, 
+		     ENABLED_FLAG, 
+		     SUMMARY_FLAG, 
+		     START_DATE_ACTIVE, 
+		     END_DATE_ACTIVE);
+
+
+
+
+SHOW ERRORS;
+
+EXIT;
+REM================================================================================================
+REM                                 Start Of Script
+REM================================================================================================

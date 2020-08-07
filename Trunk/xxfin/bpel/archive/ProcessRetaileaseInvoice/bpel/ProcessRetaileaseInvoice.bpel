@@ -1,0 +1,172 @@
+<?xml version = "1.0" encoding = "UTF-8" ?>
+<!--
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  Oracle JDeveloper BPEL Designer 
+  
+  Created: Mon Jul 16 14:44:30 EDT 2007
+  Author:  bsonai
+  Purpose: Empty BPEL Process
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+-->
+<process name="RetaileaseGSSProcess"
+         targetNamespace="http://xmlns.oracle.com/RetaileaseGSSProcess"
+         xmlns="http://schemas.xmlsoap.org/ws/2003/03/business-process/"
+         xmlns:bpws="http://schemas.xmlsoap.org/ws/2003/03/business-process/"
+         xmlns:xp20="http://www.oracle.com/XSL/Transform/java/oracle.tip.pc.services.functions.Xpath20"
+         xmlns:ns4="http://xmlns.oracle.com/ODErrorLogger"
+         xmlns:ns7="http://xmlns.oracle.com/bpel/workflow/xpath"
+         xmlns:ldap="http://schemas.oracle.com/xpath/extension/ldap"
+         xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+         xmlns:ns5="http://www.openapplications.org/oagis/9/officedepot/1"
+         xmlns:client="http://xmlns.oracle.com/RetaileaseGSSProcess"
+         xmlns:ns6="http://xmlns.oracle.com/pcbpel/adapter/ftp/"
+         xmlns:ora="http://schemas.oracle.com/xpath/extension"
+         xmlns:ns9="http://www.oracle.com/XSL/Transform/java/oracle.tip.esb.server.headers.ESBHeaderFunctions"
+         xmlns:ns1="http://xmlns.oracle.com/pcbpel/adapter/ftp/FTPRetailLease/"
+         xmlns:ns3="http://xmlns.oracle.com/ProcessInvoiceInbound_OAGIS"
+         xmlns:ns2="http://www.openapplications.org/oagis/9"
+         xmlns:bpelx="http://schemas.oracle.com/bpel/extension"
+         xmlns:orcl="http://www.oracle.com/XSL/Transform/java/oracle.tip.pc.services.functions.ExtFunc"
+         xmlns:ns15="ODError"
+         xmlns:ns8="http://xmlns.oracle.com/bpel/services/IdentityService/xpath">
+  <!-- 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+      PARTNERLINKS                                                      
+      List of services participating in this BPEL process               
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  -->
+  <partnerLinks>
+    <partnerLink myRole="Get_role" name="FTPRetailLease"
+                 partnerLinkType="ns1:Get_plt"/>
+    <partnerLink name="ProcessInvoiceInbound_OAGIS"
+                 partnerRole="ProcessInvoiceInbound_OAGISProvider"
+                 partnerLinkType="ns3:ProcessInvoiceInbound_OAGIS"/>
+    <partnerLink name="ODErrorLogger" partnerRole="ODErrorLoggerProvider"
+                 partnerLinkType="ns4:ODErrorLogger"/>
+  </partnerLinks>
+  <variables>
+    <variable name="RetaileaseIn" messageType="ns1:RetailLeases_msg"/>
+    <variable name="ProcessInvoiceInbound_OAGIS_In"
+              messageType="ns3:ProcessInvoiceInbound_OAGISRequestMessage"/>
+    <variable name="invkCatchAll_initiate"
+              messageType="ns4:ODErrorLoggerRequestMessage"/>
+    <variable name="FileName_In" messageType="ns6:InboundHeader_msg"/>
+    <variable name="ErrorMessageText" type="xsd:string"/>
+  </variables>
+  <faultHandlers>
+    <catchAll>
+      <sequence name="Sequence_4">
+        <assign name="asnCatchAll">
+          <copy>
+            <from expression="concat(&quot;Error encountered in ProcessRetailInvoice, while copying file &quot;, bpws:getVariableData('FileName_In','inboundHeader','/ns6:InboundFTPHeaderType/ns6:fileName'))"/>
+            <to variable="ErrorMessageText"/>
+          </copy>
+          <copy>
+            <from expression="ora:getProcessId()"/>
+            <to variable="invkCatchAll_initiate" part="payload"
+                query="/ns15:ErrorData/ns15:ProcessInfo/ns15:BusinessProcessName"/>
+          </copy>
+          <copy>
+            <from expression="ora:getInstanceId()"/>
+            <to variable="invkCatchAll_initiate" part="payload"
+                query="/ns15:ErrorData/ns15:ProcessInfo/ns15:BusinessProcessId"/>
+          </copy>
+          <copy>
+            <from expression="ora:getDomainId()"/>
+            <to variable="invkCatchAll_initiate" part="payload"
+                query="/ns15:ErrorData/ns15:ProcessInfo/ns15:BusinessProcessDomain"/>
+          </copy>
+          <copy>
+            <from expression="ora:getProcessURL()"/>
+            <to variable="invkCatchAll_initiate" part="payload"
+                query="/ns15:ErrorData/ns15:ProcessInfo/ns15:SystemName"/>
+          </copy>
+          <copy>
+            <from expression="xp20:current-dateTime()"/>
+            <to variable="invkCatchAll_initiate" part="payload"
+                query="/ns15:ErrorData/ns15:ErrorDetails/ns15:ErrorDateTime"/>
+          </copy>
+          <copy>
+            <from expression="'Catch All on the Main Sequence'"/>
+            <to variable="invkCatchAll_initiate" part="payload"
+                query="/ns15:ErrorData/ns15:ProcessInfo/ns15:BusinessProcessStep"/>
+          </copy>
+          <copy>
+            <from expression="ora:getFaultName()"/>
+            <to variable="invkCatchAll_initiate" part="payload"
+                query="/ns15:ErrorData/ns15:ErrorDetails/ns15:ErrorCode"/>
+          </copy>
+          <copy>
+            <from variable="ErrorMessageText"/>
+            <to variable="invkCatchAll_initiate" part="payload"
+                query="/ns15:ErrorData/ns15:ErrorDetails/ns15:ErrorDescription"/>
+          </copy>
+          <copy>
+            <from expression="ora:getFaultAsString()"/>
+            <to variable="invkCatchAll_initiate" part="payload"
+                query="/ns15:ErrorData/ns15:ErrorDetails/ns15:ErrorText"/>
+          </copy>
+          <copy>
+            <from expression="'system'"/>
+            <to variable="invkCatchAll_initiate" part="payload"
+                query="/ns15:ErrorData/ns15:ErrorDetails/ns15:ErrorType"/>
+          </copy>
+          <copy>
+            <from expression="'fatal'"/>
+            <to variable="invkCatchAll_initiate" part="payload"
+                query="/ns15:ErrorData/ns15:ErrorDetails/ns15:ErrorSeverity"/>
+          </copy>
+          <copy>
+            <from expression="ora:doc('${server_url}/xmllib/fin/GlobalParameters.xml','/GlobalParameters/FaultNotification/SendNotification')"/>
+            <to variable="invkCatchAll_initiate" part="payload"
+                query="/ns15:ErrorData/ns15:Notification/ns15:sendNotification"/>
+          </copy>
+        </assign>
+        <invoke name="invkCatchAll" partnerLink="ODErrorLogger"
+                portType="ns4:ODErrorLogger" operation="initiate"
+                inputVariable="invkCatchAll_initiate"/>
+        <terminate name="Terminate"/>
+      </sequence>
+    </catchAll>
+  </faultHandlers>
+  <!-- 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+      VARIABLES                                                        
+      List of messages and XML documents used within this BPEL process 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  -->
+  <!-- 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+     ORCHESTRATION LOGIC                                               
+     Set of activities coordinating the flow of messages across the    
+     services integrated within this business process                  
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  -->
+  <sequence name="main">
+    <scope name="ScopeInvokeProcessInvoice">
+      <variables>
+        <variable name="RemoteFaultVar"
+                  messageType="bpelx:RuntimeFaultMessage"/>
+      </variables>
+      <sequence name="Sequence_1">
+        <receive name="receive" createInstance="yes"
+                 partnerLink="FTPRetailLease" portType="ns1:Get_ptt"
+                 operation="Get" variable="RetaileaseIn"
+                 bpelx:headerVariable="FileName_In"/>
+        <assign name="Transform_1">
+          <bpelx:annotation>
+            <bpelx:pattern>transformation</bpelx:pattern>
+          </bpelx:annotation>
+          <copy>
+            <from expression="ora:processXSLT('Transformation_1.xsl',bpws:getVariableData('RetaileaseIn','RetailLeases'))"/>
+            <to variable="ProcessInvoiceInbound_OAGIS_In" part="payload"/>
+          </copy>
+        </assign>
+        <invoke name="Invoke_ProcessInvoiceInbound_OAGIS"
+                partnerLink="ProcessInvoiceInbound_OAGIS"
+                portType="ns3:ProcessInvoiceInbound_OAGIS" operation="initiate"
+                inputVariable="ProcessInvoiceInbound_OAGIS_In"/>
+      </sequence>
+    </scope>
+  </sequence>
+</process>

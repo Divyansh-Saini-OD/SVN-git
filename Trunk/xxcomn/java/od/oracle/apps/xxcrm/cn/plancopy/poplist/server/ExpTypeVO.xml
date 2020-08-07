@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding='windows-1252'?>
+<!DOCTYPE ViewObject SYSTEM "jbo_03_01.dtd">
+
+<ViewObject
+   Name="ExpTypeVO"
+   BindingStyle="Oracle"
+   CustomQuery="true"
+   RowClass="oracle.apps.fnd.framework.server.OAViewRowImpl"
+   ComponentClass="od.oracle.apps.xxcrm.cn.plancopy.poplist.server.ExpTypeVOImpl"
+   MsgBundleClass="oracle.jbo.common.JboResourceBundle"
+   UseGlueCode="false" >
+   <SQLQuery><![CDATA[
+SELECT 'Compensation Plans' AS EXPTYPE FROM DUAL
+UNION
+SELECT 'Rate Tables' AS EXPTYPE FROM DUAL
+   ]]></SQLQuery>
+   <DesignTime>
+      <Attr Name="_version" Value="9.0.3.12.53" />
+      <Attr Name="_CodeGenFlagNew" Value="36" />
+   </DesignTime>
+   <ViewAttribute
+      Name="Exptype"
+      IsPersistent="false"
+      Precision="18"
+      Type="java.lang.String"
+      AliasName="EXPTYPE"
+      ColumnType="VARCHAR2"
+      Expression="EXPTYPE"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="18" />
+      </DesignTime>
+   </ViewAttribute>
+</ViewObject>

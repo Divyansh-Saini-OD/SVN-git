@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions
+     name="ServiceOrderStatusInquiry"
+     targetNamespace="http://xmlns.oracle.com/ServiceOrderStatusInquiry"
+     xmlns="http://schemas.xmlsoap.org/wsdl/"
+     xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/"
+     xmlns:ns1="http://gsidev01/ServiceStatusInquiryWS.wsdl/types/"
+     xmlns:plnk="http://schemas.xmlsoap.org/ws/2003/05/partner-link/"
+     xmlns:ns2="http://gsidev01/ServiceStatusInquiryWS.wsdl/types/"
+     xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
+     xmlns:client="http://xmlns.oracle.com/ServiceOrderStatusInquiry"
+    >
+    <types>
+        <schema xmlns="http://www.w3.org/2001/XMLSchema">
+            <import namespace="http://gsidev01/ServiceStatusInquiryWS.wsdl/types/" schemaLocation="serviceStatusInquiry.xsd"/>
+        </schema>
+        <schema xmlns="http://www.w3.org/2001/XMLSchema">
+            <import namespace="http://gsidev01/ServiceStatusInquiryWS.wsdl/types/" schemaLocation="serviceStatusOut.xsd"/>
+        </schema>
+    </types>
+    <message name="ServiceOrderStatusInquiryRequestMessage">
+        <part name="payload" element="ns1:searchServicerequestElement"/>
+    </message>
+    <message name="ServiceOrderStatusInquiryResponseMessage">
+        <part name="payload" element="ns1:searchServicerequestElement"/>
+    </message>
+    <portType name="ServiceOrderStatusInquiry">
+        <operation name="process">
+            <input message="client:ServiceOrderStatusInquiryRequestMessage"/>
+            <output message="client:ServiceOrderStatusInquiryResponseMessage"/>
+        </operation>
+    </portType>
+    <binding name="ServiceOrderStatusInquiryBinding" type="client:ServiceOrderStatusInquiry">
+        <soap:binding transport="http://schemas.xmlsoap.org/soap/http"/>
+        <operation name="process">
+            <soap:operation style="document" soapAction="process"/>
+            <input>
+                <soap:body use="literal" namespace="http://xmlns.oracle.com/ServiceOrderStatusInquiry"/>
+            </input>
+            <output>
+                <soap:body use="literal" namespace="http://xmlns.oracle.com/ServiceOrderStatusInquiry"/>
+            </output>
+        </operation>
+    </binding>
+    <service name="ServiceOrderStatusInquiryService">
+        <port name="ServiceOrderStatusInquiryPort" binding="client:ServiceOrderStatusInquiryBinding">
+            <soap:address location="REPLACE_WITH_ACTUAL_URL"/>
+        </port>
+    </service>
+    <plnk:partnerLinkType name="ServiceOrderStatusInquiry">
+        <plnk:role name="ServiceOrderStatusInquiryProvider">
+            <plnk:portType name="client:ServiceOrderStatusInquiry"/>
+        </plnk:role>
+    </plnk:partnerLinkType>
+</definitions>

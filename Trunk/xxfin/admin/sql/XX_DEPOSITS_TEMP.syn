@@ -1,0 +1,26 @@
+-- +============================================================================+
+-- |                  Office Depot                                              |
+-- +============================================================================+
+-- | Name        : XX_DEPOSITS_TEMP.syn                                         |
+-- | Rice ID     : E2059                                                        |
+-- | Description : Synonym for Table XX_DEPOSITS_TEMP                           |
+-- |                                                                            |
+-- |Change Record:                                                              |
+-- |===============                                                             |
+-- |Version   Date        Author           Remarks                              |
+-- |=======  ===========  =============    =====================================|
+-- |1.0      20-JAN-2016  Suresh Naragam   Initial Version                      |
+-- +============================================================================+
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     ON
+
+PROMPT
+PROMPT Creating Synonym XX_DEPOSITS_TEMP in APPS.....
+PROMPT
+
+CREATE OR REPLACE SYNONYM XX_DEPOSITS_TEMP FOR xxfin.XX_DEPOSITS_TEMP;
+
+SHOW ERROR;

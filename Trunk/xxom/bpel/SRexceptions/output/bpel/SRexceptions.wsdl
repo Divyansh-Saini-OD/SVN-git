@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions name="SRexceptions"
+             targetNamespace="http://xmlns.oracle.com/SRexceptions"
+             xmlns="http://schemas.xmlsoap.org/wsdl/"
+             xmlns:client="http://xmlns.oracle.com/SRexceptions"
+             xmlns:ns1="ODSRExceptions"
+             xmlns:plnk="http://schemas.xmlsoap.org/ws/2003/05/partner-link/">
+
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	TYPE DEFINITION - List of services participating in this BPEL process
+	The default output of the BPEL designer uses strings as input and 
+	output to the BPEL Process. But you can define or import any XML 
+	Schema type and use them as part of the message types.
+	~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->   
+	<types>
+		<schema xmlns="http://www.w3.org/2001/XMLSchema">
+			<import namespace="ODSRExceptions" schemaLocation="ODSRExceptions.xsd" />
+		</schema>
+	</types>
+
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	MESSAGE TYPE DEFINITION - Definition of the message types used as 
+	part of the port type defintions
+	~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->      
+	<message name="SRexceptionsRequestMessage">
+		<part name="payload" element="ns1:ExceptionData" />
+	</message>
+
+	<message name="SRexceptionsResponseMessage">
+		<part name="payload" element="ns1:ExceptionData" />
+	</message>
+
+
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	PORT TYPE DEFINITION - A port type groups a set of operations into
+	a logical service unit.
+	~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<!-- portType implemented by the SRexceptions BPEL process -->
+	<portType name="SRexceptions">
+		<operation name="initiate">
+			<input message="client:SRexceptionsRequestMessage"/>
+		</operation>
+	</portType>
+
+	<!-- portType implemented by the requester of SRexceptions BPEL process
+	for asynchronous callback purposes
+	-->
+	<portType name="SRexceptionsCallback">
+		<operation name="onResult">
+			<input message="client:SRexceptionsResponseMessage"/>
+		</operation>
+	</portType>
+
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	PARTNER LINK TYPE DEFINITION
+	the SRexceptions partnerLinkType binds the provider and
+	requester portType into an asynchronous conversation.
+	~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<plnk:partnerLinkType name="SRexceptions">
+		<plnk:role name="SRexceptionsProvider">
+			<plnk:portType name="client:SRexceptions"/>
+		</plnk:role>
+		<plnk:role name="SRexceptionsRequester">
+			<plnk:portType name="client:SRexceptionsCallback"/>
+		</plnk:role>
+	</plnk:partnerLinkType>
+</definitions>

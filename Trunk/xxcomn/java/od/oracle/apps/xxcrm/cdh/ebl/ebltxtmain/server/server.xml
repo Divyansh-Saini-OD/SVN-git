@@ -1,0 +1,67 @@
+<?xml version='1.0' encoding='windows-1252' ?>
+<!DOCTYPE JboPackage SYSTEM "jbo_03_01.dtd">
+
+<JboPackage
+   Name="server"
+   SeparateXMLFiles="true"
+   PackageName="od.oracle.apps.xxcrm.cdh.ebl.ebltxtmain.server" >
+   <DesignTime>
+      <Attr Name="_ejbPackage" Value="false" />
+      <Attr Name="_version" Value="10.1.3.41.57" />
+   </DesignTime>
+   <Containee
+      Name="ODEBillConcatenateVO"
+      FullName="od.oracle.apps.xxcrm.cdh.ebl.ebltxtmain.server.ODEBillConcatenateVO"
+      ObjectType="ViewObject" >
+   </Containee>
+   <Containee
+      Name="ODEBillPPRVO"
+      FullName="od.oracle.apps.xxcrm.cdh.ebl.ebltxtmain.server.ODEBillPPRVO"
+      ObjectType="ViewObject" >
+   </Containee>
+   <Containee
+      Name="ODEBillSplitVO"
+      FullName="od.oracle.apps.xxcrm.cdh.ebl.ebltxtmain.server.ODEBillSplitVO"
+      ObjectType="ViewObject" >
+   </Containee>
+   <Containee
+      Name="ODEBillTemplDtlTxtVO"
+      FullName="od.oracle.apps.xxcrm.cdh.ebl.ebltxtmain.server.ODEBillTemplDtlTxtVO"
+      ObjectType="ViewObject" >
+   </Containee>
+   <Containee
+      Name="ODEBillTemplHdrTxtVO"
+      FullName="od.oracle.apps.xxcrm.cdh.ebl.ebltxtmain.server.ODEBillTemplHdrTxtVO"
+      ObjectType="ViewObject" >
+   </Containee>
+   <Containee
+      Name="ODEBillTemplTrlTxtVO"
+      FullName="od.oracle.apps.xxcrm.cdh.ebl.ebltxtmain.server.ODEBillTemplTrlTxtVO"
+      ObjectType="ViewObject" >
+   </Containee>
+   <Containee
+      Name="ODEBillTxtAM"
+      FullName="od.oracle.apps.xxcrm.cdh.ebl.ebltxtmain.server.ODEBillTxtAM"
+      ObjectType="AppModule" >
+   </Containee>
+   <Containee
+      Name="ODEBillTxtCommonVO"
+      FullName="od.oracle.apps.xxcrm.cdh.ebl.ebltxtmain.server.ODEBillTxtCommonVO"
+      ObjectType="ViewObject" >
+   </Containee>
+   <Containee
+      Name="ODEBillTxtDtlFieldsVO"
+      FullName="od.oracle.apps.xxcrm.cdh.ebl.ebltxtmain.server.ODEBillTxtDtlFieldsVO"
+      ObjectType="ViewObject" >
+   </Containee>
+   <Containee
+      Name="ODEBillTxtHdrFieldsVO"
+      FullName="od.oracle.apps.xxcrm.cdh.ebl.ebltxtmain.server.ODEBillTxtHdrFieldsVO"
+      ObjectType="ViewObject" >
+   </Containee>
+   <Containee
+      Name="ODEBillTxtTrlFieldsVO"
+      FullName="od.oracle.apps.xxcrm.cdh.ebl.ebltxtmain.server.ODEBillTxtTrlFieldsVO"
+      ObjectType="ViewObject" >
+   </Containee>
+</JboPackage>

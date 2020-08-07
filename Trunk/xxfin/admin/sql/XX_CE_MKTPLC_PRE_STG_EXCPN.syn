@@ -1,0 +1,31 @@
+SET VERIFY OFF;
+SET SHOW OFF;
+SET ECHO OFF;
+SET TAB OFF;
+SET FEEDBACK OFF;
+ 
+WHENEVER SQLERROR CONTINUE;
+ 
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+-- +===========================================================================+
+-- |                  Office Depot - Project Simplify                          |
+-- +===========================================================================+
+-- | Name :          XX_CE_MKTPLC_PRE_STG_EXCPN                           |
+-- | Description :   Script to create synonym for 
+-- |                                   XX_CE_MKTPLC_PRE_STG_EXCPN  table |
+-- |                                                                           |
+-- |   RICE_ID:I3123                                                         |
+-- |Change Record:                                                             |
+-- |===============                                                            |
+-- |Version      Date           Author                  Remarks                |
+-- |=======    ==========     =============             ====================== |
+-- | DRAFT 1.0 8-AUG-2018   Priyam P               Initial draft version    |
+-- +===========================================================================+
+
+ 
+
+Create  or replace synonym XX_CE_MKTPLC_PRE_STG_EXCPN for XXFIN.XX_CE_MKTPLC_PRE_STG_EXCPN;
+
+ 
+Show error

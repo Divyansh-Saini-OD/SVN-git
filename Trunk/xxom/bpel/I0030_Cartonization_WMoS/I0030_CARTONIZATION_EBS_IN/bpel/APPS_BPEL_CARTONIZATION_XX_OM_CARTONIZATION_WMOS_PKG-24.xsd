@@ -1,0 +1,357 @@
+<schema targetNamespace="http://xmlns.oracle.com/pcbpel/adapter/db/APPS/BPEL_CARTONIZATION/XX_OM_CARTONIZATION_WMOS_PKG-24/" xmlns="http://www.w3.org/2001/XMLSchema" xmlns:db="http://xmlns.oracle.com/pcbpel/adapter/db/APPS/BPEL_CARTONIZATION/XX_OM_CARTONIZATION_WMOS_PKG-24/">
+   <element name="InputParameters">
+      <complexType>
+         <sequence>
+            <element name="P_SHOWSHIPUNIT_FIRSTLVL_TBL" type="db:XX_OM_CARTONIZATION_WMOS_PKG_" db:index="1" db:type="Array" minOccurs="0" nillable="true"/>
+         </sequence>
+      </complexType>
+   </element>
+   <element name="OutputParameters">
+      <complexType>
+         <sequence>
+            <element name="O_STATUS" type="string" db:index="2" db:type="VARCHAR2" minOccurs="0" nillable="true"/>
+            <element name="O_ERRCODE" type="decimal" db:index="3" db:type="NUMBER" minOccurs="0" nillable="true"/>
+         </sequence>
+      </complexType>
+   </element>
+   <complexType name="XX_OM_CARTONIZATION_WMOS_PKG5">
+      <sequence>
+         <element name="CONTAINER_ID" type="decimal" db:type="NUMBER" minOccurs="0" nillable="true"/>
+         <element name="DELIVERY_NUMBER" type="decimal" db:type="NUMBER" minOccurs="0" nillable="true"/>
+         <element name="DELIVERY_DETAIL_ID" type="decimal" db:type="NUMBER" minOccurs="0" nillable="true"/>
+         <element name="CONTAINERLINENUM" type="decimal" db:type="NUMBER" minOccurs="0" nillable="true"/>
+         <element name="INVENTORY_ITEM_ID" type="decimal" db:type="NUMBER" minOccurs="0" nillable="true"/>
+         <element name="REQUESTED_QUANTITY" type="decimal" db:type="NUMBER" minOccurs="0" nillable="true"/>
+         <element name="SPL_INSTR_CODE_1" db:type="VARCHAR2" minOccurs="0" nillable="true">
+            <simpleType>
+               <restriction base="string">
+                  <maxLength value="2000"/>
+               </restriction>
+            </simpleType>
+         </element>
+         <element name="SPL_INSTR_CODE_2" db:type="VARCHAR2" minOccurs="0" nillable="true">
+            <simpleType>
+               <restriction base="string">
+                  <maxLength value="2000"/>
+               </restriction>
+            </simpleType>
+         </element>
+         <element name="SPL_INSTR_CODE_3" db:type="VARCHAR2" minOccurs="0" nillable="true">
+            <simpleType>
+               <restriction base="string">
+                  <maxLength value="2000"/>
+               </restriction>
+            </simpleType>
+         </element>
+         <element name="SPL_INSTR_CODE_4" db:type="VARCHAR2" minOccurs="0" nillable="true">
+            <simpleType>
+               <restriction base="string">
+                  <maxLength value="2000"/>
+               </restriction>
+            </simpleType>
+         </element>
+         <element name="SPL_INSTR_CODE_5" db:type="VARCHAR2" minOccurs="0" nillable="true">
+            <simpleType>
+               <restriction base="string">
+                  <maxLength value="2000"/>
+               </restriction>
+            </simpleType>
+         </element>
+         <element name="SPL_INSTR_CODE_6" db:type="VARCHAR2" minOccurs="0" nillable="true">
+            <simpleType>
+               <restriction base="string">
+                  <maxLength value="2000"/>
+               </restriction>
+            </simpleType>
+         </element>
+         <element name="SPL_INSTR_CODE_7" db:type="VARCHAR2" minOccurs="0" nillable="true">
+            <simpleType>
+               <restriction base="string">
+                  <maxLength value="2000"/>
+               </restriction>
+            </simpleType>
+         </element>
+         <element name="SPL_INSTR_CODE_8" db:type="VARCHAR2" minOccurs="0" nillable="true">
+            <simpleType>
+               <restriction base="string">
+                  <maxLength value="2000"/>
+               </restriction>
+            </simpleType>
+         </element>
+         <element name="SPL_INSTR_CODE_9" db:type="VARCHAR2" minOccurs="0" nillable="true">
+            <simpleType>
+               <restriction base="string">
+                  <maxLength value="2000"/>
+               </restriction>
+            </simpleType>
+         </element>
+         <element name="SPL_INSTR_CODE_10" db:type="VARCHAR2" minOccurs="0" nillable="true">
+            <simpleType>
+               <restriction base="string">
+                  <maxLength value="2000"/>
+               </restriction>
+            </simpleType>
+         </element>
+         <element name="SEASON" db:type="VARCHAR2" minOccurs="0" nillable="true">
+            <simpleType>
+               <restriction base="string">
+                  <maxLength value="200"/>
+               </restriction>
+            </simpleType>
+         </element>
+         <element name="SEASON_YR" db:type="VARCHAR2" minOccurs="0" nillable="true">
+            <simpleType>
+               <restriction base="string">
+                  <maxLength value="200"/>
+               </restriction>
+            </simpleType>
+         </element>
+         <element name="STYLE" db:type="VARCHAR2" minOccurs="0" nillable="true">
+            <simpleType>
+               <restriction base="string">
+                  <maxLength value="200"/>
+               </restriction>
+            </simpleType>
+         </element>
+         <element name="STYLESFX" db:type="VARCHAR2" minOccurs="0" nillable="true">
+            <simpleType>
+               <restriction base="string">
+                  <maxLength value="200"/>
+               </restriction>
+            </simpleType>
+         </element>
+         <element name="COLOR" db:type="VARCHAR2" minOccurs="0" nillable="true">
+            <simpleType>
+               <restriction base="string">
+                  <maxLength value="200"/>
+               </restriction>
+            </simpleType>
+         </element>
+         <element name="COLORSFX" db:type="VARCHAR2" minOccurs="0" nillable="true">
+            <simpleType>
+               <restriction base="string">
+                  <maxLength value="200"/>
+               </restriction>
+            </simpleType>
+         </element>
+         <element name="SECDIM" db:type="VARCHAR2" minOccurs="0" nillable="true">
+            <simpleType>
+               <restriction base="string">
+                  <maxLength value="200"/>
+               </restriction>
+            </simpleType>
+         </element>
+         <element name="QUAL" db:type="VARCHAR2" minOccurs="0" nillable="true">
+            <simpleType>
+               <restriction base="string">
+                  <maxLength value="200"/>
+               </restriction>
+            </simpleType>
+         </element>
+         <element name="SIZEDESC" db:type="VARCHAR2" minOccurs="0" nillable="true">
+            <simpleType>
+               <restriction base="string">
+                  <maxLength value="200"/>
+               </restriction>
+            </simpleType>
+         </element>
+         <element name="PROCSTATCODE" type="decimal" db:type="NUMBER" minOccurs="0" nillable="true"/>
+         <element name="PROCDATETIME" type="dateTime" db:type="DATE" minOccurs="0" nillable="true"/>
+      </sequence>
+   </complexType>
+   <complexType name="XX_OM_CARTONIZATION_WMOS_PKG1">
+      <sequence>
+         <element name="DELIVERY_ID" type="decimal" db:type="NUMBER" minOccurs="0" nillable="true"/>
+         <element name="NUMBER_OF_LPN" type="decimal" db:type="NUMBER" minOccurs="0" nillable="true"/>
+         <element name="GROSS_WEIGHT" type="decimal" db:type="NUMBER" minOccurs="0" nillable="true"/>
+         <element name="VOLUME" type="decimal" db:type="NUMBER" minOccurs="0" nillable="true"/>
+         <element name="SPL_INSTR_CODE_1" db:type="VARCHAR2" minOccurs="0" nillable="true">
+            <simpleType>
+               <restriction base="string">
+                  <maxLength value="2000"/>
+               </restriction>
+            </simpleType>
+         </element>
+         <element name="SPL_INSTR_CODE_2" db:type="VARCHAR2" minOccurs="0" nillable="true">
+            <simpleType>
+               <restriction base="string">
+                  <maxLength value="2000"/>
+               </restriction>
+            </simpleType>
+         </element>
+         <element name="SPL_INSTR_CODE_3" db:type="VARCHAR2" minOccurs="0" nillable="true">
+            <simpleType>
+               <restriction base="string">
+                  <maxLength value="2000"/>
+               </restriction>
+            </simpleType>
+         </element>
+         <element name="SPL_INSTR_CODE_4" db:type="VARCHAR2" minOccurs="0" nillable="true">
+            <simpleType>
+               <restriction base="string">
+                  <maxLength value="2000"/>
+               </restriction>
+            </simpleType>
+         </element>
+         <element name="SPL_INSTR_CODE_5" db:type="VARCHAR2" minOccurs="0" nillable="true">
+            <simpleType>
+               <restriction base="string">
+                  <maxLength value="2000"/>
+               </restriction>
+            </simpleType>
+         </element>
+         <element name="SPL_INSTR_CODE_6" db:type="VARCHAR2" minOccurs="0" nillable="true">
+            <simpleType>
+               <restriction base="string">
+                  <maxLength value="2000"/>
+               </restriction>
+            </simpleType>
+         </element>
+         <element name="SPL_INSTR_CODE_7" db:type="VARCHAR2" minOccurs="0" nillable="true">
+            <simpleType>
+               <restriction base="string">
+                  <maxLength value="2000"/>
+               </restriction>
+            </simpleType>
+         </element>
+         <element name="SPL_INSTR_CODE_8" db:type="VARCHAR2" minOccurs="0" nillable="true">
+            <simpleType>
+               <restriction base="string">
+                  <maxLength value="2000"/>
+               </restriction>
+            </simpleType>
+         </element>
+         <element name="SPL_INSTR_CODE_9" db:type="VARCHAR2" minOccurs="0" nillable="true">
+            <simpleType>
+               <restriction base="string">
+                  <maxLength value="2000"/>
+               </restriction>
+            </simpleType>
+         </element>
+         <element name="SPL_INSTR_CODE_10" db:type="VARCHAR2" minOccurs="0" nillable="true">
+            <simpleType>
+               <restriction base="string">
+                  <maxLength value="2000"/>
+               </restriction>
+            </simpleType>
+         </element>
+         <element name="PROCSTATCODE" type="decimal" db:type="NUMBER" minOccurs="0" nillable="true"/>
+         <element name="PROCDATETIME" type="dateTime" db:type="DATE" minOccurs="0" nillable="true"/>
+         <element name="LT_SHOWSHIPUNIT_SECLVL_TBL" type="db:XXOMCARTONIZATIONWMOSPKG1_XX_" db:type="Array" minOccurs="0" nillable="true"/>
+      </sequence>
+   </complexType>
+   <complexType name="XXOMCARTONIZATIONWMOSPKG1_XX_">
+      <sequence>
+         <element name="LT_SHOWSHIPUNIT_SECLVL_TBL_ITEM" type="db:XX_OM_CARTONIZATION_WMOS_PKG3" db:type="Struct" minOccurs="0" maxOccurs="unbounded" nillable="true"/>
+      </sequence>
+   </complexType>
+   <complexType name="XX_OM_CARTONIZATION_WMOS_PKG3">
+      <sequence>
+         <element name="CONTAINER_ID" type="decimal" db:type="NUMBER" minOccurs="0" nillable="true"/>
+         <element name="DELIVERY_ID" type="decimal" db:type="NUMBER" minOccurs="0" nillable="true"/>
+         <element name="GROSS_WEIGHT" type="decimal" db:type="NUMBER" minOccurs="0" nillable="true"/>
+         <element name="VOLUME" type="decimal" db:type="NUMBER" minOccurs="0" nillable="true"/>
+         <element name="LENGTH" type="decimal" db:type="NUMBER" minOccurs="0" nillable="true"/>
+         <element name="WIDTH" type="decimal" db:type="NUMBER" minOccurs="0" nillable="true"/>
+         <element name="HEIGHT" type="decimal" db:type="NUMBER" minOccurs="0" nillable="true"/>
+         <element name="CARTON_TYPE" db:type="VARCHAR2" minOccurs="0" nillable="true">
+            <simpleType>
+               <restriction base="string">
+                  <maxLength value="200"/>
+               </restriction>
+            </simpleType>
+         </element>
+         <element name="CARTON_SIZE" db:type="VARCHAR2" minOccurs="0" nillable="true">
+            <simpleType>
+               <restriction base="string">
+                  <maxLength value="200"/>
+               </restriction>
+            </simpleType>
+         </element>
+         <element name="POSTMASTER" type="decimal" db:type="NUMBER" minOccurs="0" nillable="true"/>
+         <element name="SPL_INSTR_CODE_1" db:type="VARCHAR2" minOccurs="0" nillable="true">
+            <simpleType>
+               <restriction base="string">
+                  <maxLength value="2000"/>
+               </restriction>
+            </simpleType>
+         </element>
+         <element name="SPL_INSTR_CODE_2" db:type="VARCHAR2" minOccurs="0" nillable="true">
+            <simpleType>
+               <restriction base="string">
+                  <maxLength value="2000"/>
+               </restriction>
+            </simpleType>
+         </element>
+         <element name="SPL_INSTR_CODE_3" db:type="VARCHAR2" minOccurs="0" nillable="true">
+            <simpleType>
+               <restriction base="string">
+                  <maxLength value="2000"/>
+               </restriction>
+            </simpleType>
+         </element>
+         <element name="SPL_INSTR_CODE_4" db:type="VARCHAR2" minOccurs="0" nillable="true">
+            <simpleType>
+               <restriction base="string">
+                  <maxLength value="2000"/>
+               </restriction>
+            </simpleType>
+         </element>
+         <element name="SPL_INSTR_CODE_5" db:type="VARCHAR2" minOccurs="0" nillable="true">
+            <simpleType>
+               <restriction base="string">
+                  <maxLength value="2000"/>
+               </restriction>
+            </simpleType>
+         </element>
+         <element name="SPL_INSTR_CODE_6" db:type="VARCHAR2" minOccurs="0" nillable="true">
+            <simpleType>
+               <restriction base="string">
+                  <maxLength value="2000"/>
+               </restriction>
+            </simpleType>
+         </element>
+         <element name="SPL_INSTR_CODE_7" db:type="VARCHAR2" minOccurs="0" nillable="true">
+            <simpleType>
+               <restriction base="string">
+                  <maxLength value="2000"/>
+               </restriction>
+            </simpleType>
+         </element>
+         <element name="SPL_INSTR_CODE_8" db:type="VARCHAR2" minOccurs="0" nillable="true">
+            <simpleType>
+               <restriction base="string">
+                  <maxLength value="2000"/>
+               </restriction>
+            </simpleType>
+         </element>
+         <element name="SPL_INSTR_CODE_9" db:type="VARCHAR2" minOccurs="0" nillable="true">
+            <simpleType>
+               <restriction base="string">
+                  <maxLength value="2000"/>
+               </restriction>
+            </simpleType>
+         </element>
+         <element name="SPL_INSTR_CODE_10" db:type="VARCHAR2" minOccurs="0" nillable="true">
+            <simpleType>
+               <restriction base="string">
+                  <maxLength value="2000"/>
+               </restriction>
+            </simpleType>
+         </element>
+         <element name="PROCSTATCODE" type="decimal" db:type="NUMBER" minOccurs="0" nillable="true"/>
+         <element name="PROCDATETIME" type="dateTime" db:type="DATE" minOccurs="0" nillable="true"/>
+         <element name="LT_SHOWSHIPUNIT_THIRDLVL_TBL" type="db:XXOMCARTONIZATIONWMOSPKG3_XX_" db:type="Array" minOccurs="0" nillable="true"/>
+      </sequence>
+   </complexType>
+   <complexType name="XXOMCARTONIZATIONWMOSPKG3_XX_">
+      <sequence>
+         <element name="LT_SHOWSHIPUNIT_THIRDLVL_TBL_ITEM" type="db:XX_OM_CARTONIZATION_WMOS_PKG5" db:type="Struct" minOccurs="0" maxOccurs="unbounded" nillable="true"/>
+      </sequence>
+   </complexType>
+   <complexType name="XX_OM_CARTONIZATION_WMOS_PKG_">
+      <sequence>
+         <element name="P_SHOWSHIPUNIT_FIRSTLVL_TBL_ITEM" type="db:XX_OM_CARTONIZATION_WMOS_PKG1" db:type="Struct" minOccurs="0" maxOccurs="unbounded" nillable="true"/>
+      </sequence>
+   </complexType>
+</schema>

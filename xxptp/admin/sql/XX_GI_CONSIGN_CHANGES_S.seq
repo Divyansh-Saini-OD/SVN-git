@@ -1,0 +1,64 @@
+REM============================================================================================
+REM                                 Start Of Script                                            
+REM============================================================================================
+
+--+=============================================================================================+--
+--|                                                                                             |--
+--| Object Name    : E0384b ConsignmentConversionCapture                                        |--
+--|                                                                                             |--
+--| Program Name   : XX_GI_CONSIGN_CHANGES_S.seq                                                |--        
+--|                                                                                             |--   
+--| Purpose        : Create Custom Sequences.                                                   |--
+--|                  The Objects created are:                                                   |--
+--|                                                                                             |--
+--|                  1. XX_GI_CONSIGN_CHANGES_S(Sequence for generation of CHANGE_ID)           |--  
+--|                                                                                             |-- 
+--| Change History  :                                                                           |--
+--| Version           Date             Changed By              Description                      |--
+--+=============================================================================================+--
+--| 1.0              08-OCT-2007       Madhukar Salunke        Original                         |--
+--+=============================================================================================+-- 
+
+SET VERIFY   OFF
+SET TERM     ON
+SET FEEDBACK OFF
+SET SHOW     OFF
+SET ECHO     OFF
+SET TAB      OFF
+				   
+WHENEVER SQLERROR CONTINUE
+
+PROMPT
+PROMPT Dropping Existing Custom Sequences......
+PROMPT
+
+WHENEVER SQLERROR CONTINUE
+
+PROMPT
+PROMPT Dropping Sequence XX_GI_CONSIGN_CHANGES_S......
+PROMPT
+
+DROP SEQUENCE XX_GI_CONSIGN_CHANGES_S;
+
+WHENEVER SQLERROR CONTINUE
+
+PROMPT
+PROMPT Creating Custom Sequence XX_GI_CONSIGN_CHANGES_S
+PROMPT
+
+CREATE SEQUENCE XXPTP.XX_GI_CONSIGN_CHANGES_S INCREMENT BY 1 START WITH 1 NOCACHE NOORDER;
+
+WHENEVER SQLERROR CONTINUE
+
+PROMPT
+PROMPT Exiting....
+PROMPT
+
+SET FEEDBACK ON
+
+EXIT;
+
+REM=================================================================================================
+REM                                   End Of Script                                            
+REM=================================================================================================
+

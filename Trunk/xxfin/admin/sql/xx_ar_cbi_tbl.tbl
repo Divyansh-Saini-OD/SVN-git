@@ -1,0 +1,98 @@
+-- +=====================================================================+
+-- |                  Office Depot - Project Simplify                    |
+-- |                       Providge Consulting                           |
+-- +=====================================================================+
+-- |                                                                     |
+-- | Description :E0286 CERTEGY CONTROL TOTALS                           |
+-- |                                                                     |
+-- |                                                                     |
+-- |Change Record:                                                       |
+-- |===============                                                      |
+-- |Version   Date              Author              Remarks              |
+-- |======   ==========     =============        ======================= |
+-- |1.0       03-JUN-2008   Balaguru Seshadri,   Created Base version    |
+-- |                        Providge Consulting                          |
+-- |                                                                     |
+-- +=====================================================================+
+create table xxfin.xx_ar_cbi_trx_all
+( request_id             number,
+  cons_inv_id            number,
+  customer_trx_id        number,
+  order_header_id        number,  
+  inv_number             varchar2(20 byte),
+  inv_type               varchar2(20 byte),
+  inv_source_id          number,
+  inv_source_name        varchar2(50 byte),
+  order_date             date,
+  ship_date              date,
+  sfhdr1                 varchar2(30),
+  sfdata1                varchar2(30),
+  sfhdr2                 varchar2(30),
+  sfdata2                varchar2(30),
+  sfhdr3                 varchar2(30),
+  sfdata3                varchar2(30),
+  sfhdr4                 varchar2(30),
+  sfdata4                varchar2(30),
+  sfhdr5                 varchar2(30),
+  sfdata5                varchar2(30),  
+  sfhdr6                 varchar2(30),
+  sfdata6                varchar2(30),
+  subtotal_amount        number,
+  delivery_charges       number,
+  promo_and_disc         number,
+  tax_code               varchar2(20 byte),
+  tax_amount             number,  
+  cad_county_tax_code    varchar2(20 byte),
+  cad_county_tax_amount  number,
+  cad_state_tax_code     varchar2(20 byte),
+  cad_state_tax_amount   number,
+  insert_seq             number,
+  attribute1             varchar2(150),
+  attribute2             varchar2(150),
+  attribute3             varchar2(150),
+  attribute4             varchar2(150),
+  attribute5             varchar2(150),
+  attribute6             varchar2(150),
+  attribute7             varchar2(150),
+  attribute8             varchar2(150),
+  attribute9             varchar2(150),
+  attribute10             varchar2(150),
+  attribute11             varchar2(150),                    
+  attribute12             varchar2(150),
+  attribute13             varchar2(150),
+  attribute14             varchar2(150),
+  attribute15             varchar2(150),        
+  org_id                 number  default to_number(decode(substrb(userenv('client_info'),1,1),' ',null,substrb(userenv('client_info'),1,10)))
+)
+/
+create table xxfin.xx_ar_cbi_trx_lines_all
+(
+  request_id             number,
+  cons_inv_id            number,  
+  customer_trx_id        number,
+  line_seq               number,
+  item_code              varchar2(80),
+  customer_product_code  varchar2(80),
+  item_description       varchar2(80),
+  manuf_code             varchar2(80),
+  qty                    number,
+  uom                    varchar2(3),
+  unit_price             number,
+  extended_price         number,
+  org_id                 number default to_number(decode(substrb(userenv('client_info'),1,1),' ',null,substrb(userenv('client_info'),1,10)))                 
+) 
+/ 
+create table xxfin.xx_ar_cbi_trx_totals_all
+(
+  request_id             number,
+  cons_inv_id            number,  
+  customer_trx_id        number,
+  line_type              varchar2(20),
+  line_seq               number,
+  trx_number             varchar2(30),
+  sf_text                varchar2(80 byte),
+  sf_amount              number,
+  page_break             VARCHAR2(1),
+  order_count            NUMBER,
+  org_id                 number default to_number(decode(substrb(userenv('client_info'),1,1),' ',null,substrb(userenv('client_info'),1,10)))                 
+); 

@@ -1,0 +1,16 @@
+<!--Added for R1.2 Defect # 3075(CR 665)-->
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<customization xmlns="http://xmlns.oracle.com/jrad" version="9.0.5.4.89_560" xml:lang="en-US" customizes="/oracle/apps/ar/irec/accountDetails/webui/ARIACCTDETAILSPAGE" developerMode="true" xmlns:user="http://xmlns.oracle.com/jrad/user" user:responsibilityKey="xx_od_ca_irec_cs" user:responsibilityAppId="222">
+   <modifications>
+      <modify element="debTrxApplyCredits" rendered="false"/>
+      <modify element="cmApplyCredits" rendered="false"/>
+      <modify element="pmtApplyCredits" rendered="false"/>
+      <modify element="dmApplyCredits" rendered="false"/>
+      <modify element="depApplyCredits" rendered="false"/>
+      <modify element="CustApplyCredits" rendered="false"/>
+      <modify element="ApplyCredits" rendered="false"/>
+      <modify element="discApplyCredits" rendered="false"/>
+      <modify element="cbApplyCredits" rendered="false"/>
+      <modify element="guarApplyCredits" rendered="false"/>
+   </modifications>
+</customization>

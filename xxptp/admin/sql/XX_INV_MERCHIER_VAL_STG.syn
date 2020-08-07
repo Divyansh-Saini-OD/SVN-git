@@ -1,0 +1,71 @@
+REM============================================================================================
+REM                                 Start Of Script
+REM============================================================================================
+
+--+=============================================================================================+--
+--|                                                                                             |--
+--| Object Name    : OD C0273, Merchandising Hierarchy                                          |--
+--|                                                                                             |--
+--| Program Name   : XX_INV_MERCHIER_VAL_STG.syn                                                |--
+--|                                                                                             |--
+--| Purpose        : Create Custom Synonyms                                                     |--
+--|                  The Objects created are:                                                   |--
+--|                                                                                             |--
+--|                1. XX_INV_MERCHIER_VAL_STG (Synonym for table XX_INV_MERCHIER_VAL_STG)       |--
+--|                                                                                             |--
+--| Change History  :                                                                           |--
+--| Version           Date             Changed By              Description                      |--
+--+=============================================================================================+--
+--| 1.0              29-Jun-2007       Gowri Nagarajan         Original                         |--
+--| 1.1              29-Jun-2007       Parvez Siddiqui         TL Reviewed                      |--
+--+=============================================================================================+--
+
+SET VERIFY   OFF
+SET TERM     ON
+SET FEEDBACK OFF
+SET SHOW     OFF
+SET ECHO     OFF
+SET TAB      OFF
+
+WHENEVER SQLERROR CONTINUE
+                   
+PROMPT             
+PROMPT Dropping Existing Synonyms for Custom Base Tables......
+PROMPT             
+                   
+WHENEVER SQLERROR CONTINUE
+
+PROMPT
+PROMPT Dropping SYNONYM XX_INV_MERCHIER_VAL_STG in APPS
+PROMPT
+
+DROP SYNONYM XX_INV_MERCHIER_VAL_STG ;
+
+WHENEVER SQLERROR CONTINUE
+
+PROMPT
+PROMPT Creating Synonym in APPS...
+PROMPT
+
+WHENEVER SQLERROR CONTINUE
+
+PROMPT
+PROMPT Creating SYNONYM XX_INV_MERCHIER_VAL_STG
+PROMPT
+
+CREATE OR REPLACE SYNONYM XX_INV_MERCHIER_VAL_STG FOR XXCNV.XX_INV_MERCHIER_VAL_STG;
+
+WHENEVER SQLERROR CONTINUE
+
+PROMPT
+PROMPT Exiting....
+PROMPT
+
+SET FEEDBACK ON
+
+EXIT;
+
+REM=================================================================================================
+REM                                   End Of Script                                            
+REM=================================================================================================
+

@@ -1,0 +1,58 @@
+REM============================================================================================
+REM                                 Start Of Script                                            
+REM============================================================================================
+
+--+=============================================================================================+--
+--|                                                                                             |--
+--| Object Name    : OD E0323 UpdatePriceRetroactively                                          |--
+--|                                                                                             |--
+--| Program Name   : DROP_XX_PO_PRICE_PROTECTION_DETAIL.tbl                                     |--
+--|                                                                                             |--
+--| Purpose        : Drop Custom Tables .                                                       |--
+--|                  The Object dropped is :                                                    |--
+--|                  1. XX_PO_PRICE_PROTECTION_DETAIL                                           |--
+--|                                                                                             |--
+--| Change History  :                                                                           |--
+--| Version           Date             Changed By              Description                      |--
+--+=============================================================================================+--
+--| 1.0               20-Nov-2007     Meenu Goyal             Original                          |--
+--+=============================================================================================+--
+
+SET VERIFY   OFF
+SET TERM     ON
+SET FEEDBACK OFF
+SET SHOW     OFF
+SET ECHO     OFF
+SET TAB      OFF
+                   
+WHENEVER SQLERROR CONTINUE
+                   
+PROMPT             
+PROMPT Dropping Existing Custom Tables......
+PROMPT             
+
+WHENEVER SQLERROR CONTINUE
+
+PROMPT
+PROMPT Dropping Table XX_PO_PRICE_PROTECTION_DETAIL
+PROMPT
+
+DROP TABLE XX_PO_PRICE_PROTECTION_DETAIL;
+
+WHENEVER SQLERROR CONTINUE
+
+
+PROMPT
+PROMPT Exiting....
+PROMPT
+
+SET FEEDBACK ON
+
+
+EXIT;
+
+
+REM=================================================================================================
+REM                                   End Of Script                                            
+REM=================================================================================================
+

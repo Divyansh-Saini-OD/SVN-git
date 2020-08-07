@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding='windows-1252'?>
+<!DOCTYPE AppModule SYSTEM "jbo_03_01.dtd">
+
+<AppModule
+   Name="ODSCDashboardAM"
+   ComponentClass="od.oracle.apps.xxmer.scdashboard.server.ODSCDashboardAMImpl"
+   LoadComponentsLazily="true" >
+   <DesignTime>
+      <Attr Name="_isCodegen" Value="true" />
+      <Attr Name="_version" Value="9.0.3.14.01" />
+      <Attr Name="_deployType" Value="0" />
+   </DesignTime>
+   <ViewUsage
+      Name="ODSCVendorRegionVO"
+      ViewObjectName="od.oracle.apps.xxmer.scdashboard.server.ODSCVendorRegionVO" >
+   </ViewUsage>
+   <ViewUsage
+      Name="ODSCAuditHistoryVO"
+      ViewObjectName="od.oracle.apps.xxmer.scdashboard.server.ODSCAuditHistoryVO" >
+   </ViewUsage>
+   <ViewUsage
+      Name="ODSCInspectionDetailsVO"
+      ViewObjectName="od.oracle.apps.xxmer.scdashboard.server.ODSCInspectionDetailsVO" >
+   </ViewUsage>
+</AppModule>

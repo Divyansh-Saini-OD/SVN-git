@@ -1,0 +1,41 @@
+REM================================================================================================
+REM                                 Start Of Script
+REM================================================================================================
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     OFF
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+-- +=======================================================================+
+-- |               Office Depot - Project Simplify                         |
+-- +=======================================================================+
+-- | Name        : GL_REVAL_EXP_RANGES_GT_N1                               |
+-- | Description : Non-Unique Index for Table GL.GL_REVAL_EXP_RANGES_GT    |
+-- |Change History:                                                        |
+-- |---------------                                                        |
+-- |                                                                       |
+-- |Version  Date        Author             Remarks                        |
+-- |-------  ----------- -----------------  -------------------------------|
+-- |1.0      09-Mar-2014 Paddy Sanjeevi     Initial  Version Defect 28652  |
+-- +=======================================================================+
+
+PROMPT
+PROMPT Creating Index....
+PROMPT
+
+CREATE INDEX xxfin.GL_REVAL_EXP_RANGES_GT_N1 on GL.GL_REVAL_EXP_RANGES_GT
+(
+ NVL(segment4_low, 'X') , NVL(segment4_high, 'X'),
+ NVL(segment3_low, 'X') , NVL(segment3_high, 'X'),
+ NVL(segment2_low, 'X') , NVL(segment2_high, 'X')
+);
+
+
+SHOW ERRORS;
+
+
+REM================================================================================================
+REM                                 Start Of Script
+REM================================================================================================

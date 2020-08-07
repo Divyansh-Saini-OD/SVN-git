@@ -1,0 +1,27 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+
+<!--
+  Author: Sridevi Kondoju
+  Component Id: E1066
+  Script Location: $CUSTOM_JAVA_TOP/oracle/apps/ar/cusstd/ovrview/webui
+  Description: CDH Customers Screen
+  History:
+  Name            Date         Version    Description
+  Sridevi Kondoju 6-Aug-2014   1.0       Modified for defect 29032.
+-->
+
+<customization xmlns="http://xmlns.oracle.com/jrad" version="9.0.6.0.0_50" xml:lang="en-US" customizes="/oracle/apps/ar/cusstd/ovrview/webui/ArCusOvrPG" xmlns:oa="http://xmlns.oracle.com/oa">
+   <modifications>
+      <insert parent="Act2SitesSyncRN" grouping="contents">
+         <modify element="region13.SiteAddress1Filter" rendered="true"/>
+         <modify element="region13.SiteAddress2Filter" rendered="true"/>
+         <modify element="region13.SiteStateFilter" rendered="true"/>
+         <modify element="region13.SiteCityFilter" rendered="true"/>
+         <modify element="region13.SiteCountryFilter" rendered="true"/>
+         <move element="partyRelRN" after="choiceRN"/> 
+         <!-- commented for defect29032.
+		 <oa:messageTextInput id="ODSiteSequence" adminCustomizable="true" cellNoWrapFormat="false" dataType="VARCHAR2" disabled="false" initSortSeq="none" prompt="Site Sequence" queryable="true" readOnly="false" rendered="true" required="no" rows="1" scope="." secret="false" selectiveSearchCriteria="true" serverUnvalidated="false" showRequired="false" sortState="no" tipType="none" totalValue="false" userCustomizable="true" vAlign="middle" warnAboutChanges="true" xmlns:oa="http://xmlns.oracle.com/oa"/>
+		 -->
+      </insert>
+   </modifications>
+</customization>

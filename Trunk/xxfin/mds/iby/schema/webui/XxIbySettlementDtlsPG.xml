@@ -1,0 +1,39 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<page xmlns:jrad="http://xmlns.oracle.com/jrad" xmlns:oa="http://xmlns.oracle.com/oa" xmlns:ui="http://xmlns.oracle.com/uix/ui" version="10.1.3_1312" xml:lang="en-US" xmlns:user="http://xmlns.oracle.com/jrad/user" xmlns="http://xmlns.oracle.com/jrad" file-version="$Header$">
+   <content>
+      <oa:pageLayout id="PagLayoutRN" amDefName="od.oracle.apps.xxfin.iby.settlement.server.SettlementAM" windowTitle="Settlement Credit Card Details" title="201 Details" controllerClass="od.oracle.apps.xxfin.iby.schema.webui.XxIbySettlementDetailsCO">
+         <ui:corporateBranding>
+            <oa:image id="corporateBrandingImage" source="/OA_MEDIA/FNDSSCORP.gif"/>
+         </ui:corporateBranding>
+         <ui:productBranding>
+            <oa:image id="ProdBrand" source="FNDTAPPBRAND.gif"/>
+         </ui:productBranding>
+         <ui:contents>
+            <oa:table id="XxIbyBatchTrxns201HistoryVO1">
+               <ui:contents>
+                  <oa:messageStyledText id="DecrpytVal" dataType="VARCHAR2" prompt="DecrpytVal" viewName="XxIbyBatchTrxns201HistoryVO1" viewAttr="DecrpytVal" maximumLength="4000"/>
+                  <oa:messageStyledText id="Ixtransactiontype1" dataType="VARCHAR2" prompt="Ixtransactiontype" viewName="XxIbyBatchTrxns201HistoryVO1" viewAttr="Ixtransactiontype" maximumLength="240"/>
+                  <oa:messageStyledText id="Ixproductcode1" dataType="VARCHAR2" prompt="Ixproductcode" viewName="XxIbyBatchTrxns201HistoryVO1" viewAttr="Ixproductcode" maximumLength="240"/>
+                  <oa:messageStyledText id="Ixskunumber1" dataType="VARCHAR2" prompt="Ixskunumber" viewName="XxIbyBatchTrxns201HistoryVO1" viewAttr="Ixskunumber" maximumLength="240"/>
+                  <oa:messageStyledText id="Ixitemdescription1" dataType="VARCHAR2" prompt="Ixitemdescription" viewName="XxIbyBatchTrxns201HistoryVO1" viewAttr="Ixitemdescription" maximumLength="240"/>
+                  <oa:messageStyledText id="Ixitemquantity1" dataType="VARCHAR2" prompt="Ixitemquantity" viewName="XxIbyBatchTrxns201HistoryVO1" viewAttr="Ixitemquantity" maximumLength="240"/>
+                  <oa:messageStyledText id="Ixunitcost1" dataType="VARCHAR2" prompt="Ixunitcost" viewName="XxIbyBatchTrxns201HistoryVO1" viewAttr="Ixunitcost" maximumLength="240"/>
+                  <oa:messageStyledText id="Ixunitvatamount1" dataType="VARCHAR2" prompt="Ixunitvatamount" viewName="XxIbyBatchTrxns201HistoryVO1" viewAttr="Ixunitvatamount" maximumLength="240"/>
+                  <oa:messageStyledText id="Ixunitvatrate1" dataType="VARCHAR2" prompt="Ixunitvatrate" viewName="XxIbyBatchTrxns201HistoryVO1" viewAttr="Ixunitvatrate" maximumLength="240"/>
+                  <oa:messageStyledText id="Ixunitdiscount1" dataType="VARCHAR2" prompt="Ixunitdiscount" viewName="XxIbyBatchTrxns201HistoryVO1" viewAttr="Ixunitdiscount" maximumLength="240"/>
+                  <oa:messageStyledText id="Ixunitdepartmentcode1" dataType="VARCHAR2" prompt="Ixunitdepartmentcode" viewName="XxIbyBatchTrxns201HistoryVO1" viewAttr="Ixunitdepartmentcode" maximumLength="240"/>
+                  <oa:messageStyledText id="Ixinvoicelinenum1" dataType="VARCHAR2" prompt="Ixinvoicelinenum" viewName="XxIbyBatchTrxns201HistoryVO1" viewAttr="Ixinvoicelinenum" maximumLength="240"/>
+                  <oa:messageStyledText id="Ixcustpolinenum1" dataType="VARCHAR2" prompt="Ixcustpolinenum" viewName="XxIbyBatchTrxns201HistoryVO1" viewAttr="Ixcustpolinenum" maximumLength="240"/>
+                  <oa:messageStyledText id="Ixcustitemnum1" dataType="VARCHAR2" prompt="Ixcustitemnum" viewName="XxIbyBatchTrxns201HistoryVO1" viewAttr="Ixcustitemnum" maximumLength="240"/>
+                  <oa:messageStyledText id="Ixcustitemdesc1" dataType="VARCHAR2" prompt="Ixcustitemdesc" viewName="XxIbyBatchTrxns201HistoryVO1" viewAttr="Ixcustitemdesc" maximumLength="240"/>
+                  <oa:messageStyledText id="Ixcustunitprice1" dataType="VARCHAR2" prompt="Ixcustunitprice" viewName="XxIbyBatchTrxns201HistoryVO1" viewAttr="Ixcustunitprice" maximumLength="240"/>
+                  <oa:messageStyledText id="Ixcustuom1" dataType="VARCHAR2" prompt="Ixcustuom" viewName="XxIbyBatchTrxns201HistoryVO1" viewAttr="Ixcustuom" maximumLength="240"/>
+               </ui:contents>
+            </oa:table>
+         </ui:contents>
+         <ui:returnNavigation>
+            <oa:link id="ReturnLink"/>
+         </ui:returnNavigation>
+      </oa:pageLayout>
+   </content>
+</page>

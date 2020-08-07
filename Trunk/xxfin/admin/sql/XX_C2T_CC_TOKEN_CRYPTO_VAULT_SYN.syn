@@ -1,0 +1,29 @@
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     ON
+    -- +==========================================================================+
+    -- |                  Office Depot - Project Simplify                         |
+    -- +==========================================================================+
+    -- | SQL Script to create the Synonym                                         |
+    -- |                                                                          |
+    -- | XX_C2T_CC_TOKEN_CRYPTO_VAULT_SYN.syn                                                  |
+    -- |                                                                          |
+    -- |                                                                          |
+    -- |                                                                          |
+    -- |                                                                          |
+    -- |Change Record:                                                            |
+    -- |===============                                                           |
+    -- |Version   Date         Author               Remarks                       |
+    -- |=======   ==========   =============        ==============================|
+    -- | V1.0     12-OCT-2015  Harvinder Rakhra     Initial version               |
+    -- |                                                                          |
+    -- +==========================================================================+
+
+--CREATE SYNONYM XX_C2T_CC_TOKEN_CRYPTO_VAULT;
+
+PROMPT CREATING SYNONYM FOR XX_C2T_CC_TOKEN_CRYPTO_VAULT..... 
+CREATE OR REPLACE SYNONYM XX_C2T_CC_TOKEN_CRYPTO_VAULT FOR XXFIN.XX_C2T_CC_TOKEN_CRYPTO_VAULT;
+
+SHOW ERROR

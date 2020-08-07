@@ -1,0 +1,22 @@
+--+=====================================================================+
+--|                   Office Depot - Project FIT                        |
+--+=====================================================================+
+--|                                                                     |
+--|Rice        : I2158                                                  |
+--|File Name   : ALTER_XX_AR_PS_WC_STG.tbl                              |
+--|File Path   : $XXFIN_TOP/admin/sql                                   |
+--|Schema      : XXFIN                                                  |
+--|                                                                     |
+--|Version    Date           Author             Remarks                 |
+--|=======   =========    ====================  ========================|
+--| 1.0      19-JAN-12    R.Aldridge            Defect 16332 - modify   |
+--|                                             columns to be generic   |
+--+=====================================================================+
+
+SET VERIFY OFF
+WHENEVER SQLERROR CONTINUE
+
+PROMPT "Altering Table Definition XXFIN.XX_AR_PS_WC_STG..."
+ALTER TABLE xxfin.xx_ar_ps_wc_stg RENAME COLUMN customer_trx_id TO trx_rec_id;
+
+ALTER TABLE xxfin.xx_ar_ps_wc_stg RENAME COLUMN trx_number TO trx_rec_number;

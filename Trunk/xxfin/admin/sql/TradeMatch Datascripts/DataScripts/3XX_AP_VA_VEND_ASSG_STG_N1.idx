@@ -1,0 +1,24 @@
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     ON
+-- +===========================================================================+
+-- |                  Office Depot - Project Simplify                          |
+-- +===========================================================================+
+-- | Name :XXFIN.XX_AP_VA_VEND_ASSG_STG_N1                                     |
+-- | Description :   Script to create XX_AP_VA_VEND_ASSG_STG_N1 index          |
+-- | Rice ID     :  E3523                                                      |
+-- |                                                                           |
+-- |Change Record:                                                             |
+-- |===============                                                            |
+-- |Version      Date           Author                  Remarks                |
+-- |=======    ==========     =============             ====================== |
+-- | 1.0      30-AUG-2017      Sridhar G.               Initial draft version  |
+-- +===========================================================================+
+
+CREATE  INDEX  xxfin.XX_AP_VA_VEND_ASSG_STG_N1
+ON             xxfin.XX_AP_VA_VEND_ASSG_STG(
+                                        VENDOR_NUMBER
+                                       );
+SHOW ERRORS;

@@ -1,0 +1,43 @@
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+-- +=======================================================================+
+-- |               Office Depot - Project Simplify                         |
+-- |      Oracle NAC/Office Depot/Consulting Organization                  |
+-- +=======================================================================+
+-- | Name             :XX_MOD_NAME_IDX.idx                        |
+-- | Description      :Index on XXCOMN.XX_COM_ERROR_LOG                    | 
+-- |                                                                       |
+-- |Change History:                                                        |
+-- |---------------                                                        |
+-- |                                                                       |
+-- |Version  Date        Author             Remarks                        |
+-- |-------  ----------- -----------------  -------------------------------|
+-- |Draft1a  15-Nov-2007 Ramesh Raghupathi  Initial Draft Version          |
+-- +=======================================================================+
+
+-- -------------------------------------------------
+-- Creating Index XX_MOD_NAME_IDX
+-- -------------------------------------------------
+
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+PROMPT
+PROMPT Creating INDEX XX_MOD_NAME_IDX
+PROMPT
+
+CREATE INDEX XXCOMN.XX_MOD_NAME_IDX ON XX_COM_ERROR_LOG
+(MODULE_NAME);
+
+WHENEVER SQLERROR CONTINUE
+
+PROMPT
+PROMPT Exiting....
+PROMPT
+
+SET FEEDBACK ON
+
+EXIT;

@@ -1,0 +1,1042 @@
+<?xml version='1.0' encoding='windows-1252' ?>
+<!DOCTYPE Entity SYSTEM "jbo_03_01.dtd">
+
+<Entity
+   Name="ODEBillMainEO"
+   DBObjectType="synonym"
+   DBObjectName="XX_CDH_EBL_MAIN"
+   AliasName="ODEBillMainEO"
+   BindingStyle="Oracle"
+   UseGlueCode="false"
+   RowClass="od.oracle.apps.xxcrm.cdh.ebl.eblmain.schema.server.ODEBillMainEOImpl"
+   DefClass="oracle.apps.fnd.framework.server.OAEntityDefImpl"
+   CollClass="oracle.apps.fnd.framework.server.OAEntityCache" >
+   <DesignTime>
+      <Attr Name="_isCodegen" Value="true" />
+      <Attr Name="_version" Value="10.1.3.43.6" />
+      <AttrArray Name="_publishEvents">
+      </AttrArray>
+      <Attr Name="_codeGenFlag2" Value="Init|Delete|Access|DML|Val" />
+   </DesignTime>
+   <Attribute
+      Name="CustDocId"
+      Precision="15"
+      Scale="0"
+      ColumnName="CUST_DOC_ID"
+      Type="oracle.jbo.domain.Number"
+      ColumnType="NUMBER"
+      SQLType="NUMERIC"
+      TableName="XX_CDH_EBL_MAIN"
+      PrimaryKey="true" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="CustAccountId"
+      Precision="15"
+      Scale="0"
+      ColumnName="CUST_ACCOUNT_ID"
+      Type="oracle.jbo.domain.Number"
+      ColumnType="NUMBER"
+      SQLType="NUMERIC"
+      TableName="XX_CDH_EBL_MAIN" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="EbillTransmissionType"
+      Precision="15"
+      ColumnName="EBILL_TRANSMISSION_TYPE"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XX_CDH_EBL_MAIN" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="15" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="EbillAssociate"
+      Precision="256"
+      ColumnName="EBILL_ASSOCIATE"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XX_CDH_EBL_MAIN" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="256" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="FileProcessingMethod"
+      Precision="50"
+      ColumnName="FILE_PROCESSING_METHOD"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XX_CDH_EBL_MAIN" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="50" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="MaxFileSize"
+      Precision="15"
+      Scale="0"
+      ColumnName="MAX_FILE_SIZE"
+      Type="oracle.jbo.domain.Number"
+      ColumnType="NUMBER"
+      SQLType="NUMERIC"
+      TableName="XX_CDH_EBL_MAIN" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="MaxTransmissionSize"
+      Precision="15"
+      Scale="0"
+      ColumnName="MAX_TRANSMISSION_SIZE"
+      Type="oracle.jbo.domain.Number"
+      ColumnType="NUMBER"
+      SQLType="NUMERIC"
+      TableName="XX_CDH_EBL_MAIN" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="ZipRequired"
+      Precision="1"
+      ColumnName="ZIP_REQUIRED"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XX_CDH_EBL_MAIN" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="1" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="ZippingUtility"
+      Precision="80"
+      ColumnName="ZIPPING_UTILITY"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XX_CDH_EBL_MAIN" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="80" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="ZipFileNameExt"
+      Precision="10"
+      ColumnName="ZIP_FILE_NAME_EXT"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XX_CDH_EBL_MAIN" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="10" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="OdFieldContact"
+      Precision="256"
+      ColumnName="OD_FIELD_CONTACT"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XX_CDH_EBL_MAIN" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="256" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="OdFieldContactEmail"
+      Precision="256"
+      ColumnName="OD_FIELD_CONTACT_EMAIL"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XX_CDH_EBL_MAIN" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="256" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="OdFieldContactPhone"
+      Precision="30"
+      ColumnName="OD_FIELD_CONTACT_PHONE"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XX_CDH_EBL_MAIN" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="30" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="ClientTechContact"
+      Precision="256"
+      ColumnName="CLIENT_TECH_CONTACT"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XX_CDH_EBL_MAIN" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="256" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="ClientTechContactEmail"
+      Precision="256"
+      ColumnName="CLIENT_TECH_CONTACT_EMAIL"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XX_CDH_EBL_MAIN" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="256" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="ClientTechContactPhone"
+      Precision="256"
+      ColumnName="CLIENT_TECH_CONTACT_PHONE"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XX_CDH_EBL_MAIN" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="256" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="FileNameSeqReset"
+      Precision="20"
+      ColumnName="FILE_NAME_SEQ_RESET"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XX_CDH_EBL_MAIN" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="20" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="FileNextSeqNumber"
+      Precision="15"
+      Scale="0"
+      ColumnName="FILE_NEXT_SEQ_NUMBER"
+      Type="oracle.jbo.domain.Number"
+      ColumnType="NUMBER"
+      SQLType="NUMERIC"
+      TableName="XX_CDH_EBL_MAIN" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="FileSeqResetDate"
+      ColumnName="FILE_SEQ_RESET_DATE"
+      Type="oracle.jbo.domain.Date"
+      ColumnType="DATE"
+      SQLType="TIMESTAMP"
+      TableName="XX_CDH_EBL_MAIN" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="7" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="FileNameMaxSeqNumber"
+      Precision="15"
+      Scale="0"
+      ColumnName="FILE_NAME_MAX_SEQ_NUMBER"
+      Type="oracle.jbo.domain.Number"
+      ColumnType="NUMBER"
+      SQLType="NUMERIC"
+      TableName="XX_CDH_EBL_MAIN" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="Attribute1"
+      Precision="150"
+      ColumnName="ATTRIBUTE1"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XX_CDH_EBL_MAIN" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="150" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="Attribute2"
+      Precision="150"
+      ColumnName="ATTRIBUTE2"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XX_CDH_EBL_MAIN" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="150" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="Attribute3"
+      Precision="150"
+      ColumnName="ATTRIBUTE3"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XX_CDH_EBL_MAIN" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="150" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="Attribute4"
+      Precision="150"
+      ColumnName="ATTRIBUTE4"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XX_CDH_EBL_MAIN" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="150" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="Attribute5"
+      Precision="150"
+      ColumnName="ATTRIBUTE5"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XX_CDH_EBL_MAIN" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="150" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="Attribute6"
+      Precision="150"
+      ColumnName="ATTRIBUTE6"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XX_CDH_EBL_MAIN" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="150" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="Attribute7"
+      Precision="150"
+      ColumnName="ATTRIBUTE7"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XX_CDH_EBL_MAIN" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="150" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="Attribute8"
+      Precision="150"
+      ColumnName="ATTRIBUTE8"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XX_CDH_EBL_MAIN" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="150" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="Attribute9"
+      Precision="150"
+      ColumnName="ATTRIBUTE9"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XX_CDH_EBL_MAIN" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="150" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="Attribute10"
+      Precision="150"
+      ColumnName="ATTRIBUTE10"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XX_CDH_EBL_MAIN" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="150" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="Attribute11"
+      Precision="150"
+      ColumnName="ATTRIBUTE11"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XX_CDH_EBL_MAIN" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="150" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="Attribute12"
+      Precision="150"
+      ColumnName="ATTRIBUTE12"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XX_CDH_EBL_MAIN" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="150" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="Attribute13"
+      Precision="150"
+      ColumnName="ATTRIBUTE13"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XX_CDH_EBL_MAIN" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="150" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="Attribute14"
+      Precision="150"
+      ColumnName="ATTRIBUTE14"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XX_CDH_EBL_MAIN" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="150" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="Attribute15"
+      Precision="150"
+      ColumnName="ATTRIBUTE15"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XX_CDH_EBL_MAIN" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="150" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="Attribute16"
+      Precision="150"
+      ColumnName="ATTRIBUTE16"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XX_CDH_EBL_MAIN" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="150" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="Attribute17"
+      Precision="150"
+      ColumnName="ATTRIBUTE17"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XX_CDH_EBL_MAIN" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="150" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="Attribute18"
+      Precision="150"
+      ColumnName="ATTRIBUTE18"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XX_CDH_EBL_MAIN" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="150" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="Attribute19"
+      Precision="150"
+      ColumnName="ATTRIBUTE19"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XX_CDH_EBL_MAIN" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="150" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="Attribute20"
+      Precision="150"
+      ColumnName="ATTRIBUTE20"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XX_CDH_EBL_MAIN" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="150" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="LastUpdateDate"
+      ColumnName="LAST_UPDATE_DATE"
+      Type="oracle.jbo.domain.Date"
+      ColumnType="DATE"
+      SQLType="TIMESTAMP"
+      TableName="XX_CDH_EBL_MAIN" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="7" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="LastUpdatedBy"
+      Precision="15"
+      Scale="0"
+      ColumnName="LAST_UPDATED_BY"
+      Type="oracle.jbo.domain.Number"
+      ColumnType="NUMBER"
+      SQLType="NUMERIC"
+      TableName="XX_CDH_EBL_MAIN" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="CreationDate"
+      ColumnName="CREATION_DATE"
+      Type="oracle.jbo.domain.Date"
+      ColumnType="DATE"
+      SQLType="TIMESTAMP"
+      TableName="XX_CDH_EBL_MAIN" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="7" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="CreatedBy"
+      Precision="15"
+      Scale="0"
+      ColumnName="CREATED_BY"
+      Type="oracle.jbo.domain.Number"
+      ColumnType="NUMBER"
+      SQLType="NUMERIC"
+      TableName="XX_CDH_EBL_MAIN" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="LastUpdateLogin"
+      Precision="15"
+      Scale="0"
+      ColumnName="LAST_UPDATE_LOGIN"
+      Type="oracle.jbo.domain.Number"
+      ColumnType="NUMBER"
+      SQLType="NUMERIC"
+      TableName="XX_CDH_EBL_MAIN" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="RequestId"
+      Precision="15"
+      Scale="0"
+      ColumnName="REQUEST_ID"
+      Type="oracle.jbo.domain.Number"
+      ColumnType="NUMBER"
+      SQLType="NUMERIC"
+      TableName="XX_CDH_EBL_MAIN" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="ProgramApplicationId"
+      Precision="15"
+      Scale="0"
+      ColumnName="PROGRAM_APPLICATION_ID"
+      Type="oracle.jbo.domain.Number"
+      ColumnType="NUMBER"
+      SQLType="NUMERIC"
+      TableName="XX_CDH_EBL_MAIN" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="ProgramId"
+      Precision="15"
+      Scale="0"
+      ColumnName="PROGRAM_ID"
+      Type="oracle.jbo.domain.Number"
+      ColumnType="NUMBER"
+      SQLType="NUMERIC"
+      TableName="XX_CDH_EBL_MAIN" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="ProgramUpdateDate"
+      ColumnName="PROGRAM_UPDATE_DATE"
+      Type="oracle.jbo.domain.Date"
+      ColumnType="DATE"
+      SQLType="TIMESTAMP"
+      TableName="XX_CDH_EBL_MAIN" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="7" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="WhUpdateDate"
+      ColumnName="WH_UPDATE_DATE"
+      Type="oracle.jbo.domain.Date"
+      ColumnType="DATE"
+      SQLType="TIMESTAMP"
+      TableName="XX_CDH_EBL_MAIN" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="7" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="FileNameExt"
+      Precision="10"
+      ColumnName="FILE_NAME_EXT"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XX_CDH_EBL_MAIN" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="10" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="DelimiterChar"
+      Precision="10"
+      ColumnName="DELIMITER_CHAR"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XX_CDH_EBL_MAIN" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="10" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="FileCreationType"
+      Precision="15"
+      ColumnName="FILE_CREATION_TYPE"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XX_CDH_EBL_MAIN" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="15" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="SummaryBill"
+      Precision="1"
+      ColumnName="SUMMARY_BILL"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XX_CDH_EBL_MAIN" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="1" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="NondtQuantity"
+      ColumnName="NONDT_QUANTITY"
+      Type="oracle.jbo.domain.Number"
+      ColumnType="NUMBER"
+      SQLType="NUMERIC"
+      TableName="XX_CDH_EBL_MAIN"
+      ChangeIndicator="true"
+      RetrievedOnUpdate="true"
+      RetrievedOnInsert="true" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="ParentDocId"
+      ColumnName="PARENT_DOC_ID"
+      Type="oracle.jbo.domain.Number"
+      ColumnType="NUMBER"
+      SQLType="NUMERIC"
+      TableName="XX_CDH_EBL_MAIN" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </Attribute>
+   <Key
+      Name="SysC00331583" >
+      <AttrArray Name="Attributes">
+         <Item Value="od.oracle.apps.xxcrm.cdh.ebl.eblmain.schema.server.ODEBillMainEO.CustDocId" />
+      </AttrArray>
+      <DesignTime>
+         <Attr Name="_checkCondition" Value="&#34;CUST_DOC_ID&#34; IS NOT NULL" />
+         <Attr Name="_isCheck" Value="true" />
+         <Attr Name="_DBObjectName" Value="SYS_C00331583" />
+      </DesignTime>
+   </Key>
+   <Key
+      Name="SysC00331584" >
+      <AttrArray Name="Attributes">
+         <Item Value="od.oracle.apps.xxcrm.cdh.ebl.eblmain.schema.server.ODEBillMainEO.CustAccountId" />
+      </AttrArray>
+      <DesignTime>
+         <Attr Name="_checkCondition" Value="&#34;CUST_ACCOUNT_ID&#34; IS NOT NULL" />
+         <Attr Name="_isCheck" Value="true" />
+         <Attr Name="_DBObjectName" Value="SYS_C00331584" />
+      </DesignTime>
+   </Key>
+   <Key
+      Name="SysC00331585" >
+      <AttrArray Name="Attributes">
+         <Item Value="od.oracle.apps.xxcrm.cdh.ebl.eblmain.schema.server.ODEBillMainEO.EbillTransmissionType" />
+      </AttrArray>
+      <DesignTime>
+         <Attr Name="_checkCondition" Value="&#34;EBILL_TRANSMISSION_TYPE&#34; IS NOT NULL" />
+         <Attr Name="_isCheck" Value="true" />
+         <Attr Name="_DBObjectName" Value="SYS_C00331585" />
+      </DesignTime>
+   </Key>
+   <Key
+      Name="SysC00331586" >
+      <AttrArray Name="Attributes">
+         <Item Value="od.oracle.apps.xxcrm.cdh.ebl.eblmain.schema.server.ODEBillMainEO.EbillAssociate" />
+      </AttrArray>
+      <DesignTime>
+         <Attr Name="_checkCondition" Value="&#34;EBILL_ASSOCIATE&#34; IS NOT NULL" />
+         <Attr Name="_isCheck" Value="true" />
+         <Attr Name="_DBObjectName" Value="SYS_C00331586" />
+      </DesignTime>
+   </Key>
+   <Key
+      Name="SysC00331587" >
+      <AttrArray Name="Attributes">
+         <Item Value="od.oracle.apps.xxcrm.cdh.ebl.eblmain.schema.server.ODEBillMainEO.ZipRequired" />
+      </AttrArray>
+      <DesignTime>
+         <Attr Name="_checkCondition" Value="&#34;ZIP_REQUIRED&#34; IS NOT NULL" />
+         <Attr Name="_isCheck" Value="true" />
+         <Attr Name="_DBObjectName" Value="SYS_C00331587" />
+      </DesignTime>
+   </Key>
+   <Key
+      Name="SysC00331588" >
+      <AttrArray Name="Attributes">
+         <Item Value="od.oracle.apps.xxcrm.cdh.ebl.eblmain.schema.server.ODEBillMainEO.LastUpdateDate" />
+      </AttrArray>
+      <DesignTime>
+         <Attr Name="_checkCondition" Value="&#34;LAST_UPDATE_DATE&#34; IS NOT NULL" />
+         <Attr Name="_isCheck" Value="true" />
+         <Attr Name="_DBObjectName" Value="SYS_C00331588" />
+      </DesignTime>
+   </Key>
+   <Key
+      Name="SysC00331589" >
+      <AttrArray Name="Attributes">
+         <Item Value="od.oracle.apps.xxcrm.cdh.ebl.eblmain.schema.server.ODEBillMainEO.LastUpdatedBy" />
+      </AttrArray>
+      <DesignTime>
+         <Attr Name="_checkCondition" Value="&#34;LAST_UPDATED_BY&#34; IS NOT NULL" />
+         <Attr Name="_isCheck" Value="true" />
+         <Attr Name="_DBObjectName" Value="SYS_C00331589" />
+      </DesignTime>
+   </Key>
+   <Key
+      Name="SysC00331590" >
+      <AttrArray Name="Attributes">
+         <Item Value="od.oracle.apps.xxcrm.cdh.ebl.eblmain.schema.server.ODEBillMainEO.CreationDate" />
+      </AttrArray>
+      <DesignTime>
+         <Attr Name="_checkCondition" Value="&#34;CREATION_DATE&#34; IS NOT NULL" />
+         <Attr Name="_isCheck" Value="true" />
+         <Attr Name="_DBObjectName" Value="SYS_C00331590" />
+      </DesignTime>
+   </Key>
+   <Key
+      Name="SysC00331591" >
+      <AttrArray Name="Attributes">
+         <Item Value="od.oracle.apps.xxcrm.cdh.ebl.eblmain.schema.server.ODEBillMainEO.CreatedBy" />
+      </AttrArray>
+      <DesignTime>
+         <Attr Name="_checkCondition" Value="&#34;CREATED_BY&#34; IS NOT NULL" />
+         <Attr Name="_isCheck" Value="true" />
+         <Attr Name="_DBObjectName" Value="SYS_C00331591" />
+      </DesignTime>
+   </Key>
+   <Key
+      Name="SysC00331592" >
+      <AttrArray Name="Attributes">
+         <Item Value="od.oracle.apps.xxcrm.cdh.ebl.eblmain.schema.server.ODEBillMainEO.LastUpdateLogin" />
+      </AttrArray>
+      <DesignTime>
+         <Attr Name="_checkCondition" Value="&#34;LAST_UPDATE_LOGIN&#34; IS NOT NULL" />
+         <Attr Name="_isCheck" Value="true" />
+         <Attr Name="_DBObjectName" Value="SYS_C00331592" />
+      </DesignTime>
+   </Key>
+   <Key
+      Name="SysC00333412" >
+      <AttrArray Name="Attributes">
+         <Item Value="od.oracle.apps.xxcrm.cdh.ebl.eblmain.schema.server.ODEBillMainEO.CustDocId" />
+      </AttrArray>
+      <DesignTime>
+         <Attr Name="_checkCondition" Value="&#34;CUST_DOC_ID&#34; IS NOT NULL" />
+         <Attr Name="_isCheck" Value="true" />
+         <Attr Name="_DBObjectName" Value="SYS_C00333412" />
+      </DesignTime>
+   </Key>
+   <Key
+      Name="SysC00333413" >
+      <AttrArray Name="Attributes">
+         <Item Value="od.oracle.apps.xxcrm.cdh.ebl.eblmain.schema.server.ODEBillMainEO.CustAccountId" />
+      </AttrArray>
+      <DesignTime>
+         <Attr Name="_checkCondition" Value="&#34;CUST_ACCOUNT_ID&#34; IS NOT NULL" />
+         <Attr Name="_isCheck" Value="true" />
+         <Attr Name="_DBObjectName" Value="SYS_C00333413" />
+      </DesignTime>
+   </Key>
+   <Key
+      Name="SysC00333414" >
+      <AttrArray Name="Attributes">
+         <Item Value="od.oracle.apps.xxcrm.cdh.ebl.eblmain.schema.server.ODEBillMainEO.EbillTransmissionType" />
+      </AttrArray>
+      <DesignTime>
+         <Attr Name="_checkCondition" Value="&#34;EBILL_TRANSMISSION_TYPE&#34; IS NOT NULL" />
+         <Attr Name="_isCheck" Value="true" />
+         <Attr Name="_DBObjectName" Value="SYS_C00333414" />
+      </DesignTime>
+   </Key>
+   <Key
+      Name="SysC00333415" >
+      <AttrArray Name="Attributes">
+         <Item Value="od.oracle.apps.xxcrm.cdh.ebl.eblmain.schema.server.ODEBillMainEO.EbillAssociate" />
+      </AttrArray>
+      <DesignTime>
+         <Attr Name="_checkCondition" Value="&#34;EBILL_ASSOCIATE&#34; IS NOT NULL" />
+         <Attr Name="_isCheck" Value="true" />
+         <Attr Name="_DBObjectName" Value="SYS_C00333415" />
+      </DesignTime>
+   </Key>
+   <Key
+      Name="SysC00333416" >
+      <AttrArray Name="Attributes">
+         <Item Value="od.oracle.apps.xxcrm.cdh.ebl.eblmain.schema.server.ODEBillMainEO.ZipRequired" />
+      </AttrArray>
+      <DesignTime>
+         <Attr Name="_checkCondition" Value="&#34;ZIP_REQUIRED&#34; IS NOT NULL" />
+         <Attr Name="_isCheck" Value="true" />
+         <Attr Name="_DBObjectName" Value="SYS_C00333416" />
+      </DesignTime>
+   </Key>
+   <Key
+      Name="SysC00333417" >
+      <AttrArray Name="Attributes">
+         <Item Value="od.oracle.apps.xxcrm.cdh.ebl.eblmain.schema.server.ODEBillMainEO.LastUpdateDate" />
+      </AttrArray>
+      <DesignTime>
+         <Attr Name="_checkCondition" Value="&#34;LAST_UPDATE_DATE&#34; IS NOT NULL" />
+         <Attr Name="_isCheck" Value="true" />
+         <Attr Name="_DBObjectName" Value="SYS_C00333417" />
+      </DesignTime>
+   </Key>
+   <Key
+      Name="SysC00333418" >
+      <AttrArray Name="Attributes">
+         <Item Value="od.oracle.apps.xxcrm.cdh.ebl.eblmain.schema.server.ODEBillMainEO.LastUpdatedBy" />
+      </AttrArray>
+      <DesignTime>
+         <Attr Name="_checkCondition" Value="&#34;LAST_UPDATED_BY&#34; IS NOT NULL" />
+         <Attr Name="_isCheck" Value="true" />
+         <Attr Name="_DBObjectName" Value="SYS_C00333418" />
+      </DesignTime>
+   </Key>
+   <Key
+      Name="SysC00333419" >
+      <AttrArray Name="Attributes">
+         <Item Value="od.oracle.apps.xxcrm.cdh.ebl.eblmain.schema.server.ODEBillMainEO.CreationDate" />
+      </AttrArray>
+      <DesignTime>
+         <Attr Name="_checkCondition" Value="&#34;CREATION_DATE&#34; IS NOT NULL" />
+         <Attr Name="_isCheck" Value="true" />
+         <Attr Name="_DBObjectName" Value="SYS_C00333419" />
+      </DesignTime>
+   </Key>
+   <Key
+      Name="SysC00333420" >
+      <AttrArray Name="Attributes">
+         <Item Value="od.oracle.apps.xxcrm.cdh.ebl.eblmain.schema.server.ODEBillMainEO.CreatedBy" />
+      </AttrArray>
+      <DesignTime>
+         <Attr Name="_checkCondition" Value="&#34;CREATED_BY&#34; IS NOT NULL" />
+         <Attr Name="_isCheck" Value="true" />
+         <Attr Name="_DBObjectName" Value="SYS_C00333420" />
+      </DesignTime>
+   </Key>
+   <Key
+      Name="SysC00333421" >
+      <AttrArray Name="Attributes">
+         <Item Value="od.oracle.apps.xxcrm.cdh.ebl.eblmain.schema.server.ODEBillMainEO.LastUpdateLogin" />
+      </AttrArray>
+      <DesignTime>
+         <Attr Name="_checkCondition" Value="&#34;LAST_UPDATE_LOGIN&#34; IS NOT NULL" />
+         <Attr Name="_isCheck" Value="true" />
+         <Attr Name="_DBObjectName" Value="SYS_C00333421" />
+      </DesignTime>
+   </Key>
+   <Key
+      Name="SysC0095580" >
+      <AttrArray Name="Attributes">
+         <Item Value="od.oracle.apps.xxcrm.cdh.ebl.eblmain.schema.server.ODEBillMainEO.CustDocId" />
+      </AttrArray>
+      <DesignTime>
+         <Attr Name="_checkCondition" Value="&#34;CUST_DOC_ID&#34; IS NOT NULL" />
+         <Attr Name="_isCheck" Value="true" />
+         <Attr Name="_DBObjectName" Value="SYS_C0095580" />
+      </DesignTime>
+   </Key>
+   <Key
+      Name="SysC0095581" >
+      <AttrArray Name="Attributes">
+         <Item Value="od.oracle.apps.xxcrm.cdh.ebl.eblmain.schema.server.ODEBillMainEO.CustAccountId" />
+      </AttrArray>
+      <DesignTime>
+         <Attr Name="_checkCondition" Value="&#34;CUST_ACCOUNT_ID&#34; IS NOT NULL" />
+         <Attr Name="_isCheck" Value="true" />
+         <Attr Name="_DBObjectName" Value="SYS_C0095581" />
+      </DesignTime>
+   </Key>
+   <Key
+      Name="SysC0095582" >
+      <AttrArray Name="Attributes">
+         <Item Value="od.oracle.apps.xxcrm.cdh.ebl.eblmain.schema.server.ODEBillMainEO.EbillTransmissionType" />
+      </AttrArray>
+      <DesignTime>
+         <Attr Name="_checkCondition" Value="&#34;EBILL_TRANSMISSION_TYPE&#34; IS NOT NULL" />
+         <Attr Name="_isCheck" Value="true" />
+         <Attr Name="_DBObjectName" Value="SYS_C0095582" />
+      </DesignTime>
+   </Key>
+   <Key
+      Name="SysC0095583" >
+      <AttrArray Name="Attributes">
+         <Item Value="od.oracle.apps.xxcrm.cdh.ebl.eblmain.schema.server.ODEBillMainEO.EbillAssociate" />
+      </AttrArray>
+      <DesignTime>
+         <Attr Name="_checkCondition" Value="&#34;EBILL_ASSOCIATE&#34; IS NOT NULL" />
+         <Attr Name="_isCheck" Value="true" />
+         <Attr Name="_DBObjectName" Value="SYS_C0095583" />
+      </DesignTime>
+   </Key>
+   <Key
+      Name="SysC0095584" >
+      <AttrArray Name="Attributes">
+         <Item Value="od.oracle.apps.xxcrm.cdh.ebl.eblmain.schema.server.ODEBillMainEO.ZipRequired" />
+      </AttrArray>
+      <DesignTime>
+         <Attr Name="_checkCondition" Value="&#34;ZIP_REQUIRED&#34; IS NOT NULL" />
+         <Attr Name="_isCheck" Value="true" />
+         <Attr Name="_DBObjectName" Value="SYS_C0095584" />
+      </DesignTime>
+   </Key>
+   <Key
+      Name="SysC0095585" >
+      <AttrArray Name="Attributes">
+         <Item Value="od.oracle.apps.xxcrm.cdh.ebl.eblmain.schema.server.ODEBillMainEO.LastUpdateDate" />
+      </AttrArray>
+      <DesignTime>
+         <Attr Name="_checkCondition" Value="&#34;LAST_UPDATE_DATE&#34; IS NOT NULL" />
+         <Attr Name="_isCheck" Value="true" />
+         <Attr Name="_DBObjectName" Value="SYS_C0095585" />
+      </DesignTime>
+   </Key>
+   <Key
+      Name="SysC0095586" >
+      <AttrArray Name="Attributes">
+         <Item Value="od.oracle.apps.xxcrm.cdh.ebl.eblmain.schema.server.ODEBillMainEO.LastUpdatedBy" />
+      </AttrArray>
+      <DesignTime>
+         <Attr Name="_checkCondition" Value="&#34;LAST_UPDATED_BY&#34; IS NOT NULL" />
+         <Attr Name="_isCheck" Value="true" />
+         <Attr Name="_DBObjectName" Value="SYS_C0095586" />
+      </DesignTime>
+   </Key>
+   <Key
+      Name="SysC0095587" >
+      <AttrArray Name="Attributes">
+         <Item Value="od.oracle.apps.xxcrm.cdh.ebl.eblmain.schema.server.ODEBillMainEO.CreationDate" />
+      </AttrArray>
+      <DesignTime>
+         <Attr Name="_checkCondition" Value="&#34;CREATION_DATE&#34; IS NOT NULL" />
+         <Attr Name="_isCheck" Value="true" />
+         <Attr Name="_DBObjectName" Value="SYS_C0095587" />
+      </DesignTime>
+   </Key>
+   <Key
+      Name="SysC0095588" >
+      <AttrArray Name="Attributes">
+         <Item Value="od.oracle.apps.xxcrm.cdh.ebl.eblmain.schema.server.ODEBillMainEO.CreatedBy" />
+      </AttrArray>
+      <DesignTime>
+         <Attr Name="_checkCondition" Value="&#34;CREATED_BY&#34; IS NOT NULL" />
+         <Attr Name="_isCheck" Value="true" />
+         <Attr Name="_DBObjectName" Value="SYS_C0095588" />
+      </DesignTime>
+   </Key>
+   <Key
+      Name="SysC0095589" >
+      <AttrArray Name="Attributes">
+         <Item Value="od.oracle.apps.xxcrm.cdh.ebl.eblmain.schema.server.ODEBillMainEO.LastUpdateLogin" />
+      </AttrArray>
+      <DesignTime>
+         <Attr Name="_checkCondition" Value="&#34;LAST_UPDATE_LOGIN&#34; IS NOT NULL" />
+         <Attr Name="_isCheck" Value="true" />
+         <Attr Name="_DBObjectName" Value="SYS_C0095589" />
+      </DesignTime>
+   </Key>
+   <Key
+      Name="OdebillmaineoPrimaryKey" >
+      <AttrArray Name="Attributes">
+         <Item Value="od.oracle.apps.xxcrm.cdh.ebl.eblmain.schema.server.ODEBillMainEO.CustDocId" />
+      </AttrArray>
+      <DesignTime>
+         <Attr Name="_isForeign" Value="true" />
+         <Attr Name="_DBObjectName" Value="ODEBILLMAINEO_PRIMARY_KEY" />
+      </DesignTime>
+   </Key>
+</Entity>

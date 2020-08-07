@@ -1,0 +1,41 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<page xmlns:jrad="http://xmlns.oracle.com/jrad" xmlns:oa="http://xmlns.oracle.com/oa" xmlns:ui="http://xmlns.oracle.com/uix/ui" version="10.1.3_" xml:lang="en-US" xmlns:user="http://xmlns.oracle.com/jrad/user" xmlns="http://xmlns.oracle.com/jrad" file-version="$Header$">
+   <content>
+      <oa:pageLayout id="MainRN" amDefName="od.oracle.apps.xxfin.ap.idms.traitmatrix.server.XXSupplierMatrixAM" windowTitle="Supplier Matrix Create Page" controllerClass="od.oracle.apps.xxfin.ap.idms.traitmatrix.webui.XXSupplierMatrixCreateCO">
+         <ui:corporateBranding>
+            <oa:image id="corporateBrandingImage" source="/OA_MEDIA/FNDSSCORP.gif"/>
+         </ui:corporateBranding>
+         <ui:contents>
+            <oa:defaultSingleColumn id="XXSupplierMatrixDetailsRN">
+               <ui:contents>
+                  <oa:messageTextInput id="Supplier" dataType="NUMBER" prompt="Supplier" viewName="XXSuppMatrixVO1" viewAttr="Supplier" maximumLength="10" readOnly="true"/>
+                  <oa:messageLovInput id="SupTrait" dataType="NUMBER" prompt="SupTrait" viewName="XXSuppMatrixVO1" viewAttr="SupTrait" maximumLength="4" selectiveSearchCriteria="false" queryable="false" lookAheadSelectionEventEnabled="true">
+                     <lovContents>
+                        <oa:listOfValues id="region3">
+                           <ui:contents>
+                              <oa:table name="region3" id="region5">
+                                 <ui:contents>
+                                    <oa:messageStyledText id="Trait" viewName="XXSuppTrait1" queryable="true" viewAttr="SupTrait" prompt="Trait"/>
+                                    <oa:messageStyledText id="Description" viewName="XXSuppTrait1" viewAttr="Description" prompt="Description" queryable="true"/>
+                                 </ui:contents>
+                              </oa:table>
+                           </ui:contents>
+                        </oa:listOfValues>
+                     </lovContents>
+                     <lovMappings>
+                        <lovMap id="lovMap2" lovItem="Trait" resultTo="SupTrait" criteriaFrom="SupTrait"/>
+                     </lovMappings>
+                  </oa:messageLovInput>
+               </ui:contents>
+            </oa:defaultSingleColumn>
+            <oa:messageCheckBox id="EnableFlag" readOnly="false" viewName="XXSuppMatrixVO1" viewAttr="EnableFlag" text="Enable Flag" prompt="Enable Flag"/>
+            <oa:pageButtonBar id="region1">
+               <ui:contents>
+                  <oa:submitButton id="Save" text="Save" prompt="Save"/>
+                  <oa:submitButton id="Cancel" text="Close" prompt="Close"/>
+               </ui:contents>
+            </oa:pageButtonBar>
+         </ui:contents>
+      </oa:pageLayout>
+   </content>
+</page>

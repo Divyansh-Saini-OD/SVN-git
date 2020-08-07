@@ -1,0 +1,487 @@
+<?xml version='1.0' encoding='windows-1252' ?>
+<!-- +======================================================================+ -->
+<!-- | Copyright (c) 2005, 2014 Oracle and/or its affiliates.               | -->  
+<!-- |   		All rights reserved.                                | -->
+<!-- | HISTORY 								    | -->	
+<!-- | 15-Mar-2014  melapaku  Bug#18368878- iReceivables (taking longer time| -->
+<!-- |                             for customer)times out with error message| -->
+<!-- | 25-APR-2014  rsurimen  Bug 18660008 - Dispute section on the account | -->
+<!-- |                      summary page - invoice hyper link data invisible| -->
+<!-- +======================================================================+ -->
+<!DOCTYPE ViewObject SYSTEM "jbo_03_01.dtd">
+
+<!-- $Header: RequestTableVO.xml 120.18.12020000.4 2014/04/25 06:57:58 rsurimen ship $ -->
+<!--
+  Dinesh Nagapuri 15-May-2018   1.1    Retrofitted for SCM Modernization NAIT-37762
+-->
+
+
+<ViewObject
+   Name="RequestTableVO"
+   BindingStyle="Oracle"
+   CustomQuery="true"
+   RowClass="oracle.apps.ar.irec.accountDetails.server.RequestTableVORowImpl"
+   ComponentClass="oracle.apps.ar.irec.accountDetails.server.RequestTableVOImpl"
+   FetchMode="FETCH_AS_NEEDED"
+   FetchSize="25"
+   UseGlueCode="false" >
+   <SQLQuery><![CDATA[
+
+   SELECT cmreq.request_id, 
+ cmreq.status,cmreq.creation_date, cmreq.total_amount, ct.trx_number,
+ct.customer_trx_id, cmreq.url, cmreq.created_by,
+ARI_UTILITIES.get_lookup_meaning('CREDIT_MEMO_REQUEST_STATUS', cmreq.status) as STATUS_MEANING, 
+'IrREQDetails' as IR_REQ_Details, ct.invoice_currency_code, ct.bill_to_customer_id as customer_id,ct.bill_to_site_use_id as customer_site_use_id,
+ct.trx_date,to_char(ct.trx_date, 'YYYY-MM-DD') StrTrxDate, users.user_name as created_by_name,rct.type transaction_details_class,
+lk_reason.meaning reason, 
+cmreq.last_update_date last_updated,
+mo_global.get_ou_name(ct.org_id) as org_name,
+to_char(ct.paying_customer_id) paying_customer_id,
+to_char(ct.paying_site_use_id) paying_site_use_id,
+ct.BILL_TO_SITE_USE_ID,
+ct.SHIP_TO_SITE_USE_ID,
+billto_uses.BILL_TO_NAME bill_to_location,
+billto_uses.SHIP_TO_NAME ship_to_location,
+cust.account_name account_name,
+cust.account_number
+FROM   
+ra_cm_requests cmreq, 
+fnd_user users ,
+ra_customer_trx ct,
+ra_cust_trx_types rct,
+ar_lookups lk_reason,
+ar_irec_user_acct_sites_all acctsites,
+hz_cust_accounts cust,
+XX_OM_HEADER_ATTRIBUTES_V    billto_uses   										--Refrofit NAIT-37762
+WHERE  
+ct.customer_trx_id = cmreq.customer_trx_id 
+AND cust.cust_account_id = acctsites.customer_id
+AND rct.cust_trx_type_id = ct.cust_trx_type_id 
+AND ct.attribute14 = billto_uses.header_id(+) 
+AND cmreq.created_by = users.user_id
+AND lk_reason.lookup_type = 'CREDIT_MEMO_REASON'
+AND lk_reason.lookup_code = cmreq.cm_reason_code
+ AND ct.bill_to_customer_id = acctsites.customer_id
+AND(TRUNC(ct.trx_date)) >= trunc(decode( nvl(FND_PROFILE.VALUE('ARI_FILTER_TRXDATE_OLDER'), 0), 0, ct.trx_date, (sysdate-FND_PROFILE.VALUE('ARI_FILTER_TRXDATE_OLDER'))))
+ AND acctsites.session_id = :1
+ AND acctsites.user_id = :2
+AND ct.invoice_currency_code = :3
+AND ct.status_trx                = nvl(decode(:4,'OPEN', 'OP', 'CLOSED', 'CL', 
+                                                   'PAST_DUE_INVOICE', 'OP', 'OIR_AGING_-99_01', 'OP', 
+                                                   'OIR_AGING_1_30', 'OP', 'OIR_AGING_31_60', 'OP', 
+                                                   'OIR_AGING_61_90', 'OP', 'OIR_AGING_91_180', 'OP', 
+                                                   'OIR_AGING_181_365', 'OP', 'OIR_AGING_366_400', 'OP', 
+                                                   'ANY_STATUS', ct.status_trx ),
+                                                   ct.status_trx)
+ AND cmreq.APPROVAL_DATE             <= decode(:5,'OPEN', cmreq.APPROVAL_DATE, 
+                                                 'CLOSED', cmreq.APPROVAL_DATE, 
+                                                 'PAST_DUE_INVOICE', sysdate, 
+                                                 'OIR_AGING_-99_01', sysdate, 
+                                                 'OIR_AGING_1_30', sysdate-30, 
+                                                 'OIR_AGING_31_60', sysdate-60, 
+                                                 'OIR_AGING_61_90', sysdate-90, 
+                                                 'OIR_AGING_91_180', sysdate-180, 
+                                                 'OIR_AGING_181_365', sysdate-365, 
+                                                 'OIR_AGING_366_400', sysdate-400,
+                                                 'ANY_STATUS', cmreq.APPROVAL_DATE )
+AND ct.CUSTOMER_SITE_USE_ID = decode(acctsites,CUSTOMER_SITE_USE_ID, -1, ct.CUSTOMER_SITE_USE_ID, acctsites,CUSTOMER_SITE_USE_ID )
+AND nvl(billto_uses.COST_CENTER_DEPT ,'-1')       = nvl(:6, nvl(billto_uses.COST_CENTER_DEPT,'-1'))
+AND nvl(billto_uses.DESK_DEL_ADDR ,'-1')          = nvl(:7, nvl(billto_uses.DESK_DEL_ADDR,'-1'))
+AND nvl(billto_uses.RELEASE_NUMBER ,'-1')         = nvl(:8, nvl(billto_uses.RELEASE_NUMBER,'-1'))
+AND nvl(ct.PURCHASE_ORDER ,'-1')                  = nvl(:9, nvl(ct.PURCHASE_ORDER,'-1'))
+AND nvl(cmreq.orig_trx_number, '-1')              = nvl(:10, nvl(cmreq.orig_trx_number ,'-1'))
+AND cmreq.total_amount between nvl(:11, cmreq.total_amount-1) and nvl(:12, cmreq.total_amount+1)
+AND trunc( cmreq.CREATION_DATE ) between trunc(nvl(to_date(:13), cmreq.CREATION_DATE-1)) and trunc(nvl(to_date(:14), cmreq.CREATION_DATE+1)) 
+AND trunc( nvl(cmreq.DISPUTE_DATE,sysdate) ) between trunc(nvl(to_date(:15), nvl(cmreq.DISPUTE_DATE,sysdate)-1)) and trunc(nvl(to_date(:16), nvl(cmreq.DISPUTE_DATE,sysdate)+1))
+   ]]></SQLQuery>
+   <DesignTime>
+      <Attr Name="_rowSuperClassName" Value="oracle.apps.ar.irec.framework.IROAViewRowImpl" />
+      <Attr Name="_isCodegen" Value="true" />
+      <Attr Name="_isExpertMode" Value="true" />
+      <Attr Name="_version" Value="10.1.3.41.57" />
+      <Attr Name="_objectSuperClassName" Value="oracle.apps.ar.irec.accountDetails.TableVO" />
+      <Attr Name="_codeGenFlag2" Value="Access|Coll" />
+   </DesignTime>
+   <ViewAttribute
+      Name="RequestId"
+      IsQueriable="false"
+      IsPersistent="false"
+      Precision="15"
+      Scale="0"
+      Type="oracle.jbo.domain.Number"
+      ColumnType="NUMBER"
+      AliasName="REQUEST_ID"
+      Expression="REQUEST_ID"
+      SQLType="NUMERIC" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Status"
+      IsQueriable="false"
+      IsPersistent="false"
+      Precision="20"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="STATUS"
+      Expression="&#39;See the SQL...&#39;"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="20" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="CreationDate"
+      IsQueriable="false"
+      IsPersistent="false"
+      Type="oracle.jbo.domain.Date"
+      ColumnType="DATE"
+      AliasName="CREATION_DATE"
+      Expression="CREATION_DATE"
+      SQLType="DATE" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="7" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="TotalAmount"
+      IsQueriable="false"
+      IsPersistent="false"
+      Type="oracle.jbo.domain.Number"
+      ColumnType="NUMBER"
+      AliasName="TOTAL_AMOUNT"
+      Expression="TOTAL_AMOUNT"
+      SQLType="NUMERIC" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="TrxNumber"
+      IsQueriable="false"
+      IsPersistent="false"
+      Precision="30"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="TRX_NUMBER"
+      Expression="TRX_NUMBER"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="30" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="CustomerTrxId"
+      IsQueriable="false"
+      IsPersistent="false"
+      Precision="15"
+      Scale="0"
+      Type="oracle.jbo.domain.Number"
+      ColumnType="NUMBER"
+      AliasName="CUSTOMER_TRX_ID"
+      Expression="&#39;See the SQL...&#39;"
+      SQLType="NUMERIC" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Url"
+      IsQueriable="false"
+      IsPersistent="false"
+      Precision="2000"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="URL"
+      Expression="&#39;See the SQL...&#39;"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="240" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="CreatedBy"
+      IsQueriable="false"
+      IsPersistent="false"
+      Precision="15"
+      Scale="0"
+      Type="oracle.jbo.domain.Number"
+      ColumnType="NUMBER"
+      AliasName="CREATED_BY"
+      Expression="CREATED_BY"
+      SQLType="NUMERIC" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Statusmeaning"
+      IsQueriable="false"
+      IsPersistent="false"
+      Precision="80"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="STATUS_MEANING"
+      Expression="STATUS_MEANING"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="14" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Irreqdetails"
+      IsQueriable="false"
+      IsPersistent="false"
+      Precision="12"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="IR_REQ_DETAILS"
+      Expression="&#39;See the SQL...&#39;"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="12" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="InvoiceCurrencyCode"
+      IsQueriable="false"
+      IsPersistent="false"
+      Precision="15"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="INVOICE_CURRENCY_CODE"
+      Expression="&#39;See the SQL...&#39;"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="15" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="CustomerId"
+      IsQueriable="false"
+      IsPersistent="false"
+      Precision="15"
+      Scale="0"
+      Type="oracle.jbo.domain.Number"
+      ColumnType="NUMBER"
+      AliasName="CUSTOMER_ID"
+      Expression="&#39;See the SQL...&#39;"
+      SQLType="NUMERIC" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="CustomerSiteUseId"
+      IsQueriable="false"
+      IsPersistent="false"
+      Precision="15"
+      Scale="0"
+      Type="oracle.jbo.domain.Number"
+      ColumnType="NUMBER"
+      AliasName="CUSTOMER_SITE_USE_ID"
+      Expression="&#39;See the SQL...&#39;"
+      SQLType="NUMERIC" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="TrxDate"
+      IsQueriable="false"
+      IsPersistent="false"
+      Type="oracle.jbo.domain.Date"
+      ColumnType="DATE"
+      AliasName="TRX_DATE"
+      Expression="TRX_DATE"
+      SQLType="DATE" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Strtrxdate"
+      IsPersistent="false"
+      Precision="10"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="STRTRXDATE"
+      Expression="STRTRXDATE"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="10" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="CreatedByName"
+      IsQueriable="false"
+      IsPersistent="false"
+      Precision="20"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="CREATED_BY_NAME"
+      Expression="CREATED_BY_NAME"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="20" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="TransactionDetailsClass"
+      IsQueriable="false"
+      IsPersistent="false"
+      Precision="20"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="TRANSACTION_DETAILS_CLASS"
+      Expression="TRANSACTION_DETAILS_CLASS"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="20" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Reason"
+      IsUpdateable="false"
+      IsQueriable="false"
+      IsPersistent="false"
+      Precision="255"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="REASON"
+      Expression="REASON"
+      SQLType="VARCHAR" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="LastUpdated"
+      IsQueriable="false"
+      IsPersistent="false"
+      Type="oracle.jbo.domain.Date"
+      ColumnType="DATE"
+      AliasName="Last_Updated"
+      Expression="Last_Updated"
+      SQLType="DATE" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="7" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="OrgName"
+      IsPersistent="false"
+      Precision="255"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="ORG_NAME"
+      Expression="ORG_NAME"
+      SQLType="VARCHAR" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="PayingCustomerId"
+      IsPersistent="false"
+      Precision="15"
+      Scale="0"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="PAYING_CUSTOMER_ID"
+      Expression="PayingCustomerId"
+      SQLType="VARCHAR" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="PayingSiteUseId"
+      IsPersistent="false"
+      Precision="15"
+      Scale="0"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="PAYING_SITE_USE_ID"
+      Expression="PayingSiteUseId"
+      SQLType="VARCHAR" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="BillToSiteUseId"
+      IsQueriable="false"
+      IsPersistent="false"
+      Precision="15"
+      Scale="0"
+      Type="oracle.jbo.domain.Number"
+      ColumnType="NUMBER"
+      AliasName="BILL_TO_SITE_USE_ID"
+      Expression="BILL_TO_SITE_USE_ID"
+      SQLType="NUMERIC" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="ShipToSiteUseId"
+      IsQueriable="false"
+      IsPersistent="false"
+      Precision="15"
+      Scale="0"
+      Type="oracle.jbo.domain.Number"
+      ColumnType="NUMBER"
+      AliasName="SHIP_TO_SITE_USE_ID"
+      Expression="SHIP_TO_SITE_USE_ID"
+      SQLType="NUMERIC" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="BillToLocation"
+      IsPersistent="false"
+      IsNotNull="true"
+      Precision="40"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="BILL_TO_LOCATION"
+      Expression="BILL_TO_LOCATION"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="40" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="ShipToLocation"
+      IsPersistent="false"
+      Precision="40"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="SHIP_TO_LOCATION"
+      Expression="SHIP_TO_LOCATION"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="40" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="AccountName"
+      IsPersistent="false"
+      Precision="240"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="ACCOUNT_NAME"
+      Expression="ACCOUNT_NAME"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="240" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="AccountNumber"
+      IsPersistent="false"
+      IsNotNull="true"
+      Precision="30"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="ACCOUNT_NUMBER"
+      Expression="ACCOUNT_NUMBER"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="30" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="TotalAmountFormatted"
+      IsUpdateable="false"
+      IsQueriable="false"
+      IsPersistent="false"
+      Type="java.lang.String"
+      ColumnType="$none$"
+      AliasName="TOTAL_AMOUNT_FORMATTED"
+      SQLType="VARCHAR" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="RequestComponent"
+      IsUpdateable="false"
+      IsQueriable="false"
+      IsPersistent="false"
+      Type="java.lang.String"
+      ColumnType="$none$"
+      AliasName="REQUEST_COMPONENT"
+      SQLType="VARCHAR" >
+   </ViewAttribute>
+   <AttrArray Name="KeyAttributes">
+      <Item Value="RequestId" />
+   </AttrArray>
+</ViewObject>

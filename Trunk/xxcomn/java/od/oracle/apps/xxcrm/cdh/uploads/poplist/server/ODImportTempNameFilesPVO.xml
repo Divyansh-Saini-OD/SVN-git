@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding='windows-1252'?>
+<!DOCTYPE ViewObject SYSTEM "jbo_03_01.dtd">
+<!--
+Subversion Info:
+$HeadURL: http://svn.na.odcorp.net/svn/od/common/trunk/xxcomn/java/od/oracle/apps/xxcrm/cdh/uploads/poplist/server/ODImportTempNameFilesPVO.xml $
+$Rev: 260139 $
+$Date: 2016-11-10 05:11:27 -0500 (Thu, 10 Nov 2016) $
+-->
+<ViewObject
+   Name="ODImportTempNameFilesPVO"
+   BindingStyle="Oracle"
+   CustomQuery="true"
+   RowClass="od.oracle.apps.xxcrm.cdh.uploads.poplist.server.ODImportTempNameFilesPVORowImpl"
+   ComponentClass="oracle.apps.fnd.framework.server.OAViewObjectImpl"
+   MsgBundleClass="oracle.jbo.common.JboResourceBundle"
+   UseGlueCode="false" >
+   <SQLQuery><![CDATA[
+SELECT distinct xfu.clob_code
+                ,xtfu.template_name
+                ,xcb.responsibility_id
+FROM xxtps_template_file_uploads xtfu
+     ,xxtps_file_uploads xfu
+     , xx_crm_bulk_resp_setup_v xcb
+WHERE xfu.CLOB_CODE = xcb.template_code
+AND xfu.clob_code = xtfu.template_code
+   ]]></SQLQuery>
+   <DesignTime>
+      <Attr Name="_isCodegen" Value="true" />
+      <Attr Name="_version" Value="9.0.3.12.53" />
+      <Attr Name="_CodeGenFlagNew" Value="0" />
+   </DesignTime>
+   <ViewAttribute
+      Name="ClobCode"
+      IsUpdateable="false"
+      IsPersistent="false"
+      Precision="80"
+      Type="java.lang.String"
+      AliasName="CLOBCODE"
+      ColumnType="VARCHAR2"
+      Expression="ClobCode"
+      SQLType="VARCHAR" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="TemplateName"
+      IsUpdateable="false"
+      IsPersistent="false"
+      Precision="100"
+      Type="java.lang.String"
+      AliasName="TEMPLATENAME"
+      ColumnType="VARCHAR2"
+      Expression="TemplateName"
+      SQLType="VARCHAR" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="ResponsibilityId"
+      IsPersistent="false"
+      Precision="240"
+      Type="java.lang.String"
+      AliasName="RESPONSIBILITY_ID"
+      ColumnType="VARCHAR2"
+      Expression="RESPONSIBILITY_ID"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="240" />
+      </DesignTime>
+   </ViewAttribute>
+</ViewObject>

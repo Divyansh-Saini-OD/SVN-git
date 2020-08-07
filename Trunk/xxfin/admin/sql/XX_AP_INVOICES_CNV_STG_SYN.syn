@@ -1,0 +1,28 @@
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     ON
+	
+-- +==========================================================================+
+-- |                  Office Depot - Project Simplify                         |
+-- |                       PROVIDGE Consulting                                |
+-- +==========================================================================+
+-- | SQL Script to create the Synonym for Sequence xx_ap_invoices_cnv_stg_bt_s|
+-- |  and tables xx_ap_inv_hdr_intf_cnv_stg AND xx_ap_inv_lines_intf_cnv_stg  |
+-- |Change Record:                                                            |
+-- |===============                                                           |
+-- |Version   Date         Author               Remarks                       |
+-- |=======   ==========   =============        ==============================|
+-- | 1.0      25-APR-2007  Sarat Uppalapati     Initial version               |
+-- | V1.0     01-NOV-2207  Sarat Uppalapati     Removed DROP Synonym Commands |
+-- +==========================================================================+
+
+
+CREATE SYNONYM APPS.XX_AP_INVOICES_CNV_STG_BT_S  FOR XXCNV.XX_AP_INVOICES_CNV_STG_BT_S;
+
+CREATE SYNONYM APPS.XX_AP_INV_HDR_INTF_CNV_STG FOR XXCNV.XX_AP_INV_HDR_INTF_CNV_STG;
+
+CREATE SYNONYM APPS.XX_AP_INV_LINES_INTF_CNV_STG FOR XXCNV.XX_AP_INV_LINES_INTF_CNV_STG;
+
+SHOW ERROR

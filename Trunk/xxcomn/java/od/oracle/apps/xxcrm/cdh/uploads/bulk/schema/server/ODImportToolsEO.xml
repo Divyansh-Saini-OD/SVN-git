@@ -1,0 +1,366 @@
+<?xml version="1.0" encoding='windows-1252'?>
+<!DOCTYPE Entity SYSTEM "jbo_03_01.dtd">
+<!--
+Subversion Info:
+$HeadURL: http://svn.na.odcorp.net/svn/od/common/trunk/xxcomn/java/od/oracle/apps/xxcrm/cdh/uploads/bulk/schema/server/ODImportToolsEO.xml $
+$Rev: 260139 $
+$Date: 2016-11-10 05:11:27 -0500 (Thu, 10 Nov 2016) $
+-->
+<Entity
+   Name="ODImportToolsEO"
+   DBObjectType="table"
+   DBObjectName="XXTPS_FILE_UPLOADS"
+   AliasName="ODImportToolsEO"
+   BindingStyle="Oracle"
+   UseGlueCode="false"
+   CodeGenFlag="79"
+   RowClass="od.oracle.apps.xxcrm.cdh.uploads.bulk.schema.server.ODImportToolsEOImpl"
+   DefClass="oracle.apps.fnd.framework.server.OAEntityDefImpl"
+   CollClass="oracle.apps.fnd.framework.server.OAEntityCache" >
+   <DesignTime>
+      <Attr Name="_isCodegen" Value="true" />
+      <Attr Name="_version" Value="9.0.3.12.53" />
+      <AttrArray Name="_publishEvents">
+      </AttrArray>
+   </DesignTime>
+   <Attribute
+      Name="FileUploadId"
+      IsNotNull="true"
+      Type="oracle.jbo.domain.Number"
+      ColumnName="FILE_UPLOAD_ID"
+      ColumnType="NUMBER"
+      SQLType="NUMERIC"
+      TableName="XXTPS_FILE_UPLOADS"
+      PrimaryKey="true" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="ClobType"
+      IsNotNull="true"
+      Precision="30"
+      Type="java.lang.String"
+      ColumnName="CLOB_TYPE"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XXTPS_FILE_UPLOADS" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="30" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="ClobCode"
+      IsNotNull="true"
+      Precision="80"
+      Type="java.lang.String"
+      ColumnName="CLOB_CODE"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XXTPS_FILE_UPLOADS" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="80" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="FileName"
+      IsNotNull="true"
+      Precision="120"
+      Type="java.lang.String"
+      ColumnName="FILE_NAME"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XXTPS_FILE_UPLOADS" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="120" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="FileStatus"
+      IsNotNull="true"
+      Precision="1"
+      Type="java.lang.String"
+      ColumnName="FILE_STATUS"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XXTPS_FILE_UPLOADS" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="1" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="FileContentType"
+      IsNotNull="true"
+      Precision="120"
+      Type="java.lang.String"
+      ColumnName="FILE_CONTENT_TYPE"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XXTPS_FILE_UPLOADS" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="120" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="FileData"
+      IsQueriable="false"
+      Type="oracle.jbo.domain.ClobDomain"
+      ColumnName="FILE_DATA"
+      ColumnType="CLOB"
+      SQLType="CLOB"
+      TableName="XXTPS_FILE_UPLOADS" >
+   </Attribute>
+   <Attribute
+      Name="Program"
+      Precision="30"
+      Type="java.lang.String"
+      ColumnName="PROGRAM"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XXTPS_FILE_UPLOADS" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="30" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="CreatedBy"
+      IsNotNull="true"
+      Type="oracle.jbo.domain.Number"
+      ColumnName="CREATED_BY"
+      ColumnType="NUMBER"
+      SQLType="NUMERIC"
+      TableName="XXTPS_FILE_UPLOADS" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="CreationDate"
+      IsNotNull="true"
+      Type="oracle.jbo.domain.Date"
+      ColumnName="CREATION_DATE"
+      ColumnType="DATE"
+      SQLType="TIMESTAMP"
+      TableName="XXTPS_FILE_UPLOADS" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="7" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="LastUpdatedBy"
+      IsNotNull="true"
+      Type="oracle.jbo.domain.Number"
+      ColumnName="LAST_UPDATED_BY"
+      ColumnType="NUMBER"
+      SQLType="NUMERIC"
+      TableName="XXTPS_FILE_UPLOADS" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="LastUpdateDate"
+      IsNotNull="true"
+      Type="oracle.jbo.domain.Date"
+      ColumnName="LAST_UPDATE_DATE"
+      ColumnType="DATE"
+      SQLType="TIMESTAMP"
+      TableName="XXTPS_FILE_UPLOADS" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="7" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="RequestId"
+      Type="oracle.jbo.domain.Number"
+      ColumnName="REQUEST_ID"
+      ColumnType="NUMBER"
+      SQLType="NUMERIC"
+      TableName="XXTPS_FILE_UPLOADS" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="ErrorFileData"
+      IsQueriable="false"
+      Type="oracle.jbo.domain.ClobDomain"
+      ColumnName="ERROR_FILE_DATA"
+      ColumnType="CLOB"
+      SQLType="CLOB"
+      TableName="XXTPS_FILE_UPLOADS" >
+   </Attribute>
+   <Attribute
+      Name="LastUpdateLogin"
+      Type="oracle.jbo.domain.Number"
+      ColumnName="LAST_UPDATE_LOGIN"
+      ColumnType="NUMBER"
+      SQLType="NUMERIC"
+      TableName="XXTPS_FILE_UPLOADS" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="OutputFileData"
+      IsQueriable="false"
+      Type="oracle.jbo.domain.ClobDomain"
+      ColumnName="OUTPUT_FILE_DATA"
+      ColumnType="CLOB"
+      SQLType="CLOB"
+      TableName="XXTPS_FILE_UPLOADS" >
+   </Attribute>
+   <Attribute
+      Name="TotalProcessedRecords"
+      Type="oracle.jbo.domain.Number"
+      ColumnName="TOTAL_PROCESSED_RECORDS"
+      ColumnType="NUMBER"
+      SQLType="NUMERIC"
+      TableName="XXTPS_FILE_UPLOADS" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="NoOfSuccessRecords"
+      Type="oracle.jbo.domain.Number"
+      ColumnName="NO_OF_SUCCESS_RECORDS"
+      ColumnType="NUMBER"
+      SQLType="NUMERIC"
+      TableName="XXTPS_FILE_UPLOADS" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="NoOfErrorRecords"
+      Type="oracle.jbo.domain.Number"
+      ColumnName="NO_OF_ERROR_RECORDS"
+      ColumnType="NUMBER"
+      SQLType="NUMERIC"
+      TableName="XXTPS_FILE_UPLOADS" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </Attribute>
+   <Key
+      Name="SysC00346004" >
+      <AttrArray Name="Attributes">
+         <Item Value="od.oracle.apps.xxcrm.cdh.uploads.bulk.schema.server.ODImportToolsEO.CreatedBy" />
+      </AttrArray>
+      <DesignTime>
+         <Attr Name="_DBObjectName" Value="SYS_C00346004" />
+         <Attr Name="_checkCondition" Value="&#34;CREATED_BY&#34; IS NOT NULL" />
+         <Attr Name="_isCheck" Value="true" />
+      </DesignTime>
+   </Key>
+   <Key
+      Name="SysC00346005" >
+      <AttrArray Name="Attributes">
+         <Item Value="od.oracle.apps.xxcrm.cdh.uploads.bulk.schema.server.ODImportToolsEO.CreationDate" />
+      </AttrArray>
+      <DesignTime>
+         <Attr Name="_DBObjectName" Value="SYS_C00346005" />
+         <Attr Name="_checkCondition" Value="&#34;CREATION_DATE&#34; IS NOT NULL" />
+         <Attr Name="_isCheck" Value="true" />
+      </DesignTime>
+   </Key>
+   <Key
+      Name="SysC00345998" >
+      <AttrArray Name="Attributes">
+         <Item Value="od.oracle.apps.xxcrm.cdh.uploads.bulk.schema.server.ODImportToolsEO.FileUploadId" />
+      </AttrArray>
+      <DesignTime>
+         <Attr Name="_DBObjectName" Value="SYS_C00345998" />
+         <Attr Name="_checkCondition" Value="&#34;FILE_UPLOAD_ID&#34; IS NOT NULL" />
+         <Attr Name="_isCheck" Value="true" />
+      </DesignTime>
+   </Key>
+   <Key
+      Name="SysC00345999" >
+      <AttrArray Name="Attributes">
+         <Item Value="od.oracle.apps.xxcrm.cdh.uploads.bulk.schema.server.ODImportToolsEO.ClobType" />
+      </AttrArray>
+      <DesignTime>
+         <Attr Name="_DBObjectName" Value="SYS_C00345999" />
+         <Attr Name="_checkCondition" Value="&#34;CLOB_TYPE&#34; IS NOT NULL" />
+         <Attr Name="_isCheck" Value="true" />
+      </DesignTime>
+   </Key>
+   <Key
+      Name="SysC00346003" >
+      <AttrArray Name="Attributes">
+         <Item Value="od.oracle.apps.xxcrm.cdh.uploads.bulk.schema.server.ODImportToolsEO.FileContentType" />
+      </AttrArray>
+      <DesignTime>
+         <Attr Name="_DBObjectName" Value="SYS_C00346003" />
+         <Attr Name="_checkCondition" Value="&#34;FILE_CONTENT_TYPE&#34; IS NOT NULL" />
+         <Attr Name="_isCheck" Value="true" />
+      </DesignTime>
+   </Key>
+   <Key
+      Name="SysC00346000" >
+      <AttrArray Name="Attributes">
+         <Item Value="od.oracle.apps.xxcrm.cdh.uploads.bulk.schema.server.ODImportToolsEO.ClobCode" />
+      </AttrArray>
+      <DesignTime>
+         <Attr Name="_DBObjectName" Value="SYS_C00346000" />
+         <Attr Name="_checkCondition" Value="&#34;CLOB_CODE&#34; IS NOT NULL" />
+         <Attr Name="_isCheck" Value="true" />
+      </DesignTime>
+   </Key>
+   <Key
+      Name="SysC00346007" >
+      <AttrArray Name="Attributes">
+         <Item Value="od.oracle.apps.xxcrm.cdh.uploads.bulk.schema.server.ODImportToolsEO.LastUpdateDate" />
+      </AttrArray>
+      <DesignTime>
+         <Attr Name="_DBObjectName" Value="SYS_C00346007" />
+         <Attr Name="_checkCondition" Value="&#34;LAST_UPDATE_DATE&#34; IS NOT NULL" />
+         <Attr Name="_isCheck" Value="true" />
+      </DesignTime>
+   </Key>
+   <Key
+      Name="SysC00346002" >
+      <AttrArray Name="Attributes">
+         <Item Value="od.oracle.apps.xxcrm.cdh.uploads.bulk.schema.server.ODImportToolsEO.FileStatus" />
+      </AttrArray>
+      <DesignTime>
+         <Attr Name="_DBObjectName" Value="SYS_C00346002" />
+         <Attr Name="_checkCondition" Value="&#34;FILE_STATUS&#34; IS NOT NULL" />
+         <Attr Name="_isCheck" Value="true" />
+      </DesignTime>
+   </Key>
+   <Key
+      Name="XxtpsFileUploadsPk" >
+      <AttrArray Name="Attributes">
+         <Item Value="od.oracle.apps.xxcrm.cdh.uploads.bulk.schema.server.ODImportToolsEO.FileUploadId" />
+      </AttrArray>
+      <DesignTime>
+         <Attr Name="_DBObjectName" Value="XXTPS_FILE_UPLOADS_PK" />
+         <Attr Name="_isPrimary" Value="true" />
+      </DesignTime>
+   </Key>
+   <Key
+      Name="SysC00346001" >
+      <AttrArray Name="Attributes">
+         <Item Value="od.oracle.apps.xxcrm.cdh.uploads.bulk.schema.server.ODImportToolsEO.FileName" />
+      </AttrArray>
+      <DesignTime>
+         <Attr Name="_DBObjectName" Value="SYS_C00346001" />
+         <Attr Name="_checkCondition" Value="&#34;FILE_NAME&#34; IS NOT NULL" />
+         <Attr Name="_isCheck" Value="true" />
+      </DesignTime>
+   </Key>
+   <Key
+      Name="SysC00346006" >
+      <AttrArray Name="Attributes">
+         <Item Value="od.oracle.apps.xxcrm.cdh.uploads.bulk.schema.server.ODImportToolsEO.LastUpdatedBy" />
+      </AttrArray>
+      <DesignTime>
+         <Attr Name="_DBObjectName" Value="SYS_C00346006" />
+         <Attr Name="_checkCondition" Value="&#34;LAST_UPDATED_BY&#34; IS NOT NULL" />
+         <Attr Name="_isCheck" Value="true" />
+      </DesignTime>
+   </Key>
+</Entity>

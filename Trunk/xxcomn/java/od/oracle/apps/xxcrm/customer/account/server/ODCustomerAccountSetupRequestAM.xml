@@ -1,0 +1,243 @@
+<?xml version="1.0" encoding='windows-1252'?>
+<!DOCTYPE AppModule SYSTEM "jbo_03_01.dtd">
+
+<!--
+Subversion Info:
+$HeadURL: http://svn.na.odcorp.net/svn/od/common/trunk/xxcomn/java/od/oracle/apps/xxcrm/customer/account/server/ODCustomerAccountSetupRequestAM.xml $
+$Rev: 100296 $
+$Date: 2010-04-26 01:48:01 -0400 (Mon, 26 Apr 2010) $
+-->
+<AppModule
+   Name="ODCustomerAccountSetupRequestAM"
+   ComponentClass="od.oracle.apps.xxcrm.customer.account.server.ODCustomerAccountSetupRequestAMImpl"
+   LoadComponentsLazily="true" >
+   <DesignTime>
+      <Attr Name="_isCodegen" Value="true" />
+      <Attr Name="_version" Value="9.0.3.13.93" />
+      <Attr Name="_deployType" Value="0" />
+   </DesignTime>
+   <ViewUsage
+      Name="CustomerAccountSetupRequestVO"
+      ViewObjectName="od.oracle.apps.xxcrm.customer.account.server.ODCustomerAccountSetupRequestVO" >
+   </ViewUsage>
+   <ViewUsage
+      Name="ODAcctSetupTargetSysVO"
+      ViewObjectName="od.oracle.apps.xxcrm.customer.account.poplist.server.ODAcctSetupTargetSysVO" >
+   </ViewUsage>
+   <ViewUsage
+      Name="ODPricePlanLovVO"
+      ViewObjectName="od.oracle.apps.xxcrm.customer.account.poplist.server.ODPricePlanLovVO" >
+   </ViewUsage>
+   <ViewUsage
+      Name="ODDefaultPageDefLovVO"
+      ViewObjectName="od.oracle.apps.xxcrm.customer.account.poplist.server.ODDefaultPageDefLovVO" >
+   </ViewUsage>
+   <ViewUsage
+      Name="ODDelDocTypeLovVO"
+      ViewObjectName="od.oracle.apps.xxcrm.customer.account.poplist.server.ODDelDocTypeLovVO" >
+   </ViewUsage>
+   <ViewUsage
+      Name="ODDocPaymentMethodLovVO"
+      ViewObjectName="od.oracle.apps.xxcrm.customer.account.poplist.server.ODDocPaymentMethodLovVO" >
+   </ViewUsage>
+   <ViewUsage
+      Name="ODAcctSetupContractCustomLovVO"
+      ViewObjectName="od.oracle.apps.xxcrm.customer.account.poplist.server.ODAcctSetupContractCustomLovVO" >
+   </ViewUsage>
+   <ViewUsage
+      Name="ODAcctSetupContractNumberLovVO"
+      ViewObjectName="od.oracle.apps.xxcrm.customer.account.poplist.server.ODAcctSetupContractNumberLovVO" >
+   </ViewUsage>
+   <ViewUsage
+      Name="ODAcctSetupDocFreqLovVO"
+      ViewObjectName="od.oracle.apps.xxcrm.customer.account.poplist.server.ODAcctSetupDocFreqLovVO" >
+   </ViewUsage>
+   <ViewUsage
+      Name="ODAcctSetupDocNameLovVO"
+      ViewObjectName="od.oracle.apps.xxcrm.customer.account.poplist.server.ODAcctSetupDocNameLovVO" >
+   </ViewUsage>
+   <ViewUsage
+      Name="ODAcctSetupDocTypeLovVO"
+      ViewObjectName="od.oracle.apps.xxcrm.customer.account.poplist.server.ODAcctSetupDocTypeLovVO" >
+   </ViewUsage>
+   <ViewUsage
+      Name="ODCustomerAccountSetupRequestDetailsVO"
+      ViewObjectName="od.oracle.apps.xxcrm.customer.account.server.ODCustomerAccountSetupRequestDetailsVO" >
+   </ViewUsage>
+   <ViewUsage
+      Name="ODAcctSetupDocSortLokkupVO"
+      ViewObjectName="od.oracle.apps.xxcrm.customer.account.poplist.server.ODAcctSetupDocSortLokkupVO" >
+   </ViewUsage>
+   <ViewUsage
+      Name="ODAcctSetupDocTotalsShuttleVO"
+      ViewObjectName="od.oracle.apps.xxcrm.customer.account.poplist.server.ODAcctSetupDocTotalsShuttleVO" >
+   </ViewUsage>
+   <ViewUsage
+      Name="ODAcctSetupAdminDocPageBreakShuttleVO"
+      ViewObjectName="od.oracle.apps.xxcrm.asn.common.poplist.server.ODAcctSetupAdminDocPageBreakShuttleVO" >
+   </ViewUsage>
+   <ViewUsage
+      Name="ODCustAcctSetupDocPropertyVO"
+      ViewObjectName="od.oracle.apps.xxcrm.customer.account.server.ODCustAcctSetupDocPropertyVO" >
+   </ViewUsage>
+   <ViewUsage
+      Name="ODCustAcctSetupDocPropertyNewVO"
+      ViewObjectName="od.oracle.apps.xxcrm.customer.account.server.ODCustAcctSetupDocPropertyVO" >
+   </ViewUsage>
+   <ViewUsage
+      Name="ODCustAcctSetupDocumentVO"
+      ViewObjectName="od.oracle.apps.xxcrm.customer.account.server.ODCustAcctSetupDocumentVO" >
+   </ViewUsage>
+   <ViewUsage
+      Name="ODCustAcctSetupContractsVO"
+      ViewObjectName="od.oracle.apps.xxcrm.customer.account.server.ODCustAcctSetupContractsVO" >
+   </ViewUsage>
+   <ViewUsage
+      Name="ODCustAcctSetupContractsNewVO"
+      ViewObjectName="od.oracle.apps.xxcrm.customer.account.server.ODCustAcctSetupContractsVO" >
+   </ViewUsage>
+   <ViewUsage
+      Name="CustomerAccountSetupRequestPopupVO"
+      ViewObjectName="od.oracle.apps.xxcrm.customer.account.server.ODCustomerAccountSetupRequestVO" >
+   </ViewUsage>
+   <ViewUsage
+      Name="ODDefaultValuesVO"
+      ViewObjectName="od.oracle.apps.xxcrm.asn.common.customer.server.ODDefaultValuesVO" >
+   </ViewUsage>
+   <ViewUsage
+      Name="ODDocumentTemplatesVO"
+      ViewObjectName="od.oracle.apps.xxcrm.asn.common.customer.server.ODDocumentTemplatesVO" >
+   </ViewUsage>
+   <ViewUsage
+      Name="ODDocTemplateAttributesVO"
+      ViewObjectName="od.oracle.apps.xxcrm.asn.common.customer.server.ODDocTemplateAttributesVO" >
+   </ViewUsage>
+   <ViewUsage
+      Name="ODPartyRevenueBandAttributeVO"
+      ViewObjectName="od.oracle.apps.xxcrm.customer.account.poplist.server.ODPartyRevenueBandAttributeVO" >
+   </ViewUsage>
+   <ViewUsage
+      Name="ODAcctSetupDepartmentValidatedLovVO"
+      ViewObjectName="od.oracle.apps.xxcrm.customer.account.poplist.server.ODAcctSetupDepartmentValidatedLovVO" >
+   </ViewUsage>
+   <ViewUsage
+      Name="ODApContactLovVO"
+      ViewObjectName="od.oracle.apps.xxcrm.customer.account.poplist.server.ODApContactLovVO" >
+   </ViewUsage>
+   <ViewUsage
+      Name="ODCustomerAssignedRoleVO"
+      ViewObjectName="od.oracle.apps.xxcrm.customer.account.server.ODCustomerAssignedRoleVO" >
+   </ViewUsage>
+   <ViewUsage
+      Name="ODAccountSetupUpOffVO"
+      ViewObjectName="od.oracle.apps.xxcrm.customer.account.poplist.server.ODAccountSetupUpOffVO" >
+   </ViewUsage>
+   <ViewUsage
+      Name="ODContractsAssignedVO"
+      ViewObjectName="od.oracle.apps.xxcrm.customer.account.server.ODContractsAssignedVO" >
+   </ViewUsage>
+   <ViewUsage
+      Name="ODContTempCUPVO"
+      ViewObjectName="od.oracle.apps.xxcrm.customer.account.server.ODContTempCUPVO" >
+   </ViewUsage>
+   <ViewUsage
+      Name="ODContractTemplatePoplistVO"
+      ViewObjectName="od.oracle.apps.xxcrm.customer.account.poplist.server.ODContractTemplatePoplistVO" >
+   </ViewUsage>
+   <ViewUsage
+      Name="ODAccountSetupButtonsPVO"
+      ViewObjectName="od.oracle.apps.xxcrm.customer.account.server.ODAccountSetupButtonsPVO" >
+   </ViewUsage>
+   <ViewUsage
+      Name="ODOrgAccountSetupPVO"
+      ViewObjectName="od.oracle.apps.xxcrm.customer.account.server.ODOrgAccountSetupPVO" >
+   </ViewUsage>
+   <ViewUsage
+      Name="ODCustomerLoyaltyLOVVO"
+      ViewObjectName="od.oracle.apps.xxcrm.customer.account.server.ODCustomerLoyaltyLOVVO" >
+   </ViewUsage>
+   <ViewUsage
+      Name="ODCustomerSegmentationLOVVO"
+      ViewObjectName="od.oracle.apps.xxcrm.customer.account.server.ODCustomerSegmentationLOVVO" >
+   </ViewUsage>
+   <ViewUsage
+      Name="ODCustLoyaltySegmentVO"
+      ViewObjectName="od.oracle.apps.xxcrm.customer.account.server.ODCustLoyaltySegmentVO" >
+   </ViewUsage>
+   <ViewUsage
+      Name="HzPuiPrefixVO"
+      ViewObjectName="oracle.apps.ar.hz.components.lookup.server.HzPuiLookupVO" >
+   </ViewUsage>
+   <ViewUsage
+      Name="HzPuiPrefixVO1"
+      ViewObjectName="oracle.apps.ar.hz.components.lookup.server.HzPuiLookupVO" >
+   </ViewUsage>
+   <ViewUsage
+      Name="HzPuiPhoneCountryCodeVO"
+      ViewObjectName="oracle.apps.ar.hz.components.lookup.server.HzPuiPhoneCountryCodeVO" >
+   </ViewUsage>
+   <ViewUsage
+      Name="HzPuiFaxCountryCodeVO"
+      ViewObjectName="oracle.apps.ar.hz.components.lookup.server.HzPuiPhoneCountryCodeVO" >
+   </ViewUsage>
+   <ViewUsage
+      Name="HzPuiFaxCountryCodeVO1"
+      ViewObjectName="oracle.apps.ar.hz.components.lookup.server.HzPuiPhoneCountryCodeVO" >
+   </ViewUsage>
+   <ViewUsage
+      Name="HzPuiPhoneCountryCodeVO1"
+      ViewObjectName="oracle.apps.ar.hz.components.lookup.server.HzPuiPhoneCountryCodeVO" >
+   </ViewUsage>
+   <ViewUsage
+      Name="ODAPContactsVO"
+      ViewObjectName="od.oracle.apps.xxcrm.customer.account.server.ODAPContactsVO" >
+   </ViewUsage>
+   <ViewUsage
+      Name="ODAPContactPointEmailVO"
+      ViewObjectName="od.oracle.apps.xxcrm.customer.account.server.ODAPContactPointEmailVO" >
+   </ViewUsage>
+   <ViewUsage
+      Name="ODAPContactPointFaxVO"
+      ViewObjectName="od.oracle.apps.xxcrm.customer.account.server.ODAPContactPointFaxVO" >
+   </ViewUsage>
+   <ViewUsage
+      Name="ODAPContactPointPhoneVO"
+      ViewObjectName="od.oracle.apps.xxcrm.customer.account.server.ODAPContactPointPhoneVO" >
+   </ViewUsage>
+   <ViewUsage
+      Name="ODSalesContactsVO"
+      ViewObjectName="od.oracle.apps.xxcrm.customer.account.server.ODAPContactsVO" >
+   </ViewUsage>
+   <ViewUsage
+      Name="ODSalesContactPointEmailVO"
+      ViewObjectName="od.oracle.apps.xxcrm.customer.account.server.ODAPContactPointEmailVO" >
+   </ViewUsage>
+   <ViewUsage
+      Name="ODSalesContactPointFaxVO"
+      ViewObjectName="od.oracle.apps.xxcrm.customer.account.server.ODAPContactPointFaxVO" >
+   </ViewUsage>
+   <ViewUsage
+      Name="ODSalesContactPointPhoneVO"
+      ViewObjectName="od.oracle.apps.xxcrm.customer.account.server.ODAPContactPointPhoneVO" >
+   </ViewUsage>
+   <ViewUsage
+      Name="ODSalesContactLovVO"
+      ViewObjectName="od.oracle.apps.xxcrm.customer.account.poplist.server.ODApContactLovVO" >
+   </ViewUsage>
+   <ViewUsage
+      Name="ODContractTemplatesVO1"
+      ViewObjectName="od.oracle.apps.xxcrm.customer.account.server.ODContractTemplatesVO" >
+   </ViewUsage>
+   <ViewUsage
+      Name="ODCdhContractProgCodesVO"
+      ViewObjectName="od.oracle.apps.xxcrm.customer.account.server.ODCdhContractProgCodesVO" >
+   </ViewUsage>   
+   <ViewUsage
+      Name="ODCdhContractCompPVO"
+      ViewObjectName="od.oracle.apps.xxcrm.customer.account.server.ODCdhContractCompPVO" >
+   </ViewUsage>
+   <ViewUsage
+      Name="OdCdhAcctTemplateContractsVO"
+      ViewObjectName="od.oracle.apps.xxcrm.customer.account.server.OdCdhAcctTemplateContractsVO" >
+   </ViewUsage>
+</AppModule>

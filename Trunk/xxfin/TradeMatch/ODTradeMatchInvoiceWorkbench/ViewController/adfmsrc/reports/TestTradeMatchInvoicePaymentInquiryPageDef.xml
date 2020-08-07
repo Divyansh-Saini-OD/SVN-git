@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<pageDefinition xmlns="http://xmlns.oracle.com/adfm/uimodel" version="12.2.1.12.24"
+                id="TestTradeMatchInvoicePaymentInquiryPageDef" Package="reports">
+  <parameters/>
+  <executables>
+    <variableIterator id="variables"/>
+    <taskFlow id="tradematchinvoicepaymentinquirybtf1"
+              taskFlowId="/WEB-INF/trade-match-invoice-payment-inquiry-btf.xml#trade-match-invoice-payment-inquiry-btf"
+              activation="deferred" xmlns="http://xmlns.oracle.com/adf/controller/binding"/>
+  </executables>
+  <bindings/>
+</pageDefinition>

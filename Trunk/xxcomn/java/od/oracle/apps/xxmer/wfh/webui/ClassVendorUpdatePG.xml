@@ -1,0 +1,36 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<!-- dbdrv: exec java oracle/jrad/tools/xml/importer XMLImporter.class java &phase=dat+24 checkfile:~PROD:~PATH:~FILE &fullpath:~PROD:~PATH:~FILE -username &un_apps -password &pw_apps -dbconnection &jdbc_db_addr  -userId "1" -rootPackage /oracle/apps/~PROD  -rootdir &fullpath:~PROD:mds:directory  -->
+<page xmlns:jrad="http://xmlns.oracle.com/jrad" xmlns:oa="http://xmlns.oracle.com/oa" xmlns:ui="http://xmlns.oracle.com/uix/ui" version="9.0.3.8.12_1330" xml:lang="en-US" xmlns:user="http://xmlns.oracle.com/jrad/user" xmlns="http://xmlns.oracle.com/jrad" file-version="$Header$">
+   <content>
+      <oa:pageLayout id="PageLayoutRN" amDefName="od.oracle.apps.xxmer.wfh.server.WorkflowHierarchyAM" windowTitle="Update Merch Class, Vendor to Planner Association" title="Update Merch Class, Vendor to Planner Association" controllerClass="od.oracle.apps.xxmer.wfh.webui.ClassVendorUpdateCO">
+         <ui:corporateBranding>
+            <oa:image id="corporateBrandingImage" source="/OA_MEDIA/FNDSSCORP.gif"/>
+         </ui:corporateBranding>
+         <ui:contents>
+            <oa:messageComponentLayout id="UpdateClassVendorTable">
+               <ui:contents>
+                  <oa:messageStyledText id="MerchClassId" dataType="NUMBER" prompt="MerchClassId" viewName="UpdateClassVendorVO1" viewAttr="MerchClassId" styleClass="OraDataText"/>
+                  <oa:messageStyledText id="MerchClassDescription" dataType="VARCHAR2" prompt="MerchClassDescription" viewName="UpdateClassVendorVO1" viewAttr="MerchClassDescription" styleClass="OraDataText"/>
+                  <oa:messageStyledText id="VendorSiteId" dataType="NUMBER" prompt="VendorSiteId" viewName="UpdateClassVendorVO1" viewAttr="VendorSiteId" styleClass="OraDataText"/>
+                  <oa:messageStyledText id="VendorDescription" dataType="VARCHAR2" prompt="VendorDescription" viewName="UpdateClassVendorVO1" viewAttr="VendorDescription" styleClass="OraDataText"/>
+                  <oa:messageLovInput id="PlannerId" dataType="NUMBER" prompt="PlannerId" viewName="UpdateClassVendorVO1" viewAttr="PlannerId" columns="10" externalListOfValues="/od/oracle/apps/xxmer/lov/wfh/webui/LeafPlannerLovRN" unvalidated="true">
+                     <lovMappings>
+                        <lovMap id="lovMap1" lovItem="PlannerId" resultTo="PlannerId" criteriaFrom="PlannerId"/>
+                     </lovMappings>
+                  </oa:messageLovInput>
+                  <oa:messageStyledText id="PlannerName" dataType="VARCHAR2" prompt="PlannerName" viewName="UpdateClassVendorVO1" viewAttr="PlannerName" styleClass="OraDataText"/>
+               </ui:contents>
+            </oa:messageComponentLayout>
+            <oa:pageButtonBar id="PageButtons">
+               <ui:contents>
+                  <oa:submitButton id="Cancel" use="/oracle/apps/fnd/attributesets/Buttons/Cancel"/>
+                  <oa:submitButton id="Apply" use="/oracle/apps/fnd/attributesets/Buttons/Apply"/>
+               </ui:contents>
+            </oa:pageButtonBar>
+         </ui:contents>
+         <ui:returnNavigation>
+            <oa:link id="returnLink" text="Return to Merch Class Vendor Search" destination="OA.jsp?page=/od/oracle/apps/xxmer/wfh/webui/ClassVendorSearchPG&amp;retainAM=Y"/>
+         </ui:returnNavigation>
+      </oa:pageLayout>
+   </content>
+</page>

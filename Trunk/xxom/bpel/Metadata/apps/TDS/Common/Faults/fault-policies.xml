@@ -1,0 +1,104 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<faultPolicies xmlns="http://schemas.oracle.com/bpel/faultpolicy">
+
+   <faultPolicy version="2.0.1" id="RealTimeInterfacePolicy" xmlns:env="http://schemas.xmlsoap.org/soap/envelope/" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="http://schemas.oracle.com/bpel/faultpolicy" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+      <Conditions>
+         <faultName xmlns:bpelx="http://schemas.oracle.com/bpel/extension" name="bpelx:remoteFault">
+            <condition>
+               <action ref="ora-retry"/>
+            </condition>
+         </faultName>
+         <faultName xmlns:bpelx="http://schemas.oracle.com/bpel/extension" name="bpelx:bindingFault">
+            <condition>
+               <action ref="ora-rethrow-fault"/>
+            </condition>
+         </faultName>
+      </Conditions>
+      <Actions>
+         <Action id="ora-retry">
+            <retry>
+               <retryCount>2</retryCount>
+               <retryInterval>1</retryInterval>
+	       <retryFailureAction ref="ora-rethrow-fault"/>
+            </retry>
+         </Action>
+         <Action id="ora-rethrow-fault">
+            <rethrowFault/>
+         </Action>
+         <Action id="ora-human-intervention">
+            <humanIntervention/>
+         </Action>
+         <Action id="ora-terminate">
+            <abort/>
+         </Action>
+      </Actions>
+   </faultPolicy>
+
+
+   <faultPolicy version="2.0.1" id="GeneralApplicationPolicy" xmlns:env="http://schemas.xmlsoap.org/soap/envelope/" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="http://schemas.oracle.com/bpel/faultpolicy" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+      <Conditions>
+         <faultName xmlns:bpelx="http://schemas.oracle.com/bpel/extension" name="bpelx:remoteFault">
+            <condition>
+               <action ref="ora-retry"/>
+            </condition>
+         </faultName>
+         <faultName xmlns:bpelx="http://schemas.oracle.com/bpel/extension" name="bpelx:bindingFault">
+            <condition>
+               <action ref="ora-rethrow-fault"/>
+            </condition>
+         </faultName>
+      </Conditions>
+      <Actions>
+         <Action id="ora-retry">
+            <retry>
+               <retryCount>5</retryCount>
+               <retryInterval>5</retryInterval>
+	       <retryFailureAction ref="ora-rethrow-fault"/>
+            </retry>
+         </Action>
+         <Action id="ora-rethrow-fault">
+            <rethrowFault/>
+         </Action>
+         <Action id="ora-human-intervention">
+            <humanIntervention/>
+         </Action>
+         <Action id="ora-terminate">
+            <abort/>
+         </Action>
+      </Actions>
+   </faultPolicy>
+
+   <faultPolicy version="2.0.1" id="OnewayInterfacePolicy" xmlns:env="http://schemas.xmlsoap.org/soap/envelope/" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="http://schemas.oracle.com/bpel/faultpolicy" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+      <Conditions>
+         <faultName xmlns:bpelx="http://schemas.oracle.com/bpel/extension" name="bpelx:remoteFault">
+            <condition>
+               <action ref="ora-retry"/>
+            </condition>
+         </faultName>
+         <faultName xmlns:bpelx="http://schemas.oracle.com/bpel/extension" name="bpelx:bindingFault">
+            <condition>
+               <action ref="ora-rethrow-fault"/>
+            </condition>
+         </faultName>
+      </Conditions>
+      <Actions>
+         <Action id="ora-retry">
+            <retry>
+               <retryCount>5</retryCount>
+               <retryInterval>5</retryInterval>
+	       <retryFailureAction ref="ora-human-intervention"/>
+            </retry>
+         </Action>
+         <Action id="ora-rethrow-fault">
+            <rethrowFault/>
+         </Action>
+         <Action id="ora-human-intervention">
+            <humanIntervention/>
+         </Action>
+         <Action id="ora-terminate">
+            <abort/>
+         </Action>
+      </Actions>
+
+   </faultPolicy>
+</faultPolicies>

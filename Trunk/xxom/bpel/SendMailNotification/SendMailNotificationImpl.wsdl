@@ -1,0 +1,27 @@
+<?xml version= '1.0' encoding= 'UTF-8' ?>
+<wsdl:definitions
+     name="SendMailNotificationImpl"
+     targetNamespace="http://xmlns.officedepot.com/TDS/SendMailNotification/SendMailNotificationImpl"
+     xmlns:ns2="http://xmlns.officedepot.com/ODCommon/SendMailNotification/PartitionCompositeDetails"
+     xmlns:plnk="http://schemas.xmlsoap.org/ws/2003/05/partner-link/"
+     xmlns:client="http://xmlns.officedepot.com/TDS/SendMailNotification/SendMailNotificationImpl"
+     xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+    >
+    <wsdl:types>
+        <schema xmlns="http://www.w3.org/2001/XMLSchema" xmlns:ns2="http://xmlns.officedepot.com/ODCommon/SendMailNotification/PartitionCompositeDetails"
+             xmlns:ns1="http://xmlns.oracle.com/pcbpel/adapter/db/top/ReadErrorDetailsFromDBTbl"
+             xmlns:plnk="http://schemas.xmlsoap.org/ws/2003/05/partner-link/" xmlns:client="http://xmlns.officedepot.com/TDS/SendMailNotification/SendMailNotificationImpl"
+             xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+            <import namespace="http://xmlns.oracle.com/pcbpel/adapter/db/top/ReadErrorDetailsFromDBTable"
+                 schemaLocation="xsd/ReadErrorDetailsFromDBTable_table.xsd"/>
+        </schema>
+        <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:ns2="http://xmlns.officedepot.com/ODCommon/SendMailNotification/PartitionCompositeDetails"
+             xmlns:ns1="http://xmlns.oracle.com/pcbpel/adapter/db/top/ReadErrorDetailsFromDBTbl"
+             xmlns:plnk="http://schemas.xmlsoap.org/ws/2003/05/partner-link/" xmlns:client="http://xmlns.officedepot.com/TDS/SendMailNotification/SendMailNotificationImpl"
+             xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+            <xsd:import namespace="http://xmlns.officedepot.com/ODCommon/SendMailNotification/PartitionCompositeDetails"
+                 schemaLocation="xsd/PartitionCompositeDetails.xsd"/>
+        </xsd:schema>
+    </wsdl:types>
+
+</wsdl:definitions>

@@ -1,0 +1,36 @@
+-- +===================================================================+
+-- |                  Office Depot - Project Simplify                  |
+-- +===================================================================+
+-- | Name        : XX_RA_INT_LINES_ALL_N4.idx                          |
+-- |              		                                       |
+-- | Rice ID     : E0080   (SDR)                                       |
+-- |              			                               |
+-- | Description : Index Creation Script                               |
+-- |                                                                   |
+-- |              			                               |
+-- |Change Record:                                                     |
+-- |===============                                                    |
+-- |Version   Date        Author           Remarks                     |
+-- |=======  ===========  =============    ============================|
+-- |1.0      16-MAY-2011  P.Marco          Initial Version             |
+-- +===================================================================+
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     ON
+
+CREATE INDEX XXFIN.XX_RA_INT_LINES_ALL_N4 ON XXFIN.XX_RA_INT_LINES_ALL
+   (batch_source_name
+   ,org_id
+   ,cust_trx_type_id
+   ,trx_date
+   ,orig_system_bill_customer_id
+   ,orig_system_bill_address_id
+   )
+   TABLESPACE APPS_TS_TX_IDX_16M;
+
+
+
+
+SHOW ERROR

@@ -1,0 +1,29 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<!-- dbdrv: exec java oracle/jrad/tools/xml/importer XMLImporter.class java &phase=dat+24 checkfile:~PROD:~PATH:~FILE &fullpath:~PROD:~PATH:~FILE -username &un_apps -password &pw_apps -dbconnection &jdbc_db_addr  -userId "1" -rootPackage /oracle/apps/~PROD  -rootdir &fullpath:~PROD:mds:directory  -->
+<page xmlns:jrad="http://xmlns.oracle.com/jrad" xmlns:oa="http://xmlns.oracle.com/oa" xmlns:ui="http://xmlns.oracle.com/uix/ui" version="9.0.3.8.10_1080" xml:lang="en-US" xmlns:user="http://xmlns.oracle.com/jrad/user" xmlns="http://xmlns.oracle.com/jrad" file-version="$Header$">
+   <content>
+      <oa:pageLayout id="MainRN" amDefName="od.oracle.apps.xxom.xxTDSrexceptions.server.xxTDSrexceptionsAM" windowTitle="TD SR Exceptions" title="TD SR Exceptions">
+         <ui:corporateBranding>
+            <oa:image id="corporateBrandingImage" source="/OA_MEDIA/FNDSSCORP.gif"/>
+         </ui:corporateBranding>
+         <ui:contents>
+            <oa:query id="QueryRN" mode="resultsBasedSearch" dispSimple="true" dispCustomized="true" dispAdvanced="true">
+               <ui:contents>
+                  <oa:table id="xxTDSrexceptionsVO1">
+                     <ui:contents>
+                        <oa:messageStyledText id="ExceptionId" dataType="NUMBER" prompt="Exception No" viewName="xxTDSrexceptionsVO1" viewAttr="ExceptionId" vAlign="middle"/>
+                        <oa:messageStyledText id="CreationDate" dataType="DATETIME" prompt="Exception Date" viewName="xxTDSrexceptionsVO1" viewAttr="CreationDate" queryable="true" sortState="descending" vAlign="middle" initSortSeq="first"/>
+                        <oa:messageStyledText id="ModuleName" dataType="VARCHAR2" prompt="Module Name" viewName="xxTDSrexceptionsVO1" viewAttr="ModuleName" maximumLength="20" vAlign="middle" queryable="true" sortState="ascending"/>
+                        <oa:messageStyledText id="ExceptionMsg" dataType="VARCHAR2" prompt="Exception Message" viewName="xxTDSrexceptionsVO1" viewAttr="ExceptionMsg" vAlign="middle"/>
+                        <oa:messageTextInput id="ExceptionPayload" dataType="VARCHAR2" prompt="Exception Payload" viewName="xxTDSrexceptionsVO1" viewAttr="ExceptionPayload" vAlign="middle"/>
+                        <oa:messageStyledText id="ReprocessFlag" dataType="VARCHAR2" prompt="Reprocess Flag" viewName="xxTDSrexceptionsVO1" viewAttr="ReprocessFlag" maximumLength="3"/>
+                        <oa:messageStyledText id="Reprocessed" dataType="VARCHAR2" prompt="Reprocessed" viewName="xxTDSrexceptionsVO1" viewAttr="Reprocessed" maximumLength="3" vAlign="middle"/>
+                        <oa:messageStyledText id="ReprocessedDate" dataType="DATETIME" prompt="Reprocessed Date" viewName="xxTDSrexceptionsVO1" viewAttr="ReprocessedDate" vAlign="middle"/>
+                     </ui:contents>
+                  </oa:table>
+               </ui:contents>
+            </oa:query>
+         </ui:contents>
+      </oa:pageLayout>
+   </content>
+</page>

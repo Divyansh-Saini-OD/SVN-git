@@ -1,0 +1,24 @@
+-- +==========================================================================+
+-- |                  Office Depot - Project Simplify                         |
+-- +==========================================================================+
+-- | Table Script to create the following object                              |
+-- |             Synonym: XX_HR_PS_STG                                        |
+-- |                      For I0097 HR Employees                              |
+-- |                                                                          |
+-- |Change Record:                                                            |
+-- |===============                                                           |
+-- |Version   Date         Author               Remarks                       |
+-- |=======   ==========   =============        ==============================|
+-- | V1.0     2012-05-31   Joe Klein            Initial version               |
+-- |                                                                          |
+-- +==========================================================================+
+
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     ON
+
+CREATE SYNONYM XX_HR_PS_STG FOR XXFIN.XX_HR_PS_STG;
+
+SHOW ERROR

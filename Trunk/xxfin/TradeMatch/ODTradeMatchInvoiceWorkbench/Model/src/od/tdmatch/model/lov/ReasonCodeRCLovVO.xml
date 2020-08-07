@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="windows-1252" ?>
+<!DOCTYPE ViewObject SYSTEM "jbo_03_01.dtd">
+<!---->
+<ViewObject
+  xmlns="http://xmlns.oracle.com/bc4j"
+  Name="ReasonCodeRCLovVO"
+  Version="12.2.1.12.24"
+  InheritPersonalization="merge"
+  BindingStyle="OracleName"
+  CustomQuery="true"
+  RowClass="od.tdmatch.model.lov.ReasonCodeRCLovVORowImpl"
+  ComponentClass="od.tdmatch.model.lov.ReasonCodeRCLovVOImpl"
+  PageIterMode="Full"
+  OrderBy="1">
+  <DesignTime>
+    <Attr Name="_codeGenFlag2" Value="Coll"/>
+    <Attr Name="_isExpertMode" Value="true"/>
+    <Attr Name="_isCodegen" Value="true"/>
+  </DesignTime>
+  <Properties>
+    <SchemaBasedProperties>
+      <LABEL
+        ResId="od.tdmatch.model.lov.ReasonCodeRCLovVO_LABEL"/>
+    </SchemaBasedProperties>
+  </Properties>
+  <SQLQuery><![CDATA[SELECT b.target_value1 FROM xx_fin_translatevalues b ,       
+      xx_fin_translatedefinition a       
+    WHERE a.TRANSLATION_NAME = 'OD_AP_REASON_CD_ACCT_MAP'       
+    AND b.TRANSLATE_ID       = a.TRANSLATE_ID       
+    AND b.enabled_flag       ='Y'       
+    AND sysdate BETWEEN b.start_date_active AND NVL(b.end_date_active,sysdate)]]></SQLQuery>
+  <ViewAttribute
+    Name="TargetValue1"
+    IsUpdateable="false"
+    IsPersistent="false"
+    PrecisionRule="true"
+    Precision="240"
+    Type="java.lang.String"
+    ColumnType="VARCHAR2"
+    AliasName="TARGET_VALUE1"
+    Expression="TARGET_VALUE1"
+    SQLType="VARCHAR">
+    <DesignTime>
+      <Attr Name="_DisplaySize" Value="240"/>
+    </DesignTime>
+    <Properties>
+      <SchemaBasedProperties>
+        <DISPLAYWIDTH
+          Value="30"/>
+        <LABEL
+          ResId="od.tdmatch.model.lov.ReasonCodeRCLovVO.TargetValue1_LABEL"/>
+      </SchemaBasedProperties>
+    </Properties>
+  </ViewAttribute>
+  <ResourceBundle>
+    <PropertiesBundle
+      PropertiesFile="od.tdmatch.model.ModelBundle"/>
+  </ResourceBundle>
+</ViewObject>

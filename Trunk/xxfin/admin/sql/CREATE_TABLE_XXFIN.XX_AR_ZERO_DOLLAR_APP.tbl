@@ -1,0 +1,49 @@
+-- +===========================================================================+
+-- |                  Office Depot - Project Simplify                          |
+-- +===========================================================================+
+-- | Name : XX_AR_ZERO_DOLLAR_APP                                        |
+-- | Description :   Script to create XX_AR_ZERO_DOLLAR_APP table				|
+-- |                                                                           |
+-- |                                                                           |
+-- |Change Record:                                                             |
+-- |===============                                                            |
+-- |Version      Date           Author                  Remarks                |
+-- |=======    ==========     =============             ====================== |
+-- |  1.0      27-NOV-2013   Ankit Arora       		Initial Verion for     |
+-- |                                                    Defect#24869           |
+-- +===========================================================================+
+
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     ON
+WHENEVER SQLERROR CONTINUE
+
+
+--+=====================================================================+
+--+               CREATE TABLE XXFIN.XX_AR_ZERO_DOLLAR_APP              +
+--+=====================================================================+
+
+Create table XXFIN.XX_AR_ZERO_DOLLAR_APP
+(
+CUSTOMER_NAME VARCHAR2(250),
+CUSTOMER_NUMBER VARCHAR2(30),
+RECEIPT_NUMBER VARCHAR2(30),
+RECEIPT_DATE DATE,
+RECEIPT_AMOUNT NUMBER(20,2),
+APPLIED_TRX_NUMBER VARCHAR2(20),
+REQUEST_ID NUMBER(12)
+) ;
+
+SHOW ERROR;
+
+--+=====================================================================+
+--+               GRANT TABLE XXFIN.XX_AR_ZERO_DOLLAR_APP         +
+--+=====================================================================+
+
+GRANT ALL ON XXFIN.XX_AR_ZERO_DOLLAR_APP TO APPS;
+
+SHOW ERROR;
+/
+

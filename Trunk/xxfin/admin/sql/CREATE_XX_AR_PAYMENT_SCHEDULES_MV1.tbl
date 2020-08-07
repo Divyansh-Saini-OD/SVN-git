@@ -1,0 +1,40 @@
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     ON
+
+PROMPT Creating Materialized View XX_AR_PAYMENT_SCHEDULES_MV1;
+
+PROMPT Program exits IF the creation IS NOT SUCCESSFUL
+
+WHENEVER SQLERROR CONTINUE
+
+-- +==========================================================================+
+-- |                  Office Depot - Project Simplify                         |
+-- +==========================================================================+
+-- | Name :XXFIN.XX_AR_PAYMENT_SCHEDULES_MV1                                  |
+-- | Description : Create Materialized View on AR_PAYMENT_SCHEDULES_ALL       |
+-- |               for all rows with STATUS = 'OP'.                           |
+-- |                                                                          |
+-- |                                                                          |
+-- |                                                                          |
+-- |Change Record:                                                            |
+-- |===============                                                           |
+-- |Version   Date         Author               Remarks                       |
+-- |=======   ==========   =============        ==============================|
+-- | V1.0     11-MAR-2010  Prakash Sankaran     Initial version               |
+-- +==========================================================================+
+
+
+CREATE MATERIALIZED VIEW XXFIN.XX_AR_PAYMENT_SCHEDULES_MV1
+BUILD IMMEDIATE
+USING INDEX
+REFRESH FORCE ON DEMAND
+DISABLE QUERY REWRITE
+AS
+SELECT /*+ PARALLEL(APS,4) */ *
+FROM AR.AR_PAYMENT_SCHEDULES_ALL APS
+WHERE APS.STATUS = 'OP';
+
+SHOW ERROR

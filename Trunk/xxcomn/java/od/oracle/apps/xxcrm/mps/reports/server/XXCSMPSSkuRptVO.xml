@@ -1,0 +1,313 @@
+<?xml version='1.0' encoding='windows-1252' ?>
+<!DOCTYPE ViewObject SYSTEM "jbo_03_01.dtd">
+
+<ViewObject
+   Name="XXCSMPSSkuRptVO"
+   BindingStyle="Oracle"
+   CustomQuery="true"
+   RowClass="oracle.apps.fnd.framework.server.OAViewRowImpl"
+   ComponentClass="od.oracle.apps.xxcrm.mps.reports.server.XXCSMPSSkuRptVOImpl"
+   UseGlueCode="false" >
+   <SQLQuery><![CDATA[
+select mb.party_name, 
+       mb.group_name,
+       mb.ip_address,
+       mb.manufacturer,
+       mb.model,
+       mb.serial_no,
+       md.sku_option_1,
+       md.sku_option_2,
+       md.sku_option_3,
+       md.supplies_label,
+       jt.attribute4 SKU_Number,  
+       mi.description as SKU_Description,         --nvl(cb.customer_ticket_number,cb.incident_attribute_1) order_no, 
+       cb.incident_attribute_1  order_no,
+       cb.incident_number as SR_Number,
+       cb.incident_attribute_2  Delivery_date, 
+       ca.creation_date order_date,
+       replace(md.supplies_label,'TONERLEVEL_','') SKU,
+       mb.managed_status  managed_status,
+       mb.active_status   active_status
+from xx_cs_mps_device_b mb,
+     xx_cs_mps_device_details md,
+     cs_incidents_all_b cb,
+     cs_incident_types_tl ct,
+     jtf_tasks_b jt,
+     cs_incidents_audit_b ca,
+     mtl_system_items_b   mi
+where mb.device_id = md.device_id
+and   jt.attribute6 = md.supplies_label
+and jt.source_object_id = cb.incident_id
+and ca.incident_id = cb.incident_id
+and ca.incident_status_id = 14100
+and  ct.incident_type_id = cb.incident_type_id 
+and  ct.name = 'MPS Supplies Request'
+and jt.source_object_type_code = 'SR'
+and  cb.customer_id = mb.party_id
+and  mi.organization_id = 441
+and  jt.attribute4 = mi.segment1
+and  cb.incident_attribute_3 = mb.serial_no
+and   cb.incident_attribute_1 is not null  
+and ca.change_incident_status_flag = 'Y'
+and  (md.sku_option_1 is not null or md.sku_option_2 is not null or md.sku_option_3 is not null)
+AND mb.PARTY_ID = nvl(:0, mb.PARTY_ID)
+  AND to_date(ca.CREATION_DATE,'dd-MON-yy') <=(nvl(:1,to_date(ca.CREATION_DATE,'dd-MON-yy')))
+  AND to_date(ca.CREATION_DATE,'dd-MON-yy') >=(nvl(:2,to_date(ca.CREATION_DATE,'dd-MON-yy')))
+and jt.attribute4 = nvl(:3,jt.attribute4) 
+AND jt.TASK_STATUS_ID <> 7
+order by mb.party_name, ca.creation_date desc
+   ]]></SQLQuery>
+   <DesignTime>
+      <Attr Name="_isExpertMode" Value="true" />
+      <Attr Name="_version" Value="10.1.3.41.57" />
+      <Attr Name="_codeGenFlag2" Value="Access|Coll" />
+   </DesignTime>
+   <ViewAttribute
+      Name="PartyName"
+      IsPersistent="false"
+      Precision="250"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="PARTY_NAME"
+      Expression="PARTY_NAME"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="250" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="GroupName"
+      IsPersistent="false"
+      Precision="250"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="GROUP_NAME"
+      Expression="GROUP_NAME"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="250" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="IpAddress"
+      IsPersistent="false"
+      Precision="100"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="IP_ADDRESS"
+      Expression="IP_ADDRESS"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="100" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Manufacturer"
+      IsPersistent="false"
+      Precision="150"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="MANUFACTURER"
+      Expression="MANUFACTURER"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="150" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Model"
+      IsPersistent="false"
+      Precision="250"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="MODEL"
+      Expression="MODEL"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="250" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="SerialNo"
+      IsPersistent="false"
+      Precision="100"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="SERIAL_NO"
+      Expression="SERIAL_NO"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="100" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="SkuOption1"
+      IsPersistent="false"
+      Precision="40"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="SKU_OPTION_1"
+      Expression="SKU_OPTION_1"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="40" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="SkuOption2"
+      IsPersistent="false"
+      Precision="40"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="SKU_OPTION_2"
+      Expression="SKU_OPTION_2"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="40" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="SkuOption3"
+      IsPersistent="false"
+      Precision="40"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="SKU_OPTION_3"
+      Expression="SKU_OPTION_3"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="40" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="SuppliesLabel"
+      IsPersistent="false"
+      Precision="80"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="SUPPLIES_LABEL"
+      Expression="SUPPLIES_LABEL"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="80" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="SkuNumber"
+      IsPersistent="false"
+      Precision="150"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="SKU_NUMBER"
+      Expression="SKU_NUMBER"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="150" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="SkuDescription"
+      IsPersistent="false"
+      Precision="240"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="SKU_DESCRIPTION"
+      Expression="SKU_DESCRIPTION"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="240" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="OrderNo"
+      IsPersistent="false"
+      Precision="150"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="ORDER_NO"
+      Expression="ORDER_NO"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="150" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="SrNumber"
+      IsPersistent="false"
+      IsNotNull="true"
+      Precision="64"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="SR_NUMBER"
+      Expression="SR_NUMBER"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="DeliveryDate"
+      IsPersistent="false"
+      Precision="150"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="DELIVERY_DATE"
+      Expression="DELIVERY_DATE"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="150" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="OrderDate"
+      IsPersistent="false"
+      IsNotNull="true"
+      Type="oracle.jbo.domain.Date"
+      ColumnType="DATE"
+      AliasName="ORDER_DATE"
+      Expression="ORDER_DATE"
+      SQLType="DATE" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="7" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Sku"
+      IsPersistent="false"
+      Precision="80"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="SKU"
+      Expression="SKU"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="80" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="ManagedStatus"
+      IsPersistent="false"
+      Precision="50"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="MANAGED_STATUS"
+      Expression="MANAGED_STATUS"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="50" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="ActiveStatus"
+      IsPersistent="false"
+      Precision="250"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="ACTIVE_STATUS"
+      Expression="ACTIVE_STATUS"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="250" />
+      </DesignTime>
+   </ViewAttribute>
+</ViewObject>

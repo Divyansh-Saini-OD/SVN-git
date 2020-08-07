@@ -1,0 +1,20 @@
+-- +============================================================================+
+-- | Office Depot - Project Simplify                                            |
+-- | Providge Consulting                                                        |
+-- +============================================================================+
+-- | SQL Script to alter table:  XX_CE_RECON_GLACT_HDR                          |
+-- |                                                                            |
+-- |Change Record:                                                              |
+-- |===============                                                             |
+-- |Version   Date          Author         Remarks                              |
+-- |=======   ===========   =============  =====================================|
+-- |1.0       30-APR-2008   D.Gowda	   Defect 6182 & CR382                  |
+-- |                                                                            |
+-- +============================================================================+
+
+alter table xxfin.xx_ce_recon_glact_hdr
+add (DEFAULT_DM_CUST_TRX_TYPE_ID           NUMBER,
+     DEFAULT_DM_MEMO_LINE_ID               NUMBER,
+     DEFAULT_RECEIPT_METHOD_ID             NUMBER,
+     DEFAULT_CUSTOMER_ID		   NUMBER)
+/

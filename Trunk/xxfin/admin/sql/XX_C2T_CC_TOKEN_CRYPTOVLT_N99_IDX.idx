@@ -1,0 +1,35 @@
+-- +============================================================================================+
+-- |                        Office Depot - Project Simplify                                     |
+-- |                                                                                            |
+-- +============================================================================================+
+-- | Name         : XX_C2T_CC_TOKEN_CRYPTOVLT_N99_IDX.idx                                       |
+-- | Rice Id      :                                                                             | 
+-- | Description  : XX_C2T_CC_TOKEN_CRYPTOVLT_N99 Index Creation Scrip                          |  
+-- | Purpose      :                                                                             |
+-- |                                                                                            |
+-- |                                                                                            |
+-- |Change Record:                                                                              |
+-- |===============                                                                             |
+-- |Version    Date          Author                Remarks                                      | 
+-- |=======    ==========    =================    ==============================================+
+-- |1.0        23-JAN-2016  Harvinder Rakhra      Initial Version                               |
+-- +============================================================================================+
+
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     ON
+
+PROMPT
+PROMPT CREATING INDEX XX_C2T_CC_TOKEN_CRYPTOVLT_N99 for the Table XX_C2T_CC_TOKEN_STG_IBY_HIST.....
+PROMPT
+CREATE INDEX XXFIN.XX_C2T_CC_TOKEN_CRYPTOVLT_N99 on XX_C2T_CC_TOKEN_CRYPTO_VAULT(CREDIT_CARD_NUMBER_NEW, TOKEN_NUMBER_NEW, TOKEN_KEY_LABEL_NEW) 
+TABLESPACE APPS_TS_TX_DATA PARALLEL 16 NOLOGGING;
+
+
+ALTER INDEX  XXFIN.XX_C2T_CC_TOKEN_CRYPTOVLT_N99 NOPARALLEL LOGGING;
+
+  
+COMMIT;
+SHOW ERROR;

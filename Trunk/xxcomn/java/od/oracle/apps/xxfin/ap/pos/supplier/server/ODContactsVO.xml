@@ -1,0 +1,354 @@
+<?xml version='1.0' encoding='windows-1252' ?>
+
+<!--
+  Author: Sridevi Kondoju
+  Component Id: 
+  Script Location: $CUSTOM_JAVA_TOP/od/oracle/apps/xxfin/ap/pos/supplier/server
+  Description: Modified for Defect29036 
+  History:
+  Name            Date         Version    Description
+  Sridevi Kondoju 25-sep-2014   1.0       Initial version for Defect30357.
+                                          Removed PHONE_EXTENSION from phone
+  Madhu Bolli     08-Aug-2016   1.1       12.2.5 Upgrade Retrofit above the seeded version 
+									(120.19.12020000.3)										  
+-->
+
+<!DOCTYPE ViewObject SYSTEM "jbo_03_01.dtd">
+
+<!-- $Header: ContactsVO.xml 120.19.12020000.3 2014/10/17 09:23:40 nchundur ship $ -->
+
+<ViewObject
+   Name="ODContactsVO"
+   Extends="oracle.apps.pos.supplier.server.ContactsVO"
+   BindingStyle="Oracle"
+   CustomQuery="true"
+   UseGlueCode="false" >
+   <SQLQuery><![CDATA[
+select hp.party_id, hp.person_first_name, hp.person_last_name, hp.party_name,
+--hcpe.email_address, hcpp.phone_number primary_phone_number,
+hcpe.email_address,
+TRIM(TRAILING '-' FROM (NVL2(hcpp.PHONE_AREA_CODE, hcpp.PHONE_AREA_CODE || '-', '') || NVL2(hcpp.PHONE_NUMBER,hcpp.PHONE_NUMBER,''))) as primary_phone_number,
+ nvl2(fu.user_name,'UserAcct','N') as is_user,
+fu.user_id as user_id , 'EditEnabled' as is_editable,
+'RemoveEnabled' as is_Removable ,
+'CURRENT' as status
+,'HZ_PARTIES' as table_name, null as contact_request_id,
+-- Bug 6076854
+fnd_message.get_string('POS',decode(sign(trunc(nvl(hzr.end_date,sysdate+1))-trunc(sysdate)),1,
+    'POS_SP_STATUS_CURRENT','POS_SP_STATUS_INACTIVE'))
+as status_display, hcpp.raw_phone_number
+from
+hz_parties hp, fnd_user fu , hz_relationships hzr, 
+--hz_parties hzr_hp,
+hz_party_usg_assignments hpua , HZ_CONTACT_POINTS hcpp, HZ_CONTACT_POINTS hcpe
+where hp.party_id = hzr.subject_id
+and hzr.object_id = :1 -- party of supplier
+and hzr.relationship_type = 'CONTACT'
+and hzr.relationship_code = 'CONTACT_OF'
+and hzr.subject_type ='PERSON'
+and hzr.object_type = 'ORGANIZATION'
+-- commenting for Bug 6076854
+-- and (hzr.end_date is null or hzr.end_date > sysdate)
+and hzr.status in ('A','I')
+--and hzr_hp.party_id = hzr.party_id
+and fu.person_party_id (+) = hp.party_id
+and hp.party_id not in
+(
+select contact_party_id from pos_contact_requests pcr,
+pos_supplier_mappings psm
+where pcr.request_status='PENDING'
+and psm.mapping_id = pcr.mapping_id
+and psm.PARTY_ID = :2
+and contact_party_id is not null
+)
+and hpua.party_id = hp.party_id
+and hpua.status_flag in ('A','I')
+and hpua.party_usage_code = 'SUPPLIER_CONTACT'
+And hcpp.OWNER_TABLE_NAME(+) = 'HZ_PARTIES'
+And hcpp.OWNER_TABLE_ID(+) = hzr.PARTY_ID
+And hcpp.PHONE_LINE_TYPE(+) = 'GEN'
+And hcpp.CONTACT_POINT_TYPE(+) = 'PHONE'
+-- BUG 8275853,8517744 
+AND hcpp.primary_flag(+)='Y'
+-- BUG 8275853,8517744 
+And hcpe.OWNER_TABLE_NAME(+) = 'HZ_PARTIES'
+and hcpe.OWNER_TABLE_ID(+) = hzr.PARTY_ID
+And hcpe.CONTACT_POINT_TYPE(+) = 'EMAIL'
+-- BUG 8275853,8517744 
+AND hcpe.primary_flag(+)='Y'
+-- BUG 8275853,8517744 
+And (hcpe.status IS NULL OR hcpe.status IN ('A','I'))
+And (hcpp.status IS NULL OR hcpp.status IN ('A','I'))
+-- commenting for Bug 6076854
+-- and (hpua.effective_end_date is null OR hpua.effective_end_date > sysdate)
+UNION
+select hp.party_id, hp.person_first_name, hp.person_last_name, hp.party_name,
+--hcpe.email_address, hcpp.phone_number primary_phone_number,
+hcpe.email_address,
+TRIM(TRAILING '-' FROM (NVL2(hcpp.PHONE_AREA_CODE, hcpp.PHONE_AREA_CODE || '-', '') || NVL2(hcpp.PHONE_NUMBER,hcpp.PHONE_NUMBER || '-','') || hcpp.PHONE_EXTENSION)) as primary_phone_number,
+nvl2(fu.user_name,'UserAcct','N') as is_user,
+fu.user_id as user_id , 'EditEnabled' as is_editable,
+'RemoveEnabled' as is_Removable ,
+'CHANGED' as status
+,'HZ_PARTIES' as table_name, pcr.contact_request_id,
+-- Bug 6076854
+fnd_message.get_string('POS',decode(sign(trunc(nvl(hzr.end_date,sysdate+1))-trunc(sysdate)),1,
+    'POS_SP_STATUS_CHANGED_PENDING','POS_SP_STATUS_INACTIVE'))
+as status_display, hcpp.raw_phone_number
+from
+hz_parties hp, fnd_user fu , hz_relationships hzr,
+--hz_parties hzr_hp,
+pos_contact_requests pcr,
+pos_supplier_mappings psm, hz_party_usg_assignments hpua , HZ_CONTACT_POINTS hcpp, HZ_CONTACT_POINTS hcpe
+where hp.party_id = hzr.subject_id
+and hzr.object_id = :3 -- party of supplier
+and hzr.relationship_type = 'CONTACT'
+and hzr.relationship_code = 'CONTACT_OF'
+and hzr.subject_type ='PERSON'
+and hzr.object_type = 'ORGANIZATION'
+-- Commenting for Bug 6076854
+-- and (hzr.end_date is null or hzr.end_date > sysdate)
+and hzr.status = 'A'
+--and hzr.party_id = hzr_hp.party_id
+and fu.person_party_id (+) = hp.party_id
+and hp.party_id = pcr.contact_party_id
+and pcr.request_status='PENDING'
+and psm.mapping_id = pcr.mapping_id
+and psm.PARTY_ID = :4   -- party_id of supplier
+AND pcr.request_type in ( 'UPDATE', 'DELETE' )
+and hpua.party_id = hp.party_id
+and hpua.status_flag = 'A'
+and hpua.party_usage_code = 'SUPPLIER_CONTACT'
+And hcpp.OWNER_TABLE_NAME(+) = 'HZ_PARTIES'
+And hcpp.OWNER_TABLE_ID(+) = hzr.PARTY_ID
+And hcpp.PHONE_LINE_TYPE(+) = 'GEN'
+And hcpp.CONTACT_POINT_TYPE(+) = 'PHONE'
+AND hcpp.primary_flag(+)='Y'
+And hcpe.OWNER_TABLE_NAME(+) = 'HZ_PARTIES'
+and hcpe.OWNER_TABLE_ID(+) = hzr.PARTY_ID
+And hcpe.CONTACT_POINT_TYPE(+) = 'EMAIL'
+And hcpe.status (+)='A'
+And hcpp.status (+)='A'
+-- commenting for Bug 6076854
+-- and (hpua.effective_end_date is null OR hpua.effective_end_date > sysdate)
+UNION
+select contact_party_id as party_id,
+first_name as person_first_name, last_name as person_last_name, first_name ||' '||last_name as party_name,
+pcr.email_address, LTrim(RTrim(phone_area_code||' '||phone_number||' '||phone_extension)) as primary_phone_number ,
+ nvl2(fu.user_name,'UserAcct','N') as is_user,
+fu.user_id as user_id , 'EditEnabled' as is_editable,
+'RemoveEnabled' as is_Removable , 'NEW' as Status,
+'POS_CONTACT_REQUESTS' as table_name, contact_request_id
+,fnd_message.get_string('POS','POS_SP_STATUS_NEW') as status_display, pcr.phone_area_code||'-'||pcr.phone_number raw_phone_number
+from pos_contact_requests pcr, fnd_user fu, pos_supplier_mappings psm
+where fu.person_party_id (+) = pcr.contact_party_id
+and psm.party_id = :5  -- party_id of supplier
+and psm.mapping_id = pcr.mapping_id
+and pcr.request_status = 'PENDING'
+and pcr.request_type = 'ADD'
+   ]]></SQLQuery>
+   <DesignTime>
+      <Attr Name="_isExpertMode" Value="true" />
+      <Attr Name="_version" Value="10.1.3.41.57" />
+      <Attr Name="_codeGenFlag2" Value="Access" />
+   </DesignTime>
+   <ViewAttribute
+      Name="PartyId"
+      IsPersistent="false"
+      IsNotNull="true"
+      Precision="15"
+      Scale="0"
+      Type="oracle.jbo.domain.Number"
+      ColumnType="VARCHAR2"
+      AliasName="PARTY_ID"
+      Expression="PARTY_ID"
+      SQLType="NUMERIC" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="PersonFirstName"
+      IsPersistent="false"
+      Precision="150"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="PERSON_FIRST_NAME"
+      Expression="PERSON_FIRST_NAME"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="150" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="PersonLastName"
+      IsPersistent="false"
+      Precision="150"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="PERSON_LAST_NAME"
+      Expression="PERSON_LAST_NAME"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="150" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="PartyName"
+      IsPersistent="false"
+      IsNotNull="true"
+      Precision="360"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="PARTY_NAME"
+      Expression="PARTY_NAME"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="360" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="EmailAddress"
+      IsPersistent="false"
+      Precision="2000"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="EMAIL_ADDRESS"
+      Expression="EMAIL_ADDRESS"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="2000" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="PrimaryPhoneNumber"
+      IsPersistent="false"
+      Precision="40"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="PRIMARY_PHONE_NUMBER"
+      Expression="PRIMARY_PHONE_NUMBER"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="40" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="IsUser"
+      IsPersistent="false"
+      Precision="1"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="IS_USER"
+      Expression="IS_USER"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="1" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="UserId"
+      IsPersistent="false"
+      Precision="15"
+      Scale="0"
+      Type="oracle.jbo.domain.Number"
+      ColumnType="VARCHAR2"
+      AliasName="USER_ID"
+      Expression="USER_ID"
+      SQLType="NUMERIC" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="IsEditable"
+      IsPersistent="false"
+      Precision="11"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="IS_EDITABLE"
+      Expression="IS_EDITABLE"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="11" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="IsRemovable"
+      IsPersistent="false"
+      Precision="13"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="IS_REMOVABLE"
+      Expression="IS_REMOVABLE"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="13" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Status"
+      IsPersistent="false"
+      Precision="7"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="STATUS"
+      Expression="STATUS"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="7" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="TableName"
+      IsPersistent="false"
+      Precision="20"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="TABLE_NAME"
+      Expression="TABLE_NAME"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="20" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="ContactRequestId"
+      IsPersistent="false"
+      Precision="255"
+      Type="oracle.jbo.domain.Number"
+      ColumnType="VARCHAR2"
+      AliasName="CONTACT_REQUEST_ID"
+      Expression="CONTACT_REQUEST_ID"
+      SQLType="NUMERIC" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="StatusDisplay"
+      IsPersistent="false"
+      Precision="30"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="STATUS_DISPLAY"
+      Expression="STATUS_DISPLAY"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="30" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="RawPhoneNumber"
+      IsPersistent="false"
+      Precision="60"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="RAW_PHONE_NUMBER"
+      Expression="RAW_PHONE_NUMBER"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="60" />
+      </DesignTime>
+   </ViewAttribute>
+</ViewObject>

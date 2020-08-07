@@ -1,0 +1,28 @@
+-- +==========================================================================+
+-- |                  Office Depot - Project Simplify                         |
+-- |                       WIPRO Technologies                                 |
+-- +==========================================================================+
+-- | SQL Script to create                                                     |
+-- |                                                                          |
+-- |          Index Name : XX_FND_CONCURRENT_REQUESTS_N12                     |
+-- |          Script Name: XX_FND_CONCURRENT_REQUESTS_N12.idx                 |
+-- |                                                                          |
+-- |Change Record:                                                            |
+-- |===============                                                           |
+-- |Version   Date         Author               Remarks                       |
+-- |=======   ===========  =================    ==============================|
+-- | V1.0     30-JAN-2013  R.Aldridge           R12 Upgrade Defect 27846      |
+-- |                                            Encryption Performance        |
+-- +==========================================================================+
+
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     ON
+
+DROP INDEX  XXFIN.XX_FND_CONCURRENT_REQUESTS_N12;
+
+CREATE INDEX XXFIN.XX_FND_CONCURRENT_REQUESTS_N12 ON APPLSYS.FND_CONCURRENT_REQUESTS 
+  (ORACLE_SESSION_ID) INITRANS 11 
+  COMPUTE STATISTICS TABLESPACE APPS_TS_TX_DATA;

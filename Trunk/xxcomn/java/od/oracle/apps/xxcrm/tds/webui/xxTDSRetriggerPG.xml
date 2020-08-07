@@ -1,0 +1,74 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<page xmlns:jrad="http://xmlns.oracle.com/jrad" xmlns:oa="http://xmlns.oracle.com/oa" xmlns:ui="http://xmlns.oracle.com/uix/ui" version="10.1.3_1312" xml:lang="en-US" xmlns:user="http://xmlns.oracle.com/jrad/user" xmlns="http://xmlns.oracle.com/jrad" file-version="$Header$">
+   <content>
+      <oa:pageLayout id="pageLayoutRN" amDefName="od.oracle.apps.xxcrm.tds.server.xxTDSRetriggerMainAM" windowTitle="TDS ReTrigger" controllerClass="od.oracle.apps.xxcrm.tds.webui.xxTDSRetriggerMainCO" title="TDS ReTrigger Page">
+         <ui:corporateBranding>
+            <oa:image id="corporateBrandingImage" source="/OA_MEDIA/FNDSSCORP.gif"/>
+         </ui:corporateBranding>
+         <ui:contents>
+            <oa:messageComponentLayout id="mainSearchRn">
+               <ui:contents>
+                  <oa:messageChoice id="chooseActionType" prompt="Choose Action" shortDesc="Choose Action" pickListViewDef="od.oracle.apps.xxcrm.tds.server.xxTDSRetriggerActionListVO" pickListDispAttr="Type" pickListValAttr="Value" pickListViewName="xxTDSRetriggerActionListVO1" allowBlankValue="false" required="yes"/>
+                  <oa:messageChoice id="chooseReprocessType" required="yes" pickListViewDef="od.oracle.apps.xxcrm.tds.server.xxTDSRetriggerReprocessActionVO" pickListViewName="xxTDSRetriggerReprocessActionVO1" pickListDispAttr="Name" pickListValAttr="Value" allowBlankValue="false" prompt="Reprocess Type"/>
+                  <oa:messageTextInput id="chooseDateFrom" prompt="Date From" dataType="DATE" required="yes"/>
+                  <oa:messageLayout id="btnHolder">
+                     <ui:contents>
+                        <oa:submitButton id="search" text="Search" prompt="Search"/>
+                     </ui:contents>
+                  </oa:messageLayout>
+               </ui:contents>
+            </oa:messageComponentLayout>
+            <oa:spacer id="spacer2" height="10" width="10"/>
+            <oa:table id="resultsTbl1" text="Work Orders Without Connect Button" blockSize="100" width="100%" rendered="false">
+               <ui:contents>
+                  <oa:messageStyledText id="IncNumber" prompt="SR Number" viewName="xxTDSRetriggerNoConnectVO1" viewAttr="IncidentNumber"/>
+                  <oa:messageStyledText id="IncDate" prompt="SR Date" viewName="xxTDSRetriggerNoConnectVO1" viewAttr="IncidentDate"/>
+                  <oa:messageStyledText id="taskNum" prompt="Task Number" viewName="xxTDSRetriggerNoConnectVO1" viewAttr="TaskNumber"/>
+                  <oa:messageStyledText id="taskDesc" prompt="Task Desc" viewName="xxTDSRetriggerNoConnectVO1" viewAttr="Description"/>
+                  <oa:submitButton id="reprocessOrderBtn" text="Reprocess" prompt="Reprocess" rendered="true">
+                     <ui:primaryClientAction>
+                        <ui:fireAction event="reprocessOrderNC">
+                           <ui:parameters>
+                              <ui:parameter key="incNum" value="${oa.xxTDSRetriggerNoConnectVO1.IncidentNumber}"/>
+                              <ui:parameter key="taskId" value="${oa.xxTDSRetriggerNoConnectVO1.TaskId}"/>
+                              <ui:parameter key="taskDesc" value="${oa.xxTDSRetriggerNoConnectVO1.Description}"/>
+                              <ui:parameter key="taskObjNum" value="${oa.xxTDSRetriggerNoConnectVO1.ObjectVersionNumber}"/>
+                           </ui:parameters>
+                        </ui:fireAction>
+                     </ui:primaryClientAction>
+                  </oa:submitButton>
+               </ui:contents>
+               <ui:tableActions>
+                  <oa:flowLayout id="btnRow1" rendered="false">
+                     <ui:contents>
+                        <oa:submitButton id="reprocessAllBtn" text="Reprocess All" prompt="Reprocess All" rendered="true"/>
+                     </ui:contents>
+                  </oa:flowLayout>
+               </ui:tableActions>
+            </oa:table>
+            <oa:table id="resultsTbl2" blockSize="100" width="100%" rendered="false" text="Work Orders Without Tasks">
+               <ui:contents>
+                  <oa:messageStyledText id="incNumber2" prompt="SR Number" viewName="xxTDSRetriggerNoTasksVO1" viewAttr="IncidentNumber"/>
+                  <oa:messageStyledText id="incDate2" prompt="SR Date" viewName="xxTDSRetriggerNoTasksVO1" viewAttr="CreationDate"/>
+                  <oa:submitButton id="reprocessOrderBtn2" text="Reprocess" prompt="Reprocess">
+                     <ui:primaryClientAction>
+                        <ui:fireAction event="reprocessOrderNT">
+                           <ui:parameters>
+                              <ui:parameter key="incNum" value="${oa.xxTDSRetriggerNoTasksVO1.IncidentNumber}"/>
+                           </ui:parameters>
+                        </ui:fireAction>
+                     </ui:primaryClientAction>
+                  </oa:submitButton>
+               </ui:contents>
+               <ui:tableActions>
+                  <oa:flowLayout id="btnRow2" rendered="false">
+                     <ui:contents>
+                        <oa:submitButton id="reprocessAllBtn1" text="Reprocess All" prompt="Reprocess All" rendered="true"/>
+                     </ui:contents>
+                  </oa:flowLayout>
+               </ui:tableActions>
+            </oa:table>
+         </ui:contents>
+      </oa:pageLayout>
+   </content>
+</page>

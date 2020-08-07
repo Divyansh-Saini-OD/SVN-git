@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding='windows-1252'?>
+<!DOCTYPE AppModule SYSTEM "jbo_03_01.dtd">
+
+<AppModule
+   Name="Cust360AM"
+   ComponentClass="od.oracle.apps.xxcrm.Cust360.server.Cust360AMImpl"
+   LoadComponentsLazily="true" >
+   <DesignTime>
+      <Attr Name="_isCodegen" Value="true" />
+      <Attr Name="_version" Value="9.0.3.13.75" />
+      <Attr Name="_deployType" Value="0" />
+   </DesignTime>
+   <ViewUsage
+      Name="CustV"
+      ViewObjectName="od.oracle.apps.xxcrm.Cust360.server.CustVO" >
+   </ViewUsage>
+   <ViewUsage
+      Name="CaseV"
+      ViewObjectName="od.oracle.apps.xxcrm.Cust360.server.CaseVO" >
+   </ViewUsage>
+   <ViewUsage
+      Name="PriceV"
+      ViewObjectName="od.oracle.apps.xxcrm.Cust360.server.PriceVO" >
+   </ViewUsage>
+   <ViewUsage
+      Name="LoyV"
+      ViewObjectName="od.oracle.apps.xxcrm.Cust360.server.LoyVO" >
+   </ViewUsage>
+   <ViewUsage
+      Name="FinParentV"
+      ViewObjectName="od.oracle.apps.xxcrm.Cust360.server.FinParentVO" >
+   </ViewUsage>
+   <ViewUsage
+      Name="FinChildV"
+      ViewObjectName="od.oracle.apps.xxcrm.Cust360.server.FinChildVO" >
+   </ViewUsage>
+   <ViewUsage
+      Name="PotentialV"
+      ViewObjectName="od.oracle.apps.xxcrm.Cust360.server.PotentialVO" >
+   </ViewUsage>
+   <ViewUsage
+      Name="PotentialDetV"
+      ViewObjectName="od.oracle.apps.xxcrm.Cust360.server.PotentialDetVO" >
+   </ViewUsage>
+   <ViewUsage
+      Name="CampV"
+      ViewObjectName="od.oracle.apps.xxcrm.Cust360.server.CampVO" >
+   </ViewUsage>
+   <ViewUsage
+      Name="BackOrderV"
+      ViewObjectName="od.oracle.apps.xxcrm.Cust360.server.BackOrderVO" >
+   </ViewUsage>
+   <ViewUsage
+      Name="TaxExemptV"
+      ViewObjectName="od.oracle.apps.xxcrm.Cust360.server.TaxExemptVO" >
+   </ViewUsage>
+   <ViewUsage
+      Name="PastDueInfoV"
+      ViewObjectName="od.oracle.apps.xxcrm.Cust360.server.PastDueInfoVO" >
+   </ViewUsage>
+   <ViewUsage
+      Name="CustBillingInfoV"
+      ViewObjectName="od.oracle.apps.xxcrm.Cust360.server.CustBillingInfoVO" >
+   </ViewUsage>
+   <ViewUsage
+      Name="AopsSearchV"
+      ViewObjectName="od.oracle.apps.xxcrm.Cust360.server.AopsSearchVO" >
+   </ViewUsage>
+   <ViewUsage
+      Name="CdhSearchV"
+      ViewObjectName="od.oracle.apps.xxcrm.Cust360.server.CdhSearchVO" >
+   </ViewUsage>
+   <ViewUsage
+      Name="LoySearchV"
+      ViewObjectName="od.oracle.apps.xxcrm.Cust360.server.LoySearch" >
+   </ViewUsage>
+   <ViewUsage
+      Name="SearchByPhoneV"
+      ViewObjectName="od.oracle.apps.xxcrm.Cust360.server.SearchByPhoneVO" >
+   </ViewUsage>
+   <ViewUsage
+      Name="StatisticsV"
+      ViewObjectName="od.oracle.apps.xxcrm.Cust360.server.StatisticsVO" >
+   </ViewUsage>
+</AppModule>

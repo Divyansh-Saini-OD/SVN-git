@@ -1,0 +1,101 @@
+REM================================================================================================
+REM                                 Start Of Script
+REM================================================================================================
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     OFF
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+-- +==========================================================================+
+-- |                  Office Depot - Project Simplify                         |
+-- |      Oracle NAIO/Office Depot/Consulting Organization                    |
+-- +==========================================================================+
+-- | Name  :        XX_GI_AVERAGE_COST_STG                                    |
+-- | Description  : The table will store the Average Cost Details             |
+-- |                                                                          |
+-- |Change Record:                                                            |
+-- |===============                                                           |
+-- |Version   Date         Author           Remarks                           |
+-- |=======   ==========   =============    ==================================|
+-- |Draft 1A  22-JUNE-2007 Meenu Goyal      Initial                           |
+-- | 1.0      21-SEP-2007  Jayshree         Baselined                         |
+-- | 1.1      05-OCT-2007  Meenu Goyal      Template Number is made optional  |
+-- | 1.2      22-OCT-2007  Jayshree         Reviewed and Updated              |
+-- +===========================================================================+
+
+PROMPT
+PROMPT Dropping Existing Custom Table xx_gi_average_cost_stg....
+PROMPT
+
+-- +===================================================================+
+-- | Dropping existing Table:
+-- +===================================================================+
+
+DROP TABLE XX_GI_AVERAGE_COST_STG
+
+PROMPT
+PROMPT Creating Custom Table xx_gi_average_cost_stg......
+PROMPT
+
+-- +===================================================================+
+-- | Creating existing Table:
+-- +===================================================================+
+
+CREATE TABLE XX_GI_AVERAGE_COST_STG
+            (RECORD_NUMBER                   NUMBER        NOT NULL,
+             FILE_ID                         NUMBER        NOT NULL, 
+             TEMPLATE_NUMBER                 NUMBER                , 
+             OPERATING_UNIT_ID               NUMBER ,
+             ORGANIZATION                    VARCHAR2(240) ,
+             ORGANIZATION_ID                 NUMBER,
+             COST_GROUP_ID                   NUMBER,
+             MATERIAL_ACCOUNT                NUMBER,
+             MATERIAL_OVERHEAD_ACCOUNT       NUMBER,
+             RESOURCE_ACCOUNT                NUMBER,
+             OUTSIDE_PROCESSING_ACCOUNT      NUMBER,
+             OVERHEAD_ACCOUNT                NUMBER,
+             ITEM_NUMBER                     VARCHAR2(240)  NOT NULL,
+             INVENTORY_ITEM_ID               NUMBER,
+             PRIMARY_UOM                     VARCHAR2(100)  ,   
+             COUNTRY_CODE                    VARCHAR2(100)  NOT NULL,
+             TYPE_CODE                       VARCHAR2(100)  ,
+             SUBTYPE_CODE                    VARCHAR2(100)  ,
+             DIVISION_CODE                   VARCHAR2(100)  ,
+             DISTRICT_CODE                   VARCHAR2(100)  ,
+             COMPANY_CODE                    VARCHAR2(100)  ,
+             CHAIN_CODE                      VARCHAR2(100)  ,
+             AREA_CODE                       VARCHAR2(100)  ,
+             REGION_CODE                     VARCHAR2(100)  ,
+             AVERAGE_COST                    NUMBER         NOT NULL,
+             OLD_AVERAGE_COST                NUMBER         ,
+             REQUESTOR_ID                    NUMBER         ,
+             REQUESTOR_NAME                  VARCHAR2(240)  ,
+             APPROVER_ID                     NUMBER         ,
+             APPROVER_NAME                   VARCHAR2(240)  ,
+             STATUS_FLAG                     VARCHAR2(2)    ,
+             ONHAND_QUANTITY                 NUMBER         ,
+             REVISION_QTY_CONTROL_CODE       VARCHAR2(6)    ,
+             LOT_CONTROL_CODE                VARCHAR2(6)    ,
+             SERIAL_NUMBER_CONTROL_CODE      VARCHAR2(6)    ,
+             ERROR_MESSAGE                   VARCHAR2(3000) ,
+             ERROR_CODE                      VARCHAR2(100)  ,
+             CURRENCY                        VARCHAR2(5)    NOT NULL 
+          );
+
+PROMPT
+PROMPT Exiting....
+PROMPT
+
+
+SHOW ERRORS;
+
+EXIT;
+
+REM=================================================================================================
+REM                                   End Of Script
+REM=================================================================================================
+
+
+

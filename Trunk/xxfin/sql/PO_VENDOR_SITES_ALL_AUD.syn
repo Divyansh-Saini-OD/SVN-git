@@ -1,0 +1,24 @@
+-- +==========================================================================+
+-- |                  Office Depot - Project Simplify                         |
+-- |                       WIPRO Technologies                                 |
+-- +==========================================================================+
+-- | SQL Script to create the following objects                               |
+-- |             Table       : PO_VENDOR_SITES_ALL_AUD                        |
+-- |                                                                          |
+-- |                                                                          |
+-- |                                                                          |
+-- |Change Record:                                                            |
+-- |===============                                                           |
+-- |Version   Date         Author               Remarks                       |
+-- |=======   ==========   =============        ==============================|
+-- | V1.0     17-OCT-2007  Ganesan JV           Initial Version               | 
+-- |                                                                          |
+-- +==========================================================================+
+
+--DROP SYNONYM PO_VENDOR_SITES_ALL_AUD;
+
+
+CREATE OR REPLACE SYNONYM APPS.PO_VENDOR_SITES_ALL_AUD FOR XXFIN.PO_VENDOR_SITES_ALL_AUD;
+
+SHO ERR;
+ 

@@ -1,0 +1,51 @@
+SET VERIFY OFF;
+SET SHOW OFF;
+SET ECHO OFF;
+SET TAB OFF;
+SET FEEDBACK OFF;
+ 
+WHENEVER SQLERROR CONTINUE;
+ 
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+-- +==========================================================================+
+-- |                      Office Depot - IDMS                                 |
+-- |                      Capgemini Technology Services                       |
+-- +==========================================================================+
+-- | SQL Script to create the following objects                               |
+-- |             Table       : XX_AP_SUP_TRAITS_MATRIX_STG                    |
+-- |             Schema      : XXFIN                                          |
+-- |   Rice ID:   C0709                                                                       |
+-- |Create Record:                                                            |
+-- |===============                                                           |
+-- |Version   Date         Author               Remarks                       |
+-- |=======   ==========   =============        ==============================|
+-- | 1.0     08-JAN-2018   Sunil Kalal          New Table to store Supplier   |
+-- |                                            Traits Matrix staging.         | 
+-- |                                                                          |
+-- +==========================================================================+
+
+
+CREATE TABLE XX_AP_SUP_TRAITS_MATRIX_STG
+  (
+    sup_trait         NUMBER NOT NULL ,
+    supplier          NUMBER NOT NULL,
+    attribute1        VARCHAR2(60),
+    attribute2        VARCHAR2(60),
+    attribute3        VARCHAR2(60),
+    attribute4        VARCHAR2(60),
+    creation_date     DATE NOT NULL,
+    created_by        NUMBER NOT NULL,
+    last_update_date  DATE,
+    last_updated_by   NUMBER,
+    last_update_login number,
+    enable_flag       varchar2(1),
+    sup_trait_id      number default 1 not null 
+  );
+
+   
+   GRANT ALL ON XX_AP_SUP_TRAITS_MATRIX_STG TO apps;
+
+   /
+Show error
+	

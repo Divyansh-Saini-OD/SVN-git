@@ -1,0 +1,29 @@
+SET VERIFY OFF;
+SET SHOW OFF;
+SET ECHO OFF;
+SET TAB OFF;
+SET FEEDBACK OFF;
+ 
+WHENEVER SQLERROR CONTINUE;
+ 
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+-- +===========================================================================+
+-- |                  Office Depot - Project C2FO                              |
+-- +===========================================================================+
+-- | Name :          XX_AP_C2FO_VAT_TABLE                                      |
+-- | Description :   Script to create synonym for                              |
+-- |                 XXFIN.XX_AP_C2FO_VAT_TABLE table                          |
+-- |  RICE_ID:                                                                 |
+-- |Change Record:                                                             |
+-- |===============                                                            |
+-- |Version      Date           Author                  Remarks                |
+-- |=======    ==========     ===============           ====================== |
+-- |1.0        31-AUG-2018    Antonio Morales           Initial version        |
+-- +===========================================================================+
+
+ 
+
+Create  or replace synonym XX_AP_C2FO_VAT_TABLE for XXFIN.XX_AP_C2FO_VAT_TABLE;
+ 
+Show error

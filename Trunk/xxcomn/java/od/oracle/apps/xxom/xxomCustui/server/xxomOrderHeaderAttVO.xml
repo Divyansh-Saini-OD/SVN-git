@@ -1,0 +1,2380 @@
+<?xml version="1.0" encoding='windows-1252'?>
+<!DOCTYPE ViewObject SYSTEM "jbo_03_01.dtd">
+
+<ViewObject
+   Name="xxomOrderHeaderAttVO"
+   BindingStyle="Oracle"
+   CustomQuery="true"
+   RowClass="od.oracle.apps.xxom.xxomCustui.server.xxomOrderHeaderAttVORowImpl"
+   ComponentClass="od.oracle.apps.xxom.xxomCustui.server.xxomOrderHeaderAttVOImpl"
+   MsgBundleClass="oracle.jbo.common.JboResourceBundle"
+   UseGlueCode="false" >
+   <SQLQuery><![CDATA[
+SELECT xxomOrderSearchEO.HEADER_ID, 
+       xxomOrderSearchEO.ORG_ID, 
+       xxomOrderSearchEO.ORDER_TYPE_ID, 
+       xxomOrderSearchEO.ORDER_NUMBER, 
+       xxomOrderSearchEO.VERSION_NUMBER, 
+       xxomOrderSearchEO.ORDER_SOURCE_ID, 
+       xxomOrderSearchEO.SOURCE_DOCUMENT_TYPE_ID, 
+       xxomOrderSearchEO.ORIG_SYS_DOCUMENT_REF, 
+       xxomOrderSearchEO.SOURCE_DOCUMENT_ID, 
+       xxomOrderSearchEO.ORDERED_DATE, 
+       xxomOrderSearchEO.REQUEST_DATE, 
+       xxomOrderSearchEO.PRICING_DATE, 
+       xxomOrderSearchEO.SHIPMENT_PRIORITY_CODE, 
+       xxomOrderSearchEO.DEMAND_CLASS_CODE, 
+       xxomOrderSearchEO.PRICE_LIST_ID, 
+       xxomOrderSearchEO.TAX_EXEMPT_FLAG, 
+       xxomOrderSearchEO.TAX_EXEMPT_NUMBER, 
+       xxomOrderSearchEO.TAX_EXEMPT_REASON_CODE, 
+       xxomOrderSearchEO.CONVERSION_RATE, 
+       xxomOrderSearchEO.CONVERSION_RATE_DATE, 
+       xxomOrderSearchEO.CONVERSION_TYPE_CODE, 
+       xxomOrderSearchEO.PARTIAL_SHIPMENTS_ALLOWED, 
+       xxomOrderSearchEO.SHIP_TOLERANCE_ABOVE, 
+       xxomOrderSearchEO.SHIP_TOLERANCE_BELOW, 
+       xxomOrderSearchEO.TRANSACTIONAL_CURR_CODE, 
+       xxomOrderSearchEO.AGREEMENT_ID, 
+       xxomOrderSearchEO.TAX_POINT_CODE, 
+       xxomOrderSearchEO.CUST_PO_NUMBER, 
+       xxomOrderSearchEO.INVOICING_RULE_ID, 
+       xxomOrderSearchEO.ACCOUNTING_RULE_ID, 
+       xxomOrderSearchEO.ACCOUNTING_RULE_DURATION, 
+       xxomOrderSearchEO.PAYMENT_TERM_ID, 
+       xxomOrderSearchEO.SHIPPING_METHOD_CODE, 
+       xxomOrderSearchEO.FOB_POINT_CODE, 
+       xxomOrderSearchEO.FREIGHT_TERMS_CODE, 
+       xxomOrderSearchEO.SOLD_TO_ORG_ID, 
+       xxomOrderSearchEO.SOLD_TO_PHONE_ID, 
+       xxomOrderSearchEO.SHIP_FROM_ORG_ID, 
+       xxomOrderSearchEO.SHIP_TO_ORG_ID, 
+       xxomOrderSearchEO.INVOICE_TO_ORG_ID, 
+       xxomOrderSearchEO.DELIVER_TO_ORG_ID, 
+       xxomOrderSearchEO.SOLD_TO_CONTACT_ID, 
+       xxomOrderSearchEO.SHIP_TO_CONTACT_ID, 
+       xxomOrderSearchEO.INVOICE_TO_CONTACT_ID, 
+       xxomOrderSearchEO.DELIVER_TO_CONTACT_ID, 
+       xxomOrderSearchEO.CREATION_DATE, 
+       xxomOrderSearchEO.CREATED_BY, 
+       xxomOrderSearchEO.LAST_UPDATE_DATE, 
+       xxomOrderSearchEO.LAST_UPDATED_BY, 
+       xxomOrderSearchEO.LAST_UPDATE_LOGIN, 
+       xxomOrderSearchEO.EXPIRATION_DATE, 
+       xxomOrderSearchEO.REQUEST_ID, 
+       xxomOrderSearchEO.PROGRAM_APPLICATION_ID, 
+       xxomOrderSearchEO.PROGRAM_ID, 
+       xxomOrderSearchEO.PROGRAM_UPDATE_DATE, 
+       xxomOrderSearchEO.CONTEXT, 
+       xxomOrderSearchEO.ATTRIBUTE1, 
+       xxomOrderSearchEO.ATTRIBUTE2, 
+       xxomOrderSearchEO.ATTRIBUTE3, 
+       xxomOrderSearchEO.ATTRIBUTE4, 
+       xxomOrderSearchEO.ATTRIBUTE5, 
+       xxomOrderSearchEO.ATTRIBUTE6, 
+       xxomOrderSearchEO.ATTRIBUTE7, 
+       xxomOrderSearchEO.ATTRIBUTE8, 
+       xxomOrderSearchEO.ATTRIBUTE9, 
+       xxomOrderSearchEO.ATTRIBUTE10, 
+       xxomOrderSearchEO.ATTRIBUTE11, 
+       xxomOrderSearchEO.ATTRIBUTE12, 
+       xxomOrderSearchEO.ATTRIBUTE13, 
+       xxomOrderSearchEO.ATTRIBUTE14, 
+       xxomOrderSearchEO.ATTRIBUTE15, 
+       xxomOrderSearchEO.ATTRIBUTE16, 
+       xxomOrderSearchEO.ATTRIBUTE17, 
+       xxomOrderSearchEO.ATTRIBUTE18, 
+       xxomOrderSearchEO.ATTRIBUTE19, 
+       xxomOrderSearchEO.ATTRIBUTE20, 
+       xxomOrderSearchEO.GLOBAL_ATTRIBUTE_CATEGORY, 
+       xxomOrderSearchEO.GLOBAL_ATTRIBUTE1, 
+       xxomOrderSearchEO.GLOBAL_ATTRIBUTE2, 
+       xxomOrderSearchEO.GLOBAL_ATTRIBUTE3, 
+       xxomOrderSearchEO.GLOBAL_ATTRIBUTE4, 
+       xxomOrderSearchEO.GLOBAL_ATTRIBUTE5, 
+       xxomOrderSearchEO.GLOBAL_ATTRIBUTE6, 
+       xxomOrderSearchEO.GLOBAL_ATTRIBUTE7, 
+       xxomOrderSearchEO.GLOBAL_ATTRIBUTE8, 
+       xxomOrderSearchEO.GLOBAL_ATTRIBUTE9, 
+       xxomOrderSearchEO.GLOBAL_ATTRIBUTE10, 
+       xxomOrderSearchEO.GLOBAL_ATTRIBUTE11, 
+       xxomOrderSearchEO.GLOBAL_ATTRIBUTE12, 
+       xxomOrderSearchEO.GLOBAL_ATTRIBUTE13, 
+       xxomOrderSearchEO.GLOBAL_ATTRIBUTE14, 
+       xxomOrderSearchEO.GLOBAL_ATTRIBUTE15, 
+       xxomOrderSearchEO.GLOBAL_ATTRIBUTE16, 
+       xxomOrderSearchEO.GLOBAL_ATTRIBUTE17, 
+       xxomOrderSearchEO.GLOBAL_ATTRIBUTE18, 
+       xxomOrderSearchEO.GLOBAL_ATTRIBUTE19, 
+       xxomOrderSearchEO.GLOBAL_ATTRIBUTE20, 
+       xxomOrderSearchEO.TP_CONTEXT, 
+       xxomOrderSearchEO.TP_ATTRIBUTE1, 
+       xxomOrderSearchEO.TP_ATTRIBUTE2, 
+       xxomOrderSearchEO.TP_ATTRIBUTE3, 
+       xxomOrderSearchEO.TP_ATTRIBUTE4, 
+       xxomOrderSearchEO.TP_ATTRIBUTE5, 
+       xxomOrderSearchEO.TP_ATTRIBUTE6, 
+       xxomOrderSearchEO.TP_ATTRIBUTE7, 
+       xxomOrderSearchEO.TP_ATTRIBUTE8, 
+       xxomOrderSearchEO.TP_ATTRIBUTE9, 
+       xxomOrderSearchEO.TP_ATTRIBUTE10, 
+       xxomOrderSearchEO.TP_ATTRIBUTE11, 
+       xxomOrderSearchEO.TP_ATTRIBUTE12, 
+       xxomOrderSearchEO.TP_ATTRIBUTE13, 
+       xxomOrderSearchEO.TP_ATTRIBUTE14, 
+       xxomOrderSearchEO.TP_ATTRIBUTE15, 
+       xxomOrderSearchEO.FREIGHT_CARRIER_CODE, 
+       xxomOrderSearchEO.CUSTOMER_NUMBER, 
+       xxomOrderSearchEO.CURRENCY_PRECISION, 
+       xxomOrderSearchEO.ORDER_SOURCE, 
+       xxomOrderSearchEO.ORDER_TYPE, 
+       xxomOrderSearchEO.SOURCE_DOCUMENT_TYPE, 
+       xxomOrderSearchEO.AGREEMENT, 
+       xxomOrderSearchEO.PRICE_LIST, 
+       xxomOrderSearchEO.CONVERSION_TYPE, 
+       xxomOrderSearchEO.ACCOUNTING_RULE, 
+       xxomOrderSearchEO.INVOICING_RULE, 
+       xxomOrderSearchEO.TERMS, 
+       xxomOrderSearchEO.SOLD_TO, 
+       xxomOrderSearchEO.SHIP_FROM, 
+       xxomOrderSearchEO.SHIP_FROM_LOCATION, 
+       xxomOrderSearchEO.SHIP_FROM_ADDRESS1, 
+       xxomOrderSearchEO.SHIP_FROM_ADDRESS2, 
+       xxomOrderSearchEO.SHIP_FROM_ADDRESS3, 
+       xxomOrderSearchEO.SHIP_FROM_ADDRESS4, 
+       xxomOrderSearchEO.SHIP_TO, 
+       xxomOrderSearchEO.SHIP_TO_LOCATION, 
+       xxomOrderSearchEO.SHIP_TO_ADDRESS1, 
+       xxomOrderSearchEO.SHIP_TO_ADDRESS2, 
+       xxomOrderSearchEO.SHIP_TO_ADDRESS3, 
+       xxomOrderSearchEO.SHIP_TO_ADDRESS4, 
+       xxomOrderSearchEO.SHIP_TO_ADDRESS5, 
+       xxomOrderSearchEO.DELIVER_TO, 
+       xxomOrderSearchEO.DELIVER_TO_LOCATION, 
+       xxomOrderSearchEO.DELIVER_TO_ADDRESS1, 
+       xxomOrderSearchEO.DELIVER_TO_ADDRESS2, 
+       xxomOrderSearchEO.DELIVER_TO_ADDRESS3, 
+       xxomOrderSearchEO.DELIVER_TO_ADDRESS4, 
+       xxomOrderSearchEO.INVOICE_TO, 
+       xxomOrderSearchEO.INVOICE_TO_LOCATION, 
+       xxomOrderSearchEO.INVOICE_TO_ADDRESS1, 
+       xxomOrderSearchEO.INVOICE_TO_ADDRESS2, 
+       xxomOrderSearchEO.INVOICE_TO_ADDRESS3, 
+       xxomOrderSearchEO.INVOICE_TO_ADDRESS4, 
+       xxomOrderSearchEO.INVOICE_TO_ADDRESS5, 
+       xxomOrderSearchEO.SOLD_TO_CONTACT, 
+       xxomOrderSearchEO.SHIP_TO_CONTACT, 
+       xxomOrderSearchEO.INVOICE_TO_CONTACT, 
+       xxomOrderSearchEO.DELIVER_TO_CONTACT, 
+       xxomOrderSearchEO.SALESREP_ID, 
+       xxomOrderSearchEO.RETURN_REASON_CODE, 
+       xxomOrderSearchEO.RETURN_REASON, 
+       xxomOrderSearchEO.ORDER_DATE_TYPE_CODE, 
+       xxomOrderSearchEO.EARLIEST_SCHEDULE_LIMIT, 
+       xxomOrderSearchEO.LATEST_SCHEDULE_LIMIT, 
+       xxomOrderSearchEO.PAYMENT_TYPE_CODE, 
+       xxomOrderSearchEO.PAYMENT_AMOUNT, 
+       xxomOrderSearchEO.CHECK_NUMBER, 
+       xxomOrderSearchEO.CREDIT_CARD_CODE, 
+       xxomOrderSearchEO.CREDIT_CARD_HOLDER_NAME, 
+       xxomOrderSearchEO.CREDIT_CARD_NUMBER, 
+       xxomOrderSearchEO.CREDIT_CARD_EXPIRATION_DATE, 
+       xxomOrderSearchEO.CREDIT_CARD_APPROVAL_CODE, 
+       xxomOrderSearchEO.CREDIT_CARD_APPROVAL_DATE, 
+       xxomOrderSearchEO.FIRST_ACK_CODE, 
+       xxomOrderSearchEO.FIRST_ACK_DATE, 
+       xxomOrderSearchEO.LAST_ACK_CODE, 
+       xxomOrderSearchEO.LAST_ACK_DATE, 
+       xxomOrderSearchEO.BOOKED_FLAG, 
+       xxomOrderSearchEO.BOOKED_DATE, 
+       xxomOrderSearchEO.CANCELLED_FLAG, 
+       xxomOrderSearchEO.OPEN_FLAG, 
+       xxomOrderSearchEO.SOLD_FROM_ORG_ID, 
+       xxomOrderSearchEO.SHIPPING_INSTRUCTIONS, 
+       xxomOrderSearchEO.PACKING_INSTRUCTIONS, 
+       xxomOrderSearchEO.ORDER_CATEGORY_CODE, 
+       xxomOrderSearchEO.FLOW_STATUS_CODE, 
+       xxomOrderSearchEO.FREIGHT_CARRIER, 
+       xxomOrderSearchEO.CUSTOMER_PREFERENCE_SET_CODE, 
+       xxomOrderSearchEO.SALES_CHANNEL_CODE, 
+       xxomOrderSearchEO.UPGRADED_FLAG, 
+       xxomOrderSearchEO.LOCK_CONTROL, 
+       xxomOrderSearchEO.SOLD_TO_EMAIL_ADDRESS, 
+       xxomOrderSearchEO.GSA_INDICATOR, 
+       xxomOrderSearchEO.BLANKET_NUMBER, 
+       xxomOrderSearchEO.DEFAULT_FULFILLMENT_SET, 
+       xxomOrderSearchEO.LINE_SET_NAME, 
+       xxomOrderSearchEO.FULFILLMENT_SET_NAME, 
+       xxomOrderSearchEO.QUOTE_DATE, 
+       xxomOrderSearchEO.QUOTE_NUMBER, 
+       xxomOrderSearchEO.SALES_DOCUMENT_NAME, 
+       xxomOrderSearchEO.TRANSACTION_PHASE_CODE, 
+       xxomOrderSearchEO.USER_STATUS_CODE, 
+       xxomOrderSearchEO.DRAFT_SUBMITTED_FLAG, 
+       xxomOrderSearchEO.SOURCE_DOCUMENT_VERSION_NUMBER, 
+       xxomOrderSearchEO.SOLD_TO_SITE_USE_ID, 
+       xxomOrderSearchEO.SUPPLIER_SIGNATURE, 
+       xxomOrderSearchEO.SUPPLIER_SIGNATURE_DATE, 
+       xxomOrderSearchEO.CUSTOMER_SIGNATURE, 
+       xxomOrderSearchEO.CUSTOMER_SIGNATURE_DATE, 
+       xxomOrderSearchEO.MINISITE_ID, 
+       xxomOrderSearchEO.END_CUSTOMER_ID, 
+       xxomOrderSearchEO.END_CUSTOMER_CONTACT_ID, 
+       xxomOrderSearchEO.END_CUSTOMER_SITE_USE_ID, 
+       xxomOrderSearchEO.END_CUSTOMER_NAME, 
+       xxomOrderSearchEO.END_CUSTOMER_NUMBER, 
+       xxomOrderSearchEO.END_CUSTOMER_CONTACT, 
+       xxomOrderSearchEO.END_CUSTOMER_LOCATION, 
+       xxomOrderSearchEO.END_CUSTOMER_ADDRESS1, 
+       xxomOrderSearchEO.END_CUSTOMER_ADDRESS2, 
+       xxomOrderSearchEO.END_CUSTOMER_ADDRESS3, 
+       xxomOrderSearchEO.END_CUSTOMER_ADDRESS4, 
+       xxomOrderSearchEO.END_CUSTOMER_ADDRESS5, 
+       xxomOrderSearchEO.IB_OWNER, 
+       xxomOrderSearchEO.IB_CURRENT_LOCATION, 
+       xxomOrderSearchEO.IB_INSTALLED_AT_LOCATION, 
+       xxomOrderSearchEO.ORDER_FIRMED_DATE, 
+       xxomOrderSearchEO.ROW_ID, 
+       xxomOrderHeaderAttEO.HEADER_ID AS HEADER_ID1, 
+       xxomOrderHeaderAttEO.COMMENTS, 
+       xxomOrderHeaderAttEO.RELEASE_NUMBER, 
+       xxomOrderHeaderAttEO.COST_CENTER_DEPT, 
+       xxomOrderHeaderAttEO.DESK_DEL_ADDR, 
+       xxomOrderHeaderAttEO.CUST_CARR_ACCT_NO, 
+       xxomOrderHeaderAttEO.CATALOG_SRC_CD, 
+       xxomOrderHeaderAttEO.BRAND, 
+       xxomOrderHeaderAttEO.BMODE, 
+       xxomOrderHeaderAttEO.LOCALE, 
+       xxomOrderHeaderAttEO.ADVANTAGE_CARD_NUMBER, 
+       xxomOrderHeaderAttEO.GIFT_FLAG, 
+       xxomOrderHeaderAttEO.FAX_COMMENTS, 
+       xxomOrderHeaderAttEO.TRACK_NUM, 
+       xxomOrderHeaderAttEO.SHIP_TO_FLG, 
+       xxomOrderHeaderAttEO.ALT_DELV_ADDRESS, 
+       xxomOrderHeaderAttEO.FURTHER_ORD_INFO, 
+       xxomOrderHeaderAttEO.ORIG_CUST_NAME, 
+       xxomOrderHeaderAttEO.CREATED_BY_STORE_ID, 
+       xxomOrderHeaderAttEO.PAID_AT_STORE_ID, 
+       xxomOrderHeaderAttEO.SPC_CARD_NUMBER, 
+       xxomOrderHeaderAttEO.SALESREP_ID AS SALESREP_ID1, 
+       xxomOrderHeaderAttEO.DELIVERY_CODE, 
+       xxomOrderHeaderAttEO.CREATED_BY_ID, 
+       xxomOrderHeaderAttEO.DELIVERY_METHOD, 
+       xxomOrderHeaderAttEO.PLACEMENT_METHOD_CODE, 
+       xxomOrderHeaderAttEO.NUM_CARTONS, 
+       xxomOrderHeaderAttEO.CUST_COMM_PREF, 
+       xxomOrderHeaderAttEO.CUST_PREF_EMAIL, 
+       xxomOrderHeaderAttEO.CUST_PREF_FAX, 
+       xxomOrderHeaderAttEO.CUST_PREF_PHONE, 
+       xxomOrderHeaderAttEO.CUST_PREF_PHEXTN, 
+       xxomOrderHeaderAttEO.CUST_CONTACT_NAME, 
+       xxomOrderHeaderAttEO.WEB_USER_ID, 
+       xxomOrderHeaderAttEO.CREATION_DATE AS CREATION_DATE1, 
+       xxomOrderHeaderAttEO.CREATED_BY AS CREATED_BY1, 
+       xxomOrderHeaderAttEO.LAST_UPDATE_DATE AS LAST_UPDATE_DATE1, 
+       xxomOrderHeaderAttEO.LAST_UPDATED_BY AS LAST_UPDATED_BY1, 
+       xxomOrderHeaderAttEO.LAST_UPDATE_LOGIN AS LAST_UPDATE_LOGIN1, 
+       xxomOrderHeaderAttEO.OD_ORDER_TYPE, 
+       xxomOrderHeaderAttEO.SHIP_TO_NAME, 
+       xxomOrderHeaderAttEO.BILL_TO_NAME, 
+       xxomOrderHeaderAttEO.SHIP_TO_SEQUENCE, 
+       xxomOrderHeaderAttEO.SHIP_TO_ADDRESS1 AS SHIP_TO_ADDRESS11, 
+       xxomOrderHeaderAttEO.SHIP_TO_ADDRESS2 AS SHIP_TO_ADDRESS21, 
+       xxomOrderHeaderAttEO.SHIP_TO_CITY, 
+       xxomOrderHeaderAttEO.SHIP_TO_STATE, 
+       xxomOrderHeaderAttEO.SHIP_TO_COUNTRY, 
+       xxomOrderHeaderAttEO.SHIP_TO_ZIP, 
+       xxomOrderHeaderAttEO.IMP_FILE_NAME, 
+       xxomOrderHeaderAttEO.TAX_RATE, 
+       xxomOrderHeaderAttEO.ORDER_TOTAL, 
+       xxomOrderHeaderAttEO.COMMISIONABLE_IND, 
+       xxomOrderHeaderAttEO.ORDER_ACTION_CODE, 
+       xxomOrderHeaderAttEO.ORDER_START_TIME, 
+       xxomOrderHeaderAttEO.ORDER_END_TIME, 
+       xxomOrderHeaderAttEO.ORDER_TAXABLE_CD, 
+       xxomOrderHeaderAttEO.OVERRIDE_DELIVERY_CHG_CD, 
+       xxomOrderHeaderAttEO.SHIP_TO_GEOCODE, 
+       xxomOrderHeaderAttEO.CUST_DEPT_DESCRIPTION, 
+       xxomOrderHeaderAttEO.SHIP_TO_COUNTY, 
+       xxomOrderHeaderAttEO.TRAN_NUMBER, 
+       xxomOrderHeaderAttEO.AOPS_GEO_CODE, 
+       xxomOrderHeaderAttEO.TAX_EXEMPT_AMOUNT
+FROM oe_order_headers_v xxomOrderSearchEO, XX_OM_HEADER_ATTRIBUTES_ALL xxomOrderHeaderAttEO
+WHERE xxomOrderSearchEO.HEADER_ID = xxomOrderHeaderAttEO.HEADER_ID
+   ]]></SQLQuery>
+   <DesignTime>
+      <Attr Name="_isCodegen" Value="true" />
+      <Attr Name="_version" Value="9.0.3.13.75" />
+      <Attr Name="_CodeGenFlagNew" Value="36" />
+   </DesignTime>
+   <EntityUsage
+      Name="xxomOrderSearchEO"
+      Entity="od.oracle.apps.xxom.xxomCustui.server.xxomOrderSearchEO" >
+      <DesignTime>
+         <Attr Name="_EntireObjectTable" Value="false" />
+         <Attr Name="_queryClause" Value="false" />
+      </DesignTime>
+   </EntityUsage>
+   <EntityUsage
+      Name="xxomOrderHeaderAttEO"
+      Entity="od.oracle.apps.xxom.xxomCustui.server.xxomOrderHeaderAttEO"
+      SourceUsage="od.oracle.apps.xxom.xxomCustui.server.xxomOrderHeaderAttVO.xxomOrderSearchEO"
+      Reference="true" >
+      <DesignTime>
+         <Attr Name="_EntireObjectTable" Value="false" />
+         <Attr Name="_queryClause" Value="false" />
+         <AttrArray Name="_srcAttributes">
+            <Item Value="od.oracle.apps.xxom.xxomCustui.server.xxomOrderSearchEO.HeaderId" />
+            <Item Value="od.oracle.apps.xxom.xxomCustui.server.xxomOrderSearchEO.CreationDate" />
+            <Item Value="od.oracle.apps.xxom.xxomCustui.server.xxomOrderSearchEO.CreatedBy" />
+         </AttrArray>
+         <AttrArray Name="_dstAttributes">
+            <Item Value="od.oracle.apps.xxom.xxomCustui.server.xxomOrderHeaderAttEO.HeaderId" />
+            <Item Value="od.oracle.apps.xxom.xxomCustui.server.xxomOrderHeaderAttEO.CreationDate" />
+            <Item Value="od.oracle.apps.xxom.xxomCustui.server.xxomOrderHeaderAttEO.CreatedBy" />
+         </AttrArray>
+      </DesignTime>
+   </EntityUsage>
+   <ViewAttribute
+      Name="HeaderId"
+      IsNotNull="true"
+      EntityAttrName="HeaderId"
+      EntityUsage="xxomOrderSearchEO"
+      AliasName="HEADER_ID"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="OrgId"
+      EntityAttrName="OrgId"
+      EntityUsage="xxomOrderSearchEO"
+      AliasName="ORG_ID"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="OrderTypeId"
+      IsNotNull="true"
+      EntityAttrName="OrderTypeId"
+      EntityUsage="xxomOrderSearchEO"
+      AliasName="ORDER_TYPE_ID"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="OrderNumber"
+      IsNotNull="true"
+      EntityAttrName="OrderNumber"
+      EntityUsage="xxomOrderSearchEO"
+      AliasName="ORDER_NUMBER"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="VersionNumber"
+      IsNotNull="true"
+      EntityAttrName="VersionNumber"
+      EntityUsage="xxomOrderSearchEO"
+      AliasName="VERSION_NUMBER"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="OrderSourceId"
+      EntityAttrName="OrderSourceId"
+      EntityUsage="xxomOrderSearchEO"
+      AliasName="ORDER_SOURCE_ID"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="SourceDocumentTypeId"
+      EntityAttrName="SourceDocumentTypeId"
+      EntityUsage="xxomOrderSearchEO"
+      AliasName="SOURCE_DOCUMENT_TYPE_ID"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="OrigSysDocumentRef"
+      EntityAttrName="OrigSysDocumentRef"
+      EntityUsage="xxomOrderSearchEO"
+      AliasName="ORIG_SYS_DOCUMENT_REF"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="SourceDocumentId"
+      EntityAttrName="SourceDocumentId"
+      EntityUsage="xxomOrderSearchEO"
+      AliasName="SOURCE_DOCUMENT_ID"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="OrderedDate"
+      EntityAttrName="OrderedDate"
+      EntityUsage="xxomOrderSearchEO"
+      AliasName="ORDERED_DATE"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="RequestDate"
+      EntityAttrName="RequestDate"
+      EntityUsage="xxomOrderSearchEO"
+      AliasName="REQUEST_DATE"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="PricingDate"
+      EntityAttrName="PricingDate"
+      EntityUsage="xxomOrderSearchEO"
+      AliasName="PRICING_DATE"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="ShipmentPriorityCode"
+      EntityAttrName="ShipmentPriorityCode"
+      EntityUsage="xxomOrderSearchEO"
+      AliasName="SHIPMENT_PRIORITY_CODE"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="DemandClassCode"
+      EntityAttrName="DemandClassCode"
+      EntityUsage="xxomOrderSearchEO"
+      AliasName="DEMAND_CLASS_CODE"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="PriceListId"
+      EntityAttrName="PriceListId"
+      EntityUsage="xxomOrderSearchEO"
+      AliasName="PRICE_LIST_ID"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="TaxExemptFlag"
+      EntityAttrName="TaxExemptFlag"
+      EntityUsage="xxomOrderSearchEO"
+      AliasName="TAX_EXEMPT_FLAG"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="TaxExemptNumber"
+      EntityAttrName="TaxExemptNumber"
+      EntityUsage="xxomOrderSearchEO"
+      AliasName="TAX_EXEMPT_NUMBER"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="TaxExemptReasonCode"
+      EntityAttrName="TaxExemptReasonCode"
+      EntityUsage="xxomOrderSearchEO"
+      AliasName="TAX_EXEMPT_REASON_CODE"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="ConversionRate"
+      EntityAttrName="ConversionRate"
+      EntityUsage="xxomOrderSearchEO"
+      AliasName="CONVERSION_RATE"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="ConversionRateDate"
+      EntityAttrName="ConversionRateDate"
+      EntityUsage="xxomOrderSearchEO"
+      AliasName="CONVERSION_RATE_DATE"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="ConversionTypeCode"
+      EntityAttrName="ConversionTypeCode"
+      EntityUsage="xxomOrderSearchEO"
+      AliasName="CONVERSION_TYPE_CODE"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="PartialShipmentsAllowed"
+      EntityAttrName="PartialShipmentsAllowed"
+      EntityUsage="xxomOrderSearchEO"
+      AliasName="PARTIAL_SHIPMENTS_ALLOWED"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="ShipToleranceAbove"
+      EntityAttrName="ShipToleranceAbove"
+      EntityUsage="xxomOrderSearchEO"
+      AliasName="SHIP_TOLERANCE_ABOVE"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="ShipToleranceBelow"
+      EntityAttrName="ShipToleranceBelow"
+      EntityUsage="xxomOrderSearchEO"
+      AliasName="SHIP_TOLERANCE_BELOW"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="TransactionalCurrCode"
+      EntityAttrName="TransactionalCurrCode"
+      EntityUsage="xxomOrderSearchEO"
+      AliasName="TRANSACTIONAL_CURR_CODE"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="AgreementId"
+      EntityAttrName="AgreementId"
+      EntityUsage="xxomOrderSearchEO"
+      AliasName="AGREEMENT_ID"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="TaxPointCode"
+      EntityAttrName="TaxPointCode"
+      EntityUsage="xxomOrderSearchEO"
+      AliasName="TAX_POINT_CODE"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="CustPoNumber"
+      EntityAttrName="CustPoNumber"
+      EntityUsage="xxomOrderSearchEO"
+      AliasName="CUST_PO_NUMBER"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="InvoicingRuleId"
+      EntityAttrName="InvoicingRuleId"
+      EntityUsage="xxomOrderSearchEO"
+      AliasName="INVOICING_RULE_ID"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="AccountingRuleId"
+      EntityAttrName="AccountingRuleId"
+      EntityUsage="xxomOrderSearchEO"
+      AliasName="ACCOUNTING_RULE_ID"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="AccountingRuleDuration"
+      EntityAttrName="AccountingRuleDuration"
+      EntityUsage="xxomOrderSearchEO"
+      AliasName="ACCOUNTING_RULE_DURATION"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="PaymentTermId"
+      EntityAttrName="PaymentTermId"
+      EntityUsage="xxomOrderSearchEO"
+      AliasName="PAYMENT_TERM_ID"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="ShippingMethodCode"
+      EntityAttrName="ShippingMethodCode"
+      EntityUsage="xxomOrderSearchEO"
+      AliasName="SHIPPING_METHOD_CODE"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="FobPointCode"
+      EntityAttrName="FobPointCode"
+      EntityUsage="xxomOrderSearchEO"
+      AliasName="FOB_POINT_CODE"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="FreightTermsCode"
+      EntityAttrName="FreightTermsCode"
+      EntityUsage="xxomOrderSearchEO"
+      AliasName="FREIGHT_TERMS_CODE"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="SoldToOrgId"
+      EntityAttrName="SoldToOrgId"
+      EntityUsage="xxomOrderSearchEO"
+      AliasName="SOLD_TO_ORG_ID"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="SoldToPhoneId"
+      EntityAttrName="SoldToPhoneId"
+      EntityUsage="xxomOrderSearchEO"
+      AliasName="SOLD_TO_PHONE_ID"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="ShipFromOrgId"
+      EntityAttrName="ShipFromOrgId"
+      EntityUsage="xxomOrderSearchEO"
+      AliasName="SHIP_FROM_ORG_ID"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="ShipToOrgId"
+      EntityAttrName="ShipToOrgId"
+      EntityUsage="xxomOrderSearchEO"
+      AliasName="SHIP_TO_ORG_ID"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="InvoiceToOrgId"
+      EntityAttrName="InvoiceToOrgId"
+      EntityUsage="xxomOrderSearchEO"
+      AliasName="INVOICE_TO_ORG_ID"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="DeliverToOrgId"
+      EntityAttrName="DeliverToOrgId"
+      EntityUsage="xxomOrderSearchEO"
+      AliasName="DELIVER_TO_ORG_ID"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="SoldToContactId"
+      EntityAttrName="SoldToContactId"
+      EntityUsage="xxomOrderSearchEO"
+      AliasName="SOLD_TO_CONTACT_ID"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="ShipToContactId"
+      EntityAttrName="ShipToContactId"
+      EntityUsage="xxomOrderSearchEO"
+      AliasName="SHIP_TO_CONTACT_ID"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="InvoiceToContactId"
+      EntityAttrName="InvoiceToContactId"
+      EntityUsage="xxomOrderSearchEO"
+      AliasName="INVOICE_TO_CONTACT_ID"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="DeliverToContactId"
+      EntityAttrName="DeliverToContactId"
+      EntityUsage="xxomOrderSearchEO"
+      AliasName="DELIVER_TO_CONTACT_ID"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="CreationDate"
+      IsNotNull="true"
+      EntityAttrName="CreationDate"
+      EntityUsage="xxomOrderSearchEO"
+      AliasName="CREATION_DATE"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="CreatedBy"
+      IsNotNull="true"
+      EntityAttrName="CreatedBy"
+      EntityUsage="xxomOrderSearchEO"
+      AliasName="CREATED_BY"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="LastUpdateDate"
+      IsNotNull="true"
+      EntityAttrName="LastUpdateDate"
+      EntityUsage="xxomOrderSearchEO"
+      AliasName="LAST_UPDATE_DATE"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="LastUpdatedBy"
+      IsNotNull="true"
+      EntityAttrName="LastUpdatedBy"
+      EntityUsage="xxomOrderSearchEO"
+      AliasName="LAST_UPDATED_BY"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="LastUpdateLogin"
+      EntityAttrName="LastUpdateLogin"
+      EntityUsage="xxomOrderSearchEO"
+      AliasName="LAST_UPDATE_LOGIN"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="ExpirationDate"
+      EntityAttrName="ExpirationDate"
+      EntityUsage="xxomOrderSearchEO"
+      AliasName="EXPIRATION_DATE"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="RequestId"
+      EntityAttrName="RequestId"
+      EntityUsage="xxomOrderSearchEO"
+      AliasName="REQUEST_ID"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="ProgramApplicationId"
+      EntityAttrName="ProgramApplicationId"
+      EntityUsage="xxomOrderSearchEO"
+      AliasName="PROGRAM_APPLICATION_ID"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="ProgramId"
+      EntityAttrName="ProgramId"
+      EntityUsage="xxomOrderSearchEO"
+      AliasName="PROGRAM_ID"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="ProgramUpdateDate"
+      EntityAttrName="ProgramUpdateDate"
+      EntityUsage="xxomOrderSearchEO"
+      AliasName="PROGRAM_UPDATE_DATE"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Context"
+      EntityAttrName="Context"
+      EntityUsage="xxomOrderSearchEO"
+      AliasName="CONTEXT"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Attribute1"
+      EntityAttrName="Attribute1"
+      EntityUsage="xxomOrderSearchEO"
+      AliasName="ATTRIBUTE1"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Attribute2"
+      EntityAttrName="Attribute2"
+      EntityUsage="xxomOrderSearchEO"
+      AliasName="ATTRIBUTE2"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Attribute3"
+      EntityAttrName="Attribute3"
+      EntityUsage="xxomOrderSearchEO"
+      AliasName="ATTRIBUTE3"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Attribute4"
+      EntityAttrName="Attribute4"
+      EntityUsage="xxomOrderSearchEO"
+      AliasName="ATTRIBUTE4"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Attribute5"
+      EntityAttrName="Attribute5"
+      EntityUsage="xxomOrderSearchEO"
+      AliasName="ATTRIBUTE5"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Attribute6"
+      EntityAttrName="Attribute6"
+      EntityUsage="xxomOrderSearchEO"
+      AliasName="ATTRIBUTE6"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Attribute7"
+      EntityAttrName="Attribute7"
+      EntityUsage="xxomOrderSearchEO"
+      AliasName="ATTRIBUTE7"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Attribute8"
+      EntityAttrName="Attribute8"
+      EntityUsage="xxomOrderSearchEO"
+      AliasName="ATTRIBUTE8"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Attribute9"
+      EntityAttrName="Attribute9"
+      EntityUsage="xxomOrderSearchEO"
+      AliasName="ATTRIBUTE9"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Attribute10"
+      EntityAttrName="Attribute10"
+      EntityUsage="xxomOrderSearchEO"
+      AliasName="ATTRIBUTE10"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Attribute11"
+      EntityAttrName="Attribute11"
+      EntityUsage="xxomOrderSearchEO"
+      AliasName="ATTRIBUTE11"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Attribute12"
+      EntityAttrName="Attribute12"
+      EntityUsage="xxomOrderSearchEO"
+      AliasName="ATTRIBUTE12"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Attribute13"
+      EntityAttrName="Attribute13"
+      EntityUsage="xxomOrderSearchEO"
+      AliasName="ATTRIBUTE13"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Attribute14"
+      EntityAttrName="Attribute14"
+      EntityUsage="xxomOrderSearchEO"
+      AliasName="ATTRIBUTE14"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Attribute15"
+      EntityAttrName="Attribute15"
+      EntityUsage="xxomOrderSearchEO"
+      AliasName="ATTRIBUTE15"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Attribute16"
+      EntityAttrName="Attribute16"
+      EntityUsage="xxomOrderSearchEO"
+      AliasName="ATTRIBUTE16"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Attribute17"
+      EntityAttrName="Attribute17"
+      EntityUsage="xxomOrderSearchEO"
+      AliasName="ATTRIBUTE17"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Attribute18"
+      EntityAttrName="Attribute18"
+      EntityUsage="xxomOrderSearchEO"
+      AliasName="ATTRIBUTE18"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Attribute19"
+      EntityAttrName="Attribute19"
+      EntityUsage="xxomOrderSearchEO"
+      AliasName="ATTRIBUTE19"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Attribute20"
+      EntityAttrName="Attribute20"
+      EntityUsage="xxomOrderSearchEO"
+      AliasName="ATTRIBUTE20"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="GlobalAttributeCategory"
+      EntityAttrName="GlobalAttributeCategory"
+      EntityUsage="xxomOrderSearchEO"
+      AliasName="GLOBAL_ATTRIBUTE_CATEGORY"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="GlobalAttribute1"
+      EntityAttrName="GlobalAttribute1"
+      EntityUsage="xxomOrderSearchEO"
+      AliasName="GLOBAL_ATTRIBUTE1"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="GlobalAttribute2"
+      EntityAttrName="GlobalAttribute2"
+      EntityUsage="xxomOrderSearchEO"
+      AliasName="GLOBAL_ATTRIBUTE2"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="GlobalAttribute3"
+      EntityAttrName="GlobalAttribute3"
+      EntityUsage="xxomOrderSearchEO"
+      AliasName="GLOBAL_ATTRIBUTE3"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="GlobalAttribute4"
+      EntityAttrName="GlobalAttribute4"
+      EntityUsage="xxomOrderSearchEO"
+      AliasName="GLOBAL_ATTRIBUTE4"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="GlobalAttribute5"
+      EntityAttrName="GlobalAttribute5"
+      EntityUsage="xxomOrderSearchEO"
+      AliasName="GLOBAL_ATTRIBUTE5"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="GlobalAttribute6"
+      EntityAttrName="GlobalAttribute6"
+      EntityUsage="xxomOrderSearchEO"
+      AliasName="GLOBAL_ATTRIBUTE6"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="GlobalAttribute7"
+      EntityAttrName="GlobalAttribute7"
+      EntityUsage="xxomOrderSearchEO"
+      AliasName="GLOBAL_ATTRIBUTE7"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="GlobalAttribute8"
+      EntityAttrName="GlobalAttribute8"
+      EntityUsage="xxomOrderSearchEO"
+      AliasName="GLOBAL_ATTRIBUTE8"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="GlobalAttribute9"
+      EntityAttrName="GlobalAttribute9"
+      EntityUsage="xxomOrderSearchEO"
+      AliasName="GLOBAL_ATTRIBUTE9"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="GlobalAttribute10"
+      EntityAttrName="GlobalAttribute10"
+      EntityUsage="xxomOrderSearchEO"
+      AliasName="GLOBAL_ATTRIBUTE10"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="GlobalAttribute11"
+      EntityAttrName="GlobalAttribute11"
+      EntityUsage="xxomOrderSearchEO"
+      AliasName="GLOBAL_ATTRIBUTE11"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="GlobalAttribute12"
+      EntityAttrName="GlobalAttribute12"
+      EntityUsage="xxomOrderSearchEO"
+      AliasName="GLOBAL_ATTRIBUTE12"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="GlobalAttribute13"
+      EntityAttrName="GlobalAttribute13"
+      EntityUsage="xxomOrderSearchEO"
+      AliasName="GLOBAL_ATTRIBUTE13"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="GlobalAttribute14"
+      EntityAttrName="GlobalAttribute14"
+      EntityUsage="xxomOrderSearchEO"
+      AliasName="GLOBAL_ATTRIBUTE14"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="GlobalAttribute15"
+      EntityAttrName="GlobalAttribute15"
+      EntityUsage="xxomOrderSearchEO"
+      AliasName="GLOBAL_ATTRIBUTE15"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="GlobalAttribute16"
+      EntityAttrName="GlobalAttribute16"
+      EntityUsage="xxomOrderSearchEO"
+      AliasName="GLOBAL_ATTRIBUTE16"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="GlobalAttribute17"
+      EntityAttrName="GlobalAttribute17"
+      EntityUsage="xxomOrderSearchEO"
+      AliasName="GLOBAL_ATTRIBUTE17"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="GlobalAttribute18"
+      EntityAttrName="GlobalAttribute18"
+      EntityUsage="xxomOrderSearchEO"
+      AliasName="GLOBAL_ATTRIBUTE18"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="GlobalAttribute19"
+      EntityAttrName="GlobalAttribute19"
+      EntityUsage="xxomOrderSearchEO"
+      AliasName="GLOBAL_ATTRIBUTE19"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="GlobalAttribute20"
+      EntityAttrName="GlobalAttribute20"
+      EntityUsage="xxomOrderSearchEO"
+      AliasName="GLOBAL_ATTRIBUTE20"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="TpContext"
+      EntityAttrName="TpContext"
+      EntityUsage="xxomOrderSearchEO"
+      AliasName="TP_CONTEXT"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="TpAttribute1"
+      EntityAttrName="TpAttribute1"
+      EntityUsage="xxomOrderSearchEO"
+      AliasName="TP_ATTRIBUTE1"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="TpAttribute2"
+      EntityAttrName="TpAttribute2"
+      EntityUsage="xxomOrderSearchEO"
+      AliasName="TP_ATTRIBUTE2"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="TpAttribute3"
+      EntityAttrName="TpAttribute3"
+      EntityUsage="xxomOrderSearchEO"
+      AliasName="TP_ATTRIBUTE3"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="TpAttribute4"
+      EntityAttrName="TpAttribute4"
+      EntityUsage="xxomOrderSearchEO"
+      AliasName="TP_ATTRIBUTE4"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="TpAttribute5"
+      EntityAttrName="TpAttribute5"
+      EntityUsage="xxomOrderSearchEO"
+      AliasName="TP_ATTRIBUTE5"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="TpAttribute6"
+      EntityAttrName="TpAttribute6"
+      EntityUsage="xxomOrderSearchEO"
+      AliasName="TP_ATTRIBUTE6"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="TpAttribute7"
+      EntityAttrName="TpAttribute7"
+      EntityUsage="xxomOrderSearchEO"
+      AliasName="TP_ATTRIBUTE7"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="TpAttribute8"
+      EntityAttrName="TpAttribute8"
+      EntityUsage="xxomOrderSearchEO"
+      AliasName="TP_ATTRIBUTE8"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="TpAttribute9"
+      EntityAttrName="TpAttribute9"
+      EntityUsage="xxomOrderSearchEO"
+      AliasName="TP_ATTRIBUTE9"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="TpAttribute10"
+      EntityAttrName="TpAttribute10"
+      EntityUsage="xxomOrderSearchEO"
+      AliasName="TP_ATTRIBUTE10"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="TpAttribute11"
+      EntityAttrName="TpAttribute11"
+      EntityUsage="xxomOrderSearchEO"
+      AliasName="TP_ATTRIBUTE11"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="TpAttribute12"
+      EntityAttrName="TpAttribute12"
+      EntityUsage="xxomOrderSearchEO"
+      AliasName="TP_ATTRIBUTE12"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="TpAttribute13"
+      EntityAttrName="TpAttribute13"
+      EntityUsage="xxomOrderSearchEO"
+      AliasName="TP_ATTRIBUTE13"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="TpAttribute14"
+      EntityAttrName="TpAttribute14"
+      EntityUsage="xxomOrderSearchEO"
+      AliasName="TP_ATTRIBUTE14"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="TpAttribute15"
+      EntityAttrName="TpAttribute15"
+      EntityUsage="xxomOrderSearchEO"
+      AliasName="TP_ATTRIBUTE15"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="FreightCarrierCode"
+      EntityAttrName="FreightCarrierCode"
+      EntityUsage="xxomOrderSearchEO"
+      AliasName="FREIGHT_CARRIER_CODE"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="CustomerNumber"
+      EntityAttrName="CustomerNumber"
+      EntityUsage="xxomOrderSearchEO"
+      AliasName="CUSTOMER_NUMBER"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="CurrencyPrecision"
+      EntityAttrName="CurrencyPrecision"
+      EntityUsage="xxomOrderSearchEO"
+      AliasName="CURRENCY_PRECISION"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="OrderSource"
+      EntityAttrName="OrderSource"
+      EntityUsage="xxomOrderSearchEO"
+      AliasName="ORDER_SOURCE"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="OrderType"
+      IsNotNull="true"
+      EntityAttrName="OrderType"
+      EntityUsage="xxomOrderSearchEO"
+      AliasName="ORDER_TYPE"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="SourceDocumentType"
+      EntityAttrName="SourceDocumentType"
+      EntityUsage="xxomOrderSearchEO"
+      AliasName="SOURCE_DOCUMENT_TYPE"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Agreement"
+      EntityAttrName="Agreement"
+      EntityUsage="xxomOrderSearchEO"
+      AliasName="AGREEMENT"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="PriceList"
+      EntityAttrName="PriceList"
+      EntityUsage="xxomOrderSearchEO"
+      AliasName="PRICE_LIST"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="ConversionType"
+      EntityAttrName="ConversionType"
+      EntityUsage="xxomOrderSearchEO"
+      AliasName="CONVERSION_TYPE"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="AccountingRule"
+      EntityAttrName="AccountingRule"
+      EntityUsage="xxomOrderSearchEO"
+      AliasName="ACCOUNTING_RULE"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="InvoicingRule"
+      EntityAttrName="InvoicingRule"
+      EntityUsage="xxomOrderSearchEO"
+      AliasName="INVOICING_RULE"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Terms"
+      EntityAttrName="Terms"
+      EntityUsage="xxomOrderSearchEO"
+      AliasName="TERMS"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="SoldTo"
+      EntityAttrName="SoldTo"
+      EntityUsage="xxomOrderSearchEO"
+      AliasName="SOLD_TO"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="ShipFrom"
+      EntityAttrName="ShipFrom"
+      EntityUsage="xxomOrderSearchEO"
+      AliasName="SHIP_FROM"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="ShipFromLocation"
+      EntityAttrName="ShipFromLocation"
+      EntityUsage="xxomOrderSearchEO"
+      AliasName="SHIP_FROM_LOCATION"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="ShipFromAddress1"
+      EntityAttrName="ShipFromAddress1"
+      EntityUsage="xxomOrderSearchEO"
+      AliasName="SHIP_FROM_ADDRESS1"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="ShipFromAddress2"
+      EntityAttrName="ShipFromAddress2"
+      EntityUsage="xxomOrderSearchEO"
+      AliasName="SHIP_FROM_ADDRESS2"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="ShipFromAddress3"
+      EntityAttrName="ShipFromAddress3"
+      EntityUsage="xxomOrderSearchEO"
+      AliasName="SHIP_FROM_ADDRESS3"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="ShipFromAddress4"
+      EntityAttrName="ShipFromAddress4"
+      EntityUsage="xxomOrderSearchEO"
+      AliasName="SHIP_FROM_ADDRESS4"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="ShipTo"
+      EntityAttrName="ShipTo"
+      EntityUsage="xxomOrderSearchEO"
+      AliasName="SHIP_TO"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="ShipToLocation"
+      EntityAttrName="ShipToLocation"
+      EntityUsage="xxomOrderSearchEO"
+      AliasName="SHIP_TO_LOCATION"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="ShipToAddress1"
+      EntityAttrName="ShipToAddress1"
+      EntityUsage="xxomOrderSearchEO"
+      AliasName="SHIP_TO_ADDRESS1"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="ShipToAddress2"
+      EntityAttrName="ShipToAddress2"
+      EntityUsage="xxomOrderSearchEO"
+      AliasName="SHIP_TO_ADDRESS2"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="ShipToAddress3"
+      EntityAttrName="ShipToAddress3"
+      EntityUsage="xxomOrderSearchEO"
+      AliasName="SHIP_TO_ADDRESS3"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="ShipToAddress4"
+      EntityAttrName="ShipToAddress4"
+      EntityUsage="xxomOrderSearchEO"
+      AliasName="SHIP_TO_ADDRESS4"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="ShipToAddress5"
+      EntityAttrName="ShipToAddress5"
+      EntityUsage="xxomOrderSearchEO"
+      AliasName="SHIP_TO_ADDRESS5"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="DeliverTo"
+      EntityAttrName="DeliverTo"
+      EntityUsage="xxomOrderSearchEO"
+      AliasName="DELIVER_TO"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="DeliverToLocation"
+      EntityAttrName="DeliverToLocation"
+      EntityUsage="xxomOrderSearchEO"
+      AliasName="DELIVER_TO_LOCATION"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="DeliverToAddress1"
+      EntityAttrName="DeliverToAddress1"
+      EntityUsage="xxomOrderSearchEO"
+      AliasName="DELIVER_TO_ADDRESS1"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="DeliverToAddress2"
+      EntityAttrName="DeliverToAddress2"
+      EntityUsage="xxomOrderSearchEO"
+      AliasName="DELIVER_TO_ADDRESS2"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="DeliverToAddress3"
+      EntityAttrName="DeliverToAddress3"
+      EntityUsage="xxomOrderSearchEO"
+      AliasName="DELIVER_TO_ADDRESS3"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="DeliverToAddress4"
+      EntityAttrName="DeliverToAddress4"
+      EntityUsage="xxomOrderSearchEO"
+      AliasName="DELIVER_TO_ADDRESS4"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="InvoiceTo"
+      EntityAttrName="InvoiceTo"
+      EntityUsage="xxomOrderSearchEO"
+      AliasName="INVOICE_TO"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="InvoiceToLocation"
+      EntityAttrName="InvoiceToLocation"
+      EntityUsage="xxomOrderSearchEO"
+      AliasName="INVOICE_TO_LOCATION"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="InvoiceToAddress1"
+      EntityAttrName="InvoiceToAddress1"
+      EntityUsage="xxomOrderSearchEO"
+      AliasName="INVOICE_TO_ADDRESS1"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="InvoiceToAddress2"
+      EntityAttrName="InvoiceToAddress2"
+      EntityUsage="xxomOrderSearchEO"
+      AliasName="INVOICE_TO_ADDRESS2"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="InvoiceToAddress3"
+      EntityAttrName="InvoiceToAddress3"
+      EntityUsage="xxomOrderSearchEO"
+      AliasName="INVOICE_TO_ADDRESS3"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="InvoiceToAddress4"
+      EntityAttrName="InvoiceToAddress4"
+      EntityUsage="xxomOrderSearchEO"
+      AliasName="INVOICE_TO_ADDRESS4"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="InvoiceToAddress5"
+      EntityAttrName="InvoiceToAddress5"
+      EntityUsage="xxomOrderSearchEO"
+      AliasName="INVOICE_TO_ADDRESS5"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="SoldToContact"
+      EntityAttrName="SoldToContact"
+      EntityUsage="xxomOrderSearchEO"
+      AliasName="SOLD_TO_CONTACT"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="ShipToContact"
+      EntityAttrName="ShipToContact"
+      EntityUsage="xxomOrderSearchEO"
+      AliasName="SHIP_TO_CONTACT"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="InvoiceToContact"
+      EntityAttrName="InvoiceToContact"
+      EntityUsage="xxomOrderSearchEO"
+      AliasName="INVOICE_TO_CONTACT"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="DeliverToContact"
+      EntityAttrName="DeliverToContact"
+      EntityUsage="xxomOrderSearchEO"
+      AliasName="DELIVER_TO_CONTACT"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="SalesrepId"
+      EntityAttrName="SalesrepId"
+      EntityUsage="xxomOrderSearchEO"
+      AliasName="SALESREP_ID"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="ReturnReasonCode"
+      EntityAttrName="ReturnReasonCode"
+      EntityUsage="xxomOrderSearchEO"
+      AliasName="RETURN_REASON_CODE"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="ReturnReason"
+      EntityAttrName="ReturnReason"
+      EntityUsage="xxomOrderSearchEO"
+      AliasName="RETURN_REASON"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="OrderDateTypeCode"
+      EntityAttrName="OrderDateTypeCode"
+      EntityUsage="xxomOrderSearchEO"
+      AliasName="ORDER_DATE_TYPE_CODE"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="EarliestScheduleLimit"
+      EntityAttrName="EarliestScheduleLimit"
+      EntityUsage="xxomOrderSearchEO"
+      AliasName="EARLIEST_SCHEDULE_LIMIT"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="LatestScheduleLimit"
+      EntityAttrName="LatestScheduleLimit"
+      EntityUsage="xxomOrderSearchEO"
+      AliasName="LATEST_SCHEDULE_LIMIT"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="PaymentTypeCode"
+      EntityAttrName="PaymentTypeCode"
+      EntityUsage="xxomOrderSearchEO"
+      AliasName="PAYMENT_TYPE_CODE"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="PaymentAmount"
+      EntityAttrName="PaymentAmount"
+      EntityUsage="xxomOrderSearchEO"
+      AliasName="PAYMENT_AMOUNT"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="CheckNumber"
+      EntityAttrName="CheckNumber"
+      EntityUsage="xxomOrderSearchEO"
+      AliasName="CHECK_NUMBER"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="CreditCardCode"
+      EntityAttrName="CreditCardCode"
+      EntityUsage="xxomOrderSearchEO"
+      AliasName="CREDIT_CARD_CODE"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="CreditCardHolderName"
+      EntityAttrName="CreditCardHolderName"
+      EntityUsage="xxomOrderSearchEO"
+      AliasName="CREDIT_CARD_HOLDER_NAME"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="CreditCardNumber"
+      EntityAttrName="CreditCardNumber"
+      EntityUsage="xxomOrderSearchEO"
+      AliasName="CREDIT_CARD_NUMBER"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="CreditCardExpirationDate"
+      EntityAttrName="CreditCardExpirationDate"
+      EntityUsage="xxomOrderSearchEO"
+      AliasName="CREDIT_CARD_EXPIRATION_DATE"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="CreditCardApprovalCode"
+      EntityAttrName="CreditCardApprovalCode"
+      EntityUsage="xxomOrderSearchEO"
+      AliasName="CREDIT_CARD_APPROVAL_CODE"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="CreditCardApprovalDate"
+      EntityAttrName="CreditCardApprovalDate"
+      EntityUsage="xxomOrderSearchEO"
+      AliasName="CREDIT_CARD_APPROVAL_DATE"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="FirstAckCode"
+      EntityAttrName="FirstAckCode"
+      EntityUsage="xxomOrderSearchEO"
+      AliasName="FIRST_ACK_CODE"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="FirstAckDate"
+      EntityAttrName="FirstAckDate"
+      EntityUsage="xxomOrderSearchEO"
+      AliasName="FIRST_ACK_DATE"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="LastAckCode"
+      EntityAttrName="LastAckCode"
+      EntityUsage="xxomOrderSearchEO"
+      AliasName="LAST_ACK_CODE"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="LastAckDate"
+      EntityAttrName="LastAckDate"
+      EntityUsage="xxomOrderSearchEO"
+      AliasName="LAST_ACK_DATE"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="BookedFlag"
+      IsNotNull="true"
+      EntityAttrName="BookedFlag"
+      EntityUsage="xxomOrderSearchEO"
+      AliasName="BOOKED_FLAG"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="BookedDate"
+      EntityAttrName="BookedDate"
+      EntityUsage="xxomOrderSearchEO"
+      AliasName="BOOKED_DATE"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="CancelledFlag"
+      EntityAttrName="CancelledFlag"
+      EntityUsage="xxomOrderSearchEO"
+      AliasName="CANCELLED_FLAG"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="OpenFlag"
+      IsNotNull="true"
+      EntityAttrName="OpenFlag"
+      EntityUsage="xxomOrderSearchEO"
+      AliasName="OPEN_FLAG"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="SoldFromOrgId"
+      EntityAttrName="SoldFromOrgId"
+      EntityUsage="xxomOrderSearchEO"
+      AliasName="SOLD_FROM_ORG_ID"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="ShippingInstructions"
+      EntityAttrName="ShippingInstructions"
+      EntityUsage="xxomOrderSearchEO"
+      AliasName="SHIPPING_INSTRUCTIONS"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="PackingInstructions"
+      EntityAttrName="PackingInstructions"
+      EntityUsage="xxomOrderSearchEO"
+      AliasName="PACKING_INSTRUCTIONS"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="OrderCategoryCode"
+      IsNotNull="true"
+      EntityAttrName="OrderCategoryCode"
+      EntityUsage="xxomOrderSearchEO"
+      AliasName="ORDER_CATEGORY_CODE"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="FlowStatusCode"
+      EntityAttrName="FlowStatusCode"
+      EntityUsage="xxomOrderSearchEO"
+      AliasName="FLOW_STATUS_CODE"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="FreightCarrier"
+      EntityAttrName="FreightCarrier"
+      EntityUsage="xxomOrderSearchEO"
+      AliasName="FREIGHT_CARRIER"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="CustomerPreferenceSetCode"
+      EntityAttrName="CustomerPreferenceSetCode"
+      EntityUsage="xxomOrderSearchEO"
+      AliasName="CUSTOMER_PREFERENCE_SET_CODE"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="SalesChannelCode"
+      EntityAttrName="SalesChannelCode"
+      EntityUsage="xxomOrderSearchEO"
+      AliasName="SALES_CHANNEL_CODE"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="UpgradedFlag"
+      EntityAttrName="UpgradedFlag"
+      EntityUsage="xxomOrderSearchEO"
+      AliasName="UPGRADED_FLAG"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="LockControl"
+      EntityAttrName="LockControl"
+      EntityUsage="xxomOrderSearchEO"
+      AliasName="LOCK_CONTROL"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="SoldToEmailAddress"
+      EntityAttrName="SoldToEmailAddress"
+      EntityUsage="xxomOrderSearchEO"
+      AliasName="SOLD_TO_EMAIL_ADDRESS"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="GsaIndicator"
+      EntityAttrName="GsaIndicator"
+      EntityUsage="xxomOrderSearchEO"
+      AliasName="GSA_INDICATOR"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="BlanketNumber"
+      EntityAttrName="BlanketNumber"
+      EntityUsage="xxomOrderSearchEO"
+      AliasName="BLANKET_NUMBER"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="DefaultFulfillmentSet"
+      EntityAttrName="DefaultFulfillmentSet"
+      EntityUsage="xxomOrderSearchEO"
+      AliasName="DEFAULT_FULFILLMENT_SET"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="LineSetName"
+      EntityAttrName="LineSetName"
+      EntityUsage="xxomOrderSearchEO"
+      AliasName="LINE_SET_NAME"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="FulfillmentSetName"
+      EntityAttrName="FulfillmentSetName"
+      EntityUsage="xxomOrderSearchEO"
+      AliasName="FULFILLMENT_SET_NAME"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="QuoteDate"
+      EntityAttrName="QuoteDate"
+      EntityUsage="xxomOrderSearchEO"
+      AliasName="QUOTE_DATE"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="QuoteNumber"
+      EntityAttrName="QuoteNumber"
+      EntityUsage="xxomOrderSearchEO"
+      AliasName="QUOTE_NUMBER"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="SalesDocumentName"
+      EntityAttrName="SalesDocumentName"
+      EntityUsage="xxomOrderSearchEO"
+      AliasName="SALES_DOCUMENT_NAME"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="TransactionPhaseCode"
+      EntityAttrName="TransactionPhaseCode"
+      EntityUsage="xxomOrderSearchEO"
+      AliasName="TRANSACTION_PHASE_CODE"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="UserStatusCode"
+      EntityAttrName="UserStatusCode"
+      EntityUsage="xxomOrderSearchEO"
+      AliasName="USER_STATUS_CODE"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="DraftSubmittedFlag"
+      EntityAttrName="DraftSubmittedFlag"
+      EntityUsage="xxomOrderSearchEO"
+      AliasName="DRAFT_SUBMITTED_FLAG"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="SourceDocumentVersionNumber"
+      EntityAttrName="SourceDocumentVersionNumber"
+      EntityUsage="xxomOrderSearchEO"
+      AliasName="SOURCE_DOCUMENT_VERSION_NUMBER"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="SoldToSiteUseId"
+      EntityAttrName="SoldToSiteUseId"
+      EntityUsage="xxomOrderSearchEO"
+      AliasName="SOLD_TO_SITE_USE_ID"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="SupplierSignature"
+      EntityAttrName="SupplierSignature"
+      EntityUsage="xxomOrderSearchEO"
+      AliasName="SUPPLIER_SIGNATURE"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="SupplierSignatureDate"
+      EntityAttrName="SupplierSignatureDate"
+      EntityUsage="xxomOrderSearchEO"
+      AliasName="SUPPLIER_SIGNATURE_DATE"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="CustomerSignature"
+      EntityAttrName="CustomerSignature"
+      EntityUsage="xxomOrderSearchEO"
+      AliasName="CUSTOMER_SIGNATURE"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="CustomerSignatureDate"
+      EntityAttrName="CustomerSignatureDate"
+      EntityUsage="xxomOrderSearchEO"
+      AliasName="CUSTOMER_SIGNATURE_DATE"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="MinisiteId"
+      EntityAttrName="MinisiteId"
+      EntityUsage="xxomOrderSearchEO"
+      AliasName="MINISITE_ID"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="EndCustomerId"
+      EntityAttrName="EndCustomerId"
+      EntityUsage="xxomOrderSearchEO"
+      AliasName="END_CUSTOMER_ID"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="EndCustomerContactId"
+      EntityAttrName="EndCustomerContactId"
+      EntityUsage="xxomOrderSearchEO"
+      AliasName="END_CUSTOMER_CONTACT_ID"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="EndCustomerSiteUseId"
+      EntityAttrName="EndCustomerSiteUseId"
+      EntityUsage="xxomOrderSearchEO"
+      AliasName="END_CUSTOMER_SITE_USE_ID"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="EndCustomerName"
+      EntityAttrName="EndCustomerName"
+      EntityUsage="xxomOrderSearchEO"
+      AliasName="END_CUSTOMER_NAME"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="EndCustomerNumber"
+      EntityAttrName="EndCustomerNumber"
+      EntityUsage="xxomOrderSearchEO"
+      AliasName="END_CUSTOMER_NUMBER"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="EndCustomerContact"
+      EntityAttrName="EndCustomerContact"
+      EntityUsage="xxomOrderSearchEO"
+      AliasName="END_CUSTOMER_CONTACT"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="EndCustomerLocation"
+      EntityAttrName="EndCustomerLocation"
+      EntityUsage="xxomOrderSearchEO"
+      AliasName="END_CUSTOMER_LOCATION"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="EndCustomerAddress1"
+      EntityAttrName="EndCustomerAddress1"
+      EntityUsage="xxomOrderSearchEO"
+      AliasName="END_CUSTOMER_ADDRESS1"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="EndCustomerAddress2"
+      EntityAttrName="EndCustomerAddress2"
+      EntityUsage="xxomOrderSearchEO"
+      AliasName="END_CUSTOMER_ADDRESS2"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="EndCustomerAddress3"
+      EntityAttrName="EndCustomerAddress3"
+      EntityUsage="xxomOrderSearchEO"
+      AliasName="END_CUSTOMER_ADDRESS3"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="EndCustomerAddress4"
+      EntityAttrName="EndCustomerAddress4"
+      EntityUsage="xxomOrderSearchEO"
+      AliasName="END_CUSTOMER_ADDRESS4"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="EndCustomerAddress5"
+      EntityAttrName="EndCustomerAddress5"
+      EntityUsage="xxomOrderSearchEO"
+      AliasName="END_CUSTOMER_ADDRESS5"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="IbOwner"
+      EntityAttrName="IbOwner"
+      EntityUsage="xxomOrderSearchEO"
+      AliasName="IB_OWNER"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="IbCurrentLocation"
+      EntityAttrName="IbCurrentLocation"
+      EntityUsage="xxomOrderSearchEO"
+      AliasName="IB_CURRENT_LOCATION"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="IbInstalledAtLocation"
+      EntityAttrName="IbInstalledAtLocation"
+      EntityUsage="xxomOrderSearchEO"
+      AliasName="IB_INSTALLED_AT_LOCATION"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="OrderFirmedDate"
+      EntityAttrName="OrderFirmedDate"
+      EntityUsage="xxomOrderSearchEO"
+      AliasName="ORDER_FIRMED_DATE"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="RowId1"
+      IsNotNull="true"
+      EntityAttrName="RowId1"
+      EntityUsage="xxomOrderSearchEO"
+      AliasName="ROW_ID"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="HeaderId1"
+      IsUnique="true"
+      IsNotNull="true"
+      EntityAttrName="HeaderId"
+      EntityUsage="xxomOrderHeaderAttEO"
+      AliasName="HEADER_ID1"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Comments"
+      EntityAttrName="Comments"
+      EntityUsage="xxomOrderHeaderAttEO"
+      AliasName="COMMENTS"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="ReleaseNumber"
+      EntityAttrName="ReleaseNumber"
+      EntityUsage="xxomOrderHeaderAttEO"
+      AliasName="RELEASE_NUMBER"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="CostCenterDept"
+      EntityAttrName="CostCenterDept"
+      EntityUsage="xxomOrderHeaderAttEO"
+      AliasName="COST_CENTER_DEPT"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="DeskDelAddr"
+      EntityAttrName="DeskDelAddr"
+      EntityUsage="xxomOrderHeaderAttEO"
+      AliasName="DESK_DEL_ADDR"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="CustCarrAcctNo"
+      EntityAttrName="CustCarrAcctNo"
+      EntityUsage="xxomOrderHeaderAttEO"
+      AliasName="CUST_CARR_ACCT_NO"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="CatalogSrcCd"
+      EntityAttrName="CatalogSrcCd"
+      EntityUsage="xxomOrderHeaderAttEO"
+      AliasName="CATALOG_SRC_CD"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Brand"
+      EntityAttrName="Brand"
+      EntityUsage="xxomOrderHeaderAttEO"
+      AliasName="BRAND"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Bmode"
+      EntityAttrName="Bmode"
+      EntityUsage="xxomOrderHeaderAttEO"
+      AliasName="BMODE"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Locale"
+      EntityAttrName="Locale"
+      EntityUsage="xxomOrderHeaderAttEO"
+      AliasName="LOCALE"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="AdvantageCardNumber"
+      EntityAttrName="AdvantageCardNumber"
+      EntityUsage="xxomOrderHeaderAttEO"
+      AliasName="ADVANTAGE_CARD_NUMBER"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="GiftFlag"
+      EntityAttrName="GiftFlag"
+      EntityUsage="xxomOrderHeaderAttEO"
+      AliasName="GIFT_FLAG"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="FaxComments"
+      EntityAttrName="FaxComments"
+      EntityUsage="xxomOrderHeaderAttEO"
+      AliasName="FAX_COMMENTS"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="TrackNum"
+      EntityAttrName="TrackNum"
+      EntityUsage="xxomOrderHeaderAttEO"
+      AliasName="TRACK_NUM"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="ShipToFlg"
+      EntityAttrName="ShipToFlg"
+      EntityUsage="xxomOrderHeaderAttEO"
+      AliasName="SHIP_TO_FLG"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="AltDelvAddress"
+      EntityAttrName="AltDelvAddress"
+      EntityUsage="xxomOrderHeaderAttEO"
+      AliasName="ALT_DELV_ADDRESS"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="FurtherOrdInfo"
+      EntityAttrName="FurtherOrdInfo"
+      EntityUsage="xxomOrderHeaderAttEO"
+      AliasName="FURTHER_ORD_INFO"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="OrigCustName"
+      EntityAttrName="OrigCustName"
+      EntityUsage="xxomOrderHeaderAttEO"
+      AliasName="ORIG_CUST_NAME"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="CreatedByStoreId"
+      EntityAttrName="CreatedByStoreId"
+      EntityUsage="xxomOrderHeaderAttEO"
+      AliasName="CREATED_BY_STORE_ID"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="PaidAtStoreId"
+      EntityAttrName="PaidAtStoreId"
+      EntityUsage="xxomOrderHeaderAttEO"
+      AliasName="PAID_AT_STORE_ID"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="SpcCardNumber"
+      EntityAttrName="SpcCardNumber"
+      EntityUsage="xxomOrderHeaderAttEO"
+      AliasName="SPC_CARD_NUMBER"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="SalesrepId1"
+      EntityAttrName="SalesrepId"
+      EntityUsage="xxomOrderHeaderAttEO"
+      AliasName="SALESREP_ID1"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="DeliveryCode"
+      EntityAttrName="DeliveryCode"
+      EntityUsage="xxomOrderHeaderAttEO"
+      AliasName="DELIVERY_CODE"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="CreatedById"
+      EntityAttrName="CreatedById"
+      EntityUsage="xxomOrderHeaderAttEO"
+      AliasName="CREATED_BY_ID"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="DeliveryMethod"
+      EntityAttrName="DeliveryMethod"
+      EntityUsage="xxomOrderHeaderAttEO"
+      AliasName="DELIVERY_METHOD"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="PlacementMethodCode"
+      EntityAttrName="PlacementMethodCode"
+      EntityUsage="xxomOrderHeaderAttEO"
+      AliasName="PLACEMENT_METHOD_CODE"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="NumCartons"
+      EntityAttrName="NumCartons"
+      EntityUsage="xxomOrderHeaderAttEO"
+      AliasName="NUM_CARTONS"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="CustCommPref"
+      EntityAttrName="CustCommPref"
+      EntityUsage="xxomOrderHeaderAttEO"
+      AliasName="CUST_COMM_PREF"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="CustPrefEmail"
+      EntityAttrName="CustPrefEmail"
+      EntityUsage="xxomOrderHeaderAttEO"
+      AliasName="CUST_PREF_EMAIL"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="CustPrefFax"
+      EntityAttrName="CustPrefFax"
+      EntityUsage="xxomOrderHeaderAttEO"
+      AliasName="CUST_PREF_FAX"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="CustPrefPhone"
+      EntityAttrName="CustPrefPhone"
+      EntityUsage="xxomOrderHeaderAttEO"
+      AliasName="CUST_PREF_PHONE"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="CustPrefPhextn"
+      EntityAttrName="CustPrefPhextn"
+      EntityUsage="xxomOrderHeaderAttEO"
+      AliasName="CUST_PREF_PHEXTN"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="CustContactName"
+      EntityAttrName="CustContactName"
+      EntityUsage="xxomOrderHeaderAttEO"
+      AliasName="CUST_CONTACT_NAME"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="WebUserId"
+      EntityAttrName="WebUserId"
+      EntityUsage="xxomOrderHeaderAttEO"
+      AliasName="WEB_USER_ID"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="CreationDate1"
+      IsNotNull="true"
+      EntityAttrName="CreationDate"
+      EntityUsage="xxomOrderHeaderAttEO"
+      AliasName="CREATION_DATE1"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="CreatedBy1"
+      IsNotNull="true"
+      EntityAttrName="CreatedBy"
+      EntityUsage="xxomOrderHeaderAttEO"
+      AliasName="CREATED_BY1"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="LastUpdateDate1"
+      IsNotNull="true"
+      EntityAttrName="LastUpdateDate"
+      EntityUsage="xxomOrderHeaderAttEO"
+      AliasName="LAST_UPDATE_DATE1"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="LastUpdatedBy1"
+      IsNotNull="true"
+      EntityAttrName="LastUpdatedBy"
+      EntityUsage="xxomOrderHeaderAttEO"
+      AliasName="LAST_UPDATED_BY1"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="LastUpdateLogin1"
+      EntityAttrName="LastUpdateLogin"
+      EntityUsage="xxomOrderHeaderAttEO"
+      AliasName="LAST_UPDATE_LOGIN1"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="OdOrderType"
+      EntityAttrName="OdOrderType"
+      EntityUsage="xxomOrderHeaderAttEO"
+      AliasName="OD_ORDER_TYPE"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="ShipToName"
+      EntityAttrName="ShipToName"
+      EntityUsage="xxomOrderHeaderAttEO"
+      AliasName="SHIP_TO_NAME"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="BillToName"
+      EntityAttrName="BillToName"
+      EntityUsage="xxomOrderHeaderAttEO"
+      AliasName="BILL_TO_NAME"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="ShipToSequence"
+      EntityAttrName="ShipToSequence"
+      EntityUsage="xxomOrderHeaderAttEO"
+      AliasName="SHIP_TO_SEQUENCE"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="ShipToAddress11"
+      EntityAttrName="ShipToAddress1"
+      EntityUsage="xxomOrderHeaderAttEO"
+      AliasName="SHIP_TO_ADDRESS11"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="ShipToAddress21"
+      EntityAttrName="ShipToAddress2"
+      EntityUsage="xxomOrderHeaderAttEO"
+      AliasName="SHIP_TO_ADDRESS21"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="ShipToCity"
+      EntityAttrName="ShipToCity"
+      EntityUsage="xxomOrderHeaderAttEO"
+      AliasName="SHIP_TO_CITY"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="ShipToState"
+      EntityAttrName="ShipToState"
+      EntityUsage="xxomOrderHeaderAttEO"
+      AliasName="SHIP_TO_STATE"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="ShipToCountry"
+      EntityAttrName="ShipToCountry"
+      EntityUsage="xxomOrderHeaderAttEO"
+      AliasName="SHIP_TO_COUNTRY"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="ShipToZip"
+      EntityAttrName="ShipToZip"
+      EntityUsage="xxomOrderHeaderAttEO"
+      AliasName="SHIP_TO_ZIP"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="ImpFileName"
+      EntityAttrName="ImpFileName"
+      EntityUsage="xxomOrderHeaderAttEO"
+      AliasName="IMP_FILE_NAME"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="TaxRate"
+      EntityAttrName="TaxRate"
+      EntityUsage="xxomOrderHeaderAttEO"
+      AliasName="TAX_RATE"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="OrderTotal"
+      EntityAttrName="OrderTotal"
+      EntityUsage="xxomOrderHeaderAttEO"
+      AliasName="ORDER_TOTAL"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="CommisionableInd"
+      EntityAttrName="CommisionableInd"
+      EntityUsage="xxomOrderHeaderAttEO"
+      AliasName="COMMISIONABLE_IND"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="OrderActionCode"
+      EntityAttrName="OrderActionCode"
+      EntityUsage="xxomOrderHeaderAttEO"
+      AliasName="ORDER_ACTION_CODE"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="OrderStartTime"
+      EntityAttrName="OrderStartTime"
+      EntityUsage="xxomOrderHeaderAttEO"
+      AliasName="ORDER_START_TIME"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="OrderEndTime"
+      EntityAttrName="OrderEndTime"
+      EntityUsage="xxomOrderHeaderAttEO"
+      AliasName="ORDER_END_TIME"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="OrderTaxableCd"
+      EntityAttrName="OrderTaxableCd"
+      EntityUsage="xxomOrderHeaderAttEO"
+      AliasName="ORDER_TAXABLE_CD"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="OverrideDeliveryChgCd"
+      EntityAttrName="OverrideDeliveryChgCd"
+      EntityUsage="xxomOrderHeaderAttEO"
+      AliasName="OVERRIDE_DELIVERY_CHG_CD"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="ShipToGeocode"
+      EntityAttrName="ShipToGeocode"
+      EntityUsage="xxomOrderHeaderAttEO"
+      AliasName="SHIP_TO_GEOCODE"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="CustDeptDescription"
+      EntityAttrName="CustDeptDescription"
+      EntityUsage="xxomOrderHeaderAttEO"
+      AliasName="CUST_DEPT_DESCRIPTION"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="ShipToCounty"
+      EntityAttrName="ShipToCounty"
+      EntityUsage="xxomOrderHeaderAttEO"
+      AliasName="SHIP_TO_COUNTY"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="TranNumber"
+      EntityAttrName="TranNumber"
+      EntityUsage="xxomOrderHeaderAttEO"
+      AliasName="TRAN_NUMBER"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="AopsGeoCode"
+      EntityAttrName="AopsGeoCode"
+      EntityUsage="xxomOrderHeaderAttEO"
+      AliasName="AOPS_GEO_CODE"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="TaxExemptAmount"
+      EntityAttrName="TaxExemptAmount"
+      EntityUsage="xxomOrderHeaderAttEO"
+      AliasName="TAX_EXEMPT_AMOUNT"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+</ViewObject>

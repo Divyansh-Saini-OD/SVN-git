@@ -1,0 +1,48 @@
+REM==================================================================================
+REM                             Start Of Script                                     =           
+REM==================================================================================
+--+===============================================================================+--
+--|                                                                               |--
+--| Object Name    : XX_INV_ORG_CODES_S		                                      |--
+--|                                                                               |--
+--| Program Name   : XX_INV_ORG_CODES_S.seq                                       |--        
+--|                                                                               |--   
+--| Purpose        : Create Custom Tables .                                       |--
+--|                  The Objects created are:                                     |--
+--|                                                                               |--
+--|                1. XX_INV_ORG_CODES_S		                                  |--
+--|                                                                               |-- 
+--| Change History  :                                                             |--
+--| Ver   Date           Changed By           Description                         |--
+--+===============================================================================+--
+--| 1.0   01-APR-2008    Ganesh B Nadakudhiti Initial Creation                    |--
+--+===============================================================================+-- 
+SET VERIFY   OFF
+SET TERM     ON
+SET FEEDBACK OFF
+SET SHOW     OFF
+SET ECHO     OFF
+SET TAB      OFF
+
+WHENEVER SQLERROR CONTINUE
+
+PROMPT
+PROMPT Creating Custom Sequence XX_INV_ORG_CODES_S
+PROMPT
+
+CREATE SEQUENCE XX_INV_ORG_CODES_S START WITH 1 INCREMENT BY 1;
+
+WHENEVER SQLERROR CONTINUE
+
+PROMPT
+PROMPT Exiting....
+PROMPT
+
+SET FEEDBACK ON
+
+EXIT;
+
+REM=================================================================================================
+REM                                   End Of Script                                            
+REM=================================================================================================
+

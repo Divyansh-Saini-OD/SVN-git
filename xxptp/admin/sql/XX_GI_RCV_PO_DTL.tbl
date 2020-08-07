@@ -1,0 +1,284 @@
+-- +===================================================================+
+-- |                  Office Depot - Project Simplify                  |
+-- |      Oracle NAIO/WIPRO/Office Depot/Consulting Organization       |
+-- +===================================================================+
+-- | Name  :  XX_GI_RCV_PO_HDR.tbl                                     |
+-- |                                                                   |
+-- | Description : Script to create custom table XX_GI_RCV_PO_DTL.     |  
+-- |               This script is to be executed from the XXCNV Schema.|
+-- |                                                                   |
+-- |Change Record:                                                     |
+-- |===============                                                    |
+-- |                                                                   |
+-- |Version     Date        Author           Remarks                   |
+-- |=========   ==========  ==============   ==========================|
+-- |DRAFT 1.0   05-MAY-2007 Murali Krishnan   Custom table creation.   |
+-- |                        Ramachandran                               |
+-- +===================================================================+
+REM ====================================================================
+REM Drop table XXCNV.XX_GI_RCV_PO_DTL (if exists)
+REM ====================================================================
+
+PROMPT Dropping table XXPTP.XX_GI_RCV_PO_DTL (if any) . . .
+DROP TABLE 
+     XXPTP.XX_GI_RCV_PO_DTL
+CASCADE CONSTRAINTS
+/
+
+REM ====================================================================
+REM Create the table:
+REM ====================================================================
+
+PROMPT Creating table XXPTP.XX_GI_RCV_PO_DTL . . .
+
+CREATE TABLE xxptp.xx_gi_rcv_po_dtl(
+  INTERFACE_TRANSACTION_ID     NUMBER NOT NULL
+, GROUP_ID                     NUMBER NOT NULL
+, LAST_UPDATE_DATE                               DATE NOT NULL
+, LAST_UPDATED_BY              NUMBER NOT NULL
+, CREATION_DATE                                  DATE NOT NULL
+, CREATED_BY                   NUMBER NOT NULL
+, LAST_UPDATE_LOGIN            NUMBER NOT NULL
+, REQUEST_ID                   NUMBER
+, PROGRAM_APPLICATION_ID       NUMBER
+, PROGRAM_ID                   NUMBER
+, PROGRAM_UPDATE_DATE                            DATE
+, TRANSACTION_TYPE                   VARCHAR2(25)
+, TRANSACTION_DATE                               DATE
+, PROCESSING_STATUS_CODE             VARCHAR2(25)
+, PROCESSING_MODE_CODE               VARCHAR2(25)
+, PROCESSING_REQUEST_ID        NUMBER
+, TRANSACTION_STATUS_CODE            VARCHAR2(25)
+, CATEGORY_ID                  NUMBER
+, QUANTITY                     NUMBER
+, UNIT_OF_MEASURE                    VARCHAR2(25)
+, INTERFACE_SOURCE_CODE              VARCHAR2(25)
+, INTERFACE_SOURCE_LINE_ID     NUMBER
+, INV_TRANSACTION_ID           NUMBER
+, ITEM_ID                      NUMBER
+, ITEM_DESCRIPTION                   VARCHAR2(240)
+, ITEM_REVISION                      VARCHAR2(3)
+, UOM_CODE                           VARCHAR2(3)
+, EMPLOYEE_ID                  NUMBER
+, AUTO_TRANSACT_CODE                 VARCHAR2(25)
+, SHIPMENT_HEADER_ID           NUMBER
+, SHIPMENT_LINE_ID             NUMBER
+, SHIP_TO_LOCATION_ID          NUMBER
+, PRIMARY_QUANTITY             NUMBER
+, PRIMARY_UNIT_OF_MEASURE            VARCHAR2(25)
+, RECEIPT_SOURCE_CODE                VARCHAR2(25)
+, VENDOR_ID                    NUMBER
+, VENDOR_SITE_ID               NUMBER
+, FROM_ORGANIZATION_ID         NUMBER
+, FROM_SUBINVENTORY                  VARCHAR2(10)
+, TO_ORGANIZATION_ID           NUMBER
+, INTRANSIT_OWNING_ORG_ID      NUMBER
+, ROUTING_HEADER_ID            NUMBER
+, ROUTING_STEP_ID              NUMBER
+, SOURCE_DOCUMENT_CODE               VARCHAR2(25)
+, PARENT_TRANSACTION_ID        NUMBER
+, PO_HEADER_ID                 NUMBER
+, PO_REVISION_NUM              NUMBER
+, PO_RELEASE_ID                NUMBER
+, PO_LINE_ID                   NUMBER
+, PO_LINE_LOCATION_ID          NUMBER
+, PO_UNIT_PRICE                NUMBER
+, CURRENCY_CODE                      VARCHAR2(15)
+, CURRENCY_CONVERSION_TYPE           VARCHAR2(30)
+, CURRENCY_CONVERSION_RATE     NUMBER
+, CURRENCY_CONVERSION_DATE                       DATE
+, PO_DISTRIBUTION_ID           NUMBER
+, REQUISITION_LINE_ID          NUMBER
+, REQ_DISTRIBUTION_ID          NUMBER
+, CHARGE_ACCOUNT_ID            NUMBER
+, SUBSTITUTE_UNORDERED_CODE          VARCHAR2(25)
+, RECEIPT_EXCEPTION_FLAG             VARCHAR2(1)
+, ACCRUAL_STATUS_CODE                VARCHAR2(25)
+, INSPECTION_STATUS_CODE             VARCHAR2(25)
+, INSPECTION_QUALITY_CODE            VARCHAR2(25)
+, DESTINATION_TYPE_CODE              VARCHAR2(25)
+, DELIVER_TO_PERSON_ID         NUMBER
+, LOCATION_ID                  NUMBER
+, DELIVER_TO_LOCATION_ID       NUMBER
+, SUBINVENTORY                       VARCHAR2(10)
+, LOCATOR_ID                   NUMBER
+, WIP_ENTITY_ID                NUMBER
+, WIP_LINE_ID                  NUMBER
+, DEPARTMENT_CODE                    VARCHAR2(10)
+, WIP_REPETITIVE_SCHEDULE_ID   NUMBER
+, WIP_OPERATION_SEQ_NUM        NUMBER
+, WIP_RESOURCE_SEQ_NUM         NUMBER
+, BOM_RESOURCE_ID              NUMBER
+, SHIPMENT_NUM                       VARCHAR2(30)
+, FREIGHT_CARRIER_CODE               VARCHAR2(25)
+, BILL_OF_LADING                     VARCHAR2(25)
+, PACKING_SLIP                       VARCHAR2(25)
+, SHIPPED_DATE                                   DATE
+, EXPECTED_RECEIPT_DATE                          DATE
+, ACTUAL_COST                  NUMBER
+, TRANSFER_COST                NUMBER
+, TRANSPORTATION_COST          NUMBER
+, TRANSPORTATION_ACCOUNT_ID    NUMBER
+, NUM_OF_CONTAINERS            NUMBER 
+, WAYBILL_AIRBILL_NUM                VARCHAR2(20)
+, VENDOR_ITEM_NUM                    VARCHAR2(25)
+, VENDOR_LOT_NUM                     VARCHAR2(30)
+, RMA_REFERENCE                      VARCHAR2(30)
+, COMMENTS                           VARCHAR2(240)
+, ATTRIBUTE_CATEGORY                 VARCHAR2(30)
+, ATTRIBUTE1                         VARCHAR2(150)
+, ATTRIBUTE2                         VARCHAR2(150)
+, ATTRIBUTE3                         VARCHAR2(150)
+, ATTRIBUTE4                         VARCHAR2(150)
+, ATTRIBUTE5                         VARCHAR2(150)
+, ATTRIBUTE6                         VARCHAR2(150)
+, ATTRIBUTE7                         VARCHAR2(150)
+, ATTRIBUTE8                         VARCHAR2(150)
+, ATTRIBUTE9                         VARCHAR2(150)
+, ATTRIBUTE10                        VARCHAR2(150)
+, ATTRIBUTE11                        VARCHAR2(150)
+, ATTRIBUTE12                        VARCHAR2(150)
+, ATTRIBUTE13                        VARCHAR2(150)
+, ATTRIBUTE14                        VARCHAR2(150)
+, ATTRIBUTE15                        VARCHAR2(150)
+, SHIP_HEAD_ATTRIBUTE_CATEGORY       VARCHAR2(30)
+, SHIP_HEAD_ATTRIBUTE1               VARCHAR2(150)
+, SHIP_HEAD_ATTRIBUTE2               VARCHAR2(150)
+, SHIP_HEAD_ATTRIBUTE3               VARCHAR2(150)
+, SHIP_HEAD_ATTRIBUTE4               VARCHAR2(150)
+, SHIP_HEAD_ATTRIBUTE5               VARCHAR2(150)
+, SHIP_HEAD_ATTRIBUTE6               VARCHAR2(150)
+, SHIP_HEAD_ATTRIBUTE7               VARCHAR2(150)
+, SHIP_HEAD_ATTRIBUTE8               VARCHAR2(150)
+, SHIP_HEAD_ATTRIBUTE9               VARCHAR2(150)
+, SHIP_HEAD_ATTRIBUTE10              VARCHAR2(150)
+, SHIP_HEAD_ATTRIBUTE11              VARCHAR2(150)
+, SHIP_HEAD_ATTRIBUTE12              VARCHAR2(150)
+, SHIP_HEAD_ATTRIBUTE13              VARCHAR2(150)
+, SHIP_HEAD_ATTRIBUTE14              VARCHAR2(150)
+, SHIP_HEAD_ATTRIBUTE15              VARCHAR2(150)
+, SHIP_LINE_ATTRIBUTE_CATEGORY       VARCHAR2(30)
+, SHIP_LINE_ATTRIBUTE1               VARCHAR2(150)
+, SHIP_LINE_ATTRIBUTE2               VARCHAR2(150)
+, SHIP_LINE_ATTRIBUTE3               VARCHAR2(150)
+, SHIP_LINE_ATTRIBUTE4               VARCHAR2(150)
+, SHIP_LINE_ATTRIBUTE5               VARCHAR2(150)
+, SHIP_LINE_ATTRIBUTE6               VARCHAR2(150)
+, SHIP_LINE_ATTRIBUTE7               VARCHAR2(150)
+, SHIP_LINE_ATTRIBUTE8               VARCHAR2(150)
+, SHIP_LINE_ATTRIBUTE9               VARCHAR2(150)
+, SHIP_LINE_ATTRIBUTE10              VARCHAR2(150)
+, SHIP_LINE_ATTRIBUTE11              VARCHAR2(150)
+, SHIP_LINE_ATTRIBUTE12              VARCHAR2(150)
+, SHIP_LINE_ATTRIBUTE13              VARCHAR2(150)
+, SHIP_LINE_ATTRIBUTE14              VARCHAR2(150)
+, SHIP_LINE_ATTRIBUTE15              VARCHAR2(150)
+, USSGL_TRANSACTION_CODE             VARCHAR2(30)
+, GOVERNMENT_CONTEXT                 VARCHAR2(30)
+, REASON_ID                    NUMBER
+, DESTINATION_CONTEXT                VARCHAR2(30)
+, SOURCE_DOC_QUANTITY          NUMBER
+, SOURCE_DOC_UNIT_OF_MEASURE         VARCHAR2(25)
+, MOVEMENT_ID                  NUMBER
+, HEADER_INTERFACE_ID          NUMBER NOT NULL
+, VENDOR_CUM_SHIPPED_QTY       NUMBER
+, ITEM_NUM                           VARCHAR2(81)
+, DOCUMENT_NUM                       VARCHAR2(30)
+, DOCUMENT_LINE_NUM            NUMBER
+, TRUCK_NUM                          VARCHAR2(35)
+, SHIP_TO_LOCATION_CODE              VARCHAR2(60)
+, CONTAINER_NUM                      VARCHAR2(35)
+, SUBSTITUTE_ITEM_NUM                VARCHAR2(81)
+, NOTICE_UNIT_PRICE            NUMBER
+, ITEM_CATEGORY                      VARCHAR2(81)
+, LOCATION_CODE                      VARCHAR2(60)
+, VENDOR_NAME                        VARCHAR2(240)
+, VENDOR_NUM                         VARCHAR2(30)
+, VENDOR_SITE_CODE                   VARCHAR2(15)
+, FROM_ORGANIZATION_CODE             VARCHAR2(3)
+, TO_ORGANIZATION_CODE               VARCHAR2(3)
+, INTRANSIT_OWNING_ORG_CODE          VARCHAR2(3)
+, ROUTING_CODE                       VARCHAR2(30)
+, ROUTING_STEP                       VARCHAR2(30)
+, RELEASE_NUM                  NUMBER
+, DOCUMENT_SHIPMENT_LINE_NUM   NUMBER
+, DOCUMENT_DISTRIBUTION_NUM    NUMBER
+, DELIVER_TO_PERSON_NAME             VARCHAR2(240)
+, DELIVER_TO_LOCATION_CODE           VARCHAR2(60)
+, USE_MTL_LOT                  NUMBER
+, USE_MTL_SERIAL               NUMBER
+, LOCATOR                            VARCHAR2(81)
+, REASON_NAME                        VARCHAR2(30)
+, VALIDATION_FLAG                    VARCHAR2(1)
+, SUBSTITUTE_ITEM_ID           NUMBER
+, QUANTITY_SHIPPED             NUMBER
+, QUANTITY_INVOICED            NUMBER
+, TAX_NAME                           VARCHAR2(15)
+, TAX_AMOUNT                   NUMBER
+, REQ_NUM                            VARCHAR2(25)
+, REQ_LINE_NUM                 NUMBER
+, REQ_DISTRIBUTION_NUM         NUMBER
+, WIP_ENTITY_NAME                    VARCHAR2(24)
+, WIP_LINE_CODE                      VARCHAR2(10)
+, RESOURCE_CODE                      VARCHAR2(30)
+, SHIPMENT_LINE_STATUS_CODE          VARCHAR2(25)
+, BARCODE_LABEL                      VARCHAR2(35)
+, TRANSFER_PERCENTAGE          NUMBER
+, QA_COLLECTION_ID             NUMBER
+, COUNTRY_OF_ORIGIN_CODE             VARCHAR2(2)
+, OE_ORDER_HEADER_ID           NUMBER
+, OE_ORDER_LINE_ID             NUMBER
+, CUSTOMER_ID                  NUMBER
+, CUSTOMER_SITE_ID             NUMBER
+, CUSTOMER_ITEM_NUM                  VARCHAR2(50)
+, CREATE_DEBIT_MEMO_FLAG             VARCHAR2(1)
+, PUT_AWAY_RULE_ID             NUMBER
+, PUT_AWAY_STRATEGY_ID         NUMBER
+, LPN_ID                       NUMBER
+, TRANSFER_LPN_ID              NUMBER
+, COST_GROUP_ID                NUMBER
+, MOBILE_TXN                         VARCHAR2(2)
+, MMTT_TEMP_ID                 NUMBER
+, TRANSFER_COST_GROUP_ID       NUMBER
+, SECONDARY_QUANTITY           NUMBER
+, SECONDARY_UNIT_OF_MEASURE          VARCHAR2(25)
+, SECONDARY_UOM_CODE                 VARCHAR2(3)
+, QC_GRADE                           VARCHAR2(150)
+, FROM_LOCATOR                       VARCHAR2(81)
+, FROM_LOCATOR_ID              NUMBER
+, PARENT_SOURCE_TRANSACTION_NUM      VARCHAR2(25)
+, INTERFACE_AVAILABLE_QTY      NUMBER
+, INTERFACE_TRANSACTION_QTY    NUMBER
+, INTERFACE_AVAILABLE_AMT      NUMBER
+, INTERFACE_TRANSACTION_AMT    NUMBER
+, LICENSE_PLATE_NUMBER               VARCHAR2(30)
+, SOURCE_TRANSACTION_NUM             VARCHAR2(25)
+, TRANSFER_LICENSE_PLATE_NUMBER      VARCHAR2(30)
+, LPN_GROUP_ID                 NUMBER
+, ORDER_TRANSACTION_ID         NUMBER
+, CUSTOMER_ACCOUNT_NUMBER      NUMBER
+, CUSTOMER_PARTY_NAME                VARCHAR2(360)
+, OE_ORDER_LINE_NUM            NUMBER
+, OE_ORDER_NUM                 NUMBER
+, PARENT_INTERFACE_TXN_ID      NUMBER
+, CUSTOMER_ITEM_ID             NUMBER
+, AMOUNT                       NUMBER
+, JOB_ID                       NUMBER
+, TIMECARD_ID                  NUMBER
+, TIMECARD_OVN                 NUMBER
+, ERECORD_ID                   NUMBER
+, PROJECT_ID                   NUMBER
+, TASK_ID                      NUMBER
+, ASN_ATTACH_ID                NUMBER
+, ORG_ID                       NUMBER
+, OPERATING_UNIT                     VARCHAR2(240)
+, REQUESTED_AMOUNT             NUMBER
+, MATERIAL_STORED_AMOUNT       NUMBER
+, AMOUNT_SHIPPED               NUMBER
+, MATCHING_BASIS                     VARCHAR2(30)
+, REPLENISH_ORDER_LINE_ID      NUMBER
+, E0342_STATUS_FLAG                  VARCHAR2(4) NOT NULL
+, E0342_FIRST_REC_TIME                                   DATE NOT NULL
+, E0346_STATUS_FLAG                  VARCHAR2(1) 
+, E0342_ERROR_CODE                   VARCHAR2(30)
+, E0342_ERROR_DESCRIPTION            VARCHAR2(2000)

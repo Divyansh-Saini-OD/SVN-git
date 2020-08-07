@@ -1,0 +1,34 @@
+-- +==========================================================================+
+-- |                  Office Depot - Project Simplify                         |
+-- |                                                                          |
+-- +==========================================================================+
+-- | SQL Script to create Synonym for the following tables                    |
+-- |                                                                          |
+-- |                      TABLE:  XX_AP_LEGACY_INVOICES      	            |
+-- |                                                                          |
+-- |                                                                          |
+-- |                                                                          |
+-- |                                                                          |
+-- |                                                                          |
+-- |                                                                          |
+-- |Change Record:                                                            |
+-- |===============                                                           |
+-- |Version   Date         Author               Remarks                       |
+-- |=======   ==========   ================     ==============================|
+-- | V1.0     23-AUG-2007  D. Nardo             Initial version               |
+-- |          11-NOV-2007  D. Nardo             Remove DROP statement         |
+-- |                                                                          |
+-- +==========================================================================+
+
+
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     ON	
+
+CREATE PUBLIC SYNONYM XX_AP_LEGACY_INVOICES FOR XXFIN.XX_AP_LEGACY_INVOICES;
+CREATE SYNONYM XXCNV.XX_AP_LEGACY_INVOICES FOR XXFIN.XX_AP_LEGACY_INVOICES;
+
+
+SHOW ERROR

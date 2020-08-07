@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<pageDefinition xmlns="http://xmlns.oracle.com/adfm/uimodel" version="12.2.1.12.24" id="MootSummaryPOCPageDef"
+                Package="od.tdmatch.view.pageDefs">
+  <parameters/>
+  <executables>
+    <variableIterator id="variables"/>
+    <iterator Binds="InvoiceSummaryPOC1_1" RangeSize="25" DataControl="TradeMatchAMDataControl"
+              id="InvoiceSummaryPOC1_1Iterator"/>
+    <searchRegion Binds="InvoiceSummaryPOC1_1Iterator" Criteria=""
+                  Customizer="oracle.jbo.uicli.binding.JUSearchBindingCustomizer" id="InvoiceSummaryPOC1_1Query"/>
+  </executables>
+  <bindings>
+    <tree IterBinding="InvoiceSummaryPOC1_1Iterator" id="InvoiceSummaryPOC1_1">
+      <nodeDefinition DefName="od.tdmatch.model.InvoiceSummaryPOC1" Name="InvoiceSummaryPOC1_10">
+        <AttrNames>
+          <Item Value="VendorAssistant"/>
+          <Item Value="TotalInvCount"/>
+          <Item Value="TotalInvAmount"/>
+          <Item Value="TotalMootCount"/>
+          <Item Value="TotalMootInvAmount"/>
+          <Item Value="TotalMootLineAmount"/>
+          <Item Value="TotalNrfCount"/>
+          <Item Value="TotalNrfAmount"/>
+        </AttrNames>
+      </nodeDefinition>
+    </tree>
+  </bindings>
+</pageDefinition>

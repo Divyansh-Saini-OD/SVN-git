@@ -1,0 +1,639 @@
+<?xml version="1.0" encoding="windows-1252" ?>
+<!DOCTYPE ViewObject SYSTEM "jbo_03_01.dtd">
+<!---->
+<ViewObject
+  xmlns="http://xmlns.oracle.com/bc4j"
+  Name="GeneralInquiryVO"
+  Version="12.2.1.12.24"
+  InheritPersonalization="merge"
+  BindingStyle="OracleName"
+  CustomQuery="true"
+  RowClass="od.tdmatch.model.GeneralInquiryVORowImpl"
+  ComponentClass="od.tdmatch.model.GeneralInquiryVOImpl"
+  PageIterMode="Full">
+  <DesignTime>
+    <Attr Name="_codeGenFlag2" Value="Access|Coll"/>
+    <Attr Name="_isExpertMode" Value="true"/>
+    <Attr Name="_isCodegen" Value="true"/>
+  </DesignTime>
+  <Properties>
+    <SchemaBasedProperties>
+      <LABEL
+        ResId="od.tdmatch.model.GeneralInquiryVO_LABEL"/>
+    </SchemaBasedProperties>
+  </Properties>
+  <Variable
+    Name="p_vend_ast"
+    Kind="viewcriteria"
+    Type="java.lang.String">
+    <Properties>
+      <SchemaBasedProperties>
+        <DISPLAYWIDTH
+          Value="30"/>
+      </SchemaBasedProperties>
+    </Properties>
+  </Variable>
+  <Variable
+    Name="p_ou"
+    Kind="viewcriteria"
+    Type="oracle.jbo.domain.Number">
+    <Properties>
+      <SchemaBasedProperties>
+        <DISPLAYWIDTH
+          Value="30"/>
+        <LABEL
+          ResId="od.tdmatch.model.GeneralInquiryVO.p_ou_LABEL"/>
+      </SchemaBasedProperties>
+    </Properties>
+  </Variable>
+  <Variable
+    Name="p_vendor_name"
+    Kind="viewcriteria"
+    Type="java.lang.String">
+    <Properties>
+      <SchemaBasedProperties>
+        <DISPLAYWIDTH
+          Value="30"/>
+      </SchemaBasedProperties>
+    </Properties>
+  </Variable>
+  <Variable
+    Name="p_vendor_no"
+    Kind="viewcriteria"
+    Type="java.lang.String">
+    <Properties>
+      <SchemaBasedProperties>
+        <DISPLAYWIDTH
+          Value="30"/>
+      </SchemaBasedProperties>
+    </Properties>
+  </Variable>
+  <Variable
+    Name="p_vend_site"
+    Kind="viewcriteria"
+    Type="java.lang.String">
+    <Properties>
+      <SchemaBasedProperties>
+        <DISPLAYWIDTH
+          Value="30"/>
+      </SchemaBasedProperties>
+    </Properties>
+  </Variable>
+  <ViewAccessor
+    Name="PerAllPeopleFVO1"
+    ViewObjectName="od.tdmatch.model.PerAllPeopleFVO"
+    RowLevelBinds="true"/>
+  <ViewAccessor
+    Name="HrOperatingUnitsVO1"
+    ViewObjectName="od.tdmatch.model.HrOperatingUnitsVO"
+    RowLevelBinds="true"/>
+  <ListBinding
+    Name="LOV_OrganizationId"
+    ListVOName="HrOperatingUnitsVO1"
+    NullValueFlag="start"
+    NullValueId="${adfBundle['oracle.javatools.resourcebundle.SystemBundle']['NULL_VALUE_RESID']}"
+    MRUCount="0">
+    <AttrArray Name="AttrNames">
+      <Item Value="OrganizationId"/>
+    </AttrArray>
+    <AttrArray Name="AttrExpressions"/>
+    <AttrArray Name="ListAttrNames">
+      <Item Value="OrganizationId"/>
+    </AttrArray>
+    <AttrArray Name="ListDisplayAttrNames">
+      <Item Value="Name"/>
+    </AttrArray>
+    <DisplayCriteria/>
+  </ListBinding>
+  <ListBinding
+    Name="LOV_EmployeeNumber"
+    ListVOName="PerAllPeopleFVO1"
+    NullValueFlag="start"
+    NullValueId="${adfBundle['oracle.javatools.resourcebundle.SystemBundle']['NULL_VALUE_RESID']}"
+    MRUCount="0">
+    <AttrArray Name="AttrNames">
+      <Item Value="EmployeeNumber"/>
+    </AttrArray>
+    <AttrArray Name="AttrExpressions"/>
+    <AttrArray Name="ListAttrNames">
+      <Item Value="EmployeeNumber"/>
+    </AttrArray>
+    <AttrArray Name="ListDisplayAttrNames">
+      <Item Value="FullName"/>
+    </AttrArray>
+    <DisplayCriteria/>
+  </ListBinding>
+  <SQLQuery><![CDATA[SELECT a.segment1 supplier_no,     
+  a.vendor_name supplier_name,     
+  b.vendor_site_code supplier_site_no,     
+  c.name terms,     
+  b.terms_date_basis,     
+  b.payment_method_lookup_code Pay_Method,     
+  b.pay_group_lookup_code Pay_Group,     
+  b.hold_all_payments_flag Site_hold,     
+  b.hold_reason site_payment_Hold_reason,     
+  'status',     
+  ast.vendor_assistant vendor_assistant,     
+  b.attribute8 site_category,     
+  h.name operating_unit_name,     
+  h.organization_id,     
+  nvl(b.attribute6,'Open') employee_number     
+FROM (SELECT  b.target_value1, b.target_value2 vendor_assistant    
+  FROM  xx_fin_translatevalues b    
+       ,xx_fin_translatedefinition a       
+ WHERE  a.TRANSLATION_NAME = 'XX_AP_VENDOR_ASSISTANTS'     
+   AND b.TRANSLATE_ID  = a.TRANSLATE_ID    
+   AND b.enabled_flag='Y'    
+   AND SYSDATE BETWEEN b.start_date_active and NVL(b.end_date_active,sysdate)  
+   --and b.target_value1='Open'   
+                 ) ast,   
+hr_operating_units h, 
+       
+  ap_terms c,     
+  ap_supplier_sites_all b,     
+  ap_suppliers a     
+WHERE 1              =1     
+AND b.vendor_id      =a.vendor_id     
+AND b.org_id         =h.organization_id     
+AND c.term_id        =b.terms_id     
+AND nvl(b.attribute6,'Open')=ast.target_value1   
+AND exists (SELECT 'x'      
+                   FROM xx_fin_translatevalues tv,                                                                       
+                        xx_fin_translatedefinition td                       
+                  WHERE td.translation_name = 'XX_AP_TRADE_CATEGORIES'                                                                        
+                    AND tv.translate_id  = td.translate_id                                                                       
+                    AND tv.enabled_flag = 'Y'                                                                       
+                    AND sysdate between tv.start_date_active and nvl(tv.end_date_active,sysdate)      
+                    AND tv.target_value1 = b.attribute8||''   
+                )]]></SQLQuery>
+  <ViewAttribute
+    Name="SupplierNo"
+    IsUpdateable="false"
+    IsPersistent="false"
+    PrecisionRule="true"
+    Precision="255"
+    Type="java.lang.String"
+    ColumnType="VARCHAR2"
+    AliasName="SUPPLIER_NO"
+    Expression="SUPPLIER_NO"
+    SQLType="VARCHAR">
+    <DesignTime>
+      <Attr Name="_DisplaySize" Value="30"/>
+    </DesignTime>
+    <Properties>
+      <SchemaBasedProperties>
+        <LABEL
+          ResId="od.tdmatch.model.GeneralInquiryVO.SupplierNo_LABEL"/>
+        <DISPLAYWIDTH
+          Value="30"/>
+      </SchemaBasedProperties>
+    </Properties>
+  </ViewAttribute>
+  <ViewAttribute
+    Name="SupplierName"
+    IsUpdateable="false"
+    IsPersistent="false"
+    PrecisionRule="true"
+    Precision="240"
+    Type="java.lang.String"
+    ColumnType="VARCHAR2"
+    AliasName="SUPPLIER_NAME"
+    Expression="SUPPLIER_NAME"
+    SQLType="VARCHAR">
+    <DesignTime>
+      <Attr Name="_DisplaySize" Value="240"/>
+    </DesignTime>
+    <Properties>
+      <SchemaBasedProperties>
+        <LABEL
+          ResId="od.tdmatch.model.GeneralInquiryVO.SupplierName_LABEL"/>
+        <DISPLAYWIDTH
+          Value="30"/>
+      </SchemaBasedProperties>
+    </Properties>
+  </ViewAttribute>
+  <ViewAttribute
+    Name="SupplierSiteNo"
+    IsUpdateable="false"
+    IsPersistent="false"
+    PrecisionRule="true"
+    Precision="15"
+    Type="java.lang.String"
+    ColumnType="VARCHAR2"
+    AliasName="SUPPLIER_SITE_NO"
+    Expression="SUPPLIER_SITE_NO"
+    SQLType="VARCHAR">
+    <DesignTime>
+      <Attr Name="_DisplaySize" Value="15"/>
+    </DesignTime>
+    <Properties>
+      <SchemaBasedProperties>
+        <LABEL
+          ResId="od.tdmatch.model.GeneralInquiryVO.SupplierSiteNo_LABEL"/>
+        <DISPLAYWIDTH
+          Value="30"/>
+      </SchemaBasedProperties>
+    </Properties>
+  </ViewAttribute>
+  <ViewAttribute
+    Name="Terms"
+    IsUpdateable="false"
+    IsPersistent="false"
+    PrecisionRule="true"
+    Precision="50"
+    Type="java.lang.String"
+    ColumnType="VARCHAR2"
+    AliasName="TERMS"
+    Expression="TERMS"
+    SQLType="VARCHAR">
+    <DesignTime>
+      <Attr Name="_DisplaySize" Value="50"/>
+    </DesignTime>
+  </ViewAttribute>
+  <ViewAttribute
+    Name="TermsDateBasis"
+    IsUpdateable="false"
+    IsPersistent="false"
+    PrecisionRule="true"
+    Precision="25"
+    Type="java.lang.String"
+    ColumnType="VARCHAR2"
+    AliasName="TERMS_DATE_BASIS"
+    Expression="TERMS_DATE_BASIS"
+    SQLType="VARCHAR">
+    <DesignTime>
+      <Attr Name="_DisplaySize" Value="25"/>
+    </DesignTime>
+    <Properties>
+      <SchemaBasedProperties>
+        <LABEL
+          ResId="od.tdmatch.model.GeneralInquiryVO.TermsDateBasis_LABEL"/>
+      </SchemaBasedProperties>
+    </Properties>
+  </ViewAttribute>
+  <ViewAttribute
+    Name="PayMethod"
+    IsUpdateable="false"
+    IsPersistent="false"
+    PrecisionRule="true"
+    Precision="25"
+    Type="java.lang.String"
+    ColumnType="VARCHAR2"
+    AliasName="PAY_METHOD"
+    Expression="PAY_METHOD"
+    SQLType="VARCHAR">
+    <DesignTime>
+      <Attr Name="_DisplaySize" Value="25"/>
+    </DesignTime>
+    <Properties>
+      <SchemaBasedProperties>
+        <LABEL
+          ResId="od.tdmatch.model.GeneralInquiryVO.PayMethod_LABEL"/>
+      </SchemaBasedProperties>
+    </Properties>
+  </ViewAttribute>
+  <ViewAttribute
+    Name="PayGroup"
+    IsUpdateable="false"
+    IsPersistent="false"
+    PrecisionRule="true"
+    Precision="25"
+    Type="java.lang.String"
+    ColumnType="VARCHAR2"
+    AliasName="PAY_GROUP"
+    Expression="PAY_GROUP"
+    SQLType="VARCHAR">
+    <DesignTime>
+      <Attr Name="_DisplaySize" Value="25"/>
+    </DesignTime>
+    <Properties>
+      <SchemaBasedProperties>
+        <LABEL
+          ResId="od.tdmatch.model.GeneralInquiryVO.PayGroup_LABEL"/>
+      </SchemaBasedProperties>
+    </Properties>
+  </ViewAttribute>
+  <ViewAttribute
+    Name="SiteHold"
+    IsUpdateable="false"
+    IsPersistent="false"
+    PrecisionRule="true"
+    Precision="1"
+    Type="java.lang.String"
+    ColumnType="VARCHAR2"
+    AliasName="SITE_HOLD"
+    Expression="SITE_HOLD"
+    SQLType="VARCHAR">
+    <DesignTime>
+      <Attr Name="_DisplaySize" Value="1"/>
+    </DesignTime>
+    <Properties>
+      <SchemaBasedProperties>
+        <LABEL
+          ResId="od.tdmatch.model.GeneralInquiryVO.SiteHold_LABEL"/>
+      </SchemaBasedProperties>
+    </Properties>
+  </ViewAttribute>
+  <ViewAttribute
+    Name="SitePaymentHoldReason"
+    IsUpdateable="false"
+    IsPersistent="false"
+    PrecisionRule="true"
+    Precision="240"
+    Type="java.lang.String"
+    ColumnType="VARCHAR2"
+    AliasName="SITE_PAYMENT_HOLD_REASON"
+    Expression="SITE_PAYMENT_HOLD_REASON"
+    SQLType="VARCHAR">
+    <DesignTime>
+      <Attr Name="_DisplaySize" Value="240"/>
+    </DesignTime>
+    <Properties>
+      <SchemaBasedProperties>
+        <LABEL
+          ResId="od.tdmatch.model.GeneralInquiryVO.SitePaymentHoldReason_LABEL"/>
+      </SchemaBasedProperties>
+    </Properties>
+  </ViewAttribute>
+  <ViewAttribute
+    Name="Status"
+    IsUpdateable="false"
+    IsPersistent="false"
+    PrecisionRule="true"
+    Precision="6"
+    Type="java.lang.String"
+    ColumnType="CHAR"
+    AliasName="&quot;'STATUS'&quot;"
+    Expression="&quot;'STATUS'&quot;"
+    SQLType="VARCHAR">
+    <DesignTime>
+      <Attr Name="_DisplaySize" Value="6"/>
+    </DesignTime>
+    <Properties>
+      <SchemaBasedProperties>
+        <LABEL
+          ResId="od.tdmatch.model.GeneralInquiryVO.Status_LABEL"/>
+      </SchemaBasedProperties>
+    </Properties>
+  </ViewAttribute>
+  <ViewAttribute
+    Name="VendorAssistant"
+    IsPersistent="false"
+    PrecisionRule="true"
+    Precision="240"
+    Type="java.lang.String"
+    ColumnType="VARCHAR2"
+    AliasName="VENDOR_ASSISTANT"
+    Expression="VENDOR_ASSISTANT"
+    SQLType="VARCHAR">
+    <DesignTime>
+      <Attr Name="_DisplaySize" Value="240"/>
+    </DesignTime>
+    <Properties>
+      <SchemaBasedProperties>
+        <LABEL
+          ResId="od.tdmatch.model.GeneralInquiryVO.VendorAssistant_LABEL"/>
+        <DISPLAYWIDTH
+          Value="30"/>
+      </SchemaBasedProperties>
+    </Properties>
+  </ViewAttribute>
+  <ViewAttribute
+    Name="SiteCategory"
+    IsUpdateable="false"
+    IsPersistent="false"
+    PrecisionRule="true"
+    Precision="150"
+    Type="java.lang.String"
+    ColumnType="VARCHAR2"
+    AliasName="SITE_CATEGORY"
+    Expression="SITE_CATEGORY"
+    SQLType="VARCHAR">
+    <DesignTime>
+      <Attr Name="_DisplaySize" Value="150"/>
+    </DesignTime>
+    <Properties>
+      <SchemaBasedProperties>
+        <LABEL
+          ResId="od.tdmatch.model.GeneralInquiryVO.SiteCategory_LABEL"/>
+      </SchemaBasedProperties>
+    </Properties>
+  </ViewAttribute>
+  <ViewAttribute
+    Name="OperatingUnitName"
+    IsPersistent="false"
+    PrecisionRule="true"
+    Precision="240"
+    Type="java.lang.String"
+    ColumnType="VARCHAR2"
+    AliasName="OPERATING_UNIT_NAME"
+    Expression="OPERATING_UNIT_NAME"
+    SQLType="VARCHAR">
+    <DesignTime>
+      <Attr Name="_DisplaySize" Value="240"/>
+    </DesignTime>
+    <Properties>
+      <SchemaBasedProperties>
+        <DISPLAYWIDTH
+          Value="30"/>
+      </SchemaBasedProperties>
+    </Properties>
+  </ViewAttribute>
+  <ViewAttribute
+    Name="OrganizationId"
+    IsUpdateable="false"
+    IsPersistent="false"
+    PrecisionRule="true"
+    Precision="15"
+    Scale="0"
+    Type="oracle.jbo.domain.Number"
+    ColumnType="NUMBER"
+    AliasName="ORGANIZATION_ID"
+    Expression="ORGANIZATION_ID"
+    SQLType="NUMERIC"
+    LOVName="LOV_OrganizationId">
+    <Properties>
+      <SchemaBasedProperties>
+        <DISPLAYWIDTH
+          Value="30"/>
+        <CONTROLTYPE
+          Value="choice"/>
+      </SchemaBasedProperties>
+    </Properties>
+  </ViewAttribute>
+  <ViewAttribute
+    Name="EmployeeNumber"
+    IsUpdateable="false"
+    IsPersistent="false"
+    PrecisionRule="true"
+    Precision="30"
+    Type="java.lang.String"
+    ColumnType="VARCHAR2"
+    AliasName="EMPLOYEE_NUMBER"
+    Expression="EMPLOYEE_NUMBER"
+    SQLType="VARCHAR"
+    LOVName="LOV_EmployeeNumber">
+    <DesignTime>
+      <Attr Name="_DisplaySize" Value="30"/>
+    </DesignTime>
+    <Properties>
+      <SchemaBasedProperties>
+        <DISPLAYWIDTH
+          Value="30"/>
+        <LABEL
+          ResId="od.tdmatch.model.GeneralInquiryVO.EmployeeNumber_LABEL"/>
+        <CONTROLTYPE
+          Value="choice"/>
+      </SchemaBasedProperties>
+    </Properties>
+  </ViewAttribute>
+  <ViewAttribute
+    Name="SiteSelect"
+    IsSelected="false"
+    IsPersistent="false"
+    PrecisionRule="true"
+    Precision="255"
+    Type="java.lang.Boolean"
+    ColumnType="VARCHAR2"
+    AliasName="VIEW_ATTR"
+    SQLType="BIT"
+    Passivate="true"/>
+  <ViewAttribute
+    Name="NewVendorAssistant"
+    IsSelected="false"
+    IsPersistent="false"
+    PrecisionRule="true"
+    Precision="255"
+    Type="java.lang.String"
+    ColumnType="VARCHAR2"
+    AliasName="VIEW_ATTR"
+    SQLType="VARCHAR"
+    Passivate="true"/>
+  <ViewCriteria
+    Name="GeneralInquiryVOCriteria"
+    ViewObjectName="od.tdmatch.model.GeneralInquiryVO"
+    Conjunction="AND">
+    <Properties Name="_Props">
+      <CustomProperties>
+        <Property
+          Name="autoExecute"
+          Value="false"/>
+        <Property
+          Name="mode"
+          Value="Basic"/>
+        <Property
+          Name="allowConjunctionOverride"
+          Value="false"/>
+        <Property
+          Name="showInList"
+          Value="true"/>
+        <Property
+          Name="displayOperators"
+          Value="InBasicMode"/>
+      </CustomProperties>
+    </Properties>
+    <ViewCriteriaRow
+      Name="GeneralInquiryVOCriteria_row_0"
+      UpperColumns="1"
+      Conjunction="AND">
+      <ViewCriteriaItem
+        Name="SupplierNo"
+        ViewAttribute="SupplierNo"
+        Operator="="
+        Conjunction="AND"
+        Value=":p_vendor_no"
+        IsBindVarValue="true"
+        Required="Optional">
+        <CompOper
+          Name="SupplierNo_Oper"
+          ToDo="-2"
+          Oper="RemoveAll"
+          MinCardinality="1"
+          MaxCardinality="1"/>
+      </ViewCriteriaItem>
+      <ViewCriteriaItem
+        Name="SupplierName"
+        ViewAttribute="SupplierName"
+        Operator="="
+        Conjunction="AND"
+        Value=":p_vendor_name"
+        IsBindVarValue="true"
+        Required="Optional">
+        <CompOper
+          Name="SupplierName_Oper"
+          ToDo="-2"
+          Oper="RemoveAll"
+          MinCardinality="1"
+          MaxCardinality="1"/>
+      </ViewCriteriaItem>
+      <ViewCriteriaItem
+        Name="SupplierSiteNo"
+        ViewAttribute="SupplierSiteNo"
+        Operator="="
+        Conjunction="AND"
+        Value=":p_vend_site"
+        IsBindVarValue="true"
+        Required="Optional">
+        <CompOper
+          Name="SupplierSiteNo_Oper"
+          ToDo="-2"
+          Oper="RemoveAll"
+          MinCardinality="1"
+          MaxCardinality="1"/>
+      </ViewCriteriaItem>
+      <ViewCriteriaItem
+        Name="OrganizationId"
+        ViewAttribute="OrganizationId"
+        Operator="="
+        Conjunction="AND"
+        Value=":p_ou"
+        IsBindVarValue="true"
+        Required="Optional">
+        <CompOper
+          Name="OperatingUnitName_Oper0"
+          Oper="="
+          ToDo="2"
+          MinCardinality="1"
+          MaxCardinality="1"/>
+        <CompOper
+          Name="OperatingUnitName_Oper"
+          ToDo="-2"
+          Oper="RemoveAll"
+          MinCardinality="1"
+          MaxCardinality="1"/>
+      </ViewCriteriaItem>
+      <ViewCriteriaItem
+        Name="EmployeeNumber"
+        ViewAttribute="EmployeeNumber"
+        Operator="="
+        Conjunction="AND"
+        Value=":p_vend_ast"
+        IsBindVarValue="true"
+        Required="Optional">
+        <CompOper
+          Name="GeneralInquiryVOCriteria_GeneralInquiryVOCriteria_row_0_EmployeeNumber_Oper0"
+          Oper="="
+          ToDo="2"
+          MinCardinality="1"
+          MaxCardinality="1"/>
+        <CompOper
+          Name="GeneralInquiryVOCriteria_GeneralInquiryVOCriteria_row_0_EmployeeNumber_Oper"
+          ToDo="-2"
+          Oper="RemoveAll"
+          MinCardinality="1"
+          MaxCardinality="1"/>
+      </ViewCriteriaItem>
+    </ViewCriteriaRow>
+  </ViewCriteria>
+  <AttrArray Name="KeyAttributes">
+    <Item Value="SupplierNo"/>
+    <Item Value="SupplierName"/>
+    <Item Value="SupplierSiteNo"/>
+    <Item Value="OrganizationId"/>
+    <Item Value="EmployeeNumber"/>
+  </AttrArray>
+  <ResourceBundle>
+    <PropertiesBundle
+      PropertiesFile="od.tdmatch.model.ModelBundle"/>
+  </ResourceBundle>
+</ViewObject>

@@ -1,0 +1,52 @@
+-- +=====================================================================+
+-- |                  Office Depot - Project Simplify                    |
+-- +=====================================================================+
+-- | Name :  ALTER_XX_FIN_TRANSLATEDEFN.tbl                              |
+-- |                                                                     |
+-- |Change Record:                                                       |
+-- |===============                                                      |
+-- |Version   Date              Author              Remarks              |
+-- |======   ==========     =============        ======================= |
+-- |1.0       04-NOV-2015   Havish Kasina        Created Base version    |
+-- +=====================================================================+
+
+SET VERIFY      OFF
+SET TERM        OFF
+SET FEEDBACK    OFF
+SET SHOW        OFF
+SET ECHO        OFF
+SET TAB         OFF
+
+WHENEVER SQLERROR CONTINUE;
+
+SET TERM OFF
+
+SET TERM ON
+
+PROMPT
+PROMPT Altering the Table XXFIN.XX_FIN_TRANSLATEDEFINITION 
+PROMPT
+
+ALTER TABLE XXFIN.XX_FIN_TRANSLATEDEFINITION
+          add(
+        TARGET_FIELD21 VARCHAR2(25),
+			  TARGET_FIELD22 VARCHAR2(25),
+			  TARGET_FIELD23 VARCHAR2(25),
+			  TARGET_FIELD24 VARCHAR2(25),
+			  TARGET_FIELD25 VARCHAR2(25),
+			  TARGET_FIELD26 VARCHAR2(25),
+			  TARGET_FIELD27 VARCHAR2(25),
+			  TARGET_FIELD28 VARCHAR2(25),
+			  TARGET_FIELD29 VARCHAR2(25),
+			  TARGET_FIELD30 VARCHAR2(25)
+			  )
+/
+         
+PROMPT
+PROMPT Exiting....
+PROMPT            
+
+SET FEEDBACK ON
+
+SHOW ERRORS;
+EXIT;

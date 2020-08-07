@@ -1,0 +1,26 @@
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     ON
+
+-- +================================================================================+
+-- |                  Office Depot - Project Simplify                               |
+-- |                       WIPRO Technologies                                       |
+-- +================================================================================+
+-- | SQL Script to drop the table                                                   |
+-- |                                                                                |
+-- |Change Record:                                                                  |
+-- |===============                                                                 |
+-- |Version   Date         Author              Remarks                              |
+-- |=======   ==========   =============       ==================================== |
+-- | V1.0     20-JAN-2009  Ganga Devi R         dropped table                       |                                                                                |
+-- +================================================================================+
+
+-- -----------------------------------------------------
+-- Dropping existing table XXFIN.xx_ra_custom_import_ref
+-- -----------------------------------------------------
+
+DROP TABLE xxfin.xx_ra_custom_import_ref;
+                                 
+SHOW ERROR

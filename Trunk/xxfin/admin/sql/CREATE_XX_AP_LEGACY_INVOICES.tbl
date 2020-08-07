@@ -1,0 +1,46 @@
+-- +==========================================================================+
+-- |                  Office Depot - Project Simplify                         |
+-- +==========================================================================+
+-- | Name :XXFIN.XX_AP_LEGACY_INVOICES                                        |
+-- | Description : Create a table to hold invoices for last 2 years from      |
+-- |               PeopleSoft AP.
+-- |                                                                          |
+-- |Change Record:                                                            |
+-- |===============                                                           |
+-- |Version   Date         Author               Remarks                       |
+-- |=======   ==========   =============        ==============================|
+-- | V1.0     08/03/2007  Prakash Sankaran     Initial version     
+-- |          11/12/2007  Donna Nardo          Add voucher_id, pymnt_message  |
+-- |                                                                          |
+-- +==========================================================================+
+
+   SET SHOW         OFF
+   SET VERIFY       OFF
+   SET ECHO         OFF
+   SET TAB          OFF
+   SET FEEDBACK     ON
+
+
+   CREATE TABLE XXFIN.XX_AP_LEGACY_INVOICES
+     (INVOICE_NUM						VARCHAR2(30),
+      INVOICE_DT						DATE,
+      VENDOR_NUM						VARCHAR2(20),
+      ENTERED_DT						DATE,
+      TXN_CURRENCY_CODE					VARCHAR2(10),
+      INVOICE_GROSS_AMT					NUMBER,
+      INVOICE_MERCH_AMT					NUMBER,
+      BASE_CURRENCY_CODE    				VARCHAR2(10),
+      INVOICE_GROSS_AMT_BASE				NUMBER,
+      INVOICE_MERCH_AMT_BASE				NUMBER,		
+      PO_NUM						VARCHAR2(20),
+      BUSINESS_UNIT					VARCHAR2(10),
+      ORIGIN						VARCHAR2(10),
+      CLOSE_STATUS					VARCHAR2(1),
+      ENTRY_STATUS					VARCHAR2(1),
+      ACCOUNTING_DATE					DATE,
+      POST_VOUCHER					VARCHAR2(1),
+      POST_STATUS_AP					VARCHAR2(1),
+      VOUCHER_ID                                VARCHAR2(8),
+      PYMNT_MESSAGE                             VARCHAR2(70));
+
+SHOW ERROR

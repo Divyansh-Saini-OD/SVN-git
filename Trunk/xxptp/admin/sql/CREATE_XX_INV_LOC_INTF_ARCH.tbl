@@ -1,0 +1,95 @@
+REM============================================================================================
+REM                                 Start Of Script
+REM============================================================================================
+
+--+=============================================================================================+--
+--|                                                                                             |--
+--| Program Name   : CREATE_XX_ITEM_LOC_INTF_ARCH.tbl                                           |--
+--|                                                                                             |--
+--| Purpose        : Create Custom Tables .                                                     |--
+--|                  The Objects created are:                                                   |--
+--|                                                                                             |--
+--|                1. XX_ITEM_LOC_INTF_ARCH (OD RMS To EBS Interface Item Loc Table)            |--
+--|                                                                                             |--
+--| Change History  :                                                                           |--
+--| Version           Date             Changed By              Description                      |--
+--+=============================================================================================+--
+--| 1.0              10-Jun-2008       Paddy Sanjeevi          Original                         |--
+--+=============================================================================================+--
+
+SET VERIFY      OFF
+SET TERM        ON
+SET FEEDBACK    OFF
+SET SHOW        OFF
+SET ECHO        OFF
+SET TAB         OFF
+
+WHENEVER SQLERROR CONTINUE;
+
+PROMPT
+PROMPT Creating the Custom Table ......
+PROMPT
+
+PROMPT
+PROMPT Creating the Table XX_ITEM_LOC_INTF_ARCH......
+PROMPT
+
+CREATE TABLE XX_ITEM_LOC_INTF_ARCH
+(
+ ITEM                                      VARCHAR2(75) 	NOT NULL 
+,LOC                                       NUMBER(10)		NOT NULL  
+,LOCAL_ITEM_DESC                           VARCHAR2(300)	NOT NULL 
+,LOCAL_SHORT_DESC                          VARCHAR2(60)
+,PRIMARY_SUPP                              NUMBER(10)
+,STATUS                                    VARCHAR2(3)	NOT NULL 
+,OD_ABC_CLASS                              VARCHAR2(18)
+,OD_CHANNEL_BLOCK                          VARCHAR2(3)	NOT NULL 
+,OD_DIST_TARGET                            NUMBER(9)
+,OD_EBW_QTY                                NUMBER(9)
+,OD_INFINITE_QTY_CD                        VARCHAR2(18)
+,OD_LOCK_UP_ITEM_FLG                       VARCHAR2(3)	NOT NULL 
+,OD_PROPRIETARY_TYPE_CD                    VARCHAR2(18)	NOT NULL 
+,OD_REPLEN_SUB_TYPE_CD                     VARCHAR2(18)
+,OD_REPLEN_TYPE_CD                         VARCHAR2(18)	NOT NULL 
+,OD_WHSE_ITEM_CD                           VARCHAR2(18)
+,PARTITION_KEY                             NUMBER
+,CONTROL_ID                                NUMBER
+,PROCESS_FLAG                              NUMBER		NOT NULL 
+,CONV_ACTION                               VARCHAR2(10)
+,BATCH_ID                                  NUMBER
+,SOURCE_SYSTEM_CODE                        VARCHAR2(5)
+,SOURCE_SYSTEM_REF                         VARCHAR2(50)
+,CREATION_DATE                             DATE			NOT NULL 
+,CREATED_BY                                NUMBER		NOT NULL 
+,LAST_UPDATE_DATE                          DATE			NOT NULL 
+,LAST_UPDATED_BY                           NUMBER		NOT NULL 
+,INVENTORY_ITEM_ID                         NUMBER
+,LOAD_BATCH_ID                             NUMBER
+,LOCATION_PROCESS_FLAG                     NUMBER
+,ORGANIZATION_ID                           NUMBER
+,TEMPLATE_ID                               NUMBER
+,LOC_ITEM_ATTR_PROCESS_FLAG                NUMBER
+,SHIPPABLE_ITEM_FLAG                       VARCHAR2(1)
+,API_CHANGE                                VARCHAR2(1)
+,ERROR_MESSAGE                             VARCHAR2(4000)
+,ACTION_TYPE                               VARCHAR2(1)
+,PROCESS_ID                                NUMBER
+,RMS_TIMESTAMP                             TIMESTAMP(6)
+,ERROR_FLAG						 VARCHAR2(1)
+);
+
+
+WHENEVER SQLERROR CONTINUE;
+
+PROMPT
+PROMPT Exiting....
+PROMPT
+
+SET FEEDBACK ON
+
+--EXIT;
+
+REM=================================================================================================
+REM                                   End Of Script
+REM=================================================================================================
+

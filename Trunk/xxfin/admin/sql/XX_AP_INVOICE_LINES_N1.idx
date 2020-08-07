@@ -1,0 +1,40 @@
+REM================================================================================================
+REM                                 Start Of Script
+REM================================================================================================
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     OFF
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+-- +=======================================================================+
+-- |               Office Depot - Project Simplify                         |
+-- +=======================================================================+
+-- | Name        :XX_AP_INVOICE_LINES_N1                                   |
+-- | Description : Non-Unique Index for Custom Table AP_INVOICE_LINES_ALL  |
+-- |Change History:                                                        |
+-- |---------------                                                        |
+-- | RICE ID : E3523                                                       |
+-- |Version  Date        Author             Remarks                        |
+-- |-------  ----------- -----------------  -------------------------------|
+-- | 1.0     12-Nov-2014 Paddy Sanjeevi     Baselined                      |
+-- +=======================================================================+
+
+PROMPT
+PROMPT Creating Index....
+PROMPT
+
+CREATE INDEX XX_AP_INVOICE_LINES_N1 ON AP.AP_INVOICE_LINES_ALL (LAST_UPDATE_DATE) NOLOGGING PARALLEL 8
+
+alter index XX_AP_INVOICE_LINES_N1 NOPARALLEL;
+
+SHOW ERRORS;
+
+
+REM================================================================================================
+REM                                 Start Of Script
+REM================================================================================================
+
+
+

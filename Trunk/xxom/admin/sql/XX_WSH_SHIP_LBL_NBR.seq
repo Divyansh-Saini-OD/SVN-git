@@ -1,0 +1,17 @@
+-- +==========================================================================+
+-- |                  Office Depot - Project Simplify                         |
+-- +==========================================================================+
+-- | 		Name  :   XX_WSH_SHIP_LBL_NBR.seq                             |
+-- |                      Script to create the sequence for tracking          |
+-- |                      loading ship label tracking data                    |
+-- | 	RICE ID       :   I3101_WMS_Tracking_Data_Interface                   |
+-- |                                                                          |
+-- |Change Record:                                                            |
+-- |===============                                                           |
+-- |Version   Date         Author               Remarks                       |
+-- |=======   ==========   =============        ==============================|
+-- | V1.0     01-09-2017   Avinash Baddam       Initial version               |
+-- +==========================================================================+
+CREATE SEQUENCE XXOM.XX_WSH_SHIP_LBL_NBR_S
+START WITH 1000000
+INCREMENT BY 1;

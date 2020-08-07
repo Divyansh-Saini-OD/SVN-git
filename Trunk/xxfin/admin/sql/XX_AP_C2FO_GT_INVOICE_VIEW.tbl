@@ -1,0 +1,80 @@
+SET VERIFY OFF;
+SET SHOW OFF;
+SET ECHO OFF;
+SET TAB OFF;
+SET FEEDBACK OFF;
+ 
+WHENEVER SQLERROR CONTINUE;
+ 
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+-- +==================================================================================+  
+-- | Office Depot - C2FO                                                              |
+-- |                                                                                  |
+-- +==================================================================================+
+-- | SQL Script to create the table:  XX_AP_C2FO_GT_INVOICE_VIEW                      |
+-- | RICE_ID:                                                                         |                                                                                 |
+-- |Change Record:                                                                    |
+-- |===============                                                                   |
+-- |Version   Date          Author               Remarks                              |
+-- |=======   ===========   =============        =====================================|
+-- |1.0       07-SEP-2018   Antoino Morales      Initial version                      |
+-- |                                                                                  |
+-- +==================================================================================+
+
+--+=====================================================================+
+--+               CREATE TABLE XX_AP_C2FO_GT_INVOICE_VIEW
+--+=====================================================================+
+BEGIN
+  EXECUTE IMMEDIATE 'DROP TABLE xxfin.xx_ap_c2fo_gt_invoice_view';
+EXCEPTION
+  WHEN OTHERS THEN NULL;
+END;
+/
+
+CREATE GLOBAL TEMPORARY TABLE xxfin.xx_ap_c2fo_gt_invoice_view
+(COMPANY_ID	VARCHAR2(122),
+ DIVISION_ID	VARCHAR2(100),
+ INVOICE_ID	VARCHAR2(132),
+ AMOUNT	NUMBER,
+ CURRENCY	VARCHAR2(15),
+ PAYMENT_DUE_DATE	VARCHAR2(4000),
+ TRANSACTION_TYPE	CHAR(1),
+ TRANSACTION_DATE	VARCHAR2(10),
+ VOUCHER_ID	NUMBER(15),
+ PAYMENT_TERM	VARCHAR2(91),
+ PAYMENT_METHOD	VARCHAR2(30),
+ ADJ_INVOICE_ID	VARCHAR2(100),
+ ADJUSTMENT_REASON_CODE	VARCHAR2(240),
+ DESCRIPTION	VARCHAR2(240),
+ VAT_AMOUNT	NUMBER,
+ AMOUNT_GROSSVAT	NUMBER,
+ AMOUNT_NETVAT	NUMBER,
+ VAT_TO_BE_DISCOUNTED	NUMBER,
+ BUYER_NAME	VARCHAR2(240),
+ BUYER_ADDRESS	VARCHAR2(1327),
+ BUYER_TAX_ID	VARCHAR2(30),
+ LOCAL_CURRENCY_KEY	VARCHAR2(15),
+ LOCAL_CURRENCY_RATE	NUMBER,
+ LOCAL_CURRENCY_ORG_INV_AMT	NUMBER,
+ LOCAL_CURRENCY_ORIGINAL_VAT	NUMBER,
+ MARKET_TYPE	VARCHAR2(25),
+ PO_ID	VARCHAR2(163),
+ EBS_ORG_ID	NUMBER(15),
+ EBS_VENDOR_ID	NUMBER,
+ EBS_SUPPLIER_NUMBER	VARCHAR2(30),
+ EBS_VENDOR_SITE_ID	NUMBER,
+ EBS_VENDOR_SITE_CODE	VARCHAR2(15),
+ EBS_INVOICE_ID	NUMBER(15),
+ EBS_INVOICE_NUM	VARCHAR2(50),
+ EBS_PAY_GROUP	VARCHAR2(25),
+ EBS_PAY_PRIORITY	NUMBER(2),
+ EBS_SUP_PAY_PRIORITY	NUMBER,
+ EBS_SITE_PAY_PRIORITY	NUMBER,
+ EBS_VOUCHER_NUM	VARCHAR2(50),
+ EBS_CASH_DISCOUNT_AMOUNT	NUMBER,
+ EBS_INV_AMT_BEFORE_CASH_DISC	NUMBER
+)
+ ON COMMIT PRESERVE ROWS;
+
+SHOW ERRORS

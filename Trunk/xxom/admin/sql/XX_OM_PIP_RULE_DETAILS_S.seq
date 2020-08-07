@@ -1,0 +1,60 @@
+-- +===================================================================+
+-- |                  Office Depot - Project Simplify                  |
+-- |                                                                   |
+-- +===================================================================+
+-- | Name         :XX_OM_PIP_RULE_DETAILS_S.seq                        |
+-- | Rice ID      :E1259_PIPCampaignDefinition                         |
+-- | Description  :OD PIP Campaign Defintion Sequence Creation         |
+-- |               Script for PIP Rules Details                        |
+-- |                                                                   |
+-- |                                                                   |
+-- |Change Record:                                                     |
+-- |===============                                                    |
+-- |Version  Date        Author           Remarks                      |
+-- |=======  =========== =============    =============================|
+-- |1.0      17-Sep-2007 Matthew Craig    Initial draft version        |
+- +====================================================================+
+SET VERIFY      OFF
+SET TERM        OFF
+SET FEEDBACK    OFF
+SET SHOW        OFF
+SET ECHO        OFF
+SET TAB         OFF
+
+------------------
+-- Sequence creation
+------------------
+PROMPT
+PROMPT Dropping Existing Sequences from XXOM...
+PROMPT
+
+WHENEVER SQLERROR CONTINUE;
+
+PROMPT
+PROMPT Dropping SEQUENCE XX_OM_PIP_RULE_DETAILS_S 
+PROMPT
+
+DROP SEQUENCE XX_OM_PIP_RULE_DETAILS_S ;
+
+WHENEVER SQLERROR EXIT 1
+
+PROMPT
+PROMPT Creating Custom Sequences......
+PROMPT
+
+PROMPT
+PROMPT Creating Sequence XX_OM_PIP_RULE_DETAILS_S
+PROMPT
+
+CREATE SEQUENCE XX_OM_PIP_RULE_DETAILS_S INCREMENT BY 1 START WITH 1 NOCYCLE NOCACHE NOORDER;
+
+WHENEVER SQLERROR CONTINUE;
+
+PROMPT
+PROMPT Exiting....
+PROMPT
+
+SET FEEDBACK ON
+
+EXIT;
+

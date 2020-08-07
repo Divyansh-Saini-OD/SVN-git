@@ -1,0 +1,25 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<customization xmlns="http://xmlns.oracle.com/jrad" version="9.0.6.0.0_64" xml:lang="en-US" customizes="/oracle/apps/fnd/cp/viewreq/webui/CPViewRequestPG" xmlns:user="http://xmlns.oracle.com/jrad/user" user:responsibilityKey="XX_OD_US_IREC_CS" user:responsibilityAppShortName="AR">
+   <modifications>
+      <modify element="FNDCPREQUESTVIEWREGION" controllerClass="od.oracle.apps.fnd.cp.viewreq.webui.ODViewRequestsPageCO"/>
+      <modify element="Fndcpadvreqschdate" prompt="Submission Date"/>
+      <modify element="Fndcpadvreqoutputswitcher" prompt="PDF Output"/>
+      <insert after="Fndcpadvreqoutputswitcher">
+         <oa:messageStyledText id="XXODBlkExpFndcpadvreqCustomerNo" adminCustomizable="true" cellNoWrapFormat="false" dataType="VARCHAR2" initSortSeq="none" popupEnabled="false" popupRenderEvent="onClick" prompt="Customer Number" queryable="false"
+                               rendered="false" required="no" scope="." selectiveSearchCriteria="false" serverUnvalidated="false" sortByViewAttr="Argument9CustomerNo" sortState="yes" tipType="none" totalValue="false" userCustomizable="false"
+                               vAlign="middle" viewAttr="Argument9CustomerNo" viewName="RequestSummarySearchVO" warnAboutChanges="true" xmlns:oa="http://xmlns.oracle.com/oa"/>
+      </insert>	  
+      <move element="FndAdvRequestId" after="XXODBlkExpFndcpadvreqCustomerNo"/>
+      <move element="Fndcpadvprogramnamedisplay" after="FndAdvRequestId"/>
+      <move element="Fndcpadvreqphase" after="Fndcpadvprogramnamedisplay"/>
+      <move element="Fndcpadvreqstatus" after="Fndcpadvreqphase"/>
+      <move element="Fndcpadvreqschdate" after="Fndcpadvreqstatus"/>
+      <move element="Fndcpadvreqdetails" after="Fndcpadvreqschdate"/>
+      <move element="Fndcpadvreqrepublishswitcher" after="Fndcpadvreqdetails"/>
+      <move element="Fndcpreqdescription" after="Fndcpadvreqrepublishswitcher"/>
+      <move element="RequestSummarySearchVO" after="Fndcpseparator"/>
+      <insert after="RequestSummarySearchVO">
+         <oa:staticStyledText id="TestStaticTip" adminCustomizable="true" cellNoWrapFormat="false" dataType="VARCHAR2" initSortSeq="none" prompt="Note: Please allow 20 seconds before hitting refresh. When the &quot;Phase&quot; status reflects completed, an icon will appear below &quot;PDF Output&quot;. Select this icon to view the PDF." queryable="false" rendered="true" scope="." serverUnvalidated="false" sortState="no" styleClass="OraInstructionTextStrong" totalValue="false" userCustomizable="false" warnAboutChanges="true" xmlns:oa="http://xmlns.oracle.com/oa"/>
+      </insert>
+   </modifications>
+</customization>

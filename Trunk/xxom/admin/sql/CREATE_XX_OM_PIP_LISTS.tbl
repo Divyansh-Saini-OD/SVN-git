@@ -1,0 +1,123 @@
+-- +===================================================================+
+-- |                  Office Depot - Project Simplify                  |
+-- |                Oracle NAIO Consulting Organization                |
+-- +===================================================================+
+-- | Name        : CREATE_XX_OM_PIP_LISTS.tbl                          |
+-- | Rice ID     : I1267_PIPInterfacetoSAS                             |
+-- | Description  :OD PIP Interface to SAS Custom Table Creation Script|
+-- |                                                                   |
+-- |                                                                   |
+-- |Change Record:                                                     |
+-- |===============                                                    |
+-- |Version   Date        Author           Remarks                     |
+-- |=======   ==========  =============    ============================|
+-- |DRAFT 1A 14-May-2007  Vidhya Valantina Initial draft version       |
+-- |1.0      14-May-2007  Vidhya Valantina Baselined after testing     |
+-- |1.1      13-Jun-2007  Vidhya Valantina Changes made as per new MD50|
+-- |                                       and new Coding Standards    |
+-- |                                                                   |
+-- +===================================================================+
+
+SET VERIFY      OFF
+SET TERM        OFF
+SET FEEDBACK    OFF
+SET SHOW        OFF
+SET ECHO        OFF
+SET TAB         OFF
+
+PROMPT
+PROMPT Dropping Existing Custom Tables......
+PROMPT
+
+WHENEVER SQLERROR CONTINUE;
+
+PPROMPT
+PROMPT Dropping Table XX_OM_PIP_LISTS
+PROMPT
+
+DROP TABLE XX_OM_PIP_LISTS ;
+
+WHENEVER SQLERROR EXIT 1
+
+PROMPT
+PROMPT Creating the Custom Table ......
+PROMPT
+
+PROMPT
+PROMPT Enter the Table Space Name......
+PROMPT
+
+ACCEPT tablespace NOPROMPT
+
+PROMPT
+PROMPT Enter Storage Parameter - PctUsed......
+PROMPT
+
+ACCEPT pctused NOPROMPT
+
+PROMPT
+PROMPT Enter Storage Parameter - PctFree......
+PROMPT
+
+ACCEPT pctfree NOPROMPT
+
+PROMPT
+PROMPT Enter Storage Parameter - Initial......
+PROMPT
+
+ACCEPT initial NOPROMPT
+
+PROMPT
+PROMPT Enter Storage Parameter - Next......
+PROMPT
+
+ACCEPT next NOPROMPT
+
+PROMPT
+PROMPT Enter Storage Parameter - PctIncrease......
+PROMPT
+
+ACCEPT pctincrease NOPROMPT
+
+PROMPT
+PROMPT Enter Storage Parameter - MinExtents......
+PROMPT
+
+ACCEPT minextents NOPROMPT
+
+PROMPT
+PROMPT Enter Storage Parameter - MaxExtents......
+PROMPT
+
+ACCEPT maxextents NOPROMPT
+
+WHENEVER SQLERROR EXIT 1
+
+PROMPT
+PROMPT Creating the Table XX_OM_PIP_LISTS .....
+PROMPT
+
+CREATE TABLE xx_om_pip_lists (
+                                campaign_id        NUMBER         NOT NULL
+                               ,customer_id        NUMBER
+                               ,zip_code           VARCHAR2(10)
+                              )
+TABLESPACE &tablespace
+PCTUSED    &pctused
+PCTFREE    &pctfree
+STORAGE    (
+            INITIAL          &initial
+            MINEXTENTS       &minextents
+            MAXEXTENTS       &maxextents
+            PCTINCREASE      &pctincrease
+           );
+
+WHENEVER SQLERROR CONTINUE;
+
+PROMPT
+PROMPT Exiting....
+PROMPT
+
+SET FEEDBACK ON
+
+EXIT;

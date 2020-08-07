@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<pageDefinition xmlns="http://xmlns.oracle.com/adfm/uimodel" version="12.2.1.12.24" id="GeneralInquirySKUPageDef"
+                Package="od.tdmatch.view.pageDefs">
+  <parameters/>
+  <executables>
+    <variableIterator id="variables"/>
+    <iterator Binds="GeneralInQuirySKUVO1" RangeSize="25" DataControl="TradeMatchAMDataControl"
+              id="GeneralInQuirySKUVO1Iterator"/>
+  </executables>
+  <bindings>
+    <attributeValues IterBinding="GeneralInQuirySKUVO1Iterator" id="Sku">
+      <AttrNames>
+        <Item Value="Sku"/>
+      </AttrNames>
+    </attributeValues>
+    <attributeValues IterBinding="GeneralInQuirySKUVO1Iterator" id="Description">
+      <AttrNames>
+        <Item Value="Description"/>
+      </AttrNames>
+    </attributeValues>
+    <attributeValues IterBinding="GeneralInQuirySKUVO1Iterator" id="Uom">
+      <AttrNames>
+        <Item Value="Uom"/>
+      </AttrNames>
+    </attributeValues>
+    <attributeValues IterBinding="GeneralInQuirySKUVO1Iterator" id="Dept">
+      <AttrNames>
+        <Item Value="Dept"/>
+      </AttrNames>
+    </attributeValues>
+    <attributeValues IterBinding="GeneralInQuirySKUVO1Iterator" id="PackageSize">
+      <AttrNames>
+        <Item Value="PackageSize"/>
+      </AttrNames>
+    </attributeValues>
+    <attributeValues IterBinding="GeneralInQuirySKUVO1Iterator" id="PrimarySupp">
+      <AttrNames>
+        <Item Value="PrimarySupp"/>
+      </AttrNames>
+    </attributeValues>
+    <methodAction id="seachSKU" RequiresUpdateModel="true" Action="invokeMethod" MethodName="seachSKU"
+                  IsViewObjectMethod="false" DataControl="TradeMatchAMDataControl"
+                  InstanceName="bindings.seachSKU.dataControl.dataProvider">
+      <NamedData NDName="sku" NDValue='#{pageFlowScope.GeneralInquirySKUBean.sku}"' NDType="java.lang.String"/>
+    </methodAction>
+    <methodAction id="clearSKU" RequiresUpdateModel="true" Action="invokeMethod" MethodName="clearSKU"
+                  IsViewObjectMethod="false" DataControl="TradeMatchAMDataControl"
+                  InstanceName="bindings.clearSKU.dataControl.dataProvider">
+      <NamedData NDName="sku" NDType="java.lang.String"/>
+    </methodAction>
+    <methodAction id="seachWithSKU" RequiresUpdateModel="true" Action="invokeMethod" MethodName="seachWithSKU"
+                  IsViewObjectMethod="false" DataControl="TradeMatchAMDataControl"
+                  InstanceName="bindings.seachWithSKU.dataControl.dataProvider"
+                  ReturnName="data.TradeMatchAMDataControl.methodResults.seachWithSKU_seachWithSKU_dataControl_dataProvider_seachWithSKU_result">
+      <NamedData NDName="sku" NDType="java.lang.String"/>
+    </methodAction>
+    <attributeValues IterBinding="GeneralInQuirySKUVO1Iterator" id="PrimarySuppName">
+      <AttrNames>
+        <Item Value="PrimarySuppName"/>
+      </AttrNames>
+    </attributeValues>
+  </bindings>
+</pageDefinition>

@@ -1,0 +1,141 @@
+/*=============================================================================+
+|                                                                              |
+| Object Name    : XXPO_ITEM_SUPP_RMS_ATTRIBUTE                                |
+|                                                                              |
+| Program Name   : CREATE_XXPO_ITEM_SUPP_RMS_ATTRIBUTE.tbl                     |
+|                                                                              |
+| Purpose        : Create Custom Tables to hold ASL related Attributes         |
+|                  The Objects created are:                                    |
+|                  1. XXPO_ITEM_SUPP_RMS_ATTRIBUTE                             |
+|                  2. XXPO_ITEM_SUPP_RMS_ATTRIBUTE_S                           |
+|                                                                              |
+| Change History  :                                                            |
+| Ver   Date           Changed By           Description                        |
++==============================================================================+
+| 1.0   22-OCT-2007    Ganesh B Nadakudhiti Initial Creation                   |
++=============================================================================*/
+
+SET VERIFY   OFF
+SET TERM     ON
+SET FEEDBACK OFF
+SET SHOW     OFF
+SET ECHO     OFF
+SET TAB      OFF
+
+WHENEVER SQLERROR CONTINUE;
+
+PROMPT
+PROMPT Dropping INDEX XXPO_ITEM_SUPP_RMS_ATTRIB_U1......
+PROMPT
+
+--DROP INDEX XXPO_ITEM_SUPP_RMS_ATTRIB_U1;
+
+PROMPT
+PROMPT Dropping Table XXPO_ITEM_SUPP_RMS_ATTRIBUTE......
+PROMPT
+
+--DROP TABLE XXPO_ITEM_SUPP_RMS_ATTRIBUTE;
+
+PROMPT
+PROMPT Dropping sequence XXPO_ITEM_SUPP_RMS_ATTRIBUTE_S......
+PROMPT
+
+--DROP SEQUENCE XXPO_ITEM_SUPP_RMS_ATTRIBUTE_S ;
+
+--WHENEVER SQLERROR EXIT FAILURE;
+
+PROMPT
+PROMPT Creating the Table XXPO_ITEM_SUPP_RMS_ATTRIBUTE......
+PROMPT
+
+CREATE TABLE XXPO_ITEM_SUPP_RMS_ATTRIBUTE
+(
+  COMBINATION_ID           NUMBER               NOT NULL,
+  STRUCTURE_ID             NUMBER,
+  ENABLED_FLAG             VARCHAR2(1 BYTE),
+  SUMMARY_FLAG             VARCHAR2(1 BYTE),
+  START_DATE_ACTIVE        DATE,
+  END_DATE_ACTIVE          DATE,
+  LAST_UPDATE_DATE         DATE,
+  LAST_UPDATED_BY          NUMBER,
+  CARCINOGENIC_FLG         VARCHAR2(1 BYTE),
+  CONSIGNMENT_FLG          VARCHAR2(1 BYTE),
+  GOVT_COMPLIANCE_CD       VARCHAR2(6 BYTE),
+  HAZARDOUS_FLG            VARCHAR2(1 BYTE),
+  MAX_ORDER_QTY            NUMBER,
+  MIN_ORDER_QTY            NUMBER,
+  HI                       NUMBER,
+  INNER_PACK_SIZE          NUMBER,
+  NON_SHIPPABLE_INNER_QT   NUMBER,
+  SUPP_PACK_SIZE           NUMBER,
+  TI                       NUMBER,
+  VENDOR_DESIGN_ID         VARCHAR2(10 BYTE),
+  VENDOR_DESIGN_DESC       VARCHAR2(30 BYTE),
+  RANK_PRIORITY            NUMBER,
+  BACKORDERS_ALLOWED       VARCHAR2(1 BYTE),
+  DROP_SHIP_CD             VARCHAR2(10 BYTE),
+  CANADIAN_HS_TARRIFF_NBR  NUMBER,
+  SEGMENT1                 VARCHAR2(150 BYTE),
+  SEGMENT2                 VARCHAR2(150 BYTE),
+  SEGMENT3                 VARCHAR2(150 BYTE),
+  SEGMENT4                 VARCHAR2(150 BYTE),
+  SEGMENT5                 VARCHAR2(150 BYTE),
+  SEGMENT6                 VARCHAR2(150 BYTE),
+  SEGMENT7                 VARCHAR2(150 BYTE),
+  SEGMENT8                 VARCHAR2(150 BYTE),
+  SEGMENT9                 VARCHAR2(150 BYTE),
+  SEGMENT10                VARCHAR2(150 BYTE),
+  SEGMENT11                VARCHAR2(150 BYTE),
+  SEGMENT12                VARCHAR2(150 BYTE),
+  SEGMENT13                VARCHAR2(150 BYTE),
+  SEGMENT14                VARCHAR2(150 BYTE),
+  SEGMENT15                VARCHAR2(150 BYTE),
+  SEGMENT16                VARCHAR2(150 BYTE),
+  SEGMENT17                VARCHAR2(150 BYTE),
+  SEGMENT18                VARCHAR2(150 BYTE),
+  SEGMENT19                VARCHAR2(150 BYTE),
+  SEGMENT20                VARCHAR2(150 BYTE),
+  SEGMENT21                VARCHAR2(150 BYTE),
+  SEGMENT22                VARCHAR2(150 BYTE),
+  SEGMENT23                VARCHAR2(150 BYTE),
+  SEGMENT24                VARCHAR2(150 BYTE),
+  SEGMENT25                VARCHAR2(150 BYTE),
+  SEGMENT26                VARCHAR2(150 BYTE),
+  SEGMENT27                VARCHAR2(150 BYTE),
+  SEGMENT28                VARCHAR2(150 BYTE),
+  SEGMENT29                VARCHAR2(150 BYTE),
+  SEGMENT30                VARCHAR2(150 BYTE),
+  ORGANIZATION_ID          NUMBER,
+  VENDOR_NAME              VARCHAR2(150 BYTE),
+  VENDOR_ID                NUMBER
+) ;
+
+
+PROMPT
+PROMPT Creating the Index XXPO_ITEM_SUPP_RMS_ATTRIB_U1 ......
+PROMPT
+
+CREATE UNIQUE INDEX XXPO_ITEM_SUPP_RMS_ATTRIB_U1 ON XXPO_ITEM_SUPP_RMS_ATTRIBUTE (COMBINATION_ID);
+
+PROMPT
+PROMPT Creating the sequence XXPO_ITEM_SUPP_RMS_ATTRIBUTE_S......
+PROMPT
+
+CREATE SEQUENCE XXPO_ITEM_SUPP_RMS_ATTRIBUTE_S
+START WITH 50000
+INCREMENT BY 1
+MINVALUE 1
+MAXVALUE 2000000000
+NOCACHE
+NOCYCLE ;
+
+GRANT ALL ON XXPO_ITEM_SUPP_RMS_ATTRIBUTE TO apps WITH GRANT OPTION;
+GRANT ALL ON XXPO_ITEM_SUPP_RMS_ATTRIBUTE_S TO apps WITH GRANT OPTION;
+
+PROMPT
+PROMPT Exiting....
+PROMPT
+
+SET FEEDBACK ON
+
+--EXIT;

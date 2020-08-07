@@ -1,0 +1,30 @@
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+-- +=======================================================================+
+-- |               Office Depot - Project Simplify                         |
+-- |      Oracle NAIO/Office Depot/Consulting Organization                 |
+-- +=======================================================================+
+-- | Name             :XX_COM_EXCEPTIONS_LOG_CONV_N2.idx                   |
+-- | Description      :Unique Index for Custom Table                       |
+---|                   XX_COM_EXCEPTIONS_LOG_CONV                          |
+-- |                   as part of E0200_ConvCommonElements_EBS             |
+-- |                                                                       |
+-- |Change History:                                                        |
+-- |---------------                                                        |
+-- |                                                                       |
+-- |Version  Date        Author             Remarks                        |
+-- |-------  ----------- -----------------  -------------------------------|
+-- |Draft1a  26-JUN-2007 Ashok Kumar T J    Initial Draft Version          |
+-- |Draft1b  06-Nov-2007 Abhradip Ghosh     Removed the DROP Command       |
+-- +=======================================================================+
+
+-- -------------------------------------------------
+-- Creating Index XX_COM_EXCEPTIONS_LOG_CONV_N2
+-- -------------------------------------------------
+
+CREATE INDEX XXCOMN.xx_com_exceptions_log_conv_n2
+ON XXCOMN.xx_com_exceptions_log_conv(batch_id);
+
+EXIT;

@@ -1,0 +1,32 @@
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     ON
+
+PROMPT Creating SYNONYM XX_AR_EBL_XL_STG
+
+PROMPT Program exits IF the creation IS NOT SUCCESSFUL
+
+WHENEVER SQLERROR CONTINUE
+
+-- +===================================================================================+
+-- |                  Office Depot - Project Simplify                                  |
+-- +===================================================================================+
+-- | Name        : XX_AR_EBL_XL_STG                                                    |
+-- | Description : To Create the Synonym for the table XX_AR_EBL_XL_STG                |
+-- |                                                                                   |
+-- |                                                                                   |
+-- |                                                                                   |
+-- |Change Record:                                                                     |
+-- |===============                                                                    |
+-- |  Version     Date            Author                     Remarks                   |
+-- |  =======   ==========    =============           =====================            |
+-- |   1.0       13-Apr-2010       Priyanka N             Initial version              |
+-- +===================================================================================+
+
+
+CREATE SYNONYM XX_AR_EBL_XLS_STG FOR XXFIN.XX_AR_EBL_XLS_STG;
+
+
+SHOW ERROR

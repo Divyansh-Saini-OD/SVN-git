@@ -1,0 +1,62 @@
+<definitions
+     name="EbsSRexceptionSrvc"
+     targetNamespace="http://xmlns.oracle.com/pcbpel/adapter/db/EbsSRexceptionSrvc/"
+     xmlns="http://schemas.xmlsoap.org/wsdl/"
+     xmlns:tns="http://xmlns.oracle.com/pcbpel/adapter/db/EbsSRexceptionSrvc/"
+     xmlns:db="http://xmlns.oracle.com/pcbpel/adapter/db/APPS/XX_OM_SR_EXCEPTIONS_PUB/LOG_ERROR/"
+     xmlns:plt="http://schemas.xmlsoap.org/ws/2003/05/partner-link/"
+     xmlns:jca="http://xmlns.oracle.com/pcbpel/wsdl/jca/"
+     xmlns:hdr="http://xmlns.oracle.com/pcbpel/adapter/db/"
+    >
+    <import namespace="http://xmlns.oracle.com/pcbpel/adapter/db/" location="DBAdapterOutboundHeader.wsdl"/>
+    <types>
+     <schema xmlns="http://www.w3.org/2001/XMLSchema">
+       <import namespace="http://xmlns.oracle.com/pcbpel/adapter/db/APPS/XX_OM_SR_EXCEPTIONS_PUB/LOG_ERROR/"
+               schemaLocation="APPS_XX_OM_SR_EXCEPTIONS_PUB_LOG_ERROR_1.xsd" />
+     </schema>
+    </types>
+    <message name="args_in_msg">
+        <part name="InputParameters" element="db:InputParameters"/>
+    </message>
+    <message name="args_out_msg">
+        <part name="OutputParameters" element="db:OutputParameters"/>
+    </message>
+    <portType name="EbsSRexceptionSrvc_ptt">
+        <operation name="EbsSRexceptionSrvc">
+            <input message="tns:args_in_msg"/>
+            <output message="tns:args_out_msg"/>
+        </operation>
+    </portType>
+    <binding name="EbsSRexceptionSrvc_binding" type="tns:EbsSRexceptionSrvc_ptt">
+    <jca:binding  />
+        <operation name="EbsSRexceptionSrvc">
+      <jca:operation
+          SchemaName="APPS"
+          PackageName="XX_OM_SR_EXCEPTIONS_PUB"
+          ProcedureName="LOG_ERROR"
+          InteractionSpec="oracle.tip.adapter.db.DBStoredProcedureInteractionSpec" >
+      </jca:operation>
+      <input>
+        <jca:header message="hdr:OutboundHeader_msg" part="outboundHeader"/>
+      </input>
+            <output/>
+        </operation>
+    </binding>
+    <service name="EbsSRexceptionSrvc">
+        <port name="EbsSRexceptionSrvc_pt" binding="tns:EbsSRexceptionSrvc_binding">
+<!--Your runtime connection is declared in 
+J2EE_HOME/application-deployments/default/DbAdapter/oc4j-ra.xml 
+These mcf properties here are from your design time connection and 
+save you from having to edit that file and restart the application server 
+if eis/db/OraAppsEom is missing. 
+These mcf properties are safe to remove.-->
+      <jca:address location="eis/db/OraAppsEom" UIConnectionName="GSIDEV01" UIOverloadedProcedure="1"
+          ManagedConnectionFactory="oracle.tip.adapter.db.DBManagedConnectionFactory"/>
+        </port>
+    </service>
+  <plt:partnerLinkType name="EbsSRexceptionSrvc_plt" >
+    <plt:role name="EbsSRexceptionSrvc_role" >
+      <plt:portType name="tns:EbsSRexceptionSrvc_ptt" />
+    </plt:role>
+  </plt:partnerLinkType>
+</definitions>

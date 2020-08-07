@@ -1,0 +1,750 @@
+<?xml version="1.0" encoding="windows-1252" ?>
+<!DOCTYPE ViewObject SYSTEM "jbo_03_01.dtd">
+<!---->
+<ViewObject
+  xmlns="http://xmlns.oracle.com/bc4j"
+  Name="XxApInvoicePaymentInquirySearchVO"
+  Version="12.2.1.12.24"
+  InheritPersonalization="merge"
+  BindingStyle="OracleName"
+  CustomQuery="true"
+  RowClass="od.tdmatch.model.reports.vo.XxApInvoicePaymentInquirySearchVORowImpl"
+  ComponentClass="od.tdmatch.model.reports.vo.XxApInvoicePaymentInquirySearchVOImpl"
+  PageIterMode="Full"
+  FetchMode="FETCH_AS_NEEDED"
+  Passivate="All">
+  <DesignTime>
+    <Attr Name="_codeGenFlag2" Value="Access|Coll"/>
+    <Attr Name="_isExpertMode" Value="true"/>
+    <Attr Name="_isCodegen" Value="true"/>
+  </DesignTime>
+  <ViewAccessor
+    Name="SupplierDLovVO1"
+    ViewObjectName="od.tdmatch.model.lov.vendmootDship.SupplierDLovVO"
+    RowLevelBinds="true"/>
+  <ViewAccessor
+    Name="SupplierDLovVO2"
+    ViewObjectName="od.tdmatch.model.lov.vendmootDship.SupplierDLovVO"
+    RowLevelBinds="true"/>
+  <ViewAccessor
+    Name="SupplierSiteDLovVO1"
+    ViewObjectName="od.tdmatch.model.lov.vendmootDship.SupplierSiteDLovVO"
+    RowLevelBinds="true"/>
+  <ViewAccessor
+    Name="VendorAssistantDLov1"
+    ViewObjectName="od.tdmatch.model.lov.vendmootDship.VendorAssistantDLov"
+    RowLevelBinds="true"/>
+  <ViewAccessor
+    Name="PoNumberLovVO1"
+    ViewObjectName="od.tdmatch.model.lov.vendmootDship.PoNumberLovVO"
+    RowLevelBinds="true"/>
+  <ViewAccessor
+    Name="YesNoLOV1"
+    ViewObjectName="od.tdmatch.model.reports.vo.lov.YesNoLOV"
+    RowLevelBinds="true"/>
+  <ViewAccessor
+    Name="OrgLovVO1"
+    ViewObjectName="od.tdmatch.model.lov.OrgLovVO"
+    RowLevelBinds="true"/>
+  <ViewAccessor
+    Name="PaymentStatusLOV1"
+    ViewObjectName="od.tdmatch.model.reports.vo.lov.PaymentStatusLOV"
+    RowLevelBinds="true"/>
+  <ViewAccessor
+    Name="SourceLOV1"
+    ViewObjectName="od.tdmatch.model.reports.vo.lov.SourceLOV"
+    RowLevelBinds="true"/>
+  <ViewAccessor
+    Name="InvoiceTypeLOV1"
+    ViewObjectName="od.tdmatch.model.reports.vo.lov.InvoiceTypeLOV"
+    RowLevelBinds="true"/>
+  <ViewAccessor
+    Name="PaymentStatusStaticLOV1"
+    ViewObjectName="od.tdmatch.model.reports.vo.lov.PaymentStatusStaticLOV"
+    RowLevelBinds="true"/>
+  <ViewAccessor
+    Name="PaymentNumberLOV1"
+    ViewObjectName="od.tdmatch.model.reports.vo.lov.PaymentNumberLOV"
+    RowLevelBinds="true"/>
+  <ViewAccessor
+    Name="InvoiceNumberLOV1"
+    ViewObjectName="od.tdmatch.model.reports.vo.lov.InvoiceNumberLOV"
+    RowLevelBinds="true"/>
+  <ListBinding
+    Name="LOV_SupplierName"
+    ListVOName="SupplierDLovVO1"
+    ComboRowCountHint="10"
+    NullValueFlag="none"
+    MRUCount="0">
+    <AttrArray Name="AttrNames">
+      <Item Value="SupplierName"/>
+    </AttrArray>
+    <AttrArray Name="AttrExpressions"/>
+    <AttrArray Name="DerivedAttrNames">
+      <Item Value="SupplierId"/>
+    </AttrArray>
+    <AttrArray Name="ListAttrNames">
+      <Item Value="Supplier"/>
+      <Item Value="VendorId"/>
+    </AttrArray>
+    <AttrArray Name="ListDisplayAttrNames">
+      <Item Value="Supplier"/>
+    </AttrArray>
+    <DisplayCriteria/>
+  </ListBinding>
+  <ListBinding
+    Name="LOV_SupplierNum"
+    ListVOName="SupplierDLovVO2"
+    ComboRowCountHint="10"
+    NullValueFlag="none"
+    MRUCount="0">
+    <AttrArray Name="AttrNames">
+      <Item Value="SupplierNum"/>
+    </AttrArray>
+    <AttrArray Name="AttrExpressions"/>
+    <AttrArray Name="DerivedAttrNames">
+      <Item Value="SupplierId"/>
+    </AttrArray>
+    <AttrArray Name="ListAttrNames">
+      <Item Value="SupplierNo"/>
+      <Item Value="VendorId"/>
+    </AttrArray>
+    <AttrArray Name="ListDisplayAttrNames">
+      <Item Value="SupplierNo"/>
+    </AttrArray>
+    <DisplayCriteria/>
+  </ListBinding>
+  <ListBinding
+    Name="LOV_SupplierSiteNum"
+    ListVOName="SupplierSiteDLovVO1"
+    ComboRowCountHint="10"
+    NullValueFlag="none"
+    MRUCount="0">
+    <AttrArray Name="AttrNames">
+      <Item Value="SupplierSiteNum"/>
+    </AttrArray>
+    <AttrArray Name="AttrExpressions"/>
+    <AttrArray Name="DerivedAttrNames">
+      <Item Value="SupplierStieId"/>
+    </AttrArray>
+    <AttrArray Name="ListAttrNames">
+      <Item Value="SupplierSiteCode"/>
+      <Item Value="VendorSiteId"/>
+    </AttrArray>
+    <AttrArray Name="ListDisplayAttrNames">
+      <Item Value="SupplierSiteCode"/>
+    </AttrArray>
+    <DisplayCriteria/>
+  </ListBinding>
+  <ListBinding
+    Name="LOV_VendorAssistant"
+    ListVOName="VendorAssistantDLov1"
+    ComboRowCountHint="10"
+    NullValueFlag="none"
+    MRUCount="0">
+    <AttrArray Name="AttrNames">
+      <Item Value="VendorAssistant"/>
+    </AttrArray>
+    <AttrArray Name="AttrExpressions"/>
+    <AttrArray Name="DerivedAttrNames">
+      <Item Value="VendAssCode"/>
+    </AttrArray>
+    <AttrArray Name="ListAttrNames">
+      <Item Value="VendorAssistant"/>
+      <Item Value="EmployeeNo"/>
+    </AttrArray>
+    <AttrArray Name="ListDisplayAttrNames">
+      <Item Value="VendorAssistant"/>
+    </AttrArray>
+    <DisplayCriteria/>
+  </ListBinding>
+  <ListBinding
+    Name="LOV_PoNum"
+    ListVOName="PoNumberLovVO1"
+    ComboRowCountHint="10"
+    NullValueFlag="none"
+    MRUCount="0">
+    <AttrArray Name="AttrNames">
+      <Item Value="PoNum"/>
+    </AttrArray>
+    <AttrArray Name="AttrExpressions"/>
+    <AttrArray Name="DerivedAttrNames">
+      <Item Value="PoHdrId"/>
+    </AttrArray>
+    <AttrArray Name="ListAttrNames">
+      <Item Value="PoNumber"/>
+      <Item Value="PoHeaderId"/>
+    </AttrArray>
+    <AttrArray Name="ListDisplayAttrNames">
+      <Item Value="PoNumber"/>
+    </AttrArray>
+    <DisplayCriteria/>
+  </ListBinding>
+  <ListBinding
+    Name="LOV_InvoiceValidated"
+    ListVOName="YesNoLOV1"
+    NullValueFlag="none"
+    MRUCount="0">
+    <AttrArray Name="AttrNames">
+      <Item Value="InvoiceValidated"/>
+    </AttrArray>
+    <AttrArray Name="AttrExpressions"/>
+    <AttrArray Name="ListAttrNames">
+      <Item Value="Id"/>
+    </AttrArray>
+    <AttrArray Name="ListDisplayAttrNames">
+      <Item Value="Value"/>
+    </AttrArray>
+    <DisplayCriteria/>
+  </ListBinding>
+  <ListBinding
+    Name="LOV_OrgName"
+    ListVOName="OrgLovVO1"
+    NullValueFlag="none"
+    MRUCount="0">
+    <AttrArray Name="AttrNames">
+      <Item Value="OrgName"/>
+    </AttrArray>
+    <AttrArray Name="AttrExpressions"/>
+    <AttrArray Name="DerivedAttrNames">
+      <Item Value="OrgId"/>
+    </AttrArray>
+    <AttrArray Name="ListAttrNames">
+      <Item Value="Name"/>
+      <Item Value="OrganizationId"/>
+    </AttrArray>
+    <AttrArray Name="ListDisplayAttrNames">
+      <Item Value="Name"/>
+    </AttrArray>
+    <DisplayCriteria/>
+  </ListBinding>
+  <ListBinding
+    Name="LOV_InvoiceSource"
+    ListVOName="SourceLOV1"
+    ComboRowCountHint="10"
+    NullValueFlag="none"
+    MRUCount="0">
+    <AttrArray Name="AttrNames">
+      <Item Value="InvoiceSource"/>
+    </AttrArray>
+    <AttrArray Name="AttrExpressions"/>
+    <AttrArray Name="ListAttrNames">
+      <Item Value="LookupCode"/>
+    </AttrArray>
+    <AttrArray Name="ListDisplayAttrNames">
+      <Item Value="LookupCode"/>
+    </AttrArray>
+    <DisplayCriteria/>
+  </ListBinding>
+  <ListBinding
+    Name="LOV_InvoiceType"
+    ListVOName="InvoiceTypeLOV1"
+    ComboRowCountHint="10"
+    NullValueFlag="none"
+    MRUCount="0">
+    <AttrArray Name="AttrNames">
+      <Item Value="InvoiceType"/>
+    </AttrArray>
+    <AttrArray Name="AttrExpressions"/>
+    <AttrArray Name="DerivedAttrNames">
+      <Item Value="InvoiceTypeCode"/>
+    </AttrArray>
+    <AttrArray Name="ListAttrNames">
+      <Item Value="DisplayedField"/>
+      <Item Value="LookupCode"/>
+    </AttrArray>
+    <AttrArray Name="ListDisplayAttrNames">
+      <Item Value="LookupCode"/>
+    </AttrArray>
+    <DisplayCriteria/>
+  </ListBinding>
+  <ListBinding
+    Name="LOV_PaymentStatus"
+    ListVOName="PaymentStatusStaticLOV1"
+    NullValueFlag="start"
+    NullValueId="LOV_PaymentStatus_LOVUIHints_NullValueId"
+    MRUCount="0">
+    <AttrArray Name="AttrNames">
+      <Item Value="PaymentStatus"/>
+    </AttrArray>
+    <AttrArray Name="AttrExpressions"/>
+    <AttrArray Name="ListAttrNames">
+      <Item Value="Id"/>
+    </AttrArray>
+    <AttrArray Name="ListDisplayAttrNames">
+      <Item Value="Value"/>
+    </AttrArray>
+    <DisplayCriteria/>
+  </ListBinding>
+  <ListBinding
+    Name="LOV_PaymentNum"
+    ListVOName="PaymentNumberLOV1"
+    ComboRowCountHint="10"
+    NullValueFlag="none"
+    MRUCount="0">
+    <AttrArray Name="AttrNames">
+      <Item Value="PaymentNum"/>
+    </AttrArray>
+    <AttrArray Name="AttrExpressions"/>
+    <AttrArray Name="ListAttrNames">
+      <Item Value="PaymentNumber"/>
+    </AttrArray>
+    <AttrArray Name="ListDisplayAttrNames">
+      <Item Value="PaymentNumber"/>
+    </AttrArray>
+    <DisplayCriteria/>
+  </ListBinding>
+  <SQLQuery><![CDATA[SELECT NULL SUPPLIER_NAME,    
+  NULL SUPPLIER_NUM,    
+  NULL SUPPLIER_SITE_NUM ,    
+  NULL VENDOR_ASSISTANT,    
+  NULL PO_NUM,    
+  NULL PO_DATE_RANGE_FROM,    
+  NULL PO_DATE_RANGE_TO,    
+  NULL INVOICE_SOURCE,    
+  NULL INVOICE_TYPE,    
+  NULL INVOICE_NUM,    
+  NULL INVOICE_DATE_RANGE_FROM,    
+  NULL INVOICE_DATE_RANGE_TO,    
+  NULL GL_DATE_RANGE_FROM,    
+  NULL GL_DATE_RANGE_TO,    
+  NULL PAYMENT_STATUS,    
+  NULL PAYMENT_NUM,    
+  NULL INVOICE_VALIDATED,   
+  NULL ORG_ID,  
+  NULL ORG_NAME, 
+  NULL PAY_DATE_RANGE_FROM, 
+  NULL PAY_DATE_RANGE_TO 
+FROM DUAL]]></SQLQuery>
+  <ViewAttribute
+    Name="SupplierName"
+    IsPersistent="false"
+    PrecisionRule="true"
+    Precision="255"
+    Type="java.lang.String"
+    ColumnType="VARCHAR2"
+    AliasName="SUPPLIER_NAME"
+    Expression="SUPPLIER_NAME"
+    SQLType="VARCHAR"
+    LOVName="LOV_SupplierName">
+    <Properties>
+      <SchemaBasedProperties>
+        <LABEL
+          ResId="od.tdmatch.model.reports.vo.XxApInvoicePaymentInquirySearchVO.SupplierName_LABEL"/>
+        <DISPLAYWIDTH
+          Value="20"/>
+        <CONTROLTYPE
+          Value="input_text_lov"/>
+      </SchemaBasedProperties>
+    </Properties>
+  </ViewAttribute>
+  <ViewAttribute
+    Name="SupplierNum"
+    IsPersistent="false"
+    PrecisionRule="true"
+    Type="java.lang.String"
+    ColumnType="VARCHAR2"
+    AliasName="SUPPLIER_NUM"
+    Expression="SUPPLIER_NUM"
+    SQLType="VARCHAR"
+    LOVName="LOV_SupplierNum">
+    <Properties>
+      <SchemaBasedProperties>
+        <LABEL
+          ResId="od.tdmatch.model.reports.vo.XxApInvoicePaymentInquirySearchVO.SupplierNum_LABEL"/>
+        <CONTROLTYPE
+          Value="input_text_lov"/>
+      </SchemaBasedProperties>
+    </Properties>
+  </ViewAttribute>
+  <ViewAttribute
+    Name="SupplierSiteNum"
+    IsPersistent="false"
+    PrecisionRule="true"
+    Type="java.lang.String"
+    ColumnType="VARCHAR2"
+    AliasName="SUPPLIER_SITE_NUM"
+    Expression="SUPPLIER_SITE_NUM"
+    SQLType="VARCHAR"
+    LOVName="LOV_SupplierSiteNum">
+    <Properties>
+      <SchemaBasedProperties>
+        <LABEL
+          ResId="od.tdmatch.model.reports.vo.XxApInvoicePaymentInquirySearchVO.SupplierSiteNum_LABEL"/>
+        <CONTROLTYPE
+          Value="input_text_lov"/>
+      </SchemaBasedProperties>
+    </Properties>
+  </ViewAttribute>
+  <ViewAttribute
+    Name="VendorAssistant"
+    IsPersistent="false"
+    PrecisionRule="true"
+    Type="java.lang.String"
+    ColumnType="VARCHAR2"
+    AliasName="VENDOR_ASSISTANT"
+    Expression="VENDOR_ASSISTANT"
+    SQLType="VARCHAR"
+    LOVName="LOV_VendorAssistant">
+    <Properties>
+      <SchemaBasedProperties>
+        <LABEL
+          ResId="od.tdmatch.model.reports.vo.XxApInvoicePaymentInquirySearchVO.VendorAssistant_LABEL"/>
+        <CONTROLTYPE
+          Value="input_text_lov"/>
+      </SchemaBasedProperties>
+    </Properties>
+  </ViewAttribute>
+  <ViewAttribute
+    Name="PoNum"
+    IsPersistent="false"
+    PrecisionRule="true"
+    Type="java.lang.String"
+    ColumnType="VARCHAR2"
+    AliasName="PO_NUM"
+    Expression="PO_NUM"
+    SQLType="VARCHAR"
+    LOVName="LOV_PoNum">
+    <Properties>
+      <SchemaBasedProperties>
+        <LABEL
+          ResId="od.tdmatch.model.reports.vo.XxApInvoicePaymentInquirySearchVO.PoNum_LABEL"/>
+        <CONTROLTYPE
+          Value="input_text_lov"/>
+      </SchemaBasedProperties>
+    </Properties>
+  </ViewAttribute>
+  <ViewAttribute
+    Name="PoDateRangeFrom"
+    IsPersistent="false"
+    PrecisionRule="true"
+    Type="oracle.jbo.domain.Date"
+    ColumnType="VARCHAR2"
+    AliasName="PO_DATE_RANGE_FROM"
+    Expression="PO_DATE_RANGE_FROM"
+    SQLType="DATE">
+    <Properties>
+      <SchemaBasedProperties>
+        <LABEL
+          ResId="od.tdmatch.model.reports.vo.XxApInvoicePaymentInquirySearchVO.PoDateRangeFrom_LABEL"/>
+        <FMT_FORMAT
+          ResId="od.tdmatch.model.reports.vo.XxApInvoicePaymentInquirySearchVO.PoDateRangeFrom_FMT_FORMAT"/>
+        <FMT_FORMATTER
+          ResId="od.tdmatch.model.reports.vo.XxApInvoicePaymentInquirySearchVO.PoDateRangeFrom_FMT_FORMATTER"/>
+      </SchemaBasedProperties>
+    </Properties>
+  </ViewAttribute>
+  <ViewAttribute
+    Name="PoDateRangeTo"
+    IsPersistent="false"
+    PrecisionRule="true"
+    Type="oracle.jbo.domain.Date"
+    ColumnType="VARCHAR2"
+    AliasName="PO_DATE_RANGE_TO"
+    Expression="PO_DATE_RANGE_TO"
+    SQLType="DATE">
+    <Properties>
+      <SchemaBasedProperties>
+        <FMT_FORMATTER
+          ResId="od.tdmatch.model.reports.vo.XxApInvoicePaymentInquirySearchVO.PoDateRangeTo_FMT_FORMATTER"/>
+        <FMT_FORMAT
+          ResId="od.tdmatch.model.reports.vo.XxApInvoicePaymentInquirySearchVO.PoDateRangeTo_FMT_FORMAT"/>
+      </SchemaBasedProperties>
+    </Properties>
+  </ViewAttribute>
+  <ViewAttribute
+    Name="InvoiceSource"
+    IsPersistent="false"
+    PrecisionRule="true"
+    Type="java.lang.String"
+    ColumnType="VARCHAR2"
+    AliasName="INVOICE_SOURCE"
+    Expression="INVOICE_SOURCE"
+    SQLType="VARCHAR"
+    LOVName="LOV_InvoiceSource">
+    <Properties>
+      <SchemaBasedProperties>
+        <LABEL
+          ResId="od.tdmatch.model.reports.vo.XxApInvoicePaymentInquirySearchVO.InvoiceSource_LABEL"/>
+        <CONTROLTYPE
+          Value="input_text_lov"/>
+      </SchemaBasedProperties>
+    </Properties>
+  </ViewAttribute>
+  <ViewAttribute
+    Name="InvoiceType"
+    IsPersistent="false"
+    PrecisionRule="true"
+    Type="java.lang.String"
+    ColumnType="VARCHAR2"
+    AliasName="INVOICE_TYPE"
+    Expression="INVOICE_TYPE"
+    SQLType="VARCHAR"
+    LOVName="LOV_InvoiceType">
+    <Properties>
+      <SchemaBasedProperties>
+        <LABEL
+          ResId="od.tdmatch.model.reports.vo.XxApInvoicePaymentInquirySearchVO.InvoiceType_LABEL"/>
+        <CONTROLTYPE
+          Value="input_text_lov"/>
+      </SchemaBasedProperties>
+    </Properties>
+  </ViewAttribute>
+  <ViewAttribute
+    Name="InvoiceNum"
+    IsPersistent="false"
+    PrecisionRule="true"
+    Type="java.lang.String"
+    ColumnType="VARCHAR2"
+    AliasName="INVOICE_NUM"
+    Expression="INVOICE_NUM"
+    SQLType="VARCHAR">
+    <Properties>
+      <SchemaBasedProperties>
+        <LABEL
+          ResId="od.tdmatch.model.reports.vo.XxApInvoicePaymentInquirySearchVO.InvoiceNum_LABEL"/>
+      </SchemaBasedProperties>
+    </Properties>
+  </ViewAttribute>
+  <ViewAttribute
+    Name="InvoiceDateRangeFrom"
+    IsPersistent="false"
+    PrecisionRule="true"
+    Type="oracle.jbo.domain.Date"
+    ColumnType="VARCHAR2"
+    AliasName="INVOICE_DATE_RANGE_FROM"
+    Expression="INVOICE_DATE_RANGE_FROM"
+    SQLType="DATE">
+    <Properties>
+      <SchemaBasedProperties>
+        <LABEL
+          ResId="od.tdmatch.model.reports.vo.XxApInvoicePaymentInquirySearchVO.InvoiceDateRangeFrom_LABEL"/>
+        <FMT_FORMATTER
+          ResId="od.tdmatch.model.reports.vo.XxApInvoicePaymentInquirySearchVO.InvoiceDateRangeFrom_FMT_FORMATTER"/>
+        <FMT_FORMAT
+          ResId="od.tdmatch.model.reports.vo.XxApInvoicePaymentInquirySearchVO.InvoiceDateRangeFrom_FMT_FORMAT"/>
+      </SchemaBasedProperties>
+    </Properties>
+  </ViewAttribute>
+  <ViewAttribute
+    Name="InvoiceDateRangeTo"
+    IsPersistent="false"
+    PrecisionRule="true"
+    Type="oracle.jbo.domain.Date"
+    ColumnType="VARCHAR2"
+    AliasName="INVOICE_DATE_RANGE_TO"
+    Expression="INVOICE_DATE_RANGE_TO"
+    SQLType="DATE">
+    <Properties>
+      <SchemaBasedProperties>
+        <FMT_FORMATTER
+          ResId="od.tdmatch.model.reports.vo.XxApInvoicePaymentInquirySearchVO.InvoiceDateRangeTo_FMT_FORMATTER"/>
+        <FMT_FORMAT
+          ResId="od.tdmatch.model.reports.vo.XxApInvoicePaymentInquirySearchVO.InvoiceDateRangeTo_FMT_FORMAT"/>
+      </SchemaBasedProperties>
+    </Properties>
+  </ViewAttribute>
+  <ViewAttribute
+    Name="GlDateRangeFrom"
+    IsPersistent="false"
+    PrecisionRule="true"
+    Type="oracle.jbo.domain.Date"
+    ColumnType="VARCHAR2"
+    AliasName="GL_DATE_RANGE_FROM"
+    Expression="GL_DATE_RANGE_FROM"
+    SQLType="DATE">
+    <Properties>
+      <SchemaBasedProperties>
+        <LABEL
+          ResId="od.tdmatch.model.reports.vo.XxApInvoicePaymentInquirySearchVO.GlDateRangeFrom_LABEL"/>
+        <FMT_FORMATTER
+          ResId="od.tdmatch.model.reports.vo.XxApInvoicePaymentInquirySearchVO.GlDateRangeFrom_FMT_FORMATTER"/>
+        <FMT_FORMAT
+          ResId="od.tdmatch.model.reports.vo.XxApInvoicePaymentInquirySearchVO.GlDateRangeFrom_FMT_FORMAT"/>
+      </SchemaBasedProperties>
+    </Properties>
+  </ViewAttribute>
+  <ViewAttribute
+    Name="GlDateRangeTo"
+    IsPersistent="false"
+    PrecisionRule="true"
+    Type="oracle.jbo.domain.Date"
+    ColumnType="VARCHAR2"
+    AliasName="GL_DATE_RANGE_TO"
+    Expression="GL_DATE_RANGE_TO"
+    SQLType="DATE">
+    <Properties>
+      <SchemaBasedProperties>
+        <FMT_FORMATTER
+          ResId="od.tdmatch.model.reports.vo.XxApInvoicePaymentInquirySearchVO.GlDateRangeTo_FMT_FORMATTER"/>
+        <FMT_FORMAT
+          ResId="od.tdmatch.model.reports.vo.XxApInvoicePaymentInquirySearchVO.GlDateRangeTo_FMT_FORMAT"/>
+      </SchemaBasedProperties>
+    </Properties>
+  </ViewAttribute>
+  <ViewAttribute
+    Name="PaymentStatus"
+    IsPersistent="false"
+    PrecisionRule="true"
+    Type="java.lang.String"
+    ColumnType="VARCHAR2"
+    AliasName="PAYMENT_STATUS"
+    Expression="PAYMENT_STATUS"
+    SQLType="VARCHAR"
+    LOVName="LOV_PaymentStatus">
+    <Properties>
+      <SchemaBasedProperties>
+        <LABEL
+          ResId="od.tdmatch.model.reports.vo.XxApInvoicePaymentInquirySearchVO.PaymentStatus_LABEL"/>
+        <CONTROLTYPE
+          Value="choice"/>
+      </SchemaBasedProperties>
+    </Properties>
+  </ViewAttribute>
+  <ViewAttribute
+    Name="PaymentNum"
+    IsPersistent="false"
+    PrecisionRule="true"
+    Type="java.lang.String"
+    ColumnType="VARCHAR2"
+    AliasName="PAYMENT_NUM"
+    Expression="PAYMENT_NUM"
+    SQLType="VARCHAR"
+    LOVName="LOV_PaymentNum">
+    <Properties>
+      <SchemaBasedProperties>
+        <LABEL
+          ResId="od.tdmatch.model.reports.vo.XxApInvoicePaymentInquirySearchVO.PaymentNum_LABEL"/>
+        <CONTROLTYPE
+          Value="input_text_lov"/>
+      </SchemaBasedProperties>
+    </Properties>
+  </ViewAttribute>
+  <ViewAttribute
+    Name="InvoiceValidated"
+    IsPersistent="false"
+    PrecisionRule="true"
+    Type="java.lang.String"
+    ColumnType="VARCHAR2"
+    AliasName="INVOICE_VALIDATED"
+    Expression="INVOICE_VALIDATED"
+    SQLType="VARCHAR"
+    LOVName="LOV_InvoiceValidated">
+    <Properties>
+      <SchemaBasedProperties>
+        <CONTROLTYPE
+          Value="choice"/>
+        <LABEL
+          ResId="od.tdmatch.model.reports.vo.XxApInvoicePaymentInquirySearchVO.InvoiceValidated_LABEL"/>
+      </SchemaBasedProperties>
+    </Properties>
+  </ViewAttribute>
+  <ViewAttribute
+    Name="OrgId"
+    IsPersistent="false"
+    PrecisionRule="true"
+    Type="oracle.jbo.domain.Number"
+    ColumnType="VARCHAR2"
+    AliasName="ORG_ID"
+    Expression="ORG_ID"
+    SQLType="NCLOB">
+    <Properties>
+      <SchemaBasedProperties>
+        <LABEL
+          ResId="od.tdmatch.model.reports.vo.XxApInvoicePaymentInquirySearchVO.OrgId_LABEL"/>
+      </SchemaBasedProperties>
+    </Properties>
+  </ViewAttribute>
+  <ViewAttribute
+    Name="OrgName"
+    IsPersistent="false"
+    PrecisionRule="true"
+    Type="java.lang.String"
+    ColumnType="VARCHAR2"
+    AliasName="ORG_NAME"
+    Expression="ORG_NAME"
+    SQLType="VARCHAR"
+    LOVName="LOV_OrgName">
+    <Properties>
+      <SchemaBasedProperties>
+        <CONTROLTYPE
+          Value="choice"/>
+        <LABEL
+          ResId="od.tdmatch.model.reports.vo.XxApInvoicePaymentInquirySearchVO.OrgName_LABEL"/>
+        <DISPLAYWIDTH
+          Value="10"/>
+      </SchemaBasedProperties>
+    </Properties>
+  </ViewAttribute>
+  <ViewAttribute
+    Name="PayDateRangeFrom"
+    IsUpdateable="false"
+    IsPersistent="false"
+    PrecisionRule="true"
+    Type="oracle.jbo.domain.Date"
+    ColumnType="VARCHAR2"
+    AliasName="PAY_DATE_RANGE_FROM"
+    Expression="PAY_DATE_RANGE_FROM"
+    SQLType="DATE"/>
+  <ViewAttribute
+    Name="PayDateRangeTo"
+    IsUpdateable="false"
+    IsPersistent="false"
+    PrecisionRule="true"
+    Type="oracle.jbo.domain.Date"
+    ColumnType="VARCHAR2"
+    AliasName="PAY_DATE_RANGE_TO"
+    Expression="PAY_DATE_RANGE_TO"
+    SQLType="DATE"/>
+  <ViewAttribute
+    Name="SupplierId"
+    IsSelected="false"
+    IsPersistent="false"
+    PrecisionRule="true"
+    Type="oracle.jbo.domain.Number"
+    ColumnType="NUMBER"
+    AliasName="VIEW_ATTR"
+    SQLType="NUMERIC"/>
+  <ViewAttribute
+    Name="SupplierStieId"
+    IsSelected="false"
+    IsPersistent="false"
+    PrecisionRule="true"
+    Type="oracle.jbo.domain.Number"
+    ColumnType="NUMBER"
+    AliasName="VIEW_ATTR"
+    SQLType="NUMERIC"/>
+  <ViewAttribute
+    Name="VendAssCode"
+    IsSelected="false"
+    IsPersistent="false"
+    PrecisionRule="true"
+    Precision="255"
+    Type="java.lang.String"
+    ColumnType="VARCHAR2"
+    AliasName="VIEW_ATTR"
+    SQLType="VARCHAR"/>
+  <ViewAttribute
+    Name="PoHdrId"
+    IsSelected="false"
+    IsPersistent="false"
+    PrecisionRule="true"
+    Type="oracle.jbo.domain.Number"
+    ColumnType="NUMBER"
+    AliasName="VIEW_ATTR"
+    SQLType="NUMERIC"/>
+  <ViewAttribute
+    Name="InvoiceTypeCode"
+    IsSelected="false"
+    IsPersistent="false"
+    PrecisionRule="true"
+    Precision="255"
+    Type="java.lang.String"
+    ColumnType="VARCHAR2"
+    AliasName="VIEW_ATTR"
+    SQLType="VARCHAR"/>
+  <ResourceBundle>
+    <PropertiesBundle
+      PropertiesFile="od.tdmatch.model.ModelBundle"/>
+  </ResourceBundle>
+</ViewObject>

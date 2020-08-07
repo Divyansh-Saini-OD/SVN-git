@@ -1,0 +1,49 @@
+REM================================================================================================
+REM                                 Start Of Script
+REM================================================================================================
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     OFF
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+-- +=======================================================================+
+-- |               Office Depot - Project Simplify                         |
+-- |      Oracle NAIO/Office Depot/Consulting Organization                 |
+-- +=======================================================================+
+-- | Name             :XX_PO_GSS_PO_NUMBER_S                               |
+-- | Description      :Drop Custom Sequence XX_PO_GSS_PO_NUMBER_S for      |
+-- |                   E0406_PO_ROQ_PreProcessor                           |
+-- |                                                                       |
+-- |Change History:                                                        |
+-- |---------------                                                        |
+-- |                                                                       |
+-- |Version  Date        Author             Remarks                        |
+-- |-------  ----------- -----------------  -------------------------------|
+-- |Draft1a  02-Aug-2007 Remya Sasi         Initial Draft Version          |
+-- |1.0      02-Aug-2007 Remya Sasi         Baselined                      |
+-- +=======================================================================+
+
+PROMPT
+PROMPT Dropping Existing Sequence xx_po_gss_po_number_s....
+PROMPT
+-- ----------------------------------------------------------------------
+-- Drop Custom sequence
+-- ----------------------------------------------------------------------
+DROP SEQUENCE xx_po_gss_po_number_s;
+
+PROMPT
+PROMPT Exiting....
+PROMPT
+
+
+SHOW ERRORS;
+
+EXIT;
+REM=================================================================================================
+REM                                   End Of Script
+REM=================================================================================================
+
+
+

@@ -1,0 +1,89 @@
+<?xml version='1.0' encoding='windows-1252' ?>
+<!DOCTYPE ViewObject SYSTEM "jbo_03_01.dtd">
+
+<ViewObject
+   Name="ODEBillTxtConcTrlLOVVO"
+   OrderBy="meaning, seq"
+   BindingStyle="OracleName"
+   CustomQuery="true"
+   RowClass="oracle.apps.fnd.framework.server.OAViewRowImpl"
+   ComponentClass="od.oracle.apps.xxcrm.cdh.ebl.ebltxtmain.lov.server.ODEBillTxtConcTrlLOVVOImpl"
+   UseGlueCode="false" >
+   <SQLQuery><![CDATA[
+select Trl.field_id code, NVL(Trl.label, val.source_value2) meaning, Trl.cust_doc_id, Trl.seq
+from XX_CDH_EBL_TEMPL_Trl_TXT Trl,
+     xx_fin_translatedefinition def, 
+     xx_fin_translatevalues val
+WHERE 1=1
+   AND def.translate_id = val.translate_id
+   AND def.translation_name = 'XX_CDH_EBL_TXT_TRL_FIELDS'
+   AND val.enabled_flag = 'Y'
+   AND val.source_value1 IS NOT NULL
+   AND val.source_value2 IS NOT NULL
+   and val.source_value1=Trl.FIELD_ID   
+and Trl.cust_doc_id=:1
+   ]]></SQLQuery>
+   <DesignTime>
+      <Attr Name="_isExpertMode" Value="true" />
+      <Attr Name="_version" Value="10.1.3.41.57" />
+      <Attr Name="_codeGenFlag2" Value="Access|Coll|VarAccess" />
+   </DesignTime>
+   <ViewAttribute
+      Name="Code"
+      IsPersistent="false"
+      IsNotNull="true"
+      Precision="15"
+      Scale="0"
+      Type="oracle.jbo.domain.Number"
+      ColumnType="NUMBER"
+      AliasName="CODE"
+      Expression="CODE"
+      SQLType="NUMERIC" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Meaning"
+      IsPersistent="false"
+      Precision="256"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="MEANING"
+      Expression="MEANING"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="256" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="CustDocId"
+      IsPersistent="false"
+      IsNotNull="true"
+      Precision="15"
+      Scale="0"
+      Type="oracle.jbo.domain.Number"
+      ColumnType="NUMBER"
+      AliasName="CUST_DOC_ID"
+      Expression="CUST_DOC_ID"
+      SQLType="NUMERIC" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Seq"
+      IsPersistent="false"
+      IsNotNull="true"
+      Precision="15"
+      Scale="0"
+      Type="oracle.jbo.domain.Number"
+      ColumnType="NUMBER"
+      AliasName="SEQ"
+      Expression="SEQ"
+      SQLType="NUMERIC" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </ViewAttribute>
+</ViewObject>

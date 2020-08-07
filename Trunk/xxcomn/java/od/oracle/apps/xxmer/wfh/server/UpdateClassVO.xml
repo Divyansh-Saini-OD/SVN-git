@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding='windows-1252'?>
+<!DOCTYPE ViewObject SYSTEM "jbo_03_01.dtd">
+
+<ViewObject
+   Name="UpdateClassVO"
+   BindingStyle="Oracle"
+   CustomQuery="true"
+   RowClass="od.oracle.apps.xxmer.wfh.server.UpdateClassVORowImpl"
+   ComponentClass="od.oracle.apps.xxmer.wfh.server.UpdateClassVOImpl"
+   MsgBundleClass="oracle.jbo.common.JboResourceBundle"
+   UseGlueCode="false" >
+   <SQLQuery><![CDATA[
+SELECT ClassEO.ORG_ID, 
+       ClassEO.MERCH_CLASS_ID, 
+       MerchClass.DESCRIPTION AS Merch_Class_Description,
+       ClassEO.PLANNER_ID,
+       EMPL.FIRST_NAME || ' ' || EMPL.LAST_NAME AS Planner_Name
+  FROM XX_WFH_CLASS_ALL ClassEO LEFT OUTER JOIN XX_TEMP_WFH_EMPLOYEE EMPL
+       ON ClassEO.PLANNER_ID = EMPL.EMPLOYEE_ID
+     , XX_WFH_MERCH_CLASS MerchClass
+ WHERE ClassEO.ORG_ID = 141
+   AND ClassEO.MERCH_CLASS_ID = :1
+   AND ClassEO.MERCH_CLASS_ID = MerchClass.MERCH_CLASS_ID
+   ]]></SQLQuery>
+   <DesignTime>
+      <Attr Name="_isCodegen" Value="true" />
+      <Attr Name="_version" Value="9.0.3.13.75" />
+      <Attr Name="_CodeGenFlagNew" Value="36" />
+   </DesignTime>
+   <EntityUsage
+      Name="ClassEO"
+      Entity="od.oracle.apps.xxmer.schema.wfh.server.ClassEO" >
+      <DesignTime>
+         <Attr Name="_EntireObjectTable" Value="false" />
+         <Attr Name="_queryClause" Value="false" />
+      </DesignTime>
+   </EntityUsage>
+   <ViewAttribute
+      Name="OrgId"
+      IsNotNull="true"
+      EntityAttrName="OrgId"
+      EntityUsage="ClassEO"
+      AliasName="ORG_ID"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="MerchClassId"
+      IsNotNull="true"
+      EntityAttrName="MerchClassId"
+      EntityUsage="ClassEO"
+      AliasName="MERCH_CLASS_ID"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="MerchClassDescription"
+      IsUpdateable="false"
+      IsPersistent="false"
+      Precision="50"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      Expression="MerchClassDescription"
+      SQLType="VARCHAR" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="PlannerId"
+      EntityAttrName="PlannerId"
+      EntityUsage="ClassEO"
+      AliasName="PlannerId"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="PlannerName"
+      IsUpdateable="false"
+      IsPersistent="false"
+      Precision="51"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      Expression="PlannerName"
+      SQLType="VARCHAR" >
+   </ViewAttribute>
+</ViewObject>

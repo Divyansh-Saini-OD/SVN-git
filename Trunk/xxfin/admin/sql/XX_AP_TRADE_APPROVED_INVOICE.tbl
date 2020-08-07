@@ -1,0 +1,57 @@
+SET VERIFY OFF;
+SET SHOW OFF;
+SET ECHO OFF;
+SET TAB OFF;
+SET FEEDBACK OFF;
+ 
+WHENEVER SQLERROR CONTINUE;
+ 
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+-- +===========================================================================+
+-- |                  Office Depot - Project Simplify                          |
+-- +===========================================================================+
+-- | Name :          XXFIN.XX_AP_TRADE_APPROVED_INVOICE                        |
+-- | Description :   Script to create XXFIN.XX_AP_TRADE_APPROVED_INVOICE  table|
+-- |                                                                           |
+-- |                                                                           |
+-- |Change Record:                                                             |
+-- |===============                                                            |
+-- |Version      Date           Author                  Remarks                |
+-- |=======    ==========     =============             ====================== |
+-- |  1.0      18-JAN-2018    Digamber Somavanshi  Initial draft version       |
+-- +===========================================================================+
+
+ 
+--+=====================================================================+
+--+      CREATE TABLE        XX_AP_TRADE_APPROVED_INVOICE                +
+--+=====================================================================+
+
+CREATE TABLE XX_AP_TRADE_APPROVED_INVOICE 
+   (	
+    ORG_ID NUMBER, 
+	INVOICE_ID NUMBER, 
+	INVOICE_NUM VARCHAR2(50), 
+	APPROVAL_STATUS VARCHAR2(100), 
+	VENDOR_ID NUMBER, 
+	VENDOR_SITE_ID NUMBER, 
+	INVOICE_DATE DATE, 
+	GL_DATE DATE, 
+	CREATION_DATE DATE, 
+	LAST_UPDATE_DATE DATE, 
+	TRADE_SOURCE VARCHAR2(250), 
+	INVOICE_SOURCE VARCHAR2(250), 
+	INVOICE_TYPE VARCHAR2(50), 
+	QUICK_PO_HEADER_ID NUMBER, 
+	PO_HEADER_ID NUMBER, 
+	INVOICE_AMOUNT NUMBER
+   )  ;   
+   
+Grant  all on XX_AP_TRADE_APPROVED_INVOICE to APPS;
+
+   /
+Show error
+
+
+
+
+

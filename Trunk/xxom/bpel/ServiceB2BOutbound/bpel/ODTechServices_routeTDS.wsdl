@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wsdl:definitions xmlns:tns="http://schemas.officedepot.com/ODTechServices/routeTDS" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/" xmlns:http="http://schemas.xmlsoap.org/wsdl/http/" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" name="routeTDS" targetNamespace="http://schemas.officedepot.com/ODTechServices/routeTDS">
+  <wsdl:types>
+    <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:tns="http://schemas.officedepot.com/ODTechServices/routeTDS" targetNamespace="http://schemas.officedepot.com/ODTechServices/routeTDS">
+          <!--<xsd:element name="ODTechServiceRequest" type="xsd:string"/> -->
+          <xsd:element name="ODTechServiceRequest" type="xsd:string"/> 
+          <xsd:complexType name="routeTDS">
+            <xsd:sequence>
+              <xsd:element name="TDSRequest" nillable="true" type="tns:ODTechServiceRequest"/>
+            </xsd:sequence>
+          </xsd:complexType>
+          <xsd:complexType name="ODTechServiceRequest">
+            <xsd:sequence>
+              <xsd:element ref="tns:ODTechServiceRequest"/>
+            </xsd:sequence>
+          </xsd:complexType>
+          <xsd:complexType name="routeTDSResponse">
+            <xsd:sequence>
+              <xsd:element name="TDSResponse" nillable="true" type="tns:ODTechServiceResponse"/>
+            </xsd:sequence>
+          </xsd:complexType>
+          <xsd:complexType name="ODTechServiceResponse">
+            <xsd:sequence>
+              <xsd:element name="serviceId" form="qualified" type="xsd:string"/>
+              <xsd:element name="success" form="qualified" type="xsd:boolean"/>
+              <xsd:element name="serviceLink" form="qualified" type="xsd:string" minOccurs="0"/>
+              <xsd:element name="message" form="qualified" type="xsd:string" minOccurs="0"/>
+            </xsd:sequence>
+          </xsd:complexType>
+        			<xsd:element name="routeTDS" type="tns:routeTDS"/>
+			<xsd:element name="routeTDSResponse" type="tns:routeTDSResponse"/>
+	</xsd:schema>
+  </wsdl:types>
+  <wsdl:message name="routeTDS_PortType_routeTDSResponse">
+    <wsdl:part name="parameters" element="tns:routeTDSResponse">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="routeTDS_PortType_routeTDS">
+    <wsdl:part name="parameters" element="tns:routeTDS">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:portType name="routeTDS_PortType">
+    <wsdl:operation name="routeTDS">
+      <wsdl:input message="tns:routeTDS_PortType_routeTDS">
+    </wsdl:input>
+      <wsdl:output message="tns:routeTDS_PortType_routeTDSResponse">
+    </wsdl:output>
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="ODTechServices_routeTDS_Binder" type="tns:routeTDS_PortType">
+    <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+    <wsdl:operation name="routeTDS">
+      <soap:operation soapAction="ODTechServices_routeTDS_Binder_routeTDS" style="document"/>
+      <wsdl:input>
+        <soap:body parts="parameters" use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body parts="parameters" use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="routeTDS">
+    <wsdl:port name="ODTechServices_routeTDS_Port" binding="tns:ODTechServices_routeTDS_Binder">
+      <!--<soap:address location="https://b2bedi.officedepot.com:443/ws/ODTechServices:routeTDS"/>-->
+      <soap:address location="http://webmethods.service.url/ws/ODTechServices:routeTDS"/> 
+      <!--<soap:address location="http://eidev.uschecomrnd.net:5080/ws/ODTechServices:routeTDS"/>-->
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>

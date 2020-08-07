@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="windows-1252" ?>
+<!DOCTYPE ViewLink SYSTEM "jbo_03_01.dtd">
+<!---->
+<ViewLink
+  xmlns="http://xmlns.oracle.com/bc4j"
+  Name="ApHoldsXXApInvoiceHoldsVL"
+  Version="12.2.1.12.24"
+  InheritPersonalization="merge">
+  <Properties>
+    <SchemaBasedProperties>
+      <LABEL
+        ResId="od.tdmatch.model.ApHoldsXXApInvoiceHoldsVL_LABEL"/>
+    </SchemaBasedProperties>
+  </Properties>
+  <ViewLinkDefEnd
+    Name="ApHoldsVO"
+    Cardinality="1"
+    Source="true"
+    Owner="od.tdmatch.model.ApHoldsVO">
+    <DesignTime>
+      <Attr Name="_isUpdateable" Value="true"/>
+      <Attr Name="_finderName" Value="ApHoldsVO"/>
+    </DesignTime>
+    <AttrArray Name="Attributes">
+      <Item Value="od.tdmatch.model.ApHoldsVO.HoldId"/>
+    </AttrArray>
+  </ViewLinkDefEnd>
+  <ViewLinkDefEnd
+    Name="XXApInvoiceHoldsVO"
+    Cardinality="-1"
+    Owner="od.tdmatch.model.XXApInvoiceHoldsVO">
+    <DesignTime>
+      <Attr Name="_isUpdateable" Value="true"/>
+      <Attr Name="_finderName" Value="XXApInvoiceHoldsVO"/>
+    </DesignTime>
+    <AttrArray Name="Attributes">
+      <Item Value="od.tdmatch.model.XXApInvoiceHoldsVO.HoldId"/>
+    </AttrArray>
+  </ViewLinkDefEnd>
+  <ResourceBundle>
+    <PropertiesBundle
+      PropertiesFile="od.tdmatch.model.ModelBundle"/>
+  </ResourceBundle>
+</ViewLink>

@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="windows-1252" ?>
+<!DOCTYPE ViewObject SYSTEM "jbo_03_01.dtd">
+<!---->
+<ViewObject
+  xmlns="http://xmlns.oracle.com/bc4j"
+  Name="VendorAssistantDLov"
+  Version="12.2.1.12.24"
+  InheritPersonalization="merge"
+  BindingStyle="OracleName"
+  CustomQuery="true"
+  RowClass="od.tdmatch.model.lov.vendmootDship.VendorAssistantDLovRowImpl"
+  ComponentClass="od.tdmatch.model.lov.vendmootDship.VendorAssistantDLovImpl"
+  FetchMode="FETCH_AS_NEEDED"
+  PageIterMode="Full">
+  <DesignTime>
+    <Attr Name="_codeGenFlag2" Value="Coll"/>
+    <Attr Name="_isExpertMode" Value="true"/>
+    <Attr Name="_isCodegen" Value="true"/>
+  </DesignTime>
+  <Properties>
+    <SchemaBasedProperties>
+      <LABEL
+        ResId="od.tdmatch.model.lov.vendmootDship.VendorAssistantDLov_LABEL"/>
+    </SchemaBasedProperties>
+  </Properties>
+  <SQLQuery><![CDATA[SELECT  b.target_value1 employee_no           
+                                ,b.target_value2 vendor_assistant           
+  FROM  xx_fin_translatevalues b           
+       ,xx_fin_translatedefinition a              
+ WHERE EXISTS (SELECT  /*+ LEADING(h) */    
+                    'x'           
+                 FROM  ap_supplier_sites_all site,           
+                       ap_invoices_all ai,           
+                       (SELECT distinct invoice_id           
+                          FROM ap_holds_all            
+                         WHERE creation_date > '01-JAN-11'            
+                           AND NVL(status_flag,'S')= 'S'           
+                       ) h           
+                WHERE ai.invoice_id=h.invoice_id         
+                  AND ai.invoice_num not like '%ODDBUIA'  
+                  AND ai.creation_date>'01-JAN-11'           
+                  AND ai.cancelled_date IS NULL           
+                  AND ai.source='US_OD_DROPSHIP'   
+                  AND site.vendor_site_id+0=ai.vendor_site_id           
+                  AND exists (SELECT 'x'  
+                             FROM xx_fin_translatevalues tv,                                                                   
+                                  xx_fin_translatedefinition td                   
+                            WHERE td.translation_name = 'XX_AP_TRADE_CATEGORIES'                                                                    
+                              AND tv.translate_id  = td.translate_id                                                                   
+                              AND tv.enabled_flag = 'Y'                                                                   
+                              AND sysdate between tv.start_date_active and nvl(tv.end_date_active,sysdate)  
+                              AND tv.target_value1 = site.attribute8)           
+                  AND site.attribute6=b.target_value1         
+                  AND EXISTS (SELECT  'x'                                                   
+					         	FROM po_lines_all pl                                                   
+					           WHERE pl.po_header_id = NVL(ai.po_header_id,ai.quick_po_header_id)                                                   
+                             )            
+               )                                      
+   AND a.TRANSLATION_NAME = 'XX_AP_VENDOR_ASSISTANTS'            
+   AND b.TRANSLATE_ID  = a.TRANSLATE_ID           
+   AND b.enabled_flag='Y'           
+   AND SYSDATE BETWEEN b.start_date_active and NVL(b.end_date_active,sysdate)]]></SQLQuery>
+  <ViewAttribute
+    Name="EmployeeNo"
+    IsUpdateable="false"
+    IsPersistent="false"
+    PrecisionRule="true"
+    Precision="255"
+    Type="java.lang.String"
+    ColumnType="VARCHAR2"
+    AliasName="EMPLOYEE_NO"
+    Expression="EMPLOYEE_NO"
+    SQLType="VARCHAR">
+    <DesignTime>
+      <Attr Name="_DisplaySize" Value="240"/>
+    </DesignTime>
+    <Properties>
+      <SchemaBasedProperties>
+        <LABEL
+          ResId="od.tdmatch.model.lov.vendmootDship.VendorAssistantDLov.EmployeeNo_LABEL"/>
+        <DISPLAYWIDTH
+          Value="15"/>
+      </SchemaBasedProperties>
+    </Properties>
+  </ViewAttribute>
+  <ViewAttribute
+    Name="VendorAssistant"
+    IsUpdateable="false"
+    IsPersistent="false"
+    PrecisionRule="true"
+    Precision="240"
+    Type="java.lang.String"
+    ColumnType="VARCHAR2"
+    AliasName="VENDOR_ASSISTANT"
+    Expression="VENDOR_ASSISTANT"
+    SQLType="VARCHAR">
+    <DesignTime>
+      <Attr Name="_DisplaySize" Value="240"/>
+    </DesignTime>
+    <Properties>
+      <SchemaBasedProperties>
+        <LABEL
+          ResId="od.tdmatch.model.lov.vendmootDship.VendorAssistantDLov.VendorAssistant_LABEL"/>
+        <DISPLAYWIDTH
+          Value="30"/>
+      </SchemaBasedProperties>
+    </Properties>
+  </ViewAttribute>
+  <AttrArray Name="KeyAttributes">
+    <Item Value="EmployeeNo"/>
+  </AttrArray>
+  <ResourceBundle>
+    <PropertiesBundle
+      PropertiesFile="od.tdmatch.model.ModelBundle"/>
+  </ResourceBundle>
+</ViewObject>

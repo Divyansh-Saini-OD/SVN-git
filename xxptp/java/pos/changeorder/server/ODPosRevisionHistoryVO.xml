@@ -1,0 +1,679 @@
+<?xml version="1.0" encoding='windows-1252'?>
+<!DOCTYPE ViewObject SYSTEM "jbo_03_01.dtd">
+
+<ViewObject
+   Name="ODPosRevisionHistoryVO"
+   Extends="oracle.apps.pos.changeorder.server.PosRevisionHistoryVO"
+   BindingStyle="Oracle"
+   CustomQuery="true"
+   RowClass="od.oracle.apps.xxptp.pos.changeorder.server.ODPosRevisionHistoryVORowImpl"
+   ComponentClass="oracle.apps.pos.changeorder.server.PosRevisionHistoryVOImpl"
+   MsgBundleClass="oracle.jbo.common.JboResourceBundle"
+   UseGlueCode="false" >
+   <SQLQuery><![CDATA[
+SELECT poh.comments,
+  poh.revised_date,
+  poh.revision_num,
+  poh.agent_id,
+  poh.bill_to_location_id,
+  poh.po_header_id,
+  poh.ship_to_location_id,
+  poh.vendor_contact_id,
+  poh.vendor_id,
+  poh.vendor_site_id,
+  nvl(poh.closed_code,   'OPEN') closed_code,
+  poh.currency_code,
+  poh.type_lookup_code,
+  poh.segment1 po_num,
+  poh.segment1 ponum_relnum,
+  decode(poh.type_lookup_code,   'BLANKET',   decode(poh.global_agreement_flag,   'Y',   fnd_message_cache.get_string('POS',   'POS_POTYPE_GBLA'),   fnd_message_cache.get_string('POS',   'POS_POTYPE_BLKT')),   'CONTRACT',   fnd_message_cache.get_string('POS',   'POS_POTYPE_CNTR'),   'STANDARD',   fnd_message_cache.get_string('POS',   'POS_POTYPE_STD'),   'PLANNED',   fnd_message_cache.get_string('POS',   'POS_POTYPE_PLND')) TYPE_NAME,
+  NULL buyer_name,
+  v.vendor_name,
+  vs.vendor_site_code,
+  NULL location_code,
+  NULL authorization_status,
+  NULL document_state,
+  to_number(NULL) release_num,
+  NULL release_type,
+  to_number(NULL) po_release_id,
+  NULL total,
+  poh.org_id,
+  hou.name,
+  poh.creation_date,
+  poh.global_agreement_flag,
+  NULL last_sign_type,
+  poh.attribute_category po_type,
+    (SELECT full_name
+   FROM per_people_f
+   WHERE person_id = fnd.employee_id
+    AND  trunc(sysdate) between trunc(effective_start_date) and trunc(effective_end_date))
+AS
+modified_by_user ,
+fdfc.descriptive_flex_context_name po_type_name,
+fdfc.row_id,
+(SELECT  employee_number
+ FROM per_people_f
+ WHERE person_id = fnd.employee_id
+  AND  trunc(sysdate) between trunc(effective_start_date) and trunc(effective_end_date))
+AS employee_number,fnd.employee_id as person_id
+FROM po_vendors v,
+  po_vendor_sites_all vs,
+  po_headers_archive_all poh,
+  hr_all_organization_units_tl hou,
+  fnd_descr_flex_contexts_vl fdfc,
+  fnd_user fnd 
+ WHERE v.vendor_id = poh.vendor_id
+ AND vs.vendor_site_id = poh.vendor_site_id
+ AND poh.type_lookup_code IN('STANDARD',   'BLANKET',   'PLANNED',   'CONTRACT')
+ AND hou.organization_id(+) = poh.org_id
+ AND hou.LANGUAGE(+) = userenv('LANG')
+ AND fnd.user_id(+) = poh.last_updated_by
+ AND fdfc.descriptive_flex_context_code = poh.attribute_category
+ AND fdfc.application_id = 201 
+ AND fdfc.descriptive_flexfield_name = 'PO_HEADERS' 
+ AND fdfc.descriptive_flex_context_code <> 'Global Data Elements'
+ union all 
+ select poh.comments,
+  por.revised_date,
+  por.revision_num,
+  por.agent_id,
+  poh.bill_to_location_id,
+  por.po_header_id,
+  poh.ship_to_location_id,
+  poh.vendor_contact_id,
+  poh.vendor_id,
+  poh.vendor_site_id,
+  nvl(por.closed_code,   'OPEN') closed_code,
+  poh.currency_code,
+  poh.type_lookup_code,
+  poh.segment1 po_num,
+  poh.segment1 || '-' || por.release_num ponum_relnum,
+  decode(por.release_type,   'BLANKET',   fnd_message_cache.get_string('POS',   'POS_POTYPE_BLKTR'),   'SCHEDULED',   fnd_message_cache.get_string('POS',   'POS_POTYPE_PLNDR')) TYPE_NAME,
+  NULL buyer_name,
+  v.vendor_name,
+  vs.vendor_site_code,
+  NULL location_code,
+  NULL authorization_status,
+  NULL document_state,
+  por.release_num,
+  por.release_type,
+  por.po_release_id,
+  NULL total,
+  por.org_id,
+  hou.name,
+  por.creation_date,
+  NULL global_agreement_flag,
+  NULL last_sign_type,
+  poh.attribute_category po_type,
+  (SELECT  full_name
+  FROM per_people_f
+  WHERE person_id = fnd.employee_id
+   AND  trunc(sysdate) between trunc(effective_start_date) and trunc(effective_end_date))
+AS
+modified_by_user,
+fdfc.descriptive_flex_context_name po_type_name,
+fdfc.row_id,
+(SELECT  employee_number
+ FROM per_people_f
+ WHERE person_id = fnd.employee_id
+  AND  trunc(sysdate) between trunc(effective_start_date) and trunc(effective_end_date))
+AS employee_number,fnd.employee_id as person_id
+FROM po_vendors v,
+  po_vendor_sites_all vs,
+  po_releases_archive_all por,
+  po_headers_archive_all poh,
+  hr_all_organization_units_tl hou,
+  fnd_descr_flex_contexts_vl fdfc,
+  fnd_user fnd 
+ WHERE poh.po_header_id = por.po_header_id
+ AND v.vendor_id = poh.vendor_id
+ AND vs.vendor_site_id = poh.vendor_site_id
+ AND poh.type_lookup_code IN('BLANKET',   'PLANNED')
+ AND hou.organization_id(+) = por.org_id
+ AND hou.LANGUAGE(+) = userenv('LANG')
+ AND fnd.user_id(+) = por.last_updated_by
+ AND fdfc.descriptive_flex_context_code = poh.attribute_category
+ AND fdfc.application_id = 201 
+ AND fdfc.descriptive_flexfield_name = 'PO_HEADERS' 
+ AND fdfc.descriptive_flex_context_code <> 'Global Data Elements'
+ ORDER BY PO_NUM desc,REVISION_NUM desc
+   ]]></SQLQuery>
+   <DesignTime>
+      <Attr Name="_isCodegen" Value="true" />
+      <Attr Name="_version" Value="9.0.3.13.93" />
+      <Attr Name="_CodeGenFlagNew" Value="4" />
+   </DesignTime>
+   <ViewAttribute
+      Name="Comments"
+      IsQueriable="false"
+      IsPersistent="false"
+      Precision="240"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="COMMENTS"
+      Expression="COMMENTS"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+         <Attr Name="_DisplaySize" Value="240" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="REVISED_DATE"
+      IsQueriable="false"
+      IsPersistent="false"
+      Precision="255"
+      Type="oracle.jbo.domain.Date"
+      ColumnType="VARCHAR2"
+      AliasName="REVISED_DATE"
+      Expression="REVISED_DATE"
+      SQLType="DATE" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+         <Attr Name="_DisplaySize" Value="7" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="REVISION_NUM"
+      IsQueriable="false"
+      IsPersistent="false"
+      Precision="255"
+      Type="oracle.jbo.domain.Number"
+      ColumnType="VARCHAR2"
+      AliasName="REVISION_NUM"
+      Expression="REVISION_NUM"
+      SQLType="NUMERIC" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="AgentId"
+      IsQueriable="false"
+      IsPersistent="false"
+      Precision="9"
+      Scale="0"
+      Type="oracle.jbo.domain.Number"
+      ColumnType="VARCHAR2"
+      AliasName="AGENT_ID"
+      Expression="AGENT_ID"
+      SQLType="NUMERIC" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="BillToLocationId"
+      IsQueriable="false"
+      IsPersistent="false"
+      Type="oracle.jbo.domain.Number"
+      ColumnType="VARCHAR2"
+      AliasName="BILL_TO_LOCATION_ID"
+      Expression="BILL_TO_LOCATION_ID"
+      SQLType="NUMERIC" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="PoHeaderId"
+      IsQueriable="false"
+      IsPersistent="false"
+      Type="oracle.jbo.domain.Number"
+      ColumnType="VARCHAR2"
+      AliasName="PO_HEADER_ID"
+      Expression="PO_HEADER_ID"
+      SQLType="NUMERIC" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="ShipToLocationId"
+      IsQueriable="false"
+      IsPersistent="false"
+      Type="oracle.jbo.domain.Number"
+      ColumnType="VARCHAR2"
+      AliasName="SHIP_TO_LOCATION_ID"
+      Expression="SHIP_TO_LOCATION_ID"
+      SQLType="NUMERIC" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="VendorContactId"
+      IsQueriable="false"
+      IsPersistent="false"
+      Type="oracle.jbo.domain.Number"
+      ColumnType="VARCHAR2"
+      AliasName="VENDOR_CONTACT_ID"
+      Expression="VENDOR_CONTACT_ID"
+      SQLType="NUMERIC" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="VendorId"
+      IsQueriable="false"
+      IsPersistent="false"
+      Type="oracle.jbo.domain.Number"
+      ColumnType="VARCHAR2"
+      AliasName="VENDOR_ID"
+      Expression="VENDOR_ID"
+      SQLType="NUMERIC" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="VendorSiteId"
+      IsQueriable="false"
+      IsPersistent="false"
+      Type="oracle.jbo.domain.Number"
+      ColumnType="VARCHAR2"
+      AliasName="VENDOR_SITE_ID"
+      Expression="VENDOR_SITE_ID"
+      SQLType="NUMERIC" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="ClosedCode"
+      IsQueriable="false"
+      IsPersistent="false"
+      Precision="25"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="CLOSED_CODE"
+      Expression="CLOSED_CODE"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+         <Attr Name="_DisplaySize" Value="25" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="CurrencyCode"
+      IsQueriable="false"
+      IsPersistent="false"
+      Precision="15"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="CURRENCY_CODE"
+      Expression="CURRENCY_CODE"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+         <Attr Name="_DisplaySize" Value="15" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="TYPE_LOOKUP_CODE"
+      IsQueriable="false"
+      IsPersistent="false"
+      Precision="25"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="TYPE_LOOKUP_CODE"
+      Expression="TYPE_LOOKUP_CODE"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+         <Attr Name="_DisplaySize" Value="25" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="PO_NUM"
+      IsQueriable="false"
+      IsPersistent="false"
+      Precision="20"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="PO_NUM"
+      Expression="PO_NUM"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+         <Attr Name="_DisplaySize" Value="20" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="PONUM_RELNUM"
+      IsQueriable="false"
+      IsPersistent="false"
+      Precision="61"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="PONUM_RELNUM"
+      Expression="PONUM_RELNUM"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+         <Attr Name="_DisplaySize" Value="61" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="TYPE_NAME"
+      IsQueriable="false"
+      IsPersistent="false"
+      Precision="4000"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="TYPE_NAME"
+      Expression="TYPE_NAME"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+         <Attr Name="_DisplaySize" Value="4000" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="BuyerName"
+      IsQueriable="false"
+      IsPersistent="false"
+      Precision="4000"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="BUYER_NAME"
+      Expression="BUYER_NAME"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+         <Attr Name="_DisplaySize" Value="4000" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="VENDOR_NAME"
+      IsQueriable="false"
+      IsPersistent="false"
+      Precision="240"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="VENDOR_NAME"
+      Expression="VENDOR_NAME"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+         <Attr Name="_DisplaySize" Value="240" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="VENDOR_SITE_CODE"
+      IsQueriable="false"
+      IsPersistent="false"
+      Precision="15"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="VENDOR_SITE_CODE"
+      Expression="VENDOR_SITE_CODE"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+         <Attr Name="_DisplaySize" Value="15" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="LocationCode"
+      IsQueriable="false"
+      IsPersistent="false"
+      Precision="60"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="LOCATION_CODE"
+      Expression="LOCATION_CODE"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+         <Attr Name="_DisplaySize" Value="60" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="AUTHORIZATION_STATUS"
+      IsQueriable="false"
+      IsPersistent="false"
+      Precision="255"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="AUTHORIZATION_STATUS"
+      Expression="AUTHORIZATION_STATUS"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="DocumentState"
+      IsQueriable="false"
+      IsPersistent="false"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="DOCUMENT_STATE"
+      Expression="DOCUMENT_STATE"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="RELEASE_NUM"
+      IsQueriable="false"
+      IsPersistent="false"
+      Precision="255"
+      Type="oracle.jbo.domain.Number"
+      ColumnType="VARCHAR2"
+      AliasName="RELEASE_NUM"
+      Expression="RELEASE_NUM"
+      SQLType="NUMERIC" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="ReleaseType"
+      IsQueriable="false"
+      IsPersistent="false"
+      Precision="25"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="RELEASE_TYPE"
+      Expression="RELEASE_TYPE"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+         <Attr Name="_DisplaySize" Value="25" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="PoReleaseId"
+      IsQueriable="false"
+      IsPersistent="false"
+      Type="oracle.jbo.domain.Number"
+      ColumnType="VARCHAR2"
+      AliasName="PO_RELEASE_ID"
+      Expression="PO_RELEASE_ID"
+      SQLType="NUMERIC" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Total"
+      IsQueriable="false"
+      IsPersistent="false"
+      Precision="4000"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="TOTAL"
+      Expression="TOTAL"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+         <Attr Name="_DisplaySize" Value="4000" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="OrgId"
+      IsQueriable="false"
+      IsPersistent="false"
+      Type="oracle.jbo.domain.Number"
+      ColumnType="VARCHAR2"
+      AliasName="ORG_ID"
+      Expression="ORG_ID"
+      SQLType="NUMERIC" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Name"
+      IsQueriable="false"
+      IsPersistent="false"
+      Precision="240"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="NAME"
+      Expression="NAME"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+         <Attr Name="_DisplaySize" Value="240" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="CREATION_DATE"
+      IsQueriable="false"
+      IsPersistent="false"
+      Precision="255"
+      Type="oracle.jbo.domain.Date"
+      ColumnType="VARCHAR2"
+      AliasName="CREATION_DATE"
+      Expression="CREATION_DATE"
+      SQLType="DATE" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+         <Attr Name="_DisplaySize" Value="7" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="GlobalAgreementFlag"
+      IsQueriable="false"
+      IsPersistent="false"
+      Precision="1"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="GLOBAL_AGREEMENT_FLAG"
+      Expression="GLOBAL_AGREEMENT_FLAG"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+         <Attr Name="_DisplaySize" Value="1" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="LastSignType"
+      IsQueriable="false"
+      IsPersistent="false"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="LAST_SIGN_TYPE"
+      Expression="LAST_SIGN_TYPE"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="PoType"
+      IsPersistent="false"
+      Precision="30"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="PO_TYPE"
+      Expression="PO_TYPE"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="30" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="MODIFIED_BY_USER"
+      IsPersistent="false"
+      Precision="240"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="MODIFIED_BY_USER"
+      Expression="MODIFIED_BY_USER"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="240" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="PO_TYPE_NAME"
+      IsPersistent="false"
+      Precision="80"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="PO_TYPE_NAME"
+      Expression="PO_TYPE_NAME"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="80" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+         Name="ROW_ID"
+         IsPersistent="false"
+         Precision="30"
+         Type="java.lang.String"
+         ColumnType="VARCHAR2"
+         AliasName="ROW_ID"
+         Expression="ROW_ID"
+         SQLType="VARCHAR" >
+         <DesignTime>
+            <Attr Name="_DisplaySize" Value="30" />
+         </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+         Name="EMPLOYEE_NUMBER"
+         IsPersistent="false"
+         Precision="30"
+         Type="java.lang.String"
+         ColumnType="VARCHAR2"
+         AliasName="EMPLOYEE_NUMBER"
+         Expression="EMPLOYEE_NUMBER"
+         SQLType="VARCHAR" >
+         <DesignTime>
+            <Attr Name="_DisplaySize" Value="30" />
+         </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+         Name="PERSON_ID"
+         IsQueriable="false"
+         IsPersistent="false"
+         Precision="10"
+         Type="oracle.jbo.domain.Number"
+         ColumnType="VARCHAR2"
+         AliasName="PERSON_ID"
+         Expression="PERSON_ID"
+         SQLType="NUMERIC" >
+          <DesignTime>
+            <Attr Name="_OverrideAttr" Value="true" />
+            <Attr Name="_DisplaySize" Value="10" />
+          </DesignTime>
+   </ViewAttribute>
+</ViewObject>

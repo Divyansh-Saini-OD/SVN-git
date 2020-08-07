@@ -1,0 +1,32 @@
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     ON
+	
+	-- +==========================================================================+
+	-- |                  Office Depot - Project Simplify                         |
+	-- |                       WIPRO Technologies                                 |
+	-- +==========================================================================+
+	-- | SQL Script to create the Sequences                                       |
+	-- | xx_gi_transaction_int_s  - TRANSACTION_INTERFACE_ID of                   |
+        -- |                                        xx_gi_rcv_stg                     |
+	-- |                                                                          |
+	-- |SQL Script to create the Synonyms for the Sequences                       |
+	-- |    xx_gi_transaction_int_s                                               |
+	-- |Change Record:                                                            |
+	-- |===============                                                           |
+	-- |Version   Date         Author               Remarks                       |
+	-- |=======   ==========   =============        ==============================|
+	-- | 1.0      10-FEB-2007  Murali Krishnan       Initial version              |
+	-- |                       Ramachandran                                       |
+	-- +==========================================================================+
+
+DROP SEQUENCE xxcnv.xx_gi_transaction_int_s; 
+CREATE SEQUENCE xxcnv.xx_gi_transaction_int_s START WITH 1 INCREMENT BY 1;
+/
+DROP   SYNONYM xx_gi_transaction_int_s;
+CREATE SYNONYM xx_gi_transaction_int_s  FOR xxcnv.xx_gi_transaction_int_s;
+/
+SHOW ERROR
+/

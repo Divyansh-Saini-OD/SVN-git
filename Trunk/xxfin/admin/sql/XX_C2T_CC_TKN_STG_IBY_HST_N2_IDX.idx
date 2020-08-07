@@ -1,0 +1,35 @@
+-- +============================================================================================+
+-- |                        Office Depot - Project Simplify                                     |
+-- |                                                                                            |
+-- +============================================================================================+
+-- | Name         : XX_C2T_CC_TKN_STG_IBY_HST_N2_IDX.idx                                        |
+-- | Rice Id      :                                                                             | 
+-- | Description  : XX_C2T_CC_TOKEN_STG_IBY_HIST Index Creation Script                          |  
+-- | Purpose      :                                                                             |
+-- |                                                                                            |
+-- |                                                                                            |
+-- |Change Record:                                                                              |
+-- |===============                                                                             |
+-- |Version    Date          Author                Remarks                                      | 
+-- |=======    ==========    =================    ==============================================+
+-- |1.0        08-JAN-2016  Harvinder Rakhra      Initial Version                               |
+-- +============================================================================================+
+
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     ON
+
+PROMPT
+PROMPT CREATING INDEX XX_C2T_CC_TOKEN_STG_IBY_HST_N2 for the Table XX_C2T_CC_TOKEN_STG_IBY_HIST.....
+PROMPT
+PROMPT CREATING INDEX XX_C2T_CC_TOKEN_STG_IBY_HST_N2.....
+CREATE INDEX XXFIN.XX_C2T_CC_TOKEN_STG_IBY_HST_N2 ON XX_C2T_CC_TOKEN_STG_IBY_HIST (RE_ENCRYPT_STATUS)
+TABLESPACE APPS_TS_TX_DATA PARALLEL 16 NOLOGGING;
+
+ALTER INDEX XXFIN.XX_C2T_CC_TOKEN_STG_IBY_HST_N2 NOPARALLEL;
+
+  
+COMMIT;
+SHOW ERROR;

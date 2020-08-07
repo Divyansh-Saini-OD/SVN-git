@@ -1,0 +1,66 @@
+-- +===========================================================================+
+-- |                  Office Depot - Project Simplify                          |
+-- +===========================================================================+
+-- | Name :XXFIN.XX_FIN_ESP_SCHEDULE                                           |
+-- | Description :   Script to create XX_FIN_ESP_SCHEDULE table	               |
+-- |                                                                           |
+-- |                                                                           |
+-- |Change Record:                                                             |
+-- |===============                                                            |
+-- |Version      Date           Author                  Remarks                |
+-- |=======    ==========     =============             ====================== |
+-- | 1.0      9-MAY-2014      Ray Strauss               Initial draft version  |
+-- +===========================================================================+
+
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     ON
+WHENEVER SQLERROR CONTINUE
+
+--+=====================================================================+
+--+               DROP TABLE XXFIN.XX_FIN_ESP_SCHEDULE
+--+=====================================================================+
+
+--DROP TABLE XXFIN.XX_FIN_ESP_SCHEDULE;
+
+SHOW ERROR
+
+--+=====================================================================+
+--+               CREATE TABLE XXFIN.XX_FIN_ESP_SCHEDULE
+--+=====================================================================+
+
+CREATE TABLE XXFIN.XX_FIN_ESP_SCHEDULE
+  (  ESP_SCHED_ID         NUMBER,
+     ESP_EVENT            VARCHAR2(08 BYTE),
+     ESP_PREFIX           VARCHAR2(08 BYTE),
+     ESP_SYSTEM           VARCHAR2(08 BYTE),
+     ESP_SCHED_TYPE       VARCHAR2(1 BYTE),
+     ESP_SCHEDULE         VARCHAR2(80 BYTE),
+     ATTRIBUTE1           VARCHAR2(250 BYTE),
+     ATTRIBUTE2           VARCHAR2(250 BYTE),
+     ATTRIBUTE3           VARCHAR2(250 BYTE),
+     ATTRIBUTE4           VARCHAR2(250 BYTE),
+     ATTRIBUTE5           VARCHAR2(250 BYTE),
+     ATTRIBUTE6           VARCHAR2(250 BYTE),
+     ATTRIBUTE7           VARCHAR2(250 BYTE),
+     ATTRIBUTE8           VARCHAR2(250 BYTE),
+     ATTRIBUTE9           VARCHAR2(250 BYTE),
+     CREATION_DATE        DATE,
+     CREATED_BY           NUMBER,
+     LAST_UPDATED_BY      NUMBER,
+     LAST_UPDATE_DATE     DATE,
+     LAST_UPDATE_LOGIN    NUMBER
+  );
+
+SHOW ERROR
+
+--+=====================================================================+
+--+               GRANT TABLE XXFIN.XX_FIN_ESP_SCHEDULE
+--+=====================================================================+
+
+GRANT SELECT ON XXFIN.XX_FIN_ESP_SCHEDULE TO APPS;
+GRANT SELECT ON XXFIN.XX_FIN_ESP_SCHEDULE TO ERP_SYSTEM_TABLE_SELECT_ROLE;
+
+SHOW ERROR

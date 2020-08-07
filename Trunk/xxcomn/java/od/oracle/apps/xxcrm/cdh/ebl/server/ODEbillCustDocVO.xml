@@ -1,0 +1,375 @@
+<?xml version="1.0" encoding='windows-1252'?>
+<!DOCTYPE ViewObject SYSTEM "jbo_03_01.dtd">
+
+<ViewObject
+   Name="ODEbillCustDocVO"
+   BindingStyle="Oracle"
+   CustomQuery="true"
+   RowClass="od.oracle.apps.xxcrm.cdh.ebl.server.ODEbillCustDocVORowImpl"
+   ComponentClass="od.oracle.apps.xxcrm.cdh.ebl.server.ODEbillCustDocVOImpl"
+   MsgBundleClass="oracle.jbo.common.JboResourceBundle"
+   UseGlueCode="false" >
+   <SQLQuery><![CDATA[
+SELECT XCEB.cust_account_id
+     , XCEB.billdocs_cust_doc_id
+     , XCEB.billdocs_doc_type
+     , XCEB.billdocs_paydoc_ind
+     , XCEB.billdocs_delivery_meth
+     , XCEB.billdocs_doc_id 
+     , XCEB.billdocs_num_copies
+     , XCEB.billdocs_special_handling
+     , XCEB.billdocs_sig_req
+     , XCEB.billdocs_direct_flag
+     , XCEB.billdocs_auto_reprint 
+     , XCEB.billdocs_print_loc
+     , XCEB.billdocs_doc_form
+     , XCEB.billdocs_summary_flg
+     , XCEB.billdocs_combo_type
+     , XCEB.billdocs_payment_term 
+     , XCEB.billdocs_comments1
+     , XCEB.billdocs_comments2
+     , XCEB.billdocs_comments3
+     , XCEB.billdocs_comments4
+     , XCEB.billdocs_mail_attention
+     , XCEB.billdocs_doc_freq    
+     , XCEB.billdocs_eff_from_date
+     , XCEB.billdocs_eff_to_date
+     , null is_parent
+     , null send_to_parent
+     , null cust_request_date
+     , null list_child_docs
+     , null record_status
+     , null billdoc_status
+ FROM xx_cdh_a_ext_billdocs_v XCEB
+   ]]></SQLQuery>
+   <DesignTime>
+      <Attr Name="_isCodegen" Value="true" />
+      <Attr Name="_version" Value="9.0.3.12.53" />
+      <Attr Name="_CodeGenFlagNew" Value="36" />
+   </DesignTime>
+   <ViewAttribute
+      Name="HideShow"
+      IsPersistent="false"
+      DefaultValue="N"
+      Precision="255"
+      Type="java.lang.String"
+      AliasName="VIEW_ATTR"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="CustAccountId"
+      IsUpdateable="false"
+      IsPersistent="false"
+      Precision="15"
+      Scale="0"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      Expression="CustAccountId"
+      SQLType="VARCHAR" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="BilldocsCustDocId"
+      IsUpdateable="false"
+      IsPersistent="false"
+      Precision="22"
+      Scale="5"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      Expression="BilldocsCustDocId"
+      SQLType="VARCHAR" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="BilldocsDocType"
+      IsUpdateable="false"
+      IsPersistent="false"
+      Precision="150"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      Expression="BilldocsDocType"
+      SQLType="VARCHAR" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="BilldocsPaydocInd"
+      IsUpdateable="false"
+      IsPersistent="false"
+      Precision="150"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      Expression="BilldocsPaydocInd"
+      SQLType="VARCHAR" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="BilldocsDeliveryMeth"
+      IsPersistent="false"
+      Precision="150"
+      Type="java.lang.String"
+      AliasName="BILLDOCSDELIVERYMETH"
+      ColumnType="VARCHAR2"
+      Expression="BilldocsDeliveryMeth"
+      SQLType="VARCHAR" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="BilldocsDocId"
+      IsUpdateable="false"
+      IsPersistent="false"
+      Precision="22"
+      Scale="5"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      Expression="BilldocsDocId"
+      SQLType="VARCHAR" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="BilldocsNumCopies"
+      IsUpdateable="false"
+      IsPersistent="false"
+      Precision="22"
+      Scale="5"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      Expression="BilldocsNumCopies"
+      SQLType="VARCHAR" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="BilldocsSpecialHandling"
+      IsUpdateable="false"
+      IsPersistent="false"
+      Precision="150"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      Expression="BilldocsSpecialHandling"
+      SQLType="VARCHAR" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="BilldocsSigReq"
+      IsPersistent="false"
+      Precision="150"
+      Type="java.lang.String"
+      AliasName="BILLDOCSSIGREQ"
+      ColumnType="VARCHAR2"
+      Expression="BilldocsSigReq"
+      SQLType="VARCHAR" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="BilldocsDirectFlag"
+      IsPersistent="false"
+      Precision="150"
+      Type="java.lang.String"
+      AliasName="BILLDOCSDIRECTFLAG"
+      ColumnType="VARCHAR2"
+      Expression="BilldocsDirectFlag"
+      SQLType="VARCHAR" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="BilldocsAutoReprint"
+      IsPersistent="false"
+      Precision="150"
+      Type="java.lang.String"
+      AliasName="BILLDOCSAUTOREPRINT"
+      ColumnType="VARCHAR2"
+      Expression="BilldocsAutoReprint"
+      SQLType="VARCHAR" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="BilldocsPrintLoc"
+      IsUpdateable="false"
+      IsPersistent="false"
+      Precision="150"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      Expression="BilldocsPrintLoc"
+      SQLType="VARCHAR" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="BilldocsDocForm"
+      IsUpdateable="false"
+      IsPersistent="false"
+      Precision="150"
+      Type="java.lang.String"
+      AliasName="BILLDOCSDOCFORM"
+      ColumnType="VARCHAR2"
+      Expression="BilldocsDocForm"
+      SQLType="VARCHAR" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="BilldocsSummaryFlg"
+      IsUpdateable="false"
+      IsPersistent="false"
+      Precision="150"
+      Type="java.lang.String"
+      AliasName="BILLDOCSSUMMARYFLG"
+      ColumnType="VARCHAR2"
+      Expression="BilldocsSummaryFlg"
+      SQLType="VARCHAR" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="BilldocsComboType"
+      IsUpdateable="false"
+      IsPersistent="false"
+      Precision="150"
+      Type="java.lang.String"
+      AliasName="BILLDOCSCOMBOTYPE"
+      ColumnType="VARCHAR2"
+      Expression="BilldocsComboType"
+      SQLType="VARCHAR" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="BilldocsPaymentTerm"
+      IsUpdateable="false"
+      IsPersistent="false"
+      Precision="150"
+      Type="java.lang.String"
+      AliasName="BILLDOCSPAYMENTTERM"
+      ColumnType="VARCHAR2"
+      Expression="BilldocsPaymentTerm"
+      SQLType="VARCHAR" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="BilldocsComments1"
+      IsUpdateable="false"
+      IsPersistent="false"
+      Precision="150"
+      Type="java.lang.String"
+      AliasName="BILLDOCSCOMMENTS1"
+      ColumnType="VARCHAR2"
+      Expression="BilldocsComments1"
+      SQLType="VARCHAR" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="BilldocsComments2"
+      IsUpdateable="false"
+      IsPersistent="false"
+      Precision="150"
+      Type="java.lang.String"
+      AliasName="BILLDOCSCOMMENTS2"
+      ColumnType="VARCHAR2"
+      Expression="BilldocsComments2"
+      SQLType="VARCHAR" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="BilldocsComments3"
+      IsUpdateable="false"
+      IsPersistent="false"
+      Precision="150"
+      Type="java.lang.String"
+      AliasName="BILLDOCSCOMMENTS3"
+      ColumnType="VARCHAR2"
+      Expression="BilldocsComments3"
+      SQLType="VARCHAR" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="BilldocsComments4"
+      IsUpdateable="false"
+      IsPersistent="false"
+      Precision="150"
+      Type="java.lang.String"
+      AliasName="BILLDOCSCOMMENTS4"
+      ColumnType="VARCHAR2"
+      Expression="BilldocsComments4"
+      SQLType="VARCHAR" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="BilldocsMailAttention"
+      IsUpdateable="false"
+      IsPersistent="false"
+      Precision="150"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      Expression="BilldocsMailAttention"
+      SQLType="VARCHAR" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="TransHideShow"
+      IsPersistent="false"
+      Precision="255"
+      Type="java.lang.Boolean"
+      AliasName="VIEW_ATTR"
+      ColumnType="VARCHAR2"
+      SQLType="BIT" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="BilldocsDocFreq"
+      IsUpdateable="false"
+      IsPersistent="false"
+      Precision="150"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      Expression="BilldocsDocFreq"
+      SQLType="VARCHAR" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="BilldocsEffFromDate"
+      IsUpdateable="false"
+      IsPersistent="false"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      Expression="BilldocsEffFromDate"
+      SQLType="VARCHAR" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="BilldocsEffToDate"
+      IsUpdateable="false"
+      IsPersistent="false"
+      Precision="255"
+      Type="java.lang.String"
+      AliasName="BILLDOCSEFFTODATE"
+      ColumnType="VARCHAR2"
+      Expression="BilldocsEffToDate"
+      SQLType="VARCHAR" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="IsParent"
+      IsPersistent="false"
+      Type="java.lang.String"
+      AliasName="IsParent"
+      ColumnType="VARCHAR2"
+      Expression="IsParent"
+      SQLType="VARCHAR" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="SendToParent"
+      IsPersistent="false"
+      Type="java.lang.String"
+      AliasName="SendToParent"
+      ColumnType="VARCHAR2"
+      Expression="SendToParent"
+      SQLType="VARCHAR" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="CustRequestDate"
+      IsUpdateable="false"
+      IsPersistent="false"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      Expression="CustRequestDate"
+      SQLType="VARCHAR" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="ListChildDocs"
+      IsPersistent="false"
+      Type="java.lang.String"
+      AliasName="ListChildDocs"
+      ColumnType="VARCHAR2"
+      Expression="ListChildDocs"
+      SQLType="VARCHAR" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="RecordStatus"
+      IsUpdateable="false"
+      IsPersistent="false"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      Expression="RecordStatus"
+      SQLType="VARCHAR" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="BilldocStatus"
+      IsPersistent="false"
+      Type="java.lang.String"
+      AliasName="BilldocStatus"
+      ColumnType="VARCHAR2"
+      Expression="BilldocStatus"
+      SQLType="VARCHAR" >
+   </ViewAttribute>
+</ViewObject>

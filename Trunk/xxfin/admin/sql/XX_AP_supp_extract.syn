@@ -1,0 +1,29 @@
+-- +==========================================================================+
+-- |                  Office Depot - Project Simplify                         |
+-- +==========================================================================+
+-- | SQL Script to create the following objects                               |
+-- |                Synonym  : xx_ap_supp_extract                          |
+-- |                                                                          |
+-- |                                                                          |
+-- |                                                                          |
+-- |                                                                          |
+-- |Change Record:                                                            |
+-- |===============                                                           |
+-- |Version   Date         Author               Remarks                       |
+-- |=======   ==========   =============        ==============================|
+-- | V1.0     07/29/2007   Prakash Sankaran     Initial version               |
+-- |                                                                          |
+-- +==========================================================================+
+
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     ON
+
+
+--DROP SYNONYM XX_AP_SUPP_EXTRACT;
+
+CREATE SYNONYM XX_AP_SUPP_EXTRACT FOR XXFIN.XX_AP_SUPP_EXTRACT;
+
+SHOW ERROR

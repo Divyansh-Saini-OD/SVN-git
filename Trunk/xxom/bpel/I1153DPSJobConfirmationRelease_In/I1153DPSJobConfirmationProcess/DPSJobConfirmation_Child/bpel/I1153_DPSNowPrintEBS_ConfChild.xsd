@@ -1,0 +1,19 @@
+<schema attributeFormDefault="unqualified"
+	elementFormDefault="qualified"
+	targetNamespace="http://xmlns.oracle.com/I1153_DPSNowPrintEBS_ConfChild"
+	xmlns="http://www.w3.org/2001/XMLSchema">
+	<element name="I1153_DPSNowPrintEBS_ConfChildProcessRequest">
+		<complexType>
+			<sequence>
+				<element name="input" type="string"/>
+			</sequence>
+		</complexType>
+	</element>
+	<element name="I1153_DPSNowPrintEBS_ConfChildProcessResponse">
+		<complexType>
+			<sequence>
+				<element name="result" type="string"/>
+			</sequence>
+		</complexType>
+	</element>
+</schema>

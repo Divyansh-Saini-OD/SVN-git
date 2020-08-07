@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding='windows-1252'?>
+<!DOCTYPE AppModule SYSTEM "jbo_03_01.dtd">
+
+<AppModule
+   Name="ODPayrollAuditHistAM"
+   ComponentClass="od.oracle.apps.xxcrm.cn.payrun.server.ODPayrollAuditHistAMImpl"
+   LoadComponentsLazily="true" >
+   <Properties>
+      <Property Name ="RETENTION_LEVEL" Value ="MANAGE_STATE" />
+   </Properties>
+   <DesignTime>
+      <Attr Name="_isCodegen" Value="true" />
+      <Attr Name="_version" Value="9.0.3.13.93" />
+      <Attr Name="_deployType" Value="0" />
+   </DesignTime>
+   <ViewUsage
+      Name="ODPayrollAuditPayrunLOVVO1"
+      ViewObjectName="od.oracle.apps.xxcrm.cn.payrun.lov.server.ODPayrollAuditPayrunLOVVO" >
+   </ViewUsage>
+   <ViewUsage
+      Name="ODPayrollAuditTransStatusLOVVO1"
+      ViewObjectName="od.oracle.apps.xxcrm.cn.payrun.lov.server.ODPayrollAuditTransStatusLOVVO" >
+   </ViewUsage>
+   <ViewUsage
+      Name="ODPayrollAuditHistVO1"
+      ViewObjectName="od.oracle.apps.xxcrm.cn.payrun.server.ODPayrollAuditHistVO" >
+   </ViewUsage>
+</AppModule>

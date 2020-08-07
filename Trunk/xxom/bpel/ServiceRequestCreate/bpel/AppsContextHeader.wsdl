@@ -1,0 +1,29 @@
+<definitions
+     name="procedureAdapter"
+     targetNamespace="http://xmlns.oracle.com/pcbpel/adapter/appscontext/" 
+     xmlns:tns="http://xmlns.oracle.com/pcbpel/adapter/appscontext/"   
+     xmlns="http://schemas.xmlsoap.org/wsdl/" >
+
+    <types>
+        <schema attributeFormDefault="qualified" elementFormDefault="qualified" 
+                targetNamespace="http://xmlns.oracle.com/pcbpel/adapter/appscontext/"
+                xmlns="http://www.w3.org/2001/XMLSchema" 
+                xmlns:PROCEDUREAPP="http://xmlns.oracle.com/pcbpel/adapter/appscontext/">
+          <element name="ProcedureHeaderType">
+                <complexType>
+                    <sequence>
+                        <element name="Username" type="string"/>
+                        <element name="Responsibility" type="string"/>
+						<element name="ORG_ID" type="string"/>
+                    </sequence>
+                </complexType>
+            </element> 
+        </schema>
+    </types>
+   
+    <!-- Header Message --> 
+    <message name="Header_msg"> 
+      <part element="tns:ProcedureHeaderType" name="Header"/> 
+   </message> 
+
+</definitions>

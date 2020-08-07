@@ -1,0 +1,24 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<customization xmlns="http://xmlns.oracle.com/jrad" version="9.0.5.4.89_560" xml:lang="en-US" customizes="/oracle/apps/ar/hz/components/party/organization/webui/HzPuiOrgProfileQuickComponent" developerMode="true" controllerClass="od.oracle.apps.xxcrm.ar.hz.components.party.organization.webui.ODHzPuiOrgProfileQuickCO" xmlns:oa="http://xmlns.oracle.com/oa" package="/oracle/apps/ar/hz/components/party/organization/webui/customizations/site/0">
+   <modifications>
+      <move element="alias" after="organization_name"/>
+      <move element="org_name_pronunciation" after="alias"/>
+      <move element="registry_id" after="org_name_pronunciation"/>
+      <move element="duns_number" after="registry_id"/>
+      <move element="PreferredContactMethod" after="duns_number"/>
+      <move element="income_taxpayer_id" after="PreferredContactMethod"/>
+      <move element="tax_registration_num" after="income_taxpayer_id"/>
+      <move element="PhoneContactPointPurpose" after="tax_registration_num"/>
+      <move element="PhoneMessageLayout" after="PhoneContactPointPurpose"/>
+      <move element="OrgPhoneExtension" after="PhoneMessageLayout"/>
+      <move element="FaxContactPointPurpose" after="OrgPhoneExtension"/>
+      <move element="FaxMessageLayout" after="FaxContactPointPurpose"/>
+      <move element="url" after="FaxMessageLayout"/>
+      <move element="EmailFormat" after="url"/>
+      <move element="EmailAddress" after="EmailFormat"/>
+      <move element="flexMessageLayout" after="EmailAddress"/>
+      <insert before="flexMessageLayout">
+         <oa:messageTextInput id="Attribute13" adminCustomizable="true" cellNoWrapFormat="false" dataType="VARCHAR2" disabled="false" initSortSeq="none" prompt="Customer/Prospect Flag" queryable="false" readOnly="true" rendered="true" required="no" rows="1" scope="." secret="false" selectiveSearchCriteria="false" serverUnvalidated="false" sortState="no" tipType="none" totalValue="false" userCustomizable="false" vAlign="middle" viewAttr="Attribute13" viewName="HzPuiOrganizationProfileQuickVO" warnAboutChanges="true" xmlns:oa="http://xmlns.oracle.com/oa"/>
+      </insert>
+   </modifications>
+</customization>

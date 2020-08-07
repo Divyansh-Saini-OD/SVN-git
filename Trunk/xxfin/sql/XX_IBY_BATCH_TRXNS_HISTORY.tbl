@@ -1,0 +1,96 @@
+CREATE TABLE XXFIN.XX_IBY_BATCH_TRXNS_HISTORY(Pre1				NUMBER		NOT NULL,Pre2				VARCHAR2(120)	NOT NULL,Pre3				VARCHAR2(1)		NOT NULL,IxRecordType				NUMBER			,
+IxReserved2                             VARCHAR2(120)
+,IxReserved3                             VARCHAR2(120)
+,IxActionCode				NUMBER			
+,IxReserved5                            VARCHAR2(120)
+,IxMessageType				VARCHAR2(120)		
+,IxTerminalId				VARCHAR2(120)		
+,IxStoreNumber				NUMBER		NOT NULL
+,IxRegisterNumber			NUMBER			
+,IxTransactionType  	                VARCHAR2(120)		
+,IxReserved11                            VARCHAR2(120)
+,IxReserved12                            VARCHAR2(120)
+,IxAccount				NUMBER			
+,IxExpDate				NUMBER			
+,IxSwipe				VARCHAR2(120)		
+,IxAmount				NUMBER			
+,IxInvoice				VARCHAR2(120)			
+,IxReserved18                            VARCHAR2(120)
+,IxReserved19                            VARCHAR2(120)
+,IxReserved20                            VARCHAR2(120)
+,IxOptions				VARCHAR2(120)		
+,IxBankUserData				NUMBER			
+,IxReserved23                            VARCHAR2(120)
+,IxReserved24                            VARCHAR2(120)
+,IxIssueNumber				VARCHAR2(120)		
+,IxTotalSalesTaxAmount			NUMBER			
+,IxTotalSalesTaxCollto			NUMBER			 -- IxTotalSalesTaxCollectedIndicator
+,IxReserved28                            VARCHAR2(120)
+,IxReserved29                            VARCHAR2(120)
+,IxReserved30                            VARCHAR2(120)
+,IxMailOrderAVSData                      VARCHAR2(120)
+,IxReserved32                            VARCHAR2(120)
+,IxReserved33                            VARCHAR2(120)
+,IxPosEchoField                          VARCHAR2(120)
+,IxReserved35                            VARCHAR2(120)
+,IxReserved36                            VARCHAR2(120)
+,IxAuthorizationNumber 			 VARCHAR2(120)		
+,IxReserved38                            VARCHAR2(120)
+,IxReserved39                            VARCHAR2(120)
+,IxReserved40                            VARCHAR2(120)
+,IxReserved41                            VARCHAR2(120)
+,IxReserved42                            VARCHAR2(120)
+,IxReserved43                            VARCHAR2(120)
+,IxPS2000				 VARCHAR2(120)		
+,IxReference				 VARCHAR2(120)		
+,IxSTAN					 NUMBER			
+,IxReserved47                            VARCHAR2(120)
+,IxReserved48                            VARCHAR2(120)
+,IxReserved49                            VARCHAR2(120)
+,IxDate					 NUMBER			 -- DATE FORMAT mmddyyyy
+,IxTime					 NUMBER			 -- TIME
+,IxDepositData				VARCHAR2(120)		
+,IxIsoBankResp     			VARCHAR2(120)		
+,IxPrivateLabelPromoData  		VARCHAR2(120)		
+,IxReserved55                           VARCHAR2(120)
+,IxReserved56                            VARCHAR2(120)
+,IxReserved57                            VARCHAR2(120)
+,IxReserved58                            VARCHAR2(120)
+,IxDebitAccount 			 VARCHAR2(120)		 -- 59
+,IxCustomerReferenceID 			VARCHAR2(120)		
+,IxNationalTaxcollIndicator	 	NUMBER			
+,IxNationalTaxAmount			NUMBER			
+,IxOtherTaxAmount			NUMBER			
+,IxDiscountAmount			NUMBER			
+,IxShippingAmount			NUMBER			
+,IxTaxableAmount				NUMBER			
+,IxDutyAmount 				NUMBER			
+,IxShipFromZipCode  			VARCHAR2(120)		
+,IxShipToCompany 			VARCHAR2(120)		
+,IxShipToName				VARCHAR2(120)		
+,IxShipToStreet				VARCHAR2(120)		
+,IxShipToCity				VARCHAR2(120)		
+,IxShipToState				VARCHAR2(120)		
+,IxShipToCountry				VARCHAR2(120)	
+,IxShipToZipCode				VARCHAR2(120)		
+,IxPurchaserName				VARCHAR2(120)		
+,IxOrderDate  				NUMBER			
+,IxMerchantVATNumber  			VARCHAR2(120)		
+,IxCustomerVATNumber  			VARCHAR2(120)		
+,IxVATInvoice 				NUMBER			
+,IxVATAmount  				NUMBER			
+,IxVATRate 				NUMBER			
+,IxShipToIndicator               	VARCHAR2(120)
+,IxCustCountryCode                      VARCHAR2(120)
+,IxCustAccountNo                        VARCHAR2(120)
+,IxCostCenter                           VARCHAR2(120)
+,IxDesktopLocation                      VARCHAR2(120)
+,IxReleaseNumber                        VARCHAR2(120)
+,IxOriginalInvoiceNo                    VARCHAR2(120)
+,IxOtherTaxAmount2                      NUMBER
+,IxOtherTaxAmount3                      NUMBER
+,IxMiscCharge                           NUMBER
+,IxBatchName                            VARCHAR2(100)
+);
+
+SHOW ERROR

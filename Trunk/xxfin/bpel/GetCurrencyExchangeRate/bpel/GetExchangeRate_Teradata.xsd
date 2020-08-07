@@ -1,0 +1,30 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<xs:schema targetNamespace="http://xmlns.oracle.com/pcbpel/adapter/db/GetExchangeRate_Teradata" xmlns="http://xmlns.oracle.com/pcbpel/adapter/db/GetExchangeRate_Teradata" elementFormDefault="qualified" attributeFormDefault="qualified" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+   <xs:element name="GetExchangeRate_TeradataInput" type="GetExchangeRate_TeradataInput"/>
+   <xs:complexType name="GetExchangeRate_TeradataInput">
+      <xs:sequence>
+         <xs:element name="start_date" type="xs:string" nillable="true"/>
+         <xs:element name="end_date" type="xs:string" nillable="true"/>
+      </xs:sequence>
+   </xs:complexType>
+   <xs:element name="GetExchangeRate_TeradataOutputCollection" type="GetExchangeRate_TeradataOutputCollection"/>
+   <xs:complexType name="GetExchangeRate_TeradataOutputCollection">
+      <xs:sequence>
+         <xs:element name="GetExchangeRate_TeradataOutput" type="GetExchangeRate_TeradataOutput" minOccurs="0" maxOccurs="unbounded"/>
+      </xs:sequence>
+   </xs:complexType>
+   <xs:complexType name="GetExchangeRate_TeradataOutput">
+      <xs:sequence>
+         <xs:element name="DLY_CONVERSION_RT" type="xs:string" nillable="true"/>
+         <xs:element name="DLY_RT_TO_USD" type="xs:string" nillable="true"/>
+         <xs:element name="TO_CURRENCY_CD" type="xs:string" nillable="true"/>
+         <xs:element name="APA_RT_TO_USD" type="xs:string" nillable="true"/>
+         <xs:element name="APA_CONVERSION_RT" type="xs:string" nillable="true"/>
+         <xs:element name="EPA_RT_TO_USD" type="xs:string" nillable="true"/>
+         <xs:element name="EPA_CONVERSION_RT" type="xs:string" nillable="true"/>
+         <xs:element name="DT" type="xs:string" nillable="true"/>
+         <xs:element name="FISCAL_PERIOD_ID" type="xs:string" nillable="true"/>
+         <xs:element name="MONTHYEAR" type="xs:string" nillable="true"/>
+      </xs:sequence>
+   </xs:complexType>
+</xs:schema>

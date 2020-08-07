@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding='windows-1252'?>
+<!DOCTYPE ViewObject SYSTEM "jbo_03_01.dtd">
+
+<ViewObject
+   Name="NewStoreSetupVO"
+   BindingStyle="Oracle"
+   CustomQuery="true"
+   RowClass="od.oracle.apps.xxmer.newstoresetup.server.NewStoreSetupVORowImpl"
+   ComponentClass="od.oracle.apps.xxmer.newstoresetup.server.NewStoreSetupVOImpl"
+   MsgBundleClass="od.oracle.apps.xxmer.newstoresetup.server.common.NewStoreSetupVORowImplMsgBundle"
+   ComponentInterface="od.oracle.apps.xxmer.newstoresetup.NewStoreSetupVO"
+   FetchMode="FETCH_AS_NEEDED"
+   UseGlueCode="false" >
+   <SQLQuery><![CDATA[
+SELECT rpad(ou.organization_id,10)       loc_id
+      ,nvl(ou.name,'Not found')          loc_name
+      ,ns.store_dir_rcv_date             store_dir_rcv_date
+      ,to_number(ou.attribute1)          legacy_id
+      ,to_date(decode(ou.attribute3,NULL,
+              ns.store_dir_rcv_date,
+              ou.attribute3))            open_date
+      ,ms.organization_code              organization_code
+  FROM xxmer_new_store_reloc_param   ns
+      ,hr_all_organization_units     ou
+      ,org_organization_definitions  ms
+ WHERE ns.loc_id                            = ou.organization_id
+   AND ou.organization_id                   = ms.organization_id
+   AND ns.rec_status                      =  'A'
+   AND fnd_profile.value_specific('ORG_ID') = ms.operating_unit
+ORDER BY process_date
+   ]]></SQLQuery>
+   <DesignTime>
+      <Attr Name="_isCodegen" Value="true" />
+      <Attr Name="_version" Value="9.0.3.13.75" />
+      <Attr Name="_CodeGenFlagNew" Value="164" />
+   </DesignTime>
+   <ViewAttribute
+      Name="LocId"
+      IsPersistent="false"
+      Precision="30"
+      Type="java.lang.String"
+      AliasName="LOC_ID"
+      ColumnType="VARCHAR2"
+      Expression="LOC_ID"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="30" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="LocName"
+      IsPersistent="false"
+      Precision="240"
+      Type="java.lang.String"
+      AliasName="LOC_NAME"
+      ColumnType="VARCHAR2"
+      Expression="LOC_NAME"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="240" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="StoreDirRcvDate"
+      IsPersistent="false"
+      Type="oracle.jbo.domain.Date"
+      AliasName="STORE_DIR_RCV_DATE"
+      ColumnType="VARCHAR2"
+      Expression="STORE_DIR_RCV_DATE"
+      SQLType="DATE" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="7" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="LegacyId"
+      IsUpdateable="false"
+      IsPersistent="false"
+      Type="oracle.jbo.domain.Number"
+      AliasName="LEGACY_ID"
+      ColumnType="NUMBER"
+      Expression="LEGACY_ID"
+      SQLType="NUMERIC" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="OpenDate"
+      IsPersistent="false"
+      Type="oracle.jbo.domain.Date"
+      AliasName="OPEN_DATE"
+      ColumnType="VARCHAR2"
+      Expression="OPEN_DATE"
+      SQLType="DATE" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="7" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="OrganizationCode"
+      IsPersistent="false"
+      Precision="3"
+      Type="java.lang.String"
+      AliasName="ORGANIZATION_CODE"
+      ColumnType="VARCHAR2"
+      Expression="ORGANIZATION_CODE"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="3" />
+      </DesignTime>
+   </ViewAttribute>
+</ViewObject>

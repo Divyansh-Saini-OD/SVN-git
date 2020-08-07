@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!--Native format was generated from COBOL copybook MCSCEBS-->
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:nxsd="http://xmlns.oracle.com/pcbpel/nxsd" xmlns:extn="http://xmlns.oracle.com/pcbpel/nxsd/extensions" targetNamespace="http://TargetNamespace.com/plReadRequest" xmlns:tns="http://TargetNamespace.com/plReadRequest" elementFormDefault="qualified" attributeFormDefault="unqualified" nxsd:version="NXSD" nxsd:encoding="cp037" nxsd:byteOrder="bigEndian" nxsd:stream="bytes">
+   <xsd:element name="Root-Element">
+      <xsd:complexType>
+         <xsd:sequence minOccurs="1" maxOccurs="unbounded">
+            <!--COBOL declaration : 05 HEADER-AREA-->
+            <xsd:element name="HEADER-AREA">
+               <xsd:complexType>
+                  <xsd:sequence>
+                     <!--COBOL declaration : 10 HDR-DATE-TIME PIC S9(015) COMP-3-->
+                     <xsd:element name="HDR-DATE-TIME" type="xsd:long" nxsd:style="comp3" extn:sign="ticked" extn:picSize="15"/>
+                     <!--COBOL declaration : 10 HDR-EIBTASKN PIC S9(007) COMP-3-->
+                     <xsd:element name="HDR-EIBTASKN" type="xsd:long" nxsd:style="comp3" extn:sign="ticked" extn:picSize="7"/>
+                     <!--COBOL declaration : 10 HDR-TERMID PIC X(004)-->
+                     <xsd:element name="HDR-TERMID" type="xsd:string" nxsd:style="fixedLength" nxsd:padStyle="tail" nxsd:paddedBy=" " nxsd:length="4"/>
+                     <!--COBOL declaration : 10 HDR-TRANID PIC X(004)-->
+                     <xsd:element name="HDR-TRANID" type="xsd:string" nxsd:style="fixedLength" nxsd:padStyle="tail" nxsd:paddedBy=" " nxsd:length="4"/>
+                     <!--COBOL declaration : 10 HDR-SYSID PIC X(004)-->
+                     <xsd:element name="HDR-SYSID" type="xsd:string" nxsd:style="fixedLength" nxsd:padStyle="tail" nxsd:paddedBy=" " nxsd:length="4"/>
+                     <!--COBOL declaration : 10 HDR-PROG PIC X(008)-->
+                     <xsd:element name="HDR-PROG" type="xsd:string" nxsd:style="fixedLength" nxsd:padStyle="tail" nxsd:paddedBy=" " nxsd:length="8"/>
+                     <!--COBOL declaration : 10 HDR-TSQNAME PIC X(008)-->
+                     <xsd:element name="HDR-TSQNAME" type="xsd:string" nxsd:style="fixedLength" nxsd:padStyle="tail" nxsd:paddedBy=" " nxsd:length="8"/>
+                  </xsd:sequence>
+               </xsd:complexType>
+            </xsd:element>
+            <!--COBOL declaration : 05 REQUEST-AREA-->
+            <xsd:element name="REQUEST-AREA">
+               <xsd:complexType>
+                  <xsd:sequence>
+                     <!--COBOL declaration : 10 REQ-TYPE PIC X(002)-->
+                   <!--  <xsd:element name="REQ-TYPE" type="xsd:string" nxsd:style="fixedLength" nxsd:padStyle="tail" nxsd:paddedBy=" " nxsd:length="2"/> -->
+                     <!--COBOL declaration : 10 REQ-TENDER-TYPE PIC X(002)-->
+                  <!--   <xsd:element name="REQ-TENDER-TYPE" type="xsd:string" nxsd:style="fixedLength" nxsd:padStyle="tail" nxsd:paddedBy=" " nxsd:length="2"/> -->
+                     <!--COBOL declaration : 10 REQ-STORE PIC X(005)-->
+                     <xsd:element name="REQ-STORE" type="xsd:string" nxsd:style="fixedLength" nxsd:padStyle="tail" nxsd:paddedBy=" " nxsd:length="5"/>
+                     <!--COBOL declaration : 10 REQ-REGISTER PIC X(002)-->
+                     <xsd:element name="REQ-REGISTER" type="xsd:string" nxsd:style="fixedLength" nxsd:padStyle="tail" nxsd:paddedBy=" " nxsd:length="2"/>
+                     <!--COBOL declaration : 10 REQ-SALE-TRAN PIC X(004)-->
+                     <xsd:element name="REQ-SALE-TRAN" type="xsd:string" nxsd:style="fixedLength" nxsd:padStyle="tail" nxsd:paddedBy=" " nxsd:length="4"/>
+                     <!--COBOL declaration : 10 REQ-ORDER PIC X(009)-->
+                     <xsd:element name="REQ-ORDER" type="xsd:string" nxsd:style="fixedLength" nxsd:padStyle="tail" nxsd:paddedBy=" " nxsd:length="9"/>
+                     <!--COBOL declaration : 10 REQ-ORDER-SUB PIC X(003)-->
+                     <xsd:element name="REQ-ORDER-SUB" type="xsd:string" nxsd:style="fixedLength" nxsd:padStyle="tail" nxsd:paddedBy=" " nxsd:length="3"/>
+                     <!--COBOL declaration : 10 REQ-ACCOUNT PIC X(025)-->
+                     <xsd:element name="REQ-ACCOUNT" type="xsd:string" nxsd:style="fixedLength" nxsd:padStyle="tail" nxsd:paddedBy=" " nxsd:length="25"/>
+                     <!--COBOL declaration : 10 REQ-AMOUNT PIC X(009)-->
+                     <xsd:element name="REQ-AMOUNT" type="xsd:string" nxsd:style="fixedLength" nxsd:padStyle="tail" nxsd:paddedBy=" " nxsd:length="9"/>
+                     <!--COBOL declaration : 10 REQ-AOPS-AREA-->
+                   <!--  <xsd:element name="REQ-AOPS-AREA">
+                        <xsd:complexType>
+                           <xsd:sequence> -->
+                              <!--COBOL declaration : 15 REQ-AOPS-TYPE PIC X(002)-->
+                          <!--    <xsd:element name="REQ-AOPS-TYPE" type="xsd:string" nxsd:style="fixedLength" nxsd:padStyle="tail" nxsd:paddedBy=" " nxsd:length="2"/> -->
+                              <!--COBOL declaration : 15 REQ-AOPS-TRANS-NUM PIC X(004)-->
+                           <!--   <xsd:element name="REQ-AOPS-TRANS-NUM" type="xsd:string" nxsd:style="fixedLength" nxsd:padStyle="tail" nxsd:paddedBy=" " nxsd:length="4"/> -->
+                              <!--COBOL declaration : 15 REQ-AOPS-PYMT-TYPE PIC X(004)-->
+                        <!-- <xsd:element name="REQ-AOPS-PYMT-TYPE" type="xsd:string" nxsd:style="fixedLength" nxsd:padStyle="tail" nxsd:paddedBy=" " nxsd:length="4"/> -->
+                              <!--COBOL declaration : 15 REQ-AOPS-REGISTRY-NUM PIC X(012)-->
+                           <!--   <xsd:element name="REQ-AOPS-REGISTRY-NUM" type="xsd:string" nxsd:style="fixedLength" nxsd:padStyle="tail" nxsd:paddedBy=" " nxsd:length="12"/> -->
+                              <!--COBOL declaration : 15 REQ-AOPS-AUTH-CODE PIC X(006)-->
+                         <!--     <xsd:element name="REQ-AOPS-AUTH-CODE" type="xsd:string" nxsd:style="fixedLength" nxsd:padStyle="tail" nxsd:paddedBy=" " nxsd:length="6"/>
+                           </xsd:sequence>
+                        </xsd:complexType>
+                     </xsd:element> -->
+                  </xsd:sequence>
+               </xsd:complexType>
+            </xsd:element>
+         </xsd:sequence>
+      </xsd:complexType>
+   </xsd:element>
+</xsd:schema>

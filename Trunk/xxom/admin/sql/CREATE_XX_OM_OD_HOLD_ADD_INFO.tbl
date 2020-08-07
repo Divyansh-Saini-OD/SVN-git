@@ -1,0 +1,99 @@
+-- +============================================================================================+
+-- |                        Office Depot - Project Simplify                                     |
+-- |              Oracle NAIO/WIPRO/Office Depot/Consulting Organization                        |
+-- +============================================================================================+
+-- | Name         : XXOMHLDMGMTFRMWKINST.tbl                                                    |
+-- | Rice Id      : E0244                                                                       | 
+-- | Description  : OD HoldsManagementFrameworke Table Creation                                 |  
+-- | Purpose      : Create Custom Tables.                                                       |
+-- |                1. XX_OM_OD_HOLD_ADD_INFO (Additional Information Metadata Table)           |
+-- |                                                                                            |
+-- |Change Record:                                                                              |
+-- |===============                                                                             |
+-- |Version    Date          Author           Remarks                                           | 
+-- |=======    ==========    =============    ==================================================+
+-- |DRAFT 1A   03-May-2007   Nabarun Ghosh    Initial Version                                   |
+-- |1.1        04-JUN-2007   Nabarun Ghosh    Updated the Comments Section as per onsite        |
+-- |                                          review                                            |
+-- |1.2        23-JUL-2007   Nabarun Ghosh    Changed the Table Name, Inorder to accomodate the |
+-- |                                          DFF/KFF's values                                  |
+-- +============================================================================================+
+
+
+SET VERIFY      OFF
+SET TERM        OFF
+SET FEEDBACK    OFF
+SET SHOW        OFF
+SET ECHO        OFF
+SET TAB         OFF
+
+PROMPT
+PROMPT Dropping Existing Custom Tables......
+PROMPT
+
+WHENEVER SQLERROR CONTINUE
+
+PROMPT
+PROMPT Dropping Table XX_OM_OD_HOLD_ADD_INFO
+PROMPT
+
+DROP TABLE XX_OM_OD_HOLD_ADD_INFO;
+
+WHENEVER SQLERROR CONTINUE
+
+PROMPT
+PROMPT Creating the Custom Table ......
+PROMPT
+
+
+PROMPT
+PROMPT Creating the Table XX_OM_OD_HOLD_ADD_INFO .....
+PROMPT
+
+CREATE TABLE XXOM.XX_OM_OD_HOLD_ADD_INFO
+(
+  COMBINATION_ID          NUMBER                NOT NULL,
+  STRUCTURE_ID            NUMBER(15)            NOT NULL,
+  ENABLED_FLAG            VARCHAR2(1),
+  SUMMARY_FLAG            VARCHAR2(1),
+  START_DATE_ACTIVE       DATE,
+  END_DATE_ACTIVE         DATE,
+  HOLD_TYPE               VARCHAR2(1)           NOT NULL, -- Manual(Enter Value As: 'M')/Automatic (Enter Value As: 'A')
+  APPLY_TO_ORDER_OR_LINE  VARCHAR2(1)           NOT NULL, -- Order Header(Enter Value As:'O')/Order Line(Enter Value As:'L')
+  ORDER_BOOKING_STATUS    VARCHAR2(1)           NOT NULL, -- Before Booking (Enter Value As:'B')/After Booking(Enter Value As:'A')
+  ORG_ID                  VARCHAR2(20),			  -- Enter Operating Unit (141 / 161)
+  NO_OF_DAYS              VARCHAR2(20)          NOT NULL, -- Hold Nof Of Days Period
+  STOCK_RESERVED          VARCHAR2(20),			  -- Stock Reserved Period
+  ESCALATION_NO_OF_DAYS   VARCHAR2(20),
+  CREDIT_AUTHORIZATION    VARCHAR2(1),
+  AUTHORITIES_TO_NOTIFY   VARCHAR2(240),                  --Notifications to be send to 
+  PRIORITY                VARCHAR2(20),			  --Hold Release Prioritization
+  SEND_TO_POOL            VARCHAR2(1),			  --If needs to insert a record in POOL (Y/N)
+  RULE_FUNCTION_NAME      VARCHAR2(29),			  --Rule Function Name(Eg., Eval_<OD_Hold_Name> Max Char:29)
+  CREATION_DATE           DATE,
+  CREATED_BY              NUMBER,
+  LAST_UPDATE_DATE        DATE,
+  LAST_UPDATED_BY         NUMBER
+)
+TABLESPACE &tablespace
+PCTUSED    &pctused
+PCTFREE    &pctfree
+STORAGE    (
+            INITIAL          &initial
+            NEXT             &next
+            MINEXTENTS       &minextents
+            MAXEXTENTS       &maxextents
+            PCTINCREASE      &pctincrease
+           );
+
+WHENEVER SQLERROR CONTINUE
+
+
+PROMPT
+PROMPT Exiting....
+PROMPT
+
+SET FEEDBACK ON
+
+EXIT;
+

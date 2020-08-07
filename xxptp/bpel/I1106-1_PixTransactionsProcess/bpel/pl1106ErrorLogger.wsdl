@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions 
+    name="pl1106ErrorLogger"
+    targetNamespace="http://xmlns.oracle.com/pcbpel/adapter/db/pl1106ErrorLogger/"
+    xmlns:tns="http://xmlns.oracle.com/pcbpel/adapter/db/pl1106ErrorLogger/"
+    xmlns:plt="http://schemas.xmlsoap.org/ws/2003/05/partner-link/"
+    xmlns:jca="http://xmlns.oracle.com/pcbpel/wsdl/jca/"
+    xmlns:pc="http://xmlns.oracle.com/pcbpel/"
+    xmlns:top="http://xmlns.oracle.com/pcbpel/adapter/db/top/pl1106ErrorLogger"
+    xmlns:hdr="http://xmlns.oracle.com/pcbpel/adapter/db/"
+    xmlns="http://schemas.xmlsoap.org/wsdl/">
+
+    <import namespace="http://xmlns.oracle.com/pcbpel/adapter/db/" location="DBAdapterOutboundHeader.wsdl"/>
+
+    <types>
+        <schema xmlns="http://www.w3.org/2001/XMLSchema">
+            <import namespace="http://xmlns.oracle.com/pcbpel/adapter/db/top/pl1106ErrorLogger"
+                schemaLocation="pl1106ErrorLogger_table.xsd"/>
+        </schema>
+    </types>
+
+    <message name="XxGiPixtransactionsCollection_msg">
+        <part name="XxGiPixtransactionsCollection" element="top:XxGiPixtransactionsCollection"/>
+    </message>
+
+
+    <portType name="pl1106ErrorLogger_ptt">
+        <operation name="insert">
+            <input message="tns:XxGiPixtransactionsCollection_msg"/>
+        </operation>
+    </portType>
+
+    <binding name="pl1106ErrorLogger_binding" type="tns:pl1106ErrorLogger_ptt">
+        <jca:binding />
+        <operation name="insert">
+            <jca:operation
+                InteractionSpec="oracle.tip.adapter.db.DBWriteInteractionSpec"
+
+                DescriptorName="pl1106ErrorLogger.XxGiPixtransactions"
+                DmlType="insert"
+                DetectOmissions="true"
+                OptimizeMerge="true"
+                MappingsMetaDataURL="pl1106ErrorLogger_toplink_mappings.xml" />
+            <input>
+                <jca:header message="hdr:OutboundHeader_msg" part="outboundHeader"/>
+            </input>
+        </operation>
+    </binding>
+
+    <!-- Your runtime connection is declared in
+        J2EE_HOME/application-deployments/default/DbAdapter/oc4j-ra.xml
+        These 'mcf' properties here are from your design time connection and 
+        save you from having to edit that file and restart the application server
+        if eis/DB/dev03 is missing.
+        These 'mcf' properties are safe to remove.
+    -->
+    <service name="pl1106ErrorLogger">
+        <port name="pl1106ErrorLogger_pt" binding="tns:pl1106ErrorLogger_binding">
+            <jca:address location="eis/DB/dev03"
+                UIConnectionName="dev03"
+                ManagedConnectionFactory="oracle.tip.adapter.db.DBManagedConnectionFactory"
+                mcf.DriverClassName="oracle.jdbc.OracleDriver"
+                mcf.PlatformClassName="oracle.toplink.platform.database.oracle.Oracle10Platform"
+                mcf.ConnectionString="jdbc:oracle:thin:@choldbr18d.na.odcorp.net:1544:GSIDEV03"
+                mcf.UserName="apps"
+                mcf.Password="33249B2910CFF3FBCD9B834DF8560A56"
+            />
+        </port>
+    </service>
+
+    <plt:partnerLinkType name="pl1106ErrorLogger_plt" >
+        <plt:role name="pl1106ErrorLogger_role" >
+            <plt:portType name="tns:pl1106ErrorLogger_ptt" />
+        </plt:role>
+    </plt:partnerLinkType>
+
+</definitions>

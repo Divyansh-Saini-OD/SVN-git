@@ -1,0 +1,90 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<simple-archive-deployment nselem="simple-archive-deployment" class="oracle.jdeveloper.deploy.jar.ArchiveProfile" xmlns="http://xmlns.oracle.com/jdeveloper/101303/deploy/jar">
+   <archiveOptions>
+      <additionalManifests/>
+      <compressed>true</compressed>
+      <hasManifest>true</hasManifest>
+      <mainClass/>
+   </archiveOptions>
+   <fileGroups>
+      <groups>
+         <Item class="oracle.jdeveloper.deploy.common.PackagingFileGroup" internalName="project-output">
+            <contributors>
+               <Item type="2"/>
+               <Item type="7"/>
+               <Item type="3"/>
+               <Item type="6"/>
+            </contributors>
+            <displayName>Project Output</displayName>
+            <filters>
+               <rules>
+                  <Item type="1" pattern="untitled1.xml"/>
+                  <Item type="1" pattern="PSVM.class"/>
+                  <Item type="1" pattern="ODAtpFlowTypes.xml"/>
+                  <Item type="1" pattern="od.zip"/>
+                  <Item type="1" pattern="connections.xml"/>
+                  <Item type="1" pattern="connection.properties"/>
+                  <Item type="1" pattern="ATP.xml"/>
+                  <Item type="1" pattern="od/oracle/apps/xxom/atp/thread/Worker$1.class"/>
+                  <Item type="1" pattern="od/oracle/apps/xxom/atp/ATPTypes.class"/>
+                  <Item type="1" pattern="model/"/>
+                  <Item type="1" pattern=".tags/"/>
+                  <Item type="1" pattern="com/"/>
+                  <Item type="1" pattern="**/CVS/"/>
+                  <Item type="1" pattern="**.cdi"/>
+                  <Item type="1" pattern="**.contrib"/>
+                  <Item type="1" pattern="**.keep"/>
+                  <Item type="1" pattern="**.rvi"/>
+                  <Item type="1" pattern=".jsps/"/>
+                  <Item type="1" pattern=".dtags/"/>
+                  <Item type="1" pattern="**/*.jht"/>
+                  <Item type="1" pattern="**/*.jjt"/>
+                  <Item type="1" pattern="**/*.jxt"/>
+                  <Item type="0" pattern="**"/>
+               </rules>
+            </filters>
+            <targetWithinJar/>
+         </Item>
+         <Item class="oracle.jdeveloper.deploy.common.LibraryFileGroup" internalName="libraries">
+            <displayName>lib</displayName>
+            <filters>
+               <rules>
+                  <Item type="0" pattern="**"/>
+               </rules>
+            </filters>
+            <selectedLibraries>
+               <Item class="java.lang.String">Oracle JDBC</Item>
+               <Item class="java.lang.String">OC4J Deployment Plugin</Item>
+            </selectedLibraries>
+            <selectionMode>0</selectionMode>
+            <targetWithinJar/>
+         </Item>
+         <Item class="oracle.jdeveloper.deploy.common.ProjectFileGroup">
+            <contributors>
+               <autoInclude>true</autoInclude>
+               <deploySourceAs>0</deploySourceAs>
+               <files class="[Ljava.net.URL;"/>
+               <selectionFilters/>
+            </contributors>
+            <displayName>dependencies</displayName>
+            <filters>
+               <additionalArchives/>
+               <afterFilters/>
+               <beforeFilters/>
+               <duringFilters/>
+               <selectedArchives>
+                  <archives>
+                     <Item path="../../../../j2ee/home/admin_client.jar" jar-entry=""/>
+                     <Item path="../../../../j2ee/home/lib/oc4j-internal.jar" jar-entry=""/>
+                     <Item path="../../../../j2ee/home/lib/oc4j-internal.jar" jar-entry=""/>
+                  </archives>
+                  <selectionMode>1</selectionMode>
+               </selectedArchives>
+            </filters>
+            <targetWithinJar/>
+         </Item>
+      </groups>
+   </fileGroups>
+   <jarURL path="deploy/OfficeDepotATP.jar"/>
+   <profileDeps/>
+</simple-archive-deployment>

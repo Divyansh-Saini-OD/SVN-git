@@ -1,0 +1,32 @@
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     ON
+
+PROMPT drop TABLE XX_AP_SUPP_SITE_CONTACT_STG
+
+PROMPT Program exits IF the creation IS NOT SUCCESSFUL
+
+WHENEVER SQLERROR CONTINUE
+
+-- +==========================================================================+
+-- |                  Office Depot - Project Simplify                         |
+-- +==========================================================================+
+-- | Name :XXFIN.XX_AP_SUPP_SITE_CONTACT_STG                                  |
+-- | Description : Drop the XX_AP_SUPP_SITE_CONTACT_STG Staging table         |
+-- | RICE ID : E3115                                                          |
+-- |                                                                          |
+-- |                                                                          |
+-- |Change Record:                                                            |
+-- |===============                                                           |
+-- |Version   Date         Author               Remarks                       |
+-- |=======   ==========   =============        ==============================|
+-- | 1.0      22-Jan-2015  Paddy Sanjeevi       Initial version               |
+-- |                                                                          |
+-- +==========================================================================+
+
+drop table XX_AP_SUPP_SITE_CONTACT_STG;
+
+SHOW ERROR
+

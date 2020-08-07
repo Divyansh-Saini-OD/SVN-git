@@ -1,0 +1,95 @@
+<schema targetNamespace="http://xmlns.oracle.com/pcbpel/adapter/db/APPS/XX_CS_SERVICEREQUEST_PKG/SEARCH_NOTES/" xmlns="http://www.w3.org/2001/XMLSchema" xmlns:db="http://xmlns.oracle.com/pcbpel/adapter/db/APPS/XX_CS_SERVICEREQUEST_PKG/SEARCH_NOTES/" elementFormDefault="qualified">
+   <element name="InputParameters">
+      <complexType>
+         <sequence>
+            <element name="P_REQUEST_ID" type="decimal" db:index="1" db:type="NUMBER" minOccurs="0" nillable="true"/>
+            <element name="P_SR_NOTES_TBL" type="db:XX_CS_SR_NOTES_TBL" db:index="2" db:type="Array" minOccurs="0" nillable="true"/>
+            <element name="P_ECOM_SITE_KEY" type="db:XX_GLB_SITEKEY_REC_TYPE" db:index="3" db:type="Struct" minOccurs="0" nillable="true"/>
+            <element name="P_RETURN_STATUS" type="string" db:index="4" db:type="VARCHAR2" minOccurs="0" nillable="true"/>
+            <element name="P_MSG_DATA" type="string" db:index="5" db:type="VARCHAR2" minOccurs="0" nillable="true"/>
+         </sequence>
+      </complexType>
+   </element>
+   <element name="OutputParameters">
+      <complexType>
+         <sequence>
+            <element name="P_SR_NOTES_TBL" type="db:XX_CS_SR_NOTES_TBL" db:index="2" db:type="Array" minOccurs="0" nillable="true"/>
+            <element name="P_ECOM_SITE_KEY" type="db:XX_GLB_SITEKEY_REC_TYPE" db:index="3" db:type="Struct" minOccurs="0" nillable="true"/>
+            <element name="P_RETURN_STATUS" type="string" db:index="4" db:type="VARCHAR2" minOccurs="0" nillable="true"/>
+            <element name="P_MSG_DATA" type="string" db:index="5" db:type="VARCHAR2" minOccurs="0" nillable="true"/>
+         </sequence>
+      </complexType>
+   </element>
+   <complexType name="XX_CS_SR_NOTES_TBL">
+      <sequence>
+         <element name="P_SR_NOTES_TBL_ITEM" type="db:XX_CS_SR_NOTES_REC" db:type="Struct" minOccurs="0" maxOccurs="unbounded" nillable="true"/>
+      </sequence>
+   </complexType>
+   <complexType name="XX_GLB_SITEKEY_REC_TYPE">
+      <sequence>
+         <element name="SITE_BRAND" db:type="VARCHAR2" minOccurs="0" nillable="true">
+            <simpleType>
+               <restriction base="string">
+                  <maxLength value="40"/>
+               </restriction>
+            </simpleType>
+         </element>
+         <element name="SITE_MODE" db:type="VARCHAR2" minOccurs="0" nillable="true">
+            <simpleType>
+               <restriction base="string">
+                  <maxLength value="40"/>
+               </restriction>
+            </simpleType>
+         </element>
+         <element name="COUNTRY_CODE" db:type="VARCHAR2" minOccurs="0" nillable="true">
+            <simpleType>
+               <restriction base="string">
+                  <maxLength value="2"/>
+               </restriction>
+            </simpleType>
+         </element>
+         <element name="LANGUAGE_CODE" db:type="VARCHAR2" minOccurs="0" nillable="true">
+            <simpleType>
+               <restriction base="string">
+                  <maxLength value="2"/>
+               </restriction>
+            </simpleType>
+         </element>
+         <element name="OPERATING_UNIT" type="decimal" db:type="NUMBER" minOccurs="0" nillable="true"/>
+         <element name="ORDER_SOURCE" db:type="VARCHAR2" minOccurs="0" nillable="true">
+            <simpleType>
+               <restriction base="string">
+                  <maxLength value="40"/>
+               </restriction>
+            </simpleType>
+         </element>
+         <element name="SITE_KEY_ID" type="decimal" db:type="NUMBER" minOccurs="0" nillable="true"/>
+      </sequence>
+   </complexType>
+   <complexType name="XX_CS_SR_NOTES_REC">
+      <sequence>
+         <element name="NOTES" db:type="VARCHAR2" minOccurs="0" nillable="true">
+            <simpleType>
+               <restriction base="string">
+                  <maxLength value="1000"/>
+               </restriction>
+            </simpleType>
+         </element>
+         <element name="NOTE_DETAILS" db:type="VARCHAR2" minOccurs="0" nillable="true">
+            <simpleType>
+               <restriction base="string">
+                  <maxLength value="2000"/>
+               </restriction>
+            </simpleType>
+         </element>
+         <element name="CREATION_DATE" type="dateTime" db:type="DATE" minOccurs="0" nillable="true"/>
+         <element name="CREATED_BY" db:type="VARCHAR2" minOccurs="0" nillable="true">
+            <simpleType>
+               <restriction base="string">
+                  <maxLength value="100"/>
+               </restriction>
+            </simpleType>
+         </element>
+      </sequence>
+   </complexType>
+</schema>

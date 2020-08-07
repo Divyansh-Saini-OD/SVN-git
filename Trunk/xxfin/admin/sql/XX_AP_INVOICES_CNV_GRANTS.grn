@@ -1,0 +1,38 @@
+-- +==========================================================================+
+-- |                  Office Depot - Project Simplify                         |
+-- |                       PROVIDGE Consulting                                |
+-- +==========================================================================+
+-- | SQL Script to create Grants for the following tables                     |
+-- |                                                                          |
+-- |                      TABLE:  APPS.AP_INVOICES_INTERFACE                  |
+-- |                              APPS.AP_INVOICE_LINES_INTERFACE             |
+-- |                              APPS.AP_INVOCIES_ALL                        |
+-- |                                                                          |
+-- |                                                                          |
+-- |                                                                          |
+-- |                                                                          |
+-- |Change Record:                                                            |
+-- |===============                                                           |
+-- |Version   Date         Author               Remarks                       |
+-- |=======   ==========   ================     ==============================|
+-- | V1.0     06-AUG-2007  Sarat Uppalapati     Initial version               |
+-- |                                                                          |
+-- +==========================================================================+
+
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     ON
+
+GRANT ALTER, DELETE, INDEX, INSERT, REFERENCES, SELECT, UPDATE, ON COMMIT REFRESH, QUERY REWRITE, DEBUG, FLASHBACK ON  APPS.AP_INVOICES_INTERFACE TO APPS_RW WITH GRANT OPTION;
+
+GRANT ALTER, DELETE, INDEX, INSERT, REFERENCES, SELECT, UPDATE, ON COMMIT REFRESH, QUERY REWRITE, DEBUG, FLASHBACK ON  APPS.AP_INVOICE_LINES_INTERFACE TO APPS_RW WITH GRANT OPTION;
+
+GRANT ALTER, DELETE, INDEX, INSERT, REFERENCES, SELECT, UPDATE, ON COMMIT REFRESH, QUERY REWRITE, DEBUG, FLASHBACK ON  APPS.AP_INVOICES_ALL TO APPS WITH GRANT OPTION;
+
+SHOW ERROR
+
+
+
+

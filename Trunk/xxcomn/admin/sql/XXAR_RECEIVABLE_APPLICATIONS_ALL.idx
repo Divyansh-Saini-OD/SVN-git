@@ -1,0 +1,18 @@
+-- +===================================================================+
+-- |                  Office Depot - Project Simplify                  |
+-- +===================================================================+
+-- | Name        : AR_RECEIVABLE_APPLICATIONS_ALL.idx                               |
+-- | Rice ID     :                                                     |
+-- | Description : AR_RECEIVABLE_APPLICATIONS_ALL.idx - Index Creation Script       |
+-- |                                                                   |
+-- |              						       |
+-- |Change Record:                                                     |
+-- |===============                                                    |
+-- |Version   Date        Author           Remarks                     |
+-- |=======  ===========  =============    ============================|
+-- |1.0      19-Jun-2008  DWI INDEXES       Initial draft version       |
+-- |                                                                   |
+-- +===================================================================+
+create index XXCNV.XXAR_RECEIVABLE_APPL_ALLN16  on AR.AR_RECEIVABLE_APPLICATIONS_ALL (last_update_date)
+tablespace xxod nologging online parallel 4;
+

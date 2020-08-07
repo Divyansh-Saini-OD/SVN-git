@@ -1,0 +1,12 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<!-- dbdrv: exec java oracle/jrad/tools/xml/importer XMLImporter.class java &phase=dat+24 checkfile:~PROD:~PATH:~FILE &fullpath:~PROD:~PATH:~FILE -username &un_apps -password &pw_apps -dbconnection &jdbc_db_addr  -userId "1" -rootPackage /oracle/apps/~PROD  -rootdir &fullpath:~PROD:mds:directory  -->
+<oa:listOfValues version="9.0.3.8.13_1550" xml:lang="en-US" xmlns:oa="http://xmlns.oracle.com/oa" xmlns:jrad="http://xmlns.oracle.com/jrad" xmlns:ui="http://xmlns.oracle.com/uix/ui" xmlns:user="http://xmlns.oracle.com/jrad/user" xmlns="http://xmlns.oracle.com/jrad" file-version="$Header$" amDefName="od.oracle.apps.xxcrm.errorhandler.lov.server.ErrorDetailsLovAM" advancedSearchAllowed="true" scope="/" controllerClass="od.oracle.apps.xxcrm.errorhandler.lov.webui.ProgramTypeCO">
+   <ui:contents>
+      <oa:table name="ProgramTypeRN" id="ProgramTypeTable" shortDesc="ProgramTypeTable">
+         <ui:contents>
+            <oa:messageStyledText id="ProgramType" dataType="VARCHAR2" prompt="ProgramType" viewName="ProgramTypeVO1" viewAttr="ProgramType" maximumLength="60" selectiveSearchCriteria="false" queryable="true"/>
+            <oa:formValue id="ModuleNameForm" viewName="ProgramTypeVO1" viewAttr="ModuleName"/>
+         </ui:contents>
+      </oa:table>
+   </ui:contents>
+</oa:listOfValues>

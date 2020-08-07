@@ -1,0 +1,44 @@
+-- +==========================================================================+
+-- |                  Office Depot - Project Simplify                         |
+-- +==========================================================================+
+-- | 		Name  :   XX_WSH_SHIP_LBL_TRACKING.tbl                        |
+-- |                      Script to create the table for                      |
+-- |                      loading ship label tracking data                    |
+-- | 	RICE ID       :   I3101_WMS_Tracking_Data_Interface                   |
+-- |                                                                          |
+-- |Change Record:                                                            |
+-- |===============                                                           |
+-- |Version   Date         Author               Remarks                       |
+-- |=======   ==========   =============        ==============================|
+-- | V1.0     01-09-2017   Avinash Baddam       Initial version               |
+-- +==========================================================================+
+CREATE TABLE XXOM.XX_WSH_SHIP_LBL_TRACKING
+(TRACKING_ID     	NUMBER 		NOT NULL
+,ORDER_NBR       	VARCHAR2(12)
+,ORDER_DT        	DATE
+,DELIVERY_DT     	DATE
+,DELIVERY_ID		NUMBER
+,TRIP_ID		VARCHAR2(20)
+,CONTAINER_ID    	VARCHAR2(250)
+,LANE_NBR		VARCHAR2(250)
+,SRC_LOC_ID      	NUMBER
+,LOC_ID			NUMBER
+,SCAN_IN_TMSTMP  	TIMESTAMP
+,SCAN_OUT_TMSTMP 	TIMESTAMP
+,ILP			VARCHAR2(250)
+,STATUSCODE             VARCHAR2(25)           
+,STATUSDESC		VARCHAR2(2000)
+,ATTRIBUTE1             VARCHAR2(150)  
+,ATTRIBUTE2             VARCHAR2(150)  
+,ATTRIBUTE3             VARCHAR2(150)  
+,ATTRIBUTE4             VARCHAR2(150)  
+,ATTRIBUTE5             VARCHAR2(150)  
+,ATTRIBUTE_CATEGORY     VARCHAR2(150)  
+,CREATED_BY          	NUMBER
+,CREATION_DATE       	DATE 
+,LAST_UPDATED_BY     	NUMBER
+,LAST_UPDATE_DATE    	DATE
+,LAST_UPDATE_LOGIN   	NUMBER
+,CONSTRAINT XX_WSH_SHIP_LBL_TRACKING_PK PRIMARY KEY(TRACKING_ID)
+);
+

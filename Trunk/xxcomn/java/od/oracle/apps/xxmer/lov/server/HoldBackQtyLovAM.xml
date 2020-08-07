@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding='windows-1252'?>
+<!DOCTYPE AppModule SYSTEM "jbo_03_01.dtd">
+
+<AppModule
+   Name="HoldBackQtyLovAM"
+   ComponentClass="oracle.apps.fnd.framework.server.OAApplicationModuleImpl"
+   LoadComponentsLazily="true" >
+   <DesignTime>
+      <Attr Name="_version" Value="9.0.3.13.75" />
+      <Attr Name="_deployType" Value="0" />
+   </DesignTime>
+   <ViewUsage
+      Name="EBSWarehouseLocationsVO1"
+      ViewObjectName="od.oracle.apps.xxmer.lov.server.EBSWarehouseLocationsVO" >
+   </ViewUsage>
+</AppModule>

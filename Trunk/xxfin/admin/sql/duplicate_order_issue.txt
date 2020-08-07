@@ -1,0 +1,16 @@
+2575821: 20,000$ order D&H Distrbuting
+
+294008347     1   00994280      1,695.79	2572689	    10547528	received
+293958358     1   00994280     10,034.93	2575820		10547800	received
+293962598     1   00994280     20,063.85    2575821		10547801	received				
+
+
+hz_cust_account
+
+select orig_system_reference, cust_account_id, cust_acct_site_id, status from apps.hz_cust_acct_sites_all
+   where orig_system_reference like '03158571-00001-A0';
+   04004196-00003-A0
+   
+   select site_use_id, cust_acct_site_id, status, site_use_code from apps.hz_cust_site_uses_all
+   where cust_acct_site_id = 1124162411;
+   --and site_use_code = 'SHIP_TO '; --113951289

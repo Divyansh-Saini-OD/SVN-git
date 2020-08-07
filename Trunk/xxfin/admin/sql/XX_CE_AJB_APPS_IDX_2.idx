@@ -1,0 +1,36 @@
+
+-- +==========================================================================+
+-- |                  Office Depot - Project Simplify                         |
+-- |                       PROVIDGE Consulting                                |
+-- +==========================================================================+
+-- | SQL Script to create indexes                                             |
+-- |                                                                          |
+-- |                                                                          |
+-- |                                                                          |
+-- |                                                                          |
+-- |                                                                          |
+-- |Change Record:                                                            |
+-- |===============                                                           |
+-- |Version   Date         Author               Remarks                       |
+-- |=======   ==========   ================     ==============================|
+-- | V1.0     25-JUN-2008  Deepak Gowda         Initial version               |
+-- |                                                                          |
+-- +==========================================================================+
+
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     ON
+
+DROP INDEX XXFIN.AR_CASH_RECEIPTS_ALL_N1;
+
+CREATE BITMAP INDEX XXFIN.XX_AR_CASH_RECEIPTS_ALL_N1 ON AR.AR_CASH_RECEIPTS_ALL (ATTRIBUTE14) ONLINE;
+
+CREATE BITMAP INDEX XXFIN.XX_IBY_TRXN_CODE_N1 ON IBY.IBY_TRXN_CORE(INSTRNAME) ONLINE;
+
+SHOW ERROR
+
+
+
+

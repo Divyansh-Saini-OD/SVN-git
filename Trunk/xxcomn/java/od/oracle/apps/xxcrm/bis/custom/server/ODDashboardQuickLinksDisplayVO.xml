@@ -1,0 +1,177 @@
+<?xml version='1.0' encoding='windows-1252' ?>
+<!DOCTYPE ViewObject SYSTEM "jbo_03_01.dtd">
+
+<ViewObject
+   Name="ODDashboardQuickLinksDisplayVO"
+   BindingStyle="Oracle"
+   CustomQuery="true"
+   RowClass="od.oracle.apps.xxcrm.bis.custom.server.ODDashboardQuickLinksDisplayVORowImpl"
+   ComponentClass="od.oracle.apps.xxcrm.bis.custom.server.ODDashboardQuickLinksDisplayVOImpl"
+   UseGlueCode="false" >
+   <SQLQuery><![CDATA[
+SELECT ODDashboardQuickLinksEO.LABEL, 
+       ODDashboardQuickLinksEO.DESCRIPTION, 
+       ODDashboardQuickLinksEO.ORDER_OF_DISPLAY, 
+       ODDashboardQuickLinksEO.RESPONSIBILITY_KEY, 
+       ODDashboardQuickLinksEO.CREATION_DATE, 
+       ODDashboardQuickLinksEO.CREATED_BY, 
+       ODDashboardQuickLinksEO.LAST_UPDATE_DATE, 
+       ODDashboardQuickLinksEO.LAST_UPDATED_BY, 
+       ODDashboardQuickLinksEO.LAST_UPDATE_LOGIN, 
+       ODDashboardQuickLinksEO.QUICKLINK_ID, 
+       ODDashboardQuickLinksEO.PATH, 
+       ODDashboardQuickLinksEO.FULL_PATH, 
+       ODDashboardQuickLinksEO.CATEGORY_ID,
+       null AS RESP_KEY_FV,
+       fl.meaning,
+       R.RESPONSIBILITY_NAME,
+       DECODE(ODDashboardQuickLinksEO.PATH,'Relative','http://'||ODDashboardQuickLinksEO.FULL_PATH,' '||ODDashboardQuickLinksEO.FULL_PATH) as ACT_PATH
+FROM XXBI_QUICK_LINKS ODDashboardQuickLinksEO,FND_LOOKUPS FL,FND_RESPONSIBILITY_VL R
+where fl.lookup_type='XXBI_QUICK_LINK_CATEGORIES' and fl.enabled_flag='Y'
+and fl.lookup_code=ODDashboardQuickLinksEO.CATEGORY_ID
+AND R.RESPONSIBILITY_KEY = ODDashboardQuickLinksEO.RESPONSIBILITY_KEY
+   ]]></SQLQuery>
+   <DesignTime>
+      <Attr Name="_isCodegen" Value="true" />
+      <Attr Name="_isExpertMode" Value="true" />
+      <Attr Name="_version" Value="10.1.3.41.57" />
+      <Attr Name="_codeGenFlag2" Value="Access|Coll|VarAccess" />
+   </DesignTime>
+   <EntityUsage
+      Name="ODDashboardQuickLinksEO"
+      Entity="od.oracle.apps.xxcrm.bis.custom.schema.server.ODDashboardQuickLinksEO" >
+      <DesignTime>
+         <Attr Name="_queryClause" Value="false" />
+      </DesignTime>
+   </EntityUsage>
+   <ViewAttribute
+      Name="Label"
+      EntityAttrName="Label"
+      EntityUsage="ODDashboardQuickLinksEO"
+      AliasName="LABEL" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Description"
+      EntityAttrName="Description"
+      EntityUsage="ODDashboardQuickLinksEO"
+      AliasName="DESCRIPTION" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="OrderOfDisplay"
+      IsUnique="true"
+      EntityAttrName="OrderOfDisplay"
+      EntityUsage="ODDashboardQuickLinksEO"
+      AliasName="ORDER_OF_DISPLAY" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="ResponsibilityKey"
+      EntityAttrName="ResponsibilityKey"
+      EntityUsage="ODDashboardQuickLinksEO"
+      AliasName="RESPONSIBILITY_KEY" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="CreationDate"
+      EntityAttrName="CreationDate"
+      EntityUsage="ODDashboardQuickLinksEO"
+      AliasName="CREATION_DATE" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="CreatedBy"
+      EntityAttrName="CreatedBy"
+      EntityUsage="ODDashboardQuickLinksEO"
+      AliasName="CREATED_BY" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="LastUpdateDate"
+      EntityAttrName="LastUpdateDate"
+      EntityUsage="ODDashboardQuickLinksEO"
+      AliasName="LAST_UPDATE_DATE" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="LastUpdatedBy"
+      EntityAttrName="LastUpdatedBy"
+      EntityUsage="ODDashboardQuickLinksEO"
+      AliasName="LAST_UPDATED_BY" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="LastUpdateLogin"
+      EntityAttrName="LastUpdateLogin"
+      EntityUsage="ODDashboardQuickLinksEO"
+      AliasName="LAST_UPDATE_LOGIN" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="QuicklinkId"
+      IsNotNull="true"
+      EntityAttrName="QuicklinkId"
+      EntityUsage="ODDashboardQuickLinksEO"
+      AliasName="QUICKLINK_ID" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Path"
+      EntityAttrName="Path"
+      EntityUsage="ODDashboardQuickLinksEO"
+      AliasName="PATH" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="FullPath"
+      EntityAttrName="FullPath"
+      EntityUsage="ODDashboardQuickLinksEO"
+      AliasName="FULL_PATH" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="CategoryId"
+      EntityAttrName="CategoryId"
+      EntityUsage="ODDashboardQuickLinksEO"
+      AliasName="CATEGORY_ID" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="RespKeyFv"
+      IsPersistent="false"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="RESP_KEY_FV"
+      Expression="RESP_KEY_FV"
+      SQLType="VARCHAR" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Meaning"
+      IsPersistent="false"
+      IsNotNull="true"
+      Precision="80"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="MEANING"
+      Expression="MEANING"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="80" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="ResponsibilityName"
+      IsPersistent="false"
+      IsNotNull="true"
+      Precision="100"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="RESPONSIBILITY_NAME"
+      Expression="RESPONSIBILITY_NAME"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="100" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="ActPath"
+      IsPersistent="false"
+      Precision="107"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="ACT_PATH"
+      Expression="ACT_PATH"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="107" />
+      </DesignTime>
+   </ViewAttribute>
+</ViewObject>

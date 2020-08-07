@@ -1,0 +1,14 @@
+<adapter-config name="DB_TDS_APInvoice_Insert" adapter="Database Adapter" wsdlLocation="DB_TDS_APInvoice_Insert.wsdl" xmlns="http://platform.integration.oracle/blocks/adapter/fw/metadata">
+  
+  <connection-factory location="eis/db/OraXxsoa_svcEOM" UIConnectionName="TDSDev02Database" adapterRef=""/>
+  <endpoint-interaction portType="DB_TDS_APInvoice_Insert_ptt" operation="DB_TDS_APInvoice_Insert">
+    <interaction-spec className="oracle.tip.adapter.db.DBStoredProcedureInteractionSpec">
+      <property name="SchemaName" value="APPS"/>
+      <property name="PackageName" value="XX_CS_TDS_AP_INVOICE_PKG"/>
+      <property name="ProcedureName" value="INSERT_PROC"/>
+      <property name="GetActiveUnitOfWork" value="false"/>
+    </interaction-spec>
+    <output/>
+  </endpoint-interaction>
+
+</adapter-config>

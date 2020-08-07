@@ -1,0 +1,690 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<!-- +======================================================================+ -->
+<!-- |    Copyright (c) 2005, 2015 Oracle and/or its affiliates.            | -->
+<!-- |                         All rights reserved.                         | -->
+<!-- |                           Version 12.0.0                             | -->
+<!-- | 06-Jun-2014 RSURIMEN Bug # 18882501 Bank Account Number is not masked| -->
+<!-- |                       in the Payment Confirmation Page            | -->
+<!-- | 17-Jul-2014 RSURIMEN Bug # 19218421 Bank Account Information On The  | -->
+<!-- |                       Quick Payment Page Is Not Masked               | -->
+<!-- +======================================================================+ -->
+<!-- dbdrv: exec java oracle/jrad/tools/xml/importer XMLImporter.class java &phase=dat+24 checkfile(120.44.12010000.18=120.53.12020000.9)(120.42.12000000.3=120.44):~PROD:~PATH:~FILE &fullpath_~PROD_~PATH_~FILE -username &un_apps -password &pw_apps -dbconnection &jdbc_db_addr  -userId "1" -rootPackage /oracle/apps/~PROD  -rootdir &fullpath_~PROD_mds_directory  -->
+<page xmlns="http://xmlns.oracle.com/jrad" xmlns:ui="http://xmlns.oracle.com/uix/ui" xmlns:oa="http://xmlns.oracle.com/oa" xmlns:user="http://xmlns.oracle.com/jrad/user" file-version="$Header: ARI_INVOICE_PAYMENT_PAGE.xml 120.53.12020000.9 2015/03/20 14:11:35 gnramasa ship $" version="10.1.3_1312" xml:lang="en-US" xmlns:jrad="http://xmlns.oracle.com/jrad">
+   <content>
+      <oa:pageLayout id="ARI_INVOICE_PAYMENT_PAGE" akRegionCode="ARI_INVOICE_PAYMENT_PAGE" regionName="Invoice Payment Page" amDefName="oracle.apps.ar.irec.accountDetails.server.AccountDetailsAM" globalMenu="ARIMENUGLOBAL" appMenu="ARIMENUAPPLICATION" windowTitle="Payment" warnAboutChanges="true">
+         <ui:corporateBranding>
+            <oa:image id="corporateBranding" source="/OA_MEDIA/FNDSSCORP.gif"/>
+         </ui:corporateBranding>
+         <ui:productBranding>
+            <oa:formattedText id="productBranding" text="Bill Management" shortDesc="Bill Management Product"/>
+         </ui:productBranding>
+         <ui:contents>
+            <oa:flowLayout akRegionCode="ARI_INVOICE_PAYMENT_FORM" prompt="Invoice Payment Form" regionName="Invoice Payment Form" standalone="true" id="PaymentFormRegion" user:akAttributeCode="ARI_INVOICE_PAYMENT_FORM" user:akAttributeApplicationId="222" amDefName="oracle.apps.ar.irec.accountDetails.pay.server.PaymentAM" controllerClass="oracle.apps.ar.irec.accountDetails.pay.webui.PaymentFormCO">
+               <ui:contents>
+                  <oa:flowLayout akRegionCode="ARI_INVOICE_PAYMENT" prompt="Payment" regionName="Payment" controllerClass="oracle.apps.ar.irec.accountDetails.pay.webui.PaymentCO" addChildren="false" standalone="true" id="PaymentRegion" user:akAttributeCode="ARI_INVOICE_PAYMENT" user:akAttributeApplicationId="222">
+                     <ui:contents>
+                        <oa:header akRegionCode="ARI_QUICK_PAYMENT" regionName="Quick Payment" controllerClass="oracle.apps.ar.irec.accountDetails.pay.webui.QuickPaymentCO" addChildren="false" standalone="true" text="Quick Payment" id="QuickPaymentRegion" user:akAttributeCode="ARI_QUICK_PAYMENT" user:akAttributeApplicationId="222">
+                           <ui:contents>
+                              <oa:messageStyledText styleClass="OraInstructionText" id="QuickPaymentInstruction" promptTranslationExpansion="100%" user:akAttributeCode="ARI_QUICK_PAYMENT_INSTRUCTION" user:akAttributeApplicationId="222"/>
+                              <oa:header akRegionCode="ARI_QUICK_PAYMENT_INFORMATION" regionName="Quick Payment Information" controllerClass="oracle.apps.ar.irec.accountDetails.pay.webui.QuickInfoCO" addChildren="true" standalone="true" text="Payment Information" id="QuickPaymentInformationRegion" user:akAttributeCode="ARI_QUICK_PAYMENT_INFORMATION" user:akAttributeApplicationId="222">
+                                 <ui:contents>
+                                    <oa:messageStyledText id="QPServiceChargeTip" tipMessageName="ARI_SERVICE_CHARGE_TIP_MSG" tipMessageAppShortName="AR" tipType="shortTip" rendered="false"/>
+                                    <oa:messageChoice id="CustomerSiteUse" prompt="Billing Address" shortDesc="Billing Address" pickListDispAttr="Address" pickListViewName="CustSitesAccessVO" allowBlankValue="false" pickListValAttr="CustomerSiteUseId"/>
+                                    <oa:tableLayout id="QuickPayInfoTableLayout" width="100%">
+                                       <ui:contents>
+                                          <oa:rowLayout id="QuickPayInfoRowLayout">
+                                             <ui:contents>
+                                                <oa:cellFormat id="QuickPayInfoCell1" width="60%" vAlign="top" hAlign="start" columnSpan="2">
+                                                   <ui:contents>
+                                                      <oa:messageComponentLayout id="QuickPayBAMsgCompLayout" rendered="false">
+                                                         <ui:contents>
+                                                            <oa:messageStyledText prompt="Account Type" viewName="DefaultPaymentInstrumentVO" viewAttr="AccountType" styleClass="OraDataText" id="QPBankAccountType" promptTranslationExpansion="100%" user:akAttributeCode="ARI_BANK_ACCOUNT_TYPE" user:akAttributeApplicationId="222"/>
+                                                            <oa:messageStyledText prompt="Account Holder" viewName="DefaultPaymentInstrumentVO" viewAttr="AccountHolder" styleClass="OraDataText" id="QPAccountHolder" promptTranslationExpansion="100%" user:akAttributeCode="ARI_ACCOUNT_HOLDER" user:akAttributeApplicationId="222"/>
+                                                            <oa:messageStyledText prompt="Routing Number" viewName="BankBranchesVO" viewAttr="BankNum" styleClass="OraDataText" id="QPRoutingNumber" promptTranslationExpansion="100%" user:akAttributeCode="ARI_ROUTING_NUMBER" user:akAttributeApplicationId="222"/>
+                                                            <oa:messageStyledText prompt="Account Number" viewName="DefaultPaymentInstrumentVO" viewAttr="BAcNumber" styleClass="OraDataText" id="AccountNumberMaskedBA" promptTranslationExpansion="100%" user:akAttributeCode="ARI_CREDIT_CARD_NUMBER" user:akAttributeApplicationId="222"/>
+                                                            <oa:messageStyledText prompt="Bank Name" viewName="BankBranchesVO" viewAttr="BankName" styleClass="OraDataText" id="BankName" promptTranslationExpansion="100%" user:akAttributeCode="ARI_BANK_NAME" user:akAttributeApplicationId="222" rendered="false"/>
+                                                         </ui:contents>
+                                                      </oa:messageComponentLayout>
+                                                      <oa:messageComponentLayout id="QuickPayCCMsgCompLayout" rendered="false">
+                                                         <ui:contents>
+                                                            <oa:messageLayout id="QuickPayCCMsgLayout1" prompt="Credit Card">
+                                                               <ui:contents>
+                                                                  <oa:tableLayout id="QuickPayCCTableLayout1">
+                                                                     <ui:contents>
+                                                                        <oa:rowLayout id="QuickPayCCRowLayout1">
+                                                                           <ui:contents>
+                                                                              <oa:cellFormat id="QuickPayCCCell1_1" height="10">
+                                                                                 <ui:contents>
+                                                                                    <oa:messageStyledText prompt="" viewName="DefaultPaymentInstrumentVO" viewAttr="AccountType" styleClass="OraDataText" id="AccountType" promptTranslationExpansion="100%" user:akAttributeCode="ARI_CREDIT_CARD_TYPE" user:akAttributeApplicationId="222"/>
+                                                                                 </ui:contents>
+                                                                              </oa:cellFormat>
+                                                                              <oa:cellFormat id="QuickPayCCCell1_2" height="10">
+                                                                                 <ui:contents>
+                                                                                    <oa:spacer id="Spacer" width="12"/>
+                                                                                 </ui:contents>
+                                                                              </oa:cellFormat>
+                                                                              <oa:cellFormat id="QuickPayCCCell1_3" height="10">
+                                                                                 <ui:contents>
+                                                                                    <oa:messageStyledText prompt="" viewName="DefaultPaymentInstrumentVO" viewAttr="AccountNumberMasked" styleClass="OraDataText" id="AccountNumberMaskedCC" promptTranslationExpansion="100%" user:akAttributeCode="ARI_CREDIT_CARD_NUMBER" user:akAttributeApplicationId="222"/>
+                                                                                 </ui:contents>
+                                                                              </oa:cellFormat>
+                                                                           </ui:contents>
+                                                                        </oa:rowLayout>
+                                                                     </ui:contents>
+                                                                  </oa:tableLayout>
+                                                               </ui:contents>
+                                                            </oa:messageLayout>
+                                                            <oa:messageLayout id="QuickPayCCMsgLayout2" prompt="Billing Address" rendered="false">
+                                                               <ui:contents>
+                                                                  <oa:tableLayout id="QuickPayCCTableLayout5">
+                                                                     <ui:contents>
+                                                                        <oa:rowLayout id="QPCCAddressRNRowLayout">
+                                                                           <ui:contents>
+                                                                              <oa:cellFormat id="QPCCAddressRNCellLayout">
+                                                                                 <ui:contents>
+                                                                                    <oa:messageStyledText id="QPAddress" viewName="DefaultPaymentInstrumentVO" viewAttr="ConcAddress" prompt="" styleClass="OraDataText"/>
+                                                                                 </ui:contents>
+                                                                              </oa:cellFormat>
+                                                                           </ui:contents>
+                                                                        </oa:rowLayout>
+                                                                     </ui:contents>
+                                                                  </oa:tableLayout>
+                                                               </ui:contents>
+                                                            </oa:messageLayout>
+                                                            <oa:messageLayout id="QuickPayCCMsgLayout3" prompt="Expiration Date">
+                                                               <ui:contents>
+                                                                  <oa:tableLayout id="QuickPayCCTableLayout2">
+                                                                     <ui:contents>
+                                                                        <oa:rowLayout id="QuickPayCCRowLayout2">
+                                                                           <ui:contents>
+                                                                              <oa:cellFormat id="QuickPayCCCell2_1">
+                                                                                 <ui:contents>
+                                                                                    <oa:messageChoice readOnly="false" prompt="" viewName="DefaultPaymentInstrumentVO" viewAttr="ExpiryMonth" styleClass="OraFieldText" pickListViewDef="oracle.apps.ar.irec.accountDetails.pay.server.ExpDateMonthVO" pickListDispAttr="DisplayedMonth" pickListValAttr="Month" id="AccountExpMonth" promptTranslationExpansion="100%" user:akAttributeCode="ARI_CREDIT_CARD_EXP_MONTH" user:akAttributeApplicationId="222" shortDesc="Month" allowBlankValue="false"/>
+                                                                                 </ui:contents>
+                                                                              </oa:cellFormat>
+                                                                              <oa:cellFormat id="QuickPayCCCell2_2">
+                                                                                 <ui:contents>
+                                                                                    <oa:messageChoice readOnly="false" viewName="DefaultPaymentInstrumentVO" viewAttr="ExpiryYear" styleClass="OraFieldText" pickListViewDef="oracle.apps.ar.irec.accountDetails.pay.server.ExpDateYearVO" pickListDispAttr="DisplayedYear" pickListValAttr="Year" id="AccountExpYear" promptTranslationExpansion="100%" user:akAttributeCode="ARI_CREDIT_CARD_EXP_YEAR" user:akAttributeApplicationId="222" shortDesc="Year" allowBlankValue="false"/>
+                                                                                 </ui:contents>
+                                                                              </oa:cellFormat>
+                                                                           </ui:contents>
+                                                                        </oa:rowLayout>
+                                                                     </ui:contents>
+                                                                  </oa:tableLayout>
+                                                               </ui:contents>
+                                                            </oa:messageLayout>
+                                                            <oa:messageStyledText styleClass="OraDataText" id="AccountExpired" user:akAttributeCode="ARI_CREDIT_CARD_EXPIRED" user:akAttributeApplicationId="222"/>
+                                                         </ui:contents>
+                                                      </oa:messageComponentLayout>
+                                                   </ui:contents>
+                                                </oa:cellFormat>
+                                                <oa:cellFormat id="QuickPayInfoCell2" hAlign="center" vAlign="top">
+                                                   <ui:contents>
+                                                      <oa:tableLayout id="QuickPaymentAmtTableLayout">
+                                                         <ui:contents>
+                                                            <oa:rowLayout id="RemainingBalanceRow">
+                                                               <ui:contents>
+                                                                  <oa:cellFormat id="RemainingBalanceCell1">
+                                                                     <ui:contents>
+                                                                        <oa:messageStyledText id="RemainingBalanceLabel" prompt="Remaining Balance"/>
+                                                                     </ui:contents>
+                                                                  </oa:cellFormat>
+                                                                  <oa:cellFormat id="RemainingBalanceCell2" hAlign="end">
+                                                                     <ui:contents>
+                                                                        <oa:messageStyledText prompt="" dataType="VARCHAR2" viewName="MultipleInvoicesPayListSummaryVO" viewAttr="TotalDueRemainingFormatted" styleClass="OraDataText" id="RemainingBalance" promptTranslationExpansion="100%" user:akAttributeCode="ARI_REMAINING_BALANCE" user:akAttributeApplicationId="222"/>
+                                                                     </ui:contents>
+                                                                  </oa:cellFormat>
+                                                               </ui:contents>
+                                                            </oa:rowLayout>
+                                                            <oa:rowLayout id="DiscountAmtRow" rendered="false">
+                                                               <ui:contents>
+                                                                  <oa:cellFormat id="DiscountAmtCell1">
+                                                                     <ui:contents>
+                                                                        <oa:messageStyledText id="DiscountAmountLabel" prompt="Discount"/>
+                                                                     </ui:contents>
+                                                                  </oa:cellFormat>
+                                                                  <oa:cellFormat id="DiscountAmtCell2" hAlign="end">
+                                                                     <ui:contents>
+                                                                        <oa:messageStyledText prompt="" dataType="VARCHAR2" viewName="MultipleInvoicesPayListSummaryVO" viewAttr="TotalDiscountFormatted" styleClass="OraDataText" id="DiscountAmount" promptTranslationExpansion="100%" user:akAttributeCode="ARI_DISCOUNT_AMOUNT" user:akAttributeApplicationId="222" rendered="true"/>
+                                                                     </ui:contents>
+                                                                  </oa:cellFormat>
+                                                               </ui:contents>
+                                                            </oa:rowLayout>
+                                                            <oa:rowLayout id="ServiceChargeRow" rendered="false">
+                                                               <ui:contents>
+                                                                  <oa:cellFormat id="ServiceChargeCell1">
+                                                                     <ui:contents>
+                                                                        <oa:messageStyledText id="QPServiceChargeAmountLabel" prompt="Service Charge"/>
+                                                                     </ui:contents>
+                                                                  </oa:cellFormat>
+                                                                  <oa:cellFormat id="ServiceChargeCell2" hAlign="end">
+                                                                     <ui:contents>
+                                                                        <oa:messageStyledText id="QPServiceChargeAmount" prompt="" viewName="MultipleInvoicesPayListSummaryVO" viewAttr="TotalServiceChargeFormatted" styleClass="OraDataText" rendered="true"/>
+                                                                     </ui:contents>
+                                                                  </oa:cellFormat>
+                                                               </ui:contents>
+                                                            </oa:rowLayout>
+                                                            <oa:rowLayout id="PaymentAmtRow">
+                                                               <ui:contents>
+                                                                  <oa:cellFormat id="PaymentAmtCell1">
+                                                                     <ui:contents>
+                                                                        <oa:messageStyledText id="PaymentAmountLabel" prompt="Total Payment Amount"/>
+                                                                     </ui:contents>
+                                                                  </oa:cellFormat>
+                                                                  <oa:cellFormat id="PaymentAmtCell2" hAlign="end">
+                                                                     <ui:contents>
+                                                                        <oa:messageStyledText prompt="" viewName="MultipleInvoicesPayListSummaryVO" viewAttr="GrandPaymentTotalFormatted" styleClass="OraDataText" id="PaymentAmount" promptTranslationExpansion="100%" user:akAttributeCode="ARI_PAYMENT_AMOUNT" user:akAttributeApplicationId="222"/>
+                                                                     </ui:contents>
+                                                                  </oa:cellFormat>
+                                                               </ui:contents>
+                                                            </oa:rowLayout>
+                                                            <oa:rowLayout id="PaymentBalDueRow">
+                                                               <ui:contents>
+                                                                  <oa:cellFormat id="PaymentBalDueCell1">
+                                                                     <ui:contents>
+                                                                        <oa:messageStyledText id="PaymentBalanceDueLabel" prompt="Balance Due"/>
+                                                                     </ui:contents>
+                                                                  </oa:cellFormat>
+                                                                  <oa:cellFormat id="PaymentBalDueCell2" hAlign="end">
+                                                                     <ui:contents>
+                                                                        <oa:messageStyledText prompt="" dataType="VARCHAR2" viewName="MultipleInvoicesPayListSummaryVO" viewAttr="TotalBalanceDueFormatted" styleClass="OraDataText" id="PaymentBalanceDue" promptTranslationExpansion="100%" user:akAttributeCode="ARI_PAYMENT_BALANCE_DUE" user:akAttributeApplicationId="222"/>
+                                                                     </ui:contents>
+                                                                  </oa:cellFormat>
+                                                               </ui:contents>
+                                                            </oa:rowLayout>
+                                                            <oa:rowLayout id="DisputeAmountRow">
+                                                               <ui:contents>
+                                                                  <oa:cellFormat id="DisputeAmtCell1">
+                                                                     <ui:contents>
+                                                                        <oa:messageStyledText id="DisputeAmtLabel" prompt="Dispute Amount" shortDesc="Dispute Amount"/>
+                                                                     </ui:contents>
+                                                                  </oa:cellFormat>
+                                                                  <oa:cellFormat id="DisputeAmtCell2" hAlign="end">
+                                                                     <ui:contents>
+                                                                        <oa:messageStyledText id="DisputeAmt" viewName="MultipleInvoicesPayListSummaryVO" viewAttr="DisputeAmt" styleClass="OraDataText"/>
+                                                                     </ui:contents>
+                                                                  </oa:cellFormat>
+                                                               </ui:contents>
+                                                            </oa:rowLayout>
+                                                         </ui:contents>
+                                                      </oa:tableLayout>
+                                                   </ui:contents>
+                                                </oa:cellFormat>
+                                             </ui:contents>
+                                          </oa:rowLayout>
+                                          <oa:rowLayout id="QuickPayCVVRowRN" rendered="false">
+                                             <ui:contents>
+                                                <oa:cellFormat id="QuickPayCVVCellRN" columnSpan="2">
+                                                   <ui:contents>
+                                                      <oa:messageComponentLayout id="QuickPayCVVMsgRN">
+                                                         <ui:contents>
+                                                            <oa:messageLayout id="QuickPayCVVMsgLayoutRN" prompt="">
+                                                               <ui:contents>
+                                                                  <oa:spacer id="spacer12" width="12"/>
+                                                               </ui:contents>
+                                                            </oa:messageLayout>
+                                                            <oa:messageTextInput id="QPCardSecurityCode" prompt="Card Security Code" dataType="VARCHAR2" maximumLength="4" columns="4" viewName="DefaultPaymentInstrumentVO" viewAttr="CvvCode" required="${oa.CreditCardTypesPVO.SAVED_CC_CVV_REQUIRED}" shortDesc="Card Security Code"/>
+                                                         </ui:contents>
+                                                      </oa:messageComponentLayout>
+                                                   </ui:contents>
+                                                </oa:cellFormat>
+                                             </ui:contents>
+                                          </oa:rowLayout>
+                                          <oa:rowLayout id="QuickPayCVVTipRowRN" rendered="false">
+                                             <ui:contents>
+                                                <oa:cellFormat id="QuickPayCVVTipSpacerRN">
+                                                   <ui:contents>
+                                                      <oa:spacer id="spacer190" width="190"/>
+                                                   </ui:contents>
+                                                </oa:cellFormat>
+                                                <oa:cellFormat id="QuickPayCVVTipRN" columnSpan="1">
+                                                   <ui:contents>
+                                                      <oa:messageComponentLayout id="QuickPayCVVTipMsgRN">
+                                                         <ui:contents>
+                                                            <oa:messageLayout id="QuickPayCVVTipMsgLayoutRN">
+                                                               <ui:contents>
+                                                                  <oa:switcher id="QPSecurityCodeTipLayout" rendered="true" viewName="DefaultPaymentInstrumentVO" viewAttr="CardTipType">
+                                                                     <ui:case name="Tip3Digit">
+                                                                        <oa:tip id="Tip3Digit" styleClass="OraTipText" tipMessageName="ARI_CARD_SECURITY_CODE_TIP" tipMessageAppShortName="AR"/>
+                                                                     </ui:case>
+                                                                     <ui:case name="Tip4Digit">
+                                                                        <oa:tip id="Tip4Digit" tipMessageName="ARI_CVV_AMEX_TIP" tipMessageAppShortName="AR" styleClass="OraTipText"/>
+                                                                     </ui:case>
+                                                                     <ui:case name="Tip3or4Digit">
+                                                                        <oa:tip id="Tip3or4Digit" styleClass="OraTipText" tipMessageName="ARI_CVV_UNKNOWN_TIP" tipMessageAppShortName="AR"/>
+                                                                     </ui:case>
+                                                                     <ui:case name="NoTip">
+                                                                        <oa:tip id="NoTip"/>
+                                                                     </ui:case>
+                                                                  </oa:switcher>
+                                                               </ui:contents>
+                                                            </oa:messageLayout>
+                                                         </ui:contents>
+                                                      </oa:messageComponentLayout>
+                                                   </ui:contents>
+                                                </oa:cellFormat>
+                                             </ui:contents>
+                                          </oa:rowLayout>
+                                       </ui:contents>
+                                    </oa:tableLayout>
+                                 </ui:contents>
+                              </oa:header>
+                              <oa:header id="InvoiceSummaryRegion" extends="/oracle/apps/ar/irec/regions/ARI_INVOICE_SUMMARY" text="Invoice Summary" user:akAttributeCode="ARI_INVOICE_SUMMARY" user:akAttributeApplicationId="222"/>
+                              <oa:header id="QPMultipleInvoiceSummaryRegion" extends="/oracle/apps/ar/irec/accountDetails/pay/webui/ARIMULTIINVPAYMENTLIST" controllerClass="oracle.apps.ar.irec.accountDetails.pay.webui.QuickPayInvoiceSummaryCO"/>
+                           </ui:contents>
+                        </oa:header>
+                        <oa:header akRegionCode="ARI_ADV_PAYMENT" regionName="Advanced Payment" controllerClass="oracle.apps.ar.irec.accountDetails.pay.webui.AdvPaymentCO" addChildren="false" standalone="true" text="Advanced Payment" id="AdvancedPaymentRegion" user:akAttributeCode="ARI_ADV_PAYMENT" user:akAttributeApplicationId="222">
+                           <ui:contents>
+                              <oa:staticStyledText id="OneTimePaymentInstruction" messageAppShortName="AR" messageName="ARI_ONE_TIME_PMT_INSTRUCTION" styleClass="OraInstructionText"/>
+                              <oa:header id="AdvCustSiteUseRegion">
+                                 <ui:contents>
+                                    <oa:messageChoice id="AdvCustomerSiteUse" pickListViewName="CustSitesAccessVO" pickListDispAttr="Address" pickListValAttr="CustomerSiteUseId" prompt="Billing Address" shortDesc="Billing Address" allowBlankValue="false"/>
+                                 </ui:contents>
+                              </oa:header>
+                              <oa:messageComponentLayout id="AdvancedPaymentInstrRegion">
+                                 <ui:contents>
+                                    <oa:messageLayout id="RequiredMessageLayout">
+                                       <ui:contents>
+                                          <oa:tableLayout id="RequiredMessageRegion" extends="/oracle/apps/fnd/framework/webui/OAReqFieldDescRG" hAlign="start"/>
+                                       </ui:contents>
+                                    </oa:messageLayout>
+                                 </ui:contents>
+                              </oa:messageComponentLayout>
+                              <oa:header akRegionCode="ARI_ADV_PAYMENT_METHOD" regionName="Payment Method" controllerClass="oracle.apps.ar.irec.accountDetails.pay.webui.AdvPaymentMethodCO" addChildren="false" standalone="true" text="Select Payment Method" id="PaymentMethodRegion" user:akAttributeCode="ARI_ADV_PAYMENT_METHOD" user:akAttributeApplicationId="222">
+                                 <ui:contents>
+                                    <oa:messageChoice readOnly="false" required="no" prompt="Payment Method" pickListDispAttr="Meaning" pickListValAttr="LookupCode" id="PaymentType" promptTranslationExpansion="100%" user:akAttributeCode="ARI_PM_TYPE" user:akAttributeApplicationId="222" shortDesc="Payment Method" serverUnvalidated="true" allowBlankValue="false" pickListViewName="PaymentTypesVO">
+                                       <ui:primaryClientAction>
+                                          <ui:firePartialAction event="paymentMethodSelected" unvalidated="true"/>
+                                       </ui:primaryClientAction>
+                                    </oa:messageChoice>
+                                    <oa:submitButton id="ManagePaymentButton" serverUnvalidated="true" unvalidated="true" text="Manage Payment Methods" prompt="Manage Payment Methods"/>
+                                    <oa:submitButton id="ManagePaymentSiteButton" serverUnvalidated="true" unvalidated="true" text="Manage Payment Methods - Site" prompt="Manage Payment Methods - Site"/>
+                                 </ui:contents>
+                              </oa:header>
+                              <oa:flowLayout akRegionCode="ARI_ADV_CREDIT_CARD" prompt="Credit Card" regionName="Credit Card" controllerClass="oracle.apps.ar.irec.accountDetails.pay.webui.CreditCardCO" addChildren="false" standalone="true" id="CreditCardRegion" user:akAttributeCode="ARI_ADV_CREDIT_CARD" user:akAttributeApplicationId="222" rendered="${oa.PaymentTypesPVO1.PT_CC_RENDER}">
+                                 <ui:contents>
+                                    <oa:stackLayout akRegionCode="ARI_ADV_NEW_CREDIT_CARD" regionName="New Credit Card" controllerClass="oracle.apps.ar.irec.accountDetails.pay.webui.AdvNewCreditCardCO" addChildren="true" standalone="true" id="NewCreditCardRegion" user:akAttributeCode="ARI_ADV_NEW_CREDIT_CARD" user:akAttributeApplicationId="222" rendered="${oa.PaymentTypesPVO1.PT_NEWCC_RENDER}">
+                                       <ui:contents>
+                                          <oa:header id="CreditCardTypeRegion" text="" rendered="false">
+                                             <ui:contents>
+                                                <oa:messageChoice readOnly="false" required="yes" prompt="Card Brand" viewName="NewCreditCardVO" viewAttr="CreditCardType" styleClass="OraFieldText" pickListViewDef="oracle.apps.ar.irec.accountDetails.pay.server.CreditCardTypesVO" pickListDispAttr="CardName" pickListValAttr="CardType" id="NewCreditCardType" shortDesc="Card Brand" allowBlankValue="false" serverUnvalidated="true" defaultValue="AMEX" rendered="false">
+                                                   <ui:primaryClientAction>
+                                                      <ui:firePartialAction event="creditCardTypeSelected" unvalidated="true"/>
+                                                   </ui:primaryClientAction>
+                                                </oa:messageChoice>
+                                             </ui:contents>
+                                          </oa:header>
+                                          <oa:header id="CreditCardDetailsRegion" text="New Credit Card">
+                                             <ui:contents>
+                                                <oa:messageComponentLayout id="NewCCMessageCompLayout" width="40%">
+                                                   <ui:contents>
+                                                      <oa:messageStyledText id="NewCCInstruction"/>
+                                                      <oa:messageTextInput readOnly="false" required="no" columns="20" prompt="Card Holder Name" rows="1" secret="false" viewName="NewCreditCardVO" viewAttr="CreditCardHolderName" styleClass="OraFieldText" maximumLength="255" id="NewCreditCardHolderName" shortDesc="Card Holder Name" rendered="true"/>
+                                                      <oa:messageTextInput readOnly="false" required="no" columns="20" prompt="Card Number" secret="false" viewName="NewCreditCardVO" viewAttr="CreditCardNumber" styleClass="OraFieldText" maximumLength="255" id="NewCreditCardNumber" promptTranslationExpansion="100%" user:akAttributeCode="ARI_CREDIT_CARD_NUMBER" user:akAttributeApplicationId="222" rendered="true"/>
+                                                      <oa:messageLayout id="ExpiryLayout" prompt="Expiration Date">
+                                                         <ui:contents>
+                                                            <oa:tableLayout id="NewCCLayoutTable">
+                                                               <ui:contents>
+                                                                  <oa:rowLayout id="NewCCLayoutRow">
+                                                                     <ui:contents>
+                                                                        <oa:cellFormat id="NewCCLayoutCell1">
+                                                                           <ui:contents>
+                                                                                <oa:messageChoice readOnly="false" required="no" prompt="" viewName="NewCreditCardVO" viewAttr="ExpiryMonth" styleClass="OraFieldText" pickListViewDef="oracle.apps.ar.irec.accountDetails.pay.server.ExpDateMonthVO" pickListDispAttr="DisplayedMonth" pickListValAttr="Month" id="NewCreditCardExpMonth" promptTranslationExpansion="100%" user:akAttributeCode="ARI_CREDIT_CARD_EXP_MONTH" user:akAttributeApplicationId="222" shortDesc="Month" allowBlankValue="false"/>
+                                                                           </ui:contents>
+                                                                        </oa:cellFormat>
+                                                                        <oa:cellFormat id="NewCCLayoutCell2">
+                                                                           <ui:contents>
+                                                                              <oa:messageChoice readOnly="false" viewName="NewCreditCardVO" viewAttr="ExpiryYear" styleClass="OraFieldText" pickListViewDef="oracle.apps.ar.irec.accountDetails.pay.server.ExpDateYearVO" pickListDispAttr="DisplayedYear" pickListValAttr="Year" id="NewCreditCardExpYear" promptTranslationExpansion="100%" user:akAttributeCode="ARI_CREDIT_CARD_EXP_YEAR" user:akAttributeApplicationId="222" shortDesc="Year" allowBlankValue="false"/>
+                                                                           </ui:contents>
+                                                                        </oa:cellFormat>
+                                                                     </ui:contents>
+                                                                  </oa:rowLayout>
+                                                               </ui:contents>
+                                                            </oa:tableLayout>
+                                                         </ui:contents>
+                                                      </oa:messageLayout>
+                                                      <oa:messageCheckBox id="SaveCreditCard" styleClass="OraFieldText" text="Save credit card for later use" prompt="Save credit card for later use" shortDesc="Save credit card for later use" rendered="${oa.PaymentTypesPVO1.SAVE_CC_FLAG_RENDER}" checked="true" userCustomizable="true"/>
+                                                   </ui:contents>
+                                                </oa:messageComponentLayout>
+                                                <oa:messageComponentLayout id="NewCCSecurityCodeLayout" width="40%" rendered="${oa.CreditCardTypesPVO.NEW_CC_CSC_RENDER}">
+                                                   <ui:contents>
+                                                      <oa:messageLayout id="SecurityCodeSpacer">
+                                                         <ui:contents>
+                                                            <oa:spacer id="NewCCSpacer2" height="10"/>
+                                                         </ui:contents>
+                                                      </oa:messageLayout>
+                                                      <oa:messageTextInput id="CardSecurityCode" prompt="Card Security Code" required="${oa.CreditCardTypesPVO.NEW_CC_CVV_REQUIRED}" viewName="NewCreditCardVO" viewAttr="CreditCardCvv" dataType="VARCHAR2" shortDesc="Card Security Code" maximumLength="4" columns="4"/>
+                                                   </ui:contents>
+                                                </oa:messageComponentLayout>
+                                                <oa:tableLayout id="CardSecurityCodeTipLayout" rendered="${oa.CreditCardTypesPVO.NEW_CC_CSC_RENDER}">
+                                                   <ui:contents>
+                                                      <oa:rowLayout id="TipRowLayout">
+                                                         <ui:contents>
+                                                            <oa:cellFormat id="TipSpacerCell">
+                                                               <ui:contents>
+                                                                  <oa:spacer id="TipSpacer" width="160"/>
+                                                               </ui:contents>
+                                                            </oa:cellFormat>
+                                                            <oa:cellFormat id="TipMessageCell">
+                                                               <ui:contents>
+                                                                  <oa:tip id="TipMessage1" styleClass="OraTipText" tipMessageAppShortName="AR" tipMessageName="ARI_CARD_SECURITY_CODE_TIP" rendered="${oa.CreditCardTypesPVO.NEW_CC_3_DIGIT_CODE_TIP_RENDER}"/>
+                                                                  <oa:tip id="TipMessage2" rendered="${oa.CreditCardTypesPVO.NEW_CC_4_DIGIT_CODE_TIP_RENDER}" styleClass="OraTipText" tipMessageAppShortName="AR" tipMessageName="ARI_CVV_AMEX_TIP"/>
+                                                               </ui:contents>
+                                                            </oa:cellFormat>
+                                                         </ui:contents>
+                                                      </oa:rowLayout>
+                                                   </ui:contents>
+                                                </oa:tableLayout>
+                                                <oa:stackLayout id="NewCCAddressRegion" rendered="${oa.CreditCardTypesPVO.NEW_CC_ADDRESS_RENDER}">
+                                                   <ui:contents>
+                                                      <oa:header id="Address" controllerClass="oracle.apps.ar.irec.accountDetails.pay.webui.AdvNewCreditCardAddressCO" text="Billing Address"/>
+                                                   </ui:contents>
+                                                </oa:stackLayout>
+                                                <oa:tableLayout id="NewCCLayoutTable1" hAlign="left" width="100%">
+                                                   <ui:contents>
+                                                      <oa:rowLayout id="NewCCLayoutTable1Row1" width="100%">
+                                                         <ui:contents>
+                                                            <oa:cellFormat id="NewCCLayoutCell1_1" width="40%" hAlign="left">
+                                                               <ui:contents>
+                                                                  <oa:stackLayout id="NewPayPageRN" controllerClass="od.oracle.apps.xxfin.ar.irec.accountDetails.pay.webui.ODNewCCPayPageCO">
+                                                                     <ui:contents>
+                                                                        
+                                                                        <oa:rawText id="xPayframe" text=""/>
+                                                                        <oa:messageTextInput id="XXODStatus" translatableDefaultValue="000" rendered="true"/>
+                                                                        <oa:messageTextInput id="XXOD_PAYCC_MSGS" rendered="true"/>
+                                                                     </ui:contents>
+                                                                  </oa:stackLayout>
+                                                               </ui:contents>
+                                                            </oa:cellFormat>
+                                                            <oa:cellFormat id="newCCLayoutCell1_2" hAlign="left" vAlign="top" width="60%">
+                                                               <ui:contents>
+                                                                  <oa:contentContainer id="region2" icon="" text="" width="100%">
+                                                                     <ui:contents>
+                                                                       <oa:tableLayout id="NewPayPageInstrucTable" width="100%">
+                                                                           <ui:contents>
+                                                                              <oa:rowLayout id="NewPayPageInstrucRow0"  styleClass="OraContentContainerHeader">
+                                                                                 <ui:contents>
+                                                                                    <oa:cellFormat id="NewPayPageInstrucCell0" >
+                                                                                       <ui:contents>
+                                                                                       <oa:rawText id="NewPayInstruc0" text="&lt;span style='color:#FF0000;'> Attention - Please follow these steps to complete payment &lt;/span>"/>
+                                                                                       </ui:contents>
+                                                                                    </oa:cellFormat>
+                                                                                 </ui:contents>
+                                                                              </oa:rowLayout>
+                                                                              <oa:rowLayout id="NewPayPageInstrucRow1" styleClass="OraInstructionText">
+                                                                                 <ui:contents>
+                                                                                    <oa:cellFormat id="NewPayPageInstrucCell1" >
+                                                                                       <ui:contents>
+                                                                                       <oa:rawText id="NewPayInstruc1" text="&lt;br>1) Enter &lt;b>Card Holder Name&lt;/b> as it appears on your credit card.&lt;br>&lt;br>2) Enter &lt;b>Card Number&lt;/b> (no dashes or spaces).&lt;br>&lt;br>3) Enter &lt;b>Card Expiration Date&lt;/b>.&lt;br>&lt;br>4) Click &lt;b>Validate Card&lt;/b> button; you should receive a message that says &lt;i>Card Validated successfully&lt;/i>.&lt;br>&lt;br>5) Verify the &lt;b>Payment Amount&lt;/b>.&lt;br>&lt;br>&nbsp;&nbsp;&nbsp;a) Enter appropriate &lt;b>Payment Amount&lt;/b>, if different than amount displayed, and press &lt;b>Recalculate&lt;/b> button.&lt;br>&lt;br>6) Click on the &lt;b>Apply&lt;/b> button to complete the transaction."/>
+                                                                                       </ui:contents>
+                                                                                    </oa:cellFormat>
+                                                                                 </ui:contents>
+                                                                              </oa:rowLayout>
+                                                                           </ui:contents>
+                                                                        </oa:tableLayout>
+                                                                     </ui:contents>
+                                                                  </oa:contentContainer>
+                                                               </ui:contents>
+                                                            </oa:cellFormat>
+                                                         </ui:contents>
+                                                      </oa:rowLayout>
+                                                   </ui:contents>
+                                                </oa:tableLayout>
+                                             </ui:contents>
+                                          </oa:header>
+                                       </ui:contents>
+                                    </oa:stackLayout>
+                                    <oa:header regionName="Saved Credit Card" controllerClass="oracle.apps.ar.irec.accountDetails.pay.webui.AdvSavedCreditCardCO" addChildren="true" standalone="true" id="SavedCreditCardRegion" user:akAttributeCode="ARI_ADV_SAVED_CREDIT_CARD" user:akAttributeApplicationId="222" rendered="${oa.PaymentTypesPVO1.PT_EXISTINGCC_RENDER}" text="Saved Credit Cards">
+                                       <ui:contents>
+                                          <oa:table regionName="Saved Credit Cards Table" controllerClass="oracle.apps.ar.irec.accountDetails.pay.webui.AdvSavedCreditCardsTableCO" standalone="true" id="SavedCreditCardTable" user:akAttributeCode="ARI_SAVED_CREDIT_CARD_TABLE" user:akAttributeApplicationId="222" comment="This table displays a list of saved credit cards." shortDesc="This table displays a list of saved credit cards." unvalidated="true">
+                                             <ui:contents>
+                                                <oa:messageStyledText columns="11" prompt="Card Brand" rows="1" viewName="CreditCardsVO" viewAttr="CreditCardType" maximumLength="11" id="CreditCardType" promptTranslationExpansion="100%" user:akAttributeCode="ARI_CREDIT_CARD_TYPE" user:akAttributeApplicationId="222"/>
+                                                <oa:messageStyledText columns="30" prompt="Credit Card Number" viewName="CreditCardsVO" viewAttr="CreditCardNumberMasked" maximumLength="30" id="CreditCardNumber" promptTranslationExpansion="100%" user:akAttributeCode="ARI_CREDIT_CARD_NUMBER" user:akAttributeApplicationId="222"/>
+                                                <oa:messageChoice readOnly="false" required="no" prompt="Expiration" viewName="CreditCardsVO" viewAttr="ExpiryMonth" pickListViewDef="oracle.apps.ar.irec.accountDetails.pay.server.ExpDateMonthVO" pickListDispAttr="DisplayedMonth" pickListValAttr="Month" id="CreditCardExpMonth" promptTranslationExpansion="100%" user:akAttributeCode="ARI_CREDIT_CARD_EXP_MONTH" user:akAttributeApplicationId="222" allowBlankValue="false" shortDesc="Month"/>
+                                                <oa:messageChoice readOnly="false" required="no" prompt="Date" viewName="CreditCardsVO" viewAttr="ExpiryYear" pickListViewDef="oracle.apps.ar.irec.accountDetails.pay.server.ExpDateYearVO" pickListDispAttr="DisplayedYear" pickListValAttr="Year" id="CreditCardExpYear" promptTranslationExpansion="100%" user:akAttributeCode="ARI_CREDIT_CARD_EXP_YEAR" user:akAttributeApplicationId="222" allowBlankValue="false" shortDesc="Year"/>
+                                                <oa:messageTextInput columns="16" prompt="Card Holder Name" rows="1" viewName="CreditCardsVO" viewAttr="CreditCardHolder" maximumLength="80" id="CreditCardHolderName" user:akAttributeCode="ARI_CREDIT_CARD_HOLDER_NAME" user:akAttributeApplicationId="222"/>
+                                                <oa:messageStyledText id="CompanyCardFlag" viewName="CreditCardsVO" viewAttr="CompanyCardFlag" prompt="Company Card Flag"/>
+                                             </ui:contents>
+                                             <ui:tableSelection>
+                                                <oa:singleSelection viewName="CreditCardsVO" viewAttr="SelectedCreditCard" id="SelectedCreditCard" user:akAttributeCode="ARI_CREDIT_CARD_SELECTION" user:akAttributeApplicationId="222" shortDesc="Select">
+                                                   <ui:primaryClientAction>
+                                                      <ui:firePartialAction event="differentCreditCardSelected" id="firePartialAction2" formSubmitted="false" unvalidated="true"/>
+                                                   </ui:primaryClientAction>
+                                                </oa:singleSelection>
+                                             </ui:tableSelection>
+                                          </oa:table>
+                                          <oa:messageComponentLayout id="SavedCCSecurityCodeLayout" width="40%" rendered="${oa.CreditCardTypesPVO.SAVED_CC_CSC_RENDER}">
+                                             <ui:contents>
+                                                <oa:messageLayout id="SavedCCSecurityCodeSpacer">
+                                                   <ui:contents>
+                                                      <oa:spacer id="NewCCSpacer21" height="10"/>
+                                                   </ui:contents>
+                                                </oa:messageLayout>
+                                                <oa:messageTextInput id="SavedCCCardSecurityCode" prompt="Card Security Code" required="${oa.CreditCardTypesPVO.SAVED_CC_CVV_REQUIRED}" dataType="VARCHAR2" shortDesc="Card Security Code" maximumLength="4" columns="4"/>
+                                             </ui:contents>
+                                          </oa:messageComponentLayout>
+                                          <oa:tableLayout id="SavedCCCardSecurityCodeTipLayout" rendered="${oa.CreditCardTypesPVO.SAVED_CC_CSC_RENDER}">
+                                             <ui:contents>
+                                                <oa:rowLayout id="SavedCCTipRowLayout">
+                                                   <ui:contents>
+                                                      <oa:cellFormat id="SavedCCTipSpacerCell">
+                                                         <ui:contents>
+                                                            <oa:spacer id="SavedCCTipSpacer" width="160"/>
+                                                         </ui:contents>
+                                                      </oa:cellFormat>
+                                                      <oa:cellFormat id="SavedCCTipMessageCell">
+                                                         <ui:contents>
+                                                            <oa:tip id="SavedCCTipMessage" styleClass="OraTipText" tipMessageAppShortName="AR" tipMessageName="ARI_CARD_SECURITY_CODE_TIP" rendered="${oa.CreditCardTypesPVO.SAVED_CC_3_DIGIT_CODE_TIP_RENDER}"/>
+                                                            <oa:tip id="SavedCCTipMessage2" rendered="${oa.CreditCardTypesPVO.SAVED_CC_4_DIGIT_CODE_TIP_RENDER}" styleClass="OraTipText" tipMessageAppShortName="AR" tipMessageName="ARI_CVV_AMEX_TIP"/>
+                                                            <oa:tip id="SavedCCTipMessage3" styleClass="OraTipText" tipMessageAppShortName="AR" tipMessageName="ARI_CVV_UNKNOWN_TIP" rendered="${oa.CreditCardTypesPVO.SAVED_CC_3_OR_4_DIGIT_CODE_TIP_RENDER}"/>
+                                                         </ui:contents>
+                                                      </oa:cellFormat>
+                                                   </ui:contents>
+                                                </oa:rowLayout>
+                                             </ui:contents>
+                                          </oa:tableLayout>
+                                          <oa:stackLayout id="SavedCCAddressRegion" rendered="${oa.CreditCardTypesPVO.SAVED_CC_ADDRESS_RENDER}">
+                                             <ui:contents>
+                                                <oa:header id="SavedCCAddress" controllerClass="oracle.apps.ar.irec.accountDetails.pay.webui.AdvNewCreditCardAddressCO" text="Billing Address"/>
+                                             </ui:contents>
+                                          </oa:stackLayout>
+                                          <oa:messageStyledText styleClass="OraInstructionText" id="SavedCCInstruction" user:akAttributeCode="ARI_SAVED_CC_INSTRUCTION" user:akAttributeApplicationId="222"/>
+                                       </ui:contents>
+                                    </oa:header>
+                                 </ui:contents>
+                              </oa:flowLayout>
+                              <oa:flowLayout akRegionCode="ARI_ADV_BANK_ACCOUNT" prompt="Bank Account" regionName="Bank Account" controllerClass="oracle.apps.ar.irec.accountDetails.pay.webui.BankAccountCO" addChildren="false" standalone="true" id="BankAccountRegion" user:akAttributeCode="ARI_ADV_BANK_ACCOUNT" user:akAttributeApplicationId="222" rendered="${oa.PaymentTypesPVO1.PT_BA_RENDER}">
+                                 <ui:contents>
+                                    <oa:header akRegionCode="ARI_ADV_NEW_BANK_ACCOUNT" regionName="New Bank Account" controllerClass="oracle.apps.ar.irec.accountDetails.pay.webui.AdvNewBankAccountCO" addChildren="true" standalone="true" text="New Bank Account" id="NewBankAccountRegion" user:akAttributeCode="ARI_ADV_NEW_BANK_ACCOUNT" user:akAttributeApplicationId="222" rendered="${oa.PaymentTypesPVO1.PT_NEWBA_RENDER}">
+                                       <ui:contents>
+                                          <oa:staticStyledText styleClass="OraInstructionText" id="NewBAInstruction" user:akAttributeCode="ARI_NEW_BA_INSTRUCTION" user:akAttributeApplicationId="222" messageName="AR_IREC_NEW_BA_INSTRUCTIONS" messageAppShortName="ar"/>
+                                          <oa:spacer id="NewBASpacer" height="10" width="10"/>
+                                          <oa:tableLayout id="NewBALayoutTable1" width="100%">
+                                             <ui:contents>
+                                                <oa:rowLayout id="newBALayoutTable1Row1">
+                                                   <ui:contents>
+                                                      <oa:cellFormat id="newBALayoutCell1_1" vAlign="top" hAlign="start">
+                                                         <ui:contents>
+                                                            <oa:messageComponentLayout id="region1">
+                                                               <ui:contents>
+                                                                  <oa:messageLovInput id="newBABankName" viewName="NewBankAccountVO" viewAttr="BankName" prompt="Bank Name" shortDesc="Bank Name" readOnly="${oa.BankAccountsPVO.BANK_NAME_ENTERED}" rendered="true">
+                                                                     <lovContents>
+                                                                        <oa:listOfValues id="BankNameLovRegion" amDefName="oracle.apps.ar.irec.lov.server.LovAM" controllerClass="oracle.apps.ar.irec.lov.webui.BankNameLovCO">
+                                                                           <ui:contents>
+                                                                              <oa:table name="BankNameLovRegion" id="BankNameLovTableRegion">
+                                                                                 <ui:contents>
+                                                                                    <oa:messageStyledText id="BACountryLOVItem" viewName="BankNameVO" viewAttr="Country" prompt="Country" shortDesc="Country"/>
+                                                                                    <oa:messageStyledText id="BABankNameLOVItem" viewName="BankNameVO" viewAttr="BankName" queryable="true" prompt="Bank Name" shortDesc="Bank Name" selectiveSearchCriteria="true"/>
+                                                                                    <oa:messageStyledText id="BABankNumberLOVItem" viewName="BankNameVO" viewAttr="BankNumber" prompt="Bank Number" shortDesc="Bank Number"/>
+                                                                                    <oa:messageStyledText id="BAShortBankNameLOVItem" viewName="BankNameVO" viewAttr="ShortBankName"/>
+                                                                                    <oa:messageStyledText id="BABankPartyId" viewName="BankNameVO" viewAttr="BankPartyId" dataType="NUMBER" prompt="Bank Party Id"/>
+                                                                                    <oa:messageStyledText id="BABankBranchRoutingNumberLOVItem" viewName="BankNameVO" viewAttr="BankBranchRoutingNumber" rendered="false" prompt="Bank Branch Routing Number"/>
+                                                                                 </ui:contents>
+                                                                              </oa:table>
+                                                                           </ui:contents>
+                                                                        </oa:listOfValues>
+                                                                     </lovContents>
+                                                                     <lovMappings>
+                                                                        <lovMap id="BankNameLovMap" resultTo="newBABankName" criteriaFrom="newBABankName" lovItem="BABankNameLOVItem" useForValidation="no"/>
+                                                                        <lovMap id="BABankIdLovMap" lovItem="BABankPartyId" resultTo="Bank_Id" useForValidation="no"/>
+                                                                        <lovMap id="BankRoutingNumberSetMap" resultTo="RoutingNumber" lovItem="BABankBranchRoutingNumberLOVItem" useForValidation="no"/>
+                                                                     </lovMappings>
+                                                                  </oa:messageLovInput>
+                                                                  <oa:messageLovInput id="newBABranchName" viewName="NewBankAccountVO" viewAttr="BranchName" prompt="Branch Name" shortDesc="Branch Name" readOnly="${oa.BankAccountsPVO.BRANCH_NAME_ENTERED}" disabled="false" rendered="true">
+                                                                     <lovContents>
+                                                                        <oa:listOfValues id="BranchNameLovRegion" amDefName="oracle.apps.ar.irec.lov.server.LovAM" controllerClass="oracle.apps.ar.irec.lov.webui.BranchNameLovCO">
+                                                                           <ui:contents>
+                                                                              <oa:table name="BranchNameLovRegion" id="BranchNameLovTableRegion">
+                                                                                 <ui:contents>
+                                                                                    <oa:messageStyledText id="BRBranchNameLOVItem" prompt="Branch Name" shortDesc="Branch Name" viewName="BranchNameVO" viewAttr="BankBranchName" queryable="true" selectiveSearchCriteria="false"/>
+                                                                                    <oa:messageStyledText id="BRBranchNumberLOVItem" prompt="Branch Number" shortDesc="Branch Number" viewName="BranchNameVO" viewAttr="BranchNumber"/>
+                                                                                    <oa:messageStyledText id="BRCityLOVItem" viewName="BranchNameVO" viewAttr="City" prompt="City" shortDesc="City"/>
+                                                                                    <oa:messageStyledText id="BRZipLOVItem" viewName="BranchNameVO" viewAttr="Zip" prompt="Zip" shortDesc="Zip"/>
+                                                                                    <oa:messageStyledText id="BRCountryLOVItem" viewName="BranchNameVO" viewAttr="Country" prompt="Country" shortDesc="Country"/>
+                                                                                    <oa:messageStyledText id="BRBranchPartyId" dataType="NUMBER" viewName="BranchNameVO" viewAttr="BranchPartyId" prompt="Branch Party Id"/>
+                                                                                    <oa:formValue id="BRBankPartyId" viewName="BranchNameVO" viewAttr="BankPartyId" dataType="NUMBER"/>
+                                                                                 </ui:contents>
+                                                                              </oa:table>
+                                                                           </ui:contents>
+                                                                        </oa:listOfValues>
+                                                                     </lovContents>
+                                                                     <lovMappings>
+                                                                        <lovMap id="BranchNameLovMap" lovItem="BRBranchNameLOVItem" resultTo="newBABranchName" criteriaFrom="newBABranchName"/>
+                                                                        <lovMap id="BankIdForMapping" criteriaFrom="Bank_Id" lovItem="BRBankPartyId" requiredForLOV="true"/>
+                                                                        <lovMap id="RoutingNoSetMap" lovItem="BRBranchNumberLOVItem" resultTo="RoutingNumber"/>
+                                                                        <lovMap id="BRBranchIdLovMap" lovItem="BRBranchPartyId" resultTo="Branch_Id"/>
+                                                                        <lovMap id="BRBankBranchCountryMap" lovItem="BRCountryLOVItem" resultTo="BankBranchCountry"/>
+                                                                     </lovMappings>
+                                                                  </oa:messageLovInput>
+                                                                  <oa:messageTextInput readOnly="${oa.BankAccountsPVO.ROUTING_NUMBER_ENTERED}" required="yes" columns="21" prompt="Routing Number" rows="1" secret="false" viewName="NewBankAccountVO" viewAttr="RoutingNumber" styleClass="OraFieldText" maximumLength="50" id="RoutingNumber" user:akAttributeCode="ARI_ROUTING_NUMBER" user:akAttributeApplicationId="222" shortDesc="Routing Number" rendered="true">
+                                                                     <ui:primaryClientAction>
+                                                                        <ui:firePartialAction event="updateRoutingNumber" id="firePartialAction1" unvalidated="true"/>
+                                                                     </ui:primaryClientAction>
+                                                                  </oa:messageTextInput>
+                                                                  <oa:messageChoice readOnly="false" required="no" defaultValue="CHECKING" prompt="Account Type" viewName="NewBankAccountVO" viewAttr="BankAccountType" styleClass="OraFieldText" pickListViewDef="oracle.apps.ar.irec.accountDetails.pay.server.BankAccountTypesVO" pickListDispAttr="AccountType" pickListValAttr="AccountTypeCode" id="BankAccountType" user:akAttributeCode="ARI_BANK_ACCOUNT_TYPE" user:akAttributeApplicationId="222" shortDesc="Account Type" allowBlankValue="false"/>
+                                                                  <oa:messageTextInput readOnly="false" required="yes" columns="21" prompt="Account Number" rows="1" secret="false" viewName="NewBankAccountVO" viewAttr="BankAccountNumber" styleClass="OraFieldText" maximumLength="50" id="AccountNumber" user:akAttributeCode="ARI_ACCOUNT_NUMBER" user:akAttributeApplicationId="222" shortDesc="Account Number"/>
+                                                                  <oa:messageTextInput id="newBAIBAN" viewName="NewBankAccountVO" viewAttr="Iban" prompt="IBAN" shortDesc="IBAN" rendered="false"/>
+                                                                  <oa:messageTextInput readOnly="false" required="yes" columns="21" prompt="Account Holder's Name" rows="1" secret="false" viewName="NewBankAccountVO" viewAttr="AccountHolderName" styleClass="OraFieldText" maximumLength="50" id="AccountHolder" user:akAttributeCode="ARI_ACCOUNT_HOLDER" user:akAttributeApplicationId="222" shortDesc="Account Holder's Name"/>
+                                                               </ui:contents>
+                                                            </oa:messageComponentLayout>
+                                                            <oa:formValue id="Bank_Id" dataType="NUMBER" viewName="NewBankAccountVO" viewAttr="BankId"/>
+                                                            <oa:formValue id="Branch_Id" dataType="NUMBER" viewName="NewBankAccountVO" viewAttr="BranchId"/>
+                                                            <oa:formValue id="BankBranchCountry" viewName="NewBankAccountVO" viewAttr="BankBranchCountry"/>
+                                                         </ui:contents>
+                                                      </oa:cellFormat>
+                                                      <oa:cellFormat id="newBALayoutCell1_2">
+                                                         <ui:contents>
+                                                            <oa:tableLayout id="newBALayoutSubTable2">
+                                                               <ui:contents>
+                                                                  <oa:rowLayout id="newBALayoutSubRow2_1">
+                                                                     <ui:contents>
+                                                                        <oa:cellFormat id="newBALayoutCell2_1_1" hAlign="end">
+                                                                           <ui:contents>
+                                                                              <oa:image hAlign="start" width="50" height="1" source="ag_bankcheckdef_usonly.gif" id="CheckImage" promptTranslationExpansion="100%" user:akAttributeCode="ARI_CHECK_IMAGE" user:akAttributeApplicationId="222" shortDesc="Check"/>
+                                                                           </ui:contents>
+                                                                        </oa:cellFormat>
+                                                                     </ui:contents>
+                                                                  </oa:rowLayout>
+                                                               </ui:contents>
+                                                            </oa:tableLayout>
+                                                         </ui:contents>
+                                                      </oa:cellFormat>
+                                                   </ui:contents>
+                                                </oa:rowLayout>
+                                             </ui:contents>
+                                          </oa:tableLayout>
+                                       </ui:contents>
+                                    </oa:header>
+                                    <oa:header akRegionCode="ARI_ADV_SAVED_BANK_ACCOUNT" regionName="Previously Saved Bank Account" controllerClass="oracle.apps.ar.irec.accountDetails.pay.webui.AdvSavedBankAccountCO" addChildren="true" standalone="true" text="Previously Saved Bank Account" id="SavedBankAccountRegion" user:akAttributeCode="ARI_ADV_SAVED_BANK_ACCOUNT" user:akAttributeApplicationId="222" rendered="${oa.PaymentTypesPVO1.PT_EXISTINGBA_RENDER}">
+                                       <ui:contents>
+                                          <oa:messageStyledText styleClass="OraInstructionText" id="SavedBAInstruction" promptTranslationExpansion="100%" user:akAttributeCode="ARI_SAVED_BA_INSTRUCTION" user:akAttributeApplicationId="222"/>
+                                          <oa:advancedTable id="SavedBankAccountTable" viewName="BankAccountsVO" detailViewAttr="Detailview" rendered="true" comment="This table displays a list of saved bank accounts." shortDesc="This table displays a list of saved bank accounts.">
+                                             <ui:contents>
+                                                <oa:column id="column1">
+                                                   <ui:columnHeader>
+                                                      <oa:sortableHeader id="SavedAccountTypeHeader" prompt="Number"/>
+                                                   </ui:columnHeader>
+                                                   <ui:contents>
+                                                      <oa:messageStyledText id="SBBankAccountNumber" viewAttr="BAcNumber"/>
+                                                   </ui:contents>
+                                                </oa:column>
+                                                <oa:column id="column2">
+                                                   <ui:columnHeader>
+                                                      <oa:sortableHeader id="SBIBANHeader" prompt="IBAN"/>
+                                                   </ui:columnHeader>
+                                                   <ui:contents>
+                                                      <oa:messageStyledText id="SBIBAN" viewAttr="MaskedIban" prompt="IBAN"/>
+                                                   </ui:contents>
+                                                </oa:column>
+                                                <oa:column id="column3">
+                                                   <ui:columnHeader>
+                                                      <oa:sortableHeader id="SBCurrencyHeader" prompt="Currency"/>
+                                                   </ui:columnHeader>
+                                                   <ui:contents>
+                                                      <oa:messageStyledText id="SBCurrency" viewAttr="CurrencyCode" prompt="Currency"/>
+                                                   </ui:contents>
+                                                </oa:column>
+                                                <oa:column id="column4">
+                                                   <ui:columnHeader>
+                                                      <oa:sortableHeader id="SBBankNameHeader" prompt="Bank Name"/>
+                                                   </ui:columnHeader>
+                                                   <ui:contents>
+                                                      <oa:messageStyledText id="SBBankName" viewAttr="BankName" prompt="Bank Name"/>
+                                                   </ui:contents>
+                                                </oa:column>
+                                                <oa:column id="column5">
+                                                   <ui:columnHeader>
+                                                      <oa:sortableHeader id="SBStartDateHeader" prompt="Start Date"/>
+                                                   </ui:columnHeader>
+                                                   <ui:contents>
+                                                      <oa:messageStyledText id="SBStartDate" viewAttr="StartDate" prompt="Start Date"/>
+                                                   </ui:contents>
+                                                </oa:column>
+                                                <oa:column id="column6">
+                                                   <ui:columnHeader>
+                                                      <oa:sortableHeader id="SBEndDateHeader" prompt="End Date"/>
+                                                   </ui:columnHeader>
+                                                   <ui:contents>
+                                                      <oa:messageTextInput id="SBEndDate" viewAttr="EndDate" prompt="End Date" dataType="DATE"/>
+                                                   </ui:contents>
+                                                </oa:column>
+                                             </ui:contents>
+                                             <ui:detail>
+                                                <oa:labeledFieldLayout id="SavedBankAcAdvTableDetail" columns="2">
+                                                   <ui:contents>
+                                                      <oa:messageStyledText id="SBDtlAccountName" viewName="BankAccountsVO" viewAttr="AccountHolder" prompt="Account Name" styleClass="OraDataText"/>
+                                                      <oa:messageStyledText id="SBDtlBankNumber" viewName="BankAccountsVO" viewAttr="BankNumber" prompt="Bank Number" styleClass="OraDataText"/>
+                                                      <oa:messageStyledText id="SBDtlAccountType" viewName="BankAccountsVO" viewAttr="AccountType" prompt="Account Type" styleClass="OraDataText"/>
+                                                      <oa:messageStyledText id="SBDtlBankBranchName" viewName="BankAccountsVO" viewAttr="BankBranchName" prompt="Bank Branch Name" styleClass="OraDataText"/>
+                                                      <oa:messageStyledText id="SBDtlBIC" viewName="BankAccountsVO" viewAttr="BicNumber" prompt="BIC" styleClass="OraDataText"/>
+                                                      <oa:messageStyledText id="SBDtlBankBranchNumber" viewName="BankAccountsVO" viewAttr="BankBranchNumber" prompt="Bank Branch Number" styleClass="OraDataText"/>
+                                                      <oa:messageStyledText id="SBDtlSingleUse" prompt="Single Use" viewName="BankAccountsVO" viewAttr="CardSingleUseFlag" styleClass="OraDataText"/>
+                                                   </ui:contents>
+                                                </oa:labeledFieldLayout>
+                                             </ui:detail>
+                                             <ui:tableSelection>
+                                                <oa:singleSelection id="SelectedBankAccount" viewAttr="SelectedAccount" text="Select"/>
+                                             </ui:tableSelection>
+                                          </oa:advancedTable>
+                                       </ui:contents>
+                                    </oa:header>
+                                 </ui:contents>
+                              </oa:flowLayout>
+                              <oa:header id="APMultipleInvoiceSummaryRegion" extends="/oracle/apps/ar/irec/accountDetails/pay/webui/ARIMULTIINVPAYMENTLIST" controllerClass="oracle.apps.ar.irec.accountDetails.pay.webui.AdvancedPayInvoiceSummaryCO"/>
+                           </ui:contents>
+                        </oa:header>
+                     </ui:contents>
+                  </oa:flowLayout>
+               </ui:contents>
+            </oa:flowLayout>
+            <oa:pageButtonBar id="PaymentButtons" controllerClass="oracle.apps.ar.irec.accountDetails.pay.webui.PaymentPageButtonsCO">
+               <ui:contents>
+                  <oa:button text="Cancel" destination="" id="CancelButton" userCustomizable="false" textTranslationExpansion="100%" promptTranslationExpansion="100%" user:akAttributeCode="FND_CANCEL" user:akAttributeApplicationId="0" use="/oracle/apps/fnd/attributesets/Buttons/Cancel" warnAboutChanges="false" serverUnvalidated="false"/>
+                  <oa:submitButton hAlign="start" prompt="Advanced Payment" text="Advanced Payment" id="AdvPaymentButton" textTranslationExpansion="100%" promptTranslationExpansion="100%" user:akAttributeCode="ARI_ADV_PAYMENT_BUTTON" user:akAttributeApplicationId="222" unvalidated="true"/>
+                  <oa:submitButton hAlign="start" prompt="Apply" text="Apply" id="PaymentButton" textTranslationExpansion="100%" promptTranslationExpansion="100%" user:akAttributeCode="ARI_PAYMENT_BUTTON" user:akAttributeApplicationId="222"/>
+               </ui:contents>
+            </oa:pageButtonBar>
+         </ui:contents>
+      </oa:pageLayout>
+   </content>
+</page>

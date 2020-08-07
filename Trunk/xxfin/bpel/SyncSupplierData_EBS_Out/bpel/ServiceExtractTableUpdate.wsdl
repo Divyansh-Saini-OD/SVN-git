@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions 
+    name="ServiceExtractTableUpdate"
+    targetNamespace="http://xmlns.oracle.com/pcbpel/adapter/db/ServiceExtractTableUpdate/"
+    xmlns:tns="http://xmlns.oracle.com/pcbpel/adapter/db/ServiceExtractTableUpdate/"
+    xmlns:plt="http://schemas.xmlsoap.org/ws/2003/05/partner-link/"
+    xmlns:jca="http://xmlns.oracle.com/pcbpel/wsdl/jca/"
+    xmlns:pc="http://xmlns.oracle.com/pcbpel/"
+    xmlns:top="http://xmlns.oracle.com/pcbpel/adapter/db/top/ServiceExtractTableUpdate"
+    xmlns:hdr="http://xmlns.oracle.com/pcbpel/adapter/db/"
+    xmlns="http://schemas.xmlsoap.org/wsdl/">
+
+    <import namespace="http://xmlns.oracle.com/pcbpel/adapter/db/" location="DBAdapterOutboundHeader.wsdl"/>
+
+    <types>
+        <schema xmlns="http://www.w3.org/2001/XMLSchema">
+            <import namespace="http://xmlns.oracle.com/pcbpel/adapter/db/top/ServiceExtractTableUpdate"
+                schemaLocation="ServiceExtractTableUpdate_table.xsd"/>
+        </schema>
+    </types>
+
+    <message name="XxApSuppExtractCollection_msg">
+        <part name="XxApSuppExtractCollection" element="top:XxApSuppExtractCollection"/>
+    </message>
+
+
+    <portType name="ServiceExtractTableUpdate_ptt">
+        <operation name="update">
+            <input message="tns:XxApSuppExtractCollection_msg"/>
+        </operation>
+    </portType>
+
+    <binding name="ServiceExtractTableUpdate_binding" type="tns:ServiceExtractTableUpdate_ptt">
+        <jca:binding />
+        <operation name="update">
+            <jca:operation
+                InteractionSpec="oracle.tip.adapter.db.DBWriteInteractionSpec"
+
+                DescriptorName="ServiceExtractTableUpdate.XxApSuppExtract"
+                DmlType="update"
+                DetectOmissions="true"
+                OptimizeMerge="true"
+                MappingsMetaDataURL="ServiceExtractTableUpdate_toplink_mappings.xml" />
+            <input>
+                <jca:header message="hdr:OutboundHeader_msg" part="outboundHeader"/>
+            </input>
+        </operation>
+    </binding>
+
+    <!-- Your runtime connection is declared in
+        J2EE_HOME/application-deployments/default/DbAdapter/oc4j-ra.xml
+        These 'mcf' properties here are from your design time connection and 
+        save you from having to edit that file and restart the application server
+        if eis/db/EBSApps is missing.
+        These 'mcf' properties are safe to remove.
+    -->
+    <service name="ServiceExtractTableUpdate">
+        <port name="ServiceExtractTableUpdate_pt" binding="tns:ServiceExtractTableUpdate_binding">
+            <jca:address location="eis/db/EBSAppsFin"
+                UIConnectionName="EIS_APPS_EBS_APPS_DBConn"
+                ManagedConnectionFactory="oracle.tip.adapter.db.DBManagedConnectionFactory"
+            />
+        </port>
+    </service>
+
+    <plt:partnerLinkType name="ServiceExtractTableUpdate_plt" >
+        <plt:role name="ServiceExtractTableUpdate_role" >
+            <plt:portType name="tns:ServiceExtractTableUpdate_ptt" />
+        </plt:role>
+    </plt:partnerLinkType>
+
+</definitions>

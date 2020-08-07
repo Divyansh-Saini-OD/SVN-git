@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions 
+    name="DBRead"
+    targetNamespace="http://xmlns.oracle.com/pcbpel/adapter/db/DBRead/"
+    xmlns:tns="http://xmlns.oracle.com/pcbpel/adapter/db/DBRead/"
+    xmlns:plt="http://schemas.xmlsoap.org/ws/2003/05/partner-link/"
+    xmlns:jca="http://xmlns.oracle.com/pcbpel/wsdl/jca/"
+    xmlns:pc="http://xmlns.oracle.com/pcbpel/"
+    xmlns:top="http://xmlns.oracle.com/pcbpel/adapter/db/top/DBRead"
+    xmlns:hdr="http://xmlns.oracle.com/pcbpel/adapter/db/"
+    xmlns="http://schemas.xmlsoap.org/wsdl/">
+
+    <import namespace="http://xmlns.oracle.com/pcbpel/adapter/db/" location="DBAdapterOutboundHeader.wsdl"/>
+
+    <types>
+        <schema xmlns="http://www.w3.org/2001/XMLSchema">
+            <import namespace="http://xmlns.oracle.com/pcbpel/adapter/db/top/DBRead"
+                schemaLocation="DBRead_table.xsd"/>
+        </schema>
+    </types>
+
+    <message name="XxOmDpslinesVCollection_msg">
+        <part name="XxOmDpslinesVCollection" element="top:XxOmDpslinesVCollection"/>
+    </message>
+
+    <message name="DBReadSelect_p_Parent_line_id_inparameters">
+        <part name="DBReadSelect_p_Parent_line_id_inparameters" element="top:DBReadSelect_p_Parent_line_idInputParameters"/>
+    </message>
+
+    <portType name="DBRead_ptt">
+        <operation name="DBReadSelect_p_Parent_line_id">
+            <input message="tns:DBReadSelect_p_Parent_line_id_inparameters"/>
+            <output message="tns:XxOmDpslinesVCollection_msg"/>
+        </operation>
+    </portType>
+
+    <binding name="DBRead_binding" type="tns:DBRead_ptt">
+        <jca:binding />
+        <operation name="DBReadSelect_p_Parent_line_id">
+            <jca:operation
+                InteractionSpec="oracle.tip.adapter.db.DBReadInteractionSpec"
+
+                DescriptorName="DBRead.XxOmDpslinesV"
+                QueryName="DBReadSelect"
+                ReturnSingleResultSet="false"
+                MappingsMetaDataURL="DBRead_toplink_mappings.xml" />
+            <input>
+                <jca:header message="hdr:OutboundHeader_msg" part="outboundHeader"/>
+            </input>
+        </operation>
+    </binding>
+
+    <!-- Your runtime connection is declared in
+        J2EE_HOME/application-deployments/default/DbAdapter/oc4j-ra.xml
+        These 'mcf' properties here are from your design time connection and 
+        save you from having to edit that file and restart the application server
+        if eis/db/EBSApps is missing.
+        These 'mcf' properties are safe to remove.
+    -->
+    <service name="DBRead">
+        <port name="DBRead_pt" binding="tns:DBRead_binding">
+            <jca:address location="eis/db/EBSApps"
+                UIConnectionName="ebs_apps_gsidev03"
+                ManagedConnectionFactory="oracle.tip.adapter.db.DBManagedConnectionFactory"
+                mcf.DriverClassName="oracle.jdbc.OracleDriver"
+                mcf.PlatformClassName="oracle.toplink.platform.database.oracle.Oracle10Platform"
+                mcf.ConnectionString="jdbc:oracle:thin:@choldbr18d.na.odcorp.net:1544:gsidev03"
+                mcf.UserName="apps"
+                mcf.Password="33249B2910CFF3FBCD9B834DF8560A56"
+            />
+        </port>
+    </service>
+
+    <plt:partnerLinkType name="DBRead_plt" >
+        <plt:role name="DBRead_role" >
+            <plt:portType name="tns:DBRead_ptt" />
+        </plt:role>
+    </plt:partnerLinkType>
+
+</definitions>

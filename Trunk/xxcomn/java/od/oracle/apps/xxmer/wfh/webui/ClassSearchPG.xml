@@ -1,0 +1,58 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<!-- dbdrv: exec java oracle/jrad/tools/xml/importer XMLImporter.class java &phase=dat+24 checkfile:~PROD:~PATH:~FILE &fullpath:~PROD:~PATH:~FILE -username &un_apps -password &pw_apps -dbconnection &jdbc_db_addr  -userId "1" -rootPackage /oracle/apps/~PROD  -rootdir &fullpath:~PROD:mds:directory  -->
+<page xmlns:jrad="http://xmlns.oracle.com/jrad" xmlns:oa="http://xmlns.oracle.com/oa" xmlns:ui="http://xmlns.oracle.com/uix/ui" version="9.0.3.8.12_1330" xml:lang="en-US" xmlns:user="http://xmlns.oracle.com/jrad/user" xmlns="http://xmlns.oracle.com/jrad" file-version="$Header$">
+   <content>
+      <oa:pageLayout id="PageLayoutRN" amDefName="od.oracle.apps.xxmer.wfh.server.WorkflowHierarchyAM" windowTitle="Workflow Hierarchy : Merch Class to Planner Association" title="Merch Class to Planner Association">
+         <ui:corporateBranding>
+            <oa:image id="corporateBrandingImage" source="/OA_MEDIA/FNDSSCORP.gif"/>
+         </ui:corporateBranding>
+         <ui:contents>
+            <oa:query id="QueryRN" mode="autoCustomizationCriteria" dispSimple="true" dispCustomized="false" controllerClass="od.oracle.apps.xxmer.wfh.webui.ClassSearchCO">
+               <ui:contents>
+                  <oa:table id="ResultsTable" shortDesc="Merch Class to Planner Association" width="100%">
+                     <ui:contents>
+                        <oa:image id="UpdateImage" use="/oracle/apps/fnd/attributesets/Buttons/Update" source="updateicon_enabled.gif" shortDesc="Select to Update planner association" imageHeight="24" imageWidth="24">
+                           <ui:primaryClientAction>
+                              <ui:fireAction>
+                                 <ui:parameters>
+                                    <ui:parameter key="merchClassId" value="${oa.ClassSummaryVO1.MerchClassId}"/>
+                                 </ui:parameters>
+                              </ui:fireAction>
+                           </ui:primaryClientAction>
+                        </oa:image>
+                        <oa:messageStyledText id="MerchClassId" dataType="NUMBER" prompt="Merch Class Id" viewName="ClassSummaryVO1" viewAttr="MerchClassId" queryable="true" sortState="ascending" initSortSeq="first" selectiveSearchCriteria="true"/>
+                        <oa:messageStyledText id="MerchClassDescription" dataType="VARCHAR2" prompt="Merch Class Description" viewName="ClassSummaryVO1" viewAttr="MerchClassDescription" maximumLength="50"/>
+                        <oa:messageStyledText id="PlannerId" dataType="NUMBER" prompt="Planner Id" viewName="ClassSummaryVO1" viewAttr="PlannerId" queryable="true" sortState="no" initSortSeq="none" selectiveSearchCriteria="true"/>
+                        <oa:messageStyledText id="PlannerName" dataType="VARCHAR2" prompt="Planner Name" viewName="ClassSummaryVO1" viewAttr="PlannerName" maximumLength="51"/>
+                     </ui:contents>
+                  </oa:table>
+               </ui:contents>
+               <oa:simpleSearchPanel>
+                  <oa:header text="Search" id="SimpleSearchHdr">
+                     <ui:contents>
+                        <oa:messageComponentLayout id="CustomSimpleSearch">
+                           <ui:contents>
+                              <oa:messageLovInput id="SearchMerchClassId" selectiveSearchCriteria="true" maximumLength="6" prompt="Merch Class Id" styleClass="oraFieldText" shortDesc="Merch Class Id" columns="25" dataType="NUMBER" externalListOfValues="/od/oracle/apps/xxmer/lov/wfh/webui/MerchClassLovRN" unvalidated="true">
+                                 <lovMappings>
+                                    <lovMap id="lovMap2" lovItem="MerchClassId" resultTo="SearchMerchClassId" criteriaFrom="SearchMerchClassId"/>
+                                 </lovMappings>
+                              </oa:messageLovInput>
+                              <oa:messageLovInput id="SearchPlannerId" selectiveSearchCriteria="true" dataType="NUMBER" maximumLength="6" prompt="Planner Id" shortDesc="Planner Id" styleClass="OraFieldText" columns="25" externalListOfValues="/od/oracle/apps/xxmer/lov/wfh/webui/LeafPlannerLovRN" unvalidated="true">
+                                 <lovMappings>
+                                    <lovMap id="lovMap1" lovItem="PlannerId" resultTo="SearchPlannerId" criteriaFrom="SearchPlannerId"/>
+                                 </lovMappings>
+                              </oa:messageLovInput>
+                           </ui:contents>
+                        </oa:messageComponentLayout>
+                     </ui:contents>
+                  </oa:header>
+               </oa:simpleSearchPanel>
+               <oa:simpleSearchMappings>
+                  <oa:queryCriteriaMap id="merchClassIdMap" criteriaItem="SearchMerchClassId" resultsItem="MerchClassId"/>
+                  <oa:queryCriteriaMap id="PlannerIdMap" criteriaItem="SearchPlannerId" resultsItem="PlannerId"/>
+               </oa:simpleSearchMappings>
+            </oa:query>
+         </ui:contents>
+      </oa:pageLayout>
+   </content>
+</page>

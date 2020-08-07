@@ -1,0 +1,37 @@
+SET VERIFY OFF;
+SET TERM ON
+PROMPT Creating Table XX_COM_ERROR_LOG_DETAILS
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+-- +=======================================================================+
+-- |               Office Depot - Project Simplify                         |
+-- |                       Oracle Consulting                               |
+-- +=======================================================================+
+-- | Name             : XX_COM_ERROR_LOG_DETAILS                           |
+-- | Description      : Table for Common Error Handling Routines           |
+-- |                                                                       |
+-- |                                                                       |
+-- |Change History:                                                        |
+-- |---------------                                                        |
+-- |                                                                       |
+-- |Version  Date        Author             Remarks                        |
+-- |-------  ----------- -----------------  -------------------------------|
+-- |1.0      22-FEB-2007 A Sahay            Initial version                |
+-- +=======================================================================+
+
+CREATE TABLE XXCOMN.XX_COM_ERROR_LOG_DETAILS
+(
+ ERROR_LOG_DETAILS_ID     NUMBER,
+ ERROR_LOG_ID             NUMBER,
+ ERROR_MESSAGE            VARCHAR2(255),
+ CREATION_DATE            DATE,
+ CREATED_BY               NUMBER,
+ LAST_UPDATE_DATE         DATE,
+ LAST_UPDATE_BY           NUMBER
+);
+
+SHOW ERRORS;
+
+EXIT;
+

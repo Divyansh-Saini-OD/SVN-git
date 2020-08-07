@@ -1,0 +1,591 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<!-- +======================================================================+ -->
+<!-- |    Copyright (c) 2005, 2014 Oracle and/or its affiliates.           | -->
+<!-- |                         All rights reserved.                         | -->
+<!-- |                           Version 12.0.0                             | -->
+<!-- +======================================================================+ -->
+<!-- dbdrv: exec java oracle/jrad/tools/xml/importer XMLImporter.class java &phase=dat+24 checkfile(120.16.12000000.2=120.16.12010000.2):~PROD:~PATH:~FILE &fullpath:~PROD:~PATH:~FILE -username &un_apps -password &pw_apps -dbconnection &jdbc_db_addr  -userId "1" -rootPackage /oracle/apps/~PROD  -rootdir &fullpath:~PROD:mds:directory  -->
+<oa:header version="10.1.3_1312" xml:lang="en-US" file-version="$Header: ARIMULTIINVPAYMENTLIST.xml 120.16.12010000.6 2014/06/02 14:57:34 melapaku ship $" xmlns:oa="http://xmlns.oracle.com/oa" xmlns:ui="http://xmlns.oracle.com/uix/ui" xmlns:jrad="http://xmlns.oracle.com/jrad" text="Invoice Summary" controllerClass="oracle.apps.ar.irec.accountDetails.pay.webui.MultipleInvoicePayListCO" xmlns:user="http://xmlns.oracle.com/jrad/user">
+   <ui:contents>
+      <oa:tableLayout id="MultiPayTableLayout">
+         <ui:contents>
+            <oa:rowLayout id="MultiPayRow1" hAlign="start" rendered="false" width="100%">
+               <ui:contents>
+                  <oa:cellFormat id="MultiPayRow1Cell1" hAlign="start" columnSpan="1" width="15%">
+                     <ui:contents>
+                        <oa:messageTextInput id="ReceiptDate" required="yes" prompt="Payment Date" shortDesc="Payment Date" dataType="DATE" styleClass="OraFieldText" maximumLength="15" viewName="MultipleInvoicesPayListSummaryVO" viewAttr="ReceiptDate" rendered="${oa.PaymentTypesPVO1.PT_BA_RENDER}" columns="15">
+                           <ui:primaryClientAction>
+                              <ui:firePartialAction event="update" formSubmitted="true">
+                                 <ui:parameters>
+                                    <ui:parameter key="DateUpdated" value="Y"/>
+                                 </ui:parameters>
+                              </ui:firePartialAction>
+                           </ui:primaryClientAction>
+                        </oa:messageTextInput>
+                     </ui:contents>
+                  </oa:cellFormat>
+                  <oa:cellFormat id="MultiPayRow1Cell2" width="75%">
+                     <ui:contents>
+                        <oa:tip id="ReceiptDateTipText" styleClass="OraTipText" text="Payment date beyond the due date may attract interest or penalty if applicable" rendered="${oa.PaymentTypesPVO1.PT_BA_RENDER}"/>
+                     </ui:contents>
+                  </oa:cellFormat>
+               </ui:contents>
+            </oa:rowLayout>
+            <oa:rowLayout id="MultiPayRow2">
+               <ui:contents>
+                  <oa:cellFormat id="MultiPayRow2Cell1" hAlign="end" columnSpan="2">
+                     <ui:contents>
+                        <oa:advancedTable id="MultipleInvoicesPayListTable" comment="This table displays the list of invoices selected for payment." controllerClass="oracle.apps.ar.irec.accountDetails.pay.webui.MultipleInvoicePayListTableCO" viewName="MultipleInvoicesPayListVO" shortDesc="This table displays the list of invoices selected for payment." unvalidated="true">
+                           <ui:contents>
+                              <oa:column id="MultInvPayListCol1" rendered="false">
+                                 <ui:columnHeader>
+                                    <oa:sortableHeader id="sortableHeader1" prompt="Customer Id"/>
+                                 </ui:columnHeader>
+                                 <ui:contents>
+                                    <oa:messageStyledText id="CustomerId" dataType="NUMBER" prompt="Customer Id" text="Customer Id" viewName="MultipleInvoicesPayListVO" viewAttr="CustomerId" maximumLength="15" rendered="false"/>
+                                 </ui:contents>
+                              </oa:column>
+                              <oa:column id="MultInvPayListCol2" rendered="false">
+                                 <ui:columnHeader>
+                                    <oa:sortableHeader id="sortableHeader2" prompt="Customer Site Id"/>
+                                 </ui:columnHeader>
+                                 <ui:contents>
+                                    <oa:messageStyledText id="CustomerSiteUseId" dataType="NUMBER" prompt="Customer Site Id" text="Customer Site Id" viewName="MultipleInvoicesPayListVO" viewAttr="CustomerSiteUseId" maximumLength="15" rendered="false"/>
+                                 </ui:contents>
+                              </oa:column>
+                              <oa:column id="MultInvPayListCol3" rendered="false">
+                                 <ui:columnHeader>
+                                    <oa:sortableHeader id="sortableHeader3" prompt="Customer Transaction Id"/>
+                                 </ui:columnHeader>
+                                 <ui:contents>
+                                    <oa:messageStyledText id="CustomerTrxId" dataType="NUMBER" prompt="Customer Transaction Id" text="Customer Transaction Id" viewName="MultipleInvoicesPayListVO" viewAttr="CustomerTrxId" maximumLength="15" rendered="false"/>
+                                 </ui:contents>
+                              </oa:column>
+                              <oa:column id="MultInvPayListCol4">
+                                 <ui:columnHeader>
+                                    <oa:sortableHeader id="sortableHeader4" prompt="Transaction Number"/>
+                                 </ui:columnHeader>
+                                 <ui:contents>
+                                    <oa:messageStyledText id="TrxNumber" dataType="VARCHAR2" prompt="Invoice Number" text="Invoice Number" viewName="MultipleInvoicesPayListVO" viewAttr="TrxNumber" maximumLength="30"/>
+                                 </ui:contents>
+                              </oa:column>
+                              <oa:column id="TrxTypeCol">
+                                 <ui:columnHeader>
+                                    <oa:sortableHeader id="sortableHeader51" prompt="Transaction Type"/>
+                                 </ui:columnHeader>
+                                 <ui:contents>
+                                    <oa:messageStyledText id="TrxType" viewAttr="TrxListViewTrxType"/>
+                                 </ui:contents>
+                              </oa:column>
+                              <oa:column id="MultInvPayListCol5">
+                                 <ui:columnHeader>
+                                    <oa:sortableHeader id="sortableHeader5" prompt="Transaction Date"/>
+                                 </ui:columnHeader>
+                                 <ui:contents>
+                                    <oa:messageStyledText id="TrxDate" dataType="DATE" prompt="Invoice Date" text="Invoice Date" viewName="MultipleInvoicesPayListVO" viewAttr="TrxDate" columns="12"/>
+                                 </ui:contents>
+                              </oa:column>
+                              <oa:column id="MultInvPayListCol6">
+                                 <ui:columnHeader>
+                                    <oa:sortableHeader id="sortableHeader6" prompt="Due Date" cellNoWrapFormat="true"/>
+                                 </ui:columnHeader>
+                                 <ui:contents>
+                                    <oa:messageStyledText id="DueDate" dataType="DATE" prompt="Due Date" text="Due Date" viewName="MultipleInvoicesPayListVO" viewAttr="DueDate" columns="12"/>
+                                 </ui:contents>
+                              </oa:column>
+                              <oa:column id="MultInvPayListCol7">
+                                 <ui:columnHeader>
+                                    <oa:sortableHeader id="sortableHeader7" prompt="Payment Terms"/>
+                                 </ui:columnHeader>
+                                 <ui:contents>
+                                    <oa:messageStyledText id="PaymentTerms" dataType="VARCHAR2" prompt="Payment Terms" text="Payment Terms" viewName="MultipleInvoicesPayListVO" viewAttr="PaymentTerms" maximumLength="30"/>
+                                 </ui:contents>
+                              </oa:column>
+                              <oa:column id="MultInvPayListCol8" columnDataFormat="numberFormat">
+                                 <ui:columnHeader>
+                                    <oa:sortableHeader id="sortableHeader8" prompt="Amount Due Remaining"/>
+                                 </ui:columnHeader>
+                                 <ui:contents>
+                                    <oa:messageStyledText id="AmountDueRemaining" dataType="NUMBER" prompt="Amount Due Remaining" text="Amount Due Remaining" viewName="MultipleInvoicesPayListVO" viewAttr="AmountDueRemaining"/>
+                                 </ui:contents>
+                              </oa:column>
+                              <oa:column id="MultInvPayListCol9" columnDataFormat="numberFormat">
+                                 <ui:columnHeader>
+                                    <oa:sortableHeader id="sortableHeader9" prompt="Discount Amount"/>
+                                 </ui:columnHeader>
+                                 <ui:contents>
+                                    <oa:messageStyledText id="DiscountAmount" dataType="NUMBER" prompt="Discount Amount" text="Discount Amount" viewName="MultipleInvoicesPayListVO" viewAttr="DiscountAmount"/>
+                                 </ui:contents>
+                              </oa:column>
+                              <oa:column id="MultInvPayListCol10" columnDataFormat="numberFormat" totalValue="true">
+                                 <ui:columnHeader>
+                                    <oa:sortableHeader id="sortableHeader10" prompt="Payment Amount"/>
+                                 </ui:columnHeader>
+                                 <ui:contents>
+                                    <oa:messageTextInput id="PaymentAmt" dataType="NUMBER" prompt="Payment Amount" text="Payment Amount" viewName="MultipleInvoicesPayListVO" viewAttr="PaymentAmt" totalValue="true" shortDesc="Payment Amount">
+                                       <!--
+									    <ui:primaryClientAction>
+                                          <ui:firePartialAction formSubmitted="true" event="updatePmtAmount"/>
+                                       </ui:primaryClientAction>
+									   -->
+                                    </oa:messageTextInput>
+                                 </ui:contents>
+                              </oa:column>
+                              <oa:column id="MultInvPayListCol11" columnDataFormat="numberFormat">
+                                 <ui:columnHeader>
+                                    <oa:sortableHeader id="sortableHeader11" prompt="Service Charge"/>
+                                 </ui:columnHeader>
+                                 <ui:contents>
+                                    <oa:messageStyledText id="ServiceCharge" dataType="NUMBER" prompt="Service Charge" text="Service Charge" viewName="MultipleInvoicesPayListVO" viewAttr="ServiceCharge"/>
+                                 </ui:contents>
+                              </oa:column>
+                              <oa:column id="MultInvPayListCol51" columnDataFormat="numberFormat">
+                                 <ui:columnHeader>
+                                    <oa:sortableHeader id="sortableHeader52" prompt="Dispute Amount" shortDesc="Dispute Amount"/>
+                                 </ui:columnHeader>
+                                 <ui:contents>
+                                    <oa:messageStyledText id="DisputeAmt" viewAttr="DisputeAmt"/>
+                                 </ui:contents>
+                              </oa:column>
+                              <oa:column id="MultInvPayListCol12">
+                                 <ui:columnHeader>
+                                    <oa:sortableHeader id="sortableHeader12" prompt="Currency Code"/>
+                                 </ui:columnHeader>
+                                 <ui:contents>
+                                    <oa:messageStyledText id="CurrencyCode" dataType="VARCHAR2" prompt="Currency Code" text="Currency Code" viewName="MultipleInvoicesPayListVO" viewAttr="CurrencyCode" maximumLength="15"/>
+                                 </ui:contents>
+                              </oa:column>
+                              <oa:column id="MultInvPayListCol13" rendered="false">
+                                 <ui:columnHeader>
+                                    <oa:sortableHeader id="sortableHeader13" prompt="Attribute Category"/>
+                                 </ui:columnHeader>
+                                 <ui:contents>
+                                    <oa:messageStyledText id="AttributeCategory" dataType="VARCHAR2" prompt="Attribute Category" text="Attribute Category" viewName="MultipleInvoicesPayListVO" viewAttr="AttributeCategory" maximumLength="30" rendered="false"/>
+                                 </ui:contents>
+                              </oa:column>
+                              <oa:column id="MultInvPayListCol14" rendered="false">
+                                 <ui:columnHeader>
+                                    <oa:sortableHeader id="sortableHeader14" prompt="Attribute 1"/>
+                                 </ui:columnHeader>
+                                 <ui:contents>
+                                    <oa:messageStyledText id="Attribute1" dataType="VARCHAR2" prompt="Attribute 1" text="Attribute 1" viewName="MultipleInvoicesPayListVO" viewAttr="Attribute1" maximumLength="150" rendered="false"/>
+                                 </ui:contents>
+                              </oa:column>
+                              <oa:column id="MultInvPayListCol15" rendered="false">
+                                 <ui:columnHeader>
+                                    <oa:sortableHeader id="sortableHeader15" prompt="Attribute 2"/>
+                                 </ui:columnHeader>
+                                 <ui:contents>
+                                    <oa:messageStyledText id="Attribute2" dataType="VARCHAR2" prompt="Attribute 2" text="Attribute 2" viewName="MultipleInvoicesPayListVO" viewAttr="Attribute2" maximumLength="150" rendered="false"/>
+                                 </ui:contents>
+                              </oa:column>
+                              <oa:column id="MultInvPayListCol16" rendered="false">
+                                 <ui:columnHeader>
+                                    <oa:sortableHeader id="sortableHeader16" prompt="Attribute 3"/>
+                                 </ui:columnHeader>
+                                 <ui:contents>
+                                    <oa:messageStyledText id="Attribute3" dataType="VARCHAR2" prompt="Attribute 3" text="Attribute 3" viewName="MultipleInvoicesPayListVO" viewAttr="Attribute3" maximumLength="150" rendered="false"/>
+                                 </ui:contents>
+                              </oa:column>
+                              <oa:column id="MultInvPayListCol17" rendered="false">
+                                 <ui:columnHeader>
+                                    <oa:sortableHeader id="sortableHeader17" prompt="Attribute 4"/>
+                                 </ui:columnHeader>
+                                 <ui:contents>
+                                    <oa:messageStyledText id="Attribute4" dataType="VARCHAR2" prompt="Attribute 4" text="Attribute 4" viewName="MultipleInvoicesPayListVO" viewAttr="Attribute4" maximumLength="150" rendered="false"/>
+                                 </ui:contents>
+                              </oa:column>
+                              <oa:column id="MultInvPayListCol18" rendered="false">
+                                 <ui:columnHeader>
+                                    <oa:sortableHeader id="sortableHeader18" prompt="Attribute 5"/>
+                                 </ui:columnHeader>
+                                 <ui:contents>
+                                    <oa:messageStyledText id="Attribute5" dataType="VARCHAR2" prompt="Attribute 5" text="Attribute 5" viewName="MultipleInvoicesPayListVO" viewAttr="Attribute5" maximumLength="150" rendered="false"/>
+                                 </ui:contents>
+                              </oa:column>
+                              <oa:column id="MultInvPayListCol19" rendered="false">
+                                 <ui:columnHeader>
+                                    <oa:sortableHeader id="sortableHeader19" prompt="Attribute 6"/>
+                                 </ui:columnHeader>
+                                 <ui:contents>
+                                    <oa:messageStyledText id="Attribute6" dataType="VARCHAR2" prompt="Attribute 6" text="Attribute 6" viewName="MultipleInvoicesPayListVO" viewAttr="Attribute6" maximumLength="150" rendered="false"/>
+                                 </ui:contents>
+                              </oa:column>
+                              <oa:column id="MultInvPayListCol20" rendered="false">
+                                 <ui:columnHeader>
+                                    <oa:sortableHeader id="sortableHeader20" prompt="Attribute 7"/>
+                                 </ui:columnHeader>
+                                 <ui:contents>
+                                    <oa:messageStyledText id="Attribute7" dataType="VARCHAR2" prompt="Attribute 7" text="Attribute 7" viewName="MultipleInvoicesPayListVO" viewAttr="Attribute7" maximumLength="150" rendered="false"/>
+                                 </ui:contents>
+                              </oa:column>
+                              <oa:column id="MultInvPayListCol21" rendered="false">
+                                 <ui:columnHeader>
+                                    <oa:sortableHeader id="sortableHeader21" prompt="Attribute 8"/>
+                                 </ui:columnHeader>
+                                 <ui:contents>
+                                    <oa:messageStyledText id="Attribute8" dataType="VARCHAR2" prompt="Attribute 8" text="Attribute 8" viewName="MultipleInvoicesPayListVO" viewAttr="Attribute8" maximumLength="150" rendered="false"/>
+                                 </ui:contents>
+                              </oa:column>
+                              <oa:column id="MultInvPayListCol22" rendered="false">
+                                 <ui:columnHeader>
+                                    <oa:sortableHeader id="sortableHeader22" prompt="Attribute 9"/>
+                                 </ui:columnHeader>
+                                 <ui:contents>
+                                    <oa:messageStyledText id="Attribute9" dataType="VARCHAR2" prompt="Attribute 9" text="Attribute 9" viewName="MultipleInvoicesPayListVO" viewAttr="Attribute9" maximumLength="150" rendered="false"/>
+                                 </ui:contents>
+                              </oa:column>
+                              <oa:column id="MultInvPayListCol23" rendered="false">
+                                 <ui:columnHeader>
+                                    <oa:sortableHeader id="sortableHeader23" prompt="Attribute 10"/>
+                                 </ui:columnHeader>
+                                 <ui:contents>
+                                    <oa:messageStyledText id="Attribute10" dataType="VARCHAR2" prompt="Attribute 10" text="Attribute 10" viewName="MultipleInvoicesPayListVO" viewAttr="Attribute10" maximumLength="150" rendered="false"/>
+                                 </ui:contents>
+                              </oa:column>
+                              <oa:column id="MultInvPayListCol24" rendered="false">
+                                 <ui:columnHeader>
+                                    <oa:sortableHeader id="sortableHeader24" prompt="Attribute 11"/>
+                                 </ui:columnHeader>
+                                 <ui:contents>
+                                    <oa:messageStyledText id="Attribute11" dataType="VARCHAR2" prompt="Attribute 11" text="Attribute 11" viewName="MultipleInvoicesPayListVO" viewAttr="Attribute11" maximumLength="150" rendered="false"/>
+                                 </ui:contents>
+                              </oa:column>
+                              <oa:column id="MultInvPayListCol25" rendered="false">
+                                 <ui:columnHeader>
+                                    <oa:sortableHeader id="sortableHeader25" prompt="Attribute 12"/>
+                                 </ui:columnHeader>
+                                 <ui:contents>
+                                    <oa:messageStyledText id="Attribute12" dataType="VARCHAR2" prompt="Attribute 12" text="Attribute 12" viewName="MultipleInvoicesPayListVO" viewAttr="Attribute12" maximumLength="150" rendered="false"/>
+                                 </ui:contents>
+                              </oa:column>
+                              <oa:column id="MultInvPayListCol26" rendered="false">
+                                 <ui:columnHeader>
+                                    <oa:sortableHeader id="sortableHeader26" prompt="Attribute 13"/>
+                                 </ui:columnHeader>
+                                 <ui:contents>
+                                    <oa:messageStyledText id="Attribute13" dataType="VARCHAR2" prompt="Attribute 13" text="Attribute 13" viewName="MultipleInvoicesPayListVO" viewAttr="Attribute13" maximumLength="150" rendered="false"/>
+                                 </ui:contents>
+                              </oa:column>
+                              <oa:column id="MultInvPayListCol27" rendered="false">
+                                 <ui:columnHeader>
+                                    <oa:sortableHeader id="sortableHeader27" prompt="Attribute 14"/>
+                                 </ui:columnHeader>
+                                 <ui:contents>
+                                    <oa:messageStyledText id="Attribute14" dataType="VARCHAR2" prompt="Attribute 14" text="Attribute 14" viewName="MultipleInvoicesPayListVO" viewAttr="Attribute14" maximumLength="150" rendered="false"/>
+                                 </ui:contents>
+                              </oa:column>
+                              <oa:column id="MultInvPayListCol28" rendered="false">
+                                 <ui:columnHeader>
+                                    <oa:sortableHeader id="sortableHeader28" prompt="Attribute 15"/>
+                                 </ui:columnHeader>
+                                 <ui:contents>
+                                    <oa:messageStyledText id="Attribute15" dataType="VARCHAR2" prompt="Attribute 15" text="Attribute 15" viewName="MultipleInvoicesPayListVO" viewAttr="Attribute15" maximumLength="150" rendered="false"/>
+                                 </ui:contents>
+                              </oa:column>
+                              <oa:column id="MultInvPayListCol29" rendered="false">
+                                 <ui:columnHeader>
+                                    <oa:sortableHeader id="sortableHeader29" prompt="Interface Transaction Context"/>
+                                 </ui:columnHeader>
+                                 <ui:contents>
+                                    <oa:messageStyledText id="InterfaceHeaderContext" dataType="VARCHAR2" prompt="Interface Transaction Context" text="Interface Transaction Context" viewName="MultipleInvoicesPayListVO" viewAttr="InterfaceHeaderContext" maximumLength="30" rendered="false"/>
+                                 </ui:contents>
+                              </oa:column>
+                              <oa:column id="MultInvPayListCol30" rendered="false">
+                                 <ui:columnHeader>
+                                    <oa:sortableHeader id="sortableHeader30" prompt="Interface Header Attribute 1"/>
+                                 </ui:columnHeader>
+                                 <ui:contents>
+                                    <oa:messageStyledText id="InterfaceHeaderAttribute1" dataType="VARCHAR2" prompt="Interface Header Attribute 1" text="Interface Header Attribute 1" viewName="MultipleInvoicesPayListVO" viewAttr="InterfaceHeaderAttribute1" maximumLength="30" rendered="false"/>
+                                 </ui:contents>
+                              </oa:column>
+                              <oa:column id="MultInvPayListCol31" rendered="false">
+                                 <ui:columnHeader>
+                                    <oa:sortableHeader id="sortableHeader31" prompt="Interface Header Attribute 2"/>
+                                 </ui:columnHeader>
+                                 <ui:contents>
+                                    <oa:messageStyledText id="InterfaceHeaderAttribute2" dataType="VARCHAR2" prompt="Interface Header Attribute 2" text="Interface Header Attribute 2" viewName="MultipleInvoicesPayListVO" viewAttr="InterfaceHeaderAttribute2" maximumLength="30" rendered="false"/>
+                                 </ui:contents>
+                              </oa:column>
+                              <oa:column id="MultInvPayListCol32" rendered="false">
+                                 <ui:columnHeader>
+                                    <oa:sortableHeader id="sortableHeader32" prompt="Interface Header Attribute 3"/>
+                                 </ui:columnHeader>
+                                 <ui:contents>
+                                    <oa:messageStyledText id="InterfaceHeaderAttribute3" dataType="VARCHAR2" prompt="Interface Header Attribute 3" text="Interface Header Attribute 3" viewName="MultipleInvoicesPayListVO" viewAttr="InterfaceHeaderAttribute3" maximumLength="30" rendered="false"/>
+                                 </ui:contents>
+                              </oa:column>
+                              <oa:column id="MultInvPayListCol33" rendered="false">
+                                 <ui:columnHeader>
+                                    <oa:sortableHeader id="sortableHeader33" prompt="Interface Header Attribute 4"/>
+                                 </ui:columnHeader>
+                                 <ui:contents>
+                                    <oa:messageStyledText id="InterfaceHeaderAttribute4" dataType="VARCHAR2" prompt="Interface Header Attribute 4" text="Interface Header Attribute 4" viewName="MultipleInvoicesPayListVO" viewAttr="InterfaceHeaderAttribute4" maximumLength="30" rendered="false"/>
+                                 </ui:contents>
+                              </oa:column>
+                              <oa:column id="MultInvPayListCol34" rendered="false">
+                                 <ui:columnHeader>
+                                    <oa:sortableHeader id="sortableHeader34" prompt="Interface Header Attribute 5"/>
+                                 </ui:columnHeader>
+                                 <ui:contents>
+                                    <oa:messageStyledText id="InterfaceHeaderAttribute5" dataType="VARCHAR2" prompt="Interface Header Attribute 5" text="Interface Header Attribute 5" viewName="MultipleInvoicesPayListVO" viewAttr="InterfaceHeaderAttribute5" maximumLength="30" rendered="false"/>
+                                 </ui:contents>
+                              </oa:column>
+                              <oa:column id="MultInvPayListCol35" rendered="false">
+                                 <ui:columnHeader>
+                                    <oa:sortableHeader id="sortableHeader35" prompt="Interface Header Attribute 6"/>
+                                 </ui:columnHeader>
+                                 <ui:contents>
+                                    <oa:messageStyledText id="InterfaceHeaderAttribute6" dataType="VARCHAR2" prompt="Interface Header Attribute 6" text="Interface Header Attribute 6" viewName="MultipleInvoicesPayListVO" viewAttr="InterfaceHeaderAttribute6" maximumLength="30" rendered="false"/>
+                                 </ui:contents>
+                              </oa:column>
+                              <oa:column id="MultInvPayListCol36" rendered="false">
+                                 <ui:columnHeader>
+                                    <oa:sortableHeader id="sortableHeader36" prompt="Interface Header Attribute 7"/>
+                                 </ui:columnHeader>
+                                 <ui:contents>
+                                    <oa:messageStyledText id="InterfaceHeaderAttribute7" dataType="VARCHAR2" prompt="Interface Header Attribute 7" text="Interface Header Attribute 7" viewName="MultipleInvoicesPayListVO" viewAttr="InterfaceHeaderAttribute7" maximumLength="30" rendered="false"/>
+                                 </ui:contents>
+                              </oa:column>
+                              <oa:column id="MultInvPayListCol37" rendered="false">
+                                 <ui:columnHeader>
+                                    <oa:sortableHeader id="sortableHeader37" prompt="Interface Header Attribute 8"/>
+                                 </ui:columnHeader>
+                                 <ui:contents>
+                                    <oa:messageStyledText id="InterfaceHeaderAttribute8" dataType="VARCHAR2" prompt="Interface Header Attribute 8" text="Interface Header Attribute 8" viewName="MultipleInvoicesPayListVO" viewAttr="InterfaceHeaderAttribute8" maximumLength="30" rendered="false"/>
+                                 </ui:contents>
+                              </oa:column>
+                              <oa:column id="MultInvPayListCol38" rendered="false">
+                                 <ui:columnHeader>
+                                    <oa:sortableHeader id="sortableHeader38" prompt="Interface Header Attribute 9"/>
+                                 </ui:columnHeader>
+                                 <ui:contents>
+                                    <oa:messageStyledText id="InterfaceHeaderAttribute9" dataType="VARCHAR2" prompt="Interface Header Attribute 9" text="Interface Header Attribute 9" viewName="MultipleInvoicesPayListVO" viewAttr="InterfaceHeaderAttribute9" maximumLength="30" rendered="false"/>
+                                 </ui:contents>
+                              </oa:column>
+                              <oa:column id="MultInvPayListCol39" rendered="false">
+                                 <ui:columnHeader>
+                                    <oa:sortableHeader id="sortableHeader39" prompt="Interface Header Attribute 10"/>
+                                 </ui:columnHeader>
+                                 <ui:contents>
+                                    <oa:messageStyledText id="InterfaceHeaderAttribute10" dataType="VARCHAR2" prompt="Interface Header Attribute 10" text="Interface Header Attribute 10" viewName="MultipleInvoicesPayListVO" viewAttr="InterfaceHeaderAttribute10" maximumLength="30" rendered="false"/>
+                                 </ui:contents>
+                              </oa:column>
+                              <oa:column id="MultInvPayListCol40" rendered="false">
+                                 <ui:columnHeader>
+                                    <oa:sortableHeader id="sortableHeader40" prompt="Interface Header Attribute 11"/>
+                                 </ui:columnHeader>
+                                 <ui:contents>
+                                    <oa:messageStyledText id="InterfaceHeaderAttribute11" dataType="VARCHAR2" prompt="Interface Header Attribute 11" text="Interface Header Attribute 11" viewName="MultipleInvoicesPayListVO" viewAttr="InterfaceHeaderAttribute11" maximumLength="30" rendered="false"/>
+                                 </ui:contents>
+                              </oa:column>
+                              <oa:column id="MultInvPayListCol41" rendered="false">
+                                 <ui:columnHeader>
+                                    <oa:sortableHeader id="sortableHeader41" prompt="Interface Header Attribute 12"/>
+                                 </ui:columnHeader>
+                                 <ui:contents>
+                                    <oa:messageStyledText id="InterfaceHeaderAttribute12" dataType="VARCHAR2" prompt="Interface Header Attribute 12" text="Interface Header Attribute 12" viewName="MultipleInvoicesPayListVO" viewAttr="InterfaceHeaderAttribute12" maximumLength="30" rendered="false"/>
+                                 </ui:contents>
+                              </oa:column>
+                              <oa:column id="MultInvPayListCol42" rendered="false">
+                                 <ui:columnHeader>
+                                    <oa:sortableHeader id="sortableHeader42" prompt="Interface Header Attribute 13"/>
+                                 </ui:columnHeader>
+                                 <ui:contents>
+                                    <oa:messageStyledText id="InterfaceHeaderAttribute13" dataType="VARCHAR2" prompt="Interface Header Attribute 13" text="Interface Header Attribute 13" viewName="MultipleInvoicesPayListVO" viewAttr="InterfaceHeaderAttribute13" maximumLength="30" rendered="false"/>
+                                 </ui:contents>
+                              </oa:column>
+                              <oa:column id="MultInvPayListCol43" rendered="false">
+                                 <ui:columnHeader>
+                                    <oa:sortableHeader id="sortableHeader43" prompt="Interface Header Attribute 14"/>
+                                 </ui:columnHeader>
+                                 <ui:contents>
+                                    <oa:messageStyledText id="InterfaceHeaderAttribute14" dataType="VARCHAR2" prompt="Interface Header Attribute 14" text="Interface Header Attribute 14" viewName="MultipleInvoicesPayListVO" viewAttr="InterfaceHeaderAttribute14" maximumLength="30" rendered="false"/>
+                                 </ui:contents>
+                              </oa:column>
+                              <oa:column id="MultInvPayListCol44" rendered="false">
+                                 <ui:columnHeader>
+                                    <oa:sortableHeader id="sortableHeader44" prompt="Interface Header Attribute 15"/>
+                                 </ui:columnHeader>
+                                 <ui:contents>
+                                    <oa:messageStyledText id="InterfaceHeaderAttribute15" dataType="VARCHAR2" prompt="Interface Header Attribute 15" text="Interface Header Attribute 15" viewName="MultipleInvoicesPayListVO" viewAttr="InterfaceHeaderAttribute15" maximumLength="30" rendered="false"/>
+                                 </ui:contents>
+                              </oa:column>
+                              <oa:column id="MultInvPayListCol45" rendered="false">
+                                 <ui:columnHeader>
+                                    <oa:sortableHeader id="sortableHeader45" prompt="Purchase Order Number"/>
+                                 </ui:columnHeader>
+                                 <ui:contents>
+                                    <oa:messageStyledText id="PoNumber" dataType="VARCHAR2" prompt="Purchase Order Number" text="Purchase Order Number" viewName="MultipleInvoicesPayListVO" viewAttr="PoNumber" maximumLength="50" rendered="false"/>
+                                 </ui:contents>
+                              </oa:column>
+                              <oa:column id="MultInvPayListCol46" rendered="false">
+                                 <ui:columnHeader>
+                                    <oa:sortableHeader id="sortableHeader46" prompt="Line Amount"/>
+                                 </ui:columnHeader>
+                                 <ui:contents>
+                                    <oa:messageStyledText id="LineAmount" dataType="NUMBER" prompt="Line Amount" text="Line Amount" viewName="MultipleInvoicesPayListVO" viewAttr="LineAmount" rendered="false"/>
+                                 </ui:contents>
+                              </oa:column>
+                              <oa:column id="MultInvPayListCol47" rendered="false">
+                                 <ui:columnHeader>
+                                    <oa:sortableHeader id="sortableHeader47" prompt="Freight Amount"/>
+                                 </ui:columnHeader>
+                                 <ui:contents>
+                                    <oa:messageStyledText id="FreightAmount" dataType="NUMBER" prompt="Shipping" text="Freight Amount" viewName="MultipleInvoicesPayListVO" viewAttr="FreightAmount" rendered="false"/>
+                                 </ui:contents>
+                              </oa:column>
+                              <oa:column id="MultInvPayListCol48" rendered="false">
+                                 <ui:columnHeader>
+                                    <oa:sortableHeader id="sortableHeader48" prompt="Tax Amount"/>
+                                 </ui:columnHeader>
+                                 <ui:contents>
+                                    <oa:messageStyledText id="TaxAmount" dataType="NUMBER" prompt="Tax" text="Tax Amount" viewName="MultipleInvoicesPayListVO" viewAttr="TaxAmount" rendered="false"/>
+                                 </ui:contents>
+                              </oa:column>
+                              <oa:column id="MultInvPayListCol49" rendered="false">
+                                 <ui:columnHeader>
+                                    <oa:sortableHeader id="sortableHeader49" prompt="Sales Order Number"/>
+                                 </ui:columnHeader>
+                                 <ui:contents>
+                                    <oa:messageStyledText id="SoNumber" dataType="VARCHAR2" prompt="Sales Order Number" text="Sales Order Number" viewName="MultipleInvoicesPayListVO" viewAttr="SoNumber" maximumLength="50" rendered="false"/>
+                                 </ui:contents>
+                              </oa:column>
+                              <oa:column id="MultInvPayListCol50" rendered="false">
+                                 <ui:columnHeader>
+                                    <oa:sortableHeader id="sortableHeader50" prompt="Finance Charges"/>
+                                 </ui:columnHeader>
+                                 <ui:contents>
+                                    <oa:messageStyledText id="FinanceCharges" dataType="NUMBER" prompt="Charges" text="Finance Charges" viewName="MultipleInvoicesPayListVO" viewAttr="FinanceCharges" rendered="false"/>
+                                 </ui:contents>
+                              </oa:column>
+                           </ui:contents>
+                           <ui:footer>
+                              <oa:tableFooter id="tableFooter1" rendered="false">
+                                 <ui:total>
+                                    <oa:totalRow id="TotalRow" readOnly="false"/>
+                                 </ui:total>
+                              </oa:tableFooter>
+                           </ui:footer>
+                           <ui:tableActions>
+                              <oa:flowLayout id="ResetButtonRegion" rendered="false">
+                                 <ui:contents>
+                                    <oa:submitButton id="ResetAmountsButton" text="Reset to Defaults" prompt="Reset to Defaults" shortDesc="Reset the amounts to defaults" unvalidated="true">
+                                       <ui:primaryClientAction>
+                                          <ui:firePartialAction event="resetAmountsButton"/>
+                                       </ui:primaryClientAction>
+                                    </oa:submitButton>
+                                    <oa:submitButton id="ReCalc" text="Recalculate" prompt="Recalculate" shortDesc="Recalculate" unvalidated="true">
+                                       <ui:primaryClientAction>
+                                          <ui:firePartialAction event="calculateupd" id="firePartialAction1"/>
+                                       </ui:primaryClientAction>
+                                    </oa:submitButton>
+                                 </ui:contents>
+                              </oa:flowLayout>
+                           </ui:tableActions>
+                        </oa:advancedTable>
+                     </ui:contents>
+                  </oa:cellFormat>
+               </ui:contents>
+            </oa:rowLayout>
+            <oa:rowLayout id="MultiPayRow3" hAlign="end" rendered="false">
+               <ui:contents>
+                  <oa:cellFormat id="MultiPayRow3Cell1" hAlign="end" columnSpan="2">
+                     <ui:contents>
+                        <oa:tableLayout id="AdvPaymentAmtTableLayout">
+                           <ui:contents>
+                              <oa:rowLayout id="RemainingBalanceRow1">
+                                 <ui:contents>
+                                    <oa:cellFormat id="RemainingBalanceCell11">
+                                       <ui:contents>
+                                          <oa:messageStyledText id="RemainingBalanceLabel1" prompt="Remaining Balance"/>
+                                       </ui:contents>
+                                    </oa:cellFormat>
+                                    <oa:cellFormat id="RemainingBalanceCell21" hAlign="end">
+                                       <ui:contents>
+                                          <oa:messageStyledText prompt="" dataType="VARCHAR2" viewName="MultipleInvoicesPayListSummaryVO" viewAttr="TotalDueRemainingFormatted" styleClass="OraFieldNumber" id="AdvPmtRemainingBalance" promptTranslationExpansion="100%" user:akAttributeCode="ARI_REMAINING_BALANCE" user:akAttributeApplicationId="222"/>
+                                       </ui:contents>
+                                    </oa:cellFormat>
+                                 </ui:contents>
+                              </oa:rowLayout>
+                              <oa:rowLayout id="DiscountAmtRow1" rendered="false">
+                                 <ui:contents>
+                                    <oa:cellFormat id="DiscountAmtCell11">
+                                       <ui:contents>
+                                          <oa:messageStyledText id="DiscountAmountLabel1" prompt="Discount"/>
+                                       </ui:contents>
+                                    </oa:cellFormat>
+                                    <oa:cellFormat id="DiscountAmtCell21" hAlign="end">
+                                       <ui:contents>
+                                          <oa:messageStyledText prompt="" dataType="VARCHAR2" viewName="MultipleInvoicesPayListSummaryVO" viewAttr="TotalDiscountFormatted" styleClass="OraFieldNumber" id="DiscountAmount1" promptTranslationExpansion="100%" user:akAttributeCode="ARI_DISCOUNT_AMOUNT" user:akAttributeApplicationId="222" rendered="true"/>
+                                       </ui:contents>
+                                    </oa:cellFormat>
+                                 </ui:contents>
+                              </oa:rowLayout>
+                              <oa:rowLayout id="ServiceChargeRow1" rendered="false">
+                                 <ui:contents>
+                                    <oa:cellFormat id="ServiceChargeCell11">
+                                       <ui:contents>
+                                          <oa:messageStyledText id="QPServiceChargeAmountLabel1" prompt="Service Charge"/>
+                                       </ui:contents>
+                                    </oa:cellFormat>
+                                    <oa:cellFormat id="ServiceChargeCell21" hAlign="end">
+                                       <ui:contents>
+                                          <oa:messageStyledText id="APServiceChargeAmount" prompt="" viewName="MultipleInvoicesPayListSummaryVO" viewAttr="TotalServiceChargeFormatted" styleClass="OraFieldNumber" rendered="true"/>
+                                       </ui:contents>
+                                    </oa:cellFormat>
+                                 </ui:contents>
+                              </oa:rowLayout>
+                              <oa:rowLayout id="PaymentAmtRow1">
+                                 <ui:contents>
+                                    <oa:cellFormat id="PaymentAmtCell11">
+                                       <ui:contents>
+                                          <oa:messageStyledText id="PaymentAmountLabel1" prompt="Total Payment Amount"/>
+                                       </ui:contents>
+                                    </oa:cellFormat>
+                                    <oa:cellFormat id="PaymentAmtCell21" hAlign="end">
+                                       <ui:contents>
+                                          <oa:messageStyledText prompt="" viewName="MultipleInvoicesPayListSummaryVO" viewAttr="GrandPaymentTotalFormatted" styleClass="OraFieldNumber" id="PaymentAmount" promptTranslationExpansion="100%" user:akAttributeCode="ARI_PAYMENT_AMOUNT" user:akAttributeApplicationId="222"/>
+                                       </ui:contents>
+                                    </oa:cellFormat>
+                                 </ui:contents>
+                              </oa:rowLayout>
+                              <oa:rowLayout id="PaymentBalDueRow1">
+                                 <ui:contents>
+                                    <oa:cellFormat id="PaymentBalDueCell11">
+                                       <ui:contents>
+                                          <oa:messageStyledText id="PaymentBalanceDueLabel1" prompt="Balance Due"/>
+                                       </ui:contents>
+                                    </oa:cellFormat>
+                                    <oa:cellFormat id="PaymentBalDueCell21" hAlign="end">
+                                       <ui:contents>
+                                          <oa:messageStyledText prompt="" dataType="VARCHAR2" viewName="MultipleInvoicesPayListSummaryVO" viewAttr="TotalBalanceDueFormatted" styleClass="OraFieldNumber" id="BalanceDue1" promptTranslationExpansion="100%" user:akAttributeCode="ARI_PAYMENT_BALANCE_DUE" user:akAttributeApplicationId="222"/>
+                                       </ui:contents>
+                                    </oa:cellFormat>
+                                 </ui:contents>
+                              </oa:rowLayout>
+                              <oa:rowLayout id="DisputeAmountRow1">
+                                 <ui:contents>
+                                    <oa:cellFormat id="DisputeAmtCell11">
+                                       <ui:contents>
+                                          <oa:messageStyledText id="DisputeAmtLabel1" prompt="Dispute Amount" shortDesc="Dispute Amount"/>
+                                       </ui:contents>
+                                    </oa:cellFormat>
+                                    <oa:cellFormat id="DisputeAmtCell21" hAlign="end">
+                                       <ui:contents>
+                                          <oa:messageStyledText id="DisputeAmt1" viewName="MultipleInvoicesPayListSummaryVO" viewAttr="DisputeAmt" styleClass="OraFieldNumber"/>
+                                       </ui:contents>
+                                    </oa:cellFormat>
+                                 </ui:contents>
+                              </oa:rowLayout>
+                           </ui:contents>
+                        </oa:tableLayout>
+                     </ui:contents>
+                  </oa:cellFormat>
+               </ui:contents>
+            </oa:rowLayout>
+         </ui:contents>
+      </oa:tableLayout>
+      <oa:tip id="AdvPmtServiceChargeTip" tipMessageAppShortName="AR" tipMessageName="ARI_SERVICE_CHARGE_TIP_MSG" rendered="false"/>
+   </ui:contents>
+</oa:header>

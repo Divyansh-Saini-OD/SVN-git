@@ -1,0 +1,44 @@
+SET SHOW OFF;
+SET ECHO OFF;
+SET TAB OFF;
+SET FEEDBACK OFF;
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+-- +===================================================================+
+-- |                  Office Depot - Project Simplify                  |
+-- |                        WIPRO Technologies                         |
+-- +===================================================================+
+-- | Name  :    XX_OM_DPS_ERR_MSG_AQTBL                                |
+-- | Description      : This script creates Queue table                |
+-- |                    XX_OM_DPS_ERR_MSG_AQTBL                        |
+-- |                                                                   |
+-- |                                                                   |
+-- |                                                                   |
+-- |                                                                   |
+-- |Change Record:                                                     |
+-- |===============                                                    |
+-- |Version   Date        Author           Remarks                     |
+-- |=======   ==========  =============    ============================|
+-- |DRAFT 1A  13-JUN-2007 Rizwan A         Initial draft version       |
+-- |                                                                   |
+-- |                                                                   |
+-- +===================================================================+
+
+DROP INDEX BPEL_AQADM.XX_OM_DPS_ERR_MSG_AQTBL
+/
+
+SET TERM ON
+PROMPT Creating Queue Table XX_OM_DPS_ERR_MSG_AQTBL
+SET TERM OFF
+
+DBMS_AQADM.CREATE_QUEUE_TABLE(queue_table => 'BPEL_AQADM.XX_OM_DPS_ERR_MSG_AQTBL'
+                             ,queue_payload_type => 'BPEL_AQADM.XX_OM_ERR_MSG_T')
+/
+
+SET TERM ON
+PROMPT Queue Table created successfully
+SET TERM OFF
+
+SHOW ERROR
+

@@ -1,0 +1,43 @@
+SET VERIFY OFF;
+SET SHOW OFF;
+SET ECHO OFF;
+SET TAB OFF;
+SET FEEDBACK OFF;
+ 
+WHENEVER SQLERROR CONTINUE;
+ 
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+-- +==================================================================================+  
+-- | Office Depot - C2FO                                                              |
+-- |                                                                                  |
+-- +==================================================================================+
+-- | SQL Script to create the table:  XX_AP_C2FO_MARKETS                              |
+-- | RICE_ID:                                                                         |                                                                                 |
+-- |Change Record:                                                                    |
+-- |===============                                                                   |
+-- |Version   Date          Author               Remarks                              |
+-- |=======   ===========   =============        =====================================|
+-- |1.0       31-AUG-2018   Antoino Morales      Initial version                      |
+-- |                                                                                  |
+-- +==================================================================================+
+
+--+=====================================================================+
+--+               CREATE TABLE XX_AP_C2FO_MARKETS
+--+=====================================================================+
+
+BEGIN
+ EXECUTE IMMEDIATE 'DROP TABLE XXFIN.XX_AP_C2FO_MARKETS';
+EXCEPTION
+ WHEN OTHERS THEN NULL;
+END;
+/
+CREATE TABLE XXFIN.XX_AP_C2FO_MARKETS 
+(
+  ORG_ID NUMBER NOT NULL 
+, MARKET_TYPES VARCHAR2(25) NOT NULL
+,	CREATION_DATE		          TIMESTAMP   DEFAULT SYSTIMESTAMP
+,	CREATED_BY	  	          VARCHAR(60) DEFAULT user
+,	LAST_UPDATE_DATE	        TIMESTAMP   DEFAULT SYSTIMESTAMP
+,	LAST_UPDATED_BY		        VARCHAR(60) DEFAULT user
+, CONSTRAINT XX_AP_C2FO_MARKETS_PK PRIMARY KEY (ORG_ID));

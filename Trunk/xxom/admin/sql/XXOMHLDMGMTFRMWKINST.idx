@@ -1,0 +1,77 @@
+-- +============================================================================================+
+-- |                        Office Depot - Project Simplify                                     |
+-- |              Oracle NAIO/WIPRO/Office Depot/Consulting Organization                        |
+-- +============================================================================================+
+-- | Name         : XXOMHLDMGMTFRMWKINST.syn                                                   |
+-- | Rice Id      : E0244                                                                       | 
+-- | Description  : OD HoldsManagementFrameworke Index Creation                                 |  
+-- | Purpose      : Create Custom Indexes.                                                      |
+-- |                1. XX_OM_ODHOLDFRAMEWORK_U1 Unique Index on                                |
+-- |                                             XX_OM_ODHOLDFRAMEWORK_TBL.HOLD_DEFINITION_ID  |
+-- |                2. XX_OM_ODHOLDFRAMEWORK_N1 Composite Index on                             |
+-- |                                             XX_OM_ODHOLDFRAMEWORK_TBL.HOLD_DEFINITION_ID  |
+-- |                                           & XX_OM_ODHOLDFRAMEWORK_TBL.HOLD_ID             |
+-- |Change Record:                                                                              |
+-- |===============                                                                             |
+-- |Version    Date          Author           Remarks                                           | 
+-- |=======    ==========    =============    ==================================================+
+-- |DRAFT 1A   03-May-2007   Nabarun Ghosh    Initial Version                                   |
+-- |                                                                                            |
+-- +============================================================================================+
+SET VERIFY      OFF
+SET TERM        OFF
+SET FEEDBACK    OFF
+SET SHOW        OFF
+SET ECHO        OFF
+SET TAB         OFF
+
+COLUMN XXOM_login   NEW_VALUE XXOM_LOGIN   NOPRINT
+COLUMN XXOM_user    NEW_VALUE XXOM_USER    NOPRINT
+
+
+SET TERM ON
+
+SELECT '&&1' XXOM_LOGIN
+      ,'&&2' XXOM_USER
+FROM  SYS.dual
+WHERE ROWNUM = 1;
+
+WHENEVER SQLERROR EXIT 1
+
+Prompt Connecting TO Custom SCHEMA &&XXOM_USER
+
+CONNECT &&XXOM_LOGIN;
+
+
+-- Index creation
+
+PROMPT
+PROMPT Creating unique index on XX_OM_ODHOLDFRAMEWORK_TBL table .....
+PROMPT
+
+WHENEVER SQLERROR EXIT 1
+
+PROMPT
+PROMPT Creating the index on  XX_OM_ODHOLDFRAMEWORK_TBL(HOLD_DEFINITION_ID) .....
+PROMPT
+
+CREATE UNIQUE INDEX XX_OM_ODHOLDFRAMEWORK_U1 ON XX_OM_ODHOLDFRAMEWORK_TBL(HOLD_DEFINITION_ID);
+
+WHENEVER SQLERROR EXIT 1
+
+PROMPT
+PROMPT Creating the composite index on  XX_OM_ODHOLDFRAMEWORK_TBL .....
+PROMPT
+
+CREATE INDEX XX_OM_ODHOLDFRAMEWORK_N1 ON XX_OM_ODHOLDFRAMEWORK_TBL(HOLD_DEFINITION_ID,HOLD_ID);
+
+WHENEVER SQLERROR CONTINUE;
+
+PROMPT
+PROMPT Exiting....
+PROMPT
+
+SET FEEDBACK ON
+
+EXIT;
+

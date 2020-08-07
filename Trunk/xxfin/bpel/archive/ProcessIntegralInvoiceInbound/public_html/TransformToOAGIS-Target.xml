@@ -1,0 +1,326 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<ns0:ProcessInvoice xmlns:ns0="http://www.openapplications.org/oagis/9">
+   <ns0:DataArea>
+      <ns0:Invoice>
+         <ns0:InvoiceHeader>
+            <ns0:Description>CheckDescription222</ns0:Description>
+            <ns0:DocumentReference>
+               <ns0:DocumentID>
+                  <ns0:ID>InvoiceNumber211</ns0:ID>
+               </ns0:DocumentID>
+               <ns0:DocumentDateTime>20In-vo-iceD</ns0:DocumentDateTime>
+            </ns0:DocumentReference>
+            <ns0:TotalAmount>InvoiceGrossAmountSign216InvoiceGrossAmount215</ns0:TotalAmount>
+            <ns0:SupplierParty>
+               <ns0:PartyIDs>
+                  <ns0:ID>ODGlobalVendorID209</ns0:ID>
+               </ns0:PartyIDs>
+            </ns0:SupplierParty>
+            <ns0:ReasonCode>Reasoncode232</ns0:ReasonCode>
+            <ns0:PurchaseOrderReference>
+               <ns0:AlternateDocumentID>
+                  <ns0:ID>IntegralPONumber219</ns0:ID>
+               </ns0:AlternateDocumentID>
+            </ns0:PurchaseOrderReference>
+            <ns6:VoucherReference xmlns:ns6="http://www.openapplications.org/oagis/9/officedepot/1">
+               <ns0:DocumentID>
+                  <ns0:ID>IntegralVoucherNumber210</ns0:ID>
+               </ns0:DocumentID>
+               <ns6:VoucherTypeCode>InvoiceVoucherTypeCode213</ns6:VoucherTypeCode>
+            </ns6:VoucherReference>
+            <ns6:DocumentControlNumber xmlns:ns6="http://www.openapplications.org/oagis/9/officedepot/1">DCNNumber223</ns6:DocumentControlNumber>
+            <ns0:PaymentTerm>
+               <ns0:Term>
+                  <ns0:EffectiveDateTime>20In-vo-iceD</ns0:EffectiveDateTime>
+                  <ns0:DueDateTime>20In-vo-iceD</ns0:DueDateTime>
+               </ns0:Term>
+            </ns0:PaymentTerm>
+            <ns6:DiscountAmount xmlns:ns6="http://www.openapplications.org/oagis/9/officedepot/1">DiscountAmountSign218DiscountAmount217</ns6:DiscountAmount>
+            <ns6:SourceSystemCode xmlns:ns6="http://www.openapplications.org/oagis/9/officedepot/1">InvoiceSource212</ns6:SourceSystemCode>
+            <ns6:Batch xmlns:ns6="http://www.openapplications.org/oagis/9/officedepot/1">
+               <ns0:FileName>FileName394</ns0:FileName>
+               <ns0:CreationDateTime>20Cr-ea-tion:at:39</ns0:CreationDateTime>
+               <ns6:NumberOfRecords>NumberOfRecords397</ns6:NumberOfRecords>
+               <ns0:TotalAmount>TotalInvoiceAmount398</ns0:TotalAmount>
+            </ns6:Batch>
+         </ns0:InvoiceHeader>
+         <ns0:InvoiceLine>
+            <ns0:LineNumber>LineNumber229</ns0:LineNumber>
+            <ns0:Description>InvoiceLineDescription238</ns0:Description>
+            <ns7:InvoiceCharge xmlns:ns7="http://www.openapplications.org/oagis/9/currencycode/54217:2001">
+               <ns1:ReasonCode xmlns:ns1="http://www.openapplications.org/oagis/9/IANAMIMEMediaTypes:2003">Reasoncode232</ns1:ReasonCode>
+            </ns7:InvoiceCharge>
+            <ns0:TotalAmount>InvoiceLineAmountSign231InvoiceLineAmount230</ns0:TotalAmount>
+            <ns0:Distribution>
+               <ns0:EnterpriseUnit>
+                  <ns0:GLAccount>
+                     <ns0:GLElement>
+                        <ns0:Element sequenceName="Company">GLBusinessUnit233</ns0:Element>
+                        <ns0:Element sequenceName="Department">GLDepartment235</ns0:Element>
+                        <ns0:Element sequenceName="Location">GLOperatingUnit234</ns0:Element>
+                        <ns0:Element sequenceName="Account">GLAccount237</ns0:Element>
+                        <ns0:Element sequenceName="BusinessUnit">GLSalesChannel236</ns0:Element>
+                     </ns0:GLElement>
+                  </ns0:GLAccount>
+               </ns0:EnterpriseUnit>
+            </ns0:Distribution>
+         </ns0:InvoiceLine>
+         <ns0:InvoiceLine>
+            <ns0:LineNumber>LineNumber244</ns0:LineNumber>
+            <ns0:Description>InvoiceLineDescription253</ns0:Description>
+            <ns7:InvoiceCharge xmlns:ns7="http://www.openapplications.org/oagis/9/currencycode/54217:2001">
+               <ns1:ReasonCode xmlns:ns1="http://www.openapplications.org/oagis/9/IANAMIMEMediaTypes:2003">Reasoncode247</ns1:ReasonCode>
+            </ns7:InvoiceCharge>
+            <ns0:TotalAmount>InvoiceLineAmountSign246InvoiceLineAmount245</ns0:TotalAmount>
+            <ns0:Distribution>
+               <ns0:EnterpriseUnit>
+                  <ns0:GLAccount>
+                     <ns0:GLElement>
+                        <ns0:Element sequenceName="Company">GLBusinessUnit248</ns0:Element>
+                        <ns0:Element sequenceName="Department">GLDepartment250</ns0:Element>
+                        <ns0:Element sequenceName="Location">GLOperatingUnit249</ns0:Element>
+                        <ns0:Element sequenceName="Account">GLAccount252</ns0:Element>
+                        <ns0:Element sequenceName="BusinessUnit">GLSalesChannel251</ns0:Element>
+                     </ns0:GLElement>
+                  </ns0:GLAccount>
+               </ns0:EnterpriseUnit>
+            </ns0:Distribution>
+         </ns0:InvoiceLine>
+         <ns0:InvoiceLine>
+            <ns0:LineNumber>LineNumber259</ns0:LineNumber>
+            <ns0:Description>InvoiceLineDescription268</ns0:Description>
+            <ns7:InvoiceCharge xmlns:ns7="http://www.openapplications.org/oagis/9/currencycode/54217:2001">
+               <ns1:ReasonCode xmlns:ns1="http://www.openapplications.org/oagis/9/IANAMIMEMediaTypes:2003">Reasoncode262</ns1:ReasonCode>
+            </ns7:InvoiceCharge>
+            <ns0:TotalAmount>InvoiceLineAmountSign261InvoiceLineAmount260</ns0:TotalAmount>
+            <ns0:Distribution>
+               <ns0:EnterpriseUnit>
+                  <ns0:GLAccount>
+                     <ns0:GLElement>
+                        <ns0:Element sequenceName="Company">GLBusinessUnit263</ns0:Element>
+                        <ns0:Element sequenceName="Department">GLDepartment265</ns0:Element>
+                        <ns0:Element sequenceName="Location">GLOperatingUnit264</ns0:Element>
+                        <ns0:Element sequenceName="Account">GLAccount267</ns0:Element>
+                        <ns0:Element sequenceName="BusinessUnit">GLSalesChannel266</ns0:Element>
+                     </ns0:GLElement>
+                  </ns0:GLAccount>
+               </ns0:EnterpriseUnit>
+            </ns0:Distribution>
+         </ns0:InvoiceLine>
+      </ns0:Invoice>
+      <ns0:Invoice>
+         <ns0:InvoiceHeader>
+            <ns0:Description>CheckDescription284</ns0:Description>
+            <ns0:DocumentReference>
+               <ns0:DocumentID>
+                  <ns0:ID>InvoiceNumber273</ns0:ID>
+               </ns0:DocumentID>
+               <ns0:DocumentDateTime>20In-vo-iceD</ns0:DocumentDateTime>
+            </ns0:DocumentReference>
+            <ns0:TotalAmount>InvoiceGrossAmountSign278InvoiceGrossAmount277</ns0:TotalAmount>
+            <ns0:SupplierParty>
+               <ns0:PartyIDs>
+                  <ns0:ID>ODGlobalVendorID271</ns0:ID>
+               </ns0:PartyIDs>
+            </ns0:SupplierParty>
+            <ns0:ReasonCode>Reasoncode294</ns0:ReasonCode>
+            <ns0:PurchaseOrderReference>
+               <ns0:AlternateDocumentID>
+                  <ns0:ID>IntegralPONumber281</ns0:ID>
+               </ns0:AlternateDocumentID>
+            </ns0:PurchaseOrderReference>
+            <ns6:VoucherReference xmlns:ns6="http://www.openapplications.org/oagis/9/officedepot/1">
+               <ns0:DocumentID>
+                  <ns0:ID>IntegralVoucherNumber272</ns0:ID>
+               </ns0:DocumentID>
+               <ns6:VoucherTypeCode>InvoiceVoucherTypeCode275</ns6:VoucherTypeCode>
+            </ns6:VoucherReference>
+            <ns6:DocumentControlNumber xmlns:ns6="http://www.openapplications.org/oagis/9/officedepot/1">DCNNumber285</ns6:DocumentControlNumber>
+            <ns0:PaymentTerm>
+               <ns0:Term>
+                  <ns0:EffectiveDateTime>20In-vo-iceD</ns0:EffectiveDateTime>
+                  <ns0:DueDateTime>20In-vo-iceD</ns0:DueDateTime>
+               </ns0:Term>
+            </ns0:PaymentTerm>
+            <ns6:DiscountAmount xmlns:ns6="http://www.openapplications.org/oagis/9/officedepot/1">DiscountAmountSign280DiscountAmount279</ns6:DiscountAmount>
+            <ns6:SourceSystemCode xmlns:ns6="http://www.openapplications.org/oagis/9/officedepot/1">InvoiceSource274</ns6:SourceSystemCode>
+            <ns6:Batch xmlns:ns6="http://www.openapplications.org/oagis/9/officedepot/1">
+               <ns0:FileName>FileName394</ns0:FileName>
+               <ns0:CreationDateTime>20Cr-ea-tion:at:39</ns0:CreationDateTime>
+               <ns6:NumberOfRecords>NumberOfRecords397</ns6:NumberOfRecords>
+               <ns0:TotalAmount>TotalInvoiceAmount398</ns0:TotalAmount>
+            </ns6:Batch>
+         </ns0:InvoiceHeader>
+         <ns0:InvoiceLine>
+            <ns0:LineNumber>LineNumber291</ns0:LineNumber>
+            <ns0:Description>InvoiceLineDescription300</ns0:Description>
+            <ns7:InvoiceCharge xmlns:ns7="http://www.openapplications.org/oagis/9/currencycode/54217:2001">
+               <ns1:ReasonCode xmlns:ns1="http://www.openapplications.org/oagis/9/IANAMIMEMediaTypes:2003">Reasoncode294</ns1:ReasonCode>
+            </ns7:InvoiceCharge>
+            <ns0:TotalAmount>InvoiceLineAmountSign293InvoiceLineAmount292</ns0:TotalAmount>
+            <ns0:Distribution>
+               <ns0:EnterpriseUnit>
+                  <ns0:GLAccount>
+                     <ns0:GLElement>
+                        <ns0:Element sequenceName="Company">GLBusinessUnit295</ns0:Element>
+                        <ns0:Element sequenceName="Department">GLDepartment297</ns0:Element>
+                        <ns0:Element sequenceName="Location">GLOperatingUnit296</ns0:Element>
+                        <ns0:Element sequenceName="Account">GLAccount299</ns0:Element>
+                        <ns0:Element sequenceName="BusinessUnit">GLSalesChannel298</ns0:Element>
+                     </ns0:GLElement>
+                  </ns0:GLAccount>
+               </ns0:EnterpriseUnit>
+            </ns0:Distribution>
+         </ns0:InvoiceLine>
+         <ns0:InvoiceLine>
+            <ns0:LineNumber>LineNumber306</ns0:LineNumber>
+            <ns0:Description>InvoiceLineDescription315</ns0:Description>
+            <ns7:InvoiceCharge xmlns:ns7="http://www.openapplications.org/oagis/9/currencycode/54217:2001">
+               <ns1:ReasonCode xmlns:ns1="http://www.openapplications.org/oagis/9/IANAMIMEMediaTypes:2003">Reasoncode309</ns1:ReasonCode>
+            </ns7:InvoiceCharge>
+            <ns0:TotalAmount>InvoiceLineAmountSign308InvoiceLineAmount307</ns0:TotalAmount>
+            <ns0:Distribution>
+               <ns0:EnterpriseUnit>
+                  <ns0:GLAccount>
+                     <ns0:GLElement>
+                        <ns0:Element sequenceName="Company">GLBusinessUnit310</ns0:Element>
+                        <ns0:Element sequenceName="Department">GLDepartment312</ns0:Element>
+                        <ns0:Element sequenceName="Location">GLOperatingUnit311</ns0:Element>
+                        <ns0:Element sequenceName="Account">GLAccount314</ns0:Element>
+                        <ns0:Element sequenceName="BusinessUnit">GLSalesChannel313</ns0:Element>
+                     </ns0:GLElement>
+                  </ns0:GLAccount>
+               </ns0:EnterpriseUnit>
+            </ns0:Distribution>
+         </ns0:InvoiceLine>
+         <ns0:InvoiceLine>
+            <ns0:LineNumber>LineNumber321</ns0:LineNumber>
+            <ns0:Description>InvoiceLineDescription330</ns0:Description>
+            <ns7:InvoiceCharge xmlns:ns7="http://www.openapplications.org/oagis/9/currencycode/54217:2001">
+               <ns1:ReasonCode xmlns:ns1="http://www.openapplications.org/oagis/9/IANAMIMEMediaTypes:2003">Reasoncode324</ns1:ReasonCode>
+            </ns7:InvoiceCharge>
+            <ns0:TotalAmount>InvoiceLineAmountSign323InvoiceLineAmount322</ns0:TotalAmount>
+            <ns0:Distribution>
+               <ns0:EnterpriseUnit>
+                  <ns0:GLAccount>
+                     <ns0:GLElement>
+                        <ns0:Element sequenceName="Company">GLBusinessUnit325</ns0:Element>
+                        <ns0:Element sequenceName="Department">GLDepartment327</ns0:Element>
+                        <ns0:Element sequenceName="Location">GLOperatingUnit326</ns0:Element>
+                        <ns0:Element sequenceName="Account">GLAccount329</ns0:Element>
+                        <ns0:Element sequenceName="BusinessUnit">GLSalesChannel328</ns0:Element>
+                     </ns0:GLElement>
+                  </ns0:GLAccount>
+               </ns0:EnterpriseUnit>
+            </ns0:Distribution>
+         </ns0:InvoiceLine>
+      </ns0:Invoice>
+      <ns0:Invoice>
+         <ns0:InvoiceHeader>
+            <ns0:Description>CheckDescription346</ns0:Description>
+            <ns0:DocumentReference>
+               <ns0:DocumentID>
+                  <ns0:ID>InvoiceNumber335</ns0:ID>
+               </ns0:DocumentID>
+               <ns0:DocumentDateTime>20In-vo-iceD</ns0:DocumentDateTime>
+            </ns0:DocumentReference>
+            <ns0:TotalAmount>InvoiceGrossAmountSign340InvoiceGrossAmount339</ns0:TotalAmount>
+            <ns0:SupplierParty>
+               <ns0:PartyIDs>
+                  <ns0:ID>ODGlobalVendorID333</ns0:ID>
+               </ns0:PartyIDs>
+            </ns0:SupplierParty>
+            <ns0:ReasonCode>Reasoncode356</ns0:ReasonCode>
+            <ns0:PurchaseOrderReference>
+               <ns0:AlternateDocumentID>
+                  <ns0:ID>IntegralPONumber343</ns0:ID>
+               </ns0:AlternateDocumentID>
+            </ns0:PurchaseOrderReference>
+            <ns6:VoucherReference xmlns:ns6="http://www.openapplications.org/oagis/9/officedepot/1">
+               <ns0:DocumentID>
+                  <ns0:ID>IntegralVoucherNumber334</ns0:ID>
+               </ns0:DocumentID>
+               <ns6:VoucherTypeCode>InvoiceVoucherTypeCode337</ns6:VoucherTypeCode>
+            </ns6:VoucherReference>
+            <ns6:DocumentControlNumber xmlns:ns6="http://www.openapplications.org/oagis/9/officedepot/1">DCNNumber347</ns6:DocumentControlNumber>
+            <ns0:PaymentTerm>
+               <ns0:Term>
+                  <ns0:EffectiveDateTime>20In-vo-iceD</ns0:EffectiveDateTime>
+                  <ns0:DueDateTime>20In-vo-iceD</ns0:DueDateTime>
+               </ns0:Term>
+            </ns0:PaymentTerm>
+            <ns6:DiscountAmount xmlns:ns6="http://www.openapplications.org/oagis/9/officedepot/1">DiscountAmountSign342DiscountAmount341</ns6:DiscountAmount>
+            <ns6:SourceSystemCode xmlns:ns6="http://www.openapplications.org/oagis/9/officedepot/1">InvoiceSource336</ns6:SourceSystemCode>
+            <ns6:Batch xmlns:ns6="http://www.openapplications.org/oagis/9/officedepot/1">
+               <ns0:FileName>FileName394</ns0:FileName>
+               <ns0:CreationDateTime>20Cr-ea-tion:at:39</ns0:CreationDateTime>
+               <ns6:NumberOfRecords>NumberOfRecords397</ns6:NumberOfRecords>
+               <ns0:TotalAmount>TotalInvoiceAmount398</ns0:TotalAmount>
+            </ns6:Batch>
+         </ns0:InvoiceHeader>
+         <ns0:InvoiceLine>
+            <ns0:LineNumber>LineNumber353</ns0:LineNumber>
+            <ns0:Description>InvoiceLineDescription362</ns0:Description>
+            <ns7:InvoiceCharge xmlns:ns7="http://www.openapplications.org/oagis/9/currencycode/54217:2001">
+               <ns1:ReasonCode xmlns:ns1="http://www.openapplications.org/oagis/9/IANAMIMEMediaTypes:2003">Reasoncode356</ns1:ReasonCode>
+            </ns7:InvoiceCharge>
+            <ns0:TotalAmount>InvoiceLineAmountSign355InvoiceLineAmount354</ns0:TotalAmount>
+            <ns0:Distribution>
+               <ns0:EnterpriseUnit>
+                  <ns0:GLAccount>
+                     <ns0:GLElement>
+                        <ns0:Element sequenceName="Company">GLBusinessUnit357</ns0:Element>
+                        <ns0:Element sequenceName="Department">GLDepartment359</ns0:Element>
+                        <ns0:Element sequenceName="Location">GLOperatingUnit358</ns0:Element>
+                        <ns0:Element sequenceName="Account">GLAccount361</ns0:Element>
+                        <ns0:Element sequenceName="BusinessUnit">GLSalesChannel360</ns0:Element>
+                     </ns0:GLElement>
+                  </ns0:GLAccount>
+               </ns0:EnterpriseUnit>
+            </ns0:Distribution>
+         </ns0:InvoiceLine>
+         <ns0:InvoiceLine>
+            <ns0:LineNumber>LineNumber368</ns0:LineNumber>
+            <ns0:Description>InvoiceLineDescription377</ns0:Description>
+            <ns7:InvoiceCharge xmlns:ns7="http://www.openapplications.org/oagis/9/currencycode/54217:2001">
+               <ns1:ReasonCode xmlns:ns1="http://www.openapplications.org/oagis/9/IANAMIMEMediaTypes:2003">Reasoncode371</ns1:ReasonCode>
+            </ns7:InvoiceCharge>
+            <ns0:TotalAmount>InvoiceLineAmountSign370InvoiceLineAmount369</ns0:TotalAmount>
+            <ns0:Distribution>
+               <ns0:EnterpriseUnit>
+                  <ns0:GLAccount>
+                     <ns0:GLElement>
+                        <ns0:Element sequenceName="Company">GLBusinessUnit372</ns0:Element>
+                        <ns0:Element sequenceName="Department">GLDepartment374</ns0:Element>
+                        <ns0:Element sequenceName="Location">GLOperatingUnit373</ns0:Element>
+                        <ns0:Element sequenceName="Account">GLAccount376</ns0:Element>
+                        <ns0:Element sequenceName="BusinessUnit">GLSalesChannel375</ns0:Element>
+                     </ns0:GLElement>
+                  </ns0:GLAccount>
+               </ns0:EnterpriseUnit>
+            </ns0:Distribution>
+         </ns0:InvoiceLine>
+         <ns0:InvoiceLine>
+            <ns0:LineNumber>LineNumber383</ns0:LineNumber>
+            <ns0:Description>InvoiceLineDescription392</ns0:Description>
+            <ns7:InvoiceCharge xmlns:ns7="http://www.openapplications.org/oagis/9/currencycode/54217:2001">
+               <ns1:ReasonCode xmlns:ns1="http://www.openapplications.org/oagis/9/IANAMIMEMediaTypes:2003">Reasoncode386</ns1:ReasonCode>
+            </ns7:InvoiceCharge>
+            <ns0:TotalAmount>InvoiceLineAmountSign385InvoiceLineAmount384</ns0:TotalAmount>
+            <ns0:Distribution>
+               <ns0:EnterpriseUnit>
+                  <ns0:GLAccount>
+                     <ns0:GLElement>
+                        <ns0:Element sequenceName="Company">GLBusinessUnit387</ns0:Element>
+                        <ns0:Element sequenceName="Department">GLDepartment389</ns0:Element>
+                        <ns0:Element sequenceName="Location">GLOperatingUnit388</ns0:Element>
+                        <ns0:Element sequenceName="Account">GLAccount391</ns0:Element>
+                        <ns0:Element sequenceName="BusinessUnit">GLSalesChannel390</ns0:Element>
+                     </ns0:GLElement>
+                  </ns0:GLAccount>
+               </ns0:EnterpriseUnit>
+            </ns0:Distribution>
+         </ns0:InvoiceLine>
+      </ns0:Invoice>
+   </ns0:DataArea>
+</ns0:ProcessInvoice>

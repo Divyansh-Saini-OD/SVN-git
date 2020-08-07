@@ -1,0 +1,174 @@
+<!--
+  ///////////////////////////////////////////////////////////////////////////////////////////// 
+  // Oracle JDeveloper BPEL Designer 
+  // 
+  // Created: Fri Jan 27 17:41:52 PST 2006
+  // Author:  rvishnuv
+  // Purpose: Synchronous BPEL Process
+  ///////////////////////////////////////////////////////////////////////////////////////////// 
+-->
+<process name="XXOMWshSendLocRefDataToOtm"
+         targetNamespace="http://xmlns.oracle.com/apps/wsh/outbound/ref/XXOMWshSendLocRefDataToOtm"
+         xmlns="http://schemas.xmlsoap.org/ws/2003/03/business-process/"
+         xmlns:bpws="http://schemas.xmlsoap.org/ws/2003/03/business-process/"
+         xmlns:xp20="http://www.oracle.com/XSL/Transform/java/oracle.tip.pc.services.functions.Xpath20"
+         xmlns:ns4="http://xmlns.oracle.com/apps/wsh/outbound/util/WshOtmGlobalOutbound"
+         xmlns:ns7="http://xmlns.oracle.com/bpel/services/IdentityService/xpath"
+         xmlns:ldap="http://schemas.oracle.com/xpath/extension/ldap"
+         xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+         xmlns:ns5="http://xmlns.oracle.com/pcbpel/adapter/db/APPS/XX_OM_WSH_OTM_REF_DATA_GEN_PKG/SEND_LOCATIONS/"
+         xmlns:client="http://xmlns.oracle.com/apps/wsh/outbound/ref/XXOMWshSendLocRefDataToOtm"
+         xmlns:ns6="http://xmlns.oracle.com/bpel/workflow/xpath"
+         xmlns:ora="http://schemas.oracle.com/xpath/extension"
+         xmlns:ns1="http://xmlns.oracle.com/pcbpel/adapter/db/WshGenLocRefData/"
+         xmlns:ns3="http://xmlns.oracle.com/apps/otm"
+         xmlns:ns2="http://xmlns.oracle.com/pcbpel/adapter/db/APPS/XX_OM_WSH_OTM_REF_DATA_GEN_PKG/SEND_LOCATIONS/"
+         xmlns:bpelx="http://schemas.oracle.com/bpel/extension"
+         xmlns:orcl="http://www.oracle.com/XSL/Transform/java/oracle.tip.pc.services.functions.ExtFunc">
+  <!-- ================================================================= -->
+  <!-- PARTNERLINKS                                                      -->
+  <!-- List of services participating in this BPEL process               -->
+  <!-- ================================================================= -->
+  <partnerLinks>
+    <!-- 
+    The 'client' role represents the requester of this service. It is 
+    used for callback. The location and correlation information associated
+    with the client role are automatically set using WS-Addressing.
+    -->
+    <partnerLink name="client"
+                 partnerLinkType="client:XXOMWshSendLocRefDataToOtm"
+                 myRole="WshSendLocRefDataToOtmProvider"/>
+    <partnerLink name="WshGenLocRefDataPL" partnerRole="WshGenLocRefData_role"
+                 partnerLinkType="ns1:WshGenLocRefData_plt"/>
+  </partnerLinks>
+  <!-- ================================================================= -->
+  <!-- VARIABLES                                                         -->
+  <!-- List of messages and XML documents used within this BPEL process  -->
+  <!-- ================================================================= -->
+  <variables>
+    <!-- Reference to the message passed as input during initiation -->
+    <variable name="inputVariable"
+              messageType="client:WshSendLocRefDataToOtmRequestMessage"/>
+    <!--  
+    Reference to the message that will be returned to the requester
+    -->
+    <variable name="outputVariable"
+              messageType="client:WshSendLocRefDataToOtmResponseMessage"/>
+    <variable name="G_XMissionDocument" element="ns3:Transmission"/>
+    <variable name="G_APIMessage" messageType="client:WshLocRefErrorMessage"/>
+    <variable name="G_Invoke_WshGenLocRefData_Input"
+              messageType="ns1:args_in_msg"/>
+    <variable name="G_Invoke_WshGenLocRefData_Output"
+              messageType="ns1:args_out_msg"/>
+  </variables>
+  <!-- ================================================================= -->
+  <!-- ORCHESTRATION LOGIC                                               -->
+  <!-- Set of activities coordinating the flow of messages across the    -->
+  <!-- services integrated within this business process                  -->
+  <!-- ================================================================= -->
+  <sequence name="main">
+    <!-- Receive input from requestor. 
+    Note: This maps to operation defined in XXOMWshSendLocRefDataToOtm.wsdl
+    -->
+    <receive name="receiveInput" partnerLink="client"
+             portType="client:XXOMWshSendLocRefDataToOtm" operation="process"
+             variable="inputVariable" createInstance="yes"/>
+    <!-- Generate reply to synchronous request -->
+    <scope name="SelectLocationFromEBS">
+      <faultHandlers>
+        <catchAll>
+          <sequence name="Sequence_4">
+            <throw name="ThrowUnExpError" faultName="client:refDataUnExpError"
+                   faultVariable="G_APIMessage"/>
+          </sequence>
+        </catchAll>
+      </faultHandlers>
+      <sequence name="SequenceLocRefAPI">
+        <assign name="WshXFormInputEntityData">
+          <bpelx:annotation>
+            <bpelx:pattern>transformation
+            </bpelx:pattern>
+          </bpelx:annotation>
+          <copy>
+            <from expression="ora:processXSLT('WshXFormRefInput.xsl',bpws:getVariableData('inputVariable','payload'))"/>
+            <to variable="G_Invoke_WshGenLocRefData_Input"
+                part="InputParameters"/>
+          </copy>
+        </assign>
+        <invoke name="InvokeRefDataPL" partnerLink="WshGenLocRefDataPL"
+                portType="ns1:WshGenLocRefData_ptt" operation="WshGenLocRefData"
+                inputVariable="G_Invoke_WshGenLocRefData_Input"
+                outputVariable="G_Invoke_WshGenLocRefData_Output"/>
+      </sequence>
+    </scope>
+    <scope name="XFormLocationToOtm">
+      <sequence name="Sequence_2">
+        <switch name="Switch_1">
+          <case condition="bpws:getVariableData('G_Invoke_WshGenLocRefData_Output','OutputParameters','/ns2:OutputParameters/X_RETURN_STATUS') = 'U'  or bpws:getVariableData('G_Invoke_WshGenLocRefData_Output','OutputParameters','/ns2:OutputParameters/X_RETURN_STATUS') = 'E'">
+            <bpelx:annotation>
+              <bpelx:pattern>StatusCheck
+              </bpelx:pattern>
+            </bpelx:annotation>
+            <sequence name="Sequence_5">
+              <assign name="AssignAPIMessage">
+                <copy>
+                  <from variable="G_Invoke_WshGenLocRefData_Output"
+                        part="OutputParameters"/>
+                  <to variable="G_APIMessage" part="payload"/>
+                </copy>
+              </assign>
+              <throw name="ThrowLocRefError" faultName="client:refDataError"
+                     faultVariable="G_APIMessage"/>
+            </sequence>
+          </case>
+          <otherwise>
+            <sequence name="Sequence_3">
+              <assign name="WshXFormOutLocRefData">
+                <bpelx:annotation>
+                  <bpelx:pattern>transformation
+                  </bpelx:pattern>
+                </bpelx:annotation>
+                <copy>
+                  <from expression="ora:processXSLT('WshXFormOutLocRefData.xsl',bpws:getVariableData('G_Invoke_WshGenLocRefData_Output','OutputParameters'))"/>
+                  <to variable="G_XMissionDocument"/>
+                </copy>
+              </assign>
+              <assign name="AssignXMissionDoc">
+                <copy>
+                  <from variable="G_Invoke_WshGenLocRefData_Output"
+                        part="OutputParameters"
+                        query="/ns5:OutputParameters/X_TRANSMISSION_ID"/>
+                  <to variable="outputVariable" part="payload"
+                      query="/client:WshSendLocRefDataToOtmProcessResponse/client:result/ns4:transmissionId"/>
+                </copy>
+                <copy>
+                  <from variable="G_XMissionDocument"
+                        query="/ns3:Transmission"/>
+                  <to variable="outputVariable" part="payload"
+                      query="/client:WshSendLocRefDataToOtmProcessResponse/client:result/ns3:Transmission"/>
+                </copy>
+                <copy>
+                  <from variable="G_Invoke_WshGenLocRefData_Output"
+                        part="OutputParameters"
+                        query="/ns5:OutputParameters/X_RETURN_STATUS"/>
+                  <to variable="outputVariable" part="payload"
+                      query="/client:WshSendLocRefDataToOtmProcessResponse/client:result/ns4:returnStatus"/>
+                </copy>
+                <copy>
+                  <from variable="G_Invoke_WshGenLocRefData_Output"
+                        part="OutputParameters"
+                        query="/ns5:OutputParameters/X_MSG_DATA"/>
+                  <to variable="outputVariable" part="payload"
+                      query="/client:WshSendLocRefDataToOtmProcessResponse/client:result/ns4:errorMessage"/>
+                </copy>
+              </assign>
+            </sequence>
+          </otherwise>
+        </switch>
+      </sequence>
+    </scope>
+    <reply name="replyOutput" partnerLink="client"
+           portType="client:XXOMWshSendLocRefDataToOtm" operation="process"
+           variable="outputVariable"/>
+  </sequence>
+</process>

@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="WINDOWS-1252" ?>
+<dataTemplate name="XXAPGSIR" description="OD: AP GSO Supplier Site Add Report" Version="1.0">
+<parameters>
+ <parameter name="p_request_id" datatype="character" />
+</parameters>
+<dataQuery>
+<sqlStatement name="Q_GSOI">
+<![CDATA[
+SELECT     gso_reference_no GSO_REF_NO,
+           vendor_no VENDOR_NO,supplier_name SUPPLIER_NAME, Vendor_site_code,
+           row_number() over (partition by supplier_name order by supplier_name) adr_seq, 
+DECODE((supp_error_flag||supp_site_error_flag),'EE', 'FAIL','E','FAIL',
+                                 'SUCCESS'
+                                ) status,
+    SUPP_ERROR_MSG||','||SUPP_SITE_ERROR_MSG Error_message
+  FROM XX_AP_DI_SUPP_SITE_STG
+ WHERE request_id=:p_request_id
+ORDER BY 3,4 
+]]>
+</sqlStatement>
+<sqlStatement name="Q_GSOSTAT">
+<![CDATA[
+SELECT 
+(SELECT count(distinct SUPPLIER_NAME)
+FROM XX_AP_DI_SUPP_SITE_STG
+WHERE request_Id = :p_request_id
+  AND supp_process_flag = '7'
+  AND create_flag = 'Y')  SUPPLIERS_CREATED
+  
+, (SELECT count(distinct SUPPLIER_NAME)
+FROM XX_AP_DI_SUPP_SITE_STG
+WHERE request_Id = :p_request_id
+  AND supp_site_process_flag = '7') SUPPLIER_SITES_CREATED
+FROM DUAL
+]]>
+</sqlStatement>
+</dataQuery>
+<dataStructure>
+<group name="G_GSOI" source="Q_GSOI">
+<element name="VENDOR_NO" value="VENDOR_NO" />
+<element name="SUPPLIER_NAME" value="SUPPLIER_NAME" />
+<element name="GSO_REF_NO" value="GSO_REF_NO" />
+<element name="ADR_SEQ" value="ADR_SEQ" />
+<element name="VENDOR_SITE_CODE" value="VENDOR_SITE_CODE" />
+<element name="STATUS" value="STATUS" />
+<element name="ERROR_MESSAGE" value="ERROR_MESSAGE" />
+</group>
+<group name="G_GSOSTAT" source="Q_GSOSTAT">
+<element name="SUPPLIERS_CREATED" value="SUPPLIERS_CREATED" />
+<element name="SUPPLIER_SITES_CREATED" value="SUPPLIER_SITES_CREATED" />
+</group>
+</dataStructure>
+</dataTemplate>

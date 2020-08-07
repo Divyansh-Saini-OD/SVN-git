@@ -1,0 +1,12 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<!-- dbdrv: exec java oracle/jrad/tools/xml/importer XMLImporter.class java &phase=dat+24 checkfile:~PROD:~PATH:~FILE &fullpath:~PROD:~PATH:~FILE -username &un_apps -password &pw_apps -dbconnection &jdbc_db_addr  -userId "1" -rootPackage /oracle/apps/~PROD  -rootdir &fullpath:~PROD:mds:directory  -->
+<oa:listOfValues version="9.0.3.8.12_1330" xml:lang="en-US" xmlns:oa="http://xmlns.oracle.com/oa" xmlns:jrad="http://xmlns.oracle.com/jrad" xmlns:ui="http://xmlns.oracle.com/uix/ui" xmlns:user="http://xmlns.oracle.com/jrad/user" xmlns="http://xmlns.oracle.com/jrad" file-version="$Header$" scope="/" advancedSearchAllowed="true" amDefName="od.oracle.apps.xxmer.papb.lov.server.PAPBLOVAM">
+   <ui:contents>
+      <oa:table name="ProjectNumLovRN" id="ProjectNumLovVO1" amDefName="od.oracle.apps.xxmer.papb.lov.server.PAPBLOVAM">
+         <ui:contents>
+            <oa:messageStyledText id="ProjectNumber" dataType="VARCHAR2" prompt="Project Number" viewName="ProjectNumLovVO1" viewAttr="ProjectNumber" maximumLength="25" queryable="true"/>
+            <oa:messageStyledText id="ProjectName" dataType="VARCHAR2" prompt="Project Name" viewName="ProjectNumLovVO1" viewAttr="ProjectName" maximumLength="30" queryable="true"/>
+         </ui:contents>
+      </oa:table>
+   </ui:contents>
+</oa:listOfValues>

@@ -1,0 +1,40 @@
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     ON
+
+PROMPT Creating SYNONYM XX_BILLING_ALL_DELIVERY_DET  
+
+PROMPT Program exits IF the creation IS NOT SUCCESSFUL
+
+WHENEVER SQLERROR CONTINUE
+
+-- +==========================================================================+
+-- |                  Office Depot - Project Simplify                         |
+-- |                       WIPRO Technologies                                 |
+-- +==========================================================================+
+-- | Name        : APPS.XX_BILLING_ALL_DELIVERY_DET                                   |
+-- | Description : Synonym for XX_BILLING_ALL_DELIVERY_DET                           |
+-- |===============                                                           |
+-- |Version      Date              Author               Remarks               |
+-- |=======      ==========        =============        ===================== |
+-- | V1.0        27-SEP-2013       Ankit Arora		  Initial version       |
+-- |                                                      Defect#24869       |
+-- +==========================================================================+
+PROMPT
+PROMPT Dropping SYNONYM XX_BILLING_ALL_DELIVERY_DET
+PROMPT
+
+DROP SYNONYM apps.XX_BILLING_ALL_DELIVERY_DET;
+
+
+WHENEVER SQLERROR CONTINUE;
+
+PROMPT
+PROMPT Creating Synonym XX_BILLING_ALL_DELIVERY_DET  in APPS...
+PROMPT
+
+CREATE SYNONYM apps.XX_BILLING_ALL_DELIVERY_DET   FOR xxfin.XX_BILLING_ALL_DELIVERY_DET  ;
+
+SHOW ERROR;

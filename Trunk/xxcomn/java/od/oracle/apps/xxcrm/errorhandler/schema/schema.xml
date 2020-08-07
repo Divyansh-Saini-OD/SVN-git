@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding='windows-1252'?>
+<!DOCTYPE JboPackage SYSTEM "jbo_03_01.dtd">
+
+<JboPackage
+   Name="schema"
+   SeparateXMLFiles="true"
+   PackageName="od.oracle.apps.xxcrm.errorhandler.schema" >
+   <DesignTime>
+      <Attr Name="_version" Value="9.0.3.13.93" />
+      <Attr Name="_ejbPackage" Value="false" />
+   </DesignTime>
+   <Containee
+      Name="ErrorDetailsEO"
+      FullName="od.oracle.apps.xxcrm.errorhandler.schema.ErrorDetailsEO"
+      ObjectType="Entity" >
+   </Containee>
+   <Containee
+      Name="ErrorResolutionEO"
+      FullName="od.oracle.apps.xxcrm.errorhandler.schema.ErrorResolutionEO"
+      ObjectType="Entity" >
+   </Containee>
+</JboPackage>

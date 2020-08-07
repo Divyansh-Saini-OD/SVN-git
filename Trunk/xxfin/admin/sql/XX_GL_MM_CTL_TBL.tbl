@@ -1,0 +1,61 @@
+REM============================================================================================
+REM                                 Start Of Script
+REM============================================================================================
+
+--+=============================================================================================+--
+--|                                                                                             |--
+--| Program Name   :  XX_GL_MM_CTL_TBL.tbl                                                      |--
+--|                                                                                             |--
+--| Purpose        : Create Custom Tables .                                                     |--
+--|                  The Objects created are:                                                   |--
+--|                                                                                             |--
+--|                1. XX_GL_MM_CTL_TBL   (OD MidMonth Financial Control Table)                  |--
+--| RICE ID : E3120                                                                             |--
+--| Change History  :                                                                           |--
+--| Version           Date             Changed By              Description                      |--
+--+=============================================================================================+--
+--| 1.0              08-JUL-2015       Madhu Bolli         Initial                         |--
+--+=============================================================================================+--
+
+SET VERIFY      OFF
+SET TERM        ON
+SET FEEDBACK    OFF
+SET SHOW        OFF
+SET ECHO        OFF
+SET TAB         OFF
+
+WHENEVER SQLERROR CONTINUE;
+
+PROMPT
+PROMPT Creating the Custom Table ......
+PROMPT
+
+PROMPT
+PROMPT Creating the Table XX_GL_MM_CTL_TBL......
+PROMPT
+
+CREATE TABLE xxfin.XX_GL_MM_CTL_TBL
+(               PROGRAM_NAME                           VARCHAR2(30),
+                PROGRAM_ID                             NUMBER,
+                REQUEST_ID                             NUMBER   NOT NULL ,
+                REQ_STATUS_CODE                        VARCHAR2(1)  NOT NULL, 
+                CREATION_DATE                          DATE,          
+                CREATED_BY                             NUMBER,    
+                LAST_UPDATE_LOGIN                      NUMBER,
+                LAST_UPDATE_DATE                       DATE     NOT NULL,          
+                LAST_UPDATED_BY                        NUMBER   NOT NULL
+);
+
+WHENEVER SQLERROR CONTINUE;
+
+PROMPT
+PROMPT Exiting....
+PROMPT 
+
+SET FEEDBACK ON
+
+EXIT;
+
+REM=================================================================================================
+REM                                   End Of Script
+REM=================================================================================================

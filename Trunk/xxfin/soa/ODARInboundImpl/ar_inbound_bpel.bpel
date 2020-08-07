@@ -1,0 +1,381 @@
+<?xml version = "1.0" encoding = "UTF-8" ?>
+<!--
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  Oracle JDeveloper BPEL Designer 
+  
+  Created: Thu Dec 15 19:00:25 IST 2011
+  Author:  sanjtj
+  Type: BPEL 1.1 Process
+  Purpose: One Way BPEL Process
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+-->
+<process name="ar_inbound_bpel"
+         targetNamespace="http://xmlns.oracle.com/officedepot/ODARInboundImpl/ar_inbound_bpel"
+         xmlns="http://schemas.xmlsoap.org/ws/2003/03/business-process/"
+         xmlns:client="http://xmlns.oracle.com/officedepot/ODARInboundImpl/ar_inbound_bpel"
+         xmlns:ora="http://schemas.oracle.com/xpath/extension"
+         xmlns:bpws="http://schemas.xmlsoap.org/ws/2003/03/business-process/"
+         xmlns:ns1="http://xmlns.oracle.com/pcbpel/adapter/jms/officedepot/ODARInboundImpl/CommonErrorLoggingService"
+         xmlns:bpelx="http://schemas.oracle.com/bpel/extension"
+         xmlns:ns2="http://xmlns.oracle.com/pcbpel/adapter/apps/officedepot/ODARInboundImpl/invoke_ar_inbound_st_proc"
+         xmlns:ns3="http://xmlns.oracle.com/pcbpel/adapter/db/APPS/XX_AR_WC_INBOUND_PKG/INSERT_STG/"
+         xmlns:bpel2="http://docs.oasis-open.org/wsbpel/2.0/process/executable"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns:xp20="http://www.oracle.com/XSL/Transform/java/oracle.tip.pc.services.functions.Xpath20"
+         xmlns:ns5="http://www.officedepot.com/officedepot/ODComnErrorStructure/1.0"
+         xmlns:oraext="http://www.oracle.com/XSL/Transform/java/oracle.tip.pc.services.functions.ExtFunc"
+         xmlns:dvm="http://www.oracle.com/XSL/Transform/java/oracle.tip.dvm.LookupValue"
+         xmlns:hwf="http://xmlns.oracle.com/bpel/workflow/xpath"
+         xmlns:ids="http://xmlns.oracle.com/bpel/services/IdentityService/xpath"
+         xmlns:bpm="http://xmlns.oracle.com/bpmn20/extensions"
+         xmlns:xdk="http://schemas.oracle.com/bpel/extension/xpath/function/xdk"
+         xmlns:xref="http://www.oracle.com/XSL/Transform/java/oracle.tip.xref.xpath.XRefXPathFunctions"
+         xmlns:ns4="http://www.officedepot.com/officedepot/ARInbound"
+         xmlns:ldap="http://schemas.oracle.com/xpath/extension/ldap"
+         xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+         xmlns:ns6="http://oracle.com/sca/soapservice/officedepot/ODARInboundImpl/arInboundWS">
+  <!-- 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+      PARTNERLINKS                                                      
+      List of services participating in this BPEL process               
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  -->
+  <partnerLinks>
+    <!-- 
+      The 'client' role represents the requester of this service. It is 
+      used for callback. The location and correlation information associated
+      with the client role are automatically set using WS-Addressing.
+    -->
+    <partnerLink name="invoke_ar_inbound_st_proc"
+                 partnerLinkType="ns2:invoke_ar_inbound_st_proc_plt"
+                 partnerRole="invoke_ar_inbound_st_proc_role"/>
+    <partnerLink name="CommonErrorLoggingService"
+                 partnerLinkType="ns1:Produce_Message_plt"
+                 partnerRole="Produce_Message_role"/>
+    <partnerLink name="arInboundWS" partnerLinkType="ns6:arInboundWS"
+                 myRole="execute_ptt"/>
+  </partnerLinks>
+  <!-- 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+      VARIABLES                                                        
+      List of messages and XML documents used within this BPEL process 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  -->
+  <variables>
+    <!-- Reference to the message passed as input during initiation -->
+
+    <variable name="Invoke1_Produce_Message_InputVariable"
+              messageType="ns1:Produce_Message_msg"/>
+    <variable name="Invoke1_invoke_ar_inbound_st_proc_InputVariable"
+              messageType="ns2:args_in_msg"/>
+    <variable name="Invoke1_invoke_ar_inbound_st_proc_OutputVariable"
+              messageType="ns2:args_out_msg"/>
+    <variable name="Invoke2_Produce_Message_InputVariable"
+              messageType="ns1:Produce_Message_msg"/>
+    <variable name="Invoke3_Produce_Message_InputVariable"
+              messageType="ns1:Produce_Message_msg"/>
+    <variable name="compositeInstanceTitle" type="xsd:string"/>
+    <variable name="Reply1_execute_OutputVariable"
+              messageType="ns6:replyMessage"/>
+    <variable name="receiveInput_execute_InputVariable"
+              messageType="ns6:requestMessage"/>
+    <variable name="ReplyFailedInsert_execute_OutputVariable"
+              messageType="ns6:replyMessage"/>
+    <variable name="ReplyCatchAll_execute_OutputVariable"
+              messageType="ns6:replyMessage"/>
+  </variables>
+  <faultHandlers>
+    <catchAll>
+      <sequence name="ErrorSequence">
+        <assign name="AssignSystemAndBindingExceptionDataToErrorLog">
+          <copy>
+            <from expression="ora:getProcessId()"/>
+            <to variable="Invoke2_Produce_Message_InputVariable" part="body"
+                query="/ns5:ODComnErrorStructure/ns5:ODComnErrorStructureList/ns5:ProcessInfo/ns5:ProcessName"/>
+          </copy>
+          <copy>
+            <from expression="ora:setCompositeInstanceTitle(concat('Transaction Number: ',bpws:getVariableData('receiveInput_execute_InputVariable','part1','/ns4:ar_inbound_request/ns4:TRANSACTION_NUMBER'),' Category: ' ,bpws:getVariableData('receiveInput_execute_InputVariable','part1','/ns4:ar_inbound_request/ns4:CATEGORY')))"/>
+            <to variable="compositeInstanceTitle"/>
+          </copy>
+          <copy>
+            <from expression="ora:getPreference('ERROR_TYPE')"/>
+            <to variable="Invoke2_Produce_Message_InputVariable" part="body"
+                query="/ns5:ODComnErrorStructure/ns5:ODComnErrorStructureList/ns5:ErrorDetails/ns5:ErrorType"/>
+          </copy>
+          <copy>
+            <from expression="ora:getPreference('ERROR_SEVERITY')"/>
+            <to variable="Invoke2_Produce_Message_InputVariable" part="body"
+                query="/ns5:ODComnErrorStructure/ns5:ODComnErrorStructureList/ns5:ErrorDetails/ns5:ErrorSeverity"/>
+          </copy>
+          <copy>
+            <from expression="ora:getFaultAsString()"/>
+            <to variable="Invoke2_Produce_Message_InputVariable" part="body"
+                query="/ns5:ODComnErrorStructure/ns5:ODComnErrorStructureList/ns5:ErrorDetails/ns5:ErrorText"/>
+          </copy>
+          <copy>
+            <from expression="ora:getContentAsString(bpws:getVariableData('receiveInput_execute_InputVariable','part1','/ns4:ar_inbound_request'))"/>
+            <to variable="Invoke2_Produce_Message_InputVariable" part="body"
+                query="/ns5:ODComnErrorStructure/ns5:ODComnErrorStructureList/ns5:MessageDetails/ns5:MessagePayload"/>
+          </copy>
+          <copy>
+            <from expression="ora:getCurrentDateTime()"/>
+            <to variable="Invoke2_Produce_Message_InputVariable" part="body"
+                query="/ns5:ODComnErrorStructure/ns5:ODComnErrorStructureList/ns5:ErrorDetails/ns5:ErrorDateTime"/>
+          </copy>
+          <copy>
+            <from expression="ora:getPreference('CATCH_ALL_PROCESS_STEP')"/>
+            <to variable="Invoke2_Produce_Message_InputVariable" part="body"
+                query="/ns5:ODComnErrorStructure/ns5:ODComnErrorStructureList/ns5:ErrorDetails/ns5:ProcessStep"/>
+          </copy>
+          <copy>
+            <from expression="ora:getFaultName()"/>
+            <to variable="Invoke2_Produce_Message_InputVariable" part="body"
+                query="/ns5:ODComnErrorStructure/ns5:ODComnErrorStructureList/ns5:ErrorDetails/ns5:ErrorCode"/>
+          </copy>
+          <copy>
+            <from expression="ora:getDomainId()"/>
+            <to variable="Invoke2_Produce_Message_InputVariable" part="body"
+                query="/ns5:ODComnErrorStructure/ns5:ODComnErrorStructureList/ns5:ProcessInfo/ns5:Domain"/>
+          </copy>
+          <copy>
+            <from expression="ora:getCompositeInstanceId()"/>
+            <to variable="Invoke2_Produce_Message_InputVariable" part="body"
+                query="/ns5:ODComnErrorStructure/ns5:ODComnErrorStructureList/ns5:MessageDetails/ns5:MessageID"/>
+          </copy>
+          <copy>
+            <from expression="ora:getCurrentDateTime()"/>
+            <to variable="Invoke2_Produce_Message_InputVariable" part="body"
+                query="/ns5:ODComnErrorStructure/ns5:ODComnErrorStructureList/ns5:MessageDetails/ns5:MessageDateTime"/>
+          </copy>
+          <copy>
+            <from expression="ora:getPreference('MESSAGE_TYPE')"/>
+            <to variable="Invoke2_Produce_Message_InputVariable" part="body"
+                query="/ns5:ODComnErrorStructure/ns5:ODComnErrorStructureList/ns5:MessageDetails/ns5:MessageType"/>
+          </copy>
+          <copy>
+            <from expression="ora:getPreference('MESSAGE_VERSION')"/>
+            <to variable="Invoke2_Produce_Message_InputVariable" part="body"
+                query="/ns5:ODComnErrorStructure/ns5:ODComnErrorStructureList/ns5:MessageDetails/ns5:MessageVersion"/>
+          </copy>
+          <copy>
+            <from expression="ora:getPreference('MESSAGE_OPERATION')"/>
+            <to variable="Invoke2_Produce_Message_InputVariable" part="body"
+                query="/ns5:ODComnErrorStructure/ns5:ODComnErrorStructureList/ns5:MessageDetails/ns5:MessageOperation"/>
+          </copy>
+          <copy>
+            <from expression="ora:getPreference('SOURCE_SYSTEM_NAME')"/>
+            <to variable="Invoke2_Produce_Message_InputVariable" part="body"
+                query="/ns5:ODComnErrorStructure/ns5:ODComnErrorStructureList/ns5:MessageDetails/ns5:MessageSourceSystem"/>
+          </copy>
+          <copy>
+            <from expression="concat(ora:getPreference('ERROR_DESCRIPTION_TEXT'), bpws:getVariableData('receiveInput_execute_InputVariable','part1','/ns4:ar_inbound_request/ns4:WC_ID'))"/>
+            <to variable="Invoke2_Produce_Message_InputVariable" part="body"
+                query="/ns5:ODComnErrorStructure/ns5:ODComnErrorStructureList/ns5:ErrorDetails/ns5:ErrorDescription"/>
+          </copy>
+          <copy>
+            <from expression="ora:getProcessURL()"/>
+            <to variable="Invoke2_Produce_Message_InputVariable" part="body"
+                query="/ns5:ODComnErrorStructure/ns5:ODComnErrorStructureList/ns5:ProcessInfo/ns5:SystemName"/>
+          </copy>
+        </assign>
+        <invoke name="SystemExceptionErrorMessage"
+                inputVariable="Invoke2_Produce_Message_InputVariable"
+                partnerLink="CommonErrorLoggingService"
+                portType="ns1:Produce_Message_ptt" operation="Produce_Message"
+                bpelx:invokeAsDetail="no"/>
+        <assign name="AssignCatchAllError">
+          <copy>
+            <from expression="substring(concat('System Error: ',ora:getFaultAsString()),1,249)"/>
+            <to variable="ReplyCatchAll_execute_OutputVariable" part="part1"
+                query="/ns4:ar_inbound_response/ns4:message"/>
+          </copy>
+          <copy>
+            <from expression="'Error'"/>
+            <to variable="ReplyCatchAll_execute_OutputVariable" part="part1"
+                query="/ns4:ar_inbound_response/ns4:status"/>
+          </copy>
+        </assign>
+        <reply name="ReplyCatchAll"
+               variable="ReplyCatchAll_execute_OutputVariable"
+               partnerLink="arInboundWS" portType="ns6:execute_ptt"
+               operation="execute"/>
+        <terminate name="Terminate1"/>
+      </sequence>
+    </catchAll>
+  </faultHandlers>
+  <!-- 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+     ORCHESTRATION LOGIC                                               
+     Set of activities coordinating the flow of messages across the    
+     services integrated within this business process                  
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  -->
+  <sequence name="main">
+    <!-- Receive input from requestor. (Note: This maps to operation defined in ar_inbound_bpel.wsdl) -->
+    <receive name="receiveInput"
+             variable="receiveInput_execute_InputVariable" createInstance="yes"
+             partnerLink="arInboundWS" portType="ns6:execute_ptt"
+             operation="execute"/>
+    <assign name="assignCompositeInstanceTitle">
+      <copy>
+        <from expression="ora:setCompositeInstanceTitle(concat('Transaction Number: ',bpws:getVariableData('receiveInput_execute_InputVariable','part1','/ns4:ar_inbound_request/ns4:TRANSACTION_NUMBER'),' Category: ' ,bpws:getVariableData('receiveInput_execute_InputVariable','part1','/ns4:ar_inbound_request/ns4:CATEGORY')))"/>
+        <to variable="compositeInstanceTitle"/>
+      </copy>
+    </assign>
+    <assign name="TransformARData">
+      <bpelx:annotation>
+        <bpelx:pattern>transformation</bpelx:pattern>
+      </bpelx:annotation>
+      <copy>
+        <from expression="ora:doXSLTransformForDoc('xsl/TransformWcToOracle.xsl', $receiveInput_execute_InputVariable.part1)"/>
+        <to variable="Invoke1_invoke_ar_inbound_st_proc_InputVariable"
+            part="InputParameters"/>
+      </copy>
+    </assign>
+    <invoke name="InvokeARInboundStoredproc"
+            inputVariable="Invoke1_invoke_ar_inbound_st_proc_InputVariable"
+            outputVariable="Invoke1_invoke_ar_inbound_st_proc_OutputVariable"
+            partnerLink="invoke_ar_inbound_st_proc"
+            portType="ns2:invoke_ar_inbound_st_proc_ptt"
+            operation="invoke_ar_inbound_st_proc" bpelx:invokeAsDetail="no"/>
+    <switch name="Switch1">
+      <case condition="bpws:getVariableData('Invoke1_invoke_ar_inbound_st_proc_OutputVariable','OutputParameters','/ns3:OutputParameters/ns3:P_TRX_STATUS') = 'S' or bpws:getVariableData('Invoke1_invoke_ar_inbound_st_proc_OutputVariable','OutputParameters','/ns3:OutputParameters/ns3:P_TRX_STATUS')  = 'W'">
+        <bpelx:annotation>
+          <bpelx:general>
+            <bpelx:property name="userLabel">Success</bpelx:property>
+          </bpelx:general>
+        </bpelx:annotation>
+        <sequence>
+          <assign name="AssignSuccessStatus">
+            <copy>
+              <from expression="substring(concat('WC ID loaded: ',bpws:getVariableData('receiveInput_execute_InputVariable','part1','/ns4:ar_inbound_request/ns4:WC_ID')),1,249)"/>
+              <to variable="Reply1_execute_OutputVariable" part="part1"
+                  query="/ns4:ar_inbound_response/ns4:message"/>
+            </copy>
+            <copy>
+              <from expression="'Success'"/>
+              <to variable="Reply1_execute_OutputVariable" part="part1"
+                  query="/ns4:ar_inbound_response/ns4:status"/>
+            </copy>
+          </assign>
+        </sequence>
+      </case>
+      <otherwise>
+        <sequence name="Sequence2">
+          <assign name="AssignProcessExceptionToErrorLog">
+            <copy>
+              <from expression="ora:getProcessId()"/>
+              <to variable="Invoke3_Produce_Message_InputVariable" part="body"
+                  query="/ns5:ODComnErrorStructure/ns5:ODComnErrorStructureList/ns5:ProcessInfo/ns5:ProcessName"/>
+            </copy>
+            <copy>
+              <from expression="concat(ora:getPreference('API_ERROR_DESCRIPTION_TEXT'), bpws:getVariableData('receiveInput_execute_InputVariable','part1','/ns4:ar_inbound_request/ns4:WC_ID'))"/>
+              <to variable="Invoke3_Produce_Message_InputVariable" part="body"
+                  query="/ns5:ODComnErrorStructure/ns5:ODComnErrorStructureList/ns5:ErrorDetails/ns5:ErrorDescription"/>
+            </copy>
+            <copy>
+              <from expression="bpws:getVariableData('Invoke1_invoke_ar_inbound_st_proc_OutputVariable','OutputParameters','/ns3:OutputParameters/ns3:P_TRX_MESSAGE')"/>
+              <to variable="Invoke3_Produce_Message_InputVariable" part="body"
+                  query="/ns5:ODComnErrorStructure/ns5:ODComnErrorStructureList/ns5:ErrorDetails/ns5:ErrorCode"/>
+            </copy>
+            <copy>
+              <from expression="ora:getContentAsString(bpws:getVariableData('receiveInput_execute_InputVariable','part1','/ns4:ar_inbound_request') )"/>
+              <to variable="Invoke3_Produce_Message_InputVariable" part="body"
+                  query="/ns5:ODComnErrorStructure/ns5:ODComnErrorStructureList/ns5:MessageDetails/ns5:MessagePayload"/>
+            </copy>
+            <copy>
+              <from expression="ora:getPreference('API_ERROR_TYPE')"/>
+              <to variable="Invoke3_Produce_Message_InputVariable" part="body"
+                  query="/ns5:ODComnErrorStructure/ns5:ODComnErrorStructureList/ns5:ErrorDetails/ns5:ErrorType"/>
+            </copy>
+            <copy>
+              <from expression="ora:getPreference('API_ERROR_SEVERITY')"/>
+              <to variable="Invoke3_Produce_Message_InputVariable" part="body"
+                  query="/ns5:ODComnErrorStructure/ns5:ODComnErrorStructureList/ns5:ErrorDetails/ns5:ErrorSeverity"/>
+            </copy>
+            <copy>
+              <from expression="ora:getPreference('API_ERROR_TEXT')"/>
+              <to variable="Invoke3_Produce_Message_InputVariable" part="body"
+                  query="/ns5:ODComnErrorStructure/ns5:ODComnErrorStructureList/ns5:ErrorDetails/ns5:ErrorText"/>
+            </copy>
+            <copy>
+              <from expression="ora:getCurrentDateTime()"/>
+              <to variable="Invoke3_Produce_Message_InputVariable" part="body"
+                  query="/ns5:ODComnErrorStructure/ns5:ODComnErrorStructureList/ns5:ErrorDetails/ns5:ErrorDateTime"/>
+            </copy>
+            <copy>
+              <from expression="ora:getPreference('API_PROCESS_STEP')"/>
+              <to variable="Invoke3_Produce_Message_InputVariable" part="body"
+                  query="/ns5:ODComnErrorStructure/ns5:ODComnErrorStructureList/ns5:ErrorDetails/ns5:ProcessStep"/>
+            </copy>
+            <copy>
+              <from expression="ora:getDomainId()"/>
+              <to variable="Invoke3_Produce_Message_InputVariable" part="body"
+                  query="/ns5:ODComnErrorStructure/ns5:ODComnErrorStructureList/ns5:ProcessInfo/ns5:Domain"/>
+            </copy>
+            <copy>
+              <from expression="ora:getCompositeInstanceId()"/>
+              <to variable="Invoke3_Produce_Message_InputVariable" part="body"
+                  query="/ns5:ODComnErrorStructure/ns5:ODComnErrorStructureList/ns5:MessageDetails/ns5:MessageID"/>
+            </copy>
+            <copy>
+              <from expression="ora:getCurrentDateTime()"/>
+              <to variable="Invoke3_Produce_Message_InputVariable" part="body"
+                  query="/ns5:ODComnErrorStructure/ns5:ODComnErrorStructureList/ns5:MessageDetails/ns5:MessageDateTime"/>
+            </copy>
+            <copy>
+              <from expression="ora:getPreference('API_MESSAGE_TYPE')"/>
+              <to variable="Invoke3_Produce_Message_InputVariable" part="body"
+                  query="/ns5:ODComnErrorStructure/ns5:ODComnErrorStructureList/ns5:MessageDetails/ns5:MessageType"/>
+            </copy>
+            <copy>
+              <from expression="ora:getPreference('API_MESSAGE_VERSION')"/>
+              <to variable="Invoke3_Produce_Message_InputVariable" part="body"
+                  query="/ns5:ODComnErrorStructure/ns5:ODComnErrorStructureList/ns5:MessageDetails/ns5:MessageVersion"/>
+            </copy>
+            <copy>
+              <from expression="ora:getPreference('API_MESSAGE_OPERATION')"/>
+              <to variable="Invoke3_Produce_Message_InputVariable" part="body"
+                  query="/ns5:ODComnErrorStructure/ns5:ODComnErrorStructureList/ns5:MessageDetails/ns5:MessageOperation"/>
+            </copy>
+            <copy>
+              <from expression="ora:getPreference('API_SOURCE_SYSTEM_NAME')"/>
+              <to variable="Invoke3_Produce_Message_InputVariable" part="body"
+                  query="/ns5:ODComnErrorStructure/ns5:ODComnErrorStructureList/ns5:MessageDetails/ns5:MessageSourceSystem"/>
+            </copy>
+            <copy>
+              <from expression="ora:getProcessURL()"/>
+              <to variable="Invoke3_Produce_Message_InputVariable" part="body"
+                  query="/ns5:ODComnErrorStructure/ns5:ODComnErrorStructureList/ns5:ProcessInfo/ns5:SystemName"/>
+            </copy>
+          </assign>
+          <invoke name="ProcessExceptionErrorMessage"
+                  inputVariable="Invoke3_Produce_Message_InputVariable"
+                  partnerLink="CommonErrorLoggingService"
+                  portType="ns1:Produce_Message_ptt" operation="Produce_Message"
+                  bpelx:invokeAsDetail="no"/>
+          <assign name="AssignFailedInsert">
+            <copy>
+              <from expression="substring(concat('WC ID: ',bpws:getVariableData('receiveInput_execute_InputVariable','part1','/ns4:ar_inbound_request/ns4:WC_ID'), ' Failed to insert. ',bpws:getVariableData('Invoke1_invoke_ar_inbound_st_proc_OutputVariable','OutputParameters','/ns3:OutputParameters/ns3:P_TRX_MESSAGE')),1,249)"/>
+              <to variable="ReplyFailedInsert_execute_OutputVariable"
+                  part="part1" query="/ns4:ar_inbound_response/ns4:message"/>
+            </copy>
+            <copy>
+              <from expression="'Error'"/>
+              <to variable="ReplyFailedInsert_execute_OutputVariable"
+                  part="part1" query="/ns4:ar_inbound_response/ns4:status"/>
+            </copy>
+          </assign>
+          <reply name="ReplyFailedInsert"
+                 variable="ReplyFailedInsert_execute_OutputVariable"
+                 partnerLink="arInboundWS" portType="ns6:execute_ptt"
+                 operation="execute"/>
+          <terminate name="Terminate2"/>
+        </sequence>
+      </otherwise>
+    </switch>
+    <reply name="Reply" variable="Reply1_execute_OutputVariable"
+           partnerLink="arInboundWS" portType="ns6:execute_ptt"
+           operation="execute"/>
+  </sequence>
+</process>

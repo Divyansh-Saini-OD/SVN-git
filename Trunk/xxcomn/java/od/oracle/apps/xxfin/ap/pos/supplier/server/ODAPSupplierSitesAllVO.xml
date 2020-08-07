@@ -1,0 +1,1214 @@
+<?xml version='1.0' encoding='windows-1252' ?>
+<!DOCTYPE ViewObject SYSTEM "jbo_03_01.dtd">
+
+<ViewObject
+   Name="ODAPSupplierSitesAllVO"
+   BindingStyle="OracleName"
+   CustomQuery="true"
+   RowClass="oracle.apps.fnd.framework.server.OAViewRowImpl"
+   ComponentClass="od.oracle.apps.xxfin.ap.pos.supplier.server.ODAPSupplierSitesAllVOImpl"
+   UseGlueCode="false" >
+   <SQLQuery><![CDATA[
+SELECT ODAPSupplierSitesAllEO.VENDOR_SITE_ID, 
+       ODAPSupplierSitesAllEO.LAST_UPDATE_DATE, 
+       ODAPSupplierSitesAllEO.LAST_UPDATED_BY, 
+       ODAPSupplierSitesAllEO.VENDOR_ID, 
+       ODAPSupplierSitesAllEO.VENDOR_SITE_CODE, 
+       ODAPSupplierSitesAllEO.VENDOR_SITE_CODE_ALT, 
+       ODAPSupplierSitesAllEO.LAST_UPDATE_LOGIN, 
+       ODAPSupplierSitesAllEO.CREATION_DATE, 
+       ODAPSupplierSitesAllEO.CREATED_BY, 
+       ODAPSupplierSitesAllEO.PURCHASING_SITE_FLAG, 
+       ODAPSupplierSitesAllEO.RFQ_ONLY_SITE_FLAG, 
+       ODAPSupplierSitesAllEO.PAY_SITE_FLAG, 
+       ODAPSupplierSitesAllEO.ATTENTION_AR_FLAG, 
+       ODAPSupplierSitesAllEO.ADDRESS_LINE1, 
+       ODAPSupplierSitesAllEO.ADDRESS_LINES_ALT, 
+       ODAPSupplierSitesAllEO.ADDRESS_LINE2, 
+       ODAPSupplierSitesAllEO.ADDRESS_LINE3, 
+       ODAPSupplierSitesAllEO.CITY, 
+       ODAPSupplierSitesAllEO.STATE, 
+       ODAPSupplierSitesAllEO.ZIP, 
+       ODAPSupplierSitesAllEO.PROVINCE, 
+       ODAPSupplierSitesAllEO.COUNTRY, 
+       ODAPSupplierSitesAllEO.AREA_CODE, 
+       ODAPSupplierSitesAllEO.PHONE, 
+       ODAPSupplierSitesAllEO.CUSTOMER_NUM, 
+       ODAPSupplierSitesAllEO.SHIP_TO_LOCATION_ID, 
+       ODAPSupplierSitesAllEO.BILL_TO_LOCATION_ID, 
+       ODAPSupplierSitesAllEO.SHIP_VIA_LOOKUP_CODE, 
+       ODAPSupplierSitesAllEO.FREIGHT_TERMS_LOOKUP_CODE, 
+       ODAPSupplierSitesAllEO.FOB_LOOKUP_CODE, 
+       ODAPSupplierSitesAllEO.INACTIVE_DATE, 
+       ODAPSupplierSitesAllEO.FAX, 
+       ODAPSupplierSitesAllEO.FAX_AREA_CODE, 
+       ODAPSupplierSitesAllEO.TELEX, 
+       ODAPSupplierSitesAllEO.PAYMENT_METHOD_LOOKUP_CODE, 
+       ODAPSupplierSitesAllEO.BANK_ACCOUNT_NAME, 
+       ODAPSupplierSitesAllEO.BANK_ACCOUNT_NUM, 
+       ODAPSupplierSitesAllEO.BANK_NUM, 
+       ODAPSupplierSitesAllEO.BANK_ACCOUNT_TYPE, 
+       ODAPSupplierSitesAllEO.TERMS_DATE_BASIS, 
+       ODAPSupplierSitesAllEO.CURRENT_CATALOG_NUM, 
+       ODAPSupplierSitesAllEO.VAT_CODE, 
+       ODAPSupplierSitesAllEO.DISTRIBUTION_SET_ID, 
+       ODAPSupplierSitesAllEO.ACCTS_PAY_CODE_COMBINATION_ID, 
+       ODAPSupplierSitesAllEO.PREPAY_CODE_COMBINATION_ID, 
+       ODAPSupplierSitesAllEO.PAY_GROUP_LOOKUP_CODE, 
+       ODAPSupplierSitesAllEO.PAYMENT_PRIORITY, 
+       ODAPSupplierSitesAllEO.TERMS_ID, 
+       ODAPSupplierSitesAllEO.INVOICE_AMOUNT_LIMIT, 
+       ODAPSupplierSitesAllEO.PAY_DATE_BASIS_LOOKUP_CODE, 
+       ODAPSupplierSitesAllEO.ALWAYS_TAKE_DISC_FLAG, 
+       ODAPSupplierSitesAllEO.INVOICE_CURRENCY_CODE, 
+       ODAPSupplierSitesAllEO.PAYMENT_CURRENCY_CODE, 
+       ODAPSupplierSitesAllEO.HOLD_ALL_PAYMENTS_FLAG, 
+       ODAPSupplierSitesAllEO.HOLD_FUTURE_PAYMENTS_FLAG, 
+       ODAPSupplierSitesAllEO.HOLD_REASON, 
+       ODAPSupplierSitesAllEO.HOLD_UNMATCHED_INVOICES_FLAG, 
+       ODAPSupplierSitesAllEO.AP_TAX_ROUNDING_RULE, 
+       ODAPSupplierSitesAllEO.AUTO_TAX_CALC_FLAG, 
+       ODAPSupplierSitesAllEO.AUTO_TAX_CALC_OVERRIDE, 
+       ODAPSupplierSitesAllEO.AMOUNT_INCLUDES_TAX_FLAG, 
+       ODAPSupplierSitesAllEO.EXCLUSIVE_PAYMENT_FLAG, 
+       ODAPSupplierSitesAllEO.TAX_REPORTING_SITE_FLAG, 
+       ODAPSupplierSitesAllEO.ATTRIBUTE_CATEGORY, 
+       ODAPSupplierSitesAllEO.ATTRIBUTE1, 
+       ODAPSupplierSitesAllEO.ATTRIBUTE2, 
+       ODAPSupplierSitesAllEO.ATTRIBUTE3, 
+       ODAPSupplierSitesAllEO.ATTRIBUTE4, 
+       ODAPSupplierSitesAllEO.ATTRIBUTE5, 
+       ODAPSupplierSitesAllEO.ATTRIBUTE6, 
+       ODAPSupplierSitesAllEO.ATTRIBUTE7, 
+       ODAPSupplierSitesAllEO.ATTRIBUTE8, 
+       ODAPSupplierSitesAllEO.ATTRIBUTE9, 
+       ODAPSupplierSitesAllEO.ATTRIBUTE10, 
+       ODAPSupplierSitesAllEO.ATTRIBUTE11, 
+       ODAPSupplierSitesAllEO.ATTRIBUTE12, 
+       ODAPSupplierSitesAllEO.ATTRIBUTE13, 
+       ODAPSupplierSitesAllEO.ATTRIBUTE14, 
+       ODAPSupplierSitesAllEO.ATTRIBUTE15, 
+       ODAPSupplierSitesAllEO.REQUEST_ID, 
+       ODAPSupplierSitesAllEO.PROGRAM_APPLICATION_ID, 
+       ODAPSupplierSitesAllEO.PROGRAM_ID, 
+       ODAPSupplierSitesAllEO.PROGRAM_UPDATE_DATE, 
+       ODAPSupplierSitesAllEO.VALIDATION_NUMBER, 
+       ODAPSupplierSitesAllEO.EXCLUDE_FREIGHT_FROM_DISCOUNT, 
+       ODAPSupplierSitesAllEO.VAT_REGISTRATION_NUM, 
+       ODAPSupplierSitesAllEO.OFFSET_VAT_CODE, 
+       ODAPSupplierSitesAllEO.ORG_ID, 
+       ODAPSupplierSitesAllEO.CHECK_DIGITS, 
+       ODAPSupplierSitesAllEO.BANK_NUMBER, 
+       ODAPSupplierSitesAllEO.ADDRESS_LINE4, 
+       ODAPSupplierSitesAllEO.COUNTY, 
+       ODAPSupplierSitesAllEO.ADDRESS_STYLE, 
+       ODAPSupplierSitesAllEO.LANGUAGE, 
+       ODAPSupplierSitesAllEO.ALLOW_AWT_FLAG, 
+       ODAPSupplierSitesAllEO.AWT_GROUP_ID, 
+       ODAPSupplierSitesAllEO.GLOBAL_ATTRIBUTE1, 
+       ODAPSupplierSitesAllEO.GLOBAL_ATTRIBUTE2, 
+       ODAPSupplierSitesAllEO.GLOBAL_ATTRIBUTE3, 
+       ODAPSupplierSitesAllEO.GLOBAL_ATTRIBUTE4, 
+       ODAPSupplierSitesAllEO.GLOBAL_ATTRIBUTE5, 
+       ODAPSupplierSitesAllEO.GLOBAL_ATTRIBUTE6, 
+       ODAPSupplierSitesAllEO.GLOBAL_ATTRIBUTE7, 
+       ODAPSupplierSitesAllEO.GLOBAL_ATTRIBUTE8, 
+       ODAPSupplierSitesAllEO.GLOBAL_ATTRIBUTE9, 
+       ODAPSupplierSitesAllEO.GLOBAL_ATTRIBUTE10, 
+       ODAPSupplierSitesAllEO.GLOBAL_ATTRIBUTE11, 
+       ODAPSupplierSitesAllEO.GLOBAL_ATTRIBUTE12, 
+       ODAPSupplierSitesAllEO.GLOBAL_ATTRIBUTE13, 
+       ODAPSupplierSitesAllEO.GLOBAL_ATTRIBUTE14, 
+       ODAPSupplierSitesAllEO.GLOBAL_ATTRIBUTE15, 
+       ODAPSupplierSitesAllEO.GLOBAL_ATTRIBUTE16, 
+       ODAPSupplierSitesAllEO.GLOBAL_ATTRIBUTE17, 
+       ODAPSupplierSitesAllEO.GLOBAL_ATTRIBUTE18, 
+       ODAPSupplierSitesAllEO.GLOBAL_ATTRIBUTE19, 
+       ODAPSupplierSitesAllEO.GLOBAL_ATTRIBUTE20, 
+       ODAPSupplierSitesAllEO.GLOBAL_ATTRIBUTE_CATEGORY, 
+       ODAPSupplierSitesAllEO.EDI_TRANSACTION_HANDLING, 
+       ODAPSupplierSitesAllEO.EDI_ID_NUMBER, 
+       ODAPSupplierSitesAllEO.EDI_PAYMENT_METHOD, 
+       ODAPSupplierSitesAllEO.EDI_PAYMENT_FORMAT, 
+       ODAPSupplierSitesAllEO.EDI_REMITTANCE_METHOD, 
+       ODAPSupplierSitesAllEO.BANK_CHARGE_BEARER, 
+       ODAPSupplierSitesAllEO.EDI_REMITTANCE_INSTRUCTION, 
+       ODAPSupplierSitesAllEO.BANK_BRANCH_TYPE, 
+       ODAPSupplierSitesAllEO.PAY_ON_CODE, 
+       ODAPSupplierSitesAllEO.DEFAULT_PAY_SITE_ID, 
+       ODAPSupplierSitesAllEO.PAY_ON_RECEIPT_SUMMARY_CODE, 
+       ODAPSupplierSitesAllEO.TP_HEADER_ID, 
+       ODAPSupplierSitesAllEO.ECE_TP_LOCATION_CODE, 
+       ODAPSupplierSitesAllEO.PCARD_SITE_FLAG, 
+       ODAPSupplierSitesAllEO.MATCH_OPTION, 
+       ODAPSupplierSitesAllEO.COUNTRY_OF_ORIGIN_CODE, 
+       ODAPSupplierSitesAllEO.FUTURE_DATED_PAYMENT_CCID, 
+       ODAPSupplierSitesAllEO.CREATE_DEBIT_MEMO_FLAG, 
+       ODAPSupplierSitesAllEO.OFFSET_TAX_FLAG, 
+       ODAPSupplierSitesAllEO.SUPPLIER_NOTIF_METHOD, 
+       ODAPSupplierSitesAllEO.EMAIL_ADDRESS, 
+       ODAPSupplierSitesAllEO.REMITTANCE_EMAIL, 
+       ODAPSupplierSitesAllEO.PRIMARY_PAY_SITE_FLAG, 
+       ODAPSupplierSitesAllEO.SHIPPING_CONTROL, 
+       ODAPSupplierSitesAllEO.SELLING_COMPANY_IDENTIFIER, 
+       ODAPSupplierSitesAllEO.GAPLESS_INV_NUM_FLAG, 
+       ODAPSupplierSitesAllEO.DUNS_NUMBER, 
+       ODAPSupplierSitesAllEO.TOLERANCE_ID, 
+       ODAPSupplierSitesAllEO.LOCATION_ID, 
+       ODAPSupplierSitesAllEO.PARTY_SITE_ID, 
+       ODAPSupplierSitesAllEO.SERVICES_TOLERANCE_ID, 
+       ODAPSupplierSitesAllEO.RETAINAGE_RATE, 
+       ODAPSupplierSitesAllEO.TCA_SYNC_STATE, 
+       ODAPSupplierSitesAllEO.TCA_SYNC_PROVINCE, 
+       ODAPSupplierSitesAllEO.TCA_SYNC_COUNTY, 
+       ODAPSupplierSitesAllEO.TCA_SYNC_CITY, 
+       ODAPSupplierSitesAllEO.TCA_SYNC_ZIP, 
+       ODAPSupplierSitesAllEO.TCA_SYNC_COUNTRY, 
+       ODAPSupplierSitesAllEO.PAY_AWT_GROUP_ID, 
+       ODAPSupplierSitesAllEO.CAGE_CODE, 
+       ODAPSupplierSitesAllEO.LEGAL_BUSINESS_NAME, 
+       ODAPSupplierSitesAllEO.DOING_BUS_AS_NAME, 
+       ODAPSupplierSitesAllEO.DIVISION_NAME, 
+       ODAPSupplierSitesAllEO.SMALL_BUSINESS_CODE, 
+       ODAPSupplierSitesAllEO.CCR_COMMENTS, 
+       ODAPSupplierSitesAllEO.DEBARMENT_START_DATE, 
+       ODAPSupplierSitesAllEO.DEBARMENT_END_DATE,
+       apsup.VENDOR_NAME,
+       apsup.segment1
+FROM AP_SUPPLIER_SITES_ALL ODAPSupplierSitesAllEO, 
+     AP_SUPPLIERS          apsup
+WHERE apsup.vendor_id = ODAPSupplierSitesAllEO.vendor_id
+and  ODAPSupplierSitesAllEO.VENDOR_SITE_ID = :1
+   ]]></SQLQuery>
+   <DesignTime>
+      <Attr Name="_isExpertMode" Value="true" />
+      <Attr Name="_version" Value="10.1.3.41.57" />
+      <Attr Name="_codeGenFlag2" Value="Access|Coll|VarAccess" />
+   </DesignTime>
+   <EntityUsage
+      Name="ODAPSupplierSitesAllEO"
+      Entity="od.oracle.apps.xxfin.ap.pos.supplier.server.ODAPSupplierSitesAllEO" >
+      <DesignTime>
+         <Attr Name="_queryClause" Value="true" />
+         <Attr Name="_queryWhere" Value="VENDOR_SITE_ID = :1" />
+      </DesignTime>
+   </EntityUsage>
+   <ViewAttribute
+      Name="VendorSiteId"
+      IsNotNull="true"
+      EntityAttrName="VendorSiteId"
+      EntityUsage="ODAPSupplierSitesAllEO"
+      AliasName="VENDOR_SITE_ID" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="LastUpdateDate"
+      IsNotNull="true"
+      EntityAttrName="LastUpdateDate"
+      EntityUsage="ODAPSupplierSitesAllEO"
+      AliasName="LAST_UPDATE_DATE" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="LastUpdatedBy"
+      IsNotNull="true"
+      EntityAttrName="LastUpdatedBy"
+      EntityUsage="ODAPSupplierSitesAllEO"
+      AliasName="LAST_UPDATED_BY" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="VendorId"
+      IsNotNull="true"
+      EntityAttrName="VendorId"
+      EntityUsage="ODAPSupplierSitesAllEO"
+      AliasName="VENDOR_ID" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="VendorSiteCode"
+      IsNotNull="true"
+      EntityAttrName="VendorSiteCode"
+      EntityUsage="ODAPSupplierSitesAllEO"
+      AliasName="VENDOR_SITE_CODE" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="VendorSiteCodeAlt"
+      EntityAttrName="VendorSiteCodeAlt"
+      EntityUsage="ODAPSupplierSitesAllEO"
+      AliasName="VENDOR_SITE_CODE_ALT" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="LastUpdateLogin"
+      EntityAttrName="LastUpdateLogin"
+      EntityUsage="ODAPSupplierSitesAllEO"
+      AliasName="LAST_UPDATE_LOGIN" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="CreationDate"
+      IsNotNull="true"
+      EntityAttrName="CreationDate"
+      EntityUsage="ODAPSupplierSitesAllEO"
+      AliasName="CREATION_DATE" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="CreatedBy"
+      IsNotNull="true"
+      EntityAttrName="CreatedBy"
+      EntityUsage="ODAPSupplierSitesAllEO"
+      AliasName="CREATED_BY" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="PurchasingSiteFlag"
+      EntityAttrName="PurchasingSiteFlag"
+      EntityUsage="ODAPSupplierSitesAllEO"
+      AliasName="PURCHASING_SITE_FLAG" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="RfqOnlySiteFlag"
+      EntityAttrName="RfqOnlySiteFlag"
+      EntityUsage="ODAPSupplierSitesAllEO"
+      AliasName="RFQ_ONLY_SITE_FLAG" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="PaySiteFlag"
+      EntityAttrName="PaySiteFlag"
+      EntityUsage="ODAPSupplierSitesAllEO"
+      AliasName="PAY_SITE_FLAG" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="AttentionArFlag"
+      EntityAttrName="AttentionArFlag"
+      EntityUsage="ODAPSupplierSitesAllEO"
+      AliasName="ATTENTION_AR_FLAG" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="AddressLine1"
+      EntityAttrName="AddressLine1"
+      EntityUsage="ODAPSupplierSitesAllEO"
+      AliasName="ADDRESS_LINE1" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="AddressLinesAlt"
+      EntityAttrName="AddressLinesAlt"
+      EntityUsage="ODAPSupplierSitesAllEO"
+      AliasName="ADDRESS_LINES_ALT" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="AddressLine2"
+      EntityAttrName="AddressLine2"
+      EntityUsage="ODAPSupplierSitesAllEO"
+      AliasName="ADDRESS_LINE2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="AddressLine3"
+      EntityAttrName="AddressLine3"
+      EntityUsage="ODAPSupplierSitesAllEO"
+      AliasName="ADDRESS_LINE3" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="City"
+      EntityAttrName="City"
+      EntityUsage="ODAPSupplierSitesAllEO"
+      AliasName="CITY" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="State"
+      EntityAttrName="State"
+      EntityUsage="ODAPSupplierSitesAllEO"
+      AliasName="STATE" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Zip"
+      EntityAttrName="Zip"
+      EntityUsage="ODAPSupplierSitesAllEO"
+      AliasName="ZIP" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Province"
+      EntityAttrName="Province"
+      EntityUsage="ODAPSupplierSitesAllEO"
+      AliasName="PROVINCE" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Country"
+      EntityAttrName="Country"
+      EntityUsage="ODAPSupplierSitesAllEO"
+      AliasName="COUNTRY" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="AreaCode"
+      EntityAttrName="AreaCode"
+      EntityUsage="ODAPSupplierSitesAllEO"
+      AliasName="AREA_CODE" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Phone"
+      EntityAttrName="Phone"
+      EntityUsage="ODAPSupplierSitesAllEO"
+      AliasName="PHONE" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="CustomerNum"
+      EntityAttrName="CustomerNum"
+      EntityUsage="ODAPSupplierSitesAllEO"
+      AliasName="CUSTOMER_NUM" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="ShipToLocationId"
+      EntityAttrName="ShipToLocationId"
+      EntityUsage="ODAPSupplierSitesAllEO"
+      AliasName="SHIP_TO_LOCATION_ID" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="BillToLocationId"
+      EntityAttrName="BillToLocationId"
+      EntityUsage="ODAPSupplierSitesAllEO"
+      AliasName="BILL_TO_LOCATION_ID" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="ShipViaLookupCode"
+      EntityAttrName="ShipViaLookupCode"
+      EntityUsage="ODAPSupplierSitesAllEO"
+      AliasName="SHIP_VIA_LOOKUP_CODE" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="FreightTermsLookupCode"
+      EntityAttrName="FreightTermsLookupCode"
+      EntityUsage="ODAPSupplierSitesAllEO"
+      AliasName="FREIGHT_TERMS_LOOKUP_CODE" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="FobLookupCode"
+      EntityAttrName="FobLookupCode"
+      EntityUsage="ODAPSupplierSitesAllEO"
+      AliasName="FOB_LOOKUP_CODE" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="InactiveDate"
+      EntityAttrName="InactiveDate"
+      EntityUsage="ODAPSupplierSitesAllEO"
+      AliasName="INACTIVE_DATE" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Fax"
+      EntityAttrName="Fax"
+      EntityUsage="ODAPSupplierSitesAllEO"
+      AliasName="FAX" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="FaxAreaCode"
+      EntityAttrName="FaxAreaCode"
+      EntityUsage="ODAPSupplierSitesAllEO"
+      AliasName="FAX_AREA_CODE" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Telex"
+      EntityAttrName="Telex"
+      EntityUsage="ODAPSupplierSitesAllEO"
+      AliasName="TELEX" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="PaymentMethodLookupCode"
+      EntityAttrName="PaymentMethodLookupCode"
+      EntityUsage="ODAPSupplierSitesAllEO"
+      AliasName="PAYMENT_METHOD_LOOKUP_CODE" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="BankAccountName"
+      EntityAttrName="BankAccountName"
+      EntityUsage="ODAPSupplierSitesAllEO"
+      AliasName="BANK_ACCOUNT_NAME" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="BankAccountNum"
+      EntityAttrName="BankAccountNum"
+      EntityUsage="ODAPSupplierSitesAllEO"
+      AliasName="BANK_ACCOUNT_NUM" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="BankNum"
+      EntityAttrName="BankNum"
+      EntityUsage="ODAPSupplierSitesAllEO"
+      AliasName="BANK_NUM" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="BankAccountType"
+      EntityAttrName="BankAccountType"
+      EntityUsage="ODAPSupplierSitesAllEO"
+      AliasName="BANK_ACCOUNT_TYPE" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="TermsDateBasis"
+      EntityAttrName="TermsDateBasis"
+      EntityUsage="ODAPSupplierSitesAllEO"
+      AliasName="TERMS_DATE_BASIS" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="CurrentCatalogNum"
+      EntityAttrName="CurrentCatalogNum"
+      EntityUsage="ODAPSupplierSitesAllEO"
+      AliasName="CURRENT_CATALOG_NUM" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="VatCode"
+      EntityAttrName="VatCode"
+      EntityUsage="ODAPSupplierSitesAllEO"
+      AliasName="VAT_CODE" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="DistributionSetId"
+      EntityAttrName="DistributionSetId"
+      EntityUsage="ODAPSupplierSitesAllEO"
+      AliasName="DISTRIBUTION_SET_ID" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="AcctsPayCodeCombinationId"
+      EntityAttrName="AcctsPayCodeCombinationId"
+      EntityUsage="ODAPSupplierSitesAllEO"
+      AliasName="ACCTS_PAY_CODE_COMBINATION_ID" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="PrepayCodeCombinationId"
+      EntityAttrName="PrepayCodeCombinationId"
+      EntityUsage="ODAPSupplierSitesAllEO"
+      AliasName="PREPAY_CODE_COMBINATION_ID" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="PayGroupLookupCode"
+      EntityAttrName="PayGroupLookupCode"
+      EntityUsage="ODAPSupplierSitesAllEO"
+      AliasName="PAY_GROUP_LOOKUP_CODE" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="PaymentPriority"
+      EntityAttrName="PaymentPriority"
+      EntityUsage="ODAPSupplierSitesAllEO"
+      AliasName="PAYMENT_PRIORITY" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="TermsId"
+      EntityAttrName="TermsId"
+      EntityUsage="ODAPSupplierSitesAllEO"
+      AliasName="TERMS_ID" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="InvoiceAmountLimit"
+      EntityAttrName="InvoiceAmountLimit"
+      EntityUsage="ODAPSupplierSitesAllEO"
+      AliasName="INVOICE_AMOUNT_LIMIT" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="PayDateBasisLookupCode"
+      EntityAttrName="PayDateBasisLookupCode"
+      EntityUsage="ODAPSupplierSitesAllEO"
+      AliasName="PAY_DATE_BASIS_LOOKUP_CODE" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="AlwaysTakeDiscFlag"
+      EntityAttrName="AlwaysTakeDiscFlag"
+      EntityUsage="ODAPSupplierSitesAllEO"
+      AliasName="ALWAYS_TAKE_DISC_FLAG" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="InvoiceCurrencyCode"
+      EntityAttrName="InvoiceCurrencyCode"
+      EntityUsage="ODAPSupplierSitesAllEO"
+      AliasName="INVOICE_CURRENCY_CODE" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="PaymentCurrencyCode"
+      EntityAttrName="PaymentCurrencyCode"
+      EntityUsage="ODAPSupplierSitesAllEO"
+      AliasName="PAYMENT_CURRENCY_CODE" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="HoldAllPaymentsFlag"
+      EntityAttrName="HoldAllPaymentsFlag"
+      EntityUsage="ODAPSupplierSitesAllEO"
+      AliasName="HOLD_ALL_PAYMENTS_FLAG" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="HoldFuturePaymentsFlag"
+      EntityAttrName="HoldFuturePaymentsFlag"
+      EntityUsage="ODAPSupplierSitesAllEO"
+      AliasName="HOLD_FUTURE_PAYMENTS_FLAG" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="HoldReason"
+      EntityAttrName="HoldReason"
+      EntityUsage="ODAPSupplierSitesAllEO"
+      AliasName="HOLD_REASON" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="HoldUnmatchedInvoicesFlag"
+      EntityAttrName="HoldUnmatchedInvoicesFlag"
+      EntityUsage="ODAPSupplierSitesAllEO"
+      AliasName="HOLD_UNMATCHED_INVOICES_FLAG" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="ApTaxRoundingRule"
+      EntityAttrName="ApTaxRoundingRule"
+      EntityUsage="ODAPSupplierSitesAllEO"
+      AliasName="AP_TAX_ROUNDING_RULE" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="AutoTaxCalcFlag"
+      EntityAttrName="AutoTaxCalcFlag"
+      EntityUsage="ODAPSupplierSitesAllEO"
+      AliasName="AUTO_TAX_CALC_FLAG" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="AutoTaxCalcOverride"
+      EntityAttrName="AutoTaxCalcOverride"
+      EntityUsage="ODAPSupplierSitesAllEO"
+      AliasName="AUTO_TAX_CALC_OVERRIDE" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="AmountIncludesTaxFlag"
+      EntityAttrName="AmountIncludesTaxFlag"
+      EntityUsage="ODAPSupplierSitesAllEO"
+      AliasName="AMOUNT_INCLUDES_TAX_FLAG" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="ExclusivePaymentFlag"
+      EntityAttrName="ExclusivePaymentFlag"
+      EntityUsage="ODAPSupplierSitesAllEO"
+      AliasName="EXCLUSIVE_PAYMENT_FLAG" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="TaxReportingSiteFlag"
+      EntityAttrName="TaxReportingSiteFlag"
+      EntityUsage="ODAPSupplierSitesAllEO"
+      AliasName="TAX_REPORTING_SITE_FLAG" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="AttributeCategory"
+      EntityAttrName="AttributeCategory"
+      EntityUsage="ODAPSupplierSitesAllEO"
+      AliasName="ATTRIBUTE_CATEGORY" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Attribute1"
+      EntityAttrName="Attribute1"
+      EntityUsage="ODAPSupplierSitesAllEO"
+      AliasName="ATTRIBUTE1" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Attribute2"
+      EntityAttrName="Attribute2"
+      EntityUsage="ODAPSupplierSitesAllEO"
+      AliasName="ATTRIBUTE2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Attribute3"
+      EntityAttrName="Attribute3"
+      EntityUsage="ODAPSupplierSitesAllEO"
+      AliasName="ATTRIBUTE3" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Attribute4"
+      EntityAttrName="Attribute4"
+      EntityUsage="ODAPSupplierSitesAllEO"
+      AliasName="ATTRIBUTE4" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Attribute5"
+      EntityAttrName="Attribute5"
+      EntityUsage="ODAPSupplierSitesAllEO"
+      AliasName="ATTRIBUTE5" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Attribute6"
+      EntityAttrName="Attribute6"
+      EntityUsage="ODAPSupplierSitesAllEO"
+      AliasName="ATTRIBUTE6" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Attribute7"
+      EntityAttrName="Attribute7"
+      EntityUsage="ODAPSupplierSitesAllEO"
+      AliasName="ATTRIBUTE7" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Attribute8"
+      EntityAttrName="Attribute8"
+      EntityUsage="ODAPSupplierSitesAllEO"
+      AliasName="ATTRIBUTE8" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Attribute9"
+      EntityAttrName="Attribute9"
+      EntityUsage="ODAPSupplierSitesAllEO"
+      AliasName="ATTRIBUTE9" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Attribute10"
+      EntityAttrName="Attribute10"
+      EntityUsage="ODAPSupplierSitesAllEO"
+      AliasName="ATTRIBUTE10" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Attribute11"
+      EntityAttrName="Attribute11"
+      EntityUsage="ODAPSupplierSitesAllEO"
+      AliasName="ATTRIBUTE11" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Attribute12"
+      EntityAttrName="Attribute12"
+      EntityUsage="ODAPSupplierSitesAllEO"
+      AliasName="ATTRIBUTE12" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Attribute13"
+      EntityAttrName="Attribute13"
+      EntityUsage="ODAPSupplierSitesAllEO"
+      AliasName="ATTRIBUTE13" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Attribute14"
+      EntityAttrName="Attribute14"
+      EntityUsage="ODAPSupplierSitesAllEO"
+      AliasName="ATTRIBUTE14" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Attribute15"
+      EntityAttrName="Attribute15"
+      EntityUsage="ODAPSupplierSitesAllEO"
+      AliasName="ATTRIBUTE15" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="RequestId"
+      EntityAttrName="RequestId"
+      EntityUsage="ODAPSupplierSitesAllEO"
+      AliasName="REQUEST_ID" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="ProgramApplicationId"
+      EntityAttrName="ProgramApplicationId"
+      EntityUsage="ODAPSupplierSitesAllEO"
+      AliasName="PROGRAM_APPLICATION_ID" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="ProgramId"
+      EntityAttrName="ProgramId"
+      EntityUsage="ODAPSupplierSitesAllEO"
+      AliasName="PROGRAM_ID" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="ProgramUpdateDate"
+      EntityAttrName="ProgramUpdateDate"
+      EntityUsage="ODAPSupplierSitesAllEO"
+      AliasName="PROGRAM_UPDATE_DATE" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="ValidationNumber"
+      EntityAttrName="ValidationNumber"
+      EntityUsage="ODAPSupplierSitesAllEO"
+      AliasName="VALIDATION_NUMBER" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="ExcludeFreightFromDiscount"
+      EntityAttrName="ExcludeFreightFromDiscount"
+      EntityUsage="ODAPSupplierSitesAllEO"
+      AliasName="EXCLUDE_FREIGHT_FROM_DISCOUNT" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="VatRegistrationNum"
+      EntityAttrName="VatRegistrationNum"
+      EntityUsage="ODAPSupplierSitesAllEO"
+      AliasName="VAT_REGISTRATION_NUM" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="OffsetVatCode"
+      EntityAttrName="OffsetVatCode"
+      EntityUsage="ODAPSupplierSitesAllEO"
+      AliasName="OFFSET_VAT_CODE" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="OrgId"
+      EntityAttrName="OrgId"
+      EntityUsage="ODAPSupplierSitesAllEO"
+      AliasName="ORG_ID" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="CheckDigits"
+      EntityAttrName="CheckDigits"
+      EntityUsage="ODAPSupplierSitesAllEO"
+      AliasName="CHECK_DIGITS" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="BankNumber"
+      EntityAttrName="BankNumber"
+      EntityUsage="ODAPSupplierSitesAllEO"
+      AliasName="BANK_NUMBER" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="AddressLine4"
+      EntityAttrName="AddressLine4"
+      EntityUsage="ODAPSupplierSitesAllEO"
+      AliasName="ADDRESS_LINE4" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="County"
+      EntityAttrName="County"
+      EntityUsage="ODAPSupplierSitesAllEO"
+      AliasName="COUNTY" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="AddressStyle"
+      EntityAttrName="AddressStyle"
+      EntityUsage="ODAPSupplierSitesAllEO"
+      AliasName="ADDRESS_STYLE" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Language"
+      EntityAttrName="Language"
+      EntityUsage="ODAPSupplierSitesAllEO"
+      AliasName="LANGUAGE" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="AllowAwtFlag"
+      EntityAttrName="AllowAwtFlag"
+      EntityUsage="ODAPSupplierSitesAllEO"
+      AliasName="ALLOW_AWT_FLAG" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="AwtGroupId"
+      EntityAttrName="AwtGroupId"
+      EntityUsage="ODAPSupplierSitesAllEO"
+      AliasName="AWT_GROUP_ID" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="GlobalAttribute1"
+      EntityAttrName="GlobalAttribute1"
+      EntityUsage="ODAPSupplierSitesAllEO"
+      AliasName="GLOBAL_ATTRIBUTE1" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="GlobalAttribute2"
+      EntityAttrName="GlobalAttribute2"
+      EntityUsage="ODAPSupplierSitesAllEO"
+      AliasName="GLOBAL_ATTRIBUTE2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="GlobalAttribute3"
+      EntityAttrName="GlobalAttribute3"
+      EntityUsage="ODAPSupplierSitesAllEO"
+      AliasName="GLOBAL_ATTRIBUTE3" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="GlobalAttribute4"
+      EntityAttrName="GlobalAttribute4"
+      EntityUsage="ODAPSupplierSitesAllEO"
+      AliasName="GLOBAL_ATTRIBUTE4" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="GlobalAttribute5"
+      EntityAttrName="GlobalAttribute5"
+      EntityUsage="ODAPSupplierSitesAllEO"
+      AliasName="GLOBAL_ATTRIBUTE5" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="GlobalAttribute6"
+      EntityAttrName="GlobalAttribute6"
+      EntityUsage="ODAPSupplierSitesAllEO"
+      AliasName="GLOBAL_ATTRIBUTE6" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="GlobalAttribute7"
+      EntityAttrName="GlobalAttribute7"
+      EntityUsage="ODAPSupplierSitesAllEO"
+      AliasName="GLOBAL_ATTRIBUTE7" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="GlobalAttribute8"
+      EntityAttrName="GlobalAttribute8"
+      EntityUsage="ODAPSupplierSitesAllEO"
+      AliasName="GLOBAL_ATTRIBUTE8" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="GlobalAttribute9"
+      EntityAttrName="GlobalAttribute9"
+      EntityUsage="ODAPSupplierSitesAllEO"
+      AliasName="GLOBAL_ATTRIBUTE9" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="GlobalAttribute10"
+      EntityAttrName="GlobalAttribute10"
+      EntityUsage="ODAPSupplierSitesAllEO"
+      AliasName="GLOBAL_ATTRIBUTE10" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="GlobalAttribute11"
+      EntityAttrName="GlobalAttribute11"
+      EntityUsage="ODAPSupplierSitesAllEO"
+      AliasName="GLOBAL_ATTRIBUTE11" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="GlobalAttribute12"
+      EntityAttrName="GlobalAttribute12"
+      EntityUsage="ODAPSupplierSitesAllEO"
+      AliasName="GLOBAL_ATTRIBUTE12" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="GlobalAttribute13"
+      EntityAttrName="GlobalAttribute13"
+      EntityUsage="ODAPSupplierSitesAllEO"
+      AliasName="GLOBAL_ATTRIBUTE13" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="GlobalAttribute14"
+      EntityAttrName="GlobalAttribute14"
+      EntityUsage="ODAPSupplierSitesAllEO"
+      AliasName="GLOBAL_ATTRIBUTE14" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="GlobalAttribute15"
+      EntityAttrName="GlobalAttribute15"
+      EntityUsage="ODAPSupplierSitesAllEO"
+      AliasName="GLOBAL_ATTRIBUTE15" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="GlobalAttribute16"
+      EntityAttrName="GlobalAttribute16"
+      EntityUsage="ODAPSupplierSitesAllEO"
+      AliasName="GLOBAL_ATTRIBUTE16" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="GlobalAttribute17"
+      EntityAttrName="GlobalAttribute17"
+      EntityUsage="ODAPSupplierSitesAllEO"
+      AliasName="GLOBAL_ATTRIBUTE17" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="GlobalAttribute18"
+      EntityAttrName="GlobalAttribute18"
+      EntityUsage="ODAPSupplierSitesAllEO"
+      AliasName="GLOBAL_ATTRIBUTE18" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="GlobalAttribute19"
+      EntityAttrName="GlobalAttribute19"
+      EntityUsage="ODAPSupplierSitesAllEO"
+      AliasName="GLOBAL_ATTRIBUTE19" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="GlobalAttribute20"
+      EntityAttrName="GlobalAttribute20"
+      EntityUsage="ODAPSupplierSitesAllEO"
+      AliasName="GLOBAL_ATTRIBUTE20" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="GlobalAttributeCategory"
+      EntityAttrName="GlobalAttributeCategory"
+      EntityUsage="ODAPSupplierSitesAllEO"
+      AliasName="GLOBAL_ATTRIBUTE_CATEGORY" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="EdiTransactionHandling"
+      EntityAttrName="EdiTransactionHandling"
+      EntityUsage="ODAPSupplierSitesAllEO"
+      AliasName="EDI_TRANSACTION_HANDLING" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="EdiIdNumber"
+      EntityAttrName="EdiIdNumber"
+      EntityUsage="ODAPSupplierSitesAllEO"
+      AliasName="EDI_ID_NUMBER" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="EdiPaymentMethod"
+      EntityAttrName="EdiPaymentMethod"
+      EntityUsage="ODAPSupplierSitesAllEO"
+      AliasName="EDI_PAYMENT_METHOD" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="EdiPaymentFormat"
+      EntityAttrName="EdiPaymentFormat"
+      EntityUsage="ODAPSupplierSitesAllEO"
+      AliasName="EDI_PAYMENT_FORMAT" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="EdiRemittanceMethod"
+      EntityAttrName="EdiRemittanceMethod"
+      EntityUsage="ODAPSupplierSitesAllEO"
+      AliasName="EDI_REMITTANCE_METHOD" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="BankChargeBearer"
+      EntityAttrName="BankChargeBearer"
+      EntityUsage="ODAPSupplierSitesAllEO"
+      AliasName="BANK_CHARGE_BEARER" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="EdiRemittanceInstruction"
+      EntityAttrName="EdiRemittanceInstruction"
+      EntityUsage="ODAPSupplierSitesAllEO"
+      AliasName="EDI_REMITTANCE_INSTRUCTION" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="BankBranchType"
+      EntityAttrName="BankBranchType"
+      EntityUsage="ODAPSupplierSitesAllEO"
+      AliasName="BANK_BRANCH_TYPE" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="PayOnCode"
+      EntityAttrName="PayOnCode"
+      EntityUsage="ODAPSupplierSitesAllEO"
+      AliasName="PAY_ON_CODE" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="DefaultPaySiteId"
+      EntityAttrName="DefaultPaySiteId"
+      EntityUsage="ODAPSupplierSitesAllEO"
+      AliasName="DEFAULT_PAY_SITE_ID" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="PayOnReceiptSummaryCode"
+      EntityAttrName="PayOnReceiptSummaryCode"
+      EntityUsage="ODAPSupplierSitesAllEO"
+      AliasName="PAY_ON_RECEIPT_SUMMARY_CODE" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="TpHeaderId"
+      EntityAttrName="TpHeaderId"
+      EntityUsage="ODAPSupplierSitesAllEO"
+      AliasName="TP_HEADER_ID" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="EceTpLocationCode"
+      EntityAttrName="EceTpLocationCode"
+      EntityUsage="ODAPSupplierSitesAllEO"
+      AliasName="ECE_TP_LOCATION_CODE" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="PcardSiteFlag"
+      EntityAttrName="PcardSiteFlag"
+      EntityUsage="ODAPSupplierSitesAllEO"
+      AliasName="PCARD_SITE_FLAG" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="MatchOption"
+      EntityAttrName="MatchOption"
+      EntityUsage="ODAPSupplierSitesAllEO"
+      AliasName="MATCH_OPTION" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="CountryOfOriginCode"
+      EntityAttrName="CountryOfOriginCode"
+      EntityUsage="ODAPSupplierSitesAllEO"
+      AliasName="COUNTRY_OF_ORIGIN_CODE" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="FutureDatedPaymentCcid"
+      EntityAttrName="FutureDatedPaymentCcid"
+      EntityUsage="ODAPSupplierSitesAllEO"
+      AliasName="FUTURE_DATED_PAYMENT_CCID" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="CreateDebitMemoFlag"
+      EntityAttrName="CreateDebitMemoFlag"
+      EntityUsage="ODAPSupplierSitesAllEO"
+      AliasName="CREATE_DEBIT_MEMO_FLAG" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="OffsetTaxFlag"
+      EntityAttrName="OffsetTaxFlag"
+      EntityUsage="ODAPSupplierSitesAllEO"
+      AliasName="OFFSET_TAX_FLAG" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="SupplierNotifMethod"
+      EntityAttrName="SupplierNotifMethod"
+      EntityUsage="ODAPSupplierSitesAllEO"
+      AliasName="SUPPLIER_NOTIF_METHOD" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="EmailAddress"
+      EntityAttrName="EmailAddress"
+      EntityUsage="ODAPSupplierSitesAllEO"
+      AliasName="EMAIL_ADDRESS" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="RemittanceEmail"
+      EntityAttrName="RemittanceEmail"
+      EntityUsage="ODAPSupplierSitesAllEO"
+      AliasName="REMITTANCE_EMAIL" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="PrimaryPaySiteFlag"
+      EntityAttrName="PrimaryPaySiteFlag"
+      EntityUsage="ODAPSupplierSitesAllEO"
+      AliasName="PRIMARY_PAY_SITE_FLAG" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="ShippingControl"
+      EntityAttrName="ShippingControl"
+      EntityUsage="ODAPSupplierSitesAllEO"
+      AliasName="SHIPPING_CONTROL" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="SellingCompanyIdentifier"
+      EntityAttrName="SellingCompanyIdentifier"
+      EntityUsage="ODAPSupplierSitesAllEO"
+      AliasName="SELLING_COMPANY_IDENTIFIER" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="GaplessInvNumFlag"
+      EntityAttrName="GaplessInvNumFlag"
+      EntityUsage="ODAPSupplierSitesAllEO"
+      AliasName="GAPLESS_INV_NUM_FLAG" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="DunsNumber"
+      EntityAttrName="DunsNumber"
+      EntityUsage="ODAPSupplierSitesAllEO"
+      AliasName="DUNS_NUMBER" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="ToleranceId"
+      EntityAttrName="ToleranceId"
+      EntityUsage="ODAPSupplierSitesAllEO"
+      AliasName="TOLERANCE_ID" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="LocationId"
+      EntityAttrName="LocationId"
+      EntityUsage="ODAPSupplierSitesAllEO"
+      AliasName="LOCATION_ID" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="PartySiteId"
+      EntityAttrName="PartySiteId"
+      EntityUsage="ODAPSupplierSitesAllEO"
+      AliasName="PARTY_SITE_ID" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="ServicesToleranceId"
+      EntityAttrName="ServicesToleranceId"
+      EntityUsage="ODAPSupplierSitesAllEO"
+      AliasName="SERVICES_TOLERANCE_ID" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="RetainageRate"
+      EntityAttrName="RetainageRate"
+      EntityUsage="ODAPSupplierSitesAllEO"
+      AliasName="RETAINAGE_RATE" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="TcaSyncState"
+      EntityAttrName="TcaSyncState"
+      EntityUsage="ODAPSupplierSitesAllEO"
+      AliasName="TCA_SYNC_STATE" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="TcaSyncProvince"
+      EntityAttrName="TcaSyncProvince"
+      EntityUsage="ODAPSupplierSitesAllEO"
+      AliasName="TCA_SYNC_PROVINCE" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="TcaSyncCounty"
+      EntityAttrName="TcaSyncCounty"
+      EntityUsage="ODAPSupplierSitesAllEO"
+      AliasName="TCA_SYNC_COUNTY" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="TcaSyncCity"
+      EntityAttrName="TcaSyncCity"
+      EntityUsage="ODAPSupplierSitesAllEO"
+      AliasName="TCA_SYNC_CITY" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="TcaSyncZip"
+      EntityAttrName="TcaSyncZip"
+      EntityUsage="ODAPSupplierSitesAllEO"
+      AliasName="TCA_SYNC_ZIP" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="TcaSyncCountry"
+      EntityAttrName="TcaSyncCountry"
+      EntityUsage="ODAPSupplierSitesAllEO"
+      AliasName="TCA_SYNC_COUNTRY" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="PayAwtGroupId"
+      EntityAttrName="PayAwtGroupId"
+      EntityUsage="ODAPSupplierSitesAllEO"
+      AliasName="PAY_AWT_GROUP_ID" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="CageCode"
+      EntityAttrName="CageCode"
+      EntityUsage="ODAPSupplierSitesAllEO"
+      AliasName="CAGE_CODE" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="LegalBusinessName"
+      EntityAttrName="LegalBusinessName"
+      EntityUsage="ODAPSupplierSitesAllEO"
+      AliasName="LEGAL_BUSINESS_NAME" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="DoingBusAsName"
+      EntityAttrName="DoingBusAsName"
+      EntityUsage="ODAPSupplierSitesAllEO"
+      AliasName="DOING_BUS_AS_NAME" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="DivisionName"
+      EntityAttrName="DivisionName"
+      EntityUsage="ODAPSupplierSitesAllEO"
+      AliasName="DIVISION_NAME" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="SmallBusinessCode"
+      EntityAttrName="SmallBusinessCode"
+      EntityUsage="ODAPSupplierSitesAllEO"
+      AliasName="SMALL_BUSINESS_CODE" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="CcrComments"
+      EntityAttrName="CcrComments"
+      EntityUsage="ODAPSupplierSitesAllEO"
+      AliasName="CCR_COMMENTS" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="DebarmentStartDate"
+      EntityAttrName="DebarmentStartDate"
+      EntityUsage="ODAPSupplierSitesAllEO"
+      AliasName="DEBARMENT_START_DATE" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="DebarmentEndDate"
+      EntityAttrName="DebarmentEndDate"
+      EntityUsage="ODAPSupplierSitesAllEO"
+      AliasName="DEBARMENT_END_DATE" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="VendorName"
+      IsPersistent="false"
+      Precision="240"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="VENDOR_NAME"
+      Expression="VENDOR_NAME"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="240" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Segment1"
+      IsPersistent="false"
+      IsNotNull="true"
+      Precision="30"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="SEGMENT1"
+      Expression="SEGMENT1"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="30" />
+      </DesignTime>
+   </ViewAttribute>
+</ViewObject>

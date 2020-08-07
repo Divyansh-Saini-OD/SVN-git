@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+            xmlns="http://xmlns.officedepot.com/TDS/PartQuotationInboundProvABCSImpl/PartsQuotationEBM"
+            targetNamespace="http://xmlns.officedepot.com/TDS/PartQuotationInboundProvABCSImpl/PartsQuotationEBM"
+            elementFormDefault="qualified">
+  <xsd:element name="PartsQuotationEBM" type="PartsQuotationEBMType"/>    
+    
+   <xsd:complexType name="PartsQuotationEBMType">
+      <xsd:sequence>
+         <xsd:element name="PartsQuotationEBO" type="PartsQuotationEBOType" minOccurs="1" maxOccurs="1"/>       
+      </xsd:sequence>
+   </xsd:complexType> 
+
+   <xsd:complexType name="PartsQuotationEBOType">
+      <xsd:sequence>
+         <xsd:element name="PartsQuotationHeader" type="PartsQuotationHeaderType" minOccurs="1" maxOccurs="1"/>
+         <xsd:element name="PartsQuotationLineRecords" type="PartsQuotationLineRecordType" minOccurs="1" maxOccurs="1"/>         
+      </xsd:sequence>
+   </xsd:complexType>   
+   
+  <xsd:complexType name="PartsQuotationHeaderType">
+      <xsd:sequence>
+         <xsd:element name="RequestNumber" type="xsd:string"/>
+         <xsd:element name="StoreNumber" type="xsd:string"/>
+        <xsd:element name="AssociateName" type="xsd:string"/> 
+        <xsd:element name="QuotationNumber" type="xsd:string"/>
+        <xsd:element name="ExpirationDate" type="xsd:string"/>
+        <xsd:element name="Manufacturer" type="xsd:string"/>         
+        <xsd:element name="Model" type="xsd:string"/>
+        <xsd:element name="SerialNumber" type="xsd:string"/>
+        <xsd:element name="ProblemDescription" type="xsd:string"/>
+        <xsd:element name="SpecialInstructions" type="xsd:string"/>
+      </xsd:sequence>         
+   </xsd:complexType> 
+   
+   <xsd:complexType name="PartsQuotationLineRecordType">
+      <xsd:sequence>
+         <xsd:element name="PartsQuotationLineRecord" type="PartsQuotationRecord" minOccurs="1" maxOccurs="unbounded"/>         
+      </xsd:sequence>
+   </xsd:complexType>     
+   
+  <xsd:complexType name="PartsQuotationRecord">
+      <xsd:sequence>
+          <xsd:element name="ItemNumber" type="xsd:string"/>
+          <xsd:element name="ItemDescription" type="xsd:string" />         
+          <xsd:element name="Quantity" type="xsd:integer"/>         
+          <xsd:element name="ItemCategory" type="xsd:string"/>         
+          <xsd:element name="PurchasePrice" type="xsd:decimal"/>         
+          <xsd:element name="SellingPrice" type="xsd:decimal"/>        
+          <xsd:element name="ExchangePrice" type="TDSDecimalOrEmptyString"/> 
+          <xsd:element name="CoreFlag" type="xsd:string"/>         
+          <xsd:element name="UOM" type="xsd:string"/>      
+          <xsd:element name="DeliveryDate" type="xsd:string"/>
+      </xsd:sequence>
+   </xsd:complexType>
+   
+    <xsd:simpleType name="TDSDecimalOrEmptyString">
+      <xsd:union memberTypes="TDSPositiveDecimal TDSEmptyString" />
+    </xsd:simpleType>
+    
+    <xsd:simpleType name="TDSEmptyString">
+      <xsd:restriction base="xsd:string">
+        <xsd:enumeration value="" />
+      </xsd:restriction>
+    </xsd:simpleType>
+    
+    <xsd:simpleType name="TDSPositiveDecimal">
+      <xsd:restriction base="xsd:decimal"/>
+    </xsd:simpleType>
+
+</xsd:schema>

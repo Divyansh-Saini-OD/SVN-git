@@ -1,0 +1,90 @@
+-- +===========================================================================+
+-- |                  Office Depot - SAS Modernization                         |
+-- |                                                                           |
+-- +===========================================================================+
+-- | Name        : XX_OE_PAYMENTS.tbl                                          |
+-- | Description : create Table for XX_OE_PAYMENTS                             |
+-- |                                                                           |
+-- |Change Record:                                                             |
+-- |===============                                                            |
+-- |Version  Date        Author           Remarks                              |
+-- |======== =========== ================ =====================================|
+-- |1.0      20-MAR-2018 JAI_CG           Defect# NAIT-31470                   |
+-- +===========================================================================+
+
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     ON
+WHENEVER SQLERROR CONTINUE
+
+BEGIN
+  EXECUTE IMMEDIATE 'DROP TABLE XX_OE_PAYMENTS';
+EXCEPTION
+  WHEN OTHERS THEN NULL;
+END;
+/
+
+
+CREATE TABLE XX_OE_PAYMENTS
+   ( PAYMENT_TRX_ID                  NUMBER
+   , COMMITMENT_APPLIED_AMOUNT       NUMBER
+   , COMMITMENT_INTERFACED_AMOUNT    NUMBER
+   , PAYMENT_LEVEL_CODE              VARCHAR2(30)    NOT NULL
+   , HEADER_ID                       NUMBER          NOT NULL
+   , CREATION_DATE                   DATE            NOT NULL
+   , CREATED_BY                      NUMBER          NOT NULL
+   , LAST_UPDATE_DATE                DATE            NOT NULL 
+   , LAST_UPDATED_BY                 NUMBER          NOT NULL
+   , LINE_ID                         NUMBER
+   , LAST_UPDATE_LOGIN               NUMBER
+   , REQUEST_ID                      NUMBER
+   , PROGRAM_APPLICATION_ID          NUMBER
+   , PROGRAM_ID                      NUMBER
+   , PROGRAM_UPDATE_DATE             DATE
+   , CONTEXT                         VARCHAR2(30)
+   , ATTRIBUTE1                      VARCHAR2(240)
+   , ATTRIBUTE2                      VARCHAR2(240)
+   , ATTRIBUTE3                      VARCHAR2(240)
+   , ATTRIBUTE4                      VARCHAR2(240)
+   , ATTRIBUTE5                      VARCHAR2(240)
+   , ATTRIBUTE6                      VARCHAR2(240)
+   , ATTRIBUTE7                      VARCHAR2(240)
+   , ATTRIBUTE8                      VARCHAR2(240)
+   , ATTRIBUTE9                      VARCHAR2(240)
+   , ATTRIBUTE10                     VARCHAR2(240)
+   , ATTRIBUTE11                     VARCHAR2(240)
+   , ATTRIBUTE12                     VARCHAR2(240)
+   , ATTRIBUTE13                     VARCHAR2(240)
+   , ATTRIBUTE14                     VARCHAR2(240)
+   , ATTRIBUTE15                     VARCHAR2(240)
+   , PAYMENT_TYPE_CODE               VARCHAR2(30)
+   , CREDIT_CARD_CODE                VARCHAR2(30)
+   , CREDIT_CARD_NUMBER              VARCHAR2(80)
+   , CREDIT_CARD_HOLDER_NAME         VARCHAR2(80)
+   , CREDIT_CARD_EXPIRATION_DATE     DATE
+   , PREPAID_AMOUNT                  NUMBER
+   , PAYMENT_SET_ID                  NUMBER
+   , RECEIPT_METHOD_ID               NUMBER
+   , PAYMENT_COLLECTION_EVENT        VARCHAR2(30)
+   , CREDIT_CARD_APPROVAL_CODE       VARCHAR2(80)
+   , CREDIT_CARD_APPROVAL_DATE       DATE
+   , TANGIBLE_ID                     VARCHAR2(80)
+   , CHECK_NUMBER                    VARCHAR2(50)
+   , PAYMENT_AMOUNT                  NUMBER
+   , PAYMENT_NUMBER                  NUMBER
+   , LOCK_CONTROL                    NUMBER
+   , ORIG_SYS_PAYMENT_REF            VARCHAR2(50)
+   , DEFER_PAYMENT_PROCESSING_FLAG   VARCHAR2(1)
+   , PAYMENT_PERCENTAGE              NUMBER
+   , TRXN_EXTENSION_ID               NUMBER
+   , INST_ID                         NUMBER
+   , INVOICED_FLAG                   VARCHAR2(1)
+   );
+
+GRANT ALL ON XX_OE_PAYMENTS TO APPS WITH GRANT OPTION;
+
+GRANT SELECT ON XX_OE_PAYMENTS TO ERP_SYSTEM_TABLE_SELECT_ROLE;
+
+GRANT SELECT ON XX_OE_PAYMENTS TO XXDATA_STAGE_ROLE;

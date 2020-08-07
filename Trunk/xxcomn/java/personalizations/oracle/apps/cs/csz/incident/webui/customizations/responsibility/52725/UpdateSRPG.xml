@@ -1,0 +1,18 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<customization xmlns="http://xmlns.oracle.com/jrad" version="9.0.6.0.0_64" xml:lang="en-US" customizes="/oracle/apps/cs/csz/incident/webui/UpdateSRPG" xmlns:user="http://xmlns.oracle.com/jrad/user" user:responsibilityKey="od_tech_portal_ext" user:responsibilityAppShortName="IBU">
+   <modifications>
+      <modify element="UpdateSR" controllerClass="od.oracle.apps.xxcrm.cs.csz.incident.webui.XXCSTDSLinksRNCO2"/>
+      <modify element="SRWarningRN.serviceInfoHeader" rendered="false"/>
+      <modify element="KMSearchRN" rendered="false"/>
+      <move element="LeftTableRow1" after="LeftTableRow2"/>
+      <move element="LeftTableRow3" after="LeftTableRow1"/>
+      <move element="LeftTableRow4" after="LeftTableRow3"/>
+      <move element="LeftTableRow5" after="LeftTableRow4"/>
+      <modify element="SRSuperTab2Link" rendered="false"/>
+      <modify element="SRSuperTab3Link" rendered="true" text="Additional Details"/>
+      <modify element="TaskSummaryRN" rendered="true"/>
+      <modify element="ResolutionSummaryFC" rendered="false"/>
+      <modify element="SRSuperTab1Link" rendered="false"/>
+      <modify element="QuickLinkContanerRN.QuickLinksxRN.Send_mail" rendered="false"/>
+   </modifications>
+</customization>

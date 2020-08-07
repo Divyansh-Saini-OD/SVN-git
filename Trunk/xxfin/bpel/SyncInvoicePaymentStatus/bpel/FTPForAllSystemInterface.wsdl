@@ -1,0 +1,160 @@
+<definitions
+     name="FTPForAllSystemInterface"
+     targetNamespace="http://xmlns.oracle.com/pcbpel/adapter/ftp/FTPForAllSystemInterface/"
+     xmlns="http://schemas.xmlsoap.org/wsdl/"
+     xmlns:tns="http://xmlns.oracle.com/pcbpel/adapter/ftp/FTPForAllSystemInterface/"
+     xmlns:plt="http://schemas.xmlsoap.org/ws/2003/05/partner-link/"
+     xmlns:jca="http://xmlns.oracle.com/pcbpel/wsdl/jca/"
+     xmlns:opaque="http://xmlns.oracle.com/pcbpel/adapter/opaque/"     
+     xmlns:hdr="http://xmlns.oracle.com/pcbpel/adapter/ftp/"
+    >
+    <import namespace="http://xmlns.oracle.com/pcbpel/adapter/ftp/" location="ftpAdapterOutboundHeader.wsdl"/>   
+    <types>
+    <schema targetNamespace="http://xmlns.oracle.com/pcbpel/adapter/opaque/"
+            xmlns="http://www.w3.org/2001/XMLSchema" >
+      <element name="opaqueElement" type="base64Binary" />
+    </schema>
+    
+    <schema attributeFormDefault="qualified" elementFormDefault="qualified"
+            targetNamespace="http://schemas.xmlsoap.org/wsdl/"
+            xmlns="http://www.w3.org/2001/XMLSchema">
+            <import namespace="http://schemas.xmlsoap.org/ws/2003/03/addressing"
+                    schemaLocation="ws-addressing.xsd" />
+    </schema>
+         
+    </types>
+    <message name="Put_msg">
+        <part name="opaque" element="opaque:opaqueElement"/>
+    </message>
+    <portType name="Put_ptt">
+        <operation name="Put">
+            <input message="tns:Put_msg"/>
+        </operation>
+    </portType>
+    
+    
+    <!--
+    ** Binding for MVS system to FTP the Invoice payment files
+    -->
+    <binding name="Put_MVS_binding" type="tns:Put_ptt">
+    <jca:binding/>
+        <operation name="Put">
+      <jca:operation
+          FileType="ascii"
+          PhysicalDirectory="//"
+          InteractionSpec="oracle.tip.adapter.ftp.outbound.FTPInteractionSpec"
+          FileNamingConvention=""
+          NumberMessages="1"
+          OpaqueSchema="true" >
+      </jca:operation>
+      <input>
+        <jca:header message="hdr:OutboundHeader_msg" part="outboundHeader"/>
+      </input>
+        </operation>
+    </binding>
+    
+    
+    <!--
+    ** Binding for EBS system to FTP the Invoice payment files
+    -->
+    <binding name="Put_EBS_binding" type="tns:Put_ptt">
+    <jca:binding  />
+        <operation name="Put">
+      <jca:operation
+          FileType="ascii"
+          PhysicalDirectory="/"
+          InteractionSpec="oracle.tip.adapter.ftp.outbound.FTPInteractionSpec"
+          FileNamingConvention=""
+          NumberMessages="1"
+          OpaqueSchema="true" >
+      </jca:operation>
+      <input>
+        <jca:header message="hdr:OutboundHeader_msg" part="outboundHeader"/>
+      </input>
+        </operation>
+    </binding>
+    
+    
+    <!--
+    ** Binding for ODS system to FTP the Invoice payment files
+    -->    
+    <binding name="Put_ODS_binding" type="tns:Put_ptt">
+    <jca:binding  />
+        <operation name="Put">
+      <jca:operation
+          FileType="ascii"
+          PhysicalDirectory="/"
+          InteractionSpec="oracle.tip.adapter.ftp.outbound.FTPInteractionSpec"
+          FileNamingConvention=""
+          NumberMessages="1"
+          OpaqueSchema="true" >
+      </jca:operation>
+      <input>
+        <jca:header message="hdr:OutboundHeader_msg" part="outboundHeader"/>
+      </input>
+        </operation>
+    </binding>
+    
+     <!--
+    ** Binding for ESC system to FTP the Invoice payment files
+    -->    
+    <binding name="Put_ESC_binding" type="tns:Put_ptt">
+    <jca:binding  />
+        <operation name="Put">
+      <jca:operation
+          FileType="ascii"
+          PhysicalDirectory="/"
+          InteractionSpec="oracle.tip.adapter.ftp.outbound.FTPInteractionSpec"
+          FileNamingConvention=""
+          NumberMessages="1"
+          OpaqueSchema="true" >
+      </jca:operation>
+      <input>
+        <jca:header message="hdr:OutboundHeader_msg" part="outboundHeader"/>
+      </input>
+        </operation>
+    </binding>
+    
+    <!--
+    ** MVS System Service name
+    -->    
+    <service name="FTPToMVSService">
+        <port name="Put_pt" binding="tns:Put_MVS_binding">
+      <jca:address location="" />
+        </port>
+    </service>
+    
+      <!--
+    ** ESC System Service name
+    --> 
+  
+    <service name="FTPToESCService">
+        <port name="Put_pt" binding="tns:Put_ESC_binding">
+      <jca:address location="" />
+        </port>
+    </service>
+
+    <!--
+    ** EBS System Service name
+    -->        
+    <service name="FTPToEBSService">
+        <port name="Put_pt" binding="tns:Put_EBS_binding">
+      <jca:address location="" />
+        </port>
+    </service>
+    
+    <!--
+    ** ODS System Service name
+    -->    
+    <service name="FTPToODSService">
+        <port name="Put_pt" binding="tns:Put_ODS_binding">
+      <jca:address location="" />
+        </port>
+    </service>
+    
+  <plt:partnerLinkType name="Put_plt" >
+    <plt:role name="Put_role" >
+      <plt:portType name="tns:Put_ptt" />
+    </plt:role>
+  </plt:partnerLinkType>
+</definitions>

@@ -1,0 +1,28 @@
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     ON
+
+PROMPT Creating SYNONYM XX_AR_EBL_IND_DTL_HIST 
+
+PROMPT Program exits IF the creation IS NOT SUCCESSFUL
+
+WHENEVER SQLERROR CONTINUE
+-- +==========================================================================+
+-- |                  Office Depot - Project Simplify                         |
+-- |                       WIPRO Technologies                                 |
+-- +==========================================================================+
+-- | SQL Script to create the following object                                |
+-- |Table    : XX_AR_EBL_IND_DTL_HIST                                         |
+-- |           Individual   batching staging table  SYNONYM                   |
+-- |Change Record:                                                            |
+-- |===============                                                           |
+-- |Version      Date              Author               Remarks               |
+-- |=======      ==========        =============        ===================== |
+-- |1.0          26-MAy-2010        Ranjith Thangasamy                        |
+-- +==========================================================================+
+
+CREATE SYNONYM APPS.XX_AR_EBL_IND_DTL_HIST  FOR XXFIN.XX_AR_EBL_IND_DTL_HIST ;
+
+SHOW ERR

@@ -1,0 +1,73 @@
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     ON
+
+PROMPT Creating TABLE XX_AP_CONFIRMED_PAYMENT_BATCH
+
+PROMPT Program exits IF the creation IS NOT SUCCESSFUL
+
+WHENEVER SQLERROR CONTINUE
+
+-- +==========================================================================+
+-- |                  Office Depot - Project Simplify                         |
+-- |                       WIPRO Technologies                                 |
+-- +==========================================================================+
+-- | SQL Script to create the following object                                |
+-- |Table    : XX_AP_CONFIRMED_PAYMENT_BATCH                                  |
+-- |           1. Contains the Confirmed Payment Batch.                       |
+-- |           2. Status of the batches corresponding to the RTV and          |
+-- |              chargeback APDM report has been submitted or not.           |
+-- |Change Record:                                                            |
+-- |===============                                                           |
+-- |Version      Date              Author               Remarks               |
+-- |=======      ==========        =============        ===================== |
+-- | V1.0        29-SEP-2009       Gokila Tamilselvam   Initial version       |
+-- |                                                    R1.1 Defect# 1431     |
+-- +==========================================================================+
+
+CREATE TABLE XXFIN.XX_AP_CONFIRMED_PAYMENT_BATCH(
+                                                 PAYMENT_BATCH                 VARCHAR2(50)
+                                                 ,RTV                          VARCHAR2(1)
+                                                 ,CHARGEBACK                   VARCHAR2(1)
+                                                 ,LAST_UPDATE_DATE             DATE           NOT NULL
+                                                 ,LAST_UPDATED_BY              NUMBER(15)     NOT NULL
+                                                 ,CREATION_DATE                DATE           NOT NULL
+                                                 ,CREATED_BY                   NUMBER(15)     NOT NULL
+                                                 ,LAST_UPDATE_LOGIN            NUMBER(15)
+                                                 ,REQUEST_ID                   NUMBER
+                                                 ,CHECKRUN_ID                  NUMBER
+						 ,ORG_ID		       NUMBER
+                                                 ,attribute1                   VARCHAR2(255)
+                                                 ,attribute2                   VARCHAR2(255)
+                                                 ,attribute3                   VARCHAR2(255)
+                                                 ,attribute4                   VARCHAR2(255)
+                                                 ,attribute5                   VARCHAR2(255)
+                                                 ,attribute6                   VARCHAR2(255)
+                                                 ,attribute7                   VARCHAR2(255)
+                                                 ,attribute8                   VARCHAR2(255)
+                                                 ,attribute9                   VARCHAR2(255)
+                                                 ,attribute10                  VARCHAR2(255)
+                                                 ,attribute11                  VARCHAR2(255)
+                                                 ,attribute12                  VARCHAR2(255)
+                                                 ,attribute13                  VARCHAR2(255)
+                                                 ,attribute14                  VARCHAR2(255)
+                                                 ,attribute15                  VARCHAR2(255)
+                                                 ,attribute16                  NUMBER
+                                                 ,attribute17                  NUMBER
+                                                 ,attribute18                  NUMBER
+                                                 ,attribute19                  NUMBER
+                                                 ,attribute20                  NUMBER
+                                                 ,attribute21                  NUMBER
+                                                 ,attribute22                  NUMBER
+                                                 ,attribute23                  NUMBER
+                                                 ,attribute24                  NUMBER
+                                                 ,attribute25                  NUMBER
+                                                 ,attribute26                  NUMBER
+                                                 ,attribute27                  NUMBER
+                                                 ,attribute28                  NUMBER
+                                                 ,attribute29                  NUMBER
+                                                 ,attribute30                  NUMBER
+                                                 );
+SHOW ERROR

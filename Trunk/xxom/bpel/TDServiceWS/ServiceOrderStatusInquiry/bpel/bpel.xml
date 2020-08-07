@@ -1,0 +1,14 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<BPELSuitcase>
+   <BPELProcess id="ServiceOrderStatusInquiry" src="ServiceOrderStatusInquiry.bpel">
+      <partnerLinkBindings>
+         <partnerLinkBinding name="client">
+            <property name="wsdlLocation">ServiceOrderStatusInquiry.wsdl</property>
+         </partnerLinkBinding>
+         <partnerLinkBinding name="EbsServiceOrderStatus">
+            <property name="wsdlLocation">EbsServiceOrderStatus.wsdl</property>
+            <property name="retryInterval">60</property>
+         </partnerLinkBinding>
+      </partnerLinkBindings>
+   </BPELProcess>
+</BPELSuitcase>

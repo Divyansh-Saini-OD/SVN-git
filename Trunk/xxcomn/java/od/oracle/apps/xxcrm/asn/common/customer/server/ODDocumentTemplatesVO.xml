@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding='windows-1252'?>
+<!DOCTYPE ViewObject SYSTEM "jbo_03_01.dtd">
+
+<ViewObject
+   Name="ODDocumentTemplatesVO"
+   SelectList="XxCdhDocumentTemplateEO.PAYMENT_METHOD, 
+       XxCdhDocumentTemplateEO.DOCUMENT_TYPE, 
+
+       XxCdhDocumentTemplateEO.DOCUMENT_NAME, 
+       XxCdhDocumentTemplateEO.DETAIL_FLAG, 
+
+       XxCdhDocumentTemplateEO.FREQUENCY, 
+       XxCdhDocumentTemplateEO.INDIRECT_FLAG, 
+
+       XxCdhDocumentTemplateEO.INCL_BKUP_INV_FLAG, 
+       XxCdhDocumentTemplateEO.CREATED_BY, 
+
+       XxCdhDocumentTemplateEO.CREATION_DATE, 
+       XxCdhDocumentTemplateEO.LAST_UPDATED_BY, 
+
+       XxCdhDocumentTemplateEO.LAST_UPDATE_DATE, 
+       XxCdhDocumentTemplateEO.LAST_UPDATE_LOGIN, 
+
+       XxCdhDocumentTemplateEO.DOC_TEMPLATE_ID"
+   FromList="XX_CDH_DOCUMENT_TEMPLATE XxCdhDocumentTemplateEO"
+   BindingStyle="Oracle"
+   CustomQuery="false"
+   RowClass="od.oracle.apps.xxcrm.asn.common.customer.server.ODDocumentTemplatesVORowImpl"
+   ComponentClass="od.oracle.apps.xxcrm.asn.common.customer.server.ODDocumentTemplatesVOImpl"
+   MsgBundleClass="oracle.jbo.common.JboResourceBundle"
+   UseGlueCode="false" >
+   <DesignTime>
+      <Attr Name="_isCodegen" Value="true" />
+      <Attr Name="_version" Value="9.0.3.13.93" />
+      <Attr Name="_CodeGenFlagNew" Value="36" />
+   </DesignTime>
+   <EntityUsage
+      Name="XxCdhDocumentTemplateEO"
+      Entity="od.oracle.apps.xxcrm.asn.common.schema.server.ODXxCdhDocumentTemplateEO" >
+      <DesignTime>
+         <Attr Name="_queryClause" Value="false" />
+      </DesignTime>
+   </EntityUsage>
+   <ViewAttribute
+      Name="PaymentMethod"
+      Precision="30"
+      EntityAttrName="PaymentMethod"
+      EntityUsage="XxCdhDocumentTemplateEO"
+      AliasName="PAYMENT_METHOD" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="DocumentType"
+      Precision="30"
+      EntityAttrName="DocumentType"
+      EntityUsage="XxCdhDocumentTemplateEO"
+      AliasName="DOCUMENT_TYPE" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="DocumentName"
+      Precision="30"
+      EntityAttrName="DocumentName"
+      EntityUsage="XxCdhDocumentTemplateEO"
+      AliasName="DOCUMENT_NAME" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="DetailFlag"
+      Precision="1"
+      EntityAttrName="DetailFlag"
+      EntityUsage="XxCdhDocumentTemplateEO"
+      AliasName="DETAIL_FLAG" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Frequency"
+      Precision="30"
+      EntityAttrName="Frequency"
+      EntityUsage="XxCdhDocumentTemplateEO"
+      AliasName="FREQUENCY" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="IndirectFlag"
+      Precision="1"
+      EntityAttrName="IndirectFlag"
+      EntityUsage="XxCdhDocumentTemplateEO"
+      AliasName="INDIRECT_FLAG" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="InclBkupInvFlag"
+      Precision="1"
+      EntityAttrName="InclBkupInvFlag"
+      EntityUsage="XxCdhDocumentTemplateEO"
+      AliasName="INCL_BKUP_INV_FLAG" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="CreatedBy"
+      IsNotNull="true"
+      Precision="15"
+      Scale="0"
+      EntityAttrName="CreatedBy"
+      EntityUsage="XxCdhDocumentTemplateEO"
+      AliasName="CREATED_BY" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="CreationDate"
+      IsNotNull="true"
+      EntityAttrName="CreationDate"
+      EntityUsage="XxCdhDocumentTemplateEO"
+      AliasName="CREATION_DATE" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="LastUpdatedBy"
+      IsNotNull="true"
+      Precision="15"
+      Scale="0"
+      EntityAttrName="LastUpdatedBy"
+      EntityUsage="XxCdhDocumentTemplateEO"
+      AliasName="LAST_UPDATED_BY" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="LastUpdateDate"
+      IsNotNull="true"
+      EntityAttrName="LastUpdateDate"
+      EntityUsage="XxCdhDocumentTemplateEO"
+      AliasName="LAST_UPDATE_DATE" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="LastUpdateLogin"
+      Precision="15"
+      Scale="0"
+      EntityAttrName="LastUpdateLogin"
+      EntityUsage="XxCdhDocumentTemplateEO"
+      AliasName="LAST_UPDATE_LOGIN" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="DocTemplateId"
+      IsNotNull="true"
+      EntityAttrName="DocTemplateId"
+      EntityUsage="XxCdhDocumentTemplateEO"
+      AliasName="DOC_TEMPLATE_ID" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="SelectFlag"
+      IsPersistent="false"
+      Precision="255"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="SELECT_FLAG"
+      SQLType="VARCHAR" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="sortImage"
+      IsQueriable="false"
+      IsPersistent="false"
+      Precision="255"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="VIEW_ATTR"
+      SQLType="VARCHAR" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="TotalsImage"
+      IsQueriable="false"
+      IsPersistent="false"
+      Precision="255"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="VIEW_ATTR"
+      SQLType="VARCHAR" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="PageBreakImage"
+      IsQueriable="false"
+      IsPersistent="false"
+      Precision="255"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="VIEW_ATTR"
+      SQLType="VARCHAR" >
+   </ViewAttribute>
+</ViewObject>

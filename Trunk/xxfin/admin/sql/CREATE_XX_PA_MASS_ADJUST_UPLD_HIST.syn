@@ -1,0 +1,36 @@
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     ON
+
+PROMPT Creating SYNONYM XX_PA_MASS_ADJUST_UPLD_HIST               
+
+PROMPT Program exits IF the creation IS NOT SUCCESSFUL
+
+WHENEVER SQLERROR CONTINUE
+
+-- +==========================================================================+
+-- |                  Office Depot - Project Simplify                         |
+-- |                       ORACLE                                             |
+-- +==========================================================================+
+-- | Name        : APPS.XX_PA_MASS_ADJUST_UPLD_HIST                            |
+-- | Description : Synonym for XX_PA_MASS_ADJUST_UPLD_HIST                     |
+-- | Rice ID : E3072												  		  |
+-- |===============                                                           |
+-- |Version      Date              Author               Remarks               |
+-- |=======      ==========        =============        ===================== |
+-- | V1.0        24-SEP-2013       Archana N.			 Initial version      |
+-- |                                                                          |
+-- +==========================================================================+
+PROMPT
+
+WHENEVER SQLERROR CONTINUE;
+
+PROMPT
+PROMPT Creating Synonym XX_PA_MASS_ADJUST_UPLD_HIST in APPS...
+PROMPT
+
+CREATE SYNONYM apps.XX_PA_MASS_ADJUST_UPLD_HIST   FOR xxfin.XX_PA_MASS_ADJUST_UPLD_HIST  ;
+
+SHOW ERROR

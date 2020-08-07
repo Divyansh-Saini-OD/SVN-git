@@ -1,0 +1,19 @@
+-- +============================================================================================+
+-- |                  Office Depot - Project Simplify                                           |
+-- +============================================================================================+
+-- | Name        : ALTER_XX_CS_MPS_DEVICE_B_STG.tbl                                                 |
+-- |                                                                                            |
+-- |                                                                                            |
+-- |Change Record:                                                                              |
+-- |===============                                                                             |
+-- |Version     Date           Author               Remarks                                     |
+-- |=======    ==========      ================     ============================================|
+-- |1.0        20-JUN-2014     Arun Gannarapu        Initial version                            |
+-- +============================================================================================+
+
+Alter table xxom.xx_cs_mps_device_b_stg add(SUPPLIES_LABEL VARCHAR2(50));
+
+Alter table xxom.xx_cs_mps_device_b_stg add(PREV_SHIPMENT_LEVEL NUMBER);
+  
+
+SHOW ERRORS;

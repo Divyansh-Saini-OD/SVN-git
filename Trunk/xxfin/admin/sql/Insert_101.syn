@@ -1,0 +1,52 @@
+INSERT INTO xx_iby_deposit_aops_orders 
+                 (                         
+                 aops_order_number         
+                ,receipt_number            
+                ,creation_date             
+                ,created_by                
+                ,last_update_date          
+                ,last_updated_by           
+                ,last_update_login         
+                ,program_application_id    
+                ,program_id                
+                 )                         
+             VALUES                        
+                (                          
+                 '327153939001001'
+                ,'332200'
+                ,SYSDATE                  
+                ,FND_GLOBAL.USER_ID        
+                ,SYSDATE                   
+                ,FND_GLOBAL.USER_ID        
+                ,FND_GLOBAL.LOGIN_ID       
+                ,201 
+                ,223355
+                );
+                
+                
+INSERT INTO xx_iby_deposit_aops_orders 
+                 (                         
+                 aops_order_number         
+                ,receipt_number            
+                ,creation_date             
+                ,created_by                
+                ,last_update_date          
+                ,last_updated_by           
+                ,last_update_login         
+                ,program_application_id    
+                ,program_id                
+                 )                         
+             VALUES                        
+                (                          
+                 '327954441001001'
+                ,'111133'
+                ,SYSDATE-2                  
+                ,FND_GLOBAL.USER_ID        
+                ,SYSDATE-2                   
+                ,FND_GLOBAL.USER_ID        
+                ,FND_GLOBAL.LOGIN_ID       
+                ,201 
+                ,223355
+                );
+
+sho err

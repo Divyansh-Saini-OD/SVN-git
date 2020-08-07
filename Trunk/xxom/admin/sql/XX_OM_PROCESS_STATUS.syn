@@ -1,0 +1,42 @@
+ -- +========================================================================+
+   -- |                  Office Depot - Project Simplify                       |
+   -- |                  Office Depot                                          |
+   -- +========================================================================+
+   -- | Name  :      XX_OM_PROCESS_STATUS.syn                                  |
+   -- | Description:  This file creates the synonym for apps to access the     |
+   -- |               custom table XX_OM_PROCESS_STATUS                        |
+   -- |                                                                        |
+   -- |Change Record:                                                          |
+   -- |===============                                                         |
+   -- |Version Date        Author           Remarks                            |
+   -- |======= =========== ===============  ===================================|
+   -- |1.0     11-MAY-2009 Matthew Craig    Initial draft Version              |
+ -- +==========================================================================+
+
+SET VERIFY    OFF;
+SET TERM      OFF;
+SET FEEDBACK  OFF;
+SET SHOW      OFF;
+SET ECHO      OFF; 
+SET TAB       OFF; 
+
+
+WHENEVER SQLERROR CONTINUE;
+
+PROMPT
+PROMPT Creating synonym xx_om_process_status
+PROMPT
+
+CREATE SYNONYM xx_om_process_status FOR XXOM.xx_om_process_status;  
+
+
+WHENEVER SQLERROR EXIT 1
+
+PROMPT
+PROMPT Exiting....
+PROMPT
+
+SET FEEDBACK ON
+
+EXIT;
+

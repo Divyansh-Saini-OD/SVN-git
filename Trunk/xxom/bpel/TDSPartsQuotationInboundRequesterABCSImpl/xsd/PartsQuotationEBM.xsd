@@ -1,0 +1,221 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+            xmlns="http://xmlns.OfficeDepot.com/TDS/TDSPartsQuotationInboundRequesterABCSImpl/PartsQuotationEBM"
+            xmlns:od="http://www.OfficeDepot.com/TDS/MessageHeader" 
+            targetNamespace="http://xmlns.OfficeDepot.com/TDS/TDSPartsQuotationInboundRequesterABCSImpl/PartsQuotationEBM"
+            elementFormDefault="qualified">
+<xsd:import namespace="http://www.OfficeDepot.com/TDS/MessageHeader" schemaLocation="oramds:/apps/TDS/Common/Schema/MessageHeader.xsd"/>                        
+  <xsd:element name="PartsQuotationEBM" type="PartsQuotationEBMType"/>    
+    
+   <xsd:complexType name="PartsQuotationEBMType">
+      <xsd:sequence>
+         <xsd:element name="ApplicationHeader" type="od:BusinessObjectDocument" minOccurs="1" maxOccurs="1"/>
+         <xsd:element name="PartsQuotationEBO" type="PartsQuotationEBOType" minOccurs="1" maxOccurs="1"/>       
+      </xsd:sequence>
+   </xsd:complexType> 
+
+   <xsd:complexType name="PartsQuotationEBOType">
+      <xsd:sequence>
+         <xsd:element name="PartsQuotationHeader" type="PartsQuotationHeaderType" minOccurs="1" maxOccurs="1"/>
+         <xsd:element name="PartsQuotationLineRecords" type="PartsQuotationLineRecordType" minOccurs="1" maxOccurs="1"/>         
+      </xsd:sequence>
+   </xsd:complexType>   
+   
+  <xsd:complexType name="PartsQuotationHeaderType">
+      <xsd:sequence>
+
+         <xsd:element name="requestNumber">
+            <xsd:simpleType>
+               <xsd:restriction base="xsd:string">
+                  <xsd:minLength value="1" />                
+                  <xsd:maxLength value="25"/>
+               </xsd:restriction>
+            </xsd:simpleType>
+         </xsd:element>
+
+         <xsd:element name="storeNumber">
+            <xsd:simpleType>
+               <xsd:restriction base="xsd:string">
+                  <xsd:minLength value="1" />                               
+                  <xsd:maxLength value="6"/>
+               </xsd:restriction>
+            </xsd:simpleType>
+         </xsd:element>
+
+        <xsd:element name="associateName">
+            <xsd:simpleType>
+               <xsd:restriction base="xsd:string">              
+                  <xsd:maxLength value="50"/>
+               </xsd:restriction>
+            </xsd:simpleType>
+         </xsd:element>         
+
+         
+        <xsd:element name="quotationNumber">
+            <xsd:simpleType>
+               <xsd:restriction base="xsd:string">
+                  <xsd:minLength value="1" />                 
+                  <xsd:maxLength value="25"/>
+               </xsd:restriction>
+            </xsd:simpleType>
+         </xsd:element> 
+         
+ 	    <xsd:element name="expirationDate" type="xsd:dateTime"/>           
+      
+        <xsd:element name="manufacturer">
+            <xsd:simpleType>
+               <xsd:restriction base="xsd:string">
+                  <xsd:minLength value="1" />               
+                  <xsd:maxLength value="50"/>
+               </xsd:restriction>
+            </xsd:simpleType>
+         </xsd:element>      
+
+         
+        <xsd:element name="model">
+            <xsd:simpleType>
+               <xsd:restriction base="xsd:string">            
+                  <xsd:maxLength value="25"/>
+               </xsd:restriction>
+            </xsd:simpleType>
+         </xsd:element>
+         
+        <xsd:element name="serialNumber">
+            <xsd:simpleType>
+               <xsd:restriction base="xsd:string">             
+                  <xsd:maxLength value="50"/>
+               </xsd:restriction>
+            </xsd:simpleType>
+         </xsd:element>          
+         
+        <xsd:element name="problemDescr">
+            <xsd:simpleType>
+               <xsd:restriction base="xsd:string">             
+                  <xsd:maxLength value="250"/>
+               </xsd:restriction>
+            </xsd:simpleType>
+         </xsd:element>       
+
+         
+        <xsd:element name="specialInstr">
+            <xsd:simpleType>
+               <xsd:restriction base="xsd:string">             
+                  <xsd:maxLength value="1000"/>
+               </xsd:restriction>
+            </xsd:simpleType>
+         </xsd:element>             
+      </xsd:sequence>         
+   </xsd:complexType> 
+   
+   <xsd:complexType name="PartsQuotationLineRecordType">
+      <xsd:sequence>
+         <xsd:element name="PartsQuotationLineRecord" type="PartsQuotationRecord" minOccurs="1" maxOccurs="unbounded"/>         
+      </xsd:sequence>
+   </xsd:complexType>     
+   
+  <xsd:complexType name="PartsQuotationRecord">
+      <xsd:sequence>
+         <xsd:element name="itemNumber">
+            <xsd:simpleType>
+               <xsd:restriction base="xsd:string">
+                  <xsd:minLength value="1" />               
+                  <xsd:maxLength value="25"/>
+               </xsd:restriction>
+            </xsd:simpleType>
+         </xsd:element>
+         <xsd:element name="itemDescription">
+            <xsd:simpleType>
+               <xsd:restriction base="xsd:string">
+                  <xsd:minLength value="1" />               
+                  <xsd:maxLength value="250"/>
+               </xsd:restriction>
+            </xsd:simpleType>
+         </xsd:element> 
+         
+         <!--xsd:element name="rmsSku" minOccurs="0">
+            <xsd:simpleType>
+               <xsd:restriction base="xsd:string">               
+                  <xsd:maxLength value="25"/>
+               </xsd:restriction>
+            </xsd:simpleType>
+         </xsd:element-->  
+         
+          <xsd:element name="quantity">
+            <xsd:simpleType>
+               <xsd:restriction base="xsd:nonNegativeInteger"/>
+            </xsd:simpleType>
+         </xsd:element>   
+         
+        <xsd:element name="itemCategory">
+            <xsd:simpleType>
+               <xsd:restriction base="xsd:string">
+                  <xsd:minLength value="1" />               
+                  <xsd:maxLength value="25"/>
+               </xsd:restriction>
+            </xsd:simpleType>
+         </xsd:element>
+         
+          <xsd:element name="purchasePrice">
+            <xsd:simpleType>
+               <xsd:restriction base="xsd:decimal">
+                  <xsd:minInclusive value="0"/>
+                  <xsd:fractionDigits value="2"/>                    
+              </xsd:restriction>
+            </xsd:simpleType>
+         </xsd:element>  
+         
+          <xsd:element name="sellingPrice">
+            <xsd:simpleType>
+               <xsd:restriction base="xsd:decimal">
+                  <xsd:minInclusive value="0"/>
+                  <xsd:fractionDigits value="2"/>                    
+              </xsd:restriction>
+            </xsd:simpleType>
+         </xsd:element>         
+         
+         <xsd:element name="exchangePrice" type="TDSDecimalOrEmptyString"/>
+ 
+        <xsd:element name="coreFlag">
+            <xsd:simpleType>
+               <xsd:restriction base="xsd:string">
+                  <xsd:maxLength value="1"/>
+               </xsd:restriction>
+            </xsd:simpleType>
+         </xsd:element>
+         
+        <xsd:element name="uom">
+            <xsd:simpleType>
+               <xsd:restriction base="xsd:string">
+                  <xsd:minLength value="1" />               
+                  <xsd:maxLength value="5"/>
+               </xsd:restriction>
+            </xsd:simpleType>
+         </xsd:element>      
+     
+	    <xsd:element name="DeliveryDate" type="xsd:dateTime"/>         
+         
+         
+         
+      </xsd:sequence>         
+      
+   </xsd:complexType>  
+
+
+<xsd:simpleType name="TDSDecimalOrEmptyString">
+  <xsd:union memberTypes="TDSPositiveDecimal TDSEmptyString" />
+</xsd:simpleType>
+
+<xsd:simpleType name="TDSEmptyString">
+  <xsd:restriction base="xsd:string">
+    <xsd:enumeration value="" />
+  </xsd:restriction>
+</xsd:simpleType>
+
+<xsd:simpleType name="TDSPositiveDecimal">
+  <xsd:restriction base="xsd:decimal">
+      <xsd:minInclusive value="0"/>
+      <xsd:fractionDigits value="2"/>      
+  </xsd:restriction>
+</xsd:simpleType>
+
+</xsd:schema>

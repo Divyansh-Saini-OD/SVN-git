@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<xs:schema  xmlns:xs="http://www.w3.org/2001/XMLSchema"
+         attributeFormDefault="unqualified"
+	elementFormDefault="qualified"
+	targetNamespace="http://xmlns.oracle.com/Recipient6"
+	xmlns="http://xmlns.oracle.com/Recipient6"
+>
+
+
+  <xs:element name="FaultNotification">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="RecipientList" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name="Recipient">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="RecipientAddress" />
+        <xs:element ref="RecipientType" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name="RecipientAddress">
+    <xs:complexType mixed="true" />
+  </xs:element>
+
+  <xs:element name="RecipientList">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="Recipient" maxOccurs="unbounded" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name="RecipientType">
+    <xs:complexType mixed="true" />
+  </xs:element>
+
+</xs:schema>

@@ -1,0 +1,61 @@
+REM================================================================================================
+REM                                 Start Of Script
+REM================================================================================================
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     OFF
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+-- +=======================================================================+
+-- |               Office Depot - Project Simplify                         |
+-- |      Oracle NAIO/Office Depot/Consulting Organization                 |
+-- +=======================================================================+
+-- | Name             :XX_GI_AVERAGE_COST_U1                               |
+-- | Description      :Unique Index for custom Table                       |
+---|                   XX_GI_AVERAGE_COST_STG                              | 
+-- |                                                                       | 
+-- |                                                                       |
+-- |Change History:                                                        |
+-- |---------------                                                        |
+-- |                                                                       |
+-- |Version  Date        Author             Remarks                        |
+-- |-------  ----------- -----------------  -------------------------------|
+-- |Draft 1A 22-JUNE-2007 Meenu Goyal       Initial                        |
+-- |1.0      21-SEP-2007  Jayshree          Baselined                      |
+-- +=======================================================================+
+
+PROMPT
+PROMPT Dropping Existing Index xx_gi_average_cost_u1....
+PROMPT
+-- ---------------------------------------------
+-- Dropping existing index XX_GI_AVERAGE_COST_U1
+-- ---------------------------------------------
+
+DROP INDEX XX_GI_AVERAGE_COST_U1;
+
+
+PROMPT
+PROMPT Creating Index xx_gi_adjustments_u1....
+PROMPT
+
+-- -------------------------------------------------
+-- Creating Index XX_GI_ADJUSTMENTS_U1
+-- -------------------------------------------------
+
+
+CREATE INDEX    xx_gi_average_cost_u1
+ON              xx_gi_average_cost_stg(
+                                       record_number
+                                       );
+
+SHOW ERRORS;
+
+EXIT;
+
+REM================================================================================================
+REM                                 Start Of Script
+REM================================================================================================
+

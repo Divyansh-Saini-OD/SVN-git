@@ -1,0 +1,80 @@
+<?xml version="1.0"?>
+<!-- $Header: GLogXML.wsdl 115.0.11510.2 2006/02/28 20:04:00 rvishnuv noship $ 
+-->
+<definitions name="GLogService"
+        targetNamespace="http://xmlns.oracle.com/apps/otm"
+        xmlns:tns="http://xmlns.oracle.com/apps/otm"
+        xmlns:plnk="http://schemas.xmlsoap.org/ws/2003/05/partner-link/"
+        xmlns="http://schemas.xmlsoap.org/wsdl/"
+	xmlns:http="http://schemas.xmlsoap.org/wsdl/http/" 
+	xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/"  >
+
+    <import namespace="http://xmlns.oracle.com/apps/otm" location="GLogXML.xsd"/>
+    <!--
+    <types>
+        <schema xmlns:xsd = "http://www.w3.org/2001/XMLSchema">
+           <import namespace="http://xmlns.oracle.com/apps/otm" schemaLocation="GLogXML.xsd" />
+        </schema>
+    </types>
+    -->
+    <message name="GLogServiceRequestMessage">
+            <part name="payload" element="tns:Transmission"/>
+    </message>
+    <message name="GLogServiceResponseMessage">
+            <part name="payload" element="tns:TransmissionAck"/>
+    </message>
+    <message name="GLogServiceQueryResponseMessage">
+        <part name="payload" element="tns:RemoteQueryReply"/>    
+    </message>
+    <portType name="GLogService">
+        <operation name="process">
+            <input  message="tns:GLogServiceRequestMessage" />
+            <output message="tns:GLogServiceResponseMessage"/>
+        </operation>
+        <operation name="query">
+            <input  message="tns:GLogServiceRequestMessage" />
+            <output message="tns:GLogServiceQueryResponseMessage"/>
+        </operation>
+    </portType>
+  <binding name="HTTPPost" type="tns:GLogService">
+    <http:binding verb="POST"/>
+    <operation name="process">
+      <http:operation location="/process"/>
+      <input>
+        <mime:mimeXml part="payload"/>
+        <mime:content type="text/xml"/> 
+      </input>
+      <output>
+        <mime:mimeXml part="payload"/>
+ 		<mime:content type="text/xml"/> 
+      </output>
+    </operation>
+    <operation name="query">
+      <http:operation location="/query"/>
+      <input>
+        <mime:mimeXml part="payload"/>
+        <mime:content type="text/xml"/> 
+      </input>
+      <output>
+        <mime:mimeXml part="payload"/>
+ 		<mime:content type="text/xml"/> 
+      </output>
+    </operation>
+  </binding>
+  <service name="GLogService">
+    <port name="HTTPPost" binding="tns:HTTPPost">
+      <http:address location="http://otm-connor-gc3-55-wl.us.oracle.com/GC3/glog.integration.servlet.LargeTransmissionServlet"/>
+      <!--
+      <http:address location="http://%com.oracle.app.otm.webserver.host%/GC3/glog.integration.servlet.WMServlet"/>
+      <http:address location="http://%com.oracle.app.otm.webserver.host%/GC3/glog.integration.servlet.LargeTransmissionServlet"/>
+      <http:address location="http://otm-connor-gc3-55-wl.us.oracle.com/GC3/glog.integration.servlet.WMServlet"/>
+      <http:address location="http://otm-connor-gc3-55-wl.us.oracle.com/GC3/glog.integration.servlet.LargeTransmissionServlet"/>
+      -->
+    </port>
+  </service>
+  <plnk:partnerLinkType name="GLogService">
+        <plnk:role name="GLogServiceProvider">
+            <plnk:portType name="tns:GLogService"/>
+        </plnk:role>
+  </plnk:partnerLinkType>
+</definitions>

@@ -1,0 +1,53 @@
+-- +==================================================================================+
+-- | Office Depot - Project Simplify                                                  |
+-- | Providge Consulting                                                              |
+-- +==================================================================================+
+-- | SQL Script to create the table:  XX_CE_RECON_JRNL                                |
+-- |                                                                                  |
+-- |Change Record:                                                                    |
+-- |===============                                                                   |
+-- |Version   Date          Author               Remarks                              |
+-- |=======   ===========   =============        =====================================|
+-- |1.0       12-FEB-2008   BLooman              Initial version                      |
+-- |                                                                                  |
+-- +==================================================================================+
+
+--DROP TABLE XXFIN.XX_CE_RECON_JRNL;
+
+-- this is a very close copy of XX_GL_INTERFACE_NA_STG for Cash Mgmt reconciliation journals
+CREATE TABLE XXFIN.XX_CE_RECON_JRNL
+( recon_jrnl_id       NUMBER         NOT NULL,
+  statement_header_id NUMBER         NOT NULL,
+  statement_line_id   NUMBER         NOT NULL,
+  sent_to_gl_flag     VARCHAR2(1)    DEFAULT 'N'     NOT NULL,
+  status              VARCHAR2(50)   NOT NULL,
+  creation_date       DATE           NOT NULL,
+  created_by          NUMBER         NOT NULL,
+  last_update_date    DATE           NOT NULL,
+  last_updated_by     NUMBER         NOT NULL,
+  actual_flag         VARCHAR2(1)    NOT NULL,
+  group_id            NUMBER         ,
+  ce_group_id         NUMBER         NOT NULL,
+  batch_name          VARCHAR2(100)  ,
+  batch_desc          VARCHAR2(240)  ,
+  je_name             VARCHAR2(100)  ,
+  je_descrp           VARCHAR2(100)  ,
+  user_source_name    VARCHAR2(25)   NOT NULL,
+  user_catgory_name   VARCHAR2(25)   NOT NULL,
+  set_of_books_id     NUMBER         NOT NULL,
+  accounting_date     DATE           NOT NULL,
+  currency_code       VARCHAR2(15)   NOT NULL,
+  gl_company          VARCHAR2(25)   ,       -- GL segment1
+  gl_cost_center      VARCHAR2(25)   ,       -- GL segment2
+  gl_account          VARCHAR2(25)   ,       -- GL segment3
+  gl_location         VARCHAR2(25)   ,       -- GL segment4
+  gl_intercompany     VARCHAR2(25)   ,       -- GL segment5
+  gl_channel          VARCHAR2(25)   ,       -- GL segment6
+  gl_future           VARCHAR2(25)   ,       -- GL segment7
+  cc_id               NUMBER         ,
+  entered_dr          NUMBER         ,
+  entered_cr          NUMBER         ,
+  je_line_dsc         VARCHAR2(240)  ,
+  CONSTRAINT XX_CE_RECON_JRNL_PK 
+   PRIMARY KEY (recon_jrnl_id) );
+   

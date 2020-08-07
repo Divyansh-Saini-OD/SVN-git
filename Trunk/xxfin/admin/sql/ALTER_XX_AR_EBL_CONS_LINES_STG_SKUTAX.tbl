@@ -1,0 +1,27 @@
+-- +========================================================================+
+-- |                  Office Depot                                          |
+-- +========================================================================+
+-- | Name        : ALTER_XX_AR_EBL_CONS_LINES_STG_SKUTAX.tbl                |
+-- | Rice ID     : E2059                                                    |
+-- | Description : Added new fields in the existing XX_AR_EBL_CONS_LINES_STG|
+-- |               table                                                    |
+-- |                                                                        |
+-- |Change Record:                                                          |
+-- |===============                                                         |
+-- |Version   Date        Author           Remarks                          |
+-- |=======  ===========  =============    =================================|
+-- |1.0      30-AUG-2018  Capgemini        Initial Version                  |
+-- +========================================================================+
+
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     ON
+
+ALTER TABLE XXFIN.XX_AR_EBL_CONS_LINES_STG  
+        ADD(
+             SKU_LEVEL_TAX NUMBER
+           );
+
+SHOW ERROR;

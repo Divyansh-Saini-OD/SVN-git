@@ -1,0 +1,25 @@
+-- +============================================================================================+
+-- |                  Office Depot - Project Simplify                                           |
+-- +============================================================================================+
+-- | Name        : ALTER_XX_CS_MPS_DEVICE_B_STG.tbl                                                 |
+-- |                                                                                            |
+-- |                                                                                            |
+-- |Change Record:                                                                              |
+-- |===============                                                                             |
+-- |Version     Date           Author               Remarks                                     |
+-- |=======    ==========      ================     ============================================|
+-- |1.0        11-NOV-2014     Arun Gannarapu        Initial version                            |
+-- +============================================================================================+
+
+Alter table XXOM.XX_CS_MPS_DEVICE_B_STG MODIFY(BLACK_THRESHOLD    VARCHAR2(25));
+
+Alter table XXOM.XX_CS_MPS_DEVICE_B_STG MODIFY(CYAN_THRESHOLD     VARCHAR2(25));
+
+Alter table XXOM.XX_CS_MPS_DEVICE_B_STG MODIFY(MAGENTA_THRESHOLD VARCHAR2(25));
+
+Alter table XXOM.XX_CS_MPS_DEVICE_B_STG MODIFY(YELLOW_THRESHOLD VARCHAR2(25));
+
+Alter table xxom.XX_CS_MPS_DEVICE_B_STG ADD(EMAIL_ADDRESS VARCHAR2(50));
+
+
+SHOW ERRORS;

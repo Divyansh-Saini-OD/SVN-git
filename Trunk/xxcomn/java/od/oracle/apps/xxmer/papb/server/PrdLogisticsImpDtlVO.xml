@@ -1,0 +1,206 @@
+<?xml version="1.0" encoding='windows-1252'?>
+<!DOCTYPE ViewObject SYSTEM "jbo_03_01.dtd">
+
+<ViewObject
+   Name="PrdLogisticsImpDtlVO"
+   OrderBy="rank"
+   BindingStyle="Oracle"
+   CustomQuery="true"
+   RowClass="od.oracle.apps.xxmer.papb.server.PrdLogisticsImpDtlVORowImpl"
+   ComponentClass="od.oracle.apps.xxmer.papb.server.PrdLogisticsImpDtlVOImpl"
+   MsgBundleClass="oracle.jbo.common.JboResourceBundle"
+   UseGlueCode="false" >
+   <SQLQuery><![CDATA[
+select '1' as rank, 'Sell Unit' as pkg_type,
+  prod_dtl_id,
+  SL_QTY as qty,
+  SL_LENGTH as len,
+  SL_WIDTH as width,
+  SL_HEIGHT as height,
+  SL_WEIGHT as weight,
+  SL_CMB as cmb,
+  SL_CUFT as cuft, 
+  sl_vend_upc_no as vendor_upc_no, 
+  sl_od_upc_no as od_upc_no
+  from XX_PA_PB_PRD_LOGISTICS 
+union
+select '2' as rank, 'Inner Carton' as pkg_type,
+  prod_dtl_id,
+  IC_QTY as qty,
+  IC_LENGTH as len,
+  IC_WIDTH as width,
+  IC_HEIGHT as height,
+  IC_WEIGHT as weight,
+  IC_CMB as cmb,
+  IC_CUFT as cuft, 
+  ic_vend_upc_no as vendor_upc_no, 
+  ic_od_upc_no as od_upc_no
+  from XX_PA_PB_PRD_LOGISTICS 
+union
+select '3' as rank, 'Master Carton' as pkg_type,
+  prod_dtl_id,
+  MC_QTY as qty,
+  MC_LENGTH as len,
+  MC_WIDTH as width,
+  MC_HEIGHT as height,
+  MC_WEIGHT as weight,
+  MC_CMB as cmb,
+  MC_CUFT as cuft, 
+  mc_vend_upc_no as vendor_upc_no, 
+  mc_od_upc_no as od_upc_no
+  from XX_PA_PB_PRD_LOGISTICS
+   ]]></SQLQuery>
+   <DesignTime>
+      <Attr Name="_isCodegen" Value="true" />
+      <Attr Name="_version" Value="9.0.3.13.75" />
+      <Attr Name="_CodeGenFlagNew" Value="36" />
+   </DesignTime>
+   <ViewAttribute
+      Name="Rank"
+      IsPersistent="false"
+      Precision="1"
+      Type="java.lang.String"
+      AliasName="RANK"
+      ColumnType="VARCHAR2"
+      Expression="RANK"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="1" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="PkgType"
+      IsPersistent="false"
+      Precision="13"
+      Type="java.lang.String"
+      AliasName="PKG_TYPE"
+      ColumnType="VARCHAR2"
+      Expression="PKG_TYPE"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="13" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="ProdDtlId"
+      IsPersistent="false"
+      Type="oracle.jbo.domain.Number"
+      AliasName="PROD_DTL_ID"
+      ColumnType="VARCHAR2"
+      Expression="PROD_DTL_ID"
+      SQLType="NUMERIC" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Qty"
+      IsPersistent="false"
+      Type="oracle.jbo.domain.Number"
+      AliasName="QTY"
+      ColumnType="VARCHAR2"
+      Expression="QTY"
+      SQLType="NUMERIC" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Len"
+      IsPersistent="false"
+      Type="oracle.jbo.domain.Number"
+      AliasName="LEN"
+      ColumnType="VARCHAR2"
+      Expression="LEN"
+      SQLType="NUMERIC" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Width"
+      IsPersistent="false"
+      Type="oracle.jbo.domain.Number"
+      AliasName="WIDTH"
+      ColumnType="VARCHAR2"
+      Expression="WIDTH"
+      SQLType="NUMERIC" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Height"
+      IsPersistent="false"
+      Type="oracle.jbo.domain.Number"
+      AliasName="HEIGHT"
+      ColumnType="VARCHAR2"
+      Expression="HEIGHT"
+      SQLType="NUMERIC" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Weight"
+      IsPersistent="false"
+      Type="oracle.jbo.domain.Number"
+      AliasName="WEIGHT"
+      ColumnType="VARCHAR2"
+      Expression="WEIGHT"
+      SQLType="NUMERIC" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Cmb"
+      IsPersistent="false"
+      Type="oracle.jbo.domain.Number"
+      AliasName="CMB"
+      ColumnType="VARCHAR2"
+      Expression="CMB"
+      SQLType="NUMERIC" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Cuft"
+      IsPersistent="false"
+      Type="oracle.jbo.domain.Number"
+      AliasName="CUFT"
+      ColumnType="VARCHAR2"
+      Expression="CUFT"
+      SQLType="NUMERIC" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="VendorUpcNo"
+      IsPersistent="false"
+      Precision="50"
+      Type="java.lang.String"
+      AliasName="VENDOR_UPC_NO"
+      ColumnType="VARCHAR2"
+      Expression="VENDOR_UPC_NO"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="50" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="OdUpcNo"
+      IsPersistent="false"
+      Precision="50"
+      Type="java.lang.String"
+      AliasName="OD_UPC_NO"
+      ColumnType="VARCHAR2"
+      Expression="OD_UPC_NO"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="50" />
+      </DesignTime>
+   </ViewAttribute>
+</ViewObject>

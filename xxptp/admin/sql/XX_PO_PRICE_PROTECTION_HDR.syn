@@ -1,0 +1,72 @@
+REM============================================================================================
+REM                                 Start Of Script                                            
+REM============================================================================================
+
+--+==============================================================================================+--
+--|                                                                                              |--
+--| Object Name    : OD E0323 UpdatePriceRetroactively                                           |--
+--|                                                                                              |--
+--| Program Name   : XX_PO_PRICE_PROTECTION_HDR.syn                                              |--
+--|                                                                                              |--
+--| Purpose        : Create Custom Tables .                                                      |--
+--|                  The Objects created are:                                                    |--
+--|                                                                                              |--
+--|                  1. XX_PO_PRICE_PROTECTION_HDR (Synonym for XX_PO_PRICE_PROTECTION_HDR)      |--
+--|                                                                                              |--
+--| Change History  :                                                                            |--
+--| Version           Date             Changed By              Description                       |--
+--+==============================================================================================+--
+--| 1.0               09-July-2007     Sriramdas S             Original                          |--
+--+==============================================================================================+--
+
+SET VERIFY   OFF
+SET TERM     ON
+SET FEEDBACK OFF
+SET SHOW     OFF
+SET ECHO     OFF
+SET TAB      OFF
+                   
+WHENEVER SQLERROR CONTINUE
+                   
+PROMPT             
+PROMPT Dropping Existing Synonyms for Custom Base Tables
+PROMPT             
+
+WHENEVER SQLERROR CONTINUE
+
+PROMPT
+PROMPT Dropping SYNONYM XX_PO_PRICE_PROTECTION_HDR in APPS
+PROMPT
+
+DROP SYNONYM XX_PO_PRICE_PROTECTION_HDR;
+
+WHENEVER SQLERROR CONTINUE
+
+PROMPT
+PROMPT Creating Synonym in APPS...
+PROMPT
+
+WHENEVER SQLERROR CONTINUE
+
+PROMPT
+PROMPT Creating SYNONYM XX_PO_PRICE_PROTECTION_HDR
+PROMPT
+
+CREATE OR REPLACE SYNONYM XX_PO_PRICE_PROTECTION_HDR FOR XXPTP.XX_PO_PRICE_PROTECTION_HDR;
+
+WHENEVER SQLERROR CONTINUE
+
+PROMPT
+PROMPT Exiting....
+PROMPT
+
+SET FEEDBACK ON
+
+
+EXIT;
+
+
+REM=================================================================================================
+REM                                   End Of Script                                            
+REM=================================================================================================
+

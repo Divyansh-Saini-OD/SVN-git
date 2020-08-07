@@ -1,0 +1,203 @@
+<?xml version="1.0" encoding='windows-1252'?>
+<!DOCTYPE ViewObject SYSTEM "jbo_03_01.dtd">
+
+<ViewObject
+   Name="ODRepStoreSrchVO"
+   BindingStyle="Oracle"
+   CustomQuery="true"
+   RowClass="oracle.apps.fnd.framework.server.OAViewRowImpl"
+   ComponentClass="od.oracle.apps.xxcrm.stl.admin.server.ODRepStoreSrchVOImpl"
+   MsgBundleClass="oracle.jbo.common.JboResourceBundle"
+   UseGlueCode="false" >
+   <SQLQuery><![CDATA[
+SELECT ODRepStoreMapEO.REP_STORE_ID, 
+       ODRepStoreMapEO.STORE_ID, 
+       ODRepStoreMapEO.START_DATE_ACTIVE, 
+       ODRepStoreMapEO.END_DATE_ACTIVE, 
+       ODRepStoreMapEO.RESOURCE_ID, 
+       ODRepStoreMapEO.ROLE_ID, 
+       ODRepStoreMapEO.GROUP_ID,
+       r.resource_name,
+       g.group_name,
+       rol.role_name,
+       ODRepStoreMapEO.LEGACY_REP_ID,
+    ( case when nvl(ODRepStoreMapEO.END_DATE_ACTIVE,sysdate+1)>sysdate then 'Y' else 'N'   end ) ACTIVE,
+r.source_email
+FROM XXCRM_REP_STORE_MAP ODRepStoreMapEO,
+     jtf_rs_resource_extns_vl r,
+     jtf_rs_groups_vl g,
+     jtf_rs_roles_vl rol
+where ODRepStoreMapEO.RESOURCE_ID =r.RESOURCE_ID(+)
+and  ODRepStoreMapEO.ROLE_ID = rol.role_id(+)
+and ODRepStoreMapEO.GROUP_ID = g.group_id(+)
+   ]]></SQLQuery>
+   <DesignTime>
+      <Attr Name="_version" Value="9.0.3.13.75" />
+      <Attr Name="_CodeGenFlagNew" Value="36" />
+   </DesignTime>
+   <ViewAttribute
+      Name="RepStoreId"
+      IsPersistent="false"
+      Type="oracle.jbo.domain.Number"
+      AliasName="REP_STORE_ID"
+      ColumnType="VARCHAR2"
+      Expression="REP_STORE_ID"
+      SQLType="NUMERIC" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="StoreId"
+      IsPersistent="false"
+      Precision="250"
+      Type="java.lang.String"
+      AliasName="STORE_ID"
+      ColumnType="VARCHAR2"
+      Expression="STORE_ID"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="250" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="StartDateActive"
+      IsPersistent="false"
+      Type="oracle.jbo.domain.Date"
+      AliasName="START_DATE_ACTIVE"
+      ColumnType="VARCHAR2"
+      Expression="START_DATE_ACTIVE"
+      SQLType="DATE" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="7" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="EndDateActive"
+      IsPersistent="false"
+      Type="oracle.jbo.domain.Date"
+      AliasName="END_DATE_ACTIVE"
+      ColumnType="VARCHAR2"
+      Expression="END_DATE_ACTIVE"
+      SQLType="DATE" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="7" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="ResourceId"
+      IsPersistent="false"
+      Type="oracle.jbo.domain.Number"
+      AliasName="RESOURCE_ID"
+      ColumnType="VARCHAR2"
+      Expression="RESOURCE_ID"
+      SQLType="NUMERIC" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="RoleId"
+      IsPersistent="false"
+      Type="oracle.jbo.domain.Number"
+      AliasName="ROLE_ID"
+      ColumnType="VARCHAR2"
+      Expression="ROLE_ID"
+      SQLType="NUMERIC" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="GroupId"
+      IsPersistent="false"
+      Type="oracle.jbo.domain.Number"
+      AliasName="GROUP_ID"
+      ColumnType="VARCHAR2"
+      Expression="GROUP_ID"
+      SQLType="NUMERIC" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="ResourceName"
+      IsPersistent="false"
+      Precision="360"
+      Type="java.lang.String"
+      AliasName="RESOURCE_NAME"
+      ColumnType="VARCHAR2"
+      Expression="RESOURCE_NAME"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="360" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="GroupName"
+      IsPersistent="false"
+      IsNotNull="true"
+      Precision="60"
+      Type="java.lang.String"
+      AliasName="GROUP_NAME"
+      ColumnType="VARCHAR2"
+      Expression="GROUP_NAME"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="60" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="RoleName"
+      IsPersistent="false"
+      IsNotNull="true"
+      Precision="60"
+      Type="java.lang.String"
+      AliasName="ROLE_NAME"
+      ColumnType="VARCHAR2"
+      Expression="ROLE_NAME"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="60" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="LegacyRepId"
+      IsPersistent="false"
+      Precision="200"
+      Type="java.lang.String"
+      AliasName="LEGACY_REP_ID"
+      ColumnType="VARCHAR2"
+      Expression="LEGACY_REP_ID"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="200" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Active"
+      IsPersistent="false"
+      Precision="1"
+      Type="java.lang.String"
+      AliasName="ACTIVE"
+      ColumnType="VARCHAR2"
+      Expression="ACTIVE"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="1" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="SourceEmail"
+      IsPersistent="false"
+      Precision="2000"
+      Type="java.lang.String"
+      AliasName="SOURCE_EMAIL"
+      ColumnType="VARCHAR2"
+      Expression="SOURCE_EMAIL"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="2000" />
+      </DesignTime>
+   </ViewAttribute>
+</ViewObject>

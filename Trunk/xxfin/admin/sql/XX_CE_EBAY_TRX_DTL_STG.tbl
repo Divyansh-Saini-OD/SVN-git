@@ -1,0 +1,121 @@
+SET VERIFY OFF;
+SET SHOW OFF;
+SET ECHO OFF;
+SET TAB OFF;
+SET FEEDBACK OFF;
+ 
+WHENEVER SQLERROR CONTINUE;
+ 
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+-- +==================================================================================+  
+-- | Office Depot - Project Simplify                                                  |
+-- |                                                              |
+-- +==================================================================================+
+-- | SQL Script to create the table:  XX_CE_EBAY_TRX_DTL_STG                |
+-- |                                                                                  |
+-- |
+-- |                                                                                  |
+-- |                                                                                  |
+-- |Change Record:                                                                    |
+-- |===============                                                                   |
+-- |Version   Date          Author               Remarks                              |
+-- |=======   ===========   =============        =====================================|
+-- |1.0       28-JUN-2018    Priyam Parmar       Initial DRAFT version                |
+-- |                                                                                  |
+-- +==================================================================================+
+
+--+=====================================================================+
+--+               CREATE TABLE XX_CE_EBAY_TRX_DTL_STG
+--+=====================================================================+
+
+
+  CREATE TABLE XX_CE_EBAY_TRX_DTL_STG
+  (
+    TRANSACTION_ID              VARCHAR2(150 ),
+    SETTLEMENT_ID               NUMBER,
+    RECORD_TYPE                 VARCHAR2(10 ),
+    INVOICE_ID                  VARCHAR2(150 ),
+    PAY_PAL_REFERENCE_ID        VARCHAR2(150 ),
+    PAY_PAL_REFERENCE_ID_TYPE   VARCHAR2(150 ),
+    TRANSACTION_EVENT_CODE      VARCHAR2(150 ),
+    TRANSACTION_INITIATION_DATE VARCHAR2(50 ),
+    TRANSACTION_COMPLETION_DATE VARCHAR2(50 ),
+    TRANSACTION_DEBITORCREDIT   VARCHAR2(150 ),
+    GROSS_TRANSACTION_AMOUNT    NUMBER,
+    GROSS_TRANSACTION_CURRENCY  VARCHAR2(150 ),
+    FEE_DEBITORCREDIT           VARCHAR2(150 ),
+    FEE_AMOUNT                  NUMBER,
+    FEE_CURRENCY                VARCHAR2(150 ),
+    TRANSACTIONAL_STATUS        VARCHAR2(150 ),
+    INSURANCE_AMOUNT            NUMBER,
+    SALES_TAX_AMOUNT            NUMBER,
+    SHIPPING_AMOUNT             NUMBER,
+    TRANSACTION_SUBJECT         VARCHAR2(150 ),
+    TRANSACTION_NOTE            VARCHAR2(150 ),
+    PAYERS_ACCOUNT_ID           VARCHAR2(150 ),
+    PAYER_ADDRESS_STATUS        VARCHAR2(150 ),
+    ITEM_NAME                   VARCHAR2(500 ),
+    ITEM_ID                     VARCHAR2(250 ),
+    OPTION1_NAME                VARCHAR2(150 ),
+    OPTION1_VALUE               VARCHAR2(150 ),
+    OPTION2_NAME                VARCHAR2(150 ),
+    OPTION2_VALUE               VARCHAR2(150 ),
+    AUCTION_SITE                VARCHAR2(150 ),
+    AUCTION_BUYERID             VARCHAR2(150 ),
+    AUCTION_CLOSING_DATE        VARCHAR2(50 ),
+    SHIPPING_ADDRESS_LINE1      VARCHAR2(150 ),
+    SHIPPING_ADDRESS_LINE2      VARCHAR2(150 ),
+    SHIPPING_ADDRESS_CITY       VARCHAR2(150 ),
+    SHIPPING_ADDRESS_STATE      VARCHAR2(150 ),
+    SHIPPING_ADDRESS_ZIP        VARCHAR2(150 ),
+    SHIPPING_ADDRESS_COUNTRY    VARCHAR2(150 ),
+    SHIPPING_METHOD             VARCHAR2(150 ),
+    CUSTOM_FIELD                VARCHAR2(150 ),
+    BILLING_ADDRESS_LINE1       VARCHAR2(150 ),
+    BILLING_ADDRESS_LINE2       VARCHAR2(150 ),
+    BILLING_ADDRESS_CITY        VARCHAR2(150 ),
+    BILLING_ADDRESS_STATE       VARCHAR2(150 ),
+    BILLING_ADDRESS_ZIP         VARCHAR2(150 ),
+    BILLING_ADDRESS_COUNTRY     VARCHAR2(150 ),
+    CONSUMER_ID                 VARCHAR2(150 ),
+    FIRST_NAME                  VARCHAR2(150 ),
+    LAST_NAME                   VARCHAR2(150 ),
+    CONSUMER_BUSINESS_NAME      VARCHAR2(150 ),
+    CARD_TYPE                   VARCHAR2(150 ),
+    PAYMENT_SOURCE              VARCHAR2(150 ),
+    SHIPPING_NAME               VARCHAR2(150 ),
+    AUTHORIZATION_REVIEW_STATUS VARCHAR2(150 ),
+    PROTECTION_ELIGIBILITY      VARCHAR2(150 ),
+    PAYMENT_TRACKING_ID         VARCHAR2(150 ),
+    STORE_ID                    VARCHAR2(150 ),
+    TERMINAL_ID                 VARCHAR2(150 ),
+    COUPONS                     VARCHAR2(150 ),
+    SPECIAL_OFFERS              VARCHAR2(150 ),
+    LOYALTY_CARDNUMBER          VARCHAR2(150 ),
+    CHECKOUT_TYPE               VARCHAR2(150 ),
+    SEC_SHIPPING_ADDRESS_LINE1  VARCHAR2(150 ),
+    SEC_SHIPPING_ADDRESS_LINE2  VARCHAR2(150 ),
+    SEC_SHIPPING_ADDRESS_CITY   VARCHAR2(150 ),
+    SEC_SHIPPING_ADDRESS_STATE  VARCHAR2(150 ),
+    SEC_SHIPPING_ADDRESS_CNTRY  VARCHAR2(150 ),
+    SEC_SHIPPING_ADDRESS_ZIP    VARCHAR2(150 ),
+    THREEPL_REFERENCE_ID        VARCHAR2(150 ),
+    REPORT_DATE                 DATE,
+    FILENAME                    VARCHAR2(150 ),
+    ATTRIBUTE1                  VARCHAR2(150 ),
+    ATTRIBUTE2                  VARCHAR2(150 ),
+    ATTRIBUTE3                  VARCHAR2(150 ),
+    ATTRIBUTE4                  VARCHAR2(150 ),
+    ATTRIBUTE5                  VARCHAR2(150 ),
+    PROCESS_FLAG                VARCHAR2(150 ),
+    ERR_MSG                     VARCHAR2(500 ),
+    GIFTCARDID                  VARCHAR2(250 )
+  );
+
+ 
+ 
+ Grant  all on XX_CE_EBAY_TRX_DTL_STG to APPS;
+
+   /
+Show error

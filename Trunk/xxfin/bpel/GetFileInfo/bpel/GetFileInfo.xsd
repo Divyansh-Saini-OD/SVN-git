@@ -1,0 +1,24 @@
+<schema attributeFormDefault="unqualified"
+	elementFormDefault="qualified"
+	targetNamespace="http://xmlns.oracle.com/GetFileInfo"
+	xmlns="http://www.w3.org/2001/XMLSchema">
+	<element name="GetFileInfoProcessRequest">
+		<complexType>
+			<sequence>
+				<element name="fileName" type="string"/>
+			</sequence>
+		</complexType>
+	</element>
+	<element name="GetFileInfoProcessResponse">
+		<complexType>
+			<sequence>
+				<element name="result" type="string"/>
+				<element name="fileName" type="string"/>
+				<element name="lastModified" type="string"/>
+				<element name="fileSize" type="string"/>
+				<element name="numberOfLines" type="string"/>
+				<element name="longestLineLength" type="string"/>
+			</sequence>
+		</complexType>
+	</element>
+</schema>

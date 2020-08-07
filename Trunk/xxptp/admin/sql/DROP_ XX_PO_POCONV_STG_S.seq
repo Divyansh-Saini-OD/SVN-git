@@ -1,0 +1,55 @@
+REM============================================================================================
+REM                                 Start Of Script                                            
+REM============================================================================================
+
+--+=============================================================================================+--
+--|                                                                                             |--
+--| Object Name    : OD Purchase Order Conversion                                               |--
+--|                                                                                             |--
+--| Program Name   : DROP_XX_PO_POCONV_STG_S.seq                                                |--        
+--|                                                                                             |--   
+--| Purpose        : Drop Custom Sequences                                                      |--
+--|                  The Objects dropped are:                                                   |--
+--|                                                                                             |--
+--|                  1. XX_PO_POCONV_STG_S (Sequence for generation of control_id)              |--  
+--|                                                                                             |-- 
+--| Change History  :                                                                           |--
+--| Version           Date             Changed By              Description                      |--
+--+=============================================================================================+--
+--| 1.0               21-Nov-2007      Ritu Shukla             Original                         |--
+--+=============================================================================================+
+
+SET VERIFY   OFF
+SET TERM     ON
+SET FEEDBACK OFF
+SET SHOW     OFF
+SET ECHO     OFF
+SET TAB      OFF
+
+WHENEVER SQLERROR CONTINUE
+
+PROMPT
+PROMPT Dropping Existing Custom Sequences......
+PROMPT
+
+WHENEVER SQLERROR CONTINUE
+
+PROMPT
+PROMPT Dropping Sequence XXCNV.XX_PO_POCONV_STG_S......
+PROMPT
+
+DROP SEQUENCE XXCNV.XX_PO_POCONV_STG_S;
+
+WHENEVER SQLERROR CONTINUE
+
+PROMPT
+PROMPT Exiting....
+PROMPT
+
+SET FEEDBACK ON
+
+EXIT;
+
+REM=================================================================================================
+REM                                   End Of Script                                            
+REM=================================================================================================

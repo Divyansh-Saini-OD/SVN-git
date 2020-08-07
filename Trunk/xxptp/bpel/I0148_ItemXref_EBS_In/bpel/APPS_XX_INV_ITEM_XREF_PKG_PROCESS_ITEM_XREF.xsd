@@ -1,0 +1,35 @@
+<schema targetNamespace="http://xmlns.oracle.com/pcbpel/adapter/db/APPS/XX_INV_ITEM_XREF_PKG/PROCESS_ITEM_XREF/" xmlns="http://www.w3.org/2001/XMLSchema" xmlns:db="http://xmlns.oracle.com/pcbpel/adapter/db/APPS/XX_INV_ITEM_XREF_PKG/PROCESS_ITEM_XREF/">
+   <element name="InputParameters">
+      <complexType>
+         <sequence>
+            <element name="P_XREF_OBJECT" type="string" db:index="1" db:type="VARCHAR2" minOccurs="0" nillable="true"/>
+            <element name="P_ITEM" type="string" db:index="2" db:type="VARCHAR2" minOccurs="0" nillable="true"/>
+            <element name="P_ACTION" type="string" db:index="3" db:type="VARCHAR2" minOccurs="0" nillable="true"/>
+            <element name="P_XREF_ITEM" type="string" db:index="4" db:type="VARCHAR2" minOccurs="0" nillable="true"/>
+            <element name="P_XREF_TYPE" type="string" db:index="5" db:type="VARCHAR2" minOccurs="0" nillable="true"/>
+            <element name="P_PRODMULTIPLIER" type="decimal" db:index="6" db:type="NUMBER" minOccurs="0" nillable="true"/>
+            <element name="P_PRODMULTDIVCD" type="string" db:index="7" db:type="VARCHAR2" minOccurs="0" nillable="true"/>
+            <element name="P_PRDXREFDESC" type="string" db:index="8" db:type="VARCHAR2" minOccurs="0" nillable="true"/>
+            <element name="P_WHSLRSUPPLIER" type="decimal" db:index="9" db:type="NUMBER" minOccurs="0" nillable="true"/>
+            <element name="P_WHSLRMULTIPLIER" type="decimal" db:index="10" db:type="NUMBER" minOccurs="0" nillable="true"/>
+            <element name="P_WHSLRMULTDIVCD" type="string" db:index="11" db:type="VARCHAR2" minOccurs="0" nillable="true"/>
+            <element name="P_WHSLRRETAILPRICE" type="decimal" db:index="12" db:type="NUMBER" minOccurs="0" nillable="true"/>
+            <element name="P_WHSLRUOMCD" type="string" db:index="13" db:type="VARCHAR2" minOccurs="0" nillable="true"/>
+            <element name="P_WHSLRPRODCATEGORY" type="string" db:index="14" db:type="VARCHAR2" minOccurs="0" nillable="true"/>
+            <element name="P_WHSLRGENCATPGNBR" type="decimal" db:index="15" db:type="NUMBER" minOccurs="0" nillable="true"/>
+            <element name="P_WHSLRFURCATPGNBR" type="decimal" db:index="16" db:type="NUMBER" minOccurs="0" nillable="true"/>
+            <element name="P_WHSLRNNPGNBR" type="decimal" db:index="17" db:type="NUMBER" minOccurs="0" nillable="true"/>
+            <element name="P_WHSLRPRGELIGFLG" type="string" db:index="18" db:type="VARCHAR2" minOccurs="0" nillable="true"/>
+            <element name="P_WHSLRBRANCHFLG" type="string" db:index="19" db:type="VARCHAR2" minOccurs="0" nillable="true"/>
+         </sequence>
+      </complexType>
+   </element>
+   <element name="OutputParameters">
+      <complexType>
+         <sequence>
+            <element name="X_MESSAGE_CODE" type="decimal" db:index="20" db:type="NUMBER" minOccurs="0" nillable="true"/>
+            <element name="X_MESSAGE_DATA" type="string" db:index="21" db:type="VARCHAR2" minOccurs="0" nillable="true"/>
+         </sequence>
+      </complexType>
+   </element>
+</schema>

@@ -1,0 +1,1024 @@
+<?xml version="1.0" encoding='windows-1252'?>
+<!DOCTYPE Entity SYSTEM "jbo_03_01.dtd">
+
+<Entity
+   Name="ODAccountSiteEO"
+   DBObjectType="view"
+   DBObjectName="XX_CDH_ACCT_SITE_EXT_VL"
+   AliasName="ODAccountSiteEO"
+   BindingStyle="Oracle"
+   UseGlueCode="false"
+   CodeGenFlag="71"
+   RowClass="od.oracle.apps.xxcrm.addattr.acctsite.server.ODAccountSiteEOImpl"
+   DefClass="oracle.apps.fnd.framework.server.OAEntityDefImpl"
+   CollClass="oracle.apps.fnd.framework.server.OAEntityCache" >
+   <DesignTime>
+      <Attr Name="_isCodegen" Value="true" />
+      <Attr Name="_version" Value="9.0.3.13.93" />
+      <AttrArray Name="_publishEvents">
+      </AttrArray>
+   </DesignTime>
+   <Attribute
+      Name="ExtensionId"
+      IsNotNull="true"
+      Precision="15"
+      Scale="0"
+      Type="oracle.jbo.domain.Number"
+      ColumnName="EXTENSION_ID"
+      ColumnType="NUMBER"
+      SQLType="NUMERIC"
+      TableName="XX_CDH_ACCT_SITE_EXT_VL"
+      PrimaryKey="true" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="CustAcctSiteId"
+     
+      Precision="15"
+      Scale="0"
+      Type="oracle.jbo.domain.Number"
+      ColumnName="CUST_ACCT_SITE_ID"
+      ColumnType="NUMBER"
+      SQLType="NUMERIC"
+      TableName="XX_CDH_ACCT_SITE_EXT_VL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="AttrGroupId"
+      
+      Precision="15"
+      Scale="0"
+      Type="oracle.jbo.domain.Number"
+      ColumnName="ATTR_GROUP_ID"
+      ColumnType="NUMBER"
+      SQLType="NUMERIC"
+      TableName="XX_CDH_ACCT_SITE_EXT_VL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="CreatedBy"
+      
+      Precision="15"
+      Scale="0"
+      Type="oracle.jbo.domain.Number"
+      ColumnName="CREATED_BY"
+      ColumnType="NUMBER"
+      SQLType="NUMERIC"
+      TableName="XX_CDH_ACCT_SITE_EXT_VL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="CreationDate"
+      
+      Type="oracle.jbo.domain.Date"
+      ColumnName="CREATION_DATE"
+      ColumnType="DATE"
+      SQLType="TIMESTAMP"
+      TableName="XX_CDH_ACCT_SITE_EXT_VL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="7" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="LastUpdatedBy"
+      
+      Precision="15"
+      Scale="0"
+      Type="oracle.jbo.domain.Number"
+      ColumnName="LAST_UPDATED_BY"
+      ColumnType="NUMBER"
+      SQLType="NUMERIC"
+      TableName="XX_CDH_ACCT_SITE_EXT_VL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="LastUpdateDate"
+      
+      Type="oracle.jbo.domain.Date"
+      ColumnName="LAST_UPDATE_DATE"
+      ColumnType="DATE"
+      SQLType="TIMESTAMP"
+      TableName="XX_CDH_ACCT_SITE_EXT_VL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="7" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="LastUpdateLogin"
+      Precision="15"
+      Scale="0"
+      Type="oracle.jbo.domain.Number"
+      ColumnName="LAST_UPDATE_LOGIN"
+      ColumnType="NUMBER"
+      SQLType="NUMERIC"
+      TableName="XX_CDH_ACCT_SITE_EXT_VL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="SourceLang"
+      
+      Precision="4"
+      Type="java.lang.String"
+      ColumnName="SOURCE_LANG"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XX_CDH_ACCT_SITE_EXT_VL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="4" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="Language"
+      
+      Precision="4"
+      Type="java.lang.String"
+      ColumnName="LANGUAGE"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XX_CDH_ACCT_SITE_EXT_VL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="4" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="CExtAttr1"
+      Precision="150"
+      Type="java.lang.String"
+      ColumnName="C_EXT_ATTR1"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XX_CDH_ACCT_SITE_EXT_VL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="150" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="CExtAttr2"
+      Precision="150"
+      Type="java.lang.String"
+      ColumnName="C_EXT_ATTR2"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XX_CDH_ACCT_SITE_EXT_VL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="150" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="CExtAttr3"
+      Precision="150"
+      Type="java.lang.String"
+      ColumnName="C_EXT_ATTR3"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XX_CDH_ACCT_SITE_EXT_VL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="150" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="CExtAttr4"
+      Precision="150"
+      Type="java.lang.String"
+      ColumnName="C_EXT_ATTR4"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XX_CDH_ACCT_SITE_EXT_VL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="150" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="CExtAttr5"
+      Precision="150"
+      Type="java.lang.String"
+      ColumnName="C_EXT_ATTR5"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XX_CDH_ACCT_SITE_EXT_VL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="150" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="CExtAttr6"
+      Precision="150"
+      Type="java.lang.String"
+      ColumnName="C_EXT_ATTR6"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XX_CDH_ACCT_SITE_EXT_VL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="150" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="CExtAttr7"
+      Precision="150"
+      Type="java.lang.String"
+      ColumnName="C_EXT_ATTR7"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XX_CDH_ACCT_SITE_EXT_VL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="150" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="CExtAttr8"
+      Precision="150"
+      Type="java.lang.String"
+      ColumnName="C_EXT_ATTR8"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XX_CDH_ACCT_SITE_EXT_VL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="150" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="CExtAttr9"
+      Precision="150"
+      Type="java.lang.String"
+      ColumnName="C_EXT_ATTR9"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XX_CDH_ACCT_SITE_EXT_VL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="150" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="CExtAttr10"
+      Precision="150"
+      Type="java.lang.String"
+      ColumnName="C_EXT_ATTR10"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XX_CDH_ACCT_SITE_EXT_VL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="150" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="CExtAttr11"
+      Precision="150"
+      Type="java.lang.String"
+      ColumnName="C_EXT_ATTR11"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XX_CDH_ACCT_SITE_EXT_VL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="150" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="CExtAttr12"
+      Precision="150"
+      Type="java.lang.String"
+      ColumnName="C_EXT_ATTR12"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XX_CDH_ACCT_SITE_EXT_VL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="150" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="CExtAttr13"
+      Precision="150"
+      Type="java.lang.String"
+      ColumnName="C_EXT_ATTR13"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XX_CDH_ACCT_SITE_EXT_VL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="150" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="CExtAttr14"
+      Precision="150"
+      Type="java.lang.String"
+      ColumnName="C_EXT_ATTR14"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XX_CDH_ACCT_SITE_EXT_VL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="150" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="CExtAttr15"
+      Precision="150"
+      Type="java.lang.String"
+      ColumnName="C_EXT_ATTR15"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XX_CDH_ACCT_SITE_EXT_VL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="150" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="CExtAttr16"
+      Precision="150"
+      Type="java.lang.String"
+      ColumnName="C_EXT_ATTR16"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XX_CDH_ACCT_SITE_EXT_VL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="150" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="CExtAttr17"
+      Precision="150"
+      Type="java.lang.String"
+      ColumnName="C_EXT_ATTR17"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XX_CDH_ACCT_SITE_EXT_VL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="150" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="CExtAttr18"
+      Precision="150"
+      Type="java.lang.String"
+      ColumnName="C_EXT_ATTR18"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XX_CDH_ACCT_SITE_EXT_VL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="150" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="CExtAttr19"
+      Precision="150"
+      Type="java.lang.String"
+      ColumnName="C_EXT_ATTR19"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XX_CDH_ACCT_SITE_EXT_VL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="150" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="CExtAttr20"
+      Precision="150"
+      Type="java.lang.String"
+      ColumnName="C_EXT_ATTR20"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XX_CDH_ACCT_SITE_EXT_VL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="150" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="NExtAttr1"
+      Precision="22"
+      Scale="5"
+      Type="oracle.jbo.domain.Number"
+      ColumnName="N_EXT_ATTR1"
+      ColumnType="NUMBER"
+      SQLType="NUMERIC"
+      TableName="XX_CDH_ACCT_SITE_EXT_VL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="NExtAttr2"
+      Precision="22"
+      Scale="5"
+      Type="oracle.jbo.domain.Number"
+      ColumnName="N_EXT_ATTR2"
+      ColumnType="NUMBER"
+      SQLType="NUMERIC"
+      TableName="XX_CDH_ACCT_SITE_EXT_VL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="NExtAttr3"
+      Precision="22"
+      Scale="5"
+      Type="oracle.jbo.domain.Number"
+      ColumnName="N_EXT_ATTR3"
+      ColumnType="NUMBER"
+      SQLType="NUMERIC"
+      TableName="XX_CDH_ACCT_SITE_EXT_VL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="NExtAttr4"
+      Precision="22"
+      Scale="5"
+      Type="oracle.jbo.domain.Number"
+      ColumnName="N_EXT_ATTR4"
+      ColumnType="NUMBER"
+      SQLType="NUMERIC"
+      TableName="XX_CDH_ACCT_SITE_EXT_VL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="NExtAttr5"
+      Precision="22"
+      Scale="5"
+      Type="oracle.jbo.domain.Number"
+      ColumnName="N_EXT_ATTR5"
+      ColumnType="NUMBER"
+      SQLType="NUMERIC"
+      TableName="XX_CDH_ACCT_SITE_EXT_VL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="NExtAttr6"
+      Precision="22"
+      Scale="5"
+      Type="oracle.jbo.domain.Number"
+      ColumnName="N_EXT_ATTR6"
+      ColumnType="NUMBER"
+      SQLType="NUMERIC"
+      TableName="XX_CDH_ACCT_SITE_EXT_VL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="NExtAttr7"
+      Precision="22"
+      Scale="5"
+      Type="oracle.jbo.domain.Number"
+      ColumnName="N_EXT_ATTR7"
+      ColumnType="NUMBER"
+      SQLType="NUMERIC"
+      TableName="XX_CDH_ACCT_SITE_EXT_VL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="NExtAttr8"
+      Precision="22"
+      Scale="5"
+      Type="oracle.jbo.domain.Number"
+      ColumnName="N_EXT_ATTR8"
+      ColumnType="NUMBER"
+      SQLType="NUMERIC"
+      TableName="XX_CDH_ACCT_SITE_EXT_VL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="NExtAttr9"
+      Precision="22"
+      Scale="5"
+      Type="oracle.jbo.domain.Number"
+      ColumnName="N_EXT_ATTR9"
+      ColumnType="NUMBER"
+      SQLType="NUMERIC"
+      TableName="XX_CDH_ACCT_SITE_EXT_VL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="NExtAttr10"
+      Precision="22"
+      Scale="5"
+      Type="oracle.jbo.domain.Number"
+      ColumnName="N_EXT_ATTR10"
+      ColumnType="NUMBER"
+      SQLType="NUMERIC"
+      TableName="XX_CDH_ACCT_SITE_EXT_VL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="NExtAttr11"
+      Precision="22"
+      Scale="5"
+      Type="oracle.jbo.domain.Number"
+      ColumnName="N_EXT_ATTR11"
+      ColumnType="NUMBER"
+      SQLType="NUMERIC"
+      TableName="XX_CDH_ACCT_SITE_EXT_VL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="NExtAttr12"
+      Precision="22"
+      Scale="5"
+      Type="oracle.jbo.domain.Number"
+      ColumnName="N_EXT_ATTR12"
+      ColumnType="NUMBER"
+      SQLType="NUMERIC"
+      TableName="XX_CDH_ACCT_SITE_EXT_VL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="NExtAttr13"
+      Precision="22"
+      Scale="5"
+      Type="oracle.jbo.domain.Number"
+      ColumnName="N_EXT_ATTR13"
+      ColumnType="NUMBER"
+      SQLType="NUMERIC"
+      TableName="XX_CDH_ACCT_SITE_EXT_VL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="NExtAttr14"
+      Precision="22"
+      Scale="5"
+      Type="oracle.jbo.domain.Number"
+      ColumnName="N_EXT_ATTR14"
+      ColumnType="NUMBER"
+      SQLType="NUMERIC"
+      TableName="XX_CDH_ACCT_SITE_EXT_VL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="NExtAttr15"
+      Precision="22"
+      Scale="5"
+      Type="oracle.jbo.domain.Number"
+      ColumnName="N_EXT_ATTR15"
+      ColumnType="NUMBER"
+      SQLType="NUMERIC"
+      TableName="XX_CDH_ACCT_SITE_EXT_VL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="NExtAttr16"
+      Precision="22"
+      Scale="5"
+      Type="oracle.jbo.domain.Number"
+      ColumnName="N_EXT_ATTR16"
+      ColumnType="NUMBER"
+      SQLType="NUMERIC"
+      TableName="XX_CDH_ACCT_SITE_EXT_VL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="NExtAttr17"
+      Precision="22"
+      Scale="5"
+      Type="oracle.jbo.domain.Number"
+      ColumnName="N_EXT_ATTR17"
+      ColumnType="NUMBER"
+      SQLType="NUMERIC"
+      TableName="XX_CDH_ACCT_SITE_EXT_VL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="NExtAttr18"
+      Precision="22"
+      Scale="5"
+      Type="oracle.jbo.domain.Number"
+      ColumnName="N_EXT_ATTR18"
+      ColumnType="NUMBER"
+      SQLType="NUMERIC"
+      TableName="XX_CDH_ACCT_SITE_EXT_VL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="NExtAttr19"
+      Precision="22"
+      Scale="5"
+      Type="oracle.jbo.domain.Number"
+      ColumnName="N_EXT_ATTR19"
+      ColumnType="NUMBER"
+      SQLType="NUMERIC"
+      TableName="XX_CDH_ACCT_SITE_EXT_VL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="NExtAttr20"
+      Precision="22"
+      Scale="5"
+      Type="oracle.jbo.domain.Number"
+      ColumnName="N_EXT_ATTR20"
+      ColumnType="NUMBER"
+      SQLType="NUMERIC"
+      TableName="XX_CDH_ACCT_SITE_EXT_VL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="DExtAttr1"
+      Type="oracle.jbo.domain.Date"
+      ColumnName="D_EXT_ATTR1"
+      ColumnType="DATE"
+      SQLType="TIMESTAMP"
+      TableName="XX_CDH_ACCT_SITE_EXT_VL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="7" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="DExtAttr2"
+      Type="oracle.jbo.domain.Date"
+      ColumnName="D_EXT_ATTR2"
+      ColumnType="DATE"
+      SQLType="TIMESTAMP"
+      TableName="XX_CDH_ACCT_SITE_EXT_VL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="7" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="DExtAttr3"
+      Type="oracle.jbo.domain.Date"
+      ColumnName="D_EXT_ATTR3"
+      ColumnType="DATE"
+      SQLType="TIMESTAMP"
+      TableName="XX_CDH_ACCT_SITE_EXT_VL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="7" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="DExtAttr4"
+      Type="oracle.jbo.domain.Date"
+      ColumnName="D_EXT_ATTR4"
+      ColumnType="DATE"
+      SQLType="TIMESTAMP"
+      TableName="XX_CDH_ACCT_SITE_EXT_VL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="7" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="DExtAttr5"
+      Type="oracle.jbo.domain.Date"
+      ColumnName="D_EXT_ATTR5"
+      ColumnType="DATE"
+      SQLType="TIMESTAMP"
+      TableName="XX_CDH_ACCT_SITE_EXT_VL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="7" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="DExtAttr6"
+      Type="oracle.jbo.domain.Date"
+      ColumnName="D_EXT_ATTR6"
+      ColumnType="DATE"
+      SQLType="TIMESTAMP"
+      TableName="XX_CDH_ACCT_SITE_EXT_VL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="7" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="DExtAttr7"
+      Type="oracle.jbo.domain.Date"
+      ColumnName="D_EXT_ATTR7"
+      ColumnType="DATE"
+      SQLType="TIMESTAMP"
+      TableName="XX_CDH_ACCT_SITE_EXT_VL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="7" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="DExtAttr8"
+      Type="oracle.jbo.domain.Date"
+      ColumnName="D_EXT_ATTR8"
+      ColumnType="DATE"
+      SQLType="TIMESTAMP"
+      TableName="XX_CDH_ACCT_SITE_EXT_VL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="7" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="DExtAttr9"
+      Type="oracle.jbo.domain.Date"
+      ColumnName="D_EXT_ATTR9"
+      ColumnType="DATE"
+      SQLType="TIMESTAMP"
+      TableName="XX_CDH_ACCT_SITE_EXT_VL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="7" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="DExtAttr10"
+      Type="oracle.jbo.domain.Date"
+      ColumnName="D_EXT_ATTR10"
+      ColumnType="DATE"
+      SQLType="TIMESTAMP"
+      TableName="XX_CDH_ACCT_SITE_EXT_VL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="7" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="TlExtAttr1"
+      Precision="1000"
+      Type="java.lang.String"
+      ColumnName="TL_EXT_ATTR1"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XX_CDH_ACCT_SITE_EXT_VL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="1000" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="TlExtAttr2"
+      Precision="1000"
+      Type="java.lang.String"
+      ColumnName="TL_EXT_ATTR2"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XX_CDH_ACCT_SITE_EXT_VL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="1000" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="TlExtAttr3"
+      Precision="1000"
+      Type="java.lang.String"
+      ColumnName="TL_EXT_ATTR3"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XX_CDH_ACCT_SITE_EXT_VL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="1000" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="TlExtAttr4"
+      Precision="1000"
+      Type="java.lang.String"
+      ColumnName="TL_EXT_ATTR4"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XX_CDH_ACCT_SITE_EXT_VL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="1000" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="TlExtAttr5"
+      Precision="1000"
+      Type="java.lang.String"
+      ColumnName="TL_EXT_ATTR5"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XX_CDH_ACCT_SITE_EXT_VL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="1000" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="TlExtAttr6"
+      Precision="1000"
+      Type="java.lang.String"
+      ColumnName="TL_EXT_ATTR6"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XX_CDH_ACCT_SITE_EXT_VL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="1000" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="TlExtAttr7"
+      Precision="1000"
+      Type="java.lang.String"
+      ColumnName="TL_EXT_ATTR7"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XX_CDH_ACCT_SITE_EXT_VL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="1000" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="TlExtAttr8"
+      Precision="1000"
+      Type="java.lang.String"
+      ColumnName="TL_EXT_ATTR8"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XX_CDH_ACCT_SITE_EXT_VL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="1000" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="TlExtAttr9"
+      Precision="1000"
+      Type="java.lang.String"
+      ColumnName="TL_EXT_ATTR9"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XX_CDH_ACCT_SITE_EXT_VL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="1000" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="TlExtAttr10"
+      Precision="1000"
+      Type="java.lang.String"
+      ColumnName="TL_EXT_ATTR10"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XX_CDH_ACCT_SITE_EXT_VL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="1000" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="TlExtAttr11"
+      Precision="1000"
+      Type="java.lang.String"
+      ColumnName="TL_EXT_ATTR11"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XX_CDH_ACCT_SITE_EXT_VL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="1000" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="TlExtAttr12"
+      Precision="1000"
+      Type="java.lang.String"
+      ColumnName="TL_EXT_ATTR12"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XX_CDH_ACCT_SITE_EXT_VL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="1000" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="TlExtAttr13"
+      Precision="1000"
+      Type="java.lang.String"
+      ColumnName="TL_EXT_ATTR13"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XX_CDH_ACCT_SITE_EXT_VL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="1000" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="TlExtAttr14"
+      Precision="1000"
+      Type="java.lang.String"
+      ColumnName="TL_EXT_ATTR14"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XX_CDH_ACCT_SITE_EXT_VL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="1000" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="TlExtAttr15"
+      Precision="1000"
+      Type="java.lang.String"
+      ColumnName="TL_EXT_ATTR15"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XX_CDH_ACCT_SITE_EXT_VL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="1000" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="TlExtAttr16"
+      Precision="1000"
+      Type="java.lang.String"
+      ColumnName="TL_EXT_ATTR16"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XX_CDH_ACCT_SITE_EXT_VL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="1000" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="TlExtAttr17"
+      Precision="1000"
+      Type="java.lang.String"
+      ColumnName="TL_EXT_ATTR17"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XX_CDH_ACCT_SITE_EXT_VL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="1000" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="TlExtAttr18"
+      Precision="1000"
+      Type="java.lang.String"
+      ColumnName="TL_EXT_ATTR18"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XX_CDH_ACCT_SITE_EXT_VL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="1000" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="TlExtAttr19"
+      Precision="1000"
+      Type="java.lang.String"
+      ColumnName="TL_EXT_ATTR19"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XX_CDH_ACCT_SITE_EXT_VL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="1000" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="TlExtAttr20"
+      Precision="1000"
+      Type="java.lang.String"
+      ColumnName="TL_EXT_ATTR20"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XX_CDH_ACCT_SITE_EXT_VL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="1000" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="DeleteAttr"
+      IsQueriable="false"
+      IsPersistent="false"
+      Type="java.lang.String"
+      ColumnName="$none$"
+      ColumnType="$none$"
+      SQLType="VARCHAR" >
+   </Attribute>
+   <Key
+      Name="OdaccountsiteeoPrimaryKey" >
+      <AttrArray Name="Attributes">
+         <Item Value="od.oracle.apps.xxcrm.addattr.acctsite.server.ODAccountSiteEO.ExtensionId" />
+      </AttrArray>
+      <DesignTime>
+         <Attr Name="_DBObjectName" Value="ODACCOUNTSITEEO_PRIMARY_KEY" />
+         <Attr Name="_isPrimary" Value="true" />
+      </DesignTime>
+   </Key>
+</Entity>

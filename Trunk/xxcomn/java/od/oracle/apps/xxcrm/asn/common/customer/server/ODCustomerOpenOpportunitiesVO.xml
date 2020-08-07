@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding='windows-1252'?>
+<!DOCTYPE ViewObject SYSTEM "jbo_03_01.dtd">
+
+<ViewObject
+   Name="ODCustomerOpenOpportunitiesVO"
+   Extends="oracle.apps.asn.common.customer.server.CustomerOpenOpportunitiesVO"
+   BindingStyle="Oracle"
+   CustomQuery="true"
+   RowClass="od.oracle.apps.xxcrm.asn.common.customer.server.ODCustomerOpenOpportunitiesVORowImpl"
+   ComponentClass="oracle.apps.asn.common.customer.server.CustomerOpenOpportunitiesVOImpl"
+   MsgBundleClass="oracle.jbo.common.JboResourceBundle"
+   UseGlueCode="false" >
+   <SQLQuery><![CDATA[
+SELECT 
+  ALA.LEAD_ID,
+  ALA.DESCRIPTION,
+  ALA.DECISION_DATE,
+  ALA.TOTAL_AMOUNT,
+  ALA.WIN_PROBABILITY,
+  ASST.NAME AS SALES_STAGE_NAME,
+  FCT.NAME AS CURRENCY_NAME,
+  FCT.CURRENCY_CODE,
+  LOC.ADDRESS1 || ',' ||LOC.CITY||',' ||LOC.STATE||' '||LOC.POSTAL_CODE  ADDRESS,
+  TERR.DESCRIPTION COUNTRY
+FROM 
+  AS_LEADS_ALL ALA,
+  AS_STATUSES_B ASB,
+  AS_SALES_STAGES_ALL_TL ASST,
+  FND_TERRITORIES_VL TERR,
+  FND_CURRENCIES_TL FCT,
+  HZ_LOCATIONS LOC,
+  hz_party_sites hzps
+WHERE 
+  ALA.STATUS = ASB.STATUS_CODE        AND
+  ASB.OPP_OPEN_STATUS_FLAG = 'Y'        AND
+  ALA.CURRENCY_CODE = FCT.CURRENCY_CODE (+)        AND
+  FCT.LANGUAGE (+) = USERENV ('LANG')        AND
+  ALA.SALES_STAGE_ID = ASST.SALES_STAGE_ID(+)        AND
+  ASST.LANGUAGE (+)  = USERENV ('LANG')        AND
+  TERR.TERRITORY_CODE(+) = LOC.COUNTRY        AND
+  hzps.location_id = LOC.LOCATION_ID        AND
+  hzps.party_site_id = ala.address_id      AND
+  ALA.CUSTOMER_ID = :1        ORDER BY ALA.CREATION_DATE DESC
+   ]]></SQLQuery>
+   <DesignTime>
+      <Attr Name="_isCodegen" Value="true" />
+      <Attr Name="_version" Value="9.0.3.13.93" />
+      <Attr Name="_CodeGenFlagNew" Value="4" />
+   </DesignTime>
+   <ViewAttribute
+      Name="LeadId"
+      IsPersistent="false"
+      IsNotNull="true"
+      Type="oracle.jbo.domain.Number"
+      ColumnType="NUMBER"
+      AliasName="LEAD_ID"
+      Expression="LEAD_ID"
+      SQLType="NUMERIC" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Description"
+      IsPersistent="false"
+      Precision="240"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="DESCRIPTION"
+      Expression="DESCRIPTION"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+         <Attr Name="_DisplaySize" Value="240" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="DecisionDate"
+      IsPersistent="false"
+      Type="oracle.jbo.domain.Date"
+      ColumnType="DATE"
+      AliasName="DECISION_DATE"
+      Expression="DECISION_DATE"
+      SQLType="DATE" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+         <Attr Name="_DisplaySize" Value="7" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="TotalAmount"
+      IsPersistent="false"
+      Type="oracle.jbo.domain.Number"
+      ColumnType="NUMBER"
+      AliasName="TOTAL_AMOUNT"
+      Expression="TOTAL_AMOUNT"
+      SQLType="NUMERIC" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="WinProbability"
+      IsPersistent="false"
+      Type="oracle.jbo.domain.Number"
+      ColumnType="NUMBER"
+      AliasName="WIN_PROBABILITY"
+      Expression="WIN_PROBABILITY"
+      SQLType="NUMERIC" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="SalesStageName"
+      IsPersistent="false"
+      Precision="60"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="SALES_STAGE_NAME"
+      Expression="SALES_STAGE_NAME"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+         <Attr Name="_DisplaySize" Value="60" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="CurrencyName"
+      IsPersistent="false"
+      Precision="80"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="CURRENCY_NAME"
+      Expression="CURRENCY_NAME"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+         <Attr Name="_DisplaySize" Value="80" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="CurrencyCode"
+      IsPersistent="false"
+      Precision="15"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="CURRENCY_CODE"
+      Expression="CURRENCY_CODE"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+         <Attr Name="_DisplaySize" Value="15" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Address"
+      IsPersistent="false"
+      Precision="423"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="ADDRESS"
+      Expression="ADDRESS"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="423" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Country"
+      IsPersistent="false"
+      Precision="240"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="COUNTRY"
+      Expression="COUNTRY"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="240" />
+      </DesignTime>
+   </ViewAttribute>
+</ViewObject>

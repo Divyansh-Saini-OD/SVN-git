@@ -1,0 +1,453 @@
+<?xml version="1.0" encoding="windows-1252" ?>
+<!DOCTYPE ViewObject SYSTEM "jbo_03_01.dtd">
+<!---->
+<ViewObject
+  xmlns="http://xmlns.oracle.com/bc4j"
+  Name="XxApTradeMatchSearchVO"
+  Version="12.2.1.12.24"
+  InheritPersonalization="merge"
+  BindingStyle="OracleName"
+  CustomQuery="true"
+  RowClass="od.tdmatch.model.reports.vo.XxApTradeMatchSearchVORowImpl"
+  ComponentClass="od.tdmatch.model.reports.vo.XxApTradeMatchSearchVOImpl"
+  PageIterMode="Full"
+  FetchMode="FETCH_AS_NEEDED"
+  Passivate="All">
+  <DesignTime>
+    <Attr Name="_codeGenFlag2" Value="Access|Coll"/>
+    <Attr Name="_isExpertMode" Value="true"/>
+    <Attr Name="_isCodegen" Value="true"/>
+  </DesignTime>
+  <ViewAccessor
+    Name="VendorAssistantDLov1"
+    ViewObjectName="od.tdmatch.model.lov.vendmootDship.VendorAssistantDLov"
+    RowLevelBinds="true"/>
+  <ViewAccessor
+    Name="SupplierDLovVO1"
+    ViewObjectName="od.tdmatch.model.lov.vendmootDship.SupplierDLovVO"
+    RowLevelBinds="true"/>
+  <ViewAccessor
+    Name="SupplierDLovVO2"
+    ViewObjectName="od.tdmatch.model.lov.vendmootDship.SupplierDLovVO"
+    RowLevelBinds="true"/>
+  <ViewAccessor
+    Name="SupplierSiteDLovVO1"
+    ViewObjectName="od.tdmatch.model.lov.vendmootDship.SupplierSiteDLovVO"
+    RowLevelBinds="true"/>
+  <ViewAccessor
+    Name="PeriodFromLOV1"
+    ViewObjectName="od.tdmatch.model.reports.vo.lov.PeriodLOV"
+    RowLevelBinds="true"/>
+  <ViewAccessor
+    Name="PeriodLOV1"
+    ViewObjectName="od.tdmatch.model.reports.vo.lov.PeriodLOV"
+    RowLevelBinds="true"/>
+  <ViewAccessor
+    Name="OrgVO1"
+    ViewObjectName="od.tdmatch.model.OrgVO"
+    RowLevelBinds="true"/>
+  <ViewAccessor
+    Name="ReportOptionStaticLOV1"
+    ViewObjectName="od.tdmatch.model.reports.vo.lov.ReportOptionStaticLOV"
+    RowLevelBinds="true"/>
+  <ViewAccessor
+    Name="SupplierSiteDLovVO2"
+    ViewObjectName="od.tdmatch.model.lov.vendmootDship.SupplierSiteDLovVO"
+    RowLevelBinds="true"/>
+  <ViewAccessor
+    Name="VendorAssistantDLov2"
+    ViewObjectName="od.tdmatch.model.lov.vendmootDship.VendorAssistantDLov"
+    RowLevelBinds="true"/>
+  <ViewAccessor
+    Name="SupplierDLovVO3"
+    ViewObjectName="od.tdmatch.model.lov.vendmootDship.SupplierDLovVO"
+    RowLevelBinds="true"/>
+  <ViewAccessor
+    Name="OrgLovVO1"
+    ViewObjectName="od.tdmatch.model.lov.OrgLovVO"
+    RowLevelBinds="true"/>
+  <ListBinding
+    Name="LOV_Suppliername"
+    ListVOName="SupplierDLovVO2"
+    ComboRowCountHint="10"
+    NullValueFlag="none"
+    MRUCount="0">
+    <AttrArray Name="AttrNames">
+      <Item Value="Suppliername"/>
+    </AttrArray>
+    <AttrArray Name="AttrExpressions"/>
+    <AttrArray Name="DerivedAttrNames">
+      <Item Value="SuppNo"/>
+    </AttrArray>
+    <AttrArray Name="ListAttrNames">
+      <Item Value="Supplier"/>
+      <Item Value="VendorId"/>
+    </AttrArray>
+    <AttrArray Name="ListDisplayAttrNames">
+      <Item Value="SupplierNo"/>
+      <Item Value="Supplier"/>
+    </AttrArray>
+    <DisplayCriteria/>
+  </ListBinding>
+  <ListBinding
+    Name="LOV_Suppliersiteno"
+    ListVOName="SupplierSiteDLovVO1"
+    ComboRowCountHint="10"
+    NullValueFlag="none"
+    MRUCount="0">
+    <AttrArray Name="AttrNames">
+      <Item Value="Suppliersiteno"/>
+    </AttrArray>
+    <AttrArray Name="AttrExpressions"/>
+    <AttrArray Name="DerivedAttrNames">
+      <Item Value="SupSiteCode"/>
+    </AttrArray>
+    <AttrArray Name="ListAttrNames">
+      <Item Value="SupplierSiteCode"/>
+      <Item Value="VendorSiteId"/>
+    </AttrArray>
+    <AttrArray Name="ListDisplayAttrNames">
+      <Item Value="SupplierSiteCode"/>
+      <Item Value="Supplier"/>
+      <Item Value="SupplierNo"/>
+    </AttrArray>
+    <DisplayCriteria/>
+  </ListBinding>
+  <ListBinding
+    Name="LOV_Periodrangefrom"
+    ListVOName="PeriodFromLOV1"
+    ComboRowCountHint="10"
+    NullValueFlag="none"
+    MRUCount="0">
+    <AttrArray Name="AttrNames">
+      <Item Value="Periodrangefrom"/>
+    </AttrArray>
+    <AttrArray Name="AttrExpressions"/>
+    <AttrArray Name="ListAttrNames">
+      <Item Value="PeriodName"/>
+    </AttrArray>
+    <AttrArray Name="ListDisplayAttrNames">
+      <Item Value="PeriodName"/>
+    </AttrArray>
+    <DisplayCriteria/>
+  </ListBinding>
+  <ListBinding
+    Name="LOV_Periodrangeto"
+    ListVOName="PeriodLOV1"
+    ComboRowCountHint="10"
+    NullValueFlag="none"
+    MRUCount="0">
+    <AttrArray Name="AttrNames">
+      <Item Value="Periodrangeto"/>
+    </AttrArray>
+    <AttrArray Name="AttrExpressions"/>
+    <AttrArray Name="ListAttrNames">
+      <Item Value="PeriodName"/>
+    </AttrArray>
+    <AttrArray Name="ListDisplayAttrNames">
+      <Item Value="PeriodName"/>
+    </AttrArray>
+    <DisplayCriteria/>
+  </ListBinding>
+  <ListBinding
+    Name="LOV_Orgid"
+    ListVOName="OrgLovVO1"
+    NullValueFlag="none"
+    MRUCount="0">
+    <AttrArray Name="AttrNames">
+      <Item Value="Orgid"/>
+    </AttrArray>
+    <AttrArray Name="AttrExpressions"/>
+    <AttrArray Name="DerivedAttrNames">
+      <Item Value="OrgIdVal"/>
+    </AttrArray>
+    <AttrArray Name="ListAttrNames">
+      <Item Value="Name"/>
+      <Item Value="OrganizationId"/>
+    </AttrArray>
+    <AttrArray Name="ListDisplayAttrNames">
+      <Item Value="Name"/>
+    </AttrArray>
+    <DisplayCriteria/>
+  </ListBinding>
+  <ListBinding
+    Name="LOV_Reportoption"
+    ListVOName="ReportOptionStaticLOV1"
+    NullValueFlag="none"
+    MRUCount="0">
+    <AttrArray Name="AttrNames">
+      <Item Value="Reportoption"/>
+    </AttrArray>
+    <AttrArray Name="AttrExpressions"/>
+    <AttrArray Name="ListAttrNames">
+      <Item Value="Id"/>
+    </AttrArray>
+    <AttrArray Name="ListDisplayAttrNames">
+      <Item Value="Value"/>
+    </AttrArray>
+    <DisplayCriteria/>
+  </ListBinding>
+  <ListBinding
+    Name="LOV_Supplier"
+    ListVOName="SupplierDLovVO3"
+    ComboRowCountHint="10"
+    NullValueFlag="none"
+    MRUCount="0">
+    <AttrArray Name="AttrNames">
+      <Item Value="Supplier"/>
+    </AttrArray>
+    <AttrArray Name="AttrExpressions"/>
+    <AttrArray Name="DerivedAttrNames">
+      <Item Value="SuppNo"/>
+    </AttrArray>
+    <AttrArray Name="ListAttrNames">
+      <Item Value="SupplierNo"/>
+      <Item Value="VendorId"/>
+    </AttrArray>
+    <AttrArray Name="ListDisplayAttrNames">
+      <Item Value="Supplier"/>
+      <Item Value="SupplierNo"/>
+    </AttrArray>
+    <DisplayCriteria/>
+  </ListBinding>
+  <SQLQuery><![CDATA[SELECT NULL ReportOption,    
+  NULL VendorAssistant,  
+  NULL Supplier,  
+  NULL SupplierName,    
+  NULL SupplierSiteNo,     
+  NULL DateRangeFrom,  
+  NULL DateRangeTo,  
+  NULL PeriodRangeFrom,  
+  NULL PeriodRangeTo,  
+  NULL DropShip,   
+  NULL Orgid   
+FROM DUAL]]></SQLQuery>
+  <ViewAttribute
+    Name="Reportoption"
+    IsPersistent="false"
+    PrecisionRule="true"
+    Precision="255"
+    Type="java.lang.String"
+    ColumnType="VARCHAR2"
+    AliasName="REPORTOPTION"
+    Expression="REPORTOPTION"
+    SQLType="VARCHAR"
+    LOVName="LOV_Reportoption">
+    <Properties>
+      <SchemaBasedProperties>
+        <CONTROLTYPE
+          Value="radio"/>
+        <LABEL
+          ResId="od.tdmatch.model.reports.vo.XxApTradeMatchSearchVO.Reportoption_LABEL"/>
+      </SchemaBasedProperties>
+    </Properties>
+  </ViewAttribute>
+  <ViewAttribute
+    Name="Vendorassistant"
+    IsPersistent="false"
+    PrecisionRule="true"
+    Type="java.lang.String"
+    ColumnType="VARCHAR2"
+    AliasName="VENDORASSISTANT"
+    Expression="VENDORASSISTANT"
+    SQLType="VARCHAR"/>
+  <ViewAttribute
+    Name="Supplier"
+    IsPersistent="false"
+    PrecisionRule="true"
+    Type="java.lang.String"
+    ColumnType="VARCHAR2"
+    AliasName="SUPPLIER"
+    Expression="SUPPLIER"
+    SQLType="VARCHAR"
+    LOVName="LOV_Supplier">
+    <Properties>
+      <SchemaBasedProperties>
+        <LABEL
+          ResId="od.tdmatch.model.reports.vo.XxApTradeMatchSearchVO.Supplier_LABEL"/>
+        <CONTROLTYPE
+          Value="input_text_lov"/>
+      </SchemaBasedProperties>
+    </Properties>
+  </ViewAttribute>
+  <ViewAttribute
+    Name="Suppliername"
+    IsPersistent="false"
+    PrecisionRule="true"
+    Type="java.lang.String"
+    ColumnType="VARCHAR2"
+    AliasName="SUPPLIERNAME"
+    Expression="SUPPLIERNAME"
+    SQLType="VARCHAR"
+    LOVName="LOV_Suppliername">
+    <Properties>
+      <SchemaBasedProperties>
+        <LABEL
+          ResId="od.tdmatch.model.reports.vo.XxApTradeMatchSearchVO.Suppliername_LABEL"/>
+        <CONTROLTYPE
+          Value="input_text_lov"/>
+      </SchemaBasedProperties>
+    </Properties>
+  </ViewAttribute>
+  <ViewAttribute
+    Name="Suppliersiteno"
+    IsPersistent="false"
+    PrecisionRule="true"
+    Type="java.lang.String"
+    ColumnType="VARCHAR2"
+    AliasName="SUPPLIERSITENO"
+    Expression="SUPPLIERSITENO"
+    SQLType="VARCHAR"
+    LOVName="LOV_Suppliersiteno">
+    <Properties>
+      <SchemaBasedProperties>
+        <LABEL
+          ResId="od.tdmatch.model.reports.vo.XxApTradeMatchSearchVO.Suppliersiteno_LABEL"/>
+        <CONTROLTYPE
+          Value="input_text_lov"/>
+      </SchemaBasedProperties>
+    </Properties>
+  </ViewAttribute>
+  <ViewAttribute
+    Name="Daterangefrom"
+    IsPersistent="false"
+    PrecisionRule="true"
+    Type="oracle.jbo.domain.Date"
+    ColumnType="VARCHAR2"
+    AliasName="DATERANGEFROM"
+    Expression="DATERANGEFROM"
+    SQLType="DATE">
+    <Properties>
+      <SchemaBasedProperties>
+        <LABEL
+          ResId="od.tdmatch.model.reports.vo.XxApTradeMatchSearchVO.Daterangefrom_LABEL"/>
+        <FMT_FORMATTER
+          ResId="od.tdmatch.model.reports.vo.XxApTradeMatchSearchVO.Daterangefrom_FMT_FORMATTER"/>
+        <FMT_FORMAT
+          ResId="od.tdmatch.model.reports.vo.XxApTradeMatchSearchVO.Daterangefrom_FMT_FORMAT"/>
+      </SchemaBasedProperties>
+    </Properties>
+  </ViewAttribute>
+  <ViewAttribute
+    Name="Daterangeto"
+    IsPersistent="false"
+    PrecisionRule="true"
+    Type="oracle.jbo.domain.Date"
+    ColumnType="VARCHAR2"
+    AliasName="DATERANGETO"
+    Expression="DATERANGETO"
+    SQLType="DATE">
+    <Properties>
+      <SchemaBasedProperties>
+        <FMT_FORMAT
+          ResId="od.tdmatch.model.reports.vo.XxApTradeMatchSearchVO.Daterangeto_FMT_FORMAT"/>
+        <FMT_FORMATTER
+          ResId="od.tdmatch.model.reports.vo.XxApTradeMatchSearchVO.Daterangeto_FMT_FORMATTER"/>
+      </SchemaBasedProperties>
+    </Properties>
+  </ViewAttribute>
+  <ViewAttribute
+    Name="Periodrangefrom"
+    IsPersistent="false"
+    PrecisionRule="true"
+    Type="java.lang.String"
+    ColumnType="VARCHAR2"
+    AliasName="PERIODRANGEFROM"
+    Expression="PERIODRANGEFROM"
+    SQLType="VARCHAR"
+    LOVName="LOV_Periodrangefrom">
+    <Properties>
+      <SchemaBasedProperties>
+        <CONTROLTYPE
+          Value="input_text_lov"/>
+        <LABEL
+          ResId="od.tdmatch.model.reports.vo.XxApTradeMatchSearchVO.Periodrangefrom_LABEL"/>
+      </SchemaBasedProperties>
+    </Properties>
+  </ViewAttribute>
+  <ViewAttribute
+    Name="Periodrangeto"
+    IsPersistent="false"
+    PrecisionRule="true"
+    Type="java.lang.String"
+    ColumnType="VARCHAR2"
+    AliasName="PERIODRANGETO"
+    Expression="PERIODRANGETO"
+    SQLType="VARCHAR"
+    LOVName="LOV_Periodrangeto">
+    <Properties>
+      <SchemaBasedProperties>
+        <CONTROLTYPE
+          Value="input_text_lov"/>
+        <LABEL
+          ResId="od.tdmatch.model.reports.vo.XxApTradeMatchSearchVO.Periodrangeto_LABEL"/>
+      </SchemaBasedProperties>
+    </Properties>
+  </ViewAttribute>
+  <ViewAttribute
+    Name="Dropship"
+    IsPersistent="false"
+    PrecisionRule="true"
+    Type="java.lang.String"
+    ColumnType="VARCHAR2"
+    AliasName="DROPSHIP"
+    Expression="DROPSHIP"
+    SQLType="VARCHAR">
+    <Properties>
+      <SchemaBasedProperties>
+        <LABEL
+          ResId="od.tdmatch.model.reports.vo.XxApTradeMatchSearchVO.Dropship_LABEL"/>
+      </SchemaBasedProperties>
+    </Properties>
+  </ViewAttribute>
+  <ViewAttribute
+    Name="Orgid"
+    IsPersistent="false"
+    PrecisionRule="true"
+    Type="java.lang.String"
+    ColumnType="VARCHAR2"
+    AliasName="ORGID"
+    Expression="ORGID"
+    SQLType="VARCHAR"
+    LOVName="LOV_Orgid">
+    <Properties>
+      <SchemaBasedProperties>
+        <LABEL
+          ResId="od.tdmatch.model.reports.vo.XxApTradeMatchSearchVO.Orgid_LABEL"/>
+        <CONTROLTYPE
+          Value="choice"/>
+      </SchemaBasedProperties>
+    </Properties>
+  </ViewAttribute>
+  <ViewAttribute
+    Name="OrgIdVal"
+    IsSelected="false"
+    IsPersistent="false"
+    PrecisionRule="true"
+    Type="oracle.jbo.domain.Number"
+    ColumnType="NUMBER"
+    AliasName="VIEW_ATTR"
+    SQLType="NUMERIC"/>
+  <ViewAttribute
+    Name="SuppNo"
+    IsSelected="false"
+    IsPersistent="false"
+    PrecisionRule="true"
+    Type="oracle.jbo.domain.Number"
+    ColumnType="NUMBER"
+    AliasName="VIEW_ATTR"
+    SQLType="NUMERIC"/>
+  <ViewAttribute
+    Name="SupSiteCode"
+    IsSelected="false"
+    IsPersistent="false"
+    PrecisionRule="true"
+    Type="oracle.jbo.domain.Number"
+    ColumnType="NUMBER"
+    AliasName="VIEW_ATTR"
+    SQLType="NUMERIC"/>
+  <ResourceBundle>
+    <PropertiesBundle
+      PropertiesFile="od.tdmatch.model.ModelBundle"/>
+  </ResourceBundle>
+</ViewObject>

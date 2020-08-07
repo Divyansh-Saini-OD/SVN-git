@@ -1,0 +1,39 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<!-- dbdrv: exec java oracle/jrad/tools/xml/importer XMLImporter.class java &phase=dat+24 checkfile:~PROD:~PATH:~FILE &fullpath:~PROD:~PATH:~FILE -username &un_apps -password &pw_apps -dbconnection &jdbc_db_addr  -userId "1" -rootPackage /oracle/apps/~PROD  -rootdir &fullpath:~PROD:mds:directory  -->
+<page xmlns:jrad="http://xmlns.oracle.com/jrad" xmlns:oa="http://xmlns.oracle.com/oa" xmlns:ui="http://xmlns.oracle.com/uix/ui" version="9.0.3.8.12_1330" xml:lang="en-US" xmlns:user="http://xmlns.oracle.com/jrad/user" xmlns="http://xmlns.oracle.com/jrad" file-version="$Header$">
+   <content>
+      <oa:pageLayout id="MainRN" controllerClass="od.oracle.apps.xxcrm.scs.fdk.webui.ODSCSFdkActnsDtlsCO" amDefName="od.oracle.apps.xxcrm.scs.fdk.server.ODSCSAdminAM" title="Actions" windowTitle="Actions">
+         <ui:corporateBranding>
+            <oa:image id="corporateBrandingImage" source="/OA_MEDIA/FNDSSCORP.gif"/>
+         </ui:corporateBranding>
+         <ui:contents>
+            <oa:table id="ODSCSActionsVO">
+               <ui:contents>
+                  <oa:messageStyledText id="ActionCode" dataType="VARCHAR2" prompt="ActionCode" viewName="ODSCSActionsVO" viewAttr="ActionCode" maximumLength="50"/>
+                  <oa:messageStyledText id="Parameters" dataType="NUMBER" prompt="Parameters" viewName="ODSCSActionsVO" viewAttr="Parameters"/>
+                  <oa:messageStyledText id="Parameter1" dataType="VARCHAR2" prompt="Parameter1" viewName="ODSCSActionsVO" viewAttr="Parameter1" maximumLength="100"/>
+                  <oa:messageStyledText id="Parameter2" dataType="VARCHAR2" prompt="Parameter2" viewName="ODSCSActionsVO" viewAttr="Parameter2" maximumLength="100"/>
+                  <oa:messageStyledText id="Parameter3" dataType="VARCHAR2" prompt="Parameter3" viewName="ODSCSActionsVO" viewAttr="Parameter3" maximumLength="100"/>
+                  <oa:messageStyledText id="Parameter4" dataType="VARCHAR2" prompt="Parameter4" viewName="ODSCSActionsVO" viewAttr="Parameter4" maximumLength="100"/>
+                  <oa:messageStyledText id="Parameter5" dataType="VARCHAR2" prompt="Parameter5" viewName="ODSCSActionsVO" viewAttr="Parameter5" maximumLength="100"/>
+                  <oa:messageStyledText id="Parameter6" dataType="VARCHAR2" prompt="Parameter6" viewName="ODSCSActionsVO" viewAttr="Parameter6" maximumLength="100"/>
+                  <oa:messageStyledText id="Parameter7" dataType="VARCHAR2" prompt="Parameter7" viewName="ODSCSActionsVO" viewAttr="Parameter7" maximumLength="100"/>
+                  <oa:messageStyledText id="Parameter8" dataType="VARCHAR2" prompt="Parameter8" viewName="ODSCSActionsVO" viewAttr="Parameter8" maximumLength="100"/>
+                  <oa:messageStyledText id="Parameter9" dataType="VARCHAR2" prompt="Parameter9" viewName="ODSCSActionsVO" viewAttr="Parameter9" maximumLength="100"/>
+                  <oa:messageStyledText id="Parameter10" dataType="VARCHAR2" prompt="Parameter10" viewName="ODSCSActionsVO" viewAttr="Parameter10" maximumLength="100"/>
+                  <oa:messageStyledText id="Action" dataType="VARCHAR2" prompt="Action" viewName="ODSCSActionsVO" viewAttr="Action" maximumLength="50"/>
+                  <oa:messageStyledText id="ActionEntity" dataType="VARCHAR2" prompt="ActionEntity" viewName="ODSCSActionsVO" viewAttr="ActionEntity" maximumLength="50"/>
+                  <oa:image id="Update1" destination="OA.jsp?page=/od/oracle/apps/xxcrm/scs/fdk/webui/ODSCSFdkActionUpdtPG&amp;SCSFrmAId={@ActionId}" source="/OA_MEDIA/updateicon_enabled.gif" prompt="Details"/>
+               </ui:contents>
+               <ui:tableActions>
+                  <oa:flowLayout id="region1">
+                     <ui:contents>
+                        <oa:submitButton id="Create" text="Create" prompt="Create"/>
+                     </ui:contents>
+                  </oa:flowLayout>
+               </ui:tableActions>
+            </oa:table>
+         </ui:contents>
+      </oa:pageLayout>
+   </content>
+</page>

@@ -1,0 +1,29 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<customization xmlns="http://xmlns.oracle.com/jrad" version="9.0.5.4.89_560" xml:lang="en-US" customizes="/oracle/apps/jtf/cac/task/webui/CacTaskSummRN" developerMode="true" xmlns:oa="http://xmlns.oracle.com/oa" package="/oracle/apps/jtf/cac/task/webui/customizations/site/0">
+   <modifications>
+      <move element="CacSmrTaskSubjectRO" after="CacSmrTaskSubject"/>
+      <move element="CacSmrTaskDueDate" after="CacSmrTaskSubjectRO"/>
+      <move element="CacSmrTaskDueDateRO" after="CacSmrTaskDueDate"/>
+      <move element="CacSmrTaskType" after="CacSmrTaskDueDateRO"/>
+      <move element="CacSmrTaskTypeRO" after="CacSmrTaskType"/>
+      <move element="CacSmrTaskStatus" after="CacSmrTaskTypeRO"/>
+      <move element="CacSmrTaskStatusRO" after="CacSmrTaskStatus"/>
+      <move element="CacSmrTaskPSDate" after="CacSmrTaskStatusRO"/>
+      <move element="CacSmrTaskPSDatePPR" after="CacSmrTaskPSDate"/>
+      <move element="CacSmrTaskPEDate" after="CacSmrTaskPSDatePPR"/>
+      <move element="CacSmrTaskPEDatePPR" after="CacSmrTaskPEDate"/>
+      <move element="CacSmrTaskOwnerTypeCode" after="CacSmrTaskPEDatePPR"/>
+      <move element="CacSmrTaskOwnerTypeCodePPR" after="CacSmrTaskOwnerTypeCode"/>
+      <move element="CacSmrTaskOwner" after="CacSmrTaskOwnerTypeCodePPR"/>
+      <move element="CacSmrTaskOwnerPPR" after="CacSmrTaskOwner"/>
+      <move element="CacSmrTaskOwnerId" after="CacSmrTaskOwnerPPR"/>
+      <move element="CacSmrViewSwitch" after="CacSmrTaskOwnerId"/>
+      <insert before="CacSmrViewSwitch">
+         <oa:link id="calendarId" adminCustomizable="true" destination="OA.jsp?page=/oracle/apps/jtf/cac/view/webui/CacViewMainPG" rendered="${oa.TaskSummVO.NewFlag}" scope="." serverUnvalidated="false" targetFrame="_blank" text="Create Appointment" userCustomizable="false" warnAboutChanges="true" xmlns:oa="http://xmlns.oracle.com/oa"/>
+      </insert>
+      <move element="CacSmrUpdSwitch" after="CacSmrViewSwitch"/>
+      <move element="CacSmrTaskDelLink" after="CacSmrUpdSwitch"/>
+      <move element="CacSmrRowTaskId" after="CacSmrTaskDelLink"/>
+      <move element="CacSmrSourceObjectTypeCode" after="CacSmrRowTaskId"/>
+   </modifications>
+</customization>

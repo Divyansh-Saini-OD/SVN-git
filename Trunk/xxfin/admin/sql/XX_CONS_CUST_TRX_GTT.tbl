@@ -1,0 +1,88 @@
+REM============================================================================================
+REM                                 START OF SCRIPT
+REM============================================================================================
+
+--+=============================================================================================+--
+--                                                                                             --
+-- PROGRAM NAME     XX_CONS_CUST_TRX_GTT.TBL                                                   --
+--                                                                                             --
+-- PURPOSE         CREATE CUSTOM TABLES .                                                      --
+--                  THE OBJECTS CREATED ARE                                                    --
+--                                                                                             --
+--                1. XX_CONS_CUST_TRX_GTT   (OD CONSOLIDATE CUSTOMER TRANSACTIONS TABLE)       --                                                                           --
+-- CHANGE HISTORY                                                                              --
+-- VERSION           DATE             CHANGED BY              DESCRIPTION                      --
+--+=============================================================================================+--
+-- 1.0              10-SEP-2015       SHAIK GHOUSE           INITIAL                           --
+--+=============================================================================================+--
+
+SET VERIFY      OFF
+SET TERM        ON
+SET FEEDBACK    OFF
+SET SHOW        OFF
+SET ECHO        OFF
+SET TAB         OFF
+
+WHENEVER SQLERROR CONTINUE;
+
+PROMPT
+PROMPT DROP EXISTING TABLE XX_CONS_CUST_TRX_GTT ......
+PROMPT
+
+DROP TABLE XXFIN.XX_CONS_CUST_TRX_GTT;
+
+PROMPT
+PROMPT DROPPED TABLE XX_CONS_CUST_TRX_GTT......
+PROMPT
+
+
+
+PROMPT
+PROMPT CREATING TABLE XX_CONS_CUST_TRX_GTT......
+PROMPT
+
+
+
+CREATE GLOBAL TEMPORARY TABLE XXFIN.XX_CONS_CUST_TRX_GTT
+(TRX_ID NUMBER,
+HEADER_ID VARCHAR2(150),
+TRX_TYPE_ID VARCHAR2(20),
+BILL_TO_CUSTOMER_ID NUMBER
+)
+ON COMMIT PRESERVE ROWS;
+
+PROMPT
+PROMPT CREATED TABLE XX_CONS_CUST_TRX_GTT......
+PROMPT
+
+
+PROMPT
+PROMPT CREATING SYNONYM FOR  XXFIN.XX_CONS_CUST_TRX_GTT......
+PROMPT
+
+CREATE SYNONYM XX_CONS_CUST_TRX_GTT FOR XXFIN.XX_CONS_CUST_TRX_GTT;
+
+PROMPT
+PROMPT CREATED SYNONYM FOR  XXFIN.XX_CONS_CUST_TRX_GTT......
+PROMPT
+
+
+
+PROMPT
+PROMPT  GRANTING SELECT ON XXFIN.XX_CONS_CUST_TRX_GTT  TO ERP_SYSTEM_TABLE_SELECT_ROLE......
+PROMPT
+
+GRANT SELECT ON XXFIN.XX_CONS_CUST_TRX_GTT  TO ERP_SYSTEM_TABLE_SELECT_ROLE;
+
+PROMPT
+PROMPT  GRANT SELECT SUCCEEDED......
+PROMPT
+
+
+SET FEEDBACK ON
+
+EXIT;
+
+REM=================================================================================================
+REM                                   END OF SCRIPT
+REM=================================================================================================

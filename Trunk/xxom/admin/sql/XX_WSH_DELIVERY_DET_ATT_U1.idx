@@ -1,0 +1,60 @@
+-- +============================================================================================+
+-- |                        Office Depot - Project Simplify                                     |
+-- |              Oracle NAIO/WIPRO/Office Depot/Consulting Organization                        |
+-- +============================================================================================+
+-- | Name         : XX_WSH_DELIVERY_DET_ATT_U1.idx                                           |
+-- | Rice ID      : E1334_OM_Attributes_Setup                                                   |
+-- | Description  : OD Delivery Details Attributes setup                                        |  
+-- | Purpose      : Create Custom Indexes.                                                      |
+-- |Change Record:                                                                              |
+-- |===============                                                                             |
+-- |Version    Date          Author           Remarks                                           | 
+-- |=======    ==========    =============    ==================================================+
+-- |DRAFT 1A   12-Jul-2007   Milind Rane      Initial Version                                   |
+-- |DRAFT 1B   16-Jul-2007   Milind Rane          Ranamed to XX_WSH                             |
+-- +============================================================================================+
+
+SET VERIFY      OFF
+SET TERM        ON
+SET FEEDBACK    OFF
+SET SHOW        OFF
+SET ECHO        OFF
+SET TAB         OFF
+
+
+-- Index creation
+PROMPT
+PROMPT Dropping Existing Indices......
+PROMPT
+
+WHENEVER SQLERROR CONTINUE
+
+PROMPT
+PROMPT Dropping index xx_wsh_delivery_det_att_u1
+PROMPT
+
+DROP INDEX xxom.xx_wsh_delivery_det_att_u1;
+
+WHENEVER SQLERROR CONTINUE
+
+PROMPT
+PROMPT Creating unique index on XX_WSH_DELIVERY_DET_ATT_ALL table .....
+PROMPT
+
+WHENEVER SQLERROR CONTINUE
+
+PROMPT
+PROMPT Creating unique index on  xx_om_delivery_details_att_all (delivery_detail_id) .....
+PROMPT
+
+CREATE UNIQUE INDEX xxom.xx_wsh_delivery_det_att_u1 ON xxom.xx_wsh_delivery_det_att_all(delivery_detail_id)
+;
+
+WHENEVER SQLERROR CONTINUE
+
+PROMPT
+PROMPT Exiting....
+PROMPT
+
+SET FEEDBACK ON
+

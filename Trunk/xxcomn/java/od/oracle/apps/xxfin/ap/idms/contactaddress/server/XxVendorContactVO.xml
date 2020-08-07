@@ -1,0 +1,404 @@
+<?xml version='1.0' encoding='windows-1252' ?>
+<!DOCTYPE ViewObject SYSTEM "jbo_03_01.dtd">
+
+<ViewObject
+   Name="XxVendorContactVO"
+   OrderBy="QRSLT.ADDR_TYPE_ID, QRSLT.SEQ_NO ASC"
+   BindingStyle="OracleName"
+   CustomQuery="true"
+   RowClass="od.oracle.apps.xxfin.ap.idms.contactaddress.server.XxVendorContactVORowImpl"
+   ComponentClass="od.oracle.apps.xxfin.ap.idms.contactaddress.server.XxVendorContactVOImpl"
+   UseGlueCode="false" >
+   <SQLQuery><![CDATA[
+SELECT XxVendorContactEO.ADDR_KEY, 
+       XxVendorContactEO.MODULE, 
+       XxVendorContactEO.KEY_VALUE_1, 
+       XxVendorContactEO.KEY_VALUE_2, 
+       XxVendorContactEO.SEQ_NO, 
+ (SELECT XA.ADDRESS_TYPE FROM XX_AP_SUP_ADDRESS_TYPE XA WHERE XA.ADDR_TYPE_ID=XxVendorContactEO.ADDR_TYPE_ID) ADDR_TYPE, 
+       XxVendorContactEO.PRIMARY_ADDR_IND, 
+       XxVendorContactEO.ADD_1, 
+       XxVendorContactEO.ADD_2, 
+       XxVendorContactEO.ADD_3, 
+       XxVendorContactEO.CITY, 
+       XxVendorContactEO.STATE, 
+       XxVendorContactEO.COUNTRY_ID, 
+       XxVendorContactEO.POST, 
+       XxVendorContactEO.CONTACT_NAME, 
+       XxVendorContactEO.CONTACT_PHONE, 
+       XxVendorContactEO.CONTACT_TELEX, 
+       XxVendorContactEO.CONTACT_FAX, 
+       XxVendorContactEO.CONTACT_EMAIL, 
+       XxVendorContactEO.ORACLE_VENDOR_SITE_ID, 
+       XxVendorContactEO.OD_PHONE_NBR_EXT, 
+       XxVendorContactEO.OD_PHONE_800_NBR, 
+       XxVendorContactEO.OD_COMMENT_1, 
+       XxVendorContactEO.OD_COMMENT_2, 
+       XxVendorContactEO.OD_COMMENT_3, 
+       XxVendorContactEO.OD_COMMENT_4, 
+       XxVendorContactEO.OD_EMAIL_IND_FLG, 
+       XxVendorContactEO.CREATED_BY, 
+       XxVendorContactEO.CREATION_DATE, 
+       XxVendorContactEO.LAST_UPDATE_DATE, 
+       XxVendorContactEO.ATTRIBUTE1, 
+       XxVendorContactEO.ATTRIBUTE2, 
+       XxVendorContactEO.ATTRIBUTE3, 
+       XxVendorContactEO.ATTRIBUTE4, 
+       XxVendorContactEO.ATTRIBUTE5, 
+       XxVendorContactEO.LAST_UPDATE_LOGIN, 
+       XxVendorContactEO.LAST_UPDATED_BY, 
+       XxVendorContactEO.ENABLE_FLAG,
+(SELECT XA.ADDRESS_TYPE_DESC FROM XX_AP_SUP_ADDRESS_TYPE XA WHERE XA.ADDR_TYPE_ID=XxVendorContactEO.ADDR_TYPE_ID) ADDR_DESC,
+DECODE(NVL(XX_AP_SUP_REAL_OUT_RMS_XML_pkg.xx_ap_addr_update_allowed(XxVendorContactEO.ADDR_TYPE_ID),'N'),'Y','true','false') ADDR_UPDATE_ALLOWED,
+XxVendorContactEO.Od_Ship_From_Addr_Id, XxVendorContactEO.Addr_Type_Id
+FROM XX_AP_SUP_VENDOR_CONTACT XxVendorContactEO
+   ]]></SQLQuery>
+   <DesignTime>
+      <Attr Name="_isCodegen" Value="true" />
+      <Attr Name="_isExpertMode" Value="true" />
+      <Attr Name="_version" Value="10.1.3.43.6" />
+      <Attr Name="_codeGenFlag2" Value="Access|Coll|VarAccess" />
+   </DesignTime>
+   <EntityUsage
+      Name="XxVendorContactEO"
+      Entity="od.oracle.apps.xxfin.ap.idms.contactaddress.schema.server.XxVendorContactEO" >
+      <DesignTime>
+         <Attr Name="_queryClause" Value="true" />
+      </DesignTime>
+   </EntityUsage>
+   <ViewAttribute
+      Name="AddrKey"
+      IsNotNull="true"
+      EntityAttrName="AddrKey"
+      EntityUsage="XxVendorContactEO"
+      AliasName="ADDR_KEY" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Module"
+      IsNotNull="true"
+      EntityAttrName="Module"
+      EntityUsage="XxVendorContactEO"
+      AliasName="MODULE" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="KeyValue1"
+      IsNotNull="true"
+      EntityAttrName="KeyValue1"
+      EntityUsage="XxVendorContactEO"
+      AliasName="KEY_VALUE_1" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="KeyValue2"
+      EntityAttrName="KeyValue2"
+      EntityUsage="XxVendorContactEO"
+      AliasName="KEY_VALUE_2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="SeqNo"
+      IsNotNull="true"
+      EntityAttrName="SeqNo"
+      EntityUsage="XxVendorContactEO"
+      AliasName="SEQ_NO" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="AddressType"
+      IsPersistent="false"
+      IsNotNull="true"
+      Type="oracle.jbo.domain.Number"
+      ColumnType="NUMBER"
+      AliasName="ADDRESS_TYPE"
+      SQLType="NUMERIC" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="AddrType"
+      IsPersistent="false"
+      Type="oracle.jbo.domain.Number"
+      ColumnType="NUMBER"
+      AliasName="ADDR_TYPE"
+      Expression="ADDR_TYPE"
+      SQLType="NUMERIC" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="PrimaryAddrInd"
+      IsNotNull="true"
+      EntityAttrName="PrimaryAddrInd"
+      EntityUsage="XxVendorContactEO"
+      AliasName="PRIMARY_ADDR_IND" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Add1"
+      IsNotNull="true"
+      EntityAttrName="Add1"
+      EntityUsage="XxVendorContactEO"
+      AliasName="ADD_1" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Add2"
+      EntityAttrName="Add2"
+      EntityUsage="XxVendorContactEO"
+      AliasName="ADD_2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Add3"
+      EntityAttrName="Add3"
+      EntityUsage="XxVendorContactEO"
+      AliasName="ADD_3" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="City"
+      IsNotNull="true"
+      EntityAttrName="City"
+      EntityUsage="XxVendorContactEO"
+      AliasName="CITY" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="State"
+      EntityAttrName="State"
+      EntityUsage="XxVendorContactEO"
+      AliasName="STATE" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="CountryId"
+      IsNotNull="true"
+      EntityAttrName="CountryId"
+      EntityUsage="XxVendorContactEO"
+      AliasName="COUNTRY_ID" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Post"
+      EntityAttrName="Post"
+      EntityUsage="XxVendorContactEO"
+      AliasName="POST" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="ContactName"
+      EntityAttrName="ContactName"
+      EntityUsage="XxVendorContactEO"
+      AliasName="CONTACT_NAME" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="ContactPhone"
+      EntityAttrName="ContactPhone"
+      EntityUsage="XxVendorContactEO"
+      AliasName="CONTACT_PHONE" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="ContactTelex"
+      EntityAttrName="ContactTelex"
+      EntityUsage="XxVendorContactEO"
+      AliasName="CONTACT_TELEX" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="ContactFax"
+      EntityAttrName="ContactFax"
+      EntityUsage="XxVendorContactEO"
+      AliasName="CONTACT_FAX" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="ContactEmail"
+      EntityAttrName="ContactEmail"
+      EntityUsage="XxVendorContactEO"
+      AliasName="CONTACT_EMAIL" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="OracleVendorSiteId"
+      EntityAttrName="OracleVendorSiteId"
+      EntityUsage="XxVendorContactEO"
+      AliasName="ORACLE_VENDOR_SITE_ID" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="OdPhoneNbrExt"
+      EntityAttrName="OdPhoneNbrExt"
+      EntityUsage="XxVendorContactEO"
+      AliasName="OD_PHONE_NBR_EXT" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="OdPhone800Nbr"
+      EntityAttrName="OdPhone800Nbr"
+      EntityUsage="XxVendorContactEO"
+      AliasName="OD_PHONE_800_NBR" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="OdComment1"
+      EntityAttrName="OdComment1"
+      EntityUsage="XxVendorContactEO"
+      AliasName="OD_COMMENT_1" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="OdComment2"
+      EntityAttrName="OdComment2"
+      EntityUsage="XxVendorContactEO"
+      AliasName="OD_COMMENT_2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="OdComment3"
+      EntityAttrName="OdComment3"
+      EntityUsage="XxVendorContactEO"
+      AliasName="OD_COMMENT_3" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="OdComment4"
+      EntityAttrName="OdComment4"
+      EntityUsage="XxVendorContactEO"
+      AliasName="OD_COMMENT_4" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="OdEmailIndFlg"
+      IsNotNull="true"
+      EntityAttrName="OdEmailIndFlg"
+      EntityUsage="XxVendorContactEO"
+      AliasName="OD_EMAIL_IND_FLG" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="CreatedBy"
+      EntityAttrName="CreatedBy"
+      EntityUsage="XxVendorContactEO"
+      AliasName="CREATED_BY" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="CreationDate"
+      EntityAttrName="CreationDate"
+      EntityUsage="XxVendorContactEO"
+      AliasName="CREATION_DATE" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="LastUpdateDate"
+      EntityAttrName="LastUpdateDate"
+      EntityUsage="XxVendorContactEO"
+      AliasName="LAST_UPDATE_DATE" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Attribute1"
+      EntityAttrName="Attribute1"
+      EntityUsage="XxVendorContactEO"
+      AliasName="ATTRIBUTE1" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Attribute2"
+      EntityAttrName="Attribute2"
+      EntityUsage="XxVendorContactEO"
+      AliasName="ATTRIBUTE2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Attribute3"
+      EntityAttrName="Attribute3"
+      EntityUsage="XxVendorContactEO"
+      AliasName="ATTRIBUTE3" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Attribute4"
+      EntityAttrName="Attribute4"
+      EntityUsage="XxVendorContactEO"
+      AliasName="ATTRIBUTE4" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Attribute5"
+      EntityAttrName="Attribute5"
+      EntityUsage="XxVendorContactEO"
+      AliasName="ATTRIBUTE5" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="LastUpdateLogin"
+      EntityAttrName="LastUpdateLogin"
+      EntityUsage="XxVendorContactEO"
+      AliasName="LAST_UPDATE_LOGIN" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="DisableTrans"
+      IsSelected="false"
+      IsPersistent="false"
+      Type="java.lang.Boolean"
+      ColumnType="NUMBER"
+      AliasName="VIEW_ATTR"
+      SQLType="BIT" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="SelectxaAddressTypeDescfromxxApSupAddressTypexawherexaAddressTypeXxvendorcontacteoAddrType"
+      IsPersistent="false"
+      Precision="150"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="150" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="LastUpdatedBy"
+      EntityAttrName="LastUpdatedBy"
+      EntityUsage="XxVendorContactEO"
+      AliasName="LAST_UPDATED_BY" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="RespId"
+      IsPersistent="false"
+      Precision="1"
+      Type="java.lang.String"
+      ColumnType="CHAR"
+      AliasName="RESP_ID"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="1" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="UpdateAllowed"
+      IsSelected="false"
+      IsPersistent="false"
+      Type="java.lang.Boolean"
+      ColumnType="NUMBER"
+      AliasName="VIEW_ATTR"
+      SQLType="BIT" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="EnableFlag"
+      EntityAttrName="EnableFlag"
+      EntityUsage="XxVendorContactEO"
+      AliasName="ENABLE_FLAG" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="AddrDesc"
+      IsPersistent="false"
+      Precision="150"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="ADDR_DESC"
+      Expression="ADDR_DESC"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="150" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="AddrUpdateAllowed"
+      IsPersistent="false"
+      Precision="10"
+      Type="java.lang.Boolean"
+      ColumnType="VARCHAR2"
+      AliasName="ADDR_UPDATE_ALLOWED"
+      Expression="ADDR_UPDATE_ALLOWED"
+      SQLType="BIT" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="4000" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="OdShipFromAddrId"
+      EntityAttrName="OdShipFromAddrId"
+      EntityUsage="XxVendorContactEO"
+      AliasName="OD_SHIP_FROM_ADDR_ID" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="AddrTypeId"
+      IsNotNull="true"
+      EntityAttrName="AddrTypeId"
+      EntityUsage="XxVendorContactEO"
+      AliasName="ADDR_TYPE_ID" >
+   </ViewAttribute>
+</ViewObject>

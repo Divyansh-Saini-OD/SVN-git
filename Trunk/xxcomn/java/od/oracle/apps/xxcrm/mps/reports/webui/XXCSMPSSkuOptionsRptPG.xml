@@ -1,0 +1,95 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<!-- dbdrv: exec java oracle/jrad/tools/xml/importer XMLImporter.class java &phase=dat+24 checkfile:~PROD:~PATH:~FILE &fullpath:~PROD:~PATH:~FILE -username &un_apps -password &pw_apps -dbconnection &jdbc_db_addr  -userId "1" -rootPackage /oracle/apps/~PROD  -rootdir &fullpath:~PROD:mds:directory  -->
+<page xmlns:jrad="http://xmlns.oracle.com/jrad" xmlns:oa="http://xmlns.oracle.com/oa" xmlns:ui="http://xmlns.oracle.com/uix/ui" version="9.0.3.8.13_1579" xml:lang="en-US" xmlns:user="http://xmlns.oracle.com/jrad/user" xmlns="http://xmlns.oracle.com/jrad" file-version="$Header$">
+   <content>
+      <oa:pageLayout id="region1" amDefName="od.oracle.apps.xxcrm.mps.reports.server.XXCSMPSSkuOptionsRptAM" windowTitle="Sku Options Assigned Report" title="Sku Options Assigned Report" controllerClass="od.oracle.apps.xxcrm.mps.reports.webui.XXCSMPSSkuOptionsRptCO">
+         <ui:corporateBranding>
+            <oa:image id="corporateBrandingImage" source="/OA_MEDIA/FNDSSCORP.gif"/>
+         </ui:corporateBranding>
+         <ui:contents>
+            <oa:messageComponentLayout id="CriteriaRN">
+               <ui:contents>
+                  <oa:messageLovInput id="PartyName" queryable="true" prompt="Party Name">
+                     <lovContents>
+                        <oa:listOfValues id="PartyNameRN">
+                           <ui:contents>
+                              <oa:table name="PartyNameRN" id="PartyNameLOVRN">
+                                 <ui:contents>
+                                    <oa:messageStyledText id="PartyName1" dataType="VARCHAR2" prompt="Party Name" viewName="XXCSMPSPartyNameVO" viewAttr="PartyName" maximumLength="250" queryable="true"/>
+                                    <oa:formValue id="PartyId" dataType="NUMBER" prompt="PartyId" viewName="XXCSMPSPartyNameVO" viewAttr="PartyId"/>
+                                 </ui:contents>
+                              </oa:table>
+                           </ui:contents>
+                        </oa:listOfValues>
+                     </lovContents>
+                     <lovMappings>
+                        <lovMap id="PartyNamelovMap" lovItem="PartyName1" resultTo="PartyName" criteriaFrom="PartyName"/>
+                        <lovMap id="PartyIdlovMap" lovItem="PartyId" resultTo="PartyIDFV"/>
+                     </lovMappings>
+                  </oa:messageLovInput>
+                  <oa:messageTextInput id="serialNo" prompt="Serial No"/>
+               </ui:contents>
+            </oa:messageComponentLayout>
+            <oa:formValue id="PartyIDFV"/>
+            <oa:rowLayout id="SearchButtonRN" hAlign="center">
+               <ui:contents>
+                  <oa:submitButton id="Search" prompt="Search"/>
+                  <oa:spacer id="SpacerBTRN" width="10"/>
+                  <oa:submitButton id="Clear" text="Clear" prompt="Clear"/>
+               </ui:contents>
+            </oa:rowLayout>
+            <oa:table id="XXCSMPSSkuOptionsRptVO">
+               <ui:contents>
+                  <oa:messageStyledText id="BatchId" dataType="NUMBER" prompt="BatchId" viewName="XXCSMPSSkuOptionsRptVO" viewAttr="BatchId"/>
+                  <oa:messageStyledText id="Model" dataType="VARCHAR2" prompt="Model" viewName="XXCSMPSSkuOptionsRptVO" viewAttr="Model" maximumLength="250"/>
+                  <oa:messageStyledText id="SerialNo" dataType="VARCHAR2" prompt="SerialNo" viewName="XXCSMPSSkuOptionsRptVO" viewAttr="SerialNo" maximumLength="250"/>
+                  <oa:messageStyledText id="Black1" dataType="VARCHAR2" prompt="Black1" viewName="XXCSMPSSkuOptionsRptVO" viewAttr="Black1" maximumLength="100"/>
+                  <oa:messageStyledText id="Black2" dataType="VARCHAR2" prompt="Black2" viewName="XXCSMPSSkuOptionsRptVO" viewAttr="Black2" maximumLength="100"/>
+                  <oa:messageStyledText id="Black3" dataType="VARCHAR2" prompt="Black3" viewName="XXCSMPSSkuOptionsRptVO" viewAttr="Black3" maximumLength="100"/>
+                  <oa:messageStyledText id="Magenta1" dataType="VARCHAR2" prompt="Magenta1" viewName="XXCSMPSSkuOptionsRptVO" viewAttr="Magenta1" maximumLength="100"/>
+                  <oa:messageStyledText id="Magenta2" dataType="VARCHAR2" prompt="Magenta2" viewName="XXCSMPSSkuOptionsRptVO" viewAttr="Magenta2" maximumLength="100"/>
+                  <oa:messageStyledText id="Magenta3" dataType="VARCHAR2" prompt="Magenta3" viewName="XXCSMPSSkuOptionsRptVO" viewAttr="Magenta3" maximumLength="100"/>
+                  <oa:messageStyledText id="Cyan1" dataType="VARCHAR2" prompt="Cyan1" viewName="XXCSMPSSkuOptionsRptVO" viewAttr="Cyan1" maximumLength="100"/>
+                  <oa:messageStyledText id="Cyan2" dataType="VARCHAR2" prompt="Cyan2" viewName="XXCSMPSSkuOptionsRptVO" viewAttr="Cyan2" maximumLength="100"/>
+                  <oa:messageStyledText id="Cyan3" dataType="VARCHAR2" prompt="Cyan3" viewName="XXCSMPSSkuOptionsRptVO" viewAttr="Cyan3" maximumLength="100"/>
+                  <oa:messageStyledText id="Yellow1" dataType="VARCHAR2" prompt="Yellow1" viewName="XXCSMPSSkuOptionsRptVO" viewAttr="Yellow1" maximumLength="100"/>
+                  <oa:messageStyledText id="Yellow2" dataType="VARCHAR2" prompt="Yellow2" viewName="XXCSMPSSkuOptionsRptVO" viewAttr="Yellow2" maximumLength="100"/>
+                  <oa:messageStyledText id="Yellow3" dataType="VARCHAR2" prompt="Yellow3" viewName="XXCSMPSSkuOptionsRptVO" viewAttr="Yellow3" maximumLength="100"/>
+               </ui:contents>
+               <ui:tableActions>
+                  <oa:flowLayout id="tableActionsRN">
+                     <ui:contents>
+                        <oa:exportButton id="Export" exportAllRows="true" text="Export to CSV" viewName="XXCSMPSSkuOptionsRptVO"/>
+                     </ui:contents>
+                  </oa:flowLayout>
+               </ui:tableActions>
+            </oa:table>
+            <oa:table id="XXCSMPSDeviceSkuOptionsRptVO">
+               <ui:contents>
+                  <oa:messageStyledText id="Model1" dataType="VARCHAR2" prompt="Model" viewName="XXCSMPSDeviceSkuOptionsRptVO" viewAttr="Model" maximumLength="250"/>
+                  <oa:messageStyledText id="SerialNo1" dataType="VARCHAR2" prompt="SerialNo" viewName="XXCSMPSDeviceSkuOptionsRptVO" viewAttr="SerialNo" maximumLength="100"/>
+                  <oa:messageStyledText id="Black11" dataType="VARCHAR2" prompt="Black1" viewName="XXCSMPSDeviceSkuOptionsRptVO" viewAttr="Black1" maximumLength="25"/>
+                  <oa:messageStyledText id="Black21" dataType="VARCHAR2" prompt="Black2" viewName="XXCSMPSDeviceSkuOptionsRptVO" viewAttr="Black2" maximumLength="25"/>
+                  <oa:messageStyledText id="Black31" dataType="VARCHAR2" prompt="Black3" viewName="XXCSMPSDeviceSkuOptionsRptVO" viewAttr="Black3" maximumLength="25"/>
+                  <oa:messageStyledText id="Magenta11" dataType="VARCHAR2" prompt="Magenta1" viewName="XXCSMPSDeviceSkuOptionsRptVO" viewAttr="Magenta1" maximumLength="25"/>
+                  <oa:messageStyledText id="Magenta21" dataType="VARCHAR2" prompt="Magenta2" viewName="XXCSMPSDeviceSkuOptionsRptVO" viewAttr="Magenta2" maximumLength="25"/>
+                  <oa:messageStyledText id="Magenta31" dataType="VARCHAR2" prompt="Magenta3" viewName="XXCSMPSDeviceSkuOptionsRptVO" viewAttr="Magenta3" maximumLength="25"/>
+                  <oa:messageStyledText id="Cyan11" dataType="VARCHAR2" prompt="Cyan1" viewName="XXCSMPSDeviceSkuOptionsRptVO" viewAttr="Cyan1" maximumLength="25"/>
+                  <oa:messageStyledText id="Cyan21" dataType="VARCHAR2" prompt="Cyan2" viewName="XXCSMPSDeviceSkuOptionsRptVO" viewAttr="Cyan2" maximumLength="25"/>
+                  <oa:messageStyledText id="Cyan31" dataType="VARCHAR2" prompt="Cyan3" viewName="XXCSMPSDeviceSkuOptionsRptVO" viewAttr="Cyan3" maximumLength="25"/>
+                  <oa:messageStyledText id="Yellow11" dataType="VARCHAR2" prompt="Yellow1" viewName="XXCSMPSDeviceSkuOptionsRptVO" viewAttr="Yellow1" maximumLength="25"/>
+                  <oa:messageStyledText id="Yellow21" dataType="VARCHAR2" prompt="Yellow2" viewName="XXCSMPSDeviceSkuOptionsRptVO" viewAttr="Yellow2" maximumLength="25"/>
+                  <oa:messageStyledText id="Yellow31" dataType="VARCHAR2" prompt="Yellow3" viewName="XXCSMPSDeviceSkuOptionsRptVO" viewAttr="Yellow3" maximumLength="25"/>
+               </ui:contents>
+               <ui:tableActions>
+                  <oa:flowLayout id="tableActionsRN">
+                     <ui:contents>
+                        <oa:exportButton id="Export" exportAllRows="true" text="Export to CSV" viewName="XXCSMPSDeviceSkuOptionsRptVO"/>
+                     </ui:contents>
+                  </oa:flowLayout>
+               </ui:tableActions>
+            </oa:table>
+         </ui:contents>
+      </oa:pageLayout>
+   </content>
+</page>

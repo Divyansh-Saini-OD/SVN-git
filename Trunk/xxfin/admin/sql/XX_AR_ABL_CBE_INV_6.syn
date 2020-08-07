@@ -1,0 +1,28 @@
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     ON
+    -- +==========================================================================+
+    -- |                  Office Depot - Project Simplify                         |
+    -- +==========================================================================+
+    -- | SQL Script to create the Synonym                                         |
+    -- |                                                                          |
+    -- | XX_AR_ABL_CBE_INV_6.syn                                                  |
+    -- |                                                                          |
+    -- |                                                                          |
+    -- |                                                                          |
+    -- |                                                                          |
+    -- |Change Record:                                                            |
+    -- |===============                                                           |
+    -- |Version   Date         Author               Remarks                       |
+    -- |=======   ==========   =============        ==============================|
+    -- | V1.0     25-MAY-2016  Rakesh Polepalli     Initial version               |
+    -- |                                                                          |
+    -- +==========================================================================+
+
+
+PROMPT CREATING SYNONYM FOR XX_AR_ABL_CBE_INV_6..... 
+CREATE OR REPLACE SYNONYM XX_AR_ABL_CBE_INV_6 FOR XXFIN.XX_AR_ABL_CBE_INV_6;
+
+SHOW ERROR

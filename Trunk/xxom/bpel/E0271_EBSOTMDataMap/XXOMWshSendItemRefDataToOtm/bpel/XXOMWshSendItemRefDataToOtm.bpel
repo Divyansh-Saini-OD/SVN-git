@@ -1,0 +1,103 @@
+<!--
+  ///////////////////////////////////////////////////////////////////////////////////////////// 
+  // Oracle JDeveloper BPEL Designer 
+  // 
+  // Created: Tue Feb 14 14:41:31 IST 2006
+  // Author:  rahujain
+  // Purpose: Synchronous BPEL Process
+  ///////////////////////////////////////////////////////////////////////////////////////////// 
+-->
+<process name="XXOMWshSendItemRefDataToOtm"
+         targetNamespace="http://xmlns.oracle.com/apps/wsh/outbound/ref/XXOMWshSendItemRefDataToOtm"
+         xmlns="http://schemas.xmlsoap.org/ws/2003/03/business-process/"
+         xmlns:bpws="http://schemas.xmlsoap.org/ws/2003/03/business-process/"
+         xmlns:xp20="http://www.oracle.com/XSL/Transform/java/oracle.tip.pc.services.functions.Xpath20"
+         xmlns:ns4="http://xmlns.oracle.com/pcbpel/adapter/db/APPS/XX_OM_WSH_OTM_SYNC_ITEM_PKG/GET_EBS_ITEM_INFO/"
+         xmlns:ns7="http://xmlns.oracle.com/apps/otm"
+         xmlns:ldap="http://schemas.oracle.com/xpath/extension/ldap"
+         xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+         xmlns:ns5="http://xmlns.oracle.com/bpel/workflow/xpath"
+         xmlns:client="http://xmlns.oracle.com/apps/wsh/outbound/ref/XXOMWshSendItemRefDataToOtm"
+         xmlns:ns6="http://xmlns.oracle.com/bpel/services/IdentityService/xpath"
+         xmlns:ora="http://schemas.oracle.com/xpath/extension"
+         xmlns:ns1="http://xmlns.oracle.com/apps/wsh/outbound/util/WshOtmGlobalOutbound"
+         xmlns:ns3="http://xmlns.oracle.com/pcbpel/adapter/db/APPS/XX_OM_WSH_OTM_SYNC_ITEM_PKG/GET_EBS_ITEM_INFO/"
+         xmlns:ns2="http://xmlns.oracle.com/pcbpel/adapter/db/getEBSItemInfo/"
+         xmlns:bpelx="http://schemas.oracle.com/bpel/extension"
+         xmlns:orcl="http://www.oracle.com/XSL/Transform/java/oracle.tip.pc.services.functions.ExtFunc">
+  <!-- ================================================================= -->
+  <!-- PARTNERLINKS                                                      -->
+  <!-- List of services participating in this BPEL process               -->
+  <!-- ================================================================= -->
+  <partnerLinks>
+    <!-- 
+    The 'client' role represents the requester of this service. It is 
+    used for callback. The location and correlation information associated
+    with the client role are automatically set using WS-Addressing.
+    -->
+    <partnerLink name="client"
+                 partnerLinkType="client:XXOMWshSendItemRefDataToOtm"
+                 myRole="WshSendItemRefDataToOtmProvider"/>
+    <partnerLink name="getEBSItemInfo" partnerRole="getEBSItemInfo_role"
+                 partnerLinkType="ns2:getEBSItemInfo_plt"/>
+  </partnerLinks>
+  <!-- ================================================================= -->
+  <!-- VARIABLES                                                         -->
+  <!-- List of messages and XML documents used within this BPEL process  -->
+  <!-- ================================================================= -->
+  <variables>
+    <!-- Reference to the message passed as input during initiation -->
+    <variable name="inputVariable"
+              messageType="client:WshSendItemRefDataToOtmRequestMessage"/>
+    <!--  
+    Reference to the message that will be returned to the requester
+    -->
+    <variable name="outputVariable"
+              messageType="client:WshSendItemRefDataToOtmResponseMessage"/>
+    <variable name="G_getEBSItemInfo_InputVariable"
+              messageType="ns2:args_in_msg"/>
+    <variable name="G_getEBSItemInfo_OutputVariable"
+              messageType="ns2:args_out_msg"/>
+  </variables>
+  <!-- ================================================================= -->
+  <!-- ORCHESTRATION LOGIC                                               -->
+  <!-- Set of activities coordinating the flow of messages across the    -->
+  <!-- services integrated within this business process                  -->
+  <!-- ================================================================= -->
+  <sequence name="main">
+    <!-- Receive input from requestor. 
+    Note: This maps to operation defined in XXOMWshSendItemRefDataToOtm.wsdl
+    -->
+    <receive name="receiveInput" partnerLink="client"
+             portType="client:XXOMWshSendItemRefDataToOtm" operation="process"
+             variable="inputVariable" createInstance="yes"/>
+    <!-- Generate reply to synchronous request -->
+    <assign name="WshXFormInput">
+      <bpelx:annotation>
+        <bpelx:pattern>transformation
+        </bpelx:pattern>
+      </bpelx:annotation>
+      <copy>
+        <from expression="ora:processXSLT('WSHXFormInput.xsl',bpws:getVariableData('inputVariable','payload'))"/>
+        <to part="InputParameters" variable="G_getEBSItemInfo_InputVariable"/>
+      </copy>
+    </assign>
+    <invoke name="InvokeEBSItemPL" partnerLink="getEBSItemInfo"
+            portType="ns2:getEBSItemInfo_ptt" operation="getEBSItemInfo"
+            inputVariable="G_getEBSItemInfo_InputVariable"
+            outputVariable="G_getEBSItemInfo_OutputVariable"/>
+    <assign name="WshXFormToOutput">
+      <bpelx:annotation>
+        <bpelx:pattern>transformation
+        </bpelx:pattern>
+      </bpelx:annotation>
+      <copy>
+        <from expression="ora:processXSLT('WSHXFormToOutput.xsl',bpws:getVariableData('G_getEBSItemInfo_OutputVariable','OutputParameters'))"/>
+        <to variable="outputVariable" part="payload"/>
+      </copy>
+    </assign>
+    <reply name="replyOutput" partnerLink="client"
+           portType="client:XXOMWshSendItemRefDataToOtm" operation="process"
+           variable="outputVariable"/>
+  </sequence>
+</process>

@@ -1,0 +1,289 @@
+<?xml version="1.0" encoding='windows-1252'?>
+<!DOCTYPE ViewObject SYSTEM "jbo_03_01.dtd">
+
+<ViewObject
+   Name="ODEblTempDtlVO"
+   OrderBy="CUST_DOC_ID,RECORD_TYPE,SEQ"
+   BindingStyle="Oracle"
+   CustomQuery="true"
+   RowClass="od.oracle.apps.xxcrm.cdh.ebl.server.ODEblTempDtlVORowImpl"
+   ComponentClass="oracle.apps.fnd.framework.server.OAViewObjectImpl"
+   MsgBundleClass="oracle.jbo.common.JboResourceBundle"
+   UseGlueCode="false" >
+   <SQLQuery><![CDATA[
+SELECT ODEblTempDtlEO.CUST_DOC_ID, 
+       ODEblTempDtlEO.SEQ, 
+       ODEblTempDtlEO.FIELD_ID, 
+       ODEblTempDtlEO.LABEL, 
+       ODEblTempDtlEO.START_POS, 
+       ODEblTempDtlEO.FIELD_LEN, 
+       ODEblTempDtlEO.DATA_FORMAT, 
+       ODEblTempDtlEO.SORT_ORDER, 
+       ODEblTempDtlEO.SORT_TYPE, 
+       ODEblTempDtlEO.MANDATORY, 
+       ODEblTempDtlEO.SEQ_START_VAL, 
+       ODEblTempDtlEO.SEQ_INC_VAL, 
+       ODEblTempDtlEO.SEQ_RESET, 
+       ODEblTempDtlEO.CONSTANT_VALUE, 
+       ODEblTempDtlEO.ALIGNMENT, 
+       ODEblTempDtlEO.PADDING_CHAR, 
+       ODEblTempDtlEO.COMMENTS, 
+       ODEblTempDtlEO.LAST_UPDATE_DATE, 
+       ODEblTempDtlEO.LAST_UPDATED_BY, 
+       ODEblTempDtlEO.CREATION_DATE, 
+       ODEblTempDtlEO.CREATED_BY, 
+       ODEblTempDtlEO.LAST_UPDATE_LOGIN, 
+       ODEblTempDtlEO.REQUEST_ID, 
+       ODEblTempDtlEO.PROGRAM_APPLICATION_ID, 
+       ODEblTempDtlEO.PROGRAM_ID, 
+       ODEblTempDtlEO.PROGRAM_UPDATE_DATE, 
+       ODEblTempDtlEO.WH_UPDATE_DATE, 
+       ODEblTempDtlEO.RECORD_TYPE, 
+       ODEblTempDtlEO.STRING_FUN, 
+       ODEblTempDtlEO.DEFAULT_IF_NULL, 
+       ODEblTempDtlEO.ROWID
+FROM XX_CDH_EBL_TEMPL_DTL ODEblTempDtlEO
+   ]]></SQLQuery>
+   <DesignTime>
+      <Attr Name="_isCodegen" Value="true" />
+      <Attr Name="_version" Value="9.0.3.12.53" />
+      <Attr Name="_CodeGenFlagNew" Value="4" />
+   </DesignTime>
+   <EntityUsage
+      Name="ODEblTempDtlEO"
+      Entity="od.oracle.apps.xxcrm.cdh.ebl.schema.server.ODEblTempDtlEO" >
+      <DesignTime>
+         <Attr Name="_EntireObjectTable" Value="false" />
+         <Attr Name="_queryClause" Value="false" />
+      </DesignTime>
+   </EntityUsage>
+   <ViewAttribute
+      Name="CustDocId"
+      IsNotNull="true"
+      EntityAttrName="CustDocId"
+      EntityUsage="ODEblTempDtlEO"
+      AliasName="CUST_DOC_ID"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Seq"
+      IsNotNull="true"
+      EntityAttrName="Seq"
+      EntityUsage="ODEblTempDtlEO"
+      AliasName="SEQ"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="FieldId"
+      IsNotNull="true"
+      EntityAttrName="FieldId"
+      EntityUsage="ODEblTempDtlEO"
+      AliasName="FIELD_ID"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Label"
+      IsNotNull="true"
+      EntityAttrName="Label"
+      EntityUsage="ODEblTempDtlEO"
+      AliasName="LABEL"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="StartPos"
+      EntityAttrName="StartPos"
+      EntityUsage="ODEblTempDtlEO"
+      AliasName="START_POS"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="FieldLen"
+      EntityAttrName="FieldLen"
+      EntityUsage="ODEblTempDtlEO"
+      AliasName="FIELD_LEN"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="DataFormat"
+      EntityAttrName="DataFormat"
+      EntityUsage="ODEblTempDtlEO"
+      AliasName="DATA_FORMAT"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="SortOrder"
+      EntityAttrName="SortOrder"
+      EntityUsage="ODEblTempDtlEO"
+      AliasName="SORT_ORDER"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="SortType"
+      EntityAttrName="SortType"
+      EntityUsage="ODEblTempDtlEO"
+      AliasName="SORT_TYPE"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Mandatory"
+      IsNotNull="true"
+      EntityAttrName="Mandatory"
+      EntityUsage="ODEblTempDtlEO"
+      AliasName="MANDATORY"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="SeqStartVal"
+      EntityAttrName="SeqStartVal"
+      EntityUsage="ODEblTempDtlEO"
+      AliasName="SEQ_START_VAL"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="SeqIncVal"
+      EntityAttrName="SeqIncVal"
+      EntityUsage="ODEblTempDtlEO"
+      AliasName="SEQ_INC_VAL"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="SeqReset"
+      EntityAttrName="SeqReset"
+      EntityUsage="ODEblTempDtlEO"
+      AliasName="SEQ_RESET"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="ConstantValue"
+      EntityAttrName="ConstantValue"
+      EntityUsage="ODEblTempDtlEO"
+      AliasName="CONSTANT_VALUE"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Alignment"
+      EntityAttrName="Alignment"
+      EntityUsage="ODEblTempDtlEO"
+      AliasName="ALIGNMENT"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="PaddingChar"
+      EntityAttrName="PaddingChar"
+      EntityUsage="ODEblTempDtlEO"
+      AliasName="PADDING_CHAR"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Comments"
+      EntityAttrName="Comments"
+      EntityUsage="ODEblTempDtlEO"
+      AliasName="COMMENTS"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="LastUpdateDate"
+      IsNotNull="true"
+      EntityAttrName="LastUpdateDate"
+      EntityUsage="ODEblTempDtlEO"
+      AliasName="LAST_UPDATE_DATE"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="LastUpdatedBy"
+      IsNotNull="true"
+      EntityAttrName="LastUpdatedBy"
+      EntityUsage="ODEblTempDtlEO"
+      AliasName="LAST_UPDATED_BY"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="CreationDate"
+      IsNotNull="true"
+      EntityAttrName="CreationDate"
+      EntityUsage="ODEblTempDtlEO"
+      AliasName="CREATION_DATE"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="CreatedBy"
+      IsNotNull="true"
+      EntityAttrName="CreatedBy"
+      EntityUsage="ODEblTempDtlEO"
+      AliasName="CREATED_BY"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="LastUpdateLogin"
+      IsNotNull="true"
+      EntityAttrName="LastUpdateLogin"
+      EntityUsage="ODEblTempDtlEO"
+      AliasName="LAST_UPDATE_LOGIN"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="RequestId"
+      EntityAttrName="RequestId"
+      EntityUsage="ODEblTempDtlEO"
+      AliasName="REQUEST_ID"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="ProgramApplicationId"
+      EntityAttrName="ProgramApplicationId"
+      EntityUsage="ODEblTempDtlEO"
+      AliasName="PROGRAM_APPLICATION_ID"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="ProgramId"
+      EntityAttrName="ProgramId"
+      EntityUsage="ODEblTempDtlEO"
+      AliasName="PROGRAM_ID"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="ProgramUpdateDate"
+      EntityAttrName="ProgramUpdateDate"
+      EntityUsage="ODEblTempDtlEO"
+      AliasName="PROGRAM_UPDATE_DATE"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="WhUpdateDate"
+      EntityAttrName="WhUpdateDate"
+      EntityUsage="ODEblTempDtlEO"
+      AliasName="WH_UPDATE_DATE"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="RecordType"
+      IsNotNull="true"
+      EntityAttrName="RecordType"
+      EntityUsage="ODEblTempDtlEO"
+      AliasName="RECORD_TYPE"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="StringFun"
+      EntityAttrName="StringFun"
+      EntityUsage="ODEblTempDtlEO"
+      AliasName="STRING_FUN"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="DefaultIfNull"
+      EntityAttrName="DefaultIfNull"
+      EntityUsage="ODEblTempDtlEO"
+      AliasName="DEFAULT_IF_NULL"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="RowID"
+      IsUpdateable="false"
+      EntityAttrName="RowID"
+      EntityUsage="ODEblTempDtlEO"
+      AliasName="ROWID"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+</ViewObject>

@@ -1,0 +1,27 @@
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+-- +=======================================================================+
+-- |               Office Depot - Project Simplify                         |
+-- |             Oracle NAIO Consulting Organization                       |
+-- +=======================================================================+
+-- | Name             :XX_COM_ERROR_LOG_N2.idx                             |
+-- | Description      :Index on Custom Table XX_COM_ERROR_LOG              |
+-- |                                                                       |
+-- |                                                                       |
+-- |Change History:                                                        |
+-- |---------------                                                        |
+-- |                                                                       |
+-- |Version  Date        Author             Remarks                        |
+-- |-------  ----------- -----------------  -------------------------------|
+-- |1.0      06-May-2008 Hema Chikkanna     Index for table                |
+-- +=======================================================================+
+
+-- -------------------------------------------------
+-- Creating Index XX_COM_ERROR_LOG_N2
+-- -------------------------------------------------
+
+
+CREATE INDEX XXCOMN.XX_COM_ERROR_LOG_N2        
+ON XXCOMN.XX_COM_ERROR_LOG(ATTRIBUTE15);

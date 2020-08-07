@@ -1,0 +1,56 @@
+-- +==========================================================================+
+-- |                  Office Depot - Project Simplify                         |
+-- |                       PROVIDGE Consulting                                |
+-- +==========================================================================+
+-- | SQL Script to create                                                     |
+-- |                                                                          |
+-- |                      TABLES: XX_AR_EBL_TRANSMISSION                      |
+-- |                                                                          |
+-- |                                                                          |
+-- |                                                                          |
+-- |                                                                          |
+-- |                                                                          |
+-- |Change Record:                                                            |
+-- |===============                                                           |
+-- |Version   Date         Author               Remarks                       |
+-- |=======   ==========   ================     ==============================|
+-- | V1.0     30-MAR-2010  Bushrod Thomas       Initial version               |
+-- |                                                                          |
+-- |                                                                          |
+-- |                                                                          |
+-- +==========================================================================+
+
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     ON
+
+  CREATE TABLE XXFIN.XX_AR_EBL_TRANSMISSION
+   (	TRANSMISSION_ID NUMBER NOT NULL ENABLE,
+	CUSTOMER_ID NUMBER NOT NULL ENABLE,
+        ACCOUNT_NUMBER VARCHAR2(30 BYTE),
+	CUSTOMER_DOC_ID NUMBER NOT NULL ENABLE,
+	SITE_USE_ID NUMBER,
+	TRANSMISSION_DT DATE,
+	TRANSMISSION_TYPE VARCHAR2(20 BYTE),
+	STATUS VARCHAR2(20 BYTE),
+	STATUS_DETAIL VARCHAR2(4000 BYTE), 
+	DEST_EMAIL_ADDR VARCHAR2(2000 BYTE),
+	BILLING_DT_FROM DATE,
+	BILLING_DT DATE,
+	NOTIFICATION_SENT_TO VARCHAR2(256 BYTE), 
+	NOTIFICATION_SENT_DT DATE,
+        ZERO_BYTE_FLAG  VARCHAR2(1),
+	PAY_TERMS VARCHAR2(240 BYTE),
+	BILL_DUE_DT DATE, 
+        CREATED_BY NUMBER(15,0),
+        CREATION_DATE DATE,
+        LAST_UPDATED_BY NUMBER(15,0),
+        LAST_UPDATE_DATE DATE,
+      	LAST_UPDATE_LOGIN NUMBER(15,0),
+	ORG_ID NUMBER
+   ) 
+   TABLESPACE "XXOD_EBL_TS_DATA";
+
+SHOW ERROR

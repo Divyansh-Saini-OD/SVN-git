@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<schema xmlns="http://www.w3.org/2001/XMLSchema" xmlns:o1="http://www.thiscompany.com/ns/sales" targetNamespace="http://www.thiscompany.com/ns/sales">
+	<element name="POS" type="o1:POSType"/>
+	<complexType name="POSType">
+		<sequence>
+			<element name="TransactionType" type="string" minOccurs="1" maxOccurs="1"/>
+			<element name="OrderDetail" type="o1:OrderDetail"/>
+		</sequence>
+	</complexType>
+	<complexType name="OrderDetail">
+		<sequence>
+			<element name="OrderHeader" type="o1:OrderHeader"/>
+		</sequence>
+	</complexType>
+	<complexType name="OrderHeader">
+		<sequence>
+			<element name="OrderNumber" type="integer" minOccurs="1" maxOccurs="1"/>
+			<element name="POSTransactionNo" type="string" minOccurs="1" maxOccurs="1"/>
+			<element name="OrderLine" type="o1:OrderLine"/>
+			<element name="PaymentDetail" type="o1:PaymentDetail"/>
+		</sequence>
+	</complexType>
+	<complexType name="OrderLine">
+		<sequence>
+			<element name="SkuNumber" type="string" minOccurs="1" maxOccurs="1"/>
+			<element name="LineNum" type="integer" minOccurs="1" maxOccurs="1"/>
+			<element name="UomCode" type="string" minOccurs="0" maxOccurs="1"/>
+			<element name="WarehouseCode" type="string" minOccurs="1" maxOccurs="1"/>
+			<element name="SalesRepName" type="string" minOccurs="0" maxOccurs="1"/>
+			<element name="TaxAmt" type="decimal" minOccurs="0" maxOccurs="1"/>
+			<element name="SellingPrice" type="decimal" minOccurs="0" maxOccurs="1"/>
+			<element name="ShippedQuantity" type="decimal" minOccurs="0" maxOccurs="1"/>
+			<element name="SerialNum" type="string" minOccurs="0" maxOccurs="1"/>
+			<element name="LineStatus" type="string" minOccurs="1" maxOccurs="1"/>
+			<element name="TaxCode" type="string" minOccurs="0" maxOccurs="1"/>
+		</sequence>
+	</complexType>
+	<complexType name="PaymentDetail">
+		<sequence>
+			<element name="LineNum" type="integer" minOccurs="1" maxOccurs="1"/>
+			<element name="PaymentMethod" type="string" minOccurs="1" maxOccurs="1"/>
+			<element name="PaymentInstrument" type="string" minOccurs="0" maxOccurs="1"/>
+			<element name="PaymentDetails" type="string" minOccurs="0" maxOccurs="1"/>
+			<element name="ExpirationDate" type="date" minOccurs="0" maxOccurs="1"/>
+			<element name="PaymentAmount" type="decimal" minOccurs="0" maxOccurs="1"/>
+			<element name="HolderName" type="string" minOccurs="0" maxOccurs="1"/>
+			<element name="AccountNumber" type="string" minOccurs="0" maxOccurs="1"/>
+			<element name="RoutingNumber" type="string" minOccurs="0" maxOccurs="1"/>
+			<element name="AuthorizationCode" type="string" minOccurs="0" maxOccurs="1"/>
+		</sequence>
+	</complexType>
+</schema>

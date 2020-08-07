@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="windows-1252" ?>
+<project default="compile" basedir=".">
+    <target name="compile">
+
+        <echo>
+--------------------------------------------------------------
+| Compiling bpel process ${process.name}, revision ${rev}
+--------------------------------------------------------------
+        </echo>
+
+        <bpelc rev="${rev}" input="${process.dir}/bpel/bpel.xml" out="${process.dir}/output" home="${bpel.home}">
+               <customize>
+                  <partnerLinkBinding name="ODErrorLogger">
+                   <property name="wsdlLocation">http://${oderrorlogger.hostname}:${oderrorlogger.port}/orabpel/${oderrorlogger.domain}/ODErrorLogger/ODErrorLogger?wsdl</property>
+                  <property name="retryInterval">${db.retryInterval}</property>
+                  <property name="retryMaxCount">${db.retryMaxCount}</property>
+                  <property name="timeout">${db.timeout}</property>
+                 </partnerLinkBinding>
+                 <partnerLinkBinding name="ProcessNowDocsReceive">
+                  <property name="wsdlLocation">http://${http.hostname}:${http.port}/orabpel/${domain}/ProcessNowDocsReceive/ProcessNowDocsReceive?wsdl</property>
+                  <property name="retryInterval">${db.retryInterval}</property>
+                  <property name="retryMaxCount">${db.retryMaxCount}</property>
+                  <property name="timeout">${db.timeout}</property>
+                 </partnerLinkBinding>
+                 <partnerLinkBinding name="UpdateSuccessAckProcess">
+                  <property name="wsdlLocation">http://${http.hostname}:${http.port}/orabpel/${domain}/UpdateSuccessAckProcess/UpdateSuccessAckProcess?wsdl</property>
+                  <property name="retryInterval">${db.retryInterval}</property>
+                  <property name="retryMaxCount">${db.retryMaxCount}</property>
+                  <property name="timeout">${db.timeout}</property>
+                 </partnerLinkBinding>
+                 <partnerLinkBinding name="EnqueueMessage">
+                  <property name="retryInterval">${db.retryInterval}</property>
+                  <property name="retryMaxCount">${db.retryMaxCount}</property>
+                  <property name="timeout">${db.timeout}</property>
+                 </partnerLinkBinding>
+                 <partnerLinkBinding name="DBErrorWrite">
+                  <property name="retryInterval">${db.retryInterval}</property>
+                  <property name="retryMaxCount">${db.retryMaxCount}</property>
+                  <property name="timeout">${db.timeout}</property>
+                 </partnerLinkBinding>
+              </customize>
+         </bpelc>
+    </target>
+</project>

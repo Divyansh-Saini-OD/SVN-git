@@ -1,0 +1,71 @@
+REM============================================================================================
+REM                                 Start Of Script                                            
+REM============================================================================================
+
+--+=============================================================================================+--
+--|                                                                                             |--
+--| Object Name    : OD Item Cross Reference Synonym Creation                                   |--
+--|                                                                                             |--
+--| Program Name   : XX_INV_ITEMXREF_STG_S.syn                                                  |--        
+--|                                                                                             |--   
+--| Purpose        : Create Custom Synonyms                                                     |--
+--|                  The Objects created are:                                                   |--
+--|                                                                                             |--
+--|                  1. XX_INV_ITEMXREF_STG_S (Synonym for XX_INV_ITEMXREF_STG_S)               |--
+--|                                                                                             |-- 
+--| Change History  :                                                                           |--
+--| Version           Date             Changed By              Description                      |--
+--+=============================================================================================+--
+--| 1.0              29-Jun-2007      Abhradip Ghosh           Original                         |--
+--| 1.1              29-Jun-2007      Parvez Siddiqui          TL Reviewed                      |--
+--+=============================================================================================+-- 
+
+SET VERIFY   OFF
+SET TERM     ON
+SET FEEDBACK OFF
+SET SHOW     OFF
+SET ECHO     OFF
+SET TAB      OFF
+                   
+WHENEVER SQLERROR CONTINUE
+
+PROMPT
+PROMPT Dropping Synonym in APPS...
+PROMPT
+
+WHENEVER SQLERROR CONTINUE
+
+PROMPT
+PROMPT Dropping SYNONYM XX_INV_ITEMXREF_STG_S in APPS
+PROMPT
+
+DROP SYNONYM XX_INV_ITEMXREF_STG_S;
+
+WHENEVER SQLERROR CONTINUE
+
+PROMPT
+PROMPT Creating Synonym in APPS...
+PROMPT
+
+WHENEVER SQLERROR CONTINUE
+
+PROMPT
+PROMPT Creating SYNONYM XX_INV_ITEMXREF_STG_S
+PROMPT
+
+CREATE OR REPLACE SYNONYM XX_INV_ITEMXREF_STG_S FOR XXCNV.XX_INV_ITEMXREF_STG_S;
+
+WHENEVER SQLERROR CONTINUE
+
+PROMPT
+PROMPT Exiting....
+PROMPT
+
+SET FEEDBACK ON
+
+EXIT;
+
+REM=================================================================================================
+REM                                   End Of Script                                            
+REM=================================================================================================
+

@@ -1,0 +1,26 @@
+-- +==========================================================================+
+-- |                  Office Depot - Project Simplify                         |
+-- +==========================================================================+
+-- | SQL Script to create                                                     |
+-- |                                                                          |
+-- |INDEXES: XX_AR_EBL_CONS_BILLS_STG_N3                                      |
+-- |                                                                          |
+-- |                                                                          |
+-- |Change Record:                                                            |
+-- |===============                                                           |
+-- |Version   Date          Author               Remarks                      |
+-- |=======   ==========    ================     =============================|
+-- | V1.0     26-JUL-2009   Ranjith Prabu        Initial version              |
+-- |                                                                          |
+-- +==========================================================================+
+
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     ON
+
+CREATE INDEX XXFIN.XX_AR_EBL_CONS_BILLS_STG_N3 ON XXFIN.XX_AR_EBL_CONS_BILLS_STG(effective_from_date) LOCAL
+COMPUTE STATISTICS;
+
+SHOW ERROR

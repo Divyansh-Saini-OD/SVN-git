@@ -1,0 +1,1623 @@
+<?xml version="1.0" encoding="WINDOWS-1252" ?>
+<dataTemplate name="XXARCBIPRI_CA" description="OD: (CA) AR Get Summary Billing Data -CERTEGY" defaultPackage="xx_ar_print_summbill" Version="1.0">
+<properties>
+<property name="scalable_mode" value="on" />
+</properties>
+<parameters>
+ <parameter name="p_request_id" dataType="number"/>
+</parameters>
+<dataQuery>
+<sqlStatement name="Q_TAX_INFO"> 
+<![CDATA[
+SELECT tax_id
+      ,tax_id_desc
+      ,return_address_line1
+      ,return_address_line2
+      ,return_city
+      ,return_state
+      ,return_postal_code
+FROM   apps.xx_ar_sys_info
+]]>
+</sqlStatement>
+<sqlStatement name="Q_CUSTOMERS">
+<![CDATA[
+SELECT attribute9  billing_id
+      ,attribute12 account_number
+      ,attribute11 account_name
+      ,attribute10 sales_channel
+      ,customer_id
+      ,customer_id info_customer_id
+      ,customer_id sumz_customer_id
+      ,customer_id one_customer_id      
+FROM   xx_ar_cons_bills_history
+WHERE  1 =1
+  AND  print_date   <=TRUNC(SYSDATE)
+  AND  process_flag !='Y'
+  AND  attribute13   =:p_request_id
+GROUP BY attribute9 ,attribute12 ,attribute11 ,attribute10 ,customer_id
+]]>
+</sqlStatement>
+<sqlStatement name="Q_BILLING_SITES">
+<![CDATA[
+select od_summbills.billing_site_id  billing_site_id
+      ,od_summbills.billing_site_id  info_billing_site_id
+      ,od_summbills.billing_site_id  sumz_billing_site_id
+      ,od_summbills.billing_site_id  one_billing_site_id      
+      ,substr(hzlo.address1 ,1 ,40)  bill_to_address_line1
+      ,substr(hzlo.address2 ,1 ,40)  bill_to_address_line2
+      ,substr(hzlo.address3 ,1 ,40)  bill_to_address_line3
+      ,substr(hzlo.address4 ,1 ,40)  bill_to_address_line4
+      ,substr(hzlo.city ,1 ,40)      bill_to_city
+      ,hzlo.state                    bill_to_state
+      ,REPLACE(hzlo.postal_code ,'-' ,'') bill_to_postal_code
+      ,hzlo.province                 bill_to_province
+      ,hzlo.country                  bill_to_country
+      ,substr(rhzlo.address1 ,1 ,40) remit_to_address_line1
+      ,substr(rhzlo.address2 ,1 ,40) remit_to_address_line2
+      ,substr(rhzlo.address3 ,1 ,40) remit_to_address_line3
+      ,substr(rhzlo.address4 ,1 ,40) remit_to_address_line4      
+      ,substr(rhzlo.city ,1 ,40)     remit_to_city
+      ,rhzlo.state                   remit_to_state
+      ,REPLACE(rhzlo.postal_code ,'-' ,'') remit_to_postal_code
+      ,rhzlo.country                 remit_to_country
+      ,xx_ar_print_summbill.get_od_contact_info(:sales_channel ,hzlo.country ,'ORDER') order_contact
+      ,xx_ar_print_summbill.get_od_contact_info(:sales_channel ,hzlo.country ,'ACCOUNT') account_contact      
+ from  hz_cust_acct_sites   hzas
+       ,hz_cust_site_uses    hzsu
+       ,hz_party_sites       hzps
+       ,hz_locations         hzlo
+       ,hz_cust_acct_sites   rhzca
+       ,hz_party_sites       rhzps
+       ,hz_locations         rhzlo
+       ,(select customer_id ,to_number(attribute7) billing_site_id
+         from   xx_ar_cons_bills_history
+         where  1 =1
+           and  print_date <=trunc(sysdate)
+           and  process_flag !='Y'  
+           and  attribute13   =:p_request_id           
+         group by customer_id ,to_number(attribute7) 
+        ) od_summbills
+  where hzas.cust_account_id         =:customer_id
+    and hzas.cust_account_id         =od_summbills.customer_id
+    and od_summbills.billing_site_id =hzsu.site_use_id
+    and hzsu.cust_acct_site_id       =hzas.cust_acct_site_id
+    and hzps.party_site_id           =hzas.party_site_id
+    and hzlo.location_id             =hzps.location_id
+    and rhzca.cust_acct_site_id      =xx_ar_print_summbill.get_remitaddressid(od_summbills.billing_site_id)
+    and rhzps.party_site_id          =rhzca.party_site_id
+    and rhzlo.location_id            =rhzps.location_id
+]]>
+</sqlStatement>
+<sqlStatement name="Q_PAYDOC_LAYOUT">
+<![CDATA[
+SELECT document_id   doc_id
+      ,UPPER(layout) layout      
+      ,sort_by       sort_by
+      ,attribute2    total_by
+      ,attribute3    page_break
+      ,cons_inv_id   cbi_id1
+FROM   xx_ar_cons_bills_history
+WHERE  1 =1
+  AND  print_date   <=TRUNC(SYSDATE)
+  AND  paydoc       ='Y'  
+  AND  process_flag !='Y'
+  AND  customer_id  =:customer_id
+  AND  attribute7   =:billing_site_id
+  AND  attribute13   =:p_request_id
+]]>
+</sqlStatement>
+<sqlStatement name="Q_PAYDOC_CBI_DETAIL">
+<![CDATA[
+ SELECT arci.cons_inv_id                            cons_inv_id
+       ,arci.cons_billing_number                    billing_number
+       ,arci.currency_code                          currency
+       ,SUBSTR(terms.description ,1 ,15)            terms       
+       ,TO_CHAR( NVL(
+                       xx_ar_print_summbill.get_bill_from_date(arci.customer_id
+                                                                  ,arci.site_use_id 
+                                                                  ,arci.cons_inv_id 
+                                                                  ,'PAYDOC'
+                                                                  )
+                      ,TRUNC(SYSDATE)
+                    ) 
+                ,'DD-MON-YY'
+               ) bill_from_date
+      -- ,TO_CHAR(TRUNC(arci.cut_off_date) ,'DD-MON-YY')                    bill_to_date   
+       ,TO_CHAR(TRUNC(arci.cut_off_date)-1 ,'DD-MON-YY')                    bill_to_date   
+       ,TO_CHAR(TRUNC(arci.due_date) ,'DD-MON-YY')                        payment_due
+       ,xx_ar_cbi_paydoc_ministmnt       
+        (arci.cons_inv_id ,'EXTAMT_PLUS_DELVY')     cbi_extamt_incl_delvy
+       ,xx_ar_cbi_paydoc_ministmnt        
+        (arci.cons_inv_id ,'DISCOUNT')              cbi_promo_and_disc        
+       ,xx_ar_cbi_paydoc_ministmnt        
+        (arci.cons_inv_id ,'TAX')                   cbi_tax
+       ,od_summbills.attribute14                    cbi_amount_due 
+       ,xx_ar_print_summbill.xx_fin_check_digit(:account_number ,arci.cons_billing_number ,(TO_NUMBER(od_summbills.attribute14) *100)) scanline 
+       ,layout pd_layout1
+       ,layout pd_layout2
+       ,layout pd_layout3       
+       ,'ORIGINAL CONSOLIDATED BILL' doc_title       
+ FROM   xx_ar_cons_bills_history od_summbills
+       ,ar_cons_inv              arci
+       ,ra_terms                 terms
+ WHERE od_summbills.cons_inv_id =arci.cons_inv_id
+   AND od_summbills.customer_id =:customer_id
+   AND od_summbills.attribute7  =:billing_site_id
+   AND terms.term_id            =arci.term_id  
+   AND od_summbills.print_date  <=TRUNC(SYSDATE)
+   AND od_summbills.document_id =:doc_id
+   AND od_summbills.paydoc      ='Y'   
+   AND NVL(od_summbills.process_flag, 'N') !='Y'  
+   AND od_summbills.attribute13   =:p_request_id
+   AND od_summbills.cons_inv_id   =:cbi_id1
+   AND od_summbills.layout ='DETAIL'
+]]>
+</sqlStatement>
+<sqlStatement name="Q_PAYDOC_CBI_SUMMARIZE">
+<![CDATA[
+ SELECT arci.cons_inv_id                            cons_inv_id1
+       ,arci.cons_billing_number                    billing_number
+       ,arci.currency_code                          currency
+       ,SUBSTR(terms.description ,1 ,15)            terms       
+       ,TO_CHAR( NVL(
+                       xx_ar_print_summbill.get_bill_from_date(arci.customer_id
+                                                                  ,arci.site_use_id 
+                                                                  ,arci.cons_inv_id 
+                                                                  ,'PAYDOC'
+                                                                  )
+                      ,TRUNC(SYSDATE)
+                    ) 
+                ,'DD-MON-YY'
+               ) bill_from_date
+      -- ,TO_CHAR(TRUNC(arci.cut_off_date) ,'DD-MON-YY')                    bill_to_date   
+       ,TO_CHAR(TRUNC(arci.cut_off_date)-1 ,'DD-MON-YY')                    bill_to_date 
+       ,TO_CHAR(TRUNC(arci.due_date) ,'DD-MON-YY')                        payment_due
+       ,xx_ar_cbi_paydoc_ministmnt       
+        (arci.cons_inv_id ,'EXTAMT_PLUS_DELVY')     cbi_extamt_incl_delvy
+       ,xx_ar_cbi_paydoc_ministmnt        
+        (arci.cons_inv_id ,'DISCOUNT')              cbi_promo_and_disc        
+       ,xx_ar_cbi_paydoc_ministmnt        
+        (arci.cons_inv_id ,'TAX')                   cbi_tax
+       ,od_summbills.attribute14                    cbi_amount_due 
+       ,xx_ar_print_summbill.xx_fin_check_digit(:account_number ,arci.cons_billing_number ,(TO_NUMBER(od_summbills.attribute14) *100)) scanline 
+       ,layout pd_layout1
+       ,layout pd_layout2
+       ,layout pd_layout3       
+       ,'ORIGINAL CONSOLIDATED BILL' doc_title       
+ FROM   xx_ar_cons_bills_history od_summbills
+       ,ar_cons_inv              arci
+       ,ra_terms                 terms
+ WHERE od_summbills.cons_inv_id =arci.cons_inv_id
+   AND od_summbills.customer_id =:customer_id
+   AND od_summbills.attribute7  =:billing_site_id
+   AND terms.term_id            =arci.term_id  
+   AND od_summbills.print_date  <=TRUNC(SYSDATE)
+   AND od_summbills.document_id =:doc_id
+   AND od_summbills.paydoc      ='Y'   
+   AND NVL(od_summbills.process_flag, 'N') !='Y'  
+   AND od_summbills.attribute13   =:p_request_id
+   AND od_summbills.cons_inv_id   =:cbi_id1
+   AND od_summbills.layout ='SUMMARIZE'
+]]>
+</sqlStatement>
+<sqlStatement name="Q_PAYDOC_CBI_ONE">
+<![CDATA[
+ SELECT arci.cons_inv_id                            cons_inv_id2
+       ,arci.cons_billing_number                    billing_number
+       ,arci.currency_code                          currency
+       ,SUBSTR(terms.description ,1 ,15)            terms       
+       ,TO_CHAR( NVL(
+                       xx_ar_print_summbill.get_bill_from_date(arci.customer_id
+                                                                  ,arci.site_use_id 
+                                                                  ,arci.cons_inv_id 
+                                                                  ,'PAYDOC'
+                                                                  )
+                      ,TRUNC(SYSDATE)
+                    ) 
+                ,'DD-MON-YY'
+               ) bill_from_date
+     --  ,TO_CHAR(TRUNC(arci.cut_off_date) ,'DD-MON-YY')                    bill_to_date   
+       ,TO_CHAR(TRUNC(arci.cut_off_date)-1 ,'DD-MON-YY')                    bill_to_date
+       ,TO_CHAR(TRUNC(arci.due_date) ,'DD-MON-YY')                        payment_due
+       ,xx_ar_cbi_paydoc_ministmnt       
+        (arci.cons_inv_id ,'EXTAMT_PLUS_DELVY')     cbi_extamt_incl_delvy
+       ,xx_ar_cbi_paydoc_ministmnt        
+        (arci.cons_inv_id ,'DISCOUNT')              cbi_promo_and_disc        
+       ,xx_ar_cbi_paydoc_ministmnt        
+        (arci.cons_inv_id ,'TAX')                   cbi_tax
+       ,od_summbills.attribute14                    cbi_amount_due 
+       ,xx_ar_print_summbill.xx_fin_check_digit(:account_number ,arci.cons_billing_number ,(TO_NUMBER(od_summbills.attribute14) *100)) scanline 
+       ,layout pd_layout1
+       ,layout pd_layout2
+       ,layout pd_layout3       
+       ,'ORIGINAL CONSOLIDATED BILL' doc_title       
+ FROM   xx_ar_cons_bills_history od_summbills
+       ,ar_cons_inv              arci
+       ,ra_terms                 terms
+ WHERE od_summbills.cons_inv_id =arci.cons_inv_id
+   AND od_summbills.customer_id =:customer_id
+   AND od_summbills.attribute7  =:billing_site_id
+   AND terms.term_id            =arci.term_id  
+   AND od_summbills.print_date  <=TRUNC(SYSDATE)
+   AND od_summbills.document_id =:doc_id
+   AND od_summbills.paydoc      ='Y'   
+   AND NVL(od_summbills.process_flag, 'N') !='Y'  
+   AND od_summbills.attribute13   =:p_request_id
+   AND od_summbills.cons_inv_id   =:cbi_id1
+   AND od_summbills.layout ='ONE'
+]]>
+</sqlStatement>
+<sqlStatement name="Q_PAYDOC_SUMM_SOFTHEADERS">
+<![CDATA[
+SELECT REPLACE(sfhdr1 ,':' ,'') sfhdr1
+      ,REPLACE(sfhdr2 ,':' ,'') sfhdr2
+      ,REPLACE(sfhdr3 ,':' ,'') sfhdr3
+      ,REPLACE(sfhdr4 ,':' ,'') sfhdr4
+      ,REPLACE(sfhdr5 ,':' ,'') sfhdr5
+FROM  xx_ar_cbi_trx
+WHERE request_id =:p_request_id
+  AND cons_inv_id =:cons_inv_id1
+  AND attribute1  ='PAYDOC'
+  AND inv_type NOT IN ('SOFTHDR_TOTALS' ,'BILLTO_TOTALS' ,'GRAND_TOTAL')
+GROUP BY sfhdr1 ,sfhdr2 ,sfhdr3 ,sfhdr4 ,sfhdr5
+]]>
+</sqlStatement>
+<sqlStatement name="Q_INFODOC_SUMM_SOFTHEADERS">
+<![CDATA[
+SELECT REPLACE(sfhdr1 ,':' ,'') infosumz_sfhdr1
+      ,REPLACE(sfhdr2 ,':' ,'') infosumz_sfhdr2
+      ,REPLACE(sfhdr3 ,':' ,'') infosumz_sfhdr3
+      ,REPLACE(sfhdr4 ,':' ,'') infosumz_sfhdr4
+      ,REPLACE(sfhdr5 ,':' ,'') infosumz_sfhdr5
+FROM  xx_ar_cbi_trx
+WHERE request_id =:p_request_id
+  AND cons_inv_id =:info_cbi_id99
+  AND attribute1  !='PAYDOC'
+  AND inv_type NOT IN ('SOFTHDR_TOTALS' ,'BILLTO_TOTALS' ,'GRAND_TOTAL')
+GROUP BY sfhdr1 ,sfhdr2 ,sfhdr3 ,sfhdr4 ,sfhdr5
+]]>
+</sqlStatement>
+<sqlStatement name="Q_PAYDOC_ONE_SOFTHEADERS">
+<![CDATA[
+SELECT REPLACE(sfhdr1 ,':' ,'') sfhdr1
+      ,REPLACE(sfhdr2 ,':' ,'') sfhdr2
+      ,REPLACE(sfhdr3 ,':' ,'') sfhdr3
+      ,REPLACE(sfhdr4 ,':' ,'') sfhdr4
+      ,REPLACE(sfhdr5 ,':' ,'') sfhdr5
+FROM  xx_ar_cbi_trx
+WHERE request_id =:p_request_id
+  AND cons_inv_id =:cons_inv_id2
+  AND attribute1  ='PAYDOC'
+  AND inv_type NOT IN ('SOFTHDR_TOTALS' ,'BILLTO_TOTALS' ,'GRAND_TOTAL')
+GROUP BY sfhdr1 ,sfhdr2 ,sfhdr3 ,sfhdr4 ,sfhdr5
+]]>
+</sqlStatement>
+<sqlStatement name="Q_INFODOC_ONE_SOFTHEADERS">
+<![CDATA[
+SELECT REPLACE(sfhdr1 ,':' ,'') infoone_sfhdr1
+      ,REPLACE(sfhdr2 ,':' ,'') infoone_sfhdr2
+      ,REPLACE(sfhdr3 ,':' ,'') infoone_sfhdr3
+      ,REPLACE(sfhdr4 ,':' ,'') infoone_sfhdr4
+      ,REPLACE(sfhdr5 ,':' ,'') infoone_sfhdr5
+FROM  xx_ar_cbi_trx
+WHERE request_id =:p_request_id
+  AND cons_inv_id =:info_cbi_id77
+  AND attribute1  !='PAYDOC'
+  AND inv_type NOT IN ('SOFTHDR_TOTALS' ,'BILLTO_TOTALS' ,'GRAND_TOTAL')
+GROUP BY sfhdr1 ,sfhdr2 ,sfhdr3 ,sfhdr4 ,sfhdr5
+]]>
+</sqlStatement>
+<sqlStatement name="Q_PAYDOC_SUMM_TRX">
+<![CDATA[
+SELECT 
+      customer_trx_id trx_id1
+FROM  xx_ar_cbi_trx
+WHERE request_id  =:p_request_id
+  AND cons_inv_id =:cons_inv_id1
+  AND attribute1  ='PAYDOC'  
+  AND inv_type NOT IN ('SOFTHDR_TOTALS' ,'BILLTO_TOTALS' ,'GRAND_TOTAL')  
+ORDER BY insert_seq
+]]>
+</sqlStatement>
+<sqlStatement name="Q_INFODOC_SUMM_TRX">
+<![CDATA[
+SELECT 
+      customer_trx_id infosumz_trx_id1
+FROM  xx_ar_cbi_trx
+WHERE request_id  =:p_request_id
+  AND cons_inv_id =:info_cbi_id99
+  AND attribute1  !='PAYDOC'  
+  AND inv_type NOT IN ('SOFTHDR_TOTALS' ,'BILLTO_TOTALS' ,'GRAND_TOTAL')  
+ORDER BY insert_seq
+]]>
+</sqlStatement>
+<sqlStatement name="Q_PAYDOC_SUMM_TRX_INFO">
+<![CDATA[
+SELECT 
+      inv_number      order_num
+     ,inv_type        type
+     ,inv_source_id   inv_source_id
+     ,inv_source_name inv_source
+     ,TO_CHAR(order_date ,'DD-MON-YY') order_date 
+     ,sfdata1 ,sfdata2 ,sfdata3 ,sfdata4 ,sfdata5
+     ,(subtotal_amount - delivery_charges) subtotal
+     ,delivery_charges delivery
+     ,promo_and_disc discounts
+     ,tax_amount
+     ,(subtotal_amount +promo_and_disc +tax_amount) order_total
+FROM  xx_ar_cbi_trx
+WHERE request_id      =:p_request_id
+  AND cons_inv_id     =:cons_inv_id1
+  AND customer_trx_id =:trx_id1
+  AND attribute1      ='PAYDOC'  
+  AND inv_type NOT IN ('SOFTHDR_TOTALS' ,'BILLTO_TOTALS' ,'GRAND_TOTAL')  
+ORDER BY insert_seq
+]]>
+</sqlStatement>
+<sqlStatement name="Q_INFODOC_SUMM_TRX_INFO">
+<![CDATA[
+SELECT 
+      inv_number      infosumz_order_num
+     ,inv_type        infosumz_type
+     ,inv_source_id   infosumz_inv_source_id
+     ,inv_source_name infosumz_inv_source
+     ,TO_CHAR(order_date ,'DD-MON-YY') infosumz_order_date 
+     ,sfdata1 infosumz_sfdata1
+     ,sfdata2 infosumz_sfdata2
+     ,sfdata3 infosumz_sfdata3
+     ,sfdata4 infosumz_sfdata4
+     ,sfdata5 infosumz_sfdata5
+     ,(subtotal_amount - delivery_charges) infosumz_subtotal
+     ,delivery_charges infosumz_delivery
+     ,promo_and_disc infosumz_discounts
+     ,tax_amount infosumz_tax
+     ,(subtotal_amount +promo_and_disc +tax_amount) infosumz_total
+FROM  xx_ar_cbi_trx
+WHERE request_id      =:p_request_id
+  AND cons_inv_id     =:info_cbi_id99
+  AND customer_trx_id =:infosumz_trx_id1
+  AND attribute1      !='PAYDOC'  
+  AND inv_type NOT IN ('SOFTHDR_TOTALS' ,'BILLTO_TOTALS' ,'GRAND_TOTAL')  
+ORDER BY insert_seq
+]]>
+</sqlStatement>
+<sqlStatement name="Q_PAYDOC_SUMM_TOTALS">
+<![CDATA[
+SELECT sumz.insert_seq
+      ,'TOTAL FOR '||sumz.inv_source_name             summarize_text
+      ,DECODE( sumz.order_header_id 
+              ,1 
+              ,TO_CHAR(sumz.order_header_id)||' ORDER' 
+              ,TO_CHAR(sumz.order_header_id)||' ORDERS'
+             )                                         total_orders      
+      ,NVL(sumz.tax_code ,'N')                         pg_break
+      ,sumz.subtotal_amount  summarize_subtotal
+      ,sumz.delivery_charges summarize_delivery
+      ,sumz.promo_and_disc   summarize_discounts
+      ,sumz.tax_amount       summarize_tax
+      ,( sumz.subtotal_amount +
+         sumz.delivery_charges + 
+         sumz.promo_and_disc +
+         sumz.tax_amount
+       )                    summarize_total 
+FROM  xx_ar_cbi_trx sumz
+WHERE request_id      =:p_request_id
+  AND cons_inv_id     =:cons_inv_id1
+  AND customer_trx_id =:trx_id1
+  AND attribute1      ='PAYDOC'  
+  AND inv_type ='SOFTHDR_TOTALS'
+UNION ALL
+SELECT sumz.insert_seq
+      ,'TOTAL FOR '||sumz.inv_source_name             summarize_text
+      ,DECODE( sumz.order_header_id 
+              ,1 
+              ,TO_CHAR(sumz.order_header_id)||' ORDER' 
+              ,TO_CHAR(sumz.order_header_id)||' ORDERS'
+             )                                         total_orders      
+      ,NVL(sumz.tax_code ,'N')                         pg_break
+      ,sumz.subtotal_amount  summarize_subtotal
+      ,sumz.delivery_charges summarize_delivery
+      ,sumz.promo_and_disc   summarize_discounts
+      ,sumz.tax_amount       summarize_tax
+      ,( sumz.subtotal_amount +
+         sumz.delivery_charges + 
+         sumz.promo_and_disc +
+         sumz.tax_amount
+       )                    summarize_total 
+FROM  xx_ar_cbi_trx sumz
+WHERE request_id      =:p_request_id
+  AND cons_inv_id     =:cons_inv_id1
+  AND customer_trx_id =:trx_id1
+  AND attribute1      ='PAYDOC'  
+  AND inv_type ='BILLTO_TOTALS'    
+UNION ALL
+SELECT sumz.insert_seq                                  insert_seq
+      ,'GRAND TOTAL:'                                   summarize_text
+      ,DECODE( sumz.order_header_id 
+              ,1 
+              ,TO_CHAR(sumz.order_header_id)||' ORDER' 
+              ,TO_CHAR(sumz.order_header_id)||' ORDERS'
+             )                                          total_orders      
+      ,NVL(sumz.tax_code ,'N')                          pg_break
+      ,TO_NUMBER(NULL)                                  summarize_subtotal
+      ,TO_NUMBER(NULL)                                  summarize_delivery
+      ,TO_NUMBER(NULL)                                  summarize_discounts
+      ,TO_NUMBER(NULL)                                  summarize_tax
+      ,sumz.subtotal_amount                             summarize_total 
+FROM  xx_ar_cbi_trx sumz
+WHERE request_id      =:p_request_id
+  AND cons_inv_id     =:cons_inv_id1
+  AND customer_trx_id =:trx_id1
+  AND attribute1      ='PAYDOC'  
+  AND inv_type ='GRAND_TOTAL'  
+ORDER BY insert_seq
+]]>
+</sqlStatement>
+<sqlStatement name="Q_INFODOC_SUMM_TOTALS">
+<![CDATA[
+SELECT * FROM (
+SELECT sumz.insert_seq                                infosumz_insert_seq
+      ,'TOTAL FOR '||sumz.inv_source_name             infosumz_summarize_text
+      ,DECODE( sumz.order_header_id 
+              ,1 
+              ,TO_CHAR(sumz.order_header_id)||' ORDER' 
+              ,TO_CHAR(sumz.order_header_id)||' ORDERS'
+             )                                         infosumz_total_orders      
+      ,NVL(sumz.tax_code ,'N')                         infosumz_pg_break
+      ,sumz.subtotal_amount  infosumz_summarize_subtotal
+      ,sumz.delivery_charges infosumz_summarize_delivery
+      ,sumz.promo_and_disc   infosumz_summarize_discounts
+      ,sumz.tax_amount       infosumz_summarize_tax
+      ,( sumz.subtotal_amount +
+         sumz.delivery_charges + 
+         sumz.promo_and_disc +
+         sumz.tax_amount
+       )                    infosumz_summarize_total 
+FROM  xx_ar_cbi_trx sumz
+WHERE request_id      =:p_request_id
+  AND cons_inv_id     =:info_cbi_id99
+  AND customer_trx_id =:infosumz_trx_id1
+  AND attribute1      !='PAYDOC'  
+  AND inv_type ='SOFTHDR_TOTALS'
+UNION ALL
+SELECT sumz.insert_seq
+      ,'TOTAL FOR '||sumz.inv_source_name
+      ,DECODE( sumz.order_header_id 
+              ,1 
+              ,TO_CHAR(sumz.order_header_id)||' ORDER' 
+              ,TO_CHAR(sumz.order_header_id)||' ORDERS'
+             )                           
+      ,NVL(sumz.tax_code ,'N')           
+      ,sumz.subtotal_amount 
+      ,sumz.delivery_charges
+      ,sumz.promo_and_disc  
+      ,sumz.tax_amount      
+      ,( sumz.subtotal_amount +
+         sumz.delivery_charges + 
+         sumz.promo_and_disc +
+         sumz.tax_amount
+       )                    
+FROM  xx_ar_cbi_trx sumz
+WHERE request_id      =:p_request_id
+  AND cons_inv_id     =:info_cbi_id99
+  AND customer_trx_id =:infosumz_trx_id1
+  AND attribute1      !='PAYDOC'  
+  AND inv_type ='BILLTO_TOTALS'    
+UNION ALL
+SELECT sumz.insert_seq
+      ,'GRAND TOTAL:' 
+      ,DECODE( sumz.order_header_id 
+              ,1 
+              ,TO_CHAR(sumz.order_header_id)||' ORDER' 
+              ,TO_CHAR(sumz.order_header_id)||' ORDERS'
+             )        
+      ,NVL(sumz.tax_code ,'N') 
+      ,TO_NUMBER(NULL)         
+      ,TO_NUMBER(NULL)         
+      ,TO_NUMBER(NULL)         
+      ,TO_NUMBER(NULL)         
+      ,sumz.subtotal_amount    
+FROM  xx_ar_cbi_trx sumz
+WHERE request_id      =:p_request_id
+  AND cons_inv_id     =:info_cbi_id99
+  AND customer_trx_id =:infosumz_trx_id1
+  AND attribute1      !='PAYDOC'  
+  AND inv_type ='GRAND_TOTAL'
+  )
+ORDER BY infosumz_insert_seq
+]]>
+</sqlStatement>
+<sqlStatement name="Q_PAYDOC_ONE_TOTALS">
+<![CDATA[
+SELECT sumz.insert_seq
+      ,'TOTAL FOR '||sumz.inv_source_name             summarize_text
+      ,DECODE( sumz.order_header_id 
+              ,1 
+              ,TO_CHAR(sumz.order_header_id)||' ORDER' 
+              ,TO_CHAR(sumz.order_header_id)||' ORDERS'
+             )                                         total_orders      
+      ,NVL(sumz.tax_code ,'N')                         pg_break
+      ,sumz.subtotal_amount  summarize_subtotal
+      ,sumz.delivery_charges summarize_delivery
+      ,sumz.promo_and_disc   summarize_discounts
+      ,sumz.tax_amount       summarize_tax
+      ,( sumz.subtotal_amount +
+         sumz.delivery_charges + 
+         sumz.promo_and_disc +
+         sumz.tax_amount
+       )                    summarize_total 
+FROM  xx_ar_cbi_trx sumz
+WHERE request_id      =:p_request_id
+  AND cons_inv_id     =:cons_inv_id2
+  AND attribute1      ='PAYDOC'  
+  AND inv_type ='SOFTHDR_TOTALS'
+UNION ALL
+SELECT sumz.insert_seq
+      ,'TOTAL FOR '||sumz.inv_source_name             summarize_text
+      ,DECODE( sumz.order_header_id 
+              ,1 
+              ,TO_CHAR(sumz.order_header_id)||' ORDER' 
+              ,TO_CHAR(sumz.order_header_id)||' ORDERS'
+             )                                         total_orders      
+      ,NVL(sumz.tax_code ,'N')                         pg_break
+      ,sumz.subtotal_amount  summarize_subtotal
+      ,sumz.delivery_charges summarize_delivery
+      ,sumz.promo_and_disc   summarize_discounts
+      ,sumz.tax_amount       summarize_tax
+      ,( sumz.subtotal_amount +
+         sumz.delivery_charges + 
+         sumz.promo_and_disc +
+         sumz.tax_amount
+       )                    summarize_total 
+FROM  xx_ar_cbi_trx sumz
+WHERE request_id      =:p_request_id
+  AND cons_inv_id     =:cons_inv_id2
+  AND attribute1      ='PAYDOC'  
+  AND inv_type ='BILLTO_TOTALS'    
+UNION ALL
+SELECT sumz.insert_seq                                  insert_seq
+      ,'GRAND TOTAL:'                                   summarize_text
+      ,DECODE( sumz.order_header_id 
+              ,1 
+              ,TO_CHAR(sumz.order_header_id)||' ORDER' 
+              ,TO_CHAR(sumz.order_header_id)||' ORDERS'
+             )                                          total_orders      
+      ,NVL(sumz.tax_code ,'N')                          pg_break
+      ,TO_NUMBER(NULL)                                  summarize_subtotal
+      ,TO_NUMBER(NULL)                                  summarize_delivery
+      ,TO_NUMBER(NULL)                                  summarize_discounts
+      ,TO_NUMBER(NULL)                                  summarize_tax
+      ,sumz.subtotal_amount                             summarize_total 
+FROM  xx_ar_cbi_trx sumz
+WHERE request_id      =:p_request_id
+  AND cons_inv_id     =:cons_inv_id2
+  AND attribute1      ='PAYDOC'  
+  AND inv_type ='GRAND_TOTAL'  
+ORDER BY insert_seq
+]]>
+</sqlStatement>
+<sqlStatement name="Q_INFODOC_ONE_TOTALS">
+<![CDATA[
+SELECT * FROM (
+SELECT sumz.insert_seq                                infoone_insert_seq
+      ,'TOTAL FOR '||sumz.inv_source_name             infoone_summarize_text
+      ,DECODE( sumz.order_header_id 
+              ,1 
+              ,TO_CHAR(sumz.order_header_id)||' ORDER' 
+              ,TO_CHAR(sumz.order_header_id)||' ORDERS'
+             )                                         infoone_total_orders      
+      ,NVL(sumz.tax_code ,'N')                         infoone_pg_break
+      ,sumz.subtotal_amount  infoone_summarize_subtotal
+      ,sumz.delivery_charges infoone_summarize_delivery
+      ,sumz.promo_and_disc   infoone_summarize_discounts
+      ,sumz.tax_amount       infoone_summarize_tax
+      ,( sumz.subtotal_amount +
+         sumz.delivery_charges + 
+         sumz.promo_and_disc +
+         sumz.tax_amount
+       )                    infoone_summarize_total 
+FROM  xx_ar_cbi_trx sumz
+WHERE request_id      =:p_request_id
+  AND cons_inv_id     =:info_cbi_id77
+  AND attribute1      !='PAYDOC'  
+  AND inv_type ='SOFTHDR_TOTALS'
+UNION ALL
+SELECT sumz.insert_seq
+      ,'TOTAL FOR '||sumz.inv_source_name 
+      ,DECODE( sumz.order_header_id 
+              ,1 
+              ,TO_CHAR(sumz.order_header_id)||' ORDER' 
+              ,TO_CHAR(sumz.order_header_id)||' ORDERS'
+             )             
+      ,NVL(sumz.tax_code ,'N')  
+      ,sumz.subtotal_amount
+      ,sumz.delivery_charges
+      ,sumz.promo_and_disc 
+      ,sumz.tax_amount 
+      ,( sumz.subtotal_amount +
+         sumz.delivery_charges + 
+         sumz.promo_and_disc +
+         sumz.tax_amount
+       )       
+FROM  xx_ar_cbi_trx sumz
+WHERE request_id      =:p_request_id
+  AND cons_inv_id     =:info_cbi_id77
+  AND attribute1      !='PAYDOC'  
+  AND inv_type ='BILLTO_TOTALS'    
+UNION ALL
+SELECT sumz.insert_seq 
+      ,'GRAND TOTAL:'  
+      ,DECODE( sumz.order_header_id 
+              ,1 
+              ,TO_CHAR(sumz.order_header_id)||' ORDER' 
+              ,TO_CHAR(sumz.order_header_id)||' ORDERS'
+             )               
+      ,NVL(sumz.tax_code ,'N')  
+      ,TO_NUMBER(NULL) 
+      ,TO_NUMBER(NULL) 
+      ,TO_NUMBER(NULL) 
+      ,TO_NUMBER(NULL) 
+      ,sumz.subtotal_amount 
+FROM  xx_ar_cbi_trx sumz
+WHERE request_id      =:p_request_id
+  AND cons_inv_id     =:info_cbi_id77
+  AND attribute1      !='PAYDOC'  
+  AND inv_type ='GRAND_TOTAL'  
+  )
+ORDER BY infoone_insert_seq
+]]>
+</sqlStatement>
+<sqlStatement name="Q_PAYDOC_DETAIL_TRX">
+<![CDATA[
+SELECT 
+      customer_trx_id trx_id 
+     ,inv_number      invoice_num
+     ,inv_type        type
+     ,inv_source_id   inv_source_id
+     ,inv_source_name inv_source
+     ,TO_CHAR(order_date ,'DD-MON-YY') order_date
+     ,TO_CHAR(ship_date ,'DD-MON-YY') ship_date 
+     ,sfhdr1 ,sfhdr2 ,sfhdr3 ,sfhdr4 ,sfhdr5
+     ,sfdata1 ,sfdata2 ,sfdata3 ,sfdata4 ,sfdata5
+FROM  xx_ar_cbi_trx
+WHERE request_id  =:p_request_id
+  AND cons_inv_id =:cons_inv_id
+  AND attribute1  ='PAYDOC'  
+  AND inv_type NOT IN ('SOFTHDR_TOTALS' ,'BILLTO_TOTALS' ,'GRAND_TOTAL')  
+ORDER BY insert_seq
+]]>
+</sqlStatement>
+<sqlStatement name="Q_PAYDOC_DETAIL_TRX_LINES">
+<![CDATA[
+SELECT 
+      item_code
+     ,customer_product_code cust_prod_code
+     ,item_description
+     ,manuf_code
+     ,qty
+     ,uom
+     ,unit_price
+     ,extended_price
+FROM  xx_ar_cbi_trx_lines
+WHERE request_id      =:p_request_id
+  AND cons_inv_id     =:cons_inv_id
+  AND customer_trx_id =:trx_id
+  AND (item_code IS NULL OR item_code NOT IN ('SPC_CARD_INFO' ,'TD'))
+ORDER BY line_seq  
+]]>
+</sqlStatement>
+<sqlStatement name="Q_INFODOC_DETAIL_TRX_LINES">
+<![CDATA[
+SELECT 
+      item_code infodtl_item_code
+     ,customer_product_code infodtl_cust_prod_code
+     ,item_description infodtl_item_description
+     ,manuf_code infodtl_manuf_code
+     ,qty infodtl_qty
+     ,uom infodtl_uom
+     ,unit_price infodtl_unit_price
+     ,extended_price infodtl_extended_price
+FROM  xx_ar_cbi_trx_lines
+WHERE request_id      =:p_request_id
+  AND cons_inv_id     =:info_cbi_id99
+  AND customer_trx_id =:infodtl_trx_id
+  AND (item_code IS NULL OR item_code NOT IN ('SPC_CARD_INFO' ,'TD'))
+ORDER BY line_seq  
+]]>
+</sqlStatement>
+<sqlStatement name="Q_PAYDOC_TRX_MINISTMNT">
+<![CDATA[
+SELECT inv_number order_number_dup
+      ,subtotal_amount subtotal
+      ,promo_and_disc
+      ,tax_amount sales_tax
+      ,(subtotal_amount + promo_and_disc + tax_amount) total
+FROM   xx_ar_cbi_trx
+WHERE request_id      =:p_request_id
+  AND cons_inv_id     =:cons_inv_id
+  AND customer_trx_id =:trx_id  
+  AND attribute1  ='PAYDOC'  
+  AND inv_type NOT IN ('SOFTHDR_TOTALS' ,'BILLTO_TOTALS' ,'GRAND_TOTAL')  
+]]>
+</sqlStatement>
+<sqlStatement name="Q_INFODOC_TRX_MINISTMNT">
+<![CDATA[
+SELECT inv_number      infodtl_order_number_dup
+      ,subtotal_amount infodtl_subtotal
+      ,promo_and_disc  infodtl_promo_and_disc
+      ,tax_amount      infodtl_sales_tax
+      ,(subtotal_amount + promo_and_disc + tax_amount) infodtl_total
+FROM   xx_ar_cbi_trx
+WHERE request_id      =:p_request_id
+  AND cons_inv_id     =:info_cbi_id99
+  AND customer_trx_id =:infodtl_trx_id 
+  AND attribute1  !='PAYDOC'  
+  AND inv_type NOT IN ('SOFTHDR_TOTALS' ,'BILLTO_TOTALS' ,'GRAND_TOTAL')  
+]]>
+</sqlStatement>
+<sqlStatement name="Q_TRX_SOFTHEADERS">
+<![CDATA[
+SELECT line_type
+      ,line_seq
+      ,sf_text
+      ,sf_amount
+      ,NVL(page_break ,'N') page_break
+FROM   xx_ar_cbi_trx_totals
+WHERE request_id      =:p_request_id
+  AND cons_inv_id     =:cons_inv_id
+  AND customer_trx_id =:trx_id
+ORDER BY line_seq  
+]]>
+</sqlStatement>
+<sqlStatement name="Q_INFODOC_TRX_SOFTHEADERS">
+<![CDATA[
+SELECT line_type infodtl_line_type
+      ,line_seq  infodtl_line_seq
+      ,sf_text   infodtl_sf_text
+      ,sf_amount infodtl_sf_amount
+      ,NVL(page_break ,'N') infodtl_page_break
+FROM   xx_ar_cbi_trx_totals
+WHERE request_id      =:p_request_id
+  AND cons_inv_id     =:info_cbi_id99
+  AND customer_trx_id =:infodtl_trx_id
+ORDER BY line_seq  
+]]>
+</sqlStatement>
+<sqlStatement name="Q_TRX_SPC_INFO">
+<![CDATA[
+SELECT item_description spc_card_details
+FROM   xx_ar_cbi_trx_lines a
+WHERE a.request_id      =:p_request_id
+  AND a.cons_inv_id     =:cons_inv_id
+  AND a.customer_trx_id =:trx_id
+  AND a.item_code       ='SPC_CARD_INFO'
+]]>
+</sqlStatement>
+<sqlStatement name="Q_INFODOC_TRX_SPC_INFO">
+<![CDATA[
+SELECT item_description infodoc_spc_card_details
+FROM   xx_ar_cbi_trx_lines a
+WHERE a.request_id      =:p_request_id
+  AND a.cons_inv_id     =:info_cbi_id99
+  AND a.customer_trx_id =:infodtl_trx_id
+  AND a.item_code       ='SPC_CARD_INFO'
+]]>
+</sqlStatement>
+<sqlStatement name="Q_INFOSUMZ_TRX_SPC_INFO">
+<![CDATA[
+SELECT item_description infosumz_spc_card_details
+FROM   xx_ar_cbi_trx_lines a
+WHERE a.request_id      =:p_request_id
+  AND a.cons_inv_id     =:info_cbi_id99
+  AND a.customer_trx_id =:infosumz_trx_id1
+  AND a.item_code       ='SPC_CARD_INFO'
+]]>
+</sqlStatement>
+<sqlStatement name="Q_TRX_TIERED_DISC">
+<![CDATA[
+SELECT extended_price tiered_discount 
+FROM   xx_ar_cbi_trx_lines
+WHERE request_id      =:p_request_id
+  AND cons_inv_id     =:cons_inv_id
+  AND customer_trx_id =:trx_id
+  AND item_code       ='TD'
+]]>
+</sqlStatement>
+<sqlStatement name="Q_INFODOC_TRX_TIERED_DISC">
+<![CDATA[
+SELECT extended_price infodoc_tiered_discount 
+FROM   xx_ar_cbi_trx_lines
+WHERE request_id      =:p_request_id
+  AND cons_inv_id     =:info_cbi_id99
+  AND customer_trx_id =:infodtl_trx_id
+  AND item_code       ='TD'
+]]>
+</sqlStatement>
+<sqlStatement name="Q_INFOSUMZ_TRX_TIERED_DISC">
+<![CDATA[
+SELECT extended_price infosumz_tiered_discount 
+FROM   xx_ar_cbi_trx_lines
+WHERE request_id      =:p_request_id
+  AND cons_inv_id     =:info_cbi_id99
+  AND customer_trx_id =:infosumz_trx_id1
+  AND item_code       ='TD'
+]]>
+</sqlStatement>
+<sqlStatement name="Q_SOX_CONTROL">
+<![CDATA[
+SELECT TO_CHAR(NVL(COUNT(DISTINCT customer_number) ,0) ,'fm0999999') TOTAL_CUSTOMERS
+      ,TO_CHAR(NVL(COUNT(cbi_number) ,0) ,'fm09999999') TOTAL_INVOICES
+      ,TO_CHAR(NVL(SUM(cbi_amount) ,0) ,'fm099999990.90') TOTAL_AMOUNT
+FROM   XX_AR_CBI_TOTALS_V
+WHERE request_id =:p_request_id
+]]>
+</sqlStatement>
+<sqlStatement name="Q_INFODOC_LAYOUT">
+<![CDATA[
+SELECT document_id   doc_id99
+      ,document_id   doc_id88
+      ,document_id   doc_id77
+      ,UPPER(layout) layout99      
+      ,sort_by       sort_by99
+      ,attribute2    total_by99
+      ,attribute3    page_break99
+      ,cons_inv_id   info_cbi_id99
+      ,cons_inv_id   info_cbi_id88
+      ,cons_inv_id   info_cbi_id77      
+FROM   xx_ar_cons_bills_history
+WHERE  1 =1
+  AND  print_date   <=TRUNC(SYSDATE)
+  AND  paydoc       !='Y'  
+  AND  process_flag !='Y'
+  AND  customer_id  =:info_customer_id
+  AND  attribute7   =:info_billing_site_id
+  AND  attribute13   =:p_request_id
+ORDER BY cons_inv_id  
+]]>
+</sqlStatement>
+<sqlStatement name="Q_INFODOC_CBI_DETAIL">
+<![CDATA[
+SELECT  od_infocopies.cons_inv_id           cons_inv_id99
+       ,od_infocopies.billing_number        billing_number99
+       ,od_infocopies.currency              currency99
+       ,od_infocopies.terms                 terms99       
+       ,TO_CHAR( NVL(
+                       xx_ar_print_summbill.get_bill_from_date(od_infocopies.cust_id
+                                                                  ,od_infocopies.site_id
+                                                                  ,od_infocopies.cons_inv_id 
+                                                                  ,od_infocopies.infocopy_tag
+                                                                  )
+                      ,TRUNC(SYSDATE)
+                    ) 
+                ,'DD-MON-YY'
+               )                                            bill_from_date99
+       -- ,TO_CHAR(TRUNC(SYSDATE) ,'DD-MON-YY')               bill_to_date99   
+       ,TO_CHAR(TRUNC(SYSDATE)-1 ,'DD-MON-YY')               bill_to_date99   
+       ,TO_DATE(NULL)                                       payment_due99
+       ,xx_ar_cbi_infocopy_ministmnt       
+        ( od_infocopies.cons_inv_id
+         ,od_infocopies.req_id 
+         ,'EXTAMT_PLUS_DELVY'
+        )     cbi_extamt_incl_delvy99
+       ,xx_ar_cbi_infocopy_ministmnt        
+        ( od_infocopies.cons_inv_id
+         ,od_infocopies.req_id           
+         ,'DISCOUNT'
+        )              cbi_promo_and_disc99        
+       ,xx_ar_cbi_infocopy_ministmnt        
+        ( od_infocopies.cons_inv_id
+         ,od_infocopies.req_id
+          ,'TAX'
+        )                   cbi_tax99
+       ,od_infocopies.cbi_amount_due                        cbi_amount_due99 
+       ,TO_CHAR(NULL)                                       scanline99 
+       ,od_infocopies.pd_layout                             pd_layout99
+       ,'INFORMATIONAL COPY'                                doc_title99       
+ FROM  (
+       SELECT customer_id cust_id
+             ,to_number(attribute7) site_id
+             ,cons_inv_id 
+             ,attribute6  billing_number
+             ,attribute15 currency
+             ,attribute4  terms
+             ,attribute8  infocopy_tag
+             ,attribute13 req_id
+             ,attribute14 cbi_amount_due
+             ,layout      pd_layout
+             ,document_id doc_id
+       FROM   xx_ar_cons_bills_history a
+       WHERE  a.customer_id =:info_customer_id
+         AND  a.document_id =:doc_id99
+         AND  a.attribute8 ='INV_IC'
+         AND  a.attribute13 =:p_request_id
+         AND  a.print_date  <=TRUNC(SYSDATE)
+         AND  a.paydoc      !='Y'   
+         AND  NVL(a.process_flag, 'N') !='Y'
+         AND  a.layout ='DETAIL'
+       GROUP BY customer_id
+             ,to_number(attribute7)
+             ,cons_inv_id
+             ,attribute6
+             ,attribute15
+             ,attribute4
+             ,attribute8
+             ,attribute13 
+             ,attribute14
+             ,layout
+             ,document_id             
+      ) od_infocopies
+ WHERE 1 =1 
+   AND od_infocopies.cust_id    =:info_customer_id
+   AND od_infocopies.site_id    =:info_billing_site_id
+   AND od_infocopies.doc_id     =:doc_id99
+   AND od_infocopies.cons_inv_id =:info_cbi_id99
+UNION ALL
+ SELECT arci.cons_inv_id                            
+       ,arci.cons_billing_number                    
+       ,arci.currency_code                          
+       ,SUBSTR(terms.description ,1 ,15)                
+       ,TO_CHAR( NVL(
+                       xx_ar_print_summbill.get_bill_from_date(arci.customer_id
+                                                                  ,arci.site_use_id 
+                                                                  ,arci.cons_inv_id 
+                                                                  ,'PAYDOC'
+                                                                  )
+                      ,TRUNC(SYSDATE)
+                    ) 
+                ,'DD-MON-YY'
+               ) 
+      -- ,TO_CHAR(TRUNC(arci.cut_off_date) ,'DD-MON-YY')   
+       ,TO_CHAR(TRUNC(arci.cut_off_date)-1 ,'DD-MON-YY')
+       ,TO_DATE(NULL)                             
+       ,xx_ar_cbi_paydoc_ministmnt       
+        (arci.cons_inv_id ,'EXTAMT_PLUS_DELVY')  
+       ,xx_ar_cbi_paydoc_ministmnt        
+        (arci.cons_inv_id ,'DISCOUNT')      
+       ,xx_ar_cbi_paydoc_ministmnt        
+        (arci.cons_inv_id ,'TAX')  
+       ,od_summbills.attribute14      
+       ,TO_CHAR(NULL) 
+       ,layout
+       ,'INFORMATIONAL COPY'       
+ FROM   xx_ar_cons_bills_history od_summbills
+       ,ar_cons_inv              arci
+       ,ra_terms                 terms
+ WHERE 1 =1
+   AND arci.cons_inv_id =SUBSTR(od_summbills.cons_inv_id ,1 ,LENGTH(od_summbills.cons_inv_id)-1)
+   AND od_summbills.customer_id =:info_customer_id
+   AND od_summbills.attribute13 =:p_request_id
+   AND od_summbills.cons_inv_id =:info_cbi_id99
+   AND od_summbills.attribute7  =:info_billing_site_id
+   AND od_summbills.document_id =:doc_id99   
+   AND od_summbills.attribute8  ='PAYDOC_IC'   
+   AND terms.term_id            =arci.term_id  
+   AND od_summbills.print_date  <=TRUNC(SYSDATE)
+   AND od_summbills.paydoc      !='Y'   
+   AND NVL(od_summbills.process_flag, 'N') !='Y' 
+   AND od_summbills.layout ='DETAIL'
+]]>
+</sqlStatement>
+<sqlStatement name="Q_INFODOC_CBI_SUMMARIZE">
+<![CDATA[
+SELECT  od_infocopies.cons_inv_id           cons_inv_id88
+       ,od_infocopies.billing_number        billing_number88
+       ,od_infocopies.currency              currency88
+       ,od_infocopies.terms                 terms88       
+       ,TO_CHAR( NVL(
+                       xx_ar_print_summbill.get_bill_from_date(od_infocopies.cust_id
+                                                                  ,od_infocopies.site_id
+                                                                  ,od_infocopies.cons_inv_id 
+                                                                  ,od_infocopies.infocopy_tag
+                                                                  )
+                      ,TRUNC(SYSDATE)
+                    ) 
+                ,'DD-MON-YY'
+               )                                            bill_from_date88
+        --,TO_CHAR(TRUNC(SYSDATE) ,'DD-MON-YY')               bill_to_date88  
+        ,TO_CHAR(TRUNC(SYSDATE)-1 ,'DD-MON-YY')               bill_to_date88 
+       ,TO_DATE(NULL)                                       payment_due88
+       ,xx_ar_cbi_infocopy_ministmnt       
+        ( od_infocopies.cons_inv_id
+         ,od_infocopies.req_id 
+         ,'EXTAMT_PLUS_DELVY'
+        )     cbi_extamt_incl_delvy88
+       ,xx_ar_cbi_infocopy_ministmnt        
+        ( od_infocopies.cons_inv_id
+         ,od_infocopies.req_id           
+         ,'DISCOUNT'
+        )              cbi_promo_and_disc88        
+       ,xx_ar_cbi_infocopy_ministmnt        
+        ( od_infocopies.cons_inv_id
+         ,od_infocopies.req_id
+          ,'TAX'
+        )                   cbi_tax88
+       ,od_infocopies.cbi_amount_due                        cbi_amount_due88 
+       ,TO_CHAR(NULL)                                       scanline88 
+       ,od_infocopies.pd_layout                             pd_layout88
+       ,'INFORMATIONAL COPY'                                doc_title88       
+ FROM  (
+       SELECT customer_id cust_id
+             ,to_number(attribute7) site_id
+             ,cons_inv_id 
+             ,attribute6  billing_number
+             ,attribute15 currency
+             ,attribute4  terms
+             ,attribute8  infocopy_tag
+             ,attribute13 req_id
+             ,attribute14 cbi_amount_due
+             ,layout      pd_layout
+             ,document_id doc_id
+       FROM   xx_ar_cons_bills_history a
+       WHERE  a.customer_id =:sumz_customer_id
+         AND  a.document_id =:doc_id88
+         AND  a.attribute8 ='INV_IC'
+         AND  a.attribute13 =:p_request_id
+         AND  a.print_date  <=TRUNC(SYSDATE)
+         AND  a.paydoc      !='Y'   
+         AND  NVL(a.process_flag, 'N') !='Y'
+         AND  a.layout ='SUMMARIZE'
+       GROUP BY customer_id
+             ,to_number(attribute7)
+             ,cons_inv_id
+             ,attribute6
+             ,attribute15
+             ,attribute4
+             ,attribute8
+             ,attribute13 
+             ,attribute14
+             ,layout
+             ,document_id             
+      ) od_infocopies
+ WHERE 1 =1 
+   AND od_infocopies.cust_id    =:sumz_customer_id
+   AND od_infocopies.site_id    =:sumz_billing_site_id
+   AND od_infocopies.doc_id     =:doc_id88
+   AND od_infocopies.cons_inv_id =:info_cbi_id88
+UNION ALL
+ SELECT arci.cons_inv_id                            
+       ,arci.cons_billing_number                    
+       ,arci.currency_code                          
+       ,SUBSTR(terms.description ,1 ,15)                
+       ,TO_CHAR( NVL(
+                       xx_ar_print_summbill.get_bill_from_date(arci.customer_id
+                                                                  ,arci.site_use_id 
+                                                                  ,arci.cons_inv_id 
+                                                                  ,'PAYDOC'
+                                                                  )
+                      ,TRUNC(SYSDATE)
+                    ) 
+                ,'DD-MON-YY'
+               ) 
+      -- ,TO_CHAR(TRUNC(arci.cut_off_date) ,'DD-MON-YY')  
+       ,TO_CHAR(TRUNC(arci.cut_off_date)-1 ,'DD-MON-YY')
+       ,TO_DATE(NULL)                             
+       ,xx_ar_cbi_paydoc_ministmnt       
+        (arci.cons_inv_id ,'EXTAMT_PLUS_DELVY')  
+       ,xx_ar_cbi_paydoc_ministmnt        
+        (arci.cons_inv_id ,'DISCOUNT')      
+       ,xx_ar_cbi_paydoc_ministmnt        
+        (arci.cons_inv_id ,'TAX')  
+       ,od_summbills.attribute14      
+       ,TO_CHAR(NULL) 
+       ,layout
+       ,'INFORMATIONAL COPY'       
+ FROM   xx_ar_cons_bills_history od_summbills
+       ,ar_cons_inv              arci
+       ,ra_terms                 terms
+ WHERE 1 =1
+   AND arci.cons_inv_id =SUBSTR(od_summbills.cons_inv_id ,1 ,LENGTH(od_summbills.cons_inv_id)-1)
+   AND od_summbills.customer_id =:sumz_customer_id
+   AND od_summbills.attribute13 =:p_request_id
+   AND od_summbills.cons_inv_id =:info_cbi_id88
+   AND od_summbills.attribute7  =:sumz_billing_site_id
+   AND od_summbills.document_id =:doc_id88   
+   AND od_summbills.attribute8  ='PAYDOC_IC'   
+   AND terms.term_id            =arci.term_id  
+   AND od_summbills.print_date  <=TRUNC(SYSDATE)
+   AND od_summbills.paydoc      !='Y'   
+   AND NVL(od_summbills.process_flag, 'N') !='Y'  
+   AND od_summbills.layout ='SUMMARIZE'
+]]>
+</sqlStatement>
+<sqlStatement name="Q_INFODOC_CBI_ONE">
+<![CDATA[
+SELECT  od_infocopies.cons_inv_id           cons_inv_id77
+       ,od_infocopies.billing_number        billing_number77
+       ,od_infocopies.currency              currency77
+       ,od_infocopies.terms                 terms77       
+       ,TO_CHAR( NVL(
+                       xx_ar_print_summbill.get_bill_from_date(od_infocopies.cust_id
+                                                                  ,od_infocopies.site_id
+                                                                  ,od_infocopies.cons_inv_id 
+                                                                  ,od_infocopies.infocopy_tag
+                                                                  )
+                      ,TRUNC(SYSDATE)
+                    ) 
+                ,'DD-MON-YY'
+               )                                            bill_from_date77
+       -- ,TO_CHAR(TRUNC(SYSDATE) ,'DD-MON-YY')               bill_to_date77 
+        ,TO_CHAR(TRUNC(SYSDATE)-1 ,'DD-MON-YY')               bill_to_date77 
+       ,TO_DATE(NULL)                                       payment_due77
+       ,xx_ar_cbi_infocopy_ministmnt       
+        ( od_infocopies.cons_inv_id
+         ,od_infocopies.req_id 
+         ,'EXTAMT_PLUS_DELVY'
+        )     cbi_extamt_incl_delvy77
+       ,xx_ar_cbi_infocopy_ministmnt        
+        ( od_infocopies.cons_inv_id
+         ,od_infocopies.req_id           
+         ,'DISCOUNT'
+        )              cbi_promo_and_disc77        
+       ,xx_ar_cbi_infocopy_ministmnt        
+        ( od_infocopies.cons_inv_id
+         ,od_infocopies.req_id
+          ,'TAX'
+        )                   cbi_tax77
+       ,od_infocopies.cbi_amount_due                        cbi_amount_due77 
+       ,TO_CHAR(NULL)                                       scanline77 
+       ,od_infocopies.pd_layout                             pd_layout77
+       ,'INFORMATIONAL COPY'                                doc_title77       
+ FROM  (
+       SELECT customer_id cust_id
+             ,to_number(attribute7) site_id
+             ,cons_inv_id 
+             ,attribute6  billing_number
+             ,attribute15 currency
+             ,attribute4  terms
+             ,attribute8  infocopy_tag
+             ,attribute13 req_id
+             ,attribute14 cbi_amount_due
+             ,layout      pd_layout
+             ,document_id doc_id
+       FROM   xx_ar_cons_bills_history a
+       WHERE  a.customer_id =:one_customer_id
+         AND  a.document_id =:doc_id77
+         AND  a.attribute8 ='INV_IC'
+         AND  a.attribute13 =:p_request_id
+         AND  a.print_date  <=TRUNC(SYSDATE)
+         AND  a.paydoc      !='Y'   
+         AND  NVL(a.process_flag, 'N') !='Y'
+         AND  a.layout ='ONE'
+       GROUP BY customer_id
+             ,to_number(attribute7)
+             ,cons_inv_id
+             ,attribute6
+             ,attribute15
+             ,attribute4
+             ,attribute8
+             ,attribute13 
+             ,attribute14
+             ,layout
+             ,document_id             
+      ) od_infocopies
+ WHERE 1 =1 
+   AND od_infocopies.cust_id    =:one_customer_id
+   AND od_infocopies.site_id    =:one_billing_site_id
+   AND od_infocopies.doc_id     =:doc_id77
+   AND od_infocopies.cons_inv_id =:info_cbi_id77
+UNION ALL
+ SELECT arci.cons_inv_id                            
+       ,arci.cons_billing_number                    
+       ,arci.currency_code                          
+       ,SUBSTR(terms.description ,1 ,15)                
+       ,TO_CHAR( NVL(
+                       xx_ar_print_summbill.get_bill_from_date(arci.customer_id
+                                                                  ,arci.site_use_id 
+                                                                  ,arci.cons_inv_id 
+                                                                  ,'PAYDOC'
+                                                                  )
+                      ,TRUNC(SYSDATE)
+                    ) 
+                ,'DD-MON-YY'
+               ) 
+       --,TO_CHAR(TRUNC(arci.cut_off_date) ,'DD-MON-YY')  
+       ,TO_CHAR(TRUNC(arci.cut_off_date)-1 ,'DD-MON-YY')
+       ,TO_DATE(NULL)                             
+       ,xx_ar_cbi_paydoc_ministmnt       
+        (arci.cons_inv_id ,'EXTAMT_PLUS_DELVY')  
+       ,xx_ar_cbi_paydoc_ministmnt        
+        (arci.cons_inv_id ,'DISCOUNT')      
+       ,xx_ar_cbi_paydoc_ministmnt        
+        (arci.cons_inv_id ,'TAX')  
+       ,od_summbills.attribute14      
+       ,TO_CHAR(NULL) 
+       ,layout
+       ,'INFORMATIONAL COPY'       
+ FROM   xx_ar_cons_bills_history od_summbills
+       ,ar_cons_inv              arci
+       ,ra_terms                 terms
+ WHERE 1 =1
+   AND arci.cons_inv_id =SUBSTR(od_summbills.cons_inv_id ,1 ,LENGTH(od_summbills.cons_inv_id)-1)
+   AND od_summbills.customer_id =:one_customer_id
+   AND od_summbills.attribute13 =:p_request_id
+   AND od_summbills.cons_inv_id =:info_cbi_id77
+   AND od_summbills.attribute7  =:one_billing_site_id
+   AND od_summbills.document_id =:doc_id77   
+   AND od_summbills.attribute8  ='PAYDOC_IC'   
+   AND terms.term_id            =arci.term_id  
+   AND od_summbills.print_date  <=TRUNC(SYSDATE)
+   AND od_summbills.paydoc      !='Y'   
+   AND NVL(od_summbills.process_flag, 'N') !='Y'  
+   AND od_summbills.layout ='ONE'
+]]>
+</sqlStatement>
+<sqlStatement name="Q_INFODOC_DETAIL_TRX">
+<![CDATA[
+SELECT 
+      customer_trx_id infodtl_trx_id
+     ,inv_number      infodtl_invoice_num
+     ,inv_type        infodtl_type
+     ,inv_source_id   infodtl_inv_source_id
+     ,inv_source_name infodtl_inv_source
+     ,TO_CHAR(order_date ,'DD-MON-YY') infodtl_order_date
+     ,TO_CHAR(ship_date ,'DD-MON-YY') infodtl_ship_date 
+     ,sfhdr1 infodtl_sfhdr1
+     ,sfhdr2 infodtl_sfhdr2
+     ,sfhdr3 infodtl_sfhdr3
+     ,sfhdr4 infodtl_sfhdr4
+     ,sfhdr5 infodtl_sfhdr5
+     ,sfdata1 infodtl_sfdata1 
+     ,sfdata2 infodtl_sfdata2 
+     ,sfdata3 infodtl_sfdata3 
+     ,sfdata4 infodtl_sfdata4 
+     ,sfdata5 infodtl_sfdata5
+FROM  xx_ar_cbi_trx
+WHERE request_id  =:p_request_id
+  AND cons_inv_id =:info_cbi_id99
+  AND attribute1  IN ('PAYDOC_IC' ,'INV_IC')  
+  AND inv_type NOT IN ('SOFTHDR_TOTALS' ,'BILLTO_TOTALS' ,'GRAND_TOTAL')  
+ORDER BY insert_seq
+]]>
+</sqlStatement>
+</dataQuery>
+<dataTrigger name="beforeReportTrigger" source="xx_ar_print_summbill.beforereport"/>
+<dataStructure>
+<group name="G_TAX_INFO" source="Q_TAX_INFO">
+<element name="TAX_ID" value="TAX_ID" />
+<element name="TAX_ID_DESC" value="TAX_ID_DESC" />
+<element name="RETURN_ADDRESS_LINE1" value="RETURN_ADDRESS_LINE1" />
+<element name="RETURN_ADDRESS_LINE2" value="RETURN_ADDRESS_LINE2" />
+<element name="RETURN_CITY" value="RETURN_CITY" />
+<element name="RETURN_STATE" value="RETURN_STATE" />
+<element name="RETURN_POSTAL_CODE" value="RETURN_POSTAL_CODE" />
+</group>
+<group name="G_ALL_CUSTOMERS" source="Q_CUSTOMERS">
+<element name="BILLING_ID"  value="BILLING_ID" />
+<element name="ACCOUNT_NAME" value="ACCOUNT_NAME" />
+<element name="ACCOUNT_NUMBER" value="ACCOUNT_NUMBER" />
+<element name="SALES_CHANNEL" value="SALES_CHANNEL" />
+<group name="G_BILLING_SITES" source="Q_BILLING_SITES">
+<element name="BILLING_SITE_ID"        value="BILLING_SITE_ID" />
+<element name="BILL_TO_ADDRESS_LINE1"  value="BILL_TO_ADDRESS_LINE1" />
+<element name="BILL_TO_ADDRESS_LINE2"  value="BILL_TO_ADDRESS_LINE2" />
+<element name="BILL_TO_ADDRESS_LINE3"  value="BILL_TO_ADDRESS_LINE3" />
+<element name="BILL_TO_ADDRESS_LINE4"  value="BILL_TO_ADDRESS_LINE4" />
+<element name="BILL_TO_CITY"           value="BILL_TO_CITY" />
+<element name="BILL_TO_STATE"          value="BILL_TO_STATE" />
+<element name="BILL_TO_PROVINCE"       value="BILL_TO_PROVINCE" />
+<element name="BILL_TO_POSTAL_CODE"    value="BILL_TO_POSTAL_CODE" />
+<element name="BILL_TO_COUNTRY"        value="BILL_TO_COUNTRY" />
+<element name="REMIT_TO_ADDRESS_LINE1" value="REMIT_TO_ADDRESS_LINE1" />
+<element name="REMIT_TO_ADDRESS_LINE2" value="REMIT_TO_ADDRESS_LINE2" />
+<element name="REMIT_TO_ADDRESS_LINE3" value="REMIT_TO_ADDRESS_LINE3" />
+<element name="REMIT_TO_ADDRESS_LINE4" value="REMIT_TO_ADDRESS_LINE4" />
+<element name="REMIT_TO_CITY"          value="REMIT_TO_CITY" />
+<element name="REMIT_TO_STATE"         value="REMIT_TO_STATE" />
+<element name="REMIT_TO_POSTAL_CODE"   value="REMIT_TO_POSTAL_CODE" />
+<element name="REMIT_TO_COUNTRY"       value="REMIT_TO_COUNTRY" />
+<element name="ORDER_CONTACT"          value="ORDER_CONTACT" />
+<element name="ACCOUNT_CONTACT"        value="ACCOUNT_CONTACT" />
+<group name="G_PAYDOC_LAYOUT" source="Q_PAYDOC_LAYOUT">
+<element name="PAYDOC_CONS_INV_ID" value="CBI_ID1" />
+<element name="LAYOUT" value="LAYOUT" />
+<element name="DOCUMENT_ID" value="DOC_ID" />
+<element name="SORT_BY" value="SORT_BY" />
+<element name="TOTAL_BY" value="TOTAL_BY" />
+<element name="PAGE_BREAK" value="PAGE_BREAK" />
+<group name="G_PAYDOC_ONE" source="Q_PAYDOC_CBI_ONE">
+<element name="BILLING_NUMBER" value="BILLING_NUMBER" />
+<element name="CURRENCY" value="CURRENCY" />
+<element name="TERMS" value="TERMS" />
+<element name="BILL_FROM_DATE" value="BILL_FROM_DATE" />
+<element name="BILL_TO_DATE" value="BILL_TO_DATE" />
+<element name="PAYMENT_DUE" value="PAYMENT_DUE" />
+<element name="CBI_EXTAMT_INCL_DELVY" value="CBI_EXTAMT_INCL_DELVY" />
+<element name="CBI_PROMO_AND_DISC" value="CBI_PROMO_AND_DISC" />
+<element name="CBI_TAX" value="CBI_TAX" />
+<element name="CBI_AMOUNT_DUE" value="CBI_AMOUNT_DUE" />
+<element name="FLO_CODE" value="SCANLINE" />
+<element name="PDOC_LAYOUT3" value="PD_LAYOUT3" />
+<element name="DOC_TITLE" value="DOC_TITLE" />
+<group name="G_PAYDOC_ONE_SOFTHEADERS" source="Q_PAYDOC_ONE_SOFTHEADERS">
+<element name="SFHDR1" value="SFHDR1" />
+<element name="SFHDR2" value="SFHDR2" />
+<element name="SFHDR3" value="SFHDR3" />
+<element name="SFHDR4" value="SFHDR4" />
+<element name="SFHDR5" value="SFHDR5" />
+</group>
+<group name="G_PAYDOC_ONE_TOTALS" source="Q_PAYDOC_ONE_TOTALS">
+<element name="SUMMARIZE_TEXT" value="SUMMARIZE_TEXT" />
+<element name="TOTAL_ORDERS" value="TOTAL_ORDERS" />
+<element name="PG_BREAK" value="PG_BREAK" />
+<element name="SUMMARIZE_SUBTOTAL" value="SUMMARIZE_SUBTOTAL" />
+<element name="SUMMARIZE_DELIVERY" value="SUMMARIZE_DELIVERY" />
+<element name="SUMMARIZE_DISCOUNTS" value="SUMMARIZE_DISCOUNTS" />
+<element name="SUMMARIZE_TAX" value="SUMMARIZE_TAX" />
+<element name="SUMMARIZE_TOTAL" value="SUMMARIZE_TOTAL" />
+</group>
+</group>
+<group name="G_PAYDOC_SUMMARIZE" source="Q_PAYDOC_CBI_SUMMARIZE">
+<element name="BILLING_NUMBER" value="BILLING_NUMBER" />
+<element name="CURRENCY" value="CURRENCY" />
+<element name="TERMS" value="TERMS" />
+<element name="BILL_FROM_DATE" value="BILL_FROM_DATE" />
+<element name="BILL_TO_DATE" value="BILL_TO_DATE" />
+<element name="PAYMENT_DUE" value="PAYMENT_DUE" />
+<element name="CBI_EXTAMT_INCL_DELVY" value="CBI_EXTAMT_INCL_DELVY" />
+<element name="CBI_PROMO_AND_DISC" value="CBI_PROMO_AND_DISC" />
+<element name="CBI_TAX" value="CBI_TAX" />
+<element name="CBI_AMOUNT_DUE" value="CBI_AMOUNT_DUE" />
+<element name="FLO_CODE" value="SCANLINE" />
+<element name="PDOC_LAYOUT2" value="PD_LAYOUT2" />
+<element name="DOC_TITLE" value="DOC_TITLE" />
+<group name="G_PAYDOC_SUMM_SOFTHEADERS" source="Q_PAYDOC_SUMM_SOFTHEADERS">
+<element name="SFHDR1" value="SFHDR1" />
+<element name="SFHDR2" value="SFHDR2" />
+<element name="SFHDR3" value="SFHDR3" />
+<element name="SFHDR4" value="SFHDR4" />
+<element name="SFHDR5" value="SFHDR5" />
+<group name="G_PAYDOC_SUMM_TRX" source="Q_PAYDOC_SUMM_TRX">
+<element name="TRX_ID1" value="TRX_ID1" />
+<group name="G_PAYDOC_SUMM_TRX_INFO" source="Q_PAYDOC_SUMM_TRX_INFO">
+<element name="SFDATA1" value="SFDATA1" />
+<element name="SFDATA2" value="SFDATA2" />
+<element name="SFDATA3" value="SFDATA3" />
+<element name="SFDATA4" value="SFDATA4" />
+<element name="SFDATA5" value="SFDATA5" />
+<element name="ORDER_NUM" value="ORDER_NUM" />
+<element name="ORDER_DATE" value="ORDER_DATE" />
+<element name="SUBTOTAL_AMOUNT" value="SUBTOTAL_AMOUNT" />
+<element name="DELIVERY" value="DELIVERY" />
+<element name="DISCOUNTS" value="DISCOUNTS" />
+<element name="TAX_AMOUNT" value="TAX_AMOUNT" />
+<element name="TOTAL_AMOUNT" value="ORDER_TOTAL" />
+</group>
+<group name="G_PAYDOC_SUMM_TOTALS" source="Q_PAYDOC_SUMM_TOTALS">
+<element name="SUMMARIZE_TEXT" value="SUMMARIZE_TEXT" />
+<element name="TOTAL_ORDERS" value="TOTAL_ORDERS" />
+<element name="PG_BREAK" value="PG_BREAK" />
+<element name="SUMMARIZE_SUBTOTAL" value="SUMMARIZE_SUBTOTAL" />
+<element name="SUMMARIZE_DELIVERY" value="SUMMARIZE_DELIVERY" />
+<element name="SUMMARIZE_DISCOUNTS" value="SUMMARIZE_DISCOUNTS" />
+<element name="SUMMARIZE_TAX" value="SUMMARIZE_TAX" />
+<element name="SUMMARIZE_TOTAL" value="SUMMARIZE_TOTAL" />
+</group>
+</group>
+</group>
+</group>
+<group name="G_PAYDOC_DETAIL" source="Q_PAYDOC_CBI_DETAIL">
+<element name="BILLING_NUMBER" value="BILLING_NUMBER" />
+<element name="CURRENCY" value="CURRENCY" />
+<element name="TERMS" value="TERMS" />
+<element name="BILL_FROM_DATE" value="BILL_FROM_DATE" />
+<element name="BILL_TO_DATE" value="BILL_TO_DATE" />
+<element name="PAYMENT_DUE" value="PAYMENT_DUE" />
+<element name="CBI_EXTAMT_INCL_DELVY" value="CBI_EXTAMT_INCL_DELVY" />
+<element name="CBI_PROMO_AND_DISC" value="CBI_PROMO_AND_DISC" />
+<element name="CBI_TAX" value="CBI_TAX" />
+<element name="CBI_AMOUNT_DUE" value="CBI_AMOUNT_DUE" />
+<element name="FLO_CODE" value="SCANLINE" />
+<element name="DOC_TITLE" value="DOC_TITLE" />
+<element name="PDOC_LAYOUT1" value="PD_LAYOUT1" />
+<group name="G_PAYDOC_DETAIL_TRX" source="Q_PAYDOC_DETAIL_TRX">
+<element name="ORDER_NUMBER" value="INVOICE_NUM" />
+<element name="ORDER_DATE" value="ORDER_DATE" />
+<element name="SHIP_DATE" value="SHIP_DATE" />
+<element name="SFHDR1" value="SFHDR1" />
+<element name="SFDATA1" value="SFDATA1" />
+<element name="SFHDR2" value="SFHDR2" />
+<element name="SFDATA2" value="SFDATA2" />
+<element name="SFHDR3" value="SFHDR3" />
+<element name="SFDATA3" value="SFDATA3" />
+<element name="SFHDR4" value="SFHDR4" />
+<element name="SFDATA4" value="SFDATA4" />
+<element name="SFHDR5" value="SFHDR5" />
+<element name="SFDATA5" value="SFDATA5" />
+<group name="G_TRX_SPC_INFO" source="Q_TRX_SPC_INFO">
+<element name="SPC_CARD_DETAILS" value="SPC_CARD_DETAILS" />
+</group>
+<group name="G_PAYDOC_DETAIL_TRX_LINES" source="Q_PAYDOC_DETAIL_TRX_LINES">
+<element name="ITEM_CODE" value="ITEM_CODE" />
+<element name="CUST_PROD_CODE" value="CUST_PROD_CODE" />
+<element name="ITEM_DESCRIPTION" value="ITEM_DESCRIPTION" />
+<element name="MANUF_CODE" value="MANUF_CODE" />
+<element name="QTY" value="QTY" />
+<element name="UOM" value="UOM" />
+<element name="UNIT_PRICE" value="UNIT_PRICE" />
+<element name="EXTENDED_PRICE" value="EXTENDED_PRICE" />
+</group>
+<group name="G_PAYDOC_TRX_TIERED_DISC" source="Q_TRX_TIERED_DISC">
+<element name="TIERED_DISCOUNT" value="TIERED_DISCOUNT" />
+</group>
+<group name="G_PAYDOC_TRX_MINISTMNT" source="Q_PAYDOC_TRX_MINISTMNT">
+<element name="ORDER_NUMBER_DUP" value="ORDER_NUMBER_DUP" />
+<element name="ORDER_SUBTOTAL" value="SUBTOTAL" />
+<element name="PROMO_AND_DISC" value="PROMO_AND_DISC" />
+<element name="SALES_TAX" value="SALES_TAX" />
+<element name="ORDER_TOTAL" value="TOTAL" />
+</group>
+<group name="G_PAYDOC_TRX_SOFTHEADERS" source="Q_TRX_SOFTHEADERS">
+<element name="LINE_TYPE" value="LINE_TYPE" />
+<element name="LINE_SEQ" value="LINE_SEQ" />
+<element name="SF_TEXT" value="SF_TEXT" />
+<element name="SF_AMOUNT" value="SF_AMOUNT" />
+<element name="PAGE_BREAK" value="PAGE_BREAK" />
+</group>
+</group>
+</group>
+</group>
+<group name="G_INFODOC_LAYOUT" source="Q_INFODOC_LAYOUT">
+<element name="INFOCOPY_CONS_INV_ID" value="INFO_CBI_ID99" />
+<element name="LAYOUT" value="LAYOUT99" />
+<element name="DOCUMENT_ID" value="DOC_ID99" />
+<element name="SORT_BY" value="SORT_BY99" />
+<element name="TOTAL_BY" value="TOTAL_BY99" />
+<element name="PAGE_BREAK" value="PAGE_BREAK99" />
+<group name="G_INFODOC_DETAIL" source="Q_INFODOC_CBI_DETAIL">
+<element name="BILLING_NUMBER" value="BILLING_NUMBER99" />
+<element name="CURRENCY" value="CURRENCY99" />
+<element name="TERMS" value="TERMS99" />
+<element name="BILL_FROM_DATE" value="BILL_FROM_DATE99" />
+<element name="BILL_TO_DATE" value="BILL_TO_DATE99" />
+<element name="PAYMENT_DUE" value="PAYMENT_DUE99" />
+<element name="CBI_EXTAMT_INCL_DELVY" value="CBI_EXTAMT_INCL_DELVY99" />
+<element name="CBI_PROMO_AND_DISC" value="CBI_PROMO_AND_DISC99" />
+<element name="CBI_TAX" value="CBI_TAX99" />
+<element name="CBI_AMOUNT_DUE" value="CBI_AMOUNT_DUE99" />
+<element name="FLO_CODE" value="SCANLINE99" />
+<element name="DOC_TITLE" value="DOC_TITLE99" />
+<element name="PDOC_LAYOUT1" value="PD_LAYOUT99" />
+<group name="G_INFODOC_DETAIL_TRX" source="Q_INFODOC_DETAIL_TRX">
+<element name="ORDER_NUMBER" value="INFODTL_INVOICE_NUM" />
+<element name="ORDER_DATE" value="INFODTL_ORDER_DATE" />
+<element name="SHIP_DATE" value="INFODTL_SHIP_DATE" />
+<element name="SFHDR1" value="INFODTL_SFHDR1" />
+<element name="SFDATA1" value="INFODTL_SFDATA1" />
+<element name="SFHDR2" value="INFODTL_SFHDR2" />
+<element name="SFDATA2" value="INFODTL_SFDATA2" />
+<element name="SFHDR3" value="INFODTL_SFHDR3" />
+<element name="SFDATA3" value="INFODTL_SFDATA3" />
+<element name="SFHDR4" value="INFODTL_SFHDR4" />
+<element name="SFDATA4" value="INFODTL_SFDATA4" />
+<element name="SFHDR5" value="INFODTL_SFHDR5" />
+<element name="SFDATA5" value="INFODTL_SFDATA5" />
+<group name="G_INFODOC_TRX_SPC_INFO" source="Q_INFODOC_TRX_SPC_INFO">
+<element name="SPC_CARD_DETAILS" value="INFODOC_SPC_CARD_DETAILS" />
+</group>
+<group name="G_INFODOC_DETAIL_TRX_LINES" source="Q_INFODOC_DETAIL_TRX_LINES">
+<element name="ITEM_CODE" value="INFODTL_ITEM_CODE" />
+<element name="CUST_PROD_CODE" value="INFODTL_CUST_PROD_CODE" />
+<element name="ITEM_DESCRIPTION" value="INFODTL_ITEM_DESCRIPTION" />
+<element name="MANUF_CODE" value="INFODTL_MANUF_CODE" />
+<element name="QTY" value="INFODTL_QTY" />
+<element name="UOM" value="INFODTL_UOM" />
+<element name="UNIT_PRICE" value="INFODTL_UNIT_PRICE" />
+<element name="EXTENDED_PRICE" value="INFODTL_EXTENDED_PRICE" />
+</group>
+<group name="G_INFODOC_TRX_TIERED_DISC" source="Q_INFODOC_TRX_TIERED_DISC">
+<element name="TIERED_DISCOUNT" value="INFODOC_TIERED_DISCOUNT" />
+</group>
+<group name="G_INFODOC_TRX_MINISTMNT" source="Q_INFODOC_TRX_MINISTMNT">
+<element name="ORDER_NUMBER_DUP" value="INFODTL_ORDER_NUMBER_DUP" />
+<element name="ORDER_SUBTOTAL" value="INFODTL_SUBTOTAL" />
+<element name="PROMO_AND_DISC" value="INFODTL_PROMO_AND_DISC" />
+<element name="SALES_TAX" value="INFODTL_SALES_TAX" />
+<element name="ORDER_TOTAL" value="INFODTL_TOTAL" />
+</group>
+<group name="G_INFODOC_TRX_SOFTHEADERS" source="Q_INFODOC_TRX_SOFTHEADERS">
+<element name="LINE_TYPE" value="INFODTL_LINE_TYPE" />
+<element name="LINE_SEQ" value="INFODTL_LINE_SEQ" />
+<element name="SF_TEXT" value="INFODTL_SF_TEXT" />
+<element name="SF_AMOUNT" value="INFODTL_SF_AMOUNT" />
+<element name="PAGE_BREAK" value="INFODTL_PAGE_BREAK" />
+</group>
+</group>
+</group>
+<group name="G_INFODOC_SUMMARIZE" source="Q_INFODOC_CBI_SUMMARIZE">
+<element name="BILLING_NUMBER" value="BILLING_NUMBER88" />
+<element name="CURRENCY" value="CURRENCY88" />
+<element name="TERMS" value="TERMS88" />
+<element name="BILL_FROM_DATE" value="BILL_FROM_DATE88" />
+<element name="BILL_TO_DATE" value="BILL_TO_DATE88" />
+<element name="PAYMENT_DUE" value="PAYMENT_DUE88" />
+<element name="CBI_EXTAMT_INCL_DELVY" value="CBI_EXTAMT_INCL_DELVY88" />
+<element name="CBI_PROMO_AND_DISC" value="CBI_PROMO_AND_DISC88" />
+<element name="CBI_TAX" value="CBI_TAX88" />
+<element name="CBI_AMOUNT_DUE" value="CBI_AMOUNT_DUE88" />
+<element name="FLO_CODE" value="SCANLINE88" />
+<element name="PDOC_LAYOUT2" value="PD_LAYOUT288" />
+<element name="DOC_TITLE" value="DOC_TITLE88" />
+<group name="G_INFODOC_SUMM_SOFTHEADERS" source="Q_INFODOC_SUMM_SOFTHEADERS">
+<element name="SFHDR1" value="INFOSUMZ_SFHDR1" />
+<element name="SFHDR2" value="INFOSUMZ_SFHDR2" />
+<element name="SFHDR3" value="INFOSUMZ_SFHDR3" />
+<element name="SFHDR4" value="INFOSUMZ_SFHDR4" />
+<element name="SFHDR5" value="INFOSUMZ_SFHDR5" />
+<group name="G_INFODOC_SUMM_TRX" source="Q_INFODOC_SUMM_TRX">
+<element name="TRX_ID1" value="INFOSUMZ_TRX_ID1" />
+<group name="G_INFODOC_TRX_SPC_INFO" source="Q_INFOSUMZ_TRX_SPC_INFO">
+<element name="SPC_CARD_DETAILS" value="INFOSUMZ_SPC_CARD_DETAILS" />
+</group>
+<group name="G_INFODOC_SUMM_TRX_INFO" source="Q_INFODOC_SUMM_TRX_INFO">
+<element name="SFDATA1" value="INFOSUMZ_SFDATA1" />
+<element name="SFDATA2" value="INFOSUMZ_SFDATA2" />
+<element name="SFDATA3" value="INFOSUMZ_SFDATA3" />
+<element name="SFDATA4" value="INFOSUMZ_SFDATA4" />
+<element name="SFDATA5" value="INFOSUMZ_SFDATA5" />
+<element name="ORDER_NUM" value="INFOSUMZ_ORDER_NUM" />
+<element name="ORDER_DATE" value="INFOSUMZ_ORDER_DATE" />
+<element name="SUBTOTAL_AMOUNT" value="INFOSUMZ_SUBTOTAL" />
+<element name="DELIVERY" value="INFOSUMZ_DELIVERY" />
+<element name="DISCOUNTS" value="INFOSUMZ_DISCOUNTS" />
+<element name="TAX_AMOUNT" value="INFOSUMZ_TAX" />
+<element name="TOTAL_AMOUNT" value="INFOSUMZ_TOTAL" />
+</group>
+<group name="G_INFODOC_TRX_TIERED_DISC" source="Q_INFOSUMZ_TRX_TIERED_DISC">
+<element name="TIERED_DISCOUNT" value="INFOSUMZ_TIERED_DISCOUNT" />
+</group>
+<group name="G_INFODOC_SUMM_TOTALS" source="Q_INFODOC_SUMM_TOTALS">
+<element name="SUMMARIZE_TEXT" value="INFOSUMZ_SUMMARIZE_TEXT" />
+<element name="TOTAL_ORDERS" value="INFOSUMZ_TOTAL_ORDERS" />
+<element name="PG_BREAK" value="INFOSUMZ_PG_BREAK" />
+<element name="SUMMARIZE_SUBTOTAL" value="INFOSUMZ_SUMMARIZE_SUBTOTAL" />
+<element name="SUMMARIZE_DELIVERY" value="INFOSUMZ_SUMMARIZE_DELIVERY" />
+<element name="SUMMARIZE_DISCOUNTS" value="INFOSUMZ_SUMMARIZE_DISCOUNTS" />
+<element name="SUMMARIZE_TAX" value="INFOSUMZ_SUMMARIZE_TAX" />
+<element name="SUMMARIZE_TOTAL" value="INFOSUMZ_SUMMARIZE_TOTAL" />
+</group>
+</group>
+</group>
+</group>
+<group name="G_INFODOC_ONE" source="Q_INFODOC_CBI_ONE">
+<element name="BILLING_NUMBER" value="BILLING_NUMBER77" />
+<element name="CURRENCY" value="CURRENCY77" />
+<element name="TERMS" value="TERMS77" />
+<element name="BILL_FROM_DATE" value="BILL_FROM_DATE77" />
+<element name="BILL_TO_DATE" value="BILL_TO_DATE77" />
+<element name="PAYMENT_DUE" value="PAYMENT_DUE77" />
+<element name="CBI_EXTAMT_INCL_DELVY" value="CBI_EXTAMT_INCL_DELVY77" />
+<element name="CBI_PROMO_AND_DISC" value="CBI_PROMO_AND_DISC77" />
+<element name="CBI_TAX" value="CBI_TAX77" />
+<element name="CBI_AMOUNT_DUE" value="CBI_AMOUNT_DUE77" />
+<element name="FLO_CODE" value="SCANLINE77" />
+<element name="PDOC_LAYOUT3" value="PD_LAYOUT377" />
+<element name="DOC_TITLE" value="DOC_TITLE77" />
+<group name="G_INFODOC_ONE_SOFTHEADERS" source="Q_INFODOC_ONE_SOFTHEADERS">
+<element name="SFHDR1" value="INFOONE_SFHDR1" />
+<element name="SFHDR2" value="INFOONE_SFHDR2" />
+<element name="SFHDR3" value="INFOONE_SFHDR3" />
+<element name="SFHDR4" value="INFOONE_SFHDR4" />
+<element name="SFHDR5" value="INFOONE_SFHDR5" />
+</group>
+<group name="G_INFODOC_ONE_TOTALS" source="Q_INFODOC_ONE_TOTALS">
+<element name="SUMMARIZE_TEXT" value="INFOONE_SUMMARIZE_TEXT" />
+<element name="TOTAL_ORDERS" value="INFOONE_TOTAL_ORDERS" />
+<element name="PG_BREAK" value="INFOONE_PG_BREAK" />
+<element name="SUMMARIZE_SUBTOTAL" value="INFOONE_SUMMARIZE_SUBTOTAL" />
+<element name="SUMMARIZE_DELIVERY" value="INFOONE_SUMMARIZE_DELIVERY" />
+<element name="SUMMARIZE_DISCOUNTS" value="INFOONE_SUMMARIZE_DISCOUNTS" />
+<element name="SUMMARIZE_TAX" value="INFOONE_SUMMARIZE_TAX" />
+<element name="SUMMARIZE_TOTAL" value="INFOONE_SUMMARIZE_TOTAL" />
+</group>
+</group>
+</group>
+</group>
+</group>
+<group name="G_SOX_CONTROL" source="Q_SOX_CONTROL">
+<element name="TOTAL_CUSTOMERS" value="TOTAL_CUSTOMERS" />
+<element name="TOTAL_INVOICES" value="TOTAL_INVOICES" />
+<element name="TOTAL_AMOUNT" value="TOTAL_AMOUNT" />
+</group>
+</dataStructure>
+<dataTrigger name="afterReportTrigger" source="xx_ar_print_summbill.afterreport"/>
+</dataTemplate>

@@ -1,0 +1,353 @@
+
+# +===================================================================+
+# |                  Office Depot - Project Simplify                  |
+# |      			 				      |
+# +===================================================================+
+# | Name  : 	   XXCEMRKTPLCLOAD.prog   	                              |
+# | RICE ID    :   I3091
+# | Description:   This program does the following                    |
+# |             1) Call ebay load program                                 |
+# |                                                                   |
+# |                .                                       |
+# |                                                                   |
+# |                                                                   |
+# |                                                                   |
+# |Change Record:                                                     |
+# |===============                                                    |
+# |Version   Date        Author           Remarks                     |
+# |=======   ==========  =============    ============================|
+# |DRAFT 1A 17-JUL-2018  Priyam P       Initial draft version       |
+# +===================================================================+
+
+ echo "1 st argument = username/password"
+ echo "2 nd argument = $2"
+ echo "3 rd argument = $3"
+ echo "4 th argument = $4"
+ echo "5 th argument = $5"
+
+export SQLPATH=$APPL_TOP
+ 
+translationsource=$5 
+  
+V_RESULT=`sqlplus -s /nolog <<EOF
+set pagesize 0
+set linesize 255
+set sqlprompt " "
+set serveroutput on 
+set verify off
+
+SELECT XFTV.TARGET_VALUE7
+  || '|'||XFTV.TARGET_VALUE8
+  || '|'||XFTV.TARGET_VALUE10
+  || '|'||XFTV.TARGET_VALUE1
+  || '|'|| XX_ENCRYPT_DECRYPTION_TOOLKIT.DECRYPT(NVL(XFTV.TARGET_VALUE2,XX_ENCRYPT_DECRYPTION_TOOLKIT.ENCRYPT('X')))
+  || '|'|| XX_ENCRYPT_DECRYPTION_TOOLKIT.DECRYPT(NVL(XFTV.TARGET_VALUE3,XX_ENCRYPT_DECRYPTION_TOOLKIT.ENCRYPT('X')))
+  || '|'|| XFTV.TARGET_VALUE4
+  || '|'|| XFTV.TARGET_VALUE5
+  || '|'|| XX_ENCRYPT_DECRYPTION_TOOLKIT.DECRYPT(NVL(XFTV.TARGET_VALUE6,XX_ENCRYPT_DECRYPTION_TOOLKIT.ENCRYPT('X')))
+  || '|'|| XFTV.TARGET_VALUE9
+  || '|'|| REPLACE(TO_CHAR(TO_TIMESTAMP_TZ(TO_CHAR(CAST(SYSTIMESTAMP AT TIME ZONE 'UTC' AS DATE),'yyyy-mm-dd"T"hh24:mi:ss'), 'yyyy-mm-dd"T"hh24:mi:ss TZH:TZM'),'YYYY-MM-DD"T"HH24:MI:SS" Z"'),' ','')
+  || '|'|| XFTV.TARGET_VALUE20
+  || '|'|| to_char(XX_CE_MRKTPLC_PRESTG_PKG.GET_START_DATE('$translationsource'),'YYYY-MM-DD') 
+  || '|'|| to_char(sysdate,'YYYY-MM-DD')
+  || '|'|| XX_ENCRYPT_DECRYPTION_TOOLKIT.ENCRYPT(to_char(sysdate,'DDMMYYYYHH24MISS')) 
+  || '|'||XFTV.TARGET_VALUE22
+  || '|'||XFTV.TARGET_VALUE23
+  || '|'||XX_ENCRYPT_DECRYPTION_TOOLKIT.DECRYPT(NVL(XFTV.TARGET_VALUE24,XX_ENCRYPT_DECRYPTION_TOOLKIT.ENCRYPT('X')))
+  || '|'||XFTV.TARGET_VALUE16 TT
+  FROM XX_FIN_TRANSLATEDEFINITION XFTD,
+  XX_FIN_TRANSLATEVALUES XFTV
+WHERE XFTD.TRANSLATION_NAME ='OD_SETTLEMENT_PROCESSES'
+AND XFTV.SOURCE_VALUE1      ='NEWEGG_MPL'
+AND XFTD.TRANSLATE_ID       =XFTV.TRANSLATE_ID
+AND XFTD.ENABLED_FLAG       ='Y'
+AND SYSDATE BETWEEN XFTV.START_DATE_ACTIVE AND NVL(XFTV.END_DATE_ACTIVE,SYSDATE);
+	
+exit
+EOF`
+
+file_type=`echo $V_RESULT | awk '{ split($0,MODULE,"|"); print MODULE[1] }'`
+inbound_path=`echo $V_RESULT | awk '{ split($0,MODULE,"|"); print MODULE[2] }'`
+archival_path=`echo $V_RESULT | awk '{ split($0,MODULE,"|"); print MODULE[3] }'`
+url=`echo $V_RESULT | awk '{ split($0,MODULE,"|"); print MODULE[4] }'`
+accesskeyid=`echo $V_RESULT | awk '{ split($0,MODULE,"|"); print MODULE[5] }'`
+secretaccesskey=`echo $V_RESULT | awk '{ split($0,MODULE,"|"); print MODULE[6] }'`
+appname=`echo $V_RESULT | awk '{ split($0,MODULE,"|"); print MODULE[7] }'`
+appversion=`echo $V_RESULT | awk '{ split($0,MODULE,"|"); print MODULE[8] }'`
+merchantid=`echo $V_RESULT | awk '{ split($0,MODULE,"|"); print MODULE[9] }'`
+filename=`echo $V_RESULT | awk '{ split($0,MODULE,"|"); print MODULE[10] }'`
+timestamp=`echo $V_RESULT | awk '{ split($0,MODULE,"|"); print MODULE[11] }'`
+seperator=`echo $V_RESULT | awk '{ split($0,MODULE,"|"); print MODULE[12] }'`
+start_date=`echo $V_RESULT | awk '{ split($0,MODULE,"|"); print MODULE[13] }'`
+end_date=`echo $V_RESULT | awk '{ split($0,MODULE,"|"); print MODULE[14] }'`
+walmartcorrelid=`echo $V_RESULT | awk '{ split($0,MODULE,"|"); print MODULE[15] }'`
+url2=`echo $V_RESULT | awk '{ split($0,MODULE,"|"); print MODULE[16] }'`
+url3=`echo $V_RESULT | awk '{ split($0,MODULE,"|"); print MODULE[17] }'`
+google_refresh_token=`echo $V_RESULT | awk '{ split($0,MODULE,"|"); print MODULE[18] }'`
+filename2=`echo $V_RESULT | awk '{ split($0,MODULE,"|"); print MODULE[19] }'`
+
+
+
+echo " "
+echo "Translation set-up Name : OD_SETTLEMENT_PROCESSES "
+
+eval seperator=${seperator// /}
+
+echo "seperator                               = $seperator"
+
+echo " "
+echo "Process_name                           = $translationsource"
+echo "File type                              = $file_type"
+echo "Inbound path                           = $inbound_path"
+echo "Archival path                          = $archival_path"
+
+
+
+eval inbounddirectory=$inbound_path/$filename
+
+TMPFILE=$inbounddirectory > $TMPFILE;chmod 777 $TMPFILE
+
+#1) Get Request Id 
+
+url1="$url$merchantid"
+
+echo "url1=$url1"
+
+
+url1_trxn_tag="<NeweggAPIRequest>
+<OperationType>SettlementTransactionReportRequest</OperationType>
+<RequestBody>
+<SettlementTransactionReportCriteria>
+<RequestType>SETTLEMENT_TRANSACTION_REPORT</RequestType>
+<TransactionType>1</TransactionType>
+<SettlementDateFrom>$start_date</SettlementDateFrom>
+<SettlementDateTo>$end_date</SettlementDateTo>
+<SettlementDate>10/26/2018</SettlementDate>
+</SettlementTransactionReportCriteria>
+</RequestBody>
+</NeweggAPIRequest>"
+
+
+
+curl -X POST \
+   "$url1" \
+  -H 'accept: application/xml' \
+  -H "authorization: $accesskeyid" \
+  -H 'cache-control: no-cache' \
+  -H 'content-type: application/xml' \
+  -H "secretkey: $secretaccesskey" \
+  -d "$url1_trxn_tag" > $TMPFILE
+
+
+NewEgg_RequestId_trxn=`sed -n '/RequestId/{s/.*<RequestId>//;s/<\/RequestId.*//;p;}' $TMPFILE`
+
+echo "NewEgg_RequestId_trxn=$NewEgg_RequestId_trxn"
+
+#2) Curl to get status of the request submission 
+
+url2_trxn_tag="<NeweggAPIRequest>
+<OperationType>GetReportStatusRequest</OperationType>
+<RequestBody>
+<GetRequestStatus>
+<RequestIDList>
+<RequestID>$NewEgg_RequestId_trxn</RequestID>
+</RequestIDList>
+<MaxCount>10</MaxCount>
+</GetRequestStatus>
+</RequestBody>
+</NeweggAPIRequest>" 
+
+url2="$url2$merchantid"
+
+RequestStatusTrxn="IN_PROGRESS"
+
+
+
+while [ $RequestStatusTrxn != "FINISHED" ]
+
+do
+
+
+
+curl -X PUT \
+   "$url2" \
+  -H 'accept: application/xml' \
+  -H "authorization: $accesskeyid" \
+  -H 'cache-control: no-cache' \
+  -H 'content-type: application/xml' \
+  -H "secretkey: $secretaccesskey" \
+  -d "$url2_trxn_tag" | xmllint --format - > $TMPFILE
+
+RequestStatusTrxn=`sed -n '/RequestStatus/{s/.*<RequestStatus>//;s/<\/RequestStatus.*//;p;}' $TMPFILE`
+
+sleep 5
+
+done
+
+
+
+echo "RequestStatusTrxn=$RequestStatusTrxn"
+
+#3) Curl to Download the New Egg Transaction Report
+
+url3_trxn_tag="<NeweggAPIRequest >
+<OperationType>SettlementTransactionReportRequest</OperationType>
+<RequestBody>
+<RequestID>$NewEgg_RequestId_trxn</RequestID>
+<PageInfo>
+<PageIndex>1</PageIndex>
+<PageSize>10</PageSize>
+</PageInfo>
+</RequestBody>
+</NeweggAPIRequest>"
+
+url3="$url3$merchantid&version=309"
+echo "url3=$url3"
+
+curl -X PUT \
+  "$url3" \
+  -H 'accept: application/xml' \
+  -H "authorization: $accesskeyid" \
+  -H 'cache-control: no-cache' \
+  -H 'content-type: application/xml' \
+  -H "secretkey: $secretaccesskey" \
+  -d "$url3_trxn_tag" | xmllint --format - > $TMPFILE
+
+eval inbound_path=$inbound_path
+
+cd ${inbound_path}
+
+DAT=`date '+_%y%m%d%H%M%S.xml'`
+
+eval newfile=$inbound_path/$filename$DAT
+
+echo "newfile=$newfile"
+
+mv "$filename" "${newfile}" ;
+
+mv "$newfile" "${newfile//.xml_/_}" ;
+
+#Start of Newegg Summary Transaction Report
+
+eval inbounddirectory=$inbound_path/$filename2
+
+TMPFILE=$inbounddirectory > $TMPFILE;chmod 777 $TMPFILE
+
+#1) Get Request Id 
+
+
+url1_sumry_tag="<NeweggAPIRequest >
+<OperationType>SettlementSummaryReportRequest</OperationType>
+<RequestBody>
+<SettlementSummaryReportCriteria>
+<RequestType>SETTLEMENT_SUMMARY_REPORT</RequestType>
+<DateFrom>$start_date</DateFrom>
+<DateTo>$end_date</DateTo>
+</SettlementSummaryReportCriteria>
+</RequestBody>
+</NeweggAPIRequest>"
+
+
+
+curl -X POST \
+   "$url1" \
+  -H 'accept: application/xml' \
+  -H "authorization: $accesskeyid" \
+  -H 'cache-control: no-cache' \
+  -H 'content-type: application/xml' \
+  -H 'postman-token: 9cef006f-db77-b766-1e19-fefabe6695de' \
+  -H "secretkey: $secretaccesskey" \
+  -d "$url1_sumry_tag" > $TMPFILE
+
+
+NewEgg_RequestId_sumry=`sed -n '/RequestId/{s/.*<RequestId>//;s/<\/RequestId.*//;p;}' $TMPFILE`
+
+
+
+echo "NewEgg_RequestId_sumry=$NewEgg_RequestId_sumry"
+
+#2) Curl to get status of the request submission 
+
+url2_sumry_tag="<NeweggAPIRequest>
+<OperationType>GetReportStatusRequest</OperationType>
+<RequestBody>
+<GetRequestStatus>
+<RequestIDList>
+<RequestID>$NewEgg_RequestId_sumry</RequestID>
+</RequestIDList>
+<MaxCount>10</MaxCount>
+</GetRequestStatus>
+</RequestBody>
+</NeweggAPIRequest>" 
+
+
+
+
+RequestStatusSumry="IN_PROGRESS"
+
+while [ $RequestStatusSumry != "FINISHED" ]
+
+do
+
+
+#echo "RequestStatusSumry=$RequestStatusSumry"
+
+curl -X PUT \
+   "$url2" \
+  -H 'accept: application/xml' \
+  -H "authorization: $accesskeyid" \
+  -H 'cache-control: no-cache' \
+  -H 'content-type: application/xml' \
+  -H "secretkey: $secretaccesskey" \
+  -d "$url2_sumry_tag" | xmllint --format - > $TMPFILE
+
+RequestStatusSumry=`sed -n '/RequestStatus/{s/.*<RequestStatus>//;s/<\/RequestStatus.*//;p;}' $TMPFILE`
+
+sleep 5
+
+done
+
+
+echo "RequestStatusSumry=$RequestStatusSumry"
+
+#3) Curl to Download the New Egg Transaction Report
+
+url3_sumry_tag="<NeweggAPIRequest >
+<OperationType>SettlementTransactionReportRequest</OperationType>
+<RequestBody>
+<RequestID>$NewEgg_RequestId_sumry</RequestID>
+<PageInfo>
+<PageIndex>1</PageIndex>
+<PageSize>10</PageSize>
+</PageInfo>
+</RequestBody>
+</NeweggAPIRequest>"
+
+
+curl -X PUT \
+  "$url3" \
+  -H 'accept: application/xml' \
+  -H "authorization: $accesskeyid" \
+  -H 'cache-control: no-cache' \
+  -H 'content-type: application/xml' \
+  -H "secretkey: $secretaccesskey" \
+  -d "$url3_sumry_tag" | xmllint --format - > $TMPFILE
+
+eval inbound_path=$inbound_path
+
+cd ${inbound_path}
+
+DAT=`date '+_%y%m%d%H%M%S.xml'`
+
+eval newfile=$inbound_path/$filename2$DAT
+
+echo "newfile=$newfile"
+
+mv "$filename2" "${newfile}" ;
+
+mv "$newfile" "${newfile//.xml_/_}" ;
+
+
+#fi
+
+exit 0

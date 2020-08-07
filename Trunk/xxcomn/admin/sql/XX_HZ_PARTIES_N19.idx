@@ -1,0 +1,17 @@
+-- +===================================================================+
+-- |                  Office Depot - Project Simplify                  |
+-- +===================================================================+
+-- | Name        : XX_HZ_PARTIES_N19.idx                               |
+-- | Rice ID     :                                                     |
+-- | Description : XX_HZ_PARTIES_N19 - Index Creation Script           |
+-- |                                                                   |
+-- |              						       |
+-- |Change Record:                                                     |
+-- |===============                                                    |
+-- |Version   Date        Author           Remarks                     |
+-- |=======  ===========  =============    ============================|
+-- |1.0      19-Jun-2008  Enliu Yang       Initial draft version       |
+-- |                                                                   |
+-- +===================================================================+
+create index XXCNV.XX_HZ_PARTIES_N19 on AR.HZ_PARTIES(LAST_UPDATE_DATE) tablespace xxod parallel 8 nologging;create index XXFIN.XX_HZ_PARTIES_N19 on AR.HZ_PARTIES(LAST_UPDATE_DATE) tablespace xxod nologging;
+alter index xxcnv.XX_HZ_PARTIES_N19 noparallel;

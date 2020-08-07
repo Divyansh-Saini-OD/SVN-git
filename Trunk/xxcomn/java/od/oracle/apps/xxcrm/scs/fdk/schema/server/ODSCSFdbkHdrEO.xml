@@ -1,0 +1,566 @@
+<?xml version="1.0" encoding='windows-1252'?>
+<!DOCTYPE Entity SYSTEM "jbo_03_01.dtd">
+
+<Entity
+   Name="ODSCSFdbkHdrEO"
+   DBObjectType="synonym"
+   DBObjectName="XXSCS_FDBK_HDR"
+   AliasName="ODSCSFdbkHdrEO"
+   BindingStyle="Oracle"
+   UseGlueCode="false"
+   CodeGenFlag="7"
+   RowClass="od.oracle.apps.xxcrm.scs.fdk.schema.server.ODSCSFdbkHdrEOImpl"
+   DefClass="oracle.apps.fnd.framework.server.OAEntityDefImpl"
+   CollClass="oracle.apps.fnd.framework.server.OAEntityCache" >
+   <DesignTime>
+      <Attr Name="_isCodegen" Value="true" />
+      <Attr Name="_version" Value="9.0.3.13.75" />
+      <AttrArray Name="_publishEvents">
+      </AttrArray>
+   </DesignTime>
+   <Attribute
+      Name="FdbkId"
+      IsNotNull="true"
+      Type="oracle.jbo.domain.Number"
+      ColumnName="FDBK_ID"
+      ColumnType="NUMBER"
+      SQLType="NUMERIC"
+      TableName="XXSCS_FDBK_HDR"
+      PrimaryKey="true" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="CustomerAccountId"
+      Type="oracle.jbo.domain.Number"
+      ColumnName="CUSTOMER_ACCOUNT_ID"
+      ColumnType="NUMBER"
+      SQLType="NUMERIC"
+      TableName="XXSCS_FDBK_HDR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="AddressId"
+      Type="oracle.jbo.domain.Number"
+      ColumnName="ADDRESS_ID"
+      ColumnType="NUMBER"
+      SQLType="NUMERIC"
+      TableName="XXSCS_FDBK_HDR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="PartySiteId"
+      Type="oracle.jbo.domain.Number"
+      ColumnName="PARTY_SITE_ID"
+      ColumnType="NUMBER"
+      SQLType="NUMERIC"
+      TableName="XXSCS_FDBK_HDR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="PartyId"
+      Type="oracle.jbo.domain.Number"
+      ColumnName="PARTY_ID"
+      ColumnType="NUMBER"
+      SQLType="NUMERIC"
+      TableName="XXSCS_FDBK_HDR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="MassApplyFlag"
+      Precision="1"
+      Type="java.lang.String"
+      ColumnName="MASS_APPLY_FLAG"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XXSCS_FDBK_HDR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="1" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="ContactId"
+      Type="oracle.jbo.domain.Number"
+      ColumnName="CONTACT_ID"
+      ColumnType="NUMBER"
+      SQLType="NUMERIC"
+      TableName="XXSCS_FDBK_HDR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="LastUpdatedEmp"
+      Precision="100"
+      Type="java.lang.String"
+      ColumnName="LAST_UPDATED_EMP"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XXSCS_FDBK_HDR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="100" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="SalesTerritoryId"
+      Precision="200"
+      Type="java.lang.String"
+      ColumnName="SALES_TERRITORY_ID"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XXSCS_FDBK_HDR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="200" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="ResourceId"
+      Type="oracle.jbo.domain.Number"
+      ColumnName="RESOURCE_ID"
+      ColumnType="NUMBER"
+      SQLType="NUMERIC"
+      TableName="XXSCS_FDBK_HDR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="RoleId"
+      Type="oracle.jbo.domain.Number"
+      ColumnName="ROLE_ID"
+      ColumnType="NUMBER"
+      SQLType="NUMERIC"
+      TableName="XXSCS_FDBK_HDR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="GroupId"
+      Type="oracle.jbo.domain.Number"
+      ColumnName="GROUP_ID"
+      ColumnType="NUMBER"
+      SQLType="NUMERIC"
+      TableName="XXSCS_FDBK_HDR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="Language"
+      Precision="30"
+      Type="java.lang.String"
+      ColumnName="LANGUAGE"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XXSCS_FDBK_HDR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="30" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="SourceLang"
+      Precision="30"
+      Type="java.lang.String"
+      ColumnName="SOURCE_LANG"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XXSCS_FDBK_HDR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="30" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="CreatedBy"
+      Type="oracle.jbo.domain.Number"
+      ColumnName="CREATED_BY"
+      ColumnType="NUMBER"
+      SQLType="NUMERIC"
+      TableName="XXSCS_FDBK_HDR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="CreationDate"
+      Type="oracle.jbo.domain.Date"
+      ColumnName="CREATION_DATE"
+      ColumnType="DATE"
+      SQLType="TIMESTAMP"
+      TableName="XXSCS_FDBK_HDR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="7" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="LastUpdatedBy"
+      Type="oracle.jbo.domain.Number"
+      ColumnName="LAST_UPDATED_BY"
+      ColumnType="NUMBER"
+      SQLType="NUMERIC"
+      TableName="XXSCS_FDBK_HDR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="LastUpdateDate"
+      Type="oracle.jbo.domain.Date"
+      ColumnName="LAST_UPDATE_DATE"
+      ColumnType="DATE"
+      SQLType="TIMESTAMP"
+      TableName="XXSCS_FDBK_HDR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="7" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="LastUpdateLogin"
+      Type="oracle.jbo.domain.Number"
+      ColumnName="LAST_UPDATE_LOGIN"
+      ColumnType="NUMBER"
+      SQLType="NUMERIC"
+      TableName="XXSCS_FDBK_HDR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="RequestId"
+      Type="oracle.jbo.domain.Number"
+      ColumnName="REQUEST_ID"
+      ColumnType="NUMBER"
+      SQLType="NUMERIC"
+      TableName="XXSCS_FDBK_HDR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="ProgramApplicationId"
+      Type="oracle.jbo.domain.Number"
+      ColumnName="PROGRAM_APPLICATION_ID"
+      ColumnType="NUMBER"
+      SQLType="NUMERIC"
+      TableName="XXSCS_FDBK_HDR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="ProgramId"
+      Type="oracle.jbo.domain.Number"
+      ColumnName="PROGRAM_ID"
+      ColumnType="NUMBER"
+      SQLType="NUMERIC"
+      TableName="XXSCS_FDBK_HDR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="ProgramUpdateDate"
+      Type="oracle.jbo.domain.Date"
+      ColumnName="PROGRAM_UPDATE_DATE"
+      ColumnType="DATE"
+      SQLType="TIMESTAMP"
+      TableName="XXSCS_FDBK_HDR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="7" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="AttributeCategory"
+      Precision="30"
+      Type="java.lang.String"
+      ColumnName="ATTRIBUTE_CATEGORY"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XXSCS_FDBK_HDR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="30" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="Attribute1"
+      Precision="2500"
+      Type="java.lang.String"
+      ColumnName="ATTRIBUTE1"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XXSCS_FDBK_HDR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="2500" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="Attribute2"
+      Precision="2500"
+      Type="java.lang.String"
+      ColumnName="ATTRIBUTE2"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XXSCS_FDBK_HDR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="2500" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="Attribute3"
+      Precision="2500"
+      Type="java.lang.String"
+      ColumnName="ATTRIBUTE3"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XXSCS_FDBK_HDR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="2500" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="Attribute4"
+      Precision="2500"
+      Type="java.lang.String"
+      ColumnName="ATTRIBUTE4"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XXSCS_FDBK_HDR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="2500" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="Attribute5"
+      Precision="2500"
+      Type="java.lang.String"
+      ColumnName="ATTRIBUTE5"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XXSCS_FDBK_HDR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="2500" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="Attribute6"
+      Precision="2500"
+      Type="java.lang.String"
+      ColumnName="ATTRIBUTE6"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XXSCS_FDBK_HDR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="2500" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="Attribute7"
+      Precision="2500"
+      Type="java.lang.String"
+      ColumnName="ATTRIBUTE7"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XXSCS_FDBK_HDR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="2500" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="Attribute8"
+      Precision="2500"
+      Type="java.lang.String"
+      ColumnName="ATTRIBUTE8"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XXSCS_FDBK_HDR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="2500" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="Attribute9"
+      Precision="2500"
+      Type="java.lang.String"
+      ColumnName="ATTRIBUTE9"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XXSCS_FDBK_HDR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="2500" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="Attribute10"
+      Precision="2500"
+      Type="java.lang.String"
+      ColumnName="ATTRIBUTE10"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XXSCS_FDBK_HDR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="2500" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="Attribute11"
+      Precision="2500"
+      Type="java.lang.String"
+      ColumnName="ATTRIBUTE11"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XXSCS_FDBK_HDR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="2500" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="Attribute12"
+      Precision="2500"
+      Type="java.lang.String"
+      ColumnName="ATTRIBUTE12"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XXSCS_FDBK_HDR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="2500" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="Attribute13"
+      Precision="2500"
+      Type="java.lang.String"
+      ColumnName="ATTRIBUTE13"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XXSCS_FDBK_HDR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="2500" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="Attribute14"
+      Precision="2500"
+      Type="java.lang.String"
+      ColumnName="ATTRIBUTE14"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XXSCS_FDBK_HDR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="2500" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="Attribute15"
+      Precision="2500"
+      Type="java.lang.String"
+      ColumnName="ATTRIBUTE15"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XXSCS_FDBK_HDR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="2500" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="Attribute16"
+      Precision="2500"
+      Type="java.lang.String"
+      ColumnName="ATTRIBUTE16"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XXSCS_FDBK_HDR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="2500" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="Attribute17"
+      Precision="2500"
+      Type="java.lang.String"
+      ColumnName="ATTRIBUTE17"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XXSCS_FDBK_HDR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="2500" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="Attribute18"
+      Precision="2500"
+      Type="java.lang.String"
+      ColumnName="ATTRIBUTE18"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XXSCS_FDBK_HDR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="2500" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="Attribute19"
+      Precision="2500"
+      Type="java.lang.String"
+      ColumnName="ATTRIBUTE19"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XXSCS_FDBK_HDR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="2500" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="Attribute20"
+      Precision="2500"
+      Type="java.lang.String"
+      ColumnName="ATTRIBUTE20"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XXSCS_FDBK_HDR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="2500" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="EntityId"
+      Type="oracle.jbo.domain.Number"
+      ColumnName="ENTITY_ID"
+      ColumnType="NUMBER"
+      SQLType="NUMERIC"
+      TableName="XXSCS_FDBK_HDR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="EntityType"
+      Precision="30"
+      Type="java.lang.String"
+      ColumnName="ENTITY_TYPE"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XXSCS_FDBK_HDR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="30" />
+      </DesignTime>
+   </Attribute>
+   <Key
+      Name="FdbkHdrPk" >
+      <AttrArray Name="Attributes">
+         <Item Value="od.oracle.apps.xxcrm.scs.fdk.schema.server.ODSCSFdbkHdrEO.FdbkId" />
+      </AttrArray>
+      <DesignTime>
+         <Attr Name="_DBObjectName" Value="FDBK_HDR_PK" />
+         <Attr Name="_isPrimary" Value="true" />
+      </DesignTime>
+   </Key>
+</Entity>

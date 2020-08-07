@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding='windows-1252'?>
+<!DOCTYPE AppModule SYSTEM "jbo_03_01.dtd">
+
+<AppModule
+   Name="ODViewAccountSiteDtlAM"
+   ComponentClass="od.oracle.apps.xxcrm.asn.common.customer.server.ODViewAccountSiteDtlAMImpl"
+   LoadComponentsLazily="true" >
+   <DesignTime>
+      <Attr Name="_isCodegen" Value="true" />
+      <Attr Name="_version" Value="9.0.3.13.93" />
+      <Attr Name="_deployType" Value="0" />
+   </DesignTime>
+   <ViewUsage
+      Name="ODSiteUsageVO1"
+      ViewObjectName="od.oracle.apps.xxcrm.hz.account.customer.server.ODSiteUsageVO" >
+   </ViewUsage>
+</AppModule>

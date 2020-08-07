@@ -1,0 +1,45 @@
+-- +==========================================================================+
+-- |                  Office Depot - Project Simplify                         |
+-- |                       WIPRO Technologies                                 |
+-- +==========================================================================+
+-- | Name :XXFIN.XX_PA_PROJ_DATA_STG                                          |
+-- | Description : Create the staging ( xxfin.xx_pa_proj_data_stg ) Table to  |
+-- |               store data from SQL table for process.                     |
+-- |                                                                          |
+-- |                                                                          |
+-- |                                                                          |
+-- |Change Record:                                                            |
+-- |===============                                                           |
+-- |Version   Date         Author               Remarks                       |
+-- |=======   ==========   =============        ==============================|
+-- | V1.0     27-Apr-2007  Raj Patel            Initial version               |
+-- |                                                                          |
+-- +==========================================================================+
+
+   SET SHOW         OFF
+   SET VERIFY       OFF
+   SET ECHO         OFF
+   SET TAB          OFF
+   SET FEEDBACK     ON
+
+
+   CREATE TABLE xxfin.xx_pa_proj_data_stg
+     (	
+	 PANEx				VARCHAR2(25)	PRIMARY KEY
+	,ProjectID			NUMBER	        NOT NULL
+	,TemplateID			NUMBER	
+	,ProjOrgID			NUMBER
+	,ProjName			VARCHAR2(30)
+	,ProjDescr			VARCHAR2(250)
+	,StartDate			DATE
+	,CompletionDate			DATE
+	,CountryID			VARCHAR2(2)     NOT NULL
+	,Expenses			NUMBER	
+	,Capital			NUMBER          NOT NULL
+	,EBSPA_ProjectID		NUMBER
+	,EBSPA_SentFlag			VARCHAR2(1)
+	,EBSPA_SentDate			DATE
+	,EBSPA_AckDate			DATE
+     );
+
+SHOW ERROR

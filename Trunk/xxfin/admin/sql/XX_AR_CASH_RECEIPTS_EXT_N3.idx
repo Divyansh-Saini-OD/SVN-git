@@ -1,0 +1,21 @@
+-- +==================================================================================+  
+-- | Office Depot - Project Simplify                                                  |
+-- | Providge Consulting                                                              |
+-- +==================================================================================+
+-- | SQL Script to create indexes on the table:  XXFIN.XX_AR_CASH_RECEIPTS_EXT        |
+-- |                                                                                  |
+-- | For the Extension I1025 Create and Apply Receipts                                |
+-- |                                                                                  |
+-- |Change Record:                                                                    |
+-- |===============                                                                   |
+-- |Version   Date          Author               Remarks                              |
+-- |=======   ===========   =============        =====================================|
+-- |1.0       10-JUN-2008   BLooman              Initial version                      |
+-- |1.1       25-MAR-2009   Sowmya M S           Splitting the index creation         |
+-- +==================================================================================+
+
+  
+--DROP INDEX XXFIN.XX_AR_CASH_RECEIPTS_EXT_N3;
+ 
+CREATE INDEX XXFIN.XX_AR_CASH_RECEIPTS_EXT_N3 
+ ON XX_AR_CASH_RECEIPTS_EXT (I1025_RECORD_TYPE, ORIG_SYS_DOCUMENT_REF, PAYMENT_NUMBER);

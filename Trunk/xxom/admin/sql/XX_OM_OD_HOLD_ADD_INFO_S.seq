@@ -1,0 +1,64 @@
+-- +============================================================================================+
+-- |                        Office Depot - Project Simplify                                     |
+-- |              Oracle NAIO/WIPRO/Office Depot/Consulting Organization                        |
+-- +============================================================================================+
+-- | Name         : XX_OM_OD_HOLD_ADD_INFO_S.seq                                                |
+-- | Rice Id      : E0244                                                                       | 
+-- | Description  : OD HoldsManagementFrameworke Sequence Creation                              |  
+-- | Purpose      : Create Custom Sequence.                                                     |
+-- |                1. XX_OM_OD_HOLD_ADD_INFO_S Sequence for Additional Information  Table      |
+-- |                   XX_OM_OD_HOLD_ADD_INFO                                                   |
+-- |                                                                                            |
+-- |Change Record:                                                                              |
+-- |===============                                                                             |
+-- |Version    Date          Author           Remarks                                           | 
+-- |=======    ==========    =============    ==================================================+
+-- |DRAFT 1A   03-May-2007   Nabarun Ghosh    Initial Version                                   |
+-- |1.1        04-JUN-2007   Nabarun Ghosh    Updated the Comments Section as per onsite        |
+-- |                                          review                                            |
+-- |1.2        23-JUL-2007   Nabarun Ghosh    Changed the Table Name, Inorder to accomodate the |
+-- |                                          DFF/KFF's values                                  |
+-- +============================================================================================+
+SET VERIFY      OFF
+SET TERM        OFF
+SET FEEDBACK    OFF
+SET SHOW        OFF
+SET ECHO        OFF
+SET TAB         OFF
+
+-- Sequence creation
+
+PROMPT
+PROMPT Dropping Existing Sequences from XXOM...
+PROMPT
+
+WHENEVER SQLERROR CONTINUE
+
+PROMPT
+PROMPT Dropping SEQUENCE XX_OM_OD_HOLD_ADD_INFO_S from XXOM Schema... 
+PROMPT
+
+DROP SEQUENCE XXOM.XX_OM_OD_HOLD_ADD_INFO_S ;
+
+PROMPT
+PROMPT Creating Custom Sequences......
+PROMPT
+
+WHENEVER SQLERROR CONTINUE
+
+PROMPT
+PROMPT Creating Sequence XX_OM_OD_HOLD_ADD_INFO_S in XXOM Schema...
+PROMPT
+
+CREATE SEQUENCE XXOM.XX_OM_OD_HOLD_ADD_INFO_S INCREMENT BY 1 START WITH 1 NOCYCLE NOCACHE NOORDER;
+
+WHENEVER SQLERROR CONTINUE
+
+PROMPT
+PROMPT Exiting....
+PROMPT
+
+SET FEEDBACK ON
+
+EXIT;
+

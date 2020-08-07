@@ -1,0 +1,250 @@
+<?xml version="1.0" encoding="WINDOWS-1252" ?>
+<dataTemplate name="XXARCBISUM_SPEC" description="SPECIAL HANDLING CONSOLIDATED BILLING-SUMMARIZE" Version="1.0">
+<parameters>
+ <parameter name="P_SUMM_BILL_NUM" dataType="character" />
+ <parameter name="P_SUMM_BILL_NUM_TO" dataType="character" />
+ <parameter name="P_CUST_ACCOUNT_ID" dataType="number" />
+ <parameter name="P_MBS_DOCUMENT_ID" dataType="number" />
+ <parameter name="P_MBS_EXTENSION_ID" dataType="number" />
+ <parameter name="P_SPEC_HANDLING_FLAG" dataType="character" />
+ <parameter name="P_SELECT_LIST" dataType="character" />
+ <parameter name="P_ORDER_LIST" dataType="character" />
+</parameters>
+<dataQuery>
+<sqlStatement name="Q_SUMMARIZE">
+<![CDATA[
+SELECT cbi.*
+      ,docs.billdocs_comments1||' ,'||docs.billdocs_comments2||' ,'||docs.billdocs_comments3||' ,'||docs.billdocs_comments4 comments
+      ,c.doc_sort_order  doc_desc
+FROM  apps.xx_ar_cbi_reprint_v cbi ,xx_cdh_a_ext_billdocs_v docs ,xx_cdh_mbs_document_master c
+WHERE cbi.billing_no BETWEEN NVL(:p_summ_bill_num, cbi.BILLING_NO) AND NVL(:p_summ_bill_num_to, cbi.billing_no)
+  AND cbi.customer_id =:p_cust_account_id
+  AND cbi.customer_id =docs.cust_account_id
+  AND docs.extension_id =:p_mbs_extension_id
+  AND docs.billdocs_doc_id =c.document_id
+ORDER BY cbi.customer_number
+]]>
+</sqlStatement>
+<sqlStatement name="Q_TAXES">
+<![CDATA[
+SELECT 
+       DECODE 
+        ( 
+         ARITS.TAX_CODE_NAME
+        ,'COUNTY'
+        ,DECODE
+         (
+          :CURRENCY
+         ,'CAD'
+          ,DECODE
+           (
+             :PROVINCE
+            ,'QC'
+            ,'QST'
+            ,'PST'           
+           )
+           ,'USD'
+           ,'USDPR'
+         )                           
+         ,'STATE'
+          ,DECODE
+           (
+             :CURRENCY
+            ,'CAD'
+            ,'GST'
+            ,'USDST'           
+           )
+         )   TAX_DESC
+      ,SUM(ARITS.TAX_AMOUNT) TAX_AMT
+FROM  AR_INVOICE_TAX_SUMMARY_V ARITS
+WHERE ARITS.CUSTOMER_TRX_ID 
+  =(
+    SELECT ARCITL.CUSTOMER_TRX_ID
+    FROM   AR_CONS_INV_TRX_LINES ARCITL
+    WHERE  ARCITL.CONS_INV_ID =:CONS_INV_ID
+      AND  ARCITL.CUSTOMER_TRX_ID =ARITS.CUSTOMER_TRX_ID
+    GROUP BY ARCITL.CUSTOMER_TRX_ID   
+   )
+AND ARITS.TAX_CODE_NAME !='CITY'
+GROUP BY ARITS.TAX_CODE_NAME
+]]>
+</sqlStatement>
+<sqlStatement name="Q_SUBTOTAL">
+<![CDATA[
+SELECT SUBTOT_DESC   SUBTOTAL1
+      ,SUBTOT_AMOUNT SUBTOTAL1_AMOUNT
+FROM   XX_AR_CBI_SORT
+WHERE  RPT_TYPE ='SPL-SUM'
+  AND  CUSTOMER_ID =:CUSTOMER_ID
+  AND  CONS_INV_ID =:CONS_INV_ID
+ORDER BY TRX_ID
+]]>
+</sqlStatement>
+<sqlStatement name="Q_CONS_INV_TOTALS"> 
+<![CDATA[ 
+SELECT 
+       SUM(DECODE(LINE_TYPE, 'LINE', NVL(AMOUNT, 0), 0)) LINE_AMOUNT
+      ,SUM(DECODE(LINE_TYPE, 'TAX',  NVL(AMOUNT, 0), 0)) TAX_AMOUNT
+      ,SUM(DECODE(LINE_TYPE, 'DISC', NVL(AMOUNT, 0), 0)) DISC_AMOUNT
+      ,SUM(NVL(AMOUNT,0))                                TOTAL_AMOUNT 
+      ,:CURRENCY                                         CIT_CURRENCY
+FROM (
+SELECT
+       'DISC'                                           LINE_TYPE
+      ,SUM(RACTL.EXTENDED_AMOUNT)                       AMOUNT
+FROM   
+       AR_CONS_INV_TRX       ARCIT 
+      ,AR_CONS_INV_TRX_LINES CONSINV_LINES
+      ,RA_CUSTOMER_TRX_LINES RACTL
+      ,OE_PRICE_ADJUSTMENTS  OEPA
+WHERE ARCIT.CONS_INV_ID                  = :CONS_INV_ID
+  AND CONSINV_LINES.CONS_INV_ID          = ARCIT.CONS_INV_ID
+  AND CONSINV_LINES.CONS_INV_LINE_NUMBER = ARCIT.CONS_INV_LINE_NUMBER
+  AND CONSINV_LINES.CUSTOMER_TRX_LINE_ID = RACTL.CUSTOMER_TRX_LINE_ID
+  AND CONSINV_LINES.CUSTOMER_TRX_ID      = RACTL.CUSTOMER_TRX_ID
+  AND RACTL.INTERFACE_LINE_ATTRIBUTE11   = OEPA.PRICE_ADJUSTMENT_ID
+  --AND OEPA.ATTRIBUTE8 IN ('TD', '21', '10')
+  AND ARCIT.TRANSACTION_TYPE IN 
+  (
+   'INVOICE'
+  ,'CREDIT_MEMO'
+  )
+UNION
+SELECT
+       RACTL.LINE_TYPE                                  LINE_TYPE
+      ,SUM(RACTL.EXTENDED_AMOUNT)                       LINE_TOT_AMT
+FROM   
+       AR_CONS_INV_TRX       ARCIT 
+      ,AR_CONS_INV_TRX_LINES CONSINV_LINES
+      ,RA_CUSTOMER_TRX_LINES RACTL
+WHERE ARCIT.CONS_INV_ID                  = :CONS_INV_ID
+  AND CONSINV_LINES.CONS_INV_ID          = ARCIT.CONS_INV_ID
+  AND CONSINV_LINES.CONS_INV_LINE_NUMBER = ARCIT.CONS_INV_LINE_NUMBER
+  AND CONSINV_LINES.CUSTOMER_TRX_LINE_ID = RACTL.CUSTOMER_TRX_LINE_ID
+  AND CONSINV_LINES.CUSTOMER_TRX_ID      = RACTL.CUSTOMER_TRX_ID
+  AND RACTL.LINE_TYPE = 'LINE'
+  AND ARCIT.TRANSACTION_TYPE IN 
+  (
+   'INVOICE'
+  ,'CREDIT_MEMO'
+  )
+  AND (CONSINV_LINES.CUSTOMER_TRX_ID ,CONSINV_LINES.CUSTOMER_TRX_LINE_ID) NOT IN
+  (
+     SELECT ARCITLI.CUSTOMER_TRX_ID
+           ,ARCITLI.CUSTOMER_TRX_LINE_ID
+     FROM   RA_CUSTOMER_TRX_LINES  RACTL
+           ,OE_PRICE_ADJUSTMENTS OEPA
+           ,AR_CONS_INV_TRX_LINES ARCITLI
+     WHERE  1 = 1
+     AND RACTL.INTERFACE_LINE_ATTRIBUTE11 = OEPA.PRICE_ADJUSTMENT_ID
+     --AND OEPA.ATTRIBUTE8 IN ('TD', '10', '21')
+     AND ARCITLI.CUSTOMER_TRX_LINE_ID = RACTL.CUSTOMER_TRX_LINE_ID
+     AND ARCITLI.CUSTOMER_TRX_ID = RACTL.CUSTOMER_TRX_ID
+     AND ARCIT.CONS_INV_ID = ARCIT.CONS_INV_ID
+  )  
+GROUP BY RACTL.LINE_TYPE
+UNION ALL
+SELECT
+       RACTL.LINE_TYPE                                  LINE_TYPE
+      ,SUM(RACTL.EXTENDED_AMOUNT)                       LINE_TOT_AMT
+FROM   
+       AR_CONS_INV_TRX       ARCIT 
+      ,AR_CONS_INV_TRX_LINES CONSINV_LINES
+      ,RA_CUSTOMER_TRX_LINES RACTL
+WHERE ARCIT.CONS_INV_ID                  = :CONS_INV_ID
+  AND CONSINV_LINES.CONS_INV_ID          = ARCIT.CONS_INV_ID
+  AND CONSINV_LINES.CONS_INV_LINE_NUMBER = ARCIT.CONS_INV_LINE_NUMBER
+--  AND CONSINV_LINES.CUSTOMER_TRX_LINE_ID = RACTL.CUSTOMER_TRX_LINE_ID
+  AND CONSINV_LINES.CUSTOMER_TRX_ID      = RACTL.CUSTOMER_TRX_ID
+  AND RACTL.LINE_TYPE = 'TAX'
+  AND ARCIT.TRANSACTION_TYPE IN 
+  (
+   'INVOICE'
+  ,'CREDIT_MEMO'
+  )
+GROUP BY RACTL.LINE_TYPE
+UNION ALL
+SELECT
+       'LINE'
+      ,SUM(ARCIT.AMOUNT_ORIGINAL)
+FROM   AR_CONS_INV_TRX       ARCIT 
+WHERE ARCIT.CONS_INV_ID =:CONS_INV_ID
+  AND ARCIT.TRANSACTION_TYPE ='ADJUSTMENT'
+UNION ALL
+SELECT
+       'TAX'
+      ,SUM(ARCIT.TAX_ORIGINAL)
+FROM   AR_CONS_INV_TRX       ARCIT 
+WHERE ARCIT.CONS_INV_ID =:CONS_INV_ID
+  AND ARCIT.TRANSACTION_TYPE ='ADJUSTMENT'
+)
+]]> 
+</sqlStatement>
+</dataQuery>
+<dataStructure>
+<group name="G_CUSTOMER_NUMBER" source="Q_SUMMARIZE">
+<element name="CUSTOMER_ID" value="CUSTOMER_NUMBER" />
+<element name="COMMENT" value="COMMENTS" />
+<element name="SORT_DESC" value="DOC_DESC" />
+<element name="ADDR1" value="ADDRESS1" />
+<element name="ADDR2" value="ADDRESS2" />
+<element name="CITYSTATEPOSTALCODE" value="CITY" />
+<element name="CONS_ID" value="CONS_INV_ID" />
+<element name="TAX_ID_DESC" value="TAX_ID_DESC" />
+<element name="TAX_ID" value="TAX_ID" />
+<element name="ACCOUNT_CONTACT" value="ACCOUNT_CONTACT" />
+<element name="ORDER_CONTACT" value="ORDER_CONTACT" />
+<element name="BILLING_NO" value="BILLING_NO" />
+<element name="BILLING_NO1" value="BILLING_NO" />
+<element name="ISSUE_DATE" value="ISSUE_DATE" />
+<element name="ISSUE_DATE1" value="ISSUE_DATE" />
+<element name="CUT_OFF_DATE" value="CUT_OFF_DATE" />
+<element name="DUE_DATE" value="DUE_DATE" />
+<element name="CUSTOMER_NAME" value="CUSTOMER_NAME" />
+<element name="CUSTOMER_NAME1" value="CUSTOMER_NAME" />
+<element name="ACCOUNT_NUMBER" value="ACCOUNT_NUMBER" />
+<element name="BILLING_ID" value="CUSTOMER_NUMBER" />
+<element name="BILLING_ID1" value="CUSTOMER_NUMBER" />
+<element name="ADDRESS1" value="ADDRESS1" />
+<element name="ADDRESS2" value="ADDRESS2" />
+<element name="CITY" value="CITY" />
+<element name="COUNTRY" value="COUNTRY" />
+<element name="PROVINCE" value="PROVINCE" />
+<element name="CURRENCY" value="CURRENCY" />
+<element name="RADDRESS1" value="RADDRESS1" />
+<element name="RADDRESS2" value="RADDRESS2" />
+<element name="RCITY" value="RCITY" />
+<element name="RCOUNTRY" value="RCOUNTRY" />
+<element name="CD_BEGINNING_BALANCE" value="CD_BEGINNING_BALANCE" />
+<element name="CD_ENDING_BALANCE" value="CD_ENDING_BALANCE" />
+<element name="CD_ENDING_BALANCE1" value="CD_ENDING_BALANCE" />
+<element name="CD_ENDING_BALANCE2" value="CD_ENDING_BALANCE" />
+<element name="CD_PERIOD_RECEIPTS" value="CD_PERIOD_RECEIPTS" />
+<element name="CD_PERIOD_TAX" value="CD_PERIOD_TAX" />
+<element name="CD_PERIOD_BILLED" value="CD_PERIOD_BILLED" />
+<group name="G_CANADIAN_TAXES" source="Q_TAXES">
+<element name="TAX_TYPE" value="TAX_DESC" />
+<element name="TAX_TYPE_TOTAL" value="TAX_AMT" />
+</group>
+<group name="G_SUBTOTALS" source="Q_SUBTOTAL">
+<element name="SUBTOTAL" value="SUBTOTAL1" />
+<element name="SUBTOTAL_AMOUNT" value="SUBTOTAL1_AMOUNT" />
+</group>
+<group name="G_CONS_INV_TOTALS" source="Q_CONS_INV_TOTALS"> 
+<element name="CIT_LINE_AMOUNT" value="LINE_AMOUNT" /> 
+<element name="CIT_TAX_AMOUNT" value="TAX_AMOUNT" /> 
+<element name="CIT_DISC_AMOUNT" value="DISC_AMOUNT" /> 
+<element name="CIT_TOTAL_AMOUNT" value="TOTAL_AMOUNT" /> 
+<element name="CIT_CURRENCY" value="CIT_CURRENCY" /> 
+</group>
+<element name="RADDRESS1C" value="RADDRESS1" />
+<element name="RADDRESS2C" value="RADDRESS2" />
+<element name="RCITYC" value="RCITY" />
+<element name="PRINT_INSTANCE" value="SPL_PRINT_INSTANCE" />
+<element name="PAYSTUB_UPPER_TEXT" value="PAYSTUB_UPPER_TEXT" />
+<element name="FLO_CODE" value="FLO_CODE" />
+<element name="BILLING_POSTAL_CODE" value="BILLING_POSTAL_CODE" />
+<element name="REMIT_POSTAL_CODE" value="REMIT_POSTAL_CODE" />
+</group>
+</dataStructure>
+</dataTemplate>

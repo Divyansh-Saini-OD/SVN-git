@@ -1,0 +1,37 @@
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     ON
+
+-- +===================================================================+
+-- |                  Office Depot - Project Simplify                  |
+-- |      Oracle NAIO/WIPRO/Office Depot/Consulting Organization       |
+-- +===================================================================+
+-- | Name  :  XXFIN_REMIT_ERRORSINST.tbl                               |
+-- |                                                                   |
+-- | Description : Script to create custom table XXFIN_REMIT_ERRORS.   |  
+-- |               This script is to be executed from the XXFIN Schema.|
+-- |                                                                   |
+-- |Change Record:                                                     |
+-- |===============                                                    |
+-- |                                                                   |
+-- |Version     Date        Author           Remarks                   |
+-- |=========   ==========  ==============   ==========================|
+-- |DRAFT 1.0   18-JAN-2007 Shivkumar Iyer   Custom table creation.    |
+-- | V1.1       19-NOV-2007 Nandini Bhimana    drop table statement    |
+-- |                          Boina         commented and Slash removed|
+-- |                                                                   |
+-- +===================================================================+
+
+--DROP TABLE  XXFIN.XXFIN_REMIT_ERRORS CASCADE CONSTRAINTS;
+
+CREATE TABLE XXFIN.XXFIN_REMIT_ERRORS
+   (
+   Trx_Number                 VARCHAR2(20)
+   ,Customer_Trx_id           NUMBER(15)
+   ,Error_Code                VARCHAR2(20)
+   ,Error_Msg                 VARCHAR2(100)
+   ,RmttoAdd_Updt_Flg         VARCHAR2(1)
+   );
+SHOW ERROR;

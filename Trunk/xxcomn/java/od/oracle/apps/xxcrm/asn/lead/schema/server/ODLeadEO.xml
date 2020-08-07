@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding='windows-1252'?>
+<!DOCTYPE Entity SYSTEM "jbo_03_01.dtd">
+
+
+<Entity
+   Name="ODLeadEO"
+   Extends="oracle.apps.asn.lead.schema.server.LeadEO"
+   DBObjectType="table"
+   DBObjectName="AS_SALES_LEADS"
+   AliasName="ODLeadEO"
+   BindingStyle="Oracle"
+   UseGlueCode="false"
+   CodeGenFlag="4"
+   RowClass="od.oracle.apps.xxcrm.asn.lead.schema.server.ODLeadEOImpl"
+   DefClass="oracle.apps.fnd.framework.server.OAEntityDefImpl"
+   CollClass="oracle.apps.fnd.framework.server.OAEntityCache" >
+   <DesignTime>
+      <Attr Name="_isCodegen" Value="true" />
+      <Attr Name="_version" Value="9.0.3.13.93" />
+      <AttrArray Name="_publishEvents">
+      </AttrArray>
+   </DesignTime>
+</Entity>

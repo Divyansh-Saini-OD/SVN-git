@@ -1,0 +1,27 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<BC4JConfig>
+   <AppModuleConfigBag>
+      <AppModuleConfig name="NewStoreSetupAMLocal">
+         <AppModuleJndiName>od.oracle.apps.xxmer.newstoresetup.server.NewStoreSetupAM</AppModuleJndiName>
+         <DeployPlatform>LOCAL</DeployPlatform>
+         <JDBCName>gsidev03</JDBCName>
+         <ApplicationName>od.oracle.apps.xxmer.newstoresetup.server.NewStoreSetupAM</ApplicationName>
+         <jbo.project>NewStoreSetup</jbo.project>
+      </AppModuleConfig>
+   </AppModuleConfigBag>
+   <ConnectionDefinition name="gsidev03">
+      <ENTRY name="JDBC_PORT" value="1544"/>
+      <ENTRY name="ConnectionType" value="JDBC"/>
+      <ENTRY name="HOSTNAME" value="choldbr18d.na.odcorp.net"/>
+      <ENTRY name="DeployPassword" value="true"/>
+      <ENTRY name="user" value="apps"/>
+      <ENTRY name="ConnectionName" value="gsidev03"/>
+      <ENTRY name="SID" value="gsidev03"/>
+      <ENTRY name="password">
+         <![CDATA[appsp2p]]>
+      </ENTRY>
+      <ENTRY name="JdbcDriver" value="oracle.jdbc.driver.OracleDriver"/>
+      <ENTRY name="ORACLE_JDBC_TYPE" value="thin"/>
+      <ENTRY name="DeployPassword" value="true"/>
+   </ConnectionDefinition>
+</BC4JConfig>

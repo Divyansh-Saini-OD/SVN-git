@@ -1,0 +1,27 @@
+SET VERIFY OFF;
+SET TERM ON
+PROMPT Creating Synonym XX_COM_ERROR_LOG
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+-- +=======================================================================+
+-- |               Office Depot - Project Simplify                         |
+-- |                       Oracle Consulting                               |
+-- +=======================================================================+
+-- | Name  :        XX_COM_ERROR_LOG                                       |
+-- | Description:   Table for common error handling routines               |
+-- |                                                                       |
+-- |                                                                       |
+-- |                                                                       |
+-- |Change Record:                                                         |
+-- |===============                                                        |
+-- |Version   Date        Author           Remarks                         |
+-- |=======   ==========  =============    ================================|
+-- |1.0       22-FEB-2007 A Sahay          Initial version                 |
+-- +=======================================================================+
+
+CREATE OR REPLACE SYNONYM  APPS.XX_COM_ERROR_LOG for XXCOMN.XX_COM_ERROR_LOG;
+
+SHOW ERRORS;
+
+EXIT;

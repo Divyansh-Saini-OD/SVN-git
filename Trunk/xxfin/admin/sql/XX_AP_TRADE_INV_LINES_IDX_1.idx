@@ -1,0 +1,48 @@
+-- +============================================================================================+
+-- |                        Office Depot - Project Simplify                                     |
+-- |                                                                                            |
+-- +============================================================================================+
+-- | Name         : XX_AP_TRADE_INV_LINES_IDX_1.idx                                             |
+-- | Rice Id      :                                                                             | 
+-- | Description  :                                                                             |  
+-- | Purpose      : Create Indexes for Table XX_AP_TRADE_INV_LINES.tbl on columns               |
+-- |                (record_status, source and invoice_line_id)                                 |
+-- |                                                                                            |
+-- |Change Record:                                                                              |
+-- |===============                                                                             |
+-- |Version    Date          Author                Remarks                                      | 
+-- |=======    ==========    =================    ==============================================+
+-- |DRAFT 1A   23-SEPT-2017   Havish Kasina        Initial Version                              |
+-- +============================================================================================+
+
+SET VERIFY      OFF
+SET TERM        ON
+SET FEEDBACK    OFF
+SET SHOW        OFF
+SET ECHO        OFF
+SET TAB         OFF
+
+PROMPT
+PROMPT Creation of Index on custom table.....
+PROMPT
+
+PROMPT
+PROMPT Creating non-unique index on INDEX XX_AP_TRADE_INV_LINES_N6 .....
+PROMPT
+CREATE INDEX XXFIN.XX_AP_TRADE_INV_LINES_N6 ON XXFIN.XX_AP_TRADE_INV_LINES(CREATION_DATE);
+
+PROMPT
+PROMPT Creating non-unique index on INDEX XX_AP_TRADE_INV_LINES_N7 .....
+PROMPT
+CREATE INDEX XXFIN.XX_AP_TRADE_INV_LINES_N7 ON XXFIN.XX_AP_TRADE_INV_LINES(AP_VENDOR);
+
+WHENEVER SQLERROR EXIT 1
+
+PROMPT
+PROMPT Exiting....
+PROMPT
+
+SET FEEDBACK ON
+
+EXIT;
+

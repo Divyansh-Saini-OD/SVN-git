@@ -1,0 +1,30 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<customization xmlns="http://xmlns.oracle.com/jrad" version="9.0.5.4.89_560" xml:lang="en-US" customizes="/oracle/apps/icx/por/req/webui/OneTimeLocationPG" developerMode="true" xmlns:oa="http://xmlns.oracle.com/oa" package="/oracle/apps/icx/por/req/webui/customizations/site/0">
+   <modifications>
+      <modify element="Attribute1" longTipRegion="" prompt="" tipMessageAppShortName="Inherit" tipMessageName="" tipType="none"/>
+      <modify element="EnterAnAddress" text="Enter an address and click &lt;b>Apply&lt;/b> when you are done."/>
+      <modify element="Attribute2" rendered="false"/>
+      <move element="Apply" after="Cancel"/>
+      <move element="Ok" after="Apply"/>
+      <move element="OneTimeSpacer" after="EnterAnAddress"/>
+      <move element="AddressLabeledFieldLayout" after="OneTimeSpacer"/>
+      <insert before="Attribute1">
+         <oa:formattedText id="FormatText" adminCustomizable="true" cellNoWrapFormat="true" dataType="VARCHAR2" initSortSeq="none" queryable="false" rendered="true" scope="." sortState="no" text="&lt;font size=&quot;3&quot; >&lt;b>Non-Office Depot address only&lt;/b>.&lt;/font>&lt;br>Do not use special characters such as &amp; in the address." totalValue="false" userCustomizable="false" xmlns:oa="http://xmlns.oracle.com/oa"/>
+      </insert>
+      <move element="Attribute2" after="Attribute1"/>
+      <move element="Attribute3" after="Attribute2"/>
+      <move element="Attribute4" after="Attribute3"/>
+      <move element="Attribute5" after="Attribute4"/>
+      <move element="Attribute6" after="Attribute5"/>
+      <move element="Attribute7" after="Attribute6"/>
+      <move element="Attribute8" after="Attribute7"/>
+      <move element="Attribute9" after="Attribute8"/>
+      <move element="Attribute10" after="Attribute9"/>
+      <move element="Attribute11" after="Attribute10"/>
+      <move element="Attribute12" after="Attribute11"/>
+      <move element="Attribute13" after="Attribute12"/>
+      <move element="Attribute14" after="Attribute13"/>
+      <move element="Attribute15" after="Attribute14"/>
+      <move element="PageButtonsRN" after="OneTimeLocationRN"/>
+   </modifications>
+</customization>

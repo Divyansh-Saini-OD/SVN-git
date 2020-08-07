@@ -1,0 +1,514 @@
+<?xml version = "1.0" encoding = "UTF-8" ?>
+<!--
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  Oracle JDeveloper BPEL Designer 
+  
+  Created: Thu May 24 18:19:04 IST 2007
+  Author:  gowri
+  Purpose: Empty BPEL Process
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+-->
+<process name="EFTAcknowledgement_Returns_Notify"
+         targetNamespace="http://xmlns.oracle.com/EFTAcknowledgement_Returns_Notify"
+         xmlns="http://schemas.xmlsoap.org/ws/2003/03/business-process/"
+         xmlns:bpws="http://schemas.xmlsoap.org/ws/2003/03/business-process/"
+         xmlns:xp20="http://www.oracle.com/XSL/Transform/java/oracle.tip.pc.services.functions.Xpath20"
+         xmlns:ns13="http://xmlns.oracle.com/BPELInvokeESP"
+         xmlns:ns4="http://xmlns.oracle.com/pcbpel/adapter/ftp/"
+         xmlns:ns7="ODError"
+         xmlns:ldap="http://schemas.oracle.com/xpath/extension/ldap"
+         xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+         xmlns:ns12="http://xmlns.oracle.com/TransactionData"
+         xmlns:ns5="http://xmlns.oracle.com/pcbpel/adapter/ftp/svcFilePut/"
+         xmlns:client="http://xmlns.oracle.com/EFTAcknowledgement_Returns_Notify"
+         xmlns:ns6="http://xmlns.oracle.com/ODErrorLogger"
+         xmlns:ora="http://schemas.oracle.com/xpath/extension"
+         xmlns:ns11="http://www.oracle.com/XSL/Transform/java/oracle.tip.esb.server.headers.ESBHeaderFunctions"
+         xmlns:ns9="http://xmlns.oracle.com/bpel/workflow/xpath"
+         xmlns:ns1="http://xmlns.oracle.com/pcbpel/adapter/ftp/svcFileGet/"
+         xmlns:ns3="http://xmlns.oracle.com/ias/pcbpel/NotificationService"
+         xmlns:ns14="http://www.oracle.com/XSL/Transform/java/oracle.tip.xref.xpath.XRefXPathFunctions"
+         xmlns:ns2="http://xmlns.oracle.com/pcbpel/adapter/opaque/"
+         xmlns:bpelx="http://schemas.oracle.com/bpel/extension"
+         xmlns:orcl="http://www.oracle.com/XSL/Transform/java/oracle.tip.pc.services.functions.ExtFunc"
+         xmlns:ns15="http://xmlns.oracle.com/pcbpel/adapter/ftp/FTPGetFile/"
+         xmlns:ns10="http://xmlns.oracle.com/bpel/services/IdentityService/xpath"
+         xmlns:ns8="http://xmlns.oracle.com/ODTransactionLogger">
+  <bpelx:exec import="java.util.*"/>
+  <bpelx:exec import="java.lang.*"/>
+  <bpelx:exec import="java.math.*"/>
+  <bpelx:exec import="com.collaxa.common.util.*"/>
+  <bpelx:exec import="java.io.*"/>
+  <!-- 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+      PARTNERLINKS                                                      
+      List of services participating in this BPEL process               
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  -->
+  <partnerLinks>
+    <partnerLink name="NotificationService"
+                 partnerRole="NotificationServiceProvider"
+                 partnerLinkType="ns3:NotificationServiceLink"/>
+    <partnerLink myRole="ODErrorLoggerRequester" name="PlODErrorLogger"
+                 partnerRole="ODErrorLoggerProvider"
+                 partnerLinkType="ns6:ODErrorLogger"/>
+    <partnerLink myRole="ODTransactionLoggerRequester"
+                 name="ODTransactionLogger"
+                 partnerRole="ODTransactionLoggerProvider"
+                 partnerLinkType="ns8:ODTransactionLogger"/>
+    <partnerLink myRole="Get_role" name="FTPGetFile"
+                 partnerLinkType="ns15:Get_plt"/>
+  </partnerLinks>
+  <!-- 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+      VARIABLES                                                        
+      List of messages and XML documents used within this BPEL process 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  -->
+  <variables>
+    <variable name="ReciveAckFileIn" messageType="ns15:Get_msg"/>
+    <variable name="AckFileContentOpaque" type="xsd:string"/>
+    <variable name="AckFileContentReadable" type="xsd:string"/>
+    <variable name="ReceiveAckFileHeaderIn"
+              messageType="ns4:InboundHeader_msg"/>
+    <variable name="AckFileName" type="xsd:string"/>
+    <variable name="Exception" messageType="bpelx:RuntimeFaultMessage"/>
+    <variable name="invkSelectionFailure_initiate"
+              messageType="ns6:ODErrorLoggerRequestMessage"/>
+    <variable name="invkRemoteFault_initiate"
+              messageType="ns6:ODErrorLoggerRequestMessage"/>
+    <variable name="invkBindingFault_initiate"
+              messageType="ns6:ODErrorLoggerRequestMessage"/>
+    <variable name="invkCatchAll_initiate"
+              messageType="ns6:ODErrorLoggerRequestMessage"/>
+    <variable name="ErrorMessageText" type="xsd:string"/>
+    <variable name="Email_Name" type="xsd:string"/>
+    <variable name="ProcessHeader" type="xsd:string"/>
+    <variable name="logTransactionInput"
+              messageType="ns8:ODTransactionLoggerRequestMessage"/>
+  </variables>
+  <faultHandlers>
+    <catchAll>
+      <sequence name="Sequence_5">
+        <assign name="asnCatchAll">
+          <copy>
+            <from expression="concat(&quot;Exception caught while processing batch file &quot;, bpws:getVariableData('AckFileName'), &quot;.&quot;)"/>
+            <to variable="ErrorMessageText"/>
+          </copy>
+          <copy>
+            <from expression="ora:getProcessId()"/>
+            <to variable="invkCatchAll_initiate" part="payload"
+                query="/ns7:ErrorData/ns7:ProcessInfo/ns7:BusinessProcessName"/>
+          </copy>
+          <copy>
+            <from expression="ora:getInstanceId()"/>
+            <to variable="invkCatchAll_initiate" part="payload"
+                query="/ns7:ErrorData/ns7:ProcessInfo/ns7:BusinessProcessId"/>
+          </copy>
+          <copy>
+            <from expression="ora:getDomainId()"/>
+            <to variable="invkCatchAll_initiate" part="payload"
+                query="/ns7:ErrorData/ns7:ProcessInfo/ns7:BusinessProcessDomain"/>
+          </copy>
+          <copy>
+            <from expression="ora:getProcessURL()"/>
+            <to variable="invkCatchAll_initiate" part="payload"
+                query="/ns7:ErrorData/ns7:ProcessInfo/ns7:SystemName"/>
+          </copy>
+          <copy>
+            <from expression="ora:getCurrentDateTime()"/>
+            <to variable="invkCatchAll_initiate" part="payload"
+                query="/ns7:ErrorData/ns7:ErrorDetails/ns7:ErrorDateTime"/>
+          </copy>
+          <copy>
+            <from expression="'Catch All on the Main Sequence for ACH Payment Process'"/>
+            <to variable="invkCatchAll_initiate" part="payload"
+                query="/ns7:ErrorData/ns7:ProcessInfo/ns7:BusinessProcessStep"/>
+          </copy>
+          <copy>
+            <from expression="ora:getFaultName()"/>
+            <to variable="invkCatchAll_initiate" part="payload"
+                query="/ns7:ErrorData/ns7:ErrorDetails/ns7:ErrorCode"/>
+          </copy>
+          <copy>
+            <from variable="ErrorMessageText"/>
+            <to variable="invkCatchAll_initiate" part="payload"
+                query="/ns7:ErrorData/ns7:ErrorDetails/ns7:ErrorDescription"/>
+          </copy>
+          <copy>
+            <from expression="ora:getFaultAsString()"/>
+            <to variable="invkCatchAll_initiate" part="payload"
+                query="/ns7:ErrorData/ns7:ErrorDetails/ns7:ErrorText"/>
+          </copy>
+          <copy>
+            <from expression="'system'"/>
+            <to variable="invkCatchAll_initiate" part="payload"
+                query="/ns7:ErrorData/ns7:ErrorDetails/ns7:ErrorType"/>
+          </copy>
+          <copy>
+            <from expression="'fatal'"/>
+            <to variable="invkCatchAll_initiate" part="payload"
+                query="/ns7:ErrorData/ns7:ErrorDetails/ns7:ErrorSeverity"/>
+          </copy>
+          <copy>
+            <from expression="ora:doc('${server_url}/xmllib/fin/GlobalParameters.xml','/GlobalParameters/FaultNotification/SendNotification')"/>
+            <to variable="invkCatchAll_initiate" part="payload"
+                query="/ns7:ErrorData/ns7:Notification/ns7:sendNotification"/>
+          </copy>
+        </assign>
+        <scope name="logTransactionErrorLogger">
+          <sequence name="Sequence_22">
+            <assign name="logTrnLoggerData">
+              <copy>
+                <from expression="'Error'"/>
+                <to variable="logTransactionInput" part="payload"
+                    query="/ns12:TransactionData/ns12:ProcessInfo/ns12:ProcessStatus"/>
+              </copy>
+            </assign>
+            <invoke name="invkTrnErrorLogger" partnerLink="ODTransactionLogger"
+                    portType="ns8:ODTransactionLogger" operation="initiate"
+                    inputVariable="logTransactionInput"/>
+          </sequence>
+        </scope>
+        <invoke name="invkCatchAll" partnerLink="PlODErrorLogger"
+                portType="ns6:ODErrorLogger" operation="initiate"
+                inputVariable="invkCatchAll_initiate"/>
+        <terminate name="TerminateProcess"/>
+      </sequence>
+    </catchAll>
+  </faultHandlers>
+  <!-- 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+     ORCHESTRATION LOGIC                                               
+     Set of activities coordinating the flow of messages across the    
+     services integrated within this business process                  
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  -->
+  <sequence name="main">
+    <receive name="rcvFileGet" partnerLink="FTPGetFile" portType="ns15:Get_ptt"
+             operation="Get" variable="ReciveAckFileIn" createInstance="yes"
+             bpelx:headerVariable="ReceiveAckFileHeaderIn"/>
+    <scope name="logTransactionStart">
+      <variables>
+        <variable name="xmlFragment" type="xsd:string"/>
+      </variables>
+      <sequence name="Sequence_6">
+        <assign name="copyTransactionData">
+          <copy>
+            <from expression="ora:getDomainId()"/>
+            <to variable="logTransactionInput" part="payload"
+                query="/ns12:TransactionData/ns12:ProcessInfo/ns12:Domain"/>
+          </copy>
+          <copy>
+            <from expression="ora:getProcessId()"/>
+            <to variable="logTransactionInput" part="payload"
+                query="/ns12:TransactionData/ns12:ProcessInfo/ns12:ProcessName"/>
+          </copy>
+          <copy>
+            <from expression="ora:getInstanceId()"/>
+            <to variable="logTransactionInput" part="payload"
+                query="/ns12:TransactionData/ns12:ProcessInfo/ns12:InstanceId"/>
+          </copy>
+          <copy>
+            <from expression="'Start'"/>
+            <to variable="logTransactionInput" part="payload"
+                query="/ns12:TransactionData/ns12:ProcessInfo/ns12:ProcessStatus"/>
+          </copy>
+          <copy>
+            <from expression="'FTP'"/>
+            <to variable="logTransactionInput" part="payload"
+                query="/ns12:TransactionData/ns12:MessageDetails/ns12:MessageOperation"/>
+          </copy>
+          <copy>
+            <from expression="'AS2 Transmission - Web Methods'"/>
+            <to variable="logTransactionInput" part="payload"
+                query="/ns12:TransactionData/ns12:MessageDetails/ns12:MessageSourceSystemComponent"/>
+          </copy>
+          <copy>
+            <from expression="'Opaque'"/>
+            <to variable="logTransactionInput" part="payload"
+                query="/ns12:TransactionData/ns12:MessageDetails/ns12:MessageType"/>
+          </copy>
+          <copy>
+            <from>
+              <EntiltyList xmlns="http://xmlns.oracle.com/TransactionData">
+                <EntityID EntityType="SourceFileName"/>
+              </EntiltyList>
+            </from>
+            <to variable="logTransactionInput" part="payload"
+                query="/ns12:TransactionData/ns12:EntiltyList"/>
+          </copy>
+          <copy>
+            <from expression="concat('&lt;EntityID EntityType=&quot;SourceFileName&quot;>', bpws:getVariableData('ReceiveAckFileHeaderIn','inboundHeader','/ns4:InboundFTPHeaderType/ns4:fileName'), '&lt;/EntityID>')"/>
+            <to variable="xmlFragment"/>
+          </copy>
+          <copy>
+            <from expression="ora:parseEscapedXML(bpws:getVariableData('xmlFragment'))"/>
+            <to variable="logTransactionInput" part="payload"
+                query="/ns12:TransactionData/ns12:EntiltyList/ns12:EntityID[1]"/>
+          </copy>
+          <copy>
+            <from expression="ora:getCurrentDateTime()"/>
+            <to variable="logTransactionInput" part="payload"
+                query="/ns12:TransactionData/ns12:ProcessInfo/ns12:transactionStartTime"/>
+          </copy>
+          <copy>
+            <from expression="'I1214_EFT_Acknowledgement_Returns_from_Banks EBS AP Inbound'"/>
+            <to variable="logTransactionInput" part="payload"
+                query="/ns12:TransactionData/ns12:ProcessInfo/ns12:SystemName"/>
+          </copy>
+          <copy>
+            <from expression="'Banks'"/>
+            <to variable="logTransactionInput" part="payload"
+                query="/ns12:TransactionData/ns12:ProcessInfo/ns12:TradingPartnerDetails/ns12:TPFrom"/>
+          </copy>
+          <copy>
+            <from expression="'Email Notification'"/>
+            <to variable="logTransactionInput" part="payload"
+                query="/ns12:TransactionData/ns12:ProcessInfo/ns12:TradingPartnerDetails/ns12:TPTo"/>
+          </copy>
+          <copy>
+            <from expression="'Banks'"/>
+            <to variable="logTransactionInput" part="payload"
+                query="/ns12:TransactionData/ns12:MessageDetails/ns12:MessageSourceSystem"/>
+          </copy>
+          <copy>
+            <from expression="ora:getCurrentDateTime()"/>
+            <to variable="logTransactionInput" part="payload"
+                query="/ns12:TransactionData/ns12:MessageDetails/ns12:MessageDateTime"/>
+          </copy>
+        </assign>
+        <invoke name="logTransaction" partnerLink="ODTransactionLogger"
+                portType="ns8:ODTransactionLogger" operation="initiate"
+                inputVariable="logTransactionInput"/>
+      </sequence>
+    </scope>
+    <scope name="setProcessHeader">
+      <sequence name="Sequence_20">
+        <assign name="initializeInstanceTitle">
+          <copy>
+            <from expression="substring( concat( &quot;Processing: &quot;, bpws:getVariableData('ReceiveAckFileHeaderIn','inboundHeader','/ns4:InboundFTPHeaderType/ns4:fileName')),1,50)"/>
+            <to variable="ProcessHeader"/>
+          </copy>
+        </assign>
+        <bpelx:exec name="setTitle" language="java" version="1.5">
+          <![CDATA[try {             
+  String title = (String)getVariableData("ProcessHeader");             
+  setTitle(title);             
+  addAuditTrailEntry(title) ;             
+} catch (Exception ex) {             
+  addAuditTrailEntry(ex.toString());             
+  ex.printStackTrace();             
+}]]>
+        </bpelx:exec>
+      </sequence>
+    </scope>
+    <assign name="asnReceivedFileContent">
+      <copy>
+        <from variable="ReciveAckFileIn" part="opaque"
+              query="/ns2:opaqueElement"/>
+        <to variable="AckFileContentOpaque"/>
+      </copy>
+      <copy>
+        <from variable="ReceiveAckFileHeaderIn" part="inboundHeader"
+              query="/ns4:InboundFTPHeaderType/ns4:fileName"/>
+        <to variable="AckFileName"/>
+      </copy>
+      <copy>
+        <from expression='ora:doc("${server_url}/xmllib/fin/GlobalParameters.xml","/GlobalParameters/EFTAcknowledgement_Returns_Notify/EmailAddress")'/>
+        <to variable="Email_Name"/>
+      </copy>
+    </assign>
+    <bpelx:exec name="javaemb_Transfer_Opaque_Readable" language="java"
+                version="1.5">
+      <![CDATA[/* Converting the Opaque File Content to Readable File Content */       
+       
+String input = (String)getVariableData("AckFileContentOpaque");  
+if (input.length() != 0){ 
+Base64Decoder Decoder = new Base64Decoder();             
+            
+try         
+{         
+    String decoded = Base64Decoder.decode(input);                
+    setVariableData("AckFileContentReadable",decoded);         
+}         
+       
+catch(UnsupportedEncodingException uee)        
+{         
+uee.printStackTrace();         
+} 
+} else { 
+    setVariableData("AckFileContentReadable","");   
+}]]>
+    </bpelx:exec>
+    <scope name="Email_1">
+      <bpelx:annotation>
+        <bpelx:pattern patternName="bpelx:email"></bpelx:pattern>
+      </bpelx:annotation>
+      <variables>
+        <variable name="varNotificationReq"
+                  messageType="ns3:EmailNotificationRequest"/>
+        <variable name="varNotificationResponse"
+                  messageType="ns3:ArrayOfResponse"/>
+        <variable name="NotificationServiceFaultVariable"
+                  messageType="ns3:NotificationServiceErrorMessage"/>
+      </variables>
+      <sequence name="Sequence_1">
+        <assign name="EmailParamsAssign">
+          <copy>
+            <from expression="string('SOAEmailNotify')"/>
+            <to variable="varNotificationReq" part="EmailPayload"
+                query="/EmailPayload/ns3:FromAccountName"/>
+          </copy>
+          <copy>
+            <from expression="string('')"/>
+            <to variable="varNotificationReq" part="EmailPayload"
+                query="/EmailPayload/ns3:Bcc"/>
+          </copy>
+          <copy>
+            <from expression="string('')"/>
+            <to variable="varNotificationReq" part="EmailPayload"
+                query="/EmailPayload/ns3:Cc"/>
+          </copy>
+          <copy>
+            <from expression="string('')"/>
+            <to variable="varNotificationReq" part="EmailPayload"
+                query="/EmailPayload/ns3:ReplyToAddress"/>
+          </copy>
+          <copy>
+            <from expression="string('Acknowledge Returns from Bank Of America(BOA)')"/>
+            <to variable="varNotificationReq" part="EmailPayload"
+                query="/EmailPayload/ns3:Subject"/>
+          </copy>
+          <copy>
+            <from expression="bpws:getVariableData('Email_Name')"/>
+            <to variable="varNotificationReq" part="EmailPayload"
+                query="/EmailPayload/ns3:To"/>
+          </copy>
+          <copy>
+            <from>
+              <Content xmlns="http://xmlns.oracle.com/ias/pcbpel/NotificationService">
+                <MimeType xmlns="http://xmlns.oracle.com/ias/pcbpel/NotificationService">multipart/mixed</MimeType>
+                <ContentBody xmlns="http://xmlns.oracle.com/ias/pcbpel/NotificationService">
+                  <MultiPart xmlns="http://xmlns.oracle.com/ias/pcbpel/NotificationService">
+                    <BodyPart xmlns="http://xmlns.oracle.com/ias/pcbpel/NotificationService">
+                      <MimeType xmlns="http://xmlns.oracle.com/ias/pcbpel/NotificationService"/>
+                      <ContentBody xmlns="http://xmlns.oracle.com/ias/pcbpel/NotificationService"/>
+                      <BodyPartName xmlns="http://xmlns.oracle.com/ias/pcbpel/NotificationService"/>
+                    </BodyPart>
+                    <BodyPart xmlns="http://xmlns.oracle.com/ias/pcbpel/NotificationService">
+                      <MimeType xmlns="http://xmlns.oracle.com/ias/pcbpel/NotificationService"/>
+                      <ContentBody xmlns="http://xmlns.oracle.com/ias/pcbpel/NotificationService"/>
+                      <BodyPartName xmlns="http://xmlns.oracle.com/ias/pcbpel/NotificationService"/>
+                    </BodyPart>
+                  </MultiPart>
+                </ContentBody>
+              </Content>
+            </from>
+            <to variable="varNotificationReq" part="EmailPayload"
+                query="/EmailPayload/ns3:Content"/>
+          </copy>
+          <copy>
+            <from expression="string('text/html; charset=UTF-8')"/>
+            <to variable="varNotificationReq" part="EmailPayload"
+                query="/EmailPayload/ns3:Content/ns3:ContentBody/ns3:MultiPart/ns3:BodyPart[1]/ns3:MimeType"/>
+          </copy>
+          <!-- 
+          <copy>
+            <from expression="string('MessageBody.html')"/>
+            <to variable="varNotificationReq" part="EmailPayload"
+                query="/EmailPayload/ns3:Content/ns3:ContentBody/ns3:MultiPart/ns3:BodyPart[1]/ns3:BodyPartName"/>
+          </copy>
+   -->
+          <copy>
+            <from expression="string('Please find Attached the Acknowledge file from Bank of America.')"/>
+            <to variable="varNotificationReq" part="EmailPayload"
+                query="/EmailPayload/ns3:Content/ns3:ContentBody/ns3:MultiPart/ns3:BodyPart[1]/ns3:ContentBody"/>
+          </copy>
+          <copy>
+            <from expression="string('text/html; charset=UTF-8')"/>
+            <to variable="varNotificationReq" part="EmailPayload"
+                query="/EmailPayload/ns3:Content/ns3:ContentBody/ns3:MultiPart/ns3:BodyPart[2]/ns3:MimeType"/>
+          </copy>
+          <copy>
+            <from expression="bpws:getVariableData('AckFileName')"/>
+            <to variable="varNotificationReq" part="EmailPayload"
+                query="/EmailPayload/ns3:Content/ns3:ContentBody/ns3:MultiPart/ns3:BodyPart[2]/ns3:BodyPartName"/>
+          </copy>
+          <copy>
+            <from expression="bpws:getVariableData('AckFileContentReadable')"/>
+            <to variable="varNotificationReq" part="EmailPayload"
+                query="/EmailPayload/ns3:Content/ns3:ContentBody/ns3:MultiPart/ns3:BodyPart[2]/ns3:ContentBody"/>
+          </copy>
+        </assign>
+        <invoke name="InvokeNotificationService"
+                partnerLink="NotificationService"
+                portType="ns3:NotificationService"
+                operation="sendEmailNotification"
+                inputVariable="varNotificationReq"
+                outputVariable="varNotificationResponse"/>
+      </sequence>
+    </scope>
+    <scope name="logTransactionEnd">
+      <variables>
+        <variable name="xmlFragment" type="xsd:string"/>
+      </variables>
+      <sequence name="Sequence_21">
+        <assign name="logTransactionEndData">
+          <copy>
+            <from expression="'Success'"/>
+            <to variable="logTransactionInput" part="payload"
+                query="/ns12:TransactionData/ns12:ProcessInfo/ns12:ProcessStatus"/>
+          </copy>
+          <copy>
+            <from expression="ora:getCurrentDateTime()"/>
+            <to variable="logTransactionInput" part="payload"
+                query="/ns12:TransactionData/ns12:ProcessInfo/ns12:transactionEndTime"/>
+          </copy>
+          <copy>
+            <from>
+              <EntiltyList xmlns="http://xmlns.oracle.com/TransactionData">
+                <EntityID EntityType="SourceFileName"/>
+                <EntityID EntityType="EmailAddress"/>
+                <EntityID EntityType="ReleaseESPJob"/>
+              </EntiltyList>
+            </from>
+            <to variable="logTransactionInput" part="payload"
+                query="/ns12:TransactionData/ns12:EntiltyList"/>
+          </copy>
+          <copy>
+            <from expression="concat('&lt;EntityID EntityType=&quot;SourceFileName&quot;>', bpws:getVariableData('ReceiveAckFileHeaderIn','inboundHeader','/ns4:InboundFTPHeaderType/ns4:fileName'), '&lt;/EntityID>')"/>
+            <to variable="xmlFragment"/>
+          </copy>
+          <copy>
+            <from expression="ora:parseEscapedXML(bpws:getVariableData('xmlFragment'))"/>
+            <to variable="logTransactionInput" part="payload"
+                query="/ns12:TransactionData/ns12:EntiltyList/ns12:EntityID[1]"/>
+          </copy>
+          <copy>
+            <from expression="concat('&lt;EntityID EntityType=&quot;EmailAddress&quot;>', bpws:getVariableData('Email_Name'), '&lt;/EntityID>')"/>
+            <to variable="xmlFragment"/>
+          </copy>
+          <copy>
+            <from expression="ora:parseEscapedXML(bpws:getVariableData('xmlFragment'))"/>
+            <to variable="logTransactionInput" part="payload"
+                query="/ns12:TransactionData/ns12:EntiltyList/ns12:EntityID[2]"/>
+          </copy>
+          <copy>
+            <from expression="concat('&lt;EntityID EntityType=&quot;ReleaseESPJob&quot;>', 'No', '&lt;/EntityID>')"/>
+            <to variable="xmlFragment"/>
+          </copy>
+          <copy>
+            <from expression="ora:parseEscapedXML(bpws:getVariableData('xmlFragment'))"/>
+            <to variable="logTransactionInput" part="payload"
+                query="/ns12:TransactionData/ns12:EntiltyList/ns12:EntityID[3]"/>
+          </copy>
+        </assign>
+        <invoke name="invkLogTransactionEndData"
+                partnerLink="ODTransactionLogger"
+                portType="ns8:ODTransactionLogger" operation="initiate"
+                inputVariable="logTransactionInput"/>
+      </sequence>
+    </scope>
+  </sequence>
+</process>

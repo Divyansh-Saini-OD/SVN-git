@@ -1,0 +1,20 @@
+-- +============================================================================================+
+-- |                  Office Depot - Project Simplify                                           |
+-- +============================================================================================+
+-- | Name        : ALTER_XX_CS_MPS_DEVICE_B_STG.tbl                                                 |
+-- |                                                                                            |
+-- |                                                                                            |
+-- |Change Record:                                                                              |
+-- |===============                                                                             |
+-- |Version     Date           Author               Remarks                                     |
+-- |=======    ==========      ================     ============================================|
+-- |1.0        20-JUN-2014     Arun Gannarapu        Initial version                            |
+-- +============================================================================================+
+
+Alter table xxom.xx_cs_mps_device_b_stg add(CYAN_TONER_LEVEL VARCHAR2(20));
+
+Alter table xxom.xx_cs_mps_device_b_stg add(MAGENTA_TONER_LEVEL VARCHAR2(20));
+
+Alter table xxom.xx_cs_mps_device_b_stg add(YELLOW_TONER_LEVEL VARCHAR2(20));
+
+SHOW ERRORS;

@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding='windows-1252'?>
+<!DOCTYPE ViewObject SYSTEM "jbo_03_01.dtd">
+
+<ViewObject
+   Name="ODAcctSetupDocTotalsShuttleVO"
+   BindingStyle="Oracle"
+   CustomQuery="true"
+   RowClass="od.oracle.apps.xxcrm.customer.account.poplist.server.ODAcctSetupDocTotalsShuttleVORowImpl"
+   ComponentClass="od.oracle.apps.xxcrm.customer.account.poplist.server.ODAcctSetupDocTotalsShuttleVOImpl"
+   MsgBundleClass="oracle.jbo.common.JboResourceBundle"
+   UseGlueCode="false" >
+   <SQLQuery><![CDATA[
+SELECT LKP.lookup_code, LKP.lookup_code || ' = ' ||LKP.meaning meaning 
+FROM fnd_lookups LKP, XX_CDH_ACCT_SETUP_DOC_PROPERTY PROPERTY
+WHERE  PROPERTY.PROPERTY_VALUE=LKP.lookup_code
+AND LKP.lookup_type='XXOD_ASN_ACCT_SETUP_DOC_SORTS'
+AND PROPERTY.PROPERTY_TYPE='TOTALS'
+AND PROPERTY.DOCUMENT_ID=:1
+   ]]></SQLQuery>
+   <DesignTime>
+      <Attr Name="_isCodegen" Value="true" />
+      <Attr Name="_version" Value="9.0.3.13.93" />
+      <Attr Name="_CodeGenFlagNew" Value="36" />
+   </DesignTime>
+   <ViewAttribute
+      Name="LookupCode"
+      IsPersistent="false"
+      IsNotNull="true"
+      Precision="30"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="LOOKUP_CODE"
+      Expression="LOOKUP_CODE"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="30" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Meaning"
+      IsPersistent="false"
+      Precision="113"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="MEANING"
+      Expression="MEANING"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="113" />
+      </DesignTime>
+   </ViewAttribute>
+</ViewObject>

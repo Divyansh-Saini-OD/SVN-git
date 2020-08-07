@@ -1,0 +1,26 @@
+-- +==========================================================================+
+-- |                  Office Depot - Project Simplify                         |
+-- +==========================================================================+
+-- | Name :XXFIN.XX_RA_INT_LINES_ALL                                          |
+-- | Description : Alter table XXFIN.XX_RA_INT_LINES_ALL to include           |
+-- |               TAX_REGIME_CODE,TAX ,TAX_STATUS_CODE, TAX_RATE_CODE        |
+-- |               for R12 Retrofit Changes                                   |
+-- |                                                                          |
+-- |                                                                          |
+-- |                                                                          |
+-- |Change Record:                                                            |
+-- |===============                                                           |
+-- |Version   Date         Author               Remarks                       |
+-- |=======   ==========   =============        ==============================|
+-- | 1.0      23-JUL-2013  Manasa D            E0080 - Initial version        |
+-- |                                           Tax columns added.             |
+-- |==========================================================================|
+  
+ALTER TABLE XXFIN.XX_RA_INT_LINES_ALL 
+ADD
+( TAX_REGIME_CODE    VARCHAR2(30),
+  TAX                VARCHAR2(30), 
+  TAX_STATUS_CODE    VARCHAR2(30), 
+  TAX_RATE_CODE      VARCHAR2(30) 
+);
+SHOW ERRORS;

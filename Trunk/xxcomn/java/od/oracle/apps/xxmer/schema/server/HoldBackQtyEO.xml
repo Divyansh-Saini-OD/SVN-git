@@ -1,0 +1,318 @@
+<?xml version="1.0" encoding='windows-1252'?>
+<!DOCTYPE Entity SYSTEM "jbo_03_01.dtd">
+
+<Entity
+   Name="HoldBackQtyEO"
+   DBObjectType="table"
+   DBObjectName="XXMER.OD_HOLD_BACK_QUANTITY"
+   AliasName="HoldBackQtyEO"
+   BindingStyle="Oracle"
+   UseGlueCode="false"
+   CodeGenFlag="71"
+   RowClass="od.oracle.apps.xxmer.schema.server.HoldBackQtyEOImpl"
+   DefClass="oracle.apps.fnd.framework.server.OAEntityDefImpl"
+   CollClass="oracle.apps.fnd.framework.server.OAEntityCache" >
+   <DesignTime>
+      <Attr Name="_isCodegen" Value="true" />
+      <Attr Name="_version" Value="9.0.3.13.75" />
+      <AttrArray Name="_publishEvents">
+      </AttrArray>
+   </DesignTime>
+   <Attribute
+      Name="Item"
+      IsNotNull="true"
+      Precision="8"
+      Type="java.lang.String"
+      ColumnName="ITEM"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XXMER.OD_HOLD_BACK_QUANTITY"
+      PrimaryKey="true" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="8" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="WarehouseLocation"
+      IsNotNull="true"
+      Precision="4"
+      Type="java.lang.String"
+      ColumnName="WAREHOUSE_LOCATION"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XXMER.OD_HOLD_BACK_QUANTITY"
+      PrimaryKey="true" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="4" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="HoldQuantity"
+      IsNotNull="true"
+      Precision="8"
+      Scale="0"
+      Type="oracle.jbo.domain.Number"
+      ColumnName="HOLD_QUANTITY"
+      ColumnType="NUMBER"
+      SQLType="NUMERIC"
+      TableName="XXMER.OD_HOLD_BACK_QUANTITY" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="QuantityOnHand"
+      IsNotNull="true"
+      Precision="8"
+      Scale="0"
+      Type="oracle.jbo.domain.Number"
+      ColumnName="QUANTITY_ON_HAND"
+      ColumnType="NUMBER"
+      SQLType="NUMERIC"
+      TableName="XXMER.OD_HOLD_BACK_QUANTITY" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="StartDate"
+      IsNotNull="true"
+      Type="oracle.jbo.domain.Date"
+      ColumnName="START_DATE"
+      ColumnType="TIMESTAMP"
+      SQLType="TIMESTAMP"
+      TableName="XXMER.OD_HOLD_BACK_QUANTITY" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="11" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="EndDate"
+      IsNotNull="true"
+      Type="oracle.jbo.domain.Date"
+      ColumnName="END_DATE"
+      ColumnType="TIMESTAMP"
+      SQLType="TIMESTAMP"
+      TableName="XXMER.OD_HOLD_BACK_QUANTITY" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="11" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="ItemType"
+      IsNotNull="true"
+      Precision="2"
+      Type="java.lang.String"
+      ColumnName="ITEM_TYPE"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XXMER.OD_HOLD_BACK_QUANTITY" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="2" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="LastUpdateDate"
+      IsNotNull="true"
+      Type="oracle.jbo.domain.Date"
+      ColumnName="LAST_UPDATE_DATE"
+      ColumnType="DATE"
+      SQLType="TIMESTAMP"
+      TableName="XXMER.OD_HOLD_BACK_QUANTITY" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="7" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="LastUpdatedBy"
+      IsNotNull="true"
+      Type="oracle.jbo.domain.Number"
+      ColumnName="LAST_UPDATED_BY"
+      ColumnType="NUMBER"
+      SQLType="NUMERIC"
+      TableName="XXMER.OD_HOLD_BACK_QUANTITY" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="CreationDate"
+      IsNotNull="true"
+      Type="oracle.jbo.domain.Date"
+      ColumnName="CREATION_DATE"
+      ColumnType="DATE"
+      SQLType="TIMESTAMP"
+      TableName="XXMER.OD_HOLD_BACK_QUANTITY" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="7" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="CreatedBy"
+      IsNotNull="true"
+      Type="oracle.jbo.domain.Number"
+      ColumnName="CREATED_BY"
+      ColumnType="NUMBER"
+      SQLType="NUMERIC"
+      TableName="XXMER.OD_HOLD_BACK_QUANTITY" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="LastUpdateLogin"
+      Type="oracle.jbo.domain.Number"
+      ColumnName="LAST_UPDATE_LOGIN"
+      ColumnType="NUMBER"
+      SQLType="NUMERIC"
+      TableName="XXMER.OD_HOLD_BACK_QUANTITY" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </Attribute>
+   <Key
+      Name="SysC00254497" >
+      <AttrArray Name="Attributes">
+         <Item Value="od.oracle.apps.xxmer.schema.server.HoldBackQtyEO.StartDate" />
+      </AttrArray>
+      <DesignTime>
+         <Attr Name="_DBObjectName" Value="SYS_C00254497" />
+         <Attr Name="_checkCondition" Value="&#34;START_DATE&#34; IS NOT NULL" />
+         <Attr Name="_isCheck" Value="true" />
+      </DesignTime>
+   </Key>
+   <Key
+      Name="SysC00254503" >
+      <AttrArray Name="Attributes">
+         <Item Value="od.oracle.apps.xxmer.schema.server.HoldBackQtyEO.CreatedBy" />
+      </AttrArray>
+      <DesignTime>
+         <Attr Name="_DBObjectName" Value="SYS_C00254503" />
+         <Attr Name="_checkCondition" Value="&#34;CREATED_BY&#34; IS NOT NULL" />
+         <Attr Name="_isCheck" Value="true" />
+      </DesignTime>
+   </Key>
+   <Key
+      Name="SysC00254493" >
+      <AttrArray Name="Attributes">
+         <Item Value="od.oracle.apps.xxmer.schema.server.HoldBackQtyEO.Item" />
+      </AttrArray>
+      <DesignTime>
+         <Attr Name="_DBObjectName" Value="SYS_C00254493" />
+         <Attr Name="_checkCondition" Value="&#34;ITEM&#34; IS NOT NULL" />
+         <Attr Name="_isCheck" Value="true" />
+      </DesignTime>
+   </Key>
+   <Key
+      Name="SysC00254500" >
+      <AttrArray Name="Attributes">
+         <Item Value="od.oracle.apps.xxmer.schema.server.HoldBackQtyEO.LastUpdateDate" />
+      </AttrArray>
+      <DesignTime>
+         <Attr Name="_DBObjectName" Value="SYS_C00254500" />
+         <Attr Name="_checkCondition" Value="&#34;LAST_UPDATE_DATE&#34; IS NOT NULL" />
+         <Attr Name="_isCheck" Value="true" />
+      </DesignTime>
+   </Key>
+   <Key
+      Name="SysC00254496" >
+      <AttrArray Name="Attributes">
+         <Item Value="od.oracle.apps.xxmer.schema.server.HoldBackQtyEO.QuantityOnHand" />
+      </AttrArray>
+      <DesignTime>
+         <Attr Name="_DBObjectName" Value="SYS_C00254496" />
+         <Attr Name="_checkCondition" Value="&#34;QUANTITY_ON_HAND&#34; IS NOT NULL" />
+         <Attr Name="_isCheck" Value="true" />
+      </DesignTime>
+   </Key>
+   <Key
+      Name="SysC00254495" >
+      <AttrArray Name="Attributes">
+         <Item Value="od.oracle.apps.xxmer.schema.server.HoldBackQtyEO.HoldQuantity" />
+      </AttrArray>
+      <DesignTime>
+         <Attr Name="_DBObjectName" Value="SYS_C00254495" />
+         <Attr Name="_checkCondition" Value="&#34;HOLD_QUANTITY&#34; IS NOT NULL" />
+         <Attr Name="_isCheck" Value="true" />
+      </DesignTime>
+   </Key>
+   <Key
+      Name="PkOdHoldBackQuantity" >
+      <AttrArray Name="Attributes">
+         <Item Value="od.oracle.apps.xxmer.schema.server.HoldBackQtyEO.Item" />
+         <Item Value="od.oracle.apps.xxmer.schema.server.HoldBackQtyEO.WarehouseLocation" />
+      </AttrArray>
+      <DesignTime>
+         <Attr Name="_DBObjectName" Value="PK_OD_HOLD_BACK_QUANTITY" />
+         <Attr Name="_isPrimary" Value="true" />
+      </DesignTime>
+   </Key>
+   <Key
+      Name="SysC00254502" >
+      <AttrArray Name="Attributes">
+         <Item Value="od.oracle.apps.xxmer.schema.server.HoldBackQtyEO.CreationDate" />
+      </AttrArray>
+      <DesignTime>
+         <Attr Name="_DBObjectName" Value="SYS_C00254502" />
+         <Attr Name="_checkCondition" Value="&#34;CREATION_DATE&#34; IS NOT NULL" />
+         <Attr Name="_isCheck" Value="true" />
+      </DesignTime>
+   </Key>
+   <Key
+      Name="SysC00254498" >
+      <AttrArray Name="Attributes">
+         <Item Value="od.oracle.apps.xxmer.schema.server.HoldBackQtyEO.EndDate" />
+      </AttrArray>
+      <DesignTime>
+         <Attr Name="_DBObjectName" Value="SYS_C00254498" />
+         <Attr Name="_checkCondition" Value="&#34;END_DATE&#34; IS NOT NULL" />
+         <Attr Name="_isCheck" Value="true" />
+      </DesignTime>
+   </Key>
+   <Key
+      Name="SysC00254501" >
+      <AttrArray Name="Attributes">
+         <Item Value="od.oracle.apps.xxmer.schema.server.HoldBackQtyEO.LastUpdatedBy" />
+      </AttrArray>
+      <DesignTime>
+         <Attr Name="_DBObjectName" Value="SYS_C00254501" />
+         <Attr Name="_checkCondition" Value="&#34;LAST_UPDATED_BY&#34; IS NOT NULL" />
+         <Attr Name="_isCheck" Value="true" />
+      </DesignTime>
+   </Key>
+   <Key
+      Name="SysC00254494" >
+      <AttrArray Name="Attributes">
+         <Item Value="od.oracle.apps.xxmer.schema.server.HoldBackQtyEO.WarehouseLocation" />
+      </AttrArray>
+      <DesignTime>
+         <Attr Name="_DBObjectName" Value="SYS_C00254494" />
+         <Attr Name="_checkCondition" Value="&#34;WAREHOUSE_LOCATION&#34; IS NOT NULL" />
+         <Attr Name="_isCheck" Value="true" />
+      </DesignTime>
+   </Key>
+   <Key
+      Name="SysC00254499" >
+      <AttrArray Name="Attributes">
+         <Item Value="od.oracle.apps.xxmer.schema.server.HoldBackQtyEO.ItemType" />
+      </AttrArray>
+      <DesignTime>
+         <Attr Name="_DBObjectName" Value="SYS_C00254499" />
+         <Attr Name="_checkCondition" Value="&#34;ITEM_TYPE&#34; IS NOT NULL" />
+         <Attr Name="_isCheck" Value="true" />
+      </DesignTime>
+   </Key>
+   <Key
+      Name="FkOdHoldBackQuantity" >
+      <AttrArray Name="Attributes">
+         <Item Value="od.oracle.apps.xxmer.schema.server.HoldBackQtyEO.Item" />
+      </AttrArray>
+      <DesignTime>
+         <Attr Name="_DBObjectName" Value="FK_OD_HOLD_BACK_QUANTITY" />
+         <Attr Name="_referencedKey" Value="PK_EBS_HB_ITEM" />
+         <Attr Name="_isForeign" Value="true" />
+         <Attr Name="_isDeferrableConstraint" Value="true" />
+         <Attr Name="_isInitiallyDeferredConstraint" Value="true" />
+      </DesignTime>
+   </Key>
+</Entity>

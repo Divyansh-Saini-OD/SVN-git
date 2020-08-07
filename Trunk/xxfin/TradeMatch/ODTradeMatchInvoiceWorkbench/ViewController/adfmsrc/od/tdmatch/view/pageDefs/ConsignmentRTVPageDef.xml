@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<pageDefinition xmlns="http://xmlns.oracle.com/adfm/uimodel" version="12.2.1.12.24" id="ConsignmentRTVPageDef"
+                Package="od.tdmatch.view.pageDefs">
+  <parameters/>
+  <executables>
+    <variableIterator id="variables"/>
+    <iterator Binds="ConsignmentRTVVO" RangeSize="10" DataControl="ODTradeMatchReportsAMDataControl"
+              id="ConsgnmntRTVVO1Iterator"/>
+    <searchRegion Criteria="ConsgnmntRTVVOC" Customizer="oracle.jbo.uicli.binding.JUSearchBindingCustomizer"
+                  Binds="ConsgnmntRTVVO1Iterator" id="ConsgnmntRTVVOCQuery"/>
+    <iterator Binds="ConsignmentRTVSearchVO" RangeSize="25" DataControl="ODTradeMatchReportsAMDataControl"
+              id="ConsignmentRTVSearchVO1Iterator"/>
+  </executables>
+  <bindings>
+    <tree IterBinding="ConsgnmntRTVVO1Iterator" id="ConsgnmntRTVVO">
+      <nodeDefinition DefName="od.tdmatch.model.reports.vo.ConsignmentRTVVO" Name="ConsgnmntRTVVO10">
+        <AttrNames>
+          <Item Value="SupplierSite"/>
+          <Item Value="SupplierName"/>
+          <Item Value="OriginalRtv"/>
+          <Item Value="TransactionDate"/>
+          <Item Value="Location"/>
+          <Item Value="Sku"/>
+          <Item Value="FreightCarrier"/>
+          <Item Value="FreightBill"/>
+          <Item Value="Rga"/>
+          <Item Value="VendorProduct"/>
+          <Item Value="Description"/>
+          <Item Value="TransactionQuantity"/>
+          <Item Value="TransactionCost"/>
+          <Item Value="ExtendedCost"/>
+          
+        </AttrNames>
+      </nodeDefinition>
+    </tree>
+    <listOfValues IterBinding="ConsignmentRTVSearchVO1Iterator" Uses="LOV_Suppliername"
+                  id="Suppliername" ApplyValidation="false"/>
+    <listOfValues IterBinding="ConsignmentRTVSearchVO1Iterator" StaticList="false" Uses="LOV_Suppliersiteno"
+                  id="Suppliersiteno"/>
+    <listOfValues IterBinding="ConsignmentRTVSearchVO1Iterator" StaticList="false" Uses="LOV_Rtvno" id="Rtvno"/>
+    <attributeValues IterBinding="ConsignmentRTVSearchVO1Iterator" id="Transactiondatefrom">
+      <AttrNames>
+        <Item Value="Transactiondatefrom"/>
+      </AttrNames>
+    </attributeValues>
+    <attributeValues IterBinding="ConsignmentRTVSearchVO1Iterator" id="Transactiondateto">
+      <AttrNames>
+        <Item Value="Transactiondateto"/>
+      </AttrNames>
+    </attributeValues>
+    <attributeValues IterBinding="ConsignmentRTVSearchVO1Iterator" id="Transactionperiodfrom">
+      <AttrNames>
+        <Item Value="Transactionperiodfrom"/>
+      </AttrNames>
+    </attributeValues>
+    <listOfValues IterBinding="ConsignmentRTVSearchVO1Iterator" StaticList="false" Uses="LOV_Rgano" id="Rgano"/>
+    <listOfValues IterBinding="ConsignmentRTVSearchVO1Iterator" StaticList="false" Uses="LOV_Location" id="Location"/>
+    <list IterBinding="ConsignmentRTVSearchVO1Iterator" StaticList="false" Uses="LOV_Orgid" id="Orgid"
+          DTSupportsMRU="false" SelectItemValueMode="ListObject"/>
+    <attributeValues IterBinding="ConsignmentRTVSearchVO1Iterator" id="OrgIdValue">
+      <AttrNames>
+        <Item Value="OrgIdValue"/>
+      </AttrNames>
+    </attributeValues>
+    <listOfValues IterBinding="ConsignmentRTVSearchVO1Iterator" StaticList="false" Uses="LOV_Transactionperiodfrom"
+                  id="Transactionperiodfrom1"/>
+    <listOfValues IterBinding="ConsignmentRTVSearchVO1Iterator" StaticList="false" Uses="LOV_Transactionperiodto"
+                  id="Transactionperiodto"/>
+    <listOfValues IterBinding="ConsignmentRTVSearchVO1Iterator" StaticList="false" Uses="LOV_OrgRtv" id="OrgRtv"/>
+    <attributeValues IterBinding="ConsignmentRTVSearchVO1Iterator" id="Sku1">
+      <AttrNames>
+        <Item Value="Sku"/>
+      </AttrNames>
+    </attributeValues>
+    <methodAction id="searchConsignRTV" RequiresUpdateModel="true" Action="invokeMethod" MethodName="searchConsignRTV"
+                  IsViewObjectMethod="false" DataControl="ODTradeMatchReportsAMDataControl"
+                  InstanceName="bindings.searchConsignRTV.dataControl.dataProvider"
+                  ReturnName="data.ODTradeMatchReportsAMDataControl.methodResults.searchConsignRTV_searchConsignRTV_dataControl_dataProvider_searchConsignRTV_result">
+      <NamedData NDName="sku" NDType="java.lang.String"/>
+    </methodAction>
+  </bindings>
+</pageDefinition>

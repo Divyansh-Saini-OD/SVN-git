@@ -1,0 +1,20 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<!-- dbdrv: exec java oracle/jrad/tools/xml/importer XMLImporter.class java &phase=dat+24 checkfile:~PROD:~PATH:~FILE &fullpath:~PROD:~PATH:~FILE -username &un_apps -password &pw_apps -dbconnection &jdbc_db_addr  -userId "1" -rootPackage /oracle/apps/~PROD  -rootdir &fullpath:~PROD:mds:directory  -->
+<oa:stackLayout version="9.0.3.8.12_1330" xml:lang="en-US" xmlns:oa="http://xmlns.oracle.com/oa" xmlns:jrad="http://xmlns.oracle.com/jrad" xmlns:ui="http://xmlns.oracle.com/uix/ui" xmlns:user="http://xmlns.oracle.com/jrad/user" xmlns="http://xmlns.oracle.com/jrad" file-version="$Header$" amDefName="od.oracle.apps.xxcrm.scs.fdk.server.ODSCSDshbdAM">
+   <ui:contents>
+      <oa:table id="ODSCSFDKHstryVO" controllerClass="od.oracle.apps.xxcrm.scs.fdk.webui.ODSCSFdkHstryCO">
+         <ui:contents>
+            <oa:messageStyledText id="Logcreatedt" dataType="DATE" prompt="Log Date" viewName="ODSCSFDKHstryVO" viewAttr="Logcreatedt"/>
+            <oa:messageStyledText id="SalesPersonId" dataType="VARCHAR2" prompt="Sales Person" viewName="ODSCSFDKHstryVO" viewAttr="SalesPersonId" maximumLength="200"/>
+            <oa:messageStyledText id="ContactDt" dataType="DATE" prompt="Contact Date" viewName="ODSCSFDKHstryVO" viewAttr="ContactDt"/>
+            <oa:messageStyledText id="ContactAfterDate" dataType="DATE" prompt="Contact After Date" viewName="ODSCSFDKHstryVO" viewAttr="ContactAfterDate"/>
+            <oa:messageStyledText id="ContactNotesTxt" dataType="VARCHAR2" prompt="Notes" viewName="ODSCSFDKHstryVO" viewAttr="ContactNotesTxt" maximumLength="2500"/>
+            <oa:messageStyledText id="ContactFullName" dataType="VARCHAR2" prompt="Contact Name" viewName="ODSCSFDKHstryVO" viewAttr="ContactFullName" maximumLength="1080"/>
+            <oa:messageStyledText id="Phone" dataType="VARCHAR2" prompt="Phone" viewName="ODSCSFDKHstryVO" viewAttr="Phone" maximumLength="62"/>
+            <oa:messageStyledText id="EmailAddress" dataType="VARCHAR2" prompt="Email" viewName="ODSCSFDKHstryVO" viewAttr="EmailAddress" maximumLength="2000"/>
+            <oa:link id="Details" destination="OA.jsp?page=/od/oracle/apps/xxcrm/scs/fdk/webui/ODSCSFdkFmDtlsPG&amp;SCSFrmFdkId={@FdbkId}" targetFrame="_blank" text="View Details" rendered="false"/>
+            <oa:image id="Dtls" destination="OA.jsp?page=/od/oracle/apps/xxcrm/scs/fdk/webui/ODSCSFdkFmDtlsPG&amp;SCSFrmFdkId={@FdbkId}&amp;addBreadCrumb=Y" source="/OA_MEDIA/detailsicon_enabled.gif" prompt="Details"/>
+         </ui:contents>
+      </oa:table>
+   </ui:contents>
+</oa:stackLayout>

@@ -1,0 +1,74 @@
+-- +============================================================================================+
+-- |                        Office Depot - Project Simplify                                     |
+-- |              Oracle NAIO/WIPRO/Office Depot/Consulting Organization                        |
+-- +============================================================================================+
+-- | Name         : CREATE_XX_OM_GLOBAL_EXCEPTIONS.tbl                                          |
+-- | Rice Id      :                                                                             | 
+-- | Description  : OD Exceptions Handling Table Creation                                       |  
+-- | Purpose      : Create Custom Tables.                                                       |
+-- |                                                                                            |
+-- |                                                                                            |
+-- |Change Record:                                                                              |
+-- |===============                                                                             |
+-- |Version    Date          Author                Remarks                                      | 
+-- |=======    ==========    =================    ==============================================+
+-- |DRAFT 1A   03-May-2007   Bapuji Nanapaneni    Initial Version                               |
+-- |                                                                                            |
+-- +============================================================================================+
+
+SET VERIFY      OFF
+SET TERM        ON
+SET FEEDBACK    OFF
+SET SHOW        OFF
+SET ECHO        OFF
+SET TAB         OFF
+
+PROMPT
+PROMPT Dropping Existing Custom Tables......
+PROMPT
+
+PROMPT
+PROMPT Dropping Table xx_om_global_exceptions
+PROMPT
+
+DROP TABLE xx_om_global_exceptions;
+
+WHENEVER SQLERROR CONTINUE;
+
+PROMPT
+PROMPT Creating the Table xx_om_global_exceptions.....
+PROMPT
+
+CREATE TABLE xx_om_global_exceptions 
+    (
+      exception_id         NUMBER         PRIMARY KEY 
+    , exception_header     VARCHAR2(40)   NOT NULL    
+    , track_Code           VARCHAR2(5)    NOT NULL
+    , solution_domain      VARCHAR2(40)   NOT NULL
+    , function_name        VARCHAR2(40)   NOT NULL
+    , error_code           VARCHAR2(40)   NOT NULL
+    , description          VARCHAR2(1000) NOT NULL 
+    , entity_ref           VARCHAR2(40)   NOT NULL
+    , entity_ref_id        NUMBER         NOT NULL
+    , exception_sent_flag  VARCHAR2(1)
+    , attribute1           VARCHAR2(40)
+    , attribute2           VARCHAR2(40)
+    , attribute3           VARCHAR2(40)
+    , attribute4           VARCHAR2(40)
+    , created_by           NUMBER         NOT NULL
+    , creation_date	   DATE	      NOT NULL
+    , last_updated_by	   NUMBER         NOT NULL
+    , last_update_date     DATE           NOT NULL
+    , last_update_login    NUMBER		
+    )
+/
+
+WHENEVER SQLERROR EXIT 1
+
+PROMPT
+PROMPT Exiting....
+PROMPT
+
+SET FEEDBACK ON
+
+EXIT;

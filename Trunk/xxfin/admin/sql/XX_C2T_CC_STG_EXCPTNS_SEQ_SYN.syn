@@ -1,0 +1,28 @@
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     ON
+    -- +==========================================================================+
+    -- |                  Office Depot - Project Simplify                         |
+    -- +==========================================================================+
+    -- | SQL Script to create the Synonym                                         |
+    -- |                                                                          |
+    -- | XX_C2T_CC_STG_EXCPTNS_SEQ_SYN.syn                                                  |
+    -- |                                                                          |
+    -- |                                                                          |
+    -- |                                                                          |
+    -- |                                                                          |
+    -- |Change Record:                                                            |
+    -- |===============                                                           |
+    -- |Version   Date         Author               Remarks                       |
+    -- |=======   ==========   =============        ==============================|
+    -- | V1.0     24-MAR-2016  Avinash Baddam       Initial version               |
+    -- |                                                                          |
+    -- +==========================================================================+
+
+
+PROMPT CREATING SYNONYM FOR XX_C2T_CC_STG_EXCPTNS_SEQ..... 
+CREATE OR REPLACE SYNONYM XX_C2T_CC_STG_EXCPTNS_SEQ FOR XXFIN.XX_C2T_CC_STG_EXCPTNS_SEQ;
+
+SHOW ERROR

@@ -1,0 +1,57 @@
+REM============================================================================================
+REM                                 Start Of Script                                            
+REM============================================================================================
+--**************************************************************************************************
+--
+-- Object Name    : E0342_InventoryReceiving 
+--
+-- Program Name   : DROP_XX_GI_RCV_PO_HDR.tbl
+--
+-- Author         : Vikas Raina
+--
+-- Purpose        : Drop Custom Table .  
+--                  The Object dropped is:
+--                     1) XX_GI_RCV_PO_HDR Table 
+--
+-- Change History  :
+-- Version         Date             Changed By        Description 
+--**************************************************************************************************
+-- 1.0             1/02/2008       Vikas Raina        baselined
+--**************************************************************************************************
+SET VERIFY   OFF
+SET TERM     ON
+SET FEEDBACK OFF
+SET SHOW     OFF
+SET ECHO     OFF
+SET TAB      OFF
+                   
+WHENEVER SQLERROR CONTINUE
+                   
+PROMPT             
+PROMPT Dropping Existing Custom Base Table XX_GI_RCV_PO_HDR......
+PROMPT             
+
+WHENEVER SQLERROR CONTINUE
+
+PROMPT
+PROMPT Dropping Table XX_GI_RCV_PO_HDR 
+PROMPT
+
+DROP TABLE XX_GI_RCV_PO_HDR;
+
+
+WHENEVER SQLERROR CONTINUE
+
+PROMPT
+PROMPT Exiting....
+PROMPT
+
+SET FEEDBACK ON
+
+
+EXIT;
+
+
+REM=================================================================================================
+REM                                   End Of Script                                            
+REM=======

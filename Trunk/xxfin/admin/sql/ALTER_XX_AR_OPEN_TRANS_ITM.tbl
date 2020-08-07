@@ -1,0 +1,30 @@
+
+ SET SHOW         OFF
+ SET VERIFY       OFF
+ SET ECHO         OFF
+ SET TAB          OFF
+ SET FEEDBACK     ON
+
+ PROMPT Creating TABLE XX_AR_OPEN_TRANS_ITM
+
+ PROMPT Program exits IF the creation IS NOT SUCCESSFUL
+
+ WHENEVER SQLERROR CONTINUE
+
+ -- +==========================================================================+
+ -- |                  Office Depot - Project Simplify                         |
+ -- |                       WIPRO Technologies                                 |
+ -- +==========================================================================+
+ -- | SQL Script to move the tablespace                                        |
+ -- |Table    : XX_AR_OPEN_TRANS_ITM                                         |
+ -- |Change Record:                                                            |
+ -- |===============                                                           |
+ -- |Version      Date              Author               Remarks               |
+ -- |=======      ==========        =============        ===================== |
+ -- | V1.0        05-APR-2010      Usha R                Initial version       |
+ -- |                                                   Modified for defect 4901
+ -- +==========================================================================+
+ALTER TABLE XX_AR_OPEN_TRANS_ITM MOVE TABLESPACE APPS_TS_TX_DATA_32M;
+
+ SHOW ERROR                              
+

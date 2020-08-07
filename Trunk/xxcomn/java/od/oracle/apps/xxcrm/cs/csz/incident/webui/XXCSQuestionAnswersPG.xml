@@ -1,0 +1,58 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<page xmlns:jrad="http://xmlns.oracle.com/jrad" xmlns:oa="http://xmlns.oracle.com/oa" xmlns:ui="http://xmlns.oracle.com/uix/ui" version="10.1.3_1312" xml:lang="en-US" xmlns:user="http://xmlns.oracle.com/jrad/user" xmlns="http://xmlns.oracle.com/jrad" file-version="$Header$">
+   <content>
+      <oa:pageLayout id="PageLayoutRN" amDefName="od.oracle.apps.xxcrm.cs.csz.incident.server.XXCSQuestionAnswersAM" controllerClass="od.oracle.apps.xxcrm.cs.csz.incident.webui.XXCSQuestionAnswersPGCO">
+         <ui:corporateBranding>
+            <oa:image id="corporateBrandingImage" source="/OA_MEDIA/FNDSSCORP.gif"/>
+         </ui:corporateBranding>
+         <ui:contents>
+            <oa:stackLayout id="NoQuestionsMsgRN" rendered="false">
+               <ui:contents>
+                  <oa:staticStyledText id="NoSrvcQuestionsMsg" text="No presevice questions for this order." prompt="No presevice questions for this order."/>
+               </ui:contents>
+            </oa:stackLayout>
+            <oa:stackLayout id="PanelsRN" rendered="true" prompt="Preservice Questions">
+               <ui:contents>
+                  <oa:header id="HdrRN" text="Preservice Questions"/>
+                  <oa:advancedTable id="MainTblRN" viewName="XXCSQAPanelsVO1" detailViewAttr="DetailFlag" childViewAttrName="PanelName" viewLinkName="XXCSPanelsToQAVL1">
+                     <ui:detail>
+                        <oa:header id="region1">
+                           <ui:contents>
+                              <oa:advancedTable id="DetailTblRN" viewName="XXCSQuestionAnswersVO1" viewLinkName="XXCSPanelsToQAVL1">
+                                 <ui:contents>
+                                    <oa:column id="QuestionCol">
+                                       <ui:columnHeader>
+                                          <oa:sortableHeader id="sortableHeader1" prompt="Questions"/>
+                                       </ui:columnHeader>
+                                       <ui:contents>
+                                          <oa:messageStyledText id="QCol" viewAttr="Question" prompt="Questions"/>
+                                       </ui:contents>
+                                    </oa:column>
+                                    <oa:column id="AnswerCol">
+                                       <ui:columnHeader>
+                                          <oa:sortableHeader id="sortableHeader2" prompt="Answers"/>
+                                       </ui:columnHeader>
+                                       <ui:contents>
+                                          <oa:messageStyledText id="AnsCol" viewAttr="Answer" prompt="Answers"/>
+                                       </ui:contents>
+                                    </oa:column>
+                                 </ui:contents>
+                              </oa:advancedTable>
+                           </ui:contents>
+                        </oa:header>
+                     </ui:detail>
+                     <ui:contents>
+                        <oa:column id="column1">
+                           <ui:columnHeader/>
+                           <ui:contents>
+                              <oa:messageStyledText id="PanelName" viewAttr="PanelName" prompt="Panel Name" styleClass="OraHeaderSub"/>
+                           </ui:contents>
+                        </oa:column>
+                     </ui:contents>
+                  </oa:advancedTable>
+               </ui:contents>
+            </oa:stackLayout>
+         </ui:contents>
+      </oa:pageLayout>
+   </content>
+</page>

@@ -1,0 +1,23 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<BPELSuitcase>
+   <BPELProcess id="DPSCancel_SendNowDocsMsgProcess" src="DPSCancel_SendNowDocsMsgProcess.bpel">
+      <partnerLinkBindings>
+         <partnerLinkBinding name="client">
+            <property name="wsdlLocation">DPSCancel_SendNowDocsMsgProcess.wsdl</property>
+         </partnerLinkBinding>
+         <partnerLinkBinding name="ProcessNowDocsReceive">
+            <property name="wsdlLocation">http://chilsoa02d.na.odcorp.net:7777/orabpel/otc/DPSCancel_ProcessNowDocsReceive/DPSCancel_ProcessNowDocsReceive?wsdl</property>
+         </partnerLinkBinding>
+         <partnerLinkBinding name="ODErrorLogger">
+            <property name="wsdlLocation">http://chilsoa02d.na.odcorp.net:7777/orabpel/default/ODErrorLogger/ODErrorLogger?wsdl</property>
+         </partnerLinkBinding>
+         <partnerLinkBinding name="EnqueueMessage">
+            <property name="wsdlLocation">EnqueueMsg.wsdl</property>
+            <property name="retryInterval">60</property>
+         </partnerLinkBinding>
+         <partnerLinkBinding name="ClearStagingProcess">
+            <property name="wsdlLocation">http://chilsoa02d.na.odcorp.net:7777/orabpel/otc/DPSCancel_ClearStaging/DPSCancel_ClearStaging?wsdl</property>
+         </partnerLinkBinding>
+      </partnerLinkBindings>
+   </BPELProcess>
+</BPELSuitcase>

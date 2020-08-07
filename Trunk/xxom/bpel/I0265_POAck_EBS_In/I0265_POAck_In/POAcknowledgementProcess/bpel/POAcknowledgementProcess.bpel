@@ -1,0 +1,426 @@
+<?xml version = "1.0" encoding = "UTF-8" ?>
+<!--
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  Oracle JDeveloper BPEL Designer 
+  
+  Created: Tue Jun 19 18:57:29 EDT 2007
+  Author:  rizwan-appees
+  Purpose: Asynchronous BPEL Process
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+-->
+<process name="POAcknowledgementProcess"
+         targetNamespace="http://xmlns.oracle.com/POAcknowledgementProcess"
+         xmlns="http://schemas.xmlsoap.org/ws/2003/03/business-process/"
+         xmlns:bpws="http://schemas.xmlsoap.org/ws/2003/03/business-process/"
+         xmlns:xp20="http://www.oracle.com/XSL/Transform/java/oracle.tip.pc.services.functions.Xpath20"
+         xmlns:ns4="http://xmlns.oracle.com/ODErrorLogger"
+         xmlns:ns7="http://xmlns.oracle.com/ias/pcbpel/NotificationService"
+         xmlns:ids="http://xmlns.oracle.com/bpel/services/IdentityService/xpath"
+         xmlns:ldap="http://schemas.oracle.com/xpath/extension/ldap"
+         xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+         xmlns:ns12="http://xmlns.oracle.com/pcbpel/adapter/db/APPS/XX_OM_POACKINTF_PKG/VALIDATE_PROCESS_POACK/"
+         xmlns:ns5="ODError"
+         xmlns:client="http://xmlns.oracle.com/POAcknowledgementProcess"
+         xmlns:ns6="http://xmlns.oracle.com/pcbpel/adapter/db/APPS/XX_OM_POACKINTF_PKG/VALIDATE_PROCESS_POACK/"
+         xmlns:ora="http://schemas.oracle.com/xpath/extension"
+         xmlns:ns11="http://xmlns.oracle.com/pcbpel/adapter/db/APPS/XX_OM_POACKINTF_PKG/APPS_INIT/"
+         xmlns:ns9="http://xmlns.oracle.com/pcbpel/adapter/aq/outbound/"
+         xmlns:hwf="http://xmlns.oracle.com/bpel/workflow/xpath"
+         xmlns:ns1="http://www.openapplications.org/oagis/9"
+         xmlns:ehdr="http://www.oracle.com/XSL/Transform/java/oracle.tip.esb.server.headers.ESBHeaderFunctions"
+         xmlns:ns3="http://xmlns.oracle.com/pcbpel/adapter/db/UpdatePOAckDetails/"
+         xmlns:ns2="http://www.openapplications.org/oagis/9/officedepot/1"
+         xmlns:bpelx="http://schemas.oracle.com/bpel/extension"
+         xmlns:orcl="http://www.oracle.com/XSL/Transform/java/oracle.tip.pc.services.functions.ExtFunc"
+         xmlns:ns10="http://xmlns.oracle.com/pcbpel/adapter/db/AppsInit/"
+         xmlns:ns8="http://xmlns.oracle.com/pcbpel/adapter/aq/EnqueueMessage/">
+    <!-- 
+      ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        PARTNERLINKS                                                      
+        List of services participating in this BPEL process               
+      ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    -->
+    <partnerLinks>
+        <!-- 
+      The 'client' role represents the requester of this service. It is 
+      used for callback. The location and correlation information associated
+      with the client role are automatically set using WS-Addressing.
+    -->
+        <partnerLink name="client"
+                     partnerLinkType="client:POAcknowledgementProcess"
+                     myRole="POAcknowledgementProcessProvider"
+                     partnerRole="POAcknowledgementProcessRequester"/>
+        <partnerLink name="ODErrorLogger" partnerRole="ODErrorLoggerProvider"
+                     partnerLinkType="ns4:ODErrorLogger"/>
+        <partnerLink name="EnqueueMessage" partnerRole="Enqueue_role"
+                     partnerLinkType="ns8:Enqueue_plt"/>
+        <!--<partnerLink name="AppsInit" partnerRole="AppsInit_role"
+                     partnerLinkType="ns10:AppsInit_plt"/> -->
+        <partnerLink name="UpdatePOAckDetails"
+                     partnerRole="UpdatePOAckDetails_role"
+                     partnerLinkType="ns3:UpdatePOAckDetails_plt"/>
+    </partnerLinks>
+    <!-- 
+      ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        VARIABLES                                                        
+        List of messages and XML documents used within this BPEL process 
+      ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    -->
+    <variables>
+        <!-- Reference to the message passed as input during initiation -->
+        <variable name="inputVariable"
+                  messageType="client:POAcknowledgementProcessRequestMessage"/>
+        <!-- Reference to the message that will be sent back to the requester during callback -->
+        <variable name="outputVariable"
+                  messageType="client:POAcknowledgementProcessResponseMessage"/>
+        <variable name="RemoteFaultVar"
+                  messageType="bpelx:RuntimeFaultMessage"/>
+        <variable name="InvokeRemErrorLoggerIn"
+                  messageType="ns4:ODErrorLoggerRequestMessage"/>
+        <variable name="activityNameVar" type="xsd:string"/>
+        <variable name="activityDescriptionVar" type="xsd:string"/>
+        <variable name="BindingFaultVar"
+                  messageType="bpelx:RuntimeFaultMessage"/>
+        <variable name="InvokeBindErrorLoggerIn"
+                  messageType="ns4:ODErrorLoggerRequestMessage"/>
+        <variable name="InvokeCatchAllErrorLoggerIn"
+                  messageType="ns4:ODErrorLoggerRequestMessage"/>
+        <variable name="InvokeCatchAllEnqueueIn"
+                  messageType="ns8:AcknowledgePurchaseOrder_msg"/>
+        <variable name="EnqueueHeader" messageType="ns9:Header"/>
+        <variable name="InvokeRemEnqueueIn"
+                  messageType="ns8:AcknowledgePurchaseOrder_msg"/>
+        <variable name="InvokeBindEnqueueIn"
+                  messageType="ns8:AcknowledgePurchaseOrder_msg"/>
+        <variable name="InvokeUpdatePOAckVarIn" messageType="ns3:args_in_msg"/>
+        <variable name="InvokeUpdatePOAckVarOut"
+                  messageType="ns3:args_out_msg"/>
+    </variables>
+    <faultHandlers>
+        <catch faultName="bpelx:remoteFault" faultVariable="RemoteFaultVar">
+            <sequence name="Sequence_1">
+                <assign name="AssignRemEnqueueMsg">
+                    <copy>
+                        <from expression="ora:getProcessId()"/>
+                        <to variable="InvokeRemErrorLoggerIn" part="payload"
+                            query="/ns5:ErrorData/ns5:ProcessInfo/ns5:BusinessProcessName"/>
+                    </copy>
+                    <copy>
+                        <from expression="ora:getDomainId()"/>
+                        <to variable="InvokeRemErrorLoggerIn" part="payload"
+                            query="/ns5:ErrorData/ns5:ProcessInfo/ns5:BusinessProcessDomain"/>
+                    </copy>
+                    <copy>
+                        <from variable="RemoteFaultVar" part="code"/>
+                        <to variable="InvokeRemErrorLoggerIn" part="payload"
+                            query="/ns5:ErrorData/ns5:ErrorDetails/ns5:ErrorCode"/>
+                    </copy>
+                    <copy>
+                        <from variable="RemoteFaultVar" part="summary"/>
+                        <to variable="InvokeRemErrorLoggerIn" part="payload"
+                            query="/ns5:ErrorData/ns5:ErrorDetails/ns5:ErrorDescription"/>
+                    </copy>
+                    <copy>
+                        <from variable="RemoteFaultVar" part="detail"/>
+                        <to variable="InvokeRemErrorLoggerIn" part="payload"
+                            query="/ns5:ErrorData/ns5:ErrorDetails/ns5:ErrorText"/>
+                    </copy>
+                    <copy>
+                        <from expression="'Fatal'"/>
+                        <to variable="InvokeRemErrorLoggerIn" part="payload"
+                            query="/ns5:ErrorData/ns5:ErrorDetails/ns5:ErrorSeverity"/>
+                    </copy>
+                    <copy>
+                        <from expression="ora:getCurrentDateTime()"/>
+                        <to variable="InvokeRemErrorLoggerIn" part="payload"
+                            query="/ns5:ErrorData/ns5:ErrorDetails/ns5:ErrorDateTime"/>
+                    </copy>
+                    <copy>
+                        <from expression="ora:getCurrentDateTime()"/>
+                        <to variable="InvokeRemErrorLoggerIn" part="payload"
+                            query="/ns5:ErrorData/ns5:MessageDetails/ns5:MessageDateTime"/>
+                    </copy>
+                    <copy>
+                        <from expression="ids:getDefaultRealmName()"/>
+                        <to variable="InvokeRemErrorLoggerIn" part="payload"
+                            query="/ns5:ErrorData/ns5:ProcessInfo/ns5:SystemName"/>
+                    </copy>
+                    <copy>
+                        <from expression="ora:generateGUID()"/>
+                        <to variable="InvokeRemErrorLoggerIn" part="payload"
+                            query="/ns5:ErrorData/ns5:ProcessInfo/ns5:BusinessProcessId"/>
+                    </copy>
+                    <copy>
+                        <from variable="activityNameVar"/>
+                        <to variable="InvokeRemErrorLoggerIn" part="payload"
+                            query="/ns5:ErrorData/ns5:ProcessInfo/ns5:BusinessProcessStep"/>
+                    </copy>
+                    <copy>
+                        <from expression="ora:getContentAsString(bpws:getVariableData('inputVariable','payload','/ns1:AcknowledgePurchaseOrder'))"/>
+                        <to variable="InvokeRemErrorLoggerIn" part="payload"
+                            query="/ns5:ErrorData/ns5:MessageDetails/ns5:MessageData"/>
+                    </copy>
+                    <copy>
+                        <from variable="inputVariable" part="payload"
+                              query="/ns1:AcknowledgePurchaseOrder"/>
+                        <to variable="InvokeRemEnqueueIn"
+                            part="AcknowledgePurchaseOrder"
+                            query="/ns1:AcknowledgePurchaseOrder"/>
+                    </copy>
+                    <copy>
+                        <from expression='ora:doc("${server_url}/xmllib/otc/GlobalParameters.xml","/GlobalParameters/OTC/POACK/EnqueueDelay")'/>
+                        <to variable="EnqueueHeader" part="Header"
+                            query="/ns9:Header/ns9:Delay"/>
+                    </copy>
+                </assign>
+                <invoke name="InvokeRemErrorLogger" partnerLink="ODErrorLogger"
+                        portType="ns4:ODErrorLogger" operation="initiate"
+                        inputVariable="InvokeRemErrorLoggerIn"/>
+                <invoke name="InvokeRemEnqueue" partnerLink="EnqueueMessage"
+                        portType="ns8:Enqueue_ptt" operation="Enqueue"
+                        inputVariable="InvokeRemEnqueueIn"
+                        bpelx:inputHeaderVariable="EnqueueHeader"/>
+            </sequence>
+        </catch>
+        <catch faultName="bpelx:bindingFault" faultVariable="BindingFaultVar">
+            <sequence name="Sequence_2">
+                <assign name="AssignBindEnqueueMsg">
+                    <copy>
+                        <from expression="ora:getProcessId()"/>
+                        <to variable="InvokeBindErrorLoggerIn" part="payload"
+                            query="/ns5:ErrorData/ns5:ProcessInfo/ns5:BusinessProcessName"/>
+                    </copy>
+                    <copy>
+                        <from expression="ora:getDomainId()"/>
+                        <to variable="InvokeBindErrorLoggerIn" part="payload"
+                            query="/ns5:ErrorData/ns5:ProcessInfo/ns5:BusinessProcessDomain"/>
+                    </copy>
+                    <copy>
+                        <from variable="BindingFaultVar" part="code"/>
+                        <to variable="InvokeBindErrorLoggerIn" part="payload"
+                            query="/ns5:ErrorData/ns5:ErrorDetails/ns5:ErrorCode"/>
+                    </copy>
+                    <copy>
+                        <from variable="BindingFaultVar" part="summary"/>
+                        <to variable="InvokeBindErrorLoggerIn" part="payload"
+                            query="/ns5:ErrorData/ns5:ErrorDetails/ns5:ErrorDescription"/>
+                    </copy>
+                    <copy>
+                        <from variable="BindingFaultVar" part="detail"/>
+                        <to variable="InvokeBindErrorLoggerIn" part="payload"
+                            query="/ns5:ErrorData/ns5:ErrorDetails/ns5:ErrorText"/>
+                    </copy>
+                    <copy>
+                        <from expression="'Fatal'"/>
+                        <to variable="InvokeBindErrorLoggerIn" part="payload"
+                            query="/ns5:ErrorData/ns5:ErrorDetails/ns5:ErrorSeverity"/>
+                    </copy>
+                    <copy>
+                        <from expression="ora:getCurrentDateTime()"/>
+                        <to variable="InvokeBindErrorLoggerIn" part="payload"
+                            query="/ns5:ErrorData/ns5:ErrorDetails/ns5:ErrorDateTime"/>
+                    </copy>
+                    <copy>
+                        <from expression="ora:getCurrentDateTime()"/>
+                        <to variable="InvokeBindErrorLoggerIn" part="payload"
+                            query="/ns5:ErrorData/ns5:MessageDetails/ns5:MessageDateTime"/>
+                    </copy>
+                    <copy>
+                        <from expression="ids:getDefaultRealmName()"/>
+                        <to variable="InvokeBindErrorLoggerIn" part="payload"
+                            query="/ns5:ErrorData/ns5:ProcessInfo/ns5:SystemName"/>
+                    </copy>
+                    <copy>
+                        <from expression="ora:generateGUID()"/>
+                        <to variable="InvokeBindErrorLoggerIn" part="payload"
+                            query="/ns5:ErrorData/ns5:ProcessInfo/ns5:BusinessProcessId"/>
+                    </copy>
+                    <copy>
+                        <from variable="activityNameVar"/>
+                        <to variable="InvokeBindErrorLoggerIn" part="payload"
+                            query="/ns5:ErrorData/ns5:ProcessInfo/ns5:BusinessProcessStep"/>
+                    </copy>
+                    <copy>
+                        <from expression="ora:getContentAsString(bpws:getVariableData('inputVariable','payload','/ns1:AcknowledgePurchaseOrder'))"/>
+                        <to variable="InvokeBindErrorLoggerIn" part="payload"
+                            query="/ns5:ErrorData/ns5:MessageDetails/ns5:MessageData"/>
+                    </copy>
+                    <copy>
+                        <from variable="inputVariable" part="payload"
+                              query="/ns1:AcknowledgePurchaseOrder"/>
+                        <to variable="InvokeBindEnqueueIn"
+                            part="AcknowledgePurchaseOrder"
+                            query="/ns1:AcknowledgePurchaseOrder"/>
+                    </copy>
+                    <copy>
+                        <from expression='ora:doc("${server_url}/xmllib/otc/GlobalParameters.xml","/GlobalParameters/OTC/POACK/EnqueueDelay")'/>
+                        <to variable="EnqueueHeader" part="Header"
+                            query="/ns9:Header/ns9:Delay"/>
+                    </copy>
+                </assign>
+                <invoke name="InvokeBindErrorLogger" partnerLink="ODErrorLogger"
+                        portType="ns4:ODErrorLogger" operation="initiate"
+                        inputVariable="InvokeBindErrorLoggerIn"/>
+                <invoke name="InvokeBindEnqueue" partnerLink="EnqueueMessage"
+                        portType="ns8:Enqueue_ptt" operation="Enqueue"
+                        inputVariable="InvokeBindEnqueueIn"
+                        bpelx:inputHeaderVariable="EnqueueHeader"/>
+            </sequence>
+        </catch>
+        <catchAll>
+            <sequence name="Sequence_3">
+                <assign name="AssignCatchAllEnqueueMsg">
+                    <copy>
+                        <from expression="ora:getProcessId()"/>
+                        <to variable="InvokeCatchAllErrorLoggerIn"
+                            part="payload"
+                            query="/ns5:ErrorData/ns5:ProcessInfo/ns5:BusinessProcessName"/>
+                    </copy>
+                    <copy>
+                        <from expression="ora:getDomainId()"/>
+                        <to variable="InvokeCatchAllErrorLoggerIn"
+                            part="payload"
+                            query="/ns5:ErrorData/ns5:ProcessInfo/ns5:BusinessProcessDomain"/>
+                    </copy>
+                    <copy>
+                        <from expression="'Fatal'"/>
+                        <to variable="InvokeCatchAllErrorLoggerIn"
+                            part="payload"
+                            query="/ns5:ErrorData/ns5:ErrorDetails/ns5:ErrorSeverity"/>
+                    </copy>
+                    <copy>
+                        <from expression="ora:getCurrentDateTime()"/>
+                        <to variable="InvokeCatchAllErrorLoggerIn"
+                            part="payload"
+                            query="/ns5:ErrorData/ns5:ErrorDetails/ns5:ErrorDateTime"/>
+                    </copy>
+                    <copy>
+                        <from expression="ora:getCurrentDateTime()"/>
+                        <to variable="InvokeCatchAllErrorLoggerIn"
+                            part="payload"
+                            query="/ns5:ErrorData/ns5:MessageDetails/ns5:MessageDateTime"/>
+                    </copy>
+                    <copy>
+                        <from expression="ids:getDefaultRealmName()"/>
+                        <to variable="InvokeCatchAllErrorLoggerIn"
+                            part="payload"
+                            query="/ns5:ErrorData/ns5:ProcessInfo/ns5:SystemName"/>
+                    </copy>
+                    <copy>
+                        <from expression="ora:generateGUID()"/>
+                        <to variable="InvokeCatchAllErrorLoggerIn"
+                            part="payload"
+                            query="/ns5:ErrorData/ns5:ProcessInfo/ns5:BusinessProcessId"/>
+                    </copy>
+                    <copy>
+                        <from variable="activityNameVar"/>
+                        <to variable="InvokeCatchAllErrorLoggerIn"
+                            part="payload"
+                            query="/ns5:ErrorData/ns5:ProcessInfo/ns5:BusinessProcessStep"/>
+                    </copy>
+                    <copy>
+                        <from expression="ora:getContentAsString(bpws:getVariableData('inputVariable','payload','/ns1:AcknowledgePurchaseOrder'))"/>
+                        <to variable="InvokeCatchAllErrorLoggerIn"
+                            part="payload"
+                            query="/ns5:ErrorData/ns5:MessageDetails/ns5:MessageData"/>
+                    </copy>
+                    <copy>
+                        <from expression="'0001'"/>
+                        <to variable="InvokeCatchAllErrorLoggerIn"
+                            part="payload"
+                            query="/ns5:ErrorData/ns5:ErrorDetails/ns5:ErrorCode"/>
+                    </copy>
+                    <copy>
+                        <from expression="concat('An error occurred while performing this acitvity ',bpws:getVariableData('activityNameVar'),bpws:getVariableData('activityDescriptionVar'))"/>
+                        <to variable="InvokeCatchAllErrorLoggerIn"
+                            part="payload"
+                            query="/ns5:ErrorData/ns5:ErrorDetails/ns5:ErrorDescription"/>
+                    </copy>
+                    <copy>
+                        <from expression="concat('An error occurred while performing this acitvity ',bpws:getVariableData('activityNameVar'),bpws:getVariableData('activityDescriptionVar'))"/>
+                        <to variable="InvokeCatchAllErrorLoggerIn"
+                            part="payload"
+                            query="/ns5:ErrorData/ns5:ErrorDetails/ns5:ErrorText"/>
+                    </copy>
+                    <copy>
+                        <from expression='ora:doc("${server_url}/xmllib/otc/GlobalParameters.xml","/GlobalParameters/OTC/POACK/EnqueueDelay")'/>
+                        <to variable="EnqueueHeader" part="Header"
+                            query="/ns9:Header/ns9:Delay"/>
+                    </copy>
+                </assign>
+                <invoke name="InvokeCatchAllErrorLogger"
+                        partnerLink="ODErrorLogger" portType="ns4:ODErrorLogger"
+                        operation="initiate"
+                        inputVariable="InvokeCatchAllErrorLoggerIn"/>
+                <invoke name="InvokeCatchAllEnqueue"
+                        partnerLink="EnqueueMessage" portType="ns8:Enqueue_ptt"
+                        operation="Enqueue"
+                        inputVariable="InvokeCatchAllEnqueueIn"
+                        bpelx:inputHeaderVariable="EnqueueHeader"/>
+            </sequence>
+        </catchAll>
+    </faultHandlers>
+    <!-- 
+      ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+       ORCHESTRATION LOGIC                                               
+       Set of activities coordinating the flow of messages across the    
+       services integrated within this business process                  
+      ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    -->
+    <sequence name="main">
+        <!-- Receive input from requestor. (Note: This maps to operation defined in POAcknowledgementProcess.wsdl) -->
+        <receive name="receiveInput" partnerLink="client"
+                 portType="client:POAcknowledgementProcess" operation="initiate"
+                 variable="inputVariable" createInstance="yes"/>
+        <!-- 
+          Asynchronous callback to the requester. (Note: the callback location and correlation id is transparently handled using WS-addressing.)
+        -->
+        <assign name="AssignErrMsg">
+            <copy>
+                <from expression="'TransformOAGISToDB'"/>
+                <to variable="activityNameVar"/>
+            </copy>
+            <copy>
+                <from expression="'(This activity transform OAGIS format data to DB format)'"/>
+                <to variable="activityDescriptionVar"/>
+            </copy>
+        </assign>
+        <assign name="TransformOAGISToDB">
+            <bpelx:annotation>
+                <bpelx:pattern>transformation</bpelx:pattern>
+            </bpelx:annotation>
+            <copy>
+                <from expression="ora:processXSLT('TransformOAGIStoDB.xsl',bpws:getVariableData('inputVariable','payload'))"/>
+                <to variable="InvokeUpdatePOAckVarIn" part="InputParameters"/>
+            </copy>
+        </assign>
+        <assign name="AssignErrMsg">
+            <copy>
+                <from expression="'InvokeUpdatePOAck'"/>
+                <to variable="activityNameVar"/>
+            </copy>
+            <copy>
+                <from expression="'(This activity invoke a Database Adapter that updates and process PO Ack details'"/>
+                <to variable="activityDescriptionVar"/>
+            </copy>
+            <copy>
+                <from expression='ora:doc("${server_url}/xmllib/otc/GlobalParameters.xml","/GlobalParameters/OTC/POACK/UserName")'/>
+                <to variable="InvokeUpdatePOAckVarIn" part="InputParameters"
+                    query="/ns12:InputParameters/P_USER_NAME"/>
+            </copy>
+            <copy>
+                <from expression='ora:doc("${server_url}/xmllib/otc/GlobalParameters.xml","/GlobalParameters/OTC/POACK/RespName")'/>
+                <to variable="InvokeUpdatePOAckVarIn" part="InputParameters"
+                    query="/ns12:InputParameters/P_RESP_NAME"/>
+            </copy>
+        </assign>
+        <invoke name="InvokeUpdatePOAck" partnerLink="UpdatePOAckDetails"
+                portType="ns3:UpdatePOAckDetails_ptt"
+                operation="UpdatePOAckDetails"
+                inputVariable="InvokeUpdatePOAckVarIn"
+                outputVariable="InvokeUpdatePOAckVarOut"/>
+        <invoke name="callbackClient" partnerLink="client"
+                portType="client:POAcknowledgementProcessCallback"
+                operation="onResult" inputVariable="outputVariable"/>
+    </sequence>
+</process>

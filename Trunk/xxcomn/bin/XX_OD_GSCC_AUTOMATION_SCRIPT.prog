@@ -1,0 +1,134 @@
+#-- | Rice ID         :                          			                |
+#-- | Description     : Shell Script to provide the results of each GSCC    |
+#-- |                   execution for all custom tops                       |
+#-- |Change History:                                                        |
+#-- |---------------                                                        |
+#-- |Version    Date          Author                Remarks                 |
+#-- |-------    -----------  --------------        -------------------------|
+#-- |Draft 1.0  17-JAN-2017  Havish Kasina         Initial Draft version    |
+#-- +=======================================================================+
+
+#Shell Script to provide the results of each GSCC execution for all custom tops 
+
+#Apps default parameters
+FCP_LOGIN=$1
+FCP_USERID=$2
+FCP_USERNAME=$3
+FCP_REQID=$4
+echo $FCP_REQID 
+echo "================================================================================" 
+echo "Start Time          : `date`"                        
+echo "Program Name        : OD: GSCC Violation Report - filesystem                    "
+echo "================================================================================" 
+echo " ==============Concurrent Program Parameters===================================="
+
+echo "================================================================================" 
+echo " Setting Environment Variable "
+. $HOME/r122profile.sh
+echo "================================================================================" 
+lc_run_top=$RUN_BASE
+echo $lc_run_top
+file_name1='o'
+file_name2='.out'
+out_file_name=$file_name1$FCP_REQID$file_name2
+
+echo "=========================================================================="
+echo "Calling perl script for the XXCNV TOP"
+echo "perl $FND_TOP/bin/gscc.pl -f '$XXCNV_TOP/*'  -o XXCNV_TOP_gcc-out.log"
+perl $FND_TOP/bin/gscc.pl -f '$XXCNV_TOP/*'  -o XXCNV_TOP_gcc-out.log
+echo "=========================================================================="
+echo "Calling perl script for the XXCOMN TOP"
+echo "perl $FND_TOP/bin/gscc.pl -f '$XXCOMN_TOP/*'  -o XXCOMN_TOP_gcc-out.log"
+perl $FND_TOP/bin/gscc.pl -f '$XXCOMN_TOP/*'  -o XXCOMN_TOP_gcc-out.log
+echo "=========================================================================="
+echo "Calling perl script for the XXCRM TOP"
+echo "perl $FND_TOP/bin/gscc.pl -f '$XXCRM_TOP/*'  -o XXCRM_TOP_gcc-out.log"
+perl $FND_TOP/bin/gscc.pl -f '$XXCRM_TOP/*'  -o XXCRM_TOP_gcc-out.log
+echo "=========================================================================="
+echo "Calling perl script for the XXCS TOP"
+echo "perl $FND_TOP/bin/gscc.pl -f '$XXCS_TOP/*'  -o XXCS_TOP_gcc-out.log"
+perl $FND_TOP/bin/gscc.pl -f '$XXCS_TOP/*'  -o XXCS_TOP_gcc-out.log
+echo "=========================================================================="
+echo "Calling perl script for the XXDBA TOP"
+echo "perl $FND_TOP/bin/gscc.pl -f '$XXDBA_TOP/*'  -o XXDBA_TOP_gcc-out.log"
+perl $FND_TOP/bin/gscc.pl -f '$XXDBA_TOP/*'  -o XXDBA_TOP_gcc-out.log
+echo "=========================================================================="
+echo "Calling perl script for the XXFIN TOP"
+echo "perl $FND_TOP/bin/gscc.pl -f '$XXFIN_TOP/*'  -o XXFIN_TOP_gcc-out.log"
+perl $FND_TOP/bin/gscc.pl -f '$XXFIN_TOP/*'  -o XXFIN_TOP_gcc-out.log
+echo "=========================================================================="
+echo "Calling perl script for the XXMER TOP"
+echo "perl $FND_TOP/bin/gscc.pl -f '$XXMER_TOP/*'  -o XXMER_TOP_gcc-out.log"
+perl $FND_TOP/bin/gscc.pl -f '$XXMER_TOP/*'  -o XXMER_TOP_gcc-out.log
+echo "=========================================================================="
+echo "Calling perl script for the XXOM TOP"
+echo "perl $FND_TOP/bin/gscc.pl -f '$XXOM_TOP/*'  -o XXOM_TOP_gcc-out.log"
+perl $FND_TOP/bin/gscc.pl -f '$XXOM_TOP/*'  -o XXOM_TOP_gcc-out.log
+echo "=========================================================================="
+echo "Calling perl script for the XXPTP TOP"
+echo "perl $FND_TOP/bin/gscc.pl -f '$XXPTP_TOP/*'  -o XXPTP_TOP_gcc-out.log"
+perl $FND_TOP/bin/gscc.pl -f '$XXPTP_TOP/*'  -o XXPTP_TOP_gcc-out.log
+echo "=========================================================================="
+echo "Calling perl script for the XXTPS TOP"
+echo "perl $FND_TOP/bin/gscc.pl -f '$XXTPS_TOP/*'  -o XXTPS_TOP_gcc-out.log"
+perl $FND_TOP/bin/gscc.pl -f '$XXTPS_TOP/*'  -o XXTPS_TOP_gcc-out.log
+echo "=========================================================================="
+echo "Calling perl script for the XXTWE TOP"
+echo "perl $FND_TOP/bin/gscc.pl -f '$XXTWE_TOP/*'  -o XXTWE_TOP_gcc-out.log"
+perl $FND_TOP/bin/gscc.pl -f '$XXTWE_TOP/*'  -o XXTWE_TOP_gcc-out.log
+echo "=========================================================================="
+
+echo "Adding all files into the single file"
+echo "\033[1mXXCNV_TOP GSCC Violations: \033[0m" >> $APPLCSF/$APPLOUT/$out_file_name
+cat XXCNV_TOP_gcc-out.log >> $APPLCSF/$APPLOUT/$out_file_name
+echo "\033[1mXXCOMN_TOP GSCC Violations: \033[0m" >> $APPLCSF/$APPLOUT/$out_file_name
+cat XXCOMN_TOP_gcc-out.log >> $APPLCSF/$APPLOUT/$out_file_name
+echo "\033[1mXXCRM_TOP GSCC Violations: \033[0m" >> $APPLCSF/$APPLOUT/$out_file_name
+cat XXCRM_TOP_gcc-out.log >> $APPLCSF/$APPLOUT/$out_file_name
+echo "\033[1mXXCS_TOP GSCC Violations: \033[0m" >> $APPLCSF/$APPLOUT/$out_file_name
+cat XXCS_TOP_gcc-out.log >> $APPLCSF/$APPLOUT/$out_file_name
+echo "\033[1mXXDBA_TOP GSCC Violations: \033[0m" >> $APPLCSF/$APPLOUT/$out_file_name
+cat XXDBA_TOP_gcc-out.log >> $APPLCSF/$APPLOUT/$out_file_name
+echo "\033[1mXXFIN_TOP GSCC Violations: \033[0m" >> $APPLCSF/$APPLOUT/$out_file_name
+cat XXFIN_TOP_gcc-out.log >> $APPLCSF/$APPLOUT/$out_file_name
+echo "\033[1mXXMER_TOP GSCC Violations: \033[0m" >> $APPLCSF/$APPLOUT/$out_file_name
+cat XXMER_TOP_gcc-out.log >> $APPLCSF/$APPLOUT/$out_file_name
+echo "\033[1mXXOM_TOP GSCC Violations: \033[0m" >> $APPLCSF/$APPLOUT/$out_file_name
+cat XXOM_TOP_gcc-out.log >> $APPLCSF/$APPLOUT/$out_file_name
+echo "\033[1mXXPTP_TOP GSCC Violations: \033[0m" >> $APPLCSF/$APPLOUT/$out_file_name
+cat XXPTP_TOP_gcc-out.log >> $APPLCSF/$APPLOUT/$out_file_name
+echo "\033[1mXXTPS_TOP GSCC Violations: \033[0m" >> $APPLCSF/$APPLOUT/$out_file_name
+cat XXTPS_TOP_gcc-out.log >> $APPLCSF/$APPLOUT/$out_file_name
+echo "\033[1mXXTWE_TOP GSCC Violations: \033[0m" >> $APPLCSF/$APPLOUT/$out_file_name
+cat XXTWE_TOP_gcc-out.log >> $APPLCSF/$APPLOUT/$out_file_name
+echo "========================================================================="
+echo "\033[1mXXCOMN_TOP GSCC Violations: \033[0m"
+export SQLPATH=$APPL_TOP
+echo $SQLPATH
+
+echo " Getting the Email List"
+email_alert_list=`sqlplus -s $1 <<EOF_SQL
+whenever sqlerror exit 1
+SET feedback off echo off verify off heading off
+set pagesize 0
+set feedback off
+set serveroutput on size 1000000
+SET linesize  32000
+SET long  50000
+SELECT target_value1 FROM xx_fin_translatevalues
+ WHERE 1 =1 
+   AND source_value1 = 'XXOD_COMN_GSCC_VIOLATIONS'
+   AND translate_id IN ( SELECT translate_id FROM xx_fin_translatedefinition
+                                WHERE translation_name = 'OD_MAIL_GROUPS');
+exit;
+EOF_SQL`
+
+echo $email_alert_list
+gscc_violations=`grep 'Errors (' $APPLCSF/$APPLOUT/$out_file_name|wc -l`;
+
+if [ $gscc_violations -gt 1 ]; then
+  echo "GSCC violations were found."
+echo "Attached is the document having GSCC Violations" | mailx -s "GSCC Violations Report - File System " -a $APPLCSF/$APPLOUT/$out_file_name $email_alert_list
+fi
+
+

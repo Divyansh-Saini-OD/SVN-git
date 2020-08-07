@@ -1,0 +1,40 @@
+-- +============================================================================================+
+-- |                        Office Depot - Project Simplify                                     |
+-- |                                                                                            |
+-- +============================================================================================+
+-- | Name         : XX_C2T_CC_TOKEN_CRYPTO_VAUL_IDX.idx                                         |
+-- | Rice Id      :                                                                             | 
+-- | Description  : XX_C2T_CC_TOKEN_CRYPTO_VAULT Table Indexes Creation Script                  |  
+-- | Purpose      :                                                                             |
+-- |                                                                                            |
+-- |                                                                                            |
+-- |Change Record:                                                                              |
+-- |===============                                                                             |
+-- |Version    Date          Author                Remarks                                      | 
+-- |=======    ==========    =================    ==============================================+
+-- |1.0        13-OCT-2015  Harvinder Rakhra      Initial Version                               |
+-- |1.1        26-OCT-2015  Harvinder Rakhra      Added Index XX_C2T_CC_TOKEN_CRYPTOVAULT_N1    |
+-- +============================================================================================+
+
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     ON
+
+
+PROMPT CREATING INDEX XX_C2T_CC_TOKEN_CRYPTOVAULT_N2.....
+CREATE UNIQUE INDEX XXFIN.XX_C2T_CC_TOKEN_CRYPTOVAULT_N2
+ON XX_C2T_CC_TOKEN_CRYPTO_VAULT (CARD_ID);
+
+PROMPT CREATING INDEX XX_C2T_CC_TOKEN_CRYPTO_VLT_N1....
+CREATE INDEX XXFIN.XX_C2T_CC_TOKEN_CRYPTOVAULT_N1 
+ON XX_C2T_CC_TOKEN_CRYPTO_VAULT(CREDIT_CARD_NUMBER_NEW);
+
+PROMPT CREATING INDEX XX_C2T_CC_TOKEN_CRYPTOVAULT_N3.....
+CREATE INDEX XXFIN.XX_C2T_CC_TOKEN_CRYPTOVAULT_N3  
+ON  XX_C2T_CC_TOKEN_CRYPTO_VAULT ( RE_ENCRYPT_STATUS);
+
+COMMIT;
+
+SHOW ERROR;

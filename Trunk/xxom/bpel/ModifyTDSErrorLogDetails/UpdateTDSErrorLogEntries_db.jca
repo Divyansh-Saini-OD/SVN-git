@@ -1,0 +1,14 @@
+<adapter-config name="UpdateTDSErrorLogEntries" adapter="Database Adapter" wsdlLocation="UpdateTDSErrorLogEntries.wsdl" xmlns="http://platform.integration.oracle/blocks/adapter/fw/metadata">
+  
+  <connection-factory location="eis/db/OraXXSOAEH" UIConnectionName="ErrorHandlingDatabase" adapterRef=""/>
+  <endpoint-interaction portType="UpdateTDSErrorLogEntries_ptt" operation="update">
+    <interaction-spec className="oracle.tip.adapter.db.DBWriteInteractionSpec">
+      <property name="DescriptorName" value="UpdateTDSErrorLogEntries.XxcomErrorLog"/>
+      <property name="DmlType" value="update"/>
+      <property name="MappingsMetaDataURL" value="UpdateTDSErrorLogEntries-or-mappings.xml"/>
+      <property name="DetectOmissions" value="true"/>
+      <property name="GetActiveUnitOfWork" value="false"/>
+    </interaction-spec>
+  </endpoint-interaction>
+
+</adapter-config>

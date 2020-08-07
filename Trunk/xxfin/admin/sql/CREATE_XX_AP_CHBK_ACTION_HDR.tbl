@@ -1,0 +1,76 @@
+REM============================================================================================
+REM                                 Start Of Script
+REM============================================================================================
+
+--+=============================================================================================+--
+--|                                                                                             |--
+--| Program Name   : CREATE_XX_AP_CHBK_ACTION_HDR.tbl                                           |--
+--| RICE ID        : E3523                                                                      |--
+--| Purpose        : Create Custom Tables .                                                     |--
+--|                  The Objects created are:                                                   |--
+--|                                                                                             |--
+--|                1. XX_AP_CHBK_ACTION_HDR(OD AP UI Action Header Table                        |--
+--|                                                                                             |--
+--| Change History  :                                                                           |--
+--| Version           Date             Changed By              Description                      |--
+--+=============================================================================================+--
+--| 1.0              03-Sep-2017       Paddy Sanjeevi          Original                         |--
+--+=============================================================================================+--
+
+SET VERIFY      OFF
+SET TERM        ON
+SET FEEDBACK    OFF
+SET SHOW        OFF
+SET ECHO        OFF
+SET TAB         OFF
+
+WHENEVER SQLERROR CONTINUE;
+
+PROMPT
+PROMPT Creating the Custom Table ......
+PROMPT
+
+PROMPT
+PROMPT Creating the Table XX_AP_CHBK_ACTION_HDR.....
+PROMPT
+
+Create table XX_AP_CHBK_ACTION_HDR
+( invoice_id               NUMBER,
+  invoice_num              VARCHAR2(50),
+  po_header_id             NUMBER,
+  process_flag             VARCHAR2(1),
+  chbk_create_flag         VARCHAR2(1),
+  rel_hold_flag            VARCHAR2(1),
+  chbk_process_flag        VARCHAR2(1),
+  rel_hold_process_flag    VARCHAR2(1),
+  cancel_inv_process_flag  VARCHAR2(1),
+  inv_recreate_flag        VARCHAR2(1),
+  delete_flag              VARCHAR2(1),
+  error_message            VARCHAR2(2000),
+  created_by_name          VARCHAR2(100),
+  cancel_invoice           VARCHAR2(1),
+  org_invoice_amount       NUMBER,
+  org_id                   NUMBER,
+  source                   VARCHAR2(25),
+  created_by        	   NUMBER,
+  creation_date     	   DATE,
+  last_updated_by   	   NUMBER,
+  last_update_date  	   DATE
+);
+ 
+WHENEVER SQLERROR CONTINUE;
+
+PROMPT
+PROMPT Exiting....
+PROMPT 
+
+SET FEEDBACK ON
+
+EXIT;
+
+REM=================================================================================================
+REM                                   End Of Script
+REM=================================================================================================
+
+
+

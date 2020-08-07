@@ -1,0 +1,25 @@
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     ON
+
+-- +==========================================================================+
+-- |                  Office Depot - Project Simplify                         |
+-- |                       WIPRO Technologies                                 |
+-- +==========================================================================+
+-- | SQL Script to create the following object                                |
+-- |             Synonym  : XX_IBY_BATCH_TRXNS_HISTORY                        |
+-- |                      For I1039,Settlement and Payment Processing         |
+-- |                                                                          |
+-- |Change Record:                                                            |
+-- |===============                                                           |
+-- |Version   Date         Author               Remarks                       |
+-- |=======   ==========   =============        ==============================|
+-- | V1.0     29-MAY-2008  Gowri Shankar        Initial version               |
+-- |                                                                          |
+-- +==========================================================================+
+
+CREATE SYNONYM XX_IBY_BATCH_TRXNS_HIST_BKP FOR xxfin.XX_IBY_BATCH_TRXNS_HIST_BKP;
+
+SHOW ERROR

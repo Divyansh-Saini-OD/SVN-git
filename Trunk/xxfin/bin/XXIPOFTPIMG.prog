@@ -1,0 +1,381 @@
+# +===================================================================+
+# |                  Office Depot - Project Simplify                  |
+# |                      WIPRO TECHNOLOGIES                           |
+# +===================================================================+
+# | Name  :               XXIPOFTPIMG                                 |
+# | Description:   The files in the folders -> documents and images in|
+# |                the database server of an instance should always be|
+# |                in sync with the corresponding folders in FTP      |
+# |                server. This program is used to sync the folders in| 
+# |                database server as in FTP server.                  |
+# |                The source directory, destination directory,       |
+# |                username, password are all stored in the           |
+# |                translation definition is OD_FTP_PROCESSES. The    |
+# |                process also updates the icx_cat_items_tlp to map  |
+# |                item numbers with corresponding images to be       |
+# |                rendered in iProcurement screens.                  |
+# |                                                                   |
+# |                                                                   |
+# |Change Record:                                                     |
+# |===============                                                    |
+# |Version   Date        Author           Remarks                     |
+# |=======   ==========  =============    ============================|
+# |Ver 1.0  26-AUG-2008  Srividya Sundar  Initial draft version       |
+# |Ver 1.1  04-SEP-2008  Radhika Raman    Changed the UPDATE stmt     |
+# |Ver 1.2  10-SEP-2008  Ram              Changed logic to handle     |
+# |                                       large number of image files |
+# |Ver 1.2  15-SEP-2008  Gowri Shankar    Fix for the Defect# 11122   |
+# |Ver 1.3  29-Oct-2008  Subbu Pillai     Defect 12211				  |
+# |Ver 1.4  16-Oct-2013  Deepak V         I2092 - Changes for R12 Upgrade retrofit.   |
+# |                                       Table ICX_CAT_ITEMS_TLP has |
+# |                                       been replaced by            |
+# |                                       ICX_CAT_ATTRIBUTE_VALUES    |
+# | 1.5      09-SEP-2016    Praveen Vanga          Defect 39261     |
+# | 1.6      19-MAR-2019  BIAS            Use LFTP instead of FTP     |
+# +===================================================================+
+
+#!/usr/bin/ksh
+
+FCP_REQID=$4
+
+EXECFILE=$XXFIN_DATA/COM_FTP_${FCP_REQID}.$$    #Changed $HOME TO $XXFIN_DATA for the Defect# 11122
+>$EXECFILE;chmod 600 $EXECFILE
+
+echo "FTP Execution File = $EXECFILE"
+
+TMPFILE=$XXFIN_DATA/COM_FTP_TMP_${FCP_REQID}.$$          #Changed $HOME TO $XXFIN_DATA for the Defect# 11122
+>$TMPFILE;chmod 600 $TMPFILE
+
+echo "Temp File = $TMPFILE"
+
+echo " "
+echo "Fetching parameters"
+
+#Start of Addition for the Defect# 9992
+
+#TMP_IMG_FILE_NAME=imgupdate_${FCP_REQID}.tmp.$$
+TMP_IMG_FILE_NAME=XX_IPO_IMAGE_TRANSFER_EXT.TXT
+TMP_IMG_FILE=$XXFIN_DATA/inbound/$TMP_IMG_FILE_NAME
+
+echo $TMP_IMG_FILE
+
+#End of Addition for the Defect# 9992
+
+filetype=$5
+echo " "
+echo "Filetype = $filetype"
+
+
+#Fetching the servername,username,password,source directory,target directory from the translation table 
+#for the chosen filetype.
+
+echo " "
+echo "Obtaining values from Translation"
+
+if [ "$filetype" = "Images" ]
+then
+   val=OD_PO_IMAGE_TRANSFER
+else
+   val=OD_PO_DOC_TRANSFER
+fi
+
+echo " "
+echo "Source Value in Translation = $val"
+echo " "
+echo "starting sql session"
+
+export SQLPATH=$APPL_TOP
+ 
+
+V_RESULT=`sqlplus -s /nolog <<EOF
+set linesize 255
+set sqlprompt " "
+set serveroutput on 
+set verify off
+
+SELECT  
+      xftv.Target_Value1 
+      || ' ' || xftv.Target_Value2
+      || ' ' || xftv.Target_Value3
+      || ' ' || xftv.Target_Value4
+      || ' ' || xftv.Target_Value5
+FROM  
+      xx_fin_translatedefinition XFTD,
+      xx_fin_translatevalues     XFTV
+WHERE 
+      XFTD.translate_id          = XFTV.translate_id
+      AND XFTD.translation_name   ='OD_FTP_PROCESSES'
+      AND XFTV.source_value1  ='$val';  
+
+exit
+EOF`
+
+echo "Parse output string into different variables"
+
+#The following code is commented by BIAS
+#server=`echo $V_RESULT | awk '{print $1}'`
+#user=`echo $V_RESULT | awk '{print $2 }'`
+#passwd=`echo $V_RESULT | awk '{print $3}'`
+#source1=`echo $V_RESULT | awk '{print $4}'`
+#dest1=`echo $V_RESULT | awk '{print $5}'`
+
+#The following code is added by BIAS
+#991 odsc03.na.odcorp.net NA/ODPFTP FTP16@od77 /OPCO/Oracle_IP_Images $XXFIN_DATA/IPO/images/TEST
+port=`echo $V_RESULT | awk '{print $1}'`
+server=`echo $V_RESULT | awk '{print $2}'`
+user=`echo $V_RESULT | awk '{print $3}'`
+passwd=`echo $V_RESULT | awk '{print $4}'`
+source1=`echo $V_RESULT | awk '{print $5}'`
+dest1=`echo $V_RESULT | awk '{print $6}'`
+
+eval source=$source1
+eval dest=$dest1
+
+echo " "
+echo "port                  = $port"
+echo "FTP Server            = $server "
+echo "Source Directory      = $source"
+echo "Target Directory      = $dest"
+
+echo " "
+echo "Removing all the files from the destination directory"
+
+cd  $dest
+echo "The current path is `pwd` "
+echo "rm *"
+rm *
+
+echo "The number of files in destination directory now is `ls -1 $dest | wc -l` "
+echo " "
+ 
+#Copying the files from ftp server to the database server
+
+#The following code is commented by BIAS
+#echo "verbose" >> $EXECFILE
+#echo "open $server" >> $EXECFILE
+#echo "open $server"
+#echo "quote USER $user" >> $EXECFILE
+#echo "quote USER $user"
+#echo "quote PASS $passwd" >> $EXECFILE
+#echo "quote PASS *****" 
+#echo "lcd $dest" >> $EXECFILE
+#echo "lcd $dest"
+#echo "cd $source" >> $EXECFILE
+#echo "cd $source"
+#echo "bin" >> $EXECFILE
+#echo "bin"
+
+#echo "mget *.*" >> $EXECFILE
+#echo "mget *.*" 
+
+
+#echo "prompt off" >> $EXECFILE
+#echo "prompt off"
+#echo "quit" >> $EXECFILE
+#echo "quit"
+
+
+#cat $EXECFILE   #Commented to hide FTP Login Credentials
+DAT_TIME_STAMP=`date '+%y%m%d%H%M%S'`
+echo "Time Stamp Before FTP(YYMMDDHHMISS): $DAT_TIME_STAMP"
+
+#Commented by BIAS
+#ftp -n < $EXECFILE > $TMPFILE
+
+#Added by BIAS
+filename="*.*"
+destfile=""
+$XXFIN_TOP/bin/./XXLFTPGET.sh $user $passwd $port $server $source $dest $filename $destfile >> $TMPFILE
+sleep 60s
+
+DAT_TIME_STAMP=`date '+%y%m%d%H%M%S'`
+echo "Time Stamp After FTP(YYMMDDHHMISS) : $DAT_TIME_STAMP"
+
+echo " "
+echo "The number of files in destination directory now is `ls -1 $dest | wc -l`  "
+
+#Error Handling
+
+Server_check=`grep 'Not connected' $TMPFILE`
+User_passwd=`grep 'Please login with USER and PASS'  $TMPFILE`
+Local_directory_error=`grep '550 Failed to change directory' $TMPFILE`
+#Success=`grep 'File receive OK'  $TMPFILE`			#Commented by BIAS
+#Success1=`grep '226 '  $TMPFILE`					#Commented by BIAS
+LFTPSuccess=`grep 'LFTP_SUCCESSFUL'  $TMPFILE`    	#Added by BIAS
+echo "LFTPSuccess=$LFTPSuccess"  					#Added by BIAS
+
+if [ "$Server_check" != "" ]
+then
+    echo " "
+    echo "ERROR: Please check the server. Server provided is $server."
+	  # Added the Below Piece of Code for the Defect 12211.
+	 rm $EXECFILE
+	 rm $TMPFILE
+    exit 1
+
+ elif [ "$User_passwd" != "" ]
+then
+
+    echo " "
+    echo "ERROR: Please provide appropriate username and password."
+	  # Added the Below Piece of Code for the Defect 12211.
+	 rm $EXECFILE
+	 rm $TMPFILE
+    exit 1
+
+ elif [ "$Local_directory_error" != "" ]
+then
+
+    echo " "
+    echo "ERROR: Cannot change to $dest"
+	  # Added the Below Piece of Code for the Defect 12211.
+	 rm $EXECFILE
+	 rm $TMPFILE	 
+     exit 1
+
+ #elif [ "$Success" != "" -o  "$Success1" != "" ]   #Commented by BIAS
+ elif [ "$LFTPSuccess" != "" ]                      #Added by BIAS
+then 
+    echo " "
+    echo "SUCCESS: Successful transmission"
+
+fi
+
+#End of error handling
+
+
+if [ "$filetype" = "Images" ]
+then
+
+       echo " "
+       echo "Updating icx table for images"
+       echo "Concatenating the file names"
+
+       echo "The current path is `pwd` "
+       
+       #file=`ls | cut -d. -f1 | awk '$1=":"$1":"' | sed s/":"/"'"/g | concat`    #Commented for the Defect# 9992
+     
+       echo "Writing the File Names into the XX_IPO_IMAGE_TRANSFER_EXT.TXT"
+       ls | cut -d. -f1 > $TMP_IMG_FILE
+       #cat $TMP_IMG_FILE
+
+       echo "Updating the table with imagefile names ..." 
+       #changed the update to nullify everything initially - Radhika Raman
+
+       #V_UPDATE=`sqlplus -s /nolog <<EOF
+       #set sqlprompt " "
+       #set verify off
+
+       #UPDATE icx.ICX_CAT_ITEMS_TLP
+       #SET PICTURE = NULL,
+       #    THUMBNAIL_IMAGE= NULL;
+
+       #UPDATE icx.ICX_CAT_ITEMS_TLP
+       #SET PICTURE = trim(INTERNAL_ITEM_NUM)||'.jpg',
+           #THUMBNAIL_IMAGE= trim(INTERNAL_ITEM_NUM)||'.jpg'
+       #WHERE TRIM(INTERNAL_ITEM_NUM) IN ($file);       
+
+
+       #COMMIT;
+
+       #exit
+       #EOF`
+	   
+       V_UPDATE=`sqlplus -s /nolog <<EOF
+       set verify off
+       set serveroutput on
+DECLARE
+
+    ln_image_count NUMBER:=0;
+    l_org_id NUMBER;
+
+BEGIN
+	
+	SELECT organization_id 
+	INTO l_org_id
+	FROM mtl_parameters
+	WHERE master_organization_id = organization_id
+	  AND rownum = 1;
+	  
+    --UPDATE icx.ICX_CAT_ITEMS_TLP           Commented by Deepak For R12 retrofit upgrade. Table ICX_CAT_ITEMS_TLP has been replaced by ICX_CAT_ATTRIBUTE_VALUES
+	UPDATE icx.ICX_CAT_ATTRIBUTE_VALUES 
+    SET    PICTURE = NULL
+           ,THUMBNAIL_IMAGE= NULL;
+
+	ln_image_count := SQL%ROWCOUNT;
+	
+    DBMS_OUTPUT.PUT_LINE('Before Update: '||to_char(SYSDATE,'DD-MON-YYYY HH24:MI:SS'));
+	
+	
+
+    --UPDATE icx.ICX_CAT_ITEMS_TLP ICIT      
+
+/*	Commented by Deepak For R12 retrofit upgrade. Table ICX_CAT_ITEMS_TLP has been replaced by ICX_CAT_ATTRIBUTE_VALUES
+	    UPDATE ICX.icx_cat_items_tlp ICIT
+    SET    ICIT.picture = ICIT.internal_item_num||'.jpg'
+          ,ICIT.thumbnail_image= ICIT.internal_item_num||'.jpg'
+    WHERE EXISTS 
+         ( SELECT XPIT.item_number FROM xx_ipo_image_transfer_ext XPIT WHERE 
+           XPIT.item_number = ICIT.internal_item_num);
+*/
+
+--  Added for R12 upgrade retrofit
+	UPDATE ICX_CAT_ATTRIBUTE_VALUES ICAV
+	SET ICAV.picture = (SELECT DISTINCT temp_tbl.item_number || '.jpg' 
+					FROM 
+					(
+					SELECT XPIT.item_number item_number, msl.inventory_item_id
+					   FROM xx_ipo_image_transfer_ext XPIT ,                   
+					mtl_system_items msl
+					WHERE XPIT.item_number = msl.segment1
+					  AND msl.organization_id = l_org_id					  
+					) temp_tbl
+					 WHERE temp_tbl.inventory_item_id = ICAV.inventory_item_id
+					)
+	WHERE EXISTS (SELECT null FROM 
+					xx_ipo_image_transfer_ext XPIT
+				  , mtl_system_items msl
+				  WHERE msl.segment1 = xpit.item_number
+					AND ICAV.inventory_item_id = msl.inventory_item_id					
+					AND msl.organization_id = l_org_id
+				  );                 
+
+    ln_image_count := SQL%ROWCOUNT;
+	
+	
+	
+	UPDATE ICX_CAT_ATTRIBUTE_VALUES ICAV
+	SET thumbnail_image = picture;	
+
+    DBMS_OUTPUT.PUT_LINE('After Update: '||to_char(SYSDATE,'DD-MON-YYYY HH24:MI:SS'));
+    DBMS_OUTPUT.PUT_LINE('Number of Images updated: '||ln_image_count);
+
+EXCEPTION 
+    WHEN OTHERS THEN
+    DBMS_OUTPUT.PUT_LINE('Error Message: '||SQLERRM);
+
+END;
+/
+       exit
+       EOF`
+
+       echo "Return Message for Update:"
+	   echo $V_UPDATE
+       # Below Code Commented for the Defect 12211
+      # echo "Deleting FTP Execution File"
+
+       #rm $EXECFILE
+
+       #echo "Deleting Temp File"
+
+       #rm $TMPFILE
+
+fi
+      # Added the Below Piece of Code for the Defect 12211.
+	    echo "Deleting FTP Execution File"
+
+       rm $EXECFILE
+
+       echo "Deleting Temp File"
+
+       rm $TMPFILE

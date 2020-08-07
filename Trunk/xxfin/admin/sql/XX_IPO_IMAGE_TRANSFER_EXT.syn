@@ -1,0 +1,28 @@
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     ON
+
+-- +==========================================================================+
+-- |                  Office Depot - Project Simplify                         |
+-- |                       WIPRO Technologies                                 |
+-- +==========================================================================+
+-- | Name :      OD: IPO Transfer Images and Documents to Server              |
+-- |                                                                          |
+-- | SQL Script to create                                                     |
+-- |                                                                          |
+-- |             SYNONYM:                                                     |
+-- |                            XX_IPO_IMAGE_TRANSFER_EXT                     |
+-- |                                                                          |
+-- |Change Record:                                                            |
+-- |===============                                                           |
+-- |Version   Date         Author               Remarks                       |
+-- |=======   ==========   =============        ==============================|
+-- | V1.0     15-SEP-2008  Gowri Shankar        Initial version               |
+-- |                                                                          |
+-- +==========================================================================+
+
+CREATE SYNONYM XX_IPO_IMAGE_TRANSFER_EXT FOR xxfin.xx_ipo_image_transfer_ext;
+
+SHOW ERROR

@@ -1,0 +1,20 @@
+-- +==========================================================================+
+-- |                  Office Depot - Project Simplify                         |
+-- +==========================================================================+
+-- | SQL Script to create the following objects                               |
+-- |                Synonym  :  XXOD_TABLE_REBUILD                         |
+-- |                          |
+-- |                                                                          |
+-- |                                                                          |
+-- |                                                                          |
+-- |Change Record:                                                            |
+-- |===============                                                           |
+-- |Version   Date         Author               Remarks                       |
+-- |=======   ==========   =============        ==============================|
+-- | V1.0     25-JUL-2010  Radhika Patnala          Initial version           |
+-- |                                                                          |
+-- +==========================================================================+
+
+CREATE or REPLACE  SYNONYM XXOD_TABLE_REBUILD for xxdba.XXOD_TABLE_REBUILD;
+
+

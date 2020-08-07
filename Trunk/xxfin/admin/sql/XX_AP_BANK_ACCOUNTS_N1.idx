@@ -1,0 +1,26 @@
+-- +==========================================================================+
+-- |                  Office Depot - Project Simplify                         |
+-- |                                                                          |
+-- +==========================================================================+
+-- | SQL Script to create the following objects                               |
+-- |             INDEX       : XXFIN.XX_AP_BANK_ACCOUNTS_N1                   |
+-- |                         For P.AP_BANK_ACCOUNTS_ALL table used by E1318   |
+-- |                                                                          |
+-- |                                                                          |
+-- |                                                                          |
+-- |Change Record:                                                            |
+-- |===============                                                           |
+-- |Version   Date         Author               Remarks                       |
+-- |=======   ===========  =============        ==============================|
+-- | V1.0     07-JUN-2008  Rick Aldridge        Initial version               |
+-- |                                                                          |
+-- +==========================================================================+
+
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     ON
+
+CREATE INDEX XXFIN.XX_AP_BANK_ACCOUNTS_N1 ON AP.AP_BANK_ACCOUNTS_ALL
+(ASSET_CODE_COMBINATION_ID);

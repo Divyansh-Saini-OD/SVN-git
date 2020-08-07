@@ -1,0 +1,36 @@
+-- +==========================================================================+
+-- |                  Office Depot - Project Simplify                         |
+-- |                       Providge Consulting                                |
+-- +==========================================================================+
+-- | Name :XXFIN.XX_CE_999_INTERFACE_S                                        |
+-- | Description : Create the Cash Management (CE) Reconciliation             |
+-- |               Open Interface table sequence used by Cash Management      |
+-- |               extensions.                                                |
+-- |                                                                          |
+-- |                                                                          |
+-- |                                                                          |
+-- |Change Record:                                                            |
+-- |===============                                                           |
+-- |Version   Date         Author               Remarks                       |
+-- |=======   ==========   =============        ==============================|
+-- | V1.0     04-Aug-2007  Terry Banks          Initial version               |
+-- |                                                                          |
+-- +==========================================================================+
+
+   SET SHOW         OFF
+   SET VERIFY       OFF
+   SET ECHO         OFF
+   SET TAB          OFF
+   SET FEEDBACK     ON
+
+
+--DROP SEQUENCE XXFIN.XX_CE_999_INTERFACE_S
+--/
+
+
+CREATE SEQUENCE XX_CE_999_INTERFACE_S
+	START WITH 1
+	INCREMENT BY 1 
+	NOCACHE NOORDER NOCYCLE ;
+
+SHOW ERROR

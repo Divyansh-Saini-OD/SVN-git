@@ -1,0 +1,32 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<customization xmlns="http://xmlns.oracle.com/jrad" version="9.0.5.4.89_560" xml:lang="en-US" customizes="/oracle/apps/asn/lead/webui/ASNMgrLeadQryRN" developerMode="true" package="/oracle/apps/asn/lead/webui/customizations/site/0">
+   <modifications>
+      <move element="ASNLeadLstCustNm" after="ASNLeadLstNm"/>
+      <insert before="ASNLeadLstCustNm">
+         <oa:messageStyledText id="ASNLeadLstCustName" adminCustomizable="true" cellNoWrapFormat="false" dataType="VARCHAR2" destination="OA.jsp?page=/od/oracle/apps/xxcrm/asn/common/customer/webui/ODOrgViewPG&amp;OAFunc=ASN_ORGVIEWPG&amp;addBreadCrumb=Y&amp;ASNReqFrmCustId={@CustomerId}&amp;ASNReqFrmSalesLeadId={@SalesLeadId}" initSortSeq="none" prompt="Prospect/Customer" queryable="false" rendered="true" required="no" scope="." selectiveSearchCriteria="false" serverUnvalidated="false" sortState="yes" tipType="none" viewAttr="CustomerName" viewName="LeadSearchVO" totalValue="false" userCustomizable="false" vAlign="middle" warnAboutChanges="true" xmlns:oa="http://xmlns.oracle.com/oa"/>
+      </insert>
+      <move element="ASNLeadLstRank" after="ASNLeadLstCustNm"/>
+      <move element="ASNLeadLstStatus" after="ASNLeadLstRank"/>
+      <move element="ASNLeadLstAge" after="ASNLeadLstStatus"/>
+      <move element="ASNLeadLstChnl" after="ASNLeadLstAge"/>
+      <move element="ASNLeadLstStg" after="ASNLeadLstChnl"/>
+      <move element="ASNLeadLstCnvToOppty" after="ASNLeadLstStg"/>
+      <move element="ASNLeadLstSrcNm" after="ASNLeadLstCnvToOppty"/>
+      <move element="ASNLeadLstNbr" after="ASNLeadLstSrcNm"/>
+      <move element="ASNLeadLstLastUpdDate" after="ASNLeadLstNbr"/>
+      <move element="ASNLeadLstCrteDate" after="ASNLeadLstLastUpdDate"/>
+      <move element="ASNLeadLstCurrNm" after="ASNLeadLstCrteDate"/>
+      <move element="ASNLeadLstOwNm" after="ASNLeadLstCurrNm"/>
+      <move element="ASNLeadLstMeth" after="ASNLeadLstOwNm"/>
+      <move element="ASNLeadLstUpdBy" after="ASNLeadLstMeth"/>
+      <move element="ASNLeadLstBdgtAmt" after="ASNLeadLstUpdBy"/>
+      <move element="ASNLeadLstSrcSystem" after="ASNLeadLstBdgtAmt"/>
+      <move element="ASNLeadLstOwId" after="ASNLeadLstSrcSystem"/>
+      <move element="ASNLeadLstSlsRscId" after="ASNLeadLstOwId"/>
+      <move element="ASNLeadLstSlsGrpId" after="ASNLeadLstSlsRscId"/>
+      <move element="ASNLeadLstSrcId" after="ASNLeadLstSlsGrpId"/>
+      <move element="ASNLeadLstSlsRscNm" after="ASNLeadLstSrcId"/>
+      <move element="ASNLeadLstSlsGrpNm" after="ASNLeadLstSlsRscNm"/>
+      <modify element="ASNLeadLstCustNm" rendered="false"/>
+   </modifications>
+</customization>

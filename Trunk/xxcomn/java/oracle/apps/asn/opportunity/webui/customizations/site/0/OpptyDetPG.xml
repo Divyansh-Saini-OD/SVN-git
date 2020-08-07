@@ -1,0 +1,55 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<customization xmlns="http://xmlns.oracle.com/jrad" version="9.0.5.4.89_560" xml:lang="en-US" customizes="/oracle/apps/asn/opportunity/webui/OpptyDetPG" developerMode="true" package="/oracle/apps/asn/opportunity/webui/customizations/site/0" xmlns:oa="http://xmlns.oracle.com/oa" xmlns:ui="http://xmlns.oracle.com/uix/ui">
+   <modifications>
+      <modify element="PageLayoutRN" controllerClass="od.oracle.apps.xxcrm.asn.opportunity.webui.ODOpptyDetCO"/>
+      <modify element="ASNSubtabNoteRN" controllerClass="od.oracle.apps.xxcrm.asn.common.webui.ODASNNotesCO"/>
+      <move element="ASNAddrSelButton" after="ASNOpptyDetAddr"/>
+      <insert before="ASNAddrSelButton">
+         <oa:link id="ASNOpptyDetAddrLink" adminCustomizable="true" destination="OA.jsp?page=/od/oracle/apps/xxcrm/asn/partysite/webui/ODSiteViewPG&amp;OAFunc=XX_ASN_SITEVIEWPG&amp;ASNReqFrmFuncName=ASN_OPPTYDETPG&amp;ASNReqFrmCustId={@CustomerId}&amp;ASNReqFrmSiteId={@AddressId}&amp;addBreadCrumb=Y" rendered="true" scope="." serverUnvalidated="false" userCustomizable="false" viewAttr="Address" viewName="OpportunityDetailsVO1" warnAboutChanges="true" xmlns:oa="http://xmlns.oracle.com/oa"/>
+      </insert>
+      <modify element="ASNOpptyDetAddr" rendered="false"/>
+      <modify element="ASNSTAddButton" rendered="false"/>
+      <modify element="ASNSTAcc" readOnly="true"/>
+      <modify element="ASNSTKeepCol" rendered="false"/>
+      <modify element="ASNSTOwCol" rendered="false"/>
+      <modify element="ASNSTRmLinkCol" rendered="false"/>
+      <modify element="ASNAddrSelButton" rendered="false"/>
+      <modify element="ASNOpptyDetChnl" rendered="false"/>
+      <modify element="ASNSubtabSugCtctLstRN" rendered="false"/>
+      <modify element="ASNPrdtAddButton" prompt="Select Product"/>
+      <modify element="ASNCmptAddButton" prompt="Select Competitors"/>
+      <modify element="ASNDetTaskRN.CacSmrTaskDueDate" prompt="Date"/>
+      <modify element="ASNDetTaskRN.CacSmrTaskDueDateRO" prompt="Date"/>
+      <modify element="ASNCtctAddButton" rendered="true"/>
+      <modify element="ASNCtctCrteButton" rendered="true"/>
+      <modify element="ASNOpptyDetFrcstAmt" queryable="true"/>
+      <move element="ASNPrdtItmNumCol" after="ASNPrdtCtgCol"/>
+      <move element="ASNPrdtUomCol" after="ASNPrdtItmNumCol"/>
+      <move element="ASNPrdtQuanCol" after="ASNPrdtUomCol"/>
+      <move element="ASNPrdtAmtCol" after="ASNPrdtQuanCol"/>
+      <move element="ASNPrdtDateCol" after="ASNPrdtAmtCol"/>
+      <insert before="ASNPrdtDateCol">
+         <oa:column id="IMUCOLUMNHDR" adminCustomizable="true" bandingShade="none" cellNoWrapFormat="false" columnDataFormat="numberFormat" displayGrid="true" rendered="true" scope="." totalValue="false" userCustomizable="false" xmlns:oa="http://xmlns.oracle.com/oa">
+            <ui:columnHeader xmlns:ui="http://xmlns.oracle.com/uix/ui">
+               <oa:sortableHeader id="IMUHDR" adminCustomizable="true" cellNoWrapFormat="false" initSortSeq="none" prompt="IMU%" rendered="true" required="no" scope="." sortByViewAttr="Attribute1" sortState="yes" userCustomizable="false"/>
+            </ui:columnHeader>
+            <ui:contents xmlns:ui="http://xmlns.oracle.com/uix/ui">
+               <oa:messageTextInput id="IMUTXTINPUT" adminCustomizable="true" cellNoWrapFormat="false" columns="4" dataType="VARCHAR2" disabled="false" initSortSeq="none" prompt="IMU%" queryable="true" readOnly="false" rendered="true" required="no" rows="1" scope="." secret="false" selectiveSearchCriteria="true" serverUnvalidated="false" sortState="no" tipType="none" totalValue="false" translatableDefaultValue="'0'" userCustomizable="false" vAlign="middle" viewAttr="Attribute1" viewName="OpportunityLineDetailsVO1" warnAboutChanges="true"/>
+            </ui:contents>
+         </oa:column>
+      </insert>
+      <move element="ASNPrdtBestCol" after="ASNPrdtDateCol"/>
+      <move element="ASNBestExCol" after="ASNPrdtBestCol"/>
+      <move element="ASNPrdtFrcstCol" after="ASNBestExCol"/>
+      <move element="ASNPrdtFrcstExCol" after="ASNPrdtFrcstCol"/>
+      <move element="ASNPrdtWorstCol" after="ASNPrdtFrcstExCol"/>
+      <move element="ASNPrdtWorstExCol" after="ASNPrdtWorstCol"/>
+      <move element="ASNPrdtRmLinkCol" after="ASNPrdtWorstExCol"/>
+      <move element="ASNPrdtOrgId" after="ASNPrdtRmLinkCol"/>
+      <move element="ASNPrdtInvItemId" after="ASNPrdtOrgId"/>
+      <move element="ASNPrdtPrdtCatId" after="ASNPrdtInvItemId"/>
+      <move element="ASNPrdtPrdtCatSetId" after="ASNPrdtPrdtCatId"/>
+      <move element="ASNPrdtProcInvItemId" after="ASNPrdtPrdtCatSetId"/>
+      <move element="ASNPrdtProcOrgId" after="ASNPrdtProcInvItemId"/>
+   </modifications>
+</customization>

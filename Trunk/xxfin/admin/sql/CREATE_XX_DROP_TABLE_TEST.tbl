@@ -1,0 +1,40 @@
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     ON
+
+PROMPT Creating TABLE XX_AR_INVOICE_FREQUENCY
+
+PROMPT Program exits IF the creation IS NOT SUCCESSFUL
+
+-- +==========================================================================+
+-- |                  Office Depot - Project Simplify                         |
+-- +==========================================================================+
+-- | Name :XXFIN.XX_AR_INVOICE_FREQUENCY                                      |
+-- | Description : testing the drop table and whenever sqlerror combination   |
+-- |                                                                          |
+-- |                                                                          |
+-- |                                                                          |
+-- |                                                                          |
+-- |Change Record:                                                            |
+-- |===============                                                           |
+-- |Version   Date         Author               Remarks                       |
+-- |=======   ==========   =============        ==============================|
+-- | V1.0     01-Nov-2007  afan Sheriff         Initial version               |
+-- |                                                                          |
+-- | V1.1    19-Nov-2007   Nandini Bhimama       Drop statement commented     |
+-- |                         Boina                and slash removed           |
+-- +==========================================================================+
+--WHENEVER NOT FOUND CONTINUE
+
+--DROP TABLE  XXFIN.XX_DROP_TABLE_TEST;
+
+WHENEVER SQLERROR CONTINUE
+
+
+CREATE TABLE XXFIN.XX_DROP_TABLE_TEST 
+( 
+    document_id             NUMBER
+);
+SHOW ERR

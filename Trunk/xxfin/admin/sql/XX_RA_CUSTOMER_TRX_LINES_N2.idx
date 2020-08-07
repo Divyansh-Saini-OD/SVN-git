@@ -1,0 +1,48 @@
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     ON
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+-- +=======================================================================+
+-- |               Office Depot - Project Simplify                         |
+-- |                                                                       | 
+-- +=======================================================================+
+-- | NAME        : XX_RA_CUSTOMER_TRX_LINES_N2                             |
+-- |                                                                       |
+-- | DESCRIPTION : Index on RA_CUSTOMER_TRX_LINES_ALL                      |
+-- |                                                                       |
+-- |Change History:                                                        |
+-- |---------------                                                        |
+-- |                                                                       |
+-- |Version  Date         Author             Remarks                       |
+-- |-------  -----------  -----------------  ------------------------------|
+-- |1.0      20-JAN-2009  Subbu Pillai       Initial version               |
+-- |1.1      21-JAN-2009  Rick Aldridge      Corrected table name          |
+-- +=======================================================================+
+
+-- -------------------------------------------------
+-- DROP Existing XX_RA_CUSTOMER_TRX_LINES_N2 Index
+-- -------------------------------------------------
+
+DROP INDEX XXFIN.XX_RA_CUSTOMER_TRX_LINES_N2;
+
+-- -------------------------------------------------
+-- Creating Index XX_RA_CUSTOMER_TRX_LINES_N2
+-- -------------------------------------------------
+CREATE INDEX XXFIN.XX_RA_CUSTOMER_TRX_LINES_N2
+   ON AR.RA_CUSTOMER_TRX_LINES_ALL (INTERFACE_LINE_CONTEXT
+                                   ,INTERFACE_LINE_ATTRIBUTE6)   
+   INITRANS 11
+   PARALLEL 16
+   COMPRESS 2
+   TABLESPACE APPS_TS_TX_IDX_16M
+   ONLINE;
+
+
+ALTER INDEX XXFIN.XX_RA_CUSTOMER_TRX_LINES_N2 NOPARALLEL LOGGING;
+
+EXEC DBMS_STATS.UNLOCK_TABLE_STATS('AR','RA_CUSTOMER_TRX_LINES_ALL');
+EXEC FND_STATS.GATHER_INDEX_STATS('XXFIN','XX_RA_CUSTOMER_TRX_LINES_N2',NULL,8);
+EXEC DBMS_STATS.LOCK_TABLE_STATS('AR','RA_CUSTOMER_TRX_LINES_ALL');

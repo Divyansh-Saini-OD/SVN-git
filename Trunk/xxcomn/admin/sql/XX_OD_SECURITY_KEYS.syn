@@ -1,0 +1,32 @@
+-- +==========================================================================+
+-- |                  Office Depot - Project Simplify                         |
+-- +==========================================================================+
+-- | SQL Script to create the following objects                               |
+-- |                Synonym  : xx_od_security_keys                            |
+-- |                                                                          |
+-- |                           Synonym for the security keys table            |
+-- |                                                                          |
+-- |                                                                          |
+-- |                                                                          |
+-- |Change Record:                                                            |
+-- |===============                                                           |
+-- |Version   Date         Author               Remarks                       |
+-- |=======   ==========   =============        ==============================|
+-- | V1.0     07/29/2007   Prakash Sankaran     Initial version               |
+-- |                                                                          |
+-- | V1.1     06/27/2008   Anusha Ramanujam     Added Replace command  and    |
+-- |                                            created the synonym for table |
+-- |                                            under XXSEC schema. Fix for   |
+-- |                                            defect# 8388.
+-- +==========================================================================+
+
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     ON
+
+
+CREATE OR REPLACE SYNONYM xx_od_security_keys FOR XXSEC.xx_od_security_keys;
+
+SHOW ERROR

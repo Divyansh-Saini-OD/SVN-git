@@ -1,0 +1,358 @@
+<?xml version="1.0" encoding='windows-1252'?>
+<!DOCTYPE ViewObject SYSTEM "jbo_03_01.dtd">
+
+<ViewObject
+   Name="OD_MPSCurrentLevelsVO"
+   BindingStyle="Oracle"
+   CustomQuery="true"
+   RowClass="od.oracle.apps.xxcrm.mps.server.OD_MPSCurrentLevelsVORowImpl"
+   ComponentClass="od.oracle.apps.xxcrm.mps.server.OD_MPSCurrentLevelsVOImpl"
+   MsgBundleClass="oracle.jbo.common.JboResourceBundle"
+   UseGlueCode="false" >
+   <SQLQuery><![CDATA[
+SELECT OD_MPSDeviceDetailsSKUEO.DEVICE_ID, 
+       OD_MPSDeviceDetailsSKUEO.DEVICE_NAME, 
+       OD_MPSDeviceDetailsSKUEO.DEVICE_STATUS, 
+       OD_MPSDeviceDetailsSKUEO.CURRENT_COUNT, 
+       OD_MPSDeviceDetailsSKUEO.BLACK_COUNT, 
+       OD_MPSDeviceDetailsSKUEO.COLOR_COUNT, 
+       OD_MPSDeviceDetailsSKUEO.TONER_ORDER_DATE, 
+       OD_MPSDeviceDetailsSKUEO.QUANTITY, 
+       OD_MPSDeviceDetailsSKUEO.DELIVERY_DATE, 
+       OD_MPSDeviceDetailsSKUEO.TOTAL_COUNT, 
+       OD_MPSDeviceDetailsSKUEO.TOTAL_BLACK_COUNT, 
+       OD_MPSDeviceDetailsSKUEO.TOTAL_COLOR_COUNT, 
+       OD_MPSDeviceDetailsSKUEO.PREVIOUS_COUNT, 
+       OD_MPSDeviceDetailsSKUEO.PREVIOUS_BLACK_COUNT, 
+       OD_MPSDeviceDetailsSKUEO.PREVIOUS_COLOR_COUNT, 
+       OD_MPSDeviceDetailsSKUEO.PREVIOUS_BILL_COUNT, 
+       OD_MPSDeviceDetailsSKUEO.USAGE_ORDER_DATE, 
+       OD_MPSDeviceDetailsSKUEO.OVER_USAGE, 
+       OD_MPSDeviceDetailsSKUEO.USAGE_BILLED, 
+       OD_MPSDeviceDetailsSKUEO.CREATION_DATE, 
+       OD_MPSDeviceDetailsSKUEO.CREATED_BY, 
+       OD_MPSDeviceDetailsSKUEO.LAST_UPDATE_DATE, 
+       OD_MPSDeviceDetailsSKUEO.LAST_UPDATE_BY, 
+       OD_MPSDeviceDetailsSKUEO.ATTRIBUTE1, 
+       OD_MPSDeviceDetailsSKUEO.ATTRIBUTE2, 
+       OD_MPSDeviceDetailsSKUEO.ATTRIBUTE3, 
+       OD_MPSDeviceDetailsSKUEO.ATTRIBUTE4, 
+       OD_MPSDeviceDetailsSKUEO.ATTRIBUTE5, 
+       OD_MPSDeviceDetailsSKUEO.FIRST_SEEN, 
+       OD_MPSDeviceDetailsSKUEO.LAST_ACTIVE, 
+       OD_MPSDeviceDetailsSKUEO.TONER_ORDER_NUMBER, 
+       OD_MPSDeviceDetailsSKUEO.REQUEST_NUMBER, 
+       OD_MPSDeviceDetailsSKUEO.SUPPLIES_LABEL, 
+       OD_MPSDeviceDetailsSKUEO.SUPPLIES_LEVEL, 
+       OD_MPSDeviceDetailsSKUEO.TONER_ORDER_TOTAL, 
+       OD_MPSDeviceDetailsSKUEO.SERIAL_NO, 
+       OD_MPSDeviceDetailsSKUEO.SKU_OPTION_1, 
+       OD_MPSDeviceDetailsSKUEO.SKU_OPTION_2, 
+       OD_MPSDeviceDetailsSKUEO.SKU_OPTION_3, 
+       OD_MPSDeviceDetailsSKUEO.ROWID,
+       replace(supplies_label,'TONERLEVEL_','') LABEL,
+	   OD_MPSDeviceDetailsSKUEO.TONER_STOCK
+FROM XX_CS_MPS_DEVICE_DETAILS OD_MPSDeviceDetailsSKUEO WHERE OD_MPSDeviceDetailsSKUEO.SERIAL_NO = :1
+AND OD_MPSDeviceDetailsSKUEO.SUPPLIES_LABEL <> 'USAGE'
+   ]]></SQLQuery>
+   <DesignTime>
+      <Attr Name="_isCodegen" Value="true" />
+      <Attr Name="_version" Value="9.0.3.14.01" />
+      <Attr Name="_CodeGenFlagNew" Value="36" />
+   </DesignTime>
+   <EntityUsage
+      Name="OD_MPSDeviceDetailsSKUEO"
+      Entity="od.oracle.apps.xxcrm.mps.schema.server.OD_MPSDeviceDetailsSKUEO" >
+      <DesignTime>
+         <Attr Name="_queryClause" Value="false" />
+      </DesignTime>
+   </EntityUsage>
+   <ViewAttribute
+      Name="DeviceId"
+      Precision="150"
+      EntityAttrName="DeviceId"
+      EntityUsage="OD_MPSDeviceDetailsSKUEO"
+      AliasName="DEVICE_ID" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="DeviceName"
+      Precision="250"
+      EntityAttrName="DeviceName"
+      EntityUsage="OD_MPSDeviceDetailsSKUEO"
+      AliasName="DEVICE_NAME" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="DeviceStatus"
+      Precision="100"
+      EntityAttrName="DeviceStatus"
+      EntityUsage="OD_MPSDeviceDetailsSKUEO"
+      AliasName="DEVICE_STATUS" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="CurrentCount"
+      EntityAttrName="CurrentCount"
+      EntityUsage="OD_MPSDeviceDetailsSKUEO"
+      AliasName="CURRENT_COUNT" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="BlackCount"
+      EntityAttrName="BlackCount"
+      EntityUsage="OD_MPSDeviceDetailsSKUEO"
+      AliasName="BLACK_COUNT" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="ColorCount"
+      EntityAttrName="ColorCount"
+      EntityUsage="OD_MPSDeviceDetailsSKUEO"
+      AliasName="COLOR_COUNT" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="TonerOrderDate"
+      EntityAttrName="TonerOrderDate"
+      EntityUsage="OD_MPSDeviceDetailsSKUEO"
+      AliasName="TONER_ORDER_DATE" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Quantity"
+      EntityAttrName="Quantity"
+      EntityUsage="OD_MPSDeviceDetailsSKUEO"
+      AliasName="QUANTITY" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="DeliveryDate"
+      EntityAttrName="DeliveryDate"
+      EntityUsage="OD_MPSDeviceDetailsSKUEO"
+      AliasName="DELIVERY_DATE" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="TotalCount"
+      EntityAttrName="TotalCount"
+      EntityUsage="OD_MPSDeviceDetailsSKUEO"
+      AliasName="TOTAL_COUNT" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="TotalBlackCount"
+      EntityAttrName="TotalBlackCount"
+      EntityUsage="OD_MPSDeviceDetailsSKUEO"
+      AliasName="TOTAL_BLACK_COUNT" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="TotalColorCount"
+      EntityAttrName="TotalColorCount"
+      EntityUsage="OD_MPSDeviceDetailsSKUEO"
+      AliasName="TOTAL_COLOR_COUNT" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="PreviousCount"
+      EntityAttrName="PreviousCount"
+      EntityUsage="OD_MPSDeviceDetailsSKUEO"
+      AliasName="PREVIOUS_COUNT" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="PreviousBlackCount"
+      EntityAttrName="PreviousBlackCount"
+      EntityUsage="OD_MPSDeviceDetailsSKUEO"
+      AliasName="PREVIOUS_BLACK_COUNT" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="PreviousColorCount"
+      EntityAttrName="PreviousColorCount"
+      EntityUsage="OD_MPSDeviceDetailsSKUEO"
+      AliasName="PREVIOUS_COLOR_COUNT" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="PreviousBillCount"
+      EntityAttrName="PreviousBillCount"
+      EntityUsage="OD_MPSDeviceDetailsSKUEO"
+      AliasName="PREVIOUS_BILL_COUNT" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="UsageOrderDate"
+      EntityAttrName="UsageOrderDate"
+      EntityUsage="OD_MPSDeviceDetailsSKUEO"
+      AliasName="USAGE_ORDER_DATE" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="OverUsage"
+      EntityAttrName="OverUsage"
+      EntityUsage="OD_MPSDeviceDetailsSKUEO"
+      AliasName="OVER_USAGE" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="UsageBilled"
+      Precision="1"
+      EntityAttrName="UsageBilled"
+      EntityUsage="OD_MPSDeviceDetailsSKUEO"
+      AliasName="USAGE_BILLED" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="CreationDate"
+      IsNotNull="true"
+      EntityAttrName="CreationDate"
+      EntityUsage="OD_MPSDeviceDetailsSKUEO"
+      AliasName="CREATION_DATE" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="CreatedBy"
+      IsNotNull="true"
+      EntityAttrName="CreatedBy"
+      EntityUsage="OD_MPSDeviceDetailsSKUEO"
+      AliasName="CREATED_BY" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="LastUpdateDate"
+      IsNotNull="true"
+      EntityAttrName="LastUpdateDate"
+      EntityUsage="OD_MPSDeviceDetailsSKUEO"
+      AliasName="LAST_UPDATE_DATE" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="LastUpdateBy"
+      IsNotNull="true"
+      EntityAttrName="LastUpdateBy"
+      EntityUsage="OD_MPSDeviceDetailsSKUEO"
+      AliasName="LAST_UPDATE_BY" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Attribute1"
+      Precision="150"
+      EntityAttrName="Attribute1"
+      EntityUsage="OD_MPSDeviceDetailsSKUEO"
+      AliasName="ATTRIBUTE1" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Attribute2"
+      Precision="150"
+      EntityAttrName="Attribute2"
+      EntityUsage="OD_MPSDeviceDetailsSKUEO"
+      AliasName="ATTRIBUTE2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Attribute3"
+      Precision="150"
+      EntityAttrName="Attribute3"
+      EntityUsage="OD_MPSDeviceDetailsSKUEO"
+      AliasName="ATTRIBUTE3" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Attribute4"
+      Precision="150"
+      EntityAttrName="Attribute4"
+      EntityUsage="OD_MPSDeviceDetailsSKUEO"
+      AliasName="ATTRIBUTE4" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Attribute5"
+      Precision="150"
+      EntityAttrName="Attribute5"
+      EntityUsage="OD_MPSDeviceDetailsSKUEO"
+      AliasName="ATTRIBUTE5" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="FirstSeen"
+      EntityAttrName="FirstSeen"
+      EntityUsage="OD_MPSDeviceDetailsSKUEO"
+      AliasName="FIRST_SEEN" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="LastActive"
+      EntityAttrName="LastActive"
+      EntityUsage="OD_MPSDeviceDetailsSKUEO"
+      AliasName="LAST_ACTIVE" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="TonerOrderNumber"
+      Precision="40"
+      EntityAttrName="TonerOrderNumber"
+      EntityUsage="OD_MPSDeviceDetailsSKUEO"
+      AliasName="TONER_ORDER_NUMBER" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="RequestNumber"
+      Precision="40"
+      EntityAttrName="RequestNumber"
+      EntityUsage="OD_MPSDeviceDetailsSKUEO"
+      AliasName="REQUEST_NUMBER" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="SuppliesLabel"
+      Precision="80"
+      EntityAttrName="SuppliesLabel"
+      EntityUsage="OD_MPSDeviceDetailsSKUEO"
+      AliasName="SUPPLIES_LABEL" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="SuppliesLevel"
+      Precision="40"
+      EntityAttrName="SuppliesLevel"
+      EntityUsage="OD_MPSDeviceDetailsSKUEO"
+      AliasName="SUPPLIES_LEVEL" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="TonerOrderTotal"
+      EntityAttrName="TonerOrderTotal"
+      EntityUsage="OD_MPSDeviceDetailsSKUEO"
+      AliasName="TONER_ORDER_TOTAL" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="SerialNo"
+      Precision="100"
+      EntityAttrName="SerialNo"
+      EntityUsage="OD_MPSDeviceDetailsSKUEO"
+      AliasName="SERIAL_NO" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="SkuOption1"
+      Precision="25"
+      EntityAttrName="SkuOption1"
+      EntityUsage="OD_MPSDeviceDetailsSKUEO"
+      AliasName="SKU_OPTION_1" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="SkuOption2"
+      Precision="25"
+      EntityAttrName="SkuOption2"
+      EntityUsage="OD_MPSDeviceDetailsSKUEO"
+      AliasName="SKU_OPTION_2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="SkuOption3"
+      Precision="25"
+      EntityAttrName="SkuOption3"
+      EntityUsage="OD_MPSDeviceDetailsSKUEO"
+      AliasName="SKU_OPTION_3" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="RowID"
+      IsUpdateable="false"
+      EntityAttrName="RowID"
+      EntityUsage="OD_MPSDeviceDetailsSKUEO"
+      AliasName="ROWID" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Label"
+      IsPersistent="false"
+      Precision="80"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="LABEL"
+      Expression="LABEL"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="80" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="TonerStock"
+      IsPersistent="false"
+      Precision="10"
+      Type="oracle.jbo.domain.Number"
+      ColumnType="NUMBER"
+      AliasName="TONER_STOCK"
+      Expression="TONER_STOCK"
+      SQLType="NUMERIC" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="10" />
+      </DesignTime>
+   </ViewAttribute>
+</ViewObject>

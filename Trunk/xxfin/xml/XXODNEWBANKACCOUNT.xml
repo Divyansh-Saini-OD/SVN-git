@@ -1,0 +1,141 @@
+<dataTemplate name="XXODNEWBANKACCOUNT" description="OD Custom Report for New Bank Accounts" Version="1.0">
+<properties>
+  <property name="scalable_mode" value="on" /> 
+  <property name="rtf-output-default-font">Arial:8</property> 
+</properties>
+<parameters>
+  <parameter name="P_PERIOD" datatype="character" /> 
+</parameters>
+
+<dataQuery>
+<sqlStatement name="Q_HEADER_DATE">
+<![CDATA[ 
+SELECT TO_CHAR(SYSDATE, 'DD-MON-YYYY HH24:MI:SS') AS V_DATE
+from dual
+]]> 
+</sqlStatement>
+<sqlStatement name="Q_DATES">
+<![CDATA[ 
+select start_date,end_date,(entered_period_name ||'-'||period_year) V_PERIOD
+from gl_periods where 
+period_name = :P_PERIOD
+and rownum < 2
+]]> 
+</sqlStatement>
+<sqlStatement name="Q_MAIN">
+<![CDATA[
+SELECT cbb.bank_name,
+  cbb.bank_branch_name,
+  cba.bank_account_name,
+  cba.bank_account_num,
+  cba.account_classification    account_type,
+  cba.description,
+  hzp.party_name   account_owner,                        -- Added for defect# 30778
+  cba.creation_date,
+  --FU.user_name created_by,                             -- Commented for defect# 30778  
+  per1.full_name created_by,                             -- Added for defect# 30778    
+  cba.last_update_date,
+  cba.last_update_login,
+  --FU.user_name last_updated_by                        -- Commented for defect# 30778
+  per2.full_name last_updated_by                        -- Added for defect# 30778
+FROM CE_BANK_ACCOUNTS cba,
+     CE_BANK_BRANCHES_V cbb,
+     hz_parties hzp,                                     -- Added for defect# 30778
+     per_people_x   per1,                                -- Added for defect# 30778
+     per_people_x   per2,                                -- Added for defect# 30778     
+     FND_USER fu,
+     FND_USER fu2                                   -- Added for defect# 30778   
+WHERE FU.user_id           = cba.created_by   
+  --AND FU.user_id           = cba.Last_Updated_By       -- Commented for defect 30778 
+  AND FU2.user_id           = cba.Last_Updated_By        -- Added for defect# 30778  
+  AND per1.person_id=       fu.employee_id(+)            -- Added for defect# 30778
+  AND per2.person_id=       fu2.employee_id(+)           -- Added for defect# 30778  
+  AND cba.bank_branch_id   = cbb.branch_party_id 
+  AND cbb.branch_party_id != 1 
+  AND FU.user_name NOT IN ('SVC_BPEL_FIN','SVC_ESP_FIN')
+  AND (cba.creation_date BETWEEN :start_date AND :end_date)
+  AND hzp.party_id=cba.account_owner_party_id            -- Added for defect# 30778         
+UNION
+SELECT cbb.bank_name,
+  cbb.bank_branch_name,
+  ieba.bank_account_name,
+  ieba.bank_account_num,
+  nvl(ieba.account_classification,'EXTERNAL') account_type,
+  ieba.description,
+  ieba2.primary_acct_owner_name account_owner,             -- Added for defect# 30778 
+  ieba.creation_date,
+  --FU.user_name created_by,                             -- Commented for defect# 30778  
+  per1.full_name created_by,                             -- Added for defect# 30778 
+  ieba.last_update_date,
+  ieba.last_update_login,
+  --FU.user_name last_updated_by                         -- Commented for defect# 30778
+  per2.full_name last_updated_by                         -- Added for defect# 30778
+FROM iby_ext_bank_accounts ieba,
+     CE_BANK_BRANCHES_V cbb,
+     iby_ext_bank_accounts_v ieba2,                  -- Added for defect# 30778  
+     per_people_x   per1,                                -- Added for defect# 30778
+     per_people_x   per2,                                -- Added for defect# 30778        
+     FND_USER fu,
+     FND_USER fu2                                   -- Added for defect# 30778      
+WHERE FU.user_id           = ieba.created_by   
+  --AND FU.user_id          = ieba.Last_Updated_By       -- Commented for defect# 30778  
+  AND FU2.user_id           = ieba.Last_Updated_By       -- Added for defect# 30778  
+  AND per1.person_id=       fu.employee_id(+)            -- Added for defect# 30778
+  AND per2.person_id=       fu2.employee_id(+)           -- Added for defect# 30778  
+  AND ieba.branch_id       = cbb.branch_party_id 
+  AND cbb.branch_party_id != 1 
+  AND FU.user_name NOT IN ('SVC_BPEL_FIN','SVC_ESP_FIN')
+  AND (ieba.creation_date BETWEEN :start_date AND :end_date)
+  AND ieba2.ext_bank_account_id=ieba.ext_bank_account_id   -- Added for defect# 30778
+ORDER BY account_type  --Modified query for Defect 28895 on 12-Mar-14
+/*SELECT bb.bank_name,
+  bb.bank_branch_name,
+  ba.bank_account_name,
+  ba.bank_account_num,
+  ba.account_type,
+  ba.description,  
+  ba.creation_date,
+  FU.user_name created_by,  
+  ba.last_update_date,
+  ba.last_update_login,
+  FU.user_name last_updated_by 
+FROM AP_BANK_ACCOUNTS_ALL ba,
+  AP_BANK_BRANCHES bb,
+  FND_USER fu          
+WHERE FU.user_id = ba.created_by   
+AND FU.user_id = ba.Last_Updated_By 
+AND ba.bank_branch_id = bb.bank_branch_id
+AND bb.bank_branch_id != 1              
+AND FU.user_name NOT IN ('SVC_BPEL_FIN','SVC_ESP_FIN')  
+AND ba.org_id           = FND_PROFILE.value('ORG_ID')
+AND (ba.creation_date BETWEEN :start_date AND :end_date)
+ORDER BY ba.account_type*/   --Commented for defect 28895 on 12-Mar-14
+]]>
+</sqlStatement>
+</dataQuery>
+
+<dataStructure>
+<group name="G_HEADER_DATE" source="Q_HEADER_DATE">
+	<element name="V_DATE" value="v_date" function="" /> 
+</group>
+<group name="Q_DATES" source="Q_DATES">
+	<element name="START_DATE" 	value="START_DATE" 	function="" /> 
+	<element name="END_DATE" 	value="END_DATE" 	function="" />
+	<element name="V_PERIOD" 	value="V_PERIOD" 	function="" />
+</group>
+<group name="G_MAIN" source="Q_MAIN">
+	<element name="BANK_NAME" 			value="bank_name" 			function="" />
+	<element name="BANK_BRANCH_NAME" 	value="bank_branch_name" 	function="" />
+	<element name="DESCRIPTION" 		value="description" 		function="" />
+	<element name="BANK_ACCOUNT_NAME" 	value="bank_account_name" 	function="" />
+	<element name="BANK_ACCOUNT_NUM" 	value="bank_account_num" 	function="" />
+	<element name="ACCOUNT_TYPE" 		value="account_type" 		function="" />
+	<element name="ACCOUNT_OWNER" 		value="account_owner" 		function="" />	
+	<element name="CREATION_DATE" 		value="creation_date" 		function="" />
+	<element name="CREATED_BY" 			value="created_by" 			function="" />
+	<element name="LAST_UPDATE_DATE" 	value="last_update_date" 	function="" />
+	<element name="LAST_UPDATE_LOGIN" 	value="last_update_login" 	function="" />
+	<element name="LAST_UPDATED_BY" 	value="last_updated_by" 	function="" />
+</group>
+</dataStructure>
+</dataTemplate>

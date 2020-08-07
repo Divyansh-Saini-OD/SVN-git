@@ -1,0 +1,12 @@
+<schema attributeFormDefault="unqualified"
+	elementFormDefault="qualified"
+	targetNamespace="http://xmlns.oracle.com/I1153_DPSNowPrintEBS_JobConf_Master"
+	xmlns="http://www.w3.org/2001/XMLSchema">
+	<element name="I1153_DPSNowPrintEBS_JobConf_MasterProcessResponse">
+		<complexType>
+			<sequence>
+				<element name="result" type="string"/>
+			</sequence>
+		</complexType>
+	</element>
+</schema>

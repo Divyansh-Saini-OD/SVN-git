@@ -1,0 +1,30 @@
+-- +===========================================================================+
+-- |                          Oracle - GSD                                     |
+-- +===========================================================================+
+-- | Name        : XX_CE_MPL_SETTLEMENT_STG_ID_S.syn                           |
+-- | Description : Script to create synonym for XX_CE_MPL_SETTLEMENT_STG_ID_S  |
+-- |               sequence
+-- | RICE ID 	 : I3091_CM Marketplace Inbound Interface                      |
+-- |                                                                           |
+-- |                                                                           |
+-- |Change Record:                                                             |
+-- |===============                                                            |
+-- |Version      Date           Author            Remarks                      |
+-- |=======    ==========     =============       ======================       |
+-- |  1.0      10-NOV-2015    Avinash B           Initial Version              |
+-- +===========================================================================+
+
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     ON
+WHENEVER SQLERROR CONTINUE
+
+
+--+=====================================================================+
+--+               CREATE SYNOYM XXFIN.XX_CE_MPL_SETTLEMENT_STG_ID_S     +
+--+=====================================================================+
+
+CREATE SYNONYM apps.XX_CE_MPL_SETTLEMENT_STG_ID_S for XXFIN.XX_CE_MPL_SETTLEMENT_STG_ID_S
+/

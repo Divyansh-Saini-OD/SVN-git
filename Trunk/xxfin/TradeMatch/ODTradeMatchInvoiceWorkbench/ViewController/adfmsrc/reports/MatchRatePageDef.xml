@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<pageDefinition xmlns="http://xmlns.oracle.com/adfm/uimodel" version="12.2.1.12.24" id="MatchRatePageDef"
+                Package="reports">
+  <parameters/>
+  <executables>
+    <variableIterator id="variables"/>
+    <iterator Binds="XxApMatchRateVO1" RangeSize="25" DataControl="ODTradeMatchReportsAMDataControl"
+              id="XxApMatchRateVO1Iterator"/>
+    <iterator Binds="XxApMatchRateDataVO1" RangeSize="-1" DataControl="ODTradeMatchReportsAMDataControl"
+              id="XxApMatchRateDataVO1Iterator" ChangeEventPolicy="ppr" Refresh="always"/>
+    <iterator Binds="XxApMatchRateDataFirstPassVO1" RangeSize="25" DataControl="ODTradeMatchReportsAMDataControl"
+              id="XxApMatchRateDataFirstPassVO1Iterator"/>
+    <iterator Binds="XxApMatchRateDataAllFinalizedVO1" RangeSize="25" DataControl="ODTradeMatchReportsAMDataControl"
+              id="XxApMatchRateDataAllFinalizedVO1Iterator"/>
+    <iterator Binds="XxApMatchRateDataPaymtDueVO1" RangeSize="25" DataControl="ODTradeMatchReportsAMDataControl"
+              id="XxApMatchRateDataPaymtDueVO1Iterator"/>
+    <iterator Binds="XxApMatchRateDataDueDaysVO1" RangeSize="25" DataControl="ODTradeMatchReportsAMDataControl"
+              id="XxApMatchRateDataDueDaysVO1Iterator"/>
+    <iterator Binds="XxApMatchRateDataTrueMatchVO1" RangeSize="25" DataControl="ODTradeMatchReportsAMDataControl"
+              id="XxApMatchRateDataTrueMatchVO1Iterator"/>
+  </executables>
+  <bindings>
+    <listOfValues IterBinding="XxApMatchRateVO1Iterator" StaticList="false" Uses="LOV_Orgid" id="Orgid"/>
+    <attributeValues IterBinding="XxApMatchRateVO1Iterator" id="OrgIdVal">
+      <AttrNames>
+        <Item Value="OrgIdVal"/>
+      </AttrNames>
+    </attributeValues>
+    <attributeValues IterBinding="XxApMatchRateVO1Iterator" id="Daterangefrom">
+      <AttrNames>
+        <Item Value="Daterangefrom"/>
+      </AttrNames>
+    </attributeValues>
+    <attributeValues IterBinding="XxApMatchRateVO1Iterator" id="Daterangeto">
+      <AttrNames>
+        <Item Value="Daterangeto"/>
+      </AttrNames>
+    </attributeValues>
+    <attributeValues IterBinding="XxApMatchRateDataVO1Iterator" id="Criteria">
+      <AttrNames>
+        <Item Value="Criteria"/>
+      </AttrNames>
+    </attributeValues>
+    <attributeValues IterBinding="XxApMatchRateDataVO1Iterator" id="TotalSysMatchCnt">
+      <AttrNames>
+        <Item Value="TotalSysMatchCnt"/>
+      </AttrNames>
+    </attributeValues>
+    <attributeValues IterBinding="XxApMatchRateDataVO1Iterator" id="TotalInvCnt">
+      <AttrNames>
+        <Item Value="TotalInvCnt"/>
+      </AttrNames>
+    </attributeValues>
+    <attributeValues IterBinding="XxApMatchRateDataVO1Iterator" id="MatchRate">
+      <AttrNames>
+        <Item Value="MatchRate"/>
+      </AttrNames>
+    </attributeValues>
+    <methodAction id="searchMatchRateData" RequiresUpdateModel="true" Action="invokeMethod"
+                  MethodName="searchMatchRateData" IsViewObjectMethod="false"
+                  DataControl="ODTradeMatchReportsAMDataControl"
+                  InstanceName="bindings.searchMatchRateData.dataControl.dataProvider"
+                  ReturnName="data.ODTradeMatchReportsAMDataControl.methodResults.searchMatchRateData_searchMatchRateData_dataControl_dataProvider_searchMatchRateData_result">
+      <NamedData NDName="matchRateMap" NDType="java.util.HashMap"/>
+    </methodAction>
+    <tree IterBinding="XxApMatchRateDataVO1Iterator" id="XxApMatchRateDataVO1">
+      <nodeDefinition DefName="od.tdmatch.model.reports.vo.XxApMatchRateDataVO" Name="XxApMatchRateDataVO10"/>
+    </tree>
+    <tree IterBinding="XxApMatchRateDataVO1Iterator" id="XxApMatchRateDataVO11" ChangeEventPolicy="ppr">
+      <nodeDefinition DefName="od.tdmatch.model.reports.vo.XxApMatchRateDataVO" Name="XxApMatchRateDataVO11">
+        <AttrNames>
+          <Item Value="MatchRate"/>
+          <Item Value="Criteria"/>
+        </AttrNames>
+      </nodeDefinition>
+    </tree>
+    <attributeValues IterBinding="XxApMatchRateDataFirstPassVO1Iterator" id="TotalSysMatchCnt1">
+      <AttrNames>
+        <Item Value="TotalSysMatchCnt"/>
+      </AttrNames>
+    </attributeValues>
+    <attributeValues IterBinding="XxApMatchRateDataFirstPassVO1Iterator" id="TotalInvCnt1">
+      <AttrNames>
+        <Item Value="TotalInvCnt"/>
+      </AttrNames>
+    </attributeValues>
+    <attributeValues IterBinding="XxApMatchRateDataFirstPassVO1Iterator" id="MatchRate1">
+      <AttrNames>
+        <Item Value="MatchRate"/>
+      </AttrNames>
+    </attributeValues>
+    <attributeValues IterBinding="XxApMatchRateDataAllFinalizedVO1Iterator" id="TotalSysMatchCnt2">
+      <AttrNames>
+        <Item Value="TotalSysMatchCnt"/>
+      </AttrNames>
+    </attributeValues>
+    <attributeValues IterBinding="XxApMatchRateDataAllFinalizedVO1Iterator" id="TotalInvCnt2">
+      <AttrNames>
+        <Item Value="TotalInvCnt"/>
+      </AttrNames>
+    </attributeValues>
+    <attributeValues IterBinding="XxApMatchRateDataAllFinalizedVO1Iterator" id="MatchRate2">
+      <AttrNames>
+        <Item Value="MatchRate"/>
+      </AttrNames>
+    </attributeValues>
+    <attributeValues IterBinding="XxApMatchRateDataPaymtDueVO1Iterator" id="TotalSysMatchCnt3">
+      <AttrNames>
+        <Item Value="TotalSysMatchCnt"/>
+      </AttrNames>
+    </attributeValues>
+    <attributeValues IterBinding="XxApMatchRateDataPaymtDueVO1Iterator" id="TotalInvCnt3">
+      <AttrNames>
+        <Item Value="TotalInvCnt"/>
+      </AttrNames>
+    </attributeValues>
+    <attributeValues IterBinding="XxApMatchRateDataPaymtDueVO1Iterator" id="MatchRate3">
+      <AttrNames>
+        <Item Value="MatchRate"/>
+      </AttrNames>
+    </attributeValues>
+    <attributeValues IterBinding="XxApMatchRateDataDueDaysVO1Iterator" id="TotalSysMatchCnt4">
+      <AttrNames>
+        <Item Value="TotalSysMatchCnt"/>
+      </AttrNames>
+    </attributeValues>
+    <attributeValues IterBinding="XxApMatchRateDataDueDaysVO1Iterator" id="TotalInvCnt4">
+      <AttrNames>
+        <Item Value="TotalInvCnt"/>
+      </AttrNames>
+    </attributeValues>
+    <attributeValues IterBinding="XxApMatchRateDataDueDaysVO1Iterator" id="MatchRate4">
+      <AttrNames>
+        <Item Value="MatchRate"/>
+      </AttrNames>
+    </attributeValues>
+    <attributeValues IterBinding="XxApMatchRateDataTrueMatchVO1Iterator" id="TotalSysMatchCnt5">
+      <AttrNames>
+        <Item Value="TotalSysMatchCnt"/>
+      </AttrNames>
+    </attributeValues>
+    <attributeValues IterBinding="XxApMatchRateDataTrueMatchVO1Iterator" id="TotalInvCnt5">
+      <AttrNames>
+        <Item Value="TotalInvCnt"/>
+      </AttrNames>
+    </attributeValues>
+    <attributeValues IterBinding="XxApMatchRateDataTrueMatchVO1Iterator" id="MatchRate5">
+      <AttrNames>
+        <Item Value="MatchRate"/>
+      </AttrNames>
+    </attributeValues>
+    <attributeValues IterBinding="XxApMatchRateDataAllFinalizedVO1Iterator" id="RunDate1">
+      <AttrNames>
+        <Item Value="RunDate"/>
+      </AttrNames>
+    </attributeValues>
+    <attributeValues IterBinding="XxApMatchRateDataTrueMatchVO1Iterator" id="RunDate3">
+      <AttrNames>
+        <Item Value="RunDate"/>
+      </AttrNames>
+    </attributeValues>
+    <methodAction id="searchDefaultMatchRateData" RequiresUpdateModel="true" Action="invokeMethod"
+                  MethodName="searchDefaultMatchRateData" IsViewObjectMethod="false"
+                  DataControl="ODTradeMatchReportsAMDataControl"
+                  InstanceName="bindings.searchDefaultMatchRateData.dataControl.dataProvider"/>
+    <list IterBinding="XxApMatchRateVO1Iterator" StaticList="false" Uses="LOV_Orgid" id="Orgid1" DTSupportsMRU="true"
+          SelectItemValueMode="ListObject"/>
+  </bindings>
+</pageDefinition>

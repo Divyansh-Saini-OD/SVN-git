@@ -1,0 +1,40 @@
+-- +====================================================================================+
+-- |                  Office Depot - Project Simplify                                   |
+-- +====================================================================================+
+-- | SQL Script to create                                                               |
+-- |                                                                                    |
+-- |                      INDEXES:    XXAR_ADJUSTMENTS_N1                               |
+-- |                                                                                    |
+-- |                                                                                    |
+-- |                                                                                    |
+-- |Change Record:                                                                      |
+-- |===============                                                                     |
+-- |Version   Date         Author               Remarks                                 |
+-- |=======   ===========  ================     ========================================|
+-- |  1.0     05-MAR-2014  Arun gannarapu       Defect 28568 to fix the performance issue |
+-- +====================================================================================+
+
+DROP INDEX XXAR_ADJUSTMENTS_N1;
+
+CREATE INDEX AR.XXAR_ADJUSTMENTS_N1 ON AR.AR_ADJUSTMENTS_ALL
+(STATUS,AMOUNT)
+LOGGING
+TABLESPACE APPS_TS_TX_IDX
+PCTFREE    0
+INITRANS   11
+MAXTRANS   255
+STORAGE    (
+            INITIAL          128K
+            NEXT             128K
+            MINEXTENTS       1
+            MAXEXTENTS       UNLIMITED
+            PCTINCREASE      0
+            BUFFER_POOL      DEFAULT
+            FLASH_CACHE      DEFAULT
+            CELL_FLASH_CACHE DEFAULT
+           )
+NOPARALLEL;
+
+
+
+EXIT;

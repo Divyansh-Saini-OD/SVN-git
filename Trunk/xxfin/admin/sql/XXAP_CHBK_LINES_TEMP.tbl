@@ -1,0 +1,55 @@
+REM============================================================================================
+REM                                 Start Of Script
+REM============================================================================================
+
+--+=============================================================================================+--
+--|                                                                                             |--
+--| Program Name   : CREATE XXAP_CHBK_LINES_TEMP.tbl                                              |--
+--|                                                                                             |--
+--| Purpose        : Create Custom Tables .                                                     |--
+--|                  The Objects created are:                                                   |--
+--|                                                                                             |--
+--|                1. XXAP_CHBK_LINES_TEMP                              |--
+--| RICE ID : R1050                                                                             |--
+--| Change History  :                                                                           |--
+--| Version           Date             Changed By              Description                      |--
+--+=============================================================================================+--
+--| 1.0              21-SEP-2017       Ragni Gupta         Initial                         |--
+--+=============================================================================================+--
+
+SET VERIFY      OFF
+SET TERM        ON
+SET FEEDBACK    OFF
+SET SHOW        OFF
+SET ECHO        OFF
+SET TAB         OFF
+
+WHENEVER SQLERROR CONTINUE;
+
+PROMPT
+PROMPT Creating the Custom Table ......
+PROMPT
+
+PROMPT
+PROMPT Creating the Table XXAP_CHBK_LINES_TEMP......
+PROMPT
+
+  CREATE TABLE XXAP_CHBK_LINES_TEMP
+   ( REQUEST_ID NUMBER, 
+	VOUCHER_NUM VARCHAR2(50), 
+	INVOICE_ID NUMBER, 
+	DB_SOURCE VARCHAR2(15), 
+	SKU VARCHAR2(40), 
+	ADJ_CD VARCHAR2(130), 
+	AUTH_QTY NUMBER, 
+	AUTH_UNIT_AMT NUMBER, 
+	INVOICE_QTY NUMBER, 
+	INVOICE_UNIT_AMT NUMBER, 
+	RCV_QTY NUMBER, 
+	INVOICE_NUM VARCHAR2(50), 
+	TOTAL NUMBER, 
+	VENDOR_PRODUCT_NUM VARCHAR2(50)
+   ) ;
+   
+   
+SHOW ERROR;

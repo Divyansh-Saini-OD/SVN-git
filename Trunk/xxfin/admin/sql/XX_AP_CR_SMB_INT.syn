@@ -1,0 +1,29 @@
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     ON
+    -- +==========================================================================+
+    -- |                  Office Depot - Project SMB Internal Market Place        |
+    -- +==========================================================================+
+    -- | SQL Script to create the Synonym                                         |
+    -- |                                                                          |
+    -- | XX_AP_SMB_INT_MKT_STG_S.syn                                              |
+    -- |                                                                          |
+    -- |                                                                          |
+    -- |                                                                          |
+    -- |                                                                          |
+    -- |Change Record:                                                            |
+    -- |===============                                                           |
+    -- |Version   Date         Author               Remarks                       |
+    -- |=======   ==========   =============        ==============================|
+    -- | V1.0     19-OCT-2018  Arun DSouza          Initial version               |
+    -- |                                                                          |
+    -- +==========================================================================+
+
+
+PROMPT CREATING SYNONYM FOR XX_AP_SMB_INT_MKT_STG_S
+
+CREATE OR REPLACE SYNONYM  XX_AP_SMB_INT_MKT_STG_S  FOR  XXFIN.XX_AP_SMB_INT_MKT_STG_S;
+
+SHOW ERROR

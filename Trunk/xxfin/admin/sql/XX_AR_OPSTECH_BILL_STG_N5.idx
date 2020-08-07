@@ -1,0 +1,25 @@
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     ON
+
+-- +==========================================================================+
+-- |                  Office Depot - Project Simplify                         |
+-- |                       WIPRO Technologies                                 |
+-- +==========================================================================+
+-- | Table Script to create the following object                              |
+-- |             Table  : STG table index                                     |
+-- |                      For purging query needs to fast 					  |
+-- |                                                                          |
+-- |Change Record:                                                            |
+-- |===============                                                           |
+-- |Version   Date         Author               Remarks                       |
+-- |=======   ==========   =============        ==============================|
+-- | V1.0     05-SEPT-2018 Aniket Jadhav        Initial version               |
+-- |                                                                          |
+-- +==========================================================================+  
+
+CREATE INDEX XX_AR_OPSTECH_BILL_STG_N5 ON XXFIN.XX_AR_OPSTECH_BILL_STG (CREATION_DATE);
+  
+SHOW ERROR; 

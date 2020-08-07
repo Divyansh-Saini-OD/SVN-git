@@ -1,0 +1,47 @@
+ SET SHOW         OFF
+ SET VERIFY       OFF
+ SET ECHO         OFF
+ SET TAB          OFF
+ SET FEEDBACK     ON
+
+ PROMPT Creating INDEX AP.AP_INVOICES_N3
+
+ PROMPT Program exits IF the creation IS NOT SUCCESSFUL
+
+ WHENEVER SQLERROR CONTINUE
+ WHENEVER OSERROR EXIT FAILURE ROLLBACK
+
+ -- +====================================================================================+
+ -- |                  Office Depot - Project Simplify                               |
+ -- +================================================================================+
+ -- |Desxription - SQL Script to create AP.AP_INVOICES_N3 index - QC Defect 19538    |
+ -- |Purpose - Index modified to improve the performance of AutoSelect program in AP |
+ -- |Change Description - Added PAY_GROUP_LOOKUP_CODE column in existing index       |
+ -- |Important Note - AP_INVOICES_N3 standard index is modified as per recommendation|
+ -- |                 from ERP Engineering. This change may get over written by patch|
+ -- |                 application. This index need to be recreated if it is over     |
+ -- |                 written by patch application.                                  |
+ -- |                                                                                |
+--testtest test xxx
+ -- |Change Record:                                                                  |
+ -- |===============                                                                 |
+ -- |Version      Date               Author               Remarks                    |
+ -- |=======      ===========        =============        ========================== |
+ -- |  1.0        02-Oct-2012        Abdul Khan           Initial version.           |
+ -- |                                                                                |
+ -- +================================================================================+
+
+ DROP INDEX ap.ap_invoices_n3;
+ 
+ CREATE INDEX ap.ap_invoices_n3 
+ ON ap.ap_invoices_all (payment_status_flag, pay_group_lookup_code) 
+ TABLESPACE apps_ts_tx_misc_idx_16m 
+ NOLOGGING 
+ PARALLEL;
+ 
+ ALTER INDEX ap.ap_invoices_n3 
+ NOPARALLEL;
+                            
+ EXIT;
+
+ SHO ERR;

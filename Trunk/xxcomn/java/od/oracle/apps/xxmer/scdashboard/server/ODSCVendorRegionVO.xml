@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding='windows-1252'?>
+<!DOCTYPE ViewObject SYSTEM "jbo_03_01.dtd">
+
+<ViewObject
+   Name="ODSCVendorRegionVO"
+   BindingStyle="Oracle"
+   CustomQuery="true"
+   RowClass="od.oracle.apps.xxmer.scdashboard.server.ODSCVendorRegionVORowImpl"
+   ComponentClass="od.oracle.apps.xxmer.scdashboard.server.ODSCVendorRegionVOImpl"
+   MsgBundleClass="oracle.jbo.common.JboResourceBundle"
+   UseGlueCode="false" >
+   <SQLQuery><![CDATA[
+SELECT DISTINCT b.character1 od_sc_vendor_number, b.character2 od_sc_vendor_name,
+                b.character16 od_sc_factory_number, b.character17 od_sc_factory_name,
+                b.character4 od_sc_vendor_status, b.character10 od_sc_audit_agent,
+                b.character15 od_sc_vend_address, b.character20 od_sc_factory_address,
+                b.character48 od_sc_vend_region, b.character23 od_sc_europe_rgn,
+                b.character29 od_sc_mexico_region, b.character35 od_sc_asia_region,
+                a.character22 od_sc_od_vendor_id, a.character28 od_sc_factory_id
+           FROM qa_results b, 
+                qa_results a,
+                qa_plans mp,
+            	qa_plans ap
+         where  ap.name='OD_SC_VENDOR_AUDIT'
+           and  mp.name='OD_PB_SC_VENDOR_MASTER'
+       and b.plan_id=mp.plan_id and a.plan_id=ap.plan_id
+       and (   (   b.character1 =a.character22
+                     OR  b.character2 = a.character23
+                    )
+                 OR (    b.character16 =a.character28
+                     OR  b.character17 =a.character29
+                    )
+                )
+   ]]></SQLQuery>
+   <DesignTime>
+      <Attr Name="_isCodegen" Value="true" />
+      <Attr Name="_version" Value="9.0.3.14.01" />
+      <Attr Name="_CodeGenFlagNew" Value="36" />
+   </DesignTime>
+   <ViewAttribute
+      Name="OdScVendorNumber"
+      IsUpdateable="false"
+      IsPersistent="false"
+      Precision="150"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      Expression="OdScVendorNumber"
+      SQLType="VARCHAR" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="OdScVendorName"
+      IsUpdateable="false"
+      IsPersistent="false"
+      Precision="150"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      Expression="OdScVendorName"
+      SQLType="VARCHAR" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="OdScFactoryNumber"
+      IsUpdateable="false"
+      IsPersistent="false"
+      Precision="150"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      Expression="OdScFactoryNumber"
+      SQLType="VARCHAR" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="OdScFactoryName"
+      IsUpdateable="false"
+      IsPersistent="false"
+      Precision="150"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      Expression="OdScFactoryName"
+      SQLType="VARCHAR" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="OdScVendorStatus"
+      IsUpdateable="false"
+      IsPersistent="false"
+      Precision="150"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      Expression="OdScVendorStatus"
+      SQLType="VARCHAR" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="OdScAuditAgent"
+      IsUpdateable="false"
+      IsPersistent="false"
+      Precision="150"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      Expression="OdScAuditAgent"
+      SQLType="VARCHAR" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="OdScVendAddress"
+      IsUpdateable="false"
+      IsPersistent="false"
+      Precision="150"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      Expression="OdScVendAddress"
+      SQLType="VARCHAR" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="OdScFactoryAddress"
+      IsUpdateable="false"
+      IsPersistent="false"
+      Precision="150"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      Expression="OdScFactoryAddress"
+      SQLType="VARCHAR" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="OdScVendRegion"
+      IsUpdateable="false"
+      IsPersistent="false"
+      Precision="150"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      Expression="OdScVendRegion"
+      SQLType="VARCHAR" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="OdScEuropeRgn"
+      IsUpdateable="false"
+      IsPersistent="false"
+      Precision="150"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      Expression="OdScEuropeRgn"
+      SQLType="VARCHAR" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="OdScMexicoRegion"
+      IsUpdateable="false"
+      IsPersistent="false"
+      Precision="150"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      Expression="OdScMexicoRegion"
+      SQLType="VARCHAR" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="OdScAsiaRegion"
+      IsUpdateable="false"
+      IsPersistent="false"
+      Precision="150"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      Expression="OdScAsiaRegion"
+      SQLType="VARCHAR" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="OdScOdVendorId"
+      IsUpdateable="false"
+      IsPersistent="false"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      Expression="OdScOdVendorId"
+      SQLType="VARCHAR" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="OdScFactoryId"
+      IsUpdateable="false"
+      IsPersistent="false"
+      Precision="150"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      Expression="OdScFactoryId"
+      SQLType="VARCHAR" >
+   </ViewAttribute>
+</ViewObject>

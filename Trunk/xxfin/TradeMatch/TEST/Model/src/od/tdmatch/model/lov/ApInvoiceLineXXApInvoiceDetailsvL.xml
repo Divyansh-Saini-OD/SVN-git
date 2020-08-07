@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="windows-1252" ?>
+<!DOCTYPE ViewLink SYSTEM "jbo_03_01.dtd">
+<!---->
+<ViewLink
+  xmlns="http://xmlns.oracle.com/bc4j"
+  Name="ApInvoiceLineXXApInvoiceDetailsvL"
+  Version="12.2.1.12.24"
+  InheritPersonalization="merge">
+  <Properties>
+    <SchemaBasedProperties>
+      <LABEL
+        ResId="od.tdmatch.model.lov.ApInvoiceLineXXApInvoiceDetailsvL_LABEL"/>
+    </SchemaBasedProperties>
+  </Properties>
+  <ViewLinkDefEnd
+    Name="ApInvoiceLineVO"
+    Cardinality="1"
+    Source="true"
+    Owner="od.tdmatch.model.ApInvoiceLineVO">
+    <DesignTime>
+      <Attr Name="_isUpdateable" Value="true"/>
+      <Attr Name="_finderName" Value="ApInvoiceLineVO"/>
+    </DesignTime>
+    <AttrArray Name="Attributes">
+      <Item Value="od.tdmatch.model.ApInvoiceLineVO.InvoiceId"/>
+      <Item Value="od.tdmatch.model.ApInvoiceLineVO.LineNumber"/>
+    </AttrArray>
+  </ViewLinkDefEnd>
+  <ViewLinkDefEnd
+    Name="XXApInvoiceDetailsVO"
+    Cardinality="-1"
+    Owner="od.tdmatch.model.XXApInvoiceDetailsVO">
+    <DesignTime>
+      <Attr Name="_isUpdateable" Value="true"/>
+      <Attr Name="_finderName" Value="XXApInvoiceDetailsVO"/>
+    </DesignTime>
+    <AttrArray Name="Attributes">
+      <Item Value="od.tdmatch.model.XXApInvoiceDetailsVO.InvoiceId"/>
+      <Item Value="od.tdmatch.model.XXApInvoiceDetailsVO.LineNumber"/>
+    </AttrArray>
+  </ViewLinkDefEnd>
+  <ResourceBundle>
+    <PropertiesBundle
+      PropertiesFile="od.tdmatch.model.ModelBundle"/>
+  </ResourceBundle>
+</ViewLink>

@@ -1,0 +1,31 @@
+SET VERIFY OFF;
+SET TERM ON
+PROMPT Creating Sequence XX_COM_JOB_RUN_DATE_S
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+-- +=======================================================================+
+-- |               Office Depot - Project Simplify                         |
+-- |                       Oracle Consulting                               |
+-- +=======================================================================+
+-- | Name  :        XX_CRM_CONTACT_SHIP_TO_REL_S                           |
+-- | Description:   Sequence for common error handling routines            |
+-- |                                                                       |
+-- |                                                                       |
+-- |                                                                       |
+-- |Change Record:                                                         |
+-- |===============                                                        |
+-- |Version   Date        Author           Remarks                         |
+-- |=======   ==========  =============    ================================|
+-- |1.0       11-JAN-2008 A Sahay          Initial version                 |
+-- +=======================================================================+
+
+CREATE SEQUENCE XXCOMN.XX_COM_JOB_RUN_DATE_S
+     MINVALUE 1
+     INCREMENT BY 1
+     START WITH 1
+     NOCACHE
+     NOORDER
+     NOCYCLE ;
+
+SHOW ERRORS;

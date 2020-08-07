@@ -1,0 +1,65 @@
+REM============================================================================================
+REM                                 Start Of Script
+REM============================================================================================
+
+--+=============================================================================================+--
+--|                                                                                             |--
+--| Program Name   : CREATE_XX_INV_EBS_CONTROL.tbl                                              |--
+--|                                                                                             |--
+--| Purpose        : Create Custom Tables .                                                     |--
+--|                  The Objects created are:                                                   |--
+--|                                                                                             |--
+--|                1. XX_INV_EBS_CONTROL(OD RMS To EBS Interface control Table)                 |--
+--|                                                                                             |--
+--| Change History  :                                                                           |--
+--| Version           Date             Changed By              Description                      |--
+--+=============================================================================================+--
+--| 1.0              10-Jun-2008       Paddy Sanjeevi          Original                         |--
+--+=============================================================================================+--
+
+SET VERIFY      OFF
+SET TERM        ON
+SET FEEDBACK    OFF
+SET SHOW        OFF
+SET ECHO        OFF
+SET TAB         OFF
+
+WHENEVER SQLERROR CONTINUE;
+
+PROMPT
+PROMPT Creating the Custom Table ......
+PROMPT
+
+PROMPT
+PROMPT Creating the Table XX_INV_EBS_CONTROL......
+PROMPT
+
+CREATE TABLE XX_INV_EBS_CONTROL
+( CONTROL_ID           NUMBER              ,
+  PROCESS_NAME         VARCHAR2(100)  NOT NULL,
+  STOP_RUNNING_FLAG    VARCHAR2(1)   ,
+  EMAIL_TO             VARCHAR2(500) ,
+  EBS_BATCH_SIZE           NUMBER        ,
+  EBS_THREADS	       NUMBER,
+  RMS_BATCH_SIZE       NUMBER,
+  CREATION_DATE        DATE           NOT NULL,
+  CREATED_BY           NUMBER         NOT NULL,
+  LAST_UPDATE_DATE     DATE           NOT NULL,
+  LAST_UPDATED_BY      NUMBER         NOT NULL
+);
+
+
+WHENEVER SQLERROR CONTINUE;
+
+PROMPT
+PROMPT Exiting....
+PROMPT
+
+SET FEEDBACK ON
+
+EXIT;
+
+REM=================================================================================================
+REM                                   End Of Script
+REM=================================================================================================
+

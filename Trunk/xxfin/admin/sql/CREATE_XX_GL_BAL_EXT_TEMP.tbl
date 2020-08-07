@@ -1,0 +1,49 @@
+-- +==========================================================================+
+-- |                  Office Depot - Project Simplify                         |
+-- |                       WIPRO Technologies                                 |
+-- +==========================================================================+
+-- | RICE ID     :  I1360                                                     |
+-- | Name        :  I1360 Oracle GL Feed to Hyperion Planning                 |
+-- | Description :                                                            |
+-- |                                                                          |
+-- |                                                                          |
+-- | SQL Script to create the following object                                |
+-- |             Table       : XXFIN.XX_GL_BAL_EXT_TEMP                       |
+-- |                                                                          |
+-- |Change Record:                                                            |
+-- |===============                                                           |
+-- |Version   Date         Author               Remarks                       |
+-- |=======   ==========   =============        ==============================|
+-- | V1.0     11-JAN-2010  Cindhu Menaka        Initial version               |
+-- |                                            Defect 2841 CR 745/585 R 1.2  |
+-- +==========================================================================+
+
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     ON
+
+CREATE TABLE XXFIN.XX_GL_BAL_EXT_TEMP(
+                                 period_name      VARCHAR2(15)
+                                ,period           VARCHAR2(15)
+                                ,actual_flag      VARCHAR2(1)
+                                ,period_year      VARCHAR2(15)
+                                ,year             VARCHAR2(15)
+                                ,company          VARCHAR2(25)
+                                ,segment2         VARCHAR2(25)
+                                ,segment3         VARCHAR2(25)
+                                ,acct_parent      VARCHAR2(60)
+                                ,cc_parent        VARCHAR2(60)
+                                ,acct_description VARCHAR2(240)
+                                ,segment4         VARCHAR2(25)
+                                ,segment5         VARCHAR2(25)
+                                ,segment6         VARCHAR2(25)
+                                ,segment7         VARCHAR2(25)
+                                ,currency_code    VARCHAR2(5)
+                                ,ytd_bal          NUMBER
+                                ,scenario         VARCHAR2(25)
+                                ,layer            VARCHAR2(25)
+                                );
+
+SHOW ERROR

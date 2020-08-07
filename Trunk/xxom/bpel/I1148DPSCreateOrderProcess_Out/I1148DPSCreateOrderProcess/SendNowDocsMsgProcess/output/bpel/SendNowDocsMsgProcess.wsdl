@@ -1,0 +1,40 @@
+<definitions
+     name="SendNowDocsMsgProcess"
+     targetNamespace="http://xmlns.oracle.com/SendNowDocsMsgProcess"
+     xmlns="http://schemas.xmlsoap.org/wsdl/"
+     xmlns:ns1="http://www.openapplications.org/oagis/9"
+     xmlns:plnk="http://schemas.xmlsoap.org/ws/2003/05/partner-link/"
+     xmlns:ns3="http://schemas.oracle.com/bpel/extension"
+     xmlns:ns2="http://xmlns.oracle.com/SendSalesOrderInfo"
+     xmlns:client="http://xmlns.oracle.com/SendNowDocsMsgProcess"
+    >
+    <import namespace="http://schemas.oracle.com/bpel/extension" location="RuntimeFault.wsdl"/>
+    <types>
+        <schema xmlns="http://www.w3.org/2001/XMLSchema">
+            <import namespace="http://xmlns.oracle.com/SendNowDocsMsgProcess" schemaLocation="SendNowDocsMsgProcess.xsd"/>
+        </schema>
+        <schema xmlns="http://www.w3.org/2001/XMLSchema">
+            <import namespace="http://www.openapplications.org/oagis/9" schemaLocation="CreateOrder.xsd"/>
+        </schema>
+        <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <xsd:import namespace="http://xmlns.oracle.com/SendSalesOrderInfo" schemaLocation="SendSalesOrderInfo.xsd"/>
+        </xsd:schema>
+    </types>
+    <message name="SendNowDocsMsgProcessRequestMessage">
+        <part name="payload" element="ns1:CreateSalesOrder"/>
+    </message>
+    <message name="SendNowDocsMsgProcessResponseMessage">
+        <part name="payload" element="client:SendNowDocsMsgProcessProcessResponse"/>
+    </message>
+    <portType name="SendNowDocsMsgProcess">
+        <operation name="process">
+            <input message="client:SendNowDocsMsgProcessRequestMessage"/>
+            <output message="client:SendNowDocsMsgProcessResponseMessage"/>
+        </operation>
+    </portType>
+    <plnk:partnerLinkType name="SendNowDocsMsgProcess">
+        <plnk:role name="SendNowDocsMsgProcessProvider">
+            <plnk:portType name="client:SendNowDocsMsgProcess"/>
+        </plnk:role>
+    </plnk:partnerLinkType>
+</definitions>

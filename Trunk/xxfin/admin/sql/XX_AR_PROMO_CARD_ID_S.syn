@@ -1,0 +1,22 @@
+-- +=====================================================================+
+-- |                  Office Depot - Project Simplify                    |
+-- |                       WIPRO Technologies                            |
+-- +=====================================================================+
+-- | Name :  XX_AR_PROMO_card_ID_S.syn                                         |
+-- | Description : Creates synonym for XX_AR_PROMO_SEQ.                  | 
+-- |                                                                     |
+-- |Change Record:                                                       |
+-- |===============                                                      |
+-- |Version   Date              Author              Remarks              |
+-- |======   ==========     =============        ======================= |
+-- |1.0       05-MAR-2007  Raji Natarajan,       Created base version    |
+-- |                       Wipro Technologies                            |
+-- |                                                                     |
+-- +=====================================================================+
+
+
+CREATE SYNONYM xx_ar_promo_card_id_s FOR xxfin.xx_ar_promo_card_id_s;
+
+
+
+SHOW ERROR

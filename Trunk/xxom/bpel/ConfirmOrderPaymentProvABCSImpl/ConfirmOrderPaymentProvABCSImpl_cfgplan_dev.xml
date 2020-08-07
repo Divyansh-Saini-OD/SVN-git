@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<SOAConfigPlan xmlns:jca="http://platform.integration.oracle/blocks/adapter/fw/metadata" xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy" xmlns:orawsp="http://schemas.oracle.com/ws/2006/01/policy" xmlns:edl="http://schemas.oracle.com/events/edl" xmlns="http://schemas.oracle.com/soa/configplan">
+   <composite name="ConfirmOrderPaymentProvABCSImpl">
+      <!--Add search and replace rules for the import section of a composite
+	Example:
+	<searchReplace>
+		<search>http://my-dev-server</search>
+		<replace>http://my-test-server</replace>
+	<searchReplace>
+	<searchReplace>
+		<search>8888</search>
+		<replace>8889</replace>
+	<searchReplace>-->
+      <import>
+         <searchReplace>
+            <search/>
+            <replace/>
+         </searchReplace>
+      </import>
+      <service name="ConfirmOrderPaymentImplService_ep">
+         <binding type="ws">
+            <attribute name="port">
+               <replace>http://xmlns.officedepot.com/TDS/ConfirmOrderPaymentProvABCSImpl/ConfirmOrderPayment#wsdl.endpoint(ConfirmOrderPaymentImplService_ep/ConfirmOrderPayment_pt)</replace>
+            </attribute>
+         </binding>
+      </service>
+      <property name="oracle.composite.faultPolicyFile">
+         <replace>oramds:/apps/ODCommon/faultpolicies/tds/fault-policies.xml</replace>
+      </property>
+      <property name="oracle.composite.faultBindingFile">
+         <replace>oramds:/apps/ODCommon/faultpolicies/tds/fault-bindings.xml</replace>
+      </property>
+      <!--Add search and replace rules for the component properties
+	For components and service/reference bindings, you can add policy references.
+	Example:
+	<component name="*">
+		<wsp:PolicyReference orawsp:category="management" orawsp:status="enabled" URI="oracle/log_policy"/>
+	</component>-->
+      <component name="ConfirmOrderPayment">
+         <property name="bpel.config.transaction">
+            <replace>requiresNew</replace>
+         </property>
+         <property name="bpel.config.oneWayDeliveryPolicy">
+            <replace>async.persist</replace>
+         </property>
+         <property name="bpel.preference.EBIZ_SUCCESS_STATUS">
+            <replace>S</replace>
+         </property>
+         <property name="bpel.preference.EBIZ_ERROR_STATUS">
+            <replace>E</replace>
+         </property>
+         <property name="bpel.preference.SOURCE_SYSTEM_NAME">
+            <replace>JDA</replace>
+         </property>
+         <property name="bpel.preference.ERROR_DESCRIPTION_TEXT">
+            <replace>There was an issue sending the data to Oracle Apps for the Service Request Number :</replace>
+         </property>
+         <property name="bpel.preference.MESSAGE_TYPE">
+            <replace>OrderPaymentConfirmationEBM</replace>
+         </property>
+         <property name="bpel.preference.MESSAGE_VERSION">
+            <replace>V1</replace>
+         </property>
+         <property name="bpel.preference.ERROR_TYPE">
+            <replace>System</replace>
+         </property>
+         <property name="bpel.preference.ERROR_SEVERITY">
+            <replace>fatal</replace>
+         </property>
+         <property name="bpel.preference.CATCH_ALL_PROCESS_STEP">
+            <replace>Catch All on the Main Sequence</replace>
+         </property>
+         <property name="bpel.preference.MESSAGE_OPERATION">
+            <replace>confirmOrderPayment</replace>
+         </property>
+      </component>
+      <reference name="UpdateOrderPaymentConfirmationService">
+         <binding type="jca"/>
+      </reference>
+      <reference name="CommonErrorLoggingService">
+         <binding type="jca"/>
+      </reference>
+   </composite>
+   <!--To configure monitor.config: 
+	<property name="enabled"><replace>true</replace></property>
+	<property name="dataObjectsFolder"><searchReplace><search>mydev</search><replace>myproduction</replace></searchReplace></property>
+	
+	sample properties to configure for JMS adapter: 
+	<jca:property name="DestinationName"><replace>jms/DemoSupplierTopic</replace></jca:property>
+	<jca:property name="TimeToLive"><replace>0</replace></jca:property>
+	
+	To add search and replace rules for wsdls, xsd and jca files
+	Example:
+	<searchReplace>
+		<search>http://my-dev-server</search>
+		<replace>http://my-test-server</replace>
+	<searchReplace>
+	<searchReplace>
+		<search>8888</search>
+		<replace>8889</replace>
+	<searchReplace>
+	-->
+   <wsdlAndSchema name="CommonErrorLoggingService.wsdl|CommonErrorLoggingService_jms.jca|ConfirmOrderPayment.wsdl|UpdateOrderPaymentConfirmationService.wsdl|UpdateOrderPaymentConfirmationService_apps.jca|xsd/APPS_XX_CS_TDS_PARTS_POS_PKG_MAIN.xsd|xsd/OrderPaymentConfirmationEBM.xsd">
+      <searchReplace>
+         <search/>
+         <replace/>
+      </searchReplace>
+   </wsdlAndSchema>
+</SOAConfigPlan>

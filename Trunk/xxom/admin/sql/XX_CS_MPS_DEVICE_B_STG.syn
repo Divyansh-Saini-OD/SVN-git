@@ -1,0 +1,31 @@
+-- +============================================================================================+
+-- |                        Office Depot - Project Simplify                                     |
+-- |                                                                                            |
+-- +============================================================================================+
+
+
+SET VERIFY      OFF
+SET TERM        ON
+SET FEEDBACK    OFF
+SET SHOW        OFF
+SET ECHO        OFF
+SET TAB         OFF
+
+
+PROMPT
+PROMPT Creating SYNONYM XX_CS_MPS_DEVICE_B_STG
+PROMPT
+
+CREATE OR REPLACE SYNONYM XX_CS_MPS_DEVICE_B_STG  FOR XXOM.XX_CS_MPS_DEVICE_B_STG
+/
+
+WHENEVER SQLERROR EXIT 1
+
+PROMPT
+PROMPT Exiting....
+PROMPT
+
+SET FEEDBACK ON
+
+--EXIT;
+

@@ -1,0 +1,57 @@
+<definitions
+     name="Ensw"
+     targetNamespace="http://xmlns.oracle.com/pcbpel/adapter/aq/Ensw/"
+     xmlns="http://schemas.xmlsoap.org/wsdl/"
+     xmlns:tns="http://xmlns.oracle.com/pcbpel/adapter/aq/Ensw/"
+     xmlns:plt="http://schemas.xmlsoap.org/ws/2003/05/partner-link/"
+     xmlns:jca="http://xmlns.oracle.com/pcbpel/wsdl/jca/"
+     xmlns:imp1="http://www.openapplications.org/oagis/9"
+     xmlns:hdr="http://xmlns.oracle.com/pcbpel/adapter/aq/outbound/"
+    >
+    <import namespace="http://xmlns.oracle.com/pcbpel/adapter/aq/outbound/" location="aqAdapterOutboundHeader.wsdl"/>
+    <import namespace="http://www.openapplications.org/oagis/9" location="C:\Rizwan\OTC\Supplier%20inv%20feed\BPEL\I1186_SupplierInventoryFeed_In\I1186_SupplierInventoryFeed_In\SupplierInvFeedProcess\bpel\SupplierInvFeedProcess.wsdl"/>
+    <message name="ShowInventoryBalance_msg">
+        <part name="ShowInventoryBalance" element="imp1:ShowInventoryBalance"/>
+    </message>
+    <portType name="Enqueue_ptt">
+        <operation name="Enqueue">
+            <input message="tns:ShowInventoryBalance_msg"/>
+        </operation>
+    </portType>
+    <binding name="Enqueue_binding" type="tns:Enqueue_ptt">
+    <jca:binding  />
+        <operation name="Enqueue">
+      <jca:operation
+          InteractionSpec="oracle.tip.adapter.aq.outbound.AQEnqueueInteractionSpec"
+          QueueName="XX_OM_SIF_ERRMSG_Q"
+          DatabaseSchema="APPS"
+          ObjectFieldName="ERR_MSG_T"
+          Correlation="SIF"
+          OpaqueSchema="false" >
+      </jca:operation>
+      <input>
+        <jca:header message="hdr:Header" part="Header"/>
+      </input>
+        </operation>
+    </binding>
+    <service name="Ensw">
+        <port name="Enqueue_pt" binding="tns:Enqueue_binding">
+<!--Your runtime connection is declared in 
+J2EE_HOME/application-deployments/default/AqAdapter/oc4j-ra.xml 
+These mcf properties here are from your design time connection and 
+save you from having to edit that file and restart the application server 
+if eis/AQ/ebs_apps_gsidev03 is missing. 
+These mcf properties are safe to remove.-->
+      <jca:address location="eis/AQ/ebs_apps_gsidev03" UIConnectionName="ebs_apps_gsidev03"
+          ManagedConnectionFactory="oracle.tip.adapter.aq.AQManagedConnectionFactory"
+          mcf.ConnectionString="jdbc:oracle:thin:@choldbr18d.na.odcorp.net:1544:gsidev03"
+          mcf.UserName="apps"
+          mcf.Password="33249B2910CFF3FBCD9B834DF8560A56" />
+        </port>
+    </service>
+  <plt:partnerLinkType name="Enqueue_plt" >
+    <plt:role name="Enqueue_role" >
+      <plt:portType name="tns:Enqueue_ptt" />
+    </plt:role>
+  </plt:partnerLinkType>
+</definitions>

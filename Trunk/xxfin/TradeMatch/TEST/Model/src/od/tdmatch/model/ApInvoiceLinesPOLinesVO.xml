@@ -1,0 +1,301 @@
+<?xml version="1.0" encoding="windows-1252" ?>
+<!DOCTYPE ViewObject SYSTEM "jbo_03_01.dtd">
+<!---->
+<ViewObject
+  xmlns="http://xmlns.oracle.com/bc4j"
+  Name="ApInvoiceLinesPOLinesVO"
+  Version="12.2.1.12.24"
+  InheritPersonalization="merge"
+  BindingStyle="OracleName"
+  CustomQuery="true"
+  RowClass="od.tdmatch.model.ApInvoiceLinesPOLinesVORowImpl"
+  ComponentClass="od.tdmatch.model.ApInvoiceLinesPOLinesVOImpl"
+  PageIterMode="Full">
+  <DesignTime>
+    <Attr Name="_codeGenFlag2" Value="Access|Coll"/>
+    <Attr Name="_isExpertMode" Value="true"/>
+    <Attr Name="_isCodegen" Value="true"/>
+  </DesignTime>
+  <Properties>
+    <SchemaBasedProperties>
+      <LABEL
+        ResId="od.tdmatch.model.ApInvoiceLinesPOLinesVO_LABEL"/>
+    </SchemaBasedProperties>
+  </Properties>
+  <Variable
+    Name="invId"
+    Kind="where"
+    Type="oracle.jbo.domain.Number"/>
+  <Variable
+    Name="poHdrId"
+    Kind="where"
+    Type="oracle.jbo.domain.Number"/>
+  <SQLQuery><![CDATA[select line_number,quantity_invoiced,unit_price,amount,line_type_lookup_code,po_line_id,po_line_location_id,(select segment1 from po_headers_all a where a.po_header_id=:poHdrId) po_num,     
+(select SUBSTR(location_code,1,6) from hr_locations_all where location_id=ApInvoiceLinesEO.ship_to_location_id) location,(select shipment_num from po_line_locations_all where po_line_id=ApInvoiceLinesEO.po_line_id) shipment_num,     
+(select line_num from po_lines_all a where a.po_line_id=ApInvoiceLinesEO.po_line_id) po_line_num,     
+ApInvoiceLinesEO.po_line_id po_line_id,(select segment1 from mtl_system_items_b a where a.inventory_item_id=ApInvoiceLinesEO.inventory_item_id and a.organization_id=441) sku,item_description sku_desc,     
+(select quantity from po_lines_all a where a.po_line_id=ApInvoiceLinesEO.po_line_id) po_qty,     
+(select unit_price from po_lines_all a where po_line_id=ApInvoiceLinesEO.po_line_id) po_price,     
+(select g.segment1 ||'.'||g.segment2||'.'||g.segment3||'.'||g.segment4||'.'||g.segment5||'.'||g.segment6||'.'||g.segment7   from gl_code_combinations g,        po.po_distributions_all d where d.po_line_id=ApInvoiceLinesEO.po_line_id     and g.code_combination_id=d.code_combination_id) charge_account,     
+'N' unmatch_po_flag,(select decode(count(hold_id),0,'N','Y') from ap_holds_all a where a.line_location_id=ApInvoiceLinesEO.po_line_location_id) hold_exists_flag,ApInvoiceLinesEO.inventory_item_id    
+from ap_invoice_lines_all ApInvoiceLinesEO     
+where invoice_id=:invId and line_type_lookup_code in ('ITEM','FREIGHT')      
+union all      
+select line_num,null,null,null,null,po_line_id,null,(select segment1 from po_headers_all a where a.po_header_id=:poHdrId) po_num,     
+(SELECT SUBSTR(location_code,1,6)  
+  FROM hr_locations_all a, po_line_locations_all b  
+  WHERE b.po_line_id=PoLinesAllEO.po_line_id  
+  and a.location_id=b.ship_to_location_id  
+  ) location,(select shipment_num from po_line_locations_all where po_line_id=PoLinesAllEO.po_line_id) shipment_num,     
+line_num po_line_num,     
+po_line_id,(select segment1 from mtl_system_items_b a where a.inventory_item_id=PoLinesAllEO.item_id and a.organization_id=441) sku,item_description sku_desc,     
+quantity po_qty,     
+unit_price po_price,     
+(select g.segment1 ||'.'||g.segment2||'.'||g.segment3||'.'||g.segment4||'.'||g.segment5||'.'||g.segment6||'.'||g.segment7   from gl_code_combinations g,        po.po_distributions_all d where d.po_line_id=PoLinesAllEO.po_line_id     and g.code_combination_id=d.code_combination_id) charge_account,     
+'Y','Y',PoLinesAllEO.item_id     
+from po_lines_all PoLinesAllEO where po_header_id=:poHdrId and po_line_id not in (select po_line_id from ap_invoice_lines_all where invoice_id=:invId and po_line_id is not null)]]></SQLQuery>
+  <ViewAttribute
+    Name="LineNumber"
+    IsUpdateable="false"
+    IsPersistent="false"
+    PrecisionRule="true"
+    Type="oracle.jbo.domain.Number"
+    ColumnType="NUMBER"
+    AliasName="LINE_NUMBER"
+    Expression="LINE_NUMBER"
+    SQLType="NUMERIC"/>
+  <ViewAttribute
+    Name="QuantityInvoiced"
+    IsUpdateable="false"
+    IsPersistent="false"
+    PrecisionRule="true"
+    Type="oracle.jbo.domain.Number"
+    ColumnType="NUMBER"
+    AliasName="QUANTITY_INVOICED"
+    Expression="QUANTITY_INVOICED"
+    SQLType="NUMERIC"/>
+  <ViewAttribute
+    Name="UnitPrice"
+    IsUpdateable="false"
+    IsPersistent="false"
+    PrecisionRule="true"
+    Type="oracle.jbo.domain.Number"
+    ColumnType="NUMBER"
+    AliasName="UNIT_PRICE"
+    Expression="UNIT_PRICE"
+    SQLType="NUMERIC"/>
+  <ViewAttribute
+    Name="Amount"
+    IsUpdateable="false"
+    IsPersistent="false"
+    PrecisionRule="true"
+    Type="oracle.jbo.domain.Number"
+    ColumnType="NUMBER"
+    AliasName="AMOUNT"
+    Expression="AMOUNT"
+    SQLType="NUMERIC"/>
+  <ViewAttribute
+    Name="LineTypeLookupCode"
+    IsUpdateable="false"
+    IsPersistent="false"
+    PrecisionRule="true"
+    Precision="25"
+    Type="java.lang.String"
+    ColumnType="VARCHAR2"
+    AliasName="LINE_TYPE_LOOKUP_CODE"
+    Expression="LINE_TYPE_LOOKUP_CODE"
+    SQLType="VARCHAR">
+    <DesignTime>
+      <Attr Name="_DisplaySize" Value="25"/>
+    </DesignTime>
+  </ViewAttribute>
+  <ViewAttribute
+    Name="PoLineId"
+    IsUpdateable="false"
+    IsPersistent="false"
+    PrecisionRule="true"
+    Type="oracle.jbo.domain.Number"
+    ColumnType="NUMBER"
+    AliasName="PO_LINE_ID"
+    Expression="PO_LINE_ID"
+    SQLType="NUMERIC"/>
+  <ViewAttribute
+    Name="PoLineLocationId"
+    IsUpdateable="false"
+    IsPersistent="false"
+    PrecisionRule="true"
+    Type="oracle.jbo.domain.Number"
+    ColumnType="NUMBER"
+    AliasName="PO_LINE_LOCATION_ID"
+    Expression="PO_LINE_LOCATION_ID"
+    SQLType="NUMERIC"/>
+  <ViewAttribute
+    Name="PoNum"
+    IsUpdateable="false"
+    IsPersistent="false"
+    PrecisionRule="true"
+    Precision="20"
+    Type="java.lang.String"
+    ColumnType="VARCHAR2"
+    AliasName="PO_NUM"
+    Expression="PO_NUM"
+    SQLType="VARCHAR">
+    <DesignTime>
+      <Attr Name="_DisplaySize" Value="20"/>
+    </DesignTime>
+  </ViewAttribute>
+  <ViewAttribute
+    Name="Location"
+    IsUpdateable="false"
+    IsPersistent="false"
+    PrecisionRule="true"
+    Precision="6"
+    Type="java.lang.String"
+    ColumnType="VARCHAR2"
+    AliasName="LOCATION"
+    Expression="LOCATION"
+    SQLType="VARCHAR">
+    <DesignTime>
+      <Attr Name="_DisplaySize" Value="6"/>
+    </DesignTime>
+  </ViewAttribute>
+  <ViewAttribute
+    Name="ShipmentNum"
+    IsUpdateable="false"
+    IsPersistent="false"
+    PrecisionRule="true"
+    Type="oracle.jbo.domain.Number"
+    ColumnType="NUMBER"
+    AliasName="SHIPMENT_NUM"
+    Expression="SHIPMENT_NUM"
+    SQLType="NUMERIC"/>
+  <ViewAttribute
+    Name="PoLineNum"
+    IsUpdateable="false"
+    IsPersistent="false"
+    PrecisionRule="true"
+    Type="oracle.jbo.domain.Number"
+    ColumnType="NUMBER"
+    AliasName="PO_LINE_NUM"
+    Expression="PO_LINE_NUM"
+    SQLType="NUMERIC"/>
+  <ViewAttribute
+    Name="PoLineId1"
+    IsUpdateable="false"
+    IsPersistent="false"
+    PrecisionRule="true"
+    Type="oracle.jbo.domain.Number"
+    ColumnType="NUMBER"
+    AliasName="PO_LINE_ID"
+    Expression="PO_LINE_ID"
+    SQLType="NUMERIC"/>
+  <ViewAttribute
+    Name="Sku"
+    IsUpdateable="false"
+    IsPersistent="false"
+    PrecisionRule="true"
+    Precision="40"
+    Type="java.lang.String"
+    ColumnType="VARCHAR2"
+    AliasName="SKU"
+    Expression="SKU"
+    SQLType="VARCHAR">
+    <DesignTime>
+      <Attr Name="_DisplaySize" Value="40"/>
+    </DesignTime>
+  </ViewAttribute>
+  <ViewAttribute
+    Name="SkuDesc"
+    IsUpdateable="false"
+    IsPersistent="false"
+    PrecisionRule="true"
+    Precision="240"
+    Type="java.lang.String"
+    ColumnType="VARCHAR2"
+    AliasName="SKU_DESC"
+    Expression="SKU_DESC"
+    SQLType="VARCHAR">
+    <DesignTime>
+      <Attr Name="_DisplaySize" Value="240"/>
+    </DesignTime>
+  </ViewAttribute>
+  <ViewAttribute
+    Name="PoQty"
+    IsUpdateable="false"
+    IsPersistent="false"
+    PrecisionRule="true"
+    Type="oracle.jbo.domain.Number"
+    ColumnType="NUMBER"
+    AliasName="PO_QTY"
+    Expression="PO_QTY"
+    SQLType="NUMERIC"/>
+  <ViewAttribute
+    Name="PoPrice"
+    IsUpdateable="false"
+    IsPersistent="false"
+    PrecisionRule="true"
+    Type="oracle.jbo.domain.Number"
+    ColumnType="NUMBER"
+    AliasName="PO_PRICE"
+    Expression="PO_PRICE"
+    SQLType="NUMERIC"/>
+  <ViewAttribute
+    Name="ChargeAccount"
+    IsUpdateable="false"
+    IsPersistent="false"
+    PrecisionRule="true"
+    Precision="181"
+    Type="java.lang.String"
+    ColumnType="VARCHAR2"
+    AliasName="CHARGE_ACCOUNT"
+    Expression="CHARGE_ACCOUNT"
+    SQLType="VARCHAR">
+    <DesignTime>
+      <Attr Name="_DisplaySize" Value="181"/>
+    </DesignTime>
+  </ViewAttribute>
+  <ViewAttribute
+    Name="UnmatchPoFlag"
+    IsUpdateable="false"
+    IsPersistent="false"
+    PrecisionRule="true"
+    Precision="1"
+    Type="java.lang.String"
+    ColumnType="CHAR"
+    AliasName="UNMATCH_PO_FLAG"
+    Expression="UNMATCH_PO_FLAG"
+    SQLType="VARCHAR">
+    <DesignTime>
+      <Attr Name="_DisplaySize" Value="1"/>
+    </DesignTime>
+  </ViewAttribute>
+  <ViewAttribute
+    Name="HoldExistsFlag"
+    IsUpdateable="false"
+    IsPersistent="false"
+    PrecisionRule="true"
+    Precision="1"
+    Type="java.lang.String"
+    ColumnType="VARCHAR2"
+    AliasName="HOLD_EXISTS_FLAG"
+    Expression="HOLD_EXISTS_FLAG"
+    SQLType="VARCHAR">
+    <DesignTime>
+      <Attr Name="_DisplaySize" Value="1"/>
+    </DesignTime>
+  </ViewAttribute>
+  <ViewAttribute
+    Name="InventoryItemId"
+    IsUpdateable="false"
+    IsPersistent="false"
+    PrecisionRule="true"
+    Type="oracle.jbo.domain.Number"
+    ColumnType="NUMBER"
+    AliasName="INVENTORY_ITEM_ID"
+    Expression="INVENTORY_ITEM_ID"
+    SQLType="NUMERIC"/>
+  <ResourceBundle>
+    <PropertiesBundle
+      PropertiesFile="od.tdmatch.model.ModelBundle"/>
+  </ResourceBundle>
+</ViewObject>

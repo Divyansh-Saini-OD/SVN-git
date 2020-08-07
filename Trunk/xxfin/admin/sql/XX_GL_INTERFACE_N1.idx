@@ -1,0 +1,65 @@
+REM================================================================================================
+REM                                 Start Of Script
+REM================================================================================================
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     ON
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+-- +=======================================================================+
+-- |               Office Depot - Project Simplify                         |
+-- |      Oracle NAIO/Office Depot/Consulting Organization                 |
+-- +=======================================================================+
+-- | Name        : XX_GL_INTERFACE_N1		                           |
+-- | Description : Non-Unique Index on GL_INTERFACE                        |
+-- |                                                                       |
+-- |Change History:                                                        |
+-- |---------------                                                        |
+-- |                                                                       |
+-- |Version  Date        Author             Remarks                        |
+-- |-------  ----------- -----------------  -------------------------------|
+-- | 1.0       01-JUN-2008   P.Suresh        Defect 7011. Multithread      |
+-- |                                         Import Journals program.      |
+-- +=======================================================================+
+WHENEVER SQLERROR CONTINUE
+
+PROMPT
+PROMPT Dropping Existing Index....
+PROMPT
+-- ---------------------------------------------------
+-- Dropping existing index XX_GL_INTERFACE_N1
+-- ---------------------------------------------------
+
+-- DROP INDEX xxfin.XX_GL_INTERFACE_N1;
+
+WHENEVER SQLERROR CONTINUE
+
+PROMPT
+PROMPT Creating Index....
+PROMPT
+-- -------------------------------------------------
+-- Creating Index XX_GL_INTERFACE_N1
+-- -------------------------------------------------
+
+
+CREATE INDEX    xxfin.XX_GL_INTERFACE_N1
+ON              gl.gl_interface(
+				user_je_source_name,
+				request_id,
+				status,
+				set_of_books_id,
+				user_je_category_name,
+				actual_flag,
+				reference24
+                                )
+TABLESPACE APPS_TS_TX_IDX_16M  ONLINE;
+
+
+SHOW ERRORS;
+
+EXIT;
+REM================================================================================================
+REM                                 Start Of Script
+REM================================================================================================

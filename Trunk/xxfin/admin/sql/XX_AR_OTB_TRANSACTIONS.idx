@@ -1,0 +1,30 @@
+---+========================================================================================================+        
+---|                                        Office Depot - Project Simplify                                 |
+---|                             Oracle NAIO/WIPRO/Office Depot/Consulting Organization                     |
+---+========================================================================================================+
+---|    Application             :       AR                                                                  |
+---|                                                                                                        |
+---|    Name                    :       XX_AR_OTB_TRANSACTIONS.ind                                          |
+---|                                                                                                        |
+---|    Description             :       This script creates the indexes on the table XX_AR_OTB_TRANSACTIONS |
+---|                                                                                                        |
+---|                                                                                                        |
+---|                                                                                                        |
+---|    Change Record                                                                                       |
+---|    ---------------------------------                                                                   |
+---|    Version         DATE              AUTHOR            DESCRIPTION                                     |
+---|    ------------    ----------------- ---------------   ---------------------                           |
+---|    1.0             14-FEB-2007       Shiva Rao         Initial Version                                 |
+---|                                                                                                        |
+---+========================================================================================================+        
+
+CREATE INDEX xxfin.xx_ar_otb_transactions_n1 on xxfin.xx_ar_otb_transactions(oracle_cust_num) ; 
+
+
+CREATE INDEX xxfin.xx_ar_otb_transactions_n2 on xxfin.xx_ar_otb_transactions(spc_card_num) ; 
+
+
+CREATE INDEX xxfin.xx_ar_otb_transactions_n3 on xxfin.xx_ar_otb_transactions(customer_id) ;
+
+
+ 

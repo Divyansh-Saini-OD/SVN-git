@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding='windows-1252'?>
+<!DOCTYPE ViewObject SYSTEM "jbo_03_01.dtd">
+
+<ViewObject
+   Name="ODContactNumberVO"
+   BindingStyle="Oracle"
+   CustomQuery="true"
+   RowClass="od.oracle.apps.xxcrm.hz.account.customer.server.ODContactNumberVORowImpl"
+   ComponentClass="od.oracle.apps.xxcrm.hz.account.customer.server.ODContactNumberVOImpl"
+   MsgBundleClass="oracle.jbo.common.JboResourceBundle"
+   UseGlueCode="false" >
+   <SQLQuery><![CDATA[
+SELECT phone_line_type||': '||phone_country_code||phone_area_code||phone_number||phone_extension phoneNumber,  
+primary_flag PrimaryFlag,
+hz_format_phone_v2pub.GET_FORMATTED_PHONE(CONTACT_POINT_ID) formattedPhone
+FROM hz_contact_points
+WHERE contact_point_type = 'PHONE' 
+AND owner_table_name = 'HZ_PARTIES'
+AND owner_table_id = :1
+   ]]></SQLQuery>
+   <DesignTime>
+      <Attr Name="_isCodegen" Value="true" />
+      <Attr Name="_version" Value="9.0.3.13.93" />
+      <Attr Name="_CodeGenFlagNew" Value="36" />
+   </DesignTime>
+   <ViewAttribute
+      Name="Phonenumber"
+      IsPersistent="false"
+      Precision="112"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="PHONENUMBER"
+      Expression="PHONENUMBER"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="112" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Primaryflag"
+      IsPersistent="false"
+      Precision="3"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="PRIMARYFLAG"
+      Expression="PRIMARYFLAG"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="3" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="formattedPhone"
+      IsPersistent="false"
+      Precision="4000"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="FORMATTED_PHONE"
+      Expression="hz_format_phone_v2pub.GET_FORMATTED_PHONE(CONTACT_POINT_ID)"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="4000" />
+      </DesignTime>
+   </ViewAttribute>
+</ViewObject>

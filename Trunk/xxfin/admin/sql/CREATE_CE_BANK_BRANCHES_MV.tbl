@@ -1,0 +1,38 @@
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     ON
+
+PROMPT Creating Materialized View CE_BANK_BRANCHES_MV;
+
+PROMPT Program exits IF the creation IS NOT SUCCESSFUL
+
+WHENEVER SQLERROR CONTINUE
+
+-- +==========================================================================+
+-- |                  Office Depot - Project Simplify                         |
+-- +==========================================================================+
+-- | Name : XXFIN.CE_BANK_BRANCHES_MV                                         |
+-- | Description : Create Materialized View on CE_BANK_BRANCHES_V             |
+-- |               for all rows                                               |
+-- |                                                                          |
+-- |                                                                          |
+-- |                                                                          |
+-- |Change Record:                                                            |
+-- |===============                                                           |
+-- |Version   Date         Author               Remarks                       |
+-- |=======   ==========   =============        ==============================|
+-- | V1.0     11-MAR-2015  Shaik Ghouse         Initial version               |
+-- +==========================================================================+
+
+
+CREATE MATERIALIZED VIEW XXFIN.CE_BANK_BRANCHES_MV
+BUILD IMMEDIATE
+REFRESH COMPLETE
+ON DEMAND
+AS SELECT * FROM CE.CE_BANK_BRANCHES_V;
+
+
+
+SHOW ERROR

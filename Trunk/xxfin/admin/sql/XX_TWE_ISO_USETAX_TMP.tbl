@@ -1,0 +1,38 @@
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     ON
+
+-- +==========================================================================+
+-- |                  Office Depot - Project Simplify                         |
+-- |                       WIPRO Technologies                                 |
+-- +==========================================================================+
+-- | SQL Script to create the following object                                |
+-- |             Table    : xx_twe_iso_usetax_tmp                             |
+-- |                        For R0504: Tax - AR Internal Sales Orders         |
+-- |                        Use Tax Validation Report                         |
+-- |Change Record:                                                            |
+-- |===============                                                           |
+-- |Version      Date              Author               Remarks               |
+-- |=======      ==========        =============        ===================== |
+-- | V1.0        09-Jan-09         Ganga Devi R         Initial version       |
+-- |                                                                          |
+-- +==========================================================================+
+
+-- DROP TABLE  XXFIN.XX_TWE_ISO_USETAX_TMP;
+
+CREATE GLOBAL TEMPORARY TABLE XXFIN.XX_TWE_ISO_USETAX_TMP(
+                                                         transaction_date DATE
+                                                        ,company VARCHAR2(25)
+                                                        ,ship_to_state VARCHAR2(60)
+                                                        ,tax_amount NUMBER
+                                                        ,order_number NUMBER
+                                                        ,Line_Number NUMBER
+                                                        ,Line_Amount NUMBER
+                                                        ,Item_Cost NUMBER
+                                                        ,UNSPC_Code VARCHAR2(40)
+                                                        ,item_description VARCHAR2(240)
+                                                        );
+
+SHOW ERROR;

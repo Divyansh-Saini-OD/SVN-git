@@ -1,0 +1,575 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="http://www.openapplications.org/oagis/9" targetNamespace="http://www.openapplications.org/oagis/9" elementFormDefault="qualified">
+   <xs:complexType name="ActionIdentityType">
+      <xs:sequence>
+         <xs:element ref="GlobalBusinessActionCode" />
+      </xs:sequence>
+   </xs:complexType>
+
+   <xs:complexType name="ActivityControlType">
+      <xs:sequence>
+         <xs:element ref="BusinessActivityIdentifier" />
+
+         <xs:element name="MessageControl" type="MessageControlType" />
+      </xs:sequence>
+   </xs:complexType>
+
+   <xs:element name="AddressLine1" type="xs:string" />
+
+   <xs:element name="AddressLine2" type="xs:string" />
+
+   <xs:element name="AddressLine3" type="xs:string" />
+
+   <xs:element name="AddressLine4" type="xs:string" />
+
+   <xs:element name="AdjusmentAmount" type="xs:string" />
+
+   <xs:element name="AdjustmentReason" type="xs:string" />
+
+   <xs:complexType name="AdjustmentsType">
+      <xs:sequence>
+         <xs:element ref="AdjusmentAmount" />
+
+         <xs:element ref="AdjustmentReason" />
+      </xs:sequence>
+   </xs:complexType>
+
+   <xs:element name="AffirmationIndicator" type="xs:string" />
+
+   <xs:complexType name="AttachmentType">
+      <xs:sequence>
+         <xs:element name="description" type="descriptionType" />
+
+         <xs:element ref="GlobalMimeTypeQualifierCode" />
+
+         <xs:element ref="UniversalResourceIdentifier" />
+      </xs:sequence>
+   </xs:complexType>
+
+   <xs:element name="BillToContactName" type="xs:string" />
+
+   <xs:element name="BillToID" type="xs:string" />
+
+   <xs:element name="BillToRep" type="xs:string" />
+
+   <xs:complexType name="BillingType">
+      <xs:sequence>
+         <xs:element ref="BillToID" />
+
+         <xs:element ref="BillToRep" />
+
+         <xs:element ref="BillToContactName" />
+
+         <xs:element ref="CountryCode" />
+
+         <xs:element ref="AddressLine1" />
+
+         <xs:element ref="AddressLine2" />
+
+         <xs:element ref="AddressLine3" />
+
+         <xs:element ref="AddressLine4" />
+
+         <xs:element ref="CityName" />
+
+         <xs:element ref="County" />
+
+         <xs:element ref="State" />
+
+         <xs:element ref="Postal" />
+
+         <xs:element ref="Fax" />
+
+         <xs:element ref="email" />
+
+         <xs:element ref="PhoneNumber" />
+      </xs:sequence>
+   </xs:complexType>
+
+   <xs:element name="BusinessActivityIdentifier" type="xs:string" />
+
+   <xs:element name="CityName" type="xs:string" />
+
+   <xs:element name="ConfigurationCode" type="xs:string" />
+
+   <xs:element name="CountableAmount" type="xs:string" />
+
+   <xs:element name="CountryCode" type="xs:string" />
+
+   <xs:element name="County" type="xs:string" />
+
+   <xs:element name="CreateSalesOrder">
+      <xs:complexType>
+         <xs:sequence>
+            <xs:element name="Preamble" type="PreambleType" />
+
+            <xs:element name="DeliveryHeader" type="DeliveryHeaderType" />
+
+            <xs:element name="ServiceHeader" type="ServiceHeaderType" />
+
+            <xs:element name="SalesOrder" type="SalesOrderType" />
+         </xs:sequence>
+      </xs:complexType>
+   </xs:element>
+
+   <xs:element name="CurrencyCode" type="xs:string" />
+
+   <xs:element name="CustomerPO" type="xs:string" />
+
+   <xs:element name="DateTimeStamp" type="xs:string" />
+
+   <xs:element name="DeliveryCharge" type="xs:string" />
+
+   <xs:complexType name="DeliveryHeaderType">
+      <xs:sequence>
+         <xs:element name="isSecureTransportRequired" type="isSecureTransportRequiredType" />
+
+         <xs:element name="messageDateTime" type="messageDateTimeType" />
+
+         <xs:element name="messageReceiverIdentification" type="messageReceiverIdentificationType" />
+
+         <xs:element name="messageSenderIdentification" type="messageSenderIdentificationType" />
+
+         <xs:element name="messageTrackingID" type="messageTrackingIDType" />
+      </xs:sequence>
+   </xs:complexType>
+
+   <xs:element name="Description" type="xs:string" />
+
+   <xs:element name="EstimatedShipDate" type="xs:string" />
+
+   <xs:element name="Fax" type="xs:string" />
+
+   <xs:element name="FreeFormText" type="xs:string" />
+
+   <xs:element name="Gift" type="xs:string" />
+
+   <xs:element name="GlobalAdministeringAuthorityCode" type="xs:string" />
+
+   <xs:element name="GlobalBusinessActionCode" type="xs:string" />
+
+   <xs:element name="GlobalBusinessIdentifier" type="xs:string" />
+
+   <xs:element name="GlobalBusinessServiceCode" type="xs:string" />
+
+   <xs:element name="GlobalMimeTypeQualifierCode" type="xs:string" />
+
+   <xs:element name="GlobalPartnerRoleClassificationCode" type="xs:string" />
+
+   <xs:element name="GlobalProcessIndicatorCode" type="xs:string" />
+
+   <xs:element name="GlobalUsageCode" type="xs:string" />
+
+   <xs:complexType name="HeaderType">
+      <xs:sequence>
+         <xs:element ref="OrderNumber" />
+
+         <xs:element ref="TotalBundleCount" />
+
+	 <xs:element ref="OrderIdentfier" />
+
+         <xs:element ref="OrderDate" />
+
+         <xs:element ref="Channel" />
+
+         <xs:element ref="CurrencyCode" />
+
+         <xs:element ref="CustomerPO" />
+
+         <xs:element ref="Description" />
+
+         <xs:element ref="PaymentMethod" />
+
+         <xs:element ref="Gift" />
+
+         <xs:element name="Adjustments" type="AdjustmentsType" />
+
+         <xs:element ref="DeliveryCharge" />
+
+         <xs:element ref="TotalPrice" />
+
+         <xs:element ref="Taxes" />
+
+         <xs:element ref="EstimatedShipDate" />
+
+         <xs:element name="Notes" type="NotesType" />
+
+         <xs:element name="MiscInfo" type="MiscInfoType" />
+
+         <xs:element name="SoldTo" type="SoldToType" />
+
+         <xs:element name="Billing" type="BillingType" />
+
+         <xs:element name="Shipping" type="ShippingType" />
+      </xs:sequence>
+   </xs:complexType>
+
+   <xs:element name="InstanceIdentifier" type="xs:string" />
+
+   <xs:complexType name="KnownInitiatingPartnerType">
+      <xs:sequence>
+         <xs:element name="PartnerIdentification" type="PartnerIdentificationType" />
+      </xs:sequence>
+   </xs:complexType>
+
+   <xs:complexType name="LineDetailsType">
+      <xs:sequence>
+         <xs:element ref="LineNumber" />
+
+         <xs:element ref="ParentLineNumber" />
+
+         <xs:element ref="ProductID" />
+
+         <xs:element ref="UnitOfMeasure" />
+
+         <xs:element ref="SalesPrice" />
+
+         <xs:element ref="ConfigurationCode" />
+
+         <xs:element ref="QuantityOrdered" />
+
+         <xs:element ref="PromotionCode" />
+
+         <xs:element ref="CurrencyCode" />
+
+         <xs:element name="Notes" type="NotesType" />
+      </xs:sequence>
+   </xs:complexType>
+
+   <xs:element name="LineNumber" type="xs:string" />
+
+   <xs:complexType name="ManifestType">
+      <xs:sequence>
+         <xs:element name="Attachment" type="AttachmentType" />
+
+         <xs:element name="numberOfAttachments" type="numberOfAttachmentsType" />
+
+         <xs:element name="ServiceContentControl" type="ServiceContentControlType" />
+      </xs:sequence>
+   </xs:complexType>
+
+   <xs:complexType name="MessageControlType">
+      <xs:sequence>
+         <xs:element name="fromRole" type="fromRoleType" />
+
+         <xs:element name="fromService" type="fromServiceType" />
+
+         <xs:element name="Manifest" type="ManifestType" />
+
+         <xs:element name="toRole" type="toRoleType" />
+
+         <xs:element name="toService" type="toServiceType" />
+      </xs:sequence>
+   </xs:complexType>
+
+   <xs:complexType name="MiscInfoType">
+      <xs:sequence minOccurs="0" maxOccurs="unbounded">
+         <xs:element name="KeyValue" type="KeyValueType" />
+      </xs:sequence>
+   </xs:complexType>
+
+   <xs:complexType name="KeyValueType">
+      <xs:sequence>
+         <xs:element name="Key" type="xs:string" />
+
+         <xs:element name="Value" type="xs:string" />
+      </xs:sequence>
+   </xs:complexType>
+
+   <xs:complexType name="NotesType">
+      <xs:sequence>
+         <xs:element ref="NotesSummary" />
+
+         <xs:element ref="NotesDetails" />
+      </xs:sequence>
+   </xs:complexType>
+
+   <xs:element name="NotesDetails" type="xs:string" />
+
+   <xs:element name="NotesSummary" type="xs:string" />
+
+   <xs:element name="OrderIdentfier" type="xs:string" />
+
+   <xs:element name="OrderNumber" type="xs:string" />
+
+   <xs:element name="TotalBundleCount" type="xs:string" />
+
+   <xs:element name="OrderDate" type="xs:date" />
+
+   <xs:element name="Channel" type="xs:string" />
+
+   <xs:element name="ParentLineNumber" type="xs:string" />
+
+   <xs:complexType name="PartnerIdentificationType">
+      <xs:sequence>
+         <xs:element name="domain" type="domainType" minOccurs="0" />
+
+         <xs:element ref="GlobalBusinessIdentifier" />
+
+         <xs:element name="locationID" type="locationIDType" minOccurs="0" />
+      </xs:sequence>
+   </xs:complexType>
+
+   <xs:element name="PaymentMethod" type="xs:string" />
+
+   <xs:element name="PhoneNumber" type="xs:string" />
+
+   <xs:element name="Postal" type="xs:string" />
+
+   <xs:complexType name="PreambleType">
+      <xs:sequence>
+         <xs:element name="standardName" type="standardNameType" />
+
+         <xs:element name="standardVersion" type="standardVersionType" />
+      </xs:sequence>
+   </xs:complexType>
+
+   <xs:complexType name="ProcessControlType">
+      <xs:sequence>
+         <xs:element name="ActivityControl" type="ActivityControlType" />
+
+         <xs:element ref="GlobalUsageCode" />
+
+         <xs:element name="pipCode" type="pipCodeType" />
+
+         <xs:element name="pipInstanceId" type="pipInstanceIdType" />
+
+         <xs:element name="pipVersion" type="pipVersionType" />
+
+         <xs:element name="KnownInitiatingPartner" type="KnownInitiatingPartnerType" />
+      </xs:sequence>
+   </xs:complexType>
+
+   <xs:element name="ProductID" type="xs:string" />
+
+   <xs:element name="PromotionCode" type="xs:string" />
+
+   <xs:element name="QuantityOrdered" type="xs:string" />
+
+   <xs:complexType name="SalesOrderType">
+      <xs:sequence>
+         <xs:element name="Header" type="HeaderType" />
+
+         <xs:element name="LineDetails" type="LineDetailsType" maxOccurs="unbounded" />
+      </xs:sequence>
+   </xs:complexType>
+
+   <xs:element name="SalesPrice" type="xs:string" />
+
+   <xs:complexType name="ServiceContentControlType">
+      <xs:sequence>
+         <xs:element name="ActionIdentity" type="ActionIdentityType" />
+      </xs:sequence>
+   </xs:complexType>
+
+   <xs:complexType name="ServiceHeaderType">
+      <xs:sequence>
+         <xs:element name="ProcessControl" type="ProcessControlType" />
+      </xs:sequence>
+   </xs:complexType>
+
+   <xs:element name="ShipToContactName" type="xs:string" />
+
+   <xs:element name="ShipToID" type="xs:string" />
+
+   <xs:element name="ShipToRep" type="xs:string" />
+
+   <xs:complexType name="ShippingType">
+      <xs:sequence>
+         <xs:element ref="ShipToID" />
+
+         <xs:element ref="ShipToRep" />
+
+         <xs:element ref="ShipToContactName" />
+
+         <xs:element ref="CountryCode" />
+
+         <xs:element ref="AddressLine1" />
+
+         <xs:element ref="AddressLine2" />
+
+         <xs:element ref="AddressLine3" />
+
+         <xs:element ref="AddressLine4" />
+
+         <xs:element ref="CityName" />
+
+         <xs:element ref="County" />
+
+         <xs:element ref="State" />
+
+         <xs:element ref="Postal" />
+
+         <xs:element ref="Fax" />
+
+         <xs:element ref="email" />
+
+         <xs:element ref="PhoneNumber" />
+      </xs:sequence>
+   </xs:complexType>
+
+   <xs:complexType name="SoldToType">
+      <xs:sequence>
+         <xs:element ref="SoldToID" />
+
+         <xs:element ref="SoldToRep" />
+
+         <xs:element ref="SoldToContactName" />
+
+         <xs:element ref="CountryCode" />
+
+         <xs:element ref="AddressLine1" />
+
+         <xs:element ref="AddressLine2" />
+
+         <xs:element ref="AddressLine3" />
+
+         <xs:element ref="AddressLine4" />
+
+         <xs:element ref="CityName" />
+
+         <xs:element ref="County" />
+
+         <xs:element ref="State" />
+
+         <xs:element ref="Postal" />
+
+         <xs:element ref="Fax" />
+
+         <xs:element ref="email" />
+
+         <xs:element ref="PhoneNumber" />
+      </xs:sequence>
+   </xs:complexType>
+
+   <xs:element name="SoldToContactName" type="xs:string" />
+
+   <xs:element name="SoldToID" type="xs:string" />
+
+   <xs:element name="SoldToRep" type="xs:string" />
+
+   <xs:element name="State" type="xs:string" />
+
+   <xs:element name="Taxes" type="xs:string" />
+
+   <xs:element name="TotalPrice" type="xs:string" />
+
+   <xs:element name="UnitOfMeasure" type="xs:string" />
+
+   <xs:element name="UniversalResourceIdentifier" type="xs:string" />
+
+   <xs:element name="Value" type="xs:string" />
+
+   <xs:element name="VersionIdentifier" type="xs:string" />
+
+   <xs:complexType name="descriptionType">
+      <xs:sequence>
+         <xs:element ref="FreeFormText" />
+      </xs:sequence>
+   </xs:complexType>
+
+   <xs:complexType name="domainType">
+      <xs:sequence>
+         <xs:element ref="FreeFormText" />
+      </xs:sequence>
+   </xs:complexType>
+
+   <xs:element name="email" type="xs:string" />
+
+   <xs:complexType name="fromRoleType">
+      <xs:sequence>
+         <xs:element ref="GlobalPartnerRoleClassificationCode" />
+      </xs:sequence>
+   </xs:complexType>
+
+   <xs:complexType name="fromServiceType">
+      <xs:sequence>
+         <xs:element ref="GlobalBusinessServiceCode" />
+      </xs:sequence>
+   </xs:complexType>
+
+   <xs:complexType name="isSecureTransportRequiredType">
+      <xs:sequence>
+         <xs:element ref="AffirmationIndicator" />
+      </xs:sequence>
+   </xs:complexType>
+
+   <xs:complexType name="locationIDType">
+      <xs:sequence>
+         <xs:element ref="Value" />
+      </xs:sequence>
+   </xs:complexType>
+
+   <xs:complexType name="messageDateTimeType">
+      <xs:sequence>
+         <xs:element ref="DateTimeStamp" />
+      </xs:sequence>
+   </xs:complexType>
+
+   <xs:complexType name="messageReceiverIdentificationType">
+      <xs:sequence>
+         <xs:element name="PartnerIdentification" type="PartnerIdentificationType" />
+      </xs:sequence>
+   </xs:complexType>
+
+   <xs:complexType name="messageSenderIdentificationType">
+      <xs:sequence>
+         <xs:element name="PartnerIdentification" type="PartnerIdentificationType" />
+      </xs:sequence>
+   </xs:complexType>
+
+   <xs:complexType name="messageTrackingIDType">
+      <xs:sequence>
+         <xs:element ref="InstanceIdentifier" />
+      </xs:sequence>
+   </xs:complexType>
+
+   <xs:complexType name="numberOfAttachmentsType">
+      <xs:sequence>
+         <xs:element ref="CountableAmount" />
+      </xs:sequence>
+   </xs:complexType>
+
+   <xs:complexType name="pipCodeType">
+      <xs:sequence>
+         <xs:element ref="GlobalProcessIndicatorCode" />
+      </xs:sequence>
+   </xs:complexType>
+
+   <xs:complexType name="pipInstanceIdType">
+      <xs:sequence>
+         <xs:element ref="InstanceIdentifier" />
+      </xs:sequence>
+   </xs:complexType>
+
+   <xs:complexType name="pipVersionType">
+      <xs:sequence>
+         <xs:element ref="VersionIdentifier" />
+      </xs:sequence>
+   </xs:complexType>
+
+   <xs:complexType name="standardNameType">
+      <xs:sequence>
+         <xs:element ref="GlobalAdministeringAuthorityCode" />
+      </xs:sequence>
+   </xs:complexType>
+
+   <xs:complexType name="standardVersionType">
+      <xs:sequence>
+         <xs:element ref="VersionIdentifier" />
+      </xs:sequence>
+   </xs:complexType>
+
+   <xs:complexType name="toRoleType">
+      <xs:sequence>
+         <xs:element ref="GlobalPartnerRoleClassificationCode" />
+      </xs:sequence>
+   </xs:complexType>
+
+   <xs:complexType name="toServiceType">
+      <xs:sequence>
+         <xs:element ref="GlobalBusinessServiceCode" />
+      </xs:sequence>
+   </xs:complexType>
+</xs:schema>
+

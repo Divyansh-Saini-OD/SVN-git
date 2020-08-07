@@ -1,0 +1,74 @@
+SET VERIFY OFF;
+SET SHOW OFF;
+SET ECHO OFF;
+SET TAB OFF;
+SET FEEDBACK OFF;
+ 
+WHENEVER SQLERROR CONTINUE;
+ 
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+-- +===========================================================================+
+-- |                  Office Depot - Project Simplify                          |
+-- +===========================================================================+
+-- | Name :          XXFIN.XX_AP_PO_RECINV_DASHB_GTEMP                                |
+-- | Description :   Script to create XXFIN.XX_AP_PO_RECINV_DASHB_GTEMP  table       |
+-- |                                                                           |
+-- |                                                                           |
+-- |Change Record:                                                             |
+-- |===============                                                            |
+-- |Version      Date           Author                  Remarks                |
+-- |=======    ==========     =============             ====================== |
+-- | DRAFT 1.0 18-Aug-2016   Priyam Parmar          Initial draft version       |
+-- +===========================================================================+
+
+ 
+--+=====================================================================+
+--+      CREATE TABLE        XX_AP_PO_RECINV_DASHB_GTEMP                +
+--+=====================================================================+
+
+CREATE TABLE XX_AP_PO_RECINV_DASHB_GTEMP 
+   (	PO VARCHAR2(20 ), 
+	PO_LINE_ID NUMBER, 
+	PO_HEADER_ID NUMBER, 
+	RCP_DATE DATE, 
+	RECEIPT_NUM VARCHAR2(30 ), 
+	RCP_QTY NUMBER, 
+	INV_DATE DATE, 
+	INVOICE_NUM VARCHAR2(50 ), 
+	INV_QTY NUMBER, 
+	RCPT_REMAIN_QTY NUMBER, 
+	RCPT_CONSUMED_FLAG VARCHAR2(1 ), 
+	INV_CONSUMED_FLAG VARCHAR2(1 ), 
+	INV_REM_QTY NUMBER, 
+	INV_APPLIED_AMT NUMBER, 
+	RECEIPT_ID NUMBER, 
+	V_INV_QTY_REM NUMBER, 
+	INV_VAL VARCHAR2(5 ), 
+	PO_LINE_NUM NUMBER, 
+	PO_QTY NUMBER, 
+	LOCATION VARCHAR2(25 ), 
+	UOM VARCHAR2(25 ), 
+	UNIT_PRICE NUMBER, 
+	QUANTITY_SHIPPED NUMBER, 
+	RECEIPT_LINE_AMT NUMBER, 
+	REC_LINE_NUM NUMBER, 
+	SKU VARCHAR2(40 ), 
+	SUPPLIER_NUM VARCHAR2(50 ), 
+	SUPPLIER_NAME VARCHAR2(100 ), 
+	SUPPLIER_SITE VARCHAR2(100 ), 
+	USER_ID NUMBER, 
+	INVOICE_FIFO_NUM NUMBER, 
+	RECEIPT_QTY NUMBER, 
+	CREATION_DATE DATE
+   ) ;
+   
+   
+Grant  all on XX_AP_PO_RECINV_DASHB_GTEMP to APPS;
+
+   /
+Show error
+
+
+
+
+

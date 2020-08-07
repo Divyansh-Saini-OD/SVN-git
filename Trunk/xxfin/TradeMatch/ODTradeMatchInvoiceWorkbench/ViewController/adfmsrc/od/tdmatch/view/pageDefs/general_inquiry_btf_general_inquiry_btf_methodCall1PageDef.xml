@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<pageDefinition xmlns="http://xmlns.oracle.com/adfm/uimodel" version="12.2.1.12.24"
+                id="general_inquiry_btf_general_inquiry_btf_methodCall1PageDef" Package="od.tdmatch.view.pageDefs"
+                SkipValidation="true">
+  <parameters/>
+  <executables>
+    <variableIterator id="variables"/>
+  </executables>
+  <bindings>
+    <methodAction id="createVendorUpdate" RequiresUpdateModel="true" Action="invokeMethod"
+                  MethodName="createVendorUpdate" IsViewObjectMethod="false" DataControl="TradeMatchAMDataControl"
+                  InstanceName="bindings.createVendorUpdate.dataControl.dataProvider"/>
+    <methodAction id="initGeneralInquiry" RequiresUpdateModel="true" Action="invokeMethod"
+                  MethodName="initGeneralInquiry" IsViewObjectMethod="false" DataControl="TradeMatchAMDataControl75"
+                  InstanceName="bindings.initGeneralInquiry.dataControl.dataProvider"/>
+  </bindings>
+</pageDefinition>

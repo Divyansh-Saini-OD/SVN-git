@@ -1,0 +1,28 @@
+-- +====================================================================================+
+-- |                  Office Depot - Project Simplify                                   |
+-- +====================================================================================+
+-- | SQL Script to create                                                               |
+-- |                                                                                    |
+-- |                      INDEXES: XX_AR_CUSTOMER_TRX_N7                                |
+-- |                                                                                    |
+-- |                                                                                    |
+-- |                                                                                    |
+-- |Change Record:                                                                      |
+-- |===============                                                                     |
+-- |Version   Date         Author               Remarks                                 |
+-- |=======   ===========  ================     ========================================|
+-- |  1.0     22-FEB-2014  R.Aldridge           Defect 28502/28444 Performance of AR    |
+-- |                                            manage billing frequencies              |
+-- +====================================================================================+
+
+DROP INDEX xxfin.xx_ar_customer_trx_n7;
+
+CREATE INDEX xxfin.xx_ar_customer_trx_n7 ON
+     ar.ra_customer_trx_all (bill_to_customer_id, attribute15,printing_option) 
+TABLESPACE APPS_TS_TX_IDX_MISC_16M 
+NOLOGGING 
+PARALLEL 8;
+
+ALTER INDEX xxfin.xx_ar_customer_trx_n7 NOPARALLEL LOGGING;
+
+EXIT;

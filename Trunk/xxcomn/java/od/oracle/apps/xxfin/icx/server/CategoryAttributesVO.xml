@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding='windows-1252'?>
+<!DOCTYPE ViewObject SYSTEM "jbo_03_01.dtd">
+
+<ViewObject
+   Name="CategoryAttributesVO"
+   BindingStyle="Oracle"
+   CustomQuery="true"
+   RowClass="od.oracle.apps.xxfin.icx.server.CategoryAttributesVORowImpl"
+   ComponentClass="od.oracle.apps.xxfin.icx.server.CategoryAttributesVOImpl"
+   MsgBundleClass="oracle.jbo.common.JboResourceBundle"
+   FetchMode="FETCH_AS_NEEDED"
+   UseGlueCode="false" >
+   <SQLQuery><![CDATA[
+select Organization_ID
+      ,OrgName
+      ,Category_ID
+      ,CONCATENATED_SEGMENTS
+      ,Buyer_ID
+      ,BuyerName
+      ,Approver_ID
+      ,ApproverName
+  from XX_ICX_CAT_ATTS_BY_ORG_V
+   ]]></SQLQuery>
+   <DesignTime>
+      <Attr Name="_isCodegen" Value="true" />
+      <Attr Name="_version" Value="9.0.3.12.53" />
+      <Attr Name="_CodeGenFlagNew" Value="36" />
+   </DesignTime>
+   <ViewAttribute
+      Name="OrganizationId"
+      IsPersistent="false"
+      IsNotNull="true"
+      Precision="15"
+      Scale="0"
+      Type="oracle.jbo.domain.Number"
+      AliasName="ORGANIZATION_ID"
+      ColumnType="VARCHAR2"
+      Expression="ORGANIZATION_ID"
+      SQLType="NUMERIC" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="OrgName"
+      IsPersistent="false"
+      IsNotNull="true"
+      Precision="240"
+      Type="java.lang.String"
+      AliasName="ORGNAME"
+      ColumnType="VARCHAR2"
+      Expression="ORGNAME"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="240" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="CategoryId"
+      IsPersistent="false"
+      IsNotNull="true"
+      Precision="255"
+      Type="oracle.jbo.domain.Number"
+      AliasName="CATEGORY_ID"
+      ColumnType="VARCHAR2"
+      Expression="CATEGORY_ID"
+      SQLType="NUMERIC" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="ConcatenatedSegments"
+      IsPersistent="false"
+      Precision="404"
+      Type="java.lang.String"
+      AliasName="CONCATENATED_SEGMENTS"
+      ColumnType="VARCHAR2"
+      Expression="CONCATENATED_SEGMENTS"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="404" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="BuyerId"
+      IsPersistent="false"
+      Precision="10"
+      Scale="0"
+      Type="oracle.jbo.domain.Number"
+      AliasName="BUYER_ID"
+      ColumnType="VARCHAR2"
+      Expression="BUYER_ID"
+      SQLType="NUMERIC" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Buyername"
+      IsPersistent="false"
+      Precision="4000"
+      Type="java.lang.String"
+      AliasName="BUYERNAME"
+      ColumnType="VARCHAR2"
+      Expression="BUYERNAME"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="4000" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="ApproverId"
+      IsPersistent="false"
+      Precision="10"
+      Scale="0"
+      Type="oracle.jbo.domain.Number"
+      AliasName="APPROVER_ID"
+      ColumnType="VARCHAR2"
+      Expression="APPROVER_ID"
+      SQLType="NUMERIC" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Approvername"
+      IsPersistent="false"
+      Precision="4000"
+      Type="java.lang.String"
+      AliasName="APPROVERNAME"
+      ColumnType="VARCHAR2"
+      Expression="APPROVERNAME"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="4000" />
+      </DesignTime>
+   </ViewAttribute>
+</ViewObject>

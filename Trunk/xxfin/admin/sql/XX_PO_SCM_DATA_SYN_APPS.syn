@@ -1,0 +1,59 @@
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     OFF
+WHENEVER SQLERROR CONTINUE
+
+-- +============================================================================================+
+-- |                        Office Depot - SCM Modernization                                    |
+-- |                                                                                            |
+-- +============================================================================================+
+-- | Name         : XX_PO_SCM_DATA_INSERT_APPS.syn                                              |
+-- | Rice Id      : I2193_OM_Attributes_Setup                                                   | 
+-- | Description  : Synonym Creation Script for APPS                                            |
+-- | Purpose      : Synonym for the Custom Objects                                              |
+-- |                                                                                            |
+-- |                                                                                            |
+-- |Change Record:                                                                              |
+-- |===============                                                                             |
+-- |Version    Date          Author                Remarks                                      | 
+-- |=======    ==========    =================    ==============================================+
+-- |1 .0       21-Jun-2018   Phuoc Nguyen         Initial Version                               |
+-- +============================================================================================+
+
+WHENEVER SQLERROR CONTINUE
+
+PROMPT
+PROMPT Creating SYNONYM OBJECTS FOR XX_PO_SCM_HDR
+PROMPT
+
+CREATE OR REPLACE SYNONYM APPS.xx_po_scm_hdr_obj FOR XXFIN.xx_po_scm_hdr_obj;
+CREATE OR REPLACE SYNONYM APPS.xx_po_scm_hdr_tab FOR XXFIN.xx_po_scm_hdr_tab;
+WHENEVER SQLERROR CONTINUE
+
+PROMPT
+PROMPT Creating SYNONYM FOR OBJECTS XX_PO_SCM_LINES
+PROMPT
+
+CREATE OR REPLACE SYNONYM APPS.xx_po_scm_lines_obj FOR XXFIN.xx_po_scm_lines_obj;
+CREATE OR REPLACE SYNONYM APPS.xx_po_scm_lines_tab FOR XXFIN.xx_po_scm_lines_tab;
+WHENEVER SQLERROR CONTINUE
+
+PROMPT
+PROMPT Creating SYNONYM FOR INTERFACE and PACKAGES
+PROMPT
+
+CREATE OR REPLACE SYNONYM XXFIN.PO_HEADERS_INTERFACE_S FOR APPS.PO_HEADERS_INTERFACE_S;
+CREATE OR REPLACE SYNONYM XXFIN.PO_LINES_INTERFACE_S FOR APPS.PO_LINES_INTERFACE_S;
+CREATE OR REPLACE SYNONYM XXFIN.XX_PO_SCM_DATA_INSERT FOR APPS.XX_PO_SCM_DATA_INSERT;
+WHENEVER SQLERROR CONTINUE
+
+GRANT ALL ON apps.PO_HEADERS_INTERFACE_S TO XXFIN;
+GRANT ALL ON apps.PO_LINES_INTERFACE_S TO XXFIN;
+GRANT ALL ON apps.xx_po_scm_data_insert TO XXFIN;
+GRANT EXECUTE ON apps.xx_po_scm_data_insert TO XXFIN;
+
+WHENEVER SQLERROR CONTINUE
+SET FEEDBACK ON
+EXIT;

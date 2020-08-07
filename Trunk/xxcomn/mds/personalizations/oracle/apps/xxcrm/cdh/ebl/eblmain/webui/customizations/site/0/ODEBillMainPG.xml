@@ -1,0 +1,9 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<customization xmlns="http://xmlns.oracle.com/jrad" version="9.0.6.0.0_54" xml:lang="en-US" customizes="/od/oracle/apps/xxcrm/cdh/ebl/eblmain/webui/ODEBillMainPG" developerMode="true">
+   <modifications>
+      <modify element="FieldNameHdr2" sortState="yes"/>
+      <modify element="sortableHeader121" sortState="yes"/>
+      <modify element="ConcatenateRN" rendered="${oa.ODEBillPPRVO.EnableXlsSubtotal}"/>
+      <modify element="ODEBillStdTemplTblRN" blockSize="100"/>
+   </modifications>
+</customization>

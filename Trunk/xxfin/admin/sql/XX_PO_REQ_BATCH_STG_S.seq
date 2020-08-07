@@ -1,0 +1,33 @@
+-- +==========================================================================+
+-- |                  Office Depot - Project Simplify                         |
+-- |                       WIPRO Technologies                                 |
+-- +==========================================================================+
+-- | Name :      PO Auto Requisition Import                                   |
+-- | Description : To automatically import the Requisitions into Oracle       |
+-- |                from the staging tables.                                  |
+-- |                                                                          |
+-- | SQL Script to create the following object                                |
+-- |             Sequence    : XX_PO_REQ_BATCH_STG_S                          |
+-- |                                                                          |
+-- |Change Record:                                                            |
+-- |===============                                                           |
+-- |Version   Date         Author               Remarks                       |
+-- |=======   ==========   =============        ==============================|
+-- | V1.0     21-MAR-2007  Gowri Shankar        Initial version               |
+-- |V1.1      19-NOV-2007  Samitha U M          Drop statement Commented      |
+-- |                                                                          |
+-- +==========================================================================+
+
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF 
+SET TAB          OFF
+SET FEEDBACK     ON
+
+--DROP SEQUENCE xxfin.xx_po_req_batch_stg_s;
+
+CREATE SEQUENCE xxfin.xx_po_req_batch_stg_s START WITH 1 INCREMENT BY 1;
+
+SHOW ERROR
+
+

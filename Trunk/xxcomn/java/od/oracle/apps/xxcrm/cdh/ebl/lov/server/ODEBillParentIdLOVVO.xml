@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding='windows-1252'?>
+<!DOCTYPE ViewObject SYSTEM "jbo_03_01.dtd">
+
+<ViewObject
+   Name="ODEBillParentIdLOVVO"
+   BindingStyle="Oracle"
+   CustomQuery="true"
+   RowClass="oracle.apps.fnd.framework.server.OAViewRowImpl"
+   ComponentClass="od.oracle.apps.xxcrm.cdh.ebl.lov.server.ODEBillParentIdLOVVOImpl"
+   MsgBundleClass="oracle.jbo.common.JboResourceBundle"
+   UseGlueCode="false" >
+   <SQLQuery><![CDATA[
+SELECT HCA.account_number
+      ,HCA.account_name
+      ,substr(HCA.orig_system_reference,1,8) BILLING_ID
+      ,XCAE.n_ext_attr2 CUST_DOC_ID
+      ,HCA.cust_account_id
+FROM  hz_cust_accounts HCA
+     ,XX_CDH_CUST_ACCT_EXT_B XCAE 
+WHERE HCA.cust_account_id = XCAE.cust_account_id 
+AND   XCAE.N_EXT_ATTR17 = 1
+AND   C_EXT_ATTR16='COMPLETE'
+AND   attr_group_id=(SELECT attr_group_id
+                   FROM   ego_attr_groups_v
+                   WHERE  attr_group_type = 'XX_CDH_CUST_ACCOUNT'
+                   AND    attr_group_name = 'BILLDOCS' )
+   ]]></SQLQuery>
+   <DesignTime>
+      <Attr Name="_version" Value="9.0.3.12.53" />
+      <Attr Name="_CodeGenFlagNew" Value="36" />
+   </DesignTime>
+   <ViewAttribute
+      Name="AccountNumber"
+      IsPersistent="false"
+      IsNotNull="true"
+      Precision="30"
+      Type="java.lang.String"
+      AliasName="ACCOUNT_NUMBER"
+      ColumnType="VARCHAR2"
+      Expression="ACCOUNT_NUMBER"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="30" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="AccountName"
+      IsPersistent="false"
+      Precision="240"
+      Type="java.lang.String"
+      AliasName="ACCOUNT_NAME"
+      ColumnType="VARCHAR2"
+      Expression="ACCOUNT_NAME"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="240" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="BillingId"
+      IsPersistent="false"
+      Precision="24"
+      Type="java.lang.String"
+      AliasName="BILLING_ID"
+      ColumnType="VARCHAR2"
+      Expression="BILLING_ID"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="24" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="CustDocId"
+      IsPersistent="false"
+      Precision="22"
+      Scale="5"
+      Type="oracle.jbo.domain.Number"
+      AliasName="CUST_DOC_ID"
+      ColumnType="VARCHAR2"
+      Expression="CUST_DOC_ID"
+      SQLType="NUMERIC" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="CustAccountId"
+      IsPersistent="false"
+      IsNotNull="true"
+      Precision="15"
+      Scale="0"
+      Type="oracle.jbo.domain.Number"
+      AliasName="CUST_ACCOUNT_ID"
+      ColumnType="VARCHAR2"
+      Expression="CUST_ACCOUNT_ID"
+      SQLType="NUMERIC" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </ViewAttribute>
+</ViewObject>

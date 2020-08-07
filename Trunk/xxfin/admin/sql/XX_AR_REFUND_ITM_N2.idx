@@ -1,0 +1,34 @@
+ SET SHOW         OFF
+ SET VERIFY       OFF
+ SET ECHO         OFF
+ SET TAB          OFF
+ SET FEEDBACK     ON
+
+ PROMPT Creating INDEX XX_AR_REFUND_ITM_N2
+
+ PROMPT Program exits IF the creation IS NOT SUCCESSFUL
+
+ WHENEVER SQLERROR CONTINUE
+ WHENEVER OSERROR EXIT FAILURE ROLLBACK
+
+ -- +================================================================================+
+ -- |                  Office Depot - Project Simplify                               |
+ -- +================================================================================+
+ -- |Desxription - SQL Script to create XX_AR_REFUND_ITM_N2 index - QC Defect 17501  |
+ -- |Purpose - Index created on XX_AR_REFUND_ITM table to improve performance        |
+ -- |                                                                                |
+ -- |Change Record:                                                                  |
+ -- |===============                                                                 |
+ -- |Version      Date               Author               Remarks                    |
+ -- |=======      ===========        =============        ========================== |
+ -- |  1.0        20-JUN-2012        Abdul Khan           Initial version.           |
+ -- |                                                                                |
+ -- +================================================================================+
+
+ CREATE INDEX xxfin.xx_ar_refund_itm_n2 
+ ON xxfin.xx_ar_refund_itm (customer_id);
+                            
+ EXIT;
+
+ SHO ERR;
+

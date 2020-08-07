@@ -1,0 +1,30 @@
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     ON
+
+-- +==========================================================================+
+-- |                  Office Depot - Project Simplify                         |
+-- |                       WIPRO Technologies                                 |
+-- +==========================================================================+
+-- | Table Script to create the following object                              |
+-- |             Table  : xx_ar_ipay_trxnumber                                |
+-- |                      For I1039,Settlement and Payment Processing         |
+-- |                                                                          |
+-- |Change Record:                                                            |
+-- |===============                                                           |
+-- |Version   Date         Author               Remarks                       |
+-- |=======   ==========   =============        ==============================|
+-- | V1.0     01-AUG-2007  Subbarao Bangaru     Initial version               |
+-- |                                                                          |
+-- +==========================================================================+
+
+-- DROP TABLE  XXFIN.xx_ar_ipay_trxnumber;
+
+CREATE TABLE XXFIN.xx_ar_ipay_trxnumber(
+ Trx_NUMBER            VARCHAR2(240)
+,OAPFORDERID           VARCHAR2(240)
+);
+
+SHOW ERROR;

@@ -1,0 +1,30 @@
+ 
+ SET SHOW         OFF
+ SET VERIFY       OFF
+ SET ECHO         OFF
+ SET TAB          OFF
+ SET FEEDBACK     ON
+
+ -- +==========================================================================+
+ -- |                  Office Depot - Project Simplify                         |
+ -- |                       WIPRO Technologies                                 |
+ -- +==========================================================================+
+ -- | SQL Script to create indexes                                             |
+ -- |                                                                          |
+ -- |                                                                          |
+ -- |                                                                          |
+ -- |                                                                          |
+ -- |                                                                          |
+ -- |Change Record:                                                            |
+ -- |===============                                                           |
+ -- |Version   Date         Author               Remarks                       |
+ -- |=======   ==========   ================     ==============================|
+ -- | V1.0     26-MAR-2010  Venkatesh B          Initial version               |
+ -- +==========================================================================+
+
+ CREATE INDEX "XXFIN"."XX_AR_OPEN_TRANS_ITM_N2" ON "XXFIN"."XX_AR_OPEN_TRANS_ITM"
+      ("CUSTOMER_ID" ASC,"AMOUNT_DUE_REMAINING" ASC);
+
+
+
+ SHOW ERROR

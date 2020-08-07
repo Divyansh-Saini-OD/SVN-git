@@ -1,0 +1,260 @@
+<?xml version = "1.0" encoding = "UTF-8" ?>
+<!--
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  Oracle JDeveloper BPEL Designer 
+  
+  Created: Mon Aug 08 13:42:59 IST 2011
+  Author:  pkalvala
+  Type: BPEL 1.1 Process
+  Purpose: Synchronous BPEL Process
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+-->
+<process name="CreatePartsQuotation"
+               targetNamespace="http://xmlns.officedepot.com/TDS/PartQuotationInboundProvABCSImpl/CreatePartsQuotation"
+               xmlns="http://schemas.xmlsoap.org/ws/2003/03/business-process/"
+               xmlns:client="http://xmlns.officedepot.com/TDS/PartQuotationInboundProvABCSImpl/CreatePartsQuotation"
+               xmlns:ora="http://schemas.oracle.com/xpath/extension"
+               xmlns:bpelx="http://schemas.oracle.com/bpel/extension"
+         xmlns:bpws="http://schemas.xmlsoap.org/ws/2003/03/business-process/"
+         xmlns:ns1="http://xmlns.oracle.com/pcbpel/adapter/apps/TDS/PartQuotationInboundProvABCSImpl/PartsQuotationCreationService"
+         xmlns:ns2="http://xmlns.oracle.com/pcbpel/adapter/jms/TDS/PartQuotationInboundProvABCSImpl/CommonErrorLoggingService"
+         xmlns:ns3="http://xmlns.oracle.com/pcbpel/adapter/db/APPS/XX_CS_TDS_PARTS_PKG/ADD_PARTS/"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns:ns5="http://www.OfficeDepot.com/TDS/MessageHeader"
+         xmlns:ns4="http://xmlns.officedepot.com/TDS/PartQuotationInboundProvABCSImpl/PartsQuotationEBM"
+         xmlns:bpel2="http://docs.oasis-open.org/wsbpel/2.0/process/executable"
+         xmlns:ns6="http://xmlns.officedepot.com/TDS/PartQuotationInboundProvABCSImpl/PartsQuotationResponseEBM"
+         xmlns:xp20="http://www.oracle.com/XSL/Transform/java/oracle.tip.pc.services.functions.Xpath20"
+         xmlns:oraext="http://www.oracle.com/XSL/Transform/java/oracle.tip.pc.services.functions.ExtFunc"
+         xmlns:dvm="http://www.oracle.com/XSL/Transform/java/oracle.tip.dvm.LookupValue"
+         xmlns:hwf="http://xmlns.oracle.com/bpel/workflow/xpath"
+         xmlns:ids="http://xmlns.oracle.com/bpel/services/IdentityService/xpath"
+         xmlns:bpm="http://xmlns.oracle.com/bpmn20/extensions"
+         xmlns:xdk="http://schemas.oracle.com/bpel/extension/xpath/function/xdk"
+         xmlns:xref="http://www.oracle.com/XSL/Transform/java/oracle.tip.xref.xpath.XRefXPathFunctions"
+         xmlns:ldap="http://schemas.oracle.com/xpath/extension/ldap"
+         xmlns:ns7="http://www.officedepot.com/officedepot/ODComnErrorStructure/1.0">
+
+    <!-- 
+      ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        PARTNERLINKS                                                      
+        List of services participating in this BPEL process               
+      ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    --> 
+  <partnerLinks>
+    <!-- 
+      The 'client' role represents the requester of this service. It is 
+      used for callback. The location and correlation information associated
+      with the client role are automatically set using WS-Addressing.
+    -->
+    <partnerLink name="CreatePartsQuotationImplService" partnerLinkType="client:CreatePartsQuotation" myRole="CreatePartsQuotationProvider"/>
+    <partnerLink name="PartsQuotationCreationService"
+                 partnerLinkType="ns1:PartsQuotationCreationService_plt"
+                 partnerRole="PartsQuotationCreationService_role"/>
+    <partnerLink name="CommonErrorLoggingService"
+                 partnerLinkType="ns2:Produce_Message_plt"
+                 partnerRole="Produce_Message_role"/>
+  </partnerLinks>
+
+  <!-- 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+      VARIABLES                                                        
+      List of messages and XML documents used within this BPEL process 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  -->
+  <variables>
+    <!-- Reference to the message passed as input during initiation -->
+    <variable name="inputVariable" messageType="client:CreatePartsQuotationRequestMessage"/>
+
+    <!-- Reference to the message that will be returned to the requester-->
+    <variable name="outputVariable" messageType="client:CreatePartsQuotationResponseMessage"/>
+    <variable name="invokePartsQuotationCreationServiceInput"
+              messageType="ns1:args_in_msg"/>
+    <variable name="invokePartsQuotationCreationServiceOutput"
+              messageType="ns1:args_out_msg"/>
+    <variable name="ReplyBackWithErrorStatuOutput"
+              messageType="client:CreatePartsQuotationResponseMessage"/>
+    <variable name="InvokeCommonErrorLoggerToSendErrorDataInput"
+              messageType="ns2:Produce_Message_msg"/>
+  </variables>
+  <faultHandlers>
+    <catchAll>
+      <sequence name="SequenceCatchAll">
+        <assign name="AssignErrorToReplyMessage">
+          <copy>
+            <from expression='ora:getPreference("EBIZ_ERROR_STATUS")'/>
+            <to variable="ReplyBackWithErrorStatuOutput" part="payload"
+                query="/ns6:PartsQuotationResponseEBM/ns6:Response"/>
+          </copy>
+          <copy>
+            <from expression="concat(ora:getPreference(&quot;ERROR_DESCRIPTION_TEXT&quot;),bpws:getVariableData('inputVariable','payload','/ns4:PartsQuotationEBM/ns4:PartsQuotationEBO/ns4:PartsQuotationHeader/ns4:RequestNumber'))"/>
+            <to variable="ReplyBackWithErrorStatuOutput" part="payload"
+                query="/ns6:PartsQuotationResponseEBM/ns6:Description"/>
+          </copy>
+        </assign>
+        <reply name="ReplyBackWithErrorStatus"
+               variable="ReplyBackWithErrorStatuOutput"
+               partnerLink="CreatePartsQuotationImplService"
+               portType="client:CreatePartsQuotation"
+               operation="createPartsQuotation"/>
+<assign name="AssignPopulateCommonErrorLoggingData">
+          <copy>
+            <from expression="ora:getProcessId()"/>
+            <to variable="InvokeCommonErrorLoggerToSendErrorDataInput"
+                part="body"
+                query="/ns7:ODComnErrorStructure/ns7:ODComnErrorStructureList/ns7:ProcessInfo/ns7:ProcessName"/>
+          </copy>
+          <copy>
+            <from expression="ora:getPreference('ERROR_TYPE')"/>
+            <to variable="InvokeCommonErrorLoggerToSendErrorDataInput"
+                part="body"
+                query="/ns7:ODComnErrorStructure/ns7:ODComnErrorStructureList/ns7:ErrorDetails/ns7:ErrorType"/>
+          </copy>
+          <copy>
+            <from expression="ora:getPreference('ERROR_SEVERITY')"/>
+            <to variable="InvokeCommonErrorLoggerToSendErrorDataInput"
+                part="body"
+                query="/ns7:ODComnErrorStructure/ns7:ODComnErrorStructureList/ns7:ErrorDetails/ns7:ErrorSeverity"/>
+          </copy>
+          <copy>
+            <from expression="ora:getFaultAsString()"/>
+            <to variable="InvokeCommonErrorLoggerToSendErrorDataInput"
+                part="body"
+                query="/ns7:ODComnErrorStructure/ns7:ODComnErrorStructureList/ns7:ErrorDetails/ns7:ErrorText"/>
+          </copy>
+          <copy>
+            <from expression="ora:getContentAsString(bpws:getVariableData('inputVariable','payload','/ns4:PartsQuotationEBM'))"/>
+            <to variable="InvokeCommonErrorLoggerToSendErrorDataInput"
+                part="body"
+                query="/ns7:ODComnErrorStructure/ns7:ODComnErrorStructureList/ns7:MessageDetails/ns7:MessagePayload"/>
+          </copy>
+          <copy>
+            <from expression="ora:getCurrentDateTime()"/>
+            <to variable="InvokeCommonErrorLoggerToSendErrorDataInput"
+                part="body"
+                query="/ns7:ODComnErrorStructure/ns7:ODComnErrorStructureList/ns7:ErrorDetails/ns7:ErrorDateTime"/>
+          </copy>
+          <copy>
+            <from expression="ora:getPreference('CATCH_ALL_PROCESS_STEP')"/>
+            <to variable="InvokeCommonErrorLoggerToSendErrorDataInput"
+                part="body"
+                query="/ns7:ODComnErrorStructure/ns7:ODComnErrorStructureList/ns7:ErrorDetails/ns7:ProcessStep"/>
+          </copy>
+          <copy>
+            <from expression="ora:getFaultName()"/>
+            <to variable="InvokeCommonErrorLoggerToSendErrorDataInput"
+                part="body"
+                query="/ns7:ODComnErrorStructure/ns7:ODComnErrorStructureList/ns7:ErrorDetails/ns7:ErrorCode"/>
+          </copy>
+          <copy>
+            <from expression="ora:getDomainId()"/>
+            <to variable="InvokeCommonErrorLoggerToSendErrorDataInput"
+                part="body"
+                query="/ns7:ODComnErrorStructure/ns7:ODComnErrorStructureList/ns7:ProcessInfo/ns7:Domain"/>
+          </copy>
+          <copy>
+            <from expression="ora:getCompositeInstanceId()"/>
+            <to variable="InvokeCommonErrorLoggerToSendErrorDataInput"
+                part="body"
+                query="/ns7:ODComnErrorStructure/ns7:ODComnErrorStructureList/ns7:MessageDetails/ns7:MessageID"/>
+          </copy>
+          <copy>
+            <from expression="ora:getCurrentDateTime()"/>
+            <to variable="InvokeCommonErrorLoggerToSendErrorDataInput"
+                part="body"
+                query="/ns7:ODComnErrorStructure/ns7:ODComnErrorStructureList/ns7:MessageDetails/ns7:MessageDateTime"/>
+          </copy>
+          <copy>
+            <from expression="ora:getPreference('MESSAGE_TYPE')"/>
+            <to variable="InvokeCommonErrorLoggerToSendErrorDataInput"
+                part="body"
+                query="/ns7:ODComnErrorStructure/ns7:ODComnErrorStructureList/ns7:MessageDetails/ns7:MessageType"/>
+          </copy>
+          <copy>
+            <from expression="ora:getPreference('MESSAGE_VERSION')"/>
+            <to variable="InvokeCommonErrorLoggerToSendErrorDataInput"
+                part="body"
+                query="/ns7:ODComnErrorStructure/ns7:ODComnErrorStructureList/ns7:MessageDetails/ns7:MessageVersion"/>
+          </copy>
+          <copy>
+            <from expression="ora:getPreference('MESSAGE_OPERATION')"/>
+            <to variable="InvokeCommonErrorLoggerToSendErrorDataInput"
+                part="body"
+                query="/ns7:ODComnErrorStructure/ns7:ODComnErrorStructureList/ns7:MessageDetails/ns7:MessageOperation"/>
+          </copy>
+          <copy>
+            <from expression="ora:getPreference('SOURCE_SYSTEM_NAME')"/>
+            <to variable="InvokeCommonErrorLoggerToSendErrorDataInput"
+                part="body"
+                query="/ns7:ODComnErrorStructure/ns7:ODComnErrorStructureList/ns7:MessageDetails/ns7:MessageSourceSystem"/>
+          </copy>
+          <copy>
+            <from expression="concat(ora:getPreference('ERROR_DESCRIPTION_TEXT'),bpws:getVariableData('inputVariable','payload','/ns4:PartsQuotationEBM/ns4:PartsQuotationEBO/ns4:PartsQuotationHeader/ns4:RequestNumber'))"/>
+            <to variable="InvokeCommonErrorLoggerToSendErrorDataInput"
+                part="body"
+                query="/ns7:ODComnErrorStructure/ns7:ODComnErrorStructureList/ns7:ErrorDetails/ns7:ErrorDescription"/>
+          </copy>
+          <copy>
+            <from expression="ora:getProcessURL()"/>
+            <to variable="InvokeCommonErrorLoggerToSendErrorDataInput"
+                part="body"
+                query="/ns7:ODComnErrorStructure/ns7:ODComnErrorStructureList/ns7:ProcessInfo/ns7:SystemName"/>
+          </copy>
+        </assign>
+        <invoke name="InvokeCommonErrorLoggerToSendErrorData"
+                bpelx:invokeAsDetail="no"
+                inputVariable="InvokeCommonErrorLoggerToSendErrorDataInput"
+                partnerLink="CommonErrorLoggingService"
+                portType="ns2:Produce_Message_ptt" operation="Produce_Message"/>
+      </sequence>
+    </catchAll>
+  </faultHandlers>
+  <!-- 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+     ORCHESTRATION LOGIC                                               
+     Set of activities coordinating the flow of messages across the    
+     services integrated within this business process                  
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  -->
+  <sequence name="main">
+
+    <!-- Receive input from requestor. (Note: This maps to operation defined in CreatePartsQuotation.wsdl) -->
+    <receive name="ReceivePartQuotationDetails" partnerLink="CreatePartsQuotationImplService" portType="client:CreatePartsQuotation" operation="createPartsQuotation" variable="inputVariable" createInstance="yes"/>
+
+    <!-- Generate reply to synchronous request -->
+    <assign name="TransformPartQuotationEBMToABMFormat">
+      <bpelx:annotation>
+        <bpelx:pattern>transformation</bpelx:pattern>
+      </bpelx:annotation>
+      <copy>
+        <from expression="ora:doXSLTransformForDoc('xsl/TransformPartQuotationEBMToABMFormat.xsl', $inputVariable.payload)"/>
+        <to variable="invokePartsQuotationCreationServiceInput"
+            part="InputParameters"/>
+      </copy>
+    </assign>
+    <invoke name="InvokePartsQuotationCreationService"
+            bpelx:invokeAsDetail="no"
+            inputVariable="invokePartsQuotationCreationServiceInput"
+            outputVariable="invokePartsQuotationCreationServiceOutput"
+            partnerLink="PartsQuotationCreationService"
+            portType="ns1:PartsQuotationCreationService_ptt"
+            operation="PartsQuotationCreationService"/>
+    <assign name="AssignResponseFromServiceToReply">
+      <copy>
+        <from variable="invokePartsQuotationCreationServiceOutput"
+              part="OutputParameters"
+              query="/ns3:OutputParameters/ns3:X_RETURN_STATUS"/>
+        <to variable="outputVariable" part="payload"
+            query="/ns6:PartsQuotationResponseEBM/ns6:Response"/>
+      </copy>
+      <copy>
+        <from variable="invokePartsQuotationCreationServiceOutput"
+              part="OutputParameters"
+              query="/ns3:OutputParameters/ns3:X_RETURN_MESSAGE"/>
+        <to variable="outputVariable" part="payload"
+            query="/ns6:PartsQuotationResponseEBM/ns6:Description"/>
+      </copy>
+    </assign>
+    <reply name="ReplyBackWithResponseFromPartQuotationCreationService" partnerLink="CreatePartsQuotationImplService" portType="client:CreatePartsQuotation" operation="createPartsQuotation" variable="outputVariable"/>
+  </sequence>
+</process>

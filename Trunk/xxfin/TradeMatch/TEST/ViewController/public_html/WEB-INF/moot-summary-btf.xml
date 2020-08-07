@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="windows-1252" ?>
+<adfc-config xmlns="http://xmlns.oracle.com/adf/controller" version="1.2">
+  <task-flow-definition id="moot-summary-btf">
+    <default-activity>MootSummary</default-activity>
+    <transaction>
+      <new-transaction/>
+    </transaction>
+    <task-flow-reentry>
+      <reentry-allowed/>
+    </task-flow-reentry>
+    <input-parameter-definition id="__5">
+      <name>mEmployeeId</name>
+      <value>#{pageFlowScope.mEmployeeId}</value>
+      <class>java.lang.String</class>
+    </input-parameter-definition>
+    <managed-bean id="__6">
+      <managed-bean-name>MyDate</managed-bean-name>
+      <managed-bean-class>java.util.Date</managed-bean-class>
+      <managed-bean-scope>request</managed-bean-scope>
+    </managed-bean>
+    <managed-bean id="__4">
+      <managed-bean-name>vendorMootBean</managed-bean-name>
+      <managed-bean-class>od.tdmatch.view.managedBeans.vendorMootBean</managed-bean-class>
+      <managed-bean-scope>pageFlow</managed-bean-scope>
+    </managed-bean>
+    <view id="MootSummary">
+      <page>/MootSummary.jsff</page>
+    </view>
+    <task-flow-call id="taskFlowCall1">
+      <task-flow-reference>
+        <document>/WEB-INF/emp-vend-summary-btf.xml</document>
+        <id>emp-vend-summary-btf</id>
+      </task-flow-reference>
+      <input-parameter id="__3">
+        <name>pEmployeeId</name>
+        <value>#{pageFlowScope.mEmployeeId}</value>
+      </input-parameter>
+    </task-flow-call>
+    <view id="view1">
+      <page>/EmpVendorSUmmary.jsff</page>
+    </view>
+    <control-flow-rule id="__1">
+      <from-activity-id>MootSummary</from-activity-id>
+      <control-flow-case id="__2">
+        <from-outcome>EmpVendSummary</from-outcome>
+        <to-activity-id>taskFlowCall1</to-activity-id>
+      </control-flow-case>
+    </control-flow-rule>
+    <use-page-fragments/>
+  </task-flow-definition>
+</adfc-config>

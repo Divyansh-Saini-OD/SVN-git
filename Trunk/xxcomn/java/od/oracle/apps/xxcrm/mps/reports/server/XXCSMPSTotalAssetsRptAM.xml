@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding='windows-1252'?>
+<!DOCTYPE AppModule SYSTEM "jbo_03_01.dtd">
+
+<AppModule
+   Name="XXCSMPSTotalAssetsRptAM"
+   ComponentClass="od.oracle.apps.xxcrm.mps.reports.server.XXCSMPSTotalAssetsRptAMImpl"
+   LoadComponentsLazily="true" >
+   <DesignTime>
+      <Attr Name="_isCodegen" Value="true" />
+      <Attr Name="_version" Value="9.0.3.14.00" />
+      <Attr Name="_deployType" Value="0" />
+   </DesignTime>
+   <ViewUsage
+      Name="XXCSMPSProgramTypeVO1"
+      ViewObjectName="od.oracle.apps.xxcrm.mps.reports.server.XXCSMPSProgramTypeVO" >
+   </ViewUsage>
+   <ViewUsage
+      Name="XXCSMPSTotalAssetsRptVO1"
+      ViewObjectName="od.oracle.apps.xxcrm.mps.reports.server.XXCSMPSTotalAssetsRptVO" >
+   </ViewUsage>
+   <ViewUsage
+      Name="XXCSMPSManufacturerVO1"
+      ViewObjectName="od.oracle.apps.xxcrm.mps.reports.server.XXCSMPSManufacturerVO" >
+   </ViewUsage>
+   <ViewUsage
+      Name="XXCSMPSPartyNameVO1"
+      ViewObjectName="od.oracle.apps.xxcrm.mps.reports.lov.server.XXCSMPSPartyNameVO" >
+   </ViewUsage>
+   <ViewUsage
+      Name="XXCSMPSModelVO1"
+      ViewObjectName="od.oracle.apps.xxcrm.mps.reports.lov.server.XXCSMPSModelVO" >
+   </ViewUsage>
+</AppModule>

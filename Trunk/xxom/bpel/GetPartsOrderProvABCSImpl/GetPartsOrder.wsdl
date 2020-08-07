@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wsdl:definitions name="GetPartsOrder"
+             targetNamespace="http://xmlns.officedepot.com/TDS/GetPartsOrderProvABCSImpl/GetPartsOrder"
+             xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+             xmlns:client="http://xmlns.officedepot.com/TDS/GetPartsOrderProvABCSImpl/GetPartsOrder"
+             xmlns:ns1="http://www.officedepot.com/TDS/GetPartsOrderProvABCSImpl/PartsOrderEBM"
+             xmlns:ns2="http://www.officedepot.com/TDS/GetPartsOrderProvABCSImpl/PartsOrderResponseEBM"
+             xmlns:ns3="http://www.officedepot.com/TDS/Common/Schema/FaultMessage"             
+             xmlns:plnk="http://schemas.xmlsoap.org/ws/2003/05/partner-link/">
+
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	TYPE DEFINITION - List of services participating in this BPEL process
+	The default output of the BPEL designer uses strings as input and 
+	output to the BPEL Process. But you can define or import any XML 
+	Schema type and use them as part of the message types.
+	~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->   
+	<wsdl:types>
+		<schema xmlns="http://www.w3.org/2001/XMLSchema">
+			<import namespace="http://www.officedepot.com/TDS/GetPartsOrderProvABCSImpl/PartsOrderEBM" schemaLocation="xsd/PartsOrderEBM.xsd" />
+		</schema>
+		<schema xmlns="http://www.w3.org/2001/XMLSchema">
+			<import namespace="http://www.officedepot.com/TDS/GetPartsOrderProvABCSImpl/PartsOrderResponseEBM" schemaLocation="xsd/PartsOrderResponseEBM.xsd" />
+		</schema>
+		<schema xmlns="http://www.w3.org/2001/XMLSchema">
+			<import namespace="http://www.officedepot.com/TDS/Common/Schema/FaultMessage" schemaLocation="oramds:/apps/ODCommon/tds/xsd/FaultMessage.xsd" />
+		</schema>    
+	</wsdl:types>
+
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	MESSAGE TYPE DEFINITION - Definition of the message types used as 
+	part of the port type defintions
+	~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->      
+	<wsdl:message name="GetPartsOrderRequestMessage">
+		<wsdl:part name="payload" element="ns1:PartsOrderEBM" />
+	</wsdl:message>
+	<wsdl:message name="GetPartsOrderResponseMessage">
+		<wsdl:part name="payload" element="ns2:PartsOrderResponseEBM" />
+	</wsdl:message>
+	<wsdl:message name="NoDataFoundFault">
+		<wsdl:part name="payload" element="ns3:FaultMessage" />
+	</wsdl:message>  
+	<wsdl:message name="OtherFaults">
+		<wsdl:part name="payload" element="ns3:FaultMessage" />
+	</wsdl:message>    
+
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	PORT TYPE DEFINITION - A port type groups a set of operations into
+	a logical service unit.
+	~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+
+	<!-- portType implemented by the GetPartsOrder BPEL process -->
+	<wsdl:portType name="GetPartsOrder">
+		<wsdl:operation name="getPartsOrderDetails">
+			<wsdl:input  message="client:GetPartsOrderRequestMessage" />
+			<wsdl:output message="client:GetPartsOrderResponseMessage"/>
+   <wsdl:fault message="client:NoDataFoundFault"
+               name="OrderInformationNotFound"/>
+   <wsdl:fault message="client:OtherFaults"
+               name="OtherFaults"/>               
+  </wsdl:operation>
+	</wsdl:portType>
+
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	PARTNER LINK TYPE DEFINITION
+	~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ --> 
+	<plnk:partnerLinkType name="GetPartsOrder">
+		<plnk:role name="GetPartsOrderProvider">
+			<plnk:portType name="client:GetPartsOrder"/>
+		</plnk:role>
+	</plnk:partnerLinkType>
+</wsdl:definitions>

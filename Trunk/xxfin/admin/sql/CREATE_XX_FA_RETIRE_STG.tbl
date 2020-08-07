@@ -1,0 +1,105 @@
+REM============================================================================================
+REM                                 Start Of Script
+REM============================================================================================
+
+--+=============================================================================================+--
+--|                                                                                             |--
+--| Program Name   : CREATE_XX_FA_RETIRE_STG.tbl                                                |--
+--|                                                                                             |--
+--| Purpose        : Create Custom Tables .                                                     |--
+--|                  The Objects created are:                                                   |--
+--|                                                                                             |--
+--|                1. XX_FA_RETIRE_STG   (OD FA Mass Retirement Staging table)                  |--
+--|                                                                                             |--
+--| Change History  :                                                                           |--
+--| Version           Date             Changed By              Description                      |--
+--+=============================================================================================+--
+--| 1.0              23-Jan-2013       Paddy Sanjeevi          Original                         |--
+--+=============================================================================================+--
+
+SET VERIFY      OFF
+SET TERM        ON
+SET FEEDBACK    OFF
+SET SHOW        OFF
+SET ECHO        OFF
+SET TAB         OFF
+
+WHENEVER SQLERROR CONTINUE;
+
+PROMPT
+PROMPT Creating the Custom Table ......
+PROMPT
+
+PROMPT
+PROMPT Creating the Table XX_FA_RETIRE_STG......
+PROMPT
+
+Create table xxfin.XX_FA_RETIRE_STG
+(Asset_id		NUMBER,
+ Description		VARCHAR2(80),
+ Book_type_code		VARCHAR2(15),
+ Company		VARCHAR2(25),
+ Building		VARCHAR2(25),
+ CostCenter		VARCHAR2(25),
+ Lob			VARCHAR2(25),
+ Major			VARCHAR2(30),
+ Minor			VARCHAR2(30),
+ Subminor		VARCHAR2(30),
+ retirement_process	VARCHAR2(30),
+ retirement_date	DATE,
+ location		VARCHAR2(150),
+ location_id		NUMBER,
+ expense_account	VARCHAR2(150),
+ expense_acct_id	NUMBER,
+ distribution_id	NUMBER,
+ cost_to_be_retired	NUMBER,
+ pos_to_be		NUMBER,
+ date_placed_in_service	DATE,
+ life_in_months		NUMBER,
+ FA_retire_period	VARCHAR2(20),
+ retirement_type	VARCHAR2(15),
+ retire_convention	VARCHAr2(10),
+ deprn_method_code	VARCHAR2(15),
+ asset_prorate_con	VARCHAR2(10),
+ fa_current_cost	NUMBER,
+ current_units		NUMBER,
+ units_retired		NUMBER,
+ asset_cost_retired	NUMBER,
+ nbv_retired		NUMBER,
+ proceeds_of_sale	NUMBER,
+ gain_loss_amount	NUMBER,
+ sold_to		VARCHAR2(30),
+ comments		VARCHAR2(250),
+ retirement_id		NUMBER,
+ Creation_date		DATE,
+ Created_by		NUMBER,
+ Last_update_date	DATE,
+ Last_updated_by	NUMBER,
+ Process_Flag		NUMBER,
+ Error_flag		VARCHAR2(1),
+ Error_message		VARCHAR2(4000),
+ Request_id		NUMBER,
+ location_description   VARCHAR2(240),
+ process_mode		VARCHAR2(25),
+ legacy_asset_id	VARCHAR2(50),
+ tax_asset_id		VARCHAR2(50),
+ nbv			NUMBER,
+ prorate_pct		NUMBER,
+ cost_of_removal	NUMBER
+);
+
+
+WHENEVER SQLERROR CONTINUE;
+
+PROMPT
+PROMPT Exiting....
+PROMPT
+
+SET FEEDBACK ON
+
+EXIT;
+
+REM=================================================================================================
+REM                                   End Of Script
+REM=================================================================================================
+

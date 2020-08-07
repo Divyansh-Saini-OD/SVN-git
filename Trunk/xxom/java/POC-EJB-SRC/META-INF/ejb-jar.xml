@@ -1,0 +1,56 @@
+<?xml version = '1.0' encoding = 'windows-1252'?>
+<ejb-jar xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/ejb-jar_2_1.xsd" version="2.1" xmlns="http://java.sun.com/xml/ns/j2ee">
+  <enterprise-beans>
+    <session>
+      <description>Session Bean ( Stateless )</description>
+      <display-name>SKUSession</display-name>
+      <ejb-name>SKUSession</ejb-name>
+      <home>ejbtest.SKUSessionHome</home>
+      <remote>ejbtest.SKUSession</remote>
+      <local-home>ejbtest.SKUSessionLocalHome</local-home>
+      <local>ejbtest.SKUSessionLocal</local>
+      <ejb-class>ejbtest.SKUSessionBean</ejb-class>
+      <session-type>Stateless</session-type>
+      <transaction-type>Container</transaction-type>
+    </session>
+    <session>
+      <description>Session Bean ( Stateless )</description>
+      <display-name>SPSessionEJB</display-name>
+      <ejb-name>SPSessionEJB</ejb-name>
+      <home>ejbtest.SPSessionEJBHome</home>
+      <remote>ejbtest.SPSessionEJB</remote>
+      <local-home>ejbtest.SPSessionEJBLocalHome</local-home>
+      <local>ejbtest.SPSessionEJBLocal</local>
+      <ejb-class>ejbtest.SPSessionEJBBean</ejb-class>
+      <session-type>Stateless</session-type>
+      <transaction-type>Container</transaction-type>
+       <env-entry>
+            <description><![CDATA[Spring Application Context]]></description>
+            <env-entry-name>ejb/theParam</env-entry-name>
+            <env-entry-type>java.lang.String</env-entry-type>
+        </env-entry>
+        <ejb-ref>
+             <ejb-ref-name>SPSessionEJB</ejb-ref-name>
+             <ejb-ref-type>Session</ejb-ref-type>
+              <home>ejbtest.SPSessionEJBHome</home>
+              <remote>ejbtest.SPSessionEJB</remote>
+        </ejb-ref>
+    </session>
+  </enterprise-beans>
+  <assembly-descriptor>
+    <container-transaction>
+      <method>
+        <ejb-name>SKUSession</ejb-name>
+        <method-name>*</method-name>
+      </method>
+      <trans-attribute>Required</trans-attribute>
+    </container-transaction>
+    <container-transaction>
+      <method>
+        <ejb-name>SPSessionEJB</ejb-name>
+        <method-name>*</method-name>
+      </method>
+      <trans-attribute>Required</trans-attribute>
+    </container-transaction>
+  </assembly-descriptor>
+</ejb-jar>

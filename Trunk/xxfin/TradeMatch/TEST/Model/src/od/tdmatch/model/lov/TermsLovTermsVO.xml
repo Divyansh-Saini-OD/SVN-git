@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="windows-1252" ?>
+<!DOCTYPE ViewObject SYSTEM "jbo_03_01.dtd">
+<!---->
+<ViewObject
+  xmlns="http://xmlns.oracle.com/bc4j"
+  Name="TermsLovTermsVO"
+  Version="12.2.1.12.24"
+  InheritPersonalization="merge"
+  BindingStyle="OracleName"
+  CustomQuery="true"
+  RowClass="od.tdmatch.model.lov.TermsLovTermsVORowImpl"
+  ComponentClass="od.tdmatch.model.lov.TermsLovTermsVOImpl"
+  PageIterMode="Full">
+  <DesignTime>
+    <Attr Name="_codeGenFlag2" Value="Coll"/>
+    <Attr Name="_isExpertMode" Value="true"/>
+    <Attr Name="_isCodegen" Value="true"/>
+  </DesignTime>
+  <Properties>
+    <SchemaBasedProperties>
+      <LABEL
+        ResId="od.tdmatch.model.lov.TermsLovTermsVO_LABEL"/>
+    </SchemaBasedProperties>
+  </Properties>
+  <SQLQuery><![CDATA[SELECT t.term_id,t.name    
+  FROM ap_terms t    
+ WHERE EXISTS (SELECT 'x'    
+                 FROM ap_supplier_sites_all site    
+                      ,ap_invoices_all ai    
+                WHERE ai.terms_id=t.term_id    
+                  AND ai.payment_status_flag IN ('N','P')    
+                  AND EXISTS (SELECT 'x'    
+                                  FROM  xx_fin_translatevalues tv    
+                                     ,xx_fin_translatedefinition td    
+                               WHERE td.TRANSLATION_NAME = 'XX_AP_TR_MATCH_INVOICES'    
+                                 AND tv.TRANSLATE_ID  = td.TRANSLATE_ID    
+                                 AND tv.enabled_flag='Y'    
+                                 AND SYSDATE BETWEEN tv.start_date_active and NVL(tv.end_date_active,sysdate)    
+                                 AND tv.target_value1=ai.source    
+                             )    
+				  AND  'APPROVED'=AP_INVOICES_PKG.GET_APPROVAL_STATUS(ai.invoice_id,     
+                                           ai.invoice_amount,    
+                                           ai.payment_status_flag,    
+                                           ai.invoice_type_lookup_code    
+                                          )    
+                                   
+			      AND site.vendor_id=ai.vendor_id    
+                  AND site.vendor_site_id=ai.vendor_site_id    
+                  AND exists (SELECT 'x'         
+         FROM xx_fin_translatevalues tv,                                                                          
+              xx_fin_translatedefinition td                          
+        WHERE td.translation_name = 'XX_AP_TRADE_CATEGORIES'                                                                           
+          AND tv.translate_id  = td.translate_id                                                                          
+          AND tv.enabled_flag = 'Y'                                                                          
+          AND sysdate between tv.start_date_active and nvl(tv.end_date_active,sysdate)         
+          AND tv.target_value1 = site.attribute8)    
+               )]]></SQLQuery>
+  <ViewAttribute
+    Name="TermId"
+    IsUpdateable="false"
+    IsPersistent="false"
+    PrecisionRule="true"
+    Precision="15"
+    Scale="0"
+    Type="oracle.jbo.domain.Number"
+    ColumnType="NUMBER"
+    AliasName="TERM_ID"
+    Expression="TERM_ID"
+    SQLType="NUMERIC">
+    <Properties>
+      <SchemaBasedProperties>
+        <LABEL
+          ResId="od.tdmatch.model.lov.TermsLovTermsVO.TermId_LABEL"/>
+        <DISPLAYWIDTH
+          Value="25"/>
+      </SchemaBasedProperties>
+    </Properties>
+  </ViewAttribute>
+  <ViewAttribute
+    Name="Name"
+    IsUpdateable="false"
+    IsPersistent="false"
+    PrecisionRule="true"
+    Precision="50"
+    Type="java.lang.String"
+    ColumnType="VARCHAR2"
+    AliasName="NAME"
+    Expression="NAME"
+    SQLType="VARCHAR">
+    <DesignTime>
+      <Attr Name="_DisplaySize" Value="50"/>
+    </DesignTime>
+    <Properties>
+      <SchemaBasedProperties>
+        <LABEL
+          ResId="od.tdmatch.model.lov.TermsLovTermsVO.Name_LABEL"/>
+        <DISPLAYWIDTH
+          Value="25"/>
+      </SchemaBasedProperties>
+    </Properties>
+  </ViewAttribute>
+  <AttrArray Name="KeyAttributes">
+    <Item Value="TermId"/>
+  </AttrArray>
+  <ResourceBundle>
+    <PropertiesBundle
+      PropertiesFile="od.tdmatch.model.ModelBundle"/>
+  </ResourceBundle>
+</ViewObject>

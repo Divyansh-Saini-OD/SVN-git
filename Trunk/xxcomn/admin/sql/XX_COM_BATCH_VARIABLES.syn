@@ -1,0 +1,22 @@
+-- +===========================================================================+
+-- |                  Office Depot - Project Simplify                          |
+-- +===========================================================================+
+-- | Name :APPS.XX_COM_BATCH_VARIABLES                                         |
+-- | Description : Create APPS synonym for table XXCOMN.XX_COM_BATCH_VARIABLES.|
+-- |                                                                           |
+-- |Change Record:                                                             |
+-- |===============                                                            |
+-- |Version   Date         Author               Remarks                        |
+-- |=======   ==========   =============        ===============================|
+-- | V1.0     01/28/2009   Joe Klein            Initial version                |
+-- |                                                                           |
+-- +===========================================================================+
+
+   SET SHOW         OFF
+   SET VERIFY       OFF
+   SET ECHO         OFF
+   SET TAB          OFF
+   SET FEEDBACK     ON
+
+
+   CREATE OR REPLACE SYNONYM "APPS"."XX_COM_BATCH_VARIABLES" FOR "XXCOMN"."XX_COM_BATCH_VARIABLES";

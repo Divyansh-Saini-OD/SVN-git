@@ -1,0 +1,26 @@
+-- +============================================================================+
+-- |                  Office Depot                                              |
+-- +============================================================================+
+-- | Name        : XX_AR_EBL_XL_TAB_SPLIT_HDR.syn                               |
+-- | Rice ID     : E2059                                                        |
+-- | Description : Synonym for Table XX_AR_EBL_XL_TAB_SPLIT_HDR                 |
+-- |                                                                            |
+-- |Change Record:                                                              |
+-- |===============                                                             |
+-- |Version   Date        Author           Remarks                              |
+-- |=======  ===========  =============    =====================================|
+-- |1.0      17-AUG-2015  Suresh Naragam   Initial Version                      |
+-- +============================================================================+
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     ON
+
+PROMPT
+PROMPT Creating Synonym XX_AR_EBL_XL_TAB_SPLIT_HDR in APPS.....
+PROMPT
+
+CREATE OR REPLACE SYNONYM apps.XX_AR_EBL_XL_TAB_SPLIT_HDR FOR xxfin.XX_AR_EBL_XL_TAB_SPLIT_HDR;
+
+SHOW ERROR;

@@ -1,0 +1,9 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<customization xmlns="http://xmlns.oracle.com/jrad" version="9.0.6.0.0_50" xml:lang="en-US" customizes="/oracle/apps/ar/hz/components/account/site/webui/HzPuiAcctSitePurposes" developerMode="true" xmlns:user="http://xmlns.oracle.com/jrad/user" user:responsibilityKey="od_ca_ar_cash_app_mgr" user:responsibilityAppShortName="AR">
+   <modifications>
+      <modify element="AcctSiteUseStatus" readOnly="true"/>
+      <modify element="locationUpdatable" readOnly="true"/>
+      <modify element="billToLocUpdatable" readOnly="true"/>
+      <modify element="SiteUseDetailDFF" readOnly="true" styleClass="OraFieldText"/>
+   </modifications>
+</customization>

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!--Native format was generated from COBOL copybook : C:\Documents and Settings\bala-edupuganti\Desktop\SrResponse_copybook_1.txt-->
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:nxsd="http://xmlns.oracle.com/pcbpel/nxsd" xmlns:extn="http://xmlns.oracle.com/pcbpel/nxsd/extensions" targetNamespace="http://TargetNamespace.com/ebsSrresponseSrvc" xmlns:tns="http://TargetNamespace.com/ebsSrresponseSrvc" elementFormDefault="qualified" attributeFormDefault="unqualified" nxsd:version="NXSD" nxsd:encoding="cp037" nxsd:byteOrder="bigEndian" nxsd:stream="chars">
+   <xsd:element name="Root-Element">
+      <xsd:complexType>
+         <xsd:sequence>
+            <!--COBOL declaration :01 RESPONSE_MQ-->
+            <xsd:element name="RESPONSE_MQ" minOccurs="1" maxOccurs="unbounded">
+               <xsd:complexType>
+                  <xsd:sequence>
+                     <!--COBOL declaration : 05 request_type PIC X(10)-->
+                     <xsd:element name="request_type" type="xsd:string" nxsd:style="fixedLength" nxsd:padStyle="tail" nxsd:paddedBy=" " nxsd:length="10"/>
+                     <!--COBOL declaration : 05 action_code PIC X(3)-->
+                     <xsd:element name="action_code" type="xsd:string" nxsd:style="fixedLength" nxsd:padStyle="tail" nxsd:paddedBy=" " nxsd:length="3"/>
+                     <!--COBOL declaration : 05 request_number PIC X(15)-->
+                     <xsd:element name="request_number" minOccurs="0" type="xsd:string" nxsd:style="fixedLength" nxsd:padStyle="tail" nxsd:paddedBy=" " nxsd:length="15"/>
+                     <!--COBOL declaration : 05 order_number PIC X(12)-->
+                     <xsd:element name="order_number" minOccurs="0" type="xsd:string" nxsd:style="fixedLength" nxsd:padStyle="tail" nxsd:paddedBy=" " nxsd:length="12"/>
+                     <!--COBOL declaration : 05 Filler PIC X(253)-->
+                     <xsd:element name="Filler" minOccurs="0" type="xsd:string" nxsd:style="fixedLength" nxsd:padStyle="tail" nxsd:paddedBy=" " nxsd:length="253"/>
+                  </xsd:sequence>
+               </xsd:complexType>
+            </xsd:element>
+         </xsd:sequence>
+      </xsd:complexType>
+   </xsd:element>
+</xsd:schema>

@@ -1,0 +1,28 @@
+-- +============================================================================+
+-- |                  Office Depot                                              |
+-- +============================================================================+
+-- | Name        : XX_AR_EBL_XL_TAB_SPLIT_DTL_N2.idx                            |
+-- | Rice ID     : E2059                                                        |
+-- | Description : Creating Index on Table XX_AR_EBL_XL_TAB_SPLIT_DTL           |
+-- |                                                                            |
+-- |Change Record:                                                              |
+-- |===============                                                             |
+-- |Version   Date        Author           Remarks                              |
+-- |=======  ===========  =============    =====================================|
+-- |1.0      18-AUG-2015  Suresh Naragam   Initial Version                      |
+-- +============================================================================+
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     ON
+
+PROMPT
+PROMPT Creating Index on Table XX_AR_EBL_XL_TAB_SPLIT_DTL .....
+PROMPT
+
+CREATE INDEX XXFIN.XX_AR_EBL_XL_TAB_SPLIT_DTL_N2 ON XXFIN.XX_AR_EBL_XL_TAB_SPLIT_DTL( creation_date
+                                                                               )
+COMPUTE STATISTICS;
+
+SHOW ERROR;

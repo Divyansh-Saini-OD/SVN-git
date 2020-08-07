@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding='windows-1252'?>
+<!DOCTYPE AppModule SYSTEM "jbo_03_01.dtd">
+<!--
+Subversion Info:
+$HeadURL: http://svn.na.odcorp.net/svn/od/common/trunk/xxcomn/java/od/oracle/apps/xxcrm/cdh/ebl/search/server/ODEBillDocSearchAM.xml $
+$Rev: 101911 $
+$Date: 2010-05-11 01:13:21 -0400 (Tue, 11 May 2010) $
+-->
+<AppModule
+   Name="ODEBillDocSearchAM"
+   ComponentClass="od.oracle.apps.xxcrm.cdh.ebl.search.server.ODEBillDocSearchAMImpl"
+   LoadComponentsLazily="true" >
+   <Properties>
+      <Property Name ="RETENTION_LEVEL" Value ="MANAGE_STATE" />
+   </Properties>
+   <DesignTime>
+      <Attr Name="_isCodegen" Value="true" />
+      <Attr Name="_version" Value="9.0.3.12.53" />
+      <Attr Name="_deployType" Value="0" />
+   </DesignTime>
+   <ViewUsage
+      Name="ODEBillDocSearchVO"
+      ViewObjectName="od.oracle.apps.xxcrm.cdh.ebl.search.server.ODEBillDocSearchVO" >
+   </ViewUsage>
+</AppModule>

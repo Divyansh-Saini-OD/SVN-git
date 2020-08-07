@@ -1,0 +1,55 @@
+REM============================================================================================
+REM                                 Start Of Script                                            
+REM============================================================================================
+
+--+=============================================================================================+--
+--|                                                                                             |--
+--| Program Name   : XX_INV_ERROR_LOG.syn                                                       |--        
+--|                                                                                             |--   
+--| Purpose        : Create Synonym for Custom Sequences                                        |--
+--|                  The Objects created are:                                                   |--
+--|                                                                                             |--
+--|                  1. XX_INV_ERROR_LOG(Synonym for XX_INV_ERROR_LOG)                          |--
+--|                                                                                             |-- 
+--| Change History  :                                                                           |--
+--| Version           Date             Changed By              Description                      |--
+--+=============================================================================================+--
+--| 1.0               02-Jul-2008      Paddy Sanjeevi          Original                         |--
+--+=============================================================================================+
+
+SET VERIFY   OFF
+SET TERM     ON
+SET FEEDBACK OFF
+SET SHOW     OFF
+SET ECHO     OFF
+SET TAB      OFF
+
+WHENEVER SQLERROR CONTINUE
+
+PROMPT
+PROMPT Creating Synonym in APPS...
+PROMPT
+
+WHENEVER SQLERROR CONTINUE
+
+PROMPT
+PROMPT Creating SYNONYM XX_INV_ERROR_LOG
+PROMPT
+
+CREATE OR REPLACE SYNONYM XX_INV_ERROR_LOG FOR XXPTP.XX_INV_ERROR_LOG;
+
+WHENEVER SQLERROR CONTINUE
+
+PROMPT
+PROMPT Exiting....
+PROMPT
+
+SET FEEDBACK ON
+
+EXIT;
+
+REM=================================================================================================
+REM                                   End Of Script                                            
+REM=================================================================================================
+
+

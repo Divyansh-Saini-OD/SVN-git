@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding='windows-1252'?>
+<!DOCTYPE ViewObject SYSTEM "jbo_03_01.dtd">
+
+<ViewObject
+   Name="ODSiteHrchyUpdAccessesVO"
+   BindingStyle="Oracle"
+   CustomQuery="true"
+   RowClass="od.oracle.apps.xxcrm.asn.common.fwk.server.ODSiteHrchyUpdAccessesVORowImpl"
+   ComponentClass="od.oracle.apps.xxcrm.asn.common.fwk.server.ODSiteHrchyUpdAccessesVOImpl"
+   MsgBundleClass="oracle.jbo.common.JboResourceBundle"
+   UseGlueCode="false" >
+   <SQLQuery><![CDATA[
+SELECT 
+  b.parent_group_id
+FROM 
+  JTF_RS_GROUP_USAGES jrgu,
+  JTF_RS_GROUPS_DENORM b,
+  (SELECT CURR_ASSN.group_id from  XX_TM_NAM_TERR_CURR_ASSIGN_V CURR_ASSN,
+  HZ_PARTY_SITES               CURR_PS,
+  HZ_PARTY_SITES               ALL_PS
+  WHERE 
+  CURR_ASSN.entity_type = 'PARTY_SITE' and
+  CURR_ASSN.entity_id =  CURR_PS.party_site_id and
+  ALL_PS.party_site_id = :1 and
+  ALL_PS.party_id = CURR_PS.party_id and
+  CURR_PS.status = 'A' and
+  nvl(CURR_PS.identifying_address_flag,'N') ='Y' 
+  UNION
+  SELECT  
+  CURR_ASSN.group_id
+  FROM 
+  XX_TM_NAM_TERR_CURR_ASSIGN_V CURR_ASSN
+  WHERE 
+  CURR_ASSN.entity_type = 'PARTY_SITE' and
+  CURR_ASSN.entity_id =  :2 
+ ) aaa  where  aaa.group_id = b.group_id    and
+  jrgu.usage IN ('SALES', 'PRM')    and
+  jrgu.group_id = b.group_id    and
+  b.start_date_active <= TRUNC(sysdate)   and
+  NVL(b.end_date_Active, sysdate) >= TRUNC(sysdate)
+   ]]></SQLQuery>
+   <DesignTime>
+      <Attr Name="_isCodegen" Value="true" />
+      <Attr Name="_version" Value="9.0.3.12.66" />
+      <Attr Name="_CodeGenFlagNew" Value="36" />
+      <Attr Name="_rowSuperClassName" Value="oracle.apps.asn.common.fwk.server.ASNViewRowImpl" />
+      <Attr Name="_objectSuperClassName" Value="oracle.apps.asn.common.fwk.server.ASNViewObjectImpl" />
+   </DesignTime>
+   <ViewAttribute
+      Name="ParentGroupId"
+      IsPersistent="false"
+      IsNotNull="true"
+      Type="oracle.jbo.domain.Number"
+      AliasName="PARENT_GROUP_ID"
+      ColumnType="VARCHAR2"
+      Expression="PARENT_GROUP_ID"
+      SQLType="NUMERIC" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </ViewAttribute>
+</ViewObject>

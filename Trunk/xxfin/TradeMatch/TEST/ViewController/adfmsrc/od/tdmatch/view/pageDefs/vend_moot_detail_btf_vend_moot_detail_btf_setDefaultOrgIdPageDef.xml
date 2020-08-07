@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<pageDefinition xmlns="http://xmlns.oracle.com/adfm/uimodel" version="12.2.1.12.24"
+                id="vend_moot_detail_btf_vend_moot_detail_btf_setDefaultOrgIdPageDef"
+                Package="od.tdmatch.view.pageDefs" SkipValidation="true">
+  <parameters/>
+  <executables/>
+  <bindings>
+    <methodAction id="setDefaultOrgId" RequiresUpdateModel="true" Action="invokeMethod" MethodName="setDefaultOrgId"
+                  IsViewObjectMethod="false" DataControl="TradeMatchAMDataControl"
+                  InstanceName="bindings.setDefaultOrgId.dataControl.dataProvider"/>
+  </bindings>
+</pageDefinition>

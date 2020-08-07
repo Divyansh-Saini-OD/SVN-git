@@ -1,0 +1,121 @@
+SET VERIFY OFF;
+SET SHOW OFF;
+SET ECHO OFF;
+SET TAB OFF;
+SET FEEDBACK OFF;
+ 
+WHENEVER SQLERROR CONTINUE;
+ 
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+-- +==================================================================================+  
+-- | Office Depot - C2FO                                                              |
+-- |                                                                                  |
+-- +==================================================================================+
+-- | SQL Script to create the table:  XX_AP_C2FO_AWARD_DATA_EXTERNAL                  |
+-- | RICE_ID:                                                                         |                                                                                 |
+-- |Change Record:                                                                    |
+-- |===============                                                                   |
+-- |Version   Date          Author               Remarks                              |
+-- |=======   ===========   =============        =====================================|
+-- |1.0       31-AUG-2018   Antoino Morales      Initial version                      |
+-- |                                                                                  |
+-- +==================================================================================+
+
+--+=====================================================================+
+--+               CREATE TABLE XX_AP_C2FO_AWARD_DATA_EXTERNAL
+--+=====================================================================+
+
+BEGIN
+ EXECUTE IMMEDIATE 'DROP TABLE XXFIN.XX_AP_C2FO_AWARD_DATA_EXTERNAL';
+EXCEPTION
+ WHEN OTHERS THEN NULL;
+END;
+/
+
+CREATE TABLE XXFIN.XX_AP_C2FO_AWARD_DATA_EXTERNAL
+(
+  COMPANY_ID                     VARCHAR2(240) 
+, COMPANY_NAME                   VARCHAR2(240) 
+, DIVISION_ID                    VARCHAR2(240) 
+, INVOICE_ID                     VARCHAR2(240) 
+, ORIGINAL_AMOUNT                NUMBER 
+, CURRENCY                       VARCHAR2(10) 
+, ORIGINAL_DUE_DATE              VARCHAR2(25) 
+, TRANSACTION_TYPE               NUMBER 
+, ORIGINAL_INV_TRANSACTION_DATE  VARCHAR2(25) 
+, VOUCHER_ID                     NUMBER 
+, DISCOUNT_PERCENTAGE            NUMBER 
+, INCOME                         NUMBER 
+, DISCOUNTED_INVOICE_AMOUNT      NUMBER 
+, PAY_DATE                       VARCHAR2(25) 
+, OFFER_APR_AMOUNT               NUMBER 
+, COVERS_ADJUSTMENT              NUMBER 
+, ADJUSTED_INVOICE_AMOUNT        NUMBER 
+, ADJ_INVOICE_ID                 VARCHAR2(240) 
+, SUPPLIER_ADDRESS_1             VARCHAR2(240) 
+, SUPPLIER_ADDRESS_2             VARCHAR2(240) 
+, SUPPLIER_CITY                  VARCHAR2(60) 
+, SUPPLIER_STATE                 VARCHAR2(150) 
+, SUPPLIER_POSTAL_CODE           VARCHAR2(60) 
+, SUPPLIER_COUNTRY               VARCHAR2(60) 
+, SUPPLIER_TAX_ID                VARCHAR2(30) 
+, SEQUENTIAL_DOCUMENT_NUMBER     NUMBER 
+, BUYER_NAME                     VARCHAR2(240) 
+, BUYER_ADDRESS                  VARCHAR2(1500) 
+, BUYER_TAX_ID                   VARCHAR2(30) 
+, ORIGINAL_AMOUNT_GROSSVAT       NUMBER 
+, ORIGINAL_AMOUNT_NETVAT         NUMBER 
+, VAT_TO_BE_DISCOUNTED           NUMBER 
+, ORIGINAL_VAT                   NUMBER 
+, AWARDED_VAT                    NUMBER 
+, VAT_REDUCTION                  NUMBER 
+, ORIGINAL_VAT_PERCENTAGE        NUMBER 
+, DISCOUNT_REASON_CODE           VARCHAR2(90) 
+, LOCAL_CURRENCY_KEY             VARCHAR2(9) 
+, LOCAL_CURRENCY_RATE            NUMBER 
+, LC_ORIGINAL_INVOICE_AMOUNT     NUMBER 
+, LOCAL_CURRENCY_INCOME          NUMBER 
+, LC_NET_AWARD_AMOUNT            NUMBER 
+, LOCAL_CURRENCY_ORIGINAL_VAT    NUMBER 
+, LOCAL_CURRENCY_AWARDED_VAT     NUMBER 
+, LOCAL_CURRENCY_VAT_REDUCTION   NUMBER 
+, MARKET_TYPE                    VARCHAR2(25) 
+, PO_ID                          NUMBER 
+, EBS_ORG_ID                     NUMBER 
+, EBS_VENDOR_ID                  NUMBER 
+, EBS_SUPPLIER_NUMBER            VARCHAR2(30) 
+, EBS_VENDOR_SITE_ID             NUMBER 
+, EBS_VENDOR_SITE_CODE           VARCHAR2(15) 
+, EBS_INVOICE_ID                 NUMBER 
+, EBS_INVOICE_NUM                VARCHAR2(50) 
+, EBS_PAY_GROUP                  VARCHAR2(25) 
+, EBS_PAY_PRIORITY               NUMBER 
+, EBS_SUB_PAY_PRIORITY           NUMBER 
+, EBS_SITE_PAY_PRIORITY          NUMBER 
+, EBS_VOUCHER_NUM                VARCHAR2(50) 
+, EBS_CASH_DISCOUNT_AMOUNT       NUMBER 
+, EBS_INV_AMT_BEFORE_CASH_DISC   NUMBER 
+) 
+ORGANIZATION EXTERNAL 
+( 
+  TYPE ORACLE_LOADER 
+  DEFAULT DIRECTORY XXFIN_C2FO_INBOUND 
+  ACCESS PARAMETERS 
+  ( 
+    RECORDS DELIMITED BY NEWLINE CHARACTERSET US7ASCII
+          BADFILE     'XXFIN_C2FO_INBOUND':'xxc2fo_award_data_external.bad'
+          DISCARDFILE 'XXFIN_C2FO_INBOUND':'xxc2fo_award_data_external.dis'
+          LOGFILE     'XXFIN_C2FO_INBOUND':'xxc2fo_award_data_external.log'
+          FIELDS TERMINATED BY ','
+          OPTIONALLY ENCLOSED BY '"'
+          MISSING FIELD VALUES ARE NULL 
+  ) 
+  LOCATION 
+  ( 
+    XXFIN_C2FO_INBOUND: 'xxdd_c2fo_award.csv' 
+  ) 
+) 
+REJECT LIMIT UNLIMITED;
+
+SHOW ERROR

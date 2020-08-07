@@ -1,0 +1,38 @@
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     ON
+
+PROMPT Creating SYNONYM xx_ar_3rd_party_prf_temp
+
+PROMPT Program exits IF the creation IS NOT SUCCESSFUL
+
+WHENEVER SQLERROR CONTINUE
+
+-- +===================================================================================+
+-- |                  Office Depot - Project Simplify                                  |
+-- +===================================================================================+
+-- | Name :xx_ar_3rd_party_prf_temp                                                    |
+-- |                                                                                   |
+-- |                                                                                   |
+-- | Description : Create the Synonym for the table xx_ar_3rd_party_prf_temp           |
+-- |                                                                                   |
+-- |                                                                                   |
+-- |                                                                                   |
+-- |                                                                                   |
+-- |Change Record:                                                                     |
+-- |===============                                                                    |
+-- |Version   Date         Author               Remarks                                |
+-- |=======   ==========   =============        =======================================|
+-- | V1.0     02-SEP-2008  Trisha Saxena        Initial version                        |
+-- +===================================================================================+
+
+
+CREATE SYNONYM test_3rd_party FOR xxfin.test_3rd_party;
+
+SHOW ERROR
+
+
+
+

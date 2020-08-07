@@ -1,0 +1,69 @@
+REM============================================================================================
+REM                                 Start Of Script                                            
+REM============================================================================================
+
+--+==============================================================================================+--
+--|                                                                                              |--
+--| Object Name    : XX_INV_ITEM_MASTER_ATTRIBUTES and XX_INV_ITEM_ORG_ATTRIBUTES for  Items     |--                       
+--|                                                                                              |--
+--| Program Name   : XX_INV_ITEM_MASTER_ORG.tbl                                                  |--        
+--|                                                                                              |--   
+--| Purpose        : Alter the  Tables in LINK instance .                                        |--
+--|                  The Objects to be altered  are:                                             |--
+--|                                                                                              |--
+--|                  1.XX_INV_ITEM_MASTER_ATTRIBUTES            |--
+--|                  2.XX_INV_ITEM_ORG_ATTRIBUTES                                                |--                                                                                               
+--| Change History  :                                                                            |--
+--| Version           Date             Changed By              Description                       |--
+--+==============================================================================================+--
+--| 1.0               28-SEP-2007      Basu                   Addition of Rms timestamp          |--
+                                                                 
+
+
+SET VERIFY   OFF
+SET TERM     ON
+SET FEEDBACK OFF
+SET SHOW     OFF
+SET ECHO     OFF
+SET TAB      OFF
+                   
+WHENEVER SQLERROR CONTINUE
+                   
+PROMPT             
+PROMPT Alter the  Existing Custom  Tables one time ......
+PROMPT             
+
+WHENEVER SQLERROR CONTINUE
+
+PROMPT
+PROMPT  Alter custom Table XX_INV_ITEM_MASTER_ATTRIBUTES 
+PROMPT
+
+ALTER TABLE XX_INV_ITEM_MASTER_ATTRIBUTES
+ADD  rms_timestamp timestamp;
+
+WHENEVER SQLERROR CONTINUE
+
+PROMPT
+PROMPT ALTER   Custom Table XX_INV_ITEM_ORG_ATTRIBUTES......
+PROMPT
+
+ALTER TABLE XX_INV_ITEM_ORG_ATTRIBUTES
+ADD  rms_timestamp timestamp;
+
+
+WHENEVER SQLERROR CONTINUE
+
+PROMPT
+PROMPT Exiting....
+PROMPT
+
+SET FEEDBACK ON
+
+
+EXIT;
+
+
+REM=================================================================================================
+REM                                   End Of Script                                            
+REM=================================================================================================

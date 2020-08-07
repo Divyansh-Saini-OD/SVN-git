@@ -1,0 +1,15 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<!-- dbdrv: exec java oracle/jrad/tools/xml/importer XMLImporter.class java &phase=dat+24 checkfile:~PROD:~PATH:~FILE &fullpath:~PROD:~PATH:~FILE -username &un_apps -password &pw_apps -dbconnection &jdbc_db_addr  -userId "1" -rootPackage /oracle/apps/~PROD  -rootdir &fullpath:~PROD:mds:directory  -->
+<oa:listOfValues version="9.0.3.8.13_1550" xml:lang="en-US" xmlns:oa="http://xmlns.oracle.com/oa" xmlns:jrad="http://xmlns.oracle.com/jrad" xmlns:ui="http://xmlns.oracle.com/uix/ui" xmlns:user="http://xmlns.oracle.com/jrad/user" xmlns="http://xmlns.oracle.com/jrad" file-version="$Header$" scope="/" amDefName="od.oracle.apps.xxfin.ar.irec.accountDetails.server.ODShipToLOVAM" controllerClass="od.oracle.apps.xxfin.ar.irec.accountDetails.webui.ODShipToLOVCO">
+   <ui:contents>
+      <oa:table name="ShipToLOVRN" id="ODShipToLocationsVO1" shortDesc="Ship To Address">
+         <ui:contents>
+            <oa:messageStyledText id="XXAddressId" viewName="ODShipToLocationsVO1" viewAttr="AddressId" prompt="Sequence" queryable="true" sortState="yes" dataType="NUMBER"/>
+            <oa:messageStyledText id="XXaddress" dataType="VARCHAR2" prompt="Address" viewName="ODShipToLocationsVO1" viewAttr="address" queryable="true" sortState="yes"/>
+            <oa:formValue id="XXsite_use_id" viewName="ODShipToLocationsVO1" viewAttr="SiteUseId" dataType="VARCHAR2"/>
+            <oa:formValue id="XXbill_to_site_id" viewName="ODShipToLocationsVO1" viewAttr="SiteUseId"/>
+            <oa:formValue id="XXcompany_id" viewName="ODShipToLocationsVO1" viewAttr="SiteUseId"/>
+         </ui:contents>
+      </oa:table>
+   </ui:contents>
+</oa:listOfValues>

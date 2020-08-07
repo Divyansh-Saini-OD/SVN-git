@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding='windows-1252'?>
+<!DOCTYPE AppModule SYSTEM "jbo_03_01.dtd">
+
+<AppModule
+   Name="ODHzPuiAddressAM"
+   Extends="oracle.apps.ar.hz.components.address.server.HzPuiAddressAM"
+   ComponentClass="od.oracle.apps.xxcrm.asn.common.customer.server.ODHzPuiAddressAMImpl" >
+   <DesignTime>
+      <Attr Name="_isCodegen" Value="true" />
+      <Attr Name="_version" Value="9.0.3.13.93" />
+      <Attr Name="_deployType" Value="0" />
+   </DesignTime>
+   <ViewUsage
+      Name="ODPartySiteListVO"
+      ViewObjectName="od.oracle.apps.xxcrm.asn.common.customer.server.ODPartySiteListVO" >
+   </ViewUsage>
+   <ViewUsage
+      Name="ODPartySiteVO"
+      ViewObjectName="od.oracle.apps.xxcrm.asn.common.customer.server.ODPartySiteVO" >
+   </ViewUsage>
+   <ViewUsage
+      Name="PartyVO"
+      ViewObjectName="oracle.apps.asn.common.server.PartyVO" >
+   </ViewUsage>
+   <ViewUsage
+      Name="ODHzPartySitesExtVLVO"
+      ViewObjectName="od.oracle.apps.xxcrm.asn.common.customer.server.ODHzPartySitesExtVLVO" >
+   </ViewUsage>
+   <ViewUsage
+      Name="ODHzContactAddressesVO"
+      ViewObjectName="od.oracle.apps.xxcrm.asn.common.customer.server.ODHzContactAddressesVO" >
+   </ViewUsage>
+</AppModule>

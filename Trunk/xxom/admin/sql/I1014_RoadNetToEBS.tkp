@@ -1,0 +1,1991 @@
+
+TKPROF: Release 8.0.6.3.0 - Production on Fri Jun 22 08:18:15 2007
+
+(c) Copyright 1999 Oracle Corporation.  All rights reserved.
+
+Trace file: gsidev03_ora_12591_I1014_RoadNetToEBS.trc
+Sort options: default
+
+********************************************************************************
+count    = number of times OCI procedure was executed
+cpu      = cpu time in seconds executing 
+elapsed  = elapsed time in seconds executing
+disk     = number of physical reads of buffers from disk
+query    = number of buffers gotten for consistent read
+current  = number of buffers gotten in current mode (usually for update)
+rows     = number of rows processed by the fetch or execute call
+********************************************************************************
+
+ALTER SESSION SET SQL_TRACE TRUE
+
+
+call     count       cpu    elapsed       disk      query    current        rows
+------- ------  -------- ---------- ---------- ---------- ----------  ----------
+Parse        0      0.00       0.00          0          0          0           0
+Execute      1      0.00       4.24          0          0          0           0
+Fetch        0      0.00       0.00          0          0          0           0
+------- ------  -------- ---------- ---------- ---------- ----------  ----------
+total        1      0.00       4.24          0          0          0           0
+
+Misses in library cache during parse: 0
+Misses in library cache during execute: 1
+Optimizer goal: ALL_ROWS
+Parsing user id: 173  (APPS)
+********************************************************************************
+
+select text 
+from
+ view$ where rowid=:1
+
+
+call     count       cpu    elapsed       disk      query    current        rows
+------- ------  -------- ---------- ---------- ---------- ----------  ----------
+Parse        2      0.00       0.96          0          0          0           0
+Execute      2      0.00       0.89          0          0          0           0
+Fetch        2      0.00       1.12          0          4          0           2
+------- ------  -------- ---------- ---------- ---------- ----------  ----------
+total        6      0.00       2.97          0          4          0           2
+
+Misses in library cache during parse: 0
+Optimizer goal: CHOOSE
+Parsing user id: SYS   (recursive depth: 1)
+
+Rows     Row Source Operation
+-------  ---------------------------------------------------
+      1  TABLE ACCESS BY USER ROWID VIEW$ (cr=1 pr=0 pw=0 time=32 us)
+
+********************************************************************************
+
+select value 
+from
+ v$parameter where name = 'user_dump_dest'
+
+
+call     count       cpu    elapsed       disk      query    current        rows
+------- ------  -------- ---------- ---------- ---------- ----------  ----------
+Parse        1     50.00      50.47          0          0          0           0
+Execute      1     10.00       1.29          0          0          0           0
+Fetch        2     39.98      41.53          0          0          0           1
+------- ------  -------- ---------- ---------- ---------- ----------  ----------
+total        4     99.98      93.29          0          0          0           1
+
+Misses in library cache during parse: 1
+Optimizer goal: ALL_ROWS
+Parsing user id: 173  (APPS)
+
+Rows     Row Source Operation
+-------  ---------------------------------------------------
+      1  HASH JOIN  (cr=0 pr=0 pw=0 time=3303 us)
+      1   FIXED TABLE FULL X$KSPPI (cr=0 pr=0 pw=0 time=1266 us)
+   1414   FIXED TABLE FULL X$KSPPCV (cr=0 pr=0 pw=0 time=4262 us)
+
+unable to set optimizer goal
+ORA-01986: OPTIMIZER_GOAL is obsolete
+
+parse error offset: 33
+
+Rows     Execution Plan
+-------  ---------------------------------------------------
+      0  SELECT STATEMENT   GOAL: ALL_ROWS
+      1   HASH JOIN
+      1    FIXED TABLE (FULL) OF 'X$KSPPI' (TABLE (FIXED))
+   1414    FIXED TABLE (FULL) OF 'X$KSPPCV' (TABLE (FIXED))
+
+********************************************************************************
+
+select obj#,type#,ctime,mtime,stime,status,dataobj#,flags,oid$, spare1, 
+  spare2 
+from
+ obj$ where owner#=:1 and name=:2 and namespace=:3 and remoteowner is null 
+  and linkname is null and subname is null
+
+
+call     count       cpu    elapsed       disk      query    current        rows
+------- ------  -------- ---------- ---------- ---------- ----------  ----------
+Parse        4      0.00       2.08          0          0          0           0
+Execute     15      0.00       6.96          0          0          0           0
+Fetch       15     30.00      12.86          0         60          0          15
+------- ------  -------- ---------- ---------- ---------- ----------  ----------
+total       34     30.00      21.90          0         60          0          15
+
+Misses in library cache during parse: 0
+Optimizer goal: CHOOSE
+Parsing user id: SYS   (recursive depth: 1)
+
+Rows     Row Source Operation
+-------  ---------------------------------------------------
+      1  TABLE ACCESS BY INDEX ROWID OBJ$ (cr=4 pr=0 pw=0 time=116 us)
+      1   INDEX RANGE SCAN I_OBJ2 (cr=3 pr=0 pw=0 time=68 us)(object id 34)
+
+********************************************************************************
+
+select audit$,options 
+from
+ procedure$ where obj#=:1
+
+
+call     count       cpu    elapsed       disk      query    current        rows
+------- ------  -------- ---------- ---------- ---------- ----------  ----------
+Parse        4      0.00       1.16          0          0          0           0
+Execute      4      0.00       1.25          0          0          0           0
+Fetch        4      0.00       1.92          0         12          0           4
+------- ------  -------- ---------- ---------- ---------- ----------  ----------
+total       12      0.00       4.33          0         12          0           4
+
+Misses in library cache during parse: 0
+Optimizer goal: CHOOSE
+Parsing user id: SYS   (recursive depth: 1)
+
+Rows     Row Source Operation
+-------  ---------------------------------------------------
+      1  TABLE ACCESS BY INDEX ROWID PROCEDURE$ (cr=3 pr=0 pw=0 time=84 us)
+      1   INDEX UNIQUE SCAN I_PROCEDURE1 (cr=2 pr=0 pw=0 time=46 us)(object id 107)
+
+********************************************************************************
+
+select owner#,name,namespace,remoteowner,linkname,p_timestamp,p_obj#, 
+  nvl(property,0),subname,d_attrs 
+from
+ dependency$ d, obj$ o where d_obj#=:1 and p_obj#=obj#(+) order by order#
+
+
+call     count       cpu    elapsed       disk      query    current        rows
+------- ------  -------- ---------- ---------- ---------- ----------  ----------
+Parse        6      0.00       1.39          0          0          0           0
+Execute      6      0.00       3.17          0          0          0           0
+Fetch       44     10.00      27.77          0        148          0          38
+------- ------  -------- ---------- ---------- ---------- ----------  ----------
+total       56     10.00      32.33          0        148          0          38
+
+Misses in library cache during parse: 0
+Optimizer goal: CHOOSE
+Parsing user id: SYS   (recursive depth: 1)
+
+Rows     Row Source Operation
+-------  ---------------------------------------------------
+      2  SORT ORDER BY (cr=12 pr=0 pw=0 time=317 us)
+      2   NESTED LOOPS OUTER (cr=12 pr=0 pw=0 time=252 us)
+      2    TABLE ACCESS BY INDEX ROWID DEPENDENCY$ (cr=4 pr=0 pw=0 time=82 us)
+      2     INDEX RANGE SCAN I_DEPENDENCY1 (cr=3 pr=0 pw=0 time=50 us)(object id 116)
+      2    TABLE ACCESS BY INDEX ROWID OBJ$ (cr=8 pr=0 pw=0 time=152 us)
+      2     INDEX UNIQUE SCAN I_OBJ1 (cr=6 pr=0 pw=0 time=92 us)(object id 33)
+
+********************************************************************************
+
+select order#,columns,types 
+from
+ access$ where d_obj#=:1
+
+
+call     count       cpu    elapsed       disk      query    current        rows
+------- ------  -------- ---------- ---------- ---------- ----------  ----------
+Parse        6      0.00       1.50          0          0          0           0
+Execute      6      0.00       1.64          0          0          0           0
+Fetch       33     10.00       6.19          0         72          0          27
+------- ------  -------- ---------- ---------- ---------- ----------  ----------
+total       45     10.00       9.33          0         72          0          27
+
+Misses in library cache during parse: 0
+Optimizer goal: CHOOSE
+Parsing user id: SYS   (recursive depth: 1)
+
+Rows     Row Source Operation
+-------  ---------------------------------------------------
+      1  TABLE ACCESS BY INDEX ROWID ACCESS$ (cr=5 pr=0 pw=0 time=72 us)
+      1   INDEX RANGE SCAN I_ACCESS1 (cr=4 pr=0 pw=0 time=74 us)(object id 118)
+
+********************************************************************************
+
+select /*+ index(idl_sb4$ i_idl_sb41) +*/ piece#,length,piece 
+from
+ idl_sb4$ where obj#=:1 and part=:2 and version=:3 order by piece#
+
+
+call     count       cpu    elapsed       disk      query    current        rows
+------- ------  -------- ---------- ---------- ---------- ----------  ----------
+Parse        8      0.00       2.03          0          0          0           0
+Execute      8     10.00       2.70          0          0          0           0
+Fetch       20      0.00       8.08          0         60          0          12
+------- ------  -------- ---------- ---------- ---------- ----------  ----------
+total       36     10.00      12.81          0         60          0          12
+
+Misses in library cache during parse: 0
+Optimizer goal: CHOOSE
+Parsing user id: SYS   (recursive depth: 1)
+
+Rows     Row Source Operation
+-------  ---------------------------------------------------
+      2  TABLE ACCESS BY INDEX ROWID IDL_SB4$ (cr=7 pr=0 pw=0 time=105 us)
+      2   INDEX RANGE SCAN I_IDL_SB41 (cr=5 pr=0 pw=0 time=95 us)(object id 113)
+
+********************************************************************************
+
+select /*+ index(idl_ub1$ i_idl_ub11) +*/ piece#,length,piece 
+from
+ idl_ub1$ where obj#=:1 and part=:2 and version=:3 order by piece#
+
+
+call     count       cpu    elapsed       disk      query    current        rows
+------- ------  -------- ---------- ---------- ---------- ----------  ----------
+Parse        8     10.00       1.60          0          0          0           0
+Execute      8     10.00       2.48          0          0          0           0
+Fetch       19     10.00       7.90          0         69          0          15
+------- ------  -------- ---------- ---------- ---------- ----------  ----------
+total       35     30.00      11.98          0         69          0          15
+
+Misses in library cache during parse: 0
+Optimizer goal: CHOOSE
+Parsing user id: SYS   (recursive depth: 1)
+
+Rows     Row Source Operation
+-------  ---------------------------------------------------
+      1  TABLE ACCESS BY INDEX ROWID IDL_UB1$ (cr=5 pr=0 pw=0 time=81 us)
+      1   INDEX RANGE SCAN I_IDL_UB11 (cr=4 pr=0 pw=0 time=61 us)(object id 110)
+
+********************************************************************************
+
+select /*+ index(idl_char$ i_idl_char1) +*/ piece#,length,piece 
+from
+ idl_char$ where obj#=:1 and part=:2 and version=:3 order by piece#
+
+
+call     count       cpu    elapsed       disk      query    current        rows
+------- ------  -------- ---------- ---------- ---------- ----------  ----------
+Parse        8      0.00       1.31          0          0          0           0
+Execute      8      0.00       1.98          0          0          0           0
+Fetch       12      0.00       3.97          0         36          0           4
+------- ------  -------- ---------- ---------- ---------- ----------  ----------
+total       28      0.00       7.26          0         36          0           4
+
+Misses in library cache during parse: 0
+Optimizer goal: CHOOSE
+Parsing user id: SYS   (recursive depth: 1)
+
+Rows     Row Source Operation
+-------  ---------------------------------------------------
+      1  TABLE ACCESS BY INDEX ROWID IDL_CHAR$ (cr=5 pr=0 pw=0 time=75 us)
+      1   INDEX RANGE SCAN I_IDL_CHAR1 (cr=4 pr=0 pw=0 time=57 us)(object id 111)
+
+********************************************************************************
+
+select /*+ index(idl_ub2$ i_idl_ub21) +*/ piece#,length,piece 
+from
+ idl_ub2$ where obj#=:1 and part=:2 and version=:3 order by piece#
+
+
+call     count       cpu    elapsed       disk      query    current        rows
+------- ------  -------- ---------- ---------- ---------- ----------  ----------
+Parse        8      0.00       1.80          0          0          0           0
+Execute      8      0.00       1.95          0          0          0           0
+Fetch       13     10.00       5.22          0         48          0           9
+------- ------  -------- ---------- ---------- ---------- ----------  ----------
+total       29     10.00       8.97          0         48          0           9
+
+Misses in library cache during parse: 0
+Optimizer goal: CHOOSE
+Parsing user id: SYS   (recursive depth: 1)
+
+Rows     Row Source Operation
+-------  ---------------------------------------------------
+      2  TABLE ACCESS BY INDEX ROWID IDL_UB2$ (cr=6 pr=0 pw=0 time=117 us)
+      2   INDEX RANGE SCAN I_IDL_UB21 (cr=4 pr=0 pw=0 time=97 us)(object id 112)
+
+********************************************************************************
+
+select privilege#,nvl(col#,0),max(mod(nvl(option$,0),2))
+from
+ objauth$ where obj#=:1 and grantee#=:2 group by privilege#,nvl(col#,0)
+
+
+call     count       cpu    elapsed       disk      query    current        rows
+------- ------  -------- ---------- ---------- ---------- ----------  ----------
+Parse        1      0.00       1.07          0          0          0           0
+Execute     13      0.00       3.84          0          0          0           0
+Fetch       14      0.00       5.92          0         40          0           1
+------- ------  -------- ---------- ---------- ---------- ----------  ----------
+total       28      0.00      10.83          0         40          0           1
+
+Misses in library cache during parse: 0
+Optimizer goal: CHOOSE
+Parsing user id: SYS   (recursive depth: 1)
+
+Rows     Row Source Operation
+-------  ---------------------------------------------------
+      0  SORT GROUP BY (cr=3 pr=0 pw=0 time=124 us)
+      0   TABLE ACCESS BY INDEX ROWID OBJAUTH$ (cr=3 pr=0 pw=0 time=77 us)
+      0    INDEX RANGE SCAN I_OBJAUTH2 (cr=3 pr=0 pw=0 time=70 us)(object id 101)
+
+********************************************************************************
+
+DECLARE
+p_del_tbl  XX_OM_ROADNET_TO_EBS_PKG.xx_om_delivery_tbl;
+x_status   VARCHAR2(1000);
+x_message  VARCHAR2(1000);
+BEGIN
+p_del_tbl(1).regionid        := NULL ;
+p_del_tbl(1).delivery_number := 12009;
+p_del_tbl(1).delivery_date   := SYSDATE ;
+p_del_tbl(1).route_number    := 3 ;
+p_del_tbl(1).stop_number     := 7 ;
+p_del_tbl(1).user_field3     := '-E';
+XX_OM_ROADNET_TO_EBS_PKG.import_route(
+                                      p_del_tbl
+                                     );
+COMMIT;
+EXCEPTION
+WHEN OTHERS THEN
+    DBMS_OUTPUT.PUT_LINE('in exception' || SQLERRM);
+END ;
+
+call     count       cpu    elapsed       disk      query    current        rows
+------- ------  -------- ---------- ---------- ---------- ----------  ----------
+Parse        1    159.98     161.43          0          0          0           0
+Execute      1    239.95     213.84          0        977          0           1
+Fetch        0      0.00       0.00          0          0          0           0
+------- ------  -------- ---------- ---------- ---------- ----------  ----------
+total        2    399.93     375.27          0        977          0           1
+
+Misses in library cache during parse: 1
+Optimizer goal: ALL_ROWS
+Parsing user id: 173  (APPS)
+********************************************************************************
+
+select metadata 
+from
+ kopm$  where name='DB_FDO'
+
+
+call     count       cpu    elapsed       disk      query    current        rows
+------- ------  -------- ---------- ---------- ---------- ----------  ----------
+Parse        1     10.00       1.24          0          0          0           0
+Execute      1      0.00       0.33          0          0          0           0
+Fetch        1      0.00       0.49          0          2          0           1
+------- ------  -------- ---------- ---------- ---------- ----------  ----------
+total        3     10.00       2.06          0          2          0           1
+
+Misses in library cache during parse: 0
+Optimizer goal: CHOOSE
+Parsing user id: SYS   (recursive depth: 1)
+
+Rows     Row Source Operation
+-------  ---------------------------------------------------
+      1  TABLE ACCESS BY INDEX ROWID KOPM$ (cr=2 pr=0 pw=0 time=56 us)
+      1   INDEX UNIQUE SCAN I_KOPM1 (cr=1 pr=0 pw=0 time=24 us)(object id 287)
+
+********************************************************************************
+
+SELECT FU.USER_ID 
+FROM
+ FND_USER FU WHERE FU.USER_NAME = :B1 
+
+
+call     count       cpu    elapsed       disk      query    current        rows
+------- ------  -------- ---------- ---------- ---------- ----------  ----------
+Parse        1     20.00      18.00          0          0          0           0
+Execute      1     39.98      35.32          0          0          0           0
+Fetch        1      0.00       1.12          0          3          0           1
+------- ------  -------- ---------- ---------- ---------- ----------  ----------
+total        3     59.98      54.44          0          3          0           1
+
+Misses in library cache during parse: 1
+Misses in library cache during execute: 1
+Optimizer goal: ALL_ROWS
+Parsing user id: 173  (APPS)   (recursive depth: 1)
+unable to set optimizer goal
+ORA-01986: OPTIMIZER_GOAL is obsolete
+
+parse error offset: 33
+
+Rows     Execution Plan
+-------  ---------------------------------------------------
+      0  SELECT STATEMENT   GOAL: ALL_ROWS
+      0   TABLE ACCESS   GOAL: ANALYZED (BY INDEX ROWID) OF 'FND_USER' 
+              (TABLE)
+      0    INDEX   GOAL: ANALYZED (UNIQUE SCAN) OF 'FND_USER_U2' (INDEX 
+               (UNIQUE))
+
+********************************************************************************
+
+SELECT FRV.RESPONSIBILITY_ID, FRV.APPLICATION_ID 
+FROM
+ FND_RESPONSIBILITY_VL FRV WHERE FRV.RESPONSIBILITY_NAME = :B1 
+
+
+call     count       cpu    elapsed       disk      query    current        rows
+------- ------  -------- ---------- ---------- ---------- ----------  ----------
+Parse        1     20.00      17.98          0          0          0           0
+Execute      1     49.99      44.92          0          0          0           0
+Fetch        1     10.00       8.85          0         33          0           1
+------- ------  -------- ---------- ---------- ---------- ----------  ----------
+total        3     79.99      71.75          0         33          0           1
+
+Misses in library cache during parse: 1
+Misses in library cache during execute: 1
+Optimizer goal: ALL_ROWS
+Parsing user id: 173  (APPS)   (recursive depth: 1)
+unable to set optimizer goal
+ORA-01986: OPTIMIZER_GOAL is obsolete
+
+parse error offset: 33
+
+Rows     Execution Plan
+-------  ---------------------------------------------------
+      0  SELECT STATEMENT   GOAL: ALL_ROWS
+      0   NESTED LOOPS
+      0    TABLE ACCESS   GOAL: ANALYZED (FULL) OF 
+               'FND_RESPONSIBILITY_TL' (TABLE)
+      0    INDEX   GOAL: ANALYZED (UNIQUE SCAN) OF 
+               'FND_RESPONSIBILITY_U1' (INDEX (UNIQUE))
+
+********************************************************************************
+
+SELECT FPOV.PROFILE_OPTION_VALUE 
+FROM
+ FND_PROFILE_OPTION_VALUES FPOV, FND_PROFILE_OPTIONS FPO WHERE 
+  FPO.PROFILE_OPTION_NAME = 'AFCORE_LOGGING_ENABLED' AND 
+  FPO.PROFILE_OPTION_ID = FPOV.PROFILE_OPTION_ID AND FPOV.LEVEL_ID = 10001 
+  AND FPO.APPLICATION_ID = FPOV.APPLICATION_ID
+
+
+call     count       cpu    elapsed       disk      query    current        rows
+------- ------  -------- ---------- ---------- ---------- ----------  ----------
+Parse        1      0.00       1.15          0          0          0           0
+Execute      1     10.00       0.74          0          0          0           0
+Fetch        1      0.00       1.75          0          5          0           0
+------- ------  -------- ---------- ---------- ---------- ----------  ----------
+total        3     10.00       3.64          0          5          0           0
+
+Misses in library cache during parse: 0
+Optimizer goal: ALL_ROWS
+Parsing user id: 173  (APPS)   (recursive depth: 1)
+unable to set optimizer goal
+ORA-01986: OPTIMIZER_GOAL is obsolete
+
+parse error offset: 33
+
+Rows     Execution Plan
+-------  ---------------------------------------------------
+      0  SELECT STATEMENT   GOAL: ALL_ROWS
+      0   NESTED LOOPS
+      0    TABLE ACCESS   GOAL: ANALYZED (BY INDEX ROWID) OF 
+               'FND_PROFILE_OPTIONS' (TABLE)
+      0     INDEX   GOAL: ANALYZED (UNIQUE SCAN) OF 
+                'FND_PROFILE_OPTIONS_U2' (INDEX (UNIQUE))
+      0    TABLE ACCESS   GOAL: ANALYZED (BY INDEX ROWID) OF 
+               'FND_PROFILE_OPTION_VALUES' (TABLE)
+      0     INDEX   GOAL: ANALYZED (RANGE SCAN) OF 
+                'FND_PROFILE_OPTION_VALUES_U1' (INDEX (UNIQUE))
+
+********************************************************************************
+
+SELECT U.USER_NAME, NVL(U.EMPLOYEE_ID, -1), NVL(U.CUSTOMER_ID, -1), 
+  NVL(U.SUPPLIER_ID, -1), NVL(U.PERSON_PARTY_ID, -1) 
+FROM
+ FND_USER U WHERE U.USER_ID = :B1 
+
+
+call     count       cpu    elapsed       disk      query    current        rows
+------- ------  -------- ---------- ---------- ---------- ----------  ----------
+Parse        1      0.00       0.95          0          0          0           0
+Execute      1      0.00       0.70          0          0          0           0
+Fetch        1      0.00       1.06          0          3          0           1
+------- ------  -------- ---------- ---------- ---------- ----------  ----------
+total        3      0.00       2.71          0          3          0           1
+
+Misses in library cache during parse: 0
+Optimizer goal: ALL_ROWS
+Parsing user id: 173  (APPS)   (recursive depth: 1)
+unable to set optimizer goal
+ORA-01986: OPTIMIZER_GOAL is obsolete
+
+parse error offset: 33
+
+Rows     Execution Plan
+-------  ---------------------------------------------------
+      0  SELECT STATEMENT   GOAL: ALL_ROWS
+      0   TABLE ACCESS   GOAL: ANALYZED (BY INDEX ROWID) OF 'FND_USER' 
+              (TABLE)
+      0    INDEX   GOAL: ANALYZED (UNIQUE SCAN) OF 'FND_USER_U1' (INDEX 
+               (UNIQUE))
+
+********************************************************************************
+
+SELECT A.APPLICATION_SHORT_NAME 
+FROM
+ FND_APPLICATION A WHERE A.APPLICATION_ID = :B1 
+
+
+call     count       cpu    elapsed       disk      query    current        rows
+------- ------  -------- ---------- ---------- ---------- ----------  ----------
+Parse        1      0.00       0.64          0          0          0           0
+Execute      1      0.00       0.28          0          0          0           0
+Fetch        1      0.00       0.51          0          2          0           1
+------- ------  -------- ---------- ---------- ---------- ----------  ----------
+total        3      0.00       1.43          0          2          0           1
+
+Misses in library cache during parse: 0
+Optimizer goal: ALL_ROWS
+Parsing user id: 173  (APPS)   (recursive depth: 1)
+unable to set optimizer goal
+ORA-01986: OPTIMIZER_GOAL is obsolete
+
+parse error offset: 33
+
+Rows     Execution Plan
+-------  ---------------------------------------------------
+      0  SELECT STATEMENT   GOAL: ALL_ROWS
+      0   TABLE ACCESS   GOAL: ANALYZED (BY INDEX ROWID) OF 
+              'FND_APPLICATION' (TABLE)
+      0    INDEX   GOAL: ANALYZED (UNIQUE SCAN) OF 'FND_APPLICATION_U1' 
+               (INDEX (UNIQUE))
+
+********************************************************************************
+
+SELECT USERENV('SESSIONID') 
+FROM
+ SYS.DUAL
+
+
+call     count       cpu    elapsed       disk      query    current        rows
+------- ------  -------- ---------- ---------- ---------- ----------  ----------
+Parse        1      0.00       0.45          0          0          0           0
+Execute      1     10.00       0.19          0          0          0           0
+Fetch        1      0.00       0.63          0          0          0           1
+------- ------  -------- ---------- ---------- ---------- ----------  ----------
+total        3     10.00       1.27          0          0          0           1
+
+Misses in library cache during parse: 0
+Optimizer goal: ALL_ROWS
+Parsing user id: 173  (APPS)   (recursive depth: 1)
+unable to set optimizer goal
+ORA-01986: OPTIMIZER_GOAL is obsolete
+
+parse error offset: 33
+
+Rows     Execution Plan
+-------  ---------------------------------------------------
+      0  SELECT STATEMENT   GOAL: ALL_ROWS
+      0   FAST DUAL
+
+********************************************************************************
+
+SELECT PROFILE_OPTION_ID, APPLICATION_ID, SITE_ENABLED_FLAG , 
+  APP_ENABLED_FLAG , RESP_ENABLED_FLAG , USER_ENABLED_FLAG, ORG_ENABLED_FLAG ,
+   SERVER_ENABLED_FLAG, SERVERRESP_ENABLED_FLAG, HIERARCHY_TYPE, 
+  USER_CHANGEABLE_FLAG 
+FROM
+ FND_PROFILE_OPTIONS WHERE PROFILE_OPTION_NAME = UPPER(:B1 ) AND 
+  START_DATE_ACTIVE <= SYSDATE AND NVL(END_DATE_ACTIVE, SYSDATE) >= SYSDATE
+
+
+call     count       cpu    elapsed       disk      query    current        rows
+------- ------  -------- ---------- ---------- ---------- ----------  ----------
+Parse        2      0.00       0.86          0          0          0           0
+Execute     20      0.00       7.69          0          0          0           0
+Fetch       20      0.00      10.36          0         60          0          20
+------- ------  -------- ---------- ---------- ---------- ----------  ----------
+total       42      0.00      18.91          0         60          0          20
+
+Misses in library cache during parse: 0
+Optimizer goal: ALL_ROWS
+Parsing user id: 173  (APPS)   (recursive depth: 1)
+unable to set optimizer goal
+ORA-01986: OPTIMIZER_GOAL is obsolete
+
+parse error offset: 33
+
+Rows     Execution Plan
+-------  ---------------------------------------------------
+      0  SELECT STATEMENT   GOAL: ALL_ROWS
+      0   TABLE ACCESS   GOAL: ANALYZED (BY INDEX ROWID) OF 
+              'FND_PROFILE_OPTIONS' (TABLE)
+      0    INDEX   GOAL: ANALYZED (UNIQUE SCAN) OF 
+               'FND_PROFILE_OPTIONS_U2' (INDEX (UNIQUE))
+
+********************************************************************************
+
+SELECT PROFILE_OPTION_VALUE 
+FROM
+ FND_PROFILE_OPTION_VALUES WHERE PROFILE_OPTION_ID = :B4 AND APPLICATION_ID = 
+  :B3 AND LEVEL_ID = 10003 AND LEVEL_VALUE = :B2 AND 
+  LEVEL_VALUE_APPLICATION_ID = :B1 AND PROFILE_OPTION_VALUE IS NOT NULL
+
+
+call     count       cpu    elapsed       disk      query    current        rows
+------- ------  -------- ---------- ---------- ---------- ----------  ----------
+Parse        2      0.00       0.91          0          0          0           0
+Execute     15      0.00       3.87          0          0          0           0
+Fetch       15      0.00       3.48          0         32          0           2
+------- ------  -------- ---------- ---------- ---------- ----------  ----------
+total       32      0.00       8.26          0         32          0           2
+
+Misses in library cache during parse: 0
+Optimizer goal: ALL_ROWS
+Parsing user id: 173  (APPS)   (recursive depth: 1)
+unable to set optimizer goal
+ORA-01986: OPTIMIZER_GOAL is obsolete
+
+parse error offset: 33
+
+Rows     Execution Plan
+-------  ---------------------------------------------------
+      0  SELECT STATEMENT   GOAL: ALL_ROWS
+      0   TABLE ACCESS   GOAL: ANALYZED (BY INDEX ROWID) OF 
+              'FND_PROFILE_OPTION_VALUES' (TABLE)
+      0    INDEX   GOAL: ANALYZED (RANGE SCAN) OF 
+               'FND_PROFILE_OPTION_VALUES_U1' (INDEX (UNIQUE))
+
+********************************************************************************
+
+SELECT NAME, VERSION 
+FROM
+ FND_CACHE_VERSIONS
+
+
+call     count       cpu    elapsed       disk      query    current        rows
+------- ------  -------- ---------- ---------- ---------- ----------  ----------
+Parse        1      0.00       0.66          0          0          0           0
+Execute      1      0.00       0.43          0          0          0           0
+Fetch        1      0.00       0.77          0          1          0           7
+------- ------  -------- ---------- ---------- ---------- ----------  ----------
+total        3      0.00       1.86          0          1          0           7
+
+Misses in library cache during parse: 0
+Optimizer goal: ALL_ROWS
+Parsing user id: 173  (APPS)   (recursive depth: 1)
+unable to set optimizer goal
+ORA-01986: OPTIMIZER_GOAL is obsolete
+
+parse error offset: 33
+
+Rows     Execution Plan
+-------  ---------------------------------------------------
+      0  SELECT STATEMENT   GOAL: ALL_ROWS
+      0   INDEX   GOAL: ANALYZED (FULL SCAN) OF 'FND_CACHE_VERSIONS_PK1' 
+              (INDEX (UNIQUE))
+
+********************************************************************************
+
+SELECT R.RESPONSIBILITY_NAME 
+FROM
+ FND_RESPONSIBILITY_VL R WHERE R.RESPONSIBILITY_ID = :B2 AND R.APPLICATION_ID 
+  = :B1 
+
+
+call     count       cpu    elapsed       disk      query    current        rows
+------- ------  -------- ---------- ---------- ---------- ----------  ----------
+Parse        1      0.00       1.19          0          0          0           0
+Execute      1      0.00       0.64          0          0          0           0
+Fetch        1      0.00       1.16          0          5          0           1
+------- ------  -------- ---------- ---------- ---------- ----------  ----------
+total        3      0.00       2.99          0          5          0           1
+
+Misses in library cache during parse: 0
+Optimizer goal: ALL_ROWS
+Parsing user id: 173  (APPS)   (recursive depth: 1)
+unable to set optimizer goal
+ORA-01986: OPTIMIZER_GOAL is obsolete
+
+parse error offset: 33
+
+Rows     Execution Plan
+-------  ---------------------------------------------------
+      0  SELECT STATEMENT   GOAL: ALL_ROWS
+      0   NESTED LOOPS
+      0    INDEX   GOAL: ANALYZED (UNIQUE SCAN) OF 
+               'FND_RESPONSIBILITY_U1' (INDEX (UNIQUE))
+      0    TABLE ACCESS   GOAL: ANALYZED (BY INDEX ROWID) OF 
+               'FND_RESPONSIBILITY_TL' (TABLE)
+      0     INDEX   GOAL: ANALYZED (UNIQUE SCAN) OF 
+                'FND_RESPONSIBILITY_TL_U1' (INDEX (UNIQUE))
+
+********************************************************************************
+
+SELECT NODE_NAME 
+FROM
+ FND_NODES WHERE NODE_ID = :B1 
+
+
+call     count       cpu    elapsed       disk      query    current        rows
+------- ------  -------- ---------- ---------- ---------- ----------  ----------
+Parse        1      0.00       0.77          0          0          0           0
+Execute      1     10.00       0.36          0          0          0           0
+Fetch        1      0.00       0.89          0          3          0           0
+------- ------  -------- ---------- ---------- ---------- ----------  ----------
+total        3     10.00       2.02          0          3          0           0
+
+Misses in library cache during parse: 0
+Optimizer goal: ALL_ROWS
+Parsing user id: 173  (APPS)   (recursive depth: 1)
+unable to set optimizer goal
+ORA-01986: OPTIMIZER_GOAL is obsolete
+
+parse error offset: 33
+
+Rows     Execution Plan
+-------  ---------------------------------------------------
+      0  SELECT STATEMENT   GOAL: ALL_ROWS
+      0   TABLE ACCESS   GOAL: ANALYZED (FULL) OF 'FND_NODES' (TABLE)
+
+********************************************************************************
+
+select NAME 
+from
+ HR_OPERATING_UNITS where ORGANIZATION_ID = :zorg_id
+
+
+call     count       cpu    elapsed       disk      query    current        rows
+------- ------  -------- ---------- ---------- ---------- ----------  ----------
+Parse        1      0.00       0.62          0          0          0           0
+Execute      1      0.00       0.78          0          0          0           0
+Fetch        1      0.00       3.90          0          7          0           1
+------- ------  -------- ---------- ---------- ---------- ----------  ----------
+total        3      0.00       5.30          0          7          0           1
+
+Misses in library cache during parse: 0
+Optimizer goal: ALL_ROWS
+Parsing user id: 173  (APPS)   (recursive depth: 1)
+unable to set optimizer goal
+ORA-01986: OPTIMIZER_GOAL is obsolete
+
+parse error offset: 33
+
+Rows     Execution Plan
+-------  ---------------------------------------------------
+      0  SELECT STATEMENT   GOAL: ALL_ROWS
+      0   MERGE JOIN (CARTESIAN)
+      0    NESTED LOOPS
+      0     NESTED LOOPS
+      0      TABLE ACCESS   GOAL: ANALYZED (BY INDEX ROWID) OF 
+                 'HR_ALL_ORGANIZATION_UNITS_TL' (TABLE)
+      0       INDEX   GOAL: ANALYZED (UNIQUE SCAN) OF 
+                  'HR_ALL_ORGANIZATION_UNTS_TL_PK' (INDEX (UNIQUE))
+      0      INDEX   GOAL: ANALYZED (UNIQUE SCAN) OF 
+                 'HR_ORGANIZATION_UNITS_PK' (INDEX (UNIQUE))
+      0     INDEX   GOAL: ANALYZED (RANGE SCAN) OF 
+                'HR_ORGANIZATION_INFORMATIO_FK2' (INDEX)
+      0    BUFFER (SORT)
+      0     TABLE ACCESS   GOAL: ANALYZED (BY INDEX ROWID) OF 
+                'HR_ORGANIZATION_INFORMATION' (TABLE)
+      0      INDEX   GOAL: ANALYZED (RANGE SCAN) OF 
+                 'HR_ORGANIZATION_INFORMATIO_IX1' (INDEX)
+
+********************************************************************************
+
+SELECT PROFILE_OPTION_VALUE 
+FROM
+ FND_PROFILE_OPTION_VALUES WHERE PROFILE_OPTION_ID = :B4 AND APPLICATION_ID = 
+  :B3 AND LEVEL_ID = :B2 AND LEVEL_VALUE = :B1 AND PROFILE_OPTION_VALUE IS 
+  NOT NULL
+
+
+call     count       cpu    elapsed       disk      query    current        rows
+------- ------  -------- ---------- ---------- ---------- ----------  ----------
+Parse        1      0.00       0.79          0          0          0           0
+Execute     37      0.00       9.82          0          0          0           0
+Fetch       37     10.00       8.57          0         85          0          11
+------- ------  -------- ---------- ---------- ---------- ----------  ----------
+total       75     10.00      19.18          0         85          0          11
+
+Misses in library cache during parse: 0
+Optimizer goal: ALL_ROWS
+Parsing user id: 173  (APPS)   (recursive depth: 1)
+unable to set optimizer goal
+ORA-01986: OPTIMIZER_GOAL is obsolete
+
+parse error offset: 33
+
+Rows     Execution Plan
+-------  ---------------------------------------------------
+      0  SELECT STATEMENT   GOAL: ALL_ROWS
+      0   TABLE ACCESS   GOAL: ANALYZED (BY INDEX ROWID) OF 
+              'FND_PROFILE_OPTION_VALUES' (TABLE)
+      0    INDEX   GOAL: ANALYZED (RANGE SCAN) OF 
+               'FND_PROFILE_OPTION_VALUES_U1' (INDEX (UNIQUE))
+
+********************************************************************************
+
+SELECT NVL(MULTI_ORG_FLAG, 'N'), NVL(MULTI_CURRENCY_FLAG, 'N') 
+FROM
+ FND_PRODUCT_GROUPS
+
+
+call     count       cpu    elapsed       disk      query    current        rows
+------- ------  -------- ---------- ---------- ---------- ----------  ----------
+Parse        1      0.00       0.73          0          0          0           0
+Execute      1      0.00       0.25          0          0          0           0
+Fetch        1      0.00       0.91          0          3          0           1
+------- ------  -------- ---------- ---------- ---------- ----------  ----------
+total        3      0.00       1.89          0          3          0           1
+
+Misses in library cache during parse: 0
+Optimizer goal: ALL_ROWS
+Parsing user id: 173  (APPS)   (recursive depth: 1)
+unable to set optimizer goal
+ORA-01986: OPTIMIZER_GOAL is obsolete
+
+parse error offset: 33
+
+Rows     Execution Plan
+-------  ---------------------------------------------------
+      0  SELECT STATEMENT   GOAL: ALL_ROWS
+      0   TABLE ACCESS   GOAL: ANALYZED (FULL) OF 'FND_PRODUCT_GROUPS' 
+              (TABLE)
+
+********************************************************************************
+
+SELECT DISTINCT PRODUCT_DEPENDENCY, LEVEL 
+FROM
+ FND_PRODUCT_INIT_DEPENDENCY P1 WHERE LEVEL = (SELECT MAX(LEVEL) FROM 
+  FND_PRODUCT_INIT_DEPENDENCY P2 WHERE P2.PRODUCT_DEPENDENCY = 
+  P1.PRODUCT_DEPENDENCY CONNECT BY PRIOR P2.PRODUCT_DEPENDENCY = 
+  P2.APPLICATION_SHORT_NAME START WITH P2.APPLICATION_SHORT_NAME = UPPER(:B1 )
+  ) CONNECT BY PRIOR PRODUCT_DEPENDENCY = APPLICATION_SHORT_NAME START WITH 
+  APPLICATION_SHORT_NAME = UPPER(:B1 ) ORDER BY LEVEL DESC
+
+
+call     count       cpu    elapsed       disk      query    current        rows
+------- ------  -------- ---------- ---------- ---------- ----------  ----------
+Parse        1      0.00       1.08          0          0          0           0
+Execute      1      9.99       1.65          0          0          0           0
+Fetch        1     10.00      14.77          0         20          0           3
+------- ------  -------- ---------- ---------- ---------- ----------  ----------
+total        3     19.99      17.50          0         20          0           3
+
+Misses in library cache during parse: 0
+Optimizer goal: ALL_ROWS
+Parsing user id: 173  (APPS)   (recursive depth: 1)
+unable to set optimizer goal
+ORA-01986: OPTIMIZER_GOAL is obsolete
+
+parse error offset: 33
+
+Rows     Execution Plan
+-------  ---------------------------------------------------
+      0  SELECT STATEMENT   GOAL: ALL_ROWS
+      0   SORT (UNIQUE)
+      0    FILTER
+      0     CONNECT BY (WITHOUT FILTERING)
+      0      INDEX   GOAL: ANALYZED (RANGE SCAN) OF 
+                 'FND_PRODUCT_INIT_DEPENDENCY_U1' (INDEX (UNIQUE))
+      0      INDEX   GOAL: ANALYZED (FULL SCAN) OF 
+                 'FND_PRODUCT_INIT_DEPENDENCY_U1' (INDEX (UNIQUE))
+      0     SORT (AGGREGATE)
+      0      FILTER
+      0       CONNECT BY (WITH FILTERING)
+      0        INDEX   GOAL: ANALYZED (RANGE SCAN) OF 
+                   'FND_PRODUCT_INIT_DEPENDENCY_U1' (INDEX (UNIQUE))
+      0        NESTED LOOPS
+      0         BUFFER (SORT)
+      0          CONNECT BY PUMP
+      0         INDEX   GOAL: ANALYZED (RANGE SCAN) OF 
+                    'FND_PRODUCT_INIT_DEPENDENCY_U1' (INDEX (UNIQUE))
+      0        INDEX   GOAL: ANALYZED (FULL SCAN) OF 
+                   'FND_PRODUCT_INIT_DEPENDENCY_U1' (INDEX (UNIQUE))
+
+********************************************************************************
+
+SELECT INIT_FUNCTION_NAME 
+FROM
+ FND_PRODUCT_INITIALIZATION WHERE APPLICATION_SHORT_NAME = :B1 AND EXISTS 
+  (SELECT 1 FROM FND_PRODUCT_INIT_CONDITION C WHERE C.APPLICATION_SHORT_NAME =
+   :B1 AND C.RE_INIT_CONDITION IN (:B6 , :B5 , :B4 , :B3 , :B2 ))
+
+
+call     count       cpu    elapsed       disk      query    current        rows
+------- ------  -------- ---------- ---------- ---------- ----------  ----------
+Parse        1      0.00       0.90          0          0          0           0
+Execute      4     10.00       4.26          0         11          0           0
+Fetch        4     10.00       1.08          0          3          0           3
+------- ------  -------- ---------- ---------- ---------- ----------  ----------
+total        9     20.00       6.24          0         14          0           3
+
+Misses in library cache during parse: 0
+Optimizer goal: ALL_ROWS
+Parsing user id: 173  (APPS)   (recursive depth: 1)
+unable to set optimizer goal
+ORA-01986: OPTIMIZER_GOAL is obsolete
+
+parse error offset: 33
+
+Rows     Execution Plan
+-------  ---------------------------------------------------
+      0  SELECT STATEMENT   GOAL: ALL_ROWS
+      0   FILTER
+      0    INDEX   GOAL: ANALYZED (RANGE SCAN) OF 
+               'FND_PRODUCT_INITIALIZATION_U1' (INDEX (UNIQUE))
+      0    INLIST ITERATOR
+      0     INDEX   GOAL: ANALYZED (RANGE SCAN) OF 
+                'FND_PRODUCT_INIT_CONDITION_U1' (INDEX (UNIQUE))
+
+********************************************************************************
+
+begin MO_GLOBAL.INIT; end;
+
+
+call     count       cpu    elapsed       disk      query    current        rows
+------- ------  -------- ---------- ---------- ---------- ----------  ----------
+Parse        1      0.00       0.81          0          0          0           0
+Execute      1     30.00      36.23          0         20          0           1
+Fetch        0      0.00       0.00          0          0          0           0
+------- ------  -------- ---------- ---------- ---------- ----------  ----------
+total        2     30.00      37.04          0         20          0           1
+
+Misses in library cache during parse: 0
+Optimizer goal: ALL_ROWS
+Parsing user id: 173  (APPS)   (recursive depth: 1)
+********************************************************************************
+
+SELECT NVL(MULTI_ORG_FLAG, 'N') 
+FROM
+ FND_PRODUCT_GROUPS
+
+
+call     count       cpu    elapsed       disk      query    current        rows
+------- ------  -------- ---------- ---------- ---------- ----------  ----------
+Parse        1      0.00       0.97          0          0          0           0
+Execute      1      0.00       0.20          0          0          0           0
+Fetch        1      0.00       0.79          0          3          0           1
+------- ------  -------- ---------- ---------- ---------- ----------  ----------
+total        3      0.00       1.96          0          3          0           1
+
+Misses in library cache during parse: 0
+Optimizer goal: ALL_ROWS
+Parsing user id: 173  (APPS)   (recursive depth: 2)
+unable to set optimizer goal
+ORA-01986: OPTIMIZER_GOAL is obsolete
+
+parse error offset: 33
+
+Rows     Execution Plan
+-------  ---------------------------------------------------
+      0  SELECT STATEMENT   GOAL: ALL_ROWS
+      0   TABLE ACCESS   GOAL: ANALYZED (FULL) OF 'FND_PRODUCT_GROUPS' 
+              (TABLE)
+
+********************************************************************************
+
+DELETE FROM MO_GLOB_ORG_ACCESS_TMP
+
+
+call     count       cpu    elapsed       disk      query    current        rows
+------- ------  -------- ---------- ---------- ---------- ----------  ----------
+Parse        1      0.00       0.74          0          0          0           0
+Execute      1      0.00       1.42          0          0          0           0
+Fetch        0      0.00       0.00          0          0          0           0
+------- ------  -------- ---------- ---------- ---------- ----------  ----------
+total        2      0.00       2.16          0          0          0           0
+
+Misses in library cache during parse: 0
+Optimizer goal: ALL_ROWS
+Parsing user id: 173  (APPS)   (recursive depth: 2)
+unable to set optimizer goal
+ORA-01986: OPTIMIZER_GOAL is obsolete
+
+parse error offset: 33
+
+Rows     Execution Plan
+-------  ---------------------------------------------------
+      0  DELETE STATEMENT   GOAL: ALL_ROWS
+      0   DELETE OF 'MO_GLOB_ORG_ACCESS_TMP'
+      0    TABLE ACCESS (FULL) OF 'MO_GLOB_ORG_ACCESS_TMP' (TABLE (TEMP))
+
+
+********************************************************************************
+
+SELECT /*+ LEADING (form)
+                USE_NL (form app mpi) */ MPI.APPLICATION_SHORT_NAME, NVL(MPI.STATUS,'N') FROM FND_FORM FORM, FND_APPLICATION APP, FND_MO_PRODUCT_INIT MPI WHERE FORM.FORM_NAME = :B1 AND FORM.APPLICATION_ID = APP.APPLICATION_ID AND APP.APPLICATION_SHORT_NAME = MPI.APPLICATION_SHORT_NAME (+)
+
+call     count       cpu    elapsed       disk      query    current        rows
+------- ------  -------- ---------- ---------- ---------- ----------  ----------
+Parse        1     20.00      20.35          0          0          0           0
+Execute      1    149.98     129.29          0          0          0           0
+Fetch        1      0.00       0.92          0          2          0           0
+------- ------  -------- ---------- ---------- ---------- ----------  ----------
+total        3    169.98     150.56          0          2          0           0
+
+Misses in library cache during parse: 1
+Misses in library cache during execute: 1
+Optimizer goal: ALL_ROWS
+Parsing user id: 173  (APPS)   (recursive depth: 2)
+unable to set optimizer goal
+ORA-01986: OPTIMIZER_GOAL is obsolete
+
+parse error offset: 33
+
+Rows     Execution Plan
+-------  ---------------------------------------------------
+      0  SELECT STATEMENT   GOAL: ALL_ROWS
+      0   NESTED LOOPS (OUTER)
+      0    NESTED LOOPS
+      0     INDEX   GOAL: ANALYZED (RANGE SCAN) OF 'FND_FORM_U2' (INDEX 
+                (UNIQUE))
+      0     TABLE ACCESS   GOAL: ANALYZED (BY INDEX ROWID) OF 
+                'FND_APPLICATION' (TABLE)
+      0      INDEX   GOAL: ANALYZED (UNIQUE SCAN) OF 
+                 'FND_APPLICATION_U1' (INDEX (UNIQUE))
+      0    TABLE ACCESS   GOAL: ANALYZED (BY INDEX ROWID) OF 
+               'FND_MO_PRODUCT_INIT' (TABLE)
+      0     INDEX   GOAL: ANALYZED (UNIQUE SCAN) OF 
+                'FND_MO_PRODUCT_INIT_U1' (INDEX (UNIQUE))
+
+********************************************************************************
+
+select node,owner,name 
+from
+ syn$ where obj#=:1
+
+
+call     count       cpu    elapsed       disk      query    current        rows
+------- ------  -------- ---------- ---------- ---------- ----------  ----------
+Parse        1      0.00       0.94          0          0          0           0
+Execute      1      0.00       0.49          0          0          0           0
+Fetch        1     10.00       0.79          0          3          0           1
+------- ------  -------- ---------- ---------- ---------- ----------  ----------
+total        3     10.00       2.22          0          3          0           1
+
+Misses in library cache during parse: 0
+Optimizer goal: CHOOSE
+Parsing user id: SYS   (recursive depth: 3)
+
+Rows     Row Source Operation
+-------  ---------------------------------------------------
+      1  TABLE ACCESS BY INDEX ROWID SYN$ (cr=3 pr=0 pw=0 time=85 us)
+      1   INDEX UNIQUE SCAN I_SYN1 (cr=2 pr=0 pw=0 time=41 us)(object id 98)
+
+********************************************************************************
+
+select t.ts#,t.file#,t.block#,nvl(t.bobj#,0),nvl(t.tab#,0),t.intcols,
+  nvl(t.clucols,0),t.audit$,t.flags,t.pctfree$,t.pctused$,t.initrans,
+  t.maxtrans,t.rowcnt,t.blkcnt,t.empcnt,t.avgspc,t.chncnt,t.avgrln,
+  t.analyzetime,t.samplesize,t.cols,t.property,nvl(t.degree,1),
+  nvl(t.instances,1),t.avgspc_flb,t.flbcnt,t.kernelcols,nvl(t.trigflag, 0),
+  nvl(t.spare1,0),nvl(t.spare2,0),t.spare4,t.spare6,ts.cachedblk,ts.cachehit,
+  ts.logicalread 
+from
+ tab$ t, tab_stats$ ts where t.obj#= :1 and t.obj# = ts.obj# (+)
+
+
+call     count       cpu    elapsed       disk      query    current        rows
+------- ------  -------- ---------- ---------- ---------- ----------  ----------
+Parse        1      0.00       0.39          0          0          0           0
+Execute      2      0.00       1.03          0          0          0           0
+Fetch        2      0.00       2.50          0          8          0           2
+------- ------  -------- ---------- ---------- ---------- ----------  ----------
+total        5      0.00       3.92          0          8          0           2
+
+Misses in library cache during parse: 0
+Optimizer goal: CHOOSE
+Parsing user id: SYS   (recursive depth: 3)
+
+Rows     Row Source Operation
+-------  ---------------------------------------------------
+      1  NESTED LOOPS OUTER (cr=4 pr=0 pw=0 time=132 us)
+      1   TABLE ACCESS CLUSTER TAB$ (cr=3 pr=0 pw=0 time=72 us)
+      1    INDEX UNIQUE SCAN I_OBJ# (cr=2 pr=0 pw=0 time=29 us)(object id 3)
+      0   TABLE ACCESS BY INDEX ROWID TAB_STATS$ (cr=1 pr=0 pw=0 time=40 us)
+      0    INDEX UNIQUE SCAN I_TAB_STATS$_OBJ# (cr=1 pr=0 pw=0 time=29 us)(object id 376892)
+
+********************************************************************************
+
+select i.obj#,i.ts#,i.file#,i.block#,i.intcols,i.type#,i.flags,i.property,
+  i.pctfree$,i.initrans,i.maxtrans,i.blevel,i.leafcnt,i.distkey,i.lblkkey,
+  i.dblkkey,i.clufac,i.cols,i.analyzetime,i.samplesize,i.dataobj#,
+  nvl(i.degree,1),nvl(i.instances,1),i.rowcnt,mod(i.pctthres$,256),
+  i.indmethod#,i.trunccnt,nvl(c.unicols,0),nvl(c.deferrable#+c.valid#,0),
+  nvl(i.spare1,i.intcols),i.spare4,i.spare2,i.spare6,decode(i.pctthres$,null,
+  null,mod(trunc(i.pctthres$/256),256)),ist.cachedblk,ist.cachehit,
+  ist.logicalread 
+from
+ ind$ i, ind_stats$ ist, (select enabled, min(cols) unicols,
+  min(to_number(bitand(defer,1))) deferrable#,min(to_number(bitand(defer,4))) 
+  valid# from cdef$ where obj#=:1 and enabled > 1 group by enabled) c where 
+  i.obj#=c.enabled(+) and i.obj# = ist.obj#(+) and i.bo#=:1 order by i.obj#
+
+
+call     count       cpu    elapsed       disk      query    current        rows
+------- ------  -------- ---------- ---------- ---------- ----------  ----------
+Parse        2      0.00       0.65          0          0          0           0
+Execute      4      0.00       4.00          0          0          0           0
+Fetch        8     49.99      49.13          0         31          0           4
+------- ------  -------- ---------- ---------- ---------- ----------  ----------
+total       14     49.99      53.78          0         31          0           4
+
+Misses in library cache during parse: 0
+Optimizer goal: CHOOSE
+Parsing user id: SYS   (recursive depth: 3)
+
+Rows     Row Source Operation
+-------  ---------------------------------------------------
+      1  SORT ORDER BY (cr=8 pr=0 pw=0 time=1528 us)
+      1   HASH JOIN OUTER (cr=8 pr=0 pw=0 time=1467 us)
+      1    NESTED LOOPS OUTER (cr=5 pr=0 pw=0 time=167 us)
+      1     TABLE ACCESS CLUSTER IND$ (cr=4 pr=0 pw=0 time=106 us)
+      1      INDEX UNIQUE SCAN I_OBJ# (cr=2 pr=0 pw=0 time=34 us)(object id 3)
+      0     TABLE ACCESS BY INDEX ROWID IND_STATS$ (cr=1 pr=0 pw=0 time=38 us)
+      0      INDEX UNIQUE SCAN I_IND_STATS$_OBJ# (cr=1 pr=0 pw=0 time=23 us)(object id 376894)
+      0    VIEW  (cr=3 pr=0 pw=0 time=163 us)
+      0     SORT GROUP BY (cr=3 pr=0 pw=0 time=152 us)
+      0      TABLE ACCESS CLUSTER CDEF$ (cr=3 pr=0 pw=0 time=78 us)
+      1       INDEX UNIQUE SCAN I_COBJ# (cr=2 pr=0 pw=0 time=40 us)(object id 27)
+
+********************************************************************************
+
+select pos#,intcol#,col#,spare1,bo#,spare2 
+from
+ icol$ where obj#=:1
+
+
+call     count       cpu    elapsed       disk      query    current        rows
+------- ------  -------- ---------- ---------- ---------- ----------  ----------
+Parse        1      0.00       0.91          0          0          0           0
+Execute      4      0.00       1.95          0          0          0           0
+Fetch       10     10.00       3.23          0         20          0           6
+------- ------  -------- ---------- ---------- ---------- ----------  ----------
+total       15     10.00       6.09          0         20          0           6
+
+Misses in library cache during parse: 0
+Optimizer goal: CHOOSE
+Parsing user id: SYS   (recursive depth: 3)
+
+Rows     Row Source Operation
+-------  ---------------------------------------------------
+      1  TABLE ACCESS BY INDEX ROWID ICOL$ (cr=4 pr=0 pw=0 time=74 us)
+      1   INDEX RANGE SCAN I_ICOL1 (cr=3 pr=0 pw=0 time=65 us)(object id 37)
+
+********************************************************************************
+
+select name,intcol#,segcol#,type#,length,nvl(precision#,0),decode(type#,2,
+  nvl(scale,-127/*MAXSB1MINAL*/),178,scale,179,scale,180,scale,181,scale,182,
+  scale,183,scale,231,scale,0),null$,fixedstorage,nvl(deflength,0),default$,
+  rowid,col#,property, nvl(charsetid,0),nvl(charsetform,0),spare1,spare2,
+  nvl(spare3,0) 
+from
+ col$ where obj#=:1 order by intcol#
+
+
+call     count       cpu    elapsed       disk      query    current        rows
+------- ------  -------- ---------- ---------- ---------- ----------  ----------
+Parse        2      0.00       0.89          0          0          0           0
+Execute      4     10.00       2.69          0          0          0           0
+Fetch       42      0.00       6.10          0         13          0          38
+------- ------  -------- ---------- ---------- ---------- ----------  ----------
+total       48     10.00       9.68          0         13          0          38
+
+Misses in library cache during parse: 0
+Optimizer goal: CHOOSE
+Parsing user id: SYS   (recursive depth: 3)
+
+Rows     Row Source Operation
+-------  ---------------------------------------------------
+      7  SORT ORDER BY (cr=3 pr=0 pw=0 time=108 us)
+      7   TABLE ACCESS CLUSTER COL$ (cr=3 pr=0 pw=0 time=67 us)
+      1    INDEX UNIQUE SCAN I_OBJ# (cr=2 pr=0 pw=0 time=16 us)(object id 3)
+
+********************************************************************************
+
+select type#,blocks,extents,minexts,maxexts,extsize,extpct,user#,iniexts,
+  NVL(lists,65535),NVL(groups,65535),cachehint,hwmincr, NVL(spare1,0),
+  NVL(scanhint,0) 
+from
+ seg$ where ts#=:1 and file#=:2 and block#=:3
+
+
+call     count       cpu    elapsed       disk      query    current        rows
+------- ------  -------- ---------- ---------- ---------- ----------  ----------
+Parse        7      0.00       1.24          0          0          0           0
+Execute      7      0.00       1.82          0          0          0           0
+Fetch        7      0.00       4.43          0         28          0           7
+------- ------  -------- ---------- ---------- ---------- ----------  ----------
+total       21      0.00       7.49          0         28          0           7
+
+Misses in library cache during parse: 0
+Optimizer goal: CHOOSE
+Parsing user id: SYS   (recursive depth: 3)
+
+Rows     Row Source Operation
+-------  ---------------------------------------------------
+      1  TABLE ACCESS CLUSTER SEG$ (cr=4 pr=0 pw=0 time=104 us)
+      1   INDEX UNIQUE SCAN I_FILE#_BLOCK# (cr=3 pr=0 pw=0 time=65 us)(object id 9)
+
+********************************************************************************
+
+select o.owner#,o.name,o.namespace,o.remoteowner,o.linkname,o.subname,
+  o.dataobj#,o.flags 
+from
+ obj$ o where o.obj#=:1
+
+
+call     count       cpu    elapsed       disk      query    current        rows
+------- ------  -------- ---------- ---------- ---------- ----------  ----------
+Parse        1      0.00       0.58          0          0          0           0
+Execute      4      0.00       1.20          0          0          0           0
+Fetch        4      0.00       1.36          0         16          0           4
+------- ------  -------- ---------- ---------- ---------- ----------  ----------
+total        9      0.00       3.14          0         16          0           4
+
+Misses in library cache during parse: 0
+Optimizer goal: CHOOSE
+Parsing user id: SYS   (recursive depth: 3)
+
+Rows     Row Source Operation
+-------  ---------------------------------------------------
+      1  TABLE ACCESS BY INDEX ROWID OBJ$ (cr=4 pr=0 pw=0 time=38 us)
+      1   INDEX UNIQUE SCAN I_OBJ1 (cr=3 pr=0 pw=0 time=16 us)(object id 33)
+
+********************************************************************************
+
+select col#, grantee#, privilege#,max(mod(nvl(option$,0),2)) 
+from
+ objauth$ where obj#=:1 and col# is not null group by privilege#, col#, 
+  grantee# order by col#, grantee#
+
+
+call     count       cpu    elapsed       disk      query    current        rows
+------- ------  -------- ---------- ---------- ---------- ----------  ----------
+Parse        1      0.00       0.47          0          0          0           0
+Execute      3      0.00       1.20          0          0          0           0
+Fetch        3      0.00       1.82          0          9          0           0
+------- ------  -------- ---------- ---------- ---------- ----------  ----------
+total        7      0.00       3.49          0          9          0           0
+
+Misses in library cache during parse: 0
+Optimizer goal: CHOOSE
+Parsing user id: SYS   (recursive depth: 3)
+
+Rows     Row Source Operation
+-------  ---------------------------------------------------
+      0  SORT GROUP BY (cr=3 pr=0 pw=0 time=104 us)
+      0   TABLE ACCESS BY INDEX ROWID OBJAUTH$ (cr=3 pr=0 pw=0 time=74 us)
+      0    INDEX RANGE SCAN I_OBJAUTH1 (cr=3 pr=0 pw=0 time=66 us)(object id 100)
+
+********************************************************************************
+
+select grantee#,privilege#,nvl(col#,0),max(mod(nvl(option$,0),2))
+from
+ objauth$ where obj#=:1 group by grantee#,privilege#,nvl(col#,0) order by 
+  grantee#
+
+
+call     count       cpu    elapsed       disk      query    current        rows
+------- ------  -------- ---------- ---------- ---------- ----------  ----------
+Parse        1      0.00       0.28          0          0          0           0
+Execute      4      0.00       1.51          0          0          0           0
+Fetch       28      9.99       4.23          0         16          0          24
+------- ------  -------- ---------- ---------- ---------- ----------  ----------
+total       33      9.99       6.02          0         16          0          24
+
+Misses in library cache during parse: 0
+Optimizer goal: CHOOSE
+Parsing user id: SYS   (recursive depth: 3)
+
+Rows     Row Source Operation
+-------  ---------------------------------------------------
+     11  SORT GROUP BY (cr=4 pr=0 pw=0 time=114 us)
+     11   TABLE ACCESS BY INDEX ROWID OBJAUTH$ (cr=4 pr=0 pw=0 time=111 us)
+     11    INDEX RANGE SCAN I_OBJAUTH1 (cr=3 pr=0 pw=0 time=45 us)(object id 100)
+
+********************************************************************************
+
+select con#,obj#,rcon#,enabled,nvl(defer,0) 
+from
+ cdef$ where robj#=:1
+
+
+call     count       cpu    elapsed       disk      query    current        rows
+------- ------  -------- ---------- ---------- ---------- ----------  ----------
+Parse        1      0.00       0.37          0          0          0           0
+Execute      3      0.00       0.81          0          0          0           0
+Fetch        3      0.00       0.73          0          6          0           0
+------- ------  -------- ---------- ---------- ---------- ----------  ----------
+total        7      0.00       1.91          0          6          0           0
+
+Misses in library cache during parse: 0
+Optimizer goal: CHOOSE
+Parsing user id: SYS   (recursive depth: 3)
+
+Rows     Row Source Operation
+-------  ---------------------------------------------------
+      0  TABLE ACCESS BY INDEX ROWID CDEF$ (cr=2 pr=0 pw=0 time=40 us)
+      0   INDEX RANGE SCAN I_CDEF3 (cr=2 pr=0 pw=0 time=27 us)(object id 49)
+
+********************************************************************************
+
+select con#,type#,condlength,intcols,robj#,rcon#,match#,refact,nvl(enabled,0),
+  rowid,cols,nvl(defer,0),mtime,nvl(spare1,0) 
+from
+ cdef$ where obj#=:1
+
+
+call     count       cpu    elapsed       disk      query    current        rows
+------- ------  -------- ---------- ---------- ---------- ----------  ----------
+Parse        1      0.00       0.52          0          0          0           0
+Execute      3      0.00       1.04          0          0          0           0
+Fetch       30      0.00       3.77          0         37          0          27
+------- ------  -------- ---------- ---------- ---------- ----------  ----------
+total       34      0.00       5.33          0         37          0          27
+
+Misses in library cache during parse: 0
+Optimizer goal: CHOOSE
+Parsing user id: SYS   (recursive depth: 3)
+
+Rows     Row Source Operation
+-------  ---------------------------------------------------
+      5  TABLE ACCESS CLUSTER CDEF$ (cr=8 pr=0 pw=0 time=36 us)
+      1   INDEX UNIQUE SCAN I_COBJ# (cr=2 pr=0 pw=0 time=18 us)(object id 27)
+
+********************************************************************************
+
+select intcol#,nvl(pos#,0),col#,nvl(spare1,0) 
+from
+ ccol$ where con#=:1
+
+
+call     count       cpu    elapsed       disk      query    current        rows
+------- ------  -------- ---------- ---------- ---------- ----------  ----------
+Parse        1      0.00       0.29          0          0          0           0
+Execute     27      0.00       5.28          0          0          0           0
+Fetch       54      0.00       9.81          0        110          0          27
+------- ------  -------- ---------- ---------- ---------- ----------  ----------
+total       82      0.00      15.38          0        110          0          27
+
+Misses in library cache during parse: 0
+Optimizer goal: CHOOSE
+Parsing user id: SYS   (recursive depth: 3)
+
+Rows     Row Source Operation
+-------  ---------------------------------------------------
+      1  TABLE ACCESS BY INDEX ROWID CCOL$ (cr=4 pr=0 pw=0 time=41 us)
+      1   INDEX RANGE SCAN I_CCOL1 (cr=3 pr=0 pw=0 time=37 us)(object id 51)
+
+********************************************************************************
+
+SELECT NVL(MPI.STATUS,'N') 
+FROM
+ FND_MO_PRODUCT_INIT MPI, FND_APPLICATION APP WHERE APP.APPLICATION_ID = :B1 
+  AND MPI.APPLICATION_SHORT_NAME = APP.APPLICATION_SHORT_NAME
+
+
+call     count       cpu    elapsed       disk      query    current        rows
+------- ------  -------- ---------- ---------- ---------- ----------  ----------
+Parse        1     20.00      19.36          0          0          0           0
+Execute      1     39.98      35.37          0          0          0           0
+Fetch        1      0.00       1.35          0          4          0           1
+------- ------  -------- ---------- ---------- ---------- ----------  ----------
+total        3     59.98      56.08          0          4          0           1
+
+Misses in library cache during parse: 1
+Misses in library cache during execute: 1
+Optimizer goal: ALL_ROWS
+Parsing user id: 173  (APPS)   (recursive depth: 2)
+unable to set optimizer goal
+ORA-01986: OPTIMIZER_GOAL is obsolete
+
+parse error offset: 33
+
+Rows     Execution Plan
+-------  ---------------------------------------------------
+      0  SELECT STATEMENT   GOAL: ALL_ROWS
+      0   NESTED LOOPS
+      0    TABLE ACCESS   GOAL: ANALYZED (BY INDEX ROWID) OF 
+               'FND_APPLICATION' (TABLE)
+      0     INDEX   GOAL: ANALYZED (UNIQUE SCAN) OF 'FND_APPLICATION_U1' 
+                (INDEX (UNIQUE))
+      0    TABLE ACCESS   GOAL: ANALYZED (BY INDEX ROWID) OF 
+               'FND_MO_PRODUCT_INIT' (TABLE)
+      0     INDEX   GOAL: ANALYZED (UNIQUE SCAN) OF 
+                'FND_MO_PRODUCT_INIT_U1' (INDEX (UNIQUE))
+
+********************************************************************************
+
+SELECT O.ORGANIZATION_ID ORGANIZATION_ID , OTL.NAME NAME , 
+  O3.ORG_INFORMATION2 LEGAL_ENTITY_ID , LE.NAME LEGAL_ENTITY_NAME 
+FROM
+ HR_ALL_ORGANIZATION_UNITS O, HR_ALL_ORGANIZATION_UNITS_TL OTL, 
+  HR_ORGANIZATION_INFORMATION O2, HR_ORGANIZATION_INFORMATION O3, 
+  HR_ALL_ORGANIZATION_UNITS_TL LE WHERE LE.ORGANIZATION_ID = 
+  DECODE(LTRIM(O3.ORG_INFORMATION2,'0123456789'), NULL, 
+  TO_NUMBER(O3.ORG_INFORMATION2), NULL) AND LE.LANGUAGE = USERENV('LANG') AND 
+  O.ORGANIZATION_ID = O2.ORGANIZATION_ID AND O.ORGANIZATION_ID = 
+  O3.ORGANIZATION_ID AND O2.ORG_INFORMATION_CONTEXT = 'CLASS' AND 
+  O3.ORG_INFORMATION_CONTEXT = 'Operating Unit Information' AND 
+  O2.ORG_INFORMATION1 ='OPERATING_UNIT' AND O2.ORG_INFORMATION2 = 'Y' AND 
+  O.ORGANIZATION_ID = OTL.ORGANIZATION_ID AND OTL.LANGUAGE = USERENV('LANG') 
+  AND O.ORGANIZATION_ID = TO_NUMBER(:B1 )
+
+
+call     count       cpu    elapsed       disk      query    current        rows
+------- ------  -------- ---------- ---------- ---------- ----------  ----------
+Parse        1     20.00      21.59          0          0          0           0
+Execute      1     89.99      79.88          0          0          0           0
+Fetch        1      0.00       3.97          0         10          0           1
+------- ------  -------- ---------- ---------- ---------- ----------  ----------
+total        3    109.99     105.44          0         10          0           1
+
+Misses in library cache during parse: 1
+Misses in library cache during execute: 1
+Optimizer goal: ALL_ROWS
+Parsing user id: 173  (APPS)   (recursive depth: 2)
+unable to set optimizer goal
+ORA-01986: OPTIMIZER_GOAL is obsolete
+
+parse error offset: 33
+
+Rows     Execution Plan
+-------  ---------------------------------------------------
+      0  SELECT STATEMENT   GOAL: ALL_ROWS
+      0   MERGE JOIN (CARTESIAN)
+      0    NESTED LOOPS
+      0     NESTED LOOPS
+      0      NESTED LOOPS
+      0       TABLE ACCESS   GOAL: ANALYZED (BY INDEX ROWID) OF 
+                  'HR_ALL_ORGANIZATION_UNITS_TL' (TABLE)
+      0        INDEX   GOAL: ANALYZED (UNIQUE SCAN) OF 
+                   'HR_ALL_ORGANIZATION_UNTS_TL_PK' (INDEX (UNIQUE))
+      0       INDEX   GOAL: ANALYZED (UNIQUE SCAN) OF 
+                  'HR_ORGANIZATION_UNITS_PK' (INDEX (UNIQUE))
+      0      TABLE ACCESS   GOAL: ANALYZED (BY INDEX ROWID) OF 
+                 'HR_ORGANIZATION_INFORMATION' (TABLE)
+      0       INDEX   GOAL: ANALYZED (RANGE SCAN) OF 
+                  'HR_ORGANIZATION_INFORMATIO_FK2' (INDEX)
+      0     TABLE ACCESS   GOAL: ANALYZED (BY INDEX ROWID) OF 
+                'HR_ALL_ORGANIZATION_UNITS_TL' (TABLE)
+      0      INDEX   GOAL: ANALYZED (UNIQUE SCAN) OF 
+                 'HR_ALL_ORGANIZATION_UNTS_TL_PK' (INDEX (UNIQUE))
+      0    BUFFER (SORT)
+      0     TABLE ACCESS   GOAL: ANALYZED (BY INDEX ROWID) OF 
+                'HR_ORGANIZATION_INFORMATION' (TABLE)
+      0      INDEX   GOAL: ANALYZED (RANGE SCAN) OF 
+                 'HR_ORGANIZATION_INFORMATIO_FK2' (INDEX)
+
+********************************************************************************
+
+select condition 
+from
+ cdef$ where rowid=:1
+
+
+call     count       cpu    elapsed       disk      query    current        rows
+------- ------  -------- ---------- ---------- ---------- ----------  ----------
+Parse        1      0.00       0.78          0          0          0           0
+Execute      1      0.00       0.54          0          0          0           0
+Fetch        1      0.00       0.68          0          2          0           1
+------- ------  -------- ---------- ---------- ---------- ----------  ----------
+total        3      0.00       2.00          0          2          0           1
+
+Misses in library cache during parse: 0
+Optimizer goal: CHOOSE
+Parsing user id: SYS   (recursive depth: 3)
+
+Rows     Row Source Operation
+-------  ---------------------------------------------------
+      1  TABLE ACCESS BY USER ROWID CDEF$ (cr=1 pr=0 pw=0 time=55 us)
+
+********************************************************************************
+
+INSERT INTO MO_GLOB_ORG_ACCESS_TMP (ORGANIZATION_ID , ORGANIZATION_NAME , 
+  LEGAL_ENTITY_ID , LEGAL_ENTITY_NAME) 
+VALUES
+ (:B1 , :B2 , :B3 , :B4 )
+
+
+call     count       cpu    elapsed       disk      query    current        rows
+------- ------  -------- ---------- ---------- ---------- ----------  ----------
+Parse        1      0.00       0.84          0          0          0           0
+Execute      1     30.00      30.83          0          1         20           1
+Fetch        0      0.00       0.00          0          0          0           0
+------- ------  -------- ---------- ---------- ---------- ----------  ----------
+total        2     30.00      31.67          0          1         20           1
+
+Misses in library cache during parse: 0
+Optimizer goal: ALL_ROWS
+Parsing user id: 173  (APPS)   (recursive depth: 2)
+unable to set optimizer goal
+ORA-01986: OPTIMIZER_GOAL is obsolete
+
+parse error offset: 33
+
+Rows     Execution Plan
+-------  ---------------------------------------------------
+      0  INSERT STATEMENT   GOAL: ALL_ROWS
+
+********************************************************************************
+
+COMMIT
+
+
+call     count       cpu    elapsed       disk      query    current        rows
+------- ------  -------- ---------- ---------- ---------- ----------  ----------
+Parse        4      0.00       0.90          0          0          0           0
+Execute      4      0.00       3.57          0          0          2           0
+Fetch        0      0.00       0.00          0          0          0           0
+------- ------  -------- ---------- ---------- ---------- ----------  ----------
+total        8      0.00       4.47          0          0          2           0
+
+Misses in library cache during parse: 0
+Parsing user id: 173  (APPS)   (recursive depth: 2)
+********************************************************************************
+
+begin HR_SIGNON.INITIALIZE_HR_SECURITY; end;
+
+
+call     count       cpu    elapsed       disk      query    current        rows
+------- ------  -------- ---------- ---------- ---------- ----------  ----------
+Parse        1      0.00       0.92          0          0          0           0
+Execute      1     39.99      35.98          0         29          0           1
+Fetch        0      0.00       0.00          0          0          0           0
+------- ------  -------- ---------- ---------- ---------- ----------  ----------
+total        2     39.99      36.90          0         29          0           1
+
+Misses in library cache during parse: 0
+Optimizer goal: ALL_ROWS
+Parsing user id: 173  (APPS)   (recursive depth: 1)
+********************************************************************************
+
+SELECT * 
+FROM
+ PER_SECURITY_PROFILES WHERE SECURITY_PROFILE_ID = :B1 
+
+
+call     count       cpu    elapsed       disk      query    current        rows
+------- ------  -------- ---------- ---------- ---------- ----------  ----------
+Parse        1      0.00       0.74          0          0          0           0
+Execute      1      0.00       0.45          0          0          0           0
+Fetch        1      0.00       0.91          0          2          0           1
+------- ------  -------- ---------- ---------- ---------- ----------  ----------
+total        3      0.00       2.10          0          2          0           1
+
+Misses in library cache during parse: 0
+Optimizer goal: ALL_ROWS
+Parsing user id: 173  (APPS)   (recursive depth: 2)
+unable to set optimizer goal
+ORA-01986: OPTIMIZER_GOAL is obsolete
+
+parse error offset: 33
+
+Rows     Execution Plan
+-------  ---------------------------------------------------
+      0  SELECT STATEMENT   GOAL: ALL_ROWS
+      0   TABLE ACCESS   GOAL: ANALYZED (BY INDEX ROWID) OF 
+              'PER_SECURITY_PROFILES' (TABLE)
+      0    INDEX   GOAL: ANALYZED (UNIQUE SCAN) OF 
+               'PER_SECURITY_PROFILES_PK' (INDEX (UNIQUE))
+
+********************************************************************************
+
+SELECT MESSAGE_TEXT, MESSAGE_NUMBER, TYPE, FND_LOG_SEVERITY, CATEGORY, 
+  SEVERITY 
+FROM
+ FND_NEW_MESSAGES M, FND_APPLICATION A WHERE :B3 = M.MESSAGE_NAME AND :B2 = 
+  M.LANGUAGE_CODE AND :B1 = A.APPLICATION_SHORT_NAME AND M.APPLICATION_ID = 
+  A.APPLICATION_ID
+
+
+call     count       cpu    elapsed       disk      query    current        rows
+------- ------  -------- ---------- ---------- ---------- ----------  ----------
+Parse        1      0.00       0.58          0          0          0           0
+Execute      3      0.00       1.15          0          0          0           0
+Fetch        3      0.00       2.75          0         16          0           1
+------- ------  -------- ---------- ---------- ---------- ----------  ----------
+total        7      0.00       4.48          0         16          0           1
+
+Misses in library cache during parse: 0
+Optimizer goal: ALL_ROWS
+Parsing user id: 173  (APPS)   (recursive depth: 2)
+unable to set optimizer goal
+ORA-01986: OPTIMIZER_GOAL is obsolete
+
+parse error offset: 33
+
+Rows     Execution Plan
+-------  ---------------------------------------------------
+      0  SELECT STATEMENT   GOAL: ALL_ROWS
+      0   NESTED LOOPS
+      0    TABLE ACCESS   GOAL: ANALYZED (BY INDEX ROWID) OF 
+               'FND_APPLICATION' (TABLE)
+      0     INDEX   GOAL: ANALYZED (UNIQUE SCAN) OF 'FND_APPLICATION_U3' 
+                (INDEX (UNIQUE))
+      0    TABLE ACCESS   GOAL: ANALYZED (BY INDEX ROWID) OF 
+               'FND_NEW_MESSAGES' (TABLE)
+      0     INDEX   GOAL: ANALYZED (UNIQUE SCAN) OF 
+                'FND_NEW_MESSAGES_PK' (INDEX (UNIQUE))
+
+********************************************************************************
+
+SELECT LEGISLATION_CODE 
+FROM
+ PER_BUSINESS_GROUPS_PERF WHERE BUSINESS_GROUP_ID = :B1 
+
+
+call     count       cpu    elapsed       disk      query    current        rows
+------- ------  -------- ---------- ---------- ---------- ----------  ----------
+Parse        1      0.00       0.58          0          0          0           0
+Execute      1      0.00       0.57          0          0          0           0
+Fetch        1      0.00       1.87          0          6          0           1
+------- ------  -------- ---------- ---------- ---------- ----------  ----------
+total        3      0.00       3.02          0          6          0           1
+
+Misses in library cache during parse: 0
+Optimizer goal: ALL_ROWS
+Parsing user id: 173  (APPS)   (recursive depth: 2)
+unable to set optimizer goal
+ORA-01986: OPTIMIZER_GOAL is obsolete
+
+parse error offset: 33
+
+Rows     Execution Plan
+-------  ---------------------------------------------------
+      0  SELECT STATEMENT   GOAL: ALL_ROWS
+      0   MERGE JOIN (CARTESIAN)
+      0    NESTED LOOPS
+      0     INDEX   GOAL: ANALYZED (UNIQUE SCAN) OF 
+                'HR_ORGANIZATION_UNITS_PK' (INDEX (UNIQUE))
+      0     TABLE ACCESS   GOAL: ANALYZED (BY INDEX ROWID) OF 
+                'HR_ORGANIZATION_INFORMATION' (TABLE)
+      0      INDEX   GOAL: ANALYZED (RANGE SCAN) OF 
+                 'HR_ORGANIZATION_INFORMATIO_IX1' (INDEX)
+      0    BUFFER (SORT)
+      0     TABLE ACCESS   GOAL: ANALYZED (BY INDEX ROWID) OF 
+                'HR_ORGANIZATION_INFORMATION' (TABLE)
+      0      INDEX   GOAL: ANALYZED (RANGE SCAN) OF 
+                 'HR_ORGANIZATION_INFORMATIO_FK2' (INDEX)
+
+********************************************************************************
+
+begin JG_CONTEXT.INITIALIZE; end;
+
+
+call     count       cpu    elapsed       disk      query    current        rows
+------- ------  -------- ---------- ---------- ---------- ----------  ----------
+Parse        1     10.00       0.78          0          0          0           0
+Execute      1     20.00      21.42          0         28          0           1
+Fetch        0      0.00       0.00          0          0          0           0
+------- ------  -------- ---------- ---------- ---------- ----------  ----------
+total        2     30.00      22.20          0         28          0           1
+
+Misses in library cache during parse: 0
+Optimizer goal: ALL_ROWS
+Parsing user id: 173  (APPS)   (recursive depth: 1)
+********************************************************************************
+
+select name,password,datats#,tempts#,type#,defrole,resource$, ptime, exptime, 
+  ltime, astatus, lcount, decode(defschclass,NULL,'DEFAULT_CONSUMER_GROUP',
+  defschclass),spare1 
+from
+ user$ where user#=:1
+
+
+call     count       cpu    elapsed       disk      query    current        rows
+------- ------  -------- ---------- ---------- ---------- ----------  ----------
+Parse        1      0.00       0.85          0          0          0           0
+Execute      1      0.00       0.40          0          0          0           0
+Fetch        1      0.00       0.66          0          2          0           1
+------- ------  -------- ---------- ---------- ---------- ----------  ----------
+total        3      0.00       1.91          0          2          0           1
+
+Misses in library cache during parse: 0
+Optimizer goal: CHOOSE
+Parsing user id: SYS   (recursive depth: 1)
+
+Rows     Row Source Operation
+-------  ---------------------------------------------------
+      1  TABLE ACCESS CLUSTER USER$ (cr=2 pr=0 pw=0 time=68 us)
+      1   INDEX UNIQUE SCAN I_USER# (cr=1 pr=0 pw=0 time=24 us)(object id 11)
+
+********************************************************************************
+
+select increment$,minvalue,maxvalue,cycle#,order$,cache,highwater,audit$,
+  flags 
+from
+ seq$ where obj#=:1
+
+
+call     count       cpu    elapsed       disk      query    current        rows
+------- ------  -------- ---------- ---------- ---------- ----------  ----------
+Parse        1     10.00       0.86          0          0          0           0
+Execute      2      0.00       0.75          0          0          0           0
+Fetch        2      0.00       1.21          0          6          0           2
+------- ------  -------- ---------- ---------- ---------- ----------  ----------
+total        5     10.00       2.82          0          6          0           2
+
+Misses in library cache during parse: 0
+Optimizer goal: CHOOSE
+Parsing user id: SYS   (recursive depth: 2)
+
+Rows     Row Source Operation
+-------  ---------------------------------------------------
+      1  TABLE ACCESS BY INDEX ROWID SEQ$ (cr=3 pr=0 pw=0 time=77 us)
+      1   INDEX UNIQUE SCAN I_SEQ1 (cr=2 pr=0 pw=0 time=41 us)(object id 99)
+
+********************************************************************************
+
+SELECT XXOM.XX_OM_EXCEPTION_ID_S.NEXTVAL 
+FROM
+ DUAL
+
+
+call     count       cpu    elapsed       disk      query    current        rows
+------- ------  -------- ---------- ---------- ---------- ----------  ----------
+Parse        1     29.99      33.51          0          0          0           0
+Execute      1      0.00       0.85          0          0          0           0
+Fetch        1      0.00       5.64          0          0          1           1
+------- ------  -------- ---------- ---------- ---------- ----------  ----------
+total        3     29.99      40.00          0          0          1           1
+
+Misses in library cache during parse: 1
+Optimizer goal: ALL_ROWS
+Parsing user id: 173  (APPS)   (recursive depth: 1)
+unable to set optimizer goal
+ORA-01986: OPTIMIZER_GOAL is obsolete
+
+parse error offset: 33
+
+Rows     Execution Plan
+-------  ---------------------------------------------------
+      0  SELECT STATEMENT   GOAL: ALL_ROWS
+      0   SEQUENCE OF 'XX_OM_EXCEPTION_ID_S' (SEQUENCE)
+      0    FAST DUAL
+
+********************************************************************************
+
+update seq$ set increment$=:2,minvalue=:3,maxvalue=:4,cycle#=:5,order$=:6,
+  cache=:7,highwater=:8,audit$=:9,flags=:10 
+where
+ obj#=:1
+
+
+call     count       cpu    elapsed       disk      query    current        rows
+------- ------  -------- ---------- ---------- ---------- ----------  ----------
+Parse        1      0.00       0.80          0          0          0           0
+Execute      1     10.00       4.14          0          2          2           1
+Fetch        0      0.00       0.00          0          0          0           0
+------- ------  -------- ---------- ---------- ---------- ----------  ----------
+total        2     10.00       4.94          0          2          2           1
+
+Misses in library cache during parse: 0
+Optimizer goal: CHOOSE
+Parsing user id: SYS   (recursive depth: 2)
+
+Rows     Row Source Operation
+-------  ---------------------------------------------------
+      1  UPDATE  SEQ$ (cr=2 pr=0 pw=0 time=337 us)
+      1   INDEX UNIQUE SCAN I_SEQ1 (cr=2 pr=0 pw=0 time=12 us)(object id 99)
+
+********************************************************************************
+
+INSERT INTO XXOM.XX_OM_GLOBAL_EXCEPTIONS ( EXCEPTION_ID , EXCEPTION_HEADER , 
+  TRACK_CODE , SOLUTION_DOMAIN , FUNCTION_NAME , ERROR_CODE , DESCRIPTION , 
+  ENTITY_REF , ENTITY_REF_ID , EXCEPTION_SENT_FLAG , CREATION_DATE , 
+  CREATED_BY , LAST_UPDATE_DATE , LAST_UPDATED_BY ) 
+VALUES
+ ( :B10 , :B9 , :B8 , :B7 , :B6 , :B5 , :B4 , :B3 , :B2 , 'N' , SYSDATE , :B1 
+  , SYSDATE , :B1 )
+
+
+call     count       cpu    elapsed       disk      query    current        rows
+------- ------  -------- ---------- ---------- ---------- ----------  ----------
+Parse        1     40.00      35.09          0          0          0           0
+Execute      1     99.98      75.81          0          1          7           1
+Fetch        0      0.00       0.00          0          0          0           0
+------- ------  -------- ---------- ---------- ---------- ----------  ----------
+total        2    139.98     110.90          0          1          7           1
+
+Misses in library cache during parse: 1
+Misses in library cache during execute: 1
+Optimizer goal: ALL_ROWS
+Parsing user id: 173  (APPS)   (recursive depth: 1)
+unable to set optimizer goal
+ORA-01986: OPTIMIZER_GOAL is obsolete
+
+parse error offset: 33
+
+Rows     Execution Plan
+-------  ---------------------------------------------------
+      0  INSERT STATEMENT   GOAL: ALL_ROWS
+
+********************************************************************************
+
+select u.name,o.name, t.update$, t.insert$, t.delete$, t.enabled  
+from
+ obj$ o,user$ u,trigger$ t  where t.baseobject=:1 and t.obj#=o.obj# and 
+  o.owner#=u.user#  and bitand(property,16)=0 and bitand(property,8)=0  order 
+  by o.obj#
+
+
+call     count       cpu    elapsed       disk      query    current        rows
+------- ------  -------- ---------- ---------- ---------- ----------  ----------
+Parse        1      0.00       0.82          0          0          0           0
+Execute      1      0.00       0.81          0          0          0           0
+Fetch        1      0.00       0.75          0          2          0           0
+------- ------  -------- ---------- ---------- ---------- ----------  ----------
+total        3      0.00       2.38          0          2          0           0
+
+Misses in library cache during parse: 0
+Optimizer goal: CHOOSE
+Parsing user id: SYS   (recursive depth: 2)
+
+Rows     Row Source Operation
+-------  ---------------------------------------------------
+      0  SORT ORDER BY (cr=2 pr=0 pw=0 time=115 us)
+      0   NESTED LOOPS  (cr=2 pr=0 pw=0 time=96 us)
+      0    NESTED LOOPS  (cr=2 pr=0 pw=0 time=86 us)
+      0     TABLE ACCESS BY INDEX ROWID TRIGGER$ (cr=2 pr=0 pw=0 time=77 us)
+      0      INDEX RANGE SCAN I_TRIGGER1 (cr=2 pr=0 pw=0 time=46 us)(object id 119)
+      0     TABLE ACCESS BY INDEX ROWID OBJ$ (cr=0 pr=0 pw=0 time=0 us)
+      0      INDEX UNIQUE SCAN I_OBJ1 (cr=0 pr=0 pw=0 time=0 us)(object id 33)
+      0    TABLE ACCESS CLUSTER USER$ (cr=0 pr=0 pw=0 time=0 us)
+      0     INDEX UNIQUE SCAN I_USER# (cr=0 pr=0 pw=0 time=0 us)(object id 11)
+
+********************************************************************************
+
+SELECT WND.ATTRIBUTE1 
+FROM
+ WSH_NEW_DELIVERIES WND WHERE WND.DELIVERY_ID = :B1 
+
+
+call     count       cpu    elapsed       disk      query    current        rows
+------- ------  -------- ---------- ---------- ---------- ----------  ----------
+Parse        1     19.99      17.69          0          0          0           0
+Execute      1     30.00      32.60          0          0          0           0
+Fetch        1      0.00       1.04          0          2          0           1
+------- ------  -------- ---------- ---------- ---------- ----------  ----------
+total        3     49.99      51.33          0          2          0           1
+
+Misses in library cache during parse: 1
+Misses in library cache during execute: 1
+Optimizer goal: ALL_ROWS
+Parsing user id: 173  (APPS)   (recursive depth: 1)
+unable to set optimizer goal
+ORA-01986: OPTIMIZER_GOAL is obsolete
+
+parse error offset: 33
+
+Rows     Execution Plan
+-------  ---------------------------------------------------
+      0  SELECT STATEMENT   GOAL: ALL_ROWS
+      0   TABLE ACCESS   GOAL: ANALYZED (BY INDEX ROWID) OF 
+              'WSH_NEW_DELIVERIES' (TABLE)
+      0    INDEX   GOAL: ANALYZED (UNIQUE SCAN) OF 
+               'WSH_NEW_DELIVERIES_U1' (INDEX (UNIQUE))
+
+********************************************************************************
+
+BEGIN DBMS_OUTPUT.GET_LINES(:LINES, :NUMLINES); END;
+
+
+call     count       cpu    elapsed       disk      query    current        rows
+------- ------  -------- ---------- ---------- ---------- ----------  ----------
+Parse        1     20.00      18.75          0          0          0           0
+Execute      1     59.99      56.79          0          0          0           1
+Fetch        0      0.00       0.00          0          0          0           0
+------- ------  -------- ---------- ---------- ---------- ----------  ----------
+total        2     79.99      75.54          0          0          0           1
+
+Misses in library cache during parse: 1
+Misses in library cache during execute: 1
+Optimizer goal: ALL_ROWS
+Parsing user id: 173  (APPS)
+********************************************************************************
+
+select audit$,properties 
+from
+ type_misc$ where obj#=:1
+
+
+call     count       cpu    elapsed       disk      query    current        rows
+------- ------  -------- ---------- ---------- ---------- ----------  ----------
+Parse        1     30.00      30.93          0          0          0           0
+Execute      1     39.99      49.14          0          0          0           0
+Fetch        1      0.00       1.14          0          3          0           1
+------- ------  -------- ---------- ---------- ---------- ----------  ----------
+total        3     69.99      81.21          0          3          0           1
+
+Misses in library cache during parse: 1
+Misses in library cache during execute: 1
+Optimizer goal: CHOOSE
+Parsing user id: SYS   (recursive depth: 1)
+
+Rows     Row Source Operation
+-------  ---------------------------------------------------
+      1  TABLE ACCESS CLUSTER TYPE_MISC$ (cr=3 pr=0 pw=0 time=115 us)
+      1   INDEX UNIQUE SCAN I_OBJ# (cr=2 pr=0 pw=0 time=53 us)(object id 3)
+
+********************************************************************************
+
+select /*+ rule */ bucket_cnt, row_cnt, cache_cnt, null_cnt, timestamp#, 
+  sample_size, minimum, maximum, distcnt, lowval, hival, density, col#, 
+  spare1, spare2, avgcln 
+from
+ hist_head$ where obj#=:1 and intcol#=:2
+
+
+call     count       cpu    elapsed       disk      query    current        rows
+------- ------  -------- ---------- ---------- ---------- ----------  ----------
+Parse        1      0.00       0.46          0          0          0           0
+Execute      3      0.00       1.39          0          0          0           0
+Fetch        3      0.00       3.17          0         12          0           3
+------- ------  -------- ---------- ---------- ---------- ----------  ----------
+total        7      0.00       5.02          0         12          0           3
+
+Misses in library cache during parse: 0
+Optimizer goal: RULE
+Parsing user id: SYS   (recursive depth: 2)
+
+Rows     Row Source Operation
+-------  ---------------------------------------------------
+      1  TABLE ACCESS BY INDEX ROWID HIST_HEAD$ (cr=4 pr=0 pw=0 time=113 us)
+      1   INDEX RANGE SCAN I_HH_OBJ#_INTCOL# (cr=3 pr=0 pw=0 time=65 us)(object id 194)
+
+
+
+
+********************************************************************************
+
+OVERALL TOTALS FOR ALL NON-RECURSIVE STATEMENTS
+
+call     count       cpu    elapsed       disk      query    current        rows
+------- ------  -------- ---------- ---------- ---------- ----------  ----------
+Parse        3    229.98     230.65          0          0          0           0
+Execute      4    309.94     276.16          0        977          0           2
+Fetch        2     39.98      41.53          0          0          0           1
+------- ------  -------- ---------- ---------- ---------- ----------  ----------
+total        9    579.90     548.34          0        977          0           3
+
+Misses in library cache during parse: 3
+Misses in library cache during execute: 2
+
+
+OVERALL TOTALS FOR ALL RECURSIVE STATEMENTS
+
+call     count       cpu    elapsed       disk      query    current        rows
+------- ------  -------- ---------- ---------- ---------- ----------  ----------
+Parse      120    259.98     262.30          0          0          0           0
+Execute    264    749.87     704.90          0         92         31           6
+Fetch      477    189.98     256.00          0       1185          1         338
+------- ------  -------- ---------- ---------- ---------- ----------  ----------
+total      861   1199.83    1223.20          0       1277         32         344
+
+Misses in library cache during parse: 9
+Misses in library cache during execute: 8
+
+   41  user  SQL statements in session.
+  155  internal SQL statements in session.
+  196  SQL statements in session.
+   29  statements EXPLAINed in this session.
+********************************************************************************
+Trace file: gsidev03_ora_12591_I1014_RoadNetToEBS.trc
+Trace file compatibility: 7.03.02
+Sort options: default
+
+       1  session in tracefile.
+      41  user  SQL statements in trace file.
+     155  internal SQL statements in trace file.
+     196  SQL statements in trace file.
+      66  unique SQL statements in trace file.
+      29  SQL statements EXPLAINed using schema:
+           APPS.prof$plan_table
+             Existing table was used.
+             Default table was used.
+    1950  lines in trace file.
+
+

@@ -1,0 +1,571 @@
+<?xml version="1.0" encoding="windows-1252" ?>
+<!DOCTYPE ViewObject SYSTEM "jbo_03_01.dtd">
+<!---->
+<ViewObject
+  xmlns="http://xmlns.oracle.com/bc4j"
+  Name="VAInvoiceSummaryVO"
+  Version="12.2.1.12.24"
+  InheritPersonalization="merge"
+  BindingStyle="OracleName"
+  CustomQuery="true"
+  PageIterMode="Full"
+  RowClass="od.tdmatch.model.VAInvoiceSummaryVORowImpl"
+  ComponentClass="od.tdmatch.model.VAInvoiceSummaryVOImpl"
+  OrderBy='"VENDOR_ASSISTANT"'>
+  <DesignTime>
+    <Attr Name="_isExpertMode" Value="true"/>
+    <Attr Name="_codeGenFlag2" Value="Access|Coll|Prog|VarAccess"/>
+    <Attr Name="_isCodegen" Value="true"/>
+  </DesignTime>
+  <Properties>
+    <SchemaBasedProperties>
+      <LABEL
+        ResId="od.tdmatch.model.VAInvoiceSummaryVO_LABEL"/>
+    </SchemaBasedProperties>
+  </Properties>
+  <ViewAccessor
+    Name="VAInvoiceSummaryVO1"
+    ViewObjectName="od.tdmatch.model.VAInvoiceSummaryVO"
+    RowLevelBinds="true"/>
+  <SQLQuery><![CDATA[SELECT tv.target_value2 vendor_assistant,tv.target_value1 employee_id,         
+  SUM(DECODE(a.hold_type,'TOTAL',inv_count,0)) total_inv_count,                                
+  SUM(DECODE(a.hold_type,'TOTAL',inv_amount,0)) total_inv_amount,                                
+  SUM(DECODE(a.hold_type,'MOOT',line_total,0))+SUM(DECODE(hold_type,'NRF',inv_amount,0)) total_line_amount,                                
+  SUM(DECODE(a.hold_type,'MOOT',inv_count,0)) total_moot_count,                                
+  SUM(DECODE(a.hold_type,'MOOT',inv_amount,null)) total_moot_inv_amount,                                
+  SUM(DECODE(a.hold_type,'MOOT',line_total,0)) total_moot_line_amount,                                
+  nvl(SUM(DECODE(a.hold_type,'NRF',inv_count,0)),0) total_nrf_count,                                
+  SUM(DECODE(a.hold_type,'NRF',inv_amount,0)) total_nrf_amount                                
+FROM                                
+  ((SELECT /*+ LEADING (h) */         
+          a.invoice_id,         
+          a.terms_id,         
+          a.vendor_id,         
+          a.vendor_site_id,         
+          a.org_id,         
+          'TOTAL' hold_type,                  
+          a.invoice_amount inv_amount,                  
+          0 line_total ,                  
+          1 inv_count,         
+          b.attribute6         
+    FROM  ap_supplier_sites_all b,         
+          ap_invoices_all a ,               
+           (SELECT /*+ INDEX(aph XX_AP_HOLDS_N1) */ 
+              distinct aph.invoice_id         
+          FROM ap_holds_all aph         
+         WHERE aph.creation_date > '01-JAN-11'          
+           AND NVL(aph.status_flag,'S')= 'S'         
+        ) h         
+   WHERE a.invoice_id=h.invoice_id         
+     AND a.invoice_num not like '%ODDBUIA'    
+     AND a.creation_date>'01-JAN-11'         
+     AND b.vendor_site_id=a.vendor_site_id         
+     AND b.vendor_id=a.vendor_id         
+     AND EXISTS (select 'x'                  
+                   from ap_payment_schedules_all apsa                  
+                  where apsa.invoice_id=a.invoice_id                  
+                    AND NVL(apsa.discount_date,due_date) < SYSDATE+8         
+                )           
+     AND EXISTS (SELECT 'x'         
+                   FROM xx_fin_translatevalues tv         
+                       ,xx_fin_translatedefinition td         
+                  WHERE td.TRANSLATION_NAME = 'XX_AP_TR_MATCH_INVOICES'         
+                    AND tv.TRANSLATE_ID  = td.TRANSLATE_ID         
+                    AND tv.enabled_flag='Y'         
+                    AND SYSDATE BETWEEN tv.start_date_active and NVL(tv.end_date_active,sysdate)         
+                    AND tv.target_value1=a.source         
+                )           
+  AND EXISTS (SELECT  'x'                                                        
+                FROM mtl_system_items_b msi,                                                        
+                     po_lines_all pl                                                        
+               WHERE pl.po_header_id = NVL(a.po_header_id,a.quick_po_header_id)                                                        
+                 AND msi.inventory_item_id = pl.item_id                                                            
+                 AND to_char(msi.organization_id) = '441'         
+                 and msi.segment1=NVL(NULL,msi.segment1)           
+              )                         
+  UNION                               
+select invoice_id, terms_id,vendor_id,vendor_site_id,org_id, hold_type, inv_amount, line_total, inv_count,attribute6         
+from (         
+SELECT /*+ LEADING (h) */         
+    a.invoice_id,a.terms_id,           
+    a.vendor_id,a.vendor_site_id,         
+    a.org_id,                             
+    'MOOT' hold_type,                               
+    a.invoice_amount inv_amount,                               
+    sum(l.amount) line_total,                               
+    1 inv_count,                               
+    count(1) line_count,         
+    b.attribute6             
+    FROM  ap_supplier_sites_all b,         
+          ap_invoice_lines_all l,                             
+          ap_invoices_all a,            
+          (SELECT /*+ INDEX(aph XX_AP_HOLDS_N1) */ 
+                distinct aph.invoice_id,aph.line_location_id         
+             FROM ap_holds_all  aph        
+            WHERE aph.creation_date > '01-JAN-11'          
+              AND NVL(aph.status_flag,'S')= 'S'         
+              AND aph.hold_lookup_code != 'OD NO Receipt'                   
+          ) h                   
+  WHERE a.invoice_id=h.invoice_id    
+    AND a.invoice_num not like '%ODDBUIA'    
+    AND h.line_location_id = l.po_line_location_id           
+    AND a.creation_date>'01-JAN-11'         
+    AND l.invoice_id           =a.invoice_id                               
+    AND l.line_type_lookup_code='ITEM'                    
+    AND b.vendor_site_id=a.vendor_site_id         
+    AND b.vendor_id=a.vendor_id         
+    AND exists (select 'x'                               
+              from ap_payment_schedules_all apsa                               
+              where apsa.invoice_id=a.invoice_id                               
+              AND NVL(apsa.discount_date,due_date) < SYSDATE+8         
+              )                               
+    AND not exists (select 'x'                                
+                    from ap_holds_all aha                               
+                    where aha.invoice_id = a.invoice_id                               
+                    AND aha.hold_lookup_code = 'OD NO Receipt'           
+                    AND NVL(aha.status_flag,'S')= 'S'         
+                )         
+    AND EXISTS (SELECT 'x'         
+                         FROM xx_fin_translatevalues tv         
+                             ,xx_fin_translatedefinition td         
+                        WHERE td.TRANSLATION_NAME = 'XX_AP_TR_MATCH_INVOICES'         
+                          AND tv.TRANSLATE_ID  = td.TRANSLATE_ID         
+                          AND tv.enabled_flag='Y'         
+                          AND SYSDATE BETWEEN tv.start_date_active and NVL(tv.end_date_active,sysdate)         
+                          AND tv.target_value1=a.source         
+                      )           
+  AND EXISTS (SELECT  'x'                                                        
+                FROM mtl_system_items_b msi,                                                        
+                     po_lines_all pl                                                        
+               WHERE pl.po_header_id = NVL(a.po_header_id,a.quick_po_header_id)                                                        
+                 AND msi.inventory_item_id = pl.item_id                                                            
+                 AND to_char(msi.organization_id) = '441'         
+                 and msi.segment1=NVL(NULL,msi.segment1)           
+              )                                 
+         GROUP BY          
+                  a.invoice_id,a.terms_id,         
+                  a.vendor_id,a.vendor_site_id,a.org_id,                                    
+                  a.invoice_amount,b.attribute6         
+)          
+UNION                               
+SELECT /*+ LEADING (h) */         
+    a.invoice_id,a.terms_id,               
+    a.vendor_id,a.vendor_site_id,a.org_id,                         
+    'NRF' hold_type,                               
+    a.invoice_amount inv_amount,                               
+    0 line_total,                               
+    1 inv_count,b.attribute6                              
+  FROM  ap_supplier_sites_all b,                              
+        ap_invoices_all a ,         
+       (SELECT /*+ INDEX(aph XX_AP_HOLDS_N1) */ 
+            distinct aph.invoice_id         
+          FROM ap_holds_all aph          
+         WHERE aph.creation_date > '01-JAN-11'          
+           AND aph.hold_lookup_code = 'OD NO Receipt'         
+           AND NVL(aph.status_flag,'S')= 'S'         
+        ) h                  
+  WHERE  a.invoice_id=h.invoice_id         
+     AND a.invoice_num not like '%ODDBUIA'    
+     AND a.creation_date>'01-JAN-11'         
+     AND b.vendor_site_id=a.vendor_site_id         
+     AND b.vendor_id=a.vendor_id         
+     AND EXISTS (select 'x'                  
+                   from ap_payment_schedules_all apsa                  
+                  where apsa.invoice_id=a.invoice_id                  
+                    AND NVL(apsa.discount_date,due_date) < SYSDATE+8         
+                )           
+     AND EXISTS (SELECT 'x'         
+                   FROM xx_fin_translatevalues tv         
+                       ,xx_fin_translatedefinition td         
+                  WHERE td.TRANSLATION_NAME = 'XX_AP_TR_MATCH_INVOICES'         
+                    AND tv.TRANSLATE_ID  = td.TRANSLATE_ID         
+                    AND tv.enabled_flag='Y'         
+                    AND SYSDATE BETWEEN tv.start_date_active and NVL(tv.end_date_active,sysdate)         
+                    AND tv.target_value1=a.source         
+                )                        
+     AND EXISTS (SELECT  'x'                                                        
+                FROM mtl_system_items_b msi,                                                        
+                     po_lines_all pl                                                        
+               WHERE pl.po_header_id = NVL(a.po_header_id,a.quick_po_header_id)                                                        
+                 AND msi.inventory_item_id = pl.item_id                                                            
+                 AND to_char(msi.organization_id) = '441'         
+                 and msi.segment1=NVL(NULL,msi.segment1)           
+              )             
+ )) a,                                
+      xx_fin_translatevalues tv,         
+      xx_fin_translatedefinition td         
+where td.TRANSLATION_NAME = 'XX_AP_VENDOR_ASSISTANTS'          
+  AND tv.TRANSLATE_ID  = td.TRANSLATE_ID         
+  AND tv.enabled_flag='Y'         
+  AND SYSDATE BETWEEN tv.start_date_active and NVL(tv.end_date_active,sysdate)           
+  AND tv.target_value1=a.attribute6         
+group by a.org_id,tv.target_value1,tv.target_value2]]></SQLQuery>
+  <ViewAttribute
+    Name="VendorAssistant"
+    IsUpdateable="false"
+    IsPersistent="false"
+    PrecisionRule="true"
+    Precision="255"
+    Type="java.lang.String"
+    ColumnType="VARCHAR2"
+    AliasName="VENDOR_ASSISTANT"
+    Expression="VENDOR_ASSISTANT"
+    SQLType="VARCHAR">
+    <DesignTime>
+      <Attr Name="_DisplaySize" Value="240"/>
+    </DesignTime>
+    <Properties>
+      <SchemaBasedProperties>
+        <LABEL
+          ResId="od.tdmatch.model.VAInvoiceSummaryVO.VendorAssistant_LABEL"/>
+      </SchemaBasedProperties>
+    </Properties>
+  </ViewAttribute>
+  <ViewAttribute
+    Name="EmployeeId"
+    IsUpdateable="false"
+    IsPersistent="false"
+    PrecisionRule="true"
+    Precision="240"
+    Type="java.lang.String"
+    ColumnType="VARCHAR2"
+    AliasName="EMPLOYEE_ID"
+    Expression="EMPLOYEE_ID"
+    SQLType="VARCHAR">
+    <DesignTime>
+      <Attr Name="_DisplaySize" Value="240"/>
+    </DesignTime>
+  </ViewAttribute>
+  <ViewAttribute
+    Name="TotalInvCount"
+    IsUpdateable="false"
+    IsPersistent="false"
+    PrecisionRule="true"
+    Type="oracle.jbo.domain.Number"
+    ColumnType="NUMBER"
+    AliasName="TOTAL_INV_COUNT"
+    Expression="TOTAL_INV_COUNT"
+    SQLType="NUMERIC">
+    <Properties>
+      <SchemaBasedProperties>
+        <LABEL
+          ResId="od.tdmatch.model.VAInvoiceSummaryVO.TotalInvCount_LABEL"/>
+        <FMT_FORMAT
+          ResId="od.tdmatch.model.VAInvoiceSummaryVO.TotalInvCount_FMT_FORMAT"/>
+        <FMT_FORMATTER
+          ResId="od.tdmatch.model.VAInvoiceSummaryVO.TotalInvCount_FMT_FORMATTER"/>
+      </SchemaBasedProperties>
+    </Properties>
+  </ViewAttribute>
+  <ViewAttribute
+    Name="TotalInvAmount"
+    IsUpdateable="false"
+    IsPersistent="false"
+    PrecisionRule="true"
+    Type="oracle.jbo.domain.Number"
+    ColumnType="NUMBER"
+    AliasName="TOTAL_INV_AMOUNT"
+    Expression="TOTAL_INV_AMOUNT"
+    SQLType="NUMERIC">
+    <Properties>
+      <SchemaBasedProperties>
+        <LABEL
+          ResId="od.tdmatch.model.VAInvoiceSummaryVO.TotalInvAmount_LABEL"/>
+        <FMT_FORMATTER
+          ResId="od.tdmatch.model.VAInvoiceSummaryVO.TotalInvAmount_FMT_FORMATTER"/>
+        <FMT_FORMAT
+          ResId="od.tdmatch.model.VAInvoiceSummaryVO.TotalInvAmount_FMT_FORMAT"/>
+      </SchemaBasedProperties>
+    </Properties>
+  </ViewAttribute>
+  <ViewAttribute
+    Name="TotalLineAmount"
+    IsUpdateable="false"
+    IsPersistent="false"
+    PrecisionRule="true"
+    Type="oracle.jbo.domain.Number"
+    ColumnType="NUMBER"
+    AliasName="TOTAL_LINE_AMOUNT"
+    Expression="TOTAL_LINE_AMOUNT"
+    SQLType="NUMERIC">
+    <Properties>
+      <SchemaBasedProperties>
+        <FMT_FORMATTER
+          ResId="od.tdmatch.model.VAInvoiceSummaryVO.TotalLineAmount_FMT_FORMATTER"/>
+        <LABEL
+          ResId="od.tdmatch.model.VAInvoiceSummaryVO.TotalLineAmount_LABEL"/>
+        <FMT_FORMAT
+          ResId="od.tdmatch.model.VAInvoiceSummaryVO.TotalLineAmount_FMT_FORMAT"/>
+      </SchemaBasedProperties>
+    </Properties>
+  </ViewAttribute>
+  <ViewAttribute
+    Name="TotalMootCount"
+    IsUpdateable="false"
+    IsPersistent="false"
+    PrecisionRule="true"
+    Type="oracle.jbo.domain.Number"
+    ColumnType="NUMBER"
+    AliasName="TOTAL_MOOT_COUNT"
+    Expression="TOTAL_MOOT_COUNT"
+    SQLType="NUMERIC">
+    <Properties>
+      <SchemaBasedProperties>
+        <LABEL
+          ResId="od.tdmatch.model.VAInvoiceSummaryVO.TotalMootCount_LABEL"/>
+        <FMT_FORMAT
+          ResId="od.tdmatch.model.VAInvoiceSummaryVO.TotalMootCount_FMT_FORMAT"/>
+        <FMT_FORMATTER
+          ResId="od.tdmatch.model.VAInvoiceSummaryVO.TotalMootCount_FMT_FORMATTER"/>
+      </SchemaBasedProperties>
+    </Properties>
+  </ViewAttribute>
+  <ViewAttribute
+    Name="TotalMootInvAmount"
+    IsUpdateable="false"
+    IsPersistent="false"
+    PrecisionRule="true"
+    Type="oracle.jbo.domain.Number"
+    ColumnType="NUMBER"
+    AliasName="TOTAL_MOOT_INV_AMOUNT"
+    Expression="TOTAL_MOOT_INV_AMOUNT"
+    SQLType="NUMERIC">
+    <Properties>
+      <SchemaBasedProperties>
+        <LABEL
+          ResId="od.tdmatch.model.VAInvoiceSummaryVO.TotalMootInvAmount_LABEL"/>
+        <FMT_FORMATTER
+          ResId="od.tdmatch.model.VAInvoiceSummaryVO.TotalMootInvAmount_FMT_FORMATTER"/>
+        <FMT_FORMAT
+          ResId="od.tdmatch.model.VAInvoiceSummaryVO.TotalMootInvAmount_FMT_FORMAT"/>
+      </SchemaBasedProperties>
+    </Properties>
+  </ViewAttribute>
+  <ViewAttribute
+    Name="TotalMootLineAmount"
+    IsUpdateable="false"
+    IsPersistent="false"
+    PrecisionRule="true"
+    Type="oracle.jbo.domain.Number"
+    ColumnType="NUMBER"
+    AliasName="TOTAL_MOOT_LINE_AMOUNT"
+    Expression="TOTAL_MOOT_LINE_AMOUNT"
+    SQLType="NUMERIC">
+    <Properties>
+      <SchemaBasedProperties>
+        <LABEL
+          ResId="od.tdmatch.model.VAInvoiceSummaryVO.TotalMootLineAmount_LABEL"/>
+        <FMT_FORMATTER
+          ResId="od.tdmatch.model.VAInvoiceSummaryVO.TotalMootLineAmount_FMT_FORMATTER"/>
+        <FMT_FORMAT
+          ResId="od.tdmatch.model.VAInvoiceSummaryVO.TotalMootLineAmount_FMT_FORMAT"/>
+      </SchemaBasedProperties>
+    </Properties>
+  </ViewAttribute>
+  <ViewAttribute
+    Name="TotalNrfCount"
+    IsUpdateable="false"
+    IsPersistent="false"
+    PrecisionRule="true"
+    Type="oracle.jbo.domain.Number"
+    ColumnType="NUMBER"
+    AliasName="TOTAL_NRF_COUNT"
+    Expression="TOTAL_NRF_COUNT"
+    SQLType="NUMERIC">
+    <Properties>
+      <SchemaBasedProperties>
+        <LABEL
+          ResId="od.tdmatch.model.VAInvoiceSummaryVO.TotalNrfCount_LABEL"/>
+        <FMT_FORMATTER
+          ResId="od.tdmatch.model.VAInvoiceSummaryVO.TotalNrfCount_FMT_FORMATTER"/>
+        <FMT_FORMAT
+          ResId="od.tdmatch.model.VAInvoiceSummaryVO.TotalNrfCount_FMT_FORMAT"/>
+      </SchemaBasedProperties>
+    </Properties>
+  </ViewAttribute>
+  <ViewAttribute
+    Name="TotalNrfAmount"
+    IsUpdateable="false"
+    IsPersistent="false"
+    PrecisionRule="true"
+    Type="oracle.jbo.domain.Number"
+    ColumnType="NUMBER"
+    AliasName="TOTAL_NRF_AMOUNT"
+    Expression="TOTAL_NRF_AMOUNT"
+    SQLType="NUMERIC">
+    <Properties>
+      <SchemaBasedProperties>
+        <LABEL
+          ResId="od.tdmatch.model.VAInvoiceSummaryVO.TotalNrfAmount_LABEL"/>
+        <FMT_FORMATTER
+          ResId="od.tdmatch.model.VAInvoiceSummaryVO.TotalNrfAmount_FMT_FORMATTER"/>
+        <FMT_FORMAT
+          ResId="od.tdmatch.model.VAInvoiceSummaryVO.TotalNrfAmount_FMT_FORMAT"/>
+      </SchemaBasedProperties>
+    </Properties>
+  </ViewAttribute>
+  <ViewAttribute
+    Name="SumTotInvAmount"
+    IsUpdateable="false"
+    IsSelected="false"
+    IsPersistent="false"
+    PrecisionRule="true"
+    Type="java.math.BigDecimal"
+    ColumnType="NUMBER"
+    AliasName="VIEW_ATTR"
+    SQLType="NUMERIC">
+    <Properties>
+      <SchemaBasedProperties>
+        <FMT_FORMATTER
+          ResId="od.tdmatch.model.VAInvoiceSummaryVO.SumTotInvAmount_FMT_FORMATTER"/>
+        <FMT_FORMAT
+          ResId="od.tdmatch.model.VAInvoiceSummaryVO.SumTotInvAmount_FMT_FORMAT"/>
+      </SchemaBasedProperties>
+    </Properties>
+  </ViewAttribute>
+  <ViewAttribute
+    Name="SumTotInvCount"
+    IsUpdateable="false"
+    IsSelected="false"
+    IsPersistent="false"
+    PrecisionRule="true"
+    Type="java.math.BigDecimal"
+    ColumnType="NUMBER"
+    AliasName="VIEW_ATTR"
+    SQLType="NUMERIC">
+    <Properties>
+      <SchemaBasedProperties>
+        <FMT_FORMATTER
+          ResId="od.tdmatch.model.VAInvoiceSummaryVO.SumTotInvCount_FMT_FORMATTER"/>
+        <FMT_FORMAT
+          ResId="od.tdmatch.model.VAInvoiceSummaryVO.SumTotInvCount_FMT_FORMAT"/>
+      </SchemaBasedProperties>
+    </Properties>
+  </ViewAttribute>
+  <ViewAttribute
+    Name="SumTotLineAmount"
+    IsUpdateable="false"
+    IsSelected="false"
+    IsPersistent="false"
+    PrecisionRule="true"
+    Type="java.math.BigDecimal"
+    ColumnType="NUMBER"
+    AliasName="VIEW_ATTR"
+    SQLType="NUMERIC">
+    <Properties>
+      <SchemaBasedProperties>
+        <FMT_FORMATTER
+          ResId="od.tdmatch.model.VAInvoiceSummaryVO.SumTotLineAmount_FMT_FORMATTER"/>
+        <FMT_FORMAT
+          ResId="od.tdmatch.model.VAInvoiceSummaryVO.SumTotLineAmount_FMT_FORMAT"/>
+      </SchemaBasedProperties>
+    </Properties>
+  </ViewAttribute>
+  <ViewAttribute
+    Name="SumTotMootCount"
+    IsUpdateable="false"
+    IsSelected="false"
+    IsPersistent="false"
+    PrecisionRule="true"
+    Type="java.math.BigDecimal"
+    ColumnType="NUMBER"
+    AliasName="VIEW_ATTR"
+    SQLType="NUMERIC">
+    <Properties>
+      <SchemaBasedProperties>
+        <FMT_FORMATTER
+          ResId="od.tdmatch.model.VAInvoiceSummaryVO.SumTotMootCount_FMT_FORMATTER"/>
+        <FMT_FORMAT
+          ResId="od.tdmatch.model.VAInvoiceSummaryVO.SumTotMootCount_FMT_FORMAT"/>
+      </SchemaBasedProperties>
+    </Properties>
+  </ViewAttribute>
+  <ViewAttribute
+    Name="SumTotMootInvAmount"
+    IsUpdateable="false"
+    IsSelected="false"
+    IsPersistent="false"
+    PrecisionRule="true"
+    Type="java.math.BigDecimal"
+    ColumnType="NUMBER"
+    AliasName="VIEW_ATTR"
+    SQLType="NUMERIC">
+    <Properties>
+      <SchemaBasedProperties>
+        <FMT_FORMATTER
+          ResId="od.tdmatch.model.VAInvoiceSummaryVO.SumTotMootInvAmount_FMT_FORMATTER"/>
+        <FMT_FORMAT
+          ResId="od.tdmatch.model.VAInvoiceSummaryVO.SumTotMootInvAmount_FMT_FORMAT"/>
+      </SchemaBasedProperties>
+    </Properties>
+  </ViewAttribute>
+  <ViewAttribute
+    Name="SumTotMootLineAmount"
+    IsUpdateable="false"
+    IsSelected="false"
+    IsPersistent="false"
+    PrecisionRule="true"
+    Type="java.math.BigDecimal"
+    ColumnType="NUMBER"
+    AliasName="VIEW_ATTR"
+    SQLType="NUMERIC">
+    <Properties>
+      <SchemaBasedProperties>
+        <FMT_FORMATTER
+          ResId="od.tdmatch.model.VAInvoiceSummaryVO.SumTotMootLineAmount_FMT_FORMATTER"/>
+        <FMT_FORMAT
+          ResId="od.tdmatch.model.VAInvoiceSummaryVO.SumTotMootLineAmount_FMT_FORMAT"/>
+      </SchemaBasedProperties>
+    </Properties>
+  </ViewAttribute>
+  <ViewAttribute
+    Name="SumTotNrfAmount"
+    IsUpdateable="false"
+    IsSelected="false"
+    IsPersistent="false"
+    PrecisionRule="true"
+    Type="java.math.BigDecimal"
+    ColumnType="NUMBER"
+    AliasName="VIEW_ATTR"
+    SQLType="NUMERIC">
+    <Properties>
+      <SchemaBasedProperties>
+        <FMT_FORMATTER
+          ResId="od.tdmatch.model.VAInvoiceSummaryVO.SumTotNrfAmount_FMT_FORMATTER"/>
+        <FMT_FORMAT
+          ResId="od.tdmatch.model.VAInvoiceSummaryVO.SumTotNrfAmount_FMT_FORMAT"/>
+      </SchemaBasedProperties>
+    </Properties>
+  </ViewAttribute>
+  <ViewAttribute
+    Name="SumTotNrfCount"
+    IsUpdateable="false"
+    IsSelected="false"
+    IsPersistent="false"
+    PrecisionRule="true"
+    Type="java.math.BigDecimal"
+    ColumnType="NUMBER"
+    AliasName="VIEW_ATTR"
+    SQLType="NUMERIC">
+    <Properties>
+      <SchemaBasedProperties>
+        <FMT_FORMATTER
+          ResId="od.tdmatch.model.VAInvoiceSummaryVO.SumTotNrfCount_FMT_FORMATTER"/>
+        <FMT_FORMAT
+          ResId="od.tdmatch.model.VAInvoiceSummaryVO.SumTotNrfCount_FMT_FORMAT"/>
+      </SchemaBasedProperties>
+    </Properties>
+  </ViewAttribute>
+  <AttrArray Name="KeyAttributes">
+    <Item Value="VendorAssistant"/>
+  </AttrArray>
+  <ViewLinkAccessor
+    Name="VAEmpVendorSummaryVO"
+    ViewLink="od.tdmatch.model.VendorAssistantViewLink"
+    Type="oracle.jbo.RowIterator"
+    IsUpdateable="false"/>
+  <ResourceBundle>
+    <PropertiesBundle
+      PropertiesFile="od.tdmatch.model.ModelBundle"/>
+  </ResourceBundle>
+</ViewObject>

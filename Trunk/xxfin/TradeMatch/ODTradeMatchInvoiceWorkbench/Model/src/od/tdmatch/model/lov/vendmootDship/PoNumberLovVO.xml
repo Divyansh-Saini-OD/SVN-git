@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="windows-1252" ?>
+<!DOCTYPE ViewObject SYSTEM "jbo_03_01.dtd">
+<!---->
+<ViewObject
+  xmlns="http://xmlns.oracle.com/bc4j"
+  Name="PoNumberLovVO"
+  Version="12.2.1.12.24"
+  InheritPersonalization="merge"
+  BindingStyle="OracleName"
+  CustomQuery="true"
+  RowClass="od.tdmatch.model.lov.vendmootDship.PoNumberLovVORowImpl"
+  ComponentClass="od.tdmatch.model.lov.vendmootDship.PoNumberLovVOImpl"
+  FetchMode="FETCH_AS_NEEDED"
+  PageIterMode="Full">
+  <DesignTime>
+    <Attr Name="_codeGenFlag2" Value="Coll"/>
+    <Attr Name="_isExpertMode" Value="true"/>
+    <Attr Name="_isCodegen" Value="true"/>
+  </DesignTime>
+  <Properties>
+    <SchemaBasedProperties>
+      <LABEL
+        ResId="od.tdmatch.model.lov.vendmootDship.PoNumberLovVO_LABEL"/>
+    </SchemaBasedProperties>
+  </Properties>
+  <SQLQuery><![CDATA[SELECT ph.segment1 po_number,ph.po_header_id           
+  FROM po_headers_all ph        
+ WHERE EXISTS (SELECT /*+ LEADING(h) */      
+					  'x'        
+                 FROM  ap_supplier_sites_all site        
+                             
+                WHERE 				  				        
+                   site.vendor_site_id=ph.vendor_site_id        
+                  AND exists (SELECT 'x'     
+                                 FROM xx_fin_translatevalues tv,                                                                      
+                                      xx_fin_translatedefinition td                      
+                                WHERE td.translation_name = 'XX_AP_TRADE_CATEGORIES'                                                                       
+                                  AND tv.translate_id  = td.translate_id                                                                      
+                                  AND tv.enabled_flag = 'Y'                                                                      
+                                  AND sysdate between tv.start_date_active and nvl(tv.end_date_active,sysdate)     
+                                  AND tv.target_value1 = site.attribute8)        
+               )]]></SQLQuery>
+  <ViewAttribute
+    Name="PoNumber"
+    IsUpdateable="false"
+    IsPersistent="false"
+    PrecisionRule="true"
+    Precision="255"
+    Type="java.lang.String"
+    ColumnType="VARCHAR2"
+    AliasName="PO_NUMBER"
+    Expression="PO_NUMBER"
+    SQLType="VARCHAR">
+    <DesignTime>
+      <Attr Name="_DisplaySize" Value="20"/>
+    </DesignTime>
+    <Properties>
+      <SchemaBasedProperties>
+        <LABEL
+          ResId="od.tdmatch.model.lov.vendmootDship.PoNumberLovVO.PoNumber_LABEL"/>
+        <DISPLAYWIDTH
+          Value="25"/>
+      </SchemaBasedProperties>
+    </Properties>
+  </ViewAttribute>
+  <ViewAttribute
+    Name="PoHeaderId"
+    IsUpdateable="false"
+    IsPersistent="false"
+    PrecisionRule="true"
+    Type="oracle.jbo.domain.Number"
+    ColumnType="NUMBER"
+    AliasName="PO_HEADER_ID"
+    Expression="PO_HEADER_ID"
+    SQLType="NUMERIC"
+    IsQueriable="false"/>
+  <AttrArray Name="KeyAttributes">
+    <Item Value="PoNumber"/>
+  </AttrArray>
+  <ResourceBundle>
+    <PropertiesBundle
+      PropertiesFile="od.tdmatch.model.ModelBundle"/>
+  </ResourceBundle>
+</ViewObject>

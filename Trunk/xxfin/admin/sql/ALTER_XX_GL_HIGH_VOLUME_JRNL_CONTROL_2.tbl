@@ -1,0 +1,42 @@
+-- +==========================================================================+
+-- |                  Office Depot - Project Simplify                         |
+-- |                       WIPRO Technologies                                 |
+-- +==========================================================================+
+-- | RICE ID     :  E2049                                                     |
+-- | Name        :  High_Volume_Journal_Import                                |
+-- |                                                                          |
+-- | SQL Script to alter the table XX_GL_HIGH_VOLUME_JRNL_CONTROL             |
+-- |  for adding a column PERIOD_NAME                                         |
+-- |Change Record:                                                            |
+-- |===============                                                           |
+-- |Version   Date         Author               Remarks                       |
+-- |=======   ==========   =============        ==============================|
+-- |  1.0     25-FEB-2010  R.Aldridge           Initial version               |
+-- |                                            Added for the Defect 4960     |
+-- |                                                                          |
+-- |                                                                          |
+-- +==========================================================================+
+
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     ON
+
+ALTER TABLE xxfin.xx_gl_high_volume_jrnl_control
+        MODIFY(INTERFACE_STATUS   VARCHAR2(25));
+           
+ALTER TABLE xxfin.xx_gl_high_volume_jrnl_control
+           ADD(GL_IMP_REQ_ID  NUMBER);
+
+ALTER TABLE xxfin.xx_gl_high_volume_jrnl_control
+           ADD(HV_STG_REQ_ID  NUMBER);
+        
+ALTER TABLE xxfin.xx_gl_high_volume_jrnl_control
+          ADD(HV_IMP_REQ_ID  NUMBER);        
+
+ALTER TABLE xxfin.xx_gl_high_volume_jrnl_control
+          ADD(derived_je_batch_name  VARCHAR2(100));
+
+             
+SHOW ERROR;

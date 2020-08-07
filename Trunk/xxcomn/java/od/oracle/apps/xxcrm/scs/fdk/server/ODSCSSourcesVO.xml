@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding='windows-1252'?>
+<!DOCTYPE ViewObject SYSTEM "jbo_03_01.dtd">
+
+<ViewObject
+   Name="ODSCSSourcesVO"
+   BindingStyle="Oracle"
+   CustomQuery="true"
+   RowClass="oracle.apps.fnd.framework.server.OAViewRowImpl"
+   ComponentClass="od.oracle.apps.xxcrm.scs.fdk.server.ODSCSSourcesVOImpl"
+   MsgBundleClass="oracle.jbo.common.JboResourceBundle"
+   UseGlueCode="false" >
+   <SQLQuery><![CDATA[
+SELECT
+                  SOC.source_code_id  source_id,
+                  SOC.source_code ,
+                  CAMPT.campaign_name source_value
+                FROM
+                  AMS_SOURCE_CODES     SOC,
+                  AMS_CAMPAIGNS_ALL_TL CAMPT,
+                  AMS_CAMPAIGNS_ALL_B  CAMPB,
+                  apps.FND_LOOKUP_VALUES    LKP
+                WHERE
+                    SOC.arc_source_code_for = 'CAMP'
+                AND SOC.active_flag = 'Y'
+                AND SOC.source_code_for_id = campb.campaign_id
+                AND CAMPB.campaign_id = campt.campaign_id
+                AND CAMPB.status_code IN('ACTIVE',    'COMPLETED')
+                AND CAMPT.LANGUAGE = userenv('LANG')
+                AND   LKP.lookup_type = 'XXCS_POTENTIAL_TYPE_SOURCE_MAP'
+                 AND ltrim(rtrim(upper(replace(LKP.description,chr(9),'')))) = ltrim(rtrim(upper(replace(CAMPT.campaign_name,chr(9),''))))
+   ]]></SQLQuery>
+   <DesignTime>
+      <Attr Name="_version" Value="9.0.3.13.75" />
+      <Attr Name="_CodeGenFlagNew" Value="36" />
+   </DesignTime>
+   <ViewAttribute
+      Name="SourceId"
+      IsPersistent="false"
+      IsNotNull="true"
+      Type="oracle.jbo.domain.Number"
+      AliasName="SOURCE_ID"
+      ColumnType="VARCHAR2"
+      Expression="SOURCE_ID"
+      SQLType="NUMERIC" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="SourceCode"
+      IsPersistent="false"
+      IsNotNull="true"
+      Precision="30"
+      Type="java.lang.String"
+      AliasName="SOURCE_CODE"
+      ColumnType="VARCHAR2"
+      Expression="SOURCE_CODE"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="30" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="SourceValue"
+      IsPersistent="false"
+      IsNotNull="true"
+      Precision="240"
+      Type="java.lang.String"
+      AliasName="SOURCE_VALUE"
+      ColumnType="VARCHAR2"
+      Expression="SOURCE_VALUE"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="240" />
+      </DesignTime>
+   </ViewAttribute>
+</ViewObject>

@@ -1,0 +1,23 @@
+---+========================================================================================================+        
+---|                                        Office Depot - Project Simplify                                 |
+---|                             Oracle NAIO/WIPRO/Office Depot/Consulting Organization                     |
+---+========================================================================================================+
+---|    Application             :       AR                                                                  |
+---|                                                                                                        |
+---|    Name                    :       XX_AR_CBI_TOTALS.syn                                                |
+---|                                                                                                        |
+---|    Description             :                                                                           |
+---|                                                                                                        |
+---|                                                                                                        |
+---|                                                                                                        |
+---|    Change Record                                                                                       |
+---|    ---------------------------------                                                                   |
+---|    Version         DATE              AUTHOR             DESCRIPTION                                    |
+---|    ------------    ----------------- ---------------    ---------------------                          |
+---|    1.0             16-JAN-2008       Balaguru Seshadri  Initial Version                                |
+---|                                                                                                        |
+---+========================================================================================================+
+--DROP TABLE XXFIN.XX_AR_CBI_TOTALS
+--/
+CREATE SYNONYM XX_AR_CBI_TOTALS FOR XXFIN.XX_AR_CBI_TOTALS
+/

@@ -1,0 +1,16 @@
+<adapter-config name="PartsQuotationCreationService" adapter="Oracle Applications Adapter" wsdlLocation="PartsQuotationCreationService.wsdl" xmlns="http://platform.integration.oracle/blocks/adapter/fw/metadata">
+  
+  <connection-factory location="eis/apps/OraXxsoa_svcEOM" UIConnectionName="TDSDev02Database" UIOracleAppType="DBOBJECT" adapterRef=""/>
+  <endpoint-interaction portType="PartsQuotationCreationService_ptt" operation="PartsQuotationCreationService">
+    <interaction-spec className="oracle.tip.adapter.apps.AppsStoredProcedureInteractionSpec">
+      <property name="IRepInternalName" value="PLSQL:XX_CS_TDS_PARTS_PKG:ADD_PARTS"/>
+      <property name="SchemaName" value="APPS"/>
+      <property name="PackageName" value="XX_CS_TDS_PARTS_PKG"/>
+      <property name="ProcedureName" value="ADD_PARTS"/>
+      <property name="Username" value="sysadmin"/>
+      <property name="Responsibility" value="System Administrator"/>
+    </interaction-spec>
+    <output/>
+  </endpoint-interaction>
+
+</adapter-config>

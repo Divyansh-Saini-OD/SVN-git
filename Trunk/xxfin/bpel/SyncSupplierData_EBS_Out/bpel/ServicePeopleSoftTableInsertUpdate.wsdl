@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions 
+    name="ServicePeopleSoftTableInsertUpdate"
+    targetNamespace="http://xmlns.oracle.com/pcbpel/adapter/db/ServicePeopleSoftTableInsertUpdate/"
+    xmlns:tns="http://xmlns.oracle.com/pcbpel/adapter/db/ServicePeopleSoftTableInsertUpdate/"
+    xmlns:plt="http://schemas.xmlsoap.org/ws/2003/05/partner-link/"
+    xmlns:jca="http://xmlns.oracle.com/pcbpel/wsdl/jca/"
+    xmlns:pc="http://xmlns.oracle.com/pcbpel/"
+    xmlns:top="http://xmlns.oracle.com/pcbpel/adapter/db/top/ServicePeopleSoftTableInsertUpdate"
+    xmlns:hdr="http://xmlns.oracle.com/pcbpel/adapter/db/"
+    xmlns="http://schemas.xmlsoap.org/wsdl/">
+
+    <import namespace="http://xmlns.oracle.com/pcbpel/adapter/db/" location="DBAdapterOutboundHeader.wsdl"/>
+
+    <types>
+        <schema xmlns="http://www.w3.org/2001/XMLSchema">
+            <import namespace="http://xmlns.oracle.com/pcbpel/adapter/db/top/ServicePeopleSoftTableInsertUpdate"
+                schemaLocation="ServicePeopleSoftTableInsertUpdate_table.xsd"/>
+        </schema>
+    </types>
+
+    <message name="XxApPsVendorCollection_msg">
+        <part name="XxApPsVendorCollection" element="top:XxApPsVendorCollection"/>
+    </message>
+
+
+    <portType name="ServicePeopleSoftTableInsertUpdate_ptt">
+        <operation name="merge">
+            <input message="tns:XxApPsVendorCollection_msg"/>
+        </operation>
+        <operation name="write">
+            <input message="tns:XxApPsVendorCollection_msg"/>
+        </operation>
+    </portType>
+
+    <binding name="ServicePeopleSoftTableInsertUpdate_binding" type="tns:ServicePeopleSoftTableInsertUpdate_ptt">
+        <jca:binding />
+        <operation name="merge">
+            <jca:operation
+                InteractionSpec="oracle.tip.adapter.db.DBWriteInteractionSpec"
+
+                DescriptorName="ServicePeopleSoftTableInsertUpdate.XxApPsVendor"
+                DmlType="merge"
+                DetectOmissions="true"
+                OptimizeMerge="true"
+                MappingsMetaDataURL="ServicePeopleSoftTableInsertUpdate_toplink_mappings.xml" />
+            <input>
+                <jca:header message="hdr:OutboundHeader_msg" part="outboundHeader"/>
+            </input>
+        </operation>
+        <operation name="write">
+            <jca:operation
+                InteractionSpec="oracle.tip.adapter.db.DBWriteInteractionSpec"
+
+                DescriptorName="ServicePeopleSoftTableInsertUpdate.XxApPsVendor"
+                DmlType="write"
+                MappingsMetaDataURL="ServicePeopleSoftTableInsertUpdate_toplink_mappings.xml" />
+            <input>
+                <jca:header message="hdr:OutboundHeader_msg" part="outboundHeader"/>
+            </input>
+        </operation>
+    </binding>
+
+    <!-- Your runtime connection is declared in
+        J2EE_HOME/application-deployments/default/DbAdapter/oc4j-ra.xml
+        These 'mcf' properties here are from your design time connection and 
+        save you from having to edit that file and restart the application server
+        if eis/db/EBSApps is missing.
+        These 'mcf' properties are safe to remove.
+    -->
+    <service name="ServicePeopleSoftTableInsertUpdate">
+        <port name="ServicePeopleSoftTableInsertUpdate_pt" binding="tns:ServicePeopleSoftTableInsertUpdate_binding">
+            <jca:address location="eis/db/EBSAppsFin"
+                UIConnectionName="EIS_APPS_EBS_APPS_DBConn"
+                ManagedConnectionFactory="oracle.tip.adapter.db.DBManagedConnectionFactory"
+            />
+        </port>
+    </service>
+
+    <plt:partnerLinkType name="ServicePeopleSoftTableInsertUpdate_plt" >
+        <plt:role name="ServicePeopleSoftTableInsertUpdate_role" >
+            <plt:portType name="tns:ServicePeopleSoftTableInsertUpdate_ptt" />
+        </plt:role>
+    </plt:partnerLinkType>
+
+</definitions>

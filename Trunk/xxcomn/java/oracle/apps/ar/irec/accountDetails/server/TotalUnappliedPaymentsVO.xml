@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding='WINDOWS-1252'?>
+<!DOCTYPE ViewObject SYSTEM "jbo_03_01.dtd">
+<!-- $Header: TotalUnappliedPaymentsVO.xml 120.0.12010000.3 2010/02/02 11:01:03 nkanchan ship $ -->
+<ViewObject
+   Name="TotalUnappliedPaymentsVO"
+   TimeStamp="1026776360890"
+   BindingStyle="Oracle"
+   CustomQuery="true"
+   RowClass="oracle.apps.ar.irec.accountDetails.server.TotalUnappliedPaymentsVORowImpl"
+   ComponentClass="oracle.apps.ar.irec.accountDetails.server.TotalUnappliedPaymentsVOImpl"
+   UseGlueCode="false" >
+   <SQLQuery><![CDATA[
+SELECT /*+ index(ps XX_AR_PAYMENT_SCHEDULES_ALL_N5) */ NVL(SUM(-app.amount_applied), 0) AS Total_Unapplied_Payments
+FROM AR_PAYMENT_SCHEDULES ps,
+  ar_receivable_applications app 
+WHERE ps.customer_id                                          = :1
+AND DECODE( (:2), NULL, NVL(ps.customer_site_use_id,-10), :3) = NVL(ps.customer_site_use_id,-10)
+AND ps.invoice_currency_code                                  = :4
+AND app.cash_receipt_id                                       = ps.cash_receipt_id
+AND NVL( app.confirmed_flag, 'Y' )                            = 'Y'
+AND app.status                                                = 'UNAPP'
+AND ps.status                                                 = 'OP' 
+   ]]></SQLQuery>
+   <DesignTime>
+      <Attr Name="_isCodegen" Value="true" />
+      <Attr Name="_version" Value="5.0.0.6.85" />
+      <Attr Name="_CodeGenFlagNew" Value="36" />
+   </DesignTime>
+   <ViewAttribute
+      Name="TotalUnappliedPayments"
+      IsQueriable="false"
+      IsPersistent="false"
+      Type="oracle.jbo.domain.Number"
+      Expression="TOTAL_UNAPPLIED_PAYMENTS"
+      SQLType="NUMERIC"
+      AliasName="TOTAL_UNAPPLIED_PAYMENTS" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="0" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="CurrencyCode"
+      IsQueriable="false"
+      IsPersistent="false"
+      Type="java.lang.String"
+      AliasName="CURRENCY_CODE" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="0" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="SumAmountFormatted"
+      IsQueriable="false"
+      IsPersistent="false"
+      Type="java.lang.String"
+      AliasName="SUM_AMOUNT_FORMATTED" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="0" />
+      </DesignTime>
+   </ViewAttribute>
+</ViewObject>

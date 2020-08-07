@@ -1,0 +1,86 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<customization xmlns="http://xmlns.oracle.com/jrad" version="9.0.5.4.89_560" xml:lang="en-US" customizes="/oracle/apps/asl/sync/webui/ASLTemplateDownloadPG" xmlns:oa="http://xmlns.oracle.com/oa">
+   <modifications>
+      <modify element="TemplateDownloadLink" destination="/XXCRM_HTML/Offline Customer Capture.exe" text="Offline Customer Setup"/>
+      <insert after="TemplateDLHeaderRN">
+         <oa:staticStyledText id="OD_ASL_DOWNLOAD_TEXT_16" adminCustomizable="true" cellNoWrapFormat="false" dataType="VARCHAR2" initSortSeq="none" messageAppShortName="ASL" messageName="OD_ASL_DOWNLOAD_TEXT_16" queryable="false" rendered="true" scope="." serverUnvalidated="false" sortState="no" totalValue="false" userCustomizable="false" warnAboutChanges="true" xmlns:oa="http://xmlns.oracle.com/oa"/>
+      </insert>
+      <insert after="TemplateDLHeaderRN">
+         <oa:staticStyledText id="OD_ASL_DOWNLOAD_TEXT_15" adminCustomizable="true" cellNoWrapFormat="false" dataType="VARCHAR2" initSortSeq="none" messageAppShortName="ASL" messageName="OD_ASL_DOWNLOAD_TEXT_15" queryable="false" rendered="true" scope="." serverUnvalidated="false" sortState="no" totalValue="false" userCustomizable="false" warnAboutChanges="true" xmlns:oa="http://xmlns.oracle.com/oa"/>
+      </insert>
+      <insert after="TemplateDLHeaderRN">
+         <oa:staticStyledText id="OD_ASL_DOWNLOAD_TEXT_14" adminCustomizable="true" cellNoWrapFormat="false" dataType="VARCHAR2" initSortSeq="none" messageAppShortName="ASL" messageName="OD_ASL_DOWNLOAD_TEXT_14" queryable="false" rendered="true" scope="." serverUnvalidated="false" sortState="no" totalValue="false" userCustomizable="false" warnAboutChanges="true" xmlns:oa="http://xmlns.oracle.com/oa"/>
+      </insert>
+      <insert after="TemplateDLHeaderRN">
+         <oa:staticStyledText id="OD_ASL_DOWNLOAD_TEXT_13" adminCustomizable="true" cellNoWrapFormat="false" dataType="VARCHAR2" initSortSeq="none" messageAppShortName="ASL" messageName="OD_ASL_DOWNLOAD_TEXT_13" queryable="false" rendered="true" scope="." serverUnvalidated="false" sortState="no" totalValue="false" userCustomizable="false" warnAboutChanges="true" xmlns:oa="http://xmlns.oracle.com/oa"/>
+      </insert>
+      <insert after="TemplateDLHeaderRN">
+         <oa:spacer id="OD_ASL_SPACER_6" adminCustomizable="true" height="20" rendered="true" scope="." width="10" xmlns:oa="http://xmlns.oracle.com/oa"/>
+      </insert>
+      <insert after="TemplateDLHeaderRN">
+         <oa:staticStyledText id="OD_ASL_DOWNLOAD_TEXT_12" adminCustomizable="true" cellNoWrapFormat="false" dataType="VARCHAR2" initSortSeq="none" messageAppShortName="ASL" messageName="OD_ASL_DOWNLOAD_TEXT_12" queryable="false" rendered="true" scope="." serverUnvalidated="false" sortState="no" totalValue="false" userCustomizable="false" warnAboutChanges="true" xmlns:oa="http://xmlns.oracle.com/oa"/>
+      </insert>
+      <insert after="TemplateDLHeaderRN">
+         <oa:spacer id="OD_ASL_SPACER_5" adminCustomizable="true" height="20" rendered="true" scope="." width="10" xmlns:oa="http://xmlns.oracle.com/oa"/>
+      </insert>
+      <insert after="TemplateDLHeaderRN">
+         <oa:staticStyledText id="OD_ASL_DOWNLOAD_TEXT_11" adminCustomizable="true" cellNoWrapFormat="false" dataType="VARCHAR2" initSortSeq="none" messageAppShortName="ASL" messageName="OD_ASL_DOWNLOAD_TEXT_11" queryable="false" rendered="true" scope="." serverUnvalidated="false" sortState="no" totalValue="false" userCustomizable="false" warnAboutChanges="true" xmlns:oa="http://xmlns.oracle.com/oa"/>
+      </insert>
+      <insert after="TemplateDLHeaderRN">
+         <oa:staticStyledText id="OD_ASL_DOWNLOAD_TEXT_10" adminCustomizable="true" cellNoWrapFormat="false" dataType="VARCHAR2" initSortSeq="none" messageAppShortName="ASL" messageName="OD_ASL_DOWNLOAD_TEXT_10" queryable="false" rendered="true" scope="." serverUnvalidated="false" sortState="no" totalValue="false" userCustomizable="false" warnAboutChanges="true" xmlns:oa="http://xmlns.oracle.com/oa"/>
+      </insert>
+      <insert after="TemplateDLHeaderRN">
+         <oa:staticStyledText id="OD_ASL_DOWNLOAD_TEXT_9" adminCustomizable="true" cellNoWrapFormat="false" dataType="VARCHAR2" initSortSeq="none" messageAppShortName="ASL" messageName="OD_ASL_DOWNLOAD_TEXT_9" queryable="false" rendered="true" scope="." serverUnvalidated="false" sortState="no" totalValue="false" userCustomizable="false" warnAboutChanges="true" xmlns:oa="http://xmlns.oracle.com/oa"/>
+      </insert>
+      <insert after="TemplateDLHeaderRN">
+         <oa:staticStyledText id="OD_ASL_DOWNLOAD_TEXT_8" adminCustomizable="true" cellNoWrapFormat="false" dataType="VARCHAR2" initSortSeq="none" messageAppShortName="ASL" messageName="OD_ASL_DOWNLOAD_TEXT_8" queryable="false" rendered="true" scope="." serverUnvalidated="false" sortState="no" totalValue="false" userCustomizable="false" warnAboutChanges="true" xmlns:oa="http://xmlns.oracle.com/oa"/>
+      </insert>
+      <insert after="TemplateDLHeaderRN">
+         <oa:spacer id="OD_ASL_SPACER_4" adminCustomizable="true" height="20" rendered="true" scope="." width="10" xmlns:oa="http://xmlns.oracle.com/oa"/>
+      </insert>
+      <insert after="TemplateDLHeaderRN">
+         <oa:staticStyledText id="OD_ASL_DOWNLOAD_TEXT_7" adminCustomizable="true" cellNoWrapFormat="false" dataType="VARCHAR2" initSortSeq="none" messageAppShortName="ASL" messageName="OD_ASL_DOWNLOAD_TEXT_7" queryable="false" rendered="true" scope="." serverUnvalidated="false" sortState="no" totalValue="false" userCustomizable="false" warnAboutChanges="true" xmlns:oa="http://xmlns.oracle.com/oa"/>
+      </insert>
+      <insert after="TemplateDLHeaderRN">
+         <oa:staticStyledText id="OD_ASL_DOWNLOAD_TEXT_6" adminCustomizable="true" cellNoWrapFormat="false" dataType="VARCHAR2" initSortSeq="none" messageAppShortName="ASL" messageName="OD_ASL_DOWNLOAD_TEXT_6" queryable="false" rendered="true" scope="." serverUnvalidated="false" sortState="no" totalValue="false" userCustomizable="false" warnAboutChanges="true" xmlns:oa="http://xmlns.oracle.com/oa"/>
+      </insert>
+      <insert after="TemplateDLHeaderRN">
+         <oa:staticStyledText id="OD_ASL_DOWNLOAD_TEXT_5" adminCustomizable="true" cellNoWrapFormat="false" dataType="VARCHAR2" initSortSeq="none" messageAppShortName="ASL" messageName="OD_ASL_DOWNLOAD_TEXT_5" queryable="false" rendered="true" scope="." serverUnvalidated="false" sortState="no" totalValue="false" userCustomizable="false" warnAboutChanges="true" xmlns:oa="http://xmlns.oracle.com/oa"/>
+      </insert>
+      <insert after="TemplateDLHeaderRN">
+         <oa:staticStyledText id="OD_ASL_DOWNLOAD_TEXT_4" adminCustomizable="true" cellNoWrapFormat="false" dataType="VARCHAR2" initSortSeq="none" messageAppShortName="ASL" messageName="OD_ASL_DOWNLOAD_TEXT_4" queryable="false" rendered="true" scope="." serverUnvalidated="false" sortState="no" totalValue="false" userCustomizable="false" warnAboutChanges="true" xmlns:oa="http://xmlns.oracle.com/oa"/>
+      </insert>
+      <insert after="TemplateDLHeaderRN">
+         <oa:spacer id="OD_ASL_SPACER_3" adminCustomizable="true" height="5" rendered="true" scope="." width="10" xmlns:oa="http://xmlns.oracle.com/oa"/>
+      </insert>
+      <insert after="TemplateDLHeaderRN">
+         <oa:link id="OD_ASL_DOWNLOAD_LINK" adminCustomizable="true" destination="/XXCRM_HTML/Offline Customer Capture.exe" rendered="true" scope="." serverUnvalidated="false" text="Offline Customer Capture" userCustomizable="false" warnAboutChanges="true" xmlns:oa="http://xmlns.oracle.com/oa"/>
+      </insert>
+      <insert after="TemplateDLHeaderRN">
+         <oa:spacer id="OD_ASL_SPACER_2" adminCustomizable="true" height="5" rendered="true" scope="." width="10" xmlns:oa="http://xmlns.oracle.com/oa"/>
+      </insert>
+      <insert after="TemplateDLHeaderRN">
+         <oa:staticStyledText id="OD_ASL_DOWNLOAD_TEXT_3" adminCustomizable="true" cellNoWrapFormat="false" dataType="VARCHAR2" initSortSeq="none" messageAppShortName="ASL" messageName="OD_ASL_DOWNLOAD_TEXT_3" queryable="false" rendered="true" scope="." serverUnvalidated="false" sortState="no" totalValue="false" userCustomizable="false" warnAboutChanges="true" xmlns:oa="http://xmlns.oracle.com/oa"/>
+      </insert>
+      <insert after="TemplateDLHeaderRN">
+         <oa:staticStyledText id="OD_ASL_DOWNLOAD_TEXT_2" adminCustomizable="true" cellNoWrapFormat="false" dataType="VARCHAR2" initSortSeq="none" messageAppShortName="ASL" messageName="OD_ASL_DOWNLOAD_TEXT_2" queryable="false" rendered="true" scope="." serverUnvalidated="false" sortState="no" totalValue="false" userCustomizable="false" warnAboutChanges="true" xmlns:oa="http://xmlns.oracle.com/oa"/>
+      </insert>
+      <insert after="TemplateDLHeaderRN">
+         <oa:spacer id="OD_ASL_SPACER_1" adminCustomizable="true" height="20" rendered="true" scope="." width="2" xmlns:oa="http://xmlns.oracle.com/oa"/>
+      </insert>
+      <insert after="TemplateDLHeaderRN">
+         <oa:staticStyledText id="OD_ASL_DOWNLOAD_TEXT_1" adminCustomizable="true" cellNoWrapFormat="false" dataType="VARCHAR2" initSortSeq="none" messageAppShortName="ASL" messageName="OD_ASL_DOWNLOAD_TEXT_1" queryable="false" rendered="true" scope="." serverUnvalidated="false" sortState="no" totalValue="false" userCustomizable="false" warnAboutChanges="true" xmlns:oa="http://xmlns.oracle.com/oa"/>
+      </insert>
+      <modify element="TemplateDLHeaderRN" text="Offline Customer Capture Template Download"/>
+      <modify element="DLTip1" rendered="false"/>
+      <modify element="DLText1" rendered="false"/>
+      <modify element="SpacerItem1" rendered="false"/>
+      <modify element="DLText2" rendered="false"/>
+      <modify element="SpacerItem2" rendered="false"/>
+      <modify element="SpacerItem3" rendered="false"/>
+      <modify element="DLText3" rendered="false"/>
+      <modify element="DLText4" rendered="false"/>
+      <modify element="SpacerItem4" rendered="false"/>
+      <modify element="SpacerItem5" rendered="false"/>
+   </modifications>
+</customization>

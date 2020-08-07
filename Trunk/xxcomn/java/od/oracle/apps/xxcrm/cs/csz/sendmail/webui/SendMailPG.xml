@@ -1,0 +1,35 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<!-- dbdrv: exec java oracle/jrad/tools/xml/importer XMLImporter.class java &phase=dat+24 checkfile:~PROD:~PATH:~FILE &fullpath:~PROD:~PATH:~FILE -username &un_apps -password &pw_apps -dbconnection &jdbc_db_addr  -userId "1" -rootPackage /oracle/apps/~PROD  -rootdir &fullpath:~PROD:mds:directory  -->
+<page xmlns:jrad="http://xmlns.oracle.com/jrad" xmlns:oa="http://xmlns.oracle.com/oa" xmlns:ui="http://xmlns.oracle.com/uix/ui" version="10.1.3_" xml:lang="en-US" xmlns:user="http://xmlns.oracle.com/jrad/user" xmlns="http://xmlns.oracle.com/jrad" file-version="$Header$">
+   <content>
+      <!--*[Enter Javadoc like developer documentation, delete this line once you fill the included template.] [Put a one line description of the region here.] [Put a brief description of the usage of the region here.] @param [Parameter_name] [Put parameter use here.] @param [Parameter_name] [Put parameter use here.] @see [Put any additional links apart from controller class and BC4J objects directly referenced by this region]-->
+      <oa:pageLayout id="SendMail" amDefName="od.oracle.apps.xxcrm.cs.csz.sendmail.server.SendMailAM" title="Send Message" controllerClass="od.oracle.apps.xxcrm.cs.csz.sendmail.webui.SendMailCO">
+         <ui:corporateBranding>
+            <oa:image id="corporateBrandingImage" source="/OA_MEDIA/FNDSSCORP.gif"/>
+         </ui:corporateBranding>
+         <ui:contents>
+            <oa:header id="region2">
+               <ui:contents>
+                  <oa:tableLayout id="region1" hAlign="left">
+                     <ui:contents>
+                        <oa:messageTextInput id="txtFrom" prompt="From:" maximumLength="100" translatableDefaultValue="no.reply@officedepot.com" readOnly="false"/>
+                        <oa:messageTextInput id="txtTo" prompt="To:" maximumLength="2000"/>
+                        <oa:messageTextInput id="txtCC" prompt="CC:" maximumLength="2000"/>
+                        <oa:messageTextInput id="txtBcc" prompt="Bcc:" maximumLength="2000"/>
+                        <oa:messageTextInput id="txtSubject" prompt="Subject:" maximumLength="250"/>
+                        <oa:messageChoice id="txtAction" pickListViewDef="od.oracle.apps.xxcrm.cs.csz.sendmail.server.ActionsPicklistVO" pickListDispAttr="Meaning" pickListValAttr="LookupCode" prompt="Actions :"/>
+                        <oa:messageTextInput id="txtMessage" prompt="Message" dataType="VARCHAR2" maximumLength="32000" vAlign="top" rows="20" columns="80" translatableDefaultValue="Hi sending mail"/>
+                        <oa:messageTextInput id="hdnIncidentNo" rendered="false" dataType="NUMBER" translatableDefaultValue="" prompt="Incident Num"/>
+                     </ui:contents>
+                  </oa:tableLayout>
+               </ui:contents>
+            </oa:header>
+            <oa:header id="region3">
+               <ui:contents>
+                  <oa:submitButton id="btnSubmit" text="Send" prompt="Send" hAlign="right"/>
+               </ui:contents>
+            </oa:header>
+         </ui:contents>
+      </oa:pageLayout>
+   </content>
+</page>

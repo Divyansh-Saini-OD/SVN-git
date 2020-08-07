@@ -1,0 +1,39 @@
+SET VERIFY      OFF
+SET TERM        OFF
+SET FEEDBACK    OFF
+SET SHOW        OFF
+SET ECHO        OFF
+SET TAB         OFF
+
+-- +===================================================================+
+-- |                        Office Depot                               |
+-- |                                                                   |
+-- +===================================================================+
+-- | Synonym Name:  XXFIN.XX_CE_BANK_STAGING                             |
+-- | Rice Id     :                                              |
+-- |                                                                   |
+-- |Change Record:                                                     |
+-- |===============                                                    |
+-- |Version   Date         Author             Remarks                  |
+-- |=======   ===========  =================  =========================|
+-- |1.0       3-DEC-2017   Jiendra Atale      Initial draft version    |
+-- +===================================================================+
+
+PROMPT
+PROMPT Synonym XX_CE_BANK_STAGING
+PROMPT    
+
+CREATE OR REPLACE SYNONYM APPS.XX_CE_BANK_STAGING FOR XXFIN.XX_CE_BANK_STAGING; 
+
+PROMPT
+PROMPT Exiting....
+PROMPT
+
+SET FEEDBACK ON
+
+SHOW ERRORS;
+EXIT;
+
+REM============================================================================================
+REM                                   End Of Script                                            
+REM============================================================================================

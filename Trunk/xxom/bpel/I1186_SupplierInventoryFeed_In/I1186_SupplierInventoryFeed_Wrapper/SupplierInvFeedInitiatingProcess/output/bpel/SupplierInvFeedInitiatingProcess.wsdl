@@ -1,0 +1,41 @@
+<definitions
+     name="SupplierInvFeedInitiatingProcess"
+     targetNamespace="http://xmlns.oracle.com/SupplierInvFeedInitiatingProcess"
+     xmlns="http://schemas.xmlsoap.org/wsdl/"
+     xmlns:ns1="http://xmlns.oracle.com/CustPO"
+     xmlns:plnk="http://schemas.xmlsoap.org/ws/2003/05/partner-link/"
+     xmlns:client="http://xmlns.oracle.com/SupplierInvFeedInitiatingProcess"
+    >
+    <types>
+        <schema xmlns="http://www.w3.org/2001/XMLSchema">
+            <import namespace="http://xmlns.oracle.com/SupplierInvFeedInitiatingProcess" schemaLocation="SupplierInvFeedInitiatingProcess.xsd"/>
+        </schema>
+        <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <xsd:import namespace="http://xmlns.oracle.com/CustPO" schemaLocation="I1186SupplierInvFeed.xsd"/>
+        </xsd:schema>
+    </types>
+    <message name="SupplierInvFeedInitiatingProcessResponseMessage">
+        <part name="payload" element="client:SupplierInvFeedInitiatingProcessProcessResponse"/>
+    </message>
+    <message name="SupplierInvFeedInitiatingProcessRequestMessage">
+        <part name="payload" element="ns1:I1186SupplierInvFeed"/>
+    </message>
+    <portType name="SupplierInvFeedInitiatingProcessCallback">
+        <operation name="onResult">
+            <input message="client:SupplierInvFeedInitiatingProcessResponseMessage"/>
+        </operation>
+    </portType>
+    <portType name="SupplierInvFeedInitiatingProcess">
+        <operation name="initiate">
+            <input message="client:SupplierInvFeedInitiatingProcessRequestMessage"/>
+        </operation>
+    </portType>
+    <plnk:partnerLinkType name="SupplierInvFeedInitiatingProcess">
+        <plnk:role name="SupplierInvFeedInitiatingProcessProvider">
+            <plnk:portType name="client:SupplierInvFeedInitiatingProcess"/>
+        </plnk:role>
+        <plnk:role name="SupplierInvFeedInitiatingProcessRequester">
+            <plnk:portType name="client:SupplierInvFeedInitiatingProcessCallback"/>
+        </plnk:role>
+    </plnk:partnerLinkType>
+</definitions>

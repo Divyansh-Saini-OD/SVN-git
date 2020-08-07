@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<BPELSuitcase guid="MD5{71421692adcf9752188a9e52b8d09ebe}" timestamp="1153983633437" revision="1.0">
+  <BPELProcess process-impl="bpel.p0.BPEL_BIN" src="XXOMWshSendTxnToOtmService.bpel" id="XXOMWshSendTxnToOtmService">
+    <partnerLinkBindings>
+      <partnerLinkBinding name="client">
+        <property name="wsdlLocation">XXOMWshSendTxnToOtmService.wsdl</property>
+      </partnerLinkBinding>
+      <partnerLinkBinding name="getDeliveryService">
+        <property name="wsdlLocation">XXOMWshSendDlvyToOtmService.wsdl</property>
+        <property name="wsdlRuntimeLocation">${domain_url}/XXOMWshSendDlvyToOtmService/XXOMWshSendDlvyToOtmService?wsdl</property>
+      </partnerLinkBinding>
+      <partnerLinkBinding name="getTripService">
+        <property name="wsdlLocation">WshSendTripToOtmService.wsdl</property>
+        <property name="wsdlRuntimeLocation">${domain_url}/WshSendTripToOtmService/WshSendTripToOtmService?wsdl</property>
+      </partnerLinkBinding>
+      <partnerLinkBinding name="getRefLocationService">
+        <property name="wsdlLocation">XXOMWshSendLocRefDataToOtm.wsdl</property>
+        <property name="wsdlRuntimeLocation">${domain_url}/XXOMWshSendLocRefDataToOtm/XXOMWshSendLocRefDataToOtm?wsdl</property>
+      </partnerLinkBinding>
+      <partnerLinkBinding name="pushToOtm">
+        <property name="wsdlLocation">GLogXML.wsdl</property>
+        <property name="wsdlRuntimeLocation">${server_url}/xmllib/GLogXML.wsdl</property>
+      </partnerLinkBinding>
+      <partnerLinkBinding name="getUpdateTxnData">
+        <property name="wsdlLocation">UpdateTxnData.wsdl</property>
+      </partnerLinkBinding>
+      <partnerLinkBinding name="updateRefLocationData">
+        <property name="wsdlLocation">ReferenceLocationData.wsdl</property>
+      </partnerLinkBinding>
+      <partnerLinkBinding name="getItemRefService">
+        <property name="wsdlLocation">XXOMWshSendItemRefDataToOtm.wsdl</property>
+        <property name="wsdlRuntimeLocation">${domain_url}/XXOMWshSendItemRefDataToOtm/XXOMWshSendItemRefDataToOtm?wsdl</property>
+      </partnerLinkBinding>
+      <partnerLinkBinding name="getAuthenticateTicket">
+        <property name="wsdlLocation">AuthenticateTicket.wsdl</property>
+      </partnerLinkBinding>
+    </partnerLinkBindings>
+  </BPELProcess>
+</BPELSuitcase>

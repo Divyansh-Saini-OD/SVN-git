@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding='windows-1252'?>
+<!DOCTYPE AppModule SYSTEM "jbo_03_01.dtd">
+
+<!--
+Subversion Info:
+$HeadURL: http://svn.na.odcorp.net/svn/od/common/trunk/xxcomn/java/od/oracle/apps/xxcrm/cdh/ebl/lov/server/ODEBillLOVAM.xml $
+$Rev: 102087 $
+$Date: 2010-05-12 02:35:07 -0400 (Wed, 12 May 2010) $
+-->
+
+<AppModule
+   Name="ODEBillLOVAM"
+   ComponentClass="od.oracle.apps.xxcrm.cdh.ebl.lov.server.ODEBillLOVAMImpl"
+   LoadComponentsLazily="true" >
+   <DesignTime>
+      <Attr Name="_isCodegen" Value="true" />
+      <Attr Name="_version" Value="9.0.3.12.53" />
+      <Attr Name="_deployType" Value="0" />
+   </DesignTime>
+   <ViewUsage
+      Name="ODEBillContactNamesLOVVO"
+      ViewObjectName="od.oracle.apps.xxcrm.cdh.ebl.lov.server.ODEBillContactNamesLOVVO" >
+   </ViewUsage>
+   <ViewUsage
+      Name="ODEBillLocationsLOVVO"
+      ViewObjectName="od.oracle.apps.xxcrm.cdh.ebl.lov.server.ODEBillLocationsLOVVO" >
+   </ViewUsage>
+   <ViewUsage
+      Name="ODEBillDocIdLOVVO"
+      ViewObjectName="od.oracle.apps.xxcrm.cdh.ebl.lov.server.ODEBillDocIdLOVVO" >
+   </ViewUsage>
+   <ViewUsage
+      Name="ODEBillPaymentTermLOVVO"
+      ViewObjectName="od.oracle.apps.xxcrm.cdh.ebl.lov.server.ODEBillPaymentTermLOVVO" >
+   </ViewUsage>
+   <ViewUsage
+      Name="ODEBillParentIdLOVVO"
+      ViewObjectName="od.oracle.apps.xxcrm.cdh.ebl.lov.server.ODEBillParentIdLOVVO" >
+   </ViewUsage>
+   <ViewUsage
+      Name="ODEBillCustDocIdLOVVO"
+      ViewObjectName="od.oracle.apps.xxcrm.cdh.ebl.lov.server.ODEBillCustDocIdLOVVO" >
+   </ViewUsage>
+   <ViewUsage
+      Name="ODEBillFromSiteLOVVO"
+      ViewObjectName="od.oracle.apps.xxcrm.cdh.ebl.lov.server.ODEBillFromSiteLOVVO" >
+   </ViewUsage>
+   <ViewUsage
+      Name="ODEBillToSiteLOVVO"
+      ViewObjectName="od.oracle.apps.xxcrm.cdh.ebl.lov.server.ODEBillToSiteLOVVO" >
+   </ViewUsage>
+   <ViewUsage
+      Name="ODEBillAggrFieldLOVVO"
+      ViewObjectName="od.oracle.apps.xxcrm.cdh.ebl.lov.server.ODEBillAggrFieldLOVVO" >
+   </ViewUsage>
+   <ViewUsage
+      Name="ODEBillNSFieldsLOVVO"
+      ViewObjectName="od.oracle.apps.xxcrm.cdh.ebl.lov.server.ODEBillNSFieldsLOVVO" >
+   </ViewUsage>
+   <ViewUsage
+      Name="ODEBillDocCopyLOVVO"
+      ViewObjectName="od.oracle.apps.xxcrm.cdh.ebl.lov.server.ODEBillDocCopyLOVVO" >
+   </ViewUsage>
+</AppModule>

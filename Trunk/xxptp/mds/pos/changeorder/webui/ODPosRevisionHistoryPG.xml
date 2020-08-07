@@ -1,0 +1,501 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<!-- dbdrv: exec java oracle/jrad/tools/xml/importer XMLImporter.class java &phase=dat+24 checkfile:~PROD:~PATH:~FILE &fullpath_~PROD_~PATH_~FILE -username &un_apps -password &pw_apps -dbconnection &jdbc_db_addr  -userId "1" -rootPackage /oracle/apps/~PROD  -rootdir &fullpath_~PROD_mds_directory  -->
+<jrad:page xmlns:jrad="http://xmlns.oracle.com/jrad" xmlns:oa="http://xmlns.oracle.com/oa" xmlns:ui="http://xmlns.oracle.com/uix/ui" version="9.0.3.8.10_1080" xml:lang="en-US" file-version="$Header: ODPosRevisionHistoryPG.xml,v 1.5 2007/07/10 13:42:15 msrikant_c Exp $" xmlns:user="http://xmlns.oracle.com/jrad/user">
+   <jrad:content>
+      <oa:pageLayout id="PageLayout" amDefName="oracle.apps.pos.changeorder.server.PosRevHistoryAM" controllerClass="oracle.apps.pos.changeorder.webui.PosRevisionHistoryCO" windowTitle="Revision History for Purchase Orders" title="Purchase Order Revision History" helpTarget="isp_index" helpTargetAppShortName="pos">
+         <ui:corporateBranding>
+            <oa:image id="corporateBrandingImage" source="/OA_MEDIA/FNDSSCORP.gif"/>
+         </ui:corporateBranding>
+         <ui:contents>
+            <oa:pageButtonBar id="PosRevHistSummButtons">
+               <ui:contents>
+                  <oa:exportButton id="PosRevHistExport" text="Export"/>
+               </ui:contents>
+            </oa:pageButtonBar>
+            <oa:header id="PosQueryHdr" text="Search -  Purchase Order Revision History">
+               <ui:contents>
+                  <oa:messageStyledText id="PosMandatoryText" prompt="To search, please enter Business Unit AND at least one of the following search criteria: PO Number, Supplier" styleClass="OraTipText"/>
+                  <oa:query id="PosQueryRegContRN" dispAdvanced="true" dispSimple="true" mode="autoCustomizationCriteria" defaultPanel="simple" rendered="true">
+                     <ui:contents>
+                        <oa:table id="PosRevHistoryTable" width="100%" text="" blockSize="25" shortDesc="Purchase Order Revision History Results">
+                           <ui:contents>
+                              <oa:messageStyledText id="PosPoNumRelNum" viewName="PosRevisionHistoryVO" viewAttr="PONUM_RELNUM" prompt="PO Number" destination="OA.jsp?OAFunc=POS_VIEW_ORDER&amp;PoHeaderId={!PoHeaderId}&amp;PoReleaseId={!PoReleaseId}" sortState="yes"/>
+                              <oa:messageStyledText id="PosPoNumber" viewAttr="PO_NUM" viewName="PosRevisionHistoryVO" dataType="VARCHAR2" prompt="PO Number" queryable="true" maximumLength="40" destination="" sortState="yes" columns="20" initSortSeq="none"/>
+                              <oa:messageStyledText id="PosReleaseNum" prompt="Release Number" viewName="PosRevisionHistoryVO" viewAttr="RELEASE_NUM" queryable="true" maximumLength="10" columns="10" dataType="NUMBER" rendered="false" sortState="no"/>
+                              <oa:messageStyledText id="PosRevision" viewAttr="REVISION_NUM" viewName="PosRevisionHistoryVO" dataType="NUMBER" prompt="Rev" destination="" queryable="true" maximumLength="10" columns="10" sortState="yes" initSortSeq="none"/>
+                              <oa:messageStyledText id="PosOrgDsp" viewName="PosNewOrgDsp" viewAttr="Name" prompt="Business Unit"/>
+                              <oa:messageStyledText id="PosDocType" viewName="PosRevisionHistoryVO" maximumLength="240" prompt="Document Type" queryable="true" viewAttr="TYPE_NAME" columns="20"/>
+                              <oa:messageStyledText id="PosDocTypeDisp" viewName="PosRevisionHistoryVO" viewAttr="TYPE_NAME" prompt="Document Type" rendered="false"/>
+                              <oa:messageStyledText id="PosDescription" viewAttr="Comments" viewName="PosRevisionHistoryVO" maximumLength="240" prompt="Description"/>
+                              <oa:messageStyledText id="PosBuyer" viewAttr="BuyerName" viewName="PosRevisionHistoryVO" maximumLength="240" prompt="Buyer" destination="OA.jsp?akRegionCode=POS_LOCATIONS_PAGE&amp;akRegionApplicationId=177&amp;LPARAMSEMPLOYEE_ID={@AgentId}&amp;PoHeaderId={@PoHeaderId}&amp;retainAM=Y&amp;addBreadCrumb=Y"/>
+                              <oa:messageStyledText id="PosOrderDateTime" dataType="DATETIME" prompt="Creation Date" viewAttr="CREATION_DATE" viewName="PosRevisionHistoryVO" initSortSeq="none" sortState="yes"/>
+                              <oa:messageStyledText id="PosOrderDate" queryable="true" dataType="DATE" viewName="PosRevisionHistoryVO" viewAttr="CREATION_DATE" prompt="Creation Date"/>
+                              <oa:messageStyledText id="PosRevisedDateTime" dataType="DATETIME" viewName="PosRevisionHistoryVO" viewAttr="REVISED_DATE" prompt="Revised Date" sortState="yes" initSortSeq="none"/>
+                              <oa:messageStyledText id="PosRevisedDate" queryable="true" viewName="PosRevisionHistoryVO" viewAttr="REVISED_DATE" prompt="Revised Date" dataType="DATE"/>
+                              <oa:messageStyledText id="PosOperUnit" columns="20" maximumLength="240" prompt="Business Unit" viewName="PosRevisionHistoryVO" viewAttr="Name" queryable="true"/>
+                              <oa:messageStyledText id="PosCurrency" viewAttr="CurrencyCode" viewName="PosRevisionHistoryVO" prompt="Currency"/>
+                              <oa:messageStyledText id="PosTotal" viewAttr="Total" viewName="PosRevisionHistoryVO" prompt="Total"/>
+                              <oa:messageStyledText id="PosShipToLoc" prompt="Ship-To Location" viewName="PosRevisionHistoryVO" viewAttr="LocationCode" destination="OA.jsp?akRegionCode=POS_ADDRESS_PAGE&amp;akRegionApplicationId=177&amp;LPARAMSLOCATION_ID={@ShipToLocationId}&amp;LPARAMSADDR_TYPE=ShipTo&amp;retainAM=Y&amp;addBreadCrumb=Y"/>
+                              <oa:image prompt="Compare to Original PO" destination="OA.jsp?akRegionCode=POSVIEWCOMPAREMAINPAGE&amp;akRegionApplicationId=177&amp;LPARAMSHEADER_ID={@PoHeaderId}&amp;LPARAMSPO_NUM={@PONUM_RELNUM}&amp;LPARAMSPO_RELEASEID={@PoReleaseId}&amp;LPARAMSRRVISION_NUM={@REVISION_NUM}&amp;CompareTo=ORIGINAL&amp;addBreadCrumb=Y&amp;retainAM=Y" id="PosCompareOrigPo" promptTranslationExpansion="100%" source="detailsicon_enabled.gif"/>
+                              <oa:image prompt="Compare to Previous PO" destination="OA.jsp?akRegionCode=POSVIEWCOMPAREMAINPAGE&amp;akRegionApplicationId=177&amp;LPARAMSHEADER_ID={@PoHeaderId}&amp;LPARAMSPO_NUM={@PONUM_RELNUM}&amp;LPARAMSPO_RELEASEID={@PoReleaseId}&amp;LPARAMSRRVISION_NUM={@REVISION_NUM}&amp;CompareTo=PREVIOUS&amp;addBreadCrumb=Y&amp;retainAM=Y" id="PosComparePrevPo" promptTranslationExpansion="100%" source="detailsicon_enabled.gif"/>
+                              <oa:switcher id="PosLastSign" viewName="PosRevisionHistoryVO" viewAttr="LastSignType" prompt="Compare to Last Signed PO" rendered="false">
+                                 <ui:case name="case1" id="case1">
+                                    <oa:image id="PosCompareLastSign" destination="OA.jsp?akRegionCode=POSVIEWCOMPAREMAINPAGE&amp;akRegionApplicationId=177&amp;LPARAMSHEADER_ID={@PoHeaderId}&amp;LPARAMSPO_RELEASEID={@PoReleaseId}&amp;LPARAMSPO_NUM={@PONUM_RELNUM}&amp;LPARAMSRRVISION_NUM={@REVISION_NUM}&amp;CompareTo=LASTSIGN&amp;addBreadCrumb=Y&amp;retainAM=Y" source="detailsicon_enabled.gif" prompt="Compare To Last Signed"/>
+                                 </ui:case>
+                              </oa:switcher>
+                              <oa:image prompt="Show all PO Changes" destination="OA.jsp?akRegionCode=POSVIEWCOMPAREMAINPAGE&amp;akRegionApplicationId=177&amp;LPARAMSHEADER_ID={@PoHeaderId}&amp;LPARAMSPO_RELEASEID={@PoReleaseId}&amp;LPARAMSPO_NUM={@PONUM_RELNUM}&amp;LPARAMSRRVISION_NUM={@REVISION_NUM}&amp;CompareTo=ALL&amp;addBreadCrumb=Y&amp;retainAM=Y" id="PosShowPoChanges" promptTranslationExpansion="100%" source="detailsicon_enabled.gif"/>
+                              <oa:messageStyledText id="ModifiedByUser" maximumLength="240" prompt="Modified By User" destination="" viewName="PosRevisionHistoryVO" viewAttr="MODIFIED_BY_USER" rendered="false"/>
+                              <oa:messageStyledText id="POType" viewName="PosRevisionHistoryVO" viewAttr="PO_TYPE_NAME" prompt="PO Type" rendered="false"/>
+                              <oa:formValue id="EmpNum" viewName="PosRevisionHistoryVO" viewAttr="EMPLOYEE_NUMBER"/>
+                              <oa:formValue id="Row_Id" viewName="PosRevisionHistoryVO" viewAttr="ROW_ID"/>
+                           </ui:contents>
+                        </oa:table>
+                     </ui:contents>
+                     <oa:simpleSearchPanel>
+                        <oa:messageComponentLayout id="RevHisSimSrchM" searchRegion="true" columns="2">
+                           <ui:contents>
+                              <oa:messageLovInput id="ModByUserSrch" prompt="Modified By User">
+                                 <jrad:lovContents>
+                                    <oa:listOfValues id="region1" amDefName="od.oracle.apps.xxptp.pos.changeorder.server.ODUsrPOTypeLovAM">
+                                       <ui:contents>
+                                          <oa:table name="region1" id="UsersTBL">
+                                             <ui:contents>
+                                                <oa:messageStyledText id="FullName" dataType="VARCHAR2" prompt="Full Name" viewName="ODUsersVO" viewAttr="FullName" maximumLength="240" queryable="true"/>
+                                                <oa:messageStyledText id="EmployeeNumber" dataType="VARCHAR2" prompt="Employee Number" viewName="ODUsersVO" viewAttr="EmployeeNumber" maximumLength="240"/>
+                                             </ui:contents>
+                                          </oa:table>
+                                       </ui:contents>
+                                    </oa:listOfValues>
+                                 </jrad:lovContents>
+                                 <jrad:lovMappings>
+                                    <jrad:lovMap id="lovMap1" resultTo="ModByUserSrch" criteriaFrom="ModByUserSrch" lovItem="FullName"/>
+                                    <jrad:lovMap id="lovMap3" resultTo="PoEmpNum" lovItem="EmployeeNumber"/>
+                                 </jrad:lovMappings>
+                              </oa:messageLovInput>
+                              <oa:messageLovInput id="POTypeSrch" prompt="PO Type">
+                                 <jrad:lovContents>
+                                    <oa:listOfValues id="poTypeReg" amDefName="od.oracle.apps.xxptp.pos.changeorder.server.ODUsrPOTypeLovAM">
+                                       <ui:contents>
+                                          <oa:table name="poTypeTab" id="POTypesTBL">
+                                             <ui:contents>
+                                                <oa:messageStyledText id="DescriptiveFlexContextName" dataType="VARCHAR2" prompt="PO Type Name" viewName="ODPOTypesVO" viewAttr="DescriptiveFlexContextName" maximumLength="80" queryable="true"/>
+                                                <oa:messageStyledText id="DescriptiveFlexContextCode" dataType="VARCHAR2" prompt="PO Type Code" viewName="ODPOTypesVO" viewAttr="DescriptiveFlexContextCode" maximumLength="5"/>
+                                                <oa:formValue id="DescRowId" dataType="VARCHAR2" viewName="ODPOTypesVO" viewAttr="ROW_ID" maximumLength="30"/>
+                                             </ui:contents>
+                                          </oa:table>
+                                       </ui:contents>
+                                    </oa:listOfValues>
+                                 </jrad:lovContents>
+                                 <jrad:lovMappings>
+                                    <jrad:lovMap id="lovMap2" lovItem="DescriptiveFlexContextName" resultTo="POTypeSrch" criteriaFrom="POTypeSrch"/>
+                                    <jrad:lovMap id="lovMap4" lovItem="DescRowId" resultTo="PoRowId"/>
+                                 </jrad:lovMappings>
+                              </oa:messageLovInput>
+                              <oa:messageTextInput id="PoNumSrch" queryable="true" prompt="PO Number"/>
+                              <oa:messageTextInput id="RelNumSrch" queryable="true" dataType="NUMBER" prompt="Release Number"/>
+                              <oa:messageTextInput id="RevSrch" dataType="NUMBER" queryable="true" prompt="Rev"/>
+                              <oa:messageLovInput id="DocTypeSrch" queryable="true" prompt="Document Type" externalListOfValues="/oracle/apps/pos/lov/webui/PosDocTypeLov">
+                                 <jrad:lovMappings>
+                                    <jrad:lovMap id="DocTypeSrchLovMap" lovItem="PosTypeName" resultTo="DocTypeSrch" criteriaFrom="DocTypeSrch"/>
+                                 </jrad:lovMappings>
+                              </oa:messageLovInput>
+                              <oa:messageTextInput id="OrdDateSrch" dataType="DATE" queryable="true" prompt="Creation Date"/>
+                              <oa:messageTextInput id="RevDateSrch" dataType="DATE" queryable="true" prompt="Revised Date"/>
+                              <oa:messageLovInput id="BusUnitSrch" queryable="true" prompt="Business Unit" externalListOfValues="/oracle/apps/pos/lov/webui/PosOperUnitLov">
+                                 <jrad:lovMappings>
+                                    <jrad:lovMap id="BusUnitSrchLovMap" lovItem="PosOperatingUnit" resultTo="BusUnitSrch" criteriaFrom="BusUnitSrch"/>
+                                 </jrad:lovMappings>
+                              </oa:messageLovInput>
+                              <oa:messageLayout id="messageLayout">
+                                 <ui:contents>
+                                    <oa:formValue id="PoRowId"/>
+                                    <oa:formValue id="PoEmpNum"/>
+                                 </ui:contents>
+                              </oa:messageLayout>
+                           </ui:contents>
+                        </oa:messageComponentLayout>
+                     </oa:simpleSearchPanel>
+                     <oa:simpleSearchMappings>
+                        <oa:queryCriteriaMap id="PoNumCritMap" criteriaItem="PoNumSrch" resultsItem="PosPoNumber"/>
+                        <oa:queryCriteriaMap id="RelNumCritMap" criteriaItem="RelNumSrch" resultsItem="PosReleaseNum"/>
+                        <oa:queryCriteriaMap id="RevCritMap" criteriaItem="RevSrch" resultsItem="PosRevision"/>
+                        <oa:queryCriteriaMap id="DocTypeCritMap" criteriaItem="DocTypeSrch" resultsItem="PosDocType"/>
+                        <oa:queryCriteriaMap id="OrdDateCritMap" criteriaItem="OrdDateSrch" resultsItem="PosOrderDate"/>
+                        <oa:queryCriteriaMap id="RevDateCritMap" criteriaItem="RevDateSrch" resultsItem="PosRevisedDate"/>
+                        <oa:queryCriteriaMap id="BusUnitCritMap" criteriaItem="BusUnitSrch" resultsItem="PosOperUnit"/>
+                        <oa:queryCriteriaMap id="ModUsrCritMap" criteriaItem="ModByUserSrch" resultsItem="ModifiedByUser"/>
+                        <oa:queryCriteriaMap id="POTypeCritMap" criteriaItem="POTypeSrch" resultsItem="POType"/>
+                        <oa:queryCriteriaMap id="EmpNumCritMap" criteriaItem="PoEmpNum" resultsItem="EmpNum"/>
+                        <oa:queryCriteriaMap id="RowIdCritMap" criteriaItem="PoRowId" resultsItem="Row_Id"/>
+                     </oa:simpleSearchMappings>
+                     <oa:advancedSearchPanel>
+                        <oa:advancedSearch id="RevHisAdvSrch">
+                           <oa:criteria>
+                              <oa:criteriaRow id="PoNumRow">
+                                 <ui:contents>
+                                    <oa:messageStyledText id="item1" prompt="PO Number"/>
+                                    <oa:messageTextInput id="PoNumAdvSrch" queryable="true"/>
+                                 </ui:contents>
+                              </oa:criteriaRow>
+                              <oa:criteriaRow id="RelNumRow">
+                                 <ui:contents>
+                                    <oa:messageStyledText id="item2" prompt="Release Number"/>
+                                    <oa:messageTextInput id="RelNumAdvSrch" queryable="true" dataType="NUMBER"/>
+                                 </ui:contents>
+                              </oa:criteriaRow>
+                              <oa:criteriaRow id="RevRow">
+                                 <ui:contents>
+                                    <oa:messageStyledText id="item3" prompt="Rev"/>
+                                    <oa:messageTextInput id="RevAdvSrch" queryable="true" dataType="NUMBER"/>
+                                 </ui:contents>
+                              </oa:criteriaRow>
+                              <oa:criteriaRow id="DocTypeRow">
+                                 <ui:contents>
+                                    <oa:messageStyledText id="item4" prompt="Document Type"/>
+                                    <oa:messageLovInput id="DocTypeAdvSrch" queryable="true" externalListOfValues="/oracle/apps/pos/lov/webui/PosDocTypeLov">
+                                       <jrad:lovMappings>
+                                          <jrad:lovMap id="DocTypeAdvLovMap" lovItem="PosTypeName" resultTo="DocTypeAdvSrch" criteriaFrom="DocTypeAdvSrch"/>
+                                       </jrad:lovMappings>
+                                    </oa:messageLovInput>
+                                 </ui:contents>
+                              </oa:criteriaRow>
+                              <oa:criteriaRow id="OrdDateRow">
+                                 <ui:contents>
+                                    <oa:messageStyledText id="item5" prompt="Creation Date"/>
+                                    <oa:messageTextInput id="OrdDateAdvSrch" dataType="DATE" queryable="true"/>
+                                 </ui:contents>
+                              </oa:criteriaRow>
+                              <oa:criteriaRow id="RevDateRow">
+                                 <ui:contents>
+                                    <oa:messageStyledText id="item6" prompt="Revised Date"/>
+                                    <oa:messageTextInput id="RevDateAdvSrch" queryable="true" dataType="DATE"/>
+                                 </ui:contents>
+                              </oa:criteriaRow>
+                              <oa:criteriaRow id="BusUnitRow">
+                                 <ui:contents>
+                                    <oa:messageStyledText id="item7" prompt="Business Unit"/>
+                                    <oa:messageLovInput id="BusUnitAdvSrch" queryable="true" externalListOfValues="/oracle/apps/pos/lov/webui/PosOperUnitLov">
+                                       <jrad:lovMappings>
+                                          <jrad:lovMap id="BusUnitAdvLovMap" lovItem="PosOperatingUnit" resultTo="BusUnitAdvSrch" criteriaFrom="BusUnitAdvSrch"/>
+                                          <jrad:lovMap id="OrgIdAdvLovMap" lovItem="PosOrganizationId" resultTo="PosOrgId"/>
+                                       </jrad:lovMappings>
+                                    </oa:messageLovInput>
+                                 </ui:contents>
+                              </oa:criteriaRow>
+                           </oa:criteria>
+                        </oa:advancedSearch>
+                     </oa:advancedSearchPanel>
+                     <oa:advancedSearchMappings>
+                        <oa:queryCriteriaMap id="PoNumAdvCritMap" criteriaItem="PoNumAdvSrch" resultsItem="PosPoNumber"/>
+                        <oa:queryCriteriaMap id="RelNumAdvCritMap" criteriaItem="RelNumAdvSrch" resultsItem="PosReleaseNum"/>
+                        <oa:queryCriteriaMap id="RevAdvCritMap" criteriaItem="RevAdvSrch" resultsItem="PosRevision"/>
+                        <oa:queryCriteriaMap id="DocTypeAdvCritMap" criteriaItem="DocTypeAdvSrch" resultsItem="PosDocType"/>
+                        <oa:queryCriteriaMap id="OrdDateAdvCritMap" criteriaItem="OrdDateAdvSrch" resultsItem="PosOrderDate"/>
+                        <oa:queryCriteriaMap id="RevDateAdvCritMap" criteriaItem="RevDateAdvSrch" resultsItem="PosRevisedDate"/>
+                        <oa:queryCriteriaMap id="BusUnitAdvCritMap" criteriaItem="BusUnitAdvSrch" resultsItem="PosOperUnit"/>
+                     </oa:advancedSearchMappings>
+                  </oa:query>
+                  <oa:query id="PosQueryRegContInternalRN" dispAdvanced="true" dispSimple="true" mode="autoCustomizationCriteria" defaultPanel="simple" rendered="true">
+                     <ui:contents>
+                        <oa:table id="PosRevHistoryTableInternal" width="100%" text="" blockSize="25" shortDesc="Purchase Order Revision History Results">
+                           <ui:contents>
+                              <oa:messageStyledText id="PosNewOrg" prompt="Business Unit" viewName="PosRevisionHistoryVO" viewAttr="Name" queryable="true"/>
+                              <oa:messageStyledText id="PosPoNumRelNumInternal" viewName="PosRevisionHistoryVO" viewAttr="PONUM_RELNUM" prompt="PO Number" destination="OA.jsp?OAFunc=POS_VIEW_ORDER&amp;PoHeaderId={!PoHeaderId}&amp;PoReleaseId={!PoReleaseId}"/>
+                              <oa:messageLovInput id="PosPoNumberInternal" prompt="PO Number" queryable="true" viewName="PosRevisionHistoryVO" viewAttr="PO_NUM" rendered="true">
+                                 <jrad:lovContents>
+                                    <oa:listOfValues id="PosInternalPONumLovRegion" amDefName="oracle.apps.pos.isp.server.PosAsnLovAM">
+                                       <ui:contents>
+                                          <oa:table name="PosInternalPONumLovRegion" id="PosInternalPONumLovTable">
+                                             <ui:contents>
+                                                <oa:messageStyledText id="PosInternalPONumLov" viewName="PosPONumberLovVO" viewAttr="PoNumber" prompt="PO Number" queryable="true"/>
+                                             </ui:contents>
+                                          </oa:table>
+                                       </ui:contents>
+                                    </oa:listOfValues>
+                                 </jrad:lovContents>
+                                 <jrad:lovMappings>
+                                    <jrad:lovMap lovItem="PosInternalPONumLov" id="PosInternalPONumLovMap1" resultTo="PosPoNumberInternal" criteriaFrom="PosPoNumberInternal"/>
+                                 </jrad:lovMappings>
+                              </oa:messageLovInput>
+                              <oa:messageStyledText id="PosReleaseNumInternal" prompt="Release Number" viewName="PosRevisionHistoryVO" viewAttr="RELEASE_NUM" queryable="true" maximumLength="10" columns="10" dataType="NUMBER" rendered="false"/>
+                              <oa:messageLovInput id="PosVendorInternal" prompt="Supplier" queryable="true" viewName="PosRevisionHistoryVO" viewAttr="VENDOR_NAME" rendered="true">
+                                 <jrad:lovContents>
+                                    <oa:listOfValues id="PosInternalVendorLovRegion" amDefName="oracle.apps.pos.isp.server.PosAsnLovAM">
+                                       <ui:contents>
+                                          <oa:table name="PosInternalVendorLovRegion" id="PosInternalVendorLovTable">
+                                             <ui:contents>
+                                                <oa:messageStyledText id="PosInternalVendorLov" viewName="PosVendorsVO" viewAttr="VendorName" prompt="Supplier" queryable="true"/>
+                                             </ui:contents>
+                                          </oa:table>
+                                       </ui:contents>
+                                    </oa:listOfValues>
+                                 </jrad:lovContents>
+                                 <jrad:lovMappings>
+                                    <jrad:lovMap lovItem="PosInternalVendorLov" id="PosInternalVendorLovMap1" resultTo="PosVendorInternal" criteriaFrom="PosVendorInternal"/>
+                                 </jrad:lovMappings>
+                              </oa:messageLovInput>
+                              <oa:messageStyledText id="PosRevisionInternal" viewAttr="REVISION_NUM" viewName="PosRevisionHistoryVO" dataType="NUMBER" prompt="Revision" destination="" queryable="true" maximumLength="10" columns="10"/>
+                              <oa:messageStyledText id="PosNewOrgDsp" prompt="Business Unit" viewName="PosRevisionHistoryVO" viewAttr="Name"/>
+                              <oa:messageStyledText id="PosVendorInternalDsp" viewAttr="VENDOR_NAME" viewName="PosRevisionHistoryVO" dataType="VARCHAR2" prompt="Supplier" queryable="false" maximumLength="25" columns="25"/>
+                              <oa:messageLovInput id="PosVendorSiteInternal" prompt="Supplier Site" queryable="true" viewName="PosRevisionHistoryVO" viewAttr="VENDOR_SITE_CODE" rendered="true">
+                                 <jrad:lovContents>
+                                    <oa:listOfValues id="PosInternalVendorSiteLovRegion" amDefName="oracle.apps.pos.isp.server.PosAsnLovAM">
+                                       <ui:contents>
+                                          <oa:table name="PosInternalVendorSiteLovRegion" id="PosInternalVendorSiteLovTable">
+                                             <ui:contents>
+                                                <oa:messageStyledText id="PosInternalVendorSiteLov" viewName="PosVendorSiteVO" viewAttr="SupplierSiteCode" prompt="Supplier Site" queryable="true"/>
+                                             </ui:contents>
+                                          </oa:table>
+                                       </ui:contents>
+                                    </oa:listOfValues>
+                                 </jrad:lovContents>
+                                 <jrad:lovMappings>
+                                    <jrad:lovMap lovItem="PosInternalVendorSiteLov" id="PosInternalVendorSiteLovMap1" resultTo="PosVendorSiteInternal" criteriaFrom="PosVendorSiteInternal"/>
+                                 </jrad:lovMappings>
+                              </oa:messageLovInput>
+                              <oa:messageStyledText id="PosSupplierSiteInternalDsp" viewName="PosRevisionHistoryVO" viewAttr="VENDOR_SITE_CODE" maximumLength="15" rendered="true" prompt="Supplier Site"/>
+                              <oa:messageLovInput id="PosDocTypeInternal" viewName="PosRevisionHistoryVO" maximumLength="240" prompt="Document Type" queryable="true" viewAttr="TYPE_NAME" externalListOfValues="/oracle/apps/pos/lov/webui/PosDocTypeLov" columns="20">
+                                 <jrad:lovMappings>
+                                    <jrad:lovMap lovItem="PosTypeName" id="PosLovMapInternal" resultTo="PosDocTypeInternal" criteriaFrom="PosDocTypeInternal"/>
+                                 </jrad:lovMappings>
+                              </oa:messageLovInput>
+                              <oa:messageStyledText id="PosDocTypeDispInternal" viewName="PosRevisionHistoryVO" viewAttr="TYPE_NAME" prompt="Document Type"/>
+                              <oa:messageStyledText id="PosDescriptionInternal" viewAttr="Comments" viewName="PosRevisionHistoryVO" maximumLength="240" prompt="Description"/>
+                              <oa:messageStyledText id="PosBuyerInternal" viewAttr="BuyerName" viewName="PosRevisionHistoryVO" maximumLength="240" prompt="Buyer" destination="OA.jsp?akRegionCode=POS_LOCATIONS_PAGE&amp;akRegionApplicationId=177&amp;LPARAMSEMPLOYEE_ID={@AgentId}&amp;retainAM=Y&amp;addBreadCrumb=Y"/>
+                              <oa:messageStyledText id="PosOrderDateInternal" dataType="DATE" queryable="true" prompt="Creation Date" viewAttr="CREATION_DATE" viewName="PosRevisionHistoryVO"/>
+                              <oa:messageStyledText id="PosOrderDateTimeInternal" sortState="no" initSortSeq="none" dataType="DATETIME" viewName="PosRevisionHistoryVO" viewAttr="CREATION_DATE" prompt="Creation Date"/>
+                              <oa:messageStyledText id="PosRevisedDateInternal" dataType="DATE" viewName="PosRevisionHistoryVO" viewAttr="REVISED_DATE" prompt="Revised Date" queryable="true"/>
+                              <oa:messageStyledText id="PosRevisedDateTimeInternal" sortState="no" initSortSeq="none" dataType="DATETIME" viewName="PosRevisionHistoryVO" viewAttr="REVISED_DATE" prompt="Revised Date"/>
+                              <oa:messageStyledText id="PosCurrencyInternal" viewAttr="CurrencyCode" viewName="PosRevisionHistoryVO" prompt="Currency"/>
+                              <oa:messageStyledText id="PosTotalInternal" viewAttr="Total" viewName="PosRevisionHistoryVO" prompt="Total"/>
+                              <oa:messageStyledText id="PosShipToLocInternal" prompt="Ship-To Location" viewName="PosRevisionHistoryVO" viewAttr="LocationCode" destination="OA.jsp?akRegionCode=POS_ADDRESS_PAGE&amp;akRegionApplicationId=177&amp;LPARAMSLOCATION_ID={@ShipToLocationId}&amp;LPARAMSADDR_TYPE=ShipTo&amp;retainAM=Y&amp;addBreadCrumb=Y"/>
+                              <oa:image prompt="Compare to Original PO" destination="OA.jsp?akRegionCode=POSVIEWCOMPAREMAINPAGE&amp;akRegionApplicationId=177&amp;LPARAMSHEADER_ID={@PoHeaderId}&amp;LPARAMSPO_NUM={@PONUM_RELNUM}&amp;LPARAMSPO_RELEASEID={@PoReleaseId}&amp;LPARAMSRRVISION_NUM={@REVISION_NUM}&amp;CompareTo=ORIGINAL&amp;addBreadCrumb=Y&amp;retainAM=Y" id="PosCompareOrigPoInternal" promptTranslationExpansion="100%" source="detailsicon_enabled.gif"/>
+                              <oa:image prompt="Compare to Previous PO" destination="OA.jsp?akRegionCode=POSVIEWCOMPAREMAINPAGE&amp;akRegionApplicationId=177&amp;#38;LPARAMSHEADER_ID={@PoHeaderId}&amp;LPARAMSPO_NUM={@PONUM_RELNUM}&amp;LPARAMSPO_RELEASEID={@PoReleaseId}&amp;LPARAMSRRVISION_NUM={@REVISION_NUM}&amp;CompareTo=PREVIOUS&amp;addBreadCrumb=Y&amp;retainAM=Y" id="PosComparePrevPoInternal" promptTranslationExpansion="100%" source="detailsicon_enabled.gif"/>
+                              <oa:switcher id="PosLastSignInt" viewName="PosRevisionHistoryVO" viewAttr="LastSignType" prompt="Compare to Last Signed PO">
+                                 <ui:case name="case2" id="case2">
+                                    <oa:image id="PosCompareLastSignInt" destination="OA.jsp?akRegionCode=POSVIEWCOMPAREMAINPAGE&amp;akRegionApplicationId=177&amp;LPARAMSHEADER_ID={@PoHeaderId}&amp;LPARAMSPO_RELEASEID={@PoReleaseId}&amp;LPARAMSPO_NUM={@PONUM_RELNUM}&amp;LPARAMSRRVISION_NUM={@REVISION_NUM}&amp;CompareTo=LASTSIGN&amp;addBreadCrumb=Y&amp;retainAM=Y" source="detailsicon_enabled.gif" prompt="Compare To Last Signed"/>
+                                 </ui:case>
+                              </oa:switcher>
+                              <oa:image prompt="Show all PO Changes" destination="OA.jsp?akRegionCode=POSVIEWCOMPAREMAINPAGE&amp;akRegionApplicationId=177&amp;LPARAMSHEADER_ID={@PoHeaderId}&amp;LPARAMSPO_RELEASEID={@PoReleaseId}&amp;LPARAMSPO_NUM={@PONUM_RELNUM}&amp;LPARAMSRRVISION_NUM={@REVISION_NUM}&amp;CompareTo=ALL&amp;addBreadCrumb=Y&amp;retainAM=Y" id="PosShowPoChangesInternal" promptTranslationExpansion="100%" source="detailsicon_enabled.gif"/>
+                           </ui:contents>
+                        </oa:table>
+                     </ui:contents>
+                     <oa:simpleSearchPanel>
+                        <oa:messageComponentLayout id="RevHisIntSimSrchM" searchRegion="true" columns="2">
+                           <ui:contents>
+                              <oa:messageLovInput id="BusUnitIntSrch" queryable="true" prompt="Business Unit" externalListOfValues="/oracle/apps/pos/lov/webui/PosOperUnitLov">
+                                 <jrad:lovMappings>
+                                    <jrad:lovMap id="PosOperUnitLovMap" lovItem="PosOperatingUnit" resultTo="BusUnitIntSrch" criteriaFrom="BusUnitIntSrch"/>
+                                    <jrad:lovMap id="OrgIdLovMap" lovItem="PosOrganizationId" resultTo="PosOrgId"/>
+                                 </jrad:lovMappings>
+                              </oa:messageLovInput>
+                              <oa:messageLovInput id="PoNumIntSrch" queryable="true" prompt="PO Number">
+                                 <jrad:lovContents>
+                                    <oa:listOfValues id="PoNumIntLovReg" amDefName="oracle.apps.pos.isp.server.PosAsnLovAM">
+                                       <ui:contents>
+                                          <oa:table name="PoNumIntLovReg" id="PoNumIntLovTbl">
+                                             <ui:contents>
+                                                <oa:messageStyledText id="PoNumIntLov" viewName="PosPONumberLovVO" viewAttr="PoNumber" queryable="true" prompt="PO Number"/>
+                                             </ui:contents>
+                                          </oa:table>
+                                       </ui:contents>
+                                    </oa:listOfValues>
+                                 </jrad:lovContents>
+                                 <jrad:lovMappings>
+                                    <jrad:lovMap id="PoNumIntLovMap" lovItem="PoNumIntLov" resultTo="PoNumIntSrch" criteriaFrom="PoNumIntSrch"/>
+                                 </jrad:lovMappings>
+                              </oa:messageLovInput>
+                              <oa:messageTextInput id="RelNumIntSrch" queryable="true" dataType="NUMBER" prompt="Release Number"/>
+                              <oa:messageLovInput id="VendIntSrch" queryable="true" prompt="Supplier">
+                                 <jrad:lovContents>
+                                    <oa:listOfValues id="VendIntLovReg" amDefName="oracle.apps.pos.isp.server.PosAsnLovAM">
+                                       <ui:contents>
+                                          <oa:table name="VendIntLovReg" id="VendIntLovTbl">
+                                             <ui:contents>
+                                                <oa:messageStyledText id="VendIntLov" viewName="PosVendorsVO" viewAttr="VendorName" queryable="true" prompt="Supplier"/>
+                                             </ui:contents>
+                                          </oa:table>
+                                       </ui:contents>
+                                    </oa:listOfValues>
+                                 </jrad:lovContents>
+                                 <jrad:lovMappings>
+                                    <jrad:lovMap id="VendIntLovMap" lovItem="VendIntLov" resultTo="VendIntSrch" criteriaFrom="VendIntSrch"/>
+                                 </jrad:lovMappings>
+                              </oa:messageLovInput>
+                              <oa:messageTextInput id="RevIntSrch" queryable="true" dataType="NUMBER" prompt="Revision"/>
+                              <oa:messageLovInput id="VendSiteIntSrch" queryable="true" prompt="Supplier Site">
+                                 <jrad:lovContents>
+                                    <oa:listOfValues id="VendSiteIntLovReg" amDefName="oracle.apps.pos.isp.server.PosAsnLovAM">
+                                       <ui:contents>
+                                          <oa:table name="VendSiteIntLovReg" id="VendSiteIntLovTbl">
+                                             <ui:contents>
+                                                <oa:messageStyledText id="VendSiteIntLov" queryable="true" prompt="Supplier Site" viewName="PosVendorSiteVO" viewAttr="SupplierSiteCode"/>
+                                             </ui:contents>
+                                          </oa:table>
+                                       </ui:contents>
+                                    </oa:listOfValues>
+                                 </jrad:lovContents>
+                                 <jrad:lovMappings>
+                                    <jrad:lovMap id="VendSiteIntLovMap" lovItem="VendSiteIntLov" resultTo="VendSiteIntSrch" criteriaFrom="VendSiteIntSrch"/>
+                                 </jrad:lovMappings>
+                              </oa:messageLovInput>
+                              <oa:messageLovInput id="DocTypeIntSrch" queryable="true" prompt="Document Type" externalListOfValues="/oracle/apps/pos/lov/webui/PosDocTypeLov">
+                                 <jrad:lovMappings>
+                                    <jrad:lovMap id="DocTypeIntLovMap" lovItem="PosTypeName" resultTo="DocTypeIntSrch" criteriaFrom="DocTypeIntSrch"/>
+                                 </jrad:lovMappings>
+                              </oa:messageLovInput>
+                              <oa:messageTextInput id="OrdDateIntSrch" queryable="true" dataType="DATE" prompt="Creation Date"/>
+                              <oa:messageTextInput id="RevDateIntSrch" queryable="true" dataType="DATE" prompt="Revised Date"/>
+                           </ui:contents>
+                        </oa:messageComponentLayout>
+                     </oa:simpleSearchPanel>
+                     <oa:simpleSearchMappings>
+                        <oa:queryCriteriaMap id="BusUnitIntCritMap" criteriaItem="BusUnitIntSrch" resultsItem="PosNewOrg"/>
+                        <oa:queryCriteriaMap id="PoNumIntCritMap" criteriaItem="PoNumIntSrch" resultsItem="PosPoNumberInternal"/>
+                        <oa:queryCriteriaMap id="RelNumIntCritMap" criteriaItem="RelNumIntSrch" resultsItem="PosReleaseNumInternal"/>
+                        <oa:queryCriteriaMap id="VendIntCritMap" criteriaItem="VendIntSrch" resultsItem="PosVendorInternal"/>
+                        <oa:queryCriteriaMap id="RevIntCritMap" criteriaItem="RevIntSrch" resultsItem="PosRevisionInternal"/>
+                        <oa:queryCriteriaMap id="VendSiteIntCritMap" criteriaItem="VendSiteIntSrch" resultsItem="PosVendorSiteInternal"/>
+                        <oa:queryCriteriaMap id="DocTypeIntCritMap" criteriaItem="DocTypeIntSrch" resultsItem="PosDocTypeInternal"/>
+                        <oa:queryCriteriaMap id="OrdDateIntCritMap" criteriaItem="OrdDateIntSrch" resultsItem="PosOrderDateInternal"/>
+                        <oa:queryCriteriaMap id="RevDateIntCritMap" criteriaItem="RevDateIntSrch" resultsItem="PosRevisedDateInternal"/>
+                     </oa:simpleSearchMappings>
+                     <oa:advancedSearchPanel>
+                        <oa:advancedSearch id="RevHisIntAdvSrch">
+                           <oa:criteria>
+                              <oa:criteriaRow id="BusUnitIntRow">
+                                 <ui:contents>
+                                    <oa:messageStyledText id="item8" prompt="Business Unit"/>
+                                    <oa:messageLovInput id="BusUnitIntAdvSrch" queryable="true" externalListOfValues="/oracle/apps/pos/lov/webui/PosOperUnitLov">
+                                       <jrad:lovMappings>
+                                          <jrad:lovMap id="BusiUnitIntAdvLovMap" lovItem="PosOperatingUnit" resultTo="BusUnitIntAdvSrch" criteriaFrom="BusUnitIntAdvSrch"/>
+                                          <jrad:lovMap id="OrgIdIntAdvLovMap" lovItem="PosOrganizationId" resultTo="PosOrgId"/>
+                                       </jrad:lovMappings>
+                                    </oa:messageLovInput>
+                                 </ui:contents>
+                              </oa:criteriaRow>
+                              <oa:criteriaRow id="PoNumIntRow">
+                                 <ui:contents>
+                                    <oa:messageStyledText id="item9" prompt="PO Number"/>
+                                    <oa:messageLovInput id="PoNumIntAdvSrch" queryable="true">
+                                       <jrad:lovContents>
+                                          <oa:listOfValues id="PoNumIntAdvLovReg" amDefName="oracle.apps.pos.isp.server.PosAsnLovAM">
+                                             <ui:contents>
+                                                <oa:table name="PoNumIntAdvLovReg" id="PoNumIntAdvLovTbl">
+                                                   <ui:contents>
+                                                      <oa:messageStyledText id="PoNumIntAdvLov" queryable="true" prompt="PO Number" viewName="PosPONumberLovVO" viewAttr="PoNumber"/>
+                                                   </ui:contents>
+                                                </oa:table>
+                                             </ui:contents>
+                                          </oa:listOfValues>
+                                       </jrad:lovContents>
+                                       <jrad:lovMappings>
+                                          <jrad:lovMap id="PoNumIntAdvLovMap" lovItem="PoNumIntAdvLov" resultTo="PoNumIntAdvSrch" criteriaFrom="PoNumIntAdvSrch"/>
+                                       </jrad:lovMappings>
+                                    </oa:messageLovInput>
+                                 </ui:contents>
+                              </oa:criteriaRow>
+                              <oa:criteriaRow id="RelNumIntRow">
+                                 <ui:contents>
+                                    <oa:messageStyledText id="item10" prompt="Release Number"/>
+                                    <oa:messageTextInput id="RelNumIntAdvSrch" queryable="true" dataType="NUMBER"/>
+                                 </ui:contents>
+                              </oa:criteriaRow>
+                              <oa:criteriaRow id="VendIntRow">
+                                 <ui:contents>
+                                    <oa:messageStyledText id="item11" prompt="Supplier"/>
+                                    <oa:messageLovInput id="VendIntAdvSrch" queryable="true">
+                                       <jrad:lovContents>
+                                          <oa:listOfValues id="VendIntAdvLovReg" amDefName="oracle.apps.pos.isp.server.PosAsnLovAM">
+                                             <ui:contents>
+                                                <oa:table name="VendIntAdvLovReg" id="VendIntAdvLovTbl">
+                                                   <ui:contents>
+                                                      <oa:messageStyledText id="VendIntAdvLov" viewName="PosVendorsVO" viewAttr="VendorName" queryable="true" prompt="Supplier"/>
+                                                   </ui:contents>
+                                                </oa:table>
+                                             </ui:contents>
+                                          </oa:listOfValues>
+                                       </jrad:lovContents>
+                                       <jrad:lovMappings>
+                                          <jrad:lovMap id="VendIntAdvLovMap" lovItem="VendIntAdvLov" resultTo="VendIntAdvSrch" criteriaFrom="VendIntAdvSrch"/>
+                                       </jrad:lovMappings>
+                                    </oa:messageLovInput>
+                                 </ui:contents>
+                              </oa:criteriaRow>
+                              <oa:criteriaRow id="RevIntRow">
+                                 <ui:contents>
+                                    <oa:messageStyledText id="item12" prompt="Revision"/>
+                                    <oa:messageTextInput id="RevIntAdvSrch" queryable="true" dataType="NUMBER"/>
+                                 </ui:contents>
+                              </oa:criteriaRow>
+                              <oa:criteriaRow id="VendSiteIntRow">
+                                 <ui:contents>
+                                    <oa:messageStyledText id="item13" prompt="Supplier Site"/>
+                                    <oa:messageLovInput id="VendSiteIntAdvSrch" queryable="true">
+                                       <jrad:lovContents>
+                                          <oa:listOfValues id="VendSiteIntAdvLovReg" amDefName="oracle.apps.pos.isp.server.PosAsnLovAM">
+                                             <ui:contents>
+                                                <oa:table name="VendSiteIntAdvLovReg" id="VendSiteIntAdvLovTbl">
+                                                   <ui:contents>
+                                                      <oa:messageStyledText id="VendSiteIntAdvLov" queryable="true" prompt="Supplier Site" viewName="PosVendorSiteVO" viewAttr="SupplierSiteCode"/>
+                                                   </ui:contents>
+                                                </oa:table>
+                                             </ui:contents>
+                                          </oa:listOfValues>
+                                       </jrad:lovContents>
+                                       <jrad:lovMappings>
+                                          <jrad:lovMap id="VendSiteIntAdvLovMap" lovItem="VendSiteIntAdvLov" resultTo="VendSiteIntAdvSrch" criteriaFrom="VendSiteIntAdvSrch"/>
+                                       </jrad:lovMappings>
+                                    </oa:messageLovInput>
+                                 </ui:contents>
+                              </oa:criteriaRow>
+                              <oa:criteriaRow id="DocTypeIntRow">
+                                 <ui:contents>
+                                    <oa:messageStyledText id="item14" prompt="Document Type"/>
+                                    <oa:messageLovInput id="DocTypeIntAdvSrch" queryable="true" externalListOfValues="/oracle/apps/pos/lov/webui/PosDocTypeLov">
+                                       <jrad:lovMappings>
+                                          <jrad:lovMap id="DocTypeLovMap" lovItem="PosTypeName" resultTo="DocTypeIntAdvSrch" criteriaFrom="DocTypeIntAdvSrch"/>
+                                       </jrad:lovMappings>
+                                    </oa:messageLovInput>
+                                 </ui:contents>
+                              </oa:criteriaRow>
+                              <oa:criteriaRow id="OrdDateIntRow">
+                                 <ui:contents>
+                                    <oa:messageStyledText id="item15" prompt="Creation Date"/>
+                                    <oa:messageTextInput id="OrdDateIntAdvSrch" queryable="true" dataType="DATE"/>
+                                 </ui:contents>
+                              </oa:criteriaRow>
+                              <oa:criteriaRow id="RevDateIntRow">
+                                 <ui:contents>
+                                    <oa:messageStyledText id="item16" prompt="Revised Date"/>
+                                    <oa:messageTextInput id="RevDateIntAdvSrch" queryable="true" dataType="DATE"/>
+                                 </ui:contents>
+                              </oa:criteriaRow>
+                           </oa:criteria>
+                        </oa:advancedSearch>
+                     </oa:advancedSearchPanel>
+                     <oa:advancedSearchMappings>
+                        <oa:queryCriteriaMap id="BusUnitIntAdvCritMap" criteriaItem="BusUnitIntAdvSrch" resultsItem="PosNewOrg"/>
+                        <oa:queryCriteriaMap id="PoNumIntAdvCritMap" criteriaItem="PoNumIntAdvSrch" resultsItem="PosPoNumberInternal"/>
+                        <oa:queryCriteriaMap id="RelNumIntAdvCritMap" criteriaItem="RelNumIntAdvSrch" resultsItem="PosReleaseNumInternal"/>
+                        <oa:queryCriteriaMap id="VendIntAdvCritMap" criteriaItem="VendIntAdvSrch" resultsItem="PosVendorInternal"/>
+                        <oa:queryCriteriaMap id="RevIntAdvCritMap" criteriaItem="RevIntAdvSrch" resultsItem="PosRevisionInternal"/>
+                        <oa:queryCriteriaMap id="VendSiteIntAdvCritMap" criteriaItem="VendSiteIntAdvSrch" resultsItem="PosVendorSiteInternal"/>
+                        <oa:queryCriteriaMap id="DocTypeIntAdvCritMap" criteriaItem="DocTypeIntAdvSrch" resultsItem="PosDocTypeInternal"/>
+                        <oa:queryCriteriaMap id="OrdDateIntAdvCritMap" criteriaItem="OrdDateIntAdvSrch" resultsItem="PosOrderDateInternal"/>
+                        <oa:queryCriteriaMap id="RevDateIntAdvCritMap" criteriaItem="RevDateIntAdvSrch" resultsItem="PosRevisedDateInternal"/>
+                     </oa:advancedSearchMappings>
+                  </oa:query>
+               </ui:contents>
+            </oa:header>
+            <oa:formValue id="PosOrgId" dataType="NUMBER"/>
+         </ui:contents>
+         <ui:productBranding>
+            <oa:image id="productBranding" source="/OA_MEDIA/POSBRAND.gif"/>
+         </ui:productBranding>
+         <ui:contentFooter>
+            <oa:contentFooter id="PosContentFooter"/>
+         </ui:contentFooter>
+      </oa:pageLayout>
+   </jrad:content>
+</jrad:page>

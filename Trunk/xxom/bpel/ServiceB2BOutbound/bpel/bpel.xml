@@ -1,0 +1,16 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<BPELSuitcase>
+   <BPELProcess id="ServiceB2BOutbound" src="ServiceB2BOutbound.bpel">
+      <partnerLinkBindings>
+         <partnerLinkBinding name="client">
+            <property name="wsdlLocation">ServiceB2BOutbound.wsdl</property>
+         </partnerLinkBinding>
+         <partnerLinkBinding name="routeTDS">
+            <property name="wsdlLocation">ODTechServices_routeTDSRef.wsdl</property>
+         </partnerLinkBinding>
+         <partnerLinkBinding name="ODErrorLogger">
+            <property name="wsdlLocation">http://esbdev01.na.odcorp.net/orabpel/default/ODErrorLogger/ODErrorLogger?wsdl</property>
+         </partnerLinkBinding>
+      </partnerLinkBindings>
+   </BPELProcess>
+</BPELSuitcase>

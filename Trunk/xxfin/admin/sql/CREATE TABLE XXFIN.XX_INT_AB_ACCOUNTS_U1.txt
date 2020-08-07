@@ -1,0 +1,27 @@
+-- +===========================================================================+
+-- |                  Office Depot - Project Simplify                          |
+-- +===========================================================================+
+-- | Name :XXFIN.XX_INT_AB_ACCOUNTS_U1                                         |
+-- | Description :   Script to create XX_INT_AB_ACCOUNTS_U1 index              |
+-- |                                                                           |
+-- |                                                                           |
+-- |Change Record:                                                             |
+-- |===============                                                            |
+-- |Version      Date           Author                  Remarks                |
+-- |=======    ==========     =============             ====================== |
+-- | 1.0      9-MAY-2013      Ray Strauss               Initial draft version  |
+-- +===========================================================================+
+
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     ON
+
+--DROP INDEX XXFIN.XX_INT_AB_ACCOUNTS_U1;
+
+CREATE UNIQUE INDEX  xxfin.XX_INT_AB_ACCOUNTS_U1
+ON                   xxfin.XX_INT_AB_ACCOUNTS(
+                                  CUST_NUM
+                                  );
+SHOW ERRORS;

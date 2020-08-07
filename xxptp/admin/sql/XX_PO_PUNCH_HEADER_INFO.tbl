@@ -1,0 +1,57 @@
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     ON
+
+PROMPT Creating TABLE XXPTP.XX_PO_PUNCH_HEADER_INFO
+
+PROMPT Program exits IF the creation IS NOT SUCCESSFUL
+
+WHENEVER SQLERROR CONTINUE
+
+-- +========================================================================================================+
+-- |                  Office Depot - Project Simplify                                                       |
+-- +========================================================================================================+
+-- | Name        :XXPTP.XX_PO_PUNCH_HEADER_INFO                                                             |
+-- | Rice ID     :                                                                                          |
+-- | Description : Staging table to capture the PO Header Information                                       |
+-- |                                                                                                        |
+-- |Change Record:                                                                                          |
+-- |===============                                                                                         |
+-- | Version   Date          Author         Remarks                                                         |
+-- |=========  ===========   =========      ========================                                        |
+-- |1.0        27-JUN-2017  Suresh Naragam   Initial Version                                                |
+-- |========================================================================================================|
+
+
+ CREATE TABLE XXPTP.XX_PO_PUNCH_HEADER_INFO ( RECORD_ID                              NUMBER            NOT NULL
+                                       ,PO_NUMBER                                    VARCHAR2(30)
+									   ,ORDER_NUM                                    VARCHAR2(30)
+									   ,RECORD_STATUS                                VARCHAR2(15)
+									   ,ERROR_MESSAGE                                VARCHAR2(2000)
+                                       ,CREATED_BY                                   NUMBER(15)        NOT NULL
+                                       ,CREATION_DATE                                DATE              NOT NULL
+                                       ,LAST_UPDATED_BY                              NUMBER(15)        NOT NULL
+                                       ,LAST_UPDATE_DATE                             DATE              NOT NULL
+                                       ,LAST_UPDATE_LOGIN                            NUMBER(15)
+                                       )
+ TABLESPACE "XXOD_TS_DATA";
+ SHOW ERROR
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

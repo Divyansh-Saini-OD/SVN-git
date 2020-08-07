@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding='windows-1252'?>
+<!DOCTYPE AppModule SYSTEM "jbo_03_01.dtd">
+
+<AppModule
+   Name="PAPBLOVAM"
+   ComponentClass="oracle.apps.fnd.framework.server.OAApplicationModuleImpl"
+   LoadComponentsLazily="true" >
+   <DesignTime>
+      <Attr Name="_version" Value="9.0.3.13.75" />
+      <Attr Name="_deployType" Value="0" />
+   </DesignTime>
+   <ViewUsage
+      Name="BrandLOVVO1"
+      ViewObjectName="od.oracle.apps.xxmer.papb.lov.server.BrandLOVVO" >
+   </ViewUsage>
+   <ViewUsage
+      Name="SrcAgentLovVO1"
+      ViewObjectName="od.oracle.apps.xxmer.papb.lov.server.SrcAgentLovVO" >
+   </ViewUsage>
+   <ViewUsage
+      Name="TrackerTypeLovVO1"
+      ViewObjectName="od.oracle.apps.xxmer.papb.lov.server.TrackerTypeLovVO" >
+   </ViewUsage>
+   <ViewUsage
+      Name="TrackerYearLovVO1"
+      ViewObjectName="od.oracle.apps.xxmer.papb.lov.server.TrackerYearLovVO" >
+   </ViewUsage>
+   <ViewUsage
+      Name="SubClassLovVO1"
+      ViewObjectName="od.oracle.apps.xxmer.papb.lov.server.SubClassLovVO" >
+   </ViewUsage>
+   <ViewUsage
+      Name="ClassLovVO1"
+      ViewObjectName="od.oracle.apps.xxmer.papb.lov.server.ClassLovVO" >
+   </ViewUsage>
+   <ViewUsage
+      Name="DeptLovVO1"
+      ViewObjectName="od.oracle.apps.xxmer.papb.lov.server.DeptLovVO" >
+   </ViewUsage>
+   <ViewUsage
+      Name="DivisionLovVO1"
+      ViewObjectName="od.oracle.apps.xxmer.papb.lov.server.DivisionLovVO" >
+   </ViewUsage>
+   <ViewUsage
+      Name="ProjectNumLovVO1"
+      ViewObjectName="od.oracle.apps.xxmer.papb.lov.server.ProjectNumLovVO" >
+   </ViewUsage>
+   <ViewUsage
+      Name="DomesticMerchantLovVO1"
+      ViewObjectName="od.oracle.apps.xxmer.papb.lov.server.DomesticMerchantLovVO" >
+   </ViewUsage>
+   <ViewUsage
+      Name="DIMerchantLovVO1"
+      ViewObjectName="od.oracle.apps.xxmer.papb.lov.server.DIMerchantLovVO" >
+   </ViewUsage>
+</AppModule>

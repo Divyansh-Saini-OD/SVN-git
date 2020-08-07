@@ -1,0 +1,38 @@
+-- +==========================================================================+
+-- |                  Office Depot - Project Simplify                         |
+-- |                       WIPRO Technologies                                 |
+-- +==========================================================================+
+-- | Name        :      PO Mass Update                                        |
+-- | Description : To create the sequence xx_po_mass_upd_batch_all_s in xxptp |
+-- |               schema.                                                    |
+-- |                                                                          |
+-- | SQL Script to create the following object                                |
+-- | Sequence    : XX_PO_MASS_UPD_BATCH_ALL_S                                 |
+-- |                                                                          |
+-- |                                                                          |
+-- |Change Record:                                                            |
+-- |===============                                                           |
+-- |Version     Date           Author                    Remarks              |
+-- |=======     ==========     =============             =====================|
+-- | V1.0       21-MAY-2007    MadanKumar J              Initial version      |
+-- | V1.1       08-JUN-2007    MadanKumar J              Updation of          |
+-- |                                                     description in the   |
+-- |                                                     File Header          |
+-- +==========================================================================+
+ 
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     ON
+ 
+DROP SEQUENCE xxptp.xx_po_mass_upd_batch_all_s;
+ 
+CREATE SEQUENCE xxptp.xx_po_mass_upd_batch_all_s START WITH 1 INCREMENT BY 1;
+ 
+SHOW ERROR
+
+
+
+
+

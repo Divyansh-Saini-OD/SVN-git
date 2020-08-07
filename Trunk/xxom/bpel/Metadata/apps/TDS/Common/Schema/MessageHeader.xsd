@@ -1,0 +1,199 @@
+<?xml version= '1.0' encoding= 'UTF-8' ?>
+<xs:schema 	targetNamespace="http://www.OfficeDepot.com/TDS/MessageHeader" 
+		xmlns:xs="http://www.w3.org/2001/XMLSchema"
+     		xmlns="http://www.OfficeDepot.com/TDS/MessageHeader" 
+		elementFormDefault="qualified" 
+		attributeFormDefault="unqualified"
+     		version="0.02">
+
+    <xs:complexType name="BusinessObjectDocument">
+        <xs:sequence>
+            <xs:element ref="ApplicationArea"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:element name="BusinessObjectDocument" type="BusinessObjectDocument" abstract="true"/>
+
+    <xs:complexType name="ApplicationArea">
+        <xs:sequence>
+
+            <xs:element name="Sender" type="Sender" minOccurs="0">
+                <xs:annotation>
+                    	<xs:documentation >
+				Identifies characteristics and control identifiers that relate to the application that created the Business Object Document.  The sender area can indicate the logical location of the application and/or database server, the application, and the task that was processing to create the BOD.
+			</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+
+            <xs:element name="Receiver" type="Receiver" minOccurs="0">
+                <xs:annotation>
+                    	<xs:documentation >
+				Identifies characteristics and control identifiers that relate to the application that receives the Business Object Document.
+			</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+
+            <xs:element name="MessageType" type="MessageType" minOccurs="0">
+                <xs:annotation>
+                    	<xs:documentation >
+				Identifies characteristics and control identifiers that relate to the application that receives the Business Object Document.
+			</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+
+	    <xs:element name="OtherBusinessAttributes" type="OtherBusinessAttributes" minOccurs="0" maxOccurs="1">
+                <xs:annotation>
+                    	<xs:documentation>
+				Identifies any other business attributes required.
+			</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+			
+            <xs:element name="CreationDateTime" type="xs:dateTime">
+                <xs:annotation>
+                    	<xs:documentation >
+				is the date time stamp that the given instance of the Business Object Document was created.  This date must not be modified during the life of the Business Object Document.
+			</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+
+
+            <xs:element name="BODId" type="xs:string" minOccurs="0">
+                <xs:annotation>
+                    <xs:documentation >
+			The BODId provides a place to carry a Globally Unique Identifier (GUID) that will make each Business Object Document instance uniquely identifiable.
+
+			This is a critical success factor to enable software developers to use the Globally Unique Identifier (GUID) to build the following services or capabilities:
+				1. Legally binding transactions,
+				2. Transaction logging,
+				3. Exception handling,
+				4. Re-sending,
+				5. Reporting,
+				6. Confirmations,
+				7. Security.
+
+			</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+
+        </xs:sequence>
+
+    </xs:complexType>
+
+    <xs:element name="ApplicationArea" type="ApplicationArea">
+        <xs:annotation>
+            	<xs:documentation >
+			Provides the information that an application may need to know in order to communicate in an integration of two or more business applications. The ApplicationArea is used at the applications layer of communication. While the integration frameworks web services and middleware provide the communication layer that OAGIS operates on top of.
+		</xs:documentation>
+        </xs:annotation>
+    </xs:element>
+
+    <xs:complexType name="DataArea">
+        <xs:annotation>
+            	<xs:documentation >
+			Is where the information that the message carries is provided. This is done by using the Verb which indicates the action to be performed on the Noun and 1 or more Nouns, which is the object that the action is to be performed.
+		</xs:documentation>
+        </xs:annotation>
+    </xs:complexType>
+
+
+    <xs:complexType name="Sender">
+        <xs:sequence>
+            <xs:element name="LogicalId" type="LogicalId" minOccurs="0">
+                <xs:annotation>
+                    <xs:documentation >
+			Provides the logical location of the server and applications from which the Business Object Document originated. It can be used to establish a logical to physical mapping, however its use is optional.
+			Each system or combination of systems should maintain an external central reference table containing the logical names or logical addresses of the application systems in the integration configuration.  This enables the logical names to be mapped to the physical network addresses of the resources needed on the network.  
+			Note:  The technical implementation of this Domain Naming Service is not dictated by this specification. 
+			This logical to physical mapping may be done at execution time by the application itself or by a middleware transport mechanism, depending on the integration architecture used.
+			This provides for a simple but effective directory access capability while maintaining application independence from the physical location of those resources on the network
+		    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+
+            <xs:element name="Component" type="xs:string" minOccurs="0">
+                <xs:annotation>
+                    <xs:documentation >
+			Provides a finer level of control than Logical Identifier and represents the business application that issued the Business Object Document.  Its use is optional.
+			The Open Applications Group has not constructed the list of valid Component names.  A suggestion for naming is to use the application component names used in the scenario diagrams in section two of OAGIS. Example Components may be Inventory, or Payroll.</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+
+
+            <xs:element name="ReferenceId" minOccurs="0">
+                <xs:annotation>
+                    <xs:documentation >Enables the sending application to indicate the instance identifier of the event or task that caused the BOD to be created. This allows drill back from the BOD message into the sending application. The may be required in environments where an audit trail must be maintained for all transactions.</xs:documentation>
+                </xs:annotation>
+                <xs:simpleType>
+                    <xs:restriction base="ReferenceId"/>
+                </xs:simpleType>
+            </xs:element>
+
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:simpleType name="LogicalId">
+        <xs:restriction base="xs:string"/>
+    </xs:simpleType>
+
+    <xs:simpleType name="Task">
+        <xs:restriction base="xs:string"/>
+    </xs:simpleType>
+
+    <xs:simpleType name="MessageType">
+        <xs:restriction base="xs:string"/>
+    </xs:simpleType>
+
+    <xs:simpleType name="ReferenceId">
+        <xs:annotation>
+            <xs:documentation />
+        </xs:annotation>
+        <xs:restriction base="xs:string"/>
+    </xs:simpleType>
+
+    <xs:complexType name="OtherBusinessAttributes">
+      <xs:sequence>
+        <xs:element name="BusinessAttribute" type="BusinessAttribute" minOccurs="0" maxOccurs="unbounded"/>
+       </xs:sequence>
+     </xs:complexType>
+
+     <xs:complexType name="BusinessAttribute">
+        <xs:annotation>
+            <xs:documentation >This will be used if any business attributes are required in application area.</xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:element name="BusinessAttributeName" type="xs:string" minOccurs="1" maxOccurs="1"/>
+            <xs:element name="BusinessAttributeValue" type="xs:string" minOccurs="1" maxOccurs="1"/>
+        </xs:sequence>
+      </xs:complexType>
+
+	<xs:complexType name="Receiver">
+        <xs:sequence>
+            <xs:element name="LogicalId" type="LogicalId" minOccurs="0">
+		<xs:annotation>
+			<xs:documentation >
+				Logical id of the target system.
+			</xs:documentation>
+		</xs:annotation>
+            </xs:element>
+
+            <xs:element name="Component" type="xs:string" minOccurs="0">
+                <xs:annotation>
+                    <xs:documentation >Provides a finer level of control than Logical Identifier and represents the business application that issued the Business Object Document.  Its use is optional.</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+
+            <xs:element name="ReferenceId" minOccurs="0">
+                <xs:annotation>
+                    <xs:documentation >Used if there is any target system reference id that need to be populated.</xs:documentation>
+                </xs:annotation>
+                <xs:simpleType>
+                    <xs:restriction base="ReferenceId"/>
+                </xs:simpleType>
+            </xs:element>
+
+        </xs:sequence>
+
+    </xs:complexType>
+</xs:schema>
+

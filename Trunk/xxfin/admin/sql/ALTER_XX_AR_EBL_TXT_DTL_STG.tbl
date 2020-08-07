@@ -1,0 +1,36 @@
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+-- +============================================================================================+
+-- |                                     Office Depot                                           |
+-- +============================================================================================+
+-- | Name        : ALTER_XX_AR_EBL_TXT_DTL_STG.tbl                                              |
+-- | Description : eTXT Summary Bill Changes Defect#38962                                       |
+-- | Rice Id     : I2186                                                                        |
+-- |                                                                                            |
+-- |Change Record:                                                                              |
+-- |===============                                                                             |
+-- |Version     Date           Author               Remarks                                     |
+-- |=======    ==========      ================     ============================================|
+-- |1.0        21-MAR-2017     Suresh N             Initial version                             |
+-- |1.1        16-FEB-2017     Punit Gupta          Requirement Defect#2282   2302              |
+-- +============================================================================================+
+
+PROMPT
+PROMPT Altering the Table XX_AR_EBL_TXT_DTL_STG .....
+PROMPT
+
+ALTER TABLE XXFIN.XX_AR_EBL_TXT_DTL_STG 
+	MODIFY (TRX_TYPE   VARCHAR2(10));
+
+ALTER TABLE XXFIN.XX_AR_EBL_TXT_DTL_STG  
+	ADD(NONDT_VALUE VARCHAR2(240),
+		REC_ORDER VARCHAR2(240));
+
+PROMPT
+PROMPT Altering the Table XX_AR_EBL_TXT_DTL_STG is done.
+PROMPT
+
+SHOW ERRORS;
+EXIT;

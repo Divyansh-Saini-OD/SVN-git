@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding='windows-1252'?>
+<!DOCTYPE JboPackage SYSTEM "jbo_03_01.dtd">
+
+<JboPackage
+   Name="server"
+   SeparateXMLFiles="true"
+   PackageName="od.oracle.apps.xxmer.gsopo.milestone.server" >
+   <DesignTime>
+      <Attr Name="_version" Value="9.0.3.13.97" />
+      <Attr Name="_ejbPackage" Value="false" />
+   </DesignTime>
+   <Containee
+      Name="ODGSOPOMilestoneAM"
+      FullName="od.oracle.apps.xxmer.gsopo.milestone.server.ODGSOPOMilestoneAM"
+      ObjectType="AppModule" >
+   </Containee>
+   <Containee
+      Name="ODmilestoneInfoVO"
+      FullName="od.oracle.apps.xxmer.gsopo.milestone.server.ODmilestoneInfoVO"
+      ObjectType="ViewObject" >
+   </Containee>
+   <Containee
+      Name="ODMilestoneInfoEVO"
+      FullName="od.oracle.apps.xxmer.gsopo.milestone.server.ODMilestoneInfoEVO"
+      ObjectType="ViewObject" >
+   </Containee>
+   <Containee
+      Name="MileStoneNameVO"
+      FullName="od.oracle.apps.xxmer.gsopo.milestone.server.MileStoneNameVO"
+      ObjectType="ViewObject" >
+   </Containee>
+</JboPackage>

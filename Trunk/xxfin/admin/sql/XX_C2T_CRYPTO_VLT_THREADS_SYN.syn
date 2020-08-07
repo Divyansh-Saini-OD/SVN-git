@@ -1,0 +1,29 @@
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     ON
+    -- +==========================================================================+
+    -- |                  Office Depot - Project Simplify                         |
+    -- +==========================================================================+
+    -- | SQL Script to create the Synonym                                         |
+    -- |                                                                          |
+    -- | XX_C2T_CRYPTO_VLT_THREADS_SYN.syn                                                  |
+    -- |                                                                          |
+    -- |                                                                          |
+    -- |                                                                          |
+    -- |                                                                          |
+    -- |Change Record:                                                            |
+    -- |===============                                                           |
+    -- |Version   Date         Author               Remarks                       |
+    -- |=======   ==========   =============        ==============================|
+    -- | V1.0     12-OCT-2015  Harvinder Rakhra     Initial version               |
+    -- |                                                                          |
+    -- +==========================================================================+
+
+--CREATE SYNONYM XX_C2T_CRYPTO_VLT_THREADS;
+
+PROMPT CREATING SYNONYM FOR XX_C2T_CRYPTO_VLT_THREADS..... 
+CREATE OR REPLACE SYNONYM XX_C2T_CRYPTO_VLT_THREADS FOR XXFIN.XX_C2T_CRYPTO_VLT_THREADS;
+
+SHOW ERROR

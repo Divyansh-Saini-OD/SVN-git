@@ -1,0 +1,232 @@
+<?xml version="1.0" encoding='windows-1252'?>
+<!DOCTYPE ViewObject SYSTEM "jbo_03_01.dtd">
+
+<!--
+Subversion Info:
+$HeadURL: http://svn.na.odcorp.net/svn/od/common/trunk/xxcomn/java/od/oracle/apps/xxcrm/hz/account/customer/server/ODCreditDunningVO.xml $
+$Rev: 241805 $
+$Date: 2015-12-07 11:00:57 -0500 (Mon, 07 Dec 2015) $
+-->
+
+<ViewObject
+   Name="ODCreditDunningVO"
+   BindingStyle="Oracle"
+   CustomQuery="true"
+   RowClass="od.oracle.apps.xxcrm.hz.account.customer.server.ODCreditDunningVORowImpl"
+   ComponentClass="od.oracle.apps.xxcrm.hz.account.customer.server.ODCreditDunningVOImpl"
+   MsgBundleClass="oracle.jbo.common.JboResourceBundle"
+   UseGlueCode="false" >
+   <SQLQuery><![CDATA[
+select hcpa.OVERALL_CREDIT_LIMIT,hcpa.CURRENCY_CODE,
+       hcp.CREDIT_ANALYST_ID,
+       ac.name AS Collection_Agent, ac.RESOURCE_ID,
+       jrre.SOURCE_PHONE,
+       jrre.SOURCE_EMAIL,
+       jrre.SOURCE_NAME,
+       jrres.SOURCE_NAME creditagentname,
+       jrres.SOURCE_PHONE creditagentphone,
+       jrres.SOURCE_EMAIL creditagentmail,
+       hcp.cust_account_id,
+       NULL billsiteID
+from hz_cust_profile_amts hcpa,
+     hz_customer_profiles hcp,
+     ar_collectors ac,
+     jtf_rs_resource_extns jrre,
+     jtf_rs_resource_extns jrres
+where hcp.CUST_ACCOUNT_PROFILE_ID = hcpa.CUST_ACCOUNT_PROFILE_ID
+and   ac.COLLECTOR_ID = hcp.COLLECTOR_ID
+and hcpa.OVERALL_CREDIT_LIMIT > 0
+and jrre.RESOURCE_ID(+) = ac.RESOURCE_ID
+and jrres.RESOURCE_ID(+) = hcp.CREDIT_ANALYST_ID
+and hcpa.site_use_id is null
+and hcpa.currency_code in
+         (select sob.currency_code
+            from hz_cust_acct_sites   cas,
+                 ar_system_parameters asp,
+                 gl_sets_of_books         sob
+           where cas.org_id          = asp.org_id
+             and asp.set_of_books_id = sob.set_of_books_id
+             and cas.status          = 'A'
+             and cas.bill_to_flag    = 'P'
+             and cas.cust_account_id = hcp.cust_account_id)
+and  hcp.CUST_ACCOUNT_ID = :1
+   ]]></SQLQuery>
+   <DesignTime>
+      <Attr Name="_isCodegen" Value="true" />
+      <Attr Name="_version" Value="9.0.3.13.93" />
+      <Attr Name="_CodeGenFlagNew" Value="36" />
+   </DesignTime>
+   <ViewAttribute
+      Name="OverallCreditLimit"
+      IsPersistent="false"
+      Type="oracle.jbo.domain.Number"
+      ColumnType="NUMBER"
+      AliasName="OVERALL_CREDIT_LIMIT"
+      Expression="OVERALL_CREDIT_LIMIT"
+      SQLType="NUMERIC" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="CurrencyCode"
+      IsPersistent="false"
+      IsNotNull="true"
+      Precision="15"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="CURRENCY_CODE"
+      Expression="CURRENCY_CODE"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="15" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="CreditAnalystId"
+      IsPersistent="false"
+      Precision="15"
+      Scale="0"
+      Type="oracle.jbo.domain.Number"
+      ColumnType="NUMBER"
+      AliasName="CREDIT_ANALYST_ID"
+      Expression="CREDIT_ANALYST_ID"
+      SQLType="NUMERIC" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="CollectionAgent"
+      IsPersistent="false"
+      IsNotNull="true"
+      Precision="30"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="COLLECTION_AGENT"
+      Expression="COLLECTION_AGENT"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="30" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="ResourceId"
+      IsPersistent="false"
+      Precision="15"
+      Scale="0"
+      Type="oracle.jbo.domain.Number"
+      ColumnType="NUMBER"
+      AliasName="RESOURCE_ID"
+      Expression="RESOURCE_ID"
+      SQLType="NUMERIC" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="SourcePhone"
+      IsPersistent="false"
+      Precision="2000"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="SOURCE_PHONE"
+      Expression="SOURCE_PHONE"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="2000" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="SourceEmail"
+      IsPersistent="false"
+      Precision="2000"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="SOURCE_EMAIL"
+      Expression="SOURCE_EMAIL"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="2000" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="SourceName"
+      IsPersistent="false"
+      Precision="360"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="SOURCE_NAME"
+      Expression="SOURCE_NAME"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="360" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Creditagentname"
+      IsPersistent="false"
+      Precision="360"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="CREDITAGENTNAME"
+      Expression="CREDITAGENTNAME"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="360" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Creditagentphone"
+      IsPersistent="false"
+      Precision="2000"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="CREDITAGENTPHONE"
+      Expression="CREDITAGENTPHONE"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="2000" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Creditagentmail"
+      IsPersistent="false"
+      Precision="2000"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="CREDITAGENTMAIL"
+      Expression="CREDITAGENTMAIL"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="2000" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="CustAccountId"
+      IsPersistent="false"
+      IsNotNull="true"
+      Precision="15"
+      Scale="0"
+      Type="oracle.jbo.domain.Number"
+      ColumnType="NUMBER"
+      AliasName="CUST_ACCOUNT_ID"
+      Expression="CUST_ACCOUNT_ID"
+      SQLType="NUMERIC" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Billsiteid"
+      IsPersistent="false"
+      Type="oracle.jbo.domain.Number"
+      ColumnType="NUMBER"
+      AliasName="BILLSITEID"
+      Expression="BILLSITEID"
+      SQLType="NUMERIC" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </ViewAttribute>
+</ViewObject>

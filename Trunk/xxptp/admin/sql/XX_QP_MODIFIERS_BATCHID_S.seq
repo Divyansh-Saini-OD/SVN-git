@@ -1,0 +1,87 @@
+REM============================================================================================
+REM                                 Start Of Script
+REM============================================================================================
+
+--+=============================================================================================+--
+--|                                                                                             |--
+--| Object Name    : OD Modifiers Sequence Creation                                             |--
+--|                                                                                             |--
+--| Program Name   : XX_QP_MODIFIERS_BATCHID_S.seq                                              |--
+--|                                                                                             |--
+--| Purpose        : Create Custom Sequences                                                    |--
+--|                  The Objects created are:                                                   |--
+--|                                                                                             |--
+--|                  1. XX_QP_MODIFIERS_BATCHID_S (Sequence for generation of load_batch_id)    |--
+--|                  2. XX_QP_MODIFIERS_BATCHID_S (Synonym for XX_QP_MODIFIERS_BATCHID_S)       |--
+--|                                                                                             |--
+--| Change History  :                                                                           |--
+--| Version           Date             Changed By              Description                      |--
+--+=============================================================================================+--
+--| 1.0              18-May-2007      Abhradip Ghosh           Original                         |--
+--+=============================================================================================+
+
+SET VERIFY   OFF
+SET TERM     ON
+SET FEEDBACK OFF
+SET SHOW     OFF
+SET ECHO     OFF
+SET TAB      OFF
+
+WHENEVER SQLERROR CONTINUE
+
+PROMPT
+PROMPT Dropping Existing Custom Sequences......
+PROMPT
+
+WHENEVER SQLERROR CONTINUE
+
+PROMPT
+PROMPT Dropping Sequence XXCNV.XX_QP_MODIFIERS_BATCHID_S......
+PROMPT
+
+DROP SEQUENCE XXCNV.XX_QP_MODIFIERS_BATCHID_S;
+
+WHENEVER SQLERROR CONTINUE
+
+PROMPT
+PROMPT Dropping SYNONYM XX_QP_MODIFIERS_BATCHID_S in APPS
+PROMPT
+
+DROP SYNONYM XX_QP_MODIFIERS_BATCHID_S;
+
+WHENEVER SQLERROR CONTINUE
+
+PROMPT
+PROMPT Creating Custom Sequence XX_QP_MODIFIERS_BATCHID_S ...
+PROMPT
+
+CREATE SEQUENCE XXCNV.XX_QP_MODIFIERS_BATCHID_S INCREMENT BY 1 START WITH 1 NOCACHE NOORDER;
+
+WHENEVER SQLERROR CONTINUE
+
+PROMPT
+PROMPT Creating Synonym in APPS...
+PROMPT
+
+WHENEVER SQLERROR CONTINUE
+
+PROMPT
+PROMPT Creating SYNONYM XX_QP_MODIFIERS_BATCHID_S ...
+PROMPT
+
+CREATE OR REPLACE SYNONYM XX_QP_MODIFIERS_BATCHID_S FOR XXCNV.XX_QP_MODIFIERS_BATCHID_S;
+
+WHENEVER SQLERROR CONTINUE
+
+PROMPT
+PROMPT Exiting....
+PROMPT
+
+SET FEEDBACK ON
+
+EXIT;
+
+REM=================================================================================================
+REM                                   End Of Script
+REM=================================================================================================
+

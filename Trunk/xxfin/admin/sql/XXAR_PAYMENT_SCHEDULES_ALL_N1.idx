@@ -1,0 +1,28 @@
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     ON
+
+-- +==========================================================================+
+-- |                  Office Depot - Project Simplify                         |
+-- |                       WIPRO Technologies                                 |
+-- +==========================================================================+
+-- | SQL Script to create indexes                                             |
+-- |                                                                          |
+-- |                                                                          |
+-- |                                                                          |
+-- |                                                                          |
+-- |                                                                          |
+-- |Change Record:                                                            |
+-- |===============                                                           |
+-- |Version   Date         Author               Remarks                       |
+-- |=======   ==========   ================     ==============================|
+-- | V1.0     10-SEP-2008  Anusha Ramanujam     Initial version               |
+-- +==========================================================================+
+
+CREATE INDEX "XXFIN"."XXAR_PAYMENT_SCHEDULES_ALL_N1" ON "AR"."AR_PAYMENT_SCHEDULES_ALL" ("GL_DATE_CLOSED", "GL_DATE", "CUSTOMER_TRX_ID") 
+TABLESPACE "APPS_TS_TX_IDX_16M"  ONLINE;
+
+
+SHOW ERROR

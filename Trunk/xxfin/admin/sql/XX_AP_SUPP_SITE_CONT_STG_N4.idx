@@ -1,0 +1,51 @@
+REM================================================================================================
+REM                                 Start Of Script
+REM================================================================================================
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     OFF
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+-- +=============================================================================+
+-- |               Office Depot - Project Simplify                               |
+-- +=============================================================================+
+-- | Name        :XX_AP_SUPP_SITE_CONT_STG_N4                                    |
+-- | Description : Non-Unique Index for Custom Table XX_AP_SUPP_SITE_CONT_STG_N4 |
+-- |Change History:                                                              |
+-- |---------------                                                              |
+-- |  RICE ID : E3115                                                                             |
+-- |Version  Date        Author             Remarks                              |
+-- |-------  ----------- -----------------  -------------------------------------|
+-- | 1.0     12-Nov-2014 Paddy Sanjeevi     Baselined                            |
+-- +=============================================================================+
+
+PROMPT
+PROMPT Creating Index....
+PROMPT
+
+CREATE INDEX XX_AP_SUPP_SITE_CONT_STG_N4 ON xxfin.XX_AP_SUPP_SITE_CONTACT_STG
+(request_id)
+LOGGING
+TABLESPACE XXOD_TS_DATA
+PCTFREE    10
+INITRANS   2
+MAXTRANS   255
+STORAGE    (
+            INITIAL          64K
+            NEXT             1M
+            MINEXTENTS       1
+            MAXEXTENTS       2147483645
+            PCTINCREASE      0
+            BUFFER_POOL      DEFAULT
+           )
+NOPARALLEL;
+
+
+SHOW ERRORS;
+
+
+REM================================================================================================
+REM                                 Start Of Script
+REM================================================================================================

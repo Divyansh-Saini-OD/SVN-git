@@ -1,0 +1,78 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<!-- dbdrv: exec java oracle/jrad/tools/xml/importer XMLImporter.class java &phase=dat+24 checkfile:~PROD:~PATH:~FILE &fullpath:~PROD:~PATH:~FILE -username &un_apps -password &pw_apps -dbconnection &jdbc_db_addr  -userId "1" -rootPackage /oracle/apps/~PROD  -rootdir &fullpath:~PROD:mds:directory  -->
+<page xmlns:jrad="http://xmlns.oracle.com/jrad" xmlns:oa="http://xmlns.oracle.com/oa" xmlns:ui="http://xmlns.oracle.com/uix/ui" version="9.0.3.8.12_1330" xml:lang="en-US" xmlns:user="http://xmlns.oracle.com/jrad/user" xmlns="http://xmlns.oracle.com/jrad" file-version="$Header$">
+   <content>
+      <oa:pageLayout id="PageLayoutRN" amDefName="od.oracle.apps.xxmer.odvendormin.server.ODVendorMinAM" windowTitle="Vendor Minimum" title="Vendor Minimum">
+         <ui:corporateBranding>
+            <oa:image id="corporateBrandingImage" source="/OA_MEDIA/FNDSSCORP.gif"/>
+         </ui:corporateBranding>
+         <ui:productBranding>
+            <oa:image id="ProductBrand" source="FNDTAPPBRAND.gif"/>
+         </ui:productBranding>
+         <ui:contents>
+            <oa:query id="ODVendorMinQryResults" adminCustomizable="true" dispAdvanced="true" defaultPanel="advanced" mode="resultsBasedSearch">
+               <ui:contents>
+                  <oa:advancedTable id="ODVendorMinAttrDef" viewName="ODVendorMinVO1" text="" adminCustomizable="true" controllerClass="od.oracle.apps.xxmer.odvendormin.webui.webui.ODVendorMinCO" tableBanding="rowBanding" userCustomizable="true">
+                     <ui:contents>
+                        <oa:columnGroup id="CVendorSiteGrp" adminCustomizable="true" userCustomizable="true">
+                           <ui:columnHeader>
+                              <oa:sortableHeader id="sortableHeader3" prompt="Vendor Site" adminCustomizable="false"/>
+                           </ui:columnHeader>
+                           <ui:contents>
+                              <oa:column id="CVendorSiteCode">
+                                 <ui:columnHeader>
+                                    <oa:sortableHeader id="vendorname" prompt="Name" adminCustomizable="true" sortState="yes" userCustomizable="true"/>
+                                 </ui:columnHeader>
+                                 <ui:contents>
+                                    <oa:messageStyledText id="vendorsitecode" viewAttr="VendorSiteCode" prompt="Vendor Code" queryable="true" adminCustomizable="true" userCustomizable="true"/>
+                                 </ui:contents>
+                              </oa:column>
+                              <oa:column id="CInventoryCurrency">
+                                 <ui:columnHeader>
+                                    <oa:sortableHeader id="currencyname" adminCustomizable="true" prompt="Default Currency" sortState="yes" userCustomizable="true" cellNoWrapFormat="true"/>
+                                 </ui:columnHeader>
+                                 <ui:contents>
+                                    <oa:messageStyledText id="inventorycurrency" viewAttr="InvoiceCurrencyCode" prompt="Inventory Currency" adminCustomizable="true" userCustomizable="true"/>
+                                 </ui:contents>
+                              </oa:column>
+                              <oa:column id="CVendorLegacyID" adminCustomizable="true" columnDataFormat="numberFormat" userCustomizable="true">
+                                 <ui:columnHeader>
+                                    <oa:sortableHeader id="hdrvendorlegid" prompt="Vendor ID" adminCustomizable="true" sortState="yes" userCustomizable="true"/>
+                                 </ui:columnHeader>
+                                 <ui:contents>
+                                    <oa:messageStyledText id="IVendorLegacyID" queryable="true" dataType="NUMBER" viewAttr="Legacyid" userCustomizable="true"/>
+                                 </ui:contents>
+                              </oa:column>
+                           </ui:contents>
+                        </oa:columnGroup>
+                        <oa:columnGroup id="CVendorMinGrp" adminCustomizable="true" userCustomizable="true">
+                           <ui:columnHeader>
+                              <oa:sortableHeader id="HdrVenMinGrp" prompt="Vendor Minimum" adminCustomizable="true" userCustomizable="true"/>
+                           </ui:columnHeader>
+                           <ui:contents>
+                              <oa:column id="CMinPrepaidCode" adminCustomizable="true" userCustomizable="true">
+                                 <ui:columnHeader>
+                                    <oa:sortableHeader id="sortableHeader2" prompt="Code" sortState="yes" userCustomizable="true"/>
+                                 </ui:columnHeader>
+                                 <ui:contents>
+                                    <oa:messageStyledText id="MinPrepaideCode" viewAttr="MinPrepaidCode" adminCustomizable="true" queryable="true" prompt="Vendor Min. Code" userCustomizable="true"/>
+                                 </ui:contents>
+                              </oa:column>
+                              <oa:column id="CVendorMinAmt" columnDataFormat="numberFormat" adminCustomizable="true" userCustomizable="true" totalValue="true">
+                                 <ui:columnHeader>
+                                    <oa:sortableHeader id="sortableHeader1" prompt="Amount" sortState="yes" userCustomizable="true"/>
+                                 </ui:columnHeader>
+                                 <ui:contents>
+                                    <oa:messageTextInput id="vendorminamt" readOnly="true" queryable="false" viewAttr="VendorMinAmount" dataType="NUMBER"/>
+                                 </ui:contents>
+                              </oa:column>
+                           </ui:contents>
+                        </oa:columnGroup>
+                     </ui:contents>
+                  </oa:advancedTable>
+               </ui:contents>
+            </oa:query>
+         </ui:contents>
+      </oa:pageLayout>
+   </content>
+</page>

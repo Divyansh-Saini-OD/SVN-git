@@ -1,0 +1,19 @@
+-- +===================================================================+
+-- |                  Office Depot - Project Simplify                  |
+-- +===================================================================+
+-- | Name        : XX_AR_INVOICE_FREQ_HISTORY_N1.idx                   |
+-- | Rice ID     :                                                     |
+-- | Description : XX_AR_INVOICE_FREQ_HISTORY_N1.idx - Index Creation Script       |
+-- |                                                                   |
+-- |              						                                   |
+-- |Change Record:                                                     |
+-- |===============                                                    |
+-- |Version   Date        Author           Remarks                     |
+-- |=======  ===========  =============    ============================|
+-- |1.0      19-Jun-2008  Subbu Pillai     Created this for proper     |
+-- |                                       Standards                   |
+-- +===================================================================+
+  CREATE INDEX "XXFIN"."XX_AR_INVOICE_FREQ_HISTORY_N1" ON "XXFIN"."XX_AR_INVOICE_FREQ_HISTORY" ("INVOICE_ID", "PAYDOC_FLAG")
+  TABLESPACE "APPS_TS_TX_IDX_16M" 
+  PARALLEL 1 ;
+ 

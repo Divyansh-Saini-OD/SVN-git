@@ -1,0 +1,11 @@
+create table xx_fin_site_use_locations( site_use_id number not null
+                                      , location_id number not null
+                                      , cust_acct_site_id number not null
+                                      , party_site_id number not null
+                                      , cust_account_id number not null
+                                      , org_id number not null
+                                      , site_use_code varchar2(30) not null
+                                      , location varchar2(40) not null
+                                      , bill_to_flag varchar2(1) 
+                                      )
+/

@@ -1,0 +1,36 @@
+<definitions
+     name="DPSCancel_SendNowDocsMsgProcess"
+     targetNamespace="http://xmlns.oracle.com/DPSCancel_SendNowDocsMsgProcess"
+     xmlns="http://schemas.xmlsoap.org/wsdl/"
+     xmlns:ns1="http://www.openapplications.org/oagis/9"
+     xmlns:plnk="http://schemas.xmlsoap.org/ws/2003/05/partner-link/"
+     xmlns:ns2="http://schemas.oracle.com/bpel/extension"
+     xmlns:client="http://xmlns.oracle.com/DPSCancel_SendNowDocsMsgProcess"
+    >
+    <import namespace="http://schemas.oracle.com/bpel/extension" location="RuntimeFault.wsdl"/>
+    <types>
+        <schema xmlns="http://www.w3.org/2001/XMLSchema">
+            <import namespace="http://xmlns.oracle.com/DPSCancel_SendNowDocsMsgProcess" schemaLocation="DPSCancel_SendNowDocsMsgProcess.xsd"/>
+        </schema>
+        <schema xmlns="http://www.w3.org/2001/XMLSchema">
+            <import namespace="http://www.openapplications.org/oagis/9" schemaLocation="CancelOrder.xsd"/>
+        </schema>
+    </types>
+    <message name="DPSCancel_SendNowDocsMsgProcessRequestMessage">
+        <part name="payload" element="ns1:SalesOrderCancel"/>
+    </message>
+    <message name="DPSCancel_SendNowDocsMsgProcessResponseMessage">
+        <part name="payload" element="client:DPSCancel_SendNowDocsMsgProcessProcessResponse"/>
+    </message>
+    <portType name="DPSCancel_SendNowDocsMsgProcess">
+        <operation name="process">
+            <input message="client:DPSCancel_SendNowDocsMsgProcessRequestMessage"/>
+            <output message="client:DPSCancel_SendNowDocsMsgProcessResponseMessage"/>
+        </operation>
+    </portType>
+    <plnk:partnerLinkType name="DPSCancel_SendNowDocsMsgProcess">
+        <plnk:role name="DPSCancel_SendNowDocsMsgProcessProvider">
+            <plnk:portType name="client:DPSCancel_SendNowDocsMsgProcess"/>
+        </plnk:role>
+    </plnk:partnerLinkType>
+</definitions>

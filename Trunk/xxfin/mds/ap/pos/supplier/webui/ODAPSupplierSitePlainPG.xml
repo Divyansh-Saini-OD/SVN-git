@@ -1,0 +1,166 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<page xmlns:jrad="http://xmlns.oracle.com/jrad" xmlns:oa="http://xmlns.oracle.com/oa" xmlns:ui="http://xmlns.oracle.com/uix/ui" version="10.1.3_" xml:lang="en-US" xmlns:user="http://xmlns.oracle.com/jrad/user" xmlns="http://xmlns.oracle.com/jrad" file-version="$Header$">
+   <content>
+      <oa:pageLayout id="MainPG" controllerClass="od.oracle.apps.xxfin.ap.pos.supplier.webui.ODAPSupplierSiteDFFPlainCO" amDefName="od.oracle.apps.xxfin.ap.pos.supplier.server.ODAPPosSupplierSiteDFFAM" windowTitle="Supplier Sites Additional Information" title="Supplier Sites Additional Information" warnAboutChanges="true">
+         <ui:corporateBranding>
+            <oa:image id="corporateBrandingImage" source="/OA_MEDIA/FNDSSCORP.gif"/>
+         </ui:corporateBranding>
+         <ui:contents>
+            <oa:formValue id="VSIDFormValue" viewName="ODAPSupplierSitesAllVO1" viewAttr="VendorSiteId" prompt="Vendor Site ID Form Val"/>
+            <oa:formValue id="VIDFormValue" viewName="ODAPSupplierSitesAllVO1" viewAttr="VendorId" prompt="Vendor ID Form Val"/>
+            <oa:messageComponentLayout id="AddressDtRN" width="80%" columns="3" rows="1">
+               <ui:contents>
+                  <oa:messageStyledText id="addrName" prompt="Address Name" shortDesc="Address Name" viewName="ODAPSupplierSitesAllVO1" viewAttr="VendorSiteCode" styleClass="OraDataText"/>
+                  <oa:messageStyledText id="addrDt" prompt="Address Detail" shortDesc="Address Detail" viewName="ODAddressDtVO1" viewAttr="AddressDetail" styleClass="OraDataText" rendered="false"/>
+                  <oa:messageStyledText id="suppName" prompt="Supplier Number / Name" shortDesc="Supplier Name" viewName="ODSupplierVO1" viewAttr="VendorDetail" styleClass="OraDataText"/>
+                  <oa:messageLayout id="messageLayout1" adminCustomizable="false">
+                     <ui:contents>
+                        <oa:formValue id="addressName" encrypted="true" viewName="ODAddressDtVO1" viewAttr="PartySiteName"/>
+                        <oa:formValue id="locationId" encrypted="true" viewName="ODAddressDtVO1" viewAttr="LocationId" dataType="NUMBER"/>
+                        <oa:formValue id="addressId" encrypted="true" viewName="ODAddressDtVO1" viewAttr="PartySiteId" dataType="NUMBER"/>
+                     </ui:contents>
+                  </oa:messageLayout>
+               </ui:contents>
+            </oa:messageComponentLayout>
+            <oa:separator id="seperator1"/>
+            <oa:messageComponentLayout id="DFFDtRN" width="80%" columns="2" rows="2">
+               <ui:contents>
+                  <oa:messageTextInput id="txtSiteID1" viewName="ODAPSupplierSitesAllVO1" viewAttr="VendorSiteId" prompt="Supplier Site ID" maximumLength="150" readOnly="true" disabled="true" styleClass="OraDataText"/>
+                  <oa:messageTextInput id="txtLegSup1" viewName="ODAPSupplierSitesAllVO1" viewAttr="Attribute9" prompt="Legacy Supplier #" maximumLength="150"/>
+                  <oa:messageTextInput id="txtRefNumber" viewName="ODAPSupplierSitesAllVO1" viewAttr="Attribute14" dataType="VARCHAR2" prompt="Reference #" maximumLength="140"/>
+                  <oa:messageChoice id="consignmentFreq" required="no" viewName="ODAPSupplierSitesAllVO1" viewAttr="Attribute4" prompt="Consignment Frequency" pickListViewDef="od.oracle.apps.xxfin.ap.pos.supplier.server.ODMatchApprovalTypeVO" pickListDispAttr="Description" pickListValAttr="FlexValue"/>
+                  <oa:messageChoice id="siteCatChoice" required="yes" viewName="ODAPSupplierSitesAllVO1" viewAttr="Attribute8" prompt="Site Category" pickListViewDef="od.oracle.apps.xxfin.ap.pos.supplier.server.ODAPSuppSiteCatChoiceVO" pickListDispAttr="ValDescription" pickListValAttr="FlexValue"/>
+                  <oa:messageChoice id="relPSChoice" prompt="Related Party Site" pickListViewDef="od.oracle.apps.xxfin.ap.pos.supplier.server.ODAPSuppSiteRelPSChoiceVO" pickListDispAttr="SupplierNameSiteCode" pickListValAttr="VendorSiteId" viewName="ODAPSupplierSitesAllVO1" viewAttr="Attribute13"/>
+                  <oa:messageTextInput id="vendAsst" viewName="ODAPSupplierSitesAllVO1" viewAttr="Attribute6" prompt="Vendor Assistant" maximumLength="150" readOnly="true"/>
+               </ui:contents>
+            </oa:messageComponentLayout>
+            <oa:separator id="seperator2"/>
+            <oa:tableLayout id="KFFTableLayoutRN" hAlign="center" adminCustomizable="true">
+               <ui:contents>
+                  <oa:rowLayout id="KFFRowLayout">
+                     <ui:contents>
+                        <oa:cellFormat id="KFF1CellFormat" width="33%" vAlign="top" hAlign="center">
+                           <ui:contents>
+                              <oa:staticStyledText id="item4" text="RMS PI Pack" prompt="RMS PI Pack" rendered="false"/>
+                              <oa:header id="region1" text="RMS PI Pack"/>
+                              <oa:messageComponentLayout id="KFF1MsgLayout">
+                                 <ui:contents>
+                                    <oa:messageTextInput id="lblVsKffId1" prompt="VS_KFF_ID" viewName="ODXXPOVendorSitesKff1VO1" viewAttr="VsKffId" dataType="NUMBER" rendered="false" disabled="false" maximumLength="15"/>
+                                    <oa:messageTextInput id="kff1StructureID" viewName="ODXXPOVendorSitesKff1VO1" viewAttr="StructureId" prompt="kff1StructureID" dataType="NUMBER" rendered="false" maximumLength="15"/>
+                                    <oa:messageTextInput id="txtSegment1" maximumLength="3" viewName="ODXXPOVendorSitesKff1VO1" viewAttr="Segment1" prompt="Lead Time" shortDesc="0 to 999 NUMBER only" tipType="shortTip" tipMessageAppShortName="XXFIN" tipMessageName="XX_AP_VALID_LEAD_TIME_TIP" dataType="NUMBER"/>
+                                    <oa:messageChoice id="chSegment2" viewName="ODXXPOVendorSitesKff1VO1" viewAttr="Segment2" prompt="Back Order Flag" pickListViewDef="od.oracle.apps.xxfin.ap.pos.supplier.server.ODAPYNFlagChoiceVO" pickListDispAttr="Description" pickListValAttr="FlexValue" totalValue="true" defaultValue="Y"/>
+                                    <oa:messageChoice id="chSegment3" viewName="ODXXPOVendorSitesKff1VO1" viewAttr="Segment3" prompt="Delivery Policy" pickListViewDef="od.oracle.apps.xxfin.ap.pos.supplier.server.ODAPDelPolicyChoiceVO" pickListDispAttr="Description" pickListValAttr="FlexValue"/>
+                                    <oa:messageChoice id="chSegment4" viewName="ODXXPOVendorSitesKff1VO1" viewAttr="Segment4" prompt="Min Prepaid Code" pickListViewDef="od.oracle.apps.xxfin.ap.pos.supplier.server.ODAPMinPrepCdChoiceVO" pickListDispAttr="Description" pickListValAttr="FlexValue"/>
+                                    <oa:messageTextInput id="txtSegment5" maximumLength="24" viewName="ODXXPOVendorSitesKff1VO1" viewAttr="Segment5" prompt="Vendor Min Amount" tipType="shortTip" tipMessageAppShortName="XXFIN" tipMessageName="XX_AP_VALID_NUMBER_TIP" dataType="NUMBER" shortDesc="NUMBER only"/>
+                                    <oa:messageChoice id="chSegment6" viewName="ODXXPOVendorSitesKff1VO1" viewAttr="Segment6" prompt="Supplier Ship To" pickListViewDef="od.oracle.apps.xxfin.ap.pos.supplier.server.ODAPSuppShipChoiceVO" pickListDispAttr="FlexValue" pickListValAttr="FlexVal"/>
+                                    <oa:messageChoice id="chSegment7" viewName="ODXXPOVendorSitesKff1VO1" viewAttr="Segment7" prompt="Inventory Type Code" pickListViewDef="od.oracle.apps.xxfin.ap.pos.supplier.server.ODAPInvTypeChoiceVO" pickListDispAttr="Description" pickListValAttr="FlexValue"/>
+                                    <oa:messageChoice id="chSegment8" viewName="ODXXPOVendorSitesKff1VO1" viewAttr="Segment8" prompt="Vertical Market Indicator" pickListViewDef="od.oracle.apps.xxfin.ap.pos.supplier.server.ODAPInvTypeChoiceVO" pickListDispAttr="Description" pickListValAttr="FlexValue" totalValue="false"/>
+                                    <oa:messageChoice id="chSegment9" viewName="ODXXPOVendorSitesKff1VO1" viewAttr="Segment9" prompt="Allow Auto Receipt" pickListViewDef="od.oracle.apps.xxfin.ap.pos.supplier.server.ODAPYNFlagChoiceVO" pickListDispAttr="Description" pickListValAttr="FlexValue"/>
+                                    <oa:messageTextInput id="txtSegment10" maximumLength="24" viewName="ODXXPOVendorSitesKff1VO1" viewAttr="Segment10" prompt="Handling" tipType="shortTip" tipMessageAppShortName="XXFIN" tipMessageName="XX_AP_VALID_NUMBER_TIP" dataType="NUMBER" shortDesc="NUMBER only"/>
+                                    <oa:messageTextInput id="txtSegment11" maximumLength="24" viewName="ODXXPOVendorSitesKff1VO1" viewAttr="Segment11" prompt="EFT Settle days" tipType="shortTip" tipMessageAppShortName="XXFIN" tipMessageName="XX_AP_VALID_NUMBER_TIP" dataType="NUMBER" shortDesc="NUMBER only"/>
+                                    <oa:messageChoice id="chSegment12" viewName="ODXXPOVendorSitesKff1VO1" viewAttr="Segment12" prompt="Split File Flag" pickListViewDef="od.oracle.apps.xxfin.ap.pos.supplier.server.ODAPYNFlagChoiceVO" pickListDispAttr="Description" pickListValAttr="FlexValue" tipType="none"/>
+                                    <oa:messageTextInput id="txtSegment13" maximumLength="24" viewName="ODXXPOVendorSitesKff1VO1" viewAttr="Segment13" prompt="Master Vendor ID" tipType="shortTip" tipMessageAppShortName="XXFIN" tipMessageName="XX_AP_VALID_NUMBER_TIP" dataType="NUMBER" shortDesc="NUMBER only"/>
+                                    <oa:messageTextInput id="txtSegment14" maximumLength="4" viewName="ODXXPOVendorSitesKff1VO1" viewAttr="Segment14" prompt="PI Pack Year" tipType="shortTip" tipMessageAppShortName="XXFIN" tipMessageName="XX_AP_VALID_NUMBER_TIP" dataType="NUMBER" shortDesc="NUMBER only"/>
+                                    <oa:messageTextInput id="txtSegment15" maximumLength="9" viewName="ODXXPOVendorSitesKff1VO1" viewAttr="Segment15" prompt="OD Date Signed" dataType="VARCHAR2" tipType="shortTip" shortDesc="Date Format: DD-MON-YY" tipMessageAppShortName="XXFIN" tipMessageName="XX_AP_VALID_DATE_FORMAT_TIP"/>
+                                    <oa:messageTextInput id="txtSegment16" maximumLength="9" viewName="ODXXPOVendorSitesKff1VO1" viewAttr="Segment16" prompt="Vendor Date Signed" dataType="VARCHAR2" tipType="shortTip" tipMessageAppShortName="XXFIN" tipMessageName="XX_AP_VALID_DATE_FORMAT_TIP" shortDesc="Date Format: DD-MON-YY"/>
+                                    <oa:messageChoice id="chSegment17" viewName="ODXXPOVendorSitesKff1VO1" viewAttr="Segment17" prompt="Deduct From Invoice Flag" pickListViewDef="od.oracle.apps.xxfin.ap.pos.supplier.server.ODAPYNFlagChoiceVO" pickListDispAttr="Description" pickListValAttr="FlexValue"/>
+                                    <oa:messageTextInput id="txtSegment18" viewName="ODXXPOVendorSitesKff1VO1" viewAttr="Segment18" prompt="Min Bus Category" maximumLength="150" tipType="shortTip" tipMessageAppShortName="XXFIN" tipMessageName="XX_AP_VALID_CHAR_OPT_TIP" shortDesc="150 characters optional"/>
+                                    <oa:messageChoice id="chSegment19" viewName="ODXXPOVendorSitesKff1VO1" viewAttr="Segment19" prompt="Combine Pick Ticket" pickListViewDef="od.oracle.apps.xxfin.ap.pos.supplier.server.ODAPDelPolicyChoiceVO" pickListDispAttr="Description" pickListValAttr="FlexValue"/>
+                                 </ui:contents>
+                              </oa:messageComponentLayout>
+                           </ui:contents>
+                        </oa:cellFormat>
+                        <oa:cellFormat id="KFF2CellFormat" width="33%" vAlign="top" hAlign="center">
+                           <ui:contents>
+                              <oa:staticStyledText id="item5" text="RMS Special Terms" prompt="RMS Special Terms" rendered="false"/>
+                              <oa:header id="region2" text="RMS Special Terms"/>
+                              <oa:messageComponentLayout id="KFF2MsgLayout">
+                                 <ui:contents>
+                                    <oa:messageTextInput id="lblVsKffId2" prompt="VS_KFF_ID" viewName="ODXXPOVendorSitesKff2VO1" viewAttr="VsKffId" dataType="NUMBER" rendered="false" maximumLength="15"/>
+                                    <oa:messageTextInput id="kff2StructureID" prompt="kff2StructureID" viewName="ODXXPOVendorSitesKff2VO1" viewAttr="StructureId" dataType="NUMBER" rendered="false" maximumLength="15"/>
+                                    <oa:messageChoice id="chSegment20" viewName="ODXXPOVendorSitesKff2VO1" viewAttr="Segment20" prompt="New Store Flag" pickListViewDef="od.oracle.apps.xxfin.ap.pos.supplier.server.ODAPYNFlagChoiceVO" pickListDispAttr="Description" pickListValAttr="FlexValue" defaultValue=""/>
+                                    <oa:messageChoice id="chSegment21" viewName="ODXXPOVendorSitesKff2VO1" viewAttr="Segment21" prompt="New Store Terms" pickListDispAttr="Name" pickListValAttr="TermId" pickListViewDef="od.oracle.apps.xxfin.ap.pos.supplier.server.ODAPTermsChoiceVO"/>
+                                    <oa:messageChoice id="chSegment22" viewName="ODXXPOVendorSitesKff2VO1" viewAttr="Segment22" prompt="Seasonal Flag" pickListViewDef="od.oracle.apps.xxfin.ap.pos.supplier.server.ODAPYNFlagChoiceVO" pickListDispAttr="Description" pickListValAttr="FlexValue"/>
+                                    <oa:messageTextInput id="txtSegment23" maximumLength="9" viewName="ODXXPOVendorSitesKff2VO1" viewAttr="Segment23" prompt="Start Date" tipType="shortTip" tipMessageAppShortName="XXFIN" tipMessageName="XX_AP_VALID_DATE_FORMAT_TIP" shortDesc="Date Format: DD-MON-YY"/>
+                                    <oa:messageTextInput id="txtSegment24" maximumLength="9" viewName="ODXXPOVendorSitesKff2VO1" viewAttr="Segment24" prompt="End Date" tipType="shortTip" tipMessageAppShortName="XXFIN" tipMessageName="XX_AP_VALID_DATE_FORMAT_TIP" shortDesc="Date Format: DD-MON-YY"/>
+                                    <oa:messageChoice id="chSegment25" viewName="ODXXPOVendorSitesKff2VO1" viewAttr="Segment25" prompt="Seasonal Terms" pickListViewDef="od.oracle.apps.xxfin.ap.pos.supplier.server.ODAPTermsChoiceVO" pickListDispAttr="Name" pickListValAttr="TermId"/>
+                                    <oa:messageChoice id="chSegment26" viewName="ODXXPOVendorSitesKff2VO1" viewAttr="Segment26" prompt="Late Ship Flag" pickListValAttr="FlexValue" pickListDispAttr="Description" pickListViewDef="od.oracle.apps.xxfin.ap.pos.supplier.server.ODAPYNFlagChoiceVO"/>
+                                    <oa:messageChoice id="chSegment27" viewName="ODXXPOVendorSitesKff2VO1" viewAttr="Segment27" prompt="850 PO" pickListViewDef="od.oracle.apps.xxfin.ap.pos.supplier.server.ODAPYNFlagChoiceVO" pickListDispAttr="Description" pickListValAttr="FlexValue"/>
+                                    <oa:messageChoice id="chSegment28" viewName="ODXXPOVendorSitesKff2VO1" viewAttr="Segment28" prompt="860 PO Change" pickListViewDef="od.oracle.apps.xxfin.ap.pos.supplier.server.ODAPYNFlagChoiceVO" pickListDispAttr="Description" pickListValAttr="FlexValue"/>
+                                    <oa:messageChoice id="chSegment29" viewName="ODXXPOVendorSitesKff2VO1" viewAttr="Segment29" prompt="855 Confirm PO" pickListValAttr="FlexValue" pickListDispAttr="Description" pickListViewDef="od.oracle.apps.xxfin.ap.pos.supplier.server.ODAPYNFlagChoiceVO"/>
+                                    <oa:messageChoice id="chSegment30" viewName="ODXXPOVendorSitesKff2VO1" viewAttr="Segment30" prompt="856 ASN" pickListViewDef="od.oracle.apps.xxfin.ap.pos.supplier.server.ODAPYNFlagChoiceVO" pickListValAttr="FlexValue" pickListDispAttr="Description"/>
+                                    <oa:messageChoice id="chSegment31" viewName="ODXXPOVendorSitesKff2VO1" viewAttr="Segment31" prompt="846 Availability" pickListViewDef="od.oracle.apps.xxfin.ap.pos.supplier.server.ODAPYNFlagChoiceVO" pickListDispAttr="Description" pickListValAttr="FlexValue"/>
+                                    <oa:messageChoice id="chSegment32" viewName="ODXXPOVendorSitesKff2VO1" viewAttr="Segment32" prompt="810 Invoice" pickListViewDef="od.oracle.apps.xxfin.ap.pos.supplier.server.ODAPYNFlagChoiceVO" pickListDispAttr="Description" pickListValAttr="FlexValue"/>
+                                    <oa:messageChoice id="chSegment33" viewName="ODXXPOVendorSitesKff2VO1" viewAttr="Segment33" prompt="832 Price Sales Catalog" pickListViewDef="od.oracle.apps.xxfin.ap.pos.supplier.server.ODAPYNFlagChoiceVO" pickListDispAttr="Description" pickListValAttr="FlexValue"/>
+                                    <oa:messageChoice id="chSegment34" viewName="ODXXPOVendorSitesKff2VO1" viewAttr="Segment34" prompt="820 EFT" pickListViewDef="od.oracle.apps.xxfin.ap.pos.supplier.server.ODAPYNFlagChoiceVO" pickListValAttr="FlexValue" pickListDispAttr="Description"/>
+                                    <oa:messageChoice id="chSegment35" viewName="ODXXPOVendorSitesKff2VO1" viewAttr="Segment35" prompt="861 Damage/Shortage" pickListViewDef="od.oracle.apps.xxfin.ap.pos.supplier.server.ODAPYNFlagChoiceVO" pickListDispAttr="Description" pickListValAttr="FlexValue"/>
+                                    <oa:messageChoice id="chSegment36" viewName="ODXXPOVendorSitesKff2VO1" viewAttr="Segment36" prompt="852 Sales" pickListViewDef="od.oracle.apps.xxfin.ap.pos.supplier.server.ODAP852SalesChoiceVO" pickListDispAttr="Description" pickListValAttr="FlexValue"/>
+                                    <oa:messageChoice id="chSegment37" viewName="ODXXPOVendorSitesKff2VO1" viewAttr="Segment37" prompt="EDI Distribution Code" pickListViewDef="od.oracle.apps.xxfin.ap.pos.supplier.server.ODAPEDICodesChoiceVO" pickListDispAttr="Description" pickListValAttr="FlexValue" defaultValue="PR"/>
+                                 </ui:contents>
+                              </oa:messageComponentLayout>
+                           </ui:contents>
+                        </oa:cellFormat>
+                        <oa:cellFormat id="KFF3CellFormat" vAlign="top" hAlign="center">
+                           <ui:contents>
+                              <oa:staticStyledText id="item6" text="RMS RTV/Obsolete" prompt="RMS RTV/Obsolete" rendered="false"/>
+                              <oa:header id="region3" text="RMS RTV/Obsolete"/>
+                              <oa:messageComponentLayout id="KFF3MsgLayout">
+                                 <ui:contents>
+                                    <oa:messageTextInput id="lblVsKffId3" prompt="VS_KFF_ID" viewName="ODXXPOVendorSitesKff3VO1" viewAttr="VsKffId" dataType="NUMBER" rendered="false" maximumLength="15"/>
+                                    <oa:messageTextInput id="kff3StructureID" prompt="kff2StructureID" viewName="ODXXPOVendorSitesKff3VO1" viewAttr="StructureId" rendered="false" dataType="NUMBER" maximumLength="15"/>
+                                    <oa:messageChoice id="chSegment40" viewName="ODXXPOVendorSitesKff3VO1" viewAttr="Segment40" prompt="RTV Option" pickListViewDef="od.oracle.apps.xxfin.ap.pos.supplier.server.ODAPRTVOptChoiceVO" pickListDispAttr="Description" pickListValAttr="FlexValue"/>
+                                    <oa:messageChoice id="chSegment41" viewName="ODXXPOVendorSitesKff3VO1" viewAttr="Segment41" prompt="RTV Freight Payment Method" pickListViewDef="od.oracle.apps.xxfin.ap.pos.supplier.server.ODAPRTVFrPmtChoiceVO" pickListDispAttr="Description" pickListValAttr="FlexValue"/>
+                                    <oa:messageTextInput id="txtSegment42" maximumLength="24" viewName="ODXXPOVendorSitesKff3VO1" viewAttr="Segment42" prompt="Permanent RGA" tipType="shortTip" tipMessageAppShortName="XXFIN" tipMessageName="XX_AP_VALID_NUMBER_TIP" dataType="NUMBER" shortDesc="NUMBER only"/>
+                                    <oa:messageTextInput id="txtSegment43" maximumLength="24" viewName="ODXXPOVendorSitesKff3VO1" viewAttr="Segment43" prompt="Destroy Allow Amount" tipType="shortTip" tipMessageAppShortName="XXFIN" tipMessageName="XX_AP_VALID_NUMBER_TIP" dataType="NUMBER" shortDesc="NUMBER only"/>
+                                    <oa:messageChoice id="chSegment44" viewName="ODXXPOVendorSitesKff3VO1" viewAttr="Segment44" prompt="Payment Frequency" pickListViewDef="od.oracle.apps.xxfin.ap.pos.supplier.server.ODAPPmtFreqChoiceVO" pickListDispAttr="Description" pickListValAttr="FlexValue" tipType="shortTip"/>
+                                    <oa:messageTextInput id="txtSegment45" maximumLength="24" viewName="ODXXPOVendorSitesKff3VO1" viewAttr="Segment45" prompt="Min Return Qty" tipType="shortTip" tipMessageAppShortName="XXFIN" tipMessageName="XX_AP_VALID_NUMBER_TIP" dataType="NUMBER" shortDesc="NUMBER only"/>
+                                    <oa:messageTextInput id="txtSegment46" maximumLength="24" viewName="ODXXPOVendorSitesKff3VO1" viewAttr="Segment46" prompt="Min Return Amount" tipType="shortTip" tipMessageAppShortName="XXFIN" tipMessageName="XX_AP_VALID_NUMBER_TIP" dataType="NUMBER" translatableDefaultValue="0" shortDesc="NUMBER only"/>
+                                    <oa:messageTextInput id="txtSegment47" maximumLength="24" viewName="ODXXPOVendorSitesKff3VO1" viewAttr="Segment47" prompt="Damage/Destroy Limit" tipType="shortTip" tipMessageAppShortName="XXFIN" tipMessageName="XX_AP_VALID_NUMBER_TIP" dataType="NUMBER" shortDesc="NUMBER only"/>
+                                    <oa:messageTextInput id="txtSegment48" maximumLength="150" viewName="ODXXPOVendorSitesKff3VO1" viewAttr="Segment48" prompt="RTV Instructions" tipType="shortTip" tipMessageAppShortName="XXFIN" tipMessageName="XX_AP_VALID_CHAR_OPT_TIP" shortDesc="150 characters optional"/>
+                                    <oa:messageTextInput id="txtSegment49" maximumLength="150" viewName="ODXXPOVendorSitesKff3VO1" viewAttr="Segment49" prompt="Add'l RTV Instructions" tipType="shortTip" tipMessageAppShortName="XXFIN" tipMessageName="XX_AP_VALID_CHAR_OPT_TIP" shortDesc="150 characters optional"/>
+                                    <oa:messageChoice id="chSegment50" viewName="ODXXPOVendorSitesKff3VO1" viewAttr="Segment50" prompt="RGA Marked Flag" pickListViewDef="od.oracle.apps.xxfin.ap.pos.supplier.server.ODAPYNFlagChoiceVO" pickListDispAttr="Description" pickListValAttr="FlexValue"/>
+                                    <oa:messageChoice id="chSegment51" viewName="ODXXPOVendorSitesKff3VO1" viewAttr="Segment51" prompt="Remove Price Sticker Flag" pickListViewDef="od.oracle.apps.xxfin.ap.pos.supplier.server.ODAPYNFlagChoiceVO" pickListDispAttr="Description" pickListValAttr="FlexValue"/>
+                                    <oa:messageChoice id="chSegment52" viewName="ODXXPOVendorSitesKff3VO1" viewAttr="Segment52" prompt="Contact Supplier for RGA" pickListViewDef="od.oracle.apps.xxfin.ap.pos.supplier.server.ODAPYNFlagChoiceVO" pickListDispAttr="Description" pickListValAttr="FlexValue"/>
+                                    <oa:messageChoice id="chSegment53" viewName="ODXXPOVendorSitesKff3VO1" viewAttr="Segment53" prompt="Destroy Flag" pickListViewDef="od.oracle.apps.xxfin.ap.pos.supplier.server.ODAPYNFlagChoiceVO" pickListDispAttr="Description" pickListValAttr="FlexValue" defaultValue=""/>
+                                    <oa:messageChoice id="chSegment54" viewName="ODXXPOVendorSitesKff3VO1" viewAttr="Segment54" prompt="Serial # Required Flag" pickListViewDef="od.oracle.apps.xxfin.ap.pos.supplier.server.ODAPYNFlagChoiceVO" pickListDispAttr="Description" pickListValAttr="FlexValue"/>
+                                    <oa:messageChoice id="chSegment55" viewName="ODXXPOVendorSitesKff3VO1" viewAttr="Segment55" prompt="Obsolete Item" pickListViewDef="od.oracle.apps.xxfin.ap.pos.supplier.server.ODAPObsCodeChoiceVO" pickListDispAttr="Description" pickListValAttr="FlexValue"/>
+                                    <oa:messageTextInput id="txtSegment56" maximumLength="24" viewName="ODXXPOVendorSitesKff3VO1" viewAttr="Segment56" prompt="Obsolete Allowance %" tipType="shortTip" tipMessageAppShortName="XXFIN" tipMessageName="XX_AP_VALID_NUMBER_TIP" dataType="NUMBER" shortDesc="NUMBER only"/>
+                                    <oa:messageTextInput id="txtSegment57" maximumLength="24" viewName="ODXXPOVendorSitesKff3VO1" viewAttr="Segment57" prompt="Obsolete Allowance Days" tipType="shortTip" tipMessageAppShortName="XXFIN" dataType="NUMBER" shortDesc="NUMBER only" tipMessageName="XX_AP_VALID_NUMBER_TIP"/>
+                                    <oa:messageChoice id="chSegment58" viewName="ODXXPOVendorSitesKff3VO1" viewAttr="Segment58" prompt="RTV Related Site" pickListViewDef="od.oracle.apps.xxfin.ap.pos.supplier.server.ODAPVendorRTVChoiceVO" pickListDispAttr="RtvSiteCode" pickListValAttr="VendorSiteId"/>
+                                 </ui:contents>
+                              </oa:messageComponentLayout>
+                           </ui:contents>
+                        </oa:cellFormat>
+                     </ui:contents>
+                  </oa:rowLayout>
+               </ui:contents>
+            </oa:tableLayout>
+            <oa:pageButtonBar id="btnRN">
+               <ui:contents>
+                  <oa:button id="btnClose" destination="javascript:window.close()" text="Close" prompt="Close"/>
+                  <oa:button id="btnCancel" text="Cancel" prompt="Cancel" warnAboutChanges="true" hAlign="end" shortDesc="Cancel" rendered="false">
+                     <ui:primaryClientAction>
+                        <ui:fireAction event="cancel">
+                           <ui:parameters>
+                              <ui:parameter key="vendorId" value="{@vendorId}"/>
+                              <ui:parameter key="vendorSiteId" value="{@vendorSiteId}"/>
+                           </ui:parameters>
+                        </ui:fireAction>
+                     </ui:primaryClientAction>
+                  </oa:button>
+                  <oa:submitButton id="btnSubmit" text="Save" prompt="Save" hAlign="end" styleClass="Save"/>
+               </ui:contents>
+            </oa:pageButtonBar>
+            <oa:flowLayout id="region4" rendered="false">
+               <ui:contents>
+                  <oa:link id="lnkReturn" text="Return to Manage Sites" warnAboutChanges="true" rendered="false">
+                     <ui:primaryClientAction>
+                        <ui:fireAction event="returnToMngSites"/>
+                     </ui:primaryClientAction>
+                  </oa:link>
+               </ui:contents>
+            </oa:flowLayout>
+         </ui:contents>
+      </oa:pageLayout>
+   </content>
+</page>

@@ -1,0 +1,32 @@
+SET VERIFY OFF;
+SET SHOW OFF;
+SET TAB OFF;
+SET ECHO OFF;
+SET FEEDBACK OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+-- +===================================================================+
+-- |                  Office Depot - Project Simplify                  |
+-- |                        WIPRO Technologies                         |
+-- +===================================================================+
+-- | Name  :            XX_OM_DPSPARENT_STG.syn                        |
+-- | Rice ID : I1151  DPS cancel order                                 |
+-- | Description      : This script creates a synonym for the table    |
+-- |                    XX_OM_DPSPARENT_STG.                           |
+-- |                                                                   |
+-- |                                                                   |
+-- |                                                                   |
+-- |                                                                   |
+-- |                                                                   |
+-- |Change Record:                                                     |
+-- |===============                                                    |
+-- |Version   Date        Author           Remarks                     |
+-- |=======   ==========  =============    ============================|
+-- |DRAFT 1   25-APR-2007 Rizwan A         Initial Version             |
+-- |                                                                   |
+-- |                                                                   |
+-- +===================================================================+
+
+CREATE SYNONYM xx_om_dpsparent_stg FOR xxom.xx_om_dpsparent_stg
+/
+SHOW ERROR

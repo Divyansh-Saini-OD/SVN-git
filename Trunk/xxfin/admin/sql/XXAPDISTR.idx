@@ -1,0 +1,26 @@
+------------------------------------------------------------------------------------
+-- Program Name: XXAPDISTR.sql
+-- Purpose:      Creates custom indexes for Payables Accounting Process
+--
+-- REVISIONS:
+-- Version Date        Author                               Description
+-- ------- ----------- ------------------------------------ ---------------------
+-- 1.0     14-AUG-2008 Sandeep Pandhare										   Created base version.
+-- 
+------------------------------------------------------------------------------------
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     ON
+
+create index xxfin.xxAP_CHRG_ALLOCATIONS_N1 on AP_CHRG_ALLOCATIONS_ALL
+ (ITEM_DIST_ID, CHARGE_DIST_ID, ALLOCATED_AMOUNT, ORG_ID)
+tablespace xxod nologging;
+
+create index xxfin.xxAP_INVOICE_DISTRIBUTIONS_n1 on AP_INVOICE_DISTRIBUTIONS_ALL
+(INVOICE_DISTRIBUTION_ID, LINE_TYPE_LOOKUP_CODE, TAX_CODE_ID, INVOICE_ID, ORG_ID)
+tablespace xxod nologging;
+
+SHOW ERROR
+

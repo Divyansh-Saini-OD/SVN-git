@@ -1,0 +1,30 @@
+# +===================================================================+
+# |                  Office Depot - Project Simplify                  |
+# |                       WIPRO Technologies                          |
+# +===================================================================+
+# | Name :      JOIN FILE                                             |
+# | Description : To concatenate all the files created                | 
+# |              by the child programs into one single file           |
+# |                                                                   |
+# |                                                                   |
+# |Change Record:                                                     |
+# |===============                                                    |
+# |Version   Date          Author              Remarks                |
+# |=======   ==========   =============        =======================|
+# |DRAFT 1.0 05-Oct-2009  Vinaykumar S    Initial draft version       |
+# |                                                                   |
+# +===================================================================+
+#
+# REQ_ID holds the master request ID
+#
+REQ_ID=$5
+file_name=$6
+echo "Request ID : " $REQ_ID
+echo "File Name : " $file_name
+for file in `ls $CUSTOM_DATA/xxfin/outbound/${file_name}_${REQ_ID}_*` 
+do 
+cat $file >>  $CUSTOM_DATA/xxfin/outbound/${file_name}_${REQ_ID}.txt
+echo "deleting file: "$file
+rm -f -v $file
+done
+echo "Created output file : "$CUSTOM_DATA"/xxfin/outbound/"${file_name}"_"${REQ_ID}".txt"

@@ -1,0 +1,52 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<!-- dbdrv: exec java oracle/jrad/tools/xml/importer XMLImporter.class java &phase=dat+24 checkfile:~PROD:~PATH:~FILE &fullpath:~PROD:~PATH:~FILE -username &un_apps -password &pw_apps -dbconnection &jdbc_db_addr  -userId "1" -rootPackage /oracle/apps/~PROD  -rootdir &fullpath:~PROD:mds:directory  -->
+<oa:header version="9.0.3.8.11_1183" xml:lang="en-US" xmlns:oa="http://xmlns.oracle.com/oa" xmlns:jrad="http://xmlns.oracle.com/jrad" xmlns:ui="http://xmlns.oracle.com/uix/ui" xmlns:user="http://xmlns.oracle.com/jrad/user" xmlns="http://xmlns.oracle.com/jrad" file-version="$Header$">
+   <ui:contents>
+      <oa:defaultDoubleColumn id="ODASLSrchRN">
+         <ui:contents>
+            <oa:messageTextInput id="orgname" prompt="Organization Name"/>
+            <oa:messageTextInput id="reqstd" dataType="DATE" prompt="Request date from"/>
+            <oa:messageChoice id="reqstat" prompt="Request Status" pickListViewDef="od.oracle.apps.xxcrm.asl.custom.server.ODASLReqStatusVO" pickListDispAttr="Meaning" pickListValAttr="Meaning"/>
+            <oa:messageTextInput id="reqend" dataType="DATE" prompt="Request date to"/>
+            <oa:messageTextInput id="address" prompt="Address"/>
+            <oa:messageChoice id="createdoffline" prompt="Created in offline" dataType="VARCHAR2" defaultValue="" pickListViewDef="od.oracle.apps.xxcrm.asl.custom.server.ODASLOfflineFlagVO" pickListDispAttr="Meaning" pickListValAttr="Meaning"/>
+            <oa:messageTextInput id="contact" prompt="Contact"/>
+            <oa:messageTextInput id="reqid" prompt="Request ID"/>
+            <oa:submitButton id="srchbut" text="Search" prompt="Search"/>
+         </ui:contents>
+      </oa:defaultDoubleColumn>
+      <oa:defaultDoubleColumn id="ODASLSrchResultsRN">
+         <ui:contents>
+            <oa:table id="ODASLSrchVO" controllerClass="od.oracle.apps.xxcrm.asl.custom.webui.ODASLSrchRNCO">
+               <ui:contents>
+                  <oa:messageTextInput id="RequestId" dataType="NUMBER" prompt="Request ID" viewName="ODASLSrchVO" viewAttr="RequestId" maximumLength="15" readOnly="true" sortState="yes"/>
+                  <oa:messageStyledText id="PartyName" dataType="VARCHAR2" prompt="Organization Name" viewName="ODASLSrchVO" viewAttr="PartyName" maximumLength="360" sortState="yes" columns="30">
+                     <ui:primaryClientAction>
+                        <ui:fireAction event="custlink" id="fireAction1">
+                           <ui:parameters>
+                              <ui:parameter key="ASNReqFrmCustId" value="${oa.current.PartyId}"/>
+                              <ui:parameter key="ASNReqFrmCustName" value="${oa.current.PartyName}"/>
+                              <ui:parameter key="AccountRequestId" value="${oa.current.RequestId}"/>
+                           </ui:parameters>
+                        </ui:fireAction>
+                     </ui:primaryClientAction>
+                  </oa:messageStyledText>
+                  <oa:messageTextInput id="Country" dataType="VARCHAR2" prompt="Country" viewName="ODASLSrchVO" viewAttr="Country" maximumLength="60" readOnly="true" sortState="yes" columns="15"/>
+                  <oa:messageTextInput id="BillToAddress" dataType="VARCHAR2" prompt="Bill To Address" viewName="ODASLSrchVO" viewAttr="BillToAddress" maximumLength="720" readOnly="true" sortState="yes" columns="30"/>
+                  <oa:messageTextInput id="Contact" dataType="VARCHAR2" prompt="Contact" viewName="ODASLSrchVO" viewAttr="Contact" maximumLength="360" readOnly="true" sortState="yes"/>
+                  <oa:messageTextInput id="CreationDate" dataType="DATE" prompt="Request Creation Date" viewName="ODASLSrchVO" viewAttr="CreationDate" readOnly="true" sortState="yes"/>
+                  <oa:messageTextInput id="Status" dataType="VARCHAR2" prompt="Reqest Status" viewName="ODASLSrchVO" viewAttr="Status" maximumLength="50" readOnly="true" sortState="yes"/>
+                  <oa:messageTextInput id="StatusTransitionDate" dataType="DATE" prompt="Status Transition Date" viewName="ODASLSrchVO" viewAttr="StatusTransitionDate" readOnly="true" sortState="yes"/>
+                  <oa:messageTextInput id="OfflineCreatedFlag" dataType="VARCHAR2" prompt="Created Offline?" viewName="ODASLSrchVO" viewAttr="OfflineCreatedFlag" maximumLength="3" readOnly="true" sortState="yes"/>
+                  <oa:messageTextInput id="PartyId" dataType="NUMBER" prompt="PartyId" viewName="ODASLSrchVO" viewAttr="PartyId" maximumLength="15" readOnly="true" sortState="yes" rendered="false"/>
+                  <oa:messageTextInput id="PartyNumber" dataType="VARCHAR2" prompt="PartyNumber" viewName="ODASLSrchVO" viewAttr="PartyNumber" maximumLength="30" readOnly="true" sortState="yes" rendered="false"/>
+                  <oa:messageTextInput id="PartySiteId" dataType="NUMBER" prompt="PartySiteId" viewName="ODASLSrchVO" viewAttr="PartySiteId" maximumLength="15" readOnly="true" sortState="yes" rendered="false"/>
+                  <oa:messageTextInput id="PartySiteNumber" dataType="VARCHAR2" prompt="PartySiteNumber" viewName="ODASLSrchVO" viewAttr="PartySiteNumber" maximumLength="30" readOnly="true" sortState="yes" rendered="false"/>
+                  <oa:messageTextInput id="ApContact" dataType="VARCHAR2" prompt="ApContact" viewName="ODASLSrchVO" viewAttr="ApContact" maximumLength="50" readOnly="true" sortState="yes" rendered="false"/>
+                  <oa:messageTextInput id="Comments" dataType="VARCHAR2" prompt="Comments" viewName="ODASLSrchVO" viewAttr="Comments" maximumLength="4000" readOnly="true" sortState="yes" rendered="false"/>
+               </ui:contents>
+            </oa:table>
+         </ui:contents>
+      </oa:defaultDoubleColumn>
+   </ui:contents>
+</oa:header>

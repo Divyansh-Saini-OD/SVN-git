@@ -1,0 +1,13 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<customization xmlns="http://xmlns.oracle.com/jrad" version="9.0.6.0.0_50" xml:lang="en-US" customizes="/oracle/apps/ar/cusstd/acctSite/webui/ArAcctSiteOverviewPG" developerMode="true" xmlns:oa="http://xmlns.oracle.com/oa">
+   <modifications>
+      <move element="SiteName" after="SiteNumber"/>
+      <insert after="SiteName">
+         <oa:messageStyledText id="lblOmxConsigneeId" adminCustomizable="true" cellNoWrapFormat="false" dataType="VARCHAR2" initSortSeq="none" popupEnabled="false" popupRenderEvent="onClick" prompt="OMX Consignee ID" queryable="false" rendered="true"
+                               required="no" scope="." selectiveSearchCriteria="false" serverUnvalidated="false" sortState="no" styleClass="OraFieldText" tipType="none" totalValue="false" userCustomizable="false" vAlign="middle" viewAttr="OmxConsigneeId"
+                               viewName="ArPartySiteInfosVO" warnAboutChanges="true" xmlns:oa="http://xmlns.oracle.com/oa"/>
+      </insert>
+   </modifications>
+</customization>
+
+

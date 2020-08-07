@@ -1,0 +1,339 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dataTemplate name="XXINVERR" description="GI Inventory Transactions Error Report" defaultPackage="XX_GI_ORG_HIERARCHY_PKG" version="1.0">
+   <parameters>
+     <parameter name="p_period_name" datatype="character"/>
+     <parameter name="p_report_mode"   datatype="character"/>
+   </parameters>
+   
+   <dataTrigger name="beforeReportTrigger" source="XX_GI_ORG_HIERARCHY_PKG.beforereport(:p_period_name)"/>
+   
+   <dataQuery>
+    <sqlStatement name="Q_EXCEP_DETAIL">
+         <![CDATA[SELECT  Decode(hou.attribute1,NULL,'999999',substr(hou.name,1,instr(hou.name,':')-1)) loc_id,
+               hou.name loc_name,
+               'MTI' table_name,
+               mtt.transaction_type_name tran_type_name,
+               nvl(mti.attribute5,0) doc_number,
+			   NVL((SELECT ATTRIBUTE_CATEGORY 
+                    FROM po_headers_all where segment1  =MTI.ATTRIBUTE5),NULL)  doc_type,   ---Added for Defect#25454 
+               trunc(mti.transaction_date) tran_date,
+               msi.segment1 sku,
+               mti.subinventory_code subinv_code,
+			   mti.transaction_quantity quantity,
+               round(nvl(mti.transaction_quantity * cic.item_cost,0),2) tran_cost,
+               null vendor_number,
+               null vendor_name,
+               nvl(mti.error_code,'No Error Code') error_code,
+               mti.error_explanation error_explanation
+          FROM mtl_transactions_interface mti,
+               mtl_transaction_types mtt,
+               mtl_system_items_b msi,
+               hr_all_organization_units hou,
+               cst_item_costs cic
+         WHERE mti.organization_id = hou.organization_id
+           AND mti.transaction_type_id = mtt.transaction_type_id
+           AND mti.inventory_item_id = msi.inventory_item_id
+           AND mti.organization_id = msi.organization_id
+           AND mti.organization_id = cic.organization_id (+)
+           AND mti.inventory_item_id = cic.inventory_item_id (+)
+           AND (mti.error_code IS NOT NULL OR mti.error_explanation IS NOT NULL)
+           AND mti.transaction_date <=XX_GI_ORG_HIERARCHY_PKG.sch_cls_date_p
+      UNION ALL
+        SELECT Decode(hou.attribute1,NULL,'999999',substr(hou.name,1,instr(hou.name,':')-1)) loc_id,
+               nvl(hou.name,'No Org Found') loc_name,
+               'RTI' table_name,
+               rcv.transaction_type tran_type_name,
+              -- nvl(rch.receipt_num,rcv.attribute8) doc_number,
+			   nvl(pha.segment1,rcv.attribute8)||'/'||rch.receipt_num doc_number,
+			   NVL((SELECT ATTRIBUTE_CATEGORY 
+                    FROM po_headers_all where segment1  =pha.segment1),NULL)  doc_type,   ---Added for Defect#25454
+               trunc(rcv.transaction_date) tran_date,
+               msi.segment1 sku,
+               rcv.subinventory subinv_code,
+			   rcv.quantity quantity,
+               round(nvl(rcv.quantity * cst.item_cost ,0),2) tran_cost,
+               aps.segment1 vendor_number,
+               aps.vendor_name,
+               nvl(pie.error_message_name,'No Error Code') error_code,
+               nvl(pie.error_message,'No Error Message') error_explanation
+          FROM rcv_transactions_interface rcv,
+               rcv_headers_interface rch,
+               hr_all_organization_units hou,
+               po_interface_errors pie,
+               cst_item_costs cst,
+               mtl_system_items_b msi,
+               ap_suppliers aps,
+			   po_headers_all pha
+         WHERE rcv.to_organization_id = hou.organization_id  (+)
+           AND rch.header_interface_id = rcv.header_interface_id
+           AND rcv.destination_type_code = 'INVENTORY'
+           AND rch.asn_type IS NULL
+           AND rcv.item_id = cst.inventory_item_id (+)
+           AND rcv.to_organization_id = cst.organization_id (+)
+           AND rcv.to_organization_id = msi.organization_id (+)
+           AND rcv.item_id = msi.inventory_item_id (+)
+           AND (pie.error_message_name IS NOT NULL OR pie.error_message IS NOT NULL)
+           AND rcv.transaction_date <= XX_GI_ORG_HIERARCHY_PKG.sch_cls_date_p
+           AND rch.header_interface_id = pie.interface_header_id (+)
+           AND pie.interface_line_id  = rcv.interface_transaction_id(+)
+           AND rcv.vendor_id=aps.vendor_id(+)
+		   AND rcv.po_header_id=pha.po_header_id(+)
+      UNION ALL
+       SELECT Decode(hou.attribute1,NULL,'999999',substr(hou.name,1,instr(hou.name,':')-1)) loc_id,
+               hou.name loc_name,
+               'MMTT' table_name,
+               mtt.transaction_type_name tran_type_name,
+               nvl(mmtt.attribute5,0) doc_number,
+			   NVL((SELECT ATTRIBUTE_CATEGORY 
+                    FROM po_headers_all where segment1  =mmtt.attribute5),NULL)  doc_type,   ---Added for Defect#25454
+               trunc(mmtt.transaction_date) tran_date,
+               msi.segment1 sku,
+               mmtt.subinventory_code subinv_code,
+			   mmtt.transaction_quantity quantity,
+               round(nvl(mmtt.transaction_cost,0),2) tran_cost,
+               null vendor_number,
+               null vendor_name,
+               nvl(mmtt.error_code,'No Error Code') error_code,
+               nvl(mmtt.error_explanation,'No Error Explanation') error_explanation
+          FROM mtl_material_transactions_temp mmtt,
+               mtl_transaction_types mtt,
+               mtl_system_items_b msi,
+               hr_all_organization_units hou
+         WHERE mmtt.organization_id = hou.organization_id
+           AND mmtt.transaction_type_id = mtt.transaction_type_id
+           AND mmtt.organization_id = msi.organization_id
+           AND mmtt.inventory_item_id = msi.inventory_item_id
+           AND (mmtt.error_code IS NOT NULL OR mmtt.error_explanation IS NOT NULL)
+           AND mmtt.transaction_date <= XX_GI_ORG_HIERARCHY_PKG.sch_cls_date_p
+     UNION ALL
+        SELECT Decode(hou.attribute1,NULL,'999999',substr(hou.name,1,instr(hou.name,':')-1)) loc_id,
+               hou.name loc_name,
+               'MMT' table_name,
+               mtt.transaction_type_name tran_type_name,
+               nvl(mmt.attribute5,0) doc_number,
+			    NVL((SELECT ATTRIBUTE_CATEGORY 
+                    FROM po_headers_all where segment1  =mmt.attribute5),NULL)  doc_type,   ---Added for Defect#25454
+               trunc(mmt.transaction_date) tran_date,
+               msi.segment1 sku,
+               mmt.subinventory_code subinv_code,
+			   mmt.transaction_quantity quantity,
+               round(nvl(mmt.transaction_cost,0),2) tran_cost,
+               null vendor_number,
+               null vendor_name,
+               nvl(mmt.error_code,'No Error Code') error_code,
+               nvl(mmt.error_explanation,'No Error Explanation') error_explanation
+          FROM mtl_material_transactions mmt,
+               mtl_transaction_types mtt,
+               mtl_system_items_b msi,
+               hr_all_organization_units hou
+         WHERE mmt.organization_id = hou.organization_id
+           AND mmt.transaction_type_id = mtt.transaction_type_id
+           AND mmt.organization_id = msi.organization_id
+           AND mmt.inventory_item_id = msi.inventory_item_id
+           AND mmt.costed_flag = 'E'
+           AND mmt.transaction_date <= XX_GI_ORG_HIERARCHY_PKG.sch_cls_date_p
+       UNION ALL
+        select Decode(hou.attribute1,NULL,'999999',substr(hou.name,1,instr(hou.name,':')-1)) loc_id,
+               hou.name loc_name,
+               'WSH' table_name,
+               wdd.source_header_type_name tran_type_name,
+               nvl(wdd.cust_po_number,0) doc_number,
+			    NVL((SELECT ATTRIBUTE_CATEGORY 
+                    FROM po_headers_all where segment1  = wdd.cust_po_number),NULL)  doc_type,   ---Added for Defect#25454
+               trunc(wts.actual_departure_date) tran_date,
+               msi.segment1 sku,
+               wdd.subinventory subinv_code,
+			   wdd.shipped_quantity quantity,
+               round(nvl(wdd.shipped_quantity * wdd.unit_price,0),2) tran_cost,
+               null vendor_number,
+               null vendor_name,
+               'No Error Code' error_code,
+               'Unprocessed' error_explanation
+          from wsh_delivery_details wdd, wsh_delivery_assignments wda,
+               wsh_new_deliveries wnd, wsh_delivery_legs wdl, wsh_trip_stops wts,
+               hr_all_organization_units hou,mtl_system_items_b msi
+         where
+               wdd.source_code = 'OE'
+           and wdd.released_status = 'C'
+           and wdd.inv_interfaced_flag in ('N' ,'P')
+           and wdd.organization_id = hou.organization_id
+           and wda.delivery_detail_id = wdd.delivery_detail_id
+           and wnd.delivery_id = wda.delivery_id
+           and wnd.status_code in ('CL','IT')
+           and wdl.delivery_id = wnd.delivery_id
+           and wts.pending_interface_flag in ('Y', 'P')
+           and wdd.organization_id = msi.organization_id
+           and wdd.inventory_item_id = msi.inventory_item_id
+           and trunc(wts.actual_departure_date) <= XX_GI_ORG_HIERARCHY_PKG.sch_cls_date_p
+           and wdl.pick_up_stop_id = wts.stop_id
+       ORDER BY 2,3]]>
+    </sqlStatement>
+	<sqlStatement name="Q_EXCEP_SUMMARY">
+         <![CDATA[ SELECT loc_id,loc_name,table_name,Count(1) as Count_Total,Round(sum(tran_cost),2) tran_cost ,error_code FROM
+             (SELECT  Decode(hou.attribute1,NULL,'999999',substr(hou.name,1,instr(hou.name,':')-1)) loc_id,
+               hou.name loc_name,
+               'MTI' table_name,
+               mtt.transaction_type_name tran_type_name,
+               nvl(mti.attribute5,0) doc_number,
+			    NVL((SELECT ATTRIBUTE_CATEGORY 
+                    FROM po_headers_all where segment1  = mti.attribute5),NULL)  doc_type,   ---Added for Defect#25454
+               trunc(mti.transaction_date) tran_date,
+               msi.segment1 sku,
+               mti.subinventory_code subinv_code,
+               round(nvl(mti.transaction_quantity * cic.item_cost,0),2) tran_cost,
+               nvl(mti.error_code,'No Error Code') error_code,
+               mti.error_explanation error_explanation
+          FROM mtl_transactions_interface mti,
+               mtl_transaction_types mtt,
+               mtl_system_items_b msi,
+               hr_all_organization_units hou,
+               cst_item_costs cic
+         WHERE mti.organization_id = hou.organization_id
+           AND mti.transaction_type_id = mtt.transaction_type_id
+           AND mti.inventory_item_id = msi.inventory_item_id
+           AND mti.organization_id = msi.organization_id
+           AND mti.organization_id = cic.organization_id (+)
+           AND mti.inventory_item_id = cic.inventory_item_id (+)
+           AND (mti.error_code IS NOT NULL OR mti.error_explanation IS NOT NULL)
+           AND mti.transaction_date <=XX_GI_ORG_HIERARCHY_PKG.sch_cls_date_p
+      UNION ALL
+        SELECT Decode(hou.attribute1,NULL,'999999',substr(hou.name,1,instr(hou.name,':')-1)) loc_id,
+               nvl(hou.name,'No Org Found') loc_name,
+               'RTI' table_name,
+               rcv.transaction_type tran_type_name,
+               nvl(rch.receipt_num,rcv.attribute8) doc_number,
+			   NVL((SELECT ATTRIBUTE_CATEGORY 
+                    FROM po_headers_all where segment1  = SUBSTR( rcv.ATTRIBUTE8, INSTR( rcv.ATTRIBUTE8, '|', 1, 1 )+1, INSTR( rcv.ATTRIBUTE8,'|',1,2 )-INSTR( rcv.ATTRIBUTE8,'|',1,1 )-1 )),NULL)  doc_type,   ---Added for Defect#25454
+               trunc(rcv.transaction_date) tran_date,
+               msi.segment1 sku,
+               rcv.subinventory subinv_code,
+               round(nvl(rcv.quantity * cst.item_cost ,0),2) tran_cost,
+               nvl(pie.error_message_name,'No Error Code') error_code,
+               nvl(pie.error_message,'No Error Message') error_explanation
+          FROM rcv_transactions_interface rcv,
+               rcv_headers_interface rch,
+               hr_all_organization_units hou,
+               po_interface_errors pie,
+               cst_item_costs cst,
+               mtl_system_items_b msi
+         WHERE rcv.to_organization_id = hou.organization_id  (+)
+           AND rch.header_interface_id = rcv.header_interface_id
+           AND rcv.destination_type_code = 'INVENTORY'
+           AND rch.asn_type IS NULL
+           AND rcv.item_id = cst.inventory_item_id (+)
+           AND rcv.to_organization_id = cst.organization_id (+)
+           AND rcv.to_organization_id = msi.organization_id (+)
+           AND rcv.item_id = msi.inventory_item_id (+)
+           AND (pie.error_message_name IS NOT NULL OR pie.error_message IS NOT NULL)
+           AND rcv.transaction_date <= XX_GI_ORG_HIERARCHY_PKG.sch_cls_date_p
+           AND rch.header_interface_id = pie.interface_header_id (+)
+           AND pie.interface_line_id  = rcv.interface_transaction_id(+)
+      UNION ALL
+       SELECT Decode(hou.attribute1,NULL,'999999',substr(hou.name,1,instr(hou.name,':')-1)) loc_id,
+               hou.name loc_name,
+               'MMTT' table_name,
+               mtt.transaction_type_name tran_type_name,
+               nvl(mmtt.attribute5,0) doc_number,
+			   NVL((SELECT ATTRIBUTE_CATEGORY 
+                       FROM po_headers_all where segment1  =mmtt.attribute5),NULL)  doc_type,   ---Added for Defect#25454 
+               trunc(mmtt.transaction_date) tran_date,
+               msi.segment1 sku,
+               mmtt.subinventory_code subinv_code,
+               round(nvl(mmtt.transaction_cost,0),2) tran_cost,
+               nvl(mmtt.error_code,'No Error Code') error_code,
+               nvl(mmtt.error_explanation,'No Error Explanation') error_explanation
+          FROM mtl_material_transactions_temp mmtt,
+               mtl_transaction_types mtt,
+               mtl_system_items_b msi,
+               hr_all_organization_units hou
+         WHERE mmtt.organization_id = hou.organization_id
+           AND mmtt.transaction_type_id = mtt.transaction_type_id
+           AND mmtt.organization_id = msi.organization_id
+           AND mmtt.inventory_item_id = msi.inventory_item_id
+           AND (mmtt.error_code IS NOT NULL OR mmtt.error_explanation IS NOT NULL)
+           AND mmtt.transaction_date <= XX_GI_ORG_HIERARCHY_PKG.sch_cls_date_p
+     UNION ALL
+        SELECT Decode(hou.attribute1,NULL,'999999',substr(hou.name,1,instr(hou.name,':')-1)) loc_id,
+               hou.name loc_name,
+               'MMT' table_name,
+               mtt.transaction_type_name tran_type_name,
+               nvl(mmt.attribute5,0) doc_number,
+			    NVL((SELECT ATTRIBUTE_CATEGORY 
+                       FROM po_headers_all where segment1  =mmt.attribute5),NULL)  doc_type,   ---Added for Defect#25454 
+               trunc(mmt.transaction_date) tran_date,
+               msi.segment1 sku,
+               mmt.subinventory_code subinv_code,
+               round(nvl(mmt.transaction_cost,0),2) tran_cost,
+               nvl(mmt.error_code,'No Error Code') error_code,
+               nvl(mmt.error_explanation,'No Error Explanation') error_explanation
+          FROM mtl_material_transactions mmt,
+               mtl_transaction_types mtt,
+               mtl_system_items_b msi,
+               hr_all_organization_units hou
+         WHERE mmt.organization_id = hou.organization_id
+           AND mmt.transaction_type_id = mtt.transaction_type_id
+           AND mmt.organization_id = msi.organization_id
+           AND mmt.inventory_item_id = msi.inventory_item_id
+           AND mmt.costed_flag = 'E'
+           AND mmt.transaction_date <= XX_GI_ORG_HIERARCHY_PKG.sch_cls_date_p
+       UNION ALL
+        select Decode(hou.attribute1,NULL,'999999',substr(hou.name,1,instr(hou.name,':')-1)) loc_id,
+               hou.name loc_name,
+               'WSH' table_name,
+               wdd.source_header_type_name tran_type_name,
+               nvl(wdd.cust_po_number,0) doc_number,
+			    NVL((SELECT ATTRIBUTE_CATEGORY 
+                       FROM po_headers_all where segment1  = wdd.cust_po_number),NULL)  doc_type,   ---Added for Defect#25454 
+               trunc(wts.actual_departure_date) tran_date,
+               msi.segment1 sku,
+               wdd.subinventory subinv_code,
+               round(nvl(wdd.shipped_quantity * wdd.unit_price,0),2) tran_cost,
+               'No Error Code' error_code,
+               'Unprocessed' error_explanation
+          from wsh_delivery_details wdd, wsh_delivery_assignments wda,
+               wsh_new_deliveries wnd, wsh_delivery_legs wdl, wsh_trip_stops wts,
+               hr_all_organization_units hou,mtl_system_items_b msi
+         where
+               wdd.source_code = 'OE'
+           and wdd.released_status = 'C'
+           and wdd.inv_interfaced_flag in ('N' ,'P')
+           and wdd.organization_id = hou.organization_id
+           and wda.delivery_detail_id = wdd.delivery_detail_id
+           and wnd.delivery_id = wda.delivery_id
+           and wnd.status_code in ('CL','IT')
+           and wdl.delivery_id = wnd.delivery_id
+           and wts.pending_interface_flag in ('Y', 'P')
+           and wdd.organization_id = msi.organization_id
+           and wdd.inventory_item_id = msi.inventory_item_id
+           and trunc(wts.actual_departure_date) <= XX_GI_ORG_HIERARCHY_PKG.sch_cls_date_p
+           and wdl.pick_up_stop_id = wts.stop_id) group by loc_id,loc_name,table_name,error_code Order by loc_id,table_name]]>
+    </sqlStatement>
+  </dataQuery>
+  <dataStructure>
+    <group name="G_EXCEP_DETAIL" source="Q_EXCEP_DETAIL">
+      <element name="LOC_ID" value="loc_id"/>
+      <element name="LOC_NAME" value="loc_name"/>
+      <element name="TABLE_NAME" value="table_name"/>
+	  <element name="TRAN_TYPE_NAME" value="tran_type_name"/>
+      <element name="DOC_NUMBER" value="doc_number"/>
+	   <element name="DOC_TYPE" value="doc_type"/>
+	  <element name="VENDOR_NUMBER" value="vendor_number"/>
+      <element name="VENDOR_NAME" value="vendor_name"/>
+      <element name="TRAN_DATE" value="tran_date"/>
+	  <element name="SKU" value="sku"/>
+      <element name="SUBINV_CODE" value="subinv_code"/>
+	  <element name="QUANTITY" value="quantity"/>
+      <element name="TRAN_COST" value="tran_cost"/> 
+      <element name="ERROR_CODE" value="error_code"/>
+      <element name="ERROR_EXPLANATION" value="error_explanation"/>
+    </group>
+	<group name="G_EXCEP_SUMMARY" source="Q_EXCEP_SUMMARY">
+      <element name="LOC_ID_S" value="loc_id"/>
+      <element name="LOC_NAME_S" value="loc_name"/>
+      <element name="TABLE_NAME_S" value="table_name"/>
+	  <element name="TRANS_COUNT_S" value="Count_Total"/>
+      <element name="TRAN_COST_S" value="tran_cost"/>
+      <element name="ERROR_CODE_S" value="error_code"/>
+    </group>
+  </dataStructure>
+</dataTemplate>

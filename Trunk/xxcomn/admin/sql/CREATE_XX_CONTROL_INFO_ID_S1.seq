@@ -1,0 +1,37 @@
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+-- +=======================================================================+
+-- |               Office Depot - Project Simplify                         |
+-- |             Oracle NAIO Consulting Organization                       |
+-- +=======================================================================+
+-- | Name             :CREATE_XX_CONTROL_INFO_ID_S1.seq                    |
+-- | Description      :Custom sequence for E0200_ConvCommonElements_EBS    |
+-- |                                                                       |
+-- |                                                                       |
+-- |Change History:                                                        |
+-- |---------------                                                        |
+-- |                                                                       |
+-- |Version  Date        Author             Remarks                        |
+-- |-------  ----------- -----------------  -------------------------------|
+-- |Draft1a  25-May-2007 Ambarish Mukherjee Initial Draft Version          |
+-- |Draft1b  25-Jun-2007 Ashok Kumar T J    Modified the maxvalue clause to|
+-- |                                        NOMAXVALUE, removed the synonym|
+-- |                                        creation script.               |
+-- |Draft1c  06-Nov-2007 Abhradip Ghosh     Removed the DROP Command       |
+-- +=======================================================================+
+
+-- --------------------------------------------------
+-- Create Custom Sequence XX_CONTROL_INFO_ID_S1    --
+-- --------------------------------------------------
+
+CREATE SEQUENCE xxcomn.xx_control_info_id_s1
+INCREMENT BY 1
+START WITH 1
+NOMAXVALUE
+NOCYCLE NOCACHE NOORDER;
+
+/
+SHOW ERRORS;
+EXIT;

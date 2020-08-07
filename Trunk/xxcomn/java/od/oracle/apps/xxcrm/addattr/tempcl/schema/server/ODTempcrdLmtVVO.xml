@@ -1,0 +1,55 @@
+<?xml version='1.0' encoding='windows-1252' ?>
+<!DOCTYPE ViewObject SYSTEM "jbo_03_01.dtd">
+
+<ViewObject
+   Name="ODTempcrdLmtVVO"
+   BindingStyle="OracleName"
+   CustomQuery="true"
+   RowClass="od.oracle.apps.xxcrm.addattr.tempcl.schema.server.ODTempcrdLmtVVORowImpl"
+   ComponentClass="od.oracle.apps.xxcrm.addattr.tempcl.schema.server.ODTempcrdLmtVVOImpl"
+   DefClass="od.oracle.apps.xxcrm.addattr.tempcl.schema.server.ODTempcrdLmtVVODefImpl"
+   UseGlueCode="false" >
+   <SQLQuery><![CDATA[
+SELECT Extension_id
+FROM XX_CDH_CUST_ACCT_EXT_B
+WHERE CUST_ACCOUNT_ID = :1
+AND N_EXT_ATTR4       = :2
+AND N_EXT_ATTR1       = :3
+AND ATTR_GROUP_ID     = :4
+AND(
+( 
+( CAST(to_timestamp(:5,'yyyy-mm-dd hh24:mi:ss.ff9') AS DATE) BETWEEN d_ext_attr1 AND d_ext_attr2 )
+  or (CAST(to_timestamp(:6,'yyyy-mm-dd hh24:mi:ss.ff9') AS DATE) BETWEEN d_ext_attr1 AND d_ext_attr2) 
+)
+                                           or
+ (( d_ext_attr1 between  (CAST(to_timestamp(:5,'yyyy-mm-dd hh24:mi:ss.ff9') AS DATE)) 
+  and (CAST(to_timestamp(:6,'yyyy-mm-dd hh24:mi:ss.ff9') AS DATE)))
+  or 
+   ( d_ext_attr2 between  (CAST(to_timestamp(:5,'yyyy-mm-dd hh24:mi:ss.ff9') AS DATE)) 
+  and (CAST(to_timestamp(:6,'yyyy-mm-dd hh24:mi:ss.ff9') AS DATE)))
+
+)
+)
+   ]]></SQLQuery>
+   <DesignTime>
+      <Attr Name="_isCodegen" Value="true" />
+      <Attr Name="_isExpertMode" Value="true" />
+      <Attr Name="_version" Value="10.1.3.41.57" />
+      <Attr Name="_codeGenFlag2" Value="Access|Def|Coll|VarAccess" />
+   </DesignTime>
+   <ViewAttribute
+      Name="ExtensionId"
+      IsPersistent="false"
+      IsNotNull="true"
+      Precision="15"
+      Scale="0"
+      Type="oracle.jbo.domain.Number"
+      ColumnType="NUMBER"
+      AliasName="EXTENSION_ID"
+      Expression="EXTENSION_ID"
+      SQLType="NUMERIC" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </ViewAttribute>
+</ViewObject>

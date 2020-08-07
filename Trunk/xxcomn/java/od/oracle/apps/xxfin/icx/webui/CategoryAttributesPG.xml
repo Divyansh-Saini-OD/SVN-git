@@ -1,0 +1,82 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<!-- dbdrv: exec java oracle/jrad/tools/xml/importer XMLImporter.class java &phase=dat+24 checkfile:~PROD:~PATH:~FILE &fullpath:~PROD:~PATH:~FILE -username &un_apps -password &pw_apps -dbconnection &jdbc_db_addr  -userId "1" -rootPackage /oracle/apps/~PROD  -rootdir &fullpath:~PROD:mds:directory  -->
+<page xmlns:jrad="http://xmlns.oracle.com/jrad" xmlns:oa="http://xmlns.oracle.com/oa" xmlns:ui="http://xmlns.oracle.com/uix/ui" version="9.0.3.8.13_1566" xml:lang="en-US" xmlns:user="http://xmlns.oracle.com/jrad/user" xmlns="http://xmlns.oracle.com/jrad" file-version="$Header$">
+   <content>
+      <oa:pageLayout id="pageLayoutRN" amDefName="od.oracle.apps.xxfin.icx.server.ICXCatsAM" windowTitle="OD Buyer and Approver Category Assignment" title="OD Buyer and Approver Category Assignment" controllerClass="od.oracle.apps.xxfin.icx.webui.ICXCatsCO">
+         <ui:corporateBranding>
+            <oa:image id="corporateBrandingImage" source="/OA_MEDIA/FNDSSCORP.gif"/>
+         </ui:corporateBranding>
+         <ui:contents>
+            <oa:query id="QueryRN" mode="autoCustomizationCriteria" dispSimple="true" dispCustomized="false" dispAdvanced="false" showCustomizePanelControls="false">
+               <oa:simpleSearchPanel>
+                  <oa:header text="Search" id="SimpleSearchHdr">
+                     <ui:contents>
+                        <oa:messageComponentLayout id="SearchRN">
+                           <ui:contents>
+                              <oa:messageLovInput id="SearchOperatingUnit" queryable="true" sortState="yes" externalListOfValues="/od/oracle/apps/xxfin/icx/lov/server/OperatingUnitsLOVRN" prompt="Operating Unit" selectiveSearchCriteria="true" initSortSeq="first" unvalidated="true" maximumLength="240" columns="40" styleClass="OraFieldText">
+                                 <lovMappings>
+                                    <lovMap id="ToFromSearchOperatingUnit" lovItem="org_name" resultTo="SearchOperatingUnit" criteriaFrom="SearchOperatingUnit"/>
+                                 </lovMappings>
+                              </oa:messageLovInput>
+                              <oa:messageLovInput id="SearchCategoryDescription" selectiveSearchCriteria="true" maximumLength="240" prompt="Category" styleClass="OraFieldText" columns="40" unvalidated="true" queryable="true" sortState="yes" initSortSeq="second" required="no" externalListOfValues="/od/oracle/apps/xxfin/icx/server/CategoryDescriptionsRN">
+                                 <lovMappings>
+                                    <lovMap id="ToFromSearchCategoryDescription" resultTo="SearchCategoryDescription" criteriaFrom="SearchCategoryDescription" lovItem="ConcatenatedSegments" programmaticQuery="false" requiredForLOV="false"/>
+                                 </lovMappings>
+                              </oa:messageLovInput>
+                              <oa:messageLovInput id="SearchBuyer" externalListOfValues="/od/oracle/apps/xxfin/icx/lov/server/BuyersLOVRN" selectiveSearchCriteria="true" prompt="Buyer" queryable="true" sortState="yes" unvalidated="true" maximumLength="240" styleClass="OraFieldText" columns="40">
+                                 <lovMappings>
+                                    <lovMap id="ToFromSearchBuyer" lovItem="full_name" resultTo="SearchBuyer" criteriaFrom="SearchBuyer"/>
+                                 </lovMappings>
+                              </oa:messageLovInput>
+                              <oa:messageLovInput id="SearchApprover" externalListOfValues="/od/oracle/apps/xxfin/icx/lov/server/BuyersLOVRN" selectiveSearchCriteria="true" prompt="Approver" sortState="yes" queryable="true" unvalidated="true" maximumLength="240" styleClass="OraFieldText" columns="40">
+                                 <lovMappings>
+                                    <lovMap id="ToFromSearchApprover" lovItem="full_name" resultTo="SearchApprover" criteriaFrom="SearchApprover"/>
+                                 </lovMappings>
+                              </oa:messageLovInput>
+                           </ui:contents>
+                        </oa:messageComponentLayout>
+                     </ui:contents>
+                  </oa:header>
+               </oa:simpleSearchPanel>
+               <oa:simpleSearchMappings>
+                  <oa:queryCriteriaMap id="CategoryDescriptionMap" criteriaItem="SearchCategoryDescription" resultsItem="ConcatenatedSegments"/>
+                  <oa:queryCriteriaMap id="OperatingUnitMap" criteriaItem="SearchOperatingUnit" resultsItem="Orgname"/>
+                  <oa:queryCriteriaMap id="BuyerMap" criteriaItem="SearchBuyer" resultsItem="Buyername"/>
+                  <oa:queryCriteriaMap id="ApproverMap" criteriaItem="SearchApprover" resultsItem="Approvername"/>
+               </oa:simpleSearchMappings>
+               <ui:contents>
+                  <oa:table id="ResultsTable" shortDesc="Category Attributes" width="100%">
+                     <ui:contents>
+                        <oa:messageStyledText id="Orgname" dataType="VARCHAR2" prompt="Operating Unit" viewName="CategoryAttributesVO1" viewAttr="OrgName" maximumLength="240" queryable="true"/>
+                        <oa:messageStyledText id="ConcatenatedSegments" dataType="VARCHAR2" prompt="Name" viewName="CategoryAttributesVO1" viewAttr="ConcatenatedSegments" maximumLength="404" queryable="true"/>
+                        <oa:messageLovInput id="Buyername" dataType="VARCHAR2" prompt="Buyer" viewName="CategoryAttributesVO1" viewAttr="Buyername" maximumLength="4000" queryable="true" externalListOfValues="/od/oracle/apps/xxfin/icx/lov/server/BuyersLOVRN">
+                           <lovMappings>
+                              <lovMap id="ToFromBuyername" lovItem="full_name" resultTo="Buyername" criteriaFrom="Buyername"/>
+                           </lovMappings>
+                        </oa:messageLovInput>
+                        <oa:messageLovInput id="Approvername" dataType="VARCHAR2" prompt="Approver" viewName="CategoryAttributesVO1" viewAttr="Approvername" maximumLength="4000" queryable="true" externalListOfValues="/od/oracle/apps/xxfin/icx/lov/server/BuyersLOVRN">
+                           <lovMappings>
+                              <lovMap id="ToFromApprovername" lovItem="full_name" resultTo="Approvername" criteriaFrom="Approvername"/>
+                           </lovMappings>
+                        </oa:messageLovInput>
+                     </ui:contents>
+                  </oa:table>
+               </ui:contents>
+            </oa:query>
+            <oa:tableLayout id="ButtonTableRN" width="100%" hAlign="center">
+               <ui:contents>
+                  <oa:rowLayout id="ButtonTableRowRN" width="100%">
+                     <ui:contents>
+                        <oa:cellFormat id="ButtonTableRowCellFormatRN" width="100%" vAlign="top" hAlign="right">
+                           <ui:contents>
+                              <oa:submitButton id="Save" use="/oracle/apps/fnd/attributesets/Buttons/Save" hAlign="end"/>
+                           </ui:contents>
+                        </oa:cellFormat>
+                     </ui:contents>
+                  </oa:rowLayout>
+               </ui:contents>
+            </oa:tableLayout>
+         </ui:contents>
+      </oa:pageLayout>
+   </content>
+</page>

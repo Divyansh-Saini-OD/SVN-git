@@ -1,0 +1,47 @@
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     ON
+
+PROMPT Creating TABLE XX_LOCK_TRANS_SPLIT_HISTORY
+
+PROMPT Program exits IF the creation IS NOT SUCCESSFUL
+
+WHENEVER SQLERROR CONTINUE
+WHENEVER OSERROR EXIT FAILURE ROLLBACK
+
+
+-- +============================================================================================+
+-- |  Office Depot - Project Simplify                                                           |
+-- |                                                                                            |
+-- +============================================================================================+
+-- |  Name:         TABLE: XX_LOCK_TRANS_SPLIT_HISTORY                                          |
+-- |  Description:  Tables created for XX_SPLIT_LOCKBOX_PKG                                     |                                                                      |
+-- |                                                                                            |
+-- |  Change Record:                                                                            |
+-- +============================================================================================+
+-- | Version     Date         Author           Remarks                                          |
+-- | =========   ===========  =============    ===============================================  |
+-- | 1.0         28-DEC-2012  Divya       Initial version                                       |
+-- +============================================================================================+
+
+DROP TABLE XXFIN.XX_LOCK_TRANS_SPLIT_HISTORY;
+
+--------------------------------------------------------
+--  DDL for Table XX_LOCK_TRANS_SPLIT_HISTORY
+--------------------------------------------------------
+CREATE TABLE XXFIN.XX_LOCK_TRANS_SPLIT_HISTORY
+  (
+    BATCH_NAME                  NUMBER,
+    STATUS                      VARCHAR2(50 BYTE),
+    TRANSMISSION_REQUEST_ID     NUMBER,
+    NEW_TRANSMISSION_REQUEST_ID NUMBER,
+    LOCKBOX_REQUEST_ID          NUMBER,
+    OLD_FILE_NAME               VARCHAR2(100 BYTE),
+    NEW_FILE_NAME               VARCHAR2(100 BYTE),
+    POST_QUICK_CASH_REQ_ID      NUMBER
+  );
+EXIT;
+
+SHOW ERROR

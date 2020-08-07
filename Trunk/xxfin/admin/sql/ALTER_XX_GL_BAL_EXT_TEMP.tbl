@@ -1,0 +1,29 @@
+-- +==========================================================================+
+-- |                  Office Depot - Project Simplify                         |
+-- |                       WIPRO Technologies                                 |
+-- +==========================================================================+
+-- | RICE ID     :  I1360                                                     |
+-- |                                                                          |
+-- | SQL Script to add NEW  Column  "MTD_BAL" in                              |
+-- |             Table       : XX_GL_BAL_EXT_TEMP                             |
+-- |                                                                          |
+-- |Change Record:                                                            |
+-- |===============                                                           |
+-- |Version   Date         Author               Remarks                       |
+-- |=======   ==========   =============        ==============================|
+-- | V1.0     02-Sep-2010  Jude Felix Antony    Initial version               |
+-- |                                            Added for the Defect 7186     |
+-- |                                                                          |
+-- +==========================================================================+
+
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     ON
+
+ALTER TABLE xxfin.xx_gl_bal_ext_temp
+       ADD(MTD_BAL  NUMBER
+          );
+
+SHOW ERROR;

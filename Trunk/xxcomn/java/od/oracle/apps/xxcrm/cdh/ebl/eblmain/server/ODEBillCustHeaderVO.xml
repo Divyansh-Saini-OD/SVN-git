@@ -1,0 +1,280 @@
+<?xml version="1.0" encoding='windows-1252'?>
+<!DOCTYPE ViewObject SYSTEM "jbo_03_01.dtd">
+
+<ViewObject
+   Name="ODEBillCustHeaderVO"
+   BindingStyle="Oracle"
+   CustomQuery="true"
+   RowClass="od.oracle.apps.xxcrm.cdh.ebl.eblmain.server.ODEBillCustHeaderVORowImpl"
+   ComponentClass="oracle.apps.fnd.framework.server.OAViewObjectImpl"
+   MsgBundleClass="oracle.jbo.common.JboResourceBundle"
+   UseGlueCode="false" >
+   <SQLQuery><![CDATA[
+SELECT  HCA.account_name customer_name
+      , HCA.account_number customer_number
+      , SUBSTR(HCA.orig_system_reference,1,8) AOPS_number 
+      , HCA.cust_account_id cust_account_id      
+      , XCEB.n_ext_attr2 cust_doc_id
+      , XCEB.n_ext_attr19 parent_doc_id
+      , XCEB.c_ext_attr1 doc_type
+      , XCEB.c_ext_attr2 pay_doc_ind
+      , XCEB.c_ext_attr3 delivery_method
+      , XCEB.c_ext_attr7 direct_doc
+      , FLV.meaning status
+      , XCEB.n_ext_attr17 is_parent
+      , HCA.party_id
+      , HP.party_name
+      , DECODE(XCEB.c_ext_attr2,'Y','Yes','N','No') pay_doc_ind_disp
+      , XCEB.c_ext_attr16 status_code
+      , DECODE(XCEB.c_ext_attr7,'Y','Yes','N','No') direct_doc_disp
+   FROM hz_cust_accounts HCA
+      , xx_cdh_cust_acct_ext_b XCEB
+      , ego_attr_groups_v EAG
+      , hz_parties HP
+      , fnd_lookup_values FLV
+WHERE XCEB.attr_group_id = EAG.attr_group_id
+  AND EAG.attr_group_type = 'XX_CDH_CUST_ACCOUNT'
+  AND EAG.attr_group_name = 'BILLDOCS'
+  AND HCA.cust_account_id = XCEB.cust_account_id
+  AND HCA.party_id = HP.party_id
+  AND FLV.lookup_code = XCEB.c_ext_attr16
+  AND FLV.lookup_type = 'XXOD_EBL_DOCUMENT_STATUS'
+  AND FLV.enabled_flag = 'Y'
+  AND sysdate BETWEEN nvl(start_date_active,sysdate) AND nvl(end_date_active,sysdate)
+   ]]></SQLQuery>
+   <DesignTime>
+      <Attr Name="_isCodegen" Value="true" />
+      <Attr Name="_version" Value="9.0.3.12.53" />
+      <Attr Name="_CodeGenFlagNew" Value="4" />
+   </DesignTime>
+   <ViewAttribute
+      Name="CustomerName"
+      IsPersistent="false"
+      Precision="240"
+      Type="java.lang.String"
+      AliasName="CUSTOMER_NAME"
+      ColumnType="VARCHAR2"
+      Expression="CUSTOMER_NAME"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="240" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="CustomerNumber"
+      IsPersistent="false"
+      IsNotNull="true"
+      Precision="30"
+      Type="java.lang.String"
+      AliasName="CUSTOMER_NUMBER"
+      ColumnType="VARCHAR2"
+      Expression="CUSTOMER_NUMBER"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="30" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="AopsNumber"
+      IsPersistent="false"
+      Precision="24"
+      Type="java.lang.String"
+      AliasName="AOPS_NUMBER"
+      ColumnType="VARCHAR2"
+      Expression="AOPS_NUMBER"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="24" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="CustAccountId"
+      IsPersistent="false"
+      IsNotNull="true"
+      Precision="15"
+      Scale="0"
+      Type="oracle.jbo.domain.Number"
+      AliasName="CUST_ACCOUNT_ID"
+      ColumnType="VARCHAR2"
+      Expression="CUST_ACCOUNT_ID"
+      SQLType="NUMERIC" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="CustDocId"
+      IsPersistent="false"
+      Precision="22"
+      Scale="5"
+      Type="oracle.jbo.domain.Number"
+      AliasName="CUST_DOC_ID"
+      ColumnType="VARCHAR2"
+      Expression="CUST_DOC_ID"
+      SQLType="NUMERIC" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="ParentDocId"
+      IsPersistent="false"
+      Precision="22"
+      Scale="5"
+      Type="oracle.jbo.domain.Number"
+      AliasName="PARENT_DOC_ID"
+      ColumnType="VARCHAR2"
+      Expression="PARENT_DOC_ID"
+      SQLType="NUMERIC" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="DocType"
+      IsPersistent="false"
+      Precision="150"
+      Type="java.lang.String"
+      AliasName="DOC_TYPE"
+      ColumnType="VARCHAR2"
+      Expression="DOC_TYPE"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="150" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="PayDocInd"
+      IsPersistent="false"
+      Precision="150"
+      Type="java.lang.String"
+      AliasName="PAY_DOC_IND"
+      ColumnType="VARCHAR2"
+      Expression="PAY_DOC_IND"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="150" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="DeliveryMethod"
+      IsPersistent="false"
+      Precision="150"
+      Type="java.lang.String"
+      AliasName="DELIVERY_METHOD"
+      ColumnType="VARCHAR2"
+      Expression="DELIVERY_METHOD"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="150" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="DirectDoc"
+      IsPersistent="false"
+      Precision="150"
+      Type="java.lang.String"
+      AliasName="DIRECT_DOC"
+      ColumnType="VARCHAR2"
+      Expression="DIRECT_DOC"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="150" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Status"
+      IsPersistent="false"
+      Precision="150"
+      Type="java.lang.String"
+      AliasName="STATUS"
+      ColumnType="VARCHAR2"
+      Expression="STATUS"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="150" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="IsParent"
+      IsPersistent="false"
+      Precision="22"
+      Scale="5"
+      Type="oracle.jbo.domain.Number"
+      AliasName="IS_PARENT"
+      ColumnType="VARCHAR2"
+      Expression="IS_PARENT"
+      SQLType="NUMERIC" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="PartyId"
+      IsPersistent="false"
+      IsNotNull="true"
+      Precision="15"
+      Scale="0"
+      Type="oracle.jbo.domain.Number"
+      AliasName="PARTY_ID"
+      ColumnType="VARCHAR2"
+      Expression="PARTY_ID"
+      SQLType="NUMERIC" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="PartyName"
+      IsPersistent="false"
+      IsNotNull="true"
+      Precision="360"
+      Type="java.lang.String"
+      AliasName="PARTY_NAME"
+      ColumnType="VARCHAR2"
+      Expression="PARTY_NAME"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="360" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="PayDocIndDisp"
+      IsPersistent="false"
+      Precision="3"
+      Type="java.lang.String"
+      AliasName="PAY_DOC_IND_DISP"
+      ColumnType="VARCHAR2"
+      Expression="PAY_DOC_IND_DISP"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="3" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="StatusCode"
+      IsPersistent="false"
+      Precision="150"
+      Type="java.lang.String"
+      AliasName="STATUS_CODE"
+      ColumnType="VARCHAR2"
+      Expression="STATUS_CODE"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="150" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="DirectDocDisp"
+      IsPersistent="false"
+      Precision="3"
+      Type="java.lang.String"
+      AliasName="DIRECT_DOC_DISP"
+      ColumnType="VARCHAR2"
+      Expression="DIRECT_DOC_DISP"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="3" />
+      </DesignTime>
+   </ViewAttribute>
+</ViewObject>

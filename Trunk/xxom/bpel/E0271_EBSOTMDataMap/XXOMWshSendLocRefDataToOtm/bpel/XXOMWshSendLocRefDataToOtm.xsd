@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+            xmlns:otm="http://xmlns.oracle.com/apps/otm"
+            xmlns="http://xmlns.oracle.com/apps/wsh/outbound/ref/XXOMWshSendLocRefDataToOtm"
+            targetNamespace="http://xmlns.oracle.com/apps/wsh/outbound/ref/XXOMWshSendLocRefDataToOtm"
+            elementFormDefault="qualified">
+   <xsd:import schemaLocation="GLogXML.xsd" namespace="http://xmlns.oracle.com/apps/otm"/>
+  <xsd:element name="InputParameters">
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element name="EntityInput" minOccurs="0" nillable="true">
+               <xsd:complexType>
+                  <xsd:sequence>
+                     <xsd:element name="entityType" type="xsd:string"/>
+                     <xsd:element name="entityIdTbl" type="xsd:long" minOccurs="1" maxOccurs="unbounded"/>
+                     <xsd:element name="parentEntityIdTbl" maxOccurs="unbounded" type="xsd:long" minOccurs="0"/>
+                  </xsd:sequence>
+               </xsd:complexType>
+            </xsd:element>
+        <xsd:element name="SecurityInput" minOccurs="0" nillable="true">
+               <xsd:complexType>
+                  <xsd:sequence>
+                     <xsd:element name="refTktKey" type="xsd:string"/>
+                     <xsd:element name="refOpCode" type="xsd:string"/>
+                     <xsd:element name="refArgKey" type="xsd:string"/>
+                  </xsd:sequence>
+               </xsd:complexType>
+            </xsd:element>
+      </xsd:sequence>
+    </xsd:complexType>
+  </xsd:element>
+   <xsd:element name="OutputParameters">
+      <xsd:complexType>
+         <xsd:sequence>
+            <xsd:element ref="otm:Transmission"/>
+            <xsd:element name="TransmissionId" type="xsd:long"/>
+         </xsd:sequence>
+      </xsd:complexType>
+   </xsd:element>
+
+</xsd:schema>
+

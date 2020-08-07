@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding='windows-1252'?>
+<!DOCTYPE Entity SYSTEM "jbo_03_01.dtd">
+
+<Entity
+   Name="PoHeadersAllEO"
+   DBObjectType="table"
+   DBObjectName="po_headers_all"
+   AliasName="PoHeadersAllEO"
+   BindingStyle="Oracle"
+   UseGlueCode="false"
+   CodeGenFlag="4"
+   RowClass="oracle.apps.fnd.framework.server.OAEntityImpl"
+   DefClass="oracle.apps.fnd.framework.server.OAEntityDefImpl"
+   CollClass="oracle.apps.fnd.framework.server.OAEntityCache" >
+   <DesignTime>
+      <Attr Name="_version" Value="9.0.3.13.75" />
+      <AttrArray Name="_publishEvents">
+      </AttrArray>
+   </DesignTime>
+   <Attribute
+      Name="PoHeaderId"
+      IsUpdateable="false"
+      IsNotNull="true"
+      Type="oracle.jbo.domain.Number"
+      ColumnName="PO_HEADER_ID"
+      ColumnType="NUMBER"
+      SQLType="NUMERIC"
+      TableName="po_headers_all" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="Segment1"
+      IsUpdateable="false"
+      IsNotNull="true"
+      Precision="20"
+      Type="java.lang.String"
+      ColumnName="SEGMENT1"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="po_headers_all" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="20" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="RowID"
+      IsUpdateable="false"
+      Type="oracle.jbo.domain.RowID"
+      ColumnName="ROWID"
+      ColumnType="ROWID"
+      SQLType="VARCHAR"
+      PrimaryKey="true" >
+   </Attribute>
+   <Key
+      Name="SysC0032713" >
+      <AttrArray Name="Attributes">
+         <Item Value="od.oracle.apps.xxmer.schema.server.PoHeadersAllEO.Segment1" />
+      </AttrArray>
+      <DesignTime>
+         <Attr Name="_DBObjectName" Value="SYS_C0032713" />
+         <Attr Name="_checkCondition" Value="&#34;SEGMENT1&#34; IS NOT NULL" />
+         <Attr Name="_isCheck" Value="true" />
+      </DesignTime>
+   </Key>
+   <Key
+      Name="SysC0032708" >
+      <AttrArray Name="Attributes">
+         <Item Value="od.oracle.apps.xxmer.schema.server.PoHeadersAllEO.PoHeaderId" />
+      </AttrArray>
+      <DesignTime>
+         <Attr Name="_DBObjectName" Value="SYS_C0032708" />
+         <Attr Name="_checkCondition" Value="&#34;PO_HEADER_ID&#34; IS NOT NULL" />
+         <Attr Name="_isCheck" Value="true" />
+      </DesignTime>
+   </Key>
+</Entity>

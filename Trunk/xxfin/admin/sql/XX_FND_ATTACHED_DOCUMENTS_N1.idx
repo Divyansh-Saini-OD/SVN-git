@@ -1,0 +1,25 @@
+-- +===================================================================+
+-- |                  Office Depot - Project Simplify                  |
+-- +===================================================================+
+-- | Name        : XX_FND_ATTACHED_DOCUMENTS_N1.idx                    |
+-- |              						                                   |
+-- | Rice ID     : I2159                                               |
+-- |              						                                   |
+-- | Description : Index Creation Script                               |
+-- |                                                                   |
+-- |              						                                   |
+-- |Change Record:                                                     |
+-- |===============                                                    |
+-- |Version   Date        Author           Remarks                     |
+-- |=======  ===========  =============    ============================|
+-- |1.0      31-JAN-2012  R.Aldridge       Initial Defect 16234        |
+-- +===================================================================+
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     ON
+
+CREATE INDEX XXFIN.xx_fnd_attached_documents_n1 ON applsys.fnd_attached_documents (pk1_value) 
+TABLESPACE APPS_TS_TX_IDX;
+

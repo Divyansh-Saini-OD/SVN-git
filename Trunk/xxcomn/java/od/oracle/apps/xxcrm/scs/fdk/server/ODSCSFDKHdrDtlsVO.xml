@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding='windows-1252'?>
+<!DOCTYPE ViewObject SYSTEM "jbo_03_01.dtd">
+
+<ViewObject
+   Name="ODSCSFDKHdrDtlsVO"
+   BindingStyle="Oracle"
+   CustomQuery="true"
+   RowClass="oracle.apps.fnd.framework.server.OAViewRowImpl"
+   ComponentClass="od.oracle.apps.xxcrm.scs.fdk.server.ODSCSFDKHdrDtlsVOImpl"
+   MsgBundleClass="oracle.jbo.common.JboResourceBundle"
+   UseGlueCode="false" >
+   <SQLQuery><![CDATA[
+select h.FDBK_ID,h.creation_date LogCreateDt,customer_account_id,address_id ,h.last_updated_emp, h.sales_territory_id SALES_PERSON_ID,  
+  (select PHONE from 
+ XX_SCS_ORG_CONTACT_INFO_V c , XXCRM.XXSCS_FDBK_LINE_DTL d where c.contact_id=d.fdk_txt 
+    and d.FDK_CODE= 'CONTACT_ID' and d.FDBK_ID=h.FDBK_ID) PHONE
+   ,(select EMAIL_ADDRESS from 
+ XX_SCS_ORG_CONTACT_INFO_V c , XXCRM.XXSCS_FDBK_LINE_DTL d where c.contact_id=d.fdk_txt 
+    and d.FDK_CODE= 'CONTACT_ID' and d.FDBK_ID=h.FDBK_ID) EMAIL_ADDRESS
+   ,(select LEGCY_ID from 
+ XX_SCS_ORG_CONTACT_INFO_V c , XXCRM.XXSCS_FDBK_LINE_DTL d where c.contact_id=d.fdk_txt 
+    and d.FDK_CODE= 'CONTACT_ID' and d.FDBK_ID=h.FDBK_ID) LEGCY_ID
+   ,(select CONTACT_FULL_NAME from 
+ XX_SCS_ORG_CONTACT_INFO_V c , XXCRM.XXSCS_FDBK_LINE_DTL d where c.contact_id=TO_NUMBER (d.fdk_txt) 
+    and d.FDK_CODE= 'CONTACT_ID' and d.FDBK_ID=h.FDBK_ID) CONTACT_FULL_NAME
+ from
+  XXCRM.XXSCS_FDBK_HDR h
+ where h.FDBK_ID=:1
+   ]]></SQLQuery>
+   <DesignTime>
+      <Attr Name="_version" Value="9.0.3.13.75" />
+      <Attr Name="_CodeGenFlagNew" Value="36" />
+   </DesignTime>
+   <ViewAttribute
+      Name="FdbkId"
+      IsPersistent="false"
+      IsNotNull="true"
+      Type="oracle.jbo.domain.Number"
+      AliasName="FDBK_ID"
+      ColumnType="VARCHAR2"
+      Expression="FDBK_ID"
+      SQLType="NUMERIC" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Logcreatedt"
+      IsPersistent="false"
+      Type="oracle.jbo.domain.Date"
+      AliasName="LOGCREATEDT"
+      ColumnType="VARCHAR2"
+      Expression="LOGCREATEDT"
+      SQLType="DATE" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="7" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="CustomerAccountId"
+      IsPersistent="false"
+      Type="oracle.jbo.domain.Number"
+      AliasName="CUSTOMER_ACCOUNT_ID"
+      ColumnType="VARCHAR2"
+      Expression="CUSTOMER_ACCOUNT_ID"
+      SQLType="NUMERIC" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="AddressId"
+      IsPersistent="false"
+      Type="oracle.jbo.domain.Number"
+      AliasName="ADDRESS_ID"
+      ColumnType="VARCHAR2"
+      Expression="ADDRESS_ID"
+      SQLType="NUMERIC" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="LastUpdatedEmp"
+      IsPersistent="false"
+      Precision="100"
+      Type="java.lang.String"
+      AliasName="LAST_UPDATED_EMP"
+      ColumnType="VARCHAR2"
+      Expression="LAST_UPDATED_EMP"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="100" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="SalesPersonId"
+      IsPersistent="false"
+      Precision="200"
+      Type="java.lang.String"
+      AliasName="SALES_PERSON_ID"
+      ColumnType="VARCHAR2"
+      Expression="SALES_PERSON_ID"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="200" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Phone"
+      IsPersistent="false"
+      Precision="62"
+      Type="java.lang.String"
+      AliasName="PHONE"
+      ColumnType="VARCHAR2"
+      Expression="PHONE"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="62" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="EmailAddress"
+      IsPersistent="false"
+      Precision="2000"
+      Type="java.lang.String"
+      AliasName="EMAIL_ADDRESS"
+      ColumnType="VARCHAR2"
+      Expression="EMAIL_ADDRESS"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="2000" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="LegcyId"
+      IsPersistent="false"
+      Precision="240"
+      Type="java.lang.String"
+      AliasName="LEGCY_ID"
+      ColumnType="VARCHAR2"
+      Expression="LEGCY_ID"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="240" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="ContactFullName"
+      IsPersistent="false"
+      Precision="1080"
+      Type="java.lang.String"
+      AliasName="CONTACT_FULL_NAME"
+      ColumnType="VARCHAR2"
+      Expression="CONTACT_FULL_NAME"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="1080" />
+      </DesignTime>
+   </ViewAttribute>
+</ViewObject>

@@ -1,0 +1,76 @@
+-- +==========================================================================+
+-- |                  Office Depot - Project Simplify                         |
+-- |                       WIPRO Technologies                                 |
+-- +==========================================================================+
+-- | SQL Script to create the following objects                               |
+-- |             Table       : XX_PO_VENDORS_ALL_AUD                             |
+-- |                                                                          |
+-- |                                                                          |
+-- |                                                                          |
+-- |Change Record:                                                            |
+-- |===============                                                           |
+-- |Version   Date         Author               Remarks                       |
+-- |=======   ==========   =============        ==============================|
+-- | V1.0     17-OCT-2007  Ganesan JV           Added few more columns as per |
+-- |                                            MD050.                        | 
+-- |                                                                          |
+-- +==========================================================================+
+
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     ON
+
+--DROP TABLE XXFIN.PO_VENDORS_ALL_AUD;
+
+  CREATE TABLE XXFIN.XX_PO_VENDORS_ALL_AUD 
+   (	PO_VENDOR_AUDIT_ID NUMBER, 
+	VENDOR_ID NUMBER, 
+	LAST_UPDATE_DATE DATE NOT NULL ENABLE, 
+	LAST_UPDATED_BY NUMBER NOT NULL ENABLE, 
+	VENDOR_NAME VARCHAR2(240) NOT NULL ENABLE, 
+	VENDOR_NAME_ALT VARCHAR2(320), 
+	LAST_UPDATE_LOGIN NUMBER, 
+	CREATION_DATE DATE, 
+	CREATED_BY NUMBER, 
+	EMPLOYEE_ID NUMBER, 
+	VENDOR_TYPE_LOOKUP_CODE VARCHAR2(30), 
+	CUSTOMER_NUM VARCHAR2(25), 
+	ONE_TIME_FLAG VARCHAR2(1), 
+	PARENT_VENDOR_ID NUMBER,
+	MIN_ORDER_AMOUNT NUMBER, 
+	SHIP_TO_LOCATION_ID NUMBER, 
+	BILL_TO_LOCATION_ID NUMBER, 
+	TERMS_ID NUMBER, 
+	SET_OF_BOOKS_ID NUMBER, 
+	CREDIT_STATUS_LOOKUP_CODE VARCHAR2(25), 
+	CREDIT_LIMIT NUMBER, 
+	ALWAYS_TAKE_DISC_FLAG VARCHAR2(1), 
+	PAY_GROUP_LOOKUP_CODE VARCHAR2(25), 
+	PAYMENT_PRIORITY NUMBER, 
+	INVOICE_CURRENCY_CODE VARCHAR2(15), 
+	PAYMENT_CURRENCY_CODE VARCHAR2(15), 
+	INVOICE_AMOUNT_LIMIT NUMBER, 
+	HOLD_ALL_PAYMENTS_FLAG VARCHAR2(1), 
+	HOLD_FUTURE_PAYMENTS_FLAG VARCHAR2(1), 
+	HOLD_REASON VARCHAR2(240), 
+	DISTRIBUTION_SET_ID NUMBER, 
+	ACCTS_PAY_CODE_COMBINATION_ID NUMBER, 
+	DISC_LOST_CODE_COMBINATION_ID NUMBER, 
+	DISC_TAKEN_CODE_COMBINATION_ID NUMBER, 
+	EXPENSE_CODE_COMBINATION_ID NUMBER, 
+	PREPAY_CODE_COMBINATION_ID NUMBER, 
+	START_DATE_ACTIVE DATE, 
+	END_DATE_ACTIVE DATE, 
+	PAYMENT_METHOD_LOOKUP_CODE VARCHAR2(25), 
+	STATE_REPORTABLE_FLAG VARCHAR2(1), 
+	FEDERAL_REPORTABLE_FLAG VARCHAR2(1), 
+	VERSIONS_OPERATION VARCHAR2(1), 
+	VERSION_TIMESTAMP TIMESTAMP (6), 
+	VAT_REGISTRATION_NUM VARCHAR2(10), 
+	TYPE_1099 VARCHAR2(10), 
+	SEGMENT1 VARCHAR2(15), 
+	NUM_1099 VARCHAR2(30)
+   ) 
+/

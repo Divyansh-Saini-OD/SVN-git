@@ -1,0 +1,28 @@
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     ON
+    -- +==========================================================================+
+    -- |                  Office Depot - Project Simplify                         |
+    -- +==========================================================================+
+    -- | SQL Script to create the Synonym                                         |
+    -- |                                                                          |
+    -- | XX_AP_DI_SUPP_SITE_STG.syn                                               |
+    -- |                                                                          |
+    -- |                                                                          |
+    -- |                                                                          |
+    -- |                                                                          |
+    -- |Change Record:                                                            |
+    -- |===============                                                           |
+    -- |Version   Date         Author               Remarks                       |
+    -- |=======   ==========   =============        ==============================|
+    -- | V1.0     29-JUN-2016  Madhu Bolli          Initial version               |
+    -- |                                                                          |
+    -- +==========================================================================+
+
+
+PROMPT CREATING SYNONYM FOR XX_AP_DI_SUPP_SITE_STG..... 
+CREATE OR REPLACE SYNONYM XX_AP_DI_SUPP_SITE_STG FOR XXFIN.XX_AP_DI_SUPP_SITE_STG;
+
+SHOW ERROR

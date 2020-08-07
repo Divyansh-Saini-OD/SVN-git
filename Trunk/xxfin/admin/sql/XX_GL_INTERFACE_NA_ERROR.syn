@@ -1,0 +1,29 @@
+-- +==========================================================================+
+-- |                  Office Depot - Project Simplify                         |
+-- |                       WIPRO Technologies                                 |
+-- +==========================================================================+
+-- | Name :     GL INTERFACE Staging table                                    |
+-- |                                                                          |
+-- | SQL Script to create the following object                                |
+-- |             Synonyms    : XXFIN.XX_GL_INTERFACE_NA_ERROR                 |
+-- |                                                                          |
+-- |Change Record:                                                            |
+-- |===============                                                           |
+-- |Version   Date         Author               Remarks                       |
+-- |=======   ==========   =============        ==============================|
+-- | V1.0     25-07-2007   P. Marco           Initial version                 |
+-- |                                                                          |
+-- +==========================================================================+
+
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     ON
+
+
+CREATE SYNONYM APPS.XX_GL_INTERFACE_NA_ERROR FOR XXFIN.XX_GL_INTERFACE_NA_ERROR;
+
+
+
+

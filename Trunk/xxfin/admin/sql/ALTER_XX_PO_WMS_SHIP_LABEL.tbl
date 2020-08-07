@@ -1,0 +1,34 @@
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     ON
+
+PROMPT Altering TABLE XX_PO_WMS_SHIP_LANE
+
+PROMPT Program exits IF the creation IS NOT SUCCESSFUL
+
+WHENEVER SQLERROR CONTINUE
+
+-- +=======================================================================================+
+-- |                  Office Depot - Project Simplify                                      |
+-- +=======================================================================================+
+-- | Name :XX_PO_WMS_SHIP_LANE.tbl                                                         |
+-- | Description : Altering the  table XX_PO_WMS_SHIP_LANE for defect 16473                |
+-- |                                                                                       |
+-- |                                                                                       |
+-- |                                                                                       |
+-- |                                                                                       |
+-- |Change Record:                                                                         |
+-- |===============                                                                        |
+-- |Version   Date         Author               Remarks                                    |
+-- |=======   ==========   =============        ===========================================|
+-- | V1.0     21-JUN-12    Saritha Mummaneni    For Defect 16473			   |
+-- |                                                                                       |
+-- +=======================================================================================+ 
+
+ALTER TABLE XXFIN.XX_PO_WMS_SHIP_LANE
+ ADD route_cd varchar2(50);
+
+
+SHOW ERROR

@@ -1,0 +1,58 @@
+REM============================================================================================
+REM                                 Start Of Script
+REM============================================================================================
+--+=============================================================================================+--
+--|                                                                                             |--
+--| Object Name    : E0341 Inventory transfer                                                   |--
+--|                                                                                             |--
+--| Program Name   : XX_GI_TRANSFER_LINES.syn                                                   |--
+--|                                                                                             |--
+--| Purpose        : Create custom table synonyms                                               |--
+--|                  The Objects created are:                                                   |--
+--|                                                                                             |--
+--|                  1. XX_GI_TRANSFER_LINES (Synonym for XX_GI_TRANSFER_LINES)                 |--
+--|                                                                                             |--
+--| Change History  :                                                                           |--
+--| Version           Date             Changed By        Description                            |--
+--|=============================================================================================|--
+--| 1.0              06-Dec-2007      Arun Andavar       No previous version                    |--
+--+=============================================================================================|
+
+SET VERIFY   OFF
+SET TERM     ON
+SET FEEDBACK OFF
+SET SHOW     OFF
+SET ECHO     OFF
+SET TAB      OFF
+
+PROMPT
+PROMPT Creating Synonym in APPS...
+PROMPT
+
+WHENEVER SQLERROR EXIT 1
+
+PROMPT
+PROMPT Creating SYNONYM XX_GI_TRANSFER_LINES
+PROMPT
+
+CREATE OR REPLACE SYNONYM XX_GI_TRANSFER_LINES FOR XXPTP.XX_GI_TRANSFER_LINES ;
+
+PROMPT
+PROMPT Exiting....
+PROMPT
+
+SET FEEDBACK ON
+
+
+EXIT;
+
+
+REM=================================================================================================
+REM                                   End Of Script
+REM=================================================================================================
+
+
+
+
+
+

@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding='windows-1252'?>
+<!DOCTYPE ViewObject SYSTEM "jbo_03_01.dtd">
+
+<ViewObject
+   Name="ODConsBillVO"
+   OrderBy="due_date desc, location"
+   BindingStyle="Oracle"
+   CustomQuery="true"
+   RowClass="od.oracle.apps.xxfin.ar.irec.accountDetails.server.ODConsBillVORowImpl"
+   ComponentClass="od.oracle.apps.xxfin.ar.irec.accountDetails.server.ODConsBillVOImpl"
+   MsgBundleClass="oracle.jbo.common.JboResourceBundle"
+   UseGlueCode="false" >
+   <SQLQuery><![CDATA[
+SELECT C.cons_billing_number CONS_BILL_ID,S.location,C.cut_off_date,C.due_date,C.beginning_balance,C.ending_balance
+FROM AR_CONS_INV_ALL C LEFT OUTER JOIN HZ_CUST_SITE_USES_ALL S ON C.site_use_id=S.site_use_id
+WHERE C.customer_id=:1 AND NVL(:2,C.site_use_id)=C.site_use_id
+AND (C.attribute2 IS NOT NULL OR C.attribute4 IS NOT NULL OR C.attribute10 IS NOT NULL OR C.attribute15 IS NOT NULL)
+   ]]></SQLQuery>
+   <DesignTime>
+      <Attr Name="_isCodegen" Value="true" />
+      <Attr Name="_version" Value="9.0.3.13.93" />
+      <Attr Name="_CodeGenFlagNew" Value="36" />
+   </DesignTime>
+   <ViewAttribute
+      Name="consbillid"
+      IsUpdateable="false"
+      IsPersistent="false"
+      Precision="30"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="CONS_BILL_ID"
+      Expression="CONS_BILL_ID"
+      SQLType="VARCHAR" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="location"
+      IsUpdateable="false"
+      IsPersistent="false"
+      Precision="40"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="LOCATION"
+      Expression="LOCATION"
+      SQLType="VARCHAR" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="cutoffdate"
+      IsUpdateable="false"
+      IsPersistent="false"
+      Type="oracle.jbo.domain.Date"
+      ColumnType="DATE"
+      AliasName="CUT_OFF_DATE"
+      Expression="CUT_OFF_DATE"
+      SQLType="DATE" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="duedate"
+      IsUpdateable="false"
+      IsPersistent="false"
+      Type="oracle.jbo.domain.Date"
+      ColumnType="DATE"
+      AliasName="DUE_DATE"
+      Expression="DUE_DATE"
+      SQLType="DATE" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="beginningbalance"
+      IsUpdateable="false"
+      IsPersistent="false"
+      Type="oracle.jbo.domain.Number"
+      ColumnType="NUMBER"
+      AliasName="BEGINNING_BALANCE"
+      Expression="BEGINNING_BALANCE"
+      SQLType="NUMERIC" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="endingbalance"
+      IsUpdateable="false"
+      IsPersistent="false"
+      Type="oracle.jbo.domain.Number"
+      ColumnType="NUMBER"
+      AliasName="ENDING_BALANCE"
+      Expression="ENDING_BALANCE"
+      SQLType="NUMERIC" >
+   </ViewAttribute>
+</ViewObject>

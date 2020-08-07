@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="windows-1252" ?>
+<!--<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+            xmlns="http://www.example.org"
+            targetNamespace="http://www.example.org"
+            elementFormDefault="qualified"> -->
+ <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" 
+             xmlns:nxsd="http://xmlns.oracle.com/pcbpel/nxsd" 
+             xmlns:extn="http://xmlns.oracle.com/pcbpel/nxsd/extensions" 
+             targetNamespace="http://TargetNamespace.com/dequeueSrupdate2Aops" 
+             xmlns:tns="http://TargetNamespace.com/dequeueSrupdate2Aops" 
+             elementFormDefault="qualified" attributeFormDefault="unqualified" 
+             nxsd:version="NXSD" nxsd:encoding="cp037" nxsd:byteOrder="bigEndian" nxsd:stream="chars">           
+    <xsd:element name="Root-Element">
+      <xsd:complexType>
+         <xsd:sequence>           
+             <xsd:element name="ODTechService" minOccurs="1" >
+               <xsd:complexType>
+                    <xsd:sequence>                      
+                      <xsd:element name="request_number" type="xsd:string" nxsd:style="" />
+                      <xsd:element name="order_number" type="xsd:string" nxsd:style=""/>
+                      <xsd:element name="request_status" type="xsd:string" nxsd:style=""/>
+                      <!--   <xsd:element name="filler" type="xsd:string" nxsd:style="fixedLength" nxsd:padStyle="tail" nxsd:paddedBy=" " nxsd:length="4002"/> -->
+                <!--     </xsd:sequence>                    
+               </xsd:complexType>               
+            </xsd:element> --> 
+            <xsd:element name="skus"  minOccurs="1" maxOccurs="27">
+               <xsd:complexType>
+                    <xsd:sequence>
+                      <xsd:element name="sku" type="xsd:string" nxsd:style="" />
+                      <xsd:element name="sku_quantity" type="xsd:string" nxsd:style=""/>                      
+                      <xsd:element name="Sku_SubID" type="xsd:string" nxsd:style=""/>
+                     </xsd:sequence>                                         
+               </xsd:complexType>               
+            </xsd:element>
+            </xsd:sequence>                    
+               </xsd:complexType>               
+            </xsd:element> 
+             </xsd:sequence>
+      </xsd:complexType>
+   </xsd:element>
+</xsd:schema>

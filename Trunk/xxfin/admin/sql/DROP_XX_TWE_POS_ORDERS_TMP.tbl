@@ -1,0 +1,25 @@
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     ON
+
+-- +==========================================================================+
+-- |                  Office Depot - Project Simplify                         |
+-- |                       WIPRO Technologies                                 |
+-- +==========================================================================+
+-- | SQL Script to drop the following object                                  |
+-- |             Table    : xx_twe_pos_orders_tmp                             |
+-- |                        For I0431: Sales Tax Reporting Interface          |
+-- |Change Record:                                                            |
+-- |===============                                                           |
+-- |Version      Date              Author               Remarks               |
+-- |=======      ==========        =============        ===================== |
+-- | V1.0        4-Feb-09          Lincy K              Initial version       |
+-- |                                                                          |
+-- +==========================================================================+
+
+
+DROP TABLE  XXFIN.XX_TWE_POS_ORDERS_TMP;
+
+SHOW ERROR;

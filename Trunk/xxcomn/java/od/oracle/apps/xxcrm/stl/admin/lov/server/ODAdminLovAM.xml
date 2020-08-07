@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding='windows-1252'?>
+<!DOCTYPE AppModule SYSTEM "jbo_03_01.dtd">
+
+<AppModule
+   Name="ODAdminLovAM"
+   ComponentClass="od.oracle.apps.xxcrm.stl.admin.lov.server.ODAdminLovAMImpl"
+   LoadComponentsLazily="true" >
+   <DesignTime>
+      <Attr Name="_isCodegen" Value="true" />
+      <Attr Name="_version" Value="9.0.3.13.75" />
+      <Attr Name="_deployType" Value="0" />
+   </DesignTime>
+   <ViewUsage
+      Name="ODRepSrchLOV1"
+      ViewObjectName="od.oracle.apps.xxcrm.stl.admin.lov.server.ODRepSrchLOV" >
+   </ViewUsage>
+   <ViewUsage
+      Name="ODStoreSrchLOV1"
+      ViewObjectName="od.oracle.apps.xxcrm.stl.admin.lov.server.ODStoreSrchLOV" >
+   </ViewUsage>
+</AppModule>

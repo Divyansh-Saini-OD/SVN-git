@@ -1,0 +1,33 @@
+<definitions
+     name="I0311_XXOMROUTENOBPELPROCESS"
+     targetNamespace="http://xmlns.oracle.com/I0311_XXOMROUTENOBPELPROCESS"
+     xmlns="http://schemas.xmlsoap.org/wsdl/"
+     xmlns:ns1="http://schemas.oracle.com/bpel/extension"
+     xmlns:plnk="http://schemas.xmlsoap.org/ws/2003/05/partner-link/"
+     xmlns:client="http://xmlns.oracle.com/I0311_XXOMROUTENOBPELPROCESS"
+    >
+    <import namespace="http://schemas.oracle.com/bpel/extension" location="RuntimeFault.wsdl"/>
+    <types>
+        <schema xmlns="http://www.w3.org/2001/XMLSchema">
+            <import namespace="http://xmlns.oracle.com/I0311_XXOMROUTENOBPELPROCESS" schemaLocation="I0311_XXOMROUTENOBPELPROCESS.xsd"/>
+        </schema>
+    </types>
+    <message name="I0311_XXOMROUTENOBPELPROCESSRequestMessage">
+        <part name="payload" element="client:I0311_XXOMROUTENOBPELPROCESSProcessRequest"/>
+    </message>
+    <message name="I0311_XXOMROUTENOBPELPROCESSResponseMessage">
+        <part name="payload" element="client:I0311_XXOMROUTENOBPELPROCESSProcessResponse"/>
+    </message>
+    <portType name="I0311_XXOMROUTENOBPELPROCESS">
+        <operation name="process">
+            <input message="client:I0311_XXOMROUTENOBPELPROCESSRequestMessage"/>
+            <output message="client:I0311_XXOMROUTENOBPELPROCESSResponseMessage"/>
+            <fault message="client:I0311_XXOMROUTENOBPELPROCESSResponseMessage" name="faultVar" />
+        </operation>
+    </portType>
+    <plnk:partnerLinkType name="I0311_XXOMROUTENOBPELPROCESS">
+        <plnk:role name="I0311_XXOMROUTENOBPELPROCESSProvider">
+            <plnk:portType name="client:I0311_XXOMROUTENOBPELPROCESS"/>
+        </plnk:role>
+    </plnk:partnerLinkType>
+</definitions>

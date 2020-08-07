@@ -1,0 +1,19 @@
+<schema attributeFormDefault="unqualified"
+	elementFormDefault="qualified"
+	targetNamespace="http://xmlns.oracle.com/I0030_CARTONIZATION_EBS_IN"
+	xmlns="http://www.w3.org/2001/XMLSchema">
+	<element name="I0030_CARTONIZATION_EBS_INProcessRequest">
+		<complexType>
+			<sequence>
+				<element name="deliveryId" type="string"/>
+			</sequence>
+		</complexType>
+	</element>
+	<element name="I0030_CARTONIZATION_EBS_INProcessResponse">
+		<complexType>
+			<sequence>
+				<element name="result" type="string"/>
+			</sequence>
+		</complexType>
+	</element>
+</schema>

@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<pageDefinition xmlns="http://xmlns.oracle.com/adfm/uimodel" version="12.2.1.12.24" id="MassReleaseHoldPageDef"
+                Package="od.tdmatch.view.pageDefs">
+  <parameters/>
+  <executables>
+    <variableIterator id="variables"/>
+    <iterator Binds="MassReleaseVO1" RangeSize="25" DataControl="TradeMatchAMDataControl"
+              id="MassReleaseVO1Iterator"/>
+    <iterator Binds="MassReleaseHoldVO1" RangeSize="25" DataControl="TradeMatchAMDataControl"
+              id="MassReleaseHoldVO1Iterator"/>
+  </executables>
+  <bindings>
+    <listOfValues IterBinding="MassReleaseVO1Iterator" StaticList="false" Uses="LOV_poNum" id="poNum"/>
+    <attributeValues IterBinding="MassReleaseVO1Iterator" id="poFrom">
+      <AttrNames>
+        <Item Value="poFrom"/>
+      </AttrNames>
+    </attributeValues>
+    <attributeValues IterBinding="MassReleaseVO1Iterator" id="poTo">
+      <AttrNames>
+        <Item Value="poTo"/>
+      </AttrNames>
+    </attributeValues>
+    <attributeValues IterBinding="MassReleaseVO1Iterator" id="invoiceFrom">
+      <AttrNames>
+        <Item Value="invoiceFrom"/>
+      </AttrNames>
+    </attributeValues>
+    <attributeValues IterBinding="MassReleaseVO1Iterator" id="invoiceTo">
+      <AttrNames>
+        <Item Value="invoiceTo"/>
+      </AttrNames>
+    </attributeValues>
+    <attributeValues IterBinding="MassReleaseVO1Iterator" id="dueFrom">
+      <AttrNames>
+        <Item Value="dueFrom"/>
+      </AttrNames>
+    </attributeValues>
+    <attributeValues IterBinding="MassReleaseVO1Iterator" id="dueTo">
+      <AttrNames>
+        <Item Value="dueTo"/>
+      </AttrNames>
+    </attributeValues>
+    <listOfValues IterBinding="MassReleaseVO1Iterator" StaticList="false" Uses="LOV_supNo" id="supNo"/>
+    <listOfValues IterBinding="MassReleaseVO1Iterator" StaticList="false" Uses="LOV_supName" id="supName"/>
+    <listOfValues IterBinding="MassReleaseVO1Iterator" StaticList="false" Uses="LOV_supSiteCode" id="supSiteCode"/>
+    <listOfValues IterBinding="MassReleaseVO1Iterator" StaticList="false" Uses="LOV_skuNo" id="skuNo"/>
+    <list IterBinding="MassReleaseVO1Iterator" StaticList="false" Uses="LOV_vendorAssistant" id="vendorAssistant"
+          DTSupportsMRU="true" SelectItemValueMode="ListObject"/>
+    <list IterBinding="MassReleaseVO1Iterator" StaticList="false" Uses="LOV_operatingId" id="operatingId"
+          DTSupportsMRU="true" SelectItemValueMode="ListObject"/>
+    <tree IterBinding="MassReleaseHoldVO1Iterator" id="MassReleaseHoldVO1">
+      <nodeDefinition DefName="od.tdmatch.model.MassReleaseHoldVO" Name="MassReleaseHoldVO10">
+        <AttrNames>
+          <Item Value="InvoiceId"/>
+          <Item Value="VendorAssistant"/>
+          <Item Value="OrgId"/>
+          <Item Value="Source"/>
+          <Item Value="InvoiceNum"/>
+          <Item Value="InvoiceDate"/>
+          <Item Value="VoucherNum"/>
+          <Item Value="InvoiceAmount"/>
+          <Item Value="PoType"/>
+          <Item Value="DueDate"/>
+          <Item Value="PoNumber"/>
+          <Item Value="SupplierName"/>
+          <Item Value="SupplierNo"/>
+          <Item Value="SupplierSite"/>
+          <Item Value="Discount"/>
+          <Item Value="Location"/>
+          <Item Value="QtyHoldAmt"/>
+          <Item Value="PriceHoldAmt"/>
+          <Item Value="FrtHold"/>
+          <Item Value="PoHoldChr"/>
+          <Item Value="FrontDoorc"/>
+          <Item Value="NonCodec"/>
+          <Item Value="DropShipc"/>
+          <Item Value="Podate"/>
+          <Item Value="Sku"/>
+          <Item Value="Pricingexcp"/>
+          <Item Value="Quantityexcp"/>
+          <Item Value="Freightexcp"/>
+          <Item Value="EmployeeSelect" Binds="EmployeeSelect"/>
+          <Item Value="QtyHoldReason"/>
+          <Item Value="PriceHoldReason"/>
+          <Item Value="SumInvAmount"/>
+          <Item Value="SumQtyAmount"/>
+          <Item Value="SumPriceAmount"/>
+        </AttrNames>
+      </nodeDefinition>
+    </tree>
+    <methodAction id="massReleaseValidate" RequiresUpdateModel="true" Action="invokeMethod"
+                  MethodName="massReleaseValidate" IsViewObjectMethod="false" DataControl="TradeMatchAMDataControl"
+                  InstanceName="bindings.massReleaseValidate.dataControl.dataProvider"
+                  ReturnName="data.TradeMatchAMDataControl.methodResults.massReleaseValidate_massReleaseValidate_dataControl_dataProvider_massReleaseValidate_result"/>
+    <button IterBinding="MassReleaseVO1Iterator" id="dropShip" DTSupportsMRU="false" StaticList="true">
+      <AttrNames>
+        <Item Value="dropShip"/>
+      </AttrNames>
+      <ValueList>
+        <Item Value="Y"/>
+        <Item Value="N"/>
+      </ValueList>
+    </button>
+    <attributeValues IterBinding="MassReleaseVO1Iterator" id="InvoiceId">
+      <AttrNames>
+        <Item Value="InvoiceId"/>
+      </AttrNames>
+    </attributeValues>
+    <button IterBinding="MassReleaseVO1Iterator" id="nonCode" DTSupportsMRU="false" StaticList="true">
+      <AttrNames>
+        <Item Value="nonCode"/>
+      </AttrNames>
+      <ValueList>
+        <Item Value="Y"/>
+        <Item Value="N"/>
+      </ValueList>
+    </button>
+    <button IterBinding="MassReleaseVO1Iterator" id="frontDoor" DTSupportsMRU="false" StaticList="true">
+      <AttrNames>
+        <Item Value="frontDoor"/>
+      </AttrNames>
+      <ValueList>
+        <Item Value="Y"/>
+        <Item Value="N"/>
+      </ValueList>
+    </button>
+    <button IterBinding="MassReleaseVO1Iterator" id="freightExcp" DTSupportsMRU="false" StaticList="true">
+      <AttrNames>
+        <Item Value="freightExcp"/>
+      </AttrNames>
+      <ValueList>
+        <Item Value="Y"/>
+        <Item Value="N"/>
+      </ValueList>
+    </button>
+    <button IterBinding="MassReleaseHoldVO1Iterator" id="EmployeeSelect" DTSupportsMRU="false" StaticList="true">
+      <AttrNames>
+        <Item Value="EmployeeSelect"/>
+      </AttrNames>
+      <ValueList>
+        <Item Value="true"/>
+        <Item Value="false"/>
+      </ValueList>
+    </button>
+    <methodAction id="updateMassReleaseSelectRow" RequiresUpdateModel="true" Action="invokeMethod"
+                  MethodName="updateMassReleaseSelectRow" IsViewObjectMethod="false"
+                  DataControl="TradeMatchAMDataControl"
+                  InstanceName="bindings.updateMassReleaseSelectRow.dataControl.dataProvider"
+                  ReturnName="data.TradeMatchAMDataControl.methodResults.updateMassReleaseSelectRow_updateMassReleaseSelectRow_dataControl_dataProvider_updateMassReleaseSelectRow_result"/>
+    <attributeValues IterBinding="MassReleaseHoldVO1Iterator" id="SumInvAmount">
+      <AttrNames>
+        <Item Value="SumInvAmount"/>
+      </AttrNames>
+    </attributeValues>
+    <attributeValues IterBinding="MassReleaseHoldVO1Iterator" id="SumPriceAmount">
+      <AttrNames>
+        <Item Value="SumPriceAmount"/>
+      </AttrNames>
+    </attributeValues>
+    <attributeValues IterBinding="MassReleaseHoldVO1Iterator" id="SumQtyAmount">
+      <AttrNames>
+        <Item Value="SumQtyAmount"/>
+      </AttrNames>
+    </attributeValues>
+    <button IterBinding="MassReleaseVO1Iterator" id="pricingExcp" DTSupportsMRU="false" StaticList="true">
+      <AttrNames>
+        <Item Value="pricingExcp"/>
+      </AttrNames>
+      <ValueList>
+        <Item Value="Y"/>
+        <Item Value="N"/>
+      </ValueList>
+    </button>
+    <button IterBinding="MassReleaseVO1Iterator" id="quantityExcp" DTSupportsMRU="false" StaticList="true">
+      <AttrNames>
+        <Item Value="quantityExcp"/>
+      </AttrNames>
+      <ValueList>
+        <Item Value="Y"/>
+        <Item Value="N"/>
+      </ValueList>
+    </button>
+    <methodAction id="clearMassReleaseHold" RequiresUpdateModel="true" Action="invokeMethod"
+                  MethodName="clearMassReleaseHold" IsViewObjectMethod="false" DataControl="TradeMatchAMDataControl"
+                  InstanceName="bindings.clearMassReleaseHold.dataControl.dataProvider"/>
+    <action id="Rollback" RequiresUpdateModel="false" Action="rollbackTransaction"
+            DataControl="TradeMatchAMDataControl85"/>
+  </bindings>
+</pageDefinition>

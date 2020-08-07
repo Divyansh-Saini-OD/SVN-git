@@ -1,0 +1,336 @@
+<?xml version="1.0" encoding="WINDOWS-1252" ?>
+<dataTemplate name="XXARCBIONE" description="Reprint Summary Billing -ONE" defaultPackage="xx_ar_reprint_summbill" Version="1.0">
+<properties>
+<property name="scalable_mode" value="on" />
+<property name="rtf-output-default-font">Arial:8</property>
+</properties>
+<parameters>
+ <parameter name="P_SUMM_BILL_NUM" datatype="character" />
+ <parameter name="P_SUMM_BILL_NUM_TO" datatype="character" />
+ <parameter name="P_CUST_ACCOUNT_ID" datatype="number" />
+ <parameter name="P_MBS_DOCUMENT_ID" datatype="number" />
+ <parameter name="P_MBS_EXTENSION_ID" datatype="number" />
+ <parameter name="P_SPEC_HANDLING_FLAG" datatype="character" />
+ <parameter name="p_request_id" datatype="number" /> 
+ <parameter name="P_ORIGIN" datatype="character" /> 
+ <parameter name="P_DOC_DETAIL" datatype="character" />
+ <parameter name="P_AS_OF_DATE1" datatype="character" />
+ <parameter name="P_SEND_TO" datatype="character" />
+</parameters>
+<dataQuery>
+<sqlStatement name="Q_BILL_TO_SITES">
+<![CDATA[
+SELECT 
+       UPPER(xx_ar_reprint_summbill.xx_bill_to_address(XACR.site_use_id))    bill_to
+      ,UPPER(xx_ar_reprint_summbill.xx_remit_to_address(XACR.site_use_id))   remit_to
+      ,xx_ar_reprint_summbill.xx_return_address()                            return_address
+      ,XACR.site_use_id                                                      site_id
+	  ,XACR.customer_id														 cust_account_id 
+      ,XACR.tax_id                                                           tax_id
+      ,XACR.tax_id_desc                                                      tax_id_desc
+      ,XACR.customer_number                                                  billing_id
+      ,XACR.account_number                                                   account_number
+      ,XACR.customer_name                                                    customer_name
+      ,XACR.account_contact                                                  account_contact
+      ,XACR.order_contact                                                    order_contact
+      ,UPPER(XACR.country)                                                   bill_to_country  
+      ,XACR.billing_postal_code                                              bill_to_postal_code
+      ,NVL(:P_SPEC_HANDLING_FLAG ,'N')                                       SPL_HANDLING
+      /*     ,(
+       SELECT TRIM(billdocs_special_handling)
+       FROM   xx_cdh_a_ext_billdocs_v
+       WHERE  extension_id =:P_MBS_EXTENSION_ID
+      ) SPL_HANDLING_COMMENTS
+       ,(
+       SELECT doc_desc 
+       FROM   xx_cdh_mbs_document_master
+       WHERE  document_id =:P_MBS_DOCUMENT_ID
+      ) DOC_DESCRIPTION
+      */
+      -- added for defect 11993
+     ,(
+       SELECT doc_desc 
+       FROM   xx_cdh_mbs_document_master
+       WHERE  document_id = NVL(:P_MBS_DOCUMENT_ID,XCEB.billdocs_doc_id )
+      ) DOC_DESCRIPTION
+
+   -- ,XCEB.billdocs_special_handling                                     SPL_HANDLING_COMMENTS commented by ranjith
+      ,DECODE(:P_SPEC_HANDLING_FLAG,'Y',XCEB.billdocs_special_handling, NULL)   SPL_HANDLING_COMMENTS
+ --     ,XCDM.doc_desc                                                      DOC_DESCRIPTION
+      ,NVL(:P_MBS_DOCUMENT_ID,XCEB.billdocs_doc_id )                            DOC_ID -- Added for R1.2 Defect# 1237 (CR# 621)
+      ,XCEB.billdocs_cust_doc_id                                                CUST_DOC_ID     -- Added for R1.3 CR 738 Defect 2766
+      ,'ATTN: '||NVL(XCEB.billdocs_mail_attention,'ACCTS PAYABLE')             MAIL_TO_ATTN   -- Added for R1.4 CR# 547 Defect# 2424
+FROM   XX_AR_CBI_REPRINT_V    XACR
+      ,xx_cdh_a_ext_billdocs_v     XCEB
+      ,xx_cdh_mbs_document_master  XCDM
+      ,ar_cons_inv_all             ACI
+WHERE billing_no BETWEEN NVL(:P_SUMM_BILL_NUM, billing_no) AND NVL(:P_SUMM_BILL_NUM_TO, billing_no)
+AND   XACR.customer_id =NVL(:P_CUST_ACCOUNT_ID,XACR.customer_id)
+AND   XACR.customer_id             =XCEB.cust_account_id
+AND   XACR.cons_inv_id = ACI.cons_inv_id
+AND   XCEB.billdocs_doc_id        =XCDM.document_id
+AND   XCEB.billdocs_doc_type      ='Consolidated Bill'
+--AND XCEB.billdocs_delivery_meth ='PRINT'   -- commented for defect 11993 
+AND (XCEB.billdocs_delivery_meth ='PRINT'   OR  :P_SPEC_HANDLING_FLAG <>'Y')   -- added for defect 11993
+AND   XCEB.billdocs_paydoc_ind    ='Y'
+AND   XCDM.doc_detail_level       = NVL(:P_DOC_DETAIL,XCDM.doc_detail_level)
+-- AND   XCDM.document_id = NVL(:P_MBS_DOCUMENT_ID,XCDM.document_id) -- commented by ranjith for defect 11993
+AND   DECODE(:P_SPEC_HANDLING_FLAG,'Y',xceb.billdocs_special_handling,1) IS NOT NULL 
+AND   (DECODE(:P_SPEC_HANDLING_FLAG,'Y',aci.attribute2,NULL) IS NULL
+        AND DECODE(:P_SPEC_HANDLING_FLAG,'Y',aci.attribute4,NULL) IS NULL
+        AND DECODE(:P_SPEC_HANDLING_FLAG,'Y',aci.attribute10,NULL) IS NULL
+        AND DECODE(:P_SPEC_HANDLING_FLAG,'Y',aci.attribute15,NULL) IS NULL  -- added for CR 586
+       )
+-- Commented for 11993
+/*AND   DECODE(:P_SPEC_HANDLING_FLAG,'Y',XX_AR_INV_FREQ_PKG.compute_effective_date
+        ( XCEB.billdocs_payment_term, TRUNC(ACI.cut_off_date)),'01-JAN-00') <= NVL(:P_AS_OF_DATE1,'01-JAN-00')*/
+-- Commented for the Defect# 15063.
+/*-- Added for 11993
+AND   DECODE(:P_SPEC_HANDLING_FLAG,'Y',XX_AR_INV_FREQ_PKG.compute_effective_date
+        ( XCEB.billdocs_payment_term, TRUNC(ACI.cut_off_date-1)),'01-JAN-00') <= NVL(:P_AS_OF_DATE1,'01-JAN-00')*/
+--Added for Defect# 15063. The logic of the attribute1 column is handled in the procedure XX_AR_PRINT_NEW_CON_PKG.MAIN
+AND   DECODE(:P_SPEC_HANDLING_FLAG,'Y',XX_AR_INV_FREQ_PKG.compute_effective_date
+        ( XCEB.billdocs_payment_term, TO_DATE(ACI.attribute1)-1),'01-JAN-00') <= NVL(:P_AS_OF_DATE1,'01-JAN-00')
+AND   ACI.status                  ='ACCEPTED'
+AND   EXISTS
+            (
+              SELECT 1
+              FROM   ar_cons_inv_trx_lines
+              WHERE  cons_inv_id =XACR.cons_inv_id
+            )
+-- Below ocnditions added for R1.3 CR 738 Defect 2766
+AND   :P_AS_OF_DATE1              >= XCEB.billdocs_eff_from_date
+AND   (XCEB.billdocs_eff_to_date  IS NULL
+       OR
+       :P_AS_OF_DATE1             <= XCEB.billdocs_eff_to_date)
+-- End of changes for R1.3 CR 738 Defect 2766
+GROUP BY XACR.site_use_id
+        ,XACR.customer_id
+        ,XACR.tax_id
+        ,XACR.tax_id_desc
+        ,XACR.customer_number
+        ,XACR.account_number
+        ,XACR.customer_name
+        ,XACR.account_contact 
+        ,XACR.order_contact
+        ,XACR.country
+        ,XACR.billing_postal_code
+        ,XCEB.billdocs_special_handling
+        ,XCEB.billdocs_doc_id         -- added for defect 11993
+        ,XCEB.billdocs_cust_doc_id    -- added for R1.3 Defect 2766 CR 738
+        ,'ATTN: '||NVL(XCEB.billdocs_mail_attention,'ACCTS PAYABLE')   -- Added for R1.4 CR# 547 Defect# 2424
+]]>
+</sqlStatement>
+<sqlStatement name="Q_CONSOLIDATED_BILLS">
+<![CDATA[
+SELECT  HZLO.province                                    bill_to_province
+       ,ACI.cons_inv_id                                  cbi_id
+       ,ACI.cons_billing_number                          billing_number
+       ,ACI.currency_code                                currency
+       ,TO_CHAR( 
+         NVL(
+             xx_ar_reprint_summbill.get_bill_from_date
+              ( ACI.customer_id
+               ,ACI.site_use_id 
+               ,ACI.cons_inv_id 
+               ,'PAYDOC'
+               ,:P_SPEC_HANDLING_FLAG
+              )
+            ,TRUNC(SYSDATE)) 
+                ,'DD-MON-YY'
+            )                                            bill_from_date
+       --,TO_CHAR(TRUNC(ACI.cut_off_date-1) ,'DD-MON-YY')  bill_to_date    -- Commented for the Defect# 15063.
+       ,TO_CHAR(TO_DATE(ACI.attribute1)-1 ,'DD-MON-YY')  bill_to_date      -- Added for Defect# 15063. The logic of the attribute1 column is handled in the procedure XX_AR_PRINT_NEW_CON_PKG.MAIN
+       ,TO_CHAR(TRUNC(ACI.due_date) ,'DD-MON-YY')        payment_due
+       ,SUBSTR(term.description ,1 ,15)                  terms
+       ,xx_ar_cbi_paydoc_ministmnt       
+        (ACI.cons_inv_id ,'EXTAMT_PLUS_DELVY')           cbi_extamt_plus_delvy
+       ,xx_ar_cbi_paydoc_ministmnt        
+        (ACI.cons_inv_id ,'DISCOUNT')                    cbi_discounts
+       ,xx_ar_cbi_paydoc_ministmnt         
+        (ACI.cons_inv_id ,'TAX')                         cbi_tax
+       ,xx_ar_cbi_paydoc_ministmnt
+        (ACI.cons_inv_id ,'TOTAL')                        cbi_amount_due
+       ,xx_ar_reprint_summbill.xx_fin_check_digit
+        (:account_number 
+         ,ACI.cons_billing_number 
+         ,(xx_ar_reprint_summbill.get_cbi_amount_due(ACI.cons_inv_id ,'TOTAL') *100)
+        ) SCAN_LINE  
+       ,DECODE(SIGN(xx_ar_cbi_paydoc_ministmnt
+        (ACI.cons_inv_id ,'TOTAL')) ,-1 ,'**DO NOT PAY**' ,'**BAL DUE**') no_payment_text
+       ,REPLACE(SFHDR.sfhdr1 ,':' ,'')                sfhdr1
+       ,REPLACE(SFHDR.sfhdr2 ,':' ,'')                sfhdr2
+       ,REPLACE(SFHDR.sfhdr3 ,':' ,'')                sfhdr3
+       ,REPLACE(SFHDR.sfhdr4 ,':' ,'')                sfhdr4
+       ,REPLACE(SFHDR.sfhdr5 ,':' ,'')                sfhdr5
+       ,DECODE(:P_ORIGIN ,'ORIG_SPEC' ,'Original Consolidated Bill' ,'Reprint of Original Consolidated Bill') doc_title
+FROM    ar_cons_inv              ACI
+       ,hz_cust_acct_sites       HZAS
+       ,hz_cust_site_uses        HZSU
+       ,hz_party_sites           HZPS
+       ,hz_locations             HZLO
+       ,ra_terms                 TERM
+       ,xx_cdh_a_ext_billdocs_v XCEB
+       ,xx_cdh_mbs_document_master XCDM
+       ,(
+        SELECT cons_inv_id ,sfhdr1 ,sfhdr2 ,sfhdr3 ,sfhdr4 ,sfhdr5
+        FROM   xx_ar_cbi_rprn_trx
+        WHERE  request_id =:p_request_id
+        AND  attribute1  ='PAYDOC'
+        AND  inv_type NOT IN ('SOFTHDR_TOTALS' ,'BILLTO_TOTALS' ,'GRAND_TOTAL')
+        GROUP BY cons_inv_id ,sfhdr1 ,sfhdr2 ,sfhdr3 ,sfhdr4 ,sfhdr5       
+        ) SFHDR
+WHERE   1 =1
+AND     ACI.customer_id        =NVL(:p_cust_account_id,ACI.customer_id)
+AND     ACI.site_use_id        =:site_id
+AND     ACI.cons_billing_number BETWEEN NVL(:P_SUMM_BILL_NUM, ACI.cons_billing_number) AND NVL(:P_SUMM_BILL_NUM_TO, ACI.cons_billing_number)
+AND     HZAS.cust_account_id   =ACI.customer_id
+AND     HZSU.cust_acct_site_id =HZAS.cust_acct_site_id
+AND     HZSU.site_use_id       =ACI.site_use_id
+AND     HZPS.party_site_id     =HZAS.party_site_id
+AND     HZLO.location_id       =hzps.location_id
+AND     TERM.term_id           =ACI.term_id
+AND     SFHDR.cons_inv_id      =ACI.cons_inv_id
+AND     ACI.customer_id             =XCEB.cust_account_id
+AND     XCEB.billdocs_doc_id        =XCDM.document_id
+AND     XCEB.billdocs_doc_type      ='Consolidated Bill' 
+--AND XCEB.billdocs_delivery_meth ='PRINT'   -- commented for defect 11993 
+AND (XCEB.billdocs_delivery_meth ='PRINT'   OR  :P_SPEC_HANDLING_FLAG <>'Y')   -- added for defect 11993
+AND     XCEB.billdocs_paydoc_ind    ='Y'
+AND     XCDM.doc_detail_level       = NVL(:P_DOC_DETAIL,XCDM.doc_detail_level)
+-- AND     XCDM.document_id = NVL(:P_MBS_DOCUMENT_ID,XCDM.document_id)      -- commented by ranjith for defect 11993
+AND     DECODE(:P_SPEC_HANDLING_FLAG,'Y',xceb.billdocs_special_handling,1) IS NOT NULL
+AND     (DECODE(:P_SPEC_HANDLING_FLAG,'Y',aci.attribute2,NULL) IS NULL
+         AND DECODE(:P_SPEC_HANDLING_FLAG,'Y',aci.attribute4,NULL) IS NULL
+         AND DECODE(:P_SPEC_HANDLING_FLAG,'Y',aci.attribute10,NULL) IS NULL
+         AND DECODE(:P_SPEC_HANDLING_FLAG,'Y',aci.attribute15,NULL) IS NULL  -- added for CR 586
+        )
+--Commented for defect 11993
+/*AND     DECODE(:P_SPEC_HANDLING_FLAG,'Y',XX_AR_INV_FREQ_PKG.compute_effective_date
+        ( XCEB.billdocs_payment_term, TRUNC(ACI.cut_off_date)),'01-JAN-00') <= NVL(:P_AS_OF_DATE1,'01-JAN-00')*/
+-- Commented for Defect# 15063
+/*--Added for defect 11993
+AND     DECODE(:P_SPEC_HANDLING_FLAG,'Y',XX_AR_INV_FREQ_PKG.compute_effective_date
+        ( XCEB.billdocs_payment_term, TRUNC(ACI.cut_off_date-1)),'01-JAN-00') <= NVL(:P_AS_OF_DATE1,'01-JAN-00')*/
+-- Added for Defect# 15063. The logic of the attribute1 column is handled in the procedure XX_AR_PRINT_NEW_CON_PKG.MAIN
+AND     DECODE(:P_SPEC_HANDLING_FLAG,'Y',XX_AR_INV_FREQ_PKG.compute_effective_date
+        ( XCEB.billdocs_payment_term, TO_DATE(ACI.attribute1)-1),'01-JAN-00') <= NVL(:P_AS_OF_DATE1,'01-JAN-00')
+AND     ACI.status                  ='ACCEPTED'
+AND     EXISTS
+            (
+              SELECT 1
+              FROM   ar_cons_inv_trx_lines
+              WHERE  cons_inv_id =ACI.cons_inv_id
+            )
+-- Below ocndition added for R1.3 CR 738 Defect 2766
+AND   XCEB.billdocs_cust_doc_id              = :CUST_DOC_ID
+-- End of changes for R1.3 CR 738 Defect 2766
+ORDER BY ACI.cons_inv_id
+]]>
+</sqlStatement>
+<sqlStatement name="Q_ONE">
+<![CDATA[
+SELECT 
+      a.sf_text                     soft_data
+     ,DECODE( TRIM(a.sf_text)
+             ,'GRAND TOTAL:'
+             ,TO_CHAR(NULL)
+             ,a.attribute1
+            )                       order_no
+     ,DECODE( TRIM(a.sf_text)
+             ,'GRAND TOTAL:'
+             ,TO_NUMBER(NULL)
+             ,NVL(a.subtotal ,0) 
+            )                       subtotal
+     ,DECODE(
+              TRIM(a.sf_text)
+             ,'GRAND TOTAL:'
+             ,TO_NUMBER(NULL)
+             ,NVL(a.delivery ,0) 
+            )                       delivery
+     ,DECODE(
+              TRIM(a.sf_text)
+             ,'GRAND TOTAL:'
+             ,TO_NUMBER(NULL)
+             ,NVL(a.discounts ,0) 
+            )                       discounts
+     ,DECODE(
+              TRIM(a.sf_text)
+             ,'GRAND TOTAL:'
+             ,TO_NUMBER(NULL)
+             ,NVL(a.tax ,0) 
+            )                       tax
+     ,NVL(a.total ,0)               total 
+     ,NVL(a.page_break ,'N')        pg_break
+	 ,DECODE(a.line_type,'SOFTHDR_TOTAL','Y','BILL_TO_TOTAL','Y','N' ) SHOW_LINE
+FROM  xx_ar_cbi_rprn_rows a
+WHERE request_id      =:p_request_id
+  AND cons_inv_id     =:cbi_id
+  AND line_type IN ('SOFTHDR_TOTAL' ,'BILL_TO_TOTAL' ,'GRAND_TOTAL')  
+ORDER BY line_seq 
+]]>
+</sqlStatement>
+	<sqlStatement name="Q_CONS_MSG_BCC">    <!--Added this sqlStatement for NAIT-61952-->
+       <![CDATA[
+          SELECT xx_ar_ebl_common_util_pkg.get_cons_msg_bcc(:cust_doc_id,:cust_account_id,:billing_number) CONS_MSG_BCC 
+		  FROM DUAL
+       ]]>
+    </sqlStatement>
+</dataQuery>
+<dataTrigger name="beforeReportTrigger" source="xx_ar_reprint_summbill.beforereport"/>
+<dataStructure>
+<group name="G_BILL_TO_SITES" source="Q_BILL_TO_SITES">
+<element name="DOC_DESCRIPTION" value="DOC_DESCRIPTION" />
+<element name="BILL_TO_COUNTRY" value="BILL_TO_COUNTRY" />
+<element name="POSTAL_CODE" value="BILL_TO_POSTAL_CODE" />
+<element name="RETURN_ADDRESS" value="RETURN_ADDRESS" />
+<element name="REMIT_TO" value="REMIT_TO" />
+<element name="BILL_TO" value="BILL_TO" />
+<element name="MAIL_TO_ATTN" value="MAIL_TO_ATTN" />     <!--Added for R1.4 Defect # 2424 (CR# 547)-->
+<element name="TAX_ID_DESC" value="TAX_ID_DESC" />
+<element name="TAX_ID" value="TAX_ID" />
+<element name="ACCOUNT_CONTACT" value="ACCOUNT_CONTACT" />
+<element name="ORDER_CONTACT" value="ORDER_CONTACT" />
+<element name="CUSTOMER_NAME" value="CUSTOMER_NAME" />
+<element name="ACCOUNT_NUMBER" value="ACCOUNT_NUMBER" />
+<element name="BILLING_ID" value="BILLING_ID" />
+<element name="SPL_HANDLING" value="SPL_HANDLING" />
+<element name="COMMENTS" value="SPL_HANDLING_COMMENTS" />
+<element name="DOC_ID" value="DOC_ID" />                 <!--Added for R1.2 Defect # 1237 (CR 621)-->
+<group name="G_CONS_BILLS" source="Q_CONSOLIDATED_BILLS">
+<element name="SCANLINE" value="SCAN_LINE" />
+<element name="BILLING_NUMBER" value="BILLING_NUMBER" />
+<element name="TERMS" value="TERMS" />
+<element name="CURRENCY" value="CURRENCY" />
+<element name="BILL_FROM_DATE" value="BILL_FROM_DATE" />
+<element name="BILL_TO_DATE" value="BILL_TO_DATE" />
+<element name="PAYMENT_DUE" value="PAYMENT_DUE" />
+<element name="DOC_TITLE" value="DOC_TITLE" />
+<element name="SFHDR1" value="SFHDR1" />
+<element name="SFHDR2" value="SFHDR2" />
+<element name="SFHDR3" value="SFHDR3" />
+<element name="SFHDR4" value="SFHDR4" />
+<element name="SFHDR5" value="SFHDR5" />
+<element name="CBI_EXTAMT_PLUS_DELVY" value="CBI_EXTAMT_PLUS_DELVY" />
+<element name="CBI_DISCOUNTS" value="CBI_DISCOUNTS" />
+<element name="CBI_TAX" value="CBI_TAX" />
+<element name="CBI_AMOUNT_DUE" value="CBI_AMOUNT_DUE" />
+<group name="G_SUMMARIZE" source="Q_ONE">
+<element name="SOFT_DATA" value="SOFT_DATA" />
+<element name="ORDER_NO" value="ORDER_NO" />
+<element name="SUBTOTAL" value="SUBTOTAL" />
+<element name="DELIVERY" value="DELIVERY" />
+<element name="DISCOUNTS" value="DISCOUNTS" />
+<element name="TAX" value="TAX" />
+<element name="TOTAL" value="TOTAL" />
+<element name="PG_BREAK" value="PG_BREAK" />
+<element name = "SHOW_LINE"  value = "SHOW_LINE" />
+</group>
+<group name = "G_CONS_MSG_BCC" source = "Q_CONS_MSG_BCC">    <!--Added this sqlStatement for NAIT-61952-->
+<element name = "CONS_MSG_BCC" value = "CONS_MSG_BCC"/>
+</group>
+</group>
+</group>
+</dataStructure>
+<dataTrigger name="afterReportTrigger" source="xx_ar_reprint_summbill.afterreport"/>
+</dataTemplate>

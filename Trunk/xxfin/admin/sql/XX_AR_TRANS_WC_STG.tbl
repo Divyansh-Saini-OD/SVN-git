@@ -1,0 +1,54 @@
+--+=====================================================================+
+--|                   Office Depot - Project FIT                        |
+--|          Capgemini/Office Depot/Consulting Organization             |
+--+=====================================================================+
+--|                                                                     |
+--|Rice        : 106313                                                 |
+--|File Name   : XX_AR_TRANS_WC_STG.tbl                                 |
+--|File Path   : $XXFIN_TOP/admin/sql                                   |
+--|Schema      : XXFIN                                                  |
+--|                                                                     |
+--|Version    Date           Author                       Remarks       |
+--|=======   ======        ====================          =========      |
+--| 1.0      15-DEC-11    Purushothaman.Narmatha                        |
+--|                                                                     |
+--+=====================================================================+
+
+SET VERIFY OFF
+WHENEVER SQLERROR CONTINUE
+
+PROMPT "Creating Table XXFIN.XX_AR_TRANS_WC_STG..."
+CREATE TABLE XXFIN.XX_AR_TRANS_WC_STG
+(
+CUSTOMER_TRX_ID                 NUMBER(15) NOT NULL
+,BILL_TO_CUSTOMER_ID                NUMBER(15)
+,BILL_TO_SITE_USE_ID                     NUMBER(15)
+,INVOICE_CLASS                           VARCHAR2(20)
+,INVOICE_TYPE                            VARCHAR2(20)
+,TRX_NUMBER                     VARCHAR2(20) NOT NULL
+,CONSOLIDATED_BILL_NUMBER                VARCHAR2(30)
+,TRX_DATE                        DATE   NOT NULL
+,PRINT_DATE                              DATE
+,TERM_CODE                               VARCHAR2(15)
+,SPECIAL_INSTRUCTIONS                    VARCHAR2(240)
+,COMMENTS                                VARCHAR2(1760)
+,INVOICE_CURRENCY_CODE                   VARCHAR2(15)
+,SEND_REFUND                             VARCHAR2(150)
+,REFUND_STATUS                           VARCHAR2(150)
+,BILLING_EXTENSION                       VARCHAR2(150)
+,ORIG_SYSTEM_ORDER_REFERENCE             VARCHAR2(50)
+,DISPUTE_FLAG                            VARCHAR2(150)
+,SALES_PERSON                            NUMBER(15)
+,PO                                      VARCHAR2(50)
+,RELEASE                                 VARCHAR2(240)
+,COST_CENTER                             VARCHAR2(240)
+,DESKTOP                                 VARCHAR2(240)
+,SALES_ORDER                             VARCHAR2(150)
+,CREATION_DATE                           DATE
+,CREATED_BY                              NUMBER(15)
+,REQUEST_ID                     NUMBER(15) NOT NULL
+,TRX_CREATION_DATE               DATE      NOT NULL
+,EXT_TYPE                     VARCHAR2(1)       NOT NULL
+,CYCLE_DATE                      DATE         NOT NULL
+,BATCH_NUM                       NUMBER        NOT NULL
+);

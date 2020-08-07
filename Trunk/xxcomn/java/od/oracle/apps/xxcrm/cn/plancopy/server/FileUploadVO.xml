@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding='windows-1252'?>
+<!DOCTYPE ViewObject SYSTEM "jbo_03_01.dtd">
+
+<ViewObject
+   Name="FileUploadVO"
+   BindingStyle="Oracle"
+   CustomQuery="true"
+   RowClass="oracle.apps.fnd.framework.server.OAViewRowImpl"
+   ComponentClass="od.oracle.apps.xxcrm.cn.plancopy.server.FileUploadVOImpl"
+   MsgBundleClass="oracle.jbo.common.JboResourceBundle"
+   UseGlueCode="false" >
+   <SQLQuery><![CDATA[
+select 'x' colValue, 1 colId from dual
+   ]]></SQLQuery>
+   <DesignTime>
+      <Attr Name="_version" Value="9.0.3.12.53" />
+      <Attr Name="_CodeGenFlagNew" Value="36" />
+   </DesignTime>
+   <ViewAttribute
+      Name="Colvalue"
+      IsPersistent="false"
+      Precision="1"
+      Type="oracle.jbo.domain.ClobDomain"
+      AliasName="COLVALUE"
+      ColumnType="CLOB"
+      Expression="COLVALUE"
+      SQLType="CLOB" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="1" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Colid"
+      IsPersistent="false"
+      Type="oracle.jbo.domain.Number"
+      AliasName="COLID"
+      ColumnType="VARCHAR2"
+      Expression="COLID"
+      SQLType="NUMERIC" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </ViewAttribute>
+</ViewObject>

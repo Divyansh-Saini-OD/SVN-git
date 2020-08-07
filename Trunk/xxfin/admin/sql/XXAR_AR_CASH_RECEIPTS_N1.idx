@@ -1,0 +1,33 @@
+-- +==========================================================================+
+-- |                  Office Depot - Project Simplify                         |
+-- +==========================================================================+
+-- | SQL Script to create                                                     |
+-- |                                                                          |
+-- |                      INDEXES: XXAR_AR_CASH_RECEIPTS_N1                   |
+-- |                                                                          |
+-- |                                                                          |
+-- |                                                                          |
+-- |Change Record:                                                            |
+-- |===============                                                           |
+-- |Version   Date          Author               Remarks                      |
+-- |=======   ==========    ================     =============================|
+-- | 1.0      21-JUL-2008   Sambasiva Reddy D    Initial version              |
+-- |                                                                          |
+-- +==========================================================================+
+
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     ON
+
+--DROP INDEX XXAR_AR_CASH_RECEIPTS_N1;
+
+CREATE INDEX XXFIN.XXAR_AR_CASH_RECEIPTS_N1 ON AR.AR_CASH_RECEIPTS_ALL(remittance_bank_account_id)
+TABLESPACE "XXOD";
+
+SHOW ERROR
+
+
+
+

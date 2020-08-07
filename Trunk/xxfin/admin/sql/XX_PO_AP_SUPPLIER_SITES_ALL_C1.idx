@@ -1,0 +1,23 @@
+-- +===========================================================================+
+-- |                  Office Depot                                             |
+-- +===========================================================================+
+-- |Description : Create index xxfin.AP_SUPPLIER_SITES_ALL_C1                  |
+-- |              (Reuqested by Kalpit.                                        |
+-- |                                                                           |
+-- |                                                                           |
+-- |Change Record:                                                             |
+-- |===============                                                            |
+-- |Version      Date           Author                  Remarks                |
+-- |=======    ==========     =============             ====================== |
+-- | 1.0       16-NOV-17      Antonio Morales           Initial draft version  |
+-- +===========================================================================+
+
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     ON
+WHENEVER SQLERROR CONTINUE
+
+create index xxfin.AP_SUPPLIER_SITES_ALL_C1 on AP.AP_SUPPLIER_SITES_ALL (LTRIM("VENDOR_SITE_CODE_ALT",'0'));
+

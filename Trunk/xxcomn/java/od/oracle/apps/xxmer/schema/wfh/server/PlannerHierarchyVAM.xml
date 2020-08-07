@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding='windows-1252'?>
+<!DOCTYPE AppModule SYSTEM "jbo_03_01.dtd">
+
+<AppModule
+   Name="PlannerHierarchyVAM"
+   ComponentClass="oracle.apps.fnd.framework.server.OAApplicationModuleImpl"
+   LoadComponentsLazily="true" >
+   <DesignTime>
+      <Attr Name="_version" Value="9.0.3.13.75" />
+      <Attr Name="_deployType" Value="0" />
+   </DesignTime>
+   <ViewUsage
+      Name="PlannerExistenceVVO1"
+      ViewObjectName="od.oracle.apps.xxmer.schema.wfh.server.PlannerExistenceVVO" >
+   </ViewUsage>
+   <ViewUsage
+      Name="ManagerExistenceVVO1"
+      ViewObjectName="od.oracle.apps.xxmer.schema.wfh.server.ManagerExistenceVVO" >
+   </ViewUsage>
+   <ViewUsage
+      Name="EmployeeExistenceVVO1"
+      ViewObjectName="od.oracle.apps.xxmer.schema.wfh.server.EmployeeExistenceVVO" >
+   </ViewUsage>
+   <ViewUsage
+      Name="LeafPlannerVVO1"
+      ViewObjectName="od.oracle.apps.xxmer.schema.wfh.server.LeafPlannerVVO" >
+   </ViewUsage>
+   <ViewUsage
+      Name="VendorExistenceVVO1"
+      ViewObjectName="od.oracle.apps.xxmer.schema.wfh.server.VendorExistenceVVO" >
+   </ViewUsage>
+</AppModule>

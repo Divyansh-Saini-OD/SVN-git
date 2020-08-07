@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<pageDefinition xmlns="http://xmlns.oracle.com/adfm/uimodel" version="12.2.1.12.24" id="CostVarianceUserPageDef"
+                Package="od.tdmatch.view.pageDefs">
+  <executables>
+    <iterator Binds="CostVarianceTVO1" RangeSize="25" DataControl="TradeMatchAMDataControl"
+              id="CostVarianceTVO1Iterator"/>
+    <iterator Binds="CostVarianceVO1" RangeSize="25" DataControl="TradeMatchAMDataControl"
+              id="CostVarianceVO1Iterator" Refresh="ifNeeded"
+              RefreshCondition="#{pageFlowScope.CostVarianceBean.load}"/>
+  </executables>
+  <bindings>
+    <attributeValues IterBinding="CostVarianceTVO1Iterator" id="operatingUnit">
+      <AttrNames>
+        <Item Value="operatingUnit"/>
+      </AttrNames>
+    </attributeValues>
+    <list IterBinding="CostVarianceTVO1Iterator" StaticList="false" Uses="LOV_operatingUnit" id="operatingUnit1"
+          DTSupportsMRU="true" SelectItemValueMode="ListObject"/>
+    <tree IterBinding="CostVarianceVO1Iterator" id="CostVarianceVO1">
+      <nodeDefinition DefName="od.tdmatch.model.CostVarianceVO" Name="CostVarianceVO10">
+        <AttrNames>
+          <Item Value="OrgId"/>
+          <Item Value="InvoiceId"/>
+          <Item Value="InvoiceNum"/>
+          <Item Value="InvoiceDate"/>
+          <Item Value="PoHeaderId"/>
+          <Item Value="PoNum"/>
+          <Item Value="PoDate"/>
+          <Item Value="PoType"/>
+          <Item Value="LineNum"/>
+          <Item Value="PoLineId"/>
+          <Item Value="Location"/>
+          <Item Value="VendorId"/>
+          <Item Value="VendorNo"/>
+          <Item Value="VendorName"/>
+          <Item Value="VendorSiteCode"/>
+          <Item Value="VendorSiteId"/>
+          <Item Value="Sku"/>
+          <Item Value="SkuDescription"/>
+          <Item Value="Dept"/>
+          <Item Value="DeptName"/>
+          <Item Value="Quantity"/>
+          <Item Value="PoCost"/>
+          <Item Value="InvoicePrice"/>
+          <Item Value="VarianceAmt"/>
+          <Item Value="VariancePct"/>
+          <Item Value="HoldDate"/>
+          <Item Value="VendorAsst"/>
+          <Item Value="VendorAsstName"/>
+          <Item Value="MerchantName"/>
+          <Item Value="Vpc"/>
+          <Item Value="MemoComments"/>
+          <Item Value="AnswerCode"/>
+          <Item Value="AnswerDate"/>
+          <Item Value="SystemUpdateDate"/>
+          <Item Value="CostEffectiveDate"/>
+          <Item Value="PayOtherCost"/>
+          <Item Value="CreationDate"/>
+          <Item Value="CreatedBy"/>
+          <Item Value="LastUpdateDate"/>
+          <Item Value="LastUpdatedBy"/>
+          <Item Value="InvoiceStatus"/>
+          <Item Value="totalQuantity"/>
+          <Item Value="sumQuantity"/>
+          <Item Value="InvoiceHoldDate"/>
+        </AttrNames>
+      </nodeDefinition>
+    </tree>
+    <methodAction id="costVarinceValidate" RequiresUpdateModel="true" Action="invokeMethod"
+                  MethodName="costVarinceValidate" IsViewObjectMethod="false" DataControl="TradeMatchAMDataControl"
+                  InstanceName="bindings.costVarinceValidate.dataControl.dataProvider"
+                  ReturnName="data.TradeMatchAMDataControl.methodResults.costVarinceValidate_costVarinceValidate_dataControl_dataProvider_costVarinceValidate_result"/>
+    <listOfValues IterBinding="CostVarianceTVO1Iterator" StaticList="false" Uses="LOV_skuNum" id="skuNum"/>
+    <listOfValues IterBinding="CostVarianceTVO1Iterator" StaticList="false" Uses="LOV_poNum" id="poNum"/>
+    <attributeValues IterBinding="CostVarianceTVO1Iterator" id="poDateFrom">
+      <AttrNames>
+        <Item Value="poDateFrom"/>
+      </AttrNames>
+    </attributeValues>
+    <attributeValues IterBinding="CostVarianceTVO1Iterator" id="poDateTo">
+      <AttrNames>
+        <Item Value="poDateTo"/>
+      </AttrNames>
+    </attributeValues>
+    <listOfValues IterBinding="CostVarianceTVO1Iterator" StaticList="false" Uses="LOV_dept" id="dept"/>
+    <listOfValues IterBinding="CostVarianceTVO1Iterator" StaticList="false" Uses="LOV_vpc" id="vpc"/>
+    <listOfValues IterBinding="CostVarianceTVO1Iterator" StaticList="false" Uses="LOV_supplierName" id="supplierName"/>
+    <listOfValues IterBinding="CostVarianceTVO1Iterator" StaticList="false" Uses="LOV_supplierNo" id="supplierNo"/>
+    <listOfValues IterBinding="CostVarianceTVO1Iterator" StaticList="false" Uses="LOV_supplierSiteCode"
+                  id="supplierSiteCode"/>
+    <listOfValues IterBinding="CostVarianceTVO1Iterator" StaticList="false" Uses="LOV_invoiceNum" id="invoiceNum"/>
+    <attributeValues IterBinding="CostVarianceTVO1Iterator" id="invoiceFrom">
+      <AttrNames>
+        <Item Value="invoiceFrom"/>
+      </AttrNames>
+    </attributeValues>
+    <attributeValues IterBinding="CostVarianceTVO1Iterator" id="invoiceTo">
+      <AttrNames>
+        <Item Value="invoiceTo"/>
+      </AttrNames>
+    </attributeValues>
+    <listOfValues IterBinding="CostVarianceTVO1Iterator" StaticList="false" Uses="LOV_answer" id="answer"/>
+    <attributeValues IterBinding="CostVarianceTVO1Iterator" id="answerDate">
+      <AttrNames>
+        <Item Value="answerDate"/>
+      </AttrNames>
+    </attributeValues>
+    <button IterBinding="CostVarianceTVO1Iterator" id="dropShip" DTSupportsMRU="false" StaticList="true">
+      <AttrNames>
+        <Item Value="dropShip"/>
+      </AttrNames>
+      <ValueList>
+        <Item Value="Y"/>
+        <Item Value="N"/>
+      </ValueList>
+    </button>
+    <button IterBinding="CostVarianceTVO1Iterator" id="frontDoor" DTSupportsMRU="false" StaticList="true">
+      <AttrNames>
+        <Item Value="frontDoor"/>
+      </AttrNames>
+      <ValueList>
+        <Item Value="Y"/>
+        <Item Value="N"/>
+      </ValueList>
+    </button>
+    <list IterBinding="CostVarianceTVO1Iterator" StaticList="false" Uses="LOV_vendorAsst" id="vendorAsst"
+          DTSupportsMRU="true" SelectItemValueMode="ListObject"/>
+    <listOfValues IterBinding="CostVarianceTVO1Iterator" StaticList="false" Uses="LOV_merchant" id="merchant"/>
+    <listOfValues IterBinding="CostVarianceTVO1Iterator" StaticList="false" Uses="LOV_invoiceStatus"
+                  id="invoiceStatus"/>
+    <methodAction id="updateCostVariance" RequiresUpdateModel="true" Action="invokeMethod"
+                  MethodName="updateCostVariance" IsViewObjectMethod="false" DataControl="TradeMatchAMDataControl"
+                  InstanceName="bindings.updateCostVariance.dataControl.dataProvider"
+                  ReturnName="data.TradeMatchAMDataControl.methodResults.updateCostVariance_updateCostVariance_dataControl_dataProvider_updateCostVariance_result"/>
+    <attributeValues IterBinding="CostVarianceVO1Iterator" id="sumQuantity">
+      <AttrNames>
+        <Item Value="sumQuantity"/>
+      </AttrNames>
+    </attributeValues>
+    <action id="Rollback" RequiresUpdateModel="false" Action="rollbackTransaction"
+            DataControl="TradeMatchAMDataControl"/>
+    <button IterBinding="CostVarianceTVO1Iterator" id="specialOrder" DTSupportsMRU="false" StaticList="true">
+      <AttrNames>
+        <Item Value="specialOrder"/>
+      </AttrNames>
+      <ValueList>
+        <Item Value="Y"/>
+        <Item Value="N"/>
+      </ValueList>
+    </button>
+  </bindings>
+</pageDefinition>

@@ -1,0 +1,50 @@
+# +===================================================================+
+# |                  Office Depot - Project Simplify                  |
+# |                       WIPRO Technologies                          |
+# +===================================================================+
+# | Name :      AR Print Statements Transfer                          |
+# | Description : To transfer the output file of                      |
+# |                  'OD : Print XML Statements'                      |
+# |                        to XXFIN_OUTBOUND directory                |
+# |                                                                   |
+# |Change Record:                                                     |
+# |===============                                                    |
+# |Version   Date          Author              Remarks                |
+# |=======   ==========   =============        =======================|
+# |1.0       05-JUNE-2007  SAMBASIVA REDDY D   Initial version        |
+# |1.1       22-OCT-2007   Samitha U M         Variable changed       |
+# |                                            for the soft link      |
+# |                                            (Defect 2482)          |
+# +===================================================================+
+#!/bin/ksh
+#
+
+#Commented for the defect 2482
+var9=`echo $1 | awk '{print $9}' | tr -d '"'`
+
+#Added for the defect 2482
+var9=$5
+echo "Request id = " $var9
+echo 
+
+# -------------
+# Set variables
+# -------------
+FILE_DIR="$APPLCSF/$APPLOUT"
+OUT_FILE="o"${var9}".out"
+SOURCE_FILE=$FILE_DIR/$OUT_FILE
+
+CONCREQ_ID=$var9
+DATE_TIME_STAMP=`date +"%Y%m%d_%H%M%S"`
+DEST_FILE1="$XXFIN_DATA/ftp/out/PTHB.STATEMENTS_${CONCREQ_ID}.xml"
+DEST_FILE2="$XXFIN_ARCHIVE/outbound/PTHB.STATEMENTS_${CONCREQ_ID}_$DATE_TIME_STAMP.xml"
+
+echo ' '
+echo "SOURCE_FILE        = $SOURCE_FILE"
+echo "DEST_FILE1         = $DEST_FILE1"
+echo "DEST_FILE2         = $DEST_FILE2"
+
+cp $SOURCE_FILE  $DEST_FILE1
+cp $SOURCE_FILE  $DEST_FILE2
+
+exit 0   # Success

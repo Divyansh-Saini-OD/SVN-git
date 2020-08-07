@@ -1,0 +1,51 @@
+<definitions
+     name="SenMail"
+     targetNamespace="http://xmlns.oracle.com/pcbpel/adapter/db/SenMail/"
+     xmlns="http://schemas.xmlsoap.org/wsdl/"
+     xmlns:tns="http://xmlns.oracle.com/pcbpel/adapter/db/SenMail/"
+     xmlns:db="http://xmlns.oracle.com/pcbpel/adapter/db/APPS/XX_OM_EMAIL_HANDLER_OUT/MIME_MAIL/"
+     xmlns:plt="http://schemas.xmlsoap.org/ws/2003/05/partner-link/"
+     xmlns:jca="http://xmlns.oracle.com/pcbpel/wsdl/jca/"
+     xmlns:hdr="http://xmlns.oracle.com/pcbpel/adapter/db/"
+    >
+    <import namespace="http://xmlns.oracle.com/pcbpel/adapter/db/" location="DBAdapterOutboundHeader.wsdl"/>
+    <types>
+     <schema xmlns="http://www.w3.org/2001/XMLSchema">
+       <import namespace="http://xmlns.oracle.com/pcbpel/adapter/db/APPS/XX_OM_EMAIL_HANDLER_OUT/MIME_MAIL/"
+               schemaLocation="APPS_XX_OM_EMAIL_HANDLER_OUT_MIME_MAIL.xsd" />
+     </schema>
+    </types>
+    <message name="args_in_msg">
+        <part name="InputParameters" element="db:InputParameters"/>
+    </message>
+    <portType name="SenMail_ptt">
+        <operation name="SenMail">
+            <input message="tns:args_in_msg"/>
+        </operation>
+    </portType>
+    <binding name="SenMail_binding" type="tns:SenMail_ptt">
+    <jca:binding  />
+        <operation name="SenMail">
+      <jca:operation
+          SchemaName="APPS"
+          PackageName="XX_OM_EMAIL_HANDLER_OUT"
+          ProcedureName="MIME_MAIL"
+          InteractionSpec="oracle.tip.adapter.db.DBStoredProcedureInteractionSpec" >
+      </jca:operation>
+      <input>
+        <jca:header message="hdr:OutboundHeader_msg" part="outboundHeader"/>
+      </input>
+        </operation>
+    </binding>
+    <service name="SenMail">
+        <port name="SenMail_pt" binding="tns:SenMail_binding">
+      <jca:address location="eis/db/OraAppsEom" UIConnectionName="GSIDEV01"
+          ManagedConnectionFactory="oracle.tip.adapter.db.DBManagedConnectionFactory" />
+        </port>
+    </service>
+  <plt:partnerLinkType name="SenMail_plt" >
+    <plt:role name="SenMail_role" >
+      <plt:portType name="tns:SenMail_ptt" />
+    </plt:role>
+  </plt:partnerLinkType>
+</definitions>

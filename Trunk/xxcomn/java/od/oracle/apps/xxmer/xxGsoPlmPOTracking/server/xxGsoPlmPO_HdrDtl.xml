@@ -1,0 +1,685 @@
+<?xml version="1.0" encoding='windows-1252'?>
+<!DOCTYPE ViewObject SYSTEM "jbo_03_01.dtd">
+
+<ViewObject
+   Name="xxGsoPlmPO_HdrDtl"
+   BindingStyle="Oracle"
+   CustomQuery="true"
+   RowClass="oracle.apps.fnd.framework.server.OAViewRowImpl"
+   ComponentClass="od.oracle.apps.xxmer.xxGsoPlmPOTracking.server.xxGsoPlmPO_HdrDtlImpl"
+   MsgBundleClass="oracle.jbo.common.JboResourceBundle"
+   UseGlueCode="false" >
+   <SQLQuery><![CDATA[
+SELECT xx_Gso_PoHdr_EO.PO_HEADER_ID, 
+       xx_Gso_PoHdr_EO.VENDOR_NO, 
+       xx_Gso_PoHdr_EO.VENDOR_NAME, 
+       xx_Gso_PoHdr_EO.PO_NUMBER, 
+       xx_Gso_PoHdr_EO.PO_TYPE, 
+       xx_Gso_PoHdr_EO.VERSION, 
+       xx_Gso_PoHdr_EO.MANUFACTURER_NAME, 
+       xx_Gso_PoHdr_EO.PO_DATE, 
+       xx_Gso_PoHdr_EO.PO_STATUS_CD, 
+       xx_Gso_PoHdr_EO.EDI_STATUS, 
+       xx_Gso_PoHdr_EO.BUYING_AGENT, 
+       xx_Gso_PoHdr_EO.OD_MERCHANT, 
+       xx_Gso_PoHdr_EO.PO_SHIP_DATE, 
+       xx_Gso_PoHdr_EO.VEND_COMT_SHIP_DATE, 
+       xx_Gso_PoHdr_EO.PO_RECD_JDA_DATE, 
+       xx_Gso_PoHdr_EO.PO_SENT_VENDOR_DATE, 
+       xx_Gso_PoHdr_EO.PO_CONFM_VEND_DATE, 
+       xx_Gso_PoHdr_EO.PO_CONF_ODCTODA_DATE, 
+       xx_Gso_PoDtl_EO.PO_HEADER_ID AS PO_HEADER_ID1, 
+       xx_Gso_PoDtl_EO.PO_LINE_ID, 
+       xx_Gso_PoDtl_EO.PO_LINE_NO, 
+       xx_Gso_PoDtl_EO.LINE_STATUS, 
+       xx_Gso_PoDtl_EO.BV_STATUS, 
+       xx_Gso_PoDtl_EO.ITEM, 
+       xx_Gso_PoDtl_EO.DESCRIPTION, 
+       xx_Gso_PoDtl_EO.UOM, 
+       xx_Gso_PoDtl_EO.VPC, 
+       xx_Gso_PoDtl_EO.CATEGORY, 
+       xx_Gso_PoDtl_EO.OD_MERCHANT AS OD_MERCHANT1, 
+       xx_Gso_PoDtl_EO.DIVISION, 
+       xx_Gso_PoDtl_EO.DEPT, 
+       xx_Gso_PoDtl_EO.CLASS AS CLASS11, 
+       xx_Gso_PoDtl_EO.ORDERED_QTY, 
+       xx_Gso_PoDtl_EO.SHIPMENT_DATE, 
+       xx_Gso_PoDtl_EO.BATCH_ID, 
+       xx_Gso_PoDtl_EO.STD_PACK, 
+       xx_Gso_PoDtl_EO.CARTON_PACK, 
+       xx_Gso_PoDtl_EO.CARTON_CUBE, 
+       xx_Gso_PoDtl_EO.CARTON_WEIGHT, 
+       xx_Gso_PoDtl_EO.MASTER_CARTON, 
+       xx_Gso_PoDtl_EO.RETAIL_COST, 
+       xx_Gso_PoDtl_EO.MASTER_FOB_COST, 
+       xx_Gso_PoDtl_EO.FOB_ORIGIN_COST, 
+       xx_Gso_PoDtl_EO.EST_LAND_COST, 
+       xx_Gso_PoDtl_EO.ACT_LAND_COST, 
+       xx_Gso_PoDtl_EO.MERCH_DEC_COST, 
+       xx_Gso_PoDtl_EO.SOURCE_PORT_NAME
+FROM XX_GSO_PO_HDR xx_Gso_PoHdr_EO, XX_GSO_PO_DTL xx_Gso_PoDtl_EO
+WHERE (xx_Gso_PoHdr_EO.PO_HEADER_ID = xx_Gso_PoDtl_EO.PO_HEADER_ID)
+   ]]></SQLQuery>
+   <DesignTime>
+      <Attr Name="_version" Value="9.0.3.12.53" />
+      <Attr Name="_CodeGenFlagNew" Value="36" />
+   </DesignTime>
+   <EntityUsage
+      Name="xxGsoPoDtl_EO"
+      Entity="od.oracle.apps.xxmer.xxGsoPlmPOTracking.server.xxGsoPoDtl_EO" >
+      <DesignTime>
+         <Attr Name="_EntireObjectTable" Value="false" />
+         <Attr Name="_queryClause" Value="false" />
+      </DesignTime>
+   </EntityUsage>
+   <EntityUsage
+      Name="xxGsoPoHdr_EO"
+      Entity="od.oracle.apps.xxmer.xxGsoPlmPOTracking.server.xxGsoPoHdr_EO"
+      SourceUsage="od.oracle.apps.xxmer.xxGsoPlmPOTracking.server.xxGsoPlmPO_HdrDtl.xxGsoPoDtl_EO"
+      ReadOnly="true"
+      Reference="true" >
+      <DesignTime>
+         <Attr Name="_EntireObjectTable" Value="false" />
+         <Attr Name="_queryClause" Value="false" />
+         <AttrArray Name="_srcAttributes">
+            <Item Value="od.oracle.apps.xxmer.xxGsoPlmPOTracking.server.xxGsoPoDtl_EO.PoHeaderId" />
+            <Item Value="od.oracle.apps.xxmer.xxGsoPlmPOTracking.server.xxGsoPoDtl_EO.OdMerchant" />
+            <Item Value="od.oracle.apps.xxmer.xxGsoPlmPOTracking.server.xxGsoPoDtl_EO.Remarks" />
+         </AttrArray>
+         <AttrArray Name="_dstAttributes">
+            <Item Value="od.oracle.apps.xxmer.xxGsoPlmPOTracking.server.xxGsoPoHdr_EO.PoHeaderId" />
+            <Item Value="od.oracle.apps.xxmer.xxGsoPlmPOTracking.server.xxGsoPoHdr_EO.OdMerchant" />
+            <Item Value="od.oracle.apps.xxmer.xxGsoPlmPOTracking.server.xxGsoPoHdr_EO.Remarks" />
+         </AttrArray>
+      </DesignTime>
+   </EntityUsage>
+   <ViewAttribute
+      Name="PoHeaderId"
+      IsPersistent="false"
+      IsNotNull="true"
+      Type="oracle.jbo.domain.Number"
+      AliasName="PO_HEADER_ID"
+      ColumnType="VARCHAR2"
+      Expression="PO_HEADER_ID"
+      SQLType="NUMERIC" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="VendorNo"
+      IsPersistent="false"
+      IsNotNull="true"
+      Precision="30"
+      Type="java.lang.String"
+      AliasName="VENDOR_NO"
+      ColumnType="VARCHAR2"
+      Expression="VENDOR_NO"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="30" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="VendorName"
+      IsPersistent="false"
+      Precision="100"
+      Type="java.lang.String"
+      AliasName="VENDOR_NAME"
+      ColumnType="VARCHAR2"
+      Expression="VENDOR_NAME"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="100" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="PoNumber"
+      IsPersistent="false"
+      IsNotNull="true"
+      Precision="50"
+      Type="java.lang.String"
+      AliasName="PO_NUMBER"
+      ColumnType="VARCHAR2"
+      Expression="PO_NUMBER"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="50" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="PoType"
+      IsPersistent="false"
+      Precision="30"
+      Type="java.lang.String"
+      AliasName="PO_TYPE"
+      ColumnType="VARCHAR2"
+      Expression="PO_TYPE"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="30" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Version"
+      IsPersistent="false"
+      Type="oracle.jbo.domain.Number"
+      AliasName="VERSION"
+      ColumnType="VARCHAR2"
+      Expression="VERSION"
+      SQLType="NUMERIC" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="ManufacturerName"
+      IsPersistent="false"
+      Precision="100"
+      Type="java.lang.String"
+      AliasName="MANUFACTURER_NAME"
+      ColumnType="VARCHAR2"
+      Expression="MANUFACTURER_NAME"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="100" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="PoDate"
+      IsPersistent="false"
+      IsNotNull="true"
+      Type="oracle.jbo.domain.Date"
+      AliasName="PO_DATE"
+      ColumnType="VARCHAR2"
+      Expression="PO_DATE"
+      SQLType="DATE" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="7" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="PoStatusCd"
+      IsPersistent="false"
+      Precision="25"
+      Type="java.lang.String"
+      AliasName="PO_STATUS_CD"
+      ColumnType="VARCHAR2"
+      Expression="PO_STATUS_CD"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="25" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="EdiStatus"
+      IsPersistent="false"
+      Precision="25"
+      Type="java.lang.String"
+      AliasName="EDI_STATUS"
+      ColumnType="VARCHAR2"
+      Expression="EDI_STATUS"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="25" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="BuyingAgent"
+      IsPersistent="false"
+      Precision="40"
+      Type="java.lang.String"
+      AliasName="BUYING_AGENT"
+      ColumnType="VARCHAR2"
+      Expression="BUYING_AGENT"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="40" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="OdMerchant"
+      IsPersistent="false"
+      Precision="40"
+      Type="java.lang.String"
+      AliasName="OD_MERCHANT"
+      ColumnType="VARCHAR2"
+      Expression="OD_MERCHANT"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="40" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="PoShipDate"
+      IsPersistent="false"
+      Type="oracle.jbo.domain.Date"
+      AliasName="PO_SHIP_DATE"
+      ColumnType="VARCHAR2"
+      Expression="PO_SHIP_DATE"
+      SQLType="DATE" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="7" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="VendComtShipDate"
+      IsPersistent="false"
+      Type="oracle.jbo.domain.Date"
+      AliasName="VEND_COMT_SHIP_DATE"
+      ColumnType="VARCHAR2"
+      Expression="VEND_COMT_SHIP_DATE"
+      SQLType="DATE" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="7" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="PoRecdJdaDate"
+      IsPersistent="false"
+      Type="oracle.jbo.domain.Date"
+      AliasName="PO_RECD_JDA_DATE"
+      ColumnType="VARCHAR2"
+      Expression="PO_RECD_JDA_DATE"
+      SQLType="DATE" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="7" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="PoSentVendorDate"
+      IsPersistent="false"
+      Type="oracle.jbo.domain.Date"
+      AliasName="PO_SENT_VENDOR_DATE"
+      ColumnType="VARCHAR2"
+      Expression="PO_SENT_VENDOR_DATE"
+      SQLType="DATE" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="7" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="PoConfmVendDate"
+      IsPersistent="false"
+      Type="oracle.jbo.domain.Date"
+      AliasName="PO_CONFM_VEND_DATE"
+      ColumnType="VARCHAR2"
+      Expression="PO_CONFM_VEND_DATE"
+      SQLType="DATE" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="7" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="PoConfOdctodaDate"
+      IsPersistent="false"
+      Type="oracle.jbo.domain.Date"
+      AliasName="PO_CONF_ODCTODA_DATE"
+      ColumnType="VARCHAR2"
+      Expression="PO_CONF_ODCTODA_DATE"
+      SQLType="DATE" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="7" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="PoHeaderId1"
+      IsPersistent="false"
+      IsNotNull="true"
+      Type="oracle.jbo.domain.Number"
+      AliasName="PO_HEADER_ID1"
+      ColumnType="VARCHAR2"
+      Expression="PO_HEADER_ID1"
+      SQLType="NUMERIC" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="PoLineId"
+      IsPersistent="false"
+      IsNotNull="true"
+      Type="oracle.jbo.domain.Number"
+      AliasName="PO_LINE_ID"
+      ColumnType="VARCHAR2"
+      Expression="PO_LINE_ID"
+      SQLType="NUMERIC" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="PoLineNo"
+      IsPersistent="false"
+      IsNotNull="true"
+      Type="oracle.jbo.domain.Number"
+      AliasName="PO_LINE_NO"
+      ColumnType="VARCHAR2"
+      Expression="PO_LINE_NO"
+      SQLType="NUMERIC" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="LineStatus"
+      IsPersistent="false"
+      Precision="30"
+      Type="java.lang.String"
+      AliasName="LINE_STATUS"
+      ColumnType="VARCHAR2"
+      Expression="LINE_STATUS"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="30" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="BvStatus"
+      IsPersistent="false"
+      Precision="30"
+      Type="java.lang.String"
+      AliasName="BV_STATUS"
+      ColumnType="VARCHAR2"
+      Expression="BV_STATUS"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="30" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Item"
+      IsPersistent="false"
+      Precision="30"
+      Type="java.lang.String"
+      AliasName="ITEM"
+      ColumnType="VARCHAR2"
+      Expression="ITEM"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="30" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Description"
+      IsPersistent="false"
+      Precision="240"
+      Type="java.lang.String"
+      AliasName="DESCRIPTION"
+      ColumnType="VARCHAR2"
+      Expression="DESCRIPTION"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="240" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Uom"
+      IsPersistent="false"
+      Precision="30"
+      Type="java.lang.String"
+      AliasName="UOM"
+      ColumnType="VARCHAR2"
+      Expression="UOM"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="30" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Vpc"
+      IsPersistent="false"
+      Precision="60"
+      Type="java.lang.String"
+      AliasName="VPC"
+      ColumnType="VARCHAR2"
+      Expression="VPC"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="60" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Category"
+      IsPersistent="false"
+      Precision="30"
+      Type="java.lang.String"
+      AliasName="CATEGORY"
+      ColumnType="VARCHAR2"
+      Expression="CATEGORY"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="30" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="OdMerchant1"
+      IsPersistent="false"
+      Precision="40"
+      Type="java.lang.String"
+      AliasName="OD_MERCHANT1"
+      ColumnType="VARCHAR2"
+      Expression="OD_MERCHANT1"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="40" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Division"
+      IsPersistent="false"
+      Type="oracle.jbo.domain.Number"
+      AliasName="DIVISION"
+      ColumnType="VARCHAR2"
+      Expression="DIVISION"
+      SQLType="NUMERIC" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Dept"
+      IsPersistent="false"
+      Type="oracle.jbo.domain.Number"
+      AliasName="DEPT"
+      ColumnType="VARCHAR2"
+      Expression="DEPT"
+      SQLType="NUMERIC" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Class11"
+      IsPersistent="false"
+      Type="oracle.jbo.domain.Number"
+      AliasName="CLASS11"
+      ColumnType="VARCHAR2"
+      Expression="CLASS11"
+      SQLType="NUMERIC" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="OrderedQty"
+      IsPersistent="false"
+      Type="oracle.jbo.domain.Number"
+      AliasName="ORDERED_QTY"
+      ColumnType="VARCHAR2"
+      Expression="ORDERED_QTY"
+      SQLType="NUMERIC" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="ShipmentDate"
+      IsPersistent="false"
+      Type="oracle.jbo.domain.Date"
+      AliasName="SHIPMENT_DATE"
+      ColumnType="VARCHAR2"
+      Expression="SHIPMENT_DATE"
+      SQLType="DATE" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="7" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="BatchId"
+      IsPersistent="false"
+      Type="oracle.jbo.domain.Number"
+      AliasName="BATCH_ID"
+      ColumnType="VARCHAR2"
+      Expression="BATCH_ID"
+      SQLType="NUMERIC" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="StdPack"
+      IsPersistent="false"
+      Type="oracle.jbo.domain.Number"
+      AliasName="STD_PACK"
+      ColumnType="VARCHAR2"
+      Expression="STD_PACK"
+      SQLType="NUMERIC" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="CartonPack"
+      IsPersistent="false"
+      Type="oracle.jbo.domain.Number"
+      AliasName="CARTON_PACK"
+      ColumnType="VARCHAR2"
+      Expression="CARTON_PACK"
+      SQLType="NUMERIC" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="CartonCube"
+      IsPersistent="false"
+      Type="oracle.jbo.domain.Number"
+      AliasName="CARTON_CUBE"
+      ColumnType="VARCHAR2"
+      Expression="CARTON_CUBE"
+      SQLType="NUMERIC" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="CartonWeight"
+      IsPersistent="false"
+      Type="oracle.jbo.domain.Number"
+      AliasName="CARTON_WEIGHT"
+      ColumnType="VARCHAR2"
+      Expression="CARTON_WEIGHT"
+      SQLType="NUMERIC" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="MasterCarton"
+      IsPersistent="false"
+      Type="oracle.jbo.domain.Number"
+      AliasName="MASTER_CARTON"
+      ColumnType="VARCHAR2"
+      Expression="MASTER_CARTON"
+      SQLType="NUMERIC" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="RetailCost"
+      IsPersistent="false"
+      Type="oracle.jbo.domain.Number"
+      AliasName="RETAIL_COST"
+      ColumnType="VARCHAR2"
+      Expression="RETAIL_COST"
+      SQLType="NUMERIC" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="MasterFobCost"
+      IsPersistent="false"
+      Type="oracle.jbo.domain.Number"
+      AliasName="MASTER_FOB_COST"
+      ColumnType="VARCHAR2"
+      Expression="MASTER_FOB_COST"
+      SQLType="NUMERIC" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="FobOriginCost"
+      IsPersistent="false"
+      Type="oracle.jbo.domain.Number"
+      AliasName="FOB_ORIGIN_COST"
+      ColumnType="VARCHAR2"
+      Expression="FOB_ORIGIN_COST"
+      SQLType="NUMERIC" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="EstLandCost"
+      IsPersistent="false"
+      Type="oracle.jbo.domain.Number"
+      AliasName="EST_LAND_COST"
+      ColumnType="VARCHAR2"
+      Expression="EST_LAND_COST"
+      SQLType="NUMERIC" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="ActLandCost"
+      IsPersistent="false"
+      Type="oracle.jbo.domain.Number"
+      AliasName="ACT_LAND_COST"
+      ColumnType="VARCHAR2"
+      Expression="ACT_LAND_COST"
+      SQLType="NUMERIC" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="MerchDecCost"
+      IsPersistent="false"
+      Type="oracle.jbo.domain.Number"
+      AliasName="MERCH_DEC_COST"
+      ColumnType="VARCHAR2"
+      Expression="MERCH_DEC_COST"
+      SQLType="NUMERIC" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="SourcePortName"
+      IsPersistent="false"
+      Precision="100"
+      Type="java.lang.String"
+      AliasName="SOURCE_PORT_NAME"
+      ColumnType="VARCHAR2"
+      Expression="SOURCE_PORT_NAME"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="100" />
+      </DesignTime>
+   </ViewAttribute>
+</ViewObject>

@@ -1,0 +1,297 @@
+<?xml version = "1.0" encoding = "UTF-8" ?>
+<!--
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  Oracle JDeveloper BPEL Designer 
+  
+  Created: Mon Aug 08 15:39:50 IST 2011
+  Author:  pkalvala
+  Type: BPEL 1.1 Process
+  Purpose: Synchronous BPEL Process
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+-->
+<process name="CreateAPInvoice"
+               targetNamespace="http://xmlns.officedepot.com/TDS/APInvoiceInboundProvABCSImpl/CreateAPInvoice"
+               xmlns="http://schemas.xmlsoap.org/ws/2003/03/business-process/"
+               xmlns:client="http://xmlns.officedepot.com/TDS/APInvoiceInboundProvABCSImpl/CreateAPInvoice"
+               xmlns:ora="http://schemas.oracle.com/xpath/extension"
+               xmlns:bpelx="http://schemas.oracle.com/bpel/extension"
+         xmlns:bpws="http://schemas.xmlsoap.org/ws/2003/03/business-process/"
+         xmlns:ns1="http://xmlns.oracle.com/pcbpel/adapter/apps/TDS/APInvoiceInboundProvABCSImpl/APInvoiceCreationService"
+         xmlns:ns2="http://xmlns.oracle.com/pcbpel/adapter/jms/TDS/APInvoiceInboundProvABCSImpl/CommonErrorLoggingService"
+         xmlns:xp20="http://www.oracle.com/XSL/Transform/java/oracle.tip.pc.services.functions.Xpath20"
+         xmlns:ns5="http://xmlns.oracle.com/pcbpel/adapter/db/APPS/XX_CS_TDS_AP_INVOICE_PKG/INSERT_PROC/"
+         xmlns:bpel="http://docs.oasis-open.org/wsbpel/2.0/process/executable"
+         xmlns:oraext="http://www.oracle.com/XSL/Transform/java/oracle.tip.pc.services.functions.ExtFunc"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns:dvm="http://www.oracle.com/XSL/Transform/java/oracle.tip.dvm.LookupValue"
+         xmlns:hwf="http://xmlns.oracle.com/bpel/workflow/xpath"
+         xmlns:ids="http://xmlns.oracle.com/bpel/services/IdentityService/xpath"
+         xmlns:ns3="http://www.officedepot.com/TDS/APInvoiceInboundProvABCSImpl/APInvoiceEBM"
+         xmlns:bpm="http://xmlns.oracle.com/bpmn20/extensions"
+         xmlns:xdk="http://schemas.oracle.com/bpel/extension/xpath/function/xdk"
+         xmlns:xref="http://www.oracle.com/XSL/Transform/java/oracle.tip.xref.xpath.XRefXPathFunctions"
+         xmlns:ns4="http://xmlns.officedepot.com/TDS/APInvoiceInboundProvABCSImpl/APInvoiceResponseEBM"
+         xmlns:ldap="http://schemas.oracle.com/xpath/extension/ldap"
+         xmlns:ns6="http://www.officedepot.com/officedepot/ODComnErrorStructure/1.0"
+         xmlns:ns7="http://xmlns.officedepot.com/TDS/APInvoiceInboundProvABCSImpl/CreateAPInoiceAsync"
+         xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+
+    <!-- 
+      ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        PARTNERLINKS                                                      
+        List of services participating in this BPEL process               
+      ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    --> 
+  <partnerLinks>
+    <!-- 
+      The 'client' role represents the requester of this service. It is 
+      used for callback. The location and correlation information associated
+      with the client role are automatically set using WS-Addressing.
+    -->
+    <partnerLink name="CreateAPInvoiceImplService" partnerLinkType="client:CreateAPInvoice" myRole="CreateAPInvoiceProvider"/>
+    <partnerLink name="CommonErrorLoggingService"
+                 partnerLinkType="ns2:Produce_Message_plt"
+                 partnerRole="Produce_Message_role"/>
+    <partnerLink name="CreateAPInoiceAsync.createapinoiceasync_client"
+                 partnerLinkType="ns7:CreateAPInoiceAsync"
+                 partnerRole="CreateAPInoiceAsyncProvider"
+                 myRole="CreateAPInoiceAsyncRequester"/>
+  </partnerLinks>
+
+  <!-- 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+      VARIABLES                                                        
+      List of messages and XML documents used within this BPEL process 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  -->
+  <variables>
+    <!-- Reference to the message passed as input during initiation -->
+    <variable name="inputVariable" messageType="client:CreateAPInvoiceRequestMessage"/>
+
+    <!-- Reference to the message that will be returned to the requester-->
+    <variable name="outputVariable" messageType="client:CreateAPInvoiceResponseMessage"/>
+    <variable name="invokeAPInvokeCreationServiceInput"
+              messageType="ns1:args_in_msg"/>
+    <variable name="invokeAPInvokeCreationServiceOuput"
+              messageType="ns1:args_out_msg"/>
+    <variable name="InvokeCommonErrorLoggerToSendErrorDataInput"
+              messageType="ns2:Produce_Message_msg"/>
+    <variable name="InvokeAsyncProcess_APInvoiceCreationService_InputVariable"
+              messageType="ns7:CreateAPInoiceAsyncRequestMessage"/>
+    <variable name="ReceiveAsyncProcessResponse_APInvoiceCreationServiceResponse"
+              messageType="ns7:CreateAPInoiceAsyncResponseMessage"/>
+    <variable name="blnDataSentToAsyncProcess" type="xsd:string"/>
+  </variables>
+  <faultHandlers>
+    <catchAll>
+      <sequence name="SequenceCatchAll">
+        <switch name="SwitchDetermineFaultType">
+          <case condition='contains(ora:getFaultAsString(),"timeout") and bpws:getVariableData(&apos;blnDataSentToAsyncProcess&apos;) = "true"'>
+            <bpelx:annotation>
+              <bpelx:general>
+                <bpelx:property name="userLabel">InCaseRequestTimedOut</bpelx:property>
+              </bpelx:general>
+            </bpelx:annotation>
+            <sequence name="SequenceRequestTimedOut">
+            <assign name="AssignErrorToReplyMessage">
+              <copy>
+                <from expression='ora:getPreference("EBIZ_ERROR_STATUS")'/>
+                <to variable="outputVariable" part="payload"
+                    query="/ns4:APInvoiceResponseEBM/ns4:Status"/>
+              </copy>
+              <copy>
+                <from expression="concat(ora:getPreference('RECEIVED_DATA_ERROR'),bpws:getVariableData('inputVariable','payload','/ns3:ApInvoiceEBM/ns3:ApInvoiceEBO/ns3:ApInvoiceHeader/ns3:InvoiceNum'))"/>
+                <to variable="outputVariable" part="payload"
+                    query="/ns4:APInvoiceResponseEBM/ns4:Message"/>
+              </copy>
+            </assign>
+            </sequence>
+          </case>
+          <otherwise>
+            <assign name="AssignErrorToReplyMessage">
+              <copy>
+                <from expression='ora:getPreference("EBIZ_ERROR_STATUS")'/>
+                <to variable="outputVariable" part="payload"
+                    query="/ns4:APInvoiceResponseEBM/ns4:Status"/>
+              </copy>
+              <copy>
+                <from expression="concat(ora:getPreference('ERROR_DESCRIPTION_TEXT'),bpws:getVariableData('inputVariable','payload','/ns3:ApInvoiceEBM/ns3:ApInvoiceEBO/ns3:ApInvoiceHeader/ns3:InvoiceNum'))"/>
+                <to variable="outputVariable" part="payload"
+                    query="/ns4:APInvoiceResponseEBM/ns4:Message"/>
+              </copy>
+            </assign>
+          </otherwise>
+        </switch>
+        <reply name="ReplyBackWithErrorStatus" variable="outputVariable"
+               partnerLink="CreateAPInvoiceImplService"
+               portType="client:CreateAPInvoice" operation="createAPInvoice"/>
+        <assign name="AssignPopulateCommonErrorLoggingData">
+          <copy>
+            <from expression="ora:getProcessId()"/>
+            <to variable="InvokeCommonErrorLoggerToSendErrorDataInput"
+                part="body"
+                query="/ns6:ODComnErrorStructure/ns6:ODComnErrorStructureList/ns6:ProcessInfo/ns6:ProcessName"/>
+          </copy>
+          <copy>
+            <from expression="ora:getPreference('ERROR_TYPE')"/>
+            <to variable="InvokeCommonErrorLoggerToSendErrorDataInput"
+                part="body"
+                query="/ns6:ODComnErrorStructure/ns6:ODComnErrorStructureList/ns6:ErrorDetails/ns6:ErrorType"/>
+          </copy>
+          <copy>
+            <from expression="ora:getPreference('ERROR_SEVERITY')"/>
+            <to variable="InvokeCommonErrorLoggerToSendErrorDataInput"
+                part="body"
+                query="/ns6:ODComnErrorStructure/ns6:ODComnErrorStructureList/ns6:ErrorDetails/ns6:ErrorSeverity"/>
+          </copy>
+          <copy>
+            <from expression="ora:getFaultAsString()"/>
+            <to variable="InvokeCommonErrorLoggerToSendErrorDataInput"
+                part="body"
+                query="/ns6:ODComnErrorStructure/ns6:ODComnErrorStructureList/ns6:ErrorDetails/ns6:ErrorText"/>
+          </copy>
+          <copy>
+            <from expression="ora:getContentAsString(bpws:getVariableData('inputVariable','payload','/ns3:ApInvoiceEBM'))"/>
+            <to variable="InvokeCommonErrorLoggerToSendErrorDataInput"
+                part="body"
+                query="/ns6:ODComnErrorStructure/ns6:ODComnErrorStructureList/ns6:MessageDetails/ns6:MessagePayload"/>
+          </copy>
+          <copy>
+            <from expression="ora:getCurrentDateTime()"/>
+            <to variable="InvokeCommonErrorLoggerToSendErrorDataInput"
+                part="body"
+                query="/ns6:ODComnErrorStructure/ns6:ODComnErrorStructureList/ns6:ErrorDetails/ns6:ErrorDateTime"/>
+          </copy>
+          <copy>
+            <from expression="ora:getPreference('CATCH_ALL_PROCESS_STEP')"/>
+            <to variable="InvokeCommonErrorLoggerToSendErrorDataInput"
+                part="body"
+                query="/ns6:ODComnErrorStructure/ns6:ODComnErrorStructureList/ns6:ErrorDetails/ns6:ProcessStep"/>
+          </copy>
+          <copy>
+            <from expression="ora:getFaultName()"/>
+            <to variable="InvokeCommonErrorLoggerToSendErrorDataInput"
+                part="body"
+                query="/ns6:ODComnErrorStructure/ns6:ODComnErrorStructureList/ns6:ErrorDetails/ns6:ErrorCode"/>
+          </copy>
+          <copy>
+            <from expression="ora:getDomainId()"/>
+            <to variable="InvokeCommonErrorLoggerToSendErrorDataInput"
+                part="body"
+                query="/ns6:ODComnErrorStructure/ns6:ODComnErrorStructureList/ns6:ProcessInfo/ns6:Domain"/>
+          </copy>
+          <copy>
+            <from expression="ora:getCompositeInstanceId()"/>
+            <to variable="InvokeCommonErrorLoggerToSendErrorDataInput"
+                part="body"
+                query="/ns6:ODComnErrorStructure/ns6:ODComnErrorStructureList/ns6:MessageDetails/ns6:MessageID"/>
+          </copy>
+          <copy>
+            <from expression="ora:getCurrentDateTime()"/>
+            <to variable="InvokeCommonErrorLoggerToSendErrorDataInput"
+                part="body"
+                query="/ns6:ODComnErrorStructure/ns6:ODComnErrorStructureList/ns6:MessageDetails/ns6:MessageDateTime"/>
+          </copy>
+          <copy>
+            <from expression="ora:getPreference('MESSAGE_TYPE')"/>
+            <to variable="InvokeCommonErrorLoggerToSendErrorDataInput"
+                part="body"
+                query="/ns6:ODComnErrorStructure/ns6:ODComnErrorStructureList/ns6:MessageDetails/ns6:MessageType"/>
+          </copy>
+          <copy>
+            <from expression="ora:getPreference('MESSAGE_VERSION')"/>
+            <to variable="InvokeCommonErrorLoggerToSendErrorDataInput"
+                part="body"
+                query="/ns6:ODComnErrorStructure/ns6:ODComnErrorStructureList/ns6:MessageDetails/ns6:MessageVersion"/>
+          </copy>
+          <copy>
+            <from expression="ora:getPreference('MESSAGE_OPERATION')"/>
+            <to variable="InvokeCommonErrorLoggerToSendErrorDataInput"
+                part="body"
+                query="/ns6:ODComnErrorStructure/ns6:ODComnErrorStructureList/ns6:MessageDetails/ns6:MessageOperation"/>
+          </copy>
+          <copy>
+            <from expression="ora:getPreference('SOURCE_SYSTEM_NAME')"/>
+            <to variable="InvokeCommonErrorLoggerToSendErrorDataInput"
+                part="body"
+                query="/ns6:ODComnErrorStructure/ns6:ODComnErrorStructureList/ns6:MessageDetails/ns6:MessageSourceSystem"/>
+          </copy>
+          <copy>
+            <from expression="concat(ora:getPreference('ERROR_DESCRIPTION_TEXT'),bpws:getVariableData('inputVariable','payload','/ns3:ApInvoiceEBM/ns3:ApInvoiceEBO/ns3:ApInvoiceHeader/ns3:InvoiceNum'))"/>
+            <to variable="InvokeCommonErrorLoggerToSendErrorDataInput"
+                part="body"
+                query="/ns6:ODComnErrorStructure/ns6:ODComnErrorStructureList/ns6:ErrorDetails/ns6:ErrorDescription"/>
+          </copy>
+          <copy>
+            <from expression="ora:getProcessURL()"/>
+            <to variable="InvokeCommonErrorLoggerToSendErrorDataInput"
+                part="body"
+                query="/ns6:ODComnErrorStructure/ns6:ODComnErrorStructureList/ns6:ProcessInfo/ns6:SystemName"/>
+          </copy>
+        </assign>
+        <invoke name="InvokeCommonErrorLoggerToSendErrorData"
+                bpelx:invokeAsDetail="no"
+                inputVariable="InvokeCommonErrorLoggerToSendErrorDataInput"
+                partnerLink="CommonErrorLoggingService"
+                portType="ns2:Produce_Message_ptt" operation="Produce_Message"/>
+      </sequence>
+    </catchAll>
+  </faultHandlers>
+  <!-- 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+     ORCHESTRATION LOGIC                                               
+     Set of activities coordinating the flow of messages across the    
+     services integrated within this business process                  
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  -->
+  <sequence name="main">
+
+    <!-- Receive input from requestor. (Note: This maps to operation defined in CreateAPInvoice.wsdl) -->
+    <receive name="ReceiveAPInvoiceDetails" partnerLink="CreateAPInvoiceImplService" portType="client:CreateAPInvoice" operation="createAPInvoice" variable="inputVariable" createInstance="yes"/>
+
+    <!-- Generate reply to synchronous request -->
+    <assign name="AssignDataToAysncProcess">
+      <copy>
+        <from variable="inputVariable" part="payload"
+              query="/ns3:ApInvoiceEBM"/>
+        <to variable="InvokeAsyncProcess_APInvoiceCreationService_InputVariable"
+            part="payload" query="/ns3:ApInvoiceEBM"/>
+      </copy>
+    </assign>
+    <invoke name="InvokeAsyncProcess"
+            inputVariable="InvokeAsyncProcess_APInvoiceCreationService_InputVariable"
+            partnerLink="CreateAPInoiceAsync.createapinoiceasync_client"
+            portType="ns7:CreateAPInoiceAsync"
+            operation="APInvoiceCreationService" bpelx:invokeAsDetail="no"/>
+    <assign name="AssignIndicateDataSentToRemoteSystem">
+      <copy>
+        <from expression='"true"'/>
+        <to variable="blnDataSentToAsyncProcess"/>
+      </copy>
+    </assign>
+    <receive name="ReceiveAsyncProcessResponse" createInstance="no"
+             variable="ReceiveAsyncProcessResponse_APInvoiceCreationServiceResponse"
+             partnerLink="CreateAPInoiceAsync.createapinoiceasync_client"
+             portType="ns7:CreateAPInoiceAsyncCallback"
+             operation="APInvoiceCreationServiceResponse"
+             bpelx:for='ora:getPreference("ASYNC_CALL_TIMEOUT")'/>
+    <assign name="AssignResponseFromServiceToReply">
+      <copy>
+        <from variable="ReceiveAsyncProcessResponse_APInvoiceCreationServiceResponse"
+              part="payload" query="/ns4:APInvoiceResponseEBM/ns4:Status"/>
+        <to variable="outputVariable" part="payload"
+            query="/ns4:APInvoiceResponseEBM/ns4:Status"/>
+      </copy>
+      <copy>
+        <from variable="ReceiveAsyncProcessResponse_APInvoiceCreationServiceResponse"
+              part="payload" query="/ns4:APInvoiceResponseEBM/ns4:Message"/>
+        <to variable="outputVariable" part="payload"
+            query="/ns4:APInvoiceResponseEBM/ns4:Message"/>
+      </copy>
+    </assign>
+    <reply name="ReplyBackWithResponseFromAPInvoiceCreationService"
+           partnerLink="CreateAPInvoiceImplService"
+           portType="client:CreateAPInvoice" operation="createAPInvoice"
+           variable="outputVariable"/>
+  </sequence>
+</process>

@@ -1,0 +1,512 @@
+<?xml version = "1.0" encoding = "UTF-8" ?>
+<!--
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  Oracle JDeveloper BPEL Designer 
+  
+  Created: Wed Aug 24 18:00:55 IST 2011
+  Author:  
+  Type: BPEL 1.1 Process
+  Purpose: Synchronous BPEL Process
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+-->
+<process name="SendMailNotificationImpl"
+               targetNamespace="http://xmlns.officedepot.com/TDS/SendMailNotification/SendMailNotificationImpl"
+               xmlns="http://schemas.xmlsoap.org/ws/2003/03/business-process/"
+               xmlns:client="http://xmlns.officedepot.com/TDS/SendMailNotification/SendMailNotificationImpl"
+               xmlns:ora="http://schemas.oracle.com/xpath/extension"
+               xmlns:bpelx="http://schemas.oracle.com/bpel/extension"
+         xmlns:bpws="http://schemas.xmlsoap.org/ws/2003/03/business-process/"
+         xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+         xmlns:bpel2="http://docs.oasis-open.org/wsbpel/2.0/process/executable"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns:xp20="http://www.oracle.com/XSL/Transform/java/oracle.tip.pc.services.functions.Xpath20"
+         xmlns:oraext="http://www.oracle.com/XSL/Transform/java/oracle.tip.pc.services.functions.ExtFunc"
+         xmlns:dvm="http://www.oracle.com/XSL/Transform/java/oracle.tip.dvm.LookupValue"
+         xmlns:hwf="http://xmlns.oracle.com/bpel/workflow/xpath"
+         xmlns:ids="http://xmlns.oracle.com/bpel/services/IdentityService/xpath"
+         xmlns:bpm="http://xmlns.oracle.com/bpmn20/extensions"
+         xmlns:xdk="http://schemas.oracle.com/bpel/extension/xpath/function/xdk"
+         xmlns:xref="http://www.oracle.com/XSL/Transform/java/oracle.tip.xref.xpath.XRefXPathFunctions"
+         xmlns:ldap="http://schemas.oracle.com/xpath/extension/ldap"
+         xmlns:ns2="http://xmlns.officedepot.com/ODCommon/SendMailNotification/PartitionCompositeDetails"
+         xmlns:ns3="http://xmlns.oracle.com/ias/pcbpel/NotificationService"
+         xmlns:ns4="http://xmlns.oracle.com/pcbpel/adapter/db/TDS/SendMailNotification/ReadErrorDetailsFromTable"
+         xmlns:ns1="http://xmlns.oracle.com/pcbpel/adapter/db/TDS/SendMailNotification/ReadErrorDetailsFromDBTable"
+         xmlns:ns5="http://xmlns.oracle.com/pcbpel/adapter/db/top/ReadErrorDetailsFromDBTable">
+
+    <!-- 
+      ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        PARTNERLINKS                                                      
+        List of services participating in this BPEL process               
+      ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    --> 
+  <partnerLinks>
+    <!-- 
+      The 'client' role represents the requester of this service. It is 
+      used for callback. The location and correlation information associated
+      with the client role are automatically set using WS-Addressing.
+    -->
+    <partnerLink name="NotificationService"
+                 partnerLinkType="ns3:NotificationServiceLink"
+                 partnerRole="NotificationServiceProvider"/>
+    <partnerLink name="ReadErrorDetailsFromDBTable"
+                 partnerLinkType="ns1:ReadErrorDetailsFromDBTable_plt"
+                 myRole="ReadErrorDetailsFromDBTable_role"/>
+  </partnerLinks>
+
+  <!-- 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+      VARIABLES                                                        
+      List of messages and XML documents used within this BPEL process 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  -->
+  <variables>
+
+    <variable name="businessContactEmailID" type="xsd:string"/>
+    <variable name="partitionName" type="xsd:string"/>
+    <variable name="compositeName" type="xsd:string"/>
+    <variable name="partionCompositeDetails"
+              element="ns2:PartitionCompositeEBM"/>
+    <variable name="soaAdminEmailID" type="xsd:string"/>
+    <variable name="soaAdminErrorDescription" type="xsd:string"/>
+    <variable name="dvmFileLocation" type="xsd:string"/>
+    <variable name="inputVariable"
+              messageType="ns1:XxcomErrorLogCollection_msg"/>
+    <variable name="outputVariable" messageType="ns1:empty_msg"/>
+  </variables>
+  <faultHandlers>
+    <catchAll>
+      <sequence>
+        <switch name="DetermineErrorType">
+          <case condition="string-length(bpws:getVariableData('soaAdminErrorDescription')) != 0">
+            <bpelx:annotation>
+              <bpelx:general>
+                <bpelx:property name="userLabel">InCaseOfKnownErrorMessage</bpelx:property>
+              </bpelx:general>
+            </bpelx:annotation>
+            <scope name="Email2">
+              <bpelx:annotation>
+                <bpelx:pattern patternName="bpelx:email"></bpelx:pattern>
+                <bpelx:general>
+                  <bpelx:property name="userLabel">SendErrorNotificationToSOAAdmin</bpelx:property>
+                </bpelx:general>
+              </bpelx:annotation>
+              <variables>
+                <variable name="varNotificationReq"
+                          messageType="ns3:EmailNotificationRequest"/>
+                <variable name="varNotificationResponse"
+                          messageType="ns3:ArrayOfResponse"/>
+                <variable name="NotificationServiceFaultVariable"
+                          messageType="ns3:NotificationServiceErrorMessage"/>
+              </variables>
+              <sequence name="SequenceSendErrorNotificationToSOAAdmin">
+                <assign name="EmailParamsAssign">
+                  <copy>
+                    <from expression="string('Default')"/>
+                    <to variable="varNotificationReq" part="EmailPayload"
+                        query="/EmailPayload/ns3:FromAccountName"/>
+                  </copy>
+                  <copy>
+                    <from expression="string('')"/>
+                    <to variable="varNotificationReq" part="EmailPayload"
+                        query="/EmailPayload/ns3:Bcc"/>
+                  </copy>
+                  <copy>
+                    <from expression="string('')"/>
+                    <to variable="varNotificationReq" part="EmailPayload"
+                        query="/EmailPayload/ns3:Cc"/>
+                  </copy>
+                  <copy>
+                    <from expression="string('')"/>
+                    <to variable="varNotificationReq" part="EmailPayload"
+                        query="/EmailPayload/ns3:ReplyToAddress"/>
+                  </copy>
+                  <copy>
+                    <from expression="concat(bpws:getVariableData('soaAdminErrorDescription'), string(' '), ' PARTITION NAME ', bpws:getVariableData('partionCompositeDetails','/ns2:PartitionCompositeEBM/ns2:PartitionName'), ' COMPOSITE NAME ', bpws:getVariableData('partionCompositeDetails','/ns2:PartitionCompositeEBM/ns2:CompositeName'))"/>
+                    <to variable="varNotificationReq" part="EmailPayload"
+                        query="/EmailPayload/ns3:Subject"/>
+                  </copy>
+                  <copy>
+                    <from expression="bpws:getVariableData('soaAdminEmailID')"/>
+                    <to variable="varNotificationReq" part="EmailPayload"
+                        query="/EmailPayload/ns3:To"/>
+                  </copy>
+                  <copy>
+                    <from><Content xmlns="http://xmlns.oracle.com/ias/pcbpel/NotificationService"><MimeType xmlns="http://xmlns.oracle.com/ias/pcbpel/NotificationService">multipart/mixed</MimeType><ContentBody xmlns="http://xmlns.oracle.com/ias/pcbpel/NotificationService"><MultiPart xmlns="http://xmlns.oracle.com/ias/pcbpel/NotificationService"> <BodyPart xmlns="http://xmlns.oracle.com/ias/pcbpel/NotificationService"><MimeType xmlns="http://xmlns.oracle.com/ias/pcbpel/NotificationService"/><ContentBody xmlns="http://xmlns.oracle.com/ias/pcbpel/NotificationService"/><BodyPartName xmlns="http://xmlns.oracle.com/ias/pcbpel/NotificationService"/></BodyPart> <BodyPart xmlns="http://xmlns.oracle.com/ias/pcbpel/NotificationService"><MimeType xmlns="http://xmlns.oracle.com/ias/pcbpel/NotificationService"/><ContentBody xmlns="http://xmlns.oracle.com/ias/pcbpel/NotificationService"/><BodyPartName xmlns="http://xmlns.oracle.com/ias/pcbpel/NotificationService"/></BodyPart></MultiPart></ContentBody></Content></from>
+                    <to variable="varNotificationReq" part="EmailPayload"
+                        query="/EmailPayload/ns3:Content"/>
+                  </copy>
+                  <copy>
+                    <from expression="string('text/html; charset=UTF-8')"/>
+                    <to variable="varNotificationReq" part="EmailPayload"
+                        query="/EmailPayload/ns3:Content/ns3:ContentBody/ns3:MultiPart/ns3:BodyPart[1]/ns3:MimeType"/>
+                  </copy>
+                  <copy>
+                    <from expression="concat(string('&lt;html>  &lt;head>  &lt;style type=&quot;text/css&quot;>   table, td, th  {   border:none; font-family:&quot;Trebuchet MS&quot;, Arial, Helvetica, sans-serif;  }   th  {  background-color:green; color:white;  }   .OddRowcolor  {   background: #FFFFFF;  }     .EvenRowcolor  {   color:#000;   background-color:#EAF2D3;  }  &lt;/style>  &lt;/head>   &lt;body>  &lt;table>    &lt;tr>    &lt;th  colspan=&quot;2&quot;>    Error Data    &lt;/th>   &lt;/tr>    &lt;tr>    &lt;td>Error Log ID&lt;/td>    &lt;td>'), bpws:getVariableData(&quot;inputVariable&quot;,&quot;XxcomErrorLogCollection&quot;,&quot;/ns5:XxcomErrorLogCollection/ns5:XxcomErrorLog/ns5:errorLogId&quot;), string('&lt;/td>  &lt;/tr>    &lt;tr class=&quot;EvenRowcolor&quot;>    &lt;td>Domain&lt;/td>    &lt;td>'), bpws:getVariableData(&quot;inputVariable&quot;,&quot;XxcomErrorLogCollection&quot;,&quot;/ns5:XxcomErrorLogCollection/ns5:XxcomErrorLog/ns5:domain&quot;), string('&lt;/td>   &lt;/tr>    &lt;tr>    &lt;td>Process Name&lt;/td>    &lt;td>'), bpws:getVariableData(&quot;inputVariable&quot;,&quot;XxcomErrorLogCollection&quot;,&quot;/ns5:XxcomErrorLogCollection/ns5:XxcomErrorLog/ns5:processName&quot;), string('&lt;/td>  &lt;/tr>    &lt;tr class=&quot;EvenRowcolor&quot;>    &lt;td>Instance Id&lt;/td>    &lt;td>'), bpws:getVariableData(&quot;inputVariable&quot;,&quot;XxcomErrorLogCollection&quot;,&quot;/ns5:XxcomErrorLogCollection/ns5:XxcomErrorLog/ns5:instanceId&quot;), string('&lt;/td>   &lt;/tr>    &lt;tr>    &lt;td>Root Id&lt;/td>    &lt;td>'), bpws:getVariableData(&quot;inputVariable&quot;,&quot;XxcomErrorLogCollection&quot;,&quot;/ns5:XxcomErrorLogCollection/ns5:XxcomErrorLog/ns5:rootId&quot;), string('&lt;/td>   &lt;/tr>     &lt;tr class=&quot;EvenRowcolor&quot;>    &lt;td>Step&lt;/td>    &lt;td>'), bpws:getVariableData(&quot;inputVariable&quot;,&quot;XxcomErrorLogCollection&quot;,&quot;/ns5:XxcomErrorLogCollection/ns5:XxcomErrorLog/ns5:step&quot;), string('&lt;/td>   &lt;/tr>    &lt;tr>    &lt;td>system Name&lt;/td>    &lt;td>'), bpws:getVariableData(&quot;inputVariable&quot;,&quot;XxcomErrorLogCollection&quot;,&quot;/ns5:XxcomErrorLogCollection/ns5:XxcomErrorLog/ns5:systemName&quot;), string(' &lt;/td>   &lt;/tr>     &lt;tr class=&quot;EvenRowcolor&quot;>    &lt;td>Trading Partner From&lt;/td>    &lt;td>'), bpws:getVariableData(&quot;inputVariable&quot;,&quot;XxcomErrorLogCollection&quot;,&quot;/ns5:XxcomErrorLogCollection/ns5:XxcomErrorLog/ns5:tpFrom&quot;), string('&lt;/td>   &lt;/tr>    &lt;tr>    &lt;td>Trading Partner To&lt;/td>    &lt;td>'), bpws:getVariableData(&quot;inputVariable&quot;,&quot;XxcomErrorLogCollection&quot;,&quot;/ns5:XxcomErrorLogCollection/ns5:XxcomErrorLog/ns5:tpTo&quot;), string('&lt;/td>   &lt;/tr>     &lt;tr class=&quot;EvenRowcolor&quot;>    &lt;td>Trading Partner Document Type Name&lt;/td>    &lt;td>'), bpws:getVariableData(&quot;inputVariable&quot;,&quot;XxcomErrorLogCollection&quot;,&quot;/ns5:XxcomErrorLogCollection/ns5:XxcomErrorLog/ns5:tpDoctypename&quot;), string('&lt;/td>   &lt;/tr>      &lt;tr>    &lt;td>Trading Partner Document Type Revision&lt;/td>    &lt;td>'), bpws:getVariableData(&quot;inputVariable&quot;,&quot;XxcomErrorLogCollection&quot;,&quot;/ns5:XxcomErrorLogCollection/ns5:XxcomErrorLog/ns5:tpDoctyperevision&quot;), string('&lt;/td>   &lt;/tr>     &lt;tr class=&quot;EvenRowcolor&quot;>    &lt;td>Entity Type&lt;/td>    &lt;td>'), bpws:getVariableData(&quot;inputVariable&quot;,&quot;XxcomErrorLogCollection&quot;,&quot;/ns5:XxcomErrorLogCollection/ns5:XxcomErrorLog/ns5:entityType&quot;), string('&lt;/td>   &lt;/tr>    &lt;tr>    &lt;td>Entity ID&lt;/td>    &lt;td>'), bpws:getVariableData(&quot;inputVariable&quot;,&quot;XxcomErrorLogCollection&quot;,&quot;/ns5:XxcomErrorLogCollection/ns5:XxcomErrorLog/ns5:entityId&quot;), string('&lt;/td>   &lt;/tr>    &lt;tr class=&quot;EvenRowcolor&quot;>    &lt;td>Error Code&lt;/td>    &lt;td>'), bpws:getVariableData(&quot;inputVariable&quot;,&quot;XxcomErrorLogCollection&quot;,&quot;/ns5:XxcomErrorLogCollection/ns5:XxcomErrorLog/ns5:errorCode&quot;), string('&lt;/td>   &lt;/tr>    &lt;tr>    &lt;td>Error Description&lt;/td>    &lt;td>'), bpws:getVariableData(&quot;inputVariable&quot;,&quot;XxcomErrorLogCollection&quot;,&quot;/ns5:XxcomErrorLogCollection/ns5:XxcomErrorLog/ns5:errorDesc&quot;), string('&lt;/td>   &lt;/tr>  &lt;tr class=&quot;EvenRowcolor&quot;>    &lt;td>Error Text&lt;/td>    &lt;td>'), bpws:getVariableData(&quot;inputVariable&quot;,&quot;XxcomErrorLogCollection&quot;,&quot;/ns5:XxcomErrorLogCollection/ns5:XxcomErrorLog/ns5:errorText&quot;), string('&lt;/td>   &lt;/tr>     &lt;tr>    &lt;td>Error Type&lt;/td>    &lt;td>'), bpws:getVariableData(&quot;inputVariable&quot;,&quot;XxcomErrorLogCollection&quot;,&quot;/ns5:XxcomErrorLogCollection/ns5:XxcomErrorLog/ns5:errorType&quot;), string('&lt;/td>   &lt;/tr>     &lt;tr class=&quot;EvenRowcolor&quot;>    &lt;td>Error Severity&lt;/td>    &lt;td>'), bpws:getVariableData(&quot;inputVariable&quot;,&quot;XxcomErrorLogCollection&quot;,&quot;/ns5:XxcomErrorLogCollection/ns5:XxcomErrorLog/ns5:errorSeverity&quot;), string('&lt;/td>  &lt;/tr>    &lt;tr>    &lt;td>Notification Flag&lt;/td>    &lt;td>'), bpws:getVariableData(&quot;inputVariable&quot;,&quot;XxcomErrorLogCollection&quot;,&quot;/ns5:XxcomErrorLogCollection/ns5:XxcomErrorLog/ns5:notificationFlag&quot;), string('&lt;/td>   &lt;/tr>    &lt;tr class=&quot;EvenRowcolor&quot;>    &lt;td>Notification Recipient&lt;/td>    &lt;td>'), bpws:getVariableData(&quot;inputVariable&quot;,&quot;XxcomErrorLogCollection&quot;,&quot;/ns5:XxcomErrorLogCollection/ns5:XxcomErrorLog/ns5:notificationRecipient&quot;), string('&lt;/td>  &lt;/tr>    &lt;tr>    &lt;td>Acknowledgement Flag&lt;/td>    &lt;td>'), bpws:getVariableData(&quot;inputVariable&quot;,&quot;XxcomErrorLogCollection&quot;,&quot;/ns5:XxcomErrorLogCollection/ns5:XxcomErrorLog/ns5:acknowledgementFlag&quot;), string('&lt;/td>   &lt;/tr>     &lt;tr class=&quot;EvenRowcolor&quot;>    &lt;td>Message ID&lt;/td>    &lt;td>'), bpws:getVariableData(&quot;inputVariable&quot;,&quot;XxcomErrorLogCollection&quot;,&quot;/ns5:XxcomErrorLogCollection/ns5:XxcomErrorLog/ns5:messageId&quot;), string('&lt;/td>   &lt;/tr>    &lt;tr>    &lt;td>Message Type&lt;/td>    &lt;td>'), bpws:getVariableData(&quot;inputVariable&quot;,&quot;XxcomErrorLogCollection&quot;,&quot;/ns5:XxcomErrorLogCollection/ns5:XxcomErrorLog/ns5:messageType&quot;), string('&lt;/td>   &lt;/tr>    &lt;tr class=&quot;EvenRowcolor&quot;>    &lt;td>Message Version&lt;/td>    &lt;td>'), bpws:getVariableData(&quot;inputVariable&quot;,&quot;XxcomErrorLogCollection&quot;,&quot;/ns5:XxcomErrorLogCollection/ns5:XxcomErrorLog/ns5:messageVersion&quot;), string('&lt;/td>  &lt;/tr>    &lt;tr>    &lt;td>Message Operation&lt;/td>    &lt;td>'), bpws:getVariableData(&quot;inputVariable&quot;,&quot;XxcomErrorLogCollection&quot;,&quot;/ns5:XxcomErrorLogCollection/ns5:XxcomErrorLog/ns5:messageOperation&quot;), string('&lt;/td>   &lt;/tr>    &lt;tr class=&quot;EvenRowcolor&quot;>    &lt;td>Message Source System&lt;/td>    &lt;td>'), bpws:getVariableData(&quot;inputVariable&quot;,&quot;XxcomErrorLogCollection&quot;,&quot;/ns5:XxcomErrorLogCollection/ns5:XxcomErrorLog/ns5:messageSourceSystem&quot;), string('&lt;/td>   &lt;/tr>    &lt;tr>    &lt;td>Message Payload&lt;/td>    &lt;td>Please see the attachement&lt;/td>   &lt;/tr>    &lt;/table>  &lt;/body>  &lt;/html>'))"/>
+                    <to variable="varNotificationReq" part="EmailPayload"
+                        query="/EmailPayload/ns3:Content/ns3:ContentBody/ns3:MultiPart/ns3:BodyPart[1]/ns3:ContentBody"/>
+                  </copy>
+                  <copy>
+                    <from expression="string('text/plain;')"/>
+                    <to variable="varNotificationReq" part="EmailPayload"
+                        query="/EmailPayload/ns3:Content/ns3:ContentBody/ns3:MultiPart/ns3:BodyPart[2]/ns3:MimeType"/>
+                  </copy>
+                  <copy>
+                    <from expression="string('MessagePayload')"/>
+                    <to variable="varNotificationReq" part="EmailPayload"
+                        query="/EmailPayload/ns3:Content/ns3:ContentBody/ns3:MultiPart/ns3:BodyPart[2]/ns3:BodyPartName"/>
+                  </copy>
+                  <copy>
+                    <from expression="bpws:getVariableData('inputVariable','XxcomErrorLogCollection','/ns5:XxcomErrorLogCollection/ns5:XxcomErrorLog/ns5:messagePayload')"/>
+                    <to variable="varNotificationReq" part="EmailPayload"
+                        query="/EmailPayload/ns3:Content/ns3:ContentBody/ns3:MultiPart/ns3:BodyPart[2]/ns3:ContentBody"/>
+                  </copy>
+                </assign>
+                <invoke name="InvokeNotificationService"
+                        portType="ns3:NotificationService"
+                        partnerLink="NotificationService"
+                        inputVariable="varNotificationReq"
+                        outputVariable="varNotificationResponse"
+                        operation="sendEmailNotification"/>
+              </sequence>
+            </scope>
+          </case>
+          <otherwise>
+            <sequence name="Sequence1">
+              <assign name="AssignUnknownError">
+                <copy>
+                  <from expression='ora:getPreference("UNKNOWN_ERROR")'/>
+                  <to variable="soaAdminErrorDescription"/>
+                </copy>
+              </assign>
+              <scope name="Email3">
+                <bpelx:annotation>
+                  <bpelx:pattern patternName="bpelx:email"></bpelx:pattern>
+                  <bpelx:general>
+                    <bpelx:property name="userLabel">SendErrorNotificationWithErrorPayload</bpelx:property>
+                  </bpelx:general>
+                </bpelx:annotation>
+                <variables>
+                  <variable name="varNotificationReq"
+                            messageType="ns3:EmailNotificationRequest"/>
+                  <variable name="varNotificationResponse"
+                            messageType="ns3:ArrayOfResponse"/>
+                  <variable name="NotificationServiceFaultVariable"
+                            messageType="ns3:NotificationServiceErrorMessage"/>
+                </variables>
+                <sequence name="SequenceUnKnownError">
+                  <assign name="EmailParamsAssign">
+                    <copy>
+                      <from expression="string('Default')"/>
+                      <to variable="varNotificationReq" part="EmailPayload"
+                          query="/EmailPayload/ns3:FromAccountName"/>
+                    </copy>
+                    <copy>
+                      <from expression="string('')"/>
+                      <to variable="varNotificationReq" part="EmailPayload"
+                          query="/EmailPayload/ns3:Bcc"/>
+                    </copy>
+                    <copy>
+                      <from expression="string('')"/>
+                      <to variable="varNotificationReq" part="EmailPayload"
+                          query="/EmailPayload/ns3:Cc"/>
+                    </copy>
+                    <copy>
+                      <from expression="string('')"/>
+                      <to variable="varNotificationReq" part="EmailPayload"
+                          query="/EmailPayload/ns3:ReplyToAddress"/>
+                    </copy>
+                    <copy>
+                      <from expression="concat(bpws:getVariableData('soaAdminErrorDescription'), string(' '), ' PARTITION NAME ', bpws:getVariableData('partionCompositeDetails','/ns2:PartitionCompositeEBM/ns2:PartitionName'), ' COMPOSITE NAME ', bpws:getVariableData('partionCompositeDetails','/ns2:PartitionCompositeEBM/ns2:CompositeName'))"/>
+                      <to variable="varNotificationReq" part="EmailPayload"
+                          query="/EmailPayload/ns3:Subject"/>
+                    </copy>
+                    <copy>
+                      <from expression="bpws:getVariableData('soaAdminEmailID')"/>
+                      <to variable="varNotificationReq" part="EmailPayload"
+                          query="/EmailPayload/ns3:To"/>
+                    </copy>
+                    <copy>
+                      <from><Content xmlns="http://xmlns.oracle.com/ias/pcbpel/NotificationService"><MimeType xmlns="http://xmlns.oracle.com/ias/pcbpel/NotificationService">multipart/mixed</MimeType><ContentBody xmlns="http://xmlns.oracle.com/ias/pcbpel/NotificationService"><MultiPart xmlns="http://xmlns.oracle.com/ias/pcbpel/NotificationService"> <BodyPart xmlns="http://xmlns.oracle.com/ias/pcbpel/NotificationService"><MimeType xmlns="http://xmlns.oracle.com/ias/pcbpel/NotificationService"/><ContentBody xmlns="http://xmlns.oracle.com/ias/pcbpel/NotificationService"/><BodyPartName xmlns="http://xmlns.oracle.com/ias/pcbpel/NotificationService"/></BodyPart> <BodyPart xmlns="http://xmlns.oracle.com/ias/pcbpel/NotificationService"><MimeType xmlns="http://xmlns.oracle.com/ias/pcbpel/NotificationService"/><ContentBody xmlns="http://xmlns.oracle.com/ias/pcbpel/NotificationService"/><BodyPartName xmlns="http://xmlns.oracle.com/ias/pcbpel/NotificationService"/></BodyPart> <BodyPart xmlns="http://xmlns.oracle.com/ias/pcbpel/NotificationService"><MimeType xmlns="http://xmlns.oracle.com/ias/pcbpel/NotificationService"/><ContentBody xmlns="http://xmlns.oracle.com/ias/pcbpel/NotificationService"/><BodyPartName xmlns="http://xmlns.oracle.com/ias/pcbpel/NotificationService"/></BodyPart></MultiPart></ContentBody></Content></from>
+                      <to variable="varNotificationReq" part="EmailPayload"
+                          query="/EmailPayload/ns3:Content"/>
+                    </copy>
+                    <copy>
+                      <from expression="string('text/html; charset=UTF-8')"/>
+                      <to variable="varNotificationReq" part="EmailPayload"
+                          query="/EmailPayload/ns3:Content/ns3:ContentBody/ns3:MultiPart/ns3:BodyPart[1]/ns3:MimeType"/>
+                    </copy>
+                    <copy>
+                      <from expression="concat(string('&lt;html>  &lt;head>  &lt;style type=&quot;text/css&quot;>   table, td, th  {   border:none; font-family:&quot;Trebuchet MS&quot;, Arial, Helvetica, sans-serif;  }   th  {  background-color:green; color:white;  }   .OddRowcolor  {   background: #FFFFFF;  }     .EvenRowcolor  {   color:#000;   background-color:#EAF2D3;  }  &lt;/style>  &lt;/head>   &lt;body>  &lt;table>    &lt;tr>    &lt;th  colspan=&quot;2&quot;>    Error Data    &lt;/th>   &lt;/tr>    &lt;tr>    &lt;td>Error Log ID&lt;/td>    &lt;td>'), bpws:getVariableData(&quot;inputVariable&quot;,&quot;XxcomErrorLogCollection&quot;,&quot;/ns5:XxcomErrorLogCollection/ns5:XxcomErrorLog/ns5:errorLogId&quot;), string('&lt;/td>  &lt;/tr>    &lt;tr class=&quot;EvenRowcolor&quot;>    &lt;td>Domain&lt;/td>    &lt;td>'), bpws:getVariableData(&quot;inputVariable&quot;,&quot;XxcomErrorLogCollection&quot;,&quot;/ns5:XxcomErrorLogCollection/ns5:XxcomErrorLog/ns5:domain&quot;), string('&lt;/td>   &lt;/tr>    &lt;tr>    &lt;td>Process Name&lt;/td>    &lt;td>'), bpws:getVariableData(&quot;inputVariable&quot;,&quot;XxcomErrorLogCollection&quot;,&quot;/ns5:XxcomErrorLogCollection/ns5:XxcomErrorLog/ns5:processName&quot;), string('&lt;/td>  &lt;/tr>    &lt;tr class=&quot;EvenRowcolor&quot;>    &lt;td>Instance Id&lt;/td>    &lt;td>'), bpws:getVariableData(&quot;inputVariable&quot;,&quot;XxcomErrorLogCollection&quot;,&quot;/ns5:XxcomErrorLogCollection/ns5:XxcomErrorLog/ns5:instanceId&quot;), string('&lt;/td>   &lt;/tr>    &lt;tr>    &lt;td>Root Id&lt;/td>    &lt;td>'), bpws:getVariableData(&quot;inputVariable&quot;,&quot;XxcomErrorLogCollection&quot;,&quot;/ns5:XxcomErrorLogCollection/ns5:XxcomErrorLog/ns5:rootId&quot;), string('&lt;/td>   &lt;/tr>     &lt;tr class=&quot;EvenRowcolor&quot;>    &lt;td>Step&lt;/td>    &lt;td>'), bpws:getVariableData(&quot;inputVariable&quot;,&quot;XxcomErrorLogCollection&quot;,&quot;/ns5:XxcomErrorLogCollection/ns5:XxcomErrorLog/ns5:step&quot;), string('&lt;/td>   &lt;/tr>    &lt;tr>    &lt;td>system Name&lt;/td>    &lt;td>'), bpws:getVariableData(&quot;inputVariable&quot;,&quot;XxcomErrorLogCollection&quot;,&quot;/ns5:XxcomErrorLogCollection/ns5:XxcomErrorLog/ns5:systemName&quot;), string(' &lt;/td>   &lt;/tr>     &lt;tr class=&quot;EvenRowcolor&quot;>    &lt;td>Trading Partner From&lt;/td>    &lt;td>'), bpws:getVariableData(&quot;inputVariable&quot;,&quot;XxcomErrorLogCollection&quot;,&quot;/ns5:XxcomErrorLogCollection/ns5:XxcomErrorLog/ns5:tpFrom&quot;), string('&lt;/td>   &lt;/tr>    &lt;tr>    &lt;td>Trading Partner To&lt;/td>    &lt;td>'), bpws:getVariableData(&quot;inputVariable&quot;,&quot;XxcomErrorLogCollection&quot;,&quot;/ns5:XxcomErrorLogCollection/ns5:XxcomErrorLog/ns5:tpTo&quot;), string('&lt;/td>   &lt;/tr>     &lt;tr class=&quot;EvenRowcolor&quot;>    &lt;td>Trading Partner Document Type Name&lt;/td>    &lt;td>'), bpws:getVariableData(&quot;inputVariable&quot;,&quot;XxcomErrorLogCollection&quot;,&quot;/ns5:XxcomErrorLogCollection/ns5:XxcomErrorLog/ns5:tpDoctypename&quot;), string('&lt;/td>   &lt;/tr>      &lt;tr>    &lt;td>Trading Partner Document Type Revision&lt;/td>    &lt;td>'), bpws:getVariableData(&quot;inputVariable&quot;,&quot;XxcomErrorLogCollection&quot;,&quot;/ns5:XxcomErrorLogCollection/ns5:XxcomErrorLog/ns5:tpDoctyperevision&quot;), string('&lt;/td>   &lt;/tr>     &lt;tr class=&quot;EvenRowcolor&quot;>    &lt;td>Entity Type&lt;/td>    &lt;td>'), bpws:getVariableData(&quot;inputVariable&quot;,&quot;XxcomErrorLogCollection&quot;,&quot;/ns5:XxcomErrorLogCollection/ns5:XxcomErrorLog/ns5:entityType&quot;), string('&lt;/td>   &lt;/tr>    &lt;tr>    &lt;td>Entity ID&lt;/td>    &lt;td>'), bpws:getVariableData(&quot;inputVariable&quot;,&quot;XxcomErrorLogCollection&quot;,&quot;/ns5:XxcomErrorLogCollection/ns5:XxcomErrorLog/ns5:entityId&quot;), string('&lt;/td>   &lt;/tr>    &lt;tr class=&quot;EvenRowcolor&quot;>    &lt;td>Error Code&lt;/td>    &lt;td>'), bpws:getVariableData(&quot;inputVariable&quot;,&quot;XxcomErrorLogCollection&quot;,&quot;/ns5:XxcomErrorLogCollection/ns5:XxcomErrorLog/ns5:errorCode&quot;), string('&lt;/td>   &lt;/tr>    &lt;tr>    &lt;td>Error Description&lt;/td>    &lt;td>'), bpws:getVariableData(&quot;inputVariable&quot;,&quot;XxcomErrorLogCollection&quot;,&quot;/ns5:XxcomErrorLogCollection/ns5:XxcomErrorLog/ns5:errorDesc&quot;), string('&lt;/td>   &lt;/tr>  &lt;tr class=&quot;EvenRowcolor&quot;>    &lt;td>Error Text&lt;/td>    &lt;td>'), bpws:getVariableData(&quot;inputVariable&quot;,&quot;XxcomErrorLogCollection&quot;,&quot;/ns5:XxcomErrorLogCollection/ns5:XxcomErrorLog/ns5:errorText&quot;), string('&lt;/td>   &lt;/tr>     &lt;tr>    &lt;td>Error Type&lt;/td>    &lt;td>'), bpws:getVariableData(&quot;inputVariable&quot;,&quot;XxcomErrorLogCollection&quot;,&quot;/ns5:XxcomErrorLogCollection/ns5:XxcomErrorLog/ns5:errorType&quot;), string('&lt;/td>   &lt;/tr>     &lt;tr class=&quot;EvenRowcolor&quot;>    &lt;td>Error Severity&lt;/td>    &lt;td>'), bpws:getVariableData(&quot;inputVariable&quot;,&quot;XxcomErrorLogCollection&quot;,&quot;/ns5:XxcomErrorLogCollection/ns5:XxcomErrorLog/ns5:errorSeverity&quot;), string('&lt;/td>  &lt;/tr>    &lt;tr>    &lt;td>Notification Flag&lt;/td>    &lt;td>'), bpws:getVariableData(&quot;inputVariable&quot;,&quot;XxcomErrorLogCollection&quot;,&quot;/ns5:XxcomErrorLogCollection/ns5:XxcomErrorLog/ns5:notificationFlag&quot;), string('&lt;/td>   &lt;/tr>    &lt;tr class=&quot;EvenRowcolor&quot;>    &lt;td>Notification Recipient&lt;/td>    &lt;td>'), bpws:getVariableData(&quot;inputVariable&quot;,&quot;XxcomErrorLogCollection&quot;,&quot;/ns5:XxcomErrorLogCollection/ns5:XxcomErrorLog/ns5:notificationRecipient&quot;), string('&lt;/td>  &lt;/tr>    &lt;tr>    &lt;td>Acknowledgement Flag&lt;/td>    &lt;td>'), bpws:getVariableData(&quot;inputVariable&quot;,&quot;XxcomErrorLogCollection&quot;,&quot;/ns5:XxcomErrorLogCollection/ns5:XxcomErrorLog/ns5:acknowledgementFlag&quot;), string('&lt;/td>   &lt;/tr>     &lt;tr class=&quot;EvenRowcolor&quot;>    &lt;td>Message ID&lt;/td>    &lt;td>'), bpws:getVariableData(&quot;inputVariable&quot;,&quot;XxcomErrorLogCollection&quot;,&quot;/ns5:XxcomErrorLogCollection/ns5:XxcomErrorLog/ns5:messageId&quot;), string('&lt;/td>   &lt;/tr>    &lt;tr>    &lt;td>Message Type&lt;/td>    &lt;td>'), bpws:getVariableData(&quot;inputVariable&quot;,&quot;XxcomErrorLogCollection&quot;,&quot;/ns5:XxcomErrorLogCollection/ns5:XxcomErrorLog/ns5:messageType&quot;), string('&lt;/td>   &lt;/tr>    &lt;tr class=&quot;EvenRowcolor&quot;>    &lt;td>Message Version&lt;/td>    &lt;td>'), bpws:getVariableData(&quot;inputVariable&quot;,&quot;XxcomErrorLogCollection&quot;,&quot;/ns5:XxcomErrorLogCollection/ns5:XxcomErrorLog/ns5:messageVersion&quot;), string('&lt;/td>  &lt;/tr>    &lt;tr>    &lt;td>Message Operation&lt;/td>    &lt;td>'), bpws:getVariableData(&quot;inputVariable&quot;,&quot;XxcomErrorLogCollection&quot;,&quot;/ns5:XxcomErrorLogCollection/ns5:XxcomErrorLog/ns5:messageOperation&quot;), string('&lt;/td>   &lt;/tr>    &lt;tr class=&quot;EvenRowcolor&quot;>    &lt;td>Message Source System&lt;/td>    &lt;td>'), bpws:getVariableData(&quot;inputVariable&quot;,&quot;XxcomErrorLogCollection&quot;,&quot;/ns5:XxcomErrorLogCollection/ns5:XxcomErrorLog/ns5:messageSourceSystem&quot;), string('&lt;/td>   &lt;/tr>    &lt;tr>    &lt;td>Message Payload&lt;/td>    &lt;td>Please see the attachement&lt;/td>   &lt;/tr>    &lt;/table>  &lt;/body>  &lt;/html>'))"/>
+                      <to variable="varNotificationReq" part="EmailPayload"
+                          query="/EmailPayload/ns3:Content/ns3:ContentBody/ns3:MultiPart/ns3:BodyPart[1]/ns3:ContentBody"/>
+                    </copy>
+                    <copy>
+                      <from expression="string('text/html;')"/>
+                      <to variable="varNotificationReq" part="EmailPayload"
+                          query="/EmailPayload/ns3:Content/ns3:ContentBody/ns3:MultiPart/ns3:BodyPart[2]/ns3:MimeType"/>
+                    </copy>
+                    <copy>
+                      <from expression="string('MessagePayload')"/>
+                      <to variable="varNotificationReq" part="EmailPayload"
+                          query="/EmailPayload/ns3:Content/ns3:ContentBody/ns3:MultiPart/ns3:BodyPart[2]/ns3:BodyPartName"/>
+                    </copy>
+                    <copy>
+                      <from expression="bpws:getVariableData('inputVariable','XxcomErrorLogCollection','/ns5:XxcomErrorLogCollection/ns5:XxcomErrorLog/ns5:messagePayload')"/>
+                      <to variable="varNotificationReq" part="EmailPayload"
+                          query="/EmailPayload/ns3:Content/ns3:ContentBody/ns3:MultiPart/ns3:BodyPart[2]/ns3:ContentBody"/>
+                    </copy>
+                    <copy>
+                      <from expression="string('text/plain;')"/>
+                      <to variable="varNotificationReq" part="EmailPayload"
+                          query="/EmailPayload/ns3:Content/ns3:ContentBody/ns3:MultiPart/ns3:BodyPart[3]/ns3:MimeType"/>
+                    </copy>
+                    <copy>
+                      <from expression="string('ErrorPayload')"/>
+                      <to variable="varNotificationReq" part="EmailPayload"
+                          query="/EmailPayload/ns3:Content/ns3:ContentBody/ns3:MultiPart/ns3:BodyPart[3]/ns3:BodyPartName"/>
+                    </copy>
+                    <copy>
+                      <from expression="ora:getFaultAsString()"/>
+                      <to variable="varNotificationReq" part="EmailPayload"
+                          query="/EmailPayload/ns3:Content/ns3:ContentBody/ns3:MultiPart/ns3:BodyPart[3]/ns3:ContentBody"/>
+                    </copy>
+                  </assign>
+                  <invoke name="InvokeNotificationService"
+                          portType="ns3:NotificationService"
+                          partnerLink="NotificationService"
+                          inputVariable="varNotificationReq"
+                          outputVariable="varNotificationResponse"
+                          operation="sendEmailNotification"
+                          bpelx:invokeAsDetail="no"/>
+                </sequence>
+              </scope>
+            </sequence>
+          </otherwise>
+        </switch>
+      </sequence>
+    </catchAll>
+  </faultHandlers>
+  <!-- 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+     ORCHESTRATION LOGIC                                               
+     Set of activities coordinating the flow of messages across the    
+     services integrated within this business process                  
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  -->
+  <sequence name="main">
+
+    <!-- Receive input from requestor. (Note: This maps to operation defined in SendMailNotificationImpl.wsdl) -->
+
+    <!-- Generate reply to synchronous request -->
+    <receive name="ReceiveInput" createInstance="yes" variable="inputVariable"
+             partnerLink="ReadErrorDetailsFromDBTable"
+             portType="ns1:ReadErrorDetailsFromDBTable_ptt"
+             operation="receive"/>
+    <assign name="Initialize">
+      <copy>
+        <from expression='ora:getPreference("SOA_ADMIN_EMAIL_ID")'/>
+        <to variable="soaAdminEmailID"/>
+      </copy>
+      <copy>
+        <from expression='string("")'/>
+        <to variable="soaAdminErrorDescription"/>
+      </copy>
+      <copy>
+        <from expression='ora:getPreference("DVM_FILE_LOCATION")'/>
+        <to variable="dvmFileLocation"/>
+      </copy>
+    </assign>
+    <assign name="TransformExtractPartitionCompositeDetails">
+      <bpelx:annotation>
+        <bpelx:pattern>transformation</bpelx:pattern>
+      </bpelx:annotation>
+      <copy>
+        <from expression="ora:doXSLTransformForDoc('xsl/ExtractPartitionCompositeDetails.xsl', $inputVariable.XxcomErrorLogCollection)"/>
+        <to variable="partionCompositeDetails"/>
+      </copy>
+    </assign>
+    <assign name="AssignPartitionAndCompositeName">
+      <copy>
+        <from variable="partionCompositeDetails"
+              query="/ns2:PartitionCompositeEBM/ns2:PartitionName"/>
+        <to variable="partitionName"/>
+      </copy>
+      <copy>
+        <from variable="partionCompositeDetails"
+              query="/ns2:PartitionCompositeEBM/ns2:CompositeName"/>
+        <to variable="compositeName"/>
+      </copy>
+    </assign>
+    <assign name="AssignEmailDetails">
+      <copy>
+        <from expression="dvm:lookupValue(bpws:getVariableData('dvmFileLocation'),&quot;CompositeName&quot;,bpws:getVariableData('compositeName'),&quot;ToContactEmailID&quot;,&quot;&quot;,&quot;PartitionName&quot;,bpws:getVariableData('partitionName'))"/>
+        <to variable="partionCompositeDetails"
+            query="/ns2:PartitionCompositeEBM/ns2:ToEmailID"/>
+      </copy>
+      <copy>
+        <from expression="dvm:lookupValue(bpws:getVariableData('dvmFileLocation'),&quot;CompositeName&quot;,bpws:getVariableData('compositeName'),&quot;CcContactEmailID&quot;,&quot;&quot;,&quot;PartitionName&quot;,bpws:getVariableData('partitionName'))"/>
+        <to variable="partionCompositeDetails"
+            query="/ns2:PartitionCompositeEBM/ns2:CcEmailID"/>
+      </copy>
+    </assign>
+    <switch name="CheckEmailAddressAndSendEmail">
+      <case condition="(bpws:getVariableData('partionCompositeDetails','/ns2:PartitionCompositeEBM/ns2:ToEmailID')  =  &quot;&quot; and  bpws:getVariableData('partionCompositeDetails','/ns2:PartitionCompositeEBM/ns2:CcEmailID') = &quot;&quot;) or (bpws:getVariableData('partionCompositeDetails','/ns2:PartitionCompositeEBM/ns2:ToEmailID') = &quot;&quot;)">
+        <bpelx:annotation>
+          <bpelx:pattern>In case Email ID and CcEmail ID are null or Email ID is null</bpelx:pattern>
+          <bpelx:general>
+            <bpelx:property name="userLabel">InCaseNoMatchingEmailDetails</bpelx:property>
+          </bpelx:general>
+        </bpelx:annotation>
+        <sequence name="SequenceNoEmailAddresses">
+          <assign name="AssignEmailNotFoundErrorDescription">
+            <copy>
+              <from expression='ora:getPreference("EMAIL_ID_NOT_SPECIFIED")'/>
+              <to variable="soaAdminErrorDescription"/>
+            </copy>
+          </assign>
+          <throw name="ThrowEmailCannotBeSentFault"
+                 faultName="client:EmailCannotBeSentFault"/>
+        </sequence>
+      </case>
+      <otherwise>
+        <bpelx:annotation>
+          <bpelx:documentation>The email ID's have been found in the DVM file</bpelx:documentation>
+        </bpelx:annotation>
+        <sequence name="SequenceCheckValidEmailAddress">
+          <scope name="Scope1">
+            <bpelx:annotation>
+              <bpelx:general>
+                <bpelx:property name="userLabel">ScopeCheckEmailID</bpelx:property>
+              </bpelx:general>
+            </bpelx:annotation>
+            <variables>
+              <variable name="ValidToEmailAddress" type="xsd:boolean"/>
+              <variable name="ValidCcEmailAddress" type="xsd:boolean"/>
+            </variables>
+            <sequence>
+              <assign name="AssignGetValidityOfEmailAddress">
+                <copy>
+                  <from expression="contains(bpws:getVariableData('partionCompositeDetails','/ns2:PartitionCompositeEBM/ns2:ToEmailID'),&quot;@&quot;) and contains(bpws:getVariableData('partionCompositeDetails','/ns2:PartitionCompositeEBM/ns2:ToEmailID'),&quot;.&quot;)"/>
+                  <to variable="ValidToEmailAddress"/>
+                </copy>
+                <copy>
+                  <from expression="contains(bpws:getVariableData('partionCompositeDetails','/ns2:PartitionCompositeEBM/ns2:CcEmailID'),&quot;.&quot;) and contains(bpws:getVariableData('partionCompositeDetails','/ns2:PartitionCompositeEBM/ns2:CcEmailID'),&quot;@&quot;)"/>
+                  <to variable="ValidCcEmailAddress"/>
+                </copy>
+              </assign>
+              <switch name="SwitchCheckIfValidToEmailAddress">
+                <case condition="bpws:getVariableData('ValidToEmailAddress') != &quot;true&quot; and bpws:getVariableData('ValidCcEmailAddress') !=&quot;true&quot; and ora:getPreference(&quot;CHECK_EMAIL_ADDRESS_VALIDITY&quot;) =&quot;true&quot;">
+                  <bpelx:annotation>
+                    <bpelx:general>
+                      <bpelx:property name="userLabel">IfBothEmailAddressesAreNotValid</bpelx:property>
+                    </bpelx:general>
+                  </bpelx:annotation>
+                  <sequence name="SequenceCheckIfValidToEmailAddress">
+                    <assign name="AssignNotValidToEmailAddressDescription">
+                      <copy>
+                        <from expression='ora:getPreference("NOT_VALID_EMAIL_ADDRESSES")'/>
+                        <to variable="soaAdminErrorDescription"/>
+                      </copy>
+                    </assign>
+                    <throw name="ThrowNotValidToEmailAdress"
+                           faultName="client:NotValidToEmailAdress"/>
+                  </sequence>
+                </case>
+              </switch>
+            </sequence>
+          </scope>
+          <scope name="Email1">
+            <bpelx:annotation>
+              <bpelx:pattern patternName="bpelx:email"></bpelx:pattern>
+              <bpelx:general>
+                <bpelx:property name="userLabel">sendEmailToBusinessUser</bpelx:property>
+              </bpelx:general>
+            </bpelx:annotation>
+            <variables>
+              <variable name="varNotificationReq"
+                        messageType="ns3:EmailNotificationRequest"/>
+              <variable name="varNotificationResponse"
+                        messageType="ns3:ArrayOfResponse"/>
+              <variable name="NotificationServiceFaultVariable"
+                        messageType="ns3:NotificationServiceErrorMessage"/>
+            </variables>
+            <sequence name="SequenceSendErrorEmailNotificationToConfiguredEMailIDs">
+              <assign name="EmailParamsAssign">
+                <copy>
+                  <from expression="string('Default')"/>
+                  <to variable="varNotificationReq" part="EmailPayload"
+                      query="/EmailPayload/ns3:FromAccountName"/>
+                </copy>
+                <copy>
+                  <from expression="string('')"/>
+                  <to variable="varNotificationReq" part="EmailPayload"
+                      query="/EmailPayload/ns3:Bcc"/>
+                </copy>
+                <copy>
+                  <from expression="bpws:getVariableData('partionCompositeDetails','/ns2:PartitionCompositeEBM/ns2:CcEmailID')"/>
+                  <to variable="varNotificationReq" part="EmailPayload"
+                      query="/EmailPayload/ns3:Cc"/>
+                </copy>
+                <copy>
+                  <from expression="string('')"/>
+                  <to variable="varNotificationReq" part="EmailPayload"
+                      query="/EmailPayload/ns3:ReplyToAddress"/>
+                </copy>
+                <copy>
+                  <from expression="concat(bpws:getVariableData('inputVariable','XxcomErrorLogCollection','/ns5:XxcomErrorLogCollection/ns5:XxcomErrorLog/ns5:errorDesc'), ' PARTITION NAME ', bpws:getVariableData('partionCompositeDetails','/ns2:PartitionCompositeEBM/ns2:PartitionName'), ' COMPOSITE NAME ', bpws:getVariableData('partionCompositeDetails','/ns2:PartitionCompositeEBM/ns2:CompositeName'))"/>
+                  <to variable="varNotificationReq" part="EmailPayload"
+                      query="/EmailPayload/ns3:Subject"/>
+                </copy>
+                <copy>
+                  <from expression="bpws:getVariableData('partionCompositeDetails','/ns2:PartitionCompositeEBM/ns2:ToEmailID')"/>
+                  <to variable="varNotificationReq" part="EmailPayload"
+                      query="/EmailPayload/ns3:To"/>
+                </copy>
+                <copy>
+                  <from><Content xmlns="http://xmlns.oracle.com/ias/pcbpel/NotificationService"><MimeType xmlns="http://xmlns.oracle.com/ias/pcbpel/NotificationService">multipart/mixed</MimeType><ContentBody xmlns="http://xmlns.oracle.com/ias/pcbpel/NotificationService"><MultiPart xmlns="http://xmlns.oracle.com/ias/pcbpel/NotificationService"> <BodyPart xmlns="http://xmlns.oracle.com/ias/pcbpel/NotificationService"><MimeType xmlns="http://xmlns.oracle.com/ias/pcbpel/NotificationService"/><ContentBody xmlns="http://xmlns.oracle.com/ias/pcbpel/NotificationService"/><BodyPartName xmlns="http://xmlns.oracle.com/ias/pcbpel/NotificationService"/></BodyPart> <BodyPart xmlns="http://xmlns.oracle.com/ias/pcbpel/NotificationService"><MimeType xmlns="http://xmlns.oracle.com/ias/pcbpel/NotificationService"/><ContentBody xmlns="http://xmlns.oracle.com/ias/pcbpel/NotificationService"/><BodyPartName xmlns="http://xmlns.oracle.com/ias/pcbpel/NotificationService"/></BodyPart></MultiPart></ContentBody></Content></from>
+                  <to variable="varNotificationReq" part="EmailPayload"
+                      query="/EmailPayload/ns3:Content"/>
+                </copy>
+                <copy>
+                  <from expression="string('text/html; charset=UTF-8')"/>
+                  <to variable="varNotificationReq" part="EmailPayload"
+                      query="/EmailPayload/ns3:Content/ns3:ContentBody/ns3:MultiPart/ns3:BodyPart[1]/ns3:MimeType"/>
+                </copy>
+                <copy>
+                  <from expression="concat(string('&lt;html>  &lt;head>  &lt;style type=&quot;text/css&quot;>   table, td, th  {   border:none; font-family:&quot;Trebuchet MS&quot;, Arial, Helvetica, sans-serif;  }   th  {  background-color:green; color:white;  }   .OddRowcolor  {   background: #FFFFFF;  }     .EvenRowcolor  {   color:#000;   background-color:#EAF2D3;  }  &lt;/style>  &lt;/head>   &lt;body>  &lt;table>    &lt;tr>    &lt;th  colspan=&quot;2&quot;>    Error Data    &lt;/th>   &lt;/tr>    &lt;tr>    &lt;td>Error Log ID&lt;/td>    &lt;td>'), bpws:getVariableData(&quot;inputVariable&quot;,&quot;XxcomErrorLogCollection&quot;,&quot;/ns5:XxcomErrorLogCollection/ns5:XxcomErrorLog/ns5:errorLogId&quot;), string('&lt;/td>  &lt;/tr>    &lt;tr class=&quot;EvenRowcolor&quot;>    &lt;td>Domain&lt;/td>    &lt;td>'), bpws:getVariableData(&quot;inputVariable&quot;,&quot;XxcomErrorLogCollection&quot;,&quot;/ns5:XxcomErrorLogCollection/ns5:XxcomErrorLog/ns5:domain&quot;), string('&lt;/td>   &lt;/tr>    &lt;tr>    &lt;td>Process Name&lt;/td>    &lt;td>'), bpws:getVariableData(&quot;inputVariable&quot;,&quot;XxcomErrorLogCollection&quot;,&quot;/ns5:XxcomErrorLogCollection/ns5:XxcomErrorLog/ns5:processName&quot;), string('&lt;/td>  &lt;/tr>    &lt;tr class=&quot;EvenRowcolor&quot;>    &lt;td>Instance Id&lt;/td>    &lt;td>'), bpws:getVariableData(&quot;inputVariable&quot;,&quot;XxcomErrorLogCollection&quot;,&quot;/ns5:XxcomErrorLogCollection/ns5:XxcomErrorLog/ns5:instanceId&quot;), string('&lt;/td>   &lt;/tr>    &lt;tr>    &lt;td>Root Id&lt;/td>    &lt;td>'), bpws:getVariableData(&quot;inputVariable&quot;,&quot;XxcomErrorLogCollection&quot;,&quot;/ns5:XxcomErrorLogCollection/ns5:XxcomErrorLog/ns5:rootId&quot;), string('&lt;/td>   &lt;/tr>     &lt;tr class=&quot;EvenRowcolor&quot;>    &lt;td>Step&lt;/td>    &lt;td>'), bpws:getVariableData(&quot;inputVariable&quot;,&quot;XxcomErrorLogCollection&quot;,&quot;/ns5:XxcomErrorLogCollection/ns5:XxcomErrorLog/ns5:step&quot;), string('&lt;/td>   &lt;/tr>    &lt;tr>    &lt;td>system Name&lt;/td>    &lt;td>'), bpws:getVariableData(&quot;inputVariable&quot;,&quot;XxcomErrorLogCollection&quot;,&quot;/ns5:XxcomErrorLogCollection/ns5:XxcomErrorLog/ns5:systemName&quot;), string(' &lt;/td>   &lt;/tr>     &lt;tr class=&quot;EvenRowcolor&quot;>    &lt;td>Trading Partner From&lt;/td>    &lt;td>'), bpws:getVariableData(&quot;inputVariable&quot;,&quot;XxcomErrorLogCollection&quot;,&quot;/ns5:XxcomErrorLogCollection/ns5:XxcomErrorLog/ns5:tpFrom&quot;), string('&lt;/td>   &lt;/tr>    &lt;tr>    &lt;td>Trading Partner To&lt;/td>    &lt;td>'), bpws:getVariableData(&quot;inputVariable&quot;,&quot;XxcomErrorLogCollection&quot;,&quot;/ns5:XxcomErrorLogCollection/ns5:XxcomErrorLog/ns5:tpTo&quot;), string('&lt;/td>   &lt;/tr>     &lt;tr class=&quot;EvenRowcolor&quot;>    &lt;td>Trading Partner Document Type Name&lt;/td>    &lt;td>'), bpws:getVariableData(&quot;inputVariable&quot;,&quot;XxcomErrorLogCollection&quot;,&quot;/ns5:XxcomErrorLogCollection/ns5:XxcomErrorLog/ns5:tpDoctypename&quot;), string('&lt;/td>   &lt;/tr>      &lt;tr>    &lt;td>Trading Partner Document Type Revision&lt;/td>    &lt;td>'), bpws:getVariableData(&quot;inputVariable&quot;,&quot;XxcomErrorLogCollection&quot;,&quot;/ns5:XxcomErrorLogCollection/ns5:XxcomErrorLog/ns5:tpDoctyperevision&quot;), string('&lt;/td>   &lt;/tr>     &lt;tr class=&quot;EvenRowcolor&quot;>    &lt;td>Entity Type&lt;/td>    &lt;td>'), bpws:getVariableData(&quot;inputVariable&quot;,&quot;XxcomErrorLogCollection&quot;,&quot;/ns5:XxcomErrorLogCollection/ns5:XxcomErrorLog/ns5:entityType&quot;), string('&lt;/td>   &lt;/tr>    &lt;tr>    &lt;td>Entity ID&lt;/td>    &lt;td>'), bpws:getVariableData(&quot;inputVariable&quot;,&quot;XxcomErrorLogCollection&quot;,&quot;/ns5:XxcomErrorLogCollection/ns5:XxcomErrorLog/ns5:entityId&quot;), string('&lt;/td>   &lt;/tr>    &lt;tr class=&quot;EvenRowcolor&quot;>    &lt;td>Error Code&lt;/td>    &lt;td>'), bpws:getVariableData(&quot;inputVariable&quot;,&quot;XxcomErrorLogCollection&quot;,&quot;/ns5:XxcomErrorLogCollection/ns5:XxcomErrorLog/ns5:errorCode&quot;), string('&lt;/td>   &lt;/tr>    &lt;tr>    &lt;td>Error Description&lt;/td>    &lt;td>'), bpws:getVariableData(&quot;inputVariable&quot;,&quot;XxcomErrorLogCollection&quot;,&quot;/ns5:XxcomErrorLogCollection/ns5:XxcomErrorLog/ns5:errorDesc&quot;), string('&lt;/td>   &lt;/tr>  &lt;tr class=&quot;EvenRowcolor&quot;>    &lt;td>Error Text&lt;/td>    &lt;td>'), bpws:getVariableData(&quot;inputVariable&quot;,&quot;XxcomErrorLogCollection&quot;,&quot;/ns5:XxcomErrorLogCollection/ns5:XxcomErrorLog/ns5:errorText&quot;), string('&lt;/td>   &lt;/tr>     &lt;tr>    &lt;td>Error Type&lt;/td>    &lt;td>'), bpws:getVariableData(&quot;inputVariable&quot;,&quot;XxcomErrorLogCollection&quot;,&quot;/ns5:XxcomErrorLogCollection/ns5:XxcomErrorLog/ns5:errorType&quot;), string('&lt;/td>   &lt;/tr>     &lt;tr class=&quot;EvenRowcolor&quot;>    &lt;td>Error Severity&lt;/td>    &lt;td>'), bpws:getVariableData(&quot;inputVariable&quot;,&quot;XxcomErrorLogCollection&quot;,&quot;/ns5:XxcomErrorLogCollection/ns5:XxcomErrorLog/ns5:errorSeverity&quot;), string('&lt;/td>  &lt;/tr>    &lt;tr>    &lt;td>Notification Flag&lt;/td>    &lt;td>'), bpws:getVariableData(&quot;inputVariable&quot;,&quot;XxcomErrorLogCollection&quot;,&quot;/ns5:XxcomErrorLogCollection/ns5:XxcomErrorLog/ns5:notificationFlag&quot;), string('&lt;/td>   &lt;/tr>    &lt;tr class=&quot;EvenRowcolor&quot;>    &lt;td>Notification Recipient&lt;/td>    &lt;td>'), bpws:getVariableData(&quot;inputVariable&quot;,&quot;XxcomErrorLogCollection&quot;,&quot;/ns5:XxcomErrorLogCollection/ns5:XxcomErrorLog/ns5:notificationRecipient&quot;), string('&lt;/td>  &lt;/tr>    &lt;tr>    &lt;td>Acknowledgement Flag&lt;/td>    &lt;td>'), bpws:getVariableData(&quot;inputVariable&quot;,&quot;XxcomErrorLogCollection&quot;,&quot;/ns5:XxcomErrorLogCollection/ns5:XxcomErrorLog/ns5:acknowledgementFlag&quot;), string('&lt;/td>   &lt;/tr>     &lt;tr class=&quot;EvenRowcolor&quot;>    &lt;td>Message ID&lt;/td>    &lt;td>'), bpws:getVariableData(&quot;inputVariable&quot;,&quot;XxcomErrorLogCollection&quot;,&quot;/ns5:XxcomErrorLogCollection/ns5:XxcomErrorLog/ns5:messageId&quot;), string('&lt;/td>   &lt;/tr>    &lt;tr>    &lt;td>Message Type&lt;/td>    &lt;td>'), bpws:getVariableData(&quot;inputVariable&quot;,&quot;XxcomErrorLogCollection&quot;,&quot;/ns5:XxcomErrorLogCollection/ns5:XxcomErrorLog/ns5:messageType&quot;), string('&lt;/td>   &lt;/tr>    &lt;tr class=&quot;EvenRowcolor&quot;>    &lt;td>Message Version&lt;/td>    &lt;td>'), bpws:getVariableData(&quot;inputVariable&quot;,&quot;XxcomErrorLogCollection&quot;,&quot;/ns5:XxcomErrorLogCollection/ns5:XxcomErrorLog/ns5:messageVersion&quot;), string('&lt;/td>  &lt;/tr>    &lt;tr>    &lt;td>Message Operation&lt;/td>    &lt;td>'), bpws:getVariableData(&quot;inputVariable&quot;,&quot;XxcomErrorLogCollection&quot;,&quot;/ns5:XxcomErrorLogCollection/ns5:XxcomErrorLog/ns5:messageOperation&quot;), string('&lt;/td>   &lt;/tr>    &lt;tr class=&quot;EvenRowcolor&quot;>    &lt;td>Message Source System&lt;/td>    &lt;td>'), bpws:getVariableData(&quot;inputVariable&quot;,&quot;XxcomErrorLogCollection&quot;,&quot;/ns5:XxcomErrorLogCollection/ns5:XxcomErrorLog/ns5:messageSourceSystem&quot;), string('&lt;/td>   &lt;/tr>    &lt;tr>    &lt;td>Message Payload&lt;/td>    &lt;td>Please see the attachement&lt;/td>   &lt;/tr>    &lt;/table>  &lt;/body>  &lt;/html>'))"/>
+                  <to variable="varNotificationReq" part="EmailPayload"
+                      query="/EmailPayload/ns3:Content/ns3:ContentBody/ns3:MultiPart/ns3:BodyPart[1]/ns3:ContentBody"/>
+                </copy>
+                <copy>
+                  <from expression="string('text/plain;')"/>
+                  <to variable="varNotificationReq" part="EmailPayload"
+                      query="/EmailPayload/ns3:Content/ns3:ContentBody/ns3:MultiPart/ns3:BodyPart[2]/ns3:MimeType"/>
+                </copy>
+                <copy>
+                  <from expression="string('MessagePayload')"/>
+                  <to variable="varNotificationReq" part="EmailPayload"
+                      query="/EmailPayload/ns3:Content/ns3:ContentBody/ns3:MultiPart/ns3:BodyPart[2]/ns3:BodyPartName"/>
+                </copy>
+                <copy>
+                  <from expression="bpws:getVariableData('inputVariable','XxcomErrorLogCollection','/ns5:XxcomErrorLogCollection/ns5:XxcomErrorLog/ns5:messagePayload')"/>
+                  <to variable="varNotificationReq" part="EmailPayload"
+                      query="/EmailPayload/ns3:Content/ns3:ContentBody/ns3:MultiPart/ns3:BodyPart[2]/ns3:ContentBody"/>
+                </copy>
+              </assign>
+              <invoke name="InvokeNotificationService"
+                      portType="ns3:NotificationService"
+                      partnerLink="NotificationService"
+                      inputVariable="varNotificationReq"
+                      outputVariable="varNotificationResponse"
+                      operation="sendEmailNotification"/>
+            </sequence>
+          </scope>
+        </sequence>
+      </otherwise>
+    </switch>
+    <reply name="ReplyBackToAdapter" variable="outputVariable"
+           partnerLink="ReadErrorDetailsFromDBTable"
+           portType="ns1:ReadErrorDetailsFromDBTable_ptt" operation="receive"/>
+  </sequence>
+</process>

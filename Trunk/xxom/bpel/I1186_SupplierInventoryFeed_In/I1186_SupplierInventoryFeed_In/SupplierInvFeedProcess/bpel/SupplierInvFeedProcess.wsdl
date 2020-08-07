@@ -1,0 +1,45 @@
+<definitions
+     name="SupplierInvFeedProcess"
+     targetNamespace="http://xmlns.oracle.com/SupplierInvFeedProcess"
+     xmlns="http://schemas.xmlsoap.org/wsdl/"
+     xmlns:ns1="http://www.openapplications.org/oagis/9"
+     xmlns:plnk="http://schemas.xmlsoap.org/ws/2003/05/partner-link/"
+     xmlns:ns2="http://schemas.oracle.com/bpel/extension"
+     xmlns:client="http://xmlns.oracle.com/SupplierInvFeedProcess"
+    >
+    <import namespace="http://schemas.oracle.com/bpel/extension" location="RuntimeFault.wsdl"/>
+    <types>
+        <schema xmlns="http://www.w3.org/2001/XMLSchema" xmlns:ns1="http://www.openapplications.org/oagis/9"
+             xmlns:plnk="http://schemas.xmlsoap.org/ws/2003/05/partner-link/" xmlns:ns2="http://schemas.oracle.com/bpel/extension"
+             xmlns:client="http://xmlns.oracle.com/SupplierInvFeedProcess">
+            <import namespace="http://xmlns.oracle.com/SupplierInvFeedProcess" schemaLocation="SupplierInvFeedProcess.xsd"/>
+        </schema>
+        <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <xsd:import namespace="http://www.openapplications.org/oagis/9" schemaLocation="http://chilsoa02d.na.odcorp.net:7777/orabpel/xmllib/eaixml/oagis/v91/message/bod/ProcessInventoryBalance.xsd"/>
+        </xsd:schema>
+    </types>
+    <message name="SupplierInvFeedProcessResponseMessage">
+        <part name="payload" element="client:SupplierInvFeedProcessProcessResponse"/>
+    </message>
+    <message name="SupplierInvFeedProcessRequestMessage">
+        <part name="payload" element="ns1:ProcessInventoryBalance"/>
+    </message>
+    <portType name="SupplierInvFeedProcessCallback">
+        <operation name="onResult">
+            <input message="client:SupplierInvFeedProcessResponseMessage"/>
+        </operation>
+    </portType>
+    <portType name="SupplierInvFeedProcess">
+        <operation name="initiate">
+            <input message="client:SupplierInvFeedProcessRequestMessage"/>
+        </operation>
+    </portType>
+    <plnk:partnerLinkType name="SupplierInvFeedProcess">
+        <plnk:role name="SupplierInvFeedProcessProvider">
+            <plnk:portType name="client:SupplierInvFeedProcess"/>
+        </plnk:role>
+        <plnk:role name="SupplierInvFeedProcessRequester">
+            <plnk:portType name="client:SupplierInvFeedProcessCallback"/>
+        </plnk:role>
+    </plnk:partnerLinkType>
+</definitions>
