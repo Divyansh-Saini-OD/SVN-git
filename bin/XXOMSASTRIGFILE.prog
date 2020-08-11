@@ -17,7 +17,7 @@
 # +========================================================================+
 # +========================================================================+
 #  Input Parameters                                                        |
-#  WAVE - 0,1,2,3,5							   |
+#  WAVE - 0,1,2,3,5                                                        |
 # +========================================================================+
 if [ -z "$5" ]
   then
@@ -39,10 +39,10 @@ CAHVOP=`ls -lrt SAS$dt*_CA_HVOP_*.TXT |awk '{print $9}'|wc -l`
 USDEPO=`ls -lrt SAS$dt*_US_DEPO_*.TXT |awk '{print $9}'|wc -l`
 CADEPO=`ls -lrt SAS$dt*_CA_DEPO_*.TXT |awk '{print $9}'|wc -l`
 
-touch $DEST_DIR/$HVOPUSTRIGFILE
-touch $DEST_DIR/$DEPOUSTRIGFILE
-touch $DEST_DIR/$HVOPCATRIGFILE
-touch $DEST_DIR/$DEPOCATRIGFILE
+echo "" > $DEST_DIR/$HVOPUSTRIGFILE
+echo "" > $DEST_DIR/$DEPOUSTRIGFILE
+echo "" > $DEST_DIR/$HVOPCATRIGFILE
+echo "" > $DEST_DIR/$DEPOCATRIGFILE
 
 if [ $USHVOP -gt 0 ]
   then
