@@ -340,6 +340,48 @@ public class ODCustDocAMImpl extends OAApplicationModuleImpl {
           }
           return retStr;
       }
+    public Boolean IfdelyMthChg(String pQuery)
+    {
+        ODUtil utl = new ODUtil(this);
+        utl.log("execQuery :Begin execQuery");
+        OracleCallableStatement ocs=null;
+        ResultSet rs=null;
+        OADBTransaction db=this.getOADBTransaction();
+        String stmt = pQuery;
+        Boolean bool=false;
+        ocs = (OracleCallableStatement)db.createCallableStatement(stmt,1);
+        System.out.println(" in del");
+        try
+        {
+          rs = ocs.executeQuery();
+          if (rs.next())
+          {
+            bool= false;
+            System.out.println(" Chnage del");
+          }
+          else { bool= true;}
+          rs.close();
+          ocs.close();
+        }
+        catch(SQLException e)
+        {
+          utl.log("execQuery:Error:"+ e.toString());
+            System.out.println(" Chnage err"+ e.toString());
+        }
+            finally
+          {
+             try{
+                  if(rs != null)
+                     rs.close();
+                  if(ocs != null)
+                     ocs.close();
+                }
+                     catch(Exception e){}
+          }
+        utl.log("execQuery :End execQuery");
+        return bool;
+    }
+      
     /**
      * execQuery to return Number
      * Generic method to execute count(1) query

@@ -296,31 +296,36 @@ public class ODEBillDocumentsCO extends OAControllerImpl
          String ePDFConsMBSDocId =pageContext.getProfile("XXOD_EBL_SKU_LEVEL_CONS_EPDF"); 
          String ePDFIndMBSDocId =pageContext.getProfile("XXOD_EBL_SKU_LEVEL_INV_EPDF");  
            String opsTechDlyMthd = pageContext.getProfile("XXOD_EBL_CENTRAL_OPSTECH");//Added by Reddy Sekhar K on 11-Sept-2018 for the eBill Central Requirement NAIT-56624 
-           
+           String query = null;
            if(ePDFConsMBSDocId.equals(docId) || ePDFIndMBSDocId.equals(docId))
            {
              rowImpl.setDeliverymethod("Case3");
              rowImpl.setReadonlyflag(Boolean.FALSE); 
              rowImpl.setCExtAttr2("N");
+               // Added by Divyansh for NAIT-129167
                OAViewObject vo = (OAViewObject)am.findViewObject("ODEBillDelyMethodePDFPVO");
-               System.out.println("VO Query cons "+vo.getQuery());
+               pageContext.writeDiagnostics(this, "VO Query cons "+vo.getQuery(),1);
+               query =vo.getQuery()+" And FLEX_VALUE = '"+rowImpl.getCExtAttr3()+"'";
+               System.out.println("query "+query);
+               Serializable exQ[]={query};
                String delmeth ="ePDF";
-               Row ro[]= (Row[])vo.getFilteredRows("Meaning",rowImpl.getCExtAttr3());
-               if (ro.length==0)
+               if ((Boolean)am.invokeMethod("IfdelyMthChg",exQ))
                {  delmeth = "ePDF"; }
                else
                { delmeth = rowImpl.getCExtAttr3();}
-               rowImpl.setCExtAttr3(delmeth);
-               Serializable num1[]={docType,delmeth};
-               Boolean s1 = (Boolean)am.invokeMethod("checkDelMethod",num1);
-               rowImpl.setFeeflag(s1);
-               rowImpl.setFeeoptioncriteria(docType+"-"+delmeth);
-               feevo.setWhereClause("SOURCE_VALUE2 = '"+delmeth +"' AND NVL(SOURCE_VALUE3,'"+docType+"')= NVL('"+docType+"',SOURCE_VALUE3)");
-               feevo.executeQuery();
-               String defval =(String)am.invokeMethod("getDefaultFee",num1);
-               String defval1 =(String)am.invokeMethod("getDefaultFeeFV",num1);
-               rowImpl.setFeeoptionfv(defval);
-               rowImpl.setFeeOption(defval1);
+               if (!rowImpl.getFeeoptioncriteria().equals(docType+"-"+delmeth)) {
+                   rowImpl.setCExtAttr3(delmeth);
+                   Serializable num1[]={docType,delmeth};
+                   Boolean s1 = (Boolean)am.invokeMethod("checkDelMethod",num1);
+                   rowImpl.setFeeflag(s1);
+                   rowImpl.setFeeoptioncriteria(docType+"-"+delmeth);
+                   feevo.setWhereClause("SOURCE_VALUE2 = '"+delmeth +"' AND NVL(SOURCE_VALUE3,'"+docType+"')= NVL('"+docType+"',SOURCE_VALUE3)");
+                   feevo.executeQuery();
+                   String defval =(String)am.invokeMethod("getDefaultFee",num1);
+                   String defval1 =(String)am.invokeMethod("getDefaultFeeFV",num1);
+                   rowImpl.setFeeoptionfv(defval);
+                   rowImpl.setFeeOption(defval1);}
+                   // Ended by Divyansh for NAIT-129167
              
            }
            //Added By Rafi on 31-Aug-2018 for SKU Level Tax to default ePDF Dely Method for Defect #NAIT-58403 - END 
@@ -332,9 +337,9 @@ public class ODEBillDocumentsCO extends OAControllerImpl
              rowImpl.setPaydocind(false);
              rowImpl.setMailattentionmsg(true);
              rowImpl.setReadonlyflag(Boolean.TRUE);
-             rowImpl.setFeeflag(Boolean.TRUE);
-              rowImpl.setAttribute("Feeoptionfv",null);
-              rowImpl.setAttribute("FeeOption",null);
+             rowImpl.setFeeflag(Boolean.TRUE);// Added by Divyansh for NAIT-129167
+             rowImpl.setAttribute("Feeoptionfv",null);// Added by Divyansh for NAIT-129167
+             rowImpl.setAttribute("FeeOption",null);// Added by Divyansh for NAIT-129167
           }
          //Added by Reddy Sekhar K on 11-Sept-2018 for the eBill Central Requirement NAIT-56624 ---END
             else if("Consolidated Bill".equals(docType)&& !opsTechDlyMthd.equals(docId))
@@ -343,14 +348,17 @@ public class ODEBillDocumentsCO extends OAControllerImpl
               rowImpl.setMailattentionmsg(false);
               rowImpl.setReadonlyflag(Boolean.FALSE); 
               rowImpl.setCExtAttr2("N");
-                OAViewObject vo = (OAViewObject)am.findViewObject("ODEBillDelyMethodPVO");
-                System.out.println("VO Query cons "+vo.getQuery());
-                String delmeth ="ePDF";
-                Row ro[]= (Row[])vo.getFilteredRows("Code",rowImpl.getCExtAttr3());
-                if (ro.length==0)
-                {  delmeth = "ePDF";}
-                else
-                { delmeth = rowImpl.getCExtAttr3();}
+              // Added by Divyansh for NAIT-129167
+              OAViewObject vo = (OAViewObject)am.findViewObject("ODEBillDelyMethodPVO");
+              query =vo.getQuery()+" And FLEX_VALUE = '"+rowImpl.getCExtAttr3()+"'";
+              System.out.println("query "+query);
+              Serializable exQ[]={query};
+              String delmeth ="ePDF";
+              if ((Boolean)am.invokeMethod("IfdelyMthChg",exQ))
+                {  delmeth = "ePDF"; }
+              else
+              { delmeth = rowImpl.getCExtAttr3();}
+              if (!rowImpl.getFeeoptioncriteria().equals(docType+"-"+delmeth)) {
                 Serializable num1[]={docType,delmeth};
                 rowImpl.setCExtAttr3(delmeth);
                 Boolean s1 = (Boolean)am.invokeMethod("checkDelMethod",num1);
@@ -361,30 +369,36 @@ public class ODEBillDocumentsCO extends OAControllerImpl
                 String defval =(String)am.invokeMethod("getDefaultFee",num1);
                 String defval1 =(String)am.invokeMethod("getDefaultFeeFV",num1);
                 rowImpl.setFeeoptionfv(defval);
-                rowImpl.setFeeOption(defval1);
+                rowImpl.setFeeOption(defval1);}
+                // Ended by Divyansh for NAIT-129167
             }
              else{                     
                     rowImpl.setDeliverymethod("Case2");
                     rowImpl.setMailattentionmsg(false);
                     rowImpl.setReadonlyflag(Boolean.FALSE);
                     rowImpl.setCExtAttr2("N");   
+                     // Added by Divyansh for NAIT-129167
                      OAViewObject vo = (OAViewObject)am.findViewObject("ODEBillDelyMethodInvoicePVO");
+                     query =vo.getQuery()+" And FLEX_VALUE = '"+rowImpl.getCExtAttr3()+"'";
+                     System.out.println("query "+query);
+                     Serializable exQ[]={query};
                      String delmeth ="ePDF";
-                     Row ro[]= (Row[])vo.getFilteredRows("Description",rowImpl.getCExtAttr3());
-                     if (ro.length==0)
+                     if ((Boolean)am.invokeMethod("IfdelyMthChg",exQ))
                      {  delmeth = "ePDF"; }
                      else
                      { delmeth = rowImpl.getCExtAttr3();}
-                     Serializable num1[]={docType,delmeth};
-                     Boolean s1 = (Boolean)am.invokeMethod("checkDelMethod",num1);
-                     rowImpl.setFeeflag(s1);
-                     rowImpl.setFeeoptioncriteria(docType+"-"+delmeth);
-                     feevo.setWhereClause("SOURCE_VALUE2 = '"+delmeth +"' AND NVL(SOURCE_VALUE3,'"+docType+"')= NVL('"+docType+"',SOURCE_VALUE3)");
-                     feevo.executeQuery();
-                     String defval =(String)am.invokeMethod("getDefaultFee",num1);
-                     String defval1 =(String)am.invokeMethod("getDefaultFeeFV",num1);
-                     rowImpl.setFeeoptionfv(defval);
-                     rowImpl.setFeeOption(defval1);
+                     if (!rowImpl.getFeeoptioncriteria().equals(docType+"-"+delmeth)) {
+                         Serializable num1[]={docType,delmeth};
+                         Boolean s1 = (Boolean)am.invokeMethod("checkDelMethod",num1);
+                         rowImpl.setFeeflag(s1);
+                         rowImpl.setFeeoptioncriteria(docType+"-"+delmeth);
+                         feevo.setWhereClause("SOURCE_VALUE2 = '"+delmeth +"' AND NVL(SOURCE_VALUE3,'"+docType+"')= NVL('"+docType+"',SOURCE_VALUE3)");
+                         feevo.executeQuery();
+                         String defval =(String)am.invokeMethod("getDefaultFee",num1);
+                         String defval1 =(String)am.invokeMethod("getDefaultFeeFV",num1);
+                         rowImpl.setFeeoptionfv(defval);
+                         rowImpl.setFeeOption(defval1);}
+                         // Ended by Divyansh for NAIT-129167
              }  
                         rowImpl.setBcPodFlag("N");
                         rowImpl.setAttribute("Bcpodcase","case4");
@@ -421,6 +435,7 @@ public class ODEBillDocumentsCO extends OAControllerImpl
         String feeOption = rowImpl.getFeeOption();
         String payDocType = rowImpl.getCExtAttr1();
         String dlyMtd = rowImpl.getCExtAttr3();
+        // Added by Divyansh for NAIT-129167
         if (stat.equals("IN_PROCESS")) {
             Serializable[] prms={payDocType,dlyMtd,feeOption};
             System.out.println("payDocType "+payDocType);
@@ -432,6 +447,7 @@ public class ODEBillDocumentsCO extends OAControllerImpl
                 throw new OAException("XXCRM","XXOD_EBL_INVALID_FEEOPT");
             }
         }
+        // Ended by Divyansh for NAIT-129167
        HashMap params = new HashMap();
        String custDocID = pageContext.getParameter("CustDocID");
        String dlyMethod = pageContext.getParameter("DlyMtd");
@@ -464,6 +480,7 @@ public class ODEBillDocumentsCO extends OAControllerImpl
           String feeOption = rowImpl.getFeeOption();
           String payDocType = rowImpl.getCExtAttr1();
           String dlyMtd = rowImpl.getCExtAttr3();
+          // Added by Divyansh for NAIT-129167
           if (stat.equals("IN_PROCESS")) {
               Serializable[] prms={payDocType,dlyMtd,feeOption};
               System.out.println("payDocType "+payDocType);
@@ -475,6 +492,7 @@ public class ODEBillDocumentsCO extends OAControllerImpl
                   throw new OAException("XXCRM","XXOD_EBL_INVALID_FEEOPT");
               }
           }
+          // Ended by Divyansh for NAIT-129167
          HashMap params = new HashMap();
          String custDocID = pageContext.getParameter("CustDocID");
          String dlyMethod = pageContext.getParameter("DlyMtd");
@@ -647,26 +665,6 @@ public class ODEBillDocumentsCO extends OAControllerImpl
         {
         String rowRef1 = pageContext.getParameter(OAWebBeanConstants.EVENT_SOURCE_ROW_REFERENCE);
         ODEbillCustDocVORowImpl rowImpl1= (ODEbillCustDocVORowImpl)am.findRowByRef(rowRef1);
-        // Added by Divyansh for NAIT-129167
-        String printType =rowImpl1.getCExtAttr3();
-        String docType =rowImpl1.getCExtAttr1();
-        Serializable num[]={docType,printType};
-        Boolean s = (Boolean)am.invokeMethod("checkDelMethod",num);
-        rowImpl1.setAttribute("FeeOption",null);
-        rowImpl1.setAttribute("Feeoptionfv",null);
-        rowImpl1.setFeeflag(s);
-        rowImpl1.setFeeoptioncriteria(docType+"-"+printType);
-        if(!s){
-            OAViewObject feevo = (OAViewObject)am.findViewObject("feeoptionType1");
-            feevo.setWhereClause("SOURCE_VALUE2 = '"+printType +"' AND NVL(SOURCE_VALUE3,'"+docType+"')= NVL('"+docType+"',SOURCE_VALUE3)");
-            feevo.executeQuery();
-            Serializable prm[] = {docType,printType};
-            String defval =(String)am.invokeMethod("getDefaultFee",prm);
-             rowImpl1.setFeeoptionfv(defval);
-            String defval1 =(String)am.invokeMethod("getDefaultFeeFV",prm);
-            rowImpl1.setFeeOption(defval1);
-        }
-        // Ended by Divyansh for NAIT-129167
         String dlyMtd = pageContext.getParameter("DelyMtdUpdate");
         String custDocId=pageContext.getParameter("CustDocId");
         utl.log("ODEBillDocumentsCO:Inside DelyMtdUpdate PPR for:"+custDocId);
@@ -699,6 +697,28 @@ public class ODEBillDocumentsCO extends OAControllerImpl
         dialogPage.setFormParameters(formParams); 
         pageContext.redirectToDialogPage(dialogPage);
         }
+        // Added by Divyansh for NAIT-129167
+        else
+        {
+            String printType =rowImpl1.getCExtAttr3();
+            String docType =rowImpl1.getCExtAttr1();
+            Serializable num[]={docType,printType};
+            Boolean s = (Boolean)am.invokeMethod("checkDelMethod",num);
+            rowImpl1.setAttribute("FeeOption",null);
+            rowImpl1.setAttribute("Feeoptionfv",null);
+            rowImpl1.setFeeflag(s);
+            rowImpl1.setFeeoptioncriteria(docType+"-"+printType);
+            if(!s){
+                OAViewObject feevo = (OAViewObject)am.findViewObject("feeoptionType1");
+                feevo.setWhereClause("SOURCE_VALUE2 = '"+printType +"' AND NVL(SOURCE_VALUE3,'"+docType+"')= NVL('"+docType+"',SOURCE_VALUE3)");
+                feevo.executeQuery();
+                Serializable prm[] = {docType,printType};
+                String defval =(String)am.invokeMethod("getDefaultFee",prm);
+                 rowImpl1.setFeeoptionfv(defval);
+                String defval1 =(String)am.invokeMethod("getDefaultFeeFV",prm);
+                rowImpl1.setFeeOption(defval1);
+            }
+        }// Ended by Divyansh for NAIT-129167
         //Added By Reddy Sekhar K on 13 Nov 2018 for the Req# NAIT-61952 & 66520-----Start
          String rowRef = pageContext.getParameter(OAWebBeanConstants.EVENT_SOURCE_ROW_REFERENCE);
          ODEbillCustDocVORowImpl rowImpl= (ODEbillCustDocVORowImpl)am.findRowByRef(rowRef);
@@ -888,6 +908,27 @@ public class ODEBillDocumentsCO extends OAControllerImpl
                                                               
           }
           }//Added By Reddy Sekhar K on 13 Nov 2018 for the Req# NAIT-61952 & 66520-----End
+          
+          
+           // Added by Divyansh for NAIT-129167
+               String printType =(String)curRow.getAttribute("CExtAttr3");
+               String docType =(String)curRow.getAttribute("CExtAttr1");
+               Serializable num[]={docType,printType};
+               Boolean s = (Boolean)am.invokeMethod("checkDelMethod",num);
+               curRow.setAttribute("FeeOption",null);
+               curRow.setAttribute("Feeoptionfv",null);
+               curRow.setAttribute("Feeflag",s);
+               curRow.setAttribute("Feeoptioncriteria",docType+"-"+printType);
+               if(!s){
+                   OAViewObject feevo = (OAViewObject)am.findViewObject("feeoptionType1");
+                   feevo.setWhereClause("SOURCE_VALUE2 = '"+printType +"' AND NVL(SOURCE_VALUE3,'"+docType+"')= NVL('"+docType+"',SOURCE_VALUE3)");
+                   feevo.executeQuery();
+                   Serializable prm[] = {docType,printType};
+                   String defval =(String)am.invokeMethod("getDefaultFee",prm);
+                    curRow.setAttribute("Feeoptionfv",defval);
+                   String defval1 =(String)am.invokeMethod("getDefaultFeeFV",prm);
+                   curRow.setAttribute("FeeOption",defval1);
+               }// Ended by Divyansh for NAIT-129167
       int lnCnt=Integer.parseInt(rowCount);
       CustDocVO.setRangeStart(lnCnt);
       }
