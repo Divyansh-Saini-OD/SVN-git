@@ -1,31 +1,26 @@
 -- +==========================================================================+
 -- |                  Office Depot - Project Simplify                         |
--- |                       WIPRO Technologies                                 |
 -- +==========================================================================+
+-- | Name        : ALTER_XX_AR_CBI_TRX_LINES_ALL_KITTING.tbl                  |
 -- | RICE ID     :  E0286                                                     |
 -- | Name        :  Consolidated Billing Invoice                              |
 -- |                                                                          |
--- | SQL Script to alter the table XX_AR_CBI_TRX_LINES_HISTORY                |
--- |  for adding a column "LINE_COMMENTS" .                                   |
+-- | SQL Script to alter the table XX_AR_CBI_TRX_LINES_HISTORY                    |
+-- |  for adding the column "KIT_SKU".                            |
 -- |Change Record:                                                            |
 -- |===============                                                           |
--- |Version   Date         Author               Remarks                       |
--- |=======   ==========   =============        ==============================|
--- |  1.0     27-NOV-2009  Tamil Vendhan L      Initial version               |
--- |                                            Added for the Defect 1744     |
--- |                                            (CR 743)                      |
--- |                                                                          |
--- |                                                                          |
+-- |Version   Date         Author          Remarks                            |
+-- |=======   ==========   =============   ===================================|
+-- |1.0       03-MAY-2020  Divyansh Saini   Initial version (NAIT-129167)     |
 -- +==========================================================================+
 
-SET SHOW         OFF
-SET VERIFY       OFF
-SET ECHO         OFF
-SET TAB          OFF
-SET FEEDBACK     ON
-
-ALTER TABLE xxfin.xx_ar_cbi_trx_lines_history
-        ADD( LINE_COMMENTS     VARCHAR2(2000)
-           );
-
-SHOW ERROR;
+	SET SHOW         OFF
+	SET VERIFY       OFF
+	SET ECHO         OFF
+	SET TAB          OFF
+	SET FEEDBACK     ON
+        
+	PROMPT
+	PROMPT Altering the Table XX_AR_CBI_TRX_LINES_HISTORY .....
+	PROMPT
+alter table xxfin.XX_AR_CBI_TRX_LINES_HISTORY add (fee_type VARCHAR2(20),fee_line_seq NUMBER);

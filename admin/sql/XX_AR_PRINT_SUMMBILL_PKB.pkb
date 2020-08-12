@@ -1,5 +1,4 @@
-create or replace
-PACKAGE BODY  xx_ar_print_summbill
+create or replace PACKAGE BODY  xx_ar_print_summbill
 AS
 ---+========================================================================================================+
 ---|                                        Office Depot - Project Simplify                                 |
@@ -129,13 +128,12 @@ AS
 -- |    1.61            24-MAY-2016       Havish Kasina      Added for Kitting, Defect# 37670               |
 -- |    1.62            12-AUG-2016       Rohit Gupta        Removed the join with RA_CUSTOMER_TRX for      |
 -- |                                                         Defect #38583(performance fix)                 |
--- |    1.63            18-APR-2018       Punit Gupta CG     Retrofit OD AR Reprint Summary/                |
--- |                                                         Consolidated Bills- Defect NAIT-31695          |
+-- |    1.63            12-AUG-2020       Divyansh Saini     Changes done for tariff NAIT - 129167          |
 ---+========================================================================================================+
 
-/***** IMPORTANT NOTE ***** 
-*****  Remit to logic is cloned at 3 locations XX_AR_PRINT_SUMMBILL_PKB.pkb,XX_AR_REMIT_ADDRESS_CHILD_PKG.pkb and XX_AR_EBL_COMMON_UTIL_PKG.pkb. Any changes done at one place 
-has to be synched in the other 2 places.*****/  
+/***** IMPORTANT NOTE *****
+*****  Remit to logic is cloned at 3 locations XX_AR_PRINT_SUMMBILL_PKB.pkb,XX_AR_REMIT_ADDRESS_CHILD_PKG.pkb and XX_AR_EBL_COMMON_UTIL_PKG.pkb. Any changes done at one place
+has to be synched in the other 2 places.*****/
 
    g_pkb_version        NUMBER (3, 2) := '1.49';
    g_as_of_date         DATE;
@@ -885,7 +883,7 @@ To avoid offcycle bills and to handle newly added infodocs for PAYDOC_IC Custome
 
 -- The following cursor has been Added for defect # 10750
 
-/* Commented for 32498 
+/* Commented for 32498
       CURSOR get_infocopy2_customers(p_attr_group_id IN NUMBER)
       IS
          SELECT   SUBSTR(cdh_bill_header.direct_flag,1,1) direct_flag
@@ -943,7 +941,7 @@ To avoid offcycle bills and to handle newly added infodocs for PAYDOC_IC Custome
 	  select * from xx_temp_certegy_cust_master
 	  where org_id = fnd_profile.VALUE ('ORG_ID')
 	  ORDER BY customer_id, document_id;
-	  
+
       CURSOR get_party_info (p_customer_id IN NUMBER)
       IS
          SELECT hzca.account_number billing_id,
@@ -957,7 +955,7 @@ To avoid offcycle bills and to handle newly added infodocs for PAYDOC_IC Custome
          WHERE  1 = 1 AND hzca.cust_account_id = p_customer_id;
 
       --AND hzp.party_id         =hzca.party_id;
-      
+
       CURSOR get_infocopy2_invoices (
          p_customer_id     IN   NUMBER,
          p_source_id       IN   NUMBER,
@@ -1070,7 +1068,7 @@ To avoid offcycle bills and to handle newly added infodocs for INV_IC Customer
                   , ratrx.customer_trx_id; */
 /* Commented for Defect 32498
 				  WITH XX_RA_CUST AS
-  (SELECT    
+  (SELECT
     g_as_of_date PRINT_DATE,
     RATRX.CUSTOMER_TRX_ID INVOICE_ID,
     XX_AR_PRINT_SUMMBILL.GET_INV_IC_SITEUSE_ID(p_customer_id ,HZSU.CUST_ACCT_SITE_ID ,p_cust_doc_id ,RATRX.SHIP_TO_SITE_USE_ID ,p_direct_flag ) SITE_USE_ID,
@@ -1114,12 +1112,12 @@ SELECT *
 FROM XX_RA_CUST,
   AR_PAYMENT_SCHEDULES APS
 WHERE XX_RA_CUST.INVOICE_ID = APS.CUSTOMER_TRX_ID
-AND APS.AMOUNT_DUE_ORIGINAL NOT BETWEEN xx_ar_print_summbill.ln_write_off_amt_low AND xx_ar_print_summbill.ln_write_off_amt_high 
+AND APS.AMOUNT_DUE_ORIGINAL NOT BETWEEN xx_ar_print_summbill.ln_write_off_amt_low AND xx_ar_print_summbill.ln_write_off_amt_high
 ORDER BY  --ratrx.bill_to_site_use_id  --Commented for the Defect # 10750
                    XX_RA_CUST.site_use_id   --Added for the Defect # 10750
                   , XX_RA_CUST.INVOICE_ID ;
-*/                  
---End modification by Adithya for Defect#19754 on 13-Dec-2012                      
+*/
+--End modification by Adithya for Defect#19754 on 13-Dec-2012
 
       TYPE cbi_tab IS TABLE OF cbi_rec
          INDEX BY BINARY_INTEGER;
@@ -1162,15 +1160,15 @@ ORDER BY  --ratrx.bill_to_site_use_id  --Commented for the Defect # 10750
       ln_amount_due            NUMBER;
       ln_gc_inv_amt            NUMBER;                -- Added for R1.1 Defect # 1451 (CR 626)
       ln_gc_cm_amt             NUMBER;                -- Added for R1.1 Defect # 1451 (CR 626)
-	  
+
 	  ln_start_time            DATE;    --Added for defect 32498
 	  ln_total_time            NUMBER;  --Added for defect 32498
 	  bln_first_rec			   BOOLEAN; --Added for defect 32498
 	  lc_record_cnt			   NUMBER;  --Added for defect 32498
-	  
+
 	  ln_max_trx_id            NUMBER := NVL(fnd_profile.VALUE ('OD_CERTEGY_MAX_TRX_ID'),479416000); -- Added for Defect 32498
-	  
-	  
+
+
       PROCEDURE proc_set_thread_id
       IS
       BEGIN
@@ -1217,8 +1215,8 @@ ORDER BY  --ratrx.bill_to_site_use_id  --Commented for the Defect # 10750
 
        lc_error_loc   :='Opening get_paydoc_cbi cursor' ; -- Added log message for Defect 10750
        lc_error_debug := NULL;                              -- Added log message for Defect 10750
-		
-	 
+
+
       OPEN get_paydoc_cbi(ln_attr_group_id);
 
       LOOP
@@ -1276,8 +1274,7 @@ ORDER BY  --ratrx.bill_to_site_use_id  --Commented for the Defect # 10750
               lc_error_debug  := 'cons_bill_id : '|| to_char(cbi_documents (i).cons_inv_id);
               SELECT  NVL(SUM(OP.payment_amount),0)
               INTO    ln_gc_inv_amt
-              FROM    --oe_payments OP
-			          xx_oe_payments_v OP -- Commented and Changed by Punit CG on 18-APR-2018 for Defect NAIT-31695
+              FROM    oe_payments OP
                      ,ra_customer_trx_all RCT
                      ,ar_cons_inv_trx_all ACIT
               WHERE   OP.header_id        = RCT.attribute14
@@ -1793,7 +1790,7 @@ ORDER BY  --ratrx.bill_to_site_use_id  --Commented for the Defect # 10750
                                      'Exit now, Please check the issue.'
                                     );
       END;
-	  
+
 	   --START for defect # 32498
 	  ln_start_time := sysdate;
 	  begin
@@ -1801,7 +1798,7 @@ ORDER BY  --ratrx.bill_to_site_use_id  --Commented for the Defect # 10750
 	  execute immediate 'DELETE FROM XX_TEMP_CERTEGY_FREQ_INV WHERE ORG_ID = ' || fnd_profile.VALUE ('ORG_ID');
 	  execute immediate 'DELETE FROM XX_AR_CERTEGY_INV_TEMP WHERE ORG_ID = ' || fnd_profile.VALUE ('ORG_ID');
 	  --execute immediate 'alter index XX_Tmp_CUST_MASTER_N1 UNUSABLE';
-      
+
       insert into xx_temp_certegy_cust_master
       SELECT   SUBSTR(cdh_bill_header.direct_flag,1,1) direct_flag
                  ,cdh_bill_header.billdocs_cust_doc_id cust_doc_id
@@ -1861,14 +1858,14 @@ ORDER BY  --ratrx.bill_to_site_use_id  --Commented for the Defect # 10750
               And Mbs_Doc_Master.Document_Id = Cdh_Bill_Header.Billdocs_Doc_Id
 			  And cdh_bill_header.cust_account_id = hzca.cust_account_id
 			  And ra.NAME = cdh_bill_header.billing_term;
-			  
-			commit;			
-		--	execute immediate 'alter index XX_Tmp_CUST_MASTER_N1 REBUILD';			 
-			
-				
+
+			commit;
+		--	execute immediate 'alter index XX_Tmp_CUST_MASTER_N1 REBUILD';
+
+
 		--	execute immediate 'alter index Xx_ar_Tmp_certegy_freq_n1 UNUSABLE';
-		--	execute immediate 'alter index Xx_ar_Tmp_certegy_freq_n2 UNUSABLE';	
-		--	execute immediate 'alter index Xx_ar_Tmp_certegy_freq_n3 UNUSABLE';	
+		--	execute immediate 'alter index Xx_ar_Tmp_certegy_freq_n2 UNUSABLE';
+		--	execute immediate 'alter index Xx_ar_Tmp_certegy_freq_n3 UNUSABLE';
 			Insert Into XX_TEMP_CERTEGY_FREQ_INV
             select a.invoice_id, b.customer_id, a.estimated_print_date, b.billing_term, b.effec_start_date, b.document_id, b.cust_doc_id, fnd_profile.VALUE ('ORG_ID') org_id
             FROM XX_AR_INVOICE_FREQ_HISTORY a, xx_temp_certegy_cust_master b
@@ -1877,8 +1874,8 @@ ORDER BY  --ratrx.bill_to_site_use_id  --Commented for the Defect # 10750
 				And a.invoice_id          >  ln_max_trx_id
 				And b.org_id = fnd_profile.VALUE ('ORG_ID')
 				and a.org_id = b.org_id
-                And A.Paydoc_Flag         = 'Y';   						
-			
+                And A.Paydoc_Flag         = 'Y';
+
 			DELETE from XX_TEMP_CERTEGY_FREQ_INV hist
 			WHERE EXISTS
 					(SELECT 1
@@ -1887,34 +1884,34 @@ ORDER BY  --ratrx.bill_to_site_use_id  --Commented for the Defect # 10750
 					   AND ARCITL.CUSTOMER_TRX_ID = hist.invoice_id
 					)
 			  AND org_id = fnd_profile.VALUE ('ORG_ID');
-    			
+
 			DELETE FROM XX_TEMP_CERTEGY_FREQ_INV hist
             Where Xx_Ar_Inv_Freq_Pkg.Compute_Effective_Date(Billing_Term ,Trunc(Estimated_Print_Date))
                   < Effec_Start_Date
 			  And org_id = fnd_profile.VALUE ('ORG_ID');
-			
-			DELETE FROM XX_TEMP_CERTEGY_FREQ_INV hist	  
+
+			DELETE FROM XX_TEMP_CERTEGY_FREQ_INV hist
 			WHERE  EXISTS
 					(SELECT 1
 					FROM XX_AR_CONS_BILLS_HISTORY
-					WHERE 1          = 1					
+					WHERE 1          = 1
 					AND ATTRIBUTE8   = 'INV_IC'
-					AND ATTRIBUTE1   = TO_CHAR (hist.invoice_id)					
+					AND ATTRIBUTE1   = TO_CHAR (hist.invoice_id)
 					AND DOCUMENT_ID  = hist.document_id
 					AND CUSTOMER_ID  = hist.customer_id
 					AND CUST_DOC_ID  = hist.cust_doc_id
 					AND PROCESS_FLAG = 'Y'
-					AND org_id = fnd_profile.VALUE ('ORG_ID')			  
+					AND org_id = fnd_profile.VALUE ('ORG_ID')
 					)
 			  AND hist.org_id = fnd_profile.VALUE ('ORG_ID');
- 			
+
 	        commit;
-			
+
 		--	execute immediate 'alter index Xx_ar_Tmp_certegy_freq_n1 REBUILD';
-		--	execute immediate 'alter index Xx_ar_Tmp_certegy_freq_n2 REBUILD';	
-		--	execute immediate 'alter index Xx_ar_Tmp_certegy_freq_n3 REBUILD';				
-    
-		--execute immediate 'alter index XX_AR_TMP_CERTEGY_N1 UNUSABLE';	
+		--	execute immediate 'alter index Xx_ar_Tmp_certegy_freq_n2 REBUILD';
+		--	execute immediate 'alter index Xx_ar_Tmp_certegy_freq_n3 REBUILD';
+
+		--execute immediate 'alter index XX_AR_TMP_CERTEGY_N1 UNUSABLE';
 		INSERT INTO XX_AR_CERTEGY_INV_TEMP
 		SELECT	g_as_of_date PRINT_DATE,
 		RATRX.CUSTOMER_TRX_ID INVOICE_ID,
@@ -1924,7 +1921,7 @@ ORDER BY  --ratrx.bill_to_site_use_id  --Commented for the Defect # 10750
 		0 amount_due,
 		mast.*
 		FROM
-		XX_TEMP_CERTEGY_FREQ_INV hist, 
+		XX_TEMP_CERTEGY_FREQ_INV hist,
 		RA_CUSTOMER_TRX RATRX ,
 		HZ_CUST_SITE_USES HZSU ,
 		AR_PAYMENT_SCHEDULES APS,
@@ -1935,19 +1932,19 @@ ORDER BY  --ratrx.bill_to_site_use_id  --Commented for the Defect # 10750
 		  AND RATRX.org_id = fnd_profile.VALUE ('ORG_ID')
 		  AND HZSU.org_id  = fnd_profile.VALUE ('ORG_ID')
 		  AND APS.org_id   = fnd_profile.VALUE ('ORG_ID')
-		  AND hist.CUSTOMER_ID = mast.customer_id  
+		  AND hist.CUSTOMER_ID = mast.customer_id
 		  AND RATRX.SHIP_TO_SITE_USE_ID = HZSU.SITE_USE_ID
-		  AND ratrx.batch_source_id <> ln_ignore_batch_source  
+		  AND ratrx.batch_source_id <> ln_ignore_batch_source
 		  AND hist.invoice_id = ratrx.CUSTOMER_TRX_ID
 		  And Aps.Customer_Trx_Id = Ratrx.Customer_Trx_Id
 		  AND HIST.DOCUMENT_ID = MAST.DOCUMENT_ID
           AND HIST.CUST_DOC_ID = MAST.CUST_DOC_ID
 		  And Aps.Amount_Due_Original Not Between xx_ar_print_summbill.ln_write_off_amt_low AND xx_ar_print_summbill.ln_write_off_amt_high;
-        --ORDER BY   XX_RA_CUST.site_use_id   
+        --ORDER BY   XX_RA_CUST.site_use_id
           --        , XX_RA_CUST.INVOICE_ID ;
-	
-		/*  
-		UPDATE XX_AR_CERTEGY_INV_TEMP TMP SET amount_due = 
+
+		/*
+		UPDATE XX_AR_CERTEGY_INV_TEMP TMP SET amount_due =
 		  (
 		  SELECT NVL(SUM(arps.amount_due_original), 0) amount_due
 				   FROM ar_payment_schedules arps
@@ -1960,11 +1957,11 @@ ORDER BY  --ratrx.bill_to_site_use_id  --Commented for the Defect # 10750
 					AND od_summbills.customer_id = tmp.customer_id
 					AND od_summbills.thread_id =   p_thread_id
 					AND od_summbills.process_flag != 'Y'
-					
+
 			);
 		*/
-		--execute immediate 'alter index XX_AR_TMP_CERTEGY_N1 REBUILD';	
-		COMMIT;      
+		--execute immediate 'alter index XX_AR_TMP_CERTEGY_N1 REBUILD';
+		COMMIT;
 		EXCEPTION
 		WHEN OTHERS THEN
 			fnd_file.put_line (fnd_file.LOG,'Error while generating Certegy data. ' || SQLERRM);
@@ -1973,9 +1970,9 @@ ORDER BY  --ratrx.bill_to_site_use_id  --Commented for the Defect # 10750
 		END;
        fnd_file.put_line (fnd_file.LOG,'time for invoice insert ' || round((sysdate - ln_start_time) *24 *60,0) || ' Min');
 	   ln_total_time := 0;
-	   
-	   bln_first_rec := false;			
-	   lc_record_cnt := 0;			   
+
+	   bln_first_rec := false;
+	   lc_record_cnt := 0;
 	   --END   for defect # 32498
 
       OPEN get_infocopy2_customers;
@@ -1992,7 +1989,7 @@ ORDER BY  --ratrx.bill_to_site_use_id  --Commented for the Defect # 10750
          FOR i IN info_documents.FIRST .. info_documents.LAST
          LOOP
 --      fnd_file.put_line(fnd_file.log ,'info_documents (i).customer_id : ' ||info_documents (i).customer_id);  --Commented for the Defect # 10750
-			
+
 			/* Commented for defect 32498
             OPEN get_party_info (info_documents (i).customer_id);
 
@@ -2004,9 +2001,9 @@ ORDER BY  --ratrx.bill_to_site_use_id  --Commented for the Defect # 10750
             */
             lc_error_loc    := 'Before get_infocopy2_invoices:INV_IC';      -- Added log message for Defect 10750
             lc_error_debug  := 'For Customer:'||info_documents (i).customer_id ; -- Added log message for Defect 10750
-			
+
 			bln_first_rec := FALSE; --Added for defect 32498
-			
+
             FOR inv_rec IN
                get_infocopy2_invoices (info_documents (i).customer_id,
                                        ln_ignore_batch_source,
@@ -2045,7 +2042,7 @@ ORDER BY  --ratrx.bill_to_site_use_id  --Commented for the Defect # 10750
                   /* New site_use_id, increment the thread count */
 				  ln_break_id := NULL;
 				  lc_record_cnt := 0;
-                  ln_thread_count := ln_thread_count + 1;				  
+                  ln_thread_count := ln_thread_count + 1;
                   /* Set the ln_thread_id value */
                   proc_set_thread_id;
                END IF;
@@ -2068,7 +2065,7 @@ ORDER BY  --ratrx.bill_to_site_use_id  --Commented for the Defect # 10750
                        FROM DUAL;
 
                      lc_prev_cons_bill := TO_CHAR (ln_prev_cons_bill_id);
-					 					                      
+
                      BEGIN
                         FOR rec IN
                            get_inv_amount (info_documents (i).customer_id,
@@ -2086,7 +2083,7 @@ ORDER BY  --ratrx.bill_to_site_use_id  --Commented for the Defect # 10750
                         THEN
                            ln_cbi_amount_due := 0;
                      END;
-                     
+
                      BEGIN
                         SAVEPOINT square2;
 
@@ -2260,8 +2257,8 @@ ORDER BY  --ratrx.bill_to_site_use_id  --Commented for the Defect # 10750
                                c_org_id, ln_thread_id
                               ,ln_prev_cons_bill_id   -- Added for defect 13403 cons inv id
                               );
-				
-				
+
+
 				ln_total_time := ln_total_time + round((sysdate - ln_start_time) *24 *60 * 60,0);
                EXCEPTION
                   WHEN DUP_VAL_ON_INDEX
@@ -2436,9 +2433,9 @@ ORDER BY  --ratrx.bill_to_site_use_id  --Commented for the Defect # 10750
       END;
  -- End of Changes for Defect 10998
 
-/***** IMPORTANT NOTE ***** 
-*****  Remit to logic is cloned at 3 locations XX_AR_PRINT_SUMMBILL_PKB.pkb,XX_AR_REMIT_ADDRESS_CHILD_PKG.pkb and XX_AR_EBL_COMMON_UTIL_PKG.pkb. Any changes done at one place 
-has to be synched in the other 2 places.*****/   
+/***** IMPORTANT NOTE *****
+*****  Remit to logic is cloned at 3 locations XX_AR_PRINT_SUMMBILL_PKB.pkb,XX_AR_REMIT_ADDRESS_CHILD_PKG.pkb and XX_AR_EBL_COMMON_UTIL_PKG.pkb. Any changes done at one place
+has to be synched in the other 2 places.*****/
 
    FUNCTION get_remitaddressid (p_bill_to_site_use_id IN NUMBER)
       RETURN NUMBER
@@ -2487,7 +2484,7 @@ has to be synched in the other 2 places.*****/
             AND a.party_site_id = party_site.party_site_id
             AND loc.location_id = party_site.location_id
             AND s.site_use_id = bill_site_use_id;
-            
+
       ln_remit_to_add            NUMBER :=0;  --added Defect 18203
 
       inv_state          hz_locations.state%TYPE;
@@ -2498,14 +2495,14 @@ has to be synched in the other 2 places.*****/
       lc_error_loc    VARCHAR2(500) := NULL ;   -- Added log message for Defect 10750
       lc_error_debug  VARCHAR2(500) := NULL ;   -- Added log message for Defect 10750
    BEGIN
-   
-              
+
+
          fnd_file.put_line (fnd_file.LOG, '*****p_bill_to_site_use_id:  '||p_bill_to_site_use_id);
-            
-/***** IMPORTANT NOTE ***** 
-*****  Remit to logic is cloned at 3 locations XX_AR_PRINT_SUMMBILL_PKB.pkb,XX_AR_REMIT_ADDRESS_CHILD_PKG.pkb and XX_AR_EBL_COMMON_UTIL_PKG.pkb. Any changes done at one place 
-has to be synched in the other 2 places.*****/           
- 
+
+/***** IMPORTANT NOTE *****
+*****  Remit to logic is cloned at 3 locations XX_AR_PRINT_SUMMBILL_PKB.pkb,XX_AR_REMIT_ADDRESS_CHILD_PKG.pkb and XX_AR_EBL_COMMON_UTIL_PKG.pkb. Any changes done at one place
+has to be synched in the other 2 places.*****/
+
           BEGIN      -- --added Defect 18203
            SELECT artav.address_id
                 INTO   ln_remit_to_add
@@ -2519,12 +2516,12 @@ has to be synched in the other 2 places.*****/
                 AND    HCSUA.site_use_id =p_bill_to_site_use_id --lc_cust_txn_rec.bill_to_site_use_id
                 AND    HCSUA.attribute25 = ARTAV.attribute1;
              EXCEPTION
-             WHEN OTHERS THEN 
+             WHEN OTHERS THEN
                ln_remit_to_add:=0;
             end;
-            
+
    IF ln_remit_to_add =0 THEN  -- --added IF clause, only for above query as part of Defect 18203
-   
+
    OPEN address (p_bill_to_site_use_id);
 
       FETCH address
@@ -2533,7 +2530,7 @@ has to be synched in the other 2 places.*****/
       lc_error_loc   := 'Inside get_remitaddressid cursor';   -- Added log message for Defect 10750
       lc_error_debug := NULL ;              -- Added log message for Defect 10750
       IF address%NOTFOUND
-      THEN  
+      THEN
          /* No Default Remit to Address can be found, use the default */
          inv_state := 'DEFAULT';  --commented defect 18203
          inv_country := 'DEFAULT';
@@ -2586,7 +2583,7 @@ has to be synched in the other 2 places.*****/
       RETURN (remit_address_id);
       ELSE
         RETURN (ln_remit_to_add); --added Defect 18203
-        
+
         END IF;
    EXCEPTION
          WHEN OTHERS
@@ -2596,11 +2593,11 @@ has to be synched in the other 2 places.*****/
                    --          ||lc_error_loc||'Debug:'||lc_error_Debug);     -- Added log message for Defect 10750
           RETURN NULL;
    END get_remitaddressid;
-/***** IMPORTANT NOTE ***** 
-*****  Remit to logic is cloned at 3 locations XX_AR_PRINT_SUMMBILL_PKB.pkb,XX_AR_REMIT_ADDRESS_CHILD_PKG.pkb and XX_AR_EBL_COMMON_UTIL_PKG.pkb. Any changes done at one place 
-has to be synched in the other 2 places.*****/  
-   
-   
+/***** IMPORTANT NOTE *****
+*****  Remit to logic is cloned at 3 locations XX_AR_PRINT_SUMMBILL_PKB.pkb,XX_AR_REMIT_ADDRESS_CHILD_PKG.pkb and XX_AR_EBL_COMMON_UTIL_PKG.pkb. Any changes done at one place
+has to be synched in the other 2 places.*****/
+
+
 
    FUNCTION xx_fin_check_digit (
       p_account_number   VARCHAR2,
@@ -2911,8 +2908,7 @@ has to be synched in the other 2 places.*****/
         INTO   ln_promo_and_disc
         FROM   ar_cons_inv_trx_all ACIT
               ,ra_customer_trx_lines_all RACTL
-			  ,xx_oe_price_adjustments_v OEPA  -- Commented and Changed by Punit CG on 18-APR-2018 for Defect NAIT-31695
-              --,oe_price_adjustments  OEPA
+              ,oe_price_adjustments  OEPA
         WHERE  1 = 1
           AND ACIT.cons_inv_id = p_cbi_id
           AND ACIT.customer_trx_id = RACTL.customer_trx_id
@@ -3256,7 +3252,7 @@ has to be synched in the other 2 places.*****/
               FROM ar_cons_inv
              WHERE customer_id = p_customer_id
                AND site_use_id = p_site_id
-               AND status IN ('ACCEPTED' ,'FINAL') 
+               AND status IN ('ACCEPTED' ,'FINAL')
                     -- added for defect 11993  -- for picking up max cut_off_date of cons invoices less than the con invoice under consideration
                --AND cut_off_date < ld_cut_off_date  -- Commented for Defect# 15063.
                AND TO_DATE(attribute1) < ld_cut_off_date -- Added for Defect# 15063.
@@ -4522,7 +4518,9 @@ INSERT INTO xx_ar_cbi_trx_lines_history
             ,line_comments                           -- Added for R1.2 Defect 1744 (CR 743)
             ,cost_center_dept
             ,cust_dept_description
-			,kit_sku                                 -- Added for Kitting, Defect# 37670        
+			,kit_sku                                 -- Added for Kitting, Defect# 37670
+            ,fee_type                                -- Added for tariff Billing 129167
+            ,fee_line_seq                            -- Added for tariff Billing 129167
       FROM   xx_ar_cbi_trx_lines
       WHERE  request_id  =p_thread_id;
 -- End of Defect 10750
@@ -5993,7 +5991,7 @@ EXCEPTION
                AND    XXTRX.customer_trx_id   =RACTL.customer_trx_id
              );
 
-         RETURN ln_ext_amt_plus_delvy;  
+         RETURN ln_ext_amt_plus_delvy;
       EXCEPTION
          WHEN OTHERS THEN
             fnd_file.put_line(fnd_file.log, 'Error @ xx_ar_cbi_infocopy_ministmnt in formula EXTAMT+DELVY');
@@ -6030,8 +6028,7 @@ EXCEPTION
          SELECT NVL(SUM(RACTL.extended_amount),0)
          INTO   ln_promo_and_disc
          FROM   ra_customer_trx_lines RACTL
-               ,xx_oe_price_adjustments_v OEPA  -- Commented and Changed by Punit CG on 18-APR-2018 for Defect NAIT-31695
-			   --,oe_price_adjustments  OEPA
+               ,oe_price_adjustments  OEPA
          WHERE  1 = 1
          AND RACTL.line_type = 'LINE'
          AND RACTL.interface_line_attribute11   = OEPA.PRICE_ADJUSTMENT_ID
@@ -6055,8 +6052,7 @@ EXCEPTION
 
          SELECT  NVL(SUM(OP.payment_amount),0)
          INTO    ln_gc_inv_amt
-         FROM    --oe_payments              OP
-		         xx_oe_payments_v OP -- Commented and Changed by Punit CG on 18-APR-2018 for Defect NAIT-31695
+         FROM    oe_payments              OP
                 ,xx_ar_cons_bills_history od_summbills
                 ,xx_ar_cbi_trx             XACT
          WHERE   OD_SUMMBILLS.cons_inv_id  =  XACT.cons_inv_id
@@ -6126,8 +6122,7 @@ EXCEPTION
       -- Start of changes for R1.3 Defect # 3551
          SELECT  NVL(SUM(OP.payment_amount),0)
          INTO    ln_gc_inv_amt
-         FROM    --oe_payments              OP
-		         xx_oe_payments_v OP -- Commented and Changed by Punit CG on 18-APR-2018 for Defect NAIT-31695
+         FROM    oe_payments              OP
                 ,xx_ar_cons_bills_history od_summbills
                 ,xx_ar_cbi_trx             XACT
          WHERE   OD_SUMMBILLS.cons_inv_id  =  XACT.cons_inv_id
@@ -6381,4 +6376,3 @@ end get_inv_ic_siteuse_id;
 
 END xx_ar_print_summbill;
 /
-SHOW ERRORS;
