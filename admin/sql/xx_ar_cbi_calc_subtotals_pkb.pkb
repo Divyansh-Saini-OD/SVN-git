@@ -1,4 +1,4 @@
-CREATE OR REPLACE PACKAGE BODY xx_ar_cbi_calc_subtotals
+create or replace PACKAGE BODY xx_ar_cbi_calc_subtotals
 AS
 ---+========================================================================================================+
 ---|                                        Office Depot - Project Simplify                                 |
@@ -44,8 +44,7 @@ AS
 -- |    2.8             11-DEC-2015       Suresh Naragam     Module 4B Release 3 Changes(Defect#36434)      |
 -- |    2.9             05-APR-2016       Havish K           Modified for the Defect 37511                  |
 -- |    3.0             10-MAY-2016       Havish Kasina      Kitting changes, Defect# 37670                 |
--- |    3.1             02-MAY-2008       Punit Gupta CG     Retrofit OD AR Reprint Summary/                |
--- |                                                         Consolidated Bills- Defect NAIT-31695          |
+-- |    3.1             23-JUN-2020       Divyansh Saini     Changes done for Tariff                        |
 ---+========================================================================================================+
 
 ----------------------------
@@ -193,39 +192,39 @@ AS
 ';
 -- commented for R1.2 Defect # 1283 (CR 621)
 /*      lv_desktop_sql        VARCHAR2 (10000)
-         :=    'DECODE(hzsu.attribute2 
-              ,NULL 
+         :=    'DECODE(hzsu.attribute2
+              ,NULL
               ,DECODE(hzca.attribute10 ,NULL ,'
             || xx_ar_cbi_calc_subtotals.lc_def_desk_title
             || ',hzca.attribute10||'':'')
-              ,hzsu.attribute2||'':''   
+              ,hzsu.attribute2||'':''
               )';
       lv_pohd_title         VARCHAR2 (10000)
-         :=    'DECODE(hzca.attribute1 
-              ,NULL 
+         :=    'DECODE(hzca.attribute1
+              ,NULL
               ,'
             || xx_ar_cbi_calc_subtotals.lc_def_pohd_title
-            || ',hzca.attribute1||'':''   
+            || ',hzca.attribute1||'':''
               )';
       lv_rele_title         VARCHAR2 (10000)
-         :=    'DECODE(hzca.attribute3 
-              ,NULL 
+         :=    'DECODE(hzca.attribute3
+              ,NULL
               ,'
             || xx_ar_cbi_calc_subtotals.lc_def_rele_title
-            || ',hzca.attribute3||'':''   
+            || ',hzca.attribute3||'':''
               )';
       lv_dept_title         VARCHAR2 (10000)
-         :=    'DECODE(hzca.attribute5 
-              ,NULL 
+         :=    'DECODE(hzca.attribute5
+              ,NULL
               ,'
             || xx_ar_cbi_calc_subtotals.lc_def_dept_title
-            || ',hzca.attribute5||'':''   
+            || ',hzca.attribute5||'':''
               )';*/
 -- Added for R1.2 Defect # 1283 (CR 621)
       lv_pohd_title         VARCHAR2 (10000)
 --         :=    'DECODE(xccae.c_ext_attr1         -- Commented for R1.2 Defect 4537
          :=    'DECODE(xccae.c_ext_attr2           -- Added for R1.2 Defect 4537
-              ,NULL 
+              ,NULL
               ,'
             || xx_ar_cbi_calc_subtotals.lc_def_pohd_title
 --            || ',xccae.c_ext_attr1||'':''            -- Commented for R1.2 Defect 4537
@@ -234,7 +233,7 @@ AS
       lv_rele_title         VARCHAR2 (10000)
 --         :=    'DECODE(xccae.c_ext_attr2             -- Commented for R1.2 Defect 4537
          :=    'DECODE(xccae.c_ext_attr3               -- Added for R1.2 Defect 4537
-              ,NULL 
+              ,NULL
               ,'
             || xx_ar_cbi_calc_subtotals.lc_def_rele_title
 --            || ',xccae.c_ext_attr2||'':''               -- Commented for R1.2 Defect 4537
@@ -243,19 +242,19 @@ AS
       lv_dept_title         VARCHAR2 (10000)
 --         :=    'DECODE(xccae.c_ext_attr3               -- Commented for R1.2 Defect 4537
          :=    'DECODE(xccae.c_ext_attr1                 -- Added for R1.2 Defect 4537
-              ,NULL 
+              ,NULL
               ,'
             || xx_ar_cbi_calc_subtotals.lc_def_dept_title
 --            || ',xccae.c_ext_attr3||'':''                -- Commented for R1.2 Defect 4537
             || ',xccae.c_ext_attr1||'':''                  -- Added for R1.2 Defect 4537
-              ,NULL 
+              ,NULL
               )';
       lv_desktop_sql         VARCHAR2 (10000)
-         :=    'DECODE(xccae.c_ext_attr4 
-              ,NULL 
+         :=    'DECODE(xccae.c_ext_attr4
+              ,NULL
               ,'
             || xx_ar_cbi_calc_subtotals.lc_def_desk_title
-            || ',xccae.c_ext_attr4||'':''   
+            || ',xccae.c_ext_attr4||'':''
               )';
 -- End of changes for R1.2 Defect # 1283 (CR 621)
       lv_blank_fields       VARCHAR2 (20000) := TO_CHAR (NULL);
@@ -271,42 +270,40 @@ AS
       lv_remaining_select   VARCHAR2 (20000)
          := ' ,ract.customer_trx_id                                 customer_trx_id
  ,oeoh.header_id                                          order_header_id
- ,ract.batch_source_id                                    inv_source_id 
+ ,ract.batch_source_id                                    inv_source_id
  ,ract.trx_number                                         inv_number
- ,trxtype.type                                            inv_type       
- ,rbs.name                                                inv_source 
- ,NVL(TRUNC(oeoh.ordered_date) ,TRUNC(ract.trx_date))     order_date       
- ,NVL(TRUNC(ract.ship_date_actual) ,TRUNC(ract.trx_date)) ship_date 
- ,xx_ar_cbi_infocopy_order_stmnt       
+ ,trxtype.type                                            inv_type
+ ,rbs.name                                                inv_source
+ ,NVL(TRUNC(oeoh.ordered_date) ,TRUNC(ract.trx_date))     order_date
+ ,NVL(TRUNC(ract.ship_date_actual) ,TRUNC(ract.trx_date)) ship_date
+ ,xx_ar_cbi_infocopy_order_stmnt
         (ract.customer_trx_id ,''EXTAMT_PLUS_DELVY'')  order_subtotal
- ,xx_ar_cbi_infocopy_order_stmnt        
-        (ract.customer_trx_id ,''DELIVERY'')           order_delvy        
- ,xx_ar_cbi_infocopy_order_stmnt        
-        (ract.customer_trx_id ,''DISCOUNT'')           order_disc        
- ,xx_ar_cbi_infocopy_order_stmnt        
+ ,xx_ar_cbi_infocopy_order_stmnt
+        (ract.customer_trx_id ,''DELIVERY'')           order_delvy
+ ,xx_ar_cbi_infocopy_order_stmnt
+        (ract.customer_trx_id ,''DISCOUNT'')           order_disc
+ ,xx_ar_cbi_infocopy_order_stmnt
         (ract.customer_trx_id ,''TAX'')                order_tax
- FROM  
+ FROM
        ra_customer_trx              ract
       ,xx_ar_cons_bills_history     od_summbills
       ,ra_cust_trx_types            trxtype
       ,hz_cust_site_uses            hzsu
-      ,xx_om_header_attributes_v xxomh  -- Commented and Changed by Punit CG on 18-APR-2018 for Defect NAIT-31695 
-	  --,xx_om_header_attributes_all  xxomh
+      ,xx_om_header_attributes_all  xxomh
       ,hz_cust_accounts             hzca
       ,xx_cdh_cust_acct_ext_b xccae                            -- Added for R1.2 Defect # 1283 (CR 621)
-      ,xx_oe_order_headers_v oeoh -- Commented and Changed by Punit CG on 18-APR-2018 for Defect NAIT-31695
-	  --,oe_order_headers             oeoh
+      ,oe_order_headers             oeoh
       ,ra_batch_sources             rbs
  WHERE  1 =1
   AND  ract.bill_to_customer_id  =hzca.cust_account_id
   AND  hzca.cust_account_id      =xccae.cust_account_id(+)                -- Added for R1.2 Defect # 1283 (CR 621)
-  AND  rbs.batch_source_id       =ract.batch_source_id  
+  AND  rbs.batch_source_id       =ract.batch_source_id
   AND  trxtype.cust_trx_type_id  =ract.cust_trx_type_id
-  AND  hzsu.site_use_id (+)      =ract.ship_to_site_use_id 
+  AND  hzsu.site_use_id (+)      =ract.ship_to_site_use_id
   AND  ract.attribute14          =oeoh.header_id(+)
   AND  xxomh.header_id(+)        =ract.attribute14
  -- AND  od_summbills.print_date   <=TRUNC(SYSDATE)  commented for defect 10750
-  AND  od_summbills.paydoc       =''N''  
+  AND  od_summbills.paydoc       =''N''
   AND  od_summbills.process_flag !=''Y''
   AND  od_summbills.attribute8   =''INV_IC''
   AND  od_summbills.cons_inv_id  =:cbi_id
@@ -813,46 +810,46 @@ AS
 ';
 -- Commented for R1.2 Defect # 1283 (CR 621)
 /*      lv_desktop_sql        VARCHAR2 (10000)
-         :=    'DECODE(hzsu.attribute2 
-              ,NULL 
+         :=    'DECODE(hzsu.attribute2
+              ,NULL
               ,DECODE(hzca.attribute10 ,NULL ,'
             || xx_ar_cbi_calc_subtotals.lc_def_desk_title
             || ',hzca.attribute10||'':'')
-              ,hzsu.attribute2||'':''   
+              ,hzsu.attribute2||'':''
               )';
       lv_desktop_sql1       VARCHAR2 (10000)
-         :=    'DECODE(hzca.attribute10 
-              ,NULL 
+         :=    'DECODE(hzca.attribute10
+              ,NULL
               ,'
             || xx_ar_cbi_calc_subtotals.lc_def_desk_title
-            || ',hzca.attribute10||'':''   
+            || ',hzca.attribute10||'':''
               )';
       lv_pohd_title         VARCHAR2 (10000)
-         :=    'DECODE(hzca.attribute1 
-              ,NULL 
+         :=    'DECODE(hzca.attribute1
+              ,NULL
               ,'
             || xx_ar_cbi_calc_subtotals.lc_def_pohd_title
-            || ',hzca.attribute1||'':''   
+            || ',hzca.attribute1||'':''
               )';
       lv_rele_title         VARCHAR2 (10000)
-         :=    'DECODE(hzca.attribute3 
-              ,NULL 
+         :=    'DECODE(hzca.attribute3
+              ,NULL
               ,'
             || xx_ar_cbi_calc_subtotals.lc_def_rele_title
-            || ',hzca.attribute3||'':''   
+            || ',hzca.attribute3||'':''
               )';
       lv_dept_title         VARCHAR2 (10000)
-         :=    'DECODE(hzca.attribute5 
-              ,NULL 
+         :=    'DECODE(hzca.attribute5
+              ,NULL
               ,'
             || xx_ar_cbi_calc_subtotals.lc_def_dept_title
-            || ',hzca.attribute5||'':''   
+            || ',hzca.attribute5||'':''
               )';*/
 -- Added for R1.2 Defect # 1283 (CR 621)
       lv_pohd_title         VARCHAR2 (10000)
 --         :=    'DECODE(xccae.c_ext_attr1      -- Commented for R1.2 Defect 4537
          :=    'DECODE(xccae.c_ext_attr2        -- Added for R1.2 Defect 4537
-              ,NULL 
+              ,NULL
               ,'
             || xx_ar_cbi_calc_subtotals.lc_def_pohd_title
 --            || ',xccae.c_ext_attr1||'':''        -- Commented for R1.2 Defect 4537
@@ -861,7 +858,7 @@ AS
       lv_rele_title         VARCHAR2 (10000)
 --         :=    'DECODE(xccae.c_ext_attr2          -- Commented for R1.2 Defect 4537
          :=    'DECODE(xccae.c_ext_attr3            -- Added for R1.2 Defect 4537
-              ,NULL 
+              ,NULL
               ,'
             || xx_ar_cbi_calc_subtotals.lc_def_rele_title
 --            || ',xccae.c_ext_attr2||'':''             -- Commented for R1.2 Defect 4537
@@ -870,62 +867,60 @@ AS
       lv_dept_title         VARCHAR2 (10000)
 --         :=    'DECODE(xccae.c_ext_attr3             -- Commented for R1.2 Defect 4537
          :=    'DECODE(xccae.c_ext_attr1               -- Added for R1.2 Defect 4537
-              ,NULL 
+              ,NULL
               ,'
             || xx_ar_cbi_calc_subtotals.lc_def_dept_title
 --            || ',xccae.c_ext_attr3||'':''               -- Commented for R1.2 Defect 4537
             || ',xccae.c_ext_attr1||'':''                 -- Added for R1.2 Defect 4537
               )';
       lv_desktop_sql         VARCHAR2 (10000)
-         :=    'DECODE(xccae.c_ext_attr4 
-              ,NULL 
+         :=    'DECODE(xccae.c_ext_attr4
+              ,NULL
               ,'
             || xx_ar_cbi_calc_subtotals.lc_def_desk_title
-            || ',xccae.c_ext_attr4||'':''   
+            || ',xccae.c_ext_attr4||'':''
               )';
 -- End of changes for R1.2 Defect # 1283 (CR 621)
       lv_blank_fields       VARCHAR2 (32000) := TO_CHAR (NULL);
       lv_remaining_select   VARCHAR2 (32000)
          := ' ,acil.customer_trx_id                                 customer_trx_id
  ,oeoh.header_id                                          order_header_id
- ,ract.batch_source_id                                    inv_source_id 
+ ,ract.batch_source_id                                    inv_source_id
  ,ract.trx_number                                         inv_number
- ,trxtype.type                                            inv_type       
- ,rbs.name                                                inv_source 
- ,NVL(TRUNC(oeoh.ordered_date) ,TRUNC(ract.trx_date))     order_date       
- ,NVL(TRUNC(ract.ship_date_actual) ,TRUNC(ract.trx_date)) ship_date 
- ,xx_ar_cbi_order_ministmnt       
+ ,trxtype.type                                            inv_type
+ ,rbs.name                                                inv_source
+ ,NVL(TRUNC(oeoh.ordered_date) ,TRUNC(ract.trx_date))     order_date
+ ,NVL(TRUNC(ract.ship_date_actual) ,TRUNC(ract.trx_date)) ship_date
+ ,xx_ar_cbi_order_ministmnt
         (acil.cons_inv_id ,ract.customer_trx_id ,''EXTAMT_PLUS_DELVY'')  order_subtotal
- ,xx_ar_cbi_order_ministmnt        
-        (acil.cons_inv_id ,ract.customer_trx_id ,''DELIVERY'')           order_delvy        
- ,xx_ar_cbi_order_ministmnt        
-        (acil.cons_inv_id ,ract.customer_trx_id ,''DISCOUNT'')           order_disc        
- ,xx_ar_cbi_order_ministmnt        
+ ,xx_ar_cbi_order_ministmnt
+        (acil.cons_inv_id ,ract.customer_trx_id ,''DELIVERY'')           order_delvy
+ ,xx_ar_cbi_order_ministmnt
+        (acil.cons_inv_id ,ract.customer_trx_id ,''DISCOUNT'')           order_disc
+ ,xx_ar_cbi_order_ministmnt
         (acil.cons_inv_id ,ract.customer_trx_id ,''TAX'')                order_tax
- FROM   
+ FROM
        (
          SELECT cons_inv_id ,customer_trx_id
-         FROM   ar_cons_inv_trx_lines    
+         FROM   ar_cons_inv_trx_lines
          WHERE  cons_inv_id =:cbi_id
          GROUP BY cons_inv_id ,customer_trx_id
        ) acil
       ,ra_customer_trx              ract
       ,ra_cust_trx_types            trxtype
       ,hz_cust_site_uses            hzsu
-	  ,xx_om_header_attributes_v xxomh  -- Commented and Changed by Punit CG on 18-APR-2018 for Defect NAIT-31695 
-      --,xx_om_header_attributes_all  xxomh
+      ,xx_om_header_attributes_all  xxomh
       ,hz_cust_accounts             hzca
       ,xx_cdh_cust_acct_ext_b xccae         -- Added for R1.2 Defect # 1283 (CR 621)
-      ,xx_oe_order_headers_v oeoh -- Commented and Changed by Punit CG on 18-APR-2018 for Defect NAIT-31695
-	  --,oe_order_headers             oeoh
-      ,ra_batch_sources             rbs      
+      ,oe_order_headers             oeoh
+      ,ra_batch_sources             rbs
  WHERE  1 =1
   AND  ract.customer_trx_id     =acil.customer_trx_id
   AND  ract.bill_to_customer_id =hzca.cust_account_id
   AND  hzca.cust_account_id     =xccae.cust_account_id(+)            -- Added for R1.2 Defect # 1283 (CR 621)
-  AND  rbs.batch_source_id      =ract.batch_source_id  
+  AND  rbs.batch_source_id      =ract.batch_source_id
   AND  trxtype.cust_trx_type_id =ract.cust_trx_type_id
-  AND  hzsu.site_use_id (+)     =ract.ship_to_site_use_id 
+  AND  hzsu.site_use_id (+)     =ract.ship_to_site_use_id
   AND  ract.attribute14         =oeoh.header_id(+)
   AND  xxomh.header_id(+)       =ract.attribute14
   AND  xccae.attr_group_id(+)   =:sfthdr_group_id';               -- Added for R1.2 Defect # 1283 (CR 621)
@@ -1523,11 +1518,18 @@ lv_sql_by :=lv_blank_fields;
                   ,xolaa.cust_dept_description
 				  ,ractl.attribute3              -- Added for Kitting, Defect# 37670
 				  ,ractl.attribute4              -- Added for Kitting, Defect# 37670
+				  ,Q_Fee.attribute7             -- Added for 3.1
+				  ,XX_AR_EBL_COMMON_UTIL_PKG.get_fee_line_number(ractl.customer_trx_id,ractl.description,null,ractl.line_number) line_number  -- change 3.1
          FROM     ra_customer_trx_lines ractl,
-		          xx_oe_order_lines_v oeol, -- Commented and Changed by Punit CG on 18-APR-2018 for Defect NAIT-31695
-                  --oe_order_lines oeol,
-				  xx_om_line_attributes_v xolaa  -- Commented and Changed by Punit CG on 18-APR-2018 for Defect NAIT-31695  
-                  --xx_om_line_attributes_all xolaa
+                  oe_order_lines oeol,
+                  xx_om_line_attributes_all xolaa,
+				  (select meaning, attribute6,attribute7
+                                       FROM fnd_lookup_values flv
+                                      WHERE lookup_type =  'OD_FEES_ITEMS'
+                                        AND flv.LANGUAGE='US'
+                                        AND FLV.enabled_flag = 'Y'                                   
+                                        AND SYSDATE BETWEEN NVL(FLV.start_date_active,SYSDATE) AND NVL(FLV.end_date_active,SYSDATE+1)  
+                                        AND FLV.attribute7 NOT IN ('DELIVERY','MISCELLANEOUS')  ) Q_Fee -- Added for 3.1
             /*
                ,(
                    SELECT mtlsi.inventory_item_id inv_item_id ,mtlsi.segment1 item_number
@@ -1553,6 +1555,7 @@ lv_sql_by :=lv_blank_fields;
               AND ractl.interface_line_attribute6 = oeol.line_id(+)
          --and ractl.inventory_item_id         =msib.inv_item_id(+)
 		      AND DECODE(ractl.attribute3,'K',DECODE(ractl.attribute5,'Y','1','2'),'1') = '1' -- Added for Kitting, Defect# 37670
+			  AND ractl.inventory_item_id = Q_Fee.attribute6(+)
          ORDER BY ractl.line_number;
 
       CURSOR misc_crmemo (
@@ -1600,8 +1603,7 @@ lv_sql_by :=lv_blank_fields;
                   ar_cons_inv arcit,
                   ra_customer_trx_lines ractl,
                   ra_customer_trx ract,
-				  xx_oe_price_adjustments_v oepa  -- Commented and Changed by Punit CG on 18-APR-2018 for Defect NAIT-31695
-                  --oe_price_adjustments oepa
+                  oe_price_adjustments oepa
             WHERE arcit.cons_inv_id = consinv_lines.cons_inv_id
               AND consinv_lines.customer_trx_id = trx_id
               AND consinv_lines.customer_trx_line_id =
@@ -1664,8 +1666,7 @@ ORDER BY  RCT.trx_number;
 CURSOR GIFT_CARD_INV (trx_id IN NUMBER) IS
 SELECT   RCT.trx_number                   TRX_NUMBER
         ,NVL(SUM(OP.payment_amount),0)    GIFT_CARD_AMT
-FROM     xx_oe_payments_v OP -- Commented and Changed by Punit CG on 02-MAY-2018 for Defect NAIT-31695
-        --oe_payments         OP
+FROM     oe_payments         OP
         ,ra_customer_trx_all RCT
 WHERE    OP.header_id        = RCT.attribute14
 AND      RCT.customer_trx_id = trx_id
@@ -1691,11 +1692,9 @@ GROUP BY RCT.trx_number;
                 SUBSTR (ooh.orig_sys_document_ref, 13, 3) spc_register_num,
                 SUBSTR (ooh.orig_sys_document_ref, 16, 5) spc_trans_num,
                 oeos.NAME oe_source
-           FROM xx_om_header_attributes_v xohaa,  -- Commented and Changed by Punit CG on 18-APR-2018 for Defect NAIT-31695 
-		        --xx_om_header_attributes_all xohaa,
+           FROM xx_om_header_attributes_all xohaa,
                 oe_order_sources oeos,
-				xx_oe_order_headers_v ooh,-- Commented and Changed by Punit CG on 18-APR-2018 for Defect NAIT-31695
-                --oe_order_headers ooh,
+                oe_order_headers ooh,
                 ra_customer_trx_all ract
           WHERE ract.customer_trx_id = trx_id
             AND ract.attribute14 = ooh.header_id
@@ -2000,10 +1999,8 @@ GROUP BY RCT.trx_number;
                      -- Added for Defect 5212
                      SELECT XOLA.line_comments
                      INTO   lc_line_comments
-                     FROM   xx_oe_order_headers_v OOH -- Commented and Changed by Punit CG on 18-APR-2018 for Defect NAIT-31695
-					        --oe_order_headers_all      OOH
-					        ,xx_om_line_attributes_v XOLA  -- Commented and Changed by Punit CG on 18-APR-2018 for Defect NAIT-31695  
-                           --,xx_om_line_attributes_all XOLA
+                     FROM   oe_order_headers_all      OOH
+                           ,xx_om_line_attributes_all XOLA
                      WHERE  OOH.header_id = trx_rec.header_id
                      AND    XOLA.line_id  = trx_rec.line_id
                      AND    OOH.order_source_id IN (SELECT attribute6
@@ -2014,7 +2011,7 @@ GROUP BY RCT.trx_number;
                                                     AND    TRUNC(SYSDATE) BETWEEN TRUNC(start_date_active) AND TRUNC(NVL(end_date_active,SYSDATE+1)));
                      -- End of changes for Defect 5212
                   EXCEPTION
-                     WHEN NO_DATA_FOUND 
+                     WHEN NO_DATA_FOUND
                      THEN
                         lc_line_comments       := NULL;
                      WHEN OTHERS
@@ -2033,13 +2030,13 @@ GROUP BY RCT.trx_number;
 																		p_kit_quantity         => trx_rec.qty,
 																		x_kit_extended_amt     => ln_kit_extended_amt,
 																		x_kit_unit_price       => ln_kit_unit_price
-																	  );					  
+																	  );
 					 trx_rec.unit_price        := ln_kit_unit_price;
-					 trx_rec.extended_price    := ln_kit_extended_amt;			 
+					 trx_rec.extended_price    := ln_kit_extended_amt;
 	             END IF;
-				 
+
 				 lc_kit_sku := NULL;
-				 
+
 				 IF trx_rec.attribute4 IS NOT NULL AND trx_rec.attribute3 = 'D'
 					THEN
 					  BEGIN
@@ -2049,13 +2046,13 @@ GROUP BY RCT.trx_number;
 						 WHERE segment1 = trx_rec.attribute4
 						   AND organization_id = NVL (trx_rec.whse_id, p_item_master_org);
 					  EXCEPTION
-						WHEN OTHERS 
+						WHEN OTHERS
 						THEN
 						  lc_kit_sku := NULL;
 					  END;
 				 END IF;
 		-- End of adding Kitting Changes, Defect# 37670
-		
+
                   lc_error_loc    := 'Calling Insert_invoice_lines';      -- Added log message for Defect 10750
                   lc_error_debug  := 'For Trx_id'||trx_row.customer_trx_id ; -- Added log message for Defect 10750
                   insert_invoice_lines
@@ -2075,8 +2072,10 @@ GROUP BY RCT.trx_number;
                          lc_line_comments                              -- Added for R1.2 Defect 1744 (CR 743)
                          ,trx_rec.cost_center_dept
                          ,trx_rec.cust_dept_description
-						 ,lc_kit_sku                                   -- Added for Kitting, Defect# 37670
-                        ); 
+                         ,lc_kit_sku                                   -- Added for Kitting, Defect# 37670
+                         ,trx_rec.attribute7                          -- Added for 3.1
+						 ,trx_rec.line_number                         -- Added for 3.1
+                        );
                END LOOP;
 
 -- ======================================================
@@ -2112,9 +2111,9 @@ GROUP BY RCT.trx_number;
                END LOOP;
 
        -- Start for Defect # 631 (CR : 662)
-     -- ======================================================    
+     -- ======================================================
      --  Insert Applied Credit Memo invoices
-     -- ======================================================          
+     -- ======================================================
         lc_error_loc := 'Insert Applied Credit Memo invoices';
         lc_error_debug := 'Customer trx ID ' || to_char(trx_row.customer_trx_id);
 
@@ -2130,13 +2129,10 @@ GROUP BY RCT.trx_number;
                 ,APS.amount_due_original
           INTO   lc_trx_number
                 ,ln_amount_applied
-          FROM   xx_om_line_attributes_v XOLA  -- Commented and Changed by Punit CG on 18-APR-2018 for Defect NAIT-31695  
-		         --xx_om_line_attributes_all XOLA
+          FROM   xx_om_line_attributes_all XOLA
                 ,ra_customer_trx_all       RCT
-				,xx_oe_order_lines_v OELA -- Commented and Changed by Punit CG on 18-APR-2018 for Defect NAIT-31695
-                --,oe_order_lines_all        OELA
-				,xx_oe_order_headers_v OEHA -- Commented and Changed by Punit CG on 18-APR-2018 for Defect NAIT-31695
-                --,oe_order_headers_all      OEHA-- added for defect 5846
+                ,oe_order_lines_all        OELA
+                ,oe_order_headers_all      OEHA-- added for defect 5846
                 ,ar_payment_schedules_all  APS
           WHERE  RCT.attribute14      = OELA.header_id
           AND    OELA.line_id         = XOLA.line_id
@@ -2303,7 +2299,7 @@ GROUP BY RCT.trx_number;
                                   || SQLERRM
                                  );-- Chnaged for Defect #11769
                fnd_file.put_line (fnd_file.LOG,
-                                  p_doc_type || ' Other errors ' || p_cbi_id|| SQLERRM   
+                                  p_doc_type || ' Other errors ' || p_cbi_id|| SQLERRM
                                  );-- Chnaged for Defect #11769
                fnd_file.put_line (fnd_file.LOG,
                                    ' Error in Get_invoices-PAYDOC:'
@@ -2340,7 +2336,7 @@ GROUP BY RCT.trx_number;
       --   fnd_file.put_line(fnd_file.log,'INV IC: ' ||p_cbi_id||'--'||sql_stmnt);  --SAMBA
          BEGIN
             fnd_file.put_line (fnd_file.LOG,
-                               'Inside Invoice InfoCopy :' || p_cbi_id  
+                               'Inside Invoice InfoCopy :' || p_cbi_id
                               );-- Chnaged for Defect #11769
             lc_error_loc   := 'Inside Invoice InfoCopy -Opening trx_cursor:INV_IC' ; -- Added log message for Defect 10750
             lc_error_debug := 'For CBI ID'||p_cbi_id; -- Added log message for Defect 10750
@@ -2566,10 +2562,8 @@ GROUP BY RCT.trx_number;
                      -- Added for Defect 5212
                      SELECT XOLA.line_comments
                      INTO   lc_line_comments
-                     FROM   xx_oe_order_headers_v OOH -- Commented and Changed by Punit CG on 18-APR-2018 for Defect NAIT-31695
-					        --oe_order_headers_all      OOH
-					        ,xx_om_line_attributes_v XOLA  -- Commented and Changed by Punit CG on 18-APR-2018 for Defect NAIT-31695    
-                           --,xx_om_line_attributes_all XOLA
+                     FROM   oe_order_headers_all      OOH
+                           ,xx_om_line_attributes_all XOLA
                      WHERE  OOH.header_id = trx_rec.header_id
                      AND    XOLA.line_id  = trx_rec.line_id
                      AND    OOH.order_source_id IN (SELECT attribute6
@@ -2580,7 +2574,7 @@ GROUP BY RCT.trx_number;
                                                     AND    TRUNC(SYSDATE) BETWEEN TRUNC(start_date_active) AND TRUNC(NVL(end_date_active,SYSDATE+1)));
                      -- End of changes for Defect 5212
                   EXCEPTION
-                     WHEN NO_DATA_FOUND 
+                     WHEN NO_DATA_FOUND
                      THEN
                         lc_line_comments       := NULL;
                      WHEN OTHERS
@@ -2599,13 +2593,13 @@ GROUP BY RCT.trx_number;
 																		p_kit_quantity         => trx_rec.qty,
 																		x_kit_extended_amt     => ln_kit_extended_amt,
 																		x_kit_unit_price       => ln_kit_unit_price
-																	  );					  
+																	  );
 					 trx_rec.unit_price        := ln_kit_unit_price;
-					 trx_rec.extended_price    := ln_kit_extended_amt;			 
+					 trx_rec.extended_price    := ln_kit_extended_amt;
 	             END IF;
-				 
+
 				 lc_kit_sku := NULL;
-				 
+
 				 IF trx_rec.attribute4 IS NOT NULL AND trx_rec.attribute3 = 'D'
 					THEN
 					  BEGIN
@@ -2615,7 +2609,7 @@ GROUP BY RCT.trx_number;
 						 WHERE segment1 = trx_rec.attribute4
 						   AND organization_id = NVL (trx_rec.whse_id, p_item_master_org);
 					  EXCEPTION
-						WHEN OTHERS 
+						WHEN OTHERS
 						THEN
 						  lc_kit_sku := NULL;
 					  END;
@@ -2642,6 +2636,8 @@ GROUP BY RCT.trx_number;
                         ,trx_rec.cost_center_dept
                         ,trx_rec.cust_dept_description
 						,lc_kit_sku                                     -- Added for Kitting, Defect# 37670
+						,trx_rec.attribute7                            -- Added for 3.1
+						,trx_rec.line_number                         -- Added for 3.1
                         );
                END LOOP;
 
@@ -2678,9 +2674,9 @@ GROUP BY RCT.trx_number;
                END LOOP;
 
        -- Start for Defect # 631 (CR : 662)
-     -- ======================================================    
+     -- ======================================================
      --  Insert Applied Credit Memo invoices
-     -- ======================================================          
+     -- ======================================================
         lc_error_loc := 'Insert Applied Credit Memo invoices';
         lc_error_debug := 'Customer trx ID ' || to_char(trx_row.customer_trx_id);
 
@@ -2696,13 +2692,10 @@ GROUP BY RCT.trx_number;
                 ,APS.amount_due_original
           INTO   lc_trx_number
                 ,ln_amount_applied
-          FROM   xx_om_line_attributes_v XOLA  -- Commented and Changed by Punit CG on 18-APR-2018 for Defect NAIT-31695  
-		        --xx_om_line_attributes_all XOLA
+          FROM   xx_om_line_attributes_all XOLA
                 ,ra_customer_trx_all       RCT
-				,xx_oe_order_lines_v OELA -- Commented and Changed by Punit CG on 18-APR-2018 for Defect NAIT-31695
-                --,oe_order_lines_all        OELA
-				,xx_oe_order_headers_v OEHA -- Commented and Changed by Punit CG on 18-APR-2018 for Defect NAIT-31695
-                --,oe_order_headers_All      OEHA -- added for defect 5846
+                ,oe_order_lines_all        OELA
+                ,oe_order_headers_All      OEHA -- added for defect 5846
                 ,ar_payment_schedules_all  APS
           WHERE  RCT.attribute14      = OELA.header_id
           AND    OELA.line_id         = XOLA.line_id
@@ -2744,7 +2737,7 @@ GROUP BY RCT.trx_number;
         ,NULL
         ,NULL
 		,NULL                       -- Added for Kitting, Defect# 37670
-           ); 
+           );
 --      END LOOP;                                                                -- Commented for R1.3 CR 733 Defect 1212
     END IF;
 
@@ -3061,7 +3054,9 @@ GROUP BY RCT.trx_number;
       p_line_comments           IN   VARCHAR2,                                 -- Added for R1.2 Defect 1744 (CR 743)
       p_cost_center_dept        IN   VARCHAR2,
       p_cust_dept_description   IN   VARCHAR2,
-	  p_kit_sku                 IN VARCHAR2                                    -- Added for Kitting, Defect# 37670
+	  p_kit_sku                 IN   VARCHAR2,                                    -- Added for Kitting, Defect# 37670
+	  p_fee_type                IN   VARCHAR2 DEFAULT NULL,                         -- Added for 3.1
+	  p_fee_line_num            IN   NUMBER DEFAULT NULL                           -- Added for 3.1
    )
    AS
    lc_error_loc    VARCHAR2(500) :=NULL ; -- Added log message for Defect 10750
@@ -3074,13 +3069,17 @@ GROUP BY RCT.trx_number;
                    item_code, customer_product_code, item_description,
                    manuf_code, qty, uom, unit_price, extended_price,
                    line_comments, cost_center_dept, cust_dept_description  -- Added for R1.2 Defect 1744 (CR 743)
-				   ,kit_sku  -- Added for Kitting, Defect# 37670   
+				   ,kit_sku  -- Added for Kitting, Defect# 37670
+				   ,fee_type-- Added for 3.1
+				   ,fee_line_seq -- Added for 3.1
                   )
            VALUES (p_reqs_id, p_cons_id, p_inv_id, p_line_seq,
                    p_item_code, p_customer_product_code, p_item_description,
                    p_manuf_code, p_qty, p_uom, p_unit_price, p_extended_price,
                    p_line_comments, p_cost_center_dept, p_cust_dept_description    -- Added for R1.2 Defect 1744 (CR 743)
 				   ,p_kit_sku   -- Added for Kitting, Defect# 37670
+				   ,p_fee_type -- Added for 3.1
+				   ,p_fee_line_num -- Added for 3.1
                   );
        lc_error_loc   := 'After xx_ar_cbi_trx_lines';  --Added log message for Defect 10750
        lc_error_debug := 'For CBI'||p_cons_id ;  --Added log message for Defect 10750
@@ -3884,7 +3883,7 @@ GROUP BY RCT.trx_number;
             END LOOP;
 
              lc_error_loc := 'Calling xx_ar_cbi_calc_subtotals.copy_totals for BILLTO_SUBTOTAL'
-                                 ||'-- SUBSTR(p_total_by ,1 ,2) =B1';    -- Added for Defect 10750 
+                                 ||'-- SUBSTR(p_total_by ,1 ,2) =B1';    -- Added for Defect 10750
              lc_error_debug := 'For CBI'|| p_cons_id; --Added for Defect 10750
             IF SUBSTR (p_total_by, 1, 2) = 'B1'
             THEN
@@ -3903,8 +3902,8 @@ GROUP BY RCT.trx_number;
                                    );
 
                 lc_error_loc := 'Calling xx_ar_cbi_calc_subtotals.copy_totals for'
-                                     ||'BILLTO_DISCOUNTS -- SUBSTR(p_total_by ,1 ,2) =B1';    -- Added for Defect 10750  
-                lc_error_debug := 'For CBI'|| p_cons_id; -- Added for Defect 10750 
+                                     ||'BILLTO_DISCOUNTS -- SUBSTR(p_total_by ,1 ,2) =B1';    -- Added for Defect 10750
+                lc_error_debug := 'For CBI'|| p_cons_id; -- Added for Defect 10750
                xx_ar_cbi_calc_subtotals.copy_totals
                                     (p_reqs_id,
                                      p_cons_id,
@@ -3920,8 +3919,8 @@ GROUP BY RCT.trx_number;
                                      ln_grand_total_orders
                                     );
                 lc_error_loc := 'Calling xx_ar_cbi_calc_subtotals.copy_totals for'
-                                     ||'BILLTO_TAX -- SUBSTR(p_total_by ,1 ,2) =B1';    -- Added for Defect 10750  
-                lc_error_debug := 'For CBI'|| p_cons_id; -- Added for Defect 10750 
+                                     ||'BILLTO_TAX -- SUBSTR(p_total_by ,1 ,2) =B1';    -- Added for Defect 10750
+                lc_error_debug := 'For CBI'|| p_cons_id; -- Added for Defect 10750
                xx_ar_cbi_calc_subtotals.copy_totals
                                     (p_reqs_id,
                                      p_cons_id,
@@ -3938,8 +3937,8 @@ GROUP BY RCT.trx_number;
                                     );
 
                lc_error_loc := 'Calling xx_ar_cbi_calc_subtotals.copy_totals for'
-                                     ||'BILLTO_TOTAL -- SUBSTR(p_total_by ,1 ,2) =B1';    -- Added for Defect 10750  
-                lc_error_debug := 'For CBI'|| p_cons_id; -- Added for Defect 10750 
+                                     ||'BILLTO_TOTAL -- SUBSTR(p_total_by ,1 ,2) =B1';    -- Added for Defect 10750
+                lc_error_debug := 'For CBI'|| p_cons_id; -- Added for Defect 10750
                xx_ar_cbi_calc_subtotals.copy_totals
                                     (p_reqs_id,
                                      p_cons_id,
@@ -3959,8 +3958,8 @@ GROUP BY RCT.trx_number;
             END IF;
 
             lc_error_loc := 'Calling xx_ar_cbi_calc_subtotals.copy_totals for'
-                                     ||'GRAND_TOTAL';    -- Added for Defect 10750  
-             lc_error_debug := 'For CBI'|| p_cons_id; -- Added for Defect 10750 
+                                     ||'GRAND_TOTAL';    -- Added for Defect 10750
+             lc_error_debug := 'For CBI'|| p_cons_id; -- Added for Defect 10750
             xx_ar_cbi_calc_subtotals.copy_totals
                                     (p_reqs_id,
                                      p_cons_id,
@@ -3997,8 +3996,8 @@ GROUP BY RCT.trx_number;
                   END LOOP;
 
                  lc_error_loc := 'Calling xx_ar_cbi_calc_subtotals.copy_totals for BILLTO_SUBTOTAL'
-                                      ||'-- only B1 totals'  ;-- Added for Defect 10750                                          
-                 lc_error_debug := 'For CBI'|| p_cons_id; -- Added for Defect 10750 
+                                      ||'-- only B1 totals'  ;-- Added for Defect 10750
+                 lc_error_debug := 'For CBI'|| p_cons_id; -- Added for Defect 10750
                   xx_ar_cbi_calc_subtotals.copy_totals
                                     (p_reqs_id,
                                      p_cons_id,
@@ -4015,7 +4014,7 @@ GROUP BY RCT.trx_number;
                                     );
 
                  lc_error_loc := 'Calling xx_ar_cbi_calc_subtotals.copy_totals for BILLTO_DISCOUNTS'
-                                      ||'-- only B1 totals'  ;-- Added for Defect 10750                                          
+                                      ||'-- only B1 totals'  ;-- Added for Defect 10750
                  lc_error_debug := 'For CBI'|| p_cons_id; -- Added for Defect 10750
                   xx_ar_cbi_calc_subtotals.copy_totals
                                     (p_reqs_id,
@@ -4033,7 +4032,7 @@ GROUP BY RCT.trx_number;
                                     );
 
                   lc_error_loc := 'Calling xx_ar_cbi_calc_subtotals.copy_totals for BILLTO_TAX'
-                                      ||'-- only B1 totals'  ;-- Added for Defect 10750                                          
+                                      ||'-- only B1 totals'  ;-- Added for Defect 10750
                  lc_error_debug := 'For CBI'|| p_cons_id; -- Added for Defect 10750
                   xx_ar_cbi_calc_subtotals.copy_totals
                                     (p_reqs_id,
@@ -4051,7 +4050,7 @@ GROUP BY RCT.trx_number;
                                     );
 
                   lc_error_loc := 'Calling xx_ar_cbi_calc_subtotals.copy_totals for BILLTO_TOTAL'
-                                      ||'-- only B1 totals'  ;-- Added for Defect 10750                                          
+                                      ||'-- only B1 totals'  ;-- Added for Defect 10750
                  lc_error_debug := 'For CBI'|| p_cons_id; -- Added for Defect 10750
                   xx_ar_cbi_calc_subtotals.copy_totals
                                     (p_reqs_id,
@@ -4069,7 +4068,7 @@ GROUP BY RCT.trx_number;
                                     );
 
                   lc_error_loc := 'Calling xx_ar_cbi_calc_subtotals.copy_totals for GRAND TOTAL'
-                                      ||'-- only B1 totals'  ;-- Added for Defect 10750                                          
+                                      ||'-- only B1 totals'  ;-- Added for Defect 10750
                  lc_error_debug := 'For CBI'|| p_cons_id; -- Added for Defect 10750
                   xx_ar_cbi_calc_subtotals.copy_totals
                                     (p_reqs_id,
@@ -4097,7 +4096,7 @@ GROUP BY RCT.trx_number;
 -- ===============================================
 -- Process sub totals for Canadian Invoices...
 -- ===============================================
-      ELSIF 
+      ELSIF
 
       xx_fin_country_defaults_pkg.f_org_id ('CA') =
                                                   fnd_profile.VALUE ('ORG_ID')
@@ -5411,7 +5410,7 @@ GROUP BY RCT.trx_number;
                           );
             END LOOP;
 
-            lc_error_loc := 'Calling copy_summ_one_totals for SOFTHDR_TOTALS -- SUBSTR(p_total_by ,1 ,2) =B1 ';    -- added for defect 10750 
+            lc_error_loc := 'Calling copy_summ_one_totals for SOFTHDR_TOTALS -- SUBSTR(p_total_by ,1 ,2) =B1 ';    -- added for defect 10750
             lc_error_debug := 'CBI'||p_cons_id ;
             IF SUBSTR (p_total_by, 1, 2) = 'B1'
             THEN
@@ -5436,7 +5435,7 @@ GROUP BY RCT.trx_number;
                NULL;
             END IF;
 
-            lc_error_loc := 'Calling copy_summ_one_totals for GRAND_TOTAL -- SUBSTR(p_total_by ,1 ,2) =B1 ';    -- added for defect 10750 
+            lc_error_loc := 'Calling copy_summ_one_totals for GRAND_TOTAL -- SUBSTR(p_total_by ,1 ,2) =B1 ';    -- added for defect 10750
             lc_error_debug := 'CBI'||p_cons_id ;
             copy_summ_one_totals (p_reqs_id,
                                   p_cons_id,
@@ -5478,7 +5477,7 @@ GROUP BY RCT.trx_number;
                      ln_grand_total_orders := b1_total_rec.total_orders;
                   END LOOP;
 
-                  lc_error_loc := 'Calling copy_summ_one_totals for BILLTO_TOTALS --  only B1 totals ';    -- added for defect 10750 
+                  lc_error_loc := 'Calling copy_summ_one_totals for BILLTO_TOTALS --  only B1 totals ';    -- added for defect 10750
                   lc_error_debug := 'CBI'||p_cons_id ;
                   copy_summ_one_totals
                                     (p_reqs_id,
@@ -5498,7 +5497,7 @@ GROUP BY RCT.trx_number;
                                      p_doc_type
                                     );
 
-                  lc_error_loc := 'Calling copy_summ_one_totals for GRAND TOTAL --  only B1 totals ';    -- added for defect 10750 
+                  lc_error_loc := 'Calling copy_summ_one_totals for GRAND TOTAL --  only B1 totals ';    -- added for defect 10750
                   lc_error_debug := 'CBI'||p_cons_id ;
                   copy_summ_one_totals
                                     (p_reqs_id,
@@ -5780,7 +5779,7 @@ GROUP BY RCT.trx_number;
                         --dbms_output.put_line ('Subtotal header #: '||NVL(lr_records(ln_curr_index).prior_header ,'NA'));
                         --dbms_output.put_line ('Subtotal @ Invoice# :'||lr_records(ln_curr_index).prior_header||' ,'||prev_inv_num||rpad(rpad('>', 30-i*5,'>') || NVL(lr_records(ln_curr_index).prior_value ,'NONE') || ' = ' || lr_records(ln_curr_index).total_amount,60));
 
-                       lc_error_loc := 'Calling copy_summ_one_totals for SOFTHDR_TOTALS -- Canadian Invoices --p_total_by !=B1 ';    -- added for defect 10750 
+                       lc_error_loc := 'Calling copy_summ_one_totals for SOFTHDR_TOTALS -- Canadian Invoices --p_total_by !=B1 ';    -- added for defect 10750
                        lc_error_debug :='CBI'||p_cons_id;
                         copy_summ_one_totals
                            (p_reqs_id,
@@ -5859,7 +5858,7 @@ GROUP BY RCT.trx_number;
                ln_curr_index := (pn_number_of_soft_headers - i) + 1;
                --dbms_output.put_line ('Bala@@@@ Subtotal :'||lr_records(ln_curr_index).current_header||' ,'||rpad(rpad('>', 30-i*5,'>') || lr_records(ln_curr_index).current_value || ' = ' || lr_records(ln_curr_index).total_amount,60));
 
-                lc_error_loc := 'Calling copy_summ_one_totals for SOFTHDR_TOTALS -- Canadian Invoices-Current ';    -- added for defect 10750 
+                lc_error_loc := 'Calling copy_summ_one_totals for SOFTHDR_TOTALS -- Canadian Invoices-Current ';    -- added for defect 10750
                 lc_error_debug :='CBI'||p_cons_id;
                copy_summ_one_totals
                        (p_reqs_id,
@@ -5891,7 +5890,7 @@ GROUP BY RCT.trx_number;
             IF SUBSTR (p_total_by, 1, 2) = 'B1'
             THEN
 
-                 lc_error_loc := 'Calling copy_summ_one_totals for BILLTO_TOTALS -- Canadian Invoices --SUBSTR (p_total_by, 1, 2) = B1';    -- added for defect 10750 
+                 lc_error_loc := 'Calling copy_summ_one_totals for BILLTO_TOTALS -- Canadian Invoices --SUBSTR (p_total_by, 1, 2) = B1';    -- added for defect 10750
                  lc_error_debug :='CBI'||p_cons_id;
                copy_summ_one_totals
                                    (p_reqs_id,
@@ -5920,7 +5919,7 @@ GROUP BY RCT.trx_number;
                NULL;
             END IF;
 
-            lc_error_loc := 'Calling copy_summ_one_totals for GRAND_TOTAL -- Canadian Invoices --SUBSTR (p_total_by, 1, 2) = B1 ';    -- added for defect 10750 
+            lc_error_loc := 'Calling copy_summ_one_totals for GRAND_TOTAL -- Canadian Invoices --SUBSTR (p_total_by, 1, 2) = B1 ';    -- added for defect 10750
              lc_error_debug :='CBI'||p_cons_id;
             copy_summ_one_totals (p_reqs_id,
                                   p_cons_id,
@@ -5966,8 +5965,8 @@ GROUP BY RCT.trx_number;
                   END LOOP;
 
                   lc_error_loc := 'Calling copy_summ_one_totals for GRAND_TOTAL -- Canadian Invoices'
-                                       ||' only B1 ';    -- added for defect 10750 
-                 lc_error_debug :='CBI'||p_cons_id; 
+                                       ||' only B1 ';    -- added for defect 10750
+                 lc_error_debug :='CBI'||p_cons_id;
                   copy_summ_one_totals
                                     (p_reqs_id,
                                      p_cons_id,
@@ -5989,8 +5988,8 @@ GROUP BY RCT.trx_number;
                                     );
 
                    lc_error_loc := 'Calling copy_summ_one_totals for GRAND_TOTAL -- Canadian Invoices'
-                                       ||' only B1 ';    -- added for defect 10750 
-                   lc_error_debug :='CBI'||p_cons_id; 
+                                       ||' only B1 ';    -- added for defect 10750
+                   lc_error_debug :='CBI'||p_cons_id;
                   copy_summ_one_totals
                                     (p_reqs_id,
                                      p_cons_id,
@@ -6107,10 +6106,10 @@ ln_attr_group_id_site NUMBER;
 begin
 
         BEGIN
-          SELECT attr_group_id 
+          SELECT attr_group_id
           INTO   ln_attr_group_id
-          FROM   ego_attr_groups_v 
-          WHERE  attr_group_type = 'XX_CDH_CUST_ACCOUNT' 
+          FROM   ego_attr_groups_v
+          WHERE  attr_group_type = 'XX_CDH_CUST_ACCOUNT'
           AND    attr_group_name = 'BILLDOCS' ;
 
           SELECT attr_group_id
@@ -6142,7 +6141,7 @@ begin
            ,xx_cdh_acct_site_ext_b XCAS
            ,xx_cdh_cust_acct_ext_b XCCA
      where  hzsu.site_use_id = p_site_use_id
-     and    hzsu.cust_acct_site_id= hzas.cust_acct_site_id  
+     and    hzsu.cust_acct_site_id= hzas.cust_acct_site_id
      and    hzas.orig_system_reference= xcas.c_ext_attr5
      and    xcas.n_ext_attr1=XCCA.n_ext_attr2
      AND    XCCA.attr_group_id=ln_attr_group_id
@@ -6176,4 +6175,3 @@ end get_where_condition_paydoc_ic;
 
 END xx_ar_cbi_calc_subtotals;
 /
-SHOW ERRORS;
