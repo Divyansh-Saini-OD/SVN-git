@@ -160,8 +160,20 @@ WHERE  1 =1
        ,layout pd_layout1
        ,layout pd_layout2
        ,layout pd_layout3       
-       ,'ORIGINAL CONSOLIDATED BILL' doc_title   
-       ,xx_ar_ebl_common_util_pkg.get_cons_msg_bcc(od_summbills.cust_doc_id,arci.customer_id,arci.cons_billing_number) CONS_MSG_BCC --Added for NAIT-73628	   
+       ,'ORIGINAL CONSOLIDATED BILL' doc_title       
+	   ,(SELECT TARGET_VALUE1 
+			FROM xx_cdh_cust_acct_ext_b b,
+           XX_FIN_TRANSLATEDEFINITION xxft, 
+           XX_FIN_TRANSLATEVALUES xxfv 
+		   WHERE b.cust_account_id = od_summbills.customer_id
+			 AND b.ATTR_GROUP_ID = 166
+             AND xxfv.SOURCE_VALUE1 = b.fee_option
+             AND xxft.translate_id = xxfv.translate_id 
+             AND xxft.TRANSLATION_NAME = 'OD_IREC_BILL_DOC_DEFAULTS'
+			 AND b.N_EXT_ATTR1 = od_summbills.DOCUMENT_ID
+			 AND b.N_EXT_ATTR2 = od_summbills.CUST_DOC_ID 
+			 AND rownum =1	 
+			 )	Fee_option
  FROM   xx_ar_cons_bills_history od_summbills
        ,ar_cons_inv              arci
        ,ra_terms                 terms
@@ -213,8 +225,20 @@ WHERE  1 =1
        ,layout pd_layout1
        ,layout pd_layout2
        ,layout pd_layout3       
-       ,'ORIGINAL CONSOLIDATED BILL' doc_title  
-       ,xx_ar_ebl_common_util_pkg.get_cons_msg_bcc(od_summbills.cust_doc_id,arci.customer_id,arci.cons_billing_number) CONS_MSG_BCC --Added for NAIT-73628  	   
+       ,'ORIGINAL CONSOLIDATED BILL' doc_title   
+       ,(SELECT TARGET_VALUE1 
+			FROM xx_cdh_cust_acct_ext_b b,
+           XX_FIN_TRANSLATEDEFINITION xxft, 
+           XX_FIN_TRANSLATEVALUES xxfv 
+		   WHERE b.cust_account_id = od_summbills.customer_id
+			 AND b.ATTR_GROUP_ID = 166
+             AND xxfv.SOURCE_VALUE1 = b.fee_option
+             AND xxft.translate_id = xxfv.translate_id 
+             AND xxft.TRANSLATION_NAME = 'OD_IREC_BILL_DOC_DEFAULTS'
+			 AND b.N_EXT_ATTR1 = od_summbills.DOCUMENT_ID
+			 AND b.N_EXT_ATTR2 = od_summbills.CUST_DOC_ID 
+			 AND rownum =1	 
+			 )	Fee_option
  FROM   xx_ar_cons_bills_history od_summbills
        ,ar_cons_inv              arci
        ,ra_terms                 terms
@@ -266,8 +290,20 @@ WHERE  1 =1
        ,layout pd_layout1
        ,layout pd_layout2
        ,layout pd_layout3       
-       ,'ORIGINAL CONSOLIDATED BILL' doc_title   
-       ,xx_ar_ebl_common_util_pkg.get_cons_msg_bcc(od_summbills.cust_doc_id,arci.customer_id,arci.cons_billing_number) CONS_MSG_BCC --Added for NAIT-73628	   
+       ,'ORIGINAL CONSOLIDATED BILL' doc_title  
+       ,(SELECT TARGET_VALUE1 
+			FROM xx_cdh_cust_acct_ext_b b,
+           XX_FIN_TRANSLATEDEFINITION xxft, 
+           XX_FIN_TRANSLATEVALUES xxfv 
+		   WHERE b.cust_account_id = od_summbills.customer_id
+			 AND b.ATTR_GROUP_ID = 166
+             AND xxfv.SOURCE_VALUE1 = b.fee_option
+             AND xxft.translate_id = xxfv.translate_id 
+             AND xxft.TRANSLATION_NAME = 'OD_IREC_BILL_DOC_DEFAULTS'
+			 AND b.N_EXT_ATTR1 = od_summbills.DOCUMENT_ID
+			 AND b.N_EXT_ATTR2 = od_summbills.CUST_DOC_ID 
+			 AND rownum =1	 
+			 )	Fee_option	   
  FROM   xx_ar_cons_bills_history od_summbills
        ,ar_cons_inv              arci
        ,ra_terms                 terms
@@ -367,23 +403,11 @@ SELECT
      ,(xact.subtotal_amount +xact.promo_and_disc +xact.tax_amount) order_total   
    ,TRIM(xohaa.cust_contact_name)                    sfdata6 -- Added for Defect# 19985 on 03-Jan-2012
 	,trim(xohaa.ship_to_address1||DECODE(trim(xohaa.ship_to_address2),'','',', '||trim(xohaa.ship_to_address2))||DECODE(trim(xohaa.ship_to_city),'','',', '||
-    trim(xohaa.ship_to_city))||DECODE(trim(xohaa.ship_to_state),'','',', '||trim(xohaa.ship_to_state))||DECODE(trim(xohaa.ship_to_zip),'','',' '||trim((CASE WHEN ((LENGTH(xohaa.ship_to_zip) > 5) and xohaa.ship_to_country IN('US','USA'))
+  trim(xohaa.ship_to_city))||DECODE(trim(xohaa.ship_to_state),'','',', '||trim(xohaa.ship_to_state))||DECODE(trim(xohaa.ship_to_zip),'','',' '||trim((CASE WHEN ((LENGTH(xohaa.ship_to_zip) > 5) and xohaa.ship_to_country IN('US','USA'))
                         THEN (SUBSTR(xohaa.ship_to_zip,1,5)||'-'||SUBSTR(xohaa.ship_to_zip,6))
                         ELSE (xohaa.ship_to_zip)
                         end)))	
               ) sfdata7 -- Added for Defect# 19985 on 03-Jan-2012
-	 ,NVL((CASE WHEN (xx_ar_ebl_pod_invoices_pkg.display_pod_delivery_date(customer_trx_id,:cust_doc_id) IS NOT NULL OR
-	              xx_ar_ebl_pod_invoices_pkg.display_pod_consignee(customer_trx_id,:cust_doc_id) IS NOT NULL 
-				 ) AND  
-				 --to_char(xx_ar_ebl_pod_invoices_pkg.display_pod(customer_trx_id,:cust_doc_id)) IS NULL --commented by sravan
-				 DBMS_LOB.compare(nvl(xx_ar_ebl_pod_invoices_pkg.display_pod(customer_trx_id,:cust_doc_id),'NULL'),'NULL')=0
-		   THEN TO_CLOB('Signature Not Available')
-           ELSE
-           NULL                 
-           END),xx_ar_ebl_pod_invoices_pkg.display_pod(customer_trx_id,:cust_doc_id)) 	POD	   -- Added for POD NAIT - 70471  
-	  ,xx_ar_ebl_pod_invoices_pkg.display_pod_delivery_date(customer_trx_id,:cust_doc_id) pod_delivery_date -- Added for POD NAIT - 70471
-	  ,xx_ar_ebl_pod_invoices_pkg.display_pod_consignee(customer_trx_id,:cust_doc_id) pod_consignee         -- Added for POD NAIT - 70471      
-	  ,xx_ar_ebl_pod_invoices_pkg.get_pod_msg(:customer_id,customer_trx_id,:cust_doc_id) cons_msg_pod       -- Added for POD NAIT - 70471   			
 from  xx_ar_cbi_trx xact,
 xx_om_header_attributes_all xohaa
 where request_id  =:p_thread_id
@@ -491,7 +515,8 @@ SELECT sumz.insert_seq
          sumz.delivery_charges + 
          sumz.promo_and_disc +
          sumz.tax_amount
-       )                    summ_total 
+       )                    summ_total,
+       XX_AR_EBL_COMMON_UTIL_PKG.get_softhdr_amount_fis(sumz.inv_type,sumz.inv_source_name,sumz.cons_inv_id,sumz.request_id,sumz.CUSTOMER_TRX_ID) summ_fee
 FROM  xx_ar_cbi_trx sumz
 WHERE request_id      =:p_thread_id
   AND cons_inv_id     =:cons_inv_id1
@@ -515,7 +540,8 @@ SELECT sumz.insert_seq
          sumz.delivery_charges + 
          sumz.promo_and_disc +
          sumz.tax_amount
-       )                    
+       )  ,
+       XX_AR_EBL_COMMON_UTIL_PKG.get_softhdr_amount_fis(sumz.inv_type,sumz.inv_source_name,sumz.cons_inv_id,sumz.request_id,sumz.CUSTOMER_TRX_ID) summ_fee	   
 FROM  xx_ar_cbi_trx sumz
 WHERE request_id      =:p_thread_id
   AND cons_inv_id     =:cons_inv_id1
@@ -535,7 +561,8 @@ SELECT sumz.insert_seq
       ,TO_NUMBER(NULL)        
       ,TO_NUMBER(NULL)        
       ,TO_NUMBER(NULL)        
-      ,sumz.subtotal_amount   
+      ,sumz.subtotal_amount  ,
+       TO_NUMBER(NULL)  
 FROM  xx_ar_cbi_trx sumz
 WHERE request_id      =:p_thread_id
   AND cons_inv_id     =:cons_inv_id1
@@ -564,7 +591,8 @@ SELECT sumz.insert_seq                                infosumz_insert_seq
          sumz.delivery_charges + 
          sumz.promo_and_disc +
          sumz.tax_amount
-       )                    infosumz_summarize_total 
+       )                    infosumz_summarize_total ,
+	   XX_AR_EBL_COMMON_UTIL_PKG.get_softhdr_amount_fis(sumz.inv_type,sumz.inv_source_name,sumz.cons_inv_id,sumz.request_id,sumz.CUSTOMER_TRX_ID) infosumz_summarize_fee
 FROM  xx_ar_cbi_trx sumz
 WHERE request_id      =:p_thread_id
   AND cons_inv_id     =:info_cbi_id99
@@ -588,7 +616,8 @@ SELECT sumz.insert_seq
          sumz.delivery_charges + 
          sumz.promo_and_disc +
          sumz.tax_amount
-       )                    
+       ),
+       XX_AR_EBL_COMMON_UTIL_PKG.get_softhdr_amount_fis(sumz.inv_type,sumz.inv_source_name,sumz.cons_inv_id,sumz.request_id,sumz.CUSTOMER_TRX_ID) infosumz_summarize_fee	   
 FROM  xx_ar_cbi_trx sumz
 WHERE request_id      =:p_thread_id
   AND cons_inv_id     =:info_cbi_id99
@@ -609,6 +638,7 @@ SELECT sumz.insert_seq
       ,TO_NUMBER(NULL)         
       ,TO_NUMBER(NULL)         
       ,sumz.subtotal_amount    
+	  ,TO_NUMBER(NULL)
 FROM  xx_ar_cbi_trx sumz
 WHERE request_id      =:p_thread_id
   AND cons_inv_id     =:info_cbi_id99
@@ -637,7 +667,9 @@ SELECT sumz.insert_seq
          sumz.delivery_charges + 
          sumz.promo_and_disc +
          sumz.tax_amount
-       )                    summarize_total 
+       )                    summarize_total ,
+       XX_AR_EBL_COMMON_UTIL_PKG.get_softhdr_amount_fis(sumz.inv_type,sumz.inv_source_name,sumz.cons_inv_id,sumz.request_id,sumz.CUSTOMER_TRX_ID) summarize_fee
+	   
 FROM  xx_ar_cbi_trx sumz
 WHERE request_id      =:p_thread_id
   AND cons_inv_id     =:cons_inv_id2
@@ -660,7 +692,8 @@ SELECT sumz.insert_seq
          sumz.delivery_charges + 
          sumz.promo_and_disc +
          sumz.tax_amount
-       )                    summarize_total 
+       )                    summarize_total ,
+       XX_AR_EBL_COMMON_UTIL_PKG.get_softhdr_amount_fis(sumz.inv_type,sumz.inv_source_name,sumz.cons_inv_id,sumz.request_id,sumz.CUSTOMER_TRX_ID) summarize_fee
 FROM  xx_ar_cbi_trx sumz
 WHERE request_id      =:p_thread_id
   AND cons_inv_id     =:cons_inv_id2
@@ -680,6 +713,7 @@ SELECT sumz.insert_seq                                  insert_seq
       ,TO_NUMBER(NULL)                                  summarize_discounts
       ,TO_NUMBER(NULL)                                  summarize_tax
       ,sumz.subtotal_amount                             summarize_total 
+      ,TO_NUMBER(NULL)                                
 FROM  xx_ar_cbi_trx sumz
 WHERE request_id      =:p_thread_id
   AND cons_inv_id     =:cons_inv_id2
@@ -707,7 +741,8 @@ SELECT sumz.insert_seq                                infoone_insert_seq
          sumz.delivery_charges + 
          sumz.promo_and_disc +
          sumz.tax_amount
-       )                    infoone_summarize_total 
+       )                    infoone_summarize_total ,
+       XX_AR_EBL_COMMON_UTIL_PKG.get_softhdr_amount_fis(sumz.inv_type,sumz.inv_source_name,sumz.cons_inv_id,sumz.request_id,sumz.CUSTOMER_TRX_ID) infoone_summarize_fee
 FROM  xx_ar_cbi_trx sumz
 WHERE request_id      =:p_thread_id
   AND cons_inv_id     =:info_cbi_id77
@@ -730,7 +765,8 @@ SELECT sumz.insert_seq
          sumz.delivery_charges + 
          sumz.promo_and_disc +
          sumz.tax_amount
-       )       
+       )       ,
+       XX_AR_EBL_COMMON_UTIL_PKG.get_softhdr_amount_fis(sumz.inv_type,sumz.inv_source_name,sumz.cons_inv_id,sumz.request_id,sumz.CUSTOMER_TRX_ID) infoone_summarize_fee
 FROM  xx_ar_cbi_trx sumz
 WHERE request_id      =:p_thread_id
   AND cons_inv_id     =:info_cbi_id77
@@ -750,6 +786,7 @@ SELECT sumz.insert_seq
       ,TO_NUMBER(NULL) 
       ,TO_NUMBER(NULL) 
       ,sumz.subtotal_amount 
+      ,TO_NUMBER(NULL) 
 FROM  xx_ar_cbi_trx sumz
 WHERE request_id      =:p_thread_id
   AND cons_inv_id     =:info_cbi_id77
@@ -796,19 +833,6 @@ SELECT
                                                                              AND xftv.enabled_flag = 'Y'
                                                                              AND xftd.enabled_flag = 'Y')
                                              AND ROWNUM < 2),'1',xohaa.COMMENTS,NULL),NULL)  REBATE_INFO
-	 -- ,xx_ar_ebl_pod_invoices_pkg.display_pod(customer_trx_id,:cust_doc_id) POD                             -- Added for POD NAIT - 70471
-	 ,NVL((CASE WHEN (xx_ar_ebl_pod_invoices_pkg.display_pod_delivery_date(customer_trx_id,:cust_doc_id) IS NOT NULL OR
-	              xx_ar_ebl_pod_invoices_pkg.display_pod_consignee(customer_trx_id,:cust_doc_id) IS NOT NULL 
-				 ) AND  
-				 --to_char(xx_ar_ebl_pod_invoices_pkg.display_pod(customer_trx_id,:cust_doc_id)) IS NULL --commented by sravan
-				 DBMS_LOB.compare(nvl(xx_ar_ebl_pod_invoices_pkg.display_pod(customer_trx_id,:cust_doc_id),'NULL'),'NULL')=0
-		   THEN TO_CLOB('Signature Not Available')
-           ELSE
-           NULL                 
-           END),xx_ar_ebl_pod_invoices_pkg.display_pod(customer_trx_id,:cust_doc_id)) 	POD	   -- Added for POD NAIT - 70471 
-	  ,xx_ar_ebl_pod_invoices_pkg.display_pod_delivery_date(customer_trx_id,:cust_doc_id) pod_delivery_date -- Added for POD NAIT - 70471
-	  ,xx_ar_ebl_pod_invoices_pkg.display_pod_consignee(customer_trx_id,:cust_doc_id) pod_consignee         -- Added for POD NAIT - 70471      
-	  ,xx_ar_ebl_pod_invoices_pkg.get_pod_msg(:customer_id,customer_trx_id,:cust_doc_id) cons_msg_pod       -- Added for POD NAIT - 70471     		
 FROM  xx_ar_cbi_trx xact,
 xx_om_header_attributes_all xohaa   -- Added for the defect#19985 Including new elements Ship To and Ordered by 6-DEC-2012
 WHERE xact.request_id  =:p_thread_id
@@ -821,6 +845,7 @@ ORDER BY xact.insert_seq
 </sqlStatement>
 <sqlStatement name="Q_PAYDOC_DETAIL_TRX_LINES">
 <![CDATA[
+SELECT * FROM (
 SELECT 
       item_code
      ,customer_product_code cust_prod_code
@@ -837,12 +862,15 @@ SELECT
            WHERE  attr_group_type = 'XX_CDH_CUST_ACCOUNT' 
            AND attr_group_name = 'REPORTING_SOFTH') AND n_ext_attr2 = :cust_doc_id),'Department')||' : '||rtrim(ltrim(cost_center_dept))||nvl2(rtrim(ltrim(cust_dept_description)),' - '||rtrim(ltrim(cust_dept_description)),null),null) DEPT_DESCRIPTION  -- Modified as per Defect 37510
 	 ,kit_sku  KIT_ITEM_DESCRIPTION -- Added for Kitting, Defect# 37670	   
-FROM  xx_ar_cbi_trx_lines
+			,fee_type Fee_code
+            ,fee_line_seq
+FROM  xx_ar_cbi_trx_lines a
 WHERE request_id      =:p_thread_id
   AND cons_inv_id     =:cons_inv_id
   AND customer_trx_id =:trx_id
   AND (item_code IS NULL OR item_code NOT IN ('SPC_CARD_INFO' ,'TD','ACM','GIFT_CARD_INV','GIFT_CARD_CM'))--Added 'GIFT_CARD_CM' and 'GIFT_CARD_INV' for Defect# 1451 CR(626)
-ORDER BY line_seq  
+)
+ORDER BY fee_line_seq
 ]]>
 </sqlStatement>
 <sqlStatement name="Q_INFODOC_DETAIL_TRX_LINES">
@@ -862,13 +890,15 @@ SELECT
            FROM   ego_attr_groups_v 
            WHERE  attr_group_type = 'XX_CDH_CUST_ACCOUNT' 
            AND attr_group_name = 'REPORTING_SOFTH') AND n_ext_attr2 = :cust_doc_id),'Department')||' : '||rtrim(ltrim(cost_center_dept))||nvl2(rtrim(ltrim(cust_dept_description)),' - '||rtrim(ltrim(cust_dept_description)),null),null) DEPT_DESCRIPTION -- Modified as per Defect 37510
-	 ,kit_sku  KIT_ITEM_DESCRIPTION -- Added for Kitting, Defect# 37670		   
+	 ,kit_sku  KIT_ITEM_DESCRIPTION -- Added for Kitting, Defect# 37670	
+     ,fee_type	  Fee_code
+     ,fee_line_seq
 FROM  xx_ar_cbi_trx_lines
 WHERE request_id      =:p_thread_id
   AND cons_inv_id     =:info_cbi_id99
   AND customer_trx_id =:infodtl_trx_id
   AND (item_code IS NULL OR item_code NOT IN ('SPC_CARD_INFO' ,'TD','ACM','GIFT_CARD_INV','GIFT_CARD_CM'))--Added 'GIFT_CARD_CM' and 'GIFT_CARD_INV' for Defect# 1451 CR(626)
-ORDER BY line_seq  
+ORDER BY fee_line_seq  
 ]]>
 </sqlStatement>
 <sqlStatement name="Q_PAYDOC_TRX_MINISTMNT">
@@ -880,6 +910,9 @@ SELECT inv_number order_number_dup
       ,TO_NUMBER(NULL)    ca_prov_tax
       ,TO_NUMBER(NULL)    ca_state_tax    
       ,(nvl(subtotal_amount ,0) + nvl(promo_and_disc ,0) + nvl(tax_amount ,0)) total
+	  ,NVL(XX_AR_EBL_COMMON_UTIL_PKG.get_line_fee_amount(:trx_id),0) TOTAL_LINE_FEE
+	  ,NVL(XX_AR_EBL_COMMON_UTIL_PKG.get_hea_fee_amount(:trx_id),0) TOTAL_HEADER_FEE
+	  ,NVL(XX_AR_EBL_COMMON_UTIL_PKG.get_line_fee_amount(:trx_id),0) + NVL(XX_AR_EBL_COMMON_UTIL_PKG.get_hea_fee_amount(:trx_id),0) TOTAL_FEE
 FROM   xx_ar_cbi_trx
 WHERE request_id      =:p_thread_id
   AND cons_inv_id     =:cons_inv_id
@@ -896,6 +929,9 @@ SELECT inv_number                    order_number_dup
       ,nvl(cad_state_tax_amount ,0)  ca_state_tax    
       ,(nvl(subtotal_amount ,0) + nvl(promo_and_disc ,0) + 
         nvl(cad_county_tax_amount ,0) + nvl(cad_state_tax_amount ,0)) total
+	  ,NVL(XX_AR_EBL_COMMON_UTIL_PKG.get_line_fee_amount(:trx_id),0) TOTAL_LINE_FEE
+	  ,NVL(XX_AR_EBL_COMMON_UTIL_PKG.get_hea_fee_amount(:trx_id),0) TOTAL_HEADER_FEE
+	  ,NVL(XX_AR_EBL_COMMON_UTIL_PKG.get_line_fee_amount(:trx_id),0) + NVL(XX_AR_EBL_COMMON_UTIL_PKG.get_hea_fee_amount(:trx_id),0) TOTAL_FEE
 FROM   xx_ar_cbi_trx
 WHERE request_id      =:p_thread_id
   AND cons_inv_id     =:cons_inv_id
@@ -914,6 +950,9 @@ SELECT inv_number              infodtl_order_number_dup
       ,TO_NUMBER(NULL)         infodtl_ca_prov_tax
       ,TO_NUMBER(NULL)         infodtl_ca_state_tax      
       ,(nvl(subtotal_amount ,0) + nvl(promo_and_disc ,0) + nvl(tax_amount ,0)) infodtl_total
+      ,NVL(XX_AR_EBL_COMMON_UTIL_PKG.get_line_fee_amount(:infodtl_trx_id),0) TOTAL_LINE_FEE
+	  ,NVL(XX_AR_EBL_COMMON_UTIL_PKG.get_hea_fee_amount(:infodtl_trx_id),0) TOTAL_HEADER_FEE
+	  ,NVL(XX_AR_EBL_COMMON_UTIL_PKG.get_line_fee_amount(:infodtl_trx_id),0) + NVL(XX_AR_EBL_COMMON_UTIL_PKG.get_hea_fee_amount(:infodtl_trx_id),0) TOTAL_FEE
 FROM   xx_ar_cbi_trx
 WHERE 1 =1
   AND request_id      =:p_thread_id
@@ -931,6 +970,9 @@ SELECT inv_number                    infodtl_order_number_dup
       ,nvl(cad_state_tax_amount ,0)  infodtl_ca_state_tax
       ,(nvl(subtotal_amount ,0) + nvl(promo_and_disc ,0) + 
         nvl(cad_county_tax_amount ,0) + nvl(cad_state_tax_amount ,0)) infodtl_total
+    ,NVL(XX_AR_EBL_COMMON_UTIL_PKG.get_line_fee_amount(:infodtl_trx_id),0) TOTAL_LINE_FEE
+	  ,NVL(XX_AR_EBL_COMMON_UTIL_PKG.get_hea_fee_amount(:infodtl_trx_id),0) TOTAL_HEADER_FEE
+	  ,NVL(XX_AR_EBL_COMMON_UTIL_PKG.get_line_fee_amount(:infodtl_trx_id),0) + NVL(XX_AR_EBL_COMMON_UTIL_PKG.get_hea_fee_amount(:infodtl_trx_id),0) TOTAL_FEE
 FROM   xx_ar_cbi_trx
 WHERE 1 =1
   AND request_id      =:p_thread_id
@@ -1204,7 +1246,20 @@ SELECT  od_infocopies.cons_inv_id           cons_inv_id99
       -- ,od_infocopies.cbi_amount_due                      cbi_amount_due99 
        ,TO_CHAR(NULL)                                       scanline99 
        ,od_infocopies.pd_layout                             pd_layout99
-       ,'INFORMATIONAL COPY'                                doc_title99       
+       ,'INFORMATIONAL COPY'                                doc_title99   
+       ,(SELECT TARGET_VALUE1 
+			FROM xx_cdh_cust_acct_ext_b b,
+           XX_FIN_TRANSLATEDEFINITION xxft, 
+           XX_FIN_TRANSLATEVALUES xxfv 
+		   WHERE b.cust_account_id = od_infocopies.cust_id
+			 AND b.ATTR_GROUP_ID = 166
+             AND xxfv.SOURCE_VALUE1 = b.fee_option
+             AND xxft.translate_id = xxfv.translate_id 
+             AND xxft.TRANSLATION_NAME = 'OD_IREC_BILL_DOC_DEFAULTS'
+			 AND b.N_EXT_ATTR1 = od_infocopies.doc_id
+			 AND b.N_EXT_ATTR2 = od_infocopies.CUST_DOC_ID 
+			 AND rownum =1	 
+			 )	Fee_option
  FROM  (
        SELECT customer_id cust_id
              ,to_number(attribute7) site_id
@@ -1288,7 +1343,20 @@ UNION ALL
                     ,'TOTAL')  
        ,TO_CHAR(NULL) 
        ,layout
-       ,'INFORMATIONAL COPY'       
+       ,'INFORMATIONAL COPY'  
+       ,(SELECT TARGET_VALUE1 
+			FROM xx_cdh_cust_acct_ext_b b,
+           XX_FIN_TRANSLATEDEFINITION xxft, 
+           XX_FIN_TRANSLATEVALUES xxfv 
+		   WHERE b.cust_account_id = od_summbills.customer_id
+			 AND b.ATTR_GROUP_ID = 166
+             AND xxfv.SOURCE_VALUE1 = b.fee_option
+             AND xxft.translate_id = xxfv.translate_id 
+             AND xxft.TRANSLATION_NAME = 'OD_IREC_BILL_DOC_DEFAULTS'
+			 AND b.N_EXT_ATTR1 = od_summbills.DOCUMENT_ID
+			 AND b.N_EXT_ATTR2 = od_summbills.CUST_DOC_ID 
+			 AND rownum =1	 
+			 )	Fee_option	   
  FROM   xx_ar_cons_bills_history od_summbills
        ,ar_cons_inv              arci
        ,ra_terms                 terms
@@ -1360,6 +1428,19 @@ SELECT  od_infocopies.cons_inv_id           cons_inv_id88
        ,TO_CHAR(NULL)                                       scanline88 
        ,od_infocopies.pd_layout                             pd_layout88
        ,'INFORMATIONAL COPY'                                doc_title88       
+        ,(SELECT TARGET_VALUE1 
+			FROM xx_cdh_cust_acct_ext_b b,
+           XX_FIN_TRANSLATEDEFINITION xxft, 
+           XX_FIN_TRANSLATEVALUES xxfv 
+		   WHERE b.cust_account_id = od_infocopies.cust_id
+			 AND b.ATTR_GROUP_ID = 166
+             AND xxfv.SOURCE_VALUE1 = b.fee_option
+             AND xxft.translate_id = xxfv.translate_id 
+             AND xxft.TRANSLATION_NAME = 'OD_IREC_BILL_DOC_DEFAULTS'
+			 AND b.N_EXT_ATTR1 = od_infocopies.doc_id
+			 AND b.N_EXT_ATTR2 = od_infocopies.CUST_DOC_ID 
+			 AND rownum =1	 
+			 )	Fee_option
  FROM  (
        SELECT customer_id cust_id
              ,to_number(attribute7) site_id
@@ -1443,7 +1524,20 @@ UNION ALL
                     ,'TOTAL')  
        ,TO_CHAR(NULL) 
        ,layout
-       ,'INFORMATIONAL COPY'       
+       ,'INFORMATIONAL COPY'   
+       ,(SELECT TARGET_VALUE1 
+			FROM xx_cdh_cust_acct_ext_b b,
+           XX_FIN_TRANSLATEDEFINITION xxft, 
+           XX_FIN_TRANSLATEVALUES xxfv 
+		   WHERE b.cust_account_id = od_summbills.customer_id
+			 AND b.ATTR_GROUP_ID = 166
+             AND xxfv.SOURCE_VALUE1 = b.fee_option
+             AND xxft.translate_id = xxfv.translate_id 
+             AND xxft.TRANSLATION_NAME = 'OD_IREC_BILL_DOC_DEFAULTS'
+			 AND b.N_EXT_ATTR1 = od_summbills.DOCUMENT_ID
+			 AND b.N_EXT_ATTR2 = od_summbills.CUST_DOC_ID 
+			 AND rownum =1	 
+			 )	Fee_option	   
  FROM   xx_ar_cons_bills_history od_summbills
        ,ar_cons_inv              arci
        ,ra_terms                 terms
@@ -1514,7 +1608,20 @@ SELECT  od_infocopies.cons_inv_id           cons_inv_id77
        --,od_infocopies.cbi_amount_due                      cbi_amount_due77 
        ,TO_CHAR(NULL)                                       scanline77 
        ,od_infocopies.pd_layout                             pd_layout77
-       ,'INFORMATIONAL COPY'                                doc_title77       
+       ,'INFORMATIONAL COPY'                                doc_title77 
+       ,(SELECT TARGET_VALUE1 
+			FROM xx_cdh_cust_acct_ext_b b,
+           XX_FIN_TRANSLATEDEFINITION xxft, 
+           XX_FIN_TRANSLATEVALUES xxfv 
+		   WHERE b.cust_account_id = od_infocopies.cust_id
+			 AND b.ATTR_GROUP_ID = 166
+             AND xxfv.SOURCE_VALUE1 = b.fee_option
+             AND xxft.translate_id = xxfv.translate_id 
+             AND xxft.TRANSLATION_NAME = 'OD_IREC_BILL_DOC_DEFAULTS'
+			 AND b.N_EXT_ATTR1 = od_infocopies.doc_id
+			 AND b.N_EXT_ATTR2 = od_infocopies.CUST_DOC_ID 
+			 AND rownum =1	 
+			 )	Fee_option	   
  FROM  (
        SELECT customer_id cust_id
              ,to_number(attribute7) site_id
@@ -1598,7 +1705,20 @@ UNION ALL
                     ,'TOTAL')  
        ,TO_CHAR(NULL) 
        ,layout
-       ,'INFORMATIONAL COPY'       
+       ,'INFORMATIONAL COPY'   
+       ,(SELECT TARGET_VALUE1 
+			FROM xx_cdh_cust_acct_ext_b b,
+           XX_FIN_TRANSLATEDEFINITION xxft, 
+           XX_FIN_TRANSLATEVALUES xxfv 
+		   WHERE b.cust_account_id = od_summbills.customer_id
+			 AND b.ATTR_GROUP_ID = 166
+             AND xxfv.SOURCE_VALUE1 = b.fee_option
+             AND xxft.translate_id = xxfv.translate_id 
+             AND xxft.TRANSLATION_NAME = 'OD_IREC_BILL_DOC_DEFAULTS'
+			 AND b.N_EXT_ATTR1 = od_summbills.DOCUMENT_ID
+			 AND b.N_EXT_ATTR2 = od_summbills.CUST_DOC_ID 
+			 AND rownum =1	 
+			 )	Fee_option		   
  FROM   xx_ar_cons_bills_history od_summbills
        ,ar_cons_inv              arci
        ,ra_terms                 terms
@@ -1722,7 +1842,7 @@ ORDER BY xact.insert_seq
 <element name="FLO_CODE" value="SCANLINE" />
 <element name="PDOC_LAYOUT3" value="PD_LAYOUT3" />
 <element name="DOC_TITLE" value="DOC_TITLE" />
-<element name="CONS_MSG_BCC"        value = "CONS_MSG_BCC"/> <!--Added this line for NAIT-73628-->
+<element name="FEE_OPTION" value="FEE_OPTION" />
 <group name="G_PAYDOC_ONE_SOFTHEADERS" source="Q_PAYDOC_ONE_SOFTHEADERS">
 <element name="SFHDR1" value="SFHDR1" />
 <element name="SFHDR2" value="SFHDR2" />
@@ -1739,6 +1859,7 @@ ORDER BY xact.insert_seq
 <element name="SUMMARIZE_DISCOUNTS" value="SUMMARIZE_DISCOUNTS" />
 <element name="SUMMARIZE_TAX" value="SUMMARIZE_TAX" />
 <element name="SUMMARIZE_TOTAL" value="SUMMARIZE_TOTAL" />
+<element name="SUMMARIZE_FEE" value="SUMMARIZE_FEE" />
 </group>
 </group>
 <group name="G_PAYDOC_SUMMARIZE" source="Q_PAYDOC_CBI_SUMMARIZE">
@@ -1756,7 +1877,7 @@ ORDER BY xact.insert_seq
 <element name="FLO_CODE" value="SCANLINE" />
 <element name="PDOC_LAYOUT2" value="PD_LAYOUT2" />
 <element name="DOC_TITLE" value="DOC_TITLE" />
-<element name="CONS_MSG_BCC"        value = "CONS_MSG_BCC"/> <!--Added this line for NAIT-73628-->
+<element name="FEE_OPTION" value="FEE_OPTION" />
 <group name="G_PAYDOC_SUMM_SOFTHEADERS" source="Q_PAYDOC_SUMM_SOFTHEADERS">
 <element name="SFHDR1" value="SFHDR1" />
 <element name="SFHDR2" value="SFHDR2" />
@@ -1782,10 +1903,6 @@ ORDER BY xact.insert_seq
 <element name="DISCOUNTS" value="DISCOUNTS" />
 <element name="TAX_AMOUNT" value="TAX_AMOUNT" />
 <element name="TOTAL_AMOUNT" value="ORDER_TOTAL" />
-<element name="POD" value="POD" />                                      <!--Added for POD NAIT 70471-->
-<element name="POD_DELIVERY_DATE" value="POD_DELIVERY_DATE" />          <!--Added for POD NAIT 70471-->
-<element name="POD_CONSIGNEE" value="POD_CONSIGNEE" />                  <!--Added for POD NAIT 70471-->
-<element name="CONS_MSG_POD" value="CONS_MSG_POD" />                    <!--Added for POD NAIT 70471-->
 </group>
 <group name="G_PAYDOC_TRX_ACM" source="Q_SUMM_TRX_ACM">
 <element name="ACM_TEXT" value="ACM_TEXT" />
@@ -1802,6 +1919,7 @@ ORDER BY xact.insert_seq
 <element name="SUMMARIZE_DISCOUNTS" value="SUMM_DISCOUNTS" />
 <element name="SUMMARIZE_TAX" value="SUMM_TAX" />
 <element name="SUMMARIZE_TOTAL" value="SUMM_TOTAL" />
+<element name="SUMM_FEE" value="SUMM_FEE" />
 </group>
 </group>
 </group>
@@ -1821,7 +1939,7 @@ ORDER BY xact.insert_seq
 <element name="FLO_CODE" value="SCANLINE" />
 <element name="DOC_TITLE" value="DOC_TITLE" />
 <element name="PDOC_LAYOUT1" value="PD_LAYOUT1" />
-<element name="CONS_MSG_BCC"        value = "CONS_MSG_BCC"/> <!--Added this line for NAIT-73628-->
+<element name="FEE_OPTION" value="FEE_OPTION" />
 <group name="G_PAYDOC_DETAIL_TRX" source="Q_PAYDOC_DETAIL_TRX">
 <element name="ORDER_NUMBER" value="INVOICE_NUM" />
 <element name="ORDER_DATE" value="ORDER_DATE" />
@@ -1841,10 +1959,6 @@ ORDER BY xact.insert_seq
 <element name="SFHDR7" value="SFHDR7" />
 <element name="SFDATA7" value="SFDATA7" />
 <element name="REBATE_INFO" value="REBATE_INFO" />
-<element name="POD" value="POD" />                                      <!--Added for POD NAIT 70471-->
-<element name="POD_DELIVERY_DATE" value="POD_DELIVERY_DATE" />          <!--Added for POD NAIT 70471-->
-<element name="POD_CONSIGNEE" value="POD_CONSIGNEE" />                  <!--Added for POD NAIT 70471-->
-<element name="CONS_MSG_POD" value="CONS_MSG_POD" />                    <!--Added for POD NAIT 70471-->
 <group name="G_TRX_SPC_INFO" source="Q_TRX_SPC_INFO">
 <element name="SPC_CARD_DETAILS" value="SPC_CARD_DETAILS" />
 </group>
@@ -1859,7 +1973,8 @@ ORDER BY xact.insert_seq
 <element name="EXTENDED_PRICE" value="EXTENDED_PRICE" />
 <element name="LINE_COMMENTS" value="LINE_COMMENTS" />                    <!--Added for R1.1 Defect # 1744 (CR 743)-->
 <element name="DEPT_DESCRIPTION" value="DEPT_DESCRIPTION" />
-<element name="KIT_ITEM_DESCRIPTION" value="KIT_ITEM_DESCRIPTION" />      <!--Added for Kitting Defect# 37670-->
+<element name="KIT_ITEM_DESCRIPTION" value="KIT_ITEM_DESCRIPTION" />      <!--Added for Kitting Defect# 37670-->    
+<element name="FEE_CODE" value="FEE_CODE" />     
 </group>
 <group name="G_PAYDOC_TRX_TIERED_DISC" source="Q_TRX_TIERED_DISC">
 <element name="TIERED_DISCOUNT" value="TIERED_DISCOUNT" />
@@ -1877,7 +1992,10 @@ ORDER BY xact.insert_seq
 <element name="SALES_TAX" value="SALES_TAX" />
 <element name="CA_PROV_TAX" value="CA_PROV_TAX" />
 <element name="CA_STATE_TAX" value="CA_STATE_TAX" />
-<element name="ORDER_TOTAL" value="TOTAL" />                          
+<element name="ORDER_TOTAL" value="TOTAL" />
+<element name="TOTAL_LINE_FEE" value="TOTAL_LINE_FEE" />
+<element name="TOTAL_HEADER_FEE" value="TOTAL_HEADER_FEE" />
+<element name="TOTAL_FEE" value="TOTAL_FEE" />
 </group>
 <group name="G_PAYDOC_TRX_SOFTHEADERS" source="Q_TRX_SOFTHEADERS">
 <element name="LINE_TYPE" value="LINE_TYPE" />
@@ -1910,6 +2028,7 @@ ORDER BY xact.insert_seq
 <element name="FLO_CODE" value="SCANLINE99" />
 <element name="DOC_TITLE" value="DOC_TITLE99" />
 <element name="PDOC_LAYOUT1" value="PD_LAYOUT99" />
+<element name="FEE_OPTION" value="FEE_OPTION" />
 <group name="G_INFODOC_DETAIL_TRX" source="Q_INFODOC_DETAIL_TRX">
 <element name="ORDER_NUMBER" value="INFODTL_INVOICE_NUM" />
 <element name="ORDER_DATE" value="INFODTL_ORDER_DATE" />
@@ -1945,6 +2064,7 @@ ORDER BY xact.insert_seq
 <element name="LINE_COMMENTS" value="INFODTL_LINE_COMMENTS" />                       <!--Added for R1.1 Defect # 1744 (CR 743)-->
 <element name="DEPT_DESCRIPTION" value="DEPT_DESCRIPTION" />
 <element name="KIT_ITEM_DESCRIPTION" value="KIT_ITEM_DESCRIPTION" />      <!--Added for Kitting Defect# 37670-->
+<element name="FEE_CODE" value="FEE_CODE" />     
 </group>
 <group name="G_INFODOC_TRX_TIERED_DISC" source="Q_INFODOC_TRX_TIERED_DISC">
 <element name="TIERED_DISCOUNT" value="INFODOC_TIERED_DISCOUNT" />
@@ -1963,6 +2083,9 @@ ORDER BY xact.insert_seq
 <element name="INFODTL_CA_PROV_TAX" value="INFODTL_CA_PROV_TAX" />
 <element name="INFODTL_CA_STATE_TAX" value="INFODTL_CA_STATE_TAX" />
 <element name="ORDER_TOTAL" value="INFODTL_TOTAL" />
+<element name="TOTAL_LINE_FEE" value="TOTAL_LINE_FEE" />
+<element name="TOTAL_HEADER_FEE" value="TOTAL_HEADER_FEE" />
+<element name="TOTAL_FEE" value="TOTAL_FEE" />
 </group>
 <group name="G_INFODOC_TRX_SOFTHEADERS" source="Q_INFODOC_TRX_SOFTHEADERS">
 <element name="LINE_TYPE" value="INFODTL_LINE_TYPE" />
@@ -1987,6 +2110,7 @@ ORDER BY xact.insert_seq
 <element name="FLO_CODE" value="SCANLINE88" />
 <element name="PDOC_LAYOUT2" value="PD_LAYOUT288" />
 <element name="DOC_TITLE" value="DOC_TITLE88" />
+<element name="FEE_OPTION" value="FEE_OPTION" />
 <group name="G_INFODOC_SUMM_SOFTHEADERS" source="Q_INFODOC_SUMM_SOFTHEADERS">
 <element name="SFHDR1" value="INFOSUMZ_SFHDR1" />
 <element name="SFHDR2" value="INFOSUMZ_SFHDR2" />
@@ -2035,6 +2159,7 @@ ORDER BY xact.insert_seq
 <element name="SUMMARIZE_DISCOUNTS" value="INFOSUMZ_SUMMARIZE_DISCOUNTS" />
 <element name="SUMMARIZE_TAX" value="INFOSUMZ_SUMMARIZE_TAX" />
 <element name="SUMMARIZE_TOTAL" value="INFOSUMZ_SUMMARIZE_TOTAL" />
+<element name="INFOSUMZ_SUMMARIZE_FEE" value="INFOSUMZ_SUMMARIZE_FEE" />
 </group>
 </group>
 </group>
@@ -2053,6 +2178,7 @@ ORDER BY xact.insert_seq
 <element name="FLO_CODE" value="SCANLINE77" />
 <element name="PDOC_LAYOUT3" value="PD_LAYOUT377" />
 <element name="DOC_TITLE" value="DOC_TITLE77" />
+<element name="FEE_OPTION" value="FEE_OPTION" />
 <group name="G_INFODOC_ONE_SOFTHEADERS" source="Q_INFODOC_ONE_SOFTHEADERS">
 <element name="SFHDR1" value="INFOONE_SFHDR1" />
 <element name="SFHDR2" value="INFOONE_SFHDR2" />
@@ -2070,6 +2196,7 @@ ORDER BY xact.insert_seq
 <element name="SUMMARIZE_DISCOUNTS" value="INFOONE_SUMMARIZE_DISCOUNTS" />
 <element name="SUMMARIZE_TAX" value="INFOONE_SUMMARIZE_TAX" />
 <element name="SUMMARIZE_TOTAL" value="INFOONE_SUMMARIZE_TOTAL" />
+<element name="SUMMARIZE_FEE" value="INFOONE_SUMMARIZE_FEE" />
 </group>
 </group>
 </group>
