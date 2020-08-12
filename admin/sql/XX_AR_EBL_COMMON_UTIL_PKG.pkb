@@ -6405,6 +6405,72 @@ BEGIN
 EXCEPTION WHEN OTHERS THEN
 return 0;
 END;
+
+-- +===================================================================================+
+-- |                  Office Depot - Project Simplify                                  |
+-- +===================================================================================+
+-- | Name        : get_softhdr_amount                                                  |
+-- | Description : To get Soft Header Amount for particular transaction                |
+-- |                                                                                   |
+-- |                                                                                   |
+-- |                                                                                   |
+-- |Change Record:                                                                     |
+-- |===============                                                                    |
+-- |Version   Date          Author              Remarks                                |
+-- |=======   ==========   =============        =======================================|
+-- | 1.0      23-JUN-2020  Divyansh Saini       Initial draft version                  |
+-- +===================================================================================+
+FUNCTION get_softhdr_amount_fis(p_line_type IN VARCHAR2
+                            ,p_sft_text IN VARCHAR2
+                            ,p_cons_id IN NUMBER
+                            ,p_request_id IN NUMBER
+							              ,p_customer_trx_id IN VARCHAR2) RETURN NUMBER IS
+ln_fee_amount NUMBER :=0;
+lv_sft_txt    VARCHAR2(100);
+lv_where      VARCHAR2(100);
+lv_sql        VARCHAR2(2000);
+BEGIN
+
+   IF p_line_type = 'BILL_TO_TOTAL' THEN
+       SELECT NVL(SUM(XX_AR_EBL_COMMON_UTIL_PKG.get_line_fee_amount(customer_trx_id) + XX_AR_EBL_COMMON_UTIL_PKG.get_hea_fee_amount(customer_trx_id)),0)
+         INTO ln_fee_amount
+         FROM xx_ar_cbi_trx_all
+        WHERE cons_inv_id = p_cons_id and request_id = p_request_id;
+   ELSIF p_line_type = 'SOFTHDR_TOTAL' THEN
+      SELECT trim(substr(p_sft_text,INSTR(p_sft_text,':')+1))
+        INTO lv_sft_txt
+        FROM DUAL;
+		
+        IF lv_sft_txt IS NOT NULL THEN
+           
+		   		SELECT DECODE(lv_sft_txt,sfdata1, ' AND sfdata1 = '''||sfdata1||'''',
+			                     sfdata2, ' AND sfdata1 = '''||sfdata1||''' AND sfdata2='''||sfdata2||'''',
+								 sfdata3, ' AND sfdata1 = '''||sfdata1||''' AND sfdata2='''||sfdata2||''' AND sfdata3='''||sfdata3||'''',
+								 sfdata4, ' AND sfdata1 = '''||sfdata1||''' AND sfdata2='''||sfdata2||''' AND sfdata3='''||sfdata3||''' AND sfdata4='''||sfdata4||'''',
+								 sfdata5, ' AND sfdata1 = '''||sfdata1||''' AND sfdata2='''||sfdata2||''' AND sfdata3='''||sfdata3||''' AND sfdata4='''||sfdata4||''' AND sfdata5='''||sfdata5||'''',
+								 sfdata6, ' AND sfdata1 = '''||sfdata1||''' AND sfdata2='''||sfdata2||''' AND sfdata3='''||sfdata3||''' AND sfdata4='''||sfdata4||''' AND sfdata5='''||sfdata5||'''AND sfdata6='''||sfdata6||'''')
+				  INTO lv_where
+				  FROM xx_ar_cbi_trx_all 
+				 WHERE request_id = p_request_id and CUSTOMER_TRX_ID = p_customer_trx_id
+				   AND INV_TYPE not in ('SOFTHDR_TOTALS','BILLTO_TOTALS','GRAND_TOTAL');	
+		   
+		   lv_sql := 'SELECT NVL(SUM(XX_AR_EBL_COMMON_UTIL_PKG.get_line_fee_amount(customer_trx_id) + XX_AR_EBL_COMMON_UTIL_PKG.get_hea_fee_amount(customer_trx_id)),0) FROM xx_ar_cbi_trx_all where request_id = '||p_request_id||' AND INV_TYPE not in (''SOFTHDR_TOTALS'',''BILLTO_TOTALS'',''GRAND_TOTAL'')'||lv_where;
+		   EXECUTE IMMEDIATE lv_sql INTO ln_fee_amount;
+        ELSIF   lv_sft_txt IS NULL THEN
+           SELECT NVL(SUM(XX_AR_EBL_COMMON_UTIL_PKG.get_line_fee_amount(customer_trx_id) + XX_AR_EBL_COMMON_UTIL_PKG.get_hea_fee_amount(customer_trx_id)),0)
+             INTO ln_fee_amount
+             FROM xx_ar_cbi_trx_all
+            WHERE cons_inv_id = p_cons_id and request_id = p_request_id;
+             -- AND COST_CENTER_SFT_DATA IS NULL;
+        END IF;
+    END IF;
+
+    return ln_fee_amount;
+
+EXCEPTION WHEN OTHERS THEN
+return 0;
+END;
+
 -- +===================================================================================+
 -- |                  Office Depot - Project Simplify                                  |
 -- +===================================================================================+
