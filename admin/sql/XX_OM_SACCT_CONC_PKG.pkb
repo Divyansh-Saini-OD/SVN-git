@@ -132,6 +132,7 @@ AS
 -- |     45.0     05-Oct-2019  Arun G     Made changes for rev recog project JIRA 106576
 -- |	 46.0	  08-May-2020  Shalu G    Made changes for Auth Amount JIRA 
 -- |     47.0     08-Aug-2020  Arun G     Made changes to populate the cost center for feeline(s) JIRA # 144725             |
+-- |     48.0     14-Aug-2020  Arun G     made changes to populate the cost center desc for fee lines JIRA 150256           |
 -- +========================================================================================================================+
     PROCEDURE process_current_order(
         p_order_tbl   IN  order_tbl_type,
@@ -7110,7 +7111,7 @@ AS
     CURSOR cur_orig_line(p_orig_sys_document_ref IN xx_om_lines_attr_iface_all.orig_sys_document_ref%TYPE,
                          p_sku_line_number       IN oe_lines_iface_all.orig_sys_line_ref%TYPE)
     IS
-    SELECT cost_center_dept
+    SELECT cost_center_dept, cust_dept_description
     FROM xx_om_lines_attr_iface_all a,
          oe_lines_iface_all b
     WHERE a.orig_sys_document_ref = p_orig_sys_document_Ref
@@ -7145,7 +7146,8 @@ AS
               END IF;
 
               UPDATE xx_om_lines_attr_iface_all a
-              SET cost_center_dept = cur_orig_line_rec.cost_center_dept 
+              SET cost_center_dept          = cur_orig_line_rec.cost_center_dept,
+                  cust_dept_description     = cur_orig_line_rec.cust_dept_description
               WHERE orig_sys_document_ref  = cur_fee_rec.orig_sys_document_Ref
               AND orig_sys_line_ref        = cur_fee_rec.orig_sys_line_ref;
    
