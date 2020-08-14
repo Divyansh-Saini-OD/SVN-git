@@ -10,7 +10,7 @@
             <![CDATA[SELECT ---TO_CHAR(SUM(RCTLGD.amount),'$999,999.99')TOT_AMT,
                                TO_CHAR(SUM(XAS.contract_line_amount),'$999,999.99')TOT_AMT,
                             ---COUNT(DISTINCT RCTA.trx_number)INV_NO,
-							COUNT(DISTINCT XAS.invoice_number)INV_NO,
+							---COUNT(DISTINCT XAS.invoice_number)INV_NO, --JIRA#NAIT-149049
                             TO_CHAR(TO_DATE(:p_as_of_date,'YYYY/MM/DD HH24:MI:SS'),'DD-MON-YY')P_CURRDATE
                      FROM   xx_ar_subscriptions                 XAS,
                             xx_ar_contracts                     XAC,
@@ -45,23 +45,24 @@
             ]]>
         </sqlStatement>
   <sqlStatement name="Q_ARSCBILLAUTHFAIL">
-  <![CDATA[SELECT   ---RCTA.trx_number                             TRANSACTION_NUMBER,
-            XAS.invoice_number                                     TRANSACTION_NUMBER,
+  <![CDATA[SELECT   
+            ---RCTA.trx_number                                     TRANSACTION_NUMBER,
+            ---XAS.invoice_number                                  TRANSACTION_NUMBER, 		
             XAS.contract_number                                    CONTRACT_NUMBER,
             XAS.contract_id,                                       
             XAC.contract_status                                    CONTRACT_STATUS,
             XAS.billing_sequence_number,
-         ---RCTLA.interface_line_attribute1 REFERENCE,
+         ---RCTLA.interface_line_attribute1                        REFERENCE,
 			XAS.initial_order_number || '-' || XAS.inv_seq_counter REFERENCE,
-         ---TO_CHAR(RCTA.trx_date,'DD-MON-YY') TRANSACTION_DATE,
+         ---TO_CHAR(RCTA.trx_date,'DD-MON-YY')                     TRANSACTION_DATE,
 			TO_CHAR(XAS.billing_date,'DD-MON-YY')                  TRANSACTION_DATE,
-         ---RCTLA.line_number TRANSACTION_LINE_NUMBER,
+         ---RCTLA.line_number                                      TRANSACTION_LINE_NUMBER,
 			XAS.contract_line_number                               TRANSACTION_LINE_NUMBER,
-         ---MSI.segment1   ITEM_NUMBER,
+         ---MSI.segment1                                           ITEM_NUMBER,
 			XACL.item_name                                         ITEM_NUMBER,
-         ---RCTLGD.amount TRANSACTION_LINE_AMOUNT,
+         ---RCTLGD.amount                                          TRANSACTION_LINE_AMOUNT,
 			XAS.contract_line_amount                               TRANSACTION_LINE_AMOUNT,
-            ---HCA.account_number CUSTOMER_NUMBER , 
+            ---HCA.account_number                                  CUSTOMER_NUMBER , 
 			xac.bill_to_cust_account_number                        CUSTOMER_NUMBER , 
             XAS.Auth_Message                                       ERROR_MESSAGE,
             (SELECT APS.vendor_name 
@@ -107,7 +108,7 @@
        AND  XACL.vendor_number                  = NVL(:P_VENDOR_NUM,XACL.vendor_number)
        ORDER  BY 
     ---RCTA.trx_number
-	   XAS.invoice_number
+	   XAS.CONTRACT_NUMBER
   ]]>
         </sqlStatement>
         <sqlStatement name="Q_SMTP_DTLS_EMAIL">
@@ -145,20 +146,18 @@
     <dataStructure>
         <group name="G_BILLING_SUMMARY" source="Q_BILLING_SUMMARY">
             <element name="TOT_AMT" value="TOT_AMT"/>
-            <element name="INV_NO" value="INV_NO"/>
             <element name="P_CURRDATE" value="P_CURRDATE"/>
             <element name="P_VENDNUM" value="p_vendor_num"/>
         </group>
         <group name="G_ARSCBILLAUTHFAIL" source="Q_ARSCBILLAUTHFAIL">
-            <element name="TRX_NUM" value="TRANSACTION_NUMBER"/>
-            <element name="CON_NUM" value="CONTRACT_NUMBER"/>
-            <element name="CON_STAT" value="CONTRACT_STATUS"/>
+            <element name="CONTRACT_NUMBER" value="CONTRACT_NUMBER"/>
+            <element name="CONTRACT_STATUS" value="CONTRACT_STATUS"/>
             <element name="REFERENCE" value="REFERENCE"/>
-            <element name="TRX_DATE" value="TRANSACTION_DATE"/>
-            <element name="LINE_NUM" value="TRANSACTION_LINE_NUMBER"/>
-            <element name="ITEM_NUM" value="ITEM_NUMBER"/>
-            <element name="LINE_AMT" value="TRANSACTION_LINE_AMOUNT"/>
-            <element name="CUST_NUM" value="CUSTOMER_NUMBER"/>
+            <element name="TRANSACTION_DATE" value="TRANSACTION_DATE"/>
+            <element name="TRANSACTION_LINE_NUMBER" value="TRANSACTION_LINE_NUMBER"/>
+            <element name="ITEM_NUMBER" value="ITEM_NUMBER"/>
+            <element name="TRANSACTION_LINE_AMOUNT" value="TRANSACTION_LINE_AMOUNT"/>
+            <element name="CUSTOMER_NUMBER" value="CUSTOMER_NUMBER"/>
             <element name="ERROR_MESSAGE" value="ERROR_MESSAGE"/>
             <element name="VENDOR_NAME" value="VENDOR_NAME"/>
         </group>
