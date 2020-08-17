@@ -27,13 +27,15 @@ AS
    -- | 1.3         04/18/2019   Paddy Sanjeevi       Modified to add GSO Requirements BEAC 12167  |
    -- | 1.4         06/04/2019   Narasimha S          Code change to get INSTANCE_NAME to DB_NAME  |
    -- | 1.4                                           for LNS Instance                             |
-      -- | 1.5   |    10/03/2019   Faiyaz Ahmad         Modified for the CAD currency extract        |
+   -- | 1.5    |    10/03/2019   Faiyaz Ahmad         Modified for the CAD currency extract        |
    -- | 1.6         11/25/2019   Paddy Sanjeevi       Modified xx_daily_extract to exclude avg rate|
-      -- | 1.7         03/12/2019  Faiyaz Ahmad         Addition of procedure xx_file_copy_dims      |
+   -- | 1.7         03/12/2019   Faiyaz Ahmad         Addition of procedure xx_file_copy_dims      |
    -- |                                               for DIMS                                     |
-      -- | 1.8         12/12/2019   Faiyaz Ahmad         Modified to get gl_daily_rates for MXN,INR,  |
+   -- | 1.8         12/12/2019   Faiyaz Ahmad         Modified to get gl_daily_rates for MXN,INR,  |
    -- |                                                   AND CRC To CAD                           |
-   -- |  1.9              05/27/2010  Amit Kumar       Modified xx_daily_extract procedure  NAIT-132879        |
+   -- |1.9          05/27/2010   Amit Kumar       Modified xx_daily_extract procedure  NAIT-132879 |
+   -- |2.0 		    14/08/2020	 Amit Kumar 		 NAIT-145025 Synchronization of Oracle Cloud   |
+   -- | 											 Exchange Rates with Oracle EBS and FCCS       |
    -- +============================================================================================+
    lc_Saturday        VARCHAR2(1)   := TO_CHAR(to_date('20000101','RRRRMMDD'),'D');
    lc_Sunday          VARCHAR2(1)   := TO_CHAR(to_date('20000102','RRRRMMDD'),'D');
@@ -436,13 +438,13 @@ IS
   lc_filename_part2 VARCHAR2(10):='.txt';
   ld_to_date   		DATE;
   --NAIT-132879 start
-  ln_conv_date           DATE ; 
-  ex_conv_date_exception EXCEPTION; 
+  ln_conv_date           DATE ;
+  ex_conv_date_exception EXCEPTION;
   ln_curr_date1 DATE	:=p_date+1;
-  ln_curr_date2 DATE    :=p_Date+2; 
+  ln_curr_date2 DATE    :=p_Date+2;
   ln_curr_date  DATE    :=p_Date;
-  ld_run_Date 	date ; 
-  
+  ld_run_Date 	date ;
+  /*--NAIT-145025 Commented below cursor
   cursor c_cal_extract (p_curr_date date, p_conv_date date) is
   SELECT b.from_currency,
 			    b.to_currency,
@@ -471,6 +473,36 @@ IS
 		    AND b.to_currency            IN ('INR','MXN','CRC')
 			ORDER BY 4,1,2;
 	--NAIT-132879 end
+	*/
+	--NAIT-145025 Start
+	CURSOR c_cal_extract (p_curr_date date, p_conv_date date) is
+		SELECT from_currency,
+			    to_currency,
+			    TO_CHAR(p_curr_date,'YYYY/MM/DD') conversion_date,
+			    user_conversion_type conversion_type,
+			    TO_CHAR(conversion_rate) conversion_rate,
+				Show_inverse_con_rate
+		   FROM GL_DAILY_RATES_V 
+		  WHERE user_conversion_type IN ('CC Period End','CC Period Average')
+		    AND conversion_date         = p_conv_date
+		    AND to_currency           ='USD'
+		    AND from_currency            <>'LTL'
+ 		 UNION
+		 SELECT b.from_currency,
+		     	b.to_currency,
+			    TO_CHAR(p_curr_date,'YYYY/MM/DD') conversion_date,
+			    a.user_conversion_type conversion_type,
+			    TO_CHAR(b.conversion_rate) conversion_rate,
+				Show_inverse_con_rate
+		   FROM GL_DAILY_RATES_V b,
+			    gl_daily_conversion_types a
+		  WHERE a.user_conversion_type IN ('CC Period End','CC Period Average')
+		    AND b.conversion_type         =a.conversion_type
+		    AND b.conversion_date         = p_conv_date
+  	   	    AND b.to_currency           ='CAD'
+		    AND b.from_currency            IN ('INR','MXN','CRC')
+			ORDER BY 4,1,2;
+		--NAIT-145025 End
 BEGIN
   SELECT LAST_DAY(p_date) INTO ld_to_date FROM DUAL;
   SELECT TO_CHAR(p_date,'YYYYMMDD')
@@ -479,7 +511,8 @@ BEGIN
   lc_file_name :=lc_file_name1||lc_filename_part1||lc_filename_part2;
   l_filehandle := UTL_FILE.fopen(gc_file_path,lc_file_name ,'w',ln_buffer);
   FOR r IN
-    (SELECT b.from_currency,
+  --NAIT-145025 Commented below cursor
+    /*(SELECT b.from_currency,
             b.to_currency,
             TO_CHAR(b.conversion_date,'YYYY/MM/DD') conversion_date,
             DECODE(a.user_conversion_type,'Ending Rate','Corporate',a.user_conversion_type) conversion_type,
@@ -508,13 +541,42 @@ BEGIN
         AND b.from_currency           ='CAD'
         AND b.to_currency            IN ('INR','MXN','CRC')
       ORDER BY 4,1,2
+    )*/
+	--NAIT-145025 Start
+	(SELECT from_currency,
+            to_currency,
+            TO_CHAR(conversion_date,'YYYY/MM/DD') conversion_date,
+            DECODE(user_conversion_type,'Ending Rate','Corporate',user_conversion_type) conversion_type,
+            TO_CHAR(conversion_rate) conversion_rate,
+			show_inverse_con_rate
+       FROM GL_DAILY_RATES_V 
+      WHERE   user_conversion_type IN ('Ending Rate')
+        AND conversion_date          in (TRUNC(p_date), TRUNC(p_date+1), TRUNC(p_date+2))  
+        AND to_currency           ='USD'
+        AND from_currency            <>'LTL'
+     UNION
+     SELECT from_currency,
+            to_currency,
+            TO_CHAR(conversion_date,'YYYY/MM/DD') conversion_date,
+            DECODE(user_conversion_type,'Ending Rate','Corporate',user_conversion_type) conversion_type,
+            TO_CHAR(conversion_rate) conversion_rate,
+			show_inverse_con_rate
+       FROM GL_DAILY_RATES_V
+      WHERE user_conversion_type IN ('Ending Rate')
+        AND conversion_date          in (TRUNC(p_date), TRUNC(p_date+1),TRUNC(p_date+2))  
+        AND to_currency           ='CAD'
+        AND from_currency            IN ('INR','MXN','CRC')
+      ORDER BY 4,1,2
     )
+	--NAIT-145025 End
   LOOP
-    l_data:=r.from_currency||','||r.to_currency||','||r.conversion_date||','||r.conversion_date||','|| r.conversion_type||','||r.conversion_rate;
+    l_data:=r.from_currency||','||r.to_currency||','||r.conversion_date||','||r.conversion_date||','|| r.conversion_type||','||r.conversion_rate
+	        --NAIT-145025 Added show_inverse_con_rate
+		    ||','||r.show_inverse_con_rate;
     UTL_FILE.PUT_LINE(l_filehandle,l_data);
-		
+
   END LOOP;
-  
+
   --NAIT-132879 start
      BEGIN
   	   SELECT TRUNC(MAX(conversion_Date))
@@ -525,9 +587,9 @@ BEGIN
 			  FROM gl_daily_conversion_types
 			  WHERE user_conversion_type IN ('CC Period End','CC Period Average')
 			  ) and conversion_Date <= p_date;
-		
+
 	   FND_FILE.PUT_LINE(FND_FILE.LOG,'Last Conversion Date: '|| ln_conv_date);
-		
+
 	 IF ln_conv_date IS NULL THEN
           RAISE ex_conv_date_exception;
        END IF;
@@ -535,7 +597,7 @@ BEGIN
 	   WHEN OTHERS THEN
 	 	 RAISE ex_conv_date_exception;
 	 END;
-	 
+
 		FOR i IN 1..3
 		LOOP
 		  IF i         =1 THEN
@@ -547,11 +609,12 @@ BEGIN
 		  END IF;
 		  FOR r IN c_cal_extract (ld_run_date, ln_conv_date)
 		  LOOP
-			l_data:=r.from_currency||','||r.to_currency||','||r.conversion_date||','||r.conversion_date||','|| r.conversion_type||','||r.conversion_rate;
+			l_data:=r.from_currency||','||r.to_currency||','||r.conversion_date||','||r.conversion_date||','|| r.conversion_type||','||r.conversion_rate
+			||','||r.show_inverse_con_rate; ----NAIT-145025 Added show_inverse_con_rate
 			UTL_FILE.PUT_LINE(l_filehandle,l_data);
-			
+
 		  END LOOP;
-		END LOOP;	
+		END LOOP;
   --NAIT-132879 end
   UTL_FILE.fclose(l_filehandle);
   xx_file_copy_dims(p_request_type,lc_file_name);
@@ -600,7 +663,7 @@ WHEN value_error THEN
 	logit(p_message =>'Error Deriving Daily Conversion Date of Last Month', p_force => TRUE);
 	gc_retcode:= 1;
 	gc_errbuf :='Error Deriving Daily Conversion Date of Last Month'||SUBSTR(sqlerrm,1,250);
-  --NAIT-132879 end	  
+  --NAIT-132879 end
 WHEN OTHERS THEN
   utl_file.fclose(l_filehandle);
   logit(p_message =>'UTL File Error:'||SUBSTR(sqlerrm,1,250), p_force => TRUE);
@@ -1020,5 +1083,3 @@ EXCEPTION
  p_errbuf := 'Error encountered. Please check logs.';
 END Extract_rates;
 END XX_GL_MTHCAL_RATE_PKG;
-/
-SHOW ERRORS;
