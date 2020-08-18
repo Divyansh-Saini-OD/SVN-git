@@ -1,4 +1,4 @@
-CREATE OR REPLACE PACKAGE BODY xx_ar_autoremit_pkg
+create or replace PACKAGE BODY XX_AR_AUTOREMIT_PKG
 AS
 -- +=========================================================================================+
 -- |                  Office Depot - Project Simplify                                        |
@@ -46,6 +46,7 @@ AS
 -- |                                            transactions job Defect 29355
 -- |3.0       16-MAY-2014  Arun Gannarapu       Updated per Defect 30015                     |
 -- |3.1       30-OCT-2015  Vasu Raparla         Removed Schema References for R12.2          |
+-- |3.2       12-AUG-2020  Divyansh Saini       Code changes done for NAIT-129669            |
 -- +=========================================================================================+
     gc_rpad_len  NUMBER DEFAULT 20;   -- Added for QC Defect # 20860
 
@@ -535,6 +536,12 @@ AS
         ld_receipt_date_high1      VARCHAR2(20);
         ln_receipt_index           NUMBER;
         ln_ret_err_code            NUMBER                                 := 0;
+        -- Added by Divyansh
+        ln_trxn_id                 NUMBER;
+        x_transaction_id_out    iby_trxn_summaries_all.TransactionID%TYPE;
+        x_transaction_mid_out   iby_trxn_summaries_all.trxnmid%TYPE;
+        p_ret_status            VARCHAR2(2000);
+        p_ret_error             VARCHAR2(2000);
 
         TYPE data_buffer_typ IS TABLE OF ar_cash_receipts.receipt_number%TYPE
             INDEX BY PLS_INTEGER;
@@ -578,6 +585,42 @@ AS
                                            AND NVL(p_receipt_num_high,
                                                    cr.receipt_number)
             ORDER BY cr.receipt_number ASC;
+			
+        -- Added cursor for NAIT-129669
+		CURSOR c_count_rim_receipts
+        IS
+            SELECT   /*+ ordered index(crh AR_CASH_RECEIPT_HISTORY_N6) use_nl(crh cr rm rclass) */
+                     cr.receipt_number
+            FROM     ar_cash_receipt_history crh,
+                     ar_cash_receipts cr,
+                     ar_receipt_methods rm,
+                     ar_receipt_classes rclass,
+                     ce_bank_acct_uses_ou remit_bank
+            WHERE    crh.cash_receipt_id = cr.cash_receipt_id
+            AND      rm.receipt_method_id = cr.receipt_method_id
+            AND      rclass.receipt_class_id = rm.receipt_class_id
+            AND      rm.receipt_method_id = NVL(p_receipt_payment_method_id,
+                                                rm.receipt_method_id)
+            AND      rclass.name = 'US_CC IRECEIVABLES_OD'
+            AND      cr.remit_bank_acct_use_id = remit_bank.bank_acct_use_id
+            AND      remit_bank.bank_account_id = p_remit_bank_account_id
+            AND      cr.selected_remittance_batch_id IS NULL
+            AND      cr.cc_error_flag IS NULL
+            AND      cr.currency_code = p_batch_currency
+            AND      crh.status = 'REMITTED'
+            AND      crh.current_record_flag = 'Y'
+            AND      rclass.remit_method_code = 'STANDARD'
+            AND      cr.receipt_date BETWEEN NVL(ld_receipt_date_low,
+                                                 cr.receipt_date)
+                                         AND NVL(ld_receipt_date_high,
+                                                 cr.receipt_date)
+            AND      rm.payment_type_code = 'CREDIT_CARD'
+            AND      cr.receipt_number BETWEEN NVL(p_receipt_num_low,
+                                                   cr.receipt_number)
+                                           AND NVL(p_receipt_num_high,
+                                                   cr.receipt_number)
+            ORDER BY cr.receipt_number ASC;
+			
     BEGIN
         fnd_file.put_line(fnd_file.LOG,
                           '*****Parameters******');
@@ -899,6 +942,31 @@ AS
 
              submit_offline_transaction(p_batch_count      => 1, -- Updated per defect 30015 p_batch_count,
                                         x_request_id       => ln_conc_request_id);
+            
+            -- Added for NAIT-129669            
+            FOR lcu_count_receipts IN c_count_rim_receipts loop
+                fnd_file.put_line(fnd_file.LOG,'processing for '||lcu_count_receipts.receipt_number);
+                BEGIN
+                    SELECT TRANSACTIONID
+                      INTO ln_trxn_id
+                      FROM ar_cash_receipts_all acr,
+                           iby_fndcpt_tx_operations ifto
+                     WHERE acr.payment_trxn_extension_id = ifto.trxn_extension_id
+                       AND acr.receipt_number = lcu_count_receipts.receipt_number;
+                    
+                    fnd_file.put_line(fnd_file.LOG,'processing for ln_trxn_id '||ln_trxn_id);
+                    xx_eai_authorization.xx_capture(ln_trxn_id,--p_trxn_id  --    IN  NUMBER,
+                                                     x_transaction_id_out,--   OUT iby_trxn_summaries_all.TransactionID%TYPE,
+                                                     x_transaction_mid_out  ,--OUT iby_trxn_summaries_all.trxnmid%TYPE,
+                                                     p_ret_status ,--          OUT VARCHAR2,
+                                                     p_ret_error     --       OUT VARCHAR2);
+                     );
+                EXCEPTION
+                    WHEN NO_DATA_FOUND THEN
+                        fnd_file.put_line(fnd_file.LOG,'Trxn Id not found for '||lcu_count_receipts.receipt_number);
+                END;
+            END LOOP;
+            -- Changes done for NAIT-129669
 
             fnd_conc_global.set_req_globals(conc_status =>       'PAUSED',
                                             request_data =>      'THIRD');
@@ -1121,6 +1189,12 @@ AS
         ld_receipt_date_high   DATE;
         ld_receipt_date_low1   VARCHAR2(20);
         ld_receipt_date_high1  VARCHAR2(20);
+        -- Added by Divyansh
+        ln_trxn_id                 NUMBER;
+        x_transaction_id_out    iby_trxn_summaries_all.TransactionID%TYPE;
+        x_transaction_mid_out   iby_trxn_summaries_all.trxnmid%TYPE;
+        p_ret_status            VARCHAR2(2000);
+        p_ret_error             VARCHAR2(2000);
 
         CURSOR c_err_receipts
         IS
@@ -1138,6 +1212,39 @@ AS
             AND           acrh.current_record_flag = 'Y'
             AND           acr.receipt_method_id = p_receipt_method_id
             AND           acr.receipt_date BETWEEN NVL(ld_receipt_date_low,
+                                                       acr.receipt_date)
+                                               AND NVL(ld_receipt_date_high,
+                                                       acr.receipt_date)
+            AND           acr.receipt_number BETWEEN NVL(p_receipt_num_low,
+                                                         acr.receipt_number)
+                                                 AND NVL(p_receipt_num_high,
+                                                         acr.receipt_number)
+            AND           NOT EXISTS(
+                              SELECT xbt.ixrecptnumber
+                              FROM   xx_iby_batch_trxns_history xbt
+                              WHERE  acr.receipt_number = xbt.ixrecptnumber
+                              AND    acr.cash_receipt_id = TO_NUMBER(xbt.attribute7) )
+            ORDER BY      acr.receipt_number
+            FOR UPDATE OF acr.receipt_number;
+
+        -- Added for NAIT-129669  
+        CURSOR c_err_rim_receipts
+        IS
+            SELECT        acr.receipt_number,
+                          acr.receipt_date,
+                          acr.amount,
+                          acr.org_id,
+                          acr.receipt_method_id,
+                          acr.cash_receipt_id,
+                          acr.cc_error_text
+            FROM          ar_cash_receipts acr, ar_cash_receipt_history acrh,ar_receipt_methods arm
+            WHERE         acr.cash_receipt_id = acrh.cash_receipt_id
+            AND           acr.cc_error_flag = 'Y'
+            AND           acrh.status = 'REMITTED'
+            AND           acrh.current_record_flag = 'Y'
+            AND           acr.receipt_method_id = arm.receipt_method_id
+            AND           arm.name              = 'US_CC IRECEIVABLES_OD'
+			AND           acr.receipt_date BETWEEN NVL(ld_receipt_date_low,
                                                        acr.receipt_date)
                                                AND NVL(ld_receipt_date_high,
                                                        acr.receipt_date)
@@ -1512,8 +1619,34 @@ AS
         ELSIF(     (lc_req_data = 'SECOND')
               AND (p_auto_remit_submit = 'Y') )
         THEN
-            submit_offline_transaction(p_batch_count =>      1,
-                                       x_request_id =>       ln_conc_request_id);
+            submit_offline_transaction(p_batch_count      => 1, -- Updated per defect 30015 p_batch_count,
+                                        x_request_id       => ln_conc_request_id);
+            
+            --
+            -- Added for NAIT-129669  
+            FOR lcu_count_receipts IN c_err_rim_receipts loop
+                fnd_file.put_line(fnd_file.LOG,'processing for '||lcu_count_receipts.receipt_number);
+                BEGIN
+                    SELECT TRANSACTIONID
+                      INTO ln_trxn_id
+                      FROM ar_cash_receipts_all acr,
+                           iby_fndcpt_tx_operations ifto
+                     WHERE acr.payment_trxn_extension_id = ifto.trxn_extension_id
+                       AND acr.receipt_number = lcu_count_receipts.receipt_number;
+                    
+                    fnd_file.put_line(fnd_file.LOG,'processing for ln_trxn_id '||ln_trxn_id);
+                    xx_eai_authorization.xx_capture(ln_trxn_id,--p_trxn_id  --    IN  NUMBER,
+                                                     x_transaction_id_out,--   OUT iby_trxn_summaries_all.TransactionID%TYPE,
+                                                     x_transaction_mid_out  ,--OUT iby_trxn_summaries_all.trxnmid%TYPE,
+                                                     p_ret_status ,--          OUT VARCHAR2,
+                                                     p_ret_error     --       OUT VARCHAR2);
+                     );
+                EXCEPTION
+                    WHEN NO_DATA_FOUND THEN
+                        fnd_file.put_line(fnd_file.LOG,'Trxn Id not found for '||lcu_count_receipts.receipt_number);
+                END;
+            END LOOP;
+            ---- Changes done for NAIT-129669  
             fnd_conc_global.set_req_globals(conc_status =>       'PAUSED',
                                             request_data =>      'THIRD');
             COMMIT;
@@ -1522,6 +1655,7 @@ AS
         ELSIF(     (lc_req_data = 'THIRD')
               AND (p_auto_remit_submit = 'Y') )
         THEN   -- Count
+        
             fnd_file.put_line(fnd_file.output,
                                  repeat_char('*',
                                              90)

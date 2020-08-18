@@ -1,9 +1,4 @@
-SET VERIFY OFF
-WHENEVER OSERROR EXIT FAILURE ROLLBACK;
-WHENEVER SQLERROR EXIT FAILURE ROLLBACK;
-
-create or replace 
-PACKAGE BODY xx_ar_irec_payments
+create or replace PACKAGE BODY xx_ar_irec_payments
 AS
 /*  | $Header: ARIRPMTB.pls 120.99.12020000.44 2015/03/13 14:21:57 gnramasa ship  $ */
 
@@ -78,6 +73,8 @@ AS
 -- |                                             for R12.2.5 upgrade       |
 -- |10.0      5-OCT-2016    Sridevi K            Modified for Vantiv       |
 -- |11.0      19-OCT-2017   Vasu R               Modified for defec 35919  |
+-- |12.0      12-AUG-2020   Divyansh saini       Modified for PCI Irec     |
+-- |                                             JIRA NAIT-129669          |
 -- +=======================================================================+
 
  /* ============================================================================+
@@ -218,7 +215,7 @@ AS
  |                                                 APPLY DATE MUST BE GREATER RECEIPT DATE
  | 27-Dec-12             melapaku  Bug 14798065 - ccard saved in ar cust pymt details even though save box
  |                                                unchecked
- | 27-Dec-12             melapaku  Bug 14797865 - ccard billing address defaulting pymt page appearance inconsiste                                              
+ | 27-Dec-12             melapaku  Bug 14797865 - ccard billing address defaulting pymt page appearance inconsiste
  | 12-Jan-13             melapaku  Bug 16097315 - IRECEIVABLES SHOWS FUTURE DATED BANK ACCOUNTS
  | 06-Feb-2013           melapaku  Bug16262617 - cannot remove end date entered via ireceivables pay function
  | 13-Feb-2013           melapaku  Bug16306925 - PAYMENTS FAIL WHEN SAME BANK ACCOUNT NUMBER , ROUTING NUMBER AND ACCOUNT
@@ -234,12 +231,12 @@ AS
  | 15-Jul-2014           gnramasa  Bug 19190706 - PPG: PAYMENT PROCESS FAILED IBYIBY_INVALID_INSTR_ASSIGN AND INVALID_INSTRUMENT_A
  | 23-Jul-2014           gnramasa  Bug 17475275 - TST1223:CREDIT CARD DETAILS BEING SHOWN TWICE, WHEN PAID PART BY PART
  | 12-Aug-2014           melapaku  Bug 19331908 - RPC-AUG14:Discount alerts at home page not shown for newly created
- |                                                customers 
+ |                                                customers
  | 14-Oct-2014           melapaku  Bug 19800178 - IRECEIVABLES LEADING ZERO REMOVED IN CVV CODE
  | 30-Dec-2014	         gnramasa  Bug 20236871 - QUICK PAYMENT PAGE NOT DISPLAYED WHEN PAYMENT METHOD AT ACCOUNT LEVEL ONLY
  | 21-Jan-2015           gnramasa  Bug 20389172 - IRECEIVABLES CREDIT CARD PAYMENTS
  | 21-Jan-2015           gnramasa  Bug20359618 - CUSTOMER (BANK ACCT TRANSFER) BANK PRIORITY CHGS WHEN IRECEIVABLES IS USED
- | 22-Jan-2015           ssiddams  Bug 20387036 - ENDDATED RECEIPT METHOD DOES NOT REMOVE NEW CREDIT CARD OPTION 
+ | 22-Jan-2015           ssiddams  Bug 20387036 - ENDDATED RECEIPT METHOD DOES NOT REMOVE NEW CREDIT CARD OPTION
  | 23-Jan-2015           gnramasa  Bug 20387436 - PAYMENTS - SWITCHING OU/CURRENCY AND MAKING 2ND PYMT CAUSES EXCHANGE RATE ERROR
  | 16-Feb-2015           gnramasa  Bug 20502416 - IREC- CODE: INCONSISTENT BEHAVIOR OF PAY BUTTON IN ACCNT DETAIL AND TRX DETAIL
  | 05-Mar-2015	         gnramasa  Bug 20352248 - ISSUE WITH PAYMENTS FOR SAME ROUTING # BUT DIFFERENT ACCOUNTS
@@ -1710,7 +1707,7 @@ CURSOR instr_details(p_bank_account_id IN NUMBER,
           --N -> Keep the existing priority
           l_update_priority := fnd_profile.value('OIR_PAYMENT_UPDATE_PRIORITY');
           write_debug_and_log('l_update_priority :' || l_update_priority);
-  
+
            --if l_priority is null then
            if nvl(l_update_priority,'Y') = 'N' then
            --l_pmtInstrAssignment_Rec_type.priority		:= l_priority;
@@ -2109,7 +2106,7 @@ CURSOR instr_details(p_bank_account_id IN NUMBER,
                                 ) IS NULL
                     )
                 )*/
-            AND (nvl(p.acct_site_use_id, p_customer_site_use_id) = p_customer_site_use_id) 
+            AND (nvl(p.acct_site_use_id, p_customer_site_use_id) = p_customer_site_use_id)
              --End bug 20236871 gnramasa 30th Dec 2014
             AND c.instrument_type = 'CREDITCARD'
             AND NVL (TRUNC (c.assignment_start_date), SYSDATE - 1) <=
@@ -2423,7 +2420,7 @@ Return NULL values in the following cases:
          LOOP
             --  bug 7712779
             WRITE_DEBUG_AND_LOG('cursor bank_account_rec returned value');
-            
+
             IF (ar_irec_payments.is_bank_acc_payment_enabled
                                                       (p_customer_id,
                                                        p_customer_site_use_id,
@@ -2437,7 +2434,7 @@ Return NULL values in the following cases:
 
             --If there are any BA, in the first iteration read those values.
             --From 2nd iteration, maintain a count of the BA and CC existing
-            
+
             WRITE_DEBUG_AND_LOG('l_ba_count: ' || l_ba_count);
             IF (l_ba_count = 0)
             THEN
@@ -2474,7 +2471,7 @@ Return NULL values in the following cases:
          LOOP
             --  bug 7712779
             WRITE_DEBUG_AND_LOG('cursor credit_card_cur returned value');
-            
+
             IF (xx_ar_irec_payments.is_credit_card_payment_enabled
                                                       (p_customer_id,
                                                        p_customer_site_use_id,
@@ -2485,7 +2482,7 @@ Return NULL values in the following cases:
                 WRITE_DEBUG_AND_LOG('xx_ar_irec_payments.is_credit_card_payment_enabled returned value as 0');
                EXIT;
             END IF;
-            
+
               WRITE_DEBUG_AND_LOG('l_ba_count: ' || l_ba_count);
 	            WRITE_DEBUG_AND_LOG('l_cc_count: ' || l_cc_count);
 
@@ -2521,7 +2518,7 @@ Return NULL values in the following cases:
             END IF;
          END LOOP;
          WRITE_DEBUG_AND_LOG('end of loop credit_card_rec');
-         
+
          IF (   (l_payment_instrument = 'BANKACCOUNT' AND l_ba_count > 1)
              OR (l_payment_instrument = 'CREDITCARD' AND l_cc_count > 1)
              OR (l_payment_instrument IS NULL)
@@ -4061,9 +4058,9 @@ Return NULL values in the following cases:
     --Start added for bug 20352248 gnramasa 5th Mar 2015
     CURSOR c_ext_bank_account (l_account_number VARCHAR2, l_bank_id number, l_branch_id number) IS
       select ext_bank_account_id
-      from iby_ext_bank_accounts 
-      where BANK_ACCOUNT_NUM = l_account_number 
-      and bank_id = l_bank_id 
+      from iby_ext_bank_accounts
+      where BANK_ACCOUNT_NUM = l_account_number
+      and bank_id = l_bank_id
       and branch_id = l_branch_id
       order by creation_date desc;
 
@@ -4438,7 +4435,7 @@ Return NULL values in the following cases:
                THEN
                fnd_log.string(fnd_log.LEVEL_STATEMENT,G_PKG_NAME||l_procedure_name,'Inside when l_bank_branch_cur_exists, p_account_number: ' || p_account_number ||' ,l_bank_id: ' || l_bank_id || ' ,l_branch_id: ' || l_branch_id);
                END IF;
-               
+
                open c_ext_bank_account(p_account_number, l_bank_id, l_branch_id);
                fetch c_ext_bank_account into l_bank_account_id;
                IF (c_ext_bank_account%FOUND) then
@@ -4670,9 +4667,9 @@ Return NULL values in the following cases:
                IF (fnd_log.level_statement >= fnd_log.g_current_runtime_level) THEN
                   fnd_log.STRING (fnd_log.level_statement, g_pkg_name || l_procedure_name, 'Other Exception in get_token - ' || SQLERRM );
                END IF;
-         END; -- 
+         END; --
 		 */
-         --E1294 - End - Added for Creditcard Tokenization functionality 
+         --E1294 - End - Added for Creditcard Tokenization functionality
          IF (fnd_log.level_statement >= fnd_log.g_current_runtime_level) THEN
             fnd_log.STRING (fnd_log.level_statement, g_pkg_name || l_procedure_name, 'before xx_od_security_key_pkg.encrypt_outlabel, for credit card encryption' );
          END IF;
@@ -4689,7 +4686,7 @@ Return NULL values in the following cases:
             fnd_log.STRING (fnd_log.level_statement, g_pkg_name || l_procedure_name, 'after xx_od_security_key_pkg.encrypt_outlabel, for credit card encryption --gc_cc_encrypt_error_message: ' || gc_cc_encrypt_error_message );
          END IF;
 
-         
+
          --Get encrypted Token
      --     IF (fnd_log.level_statement >= fnd_log.g_current_runtime_level) THEN
      --        fnd_log.STRING (fnd_log.level_statement, g_pkg_name || l_procedure_name, 'before xx_od_security_key_pkg.encrypt_outlabel, for Token encryption' );
@@ -4709,7 +4706,7 @@ Return NULL values in the following cases:
      --      END IF;
      --
      --    end if;
-         
+
 
          fnd_log.STRING
             (fnd_log.level_statement,
@@ -4725,7 +4722,7 @@ Return NULL values in the following cases:
             RETURN;
          END IF;
 
-        
+
          l_create_credit_card.card_id := NULL;
          l_create_credit_card.owner_id := p_payer_party_id;
          l_create_credit_card.card_holder_name := p_account_holder_name;
@@ -4746,7 +4743,7 @@ Return NULL values in the following cases:
          l_create_credit_card.expiration_date := p_expiration_date;
          l_create_credit_card.instrument_type := 'CREDITCARD';
          l_create_credit_card.purchasecard_subtype := NULL;
-         --Due to iFrame changes, the UI will not have element to capture card type/card brand. 
+         --Due to iFrame changes, the UI will not have element to capture card type/card brand.
          --So, we need to invoke the following function to get the card_brand
          l_create_credit_card.card_issuer := GET_CREDIT_CARD_TYPE(p_account_number); --p_card_brand;
          l_create_credit_card.single_use_flag := p_single_use_flag;
@@ -4765,9 +4762,9 @@ Return NULL values in the following cases:
 
          --The token call is being done in PaymentUtilities.java. Hence,
          --X_TOKEN_FLAG will always be 'Y', for all cards. If we get error in getting token, we throw exception
-         l_create_credit_card.attribute7 := 'Y';                  
-         
-         
+         l_create_credit_card.attribute7 := 'Y';
+
+
          IF (fnd_log.level_statement >= fnd_log.g_current_runtime_level) THEN
             fnd_log.STRING (fnd_log.level_statement, g_pkg_name || l_procedure_name, 'before iby_fndcpt_setup_pub.create_card,  l_create_credit_card.card_issuer: ' || l_create_credit_card.card_issuer );
          END IF;
@@ -6426,7 +6423,7 @@ Return NULL values in the following cases:
       END IF;
 
       write_debug_and_log('org_id value is : ' || mo_global.get_current_org_id);
-        IF mo_global.get_current_org_id is null then  
+        IF mo_global.get_current_org_id is null then
             write_debug_and_log('Calling ARP_GLOBAL.INIT_GLOBAL without org_id as parameter');
             ARP_GLOBAL.INIT_GLOBAL;
        ELSE
@@ -6484,7 +6481,7 @@ Return NULL values in the following cases:
       THEN
          l_site_use_id := p_receipt_site_id;
       END IF;
--- Modified for bug 19800178 
+-- Modified for bug 19800178
 fnd_log.STRING
                (fnd_log.level_statement,
                 g_pkg_name || l_procedure_name,
@@ -6503,7 +6500,7 @@ fnd_log.STRING
          END IF;
       ELSE
          l_cvv2 := p_cvv2;
-		 
+
 		 fnd_log.STRING
                (fnd_log.level_statement,
                 g_pkg_name || l_procedure_name,
@@ -6783,7 +6780,7 @@ fnd_log.STRING
          fnd_log.STRING (fnd_log.level_statement,
                       g_pkg_name || l_procedure_name,
                       'BEFORE calling create_payment_instrument, l_card_brand: ' || l_card_brand
-                     );         
+                     );
          create_payment_instrument
                              (p_customer_id              => p_customer_id,
                               p_customer_site_id         => l_site_use_id_pay_instr,
@@ -6810,7 +6807,10 @@ fnd_log.STRING
                               p_assignment_id            => l_instr_assign_id,
                               p_bank_account_id          => l_bank_account_id
                              );
+							 
+              
          	  dbms_output.put_line('--7--');
+      
 
          -- Check if the payment instrument was created successfully
          IF (x_return_status <> fnd_api.g_ret_sts_success)
@@ -6995,9 +6995,10 @@ fnd_log.STRING
                                       x_entity_id             => l_extn_id,
                                       x_response              => l_result_rec
                                      );
+									   ---Changes done by Divyansh
        dbms_output.put_line('--10 a --' || x_return_status);
        dbms_output.put_line('--10 b --' || l_msg_data);
-                                  
+--		x_return_status := fnd_api.g_ret_sts_success;---Changes done by Divyansh
       IF (x_return_status <> fnd_api.g_ret_sts_success)
       THEN
          IF (fnd_log.level_statement >= fnd_log.g_current_runtime_level)
@@ -7432,7 +7433,9 @@ fnd_log.STRING
                           x_bep_code                 => x_bep_code
                          -- Added for the Defect 2462(CR 247), for E1294
                          );
-         l_auth_id := x_auth_result.auth_id;
+						 
+						      --- Commented by Divyansh
+         l_auth_id := x_auth_result.auth_id;  ---Changes done by Divyansh
          fnd_log.STRING (fnd_log.level_statement,
                          g_pkg_name || l_procedure_name,
                             'XXOD: Process Payment : p_cc_auth_code'
@@ -8046,7 +8049,8 @@ fnd_log.STRING
  |                            cursor,to be passed onto iPayment API
  | 07-Oct-2004   vnb          Bug 3335944 - One Time Credit Card Verification
  | 14-Mar-2013   melapaku     Bug16471455 - Payment Audit History
-  | 21-Jul-2010   Bushrod      Updated for I0349 Defect 4180
+ | 21-Jul-2010   Bushrod      Updated for I0349 Defect 4180
+ | 12-AUG-2020   Divyansh     Changes done for NAIT-129669 
  +==============================================================*/
    PROCEDURE process_payment (
       p_cash_receipt_id       IN              NUMBER,
@@ -8097,6 +8101,7 @@ fnd_log.STRING
       -- Included by Madankumar J, Wipro Technologies for E1294
       x_msg_data1                   VARCHAR2 (2000);
    /*End-Added for R12 upgrade retrofit*/
+      l_instr_type                  VARCHAR2 (150);  -- Added for NAIT-129669
 
 		lc_auth_code                  VARCHAR2 (50)   := NULL;  -- Added as part of Defect#34865
    BEGIN
@@ -8245,7 +8250,40 @@ fnd_log.STRING
          END IF;
 
 		 /*End-Added for R12 upgrade retrofit*/
-         iby_fndcpt_trxn_pub.create_authorization
+        --Code changes done for NAIT-129669
+        --
+        -- Check for type of transaction
+        --
+        BEGIN
+         SELECT distinct instrument_type
+           INTO l_instr_type
+           FROM ar_cash_receipts_all acr, ar_receipt_methods arm,iby_fndcpt_pmt_chnnls_b ifp
+          WHERE acr.receipt_method_id = arm.receipt_method_id
+            AND arm.payment_channel_code = ifp.payment_channel_code
+            AND acr.payment_trxn_extension_id = l_payment_trxn_extension_id;
+        EXCEPTION WHEN OTHERS THEN
+          l_instr_type := 'BANK';
+        END;
+        
+        IF l_instr_type = 'CREDITCARD' THEN
+        --If credit card transaction then modify the logic
+            xx_eai_authorization.create_authorization
+                             (p_api_version         => 1.0,
+                              p_init_msg_list       => fnd_api.g_true,
+                              x_return_status       => l_return_status,
+                              x_msg_count           => l_msg_count,
+                              x_msg_data            => l_msg_data,
+                              p_payer               => p_payer_rec,
+                              p_payee               => p_payee_rec,
+                              p_trxn_entity_id      => l_payment_trxn_extension_id,
+                              p_auth_attribs        => l_auth_rec,
+                              p_amount              => l_amount_rec,
+                              x_auth_result         => x_auth_result,
+                              x_response            => x_response
+                             );        
+        ELSE         
+            -- Keeping existing logic forany other transaction type
+            iby_fndcpt_trxn_pub.create_authorization
                              (p_api_version         => 1.0,
                               p_init_msg_list       => fnd_api.g_true,
                               x_return_status       => l_return_status,
@@ -8259,6 +8297,8 @@ fnd_log.STRING
                               x_auth_result         => x_auth_result,
                               x_response            => x_response
                              );
+        END IF;
+--Code changes end for NAIT-129669                             
          IF (fnd_log.level_statement >= fnd_log.g_current_runtime_level) THEN
             fnd_log.STRING (fnd_log.level_statement, g_pkg_name || l_procedure_name, 'After Create_Authorization, l_return_status:' || l_return_status );
          END IF;
@@ -9053,7 +9093,7 @@ Defect 35495 */
          AND SYSDATE < NVL (aba.end_date, SYSDATE + 1)
          AND SYSDATE BETWEEN arm.start_date AND NVL (arm.end_date, SYSDATE)
          AND SYSDATE BETWEEN arma.start_date AND NVL (arma.end_date, SYSDATE)
-             --Added below condition for bug-20387036 
+             --Added below condition for bug-20387036
          AND sysdate between rcrm.start_date AND NVL(rcrm.end_date, sysdate)
                                                                              /* Commented for bug 12670265
                                                                              AND (
@@ -9286,9 +9326,9 @@ Defect 35495 */
          AND SYSDATE < NVL (aba.end_date, SYSDATE + 1)
          AND SYSDATE BETWEEN arm.start_date AND NVL (arm.end_date, SYSDATE)
          AND SYSDATE BETWEEN arma.start_date AND NVL (arma.end_date, SYSDATE)
-         --Added below condition for bug-20387036 
+         --Added below condition for bug-20387036
          AND sysdate between rcrm.start_date AND NVL(rcrm.end_date, sysdate) ;
-         
+
            if( FND_LOG.LEVEL_STATEMENT >= FND_LOG.G_CURRENT_RUNTIME_LEVEL ) then
                 fnd_log.string(fnd_log.LEVEL_STATEMENT,G_PKG_NAME||l_procedure_name, 'customer_bank_payment_method  :'||customer_bank_payment_method);
                 fnd_log.string(fnd_log.LEVEL_STATEMENT,G_PKG_NAME||l_procedure_name, 'system_bank_payment_method  :'||system_bank_payment_method);
@@ -10073,7 +10113,7 @@ Defect 35495 */
     | Date          Author       Description of Changes
     | 06-MAY-2011   rsinthre     Created for bug 10106518
     | 12-Aug-2014   melapaku     Bug 19331908 - RPC-AUG14:Discount alerts at home page not shown for newly created
-    |                                           customers 
+    |                                           customers
     +============================================================*/
    FUNCTION get_future_discount_wrapper (
       p_ps_id               IN   ar_payment_schedules.payment_schedule_id%TYPE,
@@ -10239,8 +10279,8 @@ Defect 35495 */
   when OTHERS then
        RAISE;
   END insert_irec_ext;
-  
-  
+
+
   PROCEDURE get_token_wrapper (
    p_account_number    IN              VARCHAR2,
    p_expiration_date   IN              DATE,
@@ -10273,6 +10313,7 @@ IS
    p_oapfretry            VARCHAR2 (15)   := NULL;
    p_oapfcvv2             VARCHAR2 (15)   := NULL;
    x_token_flag           VARCHAR2 (1)    := 'N';
+  -- x_error_msg            VARCHAR2 (4000);
 BEGIN
    x_status := fnd_api.g_ret_sts_success;
    l_procedure_name := '.get_token_wrapper';
@@ -10285,7 +10326,7 @@ BEGIN
                      );
    END IF;
 
-   xx_fin_irec_cc_token_pkg.get_token
+   /*xx_fin_irec_cc_token_pkg.get_token
                                 (p_error_msg               => x_error_msg,
                                  p_error_code              => x_error_code,
                                  p_oapfaction              => p_oapfaction,
@@ -10308,31 +10349,38 @@ BEGIN
                                  p_oapfcvv2                => p_oapfcvv2,
                                  x_token                   => x_token,
                                  x_token_flag              => x_token_flag
-                                );
-     
-   IF (x_token_flag <> 'Y') 
-   THEN     
+                                );*/ --commented code for NAIT-129669
+
+  --Code chnages done for NAIT-129669
+  xx_fin_irec_cc_token_pkg.get_token_ecomm(p_account_number ,
+                                           p_expiration_date,
+                                           x_token  ,
+                                           x_token_flag,
+                                           x_error_msg,
+                                           x_error_code);
+   IF (x_token_flag <> 'Y')
+   THEN
      IF (fnd_log.level_statement >= fnd_log.g_current_runtime_level)
-     THEN          
+     THEN
        x_status := fnd_api.g_ret_sts_error;
-       x_error_msg :=  'Unexpected Exception while getting token in xx_fin_irec_cc_token_pkg.get_token';
-     
+       x_error_msg :=  'Unexpected Exception while getting token in xx_fin_irec_cc_token_pkg.get_token '||x_error_msg;
+
        fnd_log.STRING (fnd_log.level_statement,
                         'x_error_msg :'||x_error_msg||' '||'x_error_code :'||x_error_code,
                         'get_token_wrapper'
                        );
-     END IF;                          
-   END IF;                          
+     END IF;
+   END IF;
 
    IF (fnd_log.level_statement >= fnd_log.g_current_runtime_level)
    THEN
-   
+
       fnd_log.STRING (fnd_log.level_statement,
                       g_pkg_name || l_procedure_name,
                       'in get_token_wrapper (-)'
                      );
-   END IF;                          
-                             
+   END IF;
+
 EXCEPTION
    WHEN OTHERS
    THEN
@@ -10345,9 +10393,6 @@ EXCEPTION
                            || l_procedure_name
                           );
 END get_token_wrapper;
-  
-END xx_ar_irec_payments;
-/
 
-COMMIT;
-EXIT;
+END XX_AR_IREC_PAYMENTS;
+/
