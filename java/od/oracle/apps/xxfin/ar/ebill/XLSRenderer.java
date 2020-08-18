@@ -1238,7 +1238,8 @@ public class XLSRenderer implements JavaConcurrentProgram {
 			c = r.createCell(4);
 			c.setCellValue(cstmt.getString(25)); // c.setCellValue(cstmt.getString("x_fee_label"));
 			c = r.createCell(5);
-			c.setCellValue(cstmt.getString(26)); // c.setCellValue(cstmt.getString("x_fee_Amount"));			
+			double fee_amount = Double.parseDouble(cstmt.getString(26));
+            c.setCellValue(fee_amount); // c.setCellValue(cstmt.getString("x_fee_Amount"));			
 			r = s.createRow(4);
 			}
 			//Added By Divyansh
