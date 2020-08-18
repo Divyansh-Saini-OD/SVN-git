@@ -1083,3 +1083,5 @@ EXCEPTION
  p_errbuf := 'Error encountered. Please check logs.';
 END Extract_rates;
 END XX_GL_MTHCAL_RATE_PKG;
+/
+show err
