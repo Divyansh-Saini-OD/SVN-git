@@ -18,6 +18,7 @@ AS
   -- | 1.1         19/06/2020   M K Pramod Kumar     Code Changes to trigger Journal Import Parallely
   --                                                 and remove logic to Create PA Batches based on Txn Number|
   -- | 1.2         19/07/2020   M K Pramod Kumar     Code Changes to show errors in output
+  -- | 1.3         14/08/2020   M K Pramod Kumar     Code Changes to error Load Program if any load issues.
   -- +============================================================================================+
   gc_package_name      CONSTANT all_objects.object_name%TYPE := 'XX_GL_JRNLS_CLD_INTF_PKG';
   gc_ret_success       CONSTANT VARCHAR2(20)                 := 'SUCCESS';
@@ -92,28 +93,6 @@ THEN
   fnd_file.put_line(fnd_file.log,'Error occured in Procedure-print_debug_msg. SQLERRM-'||sqlerrm );
 END print_debug_msg;
 
-    /*********************************************************************
-  * Procedure used to print output based on if p_force is TRUE.
-  * Will log to dbms_output if request id is not set,
-  * else will log to concurrent program output file.  Will prepend
-  *********************************************************************/
-  PROCEDURE log_exception(
-    p_program_name   IN VARCHAR2 ,
-    p_error_location IN VARCHAR2 ,
-    p_error_msg      IN VARCHAR2)
-IS
-  ln_login   NUMBER := FND_GLOBAL.LOGIN_ID;
-  ln_user_id NUMBER := FND_GLOBAL.USER_ID;
-BEGIN
-   IF (fnd_global.conc_request_id > 0) THEN
-      fnd_file.put_line(fnd_file.output, 'Program Name-'||p_program_name||'.Error location-'||p_error_location||'.Error Message-'||p_error_msg);
-    ELSE
-      DBMS_OUTPUT.put_line('Program Name-'||p_program_name||'.Error location-'||p_error_location||'.Error Message-'||p_error_msg);
-    END IF;
-EXCEPTION
-WHEN OTHERS THEN
-  fnd_file.put_line(fnd_file.log, 'Error while writting to the log ...'|| SQLERRM);
-END log_exception;
   /*********************************************************************
   * Procedure used to print output based on if p_force is TRUE.
   * Will log to dbms_output if request id is not set,
@@ -439,7 +418,7 @@ lv_header_flg:='N';
 							   ||' '|| SUBSTR(RPAD(NVL(lv_error_rec_data(idx).EBS_APPLICATION_NAME,' '),25),1,25)
 							   ||' '|| SUBSTR(RPAD(NVL(lv_error_rec_data(idx).EBS_JOURNAL_SOURCE,' '),25),1,25)
 							   ||' '|| SUBSTR(RPAD(NVL(lv_error_rec_data(idx).EBS_JOURNAL_CATEGORY,' '),25),1,25)
-							   ||' '|| SUBSTR(RPAD(lv_error_rec_data(idx).LINE_DESCRIPTION,50),1,50)
+							   ||' '|| SUBSTR(RPAD(NVL(lv_error_rec_data(idx).LINE_DESCRIPTION,' '),50),1,50)
 							   ||' '|| SUBSTR(RPAD(lc_ccid_acct,40),1,40)
 							   ||' '|| SUBSTR(RPAD(lv_error_rec_data(idx).ERROR_DESCRIPTION,200),1,200));
 					
@@ -537,10 +516,6 @@ IS
 	group by xfile.file_batch_id,stg.EBS_LEDGER_NAME,stg.EBS_JOURNAL_SOURCE
   ;
 
-
-
-
-
   cursor cur_gl_journals_batch(p_file_batch_id number,p_ledger_name varchar2,p_journal_source varchar2) is   
   select xfile.* ,rowid
   from  
@@ -573,7 +548,7 @@ IS
   
 Begin
 
-
+  p_retcode:=0;
   print_debug_msg(p_message=> 'Begin Creat Cloude GL Interface Batch Procedure for GL Transactions',p_force=> true);
   print_debug_msg(p_message=> 'Assigning Defaults' ,p_force=> false);
   --==========================================================================================
@@ -645,6 +620,7 @@ Begin
 						end if;	
 
 						if  lc_cr_msg IS NOT NULL THEN
+						    Rollback;
 							lc_error_status_flag := 'Y'; 
 							print_debug_msg(p_message => 'Error while creating Journal line during procedure call xx_gl_interface_pkg.create_stg_jrnl_line:'||lc_cr_msg , p_force => TRUE);
 
@@ -709,14 +685,25 @@ Begin
 
 			if lc_error_status_flag='N' then
 
-				 print_debug_msg(p_message=> 'Processing File Batch Id:'||rec.file_batch_id||',EBS Ledger Name:'||rec.EBS_LEDGER_NAME||'Journal Source:'||rec.EBS_JOURNAL_SOURCE,p_force=> true);
+				print_debug_msg(p_message=> 'Processed Successfully File Batch Id:'||rec.file_batch_id||',EBS Ledger Name:'||rec.EBS_LEDGER_NAME||'Journal Source:'||rec.EBS_JOURNAL_SOURCE,p_force=> true);
 				Update XX_GL_JRNLS_CLD_INTF_STG set record_status='I',
 				action='INSERT',
 				group_id=ln_group_id
 				where file_batch_id=rec.file_batch_id	
 				and EBS_LEDGER_NAME=rec.EBS_LEDGER_NAME
 				and EBS_JOURNAL_SOURCE=rec.EBS_JOURNAL_SOURCE;
-
+				
+                if SQL%ROWCOUNT=0 THEN				
+				IF rec.EBS_LEDGER_NAME IS NULL OR rec.EBS_JOURNAL_SOURCE IS NULL THEN 
+				    print_debug_msg(p_message=> 'Processed Failed File Batch Id:'||rec.file_batch_id||',EBS Ledger Name:'||rec.EBS_LEDGER_NAME||'Journal Source:'||rec.EBS_JOURNAL_SOURCE,p_force=> true);
+					print_debug_msg(p_message=>'Updating XX_GL_JRNLS_CLD_INTF_STG with Error Status as EBS Ledger/EBS Journal Source is null.Reprocess Data File after correcting Ledger Name/Journal Source',p_force=> true);
+					Update XX_GL_JRNLS_CLD_INTF_STG set record_status='E',
+					action='ERROR',
+					group_id=ln_group_id
+					where file_batch_id=rec.file_batch_id;
+								
+				END IF;				
+				END IF;
 
 				Update XX_GL_JRNLS_CLD_INTF_FILES
 				set record_status='I'
@@ -725,13 +712,14 @@ Begin
 
 			else
 			  Rollback;
+			  print_debug_msg(p_message=> 'Processing Failed with errors File Batch Id:'||rec.file_batch_id||',EBS Ledger Name:'||rec.EBS_LEDGER_NAME||'Journal Source:'||rec.EBS_JOURNAL_SOURCE,p_force=> true);
 			    Update XX_GL_JRNLS_CLD_INTF_STG set record_status='I',
 				action='INSERT',
 				group_id=ln_group_id
 				where file_batch_id=gn_file_batch_id	
 				and EBS_LEDGER_NAME=rec.EBS_LEDGER_NAME
-				and EBS_JOURNAL_SOURCE=rec.EBS_JOURNAL_SOURCE
-				;
+				and EBS_JOURNAL_SOURCE=rec.EBS_JOURNAL_SOURCE;			
+				
 
 				Update XX_GL_JRNLS_CLD_INTF_FILES
 				set record_status='I',
@@ -753,6 +741,7 @@ Begin
   exiting_sub(p_procedure_name => lc_procedure_name, p_exception_flag => TRUE);
 
 WHEN OTHERS THEN
+  Rollback;
   logit(p_message => 'ERROR-SQLCODE:'|| SQLCODE || ' SQLERRM: ' || SQLERRM, p_force => TRUE);
     p_retcode := 2;
     p_ERRBUF  := 'Exception in XX_GL_JRNLS_CLD_INTF_PKG.CREATE_FILE_BATCH() - '||SQLCODE||' - '||SUBSTR(SQLERRM,1,3500);
@@ -798,8 +787,8 @@ IS
   XX_GL_JRNLS_CLD_INTF_STG 
   where 1=1
   and file_batch_id=gn_file_batch_id
-  and RECORD_STATUS in ('N','E')
-  and action in ('NEW','VALID_ERROR');
+  and RECORD_STATUS in ('N')
+  and action in ('NEW');
 
   TYPE lv_application_name_tab IS TABLE OF cur_application_name%ROWTYPE 
          INDEX BY BINARY_INTEGER;	
@@ -815,8 +804,8 @@ IS
   XX_GL_JRNLS_CLD_INTF_STG 
   where 1=1
   and file_batch_id=gn_file_batch_id
-  and RECORD_STATUS in ('N','E')
-  and action in ('NEW','VALID_ERROR');
+  and RECORD_STATUS in ('N')
+  and action in ('NEW');
 
   TYPE lv_ledger_name_tab IS TABLE OF cur_ledger_name%ROWTYPE 
          INDEX BY BINARY_INTEGER;	
@@ -833,8 +822,8 @@ IS
   XX_GL_JRNLS_CLD_INTF_STG 
   where 1=1
   and file_batch_id=gn_file_batch_id
-  and RECORD_STATUS in ('N','E')
-  and action in ('NEW','VALID_ERROR');
+  and RECORD_STATUS in ('N')
+  and action in ('NEW');
 
   TYPE lv_currency_code_tab IS TABLE OF cur_currency_code%ROWTYPE 
          INDEX BY BINARY_INTEGER;	
@@ -850,8 +839,8 @@ IS
   XX_GL_JRNLS_CLD_INTF_STG 
   where 1=1
   and file_batch_id=gn_file_batch_id
-  and RECORD_STATUS in ('N','E')
-  and action in ('NEW','VALID_ERROR');
+  and RECORD_STATUS in ('N')
+  and action in ('NEW');
 
   TYPE lv_user_catg_name_tab IS TABLE OF cur_user_category_name%ROWTYPE 
          INDEX BY BINARY_INTEGER;	
@@ -867,8 +856,8 @@ IS
   XX_GL_JRNLS_CLD_INTF_STG 
   where 1=1
   and file_batch_id=gn_file_batch_id
-  and RECORD_STATUS in ('N','E')
-  and action in ('NEW','VALID_ERROR');
+  and RECORD_STATUS in ('N')
+  and action in ('NEW');
 
   TYPE lv_user_je_sourcE_name_tab IS TABLE OF cur_user_je_sourcE_name%ROWTYPE  
          INDEX BY BINARY_INTEGER;	
@@ -888,8 +877,8 @@ from
 XX_GL_JRNLS_CLD_INTF_STG 
   where 1=1
   and file_batch_id=gn_file_batch_id
-  and RECORD_STATUS in ('N','E')
-  and action in ('NEW','VALID_ERROR')  
+  and RECORD_STATUS in ('N')
+  and action in ('NEW')  
   group by ebs_ledger_name,application_name,USER_JE_CATEGORY_NAME,ae_header_id;
 
 
@@ -910,8 +899,8 @@ from
 XX_GL_JRNLS_CLD_INTF_STG 
   where 1=1
   and file_batch_id=gn_file_batch_id
-  and RECORD_STATUS in ('N','E')
-  and action in ('NEW','VALID_ERROR')  
+  and RECORD_STATUS in ('N')
+  and action in ('NEW') 
   group by ebs_ledger_name,reference10;
 
 
@@ -929,8 +918,8 @@ XX_GL_JRNLS_CLD_INTF_STG
   XX_GL_JRNLS_CLD_INTF_STG 
   where 1=1
   and file_batch_id=gn_file_batch_id
-  and RECORD_STATUS in ('N','E')
-  and action in ('NEW','VALID_ERROR');
+  and RECORD_STATUS in ('N')
+  and action in ('NEW');
 
    TYPE lv_cur_select_segments_tab IS TABLE OF cur_select_segments%ROWTYPE 
          INDEX BY BINARY_INTEGER;	
@@ -945,8 +934,8 @@ XX_GL_JRNLS_CLD_INTF_STG
   XX_GL_JRNLS_CLD_INTF_STG stg
   where 1=1
   and file_batch_id=gn_file_batch_id
-  and RECORD_STATUS in ('N','E')
-  and action in ('NEW','VALID_ERROR');
+  and RECORD_STATUS in ('N')
+  and action in ('NEW');
 
   TYPE lv_derive_ccid_tab IS TABLE OF cur_derive_ccid%ROWTYPE 
          INDEX BY BINARY_INTEGER;	
@@ -984,14 +973,15 @@ BEGIN
   l_return_status      := 'S';
   l_err_buff           := NULL;
   gn_file_batch_id:=file_rec.file_batch_id;
-
+  print_debug_msg(p_message => '+---------------------------------------------------------------------------+' , p_force => False);  
+  logit(p_message =>'Processing File Name:'||file_rec.file_name);
   logit(p_message =>'gn_file_batch_id:'||gn_file_batch_id);
-  logit(p_message =>'file_rec.gn_file_batch_id:'||file_rec.file_batch_id);
 
    --==========================================================================================
   -- Cursor Declarations for Ledger Name Validation
   --==========================================================================================
   lv_error_loc:='Ledger Name Validation begins';
+  print_debug_msg(p_message => 'Ledger Validation Begins' , p_force => False);
 
  OPEN cur_ledger_name;
 			Loop
@@ -1018,9 +1008,11 @@ BEGIN
 
 							 gc_error_status_flag:='Y';
 							 lv_error_message :='Oracle Cloud Ledger '||lv_ledger_name_data(idx).ledger_name||' not found.';
+							 logit(lv_error_message);
 						  when others then
 						    gc_error_status_flag:='Y';
-							lv_error_message:='Validation error-Oracle Cloud Ledger '||lv_ledger_name_data(idx).ledger_name ||' not found.SQLERRM-'||sqlerrm||'.';    
+							lv_error_message:='Validation error-Oracle Cloud Ledger '||lv_ledger_name_data(idx).ledger_name ||' not found.SQLERRM-'||sqlerrm||'.';  
+							logit(lv_error_message);							
 
 						 end;
 
@@ -1029,15 +1021,17 @@ BEGIN
 								ERROR_DESCRIPTION=decode(ERROR_DESCRIPTION,null,lv_error_message,ERROR_DESCRIPTION||'~'||lv_error_message)								
 								where 1=1
 								and file_batch_id=gn_file_batch_id
-								and application_name=lv_ledger_name_data(idx).ledger_name;
+								and ledger_name=lv_ledger_name_data(idx).ledger_name;
 								gc_error_status_flag:='N';
+								p_retcode:=1;
 						end if;
 
 
 					end loop;
 			end loop;
-
+    print_debug_msg(p_message => 'Ledger Validation Completed' , p_force => False);
 	close cur_ledger_name;
+	commit;
 
   if p_process_name='FIN' then
 
@@ -1046,6 +1040,7 @@ BEGIN
   --==========================================================================================
   gc_error_status_flag:='N';
   lv_error_loc:='Application Name Validation begins for FIN Transactions';
+  print_debug_msg(p_message => 'Application Name Validation Begins' , p_force => False);
    OPEN cur_application_name;
 			Loop
 			FETCH cur_application_name 
@@ -1070,9 +1065,11 @@ BEGIN
 						 when no_data_found then 
 							 gc_error_status_flag:='Y';
 							 lv_error_message :='Application Name '||lv_application_name_data(idx).application_name||' not found';
+							 logit(lv_error_message);
 						 when others then 
 						  lv_error_message:='Validation error-Applicaiton '||lv_application_name_data(idx).application_name||' not found. SQLERRM-'||sqlerrm||'.';						    
 						  gc_error_status_flag:='Y';
+						  logit(lv_error_message);
 						end;				 
 
 						if gc_error_status_flag='Y' then
@@ -1081,19 +1078,22 @@ BEGIN
 								where 1=1
 								and file_batch_id=gn_file_batch_id
 								and application_name=lv_application_name_data(idx).application_name;
+								p_retcode:=1;
 								gc_error_status_flag:='N';
 						end if;
 
 					end loop;
 			end loop;
-
+    print_debug_msg(p_message => 'Application Name Validation Completed' , p_force => False);
      close cur_application_name;
+	 commit;
 
   --==========================================================================================
   -- Cursor Declarations for Joural Sourace Validation
   --==========================================================================================
 	 gc_error_status_flag:='N';
-	 lv_error_loc:='Journal Source Name Validation begins for FIN Transactions';	  
+	 lv_error_loc:='Journal Source Name Validation begins for FIN Transactions';	 
+     print_debug_msg(p_message => 'Journal Source Name Validation Begins' , p_force => False);	 
 			OPEN cur_user_je_sourcE_name;
 			Loop
 			FETCH cur_user_je_sourcE_name 
@@ -1118,9 +1118,11 @@ BEGIN
 						 when no_data_found then 
 						     lv_error_message :='Journal Source '||lv_user_je_sourcE_name_data(idx).user_je_source_name||' not found';
 							 gc_error_status_flag:='Y';
+							 logit(lv_error_message);
 						  when others then
 							lv_error_message:='Validation error-Journal Source '||lv_user_je_sourcE_name_data(idx).user_je_source_name||' not found. SQLERRM-'||sqlerrm||'.';
 						    gc_error_status_flag:='Y';
+							logit(lv_error_message);
 						 end;
 
 						  if gc_error_status_flag='Y' then
@@ -1128,14 +1130,16 @@ BEGIN
 								ERROR_DESCRIPTION=decode(ERROR_DESCRIPTION,null,lv_error_message,ERROR_DESCRIPTION||'~'||lv_error_message)								
 								where 1=1
 								and file_batch_id=gn_file_batch_id
-								and application_name=lv_user_je_sourcE_name_data(idx).user_je_source_name;
+								and user_je_source_name=lv_user_je_sourcE_name_data(idx).user_je_source_name;
 								gc_error_status_flag:='N';
+								p_retcode:=1;
 						end if;
 
 					end loop;
 			end loop;
-
+             print_debug_msg(p_message => 'Journal Source Name Validation Completed' , p_force => False);	
             close cur_user_je_sourcE_name;
+			commit;
 
 
 
@@ -1144,6 +1148,7 @@ BEGIN
   --==========================================================================================	
 	 		gc_error_status_flag:='N';
 			lv_error_loc:='Debits and Credits Balance validation begins for FIN Transactions';
+			print_debug_msg(p_message => 'Debits and Credits Balance validation begins for FIN Transactions' , p_force => False);	
 			OPEN cur_jrnls_dr_cr_bal;
 			Loop
 			FETCH cur_jrnls_dr_cr_bal 
@@ -1159,7 +1164,9 @@ BEGIN
 						if  abs(lv_jrnls_dr_cr_bal_data(idx).total_dr)<>abs(lv_jrnls_dr_cr_bal_data(idx).total_cr) then
 						
 							 gc_error_status_flag:='Y';
-							 lv_error_message :='Debits and Credits do not balance for this transaction';
+							 lv_error_message :='Debits and Credits do not balance for this transaction.Cloud AE Header ID-'||lv_jrnls_dr_cr_bal_data(idx).ae_header_id;
+							 logit(lv_error_message);
+							 
 						end if;
 						
 						 if gc_error_status_flag='Y' then
@@ -1179,7 +1186,8 @@ BEGIN
 						if  abs(lv_jrnls_dr_cr_bal_data(idx).total_acc_dr)<>abs(lv_jrnls_dr_cr_bal_data(idx).total_acc_cr) then 
 
 							 gc_error_status_flag:='Y';
-							 lv_error_message :='Accounted Debits and Credits do not balance for this transaction';
+							 lv_error_message :='Accounted Debits and Credits do not balance for this transaction.Cloud AE Header ID-'||lv_jrnls_dr_cr_bal_data(idx).ae_header_id;
+							 logit(lv_error_message);
 
 						end if;
 
@@ -1198,7 +1206,9 @@ BEGIN
 
 					end loop;
 			end loop;
+			print_debug_msg(p_message => 'Debits and Credits Balance validation completed for FIN Transactions' , p_force => False);	
 			close cur_jrnls_dr_cr_bal;
+			commit;
 	end if;	
 
 	if p_process_name='SCM' then
@@ -1210,6 +1220,7 @@ BEGIN
   --==========================================================================================
 	 gc_error_status_flag:='N';
 	 lv_error_loc:='Journal Source Name Validation begins for SCM Transactions';	  
+	 print_debug_msg(p_message => 'Journal Source Name Validation begins for SCM Transactions' , p_force => False);	
 			OPEN cur_user_je_sourcE_name;
 			Loop
 			FETCH cur_user_je_sourcE_name 
@@ -1234,9 +1245,11 @@ BEGIN
 						 when no_data_found then 
 						     lv_error_message :='Journal Source '||lv_user_je_sourcE_name_data(idx).user_je_source_name||' not found';
 							 gc_error_status_flag:='Y';
+							 logit(lv_error_message);
 						  when others then
 							lv_error_message:='Validation error-Journal Source '||lv_user_je_sourcE_name_data(idx).user_je_source_name||' not found. SQLERRM-'||sqlerrm||'.';
 						    gc_error_status_flag:='Y';
+							logit(lv_error_message);
 						 end;
 
 						  if gc_error_status_flag='Y' then
@@ -1244,20 +1257,23 @@ BEGIN
 								ERROR_DESCRIPTION=decode(ERROR_DESCRIPTION,null,lv_error_message,ERROR_DESCRIPTION||'~'||lv_error_message)								
 								where 1=1
 								and file_batch_id=gn_file_batch_id
-								and application_name=lv_user_je_sourcE_name_data(idx).user_je_source_name;
+								and user_je_source_name=lv_user_je_sourcE_name_data(idx).user_je_source_name;
 								gc_error_status_flag:='N';
+								p_retcode:=1;
 						end if;
 
 					end loop;
 			end loop;
-
+			print_debug_msg(p_message => 'Journal Source Name Validation completed for SCM Transactions' , p_force => False);	
             close cur_user_je_sourcE_name;
+			commit;
 
   --==========================================================================================
   -- Cursor Declarations to check if Debits and Credits Balance for SCM Transactions
   --==========================================================================================	
 	 		gc_error_status_flag:='N';
 			lv_error_loc:='Debits and Credits Balance Validation begins for SCM Transactions';
+			print_debug_msg(p_message => 'Debits and Credits Balance Validation begins for SCM Transactions' , p_force => False);	
 			OPEN cur_jrnls_dr_cr_bal_scm;
 			Loop
 			FETCH cur_jrnls_dr_cr_bal_scm 
@@ -1273,14 +1289,16 @@ BEGIN
 
 
 							 gc_error_status_flag:='Y';
-							 lv_error_message :='Debits and Credits do not balance for this transaction';
+							 lv_error_message :='Debits and Credits do not balance for this transaction.TRANSACTION Number-'||lv_jrnls_dr_cr_bal_scm_data(idx).reference10;
+							 logit(lv_error_message);
 						end if;
 
 
 						if  abs(lv_jrnls_dr_cr_bal_scm_data(idx).total_acc_dr)<>abs(lv_jrnls_dr_cr_bal_scm_data(idx).total_acc_cr) then 
 
 							 gc_error_status_flag:='Y';
-							 lv_error_message :='Accounted Debits and Credits do not balance for this transaction';
+							 lv_error_message :='Accounted Debits and Credits do not balance for this transaction.TRANSACTION Number-'||lv_jrnls_dr_cr_bal_scm_data(idx).reference10;
+							 logit(lv_error_message);
 
 						end if;
 
@@ -1297,6 +1315,8 @@ BEGIN
 					end loop;
 			end loop;
 			close cur_jrnls_dr_cr_bal_scm;
+			commit;
+			print_debug_msg(p_message => 'Debits and Credits Balance Validation completed for SCM Transactions' , p_force => False);	
 
 	end if;
 
@@ -1306,6 +1326,7 @@ BEGIN
   --==========================================================================================	
 	 	gc_error_status_flag:='N';
 		lv_error_loc:='Currency Code Validation begins';
+		print_debug_msg(p_message => 'Currency Code Validation begins' , p_force => False);	
 			OPEN cur_currency_code;
 			Loop
 			FETCH cur_currency_code 
@@ -1324,9 +1345,11 @@ BEGIN
 						 when no_data_found then 
 							 gc_error_status_flag:='Y';
 							 lv_error_message :='Currency Code '||lv_currency_code_data(idx).currency_code ||' not found';	
+							 logit(lv_error_message);
 						  when others then 
 						  lv_error_message:='Validation error-Currency Code '||lv_currency_code_data(idx).currency_code||' not found. SQLERRM-'||sqlerrm||'.'; 						   
-						  gc_error_status_flag:='Y';						  
+						  gc_error_status_flag:='Y';
+						  logit(lv_error_message);						  
 						 end;
 
 						  if gc_error_status_flag='Y' then
@@ -1341,13 +1364,15 @@ BEGIN
 					end loop;
 			end loop;
 
-
+          print_debug_msg(p_message => 'Currency Code Validation completed' , p_force => False);	  
 		close cur_currency_code;
+		commit;	
  --==========================================================================================
   -- Cursor Declarations for User JE Category Name Validation
   --==========================================================================================	
 	 		gc_error_status_flag:='N';
 			lv_error_loc:='Journal Category Name Validation begins';
+			print_debug_msg(p_message => 'User Journal Category Name Validation begins' , p_force => False);	
 		OPEN cur_user_category_name;
 			Loop
 			FETCH cur_user_category_name 
@@ -1393,11 +1418,13 @@ BEGIN
 								when others then 
 									lv_error_message :='User JE Category '||lv_user_catg_name_data(idx).user_je_category_name||' not found';
 									gc_error_status_flag:='Y';
+									logit(lv_error_message);
 								end;
 						    
 						 when others then
 							lv_error_message:='Validation error-User JE Category '||lv_user_catg_name_data(idx).user_je_category_name||' not found. SQLERRM-'||sqlerrm||'.';						   
 						    gc_error_status_flag:='Y';
+							logit(lv_error_message);
 						 end;
 
 						  if gc_error_status_flag='Y' then
@@ -1406,12 +1433,15 @@ BEGIN
 								where 1=1
 								and file_batch_id=gn_file_batch_id
 								and user_je_category_name=lv_user_catg_name_data(idx).user_je_category_name;
+								p_retcode:=1;
 
 						end if; 
 
 					end loop;
 			end loop;
+			print_debug_msg(p_message => 'User Journal Category Name Validation Completed' , p_force => False);	
 		close cur_user_category_name;
+		commit;	
 
 
   --==========================================================================================
@@ -1419,6 +1449,7 @@ BEGIN
   --==========================================================================================	
 	 		gc_error_status_flag:='N';
 			lv_error_loc:='Code Combination Segments is Null validation begins';
+			print_debug_msg(p_message => 'Code Combination Segments is Null validation begins' , p_force => False);	
 			OPEN cur_select_segments;
 			Loop
 			FETCH cur_select_segments 
@@ -1441,12 +1472,14 @@ BEGIN
 						     	ERROR_DESCRIPTION=decode(ERROR_DESCRIPTION,null,lv_error_message,ERROR_DESCRIPTION||'~'||lv_error_message)								
 							 where rowid=lv_cur_select_segments_data(idx).rowid	;
 							 gc_error_status_flag:='Y';
+							 logit(lv_error_message);
 						end if;
 
 
 
 					end loop;
 			end loop;
+			print_debug_msg(p_message => 'Code Combination Segments is Null validation completed' , p_force => False);	
 			close cur_select_segments;
 
 			commit;	
@@ -1457,6 +1490,7 @@ BEGIN
 
         gc_error_status_flag:='N';
 		lv_error_loc:='CCID derivation begins';
+			print_debug_msg(p_message => 'Derive Code Combination ID validation begins' , p_force => False);
           SELECT gsob.chart_of_accounts_id             	  
 			  into gn_chart_of_accounts_id			  
            FROM gl_sets_of_books gsob
@@ -1491,6 +1525,7 @@ BEGIN
 
 												    gc_error_status_flag:='Y';
 													lv_error_message:='Code Combination ID not found for ' || lc_ccid_acct;
+													logit(lv_error_message);
 												
 												Update XX_GL_JRNLS_CLD_INTF_STG set 												    
 												    error_description=decode(ERROR_DESCRIPTION,null,lv_error_message,ERROR_DESCRIPTION||'~'||lv_error_message)								
@@ -1504,6 +1539,7 @@ BEGIN
 							when others then
 							lv_error_message:='Error to derive Code Combination Id-'||lc_ccid_acct||'. SQLERRM-'||sqlerrm;						   
 						    gc_error_status_flag:='Y';
+							logit(lv_error_message);
 							Update XX_GL_JRNLS_CLD_INTF_STG set 												    
 								error_description=decode(ERROR_DESCRIPTION,null,lv_error_message,ERROR_DESCRIPTION||'~'||lv_error_message)								
 								where rowid=lv_derive_ccid_data(idx).rowid;	
@@ -1513,11 +1549,13 @@ BEGIN
 
 					end loop;
 			end loop;
+	    print_debug_msg(p_message => 'Derive Code Combination ID validation completes' , p_force => False);
 		close cur_derive_ccid;
 		commit;
+		
 
 			if gc_error_status_flag='Y' then
-
+				
 				update XX_GL_JRNLS_CLD_INTF_FILES set record_status='V'--Update all records to Valid.Update to E when required. 
 				where 1=1
 				and file_batch_id=gn_file_batch_id;		
@@ -1544,14 +1582,14 @@ BEGIN
   if x_err_buf is not null then
   print_debug_msg(P_MESSAGE => 'VAL_CLD_GL_INTF_FILE, p_errbuf-' ||x_err_buf ||' ,p_retcode-'||x_ret_code, p_force => TRUE);
   end if;
-			
-    end loop;
+  print_debug_msg(p_message => '+---------------------------------------------------------------------------+' , p_force => False);		
+  end loop;
 EXCEPTION
 WHEN OTHERS THEN
   l_err_buff := SQLCODE || ' - '|| SUBSTR (sqlerrm,1,3500);
   print_debug_msg(p_message => 'ERROR: Exception in VALIDATE_CLD_GL_INTF_AP_FILE() API -Error Loc:'||lv_error_loc||'.Error:'|| l_err_buff , p_force => true);
   logit('Error in VALIDATE_CLD_GL_INTF_AP_FILE'||sqlerrm );
-  p_retcode      := '2';
+  p_retcode      := 2;
   p_errbuf       := l_err_buff;
 END VAL_CLD_GL_INTF_FILE;
 
@@ -1682,6 +1720,7 @@ AS
 	lv_application_name varchar2(100);
 	 lt_parameters gt_input_parameters;
      lv_filerec_count number;
+	 lv_datafile_rec_number number:=0;
 BEGIN
 
   lt_parameters('p_process_name') := p_process_name;
@@ -1708,10 +1747,6 @@ BEGIN
 			RAISE dup_file_exception;            
     END IF;
 
-
-
-
-
   print_debug_msg(p_message => '+---------------------------------------------------------------------------+' , p_force => true);
   print_debug_msg(p_message => 'Loading File:'||p_file_name , p_force => true);
   for rec in  cur_gl_process loop 
@@ -1726,6 +1761,7 @@ BEGIN
         EXIT;
       END IF;
       /*skip parsing the header labels record*/
+	  lv_datafile_rec_number:=lv_datafile_rec_number+1;
       CONTINUE	  
     WHEN replace(SUBSTR(l_newline,1,13),chr(34),'') = 'LEDGER_NAME';
       parse_datafile_line(l_newline,l_table,l_nfields,chr(124),l_error_msg,l_retcode);
@@ -1866,60 +1902,98 @@ BEGIN
 EXCEPTION
 WHEN dup_file_exception THEN
   p_errbuf  := l_error_msg;
-  p_retcode := '2';
-  log_exception (p_program_name => 'XXGLJRNLSCLDINTFLOAD' ,p_error_location => l_error_loc ,p_error_msg => p_errbuf||sqlerrm);
+  p_retcode := 2;
+  print_debug_msg(p_message =>'Program Name-XXGLJRNLSCLDINTFLOAD.Error location-XX_GL_JRNLS_CLD_INTF_PKG.load_utl_file_staging.Error Message-'||sqlerrm , p_force => true);
 WHEN parse_exception THEN
   ROLLBACK;
-  p_errbuf  := l_error_msg;
-  p_retcode := l_retcode;
-  log_exception (p_program_name => 'XXGLJRNLSCLDINTFLOAD' ,p_error_location => l_error_loc ,p_error_msg => l_error_msg||sqlerrm);
+  utl_file.fclose(l_filehandle);
+  l_error_msg:='XX_GL_JRNLS_CLD_INTF_PKG.load_utl_file_staging-When invalid_operation Exception at Processing Line Number-'||lv_datafile_rec_number||' in datafile.SQLERRM-'||l_error_msg||'~'||sqlerrm;
+  update XX_GL_JRNLS_CLD_INTF_FILES set error_description=l_error_msg where file_name=p_file_name;
+  commit;
+  print_debug_msg(p_message =>l_error_msg  , p_force => true);
+  p_errbuf := null;
+  p_retcode:= 2;
 WHEN utl_file.invalid_operation THEN
+   ROLLBACK;
   utl_file.fclose(l_filehandle);
-  p_errbuf := 'XX_GL_JRNLS_CLD_INTF_PKG.load_utl_file_staging: Invalid Operation-'||sqlerrm;
-  p_retcode:= '2';
-  log_exception (p_program_name => 'XXGLJRNLSCLDINTFLOAD' ,p_error_location => l_error_loc ,p_error_msg => p_errbuf||sqlerrm);
+  l_error_msg:='XX_GL_JRNLS_CLD_INTF_PKG.load_utl_file_staging-When invalid_operation Exception at Processing Line Number-'||lv_datafile_rec_number||' in datafile.SQLERRM-'||sqlerrm;
+  update XX_GL_JRNLS_CLD_INTF_FILES set error_description=l_error_msg where file_name=p_file_name;
+  commit;
+  print_debug_msg(p_message =>l_error_msg  , p_force => true);
+  p_errbuf := null;
+  p_retcode:= 2;
 WHEN utl_file.invalid_filehandle THEN
+  ROLLBACK;
   utl_file.fclose(l_filehandle);
-  p_errbuf := 'XX_GL_JRNLS_CLD_INTF_PKG.load_utl_file_staging: Invalid File Handle-'||sqlerrm;
-  p_retcode:= '2';
-  log_exception (p_program_name => 'XXGLJRNLSCLDINTFLOAD' ,p_error_location => l_error_loc ,p_error_msg => p_errbuf||sqlerrm);
+  l_error_msg:='XX_GL_JRNLS_CLD_INTF_PKG.load_utl_file_staging-When invalid_filehandle Exception at Processing Line Number-'||lv_datafile_rec_number||' in datafile.SQLERRM-'||sqlerrm;
+  update XX_GL_JRNLS_CLD_INTF_FILES set error_description=l_error_msg where file_name=p_file_name;
+  commit;
+  print_debug_msg(p_message =>l_error_msg  , p_force => true);
+  p_errbuf := null;
+  p_retcode:= 2;
 WHEN utl_file.read_error THEN
+  ROLLBACK;
   utl_file.fclose(l_filehandle);
-  p_errbuf := 'XX_GL_JRNLS_CLD_INTF_PKG.load_utl_file_staging: Read Error-'||sqlerrm;
-  p_retcode:= '2';
-  log_exception (p_program_name => 'XXGLJRNLSCLDINTFLOAD' ,p_error_location => l_error_loc ,p_error_msg => p_errbuf||sqlerrm);
+  l_error_msg:='XX_GL_JRNLS_CLD_INTF_PKG.load_utl_file_staging-When read_error Exception at Processing Line Number-'||lv_datafile_rec_number||' in datafile.SQLERRM-'||sqlerrm;
+  update XX_GL_JRNLS_CLD_INTF_FILES set error_description=l_error_msg where file_name=p_file_name;
+  commit;
+  print_debug_msg(p_message =>l_error_msg  , p_force => true);
+  p_errbuf := null;
+  p_retcode:= 2;
 WHEN utl_file.invalid_path THEN
+  ROLLBACK;
   utl_file.fclose(l_filehandle);
-  p_errbuf := 'XX_GL_JRNLS_CLD_INTF_PKG.load_utl_file_staging: Invalid Path-'||sqlerrm;
-  p_retcode:= '2';
-  log_exception (p_program_name => 'XXGLJRNLSCLDINTFLOAD' ,p_error_location => l_error_loc ,p_error_msg => p_errbuf||sqlerrm);
+  l_error_msg:='XX_GL_JRNLS_CLD_INTF_PKG.load_utl_file_staging-When invalid_path Exception at Processing Line Number-'||lv_datafile_rec_number||' in datafile.SQLERRM-'||sqlerrm;
+  update XX_GL_JRNLS_CLD_INTF_FILES set error_description=l_error_msg where file_name=p_file_name;
+  commit;
+  print_debug_msg(p_message =>l_error_msg  , p_force => true);
+  p_errbuf := null;
+  p_retcode:= 2;
 WHEN utl_file.invalid_mode THEN
+   ROLLBACK;
   utl_file.fclose(l_filehandle);
-  p_errbuf := 'XX_GL_JRNLS_CLD_INTF_PKG.load_utl_file_staging: Invalid Mode-'||sqlerrm;
-  p_retcode:= '2';
-  log_exception (p_program_name => 'XXGLJRNLSCLDINTFLOAD' ,p_error_location => l_error_loc ,p_error_msg => p_errbuf||sqlerrm);
+  l_error_msg:='XX_GL_JRNLS_CLD_INTF_PKG.load_utl_file_staging-When invalid_mode Exception at Processing Line Number-'||lv_datafile_rec_number||' in datafile.SQLERRM-'||sqlerrm;
+  update XX_GL_JRNLS_CLD_INTF_FILES set error_description=l_error_msg where file_name=p_file_name;
+  commit;
+  print_debug_msg(p_message =>l_error_msg  , p_force => true);
+  p_errbuf := null;
+  p_retcode:= 2;
 WHEN utl_file.internal_error THEN
+  ROLLBACK;
   utl_file.fclose(l_filehandle);
-  p_errbuf := 'XX_GL_JRNLS_CLD_INTF_PKG.load_utl_file_staging: Internal Error-'||sqlerrm;
-  p_retcode:= '2';
-  log_exception (p_program_name => 'XXGLJRNLSCLDINTFLOAD' ,p_error_location => l_error_loc ,p_error_msg => p_errbuf||sqlerrm);
+  l_error_msg:='XX_GL_JRNLS_CLD_INTF_PKG.load_utl_file_staging-When internal_error at Processing Line Number-'||lv_datafile_rec_number||' in datafile.SQLERRM-'||sqlerrm;
+  update XX_GL_JRNLS_CLD_INTF_FILES set error_description=l_error_msg where file_name=p_file_name;
+  commit;
+  print_debug_msg(p_message =>l_error_msg  , p_force => true);
+  p_errbuf := null;
+  p_retcode:= 2;
 WHEN value_error THEN
   ROLLBACK;
   utl_file.fclose(l_filehandle);
-  p_errbuf := 'XX_GL_JRNLS_CLD_INTF_PKG.load_utl_file_staging-'||sqlerrm;
-  p_retcode:= '2';
-  log_exception (p_program_name => 'XXGLJRNLSCLDINTFLOAD' ,p_error_location => l_error_loc ,p_error_msg => p_errbuf||sqlerrm); 
+  l_error_msg:='XX_GL_JRNLS_CLD_INTF_PKG.load_utl_file_staging-When Value_Error at Processing Line Number-'||lv_datafile_rec_number||' in datafile.SQLERRM-'||sqlerrm;
+  update XX_GL_JRNLS_CLD_INTF_FILES set error_description=l_error_msg where file_name=p_file_name;
+  commit;	
+  p_retcode:= 2;
+  print_debug_msg(p_message =>l_error_msg  , p_force => true);
+ 
  WHEN OTHERS THEN
   ROLLBACK;
   utl_file.fclose(l_filehandle);
-  p_retcode:= '2';
-  p_errbuf := 'XX_GL_JRNLS_CLD_INTF_PKG.load_utl_file_staging-'||SUBSTR(sqlerrm,1,250);
-  log_exception (p_program_name => 'XXGLJRNLSCLDINTFLOAD' ,p_error_location => l_error_loc ,p_error_msg => p_errbuf||sqlerrm);
+  l_error_msg:='XX_GL_JRNLS_CLD_INTF_PKG.load_utl_file_staging-When Others Exception at Processing Line Number-'||lv_datafile_rec_number||' in datafile.SQLERRM-'||sqlerrm;
+  update XX_GL_JRNLS_CLD_INTF_FILES set error_description=l_error_msg where file_name=p_file_name;
+  commit;
+  print_debug_msg(p_message =>l_error_msg  , p_force => true);
   exiting_sub(p_procedure_name => lc_procedure_name, p_exception_flag => TRUE);
+    p_errbuf := null;
+  p_retcode:= 2;
 END load_utl_file_staging;
 
 
-
+--/*********************************************************************
+--* Procedure used to Load Data File into Staging Table.
+--* This Package procedure is called from Host Program
+--* This procedure is called each time for all the files that needs to be processed.
+--*********************************************************************/
 PROCEDURE MAIN_LOAD_PROCESS(
     p_process_name VARCHAR2,
     p_file_name    VARCHAR2,
@@ -1946,11 +2020,7 @@ IS
   LOAD_UTL_FILE_STAGING( p_process_name => p_process_name, p_file_name => p_file_name,p_debug_flag => p_debug_flag,p_request_id=>p_request_id,p_user_id=>p_user_id,p_errbuf=>x_err_buf,p_retcode=>x_ret_code) ;
   print_debug_msg(P_MESSAGE => 'Exiting LOAD_UTL_FILE_STAGING Procedure' , p_force => TRUE);
   print_debug_msg(p_message => '+---------------------------------------------------------------------------+' , p_force => true);
-  if x_err_buf is not null then 
-    update XX_GL_JRNLS_CLD_INTF_FILES set error_description=x_err_buf
-	where file_name=p_file_name;
-	commit;	
-  end if;
+  
 EXCEPTION
 WHEN OTHERS THEN
   logit(p_message => 'Error Occured:'||lc_action||'~SQLCODE:'|| SQLCODE || '~SQLERRM: ' || SQLERRM, p_force => TRUE);
@@ -1958,10 +2028,10 @@ WHEN OTHERS THEN
 END MAIN_LOAD_PROCESS;
 
 
-/**********************************************************************************
-* Procedure to process  Process Journal Batch to Submit OD: GL Interface for Cloud GL Transactions and Journal Import 
-* This procedure is called by MAIN_PROCESS.
-***********************************************************************************/
+--/**********************************************************************************
+--* Procedure to process  Process Journal Batch to Submit OD: GL Interface for Cloud GL Transactions and Journal Import 
+--* This procedure is called by MAIN_PROCESS.
+--***********************************************************************************/
 PROCEDURE PROCESS_JOURNAL_BATCH(	
     p_process_name IN VARCHAR2,
     p_debug_flag   IN VARCHAR2,
@@ -2002,8 +2072,9 @@ BEGIN
   lt_parameters('p_process_name') := p_process_name;
   entering_sub(p_procedure_name => lc_procedure_name, p_parameters => lt_parameters);
   lc_action := 'Submitting GL Data File Load Program';
-
+  
    for stg_rec in cur_file_stg_batch loop
+   logit(p_message =>'Processing Ebs Journal_Source-'||stg_rec.EBS_JOURNAL_SOURCE);
    lv_status:='N';
   BEGIN
     lc_conc_req_id := fnd_request.submit_request ( application => 'XXFIN' , program => 'XXGLJRNLSCLDGLTRANS' , description => NULL , start_time => sysdate , sub_request => false , argument1=>stg_rec.EBS_JOURNAL_SOURCE,argument2=>p_debug_flag);
@@ -2029,6 +2100,7 @@ BEGIN
 				and stg.action in ('INSERT');
     ELSE
 	lv_status:='N';
+	logit(p_message =>'Conc. Program Submitted Successfully OD: GL Interface for Cloud GL Transactions Program.Request Id-'||lc_conc_req_id);
 	Update XX_GL_JRNLS_CLD_INTF_FILES xx
 				set xx.record_status='P'				
 				where xx.file_batch_id in 
@@ -2070,17 +2142,19 @@ WHEN OTHERS THEN
   l_err_buff := SQLCODE || ' - '|| SUBSTR (sqlerrm,1,3500);
   print_debug_msg(p_message => 'ERROR: Exception in PROCESS_JOURNAL_BATCH() API - '|| l_err_buff , p_force => true);
   logit('Error in PROCESS_JOURNAL_BATCH'||sqlerrm );
-  p_retcode      := '2';
+  p_retcode      := 2;
   p_errbuf       := l_err_buff;
 END PROCESS_JOURNAL_BATCH;
 
-/**********************************************************************************
-* Procedure to process  MPL at different levels.
-* This procedure is called by MAIN_PROCESS.
-***********************************************************************************/
+--/**********************************************************************************
+--* Procedure to process  MPL at different levels.
+--* This procedure is called by MAIN_PROCESS.
+--***********************************************************************************/
 PROCEDURE PROCESS_LOAD_GL_FILE(
     p_process_name IN VARCHAR2,
-    p_debug_flag   IN VARCHAR2)
+    p_debug_flag   IN VARCHAR2,
+	p_errbuf  OUT nocopy  VARCHAR2 ,
+    p_retcode OUT nocopy NUMBER )
 IS
   lc_procedure_name CONSTANT VARCHAR2(61) := gc_package_name || '.' || 'PROCESS_LOAD_GL_FILE';
   lt_parameters gt_input_parameters;
@@ -2096,18 +2170,23 @@ BEGIN
   lt_parameters('p_process_name') := p_process_name;
   entering_sub(p_procedure_name => lc_procedure_name, p_parameters => lt_parameters);
   lc_action := 'Submitting GL Data File Load Program';
+  p_retcode:=0;
   BEGIN
     lc_conc_req_id := fnd_request.submit_request ( application => 'XXFIN' , program => 'XXGLJRNLSCLDINTFLOAD' , description => NULL , start_time => sysdate , sub_request => false , argument1=>p_process_name,argument2=>p_debug_flag);
     COMMIT;
     IF lc_conc_req_id = 0 THEN
       logit(p_message =>'Conc. Program  failed to submit OD Cloud to EBS GL Journals Load Program');
+	  p_errbuf:='Conc. Program  failed to submit OD Cloud to EBS GL Journals Load Program';
+	  p_retcode:=1;
     ELSE
       lc_action              := 'Waiting for concurrent request OD Cloud to EBS GL Journals Load Program to complete';
       lc_wait_flag           := fnd_concurrent.wait_for_request(request_id => lc_conc_req_id, phase => lc_phase, status => lc_status, dev_phase => lc_dev_phase, dev_status => lc_dev_status, MESSAGE => lc_message);
       IF UPPER(lc_dev_status) = 'NORMAL' AND UPPER(lc_dev_phase) = 'COMPLETE' THEN
         logit(p_message =>'OD Cloud to EBS GL Journals Load Program successful for the Request Id: ' || lc_conc_req_id );
       ELSE
-        logit(p_message =>'OD Cloud to EBS GL Journals Load Program did not complete normally. ');
+        logit(p_message =>'OD Cloud to EBS GL Journals Load Program did not complete normally.');
+		p_errbuf:='Child Program OD Cloud to EBS GL Journals Load Program completed in Error/Warning. Please check Loader Program logs and hence Wrapper program will be completed in Warning';
+	    p_retcode:=1;
       END IF;
     END IF;
   END;
@@ -2115,14 +2194,16 @@ BEGIN
 EXCEPTION
 WHEN OTHERS THEN
   exiting_sub(p_procedure_name => lc_procedure_name, p_exception_flag => TRUE);
+  p_errbuf:='PROCEDURE: ' || lc_procedure_name || ' ACTION: ' || lc_action || ' SQLCODE: ' || SQLCODE || ' SQLERRM: ' || SQLERRM;
+  p_retcode:=2;
   RAISE_APPLICATION_ERROR(-20101, 'PROCEDURE: ' || lc_procedure_name || ' ACTION: ' || lc_action || ' SQLCODE: ' || SQLCODE || ' SQLERRM: ' || SQLERRM);
 END PROCESS_LOAD_GL_FILE;
 
 
-/**********************************************************************
-* Main Procedure to Load Cloud GL Transactions and Import
-* this procedure calls individual procedures to Load and process them.
-***********************************************************************/
+--/**********************************************************************
+--* Main Procedure to Load Cloud GL Transactions and Import
+--* this procedure calls individual procedures to Load and process them.
+--***********************************************************************/
 PROCEDURE MAIN_PROCESS(
     errbuff OUT VARCHAR2,
     retcode OUT NUMBER,
@@ -2167,11 +2248,15 @@ BEGIN
   * Call File Load Process.
   ******************************/
   lc_action := 'Invoke Load GL Interface File Process';
-
-  PROCESS_LOAD_GL_FILE (p_process_name,p_debug_flag);
-
-
-
+  print_debug_msg(p_message => 'Calling PROCESS_LOAD_GL_FILE Procedure' , p_force => true);
+  PROCESS_LOAD_GL_FILE (p_process_name,p_debug_flag,p_errbuf=>x_err_buf,p_retcode=>x_ret_code) ;
+  if x_err_buf is not null or x_ret_code <>0 then
+  print_debug_msg(P_MESSAGE => 'VAL_CLD_GL_INTF_FILE, p_errbuf-' ||x_err_buf ||' ,p_retcode-'||x_ret_code, p_force => TRUE);
+  retcode:=1;
+  end if;
+  print_debug_msg(P_MESSAGE => 'Exiting PROCESS_LOAD_GL_FILE Procedure', p_force => TRUE);
+  print_debug_msg(p_message => '+---------------------------------------------------------------------------+' , p_force => true);
+  
   --MAIN_LOAD_PROCESS(p_process_name,'EBS_GL_OD_INTF_SCM_OP_202002280646351.txt',p_debug_flag,fnd_global.conc_request_id,fnd_global.user_id);
 
   print_debug_msg(p_message => '+---------------------------------------------------------------------------+' , p_force => true);
@@ -2180,14 +2265,20 @@ BEGIN
   if x_err_buf is not null then
   print_debug_msg(P_MESSAGE => 'VAL_CLD_GL_INTF_FILE, p_errbuf-' ||x_err_buf ||' ,p_retcode-'||x_ret_code, p_force => TRUE);
   end if;
+  
+  if x_ret_code <>0 then 
+   print_debug_msg(P_MESSAGE => 'VAL_CLD_GL_INTF_FILE, Validations Errors Ledger Name/Application Name/Journal Source/Journal Category are not valid. Errors that cannot insert into XX_GL_INTERFACE_NA_STGG Table.', p_force => TRUE);
+   retcode:=1;  
+  end if;
   print_debug_msg(P_MESSAGE => 'Exiting VAL_CLD_GL_INTF_FILE Procedure' , p_force => TRUE);
   print_debug_msg(p_message => '+---------------------------------------------------------------------------+' , p_force => true);
 
   print_debug_msg(p_message => '+---------------------------------------------------------------------------+' , p_force => true);
   print_debug_msg(p_message => 'Calling CREATE_JOURNAL_BATCH Procedure' , p_force => true);
   CREATE_JOURNAL_BATCH( p_process_name => p_process_name,p_debug_flag => p_debug_flag,p_errbuf=>x_err_buf,p_retcode=>x_ret_code) ;
-  if x_err_buf is not null then
+  if x_err_buf is not null or x_ret_code <>0  then
   print_debug_msg(P_MESSAGE => 'CREATE_JOURNAL_BATCH, p_errbuf-' ||x_err_buf ||' ,p_retcode-'||x_ret_code, p_force => TRUE);
+  retcode:=1;
   end if;
   print_debug_msg(P_MESSAGE => 'Exiting CREATE_JOURNAL_BATCH Procedure' , p_force => TRUE);
   print_debug_msg(p_message => '+---------------------------------------------------------------------------+' , p_force => true);  
@@ -2195,8 +2286,9 @@ BEGIN
   print_debug_msg(p_message => '+---------------------------------------------------------------------------+' , p_force => true);
   print_debug_msg(p_message => 'Calling PROCESS_JOURNAL_BATCH Procedure' , p_force => true);
   PROCESS_JOURNAL_BATCH( p_process_name => p_process_name,p_debug_flag => p_debug_flag,p_errbuf=>x_err_buf,p_retcode=>x_ret_code) ;
-  if x_err_buf is not null then
+  if x_err_buf is not null or x_ret_code <>0 then
   print_debug_msg(P_MESSAGE => 'PROCESS_JOURNAL_BATCH, p_errbuf-' ||x_err_buf ||' ,p_retcode-'||x_ret_code, p_force => TRUE);
+  retcode:=1;
   end if;
   print_debug_msg(P_MESSAGE => 'Exiting PROCESS_JOURNAL_BATCH Procedure' , p_force => TRUE);
   print_debug_msg(p_message => '+---------------------------------------------------------------------------+' , p_force => true);  
@@ -2207,7 +2299,7 @@ WHEN OTHERS THEN
   logit(p_message => 'ERROR  Action: ' || lc_action || ' SQLCODE: ' || SQLCODE || ' SQLERRM: ' || SQLERRM, p_force => TRUE);
   retcode := 2;
   errbuff := 'Error encountered. Please check logs';
-    exiting_sub(p_procedure_name => lc_procedure_name, p_exception_flag => TRUE);
+  exiting_sub(p_procedure_name => lc_procedure_name, p_exception_flag => TRUE);
 END MAIN_PROCESS;
 END XX_GL_JRNLS_CLD_INTF_PKG;
 /
