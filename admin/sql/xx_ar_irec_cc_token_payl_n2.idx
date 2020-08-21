@@ -1,1 +1,26 @@
+-- +============================================================================================+
+-- |                        				Office Depot 		                                |
+-- |                                                                                            |
+-- +============================================================================================+
+-- | Name         : XX_AR_IREC_CC_AUTH_PAYLOADS_N1.idx                                            |
+-- | Rice Id      :                                                                             | 
+-- | Description  :                                                                             |  
+-- | Purpose      :                                                                             |
+-- |                                                                                            |
+-- |Change Record:                                                                              |
+-- |===============                                                                             |
+-- |Version    Date          Author                Remarks                                      | 
+-- |=======    ==========    =================    ==============================================+
+-- |1.0		   30-JUL-2020   Divyansh Saini    		  Initial Version                           |
+-- |                                                                                            |
+-- +============================================================================================+
+
+SET VERIFY      OFF
+SET TERM        ON
+SET FEEDBACK    OFF
+SET SHOW        OFF
+SET ECHO        OFF
+SET TAB         OFF
 create index xxfin.xx_ar_irec_cc_token_payl_n2 on xxfin.xx_ar_irec_cc_token_payloads(account_number);
+
+EXIT;
