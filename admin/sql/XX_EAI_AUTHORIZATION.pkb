@@ -480,7 +480,7 @@ IS
   CURSOR c_iby_data
   IS
     SELECT *
-    FROM iby.iby_trxn_summaries_all
+    FROM iby_trxn_summaries_all
     WHERE TRANSACTIONID      = p_trxn_id
     AND status              IN (1,11)
     AND TRXNTYPEID           = 8;
@@ -1017,9 +1017,9 @@ BEGIN
       lv_order_id,
       ln_org_id,
       lv_cust_number
-    FROM ar.ar_cash_receipts_all arc,
-      iby.iby_fndcpt_tx_extensions ite,
-      ar.hz_cust_accounts hca
+    FROM ar_cash_receipts_all arc,
+         iby_fndcpt_tx_extensions ite,
+         hz_cust_accounts hca
     WHERE arc.payment_trxn_extension_id = ite.trxn_extension_id
     AND arc.pay_from_customer           = hca.cust_account_id
     AND arc.payment_trxn_extension_id   = p_receipt_id;
