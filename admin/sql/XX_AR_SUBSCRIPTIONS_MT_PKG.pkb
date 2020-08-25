@@ -141,6 +141,10 @@ AS
 -- |                                                 for deriving  Sales Accoting String from SALES ACCOUNTING MATRIX |
 -- | 61.0        07-MAY-2020  Kayeed A               NAIT-119054 EBS- To modify the subscription billing code such    |
 -- |                                                 that recurring invoice will be created after successful payment  |
+-- | 62.0        17-AUG-2020  Arvind K               NAIT-147546 EBS- getting no data found error while invoice proces|
+-- |                                                 for initial invoice                                              |
+-- | 63.0        25-AUG-2020  Arvind K               NAIT-138851 add a new logic for unqiue transaction # which goes  |
+-- |                                                 to EAI for issuing Depot Dollar                                  |
 -- +==================================================================================================================+
 
   gc_package_name        CONSTANT all_objects.object_name%TYPE   := 'xx_ar_subscriptions_mt_pkg';
@@ -9039,6 +9043,10 @@ PROCEDURE logitt(p_message  IN  CLOB,
                                 || px_subscription_array(indx).initial_order_number
                                 || '-'
                                 || px_subscription_array(indx).billing_sequence_number
+                                || '-'
+                                || lr_contract_line_info.contract_line_number   ----NAIT-138851 Depot Dollar
+                                || '-' 
+                                || TO_CHAR(SYSDATE,'MMYY')
                                 || '",
                     "timeReceived": null
                 },
@@ -10492,8 +10500,9 @@ PROCEDURE logitt(p_message  IN  CLOB,
             get_receipt_info(p_cash_receipt_id => lr_rec_application_info.cash_receipt_id,
                              x_receipt_info    => lr_receipt_info);
           END IF;*/
-            
-          px_subscription_array(indx).receipt_created_flag := 'Y';
+         
+            px_subscription_array(indx).receipt_created_flag := 'Y';
+          
           --px_subscription_array(indx).receipt_number       := lr_receipt_info.receipt_number;
 
         ELSIF px_subscription_array(indx).billing_sequence_number >= lr_contract_line_info.initial_billing_sequence
@@ -10991,8 +11000,11 @@ PROCEDURE logitt(p_message  IN  CLOB,
             get_ordt_info(p_cash_receipt_id  => lr_rec_application_info.cash_receipt_id,
                           x_ordt_info        => lr_ordt_info);
           END IF;*/
-            
-          px_subscription_array(indx).ordt_staged_flag := 'Y';
+          ----Changes for Bug NAIT-147546
+           IF px_subscription_array(indx).invoice_interfaced_flag = 'Y' 
+           THEN
+              px_subscription_array(indx).ordt_staged_flag := 'Y';
+           END IF;
           --px_subscription_array(indx).order_payment_id  := lr_ordt_info.order_payment_id;
 
         ELSIF px_subscription_array(indx).billing_sequence_number >= lr_contract_line_info.initial_billing_sequence
@@ -11397,24 +11409,27 @@ PROCEDURE logitt(p_message  IN  CLOB,
   IS
     CURSOR c_eligible_contracts
     IS
-      SELECT DISTINCT contract_id,
-                      billing_sequence_number,
+      SELECT DISTINCT subs.contract_id,
+                      subs.billing_sequence_number,
                       --Added for - NAIT-119054
-                      auth_completed_flag,
-                      invoice_number,
+                      subs.auth_completed_flag,
+                      subs.invoice_number,
                       (select payment_type
                          from xx_ar_contracts   conts
                         where 1               = 1
                           and contract_id     = subs.contract_id
                           and contract_number = subs.contract_number)payment_type
                       --End for - NAIT-119054
-      FROM   xx_ar_subscriptions  subs
-      WHERE  (       ordt_staged_flag  IN ('N', 'E')
-              OR     email_sent_flag   IN ('N', 'E')
-              OR     history_sent_flag IN ('N', 'E') )
+      FROM   xx_ar_subscriptions  subs, xx_ar_contract_lines xacl
+      WHERE  1    =   1
+        AND    subs.contract_id = xacl.contract_id
+        AND   SYSDATE <=  NVL(xacl.close_date, SYSDATE)        --- Added condition to ignore closed contact(NAIT-147546)
+        AND (       subs.ordt_staged_flag  IN ('N', 'E')
+              OR     subs.email_sent_flag   IN ('N', 'E')
+              OR     subs.history_sent_flag IN ('N', 'E') )
        AND  NVL(subs.auth_completed_flag, 'N')        <> 'T' --IN ('Y', 'N', 'E', 'U')
-      ORDER BY contract_id             ASC,
-               billing_sequence_number ASC;
+      ORDER BY subs.contract_id             ASC,
+               subs.billing_sequence_number ASC;
 
     lc_procedure_name           CONSTANT VARCHAR2(61) := gc_package_name || '.' || 'process_eligible_subscriptions';
 
