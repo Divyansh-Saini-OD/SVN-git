@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<dataTemplate name ="XXAPMOOTINVHOLD" description="Moot hold inv hld report" Version="1.0">
+<dataTemplate name ="XXAPMOOTINVHOLD"  defaultPackage="XX_AP_XML_BURSTING_PKG" Version="1.0">
 <parameters>
 <parameter name="P_HOLD_LOOKUP_CODE" dataType="character"/>
 </parameters>
@@ -54,6 +54,7 @@ AND (b.release_lookup_code IS NULL)
 ]]>
 </sqlStatement>
 </dataQuery>
+<dataTrigger name="beforeReport" source="XX_AP_XML_BURSTING_PKG.beforeReport()" /> 
 <dataStructure>
 <group name="G_EMAIL1" source="Q_EMAIL1">
 	<element name="out_email1" value="out_email1"/>	
@@ -81,4 +82,5 @@ AND (b.release_lookup_code IS NULL)
 	 </group>	 
 </group>
 </dataStructure>
+  <dataTrigger name="afterReport" source="XX_AP_XML_BURSTING_PKG.afterReport()" /> 
 </dataTemplate>
