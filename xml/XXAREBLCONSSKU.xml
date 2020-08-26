@@ -728,14 +728,22 @@
     </sqlStatement>
 	<sqlStatement name="Q_CONS_FEE">
        <![CDATA[	
+       
 SELECT 
       flv.lookup_code FEE_CODE
      ,upper(flv.meaning)  FEE_DESCRIPTION
-     ,TO_CHAR(sum(RCTL.unit_selling_price*quantity_invoiced),'9999999999.999')       FEE_AMT      
+     ,TO_CHAR(sum(RCTL.unit_selling_price*
+	 CASE WHEN aps.class = 'CM' THEN
+	  quantity_credited
+	 ELSE 
+	  NVL(quantity_ordered,quantity_invoiced)
+	  END
+	  ),'9999999999.999')       FEE_AMT  
 FROM
      ra_customer_trx_lines_All RCTL
 	 ,xx_ar_ebl_cons_hdr_main  XAECTRS
      ,fnd_lookup_values flv
+     ,ar_payment_schedules_all aps
 WHERE 1=1
   AND flv.lookup_type = 'OD_FEES_ITEMS'
   AND flv.LANGUAGE='US'
@@ -744,6 +752,7 @@ WHERE 1=1
   AND SYSDATE BETWEEN NVL(FLV.start_date_active,SYSDATE) AND NVL(FLV.end_date_active,SYSDATE+1)  
   AND FLV.attribute7 NOT IN ('DELIVERY','MISCELLANEOUS')  
   AND RCTL.customer_trx_id         = XAECTRS.customer_trx_id
+  AND RCTL.customer_trx_id = aps.customer_trx_id
   AND XAECTRS.cons_inv_id           = :cbi_id 
   AND XAECTRS.batch_id    = :p_batch_id
   AND XAECTRS.file_id     = :file_id
