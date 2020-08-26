@@ -741,7 +741,7 @@ FROM
      ra_customer_trx_lines_All RCTL
 	 ,xx_ar_ebl_cons_hdr_main  XAECTRS
      ,fnd_lookup_values flv
-     ,ar_payment_schedules aps
+     ,ar_payment_schedules_all aps
 WHERE 1=1
   AND flv.lookup_type = 'OD_FEES_ITEMS'
   AND flv.LANGUAGE='US'
