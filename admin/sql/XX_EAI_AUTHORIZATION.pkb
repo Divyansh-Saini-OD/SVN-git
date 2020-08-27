@@ -876,7 +876,7 @@ BEGIN
                                                     MESSAGE VARCHAR2(2000 CHAR) PATH '$.paymentAuthorizationResponse.transactionStatus.message', 
                                                     ret_code NUMBER(10) PATH '$.paymentAuthorizationResponse.authorizationResult.code', 
                                                     avsCode VARCHAR2(20 CHAR) PATH '$.paymentAuthorizationResponse.authorizationResult.avsCode', 
-                                                    authCode NUMBER(20) PATH '$.paymentAuthorizationResponse.authorizationResult.authCode', 
+                                                    authCode VARCHAR2(20 CHAR) PATH '$.paymentAuthorizationResponse.authorizationResult.authCode', 
                                                     cofTransactionId VARCHAR2(2000 CHAR) PATH '$.paymentAuthorizationResponse.authorizationResult.cofTransactionId' ));
     EXCEPTION
     WHEN NO_DATA_FOUND THEN
@@ -1620,14 +1620,6 @@ BEGIN
         iby_debug_pub.add('x_transaction_mid_out '||x_transaction_mid_out,G_LEVEL_STATEMENT,l_dbg_mod);
         iby_debug_pub.add('x_ret_status '||x_ret_status,G_LEVEL_STATEMENT,l_dbg_mod);
         iby_debug_pub.add('x_ret_msg '||x_ret_msg,G_LEVEL_STATEMENT,l_dbg_mod);
-        /*l_reqresp.Response.Status := 0;
-        l_reqresp.Trxn_ID         := x_transaction_id_out;
-        l_reqresp.Trxn_Date       := sysdate;
-        l_reqresp.Authcode        := 855551;
-        l_reqresp.AVSCode         := NULL;
-        l_reqresp.CVV2Result      := NULL;
-        l_reqresp.BEPErrCode      := 0;
-        l_reqresp.BEPErrMessage   := 'Authorized.00';*/
         IF( G_LEVEL_STATEMENT >= G_CURRENT_RUNTIME_LEVEL) THEN
           iby_debug_pub.add('status :=' || l_return_status, G_LEVEL_STATEMENT,l_dbg_mod);
           iby_debug_pub.add('auth status :=' || TO_CHAR(l_reqresp.Response.Status), G_LEVEL_STATEMENT,l_dbg_mod);
