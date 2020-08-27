@@ -23,7 +23,7 @@ INSERT
   
   CURSOR lcu_template is
  select tolerance_name from ap_tolerance_templates
- where tolerance_id in (select tolerance_id from ap_supplier_sites_all where tolerance_id = :NEW.tolerance_id);
+ where tolerance_id =:NEW.tolerance_id;
 
   
   BEGIN
@@ -55,7 +55,7 @@ VALUES (XXFIN.XX_AP_TOLERANCE_TEMP_SEQ_V1.nextval
 ,:NEW.CREATION_DATE
 ,:NEW.CREATED_BY
 ,l_tol_name
-,:OLD.VENDOR_SITE_ID);
+,:NEW.VENDOR_SITE_ID);
 
 END;
 /
