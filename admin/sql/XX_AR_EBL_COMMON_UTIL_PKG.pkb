@@ -6062,46 +6062,47 @@ lv_header_line VARCHAR2(2):= 'N';
 BEGIN
 
    BEGIN
-	   SELECT to_number(attribute12)
-		 INTO ln_line_number
-		 FROM ra_customer_trx_lines_all rctl
-		WHERE 1=1
-		  AND line_number = p_line_number
-		  AND rctl.customer_trx_id = p_customer_trx_id
-		  AND rownum=1;
-   EXCEPTION WHEN OTHERS THEN
-      ln_line_number := 0 ;
-   END;
+      SELECT 'Y'
+        INTO lv_header_line
+          FROM ra_customer_trx_lines_All RCTL
+                ,fnd_lookup_values flv
+       WHERE 1=1
+         AND flv.lookup_type = 'OD_FEES_ITEMS'
+         AND flv.LANGUAGE='US'
+         AND flv.attribute6= rctl.INVENTORY_ITEM_ID
+         AND FLV.enabled_flag = 'Y'
+         AND SYSDATE BETWEEN NVL(FLV.start_date_active,SYSDATE) AND NVL(FLV.end_date_active,SYSDATE+1)
+         AND FLV.attribute7 IN ('HEADER')
+         AND customer_trx_id = p_customer_trx_id
+         AND line_number = p_line_number;
 
-   IF (ln_line_number =0 or ln_line_number is NULL) THEN
-      BEGIN
-	      SELECT 'Y'
-		    INTO lv_header_line
-			  FROM ra_customer_trx_lines_All RCTL
-				    ,fnd_lookup_values flv
-		   WHERE 1=1
-			 AND flv.lookup_type = 'OD_FEES_ITEMS'
-			 AND flv.LANGUAGE='US'
-			 AND flv.attribute6= rctl.INVENTORY_ITEM_ID
-			 AND FLV.enabled_flag = 'Y'
-			 AND SYSDATE BETWEEN NVL(FLV.start_date_active,SYSDATE) AND NVL(FLV.end_date_active,SYSDATE+1)
-			 AND FLV.attribute7 IN ('HEADER')
-			 AND customer_trx_id = p_customer_trx_id
-			 AND line_number = p_line_number;
-
-      IF lv_header_line = 'Y' THEN
-	     SELECT count(0)
-		   INTO ln_line_number
-		   FROM ra_customer_trx_lines_All
-		  WHERE customer_trx_id = p_customer_trx_id;
-	  END IF;
-	  EXCEPTION WHEN NO_DATA_FOUND THEN
-	      ln_line_number :=0;
-		WHEN OTHERS THEN
-		  ln_line_number :=0;
-	  END;
+   IF lv_header_line = 'Y' THEN
+     SELECT count(0)
+       INTO ln_line_number
+       FROM ra_customer_trx_lines_All
+      WHERE customer_trx_id = p_customer_trx_id;
    END IF;
-
+   EXCEPTION WHEN NO_DATA_FOUND THEN
+      ln_line_number :=0;
+      lv_header_line := 'N';
+    WHEN OTHERS THEN
+      ln_line_number :=0;
+      lv_header_line := 'N';
+   END;
+   
+   IF lv_header_line != 'Y' THEN
+       BEGIN
+           SELECT to_number(attribute12)
+             INTO ln_line_number
+             FROM ra_customer_trx_lines_all rctl
+            WHERE 1=1
+              AND line_number = p_line_number
+              AND rctl.customer_trx_id = p_customer_trx_id
+              AND rownum=1;
+       EXCEPTION WHEN OTHERS THEN
+          ln_line_number := 0 ;
+       END;
+   END IF;
    IF ln_line_number =0 THEN
       RETURN p_line_number;
    ELSIF ln_line_number IS NULL THEN
