@@ -171,8 +171,8 @@ SELECT CAST(MULTISET
 	  (SELECT
 		/*+ PUSH_SUBQ NO_MERGE */
 		HN.child_id
-	  FROM ar.hz_hierarchy_nodes HN ,
-		ar.hz_cust_accounts CA
+	  FROM hz_hierarchy_nodes HN ,
+		   hz_cust_accounts CA
 	  WHERE HN.parent_id           = CA.party_id
 	  AND HN.parent_id            <> HN.child_id
 	  AND CA.orig_system_reference = NVL(
