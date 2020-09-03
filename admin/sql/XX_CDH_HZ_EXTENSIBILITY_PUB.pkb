@@ -1,7 +1,3 @@
-SET VERIFY OFF;
-WHENEVER SQLERROR CONTINUE;
-WHENEVER OSERROR EXIT FAILURE ROLLBACK;
-
 create or replace package BODY XX_CDH_HZ_EXTENSIBILITY_PUB
 -- +===================================================================+
 -- |                  Office Depot - Project Simplify                  |
@@ -17,8 +13,10 @@ create or replace package BODY XX_CDH_HZ_EXTENSIBILITY_PUB
 -- |========  =========== ================== ==========================|
 -- |DRAFT 1a  10-Apr-2007 Jeevan Babu        Initial draft version     |
 -- |1.1       09-May-2014 Avinash Baddam     Modified for R12
+-- |1.2       01-SEP-2020 Divyansh Saini     Code change for           |
+-- |                                           NAIT-151474             |
 -- +===================================================================+
-is 
+is
 -- +===================================================================+
 -- | Name        :  Process_Account_Record                             |
 -- | Description :  Creates or updates information in extensions tables|
@@ -55,16 +53,22 @@ x_return_status                        OUT NOCOPY VARCHAR2,
 x_errorcode                            OUT NOCOPY NUMBER,
 x_msg_count                            OUT NOCOPY NUMBER,
 x_msg_data                             OUT NOCOPY VARCHAR2)
-is 
+is
 l_pk_column_values                     EGO_COL_NAME_VALUE_PAIR_ARRAY;
 l_class_code_values                    EGO_COL_NAME_VALUE_PAIR_ARRAY;
-l_user_privileges_on_object            EGO_VARCHAR_TBL_TYPE; 
+l_user_privileges_on_object            EGO_VARCHAR_TBL_TYPE;
+
+ln_cust_doc_id                         NUMBER;
+lv_doc_type                            VARCHAR2(25);
+lv_bill_type                           VARCHAR2(25);
+lv_fee_option                          VARCHAR2(25);
+ln_attr_group_id                       NUMBER;
 begin
     l_pk_column_values :=
       EGO_COL_NAME_VALUE_PAIR_ARRAY(
        EGO_COL_NAME_VALUE_PAIR_OBJ('CUST_ACCOUNT_ID', TO_CHAR(p_cust_account_id))
       );
-    
+
     --changed params by Avinash for R12
     EGO_USER_ATTRS_DATA_PUB.Process_User_Attrs_Data(
       p_api_version                   => 1.0
@@ -94,11 +98,49 @@ begin
      ,x_msg_count                     => x_msg_count
      ,x_msg_data                      => x_msg_data
     );
+    --Changes for 1.2
+    IF (x_return_status = fnd_api.g_ret_sts_success) THEN
+                BEGIN
+                   SELECT attr_group_id
+                     INTO ln_attr_group_id
+                     FROM ego_fnd_dsc_flx_ctx_ext                                                                                                                                                                      
+                    WHERE descriptive_flexfield_name = 'XX_CDH_CUST_ACCOUNT'
+                      AND descriptive_flex_context_code = 'BILLDOCS';
+                   
+                   SELECT c_ext_attr1,c_ext_attr3,n_ext_attr2
+                     INTO lv_doc_type,lv_bill_type,ln_cust_doc_id
+                     FROM XX_CDH_CUST_ACCT_EXT_B
+                    WHERE cust_account_id = p_cust_account_id
+                      AND ATTR_GROUP_ID          = ln_attr_group_id;
+                    
+                   SELECT xxfv.SOURCE_VALUE1
+                     INTO lv_fee_option
+                     FROM XX_FIN_TRANSLATEDEFINITION xxft, 
+                          XX_FIN_TRANSLATEVALUES xxfv
+                    WHERE SOURCE_VALUE2 = lv_bill_type
+                      AND SOURCE_VALUE3 = lv_doc_type
+                      AND xxft.translate_id = xxfv.translate_id 
+                      AND xxft.TRANSLATION_NAME = 'OD_IREC_BILL_DOC_DEFAULTS'
+                      AND UPPER(TARGET_VALUE2) = 'YES';
+                   
+                   UPDATE XX_CDH_CUST_ACCT_EXT_B
+                      SET fee_option = lv_fee_option
+                    WHERE n_ext_attr2 = ln_cust_doc_id
+                      AND ATTR_GROUP_ID          = ln_attr_group_id;
+                EXCEPTION 
+                   WHEN TOO_MANY_ROWS THEN
+                     fnd_file.put_line(fnd_file.log,'Account has many billdocs : '||ln_cust_doc_id);
+                   WHEN OTHERS THEN
+                     null;
+                END;
+              --Changes for 1.2  
+              END IF;
+    
 end Process_Account_Record;
 -- +===================================================================+
 -- | Name        :  Process_Acct_site_Record                           |
 -- | Description :  Creates or updates information in extensions tables|
--- |                for Account Site.  The XX_CDH_ACCT_SITE_EXT_B and      |     
+-- |                for Account Site.  The XX_CDH_ACCT_SITE_EXT_B and      |
 -- |                XX_CDH_ACCT_SITE_EXT_TL tables hold extended,          |
 -- |                custom attributes about Account Site.              |
 -- |                Use this API to maintain records in                |
@@ -132,16 +174,16 @@ x_return_status                        OUT NOCOPY VARCHAR2,
 x_errorcode                            OUT NOCOPY NUMBER,
 x_msg_count                            OUT NOCOPY NUMBER,
 x_msg_data                             OUT NOCOPY VARCHAR2)
-is 
+is
 l_pk_column_values                     EGO_COL_NAME_VALUE_PAIR_ARRAY;
 l_class_code_values                    EGO_COL_NAME_VALUE_PAIR_ARRAY;
-l_user_privileges_on_object            EGO_VARCHAR_TBL_TYPE; 
+l_user_privileges_on_object            EGO_VARCHAR_TBL_TYPE;
 begin
     l_pk_column_values :=
       EGO_COL_NAME_VALUE_PAIR_ARRAY(
        EGO_COL_NAME_VALUE_PAIR_OBJ('CUST_ACCT_SITE_ID', TO_CHAR(p_cust_acct_site_id))
       );
-      
+
     EGO_USER_ATTRS_DATA_PUB.Process_User_Attrs_Data(
       p_api_version                   => 1.0
      ,p_object_name                   => 'XX_CDH_CUST_ACCT_SITE'
@@ -174,7 +216,7 @@ end Process_Acct_site_Record;
 -- +===================================================================+
 -- | Name        :  Process_Acct_site_use_Record                       |
 -- | Description :  Creates or updates information in extensions tables|
--- |                for Account Site Use.  The XX_CDH_SITE_USES_EXT_B and  |    
+-- |                for Account Site Use.  The XX_CDH_SITE_USES_EXT_B and  |
 -- |                XX_CDH_SITE_USES_EXT_TL tables hold extended,          |
 -- |                custom attributes about Account.                   |
 -- |                Use this API to maintain records in                |
@@ -206,16 +248,16 @@ x_return_status                        OUT NOCOPY VARCHAR2,
 x_errorcode                            OUT NOCOPY NUMBER,
 x_msg_count                            OUT NOCOPY NUMBER,
 x_msg_data                             OUT NOCOPY VARCHAR2)
-is 
+is
 l_pk_column_values                     EGO_COL_NAME_VALUE_PAIR_ARRAY;
 l_class_code_values                    EGO_COL_NAME_VALUE_PAIR_ARRAY;
-l_user_privileges_on_object            EGO_VARCHAR_TBL_TYPE; 
+l_user_privileges_on_object            EGO_VARCHAR_TBL_TYPE;
 begin
     l_pk_column_values :=
       EGO_COL_NAME_VALUE_PAIR_ARRAY(
        EGO_COL_NAME_VALUE_PAIR_OBJ('SITE_USE_ID', TO_CHAR(p_site_use_id))
       );
-      
+
     EGO_USER_ATTRS_DATA_PUB.Process_User_Attrs_Data(
       p_api_version                   => 1.0
      ,p_object_name                   => 'XX_CDH_ACCT_SITE_USES'
@@ -248,5 +290,3 @@ end Process_Acct_site_use_Record;
 
 end XX_CDH_HZ_EXTENSIBILITY_PUB;
 /
-show errors;
-EXIT;

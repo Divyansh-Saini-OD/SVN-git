@@ -49,6 +49,7 @@ PACKAGE BODY xx_crm_extn_attbt_sync_pkg
   -- |                                 procedure set_context QC 29151    |
   -- |1.13      11-Nov-2015 Havish K   Removed the Schema References as  |
   -- |                                 per R12.2 Retrofit Changes        |
+  -- |1.14      01-SEP-2020 Divyansh   Code changes for NAIT-151474      |
   -- +===================================================================+
   AS
 
@@ -204,6 +205,9 @@ x_error_message varchar2(256);
 
   ln_cust_doc_id NUMBER;
   L_ATTRIBUTES_DATA_TABLE EGO_USER_ATTR_DATA_TABLE;
+  lv_doc_type        VARCHAR2(25);--Added for 1.14 
+  lv_bill_type       VARCHAR2(25);--Added for 1.14 
+  lv_fee_option      VARCHAR2(25);--Added for 1.14 
   
   BEGIN
      
@@ -415,6 +419,34 @@ x_error_message varchar2(256);
                 LOOP
                   lv_error_message := lv_error_message || ' ' || l_errors_tbl(i).message_text;
                 END LOOP;
+                --Changes start for 1.14  
+              ELSIF (lv_return_status = fnd_api.g_ret_sts_success) THEN
+                BEGIN
+                   
+                   SELECT c_ext_attr1,c_ext_attr3
+                     INTO lv_doc_type,lv_bill_type
+                     FROM XX_CDH_CUST_ACCT_EXT_B
+                    WHERE n_ext_attr2 = ln_cust_doc_id
+                      AND ATTR_GROUP_ID          = ln_attr_group_id;
+                    
+                   SELECT xxfv.SOURCE_VALUE1
+                     INTO lv_fee_option
+                     FROM XX_FIN_TRANSLATEDEFINITION xxft, 
+                          XX_FIN_TRANSLATEVALUES xxfv
+                    WHERE SOURCE_VALUE2 = lv_bill_type
+                      AND SOURCE_VALUE3 = lv_doc_type
+                      AND xxft.translate_id = xxfv.translate_id 
+                      AND xxft.TRANSLATION_NAME = 'OD_IREC_BILL_DOC_DEFAULTS'
+                      AND UPPER(TARGET_VALUE2) = 'YES';
+                   
+                   UPDATE XX_CDH_CUST_ACCT_EXT_B
+                      SET fee_option = lv_fee_option
+                    WHERE n_ext_attr2 = ln_cust_doc_id
+                      AND ATTR_GROUP_ID          = ln_attr_group_id;
+                EXCEPTION WHEN OTHERS THEN
+                   null;
+                END;
+              --Changes end for 1.14  
               END IF;
 
               x_error_message := lv_error_message;
