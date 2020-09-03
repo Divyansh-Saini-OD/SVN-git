@@ -80,4 +80,3 @@ GROUP BY HCA.cust_account_id ,
   TO_CHAR(TO_DATE(HCA.attribute6,'YYYY/MM/DD HH24:MI:SS'),'DD-MON-YYYY') ,
   HCPA.OVERALL_CREDIT_LIMIT,HHN.parent_id 
 ;
-/

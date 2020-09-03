@@ -136,4 +136,4 @@ AS /*
       AND LKP.LOOKUP_CODE   = HCP.PHONE_LINE_TYPE 
     AND CONTACT_POINT_TYPE         IN ('PHONE', 'EMAIL')
     )  ;
-	/
+	

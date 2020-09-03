@@ -77,4 +77,3 @@ GROUP BY HCA_CH.cust_account_id ,
   HCA_CH.orig_system_reference , HCA.orig_system_reference,
   HCA_CH.attribute6 ,
   HCPA.OVERALL_CREDIT_LIMIT;
-  /
