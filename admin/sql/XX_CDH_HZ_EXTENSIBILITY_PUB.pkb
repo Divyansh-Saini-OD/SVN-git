@@ -111,7 +111,8 @@ begin
                      INTO lv_doc_type,lv_bill_type,ln_cust_doc_id
                      FROM XX_CDH_CUST_ACCT_EXT_B
                     WHERE cust_account_id = p_cust_account_id
-                      AND ATTR_GROUP_ID          = ln_attr_group_id;
+                      AND ATTR_GROUP_ID          = ln_attr_group_id
+                      AND fee_option IS NULL;
                     
                    SELECT xxfv.SOURCE_VALUE1
                      INTO lv_fee_option
