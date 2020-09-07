@@ -32,3 +32,5 @@ AS
     RETURN XX_CRM_CREDIT_LIMTS_OBJ );
 
 
+/
+show err

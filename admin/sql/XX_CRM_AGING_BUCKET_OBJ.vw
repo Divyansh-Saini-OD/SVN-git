@@ -55,3 +55,5 @@ AS
       P_ACCT_EST_DATE       IN VARCHAR2 :=NULL,
       P_CREDIT_LIMIT        IN NUMBER   :=NULL )
     RETURN XX_CRM_AGING_BUCKET_OBJ );
+/
+show err
