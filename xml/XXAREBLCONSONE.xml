@@ -244,7 +244,7 @@
                         ,'GRAND TOTAL:',TO_NUMBER(NULL)
                         ,NVL(XAECTRS.tax ,0)
                         )                       tax
-				  ,XX_AR_EBL_COMMON_UTIL_PKG.get_softhdr_amount(XAECTRS.line_type,XAECTRS.sf_text,XAECTRS.cons_inv_id,XAECTRS.cust_doc_id,XAECTRS.request_id,XAECTRS.attribute3) FEE
+				,DECODE(XAECTRS.line_type,'GRAND_TOTAL',TO_NUMBER(NULL),XX_AR_EBL_COMMON_UTIL_PKG.get_softhdr_amount(XAECTRS.line_type,XAECTRS.sf_text,XAECTRS.cons_inv_id,XAECTRS.cust_doc_id,XAECTRS.request_id,XAECTRS.attribute3)) FEE
                 ,NVL(XAECTRS.total ,0)          total
                 ,NVL(XAECTRS.page_break ,'N')   pg_break
 				,DECODE(XAECTRS.line_type,'SOFTHDR_TOTAL','Y','BILL_TO_TOTAL','Y','N' ) SHOW_LINE
