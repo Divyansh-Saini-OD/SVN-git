@@ -57,6 +57,7 @@ AS
 -- |  16.0  05-SEP-2019 Arun G            Made changes for Card on File        |
 -- |  17.0  15-OCT-2019 Arun G            Made changes for Tariff phase 2      |
 -- |  18.0  27-MAY-2020 Shalu G           Added a column for partially reversed order auth amount|
+-- |  19.0  9-9-SEP-2020 Shalu G         Added new column item_description for Elynxx orders|
 -- +===========================================================================+
 -- +===========================================================================+
 
@@ -508,6 +509,7 @@ AS
         kit_vpc                  t_v50,
         kit_dept                 t_v50,
         kit_seqnum               t_num,
+		item_description         t_v240,                                                 --Added item_description for Elynxx orders
         kit_parent               t_v1,
         service_end_date         t_date,
         service_start_date       t_date,
