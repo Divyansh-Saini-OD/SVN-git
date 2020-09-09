@@ -13,7 +13,7 @@
 -- |Version    Date          Author                Remarks                                      | 
 -- |=======    ==========    =================    ==============================================+
 -- |DRAFT 1A   19-AUG-2013   Raj Jagarlamudi      Add MPS Retail column                         |
--- |                                                                                            |
+-- |DRAFT 1B   19-AUG-2013   Shalu George         Add Item description column                   |
 -- +============================================================================================+
 
 
@@ -30,7 +30,10 @@ PROMPT
 PROMPT MODIFYING the Table XX_OM_LINES_ATTR_IFACE_ALL.....
 PROMPT
 
-ALTER TABLE XX_OM_LINES_ATTR_IFACE_ALL ADD ( MPS_TONER_RETAIL  NUMBER)
+/*ALTER TABLE XX_OM_LINES_ATTR_IFACE_ALL ADD ( MPS_TONER_RETAIL  NUMBER)*/
+
+ALTER TABLE XX_OM_LINES_ATTR_IFACE_ALL ADD ( ITEM_DESCRIPTION  VARCHAR2 (240))
+
 /
 
 
