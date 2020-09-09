@@ -2218,7 +2218,8 @@ AS
                          kit_vend_product_code,
                          kit_sku_dept,
                          kit_seqnum,
-                         kit_parent)
+                         kit_parent,
+						 item_description)
                 SELECT li.line_id,
                        SYSDATE,
                        fnd_global.user_id,
@@ -2269,7 +2270,8 @@ AS
                        i.kit_vend_product_code,
                        i.kit_sku_dept,
                        i.kit_seqnum,
-                       i.kit_parent
+                       i.kit_parent,
+					   i.item_description
                 FROM   xx_om_lines_attr_iface_all i,
                        oe_order_lines_all li
                 WHERE  li.header_id = p_header_id
@@ -2484,7 +2486,8 @@ AS
                          kit_vend_product_code,
                          kit_sku_dept,
                          kit_seqnum,
-                         kit_parent
+                         kit_parent,
+						 item_description
 )
                 SELECT li.line_id,
                        SYSDATE,
@@ -2536,7 +2539,8 @@ AS
                        i.kit_vend_product_code,
                        i.kit_sku_dept,
                        i.kit_seqnum,
-                       i.kit_parent
+                       i.kit_parent,
+					   i.item_description
                 FROM   xx_om_lines_attr_iface_all i,
                        oe_order_lines_all li,
                        oe_order_headers_all h
