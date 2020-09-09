@@ -513,7 +513,7 @@ AS
         g_line_rec.payment_term_id.DELETE(p_idx);
         g_line_rec.inventory_item.DELETE(p_idx);
         g_line_rec.schedule_status_code.DELETE(p_idx);
-        g_line_rec.user_item_description.DELETE(p_idx);
+        g_line_rec.user_item_description.DELETE(p_idx);                                            --Added for Elynxx orders
         g_line_rec.config_code.DELETE(p_idx);
         g_line_rec.ext_top_model_line_id.DELETE(p_idx);
         g_line_rec.ext_link_to_line_id.DELETE(p_idx);
@@ -4818,7 +4818,7 @@ AS
          g_line_rec.kit_vpc(i)         := NULL;
          g_line_rec.kit_dept(i)        := NULL;
          g_line_rec.kit_seqnum(i)      := NULL;
-		 g_line_rec.item_description(i):= SUBSTR(p_order_rec.file_line,
+		 g_line_rec.item_description(i):= SUBSTR(p_order_rec.file_line,               --Elynxx order changes
                                                       95,
                                                       25);
          g_line_rec.service_end_date(i) := NULL;
@@ -6347,7 +6347,7 @@ AS
         g_line_rec.kit_vpc(p_line_idx) := NULL;
         g_line_rec.kit_dept(p_line_idx) := NULL;
         g_line_rec.kit_seqnum(p_line_idx) := NULL;
-		g_line_rec.item_description(p_line_idx) := NULL;
+		g_line_rec.item_description(p_line_idx) := NULL;                              --Added for Elynxx orders
         g_line_rec.service_end_date(p_line_idx) := NULL;
         g_line_rec.service_start_date(p_line_idx) := NULL;
         g_line_rec.accounting_rule_id(p_line_idx) := NULL;
@@ -9421,7 +9421,7 @@ EXCEPTION
         g_line_rec.kit_vpc.DELETE;
         g_line_rec.kit_dept.DELETE;
         g_line_rec.kit_seqnum.DELETE;
-		g_line_rec.item_description.DELETE;
+		g_line_rec.item_description.DELETE;													-- Added for Elynxx Orders
         g_line_rec.service_end_date.DELETE;
         g_line_rec.service_start_date.DELETE;
         g_line_rec.invoicing_rule_id.DELETE;
@@ -10016,7 +10016,7 @@ EXCEPTION
                              kit_vend_product_code,
                              kit_sku_dept,
                              kit_seqnum ,
-							 item_description
+							 item_description                  												--Added for Elynxx orders
                              )
                      VALUES (g_line_rec.orig_sys_document_ref(i_lin),
                              g_line_rec.order_source_id(i_lin),
