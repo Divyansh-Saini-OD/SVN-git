@@ -509,13 +509,13 @@ AS
         kit_vpc                  t_v50,
         kit_dept                 t_v50,
         kit_seqnum               t_num,
-		item_description         t_v240,                                                 --Added item_description for Elynxx orders
         kit_parent               t_v1,
         service_end_date         t_date,
         service_start_date       t_date,
         accounting_rule_id       t_num,
         invoicing_rule_id        t_num,
-        fee_reference_line_num   t_num
+        fee_reference_line_num   t_num,
+		item_description         t_v240,                                                 --Added item_description for Elynxx orders
     );
 
 /* Global Record Declaration for  Line */
