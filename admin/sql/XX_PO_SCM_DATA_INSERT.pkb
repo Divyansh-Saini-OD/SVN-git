@@ -13,6 +13,7 @@ CREATE OR REPLACE PACKAGE BODY xx_po_scm_data_insert AS
   -- | Version     Date         Author           Remarks                                                |
   -- | =========   ===========  =============    =================================================      |
   -- | 1.0         04/10/2017   Phuoc Nguyen     Initial version                                        |
+  -- | 2.0         09/10/2020   Shalu George     Added column Item_description                          |
   -- +============================================================================================      +
 
     PROCEDURE load_scm_data (
@@ -236,6 +237,8 @@ CREATE OR REPLACE PACKAGE BODY xx_po_scm_data_insert AS
                     p_scm_line_data(i).last_update_login := '';
                     p_scm_line_data(i).attribute2 := ''; --only need NEW in header
                     p_scm_line_data(i).attribute3 := 'SCM';
+					p_scm_line_data(i).item_description := '';         --Added for Elynxx orders
+					
                     INSERT INTO xx_po_pom_lines_int_stg (
                         record_line_id,
                         record_id,
@@ -274,7 +277,8 @@ CREATE OR REPLACE PACKAGE BODY xx_po_scm_data_insert AS
                         last_update_date,
                         last_update_login,
                         error_column,
-                        error_value
+                        error_value,
+						item_description                           --Added for Elynxx orders
                     ) VALUES (
                         p_scm_line_data(i).record_line_id,
                         p_scm_header_data.record_id,
@@ -313,7 +317,8 @@ CREATE OR REPLACE PACKAGE BODY xx_po_scm_data_insert AS
                         p_scm_line_data(i).last_update_date,
                         p_scm_line_data(i).last_update_login,
                         p_scm_line_data(i).error_column,
-                        p_scm_line_data(i).error_value
+                        p_scm_line_data(i).error_value,
+						p_scm_line_data(i).item_description                --Added for Elynxx orders
                     );
 
                     ln_line_count := ln_line_count + SQL%rowcount;
