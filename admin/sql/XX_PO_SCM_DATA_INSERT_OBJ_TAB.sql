@@ -18,6 +18,7 @@
 --| Version           Date             Changed By              Description                      |--
 --+=============================================================================================+--
 --| 1.0              19-JUN-2018       Phuoc Nguyen            Original                         |--
+--| 2.0              10-SEP-2020       Shalu George       Adding column item_description        |--
 --+=============================================================================================+--
 SET SHOW         OFF
 SET VERIFY       OFF
@@ -162,7 +163,8 @@ CREATE OR REPLACE TYPE  XX_PO_SCM_LINES_OBJ AS OBJECT (
     last_update_date       DATE,
     last_update_login      NUMBER,
     error_column           VARCHAR2(100 BYTE),
-    error_value            VARCHAR2(200 BYTE)
+    error_value            VARCHAR2(200 BYTE),
+	item_description       VARCHAR2(240 BYTE)								--Added for Elynxx
 )
 /
 WHENEVER SQLERROR CONTINUE;
