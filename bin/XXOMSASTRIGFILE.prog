@@ -13,6 +13,7 @@
 # |Version  Date         Author          Remarks                           |
 # |=======  ===========  ==============  ==================================|
 # |1.0      26-Jun-2020  Venkata Reddy                                     |
+# |2.0      03-Sep-2020  Ray Strauss     added $tm and chg file permissions|
 #                                                                          |
 # +========================================================================+
 # +========================================================================+
@@ -27,6 +28,7 @@ fi
 
 DEST_DIR="$6"
 dt=$7
+tm=$8
 
 HVOPUSTRIGFILE="SASUSHEOT$5.TXT"
 HVOPCATRIGFILE="SASCAHEOT$5.TXT"
@@ -34,10 +36,10 @@ DEPOUSTRIGFILE="SASUSDEOT$5.TXT"
 DEPOCATRIGFILE="SASCADEOT$5.TXT"
 
 cd $DEST_DIR
-USHVOP=`ls -lrt SAS$dt*_US_HVOP_*.TXT |awk '{print $9}'|wc -l`
-CAHVOP=`ls -lrt SAS$dt*_CA_HVOP_*.TXT |awk '{print $9}'|wc -l`
-USDEPO=`ls -lrt SAS$dt*_US_DEPO_*.TXT |awk '{print $9}'|wc -l`
-CADEPO=`ls -lrt SAS$dt*_CA_DEPO_*.TXT |awk '{print $9}'|wc -l`
+USHVOP=`ls -lrt SAS$dt*_US_HVOP_$tm*.TXT |awk '{print $9}'|wc -l`
+CAHVOP=`ls -lrt SAS$dt*_CA_HVOP_$tm*.TXT |awk '{print $9}'|wc -l`
+USDEPO=`ls -lrt SAS$dt*_US_DEPO_$tm*.TXT |awk '{print $9}'|wc -l`
+CADEPO=`ls -lrt SAS$dt*_CA_DEPO_$tm*.TXT |awk '{print $9}'|wc -l`
 
 echo "" > $DEST_DIR/$HVOPUSTRIGFILE
 echo "" > $DEST_DIR/$DEPOUSTRIGFILE
@@ -52,20 +54,20 @@ chmod 777 $DEST_DIR/$DEPOCATRIGFILE
 if [ $USHVOP -gt 0 ]
   then
    echo $USHVOP
-   ls -lrt SAS$dt*US_HVOP_*.TXT |awk '{print $9}' > $DEST_DIR/$HVOPUSTRIGFILE
+   ls -lrt SAS$dt*US_HVOP_$tm*.TXT |awk '{print $9}' > $DEST_DIR/$HVOPUSTRIGFILE
 fi
 if [ $USDEPO -gt 0 ]
   then
    echo $USDEPO
-   ls -lrt SAS$dt*US_DEPO_*.TXT |awk '{print $9}' > $DEST_DIR/$DEPOUSTRIGFILE
+   ls -lrt SAS$dt*US_DEPO_$tm*.TXT |awk '{print $9}' > $DEST_DIR/$DEPOUSTRIGFILE
 fi
 if [ $CAHVOP -gt 0 ]
   then
    echo $CAHVOP
-   ls -lrt SAS$dt*CA_HVOP_*.TXT |awk '{print $9}' > $DEST_DIR/$HVOPCATRIGFILE
+   ls -lrt SAS$dt*CA_HVOP_$tm*.TXT |awk '{print $9}' > $DEST_DIR/$HVOPCATRIGFILE
 fi
 if [ $CADEPO -gt 0 ]
   then
    echo $CADEPO
-   ls -lrt SAS$dt*CA_DEPO_*.TXT |awk '{print $9}' > $DEST_DIR/$DEPOCATRIGFILE
+   ls -lrt SAS$dt*CA_DEPO_*$tm.TXT |awk '{print $9}' > $DEST_DIR/$DEPOCATRIGFILE
 fi
