@@ -515,7 +515,7 @@ AS
         accounting_rule_id       t_num,
         invoicing_rule_id        t_num,
         fee_reference_line_num   t_num,
-		item_description         t_v240,                                                 --Added item_description for Elynxx orders
+		item_description         t_v240                                              --Added item_description for Elynxx orders
     );
 
 /* Global Record Declaration for  Line */
