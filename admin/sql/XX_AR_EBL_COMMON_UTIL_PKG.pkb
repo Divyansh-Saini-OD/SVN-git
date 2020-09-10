@@ -6403,10 +6403,10 @@ BEGIN
 
     select a.DOC_DETAIL_LEVEL 
       INTO lv_doc_level
-      from apps.XX_CDH_MBS_DOCUMENT_MASTER a,
-           apps.xx_cdh_cust_acct_ext_b b
+      from XX_CDH_MBS_DOCUMENT_MASTER a,
+           xx_cdh_cust_acct_ext_b b
      where b.n_ext_attr2 = p_cust_doc_id
-       and a.DOCUMENT_ID = b.n_ext_attr1;
+       and a.DOCUMENT_ID = b.n_ext_attr1 AND rownum=1;
 
     IF p_line_type = 'BILL_TO_TOTAL' THEN
        SELECT NVL(SUM(XX_AR_EBL_COMMON_UTIL_PKG.get_line_fee_amount(customer_trx_id) + XX_AR_EBL_COMMON_UTIL_PKG.get_hea_fee_amount(customer_trx_id)),0)
