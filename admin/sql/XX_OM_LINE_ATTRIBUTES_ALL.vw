@@ -22,4 +22,5 @@ PROMPT
 exec ad_zd_table.upgrade('XXOM','XX_OM_LINE_ATTRIBUTES_ALL');
 
 SHOW ERRORS;
+/
 EXIT;
