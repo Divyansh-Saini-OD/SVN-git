@@ -1001,7 +1001,8 @@ FUNCTION get_softhdr_amount(p_line_type IN VARCHAR2
 -- +===================================================================================+
 FUNCTION get_softhdr_rep_amount(p_line_type IN VARCHAR2,p_sft_text IN VARCHAR2,p_cons_id IN NUMBER
                                 ,p_request_id IN NUMBER
-							    ,p_customer_trx_id IN VARCHAR2) RETURN NUMBER ;
+							    ,p_customer_trx_id IN VARCHAR2
+                                ,p_template_type IN VARCHAR2 DEFAULT NULL) RETURN NUMBER ;
 
 FUNCTION get_fee_option (p_cust_doc_id IN NUMBER,
                          p_mbs_doc_type  IN VARCHAR2,

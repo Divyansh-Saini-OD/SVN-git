@@ -730,6 +730,7 @@
 SELECT 
       flv.lookup_code FEE_CODE
      ,upper(flv.meaning)  FEE_DESCRIPTION
+     ,flv.attribute7
      ,TO_CHAR(sum(RCTL.unit_selling_price*
 	 CASE WHEN aps.class = 'CM' THEN
 	  quantity_credited
@@ -754,7 +755,8 @@ WHERE 1=1
   AND XAECTRS.cons_inv_id           = :cbi_id 
   AND XAECTRS.batch_id    = :p_batch_id
   AND XAECTRS.file_id     = :file_id
-GROUP BY flv.lookup_code,flv.meaning
+GROUP BY flv.lookup_code,flv.meaning,flv.attribute7
+order by flv.attribute7 desc,flv.lookup_code
        ]]>
     </sqlStatement>	
   </dataQuery>
