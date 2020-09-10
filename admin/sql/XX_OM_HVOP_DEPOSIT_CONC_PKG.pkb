@@ -41,7 +41,8 @@ AS
 -- |                                          values for EMV                                 |
 -- |2.6        08-Aug-2015   Arun G           Made changes to fix the defect 35383           |
 -- |2.7        27-Oct-2016   Rajeshkumar      Performance issue 39886                        |
--- |2.8        25-Aug-2017   Venkata Battu    Made changes to order_source function for biz box|  
+-- |2.8        25-Aug-2017   Venkata Battu    Made changes to order_source function for biz box| 
+-- |2.9        03-Sep-2020   Ray Strauss      Changed code to handle empty files             | 
 -- +=========================================================================================+
     PROCEDURE process_deposit(
         x_retcode      OUT NOCOPY     NUMBER,
@@ -195,7 +196,7 @@ AS
                 fnd_file.put_line(fnd_file.LOG,
                                      'No data found: '
                                   || SQLERRM);
-                RAISE fnd_api.g_exc_error;
+                GOTO end_of_file;
             WHEN VALUE_ERROR
             THEN
                 oe_debug_pub.ADD(   'Value Error: '
@@ -402,7 +403,7 @@ AS
                                                       || g_request_id);
                 RAISE fnd_api.g_exc_unexpected_error;
         END;
-
+        <<end_of_file>>
         -- Save the messages logged so far
         oe_bulk_msg_pub.save_messages(g_request_id);
         COMMIT;
