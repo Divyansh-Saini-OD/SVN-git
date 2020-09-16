@@ -53,8 +53,10 @@ AS
    -- |5.9        01-Apr-2020  Pramod Kumar   NAIT-11880 Rev Rec Code changes
    -- |5.10       01-Apr-2020  Pramod Kumar   NAIT-11880 Code changes to make POS Subscription orders Trx Number as Orig_sys_document_ref
    -- |5.11       01-Apr-2020  Pramod Kumar   NAIT-11880 Code changes to call UNEARN Acc Class if REV REC eligible
-   -- |5.12       02-Jun-2020  Shani Singh    NAIT-125301 Fees Phase II – Quantity Shipped and Unit Price of Line Fees
+   -- |5.12       02-Jun-2020  Shani Singh    NAIT-125301 Fees Phase II â€“ Quantity Shipped and Unit Price of Line Fees
    -- |                                       (Beverage, Import Surcharge, Stamp Fees) calculation and display on billing
+   -- |6.0        14-SEP-2020  Divyansh Saini Changes done for RPC wholesale changes
+   -- |                                       JIRA NAIT-154405
    -- +=====================================================================================+
 
    ------------------------
@@ -515,6 +517,28 @@ AS
                        AND b.attribute6 = ril.INVENTORY_ITEM_ID)
       ;
       */
+
+      /*-------------------------------------
+      Cursor added for RPC whole sale changes for app ID ELYNXX JIRA NAIT-154405
+      ---------------------------------------*/
+      CURSOR lcu_elynxx_desc_upd IS
+         SELECT NVL(xxol.item_description,ril.description) item_description,ol.line_id
+           FROM xx_om_header_attributes_all xxoh,
+                xx_om_line_attributes_all xxol,
+                oe_order_lines_all ol,
+                ra_interface_lines_all ril,
+                xx_fin_translatedefinition xftd,
+                xx_fin_translatevalues xftv
+          WHERE xxoh.header_id                = ol.header_id
+            AND xxol.line_id                  = ol.line_id
+            AND ril.interface_line_attribute6 = ol.line_id
+            AND ril.request_id                = gn_request_id
+            AND xftd.translation_name         = 'XX_E0080_APP_IDS'
+            AND xftv.translate_id             = xftd.translate_id
+            AND xftd.enabled_flag             = 'Y'
+            AND xftv.enabled_flag             = 'Y'
+            AND SYSDATE BETWEEN xftv.START_DATE_ACTIVE AND NVL(xftv.END_DATE_ACTIVE,sysdate+1)
+            AND upper(xxoh.app_id)            = xftv.source_value1;
 
       lc_interface_PREV  VARCHAR2(1000);
       lc_interface_CURR  VARCHAR2(1000);
@@ -1571,6 +1595,16 @@ HEADER_ATTRIBUTE13  RA_INTERFACE_LINES_ALL.HEADER_ATTRIBUTE13%TYPE,
 
 
 
+            -- Added for RPC changes JIRA NAIT-154405
+            FOR rec_elynxx_desc_upd IN lcu_elynxx_desc_upd LOOP
+                UPDATE ra_interface_lines_all
+                   SET DESCRIPTION               = rec_elynxx_desc_upd.item_description
+                 WHERE interface_line_attribute6 = rec_elynxx_desc_upd.line_id
+                   AND request_id                = gn_request_id;
+            
+            END LOOP;
+            -- Ended for RPC changes JIRA NAIT-154405
+            
             --Added Under NAIT-121574 -- Start
 
             lc_line_num := NULL;
@@ -7729,5 +7763,3 @@ HEADER_ATTRIBUTE13  RA_INTERFACE_LINES_ALL.HEADER_ATTRIBUTE13%TYPE,
 
 END XX_AR_CREATE_ACCT_CHILD_PKG;
 /
-show errors;
-exit;
