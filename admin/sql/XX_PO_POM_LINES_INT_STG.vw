@@ -26,3 +26,4 @@ exec ad_zd_table.upgrade('XXFIN', 'XX_PO_POM_LINES_INT_STG');
 SHOW ERRORS;
 /
 EXIT;
+/
