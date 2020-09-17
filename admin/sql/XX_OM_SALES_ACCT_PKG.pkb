@@ -62,6 +62,7 @@ AS
 -- |34.0       14-Nov-2018  Arun Gannarapu     Made changes for Bill Complete                                 |
 -- |35.0       05-SEP-2019  Arun Gannarapu     Made changes to add return auth code for card on file          |
 -- |36.0       07-MAY-2020  Shalu George       Added to get authorized amount for partially reversed orders   |
+-- |37.0       10-SEP-2020  Shalu George       Added column item_description for Elynxx orders                |
 -- +==========================================================================================================+
     g_pkg_name  CONSTANT VARCHAR2(30) := 'XX_OM_SALES_ACCT_PKG';
 
