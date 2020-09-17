@@ -3374,7 +3374,7 @@ create or replace PACKAGE BODY XX_AR_EBL_CONS_INVOICES AS
                ,xola.wholesaler_item wholesaler_item
                ,rctl1.interface_line_context interface_line_context
                ,rctl1.interface_line_attribute11 oe_price_adjustment_id
-               ,DECODE(Fee_item,'Y',null,nvl(to_char(to_number(ool.customer_line_number))
+               ,DECODE(Q_fee.Fee_item,'Y',null,nvl(to_char(to_number(ool.customer_line_number))
                    ,decode(substr(ool.orig_sys_line_ref
                                  ,1
                                  ,1)
@@ -3399,7 +3399,7 @@ create or replace PACKAGE BODY XX_AR_EBL_CONS_INVOICES AS
                ,xx_om_line_attributes_all xola
                ,mtl_units_of_measure      muom
                ,mtl_system_items          msi
-			   ,(select 'Y' Fee_item, attribute6,attribute7
+               ,(select 'Y' Fee_item, attribute6,attribute7
                                        FROM fnd_lookup_values flv
                                       WHERE lookup_type =  'OD_FEES_ITEMS'
                                         AND flv.LANGUAGE='US'
@@ -3434,6 +3434,7 @@ create or replace PACKAGE BODY XX_AR_EBL_CONS_INVOICES AS
 	  ln_kit_extended_amt   NUMBER;          -- Added for Kitting, Defect# 37675
 	  ln_kit_unit_price     NUMBER;          -- Added for Kitting, Defect# 37675
 	  lc_kit_sku_desc       VARCHAR2(240);   -- Added for Kitting, Defect# 37675
+      lv_dept_type          VARCHAR2(240);   -- Added for 1.17
    BEGIN
       -- Open Detail Cursor
       OPEN lcu_cons_lines;
@@ -3517,6 +3518,20 @@ create or replace PACKAGE BODY XX_AR_EBL_CONS_INVOICES AS
 	     END IF;
    -- End of Kitting Changes, Defect# 37675
 
+         -- Added code change for 1.17
+         BEGIN
+           SELECT UPPER(hca.ATTRIBUTE9)
+             INTO lv_dept_type
+             FROM hz_cust_accounts hca,ra_customer_trx
+           WHERE cust_account_id = bill_to_customer_id 
+             AND customer_trx_id = p_cust_trx_id;
+         EXCEPTION WHEN NO_DATA_FOUND THEN
+           lv_dept_type := NULL;
+         WHEN OTHERS THEN
+           lv_dept_type := NULL;
+         END;
+         -- End code change for 1.17
+         
          INSERT INTO xx_ar_ebl_cons_dtl_main
             (cons_inv_id
             ,customer_trx_id
@@ -3613,7 +3628,7 @@ create or replace PACKAGE BODY XX_AR_EBL_CONS_INVOICES AS
             ,p_batch_id
             ,fnd_profile.VALUE('ORG_ID')
             ,NULL
-            ,cbi_line(j).dept_description
+            ,DECODE (lv_dept_type,'LINE',cbi_line(j).dept_description)  -- decode added for 1.17
             ,decode(cbi_line(j).dept_description
                    ,NULL
                    ,NULL

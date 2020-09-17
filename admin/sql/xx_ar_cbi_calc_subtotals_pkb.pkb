@@ -1495,6 +1495,7 @@ lv_sql_by :=lv_blank_fields;
 	  ln_kit_extended_amt      NUMBER;         -- Added for Kitting, Defect# 37670
 	  ln_kit_unit_price        NUMBER;         -- Added for Kitting, Defect# 37670
 	  lc_kit_sku               VARCHAR2(100);  -- Added for Kitting, Defect# 37670
+      lv_dept_type             VARCHAR2(100);  -- Added for 3.1
 
       CURSOR trx (trx_id IN NUMBER, TYPE IN VARCHAR2, inv_source IN VARCHAR2)
       IS
@@ -2052,7 +2053,19 @@ GROUP BY RCT.trx_number;
 					  END;
 				 END IF;
 		-- End of adding Kitting Changes, Defect# 37670
-
+         -- Added code change for 3.1
+                 BEGIN
+                   SELECT UPPER(hca.ATTRIBUTE9)
+                     INTO lv_dept_type
+                     FROM hz_cust_accounts hca,ra_customer_trx
+                   WHERE cust_account_id = bill_to_customer_id 
+                     AND customer_trx_id = trx_row.customer_trx_id;
+                 EXCEPTION WHEN NO_DATA_FOUND THEN
+                   lv_dept_type := NULL;
+                 WHEN OTHERS THEN
+                   lv_dept_type := NULL;
+                 END;
+                 -- End code change for 3.1
                   lc_error_loc    := 'Calling Insert_invoice_lines';      -- Added log message for Defect 10750
                   lc_error_debug  := 'For Trx_id'||trx_row.customer_trx_id ; -- Added log message for Defect 10750
                   insert_invoice_lines
@@ -2071,7 +2084,8 @@ GROUP BY RCT.trx_number;
                          trx_rec.extended_price,
                          lc_line_comments                              -- Added for R1.2 Defect 1744 (CR 743)
                          ,trx_rec.cost_center_dept
-                         ,trx_rec.cust_dept_description
+--                         ,trx_rec.cust_dept_description
+                         ,CASE WHEN lv_dept_type ='LINE' THEN trx_rec.cust_dept_description END  -- decode added for 3.1
                          ,lc_kit_sku                                   -- Added for Kitting, Defect# 37670
                          ,trx_rec.attribute7                          -- Added for 3.1
 						 ,trx_rec.line_number                         -- Added for 3.1
@@ -2615,7 +2629,19 @@ GROUP BY RCT.trx_number;
 					  END;
 				 END IF;
 		-- End of adding Kitting Changes, Defect# 37670
-
+         -- Added code change for 3.1
+                 BEGIN
+                   SELECT UPPER(hca.ATTRIBUTE9)
+                     INTO lv_dept_type
+                     FROM hz_cust_accounts hca,ra_customer_trx
+                   WHERE cust_account_id = bill_to_customer_id 
+                     AND customer_trx_id = trx_row.customer_trx_id;
+                 EXCEPTION WHEN NO_DATA_FOUND THEN
+                   lv_dept_type := NULL;
+                 WHEN OTHERS THEN
+                   lv_dept_type := NULL;
+                 END;
+                 -- End code change for 3.1
                   lc_error_loc    := 'Calling Insert_invoice_lines-INV_IC';      -- Added log message for Defect 10750
                   lc_error_debug  := 'For Trx_id'||trx_row.customer_trx_id ; -- Added log message for Defect 10750
                   insert_invoice_lines
@@ -2634,8 +2660,9 @@ GROUP BY RCT.trx_number;
                          trx_rec.extended_price,
                          lc_line_comments                               -- Added for R1.2 Defect 1744 (CR 743)
                         ,trx_rec.cost_center_dept
-                        ,trx_rec.cust_dept_description
-						,lc_kit_sku                                     -- Added for Kitting, Defect# 37670
+--                        ,trx_rec.cust_dept_description
+						            ,CASE WHEN lv_dept_type ='LINE' THEN trx_rec.cust_dept_description END   -- decode added for 3.1
+                        ,lc_kit_sku                                     -- Added for Kitting, Defect# 37670
 						,trx_rec.attribute7                            -- Added for 3.1
 						,trx_rec.line_number                         -- Added for 3.1
                         );

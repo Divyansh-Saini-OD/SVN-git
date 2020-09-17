@@ -1526,6 +1526,7 @@ create or replace PACKAGE BODY XX_AR_EBL_IND_INVOICES_PKG AS
 	  ln_kit_extended_amt   NUMBER;          -- Added for Kitting, Defect# 37675
 	  ln_kit_unit_price     NUMBER;          -- Added for Kitting, Defect# 37675
 	  lc_kit_sku_desc       VARCHAR2(240);   -- Added for Kitting, Defect# 37675
+      lv_dept_type          VARCHAR2(240);   -- Added for 1.13
    BEGIN
       -- Open Detail Cursor
       ln_seq_number := 0;
@@ -1595,6 +1596,19 @@ create or replace PACKAGE BODY XX_AR_EBL_IND_INVOICES_PKG AS
          WHEN OTHERS THEN
            ln_line_tax_amt := 0;
          END;
+         -- Added code change for 1.13
+         BEGIN
+           SELECT UPPER(hca.ATTRIBUTE9)
+             INTO lv_dept_type
+             FROM hz_cust_accounts hca,ra_customer_trx
+           WHERE cust_account_id = bill_to_customer_id 
+             AND customer_trx_id = p_cust_trx_id;
+         EXCEPTION WHEN NO_DATA_FOUND THEN
+           lv_dept_type := NULL;
+         WHEN OTHERS THEN
+           lv_dept_type := NULL;
+         END;
+         -- End code change for 1.13
 
          INSERT INTO xx_ar_ebl_ind_dtl_main
             (customer_trx_id
@@ -1689,7 +1703,7 @@ create or replace PACKAGE BODY XX_AR_EBL_IND_INVOICES_PKG AS
             ,p_batch_id
             ,fnd_profile.VALUE('ORG_ID')
             ,(CASE WHEN( p_order_source_code IN ('B','E','X')) THEN inv_line(j).line_level_comment ELSE NULL END)
-            ,inv_line(j).dept_description
+            ,DECODE (lv_dept_type,'LINE',inv_line(j).dept_description)
             ,decode(inv_line(j).dept_description
                    ,NULL
                    ,NULL
