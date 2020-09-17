@@ -1091,7 +1091,9 @@ AS
                         THEN
                             fnd_file.put_line(fnd_file.LOG,
                                               'THE FILE IS EMPTY, NO RECORDS');
-                            RAISE fnd_api.g_exc_error;
+                            lb_at_trailer := TRUE;
+                            EXIT;
+--                            RAISE fnd_api.g_exc_error;
                         END IF;
                     WHEN OTHERS
                     THEN
