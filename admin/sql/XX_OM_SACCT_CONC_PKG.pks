@@ -568,7 +568,8 @@ AS
            kit_qty                   t_num,
            kit_vpc                   t_v50,
            kit_dept                  t_v50,
-           kit_seqnum                t_num
+           kit_seqnum                t_num,
+		   item_description          t_v240 --Elynxx orders
     ); 
 
 /*   Global Record Declaration for  Line tax */ 
