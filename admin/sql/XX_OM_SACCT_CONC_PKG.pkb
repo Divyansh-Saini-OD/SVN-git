@@ -134,7 +134,7 @@ AS
 -- |     47.0     08-Aug-2020  Arun G     Made changes to populate the cost center for feeline(s) JIRA # 144725             |
 -- |     48.0     14-Aug-2020  Arun G     made changes to populate the cost center desc for fee lines JIRA 150256           |
 -- |     49.0     17-sep-2020  R.Strauss  Added code to handle empty files                                                  |
--- |     49.0     18-Sep-2020  Shalu G    Added item description for Elynxx orders                                          |
+-- |     50.0     18-Sep-2020  Shalu G    Added item description for Elynxx orders                                          |
 -- +========================================================================================================================+
     PROCEDURE process_current_order(
         p_order_tbl   IN  order_tbl_type,
@@ -4856,7 +4856,8 @@ AS
         END IF;
 
         -- Once Bob sends the entered product code uncomment the below line
-
+		
+        g_line_rec.user_item_description(i) := NULL;
         ln_bundle_id := NULL;
         g_line_rec.config_code(i) := NULL;
         g_line_rec.upc_code(i) := NULL;
@@ -11229,3 +11230,4 @@ THEN
     RETURN FALSE;
 END is_appid_need_ordertype;	
 END XX_OM_SACCT_CONC_PKG;
+/
