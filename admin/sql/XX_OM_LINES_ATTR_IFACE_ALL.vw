@@ -12,11 +12,11 @@ WHENEVER OSERROR EXIT FAILURE ROLLBACK;
 -- |===============                                                                             |
 -- |Version     Date           Author               Remarks                                     |
 -- |=======    ==========      ================     ============================================|
--- |1.0        20-NOV-2018    Arun G             Initial version                             |
+-- |1.0        20-NOV-2018    Shalu G             Initial version                               |           
 -- +============================================================================================+
 
 PROMPT
-PROMPT Creating Editioning View for XX_OM_LINES_ATTR_IFACE_ALL .....
+PROMPT Creating Editioning View for XX_OM_LINES_ATTR_IFACE_ALL.....
 PROMPT
 
 exec ad_zd_table.upgrade('XXOM','XX_OM_LINES_ATTR_IFACE_ALL');
@@ -24,4 +24,3 @@ exec ad_zd_table.upgrade('XXOM','XX_OM_LINES_ATTR_IFACE_ALL');
 SHOW ERRORS;
 /
 EXIT;
-/
