@@ -129,11 +129,12 @@ AS
 -- |     42.0     19-MAY-2019  Arun G     Made changes for Service contract project  JIRA 90510                             |  
 -- |     43.0     31-JUL-2019  Arun G     Made changes to fix Service contract project bug                                  |
 -- |     44.0     05-SEP-2019  Arun G     Made changes to for capture Authcode for Returns                                  |
--- |     45.0     05-Oct-2019  Arun G     Made changes for rev recog project JIRA 106576
--- |	 46.0	  08-May-2020  Shalu G    Made changes for Auth Amount JIRA 
+-- |     45.0     05-Oct-2019  Arun G     Made changes for rev recog project JIRA 106576                                    |
+-- |	 46.0	  08-May-2020  Shalu G    Made changes for Auth Amount JIRA                                                 |
 -- |     47.0     08-Aug-2020  Arun G     Made changes to populate the cost center for feeline(s) JIRA # 144725             |
 -- |     48.0     14-Aug-2020  Arun G     made changes to populate the cost center desc for fee lines JIRA 150256           |
--- |     49.0     17-sep-2020  R Strauss  added code to handle empty files                                                  |
+-- |     49.0     17-sep-2020  R.Strauss  Added code to handle empty files                                                  |
+-- |     49.0     18-Sep-2020  Shalu G    Added item description for Elynxx orders                                          |
 -- +========================================================================================================================+
     PROCEDURE process_current_order(
         p_order_tbl   IN  order_tbl_type,
@@ -513,7 +514,7 @@ AS
         g_line_rec.payment_term_id.DELETE(p_idx);
         g_line_rec.inventory_item.DELETE(p_idx);
         g_line_rec.schedule_status_code.DELETE(p_idx);
-        g_line_rec.user_item_description.DELETE(p_idx);
+        g_line_rec.user_item_description.DELETE(p_idx);                                            --Added for Elynxx orders
         g_line_rec.config_code.DELETE(p_idx);
         g_line_rec.ext_top_model_line_id.DELETE(p_idx);
         g_line_rec.ext_link_to_line_id.DELETE(p_idx);
@@ -555,6 +556,7 @@ AS
         g_line_rec.invoicing_rule_id.DELETE(p_idx);
         g_line_rec.accounting_rule_id.DELETE(p_idx);
         g_line_rec.fee_reference_line_num.DELETE(p_idx);
+		g_line_rec.item_description.DELETE(p_idx);
 
     EXCEPTION
         WHEN OTHERS
@@ -4819,6 +4821,7 @@ AS
          g_line_rec.kit_vpc(i)         := NULL;
          g_line_rec.kit_dept(i)        := NULL;
          g_line_rec.kit_seqnum(i)      := NULL;
+		 g_line_rec.item_description(i):= NULL;
          g_line_rec.service_end_date(i) := NULL;
          g_line_rec.service_start_date(i) := NULL;
          g_line_rec.accounting_rule_id(i) := NULL;
@@ -4854,7 +4857,6 @@ AS
 
         -- Once Bob sends the entered product code uncomment the below line
 
-        g_line_rec.user_item_description(i) := NULL;
         ln_bundle_id := NULL;
         g_line_rec.config_code(i) := NULL;
         g_line_rec.upc_code(i) := NULL;
@@ -6344,12 +6346,13 @@ AS
         g_line_rec.kit_qty(p_line_idx) := NULL;
         g_line_rec.kit_vpc(p_line_idx) := NULL;
         g_line_rec.kit_dept(p_line_idx) := NULL;
-        g_line_rec.kit_seqnum(p_line_idx) := NULL;
+        g_line_rec.kit_seqnum(p_line_idx) := NULL;                              
         g_line_rec.service_end_date(p_line_idx) := NULL;
         g_line_rec.service_start_date(p_line_idx) := NULL;
         g_line_rec.accounting_rule_id(p_line_idx) := NULL;
         g_line_rec.fee_reference_line_num(p_line_idx) := NULL;
         g_line_rec.invoicing_rule_id(p_line_idx) := NULL;
+	    g_line_rec.item_description(p_line_idx) := NULL;           --Added for Elynxx orders
 
         IF g_header_rec.order_category(p_hdr_idx) = 'ORDER'
         THEN
@@ -7394,7 +7397,8 @@ IS
    g_line_tax_rec.kit_seqnum(lb_tax_idx) := LTRIM(SUBSTR(p_order_rec.file_line,
                                                                     90,
                                                                     5)); 
-
+   g_line_tax_rec.item_description(lb_tax_idx):= SUBSTR(p_order_rec.file_line,95,35);            --Elynxx order changes
+   
    IF ln_debug_level > 0
    THEN
      oe_debug_pub.ADD(   'Line Nbr is  :'|| lc_line_nbr);
@@ -7405,6 +7409,7 @@ IS
      oe_debug_pub.ADD(   'kit vpc :'|| g_line_tax_rec.kit_vpc(lb_tax_idx));
      oe_debug_pub.ADD(   'kit Dept :'|| g_line_tax_rec.kit_dept(lb_tax_idx));
      oe_debug_pub.ADD(   'kit Seqnum :'|| g_line_tax_rec.kit_seqnum(lb_tax_idx));
+	 oe_debug_pub.ADD(   'Item Description :'|| g_line_tax_rec.item_description(lb_tax_idx));
    END IF;
 
    -- Find the line index for the tax records.
@@ -7443,6 +7448,7 @@ IS
    g_line_rec.kit_vpc(lb_line_idx)         := g_line_tax_rec.kit_vpc(lb_tax_idx);  --NVL(g_line_rec.kit_vpc(lb_line_idx),0)+g_line_tax_rec.kit_vpc(lb_tax_idx);  
    g_line_rec.kit_dept(lb_line_idx)        := g_line_tax_rec.kit_dept(lb_tax_idx);  --NVL(g_line_rec.kit_dept(lb_line_idx),0)+g_line_tax_rec.kit_dept(lb_tax_idx);  
    g_line_rec.kit_seqnum(lb_line_idx)      := g_line_tax_rec.kit_seqnum(lb_tax_idx);  --NVL(g_line_rec.kit_seqnum(lb_line_idx),0)+g_line_tax_rec.kit_seqnum(lb_tax_idx);  
+   g_line_rec.item_description(lb_line_idx):= g_line_tax_rec.item_description(lb_tax_idx);
 
    IF ln_debug_level > 0
    THEN
@@ -7453,6 +7459,7 @@ IS
      oe_debug_pub.ADD(   'Line Level Kit VPC :'||g_line_rec.kit_vpc(lb_line_idx));
      oe_debug_pub.ADD(   'Line Level Kit DEPT :'||g_line_rec.kit_dept(lb_line_idx));
      oe_debug_pub.ADD(   'Line Level Kit SEQNUM :'||g_line_rec.kit_seqnum(lb_line_idx));
+	 oe_debug_pub.ADD(   'Line Level Kit SEQNUM :'||g_line_rec.item_description(lb_line_idx));
    END IF;
 
 EXCEPTION
@@ -9418,6 +9425,7 @@ EXCEPTION
         g_line_rec.kit_vpc.DELETE;
         g_line_rec.kit_dept.DELETE;
         g_line_rec.kit_seqnum.DELETE;
+		g_line_rec.item_description.DELETE;													-- Added for Elynxx Orders
         g_line_rec.service_end_date.DELETE;
         g_line_rec.service_start_date.DELETE;
         g_line_rec.invoicing_rule_id.DELETE;
@@ -10011,7 +10019,8 @@ EXCEPTION
                              kit_qty,
                              kit_vend_product_code,
                              kit_sku_dept,
-                             kit_seqnum
+                             kit_seqnum ,
+                             item_description                  												--Added for Elynxx orders
                              )
                      VALUES (g_line_rec.orig_sys_document_ref(i_lin),
                              g_line_rec.order_source_id(i_lin),
@@ -10072,8 +10081,8 @@ EXCEPTION
                              g_line_rec.kit_qty(i_lin),
                              g_line_rec.kit_vpc(i_lin),
                              g_line_rec.kit_dept(i_lin),
-                             g_line_rec.kit_seqnum(i_lin)
-
+                             g_line_rec.kit_seqnum(i_lin),
+							 g_line_rec.item_description(i_lin)										-- Elynxx order addition
                              );
         EXCEPTION
             WHEN OTHERS
@@ -11220,4 +11229,3 @@ THEN
     RETURN FALSE;
 END is_appid_need_ordertype;	
 END XX_OM_SACCT_CONC_PKG;
-/
