@@ -514,7 +514,7 @@ AS
         g_line_rec.payment_term_id.DELETE(p_idx);
         g_line_rec.inventory_item.DELETE(p_idx);
         g_line_rec.schedule_status_code.DELETE(p_idx);
-        g_line_rec.user_item_description.DELETE(p_idx);                                            --Added for Elynxx orders
+        g_line_rec.user_item_description.DELETE(p_idx);                                            
         g_line_rec.config_code.DELETE(p_idx);
         g_line_rec.ext_top_model_line_id.DELETE(p_idx);
         g_line_rec.ext_link_to_line_id.DELETE(p_idx);
@@ -7460,7 +7460,7 @@ IS
      oe_debug_pub.ADD(   'Line Level Kit VPC :'||g_line_rec.kit_vpc(lb_line_idx));
      oe_debug_pub.ADD(   'Line Level Kit DEPT :'||g_line_rec.kit_dept(lb_line_idx));
      oe_debug_pub.ADD(   'Line Level Kit SEQNUM :'||g_line_rec.kit_seqnum(lb_line_idx));
-	 oe_debug_pub.ADD(   'Line Level Kit SEQNUM :'||g_line_rec.item_description(lb_line_idx));
+	 oe_debug_pub.ADD(   'Line Level Item Description :'||g_line_rec.item_description(lb_line_idx));
    END IF;
 
 EXCEPTION
