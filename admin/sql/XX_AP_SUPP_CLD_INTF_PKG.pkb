@@ -85,6 +85,7 @@ CREATE OR REPLACE PACKAGE BODY xx_ap_supp_cld_intf_pkg
 -- | 3.9     06-Feb-2020    Shanti Sethuraj    Modified for jira NAIT-112927                   |
 -- | 4.0     03-Mar-2020    Shanti Sethuraj    Modified for jira NAIT-118027                   |
 -- | 4.1     07-Sep-2020    Shanti Sethuraj    Modified for jira NAIT-118338                   |
+-- | 4.2     21-SEP-2020    Shanti Sethuraj    Added code for jira NAIT-126909                 |
 -- |===========================================================================================+
 AS
   /*********************************************************************
@@ -696,12 +697,14 @@ IS
   lc_enable_flag    VARCHAR2(100);
   lc_sup_trait_id   VARCHAR2(100);
   lc_master_sup_ind VARCHAR2(100);
+  ln_enable_flag    VARCHAR2(100); --added by Shanti for jira NAIT-126909
 BEGIN
   WHILE lc_sup_trait IS NOT NULL
   LOOP
     lc_description    :=NULL;
     lc_enable_flag    :=NULL;
     lc_sup_trait_id   :=NULL;
+	ln_enable_flag    :=NULL; --added by Shanti for jira NAIT-126909
     lc_master_sup_ind :=NULL;
     ln_sup_trait_id   :=0;
     ln_mat_count      :=0;
@@ -793,6 +796,31 @@ BEGIN
             print_debug_msg(p_message =>'When others, while inserting in xx_ap_sup_traits_matrix, for the Trait :'||p_sup_trait, p_force=>false);
         END;
       END IF;
+	  	      --Below code added by Shanti for jira NAIT-126909
+      IF ln_mat_count >0 THEN
+        BEGIN
+          SELECT enable_flag
+          INTO ln_enable_flag
+          FROM xx_ap_sup_traits_matrix
+          WHERE supplier    = p_sup_number
+          AND sup_trait_id  = ln_sup_trait_id;
+          IF ln_enable_flag ='N' THEN
+		  fnd_file.put_line(fnd_file.log,'Supplier trait matrix active in Cloud but in EBS'||' Supplier '||p_sup_number||' Sup_trait_id '||ln_sup_trait_id|| 'Status is '||ln_enable_flag);
+		   UPDATE xx_ap_sup_traits_matrix
+            SET enable_flag   ='Y',
+              last_update_date=SYSDATE,
+              last_updated_by =fnd_global.user_id
+            WHERE sup_trait_id=ln_sup_trait_id
+            AND supplier      =p_sup_number;
+            COMMIT;
+          END IF;
+        EXCEPTION
+        WHEN OTHERS THEN
+          print_debug_msg(p_message =>'When others, while retriving data for xx_ap_sup_traits_matrix:'||p_sup_number, p_force=>false);
+        END;
+      END IF;
+      ---end of Shanti code for jira NAIT-126909
+	  
       lc_sup_trait := SUBSTR(lc_sup_trait,ln_place + 1); -- chop list
     END IF;                                              --IF ln_sup_trait_id > 0 THEN
   END LOOP;
@@ -964,6 +992,34 @@ BEGIN
        IF cur.sup_trait IS NOT NULL THEN
           v_trait_flag   := xx_custom_sup_traits(cur.sup_trait,NVL(TO_NUMBER(LTRIM(lc_vendor_site_code_alt,'0')),cur.vendor_site_id ) );
        END IF;
+	   
+	   	   	   --shanti code starts for jira NAIT-126909
+	   begin
+    UPDATE xx_ap_sup_traits_matrix
+    SET enable_flag   ='N',
+      last_update_date=SYSDATE,
+      last_updated_by =fnd_global.user_id
+    WHERE supplier    = NVL(TO_NUMBER(LTRIM(lc_vendor_site_code_alt,'0')),cur.vendor_site_id )
+    AND sup_trait_id IN
+      (SELECT DISTINCT xxstp.sup_trait_id
+      FROM xx_ap_sup_traits xxstp ,
+        xx_ap_sup_traits_matrix xxaptm
+      WHERE xxstp.sup_trait NOT IN
+        (SELECT regexp_substr(nvl(cur.sup_trait,'0'),'[^-]+', 1, level)
+        FROM dual
+          CONNECT BY regexp_substr(nvl(cur.sup_trait,'0'), '[^-]+', 1, level) IS NOT NULL
+        )
+      AND xxaptm.supplier     =NVL(TO_NUMBER(LTRIM(lc_vendor_site_code_alt,'0')),cur.vendor_site_id )
+      AND xxaptm.sup_trait_id =xxstp.sup_trait_id
+      AND xxaptm.enable_flag  ='Y'
+      );
+	  EXCEPTION
+    WHEN OTHERS THEN
+      print_debug_msg(p_message => 'Error in disabling sup_trait for lc_vendor_site_code_alt: '||lc_vendor_site_code_alt||','|| SQLERRM ,p_force =>false);
+    END;
+    COMMIT;
+	--end of shanti code for jira NAIT-126909
+	   
 	END IF;
 
     --===============================================================
