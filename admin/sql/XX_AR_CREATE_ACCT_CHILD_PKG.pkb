@@ -533,7 +533,7 @@ AS
             AND xxol.line_id                  = ol.line_id
             AND ril.interface_line_attribute6 = ol.line_id
             AND ril.request_id                = gn_request_id
-            AND xftd.translation_name         = 'XX_E0080_APP_IDS'
+            AND xftd.translation_name         = 'AR_E0080_RPC_APP_IDS'
             AND xftv.translate_id             = xftd.translate_id
             AND xftd.enabled_flag             = 'Y'
             AND xftv.enabled_flag             = 'Y'
