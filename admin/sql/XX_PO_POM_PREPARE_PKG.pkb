@@ -25,7 +25,8 @@ AS
   -- | Version     Date         Author           Remarks                                          |
   -- | =========   ===========  =============    ===============================================  |
   -- | 1.0         07/24/2017   Avinash Baddam   Initial version       							  |
---   |  1.1        10/05/2018   Shalu George     Fixed GSCC violation bugs  					  |
+  -- |  1.1        10/05/2018   Shalu George     Fixed GSCC violation bugs  					  |
+  -- |  1.2        09/21/2020   Shalu George     Add Item Description column to xx_po_pom_lines_int_stg table for Elynxx orders | 
   -- +============================================================================================+
   -- +============================================================================================+
   -- |  Name  : Log Exception                                                             |
@@ -280,7 +281,8 @@ BEGIN
               creation_date ,
               last_updated_by ,
               last_update_date ,
-              last_update_login
+              last_update_login ,
+			  item_description
             )
           SELECT po_lines_interface_s.NEXTVAL ,
             ln_max_record_id ,
@@ -310,7 +312,8 @@ BEGIN
             sysdate ,
             gn_user_id ,
             sysdate ,
-            gn_login_id
+            gn_login_id,
+			item_description
           FROM xx_po_pom_lines_int_stg ln
           WHERE ln.po_number = line_upd_rec.po_number
           AND ln.line_num    = line_upd_rec.line_num
