@@ -155,6 +155,10 @@ WHERE  1 =1
         (arci.cons_inv_id ,'DISCOUNT')              cbi_promo_and_disc        
        ,xx_ar_cbi_paydoc_ministmnt        
         (arci.cons_inv_id ,'TAX')                   cbi_tax
+      , NVL(( SELECT SUM(XX_AR_EBL_COMMON_UTIL_PKG.get_line_fee_amount(aci.customer_trx_id) +
+                       XX_AR_EBL_COMMON_UTIL_PKG.get_hea_fee_amount(aci.customer_trx_id))
+              FROM ar_cons_inv_trx aci
+             WHERE cons_inv_id = arci.cons_inv_id),0)            cbi_fee_amt
        ,od_summbills.attribute14                    cbi_amount_due 
        ,xx_ar_print_summbill.xx_fin_check_digit(:account_number ,arci.cons_billing_number ,(TO_NUMBER(od_summbills.attribute14) *100)) scanline 
        ,layout pd_layout1
@@ -190,6 +194,39 @@ WHERE  1 =1
    AND od_summbills.layout ='DETAIL'
 ]]>
 </sqlStatement>
+-- Added for Tariff project NAIT - 129167
+<sqlStatement name="Q_PAYDOC_CONS_FEE">
+       <![CDATA[	
+SELECT 
+      flv.lookup_code FEE_CODE
+     ,upper(flv.meaning)  FEE_DESCRIPTION
+     ,flv.attribute7
+     ,TO_CHAR(sum(RCTL.unit_selling_price*
+	 CASE WHEN aps.class = 'CM' THEN
+	  quantity_credited
+	 ELSE 
+	  NVL(quantity_ordered,quantity_invoiced)
+	  END
+	  ),'9999999999.999')       FEE_AMT  
+FROM
+     ra_customer_trx_lines_All RCTL
+	 ,ar_cons_inv_trx              arci
+     ,fnd_lookup_values flv
+     ,ar_payment_schedules_all aps
+WHERE 1=1
+  AND flv.lookup_type = 'OD_FEES_ITEMS'
+  AND flv.LANGUAGE='US'
+  AND flv.attribute6= rctl.INVENTORY_ITEM_ID
+  AND FLV.enabled_flag = 'Y'                                   
+  AND SYSDATE BETWEEN NVL(FLV.start_date_active,SYSDATE) AND NVL(FLV.end_date_active,SYSDATE+1)  
+  AND FLV.attribute7 NOT IN ('DELIVERY','MISCELLANEOUS')  
+  AND RCTL.customer_trx_id         = arci.customer_trx_id
+  AND RCTL.customer_trx_id = aps.customer_trx_id
+  AND arci.cons_inv_id           = :cbi_id1 
+GROUP BY flv.lookup_code,flv.meaning,flv.attribute7
+order by flv.attribute7 desc,flv.lookup_code
+       ]]>
+    </sqlStatement>	
 <sqlStatement name="Q_PAYDOC_CBI_SUMMARIZE">
 <![CDATA[
  SELECT arci.cons_inv_id                            cons_inv_id1
@@ -220,6 +257,10 @@ WHERE  1 =1
         (arci.cons_inv_id ,'DISCOUNT')              cbi_promo_and_disc        
        ,xx_ar_cbi_paydoc_ministmnt        
         (arci.cons_inv_id ,'TAX')                   cbi_tax
+      , NVL(( SELECT SUM(XX_AR_EBL_COMMON_UTIL_PKG.get_line_fee_amount(aci.customer_trx_id) +
+                       XX_AR_EBL_COMMON_UTIL_PKG.get_hea_fee_amount(aci.customer_trx_id))
+              FROM ar_cons_inv_trx aci
+             WHERE cons_inv_id = arci.cons_inv_id),0)          cbi_fee_amt
        ,od_summbills.attribute14                    cbi_amount_due 
        ,xx_ar_print_summbill.xx_fin_check_digit(:account_number ,arci.cons_billing_number ,(TO_NUMBER(od_summbills.attribute14) *100)) scanline 
        ,layout pd_layout1
@@ -285,6 +326,10 @@ WHERE  1 =1
         (arci.cons_inv_id ,'DISCOUNT')              cbi_promo_and_disc        
        ,xx_ar_cbi_paydoc_ministmnt        
         (arci.cons_inv_id ,'TAX')                   cbi_tax
+      ,NVL(( SELECT SUM(XX_AR_EBL_COMMON_UTIL_PKG.get_line_fee_amount(aci.customer_trx_id) +
+                       XX_AR_EBL_COMMON_UTIL_PKG.get_hea_fee_amount(aci.customer_trx_id))
+              FROM ar_cons_inv_trx aci
+             WHERE cons_inv_id = arci.cons_inv_id),0)           cbi_fee_amt
        ,od_summbills.attribute14                    cbi_amount_due 
        ,xx_ar_print_summbill.xx_fin_check_digit(:account_number ,arci.cons_billing_number ,(TO_NUMBER(od_summbills.attribute14) *100)) scanline 
        ,layout pd_layout1
@@ -408,6 +453,7 @@ SELECT
                         ELSE (xohaa.ship_to_zip)
                         end)))	
               ) sfdata7 -- Added for Defect# 19985 on 03-Jan-2012
+ ,XX_AR_EBL_COMMON_UTIL_PKG.get_softhdr_amount_fis(xact.inv_type,xact.inv_source_name,xact.cons_inv_id,xact.request_id,xact.CUSTOMER_TRX_ID) fee_amt
 from  xx_ar_cbi_trx xact,
 xx_om_header_attributes_all xohaa
 where request_id  =:p_thread_id
@@ -455,6 +501,7 @@ SELECT
                         ELSE (xohaa.ship_to_zip)
                         end)))	
       ) infosumz_sfdata7 -- Added for Defect# 19985 on 03-Jan-2012
+      ,XX_AR_EBL_COMMON_UTIL_PKG.get_softhdr_amount_fis(xact.inv_type,xact.inv_source_name,xact.cons_inv_id,xact.request_id,xact.CUSTOMER_TRX_ID)INFOSUMZ_FEE
 FROM  xx_ar_cbi_trx xact,
 xx_om_header_attributes_all xohaa
 WHERE request_id      =:p_thread_id
@@ -668,7 +715,7 @@ SELECT sumz.insert_seq
          sumz.promo_and_disc +
          sumz.tax_amount
        )                    summarize_total ,
-       XX_AR_EBL_COMMON_UTIL_PKG.get_softhdr_amount_fis(sumz.inv_type,sumz.inv_source_name,sumz.cons_inv_id,sumz.request_id,sumz.CUSTOMER_TRX_ID) summarize_fee
+       XX_AR_EBL_COMMON_UTIL_PKG.get_softhdr_amount_fis(sumz.inv_type,sumz.inv_source_name,sumz.cons_inv_id,sumz.request_id,sumz.CUSTOMER_TRX_ID,'ONE') summarize_fee
 	   
 FROM  xx_ar_cbi_trx sumz
 WHERE request_id      =:p_thread_id
@@ -693,7 +740,7 @@ SELECT sumz.insert_seq
          sumz.promo_and_disc +
          sumz.tax_amount
        )                    summarize_total ,
-       XX_AR_EBL_COMMON_UTIL_PKG.get_softhdr_amount_fis(sumz.inv_type,sumz.inv_source_name,sumz.cons_inv_id,sumz.request_id,sumz.CUSTOMER_TRX_ID) summarize_fee
+       XX_AR_EBL_COMMON_UTIL_PKG.get_softhdr_amount_fis(sumz.inv_type,sumz.inv_source_name,sumz.cons_inv_id,sumz.request_id,sumz.CUSTOMER_TRX_ID,'ONE') summarize_fee
 FROM  xx_ar_cbi_trx sumz
 WHERE request_id      =:p_thread_id
   AND cons_inv_id     =:cons_inv_id2
@@ -742,7 +789,7 @@ SELECT sumz.insert_seq                                infoone_insert_seq
          sumz.promo_and_disc +
          sumz.tax_amount
        )                    infoone_summarize_total ,
-       XX_AR_EBL_COMMON_UTIL_PKG.get_softhdr_amount_fis(sumz.inv_type,sumz.inv_source_name,sumz.cons_inv_id,sumz.request_id,sumz.CUSTOMER_TRX_ID) infoone_summarize_fee
+       XX_AR_EBL_COMMON_UTIL_PKG.get_softhdr_amount_fis(sumz.inv_type,sumz.inv_source_name,sumz.cons_inv_id,sumz.request_id,sumz.CUSTOMER_TRX_ID,'ONE') infoone_summarize_fee
 FROM  xx_ar_cbi_trx sumz
 WHERE request_id      =:p_thread_id
   AND cons_inv_id     =:info_cbi_id77
@@ -766,7 +813,7 @@ SELECT sumz.insert_seq
          sumz.promo_and_disc +
          sumz.tax_amount
        )       ,
-       XX_AR_EBL_COMMON_UTIL_PKG.get_softhdr_amount_fis(sumz.inv_type,sumz.inv_source_name,sumz.cons_inv_id,sumz.request_id,sumz.CUSTOMER_TRX_ID) infoone_summarize_fee
+       XX_AR_EBL_COMMON_UTIL_PKG.get_softhdr_amount_fis(sumz.inv_type,sumz.inv_source_name,sumz.cons_inv_id,sumz.request_id,sumz.CUSTOMER_TRX_ID,'ONE') infoone_summarize_fee
 FROM  xx_ar_cbi_trx sumz
 WHERE request_id      =:p_thread_id
   AND cons_inv_id     =:info_cbi_id77
@@ -1237,6 +1284,10 @@ SELECT  od_infocopies.cons_inv_id           cons_inv_id99
          ,:doc_id99
           ,'TAX'
         )                   cbi_tax99
+      ,NVL(( SELECT SUM(XX_AR_EBL_COMMON_UTIL_PKG.get_line_fee_amount(aci.customer_trx_id) +
+                       XX_AR_EBL_COMMON_UTIL_PKG.get_hea_fee_amount(aci.customer_trx_id))
+              FROM ar_cons_inv_trx aci
+             WHERE cons_inv_id = od_infocopies.cons_inv_id),0)            cbi_fee_amt99
        ,xx_ar_cbi_infocopy_ministmnt        
         ( od_infocopies.cons_inv_id
          ,od_infocopies.req_id
@@ -1337,6 +1388,10 @@ UNION ALL
                     ,od_summbills.attribute13
                     ,od_summbills.document_id
                     ,'TAX')  
+      ,NVL(( SELECT SUM(XX_AR_EBL_COMMON_UTIL_PKG.get_line_fee_amount(aci.customer_trx_id) +
+                       XX_AR_EBL_COMMON_UTIL_PKG.get_hea_fee_amount(aci.customer_trx_id))
+              FROM ar_cons_inv_trx aci
+             WHERE cons_inv_id = arci.cons_inv_id),0)            cbi_fee_amt99
        ,xx_ar_print_summbill.get_paydoc_ic_totals(od_summbills.cons_inv_id
                     ,od_summbills.attribute13
                     ,od_summbills.document_id
@@ -1378,6 +1433,39 @@ UNION ALL
    AND od_summbills.layout ='DETAIL'
 ]]>
 </sqlStatement>
+-- Added for Tariff project NAIT - 129167
+<sqlStatement name="Q_INFODOC_CONS_FEE">
+       <![CDATA[	
+SELECT 
+      flv.lookup_code FEE_CODE
+     ,upper(flv.meaning)  FEE_DESCRIPTION
+     ,flv.attribute7
+     ,TO_CHAR(sum(RCTL.unit_selling_price*
+	 CASE WHEN aps.class = 'CM' THEN
+	  quantity_credited
+	 ELSE 
+	  NVL(quantity_ordered,quantity_invoiced)
+	  END
+	  ),'9999999999.999')       FEE_AMT  
+FROM
+     ra_customer_trx_lines_All RCTL
+	 ,ar_cons_inv_trx              arci
+     ,fnd_lookup_values flv
+     ,ar_payment_schedules_all aps
+WHERE 1=1
+  AND flv.lookup_type = 'OD_FEES_ITEMS'
+  AND flv.LANGUAGE='US'
+  AND flv.attribute6= rctl.INVENTORY_ITEM_ID
+  AND FLV.enabled_flag = 'Y'                                   
+  AND SYSDATE BETWEEN NVL(FLV.start_date_active,SYSDATE) AND NVL(FLV.end_date_active,SYSDATE+1)  
+  AND FLV.attribute7 NOT IN ('DELIVERY','MISCELLANEOUS')  
+  AND RCTL.customer_trx_id         = arci.customer_trx_id
+  AND RCTL.customer_trx_id = aps.customer_trx_id
+  AND arci.cons_inv_id           = :info_cbi_id99 
+GROUP BY flv.lookup_code,flv.meaning,flv.attribute7
+order by flv.attribute7 desc,flv.lookup_code
+       ]]>
+    </sqlStatement>	
 <sqlStatement name="Q_INFODOC_CBI_SUMMARIZE">
 <![CDATA[
 SELECT  od_infocopies.cons_inv_id           cons_inv_id88
@@ -1418,6 +1506,10 @@ SELECT  od_infocopies.cons_inv_id           cons_inv_id88
          ,:doc_id88
           ,'TAX'
         )                   cbi_tax88
+      ,NVL(( SELECT SUM(XX_AR_EBL_COMMON_UTIL_PKG.get_line_fee_amount(aci.customer_trx_id) +
+                       XX_AR_EBL_COMMON_UTIL_PKG.get_hea_fee_amount(aci.customer_trx_id))
+              FROM ar_cons_inv_trx aci
+             WHERE cons_inv_id = od_infocopies.cons_inv_id),0)  cbi_fee_amt88
        ,xx_ar_cbi_infocopy_ministmnt        
         ( od_infocopies.cons_inv_id
          ,od_infocopies.req_id
@@ -1518,6 +1610,10 @@ UNION ALL
                     ,od_summbills.attribute13
                     ,od_summbills.document_id
                     ,'TAX')  
+      ,NVL(( SELECT SUM(XX_AR_EBL_COMMON_UTIL_PKG.get_line_fee_amount(aci.customer_trx_id) +
+                       XX_AR_EBL_COMMON_UTIL_PKG.get_hea_fee_amount(aci.customer_trx_id))
+                   FROM ar_cons_inv_trx aci
+                  WHERE cons_inv_id = arci.cons_inv_id),0)  cbi_fee_amt88
        ,xx_ar_print_summbill.get_paydoc_ic_totals(od_summbills.cons_inv_id
                     ,od_summbills.attribute13
                     ,od_summbills.document_id
@@ -1599,6 +1695,10 @@ SELECT  od_infocopies.cons_inv_id           cons_inv_id77
           ,:doc_id77         
           ,'TAX'
         )                   cbi_tax77
+      ,NVL(( SELECT SUM(XX_AR_EBL_COMMON_UTIL_PKG.get_line_fee_amount(aci.customer_trx_id) +
+                       XX_AR_EBL_COMMON_UTIL_PKG.get_hea_fee_amount(aci.customer_trx_id))
+              FROM ar_cons_inv_trx aci
+             WHERE cons_inv_id = od_infocopies.cons_inv_id),0)  CBI_FEE_AMT77
        ,xx_ar_cbi_infocopy_ministmnt        
         ( od_infocopies.cons_inv_id
          ,od_infocopies.req_id
@@ -1698,7 +1798,11 @@ UNION ALL
        ,xx_ar_print_summbill.get_paydoc_ic_totals(od_summbills.cons_inv_id
                     ,od_summbills.attribute13
                     ,od_summbills.document_id
-                    ,'TAX')  
+                    ,'TAX') 
+      ,NVL(( SELECT SUM(XX_AR_EBL_COMMON_UTIL_PKG.get_line_fee_amount(aci.customer_trx_id) +
+                       XX_AR_EBL_COMMON_UTIL_PKG.get_hea_fee_amount(aci.customer_trx_id))
+              FROM ar_cons_inv_trx aci
+             WHERE cons_inv_id = arci.cons_inv_id),0)  cbi_fee_amt77                    
        ,xx_ar_print_summbill.get_paydoc_ic_totals(od_summbills.cons_inv_id
                     ,od_summbills.attribute13
                     ,od_summbills.document_id
@@ -1838,6 +1942,7 @@ ORDER BY xact.insert_seq
 <element name="CBI_EXTAMT_INCL_DELVY" value="CBI_EXTAMT_INCL_DELVY" />
 <element name="CBI_PROMO_AND_DISC" value="CBI_PROMO_AND_DISC" />
 <element name="CBI_TAX" value="CBI_TAX" />
+<element name="CBI_FEE_AMT" value="CBI_FEE_AMT" />
 <element name="CBI_AMOUNT_DUE" value="CBI_AMOUNT_DUE" />
 <element name="FLO_CODE" value="SCANLINE" />
 <element name="PDOC_LAYOUT3" value="PD_LAYOUT3" />
@@ -1873,6 +1978,7 @@ ORDER BY xact.insert_seq
 <element name="CBI_EXTAMT_INCL_DELVY" value="CBI_EXTAMT_INCL_DELVY" />
 <element name="CBI_PROMO_AND_DISC" value="CBI_PROMO_AND_DISC" />
 <element name="CBI_TAX" value="CBI_TAX" />
+<element name="CBI_FEE_AMT" value="CBI_FEE_AMT" />
 <element name="CBI_AMOUNT_DUE" value="CBI_AMOUNT_DUE" />
 <element name="FLO_CODE" value="SCANLINE" />
 <element name="PDOC_LAYOUT2" value="PD_LAYOUT2" />
@@ -1902,6 +2008,7 @@ ORDER BY xact.insert_seq
 <element name="DELIVERY" value="DELIVERY" />
 <element name="DISCOUNTS" value="DISCOUNTS" />
 <element name="TAX_AMOUNT" value="TAX_AMOUNT" />
+<element name="FEE_AMT" value="FEE_AMT" />
 <element name="TOTAL_AMOUNT" value="ORDER_TOTAL" />
 </group>
 <group name="G_PAYDOC_TRX_ACM" source="Q_SUMM_TRX_ACM">
@@ -1935,6 +2042,7 @@ ORDER BY xact.insert_seq
 <element name="CBI_EXTAMT_INCL_DELVY" value="CBI_EXTAMT_INCL_DELVY" />
 <element name="CBI_PROMO_AND_DISC" value="CBI_PROMO_AND_DISC" />
 <element name="CBI_TAX" value="CBI_TAX" />
+<element name="CBI_FEE_AMT" value="CBI_FEE_AMT" />
 <element name="CBI_AMOUNT_DUE" value="CBI_AMOUNT_DUE" />
 <element name="FLO_CODE" value="SCANLINE" />
 <element name="DOC_TITLE" value="DOC_TITLE" />
@@ -2005,6 +2113,11 @@ ORDER BY xact.insert_seq
 <element name="PAGE_BREAK" value="PAGE_BREAK" />
 </group>
 </group>
+<group name="G_PAYDOC_CONS_FEE" source="Q_PAYDOC_CONS_FEE">
+<element name="CBI_FEE_CODE"        value="FEE_CODE" />
+<element name="CBI_FEE_NAME" value="FEE_DESCRIPTION" />
+<element name="CBI_FEE_AMOUNT"         value="FEE_AMT" />
+</group>
 </group>
 </group>
 <group name="G_INFODOC_LAYOUT" source="Q_INFODOC_LAYOUT">
@@ -2024,6 +2137,7 @@ ORDER BY xact.insert_seq
 <element name="CBI_EXTAMT_INCL_DELVY" value="CBI_EXTAMT_INCL_DELVY99" />
 <element name="CBI_PROMO_AND_DISC" value="CBI_PROMO_AND_DISC99" />
 <element name="CBI_TAX" value="CBI_TAX99" />
+<element name="CBI_FEE_AMT" value="CBI_FEE_AMT99" />
 <element name="CBI_AMOUNT_DUE" value="CBI_AMOUNT_DUE99" />
 <element name="FLO_CODE" value="SCANLINE99" />
 <element name="DOC_TITLE" value="DOC_TITLE99" />
@@ -2095,6 +2209,11 @@ ORDER BY xact.insert_seq
 <element name="PAGE_BREAK" value="INFODTL_PAGE_BREAK" />
 </group>
 </group>
+<group name="G_INFODOC_CONS_FEE" source="Q_INFODOC_CONS_FEE">
+<element name="CBI_FEE_CODE"        value="FEE_CODE" />
+<element name="CBI_FEE_NAME" value="FEE_DESCRIPTION" />
+<element name="CBI_FEE_AMOUNT"         value="FEE_AMT" />
+</group>
 </group>
 <group name="G_INFODOC_SUMMARIZE" source="Q_INFODOC_CBI_SUMMARIZE">
 <element name="BILLING_NUMBER" value="BILLING_NUMBER88" />
@@ -2106,6 +2225,7 @@ ORDER BY xact.insert_seq
 <element name="CBI_EXTAMT_INCL_DELVY" value="CBI_EXTAMT_INCL_DELVY88" />
 <element name="CBI_PROMO_AND_DISC" value="CBI_PROMO_AND_DISC88" />
 <element name="CBI_TAX" value="CBI_TAX88" />
+<element name="CBI_FEE_AMT" value="CBI_FEE_AMT88" />
 <element name="CBI_AMOUNT_DUE" value="CBI_AMOUNT_DUE88" />
 <element name="FLO_CODE" value="SCANLINE88" />
 <element name="PDOC_LAYOUT2" value="PD_LAYOUT288" />
@@ -2138,6 +2258,7 @@ ORDER BY xact.insert_seq
 <element name="DELIVERY" value="INFOSUMZ_DELIVERY" />
 <element name="DISCOUNTS" value="INFOSUMZ_DISCOUNTS" />
 <element name="TAX_AMOUNT" value="INFOSUMZ_TAX" />
+<element name="FEE_AMOUNT" value="INFOSUMZ_FEE" />
 <element name="TOTAL_AMOUNT" value="INFOSUMZ_TOTAL" />
 
 </group>
@@ -2174,6 +2295,7 @@ ORDER BY xact.insert_seq
 <element name="CBI_EXTAMT_INCL_DELVY" value="CBI_EXTAMT_INCL_DELVY77" />
 <element name="CBI_PROMO_AND_DISC" value="CBI_PROMO_AND_DISC77" />
 <element name="CBI_TAX" value="CBI_TAX77" />
+<element name="CBI_FEE_AMT" value="CBI_FEE_AMT77" />
 <element name="CBI_AMOUNT_DUE" value="CBI_AMOUNT_DUE77" />
 <element name="FLO_CODE" value="SCANLINE77" />
 <element name="PDOC_LAYOUT3" value="PD_LAYOUT377" />
