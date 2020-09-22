@@ -4,7 +4,7 @@
 LANGUAGE = "US"
 LDRCONFIG = "afcpprog.lct 120.7.12020000.7"
 
-#Source Database CMNTDEV
+#Source Database CPRJDEV
 
 #RELEASE_NAME 12.2.5
 
@@ -380,7 +380,7 @@ END VALUE_SET
 
 BEGIN EXECUTABLE "XXOMSASTRIGFILE" "XXOM"
   OWNER = "534878"
-  LAST_UPDATE_DATE = "2020/07/29"
+  LAST_UPDATE_DATE = "2020/06/30"
   EXECUTION_METHOD_CODE = "H"
   EXECUTION_FILE_NAME = "XXOMSASTRIGFILE"
   USER_EXECUTABLE_NAME = "XXOMSASTRIGFILE"
@@ -432,9 +432,31 @@ BEGIN VALUE_SET "100 Characters"
 
 END VALUE_SET
 
+BEGIN VALUE_SET "PER_INTEGER_2"
+  OWNER = "ORACLE12.2.5"
+  LAST_UPDATE_DATE = "2010/07/21 00:00:00"
+  VALIDATION_TYPE = "N"
+  PROTECTED_FLAG = "N"
+  SECURITY_ENABLED_FLAG = "N"
+  LONGLIST_FLAG = "N"
+  FORMAT_TYPE = "C"
+  MAXIMUM_SIZE = "2"
+  ALPHANUMERIC_ALLOWED_FLAG = "N"
+  UPPERCASE_ONLY_FLAG = "N"
+  NUMERIC_MODE_ENABLED_FLAG = "N"
+  DESCRIPTION = "Number (2,0)"
+
+
+
+
+
+
+
+END VALUE_SET
+
 BEGIN DESC_FLEX "XXOM" "$SRS$.XXOMSASTRIGFILE"
   OWNER = "534878"
-  LAST_UPDATE_DATE = "2020/08/03 15:33:10"
+  LAST_UPDATE_DATE = "2020/06/30 16:35:10"
   TABLE_APPLICATION_SHORT_NAME = "FND"
   APPLICATION_TABLE_NAME = "FND_SRS_MASTER"
   CONTEXT_COLUMN_NAME = "STRUCTURE_COLUMN"
@@ -447,20 +469,20 @@ BEGIN DESC_FLEX "XXOM" "$SRS$.XXOMSASTRIGFILE"
   TITLE = "$SRS$.XXOMSASTRIGFILE"
   FORM_CONTEXT_PROMPT = "Context Value"
   DESCRIPTION =
- "Shell script to create SAS trigger files after copying the SAS files through MFT"
+ "Shell script for loading the AOPs order number into the EBS table"
 
 
 
   BEGIN DFF_CONTEXT "Global Data Elements"
     OWNER = "534878"
-    LAST_UPDATE_DATE = "2020/07/29 13:12:06"
+    LAST_UPDATE_DATE = "2020/06/30 16:31:43"
     ENABLED_FLAG = "Y"
     GLOBAL_FLAG = "Y"
     DESCRIPTIVE_FLEX_CONTEXT_NAME = "Global Data Elements"
   
     BEGIN DFF_SEGMENT "p_wave_number" "ATTRIBUTE1"
       OWNER = "534878"
-      LAST_UPDATE_DATE = "2020/07/29 13:13:15"
+      LAST_UPDATE_DATE = "2020/07/06 11:13:51"
       COLUMN_SEQ_NUM = "10"
       ENABLED_FLAG = "Y"
       DISPLAY_FLAG = "Y"
@@ -477,7 +499,7 @@ BEGIN DESC_FLEX "XXOM" "$SRS$.XXOMSASTRIGFILE"
     
     BEGIN DFF_SEGMENT "p_dest_dir" "ATTRIBUTE2"
       OWNER = "534878"
-      LAST_UPDATE_DATE = "2020/07/29 13:13:57"
+      LAST_UPDATE_DATE = "2020/07/06 11:17:36"
       COLUMN_SEQ_NUM = "20"
       ENABLED_FLAG = "Y"
       DISPLAY_FLAG = "Y"
@@ -494,7 +516,7 @@ BEGIN DESC_FLEX "XXOM" "$SRS$.XXOMSASTRIGFILE"
     
     BEGIN DFF_SEGMENT "p_date" "ATTRIBUTE3"
       OWNER = "534878"
-      LAST_UPDATE_DATE = "2020/07/29 13:14:39"
+      LAST_UPDATE_DATE = "2020/07/07 10:23:58"
       COLUMN_SEQ_NUM = "30"
       ENABLED_FLAG = "Y"
       DISPLAY_FLAG = "Y"
@@ -509,13 +531,29 @@ BEGIN DESC_FLEX "XXOM" "$SRS$.XXOMSASTRIGFILE"
       DESCRIPTION = "Date for SAS files to create trigger file"
     END DFF_SEGMENT
     
+    BEGIN DFF_SEGMENT "p_time_hh" "ATTRIBUTE4"
+      OWNER = "480326"
+      LAST_UPDATE_DATE = "2020/09/03 14:14:01"
+      COLUMN_SEQ_NUM = "40"
+      ENABLED_FLAG = "Y"
+      DISPLAY_FLAG = "Y"
+      REQUIRED_FLAG = "N"
+      SECURITY_ENABLED_FLAG = "N"
+      FLEX_VALUE_SET_NAME = "PER_INTEGER_2"
+      DISPLAY_SIZE = "2"
+      MAXIMUM_DESCRIPTION_LEN = "50"
+      CONCATENATION_DESCRIPTION_LEN = "25"
+      FORM_LEFT_PROMPT = "p_time_hh"
+      FORM_ABOVE_PROMPT = "p_time_hh"
+    END DFF_SEGMENT
+    
   END DFF_CONTEXT
   
 END DESC_FLEX
 
 BEGIN PROGRAM "XXOMSASTRIGFILE" "XXOM"
   OWNER = "534878"
-  LAST_UPDATE_DATE = "2020/08/03"
+  LAST_UPDATE_DATE = "2020/06/30"
   USER_CONCURRENT_PROGRAM_NAME = "OD: OM SAS Trigger Files Creation"
   EXEC = "XXOMSASTRIGFILE" "XXOM"
   EXECUTION_METHOD_CODE = "H"
@@ -528,7 +566,7 @@ BEGIN PROGRAM "XXOMSASTRIGFILE" "XXOM"
   RUN_ALONE_FLAG = "N"
   SRS_FLAG = "Y"
   DESCRIPTION =
- "Shell script to create SAS trigger files after copying the SAS files through MFT"
+ "Shell script for loading the AOPs order number into the EBS table"
   CLASS_APPLICATION = "FND"
   CONCURRENT_CLASS_NAME = "ODOM"
   EXECUTION_OPTIONS = "SECURE"
@@ -548,6 +586,8 @@ BEGIN PROGRAM "XXOMSASTRIGFILE" "XXOM"
   * @rep:paraminfo {@rep:type 100 Characters} {@rep:displayed Y} {@rep:required}\n\
   * @param p_date Date for SAS files to create trigger file\n\
   * @rep:paraminfo {@rep:type 100 Characters} {@rep:displayed Y} {@rep:required}\n\
+  * @param p_time_hh p_time_hh\n\
+  * @rep:paraminfo {@rep:type PER_INTEGER_2} {@rep:displayed Y}\n\
   */"
   RECALC_PARAMETERS = "N"
 
