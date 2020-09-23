@@ -87,7 +87,7 @@ CREATE OR REPLACE TYPE  XX_PO_SCM_LINES_OBJ AS OBJECT (
     last_update_login      NUMBER,
     error_column           VARCHAR2(100 BYTE),
     error_value            VARCHAR2(200 BYTE),
-	item_description       VARCHAR2(240 BYTE)								--Added for Elynxx
+	--item_description       VARCHAR2(240 BYTE)								--Added for Elynxx
 )
 /
 WHENEVER SQLERROR CONTINUE;
