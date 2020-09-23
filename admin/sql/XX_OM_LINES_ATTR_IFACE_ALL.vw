@@ -12,7 +12,7 @@ WHENEVER OSERROR EXIT FAILURE ROLLBACK;
 -- |===============                                                                             |
 -- |Version     Date           Author               Remarks                                     |
 -- |=======    ==========      ================     ============================================|
--- |1.0        20-NOV-2018    Shalu G             Initial version                               |           
+-- |1.0        21-SEP-2020    Shalu G             Initial version                               |           
 -- +============================================================================================+
 
 PROMPT
