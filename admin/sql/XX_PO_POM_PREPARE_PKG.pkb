@@ -283,6 +283,7 @@ BEGIN
               last_update_date ,
               last_update_login ,
 			  item_description
+
             )
           SELECT po_lines_interface_s.NEXTVAL ,
             ln_max_record_id ,
@@ -550,4 +551,4 @@ WHEN OTHERS THEN
 END Prepare_staging;
 END XX_PO_POM_PREPARE_PKG;
 /
-SHOW ERR
+SHOW ERRORS;
