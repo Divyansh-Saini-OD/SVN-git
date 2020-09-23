@@ -282,7 +282,7 @@ BEGIN
               last_updated_by ,
               last_update_date ,
               last_update_login ,
-			  item_description
+			  attribute1
 
             )
           SELECT po_lines_interface_s.NEXTVAL ,
