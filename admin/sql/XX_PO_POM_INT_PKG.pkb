@@ -2007,7 +2007,8 @@ IS
 	  stg.error_column ,
 	  stg.error_value ,
       hru.location_id ,
-      hru.organization_id
+      hru.organization_id,
+	  stg.attribute1
     FROM xx_po_pom_lines_int_stg stg ,
       hr_all_organization_units hru
     WHERE stg.record_id               = p_record_id
@@ -2147,6 +2148,7 @@ IS
   ln_err_count                   NUMBER;
   ln_error_idx                   NUMBER;
   data_exception                 EXCEPTION;
+  lc_item_desc                   VARCHAR2(150);
 BEGIN
   gc_debug      := p_debug;
   gn_request_id := fnd_global.conc_request_id;
@@ -2630,6 +2632,11 @@ Terms Valdation exception for hdr=['||l_header_tab(indx).disc_pct               
                 l_lines_tab(l_indx).error_description := 'Header Validation Failed';
                 RAISE data_exception;
               END IF;
+			  lc_item_desc := NULL;
+				IF SUBSTR(l_lines_tab(l_indx).attribute1,1,6)     = 'ELYNXX' THEN
+				lc_item_desc := SUBSTR(l_lines_tab(l_indx).attribute1,8);
+				END IF;
+				
               --Check if any of the lines have errors
               IF lc_lines_validation IS NULL THEN
                 ln_interface_line_id := l_lines_tab(l_indx).record_line_id;
@@ -2670,7 +2677,8 @@ Terms Valdation exception for hdr=['||l_header_tab(indx).disc_pct               
                     created_by ,
                     last_update_date ,
                     last_updated_by ,
-                    last_update_login
+                    last_update_login,
+					item_description
                   )
                   VALUES
                   (
@@ -2706,7 +2714,8 @@ Terms Valdation exception for hdr=['||l_header_tab(indx).disc_pct               
                     gn_user_id ,
                     sysdate ,
                     gn_user_id ,
-                    gn_login_id
+                    gn_login_id ,
+					lc_item_desc
                   ); -- 'Y' =3 way matching 'N'=2 way matching
                 IF l_lines_tab(l_indx).process_code = 'I' THEN
                   BEGIN
