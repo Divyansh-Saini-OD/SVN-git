@@ -80,6 +80,8 @@ CREATE OR REPLACE PACKAGE BODY xx_cdh_data_correction_pkg
 ---/5.10       22-NOV-2016     Sridhar Pamu         Added delete record logic in SP_EPDF_PURGE_BILLDOCS_PROC and
 ----                                                SP_EPDF_PURGE_BILLDOCS_INPROC from table xx_cdh_acct_site_ext_b
 --- 5.11       04-MAR-2017     Sridhar Pamu         Added procedure xxcdh_update_override_terms for defect 40857
+--- 5.12       29-SEP-2020     Rakesh Reddy         Updated error msg variable length in 
+----                                                xxcdh_update_override_terms for defect NAIT-156165
 -- +=========================================================================================+
 AS
    gv_init_msg_list      VARCHAR2 (1) := fnd_api.g_true;
@@ -8567,7 +8569,8 @@ l_subject changes by Devendra P as per ePDF enhacement
       l_msg_count1               NUMBER;
       l_msg_data1                VARCHAR2 (4000);
       l_return_status1           VARCHAR2 (10);
-      l_error_message            VARCHAR2 (4000);
+      --l_error_message            VARCHAR2 (4000);
+	  l_error_message            VARCHAR2 (32767);--Changed the size for NAIT-156165 to avoid program ending in error due to insufficient size
       l_msg_count_amt            NUMBER;
       l_msg_data_amt             VARCHAR2 (4000);
       l_error_message_amt        VARCHAR2 (4000);
@@ -8731,8 +8734,8 @@ l_subject changes by Devendra P as per ePDF enhacement
                FOR i IN 1 .. fnd_msg_pub.count_msg
                LOOP
                   l_error_message :=
-                        l_error_message
-                     || fnd_msg_pub.get (i, p_encoded => fnd_api.g_false);
+                        SUBSTR(l_error_message
+                     || fnd_msg_pub.get (i, p_encoded => fnd_api.g_false),32000); --Added Substr to limit the error message data for NAIT-156165
                END LOOP;
 
                DBMS_OUTPUT.put_line (l_error_message);
@@ -8775,8 +8778,8 @@ l_subject changes by Devendra P as per ePDF enhacement
                   FOR i IN 1 .. fnd_msg_pub.count_msg
                   LOOP
                      l_error_message :=
-                           l_error_message
-                        || fnd_msg_pub.get (i, p_encoded => fnd_api.g_false);
+                           SUBSTR(l_error_message
+                        || fnd_msg_pub.get (i, p_encoded => fnd_api.g_false)1,32000); --Added Substr to limit the error message data for NAIT-156165
                   END LOOP;
 
                   DBMS_OUTPUT.put_line (l_error_message);
