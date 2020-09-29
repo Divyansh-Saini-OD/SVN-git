@@ -32,7 +32,7 @@ AS
 -- |1.4      15-JUL-2013  Arun Pandian	    Retrofitted with R12       |
 -- |1.5      18-MAY-2016  Avinash Baddam    Changes for defect#37859   |
 -- |1.5      18-MAY-2016  Avinash Baddam    Changes for defect#37859   |
--- |2.0      07-Apr-2020  Amit Kumar    		Changes for E1319		       |
+-- |2.0      07-Apr-2020  Amit Kumar    		Changes for E1319		   |
 -- | 2.1 		 25-Sep-2020	Manjush D		      Changes for NAIT-149495    |
 -- +===================================================================+
 ---Declaring all variables
