@@ -32,7 +32,8 @@ AS
 -- |1.4      15-JUL-2013  Arun Pandian	    Retrofitted with R12       |
 -- |1.5      18-MAY-2016  Avinash Baddam    Changes for defect#37859   |
 -- |1.5      18-MAY-2016  Avinash Baddam    Changes for defect#37859   |
--- |2.0     07-Apr-2020  Amit Kumar    		Changes for E1319		   |
+-- |2.0      07-Apr-2020  Amit Kumar    		Changes for E1319		       |
+-- | 2.1 		 25-Sep-2020	Manjush D		      Changes for NAIT-149495    |
 -- +===================================================================+
 ---Declaring all variables
   ln_cash_bank_account_id    ce_statement_headers.bank_account_id%TYPE;  
@@ -128,6 +129,7 @@ IS
 		SELECT
 		/*+ leading(csh) ordered use_nl(csh,csl,ctc) index(csl,CE_STATEMENT_LINES_N1) use_merge(ctc) full(ctc)*/
             CTC.bank_account_id
+			,csh.bank_Account_id master_bank_acct_id   --Added for ver#2.1
            ,CSH.statement_number
            ,CSH.statement_date
            ,CSL.line_number
@@ -174,10 +176,10 @@ IS
 		AND regexp_replace(cba.bank_account_name, '[^[:digit:]]', '') IS NOT NULL
 		AND gcc.segment4                                               = SUBSTR (cba.agency_location_code, 3);
 		
-	  
+	ln_master_bank_acct_id  NUMBER; --Added Ver#2.1
 	  
 	BEGIN
-	    
+	    LN_master_bank_acct_id :=NULL; --Added Ver#2.1
 		ln_cash_bank_account_id    :=NULL;
 	  ln_statement_number        :=NULL;   
 	  ln_header_id               :=NULL;
@@ -307,7 +309,8 @@ IS
       ln_cnt := ln_cnt + 1;
        BEGIN
         FETCH lcu_gl_line_wf
-        INTO  ln_cash_bank_account_id
+        INTO  ln_cash_bank_account_id,
+		     ln_master_bank_acct_id --added version#2.1
              ,ln_statement_number
              ,ld_statement_date
              ,ln_statement_line_number
@@ -362,7 +365,8 @@ IS
                  ,ce_bank_acct_uses    cbau  
 		         ,hr_operating_units   hou  
            WHERE  ABA.asset_code_combination_id    = GCC.code_combination_id
-           AND    ABA.bank_account_id              = ln_cash_bank_account_id
+          -- AND    ABA.bank_account_id              = ln_cash_bank_account_id
+		  and aba.bank_Account_id = ln_master_bank_acct_id
            AND    NVL (ABA.end_date, SYSDATE + 1) > TRUNC (SYSDATE) 
            AND aba.bank_account_id = cbau.bank_account_id             
            AND hou.organization_id = cbau.org_id  ;                
