@@ -8735,7 +8735,7 @@ l_subject changes by Devendra P as per ePDF enhacement
                LOOP
                   l_error_message :=
                         SUBSTR(l_error_message
-                     || fnd_msg_pub.get (i, p_encoded => fnd_api.g_false),32000); --Added Substr to limit the error message data for NAIT-156165
+                     || fnd_msg_pub.get (i, p_encoded => fnd_api.g_false),1,32000); --Added Substr to limit the error message data for NAIT-156165
                END LOOP;
 
                DBMS_OUTPUT.put_line (l_error_message);
@@ -8779,7 +8779,7 @@ l_subject changes by Devendra P as per ePDF enhacement
                   LOOP
                      l_error_message :=
                            SUBSTR(l_error_message
-                        || fnd_msg_pub.get (i, p_encoded => fnd_api.g_false)1,32000); --Added Substr to limit the error message data for NAIT-156165
+                        || fnd_msg_pub.get (i, p_encoded => fnd_api.g_false),1,32000); --Added Substr to limit the error message data for NAIT-156165
                   END LOOP;
 
                   DBMS_OUTPUT.put_line (l_error_message);
