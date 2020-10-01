@@ -6254,6 +6254,7 @@ FUNCTION get_fee_option (p_cust_doc_id IN NUMBER,
 
 ln_attr_group_id NUMBER := 0;
 ln_fee_option    NUMBER := 0;
+ln_fee_option_paydoc NUMBER := 0;
 ln_cust_doc_id   NUMBER :=0;
 BEGIN
 
@@ -6270,135 +6271,41 @@ ln_cust_doc_id:= p_cust_doc_id;
 		WHEN OTHERS THEN
 		   ln_attr_group_id := 0;
 	 END;
-   IF ln_cust_doc_id IS NULL AND p_cons_inv_id IS NOT NULL THEN
-     BEGIN
-      SELECT cust_doc_id
-        INTO ln_cust_doc_id
-        FROM xx_ar_ebl_cons_hdr_hist
-       WHERE cons_inv_id = p_cons_inv_id
-         AND customer_trx_id = p_customer_trx_id
-         AND billdocs_delivery_method = 'ePDF' 
-         AND DOCUMENT_TYPE = 'Paydoc'
-         AND exists (SELECT 1
-                       FROM xx_cdh_cust_acct_ext_b
-                      WHERE n_ext_attr2 = cust_doc_id
-                        AND d_ext_attr2 is null);
-     EXCEPTION
-        WHEN NO_DATA_FOUND THEN
-           ln_cust_doc_id := null;
-        WHEN OTHERS THEN
-           ln_cust_doc_id := null;
-       END;
-   END IF;
-   
-   IF ln_cust_doc_id IS NULL AND p_customer_trx_id IS NOT NULL THEN
    
      BEGIN
-      SELECT cust_doc_id
-        INTO ln_cust_doc_id
-        FROM (
-          SELECT cust_doc_id
-            FROM xx_ar_ebl_cons_hdr_hist
-           WHERE customer_trx_id = p_customer_trx_id
-             AND billdocs_delivery_method = 'ePDF' 
-             AND DOCUMENT_TYPE = 'Paydoc'
-             AND exists (SELECT 1
-                           FROM xx_cdh_cust_acct_ext_b
-                          WHERE n_ext_attr2 = cust_doc_id
-                            AND d_ext_attr2 is null)
-             AND rownum=1
-          UNION
-          SELECT cust_doc_id
-            FROM xx_ar_ebl_ind_hdr_hist
-           WHERE customer_trx_id = p_customer_trx_id
-             AND billdocs_delivery_method = 'ePDF' 
-             AND DOCUMENT_TYPE = 'Paydoc'
-             AND exists (SELECT 1
-                           FROM xx_cdh_cust_acct_ext_b
-                          WHERE n_ext_attr2 = cust_doc_id
-                            AND d_ext_attr2 is null)
-             AND rownum=1 );
-     EXCEPTION
-        WHEN NO_DATA_FOUND THEN
-           ln_cust_doc_id := null;
-        WHEN OTHERS THEN
-           ln_cust_doc_id := null;
-       END;
-   
-   END IF;
-
-	BEGIN
-		 SELECT NVL(fee_option,0)
-		   INTO ln_fee_option
-		   FROM xx_cdh_cust_acct_ext_b
-		  WHERE n_ext_attr2   = ln_cust_doc_id
-		    AND d_ext_attr2 is null
-			and c_ext_attr1 = NVL(p_mbs_doc_type,c_ext_attr1)
-			AND attr_group_id = ln_attr_group_id
-			AND rownum =1;
+       SELECT fee_option
+         INTO ln_fee_option_paydoc
+		 FROM xx_cdh_cust_acct_ext_b
+		WHERE cust_account_id   = p_cust_account_id
+		  AND d_ext_attr2 is null
+          AND C_EXT_ATTR16 = 'COMPLETE'
+          AND C_EXT_ATTR2 = 'Y'
+          AND attr_group_id = ln_attr_group_id
+          AND rownum =1;
 	 EXCEPTION
 		WHEN NO_DATA_FOUND THEN
-		   ln_fee_option := -1;
+		   ln_fee_option_paydoc := 0;
 		WHEN OTHERS THEN
-		   ln_fee_option := 0;
+		   ln_fee_option_paydoc := 0;
 	 END;
-
-   IF ln_fee_option = -1 THEN
-      BEGIN
-		 SELECT NVL(fee_option,0)
-           INTO ln_fee_option
-           FROM xx_cdh_cust_acct_ext_b
-          WHERE cust_account_id   = p_cust_account_id
-            AND c_ext_attr3 = p_del_method
-            AND attr_group_id = ln_attr_group_id
-            and c_ext_attr1 = p_mbs_doc_type
-            AND c_ext_attr16 = 'COMPLETE'
-            AND C_EXT_ATTR2 = 'Y' --paydoc
-            AND d_ext_attr2 is null
-            AND d_ext_attr1 = (select max(d_ext_attr1)
-                                 FROM xx_cdh_cust_acct_ext_b
-                                 WHERE cust_account_id   = p_cust_account_id
-                                   AND c_ext_attr3 = p_del_method
-                                   AND attr_group_id = ln_attr_group_id
-                                   and c_ext_attr1 = p_mbs_doc_type
-                                   AND c_ext_attr16 = 'COMPLETE'
-                                   AND C_EXT_ATTR2 = 'Y' --paydoc
-                                   AND d_ext_attr2 is null);
-	 EXCEPTION
-		WHEN NO_DATA_FOUND THEN
-		   ln_fee_option := 0;
-		WHEN OTHERS THEN
-		   ln_fee_option := 0;
-	 END;
-   END IF;
+     IF ln_fee_option_paydoc >0 THEN 
+         BEGIN     
+           SELECT xftv.target_value1
+             INTO ln_fee_option
+             FROM xx_fin_translatedefinition xftd, 
+                  xx_fin_translatevalues xftv
+            WHERE xftd.translate_id = xftv.translate_id
+              AND xftd.translation_name = 'OD_FEE_OPTION_RELATION'
+              AND xftv.source_value1 = ln_fee_option_paydoc
+              AND xftv.source_value2 = p_mbs_doc_type;   
+         EXCEPTION
+            WHEN NO_DATA_FOUND THEN
+               ln_fee_option := ln_fee_option_paydoc;
+            WHEN OTHERS THEN
+               ln_fee_option := 0;
+         END;        
+     END IF;
    
-   IF ln_fee_option <= 0 THEN
-      BEGIN
-		 SELECT NVL(fee_option,0)
-           INTO ln_fee_option
-           FROM xx_cdh_cust_acct_ext_b
-          WHERE cust_account_id   = p_cust_account_id
-            AND c_ext_attr3 = p_del_method
-            AND attr_group_id = ln_attr_group_id
-            and c_ext_attr1 = p_mbs_doc_type
-            AND c_ext_attr16 = 'COMPLETE'
-            AND d_ext_attr2 is null
-            AND CREATION_DATE = (select max(CREATION_DATE)
-                                 FROM xx_cdh_cust_acct_ext_b
-                                 WHERE cust_account_id   = p_cust_account_id
-                                   AND c_ext_attr3 = p_del_method
-                                   AND attr_group_id = ln_attr_group_id
-                                   and c_ext_attr1 = p_mbs_doc_type
-                                   AND c_ext_attr16 = 'COMPLETE'
-                                   AND d_ext_attr2 is null);
-	 EXCEPTION
-		WHEN NO_DATA_FOUND THEN
-		   ln_fee_option := 0;
-		WHEN OTHERS THEN
-		   ln_fee_option := 0;
-	 END;   
-   
-   END IF; 
    IF ln_fee_option <= 0 THEN
       SELECT xftv.SOURCE_VALUE1 
         INTO ln_fee_option

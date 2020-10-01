@@ -1471,7 +1471,7 @@ create or replace PACKAGE BODY XX_AR_EBL_IND_INVOICES_PKG AS
                ,rctl1.interface_line_context interface_line_context
                ,rctl1.interface_line_attribute11 oe_price_adjustment_id
                ,xola.gsa_flag
-               ,nvl(to_char(to_number(ool.customer_line_number))
+               ,DECODE(Q_fee.Fee_item,'Y',null,nvl(to_char(to_number(ool.customer_line_number))
                    ,decode(substr(ool.orig_sys_line_ref
                                  ,1
                                  ,1)
@@ -1480,7 +1480,7 @@ create or replace PACKAGE BODY XX_AR_EBL_IND_INVOICES_PKG AS
                                 ,'0')
                           ,substr(ool.orig_sys_line_ref
                                  ,1
-                                 ,9))) po_line_number
+                                 ,9)))) po_line_number
                ,rctl1.translated_description productcdentered
                ,TRIM(xola.cust_dept_description) dept_description
 			   ,TRIM(xola.cost_center_dept) cost_center_dept -- Added for Defect 36437 (MOD4B Release 3)
@@ -1493,9 +1493,17 @@ create or replace PACKAGE BODY XX_AR_EBL_IND_INVOICES_PKG AS
                ,xx_om_line_attributes_all xola
                ,mtl_units_of_measure      muom
                ,mtl_system_items          msi
+               ,(select 'Y' Fee_item, attribute6,attribute7
+                                       FROM fnd_lookup_values flv
+                                      WHERE lookup_type =  'OD_FEES_ITEMS'
+                                        AND flv.LANGUAGE='US'
+                                        AND FLV.enabled_flag = 'Y'                                   
+                                        AND SYSDATE BETWEEN NVL(FLV.start_date_active,SYSDATE) AND NVL(FLV.end_date_active,SYSDATE+1)  
+                                        AND FLV.attribute7 NOT IN ('DELIVERY','MISCELLANEOUS')  ) Q_fee
          WHERE  rctl1.customer_trx_id = p_cust_trx_id
          AND    rctl1.uom_code = muom.uom_code(+)
          AND    rctl1.inventory_item_id = msi.inventory_item_id(+)
+         AND    rctl1.inventory_item_id = Q_fee.attribute6(+)
          AND    ool.line_id = xola.line_id(+)
          AND    rctl1.interface_line_attribute6 = ool.line_id(+)
          AND    msi.organization_id = p_organization_id
