@@ -69,5 +69,5 @@ fi
 if [ $CADEPO -gt 0 ]
   then
    echo $CADEPO
-   ls -lrt SAS$dt*CA_DEPO_*$tm.TXT |awk '{print $9}' > $DEST_DIR/$DEPOCATRIGFILE
+   ls -lrt SAS$dt*CA_DEPO_$tm*.TXT |awk '{print $9}' > $DEST_DIR/$DEPOCATRIGFILE
 fi
