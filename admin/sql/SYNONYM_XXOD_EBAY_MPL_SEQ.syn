@@ -1,8 +1,7 @@
   -- +============================================================================================+
   -- |  Office Depot                                                                              |
   -- +============================================================================================+
-  -- |  Name          : XXOD_EBAY_MPL_TRANS_RES                                                   |
-  -- |  Description   : Table to store Transactions API JSON                                      |
+  -- |  Name          : Script to create synonym XXOD_EBAY_MPL_SEQ                                |
   -- |  Change Record :                                                                           |
   -- +============================================================================================+
   -- | Version     Date         Author           Remarks                                          |
@@ -10,11 +9,6 @@
   -- | 1.0         01-Oct-2020  Mayur Palsokar   Initial version                                  |
   -- +============================================================================================+
 
-CREATE OR REPLACE TABLE XXFIN.XXOD_EBAY_MPL_TRANS_RES
-(
-TRANSACTION_JSON CLOB
-);
-
-GRANT SELECT, INSERT, UPDATE, DELETE ON XXFIN.XXOD_EBAY_MPL_TRANS_RES TO APPS;
+CREATE OR REPLACE PUBLIC SYNONYM XXOD_EBAY_MPL_SEQ FOR XXFIN.XXOD_EBAY_MPL_SEQ;
 
 SHOW ERRORS;
