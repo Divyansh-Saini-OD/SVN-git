@@ -2523,7 +2523,7 @@ lv_deposit_date DATE;
      MIN(TO_DATE(ebv.TRANSACTIONDATE, 'YYYY-MM-DD"T"HH24:MI:SS".""ZZZZ"')) transaction_start_date, 
      MAX(TO_DATE(ebv.TRANSACTIONDATE, 'YYYY-MM-DD"T"HH24:MI:SS".""ZZZZ"')) transaction_end_date,                                                                                                               
      CAST(to_date(MAX(TO_DATE(ebv.TRANSACTIONDATE, 'YYYY-MM-DD"T"HH24:MI:SS".""ZZZZ"')),'YYYY-MM-DD') AS DATE) posted_date                                                                                     
-    FROM XXFIN.XX_CE_EBAYMPL_PRE_STG_V ebv                                                                                                                                                                   
+    FROM XX_CE_EBAYMPL_PRE_STG_V ebv                                                                                                                                                                   
     WHERE 1                =1                                                                                                                                                                           
     AND NVL(ebv.process_flag,'N') IN ('N','E')                                                                                                                                                                 
     GROUP BY filename;
@@ -2534,7 +2534,7 @@ lv_deposit_date DATE;
 	SELECT distinct transactionid,
 	  orderid,
 	  TRANSACTIONTYPE
-	FROM XXFIN.XX_CE_EBAYMPL_PRE_STG_V ebv
+	FROM XX_CE_EBAYMPL_PRE_STG_V ebv
 	WHERE 1                        =1
 	and ebv.filename      =p_filename
 	AND NVL(ebv.process_flag,'N') IN ('N','E') ;
@@ -2563,7 +2563,7 @@ lv_deposit_date DATE;
 	  LINEITEMS_DELIVERYCOST_VALUE,
 	  (LINEITEMS_EBAYREMITTAXES_VALUE) EBAYREMIT_TAX,
 	  LINEITEMS_TAXTYPE
-	FROM XXFIN.XX_CE_EBAYMPL_PRE_STG_V
+	FROM XX_CE_EBAYMPL_PRE_STG_V
 	WHERE TRANSACTIONID = p_transaction_id    --'15-05673-26956'
 	AND TRANSACTIONTYPE = p_transaction_type  --'SALE'
 	GROUP BY process_name,
@@ -2777,7 +2777,7 @@ BEGIN
           Lc_Ce_Mpl_Settlement_Hdr.Last_Update_Login   :=NVL(Fnd_Global.User_Id, -1);                                                                                                                   
           Lc_Ce_Mpl_Settlement_Hdr.ajb_file_name       :=rec_file.filename||lc_settlement_id;                                                                                                           
           INSERT INTO XX_CE_MPL_SETTLEMENT_HDR VALUES lc_ce_mpl_settlement_hdr;                                                                                                                         
-          UPDATE XXFIN.XX_CE_EBAYMPL_PRE_STG_V a                                                                                                                                                              
+          UPDATE XX_CE_EBAYMPL_PRE_STG_V a                                                                                                                                                              
           SET a.process_flag    ='P',                                                                                                                                                                  
             A.Err_Msg           =NULL                                                                                                                                                                   
           WHERE A.ORDERID    =Rec_hdr.ORDERID                                                                                                                                                     
@@ -2785,7 +2785,7 @@ BEGIN
           AND a.transactiontype=Rec_hdr.transactiontype;                                                                                                                                              
           gc_success_count     :=gc_success_count+1;                                                                                                                                                    
         ELSE                                                                                                                                                                                            
-          UPDATE XXFIN.XX_CE_EBAYMPL_PRE_STG_V a                                                                                                                                                              
+          UPDATE XX_CE_EBAYMPL_PRE_STG_V a                                                                                                                                                              
           SET a.process_flag    ='E',                                                                                                                                                                   
             A.Err_Msg           ='Duplicate record found for Walmart PO#'                                                                                                                               
           WHERE A.ORDERID    =Rec_hdr.ORDERID                                                                                                                                                     
@@ -2800,7 +2800,7 @@ BEGIN
         ROLLBACK;                                                                                                                                                                                       
         gc_failure_count:=gc_failure_count+1;                                                                                                                                                           
         lc_err_msg      :=SUBSTR('PROCEDURE: ' || lc_procedure_name || ' SQLCODE: ' || SQLCODE || ' SQLERRM: ' ||sqlerrm,1,1000);                                                                       
-        UPDATE XXFIN.XX_CE_EBAYMPL_PRE_STG_V a                                                                                                                                                                
+        UPDATE XX_CE_EBAYMPL_PRE_STG_V a                                                                                                                                                                
         SET a.process_flag    ='E' ,                                                                                                                                                                    
           a.err_msg           =lc_err_msg                                                                                                                                                               
         WHERE a.ORDERID    =rec_hdr.ORDERID                                                                                                                                                       
