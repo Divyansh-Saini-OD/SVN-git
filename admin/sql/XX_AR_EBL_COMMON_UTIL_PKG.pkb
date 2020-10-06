@@ -6477,8 +6477,9 @@ BEGIN
    IF p_line_type IN ('BILL_TO_TOTAL','BILLTO_TOTALS') THEN
        SELECT NVL(SUM(XX_AR_EBL_COMMON_UTIL_PKG.get_line_fee_amount(customer_trx_id) + XX_AR_EBL_COMMON_UTIL_PKG.get_hea_fee_amount(customer_trx_id)),0)
          INTO ln_fee_amount
+         FROM (SELECT DISTINCT customer_trx_id 
          FROM xx_ar_cbi_trx_all
-        WHERE cons_inv_id = p_cons_id and request_id = p_request_id;
+        WHERE cons_inv_id = p_cons_id and request_id = p_request_id);
    ELSIF p_line_type = 'SOFTHDR_TOTALS' AND p_template_type IS NULL THEN
        SELECT NVL(trim(substr(p_sft_text,INSTR(p_sft_text,':')+1)),'X'),REPLACE(trim(substr(p_sft_text,1,INSTR(p_sft_text,':')+1)),'TOTAL FOR ')
          INTO lv_sft_txt,lv_sft_hdr
@@ -6504,7 +6505,7 @@ BEGIN
 				 WHERE request_id = p_request_id and CUSTOMER_TRX_ID = p_customer_trx_id
 				   AND INV_TYPE not in ('SOFTHDR_TOTALS','BILLTO_TOTALS','GRAND_TOTAL');	
 		   
-		   lv_sql := 'SELECT NVL(SUM(XX_AR_EBL_COMMON_UTIL_PKG.get_line_fee_amount(customer_trx_id) + XX_AR_EBL_COMMON_UTIL_PKG.get_hea_fee_amount(customer_trx_id)),0) FROM xx_ar_cbi_trx_all where request_id = '||p_request_id||' AND cons_inv_id = '||p_cons_id||' AND INV_TYPE not in (''SOFTHDR_TOTALS'',''BILLTO_TOTALS'',''GRAND_TOTAL'')'||lv_where;
+		   lv_sql := 'SELECT NVL(SUM(XX_AR_EBL_COMMON_UTIL_PKG.get_line_fee_amount(customer_trx_id) + XX_AR_EBL_COMMON_UTIL_PKG.get_hea_fee_amount(customer_trx_id)),0) FROM (SELECT DISTINCT customer_trx_id FROM xx_ar_cbi_trx_all where request_id = '||p_request_id||' AND cons_inv_id = '||p_cons_id||' AND INV_TYPE not in (''SOFTHDR_TOTALS'',''BILLTO_TOTALS'',''GRAND_TOTAL'')'||lv_where||')';
 		   EXECUTE IMMEDIATE lv_sql INTO ln_fee_amount;
         ELSIF   lv_sft_txt IS NULL THEN
            SELECT NVL(SUM(XX_AR_EBL_COMMON_UTIL_PKG.get_line_fee_amount(customer_trx_id) + XX_AR_EBL_COMMON_UTIL_PKG.get_hea_fee_amount(customer_trx_id)),0)
@@ -6581,11 +6582,11 @@ BEGIN
    IF p_line_type = 'BILL_TO_TOTAL' THEN
        SELECT NVL(SUM(XX_AR_EBL_COMMON_UTIL_PKG.get_line_fee_amount(customer_trx_id) + XX_AR_EBL_COMMON_UTIL_PKG.get_hea_fee_amount(customer_trx_id)),0)
          INTO ln_fee_amount
-         FROM (SELECT DISTINCT attribute3 customer_trx_id
-		 FROM xx_ar_cbi_rprn_rows
-        WHERE request_id = p_request_id 
-		  AND cons_inv_id = p_cons_id
-		  AND LINE_TYPE not in ('SOFTHDR_TOTALS','BILLTO_TOTALS','GRAND_TOTAL'));
+         FROM (SELECT DISTINCT customer_trx_id 
+                 FROM xx_ar_cbi_rprn_trx
+                WHERE request_id = p_request_id 
+                  AND cons_inv_id = p_cons_id
+                  AND INV_TYPE not in ('SOFTHDR_TOTALS','BILLTO_TOTALS','GRAND_TOTAL'));
    ELSIF p_line_type = 'SOFTHDR_TOTAL' AND p_template_type IS NULL THEN
       SELECT NVL(trim(substr(p_sft_text,INSTR(p_sft_text,':')+1)),'X'),REPLACE(trim(substr(p_sft_text,1,INSTR(p_sft_text,':')+1)),'TOTAL FOR ')
          INTO lv_sft_txt,lv_sft_hdr
