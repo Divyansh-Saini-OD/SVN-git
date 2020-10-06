@@ -1,8 +1,7 @@
   -- +============================================================================================+
   -- |  Office Depot                                                                              |
   -- +============================================================================================+
-  -- |  Name          : XXOD_EBAY_MPL_ORDER_RES                                                   |
-  -- |  Description   : Table to store Transactions API JSON                                      |
+  -- |  Name          : Script to provide grant XXOD_EBAY_MPL_TRANS_RES                           |
   -- |  Change Record :                                                                           |
   -- +============================================================================================+
   -- | Version     Date         Author           Remarks                                          |
@@ -10,7 +9,6 @@
   -- | 1.0         01-Oct-2020  Mayur Palsokar   Initial version                                  |
   -- +============================================================================================+
 
-CREATE TABLE XXFIN.XXOD_EBAY_MPL_ORDER_RES
-(
-ORDER_JSON CLOB
-);
+GRANT SELECT, INSERT, UPDATE, DELETE ON XXFIN.XXOD_EBAY_MPL_TRANS_RES TO APPS;
+
+SHOW ERRORS;
