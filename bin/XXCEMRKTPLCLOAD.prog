@@ -1,23 +1,18 @@
-
 # +===================================================================+
 # |                  Office Depot - Project Simplify                  |
-# |      			 				      |
+# |      			 				                                  |
 # +===================================================================+
-# | Name  : 	   XXCEMRKTPLCLOAD.prog   	                              |
-# | RICE ID    :   I3091
+# | Name  : 	   XXCEMRKTPLCLOAD.prog   	                          |
+# | RICE ID    :   I3091                                              |
 # | Description:   This program does the following                    |
-# |             1) Call ebay load program                                 |
-# |                                                                   |
-# |                .                                       |
-# |                                                                   |
-# |                                                                   |
+# |             1) Call ebay load program                             |
 # |                                                                   |
 # |Change Record:                                                     |
 # |===============                                                    |
-# |Version   Date        Author           Remarks                     |
-# |=======   ==========  =============    ============================|
-# |DRAFT 1A 17-JUL-2018  Priyam P       Initial draft version       |
-# |2.0		17-Mar-2020	 Amit Kumar		Modified to add new Google MPL|
+# |Version   Date         Author           Remarks                    |
+# |=======   ==========   =============    ===========================|
+# |DRAFT 1A  17-JUL-2018  Priyam P         Initial draft version      |
+# |1.1       24-SEP-2020  Mayur Palsokar   Modified for NAIT-141633   |
 # +===================================================================+
 
  echo "1 st argument = username/password"
@@ -475,9 +470,12 @@ fi
 
 #Ebay MArketplace
 
-if [ "${5}" = "EBAY_MPL" ]
+if [ "${5}" = "EBAY_MPL_NEW" ]
 then
 
+<<'COMMENTS'
+if [ "${5}" = "EBAY_MPL" ]
+then
 eval inboundmpldirectory=$inbound_path
 cd ${inboundmpldirectory}
 
@@ -543,47 +541,9 @@ EXECUTE xx_ce_mrktplc_load_pkg.main_mpl_load_proc('$translationsource','$i','Y',
 fi
 
 done;
-
-fi
-
-#Google Marketplace
-
-if [ "${5}" = "GOOGLE_MPL" ]
-then
-
-eval inboundmpldirectory=$inbound_path
-cd ${inboundmpldirectory}
-
-file1=`echo $file_type | awk '{ split($0,MODULE,"~"); print MODULE[1] }'`
-#file2=`echo $file_type | awk '{ split($0,MODULE,"~"); print MODULE[2] }'`
+COMMENTS
 
 
-for i in `ls $file1*.*  | sort -u`
-  do echo "$i"
-
-
- V_RESULT2=`sqlplus -s /nolog <<EOF
-     set pagesize 0
-     set linesize 255
-     set sqlprompt " "
-     set serveroutput on 
-     set verify off
-
-     select count(1) from xx_ce_mpl_files where file_name='$i' and process_flag='P';
-     COMMIT;
-
-     exit
-     EOF`
-
-     eval archival_file=$archival_path/$i
-     eval inbounddirectory=$inbound_path/$i 
-
-
-if [ "${V_RESULT2}" -ge 1 ]
-then
-echo "File is already processed in prior run removing the file "${inbounddirectory}
-rm ${inbounddirectory}
-else 
      V_RESULT2=`sqlplus -s /nolog <<EOF
      set pagesize 0
      set linesize 255
@@ -591,7 +551,7 @@ else
      set serveroutput on 
      set verify off
 
-EXECUTE xx_ce_mrktplc_load_pkg.main_mpl_load_proc('$translationsource','$i','Y','$4');
+   EXECUTE XXOD_EBAY_SETTLEMENT_PKG.MAIN;
      COMMIT;
 
      exit
@@ -601,17 +561,7 @@ EXECUTE xx_ce_mrktplc_load_pkg.main_mpl_load_proc('$translationsource','$i','Y',
 
      echo " "
 
-     echo "File is being Archived" 
-
-     echo "The Inbound File Name "${inbounddirectory}
-     echo "The Archival File Name "${archival_file}
-     cp ${inbounddirectory} ${archival_file}
-     rm ${inbounddirectory}
-
-fi
-
-
-done;
+     echo "New Ebay Marketplace process is running" 
 
 fi
 exit 0
