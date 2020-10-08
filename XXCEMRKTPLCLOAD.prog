@@ -24,6 +24,11 @@
 export SQLPATH=$APPL_TOP
  
 translationsource=$5 
+
+# Added if condition for NAIT-141633 
+
+if [ "${5}" != "NEW_EBAY_MPL" ]
+then
   
 V_RESULT=`sqlplus -s /nolog <<EOF
 set pagesize 0
@@ -78,7 +83,7 @@ walmartcorrelid=`echo $V_RESULT | awk '{ split($0,MODULE,"|"); print MODULE[15] 
 url2=`echo $V_RESULT | awk '{ split($0,MODULE,"|"); print MODULE[16] }'`
 url3=`echo $V_RESULT | awk '{ split($0,MODULE,"|"); print MODULE[17] }'`
 
-
+fi
 
 echo " "
 echo "Translation set-up Name : OD_SETTLEMENT_PROCESSES "
@@ -469,89 +474,19 @@ done;
 fi
 
 #Ebay MArketplace
+# Modified for NAIT-141633  
 
-if [ "${5}" = "EBAY_MPL_NEW" ]
+if [ "${5}" = "NEW_EBAY_MPL" ]
 then
-
-<<'COMMENTS'
-if [ "${5}" = "EBAY_MPL" ]
-then
-eval inboundmpldirectory=$inbound_path
-cd ${inboundmpldirectory}
-
-file1=`echo $file_type | awk '{ split($0,MODULE,"~"); print MODULE[1] }'`
-file2=`echo $file_type | awk '{ split($0,MODULE,"~"); print MODULE[2] }'`
-
-
-for i in `ls $file1*.* '||' $file2*.* | sort -u`
-  do echo "$i"  
-
- V_RESULT2=`sqlplus -s /nolog <<EOF
+	 
+   V_RESULT2=`sqlplus -s /nolog <<EOF
      set pagesize 0
      set linesize 255
      set sqlprompt " "
      set serveroutput on 
      set verify off
 
-     select count(1) from xx_ce_mpl_files where file_name='$i' and process_flag='P';
-     COMMIT;
-
-     exit
-     EOF`
-
-     eval archival_file=$archival_path/$i
-     eval inbounddirectory=$inbound_path/$i 
-
-
-if [ "${V_RESULT2}" -ge 1 ]
-
-then
-
-echo "File is already processed in prior run removing the file "${inbounddirectory}
-
-rm ${inbounddirectory}
-
-else 
-
-
-     V_RESULT2=`sqlplus -s /nolog <<EOF
-     set pagesize 0
-     set linesize 255
-     set sqlprompt " "
-     set serveroutput on 
-     set verify off
-
-EXECUTE xx_ce_mrktplc_load_pkg.main_mpl_load_proc('$translationsource','$i','Y','$4');
-     COMMIT;
-
-     exit
-     EOF` 
-
-    echo "$V_RESULT2"
-
-     echo " "
-
-     echo "File is being Archived" 
-
-     echo "The Inbound File Name "${inbounddirectory}
-     echo "The Archival File Name "${archival_file}
-     cp ${inbounddirectory} ${archival_file}
-     rm ${inbounddirectory}
-
-fi
-
-done;
-COMMENTS
-
-
-     V_RESULT2=`sqlplus -s /nolog <<EOF
-     set pagesize 0
-     set linesize 255
-     set sqlprompt " "
-     set serveroutput on 
-     set verify off
-
-   EXECUTE XXOD_EBAY_SETTLEMENT_PKG.MAIN;
+EXECUTE xxod_ebay_settlement_pkg.main;	
      COMMIT;
 
      exit
