@@ -479,14 +479,14 @@ fi
 if [ "${5}" = "NEW_EBAY_MPL" ]
 then
 	 
-   V_RESULT2=`sqlplus -s /nolog <<EOF
+     V_RESULT2=`sqlplus -s /nolog <<EOF
      set pagesize 0
      set linesize 255
      set sqlprompt " "
      set serveroutput on 
      set verify off
 
-EXECUTE xxod_ebay_settlement_pkg.main;	
+EXECUTE xxod_ebay_settlement_pkg.main;
      COMMIT;
 
      exit
