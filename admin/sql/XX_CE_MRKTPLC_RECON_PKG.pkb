@@ -2787,8 +2787,8 @@ BEGIN
         ELSE                                                                                                                                                                                            
           UPDATE XX_CE_EBAYMPL_PRE_STG_V a                                                                                                                                                              
           SET a.process_flag    ='E',                                                                                                                                                                   
-            A.Err_Msg           ='Duplicate record found for Walmart PO#'                                                                                                                               
-          WHERE A.ORDERID    =Rec_hdr.ORDERID                                                                                                                                                     
+            A.Err_Msg           ='Duplicate record found for Ebay PO#'||Rec_hdr.ORDERID                                                                                                                               
+          WHERE A.ORDERID    	=Rec_hdr.ORDERID                                                                                                                                                     
           AND NVL(a.process_flag,'N')  IN ('N','E')                                                                                                                                                             
           AND a.transactiontype=Rec_hdr.transactiontype;                                                                                                                                              
           gc_failure_count     :=gc_failure_count+1;                                                                                                                                                    

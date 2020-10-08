@@ -11,7 +11,7 @@
   -- +============================================================================================+
 
 CREATE OR REPLACE VIEW XX_CE_EBAYMPL_PRE_STG_V
-AS
+AS 
   SELECT 
     REC_ID,
     REPORT_DATE,
@@ -45,6 +45,6 @@ AS
     ATTRIBUTE21 LAST_UPDATE_DATE,
     ATTRIBUTE22 LAST_UPDATE_LOGIN
   FROM XX_CE_MARKETPLACE_PRE_STG
-  WHERE PROCESS_NAME = 'EBAY_MPL_NEW'
+  WHERE PROCESS_NAME = 'NEW_EBAY_MPL'
   AND FILE_TYPE      = 'EBAY_FINANCE_API'
   ORDER BY PAYOUTID;
