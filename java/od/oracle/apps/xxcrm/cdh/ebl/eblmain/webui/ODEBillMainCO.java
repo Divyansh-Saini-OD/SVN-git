@@ -64,6 +64,7 @@ import java.util.regex.Pattern;
 import od.oracle.apps.xxcrm.cdh.ebl.eblmain.server.ODEBillMainVORowImpl;
 import od.oracle.apps.xxcrm.cdh.ebl.eblmain.server.ODEBillTemplDtlVORowImpl;
 
+
 import oracle.apps.fnd.framework.server.OADBTransaction;
 import oracle.apps.fnd.framework.server.OAViewRowImpl;
 import oracle.apps.fnd.framework.webui.beans.message.OAMessageStyledTextBean;
@@ -112,7 +113,8 @@ import oracle.jbo.domain.Number;
  --  |4.11     14-Sep-2018 Reddy Sekhar K     Code Added for Defect# NAIT-60756  | 
  --  |4.12     15-Apr-2019 Rafi Mohammed      NAIT-91481 Rectify Billing Delivery Efficiency
  --  |4.13     12-Jun-2019 Reddy Sekhar K     Code added for the Defect NAIT- 98962|
-  -- |===========================================================================|
+ --  |4.14     12-JUL-2020 Divyansh Saini     Code added for the Defect NAIT- 129167|  
+ -- |===========================================================================|
   -- | Subversion Info:                                                          |
   -- | $HeadURL$                                                               |
   -- | $Rev$                                                                   |
@@ -710,7 +712,7 @@ ODEBillMainCO extends OAControllerImpl {
                           (OAMessageCheckBoxBean)webBean.findChildRecursive("SummaryBillLabelCB");
                       if(summaryBill.getValue(pageContext)!=null)
                         sSummaryBill = (String)summaryBill.getValue(pageContext);
-                    
+                        
                  //Code added by Rafi on 04-Dec-2017 for wave3 Defect#NAIT-21725 - END
                     if (sSummaryBill == null || "N".equals(sSummaryBill)) {
                         OAViewObject templDtlVO = 
@@ -723,7 +725,6 @@ ODEBillMainCO extends OAControllerImpl {
                             templDtlVO.executeQuery();
                         if (templDtlVO.getRowCount() == 0) {    
                         Serializable templParams[] = { custDocId };
-                        System.out.println("Populate temp vo called");
                         mainAM.invokeMethod("populateTemplDtl", templParams);
                         
                         
@@ -746,12 +747,13 @@ ODEBillMainCO extends OAControllerImpl {
                         //Code added by Rafi on 04-Dec-2017 for wave3 Defect#NAIT-21725 - END
                             templDtlVO.executeQuery();                   
                     }//End of Summary Bill Config Dtl display
-                    
-                    OAMessageChoiceBean stdContLvlCB = 
+                    //Added for 4.14
+	                    OAMessageChoiceBean stdContLvlCB = 
                         (OAMessageChoiceBean)webBean.findChildRecursive("StdContLvl");
                     String stdContLvl = (String)stdContLvlCB.getValue(pageContext);
                     Serializable prm[]={stdContLvl,custDocId};
                     mainAM.invokeMethod("Fee_amount_default", prm);
+                    //Added for 4.14
                     // String stdCont = (String) mainAM.invokeMethod("populateTemplDtl", templParams);
                     // pageContext.putSessionValue("stdContVar", stdCont);
                      OAMessageChoiceBean AggrFieldPoplistBean = (OAMessageChoiceBean)webBean.findChildRecursive("AggrFieldName");  
@@ -1332,12 +1334,15 @@ ODEBillMainCO extends OAControllerImpl {
            String docuType = null;
            docuType = custDocVO.first().getAttribute("DocType").toString();
            OAMessageChoiceBean transmissionType = 
-              (OAMessageChoiceBean)webBean.findIndexedChildRecursive("EbillTransmission");            
+              (OAMessageChoiceBean)webBean.findIndexedChildRecursive("EbillTransmission"); 
+            String statusF= custDocVO.first().getAttribute("StatusCode").toString();
+            if ("IN_PROCESS".equals(statusF))  {
            if(("Email".equalsIgnoreCase(transmissionType.getValue(pageContext).toString())) && "ePDF".equalsIgnoreCase(deliveryMethod))
            {
               String custAccountId = custDocVO.first().getAttribute("CustAccountId").toString();
               validateFieProcMethod(pageContext,webBean,custAccountId,docuType,payDoc);                   
-            }            
+            } 
+                     }
          //Code added by Rafi for NAIT-91481 Rectify Billing Delivery Efficiency - END
           
                 if (deliveryMethod.equals("eXLS")) {
@@ -1998,10 +2003,12 @@ ODEBillMainCO extends OAControllerImpl {
          //Added By Reddy Sekhar K on 22 June 2018 for the Defect# NAIT-27146-----Start
          mainAM.invokeMethod("parentDocIdDisabled");
          //Added By Reddy Sekhar K on 22 June 2018 for the Defect# NAIT-27146-----End 
+        //Added for 4.14
           String custDocId = pageContext.getParameter("custDocId");
           String stdContLvl = pageContext.getParameter("stdContLvl");
           Serializable prm[]={stdContLvl,custDocId};
-          mainAM.invokeMethod("Fee_amount_default", prm);
+          mainAM.invokeMethod("Fee_amount_default", prm);   
+        //Added for 4.14          
         }
         
         if ("AddStdRow".equals(pageContext.getParameter(EVENT_PARAM))) {
