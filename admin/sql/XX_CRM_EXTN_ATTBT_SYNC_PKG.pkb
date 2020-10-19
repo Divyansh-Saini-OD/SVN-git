@@ -418,9 +418,9 @@ x_error_message varchar2(256);
                 FOR i IN 1 .. l_errors_tbl.COUNT
                 LOOP
                   lv_error_message := lv_error_message || ' ' || l_errors_tbl(i).message_text;
-                END LOOP;
-                --Changes start for 1.14  
-              ELSIF (lv_return_status = fnd_api.g_ret_sts_success) THEN
+                END LOOP;  
+              END IF;
+                --Changes start for 1.14
                 BEGIN
                    
                    SELECT c_ext_attr1,c_ext_attr3
@@ -446,8 +446,7 @@ x_error_message varchar2(256);
                 EXCEPTION WHEN OTHERS THEN
                    null;
                 END;
-              --Changes end for 1.14  
-              END IF;
+              --Changes end for 1.14
 
               x_error_message := lv_error_message;
           END IF;
