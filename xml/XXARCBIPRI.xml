@@ -126,6 +126,7 @@ WHERE  1 =1
 </sqlStatement>
 <sqlStatement name="Q_PAYDOC_CBI_DETAIL">
 <![CDATA[
+ SELECT detail.*,NVL((NVL(cbi_extamt_incl_delvy,0)-cbi_fee_amt),0) cbi_extamt_incl_delvy_n FROM (
  SELECT arci.cons_inv_id                            cons_inv_id
        ,arci.cons_billing_number                    billing_number
        ,arci.currency_code                          currency
@@ -191,7 +192,7 @@ WHERE  1 =1
    AND NVL(od_summbills.process_flag, 'N') !='Y'  
    AND od_summbills.thread_id   =:p_thread_id
    AND od_summbills.cons_inv_id   =:cbi_id1
-   AND od_summbills.layout ='DETAIL'
+   AND od_summbills.layout ='DETAIL') detail
 ]]>
 </sqlStatement>
 -- Added for Tariff project NAIT - 129167
@@ -229,6 +230,7 @@ order by flv.attribute7 desc,flv.lookup_code
     </sqlStatement>	
 <sqlStatement name="Q_PAYDOC_CBI_SUMMARIZE">
 <![CDATA[
+ SELECT a.*,NVL((cbi_extamt_incl_delvy-cbi_fee_amt),0) CBI_EXTAMT_INCL_DELVY_EX_FEE FROM (
  SELECT arci.cons_inv_id                            cons_inv_id1
        ,arci.cons_billing_number                    billing_number
        ,arci.currency_code                          currency
@@ -293,11 +295,12 @@ order by flv.attribute7 desc,flv.lookup_code
    AND NVL(od_summbills.process_flag, 'N') !='Y'  
    AND od_summbills.thread_id   =:p_thread_id
    AND od_summbills.cons_inv_id   =:cbi_id1
-   AND od_summbills.layout ='SUMMARIZE'
+   AND od_summbills.layout ='SUMMARIZE') a
 ]]>
 </sqlStatement>
 <sqlStatement name="Q_PAYDOC_CBI_ONE">
 <![CDATA[
+SELECT a.*,NVL((cbi_extamt_incl_delvy - cbi_fee_amt),0) CBI_EXTAMT_INCL_DELVY_EX_FEE FROM (
  SELECT arci.cons_inv_id                            cons_inv_id2
        ,arci.cons_billing_number                    billing_number
        ,arci.currency_code                          currency
@@ -362,7 +365,7 @@ order by flv.attribute7 desc,flv.lookup_code
    AND NVL(od_summbills.process_flag, 'N') !='Y'  
    AND od_summbills.thread_id   =:p_thread_id
    AND od_summbills.cons_inv_id   =:cbi_id1
-   AND od_summbills.layout ='ONE'
+   AND od_summbills.layout ='ONE') a
 ]]>
 </sqlStatement>
 <sqlStatement name="Q_PAYDOC_SUMM_SOFTHEADERS">
@@ -441,7 +444,7 @@ SELECT
      ,xact.inv_source_name inv_source
      ,to_char(xact.order_date ,'DD-MON-YY') order_date 
      ,xact.sfdata1 ,xact.sfdata2 ,xact.sfdata3 ,xact.sfdata4 ,xact.sfdata5
-     ,(xact.subtotal_amount - xact.delivery_charges) subtotal
+     ,(xact.subtotal_amount - xact.delivery_charges - NVL(XX_AR_EBL_COMMON_UTIL_PKG.get_softhdr_amount_fis(xact.inv_type,xact.inv_source_name,xact.cons_inv_id,xact.request_id,xact.CUSTOMER_TRX_ID),0)) subtotal
      ,xact.delivery_charges delivery
      ,xact.promo_and_disc discounts
      ,xact.tax_amount
@@ -489,7 +492,7 @@ SELECT
      ,xact.sfdata3 infosumz_sfdata3
      ,xact.sfdata4 infosumz_sfdata4
      ,xact.sfdata5 infosumz_sfdata5
-     ,(xact.subtotal_amount - xact.delivery_charges) infosumz_subtotal
+     ,(xact.subtotal_amount - xact.delivery_charges-NVL(XX_AR_EBL_COMMON_UTIL_PKG.get_softhdr_amount_fis(xact.inv_type,xact.inv_source_name,xact.cons_inv_id,xact.request_id,xact.CUSTOMER_TRX_ID),0)) infosumz_subtotal
      ,xact.delivery_charges infosumz_delivery
      ,xact.promo_and_disc infosumz_discounts
      ,xact.tax_amount infosumz_tax
@@ -554,7 +557,7 @@ SELECT sumz.insert_seq
               ,TO_CHAR(sumz.order_header_id)||' ORDERS'
              )                                         tot_orders      
       ,NVL(sumz.tax_code ,'N')                         pg_brk
-      ,sumz.subtotal_amount  summ_subtotal
+      ,sumz.subtotal_amount - NVL(XX_AR_EBL_COMMON_UTIL_PKG.get_softhdr_amount_fis(sumz.inv_type,sumz.inv_source_name,sumz.cons_inv_id,sumz.request_id,sumz.CUSTOMER_TRX_ID),0)  summ_subtotal
       ,sumz.delivery_charges summ_delivery
       ,sumz.promo_and_disc   summ_discounts
       ,sumz.tax_amount       summ_tax
@@ -579,7 +582,7 @@ SELECT sumz.insert_seq
               ,TO_CHAR(sumz.order_header_id)||' ORDERS'
              ) 
       ,NVL(sumz.tax_code ,'N') 
-      ,sumz.subtotal_amount
+      ,sumz.subtotal_amount -NVL(XX_AR_EBL_COMMON_UTIL_PKG.get_softhdr_amount_fis(sumz.inv_type,sumz.inv_source_name,sumz.cons_inv_id,sumz.request_id,sumz.CUSTOMER_TRX_ID),0)
       ,sumz.delivery_charges
       ,sumz.promo_and_disc  
       ,sumz.tax_amount      
@@ -630,7 +633,7 @@ SELECT sumz.insert_seq                                infosumz_insert_seq
               ,TO_CHAR(sumz.order_header_id)||' ORDERS'
              )                                         infosumz_total_orders      
       ,NVL(sumz.tax_code ,'N')                         infosumz_pg_break
-      ,sumz.subtotal_amount  infosumz_summarize_subtotal
+      ,sumz.subtotal_amount- NVL(XX_AR_EBL_COMMON_UTIL_PKG.get_softhdr_amount_fis(sumz.inv_type,sumz.inv_source_name,sumz.cons_inv_id,sumz.request_id,sumz.CUSTOMER_TRX_ID),0)  infosumz_summarize_subtotal
       ,sumz.delivery_charges infosumz_summarize_delivery
       ,sumz.promo_and_disc   infosumz_summarize_discounts
       ,sumz.tax_amount       infosumz_summarize_tax
@@ -655,7 +658,7 @@ SELECT sumz.insert_seq
               ,TO_CHAR(sumz.order_header_id)||' ORDERS'
              )                           
       ,NVL(sumz.tax_code ,'N')           
-      ,sumz.subtotal_amount 
+      ,sumz.subtotal_amount -NVL(XX_AR_EBL_COMMON_UTIL_PKG.get_softhdr_amount_fis(sumz.inv_type,sumz.inv_source_name,sumz.cons_inv_id,sumz.request_id,sumz.CUSTOMER_TRX_ID),0)
       ,sumz.delivery_charges
       ,sumz.promo_and_disc  
       ,sumz.tax_amount      
@@ -706,7 +709,7 @@ SELECT sumz.insert_seq
               ,TO_CHAR(sumz.order_header_id)||' ORDERS'
              )                                         total_orders      
       ,NVL(sumz.tax_code ,'N')                         pg_break
-      ,sumz.subtotal_amount  summarize_subtotal
+      ,sumz.subtotal_amount-NVL(XX_AR_EBL_COMMON_UTIL_PKG.get_softhdr_amount_fis(sumz.inv_type,sumz.inv_source_name,sumz.cons_inv_id,sumz.request_id,sumz.CUSTOMER_TRX_ID,'ONE'),0)  summarize_subtotal
       ,sumz.delivery_charges summarize_delivery
       ,sumz.promo_and_disc   summarize_discounts
       ,sumz.tax_amount       summarize_tax
@@ -731,7 +734,7 @@ SELECT sumz.insert_seq
               ,TO_CHAR(sumz.order_header_id)||' ORDERS'
              )                                         total_orders      
       ,NVL(sumz.tax_code ,'N')                         pg_break
-      ,sumz.subtotal_amount  summarize_subtotal
+      ,sumz.subtotal_amount-NVL(XX_AR_EBL_COMMON_UTIL_PKG.get_softhdr_amount_fis(sumz.inv_type,sumz.inv_source_name,sumz.cons_inv_id,sumz.request_id,sumz.CUSTOMER_TRX_ID,'ONE'),0)  summarize_subtotal
       ,sumz.delivery_charges summarize_delivery
       ,sumz.promo_and_disc   summarize_discounts
       ,sumz.tax_amount       summarize_tax
@@ -780,7 +783,7 @@ SELECT sumz.insert_seq                                infoone_insert_seq
               ,TO_CHAR(sumz.order_header_id)||' ORDERS'
              )                                         infoone_total_orders      
       ,NVL(sumz.tax_code ,'N')                         infoone_pg_break
-      ,sumz.subtotal_amount  infoone_summarize_subtotal
+      ,sumz.subtotal_amount-NVL(XX_AR_EBL_COMMON_UTIL_PKG.get_softhdr_amount_fis(sumz.inv_type,sumz.inv_source_name,sumz.cons_inv_id,sumz.request_id,sumz.CUSTOMER_TRX_ID,'ONE'),0)  infoone_summarize_subtotal
       ,sumz.delivery_charges infoone_summarize_delivery
       ,sumz.promo_and_disc   infoone_summarize_discounts
       ,sumz.tax_amount       infoone_summarize_tax
@@ -804,7 +807,7 @@ SELECT sumz.insert_seq
               ,TO_CHAR(sumz.order_header_id)||' ORDERS'
              )             
       ,NVL(sumz.tax_code ,'N')  
-      ,sumz.subtotal_amount
+      ,sumz.subtotal_amount-NVL(XX_AR_EBL_COMMON_UTIL_PKG.get_softhdr_amount_fis(sumz.inv_type,sumz.inv_source_name,sumz.cons_inv_id,sumz.request_id,sumz.CUSTOMER_TRX_ID,'ONE'),0)
       ,sumz.delivery_charges
       ,sumz.promo_and_disc 
       ,sumz.tax_amount 
@@ -911,13 +914,14 @@ SELECT
 	 ,kit_sku  KIT_ITEM_DESCRIPTION -- Added for Kitting, Defect# 37670	   
 			,fee_type Fee_code
             ,fee_line_seq
+            ,customer_trx_id
 FROM  xx_ar_cbi_trx_lines a
 WHERE request_id      =:p_thread_id
   AND cons_inv_id     =:cons_inv_id
   AND customer_trx_id =:trx_id
   AND (item_code IS NULL OR item_code NOT IN ('SPC_CARD_INFO' ,'TD','ACM','GIFT_CARD_INV','GIFT_CARD_CM'))--Added 'GIFT_CARD_CM' and 'GIFT_CARD_INV' for Defect# 1451 CR(626)
 )
-ORDER BY fee_line_seq
+ORDER BY customer_trx_id,fee_line_seq
 ]]>
 </sqlStatement>
 <sqlStatement name="Q_INFODOC_DETAIL_TRX_LINES">
@@ -945,7 +949,7 @@ WHERE request_id      =:p_thread_id
   AND cons_inv_id     =:info_cbi_id99
   AND customer_trx_id =:infodtl_trx_id
   AND (item_code IS NULL OR item_code NOT IN ('SPC_CARD_INFO' ,'TD','ACM','GIFT_CARD_INV','GIFT_CARD_CM'))--Added 'GIFT_CARD_CM' and 'GIFT_CARD_INV' for Defect# 1451 CR(626)
-ORDER BY fee_line_seq  
+ORDER BY customer_trx_id,fee_line_seq  
 ]]>
 </sqlStatement>
 <sqlStatement name="Q_PAYDOC_TRX_MINISTMNT">
@@ -1246,6 +1250,7 @@ ORDER BY cons_inv_id
 </sqlStatement>
 <sqlStatement name="Q_INFODOC_CBI_DETAIL">
 <![CDATA[
+SELECT info_det.*,NVL((NVL(cbi_extamt_incl_delvy99,0)-cbi_fee_amt99),0)cbi_extamt_incl_delvy_n99 FROM (
 SELECT  od_infocopies.cons_inv_id           cons_inv_id99
        ,od_infocopies.billing_number        billing_number99
        ,od_infocopies.currency              currency99
@@ -1430,7 +1435,7 @@ UNION ALL
    AND od_summbills.print_date  <= fnd_conc_date.string_to_date(:p_as_of_date)
    AND od_summbills.paydoc      !='Y'   
    AND NVL(od_summbills.process_flag, 'N') !='Y' 
-   AND od_summbills.layout ='DETAIL'
+   AND od_summbills.layout ='DETAIL')info_det
 ]]>
 </sqlStatement>
 -- Added for Tariff project NAIT - 129167
@@ -1468,6 +1473,7 @@ order by flv.attribute7 desc,flv.lookup_code
     </sqlStatement>	
 <sqlStatement name="Q_INFODOC_CBI_SUMMARIZE">
 <![CDATA[
+SELECT info_sum.*,NVL((NVL(cbi_extamt_incl_delvy88,0)-cbi_fee_amt88),0) CBI_EXTAMT_INCL_DELVY_EX_FEE88 FROM(
 SELECT  od_infocopies.cons_inv_id           cons_inv_id88
        ,od_infocopies.billing_number        billing_number88
        ,od_infocopies.currency              currency88
@@ -1652,11 +1658,12 @@ UNION ALL
    AND od_summbills.print_date  <= fnd_conc_date.string_to_date(:p_as_of_date)
    AND od_summbills.paydoc      !='Y'   
    AND NVL(od_summbills.process_flag, 'N') !='Y'  
-   AND od_summbills.layout ='SUMMARIZE'
+   AND od_summbills.layout ='SUMMARIZE')info_sum
 ]]>
 </sqlStatement>
 <sqlStatement name="Q_INFODOC_CBI_ONE">
 <![CDATA[
+SELECT info_one.*,NVL((NVL(cbi_extamt_incl_delvy77,0)-CBI_FEE_AMT77),0) CBI_EXTAMT_INCL_DELVY_EX_FEE77 FROM(
 SELECT  od_infocopies.cons_inv_id           cons_inv_id77
        ,od_infocopies.billing_number        billing_number77
        ,od_infocopies.currency              currency77
@@ -1841,7 +1848,7 @@ UNION ALL
    AND od_summbills.print_date  <= fnd_conc_date.string_to_date(:p_as_of_date)
    AND od_summbills.paydoc      !='Y'   
    AND NVL(od_summbills.process_flag, 'N') !='Y'  
-   AND od_summbills.layout ='ONE'
+   AND od_summbills.layout ='ONE') info_one
 ]]>
 </sqlStatement>
 <sqlStatement name="Q_INFODOC_DETAIL_TRX">
@@ -1940,6 +1947,7 @@ ORDER BY xact.insert_seq
 <element name="PAYMENT_DUE" value="PAYMENT_DUE" />
 <element name="DISCOUNT_INFO" value="DISCOUNT_INFO" />
 <element name="CBI_EXTAMT_INCL_DELVY" value="CBI_EXTAMT_INCL_DELVY" />
+<element name="CBI_EXTAMT_INCL_DELVY_EX_FEE" value="CBI_EXTAMT_INCL_DELVY_EX_FEE" />
 <element name="CBI_PROMO_AND_DISC" value="CBI_PROMO_AND_DISC" />
 <element name="CBI_TAX" value="CBI_TAX" />
 <element name="CBI_FEE_AMT" value="CBI_FEE_AMT" />
@@ -1976,6 +1984,7 @@ ORDER BY xact.insert_seq
 <element name="PAYMENT_DUE" value="PAYMENT_DUE" />
 <element name="DISCOUNT_INFO" value="DISCOUNT_INFO" />
 <element name="CBI_EXTAMT_INCL_DELVY" value="CBI_EXTAMT_INCL_DELVY" />
+<element name="CBI_EXTAMT_INCL_DELVY_EX_FEE" value="CBI_EXTAMT_INCL_DELVY_EX_FEE" />
 <element name="CBI_PROMO_AND_DISC" value="CBI_PROMO_AND_DISC" />
 <element name="CBI_TAX" value="CBI_TAX" />
 <element name="CBI_FEE_AMT" value="CBI_FEE_AMT" />
@@ -2039,7 +2048,7 @@ ORDER BY xact.insert_seq
 <element name="BILL_TO_DATE" value="BILL_TO_DATE" />
 <element name="PAYMENT_DUE" value="PAYMENT_DUE" />
 <element name="DISCOUNT_INFO" value="DISCOUNT_INFO" />
-<element name="CBI_EXTAMT_INCL_DELVY" value="CBI_EXTAMT_INCL_DELVY" />
+<element name="CBI_EXTAMT_INCL_DELVY" value="CBI_EXTAMT_INCL_DELVY_N" />
 <element name="CBI_PROMO_AND_DISC" value="CBI_PROMO_AND_DISC" />
 <element name="CBI_TAX" value="CBI_TAX" />
 <element name="CBI_FEE_AMT" value="CBI_FEE_AMT" />
@@ -2134,7 +2143,7 @@ ORDER BY xact.insert_seq
 <element name="BILL_FROM_DATE" value="BILL_FROM_DATE99" />
 <element name="BILL_TO_DATE" value="BILL_TO_DATE99" />
 <element name="PAYMENT_DUE" value="PAYMENT_DUE99" />
-<element name="CBI_EXTAMT_INCL_DELVY" value="CBI_EXTAMT_INCL_DELVY99" />
+<element name="CBI_EXTAMT_INCL_DELVY" value="CBI_EXTAMT_INCL_DELVY_N99" />
 <element name="CBI_PROMO_AND_DISC" value="CBI_PROMO_AND_DISC99" />
 <element name="CBI_TAX" value="CBI_TAX99" />
 <element name="CBI_FEE_AMT" value="CBI_FEE_AMT99" />
@@ -2223,6 +2232,7 @@ ORDER BY xact.insert_seq
 <element name="BILL_TO_DATE" value="BILL_TO_DATE88" />
 <element name="PAYMENT_DUE" value="PAYMENT_DUE88" />
 <element name="CBI_EXTAMT_INCL_DELVY" value="CBI_EXTAMT_INCL_DELVY88" />
+<element name="CBI_EXTAMT_INCL_DELVY_EX_FEE" value="CBI_EXTAMT_INCL_DELVY_EX_FEE88" />
 <element name="CBI_PROMO_AND_DISC" value="CBI_PROMO_AND_DISC88" />
 <element name="CBI_TAX" value="CBI_TAX88" />
 <element name="CBI_FEE_AMT" value="CBI_FEE_AMT88" />
@@ -2293,6 +2303,7 @@ ORDER BY xact.insert_seq
 <element name="BILL_TO_DATE" value="BILL_TO_DATE77" />
 <element name="PAYMENT_DUE" value="PAYMENT_DUE77" />
 <element name="CBI_EXTAMT_INCL_DELVY" value="CBI_EXTAMT_INCL_DELVY77" />
+<element name="CBI_EXTAMT_INCL_DELVY_EX_FEE" value="CBI_EXTAMT_INCL_DELVY_EX_FEE77" />
 <element name="CBI_PROMO_AND_DISC" value="CBI_PROMO_AND_DISC77" />
 <element name="CBI_TAX" value="CBI_TAX77" />
 <element name="CBI_FEE_AMT" value="CBI_FEE_AMT77" />
