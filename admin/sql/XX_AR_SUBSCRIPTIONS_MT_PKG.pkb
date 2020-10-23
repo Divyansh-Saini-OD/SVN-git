@@ -145,6 +145,8 @@ AS
 -- |                                                 for initial invoice                                              |
 -- | 63.0        25-AUG-2020  Arvind K               NAIT-138851 add a new logic for unqiue transaction # which goes  |
 -- |                                                 to EAI for issuing Depot Dollar                                  |
+-- | 64.0        23-OCT-2020  Kayeed A               NAIT-159644 add the logic in process_eligible_subscriptions proc |
+-- |                                                 to exclude auth flag U , B and expired contracts                 |
 -- +==================================================================================================================+
 
   gc_package_name        CONSTANT all_objects.object_name%TYPE   := 'xx_ar_subscriptions_mt_pkg';
@@ -1605,7 +1607,7 @@ PROCEDURE logitt(p_message  IN  CLOB,
                  ,x_om_hdr_attribute_info.delivery_code
                  ,x_om_hdr_attribute_info.ship_to_state
          FROM   XXOM_OM_HEADER_ATTRIBUTES_HIST
-         WHERE  header_id = p_header_id;
+         WHERE  header_id = p_header_id; 
       EXCEPTION
        WHEN OTHERS
        THEN
@@ -11420,14 +11422,17 @@ PROCEDURE logitt(p_message  IN  CLOB,
                           and contract_id     = subs.contract_id
                           and contract_number = subs.contract_number)payment_type
                       --End for - NAIT-119054
-      FROM   xx_ar_subscriptions  subs, xx_ar_contract_lines xacl
+      FROM   xx_ar_subscriptions  subs, xx_ar_contract_lines xacl ,xx_ar_contracts xac --added for NAIT-159644 :23Oct2020
       WHERE  1    =   1
         AND    subs.contract_id = xacl.contract_id
+        AND    xacl.contract_id = xac.contract_id
         AND   SYSDATE <=  NVL(xacl.close_date, SYSDATE)        --- Added condition to ignore closed contact(NAIT-147546)
-        AND (       subs.ordt_staged_flag  IN ('N', 'E')
-              OR     subs.email_sent_flag   IN ('N', 'E')
-              OR     subs.history_sent_flag IN ('N', 'E') )
-       AND  NVL(subs.auth_completed_flag, 'N')        <> 'T' --IN ('Y', 'N', 'E', 'U')
+        AND (       subs.ordt_staged_flag       IN ('N', 'E')
+              OR     subs.email_sent_flag       IN ('N', 'E')
+              OR     subs.history_sent_flag     IN ('N', 'E') )
+       --AND  NVL(subs.auth_completed_flag, 'N')        <> 'T' --IN ('Y', 'N', 'E', 'U')
+       AND  NVL(subs.auth_completed_flag, 'N')  NOT IN('T','B','U') --added for NAIT-159644 :23Oct2020
+       AND  xac.contract_status                 <> 'EXPIRED'        --added for NAIT-159644 :23Oct2020
       ORDER BY subs.contract_id             ASC,
                subs.billing_sequence_number ASC;
 
