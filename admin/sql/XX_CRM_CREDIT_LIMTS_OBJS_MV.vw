@@ -16,7 +16,7 @@ AS
   -- | =========   ===========  =============        =============================================|                                                                                                    
   -- | 1.0        01-Oct-2020   Amit Kumar		     NAIT-147376 / NAIT-147376/ NAIT-136440       |                     
   -- +============================================================================================| */
-SELECT  
+SELECT
   HCPA.CURRENCY_CODE ,
   DECODE(HCPA.OVERALL_CREDIT_LIMIT, 1, 0,
 									2, 0,
@@ -34,7 +34,7 @@ DECODE(HCPAP.OVERALL_CREDIT_LIMIT, 1, 0,
 									2, 0,
 								 NULL, 0,
 									HCPAP.OVERALL_CREDIT_LIMIT)  PARENT_HIER_CREDIT_LIMIT ,
-  HCA.ORIG_SYSTEM_REFERENCE  
+  HCA.ORIG_SYSTEM_REFERENCE
 FROM ar.hz_parties HP_PAR ,
   ar.hz_cust_accounts HCA_PAR ,
   ar.hz_hierarchy_nodes HHN ,
@@ -62,7 +62,7 @@ FROM ar.hz_parties HP_PAR ,
   ) OTB
 WHERE HP_PAR.party_id  = HCA_PAR.party_id
 AND HHN.parent_id      = HP_PAR.party_id
-AND HHN.parent_id     <> HHN.child_id
+--AND HHN.parent_id     <> HHN.child_id
 AND HHN.child_id       = HP.party_id
 AND HP.party_id        = HCA.party_id
 AND HHN.hierarchy_type = 'OD_FIN_HIER'
@@ -104,7 +104,7 @@ DECODE(HCPAP.OVERALL_CREDIT_LIMIT, 1, 0,
 									2, 0,
 								 NULL, 0,
 									HCPAP.OVERALL_CREDIT_LIMIT)  PARENT_HIER_CREDIT_LIMIT ,
-  HCA.ORIG_SYSTEM_REFERENCE  
+  HCA.ORIG_SYSTEM_REFERENCE
 FROM ar.hz_parties HP_PAR ,
   ar.hz_cust_accounts HCA_PAR ,
   ar.hz_hierarchy_nodes HHN ,
@@ -114,7 +114,7 @@ FROM ar.hz_parties HP_PAR ,
   AR.HZ_CUST_PROFILE_AMTS HCPAP
 WHERE HP_PAR.party_id  = HCA_PAR.party_id
 AND HHN.parent_id      = HP_PAR.party_id
-AND HHN.parent_id     <> HHN.child_id
+--AND HHN.parent_id     <> HHN.child_id
 AND HHN.child_id       = HP.party_id
 AND HP.party_id        = HCA.party_id
 AND HHN.hierarchy_type = 'OD_FIN_HIER'
