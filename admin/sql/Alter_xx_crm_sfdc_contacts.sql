@@ -1,0 +1,14 @@
+-- +========================================================================+
+-- |                  Office Depot                                          |
+-- +========================================================================+
+-- | Name        : Alter_xx_crm_sfdc_contacts.sql                           |
+-- | Description : Added new field in the existing xx_crm_sfdc_contacts     |
+-- |               table   ACCT_ORIG_SYS_REFERENCE                          |
+-- |                                                                        |
+-- |Change Record:                                                          |
+-- |===============                                                         |
+-- |Version   Date        Author           Remarks                          |
+-- |=======  ===========  =============    =================================|
+-- |1.0      20-Oct-2020  Divyansh Saini    Initial Version                 |
+-- +========================================================================+
+ALTER TABLE xxcrm.xx_crm_sfdc_contacts ADD acct_orig_sys_reference VARCHAR2(50);
