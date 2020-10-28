@@ -1,0 +1,66 @@
+# +=========================================================================+
+# |                  Office Depot                        |
+# +=========================================================================+
+# | Name  :        XXARMOVEFILE                                             |
+# | Description:  Moving file to destination directory                      |
+# |===============                                                          |
+# |Version   Date         Author                Remarks                     |
+# |=======   ===========  ==============        ============================|
+# |DRAFT 1   18-AUG-2020  Divyansh Saini        Initial draft version       |
+# +=========================================================================+
+
+
+ echo "1 st argument = username/password"
+ echo "2 nd argument = $2"
+ echo "3 rd argument = $3"
+ echo "4 th argument = $4"
+ echo "5 th argument = $5"
+ echo "6 th argument = $6"
+ echo "7 th argument = $7"
+export SQLPATH=$APPL_TOP
+
+s_dir=$5
+prc_id=$6
+d_dir=$7
+Suffix=`date '+_%y%m%d%H%M%S_%N'`
+echo $s_dir
+echo $prc_id
+echo $d_dir
+echo $Suffix
+V_RESULT=`sqlplus -s /nolog <<EOF
+     set pagesize 0
+     set linesize 255
+     set sqlprompt " "
+     set serveroutput on 
+     set verify off
+     set heading on feedback on;
+
+     SELECT NVL((select listagg(file_name,' ') within Group (order by process_id)
+       FROM xx_ar_ss_file_names_hist
+      WHERE process_id = '$prc_id'),'NA')||'|'
+       FROM DUAL;
+
+     exit
+     EOF`
+echo $V_RESULT
+filenames=`echo $V_RESULT | awk '{ split($0,MODULE,"|"); print MODULE[1] }'`
+echo $filenames
+if [ "${filenames}" = "NA" ] 
+   then
+    echo "No file to process"
+else
+   echo "move to source folder"
+   cd $s_dir
+   echo `pwd`
+   for file in $filenames
+   do
+    filen=`echo $file | awk '{ split($0,MODULE,"."); print MODULE[1] }'`
+    d_file=$filen$Suffix'.csv'
+    echo $file
+    echo $d_file
+   # Moving file to destination folder
+    echo "Moving file to destination folder"
+    mv $s_dir/$file $d_dir/$d_file
+    #rm $s_file
+   done
+fi
