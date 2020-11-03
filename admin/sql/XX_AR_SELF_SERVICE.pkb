@@ -423,8 +423,8 @@ begin
           raise le_end_line;
        END IF;
        logs('Line Data '||lv_line_data);
-       logs('Looping with Data '||regexp_count(lv_line_data,'`'||p_delimeter));
-       For i in 0..regexp_count(lv_line_data,'`'||p_delimeter)-1 LOOP
+       logs('Looping with Data '||regexp_count(lv_line_data,p_delimeter));
+       For i in 0..regexp_count(lv_line_data,p_delimeter)-1 LOOP
            IF i=0 THEN
               lv_col_value := TRIM(SUBSTR(lv_line_data,1,INSTR(lv_line_data,p_delimeter,1,i+1)-1));
             ELSE
