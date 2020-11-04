@@ -147,6 +147,8 @@ AS
 -- |                                                 to EAI for issuing Depot Dollar                                  |
 -- | 64.0        23-OCT-2020  Kayeed A               NAIT-159644 add the logic in process_eligible_subscriptions proc |
 -- |                                                 to exclude auth flag U , B and expired contracts                 |
+-- | 65.0        03-NOV-2020  Arvind K               NAIT-159331 add the logic in import_contract_info proc           |
+-- |                                                 for Store # 1165 Issue                                           |
 -- +==================================================================================================================+
 
   gc_package_name        CONSTANT all_objects.object_name%TYPE   := 'xx_ar_subscriptions_mt_pkg';
@@ -11908,6 +11910,8 @@ PROCEDURE logitt(p_message  IN  CLOB,
     ln_records_passed           NUMBER := 0;
 
     ln_records_failed           NUMBER := 0;
+    
+    l_store_number              xx_ar_contracts.store_number%type :='';
 
   BEGIN
 
@@ -11981,6 +11985,26 @@ PROCEDURE logitt(p_message  IN  CLOB,
             lb_header_processed := TRUE;
 
             lc_action := 'Update xx_ar_contracts';
+            --Added for NAIT-159331-Store # 001165 Issue
+            IF eligible_contract_line_rec.store_number IS NULL
+			THEN
+            BEGIN
+              SELECT store_number 
+                INTO l_store_number
+                FROM xx_ar_contracts 
+                WHERE 1    =  1
+                  AND contract_number = eligible_contract_line_rec.contract_number
+                  AND contract_id     = eligible_contract_line_rec.contract_id;
+            EXCEPTION
+             WHEN NO_DATA_FOUND
+             THEN
+                l_store_number := eligible_contract_line_rec.store_number;
+             WHEN OTHERS THEN
+                l_store_number := eligible_contract_line_rec.store_number;
+            END;
+			ELSE
+                l_store_number := eligible_contract_line_rec.store_number;
+			END IF;
             
             IF eligible_contract_line_rec.cc_trans_id IS NOT NULL
             THEN
@@ -11998,9 +12022,8 @@ PROCEDURE logitt(p_message  IN  CLOB,
                      bill_to_osr                 = eligible_contract_line_rec.bill_to_osr,
                      customer_email              = eligible_contract_line_rec.customer_email,
                      initial_order_number        = eligible_contract_line_rec.initial_order_number,
-                     store_number                = LPAD(NVL(eligible_contract_line_rec.store_number, lt_program_setups('default_store_name')),
-                                                      6,
-                                                      '0'),
+                 --    store_number                = LPAD(NVL(eligible_contract_line_rec.store_number, lt_program_setups('default_store_name')),6,'0'),
+                     store_number                = LPAD(l_store_number,6,'0'),
                      payment_type                = eligible_contract_line_rec.payment_type,
                      card_type                   = eligible_contract_line_rec.card_type,
                      card_tokenenized_flag       = eligible_contract_line_rec.card_tokenized_flag,
@@ -12041,9 +12064,8 @@ PROCEDURE logitt(p_message  IN  CLOB,
                      bill_to_osr                 = eligible_contract_line_rec.bill_to_osr,
                      customer_email              = eligible_contract_line_rec.customer_email,
                      initial_order_number        = eligible_contract_line_rec.initial_order_number,
-                     store_number                = LPAD(NVL(eligible_contract_line_rec.store_number, lt_program_setups('default_store_name')),
-                                                      6,
-                                                      '0'),
+                    -- store_number                = LPAD(NVL(eligible_contract_line_rec.store_number, lt_program_setups('default_store_name')),6,'0'),
+                     store_number                = LPAD(l_store_number,6,'0'),
                      payment_type                = eligible_contract_line_rec.payment_type,
                      card_type                   = eligible_contract_line_rec.card_type,
                      card_tokenenized_flag       = eligible_contract_line_rec.card_tokenized_flag,
