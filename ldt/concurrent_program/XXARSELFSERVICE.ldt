@@ -388,21 +388,46 @@ BEGIN EXECUTABLE "XDODTEXE" "XDO"
   DESCRIPTION = "XML Publisher Data Template Executable"
 END EXECUTABLE
 
-BEGIN VALUE_SET "240 Characters"
-  OWNER = "ORACLE12.2.5"
-  LAST_UPDATE_DATE = "2014/07/02 00:00:00"
-  VALIDATION_TYPE = "N"
+BEGIN VALUE_SET "XX_AR_SS_RPT_LKP"
+  OWNER = "344967"
+  LAST_UPDATE_DATE = "2020/11/03 09:50:23"
+  VALIDATION_TYPE = "F"
   PROTECTED_FLAG = "N"
   SECURITY_ENABLED_FLAG = "N"
   LONGLIST_FLAG = "N"
   FORMAT_TYPE = "C"
-  MAXIMUM_SIZE = "240"
+  MAXIMUM_SIZE = "30"
   ALPHANUMERIC_ALLOWED_FLAG = "Y"
   UPPERCASE_ONLY_FLAG = "N"
   NUMERIC_MODE_ENABLED_FLAG = "N"
-  DESCRIPTION = "240 Characters"
 
 
+  BEGIN VSET_TABLE
+    OWNER = "344967"
+    LAST_UPDATE_DATE = "2020/11/03 09:50:23"
+    APPLICATION_TABLE_NAME = "xx_fin_translatevalues"
+    SUMMARY_ALLOWED_FLAG = "N"
+    VALUE_COLUMN_NAME = "INITCAP(SOURCE_VALUE1)"
+    VALUE_COLUMN_TYPE = "C"
+    VALUE_COLUMN_SIZE = "30"
+    ID_COLUMN_NAME = "SOURCE_VALUE1"
+    ID_COLUMN_TYPE = "C"
+    ID_COLUMN_SIZE = "30"
+    ENABLED_COLUMN_NAME = "'Y'"
+    COMPILED_ATTRIBUTE_COLUMN_NAME = "NULL"
+    HIERARCHY_LEVEL_COLUMN_NAME = "NULL"
+    START_DATE_COLUMN_NAME = "to_date(null)"
+    END_DATE_COLUMN_NAME = "to_date(null)"
+    SUMMARY_COLUMN_NAME = "'N'"
+    ADDITIONAL_WHERE_CLAUSE =
+ "target_value6 = 'Y'\n\
+and translate_id = (\n\
+select translate_id\n\
+from xx_fin_translatedefinition xftd\n\
+where xftd.translation_name ='XX_AR_SELF_SERVICE'\n\
+AND xftd.enabled_flag = 'Y')"
+  END VSET_TABLE
+  
 
 
 
@@ -423,6 +448,28 @@ BEGIN VALUE_SET "FND_DATE4_STANDARD"
   UPPERCASE_ONLY_FLAG = "Y"
   NUMERIC_MODE_ENABLED_FLAG = "N"
   DESCRIPTION = "Non-required date value set with format DD-MON-YYYY"
+
+
+
+
+
+
+
+END VALUE_SET
+
+BEGIN VALUE_SET "240 Characters"
+  OWNER = "ORACLE12.2.5"
+  LAST_UPDATE_DATE = "2014/07/02 00:00:00"
+  VALIDATION_TYPE = "N"
+  PROTECTED_FLAG = "N"
+  SECURITY_ENABLED_FLAG = "N"
+  LONGLIST_FLAG = "N"
+  FORMAT_TYPE = "C"
+  MAXIMUM_SIZE = "240"
+  ALPHANUMERIC_ALLOWED_FLAG = "Y"
+  UPPERCASE_ONLY_FLAG = "N"
+  NUMERIC_MODE_ENABLED_FLAG = "N"
+  DESCRIPTION = "240 Characters"
 
 
 
@@ -458,14 +505,14 @@ BEGIN DESC_FLEX "XXFIN" "$SRS$.XXARSELFSERVICE"
   
     BEGIN DFF_SEGMENT "Request Type" "ATTRIBUTE1"
       OWNER = "344967"
-      LAST_UPDATE_DATE = "2020/08/19 09:01:32"
+      LAST_UPDATE_DATE = "2020/11/03 09:50:32"
       COLUMN_SEQ_NUM = "1"
       ENABLED_FLAG = "Y"
       DISPLAY_FLAG = "Y"
-      REQUIRED_FLAG = "N"
+      REQUIRED_FLAG = "Y"
       SECURITY_ENABLED_FLAG = "N"
-      FLEX_VALUE_SET_NAME = "240 Characters"
-      DISPLAY_SIZE = "25"
+      FLEX_VALUE_SET_NAME = "XX_AR_SS_RPT_LKP"
+      DISPLAY_SIZE = "30"
       MAXIMUM_DESCRIPTION_LEN = "50"
       CONCATENATION_DESCRIPTION_LEN = "25"
       SRW_PARAM = "P_TYPE"
@@ -577,7 +624,7 @@ BEGIN PROGRAM "XXARSELFSERVICE" "XXFIN"
   AUTO_ANNOTATION =
  "/**\n\
   * @param Request%_Type Request Type\n\
-  * @rep:paraminfo {@rep:type 240 Characters} {@rep:displayed Y}\n\
+  * @rep:paraminfo {@rep:type XX_AR_SS_RPT_LKP} {@rep:displayed Y} {@rep:required}\n\
   * @param As%_Of%_Date As Of Date\n\
   * @rep:paraminfo {@rep:type FND_DATE4_STANDARD} {@rep:displayed Y}\n\
   * @param E%_Mail%_Address E Mail Address\n\

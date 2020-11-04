@@ -900,27 +900,29 @@ BEGIN
         
     END LOOP;
     BEGIN
-            SELECT TARGET_VALUE4,DB.DIRECTORY_PATH,TARGET_VALUE5
-              INTO lv_send_to,lv_source_folder,lv_destination_folder
-              FROM XX_FIN_TRANSLATEDEFINITION XFTD,
-                   XX_FIN_TRANSLATEVALUES XFTV,
-                   DBA_DIRECTORIES DB
-             WHERE XFTD.TRANSLATION_NAME ='XX_AR_SELF_SERVICE'
-               AND XFTV.SOURCE_VALUE1      =lv_process_type
-               AND XFTD.TRANSLATE_ID       =XFTV.TRANSLATE_ID
-               AND XFTD.ENABLED_FLAG       ='Y'
-               AND SYSDATE BETWEEN XFTV.START_DATE_ACTIVE AND NVL(XFTV.END_DATE_ACTIVE,SYSDATE)
-               AND DB.directory_name = XFTV.TARGET_VALUE1;
-        EXCEPTION WHEN OTHERS THEN
-           p_err_buf := 'Error while getting email receiptient';
-           p_ret_code := 2;
-           lv_send_to := NULL;
-        END;
-        IF lv_send_to IS NOT NULL THEN
-           ln_rep_req_id:= fnd_request.submit_request ( application => 'XXFIN' , program => 'XXARSELFSERVICE' , description => NULL , start_time => sysdate , sub_request => false , argument1=>lv_process_type, argument2=>sysdate,argument3=>lv_send_to,argument4=>g_SMTP_SERVER,argument5=>g_MAIL_FROM);
-        END IF;
-        
-        ln_arc_req_id:= fnd_request.submit_request ( application => 'XXFIN' , program => 'XXARMOVEFILE' , description => NULL , start_time => sysdate , sub_request => false , argument1=>lv_source_folder, argument2=>ln_process_id,argument3=>lv_destination_folder);
+        SELECT TARGET_VALUE4,DB.DIRECTORY_PATH,DB1.DIRECTORY_PATH
+          INTO lv_send_to,lv_source_folder,lv_destination_folder
+          FROM XX_FIN_TRANSLATEDEFINITION XFTD,
+               XX_FIN_TRANSLATEVALUES XFTV,
+               DBA_DIRECTORIES DB,
+               DBA_DIRECTORIES DB1
+         WHERE XFTD.TRANSLATION_NAME ='XX_AR_SELF_SERVICE'
+           AND XFTV.SOURCE_VALUE1      =lv_process_type
+           AND XFTD.TRANSLATE_ID       =XFTV.TRANSLATE_ID
+           AND XFTD.ENABLED_FLAG       ='Y'
+           AND SYSDATE BETWEEN XFTV.START_DATE_ACTIVE AND NVL(XFTV.END_DATE_ACTIVE,SYSDATE)
+           AND DB.directory_name = XFTV.TARGET_VALUE1
+           AND DB1.directory_name = XFTV.TARGET_VALUE5;
+    EXCEPTION WHEN OTHERS THEN
+       p_err_buf := 'Error while getting email receiptient';
+       p_ret_code := 2;
+       lv_send_to := NULL;
+    END;
+    IF lv_send_to IS NOT NULL THEN
+       ln_rep_req_id:= fnd_request.submit_request ( application => 'XXFIN' , program => 'XXARSELFSERVICE' , description => NULL , start_time => sysdate , sub_request => false , argument1=>lv_process_type, argument2=>sysdate,argument3=>lv_send_to,argument4=>g_SMTP_SERVER,argument5=>g_MAIL_FROM);
+    END IF;
+    
+    ln_arc_req_id:= fnd_request.submit_request ( application => 'XXFIN' , program => 'XXARMOVEFILE' , description => NULL , start_time => sysdate , sub_request => false , argument1=>lv_source_folder, argument2=>ln_process_id,argument3=>lv_destination_folder);
     
     logs('Start Bad address process (-)',True);
 EXCEPTION WHEN OTHERS THEN
@@ -1031,17 +1033,19 @@ BEGIN
         purge_file_data(rec_process_files.file_id);
     END LOOP;
     BEGIN
-        SELECT TARGET_VALUE4,DB.DIRECTORY_PATH,TARGET_VALUE5
+        SELECT TARGET_VALUE4,DB.DIRECTORY_PATH,DB1.DIRECTORY_PATH
           INTO lv_send_to,lv_source_folder,lv_destination_folder
           FROM XX_FIN_TRANSLATEDEFINITION XFTD,
                XX_FIN_TRANSLATEVALUES XFTV,
-               DBA_DIRECTORIES DB
+               DBA_DIRECTORIES DB,
+               DBA_DIRECTORIES DB1
          WHERE XFTD.TRANSLATION_NAME ='XX_AR_SELF_SERVICE'
            AND XFTV.SOURCE_VALUE1      =lv_process_type
            AND XFTD.TRANSLATE_ID       =XFTV.TRANSLATE_ID
            AND XFTD.ENABLED_FLAG       ='Y'
            AND SYSDATE BETWEEN XFTV.START_DATE_ACTIVE AND NVL(XFTV.END_DATE_ACTIVE,SYSDATE)
-           AND DB.directory_name = XFTV.TARGET_VALUE1;
+           AND DB.directory_name = XFTV.TARGET_VALUE1
+           AND DB1.directory_name = XFTV.TARGET_VALUE5;
     EXCEPTION WHEN OTHERS THEN
        p_err_buf := 'Error while getting email receiptient';
        p_ret_code := 2;
@@ -1164,17 +1168,19 @@ BEGIN
         
     END LOOP;
     BEGIN
-        SELECT TARGET_VALUE4,DB.DIRECTORY_PATH,TARGET_VALUE5
+        SELECT TARGET_VALUE4,DB.DIRECTORY_PATH,DB1.DIRECTORY_PATH
           INTO lv_send_to,lv_source_folder,lv_destination_folder
           FROM XX_FIN_TRANSLATEDEFINITION XFTD,
                XX_FIN_TRANSLATEVALUES XFTV,
-               DBA_DIRECTORIES DB
+               DBA_DIRECTORIES DB,
+               DBA_DIRECTORIES DB1
          WHERE XFTD.TRANSLATION_NAME ='XX_AR_SELF_SERVICE'
            AND XFTV.SOURCE_VALUE1      =lv_process_type
            AND XFTD.TRANSLATE_ID       =XFTV.TRANSLATE_ID
            AND XFTD.ENABLED_FLAG       ='Y'
            AND SYSDATE BETWEEN XFTV.START_DATE_ACTIVE AND NVL(XFTV.END_DATE_ACTIVE,SYSDATE)
-           AND DB.directory_name = XFTV.TARGET_VALUE1;
+           AND DB.directory_name = XFTV.TARGET_VALUE1
+           AND DB1.directory_name = XFTV.TARGET_VALUE5;
     EXCEPTION WHEN OTHERS THEN
        p_err_buf := 'Error while getting email receiptient';
        p_ret_code := 2;
