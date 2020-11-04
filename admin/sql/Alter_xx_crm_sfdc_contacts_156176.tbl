@@ -1,0 +1,43 @@
+-- +========================================================================+
+-- |                  Office Depot                                          |
+-- +========================================================================+
+-- | Name        : Alter_xx_crm_sfdc_contacts_156176.tbl                    |
+-- | Description : Added new field in the existing xx_crm_sfdc_contacts     |
+-- |               table   ACCT_ORIG_SYS_REFERENCE                          |
+-- |                                                                        |
+-- |Change Record:                                                          |
+-- |===============                                                         |
+-- |Version   Date        Author           Remarks                          |
+-- |=======  ===========  =============    =================================|
+-- |1.0      20-Oct-2020  Divyansh Saini    Initial Version                 |
+-- +========================================================================+
+
+
+SET VERIFY      OFF
+SET TERM        ON
+SET FEEDBACK    OFF
+SET SHOW        OFF
+SET ECHO        OFF
+SET TAB         OFF
+
+
+
+PROMPT
+PROMPT Altering the Table XX_CRM_SFDC_CONTACTS.....
+PROMPT
+
+WHENEVER SQLERROR CONTINUE
+
+ALTER TABLE XXCRM.XX_CRM_SFDC_CONTACTS ADD acct_orig_sys_reference VARCHAR2(50)
+/
+
+
+
+PROMPT
+PROMPT Exiting....
+PROMPT
+
+SET FEEDBACK ON
+
+EXIT;
+
