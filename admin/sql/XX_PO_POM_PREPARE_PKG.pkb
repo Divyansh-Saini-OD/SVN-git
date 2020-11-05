@@ -285,7 +285,7 @@ BEGIN
 			  attribute1
 
             )
-          SELECT po_lines_intrface_s.NEXTVAL ,
+          SELECT po_lines_interface_s.NEXTVAL ,
             ln_max_record_id ,
             'I' ,
             po_number ,
