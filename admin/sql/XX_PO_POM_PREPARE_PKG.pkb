@@ -285,7 +285,7 @@ BEGIN
 			  attribute1
 
             )
-          SELECT po_lines_interface_s.NEXTVAL ,
+          SELECT po_lines_intrface_s.NEXTVAL ,
             ln_max_record_id ,
             'I' ,
             po_number ,
@@ -314,7 +314,7 @@ BEGIN
             gn_user_id ,
             sysdate ,
             gn_login_id,
-			item_description
+			attribute1
           FROM xx_po_pom_lines_int_stg ln
           WHERE ln.po_number = line_upd_rec.po_number
           AND ln.line_num    = line_upd_rec.line_num
