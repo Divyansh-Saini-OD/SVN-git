@@ -523,15 +523,15 @@ AS
       ---------------------------------------*/
       CURSOR lcu_elynxx_desc_upd IS            
          SELECT NVL(xxol.item_description,ril.description) item_description,xxol.line_id
-           FROM apps.xx_om_line_attributes_all xxol,
-                apps.ra_interface_lines_all ril
+           FROM xx_om_line_attributes_all xxol,
+                ra_interface_lines_all ril
           WHERE 1=1
             AND ril.interface_line_attribute6 = xxol.line_id
             AND ril.request_id                = gn_request_id
-            AND EXISTS (SELECT 1 FROM apps.xx_om_header_attributes_all xxoh,
-                                      apps.oe_order_lines_all ol,
-                                      apps.xx_fin_translatedefinition xftd,
-                                      apps.xx_fin_translatevalues xftv
+            AND EXISTS (SELECT 1 FROM xx_om_header_attributes_all xxoh,
+                                      oe_order_lines_all ol,
+                                      xx_fin_translatedefinition xftd,
+                                      xx_fin_translatevalues xftv
                          WHERE 1=1
                             AND xftd.translation_name         = 'AR_E0080_RPC_APP_IDS'
                             AND xftv.translate_id             = xftd.translate_id
