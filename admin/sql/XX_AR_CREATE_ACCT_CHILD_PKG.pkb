@@ -1530,6 +1530,16 @@ HEADER_ATTRIBUTE13  RA_INTERFACE_LINES_ALL.HEADER_ATTRIBUTE13%TYPE,
          /**************************************************
          ** Step #7 ? Begin Processing Interface Lines    **
          **************************************************/
+        -- Added for RPC changes JIRA NAIT-154405
+        FOR rec_elynxx_desc_upd IN lcu_elynxx_desc_upd LOOP
+            UPDATE ra_interface_lines_all
+               SET DESCRIPTION               = rec_elynxx_desc_upd.item_description
+             WHERE interface_line_attribute6 = rec_elynxx_desc_upd.line_id
+               AND request_id                = gn_request_id;
+        
+        END LOOP;
+        -- Ended for RPC changes JIRA NAIT-154405
+
          LOOP
             FETCH c_interface_lines INTO lcu_process_interface_lines;
             EXIT WHEN c_interface_lines%NOTFOUND;
@@ -1592,18 +1602,6 @@ HEADER_ATTRIBUTE13  RA_INTERFACE_LINES_ALL.HEADER_ATTRIBUTE13%TYPE,
             ln_trx_num_len           := 0 ;  -- Added for NAIT-86554
             ln_bill_comp_check_count := 0 ;  -- Added for NAIT-86554
             lc_bc_spc_flag           :='N';  -- Added for NAIT-86554
-
-
-
-            -- Added for RPC changes JIRA NAIT-154405
-            FOR rec_elynxx_desc_upd IN lcu_elynxx_desc_upd LOOP
-                UPDATE ra_interface_lines_all
-                   SET DESCRIPTION               = rec_elynxx_desc_upd.item_description
-                 WHERE interface_line_attribute6 = rec_elynxx_desc_upd.line_id
-                   AND request_id                = gn_request_id;
-            
-            END LOOP;
-            -- Ended for RPC changes JIRA NAIT-154405
             
             --Added Under NAIT-121574 -- Start
 
