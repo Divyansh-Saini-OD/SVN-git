@@ -521,24 +521,26 @@ AS
       /*-------------------------------------
       Cursor added for RPC whole sale changes for app ID ELYNXX JIRA NAIT-154405
       ---------------------------------------*/
-      CURSOR lcu_elynxx_desc_upd IS
-         SELECT NVL(xxol.item_description,ril.description) item_description,ol.line_id
-           FROM xx_om_header_attributes_all xxoh,
-                xx_om_line_attributes_all xxol,
-                oe_order_lines_all ol,
-                ra_interface_lines_all ril,
-                xx_fin_translatedefinition xftd,
-                xx_fin_translatevalues xftv
-          WHERE xxoh.header_id                = ol.header_id
-            AND xxol.line_id                  = ol.line_id
-            AND ril.interface_line_attribute6 = ol.line_id
+      CURSOR lcu_elynxx_desc_upd IS            
+         SELECT NVL(xxol.item_description,ril.description) item_description,xxol.line_id
+           FROM apps.xx_om_line_attributes_all xxol,
+                apps.ra_interface_lines_all ril
+          WHERE 1=1
+            AND ril.interface_line_attribute6 = xxol.line_id
             AND ril.request_id                = gn_request_id
-            AND xftd.translation_name         = 'AR_E0080_RPC_APP_IDS'
-            AND xftv.translate_id             = xftd.translate_id
-            AND xftd.enabled_flag             = 'Y'
-            AND xftv.enabled_flag             = 'Y'
-            AND SYSDATE BETWEEN xftv.START_DATE_ACTIVE AND NVL(xftv.END_DATE_ACTIVE,sysdate+1)
-            AND upper(xxoh.app_id)            = xftv.source_value1;
+            AND EXISTS (SELECT 1 FROM apps.xx_om_header_attributes_all xxoh,
+                                      apps.oe_order_lines_all ol,
+                                      apps.xx_fin_translatedefinition xftd,
+                                      apps.xx_fin_translatevalues xftv
+                         WHERE 1=1
+                            AND xftd.translation_name         = 'AR_E0080_RPC_APP_IDS'
+                            AND xftv.translate_id             = xftd.translate_id
+                            AND xftd.enabled_flag             = 'Y'
+                            AND xftv.enabled_flag             = 'Y'
+                            AND SYSDATE BETWEEN xftv.START_DATE_ACTIVE AND NVL(xftv.END_DATE_ACTIVE,sysdate+1)
+                            AND xxoh.header_id                = ol.header_id
+                            AND xxol.line_id                  = ol.line_id
+                            AND upper(xxoh.app_id)            = xftv.source_value1);
 
       lc_interface_PREV  VARCHAR2(1000);
       lc_interface_CURR  VARCHAR2(1000);
