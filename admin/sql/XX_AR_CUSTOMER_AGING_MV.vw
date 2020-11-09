@@ -1,3 +1,5 @@
+DROP MATERIALIZED VIEW XX_AR_CUSTOMER_AGING_MV;
+
 CREATE MATERIALIZED VIEW XX_AR_CUSTOMER_AGING_MV
 BUILD IMMEDIATE 
 REFRESH COMPLETE ON DEMAND START WITH SYSDATE+0 NEXT SYSDATE+1/4
@@ -15,7 +17,8 @@ AS
 
   -- | Version     Date         Author               Remarks                                      |                                                                                                     
   -- | =========   ===========  =============        =============================================|                                                                                                    
-  -- | 1.0        01-Sept-2020 Amit Kumar		     NAIT-147376 / NAIT-147376/ NAIT-136440       |                     
+  -- | 1.0        01-Sept-2020 Amit Kumar		     NAIT-147376 / NAIT-147376/ NAIT-136440       | 
+  -- | 1.1		  05-Nov-2020   Amit Kumar			 NAIT-161273  								  |  
   -- +============================================================================================| */
 SELECT 
   /*+ PARALLEL(8) dynamic_sampling(0) */
@@ -56,7 +59,8 @@ AND HCP.standard_terms          = RT.term_id(+)
 AND HCP.site_use_id            IS NULL
 AND HCP.CUST_ACCOUNT_PROFILE_ID = HCPA.CUST_ACCOUNT_PROFILE_ID
 AND HCPA.currency_code          = 'USD'
-AND aps.status                  = 'OP'
+--AND aps.status                  = 'OP' --Commented NAIT-161273
+AND aps.status          (+)     = 'OP'   --Added NAIT-161273
 AND NVL(aps.CLASS, 'INV')    IN ('PMT','CB','INV','DM','CM')
 GROUP BY HCA.cust_account_id,
   HP.party_name,

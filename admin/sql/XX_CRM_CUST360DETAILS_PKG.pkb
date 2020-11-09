@@ -14,7 +14,9 @@ AS
   -- | Version     Date         Author               Remarks                                      |                                                                                                     
   -- | =========   ===========  =============        =============================================|                                                                                                     
   -- | 1.0         NA  			NA			         Initial version   (SVN version not found)    |                                                                                                     
-  -- | 1.1         01-Sept-2020 Amit Kumar		     NAIT-147376 / NAIT-147376/ NAIT-136440       |                     
+  -- | 1.1         01-Sept-2020 Amit Kumar		     NAIT-147376 / NAIT-147376/ NAIT-136440       |
+  -- | 1.1		  05-Nov-2020   Amit Kumar			 NAIT-161681 --To Display Credit info for 	  |
+  -- |												 all customers.		  					      |  
   -- +============================================================================================| */
 PROCEDURE GET_CUST_INFO (
                            P_AOPS_ACCT_ID  IN   NUMBER,
@@ -66,7 +68,8 @@ SELECT CAST(MULTISET
 
 SELECT CAST(MULTISET
  (
-  SELECT CURRENCY_CODE ,
+ --NAIT-161681 Commented--
+ /* SELECT CURRENCY_CODE ,
   OVERALL_CREDIT_LIMIT ,
   TRX_CREDIT_LIMIT ,
   OTB_CREDIT_LIMIT ,
@@ -78,7 +81,26 @@ SELECT CAST(MULTISET
 		WHEN CURRENCY_CODE = 'USD'
 		THEN 0
 		ELSE 1
-	  END ) AS XX_CRM_CREDIT_LIMTS_OBJS)
+	  END ) AS XX_CRM_CREDIT_LIMTS_OBJS) */ --NAIT-161681--Start-- Added new SQL below to replace the commented SQL.
+	SELECT CURRENCY_CODE ,
+	  OVERALL_CREDIT_LIMIT ,
+	  TRX_CREDIT_LIMIT ,
+	  OTB_CREDIT_LIMIT ,
+	  PARENT_HIER_CREDIT_LIMIT
+	FROM
+	  (SELECT CURRENCY_CODE ,
+		OVERALL_CREDIT_LIMIT ,
+		TRX_CREDIT_LIMIT ,
+		OTB_CREDIT_LIMIT ,
+		PARENT_HIER_CREDIT_LIMIT,
+		ORIG_SYSTEM_REFERENCE,
+		CUST_HIER,
+		row_number () over (partition BY ORIG_SYSTEM_REFERENCE order by cust_hier DESC ) row_num
+	  FROM XX_CRM_CREDIT_LIMTS_OBJS_MV
+	  WHERE ORIG_SYSTEM_REFERENCE = LPAD(P_AOPS_ACCT_ID, 8, '0')
+		|| '-00001-A0'
+	  )
+	WHERE row_num=1 ) AS XX_CRM_CREDIT_LIMTS_OBJS)  -- --NAIT-161681 -end--
  INTO XX_CRM_CREDIT_LIMTS_OBJS_T     
  FROM DUAL;
 
