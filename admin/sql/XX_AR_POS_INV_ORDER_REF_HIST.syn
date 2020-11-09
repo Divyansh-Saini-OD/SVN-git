@@ -1,0 +1,34 @@
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     ON
+
+PROMPT Creating SYNONYM XX_AR_POS_INV_ORDER_REF_HIST
+
+PROMPT Program exits IF the creation IS NOT SUCCESSFUL
+
+WHENEVER SQLERROR CONTINUE
+
+-- +===================================================================================+
+-- |                  Office Depot - Project Simplify                                  |
+-- +===================================================================================+
+-- | Name :XX_AR_POS_INV_ORDER_REF_HIST                                                |
+-- | Description : Create the Synonym for the table XX_AR_POS_INV_ORDER_REF_HIST       |
+-- |                                                                                   |
+-- |                                                                                   |
+-- |                                                                                   |
+-- |Change Record:                                                                     |
+-- |===============                                                                    |
+-- |Version   Date         Author               Remarks                                |
+-- |=======   ==========   =============        =======================================|
+-- | 1.0     09-NOV-2020  Arvind K    I          initial version                       |
+-- +===================================================================================+
+
+--DROP SYNONYM XX_AR_POS_INV_ORDER_REF_HIST;
+
+CREATE SYNONYM XX_AR_POS_INV_ORDER_REF_HIST FOR xxapps_history_query.XX_AR_POS_INV_ORDER_REF;
+
+
+SHOW ERROR
+
