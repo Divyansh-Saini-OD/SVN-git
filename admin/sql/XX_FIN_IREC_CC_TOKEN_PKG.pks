@@ -56,10 +56,10 @@ IS
  |      p_expiration_date   IN      varchar2
  |
  | RETURNS
- |      x_token 
- |      x_token_flag 
- |      x_error_msg 
- |      x_error_code  
+ |      x_token
+ |      x_token_flag
+ |      x_error_msg
+ |      x_error_code
  |
  | KNOWN ISSUES
  |
@@ -73,7 +73,7 @@ IS
  | Date                  Author            Description of Changes
  | 22-JUL-2020           Divyansh Saini      Created
  |
- *=======================================================================*/	
+ *=======================================================================*/
 PROCEDURE GET_TOKEN_ECOMM(p_account_number   IN              VARCHAR2,
                        p_expiration_date  IN              VARCHAR2,
                        x_token             OUT NOCOPY      VARCHAR2,

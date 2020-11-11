@@ -25,7 +25,7 @@ IS
     FUNCTION mask_account_number(p_value IN VARCHAR2) RETURN VARCHAR2
     IS
     BEGIN
-    
+
       RETURN lpad(substr(p_value,-4),length(p_value),'*');
     EXCEPTION
       WHEN OTHERS THEN
@@ -43,10 +43,10 @@ IS
     BEGIN
 
       lc_token_flag := 'N';
-      
+
       IF (fnd_log.level_statement >= fnd_log.g_current_runtime_level) THEN
          fnd_log.STRING (fnd_log.level_statement, 'XX_FIN_IREC_CC_TOKEN_PKG.VALIDATE_TOKEN', 'VALIDATE_TOKEN(+)' );
-      END IF;    
+      END IF;
 
       ln_token := to_number(P_TOKEN);
       lc_token_flag := 'Y';
@@ -54,7 +54,7 @@ IS
       IF (fnd_log.level_statement >= fnd_log.g_current_runtime_level) THEN
          fnd_log.STRING (fnd_log.level_statement, 'XX_FIN_IREC_CC_TOKEN_PKG.VALIDATE_TOKEN', 'lc_token_flag: ' || lc_token_flag );
          fnd_log.STRING (fnd_log.level_statement, 'XX_FIN_IREC_CC_TOKEN_PKG.VALIDATE_TOKEN', 'VALIDATE_TOKEN(-)' );
-      END IF;    
+      END IF;
 
       return lc_token_flag;
 
@@ -63,9 +63,9 @@ IS
         lc_token_flag := 'N';
         --IF (fnd_log.level_statement >= fnd_log.g_current_runtime_level) THEN
            fnd_log.STRING (fnd_log.level_statement, 'XX_FIN_IREC_CC_TOKEN_PKG.VALIDATE_TOKEN', 'Exception in converting the token to number, lc_token_flag:' || lc_token_flag || ', : sqlerrm' || sqlerrm );
-        --END IF;    
+        --END IF;
         return lc_token_flag;
-    END VALIDATE_TOKEN;    
+    END VALIDATE_TOKEN;
 
     PROCEDURE GET_TOKEN (
          P_ERROR_MSG            IN OUT NOCOPY VARCHAR2
@@ -73,9 +73,9 @@ IS
         ,P_OapfAction           IN VARCHAR2 DEFAULT NULL
         ,P_OapfTransactionId    IN VARCHAR2 DEFAULT NULL
         ,P_OapfNlsLang          IN VARCHAR2 DEFAULT NULL
-        ,P_OapfPmtInstrID       IN VARCHAR2 
+        ,P_OapfPmtInstrID       IN VARCHAR2
         ,P_OapfPmtFactorFlag    IN VARCHAR2 DEFAULT NULL
-        ,P_OapfPmtInstrExp      IN DATE 
+        ,P_OapfPmtInstrExp      IN DATE
         ,P_OapfOrgType          IN VARCHAR2 DEFAULT NULL
         ,P_OapfTrxnRef          IN VARCHAR2 DEFAULT NULL
         ,P_OapfPmtInstrDBID     IN VARCHAR2 DEFAULT NULL
@@ -88,11 +88,11 @@ IS
         ,P_OapfCurr             IN VARCHAR2 DEFAULT NULL
         ,P_OapfRetry            IN VARCHAR2 DEFAULT NULL
         ,P_OapfCVV2             IN VARCHAR2 DEFAULT NULL
-        ,X_TOKEN               OUT VARCHAR2        
-        ,X_TOKEN_FLAG          OUT VARCHAR2        
-    )                                       
+        ,X_TOKEN               OUT VARCHAR2
+        ,X_TOKEN_FLAG          OUT VARCHAR2
+    )
     IS
-    
+
       l_ajb_url             VARCHAR2(4000) := NULL;
       l_ajb_url_for_log     VARCHAR2(4000) := NULL;
       l_servlet_url         VARCHAR2(1000)  := NULL;
@@ -117,7 +117,7 @@ IS
       l_OdReqToken          VARCHAR2(256)   := NULL;
       l_wallet_location     VARCHAR2(256)   := NULL;
       l_password            VARCHAR2(256)   := NULL;
-        
+
       P_DATA_TYPE           VARCHAR2(256)  := 'TEXT/XML';
       P_PROXY_IN            VARCHAR2(256)  := NULL;
       P_NO_PROXY_DOMAINS_IN VARCHAR2(256)  := NULL;
@@ -132,10 +132,10 @@ IS
       L_VALUE               VARCHAR2(32767) := NULL;
       L_AJB_RESPONSE_STRING VARCHAR2(1000) := NULL;
       L_TOKEN               VARCHAR2(30)   := NULL;  --16 digits
-      L_TOKEN_FLAG          VARCHAR2(1)    := NULL;  
+      L_TOKEN_FLAG          VARCHAR2(1)    := NULL;
       l_exp_month           varchar2(2) := null;
       l_exp_year            varchar2(4) := null;
-      
+
       l_encoded_date        varchar2(30);
 
       l_err_response        VARCHAR2(256);
@@ -144,15 +144,15 @@ IS
 
       l_wrong_hvt           EXCEPTION;
       l_hvt_exception       EXCEPTION;
-      
+
       AJB_TIMEOUT_EXCEPTION EXCEPTION;
 
       BEGIN
         IF (fnd_log.level_statement >= fnd_log.g_current_runtime_level) THEN
            fnd_log.STRING (fnd_log.level_statement, 'XX_FIN_IREC_CC_TOKEN_PKG.GET_TOKEN', 'GET_TOKEN(+)' );
-        END IF;    
-        
-        SELECT 
+        END IF;
+
+        SELECT
            TARGET_VALUE1
           ,TARGET_VALUE2
           ,TARGET_VALUE3
@@ -199,14 +199,14 @@ IS
         WHERE 1=1
         and   DEF.TRANSLATE_ID = VAL.TRANSLATE_ID
         and   DEF.TRANSLATION_NAME='XX_FIN_IREC_TOKEN_PARAMS'
-        and   VAL.SOURCE_VALUE1 = 'AJB_URL'     
+        and   VAL.SOURCE_VALUE1 = 'AJB_URL'
         and   VAL.ENABLED_FLAG = 'Y'
         and   SYSDATE between VAL.START_DATE_ACTIVE and nvl(VAL.END_DATE_ACTIVE, SYSDATE+1)
-        ; 
+        ;
 
         IF (fnd_log.level_statement >= fnd_log.g_current_runtime_level) THEN
            fnd_log.STRING (fnd_log.level_statement, 'XX_FIN_IREC_CC_TOKEN_PKG.GET_TOKEN', 'P_OapfPmtInstrExp: ' || P_OapfPmtInstrExp );
-        END IF;    
+        END IF;
 
         select to_char(P_OapfPmtInstrExp,'MM'), to_char(P_OapfPmtInstrExp,'RR')
         into  l_exp_month, l_exp_year
@@ -214,64 +214,64 @@ IS
 
         IF (fnd_log.level_statement >= fnd_log.g_current_runtime_level) THEN
            fnd_log.STRING (fnd_log.level_statement, 'XX_FIN_IREC_CC_TOKEN_PKG.GET_TOKEN', 'P_OapfPmtInstrExp: ' || P_OapfPmtInstrExp );
-        END IF;    
-        
+        END IF;
+
         l_encoded_date := l_exp_month || '%2F' || l_exp_year;
 
         IF (fnd_log.level_statement >= fnd_log.g_current_runtime_level) THEN
            fnd_log.STRING (fnd_log.level_statement, 'XX_FIN_IREC_CC_TOKEN_PKG.GET_TOKEN', 'l_encoded_date: ' || l_encoded_date );
-        END IF;    
-        
-        l_ajb_url :=   l_servlet_url         ||    
-                       l_OapfAction          || P_OapfAction           || 
-                       l_OapfTransactionId   || P_OapfTransactionId    || 
-                       l_OapfNlsLang         || P_OapfNlsLang          || 
+        END IF;
+
+        l_ajb_url :=   l_servlet_url         ||
+                       l_OapfAction          || P_OapfAction           ||
+                       l_OapfTransactionId   || P_OapfTransactionId    ||
+                       l_OapfNlsLang         || P_OapfNlsLang          ||
                        l_OapfPmtInstrID      || P_OapfPmtInstrID       ||  --add cc number here
-                       l_OapfPmtFactorFlag   || P_OapfPmtFactorFlag    || 
+                       l_OapfPmtFactorFlag   || P_OapfPmtFactorFlag    ||
                        l_OapfPmtInstrExp     || l_encoded_date         ||  --add exp date here
-                       l_OapfOrgType         || P_OapfOrgType          || 
-                       l_OapfTrxnRef         || P_OapfTrxnRef          || 
-                       l_OapfPmtInstrDBID    || P_OapfPmtInstrDBID     || 
-                       l_OapfPmtChannelCode  || P_OapfPmtChannelCode   || 
-                       l_OapfAuthType        || P_OapfAuthType         || 
-                       l_OapfTrxnmid         || P_OapfTrxnmid          || 
-                       l_OapfStoreId         || P_OapfStoreId          || 
-                       l_OapfPrice           || P_OapfPrice            || 
-                       l_OapfOrderId         || P_OapfOrderId          || 
-                       l_OapfCurr            || P_OapfCurr             || 
-                       l_OapfRetry           || P_OapfRetry            || 
-                       l_OapfCVV2            || P_OapfCVV2             || 
-                       l_OdReqToken      
+                       l_OapfOrgType         || P_OapfOrgType          ||
+                       l_OapfTrxnRef         || P_OapfTrxnRef          ||
+                       l_OapfPmtInstrDBID    || P_OapfPmtInstrDBID     ||
+                       l_OapfPmtChannelCode  || P_OapfPmtChannelCode   ||
+                       l_OapfAuthType        || P_OapfAuthType         ||
+                       l_OapfTrxnmid         || P_OapfTrxnmid          ||
+                       l_OapfStoreId         || P_OapfStoreId          ||
+                       l_OapfPrice           || P_OapfPrice            ||
+                       l_OapfOrderId         || P_OapfOrderId          ||
+                       l_OapfCurr            || P_OapfCurr             ||
+                       l_OapfRetry           || P_OapfRetry            ||
+                       l_OapfCVV2            || P_OapfCVV2             ||
+                       l_OdReqToken
                        ;
-        l_ajb_url_for_log := 
-                       l_servlet_url         ||    
-                       l_OapfAction          || P_OapfAction           || 
-                       l_OapfTransactionId   || P_OapfTransactionId    || 
-                       l_OapfNlsLang         || P_OapfNlsLang          || 
+        l_ajb_url_for_log :=
+                       l_servlet_url         ||
+                       l_OapfAction          || P_OapfAction           ||
+                       l_OapfTransactionId   || P_OapfTransactionId    ||
+                       l_OapfNlsLang         || P_OapfNlsLang          ||
                        l_OapfPmtInstrID      || mask_account_number(P_OapfPmtInstrID) ||  --add cc number here
-                       l_OapfPmtFactorFlag   || P_OapfPmtFactorFlag    || 
+                       l_OapfPmtFactorFlag   || P_OapfPmtFactorFlag    ||
                        l_OapfPmtInstrExp     || l_encoded_date         ||  --add exp date here
-                       l_OapfOrgType         || P_OapfOrgType          || 
-                       l_OapfTrxnRef         || P_OapfTrxnRef          || 
-                       l_OapfPmtInstrDBID    || P_OapfPmtInstrDBID     || 
-                       l_OapfPmtChannelCode  || P_OapfPmtChannelCode   || 
-                       l_OapfAuthType        || P_OapfAuthType         || 
-                       l_OapfTrxnmid         || P_OapfTrxnmid          || 
-                       l_OapfStoreId         || P_OapfStoreId          || 
-                       l_OapfPrice           || P_OapfPrice            || 
-                       l_OapfOrderId         || P_OapfOrderId          || 
-                       l_OapfCurr            || P_OapfCurr             || 
-                       l_OapfRetry           || P_OapfRetry            || 
-                       l_OapfCVV2            || P_OapfCVV2             || 
-                       l_OdReqToken      
+                       l_OapfOrgType         || P_OapfOrgType          ||
+                       l_OapfTrxnRef         || P_OapfTrxnRef          ||
+                       l_OapfPmtInstrDBID    || P_OapfPmtInstrDBID     ||
+                       l_OapfPmtChannelCode  || P_OapfPmtChannelCode   ||
+                       l_OapfAuthType        || P_OapfAuthType         ||
+                       l_OapfTrxnmid         || P_OapfTrxnmid          ||
+                       l_OapfStoreId         || P_OapfStoreId          ||
+                       l_OapfPrice           || P_OapfPrice            ||
+                       l_OapfOrderId         || P_OapfOrderId          ||
+                       l_OapfCurr            || P_OapfCurr             ||
+                       l_OapfRetry           || P_OapfRetry            ||
+                       l_OapfCVV2            || P_OapfCVV2             ||
+                       l_OdReqToken
                        ;
-    
+
         --UTL_HTTP.SET_RESPONSE_ERROR_CHECK(enable => TRUE );
         --UTL_HTTP.SET_DETAILED_EXCP_SUPPORT(enable => TRUE );
         --UTL_HTTP.SET_WALLET('file:/app/ebs/ctgsixxxxx/xxfin/ewallet','ipay1234');
         -- Changes for SSL/TSL Upgrade Start
         BEGIN
-          SELECT 
+          SELECT
              TARGET_VALUE1
             ,TARGET_VALUE2
             into
@@ -282,9 +282,9 @@ IS
           WHERE 1=1
           and   DEF.TRANSLATE_ID = VAL.TRANSLATE_ID
           and   DEF.TRANSLATION_NAME='XX_FIN_IREC_TOKEN_PARAMS'
-          and   VAL.SOURCE_VALUE1 = 'WALLET_LOCATION'     
+          and   VAL.SOURCE_VALUE1 = 'WALLET_LOCATION'
           and   VAL.ENABLED_FLAG = 'Y'
-          and   SYSDATE between VAL.START_DATE_ACTIVE and nvl(VAL.END_DATE_ACTIVE, SYSDATE+1); 
+          and   SYSDATE between VAL.START_DATE_ACTIVE and nvl(VAL.END_DATE_ACTIVE, SYSDATE+1);
         EXCEPTION WHEN OTHERS THEN
           fnd_log.STRING (fnd_log.level_statement, 'XX_FIN_IREC_CC_TOKEN_PKG.GET_TOKEN', 'Wallet Location Not Found' );
           l_wallet_location := NULL;
@@ -297,7 +297,7 @@ IS
         -- Begin the post request
         IF (fnd_log.level_statement >= fnd_log.g_current_runtime_level) THEN
            fnd_log.STRING (fnd_log.level_statement, 'XX_FIN_IREC_CC_TOKEN_PKG.GET_TOKEN', 'before begin_request, l_ajb_url: ' || l_ajb_url_for_log );
-        END IF;    
+        END IF;
 
         l_http_req := utl_http.begin_request (l_ajb_url, 'POST', 'HTTP/1.1');
 
@@ -307,15 +307,15 @@ IS
         -- Process the request and get the response.
         IF (fnd_log.level_statement >= fnd_log.g_current_runtime_level) THEN
            fnd_log.STRING (fnd_log.level_statement, 'XX_FIN_IREC_CC_TOKEN_PKG.GET_TOKEN', 'before utl_http.get_response' );
-        END IF;    
+        END IF;
 
         BEGIN
-          
+
           l_http_resp := utl_http.get_response (l_http_req);
-          
+
           l_ajb_response_string := '';
           l_token := '';
-          
+
           LOOP
             utl_http.read_line(l_http_resp, l_value, TRUE);
 
@@ -335,26 +335,26 @@ IS
               EXIT;
 
             END IF;
-          END LOOP; 
-          
+          END LOOP;
+
           IF (fnd_log.level_statement >= fnd_log.g_current_runtime_level) THEN
             fnd_log.STRING (fnd_log.level_statement, 'XX_FIN_IREC_CC_TOKEN_PKG.GET_TOKEN', 'l_ajb_response_string:' || l_ajb_response_string );
             fnd_log.STRING (fnd_log.level_statement, 'XX_FIN_IREC_CC_TOKEN_PKG.GET_TOKEN', 'l_token:' || l_token );
             fnd_log.STRING (fnd_log.level_statement, 'XX_FIN_IREC_CC_TOKEN_PKG.GET_TOKEN', 'l_err_response:' || l_err_response );
             fnd_log.STRING (fnd_log.level_statement, 'XX_FIN_IREC_CC_TOKEN_PKG.GET_TOKEN', 'l_action_code:' || l_action_code );
             fnd_log.STRING (fnd_log.level_statement, 'XX_FIN_IREC_CC_TOKEN_PKG.GET_TOKEN', 'l_iso_resp_code:' || l_iso_resp_code );
-          END IF; 
-         
+          END IF;
+
           if (l_action_code != '0') then
             if ( l_action_code = '2' ) then
                if ( (P_OapfPmtInstrID = l_token) or (length(l_token) = 19)) then
-                 RAISE l_wrong_hvt; 
+                 RAISE l_wrong_hvt;
                end if;
             else
               RAISE l_hvt_exception;
-            end if;       
+            end if;
           end if;
-          
+
         EXCEPTION
           WHEN l_wrong_hvt THEN
             p_error_msg := 'Payment Process Failed: ' ||  l_err_response;
@@ -370,7 +370,7 @@ IS
             p_error_code := 3;
             --IF (fnd_log.level_statement >= fnd_log.g_current_runtime_level) THEN
                fnd_log.STRING (fnd_log.level_statement, 'XX_FIN_IREC_CC_TOKEN_PKG.GET_TOKEN', 'Exception in getting the token - ' || sqlerrm );
-            --END IF;    
+            --END IF;
         END;
 
 
@@ -384,11 +384,11 @@ IS
 
         IF (fnd_log.level_statement >= fnd_log.g_current_runtime_level) THEN
            fnd_log.STRING (fnd_log.level_statement, 'XX_FIN_IREC_CC_TOKEN_PKG.GET_TOKEN', 'l_token_flag:' || l_token_flag );
-        END IF;    
-        
+        END IF;
+
         IF (fnd_log.level_statement >= fnd_log.g_current_runtime_level) THEN
            fnd_log.STRING (fnd_log.level_statement, 'XX_FIN_IREC_CC_TOKEN_PKG.GET_TOKEN', 'after utl_http.get_response, status code: ' || l_http_resp.status_code || ',reason phrase: ' || l_http_resp.reason_phrase );
-        END IF;    
+        END IF;
 
         -- Look for client-side error and report it.
         if (l_http_resp.status_code >= 400) and (l_http_resp.status_code <= 499) then
@@ -401,7 +401,7 @@ IS
               utl_http.get_authentication( l_http_resp, l_my_scheme, l_my_realm, l_my_proxy);
 
               if (l_my_proxy) then
-                    
+
                 p_error_msg := substrb('Web proxy server is protected. Please supply the required ' || l_my_scheme || ' authentication username/password for realm ' || l_my_realm || ' for the proxy server.',1,199);
 
                 IF (fnd_log.level_statement >= fnd_log.g_current_runtime_level) THEN
@@ -436,7 +436,7 @@ IS
             return;
         end if;
         utl_http.end_response (l_http_resp);
-        
+
         IF (fnd_log.level_statement >= fnd_log.g_current_runtime_level) THEN
            fnd_log.STRING (fnd_log.level_statement, 'XX_FIN_IREC_CC_TOKEN_PKG.GET_TOKEN', 'get_token(-)' );
         END IF;
@@ -445,7 +445,7 @@ IS
         WHEN utl_http.end_of_body THEN
           p_error_msg := substrb(substr(sqlerrm,1,150) || utl_tcp.crlf  ||utl_tcp.crlf ||'URL used :'||l_ajb_url_for_log|| utl_tcp.crlf  ||utl_tcp.crlf ||
                                   'Response :'||l_ajb_response_string,1,999);
-          utl_http.end_response(l_http_resp);    
+          utl_http.end_response(l_http_resp);
         WHEN OTHERS THEN
             fnd_log.STRING (fnd_log.level_statement, 'XX_FIN_IREC_CC_TOKEN_PKG.GET_TOKEN', 'Exception in getting the token - ' || sqlerrm );
              p_error_msg := substrb(substr(sqlerrm,1,150) || utl_tcp.crlf  ||utl_tcp.crlf ||'URL used :'||l_ajb_url_for_log|| utl_tcp.crlf  ||utl_tcp.crlf ||
@@ -467,10 +467,10 @@ IS
  |      p_expiration_date   IN      varchar2
  |
  | RETURNS
- |      x_token 
- |      x_token_flag 
- |      x_error_msg 
- |      x_error_code  
+ |      x_token
+ |      x_token_flag
+ |      x_error_msg
+ |      x_error_code
  |
  | KNOWN ISSUES
  |
@@ -484,8 +484,8 @@ IS
  | Date                  Author            Description of Changes
  | 22-JUL-2020           Divyansh Saini      Created
  |
- *=======================================================================*/	
-	
+ *=======================================================================*/
+
 PROCEDURE GET_TOKEN_ECOMM(p_account_number   IN              VARCHAR2,
                           p_expiration_date  IN              VARCHAR2,
                           x_token            OUT NOCOPY      VARCHAR2,
@@ -533,7 +533,7 @@ BEGIN
      --
      -- Getting the wallet details
     BEGIN
-      SELECT 
+      SELECT
          TARGET_VALUE1
         ,TARGET_VALUE2
         into
@@ -544,9 +544,9 @@ BEGIN
       WHERE 1=1
       and   DEF.TRANSLATE_ID = VAL.TRANSLATE_ID
       and   DEF.TRANSLATION_NAME='XX_FIN_IREC_TOKEN_PARAMS'
-      and   VAL.SOURCE_VALUE1 = 'WALLET_LOCATION'     
+      and   VAL.SOURCE_VALUE1 = 'WALLET_LOCATION'
       and   VAL.ENABLED_FLAG = 'Y'
-      and   SYSDATE between VAL.START_DATE_ACTIVE and nvl(VAL.END_DATE_ACTIVE, SYSDATE+1); 
+      and   SYSDATE between VAL.START_DATE_ACTIVE and nvl(VAL.END_DATE_ACTIVE, SYSDATE+1);
     EXCEPTION WHEN OTHERS THEN
       fnd_log.STRING (fnd_log.level_statement, 'XX_FIN_IREC_CC_TOKEN_PKG.GET_TOKEN_ECOMM', 'Wallet Location Not Found' );
       l_wallet_location := NULL;
@@ -566,7 +566,7 @@ BEGIN
   --Get Ecomm URL
   --
     BEGIN
-      SELECT 
+      SELECT
          TARGET_VALUE1
         into
         lv_ecomm_url
@@ -575,9 +575,9 @@ BEGIN
       WHERE 1=1
       and   DEF.TRANSLATE_ID = VAL.TRANSLATE_ID
       and   DEF.TRANSLATION_NAME='XX_FIN_IREC_TOKEN_PARAMS'
-      and   VAL.SOURCE_VALUE1 = 'ECOMM_TOKEN_URL'     
+      and   VAL.SOURCE_VALUE1 = 'ECOMM_TOKEN_URL'
       and   VAL.ENABLED_FLAG = 'Y'
-      and   SYSDATE between VAL.START_DATE_ACTIVE and nvl(VAL.END_DATE_ACTIVE, SYSDATE+1); 
+      and   SYSDATE between VAL.START_DATE_ACTIVE and nvl(VAL.END_DATE_ACTIVE, SYSDATE+1);
     EXCEPTION WHEN OTHERS THEN
       fnd_log.STRING (fnd_log.level_statement, 'XX_EAI_AUTHORIZATION.GET_TOKEN_ECOMM', 'Url Not Found' );
       lv_ecomm_url := NULL;
@@ -605,7 +605,7 @@ BEGIN
     WHEN UTL_HTTP.end_of_body THEN
       UTL_HTTP.end_response(l_http_resp);
     END;
-    
+
     IF (fnd_log.level_statement >= fnd_log.g_current_runtime_level) THEN
         fnd_log.STRING (fnd_log.level_statement, 'XX_FIN_IREC_CC_TOKEN_PKG.GET_TOKEN_ECOMM', 'fetch values from response ');
     END IF;
@@ -615,11 +615,11 @@ BEGIN
            FROM json_table(lclob_buffer
          ,'$'
          COLUMNS (
-         code       NUMBER(10) PATH '$.statusCode',  
-         hasError   VARCHAR2(2000 CHAR) PATH '$.hasErrorResponse',  
-         reason   VARCHAR2(2000 CHAR) PATH '$.responseObject.reason',  
-         token   NUMBER(20) PATH '$.responseObject.token',  
-         responseCode VARCHAR2(2000 CHAR) PATH  '$.responseObject.responseCode' 
+         code       NUMBER(10) PATH '$.statusCode',
+         hasError   VARCHAR2(2000 CHAR) PATH '$.hasErrorResponse',
+         reason   VARCHAR2(2000 CHAR) PATH '$.responseObject.reason',
+         token   NUMBER(20) PATH '$.responseObject.token',
+         responseCode VARCHAR2(2000 CHAR) PATH  '$.responseObject.responseCode'
          ));
       EXCEPTION WHEN OTHERS THEN
          fnd_log.STRING (fnd_log.level_statement, 'XX_EAI_AUTHORIZATION.BUILD_RESPONSE', 'error while parsing response' );
@@ -665,18 +665,18 @@ BEGIN
             fnd_log.STRING (fnd_log.level_statement, 'XX_FIN_IREC_CC_TOKEN_PKG.GET_TOKEN_ECOMM', 'l_err_response:' || l_err_response );
             fnd_log.STRING (fnd_log.level_statement, 'XX_FIN_IREC_CC_TOKEN_PKG.GET_TOKEN_ECOMM', 'l_action_code:' || l_action_code );
 --            fnd_log.STRING (fnd_log.level_statement, 'XX_FIN_IREC_CC_TOKEN_PKG.GET_TOKEN_ECOMM', 'l_iso_resp_code:' || l_iso_resp_code );
-          END IF; 
-         
+          END IF;
+
           if (l_action_code != '200') then
             if ( l_action_code = '2' ) then
                if ( (p_account_number = ln_token) or (length(ln_token) = 19)) then
-                 RAISE l_wrong_hvt; 
+                 RAISE l_wrong_hvt;
                end if;
             else
               RAISE l_hvt_exception;
-            end if;       
+            end if;
           end if;
-          
+
         EXCEPTION
           WHEN l_wrong_hvt THEN
             x_error_msg := 'Payment Process Failed: ' ||  l_err_response;
@@ -692,7 +692,7 @@ BEGIN
             x_error_code := 3;
             --IF (fnd_log.level_statement >= fnd_log.g_current_runtime_level) THEN
                fnd_log.STRING (fnd_log.level_statement, 'XX_FIN_IREC_CC_TOKEN_PKG.GET_TOKEN_ECOMM', 'Exception in getting the token - ' || sqlerrm );
-            --END IF;    
+            --END IF;
         END;
 
 
@@ -708,11 +708,11 @@ BEGIN
 
         IF (fnd_log.level_statement >= fnd_log.g_current_runtime_level) THEN
            fnd_log.STRING (fnd_log.level_statement, 'XX_FIN_IREC_CC_TOKEN_PKG.GET_TOKEN_ECOMM', 'l_token_flag:' || l_token_flag );
-        END IF;    
-        
+        END IF;
+
         IF (fnd_log.level_statement >= fnd_log.g_current_runtime_level) THEN
            fnd_log.STRING (fnd_log.level_statement, 'XX_FIN_IREC_CC_TOKEN_PKG.GET_TOKEN_ECOMM', 'after utl_http.get_response, status code: ' || l_http_resp.status_code || ',reason phrase: ' || l_http_resp.reason_phrase );
-        END IF;    
+        END IF;
 
         -- Look for client-side error and report it.
         if (l_http_resp.status_code >= 400) and (l_http_resp.status_code <= 499) then
@@ -725,7 +725,7 @@ BEGIN
               utl_http.get_authentication( l_http_resp, l_my_scheme, l_my_realm, l_my_proxy);
 
               if (l_my_proxy) then
-                    
+
                 x_error_msg := substrb('Web proxy server is protected. Please supply the required ' || l_my_scheme || ' authentication username/password for realm ' || l_my_realm || ' for the proxy server.',1,199);
 
                 IF (fnd_log.level_statement >= fnd_log.g_current_runtime_level) THEN
@@ -760,7 +760,7 @@ BEGIN
             return;
         end if;
         utl_http.end_response (l_http_resp);
-        
+
         IF (fnd_log.level_statement >= fnd_log.g_current_runtime_level) THEN
            fnd_log.STRING (fnd_log.level_statement, 'XX_FIN_IREC_CC_TOKEN_PKG.GET_TOKEN_ECOMM', 'GET_TOKEN_ECOMM(-)' );
         END IF;
@@ -769,7 +769,7 @@ BEGIN
         WHEN utl_http.end_of_body THEN
           x_error_msg := substrb(substr(sqlerrm,1,150) || utl_tcp.crlf  ||utl_tcp.crlf ||'URL used :'||l_ecomm_url|| utl_tcp.crlf  ||utl_tcp.crlf ||
                                   'Response :'||lclob_buffer,1,999);
-          utl_http.end_response(l_http_resp);    
+          utl_http.end_response(l_http_resp);
         WHEN OTHERS THEN
             fnd_log.STRING (fnd_log.level_statement, 'XX_FIN_IREC_CC_TOKEN_PKG.GET_TOKEN_ECOMM', 'Exception in getting the token - ' || sqlerrm );
              x_error_msg := substrb(substr(sqlerrm,1,150) || utl_tcp.crlf  ||utl_tcp.crlf ||'URL used :'||l_ecomm_url|| utl_tcp.crlf  ||utl_tcp.crlf ||

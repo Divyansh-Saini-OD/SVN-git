@@ -495,15 +495,15 @@ BEGIN
     iby_debug_pub.add('Starting xx_capture',1,G_DEBUG_MODULE || l_module_name);
     FOR rec_iby_data IN c_iby_data LOOP
         BEGIN
-        XX_IBY_SETTLEMENT_PKG.PRE_CAPTURE_CCRETUNRN( x_error_buf => x_error_buf, 
-                                                   x_ret_code => x_ret_code, 
-                                                   x_receipt_ref => x_receipt_ref, 
-                                                   p_oapfaction => 'ORACAPTURE', 
-                                                   p_oapfcurrency => rec_iby_data.currencynamecode, 
-                                                   p_oapfamount => rec_iby_data.amount, 
-                                                   p_oapfstoreid => rec_iby_data.bepkey, 
-                                                   p_oapftransactionid => p_trxn_id, 
-                                                   p_oapftrxn_ref => NULL, 
+        XX_IBY_SETTLEMENT_PKG.PRE_CAPTURE_CCRETUNRN( x_error_buf => x_error_buf,
+                                                   x_ret_code => x_ret_code,
+                                                   x_receipt_ref => x_receipt_ref,
+                                                   p_oapfaction => 'ORACAPTURE',
+                                                   p_oapfcurrency => rec_iby_data.currencynamecode,
+                                                   p_oapfamount => rec_iby_data.amount,
+                                                   p_oapfstoreid => rec_iby_data.bepkey,
+                                                   p_oapftransactionid => p_trxn_id,
+                                                   p_oapftrxn_ref => NULL,
                                                    p_oapforder_id => rec_iby_data.tangibleid );
         IF x_ret_code = 0 THEN
             ln_status  := 0;
@@ -609,6 +609,7 @@ PROCEDURE EAI_webservice_authorization(
     p_order_id        IN VARCHAR2,
     x_reqresp OUT IBY_PAYMENT_ADAPTER_PUB.ReqResp_rec_type )
 IS
+  PRAGMA autonomous_transaction;
   l_module_name            VARCHAR2(30):= 'EAI_WEBSERVICE_AUTHORIZATION';
   lc_auth_payload          VARCHAR2(4000);
   lv_url                   VARCHAR2(2000);
@@ -668,118 +669,118 @@ BEGIN
     iby_debug_pub.add('lv_card_type '||lv_card_type,1,G_DEBUG_MODULE || l_module_name);
     iby_debug_pub.add('lv_cust_name '||lv_cust_name,1,G_DEBUG_MODULE || l_module_name);
     iby_debug_pub.add('lv_exp_date '||lv_exp_date,1,G_DEBUG_MODULE || l_module_name);
-  -- Decrypting the card number  
-    xx_od_security_key_pkg.decrypt(x_decrypted_val => x_credit_card_number_dec, 
-                                 x_error_message => lc_decrypt_error_msg, 
-                                 p_module => 'AJB', 
-                                 p_key_label => lv_key_label, 
-                                 p_algorithm => '3DES', 
-                                 p_encrypted_val => lv_card_masked, 
+  -- Decrypting the card number
+    xx_od_security_key_pkg.decrypt(x_decrypted_val => x_credit_card_number_dec,
+                                 x_error_message => lc_decrypt_error_msg,
+                                 p_module => 'AJB',
+                                 p_key_label => lv_key_label,
+                                 p_algorithm => '3DES',
+                                 p_encrypted_val => lv_card_masked,
                                  p_format => 'BASE64');
     iby_debug_pub.add('Decrypted card ',1,G_DEBUG_MODULE || l_module_name);
     SELECT p_customer_number|| '-'|| TO_CHAR(SYSDATE, 'DDMONYYYYHH24MISS')
       INTO ln_transaction_id
       FROm DUAL;
     iby_debug_pub.add('Transaction_id '||ln_transaction_id,1,G_DEBUG_MODULE || l_module_name);
-    SELECT '{                  
-            "paymentAuthorizationRequest": {                  
-            "transactionHeader": {                  
-            "consumerName": "IREC",                  
+    SELECT '{
+            "paymentAuthorizationRequest": {
+            "transactionHeader": {
+            "consumerName": "IREC",
             "consumerTransactionId": "'
                 || ln_transaction_id
-                || '",                  
+                || '",
             "consumerTransactionDateTime":"'
                 || TO_CHAR(SYSDATE, 'YYYY-MM-DD')
                 || 'T'
                 || TO_CHAR(SYSDATE, 'HH24:MI:SS')
-                || '"                    
-            },                  
-            "customer": {                  
+                || '"
+            },
+            "customer": {
             "firstName": "'
                 || lv_cust_name
-                || '",                  
-            "middleName": "",                  
-            "lastName": "",                  
-            "paymentDetails": {                  
-            "paymentType": "CREDITCARD",                  
-            "paymentCard": {                  
+                || '",
+            "middleName": "",
+            "lastName": "",
+            "paymentDetails": {
+            "paymentType": "CREDITCARD",
+            "paymentCard": {
             "cardHighValueToken": "'
                 || x_credit_card_number_dec
-                || '",                  
+                || '",
             "expirationDate": "'
                 || lv_exp_date
-                || '",                  
+                || '",
             "amount": "'
                 ||regexp_replace(p_amount, '[^0-9]', '')
-                ||'",                  
+                ||'",
             "cardType": "'
                 || lv_card_type
-                || '",                  
+                || '",
             "applicationTransactionNumber": "'
                 || p_inv_number
-                || '",      
+                || '",
             "ixPosEchoField":"'
                 ||p_order_id
-                ||'",                  
-            "billingAddress": {                  
+                ||'",
+            "billingAddress": {
             "name": "'
                 || lv_cust_name
-                || '",                  
-            "address": {                  
+                || '",
+            "address": {
             "address1": "'
                 || NULL--lr_bill_to_cust_location_info.address1
-                || '",                  
+                || '",
             "address2": "'
                 || NULL--lr_bill_to_cust_location_info.address2
-                || '",                  
+                || '",
             "city": "'
                 || NULL--lr_bill_to_cust_location_info.city
-                || '",                  
+                || '",
             "state": "'
                 || NULL--lr_bill_to_cust_location_info.state
-                || '",                  
+                || '",
             "postalCode": "'
                 || NULL--SUBSTR(lr_bill_to_cust_location_info.postal_code, 1, 5)
-                || '",                  
+                || '",
             "country": "'
                 || NULL--lr_bill_to_cust_location_info.country
-                || '"                  
-            }                  
-            }                  
-            },                  
+                || '"
+            }
+            }
+            },
             "billingAgreementId": "'
                 || NULL--lc_billing_application_id
-                || '",                  
+                || '",
             "walletId": "'
                 || NULL--lc_wallet_id
-                || '",                  
-            "avsOnly": true                  
-            },                  
-            "contact": {                  
+                || '",
+            "avsOnly": true
+            },
+            "contact": {
             "email": "'
                 || NULL--p_contract_info.customer_email
-                || '",                  
+                || '",
             "phoneNumber": "'
                 --  || lv_phone_number --??
-                || '",                  
+                || '",
             "faxNumber": "'
                 -- || lv_fax_number --??
-                || '"                  
-            }                  
-            },                
+                || '"
+            }
+            },
             "storeNumber": "'
                 || lpad(p_store_number,6,'0')
-                || '",                
-            "contract": {                    
+                || '",
+            "contract": {
             "contractId": "'
                 || NULL--p_contract_info.contract_id
-                || '",                    
+                || '",
             "customerId": "'
                 || p_customer_number--p_contract_info.bill_to_osr
-                || '"                  
-            }                  
-            }                  
-            }                  
+                || '"
+            }
+            }
+            }
             '
     INTO lc_auth_payload
     FROM DUAL;
@@ -872,11 +873,11 @@ BEGIN
                 lv_avsCode,
                 lv_authCode,
                 lv_cofTransactionId
-        FROM json_table(lclob_buffer ,'$' COLUMNS ( code NUMBER(10) PATH '$.paymentAuthorizationResponse.transactionStatus.code', 
-                                                    MESSAGE VARCHAR2(2000 CHAR) PATH '$.paymentAuthorizationResponse.transactionStatus.message', 
-                                                    ret_code NUMBER(10) PATH '$.paymentAuthorizationResponse.authorizationResult.code', 
-                                                    avsCode VARCHAR2(20 CHAR) PATH '$.paymentAuthorizationResponse.authorizationResult.avsCode', 
-                                                    authCode VARCHAR2(20 CHAR) PATH '$.paymentAuthorizationResponse.authorizationResult.authCode', 
+        FROM json_table(lclob_buffer ,'$' COLUMNS ( code NUMBER(10) PATH '$.paymentAuthorizationResponse.transactionStatus.code',
+                                                    MESSAGE VARCHAR2(2000 CHAR) PATH '$.paymentAuthorizationResponse.transactionStatus.message',
+                                                    ret_code NUMBER(10) PATH '$.paymentAuthorizationResponse.authorizationResult.code',
+                                                    avsCode VARCHAR2(20 CHAR) PATH '$.paymentAuthorizationResponse.authorizationResult.avsCode',
+                                                    authCode VARCHAR2(20 CHAR) PATH '$.paymentAuthorizationResponse.authorizationResult.authCode',
                                                     cofTransactionId VARCHAR2(2000 CHAR) PATH '$.paymentAuthorizationResponse.authorizationResult.cofTransactionId' ));
     EXCEPTION
     WHEN NO_DATA_FOUND THEN
@@ -927,7 +928,7 @@ BEGIN
     iby_debug_pub.add('   lv_authCode         '||lv_authCode,1,G_DEBUG_MODULE || l_module_name);
     iby_debug_pub.add('   lv_cofTransactionId '||lv_cofTransactionId,1,G_DEBUG_MODULE || l_module_name);
     iby_debug_pub.add('updating record type ',1,G_DEBUG_MODULE || l_module_name);
-    
+
     BEGIN
         SELECT 1
           INTO ln_error
@@ -935,17 +936,17 @@ BEGIN
          WHERE lookup_type = 'XX_AR_IREC_ERROR_CODES'
            AND enabled_flag = 'Y'
            AND lookup_code = ln_code;
-    EXCEPTION 
+    EXCEPTION
       WHEN NO_DATA_FOUND THEN
         ln_error := 0;
       WHEN OTHERS THEN
         ln_error :=-1;
     END;
-    
+
     IF ln_error !=0 THEN
         raise e_resp_error;
     END IF;
-    
+
     x_reqresp.Response.Status := ln_ret_code;
     x_reqresp.Trxn_Date     := sysdate;
     x_reqresp.Authcode      := lv_authCode;
@@ -953,11 +954,14 @@ BEGIN
     x_reqresp.CVV2Result    := NULL;
     x_reqresp.BEPErrCode    := ln_code;
     x_reqresp.BEPErrMessage := lv_message;
+        commit;
 EXCEPTION
 WHEN e_resp_error THEN
    iby_debug_pub.add('Incorrect response in EAI_webservice_authorization '|| SQLERRM,1,G_DEBUG_MODULE || l_module_name);
+   rollback;
 WHEN OTHERS THEN
   iby_debug_pub.add('Error in EAI_webservice_authorization '|| SQLERRM,1,G_DEBUG_MODULE || l_module_name);
+  rollback;
   --   x_ret_status := 'E';
   --   x_ret_msg    := 'Error in EAI_webservice_authorization '|| SQLERRM;
 END;
@@ -1061,7 +1065,7 @@ BEGIN
        AND source_value1 = ln_org_id
        AND xft.enabled_flag = 'Y'
        AND xftv.enabled_flag = 'Y';
-    
+
   EXCEPTION
   WHEN OTHERS THEN
     ln_bep_id  := NULL;
@@ -1073,18 +1077,18 @@ BEGIN
   --
   iby_debug_pub.add('Calling EAI_webservice_authorization',1,G_DEBUG_MODULE || l_module_name);
   EAI_webservice_authorization( ln_bep_key,--p_store_number     IN  VARCHAR2,
-                                lv_cust_number, 
-                                lv_inv_num, 
-                                ln_payerinstrid , 
-                                ln_amt, 
-                                lv_order_id, 
+                                lv_cust_number,
+                                lv_inv_num,
+                                ln_payerinstrid ,
+                                ln_amt,
+                                lv_order_id,
                                 x_reqresp );
   IF x_reqresp.Response.Status = 0 AND x_reqresp.BEPErrCode = 0 THEN
       --
       -- Calling iby_transactioncc_pkg insert_auth_txn
       --
     iby_debug_pub.add('Calling insert_auth_txn',1,G_DEBUG_MODULE || l_module_name);
-    iby_transactioncc_pkg.insert_auth_txn ( 
+    iby_transactioncc_pkg.insert_auth_txn (
                             ecapp_id_in                                  => 222,-- IN     iby_trxn_summaries_all.ecappid%TYPE,
                             req_type_in                                  => 'ORAPMTREQ',                                -- IN     iby_trxn_summaries_all.ReqType%TYPE,
                             order_id_in                                  => lv_order_id,                                -- IN     iby_transactions_v.order_id%TYPE,
@@ -1161,9 +1165,9 @@ BEGIN
     iby_debug_pub.add('x_transaction_mid_out '||x_transaction_mid_out,1,G_DEBUG_MODULE || l_module_name);
     x_reqresp.Trxn_ID := x_transaction_id_out;
   ELSE
-    iby_debug_pub.add('Error in xx_create_iby_summary '|| SQLERRM,1,G_DEBUG_MODULE || l_module_name);
+    iby_debug_pub.add('Error in xx_create_iby_summary '|| x_reqresp.BEPErrMessage,1,G_DEBUG_MODULE || l_module_name);
     x_ret_status := 'E';
-    x_ret_msg    := 'Error in EAI_webservice_authorization '|| SQLERRM;
+    x_ret_msg    := 'Error in EAI_webservice_authorization '|| x_reqresp.BEPErrMessage;
   END IF;
 EXCEPTION
 WHEN OTHERS THEN
@@ -1610,11 +1614,11 @@ BEGIN
         );*/
         iby_debug_pub.add('p_trxn_entity_id '||p_trxn_entity_id,G_LEVEL_STATEMENT,l_dbg_mod);
         -- Calling changes for NAIT-129669
-        xx_create_iby_summary ( p_trxn_entity_id , 
-                                x_transaction_id_out , 
-                                x_transaction_mid_out , 
-                                x_ret_status , 
-                                x_ret_msg , 
+        xx_create_iby_summary ( p_trxn_entity_id ,
+                                x_transaction_id_out ,
+                                x_transaction_mid_out ,
+                                x_ret_status ,
+                                x_ret_msg ,
                                 l_reqresp);
         iby_debug_pub.add('x_transaction_id_out '||x_transaction_id_out,G_LEVEL_STATEMENT,l_dbg_mod);
         iby_debug_pub.add('x_transaction_mid_out '||x_transaction_mid_out,G_LEVEL_STATEMENT,l_dbg_mod);

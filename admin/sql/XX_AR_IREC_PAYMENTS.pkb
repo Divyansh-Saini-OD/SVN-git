@@ -6807,10 +6807,10 @@ fnd_log.STRING
                               p_assignment_id            => l_instr_assign_id,
                               p_bank_account_id          => l_bank_account_id
                              );
-							 
-              
+
+
          	  dbms_output.put_line('--7--');
-      
+
 
          -- Check if the payment instrument was created successfully
          IF (x_return_status <> fnd_api.g_ret_sts_success)
@@ -7433,7 +7433,7 @@ fnd_log.STRING
                           x_bep_code                 => x_bep_code
                          -- Added for the Defect 2462(CR 247), for E1294
                          );
-						 
+
 						      --- Commented by Divyansh
          l_auth_id := x_auth_result.auth_id;  ---Changes done by Divyansh
          fnd_log.STRING (fnd_log.level_statement,
@@ -8050,7 +8050,7 @@ fnd_log.STRING
  | 07-Oct-2004   vnb          Bug 3335944 - One Time Credit Card Verification
  | 14-Mar-2013   melapaku     Bug16471455 - Payment Audit History
  | 21-Jul-2010   Bushrod      Updated for I0349 Defect 4180
- | 12-AUG-2020   Divyansh     Changes done for NAIT-129669 
+ | 12-AUG-2020   Divyansh     Changes done for NAIT-129669
  +==============================================================*/
    PROCEDURE process_payment (
       p_cash_receipt_id       IN              NUMBER,
@@ -8264,7 +8264,7 @@ fnd_log.STRING
         EXCEPTION WHEN OTHERS THEN
           l_instr_type := 'BANK';
         END;
-        
+
         IF l_instr_type = 'CREDITCARD' THEN
         --If credit card transaction then modify the logic
             xx_eai_authorization.create_authorization
@@ -8280,8 +8280,8 @@ fnd_log.STRING
                               p_amount              => l_amount_rec,
                               x_auth_result         => x_auth_result,
                               x_response            => x_response
-                             );        
-        ELSE         
+                             );
+        ELSE
             -- Keeping existing logic forany other transaction type
             iby_fndcpt_trxn_pub.create_authorization
                              (p_api_version         => 1.0,
@@ -8298,7 +8298,7 @@ fnd_log.STRING
                               x_response            => x_response
                              );
         END IF;
---Code changes end for NAIT-129669                             
+--Code changes end for NAIT-129669
          IF (fnd_log.level_statement >= fnd_log.g_current_runtime_level) THEN
             fnd_log.STRING (fnd_log.level_statement, g_pkg_name || l_procedure_name, 'After Create_Authorization, l_return_status:' || l_return_status );
          END IF;

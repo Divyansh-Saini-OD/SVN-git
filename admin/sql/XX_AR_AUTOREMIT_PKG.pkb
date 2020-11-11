@@ -468,6 +468,24 @@ AS
             RETURN NULL;
     END repeat_char;
 
+    PROCEDURE insert_receipt_count(p_req_id NUMBER,p_rec_num VARCHAR2) IS
+    BEGIN
+       INSERT INTO xx_ar_remit_receipts VALUES (p_req_id,p_rec_num);
+       commit;
+    EXCEPTION WHEN OTHERS THEN
+       NULL;
+    END;
+
+    PROCEDURE delete_receipt_count(p_req_id NUMBER) IS
+    lv_sql VARCHAR2(2000);
+    BEGIN
+       lv_sql := 'DELETE FROM xx_ar_remit_receipts WHERE request_id = '||p_req_id;
+       EXECUTE IMMEDIATE lv_sql;
+       
+    EXCEPTION WHEN OTHERS THEN
+       NULL;
+    END;
+
     PROCEDURE scheduler(
         x_error_buff                 OUT     VARCHAR2,
         x_ret_code                   OUT     NUMBER,
@@ -550,6 +568,7 @@ AS
         lt_data_buffer_recpt_high  data_buffer_typ;
         t_receipt_num              data_buffer_typ;
         ln_num_recpt_rows          BINARY_INTEGER                         := 0;
+        ln_req_id                  NUMBER := FND_GLOBAL.CONC_REQUEST_ID;  ---- Changes done for NAIT-129669
 
         CURSOR c_count_receipts
         IS
@@ -585,7 +604,7 @@ AS
                                            AND NVL(p_receipt_num_high,
                                                    cr.receipt_number)
             ORDER BY cr.receipt_number ASC;
-			
+
         -- Added cursor for NAIT-129669
 		CURSOR c_count_rim_receipts
         IS
@@ -619,8 +638,9 @@ AS
                                                    cr.receipt_number)
                                            AND NVL(p_receipt_num_high,
                                                    cr.receipt_number)
+            AND      cr.receipt_number IN (SELECT receipt_num FROM xx_ar_remit_receipts WHERE request_id = ln_req_id)
             ORDER BY cr.receipt_number ASC;
-			
+
     BEGIN
         fnd_file.put_line(fnd_file.LOG,
                           '*****Parameters******');
@@ -768,11 +788,14 @@ AS
             --Added for the PERF recommendation
             ln_receipt_index := 1;
 
+            FND_FILE.put(fnd_file.log,'ln_req_id '||ln_req_id);
             FOR lcu_count_receipts IN c_count_receipts
             LOOP
                 t_receipt_num(ln_receipt_index) := lcu_count_receipts.receipt_number;
                 ln_receipt_index :=   ln_receipt_index
                                     + 1;
+                insert_receipt_count(ln_req_id,lcu_count_receipts.receipt_number); ---- Changes done for NAIT-129669
+                
             END LOOP;
 
             fnd_file.put_line(fnd_file.LOG,
@@ -940,10 +963,8 @@ AS
         THEN
             -- removed the comment defect 29355
 
-             submit_offline_transaction(p_batch_count      => 1, -- Updated per defect 30015 p_batch_count,
-                                        x_request_id       => ln_conc_request_id);
-            
-            -- Added for NAIT-129669            
+            -- Added for NAIT-129669
+            FND_FILE.put(fnd_file.log,'ln_req_id '||ln_req_id);
             FOR lcu_count_receipts IN c_count_rim_receipts loop
                 fnd_file.put_line(fnd_file.LOG,'processing for '||lcu_count_receipts.receipt_number);
                 BEGIN
@@ -953,7 +974,7 @@ AS
                            iby_fndcpt_tx_operations ifto
                      WHERE acr.payment_trxn_extension_id = ifto.trxn_extension_id
                        AND acr.receipt_number = lcu_count_receipts.receipt_number;
-                    
+
                     fnd_file.put_line(fnd_file.LOG,'processing for ln_trxn_id '||ln_trxn_id);
                     xx_eai_authorization.xx_capture(ln_trxn_id,--p_trxn_id  --    IN  NUMBER,
                                                      x_transaction_id_out,--   OUT iby_trxn_summaries_all.TransactionID%TYPE,
@@ -966,8 +987,10 @@ AS
                         fnd_file.put_line(fnd_file.LOG,'Trxn Id not found for '||lcu_count_receipts.receipt_number);
                 END;
             END LOOP;
+            delete_receipt_count(ln_req_id);
             -- Changes done for NAIT-129669
-
+             submit_offline_transaction(p_batch_count      => 1, -- Updated per defect 30015 p_batch_count,
+                                        x_request_id       => ln_conc_request_id);
             fnd_conc_global.set_req_globals(conc_status =>       'PAUSED',
                                             request_data =>      'THIRD');
             COMMIT;
@@ -1195,6 +1218,7 @@ AS
         x_transaction_mid_out   iby_trxn_summaries_all.trxnmid%TYPE;
         p_ret_status            VARCHAR2(2000);
         p_ret_error             VARCHAR2(2000);
+        ln_req_id               NUMBER := FND_GLOBAL.CONC_REQUEST_ID;  ---- Changes done for NAIT-129669
 
         CURSOR c_err_receipts
         IS
@@ -1227,7 +1251,7 @@ AS
             ORDER BY      acr.receipt_number
             FOR UPDATE OF acr.receipt_number;
 
-        -- Added for NAIT-129669  
+        -- Added for NAIT-129669
         CURSOR c_err_rim_receipts
         IS
             SELECT        acr.receipt_number,
@@ -1257,6 +1281,7 @@ AS
                               FROM   xx_iby_batch_trxns_history xbt
                               WHERE  acr.receipt_number = xbt.ixrecptnumber
                               AND    acr.cash_receipt_id = TO_NUMBER(xbt.attribute7) )
+            AND      acr.receipt_number IN (SELECT receipt_num FROM xx_ar_remit_receipts WHERE request_id = ln_req_id)
             ORDER BY      acr.receipt_number
             FOR UPDATE OF acr.receipt_number;
 
@@ -1390,6 +1415,8 @@ AS
                                               110) );
                     insert_data_ordt(lt_err_rec(i).cash_receipt_id,
                                      lt_err_rec(i).receipt_method_id);
+                                     
+                    insert_receipt_count(ln_req_id,lt_err_rec(i).receipt_number);  ---- Changes done for NAIT-129669
 
                     IF (p_auto_remit_submit = 'Y')
                     THEN
@@ -1621,9 +1648,9 @@ AS
         THEN
             submit_offline_transaction(p_batch_count      => 1, -- Updated per defect 30015 p_batch_count,
                                         x_request_id       => ln_conc_request_id);
-            
+
             --
-            -- Added for NAIT-129669  
+            -- Added for NAIT-129669
             FOR lcu_count_receipts IN c_err_rim_receipts loop
                 fnd_file.put_line(fnd_file.LOG,'processing for '||lcu_count_receipts.receipt_number);
                 BEGIN
@@ -1633,7 +1660,7 @@ AS
                            iby_fndcpt_tx_operations ifto
                      WHERE acr.payment_trxn_extension_id = ifto.trxn_extension_id
                        AND acr.receipt_number = lcu_count_receipts.receipt_number;
-                    
+
                     fnd_file.put_line(fnd_file.LOG,'processing for ln_trxn_id '||ln_trxn_id);
                     xx_eai_authorization.xx_capture(ln_trxn_id,--p_trxn_id  --    IN  NUMBER,
                                                      x_transaction_id_out,--   OUT iby_trxn_summaries_all.TransactionID%TYPE,
@@ -1646,7 +1673,8 @@ AS
                         fnd_file.put_line(fnd_file.LOG,'Trxn Id not found for '||lcu_count_receipts.receipt_number);
                 END;
             END LOOP;
-            ---- Changes done for NAIT-129669  
+            delete_receipt_count(ln_req_id);
+            ---- Changes done for NAIT-129669
             fnd_conc_global.set_req_globals(conc_status =>       'PAUSED',
                                             request_data =>      'THIRD');
             COMMIT;
@@ -1655,7 +1683,7 @@ AS
         ELSIF(     (lc_req_data = 'THIRD')
               AND (p_auto_remit_submit = 'Y') )
         THEN   -- Count
-        
+
             fnd_file.put_line(fnd_file.output,
                                  repeat_char('*',
                                              90)
