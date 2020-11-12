@@ -2215,14 +2215,6 @@ PROCEDURE logitt(p_message  IN  CLOB,
     exiting_sub(p_procedure_name => lc_procedure_name);
 
     EXCEPTION
-    WHEN NO_DATA_FOUND THEN          ---NAIT-161715
-      SELECT  *
-        INTO    x_cust_site_osr_info
-        FROM    xxapps_history_query.hz_orig_sys_references
-        WHERE   owner_table_name = p_owner_table_name
-        AND     orig_system      = p_orig_system
-        AND     status           = p_status
-        AND     owner_table_id   = p_owner_table_id;
     WHEN OTHERS
     THEN
       exiting_sub(p_procedure_name => lc_procedure_name, p_exception_flag => TRUE);
