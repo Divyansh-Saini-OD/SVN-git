@@ -1490,7 +1490,8 @@ PROCEDURE logitt(p_message  IN  CLOB,
   ********************************************************/
 
   PROCEDURE get_ordt_info(p_cash_receipt_id             IN         ar_cash_receipts_all.cash_receipt_id%TYPE,
-                          x_ordt_info                   OUT NOCOPY xx_ar_order_receipt_dtl%ROWTYPE)
+                         -- x_ordt_info                  OUT NOCOPY xx_ar_order_receipt_dtl%ROWTYPE ---NAIT-161715
+                          x_ordt_info                   OUT NOCOPY xx_ar_order_receipt_dtl.header_id%TYPE)
   IS
 
     lc_procedure_name  CONSTANT VARCHAR2(61) := gc_package_name || '.' || 'get_ordt_info';
@@ -1503,18 +1504,19 @@ PROCEDURE logitt(p_message  IN  CLOB,
     entering_sub(p_procedure_name  => lc_procedure_name,
                  p_parameters      => lt_parameters);
 
-    SELECT *
+    SELECT header_id  --*  ---NAIT-161715
     INTO   x_ordt_info
     FROM   xx_ar_order_receipt_dtl
     WHERE  cash_receipt_id = p_cash_receipt_id;
 
-    logit(p_message => 'RESULT order_payment_id: ' || x_ordt_info.order_payment_id);
+    --logit(p_message => 'RESULT order_payment_id: ' || x_ordt_info.order_payment_id); ---NAIT-161715
+    logit(p_message => 'RESULT order_header_id: ' || x_ordt_info);
 
     exiting_sub(p_procedure_name => lc_procedure_name);
 
     EXCEPTION
     WHEN NO_DATA_FOUND THEN          ---NAIT-161715
-      SELECT *
+      SELECT header_id --*
         INTO   x_ordt_info
         FROM   XX_AR_ORDER_RECEIPT_DTL_HIST
         WHERE  cash_receipt_id = p_cash_receipt_id;
@@ -3070,7 +3072,8 @@ PROCEDURE logitt(p_message  IN  CLOB,
   **********************************************/
 
   PROCEDURE get_pos_ordt_info(p_order_number IN         xx_ar_order_receipt_dtl.orig_sys_document_ref%TYPE,
-                              x_ordt_info    OUT NOCOPY xx_ar_order_receipt_dtl%ROWTYPE)
+                                 --        x_ordt_info    OUT NOCOPY xx_ar_order_receipt_dtl%ROWTYPE)  ---NAIT-161715
+                              x_ordt_info    OUT NOCOPY xx_ar_order_receipt_dtl.header_id%TYPE)
   IS
 
     lc_procedure_name  CONSTANT VARCHAR2(61) := gc_package_name || '.' || 'get_pos_ordt_info';
@@ -3083,21 +3086,22 @@ PROCEDURE logitt(p_message  IN  CLOB,
     entering_sub(p_procedure_name  => lc_procedure_name,
                  p_parameters      => lt_parameters);
 
-    SELECT *
+    SELECT header_id  --*  ---NAIT-161715
     INTO   x_ordt_info
     FROM   xx_ar_order_receipt_dtl
     WHERE  orig_sys_document_ref = p_order_number
       AND  payment_type_code     = 'CREDIT_CARD'
       AND  rownum                = 1;--Added to fix -> NAIT-125675 and NAIT-126620
-
-    logit(p_message => 'RESULT header_id: ' || x_ordt_info.header_id);
+ 
+ --logit(p_message => 'RESULT header_id: ' || x_ordt_info.header_id);  ---NAIT-161715
+    logit(p_message => 'RESULT header_id: ' || x_ordt_info);
 
     exiting_sub(p_procedure_name => lc_procedure_name);
 
     EXCEPTION
     WHEN NO_DATA_FOUND
     THEN
-          SELECT *
+          SELECT header_id --*  ---NAIT-161715
            INTO   x_ordt_info
            FROM   XX_AR_ORDER_RECEIPT_DTL_HIST
           WHERE  orig_sys_document_ref = p_order_number
@@ -4326,7 +4330,9 @@ PROCEDURE logitt(p_message  IN  CLOB,
 
     lc_description                 ra_interface_lines_all.description%TYPE;
     
-    lr_pos_ordt_info               xx_ar_order_receipt_dtl%ROWTYPE;
+    --lr_pos_ordt_info               xx_ar_order_receipt_dtl%ROWTYPE;
+    
+    lr_pos_ordt_info               xx_ar_order_receipt_dtl.header_id%TYPE;
     
     lr_pos_info                    xx_ar_pos_inv_order_ref%ROWTYPE;
     
@@ -4512,7 +4518,8 @@ PROCEDURE logitt(p_message  IN  CLOB,
               get_pos_ordt_info(p_order_number => p_contract_info.initial_order_number,
                                 x_ordt_info    => lr_pos_ordt_info);
                     
-              get_pos_info(p_header_id        => lr_pos_ordt_info.header_id,
+             --   get_pos_info(p_header_id        => lr_pos_ordt_info.header_id,  ---NAIT-161715
+              get_pos_info(p_header_id        => lr_pos_ordt_info,
                            p_orig_sys_doc_ref => p_contract_info.initial_order_number,
                            x_pos_info         => lr_pos_info);
                            
@@ -4568,8 +4575,10 @@ PROCEDURE logitt(p_message  IN  CLOB,
             THEN
               get_pos_ordt_info(p_order_number => p_contract_info.initial_order_number,
                     x_ordt_info    => lr_pos_ordt_info);
-                    
-              get_pos_info(p_header_id        => lr_pos_ordt_info.header_id, 
+              
+            --  get_pos_info(p_header_id        => lr_pos_ordt_info.header_id,  ---NAIT-161715
+                  
+              get_pos_info(p_header_id        => lr_pos_ordt_info, 
                            p_orig_sys_doc_ref => p_contract_info.initial_order_number,
                            x_pos_info         => lr_pos_info);
                            
@@ -4653,7 +4662,8 @@ PROCEDURE logitt(p_message  IN  CLOB,
               get_pos_ordt_info(p_order_number => p_contract_info.initial_order_number,
                                 x_ordt_info    => lr_pos_ordt_info);
                     
-              get_pos_info(p_header_id => lr_pos_ordt_info.header_id,
+             -- get_pos_info(p_header_id => lr_pos_ordt_info.header_id,  ---NAIT-161715
+              get_pos_info(p_header_id => lr_pos_ordt_info,
                            p_orig_sys_doc_ref => p_contract_info.initial_order_number,
                            x_pos_info  => lr_pos_info);
                            
@@ -6737,7 +6747,8 @@ PROCEDURE logitt(p_message  IN  CLOB,
     
     l_day                          NUMBER;
     
-    lr_pos_ordt_info               xx_ar_order_receipt_dtl%ROWTYPE;
+    --lr_pos_ordt_info               xx_ar_order_receipt_dtl%ROWTYPE;
+   lr_pos_ordt_info               xx_ar_order_receipt_dtl.header_id%TYPE;
     
     lr_pos_info                    xx_ar_pos_inv_order_ref%ROWTYPE;
     
@@ -6929,7 +6940,8 @@ PROCEDURE logitt(p_message  IN  CLOB,
                 get_pos_ordt_info(p_order_number => p_contract_info.initial_order_number,
                       x_ordt_info    => lr_pos_ordt_info);
                       
-                get_pos_info(p_header_id        => lr_pos_ordt_info.header_id,
+              -- get_pos_info(p_header_id        => lr_pos_ordt_info.header_id,  ---NAIT-161715
+                 get_pos_info(p_header_id        => lr_pos_ordt_info,
                              p_orig_sys_doc_ref => p_contract_info.initial_order_number,
                              x_pos_info         => lr_pos_info);
                              
@@ -7703,7 +7715,8 @@ PROCEDURE logitt(p_message  IN  CLOB,
 
     lc_history_sent_flag           xx_ar_subscriptions.history_sent_flag%TYPE;
     
-    lr_pos_ordt_info               xx_ar_order_receipt_dtl%ROWTYPE;
+    -- lr_pos_ordt_info               xx_ar_order_receipt_dtl%ROWTYPE;
+   lr_pos_ordt_info               xx_ar_order_receipt_dtl.header_id%TYPE;
     
     lr_pos_info                    xx_ar_pos_inv_order_ref%ROWTYPE;
     
@@ -7873,7 +7886,8 @@ PROCEDURE logitt(p_message  IN  CLOB,
                 get_pos_ordt_info(p_order_number => p_contract_info.initial_order_number,
                       x_ordt_info    => lr_pos_ordt_info);
                       
-                get_pos_info(p_header_id        => lr_pos_ordt_info.header_id,
+               --   get_pos_info(p_header_id        => lr_pos_ordt_info.header_id,  ---NAIT-161715
+                get_pos_info(p_header_id        => lr_pos_ordt_info,
                              p_orig_sys_doc_ref => p_contract_info.initial_order_number,
                              x_pos_info         => lr_pos_info);
                              
@@ -9608,7 +9622,8 @@ PROCEDURE logitt(p_message  IN  CLOB,
 
     lc_invoice_status              VARCHAR2(25)    := NULL;
     
-    lr_pos_ordt_info               xx_ar_order_receipt_dtl%ROWTYPE;
+  --  lr_pos_ordt_info               xx_ar_order_receipt_dtl%ROWTYPE;
+  lr_pos_ordt_info               xx_ar_order_receipt_dtl.header_id%TYPE;
     
     lr_pos_info                    xx_ar_pos_inv_order_ref%ROWTYPE;
     
@@ -9762,7 +9777,8 @@ PROCEDURE logitt(p_message  IN  CLOB,
               get_pos_ordt_info(p_order_number => p_contract_info.initial_order_number,
                     x_ordt_info    => lr_pos_ordt_info);
                     
-              get_pos_info(p_header_id        => lr_pos_ordt_info.header_id,
+            --     get_pos_info(p_header_id        => lr_pos_ordt_info.header_id,  ---NAIT-161715
+              get_pos_info(p_header_id        => lr_pos_ordt_info,
                            p_orig_sys_doc_ref => p_contract_info.initial_order_number,
                            x_pos_info         => lr_pos_info);
                            
@@ -10455,7 +10471,8 @@ PROCEDURE logitt(p_message  IN  CLOB,
 
     le_processing                  EXCEPTION;
     
-    lr_pos_ordt_info               xx_ar_order_receipt_dtl%ROWTYPE;
+    -- lr_pos_ordt_info               xx_ar_order_receipt_dtl%ROWTYPE;
+   lr_pos_ordt_info               xx_ar_order_receipt_dtl.header_id%TYPE;
     
     lr_pos_info                    xx_ar_pos_inv_order_ref%ROWTYPE;
 
@@ -10611,7 +10628,8 @@ PROCEDURE logitt(p_message  IN  CLOB,
               get_pos_ordt_info(p_order_number => p_contract_info.initial_order_number,
                     x_ordt_info    => lr_pos_ordt_info);
                     
-              get_pos_info(p_header_id        => lr_pos_ordt_info.header_id,
+            --   get_pos_info(p_header_id        => lr_pos_ordt_info.header_id,  ---NAIT-161715
+             get_pos_info(p_header_id        => lr_pos_ordt_info,
                            p_orig_sys_doc_ref => p_contract_info.initial_order_number,
                            x_pos_info         => lr_pos_info);
                            
@@ -10957,7 +10975,8 @@ PROCEDURE logitt(p_message  IN  CLOB,
     
     lr_receipt_method_id           ar_receipt_methods.receipt_method_id%TYPE;
     
-    lr_pos_ordt_info               xx_ar_order_receipt_dtl%ROWTYPE;
+   --  lr_pos_ordt_info               xx_ar_order_receipt_dtl%ROWTYPE;
+   lr_pos_ordt_info               xx_ar_order_receipt_dtl.header_id%TYPE;
     
     lr_pos_info                    xx_ar_pos_inv_order_ref%ROWTYPE;
 
@@ -11113,7 +11132,8 @@ PROCEDURE logitt(p_message  IN  CLOB,
               get_pos_ordt_info(p_order_number => p_contract_info.initial_order_number,
                                 x_ordt_info    => lr_pos_ordt_info);
                     
-              get_pos_info(p_header_id        => lr_pos_ordt_info.header_id,
+          --    get_pos_info(p_header_id        => lr_pos_ordt_info.header_id,  ---NAIT-161715
+              get_pos_info(p_header_id        => lr_pos_ordt_info,
                            p_orig_sys_doc_ref => p_contract_info.initial_order_number,
                            x_pos_info         => lr_pos_info);
                            
@@ -14518,7 +14538,8 @@ END set_dnr_contract_line;
 
     lc_invoice_status              VARCHAR2(25)    := NULL;
     
-    lr_pos_ordt_info               xx_ar_order_receipt_dtl%ROWTYPE;
+    --   lr_pos_ordt_info               xx_ar_order_receipt_dtl%ROWTYPE;
+    lr_pos_ordt_info               xx_ar_order_receipt_dtl.header_id%TYPE;
     
     lr_pos_info                    xx_ar_pos_inv_order_ref%ROWTYPE;
     
@@ -14717,7 +14738,8 @@ END set_dnr_contract_line;
                 get_pos_ordt_info(p_order_number => lr_contract_info.initial_order_number,
                       x_ordt_info    => lr_pos_ordt_info);
                       
-                get_pos_info(p_header_id        => lr_pos_ordt_info.header_id,
+               --         get_pos_info(p_header_id        => lr_pos_ordt_info.header_id,  ---NAIT-161715
+                get_pos_info(p_header_id        => lr_pos_ordt_info,
                              p_orig_sys_doc_ref => lr_contract_info.initial_order_number,
                              x_pos_info         => lr_pos_info);
                              
@@ -16450,7 +16472,8 @@ END is_rev_rec_item;
     lr_bill_to_cust_acct_site_info hz_cust_acct_sites_all%ROWTYPE := NULL;
     lr_customer_info               hz_cust_accounts%ROWTYPE;
     lr_ship_to_cust_acct_site_info hz_cust_acct_sites_all%ROWTYPE := NULL;
-    lr_pos_ordt_info               xx_ar_order_receipt_dtl%ROWTYPE;
+   -- lr_pos_ordt_info               xx_ar_order_receipt_dtl%ROWTYPE;
+    lr_pos_ordt_info               xx_ar_order_receipt_dtl.header_id%TYPE;
     lr_pos_info                    xx_ar_pos_inv_order_ref%ROWTYPE;
     lr_bill_to_seq                 VARCHAR2(10) :='';
     lr_ship_to_seq                 VARCHAR2(10) :='';
@@ -16533,7 +16556,8 @@ END is_rev_rec_item;
               get_pos_ordt_info(p_order_number => lr_contract_info.initial_order_number,
                     x_ordt_info    => lr_pos_ordt_info);
                     
-              get_pos_info(p_header_id        => lr_pos_ordt_info.header_id, 
+         --     get_pos_info(p_header_id        => lr_pos_ordt_info.header_id, ---NAIT-161715
+              get_pos_info(p_header_id        => lr_pos_ordt_info, 
                            p_orig_sys_doc_ref => lr_contract_info.initial_order_number,
                            x_pos_info         => lr_pos_info);
                            
