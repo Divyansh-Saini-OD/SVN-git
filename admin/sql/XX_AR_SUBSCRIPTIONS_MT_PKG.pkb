@@ -149,6 +149,8 @@ AS
 -- |                                                 to exclude auth flag U , B and expired contracts                 |
 -- | 65.0        03-NOV-2020  Arvind K               NAIT-159331 add the logic in import_contract_info proc           |
 -- |                                                 for Store # 1165 Issue                                           |
+-- | 66.0        12-NOV-2020  Arvind K               NAIT-161715 Added logic of to fetch data from history schema     |
+-- |                                                 for issue related with no_data_found                             |
 -- +==================================================================================================================+
 
   gc_package_name        CONSTANT all_objects.object_name%TYPE   := 'xx_ar_subscriptions_mt_pkg';
@@ -1105,6 +1107,14 @@ PROCEDURE logitt(p_message  IN  CLOB,
     exiting_sub(p_procedure_name => lc_procedure_name);
 
     EXCEPTION
+    WHEN NO_DATA_FOUND THEN     ---NAIT-161715
+    
+      SELECT *
+      INTO   x_invoice_header_info
+      FROM   RA_CUSTOMER_TRX_ALL_HIST
+      WHERE  trx_number = p_invoice_number;
+    
+    
     WHEN OTHERS
     THEN
       exiting_sub(p_procedure_name => lc_procedure_name, p_exception_flag => TRUE);
@@ -1140,6 +1150,14 @@ PROCEDURE logitt(p_message  IN  CLOB,
     exiting_sub(p_procedure_name => lc_procedure_name);
 
     EXCEPTION
+    WHEN NO_DATA_FOUND     ---NAIT-161715
+    THEN
+    
+      SELECT  SUM(NVL(extended_amount, 0))
+        INTO   x_invoice_total_amount_info
+        FROM   RA_CUSTOMER_TRX_LINES_ALL_HIST
+        WHERE  customer_trx_id = p_customer_trx_id;
+    
     WHEN OTHERS
     THEN
       exiting_sub(p_procedure_name => lc_procedure_name, p_exception_flag => TRUE);
@@ -1186,17 +1204,28 @@ PROCEDURE logitt(p_message  IN  CLOB,
      ;
     --begin get_invoice_line_info Error: -20101 ORA-20101: PROCEDURE: xx_ar_subscriptions_mt_pkg.get_invoice_line_info SQLCODE: 100 SQLERRM: ORA-01403: no data found
       EXCEPTION
-      WHEN NO_DATA_FOUND THEN
-        BEGIN
-          SELECT *
-          INTO   x_invoice_line_info
-          FROM   ra_customer_trx_lines_all
-          WHERE  customer_trx_id    = p_customer_trx_id
-          AND    inventory_item_id  = p_inventory_item_id
-          AND    line_type          = 'LINE'
-          AND    line_number        = p_line_number ;
-        EXCEPTION
-         WHEN NO_DATA_FOUND THEN
+        WHEN NO_DATA_FOUND THEN     ---NAIT-161715
+         BEGIN
+           SELECT *
+           INTO   x_invoice_line_info
+           FROM   RA_CUSTOMER_TRX_LINES_ALL_HIST
+           WHERE  customer_trx_id    = p_customer_trx_id
+           AND    inventory_item_id  = p_inventory_item_id
+           AND    unit_selling_price = p_cont_line_amt
+           AND    line_type          = 'LINE'
+           AND    line_number        = p_line_number ;
+         EXCEPTION
+          WHEN NO_DATA_FOUND THEN
+           BEGIN
+            SELECT *
+            INTO   x_invoice_line_info
+            FROM   ra_customer_trx_lines_all
+            WHERE  customer_trx_id    = p_customer_trx_id
+            AND    inventory_item_id  = p_inventory_item_id
+            AND    line_type          = 'LINE'
+            AND    line_number        = p_line_number ;
+           EXCEPTION
+           WHEN NO_DATA_FOUND THEN
               SELECT *
               INTO   x_invoice_line_info
               FROM   ra_customer_trx_lines_all
@@ -1205,10 +1234,12 @@ PROCEDURE logitt(p_message  IN  CLOB,
               AND    unit_selling_price = p_cont_line_amt
               AND    line_type          = 'LINE' ;
      
-        END;
-    END;
+           END;
+         END;
+      END;
     --end get_invoice_line_info Error: -20101 ORA-20101: PROCEDURE: xx_ar_subscriptions_mt_pkg.get_invoice_line_info SQLCODE: 100 SQLERRM: ORA-01403: no data found
    ELSE
+    BEGIN
       SELECT *
       INTO   x_invoice_line_info
       FROM   ra_customer_trx_lines_all
@@ -1216,6 +1247,16 @@ PROCEDURE logitt(p_message  IN  CLOB,
       AND    line_number       = p_line_number
       --AND    inventory_item_id = p_inventory_item_id
       AND    line_type         = 'LINE';
+     EXCEPTION
+     WHEN NO_DATA_FOUND THEN       ---NAIT-161715
+      SELECT *
+        INTO   x_invoice_line_info
+        FROM   RA_CUSTOMER_TRX_LINES_ALL_HIST
+        WHERE  customer_trx_id   = p_customer_trx_id
+        AND    line_number       = p_line_number
+        --AND    inventory_item_id = p_inventory_item_id
+        AND    line_type         = 'LINE';
+    END;
     END IF;
 
     logit(p_message => 'RESULT customer_trx_line_id: ' || x_invoice_line_info.customer_trx_line_id);
@@ -1258,7 +1299,16 @@ PROCEDURE logitt(p_message  IN  CLOB,
       AND    percent              = 100 -- Added for NAIT-120608
       ;
     EXCEPTION
+     WHEN NO_DATA_FOUND THEN     ---NAIT-161715
+      SELECT *
+      INTO   x_invoice_dist_info
+      FROM   RA_CUST_TRX_LINE_GL_DIST_ALL_H
+      WHERE  customer_trx_line_id = p_customer_trx_line_id
+      AND    account_class        = p_account_class
+      AND    percent              = 100 -- Added for NAIT-120608
+      ;
       WHEN TOO_MANY_ROWS THEN
+        BEGIN
           SELECT *
           INTO   x_invoice_dist_info
           FROM   ra_cust_trx_line_gl_dist_all
@@ -1267,6 +1317,17 @@ PROCEDURE logitt(p_message  IN  CLOB,
           AND    percent              = 100 
           AND    account_set_flag     = 'Y'
           ;
+        EXCEPTION
+        WHEN NO_DATA_FOUND THEN         ---NAIT-161715
+        SELECT *
+          INTO   x_invoice_dist_info
+          FROM   RA_CUST_TRX_LINE_GL_DIST_ALL_H
+          WHERE  customer_trx_line_id = p_customer_trx_line_id
+          AND    account_class        = p_account_class
+          AND    percent              = 100 
+          AND    account_set_flag     = 'Y'
+          ;
+        END;
     END;          
     logit(p_message => 'RESULT attribute6: '  || x_invoice_dist_info.attribute6);
     logit(p_message => 'RESULT attributel1: ' || x_invoice_dist_info.attribute11);
@@ -1452,6 +1513,11 @@ PROCEDURE logitt(p_message  IN  CLOB,
     exiting_sub(p_procedure_name => lc_procedure_name);
 
     EXCEPTION
+    WHEN NO_DATA_FOUND THEN          ---NAIT-161715
+      SELECT *
+        INTO   x_ordt_info
+        FROM   XX_AR_ORDER_RECEIPT_DTL_HIST
+        WHERE  cash_receipt_id = p_cash_receipt_id;
     WHEN OTHERS
     THEN
       exiting_sub(p_procedure_name => lc_procedure_name, p_exception_flag => TRUE);
@@ -2147,6 +2213,14 @@ PROCEDURE logitt(p_message  IN  CLOB,
     exiting_sub(p_procedure_name => lc_procedure_name);
 
     EXCEPTION
+    WHEN NO_DATA_FOUND THEN          ---NAIT-161715
+      SELECT  *
+        INTO    x_cust_site_osr_info
+        FROM    xxapps_history_query.hz_orig_sys_references
+        WHERE   owner_table_name = p_owner_table_name
+        AND     orig_system      = p_orig_system
+        AND     status           = p_status
+        AND     owner_table_id   = p_owner_table_id;
     WHEN OTHERS
     THEN
       exiting_sub(p_procedure_name => lc_procedure_name, p_exception_flag => TRUE);
@@ -3021,6 +3095,15 @@ PROCEDURE logitt(p_message  IN  CLOB,
     exiting_sub(p_procedure_name => lc_procedure_name);
 
     EXCEPTION
+    WHEN NO_DATA_FOUND
+    THEN
+          SELECT *
+           INTO   x_ordt_info
+           FROM   XX_AR_ORDER_RECEIPT_DTL_HIST
+          WHERE  orig_sys_document_ref = p_order_number
+            AND  payment_type_code     = 'CREDIT_CARD'
+            AND  rownum                = 1;
+       
     WHEN OTHERS
     THEN
       exiting_sub(p_procedure_name => lc_procedure_name, p_exception_flag => TRUE);
