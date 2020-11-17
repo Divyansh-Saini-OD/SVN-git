@@ -388,12 +388,12 @@ BEGIN
            AND ext.C_EXT_ATTR2 = 'Y' --payDoc
            AND ext.d_ext_attr2 is null  -- Effective end date
            AND ext.CUST_ACCOUNT_ID =lt_tab_type(i).cust_account_id
-           and attr_group_id=(SELECT attr_group_id FROM apps.ego_fnd_dsc_flx_ctx_ext WHERE descriptive_flexfield_name = 'XX_CDH_CUST_ACCOUNT' AND descriptive_flex_context_code = 'BILLDOCS')
+           and attr_group_id=(SELECT attr_group_id FROM ego_fnd_dsc_flx_ctx_ext WHERE descriptive_flexfield_name = 'XX_CDH_CUST_ACCOUNT' AND descriptive_flex_context_code = 'BILLDOCS')
            AND NOT EXISTS (
                      SELECT 1  
-                       FROM apps.hz_cust_acct_sites_all asites,
-                            apps.hz_cust_site_uses_all uses,
-                            apps.hz_cust_site_uses_all uses1
+                       FROM hz_cust_acct_sites_all asites,
+                            hz_cust_site_uses_all uses,
+                            hz_cust_site_uses_all uses1
                       WHERE asites.cust_acct_site_id =  uses.cust_acct_site_id
                         and uses.bill_to_site_use_id is not null
                         and uses.bill_to_site_use_id = uses1.site_use_id
