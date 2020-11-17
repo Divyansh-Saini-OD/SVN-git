@@ -122,10 +122,10 @@ CURSOR c_error_details_cont IS
           AOPS_ACCOUNT,
           account_number,
           'AP Contact' info_type,
-          LAST_NAME, 
-          FIRST_NAME, 
-          PHONE_NUMBER, 
-          FAX_NUMBER, 
+          LAST_NAME,
+          FIRST_NAME,
+          PHONE_NUMBER,
+          FAX_NUMBER,
           EMAIL_ADDRESS
      FROM xx_ar_self_serv_bad_contact
     WHERE process_id = p_process_id
@@ -134,7 +134,7 @@ CURSOR c_error_details_cont IS
 
   ln_count NUMBER:= 0;
 BEGIN
-   logs('write_output(+)',true); 
+   logs('write_output(+)',true);
    FND_FILE.PUT_LINE(FND_FILE.OUTPUT,'Number of records processed : ');
    FOR rec_counts IN c_counts LOOP
       IF rec_counts.status = 'E' THEN
@@ -147,7 +147,7 @@ BEGIN
          FND_FILE.PUT_LINE(FND_FILE.OUTPUT,'Number of processed records     : '||rec_counts.cnt);
       END IF;
    END LOOP;
-   
+
    FND_FILE.PUT_LINE(FND_FILE.OUTPUT,' ');
    FND_FILE.PUT_LINE(FND_FILE.OUTPUT,'------------------------------------------------------------------------------------------------ ');
    FOR rec_error_details IN c_error_details LOOP
@@ -271,12 +271,12 @@ END purge_old_data;
 FUNCTION get_account_number(p_AOPS_account_number IN VARCHAR2) return VARCHAR2 IS
 lv_account_number VARCHAR2(100);
 BEGIN
-    SELECT account_number 
+    SELECT account_number
       INTO lv_account_number
       FROM hz_cust_accounts hca
      WHERE SUBSTR(hca.orig_system_reference,1,8) = p_AOPS_account_number;
    return lv_account_number;
-EXCEPTION 
+EXCEPTION
     WHEN NO_DATA_FOUND THEN
        return '0';
     WHEN TOO_MANY_ROWS THEN
@@ -284,6 +284,24 @@ EXCEPTION
     WHEN OTHERS THEN
        return null;
 END;
+
+/*********************************************************************
+* Function to trim file values
+*********************************************************************/
+FUNCTION get_converted_text(p_value IN VARCHAR2) 
+  RETURN VARCHAR2 IS
+  lv_value VARCHAR2(2000);
+BEGIN
+   SELECT TRIM(REPLACE(REPLACE(REPLACE(p_value,CHR(10)),CHR(13)),CHR(9)))
+     INTO lv_value
+     FROM DUAL;
+   RETURN lv_value;
+EXCEPTION 
+  WHEN OTHERS THEN
+     RETURN p_value;
+END;
+
+
 
 /*********************************************************************
 * Procedure to get Address reference
@@ -294,7 +312,7 @@ TYPE rec_type is RECORD  (address_reference VARCHAR2(1000),
                             record_id NUMBER);
 TYPE tab_type IS TABLE OF rec_type;
 lt_tab_type tab_type:=tab_type();
-  CURSOR c_reference IS 
+  CURSOR c_reference IS
      SELECT hl.ORIG_SYSTEM_REFERENCE Add_reference,xx.record_id
        FROM hz_cust_accounts hca,
              hz_parties hp,
@@ -323,11 +341,11 @@ BEGIN
 
    OPEN c_reference;
    FETCH c_reference BULK COLLECT INTO lt_tab_type;
-   
+
    FORALL i in lt_tab_type.FIRST ..lt_tab_type.LAST
      UPDATE xx_ar_self_serv_bad_addr SET address_reference = lt_tab_type(i).address_reference WHERE process_id = p_process_id AND record_id  = lt_tab_type(i).record_id;
 
-EXCEPTION 
+EXCEPTION
     WHEN OTHERS THEN
        FND_FILE.PUT_LINE(FND_FILE.LOG,'Error in Check_If_Direct '||SQLERRM);
 END;
@@ -341,44 +359,63 @@ Procedure Check_If_Direct (p_process_id IN NUMBER) IS
 ln_site_cnt        NUMBER :=0;
 ln_cust_account_id NUMBER;
 lv_flag_value      VARCHAR2(2);
-TYPE rec_type is RECORD  (flag VARCHAR2(10),
+TYPE rec_type is RECORD  (cust_account_id NUMBER,
                             AOPS_ACCOUNT VARCHAR2(100));
 TYPE tab_type IS TABLE OF rec_type;
 lt_tab_type tab_type:=tab_type();
-                            
+
 
     cursor c_cust_data IS
-       SELECT DECODE(count(0),0,'I',1,'Y','N'),xx.column2
-       FROM hz_cust_accounts hca,
-             hz_parties hp,
-             hz_party_sites hps,
-             hz_cust_acct_sites_all hcas,
-             hz_cust_site_uses_all hcsu,
-             xx_ar_ss_cmn_tbl   xx
-      WHERE hca.party_id = hp.party_id
-        AND hps.party_id = hp.party_id
-        AND hps.party_site_id = hcas.party_site_id
-        and hca.cust_account_id = hcas.cust_account_id
-        AND hcas.cust_acct_site_id = hcsu.cust_acct_site_id
-        AND hp.status = 'A'
-        AND hca.status = 'A'
-        AND hps.status = 'A'
-        AND hcas.status = 'A'
-        AND hcsu.status = 'A'
-        AND hcsu.site_use_code = 'BILL_TO'
-        AND SUBSTR(hca.orig_system_reference,1,8) = xx.column2
-        AND xx.process_id = p_process_id
-        GROUP BY xx.process_id,xx.column2;
+       SELECT hca.cust_account_id,xx.column2
+         FROM hz_cust_accounts hca,
+              xx_ar_ss_cmn_tbl xx
+        WHERE SUBSTR(hca.orig_system_reference,1,8) = xx.column2
+          AND hca.status = 'A'
+          AND xx.process_id = p_process_id;
 
 BEGIN
    logs('Check_If_Direct(+)');
    OPEN c_cust_data;
    FETCH c_cust_data BULK COLLECT INTO lt_tab_type;
+
+   FOR i in lt_tab_type.FIRST ..lt_tab_type.LAST LOOP
+     
+     BEGIN
+        SELECT 'Y'
+          INTO lv_flag_value
+          FROM xx_cdh_cust_acct_ext_b ext
+         WHERE ext.C_EXT_ATTR7 = 'Y' --Direct Document
+           AND ext.C_EXT_ATTR2 = 'Y' --payDoc
+           AND ext.d_ext_attr2 is null  -- Effective end date
+           AND ext.CUST_ACCOUNT_ID =lt_tab_type(i).cust_account_id
+           and attr_group_id=(SELECT attr_group_id FROM apps.ego_fnd_dsc_flx_ctx_ext WHERE descriptive_flexfield_name = 'XX_CDH_CUST_ACCOUNT' AND descriptive_flex_context_code = 'BILLDOCS')
+           AND NOT EXISTS (
+                     SELECT 1  
+                       FROM apps.hz_cust_acct_sites_all asites,
+                            apps.hz_cust_site_uses_all uses,
+                            apps.hz_cust_site_uses_all uses1
+                      WHERE asites.cust_acct_site_id =  uses.cust_acct_site_id
+                        and uses.bill_to_site_use_id is not null
+                        and uses.bill_to_site_use_id = uses1.site_use_id
+                        and uses.site_use_code = 'SHIP_TO' 
+                        and uses1.site_use_code = 'BILL_TO' 
+                        and uses1.PRIMARY_FLAG <> 'Y' 
+                        and uses.status='A'
+                        and uses1.status='A'
+                        and asites.cust_account_id=ext.cust_account_id
+                        and NOT ( uses.cust_acct_site_id = uses1.cust_acct_site_id)
+           );
+     
+     EXCEPTION WHEN OTHERS THEN
+        lv_flag_value := 'N';
+     END;
+     
+     UPDATE xx_ar_ss_cmn_tbl SET direct_cust_flag = lv_flag_value WHERE process_id = p_process_id AND column2 = lt_tab_type(i).AOPS_ACCOUNT;
    
-   FORALL i in lt_tab_type.FIRST ..lt_tab_type.LAST
-     UPDATE xx_ar_ss_cmn_tbl SET direct_cust_flag = lt_tab_type(i).flag WHERE process_id = p_process_id AND column2 = lt_tab_type(i).AOPS_ACCOUNT;
+   END LOOP;
+   
    logs('Check_If_Direct(-)');
-EXCEPTION 
+EXCEPTION
    WHEN OTHERS THEN
      FND_FILE.PUT_LINE(FND_FILE.LOG,'Error in Check_If_Direct '||SQLERRM);
 END Check_If_Direct;
@@ -390,9 +427,10 @@ Procedure insert_data(p_directory    IN VARCHAR2,
                       p_file_name    IN VARCHAR2,
                       p_process_id   IN NUMBER,
                       p_delimeter    IN VARCHAR2,
+                      p_enclosed_by  IN VARCHAR2 DEFAULT NULL,
                       x_error_status OUT VARCHAR2,
                       x_error_msg    OUT VARCHAR2) IS
-                      
+
 lf_file UTL_FILE.FILE_TYPE;
 lv_line_data  VARCHAR2(4000);
 lv_col_value VARCHAR2(200);
@@ -414,7 +452,7 @@ begin
      BEGIN
        utl_file.get_line(lf_file,lv_line_data);
        ln_rows := ln_rows+1;
-       IF ln_rows = 1 THEN
+       IF ln_rows = 1 OR ln_rows = 2 THEN
          Continue;
        END IF;
        lv_insert_str :='INSERT INTO xx_ar_ss_cmn_tbl(process_id';
@@ -424,12 +462,21 @@ begin
        END IF;
        logs('Line Data '||lv_line_data);
        logs('Looping with Data '||regexp_count(lv_line_data,p_delimeter));
-       For i in 0..regexp_count(lv_line_data,p_delimeter)-1 LOOP
-           IF i=0 THEN
-              lv_col_value := TRIM(SUBSTR(lv_line_data,1,INSTR(lv_line_data,p_delimeter,1,i+1)-1));
-            ELSE
-               lv_col_value := TRIM(SUBSTR(lv_line_data,INSTR(lv_line_data,p_delimeter,1,i)+length(p_delimeter),INSTR(lv_line_data,p_delimeter,1,i+1)-INSTR(lv_line_data,p_delimeter,1,i)-length(p_delimeter)));
-            END IF;
+       For i in 0..regexp_count(lv_line_data,p_delimeter)+1 LOOP
+             IF lv_line_data IS NULL THEN
+             exit;
+             end if;
+           IF lv_line_data like p_enclosed_by||'%' and regexp_count(lv_line_data,p_enclosed_by) !=0 THEN
+              lv_col_value := TRIM(SUBSTR(lv_line_data,2,INSTR(lv_line_data,p_enclosed_by||p_delimeter,1,1)-2));
+              lv_line_data := SUBSTR(lv_line_data,INSTR(lv_line_data,p_enclosed_by||p_delimeter,1,1)+2);
+           ELSIF regexp_count(lv_line_data,p_delimeter) != 0 THEN
+              lv_col_value := TRIM(SUBSTR(lv_line_data,1,INSTR(lv_line_data,p_delimeter,1,1)-1));
+              lv_line_data := SUBSTR(lv_line_data,INSTR(lv_line_data,p_delimeter,1,1)+1);
+           ELSIF regexp_count(lv_line_data,p_delimeter) = 0 THEN
+              lv_col_value:= lv_line_data;
+              lv_line_data := NULL;
+           END IF;
+            lv_col_value:=get_converted_text(lv_col_value);
             lv_insert_str := lv_insert_str||',column'||(i+1);
             lv_select_str := lv_select_str||','''||lv_col_value||'''';
        END LOOP;
@@ -438,7 +485,7 @@ begin
        logs('  lv_query '||lv_query);
        execute immediate lv_query;
        logs('  lv_query executed'||SQLERRM);
-    EXCEPTION 
+    EXCEPTION
       WHEN le_end_line THEN
         logs('  end found in file');
         utl_file.fclose(lf_file);
@@ -481,7 +528,7 @@ procedure xx_eai_call (p_payload      IN  VARCHAR2,
   l_response           UTL_HTTP.resp;
   lc_buffer            VARCHAR2(2000);
   lclob_buffer         CLOB;
-  
+
 BEGIN
   logs('   Start XX_EAI_CALL (+)');
   GET_TRANSLATION('XX_AR_SELF_SERVICE','AUTH_SERVICE',lv_url,lv_user,lv_pass);
@@ -513,7 +560,7 @@ BEGIN
   WHEN UTL_HTTP.end_of_body THEN
     UTL_HTTP.end_response(l_response);
   END;
-  
+
   p_response := lclob_buffer;
   x_error_status := lv_status;
   logs('   End XX_EAI_CALL (-)');
@@ -538,7 +585,7 @@ BEGIN
       FROM json_table(p_response ,'$' COLUMNS ( MESSAGE VARCHAR2(2000 CHAR) PATH '$.customerInfoResponse.status'));
   EXCEPTION WHEN OTHERS THEN
     lv_status := 'E';
-  END;  
+  END;
 --  logs(l_module_name,'RESPONSE','INFO','p_rec_id '||p_rec_id);
 --  logs(l_module_name,'RESPONSE','INFO','lv_status '||lv_status);
   IF p_type = 'ADDRESS' THEN
@@ -573,10 +620,10 @@ Procedure Process_data (p_type       IN VARCHAR2,
   lv_cursor_query VARCHAR2(2000);
   lv_payload      VARCHAR2(2000);
   CURSOR c_payloads IS
-    SELECT * 
+    SELECT *
       FROM xx_web_service_calls
      WHERE process_id = p_process_id;
-  
+
   x_response      VARCHAR2(2000);
   x_status_code   VARCHAR2(1);
   x_message       VARCHAR2(2000);
@@ -648,10 +695,10 @@ BEGIN
           logs('  Payload inserted for record '||rec_cont.record_id);
         END LOOP;
     END IF;
-      
-      
-      
-    FOR rec_payloads in c_payloads LOOP  
+
+
+
+    FOR rec_payloads in c_payloads LOOP
       logs('  Calling XX_EAI_CALL');
       xx_eai_call(rec_payloads.PAYLOAD,
                   x_response,
@@ -674,7 +721,7 @@ END;
 /*********************************************************************
 * Procedure to populate data from common table to staging tables
 *********************************************************************/
-PROCEDURE populate_staging_table(p_process_id IN  NUMBER 
+PROCEDURE populate_staging_table(p_process_id IN  NUMBER
                                 ,p_type       IN  VARCHAR2
                                 ,x_error      OUT VARCHAR2
                                 ,x_err_code   OUT NUMBER) IS
@@ -697,7 +744,7 @@ BEGIN
                         DIRECT_BILL_FLAG,
                         record_id,
                         process_id
-                        ) 
+                        )
                       (SELECT column1,
                               column2,
                               get_account_number(column2),
@@ -712,11 +759,11 @@ BEGIN
                               direct_cust_flag,
                               xx_ar_ss_bad_addr_s.nextval,
                               p_process_id
-                         FROM xx_ar_ss_cmn_tbl 
+                         FROM xx_ar_ss_cmn_tbl
                         WHERE process_id = p_process_id);
-                        
+
         get_address_reference(p_process_id);
-                        
+
     ELSIF p_type = 'EMAIL' THEN
         logs('  Inserting for email');
         INSERT INTO xx_ar_self_serv_bad_email(
@@ -730,7 +777,7 @@ BEGIN
                         DIRECT_BILL_FLAG,
                         record_id,
                         process_id
-                        ) 
+                        )
                       (SELECT column1,
                               column2,
                               get_account_number(column2),
@@ -741,7 +788,7 @@ BEGIN
                               direct_cust_flag,
                               xx_ar_ss_bad_email_s.nextval,
                               p_process_id
-                         FROM xx_ar_ss_cmn_tbl 
+                         FROM xx_ar_ss_cmn_tbl
                         WHERE process_id = p_process_id);
     ELSIF p_type = 'CONTACT' THEN
         logs('  Inserting for contact');
@@ -759,7 +806,7 @@ BEGIN
                         DIRECT_BILL_FLAG,
                         record_id,
                         process_id
-                        ) 
+                        )
                       (SELECT null,
                               column2,
                               column1,
@@ -773,24 +820,24 @@ BEGIN
                               direct_cust_flag,
                               xx_ar_ss_bad_cont_s.nextval,
                               p_process_id
-                         FROM xx_ar_ss_cmn_tbl 
+                         FROM xx_ar_ss_cmn_tbl
                         WHERE process_id = p_process_id);
-    
+
     END IF;
     logs('  Start populate_staging_table (-)');
 EXCEPTION WHEN OTHERS THEN
    x_error := 'Error in populate_staging_table '||SQLERRM;
    x_err_code := 2;
 END populate_staging_table;
-                              
+
 PROCEDURE purge_file_data(p_file_id NUMBER) IS
 
 BEGIN
 
    INSERT INTO xx_ar_ss_file_names_hist SELECT * FROM xx_ar_ss_file_names WHERE file_id = p_file_id;
-   
+
    execute IMMEDIATE 'DELETE FROM xx_ar_ss_file_names WHERE file_id = :1' USING p_file_id;
-   
+
 EXCEPTION WHEN OTHERS THEN
    FND_FILE.PUT_LINE(FND_FILE.LOG,'Error in purge_file_data '||SQLERRM);
 END;
@@ -820,12 +867,14 @@ procedure process_bad_address(p_err_buf OUT VARCHAR2,
   lv_p_err        VARCHAR2(2000);
   lv_p_code       NUMBER;
   lv_process_type VARCHAR2(20) := 'ADDRESS';
-  lv_send_to      VARCHAR2(50);
+  lv_send_to      VARCHAR2(200);
   lv_source_folder  VARCHAR2(100);
   lv_destination_folder  VARCHAR2(100);
   lc_req_data     VARCHAR2(500);
   ln_rep_req_id   NUMBER;
   ln_arc_req_id   NUMBER;
+  lv_enclosed_by  VARCHAR2(10);
+  
   CURSOR c_process_files(p_process_id NUMBER) IS
      SELECT file_name,file_id
        FROM xx_ar_ss_file_names
@@ -842,7 +891,7 @@ BEGIN
     --Calling insert file names program
     ln_req_id := fnd_request.submit_request ( application => 'XXFIN' , program => 'XXARBSDLOADFILES' , description => NULL , start_time => sysdate , sub_request => false , argument1=>lv_process_type, argument2=>ln_process_id);
     COMMIT;
-    logs('Conc. Program submitted '||ln_req_id); 
+    logs('Conc. Program submitted '||ln_req_id);
     IF ln_req_id = 0 THEN
       logs('Conc. Program  failed to submit Program',True);
     ELSE
@@ -855,6 +904,22 @@ BEGIN
       END IF;
     END IF;
     GET_TRANSLATION('XX_AR_SELF_SERVICE',lv_process_type,lv_directory,lv_file_name,lv_delimeter);
+    BEGIN
+        SELECT TARGET_VALUE7
+          INTO lv_enclosed_by
+          FROM XX_FIN_TRANSLATEDEFINITION XFTD,
+               XX_FIN_TRANSLATEVALUES XFTV
+         WHERE XFTD.TRANSLATION_NAME ='XX_AR_SELF_SERVICE'
+           AND XFTV.SOURCE_VALUE1      =lv_process_type
+           AND XFTD.TRANSLATE_ID       =XFTV.TRANSLATE_ID
+           AND XFTD.ENABLED_FLAG       ='Y'
+           AND SYSDATE BETWEEN XFTV.START_DATE_ACTIVE AND NVL(XFTV.END_DATE_ACTIVE,SYSDATE);
+    EXCEPTION WHEN OTHERS THEN
+       p_err_buf := 'Error while getting email receiptient';
+       p_ret_code := 2;
+       lv_send_to := NULL;
+    END;
+    
     logs('lv_directory '||lv_directory);
     logs('lv_delimeter '||lv_delimeter);
     FOR rec_process_files IN c_process_files(ln_process_id) LOOP
@@ -862,6 +927,7 @@ BEGIN
                 rec_process_files.file_name,
                 ln_process_id,
                 lv_delimeter,
+                lv_enclosed_by,
                 lv_err_code,
                 lv_err_message);
         --Checking if direct customer.
@@ -872,7 +938,7 @@ BEGIN
             logs('calling populate_staging_table',True);
             populate_staging_table(ln_process_id,lv_process_type,lv_p_err,lv_p_code);
             logs('cleaning common table',True);
-            DELETE FROM xx_ar_ss_cmn_tbl WHERE process_id = ln_process_id;   
+            DELETE FROM xx_ar_ss_cmn_tbl WHERE process_id = ln_process_id;
             commit;
             IF NVL(lv_p_code,0) = 0 THEN
                 --
@@ -897,7 +963,7 @@ BEGIN
         END IF;
         logs('Move the files to history');
         purge_file_data(rec_process_files.file_id);
-        
+
     END LOOP;
     BEGIN
         SELECT TARGET_VALUE4,DB.DIRECTORY_PATH,DB1.DIRECTORY_PATH
@@ -921,9 +987,9 @@ BEGIN
     IF lv_send_to IS NOT NULL THEN
        ln_rep_req_id:= fnd_request.submit_request ( application => 'XXFIN' , program => 'XXARSELFSERVICE' , description => NULL , start_time => sysdate , sub_request => false , argument1=>lv_process_type, argument2=>sysdate,argument3=>lv_send_to,argument4=>g_SMTP_SERVER,argument5=>g_MAIL_FROM);
     END IF;
-    
+
     ln_arc_req_id:= fnd_request.submit_request ( application => 'XXFIN' , program => 'XXARMOVEFILE' , description => NULL , start_time => sysdate , sub_request => false , argument1=>lv_source_folder, argument2=>ln_process_id,argument3=>lv_destination_folder);
-    
+
     logs('Start Bad address process (-)',True);
 EXCEPTION WHEN OTHERS THEN
   FND_FILE.PUT_LINE(FND_FILE.LOG,'Error in process_bad_address '||SQLERRM);
@@ -976,7 +1042,7 @@ BEGIN
     --Calling insert file names program
     ln_req_id := fnd_request.submit_request ( application => 'XXFIN' , program => 'XXARBSDLOADFILES' , description => NULL , start_time => sysdate , sub_request => true , argument1=>lv_process_type, argument2=>ln_process_id);
     COMMIT;
-    logs('Conc. Program submitted '||ln_req_id); 
+    logs('Conc. Program submitted '||ln_req_id);
     IF ln_req_id = 0 THEN
       logs('Conc. Program  failed to submit Program',True);
     ELSE
@@ -996,6 +1062,7 @@ BEGIN
                 rec_process_files.file_name,
                 ln_process_id,
                 lv_delimeter,
+                null,
                 lv_err_code,
                 lv_err_message);
         --Checking if direct customer.
@@ -1006,7 +1073,7 @@ BEGIN
             logs('calling populate_staging_table',True);
             populate_staging_table(ln_process_id,lv_process_type,lv_p_err,lv_p_code);
             logs('cleaning common table',True);
-            DELETE FROM xx_ar_ss_cmn_tbl WHERE process_id = ln_process_id;   
+            DELETE FROM xx_ar_ss_cmn_tbl WHERE process_id = ln_process_id;
             commit;
             IF NVL(lv_p_code,0) = 0 THEN
                 --
@@ -1054,7 +1121,7 @@ BEGIN
     IF lv_send_to IS NOT NULL THEN
        ln_rep_req_id:= fnd_request.submit_request ( application => 'XXFIN' , program => 'XXARSELFSERVICE' , description => NULL , start_time => sysdate , sub_request => false , argument1=>lv_process_type, argument2=>sysdate,argument3=>lv_send_to,argument4=>g_SMTP_SERVER,argument5=>g_MAIL_FROM);
     END IF;
-    
+
     ln_arc_req_id:= fnd_request.submit_request ( application => 'XXFIN' , program => 'XXARMOVEFILE' , description => NULL , start_time => sysdate , sub_request => false , argument1=>lv_source_folder, argument2=>ln_process_id,argument3=>lv_destination_folder);
     logs('Start Bad email process (-)',True);
 EXCEPTION WHEN OTHERS THEN
@@ -1110,7 +1177,7 @@ BEGIN
     --Calling insert file names program
     ln_req_id := fnd_request.submit_request ( application => 'XXFIN' , program => 'XXARBSDLOADFILES' , description => NULL , start_time => sysdate , sub_request => false , argument1=>lv_process_type, argument2=>ln_process_id);
     COMMIT;
-    logs('Conc. Program submitted '||ln_req_id); 
+    logs('Conc. Program submitted '||ln_req_id);
     IF ln_req_id = 0 THEN
       logs('Conc. Program  failed to submit Program',True);
     ELSE
@@ -1130,6 +1197,7 @@ BEGIN
                 rec_process_files.file_name,
                 ln_process_id,
                 lv_delimeter,
+                null,
                 lv_err_code,
                 lv_err_message);
         --Checking if direct customer.
@@ -1140,7 +1208,7 @@ BEGIN
             logs('calling populate_staging_table',True);
             populate_staging_table(ln_process_id,lv_process_type,lv_p_err,lv_p_code);
             logs('cleaning common table',True);
-            DELETE FROM xx_ar_ss_cmn_tbl WHERE process_id = ln_process_id;   
+            DELETE FROM xx_ar_ss_cmn_tbl WHERE process_id = ln_process_id;
             commit;
             IF NVL(lv_p_code,0) = 0 THEN
                 --
@@ -1165,7 +1233,7 @@ BEGIN
         END IF;
         logs('Move the files to history');
         purge_file_data(rec_process_files.file_id);
-        
+
     END LOOP;
     BEGIN
         SELECT TARGET_VALUE4,DB.DIRECTORY_PATH,DB1.DIRECTORY_PATH
@@ -1189,9 +1257,9 @@ BEGIN
     IF lv_send_to IS NOT NULL THEN
        ln_rep_req_id:= fnd_request.submit_request ( application => 'XXFIN' , program => 'XXARSELFSERVICE' , description => NULL , start_time => sysdate , sub_request => false , argument1=>lv_process_type, argument2=>sysdate,argument3=>lv_send_to,argument4=>g_SMTP_SERVER,argument5=>g_MAIL_FROM);
     END IF;
-    
+
     ln_arc_req_id:= fnd_request.submit_request ( application => 'XXFIN' , program => 'XXARMOVEFILE' , description => NULL , start_time => sysdate , sub_request => false , argument1=>lv_source_folder, argument2=>ln_process_id,argument3=>lv_destination_folder);
-    
+
     logs('Start Bad contact process (-)',True);
 EXCEPTION WHEN OTHERS THEN
   FND_FILE.PUT_LINE(FND_FILE.LOG,'Error in process_bad_contact '||SQLERRM);
@@ -1206,7 +1274,7 @@ END process_bad_contact;
                                ,p_email_address IN  VARCHAR2
                                ,p_ret_status    OUT VARCHAR2
                                ,p_ret_msg       OUT VARCHAR2) IS
-           
+
      l_contact_point_rec HZ_CONTACT_POINT_V2PUB.contact_point_rec_type;
      l_email_rec         HZ_CONTACT_POINT_V2PUB.email_rec_type;
      ln_contact_point_id  NUMBER;
@@ -1223,11 +1291,11 @@ BEGIN
     --Fetch required details for update
     --
     BEGIN
-        SELECT cust_account_id 
-          INTO ln_account_id 
+        SELECT cust_account_id
+          INTO ln_account_id
           FROM hz_cust_accounts hca
          WHERE SUBSTR(hca.orig_system_reference,1,8) = p_aops_number;
-        
+
         SELECT hp.party_id,contact_point_id,hcp.object_version_number
           INTO ln_party_id,ln_contact_point_id,ln_object_version
           FROM hz_cust_accounts hca,
@@ -1265,9 +1333,9 @@ BEGIN
  --
     HZ_CONTACT_POINT_V2PUB.update_email_contact_point
        (
-        p_contact_point_rec      =>  l_contact_point_rec,  
-        p_email_rec              =>  l_email_rec, 
-        p_object_version_number  =>  ln_object_version,        
+        p_contact_point_rec      =>  l_contact_point_rec,
+        p_email_rec              =>  l_email_rec,
+        p_object_version_number  =>  ln_object_version,
         x_return_status          =>  x_return_status,
         x_msg_count              =>  x_msg_count,
         x_msg_data               =>  x_msg_data
@@ -1285,11 +1353,11 @@ BEGIN
     ELSE
         p_ret_msg := 'Contact updated for '||p_aops_number;
         p_ret_status :=x_return_status;
-    END IF; 
-EXCEPTION 
+    END IF;
+EXCEPTION
     WHEN e_contact_error THEN
         p_ret_status  :='E';
-        p_ret_msg     := lv_error_msg;    
+        p_ret_msg     := lv_error_msg;
     WHEN OTHERS THEN
         FND_FILE.PUT_LINE(FND_FILE.LOG,'Error in update_email_address '||SQLERRM);
         p_ret_status  :='E';

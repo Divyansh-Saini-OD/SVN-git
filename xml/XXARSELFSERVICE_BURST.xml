@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xapi:requestset type="bursting" xmlns:xapi="http://xmlns.oracle.com/oxp/xapi">
+<xapi:request select="/XXARSELFSERVICE/LIST_G_PARAMS/G_PARAMS">
+<xapi:delivery>
+<xapi:email reply-to="" from="${FROM_EMAIL}" port="25" server="${SMTP_SERVER}" id="123">
+<xapi:message id="123" subject="PRINT Indirect Bad Bill To ${REQ_TYPE} Report" attachment="true" to="${MAIL_TO}">
+ Hi Team, 
+ 
+ Please find list of bad ${REQ_TYPE} for Indirect Billing Accounts attached. 
+ 
+ Thank you! </xapi:message>
+</xapi:email>
+</xapi:delivery>
+<xapi:document delivery="123" output-type="excel" output="PRINT Indirect Bad Bill To ${REQ_TYPE} Report">
+<xapi:template type="rtf" filter="" location="xdo://XXFIN.XXARSELFSERVICE.en.US/?getSource=true"> </xapi:template>
+</xapi:document>
+</xapi:request>
+</xapi:requestset>

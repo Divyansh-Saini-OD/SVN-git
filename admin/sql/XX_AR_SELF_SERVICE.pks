@@ -61,6 +61,7 @@ Procedure insert_data(p_directory    IN VARCHAR2,
                       p_file_name IN VARCHAR2,
                       p_process_id IN NUMBER,
                       p_delimeter IN VARCHAR2,
+                      p_enclosed_by  IN VARCHAR2 DEFAULT NULL,
                       x_error_status OUT VARCHAR2,
                       x_error_msg OUT VARCHAR2);
 /*********************************************************************
