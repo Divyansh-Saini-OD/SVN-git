@@ -13,6 +13,7 @@
 # |=======   ==========   =============    ===========================|
 # |DRAFT 1A  17-JUL-2018  Priyam P         Initial draft version      |
 # |1.1       24-SEP-2020  Mayur Palsokar   Modified for NAIT-141633   |
+# |1.2       05-Nov-2020  Ankit Jaiswal    Modified for NAIT-154432   |
 # +===================================================================+
 
  echo "1 st argument = username/password"
@@ -237,10 +238,10 @@ do echo "$i";
 unzip "$i" && rm "$i" 
 done
 
-
-for k in `ls Office_Depot__*.* | sort -u` 
+# Removed extra underscore from the filename for NAIT-154432
+for k in `ls Office_Depot_*.* | sort -u` 
 do echo "$k"
-mv "$k" "${k//Office_Depot__/Walmart_}" ;
+mv "$k" "${k//Office_Depot_/Walmart_}" ;
 done
 
 
