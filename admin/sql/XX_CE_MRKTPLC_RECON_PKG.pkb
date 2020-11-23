@@ -31,7 +31,8 @@ AS
   -- | 2.9.1       02/24/2020   M K Pramod Kumar     Modified to process NEWEGG Marketplace Transactions|
   -- | 2.9.2       02/24/2020   M K Pramod Kumar     Commented Bank Deposit Date Logic for Rakuten and Walmart MPL|
   -- | 2.9.3       02/24/2020   M K Pramod Kumar     Modified to fix NEWEGG Marketplace Transactions processing issue|
-  -- | 3.0		   01/10/2020	Amit Kumar			 NAIT-139979 EBAY : Develop Settlement Process
+  -- | 3.0		   10/01/2020	Amit Kumar			 NAIT-139979 EBAY : Develop Settlement Process
+  -- | 4.0         11/05/2020	Ankit Jaiswal        NAIT-154432 Walmart:Missing TAX WITHHELD Field Changes	
   -- +============================================================================================+
   gc_package_name      CONSTANT all_objects.object_name%TYPE := 'XX_CE_MRKTPLC_RECON_PKG';
   gc_ret_success       CONSTANT VARCHAR2(20)                 := 'SUCCESS';
@@ -1924,6 +1925,7 @@ IS
       tdr.WALMART_ORDER,
       tdr.transaction_type,
       tdr.PARTNER_ITEM_ID,
+	  tdr.TAX_WITHHELD,
       SUM(NVL(SHIPPED_QTY,0)) SHIPPED_QTY,
       SUM(NVL(TOTAL_TENDER_CUSTOMER,0)) TOTAL_TENDER_CUSTOMER,
       SUM(NVL(COMMISSION_FROM_SALE,0)) COMMISSION_FROM_SALE
@@ -1935,7 +1937,8 @@ IS
     GROUP BY tdr.WALMART_PO,
       tdr.WALMART_ORDER,
       tdr.transaction_type,
-      tdr.PARTNER_ITEM_ID;
+      tdr.PARTNER_ITEM_ID,
+	  tdr.TAX_WITHHELD;
   lv_deposit_date DATE;
 BEGIN
   lt_parameters('p_process_name') := p_process_name;
@@ -2047,11 +2050,16 @@ BEGIN
                   lc_price_type  :='Principal';
                   l_price_amount :=rec_dtl.TOTAL_TENDER_CUSTOMER;
                 END IF;
+				--NAIT-154432 Walmart:Missing TAX WITHHELD Field Changes
+                IF  rec_dtl.TAX_WITHHELD = 'Y' THEN
+				BEGIN
                 IF j                          =3 THEN
                   lc_action                  := 'Generate Walmart Record for Sales Tax Service Price Type';
                   lc_item_related_fee_type   :='SalesTaxServiceFee';
                   lc_item_related_fee_amount :=NVL(rec_dtl.COMMISSION_FROM_SALE,0) ;
                 END IF;
+				END;
+				END IF;
                 lc_ce_mpl_settlement_dtl.quantity_purchased      := lc_quantity_purchased;
                 lc_ce_mpl_settlement_dtl.unit_price              := lc_unit_price;
                 lc_ce_mpl_settlement_dtl.price_type              := lc_price_type;
