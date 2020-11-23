@@ -238,7 +238,7 @@ do echo "$i";
 unzip "$i" && rm "$i" 
 done
 
-# Removed extra underscore from the filename for NAIT-154432
+# Removed extra underscores from the filename for NAIT-154432
 for k in `ls Office_Depot_*.* | sort -u` 
 do echo "$k"
 mv "$k" "${k//Office_Depot_/Walmart_}" ;
