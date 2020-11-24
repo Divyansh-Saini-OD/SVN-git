@@ -1,0 +1,20 @@
+-- +===========================================================================+
+-- |                  Office Depot                                             |
+-- +===========================================================================+
+-- |Change Record:                                                             |
+-- |===============                                                            |
+-- |Version      Date           Author                  Remarks                |
+-- |=======    ==========     =============             ====================== |
+-- | 1.0      12-NOV-2020     Mayur Palsokar            Initial draft version  |
+-- +===========================================================================+
+
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     ON
+
+CREATE INDEX XXFIN.XX_GL_JRNLS_CLD_INTF_FILES_N5 ON XXFIN.XX_GL_JRNLS_CLD_INTF_FILES (creation_date) NOPARALLEL LOGGING;
+
+EXIT;
+

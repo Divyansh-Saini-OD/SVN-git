@@ -3,11 +3,11 @@ AS
   -- +============================================================================================|
   -- |  Office Depot                                                                              |
   -- +============================================================================================|
-  -- |  Name:  XX_GL_JRNLS_CLD_INTF_PKG                                                       |
+  -- |  Name:  XX_GL_JRNLS_CLD_INTF_PKG                                                           |
   -- |                                                                                            |
   -- |  Description: This package body is load Oracle Cloud journals file into EBS Staging,Validate 
   -- |					and load into NA_STG Table.                                               |
-  -- |  RICE ID   :  INT-046_Oracle Cloud GL Interface                 |
+  -- |  RICE ID   :  INT-046_Oracle Cloud GL Interface                                            |
   -- |  Description:  load Oracle Cloud journals file into EBS Staging,Validate 				  |
   -- |					and load into NA_STG Table.                                               |
   -- |  Change Record:                                                                            |
@@ -17,8 +17,9 @@ AS
   -- | 1.0         12/02/2020   M K Pramod Kumar     Initial version                              |
   -- | 1.1         19/06/2020   M K Pramod Kumar     Code Changes to trigger Journal Import Parallely
   --                                                 and remove logic to Create PA Batches based on Txn Number|
-  -- | 1.2         19/07/2020   M K Pramod Kumar     Code Changes to show errors in output
-  -- | 1.3         14/08/2020   M K Pramod Kumar     Code Changes to error Load Program if any load issues.
+  -- | 1.2         19/07/2020   M K Pramod Kumar     Code Changes to show errors in output        | 
+  -- | 1.3         14/08/2020   M K Pramod Kumar     Code Changes to error Load Program if any load issues|
+  -- | 1.4         09/11/2020   Mayur Palsokar       NAIT-161587 fix, added XX_SEND_NOTIFICATION and XX_PURGE_STAGING procedures|
   -- +============================================================================================+
   gc_package_name      CONSTANT all_objects.object_name%TYPE := 'XX_GL_JRNLS_CLD_INTF_PKG';
   gc_ret_success       CONSTANT VARCHAR2(20)                 := 'SUCCESS';
@@ -29,7 +30,7 @@ AS
   gn_org_id                     NUMBER                       := fnd_profile.VALUE ('ORG_ID');
   gn_set_of_bks_id              NUMBER                       := fnd_profile.VALUE ('GL_SET_OF_BKS_ID');
   gn_chart_of_accounts_id number;
-
+  gn_load_request_id			NUMBER;  -- Added for NAIT-161587
 
   --=================================================================
   -- Declaring Global variables
@@ -260,6 +261,175 @@ WHEN OTHERS THEN
   NULL;
 END entering_main;
 
+--/**********************************************************************
+--* Procedure to send out mailer when GL import fails
+--***********************************************************************/
+procedure xx_send_notification(
+                     p_request_id in number,
+                     x_status out varchar2,
+                     x_error out varchar2) is
+   conn utl_smtp.connection;
+
+lc_email_from varchar2 (3000):= 'no-reply@officedepot.com';
+--lc_email_to varchar2 (3000):= 'mayur.palsokar@officedepot.com';
+--lc_email_cc varchar2 (3000) := 'Padmanaban.Sanjeevi@OfficeDepot.com';
+--lc_subject varchar2 (3000) := 'Test email';
+lc_email_body varchar2 (3000) := '';
+lc_database varchar2(50);
+ln_request_id number := p_request_id;
+
+ln_cnt NUMBER:=0;
+
+lv_email_to VARCHAR2(3000);
+lv_email_cc VARCHAR2(20000);
+
+   
+cursor cur_get_det is 
+     select file_name,error_description 
+	  from xx_gl_jrnls_cld_intf_files
+	 where request_id=ln_request_id
+	   and record_status ='E';   
+
+CURSOR cur_get_cc_mail IS 
+SELECT 
+xftv.target_value1 email_id
+FROM xx_fin_translatedefinition xftd,
+xx_fin_translatevalues xftv
+WHERE xftd.translation_name ='GL_INTERFACE_EMAIL'
+AND xftv.source_value1     in ('Payables','Projects','Assets','Cash Management','Cost Management')
+AND xftd.translate_id       =xftv.translate_id
+AND xftd.enabled_flag       ='Y'
+AND sysdate BETWEEN xftv.start_date_active AND NVL(xftv.end_date_active,sysdate)
+UNION
+SELECT 
+xftv.target_value2 email_id
+FROM xx_fin_translatedefinition xftd,
+xx_fin_translatevalues xftv
+WHERE xftd.translation_name ='GL_INTERFACE_EMAIL'
+AND xftv.source_value1     in ('Payables','Projects','Assets','Cash Management','Cost Management')
+AND xftd.translate_id       =xftv.translate_id
+AND xftd.enabled_flag       ='Y'
+AND sysdate BETWEEN xftv.start_date_active AND NVL(xftv.end_date_active,sysdate)
+UNION
+SELECT 
+xftv.target_value3 email_id
+FROM xx_fin_translatedefinition xftd,
+xx_fin_translatevalues xftv
+WHERE xftd.translation_name ='GL_INTERFACE_EMAIL'
+AND xftv.source_value1     in ('Payables','Projects','Assets','Cash Management','Cost Management')
+AND xftd.translate_id       =xftv.translate_id
+AND xftd.enabled_flag       ='Y'
+AND sysdate BETWEEN xftv.start_date_active AND NVL(xftv.end_date_active,sysdate);
+
+CURSOR cur_get_to_mail IS
+SELECT DISTINCT
+xftv.target_value4 email_id
+FROM xx_fin_translatedefinition xftd,
+xx_fin_translatevalues xftv
+WHERE xftd.translation_name ='GL_INTERFACE_EMAIL'
+AND xftv.source_value1     in ('Payables','Projects','Assets','Cash Management','Cost Management')
+AND xftd.translate_id       =xftv.translate_id
+AND xftd.enabled_flag       ='Y'
+AND sysdate BETWEEN xftv.start_date_active AND NVL(xftv.end_date_active,sysdate);
+   
+begin
+  print_debug_msg(p_message => 'sending email procedure start' , p_force => true);  
+  SELECT COUNT(1)
+    INTO ln_cnt
+  	FROM xx_gl_jrnls_cld_intf_files
+   WHERE request_id=ln_request_id
+     AND record_status ='E';   
+	 
+  print_debug_msg(p_message => 'No of files with errors :'||TO_CHAR(ln_cnt) , p_force => true);   	 
+
+  IF ln_cnt<>0 THEN
+     lc_email_body := '<p>Hi,</p>'||chr(13)||
+     '<p>GL import with Request ID- '||ln_request_id||' is failed.'||' Please find the details below.</p>'||chr(10);
+     for i in cur_get_det
+     loop 
+	  lc_email_body := lc_email_body || '<p><B>File Name: </B>'||i.file_name||'<br>'||  
+      '<B>Error Description: </B>'||i.error_description||'</p>';
+     end loop;   
+	  
+     begin
+         select name
+           into lc_database
+           from v$database;
+     exception
+       when others then
+         lc_database := 'GSIDEV02';
+     end;
+	 /* 
+     if lc_database <> 'GSIPRDGB' then -- to chec   
+        lc_subject := 'Please ignore this email: '|| lc_subject;
+ 	 end if; 
+	 */
+	 FOR j IN cur_get_cc_mail LOOP
+	    IF j.email_id IS NOT NULL THEN 
+			IF lv_email_cc IS NULL THEN 
+				lv_email_cc := j.email_id ;
+			ELSE 
+				lv_email_cc := lv_email_cc ||','||j.email_id ;
+			END IF;
+		END IF;
+	 END LOOP;
+	 
+	 FOR k IN cur_get_to_mail LOOP
+		IF k.email_id IS NOT NULL THEN 
+			IF lv_email_to IS NULL THEN 
+				lv_email_to := k.email_id ;
+			ELSE 	
+				lv_email_to := lv_email_to ||','||k.email_id ;
+			END IF;
+		END IF;
+	 END LOOP;
+	 
+        
+	 conn := xx_pa_pb_mail.begin_mail(sender => lc_email_from,
+                                 recipients => lv_email_to,--lc_email_to,
+                                 cc_recipients=>lv_email_cc,--lc_email_cc,
+                                 subject => 'Oracle Cloud Journal Files Are Not Able To Process Please Check', --lc_subject,
+                                 mime_type => xx_pa_pb_mail.multipart_mime_type);
+     xx_pa_pb_mail.attach_text( conn => conn,
+                                       data => lc_email_body,
+                                       mime_type =>'text/html'
+                                                );
+
+     xx_pa_pb_mail.end_mail( conn => conn );
+     x_status := 's';
+   
+     commit;
+  END IF;   
+exception when others then
+   x_status:='e';
+   x_error := 'error while sending mail '||sqlerrm;
+      print_debug_msg(p_message => 'error in xx_send_notification'||sqlerrm , p_force => true);  
+end xx_send_notification;
+
+--/**********************************************************************
+--* Procedure to automatically purge data in staging tables after 60 days
+--***********************************************************************/
+procedure xx_purge_staging 
+is 
+begin 
+  delete 
+	   from xx_gl_jrnls_cld_intf_stg
+	  where file_batch_id in (select file_batch_id
+						        from xx_gl_jrnls_cld_intf_files
+							   where creation_date < sysdate-60
+								);
+	 commit;
+	 
+	 delete 
+	   from xx_gl_jrnls_cld_intf_files
+      where creation_date < sysdate-60;
+	  
+     commit;
+	 
+exception
+when others then
+       print_debug_msg(p_message => 'error in xx_purge_staging procedure '||sqlerrm , p_force => true); 
+end xx_purge_staging;
 
 -- +===================================================================+
 -- | Name  :FORMAT_TABS                                                |
@@ -720,10 +890,10 @@ Begin
 				and EBS_LEDGER_NAME=rec.EBS_LEDGER_NAME
 				and EBS_JOURNAL_SOURCE=rec.EBS_JOURNAL_SOURCE;			
 				
-
+			    -- Added for NAIT-161587
 				Update XX_GL_JRNLS_CLD_INTF_FILES
-				set record_status='I',
-				error_description=ERROR_DESCRIPTION||'~Error occured while processing the file-There are errors in STG Table'
+				set record_status='E',
+				error_description=ERROR_DESCRIPTION||'~Error occured in CREATE_JOURNAL_BATCH '
 				where file_batch_id=rec.file_batch_id;
 				commit;
 			end if;
@@ -869,7 +1039,10 @@ IS
   -- Cursor Declarations for Debits and Credits Balanced
   --==========================================================================================
   cursor cur_jrnls_dr_cr_bal is   
-  select ebs_ledger_name,application_name,USER_JE_CATEGORY_NAME,ae_header_id,  sum(NVL(entered_dr,0)) total_dr,
+  select ebs_ledger_name,application_name,
+		 USER_JE_CATEGORY_NAME,
+		 ae_header_id,  
+		 sum(NVL(entered_dr,0)) total_dr,
   sum(NVL(entered_cr,0)) total_cr,
   sum(NVL(accounted_dr,0)) total_acc_dr,
    sum(NVL(accounted_cr,0)) total_acc_cr  
@@ -957,6 +1130,11 @@ XX_GL_JRNLS_CLD_INTF_STG
   x_err_buf varchar2(1000);
   x_ret_code number:=0;
 
+  lc_jrnl_source_error_flag 	VARCHAR2(1);   -- Added for NAIT-161587
+  lc_jrnl_category_error_flag 	VARCHAR2(1);   -- Added for NAIT-161587
+  lc_ledger_error_flag			VARCHAR2(1);   -- Added for NAIT-161587
+ 
+
 BEGIN
   print_debug_msg(p_message=> 'Begin Validate Cloud GL Interface Financial Transactions',p_force=> true);
 
@@ -973,6 +1151,11 @@ BEGIN
   l_return_status      := 'S';
   l_err_buff           := NULL;
   gn_file_batch_id:=file_rec.file_batch_id;
+  
+  lc_jrnl_source_error_flag 	:='N';  -- Added for NAIT-161587
+  lc_jrnl_category_error_flag 	:='N';  -- Added for NAIT-161587
+  lc_ledger_error_flag			:='N';  -- Added for NAIT-161587
+
   print_debug_msg(p_message => '+---------------------------------------------------------------------------+' , p_force => False);  
   logit(p_message =>'Processing File Name:'||file_rec.file_name);
   logit(p_message =>'gn_file_batch_id:'||gn_file_batch_id);
@@ -983,6 +1166,8 @@ BEGIN
   lv_error_loc:='Ledger Name Validation begins';
   print_debug_msg(p_message => 'Ledger Validation Begins' , p_force => False);
 
+  
+  
  OPEN cur_ledger_name;
 			Loop
 			FETCH cur_ledger_name 
@@ -1005,12 +1190,14 @@ BEGIN
 
 						 Exception 
 						 when no_data_found then
-
+				
 							 gc_error_status_flag:='Y';
+							 lc_ledger_error_flag:='Y';   -- Added for NAIT-161587
 							 lv_error_message :='Oracle Cloud Ledger '||lv_ledger_name_data(idx).ledger_name||' not found.';
 							 logit(lv_error_message);
 						  when others then
 						    gc_error_status_flag:='Y';
+							lc_ledger_error_flag:='Y';		-- Added for NAIT-161587					
 							lv_error_message:='Validation error-Oracle Cloud Ledger '||lv_ledger_name_data(idx).ledger_name ||' not found.SQLERRM-'||sqlerrm||'.';  
 							logit(lv_error_message);							
 
@@ -1118,10 +1305,12 @@ BEGIN
 						 when no_data_found then 
 						     lv_error_message :='Journal Source '||lv_user_je_sourcE_name_data(idx).user_je_source_name||' not found';
 							 gc_error_status_flag:='Y';
+							 lc_jrnl_source_error_flag:='Y';     -- Added for NAIT-161587
 							 logit(lv_error_message);
 						  when others then
 							lv_error_message:='Validation error-Journal Source '||lv_user_je_sourcE_name_data(idx).user_je_source_name||' not found. SQLERRM-'||sqlerrm||'.';
 						    gc_error_status_flag:='Y';
+							lc_jrnl_source_error_flag:='Y';	    -- Added for NAIT-161587				
 							logit(lv_error_message);
 						 end;
 
@@ -1173,11 +1362,11 @@ BEGIN
 							Update XX_GL_JRNLS_CLD_INTF_STG set 				   
 								ERROR_DESCRIPTION=decode(ERROR_DESCRIPTION,null,lv_error_message,ERROR_DESCRIPTION||'~'||lv_error_message)								
 								where 1=1
-								and file_batch_id=gn_file_batch_id
+								and file_batch_id+0=gn_file_batch_id       -- Added for NAIT-161587
 								and ae_header_id=lv_jrnls_dr_cr_bal_data(idx).ae_header_id
 								and ebs_ledger_name=lv_jrnls_dr_cr_bal_data(idx).ebs_ledger_name
 								and application_name=lv_jrnls_dr_cr_bal_data(idx).application_name
-								and USER_JE_CATEGORY_NAME=lv_jrnls_dr_cr_bal_data(idx).USER_JE_CATEGORY_NAME;
+								and NVL(USER_JE_CATEGORY_NAME,'X')=NVL(lv_jrnls_dr_cr_bal_data(idx).USER_JE_CATEGORY_NAME,'X');   -- Added for NAIT-161587
 
 						end if;
 						
@@ -1195,11 +1384,11 @@ BEGIN
 							Update XX_GL_JRNLS_CLD_INTF_STG set 				   
 								ERROR_DESCRIPTION=decode(ERROR_DESCRIPTION,null,lv_error_message,ERROR_DESCRIPTION||'~'||lv_error_message)								
 								where 1=1
-								and file_batch_id=gn_file_batch_id
+								and file_batch_id+0=gn_file_batch_id          -- Added for NAIT-161587
 								and ae_header_id=lv_jrnls_dr_cr_bal_data(idx).ae_header_id
 								and ebs_ledger_name=lv_jrnls_dr_cr_bal_data(idx).ebs_ledger_name
 								and application_name=lv_jrnls_dr_cr_bal_data(idx).application_name
-								and USER_JE_CATEGORY_NAME=lv_jrnls_dr_cr_bal_data(idx).USER_JE_CATEGORY_NAME;
+								and NVL(USER_JE_CATEGORY_NAME,'X')=NVL(lv_jrnls_dr_cr_bal_data(idx).USER_JE_CATEGORY_NAME,'X');    -- Added for NAIT-161587
 
 						end if;
 
@@ -1245,10 +1434,12 @@ BEGIN
 						 when no_data_found then 
 						     lv_error_message :='Journal Source '||lv_user_je_sourcE_name_data(idx).user_je_source_name||' not found';
 							 gc_error_status_flag:='Y';
+							 lc_jrnl_source_error_flag:='Y';       -- Added for NAIT-161587
 							 logit(lv_error_message);
 						  when others then
 							lv_error_message:='Validation error-Journal Source '||lv_user_je_sourcE_name_data(idx).user_je_source_name||' not found. SQLERRM-'||sqlerrm||'.';
 						    gc_error_status_flag:='Y';
+							lc_jrnl_source_error_flag:='Y';       -- Added for NAIT-161587
 							logit(lv_error_message);
 						 end;
 
@@ -1289,7 +1480,7 @@ BEGIN
 
 
 							 gc_error_status_flag:='Y';
-							 lv_error_message :='Debits and Credits do not balance for this transaction.TRANSACTION Number-'||lv_jrnls_dr_cr_bal_scm_data(idx).reference10;
+							 lv_error_message :='Debits and Credits did not balance for this transaction.TRANSACTION Number-'||lv_jrnls_dr_cr_bal_scm_data(idx).reference10;
 							 logit(lv_error_message);
 						end if;
 
@@ -1297,7 +1488,7 @@ BEGIN
 						if  abs(lv_jrnls_dr_cr_bal_scm_data(idx).total_acc_dr)<>abs(lv_jrnls_dr_cr_bal_scm_data(idx).total_acc_cr) then 
 
 							 gc_error_status_flag:='Y';
-							 lv_error_message :='Accounted Debits and Credits do not balance for this transaction.TRANSACTION Number-'||lv_jrnls_dr_cr_bal_scm_data(idx).reference10;
+							 lv_error_message :='Accounted Debits and Credits did not balance for this transaction.TRANSACTION Number-'||lv_jrnls_dr_cr_bal_scm_data(idx).reference10;
 							 logit(lv_error_message);
 
 						end if;
@@ -1434,6 +1625,7 @@ BEGIN
 								and file_batch_id=gn_file_batch_id
 								and user_je_category_name=lv_user_catg_name_data(idx).user_je_category_name;
 								p_retcode:=1;
+								lc_jrnl_category_error_flag:='Y';       -- Added for NAIT-161587
 
 						end if; 
 
@@ -1556,9 +1748,10 @@ BEGIN
 
 			if gc_error_status_flag='Y' then
 				
-				update XX_GL_JRNLS_CLD_INTF_FILES set record_status='V'--Update all records to Valid.Update to E when required. 
+				/*update XX_GL_JRNLS_CLD_INTF_FILES set record_status='V'--Update all records to Valid.Update to E when required. 
 				where 1=1
 				and file_batch_id=gn_file_batch_id;		
+				*/              -- Commented for NAIT-161587
 				update XX_GL_JRNLS_CLD_INTF_STG set record_status='V' , 
 				action='VALID'
 				where 1=1
@@ -1575,9 +1768,33 @@ BEGIN
 				where 1=1
 				and file_batch_id=gn_file_batch_id;
 			end if;
-			commit;
+			/*Start: -- Added for NAIT-161587 */
+			IF (    lc_jrnl_source_error_flag='Y' 
+			     OR lc_jrnl_category_error_flag='Y'
+				 OR lc_ledger_error_flag='Y'
+			   ) THEN
+			   
+			   update xx_gl_jrnls_cld_intf_files 
+			      set record_status='E',
+					  error_description=error_description||', Setup Error'
+				where 1=1
+				  and file_batch_id=gn_file_batch_id; 
+			
+			END IF;
 
-   
+			update xx_gl_jrnls_cld_intf_files stg
+			   set stg.record_status='E',
+			       stg.error_description=stg.error_description||' ,Debits and Credits did not balance'
+		     where 1=1
+			   and stg.file_batch_id=gn_file_batch_id
+			   and EXISTS (SELECT 'x'
+						     FROM xx_gl_jrnls_cld_intf_stg
+							WHERE file_batch_id=gn_file_batch_id
+							  AND error_description LIKE '%Debits and Credits do not balance%'
+				   	      );
+			commit;
+            /* End: -- Added for NAIT-161587 */
+			
   CREATE_OUTPUT_FILE( p_process_name =>p_process_name,p_file_name=>file_rec.file_name,p_file_batch_id => gn_file_batch_id,p_error_msg=>x_err_buf,p_retcode=>x_ret_code) ;
   if x_err_buf is not null then
   print_debug_msg(P_MESSAGE => 'VAL_CLD_GL_INTF_FILE, p_errbuf-' ||x_err_buf ||' ,p_retcode-'||x_ret_code, p_force => TRUE);
@@ -1597,10 +1814,12 @@ END VAL_CLD_GL_INTF_FILE;
 * file record creation for uplicate Check
 * Table : XX_GL_JRNLS_CLD_INTF_FILES
 ******************************************************************/
+
 PROCEDURE INSERT_FILE_REC(
     p_process_name VARCHAR2,
     p_file_name    VARCHAR2,
     p_request_id    NUMBER,
+	p_error_msg	   VARCHAR2,   -- Added for NAIT-161587
 	p_user_id       NUMBER)
 IS
  lc_procedure_name CONSTANT VARCHAR2(61) := gc_package_name || '.' || 'INSERT_FILE_REC';
@@ -1617,7 +1836,8 @@ BEGIN
       last_updated_by,
       last_update_date,
       record_status,
-      request_id
+      request_id,                
+	  error_description    -- Added for NAIT-161587
     )
     VALUES
     (
@@ -1628,8 +1848,9 @@ BEGIN
       p_user_id,
       p_user_id,
       sysdate,
-      'N',
-      p_request_id
+      DECODE(p_error_msg,NULL,'N','E'),     -- Added for NAIT-161587
+      p_request_id,
+	  p_error_msg         -- Added for NAIT-161587
     );
 	commit;
 EXCEPTION
@@ -1722,7 +1943,7 @@ AS
      lv_filerec_count number;
 	 lv_datafile_rec_number number:=0;
 BEGIN
-
+  gn_file_batch_id:=NULL;  -- Added for NAIT-161587 -- to check 
   lt_parameters('p_process_name') := p_process_name;
   lt_parameters('p_file_name')   := p_file_name;
   lt_parameters('p_debug_flag')   := p_debug_flag;
@@ -1732,15 +1953,25 @@ BEGIN
    select count(1) into lv_filerec_count from XX_GL_JRNLS_CLD_INTF_FILES
    where FILE_NAME=p_file_name
    and   process_name=p_process_name;
-  
-
-
-    IF lv_filerec_count =0 THEN
-			gn_file_batch_id:=XX_GL_JRNLS_CLD_INTF_FILES_S.nextval;
-            insert_file_rec( p_process_name => p_process_name, p_file_name => p_file_name,p_request_id=>p_request_id,p_user_id=>p_user_id) ;            
+   
+   gn_file_batch_id:=XX_GL_JRNLS_CLD_INTF_FILES_S.nextval;      
+   
+   IF lv_filerec_count =0 THEN
+            insert_file_rec( p_process_name => p_process_name, 
+						     p_file_name => p_file_name,
+							 p_request_id=>p_request_id,
+							 p_error_msg =>NULL,
+							 p_user_id=>p_user_id) ;            
 			print_debug_msg(p_message =>'File Record Created Successfully.', p_force => true);
     ELSE
-	        p_errbuf:='Duplicate File-This file is already processed.';
+	/*Start: -- Added for NAIT-161587 */
+            insert_file_rec( p_process_name => p_process_name, 
+						     p_file_name => p_file_name,
+							 p_request_id=>p_request_id,
+							 p_error_msg =>'Duplicate File',
+							 p_user_id=>p_user_id) ;            
+   /*End: -- Added for NAIT-161587 */
+		    p_errbuf:='Duplicate File-This file is already processed.';
 			p_retcode:=2;
             logit(p_message=>'Duplicate File-This file is already processed.'||p_file_name);
 			print_debug_msg(p_message =>'Duplicate File-This file is already processed.', p_force => true);
@@ -1908,7 +2139,10 @@ WHEN parse_exception THEN
   ROLLBACK;
   utl_file.fclose(l_filehandle);
   l_error_msg:='XX_GL_JRNLS_CLD_INTF_PKG.load_utl_file_staging-When invalid_operation Exception at Processing Line Number-'||lv_datafile_rec_number||' in datafile.SQLERRM-'||l_error_msg||'~'||sqlerrm;
-  update XX_GL_JRNLS_CLD_INTF_FILES set error_description=l_error_msg where file_name=p_file_name;
+  update XX_GL_JRNLS_CLD_INTF_FILES 
+     set error_description=l_error_msg,
+		 record_status='E'  -- Added for NAIT-161587
+   where file_name=p_file_name;
   commit;
   print_debug_msg(p_message =>l_error_msg  , p_force => true);
   p_errbuf := null;
@@ -1917,7 +2151,10 @@ WHEN utl_file.invalid_operation THEN
    ROLLBACK;
   utl_file.fclose(l_filehandle);
   l_error_msg:='XX_GL_JRNLS_CLD_INTF_PKG.load_utl_file_staging-When invalid_operation Exception at Processing Line Number-'||lv_datafile_rec_number||' in datafile.SQLERRM-'||sqlerrm;
-  update XX_GL_JRNLS_CLD_INTF_FILES set error_description=l_error_msg where file_name=p_file_name;
+  update XX_GL_JRNLS_CLD_INTF_FILES 
+     set error_description=l_error_msg,
+	 record_status='E'  -- Added for NAIT-161587											
+   where file_name=p_file_name;
   commit;
   print_debug_msg(p_message =>l_error_msg  , p_force => true);
   p_errbuf := null;
@@ -1926,7 +2163,10 @@ WHEN utl_file.invalid_filehandle THEN
   ROLLBACK;
   utl_file.fclose(l_filehandle);
   l_error_msg:='XX_GL_JRNLS_CLD_INTF_PKG.load_utl_file_staging-When invalid_filehandle Exception at Processing Line Number-'||lv_datafile_rec_number||' in datafile.SQLERRM-'||sqlerrm;
-  update XX_GL_JRNLS_CLD_INTF_FILES set error_description=l_error_msg where file_name=p_file_name;
+  update XX_GL_JRNLS_CLD_INTF_FILES 
+     set error_description=l_error_msg, 
+	 record_status='E'  -- Added for NAIT-161587										
+   where file_name=p_file_name;
   commit;
   print_debug_msg(p_message =>l_error_msg  , p_force => true);
   p_errbuf := null;
@@ -1935,7 +2175,10 @@ WHEN utl_file.read_error THEN
   ROLLBACK;
   utl_file.fclose(l_filehandle);
   l_error_msg:='XX_GL_JRNLS_CLD_INTF_PKG.load_utl_file_staging-When read_error Exception at Processing Line Number-'||lv_datafile_rec_number||' in datafile.SQLERRM-'||sqlerrm;
-  update XX_GL_JRNLS_CLD_INTF_FILES set error_description=l_error_msg where file_name=p_file_name;
+  update XX_GL_JRNLS_CLD_INTF_FILES 
+     set error_description=l_error_msg,	
+	 record_status='E'   -- Added for NAIT-161587										
+   where file_name=p_file_name;
   commit;
   print_debug_msg(p_message =>l_error_msg  , p_force => true);
   p_errbuf := null;
@@ -1944,7 +2187,10 @@ WHEN utl_file.invalid_path THEN
   ROLLBACK;
   utl_file.fclose(l_filehandle);
   l_error_msg:='XX_GL_JRNLS_CLD_INTF_PKG.load_utl_file_staging-When invalid_path Exception at Processing Line Number-'||lv_datafile_rec_number||' in datafile.SQLERRM-'||sqlerrm;
-  update XX_GL_JRNLS_CLD_INTF_FILES set error_description=l_error_msg where file_name=p_file_name;
+  update XX_GL_JRNLS_CLD_INTF_FILES 
+     set error_description=l_error_msg, 
+	 record_status='E'  -- Added for NAIT-161587										
+   where file_name=p_file_name;
   commit;
   print_debug_msg(p_message =>l_error_msg  , p_force => true);
   p_errbuf := null;
@@ -1953,7 +2199,10 @@ WHEN utl_file.invalid_mode THEN
    ROLLBACK;
   utl_file.fclose(l_filehandle);
   l_error_msg:='XX_GL_JRNLS_CLD_INTF_PKG.load_utl_file_staging-When invalid_mode Exception at Processing Line Number-'||lv_datafile_rec_number||' in datafile.SQLERRM-'||sqlerrm;
-  update XX_GL_JRNLS_CLD_INTF_FILES set error_description=l_error_msg where file_name=p_file_name;
+  update XX_GL_JRNLS_CLD_INTF_FILES 
+     set error_description=l_error_msg, 
+	 record_status='E'  -- Added for NAIT-161587										  
+   where file_name=p_file_name;
   commit;
   print_debug_msg(p_message =>l_error_msg  , p_force => true);
   p_errbuf := null;
@@ -1962,7 +2211,10 @@ WHEN utl_file.internal_error THEN
   ROLLBACK;
   utl_file.fclose(l_filehandle);
   l_error_msg:='XX_GL_JRNLS_CLD_INTF_PKG.load_utl_file_staging-When internal_error at Processing Line Number-'||lv_datafile_rec_number||' in datafile.SQLERRM-'||sqlerrm;
-  update XX_GL_JRNLS_CLD_INTF_FILES set error_description=l_error_msg where file_name=p_file_name;
+  update XX_GL_JRNLS_CLD_INTF_FILES 
+     set error_description=l_error_msg, 
+	 record_status='E'  -- Added for NAIT-161587										
+   where file_name=p_file_name;
   commit;
   print_debug_msg(p_message =>l_error_msg  , p_force => true);
   p_errbuf := null;
@@ -1971,7 +2223,10 @@ WHEN value_error THEN
   ROLLBACK;
   utl_file.fclose(l_filehandle);
   l_error_msg:='XX_GL_JRNLS_CLD_INTF_PKG.load_utl_file_staging-When Value_Error at Processing Line Number-'||lv_datafile_rec_number||' in datafile.SQLERRM-'||sqlerrm;
-  update XX_GL_JRNLS_CLD_INTF_FILES set error_description=l_error_msg where file_name=p_file_name;
+  update XX_GL_JRNLS_CLD_INTF_FILES 
+     set error_description=l_error_msg,	
+	 record_status='E'  	-- Added for NAIT-161587									  
+   where file_name=p_file_name;
   commit;	
   p_retcode:= 2;
   print_debug_msg(p_message =>l_error_msg  , p_force => true);
@@ -1980,7 +2235,10 @@ WHEN value_error THEN
   ROLLBACK;
   utl_file.fclose(l_filehandle);
   l_error_msg:='XX_GL_JRNLS_CLD_INTF_PKG.load_utl_file_staging-When Others Exception at Processing Line Number-'||lv_datafile_rec_number||' in datafile.SQLERRM-'||sqlerrm;
-  update XX_GL_JRNLS_CLD_INTF_FILES set error_description=l_error_msg where file_name=p_file_name;
+  update XX_GL_JRNLS_CLD_INTF_FILES
+     set error_description=l_error_msg, 
+	 record_status='E'   -- Added for NAIT-161587										
+   where file_name=p_file_name;
   commit;
   print_debug_msg(p_message =>l_error_msg  , p_force => true);
   exiting_sub(p_procedure_name => lc_procedure_name, p_exception_flag => TRUE);
@@ -2179,13 +2437,14 @@ BEGIN
 	  p_errbuf:='Conc. Program  failed to submit OD Cloud to EBS GL Journals Load Program';
 	  p_retcode:=1;
     ELSE
+	  gn_load_request_id:=lc_conc_req_id;   -- Added for NAIT-161587
       lc_action              := 'Waiting for concurrent request OD Cloud to EBS GL Journals Load Program to complete';
       lc_wait_flag           := fnd_concurrent.wait_for_request(request_id => lc_conc_req_id, phase => lc_phase, status => lc_status, dev_phase => lc_dev_phase, dev_status => lc_dev_status, MESSAGE => lc_message);
       IF UPPER(lc_dev_status) = 'NORMAL' AND UPPER(lc_dev_phase) = 'COMPLETE' THEN
         logit(p_message =>'OD Cloud to EBS GL Journals Load Program successful for the Request Id: ' || lc_conc_req_id );
       ELSE
         logit(p_message =>'OD Cloud to EBS GL Journals Load Program did not complete normally.');
-		p_errbuf:='Child Program OD Cloud to EBS GL Journals Load Program completed in Error/Warning. Please check Loader Program logs and hence Wrapper program will be completed in Warning';
+		p_errbuf:='Child Program OD Cloud to EBS GL Journals Load Program did not complete normally. Please check Loader Program logs';
 	    p_retcode:=1;
       END IF;
     END IF;
@@ -2216,6 +2475,11 @@ IS
   lc_action VARCHAR2(1000);
   x_err_buf varchar2(1000);
   x_ret_code number:=0;
+  
+  lc_email_status varchar2(10);   -- Added for NAIT-161587
+  lc_email_err varchar2(300);  -- Added for NAIT-161587
+  ln_cnt NUMBER:=0;
+
 BEGIN
   --================================================================
   --Initializing Global variables
@@ -2257,8 +2521,6 @@ BEGIN
   print_debug_msg(P_MESSAGE => 'Exiting PROCESS_LOAD_GL_FILE Procedure', p_force => TRUE);
   print_debug_msg(p_message => '+---------------------------------------------------------------------------+' , p_force => true);
   
-  --MAIN_LOAD_PROCESS(p_process_name,'EBS_GL_OD_INTF_SCM_OP_202002280646351.txt',p_debug_flag,fnd_global.conc_request_id,fnd_global.user_id);
-
   print_debug_msg(p_message => '+---------------------------------------------------------------------------+' , p_force => true);
   print_debug_msg(p_message => 'Calling VAL_CLD_GL_INTF_FILE Procedure' , p_force => true);
   VAL_CLD_GL_INTF_FILE( p_process_name => p_process_name,p_debug_flag => p_debug_flag,p_errbuf=>x_err_buf,p_retcode=>x_ret_code) ;
@@ -2293,6 +2555,27 @@ BEGIN
   print_debug_msg(P_MESSAGE => 'Exiting PROCESS_JOURNAL_BATCH Procedure' , p_force => TRUE);
   print_debug_msg(p_message => '+---------------------------------------------------------------------------+' , p_force => true);  
 
+/* Start: Added for NAIT-161587 */ 
+
+  xx_send_notification(
+                     p_request_id => gn_load_request_id,
+                     x_status => lc_email_status,
+                     x_error => lc_email_err);
+ 
+  xx_purge_staging;
+ 
+   SELECT COUNT(1)
+    INTO ln_cnt
+  	FROM xx_gl_jrnls_cld_intf_files
+   WHERE request_id=gn_load_request_id
+     AND record_status ='E';   
+
+   IF ln_cnt<>0 THEN
+      retcode := 2;
+	  errbuff :='Error while processing file, please check the logs and email notification';
+   END IF;
+ 
+/* End: Added for NAIT-161587 */ 
 EXCEPTION
 WHEN OTHERS THEN
   logit(p_message => 'ERROR-SQLCODE:'|| SQLCODE || ' SQLERRM: ' || SQLERRM, p_force => TRUE); 
@@ -2301,7 +2584,9 @@ WHEN OTHERS THEN
   errbuff := 'Error encountered. Please check logs';
   exiting_sub(p_procedure_name => lc_procedure_name, p_exception_flag => TRUE);
 END MAIN_PROCESS;
+
 END XX_GL_JRNLS_CLD_INTF_PKG;
+
 /
 show errors;
 exit;

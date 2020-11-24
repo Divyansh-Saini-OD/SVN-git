@@ -1,8 +1,8 @@
 SET VERIFY OFF;
 WHENEVER SQLERROR CONTINUE;
 WHENEVER OSERROR EXIT FAILURE ROLLBACK;
-CREATE OR REPLACE
-PACKAGE XX_GL_JRNLS_CLD_INTF_PKG
+
+create or replace PACKAGE XX_GL_JRNLS_CLD_INTF_PKG
 AS
   -- +============================================================================================|
   -- |  Office Depot                                                                              |
@@ -19,6 +19,7 @@ AS
   -- | Version     Date         Author               Remarks                                      |
   -- | =========   ===========  =============        =============================================|
   -- | 1.0         12/08/2018   M K Pramod Kumar     Initial version                              |
+  -- | 1.2         09/11/2020   Mayur Palsokar       NAIT-161587 - Fix                            |
   -- +============================================================================================+
   /****************
   * MAIN PROCEDURE *
@@ -45,13 +46,22 @@ PROCEDURE MAIN_PROCESS(
     p_request_id   NUMBER,
 	p_user_id      NUMBER);
 	
+	/*Start: Added for NAIT-161587 */
+PROCEDURE XX_SEND_NOTIFICATION(
+                     P_REQUEST_ID IN NUMBER,
+                     X_STATUS OUT VARCHAR2,
+                     X_ERROR OUT VARCHAR2);
+					 
+Procedure XX_PURGE_STAGING;
 
+	/*End: Added for NAIT-161587 */
 	  
-	  TYPE varchar2_table
+TYPE varchar2_table
 IS
   TABLE OF VARCHAR2(32767) INDEX BY BINARY_INTEGER;
   
 END XX_GL_JRNLS_CLD_INTF_PKG;
+
 /
 show errors;
 exit;

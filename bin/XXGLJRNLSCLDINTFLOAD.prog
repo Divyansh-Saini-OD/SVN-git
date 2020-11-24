@@ -1,24 +1,22 @@
 
-# +===================================================================+
-# |                  Office Depot - Project Simplify                  |
-# |      			 				      |
-# +===================================================================+
-# | Name  : 	   XXGLJRNLSCLDINTF.prog   	                          |
-# | RICE ID    :   I3091
-# | Description:   This program does the following                    |
-# |             1) Call GL Journals load program for Non AP Journals  |
-# |                                                                   |
-# |                .                                       |
-# |                                                                   |
-# |                                                                   |
-# |                                                                   |
-# |Change Record:                                                     |
-# |===============                                                    |
-# |Version   Date        Author           Remarks                     |
-# |=======   ==========  =============    ============================|
-# |DRAFT 1A  28-JUL-2019  M K Pramod Kumar      Initial draft version   |
-# |V1.1      19-Aug-2019  M K Pramod Kumar      Changes to Error the program for Load Errors.|
-# +===================================================================+
+# +======================================================================+
+# |                  Office Depot - Project Simplify                     |
+# |      			 				                                     |
+# +======================================================================+
+# | Name  : 	   XXGLJRNLSCLDINTF.prog   	                             |
+# | RICE ID    :   I3091                                                 |
+# | Description:   This program does the following                       |
+# |             1) Call GL Journals load program for Non AP Journals     |
+# |                                                                      |
+# |                                                                      |
+# |Change Record:                                                        |
+# |===============                                                       |
+# |Version   Date        Author              Remarks                     |
+# |=======   ==========  =============       ============================|
+# |DRAFT 1A  28-JUL-2019  M K Pramod Kumar   Initial draft version       |
+# |V1.1      19-Aug-2019  M K Pramod Kumar   Changes to Error the program for Load Errors|
+# | 1.2      10-Nov-2020  Mayur Palsokar     NAIT-161587 fix             |
+# +======================================================================+
 
  echo "1 st argument = username/password"
  echo "2 nd argument = $2"
@@ -56,12 +54,8 @@ inbound_path=`echo $V_RESULT | awk '{ split($0,MODULE,"|"); print MODULE[1] }'`
 archival_path=`echo $V_RESULT | awk '{ split($0,MODULE,"|"); print MODULE[2] }'`
 file_name=`echo $V_RESULT | awk '{ split($0,MODULE,"|"); print MODULE[3] }'`
 
-
-
 echo " "
 echo "Translation set-up Name : OD_GL_JRNLS_CLD_INTF "
-
-
 
 echo " "
 echo "Process_name                           = $translationsource"
@@ -71,12 +65,8 @@ echo "Archival path                          = $archival_path"
 echo "File Name                              = $file_name"
 
 
-
-
-
 eval inbounddirectory=$inbound_path
 cd ${inbounddirectory}
-
 
 
 V_EXITSTATUS_MAIN=0
@@ -84,7 +74,6 @@ for i in `ls $file_name*.*  | sort -u`
 do echo "$i"  
 
   
-
 eval archival_file=$archival_path/$i
 eval inbounddirectory=$inbound_path/$i 
 	 
@@ -100,7 +89,14 @@ COMMIT;
 exit
 EOF` 
 
-  
+echo " "
+echo "File is being Archived" 
+echo "The Inbound File Name "${inbounddirectory}
+echo "The Archival File Name "${archival_file}
+cp ${inbounddirectory} ${archival_file}
+rm ${inbounddirectory}
+
+done;
 
 echo "$V_RESULT2"
 echo " "
@@ -111,28 +107,24 @@ set sqlprompt " "
 set serveroutput on 
 set verify off
 
-select error_description|| '|'
-from   XX_GL_JRNLS_CLD_INTF_files WHERE file_name = '$i';
-	
+select 'E'
+  FROM DUAL
+ WHERE EXISTS (SELECT 'x'
+                 from   XX_GL_JRNLS_CLD_INTF_files 
+				WHERE request_id=$4
+				  and   record_status='E'
+			  );
 exit
 EOF`
 
-V_EXITSTATUS=`echo $V_EXITSTATUS | awk '{ split($0,MODULE,"|"); print MODULE[1] }'`
+V_EXITSTATUS=`echo $V_EXITSTATUS | awk '{ split($0,MODULE,"N"); print MODULE[1] }'`
 echo "$V_EXITSTATUS"
 if [ -z "$V_EXITSTATUS" ]
 then
-echo "File Processed Successfull"
+echo "File Processed Successfully"
 else
-echo "File Processed with Errors"
-V_EXITSTATUS_MAIN=1
+echo "File Processed with errors"
+     V_EXITSTATUS_MAIN=1
 fi
-
-echo " "
-echo "File is being Archived" 
-echo "The Inbound File Name "${inbounddirectory}
-echo "The Archival File Name "${archival_file}
-cp ${inbounddirectory} ${archival_file}
-rm ${inbounddirectory}
-
-done;
+  								  	 
 exit $V_EXITSTATUS_MAIN
