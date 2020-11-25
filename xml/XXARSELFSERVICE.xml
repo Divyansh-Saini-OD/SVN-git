@@ -19,6 +19,9 @@
                ,:P_MAIL_TO MAIL_TO
                ,:P_SMTP_SERVER SMTP_SERVER
                ,:P_MAIL_FROM FROM_EMAIL
+               ,XX_AR_SELF_SERVICE.get_std_message(:P_TYPE,'SUBJECT') SUBJECT
+               ,XX_AR_SELF_SERVICE.get_std_message(:P_TYPE,'FILENAME') FILENAME
+               ,XX_AR_SELF_SERVICE.get_std_message(:P_TYPE,'BODY') MSGBODY
          FROM   DUAL
       ]]>
     </sqlStatement>
@@ -44,14 +47,32 @@
             ORDER BY Creation_date desc,AOPS_ACCOUNT
          ]]>
     </sqlStatement>
+    <sqlStatement name="Q_BAD_EMAIL">
+      <![CDATA[
+         SELECT  AOPS_ACCOUNT, 
+                 EMAIL_ADDRESS, 
+                 CREATION_DATE, 
+                 REQUEST_ID, 
+                 DIRECT_BILL_FLAG, 
+                 ACCOUNT_NUMBER
+           FROM  XX_AR_SELF_SERV_BAD_EMAIL
+          WHERE  DIRECT_BILL_FLAG  = 'N'
+            AND  TRUNC(CREATION_DATE)     >= TRUNC(NVL(fnd_conc_date.string_to_date(:P_AS_OF_DATE),CREATION_DATE))
+            AND  :P_TYPE           = 'EMAIL'
+            ORDER BY Creation_date desc,AOPS_ACCOUNT
+         ]]>
+    </sqlStatement>
   </dataQuery>
     <dataStructure>
     <group name = "G_PARAMS" source = "Q_PARAMS">
       <element name = "REQ_TYPE"           value = "REQ_TYPE"/>
       <element name = "AS_OF_DATE"         value = "AS_OF_DATE"/>
       <element name = "MAIL_TO"            value = "MAIL_TO"/>
-	  <element name="SMTP_SERVER"          value="SMTP_SERVER"/>
-	  <element name="FROM_EMAIL"           value="FROM_EMAIL"/>
+	  <element name="SMTP_SERVER"          value = "SMTP_SERVER"/>
+	  <element name="FROM_EMAIL"           value = "FROM_EMAIL"/>
+      <element name="SUBJECT"              value = "SUBJECT"/>
+      <element name="FILENAME"             value = "FILENAME"/>
+      <element name="MSGBODY"              value = "MSGBODY"/>
       <group name="Q_BAD_ADDRESS" source="Q_BAD_ADDRESS">
         <element name = "CUSTOMER_NAME"    value = "CUSTOMER_NAME" />
         <element name = "AOPS_ACCOUNT"     value = "AOPS_ACCOUNT" />
@@ -63,6 +84,12 @@
         <element name = "COUNTRY"          value = "COUNTRY" />
         <element name = "INVOICE_DATE"     value = "INVOICE_DATE" />
         <element name = "ACCOUNT_NUMBER"   value = "ACCOUNT_NUMBER" />
+        <element name = "CREATION_DATE"    value = "CREATION_DATE" />
+      </group>
+      <group name="P_BAD_EMAIL" source="Q_BAD_EMAIL">
+        <element name = "AOPS_ACCOUNT"    value = "AOPS_ACCOUNT" />
+        <element name = "EMAIL_ADDRESS"   value = "EMAIL_ADDRESS" />
+        <element name = "ACCOUNT_NUMBER"  value = "ACCOUNT_NUMBER" />
         <element name = "CREATION_DATE"   value = "CREATION_DATE" />
       </group>
     </group>

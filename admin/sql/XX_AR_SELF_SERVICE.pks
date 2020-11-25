@@ -57,13 +57,14 @@ FUNCTION get_account_number(p_AOPS_account_number IN VARCHAR2) return VARCHAR2 ;
 /*********************************************************************
 * procedure to insert data into intrim table
 *********************************************************************/
-Procedure insert_data(p_directory    IN VARCHAR2,
-                      p_file_name IN VARCHAR2,
-                      p_process_id IN NUMBER,
-                      p_delimeter IN VARCHAR2,
-                      p_enclosed_by  IN VARCHAR2 DEFAULT NULL,
+Procedure insert_data(p_directory    IN  VARCHAR2,
+                      p_file_name    IN  VARCHAR2,
+                      p_process_id   IN  NUMBER,
+                      p_delimeter    IN  VARCHAR2,
+                      p_enclosed_by  IN  VARCHAR2 DEFAULT NULL,
+                      p_skip_rows    IN  NUMBER DEFAULT 2,
                       x_error_status OUT VARCHAR2,
-                      x_error_msg OUT VARCHAR2);
+                      x_error_msg    OUT VARCHAR2);
 /*********************************************************************
 * Procedure to process bad address data
 *********************************************************************/
@@ -81,12 +82,23 @@ procedure process_bad_email(p_err_buf OUT VARCHAR2,
 *********************************************************************/
 procedure process_bad_contact(p_err_buf OUT VARCHAR2,
                               p_ret_code OUT VARCHAR2);
+
+/*********************************************
+* Function to get Message details for report *
+**********************************************/
+FUNCTION get_std_message(p_req_type IN  VARCHAR2,
+                         p_msg_type IN  VARCHAR2) RETURN VARCHAR2;
 /*********************************************************************
 * After report trigger for self service
 *********************************************************************/
---procedure xx_incorrect_info_main(p_err_buf  OUT VARCHAR2,
---                                 p_ret_code OUT VARCHAR2,
---                                 p_type     IN  VARCHAR2);
+
+
+/*********************************************************************
+* procedure to purge data
+*********************************************************************/
+Procedure PURGE_OLD_DATA(p_err_buf  OUT VARCHAR2,
+                         p_ret_code OUT NUMBER  ,
+                         p_type     IN  VARCHAR2);
 FUNCTION afterreport RETURN BOOLEAN;
 END XX_AR_SELF_SERVICE;
 /

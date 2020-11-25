@@ -252,17 +252,72 @@ END GET_TRANSLATION;
 /*********************************************************************
 * procedure to purge data
 *********************************************************************/
-Procedure purge_old_data IS
+Procedure purge_old_data(p_err_buf  OUT VARCHAR2,
+                         p_ret_code OUT NUMBER  ,
+                         p_type     IN  VARCHAR2) IS
 
 n_days          NUMBER;
 lv_null_value1  VARCHAR2(10);
 lv_null_value2  VARCHAR2(10);
 lv_del_str      VARCHAR2(500);
+lv_del_str2     VARCHAR2(500);
+lv_type         VARCHAR2(10);
+ln_address_cnt  NUMBER;
+ln_email_cnt    NUMBER;
+ln_cont_cnt     NUMBER;
 BEGIN
+  set_global_variables;
+  logs('Purge_old_data(+)',true);
   GET_TRANSLATION('XX_AR_SELF_SERVICE','N_PURGE_DAYS',n_days,lv_null_value1,lv_null_value2);
-  lv_del_str := 'delete from xx_ar_self_serv_bad_addr where creation_date < sysdate - :1';
-  execute immediate lv_del_str using n_days;
-
+  logs('Number of days : '||n_days,true);
+  lv_type := NVL(p_type,'ALL');
+  logs('Type of data to delete : '||lv_type,true);
+  --
+  --Delete Address related data
+  --
+  IF lv_type IN ('ADDRESS','ALL') THEN
+    lv_del_str2 := 'delete from xx_web_service_calls WHERE process_id IN (SELECT process_id FROM xx_ar_self_serv_bad_addr where creation_date < sysdate - :1)';
+    lv_del_str := 'delete from xx_ar_self_serv_bad_addr where creation_date < sysdate - :1';
+    logs('Deleting address data with sql : '||lv_del_str,true);
+    logs('Deleting address data with sql : '||lv_del_str2,true);
+    EXECUTE IMMEDIATE lv_del_str2 using n_days;
+    EXECUTE IMMEDIATE lv_del_str using n_days;
+    ln_address_cnt := SQL%ROWCOUNT;
+  END IF;
+  --
+  --Delete email related data
+  --
+  IF lv_type IN ('EMAIL','ALL') THEN
+    lv_del_str2 := 'delete from xx_web_service_calls WHERE process_id IN (SELECT process_id FROM xx_ar_self_serv_bad_email where creation_date < sysdate - :1)';
+    lv_del_str := 'delete from xx_ar_self_serv_bad_email where creation_date < sysdate - :1';
+    logs('Deleting email data with sql : '||lv_del_str,true);
+    logs('Deleting email data with sql : '||lv_del_str2,true);
+    EXECUTE IMMEDIATE lv_del_str2 using n_days;
+    EXECUTE IMMEDIATE lv_del_str using n_days;
+    ln_email_cnt := SQL%ROWCOUNT;
+  END IF;
+  --
+  --Delete contact related data
+  --
+  IF lv_type IN ('CONTACT','ALL') THEN
+    lv_del_str2 := 'delete from xx_web_service_calls WHERE process_id IN (SELECT process_id FROM xx_ar_self_serv_bad_contact where creation_date < sysdate - :1)';
+    lv_del_str := 'delete from xx_ar_self_serv_bad_contact where creation_date < sysdate - :1';
+    logs('Deleting contact data with sql : '||lv_del_str,true);
+    logs('Deleting contact data with sql : '||lv_del_str2,true);
+    EXECUTE IMMEDIATE lv_del_str2 using n_days;
+    EXECUTE IMMEDIATE lv_del_str using n_days;
+    ln_cont_cnt := SQL%ROWCOUNT;
+  END IF;
+  
+  FND_FILE.PUT_LINE(FND_FILE.OUTPUT,'Stats ');
+  FND_FILE.PUT_LINE(FND_FILE.OUTPUT,'************************************************** ');
+  FND_FILE.PUT_LINE(FND_FILE.OUTPUT,'Number of address records deleted '||ln_address_cnt);
+  FND_FILE.PUT_LINE(FND_FILE.OUTPUT,'Number of email records deleted '||ln_email_cnt);
+  FND_FILE.PUT_LINE(FND_FILE.OUTPUT,'Number of contact records deleted '||ln_cont_cnt);
+  FND_FILE.PUT_LINE(FND_FILE.OUTPUT,'************************************************** ');
+EXCEPTION WHEN OTHERS THEN
+   p_err_buf :='Error in purge_old_data '||SQLERRM;
+   p_ret_code := SQLCODE;
 END purge_old_data;
 
 /*********************************************************************
@@ -347,7 +402,7 @@ BEGIN
 
 EXCEPTION
     WHEN OTHERS THEN
-       FND_FILE.PUT_LINE(FND_FILE.LOG,'Error in Check_If_Direct '||SQLERRM);
+       FND_FILE.PUT_LINE(FND_FILE.LOG,'Error in get_address_reference '||SQLERRM);
 END;
 
 /*********************************************************************
@@ -404,7 +459,20 @@ BEGIN
                         and uses1.status='A'
                         and asites.cust_account_id=ext.cust_account_id
                         and NOT ( uses.cust_acct_site_id = uses1.cust_acct_site_id)
-           );
+           )
+           AND Rownum = 1;
+           
+           IF lv_flag_value = 'Y' THEN
+              SELECT DECODE(count(0),1,'Y','N')
+                INTO lv_flag_value
+                FROM hz_cust_acct_sites hcsa,
+                     hz_cust_site_uses hcsu
+               WHERE hcsa.cust_account_id = lt_tab_type(i).cust_account_id
+                 AND hcsa.cust_acct_site_id = hcsu.cust_acct_site_id
+                 AND hcsu.site_use_code = 'BILL_TO'
+                 AND hcsu.status = 'A'
+                 AND hcsa.status = 'A';
+           END IF;
      
      EXCEPTION WHEN OTHERS THEN
         lv_flag_value := 'N';
@@ -423,11 +491,12 @@ END Check_If_Direct;
 /*********************************************************************
 * procedure to insert data into intrim table
 *********************************************************************/
-Procedure insert_data(p_directory    IN VARCHAR2,
-                      p_file_name    IN VARCHAR2,
-                      p_process_id   IN NUMBER,
-                      p_delimeter    IN VARCHAR2,
-                      p_enclosed_by  IN VARCHAR2 DEFAULT NULL,
+Procedure insert_data(p_directory    IN  VARCHAR2,
+                      p_file_name    IN  VARCHAR2,
+                      p_process_id   IN  NUMBER,
+                      p_delimeter    IN  VARCHAR2,
+                      p_enclosed_by  IN  VARCHAR2 DEFAULT NULL,
+                      p_skip_rows    IN  NUMBER DEFAULT 2,
                       x_error_status OUT VARCHAR2,
                       x_error_msg    OUT VARCHAR2) IS
 
@@ -452,7 +521,7 @@ begin
      BEGIN
        utl_file.get_line(lf_file,lv_line_data);
        ln_rows := ln_rows+1;
-       IF ln_rows = 1 OR ln_rows = 2 THEN
+       IF ln_rows <=p_skip_rows THEN
          Continue;
        END IF;
        lv_insert_str :='INSERT INTO xx_ar_ss_cmn_tbl(process_id';
@@ -664,7 +733,7 @@ BEGIN
               "accountNumber": "'||rec_email.aops_account||'",
               "ebsAccountNumber": "'||rec_email.account_number||'",
               "contact": {
-                 "emailAddress": "'||rec_email.EMAIL_ADDRESS||'",
+                 "emailAddress": "'||rec_email.EMAIL_ADDRESS||'"
                           },
                           "reason": "Bad email",
                           "directFlag": ""
@@ -767,11 +836,16 @@ BEGIN
     ELSIF p_type = 'EMAIL' THEN
         logs('  Inserting for email');
         INSERT INTO xx_ar_self_serv_bad_email(
-                        CUSTOMER_NAME,
+                        EMAIL_ADDRESS,
                         AOPS_ACCOUNT,
                         account_number,
-                        invoice_date,
-                        EMAIL_ADDRESS,
+                        
+--                        CUSTOMER_NAME,
+--                        AOPS_ACCOUNT,
+--                        account_number,
+--                        invoice_date,
+--                        EMAIL_ADDRESS,
+                        
                         CREATION_DATE,
                         REQUEST_ID,
                         DIRECT_BILL_FLAG,
@@ -781,8 +855,9 @@ BEGIN
                       (SELECT column1,
                               column2,
                               get_account_number(column2),
-                              column3,
-                              column4,
+                              --column3,
+                              --column4,
+                              
                               sysdate,
                               g_conc_req_id,
                               direct_cust_flag,
@@ -874,6 +949,7 @@ procedure process_bad_address(p_err_buf OUT VARCHAR2,
   ln_rep_req_id   NUMBER;
   ln_arc_req_id   NUMBER;
   lv_enclosed_by  VARCHAR2(10);
+  ln_skip_rows    NUMBER;
   
   CURSOR c_process_files(p_process_id NUMBER) IS
      SELECT file_name,file_id
@@ -905,8 +981,8 @@ BEGIN
     END IF;
     GET_TRANSLATION('XX_AR_SELF_SERVICE',lv_process_type,lv_directory,lv_file_name,lv_delimeter);
     BEGIN
-        SELECT TARGET_VALUE7
-          INTO lv_enclosed_by
+        SELECT TARGET_VALUE7,TARGET_VALUE8
+          INTO lv_enclosed_by,ln_skip_rows
           FROM XX_FIN_TRANSLATEDEFINITION XFTD,
                XX_FIN_TRANSLATEVALUES XFTV
          WHERE XFTD.TRANSLATION_NAME ='XX_AR_SELF_SERVICE'
@@ -917,7 +993,8 @@ BEGIN
     EXCEPTION WHEN OTHERS THEN
        p_err_buf := 'Error while getting email receiptient';
        p_ret_code := 2;
-       lv_send_to := NULL;
+       lv_enclosed_by := NULL;
+       ln_skip_rows:= 2;
     END;
     
     logs('lv_directory '||lv_directory);
@@ -928,6 +1005,7 @@ BEGIN
                 ln_process_id,
                 lv_delimeter,
                 lv_enclosed_by,
+                ln_skip_rows,
                 lv_err_code,
                 lv_err_message);
         --Checking if direct customer.
@@ -1003,29 +1081,32 @@ END process_bad_address;
 *********************************************************************/
 procedure process_bad_email(p_err_buf OUT VARCHAR2,
                           p_ret_code OUT VARCHAR2) IS
-  l_module_name   VARCHAR2(2000) := g_package_name||'.'||'XX_BAD_ADDR_UPD';
-  lv_event        VARCHAR2(500);
-  ln_process_id   NUMBER;
-  ln_req_id       NUMBER;
-  lc_wait_flag    BOOLEAN;
-  lc_phase        VARCHAR2(100);
-  lc_status       VARCHAR2(100);
-  lc_dev_phase    VARCHAR2(100);
-  lc_dev_status   VARCHAR2(100);
-  lc_message      VARCHAR2(100);
-  lv_file_name    VARCHAR2(100);
-  lv_directory    VARCHAR2(100);
-  lv_err_message  VARCHAR2(2000);
-  lv_err_code     VARCHAR2(20);
-  lv_delimeter    VARCHAR2(20);
-  lv_p_err        VARCHAR2(2000);
-  lv_p_code       NUMBER;
-  lv_process_type VARCHAR2(20) := 'EMAIL';
-  lv_send_to      VARCHAR2(50);
-  lv_source_folder  VARCHAR2(100);
+--  PRAGMA AUTONOMOUS_TRANSACTION;
+  l_module_name          VARCHAR2(2000) := g_package_name||'.'||'XX_BAD_ADDR_UPD';
+  lv_event               VARCHAR2(500);
+  ln_process_id          NUMBER;
+  ln_req_id              NUMBER;
+  lc_wait_flag           BOOLEAN;
+  lc_phase               VARCHAR2(100);
+  lc_status              VARCHAR2(100);
+  lc_dev_phase           VARCHAR2(100);
+  lc_dev_status          VARCHAR2(100);
+  lc_message             VARCHAR2(100);
+  lv_file_name           VARCHAR2(100);
+  lv_directory           VARCHAR2(100);
+  lv_err_message         VARCHAR2(2000);
+  lv_err_code            VARCHAR2(20);
+  lv_delimeter           VARCHAR2(20);
+  lv_p_err               VARCHAR2(2000);
+  lv_p_code              NUMBER;
+  lv_process_type        VARCHAR2(20) := 'EMAIL';
+  lv_send_to             VARCHAR2(50);
+  lv_source_folder       VARCHAR2(100);
   lv_destination_folder  VARCHAR2(100);
-  ln_rep_req_id   NUMBER;
-  ln_arc_req_id   NUMBER;
+  ln_rep_req_id          NUMBER;
+  ln_arc_req_id          NUMBER;
+  lv_enclosed_by         VARCHAR2(10);
+  ln_skip_rows           NUMBER;
   CURSOR c_process_files(p_process_id NUMBER) IS
      SELECT file_name,file_id
        FROM xx_ar_ss_file_names
@@ -1040,7 +1121,7 @@ BEGIN
       FROM dual;
     logs('process started for id '||ln_process_id,True);
     --Calling insert file names program
-    ln_req_id := fnd_request.submit_request ( application => 'XXFIN' , program => 'XXARBSDLOADFILES' , description => NULL , start_time => sysdate , sub_request => true , argument1=>lv_process_type, argument2=>ln_process_id);
+    ln_req_id := fnd_request.submit_request ( application => 'XXFIN' , program => 'XXARBSDLOADFILES' , description => NULL , start_time => sysdate , sub_request => false , argument1=>lv_process_type, argument2=>ln_process_id);
     COMMIT;
     logs('Conc. Program submitted '||ln_req_id);
     IF ln_req_id = 0 THEN
@@ -1055,14 +1136,32 @@ BEGIN
       END IF;
     END IF;
     GET_TRANSLATION('XX_AR_SELF_SERVICE',lv_process_type,lv_directory,lv_file_name,lv_delimeter);
+    BEGIN
+        SELECT TARGET_VALUE7,TARGET_VALUE8
+          INTO lv_enclosed_by,ln_skip_rows
+          FROM XX_FIN_TRANSLATEDEFINITION XFTD,
+               XX_FIN_TRANSLATEVALUES XFTV
+         WHERE XFTD.TRANSLATION_NAME ='XX_AR_SELF_SERVICE'
+           AND XFTV.SOURCE_VALUE1      =lv_process_type
+           AND XFTD.TRANSLATE_ID       =XFTV.TRANSLATE_ID
+           AND XFTD.ENABLED_FLAG       ='Y'
+           AND SYSDATE BETWEEN XFTV.START_DATE_ACTIVE AND NVL(XFTV.END_DATE_ACTIVE,SYSDATE);
+    EXCEPTION WHEN OTHERS THEN
+       p_err_buf := 'Error while getting enclosing';
+       p_ret_code := 2;
+       lv_enclosed_by := NULL;
+       ln_skip_rows   :=1;
+    END;
     logs('lv_directory '||lv_directory);
     logs('lv_delimeter '||lv_delimeter);
+    logs('lv_enclosed_by '||lv_enclosed_by);
     FOR rec_process_files IN c_process_files(ln_process_id) LOOP
        insert_data(lv_directory,
                 rec_process_files.file_name,
                 ln_process_id,
                 lv_delimeter,
-                null,
+                lv_enclosed_by,
+                ln_skip_rows,
                 lv_err_code,
                 lv_err_message);
         --Checking if direct customer.
@@ -1161,6 +1260,7 @@ procedure process_bad_contact(p_err_buf OUT VARCHAR2,
   lc_req_data     VARCHAR2(500);
   ln_rep_req_id   NUMBER;
   ln_arc_req_id   NUMBER;
+  ln_skip_rows    NUMBER;
   CURSOR c_process_files(p_process_id NUMBER) IS
      SELECT file_name,file_id
        FROM xx_ar_ss_file_names
@@ -1198,6 +1298,7 @@ BEGIN
                 ln_process_id,
                 lv_delimeter,
                 null,
+                null,--ln_skip_rows
                 lv_err_code,
                 lv_err_message);
         --Checking if direct customer.
@@ -1363,6 +1464,22 @@ EXCEPTION
         p_ret_status  :='E';
         p_ret_msg  :='Error in update_email_address '||SQLERRM;
 END update_email_address;
+
+/*********************************************
+* Function to get Message details for report *
+**********************************************/
+
+FUNCTION get_std_message(p_req_type IN  VARCHAR2,
+                         p_msg_type IN  VARCHAR2) RETURN VARCHAR2 IS
+   p_msg_name VARCHAR2(100);                         
+BEGIN
+  p_msg_name :='XX_AR_SS_'||p_req_type||'_'||p_msg_type;
+  fnd_message.set_name('XXFIN', p_msg_name);
+  return fnd_message.get;
+
+EXCEPTION WHEN OTHERS THEN
+   RETURN null;
+END;
 
 
 /*********************************************************************
