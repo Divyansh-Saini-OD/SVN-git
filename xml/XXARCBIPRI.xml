@@ -444,7 +444,7 @@ SELECT
      ,xact.inv_source_name inv_source
      ,to_char(xact.order_date ,'DD-MON-YY') order_date 
      ,xact.sfdata1 ,xact.sfdata2 ,xact.sfdata3 ,xact.sfdata4 ,xact.sfdata5
-     ,(xact.subtotal_amount - xact.delivery_charges - NVL(XX_AR_EBL_COMMON_UTIL_PKG.get_softhdr_amount_fis(xact.inv_type,xact.inv_source_name,xact.cons_inv_id,xact.request_id,xact.CUSTOMER_TRX_ID),0)) subtotal
+     ,(xact.subtotal_amount - xact.delivery_charges - (NVL(XX_AR_EBL_COMMON_UTIL_PKG.get_line_fee_amount(xact.customer_trx_id),0) + NVL(XX_AR_EBL_COMMON_UTIL_PKG.get_hea_fee_amount(xact.customer_trx_id),0))) subtotal
      ,xact.delivery_charges delivery
      ,xact.promo_and_disc discounts
      ,xact.tax_amount
@@ -456,7 +456,7 @@ SELECT
                         ELSE (xohaa.ship_to_zip)
                         end)))	
               ) sfdata7 -- Added for Defect# 19985 on 03-Jan-2012
- ,XX_AR_EBL_COMMON_UTIL_PKG.get_softhdr_amount_fis(xact.inv_type,xact.inv_source_name,xact.cons_inv_id,xact.request_id,xact.CUSTOMER_TRX_ID) fee_amt
+ ,NVL(XX_AR_EBL_COMMON_UTIL_PKG.get_line_fee_amount(xact.customer_trx_id),0) + NVL(XX_AR_EBL_COMMON_UTIL_PKG.get_hea_fee_amount(xact.customer_trx_id),0) fee_amt
 from  xx_ar_cbi_trx xact,
 xx_om_header_attributes_all xohaa
 where request_id  =:p_thread_id
@@ -492,7 +492,7 @@ SELECT
      ,xact.sfdata3 infosumz_sfdata3
      ,xact.sfdata4 infosumz_sfdata4
      ,xact.sfdata5 infosumz_sfdata5
-     ,(xact.subtotal_amount - xact.delivery_charges-NVL(XX_AR_EBL_COMMON_UTIL_PKG.get_softhdr_amount_fis(xact.inv_type,xact.inv_source_name,xact.cons_inv_id,xact.request_id,xact.CUSTOMER_TRX_ID),0)) infosumz_subtotal
+     ,(xact.subtotal_amount - xact.delivery_charges - (NVL(XX_AR_EBL_COMMON_UTIL_PKG.get_line_fee_amount(xact.customer_trx_id),0) + NVL(XX_AR_EBL_COMMON_UTIL_PKG.get_hea_fee_amount(xact.customer_trx_id),0))) infosumz_subtotal
      ,xact.delivery_charges infosumz_delivery
      ,xact.promo_and_disc infosumz_discounts
      ,xact.tax_amount infosumz_tax
@@ -504,7 +504,7 @@ SELECT
                         ELSE (xohaa.ship_to_zip)
                         end)))	
       ) infosumz_sfdata7 -- Added for Defect# 19985 on 03-Jan-2012
-      ,XX_AR_EBL_COMMON_UTIL_PKG.get_softhdr_amount_fis(xact.inv_type,xact.inv_source_name,xact.cons_inv_id,xact.request_id,xact.CUSTOMER_TRX_ID)INFOSUMZ_FEE
+      ,NVL(XX_AR_EBL_COMMON_UTIL_PKG.get_line_fee_amount(xact.customer_trx_id),0) + NVL(XX_AR_EBL_COMMON_UTIL_PKG.get_hea_fee_amount(xact.customer_trx_id),0)INFOSUMZ_FEE
 FROM  xx_ar_cbi_trx xact,
 xx_om_header_attributes_all xohaa
 WHERE request_id      =:p_thread_id
@@ -1442,8 +1442,8 @@ UNION ALL
 <sqlStatement name="Q_INFODOC_CONS_FEE">
        <![CDATA[	
 SELECT 
-      flv.lookup_code FEE_CODE
-     ,upper(flv.meaning)  FEE_DESCRIPTION
+      flv.lookup_code FEE_CODE99
+     ,upper(flv.meaning)  FEE_DESCRIPTION99
      ,flv.attribute7
      ,TO_CHAR(sum(RCTL.unit_selling_price*
 	 CASE WHEN aps.class = 'CM' THEN
@@ -1451,7 +1451,7 @@ SELECT
 	 ELSE 
 	  NVL(quantity_ordered,quantity_invoiced)
 	  END
-	  ),'9999999999.999')       FEE_AMT  
+	  ),'9999999999.999')       FEE_AMT99  
 FROM
      ra_customer_trx_lines_All RCTL
 	 ,ar_cons_inv_trx              arci
@@ -1466,7 +1466,7 @@ WHERE 1=1
   AND FLV.attribute7 NOT IN ('DELIVERY','MISCELLANEOUS')  
   AND RCTL.customer_trx_id         = arci.customer_trx_id
   AND RCTL.customer_trx_id = aps.customer_trx_id
-  AND arci.cons_inv_id           = :info_cbi_id99 
+  AND arci.cons_inv_id           = :BILLING_NUMBER99 
 GROUP BY flv.lookup_code,flv.meaning,flv.attribute7
 order by flv.attribute7 desc,flv.lookup_code
        ]]>
@@ -2057,6 +2057,11 @@ ORDER BY xact.insert_seq
 <element name="DOC_TITLE" value="DOC_TITLE" />
 <element name="PDOC_LAYOUT1" value="PD_LAYOUT1" />
 <element name="FEE_OPTION" value="FEE_OPTION" />
+<group name="G_PAYDOC_CONS_FEE" source="Q_PAYDOC_CONS_FEE">
+<element name="CBI_FEE_CODE"        value="FEE_CODE" />
+<element name="CBI_FEE_NAME" value="FEE_DESCRIPTION" />
+<element name="CBI_FEE_AMOUNT"         value="FEE_AMT" />
+</group>
 <group name="G_PAYDOC_DETAIL_TRX" source="Q_PAYDOC_DETAIL_TRX">
 <element name="ORDER_NUMBER" value="INVOICE_NUM" />
 <element name="ORDER_DATE" value="ORDER_DATE" />
@@ -2122,11 +2127,6 @@ ORDER BY xact.insert_seq
 <element name="PAGE_BREAK" value="PAGE_BREAK" />
 </group>
 </group>
-<group name="G_PAYDOC_CONS_FEE" source="Q_PAYDOC_CONS_FEE">
-<element name="CBI_FEE_CODE"        value="FEE_CODE" />
-<element name="CBI_FEE_NAME" value="FEE_DESCRIPTION" />
-<element name="CBI_FEE_AMOUNT"         value="FEE_AMT" />
-</group>
 </group>
 </group>
 <group name="G_INFODOC_LAYOUT" source="Q_INFODOC_LAYOUT">
@@ -2152,6 +2152,11 @@ ORDER BY xact.insert_seq
 <element name="DOC_TITLE" value="DOC_TITLE99" />
 <element name="PDOC_LAYOUT1" value="PD_LAYOUT99" />
 <element name="FEE_OPTION" value="FEE_OPTION" />
+<group name="G_INFODOC_CONS_FEE" source="Q_INFODOC_CONS_FEE">
+<element name="CBI_FEE_CODE"        value="FEE_CODE99" />
+<element name="CBI_FEE_NAME" value="FEE_DESCRIPTION99" />
+<element name="CBI_FEE_AMOUNT"         value="FEE_AMT99" />
+</group>
 <group name="G_INFODOC_DETAIL_TRX" source="Q_INFODOC_DETAIL_TRX">
 <element name="ORDER_NUMBER" value="INFODTL_INVOICE_NUM" />
 <element name="ORDER_DATE" value="INFODTL_ORDER_DATE" />
@@ -2217,11 +2222,6 @@ ORDER BY xact.insert_seq
 <element name="SF_AMOUNT" value="INFODTL_SF_AMOUNT" />
 <element name="PAGE_BREAK" value="INFODTL_PAGE_BREAK" />
 </group>
-</group>
-<group name="G_INFODOC_CONS_FEE" source="Q_INFODOC_CONS_FEE">
-<element name="CBI_FEE_CODE"        value="FEE_CODE" />
-<element name="CBI_FEE_NAME" value="FEE_DESCRIPTION" />
-<element name="CBI_FEE_AMOUNT"         value="FEE_AMT" />
 </group>
 </group>
 <group name="G_INFODOC_SUMMARIZE" source="Q_INFODOC_CBI_SUMMARIZE">
