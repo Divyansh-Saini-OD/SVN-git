@@ -151,6 +151,10 @@ AS
 -- |                                                 for Store # 1165 Issue                                           |
 -- | 66.0        12-NOV-2020  Arvind K               NAIT-161715 Added logic of to fetch data from history schema     |
 -- |                                                 for issue related with no_data_found                             |
+-- | 67.0        02-DEC-2020  XXXXXXXX               NAIT-161715 added the logic into get_order_line_info for         |
+-- |                                                 no data found error fix                                          |
+-- | 68.0        02-DEC-2020  XXXXXXXX               NAIT-161715 added the logic into procedure get_pos_info          |
+-- |                                                 for get_invoice_header_info  no data found error fix             |
 -- +==================================================================================================================+
 
   gc_package_name        CONSTANT all_objects.object_name%TYPE   := 'xx_ar_subscriptions_mt_pkg';
@@ -1611,17 +1615,27 @@ PROCEDURE logitt(p_message  IN  CLOB,
     --Begin : added for NAIT-125836-Invoice creation is failing with no_data_found trying to find the initial POS order     
     WHEN NO_DATA_FOUND THEN
       BEGIN
-         SELECT * 
-           INTO   x_order_line_info 
-           FROM   xxom_oe_order_lines_all_hist
-          WHERE   header_id   = p_header_id
-            AND   line_number = p_line_number;
-          
-      EXCEPTION
-       WHEN OTHERS
-       THEN
-         exiting_sub(p_procedure_name => lc_procedure_name, p_exception_flag => TRUE);
-         RAISE_APPLICATION_ERROR(-20101, 'PROCEDURE: ' || lc_procedure_name || ' SQLCODE: ' || SQLCODE || ' SQLERRM: ' || SQLERRM);
+        SELECT *
+           INTO   x_order_line_info
+           FROM   oe_order_lines_all
+           WHERE  header_id = p_header_id
+           AND    rownum    < 2;
+        EXCEPTION
+         WHEN NO_DATA_FOUND THEN
+           BEGIN   
+           SELECT * 
+             INTO   x_order_line_info 
+             FROM   xxom_oe_order_lines_all_hist
+            WHERE   header_id   = p_header_id
+              AND   line_number = p_line_number;          
+           EXCEPTION
+              WHEN NO_DATA_FOUND THEN
+                SELECT * 
+                  INTO   x_order_line_info 
+                  FROM   xxom_oe_order_lines_all_hist
+                 WHERE   header_id   = p_header_id
+                   AND   rownum      < 2;
+        END;
       END;
 
         logit(p_message => 'RESULT header_id  XXAPPS_HISTORY_QUERY: ' || x_order_line_info.header_id);
@@ -3140,17 +3154,24 @@ PROCEDURE logitt(p_message  IN  CLOB,
     EXCEPTION
      WHEN NO_DATA_FOUND THEN
       BEGIN
-        SELECT header_id,order_number 
-        INTO x_pos_info.oe_header_id,x_pos_info.sales_order 
-        FROM oe_order_headers_all
-        WHERE orig_sys_document_ref = p_orig_sys_doc_ref;
-        -- Added for NAIT-125836-Invoice creation is failing with no_data_found trying to find the initial POS order
+	    SELECT  oe_header_id,sales_order
+          INTO  x_pos_info.oe_header_id,x_pos_info.sales_order
+          FROM  xx_ar_pos_inv_order_ref_hist
+         WHERE  oe_header_id = p_header_id;
       EXCEPTION
         WHEN NO_DATA_FOUND THEN
-          SELECT header_id,order_number 
-          INTO x_pos_info.oe_header_id,x_pos_info.sales_order 
-          FROM XXOM_OE_ORDER_HEADERS_ALL_HIST
-          WHERE orig_sys_document_ref = p_orig_sys_doc_ref;
+          BEGIN 
+		     SELECT header_id,order_number 
+               INTO x_pos_info.oe_header_id,x_pos_info.sales_order 
+               FROM oe_order_headers_all
+               WHERE orig_sys_document_ref = p_orig_sys_doc_ref;
+          EXCEPTION
+             WHEN NO_DATA_FOUND THEN
+               SELECT header_id,order_number 
+                 INTO x_pos_info.oe_header_id,x_pos_info.sales_order 
+                 FROM XXOM_OE_ORDER_HEADERS_ALL_HIST
+                 WHERE orig_sys_document_ref = p_orig_sys_doc_ref;
+          END;
       END;
    -- END for NAIT-125836-Invoice creation is failing with no_data_found trying to find the initial POS order 
       BEGIN
@@ -3160,7 +3181,11 @@ PROCEDURE logitt(p_message  IN  CLOB,
         WHERE interface_header_attribute1 = x_pos_info.sales_order ;
       EXCEPTION
         WHEN NO_DATA_FOUND THEN
-          x_pos_info.summary_trx_number := NULL;
+		   SELECT trx_number 
+             INTO x_pos_info.summary_trx_number 
+             FROM ra_customer_trx_all_hist
+            WHERE interface_header_attribute1 = x_pos_info.sales_order ;
+          --x_pos_info.summary_trx_number := NULL;
           logit(p_message => 'Invoice not yet created ' || x_pos_info.summary_trx_number);
       END;
     logit(p_message => 'RESULT POS trx_number: ' || x_pos_info.summary_trx_number);
