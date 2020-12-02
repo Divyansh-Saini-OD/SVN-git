@@ -24,22 +24,11 @@ WHENEVER SQLERROR CONTINUE
 -- |=======   ==========   =============        =======================================|
 -- | 1.0     09-NOV-2020  Arvind K    I          initial version                       |
 -- +===================================================================================+
-PROMPT
-PROMPT Synonym for sequence XX_AR_POS_INV_ORDER_REF_HIST in combo database
-PROMPT   
-BEGIN
-  EXECUTE IMMEDIATE 'DROP SYNONYM APPS.XX_AR_POS_INV_ORDER_REF_HIST';
-EXCEPTION
-  WHEN OTHERS THEN NULL;
-END;
-/
+
+--DROP SYNONYM XX_AR_POS_INV_ORDER_REF_HIST;
+
 CREATE OR REPLACE SYNONYM APPS.XX_AR_POS_INV_ORDER_REF_HIST FOR XXAPPS_HISTORY_COMBO.XX_AR_POS_INV_ORDER_REF;
-/
-GRANT SELECT ON XX_AR_POS_INV_ORDER_REF_HIST   TO 940764;
-/
-GRANT SELECT ON XX_AR_POS_INV_ORDER_REF_HIST   TO 944171;
-/
-GRANT SELECT ON XX_AR_POS_INV_ORDER_REF_HIST   TO 945632;
-SHOW ERRORS;
-EXIT;
+
+SHOW ERRORS
+
 
