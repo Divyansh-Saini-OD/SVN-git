@@ -36,11 +36,11 @@ AS
   CURSOR pom_extract (p_act_comp_date  DATE)
   IS
     SELECT SEGMENT1 PO_NUMBER
-    FROM  APPS.PO_HEADERS_ALL A
+    FROM  PO_HEADERS_ALL A
     WHERE 1=1
     --AND A.CREATION_DATE > '31-DEC-17'
     AND EXISTS (SELECT 'x'
-                FROM APPS.AP_SUPPLIER_SITES_ALL B
+                FROM AP_SUPPLIER_SITES_ALL B
                 WHERE B.VENDOR_SITE_ID = A.VENDOR_SITE_ID
                 AND SUBSTR(B.ATTRIBUTE8,1,2) = 'TR'
                 )
