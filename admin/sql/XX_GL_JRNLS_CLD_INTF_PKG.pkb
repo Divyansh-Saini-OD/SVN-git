@@ -20,6 +20,7 @@ AS
   -- | 1.2         19/07/2020   M K Pramod Kumar     Code Changes to show errors in output        | 
   -- | 1.3         14/08/2020   M K Pramod Kumar     Code Changes to error Load Program if any load issues|
   -- | 1.4         09/11/2020   Mayur Palsokar       NAIT-161587 fix, added XX_SEND_NOTIFICATION and XX_PURGE_STAGING procedures|
+  -- | 1.5         02/12/2020   Mayur Palsokar       Modified XX_SEND_NOTIFICATION procedure      |
   -- +============================================================================================+
   gc_package_name      CONSTANT all_objects.object_name%TYPE := 'XX_GL_JRNLS_CLD_INTF_PKG';
   gc_ret_success       CONSTANT VARCHAR2(20)                 := 'SUCCESS';
@@ -271,9 +272,6 @@ procedure xx_send_notification(
    conn utl_smtp.connection;
 
 lc_email_from varchar2 (3000):= 'no-reply@officedepot.com';
---lc_email_to varchar2 (3000):= 'mayur.palsokar@officedepot.com';
---lc_email_cc varchar2 (3000) := 'Padmanaban.Sanjeevi@OfficeDepot.com';
---lc_subject varchar2 (3000) := 'Test email';
 lc_email_body varchar2 (3000) := '';
 lc_database varchar2(50);
 ln_request_id number := p_request_id;
@@ -344,26 +342,15 @@ begin
 
   IF ln_cnt<>0 THEN
      lc_email_body := '<p>Hi,</p>'||chr(13)||
-     '<p>GL import with Request ID- '||ln_request_id||' is failed.'||' Please find the details below.</p>'||chr(10);
+	 '<p>Oracle Cloud EBS GL Interface encountered issues while processing the files.</p>'||chr(13)||
+	 '<p>Please find the details below.</p>'||chr(13)||
+     '<p>GL import with Request ID- '||ln_request_id||' is failed.</p>'||chr(10);
      for i in cur_get_det
      loop 
 	  lc_email_body := lc_email_body || '<p><B>File Name: </B>'||i.file_name||'<br>'||  
       '<B>Error Description: </B>'||i.error_description||'</p>';
      end loop;   
 	  
-     begin
-         select name
-           into lc_database
-           from v$database;
-     exception
-       when others then
-         lc_database := 'GSIDEV02';
-     end;
-	 /* 
-     if lc_database <> 'GSIPRDGB' then -- to chec   
-        lc_subject := 'Please ignore this email: '|| lc_subject;
- 	 end if; 
-	 */
 	 FOR j IN cur_get_cc_mail LOOP
 	    IF j.email_id IS NOT NULL THEN 
 			IF lv_email_cc IS NULL THEN 
@@ -386,9 +373,9 @@ begin
 	 
         
 	 conn := xx_pa_pb_mail.begin_mail(sender => lc_email_from,
-                                 recipients => lv_email_to,--lc_email_to,
-                                 cc_recipients=>lv_email_cc,--lc_email_cc,
-                                 subject => 'Oracle Cloud Journal Files Are Not Able To Process Please Check', --lc_subject,
+                                 recipients => lv_email_to,
+                                 cc_recipients=>lv_email_cc,
+                                 subject => 'Oracle Cloud EBS GL Interface Errors', 
                                  mime_type => xx_pa_pb_mail.multipart_mime_type);
      xx_pa_pb_mail.attach_text( conn => conn,
                                        data => lc_email_body,
