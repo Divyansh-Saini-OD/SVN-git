@@ -55,6 +55,7 @@ create or replace PACKAGE BODY XX_AP_NACHABOA_EFT_PKG
 -- |                      replace carriage return from the invoice     |
 -- | 						description and invoice number column for defect #45026 |
 -- |2.9      05-JUN-2020  Moving BOA file $XXFIN_DATA/ftp/out/boa  NAIT-139876 in eft_file_move
+-- |3.0      02-DEC-2020  NAIT-164183 Added logic to archive/encrypt from different folder and move to boa folder
 -- +===================================================================+
 AS
 
@@ -65,6 +66,8 @@ AS
  * Procedure to Archive the File extracted
  * This procedure is called by xx_daily_extract, xx_calendar_extract,xx_fiscal_extract procedure
 ***********************************************************************************/
+
+
 
 PROCEDURE xx_archive_file(p_file IN VARCHAR2)
 IS
@@ -102,12 +105,38 @@ BEGIN
     WHEN OTHERS THEN
       fnd_file.put_line(fnd_file.LOG,'Exception raised while getting Source directory path '|| SQLERRM);
   END;
-  lc_source_file_name := lc_source_dir_path||'/boa/'||p_file;
+
+  -- Archiving   NAIT-164183
+  lc_source_file_name := lc_source_dir_path||'/boa/encrpt/'||p_file;
   lc_dest_file_name   := lc_target_dir_path||'/'||p_file;
   ln_request_id       := fnd_request.submit_request('XXFIN', 
 													'XXCOMFILCOPY', '', '', FALSE, 
 													lc_source_file_name, 
 													lc_dest_file_name, '', '', 'N' 
+													);
+  IF ln_request_id     > 0 THEN
+    COMMIT;
+    lb_complete := fnd_concurrent.wait_for_request(request_id => ln_request_id,
+                        interval => 10,
+                        max_wait => 0,
+						phase => lc_phase,
+						status => lc_status,
+						dev_phase => lc_dev_phase,
+						dev_status => lc_dev_status,
+						MESSAGE => lc_message
+                      );
+  END IF;
+  COMMIT;
+  
+  -- Copying to $XXFIN_DATA/ftp/out/boa/  NAIT-164183
+  
+  lc_source_file_name := lc_source_dir_path||'/boa/encrpt/'||p_file;
+  lc_dest_file_name   := lc_source_dir_path||'/boa/'||p_file;
+  
+  ln_request_id       := fnd_request.submit_request('XXFIN', 
+													'XXCOMFILCOPY', '', '', FALSE, 
+													lc_source_file_name, 
+													lc_dest_file_name, '', '', 'Y' 
 													);
   IF ln_request_id     > 0 THEN
     COMMIT;
@@ -1739,10 +1768,10 @@ lc_jpm_invoice_num    ap_invoices.invoice_num%TYPE;
 
    IF lc_out_file_name IS NOT NULL THEN
 
-   -- BEGIN NAIT-139876 Assigning File path
+   -- BEGIN NAIT-139876 Assigning File path 
    
       IF lc_out_file_name LIKE '%BOA_EFT_TRADE_EFT_NACHA%' THEN
-	     lc_filepath:='$XXFIN_DATA/ftp/out/boa/';
+	     lc_filepath    :='$XXFIN_DATA/ftp/out/boa/encrpt/';  --NAIT-164183
 	  ELSE 
 	     lc_filepath:='$XXFIN_DATA/ftp/out/nacha/';
 	  END IF;
@@ -1832,8 +1861,7 @@ lc_jpm_invoice_num    ap_invoices.invoice_num%TYPE;
        --2.5 Encrypt the file and place in same directory
        --------------------------------------------
        -- THE XXCOMENPTFILE concurrent program will encrypt the  file in the
-       -- directory  XXFIN/ftp/out/nacha directory where BPEL is monitoring
-       -- for the file to arrive.
+       -- directory  XXFIN/ftp/out/boa/encrpt directory 
 	  
       IF lc_status != 'Normal'
       THEN
