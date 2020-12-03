@@ -6089,7 +6089,7 @@ BEGIN
       ln_line_number :=0;
       lv_header_line := 'N';
    END;
-   
+
    IF lv_header_line != 'Y' THEN
        BEGIN
            SELECT to_number(attribute12)
@@ -6221,11 +6221,11 @@ BEGIN
 		   ln_fee_option := 0;
 		WHEN OTHERS THEN
 		   ln_fee_option := 0;
-	 END;   
-   
-   END IF; 
+	 END;
+
+   END IF;
    IF ln_fee_option <= 0 THEN
-      SELECT xftv.SOURCE_VALUE1 
+      SELECT xftv.SOURCE_VALUE1
         INTO ln_fee_option
         FROM xx_fin_translatedefinition xftd,
              xx_fin_translatevalues xftv
@@ -6271,7 +6271,7 @@ ln_cust_doc_id:= p_cust_doc_id;
 		WHEN OTHERS THEN
 		   ln_attr_group_id := 0;
 	 END;
-   
+
      BEGIN
        SELECT fee_option
          INTO ln_fee_option_paydoc
@@ -6288,26 +6288,26 @@ ln_cust_doc_id:= p_cust_doc_id;
 		WHEN OTHERS THEN
 		   ln_fee_option_paydoc := 0;
 	 END;
-     IF ln_fee_option_paydoc >0 THEN 
-         BEGIN     
+     IF ln_fee_option_paydoc >0 THEN
+         BEGIN
            SELECT xftv.target_value1
              INTO ln_fee_option
-             FROM xx_fin_translatedefinition xftd, 
+             FROM xx_fin_translatedefinition xftd,
                   xx_fin_translatevalues xftv
             WHERE xftd.translate_id = xftv.translate_id
               AND xftd.translation_name = 'OD_FEE_OPTION_RELATION'
               AND xftv.source_value1 = ln_fee_option_paydoc
-              AND xftv.source_value2 = p_mbs_doc_type;   
+              AND xftv.source_value2 = p_mbs_doc_type;
          EXCEPTION
             WHEN NO_DATA_FOUND THEN
                ln_fee_option := ln_fee_option_paydoc;
             WHEN OTHERS THEN
                ln_fee_option := 0;
-         END;        
+         END;
      END IF;
-   
+
    IF ln_fee_option <= 0 THEN
-      SELECT xftv.SOURCE_VALUE1 
+      SELECT xftv.SOURCE_VALUE1
         INTO ln_fee_option
         FROM xx_fin_translatedefinition xftd,
              xx_fin_translatevalues xftv
@@ -6318,7 +6318,7 @@ ln_cust_doc_id:= p_cust_doc_id;
          AND upper(target_value2) = 'YES'
          AND RowNum =1;
    END IF;
-      
+
 
 return ln_fee_option;
 
@@ -6357,12 +6357,12 @@ lv_sql        VARCHAR2(2000);
 lv_doc_level  VARCHAR2(100);
 BEGIN
 
-    select a.DOC_DETAIL_LEVEL 
+    select a.DOC_DETAIL_LEVEL
       INTO lv_doc_level
       from XX_CDH_MBS_DOCUMENT_MASTER a,
            xx_cdh_cust_acct_ext_b b
      where b.n_ext_attr2 = p_cust_doc_id
-       AND a.DOCUMENT_ID = b.n_ext_attr1 
+       AND a.DOCUMENT_ID = b.n_ext_attr1
        AND rownum=1;
 
     IF p_line_type = 'BILL_TO_TOTAL' THEN
@@ -6374,9 +6374,9 @@ BEGIN
        SELECT NVL(trim(substr(p_sft_text,INSTR(p_sft_text,':')+1)),'X'),REPLACE(trim(substr(p_sft_text,1,INSTR(p_sft_text,':')+1)),'TOTAL FOR ')
          INTO lv_sft_txt,lv_sft_hdr
          FROM DUAL;
-		
+
         IF lv_sft_txt IS NOT NULL THEN
-           
+
 		   		SELECT CASE WHEN sfhdr1 = lv_sft_hdr AND NVL(sfdata1,'X') like lv_sft_txt||'%' THEN
                           ' AND NVL(sfdata1,''X'') = NVL('''||sfdata1||''',''X'')'
                           WHEN sfhdr2 = lv_sft_hdr AND NVL(sfdata2,'X') like lv_sft_txt||'%' THEN
@@ -6391,19 +6391,19 @@ BEGIN
                           ' AND NVL(sfdata1,''X'') = NVL('''||sfdata1||''',''X'')'||' AND NVL(sfdata2,''X'') = NVL('''||sfdata2||''',''X'')'||' AND NVL(sfdata3,''X'') = NVL('''||sfdata3||''',''X'')'||' AND NVL(sfdata4,''X'') = NVL('''||sfdata4||''',''X'')'||' AND NVL(sfdata5,''X'') = NVL('''||sfdata5||''',''X'')'||' AND NVL(sfdata6,''X'') = NVL('''||sfdata6||''',''X'')'
                           END
 				  INTO lv_where
-				  FROM xx_ar_ebl_cons_trx_stg 
-				 WHERE request_id = p_request_id 
+				  FROM xx_ar_ebl_cons_trx_stg
+				 WHERE request_id = p_request_id
                    AND CUSTOMER_TRX_ID = p_customer_trx_id
 				   AND INV_TYPE not in ('SOFTHDR_TOTALS','BILLTO_TOTALS','GRAND_TOTAL')
-                   AND rownum =1;	
-		   
+                   AND rownum =1;
+
 		   lv_sql := 'SELECT NVL(SUM(XX_AR_EBL_COMMON_UTIL_PKG.get_line_fee_amount(customer_trx_id) + XX_AR_EBL_COMMON_UTIL_PKG.get_hea_fee_amount(customer_trx_id)),0) FROM (SELECT DISTINCT customer_trx_id FROM xx_ar_ebl_cons_trx_stg where request_id = '||p_request_id||' AND cons_inv_id = '||p_cons_id||' AND cust_doc_id = '||p_cust_doc_id||' AND INV_TYPE not in (''SOFTHDR_TOTALS'',''BILLTO_TOTALS'',''GRAND_TOTAL'')'||lv_where||')';
 		   EXECUTE IMMEDIATE lv_sql INTO ln_fee_amount;
         ELSIF   lv_sft_txt IS NULL THEN
            SELECT NVL(SUM(XX_AR_EBL_COMMON_UTIL_PKG.get_line_fee_amount(customer_trx_id) + XX_AR_EBL_COMMON_UTIL_PKG.get_hea_fee_amount(customer_trx_id)),0)
              INTO ln_fee_amount
              FROM xx_ar_ebl_cons_hdr_main
-            WHERE cons_inv_id = p_cons_id 
+            WHERE cons_inv_id = p_cons_id
               AND cust_doc_id = p_cust_doc_id
               AND COST_CENTER_SFT_DATA IS NULL;
         END IF;
@@ -6411,7 +6411,7 @@ BEGIN
        SELECT NVL(trim(substr(p_sft_text,INSTR(p_sft_text,':')+1)),'X'),REPLACE(trim(substr(p_sft_text,1,INSTR(p_sft_text,':')+1)),'TOTAL FOR ')
          INTO lv_sft_txt,lv_sft_hdr
          FROM DUAL;
-         
+
        SELECT CASE WHEN sfhdr1 = lv_sft_hdr AND NVL(sfdata1,'X') like lv_sft_txt||'%' THEN
               ' AND NVL(sfdata1,''X'') = NVL('''||sfdata1||''',''X'')'
               WHEN sfhdr2 = lv_sft_hdr AND NVL(sfdata2,'X') like lv_sft_txt||'%' THEN
@@ -6428,7 +6428,7 @@ BEGIN
          INTO lv_where
          FROM xx_ar_ebl_cons_trx_stg
         WHERE request_id = p_request_id
-          AND INV_TYPE not in ('SOFTHDR_TOTALS','BILLTO_TOTALS','GRAND_TOTAL') 
+          AND INV_TYPE not in ('SOFTHDR_TOTALS','BILLTO_TOTALS','GRAND_TOTAL')
           AND rownum =1
           AND ((sfhdr1 = lv_sft_hdr AND NVL(sfdata1,'X') like lv_sft_txt||'%') OR
                (sfhdr2 = lv_sft_hdr AND NVL(sfdata2,'X') like lv_sft_txt||'%') OR
@@ -6437,8 +6437,8 @@ BEGIN
                (sfhdr5 = lv_sft_hdr AND NVL(sfdata5,'X') like lv_sft_txt||'%') OR
                (sfhdr6 = lv_sft_hdr AND NVL(sfdata6,'X') like lv_sft_txt||'%') );
        lv_sql := 'SELECT NVL(SUM(XX_AR_EBL_COMMON_UTIL_PKG.get_line_fee_amount(customer_trx_id) + XX_AR_EBL_COMMON_UTIL_PKG.get_hea_fee_amount(customer_trx_id)),0) FROM (SELECT DISTINCT customer_trx_id FROM xx_ar_ebl_cons_trx_stg where request_id = '||p_request_id||' AND cons_inv_id = '||p_cons_id||' AND cust_doc_id = '||p_cust_doc_id||'  AND INV_TYPE not in (''SOFTHDR_TOTALS'',''BILLTO_TOTALS'',''GRAND_TOTAL'')'||lv_where||')';
-       EXECUTE IMMEDIATE lv_sql INTO ln_fee_amount;          
-         
+       EXECUTE IMMEDIATE lv_sql INTO ln_fee_amount;
+
     END IF;
 
     return ln_fee_amount;
@@ -6477,16 +6477,16 @@ BEGIN
    IF p_line_type IN ('BILL_TO_TOTAL','BILLTO_TOTALS') THEN
        SELECT NVL(SUM(XX_AR_EBL_COMMON_UTIL_PKG.get_line_fee_amount(customer_trx_id) + XX_AR_EBL_COMMON_UTIL_PKG.get_hea_fee_amount(customer_trx_id)),0)
          INTO ln_fee_amount
-         FROM (SELECT DISTINCT customer_trx_id 
+         FROM (SELECT DISTINCT customer_trx_id
          FROM xx_ar_cbi_trx_all
         WHERE cons_inv_id = p_cons_id and request_id = p_request_id);
    ELSIF p_line_type = 'SOFTHDR_TOTALS' AND p_template_type IS NULL THEN
        SELECT NVL(trim(substr(p_sft_text,INSTR(p_sft_text,':')+1)),'X'),REPLACE(trim(substr(p_sft_text,1,INSTR(p_sft_text,':')+1)),'TOTAL FOR ')
          INTO lv_sft_txt,lv_sft_hdr
          FROM DUAL;
-		
+
         IF lv_sft_txt IS NOT NULL THEN
-           
+
 		   		SELECT CASE WHEN sfhdr1 = lv_sft_hdr AND NVL(sfdata1,'X') like lv_sft_txt||'%' THEN
                           ' AND NVL(sfdata1,''X'') = NVL('''||sfdata1||''',''X'')'
                           WHEN sfhdr2 = lv_sft_hdr AND NVL(sfdata2,'X') like lv_sft_txt||'%' THEN
@@ -6501,10 +6501,10 @@ BEGIN
                           ' AND NVL(sfdata1,''X'') = NVL('''||sfdata1||''',''X'')'||' AND NVL(sfdata2,''X'') = NVL('''||sfdata2||''',''X'')'||' AND NVL(sfdata3,''X'') = NVL('''||sfdata3||''',''X'')'||' AND NVL(sfdata4,''X'') = NVL('''||sfdata4||''',''X'')'||' AND NVL(sfdata5,''X'') = NVL('''||sfdata5||''',''X'')'||' AND NVL(sfdata6,''X'') = NVL('''||sfdata6||''',''X'')'
                           END
 				  INTO lv_where
-				  FROM xx_ar_cbi_trx_all 
+				  FROM xx_ar_cbi_trx_all
 				 WHERE request_id = p_request_id and CUSTOMER_TRX_ID = p_customer_trx_id
-				   AND INV_TYPE not in ('SOFTHDR_TOTALS','BILLTO_TOTALS','GRAND_TOTAL');	
-		   
+				   AND INV_TYPE not in ('SOFTHDR_TOTALS','BILLTO_TOTALS','GRAND_TOTAL');
+
 		   lv_sql := 'SELECT NVL(SUM(XX_AR_EBL_COMMON_UTIL_PKG.get_line_fee_amount(customer_trx_id) + XX_AR_EBL_COMMON_UTIL_PKG.get_hea_fee_amount(customer_trx_id)),0) FROM (SELECT DISTINCT customer_trx_id FROM xx_ar_cbi_trx_all where request_id = '||p_request_id||' AND cons_inv_id = '||p_cons_id||' AND INV_TYPE not in (''SOFTHDR_TOTALS'',''BILLTO_TOTALS'',''GRAND_TOTAL'')'||lv_where||')';
 		   EXECUTE IMMEDIATE lv_sql INTO ln_fee_amount;
         ELSIF   lv_sft_txt IS NULL THEN
@@ -6518,7 +6518,7 @@ BEGIN
        SELECT NVL(trim(substr(p_sft_text,INSTR(p_sft_text,':')+1)),'X'),REPLACE(trim(substr(p_sft_text,1,INSTR(p_sft_text,':')+1)),'TOTAL FOR ')
          INTO lv_sft_txt,lv_sft_hdr
          FROM DUAL;
-         
+
        SELECT CASE WHEN sfhdr1 = lv_sft_hdr AND NVL(sfdata1,'X') like lv_sft_txt||'%' THEN
               ' AND NVL(sfdata1,''X'') = NVL('''||sfdata1||''',''X'')'
               WHEN sfhdr2 = lv_sft_hdr AND NVL(sfdata2,'X') like lv_sft_txt||'%' THEN
@@ -6535,7 +6535,7 @@ BEGIN
          INTO lv_where
          FROM xx_ar_cbi_trx_all
         WHERE request_id = p_request_id
-          AND INV_TYPE not in ('SOFTHDR_TOTALS','BILLTO_TOTALS','GRAND_TOTAL') 
+          AND INV_TYPE not in ('SOFTHDR_TOTALS','BILLTO_TOTALS','GRAND_TOTAL')
           AND rownum =1
           AND ((sfhdr1 = lv_sft_hdr AND NVL(sfdata1,'X') like lv_sft_txt||'%') OR
                (sfhdr2 = lv_sft_hdr AND NVL(sfdata2,'X') like lv_sft_txt||'%') OR
@@ -6544,8 +6544,8 @@ BEGIN
                (sfhdr5 = lv_sft_hdr AND NVL(sfdata5,'X') like lv_sft_txt||'%') OR
                (sfhdr6 = lv_sft_hdr AND NVL(sfdata6,'X') like lv_sft_txt||'%'));
        lv_sql := 'SELECT NVL(SUM(XX_AR_EBL_COMMON_UTIL_PKG.get_line_fee_amount(customer_trx_id) + XX_AR_EBL_COMMON_UTIL_PKG.get_hea_fee_amount(customer_trx_id)),0) FROM (SELECT DISTINCT customer_trx_id FROM xx_ar_cbi_trx_all where request_id = '||p_request_id||' AND cons_inv_id = '||p_cons_id||'  AND INV_TYPE not in (''SOFTHDR_TOTALS'',''BILLTO_TOTALS'',''GRAND_TOTAL'')'||lv_where||')';
-       EXECUTE IMMEDIATE lv_sql INTO ln_fee_amount;   
-   
+       EXECUTE IMMEDIATE lv_sql INTO ln_fee_amount;
+
    END IF;
 
     return ln_fee_amount;
@@ -6582,18 +6582,18 @@ BEGIN
    IF p_line_type = 'BILL_TO_TOTAL' THEN
        SELECT NVL(SUM(XX_AR_EBL_COMMON_UTIL_PKG.get_line_fee_amount(customer_trx_id) + XX_AR_EBL_COMMON_UTIL_PKG.get_hea_fee_amount(customer_trx_id)),0)
          INTO ln_fee_amount
-         FROM (SELECT DISTINCT customer_trx_id 
+         FROM (SELECT DISTINCT customer_trx_id
                  FROM xx_ar_cbi_rprn_trx
-                WHERE request_id = p_request_id 
+                WHERE request_id = p_request_id
                   AND cons_inv_id = p_cons_id
                   AND INV_TYPE not in ('SOFTHDR_TOTALS','BILLTO_TOTALS','GRAND_TOTAL'));
    ELSIF p_line_type = 'SOFTHDR_TOTAL' AND p_template_type IS NULL THEN
       SELECT NVL(trim(substr(p_sft_text,INSTR(p_sft_text,':')+1)),'X'),REPLACE(trim(substr(p_sft_text,1,INSTR(p_sft_text,':')+1)),'TOTAL FOR ')
          INTO lv_sft_txt,lv_sft_hdr
          FROM DUAL;
-		
+
         IF lv_sft_txt IS NOT NULL THEN
-           
+
 		   	SELECT CASE WHEN sfhdr1 = lv_sft_hdr AND NVL(sfdata1,'X') like lv_sft_txt||'%' THEN
                           ' AND NVL(sfdata1,''X'') = NVL('''||sfdata1||''',''X'')'
                           WHEN sfhdr2 = lv_sft_hdr AND NVL(sfdata2,'X') like lv_sft_txt||'%' THEN
@@ -6607,11 +6607,11 @@ BEGIN
                           END
 				  INTO lv_where
 				  FROM xx_ar_cbi_rprn_trx
-				 WHERE request_id = p_request_id 
+				 WHERE request_id = p_request_id
                    AND customer_trx_id = p_customer_trx_id
-				   AND INV_TYPE not in ('SOFTHDR_TOTALS','BILLTO_TOTALS','GRAND_TOTAL') 
-                   AND rownum =1;	
-		   
+				   AND INV_TYPE not in ('SOFTHDR_TOTALS','BILLTO_TOTALS','GRAND_TOTAL')
+                   AND rownum =1;
+
 		   lv_sql := 'SELECT NVL(SUM(XX_AR_EBL_COMMON_UTIL_PKG.get_line_fee_amount(customer_trx_id) + XX_AR_EBL_COMMON_UTIL_PKG.get_hea_fee_amount(customer_trx_id)),0) FROM (SELECT DISTINCT customer_trx_id FROM xx_ar_cbi_rprn_trx where request_id = '||p_request_id||' AND cons_inv_id = '||p_cons_id ||' AND INV_TYPE not in (''SOFTHDR_TOTAL'',''BILL_TO_TOTAL'',''GRAND_TOTAL'')'||lv_where||')';
 		   EXECUTE IMMEDIATE lv_sql INTO ln_fee_amount;
         ELSIF   lv_sft_txt IS NULL THEN
@@ -6621,7 +6621,7 @@ BEGIN
        SELECT NVL(trim(substr(p_sft_text,INSTR(p_sft_text,':')+1)),'X'),REPLACE(trim(substr(p_sft_text,1,INSTR(p_sft_text,':')+1)),'TOTAL FOR ')
          INTO lv_sft_txt,lv_sft_hdr
          FROM DUAL;
-         
+
        SELECT CASE WHEN sfhdr1 = lv_sft_hdr AND NVL(sfdata1,'X') like lv_sft_txt||'%' THEN
               ' AND NVL(sfdata1,''X'') = NVL('''||sfdata1||''',''X'')'
               WHEN sfhdr2 = lv_sft_hdr AND NVL(sfdata2,'X') like lv_sft_txt||'%' THEN
@@ -6636,7 +6636,7 @@ BEGIN
          INTO lv_where
          FROM xx_ar_cbi_rprn_trx
         WHERE request_id = p_request_id
-          AND INV_TYPE not in ('SOFTHDR_TOTALS','BILLTO_TOTALS','GRAND_TOTAL') 
+          AND INV_TYPE not in ('SOFTHDR_TOTALS','BILLTO_TOTALS','GRAND_TOTAL')
           AND rownum =1
           AND ((sfhdr1 = lv_sft_hdr AND NVL(sfdata1,'X') like lv_sft_txt||'%') OR
                (sfhdr2 = lv_sft_hdr AND NVL(sfdata2,'X') like lv_sft_txt||'%') OR
@@ -6644,7 +6644,7 @@ BEGIN
                (sfhdr4 = lv_sft_hdr AND NVL(sfdata4,'X') like lv_sft_txt||'%') OR
                (sfhdr5 = lv_sft_hdr AND NVL(sfdata5,'X') like lv_sft_txt||'%') );
        lv_sql := 'SELECT NVL(SUM(XX_AR_EBL_COMMON_UTIL_PKG.get_line_fee_amount(customer_trx_id) + XX_AR_EBL_COMMON_UTIL_PKG.get_hea_fee_amount(customer_trx_id)),0) FROM (SELECT DISTINCT customer_trx_id FROM xx_ar_cbi_rprn_trx where request_id = '||p_request_id||' AND cons_inv_id = '||p_cons_id ||'  AND INV_TYPE not in (''SOFTHDR_TOTAL'',''BILL_TO_TOTAL'',''GRAND_TOTAL'')'||lv_where||')';
-       EXECUTE IMMEDIATE lv_sql INTO ln_fee_amount;   
+       EXECUTE IMMEDIATE lv_sql INTO ln_fee_amount;
     END IF;
 
     return ln_fee_amount;
