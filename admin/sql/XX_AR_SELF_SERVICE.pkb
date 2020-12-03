@@ -364,11 +364,17 @@ END;
 Procedure get_address_reference(p_process_id IN NUMBER)  IS
 lv_account_number VARCHAR2(100);
 TYPE rec_type is RECORD  (address_reference VARCHAR2(1000),
-                            record_id NUMBER);
+                            record_id NUMBER,
+                            address1 VARCHAR2(240),
+                            address2 VARCHAR2(240),
+                            city VARCHAR2(60),
+                            state VARCHAR2(60),
+                            country VARCHAR2(60),
+                            zip VARCHAR2(60));
 TYPE tab_type IS TABLE OF rec_type;
 lt_tab_type tab_type:=tab_type();
   CURSOR c_reference IS
-     SELECT hl.ORIG_SYSTEM_REFERENCE Add_reference,xx.record_id
+     SELECT hl.ORIG_SYSTEM_REFERENCE Add_reference,xx.record_id,hl.address1,hl.address2,hl.city,hl.state,hl.country,hl.postal_code
        FROM hz_cust_accounts hca,
              hz_parties hp,
              hz_party_sites hps,
@@ -398,7 +404,15 @@ BEGIN
    FETCH c_reference BULK COLLECT INTO lt_tab_type;
 
    FORALL i in lt_tab_type.FIRST ..lt_tab_type.LAST
-     UPDATE xx_ar_self_serv_bad_addr SET address_reference = lt_tab_type(i).address_reference WHERE process_id = p_process_id AND record_id  = lt_tab_type(i).record_id;
+     UPDATE xx_ar_self_serv_bad_addr 
+     SET address_reference = lt_tab_type(i).address_reference,
+         ebs_address1      =lt_tab_type(i).address1,
+         ebs_address2      =lt_tab_type(i).address2,
+         ebs_city          =lt_tab_type(i).city,
+         ebs_state         =lt_tab_type(i).state,
+         ebs_country       =lt_tab_type(i).country,
+         ebs_zip           =lt_tab_type(i).zip
+     WHERE process_id = p_process_id AND record_id  = lt_tab_type(i).record_id;
 
 EXCEPTION
     WHEN OTHERS THEN
@@ -709,12 +723,12 @@ BEGIN
                               "ebsAccountNumber": "'||rec_address.account_number||'",
                               "address": {
                                   "addressReference": "'||rec_address.address_reference||'",
-                                  "address1": "'||rec_address.address1||'",
-                                  "address2": "'||rec_address.address2||'",
-                                  "city": "'||rec_address.city||'",
-                                  "countrycd": "'||rec_address.country||'",
-                                  "zip": "'||rec_address.zip||'",
-                                  "state": "'||rec_address.state||'"
+                                  "address1": "'||rec_address.ebs_address1||'",
+                                  "address2": "'||rec_address.ebs_address2||'",
+                                  "city": "'||rec_address.ebs_city||'",
+                                  "countrycd": "'||rec_address.ebs_country||'",
+                                  "zip": "'||rec_address.ebs_zip||'",
+                                  "state": "'||rec_address.ebs_state||'"
                               },
                               "reason": "Bad Address",
                               "directFlag": ""

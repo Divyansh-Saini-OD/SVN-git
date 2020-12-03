@@ -96,7 +96,7 @@ FUNCTION get_std_message(p_req_type IN  VARCHAR2,
 /*********************************************************************
 * procedure to purge data
 *********************************************************************/
-Procedure PURGE_OLD_DATA(p_err_buf  OUT VARCHAR2,
+Procedure purge_old_data(p_err_buf  OUT VARCHAR2,
                          p_ret_code OUT NUMBER  ,
                          p_type     IN  VARCHAR2);
 FUNCTION afterreport RETURN BOOLEAN;

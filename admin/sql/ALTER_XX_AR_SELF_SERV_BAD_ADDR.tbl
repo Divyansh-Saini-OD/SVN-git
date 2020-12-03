@@ -1,0 +1,53 @@
+-- +============================================================================================+
+-- |                        Office Depot - Project Simplify                                     |
+-- |                                                                                            |
+-- +============================================================================================+
+-- | Name         : ALTER_XX_AR_SELF_SERV_BAD_ADDR.tbl                                          |
+-- | Rice Id      :                                                                             | 
+-- | Description  : Adding EBS address column in XX_AR_SELF_SERV_BAD_ADDR                       |  
+-- | Purpose      : MODIFY Custom Table XX_AR_SELF_SERV_BAD_ADDR.                               |
+-- |                                                                                            |
+-- |                                                                                            |
+-- |Change Record:                                                                              |
+-- |===============                                                                             |
+-- |Version    Date          Author                Remarks                                      | 
+-- |=======    ==========    =================    ==============================================+
+-- |DRAFT 1A   03-DEC-2020   Divyansh Saini       Adding EBS Address Columns                    |
+-- +============================================================================================+
+
+
+
+SET VERIFY      OFF
+SET TERM        ON
+SET FEEDBACK    OFF
+SET SHOW        OFF
+SET ECHO        OFF
+SET TAB         OFF
+
+
+
+PROMPT
+PROMPT MODIFYING the Table XX_AR_SELF_SERV_BAD_ADDR.....
+PROMPT
+
+
+
+ALTER TABLE XXFIN.XX_AR_SELF_SERV_BAD_ADDR  ADD ( EBS_ADDRESS1	VARCHAR2(240 BYTE),
+EBS_ADDRESS2	VARCHAR2(240 BYTE),
+EBS_CITY	VARCHAR2(60 BYTE),
+EBS_STATE	VARCHAR2(60 BYTE),
+EBS_ZIP	VARCHAR2(60 BYTE),
+EBS_COUNTRY	VARCHAR2(60 BYTE))
+
+/
+
+WHENEVER SQLERROR EXIT 1
+
+PROMPT
+PROMPT Exiting....
+PROMPT
+
+SET FEEDBACK ON
+/
+EXIT;
+/
