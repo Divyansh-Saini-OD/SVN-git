@@ -68,11 +68,14 @@ AS
       INTO l_act_comp_date
       FROM FND_CONCURRENT_REQUESTS
       WHERE 1=1
-      AND REQUEST_ID = (SELECT MAX(REQUEST_ID)
-                        FROM FND_CONCURRENT_REQUESTS
-                        WHERE CONCURRENT_PROGRAM_ID = 403298
-                        AND PHASE_CODE = 'C'
-                        AND STATUS_CODE = 'C'
+      AND REQUEST_ID = (SELECT MAX(FCR.REQUEST_ID)
+                        FROM FND_CONCURRENT_REQUESTS FCR,
+                             FND_CONCURRENT_PROGRAMS FCP
+                        WHERE FCR.CONCURRENT_PROGRAM_ID = FCP.CONCURRENT_PROGRAM_ID
+                        AND FCP.CONCURRENT_PROGRAM_NAME = 'XXODMFTEPT'
+                        AND FCP.ENABLED_FLAG = 'Y'
+                        AND FCR.PHASE_CODE = 'C'
+                        AND FCR.STATUS_CODE = 'C'
                         );
     EXCEPTION
     WHEN NO_DATA_FOUND THEN
