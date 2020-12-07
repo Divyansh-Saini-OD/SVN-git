@@ -2330,3 +2330,4 @@ AS
          lp_log_comn_error ('STORE OVER/SHORT - CC', 'Unresolved');
    END store_os_cc_main;
 END XX_CE_STORE_OS_WLFG_PKG;
+/
