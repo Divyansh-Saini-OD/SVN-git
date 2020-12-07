@@ -1,46 +1,5 @@
--- +==================================================================================+
--- |                  Office Depot						                             |
--- +==================================================================================+
--- | Name :APPS.XX_CE_MANUAL_MATCH_WF_V                                           		|
--- | Description : Returns Unreconciled Wells Fargo Bank Statements (E1319) 		   |
--- |                                                                                  |
--- |Change Record:                                                                    |
--- |===============                                                                   |
--- |Version   Date         Author               Remarks                               |
--- |=======   ==========   =============        ======================================|
--- | V1.0     10-Apr-2020  Amit Kumar           Initial version                       |
--- +==================================================================================+
-
-CREATE OR REPLACE FORCE VIEW APPS.XX_CE_MANUAL_MATCH_WF_V 
-("ROW_ID", 
- "BANK_ACCOUNT_ID", 
- "STORE_BANK_ACCOUNT_ID",
- "BANK_ACCOUNT_NAME", 
- "BANK_NAME",
- "AGENCY_LOCATION_CODE",
- "BANK_ACCOUNT_NAME_ALT",
- "DESCRIPTION", 
- "BANK_ACCOUNT_NUM", 
- "STATEMENT_HEADER_ID", 
- "STATEMENT_NUMBER", 
- "STATEMENT_DATE", 
- "CURRENCY_CODE", 
- "STATEMENT_LINE_ID", 
- "LINE_NUMBER", 
- "TRX_DATE", 
- "TRX_CODE", 
- "TRX_TYPE", 
- "AMOUNT", 
- "STATUS", 
- "TRX_CODE_ID", 
- "EFFECTIVE_DATE", 
- "BANK_TRX_NUMBER", 
- "INVOICE_TEXT", 
- "ACCOUNTING_DATE", 
- "BANK_ACCOUNT_TYPE", 
- "CUSTOMER_TEXT")
-AS
-SELECT CSL.ROWID "ROW_ID" ,
+  CREATE OR REPLACE FORCE EDITIONABLE VIEW "APPS"."XX_CE_MANUAL_MATCH_WF_V" ("ROW_ID", "BANK_ACCOUNT_ID", "STORE_BANK_ACCOUNT_ID", "BANK_ACCOUNT_NAME", "BANK_NAME", "AGENCY_LOCATION_CODE", "BANK_ACCOUNT_NAME_ALT", "DESCRIPTION", "BANK_ACCOUNT_NUM", "STATEMENT_HEADER_ID", "STATEMENT_NUMBER", "STATEMENT_DATE", "CURRENCY_CODE", "STATEMENT_LINE_ID", "LINE_NUMBER", "TRX_DATE", "TRX_CODE", "TRX_TYPE", "AMOUNT", "STATUS", "TRX_CODE_ID", "EFFECTIVE_DATE", "BANK_TRX_NUMBER", "INVOICE_TEXT", "ACCOUNTING_DATE", "BANK_ACCOUNT_TYPE", "CUSTOMER_TEXT") AS 
+  SELECT CSL.ROWID "ROW_ID" ,
   CSH.bank_account_id "BANK_ACCOUNT_ID" ,
   CTC.bank_account_id "STORE_BANK_ACCOUNT_ID",
   cba1.bank_account_name "BANK_ACCOUNT_NAME" ,
@@ -93,7 +52,20 @@ AND NVL (cba.end_date, SYSDATE      + 1)                       > TRUNC (SYSDATE)
 AND cba.bank_account_type                                     IN ('Deposit','DEPOSIT')
 AND CTC.RECONCILE_FLAG                                         ='OI'
 AND hp.party_id                                                = cba.bank_id
-AND hp.party_name                                              ='WELLS FARGO BANK'
+--Changes for NAIT-140412 <START>
+--AND hp.party_name                                              ='WELLS FARGO BANK'
+AND hp.party_name                                              IN 
+	(SELECT xftv.source_value2
+		FROM XX_FIN_TRANSLATEDEFINITION XFTD, XX_FIN_TRANSLATEVALUES XFTV
+		WHERE 1=1
+		AND xftd.translate_id = xftv.translate_id
+		AND xftd.translation_name = 'XX_CM_E1319_STORE_OS_CC'
+		AND xftv.source_value1 = 'BANK'
+		AND SYSDATE BETWEEN XFTV.start_date_active AND NVL(XFTV.end_date_active,SYSDATE+1)
+		AND SYSDATE BETWEEN XFTD.start_date_active AND NVL(XFTD.end_date_active,SYSDATE+1)
+		AND XFTV.enabled_flag = 'Y'
+		AND XFTD.enabled_flag = 'Y'
+		)
+--Changes for NAIT-140412 <END>
 AND hp.party_type                                              ='ORGANIZATION'
 AND regexp_replace(cba.bank_account_name, '[^[:digit:]]', '') IS NOT NULL;
-/

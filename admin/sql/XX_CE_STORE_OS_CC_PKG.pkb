@@ -108,6 +108,7 @@ AS
 -- |4.6      30-May-2017 Rohit Nanda	    Modified for the Defect# 42107           |
 -- |5.1      30-Mar-2020 Amit Kumar	    	E1319 changes to not consider Wells Fargo|
 -- |											Records in main cursors.		     |
+-- |6.1      30-Nov-2020 Pratik Gadia		Changes for NAIT-140412 				 |
 -- +=================================================================================+
 -- |Name        :                                                                    |
 -- | Description : This procedure will be used to process the                        |
@@ -398,6 +399,8 @@ AS
 						)
 					  )
 			  )
+			--<START> Commented for NAIT-140412 
+			/*
 			WHERE location_id NOT IN
 			  (SELECT SUBSTR (cba.agency_location_code, 3)
 			  FROM CE_BANK_ACCOUNTS CBA,
@@ -409,8 +412,42 @@ AS
 			  AND upper(cba.bank_Account_name) LIKE '%WELLS%'
 			  AND cba.agency_location_code IS NOT NULL
 			  )
+			 */ 
+			--<END> Commented for NAIT-140412 
+			--<START> Added for NAIT-140412 
+			WHERE location_id NOT IN
+			  (SELECT SUBSTR (cba.agency_location_code, 3)
+			  FROM CE_BANK_ACCOUNTS CBA,
+				HZ_PARTIES HP
+			  WHERE hp.party_id =cba.bank_id
+			  AND hp.party_name IN
+								(SELECT upper(XFTV.source_value2)
+									FROM xx_fin_translatedefinition XFTD,xx_fin_translatevalues XFTV
+									WHERE XFTD.translate_id = XFTV.translate_id
+									AND XFTD.translation_name = 'XX_CM_E1319_STORE_OS_CC'
+									AND XFTV.source_value1 = 'BANK'
+									AND SYSDATE BETWEEN XFTV.start_date_active AND NVL(XFTV.end_date_active,SYSDATE+1)
+									AND SYSDATE BETWEEN XFTD.start_date_active AND NVL(XFTD.end_date_active,SYSDATE+1)
+									AND XFTV.enabled_flag = 'Y'
+									AND XFTD.enabled_flag = 'Y')
+			  AND hp.party_type ='ORGANIZATION'
+			  AND HP.STATUS     ='A'
+			  AND upper(substr(cba.bank_Account_name,1,4)) IN 
+								(SELECT upper(substr(XFTV.source_value2,1,4))
+									FROM xx_fin_translatedefinition XFTD,xx_fin_translatevalues XFTV
+									WHERE XFTD.translate_id = XFTV.translate_id
+									AND XFTD.translation_name  = 'XX_CM_E1319_STORE_OS_CC'
+									AND XFTV.source_value1 = 'BANK'
+									AND SYSDATE BETWEEN XFTV.start_date_active AND NVL(XFTV.end_date_active,SYSDATE+1)
+									AND SYSDATE BETWEEN XFTD.start_date_active AND NVL(XFTD.end_date_active,SYSDATE+1)
+									AND XFTV.enabled_flag = 'Y'
+									AND XFTD.enabled_flag = 'Y'
+								)
+			  AND cba.agency_location_code IS NOT NULL
+			  )
+			--<END> Added for NAIT-140412 			
 			ORDER BY 1,  2;
-			
+
 
 		CURSOR c_store_deposit_bank
 		IS
@@ -464,7 +501,9 @@ AS
 			  )
 			)
 		  )
-		WHERE location_id NOT IN
+			--<START> Commented for NAIT-140412  
+			/*
+			WHERE location_id NOT IN
 			  (SELECT SUBSTR (cba.agency_location_code, 3)
 			  FROM CE_BANK_ACCOUNTS CBA,
 				HZ_PARTIES HP
@@ -475,6 +514,40 @@ AS
 			  AND upper(cba.bank_Account_name) LIKE '%WELLS%'
 			  AND cba.agency_location_code IS NOT NULL
 			  )
+			 */ 
+			--<END> Commented for NAIT-140412 
+			--<START> Added for NAIT-140412 
+			WHERE location_id NOT IN
+			  (SELECT SUBSTR (cba.agency_location_code, 3)
+			  FROM CE_BANK_ACCOUNTS CBA,
+				HZ_PARTIES HP
+			  WHERE hp.party_id =cba.bank_id
+			  AND hp.party_name IN
+								(SELECT upper(XFTV.source_value2)
+									FROM xx_fin_translatedefinition XFTD,xx_fin_translatevalues XFTV
+									WHERE XFTD.translate_id = XFTV.translate_id
+									AND XFTD.translation_name = 'XX_CM_E1319_STORE_OS_CC'
+									AND XFTV.source_value1 = 'BANK'
+									AND SYSDATE BETWEEN XFTV.start_date_active AND NVL(XFTV.end_date_active,SYSDATE+1)
+									AND SYSDATE BETWEEN XFTD.start_date_active AND NVL(XFTD.end_date_active,SYSDATE+1)
+									AND XFTV.enabled_flag = 'Y'
+									AND XFTD.enabled_flag = 'Y')
+			  AND hp.party_type ='ORGANIZATION'
+			  AND HP.STATUS     ='A'
+			  AND upper(substr(cba.bank_Account_name,1,4)) IN 
+								(SELECT upper(substr(XFTV.source_value2,1,4))
+									FROM xx_fin_translatedefinition XFTD,xx_fin_translatevalues XFTV
+									WHERE XFTD.translate_id = XFTV.translate_id
+									AND XFTD.translation_name  = 'XX_CM_E1319_STORE_OS_CC'
+									AND XFTV.source_value1 = 'BANK'
+									AND SYSDATE BETWEEN XFTV.start_date_active AND NVL(XFTV.end_date_active,SYSDATE+1)
+									AND SYSDATE BETWEEN XFTD.start_date_active AND NVL(XFTD.end_date_active,SYSDATE+1)
+									AND XFTV.enabled_flag = 'Y'
+									AND XFTD.enabled_flag = 'Y'
+								)
+			  AND cba.agency_location_code IS NOT NULL
+			  )
+			--<END> Added for NAIT-140412 
 	    ORDER BY 1,  2;
 /****************************** R1.5 Cursur changes to exclude Wells Fargo Records Ends  *****************************/
 
@@ -3371,4 +3444,3 @@ lp_print (' lc_aba_key :: '||lc_aba_key, 'LOG'); --Defect #41450
          lp_log_comn_error ('STORE OVER/SHORT - CC', 'Unresolved');
    END store_os_cc_main;
 END xx_ce_store_os_cc_pkg;
-/

@@ -15,6 +15,7 @@ AS
 -- |Version  Date         Authors            Remarks                                 |
 -- |=======  ===========  ===============    ============================            |
 -- |1.0      30-Mar-2020  Amit Kumar        Initial version                          |
+-- |2.0      30-Nov-2020  Pratik Gadia		Changes for NAIT-140412 				 |
 -- |                                                                                 |
 -- |=================================================================================|
 -- | Name        : OD: CM Store Over/Short and Cash Concentration WF                 |
@@ -23,7 +24,7 @@ AS
 -- |               and Cash Concentration extention for Wells Fargo Bank             |
 -- |(E1318 Copy Modified )                                                           |                                                                          |
 -- |                                                                                 |                                                                                                                                                                                                            |
--- | Exection File Name: XX_CE_STORE_OS_WLFG_PKG.STORE_OS_CC_MAIN                    |      
+-- | Exection File Name: XX_CE_STORE_OS_WLFG_PKG.STORE_OS_CC_MAIN                    |
 -- |                                                                                 |                                                                                                                                                                                                                                         |
 -- |                                                                                 |
 -- | Parameters  : None                                                              |
@@ -207,6 +208,8 @@ AS
                                                           )
                                             )
             )
+		  --<START> Commented for NAIT-140412 
+		  /*
           WHERE location_id IN
             (SELECT SUBSTR (cba.agency_location_code, 3)
             FROM CE_BANK_ACCOUNTS CBA,
@@ -217,6 +220,39 @@ AS
             AND HP.STATUS     ='A'
             AND upper(cba.bank_Account_name) LIKE '%WELLS%'
             )
+		  */
+		  --<END> Commented for NAIT-140412 
+		  --<START> Added for NAIT-140412 
+		  WHERE location_id IN
+            (SELECT SUBSTR (cba.agency_location_code, 3)
+            FROM CE_BANK_ACCOUNTS CBA,
+                          HZ_PARTIES HP
+            WHERE hp.party_id =cba.bank_id
+			AND hp.party_name IN 
+								(SELECT upper(XFTV.source_value2)
+									FROM xx_fin_translatedefinition XFTD,xx_fin_translatevalues XFTV
+									WHERE XFTD.translate_id = XFTV.translate_id
+									AND XFTD.translation_name = gc_trans_name
+									AND XFTV.source_value1 = 'BANK'
+									AND SYSDATE BETWEEN XFTV.start_date_active AND NVL(XFTV.end_date_active,SYSDATE+1)
+									AND SYSDATE BETWEEN XFTD.start_date_active AND NVL(XFTD.end_date_active,SYSDATE+1)
+									AND XFTV.enabled_flag = 'Y'
+									AND XFTD.enabled_flag = 'Y')
+			AND hp.party_type ='ORGANIZATION'
+            AND HP.STATUS     ='A'
+            AND upper(substr(cba.bank_Account_name,1,4)) IN 
+								(SELECT upper(substr(XFTV.source_value2,1,4))
+									FROM xx_fin_translatedefinition XFTD,xx_fin_translatevalues XFTV
+									WHERE XFTD.translate_id = XFTV.translate_id
+									AND XFTD.translation_name  = gc_trans_name
+									AND XFTV.source_value1 = 'BANK'
+									AND SYSDATE BETWEEN XFTV.start_date_active AND NVL(XFTV.end_date_active,SYSDATE+1)
+									AND SYSDATE BETWEEN XFTD.start_date_active AND NVL(XFTD.end_date_active,SYSDATE+1)
+									AND XFTV.enabled_flag = 'Y'
+									AND XFTD.enabled_flag = 'Y'
+								)
+            )
+		  --<END> Added for NAIT-140412 
           ORDER BY 1,  2;
 
 
@@ -272,6 +308,8 @@ AS
                          )
                        )
          )
+	   --<START> Commented for NAIT-140412 
+	   /*
        WHERE location_id IN
          (SELECT SUBSTR (cba.agency_location_code, 3)
          FROM CE_BANK_ACCOUNTS CBA,
@@ -282,6 +320,39 @@ AS
          AND HP.STATUS     ='A'
          AND upper(cba.bank_Account_name) LIKE '%WELLS%'
          )
+	   */
+	   --<END> Commented for NAIT-140412 
+	   --<START> Added for NAIT-140412 
+	   WHERE location_id IN
+            (SELECT SUBSTR (cba.agency_location_code, 3)
+            FROM CE_BANK_ACCOUNTS CBA,
+                          HZ_PARTIES HP
+            WHERE hp.party_id =cba.bank_id
+			AND hp.party_name IN 
+								(SELECT upper(XFTV.source_value2)
+									FROM xx_fin_translatedefinition XFTD,xx_fin_translatevalues XFTV
+									WHERE XFTD.translate_id = XFTV.translate_id
+									AND XFTD.translation_name = gc_trans_name
+									AND XFTV.source_value1 = 'BANK'
+									AND SYSDATE BETWEEN XFTV.start_date_active AND NVL(XFTV.end_date_active,SYSDATE+1)
+									AND SYSDATE BETWEEN XFTD.start_date_active AND NVL(XFTD.end_date_active,SYSDATE+1)
+									AND XFTV.enabled_flag = 'Y'
+									AND XFTD.enabled_flag = 'Y')
+			AND hp.party_type ='ORGANIZATION'
+            AND HP.STATUS     ='A'
+            AND upper(substr(cba.bank_Account_name,1,4)) IN 
+								(SELECT upper(substr(XFTV.source_value2,1,4))
+									FROM xx_fin_translatedefinition XFTD,xx_fin_translatevalues XFTV
+									WHERE XFTD.translate_id = XFTV.translate_id
+									AND XFTD.translation_name  = gc_trans_name
+									AND XFTV.source_value1 = 'BANK'
+									AND SYSDATE BETWEEN XFTV.start_date_active AND NVL(XFTV.end_date_active,SYSDATE+1)
+									AND SYSDATE BETWEEN XFTD.start_date_active AND NVL(XFTD.end_date_active,SYSDATE+1)
+									AND XFTV.enabled_flag = 'Y'
+									AND XFTD.enabled_flag = 'Y'
+								)
+            )
+	   --<END> Added for NAIT-140412 
        ORDER BY 1,  2;
 
 
@@ -687,9 +758,28 @@ AS
                   SUBSTR (aba.bank_account_name
                         , LENGTH (aba.bank_account_name) - 5
                          )
-                                                AND aba.bank_id in (SELECT hp.party_id FROM HZ_PARTIES hp
-                                                                                                                                WHERE UPPER(hp.party_name) ='WELLS FARGO BANK'
-                                                                                                                                AND hp.party_type='ORGANIZATION');
+            --<START> Commented for NAIT-140412 			 
+            /*
+			AND aba.bank_id in (SELECT hp.party_id FROM HZ_PARTIES hp
+                                WHERE UPPER(hp.party_name) ='WELLS FARGO BANK'
+                                AND hp.party_type='ORGANIZATION');
+			*/
+			--<END> Commented for NAIT-140412 
+			--<START> Added for NAIT-140412 
+			AND aba.bank_id in (SELECT hp.party_id FROM HZ_PARTIES hp
+                                WHERE UPPER(hp.party_name) IN 
+													(SELECT upper(XFTV.source_value2)
+														FROM xx_fin_translatedefinition XFTD,xx_fin_translatevalues XFTV
+														WHERE XFTD.translate_id = XFTV.translate_id
+														AND XFTD.translation_name = gc_trans_name
+														AND XFTV.source_value1 = 'BANK'
+														AND SYSDATE BETWEEN XFTV.start_date_active AND NVL(XFTV.end_date_active,SYSDATE+1)
+														AND SYSDATE BETWEEN XFTD.start_date_active AND NVL(XFTD.end_date_active,SYSDATE+1)
+														AND XFTV.enabled_flag = 'Y'
+														AND XFTD.enabled_flag = 'Y'
+													)
+								AND hp.party_type='ORGANIZATION');							
+			--<END> Added for NAIT-140412 
 
          lc_store_cash_account := lc_seg_acct;                         -- Hold the store's cash account
          lc_store_seg_cost := lc_seg_cost;                   -- Hold the store's cost center
@@ -2239,5 +2329,4 @@ AS
          lp_print (lc_error_msg, 'BOTH');
          lp_log_comn_error ('STORE OVER/SHORT - CC', 'Unresolved');
    END store_os_cc_main;
-END XX_CE_STORE_OS_WLFG_PKG;    
-/
+END XX_CE_STORE_OS_WLFG_PKG;

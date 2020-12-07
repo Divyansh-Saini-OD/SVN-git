@@ -32,14 +32,16 @@ AS
 -- |1.4      15-JUL-2013  Arun Pandian	    Retrofitted with R12       |
 -- |1.5      18-MAY-2016  Avinash Baddam    Changes for defect#37859   |
 -- |1.5      18-MAY-2016  Avinash Baddam    Changes for defect#37859   |
--- |2.0      07-Apr-2020  Amit Kumar    		Changes for E1319		   |
--- | 2.1 		 25-Sep-2020	Manjush D		      Changes for NAIT-149495    |
+-- |2.0      07-Apr-2020  Amit Kumar    	Changes for E1319		   |
+-- |2.1 	 25-Sep-2020  Manjush D		    Changes for NAIT-149495    |
+-- |2.2      30-Nov-2020  Pratik Gadia		Changes for NAIT-140412    |
+-- |2.2      30-Nov-2020  Pratik Gadia		Changes for NAIT-138934    |
 -- +===================================================================+
 ---Declaring all variables
-  ln_cash_bank_account_id    ce_statement_headers.bank_account_id%TYPE;  
-  ln_statement_number        ce_statement_headers.statement_number%TYPE; 
+  ln_cash_bank_account_id    ce_statement_headers.bank_account_id%TYPE;
+  ln_statement_number        ce_statement_headers.statement_number%TYPE;
   ln_header_id               ce_statement_lines.statement_header_id%TYPE;
-  ld_statement_date          ce_statement_headers.statement_date%TYPE;   
+  ld_statement_date          ce_statement_headers.statement_date%TYPE;
   ln_statement_line_number   ce_statement_lines.line_number%TYPE;
   ln_statement_line_id       ce_statement_lines.statement_line_id%TYPE;
   ld_trx_date                ce_statement_lines.trx_date%TYPE;
@@ -60,7 +62,7 @@ AS
   lpv_description            VARCHAR2(240);
   lc_output_msg              VARCHAR2(240);
   lc_output_msg1             VARCHAR2(240);
-  lc_bank_branch	     hz_parties.party_name%TYPE; 
+  lc_bank_branch	     hz_parties.party_name%TYPE;
   lc_ba_segment1             gl_code_combinations.segment1%TYPE;
   lc_ba_segment2             gl_code_combinations.segment2%TYPE;
   lc_ba_segment3             gl_code_combinations.segment3%TYPE;
@@ -93,7 +95,7 @@ AS
   ln_cnt1                    NUMBER := 0;
   ln_cnt2                    NUMBER := 0;
   EX_ERROR                   EXCEPTION;
-  EX_ERROR_WF                EXCEPTION;   
+  EX_ERROR_WF                EXCEPTION;
 -- +===================================================================+
 -- | Name  : CREATE_GL_INTRF_WF_LINE                             	   |
 -- | Description      : This Procedure is used to insert  GL Journal for|
@@ -148,10 +150,10 @@ IS
            ,GCC.segment5
            ,GCC.segment6
            ,GCC.segment7
-		FROM ce_statement_headers csh 
-		  , ce_statement_lines csl 
+		FROM ce_statement_headers csh
+		  , ce_statement_lines csl
 		  , ce_transaction_codes ctc
-		  , ce_bank_accounts cba 
+		  , ce_bank_accounts cba
 		  ,gl_code_combinations gcc
 		  ,Hz_parties hp
 		WHERE csl.attribute15              IS NULL
@@ -171,17 +173,127 @@ IS
 		and ctc.bank_Account_id			   =cba.bank_Account_id
 		AND   CTC.attribute10 IS NOT NULL
 		AND hp.party_id                      = cba.bank_id
-		AND hp.party_name                    ='WELLS FARGO BANK'
+		--AND hp.party_name                  ='WELLS FARGO BANK'  --Commented for NAIT-140412
+		--<START> Added for NAIT-140412			
+		AND hp.party_name IN
+					(SELECT upper(XFTV.source_value2)
+					 FROM xx_fin_translatedefinition XFTD,xx_fin_translatevalues XFTV
+					 WHERE XFTD.translate_id = XFTV.translate_id
+					 AND XFTD.translation_name = 'XX_CM_E1319_STORE_OS_CC'
+					 AND XFTV.source_value1 = 'BANK'
+					 AND SYSDATE BETWEEN XFTV.start_date_active AND NVL(XFTV.end_date_active,SYSDATE+1)
+					 AND SYSDATE BETWEEN XFTD.start_date_active AND NVL(XFTD.end_date_active,SYSDATE+1)
+					 AND XFTV.enabled_flag = 'Y'
+					 AND XFTD.enabled_flag = 'Y')
+		--<END> Added for NAIT-140412	
 		AND hp.party_type                    ='ORGANIZATION'
 		AND regexp_replace(cba.bank_account_name, '[^[:digit:]]', '') IS NOT NULL
-		AND gcc.segment4                                               = SUBSTR (cba.agency_location_code, 3);
-		
+		AND gcc.segment4                                               = SUBSTR (cba.agency_location_code, 3)
+		--<START> Added for NAIT-138934
+		AND CTC.TRX_CODE NOT IN (SELECT xftv.target_value1
+								 FROM xx_fin_translatedefinition XFTD,xx_fin_translatevalues XFTV
+								 WHERE XFTD.translate_id = XFTV.translate_id
+								 AND XFTD.translation_name = 'XX_CM_E1319_STORE_OS_CC'
+								 AND XFTV.source_value1 = 'BSTMT_TRX_CODE'
+								 AND SYSDATE BETWEEN XFTV.start_date_active AND NVL(XFTV.end_date_active,SYSDATE+1)
+								 AND SYSDATE BETWEEN XFTD.start_date_active AND NVL(XFTD.end_date_active,SYSDATE+1)
+								 AND XFTV.enabled_flag = 'Y'
+								 AND XFTD.enabled_flag = 'Y')   
+		UNION
+		 SELECT 
+		/*+ leading(csh) ordered use_nl(csh,csl,ctc) index(csl,CE_STATEMENT_LINES_N1) use_merge(ctc) full(ctc)*/
+            CTC.bank_account_id
+			,csh.bank_Account_id master_bank_acct_id   --Added for ver#2.1
+           ,CSH.statement_number
+           ,CSH.statement_date
+           ,CSL.line_number
+           ,CSL.statement_line_id
+           ,CSL.trx_date
+           ,CSL.trx_type
+           ,CSL.amount
+           ,CSL.statement_header_id
+           ,CSL.invoice_text
+           ,CTC.trx_code
+           ,CBA.currency_code
+           ,GCC.segment1
+           ,GCC.segment2
+           ,GCC.segment3
+           ,GCC.segment4
+           ,GCC.segment5
+           ,GCC.segment6
+           ,GCC.segment7
+		FROM ce_statement_headers csh
+		  , ce_statement_lines csl
+		  , ce_transaction_codes ctc
+		  , ce_bank_accounts cba
+		  ,gl_code_combinations gcc
+		  ,Hz_parties hp
+		  ,CE_JE_MAPPINGS JEM 
+		WHERE csl.attribute15              IS NULL
+		AND csl.statement_header_id        = csh.statement_header_id
+		AND csh.bank_account_id            = NVL(p_bank_account_id,CSH.bank_account_id)
+		AND   CSH.statement_number BETWEEN NVL(p_statement_number_from,CSH.statement_number)
+                                    AND NVL(p_statement_number_to,CSH.statement_number)
+        AND   fnd_date.canonical_to_date(CSH.statement_date) BETWEEN NVL(fnd_date.canonical_to_date(p_statement_date_from),fnd_date.canonical_to_date(CSH.statement_date))
+                                                              AND NVL(fnd_date.canonical_to_date(p_statement_date_to),fnd_date.canonical_to_date(CSH.statement_date))
+		AND lpad(SUBSTR (cba.agency_location_code, 3), 9,'0') = SUBSTR (csl.CUSTOMER_TEXT,3)
+		AND   NVL(CSL.attribute2,'N')   <> 'PROC-E2027-YES'
+		AND csl.status!                    ='RECONCILED'
+		AND SUBSTR (csl.CUSTOMER_TEXT,3) =lpad(gcc.segment4, 9,'0')
+		--AND gcc.code_combination_id   = CTC.attribute10  
+		AND jem.GL_ACCOUNT_CCID = gcc.code_combination_id  
+		AND JEM.TRX_CODE_ID                      = CTC.TRANSACTION_CODE_ID  
+		AND NVL (cba.end_date, SYSDATE  + 1) > TRUNC (SYSDATE)
+		AND csl.trx_code                   = ctc.trx_code
+		and ctc.bank_Account_id			   =cba.bank_Account_id
+		--AND   CTC.attribute10 IS NOT NULL  
+		AND hp.party_id                      = cba.bank_id	
+		AND hp.party_name IN
+					(SELECT upper(XFTV.source_value2)
+					 FROM xx_fin_translatedefinition XFTD,xx_fin_translatevalues XFTV
+					 WHERE XFTD.translate_id = XFTV.translate_id
+					 AND XFTD.translation_name = 'XX_CM_E1319_STORE_OS_CC'
+					 AND XFTV.source_value1 = 'BANK'
+					 AND SYSDATE BETWEEN XFTV.start_date_active AND NVL(XFTV.end_date_active,SYSDATE+1)
+					 AND SYSDATE BETWEEN XFTD.start_date_active AND NVL(XFTD.end_date_active,SYSDATE+1)
+					 AND XFTV.enabled_flag = 'Y'
+					 AND XFTD.enabled_flag = 'Y')
+		AND hp.party_type                    ='ORGANIZATION'
+		AND regexp_replace(cba.bank_account_name, '[^[:digit:]]', '') IS NOT NULL
+		AND ctc.trx_code IN (SELECT xftv.target_value1
+							FROM xx_fin_translatedefinition XFTD,xx_fin_translatevalues XFTV
+							WHERE XFTD.translate_id = XFTV.translate_id
+							AND XFTD.translation_name = 'XX_CM_E1319_STORE_OS_CC'
+							AND XFTV.source_value1 = 'BSTMT_TRX_CODE'
+							AND SYSDATE BETWEEN XFTV.start_date_active AND NVL(XFTV.end_date_active,SYSDATE+1)
+							AND SYSDATE BETWEEN XFTD.start_date_active AND NVL(XFTD.end_date_active,SYSDATE+1)
+							AND XFTV.enabled_flag = 'Y'
+							AND XFTD.enabled_flag = 'Y') 
+		AND gcc.segment4 = SUBSTR (cba.agency_location_code, 3);
+		--<END> Added for NAIT-138934
+	
+	--<START> Added for NAIT-138934	
+	CURSOR lcu_trans_je_trx_code
+	IS	
+	SELECT target_value1 trans_je_trx_code
+	FROM xx_fin_translatedefinition XFTD,xx_fin_translatevalues XFTV
+	WHERE XFTD.translate_id = XFTV.translate_id
+	AND XFTD.translation_name = 'XX_CM_E1319_STORE_OS_CC'
+	AND XFTV.source_value1 = 'BSTMT_TRX_CODE'
+	AND SYSDATE BETWEEN XFTV.start_date_active AND NVL(XFTV.end_date_active,SYSDATE+1)
+	AND SYSDATE BETWEEN XFTD.start_date_active AND NVL(XFTD.end_date_active,SYSDATE+1)
+	AND XFTV.enabled_flag = 'Y'
+	AND XFTD.enabled_flag = 'Y';
+
+	--<END> Added for NAIT-138934
+
 	ln_master_bank_acct_id  NUMBER; --Added Ver#2.1
-	  
+	ln_is_je_trx_code BOOLEAN;											--Added for NAIT-138934	
+
 	BEGIN
 	    LN_master_bank_acct_id :=NULL; --Added Ver#2.1
 		ln_cash_bank_account_id    :=NULL;
-	  ln_statement_number        :=NULL;   
+	  ln_statement_number        :=NULL;
 	  ln_header_id               :=NULL;
 	  ld_statement_date          :=NULL;
 	  ln_statement_line_number   :=NULL;
@@ -235,8 +347,9 @@ IS
 	  ln_cnt                     :=0;
 	  ln_cnt1                    :=0;
 	  ln_cnt2                    :=0;
+	  ln_is_je_trx_code := FALSE;			--Added for NAIT-138934
 
-	  
+
 		FND_FILE.PUT_LINE(FND_FILE.LOG,'CREATE_GL_INTRF_WF_LINE: p_bank_branch_id			' ||p_bank_branch_id);
 		FND_FILE.PUT_LINE(FND_FILE.LOG,'CREATE_GL_INTRF_WF_LINE: p_bank_account_id			' ||p_bank_account_id);
 		FND_FILE.PUT_LINE(FND_FILE.LOG,'CREATE_GL_INTRF_WF_LINE: p_statement_number_from	' ||p_statement_number_from);
@@ -244,8 +357,8 @@ IS
 		FND_FILE.PUT_LINE(FND_FILE.LOG,'CREATE_GL_INTRF_WF_LINE: p_statement_date_from		' ||p_statement_date_from);
 		FND_FILE.PUT_LINE(FND_FILE.LOG,'CREATE_GL_INTRF_WF_LINE: p_statement_date_to		' ||p_statement_date_to);
 		FND_FILE.PUT_LINE(FND_FILE.LOG,'CREATE_GL_INTRF_WF_LINE: p_gl_date					' ||p_gl_date);
-		
-		
+
+
 		IF p_bank_branch_id IS NOT NULL THEN
 		BEGIN
 			SELECT bank_branch_name, bank_name
@@ -270,6 +383,7 @@ IS
 			 FND_FILE.PUT_LINE(FND_FILE.LOG,'CREATE_GL_INTRF_WF_LINE: Error in fetching the bank account number.');
 		END;
 		END IF;
+		
 		FND_FILE.PUT_LINE(FND_FILE.Output,'_________________________________________________________________________________________________________________________');
 		FND_FILE.PUT_LINE(FND_FILE.Output,'');
 		FND_FILE.PUT_LINE(FND_FILE.Output,'=========================================================================================================================');
@@ -292,8 +406,8 @@ IS
 		FND_FILE.PUT_LINE(FND_FILE.Output,'----------               -----------          --------    --------------    --------------    --------   --------------                                             ------------               -----------');
 
    BEGIN
-	
-	
+
+
 		BEGIN
 			 SELECT gl_interface_control_s.NEXTVAL
 			 INTO   ln_group_id
@@ -303,7 +417,7 @@ IS
 			FND_FILE.PUT_LINE(FND_FILE.LOG,'CREATE_GL_INTRF_WF_LINE: Error in GL Interface sequence.');
 		END;
 
-	
+
 	OPEN lcu_gl_line_wf;
     LOOP
       ln_cnt := ln_cnt + 1;
@@ -330,17 +444,30 @@ IS
              ,lc_segment6
              ,lc_segment7;
         EXIT WHEN lcu_gl_line_wf%NOTFOUND OR lcu_gl_line_wf%NOTFOUND IS NULL;
+		
+		--<START> Added for NAIT-138934
+		FOR indx IN lcu_trans_je_trx_code
+		LOOP
+			IF lc_trx_code = indx.trans_je_trx_code THEN
+				ln_is_je_trx_code := TRUE;
+				EXIT;
+			END IF;
+		END LOOP;
+		--<END> Added for NAIT-138934
+		
 
         BEGIN
         ln_cnt1 := ln_cnt1 + 1;
          ---------------------------------------------------------------------------
          -- This statement will fetch the Asset Account for a given bank_account_id
          ---------------------------------------------------------------------------
+		 
+		 IF (NOT ln_is_je_trx_code) THEN		--Added for NAIT-138934
            SELECT ABA.bank_account_id
                  ,ABA.bank_account_num
                  ,ABA.currency_code
-                 ,hou.set_of_books_id     
-		         ,cbau.org_id             
+                 ,hou.set_of_books_id
+		         ,cbau.org_id
                  ,GCC.segment1
                  ,GCC.segment2
                  ,GCC.segment3
@@ -361,15 +488,56 @@ IS
                  ,lc_ba_segment6
                  ,lc_ba_segment7
            FROM   gl_code_combinations GCC
-                 ,ce_bank_accounts     ABA   
-                 ,ce_bank_acct_uses    cbau  
-		         ,hr_operating_units   hou  
+                 ,ce_bank_accounts     ABA
+                 ,ce_bank_acct_uses    cbau
+		         ,hr_operating_units   hou
            WHERE  ABA.asset_code_combination_id    = GCC.code_combination_id
           -- AND    ABA.bank_account_id              = ln_cash_bank_account_id
 		  and aba.bank_Account_id = ln_master_bank_acct_id
-           AND    NVL (ABA.end_date, SYSDATE + 1) > TRUNC (SYSDATE) 
-           AND aba.bank_account_id = cbau.bank_account_id             
-           AND hou.organization_id = cbau.org_id  ;                
+           AND    NVL (ABA.end_date, SYSDATE + 1) > TRUNC (SYSDATE)
+           AND aba.bank_account_id = cbau.bank_account_id
+           AND hou.organization_id = cbau.org_id  ;
+		  --<START> Added for NAIT-138934 
+		  ELSE 
+		   SELECT ABA.bank_account_id
+                 ,ABA.bank_account_num
+                 ,ABA.currency_code
+                 ,hou.set_of_books_id
+		         ,cbau.org_id
+                 ,GCC.segment1
+                 ,GCC.segment2
+                 ,GCC.segment3
+                 ,GCC.segment4
+                 ,GCC.segment5
+                 ,GCC.segment6
+                 ,GCC.segment7
+           INTO   ln_asset_bank_account_id
+                 ,lc_bank_acct_num
+                 ,lc_currency_code
+                 ,ln_sob_id
+                 ,ln_org_id
+                 ,lc_ba_segment1
+                 ,lc_ba_segment2
+                 ,lc_ba_segment3
+                 ,lc_ba_segment4
+                 ,lc_ba_segment5
+                 ,lc_ba_segment6
+                 ,lc_ba_segment7
+           FROM   gl_code_combinations GCC
+                 ,ce_bank_accounts     ABA
+                 ,ce_bank_acct_uses    cbau
+		         ,hr_operating_units   hou
+           WHERE  ABA.cash_clearing_ccid    = GCC.code_combination_id
+          -- AND    ABA.bank_account_id              = ln_cash_bank_account_id
+		  and aba.bank_Account_id = ln_master_bank_acct_id
+           AND    NVL (ABA.end_date, SYSDATE + 1) > TRUNC (SYSDATE)
+           AND aba.bank_account_id = cbau.bank_account_id
+           AND hou.organization_id = cbau.org_id  ;
+		   
+		   END IF;
+		   
+		   ln_is_je_trx_code := FALSE;
+		   --<END> Added for NAIT-138934
         EXCEPTION
         WHEN NO_DATA_FOUND THEN
           RAISE EX_ERROR_WF;
@@ -378,9 +546,9 @@ IS
         END;
         ld_gl_date := to_char(to_date(p_gl_date,'YYYY/MM/DD HH24:MI:SS'));
         lpv_description := lc_bank_acct_num||'-'||ln_statement_number||'-'||ln_statement_line_number||'-'||lc_trx_code||'-'||lc_invoice_text;
-		
-		 FND_FILE.PUT_LINE(FND_FILE.log, 'ln_asset_bank_account_id : ' || ln_asset_bank_account_id ||','||'lc_bank_acct_num : ' || lc_bank_acct_num 
-		 ||','||'ln_sob_id : ' || ln_sob_id ||','||'lc_currency_code : ' || lc_currency_code ||','||'ln_org_id : ' || ln_org_id 
+
+		 FND_FILE.PUT_LINE(FND_FILE.log, 'ln_asset_bank_account_id : ' || ln_asset_bank_account_id ||','||'lc_bank_acct_num : ' || lc_bank_acct_num
+		 ||','||'ln_sob_id : ' || ln_sob_id ||','||'lc_currency_code : ' || lc_currency_code ||','||'ln_org_id : ' || ln_org_id
 		 ||','|| 'lc_ba_segment1 : ' || lc_ba_segment1 ||','|| 'lc_ba_segment2 : ' || lc_ba_segment2
 		 ||','|| 'lc_ba_segment3 : ' || lc_ba_segment3 ||','|| 'lc_ba_segment4 : ' || lc_ba_segment4
 		 ||','|| 'lc_ba_segment5 : ' || lc_ba_segment5 ||','|| 'lc_ba_segment6 : ' || lc_ba_segment6
@@ -529,7 +697,7 @@ IS
     FND_FILE.PUT_LINE(FND_FILE.log,'Total No. Of Wells Fargo Statement Lines fetched : '||ln_cnt1);
     FND_FILE.PUT_LINE(FND_FILE.log,'Total No. Of Wells Fargo Statements Lines inserted in GL Tables : '||ln_cnt2);
     COMMIT;
-	  
+
 END CREATE_GL_INTRF_WF_LINE;
 
 
@@ -631,13 +799,25 @@ IS
 		AND csl.trx_code                                               = ctc.trx_code
 		AND ctc.bank_Account_id                                        =cba.bank_Account_id
 		AND CTC.attribute10                                           IS NOT NULL
-		AND hp.party_id                                                = cba.bank_id
-		AND hp.party_name                                              ='WELLS FARGO BANK'
+		AND hp.party_id                                                = cba.bank_id 
+		--AND hp.party_name                                              ='WELLS FARGO BANK' --Commented for NAIT-140412
+		--<START> Added for NAIT-140412	
+		AND hp.party_name IN
+					(SELECT upper(XFTV.source_value2)
+					 FROM xx_fin_translatedefinition XFTD,xx_fin_translatevalues XFTV
+					 WHERE XFTD.translate_id = XFTV.translate_id
+					 AND XFTD.translation_name = 'XX_CM_E1319_STORE_OS_CC'
+					 AND XFTV.source_value1 = 'BANK'
+					 AND SYSDATE BETWEEN XFTV.start_date_active AND NVL(XFTV.end_date_active,SYSDATE+1)
+					 AND SYSDATE BETWEEN XFTD.start_date_active AND NVL(XFTD.end_date_active,SYSDATE+1)
+					 AND XFTV.enabled_flag = 'Y'
+					 AND XFTD.enabled_flag = 'Y')
+		--<END> Added for NAIT-140412	
 		AND hp.party_type                                              ='ORGANIZATION'
 		AND regexp_replace(cba.bank_account_name, '[^[:digit:]]', '') IS NOT NULL
 		AND gcc.segment4                                               = SUBSTR (cba.agency_location_code, 3)
 		);
-		 
+
  /*	Ver 2.0
 
   ln_cash_bank_account_id    ce_statement_headers.bank_account_id%TYPE;  --Commented ce_statement_headers_all as part of R12 Retrofit
@@ -711,17 +891,17 @@ IS
   ln_cnt1                    NUMBER := 0;
   ln_cnt2                    NUMBER := 0;
   EX_ERROR                   EXCEPTION;
-  EX_ERROR_WF                EXCEPTION;   
+  EX_ERROR_WF                EXCEPTION;
  --Commenting all variables here.
  /*Ver 2.0 End here*/
-  
+
   BEGIN
   --V2.0-start
 	ln_cnt    := 0;
 	ln_cnt1   := 0;
 	ln_cnt2   := 0;
 	--v2.0 end--
-	
+
     IF p_bank_branch_id IS NOT NULL THEN
     BEGIN
         SELECT bank_branch_name, bank_name
@@ -992,18 +1172,18 @@ IS
     FND_FILE.PUT_LINE(FND_FILE.log,'Total No. Of records fetched : '||ln_cnt1);
     FND_FILE.PUT_LINE(FND_FILE.log,'Total No. Of inserted in GL Tables : '||ln_cnt2);
     COMMIT;
-  
+
    --Version 2.0 starts
     --END;
 	BEGIN
 	  CREATE_GL_INTRF_WF_LINE(
-			   p_bank_branch_id        
-			  ,p_bank_account_id       
-			  ,p_statement_number_from 
-			  ,p_statement_number_to   
-			  ,p_statement_date_from   
-			  ,p_statement_date_to     
-			  ,p_gl_date               
+			   p_bank_branch_id
+			  ,p_bank_account_id
+			  ,p_statement_number_from
+			  ,p_statement_number_to
+			  ,p_statement_date_from
+			  ,p_statement_date_to
+			  ,p_gl_date
 			  );
     EXCEPTION
         WHEN OTHERS THEN
@@ -1011,14 +1191,13 @@ IS
 		  x_errbuf := 'ERROR with  PROC CREATE_GL_INTRF_WF_LINE :'||SQLERRM;
           x_retcode :=1;
 	END;
-	
+
 EXCEPTION
-WHEN OTHERS 
+WHEN OTHERS
 THEN
            x_errbuf := 'ERROR with main PROC. :'||SQLERRM;
            x_retcode :=2;
-  
+
 END CREATE_GL_INTRF_STG_LINE_MAIN;
 END XX_CE_CUST_JE_LINES_CREATE_PKG;
 --Version 2.0 ends
-/
