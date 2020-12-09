@@ -154,7 +154,8 @@ AS
 -- | 67.0        02-DEC-2020  XXXXXXXX               NAIT-161715 added the logic into get_order_line_info for         |
 -- |                                                 no data found error fix                                          |
 -- | 68.0        02-DEC-2020  XXXXXXXX               NAIT-161715 added the logic into procedure get_pos_info          |
--- |                                                 for get_invoice_header_info  no data found error fix             |
+-- |                                                 for get_invoice_header_info and added into get_invoice_line_info |
+-- |                                                 for no data found error fix                                      |
 -- +==================================================================================================================+
 
   gc_package_name        CONSTANT all_objects.object_name%TYPE   := 'xx_ar_subscriptions_mt_pkg';
@@ -1215,9 +1216,11 @@ PROCEDURE logitt(p_message  IN  CLOB,
            FROM   RA_CUSTOMER_TRX_LINES_ALL_HIST
            WHERE  customer_trx_id    = p_customer_trx_id
            AND    inventory_item_id  = p_inventory_item_id
-           AND    unit_selling_price = p_cont_line_amt
+           --AND    unit_selling_price = p_cont_line_amt
            AND    line_type          = 'LINE'
-           AND    line_number        = p_line_number ;
+           --AND    line_number        = p_line_number 
+           AND    unit_selling_price >0
+           AND    rownum             <2;
          EXCEPTION
           WHEN NO_DATA_FOUND THEN
            BEGIN
@@ -1235,8 +1238,10 @@ PROCEDURE logitt(p_message  IN  CLOB,
               FROM   ra_customer_trx_lines_all
               WHERE  customer_trx_id    = p_customer_trx_id
               AND    inventory_item_id  = p_inventory_item_id
-              AND    unit_selling_price = p_cont_line_amt
-              AND    line_type          = 'LINE' ;
+              --AND    unit_selling_price = p_cont_line_amt
+              AND    line_type          = 'LINE' 
+              AND    unit_selling_price >0
+              AND    rownum             <2;
      
            END;
          END;
@@ -1257,9 +1262,11 @@ PROCEDURE logitt(p_message  IN  CLOB,
         INTO   x_invoice_line_info
         FROM   RA_CUSTOMER_TRX_LINES_ALL_HIST
         WHERE  customer_trx_id   = p_customer_trx_id
-        AND    line_number       = p_line_number
-        --AND    inventory_item_id = p_inventory_item_id
-        AND    line_type         = 'LINE';
+        --AND    line_number       = p_line_number
+        AND    inventory_item_id = p_inventory_item_id
+        AND    line_type         = 'LINE'
+        AND    unit_selling_price>0
+        AND    rownum            <2;
     END;
     END IF;
 
