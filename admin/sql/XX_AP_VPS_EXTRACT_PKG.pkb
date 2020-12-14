@@ -15,6 +15,7 @@ create or replace PACKAGE BODY      XX_AP_VPS_EXTRACT_PKG
 -- | 1.4         01/24/19     BIAS             INSTANCE_NAME is replaced with DB_NAME for OCI   |  
 -- |                                           Migration Project
 -- | 1.5         07/28/20     Bhargavi Ankolekar    This is for jira#NAIT-146750                |
+-- | 1.6         12/11/20     Mayur Palsokar   Modified invoice_vps_extract for NAIT-165042 (Temporary change)|
 -- +============================================================================================+
 AS
 
@@ -526,7 +527,178 @@ END xx_ap_get_gl_acct;
 									AND b.status_code='C'
 								);
 
-
+       /*Start: Added for NAIT-165042*/
+	   -- To generate matched invoice file which includes invoice_amount
+	   CURSOR matched_inv_cur_temp(p_inv_date DATE)
+		IS
+		SELECT	 /*+ LEADING (h) */
+				    a.source,
+					'USTR',
+					NVL(aps.attribute9,NVL(aps.vendor_site_code_alt,aps.vendor_site_id)) ap_vendor,
+					a.last_update_date,
+					a.invoice_num,
+					TO_CHAR(a.invoice_date,'MM-DD-YYYY') invoice_date,
+					TO_CHAR(a.creation_date,'MM-DD-YYYY') entry_dt,
+					l.line_number,
+					get_location(a.quick_po_header_id) location,
+					pol.unit_price po_price,
+					NULL avg_cost,
+					msi.segment1 item,
+					l.line_type_lookup_code,
+					l.quantity_invoiced,
+					l.unit_price,
+					l.amount,
+					l.attribute11 reason_cd,
+					a.doc_sequence_value voucher_num,
+					l.description voucher_line_desc,
+					pol.quantity original_po_qty,
+					pol.unit_price original_po_cost,
+					ph.segment1 ap_po_nbr,
+					pol.line_num po_line_nbr,
+					xx_ap_get_gl_acct(l.invoice_id,l.line_number,l.line_type_lookup_code) gl_account_id,
+					(	SELECT aid.period_name
+						FROM ap_invoice_distributions_all aid
+						WHERE aid.invoice_id            =a.invoice_id
+						AND ROWNUM                 <2
+					) period_name,
+					a.INVOICE_AMOUNT 
+			FROM	mtl_system_items_b msi,
+					po_lines_all pol,
+					hr_locations_all hrl,
+					po_headers_all ph,
+					ap_supplier_sites_all aps,
+					ap_invoice_lines_all l,
+					ap_invoices_all a,
+					(SELECT xte.source_id_int_1
+					   FROM xla_events xe,
+							xla_transaction_entities xte,
+							xla_ae_headers xah
+					  WHERE xah.gl_transfer_date  BETWEEN p_inv_date AND SYSDATE
+						AND xah.application_id=200
+						AND xe.event_id=xah.event_id
+						AND xe.application_id=xah.application_id
+						AND xe.entity_id=xah.entity_id
+						AND xte.application_id=xe.application_id
+						AND XTE.ENTITY_CODE      = 'AP_INVOICES'
+						AND xte.entity_id=xe.entity_id
+						AND xe.event_status_code='P'
+						AND xe.process_status_code='P'
+					  GROUP BY xte.source_id_int_1
+					) h
+			WHERE a.invoice_id=h.source_id_int_1
+			AND l.invoice_id			=a.invoice_id
+			AND l.line_type_lookup_code<>'TAX'
+			AND l.amount<>0
+			AND a.source				<>'US_OD_CONSIGNMENT_SALES'
+			AND a.invoice_num NOT LIKE '%ODDBUIA%'
+			AND a.cancelled_date IS NULL
+			AND aps.vendor_site_id		= a.vendor_site_id
+			AND ph.po_header_id(+)		= NVL(a.po_header_id,a.quick_po_header_id)
+			AND hrl.location_id 		= l.ship_to_location_id
+			AND pol.po_line_id(+)		=l.po_line_id
+			AND msi.inventory_item_id(+)=l.inventory_item_id
+			AND msi.organization_id(+)+0=441
+			AND EXISTS (SELECT 'x'
+						 FROM  xx_fin_translatevalues tv
+							  ,xx_fin_translatedefinition td
+						WHERE td.TRANSLATION_NAME 	='XX_AP_TR_MATCH_INVOICES'
+						AND tv.TRANSLATE_ID  		=td.TRANSLATE_ID
+						AND tv.enabled_flag			='Y'
+						AND SYSDATE BETWEEN tv.start_date_active AND NVL(tv.end_date_active,SYSDATE)
+						AND tv.target_value1		=a.source
+					   )
+			AND EXISTS ( SELECT 'x'
+						   FROM XX_FIN_TRANSLATEDEFINITION XFTD,
+					            XX_FIN_TRANSLATEVALUES XFTV,
+					            AP_SUPPLIER_SITES_ALL SITE
+					      WHERE SITE.VENDOR_SITE_ID     = aps.VENDOR_SITE_ID+0
+ 					        AND XFTD.TRANSLATION_NAME = 'XX_AP_TRADE_CATEGORIES'
+             				AND XFTD.TRANSLATE_ID     = XFTV.TRANSLATE_ID
+			  	  	        AND XFTV.TARGET_VALUE1    = SITE.ATTRIBUTE8||''
+							AND XFTV.ENABLED_FLAG = 'Y'
+							AND SYSDATE BETWEEN XFTV.START_DATE_ACTIVE AND NVL(XFTV.END_DATE_ACTIVE,SYSDATE)
+					   )
+		UNION ALL
+			SELECT   /*+ LEADING (j) */
+					a.source,
+					'USTR' "USTR",
+					NVL(aps.attribute9,NVL(aps.vendor_site_code_alt,aps.vendor_site_id)) ap_vendor,
+					a.last_update_date,
+					a.invoice_num,
+					TO_CHAR(a.invoice_date,'MM-DD-YYYY') invoice_date,
+					TO_CHAR(a.creation_date,'MM-DD-YYYY') entry_dt,
+					trd.invoice_line_id,
+					trd.location_number location,
+					NULL po_price,
+					trd.cost avg_cost,
+					trd.sku item,
+					trd.line_type line_type_lookup_code,
+					DECODE (quantity_sign,'+',TRD.QUANTITY, '-', (-1)*QUANTITY) quantity_invoiced,
+					NULL unit_price,
+					DECODE ((SELECT TARGET_VALUE8
+							FROM XX_FIN_TRANSLATEVALUES
+							WHERE TRANSLATE_ID IN (SELECT TRANSLATE_ID
+							FROM XX_FIN_TRANSLATEDEFINITION
+							WHERE TRANSLATION_NAME = 'AP_CONSIGN_LIABILITY'
+							AND ENABLED_FLAG = 'Y')
+							AND SOURCE_VALUE2 = TRD.AP_VENDOR
+							AND SOURCE_VALUE1 = 'USA'),NULL,TRD.PO_COST * (DECODE (quantity_sign,'+',TRD.QUANTITY, '-', (-1)*QUANTITY)) ,TRD.COST * (DECODE (quantity_sign,'+',TRD.QUANTITY, '-', (-1)*QUANTITY)))  amount,     --trd.mdse_amount amount,
+					NULL reason_cd,
+					a.doc_sequence_value voucher_num,
+					DECODE(trd.consign_flag, 'Y', trd.line_description,'N', 'UNABSORBED COSTS', trd.line_description) voucher_line_desc,
+					NULL original_po_qty,
+					NULL original_po_cost,
+					NULL ap_po_nbr,
+					NULL po_line_nbr,
+					(	SELECT gcc.segment1||'.'||gcc.segment2||'.'||gcc.segment3||'.'||gcc.segment4||'.'||gcc.segment5||'.'||gcc.segment6||'.'||gcc.segment7
+						FROM ap_invoice_distributions_all aid,
+							 gl_code_combinations gcc
+						WHERE 1                     =1
+						AND aid.invoice_id            =a.invoice_id
+						AND gcc.code_combination_id =aid.dist_code_combination_id
+						AND ROWNUM                 <=1
+					) gl_account_id,
+					(	SELECT aid.period_name
+						FROM ap_invoice_distributions_all aid,
+							 gl_code_combinations gcc
+						WHERE 1                     =1
+						AND aid.invoice_id            =a.invoice_id
+						AND gcc.code_combination_id =aid.dist_code_combination_id
+						AND ROWNUM                 <=1
+					) period_name,
+					a.INVOICE_AMOUNT
+				FROM ap_supplier_sites_all aps,
+					 xx_ap_trade_inv_lines trd,
+					 ap_invoices_all a,
+					(SELECT xte.source_id_int_1
+					   FROM xla_events xe,
+							xla_transaction_entities xte,
+							xla_ae_headers xah
+					  WHERE xah.gl_transfer_date  BETWEEN p_inv_date AND SYSDATE
+						AND xah.application_id=200
+						AND xe.event_id=xah.event_id
+						AND xe.application_id=xah.application_id
+						AND xe.entity_id=xah.entity_id
+						AND xte.application_id=xe.application_id
+						AND XTE.ENTITY_CODE      = 'AP_INVOICES'
+						AND xte.entity_id=xe.entity_id
+						AND xe.event_status_code='P'
+						AND xe.process_status_code='P'
+					  GROUP BY xte.source_id_int_1
+					) j
+				WHERE a.invoice_id=j.source_id_int_1
+  	 			  AND aps.vendor_site_id =a.vendor_site_id
+				  AND a.invoice_num NOT LIKE '%ODDBUIA%'
+				  AND a.cancelled_date IS NULL
+				  AND a.source           ='US_OD_CONSIGNMENT_SALES'
+			      AND trd.invoice_number =a.invoice_num
+				  AND trd.cost    <> 0
+				  AND trd.consign_flag   = 'Y'
+				ORDER BY invoice_num,line_number,source;
+				
+				TYPE matched_inv_tab_type_temp IS TABLE OF matched_inv_cur_temp%ROWTYPE;
+	   /*End: Added for NAIT-165042*/
+	   
 
 		l_unmatched_tab 				unmatched_inv_tab_type;
 		l_matched_tab 					matched_inv_tab_type;
@@ -553,6 +725,16 @@ END xx_ap_get_gl_acct;
 		lc_message         		   		VARCHAR2(100);
 		lc_match_file					VARCHAR2(1):='N';
 		lc_unmatch_file					VARCHAR2(1):='N';
+		
+		/*Start: Added for NAIT-165042*/
+		l_matched_tab_temp 			    matched_inv_tab_type_temp;
+		lf_m_file_temp             		UTL_FILE.file_type;
+		l_m_file_header_temp        	VARCHAR2(32000);
+		lc_m_file_content_temp			VARCHAR2(32000);
+		lc_m_file_name_temp			    VARCHAR2(250) := 'TEMP_MATCHED_INV_DATA_'||TO_CHAR(SYSDATE,'MMDDYYYY_HH24MI')||'.txt';
+		lc_match_file_temp				VARCHAR2(1):='N';
+		/*End: Added for NAIT-165042*/
+		
 BEGIN
 	xla_security_pkg.set_security_context(602);
 	--get file dir path
@@ -667,6 +849,112 @@ BEGIN
 		fnd_file.put_line(fnd_file.LOG,SQLCODE||SQLERRM);
 		END;
 	END IF;
+	
+    /*Start: Added for NAIT-165042*/
+
+    OPEN  matched_inv_cur_temp (ld_date);
+	FETCH matched_inv_cur_temp BULK COLLECT INTO l_matched_tab_temp;
+	CLOSE matched_inv_cur_temp;
+	fnd_file.put_line(fnd_file.LOG,'Matched Invoice Count with invoice amount :'||l_matched_tab_temp.COUNT);
+	IF l_matched_tab_temp.COUNT>0 THEN
+	    lc_match_file_temp					:='Y';
+		BEGIN
+			lf_m_file_temp := UTL_FILE.fopen('XXFIN_OUTBOUND',
+									   lc_m_file_name_temp,
+									   'w',
+									   ln_chunk_size);
+			l_m_file_header_temp :=
+								'SOURCE'
+								||'|'||'USTR'
+								||'|'||'AP_VENDOR'
+								||'|'||'INVOICE_NUM'
+								||'|'||'INVOICE_AMOUNT'
+								||'|'||'INVOICE_DATE'
+								||'|'||'ENTRY_DT'
+								||'|'||'LINE_NUMBER'
+								||'|'||'LOCATION'
+								||'|'||'PO_PRICE'
+								||'|'||'AVG_COST'
+								||'|'||'ITEM'
+								||'|'||'LINE_TYPE_LOOKUP_CODE'
+								||'|'||'QUANTITY_INVOICED'
+								||'|'||'UNIT_PRICE'
+								||'|'||'AMOUNT'
+								||'|'||'REASON_CD'
+								||'|'||'VOUCHER_NUM'
+								||'|'||'VOUCHER_LINE_DESC'
+								||'|'||'ORIGINAL_PO_QTY'
+								||'|'||'ORIGINAL_PO_COST'
+								||'|'||'AP_PO_NBR'
+								||'|'||'PO_LINE_NBR'
+								||'|'||'GL_ACCOUNT_ID'
+								||'|'||'PERIOD_NAME';
+			UTL_FILE.put_line(lf_m_file_temp,l_m_file_header_temp);
+			FOR i IN 1.. l_matched_tab_temp.COUNT
+			LOOP
+				lc_m_file_content_temp :=
+							l_matched_tab_temp(i).source
+							||'|'||'USTR'
+							||'|'||l_matched_tab_temp(i).ap_vendor
+							||'|'||l_matched_tab_temp(i).invoice_num
+							||'|'||l_matched_tab_temp(i).INVOICE_AMOUNT
+							||'|'||l_matched_tab_temp(i).invoice_date
+							||'|'||l_matched_tab_temp(i).entry_dt
+							||'|'||l_matched_tab_temp(i).line_number
+							||'|'||l_matched_tab_temp(i).location
+							||'|'||l_matched_tab_temp(i).po_price
+							||'|'||l_matched_tab_temp(i).avg_cost
+							||'|'||l_matched_tab_temp(i).item
+							||'|'||l_matched_tab_temp(i).line_type_lookup_code
+							||'|'||l_matched_tab_temp(i).quantity_invoiced
+							||'|'||l_matched_tab_temp(i).unit_price
+							||'|'||l_matched_tab_temp(i).amount
+							||'|'||l_matched_tab_temp(i).reason_cd
+							||'|'||l_matched_tab_temp(i).voucher_num
+							||'|'||l_matched_tab_temp(i).voucher_line_desc
+							||'|'||l_matched_tab_temp(i).original_po_qty
+							||'|'||l_matched_tab_temp(i).original_po_cost
+							||'|'||l_matched_tab_temp(i).ap_po_nbr
+							||'|'||l_matched_tab_temp(i).po_line_nbr
+							||'|'||l_matched_tab_temp(i).gl_account_id
+							||'|'||l_matched_tab_temp(i).period_name;  
+					UTL_FILE.put_line(lf_m_file_temp,lc_m_file_content_temp);
+			END LOOP;
+		UTL_FILE.fclose(lf_m_file_temp);
+		fnd_file.put_line(fnd_file.LOG,'Matched Invoice with invoice amount File Created: '|| lc_m_file_name_temp);
+		
+	/*	-- copy to matched invoice file to xxfin_data/vps dir
+		lc_dest_file_name := '/app/ebs/ct'||lc_instance_name||'/xxfin/ftp/out/vps/'||lc_m_file_name;
+		ln_conc_file_copy_request_id := fnd_request.submit_request('XXFIN',
+																   'XXCOMFILCOPY',
+																   '',
+																   '',
+																   FALSE,
+																   lc_dirpath||'/'||lc_m_file_name, --Source File Name
+																   lc_dest_file_name,            --Dest File Name
+																   '', '', 'Y'                   --Deleting the Source File
+																  );
+		IF ln_conc_file_copy_request_id > 0
+		THEN
+			COMMIT;
+			-- wait for request to finish
+			lb_complete :=fnd_concurrent.wait_for_request (
+															request_id   => ln_conc_file_copy_request_id,
+															interval     => 10,
+															max_wait     => 0,
+															phase        => lc_phase,
+															status       => lc_status,
+															dev_phase    => lc_dev_phase,
+															dev_status   => lc_dev_status,
+															message      => lc_message
+															);
+		END IF;  */
+		EXCEPTION WHEN OTHERS THEN
+		fnd_file.put_line(fnd_file.LOG,SQLCODE||SQLERRM);
+		END;
+	END IF;
+    /*End: Added for NAIT-165042*/
+	
 	OPEN unmatched_inv_cur;
 	FETCH unmatched_inv_cur BULK COLLECT INTO l_unmatched_tab;
 	CLOSE unmatched_inv_cur;
