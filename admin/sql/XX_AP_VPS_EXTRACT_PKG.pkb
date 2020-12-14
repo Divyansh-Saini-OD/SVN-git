@@ -922,33 +922,6 @@ BEGIN
 			END LOOP;
 		UTL_FILE.fclose(lf_m_file_temp);
 		fnd_file.put_line(fnd_file.LOG,'Matched Invoice with invoice amount File Created: '|| lc_m_file_name_temp);
-		
-	/*	-- copy to matched invoice file to xxfin_data/vps dir
-		lc_dest_file_name := '/app/ebs/ct'||lc_instance_name||'/xxfin/ftp/out/vps/'||lc_m_file_name;
-		ln_conc_file_copy_request_id := fnd_request.submit_request('XXFIN',
-																   'XXCOMFILCOPY',
-																   '',
-																   '',
-																   FALSE,
-																   lc_dirpath||'/'||lc_m_file_name, --Source File Name
-																   lc_dest_file_name,            --Dest File Name
-																   '', '', 'Y'                   --Deleting the Source File
-																  );
-		IF ln_conc_file_copy_request_id > 0
-		THEN
-			COMMIT;
-			-- wait for request to finish
-			lb_complete :=fnd_concurrent.wait_for_request (
-															request_id   => ln_conc_file_copy_request_id,
-															interval     => 10,
-															max_wait     => 0,
-															phase        => lc_phase,
-															status       => lc_status,
-															dev_phase    => lc_dev_phase,
-															dev_status   => lc_dev_status,
-															message      => lc_message
-															);
-		END IF;  */
 		EXCEPTION WHEN OTHERS THEN
 		fnd_file.put_line(fnd_file.LOG,SQLCODE||SQLERRM);
 		END;
