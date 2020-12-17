@@ -6394,6 +6394,8 @@ BEGIN
 				  FROM xx_ar_ebl_cons_trx_stg
 				 WHERE request_id = p_request_id
                    AND CUSTOMER_TRX_ID = p_customer_trx_id
+                   AND cons_inv_id = p_cons_id
+                   AND cust_doc_id = p_cust_doc_id
 				   AND INV_TYPE not in ('SOFTHDR_TOTALS','BILLTO_TOTALS','GRAND_TOTAL')
                    AND rownum =1;
 
@@ -6428,6 +6430,8 @@ BEGIN
          INTO lv_where
          FROM xx_ar_ebl_cons_trx_stg
         WHERE request_id = p_request_id
+          AND cons_inv_id = p_cons_id
+          AND cust_doc_id = p_cust_doc_id
           AND INV_TYPE not in ('SOFTHDR_TOTALS','BILLTO_TOTALS','GRAND_TOTAL')
           AND rownum =1
           AND ((sfhdr1 = lv_sft_hdr AND NVL(sfdata1,'X') like lv_sft_txt||'%') OR
@@ -6502,7 +6506,9 @@ BEGIN
                           END
 				  INTO lv_where
 				  FROM xx_ar_cbi_trx_all
-				 WHERE request_id = p_request_id and CUSTOMER_TRX_ID = p_customer_trx_id
+				 WHERE request_id = p_request_id 
+           AND CUSTOMER_TRX_ID = p_customer_trx_id
+           AND cons_inv_id = p_cons_id
 				   AND INV_TYPE not in ('SOFTHDR_TOTALS','BILLTO_TOTALS','GRAND_TOTAL');
 
 		   lv_sql := 'SELECT NVL(SUM(XX_AR_EBL_COMMON_UTIL_PKG.get_line_fee_amount(customer_trx_id) + XX_AR_EBL_COMMON_UTIL_PKG.get_hea_fee_amount(customer_trx_id)),0) FROM (SELECT DISTINCT customer_trx_id FROM xx_ar_cbi_trx_all where request_id = '||p_request_id||' AND cons_inv_id = '||p_cons_id||' AND INV_TYPE not in (''SOFTHDR_TOTALS'',''BILLTO_TOTALS'',''GRAND_TOTAL'')'||lv_where||')';
@@ -6535,6 +6541,7 @@ BEGIN
          INTO lv_where
          FROM xx_ar_cbi_trx_all
         WHERE request_id = p_request_id
+          AND cons_inv_id = p_cons_id
           AND INV_TYPE not in ('SOFTHDR_TOTALS','BILLTO_TOTALS','GRAND_TOTAL')
           AND rownum =1
           AND ((sfhdr1 = lv_sft_hdr AND NVL(sfdata1,'X') like lv_sft_txt||'%') OR
@@ -6609,6 +6616,7 @@ BEGIN
 				  FROM xx_ar_cbi_rprn_trx
 				 WHERE request_id = p_request_id
                    AND customer_trx_id = p_customer_trx_id
+                   AND cons_inv_id = p_cons_id
 				   AND INV_TYPE not in ('SOFTHDR_TOTALS','BILLTO_TOTALS','GRAND_TOTAL')
                    AND rownum =1;
 
@@ -6636,6 +6644,7 @@ BEGIN
          INTO lv_where
          FROM xx_ar_cbi_rprn_trx
         WHERE request_id = p_request_id
+          AND cons_inv_id = p_cons_id
           AND INV_TYPE not in ('SOFTHDR_TOTALS','BILLTO_TOTALS','GRAND_TOTAL')
           AND rownum =1
           AND ((sfhdr1 = lv_sft_hdr AND NVL(sfdata1,'X') like lv_sft_txt||'%') OR
