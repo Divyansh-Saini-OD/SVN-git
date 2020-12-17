@@ -11,7 +11,7 @@
 -- |=======  ===========  =============    =================================|
 -- |1.0      20-Oct-2020  Divyansh Saini    Initial Version                 |
 -- +========================================================================+
-CREATE OR REPLACE VIEW xxcrm.XX_CDH_CUST_ACCT_EXT_B#
+CREATE OR REPLACE EDITIONING VIEW xxcrm.XX_CDH_CUST_ACCT_EXT_B#
 AS
   SELECT EXTENSION_ID EXTENSION_ID,
     CUST_ACCOUNT_ID CUST_ACCOUNT_ID,
