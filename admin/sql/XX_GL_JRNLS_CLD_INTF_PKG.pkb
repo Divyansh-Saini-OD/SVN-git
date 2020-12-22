@@ -21,6 +21,7 @@ AS
   -- | 1.3         14/08/2020   M K Pramod Kumar     Code Changes to error Load Program if any load issues|
   -- | 1.4         09/11/2020   Mayur Palsokar       NAIT-161587 fix, added XX_SEND_NOTIFICATION and XX_PURGE_STAGING procedures|
   -- | 1.5         02/12/2020   Mayur Palsokar       Modified XX_SEND_NOTIFICATION procedure      |
+  -- | 1.6         22/12/2020   Mayur Palsokar       Modified for NAIT-166322                     |
   -- +============================================================================================+
   gc_package_name      CONSTANT all_objects.object_name%TYPE := 'XX_GL_JRNLS_CLD_INTF_PKG';
   gc_ret_success       CONSTANT VARCHAR2(20)                 := 'SUCCESS';
@@ -1735,10 +1736,10 @@ BEGIN
 
 			if gc_error_status_flag='Y' then
 				
-				/*update XX_GL_JRNLS_CLD_INTF_FILES set record_status='V'--Update all records to Valid.Update to E when required. 
+				update XX_GL_JRNLS_CLD_INTF_FILES set record_status='V'--Update all records to Valid.Update to E when required. 
 				where 1=1
-				and file_batch_id=gn_file_batch_id;		
-				*/              -- Commented for NAIT-161587
+				and file_batch_id=gn_file_batch_id;		-- Uncommented for NAIT-166322 
+				
 				update XX_GL_JRNLS_CLD_INTF_STG set record_status='V' , 
 				action='VALID'
 				where 1=1
