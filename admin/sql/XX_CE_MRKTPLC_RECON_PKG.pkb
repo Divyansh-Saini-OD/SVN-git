@@ -24,7 +24,7 @@ AS
   -- | 2.5         10/03/2018   M K Pramod Kumar     Modified to handle same Order ID scenario for Order and Refund transaction |
   -- | 2.6         11/20/2018   Sripal Reddy M       Modifed  for Defect NAIT-71529 Time zone issue |
   -- | 2.7         11/26/2018   M K Pramod Kumar     Modifed  for Defect NAIT-72064 Refund Transaction Mapping, Load into AJB998 table if ORDT information
-  -- |             is missing,change deposit date
+  -- |             is missing, change deposit date
   -- | 2.8         11/26/2018   M K Pramod Kumar     Modified to derive Bank Rec ID for EBAY MPL for partial transactinos.
   -- | 2.8.1       11/26/2018   M K Pramod Kumar     Modified to Include only Not null Order Id for RAKUTEN MPL
   -- | 2.9         04/01/2019   M K Pramod Kumar     Modified to fix Ebay Tax Issue for Multiple SKU scenario -NAIT-87324
@@ -32,7 +32,8 @@ AS
   -- | 2.9.2       02/24/2020   M K Pramod Kumar     Commented Bank Deposit Date Logic for Rakuten and Walmart MPL|
   -- | 2.9.3       02/24/2020   M K Pramod Kumar     Modified to fix NEWEGG Marketplace Transactions processing issue|
   -- | 3.0		   10/01/2020	Amit Kumar			 NAIT-139979 EBAY : Develop Settlement Process
-  -- | 4.0         11/05/2020	Ankit Jaiswal        NAIT-154432 Walmart:Missing TAX WITHHELD Field Changes	
+  -- | 4.0         11/05/2020	Ankit Jaiswal        NAIT-154432 Walmart:Missing TAX WITHHELD Field Changes	|
+  -- | 4.1         28/12/2020   Mayur Palsokar       Modified for NAIT-162646       |
   -- +============================================================================================+
   gc_package_name      CONSTANT all_objects.object_name%TYPE := 'XX_CE_MRKTPLC_RECON_PKG';
   gc_ret_success       CONSTANT VARCHAR2(20)                 := 'SUCCESS';
@@ -1925,10 +1926,11 @@ IS
       tdr.WALMART_ORDER,
       tdr.transaction_type,
       tdr.PARTNER_ITEM_ID,
-	  tdr.TAX_WITHHELD,
+	  tdr.TAX_WITHHELD,   --NAIT-154432
       SUM(NVL(SHIPPED_QTY,0)) SHIPPED_QTY,
       SUM(NVL(TOTAL_TENDER_CUSTOMER,0)) TOTAL_TENDER_CUSTOMER,
-      SUM(NVL(COMMISSION_FROM_SALE,0)) COMMISSION_FROM_SALE
+      SUM(NVL(COMMISSION_FROM_SALE,0)) COMMISSION_FROM_SALE,
+	 SUM(NVL(tdr.TOTAL_NET_TAX_COLLECTED,0)) TOTAL_NET_TAX_COLLECTED   --NAIT-154432																			  
     FROM XX_CE_WALMART_PRE_STG_V tdr
     WHERE 1                 =1
     AND tdr.walmart_po      =p_walmart_po
@@ -1937,8 +1939,9 @@ IS
     GROUP BY tdr.WALMART_PO,
       tdr.WALMART_ORDER,
       tdr.transaction_type,
-      tdr.PARTNER_ITEM_ID,
-	  tdr.TAX_WITHHELD;
+	  tdr.TAX_WITHHELD,  --NAIT-154432		  
+      tdr.PARTNER_ITEM_ID;
+	  
   lv_deposit_date DATE;
 BEGIN
   lt_parameters('p_process_name') := p_process_name;
@@ -2048,18 +2051,16 @@ BEGIN
                 IF j              =2 THEN
                   lc_action      := 'Generate Walmart Record for Principal Price Type';
                   lc_price_type  :='Principal';
-                  l_price_amount :=rec_dtl.TOTAL_TENDER_CUSTOMER;
+              --  l_price_amount :=rec_dtl.TOTAL_TENDER_CUSTOMER;
+				  l_price_amount :=rec_dtl.TOTAL_TENDER_CUSTOMER - rec_dtl.TOTAL_NET_TAX_COLLECTED; -- NAIT-154432 Walmart:Missing TAX WITHHELD Field Changes	
+				 
                 END IF;
-				--NAIT-154432 Walmart:Missing TAX WITHHELD Field Changes
-                IF  rec_dtl.TAX_WITHHELD = 'Y' THEN
-				BEGIN
                 IF j                          =3 THEN
                   lc_action                  := 'Generate Walmart Record for Sales Tax Service Price Type';
                   lc_item_related_fee_type   :='SalesTaxServiceFee';
                   lc_item_related_fee_amount :=NVL(rec_dtl.COMMISSION_FROM_SALE,0) ;
                 END IF;
-				END;
-				END IF;
+
                 lc_ce_mpl_settlement_dtl.quantity_purchased      := lc_quantity_purchased;
                 lc_ce_mpl_settlement_dtl.unit_price              := lc_unit_price;
                 lc_ce_mpl_settlement_dtl.price_type              := lc_price_type;
@@ -2524,6 +2525,11 @@ IS
   lc_err_msg xx_ce_ebay_trx_dtl_stg.err_msg%type:=NULL;                                                                                                                                                 
   lc_transaction_type XX_CE_MPL_SETTLEMENT_HDR.transaction_type%type;   
 lv_deposit_date DATE;  
+
+    L_TRANSACTIONTYPE_1 VARCHAR2(50) := 'N'; -- Added for NAIT-162646
+    L_TRANSACTIONTYPE_2 VARCHAR2(50) := 'N'; -- Added for NAIT-162646
+	L_TRANSACTIONTYPE_3 VARCHAR2(50) := 'N'; -- Added for NAIT-162646
+	L_TRANSACTIONTYPE_4 VARCHAR2(50) := 'N'; -- Added for NAIT-162646
  
  CURSOR cur_ebay_stmt_files                                                                                                                                                                   
   IS                                                                                                                                                                                                    
@@ -2594,6 +2600,33 @@ BEGIN
   lc_action := 'Deriving Translation Details for New Ebay MPL';                 
  dbms_output.put_line ('Deriving Translation Details for New Ebay MPL');
  
+ /*Start: Added for NAIT-162646*/
+ BEGIN 
+ SELECT XFTV.TARGET_VALUE8,
+        XFTV.TARGET_VALUE9,
+	    XFTV.TARGET_VALUE10,
+	    XFTV.TARGET_VALUE11
+  INTO L_TRANSACTIONTYPE_1,
+    L_TRANSACTIONTYPE_2,
+	L_TRANSACTIONTYPE_3,
+	L_TRANSACTIONTYPE_4
+  FROM XX_FIN_TRANSLATEDEFINITION XFTD,
+    XX_FIN_TRANSLATEVALUES XFTV
+  WHERE 1               =1
+  AND XFTD.TRANSLATE_ID = XFTV.TRANSLATE_ID
+  AND XFTD.ENABLED_FLAG = 'Y'
+  AND SYSDATE BETWEEN XFTV.START_DATE_ACTIVE AND NVL(XFTV.END_DATE_ACTIVE,SYSDATE)
+  AND XFTD.TRANSLATION_NAME = 'OD_SETTLEMENT_PROCESSES'
+  AND XFTV.SOURCE_VALUE1    = 'NEW_EBAY_MPL';
+  EXCEPTION
+  WHEN NO_DATA_FOUND THEN 
+    L_TRANSACTIONTYPE_1 := 'N';
+    L_TRANSACTIONTYPE_2 := 'N';
+	L_TRANSACTIONTYPE_3 := 'N';
+	L_TRANSACTIONTYPE_4 := 'N';
+  END;
+ /*End: Added for NAIT-162646*/
+ 
   FOR rec_file IN cur_ebay_stmt_files                                                                                                                                                          
   LOOP                                                                                                                                                                                                  
     logit(p_message => 'Processing New Ebay MPL Transaction File-' ||rec_file.filename);                                                                                                                 
@@ -2626,7 +2659,7 @@ BEGIN
         lc_err_msg                := NULL;                                                                                                                                                               
         lc_transaction_type       := NULL;                                                                                                                                                               
         IF rec_hdr.transactiontype='SALE' THEN                                                                                                                                                         
-          lc_transaction_type     :='Order';                                                                                                                                                            
+        lc_transaction_type     :='Order';                                                                                                                                                            
 
         ELSE                                                                                                                                                                                            
           lc_transaction_type:='Adjustment';                                                                                                                                                            
@@ -2682,8 +2715,10 @@ BEGIN
               lc_ce_mpl_settlement_dtl.attribute1                   := rec_dtl.ORDERID;                                                                                                              
               
 			  
-			IF rec_dtl.transactiontype in( 'SALE', 'REFUND') then
-              FOR j IN 1..5
+		--	IF rec_dtl.transactiontype in( 'SALE', 'REFUND') then -- Commented for NAIT-162646
+		--  FOR j IN 1..5     -- Commented for NAIT-162646
+			IF rec_dtl.transactiontype in ( L_TRANSACTIONTYPE_1, L_TRANSACTIONTYPE_2, L_TRANSACTIONTYPE_3, L_TRANSACTIONTYPE_4 ) then -- Added for NAIT-162646
+			  FOR j IN 1..4   -- Added for NAIT-162646
               LOOP
                 lc_action                  := 'Generate  New Ebay Record into Multiple Transactions';
                 lc_quantity_purchased      := NULL;
@@ -2705,19 +2740,19 @@ BEGIN
                   l_price_amount := NVL(rec_dtl.PRINCIPAL_LINE_AMOUNT,0);
                 END IF;
 
-				IF j        				  =3  THEN
+			/*	IF j        				  = 3  THEN  
                   lc_action      := 'Generate Ebay Record for Sales Tax Service Price Type';
                   lc_price_type  := 'Tax';
-                  l_price_amount :=NVL(rec_dtl.EBAYREMIT_TAX,0) ;
-			    END IF;
+                  l_price_amount :=NVL(rec_dtl.EBAYREMIT_TAX,0);  -- Commented for NAIT-162646
+			    END IF; */
 				
-				IF j                          = 4 THEN
+				IF j                          = 3 THEN  
                   lc_action                   := 'Generate New Ebay Record for Shipping Price Type';
                   lc_price_type               := 'Shipping';
 				  l_price_amount := NVL(rec_dtl.LINEITEMS_DELIVERYCOST_VALUE,0);
                 END IF;
 				
-				IF j                          = 5 THEN
+				IF j                          = 4 THEN
                   lc_action                   := 'Generate New Ebay Record for Item Related Fees';
                   lc_item_related_fee_type    := 'Commission';
 				  lc_item_related_fee_amount := NVL(rec_dtl.MARKETPLACE_FEES,0);
