@@ -6333,6 +6333,7 @@ PROCEDURE logitt(p_message  IN  CLOB,
     LOOP
 
       px_subscription_array(indx).invoice_interfaced_flag   := lc_invoice_interfaced_flag;
+      px_subscription_array(indx).auth_completed_flag       := 'N';--28122020  invoice is null during interfacing error
       px_subscription_array(indx).invoice_number            := NULL;
       px_subscription_array(indx).invoice_interfacing_error := lc_invoice_interfacing_error;
 
@@ -6358,6 +6359,7 @@ PROCEDURE logitt(p_message  IN  CLOB,
     LOOP
 
       px_subscription_array(indx).invoice_interfaced_flag   := 'E';
+      px_subscription_array(indx).auth_completed_flag       := 'N';--28122020  invoice is null during interfacing error
       px_subscription_array(indx).invoice_number            := NULL;
       px_subscription_array(indx).invoice_interfacing_error := SUBSTR('Action: ' || lc_action || ' SQLCODE: ' || SQLCODE || ' SQLERRM: ' || SQLERRM, 1, gc_max_sub_err_size);
 
