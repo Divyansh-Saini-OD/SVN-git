@@ -12,7 +12,8 @@
 -- |===============                                                                             |
 -- |Version    Date          Author                Remarks                                      |
 -- |=======    ==========    =================    ==============================================+
--- |DRAFT 1A   27-JUN-2019   Priyam Parmar          Initial Version                               |
+-- |1.0        27-JUN-2019   Priyam Parmar          Initial Version                             |
+-- |1.1        22-DEC-2020   Komal Mishra           w.r.t. JIRA NAIT-166023                     |
 -- |                                                                                            |
 -- +============================================================================================+
 
@@ -20,6 +21,7 @@ OPTIONS(SKIP=1)
 LOAD DATA
 APPEND
 INTO TABLE XX_AP_CLD_SUPP_SITES_STG
+WHEN SUPPLIER_NUMBER <> ''
 FIELDS TERMINATED BY '|'
 OPTIONALLY ENCLOSED BY '"'
 TRAILING NULLCOLS
