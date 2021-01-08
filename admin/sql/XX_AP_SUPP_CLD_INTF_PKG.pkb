@@ -1,12 +1,4 @@
-SET VERIFY OFF;
-SET SHOW OFF;
-SET ECHO OFF;
-SET TAB OFF;
-SET FEEDBACK OFF;
-WHENEVER SQLERROR CONTINUE;
-WHENEVER OSERROR EXIT FAILURE ROLLBACK;
-
-CREATE OR REPLACE PACKAGE BODY xx_ap_supp_cld_intf_pkg
+create or replace PACKAGE BODY xx_ap_supp_cld_intf_pkg
 -- +===========================================================================================+
 -- |                  Office Depot - Project Simplify                                          |
 -- +===========================================================================================+
@@ -35,11 +27,11 @@ CREATE OR REPLACE PACKAGE BODY xx_ap_supp_cld_intf_pkg
 -- |                                           for Trade Suppliers. Removed the Phone Area code|
 -- |                                           and Fax code validations in Supplier Sites and  |
 -- |                                           Contacts                                        |
--- |  2.1    07-AUG-2019     Havish Kasina     Receiving Changes added                         | 
+-- |  2.1    07-AUG-2019     Havish Kasina     Receiving Changes added                         |
 -- |  2.2    09-AUG-2019     Havish Kasina     Added columns address_line3 and address line4 in|
 -- |                                           load_supplier_sites and update_supplier_sites   |
 -- |                                           Added rfq_only_site_flag in the load supp sites |
--- |                                           Added settle days in the Custom Tolerance       | 
+-- |                                           Added settle days in the Custom Tolerance       |
 -- |                                           Added a new condition to exclude RTV sites to   |
 -- |                                           create custom tolerance                         |
 -- |  2.3    09-AUG-2019     Havish Kasina     Added supplier_notif_method                     |
@@ -55,7 +47,7 @@ CREATE OR REPLACE PACKAGE BODY xx_ap_supp_cld_intf_pkg
 -- |                                           c. Added end_date_active in the insert script   |
 -- |                                              for table ap_suppliers_int                   |
 -- |                                           d. Added inactive_date in the insert script for |
--- |                                              table ap_supplier_sites_int                  | 
+-- |                                              table ap_supplier_sites_int                  |
 -- |  3.0    19-SEP-2019     Havish Kasina     a. Added hold_reason field in ap_suppliers_int  |
 -- |                                              table                                        |
 -- |                                           b. Added hz_party_site_v2pub.update_party_site  |
@@ -69,14 +61,14 @@ CREATE OR REPLACE PACKAGE BODY xx_ap_supp_cld_intf_pkg
 -- |                                           table to populate the email address in the site |
 -- |                                           level communication                             |
 -- |  3.4    09-OCT-2019     Havish Kasina     If the site exists then:                        |
--- |                                            a. If the site status is Active, Do not update | 
+-- |                                            a. If the site status is Active, Do not update |
 -- |                                               the Legacy supplier number in EBS           |
 -- |                                            b. If the site status is Inactive, then update |
--- |                                               the Legacy supplier number in EBS to what is| 
+-- |                                               the Legacy supplier number in EBS to what is|
 -- |                                               coming from SCM (which will be blank)       |
 -- |                                           If the site does not exist then:                |
 -- |                                            a. Create the site in EBS without the Legacy   |
--- |                                               number ( This is because, in EBS today, new | 
+-- |                                               number ( This is because, in EBS today, new |
 -- |                                               sites do not have Legacy Suppler number)    |
 -- | 3.5     23-OCT-2019    Paddy Sanjeevi     Added xx_tolerance_trait procedure              |
 -- | 3.6     26-OCT-2019    Paddy Sanjeevi     Added to update payment method at site level    |
@@ -86,6 +78,7 @@ CREATE OR REPLACE PACKAGE BODY xx_ap_supp_cld_intf_pkg
 -- | 4.0     03-Mar-2020    Shanti Sethuraj    Modified for jira NAIT-118027                   |
 -- | 4.1     07-Sep-2020    Shanti Sethuraj    Modified for jira NAIT-118338                   |
 -- | 4.2     21-SEP-2020    Shanti Sethuraj    Added code for jira NAIT-126909                 |
+-- | 4.3     05-Jan-2021    Komal Mishra       Modified for jira NAIT-154376                   |
 -- |===========================================================================================+
 AS
   /*********************************************************************
@@ -109,7 +102,7 @@ BEGIN
     END IF;
   END IF;
 EXCEPTION
-WHEN OTHERS 
+WHEN OTHERS
 THEN
   NULL;
 END print_debug_msg;
@@ -369,24 +362,24 @@ IS
   v_ccid         NUMBER;
 BEGIN
   BEGIN
-    IF p_segments IS NOT NULL 
+    IF p_segments IS NOT NULL
 	THEN
       v_target    :=NULL;
-		
+
 	  SELECT LTRIM(RTRIM(tv.target_value1))
         INTO v_target
         FROM xx_fin_translatevalues tv,
              xx_fin_translatedefinition td
        WHERE tv.translate_id  = td.translate_id
-         AND translation_name = 'XX_GL_CLD2EBS_MAPPING'  
+         AND translation_name = 'XX_GL_CLD2EBS_MAPPING'
 	     AND SYSDATE BETWEEN NVL(tv.start_date_active,SYSDATE) AND NVL(tv.end_date_active,SYSDATE + 1)
          AND SYSDATE BETWEEN NVL(td.start_date_active,SYSDATE) AND NVL(td.end_date_active,SYSDATE + 1)
 	     AND tv.source_value1 = p_segments
          AND tv.enabled_flag = 'Y'
          AND td.enabled_flag = 'Y';
-	  
+
       print_debug_msg(p_message=> 'New EBs Code Combination ID is '||v_target , p_force=>true);
-	  
+
       BEGIN
         SELECT code_combination_id
           INTO v_ccid
@@ -394,7 +387,7 @@ BEGIN
          WHERE concatenated_segments=v_target
 		   AND enabled_flag = 'Y';
       EXCEPTION
-      WHEN OTHERS 
+      WHEN OTHERS
 	  THEN
         v_ccid :=NULL;
         print_debug_msg(p_message=> 'CCID does not exist in EBS for  '||v_target , p_force=>true);
@@ -423,7 +416,7 @@ BEGIN
     FROM xx_fin_translatevalues tv,
          xx_fin_translatedefinition td
    WHERE tv.translate_id  = td.translate_id
-     AND translation_name = 'XX_AP_CLOUD_PAYMENT_TERMS'  
+     AND translation_name = 'XX_AP_CLOUD_PAYMENT_TERMS'
 	 AND SYSDATE BETWEEN NVL(tv.start_date_active,SYSDATE) AND NVL(tv.end_date_active,SYSDATE + 1)
      AND SYSDATE BETWEEN NVL(td.start_date_active,SYSDATE) AND NVL(td.end_date_active,SYSDATE + 1)
 	 AND tv.source_value1 = p_cloud_terms
@@ -446,44 +439,44 @@ END;
 --|                                                                            |
 --+============================================================================+
 PROCEDURE get_receiving_details(p_supplier_num                    IN  VARCHAR2,
-                                o_inspection_required_flag        OUT VARCHAR2,	    
-								o_receipt_required_flag           OUT VARCHAR2,	        
-								o_qty_rcv_tolerance               OUT NUMBER,	            
-								o_qty_rcv_exception_code          OUT VARCHAR2,    
-								o_enforce_ship_to_loc_code        OUT VARCHAR2, 
-								o_days_early_receipt_allowed      OUT NUMBER, 
-								o_days_late_receipt_allowed       OUT NUMBER,	    
-								o_receipt_days_exception_code     OUT VARCHAR2,	
-								o_receiving_routing_id            OUT NUMBER,        
+                                o_inspection_required_flag        OUT VARCHAR2,
+								o_receipt_required_flag           OUT VARCHAR2,
+								o_qty_rcv_tolerance               OUT NUMBER,
+								o_qty_rcv_exception_code          OUT VARCHAR2,
+								o_enforce_ship_to_loc_code        OUT VARCHAR2,
+								o_days_early_receipt_allowed      OUT NUMBER,
+								o_days_late_receipt_allowed       OUT NUMBER,
+								o_receipt_days_exception_code     OUT VARCHAR2,
+								o_receiving_routing_id            OUT NUMBER,
 								o_allow_substitute_rcpts_flag     OUT VARCHAR2,
 								o_allow_unordered_rcpts_flag      OUT VARCHAR2
                                )
-IS 
+IS
 
 BEGIN
-    
-  SELECT inspection_required_flag,	     
-         receipt_required_flag,	         
-         TO_NUMBER(qty_rcv_tolerance),	             
-         qty_rcv_exception_code,     
-         enforce_ship_to_location_code, 
-         TO_NUMBER(days_early_receipt_allowed), 
-         TO_NUMBER(days_late_receipt_allowed),	     
-         receipt_days_exception_code,	 
-         TO_NUMBER(receiving_routing_id),	         
+
+  SELECT inspection_required_flag,
+         receipt_required_flag,
+         TO_NUMBER(qty_rcv_tolerance),
+         qty_rcv_exception_code,
+         enforce_ship_to_location_code,
+         TO_NUMBER(days_early_receipt_allowed),
+         TO_NUMBER(days_late_receipt_allowed),
+         receipt_days_exception_code,
+         TO_NUMBER(receiving_routing_id),
          allow_substitute_receipts_flag,
          allow_unordered_receipts_flag
-    INTO o_inspection_required_flag,      		 
-         o_receipt_required_flag,          
-         o_qty_rcv_tolerance,              
-         o_qty_rcv_exception_code,         
-         o_enforce_ship_to_loc_code, 
-         o_days_early_receipt_allowed,     
-         o_days_late_receipt_allowed,      
-         o_receipt_days_exception_code,   
-         o_receiving_routing_id,           
+    INTO o_inspection_required_flag,
+         o_receipt_required_flag,
+         o_qty_rcv_tolerance,
+         o_qty_rcv_exception_code,
+         o_enforce_ship_to_loc_code,
+         o_days_early_receipt_allowed,
+         o_days_late_receipt_allowed,
+         o_receipt_days_exception_code,
+         o_receiving_routing_id,
          o_allow_substitute_rcpts_flag,
-         o_allow_unordered_rcpts_flag 
+         o_allow_unordered_rcpts_flag
     FROM xx_ap_cld_supp_sites_stg
    WHERE request_id        = gn_request_id
      AND purchasing_site_flag = 'Y'
@@ -494,13 +487,13 @@ WHEN OTHERS
 THEN
    o_inspection_required_flag       := NULL;
    o_receipt_required_flag          := NULL;
-   o_qty_rcv_tolerance              := NULL;   
+   o_qty_rcv_tolerance              := NULL;
    o_qty_rcv_exception_code         := NULL;
    o_enforce_ship_to_loc_code       := NULL;
-   o_days_early_receipt_allowed     := NULL;   
-   o_days_late_receipt_allowed      := NULL;  
+   o_days_early_receipt_allowed     := NULL;
+   o_days_late_receipt_allowed      := NULL;
    o_receipt_days_exception_code    := NULL;
-   o_receiving_routing_id           := NULL; 
+   o_receiving_routing_id           := NULL;
    o_allow_substitute_rcpts_flag    := NULL;
    o_allow_unordered_rcpts_flag     := NULL;
 END get_receiving_details;
@@ -546,8 +539,8 @@ FUNCTION insert_bus_class(
 IS
   v_class_id NUMBER;
 BEGIN
-  SELECT POS_BUS_CLASS_ATTR_S.nextval 
-    INTO v_class_id 
+  SELECT POS_BUS_CLASS_ATTR_S.nextval
+    INTO v_class_id
 	FROM DUAL;
   INSERT
   INTO pos_bus_class_attr
@@ -615,7 +608,7 @@ FUNCTION xx_custom_tolerance
 IS
 BEGIN
   IF p_insert_flag = 'Y'
-  THEN 
+  THEN
      INSERT INTO xx_ap_custom_tolerances
              (
               supplier_id,
@@ -663,7 +656,7 @@ BEGIN
 	   WHERE supplier_id = p_vendor_id
 	     AND supplier_site_id = p_vendor_site_id
 		 AND org_id = p_org_id;
-	
+
   END IF;
   RETURN('Y');
 EXCEPTION
@@ -820,7 +813,7 @@ BEGIN
         END;
       END IF;
       ---end of Shanti code for jira NAIT-126909
-	  
+
       lc_sup_trait := SUBSTR(lc_sup_trait,ln_place + 1); -- chop list
     END IF;                                              --IF ln_sup_trait_id > 0 THEN
   END LOOP;
@@ -944,21 +937,21 @@ IS
            dff.vendor_site_code,
            dff.sup_trait,
 	       dff.favourable_price_pct ,
-	       dff.max_price_amt ,    
+	       dff.max_price_amt ,
 	       dff.min_chargeback_amt ,
-	       dff.max_freight_amt  ,   
-	       dff.dist_var_neg_amt ,   
-	       dff.dist_var_pos_amt ,   	  
+	       dff.max_freight_amt  ,
+	       dff.dist_var_neg_amt ,
+	       dff.dist_var_pos_amt ,
            site.vendor_id ,
            site.vendor_site_id,
            site.org_id,
-	       site.attribute8   		   
+	       site.attribute8
       FROM xx_ap_cld_site_dff_stg dff,
            xx_ap_cld_supp_sites_stg site
      WHERE 1                     =1
        AND dff.request_id          = gn_request_id
        AND site.vendor_site_code=dff.vendor_site_code
-	   AND site.supplier_number=dff.supplier_number     
+	   AND site.supplier_number=dff.supplier_number
        AND site.site_process_flag IN (7,8)
        AND site.request_id         = dff.request_id
        AND site.vendor_id         IS NOT NULL
@@ -992,7 +985,7 @@ BEGIN
        IF cur.sup_trait IS NOT NULL THEN
           v_trait_flag   := xx_custom_sup_traits(cur.sup_trait,NVL(TO_NUMBER(LTRIM(lc_vendor_site_code_alt,'0')),cur.vendor_site_id ) );
        END IF;
-	   
+
 	   	   	   --shanti code starts for jira NAIT-126909
 	   begin
     UPDATE xx_ap_sup_traits_matrix
@@ -1019,14 +1012,14 @@ BEGIN
     END;
     COMMIT;
 	--end of shanti code for jira NAIT-126909
-	   
+
 	END IF;
 
     --===============================================================
     -- Processing Custom Tolerance    --
     --===============================================================
 	IF (cur.attribute8 LIKE 'TR%' AND cur.attribute8 NOT LIKE '%RTV%' ) THEN   -- Added as per Version 2.2
-	  
+
         SELECT COUNT(1)
           INTO ln_tol_count
           FROM xx_ap_custom_tolerances
@@ -1036,36 +1029,36 @@ BEGIN
         print_debug_msg(p_message => 'Custom Tolerance for the vendor : '||cur.supplier_number||', Site : '||cur.vendor_site_code, p_force => false);
 
         IF ln_tol_count = 0 THEN
-		
-            v_tol_flag   := xx_custom_tolerance(cur.vendor_id, 
+
+            v_tol_flag   := xx_custom_tolerance(cur.vendor_id,
 			                                    cur.vendor_site_id,
 												cur.org_id,
 												'Y',
 												TO_NUMBER(cur.favourable_price_pct) ,
-												TO_NUMBER(cur.max_price_amt) ,      
+												TO_NUMBER(cur.max_price_amt) ,
 												TO_NUMBER(cur.min_chargeback_amt) ,
-												TO_NUMBER(cur.max_freight_amt) ,   
-												TO_NUMBER(cur.dist_var_neg_amt) ,   
-												TO_NUMBER(cur.dist_var_pos_amt) 												
+												TO_NUMBER(cur.max_freight_amt) ,
+												TO_NUMBER(cur.dist_var_neg_amt) ,
+												TO_NUMBER(cur.dist_var_pos_amt)
 												);
 		ELSE
-		    v_tol_flag   := xx_custom_tolerance(cur.vendor_id, 
+		    v_tol_flag   := xx_custom_tolerance(cur.vendor_id,
 			                                    cur.vendor_site_id,
 												cur.org_id,
 												'N',
 												TO_NUMBER(cur.favourable_price_pct) ,
-												TO_NUMBER(cur.max_price_amt) ,      
+												TO_NUMBER(cur.max_price_amt) ,
 												TO_NUMBER(cur.min_chargeback_amt) ,
-												TO_NUMBER(cur.max_freight_amt) ,   
-												TO_NUMBER(cur.dist_var_neg_amt) ,   
-												TO_NUMBER(cur.dist_var_pos_amt)    												
+												TO_NUMBER(cur.max_freight_amt) ,
+												TO_NUMBER(cur.dist_var_neg_amt) ,
+												TO_NUMBER(cur.dist_var_pos_amt)
 												);
         END IF;
         COMMIT;
 	END IF;
   END LOOP;
   COMMIT;
-  print_debug_msg(p_message => 'Begin Custom Tolerance Processing ', p_force => true);	
+  print_debug_msg(p_message => 'Begin Custom Tolerance Processing ', p_force => true);
 EXCEPTION
   WHEN OTHERS THEN
     print_debug_msg(p_message => 'Error in processing xx_tolerance_trait '||SQLERRM, p_force => true);
@@ -1121,26 +1114,27 @@ IS
            dff.rtv_related_site ,
            dff.dff_process_flag ,
 	       dff.favourable_price_pct ,
-	       dff.max_price_amt ,    
+	       dff.max_price_amt ,
 	       dff.min_chargeback_amt ,
-	       dff.max_freight_amt  ,   
-	       dff.dist_var_neg_amt ,   
-	       dff.dist_var_pos_amt ,   	  
+	       dff.max_freight_amt  ,
+	       dff.dist_var_neg_amt ,
+	       dff.dist_var_pos_amt ,
            site.create_flag ,
            site.vendor_id ,
            site.vendor_site_id,
            site.org_id,
-	       site.attribute8   
+	       site.attribute8
       FROM xx_ap_cld_site_dff_stg dff,
            xx_ap_cld_supp_sites_stg site
      WHERE 1                     =1
        AND dff.request_id          = gn_request_id
        AND site.vendor_site_code=dff.vendor_site_code
-	   AND site.supplier_number=dff.supplier_number     
+	   AND site.supplier_number=dff.supplier_number
        AND site.site_process_flag IN (7,8)
        AND site.request_id         = dff.request_id
        AND site.vendor_id         IS NOT NULL
        AND site.vendor_site_id    IS NOT NULL
+	   AND dff_process_flag <> 3 --NAIT-154376--
        AND EXISTS (SELECT 1
 				     FROM ap_supplier_sites_all
 				    WHERE vendor_id      = site.vendor_id
@@ -1169,8 +1163,34 @@ BEGIN
 					AND vendor_site_code=dff.vendor_site_code
 					AND site_process_flag<>7
 			    );
-  COMMIT;				
+  COMMIT;
 
+  --START NAIT-154376--
+  BEGIN
+  print_debug_msg(p_message => ' Updating: Custom DFF not processed due to Null Delivery Policy', p_force => true);
+  
+    UPDATE xx_ap_cld_site_dff_stg dff
+    SET dff_process_flag=3,
+      process_flag      ='Y',
+      error_flag        ='Y',
+      error_msg         ='Custom DFF not processed due to Null Delivery Policy'
+    WHERE request_id    =gn_request_id
+    AND EXISTS
+      (SELECT 'x'
+      FROM xx_ap_cld_supp_sites_stg
+      WHERE request_id    =dff.request_id
+      AND supplier_number =dff.supplier_number
+      AND vendor_site_code=dff.vendor_site_code
+      AND dff.vendor_site_code LIKE '%RTV%'
+      AND dff.delivery_policy IS NULL
+      ); 
+  
+    COMMIT;
+  EXCEPTION
+  WHEN OTHERS THEN
+    print_debug_msg(p_message => ' Error while updating xx_ap_cld_site_dff_stg for Null Delivery Policy', p_force => true);
+  END;
+  ---END NAIT-154376----
   FOR cur IN C1
   LOOP
     print_debug_msg(p_message => 'Processing Custom DFF for the site : '||cur.vendor_site_code,p_force =>false);
@@ -1204,12 +1224,12 @@ BEGIN
 
     print_debug_msg(p_message => 'Vendor Site KFF Record Count : '||ln_kff_count , p_force => true);
 
-    IF ln_kff_count = 0 
+    IF ln_kff_count = 0
 	THEN
       print_debug_msg(p_message => ' Inserting group 1 KFF ', p_force => true);
       BEGIN
-        SELECT xx_po_vendor_sites_kff_s.NEXTVAL 
-		 INTO v_kff_id 
+        SELECT xx_po_vendor_sites_kff_s.NEXTVAL
+		 INTO v_kff_id
 		 FROM DUAL;
         INSERT
         INTO xx_po_vendor_sites_kff
@@ -1262,17 +1282,17 @@ BEGIN
            SET attribute10     =v_kff_id
          WHERE vendor_site_id=cur.vendor_site_id;
       EXCEPTION
-      WHEN OTHERS 
+      WHEN OTHERS
 	  THEN
         v_error_flag :='Y';
         lc_error_msg := lc_error_msg||SUBSTR(SQLERRM,1,50)||', Error in processing RMS PI PACK Custom DFF';
       END;
       print_debug_msg(p_message => ' Inserting group 2 KFF ', p_force => true);
       BEGIN
-        SELECT xx_po_vendor_sites_kff_s.NEXTVAL 
-		  INTO v_kff_id 
+        SELECT xx_po_vendor_sites_kff_s.NEXTVAL
+		  INTO v_kff_id
 		  FROM DUAL;
-		  
+
         INSERT
         INTO xx_po_vendor_sites_kff
           (
@@ -1304,15 +1324,15 @@ BEGIN
            SET attribute11     =v_kff_id
          WHERE vendor_site_id=cur.vendor_site_id;
       EXCEPTION
-      WHEN OTHERS 
+      WHEN OTHERS
 	  THEN
         v_error_flag :='Y';
         lc_error_msg := lc_error_msg||SUBSTR(SQLERRM,1,50)||', Error in processing RMS Special Terms Custom DFF';
       END;
       print_debug_msg(p_message => ' Inserting group 3 KFF ', p_force => true);
       BEGIN
-        SELECT xx_po_vendor_sites_kff_s.NEXTVAL 
-		  INTO v_kff_id 
+        SELECT xx_po_vendor_sites_kff_s.NEXTVAL
+		  INTO v_kff_id
 		  FROM DUAL;
         INSERT
         INTO xx_po_vendor_sites_kff
@@ -1375,7 +1395,7 @@ BEGIN
            SET attribute12     =v_kff_id
          WHERE vendor_site_id=cur.vendor_site_id;
       EXCEPTION
-      WHEN OTHERS 
+      WHEN OTHERS
 	  THEN
         v_error_flag :='Y';
         lc_error_msg := lc_error_msg||SUBSTR(SQLERRM,1,50)||', Error in processing RMS RTV Custom DFF';
@@ -1645,7 +1665,7 @@ END xx_supp_dff;
 PROCEDURE update_supplier(
 						   x_ret_code OUT NUMBER ,
 						   x_return_status OUT VARCHAR2 ,
-						   x_err_buf OUT VARCHAR2 
+						   x_err_buf OUT VARCHAR2
 						 )
 IS
 CURSOR c_supplier
@@ -1692,22 +1712,22 @@ BEGIN
 
   FOR c_sup IN c_supplier
   LOOP
-    lc_inspection_required_flag	     := NULL;    
-    lc_receipt_required_flag	     := NULL;     
-    ln_qty_rcv_tolerance	         := NULL;         
-    lc_qty_rcv_exception_code	     := NULL;     
-    lc_enforce_ship_to_loc_code      := NULL;	
-    ln_days_early_receipt_allowed	 := NULL;   
-    ln_days_late_receipt_allowed	 := NULL;  
+    lc_inspection_required_flag	     := NULL;
+    lc_receipt_required_flag	     := NULL;
+    ln_qty_rcv_tolerance	         := NULL;
+    lc_qty_rcv_exception_code	     := NULL;
+    lc_enforce_ship_to_loc_code      := NULL;
+    ln_days_early_receipt_allowed	 := NULL;
+    ln_days_late_receipt_allowed	 := NULL;
     lc_receipt_days_exception_code	 := NULL;
-    ln_receiving_routing_id	         := NULL; 
+    ln_receiving_routing_id	         := NULL;
     lc_allow_substitute_rcpts_flag	 := NULL;
     lc_allow_unordered_rcpts_flag	 := NULL;
-	
+
 	-- To get the Terms Details -- Added as per Version 2.6
 	get_terms_id(p_terms_name  => lc_terms_name,
                  o_terms_id    => ln_terms_id);
-					   
+
     BEGIN
       SELECT *
         INTO lr_existing_vendor_rec
@@ -1752,7 +1772,7 @@ BEGIN
 		  lr_vendor_rec.attribute15                  :=NVL(c_sup.attribute15, FND_API.G_MISS_CHAR);
 		  lr_vendor_rec.terms_id                     :=ln_terms_id; -- Added as per Version 2.6
 		  lr_vendor_rec.JGZZ_FISCAL_CODE             := c_sup.num_1099;  -- added by Shanti for Taxpayer_id update NAIT-118338
-		  
+
 		  /* Added as per Version 2.1 by Havish Kasina */
 		  --==============================================================================
 		  -- To get the Receiving details from the Supplier Sites Staging table
@@ -1760,88 +1780,88 @@ BEGIN
 		  print_debug_msg(p_message=> l_program_step||': Fetching the Receiving Information for the Supplier ' ||c_sup.segment1 , p_force=>true);
 
 		  get_receiving_details(p_supplier_num                 => c_sup.segment1 ,
-                                o_inspection_required_flag     => lc_inspection_required_flag	   , 
-								o_receipt_required_flag        => lc_receipt_required_flag	       ,     
-								o_qty_rcv_tolerance            => ln_qty_rcv_tolerance	           ,         
-								o_qty_rcv_exception_code       => lc_qty_rcv_exception_code	       ,     
-								o_enforce_ship_to_loc_code     => lc_enforce_ship_to_loc_code      ,	 
+                                o_inspection_required_flag     => lc_inspection_required_flag	   ,
+								o_receipt_required_flag        => lc_receipt_required_flag	       ,
+								o_qty_rcv_tolerance            => ln_qty_rcv_tolerance	           ,
+								o_qty_rcv_exception_code       => lc_qty_rcv_exception_code	       ,
+								o_enforce_ship_to_loc_code     => lc_enforce_ship_to_loc_code      ,
 								o_days_early_receipt_allowed   => ln_days_early_receipt_allowed	   ,
-								o_days_late_receipt_allowed    => ln_days_late_receipt_allowed	   , 
+								o_days_late_receipt_allowed    => ln_days_late_receipt_allowed	   ,
 								o_receipt_days_exception_code  => lc_receipt_days_exception_code   ,
-								o_receiving_routing_id         => ln_receiving_routing_id          ,	     
+								o_receiving_routing_id         => ln_receiving_routing_id          ,
 								o_allow_substitute_rcpts_flag  => lc_allow_substitute_rcpts_flag   ,
-								o_allow_unordered_rcpts_flag   => lc_allow_unordered_rcpts_flag	 
+								o_allow_unordered_rcpts_flag   => lc_allow_unordered_rcpts_flag
                                );
-							   
+
 		  UPDATE xx_ap_cld_suppliers_stg
-             SET inspection_required_flag       =  lc_inspection_required_flag,	     
-                 receipt_required_flag          =  lc_receipt_required_flag,	         
-                 qty_rcv_tolerance              =  ln_qty_rcv_tolerance,	             
-                 qty_rcv_exception_code         =  lc_qty_rcv_exception_code,     
-                 enforce_ship_to_location_code  =  lc_enforce_ship_to_loc_code, 
-                 days_early_receipt_allowed     =  ln_days_early_receipt_allowed, 
-                 days_late_receipt_allowed      =  ln_days_late_receipt_allowed,	     
-                 receipt_days_exception_code    =  lc_receipt_days_exception_code,	 
-                 receiving_routing_id           =  ln_receiving_routing_id,	         
+             SET inspection_required_flag       =  lc_inspection_required_flag,
+                 receipt_required_flag          =  lc_receipt_required_flag,
+                 qty_rcv_tolerance              =  ln_qty_rcv_tolerance,
+                 qty_rcv_exception_code         =  lc_qty_rcv_exception_code,
+                 enforce_ship_to_location_code  =  lc_enforce_ship_to_loc_code,
+                 days_early_receipt_allowed     =  ln_days_early_receipt_allowed,
+                 days_late_receipt_allowed      =  ln_days_late_receipt_allowed,
+                 receipt_days_exception_code    =  lc_receipt_days_exception_code,
+                 receiving_routing_id           =  ln_receiving_routing_id,
                  allow_substitute_receipts_flag =  lc_allow_substitute_rcpts_flag,
-                 allow_unordered_receipts_flag  =  lc_allow_unordered_rcpts_flag,	       		 
+                 allow_unordered_receipts_flag  =  lc_allow_unordered_rcpts_flag,
                  last_updated_by     = g_user_id,
                  last_update_date    = SYSDATE
            WHERE 1 = 1
              AND segment1          = c_sup.segment1
              AND request_id        = gn_request_id;
-			 
+
 		   print_debug_msg(p_message=> l_program_step||': Successfully loaded the Receiving Information to the xx_ap_cld_suppliers_stgStaging Table ', p_force=>true);
-		  
-		  IF lc_inspection_required_flag IS NOT NULL OR 
-		     lc_receipt_required_flag    IS NOT NULL OR     
-			 ln_qty_rcv_tolerance IS NOT NULL OR	        
-			 lc_qty_rcv_exception_code   IS NOT NULL OR    
+
+		  IF lc_inspection_required_flag IS NOT NULL OR
+		     lc_receipt_required_flag    IS NOT NULL OR
+			 ln_qty_rcv_tolerance IS NOT NULL OR
+			 lc_qty_rcv_exception_code   IS NOT NULL OR
 			 lc_enforce_ship_to_loc_code IS NOT NULL OR
-			 ln_days_early_receipt_allowed IS NOT NULL OR 
-			 ln_days_late_receipt_allowed IS NOT NULL OR	
-			 lc_receipt_days_exception_code IS NOT NULL OR	
-			 ln_receiving_routing_id IS NOT NULL OR        
+			 ln_days_early_receipt_allowed IS NOT NULL OR
+			 ln_days_late_receipt_allowed IS NOT NULL OR
+			 lc_receipt_days_exception_code IS NOT NULL OR
+			 ln_receiving_routing_id IS NOT NULL OR
 			 lc_allow_substitute_rcpts_flag IS NOT NULL OR
-			 lc_allow_unordered_rcpts_flag IS NOT NULL	
+			 lc_allow_unordered_rcpts_flag IS NOT NULL
 		  THEN
-		      lr_vendor_rec.inspection_required_flag        :=  lc_inspection_required_flag;    
-			  lr_vendor_rec.receipt_required_flag           :=  lc_receipt_required_flag;	    
-			  lr_vendor_rec.qty_rcv_tolerance               :=  ln_qty_rcv_tolerance;	        
-			  lr_vendor_rec.qty_rcv_exception_code          :=  lc_qty_rcv_exception_code;    
-			  lr_vendor_rec.enforce_ship_to_location_code   :=  lc_enforce_ship_to_loc_code; 
+		      lr_vendor_rec.inspection_required_flag        :=  lc_inspection_required_flag;
+			  lr_vendor_rec.receipt_required_flag           :=  lc_receipt_required_flag;
+			  lr_vendor_rec.qty_rcv_tolerance               :=  ln_qty_rcv_tolerance;
+			  lr_vendor_rec.qty_rcv_exception_code          :=  lc_qty_rcv_exception_code;
+			  lr_vendor_rec.enforce_ship_to_location_code   :=  lc_enforce_ship_to_loc_code;
 			  lr_vendor_rec.days_early_receipt_allowed      :=  ln_days_early_receipt_allowed;
 			  lr_vendor_rec.days_late_receipt_allowed       :=  ln_days_late_receipt_allowed;
-			  lr_vendor_rec.receipt_days_exception_code     :=  lc_receipt_days_exception_code;	
-			  lr_vendor_rec.receiving_routing_id            :=  ln_receiving_routing_id;	        
+			  lr_vendor_rec.receipt_days_exception_code     :=  lc_receipt_days_exception_code;
+			  lr_vendor_rec.receiving_routing_id            :=  ln_receiving_routing_id;
 			  lr_vendor_rec.allow_substitute_receipts_flag  :=  lc_allow_substitute_rcpts_flag;
 			  lr_vendor_rec.allow_unordered_receipts_flag   :=  lc_allow_unordered_rcpts_flag;
-          END IF;			  
-			
-          /* End of Changes Added for Version 2.1 by Havish Kasina */			
-			 		  
+          END IF;
+
+          /* End of Changes Added for Version 2.1 by Havish Kasina */
+
 		  fnd_msg_pub.initialize; --to make msg_count 0
 		  x_return_status:=NULL;
 		  x_msg_count    :=NULL;
 		  x_msg_data     :=NULL;
 		  -------------------------------------------------Calling API
-		   ap_vendor_pub_pkg.update_vendor_public(  p_api_version => v_api_version, 
-											p_init_msg_list => v_init_msg_list, 
-											p_commit => v_commit, 
-											p_validation_level => v_validation_level, 
-											x_return_status => x_return_status, 
-											x_msg_count => x_msg_count, 
-											x_msg_data => x_msg_data, 
-											p_vendor_rec => lr_vendor_rec, 
-											p_vendor_id => lr_existing_vendor_rec.vendor_id 
-										 );    
+		   ap_vendor_pub_pkg.update_vendor_public(  p_api_version => v_api_version,
+											p_init_msg_list => v_init_msg_list,
+											p_commit => v_commit,
+											p_validation_level => v_validation_level,
+											x_return_status => x_return_status,
+											x_msg_count => x_msg_count,
+											x_msg_data => x_msg_data,
+											p_vendor_rec => lr_vendor_rec,
+											p_vendor_id => lr_existing_vendor_rec.vendor_id
+										 );
          --- modified the API from ap_vendor_pub_pkg.update_vendor to ap_vendor_pub_pkg.update_vendor_public by Shanti for NAIT-118338
 		  print_debug_msg(p_message=> l_program_step||'X_RETURN_STATUS = ' || x_return_status, p_force=>true);
           print_debug_msg(p_message=> l_program_step||'X_MSG_COUNT = ' || x_msg_count, p_force=>true);
           print_debug_msg(p_message=> l_program_step||'X_MSG_DATA = ' || x_msg_data , p_force=>true);
-      
+
 	      IF (x_return_status <> fnd_api.g_ret_sts_success) THEN
-        
+
 			FOR i IN 1 .. fnd_msg_pub.count_msg
 			LOOP
 			  l_msg := fnd_msg_pub.get(p_msg_index => i, p_encoded => fnd_api.g_false);
@@ -1854,12 +1874,12 @@ BEGIN
 			l_msg         :='';
 		  END IF;
 		  -----------------------Update the status if API successfully updated the record.
-      
+
 		  UPDATE xx_ap_cld_suppliers_stg xas
 			 SET xas.supp_process_flag   =DECODE (l_process_flag,'Y',gn_process_status_imported,'E',gn_process_status_imp_fail),---6
-				 xas.error_flag          =DECODE( l_process_flag,'N',NULL,'E','Y'),		
+				 xas.error_flag          =DECODE( l_process_flag,'N',NULL,'E','Y'),
 				 xas.error_msg           =l_msg
-		   WHERE xas.supp_process_flag   =gn_process_status_validated	
+		   WHERE xas.supp_process_flag   =gn_process_status_validated
 			 AND xas.request_id          = gn_request_id
 			 AND xas.segment1            =c_sup.segment1;
 		  COMMIT;
@@ -1917,8 +1937,8 @@ IS
   lr_location_rec                  hz_location_v2pub.location_rec_type;
   p_object_version_number          NUMBER;
   p_object_version_number1         NUMBER;
-  p_party_site_use_rec             hz_party_site_v2pub.party_site_use_rec_type; 
-  
+  p_party_site_use_rec             hz_party_site_v2pub.party_site_use_rec_type;
+
 CURSOR c_supplier_site
 IS
 SELECT *
@@ -1926,29 +1946,29 @@ SELECT *
  WHERE xas.create_flag     ='N'
    AND xas.site_process_flag =gn_process_status_validated
    AND xas.request_id        = gn_request_id;
-   
+
  CURSOR c_get_tolerance_name(c_cloud_tolerance VARCHAR2)
  IS
     SELECT LTRIM(RTRIM(tv.target_value1))
       FROM xx_fin_translatevalues tv,
            xx_fin_translatedefinition td
      WHERE tv.translate_id  = td.translate_id
-       AND translation_name = 'XX_AP_CLOUD_TOLERANCES'  
+       AND translation_name = 'XX_AP_CLOUD_TOLERANCES'
 	   AND SYSDATE BETWEEN NVL(tv.start_date_active,SYSDATE) AND NVL(tv.end_date_active,SYSDATE + 1)
        AND SYSDATE BETWEEN NVL(td.start_date_active,SYSDATE) AND NVL(td.end_date_active,SYSDATE + 1)
 	   AND tv.source_value1 = c_cloud_tolerance
        AND tv.enabled_flag = 'Y'
        AND td.enabled_flag = 'Y';
-	   
+
  CURSOR c_get_party_site_use(c_party_site_id NUMBER)
- IS 
+ IS
    SELECT party_site_id,
           party_site_use_id,
           object_version_number,
 		  site_use_type
      FROM hz_party_site_uses
-    WHERE party_site_id = c_party_site_id; 
-   
+    WHERE party_site_id = c_party_site_id;
+
 BEGIN
   -- Assign Basic Values
   print_debug_msg(p_message=> 'Begin Update Supplier Site Procedure', p_force=>true);
@@ -1958,7 +1978,7 @@ BEGIN
   p_validation_level := fnd_api.g_valid_level_full;
   p_calling_prog     := 'XXCUSTOM';
   l_program_step     := 'START';
-  
+
   FOR c_sup_site IN c_supplier_site
   LOOP
     print_debug_msg(p_message=> 'Update API call for the Site : '|| c_sup_site.vendor_site_code, p_force=>true);
@@ -1973,35 +1993,35 @@ BEGIN
       WHEN OTHERS THEN
         print_debug_msg(p_message=> l_program_step||'Unable to derive the supplier site information for site id:' || lr_existing_vendor_site_rec.vendor_site_id, p_force=>true);
     END;
-	
+
 	l_service_tolerance_name  := NULL;
-	l_qty_tolerance_name      := NULL;  
-	lc_fob_value              := NULL;     
-	
+	l_qty_tolerance_name      := NULL;
+	lc_fob_value              := NULL;
+
 	v_acct_pay  := get_cc_id(c_sup_site.accts_pay_concat_gl_segments);
     v_prepay_cde:= get_cc_id(c_sup_site.prepay_code_gl_segments);
-	
+
 	-- To get the Service Tolerance
 	OPEN c_get_tolerance_name(c_sup_site.service_tolerance);
 	FETCH c_get_tolerance_name INTO l_service_tolerance_name;
     CLOSE c_get_tolerance_name;
-		  
+
 	-- To get the Quantity Tolerance
 	OPEN c_get_tolerance_name(c_sup_site.tolerance_name);
 	FETCH c_get_tolerance_name INTO l_qty_tolerance_name;
     CLOSE c_get_tolerance_name;
-		  
+
 	-- To get the FOB Code
 	IF c_sup_site.fob_lookup_code = 'ORIGIN'
-	THEN 
+	THEN
 	     lc_fob_value := 'SHIPPING';
 	ELSIF c_sup_site.fob_lookup_code = 'DESTINATION'
-	THEN 
+	THEN
 	     lc_fob_value := 'RECEIVING';
 	ELSE
 	     lc_fob_value := c_sup_site.fob_lookup_code;
 	END IF;
-	
+
 	/* Added as per Version 3.4 */
 	-- To get the legacy Supplier Number
 	/*IF lr_vendor_site_rec.inactive_date IS NOT NULL
@@ -2021,7 +2041,7 @@ BEGIN
     lr_vendor_site_rec.primary_pay_site_flag          :=NVL(c_sup_site.primary_pay_site_flag, FND_API.G_MISS_CHAR);
     lr_vendor_site_rec.fax_area_code                  :=NVL(c_sup_site.fax_area_code, FND_API.G_MISS_CHAR);
     lr_vendor_site_rec.fax                            :=NVL(c_sup_site.fax, FND_API.G_MISS_CHAR);
-    lr_vendor_site_rec.inactive_date                  :=NVL(TO_DATE(c_sup_site.inactive_date,'YYYY/MM/DD'),FND_API.G_MISS_DATE); 
+    lr_vendor_site_rec.inactive_date                  :=NVL(TO_DATE(c_sup_site.inactive_date,'YYYY/MM/DD'),FND_API.G_MISS_DATE);
     lr_vendor_site_rec.customer_num                   :=NVL(c_sup_site.customer_num, FND_API.G_MISS_CHAR);
     lr_vendor_site_rec.ship_via_lookup_code           :=NVL(c_sup_site.ship_via_lookup_code, FND_API.G_MISS_CHAR);
     lr_vendor_site_rec.freight_terms_lookup_code      :=NVL(c_sup_site.freight_terms_lookup_code, FND_API.G_MISS_CHAR);
@@ -2074,7 +2094,7 @@ BEGIN
     lr_vendor_site_rec.province                       :=NVL(c_sup_site.province, FND_API.G_MISS_CHAR);
     lr_vendor_site_rec.state                          :=NVL(c_sup_site.state, FND_API.G_MISS_CHAR);
     lr_vendor_site_rec.city                           :=NVL(c_sup_site.city, FND_API.G_MISS_CHAR);
-    lr_vendor_site_rec.zip                            :=NVL(c_sup_site.postal_code, FND_API.G_MISS_CHAR);	
+    lr_vendor_site_rec.zip                            :=NVL(c_sup_site.postal_code, FND_API.G_MISS_CHAR);
     lr_vendor_site_rec.address_line2                  :=NVL(c_sup_site.address_line2, FND_API.G_MISS_CHAR);
     lr_vendor_site_rec.address_line1                  :=NVL(c_sup_site.address_line1, FND_API.G_MISS_CHAR);
 	lr_vendor_site_rec.address_line3                  :=NVL(c_sup_site.address_line3, FND_API.G_MISS_CHAR);  -- Added as per Version 2.2
@@ -2085,22 +2105,22 @@ BEGIN
 	lr_vendor_site_rec.accts_pay_code_combination_id  :=v_acct_pay;   -- Added as per Version 2.4 by Havish Kasina
     lr_vendor_site_rec.prepay_code_combination_id     :=v_prepay_cde; -- Added as per Version 2.4 by Havish Kasina
 	lr_vendor_site_rec.language                       := 'US';
-	
+
     fnd_msg_pub.initialize; --to make msg_count 0
     x_return_status:=NULL;
     x_msg_count    :=NULL;
     x_msg_data     :=NULL;
     -------------------------Calling Site API
-    ap_vendor_pub_pkg.update_vendor_site_public(p_api_version => p_api_version, 
+    ap_vendor_pub_pkg.update_vendor_site_public(p_api_version => p_api_version,
 	                                            p_init_msg_list => p_init_msg_list,
-												p_commit => p_commit, 
+												p_commit => p_commit,
 												p_validation_level => p_validation_level,
-												x_return_status => x_return_status, 
-												x_msg_count => x_msg_count, 
-												x_msg_data => x_msg_data, 
-												p_vendor_site_rec => lr_vendor_site_rec, 
-												p_vendor_site_id => lr_vendor_site_rec.vendor_site_id, 
-												p_calling_prog => p_calling_prog 
+												x_return_status => x_return_status,
+												x_msg_count => x_msg_count,
+												x_msg_data => x_msg_data,
+												p_vendor_site_rec => lr_vendor_site_rec,
+												p_vendor_site_id => lr_vendor_site_rec.vendor_site_id,
+												p_calling_prog => p_calling_prog
 											   );
     COMMIT;
 
@@ -2119,57 +2139,57 @@ BEGIN
     END IF;
     print_debug_msg(p_message=> l_program_step||'l_process_flag '||l_process_flag, p_force=>true);
 	print_debug_msg(p_message=> l_program_step||'lr_vendor_site_rec.inactive_date '||lr_vendor_site_rec.inactive_date, p_force=>true);
-	
+
 	/* Added as per Version 3.0 */
-	-- Update the Party Site    
+	-- Update the Party Site
 	BEGIN
         SELECT user_id,
                responsibility_id,
                responsibility_application_id
-          INTO ln_user_id,                      
-               ln_responsibility_id,            
+          INTO ln_user_id,
+               ln_responsibility_id,
                ln_responsibility_appl_id
-          FROM fnd_user_resp_groups 
-         WHERE user_id=(SELECT user_id 
-                          FROM fnd_user 
+          FROM fnd_user_resp_groups
+         WHERE user_id=(SELECT user_id
+                          FROM fnd_user
                          WHERE user_name='ODCDH')
-           AND responsibility_id=(SELECT responsibility_id 
-                                    FROM FND_RESPONSIBILITY 
+           AND responsibility_id=(SELECT responsibility_id
+                                    FROM FND_RESPONSIBILITY
                                    WHERE responsibility_key = 'XX_US_CNV_CDH_CONVERSION');   -- need to confirm
     EXCEPTION
-         WHEN OTHERS 
+         WHEN OTHERS
         THEN
 			print_debug_msg(p_message=> l_program_step||'Exception in WHEN OTHERS for SET_CONTEXT_ERROR: '||SQLERRM, p_force=>true);
     END;
-		
+
 	print_debug_msg(p_message=> l_program_step||'To fetch the Party Site Information', p_force=>true);
 	BEGIN
-	  SELECT party_site_id, 
+	  SELECT party_site_id,
 			 party_site_number,
 			 object_version_number,
-             location_id			 
+             location_id
 		INTO l_party_site_rec.party_site_id,
 		     l_party_site_rec.party_site_number,
              ln_obj_num,
-             lr_location_rec.location_id			 
+             lr_location_rec.location_id
         FROM hz_party_sites A
-       WHERE 1 =1 
+       WHERE 1 =1
          AND party_site_id = lr_existing_vendor_site_rec.party_site_id;
-	
+
 	EXCEPTION
 	  WHEN OTHERS
 	  THEN
 	      print_debug_msg(p_message=> l_program_step||'Unable to derive the party site information for site id:' || lr_existing_vendor_site_rec.vendor_site_id, p_force=>true);
     END;
-	
-  --  IF TRIM(c_sup_site.inactive_date) IS NOT NULL    -- commented by Shanti for jira NAIT-118444	
-	 IF TRIM(c_sup_site.inactive_date) IS NOT NULL AND to_date(c_sup_site.inactive_date,'yyyy/mm/dd')<=sysdate   ---- Added by Shanti for jira NAIT-118444	
+
+  --  IF TRIM(c_sup_site.inactive_date) IS NOT NULL    -- commented by Shanti for jira NAIT-118444
+	 IF TRIM(c_sup_site.inactive_date) IS NOT NULL AND to_date(c_sup_site.inactive_date,'yyyy/mm/dd')<=sysdate   ---- Added by Shanti for jira NAIT-118444
 	THEN
 	    l_party_site_rec.status := 'I';
 	ELSE
 	    l_party_site_rec.status := 'A';
     END IF;
-        
+
 	FND_GLOBAL.apps_initialize( ln_user_id,
                                 ln_responsibility_id,
                                 ln_responsibility_appl_id
@@ -2188,27 +2208,27 @@ BEGIN
                                              ) ;
 		COMMIT;
 		print_debug_msg(p_message=> l_program_step||' End of Calling Update Party Site API', p_force=>true);
-		
-		IF lc_return_status = fnd_api.g_ret_sts_success 
+
+		IF lc_return_status = fnd_api.g_ret_sts_success
         THEN
            print_debug_msg(p_message=> l_program_step||'Update of Party Site is Successful ', p_force=>true);
-		   		   
-		   SELECT object_version_number			 
-		     INTO p_object_version_number		 
+
+		   SELECT object_version_number
+		     INTO p_object_version_number
              FROM hz_locations A
-            WHERE 1 =1 
+            WHERE 1 =1
               AND location_id = lr_location_rec.location_id;
-			  		  
-		   lr_location_rec.country          :=   NVL(c_sup_site.country, FND_API.G_MISS_CHAR);        
-           lr_location_rec.address1         :=   NVL(c_sup_site.address_line1, FND_API.G_MISS_CHAR);      
-           lr_location_rec.address2         :=   NVL(c_sup_site.address_line2, FND_API.G_MISS_CHAR);       
-           lr_location_rec.address3         :=   NVL(c_sup_site.address_line3, FND_API.G_MISS_CHAR);        
-           lr_location_rec.address4         :=   NVL(c_sup_site.address_line4, FND_API.G_MISS_CHAR);        
-           lr_location_rec.city             :=   NVL(c_sup_site.city, FND_API.G_MISS_CHAR);        
-           lr_location_rec.postal_code      :=   NVL(c_sup_site.postal_code, FND_API.G_MISS_CHAR);        
-           lr_location_rec.state            :=   NVL(c_sup_site.state, FND_API.G_MISS_CHAR);        
-           lr_location_rec.province         :=   NVL(c_sup_site.province, FND_API.G_MISS_CHAR);       
-           lr_location_rec.county           :=   NVL(c_sup_site.county, FND_API.G_MISS_CHAR); 
+
+		   lr_location_rec.country          :=   NVL(c_sup_site.country, FND_API.G_MISS_CHAR);
+           lr_location_rec.address1         :=   NVL(c_sup_site.address_line1, FND_API.G_MISS_CHAR);
+           lr_location_rec.address2         :=   NVL(c_sup_site.address_line2, FND_API.G_MISS_CHAR);
+           lr_location_rec.address3         :=   NVL(c_sup_site.address_line3, FND_API.G_MISS_CHAR);
+           lr_location_rec.address4         :=   NVL(c_sup_site.address_line4, FND_API.G_MISS_CHAR);
+           lr_location_rec.city             :=   NVL(c_sup_site.city, FND_API.G_MISS_CHAR);
+           lr_location_rec.postal_code      :=   NVL(c_sup_site.postal_code, FND_API.G_MISS_CHAR);
+           lr_location_rec.state            :=   NVL(c_sup_site.state, FND_API.G_MISS_CHAR);
+           lr_location_rec.province         :=   NVL(c_sup_site.province, FND_API.G_MISS_CHAR);
+           lr_location_rec.county           :=   NVL(c_sup_site.county, FND_API.G_MISS_CHAR);
 		   lr_location_rec.language         :=   'US';
 		   x_return_status                  :=   NULL;
            x_msg_count                      :=   NULL;
@@ -2221,10 +2241,10 @@ BEGIN
                                              x_msg_count                  => x_msg_count,
                                              x_msg_data                   => x_msg_data
                                             );
-											
+
 		   COMMIT;
 		   print_debug_msg(p_message=> l_program_step||' End of Calling update_location API', p_force=>true);
-		   
+
 		   IF x_return_status <> 'S'
 		   THEN
 		       print_debug_msg(p_message=> 'Update of Location got failed:'||x_msg_data, p_force=>true);
@@ -2234,8 +2254,8 @@ BEGIN
                    print_debug_msg(p_message=>  i|| ') '|| x_msg_data, p_force=>true);
                END LOOP;
 		   ELSE
-		       -- Update the Party Site Use to Active when 
-			   
+		       -- Update the Party Site Use to Active when
+
 			   IF TRIM(c_sup_site.inactive_date) IS NULL
 			   THEN
 			      -- To get thte Party Site Use information for the Party Site ID
@@ -2245,12 +2265,12 @@ BEGIN
 					  p_party_site_use_rec.party_site_use_id := c_party_use.party_site_use_id;
 					  p_object_version_number1               := c_party_use.object_version_number;
 					  p_party_site_use_rec.status            := 'A';
-					  
+
 					  print_debug_msg(p_message=> l_program_step||' p_party_site_use_rec.party_site_id :'||p_party_site_use_rec.party_site_id, p_force=>true);
 					  print_debug_msg(p_message=> l_program_step||' p_party_site_use_rec.party_site_use_id :'||p_party_site_use_rec.party_site_use_id, p_force=>true);
 					  print_debug_msg(p_message=> l_program_step||' p_object_version_number1 :'|| p_object_version_number1, p_force=>true);
 					  print_debug_msg(p_message=> l_program_step||' site_use_type :'|| c_party_use.site_use_type, p_force=>true);
-			  
+
                       print_debug_msg(p_message=> ' Start of Calling Update Party Site Use API', p_force=>true);
                       hz_party_site_v2pub.update_party_site_use( p_init_msg_list            =>  FND_API.G_FALSE,
                                                                  p_party_site_use_rec       =>  p_party_site_use_rec,
@@ -2259,28 +2279,28 @@ BEGIN
                                                                  x_msg_count                =>  x_msg_count,
                                                                  x_msg_data                 =>  x_msg_data
                                                                );
-				      print_debug_msg(p_message=> ' End of Calling Update Party Site Use API', p_force=>true);					   
+				      print_debug_msg(p_message=> ' End of Calling Update Party Site Use API', p_force=>true);
                       COMMIT;
-                      print_debug_msg(p_message=> 'x_return_status = ' ||SUBSTR(x_return_status, 1, 255)); 
-                      print_debug_msg(p_message=> 'x_msg_count = ' ||TO_CHAR(x_msg_count)); 
-                      print_debug_msg(p_message=> 'x_msg_data = ' ||SUBSTR(x_msg_data, 1, 255)); 
- 
-                      IF x_msg_count > 1 
-                      THEN 
+                      print_debug_msg(p_message=> 'x_return_status = ' ||SUBSTR(x_return_status, 1, 255));
+                      print_debug_msg(p_message=> 'x_msg_count = ' ||TO_CHAR(x_msg_count));
+                      print_debug_msg(p_message=> 'x_msg_data = ' ||SUBSTR(x_msg_data, 1, 255));
+
+                      IF x_msg_count > 1
+                      THEN
                           FOR i IN 1 .. x_msg_count
                           LOOP
                              x_msg_data := fnd_msg_pub.get( p_msg_index => i, p_encoded => 'F');
                              print_debug_msg(p_message=>  i|| ') '|| x_msg_data, p_force=>true);
                           END LOOP;
-                      END IF; 
+                      END IF;
 				  END LOOP; -- c_party_use
 			   END IF;  --  IF TRIM(c_sup_site.inactive_date) IS NULL
-			   			   
+
            END IF;
-											
+
         ELSE
            print_debug_msg(p_message=> l_program_step||'Update of Party Site got failed:'||lc_msg_data, p_force=>true);
-           IF ln_msg_count > 0 
+           IF ln_msg_count > 0
             THEN
                 print_debug_msg(p_message=> l_program_step||'Error while updating .. ', p_force=>true);
                 FOR i IN 1..ln_msg_count
@@ -2290,8 +2310,8 @@ BEGIN
                 END LOOP;
            END IF;
         END IF;
-    print_debug_msg(p_message=> l_program_step||'Update Party Site Return Status:' || lc_return_status, p_force=>true);	
-	
+    print_debug_msg(p_message=> l_program_step||'Update Party Site Return Status:' || lc_return_status, p_force=>true);
+
     BEGIN
       UPDATE xx_ap_cld_supp_sites_stg xas
          SET xas.site_process_flag   =DECODE (l_process_flag,'Y',gn_process_status_imported ,'E',gn_process_status_imp_fail),
@@ -2328,7 +2348,7 @@ END update_supplier_sites;
 --+==============================================================================+
 PROCEDURE update_supplier_contact( x_ret_code 		OUT NUMBER ,
 								   x_return_status 	OUT VARCHAR2 ,
-								   x_err_buf 		OUT VARCHAR2 
+								   x_err_buf 		OUT VARCHAR2
 								 )
 IS
   p_api_version      		NUMBER;
@@ -2349,11 +2369,11 @@ IS
   lv_vendor_contact_rec 	ap_vendor_pub_pkg.r_vendor_contact_rec_type;
   lv_contact_title_rec 		hz_party_contact_v2pub.org_contact_rec_type;
   lc_error_status1		    VARCHAR2(1):='N';
-  lc_error_status2		    VARCHAR2(1):='N';  
+  lc_error_status2		    VARCHAR2(1):='N';
   ln_user_id                NUMBER;
   ln_responsibility_id      NUMBER;
   ln_responsibility_appl_id NUMBER;
-  
+
 CURSOR c_cont
 IS
 SELECT *
@@ -2362,10 +2382,10 @@ SELECT *
    AND xas.contact_process_flag = gn_process_status_validated
    AND xas.request_id           = gn_request_id
    AND cont_target              ='EBS';
-  
+
 CURSOR c_contact_infor(v_vendor_id NUMBER, v_vendor_site_id NUMBER) --, v_first_name VARCHAR2, v_last_name VARCHAR2)
 IS
-SELECT DISTINCT 
+SELECT DISTINCT
 	   hpr.party_id,
        asu.segment1 supp_num ,
        asu.vendor_name ,
@@ -2379,12 +2399,12 @@ SELECT DISTINCT
        asco.vendor_contact_id,
        hpc.person_first_name hz_first_name,
        hpc.person_last_name hz_last_name ,
-	   asco.per_party_id ,	
-       asco.relationship_id	,	
-       asco.rel_party_id ,	
-       asco.party_site_id  ,		
-       asco.org_contact_id ,		
-       asco.org_party_site_id	
+	   asco.per_party_id ,
+       asco.relationship_id	,
+       asco.rel_party_id ,
+       asco.party_site_id  ,
+       asco.org_contact_id ,
+       asco.org_party_site_id
   FROM hz_relationships hr ,
        ap_suppliers asu ,
        ap_supplier_sites_all assa ,
@@ -2441,33 +2461,33 @@ BEGIN
   p_init_msg_list    := fnd_api.g_false;
   p_commit           := fnd_api.g_false;
   p_validation_level := fnd_api.g_valid_level_full;
-  
+
   BEGIN
       SELECT user_id,
              responsibility_id,
              responsibility_application_id
-       INTO  ln_user_id,                      
-             ln_responsibility_id,            
+       INTO  ln_user_id,
+             ln_responsibility_id,
              ln_responsibility_appl_id
-       FROM  fnd_user_resp_groups 
-      WHERE user_id=(SELECT user_id 
-                       FROM fnd_user 
+       FROM  fnd_user_resp_groups
+      WHERE user_id=(SELECT user_id
+                       FROM fnd_user
                       WHERE user_name='ODCDH')
-                        AND responsibility_id=(SELECT responsibility_id 
-                                                 FROM FND_RESPONSIBILITY 
+                        AND responsibility_id=(SELECT responsibility_id
+                                                 FROM FND_RESPONSIBILITY
                                                 WHERE responsibility_key = 'XX_US_CNV_CDH_CONVERSION');
        FND_GLOBAL.apps_initialize(ln_user_id,
                                   ln_responsibility_id,
                                   ln_responsibility_appl_id
                                  );
   END;
-  
+
   FOR r_cont IN c_cont
   LOOP
     lc_error_status1:='N';
-    lc_error_status2:='N';	
+    lc_error_status2:='N';
 	lc_error_mesg:=NULL;
-    print_debug_msg(p_message=> 'Vendor Site/First/Last Name  : '|| r_cont.vendor_site_code||'/'||r_cont.first_name||'/'||r_cont.last_name, 
+    print_debug_msg(p_message=> 'Vendor Site/First/Last Name  : '|| r_cont.vendor_site_code||'/'||r_cont.first_name||'/'||r_cont.last_name,
 					p_force=>true);
     FOR r_cont_info IN c_contact_infor(r_cont.vendor_id , r_cont.vendor_site_id) -- , r_cont.first_name, r_cont.last_name )
     LOOP
@@ -2486,7 +2506,7 @@ BEGIN
            AND contact_point_type = 'PHONE'
            AND hpcp.owner_table_id= r_cont_info.party_id;
       EXCEPTION
-        WHEN OTHERS 
+        WHEN OTHERS
 		THEN
           l_phone_number    := NULL;
           l_phone_area_code := NULL;
@@ -2501,7 +2521,7 @@ BEGIN
            AND contact_point_type ='PHONE'
            AND hpcp.owner_table_id=r_cont_info.party_id;
       EXCEPTION
-        WHEN OTHERS 
+        WHEN OTHERS
 		THEN
           l_fax_number    := NULL;
           l_fax_area_code := NULL;
@@ -2514,7 +2534,7 @@ BEGIN
            AND contact_point_type  = 'EMAIL'
            AND hpcp.owner_table_id = r_cont_info.party_id;
       EXCEPTION
-        WHEN OTHERS 
+        WHEN OTHERS
 		THEN
           l_email_address := NULL;
       END;
@@ -2522,48 +2542,48 @@ BEGIN
   	     OR NVL(l_email_address,'X') <> NVL(r_cont.email_address,'X')
 		 OR NVL(l_fax_number,'X') <> NVL(r_cont.fax,'X')
 		 OR NVL(l_phone_area_code,'X') <> NVL(r_cont.area_code,'X')
-		 OR NVL(l_fax_area_code,'X') <> NVL(r_cont.fax_area_code,'X') 
+		 OR NVL(l_fax_area_code,'X') <> NVL(r_cont.fax_area_code,'X')
 		 OR NVL(r_cont_info.hz_first_name,'X') <> NVL(r_cont.first_name,'X')
-		 OR NVL(r_cont_info.hz_last_name,'X') <> NVL(r_cont.last_name,'X')		 		 
+		 OR NVL(r_cont_info.hz_last_name,'X') <> NVL(r_cont.last_name,'X')
 	  THEN
 	    lv_vendor_contact_rec.vendor_id         := r_cont.vendor_id;
 		lv_vendor_contact_rec.vendor_site_id    := r_cont.vendor_site_id;
 		lv_vendor_contact_rec.vendor_site_code  := r_cont.vendor_site_code;
         lv_vendor_contact_rec.vendor_contact_id := r_cont_info.vendor_contact_id;
-		lv_vendor_contact_rec.person_first_name	:= r_cont.first_name; 
+		lv_vendor_contact_rec.person_first_name	:= r_cont.first_name;
 		lv_vendor_contact_rec.person_last_name	:= r_cont.last_name;
         lv_vendor_contact_rec.phone             := NVL(r_cont.phone,FND_API.G_MISS_CHAR);
         lv_vendor_contact_rec.email_address     := NVL(r_cont.email_address,FND_API.G_MISS_CHAR);
         lv_vendor_contact_rec.fax_phone         := NVL(r_cont.fax,FND_API.G_MISS_CHAR);
         lv_vendor_contact_rec.fax_area_code     := NVL(r_cont.fax_area_code,FND_API.G_MISS_CHAR);
         lv_vendor_contact_rec.area_code         := NVL(r_cont.area_code,FND_API.G_MISS_CHAR);
-		-- lv_vendor_contact_rec.inactive_date     := NVL(TO_DATE(r_cont.inactive_date,'YYYY/MM/DD'),FND_API.G_MISS_DATE); 
+		-- lv_vendor_contact_rec.inactive_date     := NVL(TO_DATE(r_cont.inactive_date,'YYYY/MM/DD'),FND_API.G_MISS_DATE);
 		lv_vendor_contact_rec.per_party_id      := r_cont_info.per_party_id;
         lv_vendor_contact_rec.relationship_id   := r_cont_info.relationship_id;
         lv_vendor_contact_rec.rel_party_id      := r_cont_info.rel_party_id;
         lv_vendor_contact_rec.party_site_id     := r_cont_info.party_site_id;
 		lv_vendor_contact_rec.org_contact_id    := r_cont_info.org_contact_id;
-		lv_vendor_contact_rec.org_party_site_id := r_cont_info.org_party_site_id;		
+		lv_vendor_contact_rec.org_party_site_id := r_cont_info.org_party_site_id;
 		lv_vendor_contact_rec.person_first_name := r_cont.first_name;
         lv_vendor_contact_rec.person_last_name  := r_cont.last_name;
-		
+
 		fnd_msg_pub.initialize; --to make msg_count 0
         x_return_status := NULL;
         x_msg_count     := NULL;
         x_msg_data      := NULL;
-        
-		ap_vendor_pub_pkg.update_vendor_contact_public (p_api_version => 1.0, 
-														p_init_msg_list => fnd_api.g_false, 
-														p_commit => fnd_api.g_false, 
-														p_validation_level => fnd_api.g_valid_level_full, 
-														p_vendor_contact_rec => lv_vendor_contact_rec, 
-														x_return_status => x_return_status, 
-														x_msg_count => x_msg_count, 
-														x_msg_data => x_msg_data 
+
+		ap_vendor_pub_pkg.update_vendor_contact_public (p_api_version => 1.0,
+														p_init_msg_list => fnd_api.g_false,
+														p_commit => fnd_api.g_false,
+														p_validation_level => fnd_api.g_valid_level_full,
+														p_vendor_contact_rec => lv_vendor_contact_rec,
+														x_return_status => x_return_status,
+														x_msg_count => x_msg_count,
+														x_msg_data => x_msg_data
 													   );
-        
+
 		COMMIT;
-        print_debug_msg(p_message=> 'ap_vendor_pub_pkg.update_vendor_contact_public status :' || x_return_status , p_force => TRUE);        
+        print_debug_msg(p_message=> 'ap_vendor_pub_pkg.update_vendor_contact_public status :' || x_return_status , p_force => TRUE);
 		IF x_return_status <>'S' AND x_msg_count > 0 THEN
 		   lc_error_status1:='Y';
            FOR i IN 1 .. x_msg_count--fnd_msg_pub.count_msg
@@ -2577,13 +2597,13 @@ BEGIN
         END IF;
       END IF;
     END LOOP;
-	
+
 	print_debug_msg(p_message=>'Starting Calling c_cont_title',p_force=>TRUE);
-    
+
 	FOR r_cont_title IN c_cont_title (r_cont.vendor_id , r_cont.vendor_site_id) -- ,r_cont.first_name,r_cont.last_name )
     LOOP
-      
-      IF NVL(r_cont_title.job_title,'X')    <> NVL(r_cont.title,'X') 
+
+      IF NVL(r_cont_title.job_title,'X')    <> NVL(r_cont.title,'X')
 	  THEN
 	    -- lv_contact_title_rec.party_site_id  := r_cont_title.party_site_id;
         lv_contact_title_rec.org_contact_id := r_cont_title.org_contact_id;
@@ -2592,18 +2612,18 @@ BEGIN
         x_return_status := NULL;
         x_msg_count     := NULL;
         x_msg_data      := NULL;
-        hz_party_contact_v2pub.update_org_contact ( p_init_msg_list => fnd_api.g_false, 
-													p_org_contact_rec => lv_contact_title_rec, 
-													p_cont_object_version_number => r_cont_title.cont_object_version_number, 
+        hz_party_contact_v2pub.update_org_contact ( p_init_msg_list => fnd_api.g_false,
+													p_org_contact_rec => lv_contact_title_rec,
+													p_cont_object_version_number => r_cont_title.cont_object_version_number,
 													p_rel_object_version_number => r_cont_title.rel_object_version_number,
-													p_party_object_version_number=>r_cont_title.party_object_version_number, 
-													x_return_status => x_return_status, 
-													x_msg_count => x_msg_count, 
-													x_msg_data => x_msg_data 
+													p_party_object_version_number=>r_cont_title.party_object_version_number,
+													x_return_status => x_return_status,
+													x_msg_count => x_msg_count,
+													x_msg_data => x_msg_data
 												  );
         COMMIT;
         print_debug_msg(p_message=> 'hz_party_contact_v2pub.update_org_contact, status :' || x_return_status, p_force => TRUE);
-      
+
   	    IF x_return_status <>'S' AND x_msg_count > 0 THEN
 		   lc_error_status2:='Y';
            FOR i IN 1 .. x_msg_count--fnd_msg_pub.count_msg
@@ -2624,8 +2644,8 @@ BEGIN
 	ELSE
 	   l_process_flag:='E';
 	END IF;
-    print_debug_msg(p_message=>'Process status : '||l_process_flag, p_force => TRUE);	
-	
+    print_debug_msg(p_message=>'Process status : '||l_process_flag, p_force => TRUE);
+
     BEGIN
       UPDATE xx_ap_cld_supp_contact_stg xas
          SET xas.contact_process_flag   = DECODE (l_process_flag,'Y',gn_process_status_imported ,'E',gn_process_status_imp_fail),
@@ -2640,13 +2660,13 @@ BEGIN
          AND TRIM(xas.vendor_site_code) = TRIM(r_cont.vendor_site_code);
       COMMIT;
     EXCEPTION
-      WHEN OTHERS 
+      WHEN OTHERS
 	  THEN
         print_debug_msg(p_message=> 'In Exception to update records'||SQLERRM, p_force => TRUE);
     END ;
   END LOOP;
 EXCEPTION
-  WHEN OTHERS 
+  WHEN OTHERS
   THEN
     fnd_file.put_line(fnd_file.LOG,SQLCODE||','||SQLERRM);
 END update_supplier_contact;
@@ -2672,7 +2692,7 @@ IS
   lr_existing_vendor_site_rec      ap_supplier_sites_all%rowtype;
   p_calling_prog   		       	   VARCHAR2(200);
   l_program_step   		       	   VARCHAR2 (100) := '';
-  ln_msg_index_num 		       	   NUMBER; 
+  ln_msg_index_num 		       	   NUMBER;
   lr_contact_point_rec             hz_contact_point_v2pub.contact_point_rec_type;
   lr_edi_rec                       hz_contact_point_v2pub.edi_rec_type;
   lr_email_rec                     hz_contact_point_v2pub.email_rec_type;
@@ -2684,22 +2704,22 @@ IS
   ln_user_id                       NUMBER;
   ln_responsibility_id             NUMBER;
   ln_responsibility_appl_id        NUMBER;
-  ln_object_version_number         NUMBER :=1;      
+  ln_object_version_number         NUMBER :=1;
   x_contact_point_id               NUMBER;
-  
+
   CURSOR c_supplier_site
   IS
     SELECT *
       FROM xx_ap_cld_supp_sites_stg xas
-     WHERE 1 =1 
+     WHERE 1 =1
        AND xas.site_process_flag = gn_process_status_imported
        AND xas.request_id        = gn_request_id
-       AND (   xas.fax_area_code IS NOT NULL 
-	        OR xas.fax IS NOT NULL 
-			OR xas.email_address IS NOT NULL 
-	        OR xas.phone_number IS NOT NULL 
+       AND (   xas.fax_area_code IS NOT NULL
+	        OR xas.fax IS NOT NULL
+			OR xas.email_address IS NOT NULL
+	        OR xas.phone_number IS NOT NULL
 	        OR xas.phone_area_code IS NOT NULL);
-   
+
   CURSOR c_contact_details(c_party_site_id NUMBER)
   IS
     SELECT hps.party_site_id,
@@ -2733,7 +2753,7 @@ IS
            hz_contact_points email,
            hz_contact_points phone,
            hz_contact_points fax
-     WHERE 1 = 1 
+     WHERE 1 = 1
        -- AND hps.status     = 'A'
        AND hps.party_site_id = c_party_site_id
        AND hzl.country                 = fvl.territory_code
@@ -2754,7 +2774,7 @@ IS
        AND fax.contact_point_type(+)   = 'PHONE'
        AND fax.phone_line_type (+)     = 'FAX'
        AND hps.location_id             = hzl.location_id;
-   
+
 BEGIN
   -- Assign Basic Values
   print_debug_msg(p_message=> 'Begin Update Supplier Site Address Contact Procedure', p_force=>true);
@@ -2764,23 +2784,23 @@ BEGIN
   p_validation_level := fnd_api.g_valid_level_full;
   p_calling_prog     := 'XXCUSTOM';
   l_program_step     := 'START';
-  
+
   BEGIN
        SELECT user_id,
               responsibility_id,
               responsibility_application_id
-         INTO ln_user_id,                      
-              ln_responsibility_id,            
+         INTO ln_user_id,
+              ln_responsibility_id,
               ln_responsibility_appl_id
-         FROM fnd_user_resp_groups 
-        WHERE user_id=(SELECT user_id 
-                         FROM fnd_user 
+         FROM fnd_user_resp_groups
+        WHERE user_id=(SELECT user_id
+                         FROM fnd_user
                         WHERE user_name = 'ODCDH')
-          AND responsibility_id=(SELECT responsibility_id 
-                                   FROM fnd_responsibility 
-                                  WHERE responsibility_key = 'XX_US_CNV_CDH_CONVERSION'); 
+          AND responsibility_id=(SELECT responsibility_id
+                                   FROM fnd_responsibility
+                                  WHERE responsibility_key = 'XX_US_CNV_CDH_CONVERSION');
   EXCEPTION
-       WHEN OTHERS 
+       WHEN OTHERS
        THEN
 			print_debug_msg(p_message=> l_program_step||'Exception in WHEN OTHERS for SET_CONTEXT_ERROR: '||SQLERRM, p_force=>true);
   END;
@@ -2790,7 +2810,7 @@ BEGIN
                               ln_responsibility_appl_id
                             );
   fnd_global.set_nls_context('AMERICAN');
-  
+
   FOR c_sup_site IN c_supplier_site
   LOOP
     print_debug_msg(p_message=> 'Address Contact for the Site : '|| c_sup_site.vendor_site_code, p_force=>true);
@@ -2804,15 +2824,15 @@ BEGIN
         INTO lr_existing_vendor_site_rec
         FROM ap_supplier_sites_all assa
        WHERE assa.vendor_site_code = c_sup_site.vendor_site_code;
-	   
+
     EXCEPTION
       WHEN OTHERS THEN
         print_debug_msg(p_message=> l_program_step||'Unable to derive the supplier site information for site id:' || lr_existing_vendor_site_rec.vendor_site_id, p_force=>true);
     END;
-	
+
 	FOR c_sup_contact IN c_contact_details(lr_existing_vendor_site_rec.party_site_id)
 	LOOP
-	    print_debug_msg(p_message=> 'lr_existing_vendor_site_rec.party_site_id : '|| lr_existing_vendor_site_rec.party_site_id, p_force=>true); 
+	    print_debug_msg(p_message=> 'lr_existing_vendor_site_rec.party_site_id : '|| lr_existing_vendor_site_rec.party_site_id, p_force=>true);
 		-- Initializing the Mandatory API parameters
 	    -- Update Email Address
 	    IF c_sup_site.email_address IS NOT NULL
@@ -2835,22 +2855,22 @@ BEGIN
                 x_msg_count        := NULL;
                 x_msg_data         := NULL;
                 -------------------------Calling Address Contact API
-											   
-		        hz_contact_point_v2pub.update_contact_point ( p_init_msg_list => fnd_api.g_false, 
-		                                                      p_contact_point_rec => lr_contact_point_rec, 
-													          p_edi_rec => lr_edi_rec, 
-													          p_email_rec => lr_email_rec, 
+
+		        hz_contact_point_v2pub.update_contact_point ( p_init_msg_list => fnd_api.g_false,
+		                                                      p_contact_point_rec => lr_contact_point_rec,
+													          p_edi_rec => lr_edi_rec,
+													          p_email_rec => lr_email_rec,
 													          p_phone_rec => lr_phone_rec,
-                                                              p_telex_rec => lr_telex_rec, 
-													          p_web_rec => lr_web_rec, 
+                                                              p_telex_rec => lr_telex_rec,
+													          p_web_rec => lr_web_rec,
                                                               p_object_version_number => ln_object_version_number,
-                                                              x_return_status => x_return_status, 
-													          x_msg_count => x_msg_count, 
+                                                              x_return_status => x_return_status,
+													          x_msg_count => x_msg_count,
 													          x_msg_data => x_msg_data );
 
                 print_debug_msg(p_message=> 'API Return Status / Msg Count : ' || x_return_status||' / '||x_msg_count, p_force=>true);
-		
-		        IF x_return_status = 'S' 
+
+		        IF x_return_status = 'S'
 		        THEN
                    COMMIT;
                    print_debug_msg(p_message=> 'Update of EMAIL Contact Point is Successful ', p_force=>true);
@@ -2863,7 +2883,7 @@ BEGIN
                       x_msg_data := fnd_msg_pub.get( p_msg_index => i, p_encoded => 'F');
                       print_debug_msg(p_message=>  i|| ') '|| x_msg_data, p_force=>true);
                    END LOOP;
-                END IF; 
+                END IF;
 			ELSE
 			    print_debug_msg(p_message=> 'Creation of the EMAIL Address Contact for the Site: '|| c_sup_site.vendor_site_code, p_force=>true);
 			    lr_contact_point_rec := NULL;
@@ -2881,21 +2901,21 @@ BEGIN
                 x_msg_count        := NULL;
                 x_msg_data         := NULL;
                 -------------------------Calling Address Contact API
-											   
-		        hz_contact_point_v2pub.create_contact_point ( p_init_msg_list => fnd_api.g_false, 
-		                                                      p_contact_point_rec => lr_contact_point_rec, 
-													          p_edi_rec => lr_edi_rec, 
-													          p_email_rec => lr_email_rec, 
+
+		        hz_contact_point_v2pub.create_contact_point ( p_init_msg_list => fnd_api.g_false,
+		                                                      p_contact_point_rec => lr_contact_point_rec,
+													          p_edi_rec => lr_edi_rec,
+													          p_email_rec => lr_email_rec,
 													          p_phone_rec => lr_phone_rec,
-                                                              p_telex_rec => lr_telex_rec, 
-													          p_web_rec => lr_web_rec, 
-													          x_contact_point_id => x_contact_point_id, 
-													          x_return_status => x_return_status, 
-													          x_msg_count => x_msg_count, 
+                                                              p_telex_rec => lr_telex_rec,
+													          p_web_rec => lr_web_rec,
+													          x_contact_point_id => x_contact_point_id,
+													          x_return_status => x_return_status,
+													          x_msg_count => x_msg_count,
 													          x_msg_data => x_msg_data );
 
                 print_debug_msg(p_message=> 'API Return Status / Msg Count : ' || x_return_status||' / '||x_msg_count, p_force=>true);
-		
+
 		        IF x_return_status = 'S'
 		        THEN
                    COMMIT;
@@ -2936,21 +2956,21 @@ BEGIN
                 x_msg_count        := NULL;
                 x_msg_data         := NULL;
                 -------------------------Calling Address Contact API
-											   
-		        hz_contact_point_v2pub.update_contact_point ( p_init_msg_list => fnd_api.g_false, 
-		                                                      p_contact_point_rec => lr_contact_point_rec, 
-													          p_edi_rec => lr_edi_rec, 
-													          p_email_rec => lr_email_rec, 
+
+		        hz_contact_point_v2pub.update_contact_point ( p_init_msg_list => fnd_api.g_false,
+		                                                      p_contact_point_rec => lr_contact_point_rec,
+													          p_edi_rec => lr_edi_rec,
+													          p_email_rec => lr_email_rec,
 													          p_phone_rec => lr_phone_rec,
-                                                              p_telex_rec => lr_telex_rec, 
-													          p_web_rec => lr_web_rec, 
+                                                              p_telex_rec => lr_telex_rec,
+													          p_web_rec => lr_web_rec,
                                                               p_object_version_number => ln_object_version_number,
-                                                              x_return_status => x_return_status, 
-													          x_msg_count =>x_msg_count, 
+                                                              x_return_status => x_return_status,
+													          x_msg_count =>x_msg_count,
 													          x_msg_data => x_msg_data );
 
                 print_debug_msg(p_message=> 'API Return Status / Msg Count : ' || x_return_status||' / '||x_msg_count, p_force=>true);
-		
+
 		        IF x_return_status = 'S'
 		        THEN
                     COMMIT;
@@ -2984,21 +3004,21 @@ BEGIN
                 x_msg_count        := NULL;
                 x_msg_data         := NULL;
                 -------------------------Calling Address Contact API
-											   
-		        hz_contact_point_v2pub.create_contact_point ( p_init_msg_list => fnd_api.g_false, 
-		                                                      p_contact_point_rec => lr_contact_point_rec, 
-													          p_edi_rec => lr_edi_rec, 
-													          p_email_rec => lr_email_rec, 
+
+		        hz_contact_point_v2pub.create_contact_point ( p_init_msg_list => fnd_api.g_false,
+		                                                      p_contact_point_rec => lr_contact_point_rec,
+													          p_edi_rec => lr_edi_rec,
+													          p_email_rec => lr_email_rec,
 													          p_phone_rec => lr_phone_rec,
-                                                              p_telex_rec => lr_telex_rec, 
-													          p_web_rec => lr_web_rec, 
-													          x_contact_point_id => x_contact_point_id, 
-													          x_return_status => x_return_status, 
-													          x_msg_count => x_msg_count, 
+                                                              p_telex_rec => lr_telex_rec,
+													          p_web_rec => lr_web_rec,
+													          x_contact_point_id => x_contact_point_id,
+													          x_return_status => x_return_status,
+													          x_msg_count => x_msg_count,
 													          x_msg_data => x_msg_data );
 
                 print_debug_msg(p_message=> 'API Return Status / Msg Count : ' || x_return_status||' / '||x_msg_count, p_force=>true);
-		
+
 		        IF x_return_status = 'S'
 		        THEN
                    COMMIT;
@@ -3039,22 +3059,22 @@ BEGIN
                 x_msg_count        := NULL;
                 x_msg_data         := NULL;
                 -------------------------Calling Address Contact API
-											   
-		        hz_contact_point_v2pub.update_contact_point ( p_init_msg_list => fnd_api.g_false, 
-		                                                      p_contact_point_rec => lr_contact_point_rec, 
-													          p_edi_rec => lr_edi_rec, 
-													          p_email_rec => lr_email_rec, 
+
+		        hz_contact_point_v2pub.update_contact_point ( p_init_msg_list => fnd_api.g_false,
+		                                                      p_contact_point_rec => lr_contact_point_rec,
+													          p_edi_rec => lr_edi_rec,
+													          p_email_rec => lr_email_rec,
 													          p_phone_rec => lr_phone_rec,
-                                                              p_telex_rec => lr_telex_rec, 
-													          p_web_rec => lr_web_rec, 
+                                                              p_telex_rec => lr_telex_rec,
+													          p_web_rec => lr_web_rec,
                                                               p_object_version_number => ln_object_version_number,
-                                                              x_return_status => x_return_status, 
-													          x_msg_count =>x_msg_count, 
+                                                              x_return_status => x_return_status,
+													          x_msg_count =>x_msg_count,
 													          x_msg_data => x_msg_data );
 
                 print_debug_msg(p_message=> 'API Return Status / Msg Count : ' || x_return_status||' / '||x_msg_count, p_force=>true);
-		
-		        IF x_return_status = 'S' 
+
+		        IF x_return_status = 'S'
 		        THEN
                    COMMIT;
                    print_debug_msg(p_message=> 'Update of FAX Contact Point is Successful ', p_force=>true);
@@ -3087,22 +3107,22 @@ BEGIN
                 x_msg_count    := NULL;
                 x_msg_data     := NULL;
                 -------------------------Calling Address Contact API
-		        									   
-		        hz_contact_point_v2pub.create_contact_point ( p_init_msg_list => fnd_api.g_false, 
-		                                                      p_contact_point_rec => lr_contact_point_rec, 
-													          p_edi_rec => lr_edi_rec, 
-													          p_email_rec => lr_email_rec, 
+
+		        hz_contact_point_v2pub.create_contact_point ( p_init_msg_list => fnd_api.g_false,
+		                                                      p_contact_point_rec => lr_contact_point_rec,
+													          p_edi_rec => lr_edi_rec,
+													          p_email_rec => lr_email_rec,
 													          p_phone_rec => lr_phone_rec,
-                                                              p_telex_rec => lr_telex_rec, 
-													          p_web_rec => lr_web_rec, 
-													          x_contact_point_id => x_contact_point_id, 
-													          x_return_status => x_return_status, 
-													          x_msg_count => x_msg_count, 
+                                                              p_telex_rec => lr_telex_rec,
+													          p_web_rec => lr_web_rec,
+													          x_contact_point_id => x_contact_point_id,
+													          x_return_status => x_return_status,
+													          x_msg_count => x_msg_count,
 													          x_msg_data => x_msg_data );
 
                 print_debug_msg(p_message=> 'API Return Status / Msg Count : ' || x_return_status||' / '||x_msg_count, p_force=>true);
-		
-		        IF x_return_status = 'S' 
+
+		        IF x_return_status = 'S'
 		        THEN
                    COMMIT;
                    print_debug_msg(p_message=> 'Creation of FAX Contact Point is Successful ', p_force=>true);
@@ -3154,17 +3174,17 @@ IS
    ln_user_id                      NUMBER;
    ln_responsibility_id            NUMBER;
    ln_responsibility_appl_id       NUMBER;
-   
+
    CURSOR get_stg_remit_email
    IS
-     SELECT * 
-       FROM XX_AP_CLD_SUPP_SITES_STG 
-      WHERE 1 =1 
+     SELECT *
+       FROM XX_AP_CLD_SUPP_SITES_STG
+      WHERE 1 =1
         AND request_id  = gn_request_id
         AND site_process_flag  = 7;
-   
+
    CURSOR c_site_remit_email(p_vendor_id    NUMBER,
-                             p_vend_site_id NUMBER) 
+                             p_vend_site_id NUMBER)
    IS
       SELECT  ieppm.payment_method_code,
               iepa.payee_party_id,
@@ -3186,41 +3206,41 @@ IS
           AND assa.org_id = ou.organization_id
           AND assa.vendor_site_id = p_vend_site_id
           AND assa.vendor_id = p_vendor_id;
-   
+
 BEGIN
-   print_debug_msg('To Update the Remittance Email' ,p_force=> true); 
+   print_debug_msg('To Update the Remittance Email' ,p_force=> true);
    print_debug_msg('update_remittance_email() - BEGIN' ,p_force=> true);
    BEGIN
         SELECT user_id,
                responsibility_id,
                responsibility_application_id
-          INTO ln_user_id,                      
-               ln_responsibility_id,            
+          INTO ln_user_id,
+               ln_responsibility_id,
                ln_responsibility_appl_id
-          FROM fnd_user_resp_groups 
-         WHERE user_id=(SELECT user_id 
-                          FROM fnd_user 
+          FROM fnd_user_resp_groups
+         WHERE user_id=(SELECT user_id
+                          FROM fnd_user
                          WHERE user_name='ODCDH')
-           AND responsibility_id=(SELECT responsibility_id 
-                                    FROM fnd_responsibility 
-                                   WHERE responsibility_key = 'XX_US_CNV_CDH_CONVERSION'); 
+           AND responsibility_id=(SELECT responsibility_id
+                                    FROM fnd_responsibility
+                                   WHERE responsibility_key = 'XX_US_CNV_CDH_CONVERSION');
    EXCEPTION
-   WHEN OTHERS 
+   WHEN OTHERS
    THEN
 	   print_debug_msg('Exception in WHEN OTHERS for SET_CONTEXT_ERROR: '||SQLERRM,p_force=> true);
    END;
-      
+
    fnd_global.apps_initialize (user_id        => ln_user_id,
                                resp_id        => ln_responsibility_id,
                                resp_appl_id   => ln_responsibility_appl_id);
-   
+
    print_debug_msg('Call get_remit_email cursor to get IBY External Party Payment Methods details',p_force=> true);
-   FOR cur IN get_stg_remit_email 
+   FOR cur IN get_stg_remit_email
    LOOP
      print_debug_msg('Processing the Vendor Site :'||cur.vendor_site_code ,p_force=> true);
 	 print_debug_msg('Call c_site_remit_email cursor to get the Remittance Email Details from Staging Table',p_force=> true);
 	 FOR cr IN c_site_remit_email(cur.vendor_id,
-	                              cur.vendor_site_id) 
+	                              cur.vendor_site_id)
      LOOP
 	    print_debug_msg('Remit Advice Email From the IBY External Party Table :'||cr.remit_advice_email ,p_force=> true);
 		print_debug_msg('Remittance Email from the Staging Table :'||cur.remittance_email ,p_force=> true);
@@ -3248,24 +3268,24 @@ BEGIN
 		                                                    );
 
         COMMIT;
-        IF x_return_status = 'E' 
+        IF x_return_status = 'E'
 		THEN
             FOR k IN l_payee_upd_status.FIRST .. l_payee_upd_status.LAST
             LOOP
                print_debug_msg('Error Message : '|| l_payee_upd_status(k).payee_update_msg,p_force=> true);
             END LOOP;
-        END IF; -- x_return_status = 'E' 
-		  
+        END IF; -- x_return_status = 'E'
+
  	    i := 0;
 	 END LOOP; -- c_site_remit_email
    END LOOP; -- get_stg_remit_email
 EXCEPTION
-  WHEN OTHERS 
+  WHEN OTHERS
   THEN
       x_ret_code      := 1;
       x_return_status := 'E';
       x_err_buf       := 'In exception for procedure update_remittance_email' ;
-END update_remittance_email;  
+END update_remittance_email;
 --+============================================================================+
 --| Name          : Attach_bank_assignments                                    |
 --| Description   : This procedure will attach_bank_assignments using API      |
@@ -3331,7 +3351,7 @@ BEGIN
     lv_supp_site_id        := NULL;
     lv_supp_party_site_id  := NULL;
     lv_acct_owner_party_id := NULL;
-    lv_org_id              := NULL;	 
+    lv_org_id              := NULL;
     p_assignment_attribs.priority := NULL;
     print_debug_msg(p_message=> l_program_step||'Inside Cursor', p_force=>true);
 	print_debug_msg(p_message=> l_program_step||'Vendor Site Code : '||r_sup_bank.vendor_site_code, p_force=>true);
@@ -3351,15 +3371,15 @@ BEGIN
       AND assa.vendor_site_id = r_sup_bank.vendor_site_id;
       ---  AND assa.vendor_site_code = r_sup_bank.vendor_site_code;
     EXCEPTION
-    WHEN OTHERS 
+    WHEN OTHERS
 	THEN
 	    lv_supp_site_id        := NULL;
         lv_supp_party_site_id  := NULL;
         lv_acct_owner_party_id := NULL;
-        lv_org_id              := NULL;	  
+        lv_org_id              := NULL;
         print_debug_msg(p_message=> l_program_step||'Error- Get supp_site_id and supp_party_site_id' || SQLCODE || sqlerrm, p_force=>true);
     END;
-    IF r_sup_bank.account_id >0 AND r_sup_bank.instrument_uses_id IS NULL 
+    IF r_sup_bank.account_id >0 AND r_sup_bank.instrument_uses_id IS NULL
 	THEN
 	  print_debug_msg(p_message=> l_program_step||'Account ID exists and Instrument Uses ID is NULL', p_force=>true);
       ----------------------Assigning Attributes
@@ -3384,7 +3404,7 @@ BEGIN
       p_assignment_attribs.start_date := sysdate;
 	  print_debug_msg(p_message=> l_program_step||'Priority :'||p_assignment_attribs.priority, p_force=>true);
 	  print_debug_msg(p_message=> l_program_step||'Start Date :'||TO_CHAR(p_assignment_attribs.start_date,'DD-MON-YYYY'), p_force=>true);
-	  
+
       ------------------Calling API to check Joint Owner exists or no
       fnd_msg_pub.initialize; --to make msg_count 0
       x_return_status:=NULL;
@@ -3392,16 +3412,16 @@ BEGIN
       x_msg_data     :=NULL;
       x_response     :=NULL;
 	  print_debug_msg(p_message=> l_program_step||'Start of Calling API to check Joint Owner exists or not', p_force=>true);
-      iby_ext_bankacct_pub.check_bank_acct_owner ( p_api_version =>p_api_version, 
-	                                               p_init_msg_list=>p_init_msg_list, 
-												   p_bank_acct_id=>r_sup_bank.account_id, 
-												   p_acct_owner_party_id =>lv_acct_owner_party_id, 
-												   x_return_status=>x_return_status, 
-												   x_msg_count=>x_msg_count, 
-												   x_msg_data=>x_msg_data, 
+      iby_ext_bankacct_pub.check_bank_acct_owner ( p_api_version =>p_api_version,
+	                                               p_init_msg_list=>p_init_msg_list,
+												   p_bank_acct_id=>r_sup_bank.account_id,
+												   p_acct_owner_party_id =>lv_acct_owner_party_id,
+												   x_return_status=>x_return_status,
+												   x_msg_count=>x_msg_count,
+												   x_msg_data=>x_msg_data,
 												   x_response=>x_response );
 	  print_debug_msg(p_message=> l_program_step||'End of Calling API to check Joint Owner exists or not', p_force=>true);
-      IF x_return_status <>'S' 
+      IF x_return_status <>'S'
 	  THEN --------------No join owner exists
 	    print_debug_msg(p_message=> l_program_step||'No join owner exists', p_force=>true);
         print_debug_msg(p_message=> l_program_step||'x_return_status ' || x_return_status , p_force=>true);
@@ -3417,18 +3437,18 @@ BEGIN
         x_response     :=NULL;
         -------------------------Calling Joint Account Owner API
 		print_debug_msg(p_message=> l_program_step||'Start of Calling Joint Account Owner API', p_force=>true);
-        iby_ext_bankacct_pub.add_joint_account_owner ( p_api_version =>p_api_version, 
-		                                               p_init_msg_list=>p_init_msg_list, 
-													   p_bank_account_id=>r_sup_bank.account_id, 
-													   p_acct_owner_party_id =>lv_acct_owner_party_id, 
-													   x_joint_acct_owner_id=>l_joint_acct_owner_id, 
-													   x_return_status=>x_return_status, 
-													   x_msg_count=>x_msg_count, 
-													   x_msg_data=>x_msg_data, 
+        iby_ext_bankacct_pub.add_joint_account_owner ( p_api_version =>p_api_version,
+		                                               p_init_msg_list=>p_init_msg_list,
+													   p_bank_account_id=>r_sup_bank.account_id,
+													   p_acct_owner_party_id =>lv_acct_owner_party_id,
+													   x_joint_acct_owner_id=>l_joint_acct_owner_id,
+													   x_return_status=>x_return_status,
+													   x_msg_count=>x_msg_count,
+													   x_msg_data=>x_msg_data,
 													   x_response=>x_response );
 		print_debug_msg(p_message=> l_program_step||'End of Calling Joint Account Owner API', p_force=>true);
-		IF x_return_status <>'S' 
-	    THEN 
+		IF x_return_status <>'S'
+	    THEN
 	        print_debug_msg(p_message=> l_program_step||'Unable to Add Joint Account Owner', p_force=>true);
             FOR i IN 1 .. x_msg_count--fnd_msg_pub.count_msg
             LOOP
@@ -3447,15 +3467,15 @@ BEGIN
       x_msg_data     :=NULL;
       x_response     :=NULL;
       --------------------Call the API for instr assignment
-      iby_disbursement_setup_pub.set_payee_instr_assignment (p_api_version => p_api_version, 
-	                                                         p_init_msg_list => p_init_msg_list, 
+      iby_disbursement_setup_pub.set_payee_instr_assignment (p_api_version => p_api_version,
+	                                                         p_init_msg_list => p_init_msg_list,
 															 p_commit => p_commit,
-															 x_return_status => x_return_status, 
-															 x_msg_count => x_msg_count, 
-															 x_msg_data => x_msg_data, 
-															 p_payee => p_payee, 
-															 p_assignment_attribs => p_assignment_attribs, 
-															 x_assign_id => l_assign_id, 
+															 x_return_status => x_return_status,
+															 x_msg_count => x_msg_count,
+															 x_msg_data => x_msg_data,
+															 p_payee => p_payee,
+															 p_assignment_attribs => p_assignment_attribs,
+															 x_assign_id => l_assign_id,
 															 x_response => x_response );
       COMMIT;
       print_debug_msg(p_message=> l_program_step||'SET_PAYEE_INSTR_ASSIGNMENT X_ASSIGN_ID = ' || l_assign_id, p_force=>true);
@@ -3478,7 +3498,7 @@ BEGIN
       END IF;
     END IF;--R_SUP_BANK.account_id IS NOT NULL AND R_SUP_BANK.INSTRUMENT_USES_ID IS NULL
     ------------------------------When Account ID is null create new Account and instrumnets
-    IF r_sup_bank.account_id               IS NULL OR r_sup_bank.account_id=-1 
+    IF r_sup_bank.account_id               IS NULL OR r_sup_bank.account_id=-1
 	THEN
       x_bank_branch_rec.currency           :=NVL(r_sup_bank.currency_code,'USD');
       x_bank_branch_rec.branch_id          :=r_sup_bank.branch_id;
@@ -3486,26 +3506,26 @@ BEGIN
       x_bank_branch_rec.acct_owner_party_id:=lv_acct_owner_party_id;
       x_bank_branch_rec.country_code       :=r_sup_bank.country_code;
       x_bank_branch_rec.bank_account_name  := r_sup_bank.bank_account_name;
-      x_bank_branch_rec.bank_account_num   :=r_sup_bank.bank_account_num; 
-      x_bank_branch_rec.acct_type          := 'Supplier';	 
-	  
+      x_bank_branch_rec.bank_account_num   :=r_sup_bank.bank_account_num;
+      x_bank_branch_rec.acct_type          := 'Supplier';
+
       fnd_msg_pub.initialize; --to make msg_count 0
       x_return_status:=NULL;
       x_msg_count    :=NULL;
       x_msg_data     :=NULL;
       x_response     :=NULL;
-      iby_ext_bankacct_pub.create_ext_bank_acct ( p_api_version => 1.0, 
-	                                              p_init_msg_list => fnd_api.g_true, 
-												  p_ext_bank_acct_rec => x_bank_branch_rec, 
+      iby_ext_bankacct_pub.create_ext_bank_acct ( p_api_version => 1.0,
+	                                              p_init_msg_list => fnd_api.g_true,
+												  p_ext_bank_acct_rec => x_bank_branch_rec,
 												  p_association_level => 'SS',
-												  p_supplier_site_id => lv_supp_site_id, 
-												  p_party_site_id => lv_supp_party_site_id, 
-												  p_org_id => lv_org_id, 
-												  p_org_type => 'OPERATING_UNIT', 
+												  p_supplier_site_id => lv_supp_site_id,
+												  p_party_site_id => lv_supp_party_site_id,
+												  p_org_id => lv_org_id,
+												  p_org_type => 'OPERATING_UNIT',
 												  x_acct_id => l_account_id,
-												  x_return_status => x_return_status, 
-												  x_msg_count => x_msg_count, 
-												  x_msg_data =>x_msg_data, 
+												  x_return_status => x_return_status,
+												  x_msg_count => x_msg_count,
+												  x_msg_data =>x_msg_data,
 												  x_response => x_response );
       print_debug_msg(p_message=> l_program_step||'create_ext_bank_acct l_account_id = ' || l_account_id, p_force=>true);
       print_debug_msg(p_message=> l_program_step||'create_ext_bank_acct X_RETURN_STATUS = ' || x_return_status, p_force=>true);
@@ -3772,7 +3792,7 @@ BEGIN
         FETCH c_get_fnd_lookup_code INTO l_org_type_code;
         CLOSE c_get_fnd_lookup_code;
         IF l_org_type_code     IS NULL THEN
-          gc_error_status_flag := 'Y'; 
+          gc_error_status_flag := 'Y';
           print_debug_msg(p_message=> gc_step||'Organization Type : '||l_organization_type||' does not exist in the system' ,p_force=> false);
 		  gc_error_msg:='Organization Type : '||l_organization_type||' does not exist in the system';
         ELSE
@@ -3803,7 +3823,7 @@ BEGIN
         IF l_supplier_type (l_sup_idx).segment1 IS NULL THEN
           gc_error_status_flag                  := 'Y';
           print_debug_msg(p_message=> l_program_step||' Supplier number Cannot be BLANK'||l_sup_idx ,p_force=> true);
-		  gc_error_msg:=gc_error_msg||' , Supplier Number is BLANK ';		  
+		  gc_error_msg:=gc_error_msg||' , Supplier Number is BLANK ';
           l_supplier_type (l_sup_idx).supp_PROCESS_FLAG := gn_process_status_error;
           l_supplier_type (l_sup_idx).ERROR_FLAG        := gc_process_error_flag;
           l_supplier_type (l_sup_idx).ERROR_MSG         := 'Supplier number Cannot be BLANK'||l_sup_idx;
@@ -3870,7 +3890,7 @@ BEGIN
         IF l_supplier_type (l_sup_idx).vendor_type_lookup_code IS NULL THEN
           gc_error_status_flag                                 := 'Y';
           print_debug_msg(p_message=> gc_step||l_supplier_type (l_sup_idx).vendor_type_lookup_code||' Supplier Type cannot be BLANK' ,p_force=> true);
-		  gc_error_msg:=gc_error_msg||' , Supplier Type is BLANK';			  
+		  gc_error_msg:=gc_error_msg||' , Supplier Type is BLANK';
         ELSE -- Derive the Supplier Type Code
           l_sup_type_code := NULL;
           OPEN c_sup_type_code(l_supplier_type (l_sup_idx).vendor_type_lookup_code);
@@ -3892,7 +3912,7 @@ BEGIN
           IF (NOT (isnumeric(l_supplier_type(l_sup_idx).customer_num))) THEN
             gc_error_status_flag := 'Y';
             print_debug_msg(p_message=> gc_step||l_supplier_type (l_sup_idx).customer_num||' Customer Number should be Numeric' ,p_force=> true);
-			gc_error_msg:=gc_error_msg||' , '||l_supplier_type (l_sup_idx).customer_num||' Customer Number should be Numeric';			
+			gc_error_msg:=gc_error_msg||' , '||l_supplier_type (l_sup_idx).customer_num||' Customer Number should be Numeric';
           END IF; -- IF (NOT (isNumeric(l_sup_site_type.CUSTOMER_NUM)))
         END IF;   -- IF (l_supplier_type(l_sup_idx).CUSTOMER_NUM IS NOT NULL)
         --====================================================================
@@ -4131,14 +4151,14 @@ IS
     AND TO_CHAR(xasi.org_id)    =c_org_id;
   --=================================================================
   -- Cursor Declarations for Tolerance mapping from Cloud to EBS
-  --=================================================================	
+  --=================================================================
   CURSOR c_get_tolerance_name(c_cloud_tolerance VARCHAR2)
   IS
     SELECT LTRIM(RTRIM(tv.target_value1))
       FROM xx_fin_translatevalues tv,
            xx_fin_translatedefinition td
      WHERE tv.translate_id  = td.translate_id
-       AND translation_name = 'XX_AP_CLOUD_TOLERANCES'  
+       AND translation_name = 'XX_AP_CLOUD_TOLERANCES'
 	   AND SYSDATE BETWEEN NVL(tv.start_date_active,SYSDATE) AND NVL(tv.end_date_active,SYSDATE + 1)
        AND SYSDATE BETWEEN NVL(td.start_date_active,SYSDATE) AND NVL(td.end_date_active,SYSDATE + 1)
 	   AND tv.source_value1 = c_cloud_tolerance
@@ -4146,14 +4166,14 @@ IS
        AND td.enabled_flag = 'Y';
   --=================================================================
   -- Cursor Declarations for FOB mapping from Cloud to EBS
-  --=================================================================	
+  --=================================================================
   CURSOR c_get_fob_value(c_cloud_fob VARCHAR2)
   IS
     SELECT LTRIM(RTRIM(tv.target_value1))
       FROM xx_fin_translatevalues tv,
            xx_fin_translatedefinition td
      WHERE tv.translate_id  = td.translate_id
-       AND translation_name = 'XX_AP_CLOUD_FOB_VALUES'  
+       AND translation_name = 'XX_AP_CLOUD_FOB_VALUES'
 	   AND SYSDATE BETWEEN NVL(tv.start_date_active,SYSDATE) AND NVL(tv.end_date_active,SYSDATE + 1)
        AND SYSDATE BETWEEN NVL(td.start_date_active,SYSDATE) AND NVL(td.end_date_active,SYSDATE + 1)
 	   AND tv.source_value1 = c_cloud_fob
@@ -4297,7 +4317,7 @@ BEGIN
     FETCH c_sup_site_email INTO lc_site_email_address;
     CLOSE c_sup_site_email;
     print_debug_msg(p_message=>'Supplier Site Email Address : '||lc_site_email_address ,p_force=> false);
-    
+
 	l_sup_site_and_add (l_sup_site_idx).site_email_address := lc_site_email_address;
     --==============================================================================================================
     -- Validating the Supplier Site - Address Details -  Address Line 1
@@ -4353,7 +4373,7 @@ BEGIN
         gc_error_site_status_flag := 'Y';
         print_debug_msg(p_message=> 'Vendor Site CA Address has value for STATE',p_force=> false);
         gc_error_msg:=gc_error_msg||' ,Vendor Site CA Address has value for STATE';
-      END IF; -- IF l_sup_site_type.PROVINCE IS NULL      
+      END IF; -- IF l_sup_site_type.PROVINCE IS NULL
     ELSE
       gc_error_site_status_flag := 'Y';
       print_debug_msg(p_message=> 'Invalid Country ',p_force=> false);
@@ -4386,7 +4406,7 @@ BEGIN
       l_sup_site_type.create_flag:=l_sup_create_flag;
     END IF;
     print_debug_msg(p_message=> 'After supplier site existence check Error Status/Create Flag : '||gc_error_site_status_flag||'/'||
-							     l_sup_create_flag, 
+							     l_sup_create_flag,
 					p_force=> false
 				   );
     --==============================================================================================================
@@ -4414,17 +4434,17 @@ BEGIN
           print_debug_msg(p_message=> l_sup_site_type.country||' Vendor Site Country is Invalid' ,p_force=> false);
         END IF; -- IF IF l_sup_site_type.COUNTRY_CODE = 'US'
     END IF;   -- IF l_sup_site_type.POSTAL_CODE IS NULL
-    
+
       --=============================================================================
       -- Validating the Supplier Site Category
-      --=============================================================================	  
-	  
+      --=============================================================================
+
       IF l_sup_site_type.attribute8 IS NULL THEN
          gc_error_site_status_flag := 'Y';
          print_debug_msg(p_message=> 'Site Category is BLANK' ,p_force=> true);
    	     gc_error_msg:=gc_error_msg||' , Site Category is BLANK';
-      END IF;	  
-	  
+      END IF;
+
       --=============================================================================
       -- Validating the Supplier Site - Ship to Location Code
       --=============================================================================
@@ -4454,45 +4474,45 @@ BEGIN
         END IF; -- IF l_ship_to_location_id IS NULL
       END IF;
       --=============================================================================
-      -- Validating Terms 
+      -- Validating Terms
       --=============================================================================
-	  
-	  IF l_sup_site_type.terms_name IS NOT NULL 
-	  THEN		 
+
+	  IF l_sup_site_type.terms_name IS NOT NULL
+	  THEN
 	       OPEN c_get_term_id(xx_get_terms(l_sup_site_type.terms_name));
            FETCH c_get_term_id INTO ln_terms_id;
            CLOSE c_get_term_id;
-		   
-         IF NVL(ln_terms_id,0) = 0 
+
+         IF NVL(ln_terms_id,0) = 0
 		 THEN
             gc_error_site_status_flag := 'Y';
             print_debug_msg(p_message=> l_sup_site_type.terms_name||' Invalid  Terms' ,p_force=> true);
 			gc_error_msg:=gc_error_msg||' ,'|| l_sup_site_type.terms_name||' Invalid  Terms';
-         END IF; 
+         END IF;
       END IF;
-	  
+
       --=============================================================================
       -- Validating the Supplier Site - FOB Lookup value
       --=============================================================================
       l_fob_code_cnt                     := NULL;
-      IF l_sup_site_type.fob_lookup_code IS NOT NULL 
+      IF l_sup_site_type.fob_lookup_code IS NOT NULL
 	  THEN -- Derive the FOB Code
          l_fob_code_cnt                   := 0;
-		 
+
 	     IF l_sup_site_type.fob_lookup_code = 'ORIGIN'
-		   THEN 
+		   THEN
 		       lc_fob_value := 'SHIPPING';
 		 ELSIF l_sup_site_type.fob_lookup_code = 'DESTINATION'
-		   THEN 
+		   THEN
 		       lc_fob_value := 'RECEIVING';
 		 ELSE
 		       lc_fob_value := l_sup_site_type.fob_lookup_code;
 		 END IF;
-		 
+
          OPEN c_get_fnd_lookup_code_cnt('FOB', lc_fob_value);
          FETCH c_get_fnd_lookup_code_cnt INTO l_fob_code_cnt;
          CLOSE c_get_fnd_lookup_code_cnt;
-         IF l_fob_code_cnt            =0 
+         IF l_fob_code_cnt            =0
 		 THEN
             gc_error_site_status_flag := 'Y';
             print_debug_msg(p_message=> l_sup_site_type.fob_lookup_code||' Invalid FOB ' ,p_force=> true);
@@ -4535,15 +4555,15 @@ BEGIN
       IF l_sup_site_type.service_tolerance IS NOT NULL
 	  THEN
         l_service_tolerance_cnt := 0;
-		 
+
 		OPEN c_get_tolerance_name(l_sup_site_type.service_tolerance);
 		FETCH c_get_tolerance_name INTO l_service_tolerance_name;
         CLOSE c_get_tolerance_name;
-		
+
         OPEN c_get_tolerance(l_service_tolerance_name);
         FETCH c_get_tolerance INTO l_service_tolerance_cnt;
         CLOSE c_get_tolerance;
-        IF l_service_tolerance_cnt = 0 
+        IF l_service_tolerance_cnt = 0
 		THEN
            gc_error_site_status_flag := 'Y';
            print_debug_msg(p_message=>  l_sup_site_type.service_tolerance||' Invalid Service Tolerance' ,p_force=> true);
@@ -4553,18 +4573,18 @@ BEGIN
       --=============================================================================
       -- Validating the Supplier Site - Invoice Tolerance
       --=============================================================================
-      IF l_sup_site_type.tolerance_name IS NOT NULL 
+      IF l_sup_site_type.tolerance_name IS NOT NULL
 	  THEN
         l_tolerance_cnt := 0;
-		 
+
 		OPEN c_get_tolerance_name(l_sup_site_type.tolerance_name);
 		FETCH c_get_tolerance_name INTO l_tolerance_name;
         CLOSE c_get_tolerance_name;
-		
+
         OPEN c_get_tolerance(l_tolerance_name);
         FETCH c_get_tolerance INTO l_tolerance_cnt;
         CLOSE c_get_tolerance;
-        IF l_tolerance_cnt =0 
+        IF l_tolerance_cnt =0
 		THEN
            gc_error_site_status_flag := 'Y';
            print_debug_msg(p_message=>  l_sup_site_type.tolerance_name||' Invalid Quantity Tolerance' ,p_force=> true);
@@ -4612,13 +4632,13 @@ BEGIN
       ELSE
         l_always_disc_flag := l_sup_site_type.always_take_disc_flag;
       END IF;
-    
+
 	l_sup_site_and_add(l_sup_site_idx).create_flag :=l_sup_create_flag;
     l_sup_site_and_add(l_sup_site_idx).supplier_name       := l_sup_site_type.supplier_name;
     l_sup_site_and_add(l_sup_site_idx).supplier_number     := l_sup_site_type.supplier_number;
     l_sup_site_and_add(l_sup_site_idx).vendor_site_code    := l_sup_site_type.vendor_site_code;
     l_sup_site_and_add(l_sup_site_idx).vendor_id           := l_sup_site_type.supp_id;
-    l_sup_site_and_add(l_sup_site_idx).terms_id            := ln_terms_id;	
+    l_sup_site_and_add(l_sup_site_idx).terms_id            := ln_terms_id;
     IF gc_error_site_status_flag                            = 'Y' THEN
       l_sup_site_and_add(l_sup_site_idx).site_process_flag := gn_process_status_error;
       l_sup_site_and_add(l_sup_site_idx).error_flag        := gc_process_error_flag;
@@ -4632,9 +4652,9 @@ BEGIN
   --============================================================================
   -- For Doing the Bulk Update
   --============================================================================
-  
+
   print_debug_msg(p_message=> 'Bulk Update Site Records : '||l_sup_site_and_add.count ,p_force=> true);
-  
+
   IF l_sup_site_and_add.count > 0 THEN
     BEGIN
       FORALL l_idxs IN l_sup_site_and_add.FIRST .. l_sup_site_and_add.LAST
@@ -4725,7 +4745,7 @@ IS
     AND UPPER(last_name)   = UPPER(c_last_name)
     AND xasi.vendor_id     = c_vendor_id
     AND xasi.vendor_site_id= c_vendor_site_id;
-*/	
+*/
   --==========================================================================================
   -- Cursor Declarations for Supplier Site existence
   --==========================================================================================
@@ -4887,7 +4907,7 @@ BEGIN
     gc_error_msg              := '';
 	l_sup_create_flag         :=NULL;
 
-    print_debug_msg(p_message=> 'Supplier/Site/Contact : '||l_sup_site_cont_type.supplier_number||'/'|| 
+    print_debug_msg(p_message=> 'Supplier/Site/Contact : '||l_sup_site_cont_type.supplier_number||'/'||
 							     UPPER(l_sup_site_cont_type.supplier_name)||'/'||
 								 l_sup_site_cont_type.vendor_site_code||'/'||
 								 l_sup_site_cont_type.first_name||'/'||l_sup_site_cont_type.last_name
@@ -4909,12 +4929,12 @@ BEGIN
     IF l_sup_site_cont_type.first_name IS NULL THEN
       gc_error_site_status_flag        := 'Y';
       print_debug_msg(p_message => 'Contact First Name is BLANK', p_force => FALSE);
-      gc_error_msg:=gc_error_msg||' , Contact First Name is BLANK';     
+      gc_error_msg:=gc_error_msg||' , Contact First Name is BLANK';
     END IF;
     IF l_sup_site_cont_type.last_name IS NULL THEN
       gc_error_site_status_flag       := 'Y';
       print_debug_msg(p_message=> 'Contact Last Name is BLANK' , p_force=> FALSE);
-      gc_error_msg:=gc_error_msg||' , Contact Last Name is BLANK';     
+      gc_error_msg:=gc_error_msg||' , Contact Last Name is BLANK';
     END IF;
     IF gc_error_site_status_flag = 'N' THEN
       l_sup_cont_exist_cnt := 0;
@@ -4947,7 +4967,7 @@ BEGIN
     END IF;
     print_debug_msg(p_message=>'Contact Process / Error Flag :'||l_sup_cont(l_sup_cont_idx).contact_process_flag||'/'||gc_error_site_status_flag);
   END LOOP; --  FOR l_sup_site_type IN c_supplier_contact
- 
+
   print_debug_msg(p_message=> 'Bulk Update for all Contact Records :'|| l_sup_cont.COUNT , p_force => TRUE);
 
   IF l_sup_cont.COUNT > 0 THEN
@@ -5053,7 +5073,7 @@ BEGIN
     lv_supp_site_id          := NULL;
     lv_supp_party_site_id    := NULL;
     lv_acct_owner_party_id   := NULL;
-    lv_org_id                := NULL;  
+    lv_org_id                := NULL;
     p_assignment_attribs.priority := NULL;
     print_debug_msg(p_message=> l_program_step||'Inside Cursor', p_force=>true);
 	print_debug_msg(p_message=> l_program_step||'Vendor Site : '||r_sup_bank.vendor_site_code, p_force=>true);
@@ -5072,7 +5092,7 @@ BEGIN
       AND aps.vendor_id       =r_sup_bank.vendor_id
       AND assa.vendor_site_id = r_sup_bank.vendor_site_id;
     EXCEPTION
-    WHEN OTHERS 
+    WHEN OTHERS
 	THEN
 	     lv_supp_site_id          := NULL;
 	     lv_supp_party_site_id    := NULL;
@@ -5080,7 +5100,7 @@ BEGIN
 	     lv_org_id                := NULL;
          print_debug_msg(p_message=> l_program_step||'Error- Get supp_site_id and supp_party_site_id' || SQLCODE || sqlerrm, p_force=>true);
     END;
-	
+
 	IF lv_supp_site_id IS NOT NULL
 	THEN
         p_payee.supplier_site_id := lv_supp_site_id;
@@ -5102,16 +5122,16 @@ BEGIN
 	    END IF;
         p_assignment_attribs.start_date              := TO_DATE(r_sup_bank.start_date,'YYYY/MM/DD');
         IF r_sup_bank.end_date IS NOT NULL
-	    THEN 
+	    THEN
 	        p_assignment_attribs.end_date            := TO_DATE(r_sup_bank.end_date,'YYYY/MM/DD');
 	    ELSE
-	        p_assignment_attribs.end_date            := TO_DATE('4712/12/31','YYYY/MM/DD'); 
+	        p_assignment_attribs.end_date            := TO_DATE('4712/12/31','YYYY/MM/DD');
 	    END IF;
-	
+
         print_debug_msg(p_message=> l_program_step||'Primary Flag : '||r_sup_bank.primary_flag, p_force=>true);
 	    print_debug_msg(p_message=> l_program_step||'Start Date : '||p_assignment_attribs.start_date, p_force=>true);
 	    print_debug_msg(p_message=> l_program_step||'End Date : '||p_assignment_attribs.end_date, p_force=>true);
-	    print_debug_msg(p_message=> l_program_step||'Priority : '||p_assignment_attribs.priority, p_force=>true); 
+	    print_debug_msg(p_message=> l_program_step||'Priority : '||p_assignment_attribs.priority, p_force=>true);
         fnd_msg_pub.initialize; --to make msg_count 0
         x_return_status:=NULL;
         x_msg_count    :=NULL;
@@ -5119,15 +5139,15 @@ BEGIN
         x_response     :=NULL;
         --------------------Call the API for instr assignment
 	    print_debug_msg(p_message=> l_program_step||'Start of calling API Instr Assignment', p_force=>true);
-        iby_disbursement_setup_pub.set_payee_instr_assignment (p_api_version => p_api_version, 
+        iby_disbursement_setup_pub.set_payee_instr_assignment (p_api_version => p_api_version,
 	                                                           p_init_msg_list => p_init_msg_list,
 														       p_commit => p_commit,
-														       x_return_status => x_return_status, 
-														       x_msg_count => x_msg_count, 
-														       x_msg_data => x_msg_data, 
-														       p_payee => p_payee, 
-														       p_assignment_attribs => p_assignment_attribs, 
-														       x_assign_id => l_assign_id, 
+														       x_return_status => x_return_status,
+														       x_msg_count => x_msg_count,
+														       x_msg_data => x_msg_data,
+														       p_payee => p_payee,
+														       p_assignment_attribs => p_assignment_attribs,
+														       x_assign_id => l_assign_id,
 														       x_response => x_response );
         COMMIT;
 	    print_debug_msg(p_message=> l_program_step||'End of calling API Instr Assignment', p_force=>true);
@@ -5224,7 +5244,7 @@ IS
     WHERE a.party_name    =p_bank_name
     AND b.bank_party_id   =a.party_id
     AND b.bank_branch_name=p_branch
-	-- AND b.branch_number=p_branch 
+	-- AND b.branch_number=p_branch
     AND b.country         =p_country
     AND SYSDATE BETWEEN b.start_date AND NVL(end_date,sysdate+1);
   --==========================================================================================
@@ -5325,46 +5345,46 @@ BEGIN
     gc_error_msg              := '';
 	l_sup_bank_id             := NULL;
 	l_sup_bank_branch_id      := NULL;
-	
+
     --====================================================================
     -- Checking Required Columns validation
     --====================================================================
-    IF l_sup_bank_type.supplier_name IS NULL 
+    IF l_sup_bank_type.supplier_name IS NULL
 	THEN
       gc_error_site_status_flag      := 'Y';
       gc_error_msg                   :=gc_error_msg||' Supplier Name is NULL';
       print_debug_msg(p_message=> 'Supplier Name is BLANK' , p_force=> true);
-      gc_error_msg:=gc_error_msg||' , Supplier Name is BLANK'; 
+      gc_error_msg:=gc_error_msg||' , Supplier Name is BLANK';
     END IF;
-    IF l_sup_bank_type.supplier_num IS NULL 
+    IF l_sup_bank_type.supplier_num IS NULL
 	THEN
       gc_error_site_status_flag     := 'Y';
       gc_error_msg                  :=gc_error_msg||', Supplier Number is BLANK';
       print_debug_msg(p_message=> 'Supplier Number is BLANK' , p_force=> true);
 	END IF;
-	  
-    IF l_sup_bank_type.vendor_site_code IS NULL 
+
+    IF l_sup_bank_type.vendor_site_code IS NULL
 	THEN
       gc_error_site_status_flag         := 'Y';
       gc_error_msg                      :=gc_error_msg||', Vendor Site Code is BLANK';
 	  print_debug_msg(p_message=> 'Vendor Site Code is BLANK' , p_force=> true);
     END IF;
-	
-	IF l_sup_bank_type.bank_account_name IS NULL 
+
+	IF l_sup_bank_type.bank_account_name IS NULL
 	THEN
       gc_error_site_status_flag         := 'Y';
       gc_error_msg                      :=gc_error_msg||', Bank Account Name is BLANK';
 	  print_debug_msg(p_message=> 'Bank Account Name is BLANK' , p_force=> true);
     END IF;
-	
-	print_debug_msg(p_message=> 'Error Message :'||gc_error_msg , p_force=> true);	  
+
+	print_debug_msg(p_message=> 'Error Message :'||gc_error_msg , p_force=> true);
 
     --==============================================================================================================
     -- Validating the Supplier Bank - Address Details -  Address Line 2
     --==============================================================================================================
     print_debug_msg(p_message=> gc_step||' After basic validation of Contact - gc_error_site_status_flag is '||gc_error_site_status_flag ,p_force=> true);
     l_bank_create_flag          := '';
-    IF gc_error_site_status_flag = 'N' 
+    IF gc_error_site_status_flag = 'N'
 	THEN
       print_debug_msg(p_message=> gc_step||' l_sup_bank_type.update_flag is '||l_sup_bank_type.CREATE_FLAG ,p_force=> true);
       print_debug_msg(p_message=> gc_step||' upper(l_sup_bank_type.vendor_site_code) is '||upper(l_sup_bank_type.vendor_site_code) ,p_force=> true);
@@ -5417,13 +5437,13 @@ BEGIN
 				   AND ROWNUM = 1;
 				l_sup_bank_type.account_id :=l_bank_account_id;
 			END;
-        WHEN OTHERS 
+        WHEN OTHERS
 		THEN
           l_bank_account_id           :=-1;
           l_bank_create_flag          :='Y';--Insert for Bank
           l_sup_bank_type.create_flag :=l_bank_create_flag;
         END;
-		
+
         IF NVL(l_bank_account_id,-1) > 0 THEN
           BEGIN
             SELECT uses.instrument_payment_use_id,
@@ -5459,8 +5479,8 @@ BEGIN
           l_sup_bank_type.instrument_uses_id :=l_instrument_id;
         END IF;
       END IF;
-      IF l_instrument_id    > 0 
-	  -- AND l_sup_bank_type.end_date IS NOT NULL 
+      IF l_instrument_id    > 0
+	  -- AND l_sup_bank_type.end_date IS NOT NULL
 	  THEN
         l_bank_create_flag :='N';--Update for Bank assignment end Date
       ELSE
@@ -5484,7 +5504,7 @@ BEGIN
       l_sup_bank(l_sup_bank_idx).branch_id          :=l_sup_bank_branch_id;
       l_sup_bank(l_sup_bank_idx).account_id         :=l_bank_account_id;
     END IF;
-    IF gc_error_site_status_flag                      = 'Y' 
+    IF gc_error_site_status_flag                      = 'Y'
 	THEN
       l_sup_bank(l_sup_bank_idx).bnkact_process_flag := gn_process_status_error;
       l_sup_bank(l_sup_bank_idx).ERROR_FLAG          := gc_process_error_flag;
@@ -5495,10 +5515,10 @@ BEGIN
       l_sup_bank(l_sup_bank_idx).bank_id             := NULL;
       l_sup_bank(l_sup_bank_idx).branch_id           := NULL;
       l_sup_bank(l_sup_bank_idx).account_id          := NULL;
-	  
-	  print_debug_msg(p_message=> 'bnkact_process_flag :'||l_sup_bank(l_sup_bank_idx).bnkact_process_flag , p_force=> true);	
-	  print_debug_msg(p_message=> 'error_flag :'||l_sup_bank(l_sup_bank_idx).error_flag , p_force=> true);	
-	  print_debug_msg(p_message=> 'error_msg :'||l_sup_bank(l_sup_bank_idx).error_msg , p_force=> true);	
+
+	  print_debug_msg(p_message=> 'bnkact_process_flag :'||l_sup_bank(l_sup_bank_idx).bnkact_process_flag , p_force=> true);
+	  print_debug_msg(p_message=> 'error_flag :'||l_sup_bank(l_sup_bank_idx).error_flag , p_force=> true);
+	  print_debug_msg(p_message=> 'error_msg :'||l_sup_bank(l_sup_bank_idx).error_msg , p_force=> true);
     ELSE
       l_sup_bank(l_sup_bank_idx).bnkact_process_flag := gn_process_status_validated;
       print_debug_msg(p_message=> 'Process Flag ' ||gn_process_status_validated, p_force=> true);
@@ -5562,7 +5582,7 @@ END validate_bank_records;
 --+============================================================================+
 PROCEDURE load_supplier_interface( x_ret_code OUT NUMBER ,
 								   x_return_status OUT VARCHAR2 ,
-								   x_err_buf OUT VARCHAR2 
+								   x_err_buf OUT VARCHAR2
 								 )
 IS
   --=========================================================================================
@@ -5620,7 +5640,7 @@ IS
     AND xas.create_flag         = 'Y';
 
 	l_process_status_flag VARCHAR2(1);
-	
+
   CURSOR c_error
   IS
   SELECT a.rowid drowid,
@@ -5628,7 +5648,7 @@ IS
     FROM fnd_new_messages d,
 	     ap_supplier_int_rejections c,
          ap_suppliers_int b,
-         xx_ap_cld_suppliers_stg a 
+         xx_ap_cld_suppliers_stg a
    WHERE a.request_id=gn_request_id
      AND a.supp_process_flag=gn_process_status_validated
      AND a.create_flag='Y'
@@ -5637,7 +5657,7 @@ IS
      AND c.parent_id=b.vendor_interface_id
      AND c.parent_table='AP_SUPPLIERS_INT'
 	 AND d.message_name = c.reject_lookup_code;
-  
+
 BEGIN
   print_debug_msg(p_message=> gc_step||' load_Supplier_Interface() - BEGIN' ,p_force=> false);
   --==============================================================================
@@ -5656,15 +5676,15 @@ BEGIN
       FOR l_idx IN l_supplier_type.first .. l_supplier_type.last
       LOOP
 		gc_error_msg 					 := NULL;
-	    lc_inspection_required_flag	     := NULL;    
-        lc_receipt_required_flag	     := NULL;     
-        ln_qty_rcv_tolerance	         := NULL;         
-        lc_qty_rcv_exception_code	     := NULL;     
-        lc_enforce_ship_to_loc_code      := NULL;	
-        ln_days_early_receipt_allowed	 := NULL;   
-        ln_days_late_receipt_allowed	 := NULL;  
+	    lc_inspection_required_flag	     := NULL;
+        lc_receipt_required_flag	     := NULL;
+        ln_qty_rcv_tolerance	         := NULL;
+        lc_qty_rcv_exception_code	     := NULL;
+        lc_enforce_ship_to_loc_code      := NULL;
+        ln_days_early_receipt_allowed	 := NULL;
+        ln_days_late_receipt_allowed	 := NULL;
         lc_receipt_days_exception_code	 := NULL;
-        ln_receiving_routing_id	         := NULL; 
+        ln_receiving_routing_id	         := NULL;
         lc_allow_substitute_rcpts_flag	 := NULL;
         lc_allow_unordered_rcpts_flag	 := NULL;
         --==============================================================================
@@ -5681,14 +5701,14 @@ BEGIN
           SELECT ap_suppliers_int_s.nextval
           INTO l_vendor_intf_id
           FROM dual;
-		  
+
           /* Added as per Version 2.6 by Havish Kasina */
 		  --====================
-		  -- To get the terms 
-		  --====================				   
+		  -- To get the terms
+		  --====================
 		  get_terms_id(p_terms_name  => lc_terms_name,
                        o_terms_id    => ln_terms_id);
-		  
+
 		  /* Added as per Version 2.1 by Havish Kasina */
 		  --==============================================================================
 		  -- To get the Receiving details from the Supplier Sites Staging table
@@ -5696,37 +5716,37 @@ BEGIN
 		  print_debug_msg(p_message=> 'Fetching the Receiving Information for the Supplier ' ||l_supplier_type (l_idx).segment1 , p_force=>true);
 
 		  get_receiving_details(p_supplier_num                 => l_supplier_type (l_idx).segment1 ,
-                                o_inspection_required_flag     => lc_inspection_required_flag	   , 
-								o_receipt_required_flag        => lc_receipt_required_flag	       ,     
-								o_qty_rcv_tolerance            => ln_qty_rcv_tolerance	           ,         
-								o_qty_rcv_exception_code       => lc_qty_rcv_exception_code	       ,     
-								o_enforce_ship_to_loc_code     => lc_enforce_ship_to_loc_code      ,	 
+                                o_inspection_required_flag     => lc_inspection_required_flag	   ,
+								o_receipt_required_flag        => lc_receipt_required_flag	       ,
+								o_qty_rcv_tolerance            => ln_qty_rcv_tolerance	           ,
+								o_qty_rcv_exception_code       => lc_qty_rcv_exception_code	       ,
+								o_enforce_ship_to_loc_code     => lc_enforce_ship_to_loc_code      ,
 								o_days_early_receipt_allowed   => ln_days_early_receipt_allowed	   ,
-								o_days_late_receipt_allowed    => ln_days_late_receipt_allowed	   , 
+								o_days_late_receipt_allowed    => ln_days_late_receipt_allowed	   ,
 								o_receipt_days_exception_code  => lc_receipt_days_exception_code   ,
-								o_receiving_routing_id         => ln_receiving_routing_id          ,	     
+								o_receiving_routing_id         => ln_receiving_routing_id          ,
 								o_allow_substitute_rcpts_flag  => lc_allow_substitute_rcpts_flag   ,
-								o_allow_unordered_rcpts_flag   => lc_allow_unordered_rcpts_flag	 
+								o_allow_unordered_rcpts_flag   => lc_allow_unordered_rcpts_flag
                                );
-							   
+
 		  UPDATE xx_ap_cld_suppliers_stg
-             SET inspection_required_flag       =  lc_inspection_required_flag,	     
-                 receipt_required_flag          =  lc_receipt_required_flag,	         
-                 qty_rcv_tolerance              =  ln_qty_rcv_tolerance,	             
-                 qty_rcv_exception_code         =  lc_qty_rcv_exception_code,     
-                 enforce_ship_to_location_code  =  lc_enforce_ship_to_loc_code, 
-                 days_early_receipt_allowed     =  ln_days_early_receipt_allowed, 
-                 days_late_receipt_allowed      =  ln_days_late_receipt_allowed,	     
-                 receipt_days_exception_code    =  lc_receipt_days_exception_code,	 
-                 receiving_routing_id           =  ln_receiving_routing_id,	         
+             SET inspection_required_flag       =  lc_inspection_required_flag,
+                 receipt_required_flag          =  lc_receipt_required_flag,
+                 qty_rcv_tolerance              =  ln_qty_rcv_tolerance,
+                 qty_rcv_exception_code         =  lc_qty_rcv_exception_code,
+                 enforce_ship_to_location_code  =  lc_enforce_ship_to_loc_code,
+                 days_early_receipt_allowed     =  ln_days_early_receipt_allowed,
+                 days_late_receipt_allowed      =  ln_days_late_receipt_allowed,
+                 receipt_days_exception_code    =  lc_receipt_days_exception_code,
+                 receiving_routing_id           =  ln_receiving_routing_id,
                  allow_substitute_receipts_flag =  lc_allow_substitute_rcpts_flag,
-                 allow_unordered_receipts_flag  =  lc_allow_unordered_rcpts_flag,	       		 
+                 allow_unordered_receipts_flag  =  lc_allow_unordered_rcpts_flag,
                  last_updated_by     = g_user_id,
                  last_update_date    = SYSDATE
            WHERE 1 = 1
              AND segment1          = l_supplier_type (l_idx).segment1
              AND request_id        = gn_request_id;
-			 
+
 		  print_debug_msg(p_message=>'Successfully loaded the Receiving Information into xx_ap_cld_suppliers_stg staging table', p_force=>true);
 
 		  /* End of Changes Added for Version 2.1 by Havish Kasina */
@@ -5780,7 +5800,7 @@ BEGIN
                   creation_date ,
                   last_update_date ,
                   last_updated_by,
-                  organization_type_lookup_code,  
+                  organization_type_lookup_code,
 				  inspection_required_flag,           -- Added as per Version 2.1 by Havish Kasina
 				  receipt_required_flag ,             -- Added as per Version 2.1 by Havish Kasina
 				  qty_rcv_tolerance,                  -- Added as per Version 2.1 by Havish Kasina
@@ -5908,16 +5928,16 @@ BEGIN
   IF lc_intf_ins_flag='Y' THEN
      print_out_msg(p_message => '-------------------Starting Supplier Import Program-------------------------------------------------------------------------');
      fnd_global.apps_initialize ( user_id => l_user_id ,resp_id => l_resp_id ,resp_appl_id => l_resp_appl_id );
-     l_rept_req_id := fnd_request.submit_request(application => 'SQLAP' , 
-												 program => 'APXSUIMP' , 
-												 description => '' , 
-												 start_time => SYSDATE , 
-												 sub_request => false , 
-												 argument1 => 'NEW' , 
-												 argument2 => 1000 , 
-												 argument3 => 'N' , 
-												 argument4 => 'N' , 
-												 argument5 => 'N' 
+     l_rept_req_id := fnd_request.submit_request(application => 'SQLAP' ,
+												 program => 'APXSUIMP' ,
+												 description => '' ,
+												 start_time => SYSDATE ,
+												 sub_request => false ,
+												 argument1 => 'NEW' ,
+												 argument2 => 1000 ,
+												 argument3 => 'N' ,
+												 argument4 => 'N' ,
+												 argument5 => 'N'
 												);
      COMMIT;
      IF l_rept_req_id != 0 THEN
@@ -5925,7 +5945,7 @@ BEGIN
         l_dev_phase_out := 'Start';
         l_bflag         :=fnd_concurrent.wait_for_request(l_rept_req_id,5,0,l_phas_out,
 														  l_status_out , l_dev_phase_out,l_dev_status_out,
-														  l_message_out 
+														  l_message_out
 														 );
         BEGIN
           UPDATE xx_ap_cld_suppliers_stg stg
@@ -5947,8 +5967,8 @@ BEGIN
         END ;
 
         UPDATE xx_ap_cld_suppliers_stg a
-           SET (vendor_id,party_id)=(SELECT vendor_id,party_id 
-									   FROM ap_suppliers 
+           SET (vendor_id,party_id)=(SELECT vendor_id,party_id
+									   FROM ap_suppliers
 									  WHERE segment1=a.segment1
 									)
          WHERE request_id=gn_request_id
@@ -5960,7 +5980,7 @@ BEGIN
                  process_flag        ='Y',
                  error_flag          ='Y',
                  error_msg           =error_msg||','||cur.reject_lookup_code
-           WHERE rowid=cur.drowid;		
+           WHERE rowid=cur.drowid;
 		END LOOP;
 		COMMIT;
      END IF;
@@ -6028,17 +6048,17 @@ IS
      WHERE xsup_site.site_process_flag = gn_process_status_validated
        AND xsup_site.request_id          = gn_request_id
        AND create_flag                   ='Y';
-	   
+
    --=================================================================
   -- Cursor Declarations for Tolerance mapping from Cloud to EBS
-  --=================================================================	
+  --=================================================================
   CURSOR c_get_tolerance_name(c_cloud_tolerance VARCHAR2)
   IS
     SELECT LTRIM(RTRIM(tv.target_value1))
       FROM xx_fin_translatevalues tv,
            xx_fin_translatedefinition td
      WHERE tv.translate_id  = td.translate_id
-       AND translation_name = 'XX_AP_CLOUD_TOLERANCES'  
+       AND translation_name = 'XX_AP_CLOUD_TOLERANCES'
 	   AND SYSDATE BETWEEN NVL(tv.start_date_active,SYSDATE) AND NVL(tv.end_date_active,SYSDATE + 1)
        AND SYSDATE BETWEEN NVL(td.start_date_active,SYSDATE) AND NVL(td.end_date_active,SYSDATE + 1)
 	   AND tv.source_value1 = c_cloud_tolerance
@@ -6052,7 +6072,7 @@ IS
     FROM fnd_new_messages d,
 	     ap_supplier_int_rejections c,
          ap_supplier_sites_int b,
-         xx_ap_cld_supp_sites_stg a 
+         xx_ap_cld_supp_sites_stg a
    WHERE a.request_id=gn_request_id
      AND a.site_process_flag = gn_process_status_validated
      AND a.create_flag='Y'
@@ -6061,7 +6081,7 @@ IS
      AND c.parent_id=b.vendor_site_interface_id
      AND c.parent_table='AP_SUPPLIER_SITES_INT'
 	 AND d.message_name = c.reject_lookup_code;
-	
+
   l_process_site_error_flag     VARCHAR2(1) DEFAULT 'N';
   l_vendor_id                   NUMBER;
   l_vendor_site_id              NUMBER;
@@ -6099,8 +6119,8 @@ BEGIN
 		l_service_tolerance_name   := NULL;
 		l_qty_tolerance_name       := NULL;
 		lc_fob_value               := NULL;
-		
-        IF l_process_site_error_flag='N' 
+
+        IF l_process_site_error_flag='N'
 		THEN
           --==============================================================================
           -- Calling the Vendor Site Interface Id for Passing it to Interface Table
@@ -6110,28 +6130,28 @@ BEGIN
           FROM sys.dual;
           v_acct_pay  := get_cc_id(l_sup_site_type(l_idx).accts_pay_concat_gl_segments);
           v_prepay_cde:= get_cc_id(l_sup_site_type(l_idx). prepay_code_gl_segments);
-		  
+
 		  -- To get the Service Tolerance
 		  OPEN c_get_tolerance_name(l_sup_site_type(l_idx).service_tolerance);
 		  FETCH c_get_tolerance_name INTO l_service_tolerance_name;
           CLOSE c_get_tolerance_name;
-		  
+
 		  -- To get the Quantity Tolerance
 		  OPEN c_get_tolerance_name(l_sup_site_type(l_idx).tolerance_name);
 		  FETCH c_get_tolerance_name INTO l_qty_tolerance_name;
           CLOSE c_get_tolerance_name;
-		  
+
 		  -- To get the FOB Code
 		  IF l_sup_site_type(l_idx).fob_lookup_code = 'ORIGIN'
-		  THEN 
+		  THEN
 		       lc_fob_value := 'SHIPPING';
 		  ELSIF l_sup_site_type(l_idx).fob_lookup_code = 'DESTINATION'
-		  THEN 
+		  THEN
 		       lc_fob_value := 'RECEIVING';
 		  ELSE
 		       lc_fob_value := l_sup_site_type(l_idx).fob_lookup_code;
 		  END IF;
-		  
+
           BEGIN
             INSERT
             INTO ap_supplier_sites_int
@@ -6371,16 +6391,16 @@ BEGIN
   COMMIT;
   IF lc_intf_ins_flag='Y' THEN
      fnd_global.apps_initialize ( user_id => l_user_id ,resp_id => l_resp_id ,resp_appl_id => l_resp_appl_id );
-     l_rept_req_id := fnd_request.submit_request (application => 'SQLAP' , 
-	                                             program => 'APXSSIMP' , 
-												 description => '' , 
-												 start_time => SYSDATE , 
-												 sub_request => FALSE , 
-												 argument1 => '', 
-												 argument2 => 'NEW' , 
-												 argument3 => 1000 , 
-												 argument4 => 'N' , 
-												 argument5 => 'N', 
+     l_rept_req_id := fnd_request.submit_request (application => 'SQLAP' ,
+	                                             program => 'APXSSIMP' ,
+												 description => '' ,
+												 start_time => SYSDATE ,
+												 sub_request => FALSE ,
+												 argument1 => '',
+												 argument2 => 'NEW' ,
+												 argument3 => 1000 ,
+												 argument4 => 'N' ,
+												 argument5 => 'N',
 												 argument6 => 'N' );
     COMMIT;
     IF l_rept_req_id != 0 THEN
@@ -6418,9 +6438,9 @@ BEGIN
                process_flag        ='Y',
                error_flag          ='Y',
                error_msg           =error_msg||','||cur.reject_lookup_code
-	     WHERE rowid=cur.drowid;				   
+	     WHERE rowid=cur.drowid;
 	  END LOOP;
-      COMMIT;	  
+      COMMIT;
     END IF;
   END IF;
   x_return_status := l_return_status;
@@ -6467,7 +6487,7 @@ IS
   l_user_id                	NUMBER ;
   l_resp_id                	NUMBER ;
   l_resp_appl_id           	NUMBER ;
-  lc_error_mesg			   	VARCHAR2(2000);  
+  lc_error_mesg			   	VARCHAR2(2000);
   l_msg_data 				VARCHAR2(1000);
   l_vendor_contact_id 		NUMBER;
   l_per_party_id 			NUMBER;
@@ -6475,11 +6495,11 @@ IS
   l_rel_id 					NUMBER;
   l_org_contact_id 			NUMBER;
   l_party_site_id 			NUMBER;
-  ln_party_site_id 			NUMBER;  
-  
-  l_vendor_contact_rec 	ap_vendor_pub_pkg.r_vendor_contact_rec_type;	  
+  ln_party_site_id 			NUMBER;
+
+  l_vendor_contact_rec 	ap_vendor_pub_pkg.r_vendor_contact_rec_type;
   l_msg              	VARCHAR2(2000);
-  ln_msg_index_num 		NUMBER;  
+  ln_msg_index_num 		NUMBER;
   l_msg_count 			NUMBER;
   l_cont_process_error_flag VARCHAR2(1);
   l_vendor_id               NUMBER;
@@ -6501,7 +6521,7 @@ IS
 
 
 BEGIN
-  gc_step                   := 'SUPCONT';  
+  gc_step                   := 'SUPCONT';
   print_debug_msg(p_message=> gc_step||' load_Supplier_cont_Interface() - BEGIN' ,p_force=> false);
   set_step ('Start of Process Records Using API');
   --==============================================================================
@@ -6512,24 +6532,24 @@ BEGIN
   l_ret_code                := 0;
   l_return_status           := 'S';
   l_err_buff                := NULL;
-  
+
   BEGIN
     SELECT user_id,
              responsibility_id,
              responsibility_application_id
-      INTO  l_user_id,                      
-             l_resp_id,            
+      INTO  l_user_id,
+             l_resp_id,
              l_resp_appl_id
-      FROM  fnd_user_resp_groups 
-     WHERE user_id=(SELECT user_id 
-                      FROM fnd_user 
+      FROM  fnd_user_resp_groups
+     WHERE user_id=(SELECT user_id
+                      FROM fnd_user
                      WHERE user_name='ODCDH')
-                       AND responsibility_id=(SELECT responsibility_id 
-                                                FROM FND_RESPONSIBILITY 
+                       AND responsibility_id=(SELECT responsibility_id
+                                                FROM FND_RESPONSIBILITY
                                                WHERE responsibility_key = 'XX_US_CNV_CDH_CONVERSION');
     FND_GLOBAL.apps_initialize(l_user_id,l_resp_id,l_resp_appl_id);
-  END;  
-  
+  END;
+
   OPEN c_supplier_contacts;
   LOOP
     FETCH c_supplier_contacts bulk collect INTO l_supplier_cont_type;
@@ -6568,25 +6588,25 @@ BEGIN
              print_debug_msg(p_message=> gc_step||' - Before inserting record into AP_SUP_SITE_CONTACT_INT with vendor id -'|| l_vendor_id ,p_force=> false);
 
 			 l_vendor_contact_rec.vendor_id			:= l_vendor_id;
-			 l_vendor_contact_rec.vendor_site_id	:= l_vendor_site_id;			 
+			 l_vendor_contact_rec.vendor_site_id	:= l_vendor_site_id;
 			 l_vendor_contact_rec.party_site_id 	:= ln_party_site_id;
 			 l_vendor_contact_rec.person_first_name	:= UPPER(l_supplier_cont_type (l_idx).first_name);
-			 l_vendor_contact_rec.person_middle_name:= UPPER(l_supplier_cont_type (l_idx).middle_name);			 
-			 l_vendor_contact_rec.person_last_name	:= UPPER(l_supplier_cont_type (l_idx).last_name);		 			 
-			 l_vendor_contact_rec.person_title		:= l_supplier_cont_type (l_idx).title;			 			  			 			 
-			 l_vendor_contact_rec.area_code			:= l_supplier_cont_type (l_idx).area_code;			 			 
-			 l_vendor_contact_rec.phone				:= l_supplier_cont_type (l_idx).phone;		 			 
-			 l_vendor_contact_rec.fax_area_code		:= l_supplier_cont_type (l_idx).fax_area_code;			 			 
-			 l_vendor_contact_rec.fax_phone			:= l_supplier_cont_type (l_idx).fax;			 			 
-			 l_vendor_contact_rec.email_address		:= l_supplier_cont_type (l_idx).email_address;			 			 
-			 l_vendor_contact_rec.org_id			:= l_org_id;			 			 
+			 l_vendor_contact_rec.person_middle_name:= UPPER(l_supplier_cont_type (l_idx).middle_name);
+			 l_vendor_contact_rec.person_last_name	:= UPPER(l_supplier_cont_type (l_idx).last_name);
+			 l_vendor_contact_rec.person_title		:= l_supplier_cont_type (l_idx).title;
+			 l_vendor_contact_rec.area_code			:= l_supplier_cont_type (l_idx).area_code;
+			 l_vendor_contact_rec.phone				:= l_supplier_cont_type (l_idx).phone;
+			 l_vendor_contact_rec.fax_area_code		:= l_supplier_cont_type (l_idx).fax_area_code;
+			 l_vendor_contact_rec.fax_phone			:= l_supplier_cont_type (l_idx).fax;
+			 l_vendor_contact_rec.email_address		:= l_supplier_cont_type (l_idx).email_address;
+			 l_vendor_contact_rec.org_id			:= l_org_id;
 
      		 fnd_msg_pub.initialize; --to make msg_count 0
              l_return_status := NULL;
              l_msg_count     := NULL;
              l_msg_data      := NULL;
 			 lc_error_mesg   := NULL;
-			 
+
 			 pos_vendor_pub_pkg.create_vendor_contact( p_vendor_contact_rec => l_vendor_contact_rec,
 													   x_return_status  	=> l_return_status,
 													   x_msg_count 			=> l_msg_count,
@@ -6600,9 +6620,9 @@ BEGIN
 													 );
 
              COMMIT;
-             print_debug_msg(p_message=> 'pos_vendor_pub_pkg.create_vendor_contact :' || x_return_status , p_force => TRUE);        
-		
-			 IF l_return_status <> 'S' AND l_msg_count > 0 THEN  
+             print_debug_msg(p_message=> 'pos_vendor_pub_pkg.create_vendor_contact :' || x_return_status , p_force => TRUE);
+
+			 IF l_return_status <> 'S' AND l_msg_count > 0 THEN
 			   FOR I IN 1..l_msg_count LOOP
 			     fnd_msg_pub.get ( p_msg_index => i , p_encoded => 'F' , p_data => l_msg , p_msg_index_out => ln_msg_index_num);
 			     lc_error_mesg:=lc_error_mesg||','||l_msg;
@@ -6612,10 +6632,10 @@ BEGIN
                l_supplier_cont_type (l_idx).contact_process_flag       := 6;
                l_supplier_cont_type (l_idx).error_msg                  := lc_error_mesg;
 			   l_supplier_cont_type (l_idx).process_flag			   := 'Y';
-			   
+
 			 ELSIF l_return_status='S' THEN
                l_supplier_cont_type (l_idx).contact_process_flag       := 7;
-			   l_supplier_cont_type (l_idx).process_flag			   := 'Y';			   
+			   l_supplier_cont_type (l_idx).process_flag			   := 'Y';
 	         END IF;
           END IF; -- l_cont_process_error_flag := 'N'
         END IF;   -- IF l_supplier_cont_type (l_idx).create_flag = 'Y'
@@ -6688,7 +6708,7 @@ IS
   lr_existing_vendor_site_rec      ap_supplier_sites_all%rowtype;
   p_calling_prog   		       	   VARCHAR2(200);
   l_program_step   		       	   VARCHAR2 (100) := '';
-  ln_msg_index_num 		       	   NUMBER; 
+  ln_msg_index_num 		       	   NUMBER;
   lr_contact_point_rec             hz_contact_point_v2pub.contact_point_rec_type;
   lr_edi_rec                       hz_contact_point_v2pub.edi_rec_type;
   lr_email_rec                     hz_contact_point_v2pub.email_rec_type;
@@ -6702,7 +6722,7 @@ IS
   ln_responsibility_appl_id        NUMBER;
   ln_object_version_number         NUMBER :=1;
   x_contact_point_id               NUMBER;
-  
+
   --==============================================================================
   -- Cursor Declarations for Suppliers
   --==============================================================================
@@ -6723,23 +6743,23 @@ IS
   p_validation_level := fnd_api.g_valid_level_full;
   p_calling_prog     := 'XXCUSTOM';
   l_program_step     := 'START';
-  
+
   BEGIN
        SELECT user_id,
               responsibility_id,
               responsibility_application_id
-         INTO ln_user_id,                      
-              ln_responsibility_id,            
+         INTO ln_user_id,
+              ln_responsibility_id,
               ln_responsibility_appl_id
-         FROM fnd_user_resp_groups 
-        WHERE user_id=(SELECT user_id 
-                         FROM fnd_user 
+         FROM fnd_user_resp_groups
+        WHERE user_id=(SELECT user_id
+                         FROM fnd_user
                         WHERE user_name = 'ODCDH')
-          AND responsibility_id=(SELECT responsibility_id 
-                                   FROM fnd_responsibility 
-                                  WHERE responsibility_key = 'XX_US_CNV_CDH_CONVERSION'); 
+          AND responsibility_id=(SELECT responsibility_id
+                                   FROM fnd_responsibility
+                                  WHERE responsibility_key = 'XX_US_CNV_CDH_CONVERSION');
   EXCEPTION
-       WHEN OTHERS 
+       WHEN OTHERS
        THEN
 			print_debug_msg(p_message=> l_program_step||'Exception in WHEN OTHERS for SET_CONTEXT_ERROR: '||SQLERRM, p_force=>true);
   END;
@@ -6749,7 +6769,7 @@ IS
                               ln_responsibility_appl_id
                             );
   fnd_global.set_nls_context('AMERICAN');
-  
+
   FOR c_sup_site IN c_supplier_site
   LOOP
     print_debug_msg(p_message=> 'Creation of Address Contact for the Site : '|| c_sup_site.vendor_site_code, p_force=>true);
@@ -6764,7 +6784,7 @@ IS
       WHEN OTHERS THEN
         print_debug_msg(p_message=> l_program_step||'Unable to derive the supplier site information for site id:' || lr_existing_vendor_site_rec.vendor_site_id, p_force=>true);
     END;
-	
+
 	IF c_sup_site.email_address IS NOT NULL
 	THEN
 	    lr_contact_point_rec := NULL;
@@ -6776,28 +6796,28 @@ IS
 	    lr_contact_point_rec.primary_flag           := 'Y';
 		lr_contact_point_rec.contact_point_type     := 'EMAIL';
 		lr_email_rec.email_address                  := c_sup_site.email_address;
-    	
+
         x_contact_point_id := NULL;
 		x_return_status    := NULL;
         x_msg_count        := NULL;
         x_msg_data         := NULL;
         -------------------------Calling Address Contact API
-											   
-		hz_contact_point_v2pub.create_contact_point ( p_init_msg_list => FND_API.G_TRUE, 
-		                                              p_contact_point_rec => lr_contact_point_rec, 
-													  p_edi_rec => lr_edi_rec, 
-													  p_email_rec => lr_email_rec, 
+
+		hz_contact_point_v2pub.create_contact_point ( p_init_msg_list => FND_API.G_TRUE,
+		                                              p_contact_point_rec => lr_contact_point_rec,
+													  p_edi_rec => lr_edi_rec,
+													  p_email_rec => lr_email_rec,
 													  p_phone_rec => lr_phone_rec,
-                                                      p_telex_rec => lr_telex_rec, 
-													  p_web_rec => lr_web_rec, 
-													  x_contact_point_id => x_contact_point_id, 
-													  x_return_status => x_return_status, 
-													  x_msg_count => x_msg_count, 
+                                                      p_telex_rec => lr_telex_rec,
+													  p_web_rec => lr_web_rec,
+													  x_contact_point_id => x_contact_point_id,
+													  x_return_status => x_return_status,
+													  x_msg_count => x_msg_count,
 													  x_msg_data => x_msg_data );
 
         print_debug_msg(p_message=> 'API Return Status / Msg Count : ' || x_return_status||' / '||x_msg_count, p_force=>true);
-		
-		IF x_return_status = fnd_api.g_ret_sts_success 
+
+		IF x_return_status = fnd_api.g_ret_sts_success
 		THEN
            COMMIT;
            print_debug_msg(p_message=> 'Creation of EMAIL Contact Point is Successful ', p_force=>true);
@@ -6825,28 +6845,28 @@ IS
 		lr_phone_rec.phone_area_code                := c_sup_site.phone_area_code;
         lr_phone_rec.phone_number                   := c_sup_site.phone_number;
         lr_phone_rec.phone_line_type                := 'GEN';
-    	
+
         x_contact_point_id := NULL;
 		x_return_status    := NULL;
         x_msg_count        := NULL;
         x_msg_data         := NULL;
         -------------------------Calling Address Contact API
-											   
-		hz_contact_point_v2pub.create_contact_point ( p_init_msg_list => FND_API.G_TRUE, 
-		                                              p_contact_point_rec => lr_contact_point_rec, 
-													  p_edi_rec => lr_edi_rec, 
-													  p_email_rec => lr_email_rec, 
+
+		hz_contact_point_v2pub.create_contact_point ( p_init_msg_list => FND_API.G_TRUE,
+		                                              p_contact_point_rec => lr_contact_point_rec,
+													  p_edi_rec => lr_edi_rec,
+													  p_email_rec => lr_email_rec,
 													  p_phone_rec => lr_phone_rec,
-                                                      p_telex_rec => lr_telex_rec, 
-													  p_web_rec => lr_web_rec, 
-													  x_contact_point_id => x_contact_point_id, 
-													  x_return_status => x_return_status, 
-													  x_msg_count => x_msg_count, 
+                                                      p_telex_rec => lr_telex_rec,
+													  p_web_rec => lr_web_rec,
+													  x_contact_point_id => x_contact_point_id,
+													  x_return_status => x_return_status,
+													  x_msg_count => x_msg_count,
 													  x_msg_data => x_msg_data );
 
         print_debug_msg(p_message=> 'API Return Status / Msg Count : ' || x_return_status||' / '||x_msg_count, p_force=>true);
-		
-		IF x_return_status = fnd_api.g_ret_sts_success 
+
+		IF x_return_status = fnd_api.g_ret_sts_success
 		THEN
            COMMIT;
            print_debug_msg(p_message=> 'Creation of PHONE Contact Point is Successful ', p_force=>true);
@@ -6874,28 +6894,28 @@ IS
 		lr_phone_rec.phone_area_code                := c_sup_site.fax_area_code;
         lr_phone_rec.phone_number                   := c_sup_site.fax;
         lr_phone_rec.phone_line_type                := 'FAX';
-    	
+
         x_contact_point_id := NULL;
 		x_return_status:= NULL;
         x_msg_count    := NULL;
         x_msg_data     := NULL;
         -------------------------Calling Address Contact API
-											   
-		hz_contact_point_v2pub.create_contact_point ( p_init_msg_list => FND_API.G_TRUE, 
-		                                              p_contact_point_rec => lr_contact_point_rec, 
-													  p_edi_rec => lr_edi_rec, 
-													  p_email_rec => lr_email_rec, 
+
+		hz_contact_point_v2pub.create_contact_point ( p_init_msg_list => FND_API.G_TRUE,
+		                                              p_contact_point_rec => lr_contact_point_rec,
+													  p_edi_rec => lr_edi_rec,
+													  p_email_rec => lr_email_rec,
 													  p_phone_rec => lr_phone_rec,
-                                                      p_telex_rec => lr_telex_rec, 
-													  p_web_rec => lr_web_rec, 
-													  x_contact_point_id => x_contact_point_id, 
-													  x_return_status => x_return_status, 
-													  x_msg_count => x_msg_count, 
+                                                      p_telex_rec => lr_telex_rec,
+													  p_web_rec => lr_web_rec,
+													  x_contact_point_id => x_contact_point_id,
+													  x_return_status => x_return_status,
+													  x_msg_count => x_msg_count,
 													  x_msg_data => x_msg_data );
 
         print_debug_msg(p_message=> 'API Return Status / Msg Count : ' || x_return_status||' / '||x_msg_count, p_force=>true);
-		
-		IF x_return_status = fnd_api.g_ret_sts_success 
+
+		IF x_return_status = fnd_api.g_ret_sts_success
 		THEN
            COMMIT;
            print_debug_msg(p_message=> 'Creation of FAX Contact Point is Successful ', p_force=>true);
@@ -6938,7 +6958,7 @@ IS
   l_ret_code            NUMBER;
   l_return_status       VARCHAR2 (100);
   l_err_buff            VARCHAR2 (4000);
-  
+
 BEGIN
   l_ret_code      := 0;
   l_return_status := 'S';
@@ -6983,7 +7003,7 @@ END main_prc_supplier;
 --|                   x_retcode                 OUT      NUMBER                |
 --+============================================================================+
 PROCEDURE main_prc_supplier_site( x_errbuf OUT nocopy  VARCHAR2 ,
-								  x_retcode OUT nocopy NUMBER 
+								  x_retcode OUT nocopy NUMBER
 								)
 IS
   --================================================================
@@ -7013,13 +7033,13 @@ BEGIN
   print_debug_msg(p_message => '===========================================================================' , p_force => true);
   print_debug_msg(p_message => 'Completed the execution of the procedure load_supplier_site_interface()' , p_force => true);
   print_debug_msg(p_message => '===========================================================================' , p_force => true);
-  
+
   print_debug_msg(p_message => 'Invoking the procedure load update_suppliers_sites()' , p_force => true);
   update_supplier_sites( x_ret_code => l_ret_code , x_return_status => l_return_status , x_err_buf => l_err_buff);
   print_debug_msg(p_message => '===========================================================================' , p_force => true);
   print_debug_msg(p_message => 'Completed the execution of the procedure update_supplier_sites()' , p_force => true);
   print_debug_msg(p_message => '===========================================================================' , p_force => true);
-  
+
 EXCEPTION
   WHEN OTHERS THEN
     x_retcode := 2;
@@ -7090,7 +7110,7 @@ END main_prc_supplier_contact;
 --|                   x_retcode                 OUT      NUMBER                |
 --+============================================================================+
 PROCEDURE main_prc_supplier_bank( x_errbuf OUT nocopy  VARCHAR2 ,
-								  x_retcode OUT nocopy NUMBER 
+								  x_retcode OUT nocopy NUMBER
 								)
 IS
   --================================================================
@@ -7110,7 +7130,7 @@ BEGIN
   print_debug_msg(p_message => '===========================================================================' , p_force => true);
   print_debug_msg(p_message => 'Completion of validate_bank_records' , p_force => true);
   print_debug_msg(p_message => '===========================================================================' , p_force => true);
-  
+
   print_debug_msg(p_message => 'Invoking the procedure attach_bank_assignments()' , p_force => true);
   attach_bank_assignments( x_ret_code => l_ret_code , x_return_status => l_return_status , x_err_buf => l_err_buff);
   print_debug_msg(p_message => '===========================================================================' , p_force => true);
@@ -7152,7 +7172,7 @@ BEGIN
   l_ret_code      := 0;
   l_return_status := 'S';
   l_err_buff      := NULL;
- 
+
   --===========================================================================
   -- Update Address Contacts for the Supplier Sites --
   --===========================================================================
@@ -7190,7 +7210,7 @@ BEGIN
   l_ret_code      := 0;
   l_return_status := 'S';
   l_err_buff      := NULL;
- 
+
   --===========================================================================
   -- Update Address Contacts for the Supplier Sites --
   --===========================================================================
@@ -7204,7 +7224,7 @@ EXCEPTION
     x_retcode := 2;
     x_errbuf  := 'Exception in XX_AP_SUPP_CLD_INTF_PKG.main_prc_remittance_email() - '||SQLCODE||' - '||SUBSTR(SQLERRM,1,3500);
 END main_prc_remittance_email;
-  
+
 --+============================================================================+
 --| Name          : update_supplier_telex                                      |
 --| Description   : This procedure will set telex in ap_supplier_sites_all     |
@@ -7216,12 +7236,12 @@ END main_prc_remittance_email;
 --|                                                                            |
 --+============================================================================+
 PROCEDURE Update_supplier_telex( x_errbuf OUT VARCHAR2 ,
-								 x_retcode OUT NUMBER 
+								 x_retcode OUT NUMBER
 							   )
 IS
 CURSOR c_sup
 IS
-SELECT site.vendor_site_id 
+SELECT site.vendor_site_id
   FROM xx_ap_cld_supp_bcls_stg bcls,
        xx_ap_cld_supp_contact_stg cont,
        xx_ap_cld_site_dff_stg dff,
@@ -7232,11 +7252,11 @@ SELECT site.vendor_site_id
    AND stg.supp_process_flag    ='7'
    AND site.request_id          =stg.request_id
    AND site.supplier_number     =stg.segment1
-   AND site.site_process_flag   ='7'      
+   AND site.site_process_flag   ='7'
    AND dff.request_id(+)           =site.request_id
    AND dff.vendor_site_code(+)     =site.vendor_site_code
    AND dff.supplier_number(+)      =stg.segment1
-   AND dff.dff_process_flag(+)      ='7'   
+   AND dff.dff_process_flag(+)      ='7'
    AND cont.request_id(+)          =site.request_id
    AND cont.supplier_number(+)     =site.supplier_number
    AND cont.vendor_site_code(+)    =site.vendor_site_code
@@ -7300,8 +7320,8 @@ BEGIN
 					 AND supplier_number=ct.supplier_number
 					 AND vendor_site_code=ct.vendor_site_code
 			    );
-  COMMIT;  
-				
+  COMMIT;
+
   UPDATE xx_ap_cld_supp_bcls_stg bcls
      SET bcls.error_msg = 'Business Classification Not processed due to Supplier Error',
 	     bcls.bcls_process_flag =3,
@@ -7315,7 +7335,7 @@ BEGIN
 					 AND supp_process_flag <> 7
 					 AND segment1=bcls.supplier_number
 			    );
-  COMMIT;				
+  COMMIT;
 
   UPDATE xx_ap_cld_site_dff_stg dff
      SET dff.error_msg = 'Custom DFF not processed due to Site Error',
@@ -7330,8 +7350,8 @@ BEGIN
 					 AND site_process_flag<>7
 					 AND vendor_site_code=dff.vendor_site_code
 			    );
-  COMMIT;    
-  
+  COMMIT;
+
   UPDATE xx_ap_cld_supp_bnkact_stg bnk
      SET bnk.error_msg = 'Bank not processed due to Site Error',
 	     bnk.bnkact_process_flag=3,
@@ -7345,12 +7365,12 @@ BEGIN
 					 AND site_process_flag<>7
 					 AND vendor_site_code=bnk.vendor_site_code
 			    );
-  COMMIT;      
+  COMMIT;
 EXCEPTION
   WHEN OTHERS
-  THEN  
-    print_debug_msg(p_message => 'When others in Update Status : '|| SQLERRM, p_force => true);								 
-END update_status;	
+  THEN
+    print_debug_msg(p_message => 'When others in Update Status : '|| SQLERRM, p_force => true);
+END update_status;
 -- +============================================================================+
 -- | Procedure Name : display_status                                            |
 -- |                                                                            |
@@ -7381,7 +7401,7 @@ SELECT SUM(DECODE(site_process_flag,2,1,0)) inprocess ,
        SUM(DECODE(site_process_flag,7,1,0)) import_success
   FROM xx_ap_cld_supp_sites_stg
  WHERE request_id = gn_request_id;
- 
+
 CURSOR c_cont_stats
 IS
 SELECT SUM(DECODE(contact_process_flag,2,1,0)) inprocess ,
@@ -7390,7 +7410,7 @@ SELECT SUM(DECODE(contact_process_flag,2,1,0)) inprocess ,
        SUM(DECODE(contact_process_flag,7,1,0)) import_success
   FROM xx_ap_cld_supp_contact_stg
  WHERE request_id = gn_request_id;
- 
+
 CURSOR c_bank_stats
 IS
 SELECT SUM(DECODE(bnkact_process_flag,2,1,0)) inprocess ,
@@ -7452,46 +7472,46 @@ IS
 BEGIN
   print_debug_msg(p_message =>'--------------------------------------------------------------------------------------------', p_force => true);
   print_debug_msg(p_message => 'Starting Purge Process', p_force => true);
-  
+
   DELETE FROM xx_ap_cld_suppliers_stg
    WHERE process_flag  = 'Y'
      AND creation_date < SYSDATE-30;
   print_debug_msg(p_message =>'No. of Rows deleted in xx_ap_cld_suppliers_stg table :'||sql%rowcount,p_force => true);
   COMMIT;
-  
+
   DELETE FROM xx_ap_cld_supp_sites_stg
    WHERE process_flag  = 'Y'
      AND creation_date < SYSDATE-30;
   print_debug_msg(p_message =>'No. of Rows deleted in xx_ap_cld_supp_sites_stg table :'||sql%rowcount,p_force => true);
   COMMIT;
-  
+
   DELETE FROM xx_ap_cld_supp_contact_stg
    WHERE process_flag    ='Y'
      AND creation_date < SYSDATE-30;
   print_debug_msg(p_message =>'No. of Rows deleted in xx_ap_cld_supp_contact_stg table :'||sql%rowcount,p_force => true);
   COMMIT;
-  
+
   DELETE FROM xx_ap_cld_supp_bnkact_stg
    WHERE process_flag    ='Y'
      AND creation_date < sysdate-30;
   print_debug_msg(p_message =>'No. of Rows deleted in xx_ap_cld_supp_bnkact_stg table :'||sql%rowcount,p_force => true);
   COMMIT;
-  
+
   DELETE FROM xx_ap_cld_supp_bcls_stg
    WHERE process_flag    ='Y'
      AND creation_date < sysdate-30;
   print_debug_msg(p_message =>'No. of Rows deleted in xx_ap_cld_supp_bcls_stg table :'||sql%rowcount,p_force => true);
   COMMIT;
-  
+
   DELETE FROM xx_ap_cld_site_dff_stg
    WHERE process_flag    ='Y'
      AND creation_date < sysdate-30;
   print_debug_msg(p_message =>'No. of Rows deleted in xx_ap_cld_site_dff_stg table :'||sql%rowcount,p_force => true);
   COMMIT;
-  
+
   print_debug_msg(p_message =>'--------------------------------------------------------------------------------------------', p_force => true);
 EXCEPTION
-WHEN OTHERS 
+WHEN OTHERS
 THEN
   print_debug_msg(p_message => 'Error Message - main_prc_staging_purge : '|| SQLERRM, p_force=> true);
 END main_prc_staging_purge;
@@ -7549,7 +7569,7 @@ BEGIN
   print_debug_msg(p_message => 'Initializing Global Variables ' , p_force => true);
   l_ret_code      := 0;
   l_err_buff      := NULL;
-  print_debug_msg(p_message => '+---------------------------------------------------------------------------+' , p_force => true);  
+  print_debug_msg(p_message => '+---------------------------------------------------------------------------+' , p_force => true);
   --===============================================================
   --Updating Request Id into Supplier Staging table     --
   --===============================================================
@@ -7560,7 +7580,7 @@ BEGIN
   WHERE supp_process_flag = '1'
   AND process_flag        ='N'
   AND request_id         IS NULL;
-  
+
   print_debug_msg(p_message => 'Records to be processed from the table XX_AP_CLD_SUPPLIERS_STG are '||SQL%ROWCOUNT , p_force => true);
   print_out_msg(p_message => 'Total No. of Supplier records ready for validate and load are '||SQL%ROWCOUNT);
   COMMIT;
@@ -7573,7 +7593,7 @@ BEGIN
     print_out_msg(p_message => 'Total No. of Supplier records ready for validate and load are '||sql%rowcount);
   END IF;
   */
-  
+
   --===============================================================
   --Updating Request Id into Supplier Site Staging table     --
   --===============================================================
@@ -7584,10 +7604,10 @@ BEGIN
   WHERE site_process_flag ='1'
   AND process_flag        ='N'
   AND request_id         IS NULL;
-  
-  print_debug_msg(p_message => '+---------------------------------------------------------------------------+' , p_force => true); 
+
+  print_debug_msg(p_message => '+---------------------------------------------------------------------------+' , p_force => true);
   print_debug_msg(p_message => 'Records to be processed from the table XX_AP_SUP_CLOUD_SITES_STG are '||SQL%ROWCOUNT , p_force => true);
-  print_out_msg(p_message => 'Total No. of Supplier Site records ready for validate and load are '||SQL%ROWCOUNT);  
+  print_out_msg(p_message => 'Total No. of Supplier Site records ready for validate and load are '||SQL%ROWCOUNT);
   COMMIT;
   /*
   IF SQL%ROWCOUNT = 0 THEN
@@ -7609,8 +7629,8 @@ BEGIN
   AND process_flag           ='N'
   AND request_id            IS NULL
   AND cont_target            ='EBS';
-  
-  print_debug_msg(p_message => '+---------------------------------------------------------------------------+' , p_force => true);  
+
+  print_debug_msg(p_message => '+---------------------------------------------------------------------------+' , p_force => true);
   print_debug_msg(p_message => 'Records to be processed from the table XX_AP_SUP_CLOUD_CONTACT_STG are '||SQL%ROWCOUNT , p_force => true);
   print_out_msg(P_MESSAGE => 'Total No. of Contact records ready for validate and load are '||SQL%ROWCOUNT);
   COMMIT;
@@ -7618,7 +7638,7 @@ BEGIN
   IF SQL%ROWCOUNT = 0 THEN
     print_debug_msg(p_message => 'No records exist to process in the table XX_AP_SUP_CLOUD_CONTACT_STG.' , p_force => true);
     print_out_msg(p_message => 'Total No. of Contact records ready for validate and load are 0');
-  ELSE 
+  ELSE
     print_debug_msg(p_message => 'Records to be processed from the table XX_AP_SUP_CLOUD_CONTACT_STG are '||sql%rowcount , p_force => true);
     print_out_msg(P_MESSAGE => 'Total No. of Contact records ready for validate and load are '||SQL%ROWCOUNT);
   END IF;
@@ -7633,8 +7653,8 @@ BEGIN
   WHERE bnkact_process_flag = '1'
   AND process_flag          ='N'
   AND request_id           IS NULL;
-  
-  print_debug_msg(p_message => '+---------------------------------------------------------------------------+' , p_force => true);    
+
+  print_debug_msg(p_message => '+---------------------------------------------------------------------------+' , p_force => true);
   print_debug_msg(p_message => 'Records to be processed from the table XX_AP_CLD_SUPP_BNKACT_STG are '||SQL%ROWCOUNT , p_force => true);
   print_out_msg(P_MESSAGE => 'Total No. of Bank records ready for validate and load are '||SQL%ROWCOUNT);
   COMMIT;
@@ -7657,10 +7677,10 @@ BEGIN
   WHERE dff_process_flag = '1'
   AND process_flag       ='N'
   AND request_id        IS NULL;
-  
-  print_debug_msg(p_message => '+---------------------------------------------------------------------------+' , p_force => true);   
+
+  print_debug_msg(p_message => '+---------------------------------------------------------------------------+' , p_force => true);
   print_debug_msg(p_message => 'Records to be processed from the table XX_AP_CLD_SITE_DFF_STG are '||SQL%ROWCOUNT , p_force => true);
-  print_out_msg(P_MESSAGE => 'Total No. of DFF ready for validate and load are '||SQL%ROWCOUNT);  
+  print_out_msg(P_MESSAGE => 'Total No. of DFF ready for validate and load are '||SQL%ROWCOUNT);
   COMMIT;
   /*
   IF SQL%ROWCOUNT = 0 THEN
@@ -7681,8 +7701,8 @@ BEGIN
   WHERE bcls_process_flag = '1'
   AND process_flag        ='N'
   AND request_id         IS NULL;
-  
-  print_debug_msg(p_message => '+---------------------------------------------------------------------------+' , p_force => true);    
+
+  print_debug_msg(p_message => '+---------------------------------------------------------------------------+' , p_force => true);
   print_debug_msg(p_message => 'Records to be processed from the table XX_AP_CLD_SUPP_BCLS_STG are '||SQL%ROWCOUNT , p_force => true);
   print_out_msg(P_MESSAGE => 'Total No. of Classification records ready for validate and load are '||SQL%ROWCOUNT);
   COMMIT;
@@ -7725,17 +7745,17 @@ BEGIN
   xx_supp_dff(gn_request_id);
   print_debug_msg(p_message => 'exiting custom dff process' , p_force => true);
   print_debug_msg(p_message => '+---------------------------------------------------------------------------+' , p_force => true);
-  
+
   print_debug_msg(p_message => 'Calling Custom Tolerance and Traits' , p_force => true);
   xx_tolerance_trait(gn_request_id);
   print_debug_msg(p_message => 'exiting custom Tolerance and Traits' , p_force => true);
   print_debug_msg(p_message => '+---------------------------------------------------------------------------+' , p_force => true);
-  
+
   print_debug_msg(p_message => 'Calling Create and Update Address Contact Point Process' , p_force => true);
   main_prc_address_contact(x_errbuf =>l_err_buff , x_retcode=> l_ret_code);
   print_debug_msg(p_message => 'exiting Create and Update Address Contact Point Process' , p_force => true);
   print_debug_msg(p_message => '+---------------------------------------------------------------------------+' , p_force => true);
-  
+
   print_debug_msg(p_message => 'Calling Remittance Email Procedure' , p_force => true);
   main_prc_remittance_email(x_errbuf =>l_err_buff , x_retcode=> l_ret_code);
   print_debug_msg(p_message => 'exiting Remittance Email Procedure' , p_force => true);
@@ -7745,28 +7765,28 @@ BEGIN
   update_supplier_telex(x_errbuf =>l_err_buff , x_retcode=> l_ret_code);
   print_debug_msg(p_message => 'Exiting Update_supplier_telex' , p_force => true);
   print_debug_msg(p_message => '+---------------------------------------------------------------------------+' , p_force => true);
-  
+
   print_debug_msg(p_message => 'Calling  update_status' , p_force => true);
   update_status;
   print_debug_msg(p_message => 'Exiting update_status' , p_force => true);
   print_debug_msg(p_message => '+---------------------------------------------------------------------------+' , p_force => true);
-  
+
   BEGIN
        SELECT user_id,
               responsibility_id,
               responsibility_application_id
-         INTO ln_user_id,                      
-              ln_responsibility_id,            
+         INTO ln_user_id,
+              ln_responsibility_id,
               ln_responsibility_appl_id
-         FROM fnd_user_resp_groups 
-        WHERE user_id=(SELECT user_id 
-                         FROM fnd_user 
+         FROM fnd_user_resp_groups
+        WHERE user_id=(SELECT user_id
+                         FROM fnd_user
                         WHERE user_name = 'SVC_ESP_FIN')
-          AND responsibility_id=(SELECT responsibility_id 
-                                   FROM fnd_responsibility 
-                                  WHERE responsibility_key = 'OD_US_BATCH_JOBS'); 
+          AND responsibility_id=(SELECT responsibility_id
+                                   FROM fnd_responsibility
+                                  WHERE responsibility_key = 'OD_US_BATCH_JOBS');
   EXCEPTION
-       WHEN OTHERS 
+       WHEN OTHERS
        THEN
 			print_debug_msg(p_message=> 'Exception in WHEN OTHERS for SET_CONTEXT_ERROR: '||SQLERRM, p_force=>true);
   END;
@@ -7776,46 +7796,46 @@ BEGIN
                               ln_responsibility_appl_id
                             );
   fnd_global.set_nls_context('AMERICAN');
-  
+
   print_debug_msg(p_message => '                                                                             ' , p_force => true);
   print_debug_msg(p_message => 'Submitting the Report Program to generate the Excel File', p_force => true);
 
   lb_layout     := fnd_request.add_layout('XXFIN', 'XXAPCLDINTR', 'en', 'US', 'EXCEL' );
-  ln_request_id := fnd_request.submit_request ( application => 'XXFIN', 
-												program => 'XXAPCLDINTR', 
-												description => NULL, 
-												start_time => SYSDATE, 
-												sub_request => FALSE, 
-												argument1 => gn_request_id 
+  ln_request_id := fnd_request.submit_request ( application => 'XXFIN',
+												program => 'XXAPCLDINTR',
+												description => NULL,
+												start_time => SYSDATE,
+												sub_request => FALSE,
+												argument1 => gn_request_id
 											  );
-  IF ln_request_id > 0 
+  IF ln_request_id > 0
   THEN
      COMMIT;
      print_debug_msg(p_message => 'Able to submit the Report Program', p_force => true);
-	 
+
 	 print_debug_msg(p_message => 'While Waiting Report Request to Finish');
 
      -- wait for request to finish
 
-     lb_complete :=fnd_concurrent.wait_for_request ( request_id => ln_request_id, 
-												     interval => 15, 
-												     max_wait => 0, 
-												     phase => lc_phase, 
-												     status => lc_status, 
-												     dev_phase => lc_dev_phase, 
-												     dev_status => lc_dev_status, 
-												     message => lc_message  
+     lb_complete :=fnd_concurrent.wait_for_request ( request_id => ln_request_id,
+												     interval => 15,
+												     max_wait => 0,
+												     phase => lc_phase,
+												     status => lc_status,
+												     dev_phase => lc_dev_phase,
+												     dev_status => lc_dev_status,
+												     message => lc_message
                                                    );
-	 
+
   ELSE
      print_debug_msg(p_message => 'Failed to submit the Report Program to generate the output file - ' || SQLERRM , p_force => true);
-  END IF;												
-  
+  END IF;
+
   -- Process the Purge Staging Tables for the records more than 30 days
   main_prc_staging_purge;
-  
+
   display_status;
-  
+
   IF (l_ret_code IS NULL OR l_ret_code <> 0) THEN
     x_retcode    := l_ret_code;
     x_errbuf     := l_err_buff;
@@ -7835,7 +7855,7 @@ END xx_ap_supp_cld_intf;
   -- |  Description:  Common Report for XML bursting                                              |
   -- |  Change Record:                                                                            |
   -- +============================================================================================+
-  
+
 FUNCTION beforeReport RETURN BOOLEAN
 IS
 BEGIN
@@ -7853,13 +7873,13 @@ BEGIN
       fnd_file.put_line(fnd_file.log, 'Submitting : XML Publisher Report Bursting Program');
       ln_request_id1 := FND_REQUEST.SUBMIT_REQUEST('XDO',  -- Application short name
 	                                              'XDOBURSTREP', --- conc program short name
-												  NULL, 
-												  NULL, 
-												  FALSE, 
-												  'N', 
-												  P_CONC_REQUEST_ID, 
+												  NULL,
+												  NULL,
+												  FALSE,
+												  'N',
+												  P_CONC_REQUEST_ID,
 												  'Y');
-												  
+
 	  IF ln_request_id1 > 0
       THEN
          COMMIT;
@@ -7877,4 +7897,3 @@ WHEN OTHERS THEN
 END afterReport;
 
 END xx_ap_supp_cld_intf_pkg;
-/
