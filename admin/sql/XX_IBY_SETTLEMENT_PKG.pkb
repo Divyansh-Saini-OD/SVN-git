@@ -1,149 +1,151 @@
 create or replace package body XX_IBY_SETTLEMENT_PKG
 AS
--- +===========================================================================+
--- |                  Office Depot - Project Simplify                          |
--- +===========================================================================+
--- | Name        : Settlement and Payment Processing                           |
--- | RICE ID     : I0349 settlement                                            |
--- | Description : To populate the XX_IBY_BATCH_TRXNS 101, 201                 |
--- |               tables.                                                     |
--- |                                                                           |
--- |Change Record:                                                             |
--- |===============                                                            |
--- |Version    Date         Author              Remarks                        |
--- |=========  ===========  ==================  ===============================|
--- |1 to 11.5  30-AUG-2007  Various             Various - See previous         |
--- |                                            version of the code for        |
--- |                                            defect numbes                  |
--- |11.6                    R.Aldridge and      Defect 10836 (CR898)           |
--- |                        P.Marco             SDR changes                    |
--- |11.7                    R.Aldridge          Defect 12686                   |
--- |11.8                    P.Marco             Defect 12713                   |
--- |11.9                    B Nanapaneni        Defect 12724                   |
--- |11.10                   P.Marco             Defect 12544 and 13074         |
--- |11.11                   P.Marco             Defect 13110                   |
--- |11.12      10-AUG-2011  P.Marco             Defect 13248                   |
--- |11.13      17-AUG-2011  R.Aldridge          Defect 13321 - Remove          |
--- |                                            duplicate tangible id          |
--- |                                            check.  not required           |
--- |11.14      25-AUG-2011  R.Aldridge          Defect 13318 and 13433 - added |
--- |                                            hint to use correct index on   |
--- |                                            xx_ar_order_receipt_dtl        |
--- |                                            Removed coded added for 13248  |
--- |11.15      25-AUG-2011  R.Aldridge          Defect 13498 - ixinvoice is    |
--- |                                            missing for deposit refunds    |
--- |11.16      29-AUG-2011  R.Aldridge          Defect 13466 - Fix for AMEX CPC|
--- |                                            AOPS store to ship from        |
--- |                                            Defect 12840 - Fix null values |
--- |                                            for IREC and MISC              |
--- |11.17      16-SEP-2011  P.Marco             Defect 13812,13640,13837, 13814|
--- |11.18      01-DEC-2011  Aravind A.          Fixed defects 14579 and 14419  |
--- |12.01      02-FEB-2012  Bapuji  N.          FIxed defect 15454             |
--- |12.02      26-MAR-2012  Aravind A.          Fixed defects 17473            |
--- |13.01      01-JUL-2012  Rohit Ranjan        Fixed Defect# 13405            |
--- |13.02      24-MAY-2013  Bapuji N            Fix for PCI compliance for IREC|
--- |                                            Payments DEFECT# 23640         |
--- |14.0       16-AUG-2013  Edson Morales       Retrofited for R12 upgrade     |
--- |14.1       29-AUG-2013  Edson Morales       R12 Encryption Changes         |
--- |14.2       17-SEP-2013  Edson Morales       Added AJB encryption changes   |
--- |14.3       01-OCT-2013  Edson Morales       Fix query for capture          |
--- |14.4       02-OCT-2013  Edson Morales       Removed redundant encryption   |
--- |                                            and decryption                 |
--- |14.5       12-DEC-2013  Deepak V            Changes done for Defect 26781. |
--- |                                            ar_vat_tax_all replaced by     |
--- |                                            zx_rates_b.                    |
--- |14.6       13-DEC-2013  Edson Morales       Added by decryption for AMEX_CPC |
--- |14.7       18-DEC-2013  Edson Morales       Getting and passing org_id to
--- |                                            ar_system_parameters_all       |
--- |14.8       06-JAN-2013  Edson Morales       Fix for Defect 27469           |
--- |14.9       09-JAN-2013  Edson Morales       Fix for Defect 27466           |
--- |15.0       23-JAN-2014  Edson Morales       Fix for Defect 27744           |
--- |16.0       24-JAN-2014  Arun Gannarapu      Fix for Defect 27580           |
--- |17.0       13-Feb-2014  Lakshmi T           Changes for Defect 27883       |
--- |18.0       03-MAR-2014  Edson Morales       Changes for Defect 28663       |
--- |19.0       05-MAR-2014  Edson Morales       Changes for Defect 28761       |
--- |20.0       11-MAR-2014  Edson Morales       Changes for Defect 28688       |
--- |21.0       18-MAR-2014  Arun Gannarapu      changes for defect 29040       |
--- |22.0       07-JUL-2014  Manjusha Tangirala  Changes for defect 30047       |
--- |22.0       28-MAR-2014  Edson Morales       Changes to support manual      |
--- |                                            deposit cancelations.          |
--- |23.0       01-APR-2014  Edson               Changes for Defect 29243       |
--- |24.0       28-May-2014  Suresh Ponnambalam  Defect 29951. Raised exception |
--- |                                            in decrypt_credit_card.        |
--- |25.0       12-Aug-2014  Mark Schmit         Defect 31392. Perform CC       |
--- |                                            decrypt test prior to file     |
--- |                                            transfer routine.              |
--- |25.1       22-Sept-2014 Mark Schmit         Debug Statement remove         |
--- |26.0       09-OCT-2014  Kirubha Samuel      Modified 'xx_retrieve_receipt_info'|
--- |     select for refund transactions to include gn_cust_account_id for 31270|
--- |26.1       24-FEB-2015  Kirubha Samuel      Modified 'xx_insert_manual_receipt'|
--- |           to update the payment number for receipts created manually for 32588|
--- |26.2       25-MAR-2015 Suresh Ponnambalam   Module 4A Settlement Changes   |
--- |26.3       28-APR-2015 Harvinder Rakhra     Tokenization of Credit Card    |
--- |26.4       22-MAY-2015 Harvinder Rakhra     Tokenization of Credit Card    |
--- |26.5       29-MAY-2015 Suresh Ponnambalam   Mod 4A secondary soft header   |
--- |26.6       03-JUN-2015 Suresh Ponnambalam   Tokenization: Added token flag |
--- |                                            to xx_ar_invoice_ods           |
--- |26.7       18-JUN-2015 Harvinder Rakhra     Tokenization: Defect 34724     |
--- |26.8       24-JUN-2015 Rakesh Polepalli	Modified the procedure         |
--- |						'xx_set_post_trx_variables'    |
--- |						as part of the Defect# 34612   |
--- |26.9       08-JUL-2015 Harvinder Rakhra     Tokenization Changes           |
--- |27.0       27-JUL-2015 Harvinder Rakhra     Set Field21 and Field56 based  |
--- |                                            on EMV fields.                 |
--- |                                            Tokenization Changes. Defect#35087   |
--- |27.1       06-AUG-2015 Harvinder Rakhra     Space Delimiter added for EMV fields |
--- |27.2       11-AUG-2015 Harvinder Rakhra     gc_ixswipe value updated based |
--- |                                            on ixswipe value               |
--- |27.3       19-AUG-2015 Harvinder Rakhra     Defect in gc_ixoptions logic changed|
--- |28.0       27-AUG-2014 Suresh Ponnambalam   Defect 35495. Added exception  |
--- |                                            to xx_ar_invoice_ods.          |
--- |29.0       28-AUG-2015 Shubhashree R       Modified xx_set_post_trx_variables|
--- |                                           procedure for Defect# 35181     |
--- |30.0       18-SEP-2015 Rakesh Polepalli    Defect# 35780,Modified 'EACH' to 'EA' in the |
--- |					       procedure xx_create_201_settlement_rec |
--- |31.0       10-OCT-2015 rakesh Polepalli    Defect# 35839,Modified clbatch procedure |
--- |32.0       14-OCT-2015 Avinash Baddam      Changes for Defect#36003 and    |
--- |					       R12.2 Compliance Changes        |
--- |33.0       18-FEB-2016 Avinash Baddam      Defect#37204 - Masterpass       |
--- |34.0	   29-APR-2016 Rakesh Polepalli    Changes for the defect# 37763   |
--- |35.0	   23-JUN-2016 Rakesh Polepalli    Changes for the defect# 38244   |
--- |36.0       24-JUN-2016 Avinash Baddam      Defect#38215 - amex to vantiv conv   |
--- |37.0       23-AUG-2016 Suresh Ponnambalam  Defect 38243 - AMEX Instrsubtype|
--- |38.0       30-AUG-2016 Suresh Ponnambalam  Defect 39040 - Removed : from   |
--- |                                           ixcustcountrycode.              |
--- |39.0       16-SEP-2016 Suresh Ponnambalam  Defect 39341 - Remapped ixreleasenumber |
--- |                                           to ixothertaxamount3 and remove |
--- |                                           ixoriginalinvoiceno from file.  |
--- |40.0       17-OCT-2016 Suresh Ponnambalam  Amex to check ixunitcost instead |
--- |                                           of ixcustunitprice to create level 2|
--- |41.0	   03-NOV-2016 Rakesh Polepalli    Changes for defects# 37866,39910 |
--- |42.0	   03-NOV-2016 Rakesh Polepalli    Changes for defects# 38223,40149 |
--- |43.0       27-DEC-2016 Suresh Ponnambalam  Defect 40377 AMEX SKU order change|
--- |44.0     02-SEP-2017  Uday Jadhav         Changes done for BIZBOX Rollout to pass MPL_ORDER_ID to IXINVOICE|
--- |45.0       05-FEB-2018 Atul Khard  		   Defect 44326 Adding HINT /*+ index(OOH,OE_ORDER_HEADERS_U2) */|
--- |46.0       21-FEB-2018 Rohit Gupta         Modified code for defect #44299 |
--- |47.0       05-MAR-2018 M K Pramod Kumar    Modified code for defect NAIT-31107 |
--- |47.1       05-MAR-2018 M K Pramod Kumar    Code Change to process UnApplied Invoices for SERVICE-CONTRACTS |
--- |47.2       05-MAR-2018 M K Pramod Kumar    Modified to derive Invoice Num from ORDT |
+-- +===================================================================================================+
+-- |                  Office Depot - Project Simplify                          												|
+-- +===================================================================================================+
+-- | Name        : Settlement and Payment Processing                           												|
+-- | RICE ID     : I0349 settlement                                            												|
+-- | Description : To populate the XX_IBY_BATCH_TRXNS 101, 201                 												|
+-- |               tables.                                                     												|
+-- |                                                                           												|
+-- |Change Record:                                                             												|
+-- |===============                                                            												|
+-- |Version    Date         Author              Remarks                        												|
+-- |=========  ===========  ==================  =======================================================+
+-- |1 to 11.5  30-AUG-2007  Various             Various - See previous         												|
+-- |                                            version of the code for        												|
+-- |                                            defect numbes                  												|
+-- |11.6                    R.Aldridge and      Defect 10836 (CR898)           												|
+-- |                        P.Marco             SDR changes                    												|
+-- |11.7                    R.Aldridge          Defect 12686                   												|
+-- |11.8                    P.Marco             Defect 12713                   												|
+-- |11.9                    B Nanapaneni        Defect 12724                   												|
+-- |11.10                   P.Marco             Defect 12544 and 13074         												|
+-- |11.11                   P.Marco             Defect 13110                   												|
+-- |11.12      10-AUG-2011  P.Marco             Defect 13248                   												|
+-- |11.13      17-AUG-2011  R.Aldridge          Defect 13321 - Remove          												|
+-- |                                            duplicate tangible id          												|
+-- |                                            check.  not required           												|
+-- |11.14      25-AUG-2011  R.Aldridge          Defect 13318 and 13433 - added 												|
+-- |                                            hint to use correct index on   												|
+-- |                                            xx_ar_order_receipt_dtl        												|
+-- |                                            Removed coded added for 13248  												|
+-- |11.15      25-AUG-2011  R.Aldridge          Defect 13498 - ixinvoice is    												|
+-- |                                            missing for deposit refunds    												|
+-- |11.16      29-AUG-2011  R.Aldridge          Defect 13466 - Fix for AMEX CPC												|
+-- |                                            AOPS store to ship from        												|
+-- |                                            Defect 12840 - Fix null values 												|
+-- |                                            for IREC and MISC              												|
+-- |11.17      16-SEP-2011  P.Marco             Defect 13812,13640,13837, 13814												|
+-- |11.18      01-DEC-2011  Aravind A.          Fixed defects 14579 and 14419  												|
+-- |12.01      02-FEB-2012  Bapuji  N.          FIxed defect 15454             												|
+-- |12.02      26-MAR-2012  Aravind A.          Fixed defects 17473            												|
+-- |13.01      01-JUL-2012  Rohit Ranjan        Fixed Defect# 13405            												|
+-- |13.02      24-MAY-2013  Bapuji N            Fix for PCI compliance for IREC												|
+-- |                                            Payments DEFECT# 23640         												|
+-- |14.0       16-AUG-2013  Edson Morales       Retrofited for R12 upgrade     												|
+-- |14.1       29-AUG-2013  Edson Morales       R12 Encryption Changes         												|
+-- |14.2       17-SEP-2013  Edson Morales       Added AJB encryption changes   												|
+-- |14.3       01-OCT-2013  Edson Morales       Fix query for capture          												|
+-- |14.4       02-OCT-2013  Edson Morales       Removed redundant encryption   												|
+-- |                                            and decryption                 												|
+-- |14.5       12-DEC-2013  Deepak V            Changes done for Defect 26781. 												|
+-- |                                            ar_vat_tax_all replaced by     												|
+-- |                                            zx_rates_b.                    												|
+-- |14.6       13-DEC-2013  Edson Morales       Added by decryption for AMEX_CPC 											|
+-- |14.7       18-DEC-2013  Edson Morales       Getting and passing org_id to												  |
+-- |                                            ar_system_parameters_all       												|
+-- |14.8       06-JAN-2013  Edson Morales       Fix for Defect 27469           												|
+-- |14.9       09-JAN-2013  Edson Morales       Fix for Defect 27466           												|
+-- |15.0       23-JAN-2014  Edson Morales       Fix for Defect 27744           												|
+-- |16.0       24-JAN-2014  Arun Gannarapu      Fix for Defect 27580           												|
+-- |17.0       13-Feb-2014  Lakshmi T           Changes for Defect 27883       												|
+-- |18.0       03-MAR-2014  Edson Morales       Changes for Defect 28663       												|
+-- |19.0       05-MAR-2014  Edson Morales       Changes for Defect 28761       												|
+-- |20.0       11-MAR-2014  Edson Morales       Changes for Defect 28688       												|
+-- |21.0       18-MAR-2014  Arun Gannarapu      changes for defect 29040       												|
+-- |22.0       07-JUL-2014  Manjusha Tangirala  Changes for defect 30047       												|
+-- |22.0       28-MAR-2014  Edson Morales       Changes to support manual      												|
+-- |                                            deposit cancelations.          												|
+-- |23.0       01-APR-2014  Edson               Changes for Defect 29243       												|
+-- |24.0       28-May-2014  Suresh Ponnambalam  Defect 29951. Raised exception 												|
+-- |                                            in decrypt_credit_card.        												|
+-- |25.0       12-Aug-2014  Mark Schmit         Defect 31392. Perform CC       												|
+-- |                                            decrypt test prior to file     												|
+-- |                                            transfer routine.              												|
+-- |25.1       22-Sept-2014 Mark Schmit         Debug Statement remove         												|
+-- |26.0       09-OCT-2014  Kirubha Samuel      Modified 'xx_retrieve_receipt_info'										|
+-- |     										select for refund transactions to include gn_cust_account_id for 31270		|
+-- |26.1       24-FEB-2015  Kirubha Samuel      Modified 'xx_insert_manual_receipt'										|
+-- |           to update the payment number for receipts created manually for 32588										|
+-- |26.2       25-MAR-2015 Suresh Ponnambalam   Module 4A Settlement Changes   												|
+-- |26.3       28-APR-2015 Harvinder Rakhra     Tokenization of Credit Card    												|
+-- |26.4       22-MAY-2015 Harvinder Rakhra     Tokenization of Credit Card    												|
+-- |26.5       29-MAY-2015 Suresh Ponnambalam   Mod 4A secondary soft header   												|
+-- |26.6       03-JUN-2015 Suresh Ponnambalam   Tokenization: Added token flag 												|
+-- |                                            to xx_ar_invoice_ods           												|
+-- |26.7       18-JUN-2015 Harvinder Rakhra     Tokenization: Defect 34724     												|
+-- |26.8       24-JUN-2015 Rakesh Polepalli		Modified the procedure     													    |
+-- |											'xx_set_post_trx_variables' 			   									                      |
+-- |											as part of the Defect# 34612												                        |
+-- |26.9       08-JUL-2015 Harvinder Rakhra     Tokenization Changes           												|
+-- |27.0       27-JUL-2015 Harvinder Rakhra     Set Field21 and Field56 based  												|
+-- |                                            on EMV fields.                 												|
+-- |                                            Tokenization Changes. Defect#35087   									|
+-- |27.1       06-AUG-2015 Harvinder Rakhra     Space Delimiter added for EMV fields 									|
+-- |27.2       11-AUG-2015 Harvinder Rakhra     gc_ixswipe value updated based 												|
+-- |                                            on ixswipe value               												|
+-- |27.3       19-AUG-2015 Harvinder Rakhra     Defect in gc_ixoptions logic changed									|
+-- |28.0       27-AUG-2014 Suresh Ponnambalam   Defect 35495. Added exception  												|
+-- |                                            to xx_ar_invoice_ods.          												|
+-- |29.0       28-AUG-2015 Shubhashree R       Modified xx_set_post_trx_variables											|
+-- |                                           procedure for Defect# 35181     												|
+-- |30.0       18-SEP-2015 Rakesh Polepalli    Defect# 35780,Modified 'EACH' to 'EA' in the 					|
+-- |					       					procedure xx_create_201_settlement_rec 										              |
+-- |31.0       10-OCT-2015 rakesh Polepalli    Defect# 35839,Modified clbatch procedure 							|
+-- |32.0       14-OCT-2015 Avinash Baddam      Changes for Defect#36003 and    												|
+-- |					       					R12.2 Compliance Changes        											                  |
+-- |33.0       18-FEB-2016 Avinash Baddam      Defect#37204 - Masterpass       												|
+-- |34.0	   29-APR-2016 Rakesh Polepalli    Changes for the defect# 37763   												  |
+-- |35.0	   23-JUN-2016 Rakesh Polepalli    Changes for the defect# 38244   												  |
+-- |36.0       24-JUN-2016 Avinash Baddam      Defect#38215 - amex to vantiv conv   									|
+-- |37.0       23-AUG-2016 Suresh Ponnambalam  Defect 38243 - AMEX Instrsubtype												|
+-- |38.0       30-AUG-2016 Suresh Ponnambalam  Defect 39040 - Removed : from   												|
+-- |                                           ixcustcountrycode.              												|
+-- |39.0       16-SEP-2016 Suresh Ponnambalam  Defect 39341 - Remapped ixreleasenumber 								|
+-- |                                           to ixothertaxamount3 and remove 												|
+-- |                                           ixoriginalinvoiceno from file.  												|
+-- |40.0       17-OCT-2016 Suresh Ponnambalam  Amex to check ixunitcost instead 											|
+-- |                                           of ixcustunitprice to create level 2										|
+-- |41.0	   03-NOV-2016 Rakesh Polepalli    Changes for defects# 37866,39910 											  |
+-- |42.0	   03-NOV-2016 Rakesh Polepalli    Changes for defects# 38223,40149 											  |
+-- |43.0       27-DEC-2016 Suresh Ponnambalam  Defect 40377 AMEX SKU order change											|
+-- |44.0     02-SEP-2017  Uday Jadhav          Changes done for BIZBOX Rollout to pass MPL_ORDER_ID to IXINVOICE			      |
+-- |45.0       05-FEB-2018 Atul Khard  		   Defect 44326 Adding HINT /*+ index(OOH,OE_ORDER_HEADERS_U2) */				          |
+-- |46.0       21-FEB-2018 Rohit Gupta         Modified code for defect #44299 												                      |
+-- |47.0       05-MAR-2018 M K Pramod Kumar    Modified code for defect NAIT-31107 											                    |
+-- |47.1       05-MAR-2018 M K Pramod Kumar    Code Change to process UnApplied Invoices for SERVICE-CONTRACTS 				      |
+-- |47.2       05-MAR-2018 M K Pramod Kumar    Modified to derive Invoice Num from ORDT 									                  |
 -- |47.3       14-MAR-2018 M K Pramod Kumar    Modified to derive gc_ixreserved31 to default to *ECI for SERVICE-CONTRACTS  |
--- |48.0       21-FEB-2019 M K Pramod Kumar    Modified  code for COF changes per NAIT-83065 |
--- |48.1       10-MAY-2019 M K Pramod Kumar    Modified to to derive Instance Name for LNS
--- |48.2       12-SEP-2019 M K Pramod Kumar    Modified for Return Mandate per NAIT-106896
--- |48.3       07-JAN-2020 Sripal Reddy        Modified for sglpmt_multi_settlement refund issue NAIT-115171  |
--- |48.4       18-FEB-2020 Sripal reddy        Modified for POC: Customer PO line number NAIT 123195 by sripal  |
--- |48.5       13-JUL-2020 Atul Khard          Modified for NAIT-131811: POS Settlement Changes for Partial Reversal   |
--- |48.6       16-JUL-2020 Atul Khard          Modified for EMV Card changes   |
--- +===========================================================================+
+-- |48.0       21-FEB-2019 M K Pramod Kumar    Modified  code for COF changes per NAIT-83065 								                |
+-- |48.1       10-MAY-2019 M K Pramod Kumar    Modified to to derive Instance Name for LNS									                |
+-- |48.2       12-SEP-2019 M K Pramod Kumar    Modified for Return Mandate per NAIT-106896									                |
+-- |48.3       07-JAN-2020 Sripal Reddy        Modified for sglpmt_multi_settlement refund issue NAIT-115171  				      |
+-- |48.4       18-FEB-2020 Sripal reddy        Modified for POC: Customer PO line number NAIT 123195 by sripal  			      |
+-- |48.5       13-JUL-2020 Atul Khard          Modified for NAIT-131811: POS Settlement Changes for Partial Reversal		    |
+-- |48.6       16-JUL-2020 Atul Khard          Modified for EMV Card changes   												                      |
+-- |48.7	   30-NOV-2020 Karan Varshney 	   Modified for AJBCredit - Settlement Issue (NAIT-161505)						            |      
+-- |48.8	   06-JAN-2020 Karan Varshney	     Modiifed for OD EBS Field 50 in the settlement issue (NAIT-165607)	          	|			
+-- +=========================================================================================================================+
 
 	g_package_name              CONSTANT all_objects.object_name%TYPE                        := 'xx_iby_settlement_pkg';
-	g_return_success            CONSTANT VARCHAR2(20)                                              := 'SUCCESS';
-	g_return_failure            CONSTANT VARCHAR2(20)                                              := 'FAILURE';
-	g_return_too_many_rows      CONSTANT VARCHAR2(20)                                              := 'TOO_MANY_ROWS';
-	g_return_no_data_found      CONSTANT VARCHAR2(20)                                              := 'NO_DATA_FOUND';
-	g_max_error_message_length  CONSTANT NUMBER                                                    := 2000;
-	g_debug                              BOOLEAN                                                   := FALSE;
-	g_max_err_buf_size          CONSTANT NUMBER                                                    := 250;
+	g_return_success            CONSTANT VARCHAR2(20)                                        := 'SUCCESS';
+	g_return_failure            CONSTANT VARCHAR2(20)                                        := 'FAILURE';
+	g_return_too_many_rows      CONSTANT VARCHAR2(20)                                        := 'TOO_MANY_ROWS';
+	g_return_no_data_found      CONSTANT VARCHAR2(20)                                        := 'NO_DATA_FOUND';
+	g_max_error_message_length  CONSTANT NUMBER                                              := 2000;
+	g_debug                              BOOLEAN                                             := FALSE;
+	g_max_err_buf_size          CONSTANT NUMBER                                              := 250;
 	-------------------------------------
 -- Global Constants
 -------------------------------------
@@ -316,10 +318,10 @@ AS
 	gn_amex_except5                      NUMBER;
 	gn_amex_except6                      NUMBER;
 	gn_amex_except7                      NUMBER;
-	gn_amex_except11                      NUMBER;
-	gn_amex_except12                      NUMBER;
-	gn_amex_except13                      NUMBER;
-	gn_amex_except15		      NUMBER;
+	gn_amex_except11                     NUMBER;
+	gn_amex_except12                     NUMBER;
+	gn_amex_except13                     NUMBER;
+	gn_amex_except15		      		 NUMBER;
 	gb_is_deposit_receipt                BOOLEAN;
 	gc_is_deposit_return                 BOOLEAN;
 	gc_transaction_number                xx_om_legacy_deposits.transaction_number%TYPE;
@@ -2795,8 +2797,10 @@ AS
 										 ,
 				   xaord.receipt_method_id receipt_method_id,
 				   xaord.additional_auth_codes additional_auth_codes,
-				   TO_CHAR(xaord.receipt_date,
-						   'MMDDYYYY') ixdate,
+				   /*TO_CHAR(xaord.receipt_date,
+						   'MMDDYYYY') ixdate,*/			-- Modified the changes for version 48.8
+				   TO_CHAR(op.credit_card_approval_date,
+							'MMDDYYYY') ixdate,		
 				   '000000' ixtime,
 				   xaord.customer_id pay_from_customer,
 				   xaord.customer_site_billto_id customer_site_use_id,
@@ -2866,7 +2870,7 @@ AS
 				   gc_ixcustaccountno,
 				   gc_key_label
 			FROM   xx_ar_order_receipt_dtl xaord, oe_order_headers_all ooha, hz_cust_accounts hca
-			,oe_payments op --Added for NAIT-131811
+					,oe_payments op --Added for NAIT-131811
 			WHERE  xaord.order_payment_id = gn_order_payment_id
 			AND    xaord.header_id = ooha.header_id
 			AND    ooha.header_id = op.header_id(+) --Added for NAIT-131811
@@ -2903,8 +2907,10 @@ AS
 				   acr.payment_server_order_num payment_server_id,
 				   xaord.receipt_method_id receipt_method_id,
 				   xaord.additional_auth_codes additional_auth_codes,
-				   TO_CHAR(acr.receipt_date,
-						   'MMDDYYYY') ixdate,
+				   /*TO_CHAR(acr.receipt_date,
+						   'MMDDYYYY') ixdate,*/			-- Modified the changes for version 48.8
+				   TO_CHAR(op.credit_card_approval_date,
+							'MMDDYYYY') ixdate,
 				   '000000' ixtime,
 				   acr.pay_from_customer pay_from_customer,
 				   acr.customer_site_use_id customer_site_use_id,
@@ -3084,8 +3090,10 @@ AS
 				   acr.payment_server_order_num payment_server_id,
 				   acr.receipt_method_id receipt_method_id,
 				   xaord.additional_auth_codes additional_auth_codes,
-				   TO_CHAR(acr.receipt_date,
-						   'MMDDYYYY') ixdate,
+				   /*TO_CHAR(acr.receipt_date,
+						   'MMDDYYYY') ixdate,*/			-- Modified the changes for version 48.8
+				   TO_CHAR(op.credit_card_approval_date,
+							'MMDDYYYY') ixdate,
 				   '000000' ixtime,
 				   acr.pay_from_customer pay_from_customer,
 				   acr.customer_site_use_id customer_site_use_id,
@@ -3130,9 +3138,9 @@ AS
 				   gc_key_label,
 				   vn_Payment_Trxn_Extension_Id
 			FROM   ar_cash_receipts_all acr, xx_ar_order_receipt_dtl xaord
-			,oe_payments op --Added for NAIT-131811
+					,oe_payments op --Added for NAIT-131811
 			WHERE  xaord.order_payment_id = gn_order_payment_id
-			AND    xaord.header_id = op.header_id(+) --Added for NAIT-131811 
+			AND    xaord.header_id = op.header_id(+) --Added for NAIT-131811
 			AND    xaord.payment_number = op.payment_number(+) --Added for NAIT-131811
 			--acr.cash_receipt_id = gn_cash_receipt_id
 			AND    acr.cash_receipt_id = xaord.cash_receipt_id;
@@ -4323,30 +4331,30 @@ AS
 		IF NVL (lc_emv_terminal, 'N') <> 'N' THEN
 			gc_ixoptions := '*DEVCAP='||lc_emv_terminal||' '||gc_ixoptions;
 		END IF; --Moved up for Version 48.6
-		
+
 		IF NVL(lc_emv_card,'T') <> 'T' THEN --Added for Version 48.6
-		
+
 			IF NVL (lc_emv_fallback, 'N') = 'Y' THEN
-	
+
 				IF NVL (gc_ixswipe , '-1') <> '-1' THEN   --Version 27.1
 				gc_ixoptions := '*CEM_Swiped *FALLBACK_EMV '||gc_ixoptions;
 				ELSE
 				gc_ixoptions := '*CEM_Manual *FALLBACK_EMV '||gc_ixoptions;
 				END IF;
 			END IF;
-	
+
 			IF NVL (lc_emv_offline, 'N') = 'Y' THEN
 				gc_ixoptions := '*REFERRAL '||gc_ixoptions;
 			END IF;
-	
+
 			IF NVL (lc_emv_transaction, 'N') = 'Y' THEN
 				gc_ixoptions := '*CEM_Insert *EMV '||gc_ixoptions;   --Version 27.1
 			END IF;
-	
+
 			IF NVL (lc_emv_tvr, 'N') <> 'N' THEN
 				gc_ixreserved56 := '<95>'||lc_emv_tvr||'</95>';
 			END IF;
-		
+
 		END IF;--Added for Version 48.6
 
 		xx_location_and_log(g_loc, 'gc_ixoptions :: '||gc_ixoptions);
@@ -4404,18 +4412,18 @@ END xx_set_post_receipt_variables;
 						'Entering NO_DATA_FOUND Exception in XX_SET_POST_TRX_VARIABLES for Retrieve Sales Order Type. ');
 				gc_sales_order_trans_type_desc := NULL;
 		END;
-		
+
 		BEGIN  -- For Version 48.6 starts here
-						
+
 			xx_location_and_log(g_log,'EMV Card Check in ORDT');
-			
+
 			lc_emv_card := NULL;
-						
+
 			SELECT  nvl(emv_card,'N')
 				INTO lc_emv_card
 			FROM xx_ar_order_receipt_dtl
-			WHERE order_payment_id = gn_order_payment_id; 
-							
+			WHERE order_payment_id = gn_order_payment_id;
+
 		EXCEPTION
 			WHEN NO_DATA_FOUND
 			THEN
@@ -4441,13 +4449,13 @@ END xx_set_post_receipt_variables;
 						|| gc_application_ref_num;
 
 					SELECT cust_po_number,
-						   TO_CHAR(ordered_date,
-								   'MMDDYYYY'),
+						   /*TO_CHAR(ordered_date,       	-- Modified the changes for 48.7 version
+								   'MMDDYYYY'),*/
 						   ship_from_org_id,
 						   header_id,
 						   orig_sys_document_ref
 					INTO   gc_ixcustomerreferenceid,
-						   gc_ixorderdate,
+						   --gc_ixorderdate,				-- Modified the changes for 48.7 version
 						   gn_ship_from_org_id,
 						   gn_order_header_id,
 						   gc_orig_sys_document_ref
@@ -4460,9 +4468,9 @@ END xx_set_post_receipt_variables;
 					xx_location_and_log(g_log,
 										   'Customer Reference Id    : '
 										|| gc_ixcustomerreferenceid);
-					xx_location_and_log(g_log,
+					/*xx_location_and_log(g_log,
 										   'Order Date               : '
-										|| gc_ixorderdate);
+										|| gc_ixorderdate);*/				-- Modified the changes for 48.7 version
 					xx_location_and_log(g_log,
 										   'Ship From Org Id         : '
 										|| gn_ship_from_org_id);
@@ -4482,6 +4490,44 @@ END xx_set_post_receipt_variables;
 						gn_ship_from_org_id := NULL;
 						gc_ixorderdate := NULL;
 				END;
+				
+				--Start Changes for 48.7 version
+				BEGIN
+					xx_location_and_log(g_loc,
+										'Retrieving ixorderdate from auth date of oe_payments. ');
+					gc_error_debug :=
+						   'Sales Order: '
+						|| gn_order_number
+						|| '. Application Ref Num: '
+						|| gc_application_ref_num
+						|| '. Order Payment ID: '
+						|| gn_order_payment_id;
+						
+					
+					SELECT TO_CHAR(op.CREDIT_CARD_APPROVAL_DATE,'MMDDYYYY') CREDIT_CARD_APPROVAL_DATE
+					INTO gc_ixorderdate
+					FROM oe_payments op,
+						 xx_ar_order_receipt_dtl xaord
+					WHERE 1=1
+					AND op.header_id = xaord.header_id
+					AND op.orig_sys_payment_ref = xaord.orig_sys_payment_ref
+					AND xaord.order_number = NVL(gn_order_number,
+												 gc_application_ref_num)
+					AND xaord.order_payment_id = gn_order_payment_id;
+
+					  xx_location_and_log(g_log,
+										  'Auth Date from oe_payments: '
+										  || gc_ixorderdate);
+
+				EXCEPTION
+					WHEN NO_DATA_FOUND
+					THEN
+						xx_location_and_log
+							(g_loc,
+							 'Entering NO_DATA_FOUND Exception in gc_ixorderdate for Retrieve Auth Date/Credit Card Approval Date Information. ');
+					gc_ixorderdate := NULL;
+				END;
+				--End Changes for 48.7 version
 
 	  --Start Changes for BIZBOX
 		BEGIN
@@ -7322,18 +7368,18 @@ END xx_set_post_receipt_variables;
 			|| gn_cash_receipt_id
 			|| '.  Payment Order ID: '
 			|| gn_order_payment_id;
-			
+
 	-- NAIT-131811 change starts
-	
+
 	xx_location_and_log(g_loc,
 							'Original Amount, Field20 - '||gc_ixreserved20);
-	
+
     IF to_number(gc_ixreserved20) = 0
     THEN
       gc_ixreserved20 := NULL;
     END IF;
     --NAIT-131811 change ends
-	
+
 		INSERT INTO xx_iby_batch_trxns
 					(pre1,
 					 pre2,
@@ -10753,8 +10799,8 @@ END xx_set_post_receipt_variables;
 					 xoha.cost_center_dept,
 					 xoha.desk_del_addr,
 					 xoha.release_number,
-					 TO_CHAR(ooha.ordered_date,
-							 'MMDDYYYY') ixorderdate,
+					 /*TO_CHAR(ooha.ordered_date,				-- Commented for 48.7 version
+							 'MMDDYYYY') ixorderdate,*/					  
 					 ooha.ship_from_org_id,
 					 DECODE(LENGTH(xoldd.orig_sys_document_ref),
 							20, 'POS',
@@ -10790,7 +10836,7 @@ END xx_set_post_receipt_variables;
 			FETCH lcu_single_pmt
 			INTO  ltab_single_pmt_rec;
 
-			EXIT WHEN lcu_single_pmt%NOTFOUND;
+			EXIT WHEN lcu_single_pmt%NOTFOUND;			
 
 --------------------------------------------------------------
 -- Assign CURSOR variables to GLOBAL variables and increment counter
@@ -10815,8 +10861,38 @@ END xx_set_post_receipt_variables;
 				gc_ixreleasenumber := ltab_single_pmt_rec.release_number;
 				gc_cust_po_number := ltab_single_pmt_rec.cust_po_number;
 				gc_ixcustomerreferenceid := ltab_single_pmt_rec.cust_po_number;
-				gc_ixorderdate := ltab_single_pmt_rec.ixorderdate;
+				--gc_ixorderdate := ltab_single_pmt_rec.ixorderdate; 			-- Commented for 48.7 version
 				gn_ship_from_org_id := ltab_single_pmt_rec.ship_from_org_id;
+			END;
+			
+			----------------------------------------------------------------------------
+			-- Fetching the CREDIT_CARD_APPROVAL_DATE in gc_ixorderdate for 48.7 version
+			----------------------------------------------------------------------------	
+			BEGIN
+				xx_location_and_log(g_loc,
+									'Fetching Auth Date from oe_payments. ');
+				xx_location_and_log(g_loc,
+									'Order_payment_id: '||ltab_single_pmt_rec.order_payment_id);
+									
+				SELECT TO_CHAR(op.CREDIT_CARD_APPROVAL_DATE,'MMDDYYYY') CREDIT_CARD_APPROVAL_DATE
+				INTO gc_ixorderdate
+				FROM oe_payments op,
+					 xx_ar_order_receipt_dtl xaord
+				WHERE 1=1
+				AND op.header_id = xaord.header_id
+				AND op.orig_sys_payment_ref = xaord.orig_sys_payment_ref
+				AND xaord.order_payment_id = ltab_single_pmt_rec.order_payment_id;
+
+			    xx_location_and_log(g_loc,
+								    'Auth Date from oe_payments: '
+								    || gc_ixorderdate);
+			EXCEPTION
+			WHEN NO_DATA_FOUND
+			THEN
+				xx_location_and_log
+					(g_loc,
+					 'Entering NO_DATA_FOUND Exception in gc_ixorderdate for Retrieve Credit Card Approval Date. ');
+				gc_ixorderdate := NULL;
 			END;
 
 --------------------------------------------------------------
@@ -18502,6 +18578,3 @@ END ORDT_RECORDS_MAIL;
 						p_exception_flag =>      TRUE);
 	END retry_errors;
 END xx_iby_settlement_pkg;
-/
-show errors;
-exit;
