@@ -12,8 +12,9 @@
 -- |===============                                                                             |
 -- |Version    Date          Author                Remarks                                      |
 -- |=======    ==========    =================    ==============================================+
--- |1.0        27-JUN-2019   Priyam Parmar          Initial Version                             |
--- |1.1        22-DEC-2020   Komal Mishra           w.r.t. JIRA NAIT-166023                     |
+-- |1.0 	   27-JUN-2019   Priyam Parmar     	  Initial Version                               |
+-- |1.1        22-DEC-2020   Komal Mishra      	  w.r.t. JIRA NAIT-166023                       |
+-- |1.2        11-JAN-2021   Gitanjali Singh      w.r.t. JIRA NAIT-127517                       |
 -- |                                                                                            |
 -- +============================================================================================+
 
@@ -37,6 +38,8 @@ BCLS_PROCESS_FLAG CONSTANT "1",
 created_by       CONSTANT "-1",
 creation_date    SYSDATE,
 last_update_date SYSDATE,
-last_updated_by  CONSTANT  "-1"
+last_updated_by  CONSTANT  "-1",
+STATUS   	 CHAR"TRIM(:STATUS)",
+END_DATE_ACTIVE	 CHAR"TRIM(:END_DATE_ACTIVE)"	
 )
 
