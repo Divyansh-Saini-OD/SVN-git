@@ -156,6 +156,8 @@ AS
 -- | 68.0        02-DEC-2020  XXXXXXXX               NAIT-161715 added the logic into procedure get_pos_info          |
 -- |                                                 for get_invoice_header_info and added into get_invoice_line_info |
 -- |                                                 for no data found error fix                                      |
+-- | 69.0        12-JAN-2021  Kayeed A               NAIT-78619 created the proc opt_out_ven_notification             |
+-- |                                                 for Opt-out vendor notification                                  |
 -- +==================================================================================================================+
 
   gc_package_name        CONSTANT all_objects.object_name%TYPE   := 'xx_ar_subscriptions_mt_pkg';
@@ -255,10 +257,10 @@ PROCEDURE logitt(p_message  IN  CLOB,
       THEN
         --fnd_file.put_line(fnd_file.LOG, lc_message);
       -- else print to DBMS_OUTPUT
-	  null;
+  null;
       ELSE
         --DBMS_OUTPUT.put_line(lc_message);
-		null;
+null;
       END IF;
     END IF;
   EXCEPTION
@@ -785,6 +787,23 @@ PROCEDURE logitt(p_message  IN  CLOB,
                          px_translation_info => lt_translation_info);
 
     x_program_setups('b2b_order_creation')  := lt_translation_info.target_value1;
+
+    /******************************************************
+    * Get Vendor Opted Out / DNR email service information
+    *******************************************************/
+
+    lc_action :=  'Calling get_translation_info for Vendor Opted Out / DNR email service info';
+
+    lt_translation_info := NULL;
+
+    lt_translation_info.source_value1 := 'OPTOUT_DNR_EMAIL_SERVICE';
+
+    get_translation_info(p_translation_name  => 'XX_AR_SUBSCRIPTIONS',
+                         px_translation_info => lt_translation_info);
+
+    x_program_setups('optout_dnr_email_service_url')  := lt_translation_info.target_value1;
+    x_program_setups('optout_dnr_email_service_user') := lt_translation_info.target_value2;
+    x_program_setups('optout_dnr_email_service_pwd')  := lt_translation_info.target_value3;
 
     /********************************
     * Get history service information
@@ -3160,15 +3179,15 @@ PROCEDURE logitt(p_message  IN  CLOB,
 
     EXCEPTION
      WHEN NO_DATA_FOUND THEN      
-	    BEGIN
-		    SELECT  summary_trx_number
+    BEGIN
+    SELECT  summary_trx_number
               INTO  x_pos_info.summary_trx_number
               FROM  xx_ar_pos_inv_order_ref_hist
              WHERE  oe_header_id = p_header_id;
-		EXCEPTION
+EXCEPTION
              WHEN NO_DATA_FOUND THEN
-             --Initial Order details calling		     
-			 BEGIN
+             --Initial Order details calling     
+ BEGIN
                   SELECT header_id,order_number 
                   INTO x_pos_info.oe_header_id,x_pos_info.sales_order 
                   FROM oe_order_headers_all
@@ -3181,21 +3200,21 @@ PROCEDURE logitt(p_message  IN  CLOB,
                   FROM XXOM_OE_ORDER_HEADERS_ALL_HIST
                   WHERE orig_sys_document_ref = p_orig_sys_doc_ref;
              END;
-			 --summary_trx_number
-			 BEGIN
+ --summary_trx_number
+ BEGIN
                  SELECT trx_number 
                    INTO x_pos_info.summary_trx_number 
                    FROM ra_customer_trx_all
                   WHERE interface_header_attribute1 = x_pos_info.sales_order ;
              EXCEPTION
                   WHEN NO_DATA_FOUND THEN
-		        SELECT trx_number 
+        SELECT trx_number 
                   INTO x_pos_info.summary_trx_number 
                   FROM ra_customer_trx_all_hist
                  WHERE interface_header_attribute1 = x_pos_info.sales_order ;
                      --x_pos_info.summary_trx_number := NULL;
                  logit(p_message => 'Invoice not yet created ' || x_pos_info.summary_trx_number);
-            END;	   
+            END;   
        END;
    -- END for NAIT-125836-Invoice creation is failing with no_data_found trying to find the initial POS order 
     WHEN OTHERS
@@ -5326,7 +5345,7 @@ PROCEDURE logitt(p_message  IN  CLOB,
                lc_ora_lob            := '40'; 
             END IF;
           END IF;*/
-		  lc_ora_lob := null;
+  lc_ora_lob := null;
          
           get_LOB_segment_info (p_ccid_id    => lr_invoice_dist_info.code_combination_id,         
                                  x_segment   => lc_ora_lob);
@@ -5526,8 +5545,8 @@ PROCEDURE logitt(p_message  IN  CLOB,
                lc_ora_lob            := '40'; 
             END IF;
           END IF;*/
-		  
-		  lc_ora_lob := null;
+  
+  lc_ora_lob := null;
           get_LOB_segment_info (p_ccid_id    => lr_invoice_dist_info.code_combination_id,         
                                  x_segment   => lc_ora_lob);
           
@@ -5733,7 +5752,7 @@ PROCEDURE logitt(p_message  IN  CLOB,
             END IF;
           END IF;*/
 
-		  lc_ora_lob := null;
+  lc_ora_lob := null;
           get_LOB_segment_info (p_ccid_id    => lr_invoice_dist_info.code_combination_id,         
                                  x_segment   => lc_ora_lob);
 
@@ -12114,7 +12133,7 @@ PROCEDURE logitt(p_message  IN  CLOB,
             lc_action := 'Update xx_ar_contracts';
             --Added for NAIT-159331-Store # 001165 Issue
             IF eligible_contract_line_rec.store_number IS NULL
-			THEN
+THEN
             BEGIN
               SELECT store_number 
                 INTO l_store_number
@@ -12129,9 +12148,9 @@ PROCEDURE logitt(p_message  IN  CLOB,
              WHEN OTHERS THEN
                 l_store_number := eligible_contract_line_rec.store_number;
             END;
-			ELSE
+ELSE
                 l_store_number := eligible_contract_line_rec.store_number;
-			END IF;
+END IF;
             
             IF eligible_contract_line_rec.cc_trans_id IS NOT NULL
             THEN
@@ -17128,6 +17147,331 @@ END is_rev_rec_item;
       exiting_sub(p_procedure_name => lc_procedure_name, p_exception_flag => TRUE);
       RAISE_APPLICATION_ERROR(-20101, 'PROCEDURE: ' || lc_procedure_name || ' Action: ' || lc_action || ' SQLCODE: ' || SQLCODE || ' SQLERRM: ' || SQLERRM);
   END contract_autorenew_process;
+
+/* **********************************************************************************************
+ Procedure for Opt-out vendor notification DNR
+************************************************************************************************ */
+PROCEDURE opt_out_ven_notification(errbuff            OUT VARCHAR2,
+                                   retcode            OUT NUMBER,
+                                   p_debug_flag       IN  VARCHAR2 DEFAULT 'N'
+                                  )
+  IS
+ CURSOR c_depot IS
+    SELECT (contl.contract_id  ||'-'|| contl.contract_line_number ||'-'||        
+            TO_CHAR(SYSDATE,'DDMONYYYYHH24MISS')
+           )consumerTransactionId
+           ,conts.contract_number       contractNumber    
+           ,conts.contract_id           contractId
+           ,conts.initial_order_number  orderNumber
+           ,NULL                        cancelReasonCode
+           ,contl.contract_line_number  lineNumber
+           ,conts.store_number          storeNumber
+           ,conts.bill_to_osr           billToAccountNumber
+           ,contl.close_date            contractCloseDate
+           ,contl.cancellation_date 
+           ,conts.contract_end_date     endDate
+           ,conts.contract_start_date   startDate
+           ,conts.loyalty_member_number rewardsNumber
+           ,contl.program               serviceType
+           ,contl.item_name             skuNumber
+           ,contl.item_description      skuDescription
+           ,DECODE(contl.vendor_number,NULL,'1234',contl.vendor_number)vendorNumber
+           ,conts.contract_status      
+           ,conts.external_source source
+      FROM xx_ar_subscriptions           subs
+      ,    xx_ar_contract_lines          contl
+      ,    xx_ar_contracts               conts
+    WHERE  1                             =1  
+      AND subs.contract_id               =contl.contract_id
+      AND subs.contract_line_number      =contl.contract_line_number
+      AND contl.contract_id              =conts.contract_id
+      AND contl.contract_number          =conts.contract_number
+      AND contl.renewal_type             = 'DO_NOT_RENEW'
+      AND conts.contract_status          ='EXPIRED'
+      AND contl.attribute1               <>'Y' 
+      AND TRUNC(SYSDATE-1) = TRUNC(contl.contract_line_end_date)
+      ;
+  
+    lc_action                      VARCHAR2(32000):= NULL;
+    lc_error                       VARCHAR2(32000):= NULL;    
+    lr_contract_line_info          xx_ar_contract_lines%ROWTYPE;
+    lc_wallet_id                   xx_ar_contracts.payment_identifier%TYPE; 
+    lc_optout_dnr_payload          VARCHAR2(32000) := NULL;
+    l_request                      UTL_HTTP.req;
+    l_response                     UTL_HTTP.resp;
+    lclob_buffer                   CLOB;
+    lc_buffer                      VARCHAR2(32000); 
+    lr_subscription_error_info     xx_ar_subscriptions_error%ROWTYPE;
+    le_processing                  EXCEPTION; 
+
+    lc_procedure_name              CONSTANT VARCHAR2(61) := gc_package_name || '.' || 'opt_out_ven_notification'; 
+    lt_parameters                  gt_input_parameters;	
+    lt_program_setups              gt_translation_values;
+    lr_subscription_payload_info   xx_ar_subscription_payloads%ROWTYPE;
+
+  BEGIN
+
+    lt_parameters('p_debug_flag')  := p_debug_flag;
+	
+	entering_sub(p_procedure_name  => lc_procedure_name,
+                 p_parameters      => lt_parameters);
+	
+	lc_action := 'Calling get_program_setups';
+
+    get_program_setups(x_program_setups => lt_program_setups);
+
+    FOR i IN c_depot LOOP
+	
+     BEGIN
+	 
+	 	/* *****************************
+         * Get contract line information
+         ******************************/
+         lc_action := 'Calling get_contract_line_info in opt_out_ven_notification';
+         get_contract_line_info(p_contract_id => i.contractId,
+                                p_contract_line_number => i.lineNumber,
+                                x_contract_line_info => lr_contract_line_info);
+	 
+         lc_action := 'Calling get_program_setups';
+
+         SELECT  '{
+                    "terminateVendorRequest": 
+                  {
+                   "transactionHeader": 
+                   {"consumerName": "EBS",
+                    "consumerTransactionId":"'|| i.consumerTransactionId
+                                              || '",
+                    "consumerTransactionDateTime":"'
+                                              || TO_CHAR(SYSDATE,'YYYY-MM-DD')
+                                              || 'T'
+                                              || TO_CHAR(SYSDATE,'HH24:MI:SS')
+                                              || '"
+                    },                           
+                    "contractNumber" :"'|| i.contractNumber
+                                        || '",
+                    "contractId" :"'    || i.contractId
+                                        || '",
+                    "orderNumber" :"'   || i.orderNumber
+                                        || '",
+                    "cancelReasonCode": "TerminateVednorRequest",
+                    "lineNumber" :"'    || i.lineNumber
+                                        || '",
+                    "storeNumber" :"'   || i.storeNumber
+                                        || '",
+                    "billToAccountNumber" :"'|| i.billToAccountNumber
+                                             || '",
+                      "contractCloseDate" :"'|| i.contractCloseDate
+                                             || '",
+                         "endDate" :"'       || i.endDate
+                                             || '",
+                         "startDate" :"'     || i.startDate
+                                             || '",
+                         "rewardsNumber" :"' || i.rewardsNumber
+                                             || '",
+                         "serviceType" :"'   || i.serviceType
+                                             || '",
+                         "skuNumber" :"'     || i.skuNumber
+                                             || '",
+                         "skuDescription" :"'|| i.skuDescription
+                                             || '",
+                         "vendorNumber" :"'  || i.vendorNumber
+                                             || '"
+                 }
+               }'
+            INTO   lc_optout_dnr_payload
+            FROM   DUAL;
+            
+            dbms_output.put_line('DNR Vendor Termination Request Payload -> ' || lc_optout_dnr_payload);
+
+            lc_action := 'Validating Wallet location in optout_dnr_email_service';
+
+            IF lt_program_setups('wallet_location') IS NOT NULL      THEN
+
+              lc_action := 'calling UTL_HTTP.set_wallet in optout_dnr_email_service';
+
+              UTL_HTTP.SET_WALLET(lt_program_setups('wallet_location'), lt_program_setups('wallet_password'));
+
+            END IF;
+
+            lc_action := 'Calling UTL_HTTP.set_response_error_check in optout_dnr_email_service';
+
+            UTL_HTTP.set_response_error_check(FALSE);
+
+            lc_action := 'Calling UTL_HTTP.begin_request';
+
+            l_request := UTL_HTTP.begin_request(lt_program_setups('optout_dnr_email_service_url'), 'POST', ' HTTP/1.1');
+
+            lc_action := 'Calling UTL_HTTP.SET_HEADER: user-agent';
+
+            UTL_HTTP.SET_HEADER(l_request, 'user-agent', 'mozilla/4.0');
+
+            lc_action := 'Calling UTL_HTTP.SET_HEADER: content-type';
+
+            UTL_HTTP.SET_HEADER(l_request, 'content-type', 'application/json');
+
+            lc_action := 'Calling UTL_HTTP.SET_HEADER: Content-Length';
+
+            UTL_HTTP.SET_HEADER(l_request, 'Content-Length', LENGTH(lc_optout_dnr_payload));
+
+            lc_action := 'Calling UTL_HTTP.SET_HEADER: Authorization';
+
+            UTL_HTTP.SET_HEADER(l_request, 'Authorization', 'Basic ' || UTL_RAW.cast_to_varchar2(UTL_ENCODE.base64_encode(UTL_RAW.cast_to_raw(lt_program_setups('optout_dnr_email_service_user')|| ':'|| lt_program_setups('optout_dnr_email_service_pwd')))));
+            
+			lc_action := 'Calling UTL_HTTP.write_text in optout_dnr_email_service';
+
+            UTL_HTTP.write_text(l_request, lc_optout_dnr_payload);
+
+            lc_action := 'Calling UTL_HTTP.get_response';
+
+            l_response := UTL_HTTP.get_response(l_request);
+
+            COMMIT;
+
+            logit(p_message => 'Response status_code in optout_dnr_email_service' || l_response.status_code);
+          
+            /*************************
+            * Get response into a CLOB
+            *************************/
+
+            lc_action := 'Getting response';
+
+            BEGIN
+
+              lclob_buffer := EMPTY_CLOB;
+              LOOP
+
+                UTL_HTTP.read_text(l_response, lc_buffer, LENGTH(lc_buffer));
+                lclob_buffer := lclob_buffer || lc_buffer;
+
+              END LOOP;
+
+              logit(p_message => 'Response Clob: in optout_dnr_email_service ' || lclob_buffer);
+
+              UTL_HTTP.end_response(l_response);
+
+            EXCEPTION
+              WHEN UTL_HTTP.end_of_body
+              THEN
+
+                UTL_HTTP.end_response(l_response);
+            END;
+
+            /***********************
+            * opt_out_ven_notification request/response
+            ***********************/
+
+            lc_action := 'opt_out_ven_notification request/response';
+
+            lr_subscription_payload_info.payload_id              := xx_ar_subscription_payloads_s.NEXTVAL;
+            lr_subscription_payload_info.response_data           := lclob_buffer;
+            lr_subscription_payload_info.creation_date           := SYSDATE;
+            lr_subscription_payload_info.created_by              := FND_GLOBAL.USER_ID;
+            lr_subscription_payload_info.last_updated_by         := FND_GLOBAL.USER_ID;
+            lr_subscription_payload_info.last_update_date        := SYSDATE;
+            lr_subscription_payload_info.input_payload           := lc_optout_dnr_payload;
+            lr_subscription_payload_info.contract_number         := i.contractNumber;
+            lr_subscription_payload_info.billing_sequence_number := NULL;
+            lr_subscription_payload_info.contract_line_number    := i.lineNumber; --NULL;
+            lr_subscription_payload_info.source                  := lc_procedure_name;
+            lc_action := 'Calling insert_subscription_payload_info in set_dnr_contract_line';
+
+            insert_subscript_payload_info(p_subscription_payload_info => lr_subscription_payload_info);
+
+           IF (l_response.status_code = 200)
+            THEN
+              logit(p_message => 'DNR Vendor Termination process successfully ' );
+              lr_contract_line_info.attribute1  := 'Y';
+              
+              lr_contract_line_info.last_update_date := SYSDATE;
+              lr_contract_line_info.last_updated_by  := FND_GLOBAL.USER_ID;
+  
+              update_line_info(p_contract_line_info => lr_contract_line_info);
+              
+            ELSE
+             lc_action := NULL;             
+             lc_error  := 'OPTOUT_DNR_EMAIL_SERVICE failure - response code: ' || l_response.status_code;
+
+             RAISE le_processing;
+
+            END IF; 
+         EXCEPTION
+         WHEN le_processing
+          THEN
+            lr_subscription_error_info                         := NULL;            
+            lr_subscription_error_info.contract_id             := i.contractId;
+            lr_subscription_error_info.contract_number         := i.contractNumber;
+            lr_subscription_error_info.contract_line_number    := i.lineNumber;
+            lr_subscription_error_info.error_module            := lc_procedure_name;
+            lr_subscription_error_info.error_message           := SUBSTR('Action: ' || lc_action || ' Error: ' || lc_error, 1, gc_max_err_size);
+            lr_subscription_error_info.creation_date           := SYSDATE;
+
+            lc_action := 'Calling insert_subscription_error_info in OPTOUT_DNR_EMAIL_SERVICE';
+
+            insert_subscription_error_info(p_subscription_error_info => lr_subscription_error_info);
+
+            lr_contract_line_info.attribute1                   := 'N';
+            lr_contract_line_info.last_update_date             := SYSDATE;
+            lr_contract_line_info.last_updated_by              := FND_GLOBAL.USER_ID;
+            
+            update_line_info(p_contract_line_info => lr_contract_line_info);
+
+
+            lc_error := SUBSTR(lr_subscription_error_info.error_message, 1, gc_max_sub_err_size);
+          WHEN OTHERS
+          THEN
+
+            lr_subscription_error_info                         := NULL;            
+            lr_subscription_error_info.contract_id             := i.contractId;
+            lr_subscription_error_info.contract_number         := i.contractNumber;
+            lr_subscription_error_info.contract_line_number    := i.lineNumber;
+            lr_subscription_error_info.error_module            := lc_procedure_name;
+            lr_subscription_error_info.error_message           := SUBSTR('Action: ' || lc_action || ' Error: ' || lc_error, 1, gc_max_err_size);
+            lr_subscription_error_info.creation_date           := SYSDATE;
+
+            lc_action := 'Calling insert_subscription_error_info in OPTOUT_DNR_EMAIL_SERVICE';
+
+            insert_subscription_error_info(p_subscription_error_info => lr_subscription_error_info);
+
+            lr_contract_line_info.attribute1                   := 'N';
+            lr_contract_line_info.last_update_date             := SYSDATE;
+            lr_contract_line_info.last_updated_by              := FND_GLOBAL.USER_ID;
+            
+            update_line_info(p_contract_line_info => lr_contract_line_info);
+
+            lc_error := SUBSTR(lr_subscription_error_info.error_message, 1, gc_max_sub_err_size);
+            
+       END;
+     END LOOP;
+     lc_optout_dnr_payload :='';
+  EXCEPTION
+    WHEN OTHERS
+    THEN
+
+      lr_subscription_error_info := NULL;
+      lr_subscription_error_info.contract_id := lr_contract_line_info.contract_id;
+      lr_subscription_error_info.contract_number := lr_contract_line_info.contract_number;
+      lr_subscription_error_info.contract_line_number := lr_contract_line_info.contract_line_number;
+      lr_subscription_error_info.error_module := lc_procedure_name;
+      lr_subscription_error_info.error_message := SUBSTR('Action: ' || lc_action || ' Error: ' || lc_error, 1, gc_max_err_size);
+      lr_subscription_error_info.creation_date := SYSDATE;
+
+      lc_action := 'Calling insert_subscription_error_info in OPTOUT_DNR_EMAIL_SERVICE';
+      
+      insert_subscription_error_info(p_subscription_error_info => lr_subscription_error_info);
+
+      lr_contract_line_info.attribute1                   := 'N';
+      lr_contract_line_info.last_update_date             := SYSDATE;
+      lr_contract_line_info.last_updated_by              := FND_GLOBAL.USER_ID;
+            
+      update_line_info(p_contract_line_info => lr_contract_line_info);
+      
+      lc_error := SUBSTR(lr_subscription_error_info.error_message, 1, gc_max_sub_err_size);
+
+      exiting_sub(p_procedure_name => lc_procedure_name, p_exception_flag => TRUE);
+
+      RAISE_APPLICATION_ERROR(-20101, 'PROCEDURE: ' || lc_procedure_name || ' Action: ' || lc_action || ' SQLCODE: ' || SQLCODE || ' SQLERRM: ' || SQLERRM);
+
+   END opt_out_ven_notification;  
 END xx_ar_subscriptions_mt_pkg;
 /
 show errors;

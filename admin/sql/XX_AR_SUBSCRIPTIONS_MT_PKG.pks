@@ -140,5 +140,12 @@ AS
   PROCEDURE contract_autorenew_process(errbuff      OUT  VARCHAR2,
                                        retcode      OUT  NUMBER,
                                        p_debug_flag IN   VARCHAR2 DEFAULT 'N'); 
+/* **********************************************************************************************
+ Procedure for Opt-out vendor notification DNR
+************************************************************************************************ */
+PROCEDURE opt_out_ven_notification(errbuff            OUT VARCHAR2,
+                                   retcode            OUT NUMBER,
+                                   p_debug_flag       IN  VARCHAR2 DEFAULT 'N'
+                                  );									   
 END;
 / 
