@@ -1,4 +1,4 @@
-create or replace PACKAGE BODY xx_ap_supp_cld_intf_pkg
+create or replace PACKAGE BODY XX_AP_SUPP_CLD_INTF_PKG
 -- +===========================================================================================+
 -- |                  Office Depot - Project Simplify                                          |
 -- +===========================================================================================+
@@ -79,6 +79,12 @@ create or replace PACKAGE BODY xx_ap_supp_cld_intf_pkg
 -- | 4.1     07-Sep-2020    Shanti Sethuraj    Modified for jira NAIT-118338                   |
 -- | 4.2     21-SEP-2020    Shanti Sethuraj    Added code for jira NAIT-126909                 |
 -- | 4.3     05-Jan-2021    Komal Mishra       Modified for jira NAIT-154376                   |
+-- | 4.4     05-Jan-2021	Gitanjali Singh	   Modified for jira NAIT-127517				   |
+-- |										   a)Added column (Status, end_Date_active) details|
+-- |										   b)Added AND condition to get details if Business|
+-- |										   Classification is active or not				   |
+-- | 										   c)handle condition if status is inactive then   |
+-- |                                           updating EBS base table and else condition      |
 -- |===========================================================================================+
 AS
   /*********************************************************************
@@ -847,7 +853,9 @@ IS
 		 bus.subclassification,
 		 bus.bcls_process_Flag,
 		 sup.party_id,
-		 sup.vendor_id
+		 sup.vendor_id,
+     nvl(bus.status,'A') status,			-- version 4.4
+		 bus.END_DATE_ACTIVE	--  version 4.4 
     FROM ap_suppliers sup,
          xx_ap_cld_suppliers_stg stg,
          xx_ap_cld_supp_bcls_stg bus
@@ -866,6 +874,7 @@ IS
   ln_party_id  NUMBER;
   ln_cus_count NUMBER;
   lc_error_msg VARCHAR2(2000);
+  ln_cls_id	   NUMBER;
 BEGIN
   print_debug_msg(p_message => 'Begin processing Business Classification ', p_force => true);
   FOR cur IN C1
@@ -883,7 +892,8 @@ BEGIN
      WHERE 1                 = 1
        AND party_id            = cur.party_id
        AND vendor_id           = cur.vendor_id
-       AND lookup_code         = cur.classification;
+       AND lookup_code         = cur.classification
+       and STATUS  = 'A';        ---- version 4.4 
     IF cur.classification  IS NOT NULL AND ln_cus_count =0 THEN
        IF cur.classification ='FOB' OR cur.classification = 'MINORITY_OWNED' THEN
           print_debug_msg(p_message => 'Inserting into Business Classification for the Vendor '||cur.supplier_name||', classification : '||cur.classification , p_force => false);
@@ -902,6 +912,36 @@ BEGIN
         WHERE rowid          = cur.drowid;
        COMMIT;
     ELSIF cur.classification IS NOT NULL AND ln_cus_count >0 THEN
+      --- start version 4.4
+      -- Fetch classfication_id of the current BCLS
+      SELECT CLASSIFICATION_ID      		
+        INTO ln_cls_id
+        FROM pos_bus_class_attr
+       WHERE 1                 = 1
+         AND party_id            = cur.party_id
+         AND vendor_id           = cur.vendor_id
+         AND lookup_code         = cur.classification
+         and STATUS  = 'A'; 
+     IF cur.status = 'I' ---or cur.END_DATE_ACTIVE is not null
+     THEN
+     -- updating business classification table if the BCLS got inactive in cloud
+		  UPDATE POS_BUS_CLASS_ATTR 
+			   SET status = 'I', END_DATE_ACTIVE = SYSDATE, 
+			       LAST_UPDATE_DATE = SYSDATE, LAST_UPDATED_BY = fnd_global.user_id 
+		   WHERE CLASSIFICATION_ID = ln_cls_id 
+			   AND party_id = cur.party_id
+			 ;
+		   --- updating staging table	as processed 
+	    UPDATE xx_ap_cld_supp_bcls_stg
+         SET bcls_process_Flag=7,
+             error_flag         ='N',
+             error_msg          =NULL, 
+             vendor_id          =cur.vendor_id,
+             process_flag       ='Y'
+       WHERE rowid          = cur.drowid;
+	     COMMIT;		 
+     ELSE
+     --- end version 4.4
       UPDATE xx_ap_cld_supp_bcls_stg
          SET bcls_process_Flag=7,
              error_flag         ='N',
@@ -911,6 +951,7 @@ BEGIN
        WHERE rowid          = cur.drowid;
        COMMIT;
     END IF;
+   END IF; 
   END LOOP;
   print_debug_msg(p_message => 'End processing Business Classification ', p_force => true);
 EXCEPTION
@@ -1149,7 +1190,6 @@ IS
   v_error_flag            VARCHAR2(1);
   lc_error_msg            VARCHAR2(2000);
   lc_vendor_site_code_alt VARCHAR2(100);
-  
 BEGIN
   UPDATE xx_ap_cld_site_dff_stg dff
      SET dff_process_flag=3,
@@ -1171,7 +1211,7 @@ BEGIN
   print_debug_msg(p_message => ' Updating: Custom DFF not processed due to Null Delivery Policy', p_force => true);
   
     UPDATE xx_ap_cld_site_dff_stg dff
-    SET dff_process_flag= 3,
+    SET dff_process_flag=3,
       process_flag      ='Y',
       error_flag        ='Y',
       error_msg         ='Custom DFF not processed due to Null Delivery Policy'
@@ -7897,5 +7937,5 @@ WHEN OTHERS THEN
   FND_FILE.PUT_LINE(FND_FILE.LOG, 'Unable to submit burst request ' || SQLERRM);
 END afterReport;
 
-END xx_ap_supp_cld_intf_pkg;
+END XX_AP_SUPP_CLD_INTF_PKG;
 /
