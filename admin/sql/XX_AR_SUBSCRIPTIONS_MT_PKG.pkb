@@ -13279,7 +13279,7 @@ END IF;
 
           lc_action := 'Calling UTL_HTTP.begin_request in set_dnr_contract_line';
           
-          l_request := UTL_HTTP.begin_request(lt_program_setups('dnr_email_service_url'), 'POST', ' HTTP/1.1');
+          l_request := UTL_HTTP.begin_request(lt_program_setups('dnr_email_service_url'), 'POST', 'HTTP/1.1');
 
           lc_action := 'Calling UTL_HTTP.SET_HEADER: user-agent';
 
@@ -16942,7 +16942,7 @@ END is_rev_rec_item;
 
             lc_action := 'Calling UTL_HTTP.begin_request';
 
-            l_request := UTL_HTTP.begin_request(lt_program_setups('b2b_order_creation'), 'POST', ' HTTP/1.1');
+            l_request := UTL_HTTP.begin_request(lt_program_setups('b2b_order_creation'), 'POST', 'HTTP/1.1');
 
             lc_action := 'Calling UTL_HTTP.SET_HEADER: user-agent';
 
@@ -17299,7 +17299,7 @@ PROCEDURE opt_out_ven_notification(errbuff            OUT VARCHAR2,
 
             lc_action := 'Calling UTL_HTTP.begin_request';
 
-            l_request := UTL_HTTP.begin_request(lt_program_setups('optout_dnr_email_service_url'), 'POST', ' HTTP/1.1');
+            l_request := UTL_HTTP.begin_request(lt_program_setups('optout_dnr_email_service_url'), 'POST', 'HTTP/1.1');
 
             lc_action := 'Calling UTL_HTTP.SET_HEADER: user-agent';
 
