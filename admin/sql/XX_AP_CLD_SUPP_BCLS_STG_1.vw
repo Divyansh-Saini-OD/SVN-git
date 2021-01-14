@@ -1,11 +1,11 @@
-+==========================================================================+
+--+==========================================================================+|
 -- |                  Office Depot - Project Simplify                         |
 -- +==========================================================================+
 -- | RICE ID     :                                                            |
--- | Name        :  Alter View for BCLS table                                |
+-- | Name        :  Alter View for BCLS table                                 |
 -- |                                                                          |
 -- | SQL Script to alter the following object                                 |
--- | View       : XX_AP_CLD_SUPP_BCLS_STG#                       |
+-- | View       : XX_AP_CLD_SUPP_BCLS_STG#                                    |
 -- |                                                                          |
 -- |Change Record:                                                            |
 -- |===============                                                           |
@@ -28,4 +28,4 @@
 	 STATUS STATUS, END_DATE_ACTIVE END_DATE_ACTIVE
 	 from XXFIN.XX_AP_CLD_SUPP_BCLS_STG;
 	  
-	SHOW ERROR;
+  SHOW ERROR;
