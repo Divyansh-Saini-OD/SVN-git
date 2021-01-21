@@ -308,7 +308,7 @@ BEGIN
     EXECUTE IMMEDIATE lv_del_str using n_days;
     ln_cont_cnt := SQL%ROWCOUNT;
   END IF;
-  
+
   FND_FILE.PUT_LINE(FND_FILE.OUTPUT,'Stats ');
   FND_FILE.PUT_LINE(FND_FILE.OUTPUT,'************************************************** ');
   FND_FILE.PUT_LINE(FND_FILE.OUTPUT,'Number of address records deleted '||ln_address_cnt);
@@ -343,7 +343,7 @@ END;
 /*********************************************************************
 * Function to trim file values
 *********************************************************************/
-FUNCTION get_converted_text(p_value IN VARCHAR2) 
+FUNCTION get_converted_text(p_value IN VARCHAR2)
   RETURN VARCHAR2 IS
   lv_value VARCHAR2(2000);
 BEGIN
@@ -351,7 +351,7 @@ BEGIN
      INTO lv_value
      FROM DUAL;
    RETURN lv_value;
-EXCEPTION 
+EXCEPTION
   WHEN OTHERS THEN
      RETURN p_value;
 END;
@@ -393,6 +393,7 @@ lt_tab_type tab_type:=tab_type();
         AND hps.status = 'A'
         AND hcas.status = 'A'
         AND hcsu.status = 'A'
+        AND hcsu.primary_flag = 'Y'
         AND hcsu.site_use_code = 'BILL_TO'
         AND hca.ACCOUNT_NUMBER = xx.ACCOUNT_NUMBER
         AND xx.process_id = p_process_id
@@ -404,7 +405,7 @@ BEGIN
    FETCH c_reference BULK COLLECT INTO lt_tab_type;
 
    FORALL i in lt_tab_type.FIRST ..lt_tab_type.LAST
-     UPDATE xx_ar_self_serv_bad_addr 
+     UPDATE xx_ar_self_serv_bad_addr
      SET address_reference = lt_tab_type(i).address_reference,
          ebs_address1      =lt_tab_type(i).address1,
          ebs_address2      =lt_tab_type(i).address2,
@@ -448,7 +449,7 @@ BEGIN
    FETCH c_cust_data BULK COLLECT INTO lt_tab_type;
 
    FOR i in lt_tab_type.FIRST ..lt_tab_type.LAST LOOP
-     
+
      BEGIN
         SELECT 'Y'
           INTO lv_flag_value
@@ -459,43 +460,31 @@ BEGIN
            AND ext.CUST_ACCOUNT_ID =lt_tab_type(i).cust_account_id
            and attr_group_id=(SELECT attr_group_id FROM ego_fnd_dsc_flx_ctx_ext WHERE descriptive_flexfield_name = 'XX_CDH_CUST_ACCOUNT' AND descriptive_flex_context_code = 'BILLDOCS')
            AND NOT EXISTS (
-                     SELECT 1  
+                     SELECT 1
                        FROM hz_cust_acct_sites_all asites,
                             hz_cust_site_uses_all uses,
                             hz_cust_site_uses_all uses1
                       WHERE asites.cust_acct_site_id =  uses.cust_acct_site_id
                         and uses.bill_to_site_use_id is not null
                         and uses.bill_to_site_use_id = uses1.site_use_id
-                        and uses.site_use_code = 'SHIP_TO' 
-                        and uses1.site_use_code = 'BILL_TO' 
-                        and uses1.PRIMARY_FLAG <> 'Y' 
+                        and uses.site_use_code = 'SHIP_TO'
+                        and uses1.site_use_code = 'BILL_TO'
+                        and uses1.PRIMARY_FLAG <> 'Y'
                         and uses.status='A'
                         and uses1.status='A'
                         and asites.cust_account_id=ext.cust_account_id
                         and NOT ( uses.cust_acct_site_id = uses1.cust_acct_site_id)
            )
            AND Rownum = 1;
-           
-           IF lv_flag_value = 'Y' THEN
-              SELECT DECODE(count(0),1,'Y','N')
-                INTO lv_flag_value
-                FROM hz_cust_acct_sites hcsa,
-                     hz_cust_site_uses hcsu
-               WHERE hcsa.cust_account_id = lt_tab_type(i).cust_account_id
-                 AND hcsa.cust_acct_site_id = hcsu.cust_acct_site_id
-                 AND hcsu.site_use_code = 'BILL_TO'
-                 AND hcsu.status = 'A'
-                 AND hcsa.status = 'A';
-           END IF;
-     
+
      EXCEPTION WHEN OTHERS THEN
         lv_flag_value := 'N';
      END;
-     
+
      UPDATE xx_ar_ss_cmn_tbl SET direct_cust_flag = lv_flag_value WHERE process_id = p_process_id AND column2 = lt_tab_type(i).AOPS_ACCOUNT;
-   
+
    END LOOP;
-   
+
    logs('Check_If_Direct(-)');
 EXCEPTION
    WHEN OTHERS THEN
@@ -624,7 +613,7 @@ BEGIN
   IF lv_wallet_loc IS NOT NULL THEN
     UTL_HTTP.SET_WALLET(lv_wallet_loc, lv_wallet_pass);
   END IF;
-  l_request := UTL_HTTP.begin_request(lv_url, 'POST', ' HTTP/1.1');
+  l_request := UTL_HTTP.begin_request(lv_url, 'POST', 'HTTP/1.1');
   UTL_HTTP.set_header(l_request, 'user-agent', 'mozilla/4.0');
   UTL_HTTP.set_header(l_request, 'content-type', 'application/json');
   UTL_HTTP.set_header(l_request, 'Content-Length', LENGTH(p_payload));
@@ -653,22 +642,28 @@ EXCEPTION WHEN OTHERS THEN
   x_error_msg  :='Error in XX_EAI_CALL '||SQLERRM;
   logs('   ERR'||x_error_msg);
 END xx_eai_call;
-
 /*********************************************************************
 * Update status of transaction
 *********************************************************************/
-procedure update_record_status(p_response IN VARCHAR2,p_rec_id NUMBER,p_type IN VARCHAR2) IS
+procedure update_record_status(p_response IN VARCHAR2,
+                               p_rec_id   IN NUMBER,
+                               p_type     IN VARCHAR2,
+                               p_message  IN VARCHAR2 DEFAULT NULL )IS
 lv_status    VARCHAR2(10);
 lv_upd_query VARCHAR2(2000);
 l_module_name VARCHAR2(100) := 'UPDATE_RECORD_STATUS';
 BEGIN
-  BEGIN
-    SELECT DECODE(upper(MESSAGE),'SUCCESS','S','ERROR','E',MESSAGE)
-      INTO lv_status
-      FROM json_table(p_response ,'$' COLUMNS ( MESSAGE VARCHAR2(2000 CHAR) PATH '$.customerInfoResponse.status'));
-  EXCEPTION WHEN OTHERS THEN
-    lv_status := 'E';
-  END;
+  IF p_message IS NULL THEN
+      BEGIN
+        SELECT DECODE(upper(MESSAGE),'SUCCESS','S','ERROR','E',MESSAGE)
+          INTO lv_status
+          FROM json_table(p_response ,'$' COLUMNS ( MESSAGE VARCHAR2(2000 CHAR) PATH '$.customerInfoResponse.status'));
+      EXCEPTION WHEN OTHERS THEN
+        lv_status := 'E';
+      END;
+   ELSE
+      lv_status := p_message;
+   END IF;
 --  logs(l_module_name,'RESPONSE','INFO','p_rec_id '||p_rec_id);
 --  logs(l_module_name,'RESPONSE','INFO','lv_status '||lv_status);
   IF p_type = 'ADDRESS' THEN
@@ -690,6 +685,32 @@ BEGIN
 EXCEPTION WHEN OTHERS THEN
   FND_FILE.PUT_LINE(FND_FILE.LOG,'Error in update_record_status '||SQLERRM);
 END update_record_status;
+
+/*********************************************************************
+* validate_last_update if data is updated within a day span, don't send it
+*********************************************************************/
+procedure validate_last_update(p_process_id   IN  NUMBER) IS
+    n_days          NUMBER;
+    lv_null_value1  VARCHAR2(10);
+    lv_null_value2  VARCHAR2(10);
+BEGIN
+  logs('validate_last_update(+)',true);
+  GET_TRANSLATION('XX_AR_SELF_SERVICE','N_LAST_UPDATE_DATE',n_days,lv_null_value1,lv_null_value2);
+  logs('   n_days '||n_days);
+  logs('   p_process_id '||p_process_id);
+  FOR stat IN (SELECT xxad.record_id
+                 FROM hz_locations hl,
+                      xx_ar_self_serv_bad_addr xxad
+                WHERE hl.last_update_date >sysdate -n_days
+                  AND hl.orig_system_reference = xxad.address_reference
+                  AND xxad.direct_bill_flag = 'Y'
+                  AND xxad.process_id = p_process_id) LOOP
+      update_record_status(NULL,stat.record_id,'ADDRESS','M');
+  END LOOP;
+  logs('validate_last_update(-)',true);
+EXCEPTION WHEN OTHERS THEN
+  logs('   Error in validate_last_update '||SQLERRM);
+END validate_last_update;
 
 /*********************************************************************
 * Process the base data as per type
@@ -853,13 +874,13 @@ BEGIN
                         EMAIL_ADDRESS,
                         AOPS_ACCOUNT,
                         account_number,
-                        
+
 --                        CUSTOMER_NAME,
 --                        AOPS_ACCOUNT,
 --                        account_number,
 --                        invoice_date,
 --                        EMAIL_ADDRESS,
-                        
+
                         CREATION_DATE,
                         REQUEST_ID,
                         DIRECT_BILL_FLAG,
@@ -871,7 +892,7 @@ BEGIN
                               get_account_number(column2),
                               --column3,
                               --column4,
-                              
+
                               sysdate,
                               g_conc_req_id,
                               direct_cust_flag,
@@ -964,7 +985,7 @@ procedure process_bad_address(p_err_buf OUT VARCHAR2,
   ln_arc_req_id   NUMBER;
   lv_enclosed_by  VARCHAR2(10);
   ln_skip_rows    NUMBER;
-  
+
   CURSOR c_process_files(p_process_id NUMBER) IS
      SELECT file_name,file_id
        FROM xx_ar_ss_file_names
@@ -1010,7 +1031,7 @@ BEGIN
        lv_enclosed_by := NULL;
        ln_skip_rows:= 2;
     END;
-    
+
     logs('lv_directory '||lv_directory);
     logs('lv_delimeter '||lv_delimeter);
     FOR rec_process_files IN c_process_files(ln_process_id) LOOP
@@ -1036,6 +1057,7 @@ BEGIN
                 --
                 --Process data as per the reqest type
                 --
+                validate_last_update(ln_process_id);
                 logs('calling Process_data',True);
                 Process_data(lv_process_type,ln_process_id,lv_err_code,lv_err_message);
                 --
@@ -1485,7 +1507,7 @@ END update_email_address;
 
 FUNCTION get_std_message(p_req_type IN  VARCHAR2,
                          p_msg_type IN  VARCHAR2) RETURN VARCHAR2 IS
-   p_msg_name VARCHAR2(100);                         
+   p_msg_name VARCHAR2(100);
 BEGIN
   p_msg_name :='XX_AR_SS_'||p_req_type||'_'||p_msg_type;
   fnd_message.set_name('XXFIN', p_msg_name);
