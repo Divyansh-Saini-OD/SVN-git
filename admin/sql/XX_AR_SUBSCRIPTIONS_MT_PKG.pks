@@ -146,6 +146,13 @@ AS
 PROCEDURE opt_out_ven_notification(errbuff            OUT VARCHAR2,
                                    retcode            OUT NUMBER,
                                    p_debug_flag       IN  VARCHAR2 DEFAULT 'N'
-                                  );									   
+                                  );
+/* **********************************************************************************************
+ Procedure for update / reset auth falg from U to N
+************************************************************************************************ */
+PROCEDURE reset_auth_flag(errbuff            OUT VARCHAR2,
+                          retcode            OUT NUMBER,
+                          p_debug_flag       IN  VARCHAR2 DEFAULT 'N'
+                         );
 END;
 / 
