@@ -17188,8 +17188,7 @@ PROCEDURE opt_out_ven_notification(errbuff            OUT VARCHAR2,
       AND contl.contract_number          =conts.contract_number
       AND contl.renewal_type             = 'DO_NOT_RENEW'
       AND conts.contract_status          ='EXPIRED'
-      AND (contl.attribute1               <>'Y' 
-        OR contl.attribute1              ='') 
+      AND contl.attribute1               <>'Y' 
       AND TRUNC(SYSDATE-1) = TRUNC(contl.contract_line_end_date)
       ;
   
