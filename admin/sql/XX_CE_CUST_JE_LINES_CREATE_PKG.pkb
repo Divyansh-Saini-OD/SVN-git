@@ -199,7 +199,7 @@ IS
 								 AND SYSDATE BETWEEN XFTD.start_date_active AND NVL(XFTD.end_date_active,SYSDATE+1)
 								 AND XFTV.enabled_flag = 'Y'
 								 AND XFTD.enabled_flag = 'Y')   
-		UNION
+		UNION 
 		 SELECT 
 		/*+ leading(csh) ordered use_nl(csh,csl,ctc) index(csl,CE_STATEMENT_LINES_N1) use_merge(ctc) full(ctc)*/
             CTC.bank_account_id
@@ -736,7 +736,10 @@ IS
 
 	CURSOR lcu_gl_line
 	IS
-	  SELECT CSH.bank_account_id ,
+	  SELECT 
+	  --Hint added(NAIT-140412)
+	  /*+ leading(csh) ordered use_nl(csh,csl,ctc) index(csl,CE_STATEMENT_LINES_N1) use_merge(ctc) full(ctc)*/
+	  CSH.bank_account_id ,
 		CSH.statement_number ,
 		CSH.statement_date ,
 		CSL.line_number ,
@@ -777,7 +780,7 @@ IS
 	  /*Ver 2.0 Starts here*/
 	  AND csl.statement_line_id NOT IN
 		(SELECT
-		  /*+ leading(csh) ordered use_nl(csh,csl,ctc) index(csl,CE_STATEMENT_LINES_N1) use_merge(ctc) full(ctc)*/
+		  --Removed the hint from here and used in the parent select clause (NAIT-140412)
 		  CSL.statement_line_id
 		FROM ce_statement_headers csh ,
 		  ce_statement_lines csl ,
