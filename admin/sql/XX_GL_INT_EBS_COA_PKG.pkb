@@ -26,10 +26,11 @@
 -- |1.6           18-JUL-2013   Sheetal Sundaram     I0463 - Changes for R12           |
 -- |                                                 Upgrade retrofit.                 |
 -- |1.7           18-NOV-2015   Madhu Bolli          Remove schema for 12.2 retrofit   |
+-- |1.8           10-DEC-2020   Venkateshwar Panduga Made changes for JIRA#NAIT-158610 |
 
 -- +===================================================================================+
 
-CREATE OR REPLACE PACKAGE BODY XX_GL_INT_EBS_COA_PKG
+create or replace PACKAGE BODY XX_GL_INT_EBS_COA_PKG
 AS
 
 
@@ -62,16 +63,16 @@ PROCEDURE XX_GL_INT_EBS_COA_REPORT ( ERRBUFF     OUT VARCHAR2
               b.target_value10,b.target_value11,b.target_value12,
               b.target_value13,b.target_value14,b.target_value15,
               b.target_value16,b.target_value17,b.target_value18,
-              b.target_value19       
+              b.target_value19
      FROM XX_FIN_ITGORA_STG b
      WHERE b.source_name=p_source_nm;
 --- COA (Data)
 
    v_header VARCHAR2(2000);
-                 
+
   BEGIN
 
-  
+
    FND_FILE.PUT_LINE(FND_FILE.OUTPUT,'Source Name| Integral Company |Integral Department |Integral Account |Integral Account |Integral BU | Integral Batch |Oracle Company | Oracle Cost Center |Oracle Account |	Oracle Location |	Oracle LOB |Oracle SOB |Oracle Location Type | Oracle Cost Cnt Type |~COA Trans Status |*CC_ACCT_LOC |*ACCT_CC |*LOC_CC | *COST_CTR |#GLOBAL_LOCATION | #GLOBAL_COMPANY | #GLOBAL_COST_CENTER |*COSTCTR_LOC_TO_LOB |Oracle Code Combo ID | $COMBINATIONS');
 
     FOR rec IN COA_Cursor
@@ -87,7 +88,7 @@ PROCEDURE XX_GL_INT_EBS_COA_REPORT ( ERRBUFF     OUT VARCHAR2
 EXCEPTION
   WHEN others THEN
     errbuff:=SQLERRM;
-    RETCODE:='2';  
+    RETCODE:='2';
 END XX_GL_INT_EBS_COA_REPORT;
 
 -- +===================================================================+
@@ -160,7 +161,7 @@ lc_debug_prog   VARCHAR2(15) := 'PROCESS_ERROR';
 lc_debug_pkg_nm VARCHAR2(50) := 'XX_GL_INT_EBS_COA_PKG';
 
 BEGIN
-  
+
   FND_FILE.PUT_LINE(FND_FILE.LOG,'' );
   FND_FILE.PUT_LINE(FND_FILE.LOG,'Started: '||  lc_debug_pkg_nm
                                             ||  lc_debug_prog ||'!!!!!!!!!!!');
@@ -172,7 +173,7 @@ BEGIN
 
   BEGIN
 
-    INSERT 
+    INSERT
       INTO XX_GL_INTERFACE_NA_ERROR
           (
            fnd_error_code
@@ -397,7 +398,7 @@ BEGIN
  		,p_value  =>gc_sr_business_unit||'.'||gc_sr_department||'.'||gc_sr_account||'.'||
 			gc_sr_operating_unit||'.'||gc_sr_lob
 		,p_details   =>lc_error_message
-		,p_group_id    =>gn_grp_id	
+		,p_group_id    =>gn_grp_id
 		   );
 
           ELSE
@@ -760,22 +761,22 @@ BEGIN
 			      gc_intercompany||'.'||gc_lob||'.'||gc_future
              ,p_value     =>gc_sr_business_unit||'.'||gc_sr_department||'.'||gc_sr_account||'.'||gc_sr_operating_unit||'.'||gc_sr_lob
 	     ,p_details     =>lc_cc53a_error_message
-	     ,p_group_id    =>gn_grp_id	
+	     ,p_group_id    =>gn_grp_id
 		   );
 
      IF gc_debug_message = 'Y' THEN
- 
+
         FND_FILE.PUT_LINE (FND_FILE.LOG,'********************************************************');
 	FND_FILE.PUT_LINE (FND_FILE.LOG,'Error while deriving Oracle CC for PS Dept :'||p_ps_department);
 	FND_FILE.PUT_LINE (FND_FILE.LOG,lc_error_message);
         FND_FILE.PUT_LINE (FND_FILE.LOG,'********************************************************');
 	FND_FILE.PUT_LINE (FND_FILE.LOG,'                                                        ');
-	
+
      END IF;
 
   END IF;
 
-  IF lc_target_value2 IS NOT NULL THEN       	
+  IF lc_target_value2 IS NOT NULL THEN
 
      gc_target_value13 :='*VALID';
      gc_cost_center    :=lc_target_value2;
@@ -805,7 +806,7 @@ END DERIVE_COST_CENTER;
 
 PROCEDURE INSERT_ITGORA_STG (  p_source_nm		IN VARCHAR2
 		           ,p_ps_business_unit 		IN VARCHAR2
-                  	   ,p_ps_department    		IN VARCHAR2	
+                  	   ,p_ps_department    		IN VARCHAR2
 	                   ,p_ps_account       		IN VARCHAR2
         	           ,p_ps_operating_unit		IN VARCHAR2
                 	   ,p_ps_sales_channel 		IN VARCHAR2
@@ -873,7 +874,7 @@ END INSERT_ITGORA_STG;
 -- +===================================================================+
 
 PROCEDURE DERIVE_COMPANY_LOC_TYPE(p_trans_date IN DATE)
-IS 
+IS
 
 lc_error_message 		VARCHAR2(2000);
 lc_lob_error_message		VARCHAR2(2000);
@@ -894,20 +895,20 @@ BEGIN
 
   -- Step 6.1 Based on the oracle location, To get location type and company from OD_GL_GLOBAL_LOCATION
 
-  IF gc_company IS NULL THEN  
+  IF gc_company IS NULL THEN
 
      BEGIN
        SELECT ffv.attribute1,
               ffv.attribute2
-         INTO gc_company, 
+         INTO gc_company,
               gc_location_type
          FROM fnd_flex_values ffv,
-              fnd_flex_value_sets vs	
+              fnd_flex_value_sets vs
         WHERE vs.flex_value_set_name='OD_GL_GLOBAL_LOCATION'
           AND ffv.flex_value_set_id=vs.flex_value_set_id
           AND ffv.flex_value=gc_location
           AND ffv.enabled_flag='Y';
-     EXCEPTION 
+     EXCEPTION
        WHEN others THEN
         lc_error_message:='Record '||gc_record_no||
 	' - VALUE SET/6.3a - Oracle Location (to derive Location Type and Company) was not  found in the '||
@@ -922,11 +923,11 @@ BEGIN
  		     ,p_value     =>gc_sr_business_unit||'.'||gc_sr_department||'.'||gc_sr_account||'.'||
 				gc_sr_operating_unit||'.'||gc_sr_lob
 		     ,p_details     =>lc_error_message
-		     ,p_group_id    =>gn_grp_id	
+		     ,p_group_id    =>gn_grp_id
 		   );
 
        IF gc_debug_message = 'Y' THEN
- 
+
           FND_FILE.PUT_LINE (FND_FILE.LOG,'********************************************************');
           FND_FILE.PUT_LINE (FND_FILE.LOG,lc_error_message);
           FND_FILE.PUT_LINE (FND_FILE.LOG,'********************************************************');
@@ -955,7 +956,7 @@ BEGIN
         END IF;
 
         IF (gc_location_type IS NULL AND gc_company IS NULL) THEN
- 
+
            lc_error_message:='Record '||gc_record_no||
   	  ' - VALUE SET/6.3a - Oracle Location (to derive Location Type and Company), Company and Loc Type'||
 	  'value NULL in the value set  OD_GL_GLOBAL_LOCATION  -  Oracle Location:'|| gc_location;
@@ -978,25 +979,25 @@ BEGIN
  		     ,p_value  =>gc_sr_business_unit||'.'||gc_sr_department||'.'||gc_sr_account||'.'||
 			gc_sr_operating_unit||'.'||gc_sr_lob
 		     ,p_details     =>lc_error_message
-		     ,p_group_id    =>gn_grp_id	
+		     ,p_group_id    =>gn_grp_id
 		   );
        gc_target_value14:='#INVALID';
        RETURN;
 
      END IF; --      IF (gc_company IS NULL OR gc_location_type IS NULL) THEN
 
-  ELSE   --IF gc_company IS NULL THEN  
+  ELSE   --IF gc_company IS NULL THEN
 
      BEGIN
        SELECT ffv.attribute2
          INTO gc_location_type
          FROM fnd_flex_values ffv,
-              fnd_flex_value_sets vs	
+              fnd_flex_value_sets vs
         WHERE vs.flex_value_set_name='OD_GL_GLOBAL_LOCATION'
           AND ffv.flex_value_set_id=vs.flex_value_set_id
           AND ffv.flex_value=gc_location
           AND ffv.enabled_flag='Y';
-     EXCEPTION 
+     EXCEPTION
        WHEN others THEN
         lc_error_message:='Record '||gc_record_no||
 	' - VALUE SET/6.3a - Oracle Location (to derive Location Type) was not  found in the '||
@@ -1011,11 +1012,11 @@ BEGIN
  		     ,p_value     =>gc_sr_business_unit||'.'||gc_sr_department||'.'||gc_sr_account||'.'||
 				gc_sr_operating_unit||'.'||gc_sr_lob
 		     ,p_details     =>lc_error_message
-		     ,p_group_id    =>gn_grp_id	
+		     ,p_group_id    =>gn_grp_id
 		   );
 
        IF gc_debug_message = 'Y' THEN
- 
+
           FND_FILE.PUT_LINE (FND_FILE.LOG,'********************************************************');
           FND_FILE.PUT_LINE (FND_FILE.LOG,lc_error_message);
           FND_FILE.PUT_LINE (FND_FILE.LOG,'********************************************************');
@@ -1052,26 +1053,26 @@ BEGIN
  		     ,p_value  =>gc_sr_business_unit||'.'||gc_sr_department||'.'||gc_sr_account||'.'||
 			gc_sr_operating_unit||'.'||gc_sr_lob
 		     ,p_details     =>lc_error_message
-		     ,p_group_id    =>gn_grp_id	
+		     ,p_group_id    =>gn_grp_id
 		   );
        gc_target_value14:='#INVALID';
        RETURN;
 
      END IF; --      IF gc_location_type IS NULL THEN
 
-  END IF;  --  IF gc_company IS NULL THEN  
+  END IF;  --  IF gc_company IS NULL THEN
 
   gc_target_value14:='#VALID';
 
   lc_error_message:=NULL;
-   
+
   -- Step 7.1 Based on the Oracle company derived earlier, get the SOB from OD_GL_GLOBAL_COMPANY
- 
+
   BEGIN
     SELECT ffv.attribute1
       INTO lc_sob_name
       FROM fnd_flex_values ffv,
-           fnd_flex_value_sets vs	
+           fnd_flex_value_sets vs
      WHERE vs.flex_value_set_name='OD_GL_GLOBAL_COMPANY'
        AND ffv.flex_value_set_id=vs.flex_value_set_id
        AND ffv.flex_value=gc_company
@@ -1083,7 +1084,7 @@ BEGIN
            '- VALUE SET/7.3a - Oracle Company (to derive SOB) , SOB value is NULL in the value set'||           'OD_GL_GLOBAL_COMPANY -  Oracle Company: '||gc_company;
 
        IF gc_debug_message = 'Y' THEN
- 
+
           FND_FILE.PUT_LINE (FND_FILE.LOG,'********************************************************');
           FND_FILE.PUT_LINE (FND_FILE.LOG,lc_error_message);
           FND_FILE.PUT_LINE (FND_FILE.LOG,'********************************************************');
@@ -1099,10 +1100,10 @@ BEGIN
 			gc_intercompany||'.'||gc_lob||'.'||gc_future
  		    ,p_value      =>gc_sr_business_unit||'.'||gc_sr_department||'.'||gc_sr_account||'.'||gc_sr_operating_unit||'.'||gc_sr_lob
 		    ,p_details     =>lc_error_message
-		    ,p_group_id    =>gn_grp_id	
+		    ,p_group_id    =>gn_grp_id
 		   );
       RETURN;
-    END IF;	
+    END IF;
 
 
     BEGIN
@@ -1119,8 +1120,8 @@ BEGIN
     EXCEPTION
       WHEN others THEN
         lc_error_message:='When others while sob id for the sob :'||lc_sob_name||sqlerrm;
-    END;	
-  EXCEPTION 
+    END;
+  EXCEPTION
     WHEN others THEN
       lc_error_message:='Record '||gc_record_no||
 	'- VALUE SET/7.3a - Oracle Company (to derive SOB) was not  found in the value set'||
@@ -1132,7 +1133,7 @@ BEGIN
 			gc_intercompany||'.'||gc_lob||'.'||gc_future
  		    ,p_value      =>gc_sr_business_unit||'.'||gc_sr_department||'.'||gc_sr_account||'.'||gc_sr_operating_unit||'.'||gc_sr_lob
 		    ,p_details     =>lc_error_message
-		    ,p_group_id    =>gn_grp_id	
+		    ,p_group_id    =>gn_grp_id
 		   );
       IF gc_debug_message = 'Y' THEN
 
@@ -1152,12 +1153,12 @@ BEGIN
   lc_error_message:=NULL;
 
   -- Step 8.1, Based on the Oracle Cost Center, get the Cost centry type from OD_GL_GLOBAL_COST_CENTER
-	
+
   BEGIN
     SELECT ffv.attribute1
       INTO gc_cost_center_type
       FROM fnd_flex_values ffv,
-           fnd_flex_value_sets vs	
+           fnd_flex_value_sets vs
      WHERE vs.flex_value_set_name='OD_GL_GLOBAL_COST_CENTER'
        AND ffv.flex_value_set_id=vs.flex_value_set_id
        AND ffv.flex_value=gc_cost_center
@@ -1165,7 +1166,7 @@ BEGIN
 
     IF gc_cost_center_type IS NULL THEN
 
-       gc_target_value16:='#INVALID';	 
+       gc_target_value16:='#INVALID';
 
        lc_error_message:='Record '||gc_record_no||
 	  '- VALUE SET/8.3a - Oracle Cost Center (to derive Oracle Cost Center Type), cost center type '||
@@ -1186,11 +1187,11 @@ BEGIN
 			gc_intercompany||'.'||gc_lob||'.'||gc_future
  		    ,p_value      =>gc_sr_business_unit||'.'||gc_sr_department||'.'||gc_sr_account||'.'||gc_sr_operating_unit||'.'||gc_sr_lob
 		    ,p_details     =>lc_error_message
-		    ,p_group_id    =>gn_grp_id	
+		    ,p_group_id    =>gn_grp_id
 		   );
-     RETURN;	
+     RETURN;
     END IF;
-  EXCEPTION 
+  EXCEPTION
     WHEN others THEN
 
       gc_target_value16:='#INVALID';
@@ -1214,9 +1215,9 @@ BEGIN
 			gc_intercompany||'.'||gc_lob||'.'||gc_future
  		    ,p_value      =>gc_sr_business_unit||'.'||gc_sr_department||'.'||gc_sr_account||'.'||gc_sr_operating_unit||'.'||gc_sr_lob
 		    ,p_details     =>lc_error_message
-		    ,p_group_id    =>gn_grp_id	
+		    ,p_group_id    =>gn_grp_id
 		   );
-     RETURN;	
+     RETURN;
   END;
 
   gc_target_value16:='#VALID';
@@ -1256,7 +1257,7 @@ BEGIN
   IF (lc_error_message IS NOT NULL OR lc_target_value1 IS NULL) THEN
 
      gc_target_value17:='*INVALID';
- 
+
 
      IF lc_target_value1 IS NULL THEN
 
@@ -1267,14 +1268,14 @@ BEGIN
      END IF;
 
      IF lc_error_message IS NOT NULL THEN
- 
+
        lc_lob_error_message:='Record '||gc_record_no||
 	'- TRANSLATE/9.3a - Oracle Location Type and Cost Center Type (to derive LOB) was not found '||
 	'in the translate GL_COSTCTR_LOC_TO_LOB  -  Oracle Loc Type: '|| gc_location_type||
 	', Oracle Cost Center Type: '||gc_cost_center_type;
      END IF;
 
- 
+
      IF gc_debug_message = 'Y' THEN
 
         FND_FILE.PUT_LINE (FND_FILE.LOG,'********************************************************');
@@ -1283,7 +1284,7 @@ BEGIN
         FND_FILE.PUT_LINE (FND_FILE.LOG,'                                                        ');
 
      END IF;
-   
+
      PROCESS_ERROR ( p_rowid       =>g_row_id
 		    ,p_fnd_message =>'XX_GL_TRANS_VALUE_ERROR'
 		    ,p_source_nm   =>gc_source_nm
@@ -1291,13 +1292,13 @@ BEGIN
 			gc_intercompany||'.'||gc_lob||'.'||gc_future
  		    ,p_value      =>gc_sr_business_unit||'.'||gc_sr_department||'.'||gc_sr_account||'.'||gc_sr_operating_unit||'.'||gc_sr_lob
 		    ,p_details     =>lc_lob_error_message
-		    ,p_group_id    =>gn_grp_id	
+		    ,p_group_id    =>gn_grp_id
 		   );
 
      RETURN;
   END IF;
 
-  IF lc_target_value1 IS NOT NULL THEN	
+  IF lc_target_value1 IS NOT NULL THEN
      gc_lob:=lc_target_value1;
      gc_target_value17:='*VALID';
 
@@ -1330,7 +1331,7 @@ PROCEDURE DERIVE_LOCATION( p_ps_operating_unit IN VARCHAR2
 IS
 
 lc_error_message 	   VARCHAR2(2000);
-lc_oraloc431_error_msg     VARCHAR2(2000);		   
+lc_oraloc431_error_msg     VARCHAR2(2000);
 
 lc_ora_loc431		   xx_fin_translatevalues.target_value2%TYPE ;
 lc_target_value_comn       xx_fin_translatevalues.target_value2%TYPE ;
@@ -1339,7 +1340,7 @@ ld_trans_date   	   DATE;
 BEGIN
 
   ld_trans_date :=p_trans_date;
- 
+
   -- Step 4.3.1, Derive Oracle Location based on Integral Location by translate
 
   DERIVE_FIN_TRANSLATE_VALUE(
@@ -1370,7 +1371,7 @@ BEGIN
                                  );
 
   IF lc_ora_loc431 IS NOT NULL THEN
- 
+
      gc_target_value12 :='*VALID';
      gc_location       :=lc_ora_loc431;
 
@@ -1384,7 +1385,7 @@ BEGIN
   END IF;
 
   IF (lc_error_message IS NOT NULL OR lc_ora_loc431 IS NULL) THEN
-	
+
       gc_target_value12:='*INVALID';
 
       IF lc_ora_loc431 IS NULL THEN
@@ -1406,11 +1407,11 @@ BEGIN
 			gc_intercompany||'.'||gc_lob||'.'||gc_future
  		     ,p_value     =>gc_sr_business_unit||'.'||gc_sr_department||'.'||gc_sr_account||'.'||gc_sr_operating_unit||'.'||gc_sr_lob
 		     ,p_details     =>lc_oraloc431_error_msg
-		     ,p_group_id    =>gn_grp_id	
+		     ,p_group_id    =>gn_grp_id
 		   );
 
       IF gc_debug_message = 'Y' THEN
- 
+
          FND_FILE.PUT_LINE (FND_FILE.LOG,'********************************************************');
          FND_FILE.PUT_LINE (FND_FILE.LOG,lc_oraloc431_error_msg);
          FND_FILE.PUT_LINE (FND_FILE.LOG,'********************************************************');
@@ -1426,14 +1427,14 @@ BEGIN
       END IF;
 
       -- Translate Step 8.1 to get the cost center type  based on oracle cc
-      
+
       IF gc_cost_center IS NOT NULL THEN
 
          BEGIN
            SELECT ffv.attribute1
              INTO gc_cost_center_type
              FROM fnd_flex_values ffv,
-                  fnd_flex_value_sets vs	
+                  fnd_flex_value_sets vs
             WHERE vs.flex_value_set_name='OD_GL_GLOBAL_COST_CENTER'
               AND ffv.flex_value_set_id=vs.flex_value_set_id
               AND ffv.flex_value=gc_cost_center
@@ -1445,9 +1446,9 @@ BEGIN
               lc_error_message:='Record '||gc_record_no||
 		'- VALUE SET/8.3a - Oracle Cost Center (to derive Oracle Cost Center Type), cost center type '||
 	        'is null in the value set OD_GL_GLOBAL_COST_CENTER  -  Oracle Cost Center:'||gc_cost_center;
- 
+
               IF gc_debug_message = 'Y' THEN
- 
+
                 FND_FILE.PUT_LINE (FND_FILE.LOG,'********************************************************');
                 FND_FILE.PUT_LINE (FND_FILE.LOG,lc_error_message);
                 FND_FILE.PUT_LINE (FND_FILE.LOG,'********************************************************');
@@ -1461,13 +1462,13 @@ BEGIN
 			gc_intercompany||'.'||gc_lob||'.'||gc_future
  		    ,p_value      =>gc_sr_business_unit||'.'||gc_sr_department||'.'||gc_sr_account||'.'||gc_sr_operating_unit||'.'||gc_sr_lob
 		    ,p_details     =>lc_error_message
-   		    ,p_group_id    =>gn_grp_id	
+   		    ,p_group_id    =>gn_grp_id
 		   );
 
            ELSE
              gc_target_value16:='#VALID';
            END IF;
-         EXCEPTION 
+         EXCEPTION
            WHEN others THEN
              lc_error_message:='Record '||gc_record_no||
 		'- VALUE SET/8.3a - Oracle Cost Center (to derive Oracle Cost Center Type) was not '||
@@ -1489,7 +1490,7 @@ BEGIN
 			gc_intercompany||'.'||gc_lob||'.'||gc_future
  		    ,p_value      =>gc_sr_business_unit||'.'||gc_sr_department||'.'||gc_sr_account||'.'||gc_sr_operating_unit||'.'||gc_sr_lob
 		    ,p_details     =>lc_error_message
-		    ,p_group_id    =>gn_grp_id	
+		    ,p_group_id    =>gn_grp_id
 		   );
          END;
       END IF;  --IF gc_cost_center IS NOT NULL THEN
@@ -1519,7 +1520,7 @@ END DERIVE_LOCATION;
 
 
 PROCEDURE DERIVE_BY_PSDEPTACCT(p_ps_department     IN VARCHAR2,
-		               p_ps_account        IN VARCHAR2,  
+		               p_ps_account        IN VARCHAR2,
 			       p_ps_operating_unit IN VARCHAR2,
 			       p_trans_date	   IN DATE)
 IS
@@ -1585,16 +1586,16 @@ BEGIN
       -- Translate Step 4.3.1 to get the location by translate GL_INT_EBS_LOC_CC
 
       DERIVE_LOCATION( p_ps_operating_unit,p_ps_department,p_trans_date);
-    
- 
+
+
   END IF;  -- (lc_ora_dept31 IS NOT NULL AND lc_ora_acct31 IS NOT NULL) THEN
 
   IF (lc_ora_dept31 IS NULL OR lc_ora_acct31 IS NULL) THEN
 
      gc_target_value11 :=NULL;
-	
+
      -- Translate Account By  Step 3.3.1
- 
+
      DERIVE_FIN_TRANSLATE_VALUE(
                                    p_translation_name => 'GL_INT_EBS_ACCT_CC'
                                   ,p_source_value3    => SUBSTR(p_ps_account,1,7)
@@ -1623,7 +1624,7 @@ BEGIN
                                  );
 
      IF (lc_error_message IS NOT NULL OR lc_oracle_acct IS NULL) THEN
-	
+
          gc_target_value11:='*INVALID';
 
 	 IF lc_oracle_acct IS NULL THEN
@@ -1631,13 +1632,13 @@ BEGIN
 			'- TRANSLATE - Integral Account is null in the translate GL_INT_EBS_ACCT_CC '||
 		        '- Account :'||p_ps_account;
 	 END IF;
-	 
+
 
 	 IF lc_error_message IS NOT NULL THEN
 	    lc_acct_error_message:='Record '||gc_record_no||
 			'- TRANSLATE - Integral Account was not found in the translate GL_INT_EBS_ACCT_CC '||
 		        '- Account :'||p_ps_account;
-	 
+
 	 END IF;
 
          PROCESS_ERROR ( p_rowid       =>g_row_id
@@ -1647,12 +1648,12 @@ BEGIN
 			gc_intercompany||'.'||gc_lob||'.'||gc_future
  		     ,p_value     =>gc_sr_business_unit||'.'||gc_sr_department||'.'||gc_sr_account||'.'||gc_sr_operating_unit||'.'||gc_sr_lob
 		     ,p_details     =>lc_acct_error_message
-		     ,p_group_id    =>gn_grp_id	
+		     ,p_group_id    =>gn_grp_id
 		   );
 
 
          IF gc_debug_message = 'Y' THEN
- 
+
             FND_FILE.PUT_LINE (FND_FILE.LOG,'********************************************************');
             FND_FILE.PUT_LINE (FND_FILE.LOG,'Error while deriving Oracle Acct for PS Acct :'||p_ps_account);
             FND_FILE.PUT_LINE (FND_FILE.LOG,lc_acct_error_message);
@@ -1664,14 +1665,14 @@ BEGIN
          -- continue step 4.1 for remaining mappings
 
      END IF;
-   
+
      IF lc_oracle_acct IS NOT NULL THEN
 
         gc_target_value11 :='*VALID';
         gc_account        :=lc_oracle_acct;
 
         -- Proceed to Step 4.1 further to get gc_cost_center, gc_location
-     END IF; 
+     END IF;
 
 
      gc_target_value12:=NULL;
@@ -1707,13 +1708,13 @@ BEGIN
                                   ,p_trx_date         => ld_trans_date
                                  );
 
-     IF     lc_oracle_cc       IS NOT NULL 
+     IF     lc_oracle_cc       IS NOT NULL
         AND lc_oracle_location IS NOT NULL THEN
- 
+
         gc_target_value12 :='*VALID';
         gc_cost_center    :=lc_oracle_cc;
         gc_location       :=lc_oracle_location;
-	
+
          -- Translate by Step 6
         DERIVE_COMPANY_LOC_TYPE(p_trans_date);
 
@@ -1810,13 +1811,13 @@ lc_target_value9           xx_fin_translatevalues.target_value1%TYPE ;
 
 
 lc_target_value_comn       xx_fin_translatevalues.target_value2%TYPE ;
-ld_trans_date              DATE;       
+ld_trans_date              DATE;
 lc_sob_name		   VARCHAR2(50);
 ln_sob_id		   NUMBER;
 BEGIN
 
   ld_trans_date  := p_trans_date;
-  
+
   gc_sr_business_unit	  :=NULL;
   gc_sr_department	  :=NULL;
   gc_sr_account		  :=NULL;
@@ -1846,10 +1847,10 @@ BEGIN
   gc_target_value18	  := NULL;
   gc_target_value19	  := NULL;
   gc_target_value10	:='*INVALID';
-  
 
 
-  
+
+
   IF gc_debug_message = 'Y' THEN
 
      FND_FILE.PUT_LINE (FND_FILE.LOG,'********************* Given Parameters *********************');
@@ -1873,7 +1874,7 @@ BEGIN
   gc_sr_operating_unit	  :=p_ps_operating_unit;
   gc_sr_lob		  :=p_ps_sales_channel;
 
-  -- Step 1.2  
+  -- Step 1.2
 
   IF     p_ps_department        IS NULL
       OR p_ps_account           IS NULL
@@ -1882,7 +1883,7 @@ BEGIN
 	 lc_error_message:='Record '||gc_record_no||
 			   ' - VALIDATION/1.2.a - One or more Integral required values are missing (null):   Department: '||
 			    p_ps_department|| ', Account: '||p_ps_account|| ', Location: '||p_ps_operating_unit;
-		
+
 
 
       IF gc_debug_message = 'Y' THEN
@@ -1902,7 +1903,7 @@ BEGIN
  		   ,p_value     =>gc_sr_business_unit||'.'||gc_sr_department||'.'||gc_sr_account||'.'||
 				gc_sr_operating_unit||'.'||gc_sr_lob
 		   ,p_details   =>lc_error_message
-		   ,p_group_id    =>gn_grp_id	
+		   ,p_group_id    =>gn_grp_id
 		   );
 
       gc_target_value9	:='~INVALID';
@@ -1915,9 +1916,9 @@ BEGIN
   lc_error_message:=NULL;
 
   IF     p_ps_business_unit 	IS NOT NULL
-     AND p_ps_department    	IS NOT NULL 
+     AND p_ps_department    	IS NOT NULL
      AND p_ps_account 		IS NOT NULL
-     AND p_ps_operating_unit 	IS NOT NULL 
+     AND p_ps_operating_unit 	IS NOT NULL
      AND p_ps_sales_channel 	IS NOT NULL THEN
 
      DERIVE_FIN_TRANSLATE_VALUE(
@@ -1951,11 +1952,11 @@ BEGIN
                                ,p_trx_date         => ld_trans_date
                               );
 
-	
-     IF     lc_target_value1 IS NOT NULL 
-        AND lc_target_value2 IS NOT NULL 
-        AND lc_target_value3 IS NOT NULL 
-        AND lc_target_value4 IS NOT NULL 
+
+     IF     lc_target_value1 IS NOT NULL
+        AND lc_target_value2 IS NOT NULL
+        AND lc_target_value3 IS NOT NULL
+        AND lc_target_value4 IS NOT NULL
         AND lc_target_value5 IS NOT NULL  THEN
 
 	gc_company	        :=lc_target_value1;
@@ -1965,12 +1966,12 @@ BEGIN
         gc_lob   		:=lc_target_value5;
 	gc_target_value10	:='*VALID';
 
-     ELSE	
+     ELSE
 
 	gc_target_value10	:='*INVALID';
 
         lc_error_message:=NULL;
-   
+
         -- Step 2.4
 
         DERIVE_FIN_TRANSLATE_VALUE(
@@ -2002,10 +2003,10 @@ BEGIN
                                ,x_error_message    => lc_error_message
                                ,p_trx_date         => ld_trans_date
                               );
-	
-        IF     lc_target_value1 IS NOT NULL 
-           AND lc_target_value2 IS NOT NULL 
-           AND lc_target_value3 IS NOT NULL 
+
+        IF     lc_target_value1 IS NOT NULL
+           AND lc_target_value2 IS NOT NULL
+           AND lc_target_value3 IS NOT NULL
            AND lc_target_value4 IS NOT NULL  THEN
 
        	   gc_company	        :=lc_target_value1;
@@ -2025,16 +2026,16 @@ BEGIN
      END IF;		--END IF of lc_target_value1/2/3/4/5 IS NOT NULL
 
   END IF ;  --IF     p_ps_business_unit 	IS NOT NULL
- 
+
 
   IF  gc_target_value10 ='*INVALID' THEN
 
-     IF      p_ps_department IS NOT NULL 
+     IF      p_ps_department IS NOT NULL
          AND p_ps_account IS NOT NULL
          AND p_ps_operating_unit IS NOT NULL THEN
 
          -- Step 2.7
-   
+
          DERIVE_FIN_TRANSLATE_VALUE(
                                 p_translation_name => 'GL_INT_EBS_CC_ACCT_LOC'
                                ,p_source_value2    => SUBSTR(p_ps_department,2)
@@ -2066,9 +2067,9 @@ BEGIN
 
 
          lc_error_message:=NULL;
-	
-         IF     lc_target_value2 IS NOT NULL 
-            AND lc_target_value3 IS NOT NULL 
+
+         IF     lc_target_value2 IS NOT NULL
+            AND lc_target_value3 IS NOT NULL
             AND lc_target_value4 IS NOT NULL  THEN
 
             gc_cost_center		:=lc_target_value2;
@@ -2081,21 +2082,21 @@ BEGIN
 
             DERIVE_COMPANY_LOC_TYPE(p_trans_date);
 
-         END IF;   --     lc_target_value2/value3/value4 IS NOT NULL 
+         END IF;   --     lc_target_value2/value3/value4 IS NOT NULL
 
          lc_error_message:=NULL;
 
          -- Derive by PS Department and PS Account
 
-         IF    lc_target_value2 IS NULL 
-            OR lc_target_value3 IS NULL 
+         IF    lc_target_value2 IS NULL
+            OR lc_target_value3 IS NULL
             OR lc_target_value4 IS NULL  THEN
 
    	    gc_target_value10	:='*INVALID';
 
             DERIVE_BY_PSDEPTACCT(p_ps_department,p_ps_account,p_ps_operating_unit,p_trans_date);
 
-	
+
  	    --IF     gc_cost_center IS NOT NULL
   	    --   AND gc_location IS NOT NULL  THEN
 
@@ -2105,15 +2106,15 @@ BEGIN
 
          END IF;
 
-     END IF;     --     p_ps_department IS NOT NULL 
+     END IF;     --     p_ps_department IS NOT NULL
 
-  END IF ;  --END IF of gc_target_value10	:='*INVALID'; 
+  END IF ;  --END IF of gc_target_value10	:='*INVALID';
 
   DERIVE_CCID( gc_company
 	      ,gc_cost_center
 	      ,gc_account
 	      ,gc_location
-	      ,gc_intercompany	
+	      ,gc_intercompany
 	      ,gc_lob
 	      ,gc_future
 	      ,gc_ccid
@@ -2136,7 +2137,7 @@ BEGIN
  		   ,p_value  =>gc_sr_business_unit||'.'||gc_sr_department||'.'||gc_sr_account||'.'||
 				gc_sr_operating_unit||'.'||gc_sr_lob
 		   ,p_details   =>SUBSTR(lc_ccid_error_message||lc_error_message,1,2999)
-		   ,p_group_id    =>gn_grp_id	
+		   ,p_group_id    =>gn_grp_id
 		   );
   ELSE
 
@@ -2146,12 +2147,12 @@ BEGIN
     IF gc_ccid_enabled='N' THEN
        gc_target_value19 :='$INVALID';
     END IF;
-   
+
   END IF;
 
 
   -- Assigning the Derived values to the out parameters
- 
+
   x_seg1_company  := gc_company;
   x_seg2_costctr  := gc_cost_center;
   x_seg3_account  := gc_account;
@@ -2160,9 +2161,9 @@ BEGIN
   x_seg6_lob      := gc_lob;
   x_seg7_future   := gc_future;
   x_ccid          := gc_ccid;
- 
 
-  IF (    gc_company IS NULL 
+
+  IF (    gc_company IS NULL
        OR gc_cost_center IS NULL
        OR gc_account IS NULL
        OR gc_location IS NULL
@@ -2170,9 +2171,9 @@ BEGIN
        OR gc_ccid IS NULL
      ) THEN
 
-     x_error_message := 'INVALID';  
+     x_error_message := 'INVALID';
      gc_target_value9:='~INVALID';
-  
+
   END IF;
 
   IF gc_ccid IS NOT NULL THEN
@@ -2180,12 +2181,15 @@ BEGIN
 
     IF gc_ccid_enabled='N' THEN
        gc_target_value9 :='~INVALID';
+--- Below logic is added for V1.8     
+       x_error_message := 'INVALID';
+--- End for V1.8 
     END IF;
 
   END IF;
 
   IF gc_debug_message = 'Y' THEN
-  
+
      FND_FILE.PUT_LINE (FND_FILE.LOG,'**********************************************************');
      FND_FILE.PUT_LINE (FND_FILE.LOG,'Received Oracle Company      : ' || x_seg1_company);
      FND_FILE.PUT_LINE (FND_FILE.LOG,'Received Oracle Costcenter   : ' || x_seg2_costctr);
@@ -2202,10 +2206,10 @@ BEGIN
 
   Insert_itgora_stg( gc_source_nm
 		  ,p_ps_business_unit
-                  ,p_ps_department 
-                  ,p_ps_account    
+                  ,p_ps_department
+                  ,p_ps_account
                   ,p_ps_operating_unit
-                  ,p_ps_sales_channel    
+                  ,p_ps_sales_channel
 		  ,p_reference24
 		  ,lc_itgora_error_message
   		 );
@@ -2242,7 +2246,7 @@ END TRANSLATE_PS_VALUES;
     PROCEDURE GLSI_ITGORA_DERIVE_VALUES ( p_group_id    IN VARCHAR2
 				        ,p_source_nm   IN VARCHAR2
 				        ,p_request_id  IN NUMBER
-			                ,p_debug_flag  IN VARCHAR2	
+			                ,p_debug_flag  IN VARCHAR2
 				        ,p_error_count OUT NUMBER
 				      )
     IS
@@ -2314,7 +2318,7 @@ END TRANSLATE_PS_VALUES;
       gc_source_nm	:=p_source_nm;
       gn_req_id		:=p_request_id;
       gc_debug_message	:=p_debug_flag;
-   
+
       DELETE_TRANSLATE(p_source_nm);
 
       lc_error_flg  := 'N';
@@ -2357,8 +2361,8 @@ END TRANSLATE_PS_VALUES;
         DEBUG_MESSAGE (lc_debug_msg,1);
 
         gc_error_message := NULL;
-	
-               
+
+
 	XX_GL_INT_EBS_COA_PKG.TRANSLATE_PS_VALUES(
 				  p_record_no		      => gc_record_no
                                  ,p_ps_business_unit          => lc_ps_company
@@ -2381,13 +2385,13 @@ END TRANSLATE_PS_VALUES;
                                  );
 
         IF (gc_error_message='INVALID' OR gc_error_message LIKE '%INVALID%') THEN
-              
+
 	   ln_error_count:=ln_error_count+1;
-	
+
            lc_error_flg := 'Y';
 
         ELSE
-                  
+
           lc_error_flg := 'N';
           lc_debug_msg :=   gc_error_message;
           DEBUG_MESSAGE (lc_debug_msg);
@@ -2400,20 +2404,20 @@ END TRANSLATE_PS_VALUES;
            IF lc_ora_cost_center IS NULL THEN
               lc_ora_cost_center := lc_ps_cost_center;
            END IF;
- 
+
            IF lc_ora_account IS NULL THEN
               lc_ora_account := lc_ps_account;
            END IF;
-  
+
            IF lc_ora_location IS NULL THEN
               lc_ora_location := lc_ps_location;
            END IF;
 
-	END IF; 
+	END IF;
 
         IF gc_source_nm IN ('OD Inventory (SIV)','OD AP Integral') THEN
 
-	   IF lc_ora_company IS NULL THEN 
+	   IF lc_ora_company IS NULL THEN
               lc_ora_company :='1001';
            END IF;
 
@@ -2491,7 +2495,7 @@ END TRANSLATE_PS_VALUES;
           END;
 
         END IF;   --         IF  lc_error_flg = 'N' THEN
-              
+
       END LOOP;
       CLOSE get_je_lines_cursor;
 
@@ -2515,3 +2519,4 @@ END TRANSLATE_PS_VALUES;
 
 END XX_GL_INT_EBS_COA_PKG;
 /
+SHOW ERR;
