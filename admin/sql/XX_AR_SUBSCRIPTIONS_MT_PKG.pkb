@@ -158,6 +158,7 @@ AS
 -- |                                                 for no data found error fix                                      |
 -- | 69.0        12-JAN-2021  Kayeed A               NAIT-78619 created the proc opt_out_ven_notification             |
 -- |                                                 for Opt-out vendor notification                                  |
+-- | 70.0        29-JAN-2021  Dattatray B            Created a New Procedure reset_auth_flag to process U flag data   |
 -- +==================================================================================================================+
 
   gc_package_name        CONSTANT all_objects.object_name%TYPE   := 'xx_ar_subscriptions_mt_pkg';
@@ -8839,7 +8840,7 @@ EXCEPTION
                                       || p_contract_info.bill_to_osr 
                                       || '",
                         "storeNumber": "' 
-                                      || p_contract_info.store_number 
+                                      || p_contract_info.store_number
                                       || '",
                         "rewardsNumber": "'
                                       ||p_contract_info.loyalty_member_number
@@ -17188,7 +17189,8 @@ PROCEDURE opt_out_ven_notification(errbuff            OUT VARCHAR2,
       AND contl.contract_number          =conts.contract_number
       AND contl.renewal_type             = 'DO_NOT_RENEW'
       AND conts.contract_status          ='EXPIRED'
-      AND contl.attribute1               <>'Y' 
+      AND (contl.attribute1               <>'Y' 
+        OR contl.attribute1              ='') 
       AND TRUNC(SYSDATE-1) = TRUNC(contl.contract_line_end_date)
       ;
   
@@ -17205,32 +17207,33 @@ PROCEDURE opt_out_ven_notification(errbuff            OUT VARCHAR2,
     le_processing                  EXCEPTION; 
 
     lc_procedure_name              CONSTANT VARCHAR2(61) := gc_package_name || '.' || 'opt_out_ven_notification'; 
-    lt_parameters                  gt_input_parameters;
+    lt_parameters                  gt_input_parameters;	
     lt_program_setups              gt_translation_values;
     lr_subscription_payload_info   xx_ar_subscription_payloads%ROWTYPE;
 
   BEGIN
 
     lt_parameters('p_debug_flag')  := p_debug_flag;
-
-    entering_sub(p_procedure_name  => lc_procedure_name,
+	
+	entering_sub(p_procedure_name  => lc_procedure_name,
                  p_parameters      => lt_parameters);
-    lc_action := 'Calling get_program_setups';
+	
+	lc_action := 'Calling get_program_setups';
 
     get_program_setups(x_program_setups => lt_program_setups);
 
     FOR i IN c_depot LOOP
-
+	
      BEGIN
-
-        /* *****************************
+	 
+	 	/* *****************************
          * Get contract line information
          ******************************/
          lc_action := 'Calling get_contract_line_info in opt_out_ven_notification';
          get_contract_line_info(p_contract_id => i.contractId,
                                 p_contract_line_number => i.lineNumber,
                                 x_contract_line_info => lr_contract_line_info);
-
+	 
          lc_action := 'Calling get_program_setups';
 
          SELECT  '{
@@ -17316,7 +17319,7 @@ PROCEDURE opt_out_ven_notification(errbuff            OUT VARCHAR2,
 
             UTL_HTTP.SET_HEADER(l_request, 'Authorization', 'Basic ' || UTL_RAW.cast_to_varchar2(UTL_ENCODE.base64_encode(UTL_RAW.cast_to_raw(lt_program_setups('optout_dnr_email_service_user')|| ':'|| lt_program_setups('optout_dnr_email_service_pwd')))));
             
-            lc_action := 'Calling UTL_HTTP.write_text in optout_dnr_email_service';
+			lc_action := 'Calling UTL_HTTP.write_text in optout_dnr_email_service';
 
             UTL_HTTP.write_text(l_request, lc_optout_dnr_payload);
 
@@ -17480,14 +17483,16 @@ PROCEDURE reset_auth_flag(errbuff            OUT VARCHAR2,
                           p_debug_flag       IN  VARCHAR2 DEFAULT 'N'
                          )
   IS
- CURSOR c_fetch IS
+  CURSOR c_fetch IS
     SELECT distinct
            conts.contract_id,
            conts.contract_number,
            conts.card_token,
            conts.card_type,
            conts.card_encryption_label,
+           subs.billing_date,
            subs.contract_line_number,
+		   subs.auth_completed_flag,
            subs.billing_sequence_number
       FROM xx_ar_subscriptions    subs,
            xx_ar_contracts        conts,
@@ -17500,40 +17505,39 @@ PROCEDURE reset_auth_flag(errbuff            OUT VARCHAR2,
        AND subs.contract_line_number  = contls.contract_line_number
        AND SYSDATE <=  NVL(contls.close_date, SYSDATE)
        AND conts.contract_status      <> 'EXPIRED'
-       AND subs.auth_completed_flag   = 'U'
+       AND subs.auth_completed_flag   =  'U'
        AND conts.payment_type         <> 'AB'
-       AND subs.invoice_created_flag  <> 'Y'
-       AND subs.receipt_created_flag  <> 'Y'                  
+       AND subs.invoice_created_flag  <> 'Y'	  	
+       AND subs.receipt_created_flag  <> 'Y'            
        ORDER BY subs.billing_date ASC;
-
   
     lc_action                      VARCHAR2(32000):= NULL;
     lc_error                       VARCHAR2(32000):= NULL;    
     lt_subscription_array          subscription_table;
     lr_subscription_error_info     xx_ar_subscriptions_error%ROWTYPE;
-    le_processing                  EXCEPTION; 
+    --le_processing                  EXCEPTION; 
 
-    lc_procedure_name              CONSTANT VARCHAR2(61) := gc_package_name || '.' || 'reset_auth_flag'; 
+    lc_procedure_name              CONSTANT VARCHAR2(61) := gc_package_name || '.' || 'reset_auth_flag';
     lt_parameters                  gt_input_parameters;
     lc_decrypted_value             xx_ar_contracts.card_token%TYPE;
 
   BEGIN
 
     lt_parameters('p_debug_flag')  := p_debug_flag;
-
+    
     entering_sub(p_procedure_name  => lc_procedure_name,
                  p_parameters      => lt_parameters);
-
+    
     lc_action := 'Before Loop inside reset_auth_flag prc';
 
     FOR i IN c_fetch 
-    LOOP
-
+	LOOP
+   
      BEGIN
- 
+   
         /* *****************************
          * Get Subscription information
-         ******************************/
+         ***************************** */
         lc_action := 'Calling get_alt_subscription_array';
         lt_subscription_array.delete();
 
@@ -17541,7 +17545,7 @@ PROCEDURE reset_auth_flag(errbuff            OUT VARCHAR2,
                                    p_line_number             => i.contract_line_number,
                                    p_billing_sequence_number => i.billing_sequence_number,
                                    x_subscription_array      => lt_subscription_array); 
-            
+           
       FOR indx IN 1 .. lt_subscription_array.COUNT
       LOOP
            /***************************************
@@ -17580,17 +17584,17 @@ PROCEDURE reset_auth_flag(errbuff            OUT VARCHAR2,
                     lt_subscription_array(indx).ordt_staged_flag    := 'N';
                     lt_subscription_array(indx).email_sent_flag     := 'N';
                     lt_subscription_array(indx).history_sent_flag   := 'N';
-         
+
                     lc_action := 'Calling update_subscription_info';
 
                   update_subscription_info(px_subscription_info => lt_subscription_array(indx));
-                 END IF;
+                END IF;
 
            END IF; --ln_loop_counter end if
 
-       END LOOP;
+         END LOOP;
 
-   END;
+       END;
 
      END LOOP;
 
@@ -17601,7 +17605,7 @@ PROCEDURE reset_auth_flag(errbuff            OUT VARCHAR2,
       exiting_sub(p_procedure_name => lc_procedure_name, p_exception_flag => TRUE);
 
       RAISE_APPLICATION_ERROR(-20101, 'PROCEDURE: ' || lc_procedure_name || ' Action: ' || lc_action || ' SQLCODE: ' || SQLCODE || ' SQLERRM: ' || SQLERRM);
-
+     
    END reset_auth_flag; 
 END xx_ar_subscriptions_mt_pkg;
 /
