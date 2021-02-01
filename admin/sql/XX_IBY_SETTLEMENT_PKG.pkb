@@ -2907,10 +2907,8 @@ AS
 				   acr.payment_server_order_num payment_server_id,
 				   xaord.receipt_method_id receipt_method_id,
 				   xaord.additional_auth_codes additional_auth_codes,
-				   /*TO_CHAR(acr.receipt_date,
-						   'MMDDYYYY') ixdate,*/			-- Modified the changes for version 48.8
-				   TO_CHAR(op.credit_card_approval_date,
-							'MMDDYYYY') ixdate,
+				   TO_CHAR(acr.receipt_date,
+						   'MMDDYYYY') ixdate,
 				   '000000' ixtime,
 				   acr.pay_from_customer pay_from_customer,
 				   acr.customer_site_use_id customer_site_use_id,
@@ -3092,8 +3090,13 @@ AS
 				   xaord.additional_auth_codes additional_auth_codes,
 				   /*TO_CHAR(acr.receipt_date,
 						   'MMDDYYYY') ixdate,*/			-- Modified the changes for version 48.8
-				   TO_CHAR(op.credit_card_approval_date,
-							'MMDDYYYY') ixdate,
+				   DECODE (gc_remit_processing_type,
+							g_poe_single_pmt_multi_ord,
+							TO_CHAR(op.credit_card_approval_date,
+							'MMDDYYYY'),
+							TO_CHAR(acr.receipt_date,
+						   'MMDDYYYY')	
+						   )	ixdate,
 				   '000000' ixtime,
 				   acr.pay_from_customer pay_from_customer,
 				   acr.customer_site_use_id customer_site_use_id,
