@@ -35,7 +35,6 @@ AS
 -- |2.0      07-Apr-2020  Amit Kumar    	Changes for E1319		   |
 -- |2.1 	 25-Sep-2020  Manjush D		    Changes for NAIT-149495    |
 -- |2.2      30-Nov-2020  Pratik Gadia		Changes for NAIT-140412    |
--- |2.2      30-Nov-2020  Pratik Gadia		Changes for NAIT-138934    |
 -- +===================================================================+
 ---Declaring all variables
   ln_cash_bank_account_id    ce_statement_headers.bank_account_id%TYPE;
@@ -188,107 +187,9 @@ IS
 		--<END> Added for NAIT-140412	
 		AND hp.party_type                    ='ORGANIZATION'
 		AND regexp_replace(cba.bank_account_name, '[^[:digit:]]', '') IS NOT NULL
-		AND gcc.segment4                                               = SUBSTR (cba.agency_location_code, 3)
-		--<START> Added for NAIT-138934
-		AND CTC.TRX_CODE NOT IN (SELECT xftv.target_value1
-								 FROM xx_fin_translatedefinition XFTD,xx_fin_translatevalues XFTV
-								 WHERE XFTD.translate_id = XFTV.translate_id
-								 AND XFTD.translation_name = 'XX_CM_E1319_STORE_OS_CC'
-								 AND XFTV.source_value1 = 'BSTMT_TRX_CODE'
-								 AND SYSDATE BETWEEN XFTV.start_date_active AND NVL(XFTV.end_date_active,SYSDATE+1)
-								 AND SYSDATE BETWEEN XFTD.start_date_active AND NVL(XFTD.end_date_active,SYSDATE+1)
-								 AND XFTV.enabled_flag = 'Y'
-								 AND XFTD.enabled_flag = 'Y')   
-		UNION 
-		 SELECT 
-		/*+ leading(csh) ordered use_nl(csh,csl,ctc) index(csl,CE_STATEMENT_LINES_N1) use_merge(ctc) full(ctc)*/
-            CTC.bank_account_id
-			,csh.bank_Account_id master_bank_acct_id   --Added for ver#2.1
-           ,CSH.statement_number
-           ,CSH.statement_date
-           ,CSL.line_number
-           ,CSL.statement_line_id
-           ,CSL.trx_date
-           ,CSL.trx_type
-           ,CSL.amount
-           ,CSL.statement_header_id
-           ,CSL.invoice_text
-           ,CTC.trx_code
-           ,CBA.currency_code
-           ,GCC.segment1
-           ,GCC.segment2
-           ,GCC.segment3
-           ,GCC.segment4
-           ,GCC.segment5
-           ,GCC.segment6
-           ,GCC.segment7
-		FROM ce_statement_headers csh
-		  , ce_statement_lines csl
-		  , ce_transaction_codes ctc
-		  , ce_bank_accounts cba
-		  ,gl_code_combinations gcc
-		  ,Hz_parties hp
-		  ,CE_JE_MAPPINGS JEM 
-		WHERE csl.attribute15              IS NULL
-		AND csl.statement_header_id        = csh.statement_header_id
-		AND csh.bank_account_id            = NVL(p_bank_account_id,CSH.bank_account_id)
-		AND   CSH.statement_number BETWEEN NVL(p_statement_number_from,CSH.statement_number)
-                                    AND NVL(p_statement_number_to,CSH.statement_number)
-        AND   fnd_date.canonical_to_date(CSH.statement_date) BETWEEN NVL(fnd_date.canonical_to_date(p_statement_date_from),fnd_date.canonical_to_date(CSH.statement_date))
-                                                              AND NVL(fnd_date.canonical_to_date(p_statement_date_to),fnd_date.canonical_to_date(CSH.statement_date))
-		AND lpad(SUBSTR (cba.agency_location_code, 3), 9,'0') = SUBSTR (csl.CUSTOMER_TEXT,3)
-		AND   NVL(CSL.attribute2,'N')   <> 'PROC-E2027-YES'
-		AND csl.status!                    ='RECONCILED'
-		AND SUBSTR (csl.CUSTOMER_TEXT,3) =lpad(gcc.segment4, 9,'0')
-		--AND gcc.code_combination_id   = CTC.attribute10  
-		AND jem.GL_ACCOUNT_CCID = gcc.code_combination_id  
-		AND JEM.TRX_CODE_ID                      = CTC.TRANSACTION_CODE_ID  
-		AND NVL (cba.end_date, SYSDATE  + 1) > TRUNC (SYSDATE)
-		AND csl.trx_code                   = ctc.trx_code
-		and ctc.bank_Account_id			   =cba.bank_Account_id
-		--AND   CTC.attribute10 IS NOT NULL  
-		AND hp.party_id                      = cba.bank_id	
-		AND hp.party_name IN
-					(SELECT upper(XFTV.source_value2)
-					 FROM xx_fin_translatedefinition XFTD,xx_fin_translatevalues XFTV
-					 WHERE XFTD.translate_id = XFTV.translate_id
-					 AND XFTD.translation_name = 'XX_CM_E1319_STORE_OS_CC'
-					 AND XFTV.source_value1 = 'BANK'
-					 AND SYSDATE BETWEEN XFTV.start_date_active AND NVL(XFTV.end_date_active,SYSDATE+1)
-					 AND SYSDATE BETWEEN XFTD.start_date_active AND NVL(XFTD.end_date_active,SYSDATE+1)
-					 AND XFTV.enabled_flag = 'Y'
-					 AND XFTD.enabled_flag = 'Y')
-		AND hp.party_type                    ='ORGANIZATION'
-		AND regexp_replace(cba.bank_account_name, '[^[:digit:]]', '') IS NOT NULL
-		AND ctc.trx_code IN (SELECT xftv.target_value1
-							FROM xx_fin_translatedefinition XFTD,xx_fin_translatevalues XFTV
-							WHERE XFTD.translate_id = XFTV.translate_id
-							AND XFTD.translation_name = 'XX_CM_E1319_STORE_OS_CC'
-							AND XFTV.source_value1 = 'BSTMT_TRX_CODE'
-							AND SYSDATE BETWEEN XFTV.start_date_active AND NVL(XFTV.end_date_active,SYSDATE+1)
-							AND SYSDATE BETWEEN XFTD.start_date_active AND NVL(XFTD.end_date_active,SYSDATE+1)
-							AND XFTV.enabled_flag = 'Y'
-							AND XFTD.enabled_flag = 'Y') 
-		AND gcc.segment4 = SUBSTR (cba.agency_location_code, 3);
-		--<END> Added for NAIT-138934
-	
-	--<START> Added for NAIT-138934	
-	CURSOR lcu_trans_je_trx_code
-	IS	
-	SELECT target_value1 trans_je_trx_code
-	FROM xx_fin_translatedefinition XFTD,xx_fin_translatevalues XFTV
-	WHERE XFTD.translate_id = XFTV.translate_id
-	AND XFTD.translation_name = 'XX_CM_E1319_STORE_OS_CC'
-	AND XFTV.source_value1 = 'BSTMT_TRX_CODE'
-	AND SYSDATE BETWEEN XFTV.start_date_active AND NVL(XFTV.end_date_active,SYSDATE+1)
-	AND SYSDATE BETWEEN XFTD.start_date_active AND NVL(XFTD.end_date_active,SYSDATE+1)
-	AND XFTV.enabled_flag = 'Y'
-	AND XFTD.enabled_flag = 'Y';
-
-	--<END> Added for NAIT-138934
-
+		AND gcc.segment4                                               = SUBSTR (cba.agency_location_code, 3);
+		
 	ln_master_bank_acct_id  NUMBER; --Added Ver#2.1
-	ln_is_je_trx_code BOOLEAN;											--Added for NAIT-138934	
 
 	BEGIN
 	    LN_master_bank_acct_id :=NULL; --Added Ver#2.1
@@ -347,7 +248,6 @@ IS
 	  ln_cnt                     :=0;
 	  ln_cnt1                    :=0;
 	  ln_cnt2                    :=0;
-	  ln_is_je_trx_code := FALSE;			--Added for NAIT-138934
 
 
 		FND_FILE.PUT_LINE(FND_FILE.LOG,'CREATE_GL_INTRF_WF_LINE: p_bank_branch_id			' ||p_bank_branch_id);
@@ -445,15 +345,6 @@ IS
              ,lc_segment7;
         EXIT WHEN lcu_gl_line_wf%NOTFOUND OR lcu_gl_line_wf%NOTFOUND IS NULL;
 		
-		--<START> Added for NAIT-138934
-		FOR indx IN lcu_trans_je_trx_code
-		LOOP
-			IF lc_trx_code = indx.trans_je_trx_code THEN
-				ln_is_je_trx_code := TRUE;
-				EXIT;
-			END IF;
-		END LOOP;
-		--<END> Added for NAIT-138934
 		
 
         BEGIN
@@ -462,7 +353,6 @@ IS
          -- This statement will fetch the Asset Account for a given bank_account_id
          ---------------------------------------------------------------------------
 		 
-		 IF (NOT ln_is_je_trx_code) THEN		--Added for NAIT-138934
            SELECT ABA.bank_account_id
                  ,ABA.bank_account_num
                  ,ABA.currency_code
@@ -497,47 +387,7 @@ IS
            AND    NVL (ABA.end_date, SYSDATE + 1) > TRUNC (SYSDATE)
            AND aba.bank_account_id = cbau.bank_account_id
            AND hou.organization_id = cbau.org_id  ;
-		  --<START> Added for NAIT-138934 
-		  ELSE 
-		   SELECT ABA.bank_account_id
-                 ,ABA.bank_account_num
-                 ,ABA.currency_code
-                 ,hou.set_of_books_id
-		         ,cbau.org_id
-                 ,GCC.segment1
-                 ,GCC.segment2
-                 ,GCC.segment3
-                 ,GCC.segment4
-                 ,GCC.segment5
-                 ,GCC.segment6
-                 ,GCC.segment7
-           INTO   ln_asset_bank_account_id
-                 ,lc_bank_acct_num
-                 ,lc_currency_code
-                 ,ln_sob_id
-                 ,ln_org_id
-                 ,lc_ba_segment1
-                 ,lc_ba_segment2
-                 ,lc_ba_segment3
-                 ,lc_ba_segment4
-                 ,lc_ba_segment5
-                 ,lc_ba_segment6
-                 ,lc_ba_segment7
-           FROM   gl_code_combinations GCC
-                 ,ce_bank_accounts     ABA
-                 ,ce_bank_acct_uses    cbau
-		         ,hr_operating_units   hou
-           WHERE  ABA.cash_clearing_ccid    = GCC.code_combination_id
-          -- AND    ABA.bank_account_id              = ln_cash_bank_account_id
-		  and aba.bank_Account_id = ln_master_bank_acct_id
-           AND    NVL (ABA.end_date, SYSDATE + 1) > TRUNC (SYSDATE)
-           AND aba.bank_account_id = cbau.bank_account_id
-           AND hou.organization_id = cbau.org_id  ;
-		   
-		   END IF;
-		   
-		   ln_is_je_trx_code := FALSE;
-		   --<END> Added for NAIT-138934
+		 
         EXCEPTION
         WHEN NO_DATA_FOUND THEN
           RAISE EX_ERROR_WF;
