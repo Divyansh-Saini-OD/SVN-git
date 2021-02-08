@@ -126,7 +126,7 @@ WHERE  1 =1
 </sqlStatement>
 <sqlStatement name="Q_PAYDOC_CBI_DETAIL">
 <![CDATA[
- SELECT detail.*,NVL((NVL(cbi_extamt_incl_delvy,0)-cbi_fee_amt),0) cbi_extamt_incl_delvy_n 
+ SELECT detail.*,TO_CHAR(NVL((NVL(cbi_extamt_incl_delvy,0)-cbi_fee_amt),0),'9999999999.99') cbi_extamt_incl_delvy_n 
         ,DECODE(cbi_fee_amt,0,'N','Y') SHOW_FEE_FLAG
  FROM (
  SELECT arci.cons_inv_id                            cons_inv_id
@@ -158,10 +158,10 @@ WHERE  1 =1
         (arci.cons_inv_id ,'DISCOUNT')              cbi_promo_and_disc        
        ,xx_ar_cbi_paydoc_ministmnt        
         (arci.cons_inv_id ,'TAX')                   cbi_tax
-      , NVL(( SELECT SUM(XX_AR_EBL_COMMON_UTIL_PKG.get_line_fee_amount(aci.customer_trx_id) +
+      , TO_CHAR(NVL(( SELECT SUM(XX_AR_EBL_COMMON_UTIL_PKG.get_line_fee_amount(aci.customer_trx_id) +
                        XX_AR_EBL_COMMON_UTIL_PKG.get_hea_fee_amount(aci.customer_trx_id))
               FROM ar_cons_inv_trx aci
-             WHERE cons_inv_id = arci.cons_inv_id),0)            cbi_fee_amt
+             WHERE cons_inv_id = arci.cons_inv_id),0),'9999999999.99')           cbi_fee_amt
        ,od_summbills.attribute14                    cbi_amount_due 
        ,xx_ar_print_summbill.xx_fin_check_digit(:account_number ,arci.cons_billing_number ,(TO_NUMBER(od_summbills.attribute14) *100)) scanline 
        ,layout pd_layout1
@@ -210,7 +210,7 @@ SELECT
 	 ELSE 
 	  NVL(quantity_ordered,quantity_invoiced)
 	  END
-	  ),'9999999999.999')       FEE_AMT  
+	  ),'9999999999.999') FEE_AMT  
 FROM
      ra_customer_trx_lines_All RCTL
 	 ,ar_cons_inv_trx              arci
@@ -232,7 +232,7 @@ order by flv.attribute7 desc,flv.lookup_code
     </sqlStatement>	
 <sqlStatement name="Q_PAYDOC_CBI_SUMMARIZE">
 <![CDATA[
- SELECT a.*,NVL((cbi_extamt_incl_delvy-cbi_fee_amt),0) CBI_EXTAMT_INCL_DELVY_EX_FEE 
+ SELECT a.*,TO_CHAR(NVL((cbi_extamt_incl_delvy-cbi_fee_amt),0),'9999999999.999') CBI_EXTAMT_INCL_DELVY_EX_FEE 
         ,DECODE(cbi_fee_amt,0,'N','Y') SHOW_FEE_FLAG
  FROM (
  SELECT arci.cons_inv_id                            cons_inv_id1
@@ -263,10 +263,10 @@ order by flv.attribute7 desc,flv.lookup_code
         (arci.cons_inv_id ,'DISCOUNT')              cbi_promo_and_disc        
        ,xx_ar_cbi_paydoc_ministmnt        
         (arci.cons_inv_id ,'TAX')                   cbi_tax
-      , NVL(( SELECT SUM(XX_AR_EBL_COMMON_UTIL_PKG.get_line_fee_amount(aci.customer_trx_id) +
+      , TO_CHAR(NVL(( SELECT SUM(XX_AR_EBL_COMMON_UTIL_PKG.get_line_fee_amount(aci.customer_trx_id) +
                        XX_AR_EBL_COMMON_UTIL_PKG.get_hea_fee_amount(aci.customer_trx_id))
               FROM ar_cons_inv_trx aci
-             WHERE cons_inv_id = arci.cons_inv_id),0)          cbi_fee_amt
+             WHERE cons_inv_id = arci.cons_inv_id),0),'9999999999.999')          cbi_fee_amt
        ,od_summbills.attribute14                    cbi_amount_due 
        ,xx_ar_print_summbill.xx_fin_check_digit(:account_number ,arci.cons_billing_number ,(TO_NUMBER(od_summbills.attribute14) *100)) scanline 
        ,layout pd_layout1
@@ -304,7 +304,7 @@ order by flv.attribute7 desc,flv.lookup_code
 </sqlStatement>
 <sqlStatement name="Q_PAYDOC_CBI_ONE">
 <![CDATA[
-SELECT a.*,NVL((cbi_extamt_incl_delvy - cbi_fee_amt),0) CBI_EXTAMT_INCL_DELVY_EX_FEE 
+SELECT a.*,TO_CHAR(NVL((cbi_extamt_incl_delvy - cbi_fee_amt),0),'9999999999.999') CBI_EXTAMT_INCL_DELVY_EX_FEE 
        ,DECODE(cbi_fee_amt,0,'N','Y') SHOW_FEE_FLAG
   FROM (
  SELECT arci.cons_inv_id                            cons_inv_id2
@@ -335,10 +335,10 @@ SELECT a.*,NVL((cbi_extamt_incl_delvy - cbi_fee_amt),0) CBI_EXTAMT_INCL_DELVY_EX
         (arci.cons_inv_id ,'DISCOUNT')              cbi_promo_and_disc        
        ,xx_ar_cbi_paydoc_ministmnt        
         (arci.cons_inv_id ,'TAX')                   cbi_tax
-      ,NVL(( SELECT SUM(XX_AR_EBL_COMMON_UTIL_PKG.get_line_fee_amount(aci.customer_trx_id) +
+      ,TO_CHAR(NVL(( SELECT SUM(XX_AR_EBL_COMMON_UTIL_PKG.get_line_fee_amount(aci.customer_trx_id) +
                        XX_AR_EBL_COMMON_UTIL_PKG.get_hea_fee_amount(aci.customer_trx_id))
               FROM ar_cons_inv_trx aci
-             WHERE cons_inv_id = arci.cons_inv_id),0)           cbi_fee_amt
+             WHERE cons_inv_id = arci.cons_inv_id),0),'9999999999.999')           cbi_fee_amt
        ,od_summbills.attribute14                    cbi_amount_due 
        ,xx_ar_print_summbill.xx_fin_check_digit(:account_number ,arci.cons_billing_number ,(TO_NUMBER(od_summbills.attribute14) *100)) scanline 
        ,layout pd_layout1
@@ -450,7 +450,8 @@ SELECT
      ,xact.inv_source_name inv_source
      ,to_char(xact.order_date ,'DD-MON-YY') order_date 
      ,xact.sfdata1 ,xact.sfdata2 ,xact.sfdata3 ,xact.sfdata4 ,xact.sfdata5
-     ,(xact.subtotal_amount - xact.delivery_charges - (NVL(XX_AR_EBL_COMMON_UTIL_PKG.get_line_fee_amount(xact.customer_trx_id),0) + NVL(XX_AR_EBL_COMMON_UTIL_PKG.get_hea_fee_amount(xact.customer_trx_id),0))) subtotal
+     ,TO_CHAR((xact.subtotal_amount - xact.delivery_charges - 
+     (NVL(XX_AR_EBL_COMMON_UTIL_PKG.get_line_fee_amount(xact.customer_trx_id),0) + NVL(XX_AR_EBL_COMMON_UTIL_PKG.get_hea_fee_amount(xact.customer_trx_id),0))),'9999999999.999') subtotal
      ,xact.delivery_charges delivery
      ,xact.promo_and_disc discounts
      ,xact.tax_amount
@@ -463,7 +464,9 @@ SELECT
                         end)))	
               ) sfdata7 -- Added for Defect# 19985 on 03-Jan-2012
  ,DECODE(:cbi_fee_amt,0,'N','Y') SHOW_FEE_FLAG
- ,NVL(XX_AR_EBL_COMMON_UTIL_PKG.get_line_fee_amount(xact.customer_trx_id),0) + NVL(XX_AR_EBL_COMMON_UTIL_PKG.get_hea_fee_amount(xact.customer_trx_id),0) fee_amt
+ ,TO_CHAR(NVL(XX_AR_EBL_COMMON_UTIL_PKG.get_line_fee_amount(xact.customer_trx_id),0) 
+              + NVL(XX_AR_EBL_COMMON_UTIL_PKG.get_hea_fee_amount(xact.customer_trx_id),0)
+          ,'9999999999.999')              fee_amt
 from  xx_ar_cbi_trx xact,
 xx_om_header_attributes_all xohaa
 where request_id  =:p_thread_id
@@ -499,7 +502,9 @@ SELECT
      ,xact.sfdata3 infosumz_sfdata3
      ,xact.sfdata4 infosumz_sfdata4
      ,xact.sfdata5 infosumz_sfdata5
-     ,(xact.subtotal_amount - xact.delivery_charges - (NVL(XX_AR_EBL_COMMON_UTIL_PKG.get_line_fee_amount(xact.customer_trx_id),0) + NVL(XX_AR_EBL_COMMON_UTIL_PKG.get_hea_fee_amount(xact.customer_trx_id),0))) infosumz_subtotal
+     ,TO_CHAR((xact.subtotal_amount - xact.delivery_charges - 
+               (NVL(XX_AR_EBL_COMMON_UTIL_PKG.get_line_fee_amount(xact.customer_trx_id),0) 
+                   + NVL(XX_AR_EBL_COMMON_UTIL_PKG.get_hea_fee_amount(xact.customer_trx_id),0))),'9999999999.999') infosumz_subtotal
      ,xact.delivery_charges infosumz_delivery
      ,xact.promo_and_disc infosumz_discounts
      ,xact.tax_amount infosumz_tax
@@ -512,7 +517,8 @@ SELECT
                         end)))	
       ) infosumz_sfdata7 -- Added for Defect# 19985 on 03-Jan-2012
       ,DECODE(:cbi_fee_amt88,0,'N','Y') SHOW_FEE_FLAG88
-      ,NVL(XX_AR_EBL_COMMON_UTIL_PKG.get_line_fee_amount(xact.customer_trx_id),0) + NVL(XX_AR_EBL_COMMON_UTIL_PKG.get_hea_fee_amount(xact.customer_trx_id),0)INFOSUMZ_FEE
+      ,TO_CHAR((NVL(XX_AR_EBL_COMMON_UTIL_PKG.get_line_fee_amount(xact.customer_trx_id),0) + 
+               NVL(XX_AR_EBL_COMMON_UTIL_PKG.get_hea_fee_amount(xact.customer_trx_id),0)),'9999999999.999')INFOSUMZ_FEE
 FROM  xx_ar_cbi_trx xact,
 xx_om_header_attributes_all xohaa
 WHERE request_id      =:p_thread_id
@@ -575,7 +581,7 @@ SELECT sumz.insert_seq
          sumz.tax_amount
        )                    summ_total,
        DECODE(:cbi_fee_amt,0,'N','Y') SHOW_FEE_FLAG,
-       XX_AR_EBL_COMMON_UTIL_PKG.get_softhdr_amount_fis(sumz.inv_type,sumz.inv_source_name,sumz.cons_inv_id,sumz.request_id,sumz.CUSTOMER_TRX_ID) summ_fee
+       TO_CHAR(XX_AR_EBL_COMMON_UTIL_PKG.get_softhdr_amount_fis(sumz.inv_type,sumz.inv_source_name,sumz.cons_inv_id,sumz.request_id,sumz.CUSTOMER_TRX_ID),'9999999999.999') summ_fee
 FROM  xx_ar_cbi_trx sumz
 WHERE request_id      =:p_thread_id
   AND cons_inv_id     =:cons_inv_id1
@@ -601,7 +607,7 @@ SELECT sumz.insert_seq
          sumz.tax_amount
        )  ,
        DECODE(:cbi_fee_amt,0,'N','Y') SHOW_FEE_FLAG,
-       XX_AR_EBL_COMMON_UTIL_PKG.get_softhdr_amount_fis(sumz.inv_type,sumz.inv_source_name,sumz.cons_inv_id,sumz.request_id,sumz.CUSTOMER_TRX_ID) summ_fee	   
+       TO_CHAR(XX_AR_EBL_COMMON_UTIL_PKG.get_softhdr_amount_fis(sumz.inv_type,sumz.inv_source_name,sumz.cons_inv_id,sumz.request_id,sumz.CUSTOMER_TRX_ID),'9999999999.999') summ_fee	   
 FROM  xx_ar_cbi_trx sumz
 WHERE request_id      =:p_thread_id
   AND cons_inv_id     =:cons_inv_id1
@@ -654,7 +660,7 @@ SELECT sumz.insert_seq                                infosumz_insert_seq
          sumz.tax_amount
        )                    infosumz_summarize_total ,
        DECODE(:cbi_fee_amt88,0,'N','Y') SHOW_FEE_FLAG88,
-	   XX_AR_EBL_COMMON_UTIL_PKG.get_softhdr_amount_fis(sumz.inv_type,sumz.inv_source_name,sumz.cons_inv_id,sumz.request_id,sumz.CUSTOMER_TRX_ID) infosumz_summarize_fee
+	   TO_CHAR(XX_AR_EBL_COMMON_UTIL_PKG.get_softhdr_amount_fis(sumz.inv_type,sumz.inv_source_name,sumz.cons_inv_id,sumz.request_id,sumz.CUSTOMER_TRX_ID),'9999999999.999') infosumz_summarize_fee
 FROM  xx_ar_cbi_trx sumz
 WHERE request_id      =:p_thread_id
   AND cons_inv_id     =:info_cbi_id99
@@ -680,7 +686,7 @@ SELECT sumz.insert_seq
          sumz.tax_amount
        ),
        DECODE(:cbi_fee_amt88,0,'N','Y') SHOW_FEE_FLAG88,
-       XX_AR_EBL_COMMON_UTIL_PKG.get_softhdr_amount_fis(sumz.inv_type,sumz.inv_source_name,sumz.cons_inv_id,sumz.request_id,sumz.CUSTOMER_TRX_ID) infosumz_summarize_fee	   
+       TO_CHAR(XX_AR_EBL_COMMON_UTIL_PKG.get_softhdr_amount_fis(sumz.inv_type,sumz.inv_source_name,sumz.cons_inv_id,sumz.request_id,sumz.CUSTOMER_TRX_ID),'9999999999.999') infosumz_summarize_fee	   
 FROM  xx_ar_cbi_trx sumz
 WHERE request_id      =:p_thread_id
   AND cons_inv_id     =:info_cbi_id99
@@ -733,7 +739,7 @@ SELECT sumz.insert_seq
          sumz.tax_amount
        )                    summarize_total ,
        DECODE(:cbi_fee_amt,0,'N','Y') SHOW_FEE_FLAG,
-       XX_AR_EBL_COMMON_UTIL_PKG.get_softhdr_amount_fis(sumz.inv_type,sumz.inv_source_name,sumz.cons_inv_id,sumz.request_id,sumz.CUSTOMER_TRX_ID,'ONE') summarize_fee
+       TO_CHAR(XX_AR_EBL_COMMON_UTIL_PKG.get_softhdr_amount_fis(sumz.inv_type,sumz.inv_source_name,sumz.cons_inv_id,sumz.request_id,sumz.CUSTOMER_TRX_ID,'ONE'),'9999999999.999') summarize_fee
 	   
 FROM  xx_ar_cbi_trx sumz
 WHERE request_id      =:p_thread_id
@@ -759,7 +765,7 @@ SELECT sumz.insert_seq
          sumz.tax_amount
        )                    summarize_total ,
        DECODE(:cbi_fee_amt,0,'N','Y') SHOW_FEE_FLAG,
-       XX_AR_EBL_COMMON_UTIL_PKG.get_softhdr_amount_fis(sumz.inv_type,sumz.inv_source_name,sumz.cons_inv_id,sumz.request_id,sumz.CUSTOMER_TRX_ID,'ONE') summarize_fee
+       TO_CHAR(XX_AR_EBL_COMMON_UTIL_PKG.get_softhdr_amount_fis(sumz.inv_type,sumz.inv_source_name,sumz.cons_inv_id,sumz.request_id,sumz.CUSTOMER_TRX_ID,'ONE'),'9999999999.999') summarize_fee
 FROM  xx_ar_cbi_trx sumz
 WHERE request_id      =:p_thread_id
   AND cons_inv_id     =:cons_inv_id2
@@ -810,7 +816,7 @@ SELECT sumz.insert_seq                                infoone_insert_seq
          sumz.tax_amount
        )                    infoone_summarize_total ,
        DECODE(:cbi_fee_amt77,0,'N','Y') SHOW_FEE_FLAG77,
-       XX_AR_EBL_COMMON_UTIL_PKG.get_softhdr_amount_fis(sumz.inv_type,sumz.inv_source_name,sumz.cons_inv_id,sumz.request_id,sumz.CUSTOMER_TRX_ID,'ONE') infoone_summarize_fee
+       TO_CHAR(XX_AR_EBL_COMMON_UTIL_PKG.get_softhdr_amount_fis(sumz.inv_type,sumz.inv_source_name,sumz.cons_inv_id,sumz.request_id,sumz.CUSTOMER_TRX_ID,'ONE'),'9999999999.999') infoone_summarize_fee
 FROM  xx_ar_cbi_trx sumz
 WHERE request_id      =:p_thread_id
   AND cons_inv_id     =:info_cbi_id77
@@ -835,7 +841,7 @@ SELECT sumz.insert_seq
          sumz.tax_amount
        )       ,
        DECODE(:cbi_fee_amt77,0,'N','Y') SHOW_FEE_FLAG77,
-       XX_AR_EBL_COMMON_UTIL_PKG.get_softhdr_amount_fis(sumz.inv_type,sumz.inv_source_name,sumz.cons_inv_id,sumz.request_id,sumz.CUSTOMER_TRX_ID,'ONE') infoone_summarize_fee
+       TO_CHAR(XX_AR_EBL_COMMON_UTIL_PKG.get_softhdr_amount_fis(sumz.inv_type,sumz.inv_source_name,sumz.cons_inv_id,sumz.request_id,sumz.CUSTOMER_TRX_ID,'ONE'),'9999999999.999') infoone_summarize_fee
 FROM  xx_ar_cbi_trx sumz
 WHERE request_id      =:p_thread_id
   AND cons_inv_id     =:info_cbi_id77
@@ -981,9 +987,9 @@ SELECT inv_number order_number_dup
       ,TO_NUMBER(NULL)    ca_prov_tax
       ,TO_NUMBER(NULL)    ca_state_tax    
       ,(nvl(subtotal_amount ,0) + nvl(promo_and_disc ,0) + nvl(tax_amount ,0)) total
-	  ,NVL(XX_AR_EBL_COMMON_UTIL_PKG.get_line_fee_amount(:trx_id),0) TOTAL_LINE_FEE
-	  ,NVL(XX_AR_EBL_COMMON_UTIL_PKG.get_hea_fee_amount(:trx_id),0) TOTAL_HEADER_FEE
-	  ,NVL(XX_AR_EBL_COMMON_UTIL_PKG.get_line_fee_amount(:trx_id),0) + NVL(XX_AR_EBL_COMMON_UTIL_PKG.get_hea_fee_amount(:trx_id),0) TOTAL_FEE
+	  ,TO_CHAR(NVL(XX_AR_EBL_COMMON_UTIL_PKG.get_line_fee_amount(:trx_id),0),'9999999999.999') TOTAL_LINE_FEE
+	  ,TO_CHAR(NVL(XX_AR_EBL_COMMON_UTIL_PKG.get_hea_fee_amount(:trx_id),0),'9999999999.999') TOTAL_HEADER_FEE
+	  ,TO_CHAR((NVL(XX_AR_EBL_COMMON_UTIL_PKG.get_line_fee_amount(:trx_id),0) + NVL(XX_AR_EBL_COMMON_UTIL_PKG.get_hea_fee_amount(:trx_id),0)),'9999999999.999') TOTAL_FEE
       ,DECODE(:cbi_fee_amt,0,'N','Y') SHOW_FEE_FLAG
 FROM   xx_ar_cbi_trx
 WHERE request_id      =:p_thread_id
@@ -1001,9 +1007,9 @@ SELECT inv_number                    order_number_dup
       ,nvl(cad_state_tax_amount ,0)  ca_state_tax    
       ,(nvl(subtotal_amount ,0) + nvl(promo_and_disc ,0) + 
         nvl(cad_county_tax_amount ,0) + nvl(cad_state_tax_amount ,0)) total
-	  ,NVL(XX_AR_EBL_COMMON_UTIL_PKG.get_line_fee_amount(:trx_id),0) TOTAL_LINE_FEE
-	  ,NVL(XX_AR_EBL_COMMON_UTIL_PKG.get_hea_fee_amount(:trx_id),0) TOTAL_HEADER_FEE
-	  ,NVL(XX_AR_EBL_COMMON_UTIL_PKG.get_line_fee_amount(:trx_id),0) + NVL(XX_AR_EBL_COMMON_UTIL_PKG.get_hea_fee_amount(:trx_id),0) TOTAL_FEE
+	  ,TO_CHAR(NVL(XX_AR_EBL_COMMON_UTIL_PKG.get_line_fee_amount(:trx_id),0),'9999999999.999') TOTAL_LINE_FEE
+	  ,TO_CHAR(NVL(XX_AR_EBL_COMMON_UTIL_PKG.get_hea_fee_amount(:trx_id),0),'9999999999.999') TOTAL_HEADER_FEE
+	  ,TO_CHAR((NVL(XX_AR_EBL_COMMON_UTIL_PKG.get_line_fee_amount(:trx_id),0) + NVL(XX_AR_EBL_COMMON_UTIL_PKG.get_hea_fee_amount(:trx_id),0)),'9999999999.999') TOTAL_FEE
       ,DECODE(:cbi_fee_amt,0,'N','Y') SHOW_FEE_FLAG
 FROM   xx_ar_cbi_trx
 WHERE request_id      =:p_thread_id
@@ -1023,9 +1029,9 @@ SELECT inv_number              infodtl_order_number_dup
       ,TO_NUMBER(NULL)         infodtl_ca_prov_tax
       ,TO_NUMBER(NULL)         infodtl_ca_state_tax      
       ,(nvl(subtotal_amount ,0) + nvl(promo_and_disc ,0) + nvl(tax_amount ,0)) infodtl_total
-      ,NVL(XX_AR_EBL_COMMON_UTIL_PKG.get_line_fee_amount(:infodtl_trx_id),0) TOTAL_LINE_FEE
-	  ,NVL(XX_AR_EBL_COMMON_UTIL_PKG.get_hea_fee_amount(:infodtl_trx_id),0) TOTAL_HEADER_FEE
-	  ,NVL(XX_AR_EBL_COMMON_UTIL_PKG.get_line_fee_amount(:infodtl_trx_id),0) + NVL(XX_AR_EBL_COMMON_UTIL_PKG.get_hea_fee_amount(:infodtl_trx_id),0) TOTAL_FEE
+	  ,TO_CHAR(NVL(XX_AR_EBL_COMMON_UTIL_PKG.get_line_fee_amount(:infodtl_trx_id),0),'9999999999.999') TOTAL_LINE_FEE
+	  ,TO_CHAR(NVL(XX_AR_EBL_COMMON_UTIL_PKG.get_hea_fee_amount(:infodtl_trx_id),0),'9999999999.999') TOTAL_HEADER_FEE
+	  ,TO_CHAR((NVL(XX_AR_EBL_COMMON_UTIL_PKG.get_line_fee_amount(:infodtl_trx_id),0) + NVL(XX_AR_EBL_COMMON_UTIL_PKG.get_hea_fee_amount(:infodtl_trx_id),0)),'9999999999.999') TOTAL_FEE
       ,DECODE(:cbi_fee_amt99,0,'N','Y') SHOW_FEE_FLAG
 FROM   xx_ar_cbi_trx
 WHERE 1 =1
@@ -1044,9 +1050,9 @@ SELECT inv_number                    infodtl_order_number_dup
       ,nvl(cad_state_tax_amount ,0)  infodtl_ca_state_tax
       ,(nvl(subtotal_amount ,0) + nvl(promo_and_disc ,0) + 
         nvl(cad_county_tax_amount ,0) + nvl(cad_state_tax_amount ,0)) infodtl_total
-    ,NVL(XX_AR_EBL_COMMON_UTIL_PKG.get_line_fee_amount(:infodtl_trx_id),0) TOTAL_LINE_FEE
-	  ,NVL(XX_AR_EBL_COMMON_UTIL_PKG.get_hea_fee_amount(:infodtl_trx_id),0) TOTAL_HEADER_FEE
-	  ,NVL(XX_AR_EBL_COMMON_UTIL_PKG.get_line_fee_amount(:infodtl_trx_id),0) + NVL(XX_AR_EBL_COMMON_UTIL_PKG.get_hea_fee_amount(:infodtl_trx_id),0) TOTAL_FEE
+	  ,TO_CHAR(NVL(XX_AR_EBL_COMMON_UTIL_PKG.get_line_fee_amount(:infodtl_trx_id),0),'9999999999.999') TOTAL_LINE_FEE
+	  ,TO_CHAR(NVL(XX_AR_EBL_COMMON_UTIL_PKG.get_hea_fee_amount(:infodtl_trx_id),0),'9999999999.999') TOTAL_HEADER_FEE
+	  ,TO_CHAR((NVL(XX_AR_EBL_COMMON_UTIL_PKG.get_line_fee_amount(:infodtl_trx_id),0) + NVL(XX_AR_EBL_COMMON_UTIL_PKG.get_hea_fee_amount(:infodtl_trx_id),0)),'9999999999.999') TOTAL_FEE
       ,DECODE(:cbi_fee_amt99,0,'N','Y') SHOW_FEE_FLAG
 FROM   xx_ar_cbi_trx
 WHERE 1 =1
@@ -1274,7 +1280,7 @@ ORDER BY cons_inv_id
 </sqlStatement>
 <sqlStatement name="Q_INFODOC_CBI_DETAIL">
 <![CDATA[
-SELECT info_det.*,NVL((NVL(cbi_extamt_incl_delvy99,0)-cbi_fee_amt99),0)cbi_extamt_incl_delvy_n99 
+SELECT info_det.*,TO_CHAR(NVL((NVL(cbi_extamt_incl_delvy99,0)-cbi_fee_amt99),0),'9999999999.999') cbi_extamt_incl_delvy_n99 
   ,DECODE(cbi_fee_amt99,0,'N','Y') SHOW_FEE_FLAG99
 FROM (
 SELECT  od_infocopies.cons_inv_id           cons_inv_id99
@@ -1315,10 +1321,10 @@ SELECT  od_infocopies.cons_inv_id           cons_inv_id99
          ,:doc_id99
           ,'TAX'
         )                   cbi_tax99
-      ,NVL(( SELECT SUM(XX_AR_EBL_COMMON_UTIL_PKG.get_line_fee_amount(aci.customer_trx_id) +
+      ,TO_CHAR(NVL(( SELECT SUM(XX_AR_EBL_COMMON_UTIL_PKG.get_line_fee_amount(aci.customer_trx_id) +
                        XX_AR_EBL_COMMON_UTIL_PKG.get_hea_fee_amount(aci.customer_trx_id))
               FROM ar_cons_inv_trx aci
-             WHERE cons_inv_id = od_infocopies.cons_inv_id),0)            cbi_fee_amt99
+             WHERE cons_inv_id = od_infocopies.cons_inv_id),0),'9999999999.999')            cbi_fee_amt99
        ,xx_ar_cbi_infocopy_ministmnt        
         ( od_infocopies.cons_inv_id
          ,od_infocopies.req_id
@@ -1419,10 +1425,10 @@ UNION ALL
                     ,od_summbills.attribute13
                     ,od_summbills.document_id
                     ,'TAX')  
-      ,NVL(( SELECT SUM(XX_AR_EBL_COMMON_UTIL_PKG.get_line_fee_amount(aci.customer_trx_id) +
+      ,TO_CHAR(NVL(( SELECT SUM(XX_AR_EBL_COMMON_UTIL_PKG.get_line_fee_amount(aci.customer_trx_id) +
                        XX_AR_EBL_COMMON_UTIL_PKG.get_hea_fee_amount(aci.customer_trx_id))
               FROM ar_cons_inv_trx aci
-             WHERE cons_inv_id = arci.cons_inv_id),0)            cbi_fee_amt99
+             WHERE cons_inv_id = arci.cons_inv_id),0),'9999999999.999')            cbi_fee_amt99
        ,xx_ar_print_summbill.get_paydoc_ic_totals(od_summbills.cons_inv_id
                     ,od_summbills.attribute13
                     ,od_summbills.document_id
@@ -1499,7 +1505,7 @@ order by flv.attribute7 desc,flv.lookup_code
     </sqlStatement>	
 <sqlStatement name="Q_INFODOC_CBI_SUMMARIZE">
 <![CDATA[
-SELECT info_sum.*,NVL((NVL(cbi_extamt_incl_delvy88,0)-cbi_fee_amt88),0) CBI_EXTAMT_INCL_DELVY_EX_FEE88 
+SELECT info_sum.*,TO_CHAR(NVL((NVL(cbi_extamt_incl_delvy88,0)-cbi_fee_amt88),0),'9999999999.999') CBI_EXTAMT_INCL_DELVY_EX_FEE88 
    ,DECODE(cbi_fee_amt88,0,'N','Y') SHOW_FEE_FLAG88
 FROM(
 SELECT  od_infocopies.cons_inv_id           cons_inv_id88
@@ -1540,10 +1546,10 @@ SELECT  od_infocopies.cons_inv_id           cons_inv_id88
          ,:doc_id88
           ,'TAX'
         )                   cbi_tax88
-      ,NVL(( SELECT SUM(XX_AR_EBL_COMMON_UTIL_PKG.get_line_fee_amount(aci.customer_trx_id) +
+      ,TO_CHAR(NVL(( SELECT SUM(XX_AR_EBL_COMMON_UTIL_PKG.get_line_fee_amount(aci.customer_trx_id) +
                        XX_AR_EBL_COMMON_UTIL_PKG.get_hea_fee_amount(aci.customer_trx_id))
               FROM ar_cons_inv_trx aci
-             WHERE cons_inv_id = od_infocopies.cons_inv_id),0)  cbi_fee_amt88
+             WHERE cons_inv_id = od_infocopies.cons_inv_id),0),'9999999999.999')  cbi_fee_amt88
        ,xx_ar_cbi_infocopy_ministmnt        
         ( od_infocopies.cons_inv_id
          ,od_infocopies.req_id
@@ -1644,10 +1650,10 @@ UNION ALL
                     ,od_summbills.attribute13
                     ,od_summbills.document_id
                     ,'TAX')  
-      ,NVL(( SELECT SUM(XX_AR_EBL_COMMON_UTIL_PKG.get_line_fee_amount(aci.customer_trx_id) +
+      ,TO_CHAR(NVL(( SELECT SUM(XX_AR_EBL_COMMON_UTIL_PKG.get_line_fee_amount(aci.customer_trx_id) +
                        XX_AR_EBL_COMMON_UTIL_PKG.get_hea_fee_amount(aci.customer_trx_id))
                    FROM ar_cons_inv_trx aci
-                  WHERE cons_inv_id = arci.cons_inv_id),0)  cbi_fee_amt88
+                  WHERE cons_inv_id = arci.cons_inv_id),0),'9999999999.999')  cbi_fee_amt88
        ,xx_ar_print_summbill.get_paydoc_ic_totals(od_summbills.cons_inv_id
                     ,od_summbills.attribute13
                     ,od_summbills.document_id
@@ -1691,7 +1697,7 @@ UNION ALL
 </sqlStatement>
 <sqlStatement name="Q_INFODOC_CBI_ONE">
 <![CDATA[
-SELECT info_one.*,NVL((NVL(cbi_extamt_incl_delvy77,0)-CBI_FEE_AMT77),0) CBI_EXTAMT_INCL_DELVY_EX_FEE77 
+SELECT info_one.*,TO_CHAR(NVL((NVL(cbi_extamt_incl_delvy77,0)-CBI_FEE_AMT77),0),'9999999999.999') CBI_EXTAMT_INCL_DELVY_EX_FEE77 
   ,DECODE(CBI_FEE_AMT77,0,'N','Y') SHOW_FEE_FLAG77
   FROM(
 SELECT  od_infocopies.cons_inv_id           cons_inv_id77
@@ -1732,10 +1738,10 @@ SELECT  od_infocopies.cons_inv_id           cons_inv_id77
           ,:doc_id77         
           ,'TAX'
         )                   cbi_tax77
-      ,NVL(( SELECT SUM(XX_AR_EBL_COMMON_UTIL_PKG.get_line_fee_amount(aci.customer_trx_id) +
+      ,TO_CHAR(NVL(( SELECT SUM(XX_AR_EBL_COMMON_UTIL_PKG.get_line_fee_amount(aci.customer_trx_id) +
                        XX_AR_EBL_COMMON_UTIL_PKG.get_hea_fee_amount(aci.customer_trx_id))
               FROM ar_cons_inv_trx aci
-             WHERE cons_inv_id = od_infocopies.cons_inv_id),0)  CBI_FEE_AMT77
+             WHERE cons_inv_id = od_infocopies.cons_inv_id),0),'9999999999.999')  CBI_FEE_AMT77
        ,xx_ar_cbi_infocopy_ministmnt        
         ( od_infocopies.cons_inv_id
          ,od_infocopies.req_id
@@ -1836,10 +1842,10 @@ UNION ALL
                     ,od_summbills.attribute13
                     ,od_summbills.document_id
                     ,'TAX') 
-      ,NVL(( SELECT SUM(XX_AR_EBL_COMMON_UTIL_PKG.get_line_fee_amount(aci.customer_trx_id) +
+      ,TO_CHAR(NVL(( SELECT SUM(XX_AR_EBL_COMMON_UTIL_PKG.get_line_fee_amount(aci.customer_trx_id) +
                        XX_AR_EBL_COMMON_UTIL_PKG.get_hea_fee_amount(aci.customer_trx_id))
               FROM ar_cons_inv_trx aci
-             WHERE cons_inv_id = arci.cons_inv_id),0)  cbi_fee_amt77                    
+             WHERE cons_inv_id = arci.cons_inv_id),0),'9999999999.999')  cbi_fee_amt77                    
        ,xx_ar_print_summbill.get_paydoc_ic_totals(od_summbills.cons_inv_id
                     ,od_summbills.attribute13
                     ,od_summbills.document_id
