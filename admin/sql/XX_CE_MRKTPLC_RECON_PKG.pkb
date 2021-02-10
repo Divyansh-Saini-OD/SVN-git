@@ -2526,11 +2526,7 @@ IS
   lc_transaction_type XX_CE_MPL_SETTLEMENT_HDR.transaction_type%type;   
 lv_deposit_date DATE;  
 
-    L_TRANSACTIONTYPE_1 VARCHAR2(50) := 'N'; -- Added for NAIT-162646
-    L_TRANSACTIONTYPE_2 VARCHAR2(50) := 'N'; -- Added for NAIT-162646
-	L_TRANSACTIONTYPE_3 VARCHAR2(50) := 'N'; -- Added for NAIT-162646
-	L_TRANSACTIONTYPE_4 VARCHAR2(50) := 'N'; -- Added for NAIT-162646
- 
+    L_TRANSACTION_TYPE VARCHAR2(50) := 'N';  -- Added for NAIT-162646
  CURSOR cur_ebay_stmt_files                                                                                                                                                                   
   IS                                                                                                                                                                                                    
     SELECT DISTINCT filename,                                                                                                                                                                           
@@ -2600,31 +2596,30 @@ BEGIN
   lc_action := 'Deriving Translation Details for New Ebay MPL';                 
  dbms_output.put_line ('Deriving Translation Details for New Ebay MPL');
  
- /*Start: Added for NAIT-162646*/
- BEGIN 
- SELECT XFTV.TARGET_VALUE8,
-        XFTV.TARGET_VALUE9,
-	    XFTV.TARGET_VALUE10,
-	    XFTV.TARGET_VALUE11
-  INTO L_TRANSACTIONTYPE_1,
-    L_TRANSACTIONTYPE_2,
-	L_TRANSACTIONTYPE_3,
-	L_TRANSACTIONTYPE_4
+  /*Start: Added for NAIT-162646*/
+ BEGIN
+  SELECT  trim(both ',' from regexp_replace(
+     ( XFTV.TARGET_VALUE1  ||','||XFTV.TARGET_VALUE2  ||','
+       ||XFTV.TARGET_VALUE3  ||','||XFTV.TARGET_VALUE4  ||','
+     ||XFTV.TARGET_VALUE5  ||','||XFTV.TARGET_VALUE6  ||','
+     ||XFTV.TARGET_VALUE7  ||','||XFTV.TARGET_VALUE8  ||','
+     ||XFTV.TARGET_VALUE9  ||','||XFTV.TARGET_VALUE10 ||','
+     ||XFTV.TARGET_VALUE11 ||','||XFTV.TARGET_VALUE12 ||','
+     ||XFTV.TARGET_VALUE13 ||','||XFTV.TARGET_VALUE14 ||','
+     ||XFTV.TARGET_VALUE15),
+     '(,)+', '\1')) L_TRANSACTION_TYPE
+  INTO L_TRANSACTION_TYPE
   FROM XX_FIN_TRANSLATEDEFINITION XFTD,
-    XX_FIN_TRANSLATEVALUES XFTV
-  WHERE 1               =1
-  AND XFTD.TRANSLATE_ID = XFTV.TRANSLATE_ID
-  AND XFTD.ENABLED_FLAG = 'Y'
-  AND SYSDATE BETWEEN XFTV.START_DATE_ACTIVE AND NVL(XFTV.END_DATE_ACTIVE,SYSDATE)
-  AND XFTD.TRANSLATION_NAME = 'OD_SETTLEMENT_PROCESSES'
-  AND XFTV.SOURCE_VALUE1    = 'NEW_EBAY_MPL';
-  EXCEPTION
+      XX_FIN_TRANSLATEVALUES XFTV
+  WHERE XFTD.TRANSLATION_NAME ='OD_MPL_TRX_TYPES_MAP'
+  AND XFTV.SOURCE_VALUE1      ='EBAY'
+  AND XFTD.TRANSLATE_ID       = XFTV.TRANSLATE_ID
+  AND XFTD.ENABLED_FLAG       ='Y'
+  AND SYSDATE BETWEEN XFTV.START_DATE_ACTIVE AND NVL(XFTV.END_DATE_ACTIVE,SYSDATE);
+ EXCEPTION
   WHEN NO_DATA_FOUND THEN 
-    L_TRANSACTIONTYPE_1 := 'N';
-    L_TRANSACTIONTYPE_2 := 'N';
-	L_TRANSACTIONTYPE_3 := 'N';
-	L_TRANSACTIONTYPE_4 := 'N';
-  END;
+    L_TRANSACTION_TYPE := 'N';
+ END;
  /*End: Added for NAIT-162646*/
  
   FOR rec_file IN cur_ebay_stmt_files                                                                                                                                                          
@@ -2713,11 +2708,7 @@ BEGIN
               lc_ce_mpl_settlement_dtl.last_update_date             := SYSDATE;                                                                                                                         
               lc_ce_mpl_settlement_dtl.last_update_login            := NVL(FND_GLOBAL.USER_ID, -1);                                                                                                     
               lc_ce_mpl_settlement_dtl.attribute1                   := rec_dtl.ORDERID;                                                                                                              
-              
-			  
-		--	IF rec_dtl.transactiontype in( 'SALE', 'REFUND') then -- Commented for NAIT-162646
-		--  FOR j IN 1..5     -- Commented for NAIT-162646
-			IF rec_dtl.transactiontype in ( L_TRANSACTIONTYPE_1, L_TRANSACTIONTYPE_2, L_TRANSACTIONTYPE_3, L_TRANSACTIONTYPE_4 ) then -- Added for NAIT-162646
+			IF UPPER(REC_DTL.TRANSACTIONTYPE) IN (UPPER(L_TRANSACTION_TYPE)) THEN -- Added for NAIT-162646
 			  FOR j IN 1..4   -- Added for NAIT-162646
               LOOP
                 lc_action                  := 'Generate  New Ebay Record into Multiple Transactions';
@@ -2729,10 +2720,10 @@ BEGIN
                 lc_item_related_fee_amount := NULL;
 				
 				IF j         				=1 THEN
-                    lc_action := 'Generate New Ebay  Record for Item';
-                    lc_quantity_purchased :=NVL(rec_dtl.LINEITEMS_QUANTITY,0);
-                    lc_unit_price         :=ROUND(rec_dtl.UNIT_PRICE,2);
-                  END IF;
+                   lc_action := 'Generate New Ebay  Record for Item';
+                   lc_quantity_purchased :=NVL(rec_dtl.LINEITEMS_QUANTITY,0);
+                   lc_unit_price         :=ROUND(rec_dtl.UNIT_PRICE,2);
+                END IF;
 				  
                 IF j                          = 2 THEN
                   lc_action      := 'Generate New Ebay Record for Principal Price Type';
@@ -2764,11 +2755,8 @@ BEGIN
                 lc_ce_mpl_settlement_dtl.price_amount            := l_price_amount;
                 lc_ce_mpl_settlement_dtl.item_related_fee_type   := lc_item_related_fee_type;
                 lc_ce_mpl_settlement_dtl.item_related_fee_amount := lc_item_related_fee_amount;
-				
-				
+								
                 INSERT INTO xx_ce_mpl_settlement_dtl VALUES lc_ce_mpl_settlement_dtl;
-				
-
               END LOOP;
             END IF;
 			
