@@ -50,8 +50,8 @@ BEGIN
            l_delivery_mthd,
            l_payment_term,
            l_direct_document
-      FROM apps.hz_cust_accounts_all HCA
-         , apps.xx_cdh_cust_acct_ext_b XCEB
+      FROM hz_cust_accounts_all HCA
+         , xx_cdh_cust_acct_ext_b XCEB
          , ego_attr_groups_v EAG
       WHERE XCEB.attr_group_id = EAG.attr_group_id
         AND EAG.attr_group_type = 'XX_CDH_CUST_ACCOUNT'
