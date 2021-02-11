@@ -10,6 +10,7 @@ AS
 --   1.0        08/01/2017  Uday Jadhav      1. Created this package. 
 --   1.1        01/09/2018  Theja Rajula     2. Add Default CCID to AP Invoices Header
 --   1.2        03/01/2018  Sahithi Kunuru	 3. Changed the logic to derive payment method-defect#44371
+--   1.3        01/02/2021  Komal Mishra	 4. NAIT-164624 Refunds are not getting processed due to vendor_site_code_alt Issue
 -- =========================================================================================================================
     TYPE receipt_writeoff_record IS RECORD(
         receipt_number        VARCHAR2(30),
@@ -346,9 +347,8 @@ AS
                         BEGIN
                             SELECT account_number,
                                    party_name,
-                                   SUBSTR(hca.orig_system_reference,
-                                          1,
-                                          8) aops_customer_number                   
+                                 --  SUBSTR(hca.orig_system_reference,1,8) aops_customer_number   
+				   SUBSTR(hca.orig_system_reference,1, (INSTR(hca.orig_system_reference,'-',1))-1) aops_customer_number  --NAIT-164624								   								 
                             INTO   vidtrxtab(i).customer_number,
                                    vidtrxtab(i).party_name,
                                    vidtrxtab(i).aops_customer_number                
