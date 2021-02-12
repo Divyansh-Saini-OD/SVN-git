@@ -687,32 +687,6 @@ EXCEPTION WHEN OTHERS THEN
 END update_record_status;
 
 /*********************************************************************
-* validate_last_update if data is updated within a day span, don't send it
-*********************************************************************/
-procedure validate_last_update(p_process_id   IN  NUMBER) IS
-    n_days          NUMBER;
-    lv_null_value1  VARCHAR2(10);
-    lv_null_value2  VARCHAR2(10);
-BEGIN
-  logs('validate_last_update(+)',true);
-  GET_TRANSLATION('XX_AR_SELF_SERVICE','N_LAST_UPDATE_DATE',n_days,lv_null_value1,lv_null_value2);
-  logs('   n_days '||n_days);
-  logs('   p_process_id '||p_process_id);
-  FOR stat IN (SELECT xxad.record_id
-                 FROM hz_locations hl,
-                      xx_ar_self_serv_bad_addr xxad
-                WHERE hl.last_update_date >sysdate -n_days
-                  AND hl.orig_system_reference = xxad.address_reference
-                  AND xxad.direct_bill_flag = 'Y'
-                  AND xxad.process_id = p_process_id) LOOP
-      update_record_status(NULL,stat.record_id,'ADDRESS','M');
-  END LOOP;
-  logs('validate_last_update(-)',true);
-EXCEPTION WHEN OTHERS THEN
-  logs('   Error in validate_last_update '||SQLERRM);
-END validate_last_update;
-
-/*********************************************************************
 * Process the base data as per type
 *********************************************************************/
 Procedure Process_data (p_type       IN VARCHAR2,
@@ -1057,7 +1031,6 @@ BEGIN
                 --
                 --Process data as per the reqest type
                 --
-                validate_last_update(ln_process_id);
                 logs('calling Process_data',True);
                 Process_data(lv_process_type,ln_process_id,lv_err_code,lv_err_message);
                 --
