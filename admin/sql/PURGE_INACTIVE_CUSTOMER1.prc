@@ -58,7 +58,6 @@ begin
   for i_rec in c1
   loop
     BEGIN
-    --insert into xxfin.xxfin_datafix_scripts_log (log, log_date) values ('Script Started', sysdate);
     --update orig_system_references
     P_ORIG_SYSTEM_REF_ID          := NULL;
     P_OBJECT_VERSION_NUMBER       := null;
@@ -179,7 +178,6 @@ begin
 	  insert into XXFIN_FINAL_PURGED_CUSTOMERS  select * from XXFIN_AOPS_PURGED_CUSTOMERS  where  ORIG_SYSTEM_REFERENCE=i_rec.ORIG_SYSTEM_REFERENCE; --Table Added by Ankit    
 	  
     ELSE
-      --Update xxfin.XXFIN_AOPS_PURGED_CUSTOMERS with status as not purged
 	  update XXFIN_AOPS_PURGED_CUSTOMERS set purge_status='N', purged_date=sysdate where orig_system_reference = i_rec.ORIG_SYSTEM_REFERENCE;
 	  --altered purge_status to status--Added by Ankit
 	 
@@ -198,3 +196,4 @@ exception
   when others then
     fnd_file.put_line(fnd_file.log,'Exception:- '||SQLERRM);
 end;
+/
