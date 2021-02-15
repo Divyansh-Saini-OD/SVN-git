@@ -481,7 +481,7 @@ AS
     BEGIN
        lv_sql := 'DELETE FROM xx_ar_remit_receipts WHERE request_id = '||p_req_id;
        EXECUTE IMMEDIATE lv_sql;
-       
+
     EXCEPTION WHEN OTHERS THEN
        NULL;
     END;
@@ -795,7 +795,7 @@ AS
                 ln_receipt_index :=   ln_receipt_index
                                     + 1;
                 insert_receipt_count(ln_req_id,lcu_count_receipts.receipt_number); ---- Changes done for NAIT-129669
-                
+
             END LOOP;
 
             fnd_file.put_line(fnd_file.LOG,
@@ -1415,7 +1415,7 @@ AS
                                               110) );
                     insert_data_ordt(lt_err_rec(i).cash_receipt_id,
                                      lt_err_rec(i).receipt_method_id);
-                                     
+
                     insert_receipt_count(ln_req_id,lt_err_rec(i).receipt_number);  ---- Changes done for NAIT-129669
 
                     IF (p_auto_remit_submit = 'Y')

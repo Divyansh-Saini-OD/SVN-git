@@ -636,6 +636,11 @@ IS
   lv_authCode         VARCHAR2(200);
   lv_cofTransactionId VARCHAR2(2000);
   lv_error_message    VARCHAR2(2000);
+  lv_error            VARCHAR2(2000);
+  lv_ixdate           VARCHAR2(200);
+  lv_ixTime           VARCHAR2(200);
+  lv_ixBankNodeID     VARCHAR2(200);
+  lv_ixPS2000         VARCHAR2(200);
   L_MY_SCHEME         VARCHAR2(256);
   L_MY_REALM          VARCHAR2(256);
   L_MY_PROXY          BOOLEAN;
@@ -798,7 +803,7 @@ BEGIN
     -- Begin request
     --
     iby_debug_pub.add('Begin request ',1,G_DEBUG_MODULE || l_module_name);
-    l_request := UTL_HTTP.begin_request(lv_url, 'POST', ' HTTP/1.1');
+    l_request := UTL_HTTP.begin_request(lv_url, 'POST', 'HTTP/1.1');
     UTL_HTTP.set_header(l_request, 'user-agent', 'mozilla/4.0');
     UTL_HTTP.set_header(l_request, 'content-type', 'application/json');
     UTL_HTTP.set_header(l_request, 'Content-Length', LENGTH(lc_auth_payload));
@@ -872,13 +877,22 @@ BEGIN
                 ln_ret_code,
                 lv_avsCode,
                 lv_authCode,
-                lv_cofTransactionId
+                lv_cofTransactionId,
+                lv_ixdate,
+                lv_ixTime,
+                lv_ixBankNodeID,
+                lv_ixPS2000
         FROM json_table(lclob_buffer ,'$' COLUMNS ( code NUMBER(10) PATH '$.paymentAuthorizationResponse.transactionStatus.code',
                                                     MESSAGE VARCHAR2(2000 CHAR) PATH '$.paymentAuthorizationResponse.transactionStatus.message',
                                                     ret_code NUMBER(10) PATH '$.paymentAuthorizationResponse.authorizationResult.code',
                                                     avsCode VARCHAR2(20 CHAR) PATH '$.paymentAuthorizationResponse.authorizationResult.avsCode',
                                                     authCode VARCHAR2(20 CHAR) PATH '$.paymentAuthorizationResponse.authorizationResult.authCode',
-                                                    cofTransactionId VARCHAR2(2000 CHAR) PATH '$.paymentAuthorizationResponse.authorizationResult.cofTransactionId' ));
+                                                    cofTransactionId VARCHAR2(2000 CHAR) PATH '$.paymentAuthorizationResponse.authorizationResult.cofTransactionId',
+                                                    ixDate VARCHAR2(2000 CHAR) PATH '$.paymentAuthorizationResponse.authorizationResult.ixDate',
+                                                    ixTime VARCHAR2(2000 CHAR) PATH '$.paymentAuthorizationResponse.authorizationResult.ixTime',
+                                                    ixBankNodeID VARCHAR2(2000 CHAR) PATH '$.paymentAuthorizationResponse.authorizationResult.ixBankNodeID',
+                                                    ixPS2000 VARCHAR2(2000 CHAR) PATH '$.paymentAuthorizationResponse.authorizationResult.ixPS2000'
+                                                    ));
     EXCEPTION
     WHEN NO_DATA_FOUND THEN
         iby_debug_pub.add('no data from AJB',1,G_DEBUG_MODULE || l_module_name);
@@ -935,32 +949,63 @@ BEGIN
           FROM FND_LOOKUP_VALUES
          WHERE lookup_type = 'XX_AR_IREC_ERROR_CODES'
            AND enabled_flag = 'Y'
-           AND lookup_code = ln_code;
+           AND lookup_code = ln_ret_code;
     EXCEPTION
       WHEN NO_DATA_FOUND THEN
         ln_error := 0;
       WHEN OTHERS THEN
         ln_error :=-1;
     END;
-
+    
+    x_reqresp.Response.Status  := ln_ret_code;
+    x_reqresp.Authcode         := lv_authCode;
+    x_reqresp.AVSCode          := lv_avsCode;
+    x_reqresp.CVV2Result       := NULL;
+    x_reqresp.Trxn_Date        := to_date(lv_ixdate,'MMDDYYYY');
+    x_reqresp.Acquirer         := lv_ixBankNodeID;
+    x_reqresp.PmtInstr_Type    := lv_card_type;
+    x_reqresp.BEPErrCode       := ln_code;
+    x_reqresp.BEPErrMessage    := lv_message;
+    
     IF ln_error !=0 THEN
+        BEGIN
+           SELECT meaning
+             INTO lv_error
+             FROM FND_LOOKUP_VALUES
+            WHERE lookup_type = 'XX_AR_IREC_ERROR_CODES'
+              AND enabled_flag = 'Y'
+              AND lookup_code = ln_ret_code;
+        EXCEPTION
+          WHEN NO_DATA_FOUND THEN
+            lv_error := 0;
+          WHEN OTHERS THEN
+            lv_error :=-1;
+        END;
+        x_reqresp.BEPErrMessage := lv_error;
         raise e_resp_error;
     END IF;
-
-    x_reqresp.Response.Status := ln_ret_code;
-    x_reqresp.Trxn_Date     := sysdate;
-    x_reqresp.Authcode      := lv_authCode;
-    x_reqresp.AVSCode       := lv_avsCode;
-    x_reqresp.CVV2Result    := NULL;
-    x_reqresp.BEPErrCode    := ln_code;
-    x_reqresp.BEPErrMessage := lv_message;
-        commit;
+    commit;  --- commit for pragma transaction
 EXCEPTION
 WHEN e_resp_error THEN
+
+   x_reqresp.Response.Status     := '0005';
+   x_reqresp.Response.ErrCode    := ln_ret_code;
+   x_reqresp.Response.ErrMessage := lv_error;
+   x_reqresp.ErrorLocation       := 3;
    iby_debug_pub.add('Incorrect response in EAI_webservice_authorization '|| SQLERRM,1,G_DEBUG_MODULE || l_module_name);
-   rollback;
+   commit;  --- commit for pragma transaction
 WHEN OTHERS THEN
+    x_reqresp.Response.Status := '0005';
+    x_reqresp.Trxn_Date     := sysdate;
+    x_reqresp.Authcode      := '';
+    x_reqresp.AVSCode       := 6;
+    x_reqresp.CVV2Result    := NULL;
+    x_reqresp.Trxn_Date     := sysdate;
+    x_reqresp.Acquirer      := '';
+    x_reqresp.PmtInstr_Type := lv_card_type;
+    x_reqresp.BEPErrCode    := 6;
   iby_debug_pub.add('Error in EAI_webservice_authorization '|| SQLERRM,1,G_DEBUG_MODULE || l_module_name);
+  x_reqresp.BEPErrMessage := 'Error in EAI_webservice_authorization '|| SQLERRM;
   rollback;
   --   x_ret_status := 'E';
   --   x_ret_msg    := 'Error in EAI_webservice_authorization '|| SQLERRM;
@@ -1083,7 +1128,6 @@ BEGIN
                                 ln_amt,
                                 lv_order_id,
                                 x_reqresp );
-  IF x_reqresp.Response.Status = 0 AND x_reqresp.BEPErrCode = 0 THEN
       --
       -- Calling iby_transactioncc_pkg insert_auth_txn
       --
@@ -1094,7 +1138,7 @@ BEGIN
                             order_id_in                                  => lv_order_id,                                -- IN     iby_transactions_v.order_id%TYPE,
                             merchant_id_in                               => ln_merchant,                              -- IN     iby_transactions_v.merchant_id%TYPE,
                             vendor_id_in                                 => ln_bep_id,                                 -- IN     iby_transactions_v.vendor_id%TYPE,
-                            vendor_key_in                                => ln_bep_key,                               -- IN     iby_transactions_v.bepkey%TYPE,
+                            vendor_key_in                                => lpad(ln_bep_key,6,'0'),                               -- IN     iby_transactions_v.bepkey%TYPE,
                             amount_in                                    =>ln_amt,                                        --   IN     iby_transactions_v.amount%TYPE,
                             currency_in                                  => 'USD',                                      --   IN     iby_transactions_v.currency%TYPE,
                             status_in                                    => x_reqresp.Response.Status,                    --   IN     iby_transactions_v.status%TYPE,
@@ -1164,11 +1208,7 @@ BEGIN
     iby_debug_pub.add('transaction_id_out '||x_transaction_id_out,1,G_DEBUG_MODULE || l_module_name);
     iby_debug_pub.add('x_transaction_mid_out '||x_transaction_mid_out,1,G_DEBUG_MODULE || l_module_name);
     x_reqresp.Trxn_ID := x_transaction_id_out;
-  ELSE
-    iby_debug_pub.add('Error in xx_create_iby_summary '|| x_reqresp.BEPErrMessage,1,G_DEBUG_MODULE || l_module_name);
-    x_ret_status := 'E';
-    x_ret_msg    := 'Error in EAI_webservice_authorization '|| x_reqresp.BEPErrMessage;
-  END IF;
+
 EXCEPTION
 WHEN OTHERS THEN
   iby_debug_pub.add('Error in xx_create_iby_summary '|| SQLERRM,1,G_DEBUG_MODULE || l_module_name);
@@ -1820,6 +1860,10 @@ BEGIN
           x_auth_result.Instr_SecCode_Check := l_reqresp.CVV2Result;
           x_auth_result.PaymentSys_Code     := l_reqresp.BEPErrCode;
           x_auth_result.PaymentSys_Msg      := l_reqresp.BEPErrMessage;
+          iby_debug_pub.add('Custom log Divy BEPErrCode '||l_reqresp.BEPErrCode,1,'Custom message');
+          iby_debug_pub.add('Custom log Divy BEPErrMessage '||l_reqresp.BEPErrMessage,1,'Custom message');
+          iby_debug_pub.add('Custom log Divy PaymentSys_Code '||x_auth_result.PaymentSys_Code,1,'Custom message');
+          iby_debug_pub.add('Custom log Divy PaymentSys_Msg '||x_auth_result.PaymentSys_Msg,1,'Custom message');
           --x_auth_result.Risk_Result;
         END IF;
         --COMMIT;
