@@ -13,8 +13,9 @@ create or replace PACKAGE BODY XX_FIN_VPS_NETTING_PKG AS
 --   1.3        06/05/2018  Havish Kasina       Changes added as per Defect 44886 (VPS Phase 2) 
 --   1.4        09/19/2018  Havish Kasina       Production Defect 61712: AP Invoices are not created. Fixed the issue to  
 --                                              pass the invoice amount
---	1.5			30/04/2019	Harika Nukala		Adding oracle instance for this JIRA-NAIT-93555
--- =========================================================================================================================
+--	 1.5	    30/04/2019	Harika Nukala		Adding oracle instance for this JIRA-NAIT-93555
+--   1.6        01/02/2021  Komal Mishra	    NAIT-164624 Refunds are not getting processed due to vendor_site_code_alt Issue
+-- ============================================ =============================================================================
 g_conc_request_id NUMBER :=fnd_global.conc_request_id;
 PROCEDURE update_trans( 
 					 p_trx_num IN VARCHAR2,
@@ -766,11 +767,13 @@ FUNCTION get_receipt_number(
       IS
       CURSOR c1
 		  IS
-        SELECT    decode(vals.target_value1,'WW', p_week_chars, 'YY', p_year_chars, 'VVVVVVV', lpad(p_vendor_num,7,'0'), 'PPPPPP', lpad(p_program_id,6,'0'), vals.target_value1) 
-               || decode(vals.target_value2,'WW', p_week_chars, 'YY', p_year_chars, 'VVVVVVV', lpad(p_vendor_num,7,'0'), 'PPPPPP', lpad(p_program_id,6,'0'), vals.target_value2)
-               || decode(vals.target_value3,'WW', p_week_chars, 'YY', p_year_chars, 'VVVVVVV', lpad(p_vendor_num,7,'0'), 'PPPPPP', lpad(p_program_id,6,'0'), vals.target_value3)
-               || decode(vals.target_value4,'WW', p_week_chars, 'YY', p_year_chars, 'VVVVVVV', lpad(p_vendor_num,7,'0'), 'PPPPPP', lpad(p_program_id,6,'0'), vals.target_value4)
-               || decode(vals.target_value5,'WW', p_week_chars, 'YY', p_year_chars, 'VVVVVVV', lpad(p_vendor_num,7,'0'), 'PPPPPP', lpad(p_program_id,6,'0'), vals.target_value5)
+		  --Code change start w.r.t. NAIT-164624
+        SELECT    decode(vals.target_value1,'WW', p_week_chars, 'YY', p_year_chars, 'VVVVVVVV', lpad(p_vendor_num,7,'0'), 'PPPPPP', lpad(p_program_id,6,'0'), vals.target_value1) 
+               || decode(vals.target_value2,'WW', p_week_chars, 'YY', p_year_chars, 'VVVVVVVV', lpad(p_vendor_num,7,'0'), 'PPPPPP', lpad(p_program_id,6,'0'), vals.target_value2)
+               || decode(vals.target_value3,'WW', p_week_chars, 'YY', p_year_chars, 'VVVVVVVV', lpad(p_vendor_num,7,'0'), 'PPPPPP', lpad(p_program_id,6,'0'), vals.target_value3)
+               || decode(vals.target_value4,'WW', p_week_chars, 'YY', p_year_chars, 'VVVVVVVV', lpad(p_vendor_num,7,'0'), 'PPPPPP', lpad(p_program_id,6,'0'), vals.target_value4)
+               || decode(vals.target_value5,'WW', p_week_chars, 'YY', p_year_chars, 'VVVVVVVV', lpad(p_vendor_num,7,'0'), 'PPPPPP', lpad(p_program_id,6,'0'), vals.target_value5)
+		--Code change End w.r.t. NAIT-164624
         FROM   xx_fin_translatedefinition trans
               ,xx_fin_translatevalues     vals
         WHERE  1=1
