@@ -160,6 +160,8 @@ AS
 -- |                                                 for Opt-out vendor notification                                  |
 -- | 70.0        30-JAN-2021  Kayeed A               NAIT-1646549 created the proc reset_auth_flag                    |
 -- |                                                 for resetting the auth Flag from U to N                          |
+-- | 71.0        15-FEB-2021  Arvind K               Bug fixing in the opt_out_ven_notification query, put NVL        |
+-- |                                                                                                                  |
 -- +==================================================================================================================+
 
   gc_package_name        CONSTANT all_objects.object_name%TYPE   := 'xx_ar_subscriptions_mt_pkg';
@@ -17198,7 +17200,7 @@ PROCEDURE opt_out_ven_notification(errbuff            OUT VARCHAR2,
       AND contl.contract_number          =conts.contract_number
       AND contl.renewal_type             = 'DO_NOT_RENEW'
       AND conts.contract_status          ='EXPIRED'
-      AND contl.attribute1               <>'Y' 
+      AND NVL(contl.attribute1,'N')      <>'Y'
       AND TRUNC(SYSDATE-1)               = TRUNC(contl.contract_line_end_date)
       ;
   
