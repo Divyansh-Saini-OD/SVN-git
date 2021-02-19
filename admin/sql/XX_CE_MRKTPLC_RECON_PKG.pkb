@@ -2524,9 +2524,11 @@ IS
   lc_error_flag VARCHAR2(1)                     :='N';
   lc_err_msg xx_ce_ebay_trx_dtl_stg.err_msg%type:=NULL;
   lc_transaction_type XX_CE_MPL_SETTLEMENT_HDR.transaction_type%type;
-lv_deposit_date DATE;
-
-    L_TRANSACTION_TYPE VARCHAR2(50) := 'N';  -- Added for NAIT-162646
+  lv_deposit_date DATE;
+  lc_trx_typ_flg varchar2(5):= 'N';
+  l_line_cnt number:= 0;
+			
+  L_TRANSACTION_TYPE VARCHAR2(50) := 'N';  -- Added for NAIT-162646
  CURSOR cur_ebay_stmt_files
   IS
     SELECT DISTINCT filename,
@@ -2626,13 +2628,17 @@ BEGIN
         lc_action                 := 'Processing New Ebay PreStage Header Data for Order#'||rec_hdr.ORDERID;
         lc_err_msg                := NULL;
         lc_transaction_type       := NULL;
+		l_line_cnt				  := 0;
+		lc_trx_typ_flg 			 := NULL;
+		
         IF rec_hdr.transactiontype='SALE' THEN
-        lc_transaction_type     :='Order';
+        lc_transaction_type     :='Order';				
 
         ELSE
           lc_transaction_type:='Adjustment';
         END IF;
-
+        
+		logit(p_message =>lc_action);
 
         SELECT XX_CE_MPL_HEADER_ID_SEQ.nextval INTO lc_mpl_header_id FROM dual;
         IF dup_check_transaction_type(p_process_name,rec_hdr.TRANSACTIONID,lc_transaction_type)='N' THEN
@@ -2640,6 +2646,7 @@ BEGIN
           LOOP
 
 			lc_action := 'Processing New Ebay PreStage Detail Data';
+			logit(p_message =>lc_action);
             BEGIN
               lc_ce_mpl_settlement_dtl                              :=NULL;
               lc_ce_mpl_settlement_dtl.mpl_header_id                := lc_mpl_header_id;
@@ -2682,7 +2689,9 @@ BEGIN
               lc_ce_mpl_settlement_dtl.last_update_login            := NVL(FND_GLOBAL.USER_ID, -1);
               lc_ce_mpl_settlement_dtl.attribute1                   := rec_dtl.ORDERID;
 			
-			IF UPPER(REC_DTL.TRANSACTIONTYPE) IN (UPPER( /*Start: Added for NAIT-162646*/
+			/*Start: Added for NAIT-162646*/
+			SELECT 'Y' INTO lc_trx_typ_flg FROM DUAL 
+			WHERE UPPER(REC_DTL.TRANSACTIONTYPE) IN ( 
 														SELECT TRX_TYPE FROM (SELECT XFTV.*
 														 FROM XX_FIN_TRANSLATEDEFINITION XFTD,
 														   XX_FIN_TRANSLATEVALUES XFTV
@@ -2694,8 +2703,11 @@ BEGIN
 														 UNPIVOT(TRX_TYPE for TARGET_VALUE in (TARGET_VALUE1,  TARGET_VALUE2,  TARGET_VALUE3,
 														   TARGET_VALUE4,  TARGET_VALUE5,  TARGET_VALUE6,  TARGET_VALUE7,  TARGET_VALUE8,
 														   TARGET_VALUE9,  TARGET_VALUE10,  TARGET_VALUE11,  TARGET_VALUE12,  TARGET_VALUE13,
-														   TARGET_VALUE14,  TARGET_VALUE15)))) -- Added for NAIT-162646
-			THEN
+														   TARGET_VALUE14,  TARGET_VALUE15)));
+			
+			IF LC_TRX_TYP_FLG = 'Y' THEN /*End: Added for NAIT-162646*/
+			lc_action := 'REC_DTL.TRANSACTIONTYPE '||REC_DTL.TRANSACTIONTYPE;
+			logit(p_message =>lc_action);
 			  FOR j IN 1..4   
               LOOP
                 lc_action                  := 'Generate  New Ebay Record into Multiple Transactions';
@@ -2794,24 +2806,31 @@ BEGIN
           lc_ce_mpl_settlement_hdr.last_update_date    :=SYSDATE;
           Lc_Ce_Mpl_Settlement_Hdr.Last_Update_Login   :=NVL(Fnd_Global.User_Id, -1);
           Lc_Ce_Mpl_Settlement_Hdr.ajb_file_name       :=rec_file.filename||lc_settlement_id;
-          INSERT INTO XX_CE_MPL_SETTLEMENT_HDR VALUES lc_ce_mpl_settlement_hdr;
-          UPDATE XX_CE_EBAYMPL_PRE_STG_V a
-          SET a.process_flag    ='P',
-            A.Err_Msg           =NULL
-          WHERE A.ORDERID    =Rec_hdr.ORDERID
-          AND NVL(a.process_flag,'N')   IN ('N','E')
-          AND a.transactiontype=Rec_hdr.transactiontype;
-          gc_success_count     :=gc_success_count+1;
-        ELSE
-          UPDATE XX_CE_EBAYMPL_PRE_STG_V a
-          SET a.process_flag    ='E',
-            A.Err_Msg           ='Duplicate record found for Ebay PO#'||Rec_hdr.ORDERID
-          WHERE A.ORDERID    	=Rec_hdr.ORDERID
-          AND NVL(a.process_flag,'N')  IN ('N','E')
-          AND a.transactiontype=Rec_hdr.transactiontype;
+   
+		select count(*) into l_line_cnt from xx_ce_mpl_settlement_dtl where mpl_header_id = lc_mpl_header_id;
+   
+			IF l_line_cnt > 0 THEN   
+			INSERT INTO XX_CE_MPL_SETTLEMENT_HDR VALUES lc_ce_mpl_settlement_hdr;
+			  UPDATE XX_CE_EBAYMPL_PRE_STG_V a
+			  SET a.process_flag    ='P',
+				A.Err_Msg           =NULL
+			  WHERE A.ORDERID    =Rec_hdr.ORDERID
+			  AND NVL(a.process_flag,'N')   IN ('N','E')
+			  AND a.transactiontype=Rec_hdr.transactiontype;
+			  gc_success_count     :=gc_success_count+1;
+			END IF;
+		ELSE
+			  UPDATE XX_CE_EBAYMPL_PRE_STG_V a
+			  SET a.process_flag    ='E',
+				A.Err_Msg           ='Duplicate record found for Ebay PO#'||Rec_hdr.ORDERID
+			  WHERE A.ORDERID    	=Rec_hdr.ORDERID
+			  AND NVL(a.process_flag,'N')  IN ('N','E')
+			  AND a.transactiontype=Rec_hdr.transactiontype;
+			  
           gc_failure_count     :=gc_failure_count+1;
 
         END IF;
+		
         COMMIT;
       EXCEPTION
       WHEN OTHERS THEN
@@ -2964,5 +2983,5 @@ WHEN OTHERS THEN
   exiting_sub(p_procedure_name => lc_procedure_name, p_exception_flag => TRUE);
 END MAIN_MPL_SETTLEMENT_PROCESS;
 END XX_CE_MRKTPLC_RECON_PKG;
-/
-SHOW ERRORS;
+/ 
+SHOW ERROR;
