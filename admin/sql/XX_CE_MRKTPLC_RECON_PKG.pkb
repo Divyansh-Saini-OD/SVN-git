@@ -1930,7 +1930,7 @@ IS
       SUM(NVL(SHIPPED_QTY,0)) SHIPPED_QTY,
       SUM(NVL(TOTAL_TENDER_CUSTOMER,0)) TOTAL_TENDER_CUSTOMER,
       SUM(NVL(COMMISSION_FROM_SALE,0)) COMMISSION_FROM_SALE,
-	 SUM(NVL(tdr.TOTAL_NET_TAX_COLLECTED,0)) TOTAL_NET_TAX_COLLECTED   --NAIT-154432																			  
+	 SUM(NVL(tdr.TOTAL_NET_TAX_COLLECTED,0)) TOTAL_NET_TAX_COLLECTED   --NAIT-154432
     FROM XX_CE_WALMART_PRE_STG_V tdr
     WHERE 1                 =1
     AND tdr.walmart_po      =p_walmart_po
@@ -1939,9 +1939,9 @@ IS
     GROUP BY tdr.WALMART_PO,
       tdr.WALMART_ORDER,
       tdr.transaction_type,
-	  tdr.TAX_WITHHELD,  --NAIT-154432		  
+	  tdr.TAX_WITHHELD,  --NAIT-154432
       tdr.PARTNER_ITEM_ID;
-	  
+
   lv_deposit_date DATE;
 BEGIN
   lt_parameters('p_process_name') := p_process_name;
@@ -2052,8 +2052,8 @@ BEGIN
                   lc_action      := 'Generate Walmart Record for Principal Price Type';
                   lc_price_type  :='Principal';
               --  l_price_amount :=rec_dtl.TOTAL_TENDER_CUSTOMER;
-				  l_price_amount :=rec_dtl.TOTAL_TENDER_CUSTOMER - rec_dtl.TOTAL_NET_TAX_COLLECTED; -- NAIT-154432 Walmart:Missing TAX WITHHELD Field Changes	
-				 
+				  l_price_amount :=rec_dtl.TOTAL_TENDER_CUSTOMER - rec_dtl.TOTAL_NET_TAX_COLLECTED; -- NAIT-154432 Walmart:Missing TAX WITHHELD Field Changes
+
                 END IF;
                 IF j                          =3 THEN
                   lc_action                  := 'Generate Walmart Record for Sales Tax Service Price Type';
@@ -2491,56 +2491,56 @@ WHEN OTHERS THEN
 END PROCESS_EBAY_PRESTG_DATA;
 
 --Ver 3.0 Start
-/**********************************************************************************         
-* PROCESS_NEW_EBAY_PRESTG_DATA is new procedure for Ebay MPL.                                                                                                             
-* Procedure to process Ebay MPL (no Paypal) at different levels.                                                                                                                                                  
-*this procedure is main procedure for Walmart MP and calls all sub procedures.                                                                                                                          
-* This procedure is called by MAIN_MPL_SETTLEMENT_PROCESS.                                                                                                                                              
-***********************************************************************************/                                                                                                                    
-PROCEDURE PROCESS_NEW_EBAY_PRESTG_DATA(                                                                                                                                                                  
-    p_process_name IN VARCHAR2)                                                                                                                                                                         
-IS                                                                                                                                                                                                      
+/**********************************************************************************
+* PROCESS_NEW_EBAY_PRESTG_DATA is new procedure for Ebay MPL.
+* Procedure to process Ebay MPL (no Paypal) at different levels.
+*this procedure is main procedure for Walmart MP and calls all sub procedures.
+* This procedure is called by MAIN_MPL_SETTLEMENT_PROCESS.
+***********************************************************************************/
+PROCEDURE PROCESS_NEW_EBAY_PRESTG_DATA(
+    p_process_name IN VARCHAR2)
+IS
 
-  lc_procedure_name CONSTANT VARCHAR2(61) := gc_package_name || '.' || 'PROCESS_WALMART_PRESTG_DATA';                                                                                                   
-  lt_parameters gt_input_parameters;                                                                                                                                                                    
-  lc_action VARCHAR2(1000);                                                                                                                                                                             
-  lc_ce_mpl_settlement_dtl XX_CE_MPL_SETTLEMENT_DTL%ROWTYPE;                                                                                                                                            
-  lc_ce_mpl_settlement_hdr XX_CE_MPL_SETTLEMENT_HDR%ROWTYPE;                                                                                                                                            
-  lc_settlement_start_date XX_CE_MPL_SETTLEMENT_HDR.settlement_start_date%type ;                                                                                                                        
-  lc_settlement_end_date XX_CE_MPL_SETTLEMENT_HDR.settlement_end_date%type ;                                                                                                                            
-  lc_currency VARCHAR2(15);                                                                                                                                                                             
-  lc_start_date XX_CE_MPL_SETTLEMENT_HDR.settlement_start_date%type ;                                                                                                                                   
-  lc_end_date XX_CE_MPL_SETTLEMENT_HDR.settlement_start_date%type ;                                                                                                                                     
-  lc_settlement_id XX_CE_MPL_SETTLEMENT_DTL.settlement_id%type;                                                                                                                                         
-  lc_quantity_purchased      VARCHAR2(25);                                                                                                                                                              
-  lc_unit_price              NUMBER;                                                                                                                                                                    
+  lc_procedure_name CONSTANT VARCHAR2(61) := gc_package_name || '.' || 'PROCESS_WALMART_PRESTG_DATA';
+  lt_parameters gt_input_parameters;
+  lc_action VARCHAR2(1000);
+  lc_ce_mpl_settlement_dtl XX_CE_MPL_SETTLEMENT_DTL%ROWTYPE;
+  lc_ce_mpl_settlement_hdr XX_CE_MPL_SETTLEMENT_HDR%ROWTYPE;
+  lc_settlement_start_date XX_CE_MPL_SETTLEMENT_HDR.settlement_start_date%type ;
+  lc_settlement_end_date XX_CE_MPL_SETTLEMENT_HDR.settlement_end_date%type ;
+  lc_currency VARCHAR2(15);
+  lc_start_date XX_CE_MPL_SETTLEMENT_HDR.settlement_start_date%type ;
+  lc_end_date XX_CE_MPL_SETTLEMENT_HDR.settlement_start_date%type ;
+  lc_settlement_id XX_CE_MPL_SETTLEMENT_DTL.settlement_id%type;
+  lc_quantity_purchased      VARCHAR2(25);
+  lc_unit_price              NUMBER;
 
-  lc_price_type              VARCHAR2(50);                                                                                                                                                              
-  l_price_amount             VARCHAR2(25);                                                                                                                                                              
-  lc_item_related_fee_type   VARCHAR2(50);                                                                                                                                                              
-  lc_item_related_fee_amount VARCHAR2(25);                                                                                                                                                              
-  l_rec_cnt                  NUMBER := 0;                                                                                                                                                               
-  lc_mpl_header_id XX_CE_MPL_SETTLEMENT_DTL.mpl_header_id%type;                                                                                                                                         
-  lc_error_flag VARCHAR2(1)                     :='N';                                                                                                                                                  
-  lc_err_msg xx_ce_ebay_trx_dtl_stg.err_msg%type:=NULL;                                                                                                                                                 
-  lc_transaction_type XX_CE_MPL_SETTLEMENT_HDR.transaction_type%type;   
-lv_deposit_date DATE;  
+  lc_price_type              VARCHAR2(50);
+  l_price_amount             VARCHAR2(25);
+  lc_item_related_fee_type   VARCHAR2(50);
+  lc_item_related_fee_amount VARCHAR2(25);
+  l_rec_cnt                  NUMBER := 0;
+  lc_mpl_header_id XX_CE_MPL_SETTLEMENT_DTL.mpl_header_id%type;
+  lc_error_flag VARCHAR2(1)                     :='N';
+  lc_err_msg xx_ce_ebay_trx_dtl_stg.err_msg%type:=NULL;
+  lc_transaction_type XX_CE_MPL_SETTLEMENT_HDR.transaction_type%type;
+lv_deposit_date DATE;
 
     L_TRANSACTION_TYPE VARCHAR2(50) := 'N';  -- Added for NAIT-162646
- CURSOR cur_ebay_stmt_files                                                                                                                                                                   
-  IS                                                                                                                                                                                                    
-    SELECT DISTINCT filename,                                                                                                                                                                           
-     MIN(TO_DATE(ebv.TRANSACTIONDATE, 'YYYY-MM-DD"T"HH24:MI:SS".""ZZZZ"')) transaction_start_date, 
-     MAX(TO_DATE(ebv.TRANSACTIONDATE, 'YYYY-MM-DD"T"HH24:MI:SS".""ZZZZ"')) transaction_end_date,                                                                                                               
-     CAST(to_date(MAX(TO_DATE(ebv.TRANSACTIONDATE, 'YYYY-MM-DD"T"HH24:MI:SS".""ZZZZ"')),'YYYY-MM-DD') AS DATE) posted_date                                                                                     
-    FROM XX_CE_EBAYMPL_PRE_STG_V ebv                                                                                                                                                                   
-    WHERE 1                =1                                                                                                                                                                           
-    AND NVL(ebv.process_flag,'N') IN ('N','E')                                                                                                                                                                 
+ CURSOR cur_ebay_stmt_files
+  IS
+    SELECT DISTINCT filename,
+     MIN(TO_DATE(ebv.TRANSACTIONDATE, 'YYYY-MM-DD"T"HH24:MI:SS".""ZZZZ"')) transaction_start_date,
+     MAX(TO_DATE(ebv.TRANSACTIONDATE, 'YYYY-MM-DD"T"HH24:MI:SS".""ZZZZ"')) transaction_end_date,
+     CAST(to_date(MAX(TO_DATE(ebv.TRANSACTIONDATE, 'YYYY-MM-DD"T"HH24:MI:SS".""ZZZZ"')),'YYYY-MM-DD') AS DATE) posted_date
+    FROM XX_CE_EBAYMPL_PRE_STG_V ebv
+    WHERE 1                =1
+    AND NVL(ebv.process_flag,'N') IN ('N','E')
     GROUP BY filename;
-	
-	
-  CURSOR cur_settlement_pre_stage_hdr(p_filename VARCHAR2)                                                                                                                                              
-  IS 
+
+
+  CURSOR cur_settlement_pre_stage_hdr(p_filename VARCHAR2)
+  IS
 	SELECT distinct transactionid,
 	  orderid,
 	  TRANSACTIONTYPE
@@ -2548,18 +2548,18 @@ lv_deposit_date DATE;
 	WHERE 1                        =1
 	and ebv.filename      =p_filename
 	AND NVL(ebv.process_flag,'N') IN ('N','E') ;
-	
-                                                                                                                                                                
-  CURSOR dup_check_cur(p_transactionid NUMBER)                                                                                                                                                         
-  IS                                                                                                                                                                                                    
-    SELECT settlement_id                                                                                                                                                                                
-    FROM XX_CE_MPL_SETTLEMENT_HDR                                                                                                                                                                       
-    WHERE settlement_id = p_transactionid                                                                                                                                                              
-    AND rownum          < 2;  
-	
-	
-  CURSOR cur_settlement_pre_stage_dtl(p_transaction_id VARCHAR2,p_transaction_type VARCHAR2 )                                                                                                               
-  IS                                                                                                                                                                                                    
+
+
+  CURSOR dup_check_cur(p_transactionid NUMBER)
+  IS
+    SELECT settlement_id
+    FROM XX_CE_MPL_SETTLEMENT_HDR
+    WHERE settlement_id = p_transactionid
+    AND rownum          < 2;
+
+
+  CURSOR cur_settlement_pre_stage_dtl(p_transaction_id VARCHAR2,p_transaction_type VARCHAR2 )
+  IS
  	SELECT DISTINCT process_name,
 	  payoutid,
 	  LINEITEMS_SKU,
@@ -2588,51 +2588,24 @@ lv_deposit_date DATE;
 	LINEITEMS_DELIVERYCOST_VALUE,
 	LINEITEMS_EBAYREMITTAXES_VALUE,
 	LINEITEMS_TAXTYPE;
-	  
 
-BEGIN                                                                                                                                                                                                   
-  lt_parameters('p_process_name') := p_process_name;                                                                                                                                                    
-  entering_sub(p_procedure_name => lc_procedure_name, p_parameters => lt_parameters);                                                                                                                   
-  lc_action := 'Deriving Translation Details for New Ebay MPL';                 
- dbms_output.put_line ('Deriving Translation Details for New Ebay MPL');
+
+BEGIN
+  lt_parameters('p_process_name') := p_process_name;
+  entering_sub(p_procedure_name => lc_procedure_name, p_parameters => lt_parameters);
+  lc_action := 'Deriving Translation Details for New Ebay MPL';
  
-  /*Start: Added for NAIT-162646*/
- BEGIN
-  SELECT  trim(both ',' from regexp_replace(
-     ( XFTV.TARGET_VALUE1  ||','||XFTV.TARGET_VALUE2  ||','
-       ||XFTV.TARGET_VALUE3  ||','||XFTV.TARGET_VALUE4  ||','
-     ||XFTV.TARGET_VALUE5  ||','||XFTV.TARGET_VALUE6  ||','
-     ||XFTV.TARGET_VALUE7  ||','||XFTV.TARGET_VALUE8  ||','
-     ||XFTV.TARGET_VALUE9  ||','||XFTV.TARGET_VALUE10 ||','
-     ||XFTV.TARGET_VALUE11 ||','||XFTV.TARGET_VALUE12 ||','
-     ||XFTV.TARGET_VALUE13 ||','||XFTV.TARGET_VALUE14 ||','
-     ||XFTV.TARGET_VALUE15),
-     '(,)+', '\1')) L_TRANSACTION_TYPE
-  INTO L_TRANSACTION_TYPE
-  FROM XX_FIN_TRANSLATEDEFINITION XFTD,
-      XX_FIN_TRANSLATEVALUES XFTV
-  WHERE XFTD.TRANSLATION_NAME ='OD_MPL_TRX_TYPES_MAP'
-  AND XFTV.SOURCE_VALUE1      ='EBAY'
-  AND XFTD.TRANSLATE_ID       = XFTV.TRANSLATE_ID
-  AND XFTD.ENABLED_FLAG       ='Y'
-  AND SYSDATE BETWEEN XFTV.START_DATE_ACTIVE AND NVL(XFTV.END_DATE_ACTIVE,SYSDATE);
- EXCEPTION
-  WHEN NO_DATA_FOUND THEN 
-    L_TRANSACTION_TYPE := 'N';
- END;
- /*End: Added for NAIT-162646*/
- 
-  FOR rec_file IN cur_ebay_stmt_files                                                                                                                                                          
-  LOOP                                                                                                                                                                                                  
-    logit(p_message => 'Processing New Ebay MPL Transaction File-' ||rec_file.filename);                                                                                                                 
-   lc_settlement_start_date:=rec_file.transaction_start_date;                                                                                                                                          
-    lc_settlement_end_date  :=rec_file.transaction_end_date;                                                                                                                                            
-    lc_action               := 'Deriving Settlement Start Date and Settlement End Date';                                                                                                                
-    logit(p_message => 'RESULT Settlement Start_date: ' || TO_CHAR(lc_settlement_start_date,'YYYY-MM-DD'));                                                                                             
-    logit(p_message => 'RESULT Settlement End_Date: ' || TO_CHAR(lc_settlement_end_date,'YYYY-MM-DD'));                                                                                                 
-   lc_action := 'Deriving Settlement Id';  
-    
-   
+  FOR rec_file IN cur_ebay_stmt_files
+  LOOP
+    logit(p_message => 'Processing New Ebay MPL Transaction File-' ||rec_file.filename);
+   lc_settlement_start_date:=rec_file.transaction_start_date;
+    lc_settlement_end_date  :=rec_file.transaction_end_date;
+    lc_action               := 'Deriving Settlement Start Date and Settlement End Date';
+    logit(p_message => 'RESULT Settlement Start_date: ' || TO_CHAR(lc_settlement_start_date,'YYYY-MM-DD'));
+    logit(p_message => 'RESULT Settlement End_Date: ' || TO_CHAR(lc_settlement_end_date,'YYYY-MM-DD'));
+   lc_action := 'Deriving Settlement Id';
+
+
 	SELECT xx_ce_mpl_settlement_id_s.NEXTVAL INTO lc_settlement_id FROM dual;
     lc_action := 'Validating Duplicate Settlement Id';
     FOR j IN dup_check_cur(lc_settlement_id)
@@ -2645,71 +2618,85 @@ BEGIN
       raise_application_error( -20101, 'ACTION: ' || lc_action || ' SQLCODE: ' || SQLCODE || ' SQLERRM: ' || sqlerrm );
     END IF;
 
-                                                                                                                  
-   FOR rec_hdr IN cur_settlement_pre_stage_hdr (rec_file.filename)                                                                                    
-                                                                                                                                                                                            
-    LOOP                                                                                                                                                                                                
-      BEGIN                                                                                                                                                                                             
-        lc_action                 := 'Processing New Ebay PreStage Header Data for Order#'||rec_hdr.ORDERID;                                                                                             
-        lc_err_msg                := NULL;                                                                                                                                                               
-        lc_transaction_type       := NULL;                                                                                                                                                               
-        IF rec_hdr.transactiontype='SALE' THEN                                                                                                                                                         
-        lc_transaction_type     :='Order';                                                                                                                                                            
 
-        ELSE                                                                                                                                                                                            
-          lc_transaction_type:='Adjustment';                                                                                                                                                            
-        END IF;           
-		
-				
-        SELECT XX_CE_MPL_HEADER_ID_SEQ.nextval INTO lc_mpl_header_id FROM dual;                                                                                                                         
-        IF dup_check_transaction_type(p_process_name,rec_hdr.TRANSACTIONID,lc_transaction_type)='N' THEN                                                                                                   
-          FOR rec_dtl IN cur_settlement_pre_stage_dtl(rec_hdr.TRANSACTIONID,rec_hdr.transactiontype )                                                                                                     
-          LOOP             
-            
-			lc_action := 'Processing New Ebay PreStage Detail Data';                                                                                                                                     
-            BEGIN                                                                                                                                                                                       
-              lc_ce_mpl_settlement_dtl                              :=NULL;                                                                                                                             
-              lc_ce_mpl_settlement_dtl.mpl_header_id                := lc_mpl_header_id;                                                                                                                
-              lc_ce_mpl_settlement_dtl.marketplace_name             := p_process_name;                                                                                                                   
-              lc_ce_mpl_settlement_dtl.order_id                     := rec_dtl.ORDERID ;                                                                                                             
+   FOR rec_hdr IN cur_settlement_pre_stage_hdr (rec_file.filename)
 
-              lc_ce_mpl_settlement_dtl.settlement_id                := lc_settlement_id ;                                                                                                               
-              lc_ce_mpl_settlement_dtl.transaction_id               := rec_dtl.TRANSACTIONID;                                                                                                           
-              lc_ce_mpl_settlement_dtl.adjustment_id                := NULL;                                                                                                                            
-              lc_ce_mpl_settlement_dtl.shipment_id                  := NULL ;                                                                                                                           
-              lc_ce_mpl_settlement_dtl.shipment_fee_type            := NULL;                                                                                                                            
-              lc_ce_mpl_settlement_dtl.shipment_fee_amount          := NULL;                                                                                                                            
-              lc_ce_mpl_settlement_dtl.order_fee_type               := NULL;                                                                                                                            
-              lc_ce_mpl_settlement_dtl.order_fee_amount             := NULL;                                                                                                                            
-              lc_ce_mpl_settlement_dtl.aops_order_number            :=NULL ;                                                                                                                            
-              lc_ce_mpl_settlement_dtl.fulfillment_id               := NULL ;                                                                                                                           
-              lc_ce_mpl_settlement_dtl.order_item_code              := rec_dtl.LINEITEMS_SKU ;   --LINEITEMID                                                                                                      
-              lc_ce_mpl_settlement_dtl.merchant_order_item_id       := rec_dtl.LINEITEMS_SKU;    --LINEITEMID                                                                                                      
-              lc_ce_mpl_settlement_dtl.merchant_adjustment_item_id  := NULL;                                                                                                                            
+    LOOP
+      BEGIN
+        lc_action                 := 'Processing New Ebay PreStage Header Data for Order#'||rec_hdr.ORDERID;
+        lc_err_msg                := NULL;
+        lc_transaction_type       := NULL;
+        IF rec_hdr.transactiontype='SALE' THEN
+        lc_transaction_type     :='Order';
 
-              lc_ce_mpl_settlement_dtl.sku                          := rec_dtl.LINEITEMS_SKU;     --LINEITEMID                                                                                                   
-              lc_ce_mpl_settlement_dtl.misc_fee_amount              := NULL;                                                                                                                            
-              lc_ce_mpl_settlement_dtl.other_fee_amount             := NULL;                                                                                                                            
-              lc_ce_mpl_settlement_dtl.other_fee_reason_description := NULL;                                                                                                                            
-              lc_ce_mpl_settlement_dtl.promotion_id                 := NULL;                                                                                                                            
-              lc_ce_mpl_settlement_dtl.promotion_type               := NULL;                                                                                                                            
-              lc_ce_mpl_settlement_dtl.promotion_amount             := NULL;                                                                                                                            
-              lc_ce_mpl_settlement_dtl.direct_payment_type          := NULL;                                                                                                                            
-              lc_ce_mpl_settlement_dtl.direct_payment_amount        := NULL;                                                                                                                            
-              lc_ce_mpl_settlement_dtl.other_amount                 := NULL;                                                                                                                            
-              lc_ce_mpl_settlement_dtl.store_number                 := NULL;                                                                                                                            
-              lc_ce_mpl_settlement_dtl.record_status                := 'N';                                                                                                                             
-              lc_ce_mpl_settlement_dtl.error_description            := NULL;                                                                                                                            
+        ELSE
+          lc_transaction_type:='Adjustment';
+        END IF;
 
-              lc_ce_mpl_settlement_dtl.request_id                   :=NVL(FND_GLOBAL.CONC_REQUEST_ID, -1);                                                                                              
-              lc_ce_mpl_settlement_dtl.created_by                   := NVL(FND_GLOBAL.USER_ID,        -1);                                                                                              
-              lc_ce_mpl_settlement_dtl.creation_date                := SYSDATE;                                                                                                                         
-              lc_ce_mpl_settlement_dtl.last_updated_by              := NVL(FND_GLOBAL.USER_ID, -1);                                                                                                     
-              lc_ce_mpl_settlement_dtl.last_update_date             := SYSDATE;                                                                                                                         
-              lc_ce_mpl_settlement_dtl.last_update_login            := NVL(FND_GLOBAL.USER_ID, -1);                                                                                                     
-              lc_ce_mpl_settlement_dtl.attribute1                   := rec_dtl.ORDERID;                                                                                                              
-			IF UPPER(REC_DTL.TRANSACTIONTYPE) IN (UPPER(L_TRANSACTION_TYPE)) THEN -- Added for NAIT-162646
-			  FOR j IN 1..4   -- Added for NAIT-162646
+
+        SELECT XX_CE_MPL_HEADER_ID_SEQ.nextval INTO lc_mpl_header_id FROM dual;
+        IF dup_check_transaction_type(p_process_name,rec_hdr.TRANSACTIONID,lc_transaction_type)='N' THEN
+          FOR rec_dtl IN cur_settlement_pre_stage_dtl(rec_hdr.TRANSACTIONID,rec_hdr.transactiontype )
+          LOOP
+
+			lc_action := 'Processing New Ebay PreStage Detail Data';
+            BEGIN
+              lc_ce_mpl_settlement_dtl                              :=NULL;
+              lc_ce_mpl_settlement_dtl.mpl_header_id                := lc_mpl_header_id;
+              lc_ce_mpl_settlement_dtl.marketplace_name             := p_process_name;
+              lc_ce_mpl_settlement_dtl.order_id                     := rec_dtl.ORDERID ;
+
+              lc_ce_mpl_settlement_dtl.settlement_id                := lc_settlement_id ;
+              lc_ce_mpl_settlement_dtl.transaction_id               := rec_dtl.TRANSACTIONID;
+              lc_ce_mpl_settlement_dtl.adjustment_id                := NULL;
+              lc_ce_mpl_settlement_dtl.shipment_id                  := NULL ;
+              lc_ce_mpl_settlement_dtl.shipment_fee_type            := NULL;
+              lc_ce_mpl_settlement_dtl.shipment_fee_amount          := NULL;
+              lc_ce_mpl_settlement_dtl.order_fee_type               := NULL;
+              lc_ce_mpl_settlement_dtl.order_fee_amount             := NULL;
+              lc_ce_mpl_settlement_dtl.aops_order_number            :=NULL ;
+              lc_ce_mpl_settlement_dtl.fulfillment_id               := NULL ;
+              lc_ce_mpl_settlement_dtl.order_item_code              := rec_dtl.LINEITEMS_SKU ;   --LINEITEMID
+              lc_ce_mpl_settlement_dtl.merchant_order_item_id       := rec_dtl.LINEITEMS_SKU;    --LINEITEMID
+              lc_ce_mpl_settlement_dtl.merchant_adjustment_item_id  := NULL;
+
+              lc_ce_mpl_settlement_dtl.sku                          := rec_dtl.LINEITEMS_SKU;     --LINEITEMID
+              lc_ce_mpl_settlement_dtl.misc_fee_amount              := NULL;
+              lc_ce_mpl_settlement_dtl.other_fee_amount             := NULL;
+              lc_ce_mpl_settlement_dtl.other_fee_reason_description := NULL;
+              lc_ce_mpl_settlement_dtl.promotion_id                 := NULL;
+              lc_ce_mpl_settlement_dtl.promotion_type               := NULL;
+              lc_ce_mpl_settlement_dtl.promotion_amount             := NULL;
+              lc_ce_mpl_settlement_dtl.direct_payment_type          := NULL;
+              lc_ce_mpl_settlement_dtl.direct_payment_amount        := NULL;
+              lc_ce_mpl_settlement_dtl.other_amount                 := NULL;
+              lc_ce_mpl_settlement_dtl.store_number                 := NULL;
+              lc_ce_mpl_settlement_dtl.record_status                := 'N';
+              lc_ce_mpl_settlement_dtl.error_description            := NULL;
+
+              lc_ce_mpl_settlement_dtl.request_id                   :=NVL(FND_GLOBAL.CONC_REQUEST_ID, -1);
+              lc_ce_mpl_settlement_dtl.created_by                   := NVL(FND_GLOBAL.USER_ID,        -1);
+              lc_ce_mpl_settlement_dtl.creation_date                := SYSDATE;
+              lc_ce_mpl_settlement_dtl.last_updated_by              := NVL(FND_GLOBAL.USER_ID, -1);
+              lc_ce_mpl_settlement_dtl.last_update_date             := SYSDATE;
+              lc_ce_mpl_settlement_dtl.last_update_login            := NVL(FND_GLOBAL.USER_ID, -1);
+              lc_ce_mpl_settlement_dtl.attribute1                   := rec_dtl.ORDERID;
+			
+			IF UPPER(REC_DTL.TRANSACTIONTYPE) IN (UPPER( /*Start: Added for NAIT-162646*/
+														SELECT TRX_TYPE FROM (SELECT XFTV.*
+														 FROM XX_FIN_TRANSLATEDEFINITION XFTD,
+														   XX_FIN_TRANSLATEVALUES XFTV
+														 WHERE XFTD.TRANSLATION_NAME ='OD_MPL_TRX_TYPES_MAP'
+														 AND XFTV.SOURCE_VALUE1      ='EBAY'
+														 AND XFTD.TRANSLATE_ID       = XFTV.TRANSLATE_ID
+														 AND XFTD.ENABLED_FLAG       ='Y'
+														 AND SYSDATE BETWEEN XFTV.START_DATE_ACTIVE AND NVL(XFTV.END_DATE_ACTIVE,SYSDATE) )  
+														 UNPIVOT(TRX_TYPE for TARGET_VALUE in (TARGET_VALUE1,  TARGET_VALUE2,  TARGET_VALUE3,
+														   TARGET_VALUE4,  TARGET_VALUE5,  TARGET_VALUE6,  TARGET_VALUE7,  TARGET_VALUE8,
+														   TARGET_VALUE9,  TARGET_VALUE10,  TARGET_VALUE11,  TARGET_VALUE12,  TARGET_VALUE13,
+														   TARGET_VALUE14,  TARGET_VALUE15)))) -- Added for NAIT-162646
+			THEN
+			  FOR j IN 1..4   
               LOOP
                 lc_action                  := 'Generate  New Ebay Record into Multiple Transactions';
                 lc_quantity_purchased      := NULL;
@@ -2718,137 +2705,137 @@ BEGIN
                 l_price_amount             := NULL;
                 lc_item_related_fee_type   := NULL;
                 lc_item_related_fee_amount := NULL;
-				
+
 				IF j         				=1 THEN
                    lc_action := 'Generate New Ebay  Record for Item';
                    lc_quantity_purchased :=NVL(rec_dtl.LINEITEMS_QUANTITY,0);
                    lc_unit_price         :=ROUND(rec_dtl.UNIT_PRICE,2);
                 END IF;
-				  
+
                 IF j                          = 2 THEN
                   lc_action      := 'Generate New Ebay Record for Principal Price Type';
                   lc_price_type  := 'Principal';
                   l_price_amount := NVL(rec_dtl.PRINCIPAL_LINE_AMOUNT,0);
                 END IF;
 
-			/*	IF j        				  = 3  THEN  
+			 /*	IF j        				  = 3  THEN
                   lc_action      := 'Generate Ebay Record for Sales Tax Service Price Type';
                   lc_price_type  := 'Tax';
                   l_price_amount :=NVL(rec_dtl.EBAYREMIT_TAX,0);  -- Commented for NAIT-162646
 			    END IF; */
-				
-				IF j                          = 3 THEN  
+
+				IF j                          = 3 THEN
                   lc_action                   := 'Generate New Ebay Record for Shipping Price Type';
                   lc_price_type               := 'Shipping';
 				  l_price_amount := NVL(rec_dtl.LINEITEMS_DELIVERYCOST_VALUE,0);
                 END IF;
-				
+
 				IF j                          = 4 THEN
                   lc_action                   := 'Generate New Ebay Record for Item Related Fees';
                   lc_item_related_fee_type    := 'Commission';
 				  lc_item_related_fee_amount := NVL(rec_dtl.MARKETPLACE_FEES,0);
                 END IF;
-				
+
                 lc_ce_mpl_settlement_dtl.quantity_purchased      := lc_quantity_purchased;
                 lc_ce_mpl_settlement_dtl.unit_price              := lc_unit_price;
                 lc_ce_mpl_settlement_dtl.price_type              := lc_price_type;
                 lc_ce_mpl_settlement_dtl.price_amount            := l_price_amount;
                 lc_ce_mpl_settlement_dtl.item_related_fee_type   := lc_item_related_fee_type;
                 lc_ce_mpl_settlement_dtl.item_related_fee_amount := lc_item_related_fee_amount;
-								
+
                 INSERT INTO xx_ce_mpl_settlement_dtl VALUES lc_ce_mpl_settlement_dtl;
               END LOOP;
             END IF;
-			
-            EXCEPTION                                                                                                                                                                                   
-            WHEN OTHERS THEN                                                                                                                                                                            
-              RAISE_APPLICATION_ERROR(-20101, 'PROCEDURE: ' || lc_procedure_name || ' ACTION: ' || lc_action || ' SQLCODE: ' || SQLCODE || ' SQLERRM: ' || SQLERRM);                                    
-            END;                                                                                                                                                                                        
-          END LOOP; --DTL Cursor        
-		  
-          lc_action                                      := 'Insert into XX_CE_MPL_SETTLEMENT_HDR Table for New Ebay PO#-'||rec_hdr.ORDERID;                                                          
-          Lc_Ce_Mpl_Settlement_Hdr                       :=NULL;                                                                                                                                        
 
-          lc_ce_mpl_settlement_hdr.mpl_header_id         :=lc_mpl_header_id;                                                                                                                            
-          lc_ce_mpl_settlement_hdr.PROVIDER_TYPE         :=lt_translation_info.target_value14 ;                                                                                                         
-          lc_ce_mpl_settlement_hdr.settlement_id         :=lc_settlement_id ;                                                                                                                           
-          lc_ce_mpl_settlement_hdr.settlement_start_date :=to_date(TO_CHAR(lc_settlement_start_date,'YYYY-MM-DD'),'YYYY-MM-DD') ;                                                                       
-          lc_ce_mpl_settlement_hdr.settlement_end_date   :=to_date(TO_CHAR(lc_settlement_end_date,'YYYY-MM-DD'),'YYYY-MM-DD') ;                                                                         
-          lc_ce_mpl_settlement_hdr.order_id              :=rec_hdr.ORDERID ;                                                                                                                         
-          lc_ce_mpl_settlement_hdr.merchant_order_id     :=rec_hdr.ORDERID ;                                                                                                                         
-          lc_ce_mpl_settlement_hdr.deposit_date          :=to_date(TO_CHAR(to_Date(lc_settlement_end_date,'DD-MM-YY'),'DD-MM-YYYY'),'DD-MM-YYYY');                                                      
-          lc_ce_mpl_settlement_hdr.total_amount          :=NULL;                                                                                                                                        
-          lc_ce_mpl_settlement_hdr.currency              :=NULL;                                                                                                                                        
-          IF rec_hdr.transactiontype                     ='SALE' THEN                                                                                                                                  
-            lc_ce_mpl_settlement_hdr.transaction_type    :='Order';                                                                                                                                     
-          ELSE                                                                                                                                                                                          
+            EXCEPTION
+            WHEN OTHERS THEN
+              RAISE_APPLICATION_ERROR(-20101, 'PROCEDURE: ' || lc_procedure_name || ' ACTION: ' || lc_action || ' SQLCODE: ' || SQLCODE || ' SQLERRM: ' || SQLERRM);
+            END;
+          END LOOP; --DTL Cursor
 
-            lc_ce_mpl_settlement_hdr.transaction_type :='Adjustment';                                                                                                                                   
-          END IF;                                                                                                                                                                                       
-          lc_ce_mpl_settlement_hdr.marketplace_name    :=p_process_name;                                                                                                                                
-          lc_ce_mpl_settlement_hdr.split_order         :=NULL;                                                                                                                                          
-          lc_ce_mpl_settlement_hdr.PROCESSOR_ID        := lt_translation_info.target_value13 ;                                                                                                          
-          lc_ce_mpl_settlement_hdr.posted_date         :=rec_file.posted_date ;                                                                                                                         
-          lc_ce_mpl_settlement_hdr.ajb_998_amount      :=NULL;                                                                                                                                          
-          lc_ce_mpl_settlement_hdr.ajb_999_amount      :=NULL;                                                                                                                                          
-          lc_ce_mpl_settlement_hdr.ajb_996_amount      :=NULL;                                                                                                                                          
-          lc_ce_mpl_settlement_hdr.terminal_number     :=NULL;                                                                                                                                          
-          lc_ce_mpl_settlement_hdr.card_number         :=NULL;                                                                                                                                          
-          lc_ce_mpl_settlement_hdr.auth_number         :=NULL;                                                                                                                                          
-          lc_ce_mpl_settlement_hdr.action              :=NULL;                                                                                                                                   
+          lc_action                                      := 'Insert into XX_CE_MPL_SETTLEMENT_HDR Table for New Ebay PO#-'||rec_hdr.ORDERID;
+          Lc_Ce_Mpl_Settlement_Hdr                       :=NULL;
 
-          lc_ce_mpl_settlement_hdr.record_status       :='N';                                                                                                                                           
-          lc_ce_mpl_settlement_hdr.record_status_stage :='NEW';                                                                                                                                         
-          lc_ce_mpl_settlement_hdr.error_description   :=NULL;                                                                                                                                          
-          lc_ce_mpl_settlement_hdr.request_id          :=NVL(FND_GLOBAL.CONC_REQUEST_ID, -1);                                                                                                           
-          Lc_Ce_Mpl_Settlement_Hdr.Created_By          :=NVL(Fnd_Global.User_Id,         -1);                                                                                                           
-          Lc_Ce_Mpl_Settlement_Hdr.Creation_Date       :=Sysdate;                                                                                                                                       
-          Lc_Ce_Mpl_Settlement_Hdr.Last_Updated_By     :=NVL(Fnd_Global.User_Id, -1);                                                                                                                   
-          lc_ce_mpl_settlement_hdr.last_update_date    :=SYSDATE;                                                                                                                                       
-          Lc_Ce_Mpl_Settlement_Hdr.Last_Update_Login   :=NVL(Fnd_Global.User_Id, -1);                                                                                                                   
-          Lc_Ce_Mpl_Settlement_Hdr.ajb_file_name       :=rec_file.filename||lc_settlement_id;                                                                                                           
-          INSERT INTO XX_CE_MPL_SETTLEMENT_HDR VALUES lc_ce_mpl_settlement_hdr;                                                                                                                         
-          UPDATE XX_CE_EBAYMPL_PRE_STG_V a                                                                                                                                                              
-          SET a.process_flag    ='P',                                                                                                                                                                  
-            A.Err_Msg           =NULL                                                                                                                                                                   
-          WHERE A.ORDERID    =Rec_hdr.ORDERID                                                                                                                                                     
-          AND NVL(a.process_flag,'N')   IN ('N','E')                                                                                                                                                             
-          AND a.transactiontype=Rec_hdr.transactiontype;                                                                                                                                              
-          gc_success_count     :=gc_success_count+1;                                                                                                                                                    
-        ELSE                                                                                                                                                                                            
-          UPDATE XX_CE_EBAYMPL_PRE_STG_V a                                                                                                                                                              
-          SET a.process_flag    ='E',                                                                                                                                                                   
-            A.Err_Msg           ='Duplicate record found for Ebay PO#'||Rec_hdr.ORDERID                                                                                                                               
-          WHERE A.ORDERID    	=Rec_hdr.ORDERID                                                                                                                                                     
-          AND NVL(a.process_flag,'N')  IN ('N','E')                                                                                                                                                             
-          AND a.transactiontype=Rec_hdr.transactiontype;                                                                                                                                              
-          gc_failure_count     :=gc_failure_count+1;                                                                                                                                                    
+          lc_ce_mpl_settlement_hdr.mpl_header_id         :=lc_mpl_header_id;
+          lc_ce_mpl_settlement_hdr.PROVIDER_TYPE         :=lt_translation_info.target_value14 ;
+          lc_ce_mpl_settlement_hdr.settlement_id         :=lc_settlement_id ;
+          lc_ce_mpl_settlement_hdr.settlement_start_date :=to_date(TO_CHAR(lc_settlement_start_date,'YYYY-MM-DD'),'YYYY-MM-DD') ;
+          lc_ce_mpl_settlement_hdr.settlement_end_date   :=to_date(TO_CHAR(lc_settlement_end_date,'YYYY-MM-DD'),'YYYY-MM-DD') ;
+          lc_ce_mpl_settlement_hdr.order_id              :=rec_hdr.ORDERID ;
+          lc_ce_mpl_settlement_hdr.merchant_order_id     :=rec_hdr.ORDERID ;
+          lc_ce_mpl_settlement_hdr.deposit_date          :=to_date(TO_CHAR(to_Date(lc_settlement_end_date,'DD-MM-YY'),'DD-MM-YYYY'),'DD-MM-YYYY');
+          lc_ce_mpl_settlement_hdr.total_amount          :=NULL;
+          lc_ce_mpl_settlement_hdr.currency              :=NULL;
+          IF rec_hdr.transactiontype                     ='SALE' THEN
+            lc_ce_mpl_settlement_hdr.transaction_type    :='Order';
+          ELSE
 
-        END IF;                                                                                                                                                                                         
-        COMMIT;                             
-      EXCEPTION                                                                                                                                                                                         
-      WHEN OTHERS THEN                                                                                                                                                                                  
-        ROLLBACK;                                                                                                                                                                                       
-        gc_failure_count:=gc_failure_count+1;                                                                                                                                                           
-        lc_err_msg      :=SUBSTR('PROCEDURE: ' || lc_procedure_name || ' SQLCODE: ' || SQLCODE || ' SQLERRM: ' ||sqlerrm,1,1000);                                                                       
-        UPDATE XX_CE_EBAYMPL_PRE_STG_V a                                                                                                                                                                
-        SET a.process_flag    ='E' ,                                                                                                                                                                    
-          a.err_msg           =lc_err_msg                                                                                                                                                               
-        WHERE a.ORDERID    =rec_hdr.ORDERID                                                                                                                                                       
-        AND NVL(a.process_flag,'N')   IN ('N','E')                                                                                                                                                               
-        AND a.transactiontype=Rec_hdr.transactiontype;                                                                                                                                                
+            lc_ce_mpl_settlement_hdr.transaction_type :='Adjustment';
+          END IF;
+          lc_ce_mpl_settlement_hdr.marketplace_name    :=p_process_name;
+          lc_ce_mpl_settlement_hdr.split_order         :=NULL;
+          lc_ce_mpl_settlement_hdr.PROCESSOR_ID        := lt_translation_info.target_value13 ;
+          lc_ce_mpl_settlement_hdr.posted_date         :=rec_file.posted_date ;
+          lc_ce_mpl_settlement_hdr.ajb_998_amount      :=NULL;
+          lc_ce_mpl_settlement_hdr.ajb_999_amount      :=NULL;
+          lc_ce_mpl_settlement_hdr.ajb_996_amount      :=NULL;
+          lc_ce_mpl_settlement_hdr.terminal_number     :=NULL;
+          lc_ce_mpl_settlement_hdr.card_number         :=NULL;
+          lc_ce_mpl_settlement_hdr.auth_number         :=NULL;
+          lc_ce_mpl_settlement_hdr.action              :=NULL;
 
-        COMMIT;                                                                                                                                                                                         
-      END;                                                                                                                                                                                              
-    END LOOP; --HDR Cursor                                                                                                                                                                              
-  END LOOP;   --rec_file    
+          lc_ce_mpl_settlement_hdr.record_status       :='N';
+          lc_ce_mpl_settlement_hdr.record_status_stage :='NEW';
+          lc_ce_mpl_settlement_hdr.error_description   :=NULL;
+          lc_ce_mpl_settlement_hdr.request_id          :=NVL(FND_GLOBAL.CONC_REQUEST_ID, -1);
+          Lc_Ce_Mpl_Settlement_Hdr.Created_By          :=NVL(Fnd_Global.User_Id,         -1);
+          Lc_Ce_Mpl_Settlement_Hdr.Creation_Date       :=Sysdate;
+          Lc_Ce_Mpl_Settlement_Hdr.Last_Updated_By     :=NVL(Fnd_Global.User_Id, -1);
+          lc_ce_mpl_settlement_hdr.last_update_date    :=SYSDATE;
+          Lc_Ce_Mpl_Settlement_Hdr.Last_Update_Login   :=NVL(Fnd_Global.User_Id, -1);
+          Lc_Ce_Mpl_Settlement_Hdr.ajb_file_name       :=rec_file.filename||lc_settlement_id;
+          INSERT INTO XX_CE_MPL_SETTLEMENT_HDR VALUES lc_ce_mpl_settlement_hdr;
+          UPDATE XX_CE_EBAYMPL_PRE_STG_V a
+          SET a.process_flag    ='P',
+            A.Err_Msg           =NULL
+          WHERE A.ORDERID    =Rec_hdr.ORDERID
+          AND NVL(a.process_flag,'N')   IN ('N','E')
+          AND a.transactiontype=Rec_hdr.transactiontype;
+          gc_success_count     :=gc_success_count+1;
+        ELSE
+          UPDATE XX_CE_EBAYMPL_PRE_STG_V a
+          SET a.process_flag    ='E',
+            A.Err_Msg           ='Duplicate record found for Ebay PO#'||Rec_hdr.ORDERID
+          WHERE A.ORDERID    	=Rec_hdr.ORDERID
+          AND NVL(a.process_flag,'N')  IN ('N','E')
+          AND a.transactiontype=Rec_hdr.transactiontype;
+          gc_failure_count     :=gc_failure_count+1;
 
-  exiting_sub( p_procedure_name => lc_procedure_name, p_exception_flag => true );                                                                                                                                                                                      
-EXCEPTION                                                                                                                                                                                               
-WHEN OTHERS THEN                                                                                                                                                                                        
-  ROLLBACK;                                                                                                                                                                                             
-  exiting_sub(p_procedure_name => lc_procedure_name, p_exception_flag => TRUE);                                                                                                                         
-  RAISE_APPLICATION_ERROR(-20101, 'PROCEDURE: ' || lc_procedure_name || ' SQLCODE: ' || SQLCODE || ' SQLERRM: ' || SQLERRM);                                                                            
+        END IF;
+        COMMIT;
+      EXCEPTION
+      WHEN OTHERS THEN
+        ROLLBACK;
+        gc_failure_count:=gc_failure_count+1;
+        lc_err_msg      :=SUBSTR('PROCEDURE: ' || lc_procedure_name || ' SQLCODE: ' || SQLCODE || ' SQLERRM: ' ||sqlerrm,1,1000);
+        UPDATE XX_CE_EBAYMPL_PRE_STG_V a
+        SET a.process_flag    ='E' ,
+          a.err_msg           =lc_err_msg
+        WHERE a.ORDERID    =rec_hdr.ORDERID
+        AND NVL(a.process_flag,'N')   IN ('N','E')
+        AND a.transactiontype=Rec_hdr.transactiontype;
+
+        COMMIT;
+      END;
+    END LOOP; --HDR Cursor
+  END LOOP;   --rec_file
+
+  exiting_sub( p_procedure_name => lc_procedure_name, p_exception_flag => true );
+EXCEPTION
+WHEN OTHERS THEN
+  ROLLBACK;
+  exiting_sub(p_procedure_name => lc_procedure_name, p_exception_flag => TRUE);
+  RAISE_APPLICATION_ERROR(-20101, 'PROCEDURE: ' || lc_procedure_name || ' SQLCODE: ' || SQLCODE || ' SQLERRM: ' || SQLERRM);
 END PROCESS_NEW_EBAY_PRESTG_DATA;
 
 /**********************************************************************
@@ -2918,7 +2905,7 @@ BEGIN
   IF p_market_place IN ('NEWEGG_MPL') THEN
     PROCESS_NEWEGG_PRESTG_DATA (p_market_place);
   END IF;
-  
+
   /******************************
   * Call NEW EBAY Process. --NAIT-139979 Start
   ******************************/
@@ -2978,3 +2965,4 @@ WHEN OTHERS THEN
 END MAIN_MPL_SETTLEMENT_PROCESS;
 END XX_CE_MRKTPLC_RECON_PKG;
 /
+SHOW ERRORS;
