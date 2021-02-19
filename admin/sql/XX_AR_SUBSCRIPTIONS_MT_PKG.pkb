@@ -161,6 +161,7 @@ AS
 -- | 70.0        30-JAN-2021  Kayeed A               NAIT-1646549 created the proc reset_auth_flag                    |
 -- |                                                 for resetting the auth Flag from U to N                          |
 -- | 71.0        15-FEB-2021  Arvind K               Bug fixing in the opt_out_ven_notification query, put NVL        |
+-- | 72.0        19-FEB-2021  Arvind K               NAIT-173266 bug fixing process receipt for no_data_found issue   |
 -- |                                                                                                                  |
 -- +==================================================================================================================+
 
@@ -10557,6 +10558,19 @@ EXCEPTION
 
       END IF;
 
+--------Start NAIT-173266
+      /****************************************
+      * Validate whether invoice is created
+      ****************************************/
+
+      IF px_subscription_array(indx).invoice_number IS NULL
+      THEN
+
+        lc_error := 'Not Eligible for Receipt creation as invoice number is null ';
+        RAISE le_skip;
+
+      END IF;   -----End NAIT-173266
+      
       /****************************************
       * Validate we are ready to create receipt
       ****************************************/
