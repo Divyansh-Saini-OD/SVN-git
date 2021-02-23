@@ -29,7 +29,9 @@ PACKAGE BODY XX_AP_C2FO_AWARD_PKG AS
 *   1.0          9/2/2018         Antonio Morales               OD                OD Initial Customized Version     |
 *   1.1        11/26/2018         Vivek Kumar                                      Added XPTR option - NAIT -63055  |
 *   1.2        04/18/2019         Arun DSouza                                     Added Funding Partner Code        |
-*   1.3        06/07/2019         Arun DSouza                   OD                Added debit balance pay group     |
+*   1.3        06/07/2019         Arun DSouza                   OD                Added debit balance pay group 
+*   1.4        23/02/2021         Abhinav Jaiswal               OD                NAIT-166246(C2FO Funding Partner  |
+                                                                                  Toggle Issue                      |
 *********************************************************************************************************************
 */
 
@@ -1015,7 +1017,7 @@ PACKAGE BODY XX_AP_C2FO_AWARD_PKG AS
         -- +======================================================================================================+
         -- | Validation#01 - STARTS - Checking the Holds AT Supplier and supplier site level.
         -- +======================================================================================================+
-
+  /**
             BEGIN
 
             l_error_msg      := NULL;
@@ -1080,7 +1082,7 @@ PACKAGE BODY XX_AP_C2FO_AWARD_PKG AS
                    AND xads.award_file_batch_name=c_award_file_batch_name
                    AND NVL(xads.process_flag, 'N') != 'E';
 
-            END IF;
+            END IF;                                                                 **/ --removed for 1.4(NAIT-166246)
 
        fnd_file.put_line(fnd_file.log,'Step-13');
  
@@ -2204,6 +2206,7 @@ END IF;
              WHERE 1 = 1
                AND xads.award_file_batch_name = c_award_file_batch_name
                AND xads.process_status IN ('UPDATE_DUE_DATE_ONLY_REC','CM_CREATED')
+			   AND xads.award_record_activities = 'CREATE_CM_AND_UPDATE_DUE_DATE'   --Added for 1.4(NAIT-166246)
                AND xads.process_flag = 'N';
 
         END;
