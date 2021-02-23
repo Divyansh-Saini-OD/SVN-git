@@ -609,6 +609,10 @@
     lc_xx_ap_sua_recon_STG xx_ap_sua_recon%ROWTYPE;
     lv_filerec_count       NUMBER;
     lv_datafile_rec_number NUMBER:=0;
+	l_errbuf VARCHAR2(100); 
+	ln_recon_process_req_id NUMBER;
+	b_sub_request BOOLEAN:= FALSE;
+	ln_org_id NUMBER;
 	
     CURSOR cur_sua_process_recon
     IS
@@ -625,6 +629,10 @@
       AND sysdate BETWEEN xftv.start_date_active AND NVL(xftv.end_date_active,sysdate);
 	  
   BEGIN
+  
+    ln_org_id := fnd_profile.VALUE('ORG_ID');
+    mo_global.set_policy_context('S', ln_org_id);
+	 
     -- purge xx_ap_sua_recon
     xx_purge_recon_staging;
 	
@@ -927,10 +935,32 @@
         utl_file.fclose(l_filehandle);
       END IF;
     END LOOP;
-    IF l_insert_err_flag='N' THEN
-      print_debug_msg(p_message =>TO_CHAR(l_rec_cnt)||' records successfully loaded into staging', p_force => true);
-      print_debug_msg(p_message => 'File Processed Successfully:'||p_file_name , p_force => true);
+	
+	
+	   IF l_insert_err_flag='N' THEN
+       print_debug_msg(p_message =>TO_CHAR(l_rec_cnt)||' records successfully loaded into staging', p_force => true);
+       print_debug_msg(p_message => 'File Processed Successfully:'||p_file_name , p_force => true);
+
+	  -- Call process_recon_data to generate and load bank statements with auto recon
+	  
+	  print_debug_msg(p_message => 'Calling OD: AP JPM SUA Payment Reconciliation Process' , p_force => true);
+	    
+      fnd_global.APPS_INITIALIZE(2440014,52296,200); -- mayur
+	  ln_recon_process_req_id := fnd_request.submit_request ( 
+	  application => 'XXFIN',
+      PROGRAM => 'XXAPSUARP',                                                      
+      description =>NULL,               
+      start_time => NULL,
+	  sub_request => false);                                                           
       COMMIT;
+	 
+	  
+	  IF ln_recon_process_req_id > 0 THEN
+	   print_debug_msg(p_message => 'OD: AP JPM SUA Payment Reconciliation Process submitted. Request Id: '||to_char(ln_recon_process_req_id) , p_force => true);
+ ELSE
+	   print_debug_msg(p_message => 'Error while submitting OD: AP JPM SUA Payment Reconciliation Process'||to_char(SQLERRM) , p_force => true);
+	  END IF;
+	  
     ELSIF l_insert_err_flag = 'Y' THEN
       ROLLBACK;
       UPDATE xx_ap_sua_intf_files
@@ -1119,8 +1149,8 @@
     lc_file_creation_date   VARCHAR2(50);
     lc_file_creation_time   VARCHAR2(50);
     lc_currency_code        VARCHAR2(10);
-    ln_opening_bal          NUMBER;
-    ln_closing_bal          NUMBER;
+    ln_opening_bal          VARCHAR2(50);
+    ln_closing_bal          VARCHAR2(50);
     ln_txn_amt              NUMBER;
     ln_total_txn_amt        NUMBER;
     ln_txn_id               VARCHAR2(100);
@@ -1165,14 +1195,16 @@
     CURSOR c_get_total_amount
     IS
       SELECT (SUM(txn_amount) + 1500)*100 opening_bal,
-        (SUM(txn_amount))     *100 total_txn_amount,
-        recon_file_name
+        (SUM(txn_amount))*100 total_txn_amount,
+        recon_file_name,
+		currency_code
       FROM xx_ap_sua_recon
       WHERE 1              = 1
       AND process_flag     = 'N'
       AND reconciled_flag IS NULL
       AND record_type      = 'D'
-      GROUP BY recon_file_name;
+      GROUP BY recon_file_name, currency_code;
+	  
   BEGIN
      ln_org_id := fnd_profile.VALUE('ORG_ID');
      mo_global.set_policy_context('S', ln_org_id);
@@ -1220,14 +1252,16 @@
       -- Initialize variables
       lc_file_creation_date := TO_CHAR(SYSDATE,'YYMMDD');
       lc_file_creation_time := TO_CHAR(SYSDATE,'HH24MI');
-      lc_currency_code      := 'USD';
+      lc_currency_code      := g_rec.currency_code;
       ln_cnt1               := 0;
       ln_cnt2               := 0;
       ln_loop_count         := 0;
       b_sub_request         := FALSE;
-      ln_opening_bal        := g_rec.opening_bal;
+  --    ln_opening_bal        := g_rec.opening_bal;
+	  ln_opening_bal        := '00';
       ln_total_txn_amt      := g_rec.total_txn_amount;
-      ln_closing_bal        := ln_opening_bal - ln_total_txn_amt;
+    --  ln_closing_bal        := ln_opening_bal - ln_total_txn_amt;
+	  ln_closing_bal        := '00';
 	  
       /* STEP NO: 1 - Logic to write Bank Statement file in outbound directory */
       file_handle := utl_file.fopen(lc_out_dir, lc_file_name, 'w');
@@ -1317,9 +1351,18 @@
       END IF;
 	  
       /* STEP NO: 3 - Submit 'OD: CE Bank statment loader program' conc request */
-      ln_bnk_state_ldr_req_id :=fnd_request.submit_request( 'XXFIN' , 'XX_CE_BNK_STMT_LDR_PKG_SUB_REQ' , 'OD: CE Bank statment loader program' , NULL , FALSE , 'LOAD' , 1002 , -- BAI2
-      lc_file_name , lc_out_dir_abs, TO_CHAR(SYSDATE,'YYYY/MM/DD HH:MM:SS'));
+      ln_bnk_state_ldr_req_id :=fnd_request.submit_request( 'XXFIN' , 
+	  'XX_CE_BNK_STMT_LDR_PKG_SUB_REQ' , 
+	  'OD: CE Bank statment loader program' , 
+	  NULL , 
+	  FALSE , 
+	  'LOAD' , 
+	  1002 , -- BAI2
+      lc_file_name , 
+	  lc_out_dir_abs, 
+	  TO_CHAR(SYSDATE,'YYYY/MM/DD HH:MM:SS'));
       COMMIT;
+	  
       /* STEP NO: 3.1 - Wait for 'OD: CE Update Transaction Text' program to complete */
       IF ln_bnk_state_ldr_req_id>0 THEN
         l_error_msg            := 'Submitted OD: CE Bank statment loader program Request id : '|| TO_CHAR(ln_bnk_state_ldr_req_id);
@@ -1332,7 +1375,8 @@
         l_error_msg := 'Error submitting OD: CE Bank statment loader program : ';
         print_debug_msg(p_message =>l_error_msg , p_force => true);
       END IF;
-      /* STEP NO: 4 - Submit Bank Statement Import and auto reconciliation */
+      
+	  /* STEP NO: 4 - Submit Bank Statement Import and auto reconciliation */
       IF lc_child_status = 'Y' THEN
         l_error_msg     := 'OD: CE Update Transaction Text success. Req ID: '||TO_CHAR(ln_update_txn_req_id);
         print_debug_msg(p_message =>l_error_msg , p_force => true);
@@ -1368,10 +1412,29 @@
           l_error_msg:= 'Bank branch or account id not found for bank account name ~ WELLS FARGO DUMMY - JPMSUA';
           print_debug_msg(p_message =>l_error_msg , p_force => true);
         END;
-        ln_bnk_imp_recon_req_id := fnd_request.submit_request( 'CE' , 'ARPLABIR' , 'Bank Statement Import and AutoReconciliation' , NULL , FALSE , 'ZALL', l_bank_branch_id, --339253421, -- bank branch id -- WELLS FARGO BANK, N.A.
+        ln_bnk_imp_recon_req_id := fnd_request.submit_request( 'CE' , 
+		'ARPLABIR' ,
+		'Bank Statement Import and AutoReconciliation' , 
+		NULL , 
+		FALSE , 
+		'ZALL', 
+		l_bank_branch_id, --339253421, -- bank branch id -- WELLS FARGO BANK, N.A.
         l_bank_account_id,                                                                                                                                                   -- 22205,     -- bank account id -- WELLS FARGO DUMMY - JPMSUA
-        NULL, NULL, NULL, NULL, TO_CHAR(SYSDATE,'YYYY/MM/DD HH:MM:SS'), NULL, NULL, NULL, NULL, 'NO_ACTION', 'N', NULL, NULL );
+        NULL, 
+		NULL, 
+		NULL, 
+		NULL, 
+		TO_CHAR(SYSDATE,'YYYY/MM/DD HH:MM:SS'), 
+		NULL, 
+		NULL, 
+		NULL, 
+		NULL, 
+		'NO_ACTION', 
+		'N', 
+		NULL, 
+		NULL );
         COMMIT;
+		
         IF ln_bnk_imp_recon_req_id>0 THEN
           l_error_msg            := 'Submitted Bank Statement Import and auto reconciliation. Request id : '|| TO_CHAR(ln_bnk_imp_recon_req_id);
           print_debug_msg(p_message =>l_error_msg , p_force => true);
