@@ -1468,3 +1468,6 @@
   END process_recon_data;
   
   END xx_ap_sua_pmnt_intf_pkg;
+/
+show errors;
+exit;

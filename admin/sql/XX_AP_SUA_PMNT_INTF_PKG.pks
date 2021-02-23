@@ -47,3 +47,6 @@ AS
       p_retcode IN OUT NUMBER );
 	  
 END XX_AP_SUA_PMNT_INTF_PKG;
+/
+show errors;
+exit;
