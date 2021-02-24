@@ -180,6 +180,7 @@ AS
       lc_vendor_name           ap_suppliers.vendor_name%TYPE;
       ln_vendor_id             ap_suppliers.vendor_id%TYPE;
       ln_vendor_site_id        ap_supplier_sites_all.vendor_site_id%TYPE;
+	  lc_sua_email			   VARCHAR2(150);
       ln_addenda_rec_cnt       NUMBER;
       --lc_addenda               VARCHAR2 (4000); -- Commented 09122013
       lc_addenda               CLOB; -- Added 09122013
@@ -231,10 +232,12 @@ AS
      BEGIN
       SELECT aps.vendor_id, aps.vendor_name, aps.vendor_type_lookup_code,
              asa.vendor_site_id, asa.attribute8,       -- Added for Checkprint
-             ipa.payment_date                        -- added for payment date
+             ipa.payment_date,                        -- added for payment date
+			 asa.attribute1
         INTO ln_vendor_id, lc_vendor_name, lc_vendor_type_lk_code,
              ln_vendor_site_id, lc_site_category,
-             ld_payment_date
+             ld_payment_date,
+			 lc_sua_email
         FROM ap_suppliers aps, iby_payments_all ipa,
              ap_supplier_sites_all asa
        WHERE ipa.payment_id = p_payment_id
@@ -249,6 +252,7 @@ AS
 		  ln_vendor_site_id:='';
 		  lc_site_category:='';
 		  ld_payment_date:='';
+		  lc_sua_email:='';
 	 END;	 
 ----------------------------------------------
 -- get payment currency symbol for check printing
@@ -397,10 +401,14 @@ AS
                                     XMLELEMENT ("VendorType",
                                                 lc_vendor_type_lk_code
                                                ),
+                                    XMLELEMENT ("SuaEmailAddress",
+                                                lc_sua_email
+                                               ),
                                     XMLELEMENT ("AddendaRec", lc_addenda),
                                     XMLELEMENT ("AddendaRecCount",
                                                 ln_addenda_rec_cnt
                                                )
+											   
                                    )
                        )
         INTO l_ins_ext_agg
