@@ -552,9 +552,9 @@
     l_dirpath VARCHAR2(500);
     l_newline VARCHAR2(4000);
     l_max_linesize binary_integer := 32767;
-    l_user_id    NUMBER              := fnd_global.user_id;
+    l_user_id    NUMBER              := p_user_id; --fnd_global.user_id;
     l_login_id   NUMBER              := fnd_global.login_id;
-    l_request_id NUMBER              := fnd_global.conc_request_id;
+    l_request_id NUMBER              := p_request_id; --fnd_global.conc_request_id;
     l_rec_cnt    NUMBER              := 0;
     l_table varchar2_table;
     l_nfields           INTEGER;
@@ -613,6 +613,8 @@
 	ln_recon_process_req_id NUMBER;
 	b_sub_request BOOLEAN:= FALSE;
 	ln_org_id NUMBER;
+	l_resp_id NUMBER;
+	l_application_id NUMBER;
 	
     CURSOR cur_sua_process_recon
     IS
@@ -682,9 +684,9 @@
               l_record_count     := regexp_substr(REPLACE(l_newline, ',',', '), '[^,]+', 1, 5);
               l_process_flag     := 'N';
               l_creation_date    := sysdate ;
-              l_created_by       := fnd_global.user_id;
+              l_created_by       := l_user_id;--fnd_global.user_id;
               l_last_update_date := sysdate;
-              l_last_updated_by  := fnd_global.user_id;
+              l_last_updated_by  := l_user_id;--fnd_global.user_id;
             EXCEPTION
             WHEN value_error THEN
               l_insert_err_flag:='Y';
@@ -761,9 +763,9 @@
               l_currency_code    := trim(regexp_substr(REPLACE(l_newline, ',',', '), '[^,]+', 1, 9));
               l_process_flag     := 'N';
               l_creation_date    := sysdate ;
-              l_created_by       := fnd_global.user_id;
+              l_created_by       := l_user_id;--fnd_global.user_id;
               l_last_update_date := sysdate;
-              l_last_updated_by  := fnd_global.user_id;
+              l_last_updated_by  := l_user_id;--fnd_global.user_id;
               IF l_txn_amount    >= 0 THEN
                 l_txn_type       := 'DEBIT';
               ELSIF l_txn_amount  < 0 THEN
@@ -945,7 +947,14 @@
 	  
 	  print_debug_msg(p_message => 'Calling OD: AP JPM SUA Payment Reconciliation Process' , p_force => true);
 	    
-      fnd_global.APPS_INITIALIZE(2440014,52296,200); -- mayur
+    SELECT responsibility_id,
+    application_id
+    INTO l_resp_id, l_application_id
+    FROM fnd_responsibility_tl fresp 
+    WHERE responsibility_name = 'OD (US) AP Batch Jobs';
+  
+      fnd_global.apps_initialize(l_user_id,l_resp_id,l_application_id);
+
 	  ln_recon_process_req_id := fnd_request.submit_request ( 
 	  application => 'XXFIN',
       PROGRAM => 'XXAPSUARP',                                                      
