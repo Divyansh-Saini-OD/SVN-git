@@ -946,13 +946,24 @@
 	  -- Call process_recon_data to generate and load bank statements with auto recon
 	  
 	  print_debug_msg(p_message => 'Calling OD: AP JPM SUA Payment Reconciliation Process' , p_force => true);
-	    
+	BEGIN    
     SELECT responsibility_id,
     application_id
     INTO l_resp_id, l_application_id
     FROM fnd_responsibility_tl fresp 
     WHERE responsibility_name = 'OD (US) AP Batch Jobs';
-  
+	EXCEPTION
+	WHEN no_data_found THEN
+	      l_insert_err_flag:= 'Y';
+          l_error_msg    := 'No data found while initializing call to process_recon_data';
+          print_debug_msg(p_message => l_error_msg , p_force => TRUE);
+    WHEN OTHERS THEN
+	      l_insert_err_flag:= 'Y';
+          l_error_msg    := 'Error while initializing call to process_recon_data. Error:'|| TO_CHAR(sqlerrm) ;
+          print_debug_msg(p_message => l_error_msg , p_force => TRUE); 
+    END ;
+	
+	IF l_resp_id IS NOT NULL THEN 
       fnd_global.apps_initialize(l_user_id,l_resp_id,l_application_id);
 
 	  ln_recon_process_req_id := fnd_request.submit_request ( 
@@ -963,14 +974,17 @@
 	  sub_request => false);                                                           
       COMMIT;
 	 
-	  
 	  IF ln_recon_process_req_id > 0 THEN
 	   print_debug_msg(p_message => 'OD: AP JPM SUA Payment Reconciliation Process submitted. Request Id: '||to_char(ln_recon_process_req_id) , p_force => true);
  ELSE
 	   print_debug_msg(p_message => 'Error while submitting OD: AP JPM SUA Payment Reconciliation Process'||to_char(SQLERRM) , p_force => true);
 	  END IF;
+	  END IF;
 	  
-    ELSIF l_insert_err_flag = 'Y' THEN
+    END IF;
+	
+	-- removed elseif to handle error occured while setting apps initialize
+	IF l_insert_err_flag = 'Y' THEN
       ROLLBACK;
       UPDATE xx_ap_sua_intf_files
       SET error_description=l_error_msg
