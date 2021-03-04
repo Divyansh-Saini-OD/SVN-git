@@ -85,6 +85,7 @@ create or replace PACKAGE BODY XX_AP_SUPP_CLD_INTF_PKG
 -- |										   Classification is active or not				   |
 -- | 										   c)handle condition if status is inactive then   |
 -- |                                           updating EBS base table and else condition      |
+-- | 4.5     03-Mar-2021    Paddy Sanjeevi     Modified for OD_CLEARING Payment method NAIT-172512 |
 -- |===========================================================================================+
 AS
   /*********************************************************************
@@ -7638,10 +7639,15 @@ BEGIN
   --===============================================================
   --Updating Request Id into Supplier Site Staging table     --
   --===============================================================
+
   UPDATE xx_ap_cld_supp_sites_stg xasc
   SET site_process_flag   = gn_process_status_inprocess ,
     request_id            = gn_request_id ,
-    process_flag          = 'P'
+    process_flag          = 'P',
+	payment_method_lookup_code=DECODE(payment_method_lookup_code,
+									  'OD_CLEARING','CLEARING',
+									  payment_method_lookup_code
+									 )   -- NAIT-172512
   WHERE site_process_flag ='1'
   AND process_flag        ='N'
   AND request_id         IS NULL;
