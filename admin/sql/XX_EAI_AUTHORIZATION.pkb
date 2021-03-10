@@ -964,7 +964,7 @@ BEGIN
     x_reqresp.Trxn_Date        := to_date(lv_ixdate,'MMDDYYYY');
     x_reqresp.Acquirer         := lv_ixBankNodeID;
     x_reqresp.PmtInstr_Type    := lv_card_type;
-    x_reqresp.BEPErrCode       := ln_code;
+    x_reqresp.BEPErrCode       := ln_ret_code;
     x_reqresp.BEPErrMessage    := lv_message;
     
     IF ln_error !=0 THEN
@@ -984,7 +984,7 @@ BEGIN
         x_reqresp.BEPErrMessage := lv_error;
         raise e_resp_error;
     END IF;
-    commit;  --- commit for pragma transaction
+    commit; --- commit for pragma transaction
 EXCEPTION
 WHEN e_resp_error THEN
 
@@ -1010,6 +1010,533 @@ WHEN OTHERS THEN
   --   x_ret_status := 'E';
   --   x_ret_msg    := 'Error in EAI_webservice_authorization '|| SQLERRM;
 END;
+
+/*    Count number of previous PENDING transactions, ignoring the
+	cancelled ones
+*/
+
+Function getNumPendingTrxns(i_payeeid in iby_payee.payeeid%type,
+			i_tangibleid in iby_tangible.tangibleid%type,
+			i_reqtype in iby_trxn_summaries_all.reqtype%type)
+return number
+
+IS
+
+l_num_trxns number;
+
+BEGIN
+
+     SELECT count(*)
+       INTO l_num_trxns
+       FROM iby_trxn_summaries_all
+      WHERE TangibleID = i_tangibleid
+	AND UPPER(ReqType) = UPPER(i_reqtype)
+	AND PayeeID = i_payeeid
+	AND (status IN (11,9));
+
+    IF (l_num_trxns > 1) THEN
+      -- should never run into this block
+       	raise_application_error(-20000, 'IBY_20422#', FALSE);
+    END IF;
+
+   return l_num_trxns;
+END;
+  --
+  -- USE: inserts transactional extensibility data
+  --
+  PROCEDURE insert_extensibility
+  (
+  p_trxnmid           IN     iby_trxn_summaries_all.trxnmid%TYPE,
+  p_commit            IN     VARCHAR2,
+  p_extend_names      IN     JTF_VARCHAR2_TABLE_100,
+  p_extend_vals       IN     JTF_VARCHAR2_TABLE_200
+  )
+  IS
+  BEGIN
+
+    IF (p_extend_names IS NULL) THEN
+      RETURN;
+    END IF;
+
+
+    FOR i IN p_extend_names.FIRST..p_extend_names.LAST LOOP
+    -- Bug# 18502475
+    -- Check for Null before inserting the data
+      IF(p_extend_names(i) IS NOT NULL AND p_extend_vals(i) IS NOT NULL) then
+        INSERT INTO iby_trxn_extensibility
+        (trxn_extend_id,trxnmid,extend_name,extend_value,created_by,
+         creation_date,last_updated_by,last_update_date,last_update_login,
+         object_version_number)
+        VALUES
+        (iby_trxn_extensibility_s.NEXTVAL,
+         p_trxnmid,p_extend_names(i),p_extend_vals(i),
+         fnd_global.user_id,sysdate,fnd_global.user_id,sysdate,
+         fnd_global.login_id,1);
+       END IF;
+    END LOOP;
+
+    IF (p_commit = 'Y') THEN
+      COMMIT;
+    END IF;
+  END insert_extensibility;
+
+/* get TID based on orderid */
+Function getTID(i_payeeid in iby_payee.payeeid%type,
+		i_tangibleid in iby_tangible.tangibleid%type)
+return number
+
+IS
+
+l_tid number;
+cursor c_tid(ci_payeeid in iby_payee.payeeid%type,
+		ci_tangibleid in iby_tangible.tangibleid%type)
+  is
+	SELECT distinct transactionid
+	FROM iby_trxn_summaries_all
+	WHERE tangibleid = ci_tangibleid
+	AND payeeid = ci_payeeid;
+
+BEGIN
+	if (c_tid%isopen) then
+	   close c_tid;
+	end if;
+
+	open c_tid(i_payeeid, i_tangibleid);
+	fetch c_tid into l_tid;
+	if (c_tid%notfound) then
+	  SELECT iby_trxnsumm_trxnid_s.NEXTVAL
+	  INTO l_tid
+	  FROM dual;
+	end if;
+
+	close c_tid;
+
+	return l_tid;
+
+END getTID;
+
+
+  /* Inserts a new row into the IBY_TRXN_SUMMARIES_ALL table.  This method  */
+  /* would be called every time a MIPP authorize operation is performed. */
+
+PROCEDURE insert_auth_txn
+	(
+	 ecapp_id_in         IN     iby_trxn_summaries_all.ecappid%TYPE,
+         req_type_in         IN     iby_trxn_summaries_all.ReqType%TYPE,
+         order_id_in         IN     iby_transactions_v.order_id%TYPE,
+         merchant_id_in      IN     iby_transactions_v.merchant_id%TYPE,
+         vendor_id_in        IN     iby_transactions_v.vendor_id%TYPE,
+         vendor_key_in       IN     iby_transactions_v.bepkey%TYPE,
+         amount_in           IN     iby_transactions_v.amount%TYPE,
+         currency_in         IN     iby_transactions_v.currency%TYPE,
+         status_in           IN     iby_transactions_v.status%TYPE,
+         time_in             IN     iby_transactions_v.time%TYPE,
+         payment_name_in     IN     iby_transactions_v.payment_name%TYPE,
+	 payment_type_in     IN	    iby_transactions_v.payment_type%TYPE,
+         trxn_type_in        IN     iby_transactions_v.trxn_type%TYPE,
+	 authcode_in         IN     iby_transactions_v.authcode%TYPE,
+	 referencecode_in    IN     iby_transactions_v.referencecode%TYPE,
+         AVScode_in          IN     iby_transactions_v.AVScode%TYPE,
+         acquirer_in         IN     iby_transactions_v.acquirer%TYPE,
+         Auxmsg_in           IN     iby_transactions_v.Auxmsg%TYPE,
+         vendor_code_in      IN     iby_transactions_v.vendor_code%TYPE,
+         vendor_message_in   IN     iby_transactions_v.vendor_message%TYPE,
+         error_location_in   IN     iby_transactions_v.error_location%TYPE,
+         trace_number_in     IN	    iby_transactions_v.TraceNumber%TYPE,
+	 org_id_in           IN     iby_trxn_summaries_all.org_id%type,
+         billeracct_in       IN     iby_tangible.acctno%type,
+         refinfo_in          IN     iby_tangible.refinfo%type,
+         memo_in             IN     iby_tangible.memo%type,
+         order_medium_in     IN     iby_tangible.order_medium%TYPE,
+         eft_auth_method_in  IN     iby_tangible.eft_auth_method%TYPE,
+	 payerinstrid_in     IN	    iby_trxn_summaries_all.payerinstrid%type,
+	 instrnum_in	     IN     iby_trxn_summaries_all.instrnumber%type,
+	 payerid_in          IN     iby_trxn_summaries_all.payerid%type,
+	 instrtype_in        IN     iby_trxn_summaries_all.instrType%type,
+         cvv2result_in       IN     iby_trxn_core.CVV2Result%type,
+         master_key_in       IN     iby_security_pkg.DES3_KEY_TYPE,
+         subkey_seed_in      IN     RAW,
+         trxnref_in          IN     iby_trxn_summaries_all.trxnref%TYPE,
+         dateofvoiceauth_in  IN     iby_trxn_core.date_of_voice_authorization%TYPE,
+         instr_expirydate_in IN     iby_trxn_core.instr_expirydate%TYPE,
+         instr_sec_val_in    IN     VARCHAR2,
+         card_subtype_in     IN     iby_trxn_core.card_subtype_code%TYPE,
+         card_data_level_in  IN     iby_trxn_core.card_data_level%TYPE,
+         instr_owner_name_in    IN  iby_trxn_core.instr_owner_name%TYPE,
+         instr_address_line1_in IN  iby_trxn_core.instr_owner_address_line1%TYPE,
+         instr_address_line2_in IN  iby_trxn_core.instr_owner_address_line2%TYPE,
+         instr_address_line3_in IN  iby_trxn_core.instr_owner_address_line3%TYPE,
+         instr_city_in       IN     iby_trxn_core.instr_owner_city%TYPE,
+         instr_state_in      IN     iby_trxn_core.instr_owner_state_province%TYPE,
+         instr_country_in    IN     iby_trxn_core.instr_owner_country%TYPE,
+         instr_postalcode_in IN     iby_trxn_core.instr_owner_postalcode%TYPE,
+         instr_phonenumber_in IN    iby_trxn_core.instr_owner_phone%TYPE,
+         instr_email_in      IN     iby_trxn_core.instr_owner_email%TYPE,
+         pos_reader_cap_in   IN     iby_trxn_core.pos_reader_capability_code%TYPE,
+         pos_entry_method_in IN     iby_trxn_core.pos_entry_method_code%TYPE,
+         pos_card_id_method_in IN   iby_trxn_core.pos_id_method_code%TYPE,
+         pos_auth_source_in  IN     iby_trxn_core.pos_auth_source_code%TYPE,
+         reader_data_in      IN     iby_trxn_core.reader_data%TYPE,
+         extend_names_in     IN     JTF_VARCHAR2_TABLE_100,
+         extend_vals_in      IN     JTF_VARCHAR2_TABLE_200,
+         debit_network_code_in IN   iby_trxn_core.debit_network_code%TYPE,
+         surcharge_amount_in  IN    iby_trxn_core.surcharge_amount%TYPE,
+         proc_tracenumber_in  IN    iby_trxn_core.proc_tracenumber%TYPE,
+         transaction_id_out  OUT NOCOPY iby_trxn_summaries_all.TransactionID%TYPE,
+         transaction_mid_out OUT NOCOPY iby_trxn_summaries_all.trxnmid%TYPE,
+         org_type_in         IN      iby_trxn_summaries_all.org_type%TYPE,
+         payment_channel_code_in  IN iby_trxn_summaries_all.payment_channel_code%TYPE,
+         factored_flag_in         IN iby_trxn_summaries_all.factored_flag%TYPE,
+         process_profile_code_in     IN iby_trxn_summaries_all.process_profile_code%TYPE,
+	 sub_key_id_in       IN     iby_trxn_summaries_all.sub_key_id%TYPE,
+	 voiceAuthFlag_in    IN     iby_trxn_core.voiceauthflag%TYPE,
+	 reauth_trxnid_in    IN     iby_trxn_summaries_all.TransactionID%TYPE
+)
+  IS
+    PRAGMA AUTONOMOUS_TRANSACTION;
+    l_num_trxns      NUMBER	     := 0;
+    l_trxn_mid	     NUMBER;
+    l_transaction_id NUMBER;
+    l_tmid iby_trxn_summaries_all.mtangibleid%type;
+    l_mpayeeid iby_payee.mpayeeid%type;
+
+    l_return_status    VARCHAR2(1);
+    l_msg_count        NUMBER;
+    l_msg_data         VARCHAR2(200);
+    l_checksum_valid   BOOLEAN := FALSE;  -- whether the card number is valid.
+
+    l_cc_type          VARCHAR2(80);
+    lx_cc_hash         iby_trxn_summaries_all.instrnum_hash%TYPE;
+    lx_range_id        iby_cc_issuer_ranges.cc_issuer_range_id%TYPE;
+    lx_instr_len       iby_trxn_summaries_all.instrnum_length%TYPE;
+    lx_segment_id      iby_trxn_summaries_all.instrnum_sec_segment_id%TYPE;
+    l_old_segment_id   iby_trxn_summaries_all.instrnum_sec_segment_id%TYPE;
+
+    l_instrnum         iby_trxn_summaries_all.instrnumber%type;
+    l_expirydate       iby_trxn_core.instr_expirydate%type;
+
+    l_pos_txn          iby_trxn_core.pos_trxn_flag%TYPE;
+    l_payer_party_id   iby_trxn_summaries_all.payer_party_id%type;
+
+    l_voiceauth_flag   iby_trxn_core.voiceauthflag%type;
+    l_sub_key_id       iby_trxn_summaries_all.sub_key_id%TYPE;
+
+    -- variables for CHNAME and EXPDATE encryption
+    l_chname_sec_segment_id iby_security_segments.sec_segment_id%TYPE;
+    l_expdate_sec_segment_id iby_security_segments.sec_segment_id%TYPE;
+    l_masked_chname     VARCHAR2(100) := NULL;
+  --  l_encrypted_date_format VARCHAR2(20);
+    l_encrypted         VARCHAR2(1) := 'N';
+
+ BEGIN
+
+     l_num_trxns := getNumPendingTrxns(merchant_id_in,order_id_in,req_type_in);
+
+     iby_transactioncc_pkg.prepare_instr_data
+     (FND_API.G_FALSE,master_key_in,instrnum_in,instrType_in,l_instrnum,
+      l_cc_type,lx_cc_hash,lx_range_id,lx_instr_len,lx_segment_id);
+
+
+     --
+     -- NOTE: for all subsequent data encryptions, make sure that the
+     --       parameter to increment the subkey is set to 'N' so that
+     --       all encrypted data for the trxn uses the same key!!
+     --       else data will NOT DECRYPT CORRECTLY!!
+     --
+     l_expirydate := instr_expirydate_in;
+
+
+
+     -- PABP Fixes
+     -- card holder name and instrument expiry are also considered to be
+     -- sensitive. We need to encrypt those before inserting/updating the
+     -- record in IBY_TRXN_CORE
+
+     IF ((IBY_CREDITCARD_PKG.Get_CC_Encrypt_Mode() <>
+          IBY_SECURITY_PKG.G_ENCRYPT_MODE_NONE)
+	--  AND ( IBY_CREDITCARD_PKG.Other_CC_Attribs_Encrypted = 'Y')
+	)
+     THEN
+      l_chname_sec_segment_id :=
+                 IBY_SECURITY_PKG.encrypt_field_vals(instr_owner_name_in,
+		                                     master_key_in,
+						     null,
+						     'N'
+						     );
+      l_expdate_sec_segment_id :=
+                 IBY_SECURITY_PKG.encrypt_date_field(l_expirydate,
+		                                     master_key_in,
+						     null,
+						     'N'
+						     );
+
+      l_masked_chname :=
+                IBY_SECURITY_PKG.Mask_Data(instr_owner_name_in,
+		                           IBY_SECURITY_PKG.G_MASK_ALL,
+				           0,
+					   'X'
+					   );
+      l_encrypted := 'Y';
+      l_expirydate := NULL;
+     ELSE
+      l_masked_chname := instr_owner_name_in;
+      l_encrypted := 'N';
+
+     END IF;
+
+     IF ((pos_reader_cap_in IS NULL)
+         AND (pos_entry_method_in IS NULL)
+         AND (pos_card_id_method_in IS NULL)
+         AND (pos_auth_source_in IS NULL)
+         AND (reader_data_in IS NULL)
+        )
+     THEN
+       l_pos_txn := 'N';
+     ELSE
+       l_pos_txn := 'Y';
+     END IF;
+
+     IF (l_num_trxns = 0)    THEN
+     	 -- new auth request, insert into table
+      	SELECT iby_trxnsumm_mid_s.NEXTVAL
+	INTO l_trxn_mid
+	FROM dual;
+
+  -- get the payer_party_id if exists
+ begin
+   if(payerid_in is not NULL) then
+       l_payer_party_id :=to_number(payerid_in);
+       end if;
+  exception
+    when others then
+   select card_owner_id
+   into l_payer_party_id
+   from iby_creditcard
+   where instrid=payerinstrid_in;
+  end;
+
+	IF(reauth_trxnid_in > 0)THEN
+	  l_transaction_id := reauth_trxnid_in;
+	ELSE
+	  l_transaction_id := getTID(merchant_id_in, order_id_in);
+	END IF;
+
+	transaction_id_out := l_transaction_id;
+        transaction_mid_out := l_trxn_mid;
+
+	iby_accppmtmthd_pkg.getMPayeeId(merchant_id_in, l_mpayeeid);
+
+       --Create an entry in iby_tangible table
+       iby_bill_pkg.createBill(order_id_in,amount_in,currency_in,
+		   billeracct_in,refinfo_in, memo_in,
+                   order_medium_in, eft_auth_method_in, l_tmid);
+--test_debug('subkeyid passed as: '|| sub_key_id_in);
+       INSERT INTO iby_trxn_summaries_all
+	(TrxnMID, TransactionID,TrxntypeID, ReqType, ReqDate,
+	 Amount,CurrencyNameCode, UpdateDate,Status, PaymentMethodName,
+	 TangibleID,MPayeeID, PayeeID,BEPID,bepKey,mtangibleid,
+	 BEPCode,BEPMessage,Errorlocation,ecappid,org_id,
+	 payerinstrid, instrnumber, payerid, instrType,
+
+	 last_update_date,last_updated_by,creation_date, created_by,
+         last_update_login,object_version_number,instrsubtype,trxnref,
+         org_type, payment_channel_code, factored_flag,
+         cc_issuer_range_id, instrnum_hash, instrnum_length,
+         instrnum_sec_segment_id, payer_party_id, process_profile_code,
+         salt_version,needsupdt,sub_key_id)
+       VALUES (l_trxn_mid, l_transaction_id, trxn_type_in, req_type_in,
+               sysdate,
+	       amount_in, currency_in, time_in, status_in, payment_type_in,
+	       order_id_in, l_mpayeeid, merchant_id_in, vendor_id_in,
+	       vendor_key_in, l_tmid, vendor_code_in, vendor_message_in,
+	       error_location_in, ecapp_id_in, org_id_in,
+               payerinstrid_in, l_instrnum, payerid_in, instrType_in,
+	       sysdate, fnd_global.user_id, sysdate, fnd_global.user_id,
+               fnd_global.login_id, 1, l_cc_type, trxnref_in,
+               org_type_in, payment_channel_code_in, factored_flag_in,
+               lx_range_id, lx_cc_hash, lx_instr_len, lx_segment_id,
+               l_payer_party_id, process_profile_code_in,
+               iby_security_pkg.get_salt_version,'Y',sub_key_id_in);
+
+
+      /*
+       * Fix for bug 5190504:
+       *
+       * Set the voice auth flag in iby_trxn_core to 'Y'
+       * in case, the voice auth date is not null.
+       */
+   --   IF (dateofvoiceauth_in IS NOT NULL) THEN
+   --       l_voiceauth_flag := 'Y';
+   --   ELSE
+   --       l_voiceauth_flag := 'N';
+   --   END IF;
+
+       /*
+        * The above logic will not set the voiceAuthFlag if the
+	* voice auth date is NULL.
+	* The voiceAuthFlag is now received by this API as an
+	* input parameter.
+	*/
+	l_voiceauth_flag := voiceAuthFlag_in;
+
+      INSERT INTO iby_trxn_core (
+        TrxnMID, AuthCode, date_of_voice_authorization, voiceauthflag,
+        ReferenceCode, TraceNumber,AVSCode, CVV2Result, Acquirer,
+	Auxmsg, InstrName,
+        Instr_Expirydate, expiry_sec_segment_id,
+	Card_Subtype_Code, Card_Data_Level,
+        Instr_Owner_Name, chname_sec_segment_id, encrypted,
+	Instr_Owner_Address_Line1, Instr_Owner_Address_Line2,
+        Instr_Owner_Address_Line3, Instr_Owner_City, Instr_Owner_State_Province,
+        Instr_Owner_Country, Instr_Owner_PostalCode, Instr_Owner_Phone,
+        Instr_Owner_Email,
+        POS_Reader_Capability_Code, POS_Entry_Method_Code,
+        POS_Id_Method_Code, POS_Auth_Source_Code, Reader_Data, POS_Trxn_Flag,
+debit_network_code, surcharge_amount, proc_tracenumber,
+        last_update_date, last_updated_by,
+        creation_date, created_by, last_update_login, object_version_number
+        ) VALUES (
+        l_trxn_mid, authcode_in, dateofvoiceauth_in, l_voiceauth_flag,
+        referencecode_in, trace_number_in, AVScode_in, cvv2result_in,
+        acquirer_in, Auxmsg_in, payment_name_in,
+        l_expirydate, l_expdate_sec_segment_id,
+	card_subtype_in, card_data_level_in,
+        l_masked_chname, l_chname_sec_segment_id, l_encrypted,
+        instr_address_line1_in, instr_address_line2_in, instr_address_line3_in,
+        instr_city_in, instr_state_in, instr_country_in, instr_postalcode_in,
+        instr_phonenumber_in, instr_email_in,
+        pos_reader_cap_in, pos_entry_method_in, pos_card_id_method_in,
+        pos_auth_source_in, reader_data_in, l_pos_txn,debit_network_code_in, surcharge_amount_in, proc_tracenumber_in,
+        sysdate,fnd_global.user_id,
+        sysdate,fnd_global.user_id,fnd_global.login_id,1
+        );
+
+        -- probably a superflous call since the first insert is
+        -- to log the transaction before it is sent to the payment system
+        insert_extensibility(l_trxn_mid,'N',extend_names_in,extend_vals_in);
+
+	--test_debug('insertion complete..');
+
+    ELSE
+	--(l_num_trxns = 1)
+      -- One previous PENDING transaction, so update previous row
+       SELECT TrxnMID, TransactionID, Mtangibleid, instrnum_sec_segment_id, sub_key_id
+       INTO l_trxn_mid, transaction_id_out, l_tmid, l_old_segment_id, l_sub_key_id
+       FROM iby_trxn_summaries_all
+       WHERE (TangibleID = order_id_in)
+       AND (UPPER(ReqType) = UPPER(req_type_in))
+       AND (PayeeID = merchant_id_in)
+       AND (status IN (11,9));
+
+       transaction_mid_out := l_trxn_mid;
+
+       --Re-use the previous subkey for a retry case
+ --      sub_key_id_in := l_sub_key_id;
+
+    -- Update iby_tangible table
+      iby_bill_pkg.modBill(l_tmid,order_id_in,amount_in,currency_in,
+			   billeracct_in,refinfo_in,memo_in,
+                           order_medium_in, eft_auth_method_in);
+
+
+      UPDATE iby_trxn_summaries_all
+	 SET BEPID = vendor_id_in,
+	     bepKey = vendor_key_in,
+	     Amount = amount_in,
+		-- amount, bepid is updated as the request can come in
+		-- from another online
+	     TrxntypeID = trxn_type_in,
+	     CurrencyNameCode = currency_in,
+	     UpdateDate = time_in,
+	     Status = status_in,
+	     ErrorLocation = error_location_in,
+	     BEPCode = vendor_code_in,
+	     BEPMessage = vendor_message_in,
+             instrType = instrType,
+
+		-- we don't update payerinstrid and org_id here
+		-- as it may overwrite previous payerinstrid, org_id
+		-- (from offline scheduling)
+		-- in case this request comes in from scheduler
+
+		-- could be a problem if this request comes in from
+		-- another online, w/ a different payment instrment
+		-- for a previous failed trxn, regardless, the
+		--'instrnumber' will always be correct
+
+		--org_id = org_id_in,
+ 		--payerinstrid = payerinstrid_in,
+                -- same for org_type
+
+             PaymentMethodName = NVL(payment_type_in,PaymentMethodName),
+	     instrnumber = l_instrnum,
+             instrnum_hash = lx_cc_hash,
+             instrnum_length = lx_instr_len,
+             cc_issuer_range_id = lx_range_id,
+             instrnum_sec_segment_id = lx_segment_id,
+             trxnref = trxnref_in,
+	     last_update_date = sysdate,
+	     last_updated_by = fnd_global.user_id,
+	     creation_date = sysdate,
+	     created_by = fnd_global.user_id,
+	     object_version_number = object_version_number + 1,
+             payment_channel_code = payment_channel_code_in,
+             factored_flag = factored_flag_in
+       WHERE TrxnMID = l_trxn_mid;
+
+      DELETE iby_security_segments WHERE sec_segment_id = l_old_segment_id;
+
+      UPDATE iby_trxn_core
+	 SET AuthCode = authcode_in,
+             date_of_voice_authorization = dateofvoiceauth_in,
+           --voiceauthflag = DECODE(dateofvoiceauth_in, NULL, 'N', 'Y'),
+	     voiceauthflag = voiceAuthFlag_in,
+	     AvsCode = AVScode_in,
+             CVV2Result = cvv2result_in,
+	     ReferenceCode = referencecode_in,
+	     Acquirer = acquirer_in,
+	     Auxmsg = Auxmsg_in,
+	     TraceNumber = trace_number_in,
+             InstrName = NVL(payment_name_in,InstrName),
+	     encrypted = l_encrypted,
+             Instr_Expirydate = l_expirydate,
+	     expiry_sec_segment_id = l_expdate_sec_segment_id,
+	     Card_Subtype_Code = card_subtype_in,
+             Card_Data_Level = card_data_level_in,
+             Instr_Owner_Name = l_masked_chname,
+	     chname_sec_segment_id = l_chname_sec_segment_id,
+             Instr_Owner_Address_Line1 = instr_address_line1_in,
+             Instr_Owner_Address_Line2 = instr_address_line2_in,
+             Instr_Owner_Address_Line3 = instr_address_line3_in,
+             Instr_Owner_City = instr_city_in,
+             Instr_Owner_State_Province = instr_state_in,
+             Instr_Owner_Country = instr_country_in,
+             Instr_Owner_PostalCode = instr_postalcode_in,
+             Instr_Owner_Phone = instr_phonenumber_in,
+             Instr_Owner_Email = instr_email_in,
+             POS_Reader_Capability_Code = pos_reader_cap_in,
+             POS_Entry_Method_Code = pos_entry_method_in,
+             POS_Id_Method_Code = pos_card_id_method_in,
+             POS_Auth_Source_Code = pos_auth_source_in,
+             Reader_Data = reader_data_in,
+             POS_Trxn_Flag = l_pos_txn,
+             debit_network_code = debit_network_code_in,
+             surcharge_amount  = surcharge_amount_in,
+             proc_tracenumber = proc_tracenumber_in,
+	     last_update_date = sysdate,
+	     last_updated_by = fnd_global.user_id,
+	     creation_date = sysdate,
+	     created_by = fnd_global.user_id,
+	     object_version_number = object_version_number + 1
+       WHERE TrxnMID = l_trxn_mid;
+
+       insert_extensibility(l_trxn_mid,'N',extend_names_in,extend_vals_in);
+    END IF;
+
+    COMMIT;
+  END insert_auth_txn;
+
+
 -- +===================================================================================+
 -- |                  Office Depot - Project Simplify                                  |
 -- +===================================================================================+
@@ -1132,7 +1659,7 @@ BEGIN
       -- Calling iby_transactioncc_pkg insert_auth_txn
       --
     iby_debug_pub.add('Calling insert_auth_txn',1,G_DEBUG_MODULE || l_module_name);
-    iby_transactioncc_pkg.insert_auth_txn (
+    insert_auth_txn (
                             ecapp_id_in                                  => 222,-- IN     iby_trxn_summaries_all.ecappid%TYPE,
                             req_type_in                                  => 'ORAPMTREQ',                                -- IN     iby_trxn_summaries_all.ReqType%TYPE,
                             order_id_in                                  => lv_order_id,                                -- IN     iby_transactions_v.order_id%TYPE,
@@ -1208,7 +1735,6 @@ BEGIN
     iby_debug_pub.add('transaction_id_out '||x_transaction_id_out,1,G_DEBUG_MODULE || l_module_name);
     iby_debug_pub.add('x_transaction_mid_out '||x_transaction_mid_out,1,G_DEBUG_MODULE || l_module_name);
     x_reqresp.Trxn_ID := x_transaction_id_out;
-
 EXCEPTION
 WHEN OTHERS THEN
   iby_debug_pub.add('Error in xx_create_iby_summary '|| SQLERRM,1,G_DEBUG_MODULE || l_module_name);
@@ -1860,10 +2386,6 @@ BEGIN
           x_auth_result.Instr_SecCode_Check := l_reqresp.CVV2Result;
           x_auth_result.PaymentSys_Code     := l_reqresp.BEPErrCode;
           x_auth_result.PaymentSys_Msg      := l_reqresp.BEPErrMessage;
-          iby_debug_pub.add('Custom log Divy BEPErrCode '||l_reqresp.BEPErrCode,1,'Custom message');
-          iby_debug_pub.add('Custom log Divy BEPErrMessage '||l_reqresp.BEPErrMessage,1,'Custom message');
-          iby_debug_pub.add('Custom log Divy PaymentSys_Code '||x_auth_result.PaymentSys_Code,1,'Custom message');
-          iby_debug_pub.add('Custom log Divy PaymentSys_Msg '||x_auth_result.PaymentSys_Msg,1,'Custom message');
           --x_auth_result.Risk_Result;
         END IF;
         --COMMIT;
