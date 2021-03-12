@@ -25,6 +25,22 @@
          FROM   DUAL
       ]]>
     </sqlStatement>
+    <sqlStatement name="Q_STATS">
+    <![CDATA[
+       SELECT DECODE (DIRECT_BILL_FLAG,'Y',DECODE(status,'S','Direct Success','Direct Errors')
+                                      ,'N','Indirect'
+                                      ,'Errored') Type
+                                      ,DECODE (DIRECT_BILL_FLAG,'Y',DECODE(status,'S',1,2),'N',3,4)
+              ,count(0) cnt
+         FROM xx_ar_self_serv_bad_addr
+        WHERE TRUNC(CREATION_DATE)     >= TRUNC(NVL(fnd_conc_date.string_to_date(:P_AS_OF_DATE),CREATION_DATE))
+          AND :P_TYPE           = 'ADDRESS'
+       GROUP BY DECODE (DIRECT_BILL_FLAG,'Y',DECODE(status,'S','Direct Success','Direct Errors')
+                                      ,'N','Indirect'
+                                      ,'Errored'),DECODE (DIRECT_BILL_FLAG,'Y',DECODE(status,'S',1,2),'N',3,4)
+       order by DECODE (DIRECT_BILL_FLAG,'Y',DECODE(status,'S',1,2),'N',3,4)
+    ]]>
+    </sqlStatement>
     <sqlStatement name="Q_BAD_ADDRESS">
       <![CDATA[
          SELECT  CUSTOMER_NAME, 
@@ -39,12 +55,14 @@
                  DIRECT_BILL_FLAG,
                  COUNTRY, 
                  ACCOUNT_NUMBER,
-                 INVOICE_DATE
+                 INVOICE_DATE,
+                 DECODE(DIRECT_BILL_FLAG,'Y','Direct','N','Indirect','Errored') REC_TYPE,
+                 DECODE(DIRECT_BILL_FLAG,'Y',DECODE(Status,'S','Sent','Send Error'),'N','NA','Error') SentToPG
            FROM  xx_ar_self_serv_bad_addr
-          WHERE  DIRECT_BILL_FLAG  = 'N'
+          WHERE  1=1 --NVL(DIRECT_BILL_FLAG,'N')  = 'N'
             AND  TRUNC(CREATION_DATE)     >= TRUNC(NVL(fnd_conc_date.string_to_date(:P_AS_OF_DATE),CREATION_DATE))
             AND  :P_TYPE           = 'ADDRESS'
-            ORDER BY Creation_date desc,AOPS_ACCOUNT
+            ORDER BY DECODE(DIRECT_BILL_FLAG,'Y',1,'N',2,3),8 desc,2
          ]]>
     </sqlStatement>
     <sqlStatement name="Q_BAD_EMAIL">
@@ -73,6 +91,10 @@
       <element name="SUBJECT"              value = "SUBJECT"/>
       <element name="FILENAME"             value = "FILENAME"/>
       <element name="MSGBODY"              value = "MSGBODY"/>
+      <group name="G_STATS" source="Q_STATS">
+        <element name = "Type"    value = "Type" />
+        <element name = "Count"     value = "cnt" />
+      </group>
       <group name="Q_BAD_ADDRESS" source="Q_BAD_ADDRESS">
         <element name = "CUSTOMER_NAME"    value = "CUSTOMER_NAME" />
         <element name = "AOPS_ACCOUNT"     value = "AOPS_ACCOUNT" />
@@ -85,6 +107,8 @@
         <element name = "INVOICE_DATE"     value = "INVOICE_DATE" />
         <element name = "ACCOUNT_NUMBER"   value = "ACCOUNT_NUMBER" />
         <element name = "CREATION_DATE"    value = "CREATION_DATE" />
+        <element name = "REC_TYPE"         value = "REC_TYPE" />
+        <element name = "SENTTOPG"         value = "SentToPG" />
       </group>
       <group name="P_BAD_EMAIL" source="Q_BAD_EMAIL">
         <element name = "AOPS_ACCOUNT"    value = "AOPS_ACCOUNT" />

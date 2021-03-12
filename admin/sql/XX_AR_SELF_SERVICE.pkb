@@ -329,7 +329,7 @@ BEGIN
     SELECT account_number
       INTO lv_account_number
       FROM hz_cust_accounts hca
-     WHERE SUBSTR(hca.orig_system_reference,1,8) = p_AOPS_account_number;
+     WHERE SUBSTR(orig_system_reference,1,INSTR(orig_system_reference,'-')-1) = p_AOPS_account_number;
    return lv_account_number;
 EXCEPTION
     WHEN NO_DATA_FOUND THEN
@@ -347,9 +347,18 @@ FUNCTION get_converted_text(p_value IN VARCHAR2)
   RETURN VARCHAR2 IS
   lv_value VARCHAR2(2000);
 BEGIN
+   /*Replace carriage return line break*/
    SELECT TRIM(REPLACE(REPLACE(REPLACE(p_value,CHR(10)),CHR(13)),CHR(9)))
      INTO lv_value
      FROM DUAL;
+   /*Fix for ampersand*/
+   SELECT REPLACE(lv_value,'&','''||''&''||''')
+     INTO lv_value
+     FROM DUAl;
+   /*Fix for colon*/
+   SELECT REPLACE(lv_value,'''','''''')
+     INTO lv_value
+     FROM DUAl;
    RETURN lv_value;
 EXCEPTION
   WHEN OTHERS THEN
@@ -439,7 +448,7 @@ lt_tab_type tab_type:=tab_type();
        SELECT hca.cust_account_id,xx.column2
          FROM hz_cust_accounts hca,
               xx_ar_ss_cmn_tbl xx
-        WHERE SUBSTR(hca.orig_system_reference,1,8) = xx.column2
+        WHERE SUBSTR(orig_system_reference,1,INSTR(orig_system_reference,'-')-1) = lpad(xx.column2,8,'0')
           AND hca.status = 'A'
           AND xx.process_id = p_process_id;
 
@@ -709,7 +718,7 @@ BEGIN
     logs('  Start Process_data (+)');
     IF p_type = 'ADDRESS' THEN
         logs('  Address Start');
-        FOR rec_address IN (select * from xx_ar_self_serv_bad_addr where NVL(status,'E') = 'E' AND Direct_bill_flag = 'Y' AND process_id = p_process_id)
+        FOR rec_address IN (select * from xx_ar_self_serv_bad_addr where (Direct_bill_flag = 'Y' AND process_id = p_process_id)  OR (NVL(status,'E') = 'E' AND Direct_bill_flag = 'Y' ))
         LOOP
           lv_payload := '{
                           "customerInfoRequest": {
@@ -824,8 +833,8 @@ BEGIN
                         process_id
                         )
                       (SELECT column1,
-                              column2,
-                              get_account_number(column2),
+                              lpad(column2,8,'0'),
+                              get_account_number(lpad(column2,8,'0')),
                               column3,
                               column4,
                               column5,
@@ -862,8 +871,8 @@ BEGIN
                         process_id
                         )
                       (SELECT column1,
-                              column2,
-                              get_account_number(column2),
+                              lpad(column2,8,'0'),
+                              get_account_number(lpad(column2,8,'0')),
                               --column3,
                               --column4,
 
@@ -1404,7 +1413,7 @@ BEGIN
         SELECT cust_account_id
           INTO ln_account_id
           FROM hz_cust_accounts hca
-         WHERE SUBSTR(hca.orig_system_reference,1,8) = p_aops_number;
+         WHERE SUBSTR(orig_system_reference,1,INSTR(orig_system_reference,'-')-1) = p_aops_number;
 
         SELECT hp.party_id,contact_point_id,hcp.object_version_number
           INTO ln_party_id,ln_contact_point_id,ln_object_version
