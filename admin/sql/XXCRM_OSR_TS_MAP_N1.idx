@@ -1,0 +1,25 @@
+-- +==========================================================================+
+-- |                  Office Depot - Project Optimize                         |
+-- +==========================================================================+
+-- | SQL Script to create                                                     |
+-- |                                                                          |
+-- |INDEXES: XXCRM_OSR_TS_MAP_N1		                                      |
+-- |                                                                          |
+-- |                                                                          |
+-- |Change Record:                                                            |
+-- |===============                                                           |
+-- |Version   Date          Author               Remarks                      |
+-- |=======   ==========    ================     =============================|
+-- | V1.0     15-MAR-2021   Amit Kumar           Initial version--NAIT-174584 |
+-- |                                                                          |
+-- +==========================================================================+
+
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     ON
+
+
+CREATE INDEX XXCRM.XXCRM_OSR_TS_MAP_N1 ON XXCRM.XXCRM_OSR_TS_MAP ( ORIG_SYSTEM_REF_ID );    
+SHOW ERROR

@@ -15,6 +15,8 @@ PACKAGE xx_validate_crm_osr AS
 -- |Version   Date        Author             Remarks                                                    |
 -- |========  =========== ================== ===========================================================|
 -- |1.0       03-18-2008  Yusuf Ali          Initial Draft                                              |
+-- |2.0		  03-15-2021  Amit Kumar		 NAIT-174584 - Added 2 new procedures : 					|
+-- |											save_entity_timestamp, get_entity_timestamp				|
 -- |                                                                                                    |
 -- +====================================================================================================+
 */
@@ -37,6 +39,18 @@ PACKAGE xx_validate_crm_osr AS
   ,   x_msg_count OUT NUMBER
   ,   x_msg_data OUT VARCHAR2
   );
-
+  
+  PROCEDURE save_entity_timestamp (	p_osr IN VARCHAR2, 
+									p_table_name IN varchar2, 
+									p_timestamp IN timestamp, 
+									x_return_status  OUT  VARCHAR2,
+									x_msg_data OUT  VARCHAR2);
+	
+  PROCEDURE get_entity_timestamp  (	p_osr IN VARCHAR2, 
+									p_table_name IN varchar2, 
+									x_timestamp OUT timestamp , 
+									x_return_status  OUT  VARCHAR2,
+									x_msg_data OUT  VARCHAR2);
 END xx_validate_crm_osr;
 /
+show error;

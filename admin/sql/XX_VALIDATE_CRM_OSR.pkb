@@ -21,6 +21,7 @@ create or replace PACKAGE body XX_VALIDATE_CRM_OSR AS
    -- 1.2    Kishore.V   Modified code to allow updates to SPC Information
    --                    on Inactive account
    -- 1.3    Sreedhar.M  Change in table name hz_orig_sys_references
+   -- 2.0	 Amit Kumar	 NAIT-174584 - Added 2 new procedures save_entity_timestamp, get_entity_timestamp
    -- ===========================================================================
   PROCEDURE get_entity_id(
       p_orig_system         IN hz_orig_sys_references.orig_system%TYPE
@@ -71,14 +72,15 @@ create or replace PACKAGE body XX_VALIDATE_CRM_OSR AS
                     /* Start Added by Sreedhar for SOA 12c Upgrade 02/01/2018*/
                     select owner_table_id
                     into ln_owner_table_id
-                    from   hz_orig_sys_references
+                    from   hz_orig_sys_references           ---replicate the same for all below tables.
                     where  orig_system='A0'
                     and    ORIG_SYSTEM_REFERENCE=p_osr_record(i).OSR
                     and    owner_table_name='HZ_CUST_ACCOUNTS'
                     and    status='A'; 
                     /* End Added by Sreedhar during SOA 12c Upgrade 02/01/2018*/
                END IF;
-               
+                
+				
                
 
                --The following is needed to support the SFA flow in the
@@ -148,6 +150,139 @@ create or replace PACKAGE body XX_VALIDATE_CRM_OSR AS
                         x_rec_count || ', loop count is ' || x_loop_count ||
                         '.  Other possible issues: ' || SQLERRM;
    END get_entity_id;
+   
+   /*NAIT-174584 Start*/
+   /*save_entity_timestamp does Insert or update timestamp from KAFKA for the OSR*/
+   
+   PROCEDURE save_entity_timestamp (p_osr 			IN VARCHAR2, 
+									p_table_name 	IN VARCHAR2, 
+									p_timestamp 	IN TIMESTAMP, 
+									x_return_status OUT  VARCHAR2,
+									x_msg_data 		OUT  VARCHAR2)
+   IS
+    ln_owner_table_id  	hz_orig_sys_references.owner_table_id%TYPE;
+	ln_osr_cnt			NUMBER;   
+   BEGIN
+   /*Get Owner Table ID (ln_owner_table_id) by calling get_entity_id*/
+   x_return_status     := FND_API.G_RET_STS_SUCCESS;
+   
+		BEGIN 
+			SELECT OWNER_TABLE_ID
+			INTO ln_owner_table_id
+			FROM   HZ_ORIG_SYS_REFERENCES          
+			WHERE  ORIG_SYSTEM='A0'
+			AND    ORIG_SYSTEM_REFERENCE=p_osr
+			AND    OWNER_TABLE_NAME=p_table_name
+			AND    STATUS='A'; 
+		EXCEPTION
+		WHEN NO_DATA_FOUND 
+		THEN
+			x_return_status := FND_API.G_RET_STS_ERROR;
+			x_msg_data := 'No record exist for Orig Sys Reference '||p_osr || ' in owner table '||p_table_name;
+		WHEN TOO_MANY_ROWS
+		THEN 
+			x_return_status := FND_API.G_RET_STS_ERROR;
+			x_msg_data := 'Multiple record exist for Orig Sys Reference '||p_osr || ' in owner table '||p_table_name;
+		WHEN OTHERS
+		THEN 
+			x_return_status := FND_API.G_RET_STS_ERROR;
+			x_msg_data := 'SQL OTHER ERROR for Orig Sys Reference '||p_osr || ' in owner table '||p_table_name ||' SQLERR :'||SQLERRM;
+		END;		
+		
+		IF ln_owner_table_id IS NOT NULL THEN
+			
+			BEGIN
+				SELECT count(*) 
+				INTO ln_osr_cnt
+				FROM XXCRM.XXCRM_OSR_TS_MAP
+				WHERE ORIG_SYSTEM_REFERENCE=p_osr
+				AND ENTITY_NAME=p_table_name;	
+				
+				IF ln_osr_cnt > 0 
+				THEN 
+				/*Update the latest timestamp if record exists for the entity*/
+					UPDATE XXCRM.XXCRM_OSR_TS_MAP
+					SET SOURCE_TIMESTAMP=p_timestamp
+					WHERE ORIG_SYSTEM_REFERENCE=p_osr
+					AND ENTITY_NAME=p_table_name;
+				ELSE
+				/*Insert the timestamp if no record exists for the entity, if exists then just update the timestamp */
+					INSERT INTO XXCRM.XXCRM_OSR_TS_MAP
+						(ORIG_SYSTEM_REF_ID, ORIG_SYSTEM_REFERENCE, ENTITY_NAME,SOURCE_TIMESTAMP)
+					VALUES (ln_owner_table_id,p_osr,p_table_name,p_timestamp);
+				END IF;
+			EXCEPTION
+			WHEN OTHERS
+			THEN 
+			x_return_status := FND_API.G_RET_STS_ERROR;
+			x_msg_data := 'SQL OTHER ERROR while inserting/updating timestamp into XXCRM_OSR_TS_MAP for'||p_osr || ' SQLERR :'||SQLERRM;
+			END;
+									
+		END IF; 
+		
+   END save_entity_timestamp;
+   
+   /*get_entity_timestamp procedure returns timestamp data for the osr passed.*/
+   
+   PROCEDURE get_entity_timestamp (	p_osr 			IN 	VARCHAR2, 
+									p_table_name 	IN 	VARCHAR2, 
+									x_timestamp 	OUT TIMESTAMP, 
+									x_return_status OUT VARCHAR2,
+									x_msg_data 		OUT VARCHAR2)
+   IS
+   ln_owner_table_id  hz_orig_sys_references.owner_table_id%TYPE;
+   -- lv_timestamp		  TIMESTAMP;   
+   BEGIN
+   x_return_status     := FND_API.G_RET_STS_SUCCESS;
+      /*Get Owner Table ID by calling get_entity_id*/
+		BEGIN 
+			SELECT OWNER_TABLE_ID
+			INTO ln_owner_table_id
+			FROM   HZ_ORIG_SYS_REFERENCES          
+			WHERE  ORIG_SYSTEM='A0'
+			AND    ORIG_SYSTEM_REFERENCE=p_osr
+			AND    OWNER_TABLE_NAME=p_table_name
+			AND    STATUS='A'; 
+		EXCEPTION
+		WHEN NO_DATA_FOUND 
+		THEN
+			x_return_status := FND_API.G_RET_STS_ERROR;
+			x_msg_data := 'No record exist for Orig Sys Reference '||p_osr || ' in owner table '||p_table_name;
+		WHEN TOO_MANY_ROWS
+		THEN 
+			x_return_status := FND_API.G_RET_STS_ERROR;
+			x_msg_data := 'Multiple record exist for Orig Sys Reference '||p_osr || ' in owner table '||p_table_name;
+		WHEN OTHERS
+		THEN 
+			x_return_status := FND_API.G_RET_STS_ERROR;
+			x_msg_data := 'SQL OTHER ERROR for Orig Sys Reference '||p_osr || ' in owner table '||p_table_name ||' SQLERR :'||SQLERRM;
+		END;		
+		   
+   /*Get the latest timestamp for the entity */   
+   IF ln_owner_table_id IS NOT NULL 
+   THEN
+    BEGIN
+		SELECT SOURCE_TIMESTAMP
+		INTO x_timestamp
+		FROM XXCRM.XXCRM_OSR_TS_MAP
+		WHERE ORIG_SYSTEM_REF_ID=ln_owner_table_id
+		AND ORIG_SYSTEM_REFERENCE=p_osr
+		AND ENTITY_NAME=p_table_name; 		
+	EXCEPTION
+		WHEN NO_DATA_FOUND THEN
+			x_return_status := FND_API.G_RET_STS_ERROR;
+			x_msg_data := 'No TIMESTAMP record exist for Orig Sys Reference ';
+		WHEN TOO_MANY_ROWS THEN 
+			x_return_status := FND_API.G_RET_STS_ERROR;
+			x_msg_data := 'Multiple TIMESTAMP record exist for Orig Sys Reference '||p_osr ;
+		WHEN OTHERS	THEN 
+			x_return_status := FND_API.G_RET_STS_ERROR;
+			x_msg_data := 'SQL OTHER ERROR while deriving SOURCE_TIMESTAMP for Orig Sys Reference '||p_osr || ' SQLERR :'||SQLERRM;
+	END;	
+   END IF;	   
+   END get_entity_timestamp;
+   /*NAIT-174584 End*/
 
 END XX_VALIDATE_CRM_OSR;
 /
+show error;

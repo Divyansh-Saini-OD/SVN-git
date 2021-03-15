@@ -1,0 +1,18 @@
+-- +==========================================================================+
+-- |                  Office Depot - Project Optimize                         |
+-- +==========================================================================+
+-- |SQL Script to create                                                      |
+-- |                                                                          |
+-- |SEQUENCE: XXCRM_OSR_TS_MAP_S                                              |
+-- |                                                                          |
+-- |                                                                          |
+-- |Change Record:                                                            |
+-- |===============                                                           |
+-- |Version   Date          Author               Remarks                      |
+-- |=======   ==========    ================     =============================|
+-- | V1.0     15-Mar-2021   Amit Kumar           Initial version-NAIT-174584  |
+-- |                                                                          |
+-- +==========================================================================+
+
+CREATE SEQUENCE  XXCRM.XXCRM_OSR_TS_MAP_S  MINVALUE 1 MAXVALUE 9999999999999999999999999999 INCREMENT BY 1 START WITH 1 CACHE 20 NOORDER  NOCYCLE  NOPARTITION;
+   
