@@ -194,20 +194,20 @@ create or replace PACKAGE body XX_VALIDATE_CRM_OSR AS
 			BEGIN
 				SELECT count(*) 
 				INTO ln_osr_cnt
-				FROM XXCRM_OSR_TS_MAP
+				FROM apps.XXCRM_OSR_TS_MAP
 				WHERE ORIG_SYSTEM_REFERENCE=p_osr
 				AND ENTITY_NAME=p_table_name;	
 				
 				IF ln_osr_cnt > 0 
 				THEN 
 				/*Update the latest timestamp if record exists for the entity*/
-					UPDATE XXCRM_OSR_TS_MAP
+					UPDATE apps.XXCRM_OSR_TS_MAP
 					SET SOURCE_TIMESTAMP=p_timestamp
 					WHERE ORIG_SYSTEM_REFERENCE=p_osr
 					AND ENTITY_NAME=p_table_name;
 				ELSE
 				/*Insert the timestamp if no record exists for the entity, if exists then just update the timestamp */
-					INSERT INTO XXCRM_OSR_TS_MAP
+					INSERT INTO apps.XXCRM_OSR_TS_MAP
 						(ORIG_SYSTEM_REF_ID, ORIG_SYSTEM_REFERENCE, ENTITY_NAME,SOURCE_TIMESTAMP)
 					VALUES (ln_owner_table_id,p_osr,p_table_name,p_timestamp);
 				END IF;
@@ -264,7 +264,7 @@ create or replace PACKAGE body XX_VALIDATE_CRM_OSR AS
     BEGIN
 		SELECT SOURCE_TIMESTAMP
 		INTO x_timestamp
-		FROM XXCRM_OSR_TS_MAP
+		FROM apps.XXCRM_OSR_TS_MAP
 		WHERE ORIG_SYSTEM_REF_ID=ln_owner_table_id
 		AND ORIG_SYSTEM_REFERENCE=p_osr
 		AND ENTITY_NAME=p_table_name; 		
