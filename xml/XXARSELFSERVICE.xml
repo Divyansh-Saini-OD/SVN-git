@@ -38,7 +38,19 @@
        GROUP BY DECODE (DIRECT_BILL_FLAG,'Y',DECODE(status,'S','Direct Success','Direct Errors')
                                       ,'N','Indirect'
                                       ,'Errored'),DECODE (DIRECT_BILL_FLAG,'Y',DECODE(status,'S',1,2),'N',3,4)
-       order by DECODE (DIRECT_BILL_FLAG,'Y',DECODE(status,'S',1,2),'N',3,4)
+	   UNION
+	   SELECT DECODE (DIRECT_BILL_FLAG,'Y',DECODE(status,'S','Direct Success','Direct Errors')
+                                      ,'N','Indirect'
+                                      ,'Errored') Type
+                                      ,DECODE (DIRECT_BILL_FLAG,'Y',DECODE(status,'S',1,2),'N',3,4)
+              ,count(0) cnt
+         FROM xx_ar_self_serv_bad_contact
+        WHERE TRUNC(CREATION_DATE)     >= TRUNC(NVL(fnd_conc_date.string_to_date(:P_AS_OF_DATE),CREATION_DATE))
+          AND :P_TYPE           = 'CONTACT'
+       GROUP BY DECODE (DIRECT_BILL_FLAG,'Y',DECODE(status,'S','Direct Success','Direct Errors')
+                                      ,'N','Indirect'
+                                      ,'Errored'),DECODE (DIRECT_BILL_FLAG,'Y',DECODE(status,'S',1,2),'N',3,4)
+       order by 2
     ]]>
     </sqlStatement>
     <sqlStatement name="Q_BAD_ADDRESS">
@@ -59,7 +71,7 @@
                  DECODE(DIRECT_BILL_FLAG,'Y','Direct','N','Indirect','Errored') REC_TYPE,
                  DECODE(DIRECT_BILL_FLAG,'Y',DECODE(Status,'S','Sent','Send Error'),'N','NA','Error') SentToPG
            FROM  xx_ar_self_serv_bad_addr
-          WHERE  1=1 --NVL(DIRECT_BILL_FLAG,'N')  = 'N'
+          WHERE  1=1 
             AND  TRUNC(CREATION_DATE)     >= TRUNC(NVL(fnd_conc_date.string_to_date(:P_AS_OF_DATE),CREATION_DATE))
             AND  :P_TYPE           = 'ADDRESS'
             ORDER BY DECODE(DIRECT_BILL_FLAG,'Y',1,'N',2,3),8 desc,2
@@ -78,6 +90,28 @@
             AND  TRUNC(CREATION_DATE)     >= TRUNC(NVL(fnd_conc_date.string_to_date(:P_AS_OF_DATE),CREATION_DATE))
             AND  :P_TYPE           = 'EMAIL'
             ORDER BY Creation_date desc,AOPS_ACCOUNT
+         ]]>
+    </sqlStatement>
+    <sqlStatement name="Q_BAD_CONTACT">
+      <![CDATA[
+        SELECT CUSTOMER_NAME, 
+			   AOPS_ACCOUNT, 
+			   LAST_NAME,
+			   FIRST_NAME,
+			   PHONE_NUMBER,
+			   FAX_NUMBER,
+			   EMAIL_ADDRESS,
+			   CREATION_DATE, 
+			   REQUEST_ID, 
+			   DIRECT_BILL_FLAG,
+			   ACCOUNT_NUMBER,
+			   DECODE(DIRECT_BILL_FLAG,'Y','Direct','N','Indirect','Errored') REC_TYPE,
+			   DECODE(DIRECT_BILL_FLAG,'Y',DECODE(Status,'S','Sent','Send Error'),'N','NA','Error') SentToPG
+		  FROM  xx_ar_self_serv_bad_contact
+		 WHERE  1=1 
+		   AND  TRUNC(CREATION_DATE)     >= TRUNC(NVL(fnd_conc_date.string_to_date(:P_AS_OF_DATE),CREATION_DATE))
+		   AND  :P_TYPE           = 'CONTACT'
+		   ORDER BY DECODE(DIRECT_BILL_FLAG,'Y',1,'N',2,3),8 desc,2
          ]]>
     </sqlStatement>
   </dataQuery>
@@ -115,6 +149,19 @@
         <element name = "EMAIL_ADDRESS"   value = "EMAIL_ADDRESS" />
         <element name = "ACCOUNT_NUMBER"  value = "ACCOUNT_NUMBER" />
         <element name = "CREATION_DATE"   value = "CREATION_DATE" />
+      </group>
+      <group name="G_BAD_CONTACT" source="Q_BAD_CONTACT">
+        <element name = "CUSTOMER_NAME_CON"  value = "CUSTOMER_NAME" />
+        <element name = "AOPS_ACCOUNT_CON"   value = "AOPS_ACCOUNT" />
+        <element name = "LAST_NAME"          value = "LAST_NAME" />
+        <element name = "FIRST_NAME"         value = "FIRST_NAME" />
+        <element name = "PHONE_NUMBER"       value = "PHONE_NUMBER" />
+        <element name = "FAX_NUMBER"         value = "FAX_NUMBER" />
+        <element name = "EMAIL_ADDRESS_CON"      value = "EMAIL_ADDRESS" />
+        <element name = "ACCOUNT_NUMBER_CON" value = "ACCOUNT_NUMBER" />
+        <element name = "CREATION_DATE_CON"  value = "CREATION_DATE" />
+        <element name = "REC_TYPE_CON"       value = "REC_TYPE" />
+        <element name = "SENTTOPG_CON"       value = "SentToPG" />
       </group>
     </group>
     </dataStructure>

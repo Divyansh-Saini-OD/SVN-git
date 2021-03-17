@@ -19,6 +19,8 @@ create or replace package body XX_AR_SELF_SERVICE as
 -- |Version   Date         Author             Remarks                         |
 -- |========  ===========  =================  ================================|
 -- |1.0       01-Oct-2020  Divyansh Saini     Initial version                 |
+-- |1.1       01-Mar-2021  Divyansh Saini     Changes done for leading zero   |
+-- |1.2       17-Mar-2021  Divyansh Saini     Changes done for bad contact    |
 -- |                                                                          |
 -- +==========================================================================+
 
@@ -339,6 +341,27 @@ EXCEPTION
     WHEN OTHERS THEN
        return null;
 END;
+/*********************************************************************
+* Function to check the length of source AOPS Number
+-- |Change Record:                                                   |
+-- |===============                                                  |
+-- |Version   Date         Author             Remarks                |
+-- |========  ===========  =================  =======================|
+-- |1.0       17-Mar-2021  Divyansh Saini     Initial version        |
+-- |                                                                 |
+*********************************************************************/
+FUNCTION check_aops_number(p_value IN VARCHAR2) 
+  RETURN VARCHAR2 IS
+BEGIN
+   IF length(p_value) >8 THEN
+      RETURN p_value;
+   ELSE
+      RETURN lpad(p_value,8,'0');
+   END IF;
+EXCEPTION WHEN OTHERS THEN
+  RETURN p_value;
+END check_aops_number;
+
 
 /*********************************************************************
 * Function to trim file values
@@ -351,14 +374,18 @@ BEGIN
    SELECT TRIM(REPLACE(REPLACE(REPLACE(p_value,CHR(10)),CHR(13)),CHR(9)))
      INTO lv_value
      FROM DUAL;
-   /*Fix for ampersand*/
-   SELECT REPLACE(lv_value,'&','''||''&''||''')
-     INTO lv_value
-     FROM DUAl;
-   /*Fix for colon*/
-   SELECT REPLACE(lv_value,'''','''''')
-     INTO lv_value
-     FROM DUAl;
+   
+     SELECT REPLACE(lv_value,'|','')
+       INTO lv_value
+      FROM DUAl;
+    /*Fix for colon*/
+     SELECT REPLACE(lv_value,'''','''''')
+       INTO lv_value
+      FROM DUAl;
+    /*Fix for ampersand*/
+     SELECT REPLACE(lv_value,'&','''||'||'''&'''||'||''')
+       INTO lv_value
+      FROM DUAl;
    RETURN lv_value;
 EXCEPTION
   WHEN OTHERS THEN
@@ -448,7 +475,7 @@ lt_tab_type tab_type:=tab_type();
        SELECT hca.cust_account_id,xx.column2
          FROM hz_cust_accounts hca,
               xx_ar_ss_cmn_tbl xx
-        WHERE SUBSTR(orig_system_reference,1,INSTR(orig_system_reference,'-')-1) = lpad(xx.column2,8,'0')
+        WHERE SUBSTR(orig_system_reference,1,INSTR(orig_system_reference,'-')-1) = check_aops_number(xx.column2)--1.1
           AND hca.status = 'A'
           AND xx.process_id = p_process_id;
 
@@ -575,6 +602,8 @@ begin
         logs('  No data found in file');
         utl_file.fclose(lf_file);
         EXIT;
+      WHEN OTHERS THEN
+       logs('Error while insert into common table' ||SQLERRM);
     END;
     logs('  Loop end');
   END LOOP;
@@ -760,7 +789,7 @@ BEGIN
           INSERT INTO xx_web_service_calls VALUES (rec_email.record_id,p_process_id,lv_payload,null,p_type);
           logs('  Payload inserted for record '||rec_email.record_id);
         END LOOP;
-    ELSIF p_type = 'CONTACT' THEN
+    ELSIF p_type = 'CONTACT' THEN  -- 1.2
         logs('  contact Start');
         FOR rec_cont IN (select * from xx_ar_self_serv_bad_contact where NVL(status,'E') = 'E' AND Direct_bill_flag = 'Y' AND process_id = p_process_id)
         LOOP
@@ -833,8 +862,8 @@ BEGIN
                         process_id
                         )
                       (SELECT column1,
-                              lpad(column2,8,'0'),
-                              get_account_number(lpad(column2,8,'0')),
+                              check_aops_number(column2),  -- 1.1
+                              get_account_number(check_aops_number(column2)),  --1.1
                               column3,
                               column4,
                               column5,
@@ -871,8 +900,8 @@ BEGIN
                         process_id
                         )
                       (SELECT column1,
-                              lpad(column2,8,'0'),
-                              get_account_number(lpad(column2,8,'0')),
+                              check_aops_number(column2), --1.1
+                              get_account_number(check_aops_number(column2)),--1.1
                               --column3,
                               --column4,
 
@@ -901,8 +930,10 @@ BEGIN
                         process_id
                         )
                       (SELECT null,
-                              column2,
-                              column1,
+--                              lpad(column2,8,'0'),
+                              check_aops_number(column2),  --1.1
+                              get_account_number(check_aops_number(column2)),  --1.1
+--                              column1,
                               column3,
                               column4,
                               column5,

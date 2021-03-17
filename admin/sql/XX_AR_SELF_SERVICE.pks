@@ -99,6 +99,10 @@ FUNCTION get_std_message(p_req_type IN  VARCHAR2,
 Procedure purge_old_data(p_err_buf  OUT VARCHAR2,
                          p_ret_code OUT NUMBER  ,
                          p_type     IN  VARCHAR2);
+/*********************************************************************
+* Function to check AOPS number sent from source
+*********************************************************************/
+function check_aops_number(p_value In varchar2) return varchar2;
 FUNCTION afterreport RETURN BOOLEAN;
 END XX_AR_SELF_SERVICE;
 /
