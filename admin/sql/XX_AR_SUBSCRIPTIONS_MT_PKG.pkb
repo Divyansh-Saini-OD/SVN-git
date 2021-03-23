@@ -162,7 +162,8 @@ AS
 -- |                                                 for resetting the auth Flag from U to N                          |
 -- | 71.0        15-FEB-2021  Arvind K               Bug fixing in the opt_out_ven_notification query, put NVL        |
 -- | 72.0        19-FEB-2021  Arvind K               NAIT-173266 bug fixing process receipt for no_data_found issue   |
--- | 73.0        23-MAR-2021  Arvind K               NAIT-176728 bug fixing for location validation in Renwal process |                                                                                                                  |
+-- | 73.0        23-MAR-2021  Arvind K               NAIT-176728 bug fixing for location validation in Renwal process |
+-- | 74.0        23-MAR-2021  Kayeed A               NAIT-176736 bug fixing for Card Detail to Vantiv in Renwalprocess|
 -- +==================================================================================================================+
 
   gc_package_name        CONSTANT all_objects.object_name%TYPE   := 'xx_ar_subscriptions_mt_pkg';
@@ -7835,6 +7836,18 @@ EXCEPTION
         THEN
 
           px_subscription_array(indx).auth_completed_flag := 'Y';
+          --Added for NAIT-176736 to update contracts table with cc_trans_id and cc_trans_id_source
+            UPDATE xx_ar_contracts
+               SET  --cc_trans_id           = p_cc_trans_id
+                    cc_trans_id_source    = 'EBS'
+                   ,cof_trans_id_scm_flag = 'N'
+                   ,last_update_date      = SYSDATE
+                   ,last_updated_by       = NVL(FND_GLOBAL.user_id, -1)
+             WHERE  contract_id           = px_subscription_array(indx).contract_id;
+
+             logit(p_message => 'RESULT records update: ' || SQL%ROWCOUNT);
+
+           COMMIT;        
           
         ELSIF px_subscription_array(indx).billing_sequence_number >= lr_contract_line_info.initial_billing_sequence
         THEN
