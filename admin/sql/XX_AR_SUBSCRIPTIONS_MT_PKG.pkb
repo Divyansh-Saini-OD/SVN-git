@@ -162,7 +162,7 @@ AS
 -- |                                                 for resetting the auth Flag from U to N                          |
 -- | 71.0        15-FEB-2021  Arvind K               Bug fixing in the opt_out_ven_notification query, put NVL        |
 -- | 72.0        19-FEB-2021  Arvind K               NAIT-173266 bug fixing process receipt for no_data_found issue   |
--- |                                                                                                                  |
+-- | 73.0        23-MAR-2021  Arvind K               NAIT-176728 bug fixing for location validation in Renwal process |                                                                                                                  |
 -- +==================================================================================================================+
 
   gc_package_name        CONSTANT all_objects.object_name%TYPE   := 'xx_ar_subscriptions_mt_pkg';
@@ -16546,6 +16546,7 @@ END is_rev_rec_item;
     lr_pos_info                    xx_ar_pos_inv_order_ref%ROWTYPE;
     lr_bill_to_seq                 VARCHAR2(10) :='';
     lr_ship_to_seq                 VARCHAR2(10) :='';
+    l_relocation_loc               xx_ar_contracts.store_number%TYPE;
     lr_xx_od_oks_alt_sku_tbl       xx_od_oks_alt_sku_tbl%ROWTYPE; 
     lc_billing_agreement_id        xx_ar_contracts.payment_identifier%TYPE;
 
@@ -16782,7 +16783,36 @@ END is_rev_rec_item;
               lc_card_expiration_date := TO_CHAR(lr_contract_info.card_expiration_date, 'MMYY'); 
 
             END IF;
- 
+            ----- Start of NAIT-176728----------
+             /***********************
+            * Store# Validation                     
+            ***********************/
+            IF lr_contract_info.store_number IS NOT NULL
+            THEN
+
+             lc_action := 'Validating the Store close for contract_autorenew_process';
+             l_relocation_loc := '';
+             BEGIN
+             SELECT  LPAD(vals.target_value2,6,'0')
+               INTO  l_relocation_loc
+               FROM  xx_fin_translatevalues                     vals,
+                     xx_fin_translatedefinition                 defn
+               WHERE defn.translate_id                        = vals.translate_id
+               AND   defn.translation_name                    = 'SUBSCRIPTION_STORE_CLOSE'
+               AND   SYSDATE BETWEEN vals.start_date_active AND NVL(vals.end_date_active, SYSDATE + 1)  
+               AND   SYSDATE BETWEEN defn.start_date_active AND NVL(defn.end_date_active, SYSDATE + 1)
+               AND   SYSDATE                                 >= to_date(vals.target_value4,'MM-DD-YYYY')
+               AND   vals.enabled_flag                        = 'Y'
+               AND   defn.enabled_flag                        = 'Y'
+               AND   LPAD(vals.source_value3,6,'0')           = lr_contract_info.store_number;
+             EXCEPTION
+              WHEN NO_DATA_FOUND THEN
+                l_relocation_loc := lr_contract_info.store_number;
+              WHEN OTHERS THEN
+                l_relocation_loc := lr_contract_info.store_number;
+             END;
+            END IF;
+   ----- End of NAIT-176728----------
             /*******************************
             * Build auto renew process payload
             *******************************/
@@ -16814,7 +16844,7 @@ END is_rev_rec_item;
                             || '",
                       "ShipTo" : {
                                "@invLoc" : "'
-                                     || substr(lr_contract_info.store_number,3)
+                                     || substr(l_relocation_loc,3)
                                      || '",
                                   "Addr" : {
                                  "@seq" : "'
