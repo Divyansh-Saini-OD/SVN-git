@@ -1,5 +1,4 @@
-create or replace 
-PACKAGE BODY XX_GL_INTERFACE_PKG
+create or replace PACKAGE BODY XX_GL_INTERFACE_PKG
 AS
 -- +===================================================================+
 -- |                  Office Depot - Project Simplify                  |
@@ -71,7 +70,6 @@ AS
 -- |                                       clause to process a group_id|
 -- |		                           and handling deadlock error |
 -- | 3.7    16-Nov-15  Avinash Baddam      R12.2 Compliance Changes    |
--- | 3.7    06-APR-17  Leelakrishna.G      Defect#40651				   |
 -- +===================================================================+
 
     gc_debug_pkg_nm     VARCHAR2(21) := 'XX_GL_INTERFACE_PKG.';
@@ -124,7 +122,7 @@ AS
            AND GJH.je_header_id = GIR.je_header_id;
 
      RETURN lc_count;
-	 
+
      END GET_JE_LINE_CNT;
 
 
@@ -676,7 +674,7 @@ AS
          -----------------------------
 
 
-         Type TYPE_TAB_EMAIL IS TABLE OF 
+         Type TYPE_TAB_EMAIL IS TABLE OF
                  XX_FIN_TRANSLATEVALUES.target_value1%TYPE INDEX
                  BY BINARY_INTEGER ;
 
@@ -1367,7 +1365,7 @@ AS
                   ------------------------------
                   -- Tracking status for process
                   ------------------------------
- 
+
                   FND_FILE.PUT_LINE(FND_FILE.OUTPUT,'Transferred Journals to GL Interface Table : '
                                                      ||FORMAT_TABS(5)
                                                      ||p_intrfc_transfr);
@@ -4164,7 +4162,7 @@ lc_debug_prog            VARCHAR2(25):='UPDATE COGS FLAG';
             lc_debug_prog         VARCHAR2(30) := 'CREATE_STG_JRNL_LINE';
 
         BEGIN
-            FND_FILE.PUT_LINE(FND_FILE.LOG,'Started inserting GL Journal entry line into the table XX_GL_INTERFACE_NA_STG'); 	--Defect#40651
+
             INSERT INTO XX_GL_INTERFACE_NA_STG
                                   (status
                                   ,date_created
@@ -4291,7 +4289,7 @@ lc_debug_prog            VARCHAR2(25):='UPDATE COGS FLAG';
                                   ,p_balanced
                                   );
 
-             FND_FILE.PUT_LINE(FND_FILE.LOG,' inserted GL Journal entry line into the table XX_GL_INTERFACE_NA_STG');  	--Defect#40651
+
 
         EXCEPTION
 
@@ -4304,8 +4302,6 @@ lc_debug_prog            VARCHAR2(25):='UPDATE COGS FLAG';
                                                ||lc_debug_prog);
 
                   x_output_msg  := fnd_message.get();
-				  FND_FILE.PUT_LINE(FND_FILE.LOG,x_output_msg);  		--Defect#40651
-				  FND_FILE.PUT_LINE(FND_FILE.LOG,'Eror while inserting GL Journal entry line into the table XX_GL_INTERFACE_NA_STG'||'-'||SQLERRM);  	--Defect#40651
 
     END CREATE_STG_JRNL_LINE;
 
@@ -4494,7 +4490,7 @@ lc_debug_prog            VARCHAR2(25):='UPDATE COGS FLAG';
                                    );
 
 ----Added for defect
-            XX_GL_GLSI_INTERFACE_PKG.CREATE_SUSPENSE_LINES(p_grp_id,ln_sob_id);  -- Added for suspense lines posting defect # 5327
+           -- XX_GL_GLSI_INTERFACE_PKG.CREATE_SUSPENSE_LINES(p_grp_id,ln_sob_id);  -- Added for suspense lines posting defect # 5327
                 ----------------------------------------------------------------
                 -- Open sub-cursor to ck balances and write outputselect sob ids
                 ----------------------------------------------------------------
@@ -4916,4 +4912,3 @@ END IF;
          END PROCESS_JRNL_LINES;
 
 END XX_GL_INTERFACE_PKG;
-/
