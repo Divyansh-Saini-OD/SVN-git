@@ -142,7 +142,7 @@ BEGIN
 
 /*Delete all records older than Purge Days derived*/
   DELETE
-  FROM XXFIN.XX_GL_INTERFACE_NA_STG
+  FROM XX_GL_INTERFACE_NA_STG
   WHERE USER_JE_SOURCE_NAME  = gc_journal_source_name
   and DATE_CREATED < sysdate-l_purge_days ;
   COMMIT;
