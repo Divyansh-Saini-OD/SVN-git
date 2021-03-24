@@ -19,8 +19,6 @@ create or replace package body XX_AR_SELF_SERVICE as
 -- |Version   Date         Author             Remarks                         |
 -- |========  ===========  =================  ================================|
 -- |1.0       01-Oct-2020  Divyansh Saini     Initial version                 |
--- |1.1       01-Mar-2021  Divyansh Saini     Changes done for leading zero   |
--- |1.2       17-Mar-2021  Divyansh Saini     Changes done for bad contact    |
 -- |                                                                          |
 -- +==========================================================================+
 
@@ -267,6 +265,7 @@ lv_type         VARCHAR2(10);
 ln_address_cnt  NUMBER;
 ln_email_cnt    NUMBER;
 ln_cont_cnt     NUMBER;
+ln_file_cnt     NUMBER;
 BEGIN
   set_global_variables;
   logs('Purge_old_data(+)',true);
@@ -311,11 +310,24 @@ BEGIN
     ln_cont_cnt := SQL%ROWCOUNT;
   END IF;
 
+  --
+  --Delete file history
+  --
+  IF lv_type IN ('ALL') THEN
+    lv_del_str := 'delete from xx_ar_ss_file_names_hist WHERE creation_date < sysdate - :1';
+    logs('Deleting contact data with sql : '||lv_del_str,true);
+    EXECUTE IMMEDIATE lv_del_str using n_days;
+    ln_file_cnt := SQL%ROWCOUNT;
+  END IF;
+
   FND_FILE.PUT_LINE(FND_FILE.OUTPUT,'Stats ');
   FND_FILE.PUT_LINE(FND_FILE.OUTPUT,'************************************************** ');
   FND_FILE.PUT_LINE(FND_FILE.OUTPUT,'Number of address records deleted '||ln_address_cnt);
   FND_FILE.PUT_LINE(FND_FILE.OUTPUT,'Number of email records deleted '||ln_email_cnt);
   FND_FILE.PUT_LINE(FND_FILE.OUTPUT,'Number of contact records deleted '||ln_cont_cnt);
+  IF lv_type= 'ALL' THEN
+  FND_FILE.PUT_LINE(FND_FILE.OUTPUT,'Number of history table records deleted '||ln_file_cnt);
+  END IF;
   FND_FILE.PUT_LINE(FND_FILE.OUTPUT,'************************************************** ');
 EXCEPTION WHEN OTHERS THEN
    p_err_buf :='Error in purge_old_data '||SQLERRM;
@@ -341,14 +353,30 @@ EXCEPTION
     WHEN OTHERS THEN
        return null;
 END;
+
+/*********************************************************************
+* PROCEDURE to get customer name
+*********************************************************************/
+PROCEDURE add_account_name(p_process_id IN NUMBER) IS
+   CURSOR c_em_rec IS
+     SELECT hz.account_name,email.record_id 
+       FROM xx_ar_self_serv_bad_email email,hz_cust_accounts hz
+      WHERE process_id = p_process_id
+        AND hz.account_number = email.account_number
+        AND hz.status = 'A';
+BEGIN
+  FOR rec IN c_em_rec LOOP
+    UPDATE xx_ar_self_serv_bad_email
+       SET customer_name = rec.account_name
+     WHERE RECORD_ID = rec.RECORD_ID;
+  END LOOP;
+EXCEPTION
+    WHEN OTHERS THEN
+       null;
+END;
+
 /*********************************************************************
 * Function to check the length of source AOPS Number
--- |Change Record:                                                   |
--- |===============                                                  |
--- |Version   Date         Author             Remarks                |
--- |========  ===========  =================  =======================|
--- |1.0       17-Mar-2021  Divyansh Saini     Initial version        |
--- |                                                                 |
 *********************************************************************/
 FUNCTION check_aops_number(p_value IN VARCHAR2) 
   RETURN VARCHAR2 IS
@@ -475,7 +503,7 @@ lt_tab_type tab_type:=tab_type();
        SELECT hca.cust_account_id,xx.column2
          FROM hz_cust_accounts hca,
               xx_ar_ss_cmn_tbl xx
-        WHERE SUBSTR(orig_system_reference,1,INSTR(orig_system_reference,'-')-1) = check_aops_number(xx.column2)--1.1
+        WHERE SUBSTR(orig_system_reference,1,INSTR(orig_system_reference,'-')-1) = check_aops_number(xx.column2)
           AND hca.status = 'A'
           AND xx.process_id = p_process_id;
 
@@ -559,6 +587,7 @@ begin
     logs('  Looping through file');
      BEGIN
        utl_file.get_line(lf_file,lv_line_data);
+       lv_line_data := convert(lv_line_data,'utf8','us7ascii');
        ln_rows := ln_rows+1;
        IF ln_rows <=p_skip_rows THEN
          Continue;
@@ -772,7 +801,7 @@ BEGIN
         END LOOP;
     ELSIF p_type = 'EMAIL' THEN
         logs('  Email Start');
-        FOR rec_email IN (select * from xx_ar_self_serv_bad_email where NVL(status,'E') = 'E' AND Direct_bill_flag = 'Y' AND process_id = p_process_id)
+        FOR rec_email IN (select * from xx_ar_self_serv_bad_email where (Direct_bill_flag = 'Y' AND process_id = p_process_id)  OR (NVL(status,'E') = 'E' AND Direct_bill_flag = 'Y' ))
         LOOP
           lv_payload := '{
            "customerInfoRequest": {
@@ -789,9 +818,9 @@ BEGIN
           INSERT INTO xx_web_service_calls VALUES (rec_email.record_id,p_process_id,lv_payload,null,p_type);
           logs('  Payload inserted for record '||rec_email.record_id);
         END LOOP;
-    ELSIF p_type = 'CONTACT' THEN  -- 1.2
+    ELSIF p_type = 'CONTACT' THEN
         logs('  contact Start');
-        FOR rec_cont IN (select * from xx_ar_self_serv_bad_contact where NVL(status,'E') = 'E' AND Direct_bill_flag = 'Y' AND process_id = p_process_id)
+        FOR rec_cont IN (select * from xx_ar_self_serv_bad_contact where (Direct_bill_flag = 'Y' AND process_id = p_process_id)  OR (NVL(status,'E') = 'E' AND Direct_bill_flag = 'Y' ))
         LOOP
           lv_payload := '{
            "customerInfoRequest": {
@@ -862,8 +891,8 @@ BEGIN
                         process_id
                         )
                       (SELECT column1,
-                              check_aops_number(column2),  -- 1.1
-                              get_account_number(check_aops_number(column2)),  --1.1
+                              check_aops_number(column2),
+                              get_account_number(check_aops_number(column2)),
                               column3,
                               column4,
                               column5,
@@ -900,8 +929,8 @@ BEGIN
                         process_id
                         )
                       (SELECT column1,
-                              check_aops_number(column2), --1.1
-                              get_account_number(check_aops_number(column2)),--1.1
+                              check_aops_number(column2),
+                              get_account_number(check_aops_number(column2)),
                               --column3,
                               --column4,
 
@@ -931,8 +960,8 @@ BEGIN
                         )
                       (SELECT null,
 --                              lpad(column2,8,'0'),
-                              check_aops_number(column2),  --1.1
-                              get_account_number(check_aops_number(column2)),  --1.1
+                              check_aops_number(column2),
+                              get_account_number(check_aops_number(column2)),
 --                              column1,
                               column3,
                               column4,
@@ -1227,6 +1256,7 @@ BEGIN
                 --
                 --Process data as per the reqest type
                 --
+                add_account_name(ln_process_id);
                 logs('calling Process_data',True);
                 Process_data(lv_process_type,ln_process_id,lv_err_code,lv_err_message);
                 --
