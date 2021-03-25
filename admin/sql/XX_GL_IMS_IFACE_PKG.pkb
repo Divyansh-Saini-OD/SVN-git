@@ -1464,6 +1464,7 @@ IS
   lc_email_err varchar2(300); 
   ln_cnt NUMBER:=0;
   ln_error_cnt	NUMBER :=0;
+  ln_error_count	NUMBER:=0;
   lc_purge_err_log  VARCHAR2(10);
   LC_MAIL_SUBJECT	VARCHAR2(2000);
   LN_CONC_ID		NUMBER;
@@ -1662,26 +1663,25 @@ IS
                                 ,p_summary_flag => 'N' 
                                 ,p_bypass_flg   => 'Y'
                                 );
-
-    lc_debug_msg := '!!!!!Total number of all errors: ' || gn_error_count;
-    print_debug_msg (lc_debug_msg);
-
-    IF  gn_error_count <> 0 THEN
-
-         lc_mail_subject := 'ERRORS: Found in '|| rec_je_process.user_je_source_name|| ' GL Import!';
+    
+    ln_error_count :=  ln_error_count + gn_error_count;
+	lc_debug_msg   := 'Emailing output report: gn_request_id=> '
+                    ||gn_request_id || ' gc_source_name=> ' ||rec_je_process.user_je_source_name
+                    || ' lc_mail_subject=> ' || lc_mail_subject;	
+	 print_debug_msg (lc_debug_msg);
+ END LOOP;
+ 
+    lc_debug_msg := '!!!!!Total number of all errors: ' || ln_error_count;   
+ 
+    IF  ln_error_count <> 0 THEN
+        lc_mail_subject := 'ERRORS: Found in '|| gc_journal_source_name|| ' GL Import!';
 		print_debug_msg(P_MESSAGE => 'DERIVE_CCID, CCID is not valid.', p_force => TRUE);
 		retcode:=1;  
     ELSE
-            lc_mail_subject := rec_je_process.user_je_source_name ||' Import completed!';
+            lc_mail_subject := gc_journal_source_name ||' Import completed!';
     END IF;
-
-    lc_debug_msg := 'Emailing output report: gn_request_id=> '
-                    ||gn_request_id || ' gc_source_name=> ' ||rec_je_process.user_je_source_name
-                    || ' lc_mail_subject=> ' || lc_mail_subject;
-
-    print_debug_msg (lc_debug_msg); 
-
-
+ 
+	
     ln_conc_id := fnd_request.submit_request( application => 'XXFIN'
 											 ,program     => 'XXGLINTERFACEEMAIL'
 											 ,description => NULL
@@ -1690,9 +1690,8 @@ IS
 											 ,argument1   => gn_request_id
 											 ,argument2   => gc_journal_source_name
 											 ,argument3   => lc_mail_subject
-                                             );   
- END LOOP;
-   exiting_sub(p_procedure_name => lc_procedure_name, p_exception_flag => FALSE); 
+                                             ); 
+    exiting_sub(p_procedure_name => lc_procedure_name, p_exception_flag => FALSE); 
 EXCEPTION
 WHEN OTHERS THEN
   logit(p_message => 'ERROR-SQLCODE:'|| SQLCODE || ' SQLERRM: ' || SQLERRM, p_force => TRUE); 
