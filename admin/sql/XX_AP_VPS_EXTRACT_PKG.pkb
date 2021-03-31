@@ -16,7 +16,7 @@ create or replace PACKAGE BODY      XX_AP_VPS_EXTRACT_PKG
 -- |                                           Migration Project
 -- | 1.5         07/28/20     Bhargavi Ankolekar    This is for jira#NAIT-146750                |
 -- | 1.6         12/11/20     Mayur Palsokar   Modified invoice_vps_extract for NAIT-165042 (Temporary change)|
--- | 1.7         03/31/21     Rupali Gahalot   NAIT-171554-Duplicate records in the table on VPS side with INVOICE_AMT|
+-- | 1.7         03/31/21     Rupali Gahalot   NAIT-171554-Duplicate records in the table on VPS side with INVOICE AMOUNT|
 -- +============================================================================================+
 AS
 
