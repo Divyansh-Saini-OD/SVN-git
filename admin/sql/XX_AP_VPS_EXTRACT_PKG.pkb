@@ -1031,3 +1031,4 @@ EXCEPTION WHEN OTHERS THEN
 	fnd_file.put_line(fnd_file.LOG,SQLCODE||SQLERRM);
 END invoice_vps_extract;
 END XX_AP_VPS_EXTRACT_PKG;
+/
