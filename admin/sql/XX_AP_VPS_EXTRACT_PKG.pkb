@@ -12,10 +12,11 @@ create or replace PACKAGE BODY      XX_AP_VPS_EXTRACT_PKG
 -- | 1.1         04/17/18     Paddy Sanjeevi   Defect 37766, fixed duplicate lines              |
 -- | 1.2         04/25/18     Paddy Sanjeevi   Added to use xla_ae_headers for accounting_date  |
 -- | 1.3         05/29/18     Paddy Sanjeevi   Added group by xla sql to avoid duplicate        |
--- | 1.4         01/24/19     BIAS             INSTANCE_NAME is replaced with DB_NAME for OCI   |  
+-- | 1.4         01/24/19     BIAS             INSTANCE_NAME is replaced with DB_NAME for OCI   |
 -- |                                           Migration Project
 -- | 1.5         07/28/20     Bhargavi Ankolekar    This is for jira#NAIT-146750                |
 -- | 1.6         12/11/20     Mayur Palsokar   Modified invoice_vps_extract for NAIT-165042 (Temporary change)|
+-- | 1.7         03/31/21     Rupali Gahalot   NAIT-171554-Duplicate records in the table on VPS side with INVOICE_AMT|
 -- +============================================================================================+
 AS
 
@@ -410,6 +411,7 @@ END xx_ap_get_gl_acct;
 				AND POL.PO_HEADER_ID(+)      =NVL(AI.PO_HEADER_ID,AI.QUICK_PO_HEADER_ID)
 				AND POL.ITEM_ID(+)           =L.INVENTORY_ITEM_ID
 				AND MSI.INVENTORY_ITEM_ID(+) =L.INVENTORY_ITEM_ID
+				and pol.quantity <> 0.00000000001  --changes for V-1.7
 				AND MSI.ORGANIZATION_ID(+)+0 =441
 				AND EXISTS
 				  (
@@ -473,6 +475,7 @@ END xx_ap_get_gl_acct;
 				AND POL.PO_HEADER_ID(+)       =NVL(AI.PO_HEADER_ID,AI.QUICK_PO_HEADER_ID)
 				AND POL.ITEM_ID(+)            =L.INVENTORY_ITEM_ID
 				AND MSI.INVENTORY_ITEM_ID(+)  =L.INVENTORY_ITEM_ID
+				and pol.quantity <> 0.00000000001  --changes for V-1.7
 				AND MSI.ORGANIZATION_ID(+)+0  =441
 				AND EXISTS
 				  (
@@ -561,7 +564,7 @@ END xx_ap_get_gl_acct;
 						WHERE aid.invoice_id            =a.invoice_id
 						AND ROWNUM                 <2
 					) period_name,
-					a.INVOICE_AMOUNT 
+					a.INVOICE_AMOUNT
 			FROM	mtl_system_items_b msi,
 					po_lines_all pol,
 					hr_locations_all hrl,
@@ -695,10 +698,10 @@ END xx_ap_get_gl_acct;
 				  AND trd.cost    <> 0
 				  AND trd.consign_flag   = 'Y'
 				ORDER BY invoice_num,line_number,source;
-				
+
 				TYPE matched_inv_tab_type_temp IS TABLE OF matched_inv_cur_temp%ROWTYPE;
 	   /*End: Added for NAIT-165042*/
-	   
+
 
 		l_unmatched_tab 				unmatched_inv_tab_type;
 		l_matched_tab 					matched_inv_tab_type;
@@ -725,7 +728,7 @@ END xx_ap_get_gl_acct;
 		lc_message         		   		VARCHAR2(100);
 		lc_match_file					VARCHAR2(1):='N';
 		lc_unmatch_file					VARCHAR2(1):='N';
-		
+
 		/*Start: Added for NAIT-165042*/
 		l_matched_tab_temp 			    matched_inv_tab_type_temp;
 		lf_m_file_temp             		UTL_FILE.file_type;
@@ -734,7 +737,7 @@ END xx_ap_get_gl_acct;
 		lc_m_file_name_temp			    VARCHAR2(250) := 'TEMP_MATCHED_INV_DATA_'||TO_CHAR(SYSDATE,'MMDDYYYY_HH24MI')||'.txt';
 		lc_match_file_temp				VARCHAR2(1):='N';
 		/*End: Added for NAIT-165042*/
-		
+
 BEGIN
 	xla_security_pkg.set_security_context(602);
 	--get file dir path
@@ -849,7 +852,7 @@ BEGIN
 		fnd_file.put_line(fnd_file.LOG,SQLCODE||SQLERRM);
 		END;
 	END IF;
-	
+
     /*Start: Added for NAIT-165042*/
 
     OPEN  matched_inv_cur_temp (ld_date);
@@ -917,7 +920,7 @@ BEGIN
 							||'|'||l_matched_tab_temp(i).ap_po_nbr
 							||'|'||l_matched_tab_temp(i).po_line_nbr
 							||'|'||l_matched_tab_temp(i).gl_account_id
-							||'|'||l_matched_tab_temp(i).period_name;  
+							||'|'||l_matched_tab_temp(i).period_name;
 					UTL_FILE.put_line(lf_m_file_temp,lc_m_file_content_temp);
 			END LOOP;
 		UTL_FILE.fclose(lf_m_file_temp);
@@ -927,7 +930,7 @@ BEGIN
 		END;
 	END IF;
     /*End: Added for NAIT-165042*/
-	
+
 	OPEN unmatched_inv_cur;
 	FETCH unmatched_inv_cur BULK COLLECT INTO l_unmatched_tab;
 	CLOSE unmatched_inv_cur;
@@ -1028,5 +1031,3 @@ EXCEPTION WHEN OTHERS THEN
 	fnd_file.put_line(fnd_file.LOG,SQLCODE||SQLERRM);
 END invoice_vps_extract;
 END XX_AP_VPS_EXTRACT_PKG;
-/
-SHOW ERRORS;
