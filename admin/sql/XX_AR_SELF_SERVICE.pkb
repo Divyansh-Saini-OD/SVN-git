@@ -19,9 +19,7 @@ create or replace package body XX_AR_SELF_SERVICE as
 -- |Version   Date         Author             Remarks                               |
 -- |========  ===========  =================  ======================================|
 -- |1.0       01-Oct-2020  Divyansh Saini     Initial version                       |
--- |1.1       25-Mar-2021  Divyansh Saini     Modified payload for email and        |
--- |                                          contact and logic for email_add 2 |
--- |1.2       26-Mar-2021  Divyansh Saini     Added logic for contact Tieback       |
+-- |1.1       26-Mar-2021  Divyansh Saini     Added logic for contact Tieback       |
 -- +================================================================================+
 
 /*********************************************************************
@@ -406,56 +404,6 @@ EXCEPTION
     WHEN OTHERS THEN
        null;
 END;
-
-/*********************************************************************
-* PROCEDURE to process email data
-*********************************************************************/
-PROCEDURE populate_email_data(p_process_id IN NUMBER) IS
-    lv_insert_str VARCHAR2(2000) := 'INSERT INTO xx_ar_self_serv_bad_email(process_id';
-    lv_select_str VARCHAR2(2000) := '('||p_process_id;
-    lv_query      VARCHAR2(4000);
-    lv_delimeter  VARCHAR2(2) :=',';
-    lv_line_data  VARCHAR2(2000);
-    lv_col_value  VARCHAR2(150);
-BEGIN
-    logs('  populate_email_data start(+) ');
-	FOR rec_em_data in (select column2||lv_delimeter||direct_cust_flag||lv_delimeter||listagg(column1,lv_delimeter) within group (order by process_id) email_data
-							from xx_ar_ss_cmn_tbl
-							where process_id = p_process_id
-							group by column2,direct_cust_flag) LOOP
-		lv_insert_str :='INSERT INTO xx_ar_self_serv_bad_email(process_id, AOPS_ACCOUNT,DIRECT_BILL_FLAG, EMAIL_ADDRESS,EMAIL_ADDRESS2';
-		lv_select_str := '('||p_process_id;
-		lv_line_data  := rec_em_data.email_data;
-		For i in 0..regexp_count(lv_line_data,lv_delimeter)+1 LOOP
-		   lv_col_value := null;
-		   IF i>3 THEN
-			  exit;
-		   END IF;
-		   IF regexp_count(lv_line_data,lv_delimeter) != 0 THEN
-			  lv_col_value := TRIM(SUBSTR(lv_line_data,1,INSTR(lv_line_data,lv_delimeter,1,1)-1));
-			  lv_line_data := SUBSTR(lv_line_data,INSTR(lv_line_data,lv_delimeter,1,1)+1);
-		   ELSIF regexp_count(lv_line_data,lv_delimeter) = 0 THEN
-			  lv_col_value:= lv_line_data;
-			  lv_line_data := NULL;
-		   END IF;
-			lv_col_value:=get_converted_text(lv_col_value);
-			lv_select_str := lv_select_str||','''||lv_col_value||'''';
-	   END LOOP;
-	   lv_query := lv_insert_str||',record_id,CREATION_DATE,request_id) VALUES '||lv_select_str||','||xx_ar_ss_bad_email_s.nextval||','||sysdate||','||g_conc_req_id||')';
-	   dbms_output.put_line(lv_query);
-	   logs('  lv_query '||lv_query);
-	   BEGIN
-	      execute immediate lv_query;
-       EXCEPTION WHEN OTHERS THEN
-	      logs('  Error while insert ' || SQLERRM);
-	   END;
-	END LOOP;
-	logs('  populate_email_data start(-) ');
-EXCEPTION
-    WHEN OTHERS THEN
-       logs('Unknown error while populate_email_data ' || SQLERRM);
-END;
-
 
 /*********************************************************************
 * Function to check the length of source AOPS Number
@@ -860,7 +808,6 @@ BEGIN
               "ebsAccountNumber": "'||rec_email.account_number||'",
               "contact": {
                  "emailAddress": "'||rec_email.EMAIL_ADDRESS||'",
-				 "emailAddress2": "'||rec_email.EMAIL_ADDRESS2||'"
                           },
                           "reason": "Bad email",
                           "directFlag": ""
@@ -1300,8 +1247,8 @@ BEGIN
         Check_If_Direct(ln_process_id);
         IF lv_err_code = 'S' THEN
             -- Insert_data into staging table
-            logs('calling populate_email_data',True);
-            populate_email_data(ln_process_id);
+            logs('calling populate_staging_table',True);
+            populate_staging_table(ln_process_id);
             logs('cleaning common table',True);
             DELETE FROM xx_ar_ss_cmn_tbl WHERE process_id = ln_process_id;
             commit;
@@ -1559,7 +1506,7 @@ EXCEPTION WHEN OTHERS THEN
 
 END bad_contact_tieback;
 
-   PROCEDURE generate_table_export (
+PROCEDURE generate_table_export (
       x_errbuf       OUT NOCOPY      VARCHAR2,
       x_retcode      OUT NOCOPY      NUMBER
    )
