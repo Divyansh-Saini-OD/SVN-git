@@ -1,22 +1,4 @@
-SET VERIFY OFF;
-WHENEVER SQLERROR CONTINUE;
-WHENEVER OSERROR EXIT FAILURE ROLLBACK;
-
--- +============================================================================================+
--- |                  Office Depot - Ebiz Generic Process					|
--- +============================================================================================+
--- | Name        : XXCRM_TABLE_SCRAMBLER_PKG.pkb                                                   |
--- | Description : Generic Process to create export file.                                       |
--- |                                                                                            |
--- |                                                                                            |
--- |Change Record:                                                                              |
--- |===============                                                                             |
--- |Version     Date           Author               Remarks                                     |
--- |=======    ==========      ================     ============================================|
--- |1.0        08/07/11       Devendra Petkar        Initial version                            |
--- +============================================================================================+
-
-CREATE OR REPLACE PACKAGE XXCRM_TABLE_SCRAMBLER_PKG
+create or replace PACKAGE XXCRM_TABLE_SCRAMBLER_PKG
 -- +===================================================================+
 -- |                  Office Depot -  Ebiz Generic Process.            |
 -- +===================================================================+
@@ -72,9 +54,11 @@ AS
       p_table_name  IN              VARCHAR2,
       p_delimiter   IN              VARCHAR2 DEFAULT '|~'
    );
+   
+   PROCEDURE copy_file (p_sourcepath IN VARCHAR2, p_destpath IN VARCHAR2);
+   PROCEDURE Zip_File(p_sourcepath  IN VARCHAR2,
+                     p_destpath    IN VARCHAR2
+                    );
 
 END XXCRM_TABLE_SCRAMBLER_PKG;
 /
-SHOW ERRORS;
-
-EXIT;
