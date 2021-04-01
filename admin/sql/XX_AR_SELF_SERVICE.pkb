@@ -1248,7 +1248,7 @@ BEGIN
         IF lv_err_code = 'S' THEN
             -- Insert_data into staging table
             logs('calling populate_staging_table',True);
-            populate_staging_table(ln_process_id);
+			populate_staging_table(ln_process_id,lv_process_type,lv_p_err,lv_p_code);
             logs('cleaning common table',True);
             DELETE FROM xx_ar_ss_cmn_tbl WHERE process_id = ln_process_id;
             commit;
@@ -2059,3 +2059,4 @@ END ;
 
 END XX_AR_SELF_SERVICE;
 /
+SHOW ERROR;
