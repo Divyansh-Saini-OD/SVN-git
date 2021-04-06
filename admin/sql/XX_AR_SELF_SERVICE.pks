@@ -44,25 +44,6 @@ create or replace package XX_AR_SELF_SERVICE as
 Procedure Check_If_Direct (p_process_id IN NUMBER);
 
 /*********************************************************************
-* Procedure for bad contact tieback program
-*********************************************************************/
-   PROCEDURE generate_table_export (
-      x_errbuf       OUT NOCOPY      VARCHAR2,
-      x_retcode      OUT NOCOPY      NUMBER
-   );
-
-/*********************************************************************
-* Procedure for bad contact tieback  for external applications
-*********************************************************************/
-procedure bad_contact_tieback(p_aops_number   IN  VARCHAR2,
-                              p_last_name     IN  VARCHAR2,
-							  p_first_name    IN VARCHAR2,
-							  p_phone_number  IN VARCHAR2,
-							  p_fax_number    IN VARCHAR2,
-							  p_email_addr    IN VARCHAR2,
-							  p_status        OUT VARCHAR2,
-							  p_message       OUT VARCHAR2);
-/*********************************************************************
 * Function to get customer account number
 *********************************************************************/
 FUNCTION get_account_number(p_AOPS_account_number IN VARCHAR2) return VARCHAR2 ;
@@ -115,3 +96,4 @@ function check_aops_number(p_value In varchar2) return varchar2;
 FUNCTION afterreport RETURN BOOLEAN;
 END XX_AR_SELF_SERVICE;
 /
+SHOW ERROR;
