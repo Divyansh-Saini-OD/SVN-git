@@ -605,7 +605,7 @@ PROCEDURE EAI_webservice_authorization(
     p_customer_number IN VARCHAR2,
     p_inv_number      IN VARCHAR2,
     p_instrid         IN NUMBER,
-    p_amount          IN VARCHAR2,
+    p_amount          IN NUMBER,
     p_order_id        IN VARCHAR2,
     x_reqresp OUT IBY_PAYMENT_ADAPTER_PUB.ReqResp_rec_type )
 IS
