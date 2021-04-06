@@ -1486,6 +1486,571 @@ BEGIN
 EXCEPTION WHEN OTHERS THEN
    RETURN null;
 END;
+
+/*********************************************************************
+* Procedure for bad contact tieback
+*********************************************************************/
+procedure bad_contact_tieback(p_aops_number   IN  VARCHAR2,
+                              p_last_name     IN  VARCHAR2,
+							  p_first_name    IN VARCHAR2,
+							  p_phone_number  IN VARCHAR2,
+							  p_fax_number    IN VARCHAR2,
+							  p_email_addr    IN VARCHAR2,
+							  p_status        OUT VARCHAR2,
+							  p_message       OUT VARCHAR2) IS
+
+BEGIN
+   INSERT INTO xx_ar_ss_bad_cont_tieback( record_id,
+                                          AOPS_ACCOUNT,
+										  ACCOUNT_NUMBER,
+										  LAST_NAME,
+                                          FIRST_NAME,
+                                          PHONE_NUMBER,
+                                          FAX_NUMBER,
+                                          EMAIL_ADDRESS,
+                                          runtime,
+                                          export_status) VALUES
+										  ( XX_AR_SS_BAD_CON_T_S.nextval,
+										    p_aops_number,
+											get_account_number(p_aops_number),
+											p_last_name,
+											p_first_name,
+											p_phone_number,
+											p_fax_number,
+											p_email_addr,
+											to_char(sysdate,'DD-MM-RRRR HH24:MI:SS'),
+											'N'
+										  );
+    commit;
+    p_status := 'S';
+    p_message := 'Successfully Inserted';
+EXCEPTION WHEN OTHERS THEN
+   p_status := 'E';
+   p_message := 'Error in insert '||SQLERRM;
+
+END bad_contact_tieback;
+
+PROCEDURE generate_table_export (
+      x_errbuf       OUT NOCOPY      VARCHAR2,
+      x_retcode      OUT NOCOPY      NUMBER
+   )
+   IS
+----------------------------------------------------------------------
+---                Variable Declaration                            ---
+----------------------------------------------------------------------
+      v_file                UTL_FILE.file_type;
+      ln_total_cnt          NUMBER             := 0;
+      ln_file_record_cnt    NUMBER             := 0;
+      lc_file_name          VARCHAR2 (60);
+      lc_file_name_env      VARCHAR2 (60);
+      lc_table_name         VARCHAR2 (30);
+      lc_file_loc           VARCHAR2 (60)      := 'XXCRM_OUTBOUND';
+      lc_sourcefieldname    VARCHAR2 (240);
+      lc_token              VARCHAR2 (4000);
+      ln_request_id         NUMBER             DEFAULT 0;
+      ln_program_name	    VARCHAR2 (60);
+      ln_program_short_name VARCHAR2 (60);
+      lc_message            VARCHAR2 (3000);
+      lc_message1           VARCHAR2 (3000);
+      lc_heading            VARCHAR2 (2000);
+      lc_stmt_str           VARCHAR2 (32000);
+      lc_stmt_exp_str       VARCHAR2 (4000);
+      lc_exp_record         LONG;
+      lc_sourcepath         VARCHAR2 (2000);
+      lc_destpath           VARCHAR2 (2000);
+      lc_exp_cursor         sys_refcursor;
+      lc_date_time          VARCHAR2 (60);
+      lc_low                VARCHAR2 (50);
+      lc_high               VARCHAR2 (50);
+      l_file_number         NUMBER             := 0;
+      l_file_record_limit   NUMBER;
+      lc_exp_account_id     xx_crm_wcelg_cust.cust_account_id%TYPE;
+      lc_archpath           VARCHAR2(2000) ;
+      lc_nextval	          NUMBER;
+      lc_instance_name      VARCHAR2 (100);    -- -- Added by Havish Kasina as per defect#1191
+	  lv_table_name         VARCHAR2 (100) := 'XX_AR_SS_BAD_CONT_TIEBACK';
+	  lv_delimiter          VARCHAR2 (2) := '|~';
+	  lv_directory          VARCHAR2 (100);
+
+
+      CURSOR c1 (p_table_name VARCHAR2)
+      IS
+         SELECT   a.column_name exportfieldname,
+                  DECODE (a.data_type,
+                          'DATE', 'TO_CHAR('
+                           || a.column_name
+                           || ',''yyyy/mm/dd hh24:mm:ss '')',
+                          a.column_name
+                         ) sourcefieldname,
+                  a.data_length
+             FROM all_tab_columns a,
+                  xx_fin_translatedefinition b,
+                  xx_fin_translatevalues c
+            WHERE a.table_name = p_table_name
+	      AND a.table_name = c.source_value1
+	      AND a.column_name = c.source_value2
+              AND b.translate_id = c.translate_id
+              AND b.translation_name = 'XXCRM_SCRAMBL_FILE_FORMAT'
+              AND c.enabled_flag = 'Y'
+              AND SYSDATE BETWEEN c.start_date_active
+                              AND NVL (c.end_date_active, SYSDATE + 1)
+         ORDER BY to_number(c.source_value3);
+
+      CURSOR c2 (p_table_name VARCHAR2)
+      IS
+         SELECT UPPER (b.source_value2) column_name,
+                UPPER (b.source_value3) data_type,
+                UPPER (b.source_value4) data_length
+           FROM xx_fin_translatedefinition a,
+                xx_fin_translatevalues b
+          WHERE a.translate_id = b.translate_id
+            AND a.translation_name = 'XX_CRM_SCRAMBLER_FORMAT'
+            AND b.enabled_flag = 'Y'
+            AND SYSDATE BETWEEN b.start_date_active
+                            AND NVL (b.end_date_active, SYSDATE + 1)
+            AND b.source_value1 = p_table_name;
+
+   BEGIN
+
+
+      -- Initialize the out Parameters
+      x_errbuf := NULL;
+      x_retcode := 0;
+----------------------------------------------------------------------
+---                File Creation Setup                             ---
+----------------------------------------------------------------------
+      lc_date_time := TO_CHAR (SYSDATE, 'yyyymmdd_hh24miss');
+      l_file_number := l_file_number + 1;
+
+		--Replaced from v$instance to USERENV DB_NAME --Added for LNS
+		SELECT LOWER(SUBSTR(sys_context('USERENV', 'DB_NAME'),1,8))
+		INTO lc_instance_name
+		FROM dual;
+
+       fnd_file.put_line(fnd_file.log,'Instance Name :'||lc_instance_name);
+
+         SELECT b.target_value3,UPPER (b.target_value4),UPPER (b.target_value11),UPPER (b.target_value12)
+		   INTO lv_directory,lc_file_name_env,lc_destpath,lc_archpath
+           FROM xx_fin_translatedefinition a,
+                xx_fin_translatevalues b
+          WHERE a.translate_id = b.translate_id
+            AND a.translation_name = 'XXOD_WEBCOLLECT_INTERFACE'
+            AND b.enabled_flag = 'Y'
+            AND SYSDATE BETWEEN b.start_date_active
+                            AND NVL (b.end_date_active, SYSDATE + 1)
+            AND b.source_value1 = 'XX_AR_SS_BAD_CONT_TIEBACK';
+
+      lc_file_name :=
+         lc_file_name_env || '_' || lc_date_time || '-' || l_file_number||'.txt';
+
+      lc_message1 := lv_table_name || ' Feed Generate Init.';
+      fnd_file.put_line (fnd_file.LOG, lc_message1);
+      fnd_file.put_line (fnd_file.LOG, ' ');
+     fnd_file.put_line(fnd_file.log,' File Name is :'||lc_file_name);
+     fnd_file.put_line(fnd_file.log,' Message is :'||lc_message1);
+
+      BEGIN
+         SELECT TRIM (' ' FROM directory_path || '/' || lc_file_name)
+           INTO lc_sourcepath
+           FROM all_directories
+          WHERE directory_name = 'XXCRM_OUTBOUND';
+
+         lc_message1 := ' File creating is ' || lc_sourcepath;
+         fnd_file.put_line (fnd_file.LOG, lc_message1);
+         fnd_file.put_line (fnd_file.LOG, ' ');
+        fnd_file.put_line(fnd_file.log,' Message is :'||lc_message1);
+        fnd_file.put_line(fnd_file.log,' Source Path is :'||lc_sourcepath);
+        fnd_file.put_line(fnd_file.log,' Destination Path is :'||lc_destpath);
+        fnd_file.put_line(fnd_file.log,' Archive Path is :'||lc_archpath);
+
+      EXCEPTION
+         WHEN OTHERS
+         THEN
+         lc_message1 := ' Invalid File Path. Files will not create. ';
+         fnd_file.put_line (fnd_file.LOG, lc_message1);
+         fnd_file.put_line (fnd_file.LOG, ' ');
+      END;
+
+      BEGIN
+         SELECT UPPER (b.source_value2) file_record_limit
+           INTO l_file_record_limit
+           FROM xx_fin_translatedefinition a,
+                xx_fin_translatevalues b
+          WHERE a.translate_id = b.translate_id
+            AND a.translation_name = 'XX_CRM_SCRAM_FILE_REC_LIM'
+            AND b.enabled_flag = 'Y'
+            AND SYSDATE BETWEEN b.start_date_active
+                            AND NVL (b.end_date_active, SYSDATE + 1)
+            AND b.source_value1 = lv_table_name;
+      EXCEPTION
+         WHEN OTHERS
+         THEN
+            l_file_record_limit := 10000;
+      END;
+
+      lc_message1 := ' File record limit is ' || l_file_record_limit;
+      fnd_file.put_line (fnd_file.LOG, lc_message1);
+      fnd_file.put_line (fnd_file.LOG, ' ');
+      lc_stmt_str := '''';
+      lc_heading := '';
+
+     fnd_file.put_line(fnd_file.log,'Message is :'||lc_message1);
+
+      FOR tabcol IN c1 (lv_table_name)
+      LOOP
+         lc_heading := lc_heading || tabcol.exportfieldname || lv_delimiter;
+         lc_sourcefieldname := '';
+
+         FOR scrambcol IN c2 (lv_table_name)
+         LOOP
+            IF UPPER (tabcol.exportfieldname) = scrambcol.column_name
+            THEN
+               IF scrambcol.data_type = 'NUMBER'
+               THEN
+--                  lc_low :=  rpad('1',NVL(scrambcol.data_length,tabcol.data_length),'0');
+--                  lc_high := rpad('9',NVL(scrambcol.data_length,tabcol.data_length),'9');
+                  lc_sourcefieldname :=
+                        'trunc(dbms_random.value('
+                     || 'rpad(''1'',NVL(LENGTH('
+                     || tabcol.exportfieldname
+                     || '),''0''),''0'')'
+                     || ','
+                     || 'rpad(''9'',NVL(LENGTH('
+                     || tabcol.exportfieldname
+                     || '),''0''),''9'')))';
+               ELSIF scrambcol.data_type = 'VARCHAR2'
+               THEN
+                  lc_sourcefieldname :=
+                        'dbms_random.string(''a'',NVL(LENGTH('
+                     || tabcol.exportfieldname
+                     || '),''0''))';
+               END IF;
+            --fnd_file.put_line(fnd_file.log,' Source Field Name1 is :'||lc_sourcefieldname);
+               EXIT;
+            END IF;
+         END LOOP;
+
+         IF lc_sourcefieldname IS NULL
+         THEN
+            lc_sourcefieldname := tabcol.sourcefieldname;
+            --DBMS_OUTPUT.PUT_LINE(' Source Field Name2 is :'||lc_sourcefieldname);
+         END IF;
+
+         lc_stmt_str :=
+            lc_stmt_str || '''||' || lc_sourcefieldname || '||'''
+            || lv_delimiter;
+
+           --fnd_file.put_line(fnd_file.log,' lc_stmt_str is :'||lc_stmt_str);
+      END LOOP;
+
+      lc_stmt_str := TRIM (SUBSTR(lv_delimiter,2,1) FROM lc_stmt_str);
+      lc_stmt_str := TRIM ('|' FROM lc_stmt_str);
+      lc_stmt_str := TRIM ('''' FROM lc_stmt_str);
+      lc_stmt_str := TRIM ('|' FROM lc_stmt_str);
+      lc_stmt_str := 'SELECT ' || lc_stmt_str || ' FROM APPS.' || lv_table_name || ' WHERE EXPORT_STATUS IS NULL';
+      fnd_file.put_line (fnd_file.LOG, lc_stmt_str);
+
+      v_file := UTL_FILE.fopen (LOCATION          => lc_file_loc,
+                         filename          => lc_file_name,
+                         open_mode         => 'w',
+                         max_linesize      => 32767
+                        );
+      ln_total_cnt := 0;
+      ln_file_record_cnt :=0;
+
+         SELECT xx_crmar_int_log_s.NEXTVAL
+           INTO lc_nextval
+           FROM DUAL;
+
+----------------------------------------------------------------------
+---                UTL File Generation                             ---
+----------------------------------------------------------------------
+      OPEN lc_exp_cursor FOR lc_stmt_str;
+
+      -- Fetch rows from result set one at a time:
+      LOOP
+         BEGIN
+            FETCH lc_exp_cursor
+             INTO lc_exp_record;
+
+            EXIT WHEN lc_exp_cursor%NOTFOUND;
+            UTL_FILE.put_line (v_file, lc_exp_record);
+            ln_total_cnt := ln_total_cnt + 1;
+	    ln_file_record_cnt := ln_file_record_cnt+1;
+
+          BEGIN
+
+            UPDATE XX_AR_SS_BAD_CONT_TIEBACK
+               SET EXPORT_STATUS = 'Y'
+             WHERE EXPORT_STATUS IS NULL;
+
+            COMMIT;
+
+          EXCEPTION
+          WHEN OTHERS THEN
+          NULL;--DBMS_OUTPUT.PUT_LINE('EXCEPTION:'||SQLERRM);
+          END;
+
+--------------------------------------------------------------
+---                Split File                              ---
+--------------------------------------------------------------
+            IF MOD (ln_total_cnt, l_file_record_limit) = 0
+            THEN
+               lc_message1:= '';
+               UTL_FILE.put_line (v_file, lc_message1);
+               lc_message1:= 'Total number of Records Fetched on '||SYSDATE||' is: '||ln_file_record_cnt;
+               UTL_FILE.put_line (v_file, lc_message1);
+               lc_message1:= 'File name '||lc_file_name ||' have total number of Records '||ln_file_record_cnt ||' as of '||SYSDATE||' .';
+               fnd_file.put_line (fnd_file.LOG, lc_message1);
+               fnd_file.put_line (fnd_file.LOG, '');
+	       ln_file_record_cnt :=0;
+	       UTL_FILE.fclose (v_file);
+	       lc_message1 := lc_file_name || ' File Copy Init';
+               fnd_file.put_line (fnd_file.LOG, lc_message1);
+               fnd_file.put_line (fnd_file.LOG, '');
+               INSERT INTO xx_crmar_file_log
+                           (program_id
+                           ,program_name
+                           ,program_run_date
+                           ,filename
+                           ,total_records
+                           ,status
+                           ,request_id -- V1.1, Added request_id
+                           )
+                    VALUES (lc_nextval
+                           ,ln_program_name
+                           ,SYSDATE
+                           ,lc_file_name
+                           ,ln_file_record_cnt
+                           ,'SUCCESS'
+                           ,FND_GLOBAL.CONC_REQUEST_ID -- V1.1, Added request_id
+                           );
+
+             fnd_file.put_line(fnd_file.log,'After inserting into xx_crmar_file_log table');
+             fnd_file.put_line(fnd_file.log,'Before Creating zip file to archieve folder');
+
+              -- Creating zip file to archieve folder
+               xxcrm_table_scrambler_pkg.Zip_File(p_sourcepath    => lc_sourcepath ,
+                        p_destpath      => lc_archpath
+                        );
+             fnd_file.put_line(fnd_file.log,'After Creating zip file to archieve folder');
+             fnd_file.put_line(fnd_file.log,'Before Creating Source file to Destination');
+              -- Creating Source file to Destination
+               xxcrm_table_scrambler_pkg.copy_file (p_sourcepath      => lc_sourcepath,
+                          p_destpath        => lc_destpath
+                         );
+             fnd_file.put_line(fnd_file.log,'After Creating Source file to Destination');
+               COMMIT;
+
+               lc_message1 := lc_file_name || ' File Copy Complete';
+               fnd_file.put_line (fnd_file.LOG, lc_message1);
+               fnd_file.put_line (fnd_file.LOG, '');
+               l_file_number := l_file_number + 1;
+               lc_file_name :=
+                     lc_file_name_env
+                  || '_'
+                  || lc_date_time
+                  || '-'
+                  || l_file_number
+                  || '.dat';
+
+              fnd_file.put_line(fnd_file.log,'Message is :'||lc_message1);
+              fnd_file.put_line(fnd_file.log,'File Name is :'||lc_file_name);
+               BEGIN
+                  SELECT TRIM (' ' FROM directory_path || '/' || lc_file_name)
+                    INTO lc_sourcepath
+                    FROM all_directories
+                   WHERE directory_name = 'XXCRM_OUTBOUND';
+
+                  lc_message1 := ' File creating is ' || lc_sourcepath;
+                  fnd_file.put_line (fnd_file.LOG, lc_message1);
+                  fnd_file.put_line (fnd_file.LOG, ' ');
+                 fnd_file.put_line(fnd_file.log,' Source Path is :'||lc_sourcepath);
+                 fnd_file.put_line(fnd_file.log,' Destination Path is :'||lc_destpath);
+                 fnd_file.put_line(fnd_file.log,' Archive Path is :'||lc_archpath);
+               EXCEPTION
+                  WHEN OTHERS
+                  THEN
+                     NULL;
+               END;
+
+               v_file :=
+                  UTL_FILE.fopen (LOCATION          => lc_file_loc,
+                                  filename          => lc_file_name,
+                                  open_mode         => 'w',
+                                  max_linesize      => 32767
+                                 );
+            END IF;
+-------------------------------------------------------------------
+         EXCEPTION
+            WHEN OTHERS
+            THEN
+               lc_token :=
+                     ' Error -' || SQLCODE || ':' || SUBSTR (SQLERRM, 1, 256);
+               fnd_message.set_token ('MESSAGE', lc_token);
+               lc_message := fnd_message.get;
+               fnd_file.put_line (fnd_file.LOG, ' ');
+               fnd_file.put_line (fnd_file.LOG,
+                                  'An error occured. Details : ' || lc_token
+                                 );
+               fnd_file.put_line (fnd_file.LOG, ' ');
+         END;
+      END LOOP;
+
+      -- Close cursor:
+      CLOSE lc_exp_cursor;
+
+	       lc_message1:= '';
+               UTL_FILE.put_line (v_file, lc_message1);
+               lc_message1:= 'Total number of Records Fetched on '||SYSDATE||' is: '||ln_file_record_cnt;
+               UTL_FILE.put_line (v_file, lc_message1);
+               lc_message1:= 'File name '||lc_file_name ||' have total number of Records '||ln_file_record_cnt ||' as of '||SYSDATE||' .';
+               fnd_file.put_line (fnd_file.LOG, lc_message1);
+               fnd_file.put_line (fnd_file.LOG, '');
+      UTL_FILE.fclose (v_file);
+      lc_message1 := lv_table_name || ' Feed Generate Complete.';
+      fnd_file.put_line (fnd_file.LOG, lc_message1);
+      fnd_file.put_line (fnd_file.LOG, ' ');
+
+               INSERT INTO xx_crmar_file_log
+                           (program_id
+                           ,program_name
+                           ,program_run_date
+                           ,filename
+                           ,total_records
+                           ,status
+                           ,request_id -- V1.1, Added request_id
+                           )
+                    VALUES (lc_nextval
+                           ,ln_program_name
+                           ,SYSDATE
+                           ,lc_file_name
+                           ,ln_file_record_cnt
+                           ,'SUCCESS'
+                           ,FND_GLOBAL.CONC_REQUEST_ID -- V1.1, Added request_id
+                           );
+
+      --Summary data inserting into log table
+      INSERT INTO xx_crmar_int_log
+                  (Program_Run_Id
+                  ,program_name
+                  ,program_short_name
+                  ,module_name
+                  ,program_run_date
+                  ,filename
+                  ,total_files
+                  ,total_records
+                  ,status
+                  ,MESSAGE
+                  ,request_id -- V1.1, Added request_id
+                  )
+           VALUES (lc_nextval
+                  ,ln_program_name
+                  ,ln_program_short_name
+                  ,'XXCRM'
+                  ,SYSDATE
+                  ,lc_file_name
+                  ,'1'
+                  ,ln_file_record_cnt
+                  ,'SUCCESS'
+                  ,'File generated'
+                  ,FND_GLOBAL.CONC_REQUEST_ID -- V1.1, Added request_id
+                  );
+
+
+---                Copying File                                    ---
+---  File is generated in $XXCRM/outbound directory. The file has  ---
+---  to be moved to $XXCRM/FTP/Out directory. As per OD standard   ---
+---  any external process should not poll any EBS directory.       ---
+----------------------------------------------------------------------
+      lc_message1 := lc_file_name || ' File Copy Init';
+      fnd_file.put_line (fnd_file.LOG, lc_message1);
+      fnd_file.put_line (fnd_file.LOG, '');
+     fnd_file.put_line(fnd_file.log,'Creating zip file to archieve folder');
+     fnd_file.put_line(fnd_file.log,'Creating Source file to Destination');
+    -- Creating zip file to archieve folder
+               xxcrm_table_scrambler_pkg.Zip_File(p_sourcepath    => lc_sourcepath ,
+                        p_destpath      => lc_archpath
+                        );
+
+     fnd_file.put_line(fnd_file.log,lc_message1);
+                xxcrm_table_scrambler_pkg.copy_file (p_sourcepath => lc_sourcepath,
+                          p_destpath => lc_destpath
+                          );
+
+      COMMIT;
+      lc_message1 := lc_file_name || ' File Copy Complete';
+      fnd_file.put_line (fnd_file.LOG, lc_message1);
+      fnd_file.put_line (fnd_file.LOG, '');
+     fnd_file.put_line(fnd_file.log,lc_message1);
+----------------------------------------------------------------------
+---         Printing summary report in the LOG file                ---
+----------------------------------------------------------------------
+      lc_message1 := 'Total number of ' || lv_table_name || ' Records : ';
+      fnd_file.put_line (fnd_file.LOG, lc_message1 || TO_CHAR (ln_total_cnt));
+      fnd_file.put_line (fnd_file.LOG, ' ');
+     fnd_file.put_line(fnd_file.log,lc_message1);
+      COMMIT;
+   EXCEPTION
+      WHEN UTL_FILE.invalid_path
+      THEN
+         UTL_FILE.fclose (v_file);
+         lc_token := lc_file_loc;
+         fnd_message.set_token ('MESSAGE', lc_token);
+         lc_message := fnd_message.get;
+         fnd_file.put_line (fnd_file.LOG, ' ');
+         fnd_file.put_line (fnd_file.LOG,
+                            'An error occured. Details : ' || lc_message
+                           );
+         fnd_file.put_line (fnd_file.LOG, ' ');
+        fnd_file.put_line(fnd_file.log,'EXCEPTION :'||SQLERRM);
+         x_retcode := 2;
+      WHEN UTL_FILE.write_error
+      THEN
+         UTL_FILE.fclose (v_file);
+         lc_token := lc_file_loc;
+         fnd_message.set_token ('MESSAGE1', lc_token);
+         lc_token := lc_file_name;
+         fnd_message.set_token ('MESSAGE2', lc_token);
+         lc_message := fnd_message.get;
+         fnd_file.put_line (fnd_file.LOG, ' ');
+         fnd_file.put_line (fnd_file.LOG,
+                            'An error occured. Details : ' || lc_token
+                           );
+         fnd_file.put_line (fnd_file.LOG, ' ');
+        fnd_file.put_line(fnd_file.log,'EXCEPTION :'||SQLERRM);
+         x_retcode := 2;
+      WHEN UTL_FILE.access_denied
+      THEN
+         UTL_FILE.fclose (v_file);
+         lc_token := lc_file_loc;
+         fnd_message.set_token ('MESSAGE1', lc_token);
+         lc_token := lc_file_name;
+         fnd_message.set_token ('MESSAGE2', lc_token);
+         lc_message := fnd_message.get;
+         fnd_file.put_line (fnd_file.LOG, ' ');
+         fnd_file.put_line (fnd_file.LOG,
+                            'An error occured. Details : ' || lc_token
+                           );
+         fnd_file.put_line (fnd_file.LOG, ' ');
+        fnd_file.put_line(fnd_file.log,'EXCEPTION :'||SQLERRM);
+         x_retcode := 2;
+      WHEN OTHERS
+      THEN
+         UTL_FILE.fclose (v_file);
+         lc_token := SQLCODE || ':' || SUBSTR (SQLERRM, 1, 256);
+--       fnd_file.put_line(fnd_file.log,lc_token);
+         fnd_message.set_token ('MESSAGE', lc_token);
+         lc_message := fnd_message.get;
+         fnd_file.put_line (fnd_file.LOG, ' ');
+         fnd_file.put_line (fnd_file.LOG,
+                            'An error occured. Details : ' || lc_token
+                           );
+         fnd_file.put_line (fnd_file.LOG, ' ');
+        fnd_file.put_line(fnd_file.log,'EXCEPTION :'||SQLERRM);
+         x_retcode := 2;
+   END generate_table_export;
+
 /*********************************************************************
 * After report trigger for self service
 *********************************************************************/
