@@ -716,7 +716,7 @@ BEGIN
                 || lv_exp_date
                 || '",
             "amount": "'
-                ||regexp_replace(p_amount, '[^0-9]', '')
+                ||p_amount
                 ||'",
             "cardType": "'
                 || lv_card_type
@@ -956,7 +956,7 @@ BEGIN
       WHEN OTHERS THEN
         ln_error :=-1;
     END;
-    
+
     x_reqresp.Response.Status  := ln_ret_code;
     x_reqresp.Authcode         := lv_authCode;
     x_reqresp.AVSCode          := lv_avsCode;
@@ -966,7 +966,7 @@ BEGIN
     x_reqresp.PmtInstr_Type    := lv_card_type;
     x_reqresp.BEPErrCode       := ln_ret_code;
     x_reqresp.BEPErrMessage    := lv_message;
-    
+
     IF ln_error !=0 THEN
         BEGIN
            SELECT meaning
@@ -2486,3 +2486,4 @@ END Create_Authorization;
 
 END;
 /
+SHOW ERROR;
