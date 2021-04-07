@@ -716,7 +716,7 @@ BEGIN
                 || lv_exp_date
                 || '",
             "amount": "'
-                ||p_amount
+                ||to_char(round(p_amount,2),'fm990.00')
                 ||'",
             "cardType": "'
                 || lv_card_type
