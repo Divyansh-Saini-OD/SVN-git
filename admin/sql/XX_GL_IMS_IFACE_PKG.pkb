@@ -15,6 +15,7 @@ AS
   -- | Version     Date         Author               Remarks                                      |
   -- | =========   ===========  =============        =============================================|
   -- | 1.0         01/02/2021   Amit Kumar			 I3131-GL Inventory Journals IMS to EBS		  |
+  -- | 1.1         07/04/2021   Amit Kumar			 Split Debit and Credit Lines in Staging	  |
   -- +============================================================================================+
   gc_package_name      CONSTANT all_objects.object_name%TYPE := 'XX_GL_IMS_IFACE_PKG';
   gc_ret_success       CONSTANT VARCHAR2(20)                 := 'SUCCESS';
@@ -1200,8 +1201,6 @@ BEGIN
 
 		LC_GL_INTERFACE_NA_STG.SEGMENT7                 		:= NVL(TO_CHAR(l_table(10)),'000000')     ;  --FUTURE
 		LC_GL_INTERFACE_NA_STG.LEGACY_SEGMENT7             		:= NVL(TO_CHAR(l_table(10)),'000000')     ;  --FUTURE
-		LC_GL_INTERFACE_NA_STG.ENTERED_DR		                := NVL(l_table(11),0)  ;
-		LC_GL_INTERFACE_NA_STG.ENTERED_CR		                := NVL(l_table(12),0)  ;
 		LC_GL_INTERFACE_NA_STG.REFERENCE10                		:= l_table(13)		                ; --LINE_DESCRIPTION
 		LC_GL_INTERFACE_NA_STG.CURRENCY_CODE                    := l_table(14)		                ; --CURRENCY_CODE
 		LC_GL_INTERFACE_NA_STG.CURRENCY_CONVERSION_RATE         := TO_NUMBER(RTRIM(RTRIM(l_table(15),chr(10)),chr(13)))    ; --EXCHANGE_RATE
@@ -1227,13 +1226,25 @@ BEGIN
 		l_error_msg := 'Error Deriving Journal Category for Source "'||l_table(3)||'" at Line# ' ||l_datafile_rec_number;
 		UPDATE_FILE_LOAD_ERROR('GL_CATEGORY_ERROR',gc_journal_source_name,L_ERROR_MSG,P_FILE_NAME,l_error_msg, l_group_id);
 		END;
-		
+
 		LC_GL_INTERFACE_NA_STG.USER_JE_CATEGORY_NAME:=l_journal_category;
 		LC_GL_INTERFACE_NA_STG.REFERENCE5:=l_header_desc||' '||l_table(2);				 --Header_Description
 		LC_GL_INTERFACE_NA_STG.REFERENCE2:=l_header_desc||' '||l_table(2);				 --Batch_Description
 		
-	  /*Inserting the data into Staging Table.*/
-	  INSERT INTO XX_GL_INTERFACE_NA_STG VALUES LC_GL_INTERFACE_NA_STG;
+		/*Seperating Credit and Debit Lines*/
+		FOR j IN 1..2   
+        LOOP
+			IF j =1 THEN
+                LC_GL_INTERFACE_NA_STG.ENTERED_DR		                := NVL(l_table(11),0)  ;
+				LC_GL_INTERFACE_NA_STG.ENTERED_CR		                := NULL  			   ;
+            END IF;
+			IF j =2 THEN
+                LC_GL_INTERFACE_NA_STG.ENTERED_DR		                := NULL  			   ;
+				LC_GL_INTERFACE_NA_STG.ENTERED_CR		                := NVL(l_table(12),0)  ;
+            END IF;		
+		/*Inserting the data into Staging Table.*/
+		INSERT INTO XX_GL_INTERFACE_NA_STG VALUES LC_GL_INTERFACE_NA_STG;
+		END LOOP;
 
       l_rec_cnt := l_rec_cnt + 1;
 	EXCEPTION
@@ -1245,7 +1256,7 @@ BEGIN
   
   /*Close the file*/
   utl_file.fclose(l_filehandle);   
-	logit(p_message =>'UTL File Close');  
+  logit(p_message =>'UTL File Close');  
 
   COMMIT;
 
