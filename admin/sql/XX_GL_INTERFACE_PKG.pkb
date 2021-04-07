@@ -4490,7 +4490,7 @@ lc_debug_prog            VARCHAR2(25):='UPDATE COGS FLAG';
                                    );
 
 ----Added for defect
-           -- XX_GL_GLSI_INTERFACE_PKG.CREATE_SUSPENSE_LINES(p_grp_id,ln_sob_id);  -- Added for suspense lines posting defect # 5327
+            XX_GL_GLSI_INTERFACE_PKG.CREATE_SUSPENSE_LINES(p_grp_id,ln_sob_id);  -- Added for suspense lines posting defect # 5327
                 ----------------------------------------------------------------
                 -- Open sub-cursor to ck balances and write outputselect sob ids
                 ----------------------------------------------------------------
@@ -4913,4 +4913,4 @@ END IF;
 
 END XX_GL_INTERFACE_PKG;
 /
-SHOW ERROR;
+show error;

@@ -1,15 +1,4 @@
-SET SHOW         OFF
-SET VERIFY       OFF
-SET ECHO         OFF
-SET TAB          OFF
-SET TERM         ON
-
-PROMPT Creating Package Specification XX_AR_CREATE_ACCT_MASTER_PKG 
-PROMPT Program exits if the creation is not successful
-
-WHENEVER SQLERROR CONTINUE
-CREATE OR REPLACE
-PACKAGE BODY XX_GL_GLSI_INTERFACE_PKG
+create or replace PACKAGE BODY XX_GL_GLSI_INTERFACE_PKG
 AS
 -- +===================================================================+
 -- |                  Office Depot - Project Simplify                  |
@@ -28,13 +17,14 @@ AS
 -- |1.0      25-JUN-2007  P.Marco				       |
 -- |1.1      24-FEB-2008 Raji              Fixed Defect 4889           |
 -- |1.2      10-MAR-2008 Raji              Fixed defect 5308           |
--- |1.3      11-MAR-2008 Raji              Fixed defect 5330           |  
+-- |1.3      11-MAR-2008 Raji              Fixed defect 5330           |
 -- |1.4      12-MAR-2008 Raji              Fixed defect 5328           |
 -- |1.5       08-29/2008  Chandarakala D   Changes for defect  5327    |
 -- |1.6      07-JUL-2009 Ganesan JV        Fixed defect 538            |
 -- |1.7      10-Jun-2013 Paddy Sanjeevi    Modified for defect 18792   |
 -- |1.8      18-Jul-2013 Sheetal           I0463 - Changes for R12     |
 -- |                                       Upgrade retrofit.           |
+-- |2.0		 07-Apr-2021 Amit Kumar	       I3131-Commented logic for CREATE_SUSPENSE_LINES	
 -- +===================================================================+
 
     gc_translate_error VARCHAR2(5000);
@@ -199,7 +189,7 @@ AS
              EXIT WHEN get_je_lines_cursor%NOTFOUND;
 
                lc_error_flg  := 'N';
-               
+
                XX_CNV_GL_PSFIN_PKG.TRANSLATE_PS_VALUES(
                                   p_ps_business_unit          => lc_ps_company
                                  ,p_ps_department             => lc_ps_cost_center
@@ -221,11 +211,11 @@ AS
 
 
               IF gc_error_message IS NOT NULL THEN
-              
+
                     gn_error_count := gn_error_count + 1;
-                    
-----Defect 5330 and 5328                                
-                     IF lc_ora_company IS NULL THEN 
+
+----Defect 5330 and 5328
+                     IF lc_ora_company IS NULL THEN
                      lc_ora_company := lc_ps_company;
                      END IF;
                      IF lc_ora_cost_center IS NULL THEN
@@ -237,7 +227,7 @@ AS
                      IF lc_ora_location IS NULL THEN
                      lc_ora_location := lc_ps_location;
                      END IF;
-                     
+
                      XX_GL_INTERFACE_PKG.PROCESS_ERROR
                                    (p_rowid        =>  ln_row_id
                                    ,p_fnd_message  =>  'XX_GL_TRANS_VALUE_ERROR'
@@ -247,14 +237,14 @@ AS
                                    ,p_details      =>  SUBSTR('Derived Value Error: '||gc_error_message,1,100)
                                    ,p_group_id     =>  gn_group_id
                                    );
-                                   
+
                      lc_error_flg := 'Y';
-                     
+
                      ELSE
-                     
+
                      lc_error_flg := 'N';
-                     
-               
+
+
                      lc_debug_msg :=   gc_error_message;
                      DEBUG_MESSAGE (lc_debug_msg);
 
@@ -319,7 +309,7 @@ AS
                 END;
 
             ELSE
-            
+
              BEGIN
                    	UPDATE XX_GL_INTERFACE_NA_STG
          	        SET    segment1              =  lc_ora_company
@@ -367,7 +357,7 @@ AS
                          -------------------------------
                 END;
 
-                
+
             END IF;
 
        END LOOP;
@@ -748,7 +738,7 @@ AS
 
 	       gn_error_count:=ln_itg_error_cnt;
 
-	    ELSE	
+	    ELSE
               GLSI_DERIVE_VALUES;
 	    END IF;
 
@@ -814,9 +804,9 @@ EXCEPTION
                                         ||'Group ID '   || gn_group_id
                                         ||' File Name ' || lc_reference24
                                            ||' on staging table ';
-                                           
+
                 lc_mail_subject :=  gc_source_name ||' Duplicate File is processed in the staging table!' ;
-                                           
+
                 ln_conc_id := fnd_request.submit_request( application => 'XXFIN'
 						,program     => 'XXGLINTERFACEEMAIL'
 						,description => NULL
@@ -825,9 +815,9 @@ EXCEPTION
                      				,argument1   => gn_request_id
                                                 ,argument2   => gc_source_name
                                                 ,argument3   => lc_mail_subject
-                                                );  
+                                                );
                 COMMIT;
-                
+
                 fnd_message.clear();
           	fnd_message.set_name('FND','FS-UNKNOWN');
 	        fnd_message.set_token('ERROR',lc_debug_msg);
@@ -850,9 +840,9 @@ EXCEPTION
                 lc_debug_msg := '    No data exists for GROUP_ID: '
                                            || gn_group_id
                                            ||' on staging table ';
-                                           
+
                 lc_mail_subject :=  gc_source_name ||'No data exists for GROUP_ID: '|| gn_group_id ||' on staging table ' ;
-                                           
+
                 ln_conc_id := fnd_request.submit_request( application => 'XXFIN'
 						,program     => 'XXGLINTERFACEEMAIL'
 						,description => NULL
@@ -861,7 +851,7 @@ EXCEPTION
                      				,argument1   => gn_request_id
                                                 ,argument2   => gc_source_name
                                                 ,argument3   => lc_mail_subject
-                                                );  
+                                                );
                 COMMIT;
 
                 fnd_message.clear();
@@ -902,18 +892,18 @@ EXCEPTION
      END PROCESS_JOURNALS;
 
 --+===================================================================+
--- | Name  :CREATE_SUSPENSE_LINES                                      
+-- | Name  :CREATE_SUSPENSE_LINES
 -- | Description : This procedure will be used to find
--- |               the difference in balance of the credit 
--- |               and debit amount of the journal entry  
+-- |               the difference in balance of the credit
+-- |               and debit amount of the journal entry
 -- |               and create a new suspense line with it
--- |                  
--- |               
--- | Parameters : p_grp_id, 
--- | 
--- |                                                                   
+-- |
+-- |
+-- | Parameters : p_grp_id,
+-- |
+-- |
 -- +===================================================================+
- 
+
 PROCEDURE CREATE_SUSPENSE_LINES(p_grp_id NUMBER
 				,p_sob_id NUMBER
                                 )
@@ -926,11 +916,11 @@ ln_created_by  NUMBER := fnd_profile.value('USER_ID');
 lc_debug_msg VARCHAR2(250);
 
 CURSOR lcu_unbalanced_lines IS
-SELECT 
+SELECT
                           status
                          ,XGINS.set_of_books_id
                          --,GSOB.currency_code sob_curr Commented as part of R12 Retrofit
-                         ,GL.currency_code sob_curr --Added as part of R12 Retrofit                        
+                         ,GL.currency_code sob_curr --Added as part of R12 Retrofit
                          ,date_created
                          ,actual_flag
                          ,group_id
@@ -958,7 +948,7 @@ FROM xx_gl_interface_na_stg XGINS
 	  , gl_ledgers GL --Added as part of R12 Retrofit
       ,  xx_fin_translatedefinition XFTD
       ,  xx_fin_translatevalues  XFTV
-    WHERE user_je_source_name = lc_source_name 
+    WHERE user_je_source_name = lc_source_name
     --AND XGINS.set_of_books_id =  GSOB.set_of_books_id(+) Commented as part of R12 Retrofit
 	AND XGINS.set_of_books_id =  GL.ledger_id(+) --Added as part of R12 Retrofit
     AND XFTD.translation_name = 'OD_GL_GLSI_DEFAULTS'
@@ -970,7 +960,7 @@ FROM xx_gl_interface_na_stg XGINS
     AND  (NVL(derived_val,'INVALID')    = 'INVALID'
     OR   NVL(derived_sob,'INVALID')    = 'INVALID'
     OR   NVL(balanced   ,'UNBALANCED') = 'UNBALANCED')
-    GROUP BY 
+    GROUP BY
 	                  status
                          ,XGINS.set_of_books_id
                          --,GSOB.currency_code  Commented as part of R12 Retrofit
@@ -997,6 +987,12 @@ FROM xx_gl_interface_na_stg XGINS
 	               ,target_Value7
                        having sum(nvl(entered_dr,0))-sum(nvl(entered_cr,0)) <> 0;
 BEGIN
+
+/*Version 2.0 -- to comment the entire logic being performed by CREATE_SUSPENSE_LINES procedure.*/
+
+NULL;
+
+/*
      BEGIN
        SELECT distinct user_je_source_name
        INTO lc_src_name
@@ -1009,10 +1005,10 @@ BEGIN
 
 
 IF  lc_src_name = lc_source_name THEN
-     
+
        FOR lcu_unbalanced_rec in lcu_unbalanced_lines
-            LOOP  
-		BEGIN           
+            LOOP
+		BEGIN
                        INSERT INTO  XX_GL_INTERFACE_NA_STG
                          (status
                          ,set_of_books_id
@@ -1036,7 +1032,7 @@ IF  lc_src_name = lc_source_name THEN
 	      		 ,segment1
 	       		 ,segment2
 	       		 ,segment3
-	      		 ,segment4 
+	      		 ,segment4
 	      		 ,segment5
 	      		 ,segment6
 	      		 ,segment7
@@ -1079,7 +1075,7 @@ IF  lc_src_name = lc_source_name THEN
 	  END;
           -- EXIT WHEN lcu_unbalanced_lines%NOTFOUND;
 
-     END LOOP; 
+     END LOOP;
 FND_FILE.PUT_LINE(FND_FILE.LOG,'No of suspense line created for group_id:  ' || p_grp_id||' is ' || ln_suspense_line_counter);
 
 
@@ -1088,6 +1084,7 @@ FND_FILE.PUT_LINE(FND_FILE.LOG,'No of suspense line created for group_id:  ' || 
      DEBUG_MESSAGE (lc_debug_msg,1);
  NULL;
  END IF;
+ 
 
 EXCEPTION
        WHEN OTHERS THEN
@@ -1097,13 +1094,14 @@ EXCEPTION
                          fnd_message.set_token('ROUTINE',lc_debug_msg
                                                ||gc_debug_pkg_nm
                                                ||lc_debug_prog);
-                                   
+
               --  x_return_code    := 1;
              --   x_return_message := fnd_message.get();
- END CREATE_SUSPENSE_LINES; 
+ */
+ END CREATE_SUSPENSE_LINES;
 
 
 
 END XX_GL_GLSI_INTERFACE_PKG;
 /
-SHO ERR;
+SHOW ERROR;
