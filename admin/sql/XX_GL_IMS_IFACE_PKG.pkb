@@ -198,7 +198,7 @@ END email_error_html_msg;
 *********************************************************************/
 PROCEDURE logit(
     p_message IN VARCHAR2,
-    p_force   IN BOOLEAN DEFAULT TRUE)
+    p_force   IN BOOLEAN DEFAULT FALSE)
 IS
   lc_message VARCHAR2(2000) := NULL;
 BEGIN
@@ -1087,9 +1087,7 @@ BEGIN
       END IF;
       
 	   l_datafile_rec_number:=l_datafile_rec_number+1;
-	  
-	   --logit(p_message =>'F Line:# '||l_datafile_rec_number ||' --> '|| l_newline);
-	  
+	   
 	  /*Trimming extra whitespaces using regular exp between two commas*/
 	  /*SELECT regexp_replace(
          l_newline  ,
@@ -1097,15 +1095,18 @@ BEGIN
          ','
        ) regexp
 	   INTO l_new_line
-	   from DUAL; 	  
-	   logit(p_message =>'regexp Line:# '||l_datafile_rec_number ||' --> '|| l_new_line);*/
+	   from DUAL;*/
 		
-        parse_datafile_line(l_newline,l_table,l_nfields,l_delimeter,l_error_msg,l_retcode);
+      parse_datafile_line(l_newline,l_table,l_nfields,l_delimeter,l_error_msg,l_retcode);
 		
       IF l_retcode = '2' THEN
         raise parse_exception;
       END IF;
-      	  	  
+	  
+	  IF l_table(1)='TRANSACTION DATE'
+	  THEN EXIT;
+	  END IF;
+	  
 		LC_GL_INTERFACE_NA_STG.STATUS							:= l_STATUS							;
 		LC_GL_INTERFACE_NA_STG.GROUP_ID                        	:= l_group_id                       ;
 		LC_GL_INTERFACE_NA_STG.STATUS_DESCRIPTION				:= NULL								;
@@ -1121,11 +1122,11 @@ BEGIN
 		
 		If ((TRIM(l_table(3) ) IS NOT NULL) AND ((TRIM(l_table(3) ) <> CHR(10)) OR (TRIM(l_table(3) ) <> CHR(13))))  
 			THEN
-			LC_GL_INTERFACE_NA_STG.REFERENCE1                     := l_table(3)||l_table(2)           ;  --SOURCECODE
-			LC_GL_INTERFACE_NA_STG.REFERENCE4                     := l_table(3)||l_table(2)           ;  --Journal Header
+			LC_GL_INTERFACE_NA_STG.REFERENCE1                     := TRIM(l_table(3))||TRIM(l_table(2))           ;  --SOURCECODE
+			LC_GL_INTERFACE_NA_STG.REFERENCE4                     := TRIM(l_table(3))||TRIM(l_table(2))           ;  --Journal Header
 		ELSE 
-		    LC_GL_INTERFACE_NA_STG.REFERENCE1                     := l_table(3)||l_table(2)           ;	 --SOURCECODE
-			LC_GL_INTERFACE_NA_STG.REFERENCE4                     := l_table(3)||l_table(2) 		  ;  --Journal Header		
+		    LC_GL_INTERFACE_NA_STG.REFERENCE1                     := TRIM(l_table(3))||TRIM(l_table(2))           ;	 --SOURCECODE
+			LC_GL_INTERFACE_NA_STG.REFERENCE4                     := TRIM(l_table(3))||TRIM(l_table(2)) 		  ;  --Journal Header		
 			l_error_msg := 'SOURCE_CODE Value is NULL for a line in file at Line# ' ||l_datafile_rec_number;
 			UPDATE_FILE_LOAD_ERROR('SOURCE_CODE_NULL',gc_journal_source_name,L_ERROR_MSG,P_FILE_NAME,l_error_msg, l_group_id);
 		END IF;
@@ -1135,7 +1136,7 @@ BEGIN
 			LC_GL_INTERFACE_NA_STG.SEGMENT1                       := l_table(4)                       ;  --COMPANY
 			LC_GL_INTERFACE_NA_STG.LEGACY_SEGMENT1                := l_table(4)                       ;  --COMPANY
 		ELSE 
-		    LC_GL_INTERFACE_NA_STG.SEGMENT1                       := l_table(4)                      		;  --COMPANY
+		    LC_GL_INTERFACE_NA_STG.SEGMENT1                       := l_table(4)                       ;  --COMPANY
 			LC_GL_INTERFACE_NA_STG.LEGACY_SEGMENT1                := l_table(4)                       ;  --COMPANY			
 			l_error_msg := 'COMPANY Value is NULL for a line in file at Line# ' ||l_datafile_rec_number;
 			UPDATE_FILE_LOAD_ERROR('GL_SEGMENT_NULL',gc_journal_source_name,L_ERROR_MSG,P_FILE_NAME,l_error_msg, l_group_id);
@@ -1201,7 +1202,7 @@ BEGIN
 
 		LC_GL_INTERFACE_NA_STG.SEGMENT7                 		:= NVL(TO_CHAR(l_table(10)),'000000')     ;  --FUTURE
 		LC_GL_INTERFACE_NA_STG.LEGACY_SEGMENT7             		:= NVL(TO_CHAR(l_table(10)),'000000')     ;  --FUTURE
-		LC_GL_INTERFACE_NA_STG.REFERENCE10                		:= l_table(13)		                ; --LINE_DESCRIPTION
+		LC_GL_INTERFACE_NA_STG.REFERENCE10                		:= TRIM(l_table(13))                ; --LINE_DESCRIPTION
 		LC_GL_INTERFACE_NA_STG.CURRENCY_CODE                    := l_table(14)		                ; --CURRENCY_CODE
 		LC_GL_INTERFACE_NA_STG.CURRENCY_CONVERSION_RATE         := TO_NUMBER(RTRIM(RTRIM(l_table(15),chr(10)),chr(13)))    ; --EXCHANGE_RATE
 		LC_GL_INTERFACE_NA_STG.CREATED_BY                       := p_user_id                        ;
@@ -1230,8 +1231,8 @@ BEGIN
 		LC_GL_INTERFACE_NA_STG.USER_JE_CATEGORY_NAME:=l_journal_category;
 		LC_GL_INTERFACE_NA_STG.REFERENCE5:=l_header_desc||' '||l_table(2);				 --Header_Description
 		LC_GL_INTERFACE_NA_STG.REFERENCE2:=l_header_desc||' '||l_table(2);				 --Batch_Description
-		
-		/*Seperating Credit and Debit Lines*/
+			
+		/*Splitting Credit and Debit Lines*/
 		FOR j IN 1..2   
         LOOP
 			IF j =1 THEN
@@ -1404,9 +1405,9 @@ WHEN value_error THEN
 WHEN OTHERS THEN
   ROLLBACK;
   utl_file.fclose(l_filehandle);
+  logit(p_message => 'Other Error Backtrace => '||dbms_utility.format_error_backtrace);
   l_error_msg:='When Others Exception at Processing Line Number-'||l_datafile_rec_number||' in datafile.SQLERRM-'||sqlerrm;
   print_debug_msg(p_message =>l_error_msg  , p_force => true);
-    logit(p_message => 'Other Error Backtrace => '||dbms_utility.format_error_backtrace);
   exiting_sub(p_procedure_name => lc_procedure_name, p_exception_flag => TRUE);
   p_errbuf := l_error_msg;
   p_retcode:= 2;
@@ -1424,7 +1425,7 @@ PROCEDURE MAIN_LOAD_PROCESS(
     p_file_name    VARCHAR2,
 	p_file_dir	   VARCHAR2,
     p_debug_flag   VARCHAR2,
-    p_request_id   NUMBER,
+    p_request_id   NUMBER,	
 	p_user_id      NUMBER)
 IS
 
