@@ -107,3 +107,5 @@ AS
                           );
 
 END XX_EXTERNAL_USERS_BO_PUB;
+/
+show error;
