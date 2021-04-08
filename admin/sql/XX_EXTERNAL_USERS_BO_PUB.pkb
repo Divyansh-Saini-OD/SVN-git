@@ -1379,3 +1379,5 @@ PROCEDURE log_error     ( p_error_pkg      IN  VARCHAR2
    END update_access_code;
 
 END XX_EXTERNAL_USERS_BO_PUB;
+/
+show error;
