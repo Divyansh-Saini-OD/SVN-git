@@ -19,7 +19,7 @@ AS
 -- |===============                                                                                     |
 -- |Version   Date        Author             Remarks                                                    |
 -- |========  =========== ================== ===========================================================|
--- |1.0       19-Aug-2007 Ramesh Raghupathi  Initial draft version.      			 	                    |
+-- |1.0       19-Aug-2007 Ramesh Raghupathi  Initial draft version.      			 	                |
 -- |          10-Dec-2007 Yusuf Ali          Modified code for permissions flag.          		        |
 -- |          18-Jan-2008 Alok Sahay         Changed Package Name                                       |
 -- |                                         Changed Signatures to standarize return error code         |

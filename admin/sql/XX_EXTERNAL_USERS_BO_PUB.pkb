@@ -38,7 +38,7 @@ AS
 -- |                                         save_ext_user to obtain org id for instance where          |
 -- |                                         cust_acct_site_id IS NOT NULL.                                 |
 -- |            08-Jan-2008 Narayan Bh          Created new query in create_role_resp to take              |
--- |                                               ln_bill_to_site_use_id to get cust_acct_site_id from          |
+-- |                                               ln_bill_to_site_use_id to get cust_acct_site_id from    |
 -- |                                              hz_cust_site_uses_all.                                           |
 -- |          09-Jan-2008 Alok Sahay           Removed permission flag variable (not being used) for       |
 -- |                                                condition where permission flag is S/M in create role resp |
