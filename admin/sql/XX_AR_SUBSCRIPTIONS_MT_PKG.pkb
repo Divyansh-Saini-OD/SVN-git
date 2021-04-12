@@ -50,13 +50,11 @@ AS
 -- | 19.0        15-APR-2019  Sahithi K              trigger recurring SUCCESS/FAILURE email                          |
 -- |                                                 for auto renewed BS2 contracts NAIT-90173                        |
 -- | 20.0        24-APR-2019  Sahithi K              NAIT-85914 1.pass trans_id in payment auth payload               |
--- |
 -- |                                                 2.pass wallet_type while inserting data                          |
 -- |                                                   into ORDT table based on translation                           |
 -- | 21.0        24-APR-2019  Sahithi K              Perform AVS check to get trans_id for                            |
 -- |                                                 existing contracts in SCM NAIT-89230                             |
 -- | 22.0        24-APR-2019  Sahithi K              Update SCM with trans_id for existing contracts NAIT-89231       |
--- |
 -- | 23.0        24-APR-2019  Sahithi K              add close_date field which is received                           |
 -- |                                                 from SCM extract NAIT-90255                                      |
 -- | 24.0        25-APR-2019  Punit Gupta            Made changes in the send_email_autorenew                         |
@@ -84,7 +82,6 @@ AS
 -- |                                                 contracts in SCM - NAIT-101994                                   |
 -- | 33.0        16-AUG-2019  Sahithi K              derive store# based on initial order NAIT-101932                 |
 -- | 34.0        25-SEP-2019  Sahithi K              roll back changes for sending AVS decline email NAIT-107547      |
--- |
 -- | 35.0        27-SEP-2019  Sahithi K              Recurring Payment Auth without COF Tran ID                       |
 -- |                                                 Handling and storing COF Tran ID of first(INITIAL)               |
 -- |                                                 successful auth NAIT-107551                                      |
@@ -163,7 +160,8 @@ AS
 -- | 71.0        15-FEB-2021  Arvind K               Bug fixing in the opt_out_ven_notification query, put NVL        |
 -- | 72.0        19-FEB-2021  Arvind K               NAIT-173266 bug fixing process receipt for no_data_found issue   |
 -- | 73.0        23-MAR-2021  Arvind K               NAIT-176728 bug fixing for location validation in Renwal process |
--- | 74.0        23-MAR-2021  Kayeed A               NAIT-176736 bug fixing for Card Detail to Vantiv in Renwalprocess|
+-- | 74.0        12-APR-2021  Kayeed A               Added the logic in procedure set_dnr_contract_line and           |
+-- |                                                 send_email_autorenew for NAIT-173570,NAIT-176729                 |
 -- +==================================================================================================================+
 
   gc_package_name        CONSTANT all_objects.object_name%TYPE   := 'xx_ar_subscriptions_mt_pkg';
@@ -7836,19 +7834,7 @@ EXCEPTION
         THEN
 
           px_subscription_array(indx).auth_completed_flag := 'Y';
-          --Added for NAIT-176736 to update contracts table with cc_trans_id and cc_trans_id_source
-            UPDATE xx_ar_contracts
-               SET  --cc_trans_id           = p_cc_trans_id
-                    cc_trans_id_source    = 'EBS'
-                   ,cof_trans_id_scm_flag = 'N'
-                   ,last_update_date      = SYSDATE
-                   ,last_updated_by       = NVL(FND_GLOBAL.user_id, -1)
-             WHERE  contract_id           = px_subscription_array(indx).contract_id;
-
-             logit(p_message => 'RESULT records update: ' || SQL%ROWCOUNT);
-
-           COMMIT;        
-          
+             
         ELSIF px_subscription_array(indx).billing_sequence_number >= lr_contract_line_info.initial_billing_sequence
         THEN
         
@@ -13088,7 +13074,29 @@ EXCEPTION
                                                 WHERE XAS1.contract_id = XAS.contract_id
                                                 AND   XAS1.contract_line_number = XAS.contract_line_number
                                                 )
-         GROUP BY XACL.contract_id                                                
+         GROUP BY XACL.contract_id 
+         UNION    --Added for NAIT-173570 : on 04/12/2021
+         SELECT XACL.contract_id
+         FROM   xx_ar_contract_lines XACL,
+                xx_ar_contracts XAC,
+                xx_ar_subscriptions XAS,
+                xx_od_oks_alt_sku_tbl xast
+         WHERE  TRUNC(sysdate+7) = TRUNC(XACL.contract_line_end_date)
+         AND    XACL.contract_id = XAC.contract_id
+         AND    XAC.contract_status = 'ACTIVE'
+         AND    XAC.contract_id = XAS.contract_id
+         AND    XACL.contract_line_number = XAS.contract_line_number
+         AND    XACL.close_date is NULL
+         AND    XACL.program = 'SS'
+         AND    NVL(XAS.email_autorenew_sent_flag,'N') != 'Y'
+         AND    xacl.item_name = xast.org_sku
+         AND    xast.code='Discontinued'
+         AND    XAS.billing_sequence_number IN (SELECT MAX(XAS1.billing_sequence_number) 
+                                                FROM  xx_ar_subscriptions XAS1
+                                                WHERE XAS1.contract_id = XAS.contract_id
+                                                AND   XAS1.contract_line_number = XAS.contract_line_number
+                                                )
+         GROUP BY XACL.contract_id          
          UNION
          SELECT XACL.contract_id
          FROM   xx_ar_contract_lines XACL,
@@ -13516,7 +13524,27 @@ END set_dnr_contract_line;
                                                 WHERE XAS1.contract_id = XAS.contract_id
                                                 AND   XAS1.contract_line_number = XAS.contract_line_number
                                                 )
-         GROUP BY XACL.contract_id,XAC.contract_number,XAS.billing_sequence_number,45,xacl.contract_line_number                                                  
+         GROUP BY XACL.contract_id,XAC.contract_number,XAS.billing_sequence_number,45,xacl.contract_line_number 
+         UNION   --Added for NAIT-173570 : on 04/12/2021
+         SELECT XACL.contract_id,XAC.contract_number,XAS.billing_sequence_number,7 notification_days,sum(xacl.contract_line_amount) total_contract_amount
+               ,xacl.contract_line_number
+         FROM   xx_ar_contract_lines XACL,
+                xx_ar_contracts XAC,
+                xx_ar_subscriptions XAS
+         WHERE  TRUNC(sysdate+7) = TRUNC(XACL.contract_line_end_date)
+         AND    XACL.contract_id = XAC.contract_id
+         AND    XAC.contract_status = 'ACTIVE'
+         AND    XAC.contract_id = XAS.contract_id
+         AND    XACL.contract_line_number = XAS.contract_line_number
+         AND    XACL.close_date is NULL
+         AND    XACL.program = 'SS'
+         AND    NVL(XAS.email_autorenew_sent_flag,'N') != 'Y'
+         AND    XAS.billing_sequence_number IN (SELECT MAX(XAS1.billing_sequence_number) 
+                                                FROM  xx_ar_subscriptions XAS1
+                                                WHERE XAS1.contract_id = XAS.contract_id
+                                                AND   XAS1.contract_line_number = XAS.contract_line_number
+                                                )
+         GROUP BY XACL.contract_id,XAC.contract_number,XAS.billing_sequence_number,7,xacl.contract_line_number          
          UNION
          SELECT XACL.contract_id,XAC.contract_number,XAS.billing_sequence_number,45 notification_days,sum(xacl.contract_line_amount) total_contract_amount
                ,xacl.contract_line_number
@@ -16562,6 +16590,7 @@ END is_rev_rec_item;
     l_relocation_loc               xx_ar_contracts.store_number%TYPE;
     lr_xx_od_oks_alt_sku_tbl       xx_od_oks_alt_sku_tbl%ROWTYPE; 
     lc_billing_agreement_id        xx_ar_contracts.payment_identifier%TYPE;
+    lc_error_message               VARCHAR2(2000);
 
   BEGIN
     
@@ -16674,7 +16703,7 @@ END is_rev_rec_item;
                                          x_cust_account_site_info => lr_bill_to_cust_acct_site_info);
             END IF;
             
-            lr_bill_to_seq   := substr(lr_bill_to_cust_acct_site_info.orig_system_reference,length(lr_contract_info.bill_to_osr)+2,5);
+            lr_bill_to_seq   := NVL(substr(lr_bill_to_cust_acct_site_info.orig_system_reference,length(lr_contract_info.bill_to_osr)+2,5),'00001');
          END IF;          
          IF (lr_ship_to_cust_acct_site_info.cust_acct_site_id IS NULL)
             THEN
@@ -16697,7 +16726,7 @@ END is_rev_rec_item;
           * Get Complete Ship_To information
           *************************************************/
             lc_action := 'Get Complete Ship_To information in contract_autorenew_process';
-            lr_ship_to_seq   := substr(lr_ship_to_cust_acct_site_info.orig_system_reference,length(lr_contract_info.bill_to_osr)+2,5);
+            lr_ship_to_seq   := NVL(substr(lr_ship_to_cust_acct_site_info.orig_system_reference,length(lr_contract_info.bill_to_osr)+2,5),'00001');
             END IF;
            
       FOR indx IN 1 .. lt_subscription_array.COUNT
@@ -16748,14 +16777,22 @@ END is_rev_rec_item;
                BEGIN
                      lc_action := 'Calling decrypt_credit_card in contract_autorenew_process';
    
-                     decrypt_credit_card(p_context_namespace => 'XX_AR_SUBSCRIPTIONS_MT_CTX',
+                    /* decrypt_credit_card(p_context_namespace => 'XX_AR_SUBSCRIPTIONS_MT_CTX',
                                          p_context_attribute => 'TYPE',
                                          p_context_value     => 'OM',
                                          p_module            => 'HVOP',
                                          p_format            => 'EBCDIC',
                                          p_encrypted_value   => lr_contract_info.card_token,
                                          p_key_label         => lr_contract_info.card_encryption_label,
-                                         x_decrypted_value   => lc_decrypted_value);
+                                         x_decrypted_value   => lc_decrypted_value);*/
+                      XX_OD_SECURITY_KEY_PKG.DECRYPT (  p_module        => 'HVOP'    
+                                                      , p_key_label     =>  lr_contract_info.card_encryption_label
+                                                      , p_encrypted_val =>  lr_contract_info.card_token
+                                                      , p_algorithm     => '3DES'     
+                                                      , p_format        => 'EBCDIC'   
+                                                      , x_decrypted_val =>  lc_decrypted_value
+                                                      , x_error_message =>  lc_error_message
+                                );
 
                      logit('Card Decrypted Value ->'||lc_decrypted_value);
                 EXCEPTION
@@ -16775,7 +16812,7 @@ END is_rev_rec_item;
                 
                 ELSE
                
-                  lc_masked_credit_card_number := 'BAD CARD '; 
+                  lc_masked_credit_card_number := substr(lc_decrypted_value,1,16);
                 
                 END IF;
               ELSE
