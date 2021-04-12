@@ -15,7 +15,7 @@ SET FEEDBACK     ON
 -- |===============                                                           |
 -- |Version   Date          Author               Remarks                      |
 -- |=======   ==========    ================     =============================|
--- | V1.0     27-JAN-2021   Manjush              Initial version              |
+-- | V1.0     27-JAN-2021   Amit             Initial version              |
 -- |                                                                          |
 -- +==========================================================================+
 
@@ -32,10 +32,5 @@ CREATE TABLE XXCRM.XXCDH_SYNC_PAYLOADS
 , CAMEL_UPDATE_EXCHANGE_ID  NUMBER(15)
 , PROCESSED_FLAG            VARCHAR2(1) DEFAULT 'N'
 , ERROR_REASON              VARCHAR2(256)
+, RETRY_COUNT		    NUMBER
 );
-   
-CREATE OR REPLACE PUBLIC SYNONYM XXCDH_SYNC_PAYLOADS FOR XXCRM.XXCDH_SYNC_PAYLOADS;
-
-GRANT SELECT ON XXCDH_SYNC_PAYLOADS TO "ERP_SYSTEM_TABLE_SELECT_ROLE";
-
-GRANT ALL ON XXCDH_SYNC_PAYLOADS TO "APPS";
