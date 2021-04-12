@@ -27,6 +27,7 @@ AS
 -- |                                         Removed Redundant and commented code                       |
 -- |                                         Added Logic to support deprovisionsing                     |
 -- |                                                                                                    |
+-- |2.0		  12-Apr-2021 Amit Kumar	NAIT-176294	Save external user procedure has to be split into two. |
 -- +====================================================================================================+
 */
 
@@ -94,6 +95,7 @@ AS
                                      , x_msg_count       OUT        NUMBER
                                      , x_msg_data        OUT NOCOPY VARCHAR2
                                      );
+  --Version#2.0--Start--
   PROCEDURE update_access_code( 
                             p_orig_system            IN          VARCHAR2 DEFAULT NULL
                           , p_contact_osr            IN          VARCHAR2
@@ -102,9 +104,9 @@ AS
                           , p_party_id               IN          NUMBER   DEFAULT NULL
 						  , p_webuser_osr            IN          VARCHAR2 DEFAULT NULL
                           , x_return_status          OUT NOCOPY  VARCHAR2
-                          , x_msg_count              OUT         NUMBER
-                          , x_msg_data               OUT NOCOPY  VARCHAR2
+                          , x_messages               OUT NOCOPY  HZ_MESSAGE_OBJ_TBL
                           );
+  --Version#2.0--End--
 
 END XX_EXTERNAL_USERS_BO_PUB;
 /

@@ -55,6 +55,8 @@ AS
 -- |2.0       22-OCT-2015 Manikant Kasu      Webuser Password Sync Changes                              |
 -- |2.1       17-SEP-2019 Sahithi Kunuru     NAIT-103309 Commented logic to update password regardless  |
 -- |                                         of process_name UpdateExtUserPwd /SaveiReceivables         |
+-- |																									|
+-- |3.0		  12-Apr-2021 Amit Kumar	NAIT-176294	Save external user procedure has to be split into two. |
 -- +====================================================================================================+
 */
 
@@ -776,6 +778,8 @@ PROCEDURE log_error     ( p_error_pkg      IN  VARCHAR2
 
          COMMIT;
       END IF;
+	  --Version#3.0--Start-- Below part is commented and a new procedure "update_access_code" 
+	  -- is creaated to update access of fnd users.
       /*
       -- ----------------------------------------------------------------------------
       -- if AV record was passed and user exists in FND_USER table,
@@ -801,7 +805,7 @@ PROCEDURE log_error     ( p_error_pkg      IN  VARCHAR2
       END IF; -- p_record_type = 'AV' AND NOT l_new_user
 
       x_return_status := FND_API.G_RET_STS_SUCCESS;
-	  */
+	  */--Version#3.0--End--
    EXCEPTION
      WHEN le_api_error THEN
          log_error(g_proc_name, x_msg_data);
@@ -1190,16 +1194,18 @@ PROCEDURE log_error     ( p_error_pkg      IN  VARCHAR2
          log_error(g_proc_name, x_msg_data);
    END update_ext_user_password;
    
-    --============================================================================
+ --Version#3.0--Start-- New Procedure
+   --============================================================================
    -- Name             : UPDATE_ACCESS_CODE
    -- Description      : This procedure will update the access of fnd user.
    --
-   -- Parameters :  p_userid       
-   --               p_orig_system  
-   --               p_contact_osr  
-   --               p_record_type  
-   --               p_access_code  
-   --               p_party_id         
+   -- Parameters :  p_orig_system     'A0'
+   --               p_contact_osr     Unique ID of contact from AOPS  
+   --               p_record_type     This will have a value of AV for Avolent  
+   --               p_access_code 	  Access code to control privileges  
+   --               p_party_id        Party id of the relationship of contact  
+   --                                 with account site
+   --               p_webuser_osr	  Webuser OSR
    --============================================================================
  PROCEDURE update_access_code( 
                             p_orig_system            IN          VARCHAR2 DEFAULT NULL
@@ -1213,14 +1219,14 @@ PROCEDURE log_error     ( p_error_pkg      IN  VARCHAR2
                           , x_msg_data               OUT NOCOPY  VARCHAR2
                           )
    IS
-      --  #param 1  p_userid          BSD web user id from AOPS
-	  --  #param 2  p_orig_system     Unique OSR
-      --  #param 3  p_contact_osr     Unique ID of contact from AOPS
-      --  #param 4  p_record_type     This will have a value of AV for Avolent
-      --  #param 5  p_access_code 	  Access code to control privileges
-      --  #param 6  p_party_id        Party id of the relationship of contact
+	  --  #param 1  p_orig_system     'A0'
+      --  #param 2  p_contact_osr     Unique ID of contact from AOPS
+      --  #param 3  p_record_type     This will have a value of AV for Avolent
+      --  #param 4  p_access_code 	  Access code to control privileges
+      --  #param 5  p_party_id        Party id of the relationship of contact
       --                              with account site
-      --  #param  x_retcode         return success or failure
+	  --  #param 6  p_webuser_osr	  Webuser OSR
+      --  #param  	x_return_status   return success or failure
 
      l_new_user                   BOOLEAN := FALSE;
      l_party_id                   HZ_PARTIES.party_id%TYPE := p_party_id;
@@ -1377,7 +1383,54 @@ PROCEDURE log_error     ( p_error_pkg      IN  VARCHAR2
          log_error(g_proc_name, x_msg_data);
          --raise;
    END update_access_code;
+   
+ 
+  
+   --============================================================================
+   -- Name             : UPDATE_ACCESS_CODE
+   -- Description      : This procedure will update the access of fnd user.
+   --
+   -- Parameters :  p_orig_system     'A0'
+   --               p_contact_osr     Unique ID of contact from AOPS  
+   --               p_record_type     This will have a value of AV for Avolent  
+   --               p_access_code 	  Access code to control privileges  
+   --               p_party_id        Party id of the relationship of contact  
+   --                                 with account site
+   --               p_webuser_osr	  Webuser OSR
+   --============================================================================
+   PROCEDURE update_access_code( 
+                            p_orig_system            IN          VARCHAR2 DEFAULT NULL
+                          , p_contact_osr            IN          VARCHAR2
+                          , p_record_type            IN          VARCHAR2 DEFAULT NULL
+                          , p_access_code            IN          VARCHAR2 DEFAULT NULL
+                          , p_party_id               IN          NUMBER   DEFAULT NULL
+						  , p_webuser_osr            IN          VARCHAR2 DEFAULT NULL
+                          , x_return_status          OUT NOCOPY  VARCHAR2
+                          , x_messages               OUT NOCOPY  HZ_MESSAGE_OBJ_TBL
+                          )
+   
+   IS
+     l_msg_count            NUMBER;
+     l_msg_data             VARCHAR2(4000);
+   BEGIN
+		   
+	 update_access_code( 
+						  p_orig_system     =>  p_orig_system    
+						, p_contact_osr     =>  p_contact_osr    
+						, p_record_type     =>  p_record_type    
+						, p_access_code     =>  p_access_code    
+						, p_party_id        =>  p_party_id       
+						, p_webuser_osr     =>  p_webuser_osr    
+						, x_return_status   =>  x_return_status  
+						, x_msg_count       =>  l_msg_count      
+						, x_msg_data        =>  l_msg_data       
+						);
 
+      x_messages := XX_EXTERNAL_USERS_PVT.get_messages ( p_return_status   => x_return_status
+                                                       , p_msg_count       => l_msg_count
+                                                       , p_msg_data        => l_msg_data);
+   END update_access_code;
+--Version#3.0--End--
 END XX_EXTERNAL_USERS_BO_PUB;
 /
-show error;
+show error; 
