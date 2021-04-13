@@ -1,13 +1,13 @@
-CREATE OR REPLACE PROCEDURE APPS.XX_RPA_CUST_CONTACT_PRC ( P_CUSTOMER_NAME     IN hz_cust_accounts_all.account_name%TYPE,    -- MANDATORY PARAMETER
-                                                           P_CUSTOMER_NUMBER   IN hz_cust_accounts_all.account_number%TYPE,  -- MANDATORY PARAMETER
-                                                           P_CUSTOMER_DOC_ID   IN xx_cdh_ebl_contacts.cust_doc_id%TYPE,      -- MANDATORY PARAMETER
-                                                           P_FIRST_NAME        IN hz_parties.person_first_name%TYPE,         -- MANDATORY PARAMETER
-                                                           P_LAST_NAME         IN hz_parties.person_last_name%TYPE,          -- MANDATORY PARAMETER
-                                                           P_EMAIL_ADDRESS     IN hz_contact_points.email_address%TYPE,      -- MANDATORY PARAMETER
-                                                           P_AREA_CODE         IN hz_contact_points.phone_area_code%TYPE,    -- MANDATORY PARAMETER
-                                                           P_PHONE_NUMBER      IN hz_contact_points.phone_number%TYPE,       -- MANDATORY PARAMETER
-                                                           P_EXTENSION         IN hz_contact_points.phone_extension%TYPE     -- OPTIONAL PARAMETER
-                                                           )
+CREATE OR REPLACE PROCEDURE XX_RPA_CUST_CONTACT_PRC ( P_CUSTOMER_NAME     IN hz_cust_accounts_all.account_name%TYPE,    -- MANDATORY PARAMETER
+													   P_CUSTOMER_NUMBER   IN hz_cust_accounts_all.account_number%TYPE,  -- MANDATORY PARAMETER
+													   P_CUSTOMER_DOC_ID   IN xx_cdh_ebl_contacts.cust_doc_id%TYPE,      -- MANDATORY PARAMETER
+													   P_FIRST_NAME        IN hz_parties.person_first_name%TYPE,         -- MANDATORY PARAMETER
+													   P_LAST_NAME         IN hz_parties.person_last_name%TYPE,          -- MANDATORY PARAMETER
+													   P_EMAIL_ADDRESS     IN hz_contact_points.email_address%TYPE,      -- MANDATORY PARAMETER
+													   P_AREA_CODE         IN hz_contact_points.phone_area_code%TYPE,    -- MANDATORY PARAMETER
+													   P_PHONE_NUMBER      IN hz_contact_points.phone_number%TYPE,       -- MANDATORY PARAMETER
+													   P_EXTENSION         IN hz_contact_points.phone_extension%TYPE     -- OPTIONAL PARAMETER
+													   )
 AS
  /* VARIABLES DEFINES */
  l_count              NUMBER := NULL;
@@ -136,7 +136,7 @@ BEGIN
      lv_person_rec.created_by_module := 'HZ_CPUI';
     
      --
-     hz_party_v2pub.create_person (p_init_msg_list      => apps.fnd_api.g_false,
+     hz_party_v2pub.create_person (p_init_msg_list      => fnd_api.g_false,
                                    p_person_rec         => lv_person_rec,
                                    x_party_id           => lv_party_id,
                                    x_party_number       => lv_party_number,
@@ -146,19 +146,19 @@ BEGIN
                                    x_msg_data           => lv_msg_data
                                    );
      --	
-     IF lv_return_status <> apps.fnd_api.g_ret_sts_success
+     IF lv_return_status <> fnd_api.g_ret_sts_success
      THEN
        FOR i IN 1 .. fnd_msg_pub.count_msg
        LOOP
           fnd_msg_pub.get (p_msg_index          => i,
-                           p_encoded            => apps.fnd_api.g_false,
+                           p_encoded            => fnd_api.g_false,
                            p_data               => lv_msg_data,
                            p_msg_index_out      => lv_msg_index_out
                            );
           lv_api_message := lv_api_message || ' ~ ' || lv_msg_data;
           DBMS_OUTPUT.put_line ('Error: ' || lv_api_message);
        END LOOP;
-     ELSIF (lv_return_status = apps.fnd_api.g_ret_sts_success)
+     ELSIF (lv_return_status = fnd_api.g_ret_sts_success)
      THEN
        DBMS_OUTPUT.put_line ('********Success***********');
        DBMS_OUTPUT.put_line ('lv_party_id: ' || lv_party_id);     
