@@ -25,9 +25,9 @@ DBMS_OUTPUT.put_line ('********START THE PROCESS***********');
          hcpa.object_version_number
     INTO l_acct_profile_amt_id, 
          l_ovn
-    FROM apps.ar_credit_histories h,
-         apps.hz_cust_accounts_all hca,
-         apps.hz_cust_profile_amts hcpa
+    FROM ar_credit_histories h,
+         hz_cust_accounts_all hca,
+         hz_cust_profile_amts hcpa
     WHERE h.customer_id = hca.cust_account_id
     AND h.customer_id = hcpa.cust_account_id
     AND h.currency_code = hcpa.currency_code
