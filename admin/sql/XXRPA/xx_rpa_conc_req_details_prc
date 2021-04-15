@@ -1,0 +1,83 @@
+create or replace 
+PROCEDURE xx_rpa_conc_req_details_prc(p_request_id Number,
+                                      req_det_cursor   OUT SYS_REFCURSOR,
+                                      Status       OUT  VARCHAR2,
+                                      err_msg      OUT  VARCHAR2)
+AS
+Begin
+Status := 'S';
+ OPEN req_det_cursor FOR
+    SELECT
+    fcr.request_id request_id,
+    NVL (fu.description, fu.user_name) requested_by,
+    DECODE (fcp.concurrent_program_name,
+    'FNDRSSUB', 'Request Set - ' || fcr.description,
+    fcpt.user_concurrent_program_name)
+    concurrent_program,
+    DECODE (fcr.phase_code,
+    'I', 'Inactive',
+    'P', DECODE (fcr.hold_flag, 'Y', 'Inactive', 'Pending'),
+    'R', 'Running',
+    'C', 'Complete',
+    fcr.phase_code)
+    phase,
+    DECODE (
+    fcr.status_code,
+    'U', 'Disabled',
+    'W', 'Paused',
+    'X', 'Terminated',
+    'Z', 'Waiting',
+    'M', 'No Manager',
+    'Q', 'Standby',
+    'R', 'Normal',
+    'S', 'Suspended',
+    'T', 'Terminating',
+    'D', 'Cancelled',
+    'E', 'Error',
+    'F', 'Scheduled',
+    'G', 'Warning',
+    'H', 'On Hold',
+    'I', CASE
+    WHEN fcr.request_date < fcr.requested_start_date
+    THEN
+    'Scheduled'
+    ELSE
+    'Normal'
+    END,
+    'A', 'Waiting',
+    'B', 'Resuming',
+    'C', 'Normal',
+    fcr.status_code)
+    status,
+    fcr.argument_text,
+    TO_CHAR (fcr.request_date, 'DD-Mon-RRRR HH12:MI:SS AM') date_requested,
+    TO_CHAR (fcr.requested_start_date, 'DD-Mon-RRRR HH12:MI:SS AM')
+    requested_start_date,
+    TO_CHAR (fcr.actual_start_date, 'DD-Mon-RRRR HH12:MI:SS AM')
+    date_started,
+    TO_CHAR (fcr.actual_completion_date, 'DD-Mon-RRRR HH12:MI:SS AM')
+    date_completed,
+    --fcr.oracle_process_id,
+    --fcr.os_process_id,
+    fcr.logfile_node_name || ': ' || fcr.logfile_name logfile_name,
+    fcr.outfile_node_name || ': ' || fcr.outfile_name output_name
+    FROM fnd_concurrent_requests fcr,
+    fnd_concurrent_programs fcp,
+    fnd_concurrent_programs_tl fcpt,
+    fnd_user fu
+    WHERE fcr.request_id = P_request_id --P_request_id --76411365
+    and fcr.concurrent_program_id = fcp.concurrent_program_id
+    AND fcp.concurrent_program_id = fcpt.concurrent_program_id
+    AND fcr.program_application_id = fcp.application_id
+    AND fcp.application_id = fcpt.application_id
+    AND fcr.requested_by = fu.user_id
+    AND fcpt.language = 'US'
+    ORDER BY fcr.request_date DESC;
+
+EXCEPTION   
+   WHEN OTHERS
+   THEN
+      DBMS_OUTPUT.put_line ('<Error Out2>' || DBMS_UTILITY.format_error_backtrace);
+      status :='E';
+      Err_msg := 'ERR_1 '||DBMS_UTILITY.format_error_backtrace;
+END xx_rpa_conc_req_details_prc;
