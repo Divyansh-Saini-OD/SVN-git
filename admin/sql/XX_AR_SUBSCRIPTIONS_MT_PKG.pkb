@@ -162,6 +162,7 @@ AS
 -- | 73.0        23-MAR-2021  Arvind K               NAIT-176728 bug fixing for location validation in Renwal process |
 -- | 74.0        12-APR-2021  Kayeed A               Added the logic in procedure set_dnr_contract_line and           |
 -- |                                                 send_email_autorenew for NAIT-173570,NAIT-176729                 |
+-- | 75.0        16-APR-2021  Dattatray B            NAIT-176736:Added fix for COF update and reset auth U flg program|
 -- +==================================================================================================================+
 
   gc_package_name        CONSTANT all_objects.object_name%TYPE   := 'xx_ar_subscriptions_mt_pkg';
@@ -15400,7 +15401,9 @@ END set_dnr_contract_line;
         
         lc_action := 'Calling UTL_HTTP.begin_request';
         
-        l_request := UTL_HTTP.begin_request(lt_program_setups('update_trans_id_scm_url'), 'POST', ' HTTP/1.1');
+--      l_request := UTL_HTTP.begin_request(lt_program_setups('update_trans_id_scm_url'), 'POST', ' HTTP/1.1'); --NAIT-176736
+		
+		l_request := UTL_HTTP.begin_request(lt_program_setups('update_trans_id_scm_url'), 'POST','HTTP/1.1');  --NAIT-176736
         
         lc_action := 'Calling UTL_HTTP.set_header';
         
@@ -17607,7 +17610,7 @@ PROCEDURE reset_auth_flag(errbuff            OUT VARCHAR2,
        AND conts.initial_order_number = subs.initial_order_number
        AND subs.contract_line_number  = contls.contract_line_number
        AND SYSDATE <=  NVL(contls.close_date, SYSDATE)
-       AND conts.contract_status      <> 'EXPIRED'
+	   AND conts.contract_status      NOT IN ('EXPIRED','CLOSED')  --NAIT-176736
        AND subs.auth_completed_flag   = 'U'
        AND conts.payment_type         <> 'AB'
        AND subs.invoice_created_flag  <> 'Y'
