@@ -1,6 +1,6 @@
 
 # +===================================================================+
-# |                  Office Depot - Project Simplify                  |
+# |                  Office Depot - Project Optimize                  |
 # |      			 				      |
 # +===================================================================+
 # | Name  : 	   XXGLIMSINTFLOAD.prog   	                          |
@@ -161,6 +161,10 @@ echo "The Inbound File Name "${inbounddirectory}
 echo "The Archival File Name "${archival_file}
 cp ${inbounddirectory} ${archival_file}
 rm ${inbounddirectory}
+echo " "
+echo " "
+echo " "
+echo "+===========================================================================+"
 
 done
 exit $V_EXITSTATUS_MAIN
