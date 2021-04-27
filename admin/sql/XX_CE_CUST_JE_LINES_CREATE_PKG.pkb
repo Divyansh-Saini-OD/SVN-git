@@ -35,6 +35,7 @@ AS
 -- |2.0      07-Apr-2020  Amit Kumar    	Changes for E1319		   |
 -- |2.1 	 25-Sep-2020  Manjush D		    Changes for NAIT-149495    |
 -- |2.2      30-Nov-2020  Pratik Gadia		Changes for NAIT-140412    |
+-- |2.3      27-Apr-2021  Pratik Gadia	    Changes for NAIT-175362    |
 -- +===================================================================+
 ---Declaring all variables
   ln_cash_bank_account_id    ce_statement_headers.bank_account_id%TYPE;
@@ -95,6 +96,7 @@ AS
   ln_cnt2                    NUMBER := 0;
   EX_ERROR                   EXCEPTION;
   EX_ERROR_WF                EXCEPTION;
+  ln_WF                      NUMBER := NULL; --NAIT-175362 
 -- +===================================================================+
 -- | Name  : CREATE_GL_INTRF_WF_LINE                             	   |
 -- | Description      : This Procedure is used to insert  GL Journal for|
@@ -1029,6 +1031,23 @@ IS
    --Version 2.0 starts
     --END;
 	BEGIN
+	--<START> Added for NAIT-175362 	
+	SELECT 1 INTO ln_WF
+	FROM apps.xx_fin_translatedefinition XFTD, apps.xx_fin_translatevalues XFTV
+	WHERE XFTD.translate_id = XFTV.translate_id
+	AND XFTD.translation_name = 'XX_CM_E1319_STORE_OS_CC'
+	AND XFTV.source_value1 = 'BANK'
+	AND SYSDATE BETWEEN XFTV.start_date_active AND NVL(XFTV.end_date_active,SYSDATE+1)
+	AND SYSDATE BETWEEN XFTD.start_date_active AND NVL(XFTD.end_date_active,SYSDATE+1)
+	AND XFTV.enabled_flag = 'Y'
+	AND XFTD.enabled_flag = 'Y'
+	AND UPPER(XFTV.SOURCE_VALUE2) = UPPER(lc_bank_name)
+    AND UPPER(XFTV.TARGET_VALUE1) = UPPER(lc_bank_branch);	
+	
+	IF ln_WF = 1
+	THEN
+	--<END> Added for NAIT-175362 
+	
 	  CREATE_GL_INTRF_WF_LINE(
 			   p_bank_branch_id
 			  ,p_bank_account_id
@@ -1038,7 +1057,14 @@ IS
 			  ,p_statement_date_to
 			  ,p_gl_date
 			  );
+			  
+	 END IF; --NAIT-175362
     EXCEPTION
+	    --<START> Added for NAIT-175362
+	    WHEN NO_DATA_FOUND THEN
+		   NULL;
+		--<END> Added for NAIT-175362
+		   
         WHEN OTHERS THEN
           FND_FILE.PUT_LINE(FND_FILE.LOG,'Error:'|| SQLERRM);
 		  x_errbuf := 'ERROR with  PROC CREATE_GL_INTRF_WF_LINE :'||SQLERRM;
