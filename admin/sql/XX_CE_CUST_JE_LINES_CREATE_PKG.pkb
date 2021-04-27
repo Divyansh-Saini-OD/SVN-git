@@ -1033,7 +1033,7 @@ IS
 	BEGIN
 	--<START> Added for NAIT-175362 	
 	SELECT 1 INTO ln_WF
-	FROM apps.xx_fin_translatedefinition XFTD, apps.xx_fin_translatevalues XFTV
+	FROM xx_fin_translatedefinition XFTD, xx_fin_translatevalues XFTV
 	WHERE XFTD.translate_id = XFTV.translate_id
 	AND XFTD.translation_name = 'XX_CM_E1319_STORE_OS_CC'
 	AND XFTV.source_value1 = 'BANK'
