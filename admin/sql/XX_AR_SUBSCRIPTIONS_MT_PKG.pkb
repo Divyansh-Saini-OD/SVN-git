@@ -163,6 +163,7 @@ AS
 -- | 74.0        12-APR-2021  Kayeed A               Added the logic in procedure set_dnr_contract_line and           |
 -- |                                                 send_email_autorenew for NAIT-173570,NAIT-176729                 |
 -- | 75.0        16-APR-2021  Dattatray B            NAIT-176736:Added fix for COF update and reset auth U flg program|
+-- | 76.0        28-APR-2021  Arvind K               NAIT-180755:Added fix for Default store close for Alt renewal    |
 -- +==================================================================================================================+
 
   gc_package_name        CONSTANT all_objects.object_name%TYPE   := 'xx_ar_subscriptions_mt_pkg';
@@ -16858,6 +16859,21 @@ END is_rev_rec_item;
                AND   vals.enabled_flag                        = 'Y'
                AND   defn.enabled_flag                        = 'Y'
                AND   LPAD(vals.source_value3,6,'0')           = lr_contract_info.store_number;
+               -----Start of NAIT-180755
+               IF l_relocation_loc IS NULL OR l_relocation_loc = '' THEN
+                 SELECT   LPAD(vals.target_value1,6,'0')
+                   INTO  l_relocation_loc
+                   FROM   xx_fin_translatevalues vals,
+                          xx_fin_translatedefinition defn
+                  WHERE   defn.translate_id                        = vals.translate_id
+                    AND   defn.translation_name                    = 'XX_AR_SUBSCRIPTIONS'
+                    AND   vals.source_value1                       = 'ALT_DEFAULT_STORE_CLOSE'
+                    AND   SYSDATE BETWEEN vals.start_date_active AND NVL(vals.end_date_active, SYSDATE + 1)
+                    AND   SYSDATE BETWEEN defn.start_date_active AND NVL(defn.end_date_active, SYSDATE + 1)
+                    AND   vals.enabled_flag                        = 'Y'
+                    AND   defn.enabled_flag                        = 'Y';
+               END IF;         
+               -----End of NAIT-180755
              EXCEPTION
               WHEN NO_DATA_FOUND THEN
                 l_relocation_loc := lr_contract_info.store_number;
