@@ -9,7 +9,7 @@
 -- |===============                                                            |
 -- |Version  Date        Author           Remarks                              |
 -- |======== =========== ================ =====================================|
--- |1.0      20-MAR-2018 JAI_CG           Defect# NAIT-31470                   |
+-- |1.0      28-Apr-2021 Shreyas Thorat   Initial Version                      |
 -- +===========================================================================+
 
 SET SHOW         OFF
@@ -18,13 +18,13 @@ SET ECHO         OFF
 SET TAB          OFF
 SET FEEDBACK     ON
 WHENEVER SQLERROR CONTINUE
-
+/*
 BEGIN
   EXECUTE IMMEDIATE 'DROP TABLE XX_OE_ORDER_LINES_ALL';
 EXCEPTION
   WHEN OTHERS THEN NULL;
 END;
-/
+*/
 
 
 CREATE TABLE XX_OE_ORDER_LINES_ALL
