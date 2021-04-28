@@ -1221,7 +1221,7 @@ BEGIN
         --,ATTRIBUTE9
         --,ORIG_SYS_DISCOUNT_REF
       )
-    SELECT Xxom_Adjust_Data_Seq.Nextval ,
+    SELECT Xx_Oe_Ord_adjustment_Seq.Nextval ,
       Sysdate ,
       FND_GLOBAL.user_id ,
       Sysdate ,
@@ -1271,7 +1271,7 @@ BEGIN
 		)
 		VALUES
 		(
-			Xxom_Adjust_Data_Seq.Nextval ,
+			Xx_Oe_Ord_adjustment_Seq.Nextval ,
 			Sysdate ,
 			FND_GLOBAL.user_id ,
 			Sysdate ,
@@ -1451,3 +1451,4 @@ WHEN OTHERS THEN
   
 END Xxoe_Validate_Data;
 END Xxoe_Data_Load_Pkg;
+/
