@@ -865,7 +865,7 @@ BEGIN
 	lc_level := 'Order Header';
 	
 	INSERT
-    INTO Xxom.Xx_Oe_Order_Headers_All
+    INTO Xx_Oe_Order_Headers_All
       (
         Header_Id ,
         Order_Type_Id ,
@@ -930,7 +930,7 @@ BEGIN
 	lc_level := 'Order Header Attribute';
 	
     INSERT
-    INTO Xxom.Xx_Oe_Header_Attributes_All
+    INTO Xx_Oe_Header_Attributes_All
       (
         Header_Id ,
 		canada_pst_tax,
@@ -1038,7 +1038,7 @@ BEGIN
 	lc_level := 'Order Line';
 	
 	INSERT
-    INTO Xxom.Xx_Oe_Order_Lines_All
+    INTO Xx_Oe_Order_Lines_All
       (
         Line_Id ,
         Header_Id ,
@@ -1120,7 +1120,7 @@ BEGIN
 	lc_level := 'Order Line Attribute';
 	
     INSERT
-    INTO Xxom.Xx_Oe_Line_Attributes_All
+    INTO Xx_Oe_Line_Attributes_All
       (
         Line_Id ,
         Creation_Date ,
@@ -1157,7 +1157,7 @@ BEGIN
       )
     SELECT
       (SELECT Line_Id
-      FROM Xxom.Xx_Oe_Order_Lines_All
+      FROM Xx_Oe_Order_Lines_All
       WHERE Header_Id = L_Header_Id
       AND Line_Number = X.Linenumber
       ) ,
@@ -1199,7 +1199,7 @@ BEGIN
 	lc_level := 'Order Price Adjustment';
 	
     INSERT
-    INTO Xxom.Xx_Oe_Price_Adjustments
+    INTO Xx_Oe_Price_Adjustments
       (
         Price_Adjustment_Id ,
         Creation_Date ,
@@ -1242,7 +1242,7 @@ BEGIN
       --ADJUSTMENTCODE
       --couponOwner
       --adjustName
-    FROM Xxom_Order_Adjustments_Int xoa , Xxom.Xx_Oe_Order_Lines_All xoline
+    FROM Xxom_Order_Adjustments_Int xoa , Xx_Oe_Order_Lines_All xoline
     WHERE xoa.Header_Id = I.Header_Id
 	AND xoline.Header_Id = L_Header_Id
 	AND xoa.Linenum = xoline.Line_Number
@@ -1253,7 +1253,7 @@ BEGIN
 		lc_level := 'Order Price Adjustment Tax';
 		
 		INSERT
-		INTO Xxom.Xx_Oe_Price_Adjustments
+		INTO Xx_Oe_Price_Adjustments
 		(
 		PRICE_ADJUSTMENT_ID
 		,CREATION_DATE
@@ -1278,7 +1278,7 @@ BEGIN
 			FND_GLOBAL.user_id ,
 			L_Header_Id ,
 			'Y',
-			(SELECT MIN(line_id) from Xxom.Xx_Oe_Order_Lines_All
+			(SELECT MIN(line_id) from Xx_Oe_Order_Lines_All
 			where header_id = L_Header_Id
 			),--line_id
 			'TAX',
@@ -1291,7 +1291,7 @@ BEGIN
 	
 	lc_level := 'Order Payment';
       INSERT
-      INTO Xxom.Xx_Oe_Payments
+      INTO Xx_Oe_Payments
         (
           Payment_Trx_Id ,
           Header_Id ,
@@ -1394,27 +1394,27 @@ BEGIN
       logit ('Error in Proc Xxoe_Validate_Data while inserting '|| lc_level ||' data of '||lc_int_order_number||' into xxom int tables. Error Code:'||SQLCODE);
 	  logit ('Error Message: '||SQLERRM);
 	  
-	  DELETE FROM Xxom.Xx_Oe_Payments
+	  DELETE FROM Xx_Oe_Payments
 	  WHERE header_id = L_Header_Id;
 	  
-	  DELETE FROM Xxom.Xx_Oe_Price_Adjustments
+	  DELETE FROM Xx_Oe_Price_Adjustments
 	  WHERE header_id = L_Header_Id;
 	  
-	  DELETE FROM Xxom.Xx_Oe_Line_Attributes_All xolattr
+	  DELETE FROM Xx_Oe_Line_Attributes_All xolattr
 	  WHERE EXISTS 
 	  (SELECT 1 
-      FROM Xxom.Xx_Oe_Order_Lines_All xoline
+      FROM Xx_Oe_Order_Lines_All xoline
       WHERE xoline.Header_Id = L_Header_Id
 	  AND xoline.line_id  = xolattr.line_Id
       );
 	  
-	  DELETE FROM Xxom.Xx_Oe_Order_Lines_All
+	  DELETE FROM Xx_Oe_Order_Lines_All
       WHERE Header_Id = L_Header_Id;
 	  
-	  DELETE FROM Xxom.Xx_Oe_Header_Attributes_All
+	  DELETE FROM Xx_Oe_Header_Attributes_All
 	  WHERE header_id = L_Header_Id;
 	  
-	  DELETE FROM Xxom.Xx_Oe_Order_Headers_All
+	  DELETE FROM Xx_Oe_Order_Headers_All
 	  WHERE header_id = L_Header_Id;
 	  
 	  UPDATE Xxom_Order_Headers_Int
