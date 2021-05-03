@@ -40,6 +40,8 @@ AS
 -- | 1.8     17-SEP-2018  Sangita Deshmukh      Defect (NAIT-56624) 			   |
 -- | 1.9     10-OCT-2019  M Rakesh Reddy        Modified to include SKU 		   |	
 -- |											Defect#105482                      |
+-- | 1.10    29-APR-2021  Pratik Gadia          Added Individual ePDF SKU program  |
+-- |        									(NAIT-119545)					   |
 -- +===============================================================================+
 
 -- +====================================================================+
@@ -1161,8 +1163,10 @@ BEGIN
 
                 SELECT XFTV.target_value2
                       ,XFTV.target_value3
+					  ,XFTV.target_value4  --Added for Individual ePDF SKU(NAIT-119545)
                 INTO lc_prog_name
                      ,lc_child_prog_name1
+					 ,lc_child_prog_name2  --Added for Individual ePDF SKU(NAIT-119545)
                 FROM   xx_fin_translatedefinition XFTD
                        ,xx_fin_translatevalues XFTV
                 WHERE  XFTD.translate_id = XFTV.translate_id
@@ -1196,7 +1200,8 @@ BEGIN
                 AND    FCR.concurrent_program_id = FCP.concurrent_program_id
                 AND    FCR1.concurrent_program_id = FCP1.concurrent_program_id
                 AND    FCP.concurrent_program_name = lc_prog_name
-                AND    FCP1.concurrent_program_name = lc_child_prog_name1
+                --AND    FCP1.concurrent_program_name = lc_child_prog_name1  --Commented for Individual ePDF SKU(NAIT-119545)
+				AND    FCP1.concurrent_program_name IN (lc_child_prog_name1,lc_child_prog_name2)  --Added for Individual ePDF SKU(NAIT-119545)
                 AND    FCP.application_id = FA.application_id
                 AND    FA.application_short_name = 'XXFIN'
                 AND    FLOV.level_value = fcr.responsibility_id
