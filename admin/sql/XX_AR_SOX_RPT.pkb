@@ -1210,7 +1210,8 @@ BEGIN
                 AND    FLOV.profile_option_value = TO_CHAR(ln_org_id)
                 AND    FCR1.parent_request_id = FCR.request_id
                 AND    FCR.phase_code = 'C'          -- Added by Shravya for Defect# 34796
-                AND    FCR.status_code = 'C'         -- Added by Shravya for Defect# 34796
+                --AND    FCR.status_code = 'C'         -- Added by Shravya for Defect# 34796 --Commented for Individual ePDF SKU(NAIT-119545)
+				AND    FCR.status_code IN  ('C','G')         --Added for Individual ePDF SKU(NAIT-119545)
                 ;
 
 
