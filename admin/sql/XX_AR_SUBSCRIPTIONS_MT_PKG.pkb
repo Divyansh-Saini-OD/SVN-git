@@ -13062,6 +13062,7 @@ EXCEPTION
                 xx_ar_subscriptions XAS,
                 xx_od_oks_alt_sku_tbl xast
          WHERE  TRUNC(sysdate+45) = TRUNC(XACL.contract_line_end_date)
+         AND    XACL.renewal_type <> 'DO_NOT_RENEW'
          AND    XACL.contract_id = XAC.contract_id
          AND    XAC.contract_status = 'ACTIVE'
          AND    XAC.contract_id = XAS.contract_id
@@ -13084,6 +13085,7 @@ EXCEPTION
                 xx_ar_subscriptions XAS,
                 xx_od_oks_alt_sku_tbl xast
          WHERE  TRUNC(sysdate+7) = TRUNC(XACL.contract_line_end_date)
+         AND    XACL.renewal_type <> 'DO_NOT_RENEW'
          AND    XACL.contract_id = XAC.contract_id
          AND    XAC.contract_status = 'ACTIVE'
          AND    XAC.contract_id = XAS.contract_id
@@ -13106,6 +13108,7 @@ EXCEPTION
                 xx_ar_subscriptions XAS,
                 xx_od_oks_alt_sku_tbl xast
          WHERE  TRUNC(sysdate+45) = TRUNC(XACL.contract_line_end_date)
+         AND    XACL.renewal_type <> 'DO_NOT_RENEW'
          AND    XACL.contract_id = XAC.contract_id
          AND    XAC.contract_status = 'ACTIVE'
          AND    XAC.contract_id = XAS.contract_id
@@ -13128,6 +13131,7 @@ EXCEPTION
                 xx_ar_subscriptions XAS,
                 xx_od_oks_alt_sku_tbl xast
          WHERE  TRUNC(sysdate+7) = TRUNC(XACL.contract_line_end_date)
+         AND    XACL.renewal_type <> 'DO_NOT_RENEW'
          AND    XACL.contract_id = XAC.contract_id
          AND    XAC.contract_status = 'ACTIVE'
          AND    XAC.contract_id = XAS.contract_id
