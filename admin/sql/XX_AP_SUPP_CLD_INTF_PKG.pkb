@@ -86,6 +86,7 @@ create or replace PACKAGE BODY XX_AP_SUPP_CLD_INTF_PKG
 -- | 										   c)handle condition if status is inactive then   |
 -- |                                           updating EBS base table and else condition      |
 -- | 4.5     03-Mar-2021    Paddy Sanjeevi     Modified for OD_CLEARING Payment method NAIT-172512 |
+-- | 4.6     07-May-2021	Gitanjali Singh	   Modified code to handle multiple bank sites NAIT-177108|
 -- |===========================================================================================+
 AS
   /*********************************************************************
@@ -3368,6 +3369,9 @@ IS
   x_response iby_fndcpt_common_pub.result_rec_type;
   l_assign_id           NUMBER;
   l_joint_acct_owner_id NUMBER;
+  ln_bank_account_id	NUMBER;   	--4.6
+  I NUMBER:=0;						--4.6
+  
   CURSOR c_sup_bank
   IS
     SELECT *
@@ -3376,6 +3380,7 @@ IS
     AND xas.create_flag         ='Y'
     AND xas.bnkact_process_flag =gn_process_status_validated
     AND xas.request_id          = gn_request_id
+	AND (account_id is null or account_id=-1)   ---4.6
   ORDER BY primary_flag DESC;
   ----
 BEGIN
@@ -3421,7 +3426,30 @@ BEGIN
         lv_org_id              := NULL;
         print_debug_msg(p_message=> l_program_step||'Error- Get supp_site_id and supp_party_site_id' || SQLCODE || sqlerrm, p_force=>true);
     END;
-    IF r_sup_bank.account_id >0 AND r_sup_bank.instrument_uses_id IS NULL
+	--- deriving bank_account_id details -- 4.6
+	BEGIN
+	  SELECT c.ext_bank_account_id
+	    INTO ln_bank_account_id
+		FROM iby_ext_bank_accounts c,
+			 ce_bank_branches_v b,
+			 hz_parties a
+	   WHERE a.party_name   	 =r_sup_bank.bank_name
+         AND b.bank_party_id   =a.party_id
+         AND b.bank_branch_name=r_sup_bank.branch_name
+         AND b.country         =r_sup_bank.country_code
+         AND SYSDATE BETWEEN b.start_date AND NVL(b.end_date,sysdate+1)
+         AND c.bank_id         =b.bank_party_id
+         AND c.branch_id       =b.branch_party_id
+         AND c.bank_account_num=r_sup_bank.bank_account_num
+         AND SYSDATE BETWEEN NVL(c.start_date,SYSDATE-1) AND NVL(c.end_date,SYSDATE+1);
+	EXCEPTION
+	  WHEN others THEN
+	    ln_bank_account_id:=-1;
+	END;
+	--. End 4.6
+	
+    --IF r_sup_bank.account_id >0 AND r_sup_bank.instrument_uses_id IS NULL -- updating the if condition added or condition --4.6
+	IF ((r_sup_bank.account_id >0 OR ln_bank_account_id > 0) AND r_sup_bank.instrument_uses_id IS NULL) -- added or condition --4.6
 	THEN
 	  print_debug_msg(p_message=> l_program_step||'Account ID exists and Instrument Uses ID is NULL', p_force=>true);
       ----------------------Assigning Attributes
@@ -3433,12 +3461,25 @@ BEGIN
       p_payee.org_type         := 'OPERATING_UNIT';
       -- Assignment Values
       p_assignment_attribs.instrument.instrument_type := 'BANKACCOUNT';
-      l_account_id                                    :=r_sup_bank.account_id;
+      --l_account_id           :=r_sup_bank.account_id; -- commenting and adding deriving account_id on condition basis --4.6
+	  -- p_assignment_attribs.instrument.instrument_id:=r_sup_bank.account_id; 4.6
+	  
+	  --- adding if condition to derive l_account_id and p_assignment_attribs.instrument.instrument_id -- 4.6
+	    IF ln_bank_account_id > 0 THEN
+		   l_account_id 		:=ln_bank_account_id;
+		   p_assignment_attribs.instrument.instrument_id:=ln_bank_account_id;
+		ELSE
+  		   l_account_id    :=r_sup_bank.account_id;
+		   p_assignment_attribs.instrument.instrument_id:=r_sup_bank.account_id;
+		END IF;
+	  --- end 4.6
+	  
       print_debug_msg(p_message=> l_program_step||'L_ACCOUNT_ID '||l_account_id, p_force=>true);
-      p_assignment_attribs.instrument.instrument_id:=r_sup_bank.account_id;
+      
       -- External Bank Account ID
       -- p_assignment_attribs.priority   := 1;
 	  print_debug_msg(p_message=> l_program_step||'Primary Flag :'||r_sup_bank.primary_flag, p_force=>true);
+	  
 	  IF r_sup_bank.primary_flag = 'Y'
 	  THEN
 	      p_assignment_attribs.priority := 1;
@@ -3540,7 +3581,8 @@ BEGIN
       END IF;
     END IF;--R_SUP_BANK.account_id IS NOT NULL AND R_SUP_BANK.INSTRUMENT_USES_ID IS NULL
     ------------------------------When Account ID is null create new Account and instrumnets
-    IF r_sup_bank.account_id               IS NULL OR r_sup_bank.account_id=-1
+   -- IF r_sup_bank.account_id               IS NULL OR r_sup_bank.account_id=-1 -- adding and condition --4.6 
+	IF  ( ( r_sup_bank.account_id IS NULL OR r_sup_bank.account_id=-1) AND ln_bank_account_id = -1 ) --4.6
 	THEN
       x_bank_branch_rec.currency           :=NVL(r_sup_bank.currency_code,'USD');
       x_bank_branch_rec.branch_id          :=r_sup_bank.branch_id;
