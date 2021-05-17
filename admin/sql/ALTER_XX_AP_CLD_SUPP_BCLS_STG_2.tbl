@@ -1,0 +1,26 @@
+--+==========================================================================+|
+-- |                  Office Depot - Project Simplify                         |
+-- +==========================================================================+
+-- | RICE ID     :                                                            |
+-- | Name        :  Table Alter for BCLS table                                |
+-- |                                                                          |
+-- | SQL Script to alter the following object                                 |
+-- |             Table       : XX_AP_CLD_SUPP_BCLS_STG                        |
+-- |                                                                          |
+-- |Change Record:                                                            |
+-- |===============                                                           |
+-- |Version   Date         Author               Remarks                       |
+-- |=======   ==========   =============        ==============================|
+-- | 1.0      17-MAY-2020  Gitanjali Singh      Added new columns             |
+-- +==========================================================================+
+	
+	SET SHOW         OFF
+	SET VERIFY       OFF
+	SET ECHO         OFF
+	SET TAB          OFF
+	SET FEEDBACK     ON
+	
+	alter table XXFIN.XX_AP_CLD_SUPP_BCLS_STG
+	 add  (CERTIFICATE_NUM VARCHAR2(80));
+	  
+	SHOW ERROR;
