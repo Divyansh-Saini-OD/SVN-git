@@ -87,6 +87,7 @@ create or replace PACKAGE BODY XX_AP_SUPP_CLD_INTF_PKG
 -- |                                           updating EBS base table and else condition      |
 -- | 4.5     03-Mar-2021    Paddy Sanjeevi     Modified for OD_CLEARING Payment method NAIT-172512 |
 -- | 4.6     07-May-2021	Gitanjali Singh	   Modified code to handle multiple bank sites NAIT-177108|
+-- | 4.7	 17-MAY-2021    Gitanjali Singh    Modified code to update BUCLS certificate num NAIT-177108|
 -- |===========================================================================================+
 AS
   /*********************************************************************
@@ -539,9 +540,10 @@ END;
 --| Returns       : N/A                                                        |
 --+============================================================================+
 FUNCTION insert_bus_class(
-    p_party_id  IN NUMBER ,
-    p_bus_code  IN VARCHAR2 ,
-    p_attribute IN VARCHAR2 ,
+    p_party_id  		IN NUMBER ,
+    p_bus_code  		IN VARCHAR2 ,
+    p_attribute 		IN VARCHAR2 ,
+	p_certificate_num	IN VARCHAR2,		-- 4.7
     p_vendor_id IN NUMBER )
   RETURN VARCHAR2
 IS
@@ -565,7 +567,8 @@ BEGIN
       creation_date ,
       last_updated_by ,
       last_update_date ,
-      vendor_id
+      vendor_id,
+	  CERTIFICATE_NUMBER	-- 4.7
     )
     VALUES
     (
@@ -581,7 +584,8 @@ BEGIN
       SYSDATE ,
       fnd_global.user_id ,
       SYSDATE ,
-      p_vendor_id
+      p_vendor_id,
+	  p_certificate_num		--4.7
     );
   RETURN('Y');
 EXCEPTION
@@ -857,7 +861,8 @@ IS
 		 sup.party_id,
 		 sup.vendor_id,
      nvl(bus.status,'A') status,			-- version 4.4
-		 bus.END_DATE_ACTIVE	--  version 4.4 
+		 bus.END_DATE_ACTIVE,	--  version 4.4 
+		 bus.CERTIFICATE_NUM	-- version 4.7
     FROM ap_suppliers sup,
          xx_ap_cld_suppliers_stg stg,
          xx_ap_cld_supp_bcls_stg bus
@@ -898,11 +903,11 @@ BEGIN
        and STATUS  = 'A';        ---- version 4.4 
     IF cur.classification  IS NOT NULL AND ln_cus_count =0 THEN
        IF cur.classification ='FOB' OR cur.classification = 'MINORITY_OWNED' THEN
-          print_debug_msg(p_message => 'Inserting into Business Classification for the Vendor '||cur.supplier_name||', classification : '||cur.classification , p_force => false);
-          v_buss_Flag:= insert_bus_class(cur.party_id,cur.classification,cur.subclassification,cur.vendor_id);
+          print_debug_msg(p_message => 'Inserting into Business Classification for the Vendor '||cur.supplier_name||', classification : '||cur.classification , p_force => false); -- 4.7 added certificate_num
+          v_buss_Flag:= insert_bus_class(cur.party_id,cur.classification,cur.subclassification,cur.CERTIFICATE_NUM,cur.vendor_id);
        ELSE
-          print_debug_msg(p_message => 'Inserting into BUS Class for the Vendor '||cur.supplier_name||', classification : '||cur.classification , p_force => false);
-          v_buss_Flag:= insert_bus_class(cur.party_id,cur.classification,NULL,cur.vendor_id);
+          print_debug_msg(p_message => 'Inserting into BUS Class for the Vendor '||cur.supplier_name||', classification : '||cur.classification , p_force => false); -- -- 4.7 added certificate_num
+          v_buss_Flag:= insert_bus_class(cur.party_id,cur.classification,NULL,cur.CERTIFICATE_NUM,cur.vendor_id);
        END IF;
 
        UPDATE xx_ap_cld_supp_bcls_stg
