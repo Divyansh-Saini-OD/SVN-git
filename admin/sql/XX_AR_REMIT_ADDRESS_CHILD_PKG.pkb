@@ -1,5 +1,4 @@
-create or replace
-PACKAGE BODY XX_AR_REMIT_ADDRESS_CHILD_PKG
+create or replace PACKAGE BODY XX_AR_REMIT_ADDRESS_CHILD_PKG
 AS
 -- +===================================================================+
 -- |                  Office Depot - Project Simplify                  |
@@ -47,6 +46,7 @@ AS
 -- |1.4       20-Nov-2013  Jay Gupta   Defect#27318, Select only non   |
 -- |                                   Immediate Payment Term          |
 -- |1.5       05-FEB-2014  Jay Gupta   Defect#26579, To include CM     |
+-- |1.6		  01-APR-2021  Gitanjali   channel 4 route to channel 11     |
 -- +===================================================================+
 -- | Name  : UPDATE_REMIT_ID                                           |
 -- | Description  : Updates the Remit to Address ID based on scenarios.|
@@ -61,7 +61,7 @@ AS
 -- | Returns : Error Buffer                                            |
 -- |          ,Return Code                                             |
 -- +===================================================================+
-/***** IMPORTANT NOTE ***** 
+/* **** IMPORTANT NOTE ***** 
 *****  Remit to logic is cloned at 3 locations XX_AR_PRINT_SUMMBILL_PKB.pkb,XX_AR_REMIT_ADDRESS_CHILD_PKG.pkb and XX_AR_EBL_COMMON_UTIL_PKG.pkb. Any changes done at one place 
 has to be synched in the other 2 places.*****/  
 
@@ -100,7 +100,7 @@ has to be synched in the other 2 places.*****/
       --lc_rmt_dflt_county         VARCHAR2 (100) DEFAULT 'Los Angeles';
       --lc_rmt_dflt_state          VARCHAR2 (100) DEFAULT 'CA';
       --lc_rmt_dflt_country        VARCHAR2 (100) DEFAULT 'US';
-
+      ln_chn4_remit_to_add		 NUMBER; -- 1.6
       -- Record Type Defination based on some columns of the RA_CUSTOMER_TRX_ALL table.
       TYPE ra_cust_trx_rec_type IS RECORD (
           trx_number            ra_customer_trx_all.trx_number%TYPE
@@ -441,6 +441,19 @@ has to be synched in the other 2 places.*****/
 
 FND_FILE.PUT_LINE (FND_FILE.LOG,'Testing   '||lc_cust_txn || ' ' || lc_cst_where_clause);
 
+			--- 1.6 deriving channel 4 address_id
+			BEGIN
+			
+			 select ADDRESS_ID
+			   into ln_chn4_remit_to_add
+			   from apps.ar_remit_to_addresses_v 
+			  where  attribute1 = 4;   
+			
+			EXCEPTION
+              WHEN OTHERS THEN
+                 FND_FILE.PUT_LINE (FND_FILE.LOG,'Error in channel 4 : '||SQLERRM);			
+			END;
+
             LOOP
               FETCH lc_cust_csr_var
               INTO lc_cust_txn_rec;
@@ -546,11 +559,11 @@ FND_FILE.PUT_LINE (FND_FILE.LOG,'ln_remit_to_add   '||ln_remit_to_add);
                  );
 
                END;
-
-               IF ln_remit_to_add IS NOT NULL
+				--- 1.6 added if condition, if ln_remit_to_add is not as channel 4 then normal update  
+               IF ln_remit_to_add IS NOT NULL and ln_chn4_remit_to_add <> ln_remit_to_add
                THEN
-
-                    UPDATE ra_customer_trx_all
+			   
+					UPDATE ra_customer_trx_all
                     SET remit_to_address_id = ln_remit_to_add
                     WHERE trx_number = lc_cust_txn_rec.trx_number;
 
@@ -559,6 +572,24 @@ FND_FILE.PUT_LINE (FND_FILE.LOG,'ln_remit_to_add   '||ln_remit_to_add);
                     DELETE FROM xx_ar_remit_errors
                     WHERE trx_number = lc_cust_txn_rec.trx_number
                     AND rmttoadd_updt_flg = 'Y';
+					
+			 	ELSif  ln_remit_to_add IS NOT NULL THEN --1.6 added else if if ln_chn4_remit_to_add is equal to ln_remit_to_add 
+						--- to check the channel of the remit_address			       
+				 SELECT ADDRESS_ID
+				   INTO ln_remit_to_add
+				   FROM apps.ar_remit_to_addresses_v 
+				  WHERE  attribute1 = 11; 
+				  
+					UPDATE ra_customer_trx_all
+                    SET remit_to_address_id = ln_remit_to_add
+                    WHERE trx_number = lc_cust_txn_rec.trx_number;
+
+                    ln_update_count := ln_update_count + 1;
+
+                    DELETE FROM xx_ar_remit_errors
+                    WHERE trx_number = lc_cust_txn_rec.trx_number
+                    AND rmttoadd_updt_flg = 'Y';
+					
 
                     -- If there is no value in the remit to address sales channel field on the CDH,
                     -- then default the remit to address as PO Box 70025,Los Angeles,CA 90074-0025.
@@ -723,7 +754,3 @@ FND_FILE.PUT_LINE (FND_FILE.LOG,'ln_remit_to_add   '||ln_remit_to_add);
 
    END UPDATE_REMIT_ID;
 END XX_AR_REMIT_ADDRESS_CHILD_PKG;
-/
-SHOW ERRORS;
-
---EXIT;
