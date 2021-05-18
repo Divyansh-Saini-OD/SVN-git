@@ -446,7 +446,7 @@ FND_FILE.PUT_LINE (FND_FILE.LOG,'Testing   '||lc_cust_txn || ' ' || lc_cst_where
 			
 			 select ADDRESS_ID
 			   into ln_chn4_remit_to_add
-			   from apps.ar_remit_to_addresses_v 
+			   from ar_remit_to_addresses_v 
 			  where  attribute1 = 4;   
 			
 			EXCEPTION
@@ -577,7 +577,7 @@ FND_FILE.PUT_LINE (FND_FILE.LOG,'ln_remit_to_add   '||ln_remit_to_add);
 						--- to check the channel of the remit_address			       
 				 SELECT ADDRESS_ID
 				   INTO ln_remit_to_add
-				   FROM apps.ar_remit_to_addresses_v 
+				   FROM ar_remit_to_addresses_v 
 				  WHERE  attribute1 = 11; 
 				  
 					UPDATE ra_customer_trx_all
@@ -754,3 +754,4 @@ FND_FILE.PUT_LINE (FND_FILE.LOG,'ln_remit_to_add   '||ln_remit_to_add);
 
    END UPDATE_REMIT_ID;
 END XX_AR_REMIT_ADDRESS_CHILD_PKG;
+/
