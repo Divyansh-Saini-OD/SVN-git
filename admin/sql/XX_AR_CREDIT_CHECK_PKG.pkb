@@ -47,6 +47,8 @@
 -- |    1.18            01-SEP-2015       Ravi Palikala     QC Defect#35439 - To improve the performance of |
 -- |                                                        "OD: AR Credit Check Contract Backup Extract"   |
 -- |    1.19            10-NOV-2017       Ravi Palikala     Added logic to deline if credit limit = 2       |
+-- |    1.20            10-Feb-2020       Ankit Jaiswal     NAIT-163992 Added Substring logic for           |
+-- |                                                             ORIG_SYSTEM_REFERENCE                      |
 -- |                                                                                                        |
 ---+========================================================================================================+
 
@@ -170,7 +172,9 @@ CURSOR cust_prof_cur IS
     AND    hca.attribute18 in ('CONTRACT', 'DIRECT');*/ -- Commented for defect#35439
 	--
 SELECT  /*+ index ( hcp HZ_CUSTOMER_PROFILES_N1) */
-  SUBSTR(HCA.ORIG_SYSTEM_REFERENCE,1,8) CUST_NUM,          -- Added for defect#35439	
+  --SUBSTR(HCA.ORIG_SYSTEM_REFERENCE,1,8) CUST_NUM,          -- Added for defect#35439	
+  CASE WHEN INSTR(HCA.ORIG_SYSTEM_REFERENCE,'-') > 0 THEN  SUBSTR(HCA.ORIG_SYSTEM_REFERENCE,1,INSTR(HCA.ORIG_SYSTEM_REFERENCE,'-')-1)  
+  ELSE HCA.ORIG_SYSTEM_REFERENCE END CUST_NUM ,  --NAIT-163992 Added Substring logic for ORIG_SYSTEM_REFERENCE 
   HCA.ACCOUNT_NUMBER,
   HCA.CUST_ACCOUNT_ID,
   HCA.PARTY_ID,
@@ -190,7 +194,7 @@ AND HCA.STATUS            = 'A'
 AND HCP.SITE_USE_ID      IS NULL
 AND HCP.STANDARD_TERMS    = RAT.TERM_ID
 and RAT.name             <> 'IMMEDIATE'
-AND HCA.ATTRIBUTE18      IN ('CONTRACT', 'DIRECT'); 
+AND HCA.ATTRIBUTE18      IN ('CONTRACT', 'DIRECT');
 
 BEGIN
 
@@ -514,8 +518,11 @@ BEGIN
          --*
             lc_err_pos := 'CRCHK:1120-01'||cust_prof_rec.cust_num;
          BEGIN
-                 SELECT NVL((SELECT DISTINCT(DECODE(r.relationship_code,'GROUP_SUB_PARENT',  SUBSTR(C1.orig_system_reference,1,8),
-                                                                        'GROUP_SUB_MEMBER_OF',SUBSTR(C2.orig_system_reference,1,8))) AS PARENT_ACCT
+		        --NAIT-163992 Added Substring logic for ORIG_SYSTEM_REFERENCE
+                SELECT NVL((SELECT DISTINCT(DECODE(r.relationship_code,'GROUP_SUB_PARENT',  CASE WHEN INSTR(C1.ORIG_SYSTEM_REFERENCE,'-') > 0 THEN  SUBSTR(C1.ORIG_SYSTEM_REFERENCE,1,INSTR(C1.ORIG_SYSTEM_REFERENCE,'-')-1)  
+  ELSE C1.ORIG_SYSTEM_REFERENCE END,
+                                                                        'GROUP_SUB_MEMBER_OF',CASE WHEN INSTR(C2.ORIG_SYSTEM_REFERENCE,'-') > 0 THEN  SUBSTR(C2.ORIG_SYSTEM_REFERENCE,1,INSTR(C2.ORIG_SYSTEM_REFERENCE,'-')-1)  
+  ELSE C1.ORIG_SYSTEM_REFERENCE END)) AS PARENT_ACCT
                  FROM   hz_cust_accounts C1,
                         hz_relationships R,
                         hz_cust_accounts C2
@@ -680,9 +687,11 @@ BEGIN
 
                IF ln_rel_mean = 'GROUP_SUB_MEMBER_OF' THEN
 
-                  BEGIN
-
-                       SELECT   hcas.org_id , hca.cust_account_id, substr(hca.orig_system_reference,1,8)
+                  BEGIN      
+                       /*SELECT   hcas.org_id , hca.cust_account_id,substr(hca.orig_system_reference,1,8)*/				  
+                       SELECT   hcas.org_id , hca.cust_account_id, CASE WHEN INSTR(HCA.ORIG_SYSTEM_REFERENCE,'-') > 0 THEN  SUBSTR(HCA.ORIG_SYSTEM_REFERENCE,1,INSTR(HCA.ORIG_SYSTEM_REFERENCE,'-')-1)  
+  ELSE HCA.ORIG_SYSTEM_REFERENCE END
+                         --NAIT-163992 Added Substring logic for ORIG_SYSTEM_REFERENCE
                          INTO   ln_org_id , ln_parent_account_id, ln_par_account					-- defect 1381
                          FROM   hz_cust_accounts hca,
                                 hz_cust_acct_sites_all hcas
@@ -1264,8 +1273,13 @@ BEGIN
                  INTO   lc_ach_parent_acct
                  FROM   DUAL;*/ -- Commented for Defect#35439
 
-				 SELECT NVL((SELECT DISTINCT(DECODE(relationship_code,'GROUP_SUB_PARENT',  SUBSTR(orig_system_reference1,1,8),
-                                                                        'GROUP_SUB_MEMBER_OF',SUBSTR(orig_system_reference2,1,8))) AS PARENT_ACCT
+				 /*SELECT NVL((SELECT DISTINCT(DECODE(relationship_code,'GROUP_SUB_PARENT',  SUBSTR(orig_system_reference1,1,8),
+                                                                        'GROUP_SUB_MEMBER_OF',SUBSTR(orig_system_reference2,1,8))) AS PARENT_ACCT*/
+	             SELECT NVL((SELECT DISTINCT(DECODE(relationship_code,'GROUP_SUB_PARENT',  CASE WHEN INSTR(ORIG_SYSTEM_REFERENCE1,'-') > 0 THEN  SUBSTR(ORIG_SYSTEM_REFERENCE1,1,INSTR(ORIG_SYSTEM_REFERENCE1,'-')-1)  
+  ELSE ORIG_SYSTEM_REFERENCE1 END,
+                                                                        'GROUP_SUB_MEMBER_OF',CASE WHEN INSTR(ORIG_SYSTEM_REFERENCE2,'-') > 0 THEN  SUBSTR(ORIG_SYSTEM_REFERENCE2,1,INSTR(ORIG_SYSTEM_REFERENCE2,'-')-1)  
+  ELSE ORIG_SYSTEM_REFERENCE2 END)) AS PARENT_ACCT
+  --NAIT-163992 Added Substring logic for ORIG_SYSTEM_REFERENCE 
                  from   XXOD_LC_ACH_PARENT_ACCT_GT
                  WHERE  orig_system_reference1 like p_account_num ||'%'
                  AND    ROWNUM=1), p_account_num) AS LEGACY_ACCT

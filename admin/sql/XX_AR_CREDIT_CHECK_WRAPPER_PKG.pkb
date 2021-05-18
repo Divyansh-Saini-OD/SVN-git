@@ -295,7 +295,9 @@ BEGIN
       IF lc_spc_card_num IS NOT NULL THEN
          BEGIN
 
-             SELECT SUBSTR(A.orig_system_reference,1,8),
+             SELECT --SUBSTR(A.orig_system_reference,1,8),
+					CASE WHEN INSTR(A.ORIG_SYSTEM_REFERENCE,'-') > 0 THEN  SUBSTR(A.ORIG_SYSTEM_REFERENCE,1,INSTR(A.ORIG_SYSTEM_REFERENCE,'-')-1)  
+					ELSE A.ORIG_SYSTEM_REFERENCE END ,  --NAIT-163992 Added Substring logic for ORIG_SYSTEM_REFERENCE
                     n_ext_attr2,
                     n_ext_attr3,
                     n_ext_attr4
@@ -335,8 +337,14 @@ BEGIN
          END IF;
 
          BEGIN
-                 SELECT NVL((SELECT DISTINCT(DECODE(r.relationship_code,'GROUP_SUB_PARENT',  SUBSTR(C1.orig_system_reference,1,8),
-                                                                        'GROUP_SUB_MEMBER_OF',SUBSTR(C2.orig_system_reference,1,8))) AS PARENT_ACCT
+                 SELECT NVL((SELECT DISTINCT(DECODE(r.relationship_code,'GROUP_SUB_PARENT',  
+				 --SUBSTR(C1.orig_system_reference,1,8),
+				 CASE WHEN INSTR(C1.ORIG_SYSTEM_REFERENCE,'-') > 0 THEN  SUBSTR(C1.ORIG_SYSTEM_REFERENCE,1,INSTR(C1.ORIG_SYSTEM_REFERENCE,'-')-1)  
+			     ELSE C1.ORIG_SYSTEM_REFERENCE END  ,  --NAIT-163992 Added Substring logic for ORIG_SYSTEM_REFERENCE
+                                                                        'GROUP_SUB_MEMBER_OF',
+				--SUBSTR(C2.orig_system_reference,1,8))) AS PARENT_ACCT
+				CASE WHEN INSTR(C2.ORIG_SYSTEM_REFERENCE,'-') > 0 THEN  SUBSTR(C2.ORIG_SYSTEM_REFERENCE,1,INSTR(C2.ORIG_SYSTEM_REFERENCE,'-')-1)  
+			     ELSE C2.ORIG_SYSTEM_REFERENCE END PARENT_ACCT  --NAIT-163992 Added Substring logic for ORIG_SYSTEM_REFERENCE
                  FROM   hz_cust_accounts C1,
                         hz_relationships R,
                         hz_cust_accounts C2
