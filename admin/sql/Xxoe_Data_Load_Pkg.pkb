@@ -200,7 +200,8 @@ BEGIN
         Soldto_Contactemailaddr ,
         Soldto_Contactfirstname ,
         Soldto_Contactlastname ,
-        Soldto_Contactphone ,
+        Soldto_contactName ,
+		Soldto_Contactphone ,
         Soldto_Contactphoneext ,
         Soldto_Soldtocontact ,
         Spcacctnumber ,
@@ -339,6 +340,7 @@ BEGIN
       Soldto_Contactemailaddr ,
       Soldto_Contactfirstname ,
       Soldto_Contactlastname ,
+	  Soldto_contactName , 
       Soldto_Contactphone ,
       Soldto_Contactphoneext ,
       Soldto_Soldtocontact ,
@@ -368,7 +370,7 @@ BEGIN
     FROM Dual,
       Json_Table (I.Json_Ord_Data, '$.orderHeader[*]' Columns ( Salesperson VARCHAR2(30) Path '$.SalesPerson' ,
       --Shipping
-      Shipping_Shiptoid VARCHAR2(30) Path '$.Shipping.ShipToID', Shipping_Shiptoname VARCHAR2(50) Path '$.Shipping.ShipToName', Shipping_Addressseq VARCHAR2(50) Path '$.Shipping.addressseq', Shipping_City VARCHAR2(30) Path '$.Shipping.city', Shipping_Cost VARCHAR2(30) Path '$.Shipping.cost', Shipping_Country VARCHAR2(30) Path '$.Shipping.country', Shipping_County VARCHAR2(30) Path '$.Shipping.county', Shipping_Line1 VARCHAR2(50) Path '$.Shipping.line1', Shipping_Line2 VARCHAR2(50) Path '$.Shipping.line2', Shiptolastupdatedate VARCHAR2(30) Path '$.Shipping.shipToLastUpdateDate', State VARCHAR2(30) Path '$.Shipping.state', Zip VARCHAR2(30) Path '$.Shipping.zip',
+      Shipping_Shiptoid VARCHAR2(30) Path '$.Shipping.ShipToID', Shipping_Shiptoname VARCHAR2(240) Path '$.Shipping.ShipToName', Shipping_Addressseq VARCHAR2(50) Path '$.Shipping.addressseq', Shipping_City VARCHAR2(60) Path '$.Shipping.city', Shipping_Cost VARCHAR2(30) Path '$.Shipping.cost', Shipping_Country VARCHAR2(60) Path '$.Shipping.country', Shipping_County VARCHAR2(60) Path '$.Shipping.county', Shipping_Line1 VARCHAR2(240) Path '$.Shipping.line1', Shipping_Line2 VARCHAR2(240) Path '$.Shipping.line2', Shiptolastupdatedate VARCHAR2(30) Path '$.Shipping.shipToLastUpdateDate', State VARCHAR2(60) Path '$.Shipping.state', Zip VARCHAR2(60) Path '$.Shipping.zip',
       /*
       NESTED PATH '$.Shipping'
       COLUMNS (ShipToID VARCHAR2(30) PATH '$.ShipToID',
@@ -384,14 +386,14 @@ BEGIN
       state VARCHAR2(30) PATH '$.state',
       zip VARCHAR2(30) PATH '$.zip')  , -- Need to Check
       */
-      Accountid NUMBER Path '$.accountId' , Actioncode VARCHAR2(10) Path '$.actionCode' , Accertsyn VARCHAR2(150) Path '$.addValues.AccertSyn' , Botaxpercent VARCHAR2(150) Path '$.addValues.BOTaxPercent' , Bototal VARCHAR2(150) Path '$.addValues.BOTotal' , Ccalias VARCHAR2(150) Path '$.addValues.CCALIAS' ,
+      Accountid NUMBER Path '$.accountId' , Actioncode VARCHAR2(50) Path '$.actionCode' , Accertsyn VARCHAR2(150) Path '$.addValues.AccertSyn' , Botaxpercent VARCHAR2(150) Path '$.addValues.BOTaxPercent' , Bototal VARCHAR2(150) Path '$.addValues.BOTotal' , Ccalias VARCHAR2(150) Path '$.addValues.CCALIAS' ,
       --COF_COF_RECUR VARCHAR2(150) PATH '$.addValues.COF-COF-RECUR' ,
       --Mobile_App_Id VARCHAR2(150) PATH '$.addValues.Mobile-App-Id' ,
       Siteid VARCHAR2(150) Path '$.addValues.SITEID' ,
       --SOURCE_APP VARCHAR2(150) PATH '$.addValues.SOURCE-APP' ,
-      Wname VARCHAR2(150) Path '$.addValues.WNAME' , Alternateshipper VARCHAR2(10) Path '$.alternateShipper' , Billcompleteflag VARCHAR2(1) Path '$.billCompleteFlag' ,
+      Wname VARCHAR2(150) Path '$.addValues.WNAME' , Alternateshipper VARCHAR2(240) Path '$.alternateShipper' , Billcompleteflag VARCHAR2(1) Path '$.billCompleteFlag' ,
       --billing
-      Billing_Billtoname VARCHAR2(50) Path '$.billing.BillToName', Billing_Addressseq VARCHAR2(100) Path '$.billing.addressseq', Billing_Billtolastupdatedate VARCHAR2(30) Path '$.billing.billToLastUpdateDate', Billing_City VARCHAR2(30) Path '$.billing.city', Billing_Country VARCHAR2(30) Path '$.billing.country', Billing_County VARCHAR2(30) Path '$.billing.county', Billing_Line1 VARCHAR2(50) Path '$.billing.line1', Billing_Line2 VARCHAR2(50) Path '$.billing.line2', Billing_State VARCHAR2(30) Path '$.billing.state', Billing_Zip VARCHAR2(30) Path '$.billing.zip',
+      Billing_Billtoname VARCHAR2(240) Path '$.billing.BillToName', Billing_Addressseq VARCHAR2(100) Path '$.billing.addressseq', Billing_Billtolastupdatedate VARCHAR2(30) Path '$.billing.billToLastUpdateDate', Billing_City VARCHAR2(30) Path '$.billing.city', Billing_Country VARCHAR2(30) Path '$.billing.country', Billing_County VARCHAR2(30) Path '$.billing.county', Billing_Line1 VARCHAR2(50) Path '$.billing.line1', Billing_Line2 VARCHAR2(50) Path '$.billing.line2', Billing_State VARCHAR2(30) Path '$.billing.state', Billing_Zip VARCHAR2(30) Path '$.billing.zip',
       /*
       NESTED PATH '$.billing'
       COLUMNS (BillToName VARCHAR2(50) PATH '$.BillToName',
@@ -405,9 +407,9 @@ BEGIN
       state VARCHAR2(30) PATH '$.state',
       zip VARCHAR2(30) PATH '$.zip')  , -- Need to Check
       */
-      Businessunit                    VARCHAR2(10) Path '$.businessUnit' , Cancelreason VARCHAR2(30) Path '$.cancelReason' , Commisionflag VARCHAR2(1) Path '$.commisionFlag' , Costcentersplitflag VARCHAR2(1) Path '$.costCenterSplitFlag' , Createbyid VARCHAR2(30) Path '$.createById' , Custcustomertype VARCHAR2(1) Path '$.custCustomerType' , Custponumber VARCHAR2(30) Path '$.custPONumber' , Customertaxexmptid VARCHAR2(30) Path '$.customerTaxExmptId' , Customertype VARCHAR2(1) Path '$.customerType' , Deliverymethod VARCHAR2(30) Path '$.deliveryMethod' , Depositamount NUMBER Path '$.depositAmount' , Depositamountiflag VARCHAR2(1) Path '$.depositAmountIFlag' , Deptdescription VARCHAR2(30) Path '$.deptDescription' , Dropshipflag VARCHAR2(1) Path '$.dropShipFlag' , Extordnumber VARCHAR2(30) Path '$.extOrdNumber' , Freighttaxamt NUMBER Path '$.freightTaxAmt' , Freighttaxpercent NUMBER Path '$.freightTaxPercent' , Geolocation VARCHAR2(30) Path '$.geoLocation' , Giftflag VARCHAR2(1) Path '$.giftFlag' , Invlocid
-                                      NUMBER Path '$.invLocId' , Invloctimezone VARCHAR2(5) Path '$.invLocTimeZone' , Isdropship VARCHAR2(5) Path '$.isDropShip' , Iswholesale VARCHAR2(5) Path '$.isWholeSale' , Kitoverrideflag VARCHAR2(1) Path '$.kitOverrideFlag' , Kittype VARCHAR2(20) Path '$.kitType' , Locationtype VARCHAR2(10) Path '$.locationType' , Loyaltyid NUMBER Path '$.loyaltyId' , Ordercategory VARCHAR2(1) Path '$.orderCategory' , Ordercomment1 VARCHAR2(200) Path '$.orderComment1' , Ordercomment2 VARCHAR2(200) Path '$.orderComment2' , Ordercomment3 VARCHAR2(200) Path '$.orderComment3' , Ordercreatetime NUMBER Path '$.orderCreateTime' , Ordercurrency VARCHAR2(3) Path '$.orderCurrency' , Orderdate VARCHAR2(15) Path '$.orderDate' , Orderdatetimestamp VARCHAR2(40) Path '$.orderDateTimestamp' , Orderdelcode VARCHAR2(1) Path '$.orderDelCode' , Orderdeloverridecode VARCHAR2(15) Path '$.orderDelOverrideCode' , Orderdepartment VARCHAR2(10) Path '$.orderDepartment' , Orderdesktop VARCHAR2(10) Path
-      '$.orderDesktop' , Orderendtime NUMBER Path '$.orderEndTime' , Ordergsttax NUMBER Path '$.orderGSTTax' , Orderlobid VARCHAR2(10) Path '$.orderLOBId' , Orderlastupdatedate VARCHAR2(15) Path '$.orderLastUpdateDate' , Ordernumber VARCHAR2(30) Path '$.orderNumber' , Orderpsttax NUMBER Path '$.orderPSTTax' , Orderrelease VARCHAR2(50) Path '$.orderRelease' , Ordersource VARCHAR2(25) Path '$.orderSource' , Orderstatus VARCHAR2(25) Path '$.orderStatus' , Orderstatusdescription VARCHAR2(150) Path '$.orderStatusDescription' , Ordersubtotal NUMBER Path '$.orderSubTotal' , Ordertotal NUMBER Path '$.orderTotal' , Ordertype VARCHAR2(20) Path '$.orderType' , Ordertype2 VARCHAR2(15) Path '$.orderType2' , Ordertypedescription VARCHAR2(40) Path '$.orderTypeDescription' , Orderustax NUMBER Path '$.orderUSTax' , Orderwebstatusdescription VARCHAR2(30) Path '$.orderWebStatusDescription' , Ordersubnumber VARCHAR2(30) Path '$.ordersubNumber' , Originallocationid VARCHAR2(1) Path '$.originalLocationId'
+      Businessunit                    VARCHAR2(10) Path '$.businessUnit' , Cancelreason VARCHAR2(30) Path '$.cancelReason' , Commisionflag VARCHAR2(1) Path '$.commisionFlag' , Costcentersplitflag VARCHAR2(1) Path '$.costCenterSplitFlag' , Createbyid VARCHAR2(30) Path '$.createById' , Custcustomertype VARCHAR2(1) Path '$.custCustomerType' , Custponumber VARCHAR2(50) Path '$.custPONumber' , Customertaxexmptid VARCHAR2(30) Path '$.customerTaxExmptId' , Customertype VARCHAR2(1) Path '$.customerType' , Deliverymethod VARCHAR2(30) Path '$.deliveryMethod' , Depositamount NUMBER Path '$.depositAmount' , Depositamountiflag VARCHAR2(1) Path '$.depositAmountIFlag' , Deptdescription VARCHAR2(30) Path '$.deptDescription' , Dropshipflag VARCHAR2(1) Path '$.dropShipFlag' , Extordnumber VARCHAR2(100) Path '$.extOrdNumber' , Freighttaxamt NUMBER Path '$.freightTaxAmt' , Freighttaxpercent NUMBER Path '$.freightTaxPercent' , Geolocation VARCHAR2(30) Path '$.geoLocation' , Giftflag VARCHAR2(1) Path '$.giftFlag' , Invlocid
+                                      NUMBER Path '$.invLocId' , Invloctimezone VARCHAR2(5) Path '$.invLocTimeZone' , Isdropship VARCHAR2(5) Path '$.isDropShip' , Iswholesale VARCHAR2(5) Path '$.isWholeSale' , Kitoverrideflag VARCHAR2(1) Path '$.kitOverrideFlag' , Kittype VARCHAR2(20) Path '$.kitType' , Locationtype VARCHAR2(10) Path '$.locationType' , Loyaltyid NUMBER Path '$.loyaltyId' , Ordercategory VARCHAR2(1) Path '$.orderCategory' , Ordercomment1 VARCHAR2(200) Path '$.orderComment1' , Ordercomment2 VARCHAR2(200) Path '$.orderComment2' , Ordercomment3 VARCHAR2(200) Path '$.orderComment3' , Ordercreatetime NUMBER Path '$.orderCreateTime' , Ordercurrency VARCHAR2(3) Path '$.orderCurrency' , Orderdate VARCHAR2(15) Path '$.orderDate' , Orderdatetimestamp VARCHAR2(40) Path '$.orderDateTimestamp' , Orderdelcode VARCHAR2(1) Path '$.orderDelCode' , Orderdeloverridecode VARCHAR2(15) Path '$.orderDelOverrideCode' , Orderdepartment VARCHAR2(50) Path '$.orderDepartment' , Orderdesktop VARCHAR2(50) Path
+      '$.orderDesktop' , Orderendtime NUMBER Path '$.orderEndTime' , Ordergsttax NUMBER Path '$.orderGSTTax' , Orderlobid VARCHAR2(10) Path '$.orderLOBId' , Orderlastupdatedate VARCHAR2(15) Path '$.orderLastUpdateDate' , Ordernumber VARCHAR2(30) Path '$.orderNumber' , Orderpsttax NUMBER Path '$.orderPSTTax' , Orderrelease VARCHAR2(240) Path '$.orderRelease' , Ordersource VARCHAR2(25) Path '$.orderSource' , Orderstatus VARCHAR2(25) Path '$.orderStatus' , Orderstatusdescription VARCHAR2(150) Path '$.orderStatusDescription' , Ordersubtotal NUMBER Path '$.orderSubTotal' , Ordertotal NUMBER Path '$.orderTotal' , Ordertype VARCHAR2(20) Path '$.orderType' , Ordertype2 VARCHAR2(15) Path '$.orderType2' , Ordertypedescription VARCHAR2(40) Path '$.orderTypeDescription' , Orderustax NUMBER Path '$.orderUSTax' , Orderwebstatusdescription VARCHAR2(30) Path '$.orderWebStatusDescription' , Ordersubnumber VARCHAR2(30) Path '$.ordersubNumber' , Originallocationid VARCHAR2(1) Path '$.originalLocationId'
       , Originalordernumber           VARCHAR2(30) Path '$.originalOrderNumber' , Originalordersubnumber VARCHAR2(30) Path '$.originalOrderSubNumber' , Originalsaledate VARCHAR2(30) Path '$.originalSaleDate' , Parentorder VARCHAR2(30) Path '$.parentOrder' , Pickupordeliverydate VARCHAR2(20) Path '$.pickupOrDeliveryDate' , Pricecode VARCHAR2(10) Path '$.priceCode' , Promiseddate VARCHAR2(15) Path '$.promisedDate' , Relatedorderscount_Long VARCHAR2(10) Path '$.relatedOrdersCount_long' , Returnactioncode VARCHAR2(10) Path '$.returnActionCode' , Returncategorycode VARCHAR2(15) Path '$.returnCategoryCode' , Returnreasoncode VARCHAR2(50) Path '$.returnReasonCode' ,
       --route
       Routenumber VARCHAR2(30) Path '$.route.routeNumber', Sectornumber VARCHAR2(30) Path '$.route.sectorNumber',
@@ -416,9 +418,9 @@ BEGIN
       COLUMNS (routeNumber VARCHAR2(30) PATH '$.routeNumber',
       sectorNumber VARCHAR2(30) PATH '$.sectorNumber')  , -- Need to Check
       */
-      Saledate VARCHAR2(30) Path '$.saleDate' , Salelocid VARCHAR2(30) Path '$.saleLocId' , Saleschannel VARCHAR2(20) Path '$.salesChannel' , Salespersonloc VARCHAR2(20) Path '$.salesPersonLoc' , Shipdate VARCHAR2(30) Path '$.shipDate' ,
+      Saledate VARCHAR2(30) Path '$.saleDate' , Salelocid VARCHAR2(30) Path '$.saleLocId' , Saleschannel VARCHAR2(30) Path '$.salesChannel' , Salespersonloc VARCHAR2(20) Path '$.salesPersonLoc' , Shipdate VARCHAR2(30) Path '$.shipDate' ,
       --soldTo Group
-      Soldto_Contactemailaddr VARCHAR2(30) Path '$.soldTo.contactEmailAddr', Soldto_Contactfirstname VARCHAR2(30) Path '$.soldTo.contactFirstName', Soldto_Contactlastname VARCHAR2(30) Path '$.soldTo.contactLastName', Soldto_Contactphone VARCHAR2(30) Path '$.soldTo.contactPhone', Soldto_Contactphoneext VARCHAR2(30) Path '$.soldTo.contactPhoneExt', Soldto_Soldtocontact VARCHAR2(30) Path '$.soldTo.soldToContact' ,
+      Soldto_Contactemailaddr VARCHAR2(240) Path '$.soldTo.contactEmailAddr', Soldto_Contactfirstname VARCHAR2(240) Path '$.soldTo.contactFirstName', Soldto_Contactlastname VARCHAR2(240) Path '$.soldTo.contactLastName', Soldto_contactName VARCHAR2(240) Path '$.soldTo.contactName', Soldto_Contactphone VARCHAR2(240) Path '$.soldTo.contactPhone', Soldto_Contactphoneext VARCHAR2(240) Path '$.soldTo.contactPhoneExt', Soldto_Soldtocontact VARCHAR2(30) Path '$.soldTo.soldToContact' ,
       /*
       NESTED PATH '$.soldTo'
       COLUMNS (contactEmailAddr VARCHAR2(30) PATH '$.contactEmailAddr',
@@ -615,7 +617,8 @@ BEGIN
         Header_Id ,
         Tender_Id ,
         Status ,
-		payment_ref
+		payment_ref ,
+		credit_card_holder_name
       )
     SELECT Accountnumber ,
       Acctencryptionkey ,
@@ -639,10 +642,11 @@ BEGIN
       L_Header_Id ,
       Xxom_Tender_Data_Seq.Nextval ,
       'New',
-	  payment_ref
+	  payment_ref , 
+	  credit_card_holder_name
     FROM Dual,
       Json_Table (I.Json_Ord_Data, '$.orderTenders[*]' Columns ( Accountnumber VARCHAR2(30) Path '$.accountNumber' , Acctencryptionkey VARCHAR2(100) Path '$.acctEncryptionKey' , Addrverificationcode VARCHAR2(30) Path '$.addrVerificationCode' , Amount NUMBER Path '$.amount' , Authentrymode VARCHAR2(30) Path '$.authEntryMode' , Authps2000 VARCHAR2(30) Path '$.authPS2000' , Cardnumber VARCHAR2(30) Path '$.cardNumber' , Ccauthcode VARCHAR2(30) Path '$.ccAuthCode' , Ccauthdate VARCHAR2(30) Path '$.ccAuthDate' , Ccencryptionkey VARCHAR2(100) Path '$.ccEncryptionKey' , Ccmanualauth VARCHAR2(30) Path '$.ccManualAuth' , Ccrespcode VARCHAR2(30) Path '$.ccRespCode' , Cctype VARCHAR2(30) Path '$.ccType' , Clrtexttokenflag VARCHAR2(1) Path '$.clrTextTokenFlag' , Credentialonfile VARCHAR2(100) Path '$.credentialOnFile' , Desencryptionkey VARCHAR2(100) Path '$.desEncryptionKey' , Expirydate VARCHAR2(30) Path '$.expiryDate' , Method VARCHAR2(30) Path '$.method' , Paysubtype VARCHAR2(30) Path 
-      '$.paySubType' , payment_ref VARCHAR2(20) Path '$.payment_ref' ));
+      '$.paySubType' , payment_ref VARCHAR2(20) Path '$.payment_ref' , credit_card_holder_name VARCHAR2(240) Path '$.credit_card_holder_name' ));
   EXCEPTION
   WHEN OTHERS THEN
 	logit ('Error in Xxoe_Populate_Columns while inserting '|| lc_level ||' data of '||lc_order||' into xxom int tables. Error Code:'||SQLCODE);
@@ -920,7 +924,7 @@ BEGIN
         ,
         I.Saleschannel -- derive from OE_LOOKUPS
         ,
-        I.Dropshipflag ,
+        NVL(I.Dropshipflag,'N') ,
 		I.DELIVERYMETHOD,
 		FND_PROFILE.VALUE('ORG_ID'),
 		fnd_global.conc_request_id ,
@@ -1000,8 +1004,8 @@ BEGIN
         I.Soldto_Contactemailaddr ,
         I.Soldto_Contactphone ,
         I.Soldto_Contactphoneext ,
-        I.SOLDTO_CONTACTFIRSTNAME || ' ' || I.SOLDTO_CONTACTLASTNAME --Soldto_Soldtocontact --/ SOLDTO_CONTACTFIRSTNAME / SOLDTO_CONTACTLASTNAME
-        ,I.SOLDTO_CONTACTFIRSTNAME || ' ' || I.SOLDTO_CONTACTLASTNAME,
+        I.Soldto_contactName --I.SOLDTO_CONTACTFIRSTNAME || ' ' || I.SOLDTO_CONTACTLASTNAME 
+        ,I.Soldto_contactName , --I.SOLDTO_CONTACTFIRSTNAME || ' ' || I.SOLDTO_CONTACTLASTNAME,
         I.Ordertype ,
         I.Shipping_Shiptoname ,
         I.Billing_Billtoname ,
@@ -1096,7 +1100,7 @@ BEGIN
       Shipquantity ,
       Quantity ,
       Polinenum ,
-      (Price - (NVL((
+      (Price + (NVL((
 	  SELECT SUM(xoadj.acctingCouponAmount)
 	  FROM Xxom_Order_Adjustments_Int xoadj
 	  WHERE xoadj.Header_Id = x.Header_Id
@@ -1170,7 +1174,7 @@ BEGIN
       X.Vendorproductcode ,
       X.Contractcode ,
 	  I.TAXABLEFLAG,
-	  I.COMMISIONFLAG,
+	  NVL(I.COMMISIONFLAG,'N'),
       X.Linecomments ,
       X.Backorderquantity ,
       X.Department ,
@@ -1230,7 +1234,7 @@ BEGIN
       'N' ,
       xoline.Line_Id ,
       ---xoa.Displaycouponamount
-	  (-1*xoa.displayCouponAmount)/xoline.Ordered_Quantity
+	  (xoa.displayCouponAmount)/xoline.Ordered_Quantity
 	  ,xoa.adjustmentCode
       ,xoa.COUPONID
 	  ,xoa.displaycouponamount
@@ -1355,8 +1359,9 @@ BEGIN
         Method ,
         Cctype ,
         Ccencryptionkey ,
-        I.Soldto_Contactfirstname || ' ' || I.Soldto_Contactlastname
-        ,DECODE(EXPIRYDATE,'00/00',NULL, TO_DATE('01/'||EXPIRYDATE,'dd/mm/rr'))     -- EXPIRYDATE
+        --I.Soldto_Contactfirstname || ' ' || I.Soldto_Contactlastname
+        SUBSTR (credit_card_holder_name ,1,80)
+		,DECODE(EXPIRYDATE,'00/00',NULL, TO_DATE('01/'||EXPIRYDATE,'dd/mm/rr'))     -- EXPIRYDATE
         ,
         Accountnumber ,
         Amount
