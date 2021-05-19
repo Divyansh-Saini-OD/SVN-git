@@ -1,4 +1,4 @@
-create or replace package body XX_FIN_VPS_BACKUP_INVSKU
+CREATE OR REPLACE PACKAGE BODY XX_FIN_VPS_BACKUP_INVSKU
 as
 -- +===========================================================================+
 -- |                  Office Depot                                             |
@@ -13,8 +13,10 @@ as
 -- | 1.0       09-JUL-17      Sreedhar Mohan        Initial draft version      |
 -- | 1.1       22-SEP-17      Thejaswini Rajula     Redesign Backup and stmt   |
 -- | 1.2       09-AUG-18      Havish Kasina         Added new argument to the  |
--- |                                                XXARVPSINVSKUBKUP program  |   
+-- |                                                XXARVPSINVSKUBKUP program  |
 -- | 1.3       03-MAR-19      Dinesh Nagapuri       GSCC Violation removed xxfin|
+-- | 1.4       07-May-21      Gitanjali Singh       added and condition for     |
+-- |                                                program_id not zero or null |
 -- +===========================================================================+
 
   PROCEDURE HTTP_GET_BACKUP(P_PROGRAM_ID          IN   NUMBER
@@ -29,22 +31,22 @@ as
       clob_buff CLOB;
 
       l_wallet_location     VARCHAR2(256)   := NULL;
-      l_password            VARCHAR2(256)   := NULL;   
+      l_password            VARCHAR2(256)   := NULL;
       l_url                 VARCHAR2(4000);
-      
+
       VPS_BACKUP_SERVICE_URL varchar2(1000) := null; --'https://agerndev.na.odcorp.net/vpsservice/api/v2/PGM_DETAILS';
-      l_enable_auth         VARCHAR2(256):=NULL; 
+      l_enable_auth         VARCHAR2(256):=NULL;
       l_username            VARCHAR2(256):=NULL;
       l_vps_password        VARCHAR2(256):=NULL;
       l_year                VARCHAR2(4):=NULL;
-      
+
   BEGIN
-    
+
     select to_char(sysdate, 'YYYY') into l_year  from dual;
-  
+
       BEGIN
-      
-        SELECT 
+
+        SELECT
             TARGET_VALUE1
          INTO
             VPS_BACKUP_SERVICE_URL
@@ -54,19 +56,19 @@ as
          AND DEFN.TRANSLATE_ID=VALS.TRANSLATE_ID
          AND DEFN.TRANSLATION_NAME = 'OD_VPS_TRANSLATION'
          AND SOURCE_VALUE1 LIKE 'BKUP_INT_URL'
-         ;        
-        
-      EXCEPTION 
+         ;
+
+      EXCEPTION
         WHEN OTHERS THEN
         --RETCODE:=2;
         --ERRBUF:='Error in getting Backup interface Service URL from Translation';
         fnd_file.put_line (fnd_file.LOG,SQLERRM);
         RETURN;
       END;
-  
+
       BEGIN
-      
-        SELECT 
+
+        SELECT
            TARGET_VALUE1
           ,TARGET_VALUE2
         into
@@ -77,20 +79,20 @@ as
         WHERE 1=1
         and   DEF.TRANSLATE_ID = VAL.TRANSLATE_ID
         and   DEF.TRANSLATION_NAME='XX_FIN_IREC_TOKEN_PARAMS'
-        and   VAL.SOURCE_VALUE1 = 'WALLET_LOCATION'     
+        and   VAL.SOURCE_VALUE1 = 'WALLET_LOCATION'
         and   VAL.ENABLED_FLAG = 'Y'
-        and   SYSDATE between VAL.START_DATE_ACTIVE and nvl(VAL.END_DATE_ACTIVE, SYSDATE+1); 
-        
-      EXCEPTION 
+        and   SYSDATE between VAL.START_DATE_ACTIVE and nvl(VAL.END_DATE_ACTIVE, SYSDATE+1);
+
+      EXCEPTION
         WHEN OTHERS THEN
         l_wallet_location := NULL;
         l_password := NULL;
         --RETCODE:=2;
         --ERRBUF:='Error in getting Wallet Location from Translation';
         fnd_file.put_line (fnd_file.LOG,SQLERRM);
-        RETURN;        
+        RETURN;
       END;
-      
+
                   BEGIN
             --Get Authentication username and password
           SELECT  target_value1, target_value2
@@ -102,13 +104,13 @@ as
              AND DEFN.TRANSLATION_NAME = 'OD_VPS_TRANSLATION'
              AND SOURCE_VALUE1 = 'VPS_INV_PUBLISH_AUTH'
              AND VALS.ENABLED_FLAG = 'Y'
-             AND SYSDATE between VALS.START_DATE_ACTIVE and nvl(VALS.END_DATE_ACTIVE, SYSDATE+1); 
+             AND SYSDATE between VALS.START_DATE_ACTIVE and nvl(VALS.END_DATE_ACTIVE, SYSDATE+1);
         EXCEPTION WHEN OTHERS THEN
           FND_FILE.PUT_LINE(FND_FILE.LOG,'l_username Not Found' );
           l_username:=NULL;
           l_vps_password := NULL;
         END;
-      
+
             BEGIN
              --Get Authentication Method
           SELECT  target_value1
@@ -120,29 +122,29 @@ as
              AND DEFN.TRANSLATION_NAME = 'OD_VPS_TRANSLATION'
              AND SOURCE_VALUE1 = 'VPS_INV_PUB_ENABLE_AUTH'
              AND VALS.ENABLED_FLAG = 'Y'
-             AND SYSDATE between VALS.START_DATE_ACTIVE and nvl(VALS.END_DATE_ACTIVE, SYSDATE+1); 
+             AND SYSDATE between VALS.START_DATE_ACTIVE and nvl(VALS.END_DATE_ACTIVE, SYSDATE+1);
         EXCEPTION WHEN OTHERS THEN
           FND_FILE.PUT_LINE(FND_FILE.LOG,'l_enable_auth Not Found' );
           l_enable_auth:=NULL;
         END;
       FND_FILE.PUT_LINE(FND_FILE.LOG, 'l_enable_auth: ' || l_enable_auth);
-      
+
       IF l_wallet_location IS NOT NULL THEN
         UTL_HTTP.SET_WALLET(l_wallet_location,l_password);
       END IF;
-           
+
       UTL_HTTP.SET_RESPONSE_ERROR_CHECK(FALSE);
 
-      
+
     request := UTL_HTTP.BEGIN_REQUEST(VPS_BACKUP_SERVICE_URL || '/' || P_PROGRAM_ID || '/' || P_VENDOR_NUMBER || '/'||l_year||'/' || P_BACKUP_TYPE, 'GET');
-    
+
       UTL_HTTP.SET_HEADER(request, 'User-Agent', 'Mozilla/4.0');
-      IF UPPER(l_enable_auth) IN ('Y','YES') THEN 
+      IF UPPER(l_enable_auth) IN ('Y','YES') THEN
         utl_http.set_header(request, 'Authorization', 'Basic ' || UTL_RAW.cast_to_varchar2(UTL_ENCODE.base64_encode(UTL_RAW.cast_to_raw(l_username||':'||l_vps_password))));
       END IF;
       response := UTL_HTTP.GET_RESPONSE(request);
-      --insert into a(log_msg) values ('HTTP response status code: ' || response.status_code); 
-      commit; 
+      --insert into a(log_msg) values ('HTTP response status code: ' || response.status_code);
+      commit;
       --DBMS_OUTPUT.PUT_LINE('HTTP response status code: ' || response.status_code);
       l_url:= VPS_BACKUP_SERVICE_URL || '/' || P_PROGRAM_ID || '/' || P_VENDOR_NUMBER || '/'||l_year||'/' || P_BACKUP_TYPE;
       fnd_file.put_line (fnd_file.LOG,'l_url:'||l_url);
@@ -163,7 +165,7 @@ as
                   DBMS_OUTPUT.PUT_LINE(DBMS_UTILITY.FORMAT_ERROR_BACKTRACE);
                   UTL_HTTP.END_RESPONSE(response);
           END;
-  
+
           BEGIN
             fnd_file.put_line (fnd_file.LOG,'Before inserting into XX_FIN_VPS_STMT_BACKUP_DATA: ');
             INSERT INTO XX_FIN_VPS_STMT_BACKUP_DATA VALUES (XX_FIN_VPS_STMT_BACKUP_S.nextval, p_program_id, p_vendor_number, clob_buff, P_BACKUP_TYPE, sysdate, 0, sysdate, 0);
@@ -184,7 +186,7 @@ as
   EXCEPTION
       	    WHEN OTHERS THEN
                   DBMS_OUTPUT.PUT_LINE('Exception: ' || SQLERRM);
-                  commit;  
+                  commit;
   END HTTP_GET_BACKUP;
 
 
@@ -212,8 +214,8 @@ PROCEDURE VPS_BACKUP_GET( ERRBUF                OUT  VARCHAR2
       lc_request_id                 NUMBER := fnd_global.conc_request_id;
       lc_mail_from                  VARCHAR2(100); -- := 'ebs_test_notifications@officedepot.com';
       lc_mail_to                    VARCHAR2(100); --:= fnd_profile.value('XX_VPS_SEND_MAIL_TO');
-     
-      
+
+
 
 CURSOR cur_stmt_backup(lv_stmt_date DATE,
                        p_vendor_num VARCHAR2)
@@ -233,13 +235,14 @@ CURSOR cur_stmt_backup(lv_stmt_date DATE,
   AND UPPER(c_ext_attr4)  IN ('YES','Y')
   AND UPPER(c_ext_attr8)  IN ('YES','Y')
   AND hca.cust_account_id  =rct.bill_to_customer_id
-  AND rct.attribute14     IS NOT NULL
+  --AND rct.attribute14     IS NOT NULL -- 1.4
+  AND (rct.attribute14     IS NOT NULL and rct.attribute14 <> 0) -- 1.4 added program_id should not be equal to 0
   AND TRUNC(rct.trx_date) BETWEEN TRUNC(lv_stmt_date,'YEAR') AND TRUNC(lv_stmt_date);
 
-/* Added by Havish Kasina as per Version 1.2 */  
+/* Added by Havish Kasina as per Version 1.2 */
 CURSOR cur_core_invoices(P_STMT_DATE VARCHAR2)
 IS
-  SELECT SUBSTR(hca.orig_system_reference,1,INSTR(hca.orig_system_reference, '-',1)-1) SUPPLIER_NUM 
+  SELECT SUBSTR(hca.orig_system_reference,1,INSTR(hca.orig_system_reference, '-',1)-1) SUPPLIER_NUM
             FROM hz_cust_accounts_all hca ,
                  xx_cdh_cust_acct_ext_b extb,
                  Ego_Attr_Groups_V eagv ,
@@ -260,7 +263,7 @@ IS
              AND rct.customer_trx_id  =aps.customer_trx_id
 			 AND TRUNC(aps.due_date) = TRUNC(TO_DATE(P_STMT_DATE,'YYYY/MM/DD HH24:MI:SS'))
            GROUP BY SUBSTR(hca.orig_system_reference,1,INSTR(hca.orig_system_reference, '-',1)-1);
-      
+
   BEGIN
   FND_FILE.PUT_LINE(FND_FILE.LOG,'Input Parameters ');
   FND_FILE.PUT_LINE(FND_FILE.LOG,'P_STMT_DATE :'|| P_STMT_DATE);
@@ -268,59 +271,59 @@ IS
   lv_stmt_date := FND_DATE.CANONICAL_TO_DATE (P_STMT_DATE);
   FND_FILE.PUT_LINE(FND_FILE.LOG,'Statement Date: '||lv_stmt_date);
       BEGIN
-          SELECT target_value1,target_value2 
+          SELECT target_value1,target_value2
             INTO  lc_mail_from,lc_mail_to
            FROM xx_fin_translatedefinition xftd
               , xx_fin_translatevalues xftv
           WHERE xftv.translate_id = xftd.translate_id
             AND xftd.translation_name ='OD_VPS_TRANSLATION'
             AND source_value1='CORE_BACKUP_EXCEPTION'
-            AND NVL (xftv.enabled_flag, 'N') = 'Y';       
-         EXCEPTION 
+            AND NVL (xftv.enabled_flag, 'N') = 'Y';
+         EXCEPTION
          WHEN OTHERS THEN
-          fnd_file.put_line(fnd_file.log,'OD_VPS_TRANSLATION: Not able to Derive Email IDS'||SQLERRM); 
+          fnd_file.put_line(fnd_file.log,'OD_VPS_TRANSLATION: Not able to Derive Email IDS'||SQLERRM);
           NULL;
         END;
 
         BEGIN
-          SELECT TO_NUMBER(target_value1),TO_NUMBER(target_value2) 
+          SELECT TO_NUMBER(target_value1),TO_NUMBER(target_value2)
             INTO  lv_inv_bkup_row_cnt,lv_sku_bkup_row_cnt
            FROM xx_fin_translatedefinition xftd
               , xx_fin_translatevalues xftv
           WHERE xftv.translate_id = xftd.translate_id
             AND xftd.translation_name ='OD_VPS_TRANSLATION'
             AND source_value1='CORE_BACKUP_ROWCOUNT'
-            AND NVL (xftv.enabled_flag, 'N') = 'Y';       
-         EXCEPTION 
+            AND NVL (xftv.enabled_flag, 'N') = 'Y';
+         EXCEPTION
          WHEN OTHERS THEN
-          fnd_file.put_line(fnd_file.log,'OD_VPS_TRANSLATION: Not able to Derive Email IDS'||SQLERRM); 
+          fnd_file.put_line(fnd_file.log,'OD_VPS_TRANSLATION: Not able to Derive Email IDS'||SQLERRM);
           NULL;
         END;
-		
+
 --Delete old data
 	DELETE FROM xx_fin_vps_stmt_backup_data; -- Added by Havish Kasina as per Version 1.2
 
 FOR j in cur_core_invoices(P_STMT_DATE)
 LOOP
   FOR i in cur_stmt_backup(lv_stmt_date, j.SUPPLIER_NUM) LOOP
-    
+
     --Delete old data
 	/*
-	 	   DELETE FROM xx_fin_vps_stmt_backup_data 
-	 	   				WHERE program_id=i.program_id 
+	 	   DELETE FROM xx_fin_vps_stmt_backup_data
+	 	   				WHERE program_id=i.program_id
 	 	   					AND vendor_number=i.vendor_number;
     */
 	-- Commented by Havish Kasina as per Version 1.2
-	
+
     --Call to insert Backup Data into stg table from VPS
         --INVOICES
         BEGIN
-        HTTP_GET_BACKUP(i.program_id 
-                        ,i.vendor_number 
+        HTTP_GET_BACKUP(i.program_id
+                        ,i.vendor_number
                         ,'INVOICES'
                           );
         EXCEPTION
-          WHEN NO_DATA_FOUND THEN 
+          WHEN NO_DATA_FOUND THEN
             FND_FILE.PUT_LINE(FND_FILE.LOG,'Exception in HTTP_GET_BACKUP NO DATA FOUND INVOICES '||i.program_id||i.vendor_number);
             NULL;
           WHEN OTHERS THEN
@@ -329,36 +332,36 @@ LOOP
         END;
         --SKUS
         BEGIN
-        HTTP_GET_BACKUP(i.program_id 
-                        ,i.vendor_number 
+        HTTP_GET_BACKUP(i.program_id
+                        ,i.vendor_number
                         ,'SKUS'
                           );
         EXCEPTION
-          WHEN NO_DATA_FOUND THEN 
+          WHEN NO_DATA_FOUND THEN
             FND_FILE.PUT_LINE(FND_FILE.LOG,'Exception in HTTP_GET_BACKUP NO DATA FOUND SKUS '||i.program_id||i.vendor_number);
             NULL;
-          WHEN OTHERS THEN 
+          WHEN OTHERS THEN
             FND_FILE.PUT_LINE(FND_FILE.LOG,'Exception in HTTP_GET_BACKUP SKUS '||i.program_id||i.vendor_number);
             NULL;
         END;
-      
+
       --Check INVOICES Backup DATA
-  							SELECT count(1) 
+  							SELECT count(1)
 									INTO lv_inv_cnt
-								  FROM xx_fin_vps_stmt_backup_data 
-								  WHERE dbms_lob.substr(VPS_data,4000) NOT LIKE '%{"INVOICES":[]}%' 
+								  FROM xx_fin_vps_stmt_backup_data
+								  WHERE dbms_lob.substr(VPS_data,4000) NOT LIKE '%{"INVOICES":[]}%'
 								  	AND backup_type='INVOICES'
 								  	AND program_id=i.program_id
 								  	AND vendor_number=i.vendor_number;
 								  --SKUS BACKUP Data
-								  SELECT count(1) 
+								  SELECT count(1)
 									INTO lv_sku_cnt
 								  FROM xx_fin_vps_stmt_backup_data
-								 WHERE dbms_lob.substr(VPS_data,4000) NOT LIKE '%{"SKUS":[]}%' 
+								 WHERE dbms_lob.substr(VPS_data,4000) NOT LIKE '%{"SKUS":[]}%'
 								   AND backup_type='SKUS'
 								   AND program_id=i.program_id
 								   AND vendor_number=i.vendor_number;
-            --Check Email Address for Backup 
+            --Check Email Address for Backup
                 BEGIN
                   SELECT hcp.email_address
                     INTO lv_email_address
@@ -381,7 +384,7 @@ LOOP
                       AND hcp.owner_table_name  = 'HZ_PARTIES'
                       AND rownum=1;
                     EXCEPTION
-                      WHEN NO_DATA_FOUND THEN 
+                      WHEN NO_DATA_FOUND THEN
                           lv_email_address:=NULL;
                             FND_FILE.PUT_LINE(FND_FILE.LOG,'Email Address for Backup '||i.program_id||i.vendor_number);
                           NULL;
@@ -389,19 +392,19 @@ LOOP
                           lv_email_address:=NULL;
                           FND_FILE.PUT_LINE(FND_FILE.LOG,'Email Address for Backup '||i.program_id||i.vendor_number);
                             NULL;
-                      WHEN OTHERS THEN 
+                      WHEN OTHERS THEN
                           lv_email_address:=NULL;
                           FND_FILE.PUT_LINE(FND_FILE.LOG,'Email Address for Backup '||i.program_id||i.vendor_number);
                           NULL;
                       END;
 								 IF ((lv_inv_cnt>0 OR lv_sku_cnt>0) AND lv_email_address IS NOT NULL) THEN
-                 
-                  -- Check for no of records for INVOICES and SKUS . If more than 63K records DONOT kick INVOICE and SKU program 
+
+                  -- Check for no of records for INVOICES and SKUS . If more than 63K records DONOT kick INVOICE and SKU program
                     --  BEGIN
                       SELECT Count(JT.INVOICE)
                         INTO lv_invoices_row_cnt
                         FROM XX_FIN_VPS_STMT_BACKUP_DATA bkdata						--V1.3
-                                   ,JSON_TABLE ( bkdata.vps_data, '$' COLUMNS ( 
+                                   ,JSON_TABLE ( bkdata.vps_data, '$' COLUMNS (
                                        nested path '$.INVOICES[*]' columns (
                                          "INVOICE"  varchar2(20) path '$.INVOICE' null on error,
                                          "INVOICE_DT"  varchar2(20) path '$.INVOICE_DT' null on error,
@@ -414,11 +417,11 @@ LOOP
                           AND  bkdata.vendor_number = i.vendor_number
                           AND  bkdata.backup_type='INVOICES';
                    --  END;
-                   --   BEGIN    
+                   --   BEGIN
                       SELECT COUNT(jt.SKU)
                         INTO lv_sku_row_count
                         FROM   XX_FIN_VPS_STMT_BACKUP_DATA bkdata							--V1.3
-                               ,JSON_TABLE ( bkdata.vps_data, '$' COLUMNS ( 
+                               ,JSON_TABLE ( bkdata.vps_data, '$' COLUMNS (
                                    nested path '$.SKUS[*]' columns (
                                      "SKU"  varchar2(50) path '$.SKU' null on error
                                      ,"SKUN"  varchar2(250) path '$.SKUN' null on error
@@ -440,30 +443,30 @@ LOOP
                         and    bkdata.vendor_number = i.vendor_number
                         and    bkdata.backup_type='SKUS';
                   IF lv_invoices_row_cnt>=lv_inv_bkup_row_cnt OR lv_sku_row_count>=lv_inv_bkup_row_cnt THEN --INVOICES SKUS ROWCOUNT
-                    
+
                     FND_FILE.PUT_LINE(FND_FILE.LOG,'Row Count for INVOICES OR SKUS  '||lv_invoices_row_cnt||'--'||lv_sku_row_count);
-                  -- Send mail to vendor programs email 
+                  -- Send mail to vendor programs email
                           BEGIN
                           lc_attach_text:='The backup email could not be delivered for the VN-'||i.vendor_number||' Program ID-'||i.program_id;
                           lc_conn := xx_pa_pb_mail.begin_mail (sender          =>  lc_mail_from,
                                                               recipients      =>  lc_mail_to,
                                                               cc_recipients   => NULL,
                                                               subject         => 'Core Backup email exception VN-'||i.vendor_number||' Program ID-'||i.program_id
-                                                              ); 
-                                
-                         --Attach text in the mail                                              
+                                                              );
+
+                         --Attach text in the mail
                          xx_pa_pb_mail.write_text (conn   => lc_conn,
                                                    message   => lc_attach_text);
-                         --End of mail                                    
+                         --End of mail
                          xx_pa_pb_mail.end_mail (conn => lc_conn);
                         EXCEPTION
-                          WHEN OTHERS THEN 
+                          WHEN OTHERS THEN
                             FND_FILE.PUT_LINE(FND_FILE.LOG,'Error in sending email to vendorprogram '||i.program_id||i.vendor_number||'--'||SQLERRM); -- Error in sending email
                             NULL;
                         END;
-                                    
+
                   ELSE
-									-- Call AR VPS Invoice SKU Statement Backup Program	
+									-- Call AR VPS Invoice SKU Statement Backup Program
 											  BEGIN
 											     v_inv_sku_req :=  fnd_request.submit_request(application => 'XXFIN',
 												                                                program => 'XXARVPSINVSKUBKUP',
@@ -473,7 +476,7 @@ LOOP
 												                                              argument2 => i.vendor_number												                                              );
 												COMMIT;
 												 	EXCEPTION
-												 			WHEN OTHERS THEN 
+												 			WHEN OTHERS THEN
                               FND_FILE.PUT_LINE(FND_FILE.LOG,'Exception in calling OD: US AR VPS Invoice SKU Statement Backup Program'||i.program_id||i.vendor_number);
 												 				NULL;
 												 	END;
@@ -487,17 +490,17 @@ LOOP
                                             ,dev_phase       => lc_dev_phase
                                             ,dev_status      => lc_dev_status
                                             ,message         => lc_message
-                                            );	
-                  END IF; --INVOICES SKUS Row Count                          
+                                            );
+                  END IF; --INVOICES SKUS Row Count
 								 END IF;
-  END LOOP; -- 
+  END LOOP; --
   END LOOP; -- cur_core_invoices
   COMMIT;
   FND_FILE.PUT_LINE(FND_FILE.LOG,'End VPS_BACKUP_GET ');
   EXCEPTION
       	    WHEN OTHERS THEN
                   DBMS_OUTPUT.PUT_LINE('Exception: ' || SQLERRM);
-                  commit;  
-  END VPS_BACKUP_GET; 
+                  commit;
+  END VPS_BACKUP_GET;
 END XX_FIN_VPS_BACKUP_INVSKU;
 /
