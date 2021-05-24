@@ -1279,6 +1279,13 @@ BEGIN
 	  FROM XX_GL_INTERFACE_NA_STG
 	  WHERE reference24=p_file_name
 	  );
+	  
+	IF (ln_je_exists > 0) 
+	THEN
+	L_ERROR_MSG :='Oracle Journal already exists for Accounting Dates in the file  ' ||P_FILE_NAME;
+	UPDATE_FILE_LOAD_ERROR('ACCOUNTING_DATE_ERROR',gc_journal_source_name,L_ERROR_MSG,P_FILE_NAME,l_error_msg, l_group_id);
+	END IF;
+	
 	--Ver#1.2 start
 	SELECT COUNT(1) INTO ln_je_iface_exists
 	FROM XX_GL_INTERFACE_NA
@@ -1289,11 +1296,13 @@ BEGIN
 	  WHERE reference24=p_file_name
 	  );	
 
-	IF (ln_je_exists > 0 or ln_je_iface_exists > 0) --Ver#1.2 end
+	IF (ln_je_iface_exists > 0) 
 	THEN
-	L_ERROR_MSG :='Oracle Journal already exists for Accounting Dates in the file  ' ||P_FILE_NAME;
+	L_ERROR_MSG :='Oracle Journal lines already exists in XX_GL_INTERFACE_NA Interface table for Accounting Dates in the file  ' ||P_FILE_NAME;
 	UPDATE_FILE_LOAD_ERROR('ACCOUNTING_DATE_ERROR',gc_journal_source_name,L_ERROR_MSG,P_FILE_NAME,l_error_msg, l_group_id);
 	END IF;
+	--Ver#1.2 end	
+
    END;
 
    /*Update Error to XX_GL_INTERFACE_NA_STG*/
