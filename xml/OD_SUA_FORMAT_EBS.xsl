@@ -225,12 +225,28 @@
                                     </xsl:attribute>
                                     <xsl:value-of select="TotalDocumentAmount/Value" />
                                  </DuePyblAmt>
+								 <xsl:if test="(DiscountTaken/Amount/Value = 0)">
+                                 <DscntApldAmt>
+                                    <xsl:attribute name="Ccy">
+                                       <xsl:value-of select="DiscountTaken/Amount/Currency/Code" />
+                                    </xsl:attribute>0</DscntApldAmt>
+								 </xsl:if>
+								 <xsl:if test="(DiscountTaken/Amount/Value &gt; 0 and DiscountTaken/Amount/Value &lt; 1)">
+                                 <DscntApldAmt>
+                                    <xsl:attribute name="Ccy">
+                                       <xsl:value-of select="DiscountTaken/Amount/Currency/Code" />
+                                    </xsl:attribute>
+                                    <xsl:value-of select="concat('0', DiscountTaken/Amount/Value)" />
+                                 </DscntApldAmt>
+								 </xsl:if>
+								  <xsl:if test="(DiscountTaken/Amount/Value &gt;= 1)">
                                  <DscntApldAmt>
                                     <xsl:attribute name="Ccy">
                                        <xsl:value-of select="DiscountTaken/Amount/Currency/Code" />
                                     </xsl:attribute>
                                     <xsl:value-of select="DiscountTaken/Amount/Value" />
                                  </DscntApldAmt>
+								 </xsl:if>
                                     <RmtdAmt>
                                        <xsl:attribute name="Ccy">
                                           <xsl:value-of select="PaymentAmount/Currency/Code" />
