@@ -1592,7 +1592,7 @@ BEGIN
                       sysdate,
                       gn_login_id,
                       inv_header_rec.org_id,
-					  l_inv_lines_tab(l_indx).line_number --3.8
+					  l_inv_lines_freight_tab(lf_indx).line_number --3.8
                       ---- ,SYSDATE   ---Defect#45000
                     );
                 EXCEPTION
