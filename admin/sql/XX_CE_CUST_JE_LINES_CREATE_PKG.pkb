@@ -1,43 +1,44 @@
 create or replace PACKAGE BODY XX_CE_CUST_JE_LINES_CREATE_PKG
 AS
--- +===================================================================+
--- |                  Office Depot - Project Simplify                  |
--- |                    Office Depot Organization                      |
--- +===================================================================+
--- | Name  : XX_CE_CUST_JE_LINES_CREATE_PKG                            |
--- | Description      :  This Package is created for custom JE creation|
--- |                     extension that excludes certain BAI2          |
--- |                     Transaction codes on the bank statement lines |
--- |                     from standard JE creation so they are not sent|
--- |                     through the standard JE and reconciliation    |
--- |                     process, enabling processing by the           |
--- |                     other CE custom extensions.                   |
--- |                                                                   |
--- |                                                                   |
--- | RICE#            : E2027                                          |
--- | Main ITG Package :                                                |
--- |                                                                   |
--- |Change Record:                                                     |
--- |===============                                                    |
--- |Version  Date         Author            Remarks                    |
--- |=======  ==========   =============     ===========================|
--- |DRAFT 1A 09-DEC-2008  Pradeep Krishnan  Initial draft version      |
--- |1.1      12-JAN-2009  Pradeep Krishnan  Updated the code for the   |
--- |                                        defect 12790.              |
--- |1.2      04-FEB-2009  Pradeep Krishnan  Updated the code for the   |
--- |                                        defect 12914.              |
--- |1.3      11-OCT-2012  Abdul Khan        QC 20234 - Added condition |
--- |                                        so that Reconciled  lines  |
--- |                                        doesnt get picked by E2027 |
--- |1.4      15-JUL-2013  Arun Pandian	    Retrofitted with R12       |
--- |1.5      18-MAY-2016  Avinash Baddam    Changes for defect#37859   |
--- |1.5      18-MAY-2016  Avinash Baddam    Changes for defect#37859   |
--- |2.0      07-Apr-2020  Amit Kumar    	Changes for E1319		   |
--- |2.1 	 25-Sep-2020  Manjush D		    Changes for NAIT-149495    |
--- |2.2      30-Nov-2020  Pratik Gadia		Changes for NAIT-140412    |
--- |2.3      27-Apr-2021  Pratik Gadia	    Changes for NAIT-175362    |
--- |2.3      14-May-2021  Ankit Jaiswal	    Changes for NAIT-138934    |
--- +===================================================================+
+-- +=============================================================================+
+-- |                  Office Depot - Project Simplify                            |
+-- |                    Office Depot Organization                                |
+-- +=============================================================================+
+-- | Name  : XX_CE_CUST_JE_LINES_CREATE_PKG                                      |
+-- | Description      :  This Package is created for custom JE creation          |
+-- |                     extension that excludes certain BAI2                    |
+-- |                     Transaction codes on the bank statement lines           |
+-- |                     from standard JE creation so they are not sent          |
+-- |                     through the standard JE and reconciliation              |
+-- |                     process, enabling processing by the                     |
+-- |                     other CE custom extensions.                             |
+-- |                                                                             |
+-- |                                                                             |
+-- | RICE#            : E2027                                                    |
+-- | Main ITG Package :                                                          |
+-- |                                                                             |
+-- |Change Record:                                                               |
+-- |===============                                                              |
+-- |Version  Date         Author            Remarks                              |
+-- |=======  ==========   =============     =====================================|
+-- |DRAFT 1A 09-DEC-2008  Pradeep Krishnan  Initial draft version                |
+-- |1.1      12-JAN-2009  Pradeep Krishnan  Updated the code for the             |
+-- |                                        defect 12790.                        |
+-- |1.2      04-FEB-2009  Pradeep Krishnan  Updated the code for the             |
+-- |                                        defect 12914.                        |
+-- |1.3      11-OCT-2012  Abdul Khan        QC 20234 - Added condition           |
+-- |                                        so that Reconciled  lines            |
+-- |                                        doesnt get picked by E2027           |
+-- |1.4      15-JUL-2013  Arun Pandian	    Retrofitted with R12                 |
+-- |1.5      18-MAY-2016  Avinash Baddam    Changes for defect#37859             |
+-- |1.5      18-MAY-2016  Avinash Baddam    Changes for defect#37859             |
+-- |2.0      07-Apr-2020  Amit Kumar    	Changes for E1319		             |
+-- |2.1 	 25-Sep-2020  Manjush D		    Changes for NAIT-149495              |
+-- |2.2      30-Nov-2020  Pratik Gadia		Changes for NAIT-140412              |
+-- |2.3      27-Apr-2021  Pratik Gadia	    Changes for NAIT-175362              |
+-- |2.3      14-May-2021  Ankit Jaiswal	    Changes for NAIT-138934 Wells Fargo  |
+-- |                                        Bank changes for Transaction Code    |
+-- +=============================================================================+
 ---Declaring all variables
   ln_cash_bank_account_id    ce_statement_headers.bank_account_id%TYPE;
   ln_statement_number        ce_statement_headers.statement_number%TYPE;
@@ -98,31 +99,6 @@ AS
   EX_ERROR                   EXCEPTION;
   EX_ERROR_WF                EXCEPTION;
   ln_WF                      NUMBER := NULL; --NAIT-175362 
-  
---<START> Added for NAIT-138934
--- +======================================================================+
--- | Name  : UPDATE_CE_STM_LINE_EXTERNAL                             	  |
--- | Description      : This function is used to update the status of     |
--- |                    CE_STATEMENT_LINES for '666' transaction code for |
--- |                    Wells Fargo Bank     		                      |
--- +======================================================================+
-/*PROCEDURE update_ce_stm_line_external(ln_is_je_trx_code IN VARCHAR,ln_statement_line_id IN VARCHAR,ln_header_id  IN VARCHAR) IS
-  PRAGMA AUTONOMOUS_TRANSACTION;
-BEGIN
-    IF (ln_is_je_trx_code = 'TRUE') THEN
-        UPDATE ce_statement_lines
-		SET    status = 'EXTERNAL'	
-		WHERE  statement_line_id   = ln_statement_line_id
-		AND    statement_header_id = ln_header_id;
-    END IF;
-	COMMIT;
-EXCEPTION
-WHEN OTHERS THEN
-	FND_FILE.PUT_LINE(FND_FILE.LOG,'Error updating ce_statement_lines with status as External'|| SQLERRM);
-  COMMIT;
-END;
---<END> Added for NAIT-138934
-*/
   
 -- +===================================================================+
 -- | Name  : CREATE_GL_INTRF_WF_LINE                             	   |
@@ -298,7 +274,7 @@ IS
 							AND XFTV.enabled_flag = 'Y'
 							AND XFTD.enabled_flag = 'Y') 
 		AND gcc.segment4 = SUBSTR (cba.agency_location_code, 3);
-		--<END> Added for NAIT-138934
+		--<END> Added for NAIT-138934 Wells Fargo Bank Transaction Code Change
 	ln_master_bank_acct_id  NUMBER; --Added Ver#2.1
 	ln_is_je_trx_code VARCHAR2(50); --Added for NAIT-138934	 
 
@@ -431,7 +407,7 @@ IS
 	OPEN lcu_gl_line_wf;
     LOOP
       ln_cnt := ln_cnt + 1;
-	  ln_is_je_trx_code := 'FALSE';--Added for NAIT-138934
+	  ln_is_je_trx_code := 'FALSE';--Added for NAIT-138934 Wells Fargo Bank Transaction Code Change
        BEGIN
         FETCH lcu_gl_line_wf
         INTO  ln_cash_bank_account_id,
@@ -456,8 +432,9 @@ IS
              ,lc_segment7;
         EXIT WHEN lcu_gl_line_wf%NOTFOUND OR lcu_gl_line_wf%NOTFOUND IS NULL;
 		
+		--<Start> Added for NAIT-138934 Wells Fargo Bank Transaction Code Change
 		BEGIN
-		    SELECT 'TRUE'--target_value1 trans_je_trx_code
+		    SELECT 'TRUE'
 		    INTO ln_is_je_trx_code
 		    FROM xx_fin_translatedefinition XFTD,xx_fin_translatevalues XFTV
 		    WHERE XFTD.translate_id = XFTV.translate_id
@@ -480,7 +457,7 @@ IS
          -- This statement will fetch the Asset Account for a given bank_account_id
          ---------------------------------------------------------------------------
 		 
-		IF (ln_is_je_trx_code = 'FALSE') THEN		--Added for NAIT-138934
+		IF (ln_is_je_trx_code = 'FALSE') THEN		--Added for NAIT-138934 Wells Fargo Bank Transaction Code Change
            SELECT ABA.bank_account_id
                  ,ABA.bank_account_num
                  ,ABA.currency_code
@@ -515,7 +492,7 @@ IS
            AND    NVL (ABA.end_date, SYSDATE + 1) > TRUNC (SYSDATE)
            AND aba.bank_account_id = cbau.bank_account_id
            AND hou.organization_id = cbau.org_id  ;
-		   --<START> Added for NAIT-138934 
+		   --<START> Added for NAIT-138934  Wells Fargo Bank Transaction Code Change
 		ELSE 
 		   SELECT ABA.bank_account_id
                  ,ABA.bank_account_num
@@ -552,7 +529,7 @@ IS
            AND aba.bank_account_id = cbau.bank_account_id
            AND hou.organization_id = cbau.org_id  ;		   
 		END IF;
-		   --<END> Added for NAIT-138934
+		   --<END> Added for NAIT-138934 Wells Fargo Bank Transaction Code Change
         EXCEPTION
         WHEN NO_DATA_FOUND THEN
           RAISE EX_ERROR_WF;
@@ -697,7 +674,7 @@ IS
         AND    statement_header_id = ln_header_id;
 		COMMIT;
 		
-		--<START> Added for NAIT-138934
+		--<START> Added for NAIT-138934 Wells Fargo Bank Transaction Code Change
 		--update_ce_stm_line_external(ln_is_je_trx_code,ln_statement_line_id,ln_header_id);
 		IF (ln_is_je_trx_code = 'TRUE') THEN
 		    BEGIN  
@@ -711,7 +688,7 @@ IS
 			FND_FILE.PUT_LINE(FND_FILE.LOG,'Error updating ce_statement_lines with status as External'|| SQLERRM);
 		    END;
 		END IF;
-		--<END> Added for NAIT-138934
+		--<END> Added for NAIT-138934 Wells Fargo Bank Transaction Code Change
         ln_cnt2 := ln_cnt2 + 1;
       EXCEPTION
         WHEN EX_ERROR_WF THEN
