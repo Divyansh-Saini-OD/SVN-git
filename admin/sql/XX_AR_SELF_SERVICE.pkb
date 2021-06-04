@@ -365,7 +365,7 @@ BEGIN
    SELECT TRIM(REPLACE(REPLACE(REPLACE(p_value,CHR(10)),CHR(13)),CHR(9)))
      INTO lv_value
      FROM DUAL;
-   
+
      SELECT REPLACE(lv_value,'|','')
        INTO lv_value
       FROM DUAl;
@@ -394,14 +394,14 @@ TYPE con_tab is TABLE of con_name;
 contact_t con_tab := con_tab();
 
    CURSOR c_em_rec IS
-     SELECT hz.account_name,hz.account_number,email.record_id 
+     SELECT hz.account_name,hz.account_number,email.record_id
        FROM xx_ar_self_serv_bad_email email,hz_cust_accounts hz
       WHERE process_id = p_process_id
         AND SUBSTR(orig_system_reference,1,INSTR(orig_system_reference,'-')-1) = email.aops_account
         AND hz.status = 'A';
 
    CURSOR c_con_rec IS
-     SELECT hz.account_name,con.record_id 
+     SELECT hz.account_name,con.record_id
        FROM xx_ar_self_serv_bad_contact con,hz_cust_accounts hz
       WHERE process_id = p_process_id
         AND hz.ACCOUNT_NUMBER = con.ACCOUNT_NUMBER
@@ -413,10 +413,10 @@ BEGIN
 	       account_number = rec.account_number
      WHERE RECORD_ID = rec.RECORD_ID;
   END LOOP;
-  
+
   OPEN c_con_rec;
   FETCH c_con_rec BULK COLLECT INTO contact_t;
-  CLOSE c_con_rec; 
+  CLOSE c_con_rec;
   FORALL i in contact_t.FIRST..contact_t.LAST
     UPDATE xx_ar_self_serv_bad_contact
        SET customer_name = contact_t(i).account_name
@@ -430,7 +430,7 @@ END;
 /*********************************************************************
 * Function to check the length of source AOPS Number
 *********************************************************************/
-FUNCTION check_aops_number(p_value IN VARCHAR2) 
+FUNCTION check_aops_number(p_value IN VARCHAR2)
   RETURN VARCHAR2 IS
 BEGIN
    IF length(p_value) >8 THEN
@@ -830,7 +830,7 @@ BEGIN
               "accountNumber": "'||rec_email.aops_account||'",
               "ebsAccountNumber": "'||rec_email.account_number||'",
               "contact": {
-                 "emailAddress": "'||rec_email.EMAIL_ADDRESS||'",
+                 "emailAddress": "'||rec_email.EMAIL_ADDRESS||'"
                           },
                           "reason": "Bad email",
                           "directFlag": ""
@@ -1363,6 +1363,7 @@ procedure process_bad_contact(p_err_buf OUT VARCHAR2,
   ln_rep_req_id   NUMBER;
   ln_arc_req_id   NUMBER;
   ln_skip_rows    NUMBER;
+  lv_enclosed_by         VARCHAR2(10);
   CURSOR c_process_files(p_process_id NUMBER) IS
      SELECT file_name,file_id
        FROM xx_ar_ss_file_names
@@ -1392,6 +1393,25 @@ BEGIN
       END IF;
     END IF;
     GET_TRANSLATION('XX_AR_SELF_SERVICE',lv_process_type,lv_directory,lv_file_name,lv_delimeter);
+	BEGIN
+        SELECT TARGET_VALUE7,TARGET_VALUE8
+          INTO lv_enclosed_by,ln_skip_rows
+          FROM XX_FIN_TRANSLATEDEFINITION XFTD,
+               XX_FIN_TRANSLATEVALUES XFTV
+         WHERE XFTD.TRANSLATION_NAME ='XX_AR_SELF_SERVICE'
+           AND XFTV.SOURCE_VALUE1      =lv_process_type
+           AND XFTD.TRANSLATE_ID       =XFTV.TRANSLATE_ID
+           AND XFTD.ENABLED_FLAG       ='Y'
+           AND SYSDATE BETWEEN XFTV.START_DATE_ACTIVE AND NVL(XFTV.END_DATE_ACTIVE,SYSDATE);
+    EXCEPTION WHEN OTHERS THEN
+       p_err_buf := 'Error while getting enclosing';
+       p_ret_code := 2;
+       lv_enclosed_by := NULL;
+       ln_skip_rows   :=1;
+    END;
+	logs('lv_directory '||lv_directory);
+    logs('lv_delimeter '||lv_delimeter);
+    logs('lv_enclosed_by '||lv_enclosed_by);
     logs('lv_directory '||lv_directory);
     logs('lv_delimeter '||lv_delimeter);
     FOR rec_process_files IN c_process_files(ln_process_id) LOOP
@@ -1399,8 +1419,8 @@ BEGIN
                 rec_process_files.file_name,
                 ln_process_id,
                 lv_delimeter,
-                null,
-                null,--ln_skip_rows
+                lv_enclosed_by,
+                ln_skip_rows,--ln_skip_rows
                 lv_err_code,
                 lv_err_message);
         --Checking if direct customer.
@@ -1629,7 +1649,7 @@ PROCEDURE generate_table_export (
 
        fnd_file.put_line(fnd_file.log,'Instance Name :'||lc_instance_name);
 
-         SELECT b.target_value3,UPPER (b.target_value4),UPPER (b.target_value11),UPPER (b.target_value12)
+         SELECT b.target_value3,UPPER (b.target_value4),b.target_value11,b.target_value12
 		   INTO lv_directory,lc_file_name_env,lc_destpath,lc_archpath
            FROM xx_fin_translatedefinition a,
                 xx_fin_translatevalues b
@@ -1641,7 +1661,7 @@ PROCEDURE generate_table_export (
             AND b.source_value1 = 'XX_AR_SS_BAD_CONT_TIEBACK';
 
       lc_file_name :=
-         lc_file_name_env || '_' || lc_date_time || '-' || l_file_number||'.txt';
+         lc_file_name_env || '_' || lc_date_time || '-' || l_file_number||'.dat';
 
       lc_message1 := lv_table_name || ' Feed Generate Init.';
       fnd_file.put_line (fnd_file.LOG, lc_message1);
@@ -1653,7 +1673,9 @@ PROCEDURE generate_table_export (
          SELECT TRIM (' ' FROM directory_path || '/' || lc_file_name)
            INTO lc_sourcepath
            FROM all_directories
-          WHERE directory_name = 'XXCRM_OUTBOUND';
+          WHERE directory_name = lv_directory;
+		  
+		  lc_destpath := lc_destpath||'/'||lc_file_name;
 
          lc_message1 := ' File creating is ' || lc_sourcepath;
          fnd_file.put_line (fnd_file.LOG, lc_message1);
@@ -1747,7 +1769,7 @@ PROCEDURE generate_table_export (
       lc_stmt_str := TRIM ('|' FROM lc_stmt_str);
       lc_stmt_str := TRIM ('''' FROM lc_stmt_str);
       lc_stmt_str := TRIM ('|' FROM lc_stmt_str);
-      lc_stmt_str := 'SELECT ' || lc_stmt_str || ' FROM APPS.' || lv_table_name || ' WHERE EXPORT_STATUS IS NULL';
+      lc_stmt_str := 'SELECT ' || lc_stmt_str || ' FROM APPS.' || lv_table_name || ' WHERE EXPORT_STATUS = ''N''';
       fnd_file.put_line (fnd_file.LOG, lc_stmt_str);
 
       v_file := UTL_FILE.fopen (LOCATION          => lc_file_loc,
@@ -1782,7 +1804,7 @@ PROCEDURE generate_table_export (
 
             UPDATE XX_AR_SS_BAD_CONT_TIEBACK
                SET EXPORT_STATUS = 'Y'
-             WHERE EXPORT_STATUS IS NULL;
+             WHERE EXPORT_STATUS ='N';
 
             COMMIT;
 

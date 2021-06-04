@@ -52,6 +52,19 @@
        GROUP BY DECODE (DIRECT_BILL_FLAG,'Y',DECODE(status,'S','Direct Success','Direct Errors')
                                       ,'N','Indirect'
                                       ,'Errored'),DECODE (DIRECT_BILL_FLAG,'Y',DECODE(status,'S',1,2),'N',3,4)
+	   UNION
+	   SELECT DECODE (DIRECT_BILL_FLAG,'Y',DECODE(status,'S','Direct Success','Direct Errors')
+                                      ,'N','Indirect'
+                                      ,'Errored') Type
+                                      ,DECODE (DIRECT_BILL_FLAG,'Y',DECODE(status,'S',1,2),'N',3,4)
+              ,count(0) cnt
+         FROM XX_AR_SELF_SERV_BAD_EMAIL
+        WHERE TRUNC(CREATION_DATE)     >= TRUNC(NVL(fnd_conc_date.string_to_date(:P_AS_OF_DATE),CREATION_DATE))
+          AND :P_TYPE           = 'EMAIL'
+		  AND aops_account is not null
+       GROUP BY DECODE (DIRECT_BILL_FLAG,'Y',DECODE(status,'S','Direct Success','Direct Errors')
+                                      ,'N','Indirect'
+                                      ,'Errored'),DECODE (DIRECT_BILL_FLAG,'Y',DECODE(status,'S',1,2),'N',3,4)
        order by 2
     ]]>
     </sqlStatement>
@@ -82,17 +95,21 @@
     </sqlStatement>
     <sqlStatement name="Q_BAD_EMAIL">
       <![CDATA[
-         SELECT  AOPS_ACCOUNT, 
-                 EMAIL_ADDRESS, 
+         SELECT  CUSTOMER_NAME,
+		         AOPS_ACCOUNT, 
+                 EMAIL_ADDRESS,
                  CREATION_DATE, 
                  REQUEST_ID, 
                  DIRECT_BILL_FLAG, 
-                 ACCOUNT_NUMBER
+                 ACCOUNT_NUMBER,
+			     DECODE(DIRECT_BILL_FLAG,'Y','Direct','N','Indirect','Errored') REC_TYPE,
+			     DECODE(DIRECT_BILL_FLAG,'Y',DECODE(Status,'S','Sent','Send Error'),'N','NA','Error') SentToPG
            FROM  XX_AR_SELF_SERV_BAD_EMAIL
-          WHERE  DIRECT_BILL_FLAG  = 'N'
+          WHERE  1=1
+		    AND  aops_account is not null
             AND  TRUNC(CREATION_DATE)     >= TRUNC(NVL(fnd_conc_date.string_to_date(:P_AS_OF_DATE),CREATION_DATE))
             AND  :P_TYPE           = 'EMAIL'
-            ORDER BY Creation_date desc,AOPS_ACCOUNT
+            ORDER BY DECODE(DIRECT_BILL_FLAG,'Y',1,'N',2,3),4 desc,2
          ]]>
     </sqlStatement>
     <sqlStatement name="Q_BAD_CONTACT">
@@ -148,11 +165,14 @@
         <element name = "REC_TYPE"         value = "REC_TYPE" />
         <element name = "SENTTOPG"         value = "SentToPG" />
       </group>
-      <group name="P_BAD_EMAIL" source="Q_BAD_EMAIL">
-        <element name = "AOPS_ACCOUNT"    value = "AOPS_ACCOUNT" />
+      <group name="G_BAD_EMAIL" source="Q_BAD_EMAIL">
+	    <element name = "CUSTOMER_NAME_EMAIL"  value = "CUSTOMER_NAME" />
+        <element name = "AOPS_ACCOUNT_EMAIL"    value = "AOPS_ACCOUNT" />
         <element name = "EMAIL_ADDRESS"   value = "EMAIL_ADDRESS" />
-        <element name = "ACCOUNT_NUMBER"  value = "ACCOUNT_NUMBER" />
-        <element name = "CREATION_DATE"   value = "CREATION_DATE" />
+        <element name = "ACCOUNT_NUMBER_EMAIL"  value = "ACCOUNT_NUMBER" />
+        <element name = "CREATION_DATE_EMAIL"   value = "CREATION_DATE" />
+        <element name = "REC_TYPE_EMAIL"       value = "REC_TYPE" />
+        <element name = "SENTTOPG_EMAIL"       value = "SentToPG" />
       </group>
       <group name="G_BAD_CONTACT" source="Q_BAD_CONTACT">
         <element name = "CUSTOMER_NAME_CON"  value = "CUSTOMER_NAME" />

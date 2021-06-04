@@ -11,7 +11,7 @@
 <xapi:document delivery="123" output-type="excel" output="${FILENAME}">
 <xapi:template type="rtf" location="xdo://XXFIN.XXARSELFSERVICE.en.US/?getSource=true" filter=".//G_PARAMS[REQ_TYPE='Address']"> </xapi:template>
 <xapi:template type="rtf" location="xdo://XXFIN.XXARSELFSERVICECON.en.US/?getSource=true" filter=".//G_PARAMS[REQ_TYPE='Contact']"> </xapi:template>
-<xapi:template type="rtf" location="xdo://XXFIN.XXARSELFSERVICECON.en.US/?getSource=true" filter=".//G_PARAMS[REQ_TYPE='Email']"> </xapi:template>
+<xapi:template type="rtf" location="xdo://XXFIN.XXARSELFSERVICEEMAIL.en.US/?getSource=true" filter=".//G_PARAMS[REQ_TYPE='Email']"> </xapi:template>
 </xapi:document>
 </xapi:request>
 </xapi:requestset>
