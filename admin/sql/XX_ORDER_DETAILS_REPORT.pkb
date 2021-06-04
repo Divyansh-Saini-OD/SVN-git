@@ -58,7 +58,7 @@ IS
       (SELECT f1.imp_file_name
         || ' '
         || f1.creation_date
-      FROM apps.xx_om_headers_attr_iface_all f1
+      FROM xx_om_headers_attr_iface_all f1
       WHERE f1.orig_sys_document_ref = q1.orig_sys#
       AND ROWNUM                     = 1
       ) FILE_NAME_DATECREATED,
@@ -81,11 +81,11 @@ IS
       DECODE(paid_at_store_id, NULL, DECODE(h.payment_term_id, 1111, 'DIRECT', 5, 'DIRECT', NULL, 'DIRECT', 'CONTRACT'), 'POS' ) lob,
       h.ordered_date,
       fh.process_date
-    FROM apps.oe_headers_iface_all h,
-      apps.oe_lines_iface_all al,
-      apps.xx_om_headers_attr_iface_all f,
-      apps.xx_om_lines_attr_iface_all l,
-      apps.xx_om_sacct_file_history fh
+    FROM oe_headers_iface_all h,
+      oe_lines_iface_all al,
+      xx_om_headers_attr_iface_all f,
+      xx_om_lines_attr_iface_all l,
+      xx_om_sacct_file_history fh
     WHERE 1                      = 1
     AND f.order_source_id        = h.order_source_id
     AND h.orig_sys_document_ref  = al.orig_sys_document_ref
@@ -101,7 +101,7 @@ IS
     AND LENGTH(h.orig_sys_document_ref) = 12
     AND NOT EXISTS
       (SELECT 1
-      FROM apps.oe_order_headers_all ooh
+      FROM oe_order_headers_all ooh
       WHERE ooh.orig_sys_document_ref = h.orig_sys_document_ref
       )
     GROUP BY h.org_id,
@@ -125,11 +125,11 @@ IS
       'POS' lob,
       h.ordered_date,
       fh.process_date
-    FROM apps.oe_headers_iface_all h,
-      apps.oe_lines_iface_all al,
-      apps.xx_om_headers_attr_iface_all f,
-      apps.xx_om_lines_attr_iface_all l,
-      apps.xx_om_sacct_file_history fh
+    FROM oe_headers_iface_all h,
+      oe_lines_iface_all al,
+      xx_om_headers_attr_iface_all f,
+      xx_om_lines_attr_iface_all l,
+      xx_om_sacct_file_history fh
     WHERE 1                      = 1
     AND f.order_source_id        = h.order_source_id
     AND h.orig_sys_document_ref  = al.orig_sys_document_ref
@@ -145,7 +145,7 @@ IS
     AND LENGTH(h.orig_sys_document_ref) <> 12
     AND NOT EXISTS
       (SELECT 1
-      FROM apps.oe_order_headers_all ooh
+      FROM oe_order_headers_all ooh
       WHERE ooh.orig_sys_document_ref = h.orig_sys_document_ref
       )
     GROUP BY h.org_id,
@@ -181,11 +181,11 @@ IS
         ( xh.order_total - NVL(SUM(al.tax_value), 0)) order_total_without_tax,
         DECODE(xh.paid_at_store_id, NULL,DECODE(h.payment_term_id, 1111, 'DIRECT', 5,'DIRECT', NULL, 'DIRECT', 'CONTRACT'), 'POS') lob,
         h.flow_status_code
-      FROM apps.oe_order_headers_all h,
-        apps.xx_om_header_attributes_all xh,
-        apps.oe_order_lines_all al,
-        apps.xx_om_sacct_file_history f,
-        apps.xx_om_line_attributes_all l
+      FROM oe_order_headers_all h,
+        xx_om_header_attributes_all xh,
+        oe_order_lines_all al,
+        xx_om_sacct_file_history f,
+        xx_om_line_attributes_all l
       WHERE h.header_id                   = xh.header_id
       AND al.line_id                      = l.line_id
       AND h.header_id                     = al.header_id
@@ -213,11 +213,11 @@ IS
       ( xh.order_total - NVL(SUM(al.tax_value), 0) ) order_total_without_tax,
       'POS' lob,
       h.flow_status_code
-    FROM apps.oe_order_headers_all h,
-      apps.xx_om_header_attributes_all xh,
-      apps.oe_order_lines_all al,
-      apps.xx_om_sacct_file_history f,
-      apps.xx_om_line_attributes_all l
+    FROM oe_order_headers_all h,
+      xx_om_header_attributes_all xh,
+      oe_order_lines_all al,
+      xx_om_sacct_file_history f,
+      xx_om_line_attributes_all l
     WHERE h.header_id                   = xh.header_id
     AND h.header_id                     = al.header_id
     AND al.line_id                      = l.line_id
@@ -250,11 +250,11 @@ IS
         ( xh.order_total - NVL(SUM(al.tax_value), 0) ) ORDER_TOTAL_WITHOUT_TAX,
         'POS' LOB,
         h.FLOW_STATUS_CODE
-      FROM apps.oe_order_headers_all h,
-        apps.xx_om_header_attributes_all xh,
-        apps.oe_order_lines_all al,
-        apps.xx_om_sacct_file_history f,
-        apps.xx_om_line_attributes_all l
+      FROM oe_order_headers_all h,
+        xx_om_header_attributes_all xh,
+        oe_order_lines_all al,
+        xx_om_sacct_file_history f,
+        xx_om_line_attributes_all l
       WHERE h.header_id       = xh.header_id
       AND h.header_id         = al.header_id
       AND al.line_id          = l.line_id
@@ -267,7 +267,7 @@ IS
       AND h.ordered_date   <= NVL(END_DATE,SYSDATE) )
       AND EXISTS
         (SELECT 1
-        FROM apps.xx_ra_int_lines_all a
+        FROM xx_ra_int_lines_all a
         WHERE a.interface_line_attribute1 = h.order_number
         )
       --AND h.ordered_date BETWEEN  '29-MAR-2021' AND '24-APR-2021'
@@ -289,11 +289,11 @@ IS
         ( xh.order_total - NVL(SUM(al.tax_value), 0) ) ORDER_TOTAL_WITHOUT_TAX,
         'POS' LOB,
         h.FLOW_STATUS_CODE
-      FROM apps.oe_order_headers_all h,
-        apps.xx_om_header_attributes_all xh,
-        apps.oe_order_lines_all al,
-        apps.xx_om_sacct_file_history f,
-        apps.xx_om_line_attributes_all l
+      FROM oe_order_headers_all h,
+        xx_om_header_attributes_all xh,
+        oe_order_lines_all al,
+        xx_om_sacct_file_history f,
+        xx_om_line_attributes_all l
       WHERE h.header_id       = xh.header_id
       AND h.header_id         = al.header_id
       AND al.line_id          = l.line_id
@@ -305,7 +305,7 @@ IS
       AND h.ordered_date   <= NVL(END_DATE,SYSDATE) )
       AND EXISTS
         (SELECT 1
-        FROM apps.xx_ra_int_lines_all a
+        FROM xx_ra_int_lines_all a
         WHERE a.interface_line_attribute1 = h.order_number
         )
       --AND h.ordered_date BETWEEN  '29-MAR-2021' AND '24-APR-2021'
