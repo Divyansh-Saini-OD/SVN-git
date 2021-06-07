@@ -22,5 +22,4 @@ AS
     RETURN VARCHAR2;
 	
 END XXOE_DATA_LOAD_PKG;
-show errors;
 /

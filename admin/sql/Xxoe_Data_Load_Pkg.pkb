@@ -1500,4 +1500,4 @@ WHEN OTHERS THEN
   logit ('Error Message: '||SQLERRM);
 END Xxoe_Validate_Data;
 END Xxoe_Data_Load_Pkg;
-show errors;
+/
