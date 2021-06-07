@@ -3,7 +3,7 @@
 -- +==========================================================================+
 -- | Script to create the following synonym                                   |
 -- |                                                                          |
--- |             Synonym: XXOM_IMPORT_INT                         |
+-- |             Synonym: XXOM_CSAS_FILE_NAMES_HIST                         |
 -- |Change Record:                                                            |
 -- |===============                                                           |
 -- |Version   Date         Author               Remarks                       |
@@ -21,7 +21,7 @@ WHENEVER SQLERROR CONTINUE;
 WHENEVER OSERROR EXIT FAILURE ROLLBACK;
 
 
-CREATE SYNONYM APPS.XXOM_IMPORT_INT FOR XXFIN.XXOM_IMPORT_INT;
+CREATE SYNONYM APPS.XXOM_CSAS_FILE_NAMES_HIST FOR XXFIN.XXOM_CSAS_FILE_NAMES_HIST;
 
-SHOW ERRORS;
+SHOW ERRORS
 

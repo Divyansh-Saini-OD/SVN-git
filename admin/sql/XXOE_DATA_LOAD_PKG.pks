@@ -13,8 +13,7 @@ AS
   -- +============================================================================================+
   PROCEDURE XXOE_DATA_LOAD_PRC(
       ERRBUF OUT VARCHAR2,
-      RETCODE OUT VARCHAR2,
-      p_file VARCHAR2);
+      RETCODE OUT VARCHAR2);
   PROCEDURE XXOE_VALIDATE_DATA;
   PROCEDURE xxoe_populate_columns(
 	ERRBUF OUT VARCHAR2,
@@ -23,4 +22,5 @@ AS
     RETURN VARCHAR2;
 	
 END XXOE_DATA_LOAD_PKG;
+show errors;
 /

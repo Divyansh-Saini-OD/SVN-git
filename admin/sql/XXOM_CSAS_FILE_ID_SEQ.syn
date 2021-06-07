@@ -3,7 +3,7 @@
 -- +==========================================================================+
 -- | Script to create the following synonym                                   |
 -- |                                                                          |
--- |             Synonym: XXOM_IMPORT_INT                         |
+-- |             Synonym: XXOM_CSAS_FILE_ID_SEQ                         |
 -- |Change Record:                                                            |
 -- |===============                                                           |
 -- |Version   Date         Author               Remarks                       |
@@ -16,12 +16,8 @@ SET VERIFY       OFF
 SET ECHO         OFF
 SET TAB          OFF
 SET FEEDBACK     ON
+WHENEVER SQLERROR CONTINUE
 
-WHENEVER SQLERROR CONTINUE;
-WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+CREATE SYNONYM APPS.XXOM_CSAS_FILE_ID_SEQ FOR XXFIN.XXOM_CSAS_FILE_ID_SEQ;
 
-
-CREATE SYNONYM APPS.XXOM_IMPORT_INT FOR XXFIN.XXOM_IMPORT_INT;
-
-SHOW ERRORS;
-
+SHOW ERRORS
