@@ -1769,7 +1769,7 @@ PROCEDURE generate_table_export (
       lc_stmt_str := TRIM ('|' FROM lc_stmt_str);
       lc_stmt_str := TRIM ('''' FROM lc_stmt_str);
       lc_stmt_str := TRIM ('|' FROM lc_stmt_str);
-      lc_stmt_str := 'SELECT ' || lc_stmt_str || ' FROM APPS.' || lv_table_name || ' WHERE EXPORT_STATUS = ''N''';
+      lc_stmt_str := 'SELECT distinct ' || lc_stmt_str || ' FROM APPS.' || lv_table_name || ' WHERE EXPORT_STATUS = ''N''';
       fnd_file.put_line (fnd_file.LOG, lc_stmt_str);
 
       v_file := UTL_FILE.fopen (LOCATION          => lc_file_loc,
