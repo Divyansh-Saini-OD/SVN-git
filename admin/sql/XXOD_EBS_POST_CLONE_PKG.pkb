@@ -129,6 +129,7 @@ AS
 -- |                                      translation                                                      |
 -- |1.62     11-APR-2019   Havish Kasina  Added new identifiers AP_NI_20 and AP_NI_21                      |
 -- |1.63     12-APR-2019   Havish Kasina  Added new identifier AP_NI_22                                    |
+-- |1.64     20-MAR-2021   Ankit Jaiswal  NAIT-176365--Update the ACH payment URL                          |
 -- +=======================================================================================================+
 
 -- +==========================================================+
@@ -15401,12 +15402,18 @@ AS
      lc_soa_hosturl       :=NULL;
      --IF lc_instance_name IN ('GSIDEV01' , 'GSIDEV02') THEN -- Commented as per Version 1.21
 	 IF lc_instance_name IN ('GSIDEV01' , 'GSIDEV02' , 'GSIDEV03') THEN -- Added GSIDEV03 instance as per Version 1.21
-      lc_soa_host := 'soadev01';
-     ELSIF lc_instance_name IN ('GSISIT01','GSISIT02') THEN
+      lc_soa_host         := 'soauat01'; --NAIT-176365--Update the ACH payment URL
+	 ELSIF lc_instance_name IN ('GSISIT01','GSISIT02') THEN
       lc_soa_host         := 'soadev01';  --'soasit01'; -- V 1.12 --> Commented as per Defect#33858. 
-     ELSIF lc_instance_name = 'GSISIT03' THEN -- Added as per Version 1.22 by Havish Kasina
-      lc_soa_host         := 'eaiuat01';	 
+     ELSIF lc_instance_name IN ('GSISIT01','GSISIT02') THEN --NAIT-176365--Update the ACH payment URL
+	  lc_soa_host         := 'soauat01';
+	 ELSIF lc_instance_name = 'GSISIT03' THEN -- Added as per Version 1.22 by Havish Kasina
+      lc_soa_host         := 'eaiuat01';
+     ELSIF lc_instance_name = 'GSISIT03' THEN
+	  lc_soa_host         :=  'soauat01';      --NAIT-176365--Update the ACH payment URL	 
      ELSIF lc_instance_name = 'GSIUATGB' THEN
+      lc_soa_host         := 'soauat01';
+	 ELSIF lc_instance_name = 'GSIUAT01' THEN  --NAIT-176365--Update the ACH payment URL
       lc_soa_host         := 'soauat01';
      ELSIF lc_instance_name = 'GSIPRFGB' THEN
       lc_soa_host         := 'soaprf01';
@@ -15415,8 +15422,8 @@ AS
 	 ELSE
 	  lc_soa_host         := 'soaxxxxx';  -- Added as per Version 1.22 by Havish Kasina
      END IF;
-     IF lc_soa_host  IS NOT NULL THEN
-      lc_soa_hosturl:='http://'||lc_soa_host||'.na.odcorp.net:80/soa-infra/services/finance_rt/CreateBankACHPaymentsReqABCS/createbankachpaymentsreqabcsprocess_client_ep?WSDL';
+     IF lc_soa_host  IS NOT NULL THEN  /*lc_soa_hosturl:='http://'||lc_soa_host||'.na.odcorp.net:80/soa-infra/services/finance_rt/CreateBankACHPaymentsReqABCS/createbankachpaymentsreqabcsprocess_client_ep?WSDL';*/
+	  lc_soa_hosturl:='https://'||lc_soa_host||'.na.odcorp.net/soa-infra/services/finance_rt/CreateBankACHPaymentsReqABCS/createbankachpaymentsreqabcsprocess_client_ep?WSDL'; --NAIT-176365--Update the ACH payment URL
       xx_write_to_log (lc_filehandle,'Start of update for'||lc_identifier||', for '||lc_instance_name);
       lb_profile_chg_result := NULL;
       lb_profile_chg_result := FND_PROFILE.SAVE(x_name => lc_profile_name ,x_value => lc_soa_hosturl ,x_level_name => 'SITE');
