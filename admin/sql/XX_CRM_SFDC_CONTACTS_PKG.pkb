@@ -308,7 +308,7 @@ is
           FROM hz_org_contacts HOC
             ,  hz_relationships HR
             ,  hz_parties HP
-            ,  apps.hz_contact_points hcp
+            ,  hz_contact_points hcp
         WHERE  HOC.party_relationship_id = HR.relationship_id
           AND  HR.subject_id = HP.party_id
           AND  HR.relationship_code = 'CONTACT_OF'
