@@ -17,6 +17,7 @@ create or replace PACKAGE BODY      XX_AP_VPS_EXTRACT_PKG
 -- | 1.5         07/28/20     Bhargavi Ankolekar    This is for jira#NAIT-146750                |
 -- | 1.6         12/11/20     Mayur Palsokar   Modified invoice_vps_extract for NAIT-165042 (Temporary change)|
 -- | 1.7         03/31/21     Rupali Gahalot   NAIT-171554-Duplicate records in the table on VPS side with INVOICE AMOUNT|
+-- | 1.8         06/11/21     Mayur Palsokar   NAIT-185834-Switched Matched Inv with and without amount file location|
 -- +============================================================================================+
 AS
 
@@ -762,7 +763,8 @@ BEGIN
 	    lc_match_file					:='Y';
 		BEGIN
 			lf_m_file := UTL_FILE.fopen('XXFIN_OUTBOUND',
-									   lc_m_file_name,
+									  -- lc_m_file_name, -- Commented for NAIT-185834
+									  lc_m_file_name_temp, -- Added for NAIT-185834
 									   'w',
 									   ln_chunk_size);
 			l_m_file_header :=
@@ -822,8 +824,9 @@ BEGIN
 			END LOOP;
 		UTL_FILE.fclose(lf_m_file);
 		fnd_file.put_line(fnd_file.LOG,'Matched Invoice File Created: '|| lc_m_file_name);
-		-- copy to matched invoice file to xxfin_data/vps dir
-		lc_dest_file_name := '/app/ebs/ct'||lc_instance_name||'/xxfin/ftp/out/vps/'||lc_m_file_name;
+/*	
+	-- copy to matched invoice file to xxfin_data/vps dir
+		lc_dest_file_name := '/app/ebs/ct'||lc_instance_name||'/xxfin/ftp/out/vps/'||lc_m_file_name; 
 		ln_conc_file_copy_request_id := fnd_request.submit_request('XXFIN',
 																   'XXCOMFILCOPY',
 																   '',
@@ -847,7 +850,7 @@ BEGIN
 															dev_status   => lc_dev_status,
 															message      => lc_message
 															);
-		END IF;
+		END IF;  */   -- Commented for NAIT-185834
 		EXCEPTION WHEN OTHERS THEN
 		fnd_file.put_line(fnd_file.LOG,SQLCODE||SQLERRM);
 		END;
@@ -863,7 +866,8 @@ BEGIN
 	    lc_match_file_temp					:='Y';
 		BEGIN
 			lf_m_file_temp := UTL_FILE.fopen('XXFIN_OUTBOUND',
-									   lc_m_file_name_temp,
+									--   lc_m_file_name_temp, -- Commented for NAIT-185834
+									   lc_m_file_name, -- Added for NAIT-185834
 									   'w',
 									   ln_chunk_size);
 			l_m_file_header_temp :=
@@ -925,6 +929,35 @@ BEGIN
 			END LOOP;
 		UTL_FILE.fclose(lf_m_file_temp);
 		fnd_file.put_line(fnd_file.LOG,'Matched Invoice with invoice amount File Created: '|| lc_m_file_name_temp);
+		/* Start: Added for NAIT-185834 */
+		-- copy to Matched Invoice with invoice amount File to xxfin_data/vps dir
+		lc_dest_file_name := '/app/ebs/ct'||lc_instance_name||'/xxfin/ftp/out/vps/'||lc_m_file_name; 
+		fnd_file.put_line(fnd_file.LOG,'Copying Matched Invoice with invoice amount File as '|| lc_dest_file_name);
+		ln_conc_file_copy_request_id := fnd_request.submit_request('XXFIN',
+																   'XXCOMFILCOPY',
+																   '',
+																   '',
+																   FALSE,
+																   lc_dirpath||'/'||lc_m_file_name, --Source File Name
+																   lc_dest_file_name,            --Dest File Name
+																   '', '', 'Y'                   --Deleting the Source File
+																  );
+		IF ln_conc_file_copy_request_id > 0
+		THEN
+			COMMIT;
+			-- wait for request to finish
+			lb_complete :=fnd_concurrent.wait_for_request (
+															request_id   => ln_conc_file_copy_request_id,
+															interval     => 10,
+															max_wait     => 0,
+															phase        => lc_phase,
+															status       => lc_status,
+															dev_phase    => lc_dev_phase,
+															dev_status   => lc_dev_status,
+															message      => lc_message
+															);
+		END IF; 
+			/* End: Added for NAIT-185834 */
 		EXCEPTION WHEN OTHERS THEN
 		fnd_file.put_line(fnd_file.LOG,SQLCODE||SQLERRM);
 		END;
