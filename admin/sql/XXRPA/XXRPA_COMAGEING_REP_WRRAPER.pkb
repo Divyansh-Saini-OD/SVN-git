@@ -1,4 +1,4 @@
-CREATE OR REPLACE PACKAGE BODY XXRPA_COMAGEING_REP_WRRAPER
+create or replace PACKAGE BODY XXRPA_COMAGEING_REP_WRRAPER
 AS
 -- +============================================================================================+
 -- |  Office Depot - RPA Project Simplify                                                       |
@@ -182,7 +182,7 @@ lc_temp_email varchar2(2000);
 											  (sender             => 'noreply@officedepot.com',
 											   recipients         => lc_temp_email,
 											   cc_recipients      => p_cc_recipients,
-											   subject            => 'OD: Ageing Request Report',
+											   subject            => 'Combined Aging for '||p_customer,
 											   mime_type          => xx_pa_pb_mail.multipart_mime_type
 											  );
 				xx_pa_pb_mail.xx_email_excel(conn			=>conn,
@@ -204,4 +204,3 @@ lc_temp_email varchar2(2000);
 	dbms_output.put_line('ERROR');
  END SUBMIT_REPORT;
 END XXRPA_COMAGEING_REP_WRRAPER;
-/
