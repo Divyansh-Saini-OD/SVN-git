@@ -109,6 +109,7 @@ AS
 -- |5.1      30-Mar-2020 Amit Kumar	    	E1319 changes to not consider Wells Fargo|
 -- |											Records in main cursors.		     |
 -- |6.1      30-Nov-2020 Pratik Gadia		Changes for NAIT-140412 				 |
+-- |6.2      08-Jun-2021 Karan Varshney     Changes for NAIT-179186                  |
 -- +=================================================================================+
 -- |Name        :                                                                    |
 -- | Description : This procedure will be used to process the                        |
@@ -399,7 +400,7 @@ AS
 						)
 					  )
 			  )
-			--<START> Commented for NAIT-140412 
+			--<START> Commented for NAIT-140412
 			/*
 			WHERE location_id NOT IN
 			  (SELECT SUBSTR (cba.agency_location_code, 3)
@@ -412,14 +413,15 @@ AS
 			  AND upper(cba.bank_Account_name) LIKE '%WELLS%'
 			  AND cba.agency_location_code IS NOT NULL
 			  )
-			 */ 
-			--<END> Commented for NAIT-140412 
-			--<START> Added for NAIT-140412 
+			 */
+			--<END> Commented for NAIT-140412
+			--<START> Added for NAIT-140412
 			WHERE location_id NOT IN
 			  (SELECT SUBSTR (cba.agency_location_code, 3)
 			  FROM CE_BANK_ACCOUNTS CBA,
 				HZ_PARTIES HP
 			  WHERE hp.party_id =cba.bank_id
+			  AND NVL (cba.end_date, SYSDATE  + 1) > TRUNC (SYSDATE) -- Modified for version 6.2
 			  AND hp.party_name IN
 								(SELECT upper(XFTV.source_value2)
 									FROM xx_fin_translatedefinition XFTD,xx_fin_translatevalues XFTV
@@ -432,7 +434,7 @@ AS
 									AND XFTD.enabled_flag = 'Y')
 			  AND hp.party_type ='ORGANIZATION'
 			  AND HP.STATUS     ='A'
-			  AND upper(substr(cba.bank_Account_name,1,4)) IN 
+			  AND upper(substr(cba.bank_Account_name,1,4)) IN
 								(SELECT upper(substr(XFTV.source_value2,1,4))
 									FROM xx_fin_translatedefinition XFTD,xx_fin_translatevalues XFTV
 									WHERE XFTD.translate_id = XFTV.translate_id
@@ -445,7 +447,7 @@ AS
 								)
 			  AND cba.agency_location_code IS NOT NULL
 			  )
-			--<END> Added for NAIT-140412 			
+			--<END> Added for NAIT-140412
 			ORDER BY 1,  2;
 
 
@@ -501,7 +503,7 @@ AS
 			  )
 			)
 		  )
-			--<START> Commented for NAIT-140412  
+			--<START> Commented for NAIT-140412
 			/*
 			WHERE location_id NOT IN
 			  (SELECT SUBSTR (cba.agency_location_code, 3)
@@ -514,14 +516,15 @@ AS
 			  AND upper(cba.bank_Account_name) LIKE '%WELLS%'
 			  AND cba.agency_location_code IS NOT NULL
 			  )
-			 */ 
-			--<END> Commented for NAIT-140412 
-			--<START> Added for NAIT-140412 
+			 */
+			--<END> Commented for NAIT-140412
+			--<START> Added for NAIT-140412
 			WHERE location_id NOT IN
 			  (SELECT SUBSTR (cba.agency_location_code, 3)
 			  FROM CE_BANK_ACCOUNTS CBA,
 				HZ_PARTIES HP
 			  WHERE hp.party_id =cba.bank_id
+			  AND NVL (cba.end_date, SYSDATE  + 1) > TRUNC (SYSDATE) -- Modified for version 6.2
 			  AND hp.party_name IN
 								(SELECT upper(XFTV.source_value2)
 									FROM xx_fin_translatedefinition XFTD,xx_fin_translatevalues XFTV
@@ -534,7 +537,7 @@ AS
 									AND XFTD.enabled_flag = 'Y')
 			  AND hp.party_type ='ORGANIZATION'
 			  AND HP.STATUS     ='A'
-			  AND upper(substr(cba.bank_Account_name,1,4)) IN 
+			  AND upper(substr(cba.bank_Account_name,1,4)) IN
 								(SELECT upper(substr(XFTV.source_value2,1,4))
 									FROM xx_fin_translatedefinition XFTD,xx_fin_translatevalues XFTV
 									WHERE XFTD.translate_id = XFTV.translate_id
@@ -547,7 +550,7 @@ AS
 								)
 			  AND cba.agency_location_code IS NOT NULL
 			  )
-			--<END> Added for NAIT-140412 
+			--<END> Added for NAIT-140412
 	    ORDER BY 1,  2;
 /****************************** R1.5 Cursur changes to exclude Wells Fargo Records Ends  *****************************/
 
