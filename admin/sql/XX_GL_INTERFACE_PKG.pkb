@@ -70,6 +70,8 @@ AS
 -- |                                       clause to process a group_id|
 -- |		                           and handling deadlock error |
 -- | 3.7    16-Nov-15  Avinash Baddam      R12.2 Compliance Changes    |
+-- | 3.8    15-JUN-21  Vivek Kumar        Added NVL to checking for the| 
+-- |                                     balance as part of NAIT-185006|
 -- +===================================================================+
 
     gc_debug_pkg_nm     VARCHAR2(21) := 'XX_GL_INTERFACE_PKG.';
@@ -2039,7 +2041,9 @@ END IF;
            ----------------------------------------
            -- cursor used when gc_import_crtl = 'Y'
            ----------------------------------------
-           CURSOR balance_cursor_by_sob
+		   ----Commented for NAIT-185006---
+		   
+          /* CURSOR balance_cursor_by_sob
            IS    SELECT  SUM(entered_dr)
                         ,SUM(entered_cr)
                         ,SUM(entered_dr) - SUM(entered_cr)
@@ -2060,7 +2064,36 @@ END IF;
                        ,currency_code
                        ,user_je_category_name
                        ,reference1
+                       ,accounting_date;*/
+					   
+			 ----------------------------------------
+           -- cursor used when gc_import_crtl = 'Y'
+           ----------------------------------------
+			 ----Added for NAIT-185006---
+			
+			 CURSOR balance_cursor_by_sob
+           IS    SELECT  SUM(nvl(entered_dr,0))
+                        ,SUM(NVL(entered_cr,0))
+                        ,SUM(NVL(entered_dr,0)) - SUM(NVL(entered_cr,0))
+                        ,group_id
+                        ,set_of_books_id
+                        ,user_je_source_name
+                        ,reference1
+                        ,currency_code
+                        ,user_je_category_name
+                        ,accounting_date
+                  FROM   XX_GL_INTERFACE_NA_STG
+                 WHERE  group_id        = p_group_id
+                   AND  set_of_books_id = NVL(p_sob_id,0)
+                   AND  reference1      = p_batch_name
+               GROUP BY set_of_books_id
+                       ,group_id
+                       ,user_je_source_name
+                       ,currency_code
+                       ,user_je_category_name
+                       ,reference1
                        ,accounting_date;
+			
 
 
      BEGIN
@@ -4912,5 +4945,3 @@ END IF;
          END PROCESS_JRNL_LINES;
 
 END XX_GL_INTERFACE_PKG;
-/
-show error;
