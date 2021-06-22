@@ -1,4 +1,4 @@
-CREATE OR REPLACE PACKAGE Body Xxoe_Data_Load_Pkg
+create or replace PACKAGE Body Xxoe_Data_Load_Pkg
 AS
   -- +============================================================================================+
   -- |  Office Depot - Project Optimize                                                           |
@@ -693,6 +693,20 @@ IS
   File_Name        VARCHAR2(150) ;--:= P_File ;--'test_data_3_lines.json';
   L_Ord_Number     VARCHAR2(30);
   L_Sub_Ord_Number VARCHAR2(30);
+  L_Ord_Total  NUMBER :=0;
+  L_Tax_Total  NUMBER :=0;
+  TYPE import_int_tt IS TABLE OF Xxom_Import_Int%ROWTYPE INDEX BY PLS_INTEGER;
+  import_int_data_tt import_int_tt;
+  null_import_int_data_tt import_int_tt;
+  counter NUMBER := 0;
+  error_forall   EXCEPTION;  
+  PRAGMA EXCEPTION_INIT (error_forall, -24381);
+  error_counter NUMBER;
+  
+  lv_clob clob;
+  ln_length number := 0;
+  json_data clob;
+  SEQ_NUM NUMBER ;
 BEGIN
   BEGIN
     SELECT XFTV.TARGET_VALUE3
@@ -730,6 +744,14 @@ BEGIN
       L_Clob                          := NULL;
       L_Bfile                         := NULL;
       L_Bfile                         := Bfilename(Dir_Name, File_Name);
+	  import_int_data_tt := null_import_int_data_tt;
+	  counter := 0;
+	  error_counter := 0;
+	  
+	  DELETE FROM Xxom_Imp_Cache_Int;
+	  COMMIT;
+
+	  
       IF (Dbms_Lob.Fileexists(L_Bfile) = 1) THEN
         Dbms_Output.Put_Line('File Exists');
         INSERT
@@ -761,109 +783,105 @@ BEGIN
         Dbms_Lob.Fileclose( L_Bfile );
         COMMIT;
         --select count(sequence_num) from xx_om_order_payload;
-        FOR Json_Data IN
-        (WITH Clob_Table(C) AS
-          (SELECT Ord_Json_Data C FROM Xxom_Imp_Cache_Int
-          ),
-          Recurse(Text,Line) AS
-          (SELECT Regexp_Substr(C, '.+', 1, 1) Text,1 Line FROM Clob_Table
-          UNION ALL
-          SELECT Regexp_Substr(C, '.+', 1, Line+1),
-            Line                               +1
-          FROM Recurse R,
-            Clob_Table
-          WHERE Line<Regexp_Count(C, '.+')
-          )
-        SELECT Text,Line,Xx_Om_Json_Data_Seq.Nextval Seq_Num FROM Recurse
-        )
-        LOOP
-          BEGIN
+		
+		lv_clob := NULL;
+		json_data := NULL;
+		
+		BEGIN
+		
+		SELECT Ord_Json_Data into lv_clob FROM Xxom_Imp_Cache_Int;
+
+		ln_length := length(lv_clob);
+		WHILE (ln_length >0)
+		LOOP
+		json_data:= SUBSTR(lv_clob,1,INSTR(lv_clob,chr(10)));
+		lv_clob := SUBSTR(lv_clob,INSTR(lv_clob,chr(10))+1);
+		ln_length := length(lv_clob);
+		
+		BEGIN
             SELECT Ordernumber,
-              Ordersubnumber
+              Ordersubnumber,
+			  ordertotal,
+			  TotalTax
             INTO L_Ord_Number ,
-              L_Sub_Ord_Number
+              L_Sub_Ord_Number ,
+			  L_Ord_Total, 
+			  L_Tax_Total
             FROM Dual ,
-              Json_Table (Json_Data.Text,'$.orderHeader[*]' Columns ( Ordernumber VARCHAR2(30) Path '$.orderNumber' , Ordersubnumber VARCHAR2(30) Path '$.ordersubNumber' ) );
+              Json_Table (json_data,'$.orderHeader[*]' Columns ( Ordernumber VARCHAR2(30) Path '$.orderNumber' 
+			                       , Ordersubnumber VARCHAR2(30) Path '$.ordersubNumber' 
+								   , Ordertotal NUMBER Path '$.orderTotal' 
+								   , Totaltax NUMBER Path '$.totalTax') );
           EXCEPTION
           WHEN OTHERS THEN
             logit ('Error in Proc Xxoe_Data_Load_Prc while getting order and sub_order_num. Error Code:'||SQLCODE);
             logit ('Error Message: '||SQLERRM);
             L_Ord_Number     :='';
             L_Sub_Ord_Number := '';
+			L_Ord_Total :=0;
+			L_Tax_Total :=0;
           END;
-          IF L_Ord_Number IS NOT NULL AND L_Sub_Ord_Number IS NOT NULL THEN
-            INSERT
-            INTO Xxom_Import_Int
-              (
-                Request_Id ,
-                Sequence_Num ,
-                Order_Number ,
-                Sub_Order_Number ,
-                Process_Flag ,
-                Status ,
-                Json_Ord_Data ,
-                file_name,
-                Creation_Date ,
-                Created_By ,
-                Last_Updated_By ,
-                Last_Update_Date
-              )
-              VALUES
-              (
-                fnd_global.conc_request_id ,
-                Json_Data.Seq_Num ,
-                L_Ord_Number ,
-                L_Sub_Ord_Number ,
-                'I' ,
-                'New' ,
-                Json_Data.Text ,
-                file_name,
-                Sysdate ,
-                FND_GLOBAL.user_id ,
-                FND_GLOBAL.user_id ,
-                Sysdate
-              ) ;--returning json_ord_data into tl_clob;
-          ELSE
-            INSERT
-            INTO Xxom_Import_Int
-              (
-                Request_Id ,
-                Sequence_Num ,
-                Order_Number ,
-                Sub_Order_Number ,
-                Process_Flag ,
-                Status ,
-                error_description ,
-                Json_Ord_Data ,
-                file_name,
-                Creation_Date ,
-                Created_By ,
-                Last_Updated_By ,
-                Last_Update_Date
-              )
-              VALUES
-              (
-                fnd_global.conc_request_id ,
-                Json_Data.Seq_Num ,
-                L_Ord_Number ,
-                L_Sub_Ord_Number ,
-                'E' ,
-                'Error' ,
-                'Order Number/Sub Order Number is null',
-                Json_Data.Text ,
-                file_name,
-                Sysdate ,
-                FND_GLOBAL.user_id ,
-                FND_GLOBAL.user_id ,
-                Sysdate
-              ) ;
-          END IF;
-        END LOOP;
+          counter := counter+1;
+		  
+		  SELECT Xx_Om_Json_Data_Seq.Nextval INTO SEQ_NUM FROM DUAL;
+		  
+			import_int_data_tt(counter).Request_Id 			:=  fnd_global.conc_request_id;
+			import_int_data_tt(counter).Sequence_Num 		:=  SEQ_NUM;
+			import_int_data_tt(counter).Order_Number 		:=  L_Ord_Number;
+			import_int_data_tt(counter).Sub_Order_Number 	:=  L_Sub_Ord_Number;
+			import_int_data_tt(counter).Json_Ord_Data 		:=  json_data;
+			import_int_data_tt(counter).file_name			:=  file_name;
+			import_int_data_tt(counter).Creation_Date 		:=  Sysdate;
+			import_int_data_tt(counter).Created_By 			:=  FND_GLOBAL.user_id;
+			import_int_data_tt(counter).Last_Updated_By 	:=  FND_GLOBAL.user_id;
+			import_int_data_tt(counter).Last_Update_Date 	:=  Sysdate;
+			import_int_data_tt(counter).OrderTotal 	:=  L_Ord_Total;
+			import_int_data_tt(counter).TotalTax 	:=  L_Tax_Total;
+		  
+		  IF L_Ord_Number IS NOT NULL AND L_Sub_Ord_Number IS NOT NULL THEN
+            
+            import_int_data_tt(counter).Process_Flag 		:=  'I' ;
+            import_int_data_tt(counter).Status 				:=  'New';
+			import_int_data_tt(counter).error_description	:=  '';
+		  
+		  ELSE
+            
+            import_int_data_tt(counter).Process_Flag 		:=  'E' ;
+            import_int_data_tt(counter).Status 				:=  'Error';
+			import_int_data_tt(counter).error_description	:=  'Order Number/Sub Order Number is null';	
+		  END IF;
+		END LOOP;
+		END;
+		
+		BEGIN 
+		
+		FORALL data_counter IN import_int_data_tt.FIRST .. import_int_data_tt.LAST SAVE EXCEPTIONS
+        INSERT INTO Xxom_Import_Int VALUES import_int_data_tt(data_counter);
+		
+		EXCEPTION 
+		WHEN error_forall THEN
+			error_counter := SQL%BULK_EXCEPTIONS.COUNT; 
+			
+			IF error_counter > 0 THEN 
+				logit('Total Number of errors while inserting data in Table XXOM_IMPORT_INT is : ' || error_counter);
+				
+				FOR err IN 1 .. error_counter LOOP
+					logit('Error No: ' || err || ' File Row Number : ' || SQL%BULK_EXCEPTIONS(err).error_index ||' Error Message: ' || SQLERRM(-SQL%BULK_EXCEPTIONS(err).ERROR_CODE));
+				END LOOP;
+				
+				UPDATE Xxom_Import_Int
+				SET Process_Flag = 'E',
+					Status = 'Error',
+					error_description = 'Error While inserting data in table Xxom_Import_Int from file, Please Check Log of Request ID :'||fnd_global.conc_request_id
+				WHERE file_name = file_name;
+			
+			END IF;		
+		END;
+		
         UPDATE XXOM_CSAS_FILE_NAMES_HIST
         SET process_flag = 'Y'
         WHERE file_id    = i.file_id;
-        DELETE
-        FROM Xxom_Imp_Cache_Int;
+		        
         COMMIT;
         --xxoe_populate_columns;
       ELSE
@@ -1412,8 +1430,7 @@ BEGIN
         Ccencryptionkey ,
         --I.Soldto_Contactfirstname || ' ' || I.Soldto_Contactlastname
         SUBSTR (credit_card_holder_name ,1,80) ,
-        DECODE(EXPIRYDATE,'00/00',NULL, TO_DATE('01/'
-        ||EXPIRYDATE,'dd/mm/rr')) -- EXPIRYDATE
+        DECODE(NVL(EXPIRYDATE,'00/00'),'00/00',NULL, TO_DATE('01/'||EXPIRYDATE,'dd/mm/rr')) -- EXPIRYDATE
         ,
         Accountnumber ,
         Amount ,
@@ -1442,7 +1459,7 @@ BEGIN
       logit ('Order '||lc_int_order_number||' processed');
     EXCEPTION
     WHEN OTHERS THEN
-      lc_level := 'Order Price Adjustment Tax';
+      --lc_level := 'Order Price Adjustment Tax';
       logit ('Error in Proc Xxoe_Validate_Data while inserting '|| lc_level ||' data of '||lc_int_order_number||' into xxom int tables. Error Code:'||SQLCODE);
       logit ('Error Message: '||SQLERRM);
       DELETE FROM Xx_Oe_Payments WHERE header_id = L_Header_Id;
@@ -1500,4 +1517,4 @@ WHEN OTHERS THEN
   logit ('Error Message: '||SQLERRM);
 END Xxoe_Validate_Data;
 END Xxoe_Data_Load_Pkg;
-/
+show errors;
