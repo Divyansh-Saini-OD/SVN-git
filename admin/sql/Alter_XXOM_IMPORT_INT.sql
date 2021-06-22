@@ -9,9 +9,8 @@
 -- |===============                                                      |
 -- |Version   Date              Author              Remarks              |
 -- |======   ==========     =============        ========================|
--- |1.0      19-May-2021     Shreyas Thorat       Created alter for       |
--- |                                             UAT.            |
-
+-- |1.0      22-Jun-2021     Shreyas Thorat       Alter table to add     | 
+-- | 	                                          more column in table XXOM_IMPORT_INT |
 -- +=====================================================================+
 
 SET SHOW         OFF
