@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dataTemplate name="XXHVOPERRDTL" description="OD HVOP Detail Error Report by Order Number" Version="1.0">
+   <parameters>
+      <parameter name="P_PROCESS_START_DATE" dataType="date" />
+      <parameter name="P_PROCESS_END_DATE" dataType="date" />
+   </parameters>
+   <dataQuery>
+      <sqlStatement name="Q_RADC"><![CDATA[SELECT	
+	    to_char(CREATION_DATE,'MON-DD-YYYY') PROCESS_DATE
+	   ,''''|| ORDER_NUMBER || SUB_ORDER_NUMBER ORDER_REFERENCE_NUMBER
+	   ,ORDERTOTAL ORDER_TOTAL
+	   ,TOTALTAX TAX_VALUE
+	   ,ERROR_DESCRIPTION MESSAGE_TEXT
+    FROM
+	    apps.XXOM_IMPORT_INT
+	WHERE
+	    Process_Flag = 'E' AND Status = 'Error'
+		AND trunc(CREATION_DATE) BETWEEN trunc(:P_PROCESS_START_DATE) AND trunc(:P_PROCESS_END_DATE)]]></sqlStatement>
+   </dataQuery>
+   <dataStructure>
+      <group name="G_RADC" source="Q_RADC">
+         <element name="PROCESS_DATE" value="PROCESS_DATE" />
+         <element name="ORDER_REFERENCE_NUMBER" value="ORDER_REFERENCE_NUMBER" />
+         <element name="ORDER_TOTAL" value="ORDER_TOTAL" />
+         <element name="TAX_VALUE" value="TAX_VALUE" />
+         <element name="MESSAGE_TEXT" value="MESSAGE_TEXT" />
+      </group>
+   </dataStructure>
+</dataTemplate>
