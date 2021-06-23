@@ -11,7 +11,7 @@ AS
 -- |                     from standard JE creation so they are not sent          |
 -- |                     through the standard JE and reconciliation              |
 -- |                     process, enabling processing by the                     |
--- |                     other CE custom extensions.                             |
+-- |                     other CE custom extensions                             |
 -- |                                                                             |
 -- |                                                                             |
 -- | RICE#            : E2027                                                    |
@@ -130,11 +130,37 @@ IS
   -- which has a cash account value in the Attribute10 field of the
   -- CE_STATEMENT_LINES table and which is not yet processed
   ------------------------------------------------------------------
-  CURSOR lcu_gl_line_wf
-  IS
-		SELECT
-		/*+ leading(csh) ordered use_nl(csh,csl,ctc) index(csl,CE_STATEMENT_LINES_N1) use_merge(ctc) full(ctc)*/
-            CTC.bank_account_id
+
+		--<START> Tweaked the query for performance tuning for NAIT-138934 Wells Fargo Bank Transaction Code Change
+	CURSOR lcu_gl_line_wf
+  IS	
+	SELECT	
+           a.bank_account_id
+		  -- ,a.bank_Account_id master_bank_acct_id   --Added for ver#2.1
+		   ,a.master_bank_acct_id  
+           ,a.statement_number
+           ,a.statement_date
+           ,a.line_number
+           ,a.statement_line_id
+           ,a.trx_date
+           ,a.trx_type
+           ,a.amount
+           ,a.statement_header_id
+           ,a.invoice_text
+           ,a.trx_code
+           ,a.currency_code
+           ,a.segment1
+           ,a.segment2
+           ,a.segment3
+           ,a.segment4
+           ,a.segment5
+           ,a.segment6
+           ,a.segment7
+		   from 
+(SELECT
+		/*+ full(ctc) full(CSH) full(csl) parallel(CSH,8) */
+            cba.bank_id
+			,CTC.bank_account_id
 			,csh.bank_Account_id master_bank_acct_id   --Added for ver#2.1
            ,CSH.statement_number
            ,CSH.statement_date
@@ -159,14 +185,14 @@ IS
 		  , ce_transaction_codes ctc
 		  , ce_bank_accounts cba
 		  ,gl_code_combinations gcc
-		  ,Hz_parties hp
+		 -- ,Hz_parties hp
 		WHERE csl.attribute15              IS NULL
 		AND csl.statement_header_id        = csh.statement_header_id
 		AND csh.bank_account_id            = NVL(p_bank_account_id,CSH.bank_account_id)
 		AND   CSH.statement_number BETWEEN NVL(p_statement_number_from,CSH.statement_number)
                                     AND NVL(p_statement_number_to,CSH.statement_number)
         AND   fnd_date.canonical_to_date(CSH.statement_date) BETWEEN NVL(fnd_date.canonical_to_date(p_statement_date_from),fnd_date.canonical_to_date(CSH.statement_date))
-                                                              AND NVL(fnd_date.canonical_to_date(p_statement_date_to),fnd_date.canonical_to_date(CSH.statement_date))
+                                                             AND NVL(fnd_date.canonical_to_date(p_statement_date_to),fnd_date.canonical_to_date(CSH.statement_date))
 		AND lpad(SUBSTR (cba.agency_location_code, 3), 9,'0') = SUBSTR (csl.CUSTOMER_TEXT,3)
 		AND   NVL(CSL.attribute2,'N')   <> 'PROC-E2027-YES'
 		AND csl.status!                    ='RECONCILED'
@@ -176,21 +202,6 @@ IS
 		AND csl.trx_code                   = ctc.trx_code
 		and ctc.bank_Account_id			   =cba.bank_Account_id
 		AND   CTC.attribute10 IS NOT NULL
-		AND hp.party_id                      = cba.bank_id
-		--AND hp.party_name                  ='WELLS FARGO BANK'  --Commented for NAIT-140412
-		--<START> Added for NAIT-140412			
-		AND hp.party_name IN
-					(SELECT upper(XFTV.source_value2)
-					 FROM xx_fin_translatedefinition XFTD,xx_fin_translatevalues XFTV
-					 WHERE XFTD.translate_id = XFTV.translate_id
-					 AND XFTD.translation_name = 'XX_CM_E1319_STORE_OS_CC'
-					 AND XFTV.source_value1 = 'BANK'
-					 AND SYSDATE BETWEEN XFTV.start_date_active AND NVL(XFTV.end_date_active,SYSDATE+1)
-					 AND SYSDATE BETWEEN XFTD.start_date_active AND NVL(XFTD.end_date_active,SYSDATE+1)
-					 AND XFTV.enabled_flag = 'Y'
-					 AND XFTD.enabled_flag = 'Y')
-		--<END> Added for NAIT-140412	
-		AND hp.party_type                    ='ORGANIZATION'
 		AND regexp_replace(cba.bank_account_name, '[^[:digit:]]', '') IS NOT NULL
 		AND gcc.segment4                                               = SUBSTR (cba.agency_location_code, 3)
 		--<START> Added for NAIT-138934
@@ -203,10 +214,11 @@ IS
 								 AND SYSDATE BETWEEN XFTD.start_date_active AND NVL(XFTD.end_date_active,SYSDATE+1)
 								 AND XFTV.enabled_flag = 'Y'
 								 AND XFTD.enabled_flag = 'Y')   
-		UNION
+		UNION ALL
 		 SELECT 
-		/*+ leading(csh) ordered use_nl(csh,csl,ctc) index(csl,CE_STATEMENT_LINES_N1) use_merge(ctc) full(ctc)*/
-            CTC.bank_account_id
+			/*+ full(ctc) full(CSH) full(csl) parallel(CSH,8) */
+            cba.bank_id
+			,CTC.bank_account_id
 			,csh.bank_Account_id master_bank_acct_id   --Added for ver#2.1
            ,CSH.statement_number
            ,CSH.statement_date
@@ -231,7 +243,7 @@ IS
 		  , ce_transaction_codes ctc
 		  , ce_bank_accounts cba
 		  ,gl_code_combinations gcc
-		  ,Hz_parties hp
+		 -- ,Hz_parties hp
 		  ,CE_JE_MAPPINGS JEM 
 		WHERE csl.attribute15              IS NULL
 		AND csl.statement_header_id        = csh.statement_header_id
@@ -239,30 +251,17 @@ IS
 		AND   CSH.statement_number BETWEEN NVL(p_statement_number_from,CSH.statement_number)
                                     AND NVL(p_statement_number_to,CSH.statement_number)
         AND   fnd_date.canonical_to_date(CSH.statement_date) BETWEEN NVL(fnd_date.canonical_to_date(p_statement_date_from),fnd_date.canonical_to_date(CSH.statement_date))
-                                                              AND NVL(fnd_date.canonical_to_date(p_statement_date_to),fnd_date.canonical_to_date(CSH.statement_date))
+                                                          AND NVL(fnd_date.canonical_to_date(p_statement_date_to),fnd_date.canonical_to_date(CSH.statement_date))
 		AND lpad(SUBSTR (cba.agency_location_code, 3), 9,'0') = SUBSTR (csl.CUSTOMER_TEXT,3)
 		AND   NVL(CSL.attribute2,'N')   <> 'PROC-E2027-YES'
 		AND csl.status!                    ='RECONCILED'
 		AND SUBSTR (csl.CUSTOMER_TEXT,3) =lpad(gcc.segment4, 9,'0')
-		--AND gcc.code_combination_id   = CTC.attribute10  
 		AND jem.GL_ACCOUNT_CCID = gcc.code_combination_id  
 		AND JEM.TRX_CODE_ID                      = CTC.TRANSACTION_CODE_ID  
 		AND NVL (cba.end_date, SYSDATE  + 1) > TRUNC (SYSDATE)
 		AND csl.trx_code                   = ctc.trx_code
 		and ctc.bank_Account_id			   =cba.bank_Account_id
 		--AND   CTC.attribute10 IS NOT NULL  
-		AND hp.party_id                      = cba.bank_id	
-		AND hp.party_name IN
-					(SELECT upper(XFTV.source_value2)
-					 FROM xx_fin_translatedefinition XFTD,xx_fin_translatevalues XFTV
-					 WHERE XFTD.translate_id = XFTV.translate_id
-					 AND XFTD.translation_name = 'XX_CM_E1319_STORE_OS_CC'
-					 AND XFTV.source_value1 = 'BANK'
-					 AND SYSDATE BETWEEN XFTV.start_date_active AND NVL(XFTV.end_date_active,SYSDATE+1)
-					 AND SYSDATE BETWEEN XFTD.start_date_active AND NVL(XFTD.end_date_active,SYSDATE+1)
-					 AND XFTV.enabled_flag = 'Y'
-					 AND XFTD.enabled_flag = 'Y')
-		AND hp.party_type                    ='ORGANIZATION'
 		AND regexp_replace(cba.bank_account_name, '[^[:digit:]]', '') IS NOT NULL
 		AND ctc.trx_code IN (SELECT xftv.target_value1
 							FROM xx_fin_translatedefinition XFTD,xx_fin_translatevalues XFTV
@@ -273,8 +272,19 @@ IS
 							AND SYSDATE BETWEEN XFTD.start_date_active AND NVL(XFTD.end_date_active,SYSDATE+1)
 							AND XFTV.enabled_flag = 'Y'
 							AND XFTD.enabled_flag = 'Y') 
-		AND gcc.segment4 = SUBSTR (cba.agency_location_code, 3);
-		--<END> Added for NAIT-138934 Wells Fargo Bank Transaction Code Change
+		AND gcc.segment4 = SUBSTR (cba.agency_location_code, 3))a,hz_parties hp
+		where a.bank_id  = hp.party_id
+		AND hp.party_name IN
+					(SELECT upper(XFTV.source_value2)
+					 FROM xx_fin_translatedefinition XFTD,xx_fin_translatevalues XFTV
+					 WHERE XFTD.translate_id = XFTV.translate_id
+					 AND XFTD.translation_name = 'XX_CM_E1319_STORE_OS_CC'
+					 AND XFTV.source_value1 = 'BANK'
+					 AND SYSDATE BETWEEN XFTV.start_date_active AND NVL(XFTV.end_date_active,SYSDATE+1)
+					 AND SYSDATE BETWEEN XFTD.start_date_active AND NVL(XFTD.end_date_active,SYSDATE+1)
+					 AND XFTV.enabled_flag = 'Y'
+					 AND XFTD.enabled_flag = 'Y')
+		AND hp.party_type                    ='ORGANIZATION';
 	ln_master_bank_acct_id  NUMBER; --Added Ver#2.1
 	ln_is_je_trx_code VARCHAR2(50); --Added for NAIT-138934	 
 
