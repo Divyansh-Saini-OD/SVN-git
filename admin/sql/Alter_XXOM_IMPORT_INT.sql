@@ -19,7 +19,6 @@ SET ECHO         OFF
 SET TAB          OFF
 SET FEEDBACK     ON
 
-
 alter table XXFIN.XXOM_IMPORT_INT
 add ( OrderTotal NUMBER ,  TotalTax NUMBER );
 show errors;
