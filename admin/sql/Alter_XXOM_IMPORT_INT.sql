@@ -20,6 +20,6 @@ SET TAB          OFF
 SET FEEDBACK     ON
 
 
-alter table XXOM_IMPORT_INT
+alter table XXFIN.XXOM_IMPORT_INT
 add ( OrderTotal NUMBER ,  TotalTax NUMBER );
 show errors;
