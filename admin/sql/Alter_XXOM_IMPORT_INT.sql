@@ -23,4 +23,3 @@ SET FEEDBACK     ON
 alter table XXOM_IMPORT_INT
 add ( OrderTotal NUMBER ,  TotalTax NUMBER );
 show errors;
-/
