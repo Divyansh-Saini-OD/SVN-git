@@ -699,10 +699,10 @@ IS
   import_int_data_tt import_int_tt;
   null_import_int_data_tt import_int_tt;
   counter NUMBER := 0;
-  error_forall   EXCEPTION;  
+  error_forall   EXCEPTION;
   PRAGMA EXCEPTION_INIT (error_forall, -24381);
   error_counter NUMBER;
-  
+
   lv_clob clob;
   ln_length number := 0;
   json_data clob;
@@ -747,11 +747,11 @@ BEGIN
 	  import_int_data_tt := null_import_int_data_tt;
 	  counter := 0;
 	  error_counter := 0;
-	  
+
 	  DELETE FROM Xxom_Imp_Cache_Int;
 	  COMMIT;
 
-	  
+
       IF (Dbms_Lob.Fileexists(L_Bfile) = 1) THEN
         Dbms_Output.Put_Line('File Exists');
         INSERT
@@ -783,12 +783,12 @@ BEGIN
         Dbms_Lob.Fileclose( L_Bfile );
         COMMIT;
         --select count(sequence_num) from xx_om_order_payload;
-		
+
 		lv_clob := NULL;
 		json_data := NULL;
-		
+
 		BEGIN
-		
+
 		SELECT Ord_Json_Data into lv_clob FROM Xxom_Imp_Cache_Int;
 
 		ln_length := length(lv_clob);
@@ -797,7 +797,7 @@ BEGIN
 		json_data:= SUBSTR(lv_clob,1,INSTR(lv_clob,chr(10)));
 		lv_clob := SUBSTR(lv_clob,INSTR(lv_clob,chr(10))+1);
 		ln_length := length(lv_clob);
-		
+
 		BEGIN
             SELECT Ordernumber,
               Ordersubnumber,
@@ -805,12 +805,12 @@ BEGIN
 			  TotalTax
             INTO L_Ord_Number ,
               L_Sub_Ord_Number ,
-			  L_Ord_Total, 
+			  L_Ord_Total,
 			  L_Tax_Total
             FROM Dual ,
-              Json_Table (json_data,'$.orderHeader[*]' Columns ( Ordernumber VARCHAR2(30) Path '$.orderNumber' 
-			                       , Ordersubnumber VARCHAR2(30) Path '$.ordersubNumber' 
-								   , Ordertotal NUMBER Path '$.orderTotal' 
+              Json_Table (json_data,'$.orderHeader[*]' Columns ( Ordernumber VARCHAR2(30) Path '$.orderNumber'
+			                       , Ordersubnumber VARCHAR2(30) Path '$.ordersubNumber'
+								   , Ordertotal NUMBER Path '$.orderTotal'
 								   , Totaltax NUMBER Path '$.totalTax') );
           EXCEPTION
           WHEN OTHERS THEN
@@ -822,9 +822,9 @@ BEGIN
 			L_Tax_Total :=0;
           END;
           counter := counter+1;
-		  
+
 		  SELECT Xx_Om_Json_Data_Seq.Nextval INTO SEQ_NUM FROM DUAL;
-		  
+
 			import_int_data_tt(counter).Request_Id 			:=  fnd_global.conc_request_id;
 			import_int_data_tt(counter).Sequence_Num 		:=  SEQ_NUM;
 			import_int_data_tt(counter).Order_Number 		:=  L_Ord_Number;
@@ -837,51 +837,51 @@ BEGIN
 			import_int_data_tt(counter).Last_Update_Date 	:=  Sysdate;
 			import_int_data_tt(counter).OrderTotal 	:=  L_Ord_Total;
 			import_int_data_tt(counter).TotalTax 	:=  L_Tax_Total;
-		  
+
 		  IF L_Ord_Number IS NOT NULL AND L_Sub_Ord_Number IS NOT NULL THEN
-            
+
             import_int_data_tt(counter).Process_Flag 		:=  'I' ;
             import_int_data_tt(counter).Status 				:=  'New';
 			import_int_data_tt(counter).error_description	:=  '';
-		  
+
 		  ELSE
-            
+
             import_int_data_tt(counter).Process_Flag 		:=  'E' ;
             import_int_data_tt(counter).Status 				:=  'Error';
-			import_int_data_tt(counter).error_description	:=  'Order Number/Sub Order Number is null';	
+			import_int_data_tt(counter).error_description	:=  'Order Number/Sub Order Number is null';
 		  END IF;
 		END LOOP;
 		END;
-		
-		BEGIN 
-		
+
+		BEGIN
+
 		FORALL data_counter IN import_int_data_tt.FIRST .. import_int_data_tt.LAST SAVE EXCEPTIONS
         INSERT INTO Xxom_Import_Int VALUES import_int_data_tt(data_counter);
-		
-		EXCEPTION 
+
+		EXCEPTION
 		WHEN error_forall THEN
-			error_counter := SQL%BULK_EXCEPTIONS.COUNT; 
-			
-			IF error_counter > 0 THEN 
+			error_counter := SQL%BULK_EXCEPTIONS.COUNT;
+
+			IF error_counter > 0 THEN
 				logit('Total Number of errors while inserting data in Table XXOM_IMPORT_INT is : ' || error_counter);
-				
+
 				FOR err IN 1 .. error_counter LOOP
 					logit('Error No: ' || err || ' File Row Number : ' || SQL%BULK_EXCEPTIONS(err).error_index ||' Error Message: ' || SQLERRM(-SQL%BULK_EXCEPTIONS(err).ERROR_CODE));
 				END LOOP;
-				
+
 				UPDATE Xxom_Import_Int
 				SET Process_Flag = 'E',
 					Status = 'Error',
 					error_description = 'Error While inserting data in table Xxom_Import_Int from file, Please Check Log of Request ID :'||fnd_global.conc_request_id
 				WHERE file_name = file_name;
-			
-			END IF;		
+
+			END IF;
 		END;
-		
+
         UPDATE XXOM_CSAS_FILE_NAMES_HIST
         SET process_flag = 'Y'
         WHERE file_id    = i.file_id;
-		        
+
         COMMIT;
         --xxoe_populate_columns;
       ELSE
@@ -1176,7 +1176,7 @@ BEGIN
         FROM Xxom_Order_Adjustments_Int xoadj
         WHERE xoadj.Header_Id = x.Header_Id
         AND xoadj.line_id     = x.line_id
-        ),0)/x.Quantity) ),
+        ),0)/decode(x.Quantity,0,1,x.Quantity)) ),
         Price ,
         I.Totaltax ,
         TO_DATE(I.PICKUPORDELIVERYDATE,'YYYY-MM-DD') ,
@@ -1302,7 +1302,7 @@ BEGIN
         'N' ,
         xoline.Line_Id ,
         ---xoa.Displaycouponamount
-        (xoa.displayCouponAmount)/xoline.Ordered_Quantity ,
+        (xoa.displayCouponAmount)/decode(xoline.Ordered_Quantity,0,1,xoline.Ordered_Quantity) ,
         xoa.adjustmentCode ,
         xoa.COUPONID ,
         xoa.displaycouponamount ,
