@@ -1,8 +1,5 @@
-/*************************************************************************
-*PURPOSE: To Submit Combined Aging Report Concurrent Request from backend*
-*CREATED BY: Komal Mishra                                                *
-*************************************************************************/
-CREATE OR REPLACE PROCEDURE XX_RPA_COMBINED_AGING_PROC(
+create or replace PROCEDURE XX_RPA_COMBINED_AGING_PROC(
+    p_customer IN NUMBER,
     p_request_id OUT VARCHAR2)
 AS
   l_responsibility_id NUMBER;
@@ -20,7 +17,7 @@ BEGIN
   WHERE fr.responsibility_id = frx.responsibility_id
   AND LOWER (fr.responsibility_name) LIKE LOWER('OD (US) Credit Manager');
   --
-  SELECT user_id INTO l_user_id FROM fnd_user WHERE user_name = 'KM980194';
+  SELECT user_id INTO l_user_id FROM fnd_user WHERE user_name = 'KOMAL_MISHRA';
   --
   --To set environment context.
   --
@@ -33,7 +30,7 @@ BEGIN
                                                 description => 'OD: AR Combined Aging Views', 
                                                 start_time => SYSDATE, 
                                                 sub_request => FALSE, 
-                                                argument1 => '52850' );
+                                                argument1 => p_customer);
   --
   COMMIT;
   --
@@ -48,4 +45,3 @@ EXCEPTION
 WHEN OTHERS THEN
   dbms_output.put_line('Error While Submitting Concurrent Request '||TO_CHAR(SQLCODE)||'-'||sqlerrm);
 END XX_RPA_COMBINED_AGING_PROC;
-/
