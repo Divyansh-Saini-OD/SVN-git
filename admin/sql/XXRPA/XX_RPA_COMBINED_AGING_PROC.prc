@@ -1,3 +1,7 @@
+/*************************************************************************
+*PURPOSE: To Submit Combined Aging Report Concurrent Request from backend*
+*CREATED BY: Komal Mishra                                                
+**************************************************************************/
 create or replace PROCEDURE XX_RPA_COMBINED_AGING_PROC(
     p_customer IN NUMBER,
     p_request_id OUT VARCHAR2)
@@ -45,3 +49,4 @@ EXCEPTION
 WHEN OTHERS THEN
   dbms_output.put_line('Error While Submitting Concurrent Request '||TO_CHAR(SQLCODE)||'-'||sqlerrm);
 END XX_RPA_COMBINED_AGING_PROC;
+/
