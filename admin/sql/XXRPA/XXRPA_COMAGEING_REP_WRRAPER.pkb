@@ -205,3 +205,4 @@ lc_temp_email varchar2(2000);
 	dbms_output.put_line('ERROR');
  END SUBMIT_REPORT;
 END XXRPA_COMAGEING_REP_WRRAPER;
+/
