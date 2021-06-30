@@ -88,6 +88,7 @@ create or replace PACKAGE BODY XX_AP_SUPP_CLD_INTF_PKG
 -- | 4.5     03-Mar-2021    Paddy Sanjeevi     Modified for OD_CLEARING Payment method NAIT-172512 |
 -- | 4.6     07-May-2021	Gitanjali Singh	   Modified code to handle multiple bank sites NAIT-177108|
 -- | 4.7	 17-MAY-2021    Gitanjali Singh    Modified code to update BUCLS certificate num NAIT-177108|
+-- | 4.8	 09-JUN-2021    Gitanjali Singh    Modified code to handle multi banks for 1 site NAIT-177108|
 -- |===========================================================================================+
 AS
   /*********************************************************************
@@ -3382,10 +3383,11 @@ IS
     SELECT *
     FROM xx_ap_cld_supp_bnkact_stg xas
     WHERE 1                     =1
-    AND xas.create_flag         ='Y'
+    --AND xas.create_flag         ='Y' --- commented 4.8
+	AND xas.create_flag      IN ('I','Y')  -- 4.8
     AND xas.bnkact_process_flag =gn_process_status_validated
     AND xas.request_id          = gn_request_id
-	AND (account_id is null or account_id=-1)   ---4.6
+	---AND (account_id is null or account_id=-1)   ---4.8
   ORDER BY primary_flag DESC;
   ----
 BEGIN
@@ -3448,10 +3450,44 @@ BEGIN
          AND c.bank_account_num=r_sup_bank.bank_account_num
          AND SYSDATE BETWEEN NVL(c.start_date,SYSDATE-1) AND NVL(c.end_date,SYSDATE+1);
 	EXCEPTION
-	  WHEN others THEN
+	  WHEN TOO_MANY_ROWS THEN  -- added when too_many_rows exception 4.8
+		BEGIN
+		  SELECT ext_bank_account_id
+            INTO ln_bank_account_id
+            FROM iby.iby_ext_bank_accounts
+           WHERE bank_id       =r_sup_bank.bank_id
+             AND branch_id       =r_sup_bank.branch_id
+             AND bank_account_num=r_sup_bank.bank_account_num
+		     AND country_code=r_sup_bank.country_code
+			 AND bank_account_name=r_sup_bank.bank_account_name
+			 AND UPPER(SUBSTR(bank_account_type,1,2)) = 'SU'
+             AND SYSDATE BETWEEN NVL(start_date,SYSDATE-1) AND NVL(end_date,SYSDATE+1);
+		EXCEPTION
+		  WHEN OTHERS THEN
+		    BEGIN
+			SELECT ext_bank_account_id
+              INTO ln_bank_account_id
+              FROM iby.iby_ext_bank_accounts
+             WHERE bank_id       = r_sup_bank.bank_id
+               AND branch_id       = r_sup_bank.branch_id
+               AND bank_account_num= r_sup_bank.bank_account_num
+			   AND bank_account_name=r_sup_bank.bank_account_name
+			   AND country_code=r_sup_bank.country_code
+			   AND (UPPER(SUBSTR(bank_account_type,1,2)) = 'SU' OR bank_account_type IS NULL)
+               AND SYSDATE BETWEEN NVL(start_date,SYSDATE-1) AND NVL(end_date,SYSDATE+1)
+			   AND ROWNUM = 1;
+			EXCEPTION
+			  WHEN others THEN
+			    ln_bank_account_id:=-1;
+			END;
+		END;
+	  WHEN others THEN	    
+	  print_debug_msg(p_message=>'When others assign create Y', p_force=>true); -- 4.8
 	    ln_bank_account_id:=-1;
 	END;
-	--. End 4.6
+		--. End 4.6
+   
+	 print_debug_msg(p_message=>'Bank Account id : '||to_char(ln_bank_account_id), p_force=>true);--4.8
 	
     --IF r_sup_bank.account_id >0 AND r_sup_bank.instrument_uses_id IS NULL -- updating the if condition added or condition --4.6
 	IF ((r_sup_bank.account_id >0 OR ln_bank_account_id > 0) AND r_sup_bank.instrument_uses_id IS NULL) -- added or condition --4.6
@@ -3570,7 +3606,7 @@ BEGIN
       print_debug_msg(p_message=> l_program_step||'SET_PAYEE_INSTR_ASSIGNMENT X_RETURN_STATUS = ' || x_return_status, p_force=>true);
       print_debug_msg(p_message=> l_program_step||'SET_PAYEE_INSTR_ASSIGNMENT fnd_api.g_ret_sts_success ' || fnd_api.g_ret_sts_success , p_force=>true);
       print_debug_msg(p_message=> l_program_step||'SET_PAYEE_INSTR_ASSIGNMENT X_MSG_COUNT = ' || x_msg_count, p_force=>true);
-      IF x_return_status = 'E' THEN
+      IF x_return_status in ('U', 'E') THEN -- 4.8 added U condition
         print_debug_msg(p_message=> l_program_step||'x_return_status ' || x_return_status , p_force=>true);
         print_debug_msg(p_message=> l_program_step||'fnd_api.g_ret_sts_success ' || fnd_api.g_ret_sts_success , p_force=>true);
         FOR i IN 1 .. x_msg_count--fnd_msg_pub.count_msg
@@ -5144,7 +5180,7 @@ IS
     SELECT *
     FROM xx_ap_cld_supp_bnkact_stg xas
     WHERE 1                     =1
-    AND xas.create_flag         ='N'
+    --AND xas.create_flag         ='N' -- 4.8 to check all banks 
     AND xas.bnkact_process_flag =gn_process_status_validated
     AND xas.request_id          = gn_request_id
 	ORDER BY primary_flag DESC;
@@ -5243,7 +5279,7 @@ BEGIN
         print_debug_msg(p_message=> l_program_step||'SET_PAYEE_INSTR_ASSIGNMENT END_DATE X_ASSIGN_ID = ' || l_assign_id, p_force=>true);
         print_debug_msg(p_message=> l_program_step||'SET_PAYEE_INSTR_ASSIGNMENT END_DATE X_RETURN_STATUS = ' || x_return_status, p_force=>true);
         print_debug_msg(p_message=> l_program_step||'SET_PAYEE_INSTR_ASSIGNMENT END_DATE X_MSG_COUNT = ' || x_msg_count, p_force=>true);
-        IF x_return_status = 'E' THEN
+        IF x_return_status in ('U','E') THEN --- 4.8 added U 
           print_debug_msg(p_message=> l_program_step||'x_return_status ' || x_return_status , p_force=>true);
           print_debug_msg(p_message=> l_program_step||'x_msg_data ' || x_msg_data , p_force=>true);
           FOR i IN 1 .. x_msg_count--fnd_msg_pub.count_msg
@@ -5434,7 +5470,6 @@ BEGIN
     gc_error_msg              := '';
 	l_sup_bank_id             := NULL;
 	l_sup_bank_branch_id      := NULL;
-
     --====================================================================
     -- Checking Required Columns validation
     --====================================================================
@@ -5472,11 +5507,12 @@ BEGIN
     -- Validating the Supplier Bank - Address Details -  Address Line 2
     --==============================================================================================================
     print_debug_msg(p_message=> gc_step||' After basic validation of Contact - gc_error_site_status_flag is '||gc_error_site_status_flag ,p_force=> true);
-    l_bank_create_flag          := '';
+    ---l_bank_create_flag          := ''; -- commented 4.8
+	l_bank_create_flag          := 'N'; -- 4.8
     IF gc_error_site_status_flag = 'N'
 	THEN
       print_debug_msg(p_message=> gc_step||' l_sup_bank_type.update_flag is '||l_sup_bank_type.CREATE_FLAG ,p_force=> true);
-      print_debug_msg(p_message=> gc_step||' upper(l_sup_bank_type.vendor_site_code) is '||upper(l_sup_bank_type.vendor_site_code) ,p_force=> true);
+      print_debug_msg(p_message=> gc_step||'vendor_site_code is '||upper(l_sup_bank_type.vendor_site_code) ,p_force=> true);
       OPEN c_bank_branch(l_sup_bank_type.bank_name, l_sup_bank_type.country_code,l_sup_bank_type.branch_name);
       FETCH c_bank_branch INTO l_sup_bank_id,l_sup_bank_branch_id;
       CLOSE c_bank_branch;
@@ -5532,9 +5568,13 @@ BEGIN
           l_bank_create_flag          :='Y';--Insert for Bank
           l_sup_bank_type.create_flag :=l_bank_create_flag;
         END;
+		
+	print_debug_msg(p_message=>'Bank Account id :'||to_char(l_bank_account_id)||','
+					||l_sup_bank_type.bank_account_num,p_force=> true); --4.8
 
         IF NVL(l_bank_account_id,-1) > 0 THEN
           BEGIN
+		    /*  -- commenting the select statement
             SELECT uses.instrument_payment_use_id,
               TO_CHAR(uses.start_date,'YYYY/MM/DD')
             INTO l_instrument_id,
@@ -5559,27 +5599,58 @@ BEGIN
             AND branch.bank_branch_name  =l_sup_bank_type.branch_name
             AND accts.ext_bank_account_id=l_bank_account_id
             AND SYSDATE BETWEEN TRUNC (bankprofile.effective_start_date(+)) AND NVL(TRUNC(bankprofile.effective_end_date(+)),sysdate+ 1);
+			*/
+			--- updated select statement 4.8
+			SELECT instrument.instrument_payment_use_id,
+              TO_CHAR(instrument.start_date,'YYYY/MM/DD')
+            INTO l_instrument_id,
+              l_bank_acct_start_date
+            FROM iby_external_payees_all payees,
+				 iby_pmt_instr_uses_all instrument,
+				 iby_account_owners owners,
+				 iby_ext_bank_accounts ieb,
+				 ce_bank_branches_v cbbv
+		   WHERE 1=1 
+			and cbbv.bank_name=l_sup_bank_type.bank_name
+			and cbbv.bank_branch_name=l_sup_bank_type.branch_name
+ 		    AND cbbv.branch_party_id(+)    = ieb.branch_id
+			and ieb.bank_account_num=l_sup_bank_type.bank_account_num
+			and ieb.bank_account_name=l_sup_bank_type.bank_account_name
+			AND owners.ext_bank_account_id = ieb.ext_bank_account_id
+			AND instrument.instrument_id= owners.ext_bank_account_id 
+			AND SYSDATE BETWEEN NVL(ieb.start_date,SYSDATE) AND NVL(ieb.end_date,SYSDATE)-- 
+			AND instrument.instrument_type   = 'BANKACCOUNT'
+			AND payees.supplier_site_id    = l_sup_bank_type.supp_site_id
+			AND payees.ext_payee_id        = instrument.ext_pmt_party_id
+			AND payees.payment_function = 'PAYABLES_DISB'
+			AND payees.payee_party_id      = owners.account_owner_party_id;	
+			
           EXCEPTION
           WHEN OTHERS THEN
             l_instrument_id             :=NULL;
-            l_bank_create_flag          :='Y';--Insert for Bank
-            l_sup_bank_type.create_flag :=l_bank_create_flag;
+            --l_bank_create_flag          :='Y';--Insert for Bank
+            --l_sup_bank_type.create_flag :=l_bank_create_flag;
           END;
           l_sup_bank_type.instrument_uses_id :=l_instrument_id;
         END IF;
       END IF;
       IF l_instrument_id    > 0
-	  -- AND l_sup_bank_type.end_date IS NOT NULL
+	  -- AND l_sup_bank_type.end_date IS NOT NULL	  
 	  THEN
         l_bank_create_flag :='N';--Update for Bank assignment end Date
-      ELSE
-        l_bank_acct_start_date:=l_sup_bank_type.start_date;
+      --ELSE
+        --l_bank_acct_start_date:=l_sup_bank_type.start_date;  --4.8
+		-- l_bank_create_flag :='I'; -- 4.8
+	  ELSIF nvl(l_instrument_id,-1) < 0 and NVL(l_bank_account_id,-1) > 0 
+      THEN
+      --  l_bank_acct_start_date:=l_sup_bank_type.start_date;
+	     l_bank_create_flag :='I'; -- added elsif condition for I 4.8	
       END IF;
       print_debug_msg(p_message=> gc_step||' After Bank Validation, Error Status Flag is : '||gc_error_site_status_flag ,p_force=> true);
       print_debug_msg(p_message=> gc_step||' After Bank Validation, Bank Create  Flag is : '||l_bank_create_flag ,p_force=> true);
       ------------------------Assigning values
-      l_sup_bank(l_sup_bank_idx).create_flag        :=l_bank_create_flag;
-      l_sup_bank(l_sup_bank_idx).start_date         :=l_bank_acct_start_date;
+		l_sup_bank(l_sup_bank_idx).create_flag        :=l_bank_create_flag;
+      --l_sup_bank(l_sup_bank_idx).start_date         :=l_bank_acct_start_date; -- 4.8
       l_sup_bank(l_sup_bank_idx).vendor_site_code   :=l_sup_bank_type.vendor_site_code;
       l_sup_bank(l_sup_bank_idx).supplier_name      :=l_sup_bank_type.supplier_name;
       l_sup_bank(l_sup_bank_idx).supplier_num       :=l_sup_bank_type.supplier_num;
@@ -5631,8 +5702,8 @@ BEGIN
         instrument_uses_id             = l_sup_bank(l_idxs).instrument_uses_id,
         bank_id                        = l_sup_bank(l_idxs).bank_id,
         branch_id                      = l_sup_bank(l_idxs).branch_id,
-        account_id                     = l_sup_bank(l_idxs).account_id,
-        start_date                     = l_sup_bank(l_idxs).start_date
+        account_id                     = l_sup_bank(l_idxs).account_id
+        --start_date                     = l_sup_bank(l_idxs).start_date 4.8
       WHERE 1                          = 1
       AND TRIM(UPPER(vendor_site_code))= TRIM(UPPER(l_sup_bank(l_idxs).vendor_site_code))
       AND UPPER(supplier_num)          = UPPER(l_sup_bank(l_idxs).supplier_num)
@@ -7356,6 +7427,7 @@ SELECT site.vendor_site_id
 BEGIN
   FOR cur IN c_sup
   LOOP
+    print_out_msg ('updating telex for Vendor_site_id '||cur.vendor_site_id);
     UPDATE ap_supplier_sites_all
        SET telex           ='510093'
      WHERE vendor_site_id=cur.vendor_site_id;
@@ -7991,4 +8063,3 @@ WHEN OTHERS THEN
 END afterReport;
 
 END XX_AP_SUPP_CLD_INTF_PKG;
-/
