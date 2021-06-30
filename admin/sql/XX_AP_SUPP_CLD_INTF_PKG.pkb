@@ -3454,7 +3454,7 @@ BEGIN
 		BEGIN
 		  SELECT ext_bank_account_id
             INTO ln_bank_account_id
-            FROM iby.iby_ext_bank_accounts
+            FROM iby_ext_bank_accounts
            WHERE bank_id       =r_sup_bank.bank_id
              AND branch_id       =r_sup_bank.branch_id
              AND bank_account_num=r_sup_bank.bank_account_num
@@ -3467,7 +3467,7 @@ BEGIN
 		    BEGIN
 			SELECT ext_bank_account_id
               INTO ln_bank_account_id
-              FROM iby.iby_ext_bank_accounts
+              FROM iby_ext_bank_accounts
              WHERE bank_id       = r_sup_bank.bank_id
                AND branch_id       = r_sup_bank.branch_id
                AND bank_account_num= r_sup_bank.bank_account_num
