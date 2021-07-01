@@ -89,6 +89,7 @@ create or replace PACKAGE BODY XX_AP_SUPP_CLD_INTF_PKG
 -- | 4.6     07-May-2021	Gitanjali Singh	   Modified code to handle multiple bank sites NAIT-177108|
 -- | 4.7	 17-MAY-2021    Gitanjali Singh    Modified code to update BUCLS certificate num NAIT-177108|
 -- | 4.8	 09-JUN-2021    Gitanjali Singh    Modified code to handle multi banks for 1 site NAIT-177108|
+-- | 4.9	 01-JUL-2021    Gitanjali Singh    Modified code to update BUCLS certificate num NAIT-180465|
 -- |===========================================================================================+
 AS
   /*********************************************************************
@@ -949,6 +950,12 @@ BEGIN
        WHERE rowid          = cur.drowid;
 	     COMMIT;		 
      ELSE
+	 --- 4.9 -- updating certificate_num in ebs table
+	  UPDATE POS_BUS_CLASS_ATTR  
+         SET CERTIFICATE_NUMBER = cur.CERTIFICATE_NUM, LAST_UPDATE_DATE = SYSDATE, LAST_UPDATED_BY = fnd_global.user_id 
+	   WHERE CLASSIFICATION_ID = ln_cls_id 
+		 AND party_id = cur.party_id	
+		 ;
      --- end version 4.4
       UPDATE xx_ap_cld_supp_bcls_stg
          SET bcls_process_Flag=7,
