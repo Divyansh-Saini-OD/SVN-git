@@ -3415,7 +3415,7 @@ BEGIN
     lv_org_id              := NULL;
     p_assignment_attribs.priority := NULL;
     print_debug_msg(p_message=> l_program_step||'Inside Cursor', p_force=>true);
-	print_debug_msg(p_message=> l_program_step||'Vendor Site Code : '||r_sup_bank.vendor_site_code, p_force=>true);
+	print_debug_msg(p_message=> l_program_step||'Vendor Site Code/Bank_name '||r_sup_bank.vendor_site_code||'/'||r_sup_bank.BANK_NAME, p_force=>true);
     BEGIN
       SELECT assa.vendor_site_id,
         assa.party_site_id,
@@ -3440,6 +3440,7 @@ BEGIN
         lv_org_id              := NULL;
         print_debug_msg(p_message=> l_program_step||'Error- Get supp_site_id and supp_party_site_id' || SQLCODE || sqlerrm, p_force=>true);
     END;
+	
 	--- deriving bank_account_id details -- 4.6
 	BEGIN
 	  SELECT c.ext_bank_account_id
@@ -3518,24 +3519,22 @@ BEGIN
 		   p_assignment_attribs.instrument.instrument_id:=ln_bank_account_id;
 		ELSE
   		   l_account_id    :=r_sup_bank.account_id;
-		   p_assignment_attribs.instrument.instrument_id:=r_sup_bank.account_id;
+		   p_assignment_attribs.instrument.instrument_id:=l_account_id;-- r_sup_bank.account_id;
 		END IF;
 	  --- end 4.6
 	  
-      print_debug_msg(p_message=> l_program_step||'L_ACCOUNT_ID '||l_account_id, p_force=>true);
+      print_debug_msg(p_message=> l_program_step||'L_ACCOUNT_ID and ln_bank_account_id is '||l_account_id||'/'||ln_bank_account_id, p_force=>true);
       
       -- External Bank Account ID
       -- p_assignment_attribs.priority   := 1;
 	  print_debug_msg(p_message=> l_program_step||'Primary Flag :'||r_sup_bank.primary_flag, p_force=>true);
 	  
-	  IF r_sup_bank.primary_flag = 'Y'
-	  THEN
+	  IF r_sup_bank.primary_flag = 'Y' THEN
 	      p_assignment_attribs.priority := 1;
 	  END IF;
       p_assignment_attribs.start_date := sysdate;
-	  print_debug_msg(p_message=> l_program_step||'Priority :'||p_assignment_attribs.priority, p_force=>true);
-	  print_debug_msg(p_message=> l_program_step||'Start Date :'||TO_CHAR(p_assignment_attribs.start_date,'DD-MON-YYYY'), p_force=>true);
-
+	  print_debug_msg(p_message=> l_program_step||'Priority/Start Date/ :'||p_assignment_attribs.priority||'/'||TO_CHAR(p_assignment_attribs.start_date,'DD-MON-YYYY'), p_force=>true);
+	  print_debug_msg(p_message=> l_program_step||'lv_acct_owner_party_id and r_sup_bank.account_id :'||lv_acct_owner_party_id||'/'||	 r_sup_bank.account_id, p_force=>true);
       ------------------Calling API to check Joint Owner exists or no
       fnd_msg_pub.initialize; --to make msg_count 0
       x_return_status:=NULL;
@@ -3545,17 +3544,15 @@ BEGIN
 	  print_debug_msg(p_message=> l_program_step||'Start of Calling API to check Joint Owner exists or not', p_force=>true);
       iby_ext_bankacct_pub.check_bank_acct_owner ( p_api_version =>p_api_version,
 	                                               p_init_msg_list=>p_init_msg_list,
-												   p_bank_acct_id=>r_sup_bank.account_id,
+												   p_bank_acct_id=>l_account_id, --r_sup_bank.account_id, 4.8
 												   p_acct_owner_party_id =>lv_acct_owner_party_id,
 												   x_return_status=>x_return_status,
 												   x_msg_count=>x_msg_count,
 												   x_msg_data=>x_msg_data,
 												   x_response=>x_response );
-	  print_debug_msg(p_message=> l_program_step||'End of Calling API to check Joint Owner exists or not', p_force=>true);
-      IF x_return_status <>'S'
-	  THEN --------------No join owner exists
+	  print_debug_msg(p_message=> l_program_step||'End of Calling API to check Joint Owner exists or not and x_return_status is '||x_return_status, p_force=>true);
+      IF x_return_status <>'S' THEN --------------No join owner exists
 	    print_debug_msg(p_message=> l_program_step||'No join owner exists', p_force=>true);
-        print_debug_msg(p_message=> l_program_step||'x_return_status ' || x_return_status , p_force=>true);
         FOR i IN 1 .. x_msg_count--fnd_msg_pub.count_msg
         LOOP
             fnd_msg_pub.get ( p_msg_index => i , p_encoded => 'F' , p_data => l_msg , p_msg_index_out => ln_msg_index_num );
@@ -3567,17 +3564,18 @@ BEGIN
         x_msg_data     :=NULL;
         x_response     :=NULL;
         -------------------------Calling Joint Account Owner API
-		print_debug_msg(p_message=> l_program_step||'Start of Calling Joint Account Owner API', p_force=>true);
+		print_debug_msg(p_message=> l_program_step||'Calling add Joint Account Owner API for r_sup_bank.account_id is '||r_sup_bank.account_id, p_force=>true);
         iby_ext_bankacct_pub.add_joint_account_owner ( p_api_version =>p_api_version,
 		                                               p_init_msg_list=>p_init_msg_list,
-													   p_bank_account_id=>r_sup_bank.account_id,
+													   p_bank_account_id=>l_account_id, --r_sup_bank.account_id,4.8
 													   p_acct_owner_party_id =>lv_acct_owner_party_id,
 													   x_joint_acct_owner_id=>l_joint_acct_owner_id,
 													   x_return_status=>x_return_status,
 													   x_msg_count=>x_msg_count,
 													   x_msg_data=>x_msg_data,
 													   x_response=>x_response );
-		print_debug_msg(p_message=> l_program_step||'End of Calling Joint Account Owner API', p_force=>true);
+        COMMIT;														
+		print_debug_msg(p_message=> l_program_step||'End of Calling add Joint Account Owner API', p_force=>true);
 		IF x_return_status <>'S'
 	    THEN
 	        print_debug_msg(p_message=> l_program_step||'Unable to Add Joint Account Owner', p_force=>true);
@@ -3587,11 +3585,10 @@ BEGIN
                print_debug_msg(p_message=> l_program_step||'The API call failed with error ' || l_msg , p_force=>true);
             END LOOP;
 		END IF;
-        print_debug_msg(p_message=> l_program_step||'L_JOINT_ACCT_OWNER_ID = ' || l_joint_acct_owner_id, p_force=>true);
-        print_debug_msg(p_message=> l_program_step||' ADD_JOINT_ACCOUNT_OWNER X_RETURN_STATUS = ' || x_return_status, p_force=>true);
-        print_debug_msg(p_message=> l_program_step||'ADD_JOINT_ACCOUNT_OWNER fnd_api.g_ret_sts_success ' || fnd_api.g_ret_sts_success , p_force=>true);
-        print_debug_msg(p_message=> l_program_step||'ADD_JOINT_ACCOUNT_OWNER X_MSG_COUNT = ' || x_msg_count, p_force=>true);
-      END IF;
+        print_debug_msg(p_message=> l_program_step||' ADD_JOINT_ACCOUNT_OWNER L_JOINT_ACCT_OWNER_ID/X_RETURN_STATUS/X_MSG_COUNT ' ||l_joint_acct_owner_id||'/'||x_return_status||'/'||x_msg_count, p_force=>true);
+	  ELSE 	
+	    print_debug_msg(p_message=> l_program_step||'Join owner exists', p_force=>true);
+      END IF;	  
       fnd_msg_pub.initialize; --to make msg_count 0
       x_return_status:=NULL;
       x_msg_count    :=NULL;
@@ -3607,25 +3604,24 @@ BEGIN
 															 p_payee => p_payee,
 															 p_assignment_attribs => p_assignment_attribs,
 															 x_assign_id => l_assign_id,
-															 x_response => x_response );
+															 x_response => x_response
+															 );
       COMMIT;
-      print_debug_msg(p_message=> l_program_step||'SET_PAYEE_INSTR_ASSIGNMENT X_ASSIGN_ID = ' || l_assign_id, p_force=>true);
-      print_debug_msg(p_message=> l_program_step||'SET_PAYEE_INSTR_ASSIGNMENT X_RETURN_STATUS = ' || x_return_status, p_force=>true);
-      print_debug_msg(p_message=> l_program_step||'SET_PAYEE_INSTR_ASSIGNMENT fnd_api.g_ret_sts_success ' || fnd_api.g_ret_sts_success , p_force=>true);
-      print_debug_msg(p_message=> l_program_step||'SET_PAYEE_INSTR_ASSIGNMENT X_MSG_COUNT = ' || x_msg_count, p_force=>true);
+      print_debug_msg(p_message=> l_program_step||'SET_PAYEE_INSTR_ASSIGNMENT X_ASSIGN_ID/X_RETURN_STATUS/X_MSG_COUNT/x_msg_data '|| l_assign_id||'/'||x_return_status||'/'||x_msg_count||'/'||x_msg_data, p_force=>true);
       IF x_return_status in ('U', 'E') THEN -- 4.8 added U condition
         print_debug_msg(p_message=> l_program_step||'x_return_status ' || x_return_status , p_force=>true);
-        print_debug_msg(p_message=> l_program_step||'fnd_api.g_ret_sts_success ' || fnd_api.g_ret_sts_success , p_force=>true);
         FOR i IN 1 .. x_msg_count--fnd_msg_pub.count_msg
         LOOP
           fnd_msg_pub.get ( p_msg_index => i , p_encoded => 'F' , p_data => l_msg , p_msg_index_out => ln_msg_index_num );
           print_debug_msg(p_message=> l_program_step||'The API call failed with error ' || l_msg , p_force=>true);
         END LOOP;
         l_process_flag:='E';
-      ELSE
+      ELSIF x_return_status = 'S' THEN	  
         print_debug_msg(p_message=> l_program_step||'The API call ended with SUCESSS status' , p_force=>true);
         l_process_flag:='Y';
         l_msg         :='';
+	  ELSIF x_return_status != 'S' THEN	
+	  print_debug_msg(p_message=> l_program_step||'The API Failed to set payee instrument details' , p_force=>true);
       END IF;
     END IF;--R_SUP_BANK.account_id IS NOT NULL AND R_SUP_BANK.INSTRUMENT_USES_ID IS NULL
     ------------------------------When Account ID is null create new Account and instrumnets
@@ -3659,14 +3655,10 @@ BEGIN
 												  x_msg_count => x_msg_count,
 												  x_msg_data =>x_msg_data,
 												  x_response => x_response );
-      print_debug_msg(p_message=> l_program_step||'create_ext_bank_acct l_account_id = ' || l_account_id, p_force=>true);
-      print_debug_msg(p_message=> l_program_step||'create_ext_bank_acct X_RETURN_STATUS = ' || x_return_status, p_force=>true);
-      print_debug_msg(p_message=> l_program_step||'create_ext_bank_acct fnd_api.g_ret_sts_success ' || fnd_api.g_ret_sts_success , p_force=>true);
-      print_debug_msg(p_message=> l_program_step||'create_ext_bank_acct X_MSG_COUNT = ' || x_msg_count, p_force=>true);
+      print_debug_msg(p_message=> l_program_step||'create_ext_bank_acct l_account_id/X_RETURN_STATUS/X_MSG_COUNT ' ||l_account_id||'/'||x_return_status||'/'||x_msg_count, p_force=>true);
       COMMIT;
       IF x_return_status = 'E' THEN
         print_debug_msg(p_message=> l_program_step||'create_ext_bank_acct x_return_status ' || x_return_status , p_force=>true);
-        print_debug_msg(p_message=> l_program_step||'create_ext_bank_acct fnd_api.g_ret_sts_success ' || fnd_api.g_ret_sts_success , p_force=>true);
         FOR i IN 1 .. x_msg_count--fnd_msg_pub.count_msg
         LOOP
           fnd_msg_pub.get ( p_msg_index => i , p_encoded => 'F' , p_data => l_msg , p_msg_index_out => ln_msg_index_num );
@@ -5188,7 +5180,8 @@ IS
     FROM xx_ap_cld_supp_bnkact_stg xas
     WHERE 1                     =1
     --AND xas.create_flag         ='N' -- 4.8 to check all banks 
-    AND xas.bnkact_process_flag =gn_process_status_validated
+    --AND xas.bnkact_process_flag =gn_process_status_validated -- commented to check the details 4.9 
+	AND xas.bnkact_process_flag in (7,4)
     AND xas.request_id          = gn_request_id
 	ORDER BY primary_flag DESC;
   ----
@@ -5207,7 +5200,9 @@ BEGIN
     lv_acct_owner_party_id   := NULL;
     lv_org_id                := NULL;
     p_assignment_attribs.priority := NULL;
+	
     print_debug_msg(p_message=> l_program_step||'Inside Cursor', p_force=>true);
+	print_debug_msg(p_message=> l_program_step||'bnkact_process_flag '||r_sup_bank.bnkact_process_flag, p_force=>true); --- 4.9
 	print_debug_msg(p_message=> l_program_step||'Vendor Site : '||r_sup_bank.vendor_site_code, p_force=>true);
     BEGIN
       SELECT assa.vendor_site_id,
@@ -5655,6 +5650,8 @@ BEGIN
       END IF;
       print_debug_msg(p_message=> gc_step||' After Bank Validation, Error Status Flag is : '||gc_error_site_status_flag ,p_force=> true);
       print_debug_msg(p_message=> gc_step||' After Bank Validation, Bank Create  Flag is : '||l_bank_create_flag ,p_force=> true);
+	  print_debug_msg(p_message=> gc_step||' After Bank Validation, l_instrument_id, l_bank_account_id, is : '
+					||l_instrument_id||'/'||l_bank_account_id ,p_force=> true);
       ------------------------Assigning values
 		l_sup_bank(l_sup_bank_idx).create_flag        :=l_bank_create_flag;
       --l_sup_bank(l_sup_bank_idx).start_date         :=l_bank_acct_start_date; -- 4.8
