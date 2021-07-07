@@ -348,7 +348,7 @@ AS
                             SELECT account_number,
                                    party_name,
                                  --  SUBSTR(hca.orig_system_reference,1,8) aops_customer_number   
-				   SUBSTR(hca.orig_system_reference,1, (INSTR(hca.orig_system_reference,'-',1))-1) aops_customer_number  --NAIT-164624								   								 
+									SUBSTR(hca.orig_system_reference,1, (INSTR(hca.orig_system_reference,'-',1))-1) aops_customer_number  --NAIT-164624	version 1.3							   								 
                             INTO   vidtrxtab(i).customer_number,
                                    vidtrxtab(i).party_name,
                                    vidtrxtab(i).aops_customer_number                
@@ -2639,7 +2639,13 @@ AS
         lc_invoice_num :=    'RPY'
                           || (p_trx_num);
         
+		/* Changes for verison 1.3 */
+		IF p_aops_customer_number like '%-%'
+		THEN
         v_vendor_num := substr(p_aops_customer_number,1, (instr(p_aops_customer_number,'-',1))-1);
+		ELSE
+		v_vendor_num := p_aops_customer_number;
+		END IF;
         
 		--defect#44371 -changed the logic to derive payment method 
         /*BEGIN
