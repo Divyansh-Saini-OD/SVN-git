@@ -135,7 +135,7 @@ AS
 -- |48.5       13-JUL-2020 Atul Khard          Modified for NAIT-131811: POS Settlement Changes for Partial Reversal   |
 -- |48.6       16-JUL-2020 Atul Khard          Modified for EMV Card changes   |
 -- |48.7	   30-NOV-2020 Karan Varshney 	   Modified for AJBCredit - Settlement Issue (NAIT-161505)	|
--- |48.8	   06-JAN-2021 Karan Varshney	   Modiifed for OD EBS Field 50 in the settlement issue (NAIT-165607)Test	|
+-- |48.8	   06-JAN-2021 Karan Varshney	   Modiifed for OD EBS Field 50 in the settlement issue (NAIT-165607)	|
 -- +===========================================================================+
 
 	g_package_name              CONSTANT all_objects.object_name%TYPE                        := 'xx_iby_settlement_pkg';
