@@ -2,9 +2,7 @@
 <!--   $Header: fusionapps/fin/iby/bipub/shared/runFormat/reports/DisbursementPaymentFileFormats/ISO20022CGI.xsl /st_fusionapps_11.1.1.5.1/8 2015/03/27 17:02:11 jswirsky Exp $   
   -->
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="1.0">
-   <xsl:output 
-   method="xml"
-   omit-xml-declaration="no"/>
+   <xsl:output method="xml" omit-xml-declaration="no" />
    <xsl:template match="OutboundPaymentInstruction">
       <Document xmlns="urn:iso:std:iso:20022:tech:xsd:pain.001.001.03">
          <CstmrCdtTrfInitn>
@@ -107,13 +105,13 @@
                   <Id>
                      <Othr>
                         <Id>ODP_EBS</Id>
-						 <!-- Constant-->
+                        <!-- Constant-->
                      </Othr>
                   </Id>
-                     <Tp>
-                        <Prtry>YES</Prtry>
-						 <!-- Constant SUA auth flag-->
-                     </Tp>
+                  <Tp>
+                     <Prtry>YES</Prtry>
+                     <!-- Constant SUA auth flag-->
+                  </Tp>
                   <xsl:if test="not(OutboundPayment/BankAccount/BankAccountCurrency/Code ='')">
                      <!-- Currency of the debtor bank account -->
                      <Ccy>USD</Ccy>
@@ -167,13 +165,13 @@
                               </Ctry>
                            </PstlAdr>
                         </xsl:if>
-						<xsl:if test="not(ExtendPayment/SuaEmailAddress ='')">
+                        <xsl:if test="not(ExtendPayment/SuaEmailAddress ='')">
                            <CtctDtls>
                               <EmailAdr>
                                  <xsl:value-of select="ExtendPayment/SuaEmailAddress" />
                               </EmailAdr>
                            </CtctDtls>
-						</xsl:if>						   
+                        </xsl:if>
                      </Cdtr>
                      <RmtInf>
                         <xsl:if test="not(Payee/SupplierNumber ='')">
@@ -186,11 +184,11 @@
                               <xsl:value-of select="concat('CFT|SUPPLIERSITECODE|',Payee/SupplierSiteCode)" />
                            </Ustrd>
                         </xsl:if>
-						<xsl:if test="not(ExtendPayment/SuaEmailAddress ='')">
-                        <Ustrd>
-						   <xsl:value-of select="concat('CFT|EMAILADDRESS|',ExtendPayment/SuaEmailAddress)" />
-                        </Ustrd>
-						</xsl:if>
+                        <xsl:if test="not(ExtendPayment/SuaEmailAddress ='')">
+                           <Ustrd>
+                              <xsl:value-of select="concat('CFT|EMAILADDRESS|',ExtendPayment/SuaEmailAddress)" />
+                           </Ustrd>
+                        </xsl:if>
                         <xsl:for-each select="DocumentPayable">
                            <Strd>
                               <RfrdDocInf>
@@ -219,84 +217,104 @@
                               </RfrdDocInf>
                               <RfrdDocAmt>
                                  <xsl:if test="(DocumentNumber/DocCategory='STD INV')">
-								 <DuePyblAmt>
-                                    <xsl:attribute name="Ccy">
-                                       <xsl:value-of select="TotalDocumentAmount/Currency/Code" />
-                                    </xsl:attribute>
-                                    <xsl:value-of select="TotalDocumentAmount/Value" />
-                                 </DuePyblAmt>
-								 <xsl:if test="(DiscountTaken/Amount/Value = 0)">
-                                 <DscntApldAmt>
-                                    <xsl:attribute name="Ccy">
-                                       <xsl:value-of select="DiscountTaken/Amount/Currency/Code" />
-                                    </xsl:attribute>0</DscntApldAmt>
-								 </xsl:if>
-								 <xsl:if test="(DiscountTaken/Amount/Value &gt; 0 and DiscountTaken/Amount/Value &lt; 1)">
-                                 <DscntApldAmt>
-                                    <xsl:attribute name="Ccy">
-                                       <xsl:value-of select="DiscountTaken/Amount/Currency/Code" />
-                                    </xsl:attribute>
-                                    <xsl:value-of select="concat('0', DiscountTaken/Amount/Value)" />
-                                 </DscntApldAmt>
-								 </xsl:if>
-								  <xsl:if test="(DiscountTaken/Amount/Value &gt;= 1)">
-                                 <DscntApldAmt>
-                                    <xsl:attribute name="Ccy">
-                                       <xsl:value-of select="DiscountTaken/Amount/Currency/Code" />
-                                    </xsl:attribute>
-                                    <xsl:value-of select="DiscountTaken/Amount/Value" />
-                                 </DscntApldAmt>
-								 </xsl:if>
-                                    <RmtdAmt>
-                                       <xsl:attribute name="Ccy">
-                                          <xsl:value-of select="PaymentAmount/Currency/Code" />
-                                       </xsl:attribute>
-                                       <xsl:value-of select="PaymentAmount/Value" />
-                                    </RmtdAmt>
+                                    <xsl:if test="(TotalDocumentAmount/Value &gt; 0 and TotalDocumentAmount/Value &lt; 1)">
+                                       <DuePyblAmt>
+                                          <xsl:attribute name="Ccy">
+                                             <xsl:value-of select="TotalDocumentAmount/Currency/Code" />
+                                          </xsl:attribute>
+                                          <xsl:value-of select="concat('0', TotalDocumentAmount/Value)" />
+                                       </DuePyblAmt>
+                                    </xsl:if>
+                                    <xsl:if test="(TotalDocumentAmount/Value &lt;= 0 or TotalDocumentAmount/Value &gt;= 1)">
+                                       <DuePyblAmt>
+                                          <xsl:attribute name="Ccy">
+                                             <xsl:value-of select="TotalDocumentAmount/Currency/Code" />
+                                          </xsl:attribute>
+                                          <xsl:value-of select="TotalDocumentAmount/Value" />
+                                       </DuePyblAmt>
+                                    </xsl:if>
+                                    <xsl:if test="(DiscountTaken/Amount/Value = 0)">
+                                       <DscntApldAmt>
+                                          <xsl:attribute name="Ccy">
+                                             <xsl:value-of select="DiscountTaken/Amount/Currency/Code" />
+                                          </xsl:attribute>0</DscntApldAmt>
+                                    </xsl:if>
+                                    <xsl:if test="(DiscountTaken/Amount/Value &gt; 0 and DiscountTaken/Amount/Value &lt; 1)">
+                                       <DscntApldAmt>
+                                          <xsl:attribute name="Ccy">
+                                             <xsl:value-of select="DiscountTaken/Amount/Currency/Code" />
+                                          </xsl:attribute>
+                                          <xsl:value-of select="concat('0', DiscountTaken/Amount/Value)" />
+                                       </DscntApldAmt>
+                                    </xsl:if>
+                                    <xsl:if test="(DiscountTaken/Amount/Value &gt;= 1)">
+                                       <DscntApldAmt>
+                                          <xsl:attribute name="Ccy">
+                                             <xsl:value-of select="DiscountTaken/Amount/Currency/Code" />
+                                          </xsl:attribute>
+                                          <xsl:value-of select="DiscountTaken/Amount/Value" />
+                                       </DscntApldAmt>
+                                    </xsl:if>
+                                    <xsl:if test="(PaymentAmount/Value &gt; 0 and PaymentAmount/Value &lt; 1)">
+                                       <RmtdAmt>
+                                          <xsl:attribute name="Ccy">
+                                             <xsl:value-of select="PaymentAmount/Currency/Code" />
+                                          </xsl:attribute>
+                                          <xsl:value-of select="concat('0', PaymentAmount/Value)" />
+                                       </RmtdAmt>
+                                    </xsl:if>
+                                    <xsl:if test="(PaymentAmount/Value &lt;= 0 or PaymentAmount/Value &gt;= 1)">
+                                       <RmtdAmt>
+                                          <xsl:attribute name="Ccy">
+                                             <xsl:value-of select="PaymentAmount/Currency/Code" />
+                                          </xsl:attribute>
+                                          <xsl:value-of select="PaymentAmount/Value" />
+                                       </RmtdAmt>
+                                    </xsl:if>
                                  </xsl:if>
                                  <xsl:if test="(DocumentNumber/DocCategory!='STD INV')">
-								 <xsl:if test="(TotalDocumentAmount/Value = 0)">
-                                 <DuePyblAmt>
-                                    <xsl:attribute name="Ccy">
-                                       <xsl:value-of select="TotalDocumentAmount/Currency/Code" />
-                                    </xsl:attribute>0</DuePyblAmt>
-								  </xsl:if>
-								  <xsl:if test="(TotalDocumentAmount/Value != 0)">
-								 <DuePyblAmt>
-                                    <xsl:attribute name="Ccy">
-                                       <xsl:value-of select="TotalDocumentAmount/Currency/Code" />
-                                    </xsl:attribute>
-                                    <xsl:value-of select="(TotalDocumentAmount/Value)*(-1)" />
-                                 </DuePyblAmt>
-								  </xsl:if>
-								<xsl:if test="(DiscountTaken/Amount/Value = 0)">
-                                 <DscntApldAmt>
-                                    <xsl:attribute name="Ccy">
-                                       <xsl:value-of select="DiscountTaken/Amount/Currency/Code" />
-                                    </xsl:attribute>0</DscntApldAmt>
-								  </xsl:if>
-								<xsl:if test="(DiscountTaken/Amount/Value != 0)">
-                                 <DscntApldAmt>
-                                    <xsl:attribute name="Ccy">
-                                       <xsl:value-of select="DiscountTaken/Amount/Currency/Code" />
-                                    </xsl:attribute>
-                                    <xsl:value-of select="(DiscountTaken/Amount/Value)*(-1)" />
-                                 </DscntApldAmt>
-								  </xsl:if>
-								  <xsl:if test="(PaymentAmount/Value = 0)">
-                                 <CdtNoteAmt>
-                                    <xsl:attribute name="Ccy">
-                                       <xsl:value-of select="PaymentAmount/Currency/Code" />
-                                    </xsl:attribute>0</CdtNoteAmt>
-								  </xsl:if>
-								<xsl:if test="(PaymentAmount/Value != 0)">
-                                 <CdtNoteAmt>
-                                    <xsl:attribute name="Ccy">
-                                       <xsl:value-of select="PaymentAmount/Currency/Code" />
-                                    </xsl:attribute>
-                                    <xsl:value-of select="(PaymentAmount/Value)*(-1)" />
-                                 </CdtNoteAmt>
-								  </xsl:if>
+                                    <xsl:if test="(TotalDocumentAmount/Value = 0)">
+                                       <DuePyblAmt>
+                                          <xsl:attribute name="Ccy">
+                                             <xsl:value-of select="TotalDocumentAmount/Currency/Code" />
+                                          </xsl:attribute>0</DuePyblAmt>
+                                    </xsl:if>
+                                    <xsl:if test="(TotalDocumentAmount/Value != 0)">
+                                       <DuePyblAmt>
+                                          <xsl:attribute name="Ccy">
+                                             <xsl:value-of select="TotalDocumentAmount/Currency/Code" />
+                                          </xsl:attribute>
+                                          <xsl:value-of select="(TotalDocumentAmount/Value)*(-1)" />
+                                       </DuePyblAmt>
+                                    </xsl:if>
+                                    <xsl:if test="(DiscountTaken/Amount/Value = 0)">
+                                       <DscntApldAmt>
+                                          <xsl:attribute name="Ccy">
+                                             <xsl:value-of select="DiscountTaken/Amount/Currency/Code" />
+                                          </xsl:attribute>0</DscntApldAmt>
+                                    </xsl:if>
+                                    <xsl:if test="(DiscountTaken/Amount/Value != 0)">
+                                       <DscntApldAmt>
+                                          <xsl:attribute name="Ccy">
+                                             <xsl:value-of select="DiscountTaken/Amount/Currency/Code" />
+                                          </xsl:attribute>
+                                          <xsl:value-of select="(DiscountTaken/Amount/Value)*(-1)" />
+                                       </DscntApldAmt>
+                                    </xsl:if>
+                                    <xsl:if test="(PaymentAmount/Value = 0)">
+                                       <CdtNoteAmt>
+                                          <xsl:attribute name="Ccy">
+                                             <xsl:value-of select="PaymentAmount/Currency/Code" />
+                                          </xsl:attribute>0</CdtNoteAmt>
+                                    </xsl:if>
+                                    <xsl:if test="(PaymentAmount/Value != 0)">
+                                       <CdtNoteAmt>
+                                          <xsl:attribute name="Ccy">
+                                             <xsl:value-of select="PaymentAmount/Currency/Code" />
+                                          </xsl:attribute>
+                                          <xsl:value-of select="(PaymentAmount/Value)*(-1)" />
+                                       </CdtNoteAmt>
+                                    </xsl:if>
                                  </xsl:if>
                               </RfrdDocAmt>
                               <xsl:if test="(PONumber!='') and (PONumber!='UNMATCHED') ">
