@@ -1,26 +1,27 @@
 create or replace package body XX_AR_SELF_SERVICE as
 
--- +================================================================================+
--- |                               Office Depot                                     |
--- +================================================================================+
--- | Name        :  XX_AR_SELF_SERVICE.pkb                                          |
--- |                                                                                |
--- | Subversion Info:                                                               |
--- |                                                                                |
--- |                                                                                |
--- |                                                                                |
--- | Description :                                                                  |
--- |                                                                                |
--- | Table hanfler for xx_crm_sfdc_contacts.                                        |
--- |                                                                                |
--- |                                                                                |
--- |Change Record:                                                                  |
--- |===============                                                                 |
--- |Version   Date         Author             Remarks                               |
--- |========  ===========  =================  ======================================|
--- |1.0       01-Oct-2020  Divyansh Saini     Initial version                       |
--- |1.1       26-Mar-2021  Divyansh Saini     Added logic for contact Tieback       |
--- +================================================================================+
+-- +==============================================================================================+
+-- |                               Office Depot                                                   |
+-- +==============================================================================================+
+-- | Name        :  XX_AR_SELF_SERVICE.pkb                                                        |
+-- |                                                                                              |
+-- | Subversion Info:                                                                             |
+-- |                                                                                              |
+-- |                                                                                              |
+-- |                                                                                              |
+-- | Description :                                                                                |
+-- |                                                                                              |
+-- | package for XX_AR_SELF_SERVICE process.                                                      |
+-- |                                                                                              |
+-- |                                                                                              |
+-- |Change Record:                                                                                |
+-- |===============                                                                               |
+-- |Version   Date         Author             Remarks                                             |
+-- |========  ===========  =================  ====================================================|
+-- |1.0       01-Oct-2020  Divyansh Saini     Initial version                                     |
+-- |1.1       26-Mar-2021  Divyansh Saini     Added logic for contact Tieback                     |
+-- |1.2       12-Jul-2021  Divyansh Saini     Changed direct checking logic and encoding for data |
+-- +==============================================================================================+
 
 /*********************************************************************
 * procedure to put logs
@@ -558,7 +559,7 @@ BEGIN
                         and uses.status='A'
                         and uses1.status='A'
                         and asites.cust_account_id=ext.cust_account_id
-                        and NOT ( uses.cust_acct_site_id = uses1.cust_acct_site_id)
+                        and NOT ( C_EXT_ATTR7 = 'N' AND uses.cust_acct_site_id = uses1.cust_acct_site_id)
            )
            AND Rownum = 1;
 
@@ -608,7 +609,7 @@ begin
     logs('  Looping through file');
      BEGIN
        utl_file.get_line(lf_file,lv_line_data);
-       lv_line_data := convert(lv_line_data,'utf8','us7ascii');
+       lv_line_data := convert(lv_line_data,'utf8');
        ln_rows := ln_rows+1;
        IF ln_rows <=p_skip_rows THEN
          Continue;
@@ -1043,7 +1044,7 @@ procedure process_bad_address(p_err_buf OUT VARCHAR2,
   lv_p_err        VARCHAR2(2000);
   lv_p_code       NUMBER;
   lv_process_type VARCHAR2(20) := 'ADDRESS';
-  lv_send_to      VARCHAR2(200);
+  lv_send_to      XX_FIN_TRANSLATEVALUES.TARGET_VALUE4%TYPE;
   lv_source_folder  VARCHAR2(100);
   lv_destination_folder  VARCHAR2(100);
   lc_req_data     VARCHAR2(500);
@@ -1201,7 +1202,7 @@ procedure process_bad_email(p_err_buf OUT VARCHAR2,
   lv_p_err               VARCHAR2(2000);
   lv_p_code              NUMBER;
   lv_process_type        VARCHAR2(20) := 'EMAIL';
-  lv_send_to             VARCHAR2(50);
+  lv_send_to             XX_FIN_TRANSLATEVALUES.TARGET_VALUE4%TYPE;
   lv_source_folder       VARCHAR2(100);
   lv_destination_folder  VARCHAR2(100);
   ln_rep_req_id          NUMBER;
@@ -1356,7 +1357,7 @@ procedure process_bad_contact(p_err_buf OUT VARCHAR2,
   lv_p_err        VARCHAR2(2000);
   lv_p_code       NUMBER;
   lv_process_type VARCHAR2(20) := 'CONTACT';
-  lv_send_to      VARCHAR2(50);
+  lv_send_to      XX_FIN_TRANSLATEVALUES.TARGET_VALUE4%TYPE;
   lv_source_folder  VARCHAR2(100);
   lv_destination_folder  VARCHAR2(100);
   lc_req_data     VARCHAR2(500);
