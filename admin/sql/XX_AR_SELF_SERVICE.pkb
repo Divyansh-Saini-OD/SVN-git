@@ -20,7 +20,8 @@ create or replace package body XX_AR_SELF_SERVICE as
 -- |========  ===========  =================  ====================================================|
 -- |1.0       01-Oct-2020  Divyansh Saini     Initial version                                     |
 -- |1.1       26-Mar-2021  Divyansh Saini     Added logic for contact Tieback                     |
--- |1.2       12-Jul-2021  Divyansh Saini     Changed direct checking logic and encoding for data |
+-- |1.2       12-Jul-2021  Divyansh Saini     NAIT-189112 Changed direct checking logic and       |
+-- |                                          encoding for data                                   |
 -- +==============================================================================================+
 
 /*********************************************************************
@@ -559,7 +560,7 @@ BEGIN
                         and uses.status='A'
                         and uses1.status='A'
                         and asites.cust_account_id=ext.cust_account_id
-                        and NOT ( C_EXT_ATTR7 = 'N' AND uses.cust_acct_site_id = uses1.cust_acct_site_id)
+                        and NOT ( C_EXT_ATTR7 = 'N' AND uses.cust_acct_site_id = uses1.cust_acct_site_id)  -- added for 1.2
            )
            AND Rownum = 1;
 
@@ -609,7 +610,7 @@ begin
     logs('  Looping through file');
      BEGIN
        utl_file.get_line(lf_file,lv_line_data);
-       lv_line_data := convert(lv_line_data,'utf8');
+       lv_line_data := convert(lv_line_data,'utf8');  -- changed for 1.2
        ln_rows := ln_rows+1;
        IF ln_rows <=p_skip_rows THEN
          Continue;
