@@ -17616,9 +17616,9 @@ PROCEDURE reset_auth_flag(errbuff            OUT VARCHAR2,
            conts.card_token,
            conts.card_type,
            conts.card_encryption_label,
-		   subs.billing_date,
+           subs.billing_date,
            subs.contract_line_number,
-		   subs.auth_completed_flag,
+           subs.auth_completed_flag,
            subs.billing_sequence_number
       FROM xx_ar_subscriptions    subs,
            xx_ar_contracts        conts,
@@ -17630,7 +17630,7 @@ PROCEDURE reset_auth_flag(errbuff            OUT VARCHAR2,
        AND conts.initial_order_number = subs.initial_order_number
        AND subs.contract_line_number  = contls.contract_line_number
        AND SYSDATE <=  NVL(contls.close_date, SYSDATE)
-	   AND conts.contract_status      NOT IN ('EXPIRED','CLOSED')  --NAIT-176736
+       AND conts.contract_status      NOT IN ('EXPIRED','CLOSED')  --NAIT-176736
        AND subs.auth_completed_flag   = 'U'
        AND conts.payment_type         <> 'AB'
        AND subs.invoice_created_flag  <> 'Y'
@@ -17705,7 +17705,7 @@ PROCEDURE reset_auth_flag(errbuff            OUT VARCHAR2,
                           logit(p_message => 'Getting issue while calling decrypt credit card');
                 END;
 
-                IF length(lc_decrypted_value)= 16
+                IF length(lc_decrypted_value)<= 16
                 THEN
                     lt_subscription_array(indx).auth_completed_flag := 'N';                      
                     lt_subscription_array(indx).ordt_staged_flag    := 'N';
