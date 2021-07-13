@@ -1,4 +1,4 @@
-create or replace package body XX_IBY_SETTLEMENT_PKG
+CREATE OR REPLACE PACKAGE BODY XX_IBY_SETTLEMENT_PKG
 AS
 -- +===========================================================================+
 -- |                  Office Depot - Project Simplify                          |
@@ -120,7 +120,7 @@ AS
 -- |41.0	   03-NOV-2016 Rakesh Polepalli    Changes for defects# 37866,39910 |
 -- |42.0	   03-NOV-2016 Rakesh Polepalli    Changes for defects# 38223,40149 |
 -- |43.0       27-DEC-2016 Suresh Ponnambalam  Defect 40377 AMEX SKU order change|
--- |44.0     02-SEP-2017  Uday Jadhav         Changes done for BIZBOX Rollout to pass MPL_ORDER_ID to IXINVOICE|
+-- |44.0       02-SEP-2017  Uday Jadhav         Changes done for BIZBOX Rollout to pass MPL_ORDER_ID to IXINVOICE|
 -- |45.0       05-FEB-2018 Atul Khard  		   Defect 44326 Adding HINT /*+ index(OOH,OE_ORDER_HEADERS_U2) */|
 -- |46.0       21-FEB-2018 Rohit Gupta         Modified code for defect #44299 |
 -- |47.0       05-MAR-2018 M K Pramod Kumar    Modified code for defect NAIT-31107 |
@@ -135,7 +135,8 @@ AS
 -- |48.5       13-JUL-2020 Atul Khard          Modified for NAIT-131811: POS Settlement Changes for Partial Reversal   |
 -- |48.6       16-JUL-2020 Atul Khard          Modified for EMV Card changes   |
 -- |48.7	   30-NOV-2020 Karan Varshney 	   Modified for AJBCredit - Settlement Issue (NAIT-161505)	|
--- |48.8	   06-JAN-2021 Karan Varshney	   Modiifed for OD EBS Field 50 in the settlement issue (NAIT-165607)	|
+-- |48.8	   06-JAN-2021 Karan Varshney	   Modiifed for OD EBS Field 50 in the settlement issue (NAIT-165607)  	|
+-- |49.0	   06-JUL-2021 Amit Kumar		   NAIT-185985 B-Comm- CE Settlement changes
 -- +===========================================================================+
 
 	g_package_name              CONSTANT all_objects.object_name%TYPE                        := 'xx_iby_settlement_pkg';
@@ -2802,7 +2803,7 @@ AS
 					NVL(TO_CHAR(op.credit_card_approval_date,
 								'MMDDYYYY'),
 						TO_CHAR(xaord.receipt_date,
-								'MMDDYYYY')) ixdate,		
+								'MMDDYYYY')) ixdate,
 				   '000000' ixtime,
 				   xaord.customer_id pay_from_customer,
 				   xaord.customer_site_billto_id customer_site_use_id,
@@ -3142,7 +3143,7 @@ AS
 			FROM   ar_cash_receipts_all acr, xx_ar_order_receipt_dtl xaord
 			,oe_payments op --Added for NAIT-131811
 			WHERE  xaord.order_payment_id = gn_order_payment_id
-			AND    xaord.header_id = op.header_id(+) --Added for NAIT-131811 
+			AND    xaord.header_id = op.header_id(+) --Added for NAIT-131811
 			AND    xaord.payment_number = op.payment_number(+) --Added for NAIT-131811
 			--acr.cash_receipt_id = gn_cash_receipt_id
 			AND    acr.cash_receipt_id = xaord.cash_receipt_id;
@@ -4333,30 +4334,30 @@ AS
 		IF NVL (lc_emv_terminal, 'N') <> 'N' THEN
 			gc_ixoptions := '*DEVCAP='||lc_emv_terminal||' '||gc_ixoptions;
 		END IF; --Moved up for Version 48.6
-		
+
 		IF NVL(lc_emv_card,'T') <> 'T' THEN --Added for Version 48.6
-		
+
 			IF NVL (lc_emv_fallback, 'N') = 'Y' THEN
-	
+
 				IF NVL (gc_ixswipe , '-1') <> '-1' THEN   --Version 27.1
 				gc_ixoptions := '*CEM_Swiped *FALLBACK_EMV '||gc_ixoptions;
 				ELSE
 				gc_ixoptions := '*CEM_Manual *FALLBACK_EMV '||gc_ixoptions;
 				END IF;
 			END IF;
-	
+
 			IF NVL (lc_emv_offline, 'N') = 'Y' THEN
 				gc_ixoptions := '*REFERRAL '||gc_ixoptions;
 			END IF;
-	
+
 			IF NVL (lc_emv_transaction, 'N') = 'Y' THEN
 				gc_ixoptions := '*CEM_Insert *EMV '||gc_ixoptions;   --Version 27.1
 			END IF;
-	
+
 			IF NVL (lc_emv_tvr, 'N') <> 'N' THEN
 				gc_ixreserved56 := '<95>'||lc_emv_tvr||'</95>';
 			END IF;
-		
+
 		END IF;--Added for Version 48.6
 
 		xx_location_and_log(g_loc, 'gc_ixoptions :: '||gc_ixoptions);
@@ -4415,18 +4416,18 @@ END xx_set_post_receipt_variables;
 						'Entering NO_DATA_FOUND Exception in XX_SET_POST_TRX_VARIABLES for Retrieve Sales Order Type. ');
 				gc_sales_order_trans_type_desc := NULL;
 		END;
-		
+
 		BEGIN  -- For Version 48.6 starts here
-						
+
 			xx_location_and_log(g_log,'EMV Card Check in ORDT');
-			
+
 			lc_emv_card := NULL;
-						
+
 			SELECT  nvl(emv_card,'N')
 				INTO lc_emv_card
 			FROM xx_ar_order_receipt_dtl
-			WHERE order_payment_id = gn_order_payment_id; 
-							
+			WHERE order_payment_id = gn_order_payment_id;
+
 		EXCEPTION
 			WHEN NO_DATA_FOUND
 			THEN
@@ -4493,7 +4494,7 @@ END xx_set_post_receipt_variables;
 						gn_ship_from_org_id := NULL;
 						gc_ixorderdate := NULL;
 				END;
-				
+
 				/* Version 48.7 - Retrieving credit_card_approval_date for ixorderdate */
 				BEGIN
 					xx_location_and_log(g_loc,
@@ -4522,7 +4523,7 @@ END xx_set_post_receipt_variables;
 							 'Entering NO_DATA_FOUND Exception in lc_auth_date for Retrieve Auth Date. ');
 						lc_auth_date := NULL;
 				END;
-				
+
 				IF lc_auth_date IS NOT NULL
 				THEN
 				gc_ixorderdate := lc_auth_date;
@@ -7368,18 +7369,18 @@ END xx_set_post_receipt_variables;
 			|| gn_cash_receipt_id
 			|| '.  Payment Order ID: '
 			|| gn_order_payment_id;
-			
+
 	-- NAIT-131811 change starts
-	
+
 	xx_location_and_log(g_loc,
 							'Original Amount, Field20 - '||gc_ixreserved20);
-	
+
     IF to_number(gc_ixreserved20) = 0
     THEN
       gc_ixreserved20 := NULL;
     END IF;
     --NAIT-131811 change ends
-	
+
 		INSERT INTO xx_iby_batch_trxns
 					(pre1,
 					 pre2,
@@ -9093,7 +9094,13 @@ END xx_set_post_receipt_variables;
 -- +====================================================================+
 	PROCEDURE xx_single_trx_settlement
 	IS
+
+	lv_ixstrnum VARCHAR2(10); --NAIT-185985 Added
+	lv_pre2 	VARCHAR2(10); --NAIT-185985 Added
+	
 	BEGIN
+	lv_ixstrnum :=NULL;
+	lv_pre2		:=NULL;
 --------------------------------------------------------------------------
 -- Step #1 - Set POST Invoice/Order/Deposit Variables
 --------------------------------------------------------------------------
@@ -9144,6 +9151,46 @@ END xx_set_post_receipt_variables;
 				   XX_UPDATE_COF_TRANS;
 				END IF;
 				--End code Changes for V48.0
+				
+		--NAIT-185985 B-Comm- CE Settlement changes  --Start 
+	
+		BEGIN
+			SELECT trans.location
+			  INTO lv_ixstrnum
+			FROM XX_AR_ORDER_RECEIPT_DTL ordt,
+			  oe_order_headers_all oeh,
+			  xx_om_header_attributes_all xoha,
+			  (SELECT xftv.target_value1 location,
+				xftv.source_value1 appid
+			  FROM xx_fin_translatedefinition xftd,
+				xx_fin_translatevalues xftv
+			  WHERE xftd.translate_id   = xftv.translate_id
+			  AND xftd.translation_name ='OD_IBY_STLMNT_APPID_LOC'
+			  AND SYSDATE BETWEEN xftv.start_date_active AND NVL(xftv.end_date_active, SYSDATE + 1)
+			  AND SYSDATE BETWEEN xftd.start_date_active AND NVL(xftd.end_date_active, SYSDATE + 1)
+			  AND xftv.enabled_flag = 'Y'
+			  AND xftd.enabled_flag = 'Y'
+			  ) trans
+			WHERE 1                   =1
+			AND ordt.order_number     = oeh.order_number
+			AND oeh.header_id         = xoha.header_id
+			AND xoha.app_id           = trans.appid
+			AND ordt.ORDER_PAYMENT_ID = gn_order_payment_id
+			AND rownum				  =1;			
+		EXCEPTION
+		WHEN NO_DATA_FOUND
+			THEN NULL;
+		WHEN OTHERS
+			THEN NULL ;	 
+		END;
+		
+		IF lv_ixstrnum IS NOT NULL
+		THEN 
+			lv_pre2 := lv_ixstrnum;
+			gc_pre2 := lv_pre2;
+			gc_ixstorenumber := lv_ixstrnum;
+		END IF;
+	    --NAIT-185985 B-Comm- CE Settlement changes  --End
 
 		xx_location_and_log(g_loc,
 							'***** Executing XX_CREATE_101_SETTLEMENT_REC from XX_SINGLE_TRX_SETTLEMENT ***** ');
@@ -10865,7 +10912,7 @@ END xx_set_post_receipt_variables;
 				gc_ixorderdate := ltab_single_pmt_rec.ixorderdate;
 				gn_ship_from_org_id := ltab_single_pmt_rec.ship_from_org_id;
 			END;
-			
+
 			/* Version 48.7 - Retrieving credit_card_approval_date for xx_poe_sglpmt_multi_settlement */
 			BEGIN
 				xx_location_and_log(g_loc,
@@ -10891,7 +10938,7 @@ END xx_set_post_receipt_variables;
 						 'Entering NO_DATA_FOUND Exception in lc_auth_date for xx_poe_sglpmt_multi_settlement Retrieve Auth Date. ');
 					lc_auth_date := NULL;
 			END;
-				
+
 			IF lc_auth_date IS NOT NULL
 			THEN
 			gc_ixorderdate := lc_auth_date;
@@ -18580,7 +18627,6 @@ END ORDT_RECORDS_MAIL;
 			exiting_sub(p_procedure_name =>      lc_procedure_name,
 						p_exception_flag =>      TRUE);
 	END retry_errors;
-END xx_iby_settlement_pkg;
+END XX_IBY_SETTLEMENT_PKG;
 /
-show errors;
-exit;
+show error;
