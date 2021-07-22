@@ -136,8 +136,8 @@ AS
 -- |48.6       16-JUL-2020 Atul Khard          Modified for EMV Card changes   |
 -- |48.7	   30-NOV-2020 Karan Varshney 	   Modified for AJBCredit - Settlement Issue (NAIT-161505)	|
 -- |48.8	   06-JAN-2021 Karan Varshney	   Modiifed for OD EBS Field 50 in the settlement issue (NAIT-165607)  	|
--- |49.0	   06-JUL-2021 Amit Kumar		   NAIT-185985 B-Comm- CE Settlement changes
--- +===========================================================================+
+-- |49.0	   06-JUL-2021 Amit Kumar		   NAIT-185985, NAIT-190014 B-Comm and ELEVATE Together- CE Settlement changes
+-- +============================================================================================================================+
 
 	g_package_name              CONSTANT all_objects.object_name%TYPE                        := 'xx_iby_settlement_pkg';
 	g_return_success            CONSTANT VARCHAR2(20)                                              := 'SUCCESS';
@@ -9082,6 +9082,70 @@ END xx_set_post_receipt_variables;
 		END IF;
 	END xx_validate_101_201_creation;
 
+-- NAIT-190014/NAIT-185985 Start
+-- +====================================================================+
+-- | PROCEDURE  : XX_APPID_TO_STORENUM                              	|
+-- |                                                                    |
+-- | DESCRIPTION: is new procedure created for NAIT-190014/NAIT-185985.	|
+-- |	 This procedure is used to derive ixstorenum and pre2 using 	|
+-- |	appid (in xx_om_header_attributes_all) for order payments.	 	|
+-- |	The derived values will be assigned back to the global variables|
+-- |	 gc_pre2 and gc_ixstorenumbert         							|
+-- |                                                                    |
+-- | PARAMETERS : p_order_payment_id       								|
+-- |                                                                    |
+-- | RETURNS    : NONE 												    |
+-- +====================================================================+
+	
+	PROCEDURE XX_APPID_TO_STORENUM	(p_order_payment_id IN NUMBER )
+	IS
+	lv_ixstrnum VARCHAR2(10); 
+	lv_pre2 	VARCHAR2(10); 
+		
+	BEGIN
+	lv_ixstrnum := NULL;
+	lv_pre2		:= NULL;
+	
+		BEGIN
+			SELECT trans.location
+			  INTO lv_ixstrnum
+			FROM XX_AR_ORDER_RECEIPT_DTL ordt,
+			  oe_order_headers_all oeh,
+			  xx_om_header_attributes_all xoha,
+			  (SELECT xftv.target_value1 location,
+				xftv.source_value1 appid
+			  FROM xx_fin_translatedefinition xftd,
+				xx_fin_translatevalues xftv
+			  WHERE xftd.translate_id   = xftv.translate_id
+			  AND xftd.translation_name ='OD_IBY_STLMNT_APPID_LOC'
+			  AND SYSDATE BETWEEN xftv.start_date_active AND NVL(xftv.end_date_active, SYSDATE + 1)
+			  AND SYSDATE BETWEEN xftd.start_date_active AND NVL(xftd.end_date_active, SYSDATE + 1)
+			  AND xftv.enabled_flag = 'Y'
+			  AND xftd.enabled_flag = 'Y'
+			  ) trans
+			WHERE 1                   =1
+			AND ordt.order_number     = oeh.order_number
+			AND oeh.header_id         = xoha.header_id
+			AND xoha.app_id           = trans.appid
+			AND ordt.ORDER_PAYMENT_ID = p_order_payment_id
+			AND rownum				  =1;			
+		EXCEPTION
+		WHEN NO_DATA_FOUND
+			THEN NULL;
+		WHEN OTHERS
+			THEN NULL ;	 
+		END;
+		
+		IF lv_ixstrnum IS NOT NULL
+		THEN 
+			lv_pre2 := lv_ixstrnum;
+			gc_pre2 := lv_pre2;
+			gc_ixstorenumber := lv_ixstrnum;
+		END IF;
+		
+	END XX_APPID_TO_STORENUM;
+-- NAIT-190014/NAIT-185985 END
+	
 -- +====================================================================+
 -- | PROCEDURE  : XX_SINGLE_TRX_SETTLEMENT                              |
 -- |                                                                    |
@@ -9095,12 +9159,8 @@ END xx_set_post_receipt_variables;
 	PROCEDURE xx_single_trx_settlement
 	IS
 
-	lv_ixstrnum VARCHAR2(10); --NAIT-185985 Added
-	lv_pre2 	VARCHAR2(10); --NAIT-185985 Added
-	
 	BEGIN
-	lv_ixstrnum :=NULL;
-	lv_pre2		:=NULL;
+
 --------------------------------------------------------------------------
 -- Step #1 - Set POST Invoice/Order/Deposit Variables
 --------------------------------------------------------------------------
@@ -9152,45 +9212,9 @@ END xx_set_post_receipt_variables;
 				END IF;
 				--End code Changes for V48.0
 				
-		--NAIT-185985 B-Comm- CE Settlement changes  --Start 
-	
-		BEGIN
-			SELECT trans.location
-			  INTO lv_ixstrnum
-			FROM XX_AR_ORDER_RECEIPT_DTL ordt,
-			  oe_order_headers_all oeh,
-			  xx_om_header_attributes_all xoha,
-			  (SELECT xftv.target_value1 location,
-				xftv.source_value1 appid
-			  FROM xx_fin_translatedefinition xftd,
-				xx_fin_translatevalues xftv
-			  WHERE xftd.translate_id   = xftv.translate_id
-			  AND xftd.translation_name ='OD_IBY_STLMNT_APPID_LOC'
-			  AND SYSDATE BETWEEN xftv.start_date_active AND NVL(xftv.end_date_active, SYSDATE + 1)
-			  AND SYSDATE BETWEEN xftd.start_date_active AND NVL(xftd.end_date_active, SYSDATE + 1)
-			  AND xftv.enabled_flag = 'Y'
-			  AND xftd.enabled_flag = 'Y'
-			  ) trans
-			WHERE 1                   =1
-			AND ordt.order_number     = oeh.order_number
-			AND oeh.header_id         = xoha.header_id
-			AND xoha.app_id           = trans.appid
-			AND ordt.ORDER_PAYMENT_ID = gn_order_payment_id
-			AND rownum				  =1;			
-		EXCEPTION
-		WHEN NO_DATA_FOUND
-			THEN NULL;
-		WHEN OTHERS
-			THEN NULL ;	 
-		END;
-		
-		IF lv_ixstrnum IS NOT NULL
-		THEN 
-			lv_pre2 := lv_ixstrnum;
-			gc_pre2 := lv_pre2;
-			gc_ixstorenumber := lv_ixstrnum;
-		END IF;
-	    --NAIT-185985 B-Comm- CE Settlement changes  --End
+		/*NAIT-190014/NAIT-185985 Deriving ixstorenum and pre2 for eligible payment id's*/
+		XX_APPID_TO_STORENUM(gn_order_payment_id  );
+		/*NAIT-190014/NAIT-185985 changes end*/
 
 		xx_location_and_log(g_loc,
 							'***** Executing XX_CREATE_101_SETTLEMENT_REC from XX_SINGLE_TRX_SETTLEMENT ***** ');
@@ -9492,6 +9516,10 @@ END xx_set_post_receipt_variables;
 				   XX_UPDATE_COF_TRANS;
 				END IF;
 				--End code Changes for V48.0
+				
+		/*NAIT-190014/NAIT-185985 Deriving ixstorenum and pre2 for eligible payment id's*/
+		XX_APPID_TO_STORENUM(gn_order_payment_id  );
+		/*NAIT-190014/NAIT-185985 changes end*/
 
 		xx_location_and_log(g_loc,
 							'***** Executing XX_CREATE_101_SETTLEMENT_REC from XX_IREC_MULTI_TRX_SETTLEMENT ***** ');
