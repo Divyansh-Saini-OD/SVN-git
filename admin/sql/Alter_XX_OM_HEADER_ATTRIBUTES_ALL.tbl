@@ -1,0 +1,28 @@
+-- +=====================================================================+
+-- |                   Office Depot - SAS Modernization                  |
+-- +=====================================================================+
+-- | Name :  Alter_XX_OM_HEADER_ATTRIBUTES_ALL.tbl                            |
+-- | Description :   Alter XX_OM_HEADER_ATTRIBUTES_ALL                       |
+-- |                                                                     |
+-- |                                                                     |
+-- |Change Record:                                                       |
+-- |===============                                                      |
+-- |Version   Date              Author              Remarks              |
+-- |======   ==========     =============        ========================|
+-- |1.0      14-Jul-2021     Ankit Jaiswal       Alter table to add     | 
+-- | 	                                          more column in table XX_OM_HEADER_ATTRIBUTES_ALL |
+-- +=====================================================================+
+
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     ON
+
+alter table XXOM.XX_OM_HEADER_ATTRIBUTES_ALL
+add ( CANADA_PST_TAX VARCHAR2(50 BYTE) ,
+      CUST_DEPT_NO VARCHAR2(50 BYTE) ,
+      DESKTOP_LOC_ADDR VARCHAR2(50 BYTE) ,
+      LOYALTY_ID VARCHAR2(50 BYTE) ,
+      ACTION_CODE  VARCHAR2(50 BYTE))
+show errors;
