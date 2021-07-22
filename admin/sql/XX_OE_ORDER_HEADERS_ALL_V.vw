@@ -9,7 +9,8 @@
   -- | =========   ===========  =============    ===============================================  |
   -- | 1.0         14-Jul-2021  Ankit Jaiswal   Initial version                                  |
   -- +============================================================================================+
-  
+CREATE OR REPLACE VIEW XX_OE_ORDER_HEADERS_ALL_V
+AS 
 SELECT 
     HEADER_ID
     ,ORDER_TYPE_ID
