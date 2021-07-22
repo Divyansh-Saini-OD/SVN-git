@@ -1,45 +1,28 @@
--- +============================================================================================+
--- |                        Office Depot - Project Simplify                                     |
--- |                                                                                            |
--- +============================================================================================+
--- | Name         : ALTER_XX_OM_HEADER_ATTRIBUTES_ALL.tbl                                       |
--- | Rice Id      : I1272                                                                       | 
--- | Description  : INT-I1272_SalesOrderFrom LegacySystems(HVOP) Table MODIFICATION             |  
--- | Purpose      : MODIFY Custom Table XX_OM_HEADER_ATTRIBUTES_ALL. to add APP_ID              |
--- |                column                                                                      |
--- |                                                                                            |
--- |                                                                                            |
--- |Change Record:                                                                              |
--- |===============                                                                             |
--- |Version    Date          Author                Remarks                                      | 
--- |=======    ==========    =================    ==============================================+
--- |DRAFT 1A   24-MAY-2013   Bapuji Nanapaneni    Initial Version                               |
--- |                                                                                            |
--- +============================================================================================+
+-- +=====================================================================+
+-- |                   Office Depot - SAS Modernization                  |
+-- +=====================================================================+
+-- | Name :  Alter_XX_OM_HEADER_ATTRIBUTES_ALL.tbl                            |
+-- | Description :   Alter XX_OM_HEADER_ATTRIBUTES_ALL                       |
+-- |                                                                     |
+-- |                                                                     |
+-- |Change Record:                                                       |
+-- |===============                                                      |
+-- |Version   Date              Author              Remarks              |
+-- |======   ==========     =============        ========================|
+-- |1.0      14-Jul-2021     Ankit Jaiswal       Alter table to add     | 
+-- | 	                                          more column in table XX_OM_HEADER_ATTRIBUTES_ALL |
+-- +=====================================================================+
 
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     ON
 
-SET VERIFY      OFF
-SET TERM        ON
-SET FEEDBACK    OFF
-SET SHOW        OFF
-SET ECHO        OFF
-SET TAB         OFF
-
-
-
-PROMPT
-PROMPT MODIFYING the Table XX_OM_HEADER_ATTRIBUTES_ALL.....
-PROMPT
-
-ALTER TABLE XXOM.XX_OM_HEADER_ATTRIBUTES_ALL ADD (app_id  VARCHAR2(30))
-
-/
-WHENEVER SQLERROR EXIT 1
-
-PROMPT
-PROMPT Exiting....
-PROMPT
-
-SET FEEDBACK ON
-
---EXIT;
+alter table XXOM.XX_OM_HEADER_ATTRIBUTES_ALL
+add ( CANADA_PST_TAX VARCHAR2(50 BYTE) ,
+      CUST_DEPT_NO VARCHAR2(50 BYTE) ,
+      DESKTOP_LOC_ADDR VARCHAR2(50 BYTE) ,
+      LOYALTY_ID VARCHAR2(50 BYTE) ,
+      ACTION_CODE  VARCHAR2(50 BYTE));
+show errors;
