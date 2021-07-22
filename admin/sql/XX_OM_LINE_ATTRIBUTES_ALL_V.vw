@@ -1,15 +1,15 @@
   -- +============================================================================================+
   -- |  Office Depot                                                                              |
   -- +============================================================================================+
-  -- |  Name          : XX_OE_LINE_ATTRIBUTES_ALL_V                                               |
-  -- |  Description   : OE Line Attribute view based on union of EBS custom and seeded tables     |
+  -- |  Name          : XX_OM_LINE_ATTRIBUTES_ALL_V                                              |
+  -- |  Description   : OM Line Attribute view based on union of EBS custom and seeded tables     |
   -- |  Change Record :                                                                           |
   -- +============================================================================================+
   -- | Version     Date         Author           Remarks                                          |
   -- | =========   ===========  =============    ===============================================  |
   -- | 1.0         14-Jul-2021  Ankit Jaiswal   Initial version                                  |
   -- +============================================================================================+
-CREATE OR REPLACE VIEW XX_OE_LINE_ATTRIBUTES_ALL_V
+CREATE OR REPLACE VIEW XX_OM_LINE_ATTRIBUTES_ALL_V
 AS
 SELECT
     LINE_ID
@@ -219,4 +219,4 @@ SELECT
 	,NULL
     ,ITEM_DESCRIPTION
 FROM 
-    XX_OM_LINE_ATTRIBUTES_ALL
+    XX_OM_LINE_ATTRIBUTES_ALL;

@@ -1,8 +1,8 @@
   -- +============================================================================================+
   -- |  Office Depot                                                                              |
   -- +============================================================================================+
-  -- |  Name          : XX_OE_PAYMENTS_V                                                          |
-  -- |  Description   : OE Payments view based on union of EBS custom and seeded tables           |
+  -- |  Name          : XX_OM_PAYMENTS_V                                                          |
+  -- |  Description   : OM Payments view based on union of EBS custom and seeded tables           |
   -- |  Change Record :                                                                           |
   -- +============================================================================================+
   -- | Version     Date         Author           Remarks                                          |
@@ -10,7 +10,7 @@
   -- | 1.0         14-Jul-2021  Ankit Jaiswal   Initial version                                  |
   -- +============================================================================================+
 
-CREATE OR REPLACE VIEW XX_OE_PAYMENTS_V
+CREATE OR REPLACE VIEW XX_OM_PAYMENTS_V
 AS 
     SELECT
         PAYMENT_TRX_ID	                

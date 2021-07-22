@@ -1,7 +1,7 @@
   -- +============================================================================================+
   -- |  Office Depot                                                                              |
   -- +============================================================================================+
-  -- |  Name          : XX_OE_ORDER_HEADERS_ALL_V                                               |
+  -- |  Name          : XX_OM_ORDER_HEADERS_ALL_V                                               |
   -- |  Description   : OE Order Headers view based on union of EBS custom and seeded tables     |
   -- |  Change Record :                                                                           |
   -- +============================================================================================+
@@ -9,7 +9,7 @@
   -- | =========   ===========  =============    ===============================================  |
   -- | 1.0         14-Jul-2021  Ankit Jaiswal   Initial version                                  |
   -- +============================================================================================+
-CREATE OR REPLACE VIEW XX_OE_ORDER_HEADERS_ALL_V
+CREATE OR REPLACE VIEW XX_OM_ORDER_HEADERS_ALL_V
 AS 
 SELECT 
     HEADER_ID

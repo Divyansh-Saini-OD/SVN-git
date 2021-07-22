@@ -1,8 +1,8 @@
   -- +============================================================================================+
   -- |  Office Depot                                                                              |
   -- +============================================================================================+
-  -- |  Name          : xx_oe_price_adjustments_v                                                 |
-  -- |  Description   : OE Price Adjustment view based on union of EBS custom and seeded tables   |
+  -- |  Name          : XX_OM_PRICE_ADJUSTMENTS_V                                                 |
+  -- |  Description   : OM Price Adjustment view based on union of EBS custom and seeded tables   |
   -- |  Change Record :                                                                           |
   -- +============================================================================================+
   -- | Version     Date         Author           Remarks                                          |
@@ -10,7 +10,7 @@
   -- | 1.0         14-Jul-2021  Ankit Jaiswal   Initial version                                  |
   -- +============================================================================================+
 
-CREATE OR REPLACE VIEW XX_OE_PRICE_ADJUSTMENTS_V AS
+CREATE OR REPLACE VIEW XX_OM_PRICE_ADJUSTMENTS_V AS
 SELECT 
     PRICE_ADJUSTMENT_ID
     ,CREATION_DATE

@@ -1,15 +1,15 @@
   -- +============================================================================================+
   -- |  Office Depot                                                                              |
   -- +============================================================================================+
-  -- |  Name          : XX_OE_HEADER_ATTRIBUTES_ALL_V                                               |
-  -- |  Description   : OE Header Attribute view based on union of EBS custom and seeded tables     |
+  -- |  Name          : XX_OM_HEADER_ATTRIBUTES_ALL_V                                               |
+  -- |  Description   : OM Header Attribute view based on union of EBS custom and seeded tables     |
   -- |  Change Record :                                                                           |
   -- +============================================================================================+
   -- | Version     Date         Author           Remarks                                          |
   -- | =========   ===========  =============    ===============================================  |
   -- | 1.0         14-Jul-2021  Ankit Jaiswal   Initial version                                  |
   -- +============================================================================================+
-CREATE OR REPLACE VIEW XX_OE_HEADER_ATTRIBUTES_ALL_V
+CREATE OR REPLACE VIEW XX_OM_HEADER_ATTRIBUTES_ALL_V
 AS
 SELECT
     HEADER_ID
