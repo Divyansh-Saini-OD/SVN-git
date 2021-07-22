@@ -133,45 +133,9 @@ AS
          AND    XAC.contract_id = XAS.contract_id
          AND    XACL.contract_line_number = XAS.contract_line_number
          AND    XACL.close_date is NULL
-         AND    XACL.program = 'SS'
+         AND    XACL.program IN ('SS','BS')
          AND    NVL(XAS.email_autorenew_sent_flag,'N') != 'Y'
          AND    XAS.billing_sequence_number IN (SELECT MAX(XAS1.billing_sequence_number) 
-                                                FROM  xx_ar_subscriptions XAS1
-                                                WHERE XAS1.contract_id = XAS.contract_id
-                                                AND   XAS1.contract_line_number = XAS.contract_line_number
-                                                )
-         GROUP BY  XAS.contract_number,
-    XAS.contract_id,
-    xas.billing_sequence_number,
-    XAS.initial_order_number,
-    XAS.contract_name,
-    XAC.card_type,
-    XAC.card_token,
-    TO_CHAR(XAC.card_expiration_date,'YYMM'),
-    XAC.card_encryption_label,
-    XAC.card_encryption_hash,
-    XAS.authorization_code,
-    NVL(XAS.auth_message,'UNDEFINED'),
-    TO_CHAR(XAS.last_auth_attempt_date,'MMDDYYYY')                                             
-         UNION
-         SELECT  XAS.contract_number,XAS.contract_id,xas.billing_sequence_number,XAS.initial_order_number,
-      XAS.contract_name, XAC.card_type, XAC.card_token, TO_CHAR(XAC.card_expiration_date,'YYMM') card_expiration_date,
-      XAC.card_encryption_label, XAC.card_encryption_hash, XAS.authorization_code auth_status,
-      NVL(XAS.auth_message,'UNDEFINED') auth_message, TO_CHAR(XAS.last_auth_attempt_date,'MMDDYYYY') error_date,
-      MAX(xas.contract_line_number) contract_line_number
-         FROM   xx_ar_contract_lines XACL,
-                xx_ar_contracts XAC,
-                xx_ar_subscriptions XAS
-         WHERE  1   =  1
-         AND TRUNC(SYSDATE+45) = TRUNC(XACL.contract_line_end_date)
-         AND    XACL.contract_id = XAC.contract_id
-         AND    XAC.contract_status = 'ACTIVE'
-         AND    XAC.contract_id = XAS.contract_id
-         AND    XACL.contract_line_number = XAS.contract_line_number
-         AND    XACL.close_date is NULL
-         AND    XACL.program ='BS'
-         AND    NVL(XAS.email_autorenew_sent_flag,'N') != 'Y'
-         AND    XAS.billing_sequence_number IN (SELECT MAX(XAS1.billing_sequence_number)
                                                 FROM  xx_ar_subscriptions XAS1
                                                 WHERE XAS1.contract_id = XAS.contract_id
                                                 AND   XAS1.contract_line_number = XAS.contract_line_number
@@ -205,7 +169,7 @@ AS
          AND    XAC.contract_id = XAS.contract_id
          AND    XACL.contract_line_number = XAS.contract_line_number
          AND    XACL.close_date is NULL
-         AND    XACL.program = 'BS'
+         AND    XACL.program  IN('BS','SS')
          AND    NVL(XAS.email_autorenew_sent_flag,'N') != 'Y'
          AND    XAS.billing_sequence_number IN (SELECT MAX(XAS1.billing_sequence_number) 
                                                 FROM   xx_ar_subscriptions XAS1
@@ -230,7 +194,7 @@ AS
       contract_name, card_type, card_token,card_expiration_date,
       card_encryption_label, card_encryption_hash, auth_status,
       auth_message, error_date, contract_line_number
-UNION
+ UNION
     SELECT
       XAS.contract_number,
       XAS.contract_id,
@@ -250,7 +214,8 @@ UNION
       xx_ar_subscriptions XAS,
       xx_ar_contracts XAC
     WHERE
-      XAS.auth_completed_flag        = 'E'
+        1                            = 1
+    AND XAS.auth_completed_flag      IN ( 'E','U')
     AND XAC.contract_id              = XAS.contract_id
     AND XAS.billing_sequence_number IN
       (
