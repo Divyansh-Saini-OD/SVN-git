@@ -9100,15 +9100,16 @@ END xx_set_post_receipt_variables;
 	PROCEDURE XX_APPID_TO_STORENUM	(p_order_payment_id IN NUMBER )
 	IS
 	lv_ixstrnum VARCHAR2(10); 
-	lv_pre2 	VARCHAR2(10); 
+	lv_app_id	VARCHAR2(30);
+	l_mpl_order_id  xx_ar_order_receipt_dtl.mpl_order_id%Type;
 		
 	BEGIN
 	lv_ixstrnum := NULL;
-	lv_pre2		:= NULL;
+	lv_app_id  := NULL;
 	
 		BEGIN
-			SELECT trans.location
-			  INTO lv_ixstrnum
+			SELECT trans.location , trans.appid
+			  INTO lv_ixstrnum , lv_app_id
 			FROM XX_AR_ORDER_RECEIPT_DTL ordt,
 			  oe_order_headers_all oeh,
 			  xx_om_header_attributes_all xoha,
@@ -9135,13 +9136,26 @@ END xx_set_post_receipt_variables;
 		WHEN OTHERS
 			THEN NULL ;	 
 		END;
-		
-		IF lv_ixstrnum IS NOT NULL
+			
+		/*For APPID ELEVATE TOGETHER we are getting External Order Number for IXINVOICE
+		  This is because Elevate Together is authorized through EAI and not CDAP*/
+		IF lv_ixstrnum IS NOT NULL and lv_app_id = 'ELEVATE'  
 		THEN 
-			lv_pre2 := lv_ixstrnum;
-			gc_pre2 := lv_pre2;
-			gc_ixstorenumber := lv_ixstrnum;
+			  SELECT  MPL_ORDER_ID
+				INTO l_mpl_order_id
+				FROM xx_ar_order_receipt_dtl
+			   WHERE order_payment_id = p_order_payment_id;
+
+		      gc_ixinvoice 		:= l_mpl_order_id;
+			  gc_pre2        	:= lv_ixstrnum;
+			  gc_ixstorenumber 	:= lv_ixstrnum;
+			  
+		ELSIF  lv_ixstrnum IS NOT NULL 
+		THEN 
+			  gc_pre2        	:= lv_ixstrnum;
+			  gc_ixstorenumber 	:= lv_ixstrnum;
 		END IF;
+
 		
 	END XX_APPID_TO_STORENUM;
 -- NAIT-190014/NAIT-185985 END
