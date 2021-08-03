@@ -1,0 +1,95 @@
+# +===================================================================+
+# |                  Office Depot                                     |
+# |      			 				                                  |
+# +===================================================================+
+# | Name  : 	   XX_AR_SCAAS_FILE_LOAD   	                          |
+# | RICE ID    :                                                      |
+# | Description: Load file names into custom table                    |
+# |                                                                   |
+# |Change Record:                                                     |
+# |===============                                                    |
+# |Version   Date         Author           Remarks                    |
+# |=======   ==========   =============    ===========================|
+# |DRAFT 1A  07-JUL-2021  Divyansh Saini   Initial draft version      |
+# +===================================================================+
+ echo "1 st argument = username/password"
+ echo "2 nd argument = $2"
+ echo "3 rd argument = $3"
+ echo "4 th argument = $4"
+ echo "5 th argument = $5"
+ echo "6 th argument = $6"
+export SQLPATH=$APPL_TOP
+v_request_id=$4 
+processtype=$5 
+p_process_id=$6
+V_RESULT=`sqlplus -s /nolog <<EOF
+set pagesize 0
+set linesize 255
+set serveroutput on 
+set verify off
+
+SELECT DB.DIRECTORY_PATH
+       || '|'||XFTV.TARGET_VALUE2
+       || '|'||XFTV.TARGET_VALUE3
+  FROM XX_FIN_TRANSLATEDEFINITION XFTD,
+       XX_FIN_TRANSLATEVALUES XFTV,
+       DBA_DIRECTORIES DB
+ WHERE XFTD.TRANSLATION_NAME ='XX_AR_SCAAS_INTERFACE'
+   AND XFTV.SOURCE_VALUE1      ='$processtype'
+   AND XFTD.TRANSLATE_ID       =XFTV.TRANSLATE_ID
+   AND XFTD.ENABLED_FLAG       ='Y'
+   AND SYSDATE BETWEEN XFTV.START_DATE_ACTIVE AND NVL(XFTV.END_DATE_ACTIVE,SYSDATE)
+   AND DB.directory_name = XFTV.TARGET_VALUE1;
+	
+exit
+EOF`
+
+file_path=`echo $V_RESULT | awk '{ split($0,MODULE,"|"); print MODULE[1] }'`
+file_name=`echo $V_RESULT | awk '{ split($0,MODULE,"|"); print MODULE[2] }'`
+delimeter=`echo $V_RESULT | awk '{ split($0,MODULE,"|"); print MODULE[3] }'`
+echo $file_path
+echo $file_name
+cd $file_path
+filenames=`ls $file_name*`
+echo $filenames
+for filename in $filenames
+do
+echo $filename
+V_COUNT=`sqlplus -s /nolog <<EOF
+     set pagesize 0
+     set linesize 255
+     set sqlprompt " "
+     set serveroutput on 
+     set verify off
+
+     select count(1) from xx_ar_scaas_files_hist where file_name='$filename';
+     COMMIT;
+
+     exit
+     EOF`
+echo $V_COUNT
+if [ "${V_COUNT}" -ge 1 ]
+    then
+        echo "File already processed "+$filename
+    else
+V_COUNT=`sqlplus -s /nolog <<EOF
+     set pagesize 0
+     set linesize 255
+     set sqlprompt " "
+     set serveroutput on 
+     set verify off
+     set heading on feedback on;
+
+     INSERT INTO xx_ar_scaas_files (file_name,request_id,delimeter) VALUES (
+    '$filename',
+    $v_request_id,
+	'$delimeter'
+    );
+     COMMIT;
+
+     exit
+     EOF`
+echo $V_COUNT
+fi
+done
+
