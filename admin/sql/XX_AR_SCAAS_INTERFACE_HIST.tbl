@@ -12,13 +12,7 @@
 -- |1.0      19-Jul-2021     Divyansh Saini      Initial Version         |
 -- +=====================================================================+
 
-SET SHOW         OFF
-SET VERIFY       OFF
-SET ECHO         OFF
-SET TAB          OFF
-SET FEEDBACK     ON
-
-create table xxfin.XX_AR_SCAAS_INTERFACE_hist (
+create table xxfin.XX_AR_SCAAS_INTERFACE_hist
 (	"RECORD_ID" NUMBER , 
 	"SUBSCRIPTION_ID" VARCHAR2(34 BYTE), 
 	"SUBSCRIPTION_NUMBER" VARCHAR2(34 BYTE), 
