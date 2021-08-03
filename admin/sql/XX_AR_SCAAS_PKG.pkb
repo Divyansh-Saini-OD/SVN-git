@@ -72,6 +72,35 @@ EXCEPTION
       THEN
           NULL;
 END;
+
+/*********************************************************************
+* Function to trim file values
+*********************************************************************/
+FUNCTION get_converted_text(p_value IN VARCHAR2)
+  RETURN VARCHAR2 IS
+  lv_value VARCHAR2(2000);
+BEGIN
+   /*Replace carriage return line break*/
+   SELECT TRIM(REPLACE(REPLACE(REPLACE(p_value,CHR(10)),CHR(13)),CHR(9)))
+     INTO lv_value
+     FROM DUAL;
+
+     SELECT REPLACE(lv_value,'|','')
+       INTO lv_value
+      FROM DUAl;
+    /*Fix for colon*/
+     SELECT REPLACE(lv_value,'''','''''')
+       INTO lv_value
+      FROM DUAl;
+    /*Fix for ampersand*/
+     SELECT REPLACE(lv_value,'&','''||'||'''&'''||'||''')
+       INTO lv_value
+      FROM DUAl;
+   RETURN lv_value;
+EXCEPTION
+  WHEN OTHERS THEN
+     RETURN p_value;
+END;
 -- +===================================================================================+
 -- |                  Office Depot - SCAAS                                             |
 -- +===================================================================================+
