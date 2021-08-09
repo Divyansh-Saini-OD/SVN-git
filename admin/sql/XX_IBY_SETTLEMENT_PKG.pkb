@@ -137,6 +137,9 @@ AS
 -- |48.7	   30-NOV-2020 Karan Varshney 	   Modified for AJBCredit - Settlement Issue (NAIT-161505)	|
 -- |48.8	   06-JAN-2021 Karan Varshney	   Modiifed for OD EBS Field 50 in the settlement issue (NAIT-165607)  	|
 -- |49.0	   06-JUL-2021 Amit Kumar		   NAIT-185985, NAIT-190014 B-Comm and ELEVATE Together- CE Settlement changes
+-- |49.1	   09-Aug-2021 Amit Kumar		   NAIT-186046 Settlement Issue - Subscriptions - Settlement is different than the authorization: Changing Terminal Number so it could match 
+-- |										   the settlement to the authorization so it sent the abbreviated settlement record to WorldPay.
+-- |49.2 	   09-Aug-2021 Amit Kumar		   NAIT-187508 Authorized Returns are sent to Settlement with the incorrect Transaction Number. 
 -- +============================================================================================================================+
 
 	g_package_name              CONSTANT all_objects.object_name%TYPE                        := 'xx_iby_settlement_pkg';
@@ -4765,7 +4768,10 @@ END xx_set_post_receipt_variables;
 
 				BEGIN
 					gc_source := 'AC';
-					gc_ixregisternumber := '56';
+					--NAIT-186046 Change started
+					--gc_ixregisternumber := '56'; --NAIT-186046-- Commented
+					gc_ixregisternumber := '95';
+					--NAIT-186046 change end
 					gc_ixps2000 := NULL;
 					gc_ixstorenumber := gc_oapfstoreid;
 					-- oapfstoreid will always have a value of 001099 for IEX receipts from Automatic Remittance
@@ -4851,7 +4857,10 @@ END xx_set_post_receipt_variables;
 
 				BEGIN
 					gc_source := 'AR';
-					gc_ixregisternumber := '56';
+					--NAIT-186046 Change started
+					--gc_ixregisternumber := '56'; --NAIT-186046-- Commented
+					gc_ixregisternumber := '95';
+					--NAIT-186046 change end
 					--gc_ixreserved31 := gc_mo_value; Modified for V47.3 14/Mar/2018
 					--------------------------------------------------------------------------
 					-- Retrieve AOPS Auth Entry-Defaulted to *ECE for Service Contracts
@@ -6578,7 +6587,11 @@ END xx_set_post_receipt_variables;
 									  || gn_order_number
 									  || '#'
 									  || gn_order_payment_id;
-				gc_ixtransnumber := gn_order_number;
+				--Start of NAIT-187508 Changes below to derive ixtransnumber from trx_number					  
+				--gc_ixtransnumber := gn_order_number;	 --Commented		
+				gc_ixtransnumber := gc_trx_number;
+				--End of NAIT-187508 Changes
+				
 				gc_ixrecptnumber :=    'OM'
 									|| gn_order_payment_id;
 			ELSIF(gc_remit_processing_type = g_poe_single_pmt_multi_ord)
