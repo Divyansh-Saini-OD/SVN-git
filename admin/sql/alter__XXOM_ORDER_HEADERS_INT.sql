@@ -25,4 +25,3 @@ modify  ACCOUNTID VARCHAR2(240);
 
 
 show errors;
-/
