@@ -316,7 +316,7 @@ FUNCTION get_ship_method( p_ship_method  IN  VARCHAR2)
 			INTO   ret_order_source_id
 			FROM   fnd_lookup_values
 		   WHERE  lookup_type = 'OD_ORDER_SOURCE' AND lookup_code = UPPER(p_order_source)
-		   AND view_application_id = 222;
+		   AND view_application_id = 20043;
 		EXCEPTION
 		WHEN OTHERS
 		THEN
