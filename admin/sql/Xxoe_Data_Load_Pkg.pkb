@@ -12,13 +12,6 @@ AS
   ---| Rice 1272
   -- | 1.0      28-Apr-2021      Shreyas Thorat            Initial draft version  |
   -- +============================================================================================+
-FUNCTION Getdata(
-    P_Req NUMBER)
-  RETURN VARCHAR2
-IS
-BEGIN
-  NULL;
-END Getdata;
 
     PROCEDURE get_pay_method(
         p_payment_instrument  IN             VARCHAR2,
@@ -74,7 +67,7 @@ WHEN OTHERS THEN
   NULL;
 END logit;
 
-FUNCTION payment_term( p_sold_to_org_id  IN  NUMBER)
+FUNCTION payment_term( p_sold_to_org_id  IN  NUMBER , p_immediate_pay_term IN NUMBER)
         RETURN NUMBER
     IS
 -- +===================================================================+
@@ -97,7 +90,7 @@ FUNCTION payment_term( p_sold_to_org_id  IN  NUMBER)
     EXCEPTION
         WHEN OTHERS
         THEN
-            RETURN NULL;
+            RETURN p_immediate_pay_term;
     END payment_term;
 
 
@@ -256,8 +249,8 @@ FUNCTION get_ship_method( p_ship_method  IN  VARCHAR2)
 		FROM   fnd_lookup_values lkp
 		WHERE  1=1
 		AND    lkp.lookup_code = p_ship_method
-		AND    lkp.lookup_type = 'OD_SHIP_METHODS'
-		AND    view_application_id = 20043;
+		AND    lkp.lookup_type = 'OD_CSAS_SHIP_METHODS'
+		AND    view_application_id = 222;
 
         RETURN ship_method;
     EXCEPTION
@@ -291,7 +284,7 @@ FUNCTION get_ship_method( p_ship_method  IN  VARCHAR2)
 		    SELECT attribute6
             INTO   g_order_source(p_order_source)
             FROM   fnd_lookup_values
-            WHERE  lookup_type = 'OD_ORDER_SOURCE' 
+            WHERE  lookup_type = 'OD_CSAS_ORDER_SOURCE' 
 			  AND  lookup_code = '0'||UPPER(p_order_source)
 			  AND  attribute7  = p_app_id;
 
@@ -302,7 +295,7 @@ FUNCTION get_ship_method( p_ship_method  IN  VARCHAR2)
 			  SELECT   attribute6
                 INTO   g_order_source(p_order_source)
                 FROM   fnd_lookup_values
-               WHERE  lookup_type = 'OD_ORDER_SOURCE' AND lookup_code = UPPER(p_order_source);
+               WHERE  lookup_type = 'OD_CSAS_ORDER_SOURCE' AND lookup_code = UPPER(p_order_source);
 			EXCEPTION
             WHEN OTHERS
             THEN
@@ -315,8 +308,8 @@ FUNCTION get_ship_method( p_ship_method  IN  VARCHAR2)
 		  SELECT   attribute6
 			INTO   ret_order_source_id
 			FROM   fnd_lookup_values
-		   WHERE  lookup_type = 'OD_ORDER_SOURCE' AND lookup_code = UPPER(p_order_source)
-		   AND view_application_id = 20043;
+		   WHERE  lookup_type = 'OD_CSAS_ORDER_SOURCE' AND lookup_code = UPPER(p_order_source)
+		   AND view_application_id = 222;
 		EXCEPTION
 		WHEN OTHERS
 		THEN
@@ -470,25 +463,17 @@ FUNCTION get_ship_method( p_ship_method  IN  VARCHAR2)
 
 
 /* ===========================================================================*
-|  PUBLIC PROCEDURE Xxoe_Populate_Columns                                    |
+|  PUBLIC PROCEDURE xxom_load_data                                    |
 |                                                                            |
 |  DESCRIPTION                                                               |
 |  This procedure is used to load data into xxom interface table.            |
-|  After this it will cal validation procedure to load data in xxoe tables   |
 |                                                                            |
 |  This procedure will be called directly by Concurrent Program              |
 |                                                                            |
 * ===========================================================================*/
-PROCEDURE Xxoe_Populate_Columns(
-    Errbuf OUT VARCHAR2,
-    Retcode OUT VARCHAR2)
+PROCEDURE xxom_load_data ( P_START_ID IN VARCHAR2 , P_END_ID IN VARCHAR2 ) 
 IS
-  L_Header_Id NUMBER;
-  lc_order    NUMBER;
-  lc_seq_num  NUMBER;
-  lc_level    VARCHAR2(50);
-  
-  cursor cur_data
+cursor cur_data
   IS 
   SELECT Order_Number ,
     Sub_Order_Number ,
@@ -498,7 +483,13 @@ IS
     Json_Ord_Data
   FROM Xxom_Import_Int
   WHERE Process_Flag = 'I'
-  AND status         = 'New';
+  AND status         = 'New'
+  AND Sequence_Num BETWEEN P_START_ID AND P_END_ID;
+  
+  L_Header_Id NUMBER;
+  lc_order    NUMBER;
+  lc_seq_num  NUMBER;
+  lc_level    VARCHAR2(50);
   
   TYPE cur_data_tab IS TABLE OF cur_data%ROWTYPE INDEX BY PLS_INTEGER;
   cur_lob_data cur_data_tab;
@@ -535,54 +526,9 @@ IS
   
   L_CHUNK_SIZE VARCHAR2(100);
   L_PARALLEL_LEVEL VARCHAR2(100);
+  
+BEGIN 
 
-BEGIN
-    
-	BEGIN 
-		SELECT  XFTV.TARGET_VALUE1
-		INTO l_limit
-		FROM XX_FIN_TRANSLATEDEFINITION XFTD , XX_FIN_TRANSLATEVALUES XFTV
-		WHERE XFTD.TRANSLATION_NAME ='XX_AR_CSAS_INTEGRETION'
-		AND XFTD.TRANSLATE_ID       =XFTV.TRANSLATE_ID
-		AND XFTD.ENABLED_FLAG       ='Y'
-		AND XFTV.SOURCE_VALUE2 = FND_PROFILE.VALUE('ORG_ID')
-		AND XFTV.SOURCE_VALUE1 = 'LIMIT'
-		AND SYSDATE BETWEEN XFTV.START_DATE_ACTIVE AND NVL(XFTV.END_DATE_ACTIVE,SYSDATE);
-	EXCEPTION 
-	WHEN OTHERS THEN 
-		l_limit := 1000;
-	END;
-	
-	BEGIN 
-		SELECT  XFTV.TARGET_VALUE1
-		INTO L_CHUNK_SIZE
-		FROM XX_FIN_TRANSLATEDEFINITION XFTD , XX_FIN_TRANSLATEVALUES XFTV
-		WHERE XFTD.TRANSLATION_NAME ='XX_AR_CSAS_INTEGRETION'
-		AND XFTD.TRANSLATE_ID       =XFTV.TRANSLATE_ID
-		AND XFTD.ENABLED_FLAG       ='Y'
-		AND XFTV.SOURCE_VALUE2 = FND_PROFILE.VALUE('ORG_ID')
-		AND XFTV.SOURCE_VALUE1 = 'CHUNK_SIZE'
-		AND SYSDATE BETWEEN XFTV.START_DATE_ACTIVE AND NVL(XFTV.END_DATE_ACTIVE,SYSDATE);
-	EXCEPTION 
-	WHEN OTHERS THEN 
-		L_CHUNK_SIZE := 400;
-	END;
-	
-	BEGIN 
-		SELECT  XFTV.TARGET_VALUE1
-		INTO L_PARALLEL_LEVEL
-		FROM XX_FIN_TRANSLATEDEFINITION XFTD , XX_FIN_TRANSLATEVALUES XFTV
-		WHERE XFTD.TRANSLATION_NAME ='XX_AR_CSAS_INTEGRETION'
-		AND XFTD.TRANSLATE_ID       =XFTV.TRANSLATE_ID
-		AND XFTD.ENABLED_FLAG       ='Y'
-		AND XFTV.SOURCE_VALUE2 = FND_PROFILE.VALUE('ORG_ID')
-		AND XFTV.SOURCE_VALUE1 = 'PARALLEL_LEVEL'
-		AND SYSDATE BETWEEN XFTV.START_DATE_ACTIVE AND NVL(XFTV.END_DATE_ACTIVE,SYSDATE);
-	EXCEPTION 
-	WHEN OTHERS THEN 
-		L_PARALLEL_LEVEL := 100;
-	END;
-	
 	
 	OPEN cur_data;
 	LOOP 
@@ -1033,24 +979,183 @@ BEGIN
 
 	END;
 
-
   UPDATE Xxom_Import_Int
   SET Process_Flag   = 'P',
     status           = 'Processed'
   WHERE Process_Flag = 'I'
-  AND status         = 'New';
+  AND status         = 'New'
+  AND Sequence_Num BETWEEN P_START_ID AND P_END_ID;
   
   COMMIT;
+	
+END xxom_load_data;
+/* ===========================================================================*
+|  PUBLIC PROCEDURE Xxoe_Populate_Columns                                    |
+|                                                                            |
+|  DESCRIPTION                                                               |
+|  This procedure is used to load data into xxom interface table.            |
+|  After this it will cal validation procedure to load data in xxoe tables   |
+|                                                                            |
+|  This procedure will be called directly by Concurrent Program              |
+|                                                                            |
+* ===========================================================================*/
+PROCEDURE Xxoe_Populate_Columns(
+    Errbuf OUT VARCHAR2,
+    Retcode OUT VARCHAR2)
+IS
+  L_Header_Id NUMBER;
+  lc_order    NUMBER;
+  lc_seq_num  NUMBER;
+  lc_level    VARCHAR2(50);
   
- 
+  cursor cur_data
+  IS 
+  SELECT Order_Number ,
+    Sub_Order_Number ,
+    Process_Flag ,
+    Status ,
+    Sequence_Num,
+    Json_Ord_Data
+  FROM Xxom_Import_Int
+  WHERE Process_Flag = 'I'
+  AND status         = 'New';
   
+  TYPE cur_data_tab IS TABLE OF cur_data%ROWTYPE INDEX BY PLS_INTEGER;
+  cur_lob_data cur_data_tab;
+  null_cur_lob_data cur_data_tab;
   
+  TYPE tt_header_int IS TABLE OF Xxom_Order_Headers_Int%ROWTYPE ;--INDEX BY PLS_INTEGER;
+  l_header_int tt_header_int := tt_header_int();
+  l_header_int_temp tt_header_int := tt_header_int();
+  empty_header_int tt_header_int := tt_header_int();
+  
+  TYPE tt_line_int IS TABLE OF XXOM_ORDER_LINES_INT%ROWTYPE;-- INDEX BY PLS_INTEGER;
+  l_line_int tt_line_int := tt_line_int();
+  l_line_int_temp tt_line_int := tt_line_int();
+  empty_line_int tt_line_int := tt_line_int();
+  
+  TYPE tt_tender_int IS TABLE OF XXOM_ORDER_TENDERS_INT%ROWTYPE;-- INDEX BY PLS_INTEGER;
+  l_tender_int tt_tender_int := tt_tender_int();
+  l_tender_int_temp tt_tender_int := tt_tender_int();
+  empty_tender_int tt_tender_int := tt_tender_int();
+  
+  TYPE tt_adjustment_int IS TABLE OF XXOM_ORDER_ADJUSTMENTS_INT%ROWTYPE;-- INDEX BY PLS_INTEGER;
+  l_adjustment_int tt_adjustment_int := tt_adjustment_int();
+  l_adjustment_int_temp tt_adjustment_int := tt_adjustment_int();
+  empty_adjustment_int tt_adjustment_int := tt_adjustment_int();
+  
+  error_forall   EXCEPTION;
+  PRAGMA EXCEPTION_INIT (error_forall, -24381);
+  error_counter NUMBER;
+  
+  l_limit NUMBER := 100;
+  
+  L_SQL_STMT VARCHAR2(32767);
+  L_TASK_NAME VARCHAR2(1000);
+  
+  L_CHUNK_SIZE VARCHAR2(100);
+  L_PARALLEL_LEVEL VARCHAR2(100);
+  
+  l_org_id NUMBER := FND_PROFILE.VALUE('ORG_ID');
+
+BEGIN
+    
+	BEGIN 
+		SELECT 
+		"'LIMIT'" AS LIMIT,
+		"'CHUNK_SIZE'" AS CHUNK_SIZE,
+		"'PARALLEL_LEVEL'" AS PARALLEL_LEVEL
+		INTO l_limit,l_chunk_size,l_parallel_level
+		FROM
+		(SELECT XFTV.SOURCE_VALUE1,
+		XFTV.TARGET_VALUE1
+		FROM XX_FIN_TRANSLATEDEFINITION XFTD ,
+		XX_FIN_TRANSLATEVALUES XFTV
+		WHERE XFTD.TRANSLATION_NAME ='XX_AR_CSAS_INTEGRETION'
+		AND XFTD.TRANSLATE_ID =XFTV.TRANSLATE_ID
+		AND XFTD.ENABLED_FLAG ='Y'
+		AND SOURCE_VALUE1 IN ('LIMIT','CHUNK_SIZE','PARALLEL_LEVEL')
+		AND XFTV.SOURCE_VALUE2 = l_org_id
+		AND SYSDATE BETWEEN XFTV.START_DATE_ACTIVE AND NVL(XFTV.END_DATE_ACTIVE,SYSDATE)
+		) PIVOT (MAX(TARGET_VALUE1) FOR SOURCE_VALUE1 IN ('LIMIT','CHUNK_SIZE','PARALLEL_LEVEL')) ;
+	EXCEPTION 
+	WHEN OTHERS THEN 
+		L_LIMIT := 1000;
+		L_CHUNK_SIZE := 400;
+		L_PARALLEL_LEVEL := 100;
+	
+	END;
+	
+	
+	-- Call XXOM Table Insert Logic Parallel
+	
 	BEGIN
 		SELECT DBMS_PARALLEL_EXECUTE.generate_task_name
 		INTO L_TASK_NAME
 		FROM   dual;
 	EXCEPTION WHEN OTHERS THEN
-	   logit('Erroring while generating task name'||SQLERRM);
+	   logit('Erroring while generating task name for XXOM Table Insert - '||SQLERRM);
+	END;
+	
+	BEGIN
+		DBMS_PARALLEL_EXECUTE.create_task (task_name => L_TASK_NAME);	
+	EXCEPTION WHEN OTHERS THEN
+	  logit('Erroring while creating Task for XXOM Table Insert - '||SQLERRM);	 
+	END;
+	
+	logit('---------------------------------------------------------');
+	logit('--------------'||'Task Name-'||L_TASK_NAME||'--------------');
+	logit('---------------------------------------------------------');
+  
+	BEGIN
+	/* Creation of Chunk by Number Column*/
+	DBMS_PARALLEL_EXECUTE.CREATE_CHUNKS_BY_SQL(
+												task_name => L_TASK_NAME,
+												sql_stmt  => 'select start_id , end_id from (  
+							with rws as (
+							SELECT Sequence_Num , ROW_NUMBER() OVER (ORDER BY Sequence_Num) rn
+							FROM Xxom_Import_Int
+							WHERE status = ''New''
+							), grps as ( select r.*,  ceil ( rn / 500 ) grp  from   rws r )
+											select grp , min(Sequence_Num) start_id ,max(Sequence_Num) end_id
+											  from   grps
+											  group  by grp
+											  )
+											  order by 1',
+												by_rowid => FALSE   ); 
+	EXCEPTION WHEN OTHERS THEN
+		logit('Erroring while creating Chunk for XXOM Table Insert - '||SQLERRM);
+	END;
+
+	BEGIN
+	logit('Before Executing XXOM Table Insert Parallel-'||TO_CHAR(SYSDATE,'MM/DD/YYYY HH24:Mi:SS'));
+
+	l_sql_stmt := 'begin
+		Xxoe_Data_Load_Pkg.xxom_load_data(:start_id,:end_id);
+		end;				
+		';		
+	DBMS_PARALLEL_EXECUTE.run_task( task_name      => L_TASK_NAME,
+							sql_stmt       => l_sql_stmt,
+							language_flag  => DBMS_SQL.NATIVE,
+							parallel_level => L_PARALLEL_LEVEL);
+
+	logit('After Executing XXOM Table Insert Parallel-'||TO_CHAR(SYSDATE,'MM/DD/YYYY HH24:Mi:SS'));						 
+	COMMIT;
+	EXCEPTION WHEN OTHERS THEN
+		logit('Erroring while executing Task for XXOM Table Insert - '||SQLERRM);	
+	END;
+
+  
+ 
+  
+  
+	-- Call Validation Logic Parallel
+	BEGIN
+		SELECT DBMS_PARALLEL_EXECUTE.generate_task_name
+		INTO L_TASK_NAME
+		FROM   dual;
+	EXCEPTION WHEN OTHERS THEN
+	   logit('Erroring while generating task name for XXOE Table Insert - '||SQLERRM);
 	END;
 	
 	BEGIN
@@ -1080,7 +1185,7 @@ BEGIN
 																  order by 1',
 												by_rowid => FALSE   ); 
 	EXCEPTION WHEN OTHERS THEN
-		logit('Erroring while creating Chunk '||SQLERRM);
+		logit('Erroring while creating Chunk for XXOE Table Insert - '||SQLERRM);
 	END;
 
 	BEGIN
@@ -1098,7 +1203,7 @@ BEGIN
 	logit('After Executing DBMS Parallel-'||TO_CHAR(SYSDATE,'MM/DD/YYYY HH24:Mi:SS'));						 
 	COMMIT;
 	EXCEPTION WHEN OTHERS THEN
-		logit('Erroring while executing Task '||SQLERRM);	
+		logit('Erroring while executing Task for XXOE Table Insert - '||SQLERRM);	
 	END;
   
   
@@ -1430,6 +1535,9 @@ IS
 	l_LIST_HEADER_ID NUMBER := 0;
 	l_SALESREP_ID NUMBER := 0;
 	l_LIMIT NUMBER := 100;
+	
+	l_org_id NUMBER := FND_PROFILE.VALUE('ORG_ID');
+	l_immediate_pay_term NUMBER := 0;
 
   
 BEGIN
@@ -1457,13 +1565,17 @@ BEGIN
 			lv_deposit_term_id := NULL;
 	END;
 	
+-- Get Term_id for immediate 
+
+	select term_id INTO l_immediate_pay_term from RA_TERMS where name = 'IMMEDIATE' and NVL(end_date_active,SYSDATE+1)>SYSDATE	;
+	
 	
 	FOR cust_value in (SELECT XFTV.SOURCE_VALUE1 , XFTV.TARGET_VALUE1
 						FROM XX_FIN_TRANSLATEDEFINITION XFTD , XX_FIN_TRANSLATEVALUES XFTV
 						WHERE XFTD.TRANSLATION_NAME ='XX_AR_CSAS_INTEGRETION'
 						AND XFTD.TRANSLATE_ID       =XFTV.TRANSLATE_ID
 						AND XFTD.ENABLED_FLAG       ='Y'
-						AND XFTV.SOURCE_VALUE2 = FND_PROFILE.VALUE('ORG_ID')
+						AND XFTV.SOURCE_VALUE2 = l_org_id
 						AND SYSDATE BETWEEN XFTV.START_DATE_ACTIVE AND NVL(XFTV.END_DATE_ACTIVE,SYSDATE)) 
 	LOOP
 	BEGIN
@@ -1525,7 +1637,7 @@ BEGIN
       header_data_tt(header_count).Created_By 			:= FND_GLOBAL.user_id;
       header_data_tt(header_count).Last_Updated_By 		:= FND_GLOBAL.user_id;
       header_data_tt(header_count).Last_Update_Date 		:= SYSDATE;
-      header_data_tt(header_count).Order_Source_Id 		:= NULL;
+      --header_data_tt(header_count).Order_Source_Id 		:= NULL;
       header_data_tt(header_count).Ordered_Date 			:= TO_DATE(i.ORDERDATE,'RRRR-MM-DD');
       header_data_tt(header_count).PRICING_DATE			:= TO_DATE(i.ORDERDATE,'RRRR-MM-DD');
       header_data_tt(header_count).Tax_Exempt_Number 		:= I.Customertaxexmptid;
@@ -1536,7 +1648,7 @@ BEGIN
       header_data_tt(header_count).Sales_Channel_Code 	:= I.Saleschannel;
       header_data_tt(header_count).Drop_Ship_Flag 		:= I.Dropshipflag ;--DECODE(NVL(I.Dropshipflag,'N'),'Y','Y','N');
       header_data_tt(header_count).FREIGHT_CARRIER_CODE	:= I.DELIVERYMETHOD;
-      header_data_tt(header_count).ORG_ID					:= FND_PROFILE.VALUE('ORG_ID');
+      header_data_tt(header_count).ORG_ID					:= l_org_id;
       header_data_tt(header_count).REQUEST_ID				:= FND_GLOBAL.CONC_REQUEST_ID;
       header_data_tt(header_count).REQUEST_DATE			:= SYSDATE;
 	  /*New Mapping*/
@@ -1547,7 +1659,7 @@ BEGIN
 	  --header_data_tt(header_count).ORDER_TYPE_ID			:= get_order_type(I.orderType);
 	  header_data_tt(header_count).Salesrep_Id 			:= get_salesrep_for_legacyrep ( FND_PROFILE.VALUE('ORG_ID'), I.Salesperson , SYSDATE , l_SALESREP_ID) ;
 	  header_data_tt(header_count).Ship_From_Org_Id 		:= load_org_details(I.Invlocid);
-	  header_data_tt(header_count).sold_from_org_id		:= FND_PROFILE.VALUE('ORG_ID');
+	  header_data_tt(header_count).sold_from_org_id		:= l_org_id;
 	  
 	  get_customer_details (I.accountId ||'-00001-A0' , 'A0',header_data_tt(header_count).SOLD_TO_ORG_ID) ;
 	  	  
@@ -1566,7 +1678,7 @@ BEGIN
 			header_data_tt(header_count).payment_term_id := lv_deposit_term_id;
 		ELSE
 			-- Get the payment term from Customer Account setup
-			header_data_tt(header_count).payment_term_id := payment_term(header_data_tt(header_count).SOLD_TO_ORG_ID);
+			header_data_tt(header_count).payment_term_id := payment_term(header_data_tt(header_count).SOLD_TO_ORG_ID, l_immediate_pay_term );
 		END IF;
 
 	  
@@ -1640,6 +1752,8 @@ BEGIN
 		header_attr_data_tt(head_attr_count).Cust_Pref_Phextn 	:= I.Soldto_Contactphoneext ;
 		header_attr_data_tt(head_attr_count).order_start_time	:=	to_date(i.ORDERDATE|| ' '||'120000' , 'RRRR-MM-DD hh24miss') ;
 		header_attr_data_tt(head_attr_count).order_end_time		:= to_date(i.ORDERDATE|| ' '||'120000' , 'RRRR-MM-DD hh24miss') ;
+		header_attr_data_tt(head_attr_count).ORIG_CUST_NAME 	:= I.Soldto_contactName ;
+		/*
 		BEGIN
 				SELECT party_name
 				INTO   header_attr_data_tt(head_attr_count).ORIG_CUST_NAME 
@@ -1651,7 +1765,7 @@ BEGIN
 				THEN
 					header_attr_data_tt(head_attr_count).ORIG_CUST_NAME := NULL;
 			 END;
-		
+		*/
 	  FOR Line IN  (SELECT xol.* , 
 						(xol.Price + (NVL(
 						(SELECT SUM(xoadj.acctingCouponAmount)
@@ -1691,7 +1805,7 @@ BEGIN
 		line_data_tt(line_count).Created_By 	:=	FND_GLOBAL.user_id	;
 		line_data_tt(line_count).Last_Update_Date 	:=	Sysdate	;
 		line_data_tt(line_count).Last_Updated_By 	:=	FND_GLOBAL.user_id	;
-		line_data_tt(line_count).Line_Category_Code 	:=	NVL(Line.Itemtype,'N')	;
+		line_data_tt(line_count).Line_Category_Code 	:=	'ORDER';--NVL(Line.Itemtype,'N')	;
 		line_data_tt(line_count).Open_Flag 	:=	'N'	;
 		line_data_tt(line_count).Booked_Flag 	:=	'N' 	;
 		line_data_tt(line_count).User_Item_Description 	:=	Line.Sku 	;
@@ -1709,7 +1823,7 @@ BEGIN
 		line_data_tt(line_count).PRICING_QUANTITY_UOM 	:=	Line.unit 	;
 		line_data_tt(line_count).FULFILLED_QUANTITY 	:=	Line.shipquantity 	;
 		line_data_tt(line_count).ACTUAL_SHIPMENT_DATE 	:=	TO_DATE(I.SALEDATE,'YYYY-MM-DD') 	;
-		line_data_tt(line_count).ORG_ID	:=	FND_PROFILE.VALUE('ORG_ID')	;
+		line_data_tt(line_count).ORG_ID	:=	l_org_id	;
 		line_data_tt(line_count).REQUEST_ID 	:=	fnd_global.conc_request_id 	;
 		line_data_tt(line_count).REQUEST_DATE	:=	SYSDATE	;
 		line_data_tt(line_count).DROP_SHIP_FLAG	:=	I.Dropshipflag 	;
@@ -1720,6 +1834,16 @@ BEGIN
 		line_data_tt(line_count).SHIP_TO_ORG_ID  	:= header_data_tt(header_count).SHIP_TO_ORG_ID;
 		line_data_tt(line_count).INVOICE_TO_ORG_ID  := header_data_tt(header_count).INVOICE_TO_ORG_ID;
 		line_data_tt(line_count).SOLD_TO_ORG_ID 	:= header_data_tt(header_count).SOLD_TO_ORG_ID;
+		line_data_tt(line_count).ITEM_TYPE_CODE 	:= 'STANDARD';
+		line_data_tt(line_count).PAYMENT_TERM_ID 	:=  header_data_tt(header_count).payment_term_id;
+		
+		line_data_tt(line_count).SCHEDULE_ARRIVAL_DATE := line_data_tt(line_count).SCHEDULE_SHIP_DATE;
+		line_data_tt(line_count).SALESREP_ID := header_data_tt(header_count).Salesrep_Id;
+
+		line_data_tt(line_count).SOURCE_TYPE_CODE := 'INTERNAL';
+		line_data_tt(line_count).ITEM_IDENTIFIER_TYPE := 'INT';
+		line_data_tt(line_count).ORDER_SOURCE_ID := header_data_tt(header_count).ORDER_SOURCE_ID;
+
 
 		line_data_tt(line_count).Cust_Po_Number := I.Custponumber;
 		line_data_tt(line_count).PRICING_DATE  := SYSDATE;
@@ -2235,5 +2359,3 @@ END Xxoe_Validate_Data;
 
 
 END Xxoe_Data_Load_Pkg;
-/
-show errors;
