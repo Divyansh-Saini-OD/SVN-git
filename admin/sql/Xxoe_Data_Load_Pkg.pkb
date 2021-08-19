@@ -2359,3 +2359,5 @@ END Xxoe_Validate_Data;
 
 
 END Xxoe_Data_Load_Pkg;
+/
+SHOW ERRORS;
