@@ -1,0 +1,30 @@
+
+-- +===========================================================================+
+-- |                  Office Depot - SAS Modernization                         |
+-- |                                                                           |
+-- +===========================================================================+
+-- | Name        : xxom_pay_term_obj_table.tbl                                 |
+-- | Description : create Object xxom_pay_term_obj_table                    |
+-- |                                                                           |
+-- |Change Record:                                                             |
+-- |===============                                                            |
+-- |Version  Date        Author           Remarks                              |
+-- |======== =========== ================ =====================================|
+-- |1.0      23-Aug-2021 Shreyas Thorat   Initial Version                      |
+-- +===========================================================================+
+
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     ON
+WHENEVER SQLERROR CONTINUE
+
+CREATE type xxom_pay_term_obj_table as table of xxom_pay_term_obj; 
+   
+GRANT ALL ON xxom_pay_term_obj_table TO APPS WITH GRANT OPTION;
+
+GRANT SELECT ON xxom_pay_term_obj_table TO ERP_SYSTEM_TABLE_SELECT_ROLE;
+
+GRANT SELECT ON xxom_pay_term_obj_table TO XXDATA_STAGE_ROLE;
+  
