@@ -528,11 +528,26 @@ cursor cur_data
   L_PARALLEL_LEVEL VARCHAR2(100);
   
 BEGIN 
-
+    BEGIN 
+		SELECT
+		XFTV.TARGET_VALUE1
+		INTO l_limit
+		FROM XX_FIN_TRANSLATEDEFINITION XFTD ,
+		XX_FIN_TRANSLATEVALUES XFTV
+		WHERE XFTD.TRANSLATION_NAME ='XX_AR_CSAS_INTEGRETION'
+		AND XFTD.TRANSLATE_ID =XFTV.TRANSLATE_ID
+		AND XFTD.ENABLED_FLAG ='Y'
+		AND SOURCE_VALUE1 IN ('XXOM_LIMIT')
+		AND XFTV.SOURCE_VALUE2 = FND_PROFILE.VALUE('ORG_ID')
+		AND SYSDATE BETWEEN XFTV.START_DATE_ACTIVE AND NVL(XFTV.END_DATE_ACTIVE,SYSDATE);
+	EXCEPTION 
+	WHEN OTHERS THEN
+		l_limit := 500;
+	END;
 	
 	OPEN cur_data;
 	LOOP 
-	FETCH cur_data BULK COLLECT INTO cur_lob_data LIMIT 100;
+	FETCH cur_data BULK COLLECT INTO cur_lob_data LIMIT l_limit;
     EXIT WHEN cur_lob_data.COUNT = 0;
 	
 	FOR i IN 1 .. cur_lob_data.COUNT
@@ -690,6 +705,7 @@ BEGIN
         'New'
 		,''
 		,Soldto_contactName
+		,orig_cust_name
 		BULK COLLECT INTO 
 		l_header_int_temp
       FROM Dual,
@@ -760,7 +776,8 @@ BEGIN
         --Store Group
         Store_City VARCHAR2(30) Path '$.store.city', Store_Country VARCHAR2(30) Path '$.store.country', Store_Description VARCHAR2(30) Path '$.store.description', Store_Line1 VARCHAR2(30) Path '$.store.line1', Store_Line2 VARCHAR2(30) Path '$.store.line2', Store_Phone VARCHAR2(30) Path '$.store.phone', Store_Receiptnumber VARCHAR2(30) Path '$.store.receiptNumber', Store_State VARCHAR2(30) Path '$.store.state', Storenumber VARCHAR2(30) Path '$.store.storeNumber', Store_Zipcode VARCHAR2(30) Path '$.store.zipCode' , -- Need to Check
         Taxpercent NUMBER Path '$.taxPercent' , Taxableflag VARCHAR2(1) Path '$.taxableFlag' , Totaladjustmentamount NUMBER Path '$.totalAdjustmentAmount' , Totalsaleamount NUMBER Path '$.totalSaleAmount' , Totaltax NUMBER Path '$.totalTax' , Updatedby VARCHAR2(30) Path '$.updatedBy' ,Clientip VARCHAR2(30) Path '$.webOrderInf.clientIP' ,Lastuserid VARCHAR2(30) Path '$.webOrderInf.lastUserId' ,Originaluserid VARCHAR2(30) Path '$.webOrderInf.originalUserId'
-        /*
+        ,orig_cust_name VARCHAR2(360) Path '$.orig_cust_name'
+		/*
         NESTED PATH '$.webOrderInf'
         COLUMNS (clientIP VARCHAR2(30) PATH '$.clientIP',
         lastUserId VARCHAR2(30) PATH '$.lastUserId',
@@ -1048,13 +1065,17 @@ IS
   PRAGMA EXCEPTION_INIT (error_forall, -24381);
   error_counter NUMBER;
   
-  l_limit NUMBER := 100;
+  l_xxom_limit NUMBER := 100;
   
   L_SQL_STMT VARCHAR2(32767);
   L_TASK_NAME VARCHAR2(1000);
   
-  L_CHUNK_SIZE VARCHAR2(100);
-  L_PARALLEL_LEVEL VARCHAR2(100);
+  L_XXOM_CHUNK_SIZE VARCHAR2(100);
+  L_XXOM_PARALLEL_LEVEL VARCHAR2(100);
+  
+  l_xxoe_limit NUMBER := 100;
+  L_XXOE_CHUNK_SIZE VARCHAR2(100);
+  L_XXOE_PARALLEL_LEVEL VARCHAR2(100);
   
   l_org_id NUMBER := FND_PROFILE.VALUE('ORG_ID');
 
@@ -1062,10 +1083,14 @@ BEGIN
     
 	BEGIN 
 		SELECT 
-		"'LIMIT'" AS LIMIT,
-		"'CHUNK_SIZE'" AS CHUNK_SIZE,
-		"'PARALLEL_LEVEL'" AS PARALLEL_LEVEL
-		INTO l_limit,l_chunk_size,l_parallel_level
+		"'XXOM_LIMIT'" AS XXOM_LIMIT,
+		"'XXOM_CHUNK_SIZE'" AS XXOM_CHUNK_SIZE,
+		"'XXOM_PARALLEL_LEVEL'" AS XXOM_PARALLEL_LEVEL,
+		"'XXOE_LIMIT'" AS XXOE_LIMIT,
+		"'XXOE_CHUNK_SIZE'" AS XXOE_CHUNK_SIZE,
+		"'XXOE_PARALLEL_LEVEL'" AS XXOE_PARALLEL_LEVEL
+		INTO l_xxom_limit,L_XXOM_CHUNK_SIZE,L_XXOM_PARALLEL_LEVEL,
+		     l_xxoe_limit,L_XXOE_CHUNK_SIZE,L_XXOE_PARALLEL_LEVEL
 		FROM
 		(SELECT XFTV.SOURCE_VALUE1,
 		XFTV.TARGET_VALUE1
@@ -1074,15 +1099,18 @@ BEGIN
 		WHERE XFTD.TRANSLATION_NAME ='XX_AR_CSAS_INTEGRETION'
 		AND XFTD.TRANSLATE_ID =XFTV.TRANSLATE_ID
 		AND XFTD.ENABLED_FLAG ='Y'
-		AND SOURCE_VALUE1 IN ('LIMIT','CHUNK_SIZE','PARALLEL_LEVEL')
+		AND SOURCE_VALUE1 IN ('XXOM_LIMIT','XXOM_CHUNK_SIZE','XXOM_PARALLEL_LEVEL','XXOE_LIMIT','XXOE_CHUNK_SIZE','XXOE_PARALLEL_LEVEL')
 		AND XFTV.SOURCE_VALUE2 = l_org_id
 		AND SYSDATE BETWEEN XFTV.START_DATE_ACTIVE AND NVL(XFTV.END_DATE_ACTIVE,SYSDATE)
-		) PIVOT (MAX(TARGET_VALUE1) FOR SOURCE_VALUE1 IN ('LIMIT','CHUNK_SIZE','PARALLEL_LEVEL')) ;
+		) PIVOT (MAX(TARGET_VALUE1) FOR SOURCE_VALUE1 IN ('XXOM_LIMIT','XXOM_CHUNK_SIZE','XXOM_PARALLEL_LEVEL','XXOE_LIMIT','XXOE_CHUNK_SIZE','XXOE_PARALLEL_LEVEL')) ;
 	EXCEPTION 
 	WHEN OTHERS THEN 
-		L_LIMIT := 1000;
-		L_CHUNK_SIZE := 400;
-		L_PARALLEL_LEVEL := 100;
+		l_xxom_limit			:= 1000;
+		L_XXOM_CHUNK_SIZE		:= 1000;
+		L_XXOM_PARALLEL_LEVEL	:= 50;
+		l_xxoe_limit			:= 500;
+		L_XXOE_CHUNK_SIZE		:= 500;
+		L_XXOE_PARALLEL_LEVEL	:= 50;
 	
 	END;
 	
@@ -1116,7 +1144,7 @@ BEGIN
 							SELECT Sequence_Num , ROW_NUMBER() OVER (ORDER BY Sequence_Num) rn
 							FROM Xxom_Import_Int
 							WHERE status = ''New''
-							), grps as ( select r.*,  ceil ( rn / 500 ) grp  from   rws r )
+							), grps as ( select r.*,  ceil ( rn / '||L_XXOM_CHUNK_SIZE||' ) grp  from   rws r )
 											select grp , min(Sequence_Num) start_id ,max(Sequence_Num) end_id
 											  from   grps
 											  group  by grp
@@ -1137,7 +1165,7 @@ BEGIN
 	DBMS_PARALLEL_EXECUTE.run_task( task_name      => L_TASK_NAME,
 							sql_stmt       => l_sql_stmt,
 							language_flag  => DBMS_SQL.NATIVE,
-							parallel_level => L_PARALLEL_LEVEL);
+							parallel_level => L_XXOM_PARALLEL_LEVEL);
 
 	logit('After Executing XXOM Table Insert Parallel-'||TO_CHAR(SYSDATE,'MM/DD/YYYY HH24:Mi:SS'));						 
 	COMMIT;
@@ -1177,7 +1205,7 @@ BEGIN
 												SELECT header_id , ROW_NUMBER() OVER (ORDER BY header_id) rn
 												FROM Xxom_Order_Headers_Int
 												WHERE status = ''New''
-												), grps as ( select r.*,  ceil ( rn / '||L_CHUNK_SIZE||' ) grp  from   rws r )
+												), grps as ( select r.*,  ceil ( rn / '||L_XXOE_CHUNK_SIZE||' ) grp  from   rws r )
 																select grp , min(header_id) start_id ,max(header_id) end_id
 																  from   grps
 																  group  by grp
@@ -1195,13 +1223,13 @@ BEGIN
 		Xxoe_Data_Load_Pkg.Xxoe_Validate_Data(:start_id,:end_id);
 		end;				
 		';		
+	
 	DBMS_PARALLEL_EXECUTE.run_task( task_name      => L_TASK_NAME,
 							sql_stmt       => l_sql_stmt,
 							language_flag  => DBMS_SQL.NATIVE,
-							parallel_level => L_PARALLEL_LEVEL);
-
+							parallel_level => L_XXOE_PARALLEL_LEVEL);
 	logit('After Executing DBMS Parallel-'||TO_CHAR(SYSDATE,'MM/DD/YYYY HH24:Mi:SS'));						 
-	COMMIT;
+	--COMMIT;
 	EXCEPTION WHEN OTHERS THEN
 		logit('Erroring while executing Task for XXOE Table Insert - '||SQLERRM);	
 	END;
@@ -1538,9 +1566,40 @@ IS
 	
 	l_org_id NUMBER := FND_PROFILE.VALUE('ORG_ID');
 	l_immediate_pay_term NUMBER := 0;
+	
+	xxom_lookup_obj xxom_lookup_obj_tab := xxom_lookup_obj_tab();
+	xxom_org_obj xxom_org_object_table := xxom_org_object_table();
+	xxom_payterm xxom_pay_term_obj_table := xxom_pay_term_obj_table();
 
   
 BEGIN
+
+	SELECT xxom_pay_term_obj (lookup_code , attribute6  ,attribute7 )
+	BULK COLLECT INTO xxom_payterm
+		--INTO   p_credit_card_code
+		--	  ,p_payment_type_code	   
+		FROM fnd_lookup_values 
+		WHERE lookup_type = 'OD_PAYMENT_TYPES'
+		--AND lookup_code = p_payment_instrument
+		AND enabled_flag = 'Y'
+		AND NVL(end_date_active,SYSDATE+1)>SYSDATE;
+    
+
+
+	SELECT xxom_org_object(organization_id , attribute1)
+	BULK COLLECT INTO  xxom_org_obj
+	FROM   hr_all_organization_units ;
+	 
+	SELECT XXOM_LOOKUP_OBJECT(lookup_type,lookup_code,attribute6 	)
+	BULK COLLECT INTO  xxom_lookup_obj
+		FROM   fnd_lookup_values 
+		WHERE  1=1
+		AND    lookup_type in ( 'OD_CSAS_SHIP_METHODS' ,'OD_CSAS_ORDER_SOURCE')
+		AND    view_application_id = 222
+    and enabled_flag = 'Y'
+    and NVL(END_DATE_ACTIVE,SYSDATE+1)>SYSDATE;
+    
+
 	BEGIN
 		SELECT term_id
 		INTO   lv_im_pay_term_id
@@ -1654,14 +1713,50 @@ BEGIN
 	  /*New Mapping*/
 	  header_data_tt(header_count).FLOW_STATUS_CODE		:= 'CLOSED';
 	  header_data_tt(header_count).PRICING_DATE			:= SYSDATE;
-	  header_data_tt(header_count).SHIPPING_METHOD_CODE 	:= get_ship_method(I.DELIVERYMETHOD);
-	  header_data_tt(header_count).ORDER_SOURCE_ID 		:= get_order_source(I.orderSource);
+	  --header_data_tt(header_count).SHIPPING_METHOD_CODE 	:= get_ship_method(I.DELIVERYMETHOD);
+	  --header_data_tt(header_count).ORDER_SOURCE_ID 		:= get_order_source(I.orderSource);
 	  --header_data_tt(header_count).ORDER_TYPE_ID			:= get_order_type(I.orderType);
-	  header_data_tt(header_count).Salesrep_Id 			:= get_salesrep_for_legacyrep ( FND_PROFILE.VALUE('ORG_ID'), I.Salesperson , SYSDATE , l_SALESREP_ID) ;
-	  header_data_tt(header_count).Ship_From_Org_Id 		:= load_org_details(I.Invlocid);
+	  header_data_tt(header_count).Salesrep_Id 			:= get_salesrep_for_legacyrep ( l_org_id, I.Salesperson , SYSDATE , l_SALESREP_ID) ;
+	  --header_data_tt(header_count).Ship_From_Org_Id 		:= load_org_details(I.Invlocid);
 	  header_data_tt(header_count).sold_from_org_id		:= l_org_id;
 	  
-	  get_customer_details (I.accountId ||'-00001-A0' , 'A0',header_data_tt(header_count).SOLD_TO_ORG_ID) ;
+	  BEGIN
+	  
+	   SELECT organization_id
+        INTO   header_data_tt(header_count).Ship_From_Org_Id 
+        FROM   table(cast(xxom_org_obj as xxom_org_object_table)) 
+        WHERE  attribute1 = I.Invlocid;
+	  
+	  EXCEPTION 
+	  WHEN OTHERS THEN 
+		header_data_tt(header_count).Ship_From_Org_Id  := '';
+	  END ;
+	  
+	  BEGIN 
+		select attribute6
+		INTO header_data_tt(header_count).SHIPPING_METHOD_CODE 
+		from table(cast(xxom_lookup_obj as xxom_lookup_obj_tab))
+		WHERE lookup_code = I.DELIVERYMETHOD
+		and lookup_type = 'OD_CSAS_SHIP_METHODS';
+		
+	  EXCEPTION 
+	  WHEN OTHERS THEN 
+		header_data_tt(header_count).SHIPPING_METHOD_CODE  := '';
+	  END;
+	  
+	   BEGIN 
+		select attribute6
+		INTO header_data_tt(header_count).ORDER_SOURCE_ID 
+		from table(cast(xxom_lookup_obj as xxom_lookup_obj_tab))
+		WHERE lookup_code = I.orderSource
+		and lookup_type = 'OD_CSAS_ORDER_SOURCE';
+	   EXCEPTION 
+	  WHEN OTHERS THEN 
+		header_data_tt(header_count).ORDER_SOURCE_ID  := '';
+	  END;
+	  
+	  
+	  get_customer_details (I.accountId ||'-00001-A0' , 'A0',header_data_tt(header_count).SOLD_TO_ORG_ID);
 	  	  
 	  	  
 	  IF header_data_tt(header_count).SOLD_TO_ORG_ID IS NOT NULL THEN 
@@ -1717,7 +1812,7 @@ BEGIN
 		--header_attr_data_tt(head_attr_count).ORIG_CUST_NAME		:= I.Soldto_contactName  ;
 		header_attr_data_tt(head_attr_count).Od_Order_Type		:= I.Ordertype ;
 		header_attr_data_tt(head_attr_count).Ship_To_Name		:= I.Shipping_Shiptoname ;
-		header_attr_data_tt(head_attr_count).Bill_To_Name 		:= I.Billing_Billtoname ;
+		header_attr_data_tt(head_attr_count).Bill_To_Name 		:= I.orig_cust_name;--I.Billing_Billtoname ;
 		header_attr_data_tt(head_attr_count).Ship_To_Sequence 	:= I.Shipping_Addressseq ;
 		header_attr_data_tt(head_attr_count).Ship_To_Address1	:= I.Shipping_Line1 ;
 		header_attr_data_tt(head_attr_count).Ship_To_Address2 	:= I.Shipping_Line2 ;
@@ -1752,7 +1847,7 @@ BEGIN
 		header_attr_data_tt(head_attr_count).Cust_Pref_Phextn 	:= I.Soldto_Contactphoneext ;
 		header_attr_data_tt(head_attr_count).order_start_time	:=	to_date(i.ORDERDATE|| ' '||'120000' , 'RRRR-MM-DD hh24miss') ;
 		header_attr_data_tt(head_attr_count).order_end_time		:= to_date(i.ORDERDATE|| ' '||'120000' , 'RRRR-MM-DD hh24miss') ;
-		header_attr_data_tt(head_attr_count).ORIG_CUST_NAME 	:= I.Soldto_contactName ;
+		header_attr_data_tt(head_attr_count).ORIG_CUST_NAME 	:=  I.orig_cust_name ;-- I.Soldto_contactName ;
 		/*
 		BEGIN
 				SELECT party_name
@@ -1970,7 +2065,8 @@ BEGIN
 							xot.Ccauthcode ,
 							xot.Method ,
 							xot.Ccencryptionkey ,
-							SUBSTR (xot.credit_card_holder_name ,1,80) credit_card_holder_name,
+							--SUBSTR (xot.credit_card_holder_name ,1,80) credit_card_holder_name,
+							SUBSTR(I.orig_cust_name,1,80) credit_card_holder_name,
 							DECODE(NVL(xot.EXPIRYDATE,'00/00'),'00/00',NULL, TO_DATE('01/'||xot.EXPIRYDATE,'dd/mm/rr')) EXPIRYDATE,
 							xot.Accountnumber ,
 							xot.Amount ,
@@ -1997,7 +2093,7 @@ BEGIN
 			--payment_data_tt(payment_count).Payment_Type_Code 			:=	payment.Method 	;
 			--payment_data_tt(payment_count).Credit_Card_Code 			:=	payment.Cctype 	;
 			payment_data_tt(payment_count).Credit_Card_Number 			:=	payment.Ccencryptionkey 	;
-			--payment_data_tt(payment_count).Credit_Card_Holder_Name 	:=	payment.credit_card_holder_name ;
+			payment_data_tt(payment_count).Credit_Card_Holder_Name 	:=	payment.credit_card_holder_name ;
 			payment_data_tt(payment_count).CREDIT_CARD_EXPIRATION_DATE :=	payment.EXPIRYDATE;
 			payment_data_tt(payment_count).Check_Number 				:=	payment.Accountnumber 	;
 			payment_data_tt(payment_count).Payment_Amount 				:=	payment.Amount 	;
@@ -2012,12 +2108,31 @@ BEGIN
 			payment_data_tt(payment_count).Attribute4 					:=	payment.ccEncryptionKey 	;
 			payment_data_tt(payment_count).Attribute9 					:=	'0' 	;
 	  
+	        /*
 			get_pay_method(p_payment_instrument      => payment.Cctype ,
                            p_payment_type_code       => payment_data_tt(payment_count).Payment_Type_Code,
                            p_credit_card_code        => payment_data_tt(payment_count).Credit_Card_Code);
 						   			   
+	        */
+		
+			BEGIN
+				--lookup_code VARCHAR2(240), attribute6 VARCHAR2(240) ,attribute7
+				--NULL;
+				
+				SELECT attribute6 , attribute7
+				INTO   payment_data_tt(payment_count).Payment_Type_Code	,	
+					   payment_data_tt(payment_count).Credit_Card_Code				
+				FROM   table(cast(xxom_payterm as xxom_pay_term_obj_table)) 
+				WHERE  lookup_code = payment.Cctype;
+				
+
+			EXCEPTION 
+			WHEN OTHERS THEN 
+				payment_data_tt(payment_count).Payment_Type_Code := '';	
+				payment_data_tt(payment_count).Credit_Card_Code  := '';
+			END ;
 	  
-			payment_data_tt(payment_count).Credit_Card_Holder_Name := header_attr_data_tt(head_attr_count).ORIG_CUST_NAME;
+			--payment_data_tt(payment_count).Credit_Card_Holder_Name := header_attr_data_tt(head_attr_count).ORIG_CUST_NAME;
 	  
 	  
 	  END LOOP;
