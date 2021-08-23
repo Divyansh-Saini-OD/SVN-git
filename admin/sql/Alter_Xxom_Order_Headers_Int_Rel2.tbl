@@ -21,7 +21,6 @@ SET FEEDBACK     ON
 
 
 alter table Xxom_Order_Headers_Int
-add ( orig_cust_name VARCHAR2(360) );
+add orig_cust_name VARCHAR2(360) ;
 
 show errors;
-/
