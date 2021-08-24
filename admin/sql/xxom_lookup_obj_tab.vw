@@ -3,8 +3,8 @@
 -- |                  Office Depot - SAS Modernization                         |
 -- |                                                                           |
 -- +===========================================================================+
--- | Name        : xxom_org_object.tbl                                 |
--- | Description : create Object xxom_org_object                    |
+-- | Name        : xxom_lookup_obj_tab.vw                                 |
+-- | Description : create Object xxom_lookup_obj_tab                    |
 -- |                                                                           |
 -- |Change Record:                                                             |
 -- |===============                                                            |
@@ -13,14 +13,8 @@
 -- |1.0      23-Aug-2021 Shreyas Thorat   Initial Version                      |
 -- +===========================================================================+
 
-SET SHOW         OFF
-SET VERIFY       OFF
-SET ECHO         OFF
-SET TAB          OFF
-SET FEEDBACK     ON
-WHENEVER SQLERROR CONTINUE
-
-CREATE OR REPLACE type xxom_org_object as object (organization_id NUMBER ,attribute1 VARCHAR2(240) );
-
-show errors;
+CREATE OR REPLACE type XXFIN.xxom_lookup_obj_tab as table of xxom_lookup_object; 
 /
+show errors;
+
+  

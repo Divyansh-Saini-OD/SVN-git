@@ -1,10 +1,9 @@
-
 -- +===========================================================================+
 -- |                  Office Depot - SAS Modernization                         |
 -- |                                                                           |
 -- +===========================================================================+
--- | Name        : xxom_pay_term_obj.tbl                                 |
--- | Description : create Object xxom_pay_term_obj                    |
+-- | Name        : xxom_pay_term_obj_table.vw                                 |
+-- | Description : create Object xxom_pay_term_obj_table                    |
 -- |                                                                           |
 -- |Change Record:                                                             |
 -- |===============                                                            |
@@ -13,14 +12,6 @@
 -- |1.0      23-Aug-2021 Shreyas Thorat   Initial Version                      |
 -- +===========================================================================+
 
-SET SHOW         OFF
-SET VERIFY       OFF
-SET ECHO         OFF
-SET TAB          OFF
-SET FEEDBACK     ON
-WHENEVER SQLERROR CONTINUE
-
-CREATE OR REPLACE type xxom_pay_term_obj as object (lookup_code VARCHAR2(240), attribute6 VARCHAR2(240) ,attribute7 VARCHAR2(240)); 
-   
+CREATE OR REPLACE type xxfin.xxom_pay_term_obj_table as table of xxom_pay_term_obj; 
+/   
 show errors;
-/
