@@ -12,13 +12,6 @@
 -- |1.0      23-Aug-2021 Shreyas Thorat   Initial Version                      |
 -- +===========================================================================+
 
-SET SHOW         OFF
-SET VERIFY       OFF
-SET ECHO         OFF
-SET TAB          OFF
-SET FEEDBACK     ON
-WHENEVER SQLERROR CONTINUE
-
 CREATE OR REPLACE type xxom_lookup_object as object (lookup_type varchar2(200),lookup_code VARCHAR2(200),attribute6 VARCHAR2(200)); 
   
 show errors;
