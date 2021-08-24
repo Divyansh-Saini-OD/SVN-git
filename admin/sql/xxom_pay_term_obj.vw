@@ -1,4 +1,3 @@
-
 -- +===========================================================================+
 -- |                  Office Depot - SAS Modernization                         |
 -- |                                                                           |
@@ -14,6 +13,5 @@
 -- +===========================================================================+
 
 CREATE OR REPLACE type xxfin.xxom_pay_term_obj as object (lookup_code VARCHAR2(240), attribute6 VARCHAR2(240) ,attribute7 VARCHAR2(240)); 
-   
+/   
 show errors;
-/
