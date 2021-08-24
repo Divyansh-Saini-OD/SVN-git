@@ -20,13 +20,7 @@ SET TAB          OFF
 SET FEEDBACK     ON
 WHENEVER SQLERROR CONTINUE
 
-CREATE type xxom_lookup_obj_tab as table of xxom_lookup_obj_tab; 
-   
-GRANT ALL ON xxom_lookup_obj_tab TO APPS WITH GRANT OPTION;
-
-GRANT SELECT ON xxom_lookup_obj_tab TO ERP_SYSTEM_TABLE_SELECT_ROLE;
-
-GRANT SELECT ON xxom_lookup_obj_tab TO XXDATA_STAGE_ROLE;
+CREATE OR REPLACE type xxom_lookup_obj_tab as table of xxom_lookup_obj_tab; 
 
 show errors;
 /

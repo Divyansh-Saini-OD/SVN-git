@@ -20,13 +20,7 @@ SET TAB          OFF
 SET FEEDBACK     ON
 WHENEVER SQLERROR CONTINUE
 
-CREATE type xxom_pay_term_obj as object (lookup_code VARCHAR2(240), attribute6 VARCHAR2(240) ,attribute7 VARCHAR2(240)); 
+CREATE OR REPLACE type xxom_pay_term_obj as object (lookup_code VARCHAR2(240), attribute6 VARCHAR2(240) ,attribute7 VARCHAR2(240)); 
    
-GRANT ALL ON xxom_pay_term_obj TO APPS WITH GRANT OPTION;
-
-GRANT SELECT ON xxom_pay_term_obj TO ERP_SYSTEM_TABLE_SELECT_ROLE;
-
-GRANT SELECT ON xxom_pay_term_obj TO XXDATA_STAGE_ROLE;
-
 show errors;
 /

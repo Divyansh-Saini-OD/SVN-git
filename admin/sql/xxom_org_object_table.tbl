@@ -20,13 +20,7 @@ SET TAB          OFF
 SET FEEDBACK     ON
 WHENEVER SQLERROR CONTINUE
 
-CREATE type xxom_org_object_table as table of xxom_org_object; 
-   
-GRANT ALL ON xxom_org_object_table TO APPS WITH GRANT OPTION;
-
-GRANT SELECT ON xxom_org_object_table TO ERP_SYSTEM_TABLE_SELECT_ROLE;
-
-GRANT SELECT ON xxom_org_object_table TO XXDATA_STAGE_ROLE;
+CREATE OR REPLACE type xxom_org_object_table as table of xxom_org_object; 
  
 show errors;
 /
