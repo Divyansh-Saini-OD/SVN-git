@@ -24,7 +24,7 @@ SELECT
     a.REFUND_HEADER_ID,a.IDENTIFICATION_TYPE,a.IDENTIFICATION_DATE,a.CUSTOMER_ID,a.CUSTOMER_NUMBER,a.REFUND_AMOUNT,a.PAYEE_NAME,A.REFUND_ALT_FLAG,a.ALT_ADDRESS1,a.ALT_ADDRESS2,
     a.ALT_ADDRESS3,a.ALT_CITY,a.ALT_STATE,a.ALT_POSTAL_CODE,a.ALT_COUNTRY,a.TRX_NUMBER,a.TRX_CURRENCY_CODE,
     a.ESCHEAT_FLAG,a.OM_HOLD_STATUS,a.OM_DELETE_STATUS,a.ADJUSTMENT_NUMBER,a.ADJ_CREATION_DATE,a.AP_INVOICE_NUMBER,a.AP_INV_CREATION_DATE,
-    a.PAID_FLAG,(SELECT Name FROM apps.hr_operating_units where organization_id=a.ORG_ID AND ROWNUM=1)Org_Name,
+    a.PAID_FLAG,(SELECT Name FROM hr_operating_units where organization_id=a.ORG_ID AND ROWNUM=1)Org_Name,
     a.STATUS,a.CREATION_DATE,a.ERROR_FLAG
 FROM
     xx_ar_refund_trx_tmp       a,
@@ -36,13 +36,12 @@ WHERE
     AND a.status = 'W'
     AND selected_flag = 'Y'
     AND a.identification_type != 'OM'
---and c.amount_due_remaining!=0
     AND c.status = 'OP'
     AND EXISTS (
         SELECT
             1
         FROM
-            apps.ra_customer_trx_all b
+            ra_customer_trx_all b
         WHERE
             b.trx_number = a.trx_number
     )
