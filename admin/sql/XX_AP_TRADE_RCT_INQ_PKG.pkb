@@ -1018,7 +1018,7 @@ BEGIN
     INTO l_user_id
     FROM fnd_user
 	-- WHERE user_name=TO_CHAR(p_user_id);  -- Commented for NAIT-167419
-	WHERE (user_name=TO_CHAR(p_user_id) OR user_name='0'||TO_CHAR(p_user_id));     -- Added for NAIT-167419
+	WHERE (user_name=TO_CHAR(p_user_id) OR user_name=LPAD(TO_CHAR(p_user_id),6,'0'));     -- Added for NAIT-16741
   EXCEPTION
   WHEN OTHERS THEN
     l_resp_appl_id:=0;
