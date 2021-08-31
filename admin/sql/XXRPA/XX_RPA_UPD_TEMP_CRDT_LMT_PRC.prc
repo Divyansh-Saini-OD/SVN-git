@@ -4,6 +4,18 @@ create or replace PROCEDURE XX_RPA_UPD_TEMP_CRDT_LMT_PRC ( P_ACCOUNT_NUMBER  IN 
                                                        )
 AS
   l_cust_prof_amt_rec           hz_customer_profile_v2pub.cust_profile_amt_rec_type;
+  l_START_DATE					XX_CDH_CUST_ACCT_EXT_B.D_EXT_ATTR1%TYPE;
+  l_END_DATE					XX_CDH_CUST_ACCT_EXT_B.D_EXT_ATTR2%TYPE;
+  l_EXTENSION_ID 				XX_CDH_CUST_ACCT_EXT_B.EXTENSION_ID%TYPE;
+  l_ATTR_GROUP_ID				XX_CDH_CUST_ACCT_EXT_B.ATTR_GROUP_ID%TYPE;
+  l_CREATED_BY					XX_CDH_CUST_ACCT_EXT_B.CREATED_BY%TYPE;
+  l_CREATION_DATE				XX_CDH_CUST_ACCT_EXT_B.CREATION_DATE%TYPE;
+  l_last_updated_by	 			XX_CDH_CUST_ACCT_EXT_B.last_updated_by%TYPE;
+  l_last_update_date			XX_CDH_CUST_ACCT_EXT_B.last_update_date%TYPE;
+  l_last_update_login           XX_CDH_CUST_ACCT_EXT_B.LAST_UPDATE_LOGIN%TYPE;
+  l_C_EXT_ATTR1					XX_CDH_CUST_ACCT_EXT_B.C_EXT_ATTR1%TYPE;
+  l_N_EXT_ATTR1					XX_CDH_CUST_ACCT_EXT_B.N_EXT_ATTR1%TYPE;
+  l_N_EXT_ATTR3 				XX_CDH_CUST_ACCT_EXT_B.N_EXT_ATTR3%TYPE;
   l_version_num                 NUMBER;
   l_return_status               VARCHAR2 (500);
   l_msg_count                   NUMBER;
@@ -16,6 +28,7 @@ AS
   l_user_id                     NUMBER;
   l_responsibility_id           NUMBER;
   l_responsibility_appl_id      NUMBER;
+  l_cust_acct_id				NUMBER;
 
 BEGIN
   DBMS_OUTPUT.put_line ('********START THE PROCESS***********');
@@ -54,10 +67,12 @@ BEGIN
   BEGIN
     SELECT hcpa.object_version_number,
            hcpa.cust_account_profile_id,
-           hcpa.cust_acct_profile_amt_id
+           hcpa.cust_acct_profile_amt_id,
+	   hca.cust_account_id
     INTO l_ovn,
          l_cust_account_profile_id,
-         l_acct_profile_amt_id
+         l_acct_profile_amt_id,
+	 l_cust_acct_id
     FROM hz_customer_profiles hcp,
          hz_cust_accounts hca,
          hz_cust_profile_amts hcpa,
@@ -94,10 +109,40 @@ BEGIN
   l_cust_prof_amt_rec.cust_account_profile_id := l_cust_account_profile_id;
   l_cust_prof_amt_rec.cust_acct_profile_amt_id := l_acct_profile_amt_id;
   ----------------------------------------------------------------------
-  IF P_TEMP_CREDIT_LMT IS NOT NULL THEN
+ DBMS_OUTPUT.put_line ('********UPDATE START********');
+
+ IF P_TEMP_CREDIT_LMT IS NOT NULL 
+  THEN
   UPDATE XX_CDH_CUST_ACCT_EXT_B
   set N_EXT_ATTR2 = P_TEMP_CREDIT_LMT
-  WHERE cust_account_id in (select cust_account_id FROM hz_cust_accounts)
+  WHERE cust_account_id = l_cust_acct_id
+  AND ATTR_GROUP_ID =
+    (SELECT grp.ATTR_GROUP_ID
+    FROM EGO_ATTR_GROUPS_V grp
+    WHERE grp.APPLICATION_ID = 222
+    AND grp.ATTR_GROUP_NAME  = 'TEMPORARY_CREDITLIMIT'
+    AND grp.ATTR_GROUP_TYPE  = 'XX_CDH_CUST_ACCOUNT'
+    )
+ AND sysdate between D_EXT_ATTR1 and nvl(D_EXT_ATTR2,sysdate+1);
+  DBMS_OUTPUT.put_line ('********UPDATE END********');
+COMMIT;
+END IF;
+
+--DBMS_OUTPUT.put_line ('********INSERT START*******');
+   SELECT ATTR_GROUP_ID  into l_ATTR_GROUP_ID 
+   FROM EGO_ATTR_GROUPS_V 
+   WHERE APPLICATION_ID = 222
+   AND ATTR_GROUP_NAME  = 'TEMPORARY_CREDITLIMIT'
+   AND ATTR_GROUP_TYPE  = 'XX_CDH_CUST_ACCOUNT';
+   
+SELECT C_EXT_ATTR1,
+	N_EXT_ATTR1,
+	N_EXT_ATTR3	
+	into l_C_EXT_ATTR1 , 
+	l_N_EXT_ATTR1,
+	l_N_EXT_ATTR3
+   FROM XX_CDH_CUST_ACCT_EXT_B 
+   WHERE cust_account_id = l_cust_acct_id
   AND ATTR_GROUP_ID =
     (SELECT grp.ATTR_GROUP_ID
     FROM EGO_ATTR_GROUPS_V grp
@@ -105,8 +150,147 @@ BEGIN
     AND grp.ATTR_GROUP_NAME  = 'TEMPORARY_CREDITLIMIT'
     AND grp.ATTR_GROUP_TYPE  = 'XX_CDH_CUST_ACCOUNT'
     );
-  COMMIT;
+  
+
+l_EXTENSION_ID 				:= 			ego_extfwk_s.NEXTVAL;
+l_CREATED_BY				:=			fnd_global.user_id;
+l_CREATION_DATE				:=			sysdate;
+l_last_updated_by 			:= 			fnd_global.user_id;
+l_last_update_date			:= 			sysdate;
+l_last_update_login	 :=fnd_global.user_id;
+   DBMS_OUTPUT.put_line ('********INSERT START*******');
+IF sysdate not between l_start_date and nvl(l_end_date ,sysdate+1) then
+  INSERT into    
+  XX_CDH_CUST_ACCT_EXT_B
+  (EXTENSION_ID,
+  CUST_ACCOUNT_ID,
+  ATTR_GROUP_ID,
+  CREATED_BY,
+  CREATION_DATE,
+  LAST_UPDATED_BY,
+  LAST_UPDATE_DATE,
+  LAST_UPDATE_LOGIN,
+  C_EXT_ATTR1,
+  C_EXT_ATTR2,
+  C_EXT_ATTR3,
+  C_EXT_ATTR4,
+  C_EXT_ATTR5,
+  C_EXT_ATTR6,
+  C_EXT_ATTR7,
+  C_EXT_ATTR8,
+  C_EXT_ATTR9,
+  C_EXT_ATTR10,
+  C_EXT_ATTR11,
+  C_EXT_ATTR12,
+  C_EXT_ATTR13,
+  C_EXT_ATTR14,
+  C_EXT_ATTR15,
+  C_EXT_ATTR16,
+  C_EXT_ATTR17,
+  C_EXT_ATTR18,
+  C_EXT_ATTR19,
+  C_EXT_ATTR20,
+  N_EXT_ATTR1,
+  N_EXT_ATTR2,
+  N_EXT_ATTR3,
+  N_EXT_ATTR4,
+  N_EXT_ATTR5,
+  N_EXT_ATTR6,
+  N_EXT_ATTR7,
+  N_EXT_ATTR8,
+  N_EXT_ATTR9,
+  N_EXT_ATTR10,
+  N_EXT_ATTR11,
+  N_EXT_ATTR12,
+  N_EXT_ATTR13,
+  N_EXT_ATTR14,
+  N_EXT_ATTR15,
+  N_EXT_ATTR16,
+  N_EXT_ATTR17,
+  N_EXT_ATTR18,
+  N_EXT_ATTR19,
+  N_EXT_ATTR20,
+  D_EXT_ATTR1,
+  D_EXT_ATTR2,
+  D_EXT_ATTR3,
+  D_EXT_ATTR4,
+  D_EXT_ATTR5,
+  D_EXT_ATTR6,
+  D_EXT_ATTR7,
+  D_EXT_ATTR8,
+  D_EXT_ATTR9,
+  D_EXT_ATTR10,
+  BC_POD_FLAG,
+  FEE_OPTION)
+  
+  VALUES
+  
+  (l_EXTENSION_ID,
+  l_cust_acct_id,
+  l_ATTR_GROUP_ID,
+  l_CREATED_BY,
+  l_CREATION_DATE,
+  l_last_updated_by,
+  l_last_update_date,
+  l_last_update_login,
+  l_C_EXT_ATTR1,
+  '',
+  'N',
+  '',
+  '',
+  '',
+  '',
+  '',
+  '',
+  '',
+  '',
+  '',
+  '',
+  '',
+  '',
+  '',
+  '',
+  '',
+  '',
+  '',
+  l_N_EXT_ATTR1,
+  P_TEMP_CREDIT_LMT,
+  l_N_EXT_ATTR3,
+  l_cust_acct_id,
+  NULL,
+  NULL,
+  NULL,
+  NULL,
+  NULL,
+  NULL,
+  NULL,
+  NULL,
+  NULL,
+  NULL,
+  NULL,
+  NULL,
+  NULL,
+  NULL,
+  NULL,
+  NULL,
+  sysdate,
+  sysdate+30,
+  NULL,
+  NULL,
+  NULL,
+  NULL,
+  NULL,
+  NULL,
+  NULL,
+  NULL,
+  '',
+  NULL);
+  
+  
+    COMMIT;
   END IF;
+  
+   DBMS_OUTPUT.put_line ('********INSERT END PROCESS****');
   ----------------------------------------------------------------------
   l_cust_prof_amt_rec.attribute1               := 'N';
   ----------------------------------------------------------------------
