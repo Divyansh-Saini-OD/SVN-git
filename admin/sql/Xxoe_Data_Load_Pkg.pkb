@@ -1078,6 +1078,14 @@ IS
   L_XXOE_PARALLEL_LEVEL VARCHAR2(100);
   
   l_org_id NUMBER := FND_PROFILE.VALUE('ORG_ID');
+  
+   l_user_id   NUMBER    := fnd_global.user_id;
+   l_resp_id   NUMBER    := fnd_global.resp_id;  
+   l_resp_appl_id NUMBER  := fnd_global.resp_appl_id;   
+   
+   l_request_id NUMBER :=0;
+ 
+   
 
 BEGIN
     
@@ -1178,58 +1186,46 @@ BEGIN
   
   
 	-- Call Validation Logic Parallel
-	BEGIN
-		SELECT DBMS_PARALLEL_EXECUTE.generate_task_name
-		INTO L_TASK_NAME
-		FROM   dual;
-	EXCEPTION WHEN OTHERS THEN
-	   logit('Erroring while generating task name for XXOE Table Insert - '||SQLERRM);
-	END;
-	
-	BEGIN
-		DBMS_PARALLEL_EXECUTE.create_task (task_name => L_TASK_NAME);	
-	EXCEPTION WHEN OTHERS THEN
-	  logit('Erroring while creating Task '||SQLERRM);	 
-	END;
+	fnd_global.APPS_INITIALIZE(l_user_id,l_resp_id, l_resp_appl_id);
 	
 	logit('---------------------------------------------------------');
 	logit('--------------'||'Task Name-'||L_TASK_NAME||'--------------');
 	logit('---------------------------------------------------------');
   
 	BEGIN
-	/* Creation of Chunk by Number Column*/
-	DBMS_PARALLEL_EXECUTE.CREATE_CHUNKS_BY_SQL(
-												task_name => L_TASK_NAME,
-												sql_stmt  => 'select start_id , end_id from (  
-												with rws as (
-												SELECT header_id , ROW_NUMBER() OVER (ORDER BY header_id) rn
-												FROM Xxom_Order_Headers_Int
-												WHERE status = ''New''
-												), grps as ( select r.*,  ceil ( rn / '||L_XXOE_CHUNK_SIZE||' ) grp  from   rws r )
-																select grp , min(header_id) start_id ,max(header_id) end_id
-																  from   grps
-																  group  by grp
-																  )
-																  order by 1',
-												by_rowid => FALSE   ); 
-	EXCEPTION WHEN OTHERS THEN
-		logit('Erroring while creating Chunk for XXOE Table Insert - '||SQLERRM);
-	END;
-
-	BEGIN
-	logit('Before Executing DBMS Parallel-'||TO_CHAR(SYSDATE,'MM/DD/YYYY HH24:Mi:SS'));
-
-	l_sql_stmt := 'begin
-		Xxoe_Data_Load_Pkg.Xxoe_Validate_Data(:start_id,:end_id);
-		end;				
-		';		
+		FOR run_job IN (select start_id , end_id from (  
+						with rws as (
+						SELECT header_id , ROW_NUMBER() OVER (ORDER BY header_id) rn
+						FROM Xxom_Order_Headers_Int
+						WHERE status = 'New'
+						), grps as ( select r.*,  ceil ( rn / L_XXOE_CHUNK_SIZE ) grp  from   rws r )
+										select grp , min(header_id) start_id ,max(header_id) end_id
+										  from   grps
+										  group  by grp
+										  )
+										  order by 1) 
+		LOOP
+			
+			l_request_id := fnd_request.submit_request (application      => 'XXFIN'         -- Application Short Name
+														  ,program          => 'XXOMCSASCREATEORDER'   -- Program Short Name
+														  ,description      => 'OD: CSAS Create Orders' -- Any Meaningful Description
+														  ,start_time       => SYSDATE          -- Start Time
+														  ,sub_request      => FALSE            -- Subrequest Default False
+														  ,argument1        => run_job.start_id  -- Parameters Starting
+														  ,argument2        => run_job.end_id    -- Parameters Starting
+														 );
+   
+			COMMIT;
+			
+		IF l_request_id > 0
+		THEN
+		  logit('XXOMCSASCREATEORDER - Create Order Program submitted from id - '||run_job.start_id|| ' and to id -'||run_job.end_id );
+		ELSE
+		  logit('XXOMCSASCREATEORDER - Create Order Program is not submitted from id - '||run_job.start_id|| ' and to id -'||run_job.end_id );
+		END IF;
+			
+		END LOOP;
 	
-	DBMS_PARALLEL_EXECUTE.run_task( task_name      => L_TASK_NAME,
-							sql_stmt       => l_sql_stmt,
-							language_flag  => DBMS_SQL.NATIVE,
-							parallel_level => L_XXOE_PARALLEL_LEVEL);
-	logit('After Executing DBMS Parallel-'||TO_CHAR(SYSDATE,'MM/DD/YYYY HH24:Mi:SS'));						 
-	--COMMIT;
 	EXCEPTION WHEN OTHERS THEN
 		logit('Erroring while executing Task for XXOE Table Insert - '||SQLERRM);	
 	END;
@@ -1273,6 +1269,7 @@ IS
   L_Sub_Ord_Number VARCHAR2(30);
   L_Ord_Total  NUMBER :=0;
   L_Tax_Total  NUMBER :=0;
+  L_Ordered_date VARCHAR2(30):='';
   TYPE import_int_tt IS TABLE OF Xxom_Import_Int%ROWTYPE INDEX BY PLS_INTEGER;
   import_int_data_tt import_int_tt;
   null_import_int_data_tt import_int_tt;
@@ -1380,16 +1377,19 @@ BEGIN
             SELECT Ordernumber,
               Ordersubnumber,
 			  ordertotal,
-			  TotalTax
+			  TotalTax,
+			  Orderdate
             INTO L_Ord_Number ,
               L_Sub_Ord_Number ,
 			  L_Ord_Total,
-			  L_Tax_Total
+			  L_Tax_Total,
+			  L_Ordered_date
             FROM Dual ,
               Json_Table (json_data,'$.orderHeader[*]' Columns ( Ordernumber VARCHAR2(30) Path '$.orderNumber'
 			                       , Ordersubnumber VARCHAR2(30) Path '$.ordersubNumber'
 								   , Ordertotal NUMBER Path '$.orderTotal'
-								   , Totaltax NUMBER Path '$.totalTax') );
+								   , Totaltax NUMBER Path '$.totalTax'
+								   , Orderdate VARCHAR2(30) Path '$.orderDate') );
           EXCEPTION
           WHEN OTHERS THEN
             logit ('Error in Proc Xxoe_Data_Load_Prc while getting order and sub_order_num. Error Code:'||SQLCODE);
@@ -1398,6 +1398,7 @@ BEGIN
             L_Sub_Ord_Number := '';
 			L_Ord_Total :=0;
 			L_Tax_Total :=0;
+			L_Ordered_date := '';
           END;
           counter := counter+1;
 
@@ -1415,6 +1416,7 @@ BEGIN
 			import_int_data_tt(counter).Last_Update_Date 	:=  Sysdate;
 			import_int_data_tt(counter).OrderTotal 	:=  L_Ord_Total;
 			import_int_data_tt(counter).TotalTax 	:=  L_Tax_Total;
+			import_int_data_tt(counter).Ordered_Date 	:=  L_Ordered_date;
 
 		  IF L_Ord_Number IS NOT NULL AND L_Sub_Ord_Number IS NOT NULL THEN
 
@@ -1480,7 +1482,7 @@ WHEN OTHERS THEN
   logit ('Error Message: '||SQLERRM);
 END Xxoe_Data_Load_Prc;
 /* ===========================================================================*
-|  PUBLIC PROCEDURE Xxoe_Validate_Data                                       |
+|  PUBLIC PROCEDURE create_csas_order                                       |
 |                                                                            |
 |  DESCRIPTION                                                               |
 |  This procedure is used to validated and load data into xxoe tables        |
@@ -1489,7 +1491,8 @@ END Xxoe_Data_Load_Prc;
 |  This procedure will be called from  Xxoe_Populate_Columns proc            |
 |                                                                            |
 * ===========================================================================*/
-PROCEDURE Xxoe_Validate_Data ( P_START_ID IN VARCHAR2 , P_END_ID IN VARCHAR2 ) 
+PROCEDURE 
+create_csas_order ( ERRBUF OUT VARCHAR2,RETCODE OUT VARCHAR2 , P_START_ID IN VARCHAR2 , P_END_ID IN VARCHAR2 )
 IS
   L_Header_Id         NUMBER;
   lc_int_order_number VARCHAR2(50) ;
@@ -1552,6 +1555,7 @@ IS
    
    err_rec_tab ERROR_REC_TAB;
    err_count NUMBER :=1;
+   l_num NUMBER;
    
   error_forall   EXCEPTION;
   PRAGMA EXCEPTION_INIT (error_forall, -24381);
@@ -1570,6 +1574,7 @@ IS
 	xxom_lookup_obj xxom_lookup_obj_tab := xxom_lookup_obj_tab();
 	xxom_org_obj xxom_org_object_table := xxom_org_object_table();
 	xxom_payterm xxom_pay_term_obj_table := xxom_pay_term_obj_table();
+	ord_err_data xxom_error_rec_t:= xxom_error_rec_t();
 
   
 BEGIN
@@ -1660,7 +1665,7 @@ BEGIN
 		END IF;
 	EXCEPTION	
 	WHEN OTHERS THEN
-		logit ('Exception in Proc Xxoe_Validate_Data. While getting System Variables from translation XX_AR_CSAS_INTEGRETION, Error Code:'||SQLCODE);
+		logit ('Exception in Proc create_csas_order. While getting System Variables from translation XX_AR_CSAS_INTEGRETION, Error Code:'||SQLCODE);
 	END;	
 	END LOOP;
 	
@@ -1671,7 +1676,7 @@ BEGIN
   FROM Xxom_Order_Headers_Int
   WHERE Status = 'New'
   AND HEADER_ID BETWEEN P_START_ID AND P_END_ID
-  ORDER BY Header_Id
+  --ORDER BY Header_Id
   )
   LOOP
     lc_int_order_number := I.Ordernumber ;
@@ -1881,7 +1886,8 @@ BEGIN
 						  AND xol.Header_Id = I.Header_Id
 						  and xol.Linenumber = xoa.LINENUM (+)
 						  AND xol.status      = 'New' 
-						  ORDER BY xol.Linenumber)
+						  --ORDER BY xol.Linenumber
+						  )
 	  LOOP
 	  
 		lc_level := 'Order Line';
@@ -1958,6 +1964,7 @@ BEGIN
 		line_attr_count := line_attr_count +1;
 		
 		line_attr_data_tt (line_attr_count).Line_Id 			:=	line_id_seq	;
+		line_attr_data_tt (line_attr_count).Header_Id 			:=	L_Header_Id	;
 		line_attr_data_tt (line_attr_count).Creation_Date 		:=	Sysdate 	;
 		line_attr_data_tt (line_attr_count).Created_By 			:=	FND_GLOBAL.user_id 	;
 		line_attr_data_tt (line_attr_count).Last_Update_Date 	:=	Sysdate 	;
@@ -2131,17 +2138,13 @@ BEGIN
 				payment_data_tt(payment_count).Payment_Type_Code := '';	
 				payment_data_tt(payment_count).Credit_Card_Code  := '';
 			END ;
-	  
-			--payment_data_tt(payment_count).Credit_Card_Holder_Name := header_attr_data_tt(head_attr_count).ORIG_CUST_NAME;
-	  
-	  
 	  END LOOP;
 	  
      
     EXCEPTION
     WHEN OTHERS THEN
       --lc_level := 'Order Price Adjustment Tax';
-      logit ('Error in Proc Xxoe_Validate_Data while getting '|| lc_level ||' data of '||lc_int_order_number||' into xxom int tables. Error Code:'||SQLCODE);
+      logit ('Error in Proc create_csas_order while getting '|| lc_level ||' data of '||lc_int_order_number||' into xxom int tables. Error Code:'||SQLCODE);
       logit ('Error Message: '||SQLERRM);
 	  
 	  err_rec_tab(err_count).header_id :=  L_Header_Id;
@@ -2149,54 +2152,6 @@ BEGIN
 	  --err_rec_tab(err_count).sub_order_number := I.Ordersubnumber;
 	  err_count := err_count+1;
 	  
-	  /*
-      DELETE FROM Xx_Oe_Payments WHERE header_id = L_Header_Id;
-      DELETE FROM Xx_Oe_Price_Adjustments WHERE header_id = L_Header_Id;
-      DELETE
-      FROM Xx_Oe_Line_Attributes_All xolattr
-      WHERE EXISTS
-        (SELECT 1
-        FROM Xx_Oe_Order_Lines_All xoline
-        WHERE xoline.Header_Id = L_Header_Id
-        AND xoline.line_id     = xolattr.line_Id
-        );
-      DELETE FROM Xx_Oe_Order_Lines_All WHERE Header_Id = L_Header_Id;
-      DELETE FROM Xx_Oe_Header_Attributes_All WHERE header_id = L_Header_Id;
-      DELETE FROM Xx_Oe_Order_Headers_All WHERE header_id = L_Header_Id;
-      UPDATE Xxom_Order_Headers_Int
-      SET status          = 'Error' ,
-        error_description = 'Error in Proc Xxoe_Validate_Data while inserting '
-        || lc_level
-        ||' data'
-      WHERE Ordernumber = lc_int_order_number
-      AND Header_Id     = lc_int_header_id;
-      UPDATE Xxom_Order_Lines_Int
-      SET status          = 'Error' ,
-        error_description = 'Error in Proc Xxoe_Validate_Data while inserting '
-        || lc_level
-        ||' data'
-      WHERE header_id = lc_int_header_id;
-      UPDATE Xxom_Order_Adjustments_Int
-      SET status          = 'Error' ,
-        error_description = 'Error in Proc Xxoe_Validate_Data while inserting '
-        || lc_level
-        ||' data'
-      WHERE header_id = lc_int_header_id;
-      UPDATE Xxom_Order_Tenders_Int
-      SET status          = 'Error' ,
-        error_description = 'Error in Proc Xxoe_Validate_Data while inserting '
-        || lc_level
-        ||' data'
-      WHERE header_id = lc_int_header_id;
-      UPDATE Xxom_Import_Int
-      SET Process_Flag    = 'E',
-        Status            = 'Error',
-        error_description = 'Error while inserting '
-        ||lc_level
-        || ' data in xxoe table'
-      WHERE Order_Number   = lc_int_order_number
-      AND Sub_Order_Number = lc_sub_order_number;
-    */
 	END;
   END LOOP;
   
@@ -2215,7 +2170,7 @@ BEGIN
 					logit('Error No: ' || err || ' File Row Number : ' || SQL%BULK_EXCEPTIONS(err).error_index ||' Error Message: ' || SQLERRM(-SQL%BULK_EXCEPTIONS(err).ERROR_CODE));
 					err_rec_tab(err_count).header_id :=  header_data_tt(SQL%BULK_EXCEPTIONS(err).error_index).Header_Id;
 					err_rec_tab(err_count).order_number := header_data_tt(SQL%BULK_EXCEPTIONS(err).error_index).Order_number ;
-					err_rec_tab(err_count).error := SUBSTR(SQLERRM(-SQL%BULK_EXCEPTIONS(err).ERROR_CODE),1,100);
+					err_rec_tab(err_count).error := 'Error While Inserting Header Data: ' ||SUBSTR(SQLERRM(-SQL%BULK_EXCEPTIONS(err).ERROR_CODE),1,100);
 					--err_rec_tab(err_count).sub_order_number := I.Ordersubnumber;
 					err_count := err_count+1;
 				END LOOP;
@@ -2235,7 +2190,7 @@ BEGIN
 					logit('Error No: ' || err || ' File Row Number : ' || SQL%BULK_EXCEPTIONS(err).error_index ||' Error Message: ' || SQLERRM(-SQL%BULK_EXCEPTIONS(err).ERROR_CODE));
 					err_rec_tab(err_count).header_id :=  header_attr_data_tt(SQL%BULK_EXCEPTIONS(err).error_index).Header_Id;
 					err_rec_tab(err_count).order_number := header_data_tt(SQL%BULK_EXCEPTIONS(err).error_index).Order_number ;
-					err_rec_tab(err_count).error := SUBSTR(SQLERRM(-SQL%BULK_EXCEPTIONS(err).ERROR_CODE),1,100);
+					err_rec_tab(err_count).error := 'Error While Inserting Header Attribute : ' ||SUBSTR(SQLERRM(-SQL%BULK_EXCEPTIONS(err).ERROR_CODE),1,100);
 					--err_rec_tab(err_count).sub_order_number := I.Ordersubnumber;
 					err_count := err_count+1;
 				END LOOP;
@@ -2256,7 +2211,7 @@ BEGIN
 					err_rec_tab(err_count).header_id :=  line_data_tt(SQL%BULK_EXCEPTIONS(err).error_index).Header_Id;
 					--err_rec_tab(err_count).order_number := header_data_tt(SQL%BULK_EXCEPTIONS(err).error_index).Order_number ;
 					err_rec_tab(err_count).line_id :=  line_data_tt(SQL%BULK_EXCEPTIONS(err).error_index).line_id;
-					err_rec_tab(err_count).error := SUBSTR(SQLERRM(-SQL%BULK_EXCEPTIONS(err).ERROR_CODE),1,100);
+					err_rec_tab(err_count).error := 'Error While Inserting Line Data :'||SUBSTR(SQLERRM(-SQL%BULK_EXCEPTIONS(err).ERROR_CODE),1,100);
 					--err_rec_tab(err_count).sub_order_number := I.Ordersubnumber;
 					err_count := err_count+1;
 				END LOOP;
@@ -2274,10 +2229,10 @@ BEGIN
 
 				FOR err IN 1 .. SQL%BULK_EXCEPTIONS.COUNT LOOP
 					logit('Error No: ' || err || ' File Row Number : ' || SQL%BULK_EXCEPTIONS(err).error_index ||' Error Message: ' || SQLERRM(-SQL%BULK_EXCEPTIONS(err).ERROR_CODE));
-					err_rec_tab(err_count).header_id :=  line_data_tt(SQL%BULK_EXCEPTIONS(err).error_index).Header_Id;
+					err_rec_tab(err_count).header_id :=  line_attr_data_tt(SQL%BULK_EXCEPTIONS(err).error_index).Header_Id;
 					--err_rec_tab(err_count).order_number := header_data_tt(SQL%BULK_EXCEPTIONS(err).error_index).Order_number ;
 					err_rec_tab(err_count).line_id :=  line_attr_data_tt(SQL%BULK_EXCEPTIONS(err).error_index).line_id;
-					err_rec_tab(err_count).error := SUBSTR(SQLERRM(-SQL%BULK_EXCEPTIONS(err).ERROR_CODE),1,100);
+					err_rec_tab(err_count).error := 'Error While Inserting Line Attribute : ' ||SUBSTR(SQLERRM(-SQL%BULK_EXCEPTIONS(err).ERROR_CODE),1,100);
 					--err_rec_tab(err_count).sub_order_number := I.Ordersubnumber;
 					err_count := err_count+1;
 				END LOOP;
@@ -2298,7 +2253,7 @@ BEGIN
 					err_rec_tab(err_count).header_id :=  price_adj_data_tt(SQL%BULK_EXCEPTIONS(err).error_index).Header_Id;
 					--err_rec_tab(err_count).order_number := header_data_tt(SQL%BULK_EXCEPTIONS(err).error_index).Order_number ;
 					--err_rec_tab(err_count).line_id :=  line_attr_data_tt(SQL%BULK_EXCEPTIONS(err).error_index).line_id;
-					err_rec_tab(err_count).error := SUBSTR(SQLERRM(-SQL%BULK_EXCEPTIONS(err).ERROR_CODE),1,100);
+					err_rec_tab(err_count).error := 'Error While Inserting Price Adjustment : ' ||SUBSTR(SQLERRM(-SQL%BULK_EXCEPTIONS(err).ERROR_CODE),1,100);
 					--err_rec_tab(err_count).sub_order_number := I.Ordersubnumber;
 					err_count := err_count+1;
 				END LOOP;
@@ -2319,96 +2274,83 @@ BEGIN
 					err_rec_tab(err_count).header_id :=  payment_data_tt(SQL%BULK_EXCEPTIONS(err).error_index).Header_Id;
 					--err_rec_tab(err_count).order_number := header_data_tt(SQL%BULK_EXCEPTIONS(err).error_index).Order_number ;
 					--err_rec_tab(err_count).line_id :=  line_attr_data_tt(SQL%BULK_EXCEPTIONS(err).error_index).line_id;
-					err_rec_tab(err_count).error := SUBSTR(SQLERRM(-SQL%BULK_EXCEPTIONS(err).ERROR_CODE),1,100);
+					err_rec_tab(err_count).error := 'Error While Inserting Payment : ' ||SUBSTR(SQLERRM(-SQL%BULK_EXCEPTIONS(err).ERROR_CODE),1,100);
 					--err_rec_tab(err_count).sub_order_number := I.Ordersubnumber;
 					err_count := err_count+1;
 				END LOOP;
 			END IF;
 		END;
+
+		UPDATE Xxom_Order_Headers_Int
+		SET status = 'Processed'
+		WHERE 1=1 
+		AND status = 'New'
+		AND HEADER_ID BETWEEN P_START_ID AND P_END_ID;
+		
+		UPDATE XXOM_ORDER_LINES_INT
+		SET status = 'Processed'
+		WHERE 1=1 
+		AND status = 'New'
+		AND HEADER_ID BETWEEN P_START_ID AND P_END_ID;
+		
+		UPDATE XXOM_ORDER_ADJUSTMENTS_INT
+		SET status = 'Processed'
+		WHERE 1=1 
+		AND status = 'New'
+		AND HEADER_ID BETWEEN P_START_ID AND P_END_ID;
+		
+		UPDATE XXOM_ORDER_TENDERS_INT
+		SET status = 'Processed'
+		WHERE 1=1 
+		AND status = 'New'
+		AND HEADER_ID BETWEEN P_START_ID AND P_END_ID;
+		
+	  --COMMIT;
 	  
+	  l_num := err_rec_tab.FIRST;
 	  
-	  BEGIN 
+	  IF l_num IS NOT NULL 
+	  THEN 
 	  
-	  FORALL header_data IN header_data_tt.FIRST..header_data_tt.LAST 
-	  UPDATE Xxom_Order_Headers_Int
-	  SET status = 'Processed'
-	  WHERE Ordernumber || Ordersubnumber = header_data_tt(header_data).Order_number
-	  AND status = 'New';
+	  FOR counter IN err_rec_tab.FIRST .. err_rec_tab.LAST LOOP
+		ord_err_data.EXTEND;
+		ord_err_data(ord_err_data.LAST) := xxom_error_rec_obj ( err_rec_tab(counter).header_id ,
+															err_rec_tab(counter).line_id,
+															err_rec_tab(counter).order_number,
+															SUBSTR(err_rec_tab(counter).error,1,150));
 	  
-	  FORALL header_data IN header_data_tt.FIRST..header_data_tt.LAST
-	  UPDATE XXOM_ORDER_LINES_INT xol
-	  SET status = 'Processed'
-	  WHERE status = 'New'
-	  AND  EXISTS (
-	  SELECT 1 FROM Xxom_Order_Headers_Int xoh
-	  WHERE xoh.Ordernumber || xoh.Ordersubnumber = header_data_tt(header_data).Order_number
-	  AND status = 'Processed'
-	  AND xoh.header_id = xol.header_id
-	  );
+	  --table(cast(ord_err_data as xxom_error_rec_t)
 	  
-	  FORALL header_data IN header_data_tt.FIRST..header_data_tt.LAST
-	  UPDATE XXOM_ORDER_ADJUSTMENTS_INT xoa
-	  SET status = 'Processed'
-	  WHERE status = 'New'
-	  AND  EXISTS (
-	  SELECT 1 FROM Xxom_Order_Headers_Int xoh
-	  WHERE xoh.Ordernumber || xoh.Ordersubnumber = header_data_tt(header_data).Order_number
-	  AND status = 'Processed'
-	  AND xoh.header_id = xoa.header_id
-	  );
+	  END LOOP;
+		
+		
+		DELETE FROM XX_OE_PAYMENTS xop WHERE 
+		exists (SELECT 1 FROM table(cast(ord_err_data as xxom_error_rec_t)) ord_err 
+			WHERE ord_err.header_id= xop.header_id);
+
+		DELETE FROM XX_OE_PRICE_ADJUSTMENTS xope WHERE 
+		exists (SELECT 1 FROM table(cast(ord_err_data as xxom_error_rec_t)) ord_err 
+			WHERE ord_err.header_id= xope.header_id);
+
+		DELETE FROM XX_OE_LINE_ATTRIBUTES_ALL xola
+		WHERE EXISTS (SELECT 1 FROM table(cast(ord_err_data as xxom_error_rec_t)) ord_err 
+			WHERE ord_err.header_id= xola.header_id);
+		
+		DELETE FROM XX_OE_ORDER_LINES_ALL xol
+		WHERE exists (SELECT 1 FROM table(cast(ord_err_data as xxom_error_rec_t)) ord_err 
+			WHERE ord_err.header_id= xol.header_id);
+		
+		DELETE FROM Xx_Oe_Header_Attributes_All xoh
+		WHERE exists (SELECT 1 FROM table(cast(ord_err_data as xxom_error_rec_t)) ord_err 
+			WHERE ord_err.header_id= xoh.header_id);
+		
+	  END IF;
 	  
-	  FORALL header_data IN header_data_tt.FIRST..header_data_tt.LAST
-	  UPDATE XXOM_ORDER_TENDERS_INT xot
-	  SET status = 'Processed'
-	  WHERE status = 'New'
-	  AND  EXISTS (
-	  SELECT 1 FROM Xxom_Order_Headers_Int xoh
-	  WHERE xoh.Ordernumber || xoh.Ordersubnumber = header_data_tt(header_data).Order_number
-	  AND status = 'Processed'
-	  AND xoh.header_id = xot.header_id
-	  );
-	  
-	  END;
-	  
-	  /*
-	  UPDATE Xxom_Order_Headers_Int
-      SET status        = 'Processed'
-      WHERE Ordernumber = lc_int_order_number
-      AND Header_Id     = lc_int_header_id;
-      UPDATE Xxom_Order_Lines_Int
-      SET status      = 'Processed'
-      WHERE header_id = lc_int_header_id;
-      UPDATE Xxom_Order_Adjustments_Int
-      SET status      = 'Processed'
-      WHERE header_id = lc_int_header_id;
-      UPDATE Xxom_Order_Tenders_Int
-      SET status      = 'Processed'
-      WHERE header_id = lc_int_header_id;
-      logit ('Order '||lc_int_order_number||' processed');
-  */
-  
-	FORALL err_data IN err_rec_tab.FIRST..err_rec_tab.LAST 
-	DELETE FROM XX_OE_PAYMENTS WHERE header_id = err_rec_tab(err_data).header_id;
-	
-	FORALL err_data IN err_rec_tab.FIRST..err_rec_tab.LAST 
-	DELETE FROM XX_OE_PRICE_ADJUSTMENTS WHERE header_id = err_rec_tab(err_data).header_id;
-	
-	FORALL err_data IN err_rec_tab.FIRST..err_rec_tab.LAST
-	DELETE FROM XX_OE_LINE_ATTRIBUTES_ALL
-	WHERE LINE_ID IN (SELECT LINE_ID FROM XX_OE_ORDER_LINES_ALL WHERE header_id = err_rec_tab(err_data).header_id  );
-	
-	
-	FORALL err_data IN err_rec_tab.FIRST..err_rec_tab.LAST 
-	DELETE FROM XX_OE_ORDER_LINES_ALL WHERE header_id = err_rec_tab(err_data).header_id;
-	
-	FORALL err_data IN err_rec_tab.FIRST..err_rec_tab.LAST 
-	DELETE FROM Xx_Oe_Header_Attributes_All WHERE header_id = err_rec_tab(err_data).header_id; 
-	
 	FORALL err_data IN err_rec_tab.FIRST..err_rec_tab.LAST
 	UPDATE Xxom_Import_Int xii
       SET Process_Flag    = 'E',
         Status            = 'Error',
-        error_description = 'Error while inserting XXOE Table, Error :'||err_rec_tab(err_data).error
+        error_description = err_rec_tab(err_data).error
       WHERE 1=1 
 	  AND EXISTS 
 	  (SELECT 1 FROM Xx_Oe_Order_Headers_All xooa WHERE xooa.ORDER_NUMBER = xii.order_Number   || xii.Sub_Order_Number 
@@ -2420,43 +2362,45 @@ BEGIN
 	SET status = 'Error' , error_description = err_rec_tab(err_data).error
 	WHERE status = 'Processed'
 	AND EXISTS (SELECT 1 FROM Xx_Oe_Order_Headers_All xooa WHERE xooa.ORDER_NUMBER = xohi.Ordernumber || xohi.Ordersubnumber
-	AND xooa.header_id = err_rec_tab(err_data).header_id);
+	AND xooa.header_id = err_rec_tab(err_data).header_id)
+	AND HEADER_ID BETWEEN P_START_ID AND P_END_ID;
 	
-	FORALL err_data IN err_rec_tab.FIRST..err_rec_tab.LAST
+	--FORALL err_data IN err_rec_tab.FIRST..err_rec_tab.LAST
 	UPDATE Xxom_Order_Lines_Int xoli
 	SET status = 'Error' , error_description = 'Error While Inserting Data in XXOE Table'
 	WHERE EXISTS (
 	SELECT 1 FROM Xxom_Order_Headers_Int xohi
 	WHERE xohi.header_id = xoli.header_id
 	AND xohi.status = 'Error'
-	AND EXISTS (SELECT 1 FROM Xx_Oe_Order_Headers_All xooa WHERE xooa.ORDER_NUMBER = xohi.Ordernumber || xohi.Ordersubnumber
-	AND xooa.header_id = err_rec_tab(err_data).header_id)
+	AND xohi.HEADER_ID BETWEEN P_START_ID AND P_END_ID
 	)
-	AND xoli.status = 'Processed';
+	AND xoli.HEADER_ID BETWEEN P_START_ID AND P_END_ID
+	AND xoli.status = 'Processed'
+	;
 	
 	
-	FORALL err_data IN err_rec_tab.FIRST..err_rec_tab.LAST
+	--FORALL err_data IN err_rec_tab.FIRST..err_rec_tab.LAST
 	UPDATE Xxom_Order_Adjustments_Int xoai
 	SET status = 'Error' , error_description = 'Error While Inserting Data in XXOE Table'
 	WHERE EXISTS (
 	SELECT 1 FROM Xxom_Order_Headers_Int xohi
 	WHERE xohi.header_id = xoai.header_id
 	AND xohi.status = 'Error'
-	AND EXISTS (SELECT 1 FROM Xx_Oe_Order_Headers_All xooa WHERE xooa.ORDER_NUMBER = xohi.Ordernumber || xohi.Ordersubnumber
-	AND xooa.header_id = err_rec_tab(err_data).header_id)
+	AND xohi.HEADER_ID BETWEEN P_START_ID AND P_END_ID
 	)
+	AND xoai.HEADER_ID BETWEEN P_START_ID AND P_END_ID
 	AND xoai.status = 'Processed';
 	
-	FORALL err_data IN err_rec_tab.FIRST..err_rec_tab.LAST
+	--FORALL err_data IN err_rec_tab.FIRST..err_rec_tab.LAST
 	UPDATE Xxom_Order_Tenders_Int xoti
 	SET status = 'Error' , error_description = 'Error While Inserting Data in XXOE Table'
 	WHERE EXISTS (
 	SELECT 1 FROM Xxom_Order_Headers_Int xohi
 	WHERE xohi.header_id = xoti.header_id
 	AND xohi.status = 'Error'
-	AND EXISTS (SELECT 1 FROM Xx_Oe_Order_Headers_All xooa WHERE xooa.ORDER_NUMBER = xohi.Ordernumber || xohi.Ordersubnumber
-	AND xooa.header_id = err_rec_tab(err_data).header_id)
+	AND xohi.HEADER_ID BETWEEN P_START_ID AND P_END_ID
 	)
+	AND xoti.HEADER_ID BETWEEN P_START_ID AND P_END_ID
 	AND xoti.status = 'Processed';
 		
 	FORALL err_data IN err_rec_tab.FIRST..err_rec_tab.LAST 
@@ -2465,13 +2409,18 @@ BEGIN
   COMMIT;
 EXCEPTION
 WHEN OTHERS THEN
-  logit ('Exception in Proc Xxoe_Validate_Data. Error Code:'||SQLCODE);
+  logit ('Exception in Proc create_csas_order. Error Code:'||SQLCODE);
   logit ('Error Message: '||SQLERRM);
-END Xxoe_Validate_Data;
+END create_csas_order;
 
 
 --PROCEDURE XXOE_PROCESS_DATA ( P_START_ID IN VARCHAR2 , P_END_ID IN VARCHAR2 ) ;
 
+PROCEDURE Xxoe_Validate_Data ( P_START_ID IN VARCHAR2 , P_END_ID IN VARCHAR2 ) 
+IS 
+BEGIN 
+NULL;
+END Xxoe_Validate_Data ;
 
 END Xxoe_Data_Load_Pkg;
 /

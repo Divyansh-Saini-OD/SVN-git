@@ -4,7 +4,7 @@ AS
   -- |  Office Depot - Project Optimize                                                           |
   -- |                                                                                            |
   -- +============================================================================================+
-  -- |  Name      :  XX_OE_DATA_LOAD_PKG                                                          |
+  -- |  Name      :  XXOE_DATA_LOAD_PKG                                                          |
   -- |  RICE ID   :                                              |
   -- +============================================================================================+
   -- | Version     Date         Author           Remarks                                          |
@@ -20,6 +20,7 @@ AS
 	RETCODE OUT VARCHAR2);
   --PROCEDURE XXOE_PROCESS_DATA ( P_START_ID IN VARCHAR2 , P_END_ID IN VARCHAR2 ) ;
   PROCEDURE xxom_load_data ( P_START_ID IN VARCHAR2 , P_END_ID IN VARCHAR2 );
+  PROCEDURE create_csas_order ( ERRBUF OUT VARCHAR2,RETCODE OUT VARCHAR2 , P_START_ID IN VARCHAR2 , P_END_ID IN VARCHAR2 );
 	
 END XXOE_DATA_LOAD_PKG;
 /
