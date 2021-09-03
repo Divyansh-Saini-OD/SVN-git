@@ -49,7 +49,7 @@ echo $file_path
 echo $file_ext
 echo $file_limit
 cd $file_path
-filenames=`ls *.$file_ext`
+filenames=`ls -ltr csas_hvop*.$file_ext`
 echo $filenames
 rec=0
 for filename in $filenames
