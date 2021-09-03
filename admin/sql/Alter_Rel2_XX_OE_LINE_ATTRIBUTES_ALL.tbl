@@ -1,0 +1,27 @@
+-- +===========================================================================+
+-- |                  Office Depot - SAS Modernization                         |
+-- |                                                                           |
+-- +===========================================================================+
+-- | Name        : Alter_Rel2_XX_OE_LINE_ATTRIBUTES_ALL.tbl                                 |
+-- | Description : Alter Table for XX_OE_LINE_ATTRIBUTES_ALL                    |
+-- |                                                                           |
+-- |Change Record:                                                             |
+-- |===============                                                            |
+-- |Version  Date        Author           Remarks                              |
+-- |======== =========== ================ =====================================|
+-- |1.0      03-Sep-2021 Shreyas Thorat   Initial Version                      |
+-- +===========================================================================+
+
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     ON
+WHENEVER SQLERROR CONTINUE
+
+  Alter  TABLE xxom.XX_OE_LINE_ATTRIBUTES_ALL 
+  ADD HEADER_ID NUMBER ; 
+  
+SET FEEDBACK ON
+
+EXIT;
