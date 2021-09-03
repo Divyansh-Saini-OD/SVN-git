@@ -31,7 +31,7 @@ V_RESULT=`sqlplus -s /nolog <<EOF
      set serveroutput on 
      set verify off
 
-SELECT XFTV.TARGET_VALUE1|| '|'||XFTV.TARGET_VALUE4
+SELECT XFTV.TARGET_VALUE1|| '|'||XFTV.TARGET_VALUE4||'|'||XFTV.TARGET_VALUE5
   FROM XX_FIN_TRANSLATEDEFINITION XFTD,
        XX_FIN_TRANSLATEVALUES XFTV
  WHERE XFTD.TRANSLATION_NAME ='XXOM_CSAS_FILE_PROCESS'
@@ -44,15 +44,16 @@ EOF`
 
 file_path=`echo $V_RESULT | awk '{ split($0,MODULE,"|"); print MODULE[1] }'`
 file_ext=`echo $V_RESULT | awk '{ split($0,MODULE,"|"); print MODULE[2] }'`
+file_limit=`echo $V_RESULT | awk '{ split($0,MODULE,"|"); print MODULE[3] }'`
 echo $file_path
 echo $file_ext
+echo $file_limit
 cd $file_path
 filenames=`ls *.$file_ext`
 echo $filenames
-let rec=0
+rec=0
 for filename in $filenames
 do
-let rec=rec+1
 echo "$filename"
 echo $rec
 V_COUNT=`sqlplus -s /nolog <<EOF
@@ -68,6 +69,9 @@ if [ "${V_COUNT}" -ge 1 ]
 then
   echo "File already processed "+"$filename"
 else
+if [[ $rec -lt "${file_limit}" ]] 
+then 
+((rec=rec+1))
 V_COUNT=`sqlplus -s /nolog <<EOF
      set pagesize 0
      set linesize 255
@@ -89,6 +93,9 @@ V_COUNT=`sqlplus -s /nolog <<EOF
      exit
      EOF`
 echo $V_COUNT
+else
+exit 0
+fi
 fi
 done
 
