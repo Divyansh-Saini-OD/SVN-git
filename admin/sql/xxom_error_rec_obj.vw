@@ -11,11 +11,6 @@
 -- |======== =========== ================ =====================================|
 -- |1.0      03-Sep-2021 Shreyas Thorat   Initial Version                      |
 -- +===========================================================================+
-
-DROP TYPE xxfin.xxom_error_rec_obj FORCE;
-DROP TYPE xxfin.xxom_error_rec_t FORCE;
-
-
 CREATE OR REPLACE type xxfin.xxom_error_rec_obj as object 
 	( header_id  NUMBER, 
       line_id  NUMBER, 
