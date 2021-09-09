@@ -114,7 +114,7 @@ END;
 -- |=======   ==========   =============           ====================================|
 -- |DRAFT 1.0              Divyansh Saini           Initial draft version              |
 -- +===================================================================================+
-Function get_inventory_item_id (p_name            IN varchar2) 
+Function get_inventory_item_id (p_name            IN varchar2)
 RETURN mtl_system_items_b%ROWTYPE IS
   ln_item_id  NUMBER := '';
   r_item_info mtl_system_items_b%ROWTYPE;
@@ -139,6 +139,35 @@ END;
 -- +===================================================================================+
 -- |                  Office Depot - SCAAS                                             |
 -- +===================================================================================+
+-- | Name        : check_duplicate                                                     |
+-- | Description : Function to check_duplicate                                         |
+-- |Parameters   :                                                                     |
+-- |                                                                                   |
+-- |Change Record:                                                                     |
+-- |===============                                                                    |
+-- |Version   Date          Author                 Remarks                             |
+-- |=======   ==========   =============           ====================================|
+-- |DRAFT 1.0              Divyansh Saini           Initial draft version              |
+-- +===================================================================================+
+PROCEDURE check_duplicate IS
+
+BEGIN
+
+   UPDATE XX_AR_SCAAS_INTERFACE i
+      SET STATUS = 'Duplicate'
+	WHERE EXISTS (SELECT 1 
+	                FROM XX_AR_SCAAS_INTERFACE_HIST h
+	               WHERE h.SUBSCRIPTION_ID = i.SUBSCRIPTION_ID
+				     AND h.AOPS_NUMBER     = i.AOPS_NUMBER
+					 AND h.ITEM_NAME       = i.ITEM_NAME
+					 AND h.n_ext_attr1     = i.n_ext_attr1);
+EXCEPTION WHEN OTHERS THEN
+   logs('  Error in check_duplicate '||SQLERRM,true);
+END;
+
+-- +===================================================================================+
+-- |                  Office Depot - SCAAS                                             |
+-- +===================================================================================+
 -- | Name        : get_term_id                                                         |
 -- | Description : Function to get get_term_id                                         |
 -- |Parameters   :                                                                     |
@@ -149,7 +178,7 @@ END;
 -- |=======   ==========   =============           ====================================|
 -- |DRAFT 1.0              Divyansh Saini           Initial draft version              |
 -- +===================================================================================+
-Function get_term_id (p_name        IN varchar2) 
+Function get_term_id (p_name        IN varchar2)
 RETURN number IS
   ln_term_id NUMBER := '';
 BEGIN
@@ -167,6 +196,17 @@ EXCEPTION WHEN OTHERS THEN
 return null;
 END;
 
+PROCEDURE purge_file_data(p_file_id NUMBER) IS
+
+BEGIN
+
+   INSERT INTO xx_ar_scaas_files_hist SELECT * FROM xx_ar_scaas_files WHERE process_id = p_file_id;
+
+   execute IMMEDIATE 'DELETE FROM xx_ar_scaas_files WHERE process_id = :1' USING p_file_id;
+
+EXCEPTION WHEN OTHERS THEN
+   FND_FILE.PUT_LINE(FND_FILE.LOG,'Error in purge_file_data '||SQLERRM);
+END;
 
 -- +===================================================================================+
 -- |                  Office Depot - SCAAS                                             |
@@ -185,9 +225,9 @@ PROCEDURE insert_ra_intf_lines (x_ra_intf_lines_info  ra_interface_lines_all%ROW
 
 BEGIN
     logs('Starting insert_ra_intf_lines(+)');
-    
+
     INSERT INTO ra_interface_lines_all VALUES x_ra_intf_lines_info;
-    
+
     logs('Starting insert_ra_intf_lines(-)');
 EXCEPTION WHEN OTHERS THEN
     logs('Unable to insert data for line '||SQLERRM,true);
@@ -210,9 +250,9 @@ PROCEDURE insert_ra_intf_dists (x_ra_intf_dists_info  ra_interface_distributions
 
 BEGIN
     logs('Starting insert_ra_intf_dists(+)');
-    
+
     INSERT INTO ra_interface_distributions_all VALUES x_ra_intf_dists_info;
-    
+
     logs('End insert_ra_intf_dists(-)');
 EXCEPTION WHEN OTHERS THEN
     logs('Unable to insert data for line '||SQLERRM,true);
@@ -240,7 +280,7 @@ PROCEDURE check_req_status(p_request_id IN NUMBER) IS
    ld_curr_time  DATE   := sysdate;
 
 BEGIN
-   
+
    WHILE ( lv_phase != 'C')
    LOOP
        SELECT status_code,phase_code
@@ -248,12 +288,12 @@ BEGIN
          FROM fnd_concurrent_requests
         WHERE request_id = p_request_id;
         ld_curr_time := sysdate;
-    IF (ld_curr_time - ld_start_time)*24*60 < 5 THEN
+    IF (ld_curr_time - ld_start_time)*24*60 > 5 THEN
         lv_phase := 'C';
     END IF;
     DBMS_lock.sleep(10);
     END LOOP;
-    
+
     IF UPPER(lv_status) = 'C' AND UPPER(lv_phase) = 'C' THEN
         logs('Program completed successful for the Request Id: ' || p_request_id );
     ELSE
@@ -280,7 +320,7 @@ END check_req_status;
 procedure process_data (errbuf         out varchar2,
                         retcode        out number,
                         p_process_id   IN  NUMBER,
-                        p_thread_count IN  NUMBER)is 
+                        p_thread_count IN  NUMBER)is
   ln_cnt_err_request   NUMBER;
   lc_request_data      VARCHAR2(200);
   ln_parent_request_id NUMBER;
@@ -298,16 +338,16 @@ BEGIN
   lc_request_data      := fnd_conc_global.request_data;
   SELECT count(distinct BILL_TO_CUSTOMER_OSR)
     INTO ln_total_count
-    FROM xx_ar_scaas_interface 
+    FROM xx_ar_scaas_interface
    WHERE process_id = p_process_id;
-   
+
   IF ln_total_count >0 AND ln_total_count < p_thread_count THEN
-      SELECT min(record_id) mnid,max(record_id) mxid 
+      SELECT min(record_id) mnid,max(record_id) mxid
         BULK COLLECT INTO l_record_tab
-        FROM xx_ar_scaas_interface 
+        FROM xx_ar_scaas_interface
       WHERE process_id = p_process_id;
   ELSIF ln_total_count >0 AND ln_total_count > p_thread_count THEN
-      SELECT max(record_id)mxid,min(record_id)mnid 
+      SELECT max(record_id)mxid,min(record_id)mnid
         BULK COLLECT INTO l_record_tab
         FROM (
                             SELECT record_id,trunc(cnt/p_thread_count)+ sign(mod(cnt,p_thread_count)) cnth FROm(
@@ -328,7 +368,7 @@ BEGIN
                                              ,argument1   => l_record_tab(indx).minId
                                              ,argument2   => l_record_tab(indx).maxId
                                              ,argument3   => p_process_id);
-     
+
      END LOOP;
      IF (ln_thread_count > 0) THEN
             fnd_conc_global.set_req_globals(conc_status  => 'PAUSED'
@@ -350,8 +390,9 @@ BEGIN
           lc_error_loc := 'All the Child Programs Completed Normal...';
           logs(lc_error_loc,true);
        END IF;
-       
+
   END IF;
+     purge_file_data(p_process_id);
    logs('Process_data(-)',true);
 END process_data;
 
@@ -392,7 +433,7 @@ procedure process_data_child (errbuf       out varchar2,
    loc_error              EXCEPTION;
    source_not_found       EXCEPTION;
    type_not_found         EXCEPTION;
-   
+
    TYPE det_tab IS TABLE OF xx_ar_scaas_interface%ROWTYPE;
    Det_data det_tab := det_tab();
    lr_ra_intf_lines_info  ra_interface_lines_all%ROWTYPE;
@@ -400,21 +441,26 @@ procedure process_data_child (errbuf       out varchar2,
    lr_item_info           mtl_system_items_b%ROWTYPE;
    ln_interface_line_id   NUMBER := 0;
    ln_trx_number          NUMBER := 0;
-   
+   lv_cons_flag           hz_customer_profiles.CONS_INV_FLAG%TYPE;
+   ln_term_id             hz_customer_profiles.standard_terms%TYPE;
+   ld_billing_date        ar_cons_bill_cycle_dates.billable_date%TYPE;
+   ln_billing_cycle_id    ra_terms.billing_cycle_id%TYPE;
+   lv_term_name           ra_terms.name%TYPE;
+
    CURSOR c_cust_numbers IS
       SELECT DISTINCT bill_to_customer_osr aops_num
         FROM xx_ar_scaas_interface
          WHERE status = 'NEW'
            AND process_id = p_process_id
            AND record_id between p_min_id AND p_max_id;
-   
-   CURSOR c_get_det(p_aops_num VARCHAR) IS 
+
+   CURSOR c_get_det(p_aops_num VARCHAR) IS
       SELECT  a.*
           FROM xx_ar_scaas_interface a
          WHERE status = 'NEW'
            AND bill_to_customer_osr = p_aops_num
            AND process_id = p_process_id;
-   
+
 BEGIN
     set_global_variables;
     logs('process_data_child(+) ',true);
@@ -441,7 +487,7 @@ BEGIN
        ln_customer_id        := NULL;
        ln_bill_to_address_id := NULL;
     END;
-    
+
     logs('Getting Ship to details');
     BEGIN
       SELECT HCSU.cust_acct_site_id
@@ -542,26 +588,46 @@ BEGIN
        logs('Unable to get g_type_id '||SQLERRM);
        raise type_not_found;
     END;
+    BEGIN
+         SELECT rt.name,
+                rt.term_id,
+                (select min(billable_date) from ar_cons_bill_cycle_dates where billing_cycle_id = rt.billing_cycle_id
+                AND billable_date > sysdate)
+           INTO lv_term_name,ln_term_id,ld_billing_date
+           FROM xx_cdh_cust_acct_ext_b x,
+                ra_terms rt
+          WHERE x.cust_account_id = ln_customer_id
+            AND x.c_ext_attr2 = 'Y'
+            AND x.c_ext_attr14 = rt.name
+            AND sysdate between NVL(x.d_ext_attr1,sysdate) and NVL(x.d_ext_attr2,sysdate+1)
+            AND x.attr_group_id IN (SELECT attr_group_id
+                          FROM   ego_attr_groups_v
+                          WHERE  attr_group_type = 'XX_CDH_CUST_ACCOUNT'
+                          AND    attr_group_name = 'BILLDOCS');
+     
+     EXCEPTIOn WHEN OTHERS THEN
+       ln_term_id := 5;
+       lv_term_name := 'IMMEDIATE';
+     END;
 
-    
     OPEN c_get_det(rec_cust_numbers.aops_num);
     LOOP
         FETCH c_get_det BULK COLLECT INTO Det_data LIMIT ln_limit;
-       
+        
+--      ln_trx_number                                       := xx_ar_scaas_trx_s.NEXTVAL;
     FOR indx IN 1..Det_data.count LOOP
-    
+
        lr_item_info := get_inventory_item_id(Det_data(indx).ITEM_NAME);
-       
+
        logs('Populating ra_interface_lines_all record');
 
           ln_interface_line_id                                := ra_customer_trx_lines_s.NEXTVAL;
-          ln_trx_number                                       := xx_ar_scaas_trx_s.NEXTVAL;
           lr_ra_intf_lines_info                               := NULL;
           lr_ra_intf_lines_info.interface_line_id             := ln_interface_line_id;
-          lr_ra_intf_lines_info.trx_number                    := ln_trx_number;
-          lr_ra_intf_lines_info.trx_date                      := SYSDATE;
+--          lr_ra_intf_lines_info.trx_number                    := ln_trx_number;
+          lr_ra_intf_lines_info.trx_date                      := Det_data(indx).TRX_DATE;
           lr_ra_intf_lines_info.batch_source_name             := lv_source;
-          lr_ra_intf_lines_info.amount                        := Det_data(indx).AMOUNT;
+          lr_ra_intf_lines_info.amount                        := ROUND(Det_data(indx).AMOUNT*Det_data(indx).quantity,2);
           lr_ra_intf_lines_info.description                   := Det_data(indx).ITEM_DESCRIPTION;
           lr_ra_intf_lines_info.line_type                     := 'LINE';
 
@@ -571,7 +637,7 @@ BEGIN
           lr_ra_intf_lines_info.conversion_date               := SYSDATE;
 
           lr_ra_intf_lines_info.header_attribute_category     := 'SALES_ACCT';
-          lr_ra_intf_lines_info.header_attribute1             := Det_data(indx).SUBSCRIPTION_NUMBER;
+          lr_ra_intf_lines_info.header_attribute1             := ln_customer_id;
 
           lr_ra_intf_lines_info.last_update_date              := SYSDATE;
           lr_ra_intf_lines_info.last_updated_by               := FND_GLOBAL.USER_ID;
@@ -581,7 +647,7 @@ BEGIN
 
           lr_ra_intf_lines_info.gl_date                       := SYSDATE;
 
-          lr_ra_intf_lines_info.inventory_item_id             := lr_item_info.inventory_item_id;
+          lr_ra_intf_lines_info.inventory_item_id             := NVL(lr_item_info.inventory_item_id,-1);
           lr_ra_intf_lines_info.interface_line_attribute6     := Det_data(indx).AMOUNT;
           lr_ra_intf_lines_info.uom_code                      := Det_data(indx).UNIT_OF_MEASURE;
 
@@ -600,7 +666,7 @@ BEGIN
           lr_ra_intf_lines_info.unit_standard_price           := Det_data(indx).AMOUNT;
 
           lr_ra_intf_lines_info.interface_line_context        := 'RECURRING BILLING';
-          lr_ra_intf_lines_info.interface_line_attribute1     := Det_data(indx).SUBSCRIPTION_NUMBER || '-' || Det_data(indx).record_id;
+          lr_ra_intf_lines_info.interface_line_attribute1     := ln_customer_id;--Det_data(indx).SUBSCRIPTION_NUMBER || '-' || Det_data(indx).record_id;
           lr_ra_intf_lines_info.interface_line_attribute2     := Det_data(indx).process_id;
           lr_ra_intf_lines_info.interface_line_attribute3     := Det_data(indx).SUBSCRIPTION_ID;
           lr_ra_intf_lines_info.interface_line_attribute4     := Det_data(indx).record_id;
@@ -611,14 +677,17 @@ BEGIN
 
           lr_ra_intf_lines_info.warehouse_id                  := lr_item_info.organization_id;
 
-          lr_ra_intf_lines_info.term_id                       := get_term_id(Det_data(indx).PAYMENT_TERM );
-          lr_ra_intf_lines_info.term_name                     := Det_data(indx).PAYMENT_TERM;
+          lr_ra_intf_lines_info.term_id                       := ln_term_id;
+          lr_ra_intf_lines_info.term_name                     := lv_term_name;
           lr_ra_intf_lines_info.org_id                        := 404;
           lr_ra_intf_lines_info.cust_trx_type_name            := 'OD_SCAAS_INVOICE_OD';
           lr_ra_intf_lines_info.cust_trx_type_id              := g_type_id;
+          IF ld_billing_date IS NOT NULL THEN
+            lr_ra_intf_lines_info.billing_date                := ld_billing_date;
+          END IF;
 --          lr_ra_intf_lines_info.set_of_books_id               := lr_operating_unit_info.set_of_books_id;
 
-          lr_ra_intf_lines_info.translated_description        := lr_item_info.segment1;      
+          lr_ra_intf_lines_info.translated_description        := lr_item_info.segment1;
 
         logs('  calling insert_ra_intf_lines ');
         insert_ra_intf_lines(lr_ra_intf_lines_info);
@@ -628,7 +697,7 @@ BEGIN
 
         lr_ra_intf_dists_info.interface_line_id               := ln_interface_line_id;
         lr_ra_intf_dists_info.interface_line_context          := 'RECURRING BILLING';
-        lr_ra_intf_dists_info.interface_line_attribute1       := Det_data(indx).SUBSCRIPTION_NUMBER || '-' || Det_data(indx).record_id;
+        lr_ra_intf_dists_info.interface_line_attribute1       := ln_customer_id;--Det_data(indx).SUBSCRIPTION_NUMBER || '-' || Det_data(indx).record_id;
         lr_ra_intf_dists_info.interface_line_attribute2       := Det_data(indx).process_id;
         lr_ra_intf_dists_info.interface_line_attribute3       := Det_data(indx).SUBSCRIPTION_ID;
         lr_ra_intf_dists_info.interface_line_attribute4       := Det_data(indx).record_id;
@@ -650,29 +719,29 @@ BEGIN
         lr_ra_intf_dists_info.last_update_date                := SYSDATE;
         lr_ra_intf_dists_info.last_update_login               := FND_GLOBAL.USER_ID;
         lr_ra_intf_dists_info.org_id                          := ln_org_id;
-                    
+
         insert_ra_intf_dists(lr_ra_intf_dists_info);
-         
-        END LOOP;     
-             
-    
+
+        END LOOP;
+
+
     EXIT WHEN Det_data.count =0;
     END LOOP;
-    
+
     CLOSE c_get_det;
-  
+
    UPDATE xx_ar_scaas_interface
       SET status = 'Processed'
     WHERE status = 'NEW'
       AND bill_to_customer_osr = rec_cust_numbers.aops_num
       AND process_id = p_process_id;
-      
+
     EXECUTE IMMEDIATE 'INSERT INTO xx_ar_scaas_interface_hist SELECT * FROM xx_ar_scaas_interface  WHERE bill_to_customer_osr = :1 AND process_id = :2' USING rec_cust_numbers.aops_num,p_process_id;
     EXECUTE IMMEDIATE 'DELETE FROM xx_ar_scaas_interface  WHERE bill_to_customer_osr = :1 AND process_id = :2' USING rec_cust_numbers.aops_num,p_process_id;
   END LOOP;
 
    logs('process_data_child(-)',true);
-EXCEPTION 
+EXCEPTION
   WHEN source_not_found THEN
     errbuf := 'batch Source not found '||SQLERRM;
     retcode := 1;
@@ -685,18 +754,6 @@ EXCEPTION
   WHEN OTHERS THEN
     errbuf := 'Error while processing ' || ' . Error '||SQLERRM;
     retcode := 2;
-END;
-
-PROCEDURE purge_file_data(p_file_id NUMBER) IS
-
-BEGIN
-
-   INSERT INTO xx_ar_scaas_files_hist SELECT * FROM xx_ar_scaas_files WHERE file_id = p_file_id;
-
-   execute IMMEDIATE 'DELETE FROM xx_ar_scaas_files WHERE file_id = :1' USING p_file_id;
-
-EXCEPTION WHEN OTHERS THEN
-   FND_FILE.PUT_LINE(FND_FILE.LOG,'Error in purge_file_data '||SQLERRM);
 END;
 
 -- +===================================================================================+
@@ -714,7 +771,7 @@ END;
 -- +===================================================================================+
 PROCEDURE load_data(errbuf       OUT varchar2,
                     retcode      OUT number,
-                    p_process_id IN  number) is 
+                    p_process_id IN  number) is
 lf_file         UTL_FILE.FILE_TYPE;
 lv_line_data    VARCHAR2(4000);
 lv_col_value    VARCHAR2(200);
@@ -730,7 +787,7 @@ lv_delimeter    varchar2(10);
 type col_map_typ is record  (col_name varchar2(200),datatype  varchar2(200),format varchar2(200));
 type col_map_tab is table of col_map_typ;
 
-cursor c_col_mapping is 
+cursor c_col_mapping is
 SELECT xtv.target_value1,target_value3 ,target_value4
   FROM XX_FIN_TRANSLATEDEFINITION xtd, XX_FIN_TRANSLATEVALUES xtv
  WHERE xtd.translate_id = xtv.translate_id
@@ -798,8 +855,13 @@ BEGIN
          END LOOP;
          lv_query := lv_insert_str||') VALUES '||lv_select_str||')';
          logs('  lv_query '||lv_query);
-         execute immediate lv_query;
-         logs('  lv_query executed'||SQLERRM);
+		 BEGIN
+            execute immediate lv_query;
+		 EXCEPTION WHEN OTHERS THEN
+		    logs(' Error while inserting '||SQLERRM,true);
+			logs(' Errored insert sql :'||lv_query,true);
+		 END;
+         logs('  lv_query executed');
       EXCEPTION
         WHEN le_end_line THEN
           logs('  end found in file');
@@ -810,21 +872,22 @@ BEGIN
           utl_file.fclose(lf_file);
           EXIT;
         WHEN OTHERS THEN
-         logs('Error while insert into common table' ||SQLERRM);
+         logs('Error while insert into common table' ||SQLERRM,true);
       END;
       logs('  Loop end');
     END LOOP;
     logs('  insert_data(+)');
     purge_file_data(rec_get_files.file_id);
   END LOOP;
-                        
+  check_duplicate();
+
 EXCEPTION WHEN OTHERS THEN
    logs('  Error in insert_data '||SQLERRM,true);
    utl_file.fclose(lf_file);
    errbuf := sqlerrm;
    retcode := 2;
 END;
-                    
+
 PROCEDURE MAIN (errbuf    OUT VARCHAR2,
                 retcode   OUT NUMBER) IS
    lv_process_type        VARCHAR2(50) := 'FILE';
@@ -838,6 +901,8 @@ PROCEDURE MAIN (errbuf    OUT VARCHAR2,
    lc_message             VARCHAR2(100);
    ln_thread_count        NUMBER;
    lv_source_folder       VARCHAR2(100);
+   lv_source              VARCHAR2(100);
+   lv_source_id           NUMBER;
    lv_destination_folder  VARCHAR2(100);
 BEGIN
    logs('Start Main (+)',True);
@@ -847,7 +912,7 @@ BEGIN
       INTO ln_process_id
       FROM dual;
     logs('process started for id '||ln_process_id,True);
-    
+
     BEGIN
     SELECT   xftv.target_value1
       INTO   ln_thread_count
@@ -881,23 +946,14 @@ BEGIN
         logs('Program did not complete normally. ');
       END IF;*/
     END IF;
-    
-    --Calling populate staging table
-    ln_req_id := fnd_request.submit_request ( application => 'XXFIN' , program => 'XX_AR_SCAAS_LOAD_DATA' , description => NULL , start_time => sysdate , sub_request => false , argument1=>ln_process_id);
-    COMMIT;
-    logs('Conc. Program submitted '||ln_req_id);
-    IF ln_req_id = 0 THEN
-      logs('Conc. Program  failed to submit Program',True);
-    ELSE
-      logs('Waiting for concurrent request to complete');
-      check_req_status(ln_req_id);
-      /*lc_wait_flag           := fnd_concurrent.wait_for_request(request_id => ln_req_id, phase => lc_phase, status => lc_status, dev_phase => lc_dev_phase, dev_status => lc_dev_status, MESSAGE => lc_message);
-      IF UPPER(lc_dev_status) = 'NORMAL' AND UPPER(lc_dev_phase) = 'COMPLETE' THEN
-        logs('Program completed successful for the Request Id: ' || ln_req_id );
-      ELSE
-        logs('Program did not complete normally. ');
-      END IF;*/
-    END IF;
+	
+	BEGIN
+		UPDATE xx_ar_scaas_interface
+		   SET process_id = ln_process_id
+		 WHERE status  = 'NEW';
+    EXCEPTION WHEN OTHERS THEN
+	   null;
+	END;
 
     --Calling process data
     ln_req_id := fnd_request.submit_request ( application => 'XXFIN' , program => 'XX_AR_SCAAS_PROCESS_DATA' , description => NULL , start_time => sysdate , sub_request => false , argument1=>ln_process_id, argument2=>ln_thread_count);
@@ -941,7 +997,65 @@ BEGIN
       logs('Waiting for concurrent request to complete');
       check_req_status(ln_req_id);
     END IF;
+	
+    BEGIN
+       SELECT   xftv.target_value1,rb.batch_source_id
+         INTO   lv_source,lv_source_id
+         FROM   xx_fin_translatedefinition XFTD
+               ,xx_fin_translatevalues     XFTV
+               ,ra_batch_sources_all     rb
+         WHERE  XFTD.translate_id       = XFTV.translate_id
+         AND    XFTD.translation_name   = 'XX_AR_SCAAS_INTERFACE'
+         AND    XFTV.source_value1      = 'SOURCE'
+         AND    SYSDATE                 BETWEEN XFTV.start_date_active AND NVL(XFTV.end_date_active,SYSDATE+1)
+         AND    SYSDATE                 BETWEEN XFTD.start_date_active AND NVL(XFTD.end_date_active,SYSDATE+1)
+         AND    XFTV.enabled_flag       = 'Y'
+         AND    rb.name                 = xftv.target_value1
+         AND    XFTD.enabled_flag       = 'Y';
+    EXCEPTION WHEN OTHERS THEN
+       logs('Unable to get lv_source '||SQLERRM);
+    END;
 
+
+	  IF lv_source IS NOT NULL THEN
+      ln_req_id := fnd_request.submit_request
+                      (application      => 'AR',
+                      program          => 'RAXTRX',
+                      description      => NULL,
+                      start_time       => NULL,
+                      sub_request      => FALSE,
+                      argument1        => 'MAIN',
+                      argument2        => 'T',
+                      argument3        => lv_source_id,--batch_source_id
+                      argument4        => lv_source, --batch_source_name
+                      argument5        =>  to_char(sysdate,'RRRR/MM/DD HH24:MI:SS'),
+                      argument6        => '',
+                      argument7        => '',
+                      argument8        => '',
+                      argument9        => '',
+                      argument10       => '',
+                      argument11       => '',
+                      argument12       => '',
+                      argument13       => '',
+                      argument14       => '',
+                      argument15       => '',
+                      argument16       => '',
+                      argument17       => '',
+                      argument18       => '',
+                      argument19       => '',
+                      argument20       => '',
+                      argument21       => '',
+                      argument22       => '',
+                      argument23       => '',
+                      argument24       => '',
+                      argument25       => '',
+                      argument26       => 'N',
+                      argument27       => 'Y',
+                      argument28       => '',
+                      argument29       => '404', -- org_id
+                      argument30       => chr(0) -- end with chr(0)as end of parameters
+                      );
+    END IF;
 
     logs('End Main (-)',True);
 EXCEPTION WHEN OTHERS THEN
@@ -950,6 +1064,6 @@ EXCEPTION WHEN OTHERS THEN
    retcode := 2;
 END;
 
-                    
+
 end xx_ar_scaas_pkg;
 /
