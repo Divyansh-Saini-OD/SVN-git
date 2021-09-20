@@ -3,10 +3,13 @@ SET SHOW OFF;
 SET ECHO OFF;
 SET TAB OFF;
 SET FEEDBACK OFF;
+ 
 WHENEVER SQLERROR CONTINUE;
+ 
 WHENEVER OSERROR EXIT FAILURE ROLLBACK;
 
-CREATE OR REPLACE PACKAGE xx_ap_dashboard_rpt_pkg
+create or replace 
+PACKAGE xx_ap_dashboard_rpt_pkg
 AS
   -- |  Office Depot - Project Simplify                                                           |
   -- |                                                                                            |
@@ -21,7 +24,6 @@ AS
   -- | 1.0         11/10/2017   Digamber S       Initial version                                  |
   -- | 1.1         11/10/2017   Digamber S       RTV Reconcilation                                |
   -- | 1.1         18/01/2018   Digamber S       Incorporetd hint for performance                 |
-  -- | 1.2         30/03/2020   Mayur Palsokar   Modified CHARGEBACK_DB, xx_ap_trade_chbk_summary for NAIT-106309
   -- +============================================================================================+
 TYPE chargeback_db
 IS
@@ -52,15 +54,12 @@ IS
     Typecode             VARCHAR2(150),
     po_num               VARCHAR2(50),
     sku                  VARCHAR2(250),
-    reason_code          VARCHAR2(150),
-    line_amount          NUMBER,
-    total_amt            NUMBER,
-    gl_date              DATE ); -- Added by Mayur for NAIT-106309
-
+    reason_code          varchar2(150),
+    line_amount          number,
+    total_amt            NUMBER);
 TYPE chargeback_db_ctt
 IS
   TABLE OF XX_AP_DASHBOARD_RPT_PKG.CHARGEBACK_DB;
-
   -- Ap Trade Reconciliation dashboard Report
 TYPE ap_trade_rtv_recon
 IS
@@ -84,11 +83,9 @@ IS
     MY_OTH_AMT         NUMBER,
     QY_OTH_AMT         NUMBER*/
   ) ;
-
 TYPE ap_trade_rtv_recon_ctt
 IS
   TABLE OF xx_ap_dashboard_rpt_pkg.ap_trade_rtv_recon;
-
   -- Trade Match Analysis
 TYPE ap_trade_match_analysis
 IS
@@ -117,38 +114,32 @@ IS
     system_matched       NUMBER,
     system_matched_per   NUMBER,
     manually_matched_per NUMBER ) ;
-
 TYPE ap_trade_match_analysis_ctt
 IS
   TABLE OF xx_ap_dashboard_rpt_pkg.ap_trade_match_analysis;
-
   FUNCTION VENDOR_ASSISTANT(
       p_assistant_code VARCHAR2)
     RETURN VARCHAR2;
-
   ------------------------------------------------------------
   -- AP Trade – Charge Back Summary
   -- Solution ID: 214.0
   -- RICE_ID : E3522
   ------------------------------------------------------------
-  FUNCTION xx_ap_trade_chbk_summary(
-      P_DATE_FROM      DATE ,
-      P_DATE_TO        DATE,
-      P_ORG_ID         NUMBER,
-      P_VENDOR_ID      NUMBER,
-      P_VENDOR_SITE_ID NUMBER,
-      P_ASSIST_CODE    VARCHAR2,
-      P_ITEM_ID        NUMBER,
-      P_REPORT_OPTION  VARCHAR2,
-      p_disp_option    VARCHAR2, -- 'S' 'D'
-      P_PRC_EXCEP      VARCHAR2,
-      P_QTY_EXCEP      VARCHAR2,
-      P_OTH_EXCEP      VARCHAR2,
-      P_GL_DATE_FROM   DATE, -- Added by Mayur for NAIT-106309
-      P_GL_DATE_TO     DATE  -- Added by Mayur for NAIT-106309
+FUNCTION xx_ap_trade_chbk_summary(
+    P_DATE_FROM      DATE ,
+    P_DATE_TO        DATE,
+    P_ORG_ID         NUMBER,
+    P_VENDOR_ID      NUMBER,
+    P_VENDOR_SITE_ID NUMBER,
+    P_ASSIST_CODE    VARCHAR2,
+    P_ITEM_ID        NUMBER,
+    P_REPORT_OPTION  VARCHAR2,    
+    p_disp_option   VARCHAR2,  -- 'S' 'D'
+    P_PRC_EXCEP  VARCHAR2,
+    P_QTY_EXCEP  VARCHAR2,
+    P_OTH_EXCEP  VARCHAR2
     )
-    RETURN xx_ap_dashboard_rpt_pkg.chargeback_db_ctt pipelined;
-
+   RETURN xx_ap_dashboard_rpt_pkg.chargeback_db_ctt pipelined;
   ------------------------------------------------------------
   -- Ap Trade AP Trade – RTV Reconcilation
   -- Solution ID: 217.0
@@ -160,12 +151,12 @@ IS
       p_period_from VARCHAR2,
       P_Period_to   VARCHAR2)
     RETURN xx_ap_dashboard_rpt_pkg.ap_trade_rtv_recon_ctt pipelined;
-
   ------------------------------------------------------------
   -- AP Trade – Match Analysis
   -- Solution ID: 215.0
   -- RICE_ID : E3522
   ------------------------------------------------------------
+  
   -- AP Trade – Match Analysis
   FUNCTION xx_ap_trade_match_analysis(
       p_date_from      DATE ,
@@ -179,22 +170,19 @@ IS
       P_Drop_Ship_Flag VARCHAR2,
       P_report_option  VARCHAR2 )
     RETURN xx_ap_dashboard_rpt_pkg.ap_trade_match_analysis_ctt pipelined;
-
   FUNCTION get_hold_release_date(
       p_invoice_id NUMBER)
     RETURN DATE ;
-
   FUNCTION get_hold_release_by(
       p_invoice_id NUMBER)
     RETURN VARCHAR2 ;
-
   FUNCTION get_user_name(
       p_user_id NUMBER)
     RETURN VARCHAR2 ;
-  
   FUNCTION get_po_category(
       p_po_header_id NUMBER)
     RETURN VARCHAR2 ;
 END;
 /
+
 SHOW ERRORS;

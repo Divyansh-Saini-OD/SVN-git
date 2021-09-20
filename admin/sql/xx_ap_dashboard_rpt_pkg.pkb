@@ -3,10 +3,13 @@ SET SHOW OFF;
 SET ECHO OFF;
 SET TAB OFF;
 SET FEEDBACK OFF;
+  
 WHENEVER SQLERROR CONTINUE;
+ 
 WHENEVER OSERROR EXIT FAILURE ROLLBACK;
 
-CREATE OR REPLACE PACKAGE body xx_ap_dashboard_rpt_pkg
+create or replace 
+PACKAGE body xx_ap_dashboard_rpt_pkg
 AS
   -- +============================================================================================+
   -- |  Office Depot - Project Simplify                                                           |
@@ -24,9 +27,7 @@ AS
   -- | 1.1         18/01/2018   Digamber S       Incorporetd hint for performance                 |
   -- | 1.2         10/04/2018   Priyam P         Fix for Revalidated Invoices                     |
   -- | 1.3         16/01/2018   Madhan Sanjeevi  Code Modified for NAIT-52933                     |
-  -- | 1.4         30/03/2020   Mayur Palsokar   Modified xx_ap_trade_chbk_summary for NAIT-106309|
   -- +============================================================================================+
-
 FUNCTION get_po_category(
     p_po_header_id NUMBER)
   RETURN VARCHAR2
@@ -43,7 +44,6 @@ BEGIN
   END LOOP;
   RETURN l_po_category;
 END;
-
 FUNCTION get_user_name(
     p_user_id NUMBER)
   RETURN VARCHAR2
@@ -58,7 +58,6 @@ BEGIN
   END LOOP;
   RETURN L_user_name;
 END;
-
 FUNCTION get_hold_release_date(
     p_invoice_id NUMBER)
   RETURN DATE
@@ -82,7 +81,6 @@ BEGIN
   END LOOP;
   RETURN l_date;
 END;
-
 FUNCTION get_hold_release_by(
     p_invoice_id NUMBER)
   RETURN VARCHAR2
@@ -108,7 +106,6 @@ BEGIN
   END LOOP;
   RETURN l_released_by;
 END;
-
 FUNCTION VENDOR_ASSISTANT(
     p_assistant_code VARCHAR2)
   RETURN VARCHAR2
@@ -150,10 +147,7 @@ FUNCTION xx_ap_trade_chbk_summary(
     P_DISP_OPTION    VARCHAR2, -- 'S' 'D'
     P_PRC_EXCEP      VARCHAR2,
     P_QTY_EXCEP      VARCHAR2,
-    P_OTH_EXCEP      VARCHAR2,
-    P_GL_DATE_FROM   DATE, -- Added by Mayur for NAIT-106309
-    P_GL_DATE_TO     DATE  -- Added by Mayur for NAIT-106309
-  )
+    P_OTH_EXCEP      VARCHAR2 )
   RETURN xx_ap_dashboard_rpt_pkg.chargeback_db_ctt pipelined
 IS
   L_Total NUMBER ;
@@ -210,8 +204,7 @@ IS
         ) SKU,
       --msib.segment1 sKU,
       NVL(UPPER(SUBSTR(AIL.DESCRIPTION,1,3)),'OTH') REASON_CODE,
-      NVL(ail.amount,0) line_amount,
-      ai.gl_date GL_DATE -- Added by Mayur for NAIT-106309
+      NVL(ail.amount,0) line_amount
       --total_amt;
     FROM AP_INVOICES_ALL AI,
       AP_INVOICE_LINES_ALL AIL,
@@ -223,11 +216,9 @@ IS
     AND PHA.PO_HEADER_ID = NVL(AI.PO_HEADER_ID,AI.QUICK_PO_HEADER_ID)
     AND AI.INVOICE_DATE BETWEEN TO_DATE(TO_CHAR(P_DATE_FROM)
       ||' 00:00:00','DD-MON-RR HH24:MI:SS')
-    AND TO_DATE(TO_CHAR(p_date_to)
+    AND to_date(TO_CHAR(p_date_to)
       ||' 23:59:59','DD-MON-RR HH24:MI:SS')
-    AND (AI.GL_DATE >= TO_DATE(TO_CHAR(P_GL_DATE_FROM),'DD-MON-RR') OR P_GL_DATE_FROM IS NULL) -- Added by Mayur for NAIT-106309
-    AND (AI.GL_DATE <= TO_DATE(TO_CHAR(P_GL_DATE_TO),'DD-MON-RR') OR P_GL_DATE_TO IS NULL)     -- Added by Mayur for NAIT-106309
-    AND AI.ORG_ID   = NVL(P_ORG_ID,AI.ORG_ID)
+    AND AI.ORG_ID = NVL(P_ORG_ID,AI.ORG_ID)
     AND AI.INVOICE_NUM LIKE '%DM'
     AND NVL(ai.attribute12 ,'N')     = 'Y'
     AND ai.invoice_type_lookup_code <> 'STANDARD'
@@ -285,8 +276,7 @@ IS
       a.assistant_code,
       a.Sup_num,
       a.supplier ,
-      a.vendor_site_code;
-	  
+      a.vendor_site_code ;
     -- Vendor Assistant
     CURSOR Ven_assit
     IS
@@ -336,8 +326,7 @@ IS
           ) SKU,
         --msib.segment1 sKU,
         NVL(UPPER(SUBSTR(AIL.DESCRIPTION,1,3)),'OTH') REASON_CODE,
-        NVL(ail.amount,0) line_amount,
-        ai.gl_date GL_DATE -- Added by Mayur for NAIT-106309
+        NVL(ail.amount,0) line_amount
         --total_amt;
       FROM AP_INVOICES_ALL AI,
         AP_INVOICE_LINES_ALL AIL,
@@ -349,11 +338,9 @@ IS
       AND PHA.PO_HEADER_ID = NVL(AI.PO_HEADER_ID,AI.QUICK_PO_HEADER_ID)
       AND AI.INVOICE_DATE BETWEEN TO_DATE(TO_CHAR(P_DATE_FROM)
         ||' 00:00:00','DD-MON-RR HH24:MI:SS')
-      AND TO_DATE(TO_CHAR(p_date_to)
+      AND to_date(TO_CHAR(p_date_to)
         ||' 23:59:59','DD-MON-RR HH24:MI:SS')
-      AND (AI.GL_DATE >= TO_DATE(TO_CHAR(P_GL_DATE_FROM),'DD-MON-RR') OR P_GL_DATE_FROM IS NULL) -- Added by Mayur for NAIT-106309
-      AND (AI.GL_DATE <= TO_DATE(TO_CHAR(P_GL_DATE_TO),'DD-MON-RR') OR P_GL_DATE_TO IS NULL)     -- Added by Mayur for NAIT-106309
-      AND AI.ORG_ID   = NVL(P_ORG_ID,AI.ORG_ID)
+      AND AI.ORG_ID = NVL(P_ORG_ID,AI.ORG_ID)
       AND AI.INVOICE_NUM LIKE '%DM'
       AND NVL(ai.attribute12 ,'N')     = 'Y'
       AND ai.invoice_type_lookup_code <> 'STANDARD'
@@ -406,9 +393,8 @@ IS
         ) A
       HAVING SUM(DECODE(P_PRC_EXCEP, 'Y', a.PD_AMT,0)+ DECODE(P_QTY_EXCEP, 'Y', a.SH_AMT,0)+DECODE(P_OTH_EXCEP, 'Y', a.OTH_AMT,0)) <> 0
       GROUP BY a.org_id,
-        a.assistant_code;
-    
-	-- Detail Cursor
+        a.assistant_code ;
+      -- DEtail Cursor
       CURSOR Detail
       IS
         SELECT
@@ -437,8 +423,7 @@ IS
           --msib.segment1 sKU,
           --  DECODE(nvl(AIL.INVENTORY_ITEM_ID,-1), -1,'Other','Item') Line_type,
           NVL(UPPER(SUBSTR(AIL.DESCRIPTION,1,3)),'OTH') REASON_CODE,
-          NVL(ail.amount,0) line_amount,
-          ai.gl_date GL_DATE -- Added by Mayur for NAIT-106309
+          NVL(ail.amount,0) line_amount
           --total_amt;
         FROM AP_INVOICES_ALL AI,
           AP_INVOICE_LINES_ALL AIL,
@@ -450,11 +435,9 @@ IS
         AND PHA.PO_HEADER_ID = NVL(AI.PO_HEADER_ID,AI.QUICK_PO_HEADER_ID)
         AND AI.INVOICE_DATE BETWEEN TO_DATE(TO_CHAR(P_DATE_FROM)
           ||' 00:00:00','DD-MON-RR HH24:MI:SS')
-        AND TO_DATE(TO_CHAR(p_date_to)
+        AND to_date(TO_CHAR(p_date_to)
           ||' 23:59:59','DD-MON-RR HH24:MI:SS')
-        AND (AI.GL_DATE >= TO_DATE(TO_CHAR(P_GL_DATE_FROM),'DD-MON-RR') OR P_GL_DATE_FROM IS NULL) -- Added by Mayur for NAIT-106309
-        AND (AI.GL_DATE <= TO_DATE(TO_CHAR(P_GL_DATE_TO),'DD-MON-RR') OR P_GL_DATE_TO IS NULL)     -- Added by Mayur for NAIT-106309
-        AND AI.ORG_ID   = NVL(P_ORG_ID,AI.ORG_ID)
+        AND AI.ORG_ID = NVL(P_ORG_ID,AI.ORG_ID)
         AND AI.INVOICE_NUM LIKE '%DM'
         AND NVL(ai.attribute12 ,'N')     = 'Y'
         AND ai.invoice_type_lookup_code <> 'STANDARD'
@@ -506,10 +489,8 @@ IS
           )
         ORDER BY ai.vendor_id,
           ai.vendor_site_id,
-          AI.INVOICE_ID,
-          ai.gl_date; -- Added by Mayur for NAIT-106309
-     
-	 --chargeback_db_tab xx_ap_dashboard_rpt_pkg.chargeback_db_ctt;
+          AI.INVOICE_ID ;
+        --chargeback_db_tab xx_ap_dashboard_rpt_pkg.chargeback_db_ctt;
       TYPE chargeback_db_ctt
     IS
       TABLE OF xx_ap_dashboard_rpt_pkg.chargeback_db INDEX BY PLS_INTEGER;
@@ -522,8 +503,7 @@ IS
       L_EXCEPTION   VARCHAR2(100) := 'Other';
       L_REASON_CODE VARCHAR2(100) := 'OTH';
       l_exp         VARCHAR2(100) := NULL;
-    
-	BEGIN
+    BEGIN
       xla_security_pkg.set_security_context(602);
       l_exp                   := P_OTH_EXCEP;
       IF l_chargeback_db.count > 0 THEN
@@ -590,7 +570,6 @@ IS
           L_Total     := L_Total+I.Oth_Amt;
           END IF;*/
           L_Chargeback_Db(N).Line_Amount := i.line_amount;
-          L_Chargeback_Db(N).GL_DATE     := i.GL_DATE; -- Added by Mayur for NAIT-106309
           --dbms_output.put_line('Test '||l_chargeback_db(n).vendor_id);
           n := n+1;
         END LOOP;
@@ -693,7 +672,6 @@ IS
         l_chargeback_db(0).sku                  := NULL;
         l_chargeback_db(0).Reason_code          := NULL;
         l_chargeback_db(0).line_amount          := NULL;
-        L_Chargeback_Db(0).GL_DATE              := NULL; -- Added by Mayur for NAIT-106309
       END IF;
       FOR i IN l_chargeback_db.First .. l_chargeback_db.last
       LOOP
@@ -832,24 +810,24 @@ BEGIN
   --Code commented based on NAIT-52933
   /*FOR i IN sitran (l_start_date,l_end_date)
   LOOP
-  l_ap_trade_rtv_recon(n).APPLICATION := i.APPLICATION;
-  L_Ap_Trade_Rtv_Recon(N).Country     := I.Country;
-  l_ap_trade_rtv_recon(n).DY_73_AMT   := i.DY_73_AMT;
-  l_ap_trade_rtv_recon(n).wy_73_amt   := i.wy_73_amt;
-  l_ap_trade_rtv_recon(n).my_73_amt   := i.my_73_amt;
-  L_Ap_Trade_Rtv_Recon(N).Qy_73_Amt   := I.Qy_73_Amt;
-  -- l_ap_trade_rtv_recon(n).INVOICE_NUM        := i.INVOICE_NUM;
-  -- l_ap_trade_rtv_recon(n).INVOICE_DATE       := i.INVOICE_DATE;
-  -- l_ap_trade_rtv_recon(n).RTV_NUMBER         := i.RTV_NUMBER;
-  -- L_Ap_Trade_Rtv_Recon(N).Sku                := I.Sku;
-  -- l_ap_trade_rtv_recon(n).RETURN_CODE        := i.RETURN_CODE;
-  --  l_ap_trade_rtv_recon(n).RETURN_DESCRIPTION := i.RETURN_DESCRIPTION;
-  -- l_ap_trade_rtv_recon(n).FREQUENCY_CODE     := i.FREQUENCY_CODE;
-  --l_ap_trade_rtv_recon(n).DY_OTH_AMT         := i.DY_OTH_AMT;
-  --l_ap_trade_rtv_recon(n).wy_oth_amt         := i.wy_oth_amt;
-  --l_ap_trade_rtv_recon(n).my_oth_amt         := i.my_oth_amt;
-  --l_ap_trade_rtv_recon(n).qy_oth_amt         := i.qy_oth_amt;
-  N := N+1;
+    l_ap_trade_rtv_recon(n).APPLICATION := i.APPLICATION;
+    L_Ap_Trade_Rtv_Recon(N).Country     := I.Country;
+    l_ap_trade_rtv_recon(n).DY_73_AMT   := i.DY_73_AMT;
+    l_ap_trade_rtv_recon(n).wy_73_amt   := i.wy_73_amt;
+    l_ap_trade_rtv_recon(n).my_73_amt   := i.my_73_amt;
+    L_Ap_Trade_Rtv_Recon(N).Qy_73_Amt   := I.Qy_73_Amt;
+    -- l_ap_trade_rtv_recon(n).INVOICE_NUM        := i.INVOICE_NUM;
+    -- l_ap_trade_rtv_recon(n).INVOICE_DATE       := i.INVOICE_DATE;
+    -- l_ap_trade_rtv_recon(n).RTV_NUMBER         := i.RTV_NUMBER;
+    -- L_Ap_Trade_Rtv_Recon(N).Sku                := I.Sku;
+    -- l_ap_trade_rtv_recon(n).RETURN_CODE        := i.RETURN_CODE;
+    --  l_ap_trade_rtv_recon(n).RETURN_DESCRIPTION := i.RETURN_DESCRIPTION;
+    -- l_ap_trade_rtv_recon(n).FREQUENCY_CODE     := i.FREQUENCY_CODE;
+    --l_ap_trade_rtv_recon(n).DY_OTH_AMT         := i.DY_OTH_AMT;
+    --l_ap_trade_rtv_recon(n).wy_oth_amt         := i.wy_oth_amt;
+    --l_ap_trade_rtv_recon(n).my_oth_amt         := i.my_oth_amt;
+    --l_ap_trade_rtv_recon(n).qy_oth_amt         := i.qy_oth_amt;
+    N := N+1;
   END LOOP;*/
   FOR j IN ORCL ( l_start_date,l_end_date)
   LOOP
@@ -877,9 +855,9 @@ BEGIN
   FOR i IN 1..2
   LOOP
     --Code commented based on NAIT-52933
-    /*IF i                                   = 1 THEN
-    l_ap_trade_rtv_recon(n).application := 'SITRAN';
-    l_ap_trade_rtv_recon(n).country     := 'OU_US';
+	/*IF i                                   = 1 THEN
+      l_ap_trade_rtv_recon(n).application := 'SITRAN';
+      l_ap_trade_rtv_recon(n).country     := 'OU_US';
     END IF;*/
     IF i                                   = 1 THEN
       L_Ap_Trade_Rtv_Recon(N).Application := 'Oracle AP';
@@ -889,10 +867,10 @@ BEGIN
       l_ap_trade_rtv_recon(n).application := 'Oracle AP';
       l_ap_trade_rtv_recon(n).country     :='OU_CA';
     END IF;
-    --Code commented based on NAIT-52933
+	 --Code commented based on NAIT-52933
     /*IF i                                   = 4 THEN
-    l_ap_trade_rtv_recon(n).application := 'SITRAN';
-    l_ap_trade_rtv_recon(n).country     :='OU_CA';
+      l_ap_trade_rtv_recon(n).application := 'SITRAN';
+      l_ap_trade_rtv_recon(n).country     :='OU_CA';
     END IF;*/
     l_ap_trade_rtv_recon(n).dy_73_amt := 0;
     l_ap_trade_rtv_recon(n).wy_73_amt := 0;
@@ -1044,8 +1022,8 @@ IS
           )
         ) H,
         Ap_Invoices_All Ai
-      WHERE 1                        =1
-      AND ai.invoice_type_lookup_code='STANDARD'
+      WHERE 1=1
+      and ai.invoice_type_lookup_code='STANDARD'
       AND H.LAST_UPDATE_DATE BETWEEN TO_DATE(TO_CHAR(P_DT_FROM)
         ||' 00:00:00','DD-MON-RR HH24:MI:SS')
       AND TO_DATE(TO_CHAR(P_DT_TO)
@@ -1156,8 +1134,8 @@ IS
       FROM AP_SUPPLIER_SITES_ALL SIT,
         AP_SUPPLIERS SUP,
         AP_INVOICES_ALL AI
-      WHERE 1                        =1
-      AND ai.invoice_type_lookup_code='STANDARD'
+      WHERE 1=1
+      and ai.invoice_type_lookup_code='STANDARD'
       AND AI.LAST_UPDATE_DATE BETWEEN TO_DATE(TO_CHAR(P_DT_FROM)
         ||' 00:00:00','DD-MON-RR HH24:MI:SS')
       AND TO_DATE(TO_CHAR(P_DT_TO)
@@ -1316,8 +1294,8 @@ IS
             )
           ) H,
           Ap_Invoices_All Ai
-        WHERE 1                        =1
-        AND ai.invoice_type_lookup_code='STANDARD'
+        WHERE 1=1
+        and ai.invoice_type_lookup_code='STANDARD'
         AND H.LAST_UPDATE_DATE BETWEEN TO_DATE(TO_CHAR(P_DT_FROM)
           ||' 00:00:00','DD-MON-RR HH24:MI:SS')
         AND TO_DATE(TO_CHAR(P_DT_TO)
@@ -1428,8 +1406,8 @@ IS
         FROM AP_SUPPLIER_SITES_ALL SIT,
           AP_SUPPLIERS SUP,
           AP_INVOICES_ALL AI
-        WHERE 1                        =1
-        AND ai.invoice_type_lookup_code='STANDARD'
+        WHERE 1=1
+        and ai.invoice_type_lookup_code='STANDARD'
         AND AI.LAST_UPDATE_DATE BETWEEN TO_DATE(TO_CHAR(P_DT_FROM)
           ||' 00:00:00','DD-MON-RR HH24:MI:SS')
         AND TO_DATE(TO_CHAR(P_DT_TO)
@@ -1685,4 +1663,5 @@ IS
   END Xx_Ap_Trade_Match_Analysis;
 END xx_ap_dashboard_rpt_pkg;
 /
+
 SHOW ERRORS;
