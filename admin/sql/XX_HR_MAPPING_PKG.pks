@@ -1,8 +1,7 @@
-create or replace
-PACKAGE "XX_HR_MAPPING_PKG" AS
+create or replace PACKAGE "XX_HR_MAPPING_PKG" AS
 
   FUNCTION JOB_ID (
-     p_job_title          IN VARCHAR2  
+     p_job_title          IN VARCHAR2
     ,p_job_country_code   IN VARCHAR2
     ,p_job_business_unit  IN VARCHAR2
     ,p_job_code           IN VARCHAR2
@@ -19,7 +18,8 @@ PACKAGE "XX_HR_MAPPING_PKG" AS
   ) RETURN HR_LOCATIONS.location_id%TYPE;
 
   FUNCTION ORGANIZATION_ID (
-     p_cost_center    IN  VARCHAR2
+     p_cost_center    IN  VARCHAR2,
+	 p_bg_id          IN  NUMBER
   ) RETURN HR_ALL_ORGANIZATION_UNITS.organization_id%TYPE;
 
   FUNCTION BUSINESS_GROUP_ID (
@@ -55,7 +55,8 @@ PACKAGE "XX_HR_MAPPING_PKG" AS
   ) RETURN GL_CODE_COMBINATIONS.segment1%TYPE;
 
   FUNCTION COST_CENTER (
-     p_dept               IN VARCHAR2)
+     p_dept               IN VARCHAR2,
+	p_BG_id              IN NUMBER)
   RETURN GL_CODE_COMBINATIONS.segment2%TYPE;
 
   FUNCTION ACCOUNT (
@@ -85,6 +86,9 @@ PACKAGE "XX_HR_MAPPING_PKG" AS
    ,p_grade              IN  VARCHAR2 := '%'
   ) RETURN XX_FIN_TRANSLATEVALUES.target_value1%TYPE;
 
+  FUNCTION GET_LEDGER (
+     p_company           IN VARCHAR2
+    ,p_location          IN VARCHAR2
+  ) RETURN gl_ledgers.ledger_id%TYPE;
 END XX_HR_MAPPING_PKG;
-
 /

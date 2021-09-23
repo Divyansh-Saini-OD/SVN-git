@@ -40,6 +40,7 @@ create or replace PACKAGE BODY XX_HR_EMP_PKG AS
 -- | 2.9    2015-10-06    Anoop Salim          Changes for defect 36035    	     |
 -- | 2.10   11-Feb-16    Paddy Sanjeevi	   Modified for Defect 36482              |
 -- | 2.11   14-Jun-16    Paddy Sanjeevi       Modified to avoid ldap call           |
+-- | 2.12   20-SEP-2021  Divyansh Saini       Modified code for Split project        |
 -- +=================================================================================+
   G_UPDATE_MODE      CONSTANT VARCHAR2(11) := 'UPDATE';
   G_CORRECTION_MODE  CONSTANT VARCHAR2(11) := 'CORRECTION';
@@ -74,7 +75,7 @@ create or replace PACKAGE BODY XX_HR_EMP_PKG AS
     SELECT 'Y'
       INTO v_exists
       FROM dual
-     WHERE EXISTS ( SELECT 'X' 
+     WHERE EXISTS ( SELECT 'X'
     		      FROM fnd_responsibility_vl b,
        			   fnd_user_resp_groups_direct a,
        			   fnd_user c,
@@ -87,7 +88,7 @@ create or replace PACKAGE BODY XX_HR_EMP_PKG AS
                   );
     IF v_exists='Y' THEN
        RETURN(v_exists);
-    END IF; 
+    END IF;
   EXCEPTION
     WHEN others THEN
       RETURN('N');
@@ -100,7 +101,7 @@ create or replace PACKAGE BODY XX_HR_EMP_PKG AS
   IS
 
   BEGIN
-    INSERT 
+    INSERT
       INTO  XX_IEXP_TRMTD_EMP
 	  ( employee_number
 	   ,term_date
@@ -162,8 +163,8 @@ create or replace PACKAGE BODY XX_HR_EMP_PKG AS
   )
   IS
   BEGIN
-    --Dbms_Output.Put_Line(P_Severity || ' in ' || P_Error_Location || ': ' || P_Message || '. Employee #' || P_Employee_Number);
-    --   Fnd_File.Put_Line(Fnd_File.Log,P_Severity || ' in ' || P_Error_Location || ': ' || P_Message || '. Employee #' || P_Employee_Number);
+--    Dbms_Output.Put_Line(P_Severity || ' in ' || P_Error_Location || ': ' || P_Message || '. Employee #' || P_Employee_Number);
+       Fnd_File.Put_Line(Fnd_File.Log,P_Severity || ' in ' || P_Error_Location || ': ' || P_Message || '. Employee #' || P_Employee_Number);
 
 
     IF p_severity=G_SEVERITY_ERROR THEN
@@ -202,7 +203,8 @@ create or replace PACKAGE BODY XX_HR_EMP_PKG AS
     SELECT * INTO lr_person_row
     FROM PER_ALL_PEOPLE_F
     WHERE employee_number=p_employee_number
-    AND ld_sysdate BETWEEN effective_start_date AND effective_end_date;
+    AND ld_sysdate BETWEEN effective_start_date AND effective_end_date
+	AND BUSINESS_GROUP_ID = fnd_profile.value('PER_BUSINESS_GROUP_ID'); -- Added BG condition for 2.12
 
     RETURN lr_person_row;
   END PERSON_ROW;
@@ -289,8 +291,8 @@ create or replace PACKAGE BODY XX_HR_EMP_PKG AS
       AND    A.PRIMARY_FLAG = 'Y'
 	  -- 	Added as part of defect 36035
       AND    A.assignment_status_type_id = 1
-      AND    P.person_type_id = 6	
-	  --	  
+      AND    P.person_type_id = 6
+	  --
       AND    ld_sysdate BETWEEN P.effective_start_date AND P.effective_end_date
       AND    ld_sysdate BETWEEN A.effective_start_date AND A.effective_end_date;
 
@@ -299,7 +301,7 @@ create or replace PACKAGE BODY XX_HR_EMP_PKG AS
       lc_iexp_access:=CHECK_IEXP_EMPLOYEE(p_employee_number);
 
       IF lc_iexp_access='N' THEN
-    
+
 	  HR_EX_EMPLOYEE_API.ACTUAL_TERMINATION_EMP (
         	 p_effective_date             => SYSDATE
 	        ,p_actual_termination_date    => SYSDATE
@@ -451,7 +453,7 @@ create or replace PACKAGE BODY XX_HR_EMP_PKG AS
 
     SELECT DECODE(p_sex,'F','F','M') INTO lc_sex FROM SYS.DUAL; -- for any unknown sex, use M
 
-    -- Begin Defect 36482 
+    -- Begin Defect 36482
     BEGIN
       SELECT email_address,person_party_id INTO lc_fnd_email_address,ln_person_party_id FROM FND_USER
       WHERE user_name=p_employee_number
@@ -460,8 +462,8 @@ create or replace PACKAGE BODY XX_HR_EMP_PKG AS
       --IF INSTR(lc_fnd_email_address,'@')=0 THEN
       --   lc_fnd_email_address := NULL;
       --END IF;
-    EXCEPTION 
-	 WHEN OTHERS THEN 
+    EXCEPTION
+	 WHEN OTHERS THEN
 	   lc_fnd_email_address:=NULL;
     END;
 
@@ -485,7 +487,7 @@ create or replace PACKAGE BODY XX_HR_EMP_PKG AS
         ,p_middle_names                  => TRIM(p_middle_names)	-- added TRIM for defect# 19305
         ,p_last_name                     => p_last_name
         ,p_suffix                        => p_suffix
-        ,p_email_address                 => lc_email_address  
+        ,p_email_address                 => lc_email_address
         ,p_sex                           => lc_sex
         ,p_party_id                      => ln_person_party_id
         ,p_person_type_id                => G_PERSON_TYPE_ID_EMP
@@ -524,8 +526,8 @@ create or replace PACKAGE BODY XX_HR_EMP_PKG AS
          FND_USER_PKG.UPDATEUSER(  x_user_name      => p_employee_number
                                ,x_owner          => 'CUST'
                                ,x_email_address  => lc_femail_address);
-       EXCEPTION 
-	   WHEN OTHERS THEN 
+       EXCEPTION
+	   WHEN OTHERS THEN
 	     BEGIN -- workaround for few employees who throw FND_UPDATE_USER_FAILED exception
              FND_USER_PKG.UPDATEUSER(x_user_name       => p_employee_number
                                   ,x_owner           => 'CUST'
@@ -534,8 +536,8 @@ create or replace PACKAGE BODY XX_HR_EMP_PKG AS
                                   ,x_change_source   => fnd_user_pkg.change_source_oid);
 
              LOG_LINE('INSERT_OR_UPDATE_PERSON', GET_MESSAGE('0012_EMAIL_SET','EMAIL',lc_email_address), p_employee_number, G_SEVERITY_FYI); -- Email address set to EMAIL
-          EXCEPTION 
-            WHEN OTHERS THEN 
+          EXCEPTION
+            WHEN OTHERS THEN
               BEGIN
                 LOG_LINE('INSERT_OR_UPDATE_PERSON',SQLERRM,p_employee_number);
               END;
@@ -915,6 +917,8 @@ create or replace PACKAGE BODY XX_HR_EMP_PKG AS
                                        || '.' || XX_HR_MAPPING_PKG.FUTURE());
       END IF;
     END IF;
+	
+	LOG_LINE('UPDATE_ASSIGNMENT','ln_default_code_comb_id', ln_default_code_comb_id, G_SEVERITY_WARNING); 
 
     IF p_manager_level='0' THEN -- CEO has manager_level 0... no supervisor expected
       lc_supervisor_number := NULL; -- make sure supervisor is not assigned because PeopleSoft is requiring a manager assignment now which is creating a circular ref for CEO
@@ -958,8 +962,8 @@ create or replace PACKAGE BODY XX_HR_EMP_PKG AS
         ,p_object_version_number      => ln_object_version_number
         ,p_supervisor_id              => ln_supervisor_id
         ,p_change_reason              => NULL
-        ,p_default_code_comb_id       => ln_default_code_comb_id
-        ,p_set_of_books_id            => ln_set_of_books_id
+        ,p_default_code_comb_id       => null--ln_default_code_comb_id
+        ,p_set_of_books_id            => NULL--ln_set_of_books_id
         ,p_ass_attribute1             => p_job_country_code
         ,p_ass_attribute2             => p_job_business_unit
         ,p_ass_attribute3             => p_job_code
@@ -1121,9 +1125,7 @@ create or replace PACKAGE BODY XX_HR_EMP_PKG AS
   BEGIN
 
     BEGIN
-	if p_location <> '99999' then
       ln_location_id := XX_HR_MAPPING_PKG.LOCATION_ID(p_location);
-	  end if;
       EXCEPTION WHEN OTHERS THEN
          -- LOG_LINE('UPDATE_ASSIGNMENT_CRITERIA',SQLERRM, p_employee_number, G_SEVERITY_WARNING);
          NULL; -- Logged in sync_employee when verifying LOCATION
@@ -1467,7 +1469,7 @@ create or replace PACKAGE BODY XX_HR_EMP_PKG AS
     ln_person_id                  PER_ALL_PEOPLE_F.person_id%TYPE;
     ld_sysdate                    DATE := TRUNC(SYSDATE);
     Hr_Error                      Exception;
-    ln_error_cnt                  NUMBER       := 0;          --Added for defect 29387 
+    ln_error_cnt                  NUMBER       := 0;          --Added for defect 29387
   BEGIN
 
     IF p_empl_status IN ('T','U','R','D','Q') THEN
@@ -1478,35 +1480,35 @@ create or replace PACKAGE BODY XX_HR_EMP_PKG AS
     ELSE
 
       BEGIN
-        lc_location        := XX_HR_MAPPING_PKG.LOCATION(p_location);                                         
+        lc_location        := XX_HR_MAPPING_PKG.LOCATION(p_location);
         Exception When Others Then
           ln_error_cnt := ln_error_cnt +1 ;
           --Added for defect 29387
           LOG_LINE('SYNC_EMPLOYEE',SQLERRM, p_employee_number, G_SEVERITY_WARNING);
       END;
+	  LOG_LINE('SYNC_EMPLOYEE lc_location',lc_location, p_employee_number, G_SEVERITY_WARNING);
       BEGIN
-	  if p_dept <> '9999' then
-        lc_cost_center     := XX_HR_MAPPING_PKG.COST_CENTER(p_dept);
-		end if;
+        lc_cost_center     := XX_HR_MAPPING_PKG.COST_CENTER(p_dept,fnd_profile.VALUE('PER_BUSINESS_GROUP_ID')); -- Added BG condition for 2.12
         Exception When Others Then
           Ln_Error_Cnt := Ln_Error_Cnt +1 ;
           --Added for defect 29387
 
           LOG_LINE('SYNC_EMPLOYEE',SQLERRM, p_employee_number, G_SEVERITY_WARNING);
       END;
+	  LOG_LINE('SYNC_EMPLOYEE lc_cost_center ',lc_cost_center, p_employee_number, G_SEVERITY_WARNING);
       BEGIN
-	  
-        ln_organization_id := XX_HR_MAPPING_PKG.ORGANIZATION_ID(lc_cost_center);
-		
+        ln_organization_id := XX_HR_MAPPING_PKG.ORGANIZATION_ID(lc_cost_center,fnd_profile.VALUE('PER_BUSINESS_GROUP_ID')); -- Added BG condition for 2.12
         EXCEPTION WHEN OTHERS THEN
           Ln_Error_Cnt := Ln_Error_Cnt +1 ;
           --Added for defect 29387
           LOG_LINE('SYNC_EMPLOYEE',SQLERRM, p_employee_number, G_SEVERITY_WARNING);
       END;
+	  
+	  LOG_LINE('SYNC_EMPLOYEE ln_organization_id ',ln_organization_id, p_employee_number, G_SEVERITY_WARNING);
 
       IF BITAND(p_sync_mode,G_SYNC_PERSON)>0 AND (Ln_Error_Cnt = 0)THEN  --Added for defect 29387
         lc_step            := 'person';
-        
+
         INSERT_OR_UPDATE_PERSON (
            p_employee_number    => p_employee_number
           ,p_business_group_id  => XX_HR_MAPPING_PKG.BUSINESS_GROUP_ID(ln_organization_id)
@@ -1517,7 +1519,7 @@ create or replace PACKAGE BODY XX_HR_EMP_PKG AS
           ,p_sex                => p_sex
           ,p_reg_region         => p_reg_region
           ,p_email_id           => p_email_id			-- Defect 36482
-	    
+
         );
         COMMIT;
         LOG_LINE('SYNC_EMPLOYEE',GET_MESSAGE('0010_SYNCHED_STEP','STEP',lc_step), p_employee_number, G_SEVERITY_FYI); -- Synched - STEP
@@ -1756,7 +1758,7 @@ create or replace PACKAGE BODY XX_HR_EMP_PKG AS
     ld_sysdate         DATE := TRUNC(SYSDATE);
   BEGIN
     G_Program_Name := 'XXHRSYNCHANGEDEMPLOYEES';
-    
+
 
 
 
@@ -1769,6 +1771,7 @@ create or replace PACKAGE BODY XX_HR_EMP_PKG AS
           ON P.employee_number=V.emplid                                           -- only necessary for Auto Update exclusions
         WHERE T.emplid=V.emplid
           And Nvl(P.Attribute1,'Y') <> 'N' -- Additional Personal Details DFF segment1 is Auto Update, meaning don't sync if N
+		  AND XX_HR_MAPPING_PKG.GET_LEDGER( COMPANY, LOCATION) = fnd_profile.value('GL_SET_OF_BKS_ID') ---- Added ledger condition for 2.12
           AND ld_sysdate BETWEEN NVL(P.effective_start_date,ld_sysdate) AND NVL(P.effective_end_date,ld_sysdate) -- only necessary for Auto Update exclusions
         ORDER BY grade DESC)
     Loop
@@ -1812,6 +1815,7 @@ create or replace PACKAGE BODY XX_HR_EMP_PKG AS
           ON P.employee_number=V.emplid                                           -- only necessary for Auto Update exclusions
         WHERE T.emplid=V.emplid
           AND NVL(P.attribute1,'Y') <> 'N' -- Additional Personal Details DFF segment1 is Auto Update, meaning don't sync if N
+		  AND XX_HR_MAPPING_PKG.GET_LEDGER( COMPANY, LOCATION) = fnd_profile.value('GL_SET_OF_BKS_ID')  -- Added Ledger condition for 2.12
           AND ld_sysdate BETWEEN NVL(P.effective_start_date,ld_sysdate) AND NVL(P.effective_end_date,ld_sysdate) -- only necessary for Auto Update exclusions
         ORDER BY grade DESC)
     LOOP
@@ -1870,6 +1874,8 @@ create or replace PACKAGE BODY XX_HR_EMP_PKG AS
     lc_employee_number   VARCHAR2(20);
   BEGIN
     G_PROGRAM_NAME := 'XXHRSYNCALLEMPLOYEES';
+	
+	fnd_file.put_line(fnd_file.log,'fnd_profile.value '||fnd_profile.value('GL_SET_OF_BKS_ID'));
 
     IF BITAND(ln_sync_mode,G_SYNC_PERSON)>0 THEN
       FOR lr_row
@@ -1883,10 +1889,12 @@ create or replace PACKAGE BODY XX_HR_EMP_PKG AS
             AND V.emplid>=p_from_employee_number
             AND V.emplid<=p_to_employee_number
             AND NVL(P.attribute1,'Y') <> 'N' -- Additional Personal Details DFF segment1 is Auto Update, meaning don't sync if N
+			AND XX_HR_MAPPING_PKG.GET_LEDGER( COMPANY, LOCATION) = fnd_profile.value('GL_SET_OF_BKS_ID')  -- Added Ledger condition for 2.12
             AND ld_sysdate BETWEEN NVL(P.effective_start_date,ld_sysdate) AND NVL(P.effective_end_date,ld_sysdate)  -- only necessary for Auto Update exclusions
 
           ORDER BY V.emplid)
       LOOP
+	    fnd_file.put_line(fnd_file.log,'In Loop');
         lc_employee_number := lr_row.emplid;
         SYNC_EMPLOYEE(lr_row, G_SYNC_PERSON);
       END LOOP;
@@ -1906,6 +1914,7 @@ create or replace PACKAGE BODY XX_HR_EMP_PKG AS
           AND ld_sysdate BETWEEN NVL(P.effective_start_date,ld_sysdate) AND NVL(P.effective_end_date,ld_sysdate)  -- only necessary for Auto Update exclusions
         ORDER BY V.emplid)
     LOOP
+	fnd_file.put_line(fnd_file.log,'In Loop');
       lc_employee_number := lr_row.emplid;
       SYNC_EMPLOYEE(lr_row, ln_sync_mode, p_create_supervisors);
     END LOOP;
@@ -2153,7 +2162,8 @@ create or replace PACKAGE BODY XX_HR_EMP_PKG AS
     SELECT person_type_id
     INTO G_PERSON_TYPE_ID_EMP
     FROM PER_PERSON_TYPES
-    WHERE system_person_type='EMP';
+    WHERE system_person_type='EMP'
+      and BUSINESS_GROUP_ID = fnd_profile.value('PER_BUSINESS_GROUP_ID'); -- Added BG condition for 2.12
 
     ----Bring contingent workers in with EMP type for full access
     --SELECT person_type_id
@@ -2161,5 +2171,4 @@ create or replace PACKAGE BODY XX_HR_EMP_PKG AS
     --FROM PER_PERSON_TYPES
     --WHERE system_person_type='CWK';
 END XX_HR_EMP_PKG;
-
 /

@@ -1,5 +1,4 @@
-create or replace
-PACKAGE XX_HR_EMP_PKG AS
+create or replace PACKAGE XX_HR_EMP_PKG AS
 -- +=================================================================================+
 -- |                       Office Depot - Project Simplify                           |
 -- |                                                                                 |
@@ -15,7 +14,7 @@ PACKAGE XX_HR_EMP_PKG AS
 -- |  2.0     2011-09-22   Joe Klein          Updated for defect 13429 to            |
 -- |                                          update phone numbers.                  |
 -- |                                                                                 |
---++=================================================================================+
+-- +=================================================================================+
   G_SYNC_PERSON      CONSTANT NUMBER := 1;
   G_SYNC_ASSIGNMENT  CONSTANT NUMBER := 2;
   G_SYNC_CRITERIA    CONSTANT NUMBER := 4;
@@ -71,5 +70,4 @@ PACKAGE XX_HR_EMP_PKG AS
   );
 
 END XX_HR_EMP_PKG;
-
 /

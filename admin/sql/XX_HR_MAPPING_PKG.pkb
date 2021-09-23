@@ -1,12 +1,11 @@
-create or replace
-PACKAGE BODY "XX_HR_MAPPING_PKG" AS
+create or replace PACKAGE BODY "XX_HR_MAPPING_PKG" AS
 -- +================================================================================+
 -- |                  Office Depot - Project Simplify                    	    |
 -- |                  Office Depot                                         	    |
 -- +=================================================================================+
 -- | Name  	   : XX_HR_MAPPING_PKG (XX_HR_MAPPING_PKG.pkb)                      |
 -- | Description   : I0099 Employee with PSHR upgrade 				    |
--- |                                  	    				            |		
+-- |                                  	    				            |
 -- |Change Record:                                                         	    |
 -- |===============                                                        	    |
 -- |Version Date        Author     Remarks        Description         	            |
@@ -14,11 +13,12 @@ PACKAGE BODY "XX_HR_MAPPING_PKG" AS
 -- |1.0     			   Initial draft version          		    |
 -- |                                                                                |
 -- |1.1    19-SEP-14   Saritha M   Defect # 31846 To improve the performance        |
--- |						  of the program we have commented  | 
+-- |						  of the program we have commented  |
 -- |		                                  HR_USORG_LOV_V view and           |
 -- |		                                  included HR_ALL_ORGANIZATION_UNITS|
 -- |		                                  table.                            |
 -- |                                                                         	    |
+-- |1.2    20-SEP-21   Divyansh Saini   Code changes done for Split project          |
 -- +=================================================================================+
 
   G_TRANSLATE_JOB           CONSTANT VARCHAR(30) := 'HR_PS_TO_ORACLE_JOB';
@@ -163,9 +163,11 @@ PACKAGE BODY "XX_HR_MAPPING_PKG" AS
       FROM PER_JOBS
       WHERE UPPER(name) like UPPER(p_job_country_code || p_job_business_unit || ':' || p_job_code || ':%')
         AND ld_sysdate BETWEEN date_from AND NVL(date_to,SYSDATE)
+        and BUSINESS_GROUP_ID = fnd_profile.value('PER_BUSINESS_GROUP_ID')
         AND rownum=1
       ORDER BY job_id DESC; -- could be more than one temporarily when new job is added with updated title.
                             -- in that case, use the most recent job (highest job_id)
+      fnd_file.put_line(fnd_file.log,'l_job_id '||l_job_id);
     EXCEPTION WHEN NO_DATA_FOUND THEN -- else use translation mappings to find job...
       l_job_name := JOB_TRANSLATION(p_job_country_code      => p_job_country_code
                                    ,p_job_business_unit     => p_job_business_unit
@@ -190,7 +192,7 @@ PACKAGE BODY "XX_HR_MAPPING_PKG" AS
       FROM PER_JOBS
       WHERE UPPER(name)=UPPER(l_job_name);
     END;
-    
+
     RETURN l_job_id;
 
     EXCEPTION WHEN OTHERS THEN
@@ -239,7 +241,8 @@ PACKAGE BODY "XX_HR_MAPPING_PKG" AS
 
 
   FUNCTION ORGANIZATION_ID (
-     p_cost_center    IN  VARCHAR2
+     p_cost_center    IN  VARCHAR2,
+	 p_bg_id          IN  NUMBER
   ) RETURN                 HR_ALL_ORGANIZATION_UNITS.organization_id%TYPE
   IS
     ln_organization_id     HR_ALL_ORGANIZATION_UNITS.organization_id%TYPE := NULL;
@@ -252,15 +255,16 @@ PACKAGE BODY "XX_HR_MAPPING_PKG" AS
       FROM HR_USORG_LOV_V
       WHERE UPPER(org_name) like 'CC' || p_cost_center || '-%'
         AND ld_sysdate BETWEEN date_from AND NVL(date_to,SYSDATE);*/
-    
+
     -- Added as per Ver 1.1 as per defect # 31846.
       SELECT organization_id
       INTO ln_organization_id
-      FROM HR_ALL_ORGANIZATION_UNITS 
-     WHERE  UPPER(name) like 'CC' || p_cost_center || '-%'
-        AND ld_sysdate BETWEEN date_from AND NVL(date_to,SYSDATE);            
-      
-        
+      FROM HR_ALL_ORGANIZATION_UNITS
+     WHERE  UPPER(name) like '%CC' || p_cost_center || '-%'
+        AND ld_sysdate BETWEEN date_from AND NVL(date_to,SYSDATE)
+		AND business_group_id = p_bg_id;  -- Added for 1.2
+
+
     END IF;
 
     RETURN ln_organization_id;
@@ -331,9 +335,86 @@ PACKAGE BODY "XX_HR_MAPPING_PKG" AS
       RETURN NULL;
   END;
 
+  FUNCTION GET_LEDGER (
+     p_company           IN VARCHAR2
+    ,p_location          IN VARCHAR2
+  ) RETURN gl_ledgers.ledger_id%TYPE
+  IS
+    lc_company       GL_CODE_COMBINATIONS.segment1%TYPE := NULL;
+    lc_error_message VARCHAR2(2000);
+	ln_ledger_id     gl_ledgers.ledger_id%TYPE;
+  BEGIN
+    IF p_location IS NOT NULL THEN
+      IF p_location='010000' THEN --Location 010000 may exist for multiple companies, so get Oracle company from Peoplesoft company
+        XX_GL_PSHR_INTERFACE_PKG.DERIVE_COMPANY(p_ps_company    => p_company
+                                               ,x_ora_company   => lc_company
+                                               ,x_error_message => lc_error_message);
+      ELSE
+        lc_company := XX_GL_TRANSLATE_UTL_PKG.DERIVE_COMPANY_FROM_LOCATION(p_location); --all other locations should be uniquely associated with one company
+      END IF;
 
+      IF lc_company IS NULL THEN
+        RAISE_APPLICATION_ERROR(-20563,GET_MESSAGE('0017_MAP_COM_FAILED','COMPANY', p_company, 'LOCATION', p_location),TRUE);
+        RETURN NULL;
+      END IF;
+	  BEGIN
+	   SELECT gl.ledger_id
+	     INTO ln_ledger_id
+		 FROM FND_FLEX_VALUES FFV ,
+			   fnd_flex_value_sets FFVS,
+               gl_ledgers gl
+	    WHERE FFV.flex_value_set_id = FFVS.flex_value_set_id
+		  AND  FFVS.flex_value_set_name IN ( 'OD_GL_GLOBAL_COMPANY')
+          AND  gl.short_name = ffv.attribute1
+		  AND  FFV.flex_value = lc_company;
+	  EXCEPTIOn WHEN OTHERS THEN
+	     ln_ledger_id := -1;
+	  END;
+    END IF;
+    RETURN ln_ledger_id;
+
+    EXCEPTION WHEN OTHERS THEN
+      RAISE_APPLICATION_ERROR(-20564,GET_MESSAGE('0017_MAP_COM_FAILED','COMPANY', p_company, 'LOCATION', p_location),TRUE);
+      RETURN NULL;
+  END;
+
+--
+--  FUNCTION COST_CENTER (
+--    p_dept               IN VARCHAR2
+--  ) RETURN GL_CODE_COMBINATIONS.segment2%TYPE
+--  IS
+--    lc_cost_center GL_CODE_COMBINATIONS.segment2%TYPE := NULL;
+--    ld_sysdate DATE := TRUNC(SYSDATE);
+--  BEGIN
+--    IF p_dept IS NOT NULL THEN  -- international employee depts not setup yet, so check if dept exists
+--       -- Commented as per Ver 1.1 to improve performance as per defect# 31846
+--     /* SELECT p_dept
+--      INTO lc_cost_center
+--      FROM HR_USORG_LOV_V
+--      WHERE UPPER(org_name) like 'CC' || p_dept || '-%'
+--        AND ld_sysdate BETWEEN date_from AND NVL(date_to,SYSDATE);*/
+--
+--      -- Added as per Ver 1.1 as per defect# 31846
+--            SELECT p_dept
+--              INTO lc_cost_center
+--              FROM HR_ALL_ORGANIZATION_UNITS
+--             WHERE UPPER(name) like 'CC' || p_dept || '-%'
+--               AND ld_sysdate BETWEEN date_from AND NVL(date_to,SYSDATE);
+--
+--    END IF;
+--
+----    RETURN TRANSLATION(G_TRANSLATE_COST_CENTER, p_dept);  -- Peoplesoft now in sync, so no translation needed
+--    RETURN lc_cost_center;
+--
+--    EXCEPTION WHEN OTHERS THEN
+--      RAISE_APPLICATION_ERROR(-20333,GET_MESSAGE('0018_MAP_CC_FAILED','DEPT', p_dept),TRUE);
+--      RETURN NULL;
+--  END;  
+  
+  
   FUNCTION COST_CENTER (
-    p_dept               IN VARCHAR2
+    p_dept               IN VARCHAR2,
+	p_BG_id              IN NUMBER
   ) RETURN GL_CODE_COMBINATIONS.segment2%TYPE
   IS
     lc_cost_center GL_CODE_COMBINATIONS.segment2%TYPE := NULL;
@@ -346,14 +427,14 @@ PACKAGE BODY "XX_HR_MAPPING_PKG" AS
       FROM HR_USORG_LOV_V
       WHERE UPPER(org_name) like 'CC' || p_dept || '-%'
         AND ld_sysdate BETWEEN date_from AND NVL(date_to,SYSDATE);*/
-      
+
       -- Added as per Ver 1.1 as per defect# 31846
-            SELECT p_dept
-              INTO lc_cost_center
-              FROM HR_ALL_ORGANIZATION_UNITS 
-             WHERE UPPER(name) like 'CC' || p_dept || '-%'
-               AND ld_sysdate BETWEEN date_from AND NVL(date_to,SYSDATE);
-       
+			SELECT p_dept
+			  INTO lc_cost_center
+			  FROM HR_ALL_ORGANIZATION_UNITS
+			 WHERE UPPER(name) like '%CC' || p_dept || '-%'
+			   AND ld_sysdate BETWEEN date_from AND NVL(date_to,SYSDATE)
+			   AND business_group_id = p_BG_id;  -- Added for 1.2
     END IF;
 
 --    RETURN TRANSLATION(G_TRANSLATE_COST_CENTER, p_dept);  -- Peoplesoft now in sync, so no translation needed
@@ -457,5 +538,4 @@ PACKAGE BODY "XX_HR_MAPPING_PKG" AS
 
 
 END XX_HR_MAPPING_PKG;
-
 /
