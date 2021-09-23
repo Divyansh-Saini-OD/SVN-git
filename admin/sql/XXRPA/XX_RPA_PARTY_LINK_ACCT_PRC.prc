@@ -146,3 +146,4 @@ WHEN OTHERS THEN
 	DBMS_OUTPUT.PUT_LINE ('Error while creating Parent Child Relationship:' || ' ' || SQLERRM);
 	P_STATUS := 'ERROR';
 END;
+/
