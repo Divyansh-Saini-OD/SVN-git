@@ -31,6 +31,7 @@ CREATE OR REPLACE PACKAGE BODY xx_po_global_vendor_pkg IS
 -- |                                                         Non-Converted Sites   |
 -- | 1.4    23-JUL-2013  Veronica M                          I1141 - Modified for  |
 -- |                                                         R12 Upgrade Retrofit. |
+-- | 1.5    23-SEP-2021  Mayur Palsokar                      NAIT-195643 - Modifie f_translate_inbound for Split change  |
 -- +===============================================================================+
 FUNCTION f_translate_inbound (v_global_vendor_id IN VARCHAR2 DEFAULT NULL,
                               v_trx_date DATE DEFAULT SYSDATE) RETURN NUMBER IS
@@ -45,7 +46,8 @@ FUNCTION f_translate_inbound (v_global_vendor_id IN VARCHAR2 DEFAULT NULL,
        WHERE (attribute9 = v_global_vendor_id 
               OR (vendor_site_id = v_global_vendor_id AND attribute9 IS NULL))
        AND   pay_site_flag = 'Y'
-       AND   (inactive_date IS NULL OR inactive_date > v_trx_date);
+       AND   (inactive_date IS NULL OR inactive_date > v_trx_date)
+	   AND ORG_ID = FND_PROFILE.VALUE('ORG_ID');    -- Added for NAIT-195643
 
     EXCEPTION
        WHEN TOO_MANY_ROWS THEN
@@ -56,7 +58,8 @@ FUNCTION f_translate_inbound (v_global_vendor_id IN VARCHAR2 DEFAULT NULL,
             WHERE (attribute9 = v_global_vendor_id
                    OR (vendor_site_id = v_global_vendor_id AND attribute9 IS NULL))
             AND   primary_pay_site_flag = 'Y'
-            AND   (inactive_date IS NULL OR inactive_date > v_trx_date);
+            AND   (inactive_date IS NULL OR inactive_date > v_trx_date)
+		    AND ORG_ID = FND_PROFILE.VALUE('ORG_ID');    -- Added for NAIT-195643
 
     END;
     RETURN v_target_value;
@@ -66,7 +69,8 @@ FUNCTION f_translate_inbound (v_global_vendor_id IN VARCHAR2 DEFAULT NULL,
        RETURN -1;
  END f_translate_inbound;
 
-FUNCTION f_get_outbound (v_vendor_site_id IN NUMBER DEFAULT NULL) RETURN VARCHAR2 IS
+FUNCTION 
+ (v_vendor_site_id IN NUMBER DEFAULT NULL) RETURN VARCHAR2 IS
  -- v_target_value po_vendor_sites_all.attribute9%TYPE := -1;
  v_target_value ap_supplier_sites_all.attribute9%TYPE := -1;                            -- Commented/Added for R12 Upgrade Retrofit By Veronica on 23-Jul-13
  BEGIN
@@ -87,4 +91,4 @@ FUNCTION f_get_outbound (v_vendor_site_id IN NUMBER DEFAULT NULL) RETURN VARCHAR
     END f_get_outbound;
  END xx_po_global_vendor_pkg;
 /
-SHO ERR
+SHOW ERR
