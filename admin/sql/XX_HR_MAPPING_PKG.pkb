@@ -18,7 +18,6 @@ create or replace PACKAGE BODY "XX_HR_MAPPING_PKG" AS
 -- |		                                  included HR_ALL_ORGANIZATION_UNITS|
 -- |		                                  table.                            |
 -- |                                                                         	    |
--- |1.2    20-SEP-21   Divyansh Saini   Code changes done for Split project          |
 -- +=================================================================================+
 
   G_TRANSLATE_JOB           CONSTANT VARCHAR(30) := 'HR_PS_TO_ORACLE_JOB';
@@ -262,7 +261,7 @@ create or replace PACKAGE BODY "XX_HR_MAPPING_PKG" AS
       FROM HR_ALL_ORGANIZATION_UNITS
      WHERE  UPPER(name) like '%CC' || p_cost_center || '-%'
         AND ld_sysdate BETWEEN date_from AND NVL(date_to,SYSDATE)
-		AND business_group_id = p_bg_id;  -- Added for 1.2
+		AND business_group_id = p_bg_id;
 
 
     END IF;
@@ -344,6 +343,8 @@ create or replace PACKAGE BODY "XX_HR_MAPPING_PKG" AS
     lc_error_message VARCHAR2(2000);
 	ln_ledger_id     gl_ledgers.ledger_id%TYPE;
   BEGIN
+    FND_FILE.PUT_LINE(FND_FILE.LOG,'p_company '||p_company);
+	FND_FILE.PUT_LINE(FND_FILE.LOG,'Location '||p_location);
     IF p_location IS NOT NULL THEN
       IF p_location='010000' THEN --Location 010000 may exist for multiple companies, so get Oracle company from Peoplesoft company
         XX_GL_PSHR_INTERFACE_PKG.DERIVE_COMPANY(p_ps_company    => p_company
@@ -352,9 +353,10 @@ create or replace PACKAGE BODY "XX_HR_MAPPING_PKG" AS
       ELSE
         lc_company := XX_GL_TRANSLATE_UTL_PKG.DERIVE_COMPANY_FROM_LOCATION(p_location); --all other locations should be uniquely associated with one company
       END IF;
+	  FND_FILE.PUT_LINE(FND_FILE.LOG,'lc_company '||lc_company);
 
       IF lc_company IS NULL THEN
-        RAISE_APPLICATION_ERROR(-20563,GET_MESSAGE('0017_MAP_COM_FAILED','COMPANY', p_company, 'LOCATION', p_location),TRUE);
+      --  RAISE_APPLICATION_ERROR(-20563,GET_MESSAGE('0017_MAP_COM_FAILED','COMPANY', p_company, 'LOCATION', p_location),TRUE);
         RETURN NULL;
       END IF;
 	  BEGIN
@@ -374,7 +376,7 @@ create or replace PACKAGE BODY "XX_HR_MAPPING_PKG" AS
     RETURN ln_ledger_id;
 
     EXCEPTION WHEN OTHERS THEN
-      RAISE_APPLICATION_ERROR(-20564,GET_MESSAGE('0017_MAP_COM_FAILED','COMPANY', p_company, 'LOCATION', p_location),TRUE);
+     -- RAISE_APPLICATION_ERROR(-20564,GET_MESSAGE('0017_MAP_COM_FAILED','COMPANY', p_company, 'LOCATION', p_location),TRUE);
       RETURN NULL;
   END;
 
@@ -434,7 +436,7 @@ create or replace PACKAGE BODY "XX_HR_MAPPING_PKG" AS
 			  FROM HR_ALL_ORGANIZATION_UNITS
 			 WHERE UPPER(name) like '%CC' || p_dept || '-%'
 			   AND ld_sysdate BETWEEN date_from AND NVL(date_to,SYSDATE)
-			   AND business_group_id = p_BG_id;  -- Added for 1.2
+			   AND business_group_id = p_BG_id;
     END IF;
 
 --    RETURN TRANSLATION(G_TRANSLATE_COST_CENTER, p_dept);  -- Peoplesoft now in sync, so no translation needed
