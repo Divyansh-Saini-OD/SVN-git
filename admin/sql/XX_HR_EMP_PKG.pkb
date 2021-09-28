@@ -1759,7 +1759,7 @@ create or replace PACKAGE BODY XX_HR_EMP_PKG AS
   BEGIN
     G_Program_Name := 'XXHRSYNCHANGEDEMPLOYEES';
 
-
+    FND_FILE.PUT_LINE(FND_FILE.LOG,'Ledger Id : '||fnd_profile.value('GL_SET_OF_BKS_ID'));
 
 
     -- SYNC employees specified in Peoplesoft (when an emp is updated in Peoplesoft HR, a trigger row will be written here)
