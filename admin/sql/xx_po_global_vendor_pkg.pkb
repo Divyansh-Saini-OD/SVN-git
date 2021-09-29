@@ -51,7 +51,7 @@ BEGIN
     AND pay_site_flag   = 'Y'
     AND (inactive_date IS NULL
     OR inactive_date    > v_trx_date)
-    AND ORG_ID          = FND_PROFILE.VALUE('ORG_ID'); -- Added for NAIT-195643
+    AND ORG_ID          = FND_GLOBAL.ORG_ID(); -- Added for NAIT-195643
   EXCEPTION
   WHEN TOO_MANY_ROWS THEN
     SELECT vendor_site_id
@@ -64,7 +64,7 @@ BEGIN
     AND primary_pay_site_flag = 'Y'
     AND (inactive_date       IS NULL
     OR inactive_date          > v_trx_date)
-    AND ORG_ID                = FND_PROFILE.VALUE('ORG_ID'); -- Added for NAIT-195643
+    AND ORG_ID                = FND_GLOBAL.ORG_ID(); -- Added for NAIT-195643
   END;
   RETURN v_target_value;
 EXCEPTION
