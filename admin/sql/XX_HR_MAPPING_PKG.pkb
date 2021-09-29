@@ -189,7 +189,8 @@ create or replace PACKAGE BODY "XX_HR_MAPPING_PKG" AS
       SELECT job_id
       INTO l_job_id
       FROM PER_JOBS
-      WHERE UPPER(name)=UPPER(l_job_name);
+      WHERE UPPER(name)=UPPER(l_job_name)
+	    and BUSINESS_GROUP_ID = fnd_profile.value('PER_BUSINESS_GROUP_ID');
     END;
 
     RETURN l_job_id;
