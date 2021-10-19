@@ -1,4 +1,4 @@
-CREATE OR REPLACE PACKAGE BODY XX_IBY_SETTLEMENT_PKG
+create or replace package body XX_IBY_SETTLEMENT_PKG
 AS
 -- +===========================================================================+
 -- |                  Office Depot - Project Simplify                          |
@@ -120,7 +120,7 @@ AS
 -- |41.0	   03-NOV-2016 Rakesh Polepalli    Changes for defects# 37866,39910 |
 -- |42.0	   03-NOV-2016 Rakesh Polepalli    Changes for defects# 38223,40149 |
 -- |43.0       27-DEC-2016 Suresh Ponnambalam  Defect 40377 AMEX SKU order change|
--- |44.0       02-SEP-2017  Uday Jadhav         Changes done for BIZBOX Rollout to pass MPL_ORDER_ID to IXINVOICE|
+-- |44.0     02-SEP-2017  Uday Jadhav         Changes done for BIZBOX Rollout to pass MPL_ORDER_ID to IXINVOICE|
 -- |45.0       05-FEB-2018 Atul Khard  		   Defect 44326 Adding HINT /*+ index(OOH,OE_ORDER_HEADERS_U2) */|
 -- |46.0       21-FEB-2018 Rohit Gupta         Modified code for defect #44299 |
 -- |47.0       05-MAR-2018 M K Pramod Kumar    Modified code for defect NAIT-31107 |
@@ -136,11 +136,11 @@ AS
 -- |48.6       16-JUL-2020 Atul Khard          Modified for EMV Card changes   |
 -- |48.7	   30-NOV-2020 Karan Varshney 	   Modified for AJBCredit - Settlement Issue (NAIT-161505)	|
 -- |48.8	   06-JAN-2021 Karan Varshney	   Modiifed for OD EBS Field 50 in the settlement issue (NAIT-165607)  	|
--- |49.0	   06-JUL-2021 Amit Kumar		   NAIT-185985, NAIT-190014 B-Comm and ELEVATE Together- CE Settlement changes
--- |49.1	   09-Aug-2021 Amit Kumar		   NAIT-186046 Settlement Issue - Subscriptions - Settlement is different than the authorization: Changing Terminal Number so it could match 
+-- |49.0	   09-Aug-2021 Amit Kumar		   NAIT-186046 Settlement Issue - Subscriptions - Settlement is different than the authorization: Changing Terminal Number so it could match 
 -- |										   the settlement to the authorization so it sent the abbreviated settlement record to WorldPay.
--- |49.2 	   09-Aug-2021 Amit Kumar		   NAIT-187508 Authorized Returns are sent to Settlement with the incorrect Transaction Number. 
--- +============================================================================================================================+
+-- |49.1 	   09-Aug-2021 Amit Kumar		   NAIT-187508 Authorized Returns are sent to Settlement with the incorrect Transaction Number. 
+-- |49.2 	   19-Oct-2021 Amit Kumar		   NAIT-197965 OD - EBS - AJB Team - Modify Settlement program for a date issue. Undo changes done in #v48.8
+-- +===========================================================================+
 
 	g_package_name              CONSTANT all_objects.object_name%TYPE                        := 'xx_iby_settlement_pkg';
 	g_return_success            CONSTANT VARCHAR2(20)                                              := 'SUCCESS';
@@ -2801,12 +2801,12 @@ AS
 										 ,
 				   xaord.receipt_method_id receipt_method_id,
 				   xaord.additional_auth_codes additional_auth_codes,
-				   /*TO_CHAR(xaord.receipt_date,					-- Modified the code changes for version 48.8
-						   'MMDDYYYY') ixdate,*/
-					NVL(TO_CHAR(op.credit_card_approval_date,
+				   TO_CHAR(xaord.receipt_date,					-- Modified the code changes for version 48.8 --Uncommented again for NAIT-197965 v49.2
+						   'MMDDYYYY') ixdate,
+					/*NVL(TO_CHAR(op.credit_card_approval_date,
 								'MMDDYYYY'),
 						TO_CHAR(xaord.receipt_date,
-								'MMDDYYYY')) ixdate,
+								'MMDDYYYY')) ixdate,*/			-- Commented for NAIT-197965 v49.2
 				   '000000' ixtime,
 				   xaord.customer_id pay_from_customer,
 				   xaord.customer_site_billto_id customer_site_use_id,
@@ -3094,12 +3094,12 @@ AS
 				   acr.payment_server_order_num payment_server_id,
 				   acr.receipt_method_id receipt_method_id,
 				   xaord.additional_auth_codes additional_auth_codes,
-				   /*TO_CHAR(acr.receipt_date,							-- Modified the code changes for version 48.8
-						   'MMDDYYYY') ixdate,*/
-					NVL(TO_CHAR(op.credit_card_approval_date,
+				   TO_CHAR(acr.receipt_date,			-- Modified the code changes for version 48.8 --Uncommented again for NAIT-197965 v49.2
+						   'MMDDYYYY') ixdate,
+				 /*NVL(TO_CHAR(op.credit_card_approval_date,
 								'MMDDYYYY'),
 						TO_CHAR(acr.receipt_date,
-								'MMDDYYYY')) ixdate,
+								'MMDDYYYY')) ixdate,*/ --commented for NAIT-197965 v49.2
 				   '000000' ixtime,
 				   acr.pay_from_customer pay_from_customer,
 				   acr.customer_site_use_id customer_site_use_id,
@@ -4768,6 +4768,7 @@ END xx_set_post_receipt_variables;
 
 				BEGIN
 					gc_source := 'AC';
+					
 					--NAIT-186046 Change started
 					--gc_ixregisternumber := '56'; --NAIT-186046-- Commented
 					gc_ixregisternumber := '95';
@@ -6591,7 +6592,6 @@ END xx_set_post_receipt_variables;
 				--gc_ixtransnumber := gn_order_number;	 --Commented		
 				gc_ixtransnumber := gc_trx_number;
 				--End of NAIT-187508 Changes
-				
 				gc_ixrecptnumber :=    'OM'
 									|| gn_order_payment_id;
 			ELSIF(gc_remit_processing_type = g_poe_single_pmt_multi_ord)
@@ -9095,84 +9095,6 @@ END xx_set_post_receipt_variables;
 		END IF;
 	END xx_validate_101_201_creation;
 
--- NAIT-190014/NAIT-185985 Start
--- +====================================================================+
--- | PROCEDURE  : XX_APPID_TO_STORENUM                              	|
--- |                                                                    |
--- | DESCRIPTION: is new procedure created for NAIT-190014/NAIT-185985.	|
--- |	 This procedure is used to derive ixstorenum and pre2 using 	|
--- |	appid (in xx_om_header_attributes_all) for order payments.	 	|
--- |	The derived values will be assigned back to the global variables|
--- |	 gc_pre2 and gc_ixstorenumbert         							|
--- |                                                                    |
--- | PARAMETERS : p_order_payment_id       								|
--- |                                                                    |
--- | RETURNS    : NONE 												    |
--- +====================================================================+
-	
-	PROCEDURE XX_APPID_TO_STORENUM	(p_order_payment_id IN NUMBER )
-	IS
-	lv_ixstrnum VARCHAR2(10); 
-	lv_app_id	VARCHAR2(30);
-	l_mpl_order_id  xx_ar_order_receipt_dtl.mpl_order_id%Type;
-		
-	BEGIN
-	lv_ixstrnum := NULL;
-	lv_app_id  := NULL;
-	
-		BEGIN
-			SELECT trans.location , trans.appid
-			  INTO lv_ixstrnum , lv_app_id
-			FROM XX_AR_ORDER_RECEIPT_DTL ordt,
-			  oe_order_headers_all oeh,
-			  xx_om_header_attributes_all xoha,
-			  (SELECT xftv.target_value1 location,
-				xftv.source_value1 appid
-			  FROM xx_fin_translatedefinition xftd,
-				xx_fin_translatevalues xftv
-			  WHERE xftd.translate_id   = xftv.translate_id
-			  AND xftd.translation_name ='OD_IBY_STLMNT_APPID_LOC'
-			  AND SYSDATE BETWEEN xftv.start_date_active AND NVL(xftv.end_date_active, SYSDATE + 1)
-			  AND SYSDATE BETWEEN xftd.start_date_active AND NVL(xftd.end_date_active, SYSDATE + 1)
-			  AND xftv.enabled_flag = 'Y'
-			  AND xftd.enabled_flag = 'Y'
-			  ) trans
-			WHERE 1                   =1
-			AND ordt.order_number     = oeh.order_number
-			AND oeh.header_id         = xoha.header_id
-			AND xoha.app_id           = trans.appid
-			AND ordt.ORDER_PAYMENT_ID = p_order_payment_id
-			AND rownum				  =1;			
-		EXCEPTION
-		WHEN NO_DATA_FOUND
-			THEN NULL;
-		WHEN OTHERS
-			THEN NULL ;	 
-		END;
-			
-		/*For APPID ELEVATE TOGETHER we are getting External Order Number for IXINVOICE
-		  This is because Elevate Together is authorized through EAI and not CDAP*/
-		IF lv_ixstrnum IS NOT NULL and lv_app_id = 'ELEVATE'  
-		THEN 
-			  SELECT  MPL_ORDER_ID
-				INTO l_mpl_order_id
-				FROM xx_ar_order_receipt_dtl
-			   WHERE order_payment_id = p_order_payment_id;
-
-		      gc_ixinvoice 		:= l_mpl_order_id;
-			  gc_pre2        	:= lv_ixstrnum;
-			  gc_ixstorenumber 	:= lv_ixstrnum;
-			  
-		ELSIF  lv_ixstrnum IS NOT NULL 
-		THEN 
-			  gc_pre2        	:= lv_ixstrnum;
-			  gc_ixstorenumber 	:= lv_ixstrnum;
-		END IF;
-
-		
-	END XX_APPID_TO_STORENUM;
--- NAIT-190014/NAIT-185985 END
-	
 -- +====================================================================+
 -- | PROCEDURE  : XX_SINGLE_TRX_SETTLEMENT                              |
 -- |                                                                    |
@@ -9185,9 +9107,7 @@ END xx_set_post_receipt_variables;
 -- +====================================================================+
 	PROCEDURE xx_single_trx_settlement
 	IS
-
 	BEGIN
-
 --------------------------------------------------------------------------
 -- Step #1 - Set POST Invoice/Order/Deposit Variables
 --------------------------------------------------------------------------
@@ -9238,10 +9158,6 @@ END xx_set_post_receipt_variables;
 				   XX_UPDATE_COF_TRANS;
 				END IF;
 				--End code Changes for V48.0
-				
-		/*NAIT-190014/NAIT-185985 Deriving ixstorenum and pre2 for eligible payment id's*/
-		XX_APPID_TO_STORENUM(gn_order_payment_id  );
-		/*NAIT-190014/NAIT-185985 changes end*/
 
 		xx_location_and_log(g_loc,
 							'***** Executing XX_CREATE_101_SETTLEMENT_REC from XX_SINGLE_TRX_SETTLEMENT ***** ');
@@ -9543,10 +9459,6 @@ END xx_set_post_receipt_variables;
 				   XX_UPDATE_COF_TRANS;
 				END IF;
 				--End code Changes for V48.0
-				
-		/*NAIT-190014/NAIT-185985 Deriving ixstorenum and pre2 for eligible payment id's*/
-		XX_APPID_TO_STORENUM(gn_order_payment_id  );
-		/*NAIT-190014/NAIT-185985 changes end*/
 
 		xx_location_and_log(g_loc,
 							'***** Executing XX_CREATE_101_SETTLEMENT_REC from XX_IREC_MULTI_TRX_SETTLEMENT ***** ');
@@ -18682,6 +18594,6 @@ END ORDT_RECORDS_MAIL;
 			exiting_sub(p_procedure_name =>      lc_procedure_name,
 						p_exception_flag =>      TRUE);
 	END retry_errors;
-END XX_IBY_SETTLEMENT_PKG;
+END xx_iby_settlement_pkg;
 /
 show error;
