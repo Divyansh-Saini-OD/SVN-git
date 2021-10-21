@@ -190,7 +190,7 @@ create or replace PACKAGE BODY "XX_HR_MAPPING_PKG" AS
       INTO l_job_id
       FROM PER_JOBS
       WHERE UPPER(name)=UPPER(l_job_name)
-	    and BUSINESS_GROUP_ID = fnd_profile.value('PER_BUSINESS_GROUP_ID');
+        and BUSINESS_GROUP_ID = fnd_profile.value('PER_BUSINESS_GROUP_ID');
     END;
 
     RETURN l_job_id;
@@ -358,15 +358,17 @@ create or replace PACKAGE BODY "XX_HR_MAPPING_PKG" AS
         RETURN NULL;
       END IF;
 	  BEGIN
-	   SELECT gl.ledger_id
+	   SELECT distinct hou.business_group_id --.ledger_id
 	     INTO ln_ledger_id
-		 FROM FND_FLEX_VALUES FFV ,
-			   fnd_flex_value_sets FFVS,
-               gl_ledgers gl
+		   FROM FND_FLEX_VALUES FFV ,
+			      fnd_flex_value_sets FFVS,
+            gl_ledgers gl,
+            hr_operating_units hou
 	    WHERE FFV.flex_value_set_id = FFVS.flex_value_set_id
-		  AND  FFVS.flex_value_set_name IN ( 'OD_GL_GLOBAL_COMPANY')
-          AND  gl.short_name = ffv.attribute1
-		  AND  FFV.flex_value = lc_company;
+		    AND FFVS.flex_value_set_name IN ( 'OD_GL_GLOBAL_COMPANY')
+        AND gl.short_name = ffv.attribute1
+		    AND FFV.flex_value = lc_company
+        AND hou.set_of_books_id = gl.ledger_id;
 	  EXCEPTIOn WHEN OTHERS THEN
 	     ln_ledger_id := -1;
 	  END;
