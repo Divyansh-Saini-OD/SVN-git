@@ -1,0 +1,572 @@
+# $Header$
+
+# dbdrv: exec fnd bin FNDLOAD bin &phase=daa+56 checkfile:~PROD:~PATH:~FILE &ui_apps 0 Y UPLOAD @FND:patch/115/import/afffload.lct @~PROD:~PATH/~FILE
+LANGUAGE = "US"
+LDRCONFIG = "afffload.lct 120.19.12020000.6"
+
+#Source Database CPRJDEV
+
+#RELEASE_NAME 12.2.5
+
+# -- Begin Entity Definitions -- 
+
+DEFINE VALUE_SET
+  KEY   FLEX_VALUE_SET_NAME             VARCHAR2(60)
+  CTX   OWNER                           VARCHAR2(4000)
+  CTX   LAST_UPDATE_DATE                VARCHAR2(50)
+  BASE  VALIDATION_TYPE                 VARCHAR2(1)
+  BASE  PROTECTED_FLAG                  VARCHAR2(1)
+  BASE  SECURITY_ENABLED_FLAG           VARCHAR2(1)
+  BASE  LONGLIST_FLAG                   VARCHAR2(1)
+  BASE  FORMAT_TYPE                     VARCHAR2(1)
+  BASE  MAXIMUM_SIZE                    VARCHAR2(50)
+  BASE  NUMBER_PRECISION                VARCHAR2(50)
+  BASE  ALPHANUMERIC_ALLOWED_FLAG       VARCHAR2(1)
+  BASE  UPPERCASE_ONLY_FLAG             VARCHAR2(1)
+  BASE  NUMERIC_MODE_ENABLED_FLAG       VARCHAR2(1)
+  BASE  MINIMUM_VALUE                   VARCHAR2(150)
+  BASE  MAXIMUM_VALUE                   VARCHAR2(150)
+  BASE  PARENT_FLEX_VALUE_SET_NAME      VARCHAR2(60)
+  BASE  DEPENDANT_DEFAULT_VALUE         VARCHAR2(60)
+  BASE  DEPENDANT_DEFAULT_MEANING       VARCHAR2(240)
+  TRANS DESCRIPTION                     VARCHAR2(240)
+
+  DEFINE VSET_VALUE
+    KEY   PARENT_FLEX_VALUE_LOW           VARCHAR2(60)
+    KEY   FLEX_VALUE                      VARCHAR2(150)
+    CTX   OWNER                           VARCHAR2(4000)
+    CTX   LAST_UPDATE_DATE                VARCHAR2(50)
+    BASE  ENABLED_FLAG                    VARCHAR2(1)
+    BASE  SUMMARY_FLAG                    VARCHAR2(1)
+    BASE  START_DATE_ACTIVE               VARCHAR2(50)
+    BASE  END_DATE_ACTIVE                 VARCHAR2(50)
+    BASE  PARENT_FLEX_VALUE_HIGH          VARCHAR2(60)
+    BASE  ROLLUP_HIERARCHY_CODE           VARCHAR2(30)
+    BASE  HIERARCHY_LEVEL                 VARCHAR2(50)
+    BASE  COMPILED_VALUE_ATTRIBUTES       VARCHAR2(2000)
+    BASE  VALUE_CATEGORY                  VARCHAR2(30)
+    BASE  ATTRIBUTE1                      VARCHAR2(240)
+    BASE  ATTRIBUTE2                      VARCHAR2(240)
+    BASE  ATTRIBUTE3                      VARCHAR2(240)
+    BASE  ATTRIBUTE4                      VARCHAR2(240)
+    BASE  ATTRIBUTE5                      VARCHAR2(240)
+    BASE  ATTRIBUTE6                      VARCHAR2(240)
+    BASE  ATTRIBUTE7                      VARCHAR2(240)
+    BASE  ATTRIBUTE8                      VARCHAR2(240)
+    BASE  ATTRIBUTE9                      VARCHAR2(240)
+    BASE  ATTRIBUTE10                     VARCHAR2(240)
+    BASE  ATTRIBUTE11                     VARCHAR2(240)
+    BASE  ATTRIBUTE12                     VARCHAR2(240)
+    BASE  ATTRIBUTE13                     VARCHAR2(240)
+    BASE  ATTRIBUTE14                     VARCHAR2(240)
+    BASE  ATTRIBUTE15                     VARCHAR2(240)
+    BASE  ATTRIBUTE16                     VARCHAR2(240)
+    BASE  ATTRIBUTE17                     VARCHAR2(240)
+    BASE  ATTRIBUTE18                     VARCHAR2(240)
+    BASE  ATTRIBUTE19                     VARCHAR2(240)
+    BASE  ATTRIBUTE20                     VARCHAR2(240)
+    BASE  ATTRIBUTE21                     VARCHAR2(240)
+    BASE  ATTRIBUTE22                     VARCHAR2(240)
+    BASE  ATTRIBUTE23                     VARCHAR2(240)
+    BASE  ATTRIBUTE24                     VARCHAR2(240)
+    BASE  ATTRIBUTE25                     VARCHAR2(240)
+    BASE  ATTRIBUTE26                     VARCHAR2(240)
+    BASE  ATTRIBUTE27                     VARCHAR2(240)
+    BASE  ATTRIBUTE28                     VARCHAR2(240)
+    BASE  ATTRIBUTE29                     VARCHAR2(240)
+    BASE  ATTRIBUTE30                     VARCHAR2(240)
+    BASE  ATTRIBUTE31                     VARCHAR2(240)
+    BASE  ATTRIBUTE32                     VARCHAR2(240)
+    BASE  ATTRIBUTE33                     VARCHAR2(240)
+    BASE  ATTRIBUTE34                     VARCHAR2(240)
+    BASE  ATTRIBUTE35                     VARCHAR2(240)
+    BASE  ATTRIBUTE36                     VARCHAR2(240)
+    BASE  ATTRIBUTE37                     VARCHAR2(240)
+    BASE  ATTRIBUTE38                     VARCHAR2(240)
+    BASE  ATTRIBUTE39                     VARCHAR2(240)
+    BASE  ATTRIBUTE40                     VARCHAR2(240)
+    BASE  ATTRIBUTE41                     VARCHAR2(240)
+    BASE  ATTRIBUTE42                     VARCHAR2(240)
+    BASE  ATTRIBUTE43                     VARCHAR2(240)
+    BASE  ATTRIBUTE44                     VARCHAR2(240)
+    BASE  ATTRIBUTE45                     VARCHAR2(240)
+    BASE  ATTRIBUTE46                     VARCHAR2(240)
+    BASE  ATTRIBUTE47                     VARCHAR2(240)
+    BASE  ATTRIBUTE48                     VARCHAR2(240)
+    BASE  ATTRIBUTE49                     VARCHAR2(240)
+    BASE  ATTRIBUTE50                     VARCHAR2(240)
+    BASE  ATTRIBUTE_SORT_ORDER            VARCHAR2(50)
+    TRANS FLEX_VALUE_MEANING              VARCHAR2(150)
+    TRANS DESCRIPTION                     VARCHAR2(240)
+
+    DEFINE VSET_VALUE_QUAL_VALUE
+      KEY   ID_FLEX_APPLICATION_SHORT_NAME  VARCHAR2(50)
+      KEY   ID_FLEX_CODE                    VARCHAR2(4)
+      KEY   SEGMENT_ATTRIBUTE_TYPE          VARCHAR2(30)
+      KEY   VALUE_ATTRIBUTE_TYPE            VARCHAR2(30)
+      CTX   OWNER                           VARCHAR2(4000)
+      CTX   LAST_UPDATE_DATE                VARCHAR2(50)
+      BASE  COMPILED_VALUE_ATTRIBUTE_VALUE  VARCHAR2(2000)
+    END VSET_VALUE_QUAL_VALUE
+
+      DEFINE VSET_VALUE_HIERARCHY
+        KEY   RANGE_ATTRIBUTE                 VARCHAR2(1)
+        KEY   CHILD_FLEX_VALUE_LOW            VARCHAR2(60)
+        KEY   CHILD_FLEX_VALUE_HIGH           VARCHAR2(60)
+        CTX   OWNER                           VARCHAR2(4000)
+        CTX   LAST_UPDATE_DATE                VARCHAR2(50)
+        BASE  START_DATE_ACTIVE               VARCHAR2(50)
+        BASE  END_DATE_ACTIVE                 VARCHAR2(50)
+      END VSET_VALUE_HIERARCHY
+  END VSET_VALUE
+
+    DEFINE VSET_QUALIFIER
+      KEY   ID_FLEX_APPLICATION_SHORT_NAME  VARCHAR2(50)
+      KEY   ID_FLEX_CODE                    VARCHAR2(4)
+      KEY   SEGMENT_ATTRIBUTE_TYPE          VARCHAR2(30)
+      KEY   VALUE_ATTRIBUTE_TYPE            VARCHAR2(30)
+      CTX   OWNER                           VARCHAR2(4000)
+      CTX   LAST_UPDATE_DATE                VARCHAR2(50)
+      BASE  ASSIGNMENT_ORDER                VARCHAR2(50)
+      BASE  ASSIGNMENT_DATE                 VARCHAR2(50)
+    END VSET_QUALIFIER
+
+      DEFINE VSET_ROLLUP_GROUP
+        KEY   HIERARCHY_CODE                  VARCHAR2(30)
+        CTX   OWNER                           VARCHAR2(4000)
+        CTX   LAST_UPDATE_DATE                VARCHAR2(50)
+        TRANS HIERARCHY_NAME                  VARCHAR2(30)
+        TRANS DESCRIPTION                     VARCHAR2(240)
+      END VSET_ROLLUP_GROUP
+
+        DEFINE VSET_SECURITY_RULE
+          KEY   FLEX_VALUE_RULE_NAME            VARCHAR2(30)
+          KEY   PARENT_FLEX_VALUE_LOW           VARCHAR2(60)
+          CTX   OWNER                           VARCHAR2(4000)
+          CTX   LAST_UPDATE_DATE                VARCHAR2(50)
+          BASE  PARENT_FLEX_VALUE_HIGH          VARCHAR2(60)
+          TRANS ERROR_MESSAGE                   VARCHAR2(240)
+          TRANS DESCRIPTION                     VARCHAR2(240)
+
+          DEFINE VSET_SECURITY_USAGE
+            KEY   APPLICATION_SHORT_NAME          VARCHAR2(50)
+            KEY   RESPONSIBILITY_KEY              VARCHAR2(30)
+            CTX   OWNER                           VARCHAR2(4000)
+            CTX   LAST_UPDATE_DATE                VARCHAR2(50)
+            BASE  PARENT_FLEX_VALUE_HIGH          VARCHAR2(60)
+          END VSET_SECURITY_USAGE
+
+            DEFINE VSET_SECURITY_LINE
+              KEY   INCLUDE_EXCLUDE_INDICATOR       VARCHAR2(1)
+              KEY   FLEX_VALUE_LOW                  VARCHAR2(60)
+              KEY   FLEX_VALUE_HIGH                 VARCHAR2(60)
+              CTX   OWNER                           VARCHAR2(4000)
+              CTX   LAST_UPDATE_DATE                VARCHAR2(50)
+              BASE  PARENT_FLEX_VALUE_HIGH          VARCHAR2(60)
+            END VSET_SECURITY_LINE
+        END VSET_SECURITY_RULE
+
+          DEFINE VSET_EVENT
+            KEY   EVENT_CODE                      VARCHAR2(1)
+            CTX   OWNER                           VARCHAR2(4000)
+            CTX   LAST_UPDATE_DATE                VARCHAR2(50)
+            BASE  USER_EXIT                       VARCHAR2(32000)
+          END VSET_EVENT
+
+            DEFINE VSET_TABLE
+              CTX   OWNER                           VARCHAR2(4000)
+              CTX   LAST_UPDATE_DATE                VARCHAR2(50)
+              BASE  TABLE_APPLICATION_SHORT_NAME    VARCHAR2(50)
+              BASE  APPLICATION_TABLE_NAME          VARCHAR2(240)
+              BASE  SUMMARY_ALLOWED_FLAG            VARCHAR2(1)
+              BASE  VALUE_COLUMN_NAME               VARCHAR2(240)
+              BASE  VALUE_COLUMN_TYPE               VARCHAR2(1)
+              BASE  VALUE_COLUMN_SIZE               VARCHAR2(50)
+              BASE  ID_COLUMN_NAME                  VARCHAR2(240)
+              BASE  ID_COLUMN_TYPE                  VARCHAR2(1)
+              BASE  ID_COLUMN_SIZE                  VARCHAR2(50)
+              BASE  MEANING_COLUMN_NAME             VARCHAR2(240)
+              BASE  MEANING_COLUMN_TYPE             VARCHAR2(1)
+              BASE  MEANING_COLUMN_SIZE             VARCHAR2(50)
+              BASE  ENABLED_COLUMN_NAME             VARCHAR2(240)
+              BASE  COMPILED_ATTRIBUTE_COLUMN_NAME  VARCHAR2(240)
+              BASE  HIERARCHY_LEVEL_COLUMN_NAME     VARCHAR2(240)
+              BASE  START_DATE_COLUMN_NAME          VARCHAR2(240)
+              BASE  END_DATE_COLUMN_NAME            VARCHAR2(240)
+              BASE  SUMMARY_COLUMN_NAME             VARCHAR2(240)
+              BASE  ADDITIONAL_WHERE_CLAUSE         VARCHAR2(32000)
+              BASE  ADDITIONAL_QUICKPICK_COLUMNS    VARCHAR2(240)
+            END VSET_TABLE
+
+              DEFINE VSET_DEPENDS_ON
+                KEY   IND_FLEX_VALUE_SET_NAME         VARCHAR2(60)
+                CTX   OWNER                           VARCHAR2(4000)
+                CTX   LAST_UPDATE_DATE                VARCHAR2(50)
+                BASE  IND_VALIDATION_TYPE             VARCHAR2(1)
+                BASE  DEP_VALIDATION_TYPE             VARCHAR2(1)
+              END VSET_DEPENDS_ON
+END VALUE_SET
+
+# -- End Entity Definitions -- 
+
+
+BEGIN VALUE_SET "R_OD_ALL_FA_LOCATION_COUNTRY"
+  OWNER = "510532"
+  LAST_UPDATE_DATE = "2007/10/29 11:32:18"
+  VALIDATION_TYPE = "I"
+  PROTECTED_FLAG = "N"
+  SECURITY_ENABLED_FLAG = "Y"
+  LONGLIST_FLAG = "N"
+  FORMAT_TYPE = "C"
+  MAXIMUM_SIZE = "4"
+  ALPHANUMERIC_ALLOWED_FLAG = "Y"
+  UPPERCASE_ONLY_FLAG = "Y"
+  NUMERIC_MODE_ENABLED_FLAG = "N"
+  DESCRIPTION = "Fixed Assets Country Location"
+
+
+
+
+  BEGIN VSET_SECURITY_RULE "CA" ""
+    OWNER = "510532"
+    LAST_UPDATE_DATE = "2007/11/02 09:40:02"
+    ERROR_MESSAGE = "Please enter 'CA' for Canada"
+    DESCRIPTION = "Canada"
+  
+    BEGIN VSET_SECURITY_LINE "I" "CA" "CA"
+      OWNER = "510532"
+      LAST_UPDATE_DATE = "2007/11/02 09:40:12"
+    END VSET_SECURITY_LINE
+    
+  
+  END VSET_SECURITY_RULE
+  
+  BEGIN VSET_SECURITY_RULE "US" ""
+    OWNER = "510532"
+    LAST_UPDATE_DATE = "2007/11/02 09:40:02"
+    ERROR_MESSAGE = "Please enter 'US' for United States"
+    DESCRIPTION = "United States"
+  
+    BEGIN VSET_SECURITY_LINE "I" "US" "US"
+      OWNER = "510532"
+      LAST_UPDATE_DATE = "2007/11/02 09:40:02"
+    END VSET_SECURITY_LINE
+    
+  
+  END VSET_SECURITY_RULE
+  
+
+
+
+  BEGIN VSET_VALUE "" "AT"
+    OWNER = "352735"
+    LAST_UPDATE_DATE = "2007/10/29 16:05:10"
+    ENABLED_FLAG = "Y"
+    SUMMARY_FLAG = "N"
+    DESCRIPTION = "Austria"
+  
+  
+  END VSET_VALUE
+  
+  BEGIN VSET_VALUE "" "AU"
+    OWNER = "998132"
+    LAST_UPDATE_DATE = "2008/02/20 11:25:35"
+    ENABLED_FLAG = "Y"
+    SUMMARY_FLAG = "N"
+    DESCRIPTION = "Australia"
+  
+  
+  END VSET_VALUE
+  
+  BEGIN VSET_VALUE "" "BE"
+    OWNER = "352735"
+    LAST_UPDATE_DATE = "2007/10/29 16:05:10"
+    ENABLED_FLAG = "Y"
+    SUMMARY_FLAG = "N"
+    DESCRIPTION = "Belgium"
+  
+  
+  END VSET_VALUE
+  
+  BEGIN VSET_VALUE "" "BM"
+    OWNER = "352735"
+    LAST_UPDATE_DATE = "2007/10/29 16:05:10"
+    ENABLED_FLAG = "Y"
+    SUMMARY_FLAG = "N"
+    DESCRIPTION = "Bermuda"
+  
+  
+  END VSET_VALUE
+  
+  BEGIN VSET_VALUE "" "CA"
+    OWNER = "510532"
+    LAST_UPDATE_DATE = "2007/10/29 11:51:47"
+    ENABLED_FLAG = "Y"
+    SUMMARY_FLAG = "N"
+    DESCRIPTION = "Canada"
+  
+  
+  END VSET_VALUE
+  
+  BEGIN VSET_VALUE "" "CH"
+    OWNER = "352735"
+    LAST_UPDATE_DATE = "2007/10/29 16:05:11"
+    ENABLED_FLAG = "Y"
+    SUMMARY_FLAG = "N"
+    DESCRIPTION = "Switzerland"
+  
+  
+  END VSET_VALUE
+  
+  BEGIN VSET_VALUE "" "CN"
+    OWNER = "352735"
+    LAST_UPDATE_DATE = "2007/10/29 16:05:11"
+    ENABLED_FLAG = "Y"
+    SUMMARY_FLAG = "N"
+    DESCRIPTION = "China"
+  
+  
+  END VSET_VALUE
+  
+  BEGIN VSET_VALUE "" "CO"
+    OWNER = "998132"
+    LAST_UPDATE_DATE = "2008/02/20 11:25:35"
+    ENABLED_FLAG = "Y"
+    SUMMARY_FLAG = "N"
+    DESCRIPTION = "Columbia"
+  
+  
+  END VSET_VALUE
+  
+  BEGIN VSET_VALUE "" "CY"
+    OWNER = "998132"
+    LAST_UPDATE_DATE = "2008/02/20 11:25:35"
+    ENABLED_FLAG = "Y"
+    SUMMARY_FLAG = "N"
+    DESCRIPTION = "Cyprus"
+  
+  
+  END VSET_VALUE
+  
+  BEGIN VSET_VALUE "" "CZ"
+    OWNER = "352735"
+    LAST_UPDATE_DATE = "2007/10/29 16:05:10"
+    ENABLED_FLAG = "Y"
+    SUMMARY_FLAG = "N"
+    DESCRIPTION = "Czech Republic"
+  
+  
+  END VSET_VALUE
+  
+  BEGIN VSET_VALUE "" "DE"
+    OWNER = "352735"
+    LAST_UPDATE_DATE = "2007/10/29 16:05:11"
+    ENABLED_FLAG = "Y"
+    SUMMARY_FLAG = "N"
+    DESCRIPTION = "Germany"
+  
+  
+  END VSET_VALUE
+  
+  BEGIN VSET_VALUE "" "DK"
+    OWNER = "998132"
+    LAST_UPDATE_DATE = "2008/02/19 18:02:02"
+    ENABLED_FLAG = "Y"
+    SUMMARY_FLAG = "N"
+    DESCRIPTION = "Denmark"
+  
+  
+  END VSET_VALUE
+  
+  BEGIN VSET_VALUE "" "ES"
+    OWNER = "352735"
+    LAST_UPDATE_DATE = "2007/10/29 16:05:11"
+    ENABLED_FLAG = "Y"
+    SUMMARY_FLAG = "N"
+    DESCRIPTION = "Spain"
+  
+  
+  END VSET_VALUE
+  
+  BEGIN VSET_VALUE "" "FR"
+    OWNER = "352735"
+    LAST_UPDATE_DATE = "2007/10/29 16:05:10"
+    ENABLED_FLAG = "Y"
+    SUMMARY_FLAG = "N"
+    DESCRIPTION = "France"
+  
+  
+  END VSET_VALUE
+  
+  BEGIN VSET_VALUE "" "HU"
+    OWNER = "352735"
+    LAST_UPDATE_DATE = "2007/10/29 16:05:11"
+    ENABLED_FLAG = "Y"
+    SUMMARY_FLAG = "N"
+    DESCRIPTION = "Hungary"
+  
+  
+  END VSET_VALUE
+  
+  BEGIN VSET_VALUE "" "IE"
+    OWNER = "352735"
+    LAST_UPDATE_DATE = "2007/10/29 16:05:11"
+    ENABLED_FLAG = "Y"
+    SUMMARY_FLAG = "N"
+    DESCRIPTION = "Ireland"
+  
+  
+  END VSET_VALUE
+  
+  BEGIN VSET_VALUE "" "IL"
+    OWNER = "352735"
+    LAST_UPDATE_DATE = "2007/10/29 16:05:11"
+    ENABLED_FLAG = "Y"
+    SUMMARY_FLAG = "N"
+    DESCRIPTION = "Israel"
+  
+  
+  END VSET_VALUE
+  
+  BEGIN VSET_VALUE "" "IN"
+    OWNER = "352735"
+    LAST_UPDATE_DATE = "2008/07/15 18:29:47"
+    ENABLED_FLAG = "Y"
+    SUMMARY_FLAG = "N"
+    DESCRIPTION = "India"
+  
+  
+  END VSET_VALUE
+  
+  BEGIN VSET_VALUE "" "IT"
+    OWNER = "352735"
+    LAST_UPDATE_DATE = "2007/10/29 16:05:11"
+    ENABLED_FLAG = "Y"
+    SUMMARY_FLAG = "N"
+    DESCRIPTION = "Italy"
+  
+  
+  END VSET_VALUE
+  
+  BEGIN VSET_VALUE "" "JP"
+    OWNER = "352735"
+    LAST_UPDATE_DATE = "2007/10/29 16:05:11"
+    ENABLED_FLAG = "Y"
+    SUMMARY_FLAG = "N"
+    DESCRIPTION = "Japan"
+  
+  
+  END VSET_VALUE
+  
+  BEGIN VSET_VALUE "" "KR"
+    OWNER = "352735"
+    LAST_UPDATE_DATE = "2007/10/29 16:05:11"
+    ENABLED_FLAG = "Y"
+    SUMMARY_FLAG = "N"
+    DESCRIPTION = "Korea"
+  
+  
+  END VSET_VALUE
+  
+  BEGIN VSET_VALUE "" "LU"
+    OWNER = "352735"
+    LAST_UPDATE_DATE = "2007/10/29 16:05:11"
+    ENABLED_FLAG = "Y"
+    SUMMARY_FLAG = "N"
+    DESCRIPTION = "Luxembourg"
+  
+  
+  END VSET_VALUE
+  
+  BEGIN VSET_VALUE "" "MX"
+    OWNER = "352735"
+    LAST_UPDATE_DATE = "2007/10/29 16:05:11"
+    ENABLED_FLAG = "Y"
+    SUMMARY_FLAG = "N"
+    DESCRIPTION = "Mexico"
+  
+  
+  END VSET_VALUE
+  
+  BEGIN VSET_VALUE "" "NL"
+    OWNER = "352735"
+    LAST_UPDATE_DATE = "2007/10/29 16:05:11"
+    ENABLED_FLAG = "Y"
+    SUMMARY_FLAG = "N"
+    DESCRIPTION = "Netherlands"
+  
+  
+  END VSET_VALUE
+  
+  BEGIN VSET_VALUE "" "PL"
+    OWNER = "998132"
+    LAST_UPDATE_DATE = "2008/02/20 11:25:35"
+    ENABLED_FLAG = "Y"
+    SUMMARY_FLAG = "N"
+    DESCRIPTION = "Poland"
+  
+  
+  END VSET_VALUE
+  
+  BEGIN VSET_VALUE "" "PT"
+    OWNER = "352735"
+    LAST_UPDATE_DATE = "2007/10/29 16:05:11"
+    ENABLED_FLAG = "Y"
+    SUMMARY_FLAG = "N"
+    DESCRIPTION = "Portugal"
+  
+  
+  END VSET_VALUE
+  
+  BEGIN VSET_VALUE "" "RO"
+    OWNER = "998132"
+    LAST_UPDATE_DATE = "2008/02/20 11:25:35"
+    ENABLED_FLAG = "Y"
+    SUMMARY_FLAG = "N"
+    DESCRIPTION = "Romania"
+  
+  
+  END VSET_VALUE
+  
+  BEGIN VSET_VALUE "" "SE"
+    OWNER = "352735"
+    LAST_UPDATE_DATE = "2008/10/02 11:29:25"
+    ENABLED_FLAG = "Y"
+    SUMMARY_FLAG = "N"
+    DESCRIPTION = "Sweden"
+  
+  
+  END VSET_VALUE
+  
+  BEGIN VSET_VALUE "" "TH"
+    OWNER = "998132"
+    LAST_UPDATE_DATE = "2008/02/20 11:25:35"
+    ENABLED_FLAG = "Y"
+    SUMMARY_FLAG = "N"
+    DESCRIPTION = "Thailand"
+  
+  
+  END VSET_VALUE
+  
+  BEGIN VSET_VALUE "" "UK"
+    OWNER = "352735"
+    LAST_UPDATE_DATE = "2007/10/29 16:05:11"
+    ENABLED_FLAG = "Y"
+    SUMMARY_FLAG = "N"
+    DESCRIPTION = "United Kingdom"
+  
+  
+  END VSET_VALUE
+  
+  BEGIN VSET_VALUE "" "US"
+    OWNER = "510532"
+    LAST_UPDATE_DATE = "2007/10/29 11:51:47"
+    ENABLED_FLAG = "Y"
+    SUMMARY_FLAG = "N"
+    DESCRIPTION = "United States"
+  
+  
+  END VSET_VALUE
+  
+END VALUE_SET
+
