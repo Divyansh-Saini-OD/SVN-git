@@ -209,7 +209,7 @@ END;
 PROCEDURE populate_invoice_number IS
 
    cursor c1 is 
-      SELECT distinct cust_account_id ,process_id
+      SELECT distinct C_EXT_ATTR1 ,process_id,cust_account_id
         FROM xx_ar_scaas_interface_hist 
        WHERE NVL(invoice_number,'-1')  = '-1';
    lv_sql varchar2(2000);
@@ -217,8 +217,8 @@ PROCEDURE populate_invoice_number IS
 BEGIN
     for rec in c1 loop
 
-        lv_sql := 'SELECT distinct customer_trx_id from ra_customer_trx_lines_all where interface_line_attribute1 = '''||rec.cust_account_id||
-        ''' AND interface_line_attribute2 = '''||rec.process_id||''' AND ROWNUM = 1';
+        lv_sql := 'SELECT distinct customer_trx_id from ra_customer_trx_lines_all where interface_line_attribute1 = REPLACE(SUBSTR('''||rec.C_EXT_ATTR1||
+        ''',3),''-'','''') AND interface_line_attribute2 = '''||rec.process_id||''' AND ROWNUM = 1';
 
         BEGIN
             execute immediate lv_sql INTO lv_str;
@@ -230,7 +230,7 @@ BEGIN
         update xx_ar_scaas_interface_hist
            set invoice_number = lv_str
          where process_id = rec.process_id
-           and cust_account_id = rec.cust_account_id;
+           and C_EXT_ATTR1 = rec.C_EXT_ATTR1;
 
     end loop;
 
@@ -423,7 +423,7 @@ PROCEDURE fetch_cust_details(p_process_id IN NUMBER) IS
        SELECT distinct hca.cust_account_id,xx.bill_to_customer_osr
          FROM hz_cust_accounts hca,
               XX_AR_SCAAS_INTERFACE xx
-        WHERE HCA.orig_system_reference = check_aops_number(substr(xx.bill_to_customer_osr,1,instr(xx.bill_to_customer_osr,'-')-1))
+        WHERE HCA.orig_system_reference = check_aops_number(NVL(substr(xx.bill_to_customer_osr,1,instr(xx.bill_to_customer_osr,'-')-1),xx.bill_to_customer_osr))
           AND hca.status = 'A'
           AND xx.status  = 'NEW'
           AND xx.process_id = p_process_id;
@@ -555,7 +555,7 @@ PROCEDURE Create_groups(p_process_id IN NUMBER,p_error OUT BOOLEAN) IS
   l_error_count  NUMBER;
   
   CURSOR c_ranks IS
-     SELECT DENSE_RANK() OVER (order by cust_account_id,item_name)
+     SELECT DENSE_RANK() OVER (order by cust_account_id,item_name,c_ext_attr1)
         ,record_id
         from xx_ar_scaas_interface a where process_id = p_process_id and status = 'NEW';
   
@@ -720,12 +720,17 @@ procedure process_data_child (errbuf       out varchar2,
    lv_segment5            gl_code_combinations.segment5%TYPE;
    lv_segment6            gl_code_combinations.segment6%TYPE;
    lv_segment7            gl_code_combinations.segment7%TYPE;
+   lv_location            hr_locations_all.location_code%TYPE;
+   lv_loc_type            hr_lookups.meaning%TYPE;
+   lv_cust_type           hz_cust_accounts.attribute18%TYPE;
+   lc_error_msg           VARCHAR2(2000);
    loc_error              EXCEPTION;
    source_not_found       EXCEPTION;
    type_not_found         EXCEPTION;
    
    TYPE det_rec IS RECORD (
              cust_account_id NUMBER,
+             c_ext_attr1     VARCHAR2(240),
              bill_to_site_id NUMBER,
              ship_to_site_id NUMBER,
              item_name VARCHAR2(100),
@@ -764,6 +769,7 @@ procedure process_data_child (errbuf       out varchar2,
 
    CURSOR c_get_det IS
       SELECT max(cust_account_id) cust_account_id,
+             c_ext_attr1,
              max(bill_to_site_id) bill_to_site_id,
              max(ship_to_site_id) ship_to_site_id,
              max(item_name) item_name,
@@ -781,7 +787,7 @@ procedure process_data_child (errbuf       out varchar2,
        WHERE status = 'NEW'
          AND cust_account_id between p_min_id AND p_max_id
          AND process_id = p_process_id
-       group by group_id;
+       group by group_id,c_ext_attr1,cust_account_id;
 
 BEGIN
     set_global_variables;
@@ -916,6 +922,7 @@ BEGIN
 
           lr_ra_intf_lines_info.header_attribute_category     := 'SALES_ACCT';
           lr_ra_intf_lines_info.header_attribute1             := Det_data(indx).cust_account_id;
+          lr_ra_intf_lines_info.header_attribute15            := 'N';
 
           lr_ra_intf_lines_info.last_update_date              := SYSDATE;
           lr_ra_intf_lines_info.last_updated_by               := FND_GLOBAL.USER_ID;
@@ -926,7 +933,6 @@ BEGIN
           --lr_ra_intf_lines_info.gl_date                       := SYSDATE;
 
           lr_ra_intf_lines_info.inventory_item_id             := NVL(lr_item_info.inventory_item_id,-1);
-          lr_ra_intf_lines_info.interface_line_attribute6     := Det_data(indx).AMOUNT;
           lr_ra_intf_lines_info.uom_code                      := Det_data(indx).UNIT_OF_MEASURE;
 
           lr_ra_intf_lines_info.orig_system_bill_customer_id  := Det_data(indx).cust_account_id;
@@ -937,19 +943,19 @@ BEGIN
 
           lr_ra_intf_lines_info.taxable_flag                  := 'N';
 
-          lr_ra_intf_lines_info.line_number                   := Det_data(indx).SUBSCRIPTION_ID;
+          lr_ra_intf_lines_info.line_number                   := Det_data(indx).group_id;
 
           lr_ra_intf_lines_info.quantity                      := Det_data(indx).quantity;
           lr_ra_intf_lines_info.unit_selling_price            := Det_data(indx).AMOUNT;
           lr_ra_intf_lines_info.unit_standard_price           := Det_data(indx).AMOUNT;
 
-          lr_ra_intf_lines_info.interface_line_context        := 'RECURRING BILLING';
-          lr_ra_intf_lines_info.interface_line_attribute1     := Det_data(indx).cust_account_id;--Det_data(indx).SUBSCRIPTION_NUMBER || '-' || Det_data(indx).record_id;
+          lr_ra_intf_lines_info.interface_line_context        := 'SCAAS BILLING';
+          lr_ra_intf_lines_info.interface_line_attribute1     := REPLACE(SUBSTR(Det_data(indx).c_ext_attr1,3),'-','');--converting it for order number character limit issue in reprint
           lr_ra_intf_lines_info.interface_line_attribute2     := Det_data(indx).process_id;
           lr_ra_intf_lines_info.interface_line_attribute3     := Det_data(indx).SUBSCRIPTION_ID;
-          lr_ra_intf_lines_info.interface_line_attribute4     := Det_data(indx).record_id;
-          lr_ra_intf_lines_info.interface_line_attribute5     := Det_data(indx).SUBSCRIPTION_NUMBER;
-
+          lr_ra_intf_lines_info.interface_line_attribute4     := Det_data(indx).SUBSCRIPTION_NUMBER;
+		      lr_ra_intf_lines_info.interface_line_attribute5     := Det_data(indx).group_id;
+          lr_ra_intf_lines_info.interface_line_attribute6     := Det_data(indx).SUBSCRIPTION_ID||Det_data(indx).record_id;
           lr_ra_intf_lines_info.interface_line_attribute11    := '0';
           lr_ra_intf_lines_info.attribute15                   := 'Y';
 
@@ -958,7 +964,7 @@ BEGIN
           lr_ra_intf_lines_info.term_id                       := ln_term_id;
           lr_ra_intf_lines_info.term_name                     := lv_term_name;
           lr_ra_intf_lines_info.org_id                        := 404;
-          lr_ra_intf_lines_info.cust_trx_type_name            := 'OD_SCAAS_INVOICE_OD';
+--          lr_ra_intf_lines_info.cust_trx_type_name            := 'OD_SCAAS_INVOICE_OD';
           lr_ra_intf_lines_info.cust_trx_type_id              := g_type_id;
           IF ld_billing_date IS NOT NULL THEN
             lr_ra_intf_lines_info.billing_date                := ld_billing_date;
@@ -972,16 +978,70 @@ BEGIN
 
         
            FOR rec_c_dist_det IN c_dist_det(Det_data(indx).group_id) LOOP
+		   
+		        BEGIN
+				   SELECT SUBSTR(hla.location_code, 1, 6),
+						   hl.meaning
+				     INTO lv_location,
+					      lv_loc_type
+					 FROM hr_lookups hl,
+						   hr_locations_all hla,
+						   hr_all_organization_units haou
+					WHERE  haou.TYPE            = hl.lookup_code
+					AND    haou.location_id     = hla.location_id
+					--AND    haou.organization_id = p_org_id
+					AND    SUBSTR(hla.location_code, 1, 6) = LPAD(rec_c_dist_det.c_ext_attr2, GREATEST(LENGTH(rec_c_dist_det.c_ext_attr2), 6), '0')
+					AND    hl.lookup_type       = 'ORG_TYPE'
+					AND    hl.enabled_flag      = 'Y';
+					
+					SELECT attribute18
+					  INTO lv_cust_type
+					  FROM hz_cust_accounts
+					 WHERE cust_account_id = rec_c_dist_det.cust_account_id;
+				
+				EXCEPTION WHEN OTHERS THEN
+				   lv_location := NULL;
+				   lv_loc_type := NULL;
+				   lv_cust_type := NULL;
+				END;
+				
+				xx_ar_create_acct_child_pkg.xx_get_gl_coa(
+                             p_oloc           => lv_location
+                            ,p_sloc           => lv_location
+                            ,p_oloc_type      => lv_loc_type
+                            ,p_sloc_type      => lv_loc_type
+                            ,p_line_id        => NULL
+                            ,p_rev_account    => lv_segment3
+                            ,p_acc_class      => 'REV'
+                            ,p_cust_type      => lv_cust_type
+                            ,p_trx_type       => NULL
+                            ,p_log_flag       => NULL
+                            ,p_tax_state      => NULL
+                            ,p_tax_loc        => NULL
+                            ,p_description    => NULL
+                            ,x_company        => lv_segment1
+                            ,x_costcenter     => lv_segment2
+                            ,x_account        => lv_segment3
+                            ,x_location       => lv_segment4
+                            ,x_intercompany   => lv_segment5
+                            ,x_lob            => lv_segment6
+                            ,x_future         => lv_segment7
+                            ,x_ccid           => ln_cc_id
+                            ,x_error_message  => lc_error_msg
+                            );
+				
+				
 
                 logs('  creating rec type for distributions insertion');
 
                 lr_ra_intf_dists_info.interface_line_id               := ln_interface_line_id;
-                lr_ra_intf_dists_info.interface_line_context          := 'RECURRING BILLING';
-                lr_ra_intf_dists_info.interface_line_attribute1       := Det_data(indx).cust_account_id;--Det_data(indx).SUBSCRIPTION_NUMBER || '-' || Det_data(indx).record_id;
+                lr_ra_intf_dists_info.interface_line_context          := 'SCAAS BILLING';
+                lr_ra_intf_dists_info.interface_line_attribute1       := REPLACE(SUBSTR(Det_data(indx).c_ext_attr1,3),'-','');--converting it for order number character limit in reprints
                 lr_ra_intf_dists_info.interface_line_attribute2       := Det_data(indx).process_id;
                 lr_ra_intf_dists_info.interface_line_attribute3       := Det_data(indx).SUBSCRIPTION_ID;
-                lr_ra_intf_dists_info.interface_line_attribute4       := Det_data(indx).record_id;
-                lr_ra_intf_dists_info.interface_line_attribute5       := Det_data(indx).SUBSCRIPTION_NUMBER;
+--                lr_ra_intf_dists_info.interface_line_attribute4       := Det_data(indx).record_id;
+                lr_ra_intf_dists_info.interface_line_attribute4       := Det_data(indx).SUBSCRIPTION_NUMBER;
+				lr_ra_intf_dists_info.interface_line_attribute5       := Det_data(indx).group_id;
                 lr_ra_intf_dists_info.account_class                   := 'REV';
                 lr_ra_intf_dists_info.amount                          := ROUND(rec_c_dist_det.AMOUNT*rec_c_dist_det.quantity,2);
                 --lr_ra_intf_dists_info.percent                         := 100;
@@ -989,7 +1049,7 @@ BEGIN
                 lr_ra_intf_dists_info.segment1                        := lv_segment1;
                 lr_ra_intf_dists_info.segment2                        := lv_segment2;
                 lr_ra_intf_dists_info.segment3                        := lv_segment3;
-                lr_ra_intf_dists_info.segment4                        := LPAD(rec_c_dist_det.c_ext_attr2, GREATEST(LENGTH(rec_c_dist_det.c_ext_attr2), 6), '0') ;--rec_c_dist_det.c_ext_attr2
+                lr_ra_intf_dists_info.segment4                        := lv_segment4;
                 lr_ra_intf_dists_info.segment5                        := lv_segment5;
                 lr_ra_intf_dists_info.segment6                        := lv_segment6;
                 lr_ra_intf_dists_info.segment7                        := lv_segment7;
@@ -997,7 +1057,7 @@ BEGIN
                 lr_ra_intf_dists_info.attribute2                      := CASE WHEN rec_c_dist_det.c_ext_attr1= 'null' then '' else rec_c_dist_det.c_ext_attr1 end;
                 lr_ra_intf_dists_info.attribute3                      := rec_c_dist_det.c_ext_attr2;
                 lr_ra_intf_dists_info.attribute_category              := 'SCAAS_ACCT';
-				lr_ra_intf_dists_info.global_attribute1               := Det_data(indx).record_id;
+				        lr_ra_intf_dists_info.global_attribute1               := rec_c_dist_det.record_id;
                 lr_ra_intf_dists_info.created_by                      := FND_GLOBAL.USER_ID;
                 lr_ra_intf_dists_info.creation_date                   := SYSDATE;
                 lr_ra_intf_dists_info.last_updated_by                 := FND_GLOBAL.USER_ID;
@@ -1236,7 +1296,8 @@ BEGIN
     BEGIN
         UPDATE xx_ar_scaas_interface
            SET process_id = ln_process_id
-         WHERE status  = 'NEW';
+         WHERE status  = 'NEW'
+		   AND process_id IS NULL;
     EXCEPTION WHEN OTHERS THEN
        null;
     END;
@@ -1283,6 +1344,7 @@ BEGIN
       logs('Waiting for concurrent request to complete');
       check_req_status(ln_req_id);
     END IF;
+    
     BEGIN
        SELECT   xftv.target_value1,rb.batch_source_id
          INTO   lv_source,lv_source_id
@@ -1337,7 +1399,7 @@ BEGIN
                       argument26       => 'N',
                       argument27       => 'Y',
                       argument28       => '',
-                      argument29       => '404', -- org_id
+                      argument29       => FND_PROFILE.VALUE('ORG_ID'), -- org_id
                       argument30       => chr(0) -- end with chr(0)as end of parameters
                       );
 					  COMMIT;
@@ -1356,6 +1418,62 @@ EXCEPTION WHEN OTHERS THEN
    logs('  Error in main '||SQLERRM,true);
    errbuf := sqlerrm;
    retcode := 2;
+END;
+
+
+PROCEDURE XX_SCAAS_RPT_WRAP(errbuf OUT VARCHAR2, RETCODE OUT NUMBER) IS
+
+
+  ln_req_id     NUMBER;
+  lv_period     GL_PERIOD_STATUSES.PERIOD_NAME%TYPE;
+  lv_to_email   XX_FIN_TRANSLATEVALUES.TARGET_VALUE1%TYPE;
+  lv_server     VARCHAR2(100) := FND_PROFILE.VALUE('XX_PA_PB_MAIL_HOST');
+  lv_from_email VARCHAR2(100) := 'noreply@officedepot.com';
+  e_period_missing EXCEPTION;
+  e_email_missing  EXCEPTION;
+BEGIN
+    BEGIN 
+       SELECT PERIOD_NAME 
+         INTO lv_period
+         FROM ( SELECT PERIOD_NAME 
+                  FROM GL_PERIOD_STATUSES 
+                 WHERE SET_OF_BOOKS_ID = (SELECT SET_OF_BOOKS_ID FROM AR_SYSTEM_PARAMETERS)
+                   AND APPLICATION_ID = 222
+                   AND CLOSING_STATUS = 'O'
+                ORDER BY PERIOD_YEAR DESC, PERIOD_NUM DESC     ) 
+        WHERE rownum=1;
+    EXCEPTION WHEN OTHERS THEN
+       Logs('Error in checking period. '||SQLERRM,true);
+       raise e_period_missing;
+    END;
+
+    BEGIN 
+       SELECT target_value1 
+         INTO lv_to_email
+         FROM xx_fin_translatedefinition xftd, xx_fin_translatevalues xftv 
+        WHERE xftd.translate_id = xftv.translate_id 
+          AND xftd.translation_name = 'XX_AR_SCAAS_INTERFACE' 
+          AND xftv.source_value1 = 'DISTRIBUTION_EMAIL' 
+          AND xftv.enabled_flag = 'Y' 
+          AND sysdate between NVL(xftv.start_date_active,sysdate) and NVL(xftv.end_date_active,sysdate+1);
+    EXCEPTION WHEN OTHERS THEN
+       Logs('Error in checking toemail. '||SQLERRM,true);
+       raise e_email_missing;
+    END;
+
+    ln_req_id:= fnd_request.submit_request ( application => 'XXFIN' , program => 'XXARSCAASRPTCHILD' , description => NULL , start_time => sysdate , sub_request => false , argument1=>lv_period, argument2=>lv_to_email,argument3=>lv_SERVER,argument4=>lv_from_email);
+    COMMIT;
+    logs('Conc. Program submitted '||ln_req_id);
+    IF ln_req_id = 0 THEN
+      logs('Conc. Program  failed to submit Program',True);
+    ELSE
+      logs('Waiting for concurrent request to complete');
+      check_req_status(ln_req_id);
+    END IF;
+EXCEPTION WHEN e_email_missing THEN
+     logs('To Email missing in the setup. Please add DISTRIBUTION_EMAIL in XX_AR_SCAAS_INTERFACE translation', true);
+   WHEN e_period_missing THEN
+     logs('Open period not found',true);
 END;
 
 /*********************************************************************

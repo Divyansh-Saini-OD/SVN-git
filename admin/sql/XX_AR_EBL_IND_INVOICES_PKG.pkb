@@ -37,6 +37,7 @@ create or replace PACKAGE BODY XX_AR_EBL_IND_INVOICES_PKG AS
    -- |1.12	    21-NOV-2018  Punit CG         Made changes in the Decode Script to fetch the|
    -- |                                       Sales order# for recurring billing invoices   |
    -- |1.13     27-MAY-2020  Divyansh           Added logic for JIRA NAIT-129167            |
+   -- |1.14     20-OCT-2021  Divyansh           Changes done to get sales order for SCAAS   |
    -- +=====================================================================================+
 
    ----------------------------------------
@@ -482,6 +483,8 @@ create or replace PACKAGE BODY XX_AR_EBL_IND_INVOICES_PKG AS
                 ,'ORDER ENTRY'
                 ,rct.interface_header_attribute1
 				,'RECURRING BILLING'
+				,rct.interface_header_attribute1
+				,'SCAAS BILLING'
 				,rct.interface_header_attribute1)sales_order_number
          ,NULL order_source_code
          FROM   ra_customer_trx         rct
@@ -1497,8 +1500,8 @@ create or replace PACKAGE BODY XX_AR_EBL_IND_INVOICES_PKG AS
                                        FROM fnd_lookup_values flv
                                       WHERE lookup_type =  'OD_FEES_ITEMS'
                                         AND flv.LANGUAGE='US'
-                                        AND FLV.enabled_flag = 'Y'                                   
-                                        AND SYSDATE BETWEEN NVL(FLV.start_date_active,SYSDATE) AND NVL(FLV.end_date_active,SYSDATE+1)  
+                                        AND FLV.enabled_flag = 'Y'
+                                        AND SYSDATE BETWEEN NVL(FLV.start_date_active,SYSDATE) AND NVL(FLV.end_date_active,SYSDATE+1)
                                         AND FLV.attribute7 NOT IN ('DELIVERY','MISCELLANEOUS')  ) Q_fee
          WHERE  rctl1.customer_trx_id = p_cust_trx_id
          AND    rctl1.uom_code = muom.uom_code(+)
@@ -1609,7 +1612,7 @@ create or replace PACKAGE BODY XX_AR_EBL_IND_INVOICES_PKG AS
            SELECT UPPER(hca.ATTRIBUTE9)
              INTO lv_dept_type
              FROM hz_cust_accounts hca,ra_customer_trx
-           WHERE cust_account_id = bill_to_customer_id 
+           WHERE cust_account_id = bill_to_customer_id
              AND customer_trx_id = p_cust_trx_id;
          EXCEPTION WHEN NO_DATA_FOUND THEN
            lv_dept_type := NULL;
@@ -2906,4 +2909,3 @@ create or replace PACKAGE BODY XX_AR_EBL_IND_INVOICES_PKG AS
          RETURN lc_cust_acct_id;
    END;
 END xx_ar_ebl_ind_invoices_pkg;
-/

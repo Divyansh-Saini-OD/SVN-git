@@ -38,7 +38,7 @@ create or replace package xx_ar_scaas_pkg is
 FUNCTION check_aops_number(p_value IN VARCHAR2)
   RETURN VARCHAR2;
 
-Function get_term_id (p_name        IN varchar2) 
+Function get_term_id (p_name        IN varchar2)
 RETURN number;
 
 
@@ -58,7 +58,7 @@ RETURN number;
 
 FUNCTION get_std_message(p_msg_type IN  VARCHAR2) RETURN VARCHAR2;
 
-Function get_inventory_item_id (p_name            IN varchar2) 
+Function get_inventory_item_id (p_name            IN varchar2)
 RETURN mtl_system_items_b%ROWTYPE;
 
 procedure process_data (errbuf       out varchar2,
@@ -81,5 +81,8 @@ PROCEDURE MAIN (errbuf    OUT VARCHAR2,
 				p_run_AI  IN  varchar2);
 
 FUNCTION afterreport RETURN BOOLEAN;
+
+PROCEDURE XX_SCAAS_RPT_WRAP(errbuf OUT VARCHAR2, RETCODE OUT NUMBER);
+
 end xx_ar_scaas_pkg;
 /
