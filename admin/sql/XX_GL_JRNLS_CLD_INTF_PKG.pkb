@@ -22,7 +22,7 @@ AS
   -- | 1.4         09/11/2020   Mayur Palsokar       NAIT-161587 fix, added XX_SEND_NOTIFICATION and XX_PURGE_STAGING procedures|
   -- | 1.5         02/12/2020   Mayur Palsokar       Modified XX_SEND_NOTIFICATION procedure      |
   -- | 1.6         22/12/2020   Mayur Palsokar       Modified for NAIT-166322                     |
-  -- | 2.0		   20/09/2021	Amit Kumar			 Modified for NAIT-195642 --Project SPLIT	  |
+  -- | 2.0		   20/09/2021	Amit Kumar			 Modified for NAIT-195642					  |
   -- +============================================================================================+
   gc_package_name      CONSTANT all_objects.object_name%TYPE := 'XX_GL_JRNLS_CLD_INTF_PKG';
   gc_ret_success       CONSTANT VARCHAR2(20)                 := 'SUCCESS';
@@ -1141,6 +1141,7 @@ XX_GL_JRNLS_CLD_INTF_STG
 			INDEX BY BINARY_INTEGER;
 	
 	lv_ledger_coa_data                  lv_ledger_coa_tab;
+
   --NAIT-195642 Ends
   
   x_err_buf varchar2(1000);

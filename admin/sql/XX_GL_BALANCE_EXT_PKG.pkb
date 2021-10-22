@@ -1,4 +1,4 @@
-CREATE OR REPLACE PACKAGE BODY XX_GL_BALANCE_EXT_PKG
+create or replace PACKAGE BODY XX_GL_BALANCE_EXT_PKG
 AS
 -- +====================================================================+
 -- |                  Office Depot - Project Simplify                   |
@@ -52,11 +52,12 @@ AS
 -- |                                             Changes                |
 -- |2.6       05-Nov-2015   Madhu Bolli    	 I1360 - R122 Retrofit Table Schema Removal(defect#36303)|
 -- |2.7       17-Mar-2017   Paddy Sanjeevi  	 EU Fix                 |
--- |2.8       28-Mar-2017   Paddy Sanjeevi       GBP Tranvalue Fix      | 
+-- |2.8       28-Mar-2017   Paddy Sanjeevi       GBP Tranvalue Fix      |
+-- |3.0		  22-Oct-2021	Amit Kumar			 NAIT-199391 - Split Changes |
 -- +====================================================================+
 
 -- +====================================================================+
--- | Name : GET_PERIOD_NAME                                             |
+-- | Name : GET_PERIOD_NAME                                             |	
 -- | Description : accepts period name as a parameter and returns       |
 -- |               pre current period name and period num for p_count=2 |
 -- |               and pre pre current period name and period num for   |
@@ -1196,14 +1197,14 @@ SELECT /*+ leading(GLB) no_merge(AC) no_merge(AC1)*/
       IF UTL_FILE.is_open(lt_file_non_exld_mtd)
       THEN
         UTL_FILE.fclose(lt_file_non_exld_mtd);
-      -- Added for Defect # 10225 -- Start 
+      -- Added for Defect # 10225 -- Start
       END IF;
       IF UTL_FILE.is_open(lt_file_excluded_mtd)
       THEN
         UTL_FILE.fclose(lt_file_excluded_mtd);
       END IF;
       -- Added for Defect # 10225 -- End
-      
+
 	-- Commented for Defect # 10225 -- Start
 	/*
 	ELSIF UTL_FILE.is_open(lt_file_excluded_mtd)
@@ -2324,14 +2325,14 @@ IS
             ,GSB.name
             ,GSB.currency_code
             ,GSB.chart_of_accounts_id
-     FROM   gl_sets_of_books GSB*/                                                     
+     FROM   gl_sets_of_books GSB*/
      --added by kiran V(2.5) as per R12 Retrofit Change
      SELECT GL.ledger_id
            ,GL.short_name
            ,GL.name
            ,GL.currency_code
            ,GL.chart_of_accounts_id
-     FROM   gl_ledgers gl                                                              
+     FROM   gl_ledgers gl
      --WHERE  GSB.attribute1 = 'Y'
      WHERE GL.attribute1 = 'Y'
      --ended by kiran V(2.5) as per R12 Retrofit Change
@@ -2670,6 +2671,13 @@ BEGIN
        SELECT DECODE(lr_set_of_books.currency_code,'USD','NA','CAD','CAD','GBP','GBP')
        INTO lc_country
        FROM dual;
+	   
+	   --v3.0/NAIT-199391 start
+	   IF LR_SET_OF_BOOKS.SHORT_NAME='R_US_USD_P'
+	   THEN 
+	   lc_country := lc_country||'RE';
+	   END IF;
+	   --v3.0/NAIT-199391 end
 
      /*lc_file_name := lc_period_num || '~ORA_' || lr_set_of_books.currency_code
                           || '_' || lc_period_num || '~Actual~'
@@ -4434,4 +4442,4 @@ END GL_BALANCE_EXTRACT;
 
 END XX_GL_BALANCE_EXT_PKG;
 /
-SHO ERROR
+show error;

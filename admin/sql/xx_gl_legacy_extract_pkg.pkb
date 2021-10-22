@@ -1,15 +1,4 @@
-SET VERIFY OFF;
-SET SHOW OFF;
-SET ECHO OFF;
-SET TAB OFF;
-SET FEEDBACK OFF;
-  
-WHENEVER SQLERROR CONTINUE; 
- 
-WHENEVER OSERROR EXIT FAILURE ROLLBACK;
-
-create or replace 
-PACKAGE BODY xx_gl_legacy_extract_pkg
+create or replace PACKAGE BODY xx_gl_legacy_extract_pkg
 AS
   -- +=================================================================================+
   -- |                       Office Depot - Project Simplify                           |
@@ -27,6 +16,7 @@ AS
   -- |                                        file copy                                |
   -- |1.2      27-APR-2020  Vivek Kumar      Added For Added for NAIT-127524,Replace   |
   -- |                                       1000E to 1100E File                       |
+  -- |2.0	   22-Oct-2021	Amit Kumar		NAIT-199392 -Split Changes
   ---+=================================================================================+
   -- +=================================================================================+
   -- |                                                                                 |
@@ -59,6 +49,23 @@ AS
   -- |CALLED BY                                                                        |
   -- |  None.                                                                          |
   -- +=================================================================================+
+
+--v2.0/NAIT-199392 start
+FUNCTION is_file_exist(
+    p_directory IN VARCHAR2,
+    p_filename  IN VARCHAR2)
+  RETURN BOOLEAN
+AS
+  n_length     NUMBER;
+  n_block_size NUMBER;
+  b_exist      BOOLEAN := FALSE;
+BEGIN
+  UTL_FILE.fgetattr (p_directory, p_filename, b_exist, n_length, n_block_size);
+  RETURN b_exist;
+END is_file_exist; 
+
+--v2.0/NAIT-199392  end
+
 PROCEDURE gl_ytd_bal_monthly_extract(
     x_err_buff OUT NOCOPY VARCHAR2,
     x_ret_code OUT NOCOPY NUMBER,
@@ -122,6 +129,9 @@ AS
   lc_company     VARCHAR2 (50);
   ln_rec_count   NUMBER;
   lc_source_file VARCHAR2 (1000);
+  
+  lc_exist_file_name VARCHAR2(100);  --v2.0/NAIT-199392 added 
+  
   -- Cursor Query to get the Set of Books --
   CURSOR lcu_set_of_books
   IS
@@ -135,7 +145,9 @@ AS
     FROM --gl_sets_of_books gsb
       gl_ledgers gsb
     WHERE gsb.attribute1 = 'Y'
-    AND gsb.short_name   = DECODE (p_sob_name, 'ALL', gsb.short_name, p_sob_name );
+    AND gsb.short_name   = DECODE (p_sob_name, 'ALL', gsb.short_name, p_sob_name )
+	order by ledger_id; --v2.0/NAIT-199392
+	
   -- Cursor query to get the GL Balances
   CURSOR lcu_gl_balances ( p_set_of_books_id IN NUMBER, p_currency_code IN VARCHAR2, p_period_name IN VARCHAR2, p_coa_id IN NUMBER )
   IS
@@ -326,8 +338,11 @@ BEGIN
         ---   fnd_file.put_line (fnd_file.LOG,'ln_rec_count 1 :'||ln_rec_count);
         ----Commented to write 1000E to 5000E(Priyam)
         --- lc_file_name :='LegacyODP_ODPEBS' || lr_gl_balances.company || '_' ||lr_set_of_books.led_name||'_'|| TO_CHAR (TO_DATE (p_period_name, 'MON-YY'), 'Mon') || '_' || TO_CHAR (TO_DATE (p_period_name, 'MON-YY'), 'Mon')|| '_' ||TO_CHAR (TO_DATE (p_period_name, 'MON-YY'), 'YY')||'.txt';
-        lc_file_name :='LegacyODP_ODPEBS' || lr_gl_balances.company_swap || '_' ||lr_set_of_books.led_name||'_'|| TO_CHAR (TO_DATE (p_period_name, 'MON-YY'), 'Mon') || '_' || TO_CHAR (TO_DATE (p_period_name, 'MON-YY'), 'Mon')|| '_' ||TO_CHAR (TO_DATE (p_period_name, 'MON-YY'), 'YY')||'.txt';
-        fnd_file.put_line (fnd_file.LOG, '*************************************************************' );
+        
+		--lc_file_name :='LegacyODP_ODPEBS' || lr_gl_balances.company_swap || '_' ||lr_set_of_books.led_name||'_'|| TO_CHAR (TO_DATE (p_period_name, 'MON-YY'), 'Mon') || '_' || TO_CHAR (TO_DATE (p_period_name, 'MON-YY'), 'Mon')|| '_' ||TO_CHAR (TO_DATE (p_period_name, 'MON-YY'), 'YY')||'.txt'; --Commented v2.0/NAIT-199392 
+        lc_file_name :='LegacyODP_ODPEBS' || lr_gl_balances.company_swap || '_' ||trim(lr_set_of_books.led_name)||'_'|| TO_CHAR (TO_DATE (p_period_name, 'MON-YY'), 'Mon') || '_' || TO_CHAR (TO_DATE (p_period_name, 'MON-YY'), 'Mon')|| '_' ||TO_CHAR (TO_DATE (p_period_name, 'MON-YY'), 'YY')||'.txt'; --added v2.0/NAIT-199392
+
+		fnd_file.put_line (fnd_file.LOG, '*************************************************************' );
         fnd_file.put_line (fnd_file.log, 'SOB Name     : ' || lr_set_of_books.short_name );
         ----Commented to write 1000E to 5000E(Priyam)
         ---- fnd_file.put_line (fnd_file.LOG, 'Company     : ' || lr_gl_balances.company );
@@ -336,7 +351,40 @@ BEGIN
         fnd_file.put_line (fnd_file.LOG, 'Period Name  : ' || p_period_name );
         fnd_file.put_line (fnd_file.LOG, '-------------------------------------------------------------' );
         fnd_file.put_line (fnd_file.LOG, 'File Name : ' || lc_file_name);
-        IF NOT UTL_FILE.is_open (g_lt_file) THEN
+		
+		/*Split Changes v2.0/NAIT-199392 start*/
+		lc_exist_file_name :='LegacyODP_ODPEBS' || lr_gl_balances.company_swap || '_US_'|| TO_CHAR (TO_DATE (p_period_name, 'MON-YY'), 'Mon') || '_' || TO_CHAR (TO_DATE (p_period_name, 'MON-YY'), 'Mon')|| '_' ||TO_CHAR (TO_DATE (p_period_name, 'MON-YY'), 'YY')||'.txt';
+				
+		IF is_file_exist (lc_file_path, lc_exist_file_name)
+		THEN
+		fnd_file.put_line (fnd_file.LOG,'File exists in US_USD_P ledger. Opening file  ' ||lc_exist_file_name);
+			IF NOT UTL_FILE.is_open (g_lt_file) THEN
+				 BEGIN
+				 g_lt_file    := UTL_FILE.fopen (lc_file_path, lc_exist_file_name, 'a', ln_buffer ); --a append mode
+				 lc_file_flag := 'Y';
+				 EXCEPTION
+				 WHEN OTHERS THEN
+				 fnd_file.put_line (fnd_file.LOG, 'Exception raised while Opening the file. ' || SQLERRM );
+				 lc_file_flag := 'N';
+				 END;
+			END IF;
+		
+		ELSE
+		fnd_file.put_line (fnd_file.LOG,'File doesnt exists in US_USD_P ledger. Creating new file  ' ||lc_file_name);
+			 IF NOT UTL_FILE.is_open (g_lt_file) THEN
+				 BEGIN
+				---  fnd_file.put_line (fnd_file.LOG,'IF NOT');
+				 g_lt_file    := UTL_FILE.fopen (lc_file_path, lc_file_name, 'w', ln_buffer );
+				 lc_file_flag := 'Y';
+				 EXCEPTION
+				 WHEN OTHERS THEN
+				 fnd_file.put_line (fnd_file.LOG, 'Exception raised while Opening the file. ' || SQLERRM );
+				 lc_file_flag := 'N';
+				 END;
+			 END IF;
+		END IF;
+
+        /*IF NOT UTL_FILE.is_open (g_lt_file) THEN
           BEGIN
             ---  fnd_file.put_line (fnd_file.LOG,'IF NOT');
             g_lt_file    := UTL_FILE.fopen (lc_file_path, lc_file_name, 'w', ln_buffer );
@@ -346,7 +394,8 @@ BEGIN
             fnd_file.put_line (fnd_file.LOG, 'Exception raised while Opening the file. ' || SQLERRM );
             lc_file_flag := 'N';
           END;
-        END IF;
+        END IF; 
+		--Split changes v2.0/NAIT-199392 end*/
       END IF;
       -----------GET FILE NAME END-----------------------------------
       -----------GET line record details START-----------------------------------
@@ -437,5 +486,4 @@ WHEN OTHERS THEN
 END gl_ytd_wrapper;
 END xx_gl_legacy_extract_pkg;
 /
-
-SHOW ERRORS;
+show error;
