@@ -667,12 +667,14 @@ IS
   from
 	XX_GL_JRNLS_CLD_INTF_STG stg,
 	XX_GL_JRNLS_CLD_INTF_FILES xfile
-  where xfile.record_status='V'
+  where 1=1 --xfile.record_status='V' --NAIT-195642 commented
+  and xfile.record_status in ('V','I')  -- NAIT-195642 added
   and xfile.process_name=p_process_name
   and stg.file_batch_id=xfile.file_batch_id
   and stg.RECORD_STATUS in ('V')
   and stg.action in ('VALID')
-	group by xfile.file_batch_id,stg.EBS_LEDGER_NAME,stg.EBS_JOURNAL_SOURCE
+  AND stg.ledger_id    =gn_set_of_bks_id -- --NAIT-195642 added
+  	group by xfile.file_batch_id,stg.EBS_LEDGER_NAME,stg.EBS_JOURNAL_SOURCE
   ;
 
   cursor cur_gl_journals_batch(p_file_batch_id number,p_ledger_name varchar2,p_journal_source varchar2) is
@@ -2431,7 +2433,12 @@ BEGIN
 				where xx.file_batch_id in
 				(Select distinct file_batch_id from XX_GL_JRNLS_CLD_INTF_STG stg where EBS_JOURNAL_SOURCE=stg_rec.EBS_JOURNAL_SOURCE
 				and stg.RECORD_STATUS in ('I')
-				and stg.action in ('INSERT'));
+				and stg.action in ('INSERT')
+				--NAIT-195642 added below not exist stmt
+				and not exists (select 1 from XX_GL_JRNLS_CLD_INTF_STG stg1
+				where stg1.file_batch_id=stg.file_batch_id
+				and stg1.RECORD_STATUS='V'));
+				--NAIT-195642 end
 
 	  Update XX_GL_JRNLS_CLD_INTF_STG stg set record_status='P',
 				action='PROCESSED',
@@ -2448,7 +2455,12 @@ BEGIN
 				where xx.file_batch_id in
 				(Select distinct file_batch_id from XX_GL_JRNLS_CLD_INTF_STG stg where EBS_JOURNAL_SOURCE=stg_rec.EBS_JOURNAL_SOURCE
 				and stg.RECORD_STATUS in ('I')
-				and stg.action in ('INSERT'));
+				and stg.action in ('INSERT')
+				--NAIT-195642 added below not exist stmt
+				and not exists (select 1 from XX_GL_JRNLS_CLD_INTF_STG stg1
+				where stg1.file_batch_id=stg.file_batch_id
+				and stg1.RECORD_STATUS='V'));
+				--NAIT-195642 end
 
 	Update XX_GL_JRNLS_CLD_INTF_STG stg set record_status='P',
 				action='PROCESSED',
