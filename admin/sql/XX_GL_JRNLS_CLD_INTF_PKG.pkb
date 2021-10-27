@@ -1210,10 +1210,10 @@ BEGIN
 						  SELECT 1
 						  INTO lv_record
 						  FROM gl_ledgers
-						  WHERE name=DECODE(lv_ledger_name_data(idx).ledger_name,'ODP US Primary USD','R US USD Corp GAAP Primary','OD US Primary USD','US USD Corp GAAP Primary','OD CA Primary CAD','CA CAD Corp GAAP Primary',lv_ledger_name_data(idx).ledger_name);
+						  WHERE name=DECODE(lv_ledger_name_data(idx).ledger_name,'OD US Primary USD','R US USD Corp GAAP Primary','ODP US Primary USD','US USD Corp GAAP Primary','OD CA Primary CAD','CA CAD Corp GAAP Primary',lv_ledger_name_data(idx).ledger_name);
 						  
 						  UPDATE XX_GL_JRNLS_CLD_INTF_STG
-						  SET EBS_LEDGER_NAME=DECODE(lv_ledger_name_data(idx).ledger_name,'ODP US Primary USD','R US USD Corp GAAP Primary','OD US Primary USD','US USD Corp GAAP Primary','OD CA Primary CAD','CA CAD Corp GAAP Primary',lv_ledger_name_data(idx).ledger_name)
+						  SET EBS_LEDGER_NAME=DECODE(lv_ledger_name_data(idx).ledger_name,'OD US Primary USD','R US USD Corp GAAP Primary','ODP US Primary USD','US USD Corp GAAP Primary','OD CA Primary CAD','CA CAD Corp GAAP Primary',lv_ledger_name_data(idx).ledger_name)
 						  WHERE 1            =1
 						  AND file_batch_id  =gn_file_batch_id
 						  AND ledger_name    =lv_ledger_name_data(idx).ledger_name;
