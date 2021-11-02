@@ -123,6 +123,7 @@ IS
 -- |2.20     16-Apr-2018     Havish Kasina          Added the NVL(ld_terms_date,invoices_updt.invoice_date)          |
 -- |2.21     12-DEC-2018     Vivek Kumar            Added logic to include DL for Duplicate Invoice for NAIT-51088	 | 
 -- |2.22     03-JUN-2019  	 Dinesh Nagapuri        Replaced V$INSTANCE with DB_Name for LNS						 |
+-- |2.23     28-OCT-2021     Mayur Palsokar         Modified xx_ap_update_source for NAIT-199510 (Need to review during Spin Day3)|
 -- +=================================================================================================================+
 
 PROCEDURE XX_AP_OTM_UPDATE(p_group_id IN VARCHAR2)
@@ -991,6 +992,7 @@ END XX_AP_OTM_INVOICE;
       /* Defect 2362 - if you have multiple Expenditure Type then ignore it */
          RETURN NULL;
    END f_exp_type_inbound;
+   
    PROCEDURE xx_ap_update_source (errbuff OUT VARCHAR2, retcode OUT VARCHAR2)
    IS
    BEGIN
@@ -1009,6 +1011,14 @@ END XX_AP_OTM_INVOICE;
       UPDATE xx_ap_inv_interface_stg
          SET SOURCE = 'US_OD_RTV_CONSIGNMENT'
        WHERE SOURCE = 'US_OD_RTV_CONSIGNMEN';
+	   
+	   /* Start: Added for NAIT-199510 */
+	  UPDATE xx_ap_inv_interface_stg
+         SET SOURCE = 'US_OD_PAYROLL_GARNISHMENT',
+		     GLOBAL_ATTRIBUTE19 = 'US_ODP_PAYROLL_GARNISHMENT'
+       WHERE SOURCE = 'US_ODP_PAYROLL_GARNISHMENT';   
+      /* End: Added for NAIT-199510 */	   
+	   
       COMMIT;
    END xx_ap_update_source;
    PROCEDURE xx_ap_invoices_purge (
@@ -2149,10 +2159,11 @@ CURSOR c2 (errbuff      OUT      VARCHAR2,
 IS
 SELECT *
   FROM xx_ap_inv_interface_stg
- WHERE RTRIM (SOURCE) = p_source
+   WHERE RTRIM (SOURCE) = p_source
    AND (GROUP_ID = p_group_id OR GROUP_ID IS NULL)
    AND external_doc_ref IS NULL
    AND global_attribute16 IS NULL;
+   
       CURSOR c3 (p_invoice_id IN NUMBER)
       IS
          SELECT a.line_number, b.invoice_id,
