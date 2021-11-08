@@ -667,14 +667,12 @@ IS
   from
 	XX_GL_JRNLS_CLD_INTF_STG stg,
 	XX_GL_JRNLS_CLD_INTF_FILES xfile
-  where 1=1 --xfile.record_status='V' --NAIT-195642 commented
-  and xfile.record_status in ('V','I')  -- NAIT-195642 added
+  where xfile.record_status='V'
   and xfile.process_name=p_process_name
   and stg.file_batch_id=xfile.file_batch_id
   and stg.RECORD_STATUS in ('V')
   and stg.action in ('VALID')
-  AND stg.ledger_id    =gn_set_of_bks_id -- --NAIT-195642 added
-  	group by xfile.file_batch_id,stg.EBS_LEDGER_NAME,stg.EBS_JOURNAL_SOURCE
+	group by xfile.file_batch_id,stg.EBS_LEDGER_NAME,stg.EBS_JOURNAL_SOURCE
   ;
 
   cursor cur_gl_journals_batch(p_file_batch_id number,p_ledger_name varchar2,p_journal_source varchar2) is
@@ -759,8 +757,7 @@ Begin
                                                , p_batch_desc => ' '
                                                , p_user_source_name => lv_gl_journals_batch_data(idx).EBS_JOURNAL_SOURCE
                                                , p_user_catgory_name => lv_gl_journals_batch_data(idx).EBS_JOURNAL_CATEGORY
-                                               --, p_set_of_books_id => gn_set_of_bks_id --cur.set_of_books_id   --NAIT-195642 Commented
-											   , p_set_of_books_id => lv_gl_journals_batch_data(idx).ledger_id   --NAIT-195642 added
+                                               , p_set_of_books_id => gn_set_of_bks_id --cur.set_of_books_id
                                                , p_accounting_date => NVL(lv_gl_journals_batch_data(idx).accounting_date,SYSDATE)
                                                , p_currency_code => lv_gl_journals_batch_data(idx).currency_code
                                                , p_company => lv_gl_journals_batch_data(idx).segment1
@@ -806,8 +803,7 @@ Begin
                                                , p_batch_desc => ' '
                                                , p_user_source_name => lv_gl_journals_batch_data(idx).EBS_JOURNAL_SOURCE
                                                , p_user_catgory_name => lv_gl_journals_batch_data(idx).EBS_JOURNAL_CATEGORY
-                                               --, p_set_of_books_id => gn_set_of_bks_id --NAIT-195642 added
-											   , p_set_of_books_id => lv_gl_journals_batch_data(idx).ledger_id   --NAIT-195642 added
+                                               , p_set_of_books_id => gn_set_of_bks_id
                                                , p_accounting_date => NVL(lv_gl_journals_batch_data(idx).accounting_date,SYSDATE)
                                                , p_currency_code => lv_gl_journals_batch_data(idx).currency_code
                                                , p_company => lv_gl_journals_batch_data(idx).segment1
@@ -1119,33 +1115,7 @@ XX_GL_JRNLS_CLD_INTF_STG
 	 where xfile.record_status='N'
 	  and process_name=p_process_name;
 	  lv_error_loc varchar2(1000) :=null;
-	  
-  --NAIT-195642 Starts	  
-  --===============================================================================
-  --Cursor to derive ledger id and COA 	  --NAIT-195642 (Created for SPLIT)
-  --===============================================================================
-  CURSOR cur_ledger_coa is
-	SELECT stg.rowid,
-	gl.name,
-	gl.ledger_id,
-	gl.CHART_OF_ACCOUNTS_ID ,
-	stg.file_batch_id,
-	stg.ledger_name,
-	stg.ebs_ledger_name
-	FROM XX_GL_JRNLS_CLD_INTF_STG stg,
-	gl_ledgers gl
-	WHERE stg.EBS_LEDGER_NAME=gl.NAME
-	and stg.file_batch_id=gn_file_batch_id
-	and stg.RECORD_STATUS in ('N')
-	and stg.action in ('NEW');
-	
-	TYPE lv_ledger_coa_tab IS TABLE OF cur_ledger_coa%ROWTYPE
-			INDEX BY BINARY_INTEGER;
-	
-	lv_ledger_coa_data                  lv_ledger_coa_tab;
 
-  --NAIT-195642 Ends
-  
   x_err_buf varchar2(1000);
   x_ret_code number:=0;
 
@@ -1198,110 +1168,52 @@ BEGIN
 
 					lv_error_message:=null;
 			            BEGIN
-						  /*--NAIT-195642 Starts
-						  select 1 into lv_record from gl_ledgers
-						  where name=decode(lv_ledger_name_data(idx).ledger_name,'OD US Primary USD','US USD Corp GAAP Primary','OD CA Primary CAD','CA CAD Corp GAAP Primary',lv_ledger_name_data(idx).ledger_name);
-
-						  Update XX_GL_JRNLS_CLD_INTF_STG
-						  set EBS_LEDGER_NAME=decode(lv_ledger_name_data(idx).ledger_name,'OD US Primary USD','US USD Corp GAAP Primary','OD CA Primary CAD','CA CAD Corp GAAP Primary',lv_ledger_name_data(idx).ledger_name)
-						  where 1=1
-						  and file_batch_id=gn_file_batch_id
-							 and ledger_name=lv_ledger_name_data(idx).ledger_name;*/
 						  SELECT 1
 						  INTO lv_record
 						  FROM gl_ledgers
-						  WHERE name=DECODE(lv_ledger_name_data(idx).ledger_name,'OD US Primary USD','R US USD Corp GAAP Primary','ODP US Primary USD','US USD Corp GAAP Primary','OD CA Primary CAD','CA CAD Corp GAAP Primary',lv_ledger_name_data(idx).ledger_name);
-						  
+						  WHERE name=DECODE(lv_ledger_name_data(idx).ledger_name,
+															 'OD US Primary USD','US USD Corp GAAP Primary',
+															 'OD CA Primary CAD','CA CAD Corp GAAP Primary',
+															 'ODP US Primary USD','US USD Corp GAAP Primary', --NAIT-195642 Added
+											lv_ledger_name_data(idx).ledger_name);
 						  UPDATE XX_GL_JRNLS_CLD_INTF_STG
-						  SET EBS_LEDGER_NAME=DECODE(lv_ledger_name_data(idx).ledger_name,'OD US Primary USD','R US USD Corp GAAP Primary','ODP US Primary USD','US USD Corp GAAP Primary','OD CA Primary CAD','CA CAD Corp GAAP Primary',lv_ledger_name_data(idx).ledger_name)
+						  SET EBS_LEDGER_NAME=DECODE(lv_ledger_name_data(idx).ledger_name,
+																	  'OD US Primary USD','US USD Corp GAAP Primary',
+																	  'OD CA Primary CAD','CA CAD Corp GAAP Primary',
+																	  'ODP US Primary USD','US USD Corp GAAP Primary', --NAIT-195642 Added
+													lv_ledger_name_data(idx).ledger_name)
 						  WHERE 1            =1
 						  AND file_batch_id  =gn_file_batch_id
 						  AND ledger_name    =lv_ledger_name_data(idx).ledger_name;
-                          --NAIT-195642 Ends  --Added new ledger "ODP US Primary USD" for SPLIT 
-						 EXCEPTION
-						 WHEN no_data_found THEN
+						EXCEPTION
+						WHEN no_data_found THEN
+						  gc_error_status_flag:='Y';
+						  lc_ledger_error_flag:='Y'; -- Added for NAIT-161587
+						  lv_error_message    :='Oracle Cloud Ledger '||lv_ledger_name_data(idx).ledger_name||' not found.';
+						  logit(lv_error_message);
+						WHEN OTHERS THEN
+						  gc_error_status_flag:='Y';
+						  lc_ledger_error_flag:='Y'; -- Added for NAIT-161587
+						  lv_error_message    :='Validation error-Oracle Cloud Ledger '||lv_ledger_name_data(idx).ledger_name ||' not found.SQLERRM-'||sqlerrm||'.';
+						  logit(lv_error_message);
+						END;
 
-							 gc_error_status_flag:='Y';
-							 lc_ledger_error_flag:='Y';   -- Added for NAIT-161587
-							 lv_error_message :='Oracle Cloud Ledger '||lv_ledger_name_data(idx).ledger_name||' not found.';
-							 logit(lv_error_message);
-						  WHEN OTHERS THEN
-						    gc_error_status_flag:='Y';
-							lc_ledger_error_flag:='Y';		-- Added for NAIT-161587
-							lv_error_message:='Validation error-Oracle Cloud Ledger '||lv_ledger_name_data(idx).ledger_name ||' not found.SQLERRM-'||sqlerrm||'.';
-							logit(lv_error_message);
+						 if gc_error_status_flag='Y' then
+							Update XX_GL_JRNLS_CLD_INTF_STG set
+								ERROR_DESCRIPTION=decode(ERROR_DESCRIPTION,null,lv_error_message,ERROR_DESCRIPTION||'~'||lv_error_message)
+								where 1=1
+								and file_batch_id=gn_file_batch_id
+								and ledger_name=lv_ledger_name_data(idx).ledger_name;
+								gc_error_status_flag:='N';
+								p_retcode:=1;
+						end if;
 
-						 END;
 
-						 IF gc_error_status_flag='Y' THEN
-							UPDATE XX_GL_JRNLS_CLD_INTF_STG
-							SET	ERROR_DESCRIPTION=DECODE(ERROR_DESCRIPTION,null,lv_error_message,ERROR_DESCRIPTION||'~'||lv_error_message)
-							WHERE 1=1
-							AND file_batch_id=gn_file_batch_id
-							AND ledger_name=lv_ledger_name_data(idx).ledger_name;
-							
-							gc_error_status_flag:='N';
-							p_retcode:=1;
-						 END IF;
-
-					END LOOP;
-			END LOOP;
+					end loop;
+			end loop;
     print_debug_msg(p_message => 'Ledger Validation Completed' , p_force => False);
 	close cur_ledger_name;
 	commit;
-
-  --NAIT-195642 Starts
-  --==========================================================================================
-  -- Cursor for Ledger Name and COA Validation
-  --==========================================================================================
-  lv_error_loc:='Ledger and COA update begins';
-  print_debug_msg(p_message => 'Ledger and COA update begins' , p_force => False);
-  OPEN cur_ledger_coa;
-  LOOP
-    FETCH cur_ledger_coa BULK COLLECT INTO lv_ledger_coa_data LIMIT 5000;
-    EXIT
-  WHEN lv_ledger_coa_data.COUNT = 0;
-    FOR idx IN lv_ledger_coa_data.FIRST .. lv_ledger_coa_data.LAST
-    LOOP
-      lv_error_message:=NULL;
-      BEGIN
-        UPDATE XX_GL_JRNLS_CLD_INTF_STG
-        SET ledger_id         =lv_ledger_coa_data(idx).ledger_id,
-          chart_of_accounts_id=lv_ledger_coa_data(idx).CHART_OF_ACCOUNTS_ID
-        WHERE 1               =1
-        AND file_batch_id     =gn_file_batch_id
-        AND ledger_name       =lv_ledger_coa_data(idx).ledger_name;
-      EXCEPTION
-      WHEN no_data_found THEN
-        gc_error_status_flag:='Y';
-        lc_ledger_error_flag:='Y';
-        lv_error_message    :='Oracle ebs Ledger ID for '||lv_ledger_coa_data(idx).ebs_ledger_name||' not found.';
-        logit(lv_error_message);
-      WHEN OTHERS THEN
-        gc_error_status_flag:='Y';
-        lc_ledger_error_flag:='Y';
-        lv_error_message    :='Validation error-Oracle ebs Ledger '||lv_ledger_coa_data(idx).ebs_ledger_name ||' not found.SQLERRM-'||sqlerrm||'.';
-        logit(lv_error_message);
-      END;
-      IF gc_error_status_flag='Y' THEN
-        UPDATE XX_GL_JRNLS_CLD_INTF_STG
-        SET ERROR_DESCRIPTION=DECODE(ERROR_DESCRIPTION,NULL,lv_error_message,ERROR_DESCRIPTION
-          ||'~'
-          ||lv_error_message)
-        WHERE 1              =1
-        AND file_batch_id    =gn_file_batch_id
-        AND ledger_name      =lv_ledger_coa_data(idx).ledger_name;
-        gc_error_status_flag:='N';
-        p_retcode           :=1;
-      END IF;
-    END LOOP;
-  END LOOP;
-  print_debug_msg(p_message => 'Ledger and COA Validation Completed' , p_force => False);
-  CLOSE cur_ledger_coa;
-  COMMIT;
-  
-  --NAIT-195642 Ends
-  
 
   if p_process_name='FIN' then
 
@@ -1357,7 +1269,6 @@ BEGIN
     print_debug_msg(p_message => 'Application Name Validation Completed' , p_force => False);
      close cur_application_name;
 	 commit;
-	  
 
   --==========================================================================================
   -- Cursor Declarations for Joural Sourace Validation
@@ -1767,11 +1678,10 @@ BEGIN
         gc_error_status_flag:='N';
 		lv_error_loc:='CCID derivation begins';
 			print_debug_msg(p_message => 'Derive Code Combination ID validation begins' , p_force => False);
-		/*SELECT gsob.chart_of_accounts_id
+          SELECT gsob.chart_of_accounts_id
 			  into gn_chart_of_accounts_id
            FROM gl_sets_of_books gsob
-          WHERE set_of_books_id = gn_set_of_bks_id; 
-		  */--NAIT-195642 Commented 
+          WHERE set_of_books_id = gn_set_of_bks_id;
 
 		OPEN cur_derive_ccid;
 			Loop
@@ -1794,8 +1704,7 @@ BEGIN
 
 										   lv_derived_ccid    := fnd_flex_ext.get_ccid (application_short_name      => 'SQLGL'
 																						, key_flex_code               => 'GL#'
-																						--, structure_number            => gn_chart_of_accounts_id
-																						, structure_number            => lv_derive_ccid_data(idx).chart_of_accounts_id
+																						, structure_number            => gn_chart_of_accounts_id
 																						, validation_date             => SYSDATE
 																						, concatenated_segments       => lc_ccid_acct
 																						);
@@ -2433,12 +2342,7 @@ BEGIN
 				where xx.file_batch_id in
 				(Select distinct file_batch_id from XX_GL_JRNLS_CLD_INTF_STG stg where EBS_JOURNAL_SOURCE=stg_rec.EBS_JOURNAL_SOURCE
 				and stg.RECORD_STATUS in ('I')
-				and stg.action in ('INSERT')
-				--NAIT-195642 added below not exist stmt
-				and not exists (select 1 from XX_GL_JRNLS_CLD_INTF_STG stg1
-				where stg1.file_batch_id=stg.file_batch_id
-				and stg1.RECORD_STATUS='V'));
-				--NAIT-195642 end
+				and stg.action in ('INSERT'));
 
 	  Update XX_GL_JRNLS_CLD_INTF_STG stg set record_status='P',
 				action='PROCESSED',
@@ -2455,12 +2359,7 @@ BEGIN
 				where xx.file_batch_id in
 				(Select distinct file_batch_id from XX_GL_JRNLS_CLD_INTF_STG stg where EBS_JOURNAL_SOURCE=stg_rec.EBS_JOURNAL_SOURCE
 				and stg.RECORD_STATUS in ('I')
-				and stg.action in ('INSERT')
-				--NAIT-195642 added below not exist stmt
-				and not exists (select 1 from XX_GL_JRNLS_CLD_INTF_STG stg1
-				where stg1.file_batch_id=stg.file_batch_id
-				and stg1.RECORD_STATUS='V'));
-				--NAIT-195642 end
+				and stg.action in ('INSERT'));
 
 	Update XX_GL_JRNLS_CLD_INTF_STG stg set record_status='P',
 				action='PROCESSED',
