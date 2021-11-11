@@ -150,3 +150,5 @@ EXCEPTION
 END;   -- Function INSTALLED
 
 End zx_tax_taxware_pkg;
+/
+show error;

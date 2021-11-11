@@ -158,3 +158,5 @@ EXCEPTION
 END Get_Release;
 
 END ZX_TAX_TAXWARE_REV;
+/
+show error;
