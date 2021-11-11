@@ -1,5 +1,5 @@
-CREATE OR REPLACE PROCEDURE XX_RPA_UPD_TEMP_CRDT_LMT_PRC ( p_account_number     IN hz_cust_accounts_all.account_number%TYPE, -- MANDATORY PARAMETER
-                                                           p_temp_credit_lmt    IN xx_cdh_cust_acct_ext_b.n_ext_attr2%TYPE,  -- OPTIONAL PARAMETER
+CREATE OR REPLACE PROCEDURE XX_RPA_UPD_TEMP_CRDT_LMT_PRC ( p_account_number     IN hz_cust_accounts_all.account_number%TYPE, -- Mandatory Parameter
+                                                           p_temp_credit_lmt    IN xx_cdh_cust_acct_ext_b.n_ext_attr2%TYPE,  -- Optional Parameter
                                                            p_status             OUT VARCHAR2
                                                          )
 AS
