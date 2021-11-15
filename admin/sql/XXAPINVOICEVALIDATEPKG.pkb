@@ -1,4 +1,4 @@
-CREATE OR REPLACE PACKAGE BODY xx_ap_inv_validate_pkg
+create or replace PACKAGE BODY xx_ap_inv_validate_pkg
 IS
    gc_pcard_acct_num  VARCHAR2(50);
 -- +=================================================================================================================+
@@ -124,6 +124,7 @@ IS
 -- |2.21     12-DEC-2018     Vivek Kumar            Added logic to include DL for Duplicate Invoice for NAIT-51088	 | 
 -- |2.22     03-JUN-2019  	 Dinesh Nagapuri        Replaced V$INSTANCE with DB_Name for LNS						 |
 -- |2.23     28-OCT-2021     Mayur Palsokar         Modified xx_ap_update_source for NAIT-199510 (Need to review during Spin Day3)|
+-- |2.24     15-NOV-2021     Taruna Baluni          Modified xx_ap_update_source for NAIT-201215 (Need to review during Spin Day3)| 
 -- +=================================================================================================================+
 
 PROCEDURE XX_AP_OTM_UPDATE(p_group_id IN VARCHAR2)
@@ -530,8 +531,7 @@ IF v_cnt>0 THEN
   FOR cur IN C1(p_source,p_group_id)
   LOOP
 
-    v_vendor_id 	:= NULL;
-    v_vendor_site_id 	:= NULL;
+    v_vendor_id 	:= NULL;    v_vendor_site_id 	:= NULL;
     v_org_id 		:= NULL;
     v_terms_id		:= NULL;
     v_payment_method	:= NULL;
@@ -995,6 +995,15 @@ END XX_AP_OTM_INVOICE;
    
    PROCEDURE xx_ap_update_source (errbuff OUT VARCHAR2, retcode OUT VARCHAR2)
    IS
+   lc_code_combination  VARCHAR2 (2000);
+   l_gl_segment1                  VARCHAR2 (10);
+   l_gl_segment2                  VARCHAR2 (10);
+   l_gl_segment3                  VARCHAR2 (10);
+   l_gl_segment4                  VARCHAR2 (10);
+   l_gl_segment5                  VARCHAR2 (10);
+   l_gl_segment6                  VARCHAR2 (10);
+   l_gl_segment7                  VARCHAR2 (10);
+   vl_ccid                        NUMBER;
    BEGIN
 ------------------------------
 -- Update Invoice Sources   --
@@ -1006,21 +1015,77 @@ END XX_AP_OTM_INVOICE;
          SET SOURCE = 'US_OD_CONSIGNMENT_SALES'
        WHERE SOURCE = 'US_OD_CONSIGNMENT_SA';
       UPDATE xx_ap_inv_interface_stg
-         SET SOURCE = 'US_OD_RTV_MERCHANDISING'
+         SET SOURCE= 'US_OD_RTV_MERCHANDISING'
        WHERE SOURCE = 'US_OD_RTV_MERCHANDIS';
       UPDATE xx_ap_inv_interface_stg
          SET SOURCE = 'US_OD_RTV_CONSIGNMENT'
        WHERE SOURCE = 'US_OD_RTV_CONSIGNMEN';
 	   
+ /* Start: Added for NAIT-201215 */ 
+BEGIN 
+SELECT tv.target_value1 
+INTO  lc_code_combination
+FROM xx_fin_translatevalues tv
+,xx_fin_translatedefinition td
+WHERE td.TRANSLATION_NAME ='XXOD_AP_GARNISHMENT'
+AND tv.TRANSLATE_ID =td.TRANSLATE_ID
+AND tv.SOURCE_VALUE1 = 'LIABILITY'
+AND tv.enabled_flag ='Y'
+AND SYSDATE BETWEEN tv.start_date_active AND NVL(tv.end_date_active,SYSDATE);
+
+EXCEPTION WHEN OTHERS THEN 
+           lc_code_combination:=null;
+		   fnd_file.put_line (fnd_file.LOG,
+                         'Error while deriving liability account for ODP invoices'
+                        );
+END;
+
+If lc_code_combination is not null then
+
+                 l_gl_segment1 := SUBSTR(lc_code_combination,1,4);
+                 l_gl_segment2 := SUBSTR(lc_code_combination,6,5);
+                 l_gl_segment3 := SUBSTR(lc_code_combination,12,8);
+                 l_gl_segment4 := SUBSTR(lc_code_combination,21,6);
+                 l_gl_segment5 := SUBSTR(lc_code_combination,28,4);
+                 l_gl_segment6 := SUBSTR(lc_code_combination,33,2);
+                 l_gl_segment7 := SUBSTR(lc_code_combination,36,6);
+  
+      BEGIN
+        SELECT /*+ INDEX(GL_CODE_COMBINATIONS XX_GL_CODE_COMBINATIONS_N8) */ 
+     	         code_combination_id 
+          INTO vl_ccid
+          FROM gl_code_combinations
+         WHERE segment1 = l_gl_segment1
+           AND segment2 = l_gl_segment2 
+           AND segment3 = l_gl_segment3
+           AND segment4 = l_gl_segment4 
+           AND segment5 = l_gl_segment5
+           AND segment6 = l_gl_segment6
+           AND segment7 = l_gl_segment7
+           AND enabled_flag='Y';
+      EXCEPTION
+        WHEN others THEN
+	    vl_ccid:=NULL;
+		fnd_file.put_line (fnd_file.LOG,
+                         'vl_ccid     '
+                        );
+	end;
+
 	   /* Start: Added for NAIT-199510 */
 	  UPDATE xx_ap_inv_interface_stg
          SET SOURCE = 'US_OD_PAYROLL_GARNISHMENT',
-		     GLOBAL_ATTRIBUTE19 = 'US_ODP_PAYROLL_GARNISHMENT'
+		     GLOBAL_ATTRIBUTE19 = 'US_ODP_PAYROLL_GARNISHMENT',
+			 ACCTS_PAY_CODE_COMBINATION_ID = vl_ccid
        WHERE SOURCE = 'US_ODP_PAYROLL_GARNISHMENT';   
-      /* End: Added for NAIT-199510 */	   
-	   
+      /* End: Added for NAIT-199510 */	 
+
+end if ;
+
+ /* END: Added for NAIT-201215 */ 
+
       COMMIT;
    END xx_ap_update_source;
+   
    PROCEDURE xx_ap_invoices_purge (
       errbuff      OUT      VARCHAR2,
       retcode      OUT      VARCHAR2,
@@ -4638,5 +4703,3 @@ BEGIN
     
 END xx_ap_validate_inv_interface;
 END xx_ap_inv_validate_pkg;
-/
-SHOW ERRORS;
