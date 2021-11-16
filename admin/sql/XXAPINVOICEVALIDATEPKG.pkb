@@ -4703,3 +4703,5 @@ BEGIN
     
 END xx_ap_validate_inv_interface;
 END xx_ap_inv_validate_pkg;
+/
+SHOW ERRORS;
