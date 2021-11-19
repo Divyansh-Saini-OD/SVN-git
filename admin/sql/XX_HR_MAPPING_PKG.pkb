@@ -411,9 +411,9 @@ create or replace PACKAGE BODY "XX_HR_MAPPING_PKG" AS
 --    EXCEPTION WHEN OTHERS THEN
 --      RAISE_APPLICATION_ERROR(-20333,GET_MESSAGE('0018_MAP_CC_FAILED','DEPT', p_dept),TRUE);
 --      RETURN NULL;
---  END;  
-  
-  
+--  END;
+
+
   FUNCTION COST_CENTER (
     p_dept               IN VARCHAR2,
 	p_BG_id              IN NUMBER

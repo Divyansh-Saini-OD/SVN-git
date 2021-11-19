@@ -917,8 +917,8 @@ create or replace PACKAGE BODY XX_HR_EMP_PKG AS
 --                                       || '.' || XX_HR_MAPPING_PKG.FUTURE());
 --      END IF;
 --    END IF;
-	
-	LOG_LINE('UPDATE_ASSIGNMENT','ln_default_code_comb_id', ln_default_code_comb_id, G_SEVERITY_WARNING); 
+
+	LOG_LINE('UPDATE_ASSIGNMENT','ln_default_code_comb_id', ln_default_code_comb_id, G_SEVERITY_WARNING);
 
     IF p_manager_level='0' THEN -- CEO has manager_level 0... no supervisor expected
       lc_supervisor_number := NULL; -- make sure supervisor is not assigned because PeopleSoft is requiring a manager assignment now which is creating a circular ref for CEO
@@ -1403,7 +1403,181 @@ create or replace PACKAGE BODY XX_HR_EMP_PKG AS
     END;
   END LINK_EMP_TO_LOGIN;
 
+  FUNCTION check_if_dup_exists(p_employee_number PER_ALL_PEOPLE_F.employee_number%TYPE,p_business_group_id IN NUMBER)
+	RETURN NUMBER
+	IS
+	   lb_ret_num NUMBER;
+  BEGIN
+      SELECT business_group_id
+	    INTO lb_ret_num
+		FROM per_all_people_f
+	   WHERE employee_number    = p_employee_number
+     AND business_group_id   != p_business_group_id
+		 AND sysdate BETWEEN effective_start_date and effective_end_date
+		 AND person_type_id IN (SELECT person_type_id
+								  FROM PER_PERSON_TYPES
+								 WHERE system_person_type='EMP');
+								 
+      return lb_ret_num;
 
+  EXCEPTION 
+    WHEN NO_DATA_FOUND THEN
+	   return -2;
+    WHEN OTHERS THEN
+       fnd_file.put_line(fnd_file.log,'Error while checking duplicate');
+       return -1;
+  END;
+  
+    PROCEDURE reset_session(p_business_group_id  IN  NUMBER,p_error OUT VARCHAR2) IS
+     stop_error      exception;
+	 lv_resp_name    VARCHAR2(2000);
+	 ln_resp_app_id  NUMBER;
+	 ln_resp_id      NUMBER;
+	 p_status        VARCHAR2(4000);
+  BEGIN
+	  BEGIN
+			SELECT target_value1
+			  INTO lv_resp_name
+			  FROM xx_fin_translatedefinition xftd,
+				   xx_fin_translatevalues xftv,
+           hr_organization_units hou
+			 WHERE xftd.translation_name = 'XX_HR_BG_RESP_MAPPING'
+			   AND xftd.translate_id     = xftv.translate_id
+			   AND xftv.enabled_flag     = 'Y'
+			   AND xftv.source_value1    = hou.name
+               and hou.BUSINESS_GROUP_ID = p_business_group_id;
+		
+		EXCEPTION
+		   WHEN NO_DATA_FOUND THEN
+			  p_status :=  'Responsibility for termination on BG '||p_business_group_id||' not defined ';
+			  raise stop_error;
+		   WHEN OTHERS THEN
+			  p_status :=  'Not able to find responsibility for termination '||SQLERRM;
+			  raise stop_error;
+		END;
+		
+		BEGIN
+			SELECT APPLICATION_ID, RESPONSIBILITY_ID
+			  INTO ln_resp_app_id, ln_resp_id
+			  FROM fnd_responsibility_tl
+			 WHERE RESPONSIBILITY_NAME = lv_resp_name;
+		
+		EXCEPTION
+		   WHEN NO_DATA_FOUND THEN
+			  p_status :=  'Responsibility '||lv_resp_name||' not defined ';
+			  raise stop_error;
+		   WHEN OTHERS THEN
+			  p_status :=  'Not able to find responsibility '||SQLERRM;
+			  raise stop_error;
+		END;
+		
+		FND_GLOBAL.APPS_INITIALIZE(fnd_global.user_id,ln_resp_id,ln_resp_app_id);
+		
+  EXCEPTION 
+    WHEN stop_error THEN
+	  fnd_file.put_line(fnd_file.log,'Data not present to proper conversion');
+	  LOG_LINE('TERMINATE_CONV',p_status,null,G_SEVERITY_WARNING);
+	  p_error :=  p_status;
+    WHEN OTHERS THEN
+     fnd_file.put_line(fnd_file.log,'Error while terminate_for_conversion');
+	 LOG_LINE('TERMINATE_CONV',p_status,null,G_SEVERITY_WARNING);
+	 p_status :=  'Error in termination '||SQLERRM;
+	 p_error :=  p_status;
+  END;
+  
+  PROCEDURE terminate_for_conversion(p_employee_number    IN  PER_ALL_PEOPLE_F.employee_number%TYPE
+                                    ,p_business_group_id  IN  NUMBER
+									,p_status             OUT VARCHAR2) IS 
+	e_error                         EXCEPTION;
+    lv_error                        VARCHAR2(4000);	
+    ln_period_of_service_id         NUMBER;
+    ln_object_version_number        NUMBER;
+    ld_last_std_process_date_out    DATE;
+    lb_supervisor_warning           BOOLEAN;
+    lb_event_warning                BOOLEAN;
+    lb_interview_warning            BOOLEAN;
+    lb_review_warning               BOOLEAN;
+    lb_recruiter_warning            BOOLEAN;
+    lb_asg_future_changes_warning   BOOLEAN;
+    lc_entries_changed_warning      VARCHAR2(2);
+    lb_pay_proposal_warning         BOOLEAN;
+    lb_dod_warning                  BOOLEAN;
+    lb_org_now_no_manager_warning   BOOLEAN;
+    ld_final_process_date           DATE;
+    ld_sysdate                      DATE := TRUNC(SYSDATE);
+    -- Defect 32792
+    lc_iexp_access 		    VARCHAR2(1);
+    ln_extn_days		    NUMBER;
+    lc_extn_days		    VARCHAR2(30);
+
+  BEGIN
+  
+    reset_session(p_business_group_id,lv_error);
+	
+	IF lv_error IS NOT NULL THEN
+	   raise e_error;
+	END IF;
+
+
+    BEGIN
+      SELECT B.period_of_service_id, B.object_version_number
+      INTO   ln_period_of_service_id, ln_object_version_number
+      FROM   PER_ALL_PEOPLE_F P
+            ,PER_ALL_ASSIGNMENTS_F A
+            ,PER_PERIODS_OF_SERVICE B
+      WHERE  P.employee_number=p_employee_number
+      AND    P.person_id=A.person_id
+      AND    A.PERIOD_OF_SERVICE_ID = B.PERIOD_OF_SERVICE_ID
+      AND    A.PRIMARY_FLAG = 'Y'
+	  -- 	Added as part of defect 36035
+      AND    A.assignment_status_type_id = 1
+      AND    P.person_type_id IN (SELECT person_type_id
+								  FROM PER_PERSON_TYPES
+								 WHERE system_person_type='EMP')
+	  AND    p.business_group_id = p_business_group_id
+	  --
+      AND    ld_sysdate BETWEEN P.effective_start_date AND P.effective_end_date
+      AND    ld_sysdate BETWEEN A.effective_start_date AND A.effective_end_date;
+
+	  HR_EX_EMPLOYEE_API.ACTUAL_TERMINATION_EMP (
+        	 p_effective_date             => SYSDATE
+	        ,p_actual_termination_date    => SYSDATE
+        	,p_period_of_service_id       => ln_period_of_service_id
+	        ,p_object_version_number      => ln_object_version_number
+        	,p_last_std_process_date_out  => ld_last_std_process_date_out
+	        ,p_supervisor_warning         => lb_supervisor_warning
+	        ,p_event_warning              => lb_event_warning
+        	,p_interview_warning          => lb_interview_warning
+	        ,p_review_warning             => lb_review_warning
+        	,p_recruiter_warning          => lb_recruiter_warning
+	        ,p_asg_future_changes_warning => lb_asg_future_changes_warning
+        	,p_entries_changed_warning    => lc_entries_changed_warning
+	        ,p_pay_proposal_warning       => lb_pay_proposal_warning
+        	,p_dod_warning                => lb_dod_warning
+	      );
+
+          HR_EX_EMPLOYEE_API.FINAL_PROCESS_EMP (
+	         p_period_of_service_id       => ln_period_of_service_id
+        	,p_object_version_number      => ln_object_version_number
+	        ,p_final_process_date         => ld_final_process_date
+        	,p_org_now_no_manager_warning => lb_org_now_no_manager_warning
+        	,p_asg_future_changes_warning => lb_asg_future_changes_warning
+	        ,p_entries_changed_warning    => lc_entries_changed_warning
+	      );
+	
+    EXCEPTION WHEN NO_DATA_FOUND THEN
+      LOG_LINE('TERMINATE',GET_MESSAGE('0003_CANT_TERMINATE'),p_employee_number,G_SEVERITY_WARNING); -- Employee not found; no need to terminate
+    END ;
+   
+   
+  EXCEPTION 
+    WHEN e_error THEN
+	  LOG_LINE('TERMINATE',GET_MESSAGE('0003_CANT_TERMINATE'),p_employee_number,G_SEVERITY_WARNING);
+	  p_status :=  'Data not present for proper conversion '||SQLERRM;
+    WHEN OTHERS THEN
+	 LOG_LINE('TERMINATE','Error while terminate_for_conversion',p_employee_number,G_SEVERITY_WARNING);
+	 p_status :=  'Error in termination '||SQLERRM;
+  END terminate_for_conversion;  
 
   PROCEDURE SYNC_EMPLOYEE (
      p_employee_number            IN PER_ALL_PEOPLE_F.employee_number%TYPE
@@ -1471,6 +1645,10 @@ create or replace PACKAGE BODY XX_HR_EMP_PKG AS
     ld_sysdate                    DATE := TRUNC(SYSDATE);
     Hr_Error                      Exception;
     ln_error_cnt                  NUMBER       := 0;          --Added for defect 29387
+    ln_bg_id                      NUMBER;
+	  ln_business_group_id          NUMBER := fnd_profile.VALUE('PER_BUSINESS_GROUP_ID');
+  	e_error                       exception;
+    lv_error                      VARCHAR2(4000);
   BEGIN
 
     IF p_empl_status IN ('T','U','R','D','Q') THEN
@@ -1479,7 +1657,22 @@ create or replace PACKAGE BODY XX_HR_EMP_PKG AS
       COMMIT;
       LOG_LINE('SYNC_EMPLOYEE',GET_MESSAGE('0010_SYNCHED_STEP','STEP',lc_step), p_employee_number, G_SEVERITY_FYI); -- Synched - STEP
     ELSE
-
+      lc_step := 'check for duplicate';
+      ln_bg_id := check_if_dup_exists(p_employee_number,ln_business_group_id);
+      
+      IF ln_bg_id = -1 THEN  -- error while checking duplicate. Skip the sync
+         raise e_error;
+      ELSIF ln_bg_id != ln_business_group_id and ln_bg_id != -2 THEN -- duplicate exists in another BG. terminate the existing record
+         terminate_for_conversion(p_employee_number,ln_bg_id,lv_error);
+         IF lv_error IS NULL THEN
+            reset_session(ln_business_group_id,lv_error);
+         END IF;
+      END IF;
+      
+      IF LV_ERROR IS NOT NULL THEN
+         lc_step := 'Error in conversion to BG '||ln_bg_id;
+         raise e_error;
+      END IF;
       BEGIN
         lc_location        := XX_HR_MAPPING_PKG.LOCATION(p_location);
         Exception When Others Then
@@ -1504,7 +1697,7 @@ create or replace PACKAGE BODY XX_HR_EMP_PKG AS
           --Added for defect 29387
           LOG_LINE('SYNC_EMPLOYEE',SQLERRM, p_employee_number, G_SEVERITY_WARNING);
       END;
-	  
+
 	  LOG_LINE('SYNC_EMPLOYEE ln_organization_id ',ln_organization_id, p_employee_number, G_SEVERITY_WARNING);
 
       IF BITAND(p_sync_mode,G_SYNC_PERSON)>0 AND (Ln_Error_Cnt = 0)THEN  --Added for defect 29387
@@ -1677,7 +1870,11 @@ create or replace PACKAGE BODY XX_HR_EMP_PKG AS
 
     END IF;
 
-    EXCEPTION WHEN OTHERS THEN
+    EXCEPTION 
+    WHEN e_error THEN
+	   ROLLBACK;
+      LOG_LINE('SYNC_EMPLOYEE - ' || lc_step,SQLERRM,p_employee_number);
+    WHEN OTHERS THEN
       ROLLBACK;
       LOG_LINE('SYNC_EMPLOYEE - ' || lc_step,SQLERRM,p_employee_number);
   END SYNC_EMPLOYEE;
@@ -1770,11 +1967,23 @@ create or replace PACKAGE BODY XX_HR_EMP_PKG AS
              ,XX_HR_PS_STG V
              LEFT OUTER JOIN PER_ALL_PEOPLE_F P                                   -- only necessary for Auto Update exclusions
           ON P.employee_number=V.emplid                                           -- only necessary for Auto Update exclusions
+          AND p.business_group_id =fnd_profile.value('PER_BUSINESS_GROUP_ID')
         WHERE T.emplid=V.emplid
+--		  AND NVL(p.business_group_id,fnd_profile.value('PER_BUSINESS_GROUP_ID')) = fnd_profile.value('PER_BUSINESS_GROUP_ID')
           And Nvl(P.Attribute1,'Y') <> 'N' -- Additional Personal Details DFF segment1 is Auto Update, meaning don't sync if N
 		  AND XX_HR_MAPPING_PKG.GET_LEDGER( COMPANY, LOCATION) = fnd_profile.value('PER_BUSINESS_GROUP_ID')
           AND ld_sysdate BETWEEN NVL(P.effective_start_date,ld_sysdate) AND NVL(P.effective_end_date,ld_sysdate) -- only necessary for Auto Update exclusions
-        ORDER BY grade DESC)
+        UNION
+          SELECT V.*
+        FROM (SELECT DISTINCT emplid FROM XX_HR_PS_STG_TRIGGER WHERE PROCESS_STATUS='N' AND OD_TRANS_DT <= SYSDATE) T
+             ,XX_HR_PS_STG V
+             LEFT OUTER JOIN PER_ALL_PEOPLE_F P                                   -- only necessary for Auto Update exclusions
+          ON P.employee_number=V.emplid                                           -- only necessary for Auto Update exclusions
+        WHERE T.emplid=V.emplid
+          And Nvl(P.Attribute1,'Y') <> 'N' -- Additional Personal Details DFF segment1 is Auto Update, meaning don't sync if N
+          AND v.EMPL_STATUS = 'T'
+          AND ld_sysdate BETWEEN NVL(P.effective_start_date,ld_sysdate) AND NVL(P.effective_end_date,ld_sysdate) -- only necessary for Auto Update exclusions
+        ORDER BY 34 DESC)
     Loop
 
 
@@ -1814,8 +2023,10 @@ create or replace PACKAGE BODY XX_HR_EMP_PKG AS
              ,XX_HR_PS_STG V
              LEFT OUTER JOIN PER_ALL_PEOPLE_F P                                   -- only necessary for Auto Update exclusions
           ON P.employee_number=V.emplid                                           -- only necessary for Auto Update exclusions
+          AND p.business_group_id =fnd_profile.value('PER_BUSINESS_GROUP_ID')
         WHERE T.emplid=V.emplid
           AND NVL(P.attribute1,'Y') <> 'N' -- Additional Personal Details DFF segment1 is Auto Update, meaning don't sync if N
+--		  AND NVL(p.business_group_id,fnd_profile.value('PER_BUSINESS_GROUP_ID')) = fnd_profile.value('PER_BUSINESS_GROUP_ID')
 		  AND XX_HR_MAPPING_PKG.GET_LEDGER( COMPANY, LOCATION) = fnd_profile.value('PER_BUSINESS_GROUP_ID')
           AND ld_sysdate BETWEEN NVL(P.effective_start_date,ld_sysdate) AND NVL(P.effective_end_date,ld_sysdate) -- only necessary for Auto Update exclusions
         ORDER BY grade DESC)
@@ -1875,7 +2086,7 @@ create or replace PACKAGE BODY XX_HR_EMP_PKG AS
     lc_employee_number   VARCHAR2(20);
   BEGIN
     G_PROGRAM_NAME := 'XXHRSYNCALLEMPLOYEES';
-	
+
 	fnd_file.put_line(fnd_file.log,'fnd_profile.value '||fnd_profile.value('GL_SET_OF_BKS_ID'));
 
     IF BITAND(ln_sync_mode,G_SYNC_PERSON)>0 THEN
@@ -1884,13 +2095,14 @@ create or replace PACKAGE BODY XX_HR_EMP_PKG AS
           FROM XX_HR_PS_STG V
              LEFT OUTER JOIN PER_ALL_PEOPLE_F P                                   -- only necessary for Auto Update exclusions
           ON P.employee_number=V.emplid                                           -- only necessary for Auto Update exclusions
-
+          AND p.business_group_id =fnd_profile.value('PER_BUSINESS_GROUP_ID')
           WHERE V.empl_status IN ('A','L','P','S') -- Active, Leave of absence, Leave with pay, Suspended
             AND (TRIM(V.supervisor_id) IS NOT NULL OR V.manager_level='0')
             AND V.emplid>=p_from_employee_number
             AND V.emplid<=p_to_employee_number
+--			AND NVL(p.business_group_id,fnd_profile.value('PER_BUSINESS_GROUP_ID')) = fnd_profile.value('PER_BUSINESS_GROUP_ID')
             AND NVL(P.attribute1,'Y') <> 'N' -- Additional Personal Details DFF segment1 is Auto Update, meaning don't sync if N
-			      AND XX_HR_MAPPING_PKG.GET_LEDGER( COMPANY, LOCATION) = fnd_profile.value('PER_BUSINESS_GROUP_ID')
+			AND XX_HR_MAPPING_PKG.GET_LEDGER( COMPANY, LOCATION) = fnd_profile.value('PER_BUSINESS_GROUP_ID')
             AND ld_sysdate BETWEEN NVL(P.effective_start_date,ld_sysdate) AND NVL(P.effective_end_date,ld_sysdate)  -- only necessary for Auto Update exclusions
 
           ORDER BY V.emplid)
@@ -1907,10 +2119,12 @@ create or replace PACKAGE BODY XX_HR_EMP_PKG AS
         FROM XX_HR_PS_STG V
              LEFT OUTER JOIN PER_ALL_PEOPLE_F P                                   -- only necessary for Auto Update exclusions
           ON P.employee_number=V.emplid                                           -- only necessary for Auto Update exclusions
+          AND p.business_group_id =fnd_profile.value('PER_BUSINESS_GROUP_ID')
         WHERE V.empl_status  IN ('A','L','P','S')
           AND (TRIM(V.supervisor_id) IS NOT NULL OR V.manager_level='0')
           AND V.emplid>=p_from_employee_number
           AND V.emplid<=p_to_employee_number
+--		  AND NVL(p.business_group_id,fnd_profile.value('PER_BUSINESS_GROUP_ID')) = fnd_profile.value('PER_BUSINESS_GROUP_ID')
           AND NVL(P.attribute1,'Y') <> 'N' -- Additional Personal Details DFF segment1 is Auto Update, meaning don't sync if N
           AND XX_HR_MAPPING_PKG.GET_LEDGER( COMPANY, LOCATION) = fnd_profile.value('PER_BUSINESS_GROUP_ID')
           AND ld_sysdate BETWEEN NVL(P.effective_start_date,ld_sysdate) AND NVL(P.effective_end_date,ld_sysdate)  -- only necessary for Auto Update exclusions
