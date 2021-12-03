@@ -1,5 +1,4 @@
-create or replace
-PACKAGE BODY XX_FIN_BATCH_VARIABLES_PKG AS
+create or replace PACKAGE BODY XX_FIN_BATCH_VARIABLES_PKG AS
 
 
 -- +============================================================================================+
@@ -17,10 +16,11 @@ PACKAGE BODY XX_FIN_BATCH_VARIABLES_PKG AS
 -- | 1.0         16-Aug-2011  Joe Klein        Added LESS07CCYYMMDD and FMPY variables to       |
 -- |                                           CE track for defect 12854.                       |
 -- | 1.2         30-Nov-2015  Vasu Raparla     Removed Schema References for R.12.2             |
+-- | 1.3         03-DEC-2021  Divyansh Saini   GL Calander Code fixes  for SPIN project         |
 -- +============================================================================================+
 
 -- ===========================================================================
--- function for getting any variable value                                    
+-- function for getting any variable value
 -- ===========================================================================
   FUNCTION get
   (p_subtrack      IN VARCHAR2 DEFAULT NULL,
@@ -28,18 +28,18 @@ PACKAGE BODY XX_FIN_BATCH_VARIABLES_PKG AS
   IS
    v_value VARCHAR2(240);
   BEGIN
-    SELECT value INTO v_value 
+    SELECT value INTO v_value
       FROM XX_FIN_BATCH_VARIABLES
       WHERE subtrack = p_subtrack
       AND variable_name = p_variable_name;
     RETURN v_value;
-  EXCEPTION 
+  EXCEPTION
     WHEN NO_DATA_FOUND THEN RETURN NULL;
   END get;
 
 
 -- ===========================================================================
--- procedure for setting individual AP variable                                  
+-- procedure for setting individual AP variable
 -- ===========================================================================
   PROCEDURE set_batch_single_variable_efap
   (errbuff OUT NOCOPY VARCHAR2,
@@ -60,7 +60,7 @@ PACKAGE BODY XX_FIN_BATCH_VARIABLES_PKG AS
 
 
 -- ===========================================================================
--- procedure for setting individual AR variable                                  
+-- procedure for setting individual AR variable
 -- ===========================================================================
   PROCEDURE set_batch_single_variable_efar
   (errbuff OUT NOCOPY VARCHAR2,
@@ -81,7 +81,7 @@ PACKAGE BODY XX_FIN_BATCH_VARIABLES_PKG AS
 
 
 -- ===========================================================================
--- procedure for setting individual CE variable                                  
+-- procedure for setting individual CE variable
 -- ===========================================================================
   PROCEDURE set_batch_single_variable_efce
   (errbuff OUT NOCOPY VARCHAR2,
@@ -102,7 +102,7 @@ PACKAGE BODY XX_FIN_BATCH_VARIABLES_PKG AS
 
 
 -- ===========================================================================
--- procedure for setting individual GL variable                                  
+-- procedure for setting individual GL variable
 -- ===========================================================================
   PROCEDURE set_batch_single_variable_efgl
   (errbuff OUT NOCOPY VARCHAR2,
@@ -123,7 +123,7 @@ PACKAGE BODY XX_FIN_BATCH_VARIABLES_PKG AS
 
 
 -- ===========================================================================
--- procedure for setting individual PA variable                                  
+-- procedure for setting individual PA variable
 -- ===========================================================================
   PROCEDURE set_batch_single_variable_efpa
   (errbuff OUT NOCOPY VARCHAR2,
@@ -144,7 +144,7 @@ PACKAGE BODY XX_FIN_BATCH_VARIABLES_PKG AS
 
 
 -- ===========================================================================
--- procedure for setting AP batch variables                                   
+-- procedure for setting AP batch variables
 -- ===========================================================================
   PROCEDURE set_batch_variables_efap
   (errbuff OUT NOCOPY VARCHAR2,
@@ -183,7 +183,7 @@ PACKAGE BODY XX_FIN_BATCH_VARIABLES_PKG AS
     IF SQL%NOTFOUND THEN
        INSERT INTO XX_FIN_BATCH_VARIABLES
        VALUES (v_subtrack,'APXIIMPT_DEBUG','N');
-    END IF; 
+    END IF;
 
     --Variable LESS01CCYYMMDD
     UPDATE XX_FIN_BATCH_VARIABLES
@@ -244,7 +244,7 @@ PACKAGE BODY XX_FIN_BATCH_VARIABLES_PKG AS
        INSERT INTO XX_FIN_BATCH_VARIABLES
        VALUES (v_subtrack,'LESS05CCYYMMDD',(SELECT to_char(TRUNC(p_procdate -5),'YYYY/MM/DD HH24:MI:SS') FROM dual));
     END IF;
-     
+
     --Variable LESS06CCYYMMDD
     UPDATE XX_FIN_BATCH_VARIABLES
     SET value =
@@ -304,12 +304,12 @@ PACKAGE BODY XX_FIN_BATCH_VARIABLES_PKG AS
        INSERT INTO XX_FIN_BATCH_VARIABLES
        VALUES (v_subtrack,'PROCDATE',(SELECT to_char(TRUNC(p_procdate),'YYYY/MM/DD HH24:MI:SS') FROM dual));
     END IF;
-        
+
   END set_batch_variables_efap;
 
 
 -- ===========================================================================
--- procedure for setting AR batch variables                                   
+-- procedure for setting AR batch variables
 -- ===========================================================================
   PROCEDURE set_batch_variables_efar
   (errbuff OUT NOCOPY VARCHAR2,
@@ -356,7 +356,7 @@ PACKAGE BODY XX_FIN_BATCH_VARIABLES_PKG AS
 
 
 -- ===========================================================================
--- procedure for setting CE batch variables                                   
+-- procedure for setting CE batch variables
 -- ===========================================================================
   PROCEDURE set_batch_variables_efce
   (errbuff OUT NOCOPY VARCHAR2,
@@ -401,17 +401,7 @@ PACKAGE BODY XX_FIN_BATCH_VARIABLES_PKG AS
        INSERT INTO XX_FIN_BATCH_VARIABLES
        VALUES (v_subtrack,'LESS07CCYYMMDD',(SELECT to_char(TRUNC(p_procdate -7),'YYYY/MM/DD HH24:MI:SS') FROM dual));
     END IF;
---Variable LESS90CCYYMMDD
-    UPDATE XX_FIN_BATCH_VARIABLES
-    SET value =
-      (SELECT to_char(TRUNC(p_procdate -90),'YYYY/MM/DD HH24:MI:SS')
-       FROM dual)
-    WHERE subtrack = v_subtrack
-     AND variable_name = 'LESS90CCYYMMDD';
-    IF SQL%NOTFOUND THEN
-       INSERT INTO XX_FIN_BATCH_VARIABLES
-       VALUES (v_subtrack,'LESS90CCYYMMDD',(SELECT to_char(TRUNC(p_procdate -90),'YYYY/MM/DD HH24:MI:SS') FROM dual));
-    END IF;
+
     --Variable PER_CUR_MMM_YY
     UPDATE XX_FIN_BATCH_VARIABLES
     SET value =
@@ -431,7 +421,7 @@ PACKAGE BODY XX_FIN_BATCH_VARIABLES_PKG AS
                                             AND period_set_name = 'OD 445 CALENDAR')
               );
     END IF;
-    
+
     --Variable FMPY (previous fiscal period)
     UPDATE XX_FIN_BATCH_VARIABLES
     SET value =
@@ -442,6 +432,7 @@ PACKAGE BODY XX_FIN_BATCH_VARIABLES_PKG AS
                           WHERE p_procdate BETWEEN start_date AND end_date
                             AND period_set_name = 'OD 445 CALENDAR'
                         )
+         AND period_set_name = 'OD 445 CALENDAR'  -- 1.3
       )
     WHERE subtrack = v_subtrack
      AND variable_name = 'FMPY';
@@ -454,6 +445,7 @@ PACKAGE BODY XX_FIN_BATCH_VARIABLES_PKG AS
                                                       WHERE p_procdate BETWEEN start_date AND end_date
                                                         AND period_set_name = 'OD 445 CALENDAR'
                                                      )
+                                     AND period_set_name = 'OD 445 CALENDAR' --1.3
                                  )
               );
     END IF;
@@ -462,7 +454,7 @@ PACKAGE BODY XX_FIN_BATCH_VARIABLES_PKG AS
 
 
 -- ===========================================================================
--- procedure for setting GL batch variables                                   
+-- procedure for setting GL batch variables
 -- ===========================================================================
   PROCEDURE set_batch_variables_efgl
   (errbuff OUT NOCOPY VARCHAR2,
@@ -535,7 +527,7 @@ PACKAGE BODY XX_FIN_BATCH_VARIABLES_PKG AS
                                   )
               );
     END IF;
-    
+
     --Variable FMPE (previous fiscal month end date)
     UPDATE XX_FIN_BATCH_VARIABLES
     SET value =
@@ -586,7 +578,7 @@ PACKAGE BODY XX_FIN_BATCH_VARIABLES_PKG AS
 
 
 -- ===========================================================================
--- procedure for setting PA batch variables                                   
+-- procedure for setting PA batch variables
 -- ===========================================================================
   PROCEDURE set_batch_variables_efpa
   (errbuff OUT NOCOPY VARCHAR2,
@@ -607,7 +599,7 @@ PACKAGE BODY XX_FIN_BATCH_VARIABLES_PKG AS
        INSERT INTO XX_FIN_BATCH_VARIABLES
        VALUES (v_subtrack,'PROCDATE',(SELECT to_char(TRUNC(p_procdate),'YYYY/MM/DD HH24:MI:SS') FROM dual));
     END IF;
-        
+
     --Variable FMECCYYMMDD (fiscal month end date)
     UPDATE XX_FIN_BATCH_VARIABLES
     SET value =
@@ -633,5 +625,4 @@ PACKAGE BODY XX_FIN_BATCH_VARIABLES_PKG AS
 
 
 END XX_FIN_BATCH_VARIABLES_PKG;
-
 /
