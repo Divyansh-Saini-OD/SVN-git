@@ -31,15 +31,16 @@ create or replace PACKAGE BODY XX_HR_EMP_PKG AS
 -- |                                          Replace @pshr dblink views             |
 -- |                                          PS_OD_FIN_CONV@pshr with XX_HR_PS_STG  |
 -- |                                          and PS_OD_FIN_TRIGGER@pshr with        |
--- |                                          table XX_HR_PS_STG_TRIGGER.  	     |
--- | 2.6    2013-05-10	 Monika Vaishnav      EMployee Full_Name is having special|
--- |					      char and space (refer defect#22968 and              |
--- |   					      23714)			                          |
--- | 2.7    2014-10-16   Lakshmi Tangirala    Changes for Defect 29387 		     |
--- | 2.8    18-JAN-15    Paddy Sanjeevi	      Added Defect 32792 changes for iexp |
--- | 2.9    2015-10-06    Anoop Salim          Changes for defect 36035    	     |
--- | 2.10   11-Feb-16    Paddy Sanjeevi	   Modified for Defect 36482              |
--- | 2.11   14-Jun-16    Paddy Sanjeevi       Modified to avoid ldap call           |
+-- |                                          table XX_HR_PS_STG_TRIGGER.  	         |
+-- | 2.6    2013-05-10	 Monika Vaishnav      EMployee Full_Name is having special   |
+-- |					      char and space (refer defect#22968 and                 |
+-- |   					      23714)			                                     |
+-- | 2.7    2014-10-16   Lakshmi Tangirala    Changes for Defect 29387 		         |
+-- | 2.8    18-JAN-15    Paddy Sanjeevi	      Added Defect 32792 changes for iexp    |
+-- | 2.9    2015-10-06    Anoop Salim          Changes for defect 36035    	         |
+-- | 2.10   11-Feb-16    Paddy Sanjeevi	      Modified for Defect 36482              |
+-- | 2.11   14-Jun-16    Paddy Sanjeevi       Modified to avoid ldap call            |
+-- | 2.12   21-NOV-21    Divyansh Saini       Modified code for Spin Project         |
 -- +=================================================================================+
   G_UPDATE_MODE      CONSTANT VARCHAR2(11) := 'UPDATE';
   G_CORRECTION_MODE  CONSTANT VARCHAR2(11) := 'CORRECTION';
@@ -203,7 +204,7 @@ create or replace PACKAGE BODY XX_HR_EMP_PKG AS
     FROM PER_ALL_PEOPLE_F
     WHERE employee_number=p_employee_number
     AND ld_sysdate BETWEEN effective_start_date AND effective_end_date
-	AND BUSINESS_GROUP_ID = fnd_profile.value('PER_BUSINESS_GROUP_ID');
+	AND BUSINESS_GROUP_ID = fnd_profile.value('PER_BUSINESS_GROUP_ID');  -- 2.12
 
     RETURN lr_person_row;
   END PERSON_ROW;
@@ -918,8 +919,6 @@ create or replace PACKAGE BODY XX_HR_EMP_PKG AS
 --      END IF;
 --    END IF;
 
-	LOG_LINE('UPDATE_ASSIGNMENT','ln_default_code_comb_id', ln_default_code_comb_id, G_SEVERITY_WARNING);
-
     IF p_manager_level='0' THEN -- CEO has manager_level 0... no supervisor expected
       lc_supervisor_number := NULL; -- make sure supervisor is not assigned because PeopleSoft is requiring a manager assignment now which is creating a circular ref for CEO
       LOG_LINE('UPDATE_ASSIGNMENT',GET_MESSAGE('0004_CEO_HAS_NO_SUP'), p_employee_number, G_SEVERITY_WARNING); -- Manager level is 0 so no supervisor assigned (should be the CEO)
@@ -1053,7 +1052,7 @@ create or replace PACKAGE BODY XX_HR_EMP_PKG AS
       FROM   PER_ALL_PEOPLE_F
       WHERE  person_id=ln_supervisor_id
       AND    ld_sysdate BETWEEN effective_start_date AND effective_end_date
-	  and BUSINESS_GROUP_ID = fnd_profile.value('PER_BUSINESS_GROUP_ID');
+	  and BUSINESS_GROUP_ID = fnd_profile.value('PER_BUSINESS_GROUP_ID'); -- 2.12
     END IF;
 
 
@@ -1126,7 +1125,9 @@ create or replace PACKAGE BODY XX_HR_EMP_PKG AS
   BEGIN
 
     BEGIN
-      ln_location_id := XX_HR_MAPPING_PKG.LOCATION_ID(p_location);
+	  if p_location <> '99999' then
+          ln_location_id := XX_HR_MAPPING_PKG.LOCATION_ID(p_location);
+	  end if;
       EXCEPTION WHEN OTHERS THEN
          -- LOG_LINE('UPDATE_ASSIGNMENT_CRITERIA',SQLERRM, p_employee_number, G_SEVERITY_WARNING);
          NULL; -- Logged in sync_employee when verifying LOCATION
@@ -1402,7 +1403,7 @@ create or replace PACKAGE BODY XX_HR_EMP_PKG AS
                                     ,x_person_party_id => ln_person_party_id);
     END;
   END LINK_EMP_TO_LOGIN;
-
+-- function added for 2.12
   FUNCTION check_if_dup_exists(p_employee_number PER_ALL_PEOPLE_F.employee_number%TYPE,p_business_group_id IN NUMBER)
 	RETURN NUMBER
 	IS
@@ -1427,8 +1428,8 @@ create or replace PACKAGE BODY XX_HR_EMP_PKG AS
        fnd_file.put_line(fnd_file.log,'Error while checking duplicate');
        return -1;
   END;
-  
-    PROCEDURE reset_session(p_business_group_id  IN  NUMBER,p_error OUT VARCHAR2) IS
+  -- procedure added for 2.12
+  PROCEDURE reset_session(p_business_group_id  IN  NUMBER,p_error OUT VARCHAR2) IS
      stop_error      exception;
 	 lv_resp_name    VARCHAR2(2000);
 	 ln_resp_app_id  NUMBER;
@@ -1484,7 +1485,7 @@ create or replace PACKAGE BODY XX_HR_EMP_PKG AS
 	 p_status :=  'Error in termination '||SQLERRM;
 	 p_error :=  p_status;
   END;
-  
+   -- procedure added for 2.12
   PROCEDURE terminate_for_conversion(p_employee_number    IN  PER_ALL_PEOPLE_F.employee_number%TYPE
                                     ,p_business_group_id  IN  NUMBER
 									,p_status             OUT VARCHAR2) IS 
@@ -1646,7 +1647,7 @@ create or replace PACKAGE BODY XX_HR_EMP_PKG AS
     Hr_Error                      Exception;
     ln_error_cnt                  NUMBER       := 0;          --Added for defect 29387
     ln_bg_id                      NUMBER;
-	  ln_business_group_id          NUMBER := fnd_profile.VALUE('PER_BUSINESS_GROUP_ID');
+	  ln_business_group_id          NUMBER := fnd_profile.VALUE('PER_BUSINESS_GROUP_ID'); -- 2.12
   	e_error                       exception;
     lv_error                      VARCHAR2(4000);
   BEGIN
@@ -1659,7 +1660,7 @@ create or replace PACKAGE BODY XX_HR_EMP_PKG AS
     ELSE
       lc_step := 'check for duplicate';
       ln_bg_id := check_if_dup_exists(p_employee_number,ln_business_group_id);
-      
+      --  Changes for 2.12 start
       IF ln_bg_id = -1 THEN  -- error while checking duplicate. Skip the sync
          raise e_error;
       ELSIF ln_bg_id != ln_business_group_id and ln_bg_id != -2 THEN -- duplicate exists in another BG. terminate the existing record
@@ -1673,6 +1674,7 @@ create or replace PACKAGE BODY XX_HR_EMP_PKG AS
          lc_step := 'Error in conversion to BG '||ln_bg_id;
          raise e_error;
       END IF;
+	  --  Changes for 2.12 end
       BEGIN
         lc_location        := XX_HR_MAPPING_PKG.LOCATION(p_location);
         Exception When Others Then
@@ -1680,25 +1682,24 @@ create or replace PACKAGE BODY XX_HR_EMP_PKG AS
           --Added for defect 29387
           LOG_LINE('SYNC_EMPLOYEE',SQLERRM, p_employee_number, G_SEVERITY_WARNING);
       END;
-	  LOG_LINE('SYNC_EMPLOYEE lc_location',lc_location, p_employee_number, G_SEVERITY_WARNING);
+	  
       BEGIN
-        lc_cost_center     := XX_HR_MAPPING_PKG.COST_CENTER(p_dept,fnd_profile.VALUE('PER_BUSINESS_GROUP_ID'));
+	    if p_dept <> '9999' then
+          lc_cost_center     := XX_HR_MAPPING_PKG.COST_CENTER(p_dept,fnd_profile.VALUE('PER_BUSINESS_GROUP_ID')); -- 2.12
+		end if;
         Exception When Others Then
           Ln_Error_Cnt := Ln_Error_Cnt +1 ;
           --Added for defect 29387
 
           LOG_LINE('SYNC_EMPLOYEE',SQLERRM, p_employee_number, G_SEVERITY_WARNING);
       END;
-	  LOG_LINE('SYNC_EMPLOYEE lc_cost_center ',lc_cost_center, p_employee_number, G_SEVERITY_WARNING);
       BEGIN
-        ln_organization_id := XX_HR_MAPPING_PKG.ORGANIZATION_ID(lc_cost_center,fnd_profile.VALUE('PER_BUSINESS_GROUP_ID'));
+        ln_organization_id := XX_HR_MAPPING_PKG.ORGANIZATION_ID(lc_cost_center,fnd_profile.VALUE('PER_BUSINESS_GROUP_ID')); -- 2.12
         EXCEPTION WHEN OTHERS THEN
           Ln_Error_Cnt := Ln_Error_Cnt +1 ;
           --Added for defect 29387
           LOG_LINE('SYNC_EMPLOYEE',SQLERRM, p_employee_number, G_SEVERITY_WARNING);
       END;
-
-	  LOG_LINE('SYNC_EMPLOYEE ln_organization_id ',ln_organization_id, p_employee_number, G_SEVERITY_WARNING);
 
       IF BITAND(p_sync_mode,G_SYNC_PERSON)>0 AND (Ln_Error_Cnt = 0)THEN  --Added for defect 29387
         lc_step            := 'person';
@@ -1967,11 +1968,11 @@ create or replace PACKAGE BODY XX_HR_EMP_PKG AS
              ,XX_HR_PS_STG V
              LEFT OUTER JOIN PER_ALL_PEOPLE_F P                                   -- only necessary for Auto Update exclusions
           ON P.employee_number=V.emplid                                           -- only necessary for Auto Update exclusions
-          AND p.business_group_id =fnd_profile.value('PER_BUSINESS_GROUP_ID')
+          AND p.business_group_id =fnd_profile.value('PER_BUSINESS_GROUP_ID') -- 2.12
         WHERE T.emplid=V.emplid
 --		  AND NVL(p.business_group_id,fnd_profile.value('PER_BUSINESS_GROUP_ID')) = fnd_profile.value('PER_BUSINESS_GROUP_ID')
           And Nvl(P.Attribute1,'Y') <> 'N' -- Additional Personal Details DFF segment1 is Auto Update, meaning don't sync if N
-		  AND XX_HR_MAPPING_PKG.GET_LEDGER( COMPANY, LOCATION) = fnd_profile.value('PER_BUSINESS_GROUP_ID')
+		  AND XX_HR_MAPPING_PKG.GET_LEDGER( COMPANY, LOCATION) = fnd_profile.value('PER_BUSINESS_GROUP_ID')   -- 2.12
           AND ld_sysdate BETWEEN NVL(P.effective_start_date,ld_sysdate) AND NVL(P.effective_end_date,ld_sysdate) -- only necessary for Auto Update exclusions
         UNION
           SELECT V.*
@@ -2023,11 +2024,11 @@ create or replace PACKAGE BODY XX_HR_EMP_PKG AS
              ,XX_HR_PS_STG V
              LEFT OUTER JOIN PER_ALL_PEOPLE_F P                                   -- only necessary for Auto Update exclusions
           ON P.employee_number=V.emplid                                           -- only necessary for Auto Update exclusions
-          AND p.business_group_id =fnd_profile.value('PER_BUSINESS_GROUP_ID')
+          AND p.business_group_id =fnd_profile.value('PER_BUSINESS_GROUP_ID') -- 2.12
         WHERE T.emplid=V.emplid
           AND NVL(P.attribute1,'Y') <> 'N' -- Additional Personal Details DFF segment1 is Auto Update, meaning don't sync if N
 --		  AND NVL(p.business_group_id,fnd_profile.value('PER_BUSINESS_GROUP_ID')) = fnd_profile.value('PER_BUSINESS_GROUP_ID')
-		  AND XX_HR_MAPPING_PKG.GET_LEDGER( COMPANY, LOCATION) = fnd_profile.value('PER_BUSINESS_GROUP_ID')
+		  AND XX_HR_MAPPING_PKG.GET_LEDGER( COMPANY, LOCATION) = fnd_profile.value('PER_BUSINESS_GROUP_ID') -- 2.12
           AND ld_sysdate BETWEEN NVL(P.effective_start_date,ld_sysdate) AND NVL(P.effective_end_date,ld_sysdate) -- only necessary for Auto Update exclusions
         ORDER BY grade DESC)
     LOOP
@@ -2095,14 +2096,14 @@ create or replace PACKAGE BODY XX_HR_EMP_PKG AS
           FROM XX_HR_PS_STG V
              LEFT OUTER JOIN PER_ALL_PEOPLE_F P                                   -- only necessary for Auto Update exclusions
           ON P.employee_number=V.emplid                                           -- only necessary for Auto Update exclusions
-          AND p.business_group_id =fnd_profile.value('PER_BUSINESS_GROUP_ID')
+          AND p.business_group_id =fnd_profile.value('PER_BUSINESS_GROUP_ID') -- 2.12
           WHERE V.empl_status IN ('A','L','P','S') -- Active, Leave of absence, Leave with pay, Suspended
             AND (TRIM(V.supervisor_id) IS NOT NULL OR V.manager_level='0')
             AND V.emplid>=p_from_employee_number
             AND V.emplid<=p_to_employee_number
 --			AND NVL(p.business_group_id,fnd_profile.value('PER_BUSINESS_GROUP_ID')) = fnd_profile.value('PER_BUSINESS_GROUP_ID')
             AND NVL(P.attribute1,'Y') <> 'N' -- Additional Personal Details DFF segment1 is Auto Update, meaning don't sync if N
-			AND XX_HR_MAPPING_PKG.GET_LEDGER( COMPANY, LOCATION) = fnd_profile.value('PER_BUSINESS_GROUP_ID')
+			AND XX_HR_MAPPING_PKG.GET_LEDGER( COMPANY, LOCATION) = fnd_profile.value('PER_BUSINESS_GROUP_ID') -- 2.12
             AND ld_sysdate BETWEEN NVL(P.effective_start_date,ld_sysdate) AND NVL(P.effective_end_date,ld_sysdate)  -- only necessary for Auto Update exclusions
 
           ORDER BY V.emplid)
@@ -2119,14 +2120,14 @@ create or replace PACKAGE BODY XX_HR_EMP_PKG AS
         FROM XX_HR_PS_STG V
              LEFT OUTER JOIN PER_ALL_PEOPLE_F P                                   -- only necessary for Auto Update exclusions
           ON P.employee_number=V.emplid                                           -- only necessary for Auto Update exclusions
-          AND p.business_group_id =fnd_profile.value('PER_BUSINESS_GROUP_ID')
+          AND p.business_group_id =fnd_profile.value('PER_BUSINESS_GROUP_ID') -- 2.12
         WHERE V.empl_status  IN ('A','L','P','S')
           AND (TRIM(V.supervisor_id) IS NOT NULL OR V.manager_level='0')
           AND V.emplid>=p_from_employee_number
           AND V.emplid<=p_to_employee_number
 --		  AND NVL(p.business_group_id,fnd_profile.value('PER_BUSINESS_GROUP_ID')) = fnd_profile.value('PER_BUSINESS_GROUP_ID')
           AND NVL(P.attribute1,'Y') <> 'N' -- Additional Personal Details DFF segment1 is Auto Update, meaning don't sync if N
-          AND XX_HR_MAPPING_PKG.GET_LEDGER( COMPANY, LOCATION) = fnd_profile.value('PER_BUSINESS_GROUP_ID')
+          AND XX_HR_MAPPING_PKG.GET_LEDGER( COMPANY, LOCATION) = fnd_profile.value('PER_BUSINESS_GROUP_ID') -- 2.12
           AND ld_sysdate BETWEEN NVL(P.effective_start_date,ld_sysdate) AND NVL(P.effective_end_date,ld_sysdate)  -- only necessary for Auto Update exclusions
         ORDER BY V.emplid)
     LOOP
@@ -2379,7 +2380,7 @@ create or replace PACKAGE BODY XX_HR_EMP_PKG AS
     INTO G_PERSON_TYPE_ID_EMP
     FROM PER_PERSON_TYPES
     WHERE system_person_type='EMP'
-      and BUSINESS_GROUP_ID = fnd_profile.value('PER_BUSINESS_GROUP_ID');
+      and BUSINESS_GROUP_ID = fnd_profile.value('PER_BUSINESS_GROUP_ID'); -- 2.12
 
     ----Bring contingent workers in with EMP type for full access
     --SELECT person_type_id
