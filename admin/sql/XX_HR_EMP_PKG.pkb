@@ -1955,6 +1955,7 @@ create or replace PACKAGE BODY XX_HR_EMP_PKG AS
   IS
     lc_employee_number VARCHAR2(20) := NULL;
     ld_sysdate         DATE := TRUNC(SYSDATE);
+	ln_business_group_id NUMBER := fnd_profile.value('PER_BUSINESS_GROUP_ID');
   BEGIN
     G_Program_Name := 'XXHRSYNCHANGEDEMPLOYEES';
 
@@ -1968,12 +1969,24 @@ create or replace PACKAGE BODY XX_HR_EMP_PKG AS
              ,XX_HR_PS_STG V
              LEFT OUTER JOIN PER_ALL_PEOPLE_F P                                   -- only necessary for Auto Update exclusions
           ON P.employee_number=V.emplid                                           -- only necessary for Auto Update exclusions
-          AND p.business_group_id =fnd_profile.value('PER_BUSINESS_GROUP_ID') -- 2.12
+          AND p.business_group_id =ln_business_group_id -- 2.12
         WHERE T.emplid=V.emplid
---		  AND NVL(p.business_group_id,fnd_profile.value('PER_BUSINESS_GROUP_ID')) = fnd_profile.value('PER_BUSINESS_GROUP_ID')
           And Nvl(P.Attribute1,'Y') <> 'N' -- Additional Personal Details DFF segment1 is Auto Update, meaning don't sync if N
-		  AND XX_HR_MAPPING_PKG.GET_LEDGER( COMPANY, LOCATION) = fnd_profile.value('PER_BUSINESS_GROUP_ID')   -- 2.12
+		  --AND XX_HR_MAPPING_PKG.GET_LEDGER( COMPANY, LOCATION) = fnd_profile.value('PER_BUSINESS_GROUP_ID')   -- 2.12
           AND ld_sysdate BETWEEN NVL(P.effective_start_date,ld_sysdate) AND NVL(P.effective_end_date,ld_sysdate) -- only necessary for Auto Update exclusions
+		  AND EXISTS (
+						SELECT 1
+								   FROM FND_FLEX_VALUES FFV ,
+										  fnd_flex_value_sets FFVS,
+									gl_ledgers gl,
+									hr_operating_units hou
+								WHERE FFV.flex_value_set_id = FFVS.flex_value_set_id
+									AND FFVS.flex_value_set_name IN ( 'OD_GL_GLOBAL_COMPANY')
+								AND gl.short_name = ffv.attribute1
+									AND FFV.flex_value = XX_HR_MAPPING_PKG.COMPANY( V.COMPANY, V.LOCATION)
+								AND hou.set_of_books_id = gl.ledger_id
+								AND hou.business_group_id = ln_business_group_id
+						)
         UNION
           SELECT V.*
         FROM (SELECT DISTINCT emplid FROM XX_HR_PS_STG_TRIGGER WHERE PROCESS_STATUS='N' AND OD_TRANS_DT <= SYSDATE) T
@@ -2024,12 +2037,24 @@ create or replace PACKAGE BODY XX_HR_EMP_PKG AS
              ,XX_HR_PS_STG V
              LEFT OUTER JOIN PER_ALL_PEOPLE_F P                                   -- only necessary for Auto Update exclusions
           ON P.employee_number=V.emplid                                           -- only necessary for Auto Update exclusions
-          AND p.business_group_id =fnd_profile.value('PER_BUSINESS_GROUP_ID') -- 2.12
+          AND p.business_group_id =ln_business_group_id -- 2.12
         WHERE T.emplid=V.emplid
           AND NVL(P.attribute1,'Y') <> 'N' -- Additional Personal Details DFF segment1 is Auto Update, meaning don't sync if N
---		  AND NVL(p.business_group_id,fnd_profile.value('PER_BUSINESS_GROUP_ID')) = fnd_profile.value('PER_BUSINESS_GROUP_ID')
-		  AND XX_HR_MAPPING_PKG.GET_LEDGER( COMPANY, LOCATION) = fnd_profile.value('PER_BUSINESS_GROUP_ID') -- 2.12
+		  --AND XX_HR_MAPPING_PKG.GET_LEDGER( COMPANY, LOCATION) = fnd_profile.value('PER_BUSINESS_GROUP_ID') -- 2.12
           AND ld_sysdate BETWEEN NVL(P.effective_start_date,ld_sysdate) AND NVL(P.effective_end_date,ld_sysdate) -- only necessary for Auto Update exclusions
+		  AND EXISTS (
+						SELECT 1
+								   FROM FND_FLEX_VALUES FFV ,
+										  fnd_flex_value_sets FFVS,
+									gl_ledgers gl,
+									hr_operating_units hou
+								WHERE FFV.flex_value_set_id = FFVS.flex_value_set_id
+									AND FFVS.flex_value_set_name IN ( 'OD_GL_GLOBAL_COMPANY')
+								AND gl.short_name = ffv.attribute1
+									AND FFV.flex_value = XX_HR_MAPPING_PKG.COMPANY( V.COMPANY, V.LOCATION)
+								AND hou.set_of_books_id = gl.ledger_id
+								AND hou.business_group_id = ln_business_group_id
+						)
         ORDER BY grade DESC)
     LOOP
       lc_employee_number := lr_changed_row.emplid;
@@ -2085,6 +2110,7 @@ create or replace PACKAGE BODY XX_HR_EMP_PKG AS
     ld_sysdate           DATE := TRUNC(SYSDATE);
     ln_sync_mode         NUMBER := p_sync_mode;
     lc_employee_number   VARCHAR2(20);
+	ln_business_group_id NUMBER := fnd_profile.value('PER_BUSINESS_GROUP_ID');
   BEGIN
     G_PROGRAM_NAME := 'XXHRSYNCALLEMPLOYEES';
 
@@ -2096,16 +2122,27 @@ create or replace PACKAGE BODY XX_HR_EMP_PKG AS
           FROM XX_HR_PS_STG V
              LEFT OUTER JOIN PER_ALL_PEOPLE_F P                                   -- only necessary for Auto Update exclusions
           ON P.employee_number=V.emplid                                           -- only necessary for Auto Update exclusions
-          AND p.business_group_id =fnd_profile.value('PER_BUSINESS_GROUP_ID') -- 2.12
+          AND p.business_group_id =ln_business_group_id -- 2.12
           WHERE V.empl_status IN ('A','L','P','S') -- Active, Leave of absence, Leave with pay, Suspended
             AND (TRIM(V.supervisor_id) IS NOT NULL OR V.manager_level='0')
             AND V.emplid>=p_from_employee_number
             AND V.emplid<=p_to_employee_number
---			AND NVL(p.business_group_id,fnd_profile.value('PER_BUSINESS_GROUP_ID')) = fnd_profile.value('PER_BUSINESS_GROUP_ID')
             AND NVL(P.attribute1,'Y') <> 'N' -- Additional Personal Details DFF segment1 is Auto Update, meaning don't sync if N
-			AND XX_HR_MAPPING_PKG.GET_LEDGER( COMPANY, LOCATION) = fnd_profile.value('PER_BUSINESS_GROUP_ID') -- 2.12
+			--AND XX_HR_MAPPING_PKG.GET_LEDGER( COMPANY, LOCATION) = fnd_profile.value('PER_BUSINESS_GROUP_ID') -- 2.12
             AND ld_sysdate BETWEEN NVL(P.effective_start_date,ld_sysdate) AND NVL(P.effective_end_date,ld_sysdate)  -- only necessary for Auto Update exclusions
-
+            AND EXISTS (
+						SELECT 1
+								   FROM FND_FLEX_VALUES FFV ,
+										  fnd_flex_value_sets FFVS,
+									gl_ledgers gl,
+									hr_operating_units hou
+								WHERE FFV.flex_value_set_id = FFVS.flex_value_set_id
+									AND FFVS.flex_value_set_name IN ( 'OD_GL_GLOBAL_COMPANY')
+								AND gl.short_name = ffv.attribute1
+									AND FFV.flex_value = XX_HR_MAPPING_PKG.COMPANY( V.COMPANY, V.LOCATION)
+								AND hou.set_of_books_id = gl.ledger_id
+								AND hou.business_group_id = ln_business_group_id
+						)
           ORDER BY V.emplid)
       LOOP
 	    fnd_file.put_line(fnd_file.log,'In Loop');
@@ -2120,15 +2157,27 @@ create or replace PACKAGE BODY XX_HR_EMP_PKG AS
         FROM XX_HR_PS_STG V
              LEFT OUTER JOIN PER_ALL_PEOPLE_F P                                   -- only necessary for Auto Update exclusions
           ON P.employee_number=V.emplid                                           -- only necessary for Auto Update exclusions
-          AND p.business_group_id =fnd_profile.value('PER_BUSINESS_GROUP_ID') -- 2.12
+          AND p.business_group_id =ln_business_group_id -- 2.12
         WHERE V.empl_status  IN ('A','L','P','S')
           AND (TRIM(V.supervisor_id) IS NOT NULL OR V.manager_level='0')
           AND V.emplid>=p_from_employee_number
           AND V.emplid<=p_to_employee_number
---		  AND NVL(p.business_group_id,fnd_profile.value('PER_BUSINESS_GROUP_ID')) = fnd_profile.value('PER_BUSINESS_GROUP_ID')
           AND NVL(P.attribute1,'Y') <> 'N' -- Additional Personal Details DFF segment1 is Auto Update, meaning don't sync if N
-          AND XX_HR_MAPPING_PKG.GET_LEDGER( COMPANY, LOCATION) = fnd_profile.value('PER_BUSINESS_GROUP_ID') -- 2.12
+          --AND XX_HR_MAPPING_PKG.GET_LEDGER( COMPANY, LOCATION) = fnd_profile.value('PER_BUSINESS_GROUP_ID') -- 2.12
           AND ld_sysdate BETWEEN NVL(P.effective_start_date,ld_sysdate) AND NVL(P.effective_end_date,ld_sysdate)  -- only necessary for Auto Update exclusions
+		  AND EXISTS (
+						SELECT 1
+								   FROM FND_FLEX_VALUES FFV ,
+										  fnd_flex_value_sets FFVS,
+									gl_ledgers gl,
+									hr_operating_units hou
+								WHERE FFV.flex_value_set_id = FFVS.flex_value_set_id
+									AND FFVS.flex_value_set_name IN ( 'OD_GL_GLOBAL_COMPANY')
+								AND gl.short_name = ffv.attribute1
+									AND FFV.flex_value = XX_HR_MAPPING_PKG.COMPANY( V.COMPANY, V.LOCATION)
+								AND hou.set_of_books_id = gl.ledger_id
+								AND hou.business_group_id = ln_business_group_id
+						)
         ORDER BY V.emplid)
     LOOP
 	fnd_file.put_line(fnd_file.log,'In Loop');
