@@ -1418,7 +1418,7 @@ create or replace PACKAGE BODY XX_HR_EMP_PKG AS
 		 AND person_type_id IN (SELECT person_type_id
 								  FROM PER_PERSON_TYPES
 								 WHERE system_person_type='EMP');
-								 
+
       return lb_ret_num;
 
   EXCEPTION 
@@ -1447,7 +1447,7 @@ create or replace PACKAGE BODY XX_HR_EMP_PKG AS
 			   AND xftv.enabled_flag     = 'Y'
 			   AND xftv.source_value1    = hou.name
                and hou.BUSINESS_GROUP_ID = p_business_group_id;
-		
+
 		EXCEPTION
 		   WHEN NO_DATA_FOUND THEN
 			  p_status :=  'Responsibility for termination on BG '||p_business_group_id||' not defined ';
@@ -1456,13 +1456,13 @@ create or replace PACKAGE BODY XX_HR_EMP_PKG AS
 			  p_status :=  'Not able to find responsibility for termination '||SQLERRM;
 			  raise stop_error;
 		END;
-		
+
 		BEGIN
 			SELECT APPLICATION_ID, RESPONSIBILITY_ID
 			  INTO ln_resp_app_id, ln_resp_id
 			  FROM fnd_responsibility_tl
 			 WHERE RESPONSIBILITY_NAME = lv_resp_name;
-		
+
 		EXCEPTION
 		   WHEN NO_DATA_FOUND THEN
 			  p_status :=  'Responsibility '||lv_resp_name||' not defined ';
@@ -1471,9 +1471,9 @@ create or replace PACKAGE BODY XX_HR_EMP_PKG AS
 			  p_status :=  'Not able to find responsibility '||SQLERRM;
 			  raise stop_error;
 		END;
-		
+
 		FND_GLOBAL.APPS_INITIALIZE(fnd_global.user_id,ln_resp_id,ln_resp_app_id);
-		
+
   EXCEPTION 
     WHEN stop_error THEN
 	  fnd_file.put_line(fnd_file.log,'Data not present to proper conversion');
@@ -1512,9 +1512,9 @@ create or replace PACKAGE BODY XX_HR_EMP_PKG AS
     lc_extn_days		    VARCHAR2(30);
 
   BEGIN
-  
+
     reset_session(p_business_group_id,lv_error);
-	
+
 	IF lv_error IS NOT NULL THEN
 	   raise e_error;
 	END IF;
@@ -1565,12 +1565,12 @@ create or replace PACKAGE BODY XX_HR_EMP_PKG AS
         	,p_asg_future_changes_warning => lb_asg_future_changes_warning
 	        ,p_entries_changed_warning    => lc_entries_changed_warning
 	      );
-	
+
     EXCEPTION WHEN NO_DATA_FOUND THEN
       LOG_LINE('TERMINATE',GET_MESSAGE('0003_CANT_TERMINATE'),p_employee_number,G_SEVERITY_WARNING); -- Employee not found; no need to terminate
     END ;
-   
-   
+
+
   EXCEPTION 
     WHEN e_error THEN
 	  LOG_LINE('TERMINATE',GET_MESSAGE('0003_CANT_TERMINATE'),p_employee_number,G_SEVERITY_WARNING);
@@ -1669,7 +1669,7 @@ create or replace PACKAGE BODY XX_HR_EMP_PKG AS
             reset_session(ln_business_group_id,lv_error);
          END IF;
       END IF;
-      
+
       IF LV_ERROR IS NOT NULL THEN
          lc_step := 'Error in conversion to BG '||ln_bg_id;
          raise e_error;
@@ -1682,7 +1682,7 @@ create or replace PACKAGE BODY XX_HR_EMP_PKG AS
           --Added for defect 29387
           LOG_LINE('SYNC_EMPLOYEE',SQLERRM, p_employee_number, G_SEVERITY_WARNING);
       END;
-	  
+
       BEGIN
 	    if p_dept <> '9999' then
           lc_cost_center     := XX_HR_MAPPING_PKG.COST_CENTER(p_dept,fnd_profile.VALUE('PER_BUSINESS_GROUP_ID')); -- 2.12
@@ -1983,7 +1983,7 @@ create or replace PACKAGE BODY XX_HR_EMP_PKG AS
 								WHERE FFV.flex_value_set_id = FFVS.flex_value_set_id
 									AND FFVS.flex_value_set_name IN ( 'OD_GL_GLOBAL_COMPANY')
 								AND gl.short_name = ffv.attribute1
-									AND FFV.flex_value = XX_HR_MAPPING_PKG.COMPANY( V.COMPANY, V.LOCATION)
+									AND FFV.flex_value = XX_HR_MAPPING_PKG.COMPANY_NEW( V.COMPANY, V.LOCATION)
 								AND hou.set_of_books_id = gl.ledger_id
 								AND hou.business_group_id = ln_business_group_id
 						)
@@ -2051,7 +2051,7 @@ create or replace PACKAGE BODY XX_HR_EMP_PKG AS
 								WHERE FFV.flex_value_set_id = FFVS.flex_value_set_id
 									AND FFVS.flex_value_set_name IN ( 'OD_GL_GLOBAL_COMPANY')
 								AND gl.short_name = ffv.attribute1
-									AND FFV.flex_value = XX_HR_MAPPING_PKG.COMPANY( V.COMPANY, V.LOCATION)
+									AND FFV.flex_value = XX_HR_MAPPING_PKG.COMPANY_NEW( V.COMPANY, V.LOCATION)
 								AND hou.set_of_books_id = gl.ledger_id
 								AND hou.business_group_id = ln_business_group_id
 						)
@@ -2139,7 +2139,7 @@ create or replace PACKAGE BODY XX_HR_EMP_PKG AS
 								WHERE FFV.flex_value_set_id = FFVS.flex_value_set_id
 									AND FFVS.flex_value_set_name IN ( 'OD_GL_GLOBAL_COMPANY')
 								AND gl.short_name = ffv.attribute1
-									AND FFV.flex_value = XX_HR_MAPPING_PKG.COMPANY( V.COMPANY, V.LOCATION)
+									AND FFV.flex_value = XX_HR_MAPPING_PKG.COMPANY_NEW( V.COMPANY, V.LOCATION)
 								AND hou.set_of_books_id = gl.ledger_id
 								AND hou.business_group_id = ln_business_group_id
 						)
@@ -2174,7 +2174,7 @@ create or replace PACKAGE BODY XX_HR_EMP_PKG AS
 								WHERE FFV.flex_value_set_id = FFVS.flex_value_set_id
 									AND FFVS.flex_value_set_name IN ( 'OD_GL_GLOBAL_COMPANY')
 								AND gl.short_name = ffv.attribute1
-									AND FFV.flex_value = XX_HR_MAPPING_PKG.COMPANY( V.COMPANY, V.LOCATION)
+									AND FFV.flex_value = XX_HR_MAPPING_PKG.COMPANY_NEW( V.COMPANY, V.LOCATION)
 								AND hou.set_of_books_id = gl.ledger_id
 								AND hou.business_group_id = ln_business_group_id
 						)

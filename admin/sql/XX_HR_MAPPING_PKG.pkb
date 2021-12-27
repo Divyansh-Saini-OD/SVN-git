@@ -334,6 +334,34 @@ create or replace PACKAGE BODY "XX_HR_MAPPING_PKG" AS
       RAISE_APPLICATION_ERROR(-20564,GET_MESSAGE('0017_MAP_COM_FAILED','COMPANY', p_company, 'LOCATION', p_location),TRUE);
       RETURN NULL;
   END;
+  
+  FUNCTION COMPANY_NEW (
+     p_company           IN VARCHAR2
+    ,p_location           IN VARCHAR2
+  ) RETURN GL_CODE_COMBINATIONS.segment1%TYPE
+  IS
+    lc_company       GL_CODE_COMBINATIONS.segment1%TYPE := NULL;
+    lc_error_message VARCHAR2(2000);
+  BEGIN
+    IF p_location IS NOT NULL THEN
+      IF p_location='010000' THEN --Location 010000 may exist for multiple companies, so get Oracle company from Peoplesoft company
+        XX_GL_PSHR_INTERFACE_PKG.DERIVE_COMPANY(p_ps_company    => p_company
+                                               ,x_ora_company   => lc_company
+                                               ,x_error_message => lc_error_message);
+      ELSE
+        lc_company := XX_GL_TRANSLATE_UTL_PKG.DERIVE_COMPANY_FROM_LOCATION(p_location); --all other locations should be uniquely associated with one company
+      END IF;
+
+      IF lc_company IS NULL THEN
+        RETURN 1001;
+      END IF;
+    END IF;
+
+    RETURN lc_company;
+
+    EXCEPTION WHEN OTHERS THEN
+      RETURN 1001;
+  END;
 
   FUNCTION GET_LEDGER (
      p_company           IN VARCHAR2

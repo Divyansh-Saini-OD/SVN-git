@@ -90,5 +90,10 @@ create or replace PACKAGE "XX_HR_MAPPING_PKG" AS
      p_company           IN VARCHAR2
     ,p_location          IN VARCHAR2
   ) RETURN gl_ledgers.ledger_id%TYPE;
+  
+  FUNCTION COMPANY_NEW (
+     p_company           IN VARCHAR2
+    ,p_location           IN VARCHAR2
+  ) RETURN GL_CODE_COMBINATIONS.segment1%TYPE;
 END XX_HR_MAPPING_PKG;
 /
