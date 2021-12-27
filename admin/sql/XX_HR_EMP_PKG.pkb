@@ -188,7 +188,8 @@ create or replace PACKAGE BODY XX_HR_EMP_PKG AS
   END LOG_LINE;
 
   FUNCTION PERSON_ROW (
-     p_employee_number IN PER_ALL_PEOPLE_F.employee_number%TYPE
+     p_employee_number IN PER_ALL_PEOPLE_F.employee_number%TYPE,
+	 p_empl_type       IN VARCHAR2 DEFAULT 'E'
   )
   RETURN                  PER_ALL_PEOPLE_F%ROWTYPE
   IS
@@ -199,12 +200,22 @@ create or replace PACKAGE BODY XX_HR_EMP_PKG AS
       LOG_LINE('PERSON_ROW',GET_MESSAGE('0000_NULL_EMPLID')); -- Looking for null employee number
       RAISE NO_DATA_FOUND;
     END IF;
+    IF p_empl_type = 'S' THEN
+	    SELECT * INTO lr_person_row
+		  FROM PER_ALL_PEOPLE_F
+		 WHERE employee_number=p_employee_number
+		   AND person_type_id IN (SELECT person_type_id
+						FROM PER_PERSON_TYPES
+						WHERE system_person_type='EMP')
+		  AND ld_sysdate BETWEEN effective_start_date AND effective_end_date;
+    ELSE
+		SELECT * INTO lr_person_row
+		FROM PER_ALL_PEOPLE_F
+		WHERE employee_number=p_employee_number
+		AND ld_sysdate BETWEEN effective_start_date AND effective_end_date
+		AND BUSINESS_GROUP_ID = fnd_profile.value('PER_BUSINESS_GROUP_ID');  -- 2.12
+	END IF;
 
-    SELECT * INTO lr_person_row
-    FROM PER_ALL_PEOPLE_F
-    WHERE employee_number=p_employee_number
-    AND ld_sysdate BETWEEN effective_start_date AND effective_end_date
-	AND BUSINESS_GROUP_ID = fnd_profile.value('PER_BUSINESS_GROUP_ID');  -- 2.12
 
     RETURN lr_person_row;
   END PERSON_ROW;
@@ -924,7 +935,7 @@ create or replace PACKAGE BODY XX_HR_EMP_PKG AS
       LOG_LINE('UPDATE_ASSIGNMENT',GET_MESSAGE('0004_CEO_HAS_NO_SUP'), p_employee_number, G_SEVERITY_WARNING); -- Manager level is 0 so no supervisor assigned (should be the CEO)
     ELSE
       BEGIN
-        lr_supervisor_person_row := PERSON_ROW(lc_supervisor_number);
+        lr_supervisor_person_row := PERSON_ROW(lc_supervisor_number,'S');
         ln_supervisor_id := lr_supervisor_person_row.person_id;
       EXCEPTION
       WHEN NO_DATA_FOUND THEN
@@ -935,7 +946,7 @@ create or replace PACKAGE BODY XX_HR_EMP_PKG AS
           LOG_LINE('UPDATE_ASSIGNMENT',GET_MESSAGE('0005_CREATING_SUP','SUPNUM',lc_supervisor_number), p_employee_number, G_SEVERITY_FYI); -- Creating supervisor
           SYNC_EMPLOYEE(lc_supervisor_number, ln_sync_mode, p_create_supervisors);
           BEGIN
-            lr_supervisor_person_row := PERSON_ROW(lc_supervisor_number);
+            lr_supervisor_person_row := PERSON_ROW(lc_supervisor_number,'S');
             ln_supervisor_id := lr_supervisor_person_row.person_id;
           EXCEPTION
           When No_Data_Found Then
