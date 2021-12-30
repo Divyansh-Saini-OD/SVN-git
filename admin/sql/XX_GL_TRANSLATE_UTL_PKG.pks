@@ -1,5 +1,4 @@
-
-CREATE OR REPLACE PACKAGE XX_GL_TRANSLATE_UTL_PKG
+create or replace PACKAGE XX_GL_TRANSLATE_UTL_PKG
 AS
 -- +===================================================================+
 -- |                  Office Depot - Project Simplify                  |
@@ -8,7 +7,7 @@ AS
 -- | Name  : XX_GL_TRANSLATE_UTL_PKG                                   |
 -- | Description      :  This PKG will be used to translate data that  |
 -- |                      will interface with the GL interface tables  |
--- |                                                                   | 
+-- |                                                                   |
 -- |                                                                   |
 -- |Change Record:                                                     |
 -- |===============                                                    |
@@ -55,9 +54,9 @@ AS
 
 -- +===================================================================+
 -- | Name  : DERIVE_COMPANY_FROM_LOCATION (Overloaded)                 |
--- | Description :  This function will derive company for a given      | 
+-- | Description :  This function will derive company for a given      |
 -- |                Location and a Org ID using the GL_OU_DEFAULT_     |
--- |                COMPANY transaltion definition. If company value   | 
+-- |                COMPANY transaltion definition. If company value   |
 -- |                can not be derived on table, the  location code    |
 -- |                will be passed to the standard DERIVE_COMPANY      |
 -- |                _FROM LOCATION function.                           |
@@ -80,9 +79,9 @@ AS
 
 -- +===================================================================+
 -- | Name  : DERIVE_COMPANY_FROM_LOCATION (Overloaded)                 |
--- | Description :  This function will derive company for a given      | 
+-- | Description :  This function will derive company for a given      |
 -- |                Location and a Org Name using the GL_OU_DEFAULT_   |
--- |                COMPANY transaltion definition. If company value   | 
+-- |                COMPANY transaltion definition. If company value   |
 -- |                can not be derived on table, the  location code    |
 -- |                will be passed to the standard DERIVE_COMPANY      |
 -- |                _FROM LOCATION function.                           |
@@ -95,10 +94,14 @@ AS
 -- |                                                                   |
 -- +===================================================================+
 
-     FUNCTION DERIVE_COMPANY_FROM_LOCATION (p_location IN VARCHAR2 
+     FUNCTION DERIVE_COMPANY_FROM_LOCATION (p_location IN VARCHAR2
                                            ,p_org_name IN VARCHAR2)
          RETURN VARCHAR2;
 
+
+     FUNCTION DERIVE_COMPANY_FROM_LOCATION_SPIN (p_location IN VARCHAR2
+                                           ,p_org_name IN VARCHAR2)
+         RETURN VARCHAR2;
 
 
 -- +===================================================================+
@@ -134,7 +137,7 @@ AS
 -- |                                                                   |
 -- +===================================================================+
 
-	FUNCTION DERIVE_GL_PERIOD_NAME_NEXT  (p_trans_date IN DATE 
+	FUNCTION DERIVE_GL_PERIOD_NAME_NEXT  (p_trans_date IN DATE
                                               ,p_sob_id IN NUMBER)
 		RETURN VARCHAR2;
 
@@ -163,9 +166,4 @@ AS
 
 
 END XX_GL_TRANSLATE_UTL_PKG;
-
 /
-
-
-
-

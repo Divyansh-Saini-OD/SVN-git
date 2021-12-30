@@ -30,7 +30,6 @@ AS
 -- |                                      OD_GL_GLOBAL_COMPANY for R12 |
 -- |                                      Upgrade retrofit.            |
 -- |2.5      18-Nov-2015 Avinash Baddam   R12.2 Compliance Changes     |
--- |2.6      30-DEC-2021 Divyansh Saini   Temporary changes for SPIN   |
 -- +===================================================================+
 
 
@@ -121,7 +120,7 @@ AS
               FROM FND_FLEX_VALUES FFV ,
                    fnd_flex_value_sets FFVS
              WHERE FFV.flex_value_set_id = FFVS.flex_value_set_id
-             AND  FFVS.flex_value_set_name = 'R_OD_GL_GLOBAL_LOCATION'  -- changed from OD_GL_GLOBAL_LOCATION to R_OD_GL_GLOBAL_LOCATION 2.6
+             AND  FFVS.flex_value_set_name = 'OD_GL_GLOBAL_LOCATION'
              AND  FFV.flex_value = p_location;
 
             /* SELECT FFV.attribute1
@@ -143,6 +142,58 @@ AS
 
 
       END DERIVE_COMPANY_FROM_LOCATION;
+	  
+	  
+-- +===================================================================+
+-- | Name  : DERIVE_COMPANY_FROM_LOCATION                              |
+-- | Description      : This Function will be used to fetch Company    |
+-- |                    ID for a Location    (FND_FLEX_VALUES          |
+-- |                     _VL.flex_value) Segment4                      |
+-- | Parameters :       Location (Segment4)                            |
+-- |                                                                   |
+-- |                                                                   |
+-- | Returns :          company                                        |
+-- |                                                                   |
+-- |                                                                   |
+-- +===================================================================+
+
+     FUNCTION DERIVE_COMPANY_FROM_LOCATION_SPIN (p_location IN VARCHAR2)
+         RETURN VARCHAR2
+     IS
+
+         x_company FND_FLEX_VALUES_VL.attribute1%TYPE;
+
+         BEGIN
+
+         --- defect 6212
+
+             SELECT FFV.attribute1
+             INTO x_company
+              FROM FND_FLEX_VALUES FFV ,
+                   fnd_flex_value_sets FFVS
+             WHERE FFV.flex_value_set_id = FFVS.flex_value_set_id
+             AND  FFVS.flex_value_set_name = 'R_OD_GL_GLOBAL_LOCATION'  -- changed from OD_GL_GLOBAL_LOCATION to R_OD_GL_GLOBAL_LOCATION 2.6
+             AND  FFV.flex_value = p_location;
+
+            /* SELECT FFV.attribute1
+               INTO x_company
+               FROM FND_ID_FLEX_SEGMENTS_VL   FIFS
+                   ,FND_FLEX_VALUES_VL        FFV
+                   ,FND_ID_FLEX_STRUCTURES_VL FSTR
+              WHERE FIFS.application_column_name       = 'SEGMENT4'
+                AND UPPER(FSTR.id_flex_structure_name) = 'OD_GLOBAL_COA'
+                AND FIFS.id_flex_num                   = FSTR.id_flex_num
+                AND FIFS.flex_value_set_id             = FFV.flex_value_set_id
+                AND FFV.flex_value                     = p_location;*/
+
+             RETURN x_company;
+          --Defect 6166
+              EXCEPTION
+             WHEN NO_DATA_FOUND THEN
+             RETURN NULL;
+
+
+      END DERIVE_COMPANY_FROM_LOCATION_SPIN;
 
 -- +===================================================================+
 -- | Name  : DERIVE_COMPANY_FROM_LOCATION (Overloaded)                 |
@@ -372,7 +423,7 @@ AS
               FROM FND_FLEX_VALUES FFV ,
                    fnd_flex_value_sets FFVS
              WHERE FFV.flex_value_set_id = FFVS.flex_value_set_id
-             AND  FFVS.flex_value_set_name = 'R_OD_GL_GLOBAL_LOCATION'  -- changed from OD_GL_GLOBAL_LOCATION to R_OD_GL_GLOBAL_LOCATION 2.6
+             AND  FFVS.flex_value_set_name = 'OD_GL_GLOBAL_LOCATION'
              AND  FFV.flex_value = p_location;
 
             /*  SELECT FFV.attribute2

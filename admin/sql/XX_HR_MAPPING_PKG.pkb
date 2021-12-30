@@ -349,7 +349,7 @@ create or replace PACKAGE BODY "XX_HR_MAPPING_PKG" AS
                                                ,x_ora_company   => lc_company
                                                ,x_error_message => lc_error_message);
       ELSE
-        lc_company := XX_GL_TRANSLATE_UTL_PKG.DERIVE_COMPANY_FROM_LOCATION(p_location); --all other locations should be uniquely associated with one company
+        lc_company := XX_GL_TRANSLATE_UTL_PKG.DERIVE_COMPANY_FROM_LOCATION_SPIN(p_location); --all other locations should be uniquely associated with one company
       END IF;
 
       IF lc_company IS NULL THEN
@@ -378,7 +378,7 @@ create or replace PACKAGE BODY "XX_HR_MAPPING_PKG" AS
                                                ,x_ora_company   => lc_company
                                                ,x_error_message => lc_error_message);
       ELSE
-        lc_company := XX_GL_TRANSLATE_UTL_PKG.DERIVE_COMPANY_FROM_LOCATION(p_location); --all other locations should be uniquely associated with one company
+        lc_company := XX_GL_TRANSLATE_UTL_PKG.DERIVE_COMPANY_FROM_LOCATION_SPIN(p_location); --all other locations should be uniquely associated with one company
       END IF;
 
       IF lc_company IS NULL THEN

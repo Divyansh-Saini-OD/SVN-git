@@ -1009,7 +1009,7 @@ create or replace PACKAGE BODY XX_HR_EMP_PKG AS
           ,p_supervisor_id              => ln_supervisor_id
           ,p_change_reason              => NULL
           ,p_default_code_comb_id       => null--ln_default_code_comb_id
-          ,p_set_of_books_id            => ln_set_of_books_id
+          ,p_set_of_books_id            => NULL--ln_set_of_books_id
           ,p_ass_attribute1             => p_job_country_code
           ,p_ass_attribute2             => p_job_business_unit
           ,p_ass_attribute3             => p_job_code
