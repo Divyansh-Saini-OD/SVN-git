@@ -1,5 +1,4 @@
-create or replace
-PACKAGE BODY XX_GL_TRANSLATE_UTL_PKG
+create or replace PACKAGE BODY XX_GL_TRANSLATE_UTL_PKG
 
 AS
 -- +===================================================================+
@@ -31,6 +30,7 @@ AS
 -- |                                      OD_GL_GLOBAL_COMPANY for R12 |
 -- |                                      Upgrade retrofit.            |
 -- |2.5      18-Nov-2015 Avinash Baddam   R12.2 Compliance Changes     |
+-- |2.6      30-DEC-2021 Divyansh Saini   Temporary changes for SPIN   |
 -- +===================================================================+
 
 
@@ -121,7 +121,7 @@ AS
               FROM FND_FLEX_VALUES FFV ,
                    fnd_flex_value_sets FFVS
              WHERE FFV.flex_value_set_id = FFVS.flex_value_set_id
-             AND  FFVS.flex_value_set_name = 'OD_GL_GLOBAL_LOCATION'
+             AND  FFVS.flex_value_set_name = 'R_OD_GL_GLOBAL_LOCATION'  -- changed from OD_GL_GLOBAL_LOCATION to R_OD_GL_GLOBAL_LOCATION 2.6
              AND  FFV.flex_value = p_location;
 
             /* SELECT FFV.attribute1
@@ -372,7 +372,7 @@ AS
               FROM FND_FLEX_VALUES FFV ,
                    fnd_flex_value_sets FFVS
              WHERE FFV.flex_value_set_id = FFVS.flex_value_set_id
-             AND  FFVS.flex_value_set_name = 'OD_GL_GLOBAL_LOCATION'
+             AND  FFVS.flex_value_set_name = 'R_OD_GL_GLOBAL_LOCATION'  -- changed from OD_GL_GLOBAL_LOCATION to R_OD_GL_GLOBAL_LOCATION 2.6
              AND  FFV.flex_value = p_location;
 
             /*  SELECT FFV.attribute2
