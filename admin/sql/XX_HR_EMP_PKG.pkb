@@ -1992,7 +1992,7 @@ create or replace PACKAGE BODY XX_HR_EMP_PKG AS
 									gl_ledgers gl,
 									hr_operating_units hou
 								WHERE FFV.flex_value_set_id = FFVS.flex_value_set_id
-									AND FFVS.flex_value_set_name IN ( 'OD_GL_GLOBAL_COMPANY')
+									AND FFVS.flex_value_set_name IN ( 'R_OD_GL_GLOBAL_COMPANY')
 								AND gl.short_name = ffv.attribute1
 									AND FFV.flex_value = XX_HR_MAPPING_PKG.COMPANY_NEW( V.COMPANY, V.LOCATION)
 								AND hou.set_of_books_id = gl.ledger_id
@@ -2060,7 +2060,7 @@ create or replace PACKAGE BODY XX_HR_EMP_PKG AS
 									gl_ledgers gl,
 									hr_operating_units hou
 								WHERE FFV.flex_value_set_id = FFVS.flex_value_set_id
-									AND FFVS.flex_value_set_name IN ( 'OD_GL_GLOBAL_COMPANY')
+									AND FFVS.flex_value_set_name IN ( 'R_OD_GL_GLOBAL_COMPANY')
 								AND gl.short_name = ffv.attribute1
 									AND FFV.flex_value = XX_HR_MAPPING_PKG.COMPANY_NEW( V.COMPANY, V.LOCATION)
 								AND hou.set_of_books_id = gl.ledger_id
@@ -2148,7 +2148,7 @@ create or replace PACKAGE BODY XX_HR_EMP_PKG AS
 									gl_ledgers gl,
 									hr_operating_units hou
 								WHERE FFV.flex_value_set_id = FFVS.flex_value_set_id
-									AND FFVS.flex_value_set_name IN ( 'OD_GL_GLOBAL_COMPANY')
+									AND FFVS.flex_value_set_name IN ( 'R_OD_GL_GLOBAL_COMPANY')
 								AND gl.short_name = ffv.attribute1
 									AND FFV.flex_value = XX_HR_MAPPING_PKG.COMPANY_NEW( V.COMPANY, V.LOCATION)
 								AND hou.set_of_books_id = gl.ledger_id
@@ -2183,7 +2183,7 @@ create or replace PACKAGE BODY XX_HR_EMP_PKG AS
 									gl_ledgers gl,
 									hr_operating_units hou
 								WHERE FFV.flex_value_set_id = FFVS.flex_value_set_id
-									AND FFVS.flex_value_set_name IN ( 'OD_GL_GLOBAL_COMPANY')
+									AND FFVS.flex_value_set_name IN ( 'R_OD_GL_GLOBAL_COMPANY')
 								AND gl.short_name = ffv.attribute1
 									AND FFV.flex_value = XX_HR_MAPPING_PKG.COMPANY_NEW( V.COMPANY, V.LOCATION)
 								AND hou.set_of_books_id = gl.ledger_id

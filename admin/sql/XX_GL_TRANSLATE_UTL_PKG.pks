@@ -50,6 +50,9 @@ AS
 
 	FUNCTION DERIVE_COMPANY_FROM_LOCATION  (p_location IN VARCHAR2)
 	RETURN VARCHAR2;
+	
+     FUNCTION DERIVE_COM_FROM_LOC_SPIN (p_location IN VARCHAR2)
+	RETURN VARCHAR2;
 
 
 -- +===================================================================+
@@ -95,11 +98,6 @@ AS
 -- +===================================================================+
 
      FUNCTION DERIVE_COMPANY_FROM_LOCATION (p_location IN VARCHAR2
-                                           ,p_org_name IN VARCHAR2)
-         RETURN VARCHAR2;
-
-
-     FUNCTION DERIVE_COMPANY_FROM_LOCATION_SPIN (p_location IN VARCHAR2
                                            ,p_org_name IN VARCHAR2)
          RETURN VARCHAR2;
 

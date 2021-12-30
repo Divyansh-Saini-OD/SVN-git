@@ -157,7 +157,7 @@ AS
 -- |                                                                   |
 -- +===================================================================+
 
-     FUNCTION DERIVE_COMPANY_FROM_LOCATION_SPIN (p_location IN VARCHAR2)
+     FUNCTION DERIVE_COM_FROM_LOC_SPIN (p_location IN VARCHAR2)
          RETURN VARCHAR2
      IS
 
@@ -193,7 +193,7 @@ AS
              RETURN NULL;
 
 
-      END DERIVE_COMPANY_FROM_LOCATION_SPIN;
+      END DERIVE_COM_FROM_LOC_SPIN;
 
 -- +===================================================================+
 -- | Name  : DERIVE_COMPANY_FROM_LOCATION (Overloaded)                 |
