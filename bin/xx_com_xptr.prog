@@ -22,6 +22,7 @@
 # |1.7       02-Oct-2012   Abdul Khan          Defect # 19839         |
 # |1.8       11-Dec-2013   Avinash Baddam      Changes for Defect # 26630 |
 # |1.9       13-Sep-2016   Avinash Baddam      Changes for defect #  39289 |
+# |2.0 		 04-Jan-2022   Amit Kumar          Changes for SPLIT DAY1 |
 # +===================================================================+
 
 echo "XPTR Log starts here........................" > /tmp/xx_com_xptr.$$
@@ -51,7 +52,9 @@ V_RESULT=`echo "SET ECHO OFF
                 lc_program      fnd_concurrent_programs.concurrent_program_name%TYPE;
                 lc_request_id   fnd_concurrent_requests.argument1%TYPE;
                 lc_xptr_name    xx_fin_translatevalues.target_value1%TYPE := NULL;
-                lc_pub_out      fnd_concurrent_requests.argument7%TYPE:=NULL;
+                lc_pub_out      fnd_concurrent_requests.argument7%TYPE:=NULL;				
+				L_EXISTS 		NUMBER:=0; --Version 2.0
+				
                 BEGIN
                    BEGIN
                       --SELECT FCP.concurrent_program_name, FCR.argument1, FCR.argument7 -- Commented for defect 26630.
@@ -129,44 +132,84 @@ V_RESULT=`echo "SET ECHO OFF
                               lc_xptr_name := NULL;
                         END;
                    END IF; 
+				   
                    FND_GLOBAL.APPS_INITIALIZE('$V_USER_ID'
                                               ,'$V_RES_ID'
                                               ,'$V_RES_APP_ID'
                                                              );
                    lc_program := REPLACE(lc_program,'_','');
-                   SELECT  DECODE (lc_program,'XXTAXARBADDEBT','tx', /*DECODE added for Defect # 19839*/
- 				               'orcl'||DECODE(LOWER(FA.product_code)
-                                           ,'ce','cm'
-                                           ,'xxfin',DECODE(LOWER(SUBSTR(lc_program,3,2))
-                                                          ,'ce','cm'
-                                                          ,LOWER(SUBSTR(lc_program,3,2)))
-                                           ,'xxcomn',DECODE(LOWER(SUBSTR(lc_program,3,2))
-                                                          ,'ce','cm'
-                                                          ,LOWER(SUBSTR(lc_program,3,2)))
--- MC 14-jul-09 added XXOM decode
-                                           ,'xxom',DECODE(LOWER(SUBSTR(lc_program,1,2))
-                                                          ,'xx','om'
-                                                          ,LOWER(SUBSTR(lc_program,1,2)))
-                                           ,LOWER(FA.product_code)))
-                                     ||'~'||RPAD(DECODE(LOWER(FA.product_code)
-                                                       ,'xxfin',SUBSTR(lc_program,3,8)
-                                                       ,'xxcomn',SUBSTR(lc_program,3,8)
-                                                       ,SUBSTR(lc_program,1,8)),8,'0')
-                                     ||CR.request_id||'~'||CR.logfile_name||'~'||lc_pub_out
-                                                 ||'~'||FND_PROFILE.VALUE_SPECIFIC('XX_FIN_DISABLE_XPTR_OP')    --Defect 12248
-                   INTO      x_result
-                   FROM      fnd_concurrent_requests CR
-                            ,fnd_concurrent_programs CP
-                            ,fnd_application FA
-                   WHERE     CR.request_id = ln_request_id
-                   AND       CP.concurrent_program_id = CR.concurrent_program_id
-                   AND       CP.application_id = CR.program_application_id
-                   AND       FA.application_id = CR.program_application_id;
+				   
+				   BEGIN     --Version 2.0 Starts
+				    SELECT 1 
+					INTO 
+					L_EXISTS
+					FROM fnd_Concurrent_programs fcp,
+					fnd_concurrent_requests fcr
+					WHERE fcp.CONCURRENT_PROGRAM_ID = fcr.CONCURRENT_PROGRAM_ID
+					AND fcp.CONCURRENT_PROGRAM_NAME ='RGRARG'
+					AND fcr.request_id              =ln_request_id
+					AND fcr.argument6               ='R_US_USD_P';				   
+				   EXCEPTION
+				   WHEN OTHERS THEN
+				    L_EXISTS:=0;
+				   END;
+				   
+				   IF L_EXISTS=0 then 	   --Version 2.0 ends				   
+						SELECT  DECODE (lc_program,'XXTAXARBADDEBT','tx', /*DECODE added for Defect # 19839*/
+									'orcl'||DECODE(LOWER(FA.product_code)
+												,'ce','cm'
+												,'xxfin',DECODE(LOWER(SUBSTR(lc_program,3,2))
+																,'ce','cm'
+																,LOWER(SUBSTR(lc_program,3,2)))
+												,'xxcomn',DECODE(LOWER(SUBSTR(lc_program,3,2))
+																,'ce','cm'
+																,LOWER(SUBSTR(lc_program,3,2)))
+							-- MC 14-jul-09 added XXOM decode
+												,'xxom',DECODE(LOWER(SUBSTR(lc_program,1,2))
+																,'xx','om'
+																,LOWER(SUBSTR(lc_program,1,2)))
+												,LOWER(FA.product_code)))
+											||'~'||RPAD(DECODE(LOWER(FA.product_code)
+															,'xxfin',SUBSTR(lc_program,3,8)
+															,'xxcomn',SUBSTR(lc_program,3,8)
+															,SUBSTR(lc_program,1,8)),8,'0')
+											||CR.request_id||'~'||CR.logfile_name||'~'||lc_pub_out
+														||'~'||FND_PROFILE.VALUE_SPECIFIC('XX_FIN_DISABLE_XPTR_OP')    --Defect 12248
+						INTO      x_result
+						FROM      fnd_concurrent_requests CR
+									,fnd_concurrent_programs CP
+									,fnd_application FA
+						WHERE     CR.request_id = ln_request_id
+						AND       CP.concurrent_program_id = CR.concurrent_program_id
+						AND       CP.application_id = CR.program_application_id
+						AND       FA.application_id = CR.program_application_id;
+				   
+				   ELSE --Version 2.0 starts
+						SELECT 'rorclgl'
+							||'~'
+							||RPAD(DECODE(LOWER(FA.product_code) ,'xxfin',SUBSTR(lc_program,3,8) ,'xxcomn',SUBSTR(lc_program,3,8) ,SUBSTR(lc_program,1,8)),8,'0')
+							||CR.request_id
+							||'~'
+							||CR.logfile_name
+							||'~'
+							||lc_pub_out
+							||'~'
+							||FND_PROFILE.VALUE_SPECIFIC('XX_FIN_DISABLE_XPTR_OP') --Defect 12248
+							INTO x_result
+							FROM fnd_concurrent_requests CR ,
+							fnd_concurrent_programs CP ,
+							fnd_application FA
+							WHERE CR.request_id          = ln_request_id
+							AND CP.concurrent_program_id = CR.concurrent_program_id
+							AND CP.application_id        = CR.program_application_id
+							AND FA.application_id        = CR.program_application_id;							
+				   END IF; --Version 2.0 ends
+				   
                    DBMS_OUTPUT.PUT_LINE(x_result);
                 EXCEPTION
                     WHEN OTHERS THEN
                        DBMS_OUTPUT.PUT_LINE('OERROR~OTHER~'||SUBSTR(SQLERRM,1,255));
-                END;
+                END; 
 /"|sqlplus -s /nolog`
 if [ "$?" = 0 ]
 then
