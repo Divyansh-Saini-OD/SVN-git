@@ -1,4 +1,4 @@
-CREATE OR REPLACE PACKAGE BODY XX_AR_VENDOR_COMP_INV_EXTRACT
+create or replace PACKAGE BODY        "XX_AR_VENDOR_COMP_INV_EXTRACT" 
 -- +================================================================================================+
 -- |                      Office Depot - Project Simplify                                       	|
 -- +================================================================================================+
@@ -9,9 +9,10 @@ CREATE OR REPLACE PACKAGE BODY XX_AR_VENDOR_COMP_INV_EXTRACT
 -- | Version     Date         Author           Remarks                                          	|
 -- | =========   ===========  =============    =====================================================|
 -- | 1.0         1/29/2018    Dinesh Nagapuri  Initial version                                  	|
--- | 1.1         7/9/2019     Havish Kasina    Changed the INSTANCE_NAME to DB_NAME             	| 
+-- | 1.1         7/9/2019     Havish Kasina    Changed the INSTANCE_NAME to DB_NAME             	|
 -- | 1.2         1/9/2020     Atul Khard       Bug fix for NAIT-118582. Changed logic to fetch  	|
--- |										   period start and end date. NAIT-124914 for migrating.| 
+-- |										   period start and end date. NAIT-124914 for migrating.|
+-- | 1.3         06-JAN-2021  Krishna          GL period changes for set name                     |
 -- +================================================================================================+
 AS
     gc_debug       VARCHAR2(2)                               := 'N';
@@ -182,7 +183,7 @@ AS
 
         lc_netting_file_name :=    lc_netting_file_name
                                    || '.dat';
-        
+
 		print_out_msg(   'Processing for Date :'
                       || p_run_date);
         print_debug_msg(   'Processing for Date :'
@@ -206,8 +207,8 @@ AS
 				WHERE 1=1
 				AND p_run_date BETWEEN START_DATE AND END_DATE
 				);*/-- commented for bug fix of NAIT-118582
-				
-				
+
+
 			SELECT
 				MAX(gp1.start_date),
 				MAX(gp1.end_date)
@@ -224,8 +225,10 @@ AS
 					WHERE
 						1 = 1
 						AND p_run_date BETWEEN gp2.start_date AND gp2.end_date
-				);-- added for bug fix of NAIT-118582
-		
+            AND period_set_name = 'OD 445 CALENDAR'
+				)-- added for bug fix of NAIT-118582
+        AND period_set_name = 'OD 445 CALENDAR';
+
         EXCEPTION
             WHEN OTHERS
             THEN
@@ -335,10 +338,10 @@ AS
                                       || SQLERRM);
             END;
         END IF;
-		
+
 		lc_rec_count	:=	l_netting_extract_tab.COUNT	;
 		lc_cur_time		:=	TO_CHAR(sysdate,'HH24MISS');
-						
+
 		IF l_netting_extract_tab.COUNT > 0
         THEN
             BEGIN
@@ -736,3 +739,4 @@ AS
     END vps_netting_extract;
 END XX_AR_VENDOR_COMP_INV_EXTRACT;
 /
+show error;

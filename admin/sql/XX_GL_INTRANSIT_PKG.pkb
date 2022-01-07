@@ -1,5 +1,4 @@
-create or replace
-PACKAGE BODY XX_GL_INTRANSIT_PKG
+create or replace PACKAGE BODY      XX_GL_INTRANSIT_PKG
 AS
 -- +=====================================================================+
 -- |                  Office Depot - Project Simplify                    |
@@ -34,18 +33,20 @@ AS
 -- |                                             defect 2253             |
 -- |1.7       08-DEC-09      Rani Asaithambi     Modified the Procedure  |
 -- |                                             XX_GL_DETAIL_PROC for   |
--- |                                             the Defect #2253.       |  
+-- |                                             the Defect #2253.       |
 -- |1.8       15-Mar-11      Sai Kumar Reddy     Modified the procedure  |
--- |                                             XX_GL_DETAIL_PROC to    |  
+-- |                                             XX_GL_DETAIL_PROC to    |
 -- |                                             select customer name    |
 -- |                                             ,number and legacy      |
 -- |1.9       05-oct-12      AMS Offshore Team   account number added    |
 -- |                                             column Scheduled arrival|
--- |                                             date as per defect 16660| 	 
+-- |                                             date as per defect 16660|
 -- |2.0       18-Jul-13      Darshini            R0493 - Modified for R12|
 -- |                                             Upgrade Retrofit.       |
 -- |2.1       19-Dec-13      Jay Gupta           Defect# 27303           |
 -- |2.2       30-May-16      Madhan Sanjeevi     Defect# 37959           |
+-- |2.3       06-Jan-22      Purushotham         NAIT-204963- Added GL   |
+-- |                                             period setname condition|
 -- +=====================================================================+
 
 -- +=====================================================================+
@@ -59,7 +60,7 @@ AS
 PROCEDURE XX_GL_SUBMIT_PROC (
                              x_err_buff    OUT VARCHAR2
                             ,x_ret_code    OUT NUMBER
-                            ,p_ledger_id   IN  NUMBER  --V2.1p_sob_id							
+                            ,p_ledger_id   IN  NUMBER  --V2.1p_sob_id
                             ,p_period_from IN  VARCHAR2
                             ,p_period_to   IN  VARCHAR2
                             ,p_mode        IN  VARCHAR2
@@ -115,7 +116,7 @@ BEGIN
                                                   ,FALSE
                                                   ,p_ledger_id  --V2.1p_sob_id
                                                   ,p_period_from
-                                                  ,p_period_to												  
+                                                  ,p_period_to
                                                   );
       COMMIT;
 
@@ -134,7 +135,7 @@ BEGIN
                                                   ,FALSE
                                                   ,p_ledger_id     --V2.1p_sob_id
                                                   ,p_period_from
-                                                  ,p_period_to												  
+                                                  ,p_period_to
                                                   );
       COMMIT;
 
@@ -163,7 +164,7 @@ BEGIN
                                                    ,FALSE
                                                    ,p_ledger_id     --V2.1p_sob_id
                                                    ,p_period_from
-                                                   ,p_period_to												   
+                                                   ,p_period_to
                                                    );
       COMMIT;
 
@@ -339,8 +340,8 @@ ln_org_id := FND_PROFILE.VALUE('ORG_ID'); --Added for the defect#13364
                                  ,amount_cr
                                  ,cogs_liab_amount
                                  ,CUSTOMER_NUMBER
-                                 ,CUSTOMER_NAME 
-                                 ,schedule_arrival_date								 
+                                 ,CUSTOMER_NAME
+                                 ,schedule_arrival_date
                                  )
 --SELECT  /*+ LEADING(RCTLG) use_nl(RCTLG RCT OOHL GCC OOS GP GSOB ) index(GP GL_PERIODS_N1) */    --Commented for the defect#13364
 --SELECT /*+ LEADING(RCTLG) use_nl(RCT OOHL) index(GP GL_PERIODS_N1) */                              --Added for the defect#13364, Commented for the defect 2253
@@ -444,7 +445,7 @@ SELECT /*+ LEADING(RCT OOL1) FULL(RCT) use_nl(OOL1) use_nl(OOHL) use_nl(RCTLG) i
 			 HP.party_number,
 			 HP.party_name,
 			 --end of addition
-             schedule_arrival_date			 
+             schedule_arrival_date
 FROM   ra_cust_trx_line_gl_dist_all   RCTLG  -- Rearranged the table order for the defect#13564
       ,ra_customer_trx_all            RCT
       ,oe_order_headers_all           OOHL
@@ -474,7 +475,7 @@ AND    OOL1.header_id                     = OOHL.header_id                      
 --AND    racust.CUSTOMER_ID      	  		  = RCT.SOLD_TO_CUSTOMER_ID 					  --Added for # 5330
 AND    HCA.cust_account_id                = RCT.bill_to_customer_id
 AND    HCA.party_id                       = HP.party_id
--- end of addition 
+-- end of addition
 AND    RCTLG.gl_date                        BETWEEN GP.start_date AND GP.end_date
 --Comment for the defect#13364 starts
 --AND    EXISTS (
@@ -516,13 +517,13 @@ AND    RCT.org_id                         = ln_org_id
 AND    RCT.interface_header_attribute2      NOT IN ('SA US Return','SA CA Return')
 AND    RCT.interface_header_context       = 'ORDER ENTRY'
 AND    RCTLG.gl_date                        BETWEEN p_start_date AND p_end_date
---AND    RCTLG.customer_trx_id                BETWEEN p_cust_trx_id_from AND p_cust_trx_id_to -- Commented for Defect 2253   
+--AND    RCTLG.customer_trx_id                BETWEEN p_cust_trx_id_from AND p_cust_trx_id_to -- Commented for Defect 2253
 AND    RCT.customer_trx_id                  BETWEEN p_cust_trx_id_from AND p_cust_trx_id_to   -- Added  for Defect 2253
 -- Commented and Added by Darshini(2.0) for R12 Upgrade Retrofit
 --AND    GL.set_of_books_id               = p_sobks_id;
-AND    GL.ledger_id                       = p_ledger_id;     --V2.1p_sobks_id
+AND    GL.ledger_id                       = p_ledger_id     --V2.1p_sobks_id
 --end of addition
-
+and gp.period_set_name  = 'OD 445 CALENDAR'; --- NAIT-204963 on 06-JAN-2022 -- added GL period set name
 
 END XX_GL_DETAIL_PROC;
 
@@ -591,7 +592,7 @@ SELECT order_number    ORDERNO
       ,amount_cr       AMT_CR
       ,1               SL
       ,CUSTOMER_NUMBER CST_NUM
-      ,CUSTOMER_NAME   CST_NAME	  
+      ,CUSTOMER_NAME   CST_NAME
       ,ORIG_SYSTEM_REFERENCE LGCY_CUST_NUM
 	  ,schedule_arrival_date
 FROM   xx_gl_intord_det_temp
@@ -627,7 +628,7 @@ SELECT order_number     ORDERNO
       ,NULL                  AMT_CR
       ,2                SL
       ,CUSTOMER_NUMBER CST_NUM
-      ,CUSTOMER_NAME   CST_NAME	  
+      ,CUSTOMER_NAME   CST_NAME
       ,ORIG_SYSTEM_REFERENCE LGCY_CUST_NUM
 	  ,schedule_arrival_date
 FROM   xx_gl_intord_det_temp
@@ -648,7 +649,7 @@ l_sn_ch VARCHAR2(100);
 
 BEGIN
 	BEGIN
-	
+
 		SELECT name
 		INTO lc_sob_name
 		--Commented and added by Darshini(2.0) for R12 Upgrade Retrofit
@@ -657,7 +658,7 @@ BEGIN
 		FROM gl_ledgers
 		WHERE ledger_id = P_LEDGER_ID;  -- v2.1 P_SOBKS_ID;
 		--end of addition
-  
+
 	EXCEPTION
 	WHEN NO_DATA_FOUND THEN
 	FND_FILE.PUT_LINE(FND_FILE.LOG,'Unable to retrieve Set of Book Name');
@@ -665,72 +666,76 @@ BEGIN
 	WHEN OTHERS THEN
 	FND_FILE.PUT_LINE(FND_FILE.LOG,'Unable to retrieve Set of Book Name');
 
-	END; 
+	END;
 
 --  SRW.USER_EXIT('FND SRWINIT');
-  
+
   FND_FILE.PUT_LINE(FND_FILE.LOG,'Period From := '||P_PERIOD_FROM);
   FND_FILE.PUT_LINE(FND_FILE.LOG,'Period To := '||P_PERIOD_TO);
-  
-	BEGIN     
-	    
+
+	BEGIN
+
 		SELECT DISTINCT start_date
-		INTO   ld_start_date  
+		INTO   ld_start_date
 		FROM   gl_periods
-		WHERE  period_name = UPPER(LTRIM(RTRIM(P_PERIOD_FROM)));
+		WHERE  period_name = UPPER(LTRIM(RTRIM(P_PERIOD_FROM)))
+    and period_set_name  = 'OD 445 CALENDAR' --- NAIT-204963 on 06-JAN-2022 -- Added GL Period Set name condition
+    ;
 
 
 
 		SELECT DISTINCT end_date
-		INTO   ld_end_date     
+		INTO   ld_end_date
 		FROM   gl_periods
-		WHERE  period_name = UPPER(LTRIM(RTRIM(P_PERIOD_TO)));
-		
-		FND_FILE.PUT_LINE(FND_FILE.LOG,'Start Date := '||ld_start_date);      
-		FND_FILE.PUT_LINE(FND_FILE.LOG,'End Date   := '||ld_end_date);      		
-      
+		WHERE  period_name = UPPER(LTRIM(RTRIM(P_PERIOD_TO)))
+    and period_set_name  = 'OD 445 CALENDAR' --- NAIT-204963 on 06-JAN-2022 -- Added GL Period Set name condition
+    ;
+
+		FND_FILE.PUT_LINE(FND_FILE.LOG,'Start Date := '||ld_start_date);
+		FND_FILE.PUT_LINE(FND_FILE.LOG,'End Date   := '||ld_end_date);
+
       IF (ld_start_date > ld_end_date) THEN
-      
+
           RAISE EX_PER_RANGE;
-          
+
       END IF;
-      
-           
+
+
   EXCEPTION
   	WHEN NO_DATA_FOUND THEN
-  	FND_FILE.PUT_LINE(FND_FILE.LOG,'Unable to find the Period start date and end Date, Please enter a Valid Period range');      	 
- 	
+  	FND_FILE.PUT_LINE(FND_FILE.LOG,'Unable to find the Period start date and end Date, Please enter a Valid Period range');
+
   	WHEN EX_PER_RANGE THEN
-  	FND_FILE.PUT_LINE(FND_FILE.LOG,'Please enter a valid Period Range');      	 	 
-  	FND_FILE.PUT_LINE(FND_FILE.LOG,'Please enter a High value in Period From parameter and a low value in Period To parameter');      	 	 	
-  	
+  	FND_FILE.PUT_LINE(FND_FILE.LOG,'Please enter a valid Period Range');
+  	FND_FILE.PUT_LINE(FND_FILE.LOG,'Please enter a High value in Period From parameter and a low value in Period To parameter');
+
   	WHEN OTHERS THEN
   	FND_FILE.PUT_LINE(FND_FILE.LOG,'Unable to find the Period start date and end Date, Please enter a Valid Period range');
 
-  END;	 
-  	
--- Added below block for Defect 2253  	
+  END;
+
+-- Added below block for Defect 2253
 
   BEGIN
-  	SELECT /*+ full(RCTLG) parallel(RCTLG,2)*/ 
+  	SELECT /*+ full(RCTLG) parallel(RCTLG,2)*/
   	       MIN(CUSTOMER_TRX_ID)
   	       ,MAX(CUSTOMER_TRX_ID)
   	INTO ln_cust_trx_id_from
   	     ,ln_cust_trx_id_to
     FROM RA_CUST_TRX_LINE_GL_DIST_ALL RCTLG
     WHERE RCTLG.gl_date BETWEEN (ld_start_date) AND (ld_end_date);
-    
-  	FND_FILE.PUT_LINE(FND_FILE.LOG,'Customer trx id from '||ln_cust_trx_id_from);	 
-  	FND_FILE.PUT_LINE(FND_FILE.LOG,'Customer trx id to '||ln_cust_trx_id_to);	 
-	
-  EXCEPTION  	
+
+  	FND_FILE.PUT_LINE(FND_FILE.LOG,'Customer trx id from '||ln_cust_trx_id_from);
+  	FND_FILE.PUT_LINE(FND_FILE.LOG,'Customer trx id to '||ln_cust_trx_id_to);
+
+  EXCEPTION
   WHEN NO_DATA_FOUND THEN
-  	FND_FILE.PUT_LINE(FND_FILE.LOG,'No data found while fetching Customer Trx id'||SQLERRM);	 	 
-  
+  	FND_FILE.PUT_LINE(FND_FILE.LOG,'No data found while fetching Customer Trx id'||SQLERRM);
+
  	WHEN OTHERS THEN
-  	FND_FILE.PUT_LINE(FND_FILE.LOG,'Unable to find the Customer Trx id for the Period Start date and end Date'||SQLERRM);	 	 	  
+  	FND_FILE.PUT_LINE(FND_FILE.LOG,'Unable to find the Customer Trx id for the Period Start date and end Date'||SQLERRM);
   END;
-  	
+
   	XX_GL_INTRANSIT_PKG.XX_GL_DETAIL_PROC(
   	                                      ld_start_date
   	                                     ,ld_end_date
@@ -738,67 +743,65 @@ BEGIN
   	                                     ,ln_cust_trx_id_from -- Added for Defect 2253
   	                                     ,ln_cust_trx_id_to -- Added for Defect 2253
   	                                     );
-  	
+
   BEGIN
-	
+
     SELECT count(DISTINCT order_number)
     INTO   l_p_total
     FROM xx_gl_intord_det_temp;
-  
-    
+
+
   EXCEPTION
   WHEN NO_DATA_FOUND THEN
-  FND_FILE.PUT_LINE(FND_FILE.LOG,'No data found');	 	     
+  FND_FILE.PUT_LINE(FND_FILE.LOG,'No data found');
   WHEN OTHERS THEN
-  FND_FILE.PUT_LINE(FND_FILE.LOG,'No data found');	 
-    	
+  FND_FILE.PUT_LINE(FND_FILE.LOG,'No data found');
+
   END;
-  	
+
 BEGIN
 
 
-  fnd_file.put_line(fnd_file.output,rpad('Office Depot',50,' ')||'OD: GL In-Transit Orders');    
-  fnd_file.put_line(fnd_file.output,'FC-G');    
-  fnd_file.put_line(fnd_file.output,'Set Of Book :'|| rpad(lc_sob_name,30,' ')||lpad('Date: '||TO_CHAR(SYSDATE,'DD-MON-YYYY'),86,' '));      
-  fnd_file.put_line(fnd_file.output,'Period From :'||P_PERIOD_FROM);    
-  fnd_file.put_line(fnd_file.output,'Period To   :'||P_PERIOD_TO);     
-  fnd_file.put_line(fnd_file.output,' ');      
-  fnd_file.put_line(fnd_file.output,' ');         
+  fnd_file.put_line(fnd_file.output,rpad('Office Depot',50,' ')||'OD: GL In-Transit Orders');
+  fnd_file.put_line(fnd_file.output,'FC-G');
+  fnd_file.put_line(fnd_file.output,'Set Of Book :'|| rpad(lc_sob_name,30,' ')||lpad('Date: '||TO_CHAR(SYSDATE,'DD-MON-YYYY'),86,' '));
+  fnd_file.put_line(fnd_file.output,'Period From :'||P_PERIOD_FROM);
+  fnd_file.put_line(fnd_file.output,'Period To   :'||P_PERIOD_TO);
+  fnd_file.put_line(fnd_file.output,' ');
+  fnd_file.put_line(fnd_file.output,' ');
   fnd_file.put_line(fnd_file.output,rpad('SNO',10,' ')||'  '||rpad('Customer Name',50,' ')||'  '||rpad('Customer Number',30,' ')||'  '||rpad('Order Number',30,' ')||'  '||rpad('Ant Ship Date',12,' ')||'  '||rpad('Order Date',12,' ')||'  '||rpad('Ship Date',12,' ')||'  '||rpad('GL Date',12,' ')||'  '||rpad('Period',9,' ')||'  '||rpad('Account',170,' ')||'  '||lpad('Amt DR',30,' ')||'  '||lpad('Amt CR',30,' '));
-  fnd_file.put_line(fnd_file.output,rpad('-',10,'-')||'  '||rpad('-',50,'-')||'  '||rpad('-',30,'-')||'  '||rpad('-',30,'-')||'  '||rpad('-',12,'-')||'  '||rpad('-',12,'-')||'  '||rpad('-',12,'-')||'  '||rpad('-',9,'-')||'  '||rpad('-',170,'-')||'  '||rpad('-',30,'-')||'  '||rpad('-',30,'-')||'  '||rpad('-',30,'-'));        
+  fnd_file.put_line(fnd_file.output,rpad('-',10,'-')||'  '||rpad('-',50,'-')||'  '||rpad('-',30,'-')||'  '||rpad('-',30,'-')||'  '||rpad('-',12,'-')||'  '||rpad('-',12,'-')||'  '||rpad('-',12,'-')||'  '||rpad('-',9,'-')||'  '||rpad('-',170,'-')||'  '||rpad('-',30,'-')||'  '||rpad('-',30,'-')||'  '||rpad('-',30,'-'));
   FOR C1 IN GL_INT_ORD
   LOOP
-  
+
   IF l_ord_num <> C1.ORDERNO1 THEN
    l_sn := l_sn + 1;
-   l_ord_num := C1.ORDERNO1;   
+   l_ord_num := C1.ORDERNO1;
    l_sn_ch  := to_char(l_sn);
   ELSE
-   l_sn_ch  := ' ';     
+   l_sn_ch  := ' ';
   END IF;
 
-  fnd_file.put_line(fnd_file.output,rpad(l_sn_ch,10,' ')||'  '||rpad(C1.CST_NAME,50,' ')||'  '||rpad(C1.CST_NUM,30,' ')||'  '||rpad(C1.ORDERNO,30,' ')||'	 '||C1.schedule_arrival_date||'  '||rpad(C1.ORD_DATE,12,' ')||'  '||rpad(C1.SHP_DATE,12,' ')||'  '||rpad(C1.GL_DATE,12,' ')||'  '||rpad(C1.PERD,9,' ')||'  '||rpad(C1.ACCOUNT,170,' ')||'  '||lpad(NVL(TO_CHAR(C1.AMT_DR),' '),30,' ')||'  '||lpad(NVL(TO_CHAR(C1.AMT_CR),' '),30,' '));  
+  fnd_file.put_line(fnd_file.output,rpad(l_sn_ch,10,' ')||'  '||rpad(C1.CST_NAME,50,' ')||'  '||rpad(C1.CST_NUM,30,' ')||'  '||rpad(C1.ORDERNO,30,' ')||'	 '||C1.schedule_arrival_date||'  '||rpad(C1.ORD_DATE,12,' ')||'  '||rpad(C1.SHP_DATE,12,' ')||'  '||rpad(C1.GL_DATE,12,' ')||'  '||rpad(C1.PERD,9,' ')||'  '||rpad(C1.ACCOUNT,170,' ')||'  '||lpad(NVL(TO_CHAR(C1.AMT_DR),' '),30,' ')||'  '||lpad(NVL(TO_CHAR(C1.AMT_CR),' '),30,' '));
 
   END LOOP;
-  
-  fnd_file.put_line(fnd_file.output,' ');      
-  fnd_file.put_line(fnd_file.output,' ');        
-    
+
+  fnd_file.put_line(fnd_file.output,' ');
+  fnd_file.put_line(fnd_file.output,' ');
+
   IF l_p_total > 0 THEN
-  fnd_file.put_line(fnd_file.output,'Total Number of In-Transit orders :'||l_p_total);      
-  fnd_file.put_line(fnd_file.output,'***End of Report - OD: GL In-Transit Orders***');      
+  fnd_file.put_line(fnd_file.output,'Total Number of In-Transit orders :'||l_p_total);
+  fnd_file.put_line(fnd_file.output,'***End of Report - OD: GL In-Transit Orders***');
   ELSE
-  fnd_file.put_line(fnd_file.output,'***No Data Found - OD: GL In-Transit Orders***');        
-  END IF;  
-  
+  fnd_file.put_line(fnd_file.output,'***No Data Found - OD: GL In-Transit Orders***');
+  END IF;
+
 EXCEPTION
 WHEN OTHERS THEN
   fnd_file.put_line(fnd_file.log,'Report Generation Failed '||sqlerrm);
-END;	
+END;
 END XX_GL_IN_TRN_ORD_DTL_RPT;
 
 END XX_GL_INTRANSIT_PKG;
 /
-
-SHOW ERRORS PACKAGE BODY XX_GL_INTRANSIT_PKG;
---EXIT;
+show error;
