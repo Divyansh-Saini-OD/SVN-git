@@ -13,6 +13,7 @@ AS
   -- | =========   ===========  =============    ===============================================  |
   -- | 1.0         23-APR-18    CREDROUTHU      Initial version                                   |
   -- | 2.0         23-JAN-2019  BIAS            INSTANCE_NAME is replaced with DB_NAME for OCI    |
+  -- | 2.1         06-JAN-2021  Krishna         GL period changes for set name.                   |
   -- +============================================================================================+
   gc_debug VARCHAR2(2) := 'N';
   gn_request_id fnd_concurrent_requests.request_id%TYPE;
@@ -111,6 +112,7 @@ IS
      AND gb.period_name          = per.period_name
      AND xll.accounting_date    >= per.start_date
      AND xll.accounting_date    <= per.end_date
+     AND per.period_set_name     = 'OD 445 CALENDAR'
      AND gb.actual_flag          = 'A'
      AND gb.template_id          IS NULL
      AND gld.ledger_id           = gb.ledger_id
@@ -450,4 +452,4 @@ WHEN OTHERS THEN
 END process_ap_balances_ob;
 END XX_AP_BAL_ARCS_OB_PKG;
 /
-SHOW ERRORS;
+show error;
