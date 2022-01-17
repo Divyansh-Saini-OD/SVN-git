@@ -34,6 +34,7 @@ AS
   -- | 3.0		   10/01/2020	Amit Kumar			 NAIT-139979 EBAY : Develop Settlement Process
   -- | 4.0         11/05/2020	Ankit Jaiswal        NAIT-154432 Walmart:Missing TAX WITHHELD Field Changes	|
   -- | 4.1         28/12/2020   Mayur Palsokar       Modified for NAIT-162646       |
+  -- | 4.2         28/12/2021   Divyansh Saini       Modified for Varis Market Place              |
   -- +============================================================================================+
   gc_package_name      CONSTANT all_objects.object_name%TYPE := 'XX_CE_MRKTPLC_RECON_PKG';
   gc_ret_success       CONSTANT VARCHAR2(20)                 := 'SUCCESS';
@@ -664,7 +665,7 @@ IS
       END) net_sales,
       SUM(
       CASE
-        WHEN item_related_fee_type IN('Commission','SalesTaxServiceFee','ShippingHB','RefundCommission')
+        WHEN item_related_fee_type IN('Commission','SalesTaxServiceFee','ShippingHB','RefundCommission','RECYCLE_FEE','MISC_FEE_1','MISC_FEE_2')
         THEN to_number(item_related_fee_amount)
         ELSE 0
       END) item_fees
@@ -850,7 +851,7 @@ IS
       END) transaction_amt,
       SUM(
       CASE
-        WHEN item_related_fee_type IN('Commission','SalesTaxServiceFee','ShippingHB','RefundCommission')
+        WHEN item_related_fee_type IN('Commission','SalesTaxServiceFee','ShippingHB','RefundCommission','RECYCLE_FEE','MISC_FEE_1','MISC_FEE_2')
         THEN to_number(item_related_fee_amount)
         ELSE 0
       END) item_fees
@@ -2857,6 +2858,303 @@ WHEN OTHERS THEN
   RAISE_APPLICATION_ERROR(-20101, 'PROCEDURE: ' || lc_procedure_name || ' SQLCODE: ' || SQLCODE || ' SQLERRM: ' || SQLERRM);
 END PROCESS_NEW_EBAY_PRESTG_DATA;
 
+
+
+/**********************************************************************************
+* Procedure to process varis MP at different levels.
+*this procedure is main procedure for varis MP and calls all sub procedures.
+* This procedure is called by Main Procedure.
+***********************************************************************************/
+PROCEDURE PROCESS_VARIS_PRESTG_DATA(
+    p_process_name IN VARCHAR2)
+IS
+  lc_procedure_name CONSTANT VARCHAR2(61) := gc_package_name || '.' || 'PROCESS_VARIS_PRESTG_DATA';
+  lt_parameters gt_input_parameters;
+  lc_action VARCHAR2(1000);
+  lc_ce_mpl_settlement_dtl XX_CE_MPL_SETTLEMENT_DTL%ROWTYPE;
+  lc_ce_mpl_settlement_hdr XX_CE_MPL_SETTLEMENT_HDR%ROWTYPE;
+  lc_settlement_start_date XX_CE_MPL_SETTLEMENT_HDR.settlement_start_date%type ;
+  lc_settlement_end_date XX_CE_MPL_SETTLEMENT_HDR.settlement_end_date%type ;
+  lc_currency VARCHAR2(15);
+  lc_start_date XX_CE_MPL_SETTLEMENT_HDR.settlement_start_date%type ;
+  lc_end_date XX_CE_MPL_SETTLEMENT_HDR.settlement_start_date%type ;
+  lc_settlement_id XX_CE_MPL_SETTLEMENT_DTL.settlement_id%type;
+  lc_quantity_purchased      VARCHAR2(25);
+  lc_unit_price              NUMBER;
+  lc_price_type              VARCHAR2(50);
+  l_price_amount             VARCHAR2(25);
+  lc_item_related_fee_type   VARCHAR2(50);
+  lc_item_related_fee_amount VARCHAR2(25);
+  l_rec_cnt                  NUMBER := 0;
+  lc_mpl_header_id XX_CE_MPL_SETTLEMENT_DTL.mpl_header_id%type;
+  lc_error_flag VARCHAR2(1)                     :='N';
+  lc_err_msg xx_ce_ebay_trx_dtl_stg.err_msg%type:=NULL;
+  lc_transaction_type XX_CE_MPL_SETTLEMENT_HDR.transaction_type%type;
+  lv_deposit_date DATE;
+  CURSOR cur_varis_settlement_files
+  IS
+    SELECT DISTINCT filename,
+           to_date(TO_CHAR(MIN(to_date(order_date,'MM/DD/YYYY HH:MI:SS AM')),'MM/DD/YYYY'),'MM/DD/YYYY') transaction_start_date,
+           to_date(TO_CHAR(MAX(to_date(order_date,'MM/DD/YYYY HH:MI:SS AM')),'MM/DD/YYYY'),'MM/DD/YYYY') transaction_end_date
+      FROM xx_ce_varis_pre_stg_v v
+     WHERE 1                      = 1
+       AND v.process_flag            IN ('N','E')
+     GROUP BY filename;
+  CURSOR cur_settlement_pre_stage_hdr(p_filename VARCHAR2)
+  IS
+    SELECT DISTINCT poc_number,
+           transaction_type
+      FROM xx_ce_varis_pre_stg_v hdr
+     WHERE 1                      = 1
+       AND hdr.filename           = p_filename
+       AND hdr.process_flag       IN ('N','E')
+	   AND poc_number is not null;
+  CURSOR dup_check_cur(lc_settlement_id NUMBER)
+  IS
+    SELECT settlement_id
+      FROM XX_CE_MPL_SETTLEMENT_HDR
+     WHERE settlement_id          = lc_settlement_id
+       AND rownum                 < 2 ;
+  CURSOR cur_settlement_pre_stage_dtl(p_varis_poc_number VARCHAR2,p_transaction_type VARCHAR2 )
+  IS
+    SELECT *
+      FROM xx_ce_varis_pre_stg_v tdr
+     WHERE 1                      = 1
+       AND tdr.poc_number           = p_varis_poc_number
+       AND tdr.transaction_type   = p_transaction_type
+       AND tdr.process_flag       IN ('N','E') ;
+BEGIN
+  lt_parameters('p_process_name') := p_process_name;
+  entering_sub(p_procedure_name => lc_procedure_name, p_parameters => lt_parameters);
+  lc_action := 'Deriving Translation Details for varis MPL';
+  FOR rec_file IN cur_varis_settlement_files
+  LOOP
+    logit(p_message => 'Processing varis MPL TRR File-' ||rec_file.filename);
+    lc_action               := 'Deriving Settlement Start Date and Settlement End Date';
+    lc_settlement_start_date:=rec_file.transaction_start_date;
+    lc_settlement_end_date  :=rec_file.transaction_end_date;
+    logit(p_message => 'Settlement Start Date Derived for FileNanme-' ||rec_file.filename||'is '||lc_settlement_start_date);
+    logit(p_message => 'Settlement End Date Derived for FileNanme-' ||rec_file.filename||'is '||lc_settlement_end_date);
+    
+	lc_action := 'Deriving Settlement Id';
+    SELECT xx_ce_mpl_settlement_id_s.nextval INTO lc_settlement_id FROM dual;
+    Lc_Action := 'Validating Duplicate Settlement Id';
+    FOR j IN dup_check_cur(lc_settlement_id)
+    LOOP
+      l_rec_cnt := l_rec_cnt + 1;
+    END LOOP;
+    IF L_Rec_Cnt > 0 THEN
+      exiting_sub(p_procedure_name => lc_procedure_name, p_exception_flag => TRUE);
+      logit(p_message => 'Settlement Can not be processed , Duplicate Settlement id found in staging table-XX_CE_MPL_SETTLEMENT_HDR '||lc_settlement_id);
+      RAISE_APPLICATION_ERROR(-20101, 'ACTION: ' || lc_action || ' SQLCODE: ' || SQLCODE || ' SQLERRM: ' || SQLERRM);
+    END IF;
+    FOR rec_hdr IN cur_settlement_pre_stage_hdr(rec_file.filename)
+    LOOP
+      BEGIN
+        lc_action                 := 'Processing varis PreStage Header Data for poc_number#'||rec_hdr.poc_number;
+        lc_err_msg                :=NULL;
+        lc_transaction_type       :=NULL;
+        IF rec_hdr.transaction_type='Order' THEN
+          lc_transaction_type     :='Order';
+        ELSE
+          lc_transaction_type:='Return';
+        END IF;
+        SELECT XX_CE_MPL_HEADER_ID_SEQ.nextval INTO lc_mpl_header_id FROM dual;
+        IF dup_check_transaction_type(p_process_name,rec_hdr.poc_number,lc_transaction_type)='N' THEN
+          FOR rec_dtl IN cur_settlement_pre_stage_dtl(rec_hdr.poc_number,rec_hdr.transaction_type )
+          LOOP
+            lc_action := 'Processing varis PreStage Detail Data';
+            BEGIN
+              lc_ce_mpl_settlement_dtl                              :=NULL;
+              lc_ce_mpl_settlement_dtl.mpl_header_id                := lc_mpl_header_id;
+              lc_ce_mpl_settlement_dtl.marketplace_name             :=p_process_name;
+              lc_ce_mpl_settlement_dtl.order_id                     := rec_dtl.poc_number ;
+              lc_ce_mpl_settlement_dtl.settlement_id                := lc_settlement_id ;
+              lc_ce_mpl_settlement_dtl.transaction_id               := rec_dtl.poc_number;
+              lc_ce_mpl_settlement_dtl.adjustment_id                := NULL;
+              lc_ce_mpl_settlement_dtl.shipment_id                  := NULL ;
+              lc_ce_mpl_settlement_dtl.shipment_fee_type            := NULL;
+              lc_ce_mpl_settlement_dtl.shipment_fee_amount          := NULL;
+              lc_ce_mpl_settlement_dtl.order_fee_type               := NULL;
+              lc_ce_mpl_settlement_dtl.order_fee_amount             := NULL;
+              lc_ce_mpl_settlement_dtl.aops_order_number            := rec_dtl.poc_number ;
+              lc_ce_mpl_settlement_dtl.fulfillment_id               := NULL ;
+              lc_ce_mpl_settlement_dtl.order_item_code              := rec_dtl.sku ;
+              lc_ce_mpl_settlement_dtl.merchant_order_item_id       := NULL;
+              lc_ce_mpl_settlement_dtl.merchant_adjustment_item_id  := NULL;
+              lc_ce_mpl_settlement_dtl.sku                          := rec_dtl.sku;
+              lc_ce_mpl_settlement_dtl.misc_fee_amount              := NULL;
+              lc_ce_mpl_settlement_dtl.other_fee_amount             := NULL;
+              lc_ce_mpl_settlement_dtl.other_fee_reason_description := NULL;
+              lc_ce_mpl_settlement_dtl.promotion_id                 := NULL;
+              lc_ce_mpl_settlement_dtl.promotion_type               := NULL;
+              lc_ce_mpl_settlement_dtl.promotion_amount             := NULL;
+              lc_ce_mpl_settlement_dtl.direct_payment_type          := NULL;
+              lc_ce_mpl_settlement_dtl.direct_payment_amount        := NULL;
+              lc_ce_mpl_settlement_dtl.other_amount                 := NULL;
+              lc_ce_mpl_settlement_dtl.store_number                 := NULL;
+              lc_ce_mpl_settlement_dtl.record_status                := 'N';
+              lc_ce_mpl_settlement_dtl.error_description            := NULL;
+              lc_ce_mpl_settlement_dtl.request_id                   :=NVL(FND_GLOBAL.CONC_REQUEST_ID, -1);
+              lc_ce_mpl_settlement_dtl.created_by                   := NVL(FND_GLOBAL.USER_ID,        -1);
+              lc_ce_mpl_settlement_dtl.creation_date                := SYSDATE;
+              lc_ce_mpl_settlement_dtl.last_updated_by              := NVL(FND_GLOBAL.USER_ID, -1);
+              lc_ce_mpl_settlement_dtl.last_update_date             := SYSDATE;
+              lc_ce_mpl_settlement_dtl.last_update_login            := NVL(FND_GLOBAL.USER_ID, -1);
+              lc_ce_mpl_settlement_dtl.attribute1                   := rec_dtl.poc_number;
+              FOR j IN 1..8
+              LOOP
+                lc_action                 := 'Generate varis Record into Multiple Transactions';
+                lc_quantity_purchased     :=NULL;
+                lc_unit_price             :=NULL;
+                lc_price_type             :=NULL;
+                l_price_amount            :=NULL;
+                lc_item_related_fee_type  :=NULL;
+                lc_item_related_fee_amount:=NULL;
+                ---l_total_amount:=null;
+                ---l_currency:=null;
+                IF j             =1 THEN
+                  lc_action := 'Generate varis Record for Item';
+                  lc_quantity_purchased :=NVL(rec_dtl.poc_quantity,0);
+                  IF rec_dtl.poc_quantity  =0 THEN
+                    lc_unit_price       :=0;
+                  ELSE
+                    lc_unit_price:=rec_dtl.unit_price;
+                  END IF;
+                END IF;
+                IF j              =2 THEN
+                  lc_action      := 'Generate varis Record for Principal Price Type';
+                  lc_price_type  :='Principal';
+                  l_price_amount :=rec_dtl.line_amount;
+                END IF;
+                IF j              = 3 THEN
+                  lc_action      := 'Generate varis Record for Tax';
+                  lc_price_type  := 'Tax';
+                  l_price_amount := NVL(rec_dtl.total_tax,0);
+                END IF;
+				        IF j              = 4 THEN
+                  lc_action      := 'Generate varis Record for Shipping';
+                  lc_price_type  := 'Shipping';
+                  l_price_amount := NVL(rec_dtl.SHIPPING_CHARGE,0);
+                END IF;
+				
+                IF j              = 5 THEN
+                  lc_action      := 'Generate varis Record for Commission';
+				          lc_item_related_fee_type   := 'Commission';
+                  lc_item_related_fee_amount := NVL(rec_dtl.commisison_amount,0);
+                END IF;
+                IF j                          =6 AND to_number(NVL(rec_dtl.Fee_type_1_amt,0)) >0 THEN
+                  lc_action                  := 'Generate varis Record for Fee';
+                  lc_item_related_fee_type   := rec_dtl.Fee_type_1;
+                  lc_item_related_fee_amount := NVL(rec_dtl.Fee_type_1_amt,0);
+                END IF;
+                IF j                          =7 AND to_number(NVL(rec_dtl.Fee_type_2_amt,0)) >0 THEN
+                  lc_action                  := 'Generate varis Record for Fee';
+                  lc_item_related_fee_type   := rec_dtl.Fee_type_2;
+                  lc_item_related_fee_amount := NVL(rec_dtl.Fee_type_2_amt,0);
+                END IF;
+                IF j                          =8 AND to_number(NVL(rec_dtl.Fee_type_3_amt,0)) >0 THEN
+                  lc_action                  := 'Generate varis Record for Fee';
+                  lc_item_related_fee_type   := rec_dtl.Fee_type_3;
+                  lc_item_related_fee_amount := NVL(rec_dtl.Fee_type_3_amt,0);
+                END IF;
+                lc_ce_mpl_settlement_dtl.quantity_purchased      := lc_quantity_purchased;
+                lc_ce_mpl_settlement_dtl.unit_price              := lc_unit_price;
+                lc_ce_mpl_settlement_dtl.price_type              := lc_price_type;
+                lc_ce_mpl_settlement_dtl.price_amount            := l_price_amount;
+                lc_ce_mpl_settlement_dtl.item_related_fee_type   := lc_item_related_fee_type;
+                lc_ce_mpl_settlement_dtl.item_related_fee_amount := lc_item_related_fee_amount;
+                INSERT INTO XX_CE_MPL_SETTLEMENT_DTL VALUES lc_ce_mpl_settlement_dtl;
+              END LOOP;
+            EXCEPTION
+            WHEN OTHERS THEN
+              RAISE_APPLICATION_ERROR(-20101, 'PROCEDURE: ' || lc_procedure_name || ' ACTION: ' || lc_action || ' SQLCODE: ' || SQLCODE || ' SQLERRM: ' || SQLERRM);
+            END;
+          END LOOP; --DTL Cursor
+          lc_action                                      := 'Insert into XX_CE_MPL_SETTLEMENT_HDR Table for varis poc_number#-'||rec_hdr.poc_number;
+          Lc_Ce_Mpl_Settlement_Hdr                       :=NULL;
+          lc_ce_mpl_settlement_hdr.mpl_header_id         :=lc_mpl_header_id;
+          lc_ce_mpl_settlement_hdr.PROVIDER_TYPE         :=lt_translation_info.target_value14 ;
+          lc_ce_mpl_settlement_hdr.settlement_id         :=lc_settlement_id ;
+          lc_ce_mpl_settlement_hdr.settlement_start_date :=to_date(TO_CHAR(lc_settlement_start_date,'YYYY-MM-DD'),'YYYY-MM-DD') ;
+          lc_ce_mpl_settlement_hdr.settlement_end_date   :=to_date(TO_CHAR(lc_settlement_end_date,'YYYY-MM-DD'),'YYYY-MM-DD') ;
+          lc_ce_mpl_settlement_hdr.order_id              :=rec_hdr.poc_number ;
+          lc_ce_mpl_settlement_hdr.merchant_order_id     :=rec_hdr.poc_number ;
+          lc_ce_mpl_settlement_hdr.deposit_date          :=to_date(TO_CHAR(to_Date(lc_settlement_end_date,'DD-MM-YY'),'DD-MM-YYYY'),'DD-MM-YYYY');
+          lc_ce_mpl_settlement_hdr.total_amount          :=NULL;
+          lc_ce_mpl_settlement_hdr.currency              :=NULL;
+          IF rec_hdr.transaction_type                     ='Order' THEN
+            lc_ce_mpl_settlement_hdr.transaction_type    :='Order';
+          ELSE
+            lc_ce_mpl_settlement_hdr.transaction_type :='Return';
+          END IF;
+          lc_ce_mpl_settlement_hdr.marketplace_name    :=p_process_name;
+          lc_ce_mpl_settlement_hdr.split_order         :=NULL;
+          lc_ce_mpl_settlement_hdr.PROCESSOR_ID        := lt_translation_info.target_value13 ;
+          lc_ce_mpl_settlement_hdr.posted_date         :=TO_CHAR(lc_settlement_end_date,'YYYY-MM-DD');
+          lc_ce_mpl_settlement_hdr.ajb_998_amount      :=NULL;
+          lc_ce_mpl_settlement_hdr.ajb_999_amount      :=NULL;
+          lc_ce_mpl_settlement_hdr.ajb_996_amount      :=NULL;
+          lc_ce_mpl_settlement_hdr.terminal_number     :=NULL;
+          lc_ce_mpl_settlement_hdr.card_number         :=NULL;
+          lc_ce_mpl_settlement_hdr.auth_number         :=NULL;
+          lc_ce_mpl_settlement_hdr.action              :=NULL;
+          lc_ce_mpl_settlement_hdr.record_status       :='N';
+          lc_ce_mpl_settlement_hdr.record_status_stage :='NEW';
+          lc_ce_mpl_settlement_hdr.error_description   :=NULL;
+          lc_ce_mpl_settlement_hdr.request_id          :=NVL(FND_GLOBAL.CONC_REQUEST_ID, -1);
+          Lc_Ce_Mpl_Settlement_Hdr.Created_By          :=NVL(Fnd_Global.User_Id,         -1);
+          Lc_Ce_Mpl_Settlement_Hdr.Creation_Date       :=Sysdate;
+          Lc_Ce_Mpl_Settlement_Hdr.Last_Updated_By     :=NVL(Fnd_Global.User_Id, -1);
+          lc_ce_mpl_settlement_hdr.last_update_date    :=SYSDATE;
+          Lc_Ce_Mpl_Settlement_Hdr.Last_Update_Login   :=NVL(Fnd_Global.User_Id, -1);
+          Lc_Ce_Mpl_Settlement_Hdr.ajb_file_name       :=rec_file.filename||lc_settlement_id;
+          INSERT INTO XX_CE_MPL_SETTLEMENT_HDR VALUES lc_ce_mpl_settlement_hdr;
+          UPDATE xx_ce_varis_pre_stg_v a
+          SET a.process_flag  ='P',
+            A.Err_Msg         =NULL
+          WHERE A.poc_number     =Rec_hdr.poc_number
+          AND a.process_flag IN ('N','E')
+          AND a.transaction_type      =Rec_hdr.transaction_type;
+          gc_success_count   :=gc_success_count+1;
+        ELSE
+          UPDATE xx_ce_varis_pre_stg_v a
+          SET a.process_flag  ='E',
+            A.Err_Msg         ='Duplicate record found for varis poc_number#'
+          WHERE A.poc_number     =Rec_hdr.poc_number
+          AND a.process_flag IN ('N','E')
+          AND a.transaction_type      =Rec_hdr.transaction_type;
+          gc_failure_count   :=gc_failure_count+1;
+        END IF;
+        COMMIT;
+      EXCEPTION
+      WHEN OTHERS THEN
+        ROLLBACK;
+        gc_failure_count:=gc_failure_count+1;
+        lc_err_msg      :=SUBSTR('PROCEDURE: ' || lc_procedure_name || ' SQLCODE: ' || SQLCODE || ' SQLERRM: ' ||sqlerrm,1,1000);
+        UPDATE xx_ce_varis_pre_stg_v a
+        SET a.process_flag  ='E' ,
+          a.err_msg         =lc_err_msg
+        WHERE a.poc_number     =rec_hdr.poc_number
+        AND a.process_flag IN ('N','E')
+        AND a.transaction_type      =Rec_hdr.transaction_type;
+        COMMIT;
+      END;
+    END LOOP; --HDR Cursor
+  END LOOP;
+EXCEPTION
+WHEN OTHERS THEN
+  ROLLBACK;
+  exiting_sub(p_procedure_name => lc_procedure_name, p_exception_flag => TRUE);
+  RAISE_APPLICATION_ERROR(-20101, 'PROCEDURE: ' || lc_procedure_name || ' SQLCODE: ' || SQLCODE || ' SQLERRM: ' || SQLERRM);
+END PROCESS_VARIS_PRESTG_DATA;
+
+
+
+
+
+
+
 /**********************************************************************
 * Main Procedure to Process MarketPlaces Transactions.
 * this procedure calls individual MarketPlace procedures to process them.
@@ -2933,6 +3231,14 @@ BEGIN
   END IF;
   --NAIT-139979 End
 
+  /******************************
+  * Call VARIS Process. --NAIT-139979 Start
+  ******************************/
+  IF p_market_place IN ('VARIS_MPL') THEN
+    PROCESS_VARIS_PRESTG_DATA (p_market_place);
+  END IF;
+
+
   print_output('Processing Details by Stage:');
   print_output('----------------------------:');
   print_output('/*Load Prestaging Data:*/');
@@ -2983,5 +3289,4 @@ WHEN OTHERS THEN
   exiting_sub(p_procedure_name => lc_procedure_name, p_exception_flag => TRUE);
 END MAIN_MPL_SETTLEMENT_PROCESS;
 END XX_CE_MRKTPLC_RECON_PKG;
-/ 
-SHOW ERROR;
+/
