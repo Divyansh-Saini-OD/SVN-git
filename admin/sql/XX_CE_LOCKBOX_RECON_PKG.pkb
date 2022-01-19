@@ -49,6 +49,8 @@ AS
 -- |2.4       22-FEB-2016 Havinder Rakhra     Defect 37221; Added to_char in query to improve performance|
 -- |2.5       01-NOV-2017 Sreedhar Mohan      As part of VPS project modified where-clause to |
 -- |                                          check ce_bank_accounts.bank_account_type 'LBX'  |
+-- |2.6       16-NOV-2021 Shreyas Thorat      NAIT-174903 Unreconciled Bank Lines for Lockboxes unable    |
+-- |                                          to manually clear - need process for auto clearing  |
 -- +==========================================================================================+
 
    -- -------------------------------------------
@@ -664,6 +666,7 @@ AS
 --      ELSE
 --         lc_lockbox := NULL;
 --      END IF;
+
       xx_fin_translate_pkg.xx_fin_translatevalue_proc
                                  (p_translation_name => gc_lockbox_translation
                                 , p_source_value1 => p_bank_account_num
@@ -705,6 +708,38 @@ AS
       ELSE
          lc_lockbox := NULL;
       END IF;
+	  --Start NAIT-174903 
+	  IF p_bank_account_num = '09990204472' --AND p_trx_code = '555' 
+	  THEN
+	  BEGIN
+		 SELECT lockbox_number
+           INTO lc_lockbox
+           FROM ar_lockboxes_all ar
+          WHERE 1 = 1
+            AND status = 'A'
+            AND EXISTS (
+				SELECT 1 
+				FROM xx_fin_translatedefinition XFTD ,xx_fin_translatevalues XFT
+				WHERE  XFTD.translate_id = XFT.translate_id
+				AND    XFTD.translation_name = gc_lockbox_translation
+				AND    XFT.enabled_flag = 'Y'
+				AND    XFT.source_value1 = p_bank_account_num
+				AND    XFT.source_value2 = p_trx_code
+				AND (( SUBSTR (ar.lockbox_number, XFT.target_value1, xft.target_value2) = SUBSTR (p_invoice_text, XFT.target_value1, xft.target_value2))
+						OR (ar.lockbox_number LIKE  '%'||SUBSTR (p_invoice_text, XFT.target_value1, xft.target_value2)||'%' )
+					)
+				/*
+				AND ((length(p_invoice_text)<=7 AND  SUBSTR (ar.lockbox_number, XFT.target_value1, xft.target_value2) = SUBSTR (p_invoice_text, XFT.target_value1, xft.target_value2))
+				OR (length(p_invoice_text)>7 AND ar.lockbox_number LIKE  '%'||SUBSTR (p_invoice_text, XFT.target_value1, xft.target_value2)||'%' )
+				)*/
+				);
+		EXCEPTION		 
+		WHEN  OTHERS THEN 
+			lc_lockbox:= NULL;
+		END;		
+
+	  END IF;
+	  --End NAIT-174903 
 
       RETURN lc_lockbox;
    EXCEPTION
@@ -1796,5 +1831,3 @@ AS
    END recon_process;
 END xx_ce_lockbox_recon_pkg;
 /
-
-
