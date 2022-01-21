@@ -1,5 +1,0 @@
-ALTER TABLE xxfin.xx_ar_ebl_file ADD (billing_dt DATE);
-Update xxfin.xx_ar_ebl_file x
-set billing_dt = (select billing_dt from 
-                  apps.xx_ar_ebl_transmission y
-                  where y.transmission_id = x.transmission_id);

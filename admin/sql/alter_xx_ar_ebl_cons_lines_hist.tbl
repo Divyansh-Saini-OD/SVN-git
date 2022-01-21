@@ -1,3 +1,0 @@
-delete from xxfin.xx_ar_ebl_file where creation_date > to_date('04-JUL-2010') and status <> 'RENDERED';
-delete from xxfin.xx_Ar_ebl_transmission where creation_date > to_date('04-JUL-2010') and transmission_id <> 3829;
-delete from xxfin.xx_ar_ebl_cons_hdr_main;

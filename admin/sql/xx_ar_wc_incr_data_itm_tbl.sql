@@ -1,1 +1,0 @@
-create table xxfin.xx_ar_wc_incr_data_itm(id number,trx_type VARCHAR2(10),ext_type VARCHAR2(10),cycle_date date,batch_num number);
