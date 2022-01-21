@@ -1,0 +1,51 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+   <xs:element name="Thread">
+      <xs:complexType>
+         <xs:sequence>
+            <xs:element ref="Parent"/>
+            <xs:element ref="Worker"/>
+         </xs:sequence>
+      </xs:complexType>
+   </xs:element>
+   <xs:element name="ProviderUrl" type="xs:string"/>
+   <xs:element name="Password" type="xs:string"/>
+   <xs:element name="Worker">
+      <xs:complexType>
+         <xs:sequence>
+            <xs:element name="Max"/>
+            <xs:element name="Min"/>
+         </xs:sequence>
+      </xs:complexType>
+   </xs:element>
+   <xs:element name="Parent">
+      <xs:complexType>
+         <xs:sequence>
+            <xs:element name="Max"/>
+            <xs:element name="Min"/>
+         </xs:sequence>
+      </xs:complexType>
+   </xs:element>
+   <xs:element name="AppServerConfig">
+      <xs:complexType>
+         <xs:sequence>
+            <xs:element ref="ProviderUrl"/>
+            <xs:element ref="InitialContext"/>
+            <xs:element ref="UserName"/>
+            <xs:element ref="Password"/>
+         </xs:sequence>
+      </xs:complexType>
+   </xs:element>
+   <xs:element name="ListenToPort" type="xs:string"/>
+   <xs:element name="UserName" type="xs:string"/>
+   <xs:element name="InitialContext" type="xs:string"/>
+   <xs:element name="MTServer">
+      <xs:complexType>
+         <xs:sequence>
+            <xs:element ref="ListenToPort"/>
+            <xs:element ref="Thread"/>
+            <xs:element ref="AppServerConfig"/>
+         </xs:sequence>
+      </xs:complexType>
+   </xs:element>
+</xs:schema>

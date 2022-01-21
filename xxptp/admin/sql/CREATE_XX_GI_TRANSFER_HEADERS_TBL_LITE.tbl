@@ -1,0 +1,111 @@
+REM============================================================================================
+REM                                 Start Of Script
+REM============================================================================================
+
+--+=============================================================================================+--
+--|                                                                                             |--
+--| Object Name    : E0341 Inventory transfer                                                   |--
+--|                                                                                             |--
+--| Program Name   : CREATE_XX_GI_TRANSFER_HEADERS.tbl                                          |--
+--|                                                                                             |--
+--| Purpose        : Create Custom Tables .                                                     |--
+--|                  The Objects created are:                                                   |--
+--|                                                                                             |--
+--|                  1. XX_GI_TRANSFER_HEADERS (Inventory transfer headers staging table)       |--
+--|                                                                                             |--
+--| Change History  :                                                                           |--
+--| Version           Date             Changed By        Description                            |--
+--|=============================================================================================|--
+--| 1.0              14-Jan-2008      Ramesh Kurapati    No previous version                    |--
+--+=============================================================================================|
+
+SET VERIFY   OFF
+SET TERM     ON
+SET FEEDBACK OFF
+SET SHOW     OFF
+SET ECHO     OFF
+SET TAB      OFF
+
+
+WHENEVER SQLERROR EXIT 1
+
+PROMPT
+PROMPT Creating the Custom Table XX_GI_TRANSFER_HEADERS......
+PROMPT
+
+ CREATE TABLE XXPTP.XX_GI_TRANSFER_HEADERS 
+  --CREATE TABLE XX_GI_TRANSFER_HEADERS 
+  (
+SOURCE_SYSTEM			VARCHAR2(30)
+,HEADER_ID			NUMBER
+,TRANSFER_NUMBER			VARCHAR2(15)
+,FROM_LOC_NBR			VARCHAR2(15)
+,FROM_ORG_ID			NUMBER
+,FROM_ORG_CODE			VARCHAR2(10)
+,FROM_ORG_NAME                  VARCHAR2(240)	
+,TO_LOC_NBR			VARCHAR2(15)
+,TO_ORG_ID			NUMBER
+,TO_ORG_CODE			VARCHAR2(10)
+,TO_ORG_NAME                    VARCHAR2(240)	
+,SHIP_TO_LOCATION_ID            NUMBER
+,TRANS_TYPE_CD   		VARCHAR2(30)
+,TRANSACTION_TYPE_ID   		NUMBER	
+,DOC_TYPE_CD            	VARCHAR2(10)
+,SOURCE_CREATION_DATE		DATE	
+,SOURCE_CREATED_BY		VARCHAR2(15)			
+,BUYBACK_NUMBER			VARCHAR2(30)
+,CARTON_COUNT			NUMBER			
+,TRANSFER_COST			NUMBER	
+,SHIP_DATE			DATE	
+,SHIPPED_QTY			NUMBER	
+,STATUS		        	VARCHAR2(20)
+,RCV_SHIPMENT_HEADER_ID		NUMBER
+,TRANSACTION_DATE		DATE	
+,COMMENTS			VARCHAR2(240)
+,CREATED_BY			NUMBER
+,CREATION_DATE			DATE	
+,LAST_UPDATED_BY			NUMBER	
+,LAST_UPDATE_DATE		DATE	
+,LAST_UPDATE_LOGIN		NUMBER	
+,SOURCE_SUBINV_CD      	VARCHAR2(30)
+,SOURCE_VENDOR_ID		VARCHAR2(10)
+,NO_OF_DETAIL_LINES		NUMBER	
+,ATTRIBUTE_CATEGORY		VARCHAR2(30)
+,ATTRIBUTE1			VARCHAR2(240)
+,ATTRIBUTE2			VARCHAR2(240)
+,ATTRIBUTE3			VARCHAR2(240)
+,ATTRIBUTE4			VARCHAR2(240)
+,ATTRIBUTE5			VARCHAR2(240)
+,ATTRIBUTE6			VARCHAR2(240)
+,ATTRIBUTE7			VARCHAR2(240)
+,ATTRIBUTE8			VARCHAR2(240)
+,ATTRIBUTE9			VARCHAR2(240)
+,ATTRIBUTE10			VARCHAR2(240)
+,ATTRIBUTE11			VARCHAR2(240)
+,ATTRIBUTE12			VARCHAR2(240)
+,ATTRIBUTE13			VARCHAR2(240)
+,ATTRIBUTE14			VARCHAR2(240)
+,ATTRIBUTE15			VARCHAR2(240)
+,ERROR_CODE			VARCHAR2(240)
+,ERROR_MESSAGE			VARCHAR2(2000)
+ );
+
+PROMPT
+PROMPT Exiting....
+PROMPT
+
+SET FEEDBACK ON
+
+
+--EXIT;
+
+
+REM=================================================================================================
+REM                                   End Of Script
+REM=================================================================================================
+
+
+
+
+
+

@@ -1,0 +1,117 @@
+-- +============================================================================================+
+-- |                        Office Depot - Project Simplify                                     |
+-- |                                                                                            |
+-- +============================================================================================+
+-- | Name         : CREATE_XX_OM_LEGACY_DEPOSITS.tbl                                            |
+-- | Rice Id      : I1272                                                                       | 
+-- | Description  : INT-I1272_SalesOrderFrom LegacySystems(HVOP) Table Creation                 |  
+-- | Purpose      : Create Custom Table XX_OM_LEGACY_DEPOSITS.tbl.                              |
+-- |                                                                                            |
+-- |                                                                                            |
+-- |Change Record:                                                                              |
+-- |===============                                                                             |
+-- |Version    Date          Author                Remarks                                      | 
+-- |=======    ==========    =================    ==============================================+
+-- |DRAFT 1A   22-MAY-2007   Bapuji Nanapaneni    Initial Version                               |
+-- |      1B   17-JUN-2008                        Added 2 columns requested by brian            |
+-- |                                                                                            |
+-- +============================================================================================+
+
+SET VERIFY      OFF
+SET TERM        ON
+SET FEEDBACK    OFF
+SET SHOW        OFF
+SET ECHO        OFF
+SET TAB         OFF
+
+
+PROMPT
+PROMPT Creating the Table xx_om_legacy_deposits.....
+PROMPT
+
+CREATE TABLE xx_om_legacy_deposits 
+    (
+         order_source_id             NUMBER
+     ,   request_id                  NUMBER	 
+     ,   Orig_sys_document_ref       VARCHAR2(50)
+     ,   Orig_sys_line_ref           VARCHAR2(50)
+     ,   orig_sys_shipment_ref       VARCHAR2(50)
+     ,   Orig_sys_payment_ref        VARCHAR2(50)
+     ,   sold_to_org_id              NUMBER
+     ,   sold_to_org                 VARCHAR2(360)
+     ,   change_sequence             VARCHAR2(50)
+     ,   change_request_code         VARCHAR2(30)
+     ,   org_id                      NUMBER
+     ,   payment_type_code           VARCHAR2(30) NOT NULL
+     ,   payment_trx_id              NUMBER
+     ,   payment_method              VARCHAR2(30)
+     ,   receipt_method_id           NUMBER
+     ,   payment_collection_event    VARCHAR2(30)
+     ,   payment_set_id              NUMBER
+     ,   prepaid_amount              NUMBER	
+     ,   credit_card_number          VARCHAR2(80)
+     ,   credit_card_holder_name     VARCHAR2(80)
+     ,   credit_card_expiration_date DATE
+     ,   credit_card_code            VARCHAR2(80)
+     ,   credit_card_approval_code   VARCHAR2(80)
+     ,   credit_card_approval_date   DATE
+     ,   check_number                VARCHAR2(50)
+     ,   payment_amount              NUMBER
+     ,   payment_percentage          NUMBER
+     ,   creation_date               DATE         NOT NULL
+     ,   created_by                  NUMBER       NOT NULL
+     ,   last_update_date            DATE         NOT NULL
+     ,   last_updated_by             NUMBER       NOT NULL
+     ,   last_update_login           NUMBER
+     ,   program_application_id      NUMBER
+     ,   program_id                  NUMBER
+     ,   program_update_date         DATE	
+     ,   operation_code              VARCHAR2(30)
+     ,   status_flag                 VARCHAR2(1)
+     ,   interface_status            VARCHAR2(1000)
+     ,   error_flag                  VARCHAR2(1)
+     ,   payment_number              NUMBER
+     ,   header_id                   NUMBER	
+     ,   line_id                     NUMBER	
+     ,   cc_auth_manual              VARCHAR2(1)
+     ,   merchant_number             VARCHAR2(11)
+     ,   cc_auth_ps2000              VARCHAR2(50)
+     ,   allied_ind                  VARCHAR2(1)
+     ,   cash_receipt_id             NUMBER
+     ,   currency_code               VARCHAR2(30)
+     ,   sold_to_customer_id         NUMBER
+     ,   sold_to_site_use_id         NUMBER
+     ,   process_code                VARCHAR2(1) NOT NULL
+     ,   cc_mask_number              VARCHAR2(30)
+     ,   avail_balance               NUMBER
+     ,   transaction_number          VARCHAR2(30)
+     ,   OD_payment_type             VARCHAR2(2)
+     ,   paid_at_store_id            NUMBER 
+     ,   debit_card_approval_ref     VARCHAR2(50)
+     ,   I1025_STATUS                VARCHAR2(30) DEFAULT 'NEW' NOT NULL 
+     ,   I1025_UPDATE_DATE           DATE    
+     ,   I1025_MESSAGE               VARCHAR2(2000)
+     ,   STORE_LOCATION              VARCHAR2(10)
+     ,   RECEIPT_DATE                DATE
+     ,   IMP_FILE_NAME               VARCHAR2(80)
+     ,   CC_ENTRY_MODE               VARCHAR2(1)
+     ,   CVV_RESP_CODE               VARCHAR2(1)
+     ,   AVS_RESP_CODE               VARCHAR2(1)
+     ,   AUTH_ENTRY_MODE             VARCHAR2(1)
+     ,   I1025_PROCESS_ID            VARCHAR2(20)
+     ,   I1025_APPLY_AMOUNT          NUMBER
+    )
+/
+
+
+WHENEVER SQLERROR EXIT 1
+
+PROMPT
+PROMPT Exiting....
+PROMPT
+
+SET FEEDBACK ON
+
+EXIT;
+
+

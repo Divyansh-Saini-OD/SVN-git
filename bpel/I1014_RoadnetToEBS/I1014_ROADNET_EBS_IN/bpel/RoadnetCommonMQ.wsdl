@@ -1,0 +1,50 @@
+<definitions
+     name="RoadnetCommonMQ"
+     targetNamespace="http://xmlns.oracle.com/pcbpel/adapter/mq/headerRoadnetCommonMQ/"
+     xmlns="http://schemas.xmlsoap.org/wsdl/"
+     xmlns:tns="http://xmlns.oracle.com/pcbpel/adapter/mq/headerRoadnetCommonMQ/"
+     xmlns:plt="http://schemas.xmlsoap.org/ws/2003/05/partner-link/"
+     xmlns:jca="http://xmlns.oracle.com/pcbpel/wsdl/jca/"
+     xmlns:pc="http://xmlns.oracle.com/pcbpel/"
+     xmlns:imp1="http://TargetNamespace.com/ServiceName"
+     xmlns:hdr="http://xmlns.oracle.com/pcbpel/adapter/mq/header"
+    >
+    <import namespace="http://xmlns.oracle.com/pcbpel/adapter/mq/header" location="MQAdapterInboundHeader.wsdl"/>
+    <types>
+      <schema xmlns="http://www.w3.org/2001/XMLSchema" >
+        <import namespace="http://TargetNamespace.com/ServiceName" schemaLocation="COS_PROCESS_UPLOAD_Q.xsd" />
+      </schema>
+    </types>
+    <message name="Root-Element_msg">
+        <part name="Root-Element" element="imp1:Root-Element"/>
+    </message>
+    <portType name="Dequeue_ptt">
+        <operation name="Dequeue">
+            <input message="tns:Root-Element_msg"/>
+        </operation>
+    </portType>
+    <binding name="Dequeue_binding" type="tns:Dequeue_ptt">
+    <pc:inbound_binding 
+          UITransmissionPrimitive="Dequeue" />
+        <operation name="Dequeue">
+      <jca:operation
+          ActivationSpec="oracle.tip.adapter.mq.inbound.ActivationSpecImpl"
+          QueueName="COS_PROCESS_UPLOAD_Q"
+          OpaqueSchema="false" >
+      </jca:operation>
+      <input>
+        <jca:header message="hdr:InboundHeader_msg" part="inboundHeader"/>
+      </input>
+        </operation>
+    </binding>
+    <service name="RoadnetCommonMQ">
+        <port name="Dequeue_pt" binding="tns:Dequeue_binding">
+      <jca:address location="eis/MQ/MQSeriesAdapter" />
+        </port>
+    </service>
+  <plt:partnerLinkType name="Dequeue_plt" >
+    <plt:role name="Dequeue_role" >
+      <plt:portType name="tns:Dequeue_ptt" />
+    </plt:role>
+  </plt:partnerLinkType>
+</definitions>

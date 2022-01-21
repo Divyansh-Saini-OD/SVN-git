@@ -1,0 +1,65 @@
+<definitions
+     name="VendorCommentUpdate"
+     targetNamespace="http://xmlns.oracle.com/pcbpel/adapter/apps/VendorCommentUpdate/"
+     xmlns="http://schemas.xmlsoap.org/wsdl/"
+     xmlns:tns="http://xmlns.oracle.com/pcbpel/adapter/apps/VendorCommentUpdate/"
+     xmlns:db="http://xmlns.oracle.com/pcbpel/adapter/db/APPS/XX_CS_TDS_VEN_PKG/UPDATE_COMMENTS/"
+     xmlns:plt="http://schemas.xmlsoap.org/ws/2003/05/partner-link/"
+     xmlns:jca="http://xmlns.oracle.com/pcbpel/wsdl/jca/"
+     xmlns:hdr="http://xmlns.oracle.com/pcbpel/adapter/appscontext/"
+    >
+    <import namespace="http://xmlns.oracle.com/pcbpel/adapter/appscontext/" location="AppsContextHeader.wsdl"/>
+    <import namespace="http://xmlns.oracle.com/pcbpel/adapter/db/" location="DBAdapterOutboundHeader.wsdl"/>
+    <types>
+     <schema xmlns="http://www.w3.org/2001/XMLSchema">
+       <import namespace="http://xmlns.oracle.com/pcbpel/adapter/db/APPS/XX_CS_TDS_VEN_PKG/UPDATE_COMMENTS/"
+               schemaLocation="APPS_XX_CS_TDS_VEN_PKG_UPDATE_COMMENTS.xsd" />
+     </schema>
+    </types>
+    <message name="args_in_msg">
+        <part name="InputParameters" element="db:InputParameters"/>
+    </message>
+    <message name="args_out_msg">
+        <part name="OutputParameters" element="db:OutputParameters"/>
+    </message>
+    <portType name="VendorCommentUpdate_ptt">
+        <operation name="VendorCommentUpdate">
+            <input message="tns:args_in_msg"/>
+            <output message="tns:args_out_msg"/>
+        </operation>
+    </portType>
+    <binding name="VendorCommentUpdate_binding" type="tns:VendorCommentUpdate_ptt">
+    <jca:binding  />
+        <operation name="VendorCommentUpdate">
+      <jca:operation
+          SchemaName="APPS"
+          PackageName="XX_CS_TDS_VEN_PKG"
+          ProcedureName="UPDATE_COMMENTS"
+          InteractionSpec="oracle.tip.adapter.apps.AppsStoredProcedureInteractionSpec"
+          Username="sysadmin"
+          Responsibility="System Administrator" >
+      </jca:operation>
+      <input>
+        <jca:header message="hdr:Header_msg" part="Header"/>
+      </input>
+            <output/>
+        </operation>
+    </binding>
+    <service name="VendorCommentUpdate">
+        <port name="VendorCommentUpdate_pt" binding="tns:VendorCommentUpdate_binding">
+<!--Your runtime connection is declared in 
+J2EE_HOME/application-deployments/default/AppsAdapter/oc4j-ra.xml 
+These mcf properties here are from your design time connection and 
+save you from having to edit that file and restart the application server 
+if eis/apps/OraAppsEom is missing. 
+These mcf properties are safe to remove.-->
+      <jca:address location="eis/apps/OraAppsEom" UIConnectionName="GSIDEV01" UIOracleAppType="DBOBJECT"
+          ManagedConnectionFactory="oracle.tip.adapter.apps.AppsManagedConnectionFactory"/>
+        </port>
+    </service>
+  <plt:partnerLinkType name="VendorCommentUpdate_plt" >
+    <plt:role name="VendorCommentUpdate_role" >
+      <plt:portType name="tns:VendorCommentUpdate_ptt" />
+    </plt:role>
+  </plt:partnerLinkType>
+</definitions>

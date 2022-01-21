@@ -1,0 +1,93 @@
+<?xml version = "1.0" encoding = "UTF-8" ?>
+<!--
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  Oracle JDeveloper BPEL Designer 
+  
+  Created: Mon Jul 23 16:57:49 EDT 2007
+  Author:  rizwan-appees
+  Purpose: Asynchronous BPEL Process
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+-->
+<process name="SupplierInvFeedInitiatingProcess"
+         targetNamespace="http://xmlns.oracle.com/SupplierInvFeedInitiatingProcess"
+         xmlns="http://schemas.xmlsoap.org/ws/2003/03/business-process/"
+         xmlns:bpws="http://schemas.xmlsoap.org/ws/2003/03/business-process/"
+         xmlns:xp20="http://www.oracle.com/XSL/Transform/java/oracle.tip.pc.services.functions.Xpath20"
+         xmlns:ns1="http://xmlns.oracle.com/SupplierInvFeedProcess"
+         xmlns:ldap="http://schemas.oracle.com/xpath/extension/ldap"
+         xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+         xmlns:ns2="http://xmlns.oracle.com/CustPO"
+         xmlns:bpelx="http://schemas.oracle.com/bpel/extension"
+         xmlns:client="http://xmlns.oracle.com/SupplierInvFeedInitiatingProcess"
+         xmlns:ora="http://schemas.oracle.com/xpath/extension"
+         xmlns:orcl="http://www.oracle.com/XSL/Transform/java/oracle.tip.pc.services.functions.ExtFunc">
+    <!-- 
+      ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        PARTNERLINKS                                                      
+        List of services participating in this BPEL process               
+      ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    -->
+    <partnerLinks>
+        <!-- 
+      The 'client' role represents the requester of this service. It is 
+      used for callback. The location and correlation information associated
+      with the client role are automatically set using WS-Addressing.
+    -->
+        <partnerLink name="client"
+                     partnerLinkType="client:SupplierInvFeedInitiatingProcess"
+                     myRole="SupplierInvFeedInitiatingProcessProvider"
+                     partnerRole="SupplierInvFeedInitiatingProcessRequester"/>
+        <partnerLink name="SupplierInvFeedProcess"
+                     partnerRole="SupplierInvFeedProcessProvider"
+                     partnerLinkType="ns1:SupplierInvFeedProcess"/>
+    </partnerLinks>
+    <!-- 
+      ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        VARIABLES                                                        
+        List of messages and XML documents used within this BPEL process 
+      ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    -->
+    <variables>
+        <!-- Reference to the message passed as input during initiation -->
+        <variable name="inputVariable"
+                  messageType="client:SupplierInvFeedInitiatingProcessRequestMessage"/>
+        <!-- Reference to the message that will be sent back to the requester during callback -->
+        <variable name="outputVariable"
+                  messageType="client:SupplierInvFeedInitiatingProcessResponseMessage"/>
+        <variable name="InvokeIn"
+                  messageType="ns1:SupplierInvFeedProcessRequestMessage"/>
+    </variables>
+    <!-- 
+      ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+       ORCHESTRATION LOGIC                                               
+       Set of activities coordinating the flow of messages across the    
+       services integrated within this business process                  
+      ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    -->
+    <sequence name="main">
+        <!-- Receive input from requestor. (Note: This maps to operation defined in SupplierInvFeedInitiatingProcess.wsdl) -->
+        <receive name="receiveInput" partnerLink="client"
+                 portType="client:SupplierInvFeedInitiatingProcess"
+                 operation="initiate" variable="inputVariable"
+                 createInstance="yes"/>
+        <!-- 
+          Asynchronous callback to the requester. (Note: the callback location and correlation id is transparently handled using WS-addressing.)
+        -->
+        <assign name="TransformOAGISToDB">
+            <bpelx:annotation>
+                <bpelx:pattern>transformation</bpelx:pattern>
+            </bpelx:annotation>
+            <copy>
+                <from expression="ora:processXSLT('TransformationInputtoOAGIS.xsl',bpws:getVariableData('inputVariable','payload'))"/>
+                <to variable="InvokeIn" part="payload"/>
+            </copy>
+        </assign>
+        <invoke name="InvokeSupplierInvFeedProcess"
+                partnerLink="SupplierInvFeedProcess"
+                portType="ns1:SupplierInvFeedProcess" operation="initiate"
+                inputVariable="InvokeIn"/>
+        <invoke name="callbackClient" partnerLink="client"
+                portType="client:SupplierInvFeedInitiatingProcessCallback"
+                operation="onResult" inputVariable="outputVariable"/>
+    </sequence>
+</process>

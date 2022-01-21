@@ -1,0 +1,378 @@
+<schema targetNamespace="http://xmlns.oracle.com/pcbpel/adapter/db/APPS/WSH_OTM_REF_DATA_GEN_PKG/SEND_LOCATIONS/" xmlns="http://www.w3.org/2001/XMLSchema" xmlns:db="http://xmlns.oracle.com/pcbpel/adapter/db/APPS/WSH_OTM_REF_DATA_GEN_PKG/SEND_LOCATIONS/">
+   <element name="InputParameters">
+      <complexType>
+         <sequence>
+            <element name="P_ENTITY_IN_REC" type="db:WSH_OTM_ENTITY_REC_TYPE" db:index="1" db:type="Struct" minOccurs="0" nillable="true"/>
+         </sequence>
+      </complexType>
+   </element>
+   <element name="OutputParameters">
+      <complexType>
+         <sequence>
+            <element name="X_LOC_XMISSION_REC" type="db:WSH_OTM_LOC_XMISSION_REC_TYPE" db:index="2" db:type="Struct" minOccurs="0" nillable="true"/>
+            <element name="X_TRANSMISSION_ID" type="decimal" db:index="3" db:type="NUMBER" minOccurs="0" nillable="true"/>
+            <element name="X_RETURN_STATUS" type="string" db:index="4" db:type="VARCHAR2" minOccurs="0" nillable="true"/>
+            <element name="X_MSG_DATA" type="string" db:index="5" db:type="VARCHAR2" minOccurs="0" nillable="true"/>
+         </sequence>
+      </complexType>
+   </element>
+   <complexType name="WSH_OTM_LOC_REF_NUM_REC_TYPE">
+      <sequence>
+         <element name="LOC_REF_NUM_QUALIFIER_XID" db:type="VARCHAR2" minOccurs="0" nillable="true">
+            <simpleType>
+               <restriction base="string">
+                  <maxLength value="50"/>
+               </restriction>
+            </simpleType>
+         </element>
+         <element name="LOC_REF_NUM_QUALIFIER_DN" db:type="VARCHAR2" minOccurs="0" nillable="true">
+            <simpleType>
+               <restriction base="string">
+                  <maxLength value="50"/>
+               </restriction>
+            </simpleType>
+         </element>
+         <element name="LOC_REF_NUM_VALUE" db:type="VARCHAR2" minOccurs="0" nillable="true">
+            <simpleType>
+               <restriction base="string">
+                  <maxLength value="101"/>
+               </restriction>
+            </simpleType>
+         </element>
+      </sequence>
+   </complexType>
+   <complexType name="WSH_OTM_LOC_CONTACT_TBL_TYPE">
+      <sequence>
+         <element name="LOC_CONTACT_TBL_ITEM" type="db:WSH_OTM_LOC_CONTACT_REC_TYPE" db:type="Struct" minOccurs="0" maxOccurs="unbounded" nillable="true"/>
+      </sequence>
+   </complexType>
+   <complexType name="WSH_OTM_LOC_ADDR_TBL_TYPE">
+      <sequence>
+         <element name="LOC_ADDR_TBL_ITEM" type="db:WSH_OTM_LOC_ADDR_REC_TYPE" db:type="Struct" minOccurs="0" maxOccurs="unbounded" nillable="true"/>
+      </sequence>
+   </complexType>
+   <complexType name="WSH_OTM_RD_NUM_TBL_TYPE">
+      <sequence>
+         <element name="ENTITY_ID_TBL_ITEM" type="decimal" db:type="NUMBER" minOccurs="0" maxOccurs="unbounded" nillable="true"/>
+      </sequence>
+   </complexType>
+   <complexType name="WSH_OTM_LOC_CONTACT_REC_TYPE">
+      <sequence>
+         <element name="CONTACT_XID" db:type="VARCHAR2" minOccurs="0" nillable="true">
+            <simpleType>
+               <restriction base="string">
+                  <maxLength value="50"/>
+               </restriction>
+            </simpleType>
+         </element>
+         <element name="CONTACT_DN" db:type="VARCHAR2" minOccurs="0" nillable="true">
+            <simpleType>
+               <restriction base="string">
+                  <maxLength value="50"/>
+               </restriction>
+            </simpleType>
+         </element>
+         <element name="TXN_CODE" db:type="VARCHAR2" minOccurs="0" nillable="true">
+            <simpleType>
+               <restriction base="string">
+                  <maxLength value="10"/>
+               </restriction>
+            </simpleType>
+         </element>
+         <element name="EMAIL_ADDRESS" db:type="VARCHAR2" minOccurs="0" nillable="true">
+            <simpleType>
+               <restriction base="string">
+                  <maxLength value="60"/>
+               </restriction>
+            </simpleType>
+         </element>
+         <element name="FIRST_NAME" db:type="VARCHAR2" minOccurs="0" nillable="true">
+            <simpleType>
+               <restriction base="string">
+                  <maxLength value="20"/>
+               </restriction>
+            </simpleType>
+         </element>
+         <element name="LAST_NAME" db:type="VARCHAR2" minOccurs="0" nillable="true">
+            <simpleType>
+               <restriction base="string">
+                  <maxLength value="30"/>
+               </restriction>
+            </simpleType>
+         </element>
+         <element name="JOB_TITLE" db:type="VARCHAR2" minOccurs="0" nillable="true">
+            <simpleType>
+               <restriction base="string">
+                  <maxLength value="60"/>
+               </restriction>
+            </simpleType>
+         </element>
+         <element name="PHONE1" db:type="VARCHAR2" minOccurs="0" nillable="true">
+            <simpleType>
+               <restriction base="string">
+                  <maxLength value="80"/>
+               </restriction>
+            </simpleType>
+         </element>
+         <element name="PHONE2" db:type="VARCHAR2" minOccurs="0" nillable="true">
+            <simpleType>
+               <restriction base="string">
+                  <maxLength value="80"/>
+               </restriction>
+            </simpleType>
+         </element>
+         <element name="FAX" db:type="VARCHAR2" minOccurs="0" nillable="true">
+            <simpleType>
+               <restriction base="string">
+                  <maxLength value="80"/>
+               </restriction>
+            </simpleType>
+         </element>
+      </sequence>
+   </complexType>
+   <complexType name="WSH_OTM_LOC_REF_NUM_TBL_TYPE">
+      <sequence>
+         <element name="LOC_REF_NUM_TBL_ITEM" type="db:WSH_OTM_LOC_REF_NUM_REC_TYPE" db:type="Struct" minOccurs="0" maxOccurs="unbounded" nillable="true"/>
+      </sequence>
+   </complexType>
+   <complexType name="WSH_OTM_SERVICE_PROV_REC_TYPE">
+      <sequence>
+         <element name="SERVICE_PROV_QUALIFIER_XID" db:type="VARCHAR2" minOccurs="0" nillable="true">
+            <simpleType>
+               <restriction base="string">
+                  <maxLength value="50"/>
+               </restriction>
+            </simpleType>
+         </element>
+         <element name="SERVICE_PROV_QUALIFIER_DN" db:type="VARCHAR2" minOccurs="0" nillable="true">
+            <simpleType>
+               <restriction base="string">
+                  <maxLength value="50"/>
+               </restriction>
+            </simpleType>
+         </element>
+         <element name="SERVICE_PROV_ALIAS_VALUE" db:type="VARCHAR2" minOccurs="0" nillable="true">
+            <simpleType>
+               <restriction base="string">
+                  <maxLength value="101"/>
+               </restriction>
+            </simpleType>
+         </element>
+      </sequence>
+   </complexType>
+   <complexType name="WSH_OTM_ENTITY_REC_TYPE">
+      <sequence>
+         <element name="ENTITY_TYPE" db:type="VARCHAR2" minOccurs="0" nillable="true">
+            <simpleType>
+               <restriction base="string">
+                  <maxLength value="30"/>
+               </restriction>
+            </simpleType>
+         </element>
+         <element name="OPERATION" db:type="VARCHAR2" minOccurs="0" nillable="true">
+            <simpleType>
+               <restriction base="string">
+                  <maxLength value="255"/>
+               </restriction>
+            </simpleType>
+         </element>
+         <element name="ARGUMENT" db:type="VARCHAR2" minOccurs="0" nillable="true">
+            <simpleType>
+               <restriction base="string">
+                  <maxLength value="4000"/>
+               </restriction>
+            </simpleType>
+         </element>
+         <element name="TICKET" db:type="VARCHAR2" minOccurs="0" nillable="true">
+            <simpleType>
+               <restriction base="string">
+                  <maxLength value="500"/>
+               </restriction>
+            </simpleType>
+         </element>
+         <element name="ENTITY_ID_TBL" type="db:WSH_OTM_RD_NUM_TBL_TYPE" db:type="Array" minOccurs="0" nillable="true"/>
+         <element name="PARENT_ENTITY_ID_TBL" type="db:WSH_OTM_RD_NUM_TBL_TYPE" db:type="Array" minOccurs="0" nillable="true"/>
+      </sequence>
+   </complexType>
+   <complexType name="WSH_OTM_LOCATIONS_TBL_TYPE">
+      <sequence>
+         <element name="LOCATIONS_TBL_ITEM" type="db:WSH_OTM_LOCATIONS_REC_TYPE" db:type="Struct" minOccurs="0" maxOccurs="unbounded" nillable="true"/>
+      </sequence>
+   </complexType>
+   <complexType name="WSH_OTM_LOC_ADDR_REC_TYPE">
+      <sequence>
+         <element name="SEQ_NUMBER" db:type="VARCHAR2" minOccurs="0" nillable="true">
+            <simpleType>
+               <restriction base="string">
+                  <maxLength value="100"/>
+               </restriction>
+            </simpleType>
+         </element>
+         <element name="ADRESS_LINE" db:type="VARCHAR2" minOccurs="0" nillable="true">
+            <simpleType>
+               <restriction base="string">
+                  <maxLength value="55"/>
+               </restriction>
+            </simpleType>
+         </element>
+      </sequence>
+   </complexType>
+   <complexType name="WSH_OTM_LOC_XMISSION_REC_TYPE">
+      <sequence>
+         <element name="USERNAME" db:type="VARCHAR2" minOccurs="0" nillable="true">
+            <simpleType>
+               <restriction base="string">
+                  <maxLength value="100"/>
+               </restriction>
+            </simpleType>
+         </element>
+         <element name="PASSWORD" db:type="VARCHAR2" minOccurs="0" nillable="true">
+            <simpleType>
+               <restriction base="string">
+                  <maxLength value="100"/>
+               </restriction>
+            </simpleType>
+         </element>
+         <element name="LOCATIONS_TBL" type="db:WSH_OTM_LOCATIONS_TBL_TYPE" db:type="Array" minOccurs="0" nillable="true"/>
+      </sequence>
+   </complexType>
+   <complexType name="WSH_OTM_LOCATIONS_REC_TYPE">
+      <sequence>
+         <element name="TXN_CODE" db:type="VARCHAR2" minOccurs="0" nillable="true">
+            <simpleType>
+               <restriction base="string">
+                  <maxLength value="10"/>
+               </restriction>
+            </simpleType>
+         </element>
+         <element name="LOCATION_XID" db:type="VARCHAR2" minOccurs="0" nillable="true">
+            <simpleType>
+               <restriction base="string">
+                  <maxLength value="50"/>
+               </restriction>
+            </simpleType>
+         </element>
+         <element name="LOCATION_DN" db:type="VARCHAR2" minOccurs="0" nillable="true">
+            <simpleType>
+               <restriction base="string">
+                  <maxLength value="50"/>
+               </restriction>
+            </simpleType>
+         </element>
+         <element name="LOCATION_NAME" db:type="VARCHAR2" minOccurs="0" nillable="true">
+            <simpleType>
+               <restriction base="string">
+                  <maxLength value="120"/>
+               </restriction>
+            </simpleType>
+         </element>
+         <element name="CITY" db:type="VARCHAR2" minOccurs="0" nillable="true">
+            <simpleType>
+               <restriction base="string">
+                  <maxLength value="30"/>
+               </restriction>
+            </simpleType>
+         </element>
+         <element name="PROVINCE" db:type="VARCHAR2" minOccurs="0" nillable="true">
+            <simpleType>
+               <restriction base="string">
+                  <maxLength value="30"/>
+               </restriction>
+            </simpleType>
+         </element>
+         <element name="PROVINCE_CODE" db:type="VARCHAR2" minOccurs="0" nillable="true">
+            <simpleType>
+               <restriction base="string">
+                  <maxLength value="2"/>
+               </restriction>
+            </simpleType>
+         </element>
+         <element name="POSTAL_CODE" db:type="VARCHAR2" minOccurs="0" nillable="true">
+            <simpleType>
+               <restriction base="string">
+                  <maxLength value="15"/>
+               </restriction>
+            </simpleType>
+         </element>
+         <element name="COUNTRY_CODE_XID" db:type="VARCHAR2" minOccurs="0" nillable="true">
+            <simpleType>
+               <restriction base="string">
+                  <maxLength value="3"/>
+               </restriction>
+            </simpleType>
+         </element>
+         <element name="COUNTRY_CODE_DN" db:type="VARCHAR2" minOccurs="0" nillable="true">
+            <simpleType>
+               <restriction base="string">
+                  <maxLength value="50"/>
+               </restriction>
+            </simpleType>
+         </element>
+         <element name="CORPORATION" db:type="VARCHAR2" minOccurs="0" nillable="true">
+            <simpleType>
+               <restriction base="string">
+                  <maxLength value="30"/>
+               </restriction>
+            </simpleType>
+         </element>
+         <element name="IS_SHIPPER_KNOWN" db:type="VARCHAR2" minOccurs="0" nillable="true">
+            <simpleType>
+               <restriction base="string">
+                  <maxLength value="1"/>
+               </restriction>
+            </simpleType>
+         </element>
+         <element name="LOCATION_ROLE_XID" db:type="VARCHAR2" minOccurs="0" nillable="true">
+            <simpleType>
+               <restriction base="string">
+                  <maxLength value="30"/>
+               </restriction>
+            </simpleType>
+         </element>
+         <element name="LOCATION_ROLE_DN" db:type="VARCHAR2" minOccurs="0" nillable="true">
+            <simpleType>
+               <restriction base="string">
+                  <maxLength value="50"/>
+               </restriction>
+            </simpleType>
+         </element>
+         <element name="PARENT_LOCATION_XID" db:type="VARCHAR2" minOccurs="0" nillable="true">
+            <simpleType>
+               <restriction base="string">
+                  <maxLength value="50"/>
+               </restriction>
+            </simpleType>
+         </element>
+         <element name="PARENT_LOCATION_DN" db:type="VARCHAR2" minOccurs="0" nillable="true">
+            <simpleType>
+               <restriction base="string">
+                  <maxLength value="50"/>
+               </restriction>
+            </simpleType>
+         </element>
+         <element name="SUBSTITUTE_LOCATION_XID" db:type="VARCHAR2" minOccurs="0" nillable="true">
+            <simpleType>
+               <restriction base="string">
+                  <maxLength value="50"/>
+               </restriction>
+            </simpleType>
+         </element>
+         <element name="SUBSTITUTE_LOCATION_DN" db:type="VARCHAR2" minOccurs="0" nillable="true">
+            <simpleType>
+               <restriction base="string">
+                  <maxLength value="50"/>
+               </restriction>
+            </simpleType>
+         </element>
+         <element name="SERVICE_PROV_TBL" type="db:WSH_OTM_SERVICE_PROV_TBL_TYPE" db:type="Array" minOccurs="0" nillable="true"/>
+         <element name="LOC_ADDR_TBL" type="db:WSH_OTM_LOC_ADDR_TBL_TYPE" db:type="Array" minOccurs="0" nillable="true"/>
+         <element name="LOC_REF_NUM_TBL" type="db:WSH_OTM_LOC_REF_NUM_TBL_TYPE" db:type="Array" minOccurs="0" nillable="true"/>
+         <element name="LOC_CONTACT_TBL" type="db:WSH_OTM_LOC_CONTACT_TBL_TYPE" db:type="Array" minOccurs="0" nillable="true"/>
+      </sequence>
+   </complexType>
+   <complexType name="WSH_OTM_SERVICE_PROV_TBL_TYPE">
+      <sequence>
+         <element name="SERVICE_PROV_TBL_ITEM" type="db:WSH_OTM_SERVICE_PROV_REC_TYPE" db:type="Struct" minOccurs="0" maxOccurs="unbounded" nillable="true"/>
+      </sequence>
+   </complexType>
+</schema>

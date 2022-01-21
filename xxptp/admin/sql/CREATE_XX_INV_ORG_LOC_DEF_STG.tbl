@@ -1,0 +1,152 @@
+REM================================================================================================
+REM                                 Start Of Script
+REM================================================================================================
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     OFF
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+-- +=======================================================================+
+-- |               Office Depot - Project Simplify                         |
+-- |      Oracle NAIO/Office Depot/Consulting Organization                 |
+-- +=======================================================================+
+-- | Name             :XX_INV_ORG_LOC_DEF_STG                              |
+-- | Description      :Custom table for I1308_OrgCreationProcess           |
+-- |                                                                       |
+-- |                                                                       |
+-- |Change History:                                                        |
+-- |---------------                                                        |
+-- |                                                                       |
+-- |Version  Date        Author             Remarks                        |
+-- |-------  ----------- -----------------  -------------------------------|
+-- |Draft1a  21-Jun-2007 Remya Sasi         Initial Draft Version          |
+-- |1.1      27-May-2008 Paddy Sanjeevi     Removed / statement            |
+-- +=======================================================================+
+
+
+PROMPT
+PROMPT Creating Custom Table xx_inv_org_loc_def_stg......
+PROMPT
+
+-- ------------------------------------------------
+--  Create Custom Table XX_INV_ORG_LOC_DEF_STG   --
+-- ------------------------------------------------
+
+CREATE TABLE xx_inv_org_loc_def_stg(
+     control_id                    NUMBER          NOT NULL
+    ,bpel_instance_id              NUMBER                  
+    ,org_name_sw                   VARCHAR2(240)   NOT NULL
+    ,org_type                      VARCHAR2(40)            
+    ,od_type_cd_sw                 VARCHAR2(30)    NOT NULL
+    ,org_code                      VARCHAR2(3)             
+    ,location_number_sw            NUMBER          NOT NULL
+    ,location_name                 VARCHAR2(60)    NOT NULL
+    ,organization_id               NUMBER
+    ,sob                           VARCHAR2(40)
+    ,legal_entity                  VARCHAR2(40)
+    ,operating_unit                VARCHAR2(40)
+    ,process_flag                  NUMBER
+    ,process_action                VARCHAR2(10)
+    ,action                        VARCHAR2(10)    NOT NULL
+    ,org_created_flag              VARCHAR2(1)
+    ,org_updated_flag              VARCHAR2(1)
+    ,rms_attribute_created_flag    VARCHAR2(1)
+    ,rms_attribute_updated_flag    VARCHAR2(1)
+    ,org_param_created_flag        VARCHAR2(1)
+    ,cdh_stage_flag                VARCHAR2(1)
+    ,om_notify_flag                VARCHAR2(1)
+    ,otm_notify_flag               VARCHAR2(1)
+    ,creation_date                 DATE
+    ,created_by                    VARCHAR2(10)
+    ,update_date                   DATE
+    ,updated_by                    VARCHAR2(10)
+    ,add1_sw                       VARCHAR2(240)
+    ,add2_sw                       VARCHAR2(240)
+    ,city_sw                       VARCHAR2(30)
+    ,county_sw                     VARCHAR2(120)
+    ,state_sw                      VARCHAR2(120)
+    ,country_id_sw                 VARCHAR2(60)
+    ,pcode_sw                      VARCHAR2(30)
+    ,orig_currency_code_sw         VARCHAR2(15)
+    ,mgr_name_sw                   VARCHAR2(150)
+    ,fax_number_sw                 VARCHAR2(60)
+    ,phone_number_sw               VARCHAR2(60)
+    ,email_sw                      VARCHAR2(150)
+    ,od_cross_street_dir_1_sw      VARCHAR2(150)
+    ,od_cross_street_dir_2_sw      VARCHAR2(150)
+    ,time_zone_sw                  VARCHAR2(50)
+    ,od_city_limits_flg_s          VARCHAR2(1)
+    ,store_class_s                 VARCHAR2(1)
+    ,format_s                      NUMBER
+    ,district_sw                   NUMBER
+    ,od_division_id_sw             VARCHAR2(6)
+    ,od_sub_type_cd_sw             VARCHAR2(6)
+    ,open_date_sw                  DATE
+    ,close_date_sw                 DATE
+    ,default_wh_sw                 NUMBER
+    ,od_default_wh_csc_s           NUMBER
+    ,od_mkt_open_date_s            DATE
+    ,start_order_days_s            NUMBER
+    ,stop_order_days_s             NUMBER
+    ,od_closing_store_ind_s        VARCHAR2(1)
+    ,od_model_tax_loc_sw           NUMBER
+    ,od_loc_brand_cd_sw            VARCHAR2(6)
+    ,od_geo_cd_sw                  NUMBER
+    ,od_bts_flight_id_sw           VARCHAR2(6)
+    ,od_ad_mkt_id_sw               VARCHAR2(6)
+    ,channel_id_sw                 NUMBER
+    ,transaction_no_generated_s    VARCHAR2(6)
+    ,od_remerch_ind_s              VARCHAR2(1)
+    ,od_sister_store1_sw           NUMBER
+    ,od_sister_store2_sw           NUMBER
+    ,od_sister_store3_sw           NUMBER
+    ,od_cross_dock_lead_time_sw    VARCHAR2(2)
+    ,od_ord_cutoff_tm_sw           DATE
+    ,od_delivery_cd_sw             VARCHAR2(6)
+    ,od_routing_cd_sw              VARCHAR2(6)
+    ,od_reloc_id_sw                NUMBER
+    ,total_square_feet_s           NUMBER
+    ,break_pack_ind_w              VARCHAR2(1)
+    ,delivery_policy_w             VARCHAR2(6)
+    ,od_expanded_mix_flg_w         VARCHAR2(1)
+    ,od_default_import_wh_w        VARCHAR2(6)
+    ,od_external_wms_system_w      VARCHAR2(6)
+    ,od_defaultcrossdock_sw        VARCHAR2(20)
+    ,protected_ind_w               VARCHAR2(1)
+    ,forecast_wh_ind_w             VARCHAR2(1)
+    ,repl_ind_w                    VARCHAR2(1)
+    ,repl_srs_ord_w                NUMBER
+    ,restricted_ind_w              VARCHAR2(1)
+    ,pickup_delivery_cutoff_sw     VARCHAR2(10)
+    ,sameday_delivery_sw           VARCHAR2(10)
+    ,furniture_cutoff_sw           VARCHAR2(10)
+    ,od_whse_org_cd_sw             VARCHAR2(1)
+    ,date_from                     DATE
+    ,date_to                       DATE
+    ,action_type                   VARCHAR2(1)
+    ,validation_org                VARCHAR2(120)
+    ,link_to_rpf_and_wh            VARCHAR2(40)
+    ,flag_1                        VARCHAR2(1)
+    ,flag_2                        VARCHAR2(1)
+    ,flag_3                        VARCHAR2(1)
+    ,flag_4                        VARCHAR2(1)
+    ,flag_5                        VARCHAR2(1)
+    ,error_code                    VARCHAR2(20)
+    ,error_message                 VARCHAR2(200)
+    );
+    
+
+PROMPT
+PROMPT Exiting....
+PROMPT
+
+SHOW ERRORS;
+
+EXIT;
+
+REM=================================================================================================
+REM                                   End Of Script
+REM=================================================================================================

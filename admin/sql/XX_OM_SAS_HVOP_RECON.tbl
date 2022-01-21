@@ -1,0 +1,58 @@
+
+ -- +========================================================================+
+ -- |                  Office Depot - Project Simplify                       |
+ -- |                  Office Depot                                          |
+ -- +========================================================================+
+ -- | Name  :      XX_OM_SAS_HVOP_RECON.tbl                                  |
+ -- | Description:  This file  creates custom table                          |
+ -- |               required for SAS HVOP Reconciliation                     |
+ -- |               To be executed from apps Schema.                         |
+--  |               The objects that are created are                         |
+ -- |               XX_OM_SAS_HVOP_RECON                                     |
+ -- |Change Record:                                                          |
+ -- |===============                                                         |
+ -- |Version   Date          Author              Remarks                     |
+ -- |=======   ==========  =============    =================================|
+ -- |1.0       25-Jun-2008   Sachin Thaker  Initial draft Version            |
+ -- +========================================================================+
+
+SET VERIFY      OFF;
+SET TERM        OFF;
+SET FEEDBACK    OFF;
+SET SHOW        OFF;
+SET ECHO        OFF;
+SET TAB         OFF;
+
+PROMPT
+PROMPT Dropping Existing Custom Tables......
+PROMPT
+
+PROMPT
+PROMPT Dropping Table XX_OM_SAS_HVOP_RECON
+PROMPT
+
+DROP TABLE XXOM.XX_OM_SAS_HVOP_RECON;
+
+WHENEVER SQLERROR CONTINUE;
+
+PROMPT
+PROMPT Creating the Table XX_OM_SAS_HVOP_RECON .....
+PROMPT
+
+
+CREATE TABLE XXOM.XX_OM_SAS_HVOP_RECON (
+	"ORIG_SYS_REF" VARCHAR2(20), 
+	"ORDER_AMOUNT" NUMBER(35,3)
+  );
+
+
+WHENEVER SQLERROR EXIT 1
+
+PROMPT
+PROMPT Exiting....
+PROMPT
+
+SET FEEDBACK ON
+
+EXIT;
+

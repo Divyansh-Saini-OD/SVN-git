@@ -1,0 +1,115 @@
+
+ -- +========================================================================+
+ -- |                  Office Depot - Project Simplify                       |
+ -- |    Oracle NAIO/WIPRO/Office Depot/Consulting Organization              |
+ -- +========================================================================+
+ -- | Name  :      XXOMLINEATTRIBKFFDFF.tbl                                  |
+ -- | Description:  This file  creates custom table                          |
+ -- |               required for KFF in DFF set up for OM line               |
+ -- |               To be executed from apps Schema.                         |
+--  |               The objects that are created are                         |
+ -- |               XX_OM_LINES_ATTRIBUTES_ALL                               |
+ -- |Change Record:                                                          |
+ -- |===============                                                         |
+ -- |Version   Date          Author              Remarks                     |
+ -- |=======   ==========  =============    =================================|
+ -- |1.0       17-APR-2007   mohan          Initial draft Version            |
+ -- +========================================================================+
+
+SET VERIFY      OFF
+SET TERM        OFF
+SET FEEDBACK    OFF
+SET SHOW        OFF
+SET ECHO        OFF
+SET TAB         OFF
+
+PROMPT
+PROMPT Dropping Existing Custom Tables......
+PROMPT
+
+PROMPT
+PROMPT Dropping Table XX_OM_LINES_ATTRIBUTES_ALL
+PROMPT
+
+DROP TABLE XX_OM_LINES_ATTRIBUTES_ALL;
+
+WHENEVER SQLERROR CONTINUE;
+
+PROMPT
+PROMPT Creating the Table XX_OM_LINES_ATTRIBUTES_ALL .....
+PROMPT
+
+
+CREATE TABLE XXOM.XX_OM_LINES_ATTRIBUTES_ALL (
+COMBINATION_ID                        NUMBER (15) NOT NULL,
+STRUCTURE_ID                           NUMBER (15) NOT NULL,
+ENABLED_FLAG                           VARCHAR2 (1) NOT NULL,
+SUMMARY_FLAG                         VARCHAR2 (1) NOT NULL,
+START_DATE_ACTIVE                  DATE,
+END_DATE_ACTIVE                      DATE,
+LAST_UPDATE_DATE                    DATE NOT NULL,
+LAST_UPDATED_BY                      NUMBER   NOT NULL,
+SEGMENT1                                 VARCHAR2(240),
+SEGMENT2                                 VARCHAR2(240),
+SEGMENT3                                 VARCHAR2(240),
+SEGMENT4                                 VARCHAR2(240),
+SEGMENT5                                 VARCHAR2(240),
+SEGMENT6                                 VARCHAR2(240),
+SEGMENT7                                 VARCHAR2(240),
+SEGMENT8                                 VARCHAR2(240),
+SEGMENT9                                 VARCHAR2(240),
+SEGMENT10                                VARCHAR2(240),
+SEGMENT11                                VARCHAR2(240),
+SEGMENT12                                VARCHAR2(240),
+SEGMENT13                                VARCHAR2(240),
+SEGMENT14                                VARCHAR2(240),
+SEGMENT15                                VARCHAR2(240),
+SEGMENT16                                VARCHAR2(240),
+SEGMENT17                                VARCHAR2(240),
+SEGMENT18                                VARCHAR2(240),
+SEGMENT19                                VARCHAR2(240),
+SEGMENT20                                VARCHAR2(240),
+SEGMENT21                                VARCHAR2(240),
+SEGMENT22                                VARCHAR2(240),
+SEGMENT23                                VARCHAR2(240),
+SEGMENT24                                VARCHAR2(240),
+SEGMENT25                                VARCHAR2(240),
+SEGMENT26                                VARCHAR2(240),
+SEGMENT27                                VARCHAR2(240),
+SEGMENT28                                VARCHAR2(240),
+SEGMENT29                                VARCHAR2(240),
+SEGMENT30                                VARCHAR2(240),
+SEGMENT31                                VARCHAR2(240),
+SEGMENT32                                VARCHAR2(240),
+SEGMENT33                                VARCHAR2(240),
+SEGMENT34                                VARCHAR2(240),
+SEGMENT35                                VARCHAR2(240),
+SEGMENT36                                VARCHAR2(240),
+SEGMENT37                                VARCHAR2(240),
+SEGMENT38                                VARCHAR2(240),
+SEGMENT39                                VARCHAR2(240),
+SEGMENT40                                VARCHAR2(240),
+SEGMENT41                                VARCHAR2(240),
+SEGMENT42                                VARCHAR2(240),
+SEGMENT43                                VARCHAR2(240),
+SEGMENT44                                VARCHAR2(240),
+SEGMENT45                                VARCHAR2(240),
+SEGMENT46                                VARCHAR2(240),
+SEGMENT47                                VARCHAR2(240),
+SEGMENT48                                VARCHAR2(240),
+SEGMENT49                                VARCHAR2(240),
+SEGMENT50                                VARCHAR2(240)
+);
+/
+
+WHENEVER SQLERROR EXIT 1
+
+PROMPT
+PROMPT Exiting....
+PROMPT
+
+SET FEEDBACK ON
+
+EXIT;
+
+

@@ -1,0 +1,64 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<jdevws:WebServiceProxy xmlns:jdevws="http://xmlns.oracle.com/jdeveloper/10130/webserviceproxy">
+   <list n="CHILD_NODES">
+      <url path="ServiceOrderStatusInquiryService.java"/>
+      <url path="runtime/ServiceOrderStatusInquiryService_Impl.java"/>
+      <url path="ServiceOrderStatusInquiry.java"/>
+      <url path="types/gsidev01/servicestatusinquiryws_wsdl/types/SearchServicerequestElement.java"/>
+      <url path="types/gsidev01/servicestatusinquiryws_wsdl/types/XxCsSrRecTypeUser.java"/>
+      <url path="types/gsidev01/servicestatusinquiryws_wsdl/types/XxCsSrRecTypeBase.java"/>
+      <url path="types/gsidev01/servicestatusinquiryws_wsdl/types/XxCsSrOrderRecTypeUser.java"/>
+      <url path="types/gsidev01/servicestatusinquiryws_wsdl/types/XxCsSrOrderRecTypeBase.java"/>
+      <url path="types/gsidev01/servicestatusinquiryws_wsdl/types/XxGlbSitekeyRecTypeUser.java"/>
+      <url path="types/gsidev01/servicestatusinquiryws_wsdl/types/XxGlbSitekeyRecTypeBase.java"/>
+      <url path="types/gsidev01/servicestatusinquiryws_wsdl/types/ServiceStatusInquiryWSUser_searchServicerequest_Out.java"/>
+      <url path="types/gsidev01/servicestatusinquiryws_wsdl/types/runtime/XxCsSrRecTypeBase_InterfaceSOAPSerializer.java"/>
+      <url path="types/gsidev01/servicestatusinquiryws_wsdl/types/runtime/XxCsSrOrderRecTypeBase_InterfaceSOAPSerializer.java"/>
+      <url path="types/gsidev01/servicestatusinquiryws_wsdl/types/runtime/XxGlbSitekeyRecTypeBase_InterfaceSOAPSerializer.java"/>
+      <url path="types/gsidev01/servicestatusinquiryws_wsdl/types/runtime/XxCsSrRecTypeUser_LiteralSerializer.java"/>
+      <url path="types/gsidev01/servicestatusinquiryws_wsdl/types/runtime/XxCsSrRecTypeBase_LiteralSerializer.java"/>
+      <url path="types/gsidev01/servicestatusinquiryws_wsdl/types/runtime/XxCsSrOrderRecTypeUser_LiteralSerializer.java"/>
+      <url path="types/gsidev01/servicestatusinquiryws_wsdl/types/runtime/XxCsSrOrderRecTypeBase_LiteralSerializer.java"/>
+      <url path="types/gsidev01/servicestatusinquiryws_wsdl/types/runtime/XxGlbSitekeyRecTypeUser_LiteralSerializer.java"/>
+      <url path="types/gsidev01/servicestatusinquiryws_wsdl/types/runtime/XxGlbSitekeyRecTypeBase_LiteralSerializer.java"/>
+      <url path="types/gsidev01/servicestatusinquiryws_wsdl/types/runtime/SearchServicerequestElement_LiteralSerializer.java"/>
+      <url path="types/gsidev01/servicestatusinquiryws_wsdl/types/runtime/ServiceStatusInquiryWSUser_searchServicerequest_Out_LiteralSerializer.java"/>
+      <url path="runtime/ServiceOrderStatusInquiryBinding_Stub.java"/>
+      <url path="runtime/ServiceOrderStatusInquiryService_SerializerRegistry.java"/>
+      <url path="runtime/ServiceOrderStatusInquiryService_SerializerRegistry12.java"/>
+      <url path="ServiceOrderStatusInquiryPortClient.java"/>
+   </list>
+   <hash n="DATA_MODEL">
+      <value n="ATTACHMENT_ENCODING" v="ATTACHMENT_MIME"/>
+      <value n="MODEL_CLASS" v="oracle.jdeveloper.webservices.model.proxy.WebServiceProxy"/>
+      <hash n="PROPERTY_GROUPS">
+         <hash n="WSDL_TO_JAVA_PROPERTIES">
+            <value n="MODEL_CLASS" v="oracle.jdeveloper.webservices.model.java.WSDLToJavaProperties"/>
+            <value n="WSDL2JAVA_DEFAULT_PACKAGE" v="servicestatusclient.proxy"/>
+            <value n="WSDL2JAVA_ROOT_VALUE_PACKAGE" v="servicestatusclient.proxy.types"/>
+            <value n="WSDL2JAVA_UNWRAP_PARAMETERS" v="false"/>
+         </hash>
+      </hash>
+      <value n="PROXY_MAPPING_URL"/>
+      <hash n="PROXY_PORTS">
+         <hash n="ServiceOrderStatusInquiryPort">
+            <value n="ACCESSES_DOC_WRAPPPED" v="false"/>
+            <value n="CLASS_NAME" v="servicestatusclient.proxy.ServiceOrderStatusInquiry"/>
+            <value n="MODEL_CLASS" v="oracle.jdeveloper.webservices.model.proxy.ProxyPort"/>
+            <value n="NAME" v="ServiceOrderStatusInquiryPort"/>
+            <hash n="OPERATIONS">
+               <hash n="process">
+                  <value n="MODEL_CLASS" v="oracle.jdeveloper.webservices.model.proxy.ProxyOperation"/>
+                  <hash n="PROPERTY_GROUPS"/>
+               </hash>
+            </hash>
+            <hash n="PROPERTY_GROUPS"/>
+            <url n="PROXY_ORIGINAL_PORT_ENDPOINT" protocol="http" host="l3h7411" port="8988" path="/TDServiceWS-ServiceOrderStatusWS-context-root/ServiceOrderStatusInquiryPort"/>
+         </hash>
+      </hash>
+      <value n="PROXY_SERVICE_NAME" v="ServiceOrderStatusInquiryService"/>
+      <value n="PROXY_SERVICE_NAMESPACE" v="http://xmlns.oracle.com/ServiceOrderStatusInquiry"/>
+      <url n="PROXY_TARGET_PROJECT" path="../../../ServiceStatusClient.jpr"/>
+      <url n="PROXY_WSDL_URL" protocol="http" host="l3h7411" port="8988" path="/TDServiceWS-ServiceOrderStatusWS-context-root/ServiceOrderStatusInquiryPort" query="WSDL"/>
+   </hash>
+</jdevws:WebServiceProxy>

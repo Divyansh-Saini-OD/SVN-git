@@ -1,0 +1,46 @@
+-- +============================================================================================+
+-- |                        Office Depot - Project Simplify                                     |
+-- |                                                                                            |
+-- +============================================================================================+
+-- | Name         : ALTER_XX_OM_RETURN_TENDERS_ALL.tbl                                          |
+-- | Rice Id      : I1272                                                                       | 
+-- | Description  : INT-I1272_SalesOrderFrom LegacySystems(HVOP) Table MODIFICATION             |  
+-- | Purpose      : MODIFY Custom Table XX_OM_RETURN_TENDERS_ALL.tbl. to add                    |
+-- |                                                                                            |
+-- |                                                                                            |
+-- |Change Record:                                                                              |
+-- |===============                                                                             |
+-- |Version    Date          Author                Remarks                                      | 
+-- |=======    ==========    =================    ==============================================+
+-- |DRAFT 1A   27-JUL-2007   Bapuji Nanapaneni    Initial Version                               |
+-- |1          17-JUN-2008   Bapuji Nanapaneni    Added columns requested by brian for I1025    |
+-- |2          13-SEPT-2013  Edson Morales        R12 Credit Card Encryption                    |
+-- |                                                                                            |
+-- +============================================================================================+
+
+
+SET VERIFY      OFF
+SET TERM        ON
+SET FEEDBACK    OFF
+SET SHOW        OFF
+SET ECHO        OFF
+SET TAB         OFF
+
+
+
+PROMPT
+PROMPT MODIFYING the Table xx_om_return_tenders_all.....
+PROMPT
+
+ALTER TABLE XXOM.XX_OM_RETURN_TENDERS_ALL  ADD IDENTIFIER VARCHAR2(50)
+/
+
+WHENEVER SQLERROR EXIT 1
+
+PROMPT
+PROMPT Exiting....
+PROMPT
+
+SET FEEDBACK ON
+
+EXIT;

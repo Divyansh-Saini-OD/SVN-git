@@ -1,0 +1,114 @@
+-- +===========================================================================+
+-- |                  Office Depot - SAS Modernization                         |
+-- |                                                                           |
+-- +===========================================================================+
+-- | Name        : XX_OE_ORDER_HEADERS_SCM_IDX.idx                             |
+-- | Description : Index for Custom Table XX_OE_ORDER_HEADERS_SCM              |
+-- |                                                                           |
+-- |Change Record:                                                             |
+-- |===============                                                            |
+-- |Version  Date        Author           Remarks                              |
+-- |======== =========== ================ =====================================|
+-- |1.0      20-MAR-2018 PUNIT_CG         Defect# NAIT-31470                   |
+-- |1.1      04-JUN-2018 PUNIT_CG         Added Partitioning                   |
+-- +===========================================================================+
+
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     ON
+WHENEVER SQLERROR CONTINUE
+
+
+PROMPT
+PROMPT Creation of Index on custom table XX_OE_ORDER_HEADERS_SCM.....
+PROMPT
+
+PROMPT
+PROMPT Creating non-unique index XX_OE_ORDER_HEADERS_SCM_N1 .....
+PROMPT
+
+CREATE INDEX XX_OE_ORDER_HEADERS_SCM_N1 ON XX_OE_ORDER_HEADERS_SCM(BLANKET_NUMBER);
+
+PROMPT
+PROMPT Creating non-unique index XX_OE_ORDER_HEADERS_SCM_N2 .....
+PROMPT
+
+CREATE INDEX XX_OE_ORDER_HEADERS_SCM_N2 ON XX_OE_ORDER_HEADERS_SCM(SOLD_TO_ORG_ID);
+
+PROMPT
+PROMPT Creating non-unique index XX_OE_ORDER_HEADERS_SCM_N3 .....
+PROMPT
+
+CREATE INDEX XX_OE_ORDER_HEADERS_SCM_N3 ON XX_OE_ORDER_HEADERS_SCM(SHIP_TO_ORG_ID);
+
+PROMPT
+PROMPT Creating non-unique index XX_OE_ORDER_HEADERS_SCM_N4 .....
+PROMPT
+
+CREATE INDEX XX_OE_ORDER_HEADERS_SCM_N4 ON XX_OE_ORDER_HEADERS_SCM(INVOICE_TO_ORG_ID);
+
+PROMPT
+PROMPT Creating non-unique index XX_OE_ORDER_HEADERS_SCM_N5 .....
+PROMPT
+
+CREATE INDEX XX_OE_ORDER_HEADERS_SCM_N5 ON XX_OE_ORDER_HEADERS_SCM(CUST_PO_NUMBER);
+
+PROMPT
+PROMPT Creating non-unique index XX_OE_ORDER_HEADERS_SCM_N6 .....
+PROMPT
+
+CREATE INDEX XX_OE_ORDER_HEADERS_SCM_N6 ON XX_OE_ORDER_HEADERS_SCM(BATCH_ID);
+
+PROMPT
+PROMPT Creating non-unique index XX_OE_ORDER_HEADERS_SCM_N7 .....
+PROMPT
+
+CREATE INDEX XX_OE_ORDER_HEADERS_SCM_N7 ON XX_OE_ORDER_HEADERS_SCM(ORIG_SYS_DOCUMENT_REF, ORDER_SOURCE_ID);
+
+PROMPT
+PROMPT Creating non-unique index XX_OE_ORDER_HEADERS_SCM_N8 .....
+PROMPT
+
+CREATE INDEX XX_OE_ORDER_HEADERS_SCM_N8 ON XX_OE_ORDER_HEADERS_SCM(OPEN_FLAG);
+
+PROMPT
+PROMPT Creating non-unique index XX_OE_ORDER_HEADERS_SCM_N9 .....
+PROMPT
+
+CREATE INDEX XX_OE_ORDER_HEADERS_SCM_N9 ON XX_OE_ORDER_HEADERS_SCM(QUOTE_NUMBER, ORDER_TYPE_ID);
+
+PROMPT
+PROMPT Creating unique index XX_OE_ORDER_HEADERS_SCM_U1 .....
+PROMPT
+
+CREATE UNIQUE INDEX XX_OE_ORDER_HEADERS_SCM_U1 ON XX_OE_ORDER_HEADERS_SCM(HEADER_ID)
+PCTFREE 10 INITRANS 11 MAXTRANS 255  LOGGING
+TABLESPACE "APPS_TS_TX_IDX_OM_16M"  LOCAL
+(PARTITION "XX_OE_ORDER_HEADERS_SCM_OVRFL" 
+ PCTFREE 10 INITRANS 11 MAXTRANS 255 NOLOGGING 
+ TABLESPACE "APPS_TS_TX_IDX_OM_16M" 
+ );
+
+PROMPT
+PROMPT Creating unique index XX_OE_ORDER_HEADERS_SCM_U2 .....
+PROMPT
+
+CREATE UNIQUE INDEX XX_OE_ORDER_HEADERS_SCM_U2 ON XX_OE_ORDER_HEADERS_SCM(ORDER_NUMBER, ORDER_TYPE_ID, VERSION_NUMBER);
+
+PROMPT
+PROMPT Creating non-unique index XX_OE_ORDER_HEADERS_SCM_N10 .....
+PROMPT
+
+CREATE INDEX XX_OE_ORDER_HEADERS_SCM_N10 ON XX_OE_ORDER_HEADERS_SCM(LAST_UPDATE_DATE);
+
+
+WHENEVER SQLERROR EXIT 1
+
+PROMPT
+PROMPT Exiting....
+PROMPT
+
+EXIT;
+

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<schema xmlns="http://www.w3.org/2001/XMLSchema" xmlns:er="http://www.thiscompany.com/ns/sales" targetNamespace="http://www.thiscompany.com/ns/sales">
+	<element name="Error" type="er:ErrorType"/>
+	<complexType name="ErrorType">
+		<sequence>
+			<element name="ApplicationName" type="string"/>
+			<element name="BPELProcessName" type="string"/>
+			<element name="BPELProcessID" type="string"/>
+			<element name="TransactionType" type="string"/>
+			<element name="TransactionId" type="string"/>
+			<element name="ErrorType" type="string"/>
+			<element name="ErrorCode" type="string"/>
+			<element name="ErrorMessage" type="string"/>
+		</sequence>
+	</complexType>
+</schema>

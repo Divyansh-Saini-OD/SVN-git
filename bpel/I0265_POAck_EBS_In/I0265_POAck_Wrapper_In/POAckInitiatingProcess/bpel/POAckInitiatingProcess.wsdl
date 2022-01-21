@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions name="POAckInitiatingProcess"
+             targetNamespace="http://xmlns.oracle.com/POAckInitiatingProcess"
+             xmlns="http://schemas.xmlsoap.org/wsdl/"
+             xmlns:client="http://xmlns.oracle.com/POAckInitiatingProcess"
+             xmlns:ns1="http://xmlns.oracle.com/CustPO"
+             xmlns:plnk="http://schemas.xmlsoap.org/ws/2003/05/partner-link/">
+
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	TYPE DEFINITION - List of services participating in this BPEL process
+	The default output of the BPEL designer uses strings as input and 
+	output to the BPEL Process. But you can define or import any XML 
+	Schema type and use them as part of the message types.
+	~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->   
+	<types>
+		<schema xmlns="http://www.w3.org/2001/XMLSchema">
+			<import namespace="http://xmlns.oracle.com/POAckInitiatingProcess" schemaLocation="POAckInitiatingProcess.xsd" />
+		</schema>
+		<schema xmlns="http://www.w3.org/2001/XMLSchema">
+			<import namespace="http://xmlns.oracle.com/CustPO" schemaLocation="CustomPO.xsd" />
+		</schema>
+	</types>
+
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	MESSAGE TYPE DEFINITION - Definition of the message types used as 
+	part of the port type defintions
+	~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->      
+	<message name="POAckInitiatingProcessRequestMessage">
+		<part name="payload" element="ns1:PurchaseOrder" />
+	</message>
+
+	<message name="POAckInitiatingProcessResponseMessage">
+		<part name="payload" element="client:POAckInitiatingProcessProcessResponse"/>
+	</message>
+
+
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	PORT TYPE DEFINITION - A port type groups a set of operations into
+	a logical service unit.
+	~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<!-- portType implemented by the POAckInitiatingProcess BPEL process -->
+	<portType name="POAckInitiatingProcess">
+		<operation name="initiate">
+			<input message="client:POAckInitiatingProcessRequestMessage"/>
+		</operation>
+	</portType>
+
+	<!-- portType implemented by the requester of POAckInitiatingProcess BPEL process
+	for asynchronous callback purposes
+	-->
+	<portType name="POAckInitiatingProcessCallback">
+		<operation name="onResult">
+			<input message="client:POAckInitiatingProcessResponseMessage"/>
+		</operation>
+	</portType>
+
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	PARTNER LINK TYPE DEFINITION
+	the POAckInitiatingProcess partnerLinkType binds the provider and
+	requester portType into an asynchronous conversation.
+	~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<plnk:partnerLinkType name="POAckInitiatingProcess">
+		<plnk:role name="POAckInitiatingProcessProvider">
+			<plnk:portType name="client:POAckInitiatingProcess"/>
+		</plnk:role>
+		<plnk:role name="POAckInitiatingProcessRequester">
+			<plnk:portType name="client:POAckInitiatingProcessCallback"/>
+		</plnk:role>
+	</plnk:partnerLinkType>
+</definitions>

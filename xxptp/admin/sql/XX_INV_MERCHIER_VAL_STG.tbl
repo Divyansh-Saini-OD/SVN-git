@@ -1,0 +1,122 @@
+REM============================================================================================
+REM                                 Start Of Script
+REM============================================================================================
+
+--+=============================================================================================+--
+--|                                                                                             |--
+--| Object Name    : OD C0273, Merchandising Hierarchy                                          |--
+--|                                                                                             |--
+--| Program Name   : XX_INV_MERCHIER_VAL_STG.tbl                                                |--
+--|                                                                                             |--
+--| Purpose        : Create Custom Tables .                                                     |--
+--|                  The Objects created are:                                                   |--
+--|                                                                                             |--
+--|                1. XX_INV_MERCHIER_VAL_STG (OD Merchadising Hierarchy Staging Table)         |--
+--|                2. XX_INV_MERCHIER_VAL_STG (Synonym for XX_INV_MERCHIER_VAL_STG)             |--
+--|                                                                                             |--
+--| Change History  :                                                                           |--
+--| Version           Date             Changed By              Description                      |--
+--+=============================================================================================+--
+--| 1.0              10-May-2007       Gowri Nagarajan                  Original                |--
+--+=============================================================================================+--
+
+
+SET VERIFY      OFF
+SET TERM        OFF
+SET FEEDBACK    OFF
+SET SHOW        OFF
+SET ECHO        OFF
+SET TAB         OFF
+
+SET TERM        ON
+
+PROMPT
+PROMPT Dropping Existing Custom Tables......
+PROMPT
+
+WHENEVER SQLERROR CONTINUE;
+
+PROMPT
+PROMPT Dropping Table XXPTP.XX_INV_MERCHIER_VAL_STG
+PROMPT
+
+DROP TABLE XXPTP.XX_INV_MERCHIER_VAL_STG ;
+
+
+PROMPT
+PROMPT Dropping Synonym XX_INV_MERCHIER_VAL_STG in APPS...
+PROMPT
+
+WHENEVER SQLERROR CONTINUE;
+
+
+PROMPT
+DROP SYNONYM XX_INV_MERCHIER_VAL_STG;
+PROMPT
+
+WHENEVER SQLERROR CONTINUE;
+
+PROMPT
+PROMPT Creating the Custom Table ......
+PROMPT
+
+WHENEVER SQLERROR CONTINUE;
+
+PROMPT
+PROMPT Creating the Table XXPTP.XX_INV_MERCHIER_VAL_STG......
+PROMPT
+CREATE TABLE XXPTP.XX_INV_MERCHIER_VAL_STG
+                                       (
+                                       CONTROL_ID             NUMBER         NOT NULL
+                                     , PROCESS_FLAG           NUMBER         NOT NULL
+                                     , CONV_ACTION            VARCHAR2(10)
+                                     , LOAD_BATCH_ID          NUMBER         
+                                     , EXTRACT_BATCH_ID       NUMBER         
+                                     , SOURCE_SYSTEM_CODE     VARCHAR2(5)    NOT NULL
+                                     , SOURCE_SYSTEM_REF      VARCHAR2 (50)  NOT NULL
+                                     , ERROR_CODE             VARCHAR2(15)
+                                     , ERROR_MESSAGE          VARCHAR2(2000)
+                                     , FLEX_VALUE_SET_NAME    VARCHAR2(100)  NOT NULL
+                                     , FND_VALUE              NUMBER         NOT NULL
+                                     , FND_VALUE_DESCRIPTION  VARCHAR2(240)  NOT NULL
+                                     , LAST_UPDATE            DATE           NOT NULL
+                                     , LAST_UPDATED_BY        NUMBER         NOT NULL
+                                     , CREATION_DATE          DATE           NOT NULL
+                                     , CREATED_BY             NUMBER         NOT NULL
+                                     , VALUE_CATEGORY         VARCHAR2(30)
+                                     , ATTRIBUTE1             VARCHAR2(240)
+                                     , ATTRIBUTE2             VARCHAR2(240)
+                                     , ATTRIBUTE3             VARCHAR2(240)
+                                     , ATTRIBUTE4             VARCHAR2(240)
+                                     , ATTRIBUTE5             VARCHAR2(240)
+                                     , ATTRIBUTE6             VARCHAR2(240)
+                                     , ATTRIBUTE7             VARCHAR2(240)
+                                     , ATTRIBUTE8             VARCHAR2(240)
+                                     , ATTRIBUTE9             VARCHAR2(240)
+                                     , ATTRIBUTE10            VARCHAR2(240)
+                                     , ATTRIBUTE11            VARCHAR2(240)
+                                     , ATTRIBUTE12            VARCHAR2(240)
+                                     , ATTRIBUTE13            VARCHAR2(240)
+                                     , ATTRIBUTE14            VARCHAR2(240)
+                                     , ATTRIBUTE15            VARCHAR2(240)
+                                     );                                                 
+
+WHENEVER SQLERROR CONTINUE;
+
+PROMPT
+PROMPT Creating SYNONYM XX_INV_MERCHIER_VAL_STG in APPS
+PROMPT
+
+CREATE SYNONYM XX_INV_MERCHIER_VAL_STG  FOR XXPTP.XX_INV_MERCHIER_VAL_STG ;
+
+PROMPT
+PROMPT Exiting....
+PROMPT
+
+SET FEEDBACK ON
+
+EXIT;
+
+REM============================================================================================
+REM                                   End Of Script
+REM============================================================================================

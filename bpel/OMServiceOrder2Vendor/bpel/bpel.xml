@@ -1,0 +1,15 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<BPELSuitcase>
+   <BPELProcess id="OMServiceOrder2Vendor" src="OMServiceOrder2Vendor.bpel">
+      <partnerLinkBindings>
+         <partnerLinkBinding name="client">
+            <property name="wsdlLocation">OMServiceOrder2Vendor.wsdl</property>
+         </partnerLinkBinding>
+         <partnerLinkBinding name="routeTDS">
+            <property name="wsdlLocation">ODTechServices_routeTDSRef3.wsdl</property>
+            <property name="wsdlRuntimeLocation">http://webmethods.service.url/ws/ODTechServices:routeTDS?WSDL</property>
+             <!-- <property name="wsdlRuntimeLocation">http://b2bwmedi.officedepot.com:5080/ws/ODTechServices:routeTDS</property> -->
+         </partnerLinkBinding>
+      </partnerLinkBindings>
+   </BPELProcess>
+</BPELSuitcase>

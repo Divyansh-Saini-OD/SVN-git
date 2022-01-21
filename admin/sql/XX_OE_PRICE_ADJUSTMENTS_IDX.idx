@@ -1,0 +1,56 @@
+-- +===========================================================================+
+-- |                  Office Depot - SAS Modernization                         |
+-- |                                                                           |
+-- +===========================================================================+
+-- | Name        : XX_OE_PRICE_ADJUSTMENTS_IDX.idx                             |
+-- | Description : Index for Custom Table XX_OE_PRICE_ADJUSTMENTS              |
+-- |                                                                           |
+-- |Change Record:                                                             |
+-- |===============                                                            |
+-- |Version  Date        Author           Remarks                              |
+-- |======== =========== ================ =====================================|
+-- |1.0      28-Apr-2021 Shreyas Thorat   Initial Version                      |
+-- +===========================================================================+
+
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     ON
+WHENEVER SQLERROR CONTINUE
+
+PROMPT
+PROMPT Creation of Index on custom table XX_OE_PRICE_ADJUSTMENTS.....
+PROMPT
+
+PROMPT
+PROMPT Creating non-unique index XX_OE_PRICE_ADJUSTMENTS_N1 .....
+PROMPT
+
+CREATE INDEX XX_OE_PRICE_ADJUSTMENTS_N1 ON XX_OE_PRICE_ADJUSTMENTS(HEADER_ID);
+
+PROMPT
+PROMPT Creating non-unique index XX_OE_PRICE_ADJUSTMENTS_N2 .....
+PROMPT
+
+CREATE INDEX XX_OE_PRICE_ADJUSTMENTS_N2 ON XX_OE_PRICE_ADJUSTMENTS(LINE_ID);
+
+PROMPT
+PROMPT Creating non-unique index XX_OE_PRICE_ADJUSTMENTS_N3 .....
+PROMPT
+
+CREATE INDEX XX_OE_PRICE_ADJUSTMENTS_N3 ON XX_OE_PRICE_ADJUSTMENTS(LIST_HEADER_ID);
+
+PROMPT
+PROMPT Creating unique index XX_OE_PRICE_ADJUSTMENTS_U1 .....
+PROMPT
+
+CREATE UNIQUE INDEX XX_OE_PRICE_ADJUSTMENTS_U1 ON XX_OE_PRICE_ADJUSTMENTS(PRICE_ADJUSTMENT_ID);
+
+WHENEVER SQLERROR EXIT 1
+
+PROMPT
+PROMPT Exiting....
+PROMPT
+
+EXIT;

@@ -1,0 +1,13 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<BPELSuitcase>
+   <BPELProcess id="POAckInitiatingProcess" src="POAckInitiatingProcess.bpel">
+      <partnerLinkBindings>
+         <partnerLinkBinding name="client">
+            <property name="wsdlLocation">POAckInitiatingProcess.wsdl</property>
+         </partnerLinkBinding>
+         <partnerLinkBinding name="POAcknowledgementProcess">
+            <property name="wsdlLocation">http://chilsoa02d.na.odcorp.net:7777/orabpel/otc/POAcknowledgementProcess/POAcknowledgementProcess?wsdl</property>
+         </partnerLinkBinding>
+      </partnerLinkBindings>
+   </BPELProcess>
+</BPELSuitcase>

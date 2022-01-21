@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!--Native format was generated from COBOL copybook : C:\product\JDEV_10.1.3.1\jdev\mywork\ODBELProjects\ProcessScmPod\bpel\POD.txt-->
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:nxsd="http://xmlns.oracle.com/pcbpel/nxsd" xmlns:extn="http://xmlns.oracle.com/pcbpel/nxsd/extensions" targetNamespace="http://TargetNamespace.com/InboundService" xmlns:tns="http://TargetNamespace.com/InboundService" elementFormDefault="qualified" attributeFormDefault="unqualified" nxsd:version="NXSD" nxsd:encoding="ASCII" nxsd:byteOrder="littleEndian" nxsd:stream="chars">
+   <xsd:element name="Root-Element">
+      <xsd:complexType>
+         <xsd:sequence>
+            <!--COBOL declaration :05 AOPS_AUTO_RECON_OBT-->
+            <xsd:element name="AOPS_AUTO_RECON_OBT" minOccurs="1" maxOccurs="unbounded">
+               <xsd:complexType>
+                  <xsd:sequence>
+                     <!--COBOL declaration : 10 CDCHighOrder PIC X(01)-->
+                     <xsd:element name="CDCHighOrder" type="xsd:string" nxsd:style="fixedLength" nxsd:padStyle="tail" nxsd:paddedBy=" " nxsd:length="1"/>
+                     <!--COBOL declaration : 10 CDCOrder PIC X(09)-->
+                     <xsd:element name="CDCOrder" type="xsd:string" nxsd:style="fixedLength" nxsd:padStyle="tail" nxsd:paddedBy=" " nxsd:length="9"/>
+                     <!--COBOL declaration : 10 CDCSub PIC X(03)-->
+                     <xsd:element name="CDCSub" type="xsd:string" nxsd:style="fixedLength" nxsd:padStyle="tail" nxsd:paddedBy=" " nxsd:length="3"/>
+                     <!--COBOL declaration : 10 CDCReconSrc PIC X(01)-->
+                     <xsd:element name="CDCReconSrc" type="xsd:string" nxsd:style="fixedLength" nxsd:padStyle="tail" nxsd:paddedBy=" " nxsd:length="1"/>
+                     <!--COBOL declaration : 10 CDCReconSta PIC X(01)-->
+                     <xsd:element name="CDCReconSta" type="xsd:string" nxsd:style="fixedLength" nxsd:padStyle="tail" nxsd:paddedBy=" " nxsd:length="1"/>
+                     <!--COBOL declaration : 10 CDCDelivSta PIC X(02)-->
+                     <xsd:element name="CDCDelivSta" type="xsd:string" nxsd:style="fixedLength" nxsd:padStyle="tail" nxsd:paddedBy=" " nxsd:length="2"/>
+                     <!--COBOL declaration : 10 CDCPayExcCd PIC X(02)-->
+                     <xsd:element name="CDCPayExcCd" type="xsd:string" nxsd:style="fixedLength" nxsd:padStyle="tail" nxsd:paddedBy=" " nxsd:length="2"/>
+                     <!--COBOL declaration : 10 CDCReconSeq PIC X(03)-->
+                     <xsd:element name="CDCReconSeq" type="xsd:string" nxsd:style="fixedLength" nxsd:padStyle="tail" nxsd:paddedBy=" " nxsd:length="3"/>
+                     <!--COBOL declaration : 10 CDCTransDate PIC X(08)-->
+                     <xsd:element name="CDCTransDate" type="xsd:string" nxsd:style="fixedLength" nxsd:padStyle="tail" nxsd:paddedBy=" " nxsd:length="8"/>
+                     <!--COBOL declaration : 10 CDCTransTime PIC X(06)-->
+                     <xsd:element name="CDCTransTime" type="xsd:string" nxsd:style="fixedLength" nxsd:padStyle="tail" nxsd:paddedBy=" " nxsd:length="6"/>
+                     <!--COBOL declaration : 10 CDCRoute PIC X(03)-->
+                     <xsd:element name="CDCRoute" type="xsd:string" nxsd:style="fixedLength" nxsd:padStyle="tail" nxsd:paddedBy=" " nxsd:length="3"/>
+                     <!--COBOL declaration : 10 CDCSatelliteLoc PIC X(04)-->
+                     <xsd:element name="CDCSatelliteLoc" type="xsd:string" nxsd:style="fixedLength" nxsd:padStyle="tail" nxsd:paddedBy=" " nxsd:length="4"/>
+                     <!--COBOL declaration : 10 CDCDriver PIC X(12)-->
+                     <xsd:element name="CDCDriver" type="xsd:string" nxsd:style="fixedLength" nxsd:padStyle="tail" nxsd:paddedBy=" " nxsd:length="12"/>
+                     <!--COBOL declaration : 10 CDCSignature PIC X(20)-->
+                     <xsd:element name="CDCSignature" type="xsd:string" nxsd:style="fixedLength" nxsd:padStyle="tail" nxsd:paddedBy=" " nxsd:length="20"/>
+                     <!--COBOL declaration : 10 CDCFiller PIC X(25)-->
+                     <xsd:element name="CDCFiller" type="xsd:string" nxsd:style="fixedLength" nxsd:padStyle="tail" nxsd:paddedBy=" " nxsd:length="25"/>
+                  </xsd:sequence>
+               </xsd:complexType>
+            </xsd:element>
+         </xsd:sequence>
+      </xsd:complexType>
+   </xsd:element>
+</xsd:schema>

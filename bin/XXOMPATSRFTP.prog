@@ -1,0 +1,102 @@
+#!/usr/bin/ksh
+# +========================================================================+
+# |                  Office Depot - Project Simplify                       |
+# |                                                                        |
+# +========================================================================+
+# +========================================================================+
+# | Name  :    XXOMPATSRFTP.prog                                           |
+# | Description      :  This shell script FTPs the PAT extract to the      |
+# |                     SQL Server where the file will be imported         |
+# |                                                                        |
+# |Change Record:                                                          |
+# |===============                                                         |
+# |Version  Date       Author          Remarks                             |
+# |=======  =========  ==============  ====================================|
+# |1.0      20-May-09  Matthew Craig                                       |
+# |1.1		20-Mar-16  Anoop Salim		Changed the destination host and   |
+#										directory   					   |
+# |2.0      20-MAR-19  BIAS             Use LFTP instead of FTP            |
+# +========================================================================+
+
+
+# +========================================================================+
+#  Input Parameters                                                        |
+#  SOURCE_DIR  - source directory                                          | 
+#  SOURCE_FILE - file name                                                 |
+#  DEST_HOST   - destination server                                        |
+#  DEST_USER   - FTP user for destination server                           |
+#  DEST_PASSWD - FTP user password for destination server                  |
+#  DEST_DIR    - directory on destination                                  |
+# +========================================================================+
+SOURCE_DIR=$5
+SOURCE_FILE=$6
+#DEST_HOST=US10000CCOPSRPT
+#Destination Host is modified by BIAS as per the instructions
+#DEST_HOST=USCHCCOPSRPTS01
+DEST_HOST=uschccopsrpts01.na.odcorp.net
+DEST_USER=$7
+DEST_PASSWD=$8
+#DEST_DIR=OracleEBS
+#Destination Directory is modified by BIAS as per the instructions
+#DEST_DIR="INBOUND/ServiceRequest"
+DEST_DIR="INBOUND/ServiceRequestDev"
+
+echo "************************************************************************"
+echo Starting: FTP of PAT Extract file
+echo
+echo Parameters:
+echo "Source File Directory = $SOURCE_DIR"
+echo "Source File Name      = $SOURCE_FILE"
+echo "FTP HOST              = $DEST_HOST"
+echo "Destination Directory = $DEST_DIR"
+echo 
+echo 
+
+# check if the source directory exists
+
+if test -d $SOURCE_DIR
+then
+
+   # check if the seasonal file exists
+   if [ -f $SOURCE_DIR/$SOURCE_FILE ]; 
+   then
+      echo Initiating: FTP of PAT Extract file
+   else 
+      echo $SOURCE_FILE does not Exist
+      exit 2
+   fi
+else
+   echo $SOURCE_DIR Source File Path does not Exist
+   exit 2
+fi
+
+#Commented by BIAS
+#ftp -n $DEST_HOST <<END_SCRIPT
+#quote USER $DEST_USER
+#quote PASS $DEST_PASSWD
+#lcd ${SOURCE_DIR}
+#cd ${DEST_DIR}
+#prompt off
+#mput $SOURCE_FILE
+#quit
+#END_SCRIPT
+
+#Added by BIAS
+success=`sftp $DEST_HOST <<END_SCRIPT
+cd $DEST_DIR
+lcd  $SOURCE_DIR
+mput $SOURCE_FILE
+ls $SOURCE_FILE | wc -l
+quit
+END_SCRIPT
+`
+
+echo success=$success
+if [ $success -ge 1 ]
+then
+	echo " Completed: FTP of PAT Extract file "
+	exit 0
+else
+    echo " FTP of PAT Extract file failed "
+	exit 1
+fi

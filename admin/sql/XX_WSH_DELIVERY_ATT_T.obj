@@ -1,0 +1,71 @@
+-- +============================================================================================+
+-- |                        Office Depot - Project Simplify                                     |
+-- |                                                                                            |
+-- +============================================================================================+
+-- | Name         : xx_wsh_delivery_att_t.obj                                                   |
+-- | Rice Id      : E1334_OM_Attributes_Setup                                                   | 
+-- | Description  :                                  |  
+-- | Purpose      : Create Custom Type.                                                       |
+-- |                                                                                            |
+-- |                                                                                            |
+-- |Change Record:                                                                              |
+-- |===============                                                                             |
+-- |Version    Date          Author                Remarks                                      | 
+-- |=======    ==========    =================    ==============================================+
+-- |DRAFT 1A   05-Jul-2007   Milind Rane          Initial Version                               |
+-- |DRAFT 1B   16-Jul-2007   Milind Rane          Renamed to XX_WSH                             |
+-- +============================================================================================+
+
+
+SET VERIFY      OFF
+SET TERM        OFF
+SET FEEDBACK    OFF
+SET SHOW        OFF
+SET ECHO        OFF
+SET TAB         OFF
+
+PROMPT
+PROMPT Dropping TYPE xx_wsh_delivery_att_t
+PROMPT
+
+DROP TYPE xxom.xx_wsh_delivery_att_t;
+
+WHENEVER SQLERROR CONTINUE;
+
+PROMPT
+PROMPT Creating the object xx_wsh_delivery_att_t .....
+PROMPT
+
+
+CREATE OR REPLACE TYPE xxom.xx_wsh_delivery_att_t IS OBJECT (     
+     delivery_id                   NUMBER        
+   , od_internal_delivery_status   VARCHAR2 (40) 
+   , redelivery_flag               VARCHAR2 (40) 
+   , del_backtoback_ind            VARCHAR2 (40)
+   , no_of_shiplabels              NUMBER
+   , new_sch_ship_date             DATE
+   , new_sch_arr_date              DATE  
+   , actual_deliverd_date          DATE
+   , new_del_date_from_time        DATE
+   , new_del_date_to_time          DATE
+   , delivery_cancelled_ind        VARCHAR2(40)
+   , delivery_trans_ind            VARCHAR2(40)
+   , pod_exceptions_comments       VARCHAR2(240)
+   , retransmit_pick_ticket        VARCHAR2(40)
+   , payment_subtype_cod_ind       VARCHAR2(40)
+   , del_to_post_office_ind        VARCHAR2(40)   
+   , creation_date                 DATE           
+   , created_by                    NUMBER         
+   , last_update_date              DATE           
+   , last_updated_by               NUMBER         
+   , last_update_login             NUMBER         
+  )
+/
+
+WHENEVER SQLERROR EXIT 1
+
+PROMPT
+PROMPT Exiting....
+PROMPT
+
+SET FEEDBACK ON

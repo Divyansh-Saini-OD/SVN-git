@@ -1,0 +1,38 @@
+SET VERIFY OFF;
+SET SHOW OFF;
+SET TAB OFF;
+SET ECHO OFF;
+SET FEEDBACK OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+-- +==========================================================================+
+-- |                  Office Depot - Project Simplify                         |
+-- +==========================================================================+
+-- | Name             : XX_OM_SR_EXCEPTIONS_S.seq                    |
+-- | Description      : This script creates the sequence for us in the table  |
+-- |                    XX_OM_SR_EXCEPTIONS_S                         |
+-- |                                                                          |
+-- |Change Record:                                                            |
+-- |===============                                                           |
+-- |Version Date        Author           Remarks                              |
+-- |======= =========== ===============  =====================================|
+-- |1.0     30-Dec-2009 Bala E		 Initial Version                      |
+-- |                                                                          |
+-- +==========================================================================+
+
+PROMPT
+PROMPT Dropping existing sequence XX_OM_SR_EXCEPTIONS_S
+PROMPT
+
+--DROP SEQUENCE XX_OM_SR_EXCEPTIONS_S;
+
+PROMPT
+PROMPT Creating sequence XXOM.XX_OM_SR_EXCEPTIONS_S
+PROMPT
+
+
+
+CREATE SEQUENCE XXOM.XX_OM_SR_EXCEPTIONS_S INCREMENT BY 1 START WITH 1 NOCACHE;  
+
+SHOW ERROR

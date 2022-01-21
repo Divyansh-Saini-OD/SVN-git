@@ -1,0 +1,54 @@
+-- +============================================================================================+
+-- |                        Office Depot - Project Simplify                                     |
+-- |                                                                                            |
+-- +============================================================================================+
+-- | Name         : CREATE_XX_OM_LEGACY_DEP_DTLS.tbl                                         |
+-- | Rice Id      : I1272                                                                       | 
+-- | Description  : INT-I1272_SalesOrderFrom LegacySystems(HVOP) Table Creation FOR SALES DATA  |  
+-- |                Redesign                                                                    |
+-- | Purpose      : Create Custom Table XX_OM_LEGACY_DEP_DTLS.tbl.                              |
+-- |                                                                                            |
+-- |                                                                                            |
+-- |Change Record:                                                                              |
+-- |===============                                                                             |
+-- |Version    Date          Author                Remarks                                      | 
+-- |=======    ==========    =================    ==============================================+
+-- |DRAFT 1A   23-MAR-2011   Bapuji Nanapaneni    Initial Version                               |
+-- |                                                                                            |
+-- +============================================================================================+
+
+
+SET VERIFY      OFF
+SET TERM        ON
+SET FEEDBACK    OFF
+SET SHOW        OFF
+SET ECHO        OFF
+SET TAB         OFF
+
+
+PROMPT
+PROMPT Creating the Table xx_om_legacy_dep_dtls .....
+PROMPT
+
+CREATE TABLE xxom.xx_om_legacy_dep_dtls
+           ( transaction_number          VARCHAR2(80)
+           , order_source_id             NUMBER
+           , orig_sys_document_ref       VARCHAR2(80)
+           , order_total                 NUMBER
+           , single_pay_ind              VARCHAR2(1)
+           , creation_date               DATE           NOT NULL
+           , created_by                  NUMBER         NOT NULL
+           , last_update_date            DATE           NOT NULL
+           , last_updated_by             NUMBER         NOT NULL
+           )
+/
+
+WHENEVER SQLERROR EXIT 1
+
+PROMPT
+PROMPT Exiting....
+PROMPT
+
+SET FEEDBACK ON
+
+--EXIT;

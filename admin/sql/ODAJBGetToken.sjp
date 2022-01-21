@@ -1,0 +1,61 @@
+CREATE OR REPLACE JAVA SOURCE NAMED "ODAJBGetToken" AS
+-- +=====================================================================================================+
+-- |                              Office Depot                                                           |
+-- +=====================================================================================================+
+-- |  Name:  ODAJBGetToken                                                                               |
+-- |                                                                                                     |
+-- |  Description: Java SP to get token value from AJB service                                           |
+-- |                                                                                                     |
+-- |  Rice ID:     C0705                                                                                 |
+-- +=====================================================================================================+
+-- | Version     Date         Author               Remarks                                               |
+-- | =========   ===========  =============        ======================================================|
+-- |    1.0      01-Mar-2016  Avinash Baddam       Initial Version                                       |
+-- |    1.1      08-Dec-2016  Avinash Baddam       Changes during Amex Conv TLS                          |
+---+=====================================================================================================+
+import AJBComm.CAFipay;
+
+import AJBComm.CAFipayNetworkException;
+import AJBComm.CAFipayTimeoutException;
+
+public class ODAJBGetToken {
+    public ODAJBGetToken() {
+    }
+
+    public static String getToken(int TIMEOUT, String sAJBServerIP, int iPort, String sRequestStr) {
+
+        String sResponseStr = "";
+
+        CAFipay oCAFObj = new CAFipay();
+
+        try {
+
+            System.out.println(sRequestStr);
+
+            /* v1.1 changes*/
+            // Actual AJB method Call
+            //sResponseStr =  oCAFObj.AJB_MSGAPI(TIMEOUT, sAJBServerIP, iPort, sRequestStr, "*4INT");
+            sResponseStr =  oCAFObj.AJB_MSGAPI(TIMEOUT, sAJBServerIP, iPort, sRequestStr, "*FIPAY", "F001099");
+
+            System.out.println(sResponseStr);
+
+        } catch (CAFipayTimeoutException toExc) {
+
+            System.out.println("Timeout Exception :" + toExc.errorCode + " " + toExc.errorDesc);
+            sResponseStr = "Exception Timeout error:" + toExc.errorCode + " " + toExc.errorDesc;
+
+            /*oPrintWriter.println("Timeout Exception :" + toExc.errorCode +
+                                 " " + toExc.errorDesc);
+                                 */
+
+        } catch (CAFipayNetworkException netExc) {
+
+            System.out.println("Network Exception :" + netExc.errorCode + " " + netExc.errorDesc);
+            /*oPrintWriter.println("Network Exception :" + netExc.errorCode +
+                                 " " + netExc.errorDesc);
+                            */
+          sResponseStr = "Exception Network error:" + netExc.errorCode + " " + netExc.errorDesc;
+        }
+        return sResponseStr;
+    }
+};

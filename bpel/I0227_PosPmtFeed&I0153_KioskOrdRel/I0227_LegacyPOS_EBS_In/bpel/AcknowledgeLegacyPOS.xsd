@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<schema xmlns="http://www.w3.org/2001/XMLSchema" xmlns:pa="http://www.thiscompany.com/ns/sales" targetNamespace="http://www.thiscompany.com/ns/sales">
+	<element name="POSACK" type="pa:POSACKType"/>
+	<complexType name="POSACKType">
+		<sequence>
+			<element name="OrderNumber" type="string"/>
+			<element name="Detail" type="pa:Detail"/>
+			<element name="Status" type="string"/>
+			<element name="TransactionDatetime" type="dateTime"/>
+			<element name="Failuremessage" type="string"/>
+		</sequence>
+	</complexType>
+	<complexType name="Detail">
+		<sequence>
+			<element name="LineNumber" type="string"/>
+		</sequence>
+	</complexType>
+</schema>

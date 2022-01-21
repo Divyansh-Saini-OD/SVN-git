@@ -1,0 +1,270 @@
+<?xml version = "1.0" encoding = "UTF-8" ?>
+<!--
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  Oracle JDeveloper BPEL Designer 
+  
+  Created: Wed May 23 17:13:25 IST 2007
+  Author:  dharma
+  Purpose: Empty BPEL Process
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+-->
+<process name="MessageReprocess"
+         targetNamespace="http://xmlns.oracle.com/MessageReprocess"
+         xmlns="http://schemas.xmlsoap.org/ws/2003/03/business-process/"
+         xmlns:xp20="http://www.oracle.com/XSL/Transform/java/oracle.tip.pc.services.functions.Xpath20"
+         xmlns:bpws="http://schemas.xmlsoap.org/ws/2003/03/business-process/"
+         xmlns:ns4="http://xmlns.oracle.com/ProcessNowDocsReceive"
+         xmlns:ns7="http://xmlns.oracle.com/I1153_DPSNowPrintEBS_JobConfRel_Child"
+         xmlns:ids="http://xmlns.oracle.com/bpel/services/IdentityService/xpath"
+         xmlns:ldap="http://schemas.oracle.com/xpath/extension/ldap"
+         xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+         xmlns:ns12="http://xmlns.oracle.com/DPSCancel_SendNowDocsMsgProcess"
+         xmlns:ns5="http://xmlns.oracle.com/SendNowDocsMsgProcess"
+         xmlns:client="http://xmlns.oracle.com/MessageReprocess"
+         xmlns:ns6="http://xmlns.oracle.com/SendSalesOrderInfo"
+         xmlns:ora="http://schemas.oracle.com/xpath/extension"
+         xmlns:ns11="http://xmlns.oracle.com/DPSCancel_SendSalesOrderInfo"
+         xmlns:ns9="http://xmlbeans.orderProcessing.externalVendors.officedepot.com"
+         xmlns:hwf="http://xmlns.oracle.com/bpel/workflow/xpath"
+         xmlns:ns1="http://xmlns.oracle.com/pcbpel/adapter/aq/DequeueMessage/"
+         xmlns:ehdr="http://www.oracle.com/XSL/Transform/java/oracle.tip.esb.server.headers.ESBHeaderFunctions"
+         xmlns:ns3="http://xmlns.oracle.com/pcbpel/adapter/opaque/"
+         xmlns:ns2="http://xmlns.oracle.com/pcbpel/adapter/aq/inbound/"
+         xmlns:bpelx="http://schemas.oracle.com/bpel/extension"
+         xmlns:orcl="http://www.oracle.com/XSL/Transform/java/oracle.tip.pc.services.functions.ExtFunc"
+         xmlns:ns8="http://xmlns.oracle.com/I1153_DPSNowPrintEBS_JobConf_Child"
+         xmlns:ns10="http://www.openapplications.org/oagis/9">
+  <bpelx:exec import="java.util.*"/>
+  <bpelx:exec import="java.lang.*"/>
+  <bpelx:exec import="java.math.*"/>
+  <bpelx:exec import="com.collaxa.common.util.*"/>
+  <bpelx:exec import="java.io.*"/>
+  <!-- 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+      PARTNERLINKS                                                      
+      List of services participating in this BPEL process               
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  -->
+  <partnerLinks>
+    <partnerLink name="DPSReleaseOrder_Child"
+                 partnerRole="I1153_DPSNowPrintEBS_JobConfRel_ChildProvider"
+                 partnerLinkType="ns7:I1153_DPSNowPrintEBS_JobConfRel_Child"/>
+    <partnerLink name="DPSJobConfirmation_Child"
+                 partnerRole="I1153_DPSNowPrintEBS_JobConf_ChildProvider"
+                 partnerLinkType="ns8:I1153_DPSNowPrintEBS_JobConf_Child"/>
+    <partnerLink myRole="Dequeue_role" name="DequeueMessege"
+                 partnerLinkType="ns1:Dequeue_plt"/>
+    <partnerLink name="ProcessNowDocsReceive"
+                 partnerRole="ProcessNowDocsReceiveProvider"
+                 partnerLinkType="ns4:ProcessNowDocsReceive"/>
+    <partnerLink name="SendNowDocsMsgProcess"
+                 partnerRole="SendNowDocsMsgProcessProvider"
+                 partnerLinkType="ns5:SendNowDocsMsgProcess"/>
+    <partnerLink name="SendSalesOrderInfo"
+                 partnerRole="SendSalesOrderInfoProvider"
+                 partnerLinkType="ns6:SendSalesOrderInfo"/>
+    <partnerLink name="DPSCancel_SendSalesOrderInfo"
+                 partnerRole="DPSCancel_SendSalesOrderInfoProvider"
+                 partnerLinkType="ns11:DPSCancel_SendSalesOrderInfo"/>
+    <partnerLink name="DPSCancel_SendNowDocsMsgProcess"
+                 partnerRole="DPSCancel_SendNowDocsMsgProcessProvider"
+                 partnerLinkType="ns12:DPSCancel_SendNowDocsMsgProcess"/>
+  </partnerLinks>
+  <!-- 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+      VARIABLES                                                        
+      List of messages and XML documents used within this BPEL process 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  -->
+  <variables>
+    <variable name="DequeueHeaderVar" messageType="ns2:Header"/>
+    <variable name="CorrIDVar" type="xsd:string"/>
+    <variable name="InvokeSalesOrderInfoIn"
+              messageType="ns6:SendSalesOrderInfoRequestMessage"/>
+    <variable name="InvokeSalesOrderInfoOut"
+              messageType="ns6:SendSalesOrderInfoResponseMessage"/>
+    <variable name="InvokeNowDocsMsgIn"
+              messageType="ns5:SendNowDocsMsgProcessRequestMessage"/>
+    <variable name="InvokeNowDocsMsgOut"
+              messageType="ns5:SendNowDocsMsgProcessResponseMessage"/>
+    <variable name="InvokeNowDocsReceiveIn"
+              messageType="ns4:ProcessNowDocsReceiveRequestMessage"/>
+    <variable name="InvokeNowDocsReceiveOut"
+              messageType="ns4:ProcessNowDocsReceiveResponseMessage"/>
+    <variable name="InvokeJobConfRelIn"
+              messageType="ns7:I1153_DPSNowPrintEBS_JobConfRel_ChildRequestMessage"/>
+    <variable name="InvokeConfChildIn"
+              messageType="ns8:I1153_DPSNowPrintEBS_JobConf_ChildRequestMessage"/>
+    <variable name="Opaque" type="xsd:string"/>
+    <variable name="OpaqueToString" type="xsd:string"/>
+    <variable name="ReceiveMessageIn" messageType="ns1:Dequeue_msg"/>
+    <variable name="ReceiveMessIn" messageType="ns1:Dequeue_msg"/>
+    <variable name="InvokeDPSCancelSendNowDocsIn"
+              messageType="ns12:DPSCancel_SendNowDocsMsgProcessRequestMessage"/>
+    <variable name="InvokeDPSCancelSendSalesOrderInfoIn"
+              messageType="ns11:DPSCancel_SendSalesOrderInfoRequestMessage"/>
+    <variable name="InvokeDPSCancelSendSalesOrderInfoOut"
+              messageType="ns11:DPSCancel_SendSalesOrderInfoResponseMessage"/>
+    <variable name="InvokeDPSCancelSendNowDocsout"
+              messageType="ns12:DPSCancel_SendNowDocsMsgProcessResponseMessage"/>
+  </variables>
+  <!-- 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+     ORCHESTRATION LOGIC                                               
+     Set of activities coordinating the flow of messages across the    
+     services integrated within this business process                  
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  -->
+  <sequence name="main">
+    <receive name="ReceiveMessage" partnerLink="DequeueMessege"
+             portType="ns1:Dequeue_ptt" operation="Dequeue"
+             variable="ReceiveMessIn" createInstance="yes"
+             bpelx:headerVariable="DequeueHeaderVar"/>
+    <assign name="AssignCorrID">
+      <copy>
+        <from variable="DequeueHeaderVar" part="Header"
+              query="/ns2:Header/ns2:Correlation"/>
+        <to variable="CorrIDVar"/>
+      </copy>
+      <copy>
+        <from part="opaque" variable="ReceiveMessIn"
+              query="/ns3:opaqueElement"/>
+        <to variable="Opaque"/>
+      </copy>
+    </assign>
+    <bpelx:exec name="Java_EmbeddingOpaqueToString" language="java"
+                version="1.3">
+      <![CDATA[/*Write your java code below e.g.  
+	System.out.println("Hello, World"); 
+*/ 
+ 
+ 
+String input = (String)getVariableData("Opaque");       
+      
+Base64Decoder Decoder = new Base64Decoder();       
+      
+try   
+{   
+String decoded = Base64Decoder.decode(input);       
+      
+setVariableData("OpaqueToString",decoded);   
+}   
+catch(UnsupportedEncodingException uee) {   
+uee.printStackTrace();   
+}]]>
+    </bpelx:exec>
+    <switch name="SelectCorrID">
+      <case condition="bpws:getVariableData('CorrIDVar') = ora:doc(&quot;${server_url}/xmllib/GlobalParameters.xml&quot;,&quot;/GlobalParameters/OTC/DPS/CorrID/DPSCancel_SendSalesOrderInfo&quot;)">
+        <sequence name="Sequence_7">
+          <assign name="assignIn">
+            <copy>
+              <from expression="ora:parseEscapedXML(bpws:getVariableData('OpaqueToString'))"/>
+              <to variable="InvokeDPSCancelSendSalesOrderInfoIn" part="payload"
+                  query="/ns11:DPSCancel_SendSalesOrderInfoProcessRequest/ns11:input"/>
+            </copy>
+          </assign>
+          <invoke name="InvokeDPSCancelSendSalesOrderInfo"
+                  partnerLink="DPSCancel_SendSalesOrderInfo"
+                  portType="ns11:DPSCancel_SendSalesOrderInfo"
+                  operation="process"
+                  inputVariable="InvokeDPSCancelSendSalesOrderInfoIn"
+                  outputVariable="InvokeDPSCancelSendSalesOrderInfoOut"/>
+        </sequence>
+      </case>
+      <case condition="bpws:getVariableData('CorrIDVar') = ora:doc(&quot;${server_url}/xmllib/GlobalParameters.xml&quot;,&quot;/GlobalParameters/OTC/DPS/CorrID/DPSCancel_SendNowDocsMsg&quot;)">
+        <sequence name="Sequence_6">
+          <assign name="assignIn">
+            <copy>
+              <from expression="ora:parseEscapedXML(bpws:getVariableData('OpaqueToString'))"/>
+              <to variable="InvokeDPSCancelSendNowDocsIn" part="payload"
+                  query="/ns10:SalesOrderCancel"/>
+            </copy>
+          </assign>
+          <invoke name="InvokeDPSCancelSendNowDocs"
+                  partnerLink="DPSCancel_SendNowDocsMsgProcess"
+                  portType="ns12:DPSCancel_SendNowDocsMsgProcess"
+                  operation="process"
+                  inputVariable="InvokeDPSCancelSendNowDocsIn"
+                  outputVariable="InvokeDPSCancelSendNowDocsout"/>
+        </sequence>
+      </case>
+      <case condition="bpws:getVariableData('CorrIDVar') = ora:doc(&quot;${server_url}/xmllib/GlobalParameters.xml&quot;,&quot;/GlobalParameters/OTC/DPS/CorrID/ConfChild&quot;)">
+        <sequence name="Sequence_1">
+          <assign name="assignIn">
+            <copy>
+              <from expression="ora:parseEscapedXML(bpws:getVariableData('OpaqueToString'))"/>
+              <to variable="InvokeJobConfRelIn" part="payload"
+                  query="/ns9:ReleaseOrderRequest"/>
+            </copy>
+          </assign>
+          <invoke name="InvokeJobConfRel" partnerLink="DPSReleaseOrder_Child"
+                  portType="ns7:I1153_DPSNowPrintEBS_JobConfRel_Child"
+                  operation="initiate" inputVariable="InvokeJobConfRelIn"/>
+        </sequence>
+      </case>
+      <case condition="bpws:getVariableData('CorrIDVar') = ora:doc(&quot;${server_url}/xmllib/GlobalParameters.xml&quot;,&quot;/GlobalParameters/OTC/DPS/CorrID/RelChild&quot;)">
+        <sequence name="Sequence_2">
+          <assign name="assignIn">
+            <copy>
+              <from expression="ora:parseEscapedXML(bpws:getVariableData('OpaqueToString'))"/>
+              <to variable="InvokeConfChildIn" part="payload"
+                  query="/ns9:ConfirmOrderRequest"/>
+            </copy>
+          </assign>
+          <invoke name="InvokeConfChild" partnerLink="DPSJobConfirmation_Child"
+                  portType="ns8:I1153_DPSNowPrintEBS_JobConf_Child"
+                  operation="initiate" inputVariable="InvokeConfChildIn"/>
+        </sequence>
+      </case>
+      <case condition="bpws:getVariableData('CorrIDVar') = ora:doc(&quot;${server_url}/xmllib/GlobalParameters.xml&quot;,&quot;/GlobalParameters/OTC/DPS/CorrID/ProcessNowDocsReceive&quot;)">
+        <sequence name="Sequence_3">
+          <assign name="assignIn">
+            <copy>
+              <from expression="ora:parseEscapedXML(bpws:getVariableData('OpaqueToString'))"/>
+              <to variable="InvokeNowDocsReceiveIn" part="payload"
+                  query="/ns10:CreateSalesOrder"/>
+            </copy>
+          </assign>
+          <invoke name="InvokeNowDocsReceive"
+                  portType="ns4:ProcessNowDocsReceive"
+                  inputVariable="InvokeNowDocsReceiveIn"
+                  outputVariable="InvokeNowDocsReceiveOut"
+                  partnerLink="ProcessNowDocsReceive" operation="process"/>
+        </sequence>
+      </case>
+      <case condition="bpws:getVariableData('CorrIDVar') = ora:doc(&quot;${server_url}/xmllib/GlobalParameters.xml&quot;,&quot;/GlobalParameters/OTC/DPS/CorrID/SendNowDocsMsg&quot;)">
+        <sequence name="Sequence_4">
+          <assign name="assignIn">
+            <copy>
+              <from expression="ora:parseEscapedXML(bpws:getVariableData('OpaqueToString'))"/>
+              <to variable="InvokeNowDocsMsgIn" part="payload"
+                  query="/ns10:CreateSalesOrder"/>
+            </copy>
+          </assign>
+          <invoke name="InvokeNowDocsMsg" portType="ns5:SendNowDocsMsgProcess"
+                  inputVariable="InvokeNowDocsMsgIn"
+                  outputVariable="InvokeNowDocsMsgOut"
+                  partnerLink="SendNowDocsMsgProcess" operation="process"/>
+        </sequence>
+      </case>
+      <case condition="bpws:getVariableData('CorrIDVar') = ora:doc(&quot;${server_url}/xmllib/GlobalParameters.xml&quot;,&quot;/GlobalParameters/OTC/DPS/CorrID/SendSalesOrderInfo&quot;)">
+        <sequence name="Sequence_5">
+          <assign name="assignIn">
+            <copy>
+              <from expression="ora:parseEscapedXML(bpws:getVariableData('OpaqueToString'))"/>
+              <to variable="InvokeSalesOrderInfoIn" part="payload"
+                  query="/ns6:SendSalesOrderInfoProcessRequest"/>
+            </copy>
+          </assign>
+          <invoke name="InvokeSalesOrderInfo" portType="ns6:SendSalesOrderInfo"
+                  inputVariable="InvokeSalesOrderInfoIn"
+                  outputVariable="InvokeSalesOrderInfoOut"
+                  partnerLink="SendSalesOrderInfo" operation="process"/>
+        </sequence>
+      </case>
+      <otherwise>
+        <empty name="Empty"/>
+      </otherwise>
+    </switch>
+  </sequence>
+</process>

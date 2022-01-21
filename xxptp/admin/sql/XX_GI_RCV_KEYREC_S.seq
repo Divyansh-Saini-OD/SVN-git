@@ -1,0 +1,49 @@
+REM============================================================================================
+REM                                 Start Of Script
+REM============================================================================================
+
+--+=============================================================================================+--
+--|                                                                                             |--
+--| Object Name    : XX_GI_RCV_KEYREC_S.seq                                                     |--
+--|                                                                                             |--
+--| Program Name   : XX_GI_RCV_KEYREC_S.seq                                                     |--
+--|                                                                                             |--
+--| Purpose        : Create Custom Sequences .                                                  |--
+--|                  The Objects created are:                                                   |--
+--|                                                                                             |--
+--|                1. XX_GI_RCV_KEYREC_S                                                        |--
+--|                                                                                             |--
+--| Change History  :                                                                           |--
+--| Version           Date             Changed By              Description                      |--
+--+=============================================================================================+--
+--| 1.0              01-Feb-2008       Vikas raina             Original                         |--
+--+=============================================================================================+
+
+SET VERIFY      OFF
+SET TERM        ON
+SET FEEDBACK    OFF
+SET SHOW        OFF
+SET ECHO        OFF
+SET TAB         OFF
+
+WHENEVER SQLERROR CONTINUE
+
+PROMPT
+PROMPT Creating Sequence XX_GI_RCV_KEYREC_S
+PROMPT
+
+CREATE SEQUENCE XX_GI_RCV_KEYREC_S INCREMENT BY 1 START WITH 1 NOCACHE NOORDER;
+
+WHENEVER SQLERROR CONTINUE;
+
+PROMPT
+PROMPT Exiting....
+PROMPT
+
+SET FEEDBACK ON
+
+EXIT;
+
+REM=================================================================================================
+REM                                   End Of Script
+REM=================================================================================================

@@ -1,0 +1,54 @@
+<schema targetNamespace="http://xmlns.oracle.com/pcbpel/adapter/db/APPS/XX_OM_SR_EXCEPTIONS_PUB/LOG_ERROR/" xmlns="http://www.w3.org/2001/XMLSchema" xmlns:db="http://xmlns.oracle.com/pcbpel/adapter/db/APPS/XX_OM_SR_EXCEPTIONS_PUB/LOG_ERROR/" elementFormDefault="qualified">
+   <element name="InputParameters">
+      <complexType>
+         <sequence>
+            <element name="P_APPLICATION_NAME" type="string" db:index="1" db:default="true" db:type="VARCHAR2" minOccurs="0" nillable="true"/>
+            <element name="P_PROGRAM_TYPE" type="string" db:index="2" db:default="true" db:type="VARCHAR2" minOccurs="0" nillable="true"/>
+            <element name="P_PROGRAM_NAME" type="string" db:index="3" db:default="true" db:type="VARCHAR2" minOccurs="0" nillable="true"/>
+            <element name="P_PROGRAM_ID" type="decimal" db:index="4" db:default="true" db:type="NUMBER" minOccurs="0" nillable="true"/>
+            <element name="P_MODULE_NAME" type="string" db:index="5" db:default="true" db:type="VARCHAR2" minOccurs="0" nillable="true"/>
+            <element name="P_EXCEPTION_LOCATION" type="string" db:index="6" db:default="true" db:type="VARCHAR2" minOccurs="0" nillable="true"/>
+            <element name="P_EXCEPTION_MESSAGE_COUNT" type="decimal" db:index="7" db:default="true" db:type="NUMBER" minOccurs="0" nillable="true"/>
+            <element name="P_EXCEPTION_MESSAGE_CODE" type="string" db:index="8" db:default="true" db:type="VARCHAR2" minOccurs="0" nillable="true"/>
+            <element name="P_EXCEPTION_MESSAGE" type="string" db:index="9" db:type="CLOB" minOccurs="0" nillable="true"/>
+            <element name="P_EXCEPTION_MESSAGE_SEVERITY" type="string" db:index="10" db:default="true" db:type="VARCHAR2" minOccurs="0" nillable="true"/>
+            <element name="P_EXCEPTION_STATUS" type="string" db:index="11" db:default="true" db:type="VARCHAR2" minOccurs="0" nillable="true"/>
+            <element name="P_NOTIFY_FLAG" type="string" db:index="12" db:default="true" db:type="VARCHAR2" minOccurs="0" nillable="true"/>
+            <element name="P_EXCEPTION_PAYLOAD" type="db:PUBLIC.XMLTYPE" db:index="13" db:type="Opaque" minOccurs="0" nillable="true"/>
+            <element name="P_ATTRIBUTE1" type="string" db:index="14" db:default="true" db:type="VARCHAR2" minOccurs="0" nillable="true"/>
+            <element name="P_ATTRIBUTE2" type="string" db:index="15" db:default="true" db:type="VARCHAR2" minOccurs="0" nillable="true"/>
+            <element name="P_ATTRIBUTE3" type="string" db:index="16" db:default="true" db:type="VARCHAR2" minOccurs="0" nillable="true"/>
+            <element name="P_ATTRIBUTE4" type="string" db:index="17" db:default="true" db:type="VARCHAR2" minOccurs="0" nillable="true"/>
+            <element name="P_ATTRIBUTE5" type="string" db:index="18" db:default="true" db:type="VARCHAR2" minOccurs="0" nillable="true"/>
+            <element name="P_ATTRIBUTE6" type="string" db:index="19" db:default="true" db:type="VARCHAR2" minOccurs="0" nillable="true"/>
+            <element name="P_ATTRIBUTE7" type="string" db:index="20" db:default="true" db:type="VARCHAR2" minOccurs="0" nillable="true"/>
+            <element name="P_ATTRIBUTE8" type="string" db:index="21" db:default="true" db:type="VARCHAR2" minOccurs="0" nillable="true"/>
+            <element name="P_ATTRIBUTE9" type="string" db:index="22" db:default="true" db:type="VARCHAR2" minOccurs="0" nillable="true"/>
+            <element name="P_ATTRIBUTE10" type="string" db:index="23" db:default="true" db:type="VARCHAR2" minOccurs="0" nillable="true"/>
+            <element name="P_ATTRIBUTE11" type="string" db:index="24" db:default="true" db:type="VARCHAR2" minOccurs="0" nillable="true"/>
+            <element name="P_ATTRIBUTE12" type="string" db:index="25" db:default="true" db:type="VARCHAR2" minOccurs="0" nillable="true"/>
+            <element name="P_ATTRIBUTE13" type="string" db:index="26" db:default="true" db:type="VARCHAR2" minOccurs="0" nillable="true"/>
+            <element name="P_ATTRIBUTE14" type="string" db:index="27" db:default="true" db:type="VARCHAR2" minOccurs="0" nillable="true"/>
+            <element name="P_ATTRIBUTE15" type="string" db:index="28" db:default="true" db:type="VARCHAR2" minOccurs="0" nillable="true"/>
+            <element name="P_CREATION_DATE" type="dateTime" db:index="29" db:default="true" db:type="DATE" minOccurs="0" nillable="true"/>
+            <element name="P_CREATED_BY" type="decimal" db:index="30" db:default="true" db:type="NUMBER" minOccurs="0" nillable="true"/>
+            <element name="P_LAST_UPDATE_DATE" type="dateTime" db:index="31" db:default="true" db:type="DATE" minOccurs="0" nillable="true"/>
+            <element name="P_LAST_UPDATED_BY" type="decimal" db:index="32" db:default="true" db:type="NUMBER" minOccurs="0" nillable="true"/>
+            <element name="P_LAST_UPDATE_LOGIN" type="decimal" db:index="33" db:default="true" db:type="NUMBER" minOccurs="0" nillable="true"/>
+         </sequence>
+      </complexType>
+   </element>
+   <element name="OutputParameters">
+      <complexType>
+         <sequence>
+            <element name="X_RETCODE" type="string" db:index="34" db:type="VARCHAR2" minOccurs="0" nillable="true"/>
+            <element name="X_RET_STATUS" type="string" db:index="35" db:type="VARCHAR2" minOccurs="0" nillable="true"/>
+         </sequence>
+      </complexType>
+   </element>
+   <complexType name="PUBLIC.XMLTYPE">
+      <sequence>
+         <any processContents="skip"/>
+      </sequence>
+   </complexType>
+</schema>

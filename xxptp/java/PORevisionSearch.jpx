@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding='windows-1252'?>
+<!DOCTYPE JboProject SYSTEM "jbo_03_01.dtd">
+
+<JboProject
+   Name="OfficeDepotProject"
+   SeparateXMLFiles="true"
+   PackageName="" >
+   <Substitutes>
+      <Substitute OldName ="oracle.apps.pos.changeorder.server.PosRevisionHistoryVO" NewName ="od.oracle.apps.xxptp.pos.changeorder.server.ODPosRevisionHistoryVO" />
+      <Substitute OldName ="oracle.apps.pos.isp.server.CompareHeaderInfo" NewName ="od.oracle.apps.xxptp.pos.isp.server.ODCompareHeaderInfo" />
+      <Substitute OldName ="oracle.apps.pos.isp.server.CompareResult" NewName ="od.oracle.apps.xxptp.pos.isp.server.ODCompareResult" />
+   </Substitutes>
+</JboProject>

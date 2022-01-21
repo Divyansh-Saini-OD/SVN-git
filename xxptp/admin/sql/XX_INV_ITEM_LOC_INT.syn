@@ -1,0 +1,55 @@
+REM============================================================================================
+REM                                 Start Of Script                                            
+REM============================================================================================
+
+--+=============================================================================================+--
+--|                                                                                             |--
+--| Program Name   : XX_INV_ITEM_LOC_INT.syn                                                    |--        
+--|                                                                                             |--   
+--| Purpose        : Create Custom Synonyms                                                     |--
+--|                  The Objects created are:                                                   |--
+--|                                                                                             |--
+--|                  1. XX_INV_ITEM_LOC_INT (Synonym for XX_INV_ITEM_LOC_INT                    |--  
+--|                                                                                             |-- 
+--| Change History  :                                                                           |--
+--| Version           Date             Changed By              Description                      |--
+--+=============================================================================================+--
+--| 1.0              10-Jun-2008       Paddy Sanjeevi          Original                         |--
+--+=============================================================================================+-- 
+
+SET VERIFY   OFF
+SET TERM     ON
+SET FEEDBACK OFF
+SET SHOW     OFF
+SET ECHO     OFF
+SET TAB      OFF
+                   
+                   
+PROMPT
+PROMPT Creating Synonym in APPS...
+PROMPT
+
+WHENEVER SQLERROR CONTINUE
+
+PROMPT
+PROMPT Creating SYNONYM XX_ITEM_LOC_INTF
+PROMPT
+
+CREATE OR REPLACE SYNONYM XX_INV_ITEM_LOC_INT FOR XXPTP.XX_INV_ITEM_LOC_INT;
+
+WHENEVER SQLERROR CONTINUE
+
+PROMPT
+PROMPT Exiting....
+PROMPT
+
+SET FEEDBACK ON
+
+EXIT;
+
+REM=================================================================================================
+REM                                   End Of Script                                            
+REM=================================================================================================
+
+
+

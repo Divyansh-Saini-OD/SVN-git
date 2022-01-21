@@ -1,0 +1,464 @@
+<?xml version = "1.0" encoding = "UTF-8" ?>
+<!--
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  Oracle JDeveloper BPEL Designer 
+  
+  Created: Thu May 24 11:59:35 EDT 2007
+  Author:  Rizwan-Appees
+  Purpose: Synchronous BPEL Process
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+-->
+<process name="DPSCancel_SendNowDocsMsgProcess"
+         targetNamespace="http://xmlns.oracle.com/DPSCancel_SendNowDocsMsgProcess"
+         xmlns="http://schemas.xmlsoap.org/ws/2003/03/business-process/"
+         xmlns:bpws="http://schemas.xmlsoap.org/ws/2003/03/business-process/"
+         xmlns:xp20="http://www.oracle.com/XSL/Transform/java/oracle.tip.pc.services.functions.Xpath20"
+         xmlns:ns4="http://xmlns.oracle.com/pcbpel/adapter/db/APPS/XX_OM_DPSCANCEL_PKG/DELETE_PARENTID_BPEL/"
+         xmlns:ns7="http://xmlns.oracle.com/ODErrorLogger"
+         xmlns:ids="http://xmlns.oracle.com/bpel/services/IdentityService/xpath"
+         xmlns:ldap="http://schemas.oracle.com/xpath/extension/ldap"
+         xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+         xmlns:ns12="http://xmlns.oracle.com/DPSCancel_ClearStaging"
+         xmlns:ns5="http://xmlns.oracle.com/pcbpel/adapter/db/DBErrorWrite/"
+         xmlns:client="http://xmlns.oracle.com/DPSCancel_SendNowDocsMsgProcess"
+         xmlns:ns6="http://xmlns.oracle.com/pcbpel/adapter/db/APPS/XXOD_GLOBAL_EXCEPTION_PKG/INSERT_EXCEPTION/"
+         xmlns:ora="http://schemas.oracle.com/xpath/extension"
+         xmlns:ns11="http://xmlns.oracle.com/pcbpel/adapter/db/XXOM/XX_OM_GLOBAL_EXCEPTION_PKG/INSERT_EXCEPTION/"
+         xmlns:ns9="ODError"
+         xmlns:hwf="http://xmlns.oracle.com/bpel/workflow/xpath"
+         xmlns:ns1="http://xmlns.oracle.com/DPSCancel_ProcessNowDocsReceive"
+         xmlns:ehdr="http://www.oracle.com/XSL/Transform/java/oracle.tip.esb.server.headers.ESBHeaderFunctions"
+         xmlns:ns3="http://xmlns.oracle.com/pcbpel/adapter/db/plDBClearStg/"
+         xmlns:ns2="http://www.openapplications.org/oagis/9"
+         xmlns:bpelx="http://schemas.oracle.com/bpel/extension"
+         xmlns:orcl="http://www.oracle.com/XSL/Transform/java/oracle.tip.pc.services.functions.ExtFunc"
+         xmlns:ns8="http://xmlns.oracle.com/pcbpel/adapter/aq/EnqueueMsg/"
+         xmlns:ns10="http://xmlns.oracle.com/pcbpel/adapter/aq/outbound/">
+  <!-- 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+      PARTNERLINKS                                                      
+      List of services participating in this BPEL process               
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  -->
+  <partnerLinks>
+    <!-- 
+      The 'client' role represents the requester of this service. It is 
+      used for callback. The location and correlation information associated
+      with the client role are automatically set using WS-Addressing.
+    -->
+    <partnerLink name="client"
+                 partnerLinkType="client:DPSCancel_SendNowDocsMsgProcess"
+                 myRole="DPSCancel_SendNowDocsMsgProcessProvider"/>
+    <partnerLink name="ProcessNowDocsReceive"
+                 partnerRole="DPSCancel_ProcessNowDocsReceiveProvider"
+                 partnerLinkType="ns1:DPSCancel_ProcessNowDocsReceive"/>
+    <partnerLink name="ODErrorLogger" partnerRole="ODErrorLoggerProvider"
+                 partnerLinkType="ns7:ODErrorLogger"/>
+    <partnerLink name="EnqueueMessage" partnerRole="Enqueue_role"
+                 partnerLinkType="ns8:Enqueue_plt"/>
+    <partnerLink name="ClearStagingProcess"
+                 partnerRole="DPSCancel_ClearStagingProvider"
+                 partnerLinkType="ns12:DPSCancel_ClearStaging"/>
+  </partnerLinks>
+  <!-- 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+      VARIABLES                                                        
+      List of messages and XML documents used within this BPEL process 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  -->
+  <variables>
+    <!-- Reference to the message passed as input during initiation -->
+    <variable name="inputVariable"
+              messageType="client:DPSCancel_SendNowDocsMsgProcessRequestMessage"/>
+    <!-- Reference to the message that will be returned to the requester-->
+    <variable name="outputVariable"
+              messageType="client:DPSCancel_SendNowDocsMsgProcessResponseMessage"/>
+    <variable name="InvokeNowDocsIn"
+              messageType="ns1:DPSCancel_ProcessNowDocsReceiveRequestMessage"/>
+    <variable name="InvokeNowDocsout"
+              messageType="ns1:DPSCancel_ProcessNowDocsReceiveResponseMessage"/>
+    <variable name="RemoteFaultVar" messageType="bpelx:RuntimeFaultMessage"/>
+    <variable name="InvokeRemErrorLoggerIn"
+              messageType="ns7:ODErrorLoggerRequestMessage"/>
+    <variable name="InvokeRemEnqueueIn" messageType="ns8:SalesOrderCancel_msg"/>
+    <variable name="ReplyClientRemoteOut"
+              messageType="client:DPSCancel_SendNowDocsMsgProcessResponseMessage"/>
+    <variable name="BindingFaultVar" messageType="bpelx:RuntimeFaultMessage"/>
+    <variable name="InvokeBindErrorLoggerIn"
+              messageType="ns7:ODErrorLoggerRequestMessage"/>
+    <variable name="InvokeBindEnqueueIn"
+              messageType="ns8:SalesOrderCancel_msg"/>
+    <variable name="ReplyClientBindOut"
+              messageType="client:DPSCancel_SendNowDocsMsgProcessResponseMessage"/>
+    <variable name="InvokeCatchAllErrorLoggerIn"
+              messageType="ns7:ODErrorLoggerRequestMessage"/>
+    <variable name="InvokeCatchAllEnqueueIn"
+              messageType="ns8:SalesOrderCancel_msg"/>
+    <variable name="ReplyClientCatchAllOut"
+              messageType="client:DPSCancel_SendNowDocsMsgProcessResponseMessage"/>
+    <variable name="SessionIDVariable" type="xsd:string"/>
+    <variable name="InvokeClearStagingIn"
+              messageType="ns12:DPSCancel_ClearStagingRequestMessage"/>
+    <variable name="InvokeClearStagingOut"
+              messageType="ns12:DPSCancel_ClearStagingResponseMessage"/>
+    <variable name="activityNameVar" type="xsd:string"/>
+    <variable name="EnqHeader" messageType="ns10:Header"/>
+    <variable name="activityDescriptionVar" type="xsd:string"/>
+  </variables>
+  <faultHandlers>
+    <catch faultName="bpelx:remoteFault" faultVariable="RemoteFaultVar">
+      <sequence name="Sequence_3">
+        <assign name="AssignRemEnqueueMsg">
+          <copy>
+            <from variable="inputVariable" part="payload"
+                  query="/ns2:SalesOrderCancel"/>
+            <to variable="InvokeRemEnqueueIn" part="SalesOrderCancel"
+                query="/ns2:SalesOrderCancel"/>
+          </copy>
+          <copy>
+            <from expression="ora:getProcessId()"/>
+            <to variable="InvokeRemErrorLoggerIn" part="payload"
+                query="/ns9:ErrorData/ns9:ProcessInfo/ns9:BusinessProcessName"/>
+          </copy>
+          <copy>
+            <from expression="ora:getDomainId()"/>
+            <to variable="InvokeRemErrorLoggerIn" part="payload"
+                query="/ns9:ErrorData/ns9:ProcessInfo/ns9:BusinessProcessDomain"/>
+          </copy>
+          <copy>
+            <from variable="RemoteFaultVar" part="code"/>
+            <to variable="InvokeRemErrorLoggerIn" part="payload"
+                query="/ns9:ErrorData/ns9:ErrorDetails/ns9:ErrorCode"/>
+          </copy>
+          <copy>
+            <from variable="RemoteFaultVar" part="summary"/>
+            <to variable="InvokeRemErrorLoggerIn" part="payload"
+                query="/ns9:ErrorData/ns9:ErrorDetails/ns9:ErrorDescription"/>
+          </copy>
+          <copy>
+            <from variable="RemoteFaultVar" part="detail"/>
+            <to variable="InvokeRemErrorLoggerIn" part="payload"
+                query="/ns9:ErrorData/ns9:ErrorDetails/ns9:ErrorText"/>
+          </copy>
+          <copy>
+            <from expression="'Fatal'"/>
+            <to variable="InvokeRemErrorLoggerIn" part="payload"
+                query="/ns9:ErrorData/ns9:ErrorDetails/ns9:ErrorSeverity"/>
+          </copy>
+          <copy>
+            <from expression="ora:getCurrentDateTime()"/>
+            <to variable="InvokeRemErrorLoggerIn" part="payload"
+                query="/ns9:ErrorData/ns9:ErrorDetails/ns9:ErrorDateTime"/>
+          </copy>
+          <copy>
+            <from expression="ora:getCurrentDateTime()"/>
+            <to variable="InvokeRemErrorLoggerIn" part="payload"
+                query="/ns9:ErrorData/ns9:MessageDetails/ns9:MessageDateTime"/>
+          </copy>
+          <copy>
+            <from expression="ids:getDefaultRealmName()"/>
+            <to variable="InvokeRemErrorLoggerIn" part="payload"
+                query="/ns9:ErrorData/ns9:ProcessInfo/ns9:SystemName"/>
+          </copy>
+          <copy>
+            <from variable="activityNameVar"/>
+            <to variable="InvokeRemErrorLoggerIn" part="payload"
+                query="/ns9:ErrorData/ns9:ProcessInfo/ns9:BusinessProcessStep"/>
+          </copy>
+          <copy>
+            <from expression="ora:getContentAsString(bpws:getVariableData('inputVariable','payload','/ns2:SalesOrderCancel'))"/>
+            <to variable="InvokeRemErrorLoggerIn" part="payload"
+                query="/ns9:ErrorData/ns9:MessageDetails/ns9:MessageData"/>
+          </copy>
+          <copy>
+            <from expression="ora:generateGUID()"/>
+            <to variable="InvokeRemErrorLoggerIn" part="payload"
+                query="/ns9:ErrorData/ns9:ProcessInfo/ns9:BusinessProcessId"/>
+          </copy>
+          <copy>
+            <from expression='ora:doc("${server_url}/xmllib/otc/GlobalParameters.xml","/GlobalParameters/OTC/DPS/EnqueueDelay")'/>
+            <to variable="EnqHeader" part="Header"
+                query="/ns10:Header/ns10:Delay"/>
+          </copy>
+          <copy>
+            <from expression='ora:doc("${server_url}/xmllib/otc/GlobalParameters.xml","/GlobalParameters/OTC/DPS/ReplyException")'/>
+            <to variable="ReplyClientRemoteOut" part="payload"
+                query="/client:DPSCancel_SendNowDocsMsgProcessProcessResponse/client:result"/>
+          </copy>
+        </assign>
+        <invoke name="InvokeRemErrorLogger" partnerLink="ODErrorLogger"
+                portType="ns7:ODErrorLogger" operation="initiate"
+                inputVariable="InvokeRemErrorLoggerIn"/>
+        <invoke name="InvokeRemEnqueue" partnerLink="EnqueueMessage"
+                portType="ns8:Enqueue_ptt" operation="Enqueue"
+                inputVariable="InvokeRemEnqueueIn"
+                bpelx:inputHeaderVariable="EnqHeader"/>
+        <reply name="ReplyClientRemote" partnerLink="client"
+               portType="client:DPSCancel_SendNowDocsMsgProcess"
+               operation="process" variable="ReplyClientRemoteOut"/>
+      </sequence>
+    </catch>
+    <catch faultName="bpelx:bindingFault" faultVariable="BindingFaultVar">
+      <sequence name="Sequence_4">
+        <assign name="AssignBindEnqueueMsg">
+          <bpelx:annotation>
+            <bpelx:documentation>Assigns required exception variables to be
+                                 logged into ErrorLogger</bpelx:documentation>
+          </bpelx:annotation>
+          <copy>
+            <from variable="inputVariable" part="payload"
+                  query="/ns2:SalesOrderCancel"/>
+            <to variable="InvokeBindEnqueueIn" part="SalesOrderCancel"/>
+          </copy>
+          <copy>
+            <from expression="ora:getProcessId()"/>
+            <to variable="InvokeBindErrorLoggerIn" part="payload"
+                query="/ns9:ErrorData/ns9:ProcessInfo/ns9:BusinessProcessName"/>
+          </copy>
+          <copy>
+            <from expression="ora:getDomainId()"/>
+            <to variable="InvokeBindErrorLoggerIn" part="payload"
+                query="/ns9:ErrorData/ns9:ProcessInfo/ns9:BusinessProcessDomain"/>
+          </copy>
+          <copy>
+            <from variable="BindingFaultVar" part="code"/>
+            <to variable="InvokeBindErrorLoggerIn" part="payload"
+                query="/ns9:ErrorData/ns9:ErrorDetails/ns9:ErrorCode"/>
+          </copy>
+          <copy>
+            <from variable="BindingFaultVar" part="summary"/>
+            <to variable="InvokeBindErrorLoggerIn" part="payload"
+                query="/ns9:ErrorData/ns9:ErrorDetails/ns9:ErrorDescription"/>
+          </copy>
+          <copy>
+            <from variable="BindingFaultVar" part="detail"/>
+            <to variable="InvokeBindErrorLoggerIn" part="payload"
+                query="/ns9:ErrorData/ns9:ErrorDetails/ns9:ErrorText"/>
+          </copy>
+          <copy>
+            <from expression="'Fatal'"/>
+            <to variable="InvokeBindErrorLoggerIn" part="payload"
+                query="/ns9:ErrorData/ns9:ErrorDetails/ns9:ErrorSeverity"/>
+          </copy>
+          <copy>
+            <from expression="ora:getCurrentDateTime()"/>
+            <to variable="InvokeBindErrorLoggerIn" part="payload"
+                query="/ns9:ErrorData/ns9:ErrorDetails/ns9:ErrorDateTime"/>
+          </copy>
+          <copy>
+            <from expression="ora:getCurrentDateTime()"/>
+            <to variable="InvokeBindErrorLoggerIn" part="payload"
+                query="/ns9:ErrorData/ns9:MessageDetails/ns9:MessageDateTime"/>
+          </copy>
+          <copy>
+            <from expression="ids:getDefaultRealmName()"/>
+            <to variable="InvokeBindErrorLoggerIn" part="payload"
+                query="/ns9:ErrorData/ns9:ProcessInfo/ns9:SystemName"/>
+          </copy>
+          <copy>
+            <from variable="activityNameVar"/>
+            <to variable="InvokeBindErrorLoggerIn" part="payload"
+                query="/ns9:ErrorData/ns9:ProcessInfo/ns9:BusinessProcessStep"/>
+          </copy>
+          <copy>
+            <from expression="ora:getContentAsString(bpws:getVariableData('inputVariable','payload','/ns2:SalesOrderCancel'))"/>
+            <to variable="InvokeBindErrorLoggerIn" part="payload"
+                query="/ns9:ErrorData/ns9:MessageDetails/ns9:MessageData"/>
+          </copy>
+          <copy>
+            <from expression="ora:generateGUID()"/>
+            <to variable="InvokeBindErrorLoggerIn" part="payload"
+                query="/ns9:ErrorData/ns9:ProcessInfo/ns9:BusinessProcessId"/>
+          </copy>
+          <copy>
+            <from expression='ora:doc("${server_url}/xmllib/otc/GlobalParameters.xml","/GlobalParameters/OTC/DPS/EnqueueDelay")'/>
+            <to variable="EnqHeader" part="Header"
+                query="/ns10:Header/ns10:Delay"/>
+          </copy>
+          <copy>
+            <from expression='ora:doc("${server_url}/xmllib/otc/GlobalParameters.xml","/GlobalParameters/OTC/DPS/ReplyException")'/>
+            <to variable="ReplyClientBindOut" part="payload"
+                query="/client:DPSCancel_SendNowDocsMsgProcessProcessResponse/client:result"/>
+          </copy>
+        </assign>
+        <invoke name="InvokeBindErrorLogger" partnerLink="ODErrorLogger"
+                portType="ns7:ODErrorLogger" operation="initiate"
+                inputVariable="InvokeBindErrorLoggerIn"/>
+        <invoke name="InvokeBindEnqueue" partnerLink="EnqueueMessage"
+                portType="ns8:Enqueue_ptt" operation="Enqueue"
+                inputVariable="InvokeBindEnqueueIn"
+                bpelx:inputHeaderVariable="EnqHeader"/>
+        <reply name="ReplyClientBind" partnerLink="client"
+               portType="client:DPSCancel_SendNowDocsMsgProcess"
+               operation="process" variable="ReplyClientBindOut"/>
+      </sequence>
+    </catch>
+    <catchAll>
+      <sequence name="Sequence_5">
+        <assign name="AssignCatchAllEnqueueMsg">
+          <copy>
+            <from variable="inputVariable" part="payload"
+                  query="/ns2:SalesOrderCancel"/>
+            <to variable="InvokeCatchAllEnqueueIn" part="SalesOrderCancel"/>
+          </copy>
+          <copy>
+            <from expression="ora:getProcessId()"/>
+            <to variable="InvokeCatchAllErrorLoggerIn" part="payload"
+                query="/ns9:ErrorData/ns9:ProcessInfo/ns9:BusinessProcessName"/>
+          </copy>
+          <copy>
+            <from expression="ora:getDomainId()"/>
+            <to variable="InvokeCatchAllErrorLoggerIn" part="payload"
+                query="/ns9:ErrorData/ns9:ProcessInfo/ns9:BusinessProcessDomain"/>
+          </copy>
+          <copy>
+            <from expression="'Fatal'"/>
+            <to variable="InvokeCatchAllErrorLoggerIn" part="payload"
+                query="/ns9:ErrorData/ns9:ErrorDetails/ns9:ErrorSeverity"/>
+          </copy>
+          <copy>
+            <from expression="ora:getCurrentDateTime()"/>
+            <to variable="InvokeCatchAllErrorLoggerIn" part="payload"
+                query="/ns9:ErrorData/ns9:ErrorDetails/ns9:ErrorDateTime"/>
+          </copy>
+          <copy>
+            <from expression="ora:getCurrentDateTime()"/>
+            <to variable="InvokeCatchAllErrorLoggerIn" part="payload"
+                query="/ns9:ErrorData/ns9:MessageDetails/ns9:MessageDateTime"/>
+          </copy>
+          <copy>
+            <from expression="ids:getDefaultRealmName()"/>
+            <to variable="InvokeCatchAllErrorLoggerIn" part="payload"
+                query="/ns9:ErrorData/ns9:ProcessInfo/ns9:SystemName"/>
+          </copy>
+          <copy>
+            <from expression="ora:generateGUID()"/>
+            <to variable="InvokeCatchAllErrorLoggerIn" part="payload"
+                query="/ns9:ErrorData/ns9:ProcessInfo/ns9:BusinessProcessId"/>
+          </copy>
+          <copy>
+            <from expression='ora:doc("${server_url}/xmllib/otc/GlobalParameters.xml","/GlobalParameters/OTC/DPS/EnqueueDelay")'/>
+            <to variable="EnqHeader" part="Header"
+                query="/ns10:Header/ns10:Delay"/>
+          </copy>
+          <copy>
+            <from expression='ora:doc("${server_url}/xmllib/otc/GlobalParameters.xml","/GlobalParameters/OTC/DPS/ReplyException")'/>
+            <to variable="ReplyClientCatchAllOut" part="payload"
+                query="/client:DPSCancel_SendNowDocsMsgProcessProcessResponse/client:result"/>
+          </copy>
+          <copy>
+            <from variable="activityNameVar"/>
+            <to variable="InvokeCatchAllErrorLoggerIn" part="payload"
+                query="/ns9:ErrorData/ns9:ProcessInfo/ns9:BusinessProcessStep"/>
+          </copy>
+          <copy>
+            <from expression="ora:getContentAsString(bpws:getVariableData('inputVariable','payload','/ns2:SalesOrderCancel'))"/>
+            <to variable="InvokeCatchAllErrorLoggerIn" part="payload"
+                query="/ns9:ErrorData/ns9:MessageDetails/ns9:MessageData"/>
+          </copy>
+          <copy>
+            <from expression="''"/>
+            <to variable="InvokeCatchAllErrorLoggerIn" part="payload"
+                query="/ns9:ErrorData/ns9:ErrorDetails/ns9:ErrorCode"/>
+          </copy>
+          <copy>
+            <from expression="concat('An error occurred while performing this acitvity ',bpws:getVariableData('activityNameVar'),bpws:getVariableData('activityDescriptionVar'))"/>
+            <to variable="InvokeCatchAllErrorLoggerIn" part="payload"
+                query="/ns9:ErrorData/ns9:ErrorDetails/ns9:ErrorDescription"/>
+          </copy>
+          <copy>
+            <from expression="concat('An error occurred while performing this acitvity ',bpws:getVariableData('activityNameVar'),bpws:getVariableData('activityDescriptionVar'))"/>
+            <to variable="InvokeCatchAllErrorLoggerIn" part="payload"
+                query="/ns9:ErrorData/ns9:ErrorDetails/ns9:ErrorText"/>
+          </copy>
+        </assign>
+        <invoke name="InvokeCatchAllErrorLogger" partnerLink="ODErrorLogger"
+                portType="ns7:ODErrorLogger" operation="initiate"
+                inputVariable="InvokeCatchAllErrorLoggerIn"/>
+        <invoke name="InvokeCatchAllEnqueue" partnerLink="EnqueueMessage"
+                portType="ns8:Enqueue_ptt" operation="Enqueue"
+                inputVariable="InvokeCatchAllEnqueueIn"
+                bpelx:inputHeaderVariable="EnqHeader"/>
+        <reply name="ReplyClientCatchAll" partnerLink="client"
+               portType="client:DPSCancel_SendNowDocsMsgProcess"
+               operation="process" variable="ReplyClientCatchAllOut"/>
+      </sequence>
+    </catchAll>
+  </faultHandlers>
+  <!-- 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+     ORCHESTRATION LOGIC                                               
+     Set of activities coordinating the flow of messages across the    
+     services integrated within this business process                  
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  -->
+  <sequence name="main">
+    <!-- Receive input from requestor. (Note: This maps to operation defined in DPSCancel_SendNowDocsMsgProcess.wsdl) -->
+    <receive name="receiveInput" partnerLink="client"
+             portType="client:DPSCancel_SendNowDocsMsgProcess"
+             operation="process" variable="inputVariable" createInstance="yes"/>
+    <!-- Generate reply to synchronous request -->
+    <assign name="AssignNowDocsInVar">
+      <copy>
+        <from variable="inputVariable" part="payload"
+              query="/ns2:SalesOrderCancel/ns2:ServiceHeader/ns2:ProcessControl/ns2:pipInstanceId/ns2:InstanceIdentifier"/>
+        <to variable="SessionIDVariable"/>
+      </copy>
+      <copy>
+        <from expression="''"/>
+        <to variable="inputVariable" part="payload"
+            query="/ns2:SalesOrderCancel/ns2:ServiceHeader/ns2:ProcessControl/ns2:pipInstanceId/ns2:InstanceIdentifier"/>
+      </copy>
+      <copy>
+        <from variable="inputVariable" part="payload"
+              query="/ns2:SalesOrderCancel"/>
+        <to variable="InvokeNowDocsIn" part="payload"
+            query="/ns2:SalesOrderCancel"/>
+      </copy>
+      <copy>
+        <from expression="'Invoke NowDocs Process '"/>
+        <to variable="activityNameVar"/>
+      </copy>
+      <copy>
+        <from expression="'(This activity calls NowDocs Process)'"/>
+        <to variable="activityDescriptionVar"/>
+      </copy>
+    </assign>
+    <invoke name="InvokeNowDocs" partnerLink="ProcessNowDocsReceive"
+            portType="ns1:DPSCancel_ProcessNowDocsReceive" operation="process"
+            inputVariable="InvokeNowDocsIn" outputVariable="InvokeNowDocsout"/>
+    <assign name="AssignClearStgInput">
+      <copy>
+        <from expression="normalize-space(bpws:getVariableData('SessionIDVariable'))"/>
+        <to variable="InvokeClearStagingIn" part="payload"
+            query="/ns12:DPSCancel_ClearStagingProcessRequest/ns12:input"/>
+      </copy>
+      <bpelx:append>
+        <bpelx:from expression="normalize-space('|')"/>
+        <bpelx:to variable="InvokeClearStagingIn" part="payload"
+                  query="/ns12:DPSCancel_ClearStagingProcessRequest/ns12:input"/>
+      </bpelx:append>
+      <bpelx:append>
+        <bpelx:from variable="InvokeNowDocsout" part="payload"
+                    query="/ns1:DPSCancel_ProcessNowDocsReceiveProcessResponse/ns1:result"/>
+        <bpelx:to variable="InvokeClearStagingIn" part="payload"
+                  query="/ns12:DPSCancel_ClearStagingProcessRequest/ns12:input"/>
+      </bpelx:append>
+      <copy>
+        <from expression="'Invoke Clear Staging ' "/>
+        <to variable="activityNameVar"/>
+      </copy>
+      <copy>
+        <from expression="'(This acitivity calls Clear Staging Process)'"/>
+        <to variable="activityDescriptionVar"/>
+      </copy>
+    </assign>
+    <invoke name="InvokeClearStaging" partnerLink="ClearStagingProcess"
+            portType="ns12:DPSCancel_ClearStaging" operation="process"
+            inputVariable="InvokeClearStagingIn"
+            outputVariable="InvokeClearStagingOut"/>
+    <reply name="replyOutput" partnerLink="client"
+           portType="client:DPSCancel_SendNowDocsMsgProcess" operation="process"
+           variable="outputVariable"/>
+  </sequence>
+</process>

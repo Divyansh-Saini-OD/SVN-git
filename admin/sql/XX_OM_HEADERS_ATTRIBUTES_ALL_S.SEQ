@@ -1,0 +1,77 @@
+-- +============================================================================================+
+-- |                        Office Depot - Project Simplify                                     |
+-- |                                                                                            |
+-- +============================================================================================+
+-- | Name         : XX_OM_HEADERS_ATTRIBUTES_ALL_S.SEQ                                          |
+-- | Rice Id      :                                                                             | 
+-- | Description  : OD Sales Accounting Order Import Sequence Creation                          |  
+-- | Purpose      :                                                                             |
+-- |                                                                                            |
+-- |                                                                                            |
+-- |Change Record:                                                                              |
+-- |===============                                                                             |
+-- |Version    Date          Author                Remarks                                      | 
+-- |=======    ==========    =================    ==============================================+
+-- |DRAFT 1A   03-May-2007   Bapuji Nanapaneni    Initial Version                               |
+-- |                                                                                            |
+-- +============================================================================================+
+
+
+SET VERIFY      OFF
+SET TERM        OFF
+SET FEEDBACK    OFF
+SET SHOW        OFF
+SET ECHO        OFF
+SET TAB         OFF
+
+COLUMN XXOM_login   NEW_VALUE XXOM_LOGIN   NOPRINT
+COLUMN XXOM_user    NEW_VALUE XXOM_USER    NOPRINT
+
+SET TERM ON
+
+SELECT '&&1' XXOM_LOGIN
+      ,'&&2' XXOM_USER
+FROM  SYS.dual
+WHERE ROWNUM = 1;
+
+WHENEVER SQLERROR EXIT 1
+
+Prompt Connecting TO Custom SCHEMA &&XXOM_USER
+
+CONNECT &&XXOM_LOGIN;
+
+------------------
+-- Sequence creation
+------------------
+PROMPT
+PROMPT Dropping Existing Sequences from &&XXOM_USER...
+PROMPT
+
+PROMPT
+PROMPT Dropping SEQUENCE xx_om_headers_attributes_all_s 
+PROMPT
+
+DROP SEQUENCE xx_om_headers_attributes_all_s;
+
+WHENEVER SQLERROR CONTINUE;
+
+PROMPT
+PROMPT Creating Custom Sequences......
+PROMPT
+
+PROMPT
+PROMPT Creating Sequence xx_om_headers_attributes_all_s
+PROMPT
+
+CREATE SEQUENCE xx_om_headers_attributes_all_s INCREMENT BY 1 START WITH 1 NOCYCLE NOCACHE NOORDER
+/
+
+WHENEVER SQLERROR EXIT 1
+
+PROMPT
+PROMPT Exiting....
+PROMPT
+
+SET FEEDBACK ON
+
+EXIT;

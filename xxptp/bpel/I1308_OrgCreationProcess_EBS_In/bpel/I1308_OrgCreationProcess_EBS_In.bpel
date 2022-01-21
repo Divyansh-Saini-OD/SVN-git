@@ -1,0 +1,357 @@
+<?xml version = "1.0" encoding = "UTF-8" ?>
+<!--
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  Oracle JDeveloper BPEL Designer 
+  
+  Created: Fri Jun 29 12:19:43 IST 2007
+  Author:  siddhsin
+  Purpose: Synchronous BPEL Process
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+-->
+<process name="I1308_OrgCreationProcess_EBS_In"
+         targetNamespace="http://xmlns.oracle.com/I1308_OrgCreationProcess_EBS_In"
+         xmlns="http://schemas.xmlsoap.org/ws/2003/03/business-process/"
+         xmlns:bpws="http://schemas.xmlsoap.org/ws/2003/03/business-process/"
+         xmlns:xp20="http://www.oracle.com/XSL/Transform/java/oracle.tip.pc.services.functions.Xpath20"
+         xmlns:ns4="http://xmlns.oracle.com/pcbpel/adapter/db/top/plOrgLocStg"
+         xmlns:ns7="ODError"
+         xmlns:ids="http://xmlns.oracle.com/bpel/services/IdentityService/xpath"
+         xmlns:ldap="http://schemas.oracle.com/xpath/extension/ldap"
+         xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+         xmlns:ns5="http://xmlns.oracle.com/pcbpel/adapter/db/APPS/XX_INV_ORG_LOC_DEF_PKG/PROCESS_MAIN/"
+         xmlns:client="http://xmlns.oracle.com/I1308_OrgCreationProcess_EBS_In"
+         xmlns:ns6="http://xmlns.oracle.com/ODErrorLogger"
+         xmlns:ora="http://schemas.oracle.com/xpath/extension"
+         xmlns:hwf="http://xmlns.oracle.com/bpel/workflow/xpath"
+         xmlns:ns1="http://xmlns.oracle.com/pcbpel/adapter/db/plOrgLocStg/"
+         xmlns:ehdr="http://www.oracle.com/XSL/Transform/java/oracle.tip.esb.server.headers.ESBHeaderFunctions"
+         xmlns:ns3="http://www.openapplications.org/officedepot/merchandising/foundation/1"
+         xmlns:ns2="http://xmlns.oracle.com/pcbpel/adapter/db/plOrgCreationProcess/"
+         xmlns:bpelx="http://schemas.oracle.com/bpel/extension"
+         xmlns:orcl="http://www.oracle.com/XSL/Transform/java/oracle.tip.pc.services.functions.ExtFunc">
+  <!-- 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+      PARTNERLINKS                                                      
+      List of services participating in this BPEL process               
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  -->
+  <partnerLinks>
+    <!-- 
+      The 'client' role represents the requester of this service. It is 
+      used for callback. The location and correlation information associated
+      with the client role are automatically set using WS-Addressing.
+    -->
+    <partnerLink name="client"
+                 partnerLinkType="client:I1308_OrgCreationProcess_EBS_In"
+                 myRole="I1308_OrgCreationProcess_EBS_InProvider"/>
+    <partnerLink name="plOrgLocStg" partnerRole="plOrgLocStg_role"
+                 partnerLinkType="ns1:plOrgLocStg_plt"/>
+    <partnerLink name="plOrgCreationProcess"
+                 partnerRole="plOrgCreationProcess_role"
+                 partnerLinkType="ns2:plOrgCreationProcess_plt"/>
+    <partnerLink myRole="ODErrorLoggerRequester" name="ODErrorLogger"
+                 partnerRole="ODErrorLoggerProvider"
+                 partnerLinkType="ns6:ODErrorLogger"/>
+  </partnerLinks>
+  <!-- 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+      VARIABLES                                                        
+      List of messages and XML documents used within this BPEL process 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  -->
+  <variables>
+    <!-- Reference to the message passed as input during initiation -->
+    <variable name="inputVariable"
+              messageType="client:I1308_OrgCreationProcess_EBS_InRequestMessage"/>
+    <!-- Reference to the message that will be returned to the requester-->
+    <variable name="outputVariable"
+              messageType="client:I1308_OrgCreationProcess_EBS_InResponseMessage"/>
+    <variable name="rcvOrgCreationIn"
+              messageType="client:I1308_OrgCreationProcess_EBS_InRequestMessage"/>
+    <variable name="invkOrgLocStgIn"
+              messageType="ns1:XxInvOrgLocDefStgCollection_msg"/>
+    <variable name="invkOrgCreationProcessIn" messageType="ns2:args_in_msg"/>
+    <variable name="invkOrgCreationProcessOut" messageType="ns2:args_out_msg"/>
+    <variable name="Reply_BindingFaultoutput"
+              messageType="client:I1308_OrgCreationProcess_EBS_InResponseMessage"/>
+    <variable name="Invoke_catchbindingfault_Input"
+              messageType="ns6:ODErrorLoggerRequestMessage"/>
+    <variable name="Reply_RemoteFaultoutput"
+              messageType="client:I1308_OrgCreationProcess_EBS_InResponseMessage"/>
+    <variable name="Invoke_catchremotefault_Input"
+              messageType="ns6:ODErrorLoggerRequestMessage"/>
+    <variable name="Reply_FaultMessage_Output"
+              messageType="client:I1308_OrgCreationProcess_EBS_InResponseMessage"/>
+    <variable name="Invoke_catchall_Input"
+              messageType="ns6:ODErrorLoggerRequestMessage"/>
+    <variable name="catchremotefault" messageType="bpelx:RuntimeFaultMessage"/>
+    <variable name="catchbindingfault" messageType="bpelx:RuntimeFaultMessage"/>
+  </variables>
+  <faultHandlers>
+    <catch faultName="bpelx:remoteFault" faultVariable="catchremotefault">
+      <sequence name="Seq_catchremotefault">
+        <assign name="setremotefault">
+          <copy>
+            <from expression="concat(ora:getProcessId(),ora:getProcessVersion())"/>
+            <to variable="Invoke_catchremotefault_Input" part="payload"
+                query="/ns7:ErrorData/ns7:ProcessInfo/ns7:BusinessProcessName"/>
+          </copy>
+          <copy>
+            <from expression="ora:getInstanceId()"/>
+            <to variable="Invoke_catchremotefault_Input" part="payload"
+                query="/ns7:ErrorData/ns7:ProcessInfo/ns7:BusinessProcessId"/>
+          </copy>
+          <copy>
+            <from expression="ora:getDomainId()"/>
+            <to variable="Invoke_catchremotefault_Input" part="payload"
+                query="/ns7:ErrorData/ns7:ProcessInfo/ns7:BusinessProcessDomain"/>
+          </copy>
+          <copy>
+            <from expression="ora:getProcessURL() "/>
+            <to variable="Invoke_catchremotefault_Input" part="payload"
+                query="/ns7:ErrorData/ns7:ProcessInfo/ns7:SystemName"/>
+          </copy>
+          <copy>
+            <from expression="'I1308_OrgCreationProcess_EBS_In'"/>
+            <to variable="Invoke_catchremotefault_Input" part="payload"
+                query="/ns7:ErrorData/ns7:ProcessInfo/ns7:BusinessProcessStep"/>
+          </copy>
+          <copy>
+            <from expression="xp20:current-dateTime()"/>
+            <to variable="Invoke_catchbindingfault_Input" part="payload"
+                query="/ns7:ErrorData/ns7:ErrorDetails/ns7:ErrorDateTime"/>
+          </copy>
+          <copy>
+            <from expression="bpws:getVariableData('catchremotefault','code')"/>
+            <to variable="Invoke_catchremotefault_Input" part="payload"
+                query="/ns7:ErrorData/ns7:ErrorDetails/ns7:ErrorCode"/>
+          </copy>
+          <copy>
+            <from expression="substring(bpws:getVariableData('catchremotefault','summary'),1,1000)"/>
+            <to variable="Invoke_catchremotefault_Input" part="payload"
+                query="/ns7:ErrorData/ns7:ErrorDetails/ns7:ErrorDescription"/>
+          </copy>
+          <copy>
+            <from expression="bpws:getVariableData('catchremotefault','code')"/>
+            <to variable="Reply_RemoteFaultoutput" part="payload"
+                query="/ns3:CommonResponse/ns3:ReturnCode"/>
+          </copy>
+          <copy>
+            <from expression="substring(bpws:getVariableData('catchremotefault','summary'),1,1000)"/>
+            <to variable="Reply_RemoteFaultoutput" part="payload"
+                query="/ns3:CommonResponse/ns3:ReturnMessage"/>
+          </copy>
+        </assign>
+        <reply name="Reply_RemoteFault" partnerLink="client"
+               portType="client:I1308_OrgCreationProcess_EBS_In"
+               operation="process" variable="Reply_RemoteFaultoutput"/>
+        <invoke name="Invoke_catchremotefault" partnerLink="ODErrorLogger"
+                portType="ns6:ODErrorLogger" operation="initiate"
+                inputVariable="Invoke_catchremotefault_Input"/>
+      </sequence>
+    </catch>
+    <catch faultName="bpelx:bindingFault" faultVariable="catchbindingfault">
+      <sequence name="Seq_catchbindingfault">
+        <assign name="setbindingfault">
+          <copy>
+            <from expression="concat(ora:getProcessId(),ora:getProcessVersion())"/>
+            <to variable="Invoke_catchbindingfault_Input" part="payload"
+                query="/ns7:ErrorData/ns7:ProcessInfo/ns7:BusinessProcessName"/>
+          </copy>
+          <copy>
+            <from expression="ora:getInstanceId()"/>
+            <to variable="Invoke_catchbindingfault_Input" part="payload"
+                query="/ns7:ErrorData/ns7:ProcessInfo/ns7:BusinessProcessId"/>
+          </copy>
+          <copy>
+            <from expression="ora:getDomainId()"/>
+            <to variable="Invoke_catchbindingfault_Input" part="payload"
+                query="/ns7:ErrorData/ns7:ProcessInfo/ns7:BusinessProcessDomain"/>
+          </copy>
+          <copy>
+            <from expression="ora:getProcessURL()"/>
+            <to variable="Invoke_catchbindingfault_Input" part="payload"
+                query="/ns7:ErrorData/ns7:ProcessInfo/ns7:SystemName"/>
+          </copy>
+          <copy>
+            <from expression="'I1308_OrgCreationProcess'"/>
+            <to variable="Invoke_catchbindingfault_Input" part="payload"
+                query="/ns7:ErrorData/ns7:ProcessInfo/ns7:BusinessProcessDomain"/>
+          </copy>
+          <copy>
+            <from expression="xp20:current-dateTime()"/>
+            <to variable="Invoke_catchbindingfault_Input" part="payload"
+                query="/ns7:ErrorData/ns7:ErrorDetails/ns7:ErrorDateTime"/>
+          </copy>
+          <copy>
+            <from expression="bpws:getVariableData('catchbindingfault','code')"/>
+            <to variable="Invoke_catchbindingfault_Input" part="payload"
+                query="/ns7:ErrorData/ns7:ErrorDetails/ns7:ErrorCode"/>
+          </copy>
+          <copy>
+            <from expression="substring(bpws:getVariableData('catchbindingfault','summary'),1,1000)"/>
+            <to variable="Invoke_catchbindingfault_Input" part="payload"
+                query="/ns7:ErrorData/ns7:ErrorDetails/ns7:ErrorDescription"/>
+          </copy>
+          <copy>
+            <from expression="bpws:getVariableData('catchbindingfault','code')"/>
+            <to variable="Reply_BindingFaultoutput" part="payload"
+                query="/ns3:CommonResponse/ns3:ReturnCode"/>
+          </copy>
+          <copy>
+            <from expression="substring(bpws:getVariableData('catchbindingfault','summary'),1,1000)"/>
+            <to variable="Reply_BindingFaultoutput" part="payload"
+                query="/ns3:CommonResponse/ns3:ReturnMessage"/>
+          </copy>
+        </assign>
+        <reply name="Reply_BindingFault" partnerLink="client"
+               portType="client:I1308_OrgCreationProcess_EBS_In"
+               operation="process" variable="Reply_BindingFaultoutput"/>
+        <invoke name="Invoke_catchbindingfault" partnerLink="ODErrorLogger"
+                portType="ns6:ODErrorLogger" operation="initiate"
+                inputVariable="Invoke_catchbindingfault_Input"/>
+      </sequence>
+    </catch>
+    <catchAll>
+      <sequence name="Seq_catchall">
+        <assign name="setcatchall">
+          <copy>
+            <from expression="concat(ora:getProcessId(),ora:getProcessVersion())"/>
+            <to variable="Invoke_catchall_Input" part="payload"
+                query="/ns7:ErrorData/ns7:ProcessInfo/ns7:BusinessProcessName"/>
+          </copy>
+          <copy>
+            <from expression="ora:getInstanceId()"/>
+            <to variable="Invoke_catchall_Input" part="payload"
+                query="/ns7:ErrorData/ns7:ProcessInfo/ns7:BusinessProcessId"/>
+          </copy>
+          <copy>
+            <from expression="ora:getDomainId()"/>
+            <to variable="Invoke_catchall_Input" part="payload"
+                query="/ns7:ErrorData/ns7:ProcessInfo/ns7:BusinessProcessDomain"/>
+          </copy>
+          <copy>
+            <from expression="ora:getProcessURL()"/>
+            <to variable="Invoke_catchall_Input" part="payload"
+                query="/ns7:ErrorData/ns7:ProcessInfo/ns7:SystemName"/>
+          </copy>
+          <copy>
+            <from expression="'I1308_OrgCreationProcess'"/>
+            <to variable="Invoke_catchall_Input" part="payload"
+                query="/ns7:ErrorData/ns7:ProcessInfo/ns7:BusinessProcessStep"/>
+          </copy>
+          <copy>
+            <from expression="xp20:current-dateTime()"/>
+            <to variable="Invoke_catchall_Input" part="payload"
+                query="/ns7:ErrorData/ns7:ErrorDetails/ns7:ErrorDateTime"/>
+          </copy>
+          <copy>
+            <from expression="bpws:getVariableData('catchremotefault','code')"/>
+            <to variable="Invoke_catchall_Input" part="payload"
+                query="/ns7:ErrorData/ns7:ErrorDetails/ns7:ErrorCode"/>
+          </copy>
+          <copy>
+            <from expression="substring(bpws:getVariableData('catchremotefault','summary'),1,1000)"/>
+            <to variable="Invoke_catchall_Input" part="payload"
+                query="/ns7:ErrorData/ns7:ErrorDetails/ns7:ErrorDescription"/>
+          </copy>
+          <copy>
+            <from expression="bpws:getVariableData('catchremotefault','code')"/>
+            <to variable="Reply_FaultMessage_Output" part="payload"
+                query="/ns3:CommonResponse/ns3:ReturnCode"/>
+          </copy>
+          <copy>
+            <from expression="substring(bpws:getVariableData('catchremotefault','summary'),1,1000)"/>
+            <to variable="Reply_FaultMessage_Output" part="payload"
+                query="/ns3:CommonResponse/ns3:ReturnMessage"/>
+          </copy>
+        </assign>
+        <reply name="Reply_FaultMessage" partnerLink="client"
+               portType="client:I1308_OrgCreationProcess_EBS_In"
+               operation="process" variable="Reply_FaultMessage_Output"/>
+        <invoke name="Invoke_catchall" partnerLink="ODErrorLogger"
+                portType="ns6:ODErrorLogger" operation="initiate"
+                inputVariable="Invoke_catchall_Input"/>
+      </sequence>
+    </catchAll>
+  </faultHandlers>
+  <!-- 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+     ORCHESTRATION LOGIC                                               
+     Set of activities coordinating the flow of messages across the    
+     services integrated within this business process                  
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  -->
+  <sequence name="main">
+    <!-- Receive input from requestor. (Note: This maps to operation defined in I1308_OrgCreationProcess_EBS_In.wsdl) -->
+    <receive name="rcvOrgCreation" partnerLink="client"
+             portType="client:I1308_OrgCreationProcess_EBS_In"
+             operation="process" variable="rcvOrgCreationIn"
+             createInstance="yes"/>
+    <!-- Generate reply to synchronous request -->
+    <assign name="asnInitialise">
+      <copy>
+        <from expression="ora:getInstanceId()"/>
+        <to variable="invkOrgLocStgIn" part="XxInvOrgLocDefStgCollection"
+            query="/ns4:XxInvOrgLocDefStgCollection/ns4:XxInvOrgLocDefStg/ns4:bpelInstanceId"/>
+      </copy>
+      <copy>
+        <from expression="1"/>
+        <to variable="invkOrgLocStgIn" part="XxInvOrgLocDefStgCollection"
+            query="/ns4:XxInvOrgLocDefStgCollection/ns4:XxInvOrgLocDefStg/ns4:controlId"/>
+      </copy>
+    </assign>
+    <assign name="xformXML2Stg">
+      <bpelx:annotation>
+        <bpelx:pattern>transformation</bpelx:pattern>
+      </bpelx:annotation>
+      <copy>
+        <from expression="ora:processXSLT('Transformation_2.xsl',bpws:getVariableData('rcvOrgCreationIn','payload'))"/>
+        <to variable="invkOrgLocStgIn" part="XxInvOrgLocDefStgCollection"/>
+      </copy>
+    </assign>
+    <assign name="asnsetBpelInstanceId">
+      <copy>
+        <from expression="ora:getInstanceId()"/>
+        <to variable="invkOrgLocStgIn" part="XxInvOrgLocDefStgCollection"
+            query="/ns4:XxInvOrgLocDefStgCollection/ns4:XxInvOrgLocDefStg/ns4:bpelInstanceId"/>
+      </copy>
+      <copy>
+        <from expression="ora:getInstanceId()"/>
+        <to variable="invkOrgCreationProcessIn" part="InputParameters"
+            query="/ns5:InputParameters/P_BPEL_INST_ID"/>
+      </copy>
+    </assign>
+    <invoke name="invkOrgLocStg" partnerLink="plOrgLocStg"
+            portType="ns1:plOrgLocStg_ptt" operation="insert"
+            inputVariable="invkOrgLocStgIn"/>
+    <assign name="asnsetActionType">
+      <copy>
+        <from expression="'I'"/>
+        <to variable="invkOrgCreationProcessIn" part="InputParameters"
+            query="/ns5:InputParameters/P_ACTION_TYPE"/>
+      </copy>
+    </assign>
+    <invoke name="invkOrgCreationProcess" partnerLink="plOrgCreationProcess"
+            portType="ns2:plOrgCreationProcess_ptt"
+            operation="plOrgCreationProcess"
+            inputVariable="invkOrgCreationProcessIn"
+            outputVariable="invkOrgCreationProcessOut"/>
+    <assign name="asnOutVariable">
+      <copy>
+        <from variable="invkOrgCreationProcessOut" part="OutputParameters"
+              query="/ns5:OutputParameters/X_MESSAGE_DATA"/>
+        <to variable="outputVariable" part="payload"
+            query="/ns3:CommonResponse/ns3:ReturnMessage"/>
+      </copy>
+      <copy>
+        <from expression="bpws:getVariableData('invkOrgCreationProcessOut','OutputParameters','/ns5:OutputParameters/X_MESSAGE_CODE')"/>
+        <to variable="outputVariable" part="payload"
+            query="/ns3:CommonResponse/ns3:ReturnCode"/>
+      </copy>
+    </assign>
+    <reply name="replyOutput" partnerLink="client"
+           portType="client:I1308_OrgCreationProcess_EBS_In" operation="process"
+           variable="outputVariable"/>
+  </sequence>
+</process>

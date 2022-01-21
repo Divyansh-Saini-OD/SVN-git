@@ -1,0 +1,41 @@
+SET VERIFY OFF;
+SET SHOW OFF;
+SET TAB OFF;
+SET ECHO OFF;
+SET FEEDBACK OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+-- +===================================================================+
+-- |                  Office Depot - Project Simplify                  |
+-- |                        WIPRO Technologies                         |
+-- +===================================================================+
+-- | Name             : XX_OM_SUPP_INV_HDR_ALL_S.seq                   |
+-- | Rice ID          : I1186 Supplier Inventory Feed                  |
+-- | Description      : This scipt creates sequence for the tables     |
+-- |                    XX_OM_SUPPLIER_INVFEED_HDR_ALL and             |
+-- |                    XX_OM_SUPPLIER_INVFEED_TXN_ALL                 |
+-- |                                                                   |
+-- |                                                                   |
+-- |                                                                   |
+-- |Change Record:                                                     |
+-- |===============                                                    |
+-- |Version   Date        Author           Remarks                     |
+-- |=======   ==========  =============    ============================|
+-- |DRAFT 1   6-JULY-2007 Aravind A         Initial Version            |
+-- |                                                                   |
+-- |                                                                   |
+-- +===================================================================+
+
+PROMPT
+PROMPT Dropping existing sequence xx_om_supp_inv_hdr_all_s
+PROMPT
+
+DROP SEQUENCE xx_om_supp_inv_hdr_all_s;
+
+PROMPT
+PROMPT Creating sequence xx_om_supp_inv_hdr_all_s
+PROMPT
+
+CREATE SEQUENCE xx_om_supp_inv_hdr_all_s INCREMENT BY 1 START WITH 1 NOCACHE;                                                                                              
+SHOW ERROR

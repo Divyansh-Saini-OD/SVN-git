@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+
+** OAGIS® Revision: 9.0 **
+** Date: 08 April 2005 **
+** Copyright 1998-2005, All Rights Reserved **
+
+This is an OAGIS® BOD XML Schema (XSD) Definition.
+
+License information for this file is provided in the file **2005 OAGi License Agreement.txt** that is provided with this download package.
+
+For support, more information, or to report implementation bugs, please contact the Open Applications Group at xml@openapplications.org.
+    
+     XML Schema 
+     
+    Name: \OAGIS\9.0\BODs\Developer\ShowShipmentUnit.xsd
+-->
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://www.openapplications.org/oagis/9" targetNamespace="http://www.openapplications.org/oagis/9" elementFormDefault="qualified" attributeFormDefault="unqualified">
+        <xsd:include schemaLocation="ShipmentUnit.xsd"/>
+        <xsd:element name="ShowShipmentUnit" type="ShowShipmentUnitType">
+                <xsd:annotation>
+                        <xsd:documentation source="http://www.openapplications.org/oagis/9">The purpose of the ShowShipmentUnit is to enable an application to provide a Show ShipmentUnit information from another business application module.  The ShowShipmentUnit is the response to the GetShipmentUnit.</xsd:documentation>
+                </xsd:annotation>
+        </xsd:element>
+        <xsd:complexType name="ShowShipmentUnitType">
+                <xsd:complexContent>
+                        <xsd:extension base="BusinessObjectDocumentType">
+                                <xsd:sequence>
+                                        <xsd:element name="DataArea" type="ShowShipmentUnitDataAreaType">
+                                                <xsd:annotation>
+                                                        <xsd:documentation source="http://www.openapplications.org/oagis/9">Is where the information that the BOD message carries is provided, in this case ShowShipmentUnit. The information consists of a Verb and one or more Nouns. The verb (Show) indicates the action to be performed on the Noun (ShipmentUnit).</xsd:documentation>
+                                                </xsd:annotation>
+                                        </xsd:element>
+                                </xsd:sequence>
+                        </xsd:extension>
+                </xsd:complexContent>
+        </xsd:complexType>
+        <xsd:complexType name="ShowShipmentUnitDataAreaType">
+                <xsd:sequence>
+                        <xsd:element ref="Show"/>
+                        <xsd:element ref="ShipmentUnit" maxOccurs="unbounded"/>
+                </xsd:sequence>
+        </xsd:complexType>
+</xsd:schema>

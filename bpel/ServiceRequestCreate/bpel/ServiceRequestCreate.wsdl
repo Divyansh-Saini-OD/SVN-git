@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions name="ServiceRequestCreate"
+             targetNamespace="http://xmlns.oracle.com/ServiceRequestCreate"
+             xmlns="http://schemas.xmlsoap.org/wsdl/"
+             xmlns:client="http://xmlns.oracle.com/ServiceRequestCreate"
+             xmlns:plnk="http://schemas.xmlsoap.org/ws/2003/05/partner-link/">
+
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	TYPE DEFINITION - List of services participating in this BPEL process
+	The default output of the BPEL designer uses strings as input and 
+	output to the BPEL Process. But you can define or import any XML 
+	Schema type and use them as part of the message types.
+	~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->   
+	<types>
+		<schema xmlns="http://www.w3.org/2001/XMLSchema">
+			<import namespace="http://xmlns.oracle.com/ServiceRequestCreate" schemaLocation="ServiceRequestCreate.xsd" />
+		</schema>
+	</types>
+
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	MESSAGE TYPE DEFINITION - Definition of the message types used as 
+	part of the port type defintions
+	~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->      
+	<message name="ServiceRequestCreateRequestMessage">
+		<part name="payload" element="client:ServiceRequestCreateProcessRequest"/>
+	</message>
+
+	<message name="ServiceRequestCreateResponseMessage">
+		<part name="payload" element="client:ServiceRequestCreateProcessResponse"/>
+	</message>
+
+
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	PORT TYPE DEFINITION - A port type groups a set of operations into
+	a logical service unit.
+	~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<!-- portType implemented by the ServiceRequestCreate BPEL process -->
+	<portType name="ServiceRequestCreate">
+		<operation name="initiate">
+			<input message="client:ServiceRequestCreateRequestMessage"/>
+		</operation>
+	</portType>
+
+	<!-- portType implemented by the requester of ServiceRequestCreate BPEL process
+	for asynchronous callback purposes
+	-->
+	<portType name="ServiceRequestCreateCallback">
+		<operation name="onResult">
+			<input message="client:ServiceRequestCreateResponseMessage"/>
+		</operation>
+	</portType>
+
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	PARTNER LINK TYPE DEFINITION
+	the ServiceRequestCreate partnerLinkType binds the provider and
+	requester portType into an asynchronous conversation.
+	~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<plnk:partnerLinkType name="ServiceRequestCreate">
+		<plnk:role name="ServiceRequestCreateProvider">
+			<plnk:portType name="client:ServiceRequestCreate"/>
+		</plnk:role>
+		<plnk:role name="ServiceRequestCreateRequester">
+			<plnk:portType name="client:ServiceRequestCreateCallback"/>
+		</plnk:role>
+	</plnk:partnerLinkType>
+</definitions>

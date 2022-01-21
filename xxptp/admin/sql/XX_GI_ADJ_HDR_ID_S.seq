@@ -1,0 +1,63 @@
+REM================================================================================================
+REM                                 Start Of Script
+REM================================================================================================
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     OFF
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+-- +=======================================================================+
+-- |               Office Depot - Project Simplify                         |
+-- |      Oracle NAIO/Office Depot/Consulting Organization                 |
+-- +=======================================================================+
+-- | Name             :XX_GI_ADJ_HDR_ID_S                                  |
+-- | Description      :Custom Sequence to generate adjustment header id for|
+-- |                   E0352_MiscTransaction                               |
+-- |                                                                       |
+-- |Change History:                                                        |
+-- |---------------                                                        |
+-- |                                                                       |
+-- |Version  Date        Author             Remarks                        |
+-- |-------  ----------- -----------------  -------------------------------|
+-- |Draft1a  04-May-2007 Remya Sasi         Initial Draft Version          |
+-- |1.0      16-Aug-2007 Remya Sasi         Baselined                      |
+-- +=======================================================================+
+
+PROMPT
+PROMPT Dropping Existing Sequence xx_gi_adj_hdr_id_s.....
+PROMPT
+
+-- ---------------------------------------------------
+-- Dropping existing Sequence xx_gi_adj_hdr_id_s
+-- ---------------------------------------------------
+DROP SEQUENCE xx_gi_adj_hdr_id_s ;
+
+
+
+PROMPT
+PROMPT Creating Existing Sequence xx_gi_adj_hdr_id_s....
+PROMPT
+
+-- ----------------------------------------------------------------------
+-- Create Custom sequence
+-- ----------------------------------------------------------------------
+
+CREATE SEQUENCE xx_gi_adj_hdr_id_s
+INCREMENT BY 1
+START WITH 1
+NOCACHE
+NOORDER;
+
+
+PROMPT
+PROMPT Exiting....
+PROMPT
+
+SHOW ERRORS;
+
+EXIT;
+REM=================================================================================================
+REM                                   End Of Script
+REM=================================================================================================

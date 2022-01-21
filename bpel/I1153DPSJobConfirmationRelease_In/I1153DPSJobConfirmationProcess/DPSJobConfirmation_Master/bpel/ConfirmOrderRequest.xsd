@@ -1,0 +1,282 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" targetNamespace="http://xmlbeans.orderProcessing.externalVendors.officedepot.com" xmlns="http://xmlbeans.orderProcessing.externalVendors.officedepot.com" elementFormDefault="qualified">
+  <xsd:element name="KnownInitiatingPartner">
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element ref="PartnerIdentification"/>
+      </xsd:sequence>
+    </xsd:complexType>
+  </xsd:element>
+  <xsd:element name="InstanceIdentifier" type="xsd:string"/>
+  <xsd:element name="GlobalUsageCode" type="xsd:string"/>
+  <xsd:element name="MessageControl">
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element ref="fromRole"/>
+        <xsd:element ref="fromService"/>
+        <xsd:element ref="Manifest"/>
+        <xsd:element ref="toRole"/>
+        <xsd:element ref="toService"/>
+      </xsd:sequence>
+    </xsd:complexType>
+  </xsd:element>
+  <xsd:element name="standardVersion">
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element ref="VersionIdentifier"/>
+      </xsd:sequence>
+    </xsd:complexType>
+  </xsd:element>
+  <xsd:element name="OrderNumber" type="xsd:string"/>
+  <xsd:element name="toService">
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element ref="GlobalBusinessServiceCode"/>
+      </xsd:sequence>
+    </xsd:complexType>
+  </xsd:element>
+  <xsd:element name="OrderSubNumber" type="xsd:string"/>
+  <xsd:element name="ActionIdentity">
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element ref="GlobalBusinessActionCode"/>
+      </xsd:sequence>
+    </xsd:complexType>
+  </xsd:element>
+  <xsd:element name="ItemId" type="xsd:string"/>
+  <xsd:element name="GlobalProcessIndicatorCode" type="xsd:string"/>
+  <xsd:element name="standardName">
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element ref="GlobalAdministeringAuthorityCode"/>
+      </xsd:sequence>
+    </xsd:complexType>
+  </xsd:element>
+  <xsd:element name="umberOfAttachments">
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element ref="ServiceContentControl"/>
+      </xsd:sequence>
+    </xsd:complexType>
+  </xsd:element>
+  <xsd:element name="GlobalBusinessServiceCode" type="xsd:string"/>
+  <xsd:element name="toRole">
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element ref="GlobalPartnerRoleClassificationCode"/>
+      </xsd:sequence>
+    </xsd:complexType>
+  </xsd:element>
+  <xsd:element name="ProcessControl">
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element ref="ActivityControl"/>
+        <xsd:element ref="GlobalUsageCode"/>
+        <xsd:element ref="pipCode"/>
+        <xsd:element ref="pipInstanceId"/>
+        <xsd:element ref="pipVersion"/>
+        <xsd:element ref="KnownInitiatingPartner"/>
+      </xsd:sequence>
+    </xsd:complexType>
+  </xsd:element>
+  <xsd:element name="GlobalAdministeringAuthorityCode" type="xsd:string"/>
+  <xsd:element name="messageSenderIdentification">
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element ref="PartnerIdentification"/>
+      </xsd:sequence>
+    </xsd:complexType>
+  </xsd:element>
+  <xsd:element name="fromService">
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element ref="GlobalBusinessServiceCode"/>
+      </xsd:sequence>
+    </xsd:complexType>
+  </xsd:element>
+  <xsd:element name="CountableAmount" type="xsd:string"/>
+  <xsd:element name="ConfirmOrderRequest">
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element ref="Preamble"/>
+        <xsd:element ref="DeliveryHeader"/>
+        <xsd:element ref="ServiceHeader"/>
+        <xsd:element ref="ConfirmOrderBody"/>
+      </xsd:sequence>
+    </xsd:complexType>
+  </xsd:element>
+  <xsd:element name="pipCode">
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element ref="GlobalProcessIndicatorCode"/>
+      </xsd:sequence>
+    </xsd:complexType>
+  </xsd:element>
+  <xsd:element name="ServiceHeader">
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element ref="ProcessControl"/>
+      </xsd:sequence>
+    </xsd:complexType>
+  </xsd:element>
+  <xsd:element name="messageTrackingID">
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element ref="InstanceIdentifier"/>
+      </xsd:sequence>
+    </xsd:complexType>
+  </xsd:element>
+  <xsd:element name="Attachment">
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element ref="description"/>
+        <xsd:element ref="GlobalMimeTypeQualifierCode"/>
+        <xsd:element ref="UniversalResourceIdentifier"/>
+      </xsd:sequence>
+    </xsd:complexType>
+  </xsd:element>
+  <xsd:element name="AffirmationIndicator" type="xsd:string"/>
+  <xsd:element name="Preamble">
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element ref="standardName"/>
+        <xsd:element ref="standardVersion"/>
+      </xsd:sequence>
+    </xsd:complexType>
+  </xsd:element>
+  <xsd:element name="UniversalResourceIdentifier" type="xsd:string"/>
+  <xsd:element name="FreeFormText" type="xsd:string"/>
+  <xsd:element name="isSecureTransportRequired">
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element ref="AffirmationIndicator"/>
+      </xsd:sequence>
+    </xsd:complexType>
+  </xsd:element>
+  <xsd:element name="DateTimeStamp" type="xsd:string"/>
+  <xsd:element name="fromRole">
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element ref="GlobalPartnerRoleClassificationCode"/>
+      </xsd:sequence>
+    </xsd:complexType>
+  </xsd:element>
+  <xsd:element name="GlobalPartnerRoleClassificationCode" type="xsd:string"/>
+  <xsd:element name="messageReceiverIdentification">
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element ref="PartnerIdentification"/>
+      </xsd:sequence>
+    </xsd:complexType>
+  </xsd:element>
+  <xsd:element name="GlobalBusinessActionCode" type="xsd:string"/>
+  <xsd:element name="GlobalBusinessIdentifier" type="xsd:string"/>
+  <xsd:element name="VendorPONumber" type="xsd:string"/>
+  <xsd:element name="ServiceContentControl">
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element ref="ActionIdentity"/>
+      </xsd:sequence>
+    </xsd:complexType>
+  </xsd:element>
+  <xsd:element name="ActivityControl">
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element ref="BusinessActivityIdentifier"/>
+        <xsd:element ref="MessageControl"/>
+      </xsd:sequence>
+    </xsd:complexType>
+  </xsd:element>
+  <xsd:element name="BusinessActivityIdentifier" type="xsd:string"/>
+  <xsd:element name="messageDateTime">
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element ref="DateTimeStamp"/>
+      </xsd:sequence>
+    </xsd:complexType>
+  </xsd:element>
+  <xsd:element name="locationID">
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element ref="Value"/>
+      </xsd:sequence>
+    </xsd:complexType>
+  </xsd:element>
+  <xsd:element name="Manifest">
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element ref="Attachment"/>
+        <xsd:element ref="numberOfAttachments"/>
+      </xsd:sequence>
+    </xsd:complexType>
+  </xsd:element>
+  <xsd:element name="DeliveryHeader">
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element ref="isSecureTransportRequired"/>
+        <xsd:element ref="messageDateTime"/>
+        <xsd:element ref="messageReceiverIdentification"/>
+        <xsd:element ref="messageSenderIdentification"/>
+        <xsd:element ref="messageTrackingID"/>
+      </xsd:sequence>
+    </xsd:complexType>
+  </xsd:element>
+  <xsd:element name="Value" type="xsd:string"/>
+  <xsd:element name="PartnerIdentification">
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element minOccurs="0" ref="domain"/>
+        <xsd:element ref="GlobalBusinessIdentifier"/>
+        <xsd:element minOccurs="0" ref="locationID"/>
+      </xsd:sequence>
+    </xsd:complexType>
+  </xsd:element>
+  <xsd:element name="pipVersion">
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element ref="VersionIdentifier"/>
+      </xsd:sequence>
+    </xsd:complexType>
+  </xsd:element>
+  <xsd:element name="domain">
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element ref="FreeFormText"/>
+      </xsd:sequence>
+    </xsd:complexType>
+  </xsd:element>
+  <xsd:element name="VersionIdentifier" type="xsd:string"/>
+  <xsd:element name="GlobalMimeTypeQualifierCode" type="xsd:string"/>
+  <xsd:element name="description">
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element ref="FreeFormText"/>
+      </xsd:sequence>
+    </xsd:complexType>
+  </xsd:element>
+  <xsd:element name="numberOfAttachments">
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element ref="CountableAmount"/>
+        <xsd:element ref="umberOfAttachments"/>
+      </xsd:sequence>
+    </xsd:complexType>
+  </xsd:element>
+  <xsd:element name="ConfirmOrderBody">
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element ref="VendorPONumber"/>
+        <xsd:element ref="OrderNumber"/>
+        <xsd:element ref="OrderSubNumber"/>
+	<xsd:element ref="ItemId"/>
+      </xsd:sequence>
+    </xsd:complexType>
+  </xsd:element>
+  <xsd:element name="pipInstanceId">
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element ref="InstanceIdentifier"/>
+      </xsd:sequence>
+    </xsd:complexType>
+  </xsd:element>
+</xsd:schema>

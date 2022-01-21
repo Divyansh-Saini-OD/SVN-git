@@ -1,0 +1,91 @@
+<?xml version = "1.0" encoding = "UTF-8" ?>
+<!--
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  Oracle JDeveloper BPEL Designer 
+  
+  Created: Tue Jun 19 19:38:02 EDT 2007
+  Author:  rizwan-appees
+  Purpose: Asynchronous BPEL Process
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+-->
+<process name="POAckInitiatingProcess"
+         targetNamespace="http://xmlns.oracle.com/POAckInitiatingProcess"
+         xmlns="http://schemas.xmlsoap.org/ws/2003/03/business-process/"
+         xmlns:xp20="http://www.oracle.com/XSL/Transform/java/oracle.tip.pc.services.functions.Xpath20"
+         xmlns:bpws="http://schemas.xmlsoap.org/ws/2003/03/business-process/"
+         xmlns:ns1="http://xmlns.oracle.com/POAcknowledgementProcess"
+         xmlns:ldap="http://schemas.oracle.com/xpath/extension/ldap"
+         xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+         xmlns:ns2="http://www.openapplications.org/oagis/9"
+         xmlns:client="http://xmlns.oracle.com/POAckInitiatingProcess"
+         xmlns:bpelx="http://schemas.oracle.com/bpel/extension"
+         xmlns:ora="http://schemas.oracle.com/xpath/extension"
+         xmlns:orcl="http://www.oracle.com/XSL/Transform/java/oracle.tip.pc.services.functions.ExtFunc">
+    <!-- 
+      ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        PARTNERLINKS                                                      
+        List of services participating in this BPEL process               
+      ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    -->
+    <partnerLinks>
+        <!-- 
+      The 'client' role represents the requester of this service. It is 
+      used for callback. The location and correlation information associated
+      with the client role are automatically set using WS-Addressing.
+    -->
+        <partnerLink name="client"
+                     partnerLinkType="client:POAckInitiatingProcess"
+                     myRole="POAckInitiatingProcessProvider"
+                     partnerRole="POAckInitiatingProcessRequester"/>
+        <partnerLink name="POAcknowledgementProcess"
+                     partnerRole="POAcknowledgementProcessProvider"
+                     partnerLinkType="ns1:POAcknowledgementProcess"/>
+    </partnerLinks>
+    <!-- 
+      ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        VARIABLES                                                        
+        List of messages and XML documents used within this BPEL process 
+      ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    -->
+    <variables>
+        <!-- Reference to the message passed as input during initiation -->
+        <variable name="inputVariable"
+                  messageType="client:POAckInitiatingProcessRequestMessage"/>
+        <!-- Reference to the message that will be sent back to the requester during callback -->
+        <variable name="outputVariable"
+                  messageType="client:POAckInitiatingProcessResponseMessage"/>
+        <variable name="InvokePOAckProcessIn"
+                  messageType="ns1:POAcknowledgementProcessRequestMessage"/>
+    </variables>
+    <!-- 
+      ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+       ORCHESTRATION LOGIC                                               
+       Set of activities coordinating the flow of messages across the    
+       services integrated within this business process                  
+      ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    -->
+    <sequence name="main">
+        <!-- Receive input from requestor. (Note: This maps to operation defined in POAckInitiatingProcess.wsdl) -->
+        <receive name="receiveInput" partnerLink="client"
+                 portType="client:POAckInitiatingProcess" operation="initiate"
+                 variable="inputVariable" createInstance="yes"/>
+        <!-- 
+          Asynchronous callback to the requester. (Note: the callback location and correlation id is transparently handled using WS-addressing.)
+        -->
+        <assign name="TransformToOAGIS">
+            <bpelx:annotation>
+                <bpelx:pattern>transformation</bpelx:pattern>
+            </bpelx:annotation>
+            <copy>
+                <from expression="ora:processXSLT('TransformationInputtoOAGIS.xsl',bpws:getVariableData('inputVariable','payload'))"/>
+                <to variable="InvokePOAckProcessIn" part="payload"/>
+            </copy>
+        </assign>
+        <invoke name="InvokePOAckProcess" partnerLink="POAcknowledgementProcess"
+                portType="ns1:POAcknowledgementProcess" operation="initiate"
+                inputVariable="InvokePOAckProcessIn"/>
+        <invoke name="callbackClient" partnerLink="client"
+                portType="client:POAckInitiatingProcessCallback"
+                operation="onResult" inputVariable="outputVariable"/>
+    </sequence>
+</process>

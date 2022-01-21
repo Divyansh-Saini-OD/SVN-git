@@ -1,0 +1,22 @@
+-- +==========================================================================+
+-- |                  Office Depot - Project Simplify                         |
+-- +==========================================================================+
+-- | Name        : APPS.XX_PO_PUNCHOUT_RECORD_ID_S                            |
+-- | Description : Synonym for Sequence XX_PO_PUNCHOUT_RECORD_ID_S            |
+-- |                                                                          |
+-- |                                                                          |
+-- |                                                                          |
+-- |Change Record:                                                            |
+-- |===============                                                           |
+-- | Version     Date           Author               Remarks                  |
+-- |=========  ==========   =============      ========================       |
+-- |1.0        05-JUL-2016  Suresh Naragam     Initial Version                |
+-- |==========================================================================|
+
+PROMPT
+PROMPT Creating Synonym XX_PO_PUNCHOUT_RECORD_ID_S in APPS.....
+PROMPT
+
+CREATE OR REPLACE SYNONYM XX_PO_PUNCHOUT_RECORD_ID_S FOR XXPTP.XX_PO_PUNCHOUT_RECORD_ID_S;
+
+SHOW ERROR;

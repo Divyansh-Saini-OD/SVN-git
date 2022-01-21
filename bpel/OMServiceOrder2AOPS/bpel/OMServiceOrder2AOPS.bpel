@@ -1,0 +1,307 @@
+<?xml version = "1.0" encoding = "UTF-8" ?>
+<!--
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  Oracle JDeveloper BPEL Designer 
+  
+  Created: Wed Apr 07 13:06:18 EDT 2010
+  Author:  bala-edupuganti
+  Purpose: Asynchronous BPEL Process
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+-->
+<process name="OMServiceOrder2AOPS"
+         targetNamespace="http://xmlns.oracle.com/OMServiceOrder2AOPS"
+         xmlns="http://schemas.xmlsoap.org/ws/2003/03/business-process/"
+         xmlns:xp20="http://www.oracle.com/XSL/Transform/java/oracle.tip.pc.services.functions.Xpath20"
+         xmlns:ns4="http://xmlns.oracle.com/ODErrorLogger"
+         xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+         xmlns:ns16="http://TargetNamespace.com/ebsSrresponseSrvc"
+         xmlns:ns5="http://xmlns.oracle.com/bpel/workflow/xpath"
+         xmlns:ora="http://schemas.oracle.com/xpath/extension"
+         xmlns:ns9="ODError" xmlns:ns17="http://www.example.org"
+         xmlns:ns1="http://xmlns.oracle.com/pcbpel/adapter/apps/OMServiceOrderEvent/"
+         xmlns:ns2="http://xmlns.oracle.com/pcbpel/adapter/mq/headerSERVICE_ITEM_RESPONSE_QUEUE/"
+         xmlns:ns15="ODSRExceptions"
+         xmlns:orcl="http://www.oracle.com/XSL/Transform/java/oracle.tip.pc.services.functions.ExtFunc"
+         xmlns:ns10="http://xmlns.oracle.com/pcbpel/adapter/aq/DequeuSrUpdateToAops/"
+         xmlns:bpws="http://schemas.xmlsoap.org/ws/2003/03/business-process/"
+         xmlns:ns13="http://xmlns.oracle.com/SRexceptions"
+         xmlns:ns7="http://www.oracle.com/XSL/Transform/java/oracle.tip.esb.server.headers.ESBHeaderFunctions"
+         xmlns:ldap="http://schemas.oracle.com/xpath/extension/ldap"
+         xmlns:ns12="http://xmlns.oracle.com/pcbpel/adapter/mq/headerenqueueSrupdate2Aops/"
+         xmlns:ns18="http://TargetNamespace.com/dequeueSrupdate2Aops"
+         xmlns:client="http://xmlns.oracle.com/OMServiceOrder2AOPS"
+         xmlns:ns6="http://xmlns.oracle.com/bpel/services/IdentityService/xpath"
+         xmlns:ns11="http://xmlns.oracle.com/pcbpel/adapter/aq/dequeueSrupdate2Aops/"
+         xmlns:ns14="http://TargetNamespace.com/EnqueueSOResponseAops"
+         xmlns:ns3="http://xmlns.oracle.com/pcbpel/adapter/mq/headerAopsSRresponse/"
+         xmlns:bpelx="http://schemas.oracle.com/bpel/extension"
+         xmlns:ns8="http://www.oracle.com/XSL/Transform/java/oracle.tip.xref.xpath.XRefXPathFunctions">
+    <!-- 
+      ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        PARTNERLINKS                                                      
+        List of services participating in this BPEL process               
+      ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    -->
+    <partnerLinks>
+        <!-- 
+      The 'client' role represents the requester of this service. It is 
+      used for callback. The location and correlation information associated
+      with the client role are automatically set using WS-Addressing.
+    -->
+        <partnerLink myRole="Dequeue_role" name="dequeueSrupdate2Aops"
+                     partnerLinkType="ns11:Dequeue_plt"/>
+        <partnerLink name="enqueueSrupdate2Aops" partnerRole="Enqueue_role"
+                     partnerLinkType="ns12:Enqueue_plt"/>
+        <partnerLink myRole="ODErrorLoggerRequester" name="ODErrorLogger"
+                     partnerRole="ODErrorLoggerProvider"
+                     partnerLinkType="ns4:ODErrorLogger"/>
+       <!-- <partnerLink myRole="SRexceptionsRequester" name="SRexceptions"
+                     partnerRole="SRexceptionsProvider"
+                     partnerLinkType="ns13:SRexceptions"/>-->
+    </partnerLinks>
+    <variables>
+        <variable name="invokeOMSRFaultCatch_InputVariable"
+                  messageType="ns4:ODErrorLoggerRequestMessage"/>
+        <!--        <variable name="Dequeue_InputVariable"
+                  messageType="ns11:Roo-Element_msg"/> -->
+        <variable name="Enqueue_InputVariable"
+                  messageType="ns12:Root-Element_msg"/>
+        <!--   <variable name="InvokeEnqueueAops_InputVariable"
+                  messageType="ns12:Root-Element_msg"/>  -->
+        <variable name="Invokeexceptions_InputVariable"
+                  messageType="ns13:SRexceptionsRequestMessage"/>
+        <!-- <variable name="receiveEventFromEbs_Dequeue_InputVariable"
+                  messageType="ns11:Root-Element_msg"/> -->
+        <!-- <variable name="receiveEventFromEbs_InputVariable"
+                  messageType="ns11:Root-Element_msg"/> -->
+        <!-- <variable name="receiveEventFromEbs_Dequeue_InputVariable_1"
+                  messageType="ns11:Root-Element_msg"/> -->
+        <!-- <variable name="InvokeEnqueueAops_Enqueue_InputVariable"
+                  messageType="ns12:Root-Element_msg"/>
+        <variable name="receiveAqFromEbs_InputVariable"
+                  messageType="ns11:Root-Element_msg"/> -->
+        <!--  <variable name="receiveAqFromEbs_InputVariable_1"
+                  messageType="ns11:Root-Element_msg"/> -->
+        <!--  <variable name="InvokeEnqueueAops_Enqueue_InputVariable_1"
+                  messageType="ns12:Root-Element_msg"/> -->
+        <!-- <variable name="receiveAqFromEbs_Dequeue_InputVariable"
+                  messageType="ns11:Root-Element_msg"/> -->
+        <!-- <variable name="InvokeEnqueueAops_Enqueue_InputVariable_1"
+                  messageType="ns12:Root-Element_msg"/>
+        <variable name="EnqueueAops_Enqueue_InputVariable"
+                  messageType="ns12:Root-Element_msg"/> -->
+        <!-- <variable name="x_var" messageType="ns11:Root-Element_msg"/>
+        <variable name="x_var_1" messageType="ns11:Root-Element_msg"/>
+        <variable name="y_var_1" messageType="ns12:Root-Element_msg"/>
+        <variable name="y_var_2" messageType="ns12:Root-Element_msg"/> -->
+        <variable name="dequeueFromEbs_InputVariable"
+                  messageType="ns11:Root-Element_msg"/>
+        <variable name="EnqueueAops_InputVariable"
+                  messageType="ns12:Root-Element_msg"/>
+        <variable name="globalSrNumber" type="xsd:string"/>
+        <variable name="globalSrUpdate" type="xsd:string"/>
+    </variables>
+    <!-- 
+      ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        VARIABLES                                                        
+        List of messages and XML documents used within this BPEL process 
+      ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    -->
+    <!-- 
+      ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+       ORCHESTRATION LOGIC                                               
+       Set of activities coordinating the flow of messages across the    
+       services integrated within this business process                  
+      ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    -->
+    <sequence name="SrStatusOm2Aops">
+        <!-- Receive input from requestor. (Note: This maps to operation defined in OMServiceOrder2AOPS.wsdl) -->
+        <scope name="ScopeOm2Aops">
+            <faultHandlers>
+                <catchAll>
+                    <sequence name="SequenceCatchAll">
+                        <assign name="assignOMSRFaultCatch">
+                            <copy>
+                                <from expression="concat(ora:getProcessId(),ora:getProcessVersion())"/>
+                                <to variable="invokeOMSRFaultCatch_InputVariable"
+                                    part="payload"
+                                    query="/ns9:ErrorData/ns9:ProcessInfo/ns9:BusinessProcessName"/>
+                            </copy>
+                            <copy>
+                                <from expression="ora:getInstanceId()"/>
+                                <to variable="invokeOMSRFaultCatch_InputVariable"
+                                    part="payload"
+                                    query="/ns9:ErrorData/ns9:ProcessInfo/ns9:BusinessProcessId"/>
+                            </copy>
+                            <copy>
+                                <from expression="ora:getDomainId()"/>
+                                <to variable="invokeOMSRFaultCatch_InputVariable"
+                                    part="payload"
+                                    query="/ns9:ErrorData/ns9:ProcessInfo/ns9:BusinessProcessDomain"/>
+                            </copy>
+                            <copy>
+                                <from expression="'SR UPDATE TO AOPS'"/>
+                                <to variable="invokeOMSRFaultCatch_InputVariable"
+                                    part="payload"
+                                    query="/ns9:ErrorData/ns9:ProcessInfo/ns9:SystemName"/>
+                            </copy>
+                            <copy>
+                                <from expression="ora:getCurrentDateTime()"/>
+                                <to variable="invokeOMSRFaultCatch_InputVariable"
+                                    part="payload"
+                                    query="/ns9:ErrorData/ns9:ErrorDetails/ns9:ErrorDateTime"/>
+                            </copy>
+                            <copy>
+                                <from expression="ora:doc('${server_url}/xmllib/otc/GlobalParameters.xml','/GlobalParameters/OMServiceOrder2AOPS/FaultNotification/SendNotification')"/>
+                                <to variable="invokeOMSRFaultCatch_InputVariable"
+                                    part="payload"
+                                    query="/ns9:ErrorData/ns9:Notification/ns9:sendNotification"/>
+                            </copy>
+                            <copy>
+                                <from expression="'System'"/>
+                                <to variable="invokeOMSRFaultCatch_InputVariable"
+                                    part="payload"
+                                    query="/ns9:ErrorData/ns9:ErrorDetails/ns9:ErrorType"/>
+                            </copy>
+                            <copy>
+                                <from expression="'Fatal'"/>
+                                <to variable="invokeOMSRFaultCatch_InputVariable"
+                                    part="payload"
+                                    query="/ns9:ErrorData/ns9:ErrorDetails/ns9:ErrorSeverity"/>
+                            </copy>
+                            <copy>
+                                <from expression="ora:doc('${server_url}/xmllib/otc/GlobalParameters.xml','/GlobalParameters/OMServiceOrder2AOPS/FaultNotification/EmailTo')"/>
+                                <to variable="invokeOMSRFaultCatch_InputVariable"
+                                    part="payload"
+                                    query="/ns9:ErrorData/ns9:Notification/ns9:RecipientList"/>
+                            </copy>
+                        </assign>
+                        <invoke name="invokeOMSRFaultCatch"
+                                partnerLink="ODErrorLogger"
+                                portType="ns4:ODErrorLogger"
+                                operation="initiate"
+                                inputVariable="invokeOMSRFaultCatch_InputVariable"/>
+                        <terminate name="terminateProcess"/>
+                    </sequence>
+                </catchAll>
+            </faultHandlers>
+            <sequence name="SequenceOm2AopsMain">
+                <receive name="dequeueFromEbs"
+                         partnerLink="dequeueSrupdate2Aops"
+                         portType="ns11:Dequeue_ptt" operation="Dequeue"
+                         variable="dequeueFromEbs_InputVariable"
+                         createInstance="yes"/>
+                <!--              <assign name="Assign_1">
+                    <copy>
+                    </copy>
+                </assign>  -->
+                <assign name="TransformSrStatus">
+                    <bpelx:annotation>
+                        <bpelx:pattern>transformation</bpelx:pattern>
+                    </bpelx:annotation>
+                    <copy>
+                        <from expression="ora:processXSLT('TransformationSRStatus.xsl',bpws:getVariableData('dequeueFromEbs_InputVariable','Root-Element'))"/>
+                        <to variable="EnqueueAops_InputVariable"
+                            part="Root-Element"/>
+                    </copy>
+                </assign>
+                <sequence name="SequenceInstanceTitle">
+                    <assign name="assignInitTitle">
+                        <copy>
+                            <from variable="dequeueFromEbs_InputVariable"
+                                  part="Root-Element"
+                                  query="/ns18:Root-Element/ns18:ODTechService/ns18:request_number"/>
+                            <to variable="globalSrNumber"/>
+                        </copy>
+                        <copy>
+                            <from variable="dequeueFromEbs_InputVariable"
+                                  part="Root-Element"
+                                  query="/ns18:Root-Element/ns18:ODTechService/ns18:request_status"/>
+                            <to variable="globalSrUpdate"/>
+                        </copy>
+                    </assign>
+                    <bpelx:exec name="setInstanceTitle" language="java"
+                                version="1.3">
+                        <![CDATA[try {                                
+  String title1 = "UpdateToAOPS_SR#";            
+  String title2 = (String)getVariableData("globalSrNumber");        
+  String title3 = (String)getVariableData("globalSrUpdate");   
+  String title4 = "_" ; 
+  String title = title1 + title2 + title4 + title3;            
+  setTitle(title);                                
+  addAuditTrailEntry(title) ;                                
+} catch (Exception ex) {                                
+  addAuditTrailEntry(ex.toString());                                
+  ex.printStackTrace();                                
+}]]>
+                    </bpelx:exec>
+                </sequence>
+                <invoke name="EnqueueAops" partnerLink="enqueueSrupdate2Aops"
+                        portType="ns12:Enqueue_ptt" operation="Enqueue"
+                        inputVariable="EnqueueAops_InputVariable"/>
+                <!--<scope name="ScopeEnqueue">
+                   <faultHandlers>
+                        <catchAll>
+                            <sequence name="SequenceEnqueueExceptions">
+                                <assign name="assignExceptions">
+                                    <copy>
+                                        <from expression="concat(ora:getProcessId(),ora:getProcessVersion())"/>
+                                        <to variable="Invokeexceptions_InputVariable"
+                                            part="payload"
+                                            query="/ns15:ExceptionData/ns15:ProcessInfo/ns15:BusinessProcessName"/>
+                                    </copy>
+                                    <copy>
+                                        <from expression="ora:getInstanceId()"/>
+                                        <to variable="Invokeexceptions_InputVariable"
+                                            part="payload"
+                                            query="/ns15:ExceptionData/ns15:ProcessInfo/ns15:BusinessProcessId"/>
+                                    </copy>
+                                    <copy>
+                                        <from expression="ora:getDomainId()"/>
+                                        <to variable="Invokeexceptions_InputVariable"
+                                            part="payload"
+                                            query="/ns15:ExceptionData/ns15:ProcessInfo/ns15:BusinessProcessDomain"/>
+                                    </copy>
+                                    <copy>
+                                        <from expression="'SR UPDATE TO AOPS'"/>
+                                        <to variable="Invokeexceptions_InputVariable"
+                                            part="payload"
+                                            query="/ns15:ExceptionData/ns15:ProcessInfo/ns15:SystemName"/>
+                                    </copy>
+                                    <copy>
+                                        <from expression="ora:getCurrentDateTime()"/>
+                                        <to variable="Invokeexceptions_InputVariable"
+                                            part="payload"
+                                            query="/ns15:ExceptionData/ns15:ExceptionDetails/ns15:ExceptionDateTime"/>
+                                    </copy>
+                                    <copy>
+                                        <from expression="ora:doc('${server_url}/xmllib/otc/GlobalParameters.xml','/GlobalParameters/OMServiceOrder2AOPS/FaultNotification/SendNotification')"/>
+                                        <to variable="Invokeexceptions_InputVariable"
+                                            part="payload"
+                                            query="/ns15:ExceptionData/ns15:Notification/ns15:sendNotification"/>
+                                    </copy>
+                                    <copy>
+                                        <from expression="ora:doc('${server_url}/xmllib/otc/GlobalParameters.xml','/GlobalParameters/OMServiceOrder2AOPS/FaultNotification/EmailTo')"/>
+                                        <to variable="Invokeexceptions_InputVariable"
+                                            part="payload"
+                                            query="/ns15:ExceptionData/ns15:Notification/ns15:RecipientList"/>
+                                    </copy>
+                                </assign>
+                                <invoke name="InvokeExceptions"
+                                        partnerLink="SRexceptions"
+                                        portType="ns13:SRexceptions"
+                                        operation="initiate"
+                                        inputVariable="Invokeexceptions_InputVariable"/>
+                                <terminate name="terminateProcess"/>
+                            </sequence>
+                        </catchAll>
+                    </faultHandlers> 
+                    <sequence name="SequenceEnqueue"/>
+                </scope> -->
+            </sequence>
+        </scope>
+        <!-- 
+          Asynchronous callback to the requester. (Note: the callback location and correlation id is transparently handled using WS-addressing.)
+        -->
+    </sequence>
+</process>

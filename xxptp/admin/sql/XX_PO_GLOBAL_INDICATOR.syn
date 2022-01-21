@@ -1,0 +1,72 @@
+REM============================================================================================
+REM                                 Start Of Script                                            
+REM============================================================================================
+
+--+=============================================================================================+--
+--|                                                                                             |--
+--| Object Name    : Global PO indicator custom table Synonym Creation                          |--
+--|                                                                                             |--
+--| Program Name   : XX_PO_GLOBAL_INDICATOR.syn                                                 |--        
+--|                                                                                             |--   
+--| Purpose        : Create Synonym for Custom table XX_PO_GLOBAL_INDICATOR                     |--
+--|                  The Object created is:                                                     |--
+--|                                                                                             |--
+--|                  1. XX_PO_GLOBAL_INDICATOR (Synonym for XX_PO_GLOBAL_INDICATOR table)       |--
+--|                                                                                             |-- 
+--| Change History  :                                                                           |--
+--| Version           Date             Changed By              Description                      |--
+--+=============================================================================================+--
+--| 1.0               10-Jul-2007      Arun Andavar     Original                                |--
+--+=============================================================================================+
+
+SET VERIFY   OFF
+SET TERM     ON
+SET FEEDBACK OFF
+SET SHOW     OFF
+SET ECHO     OFF
+SET TAB      OFF
+
+WHENEVER SQLERROR CONTINUE
+
+PROMPT
+PROMPT Dropping Existing Synonym of Custom table XX_PO_GLOBAL_INDICATOR......
+PROMPT
+
+WHENEVER SQLERROR CONTINUE
+
+PROMPT
+PROMPT Dropping SYNONYM XX_PO_GLOBAL_INDICATOR in APPS
+PROMPT
+
+DROP SYNONYM XX_PO_GLOBAL_INDICATOR;
+
+WHENEVER SQLERROR CONTINUE
+
+PROMPT
+PROMPT Creating Synonym in APPS...
+PROMPT
+
+WHENEVER SQLERROR CONTINUE
+
+PROMPT
+PROMPT Creating SYNONYM XX_PO_GLOBAL_INDICATOR
+PROMPT
+
+CREATE OR REPLACE SYNONYM XX_PO_GLOBAL_INDICATOR FOR XXPTP.XX_PO_GLOBAL_INDICATOR;
+
+WHENEVER SQLERROR CONTINUE
+
+PROMPT
+PROMPT Exiting....
+PROMPT
+
+SET FEEDBACK ON
+
+EXIT;
+
+REM=================================================================================================
+REM                                   End Of Script                                            
+REM=================================================================================================
+
+
+

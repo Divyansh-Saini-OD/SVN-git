@@ -1,0 +1,76 @@
+SET SHOW OFF;
+SET ECHO OFF;
+SET TAB OFF;
+SET FEEDBACK OFF;
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+-- +===================================================================+
+-- |                  Office Depot - Project Simplify                  |
+-- |                        WIPRO Technologies                         |
+-- +===================================================================+
+-- | Name  :    XXOMDPSINTERFACEOUTINST                                |
+-- | Description      : This scipt creates index in the DFF attributes |
+-- |                    and KFF segements                              |
+-- |                                                                   |
+-- |                                                                   |
+-- |                                                                   |
+-- |                                                                   |
+-- |                                                                   |
+-- |Change Record:                                                     |
+-- |===============                                                    |
+-- |Version   Date        Author           Remarks                     |
+-- |=======   ==========  =============    ============================|
+-- |DRAFT 1A 05-MAR-2007  Aravind A        Initial draft version       |
+-- |                                                                   |
+-- |                                                                   |
+-- +===================================================================+
+
+DROP INDEX XX_OM_LINES_ATTRIBUTES_N1
+/
+
+SET TERM ON
+PROMPT Creating Index on column segment14 of XX_OM_LINES_ATTRIBUTES_ALL Table
+SET TERM OFF
+
+CREATE INDEX XX_OM_LINES_ATTRIBUTES_N1
+ON XX_OM_LINES_ATTRIBUTES_ALL(segment14)
+/
+
+SET TERM ON
+PROMPT Index created successfully
+SET TERM OFF
+
+
+DROP INDEX XX_OM_LINES_ATTRIBUTES_N2
+/
+
+SET TERM ON
+PROMPT Creating Index on column segment7 of XX_OM_LINES_ATTRIBUTES_ALL Table
+SET TERM OFF
+
+CREATE INDEX XX_OM_LINES_ATTRIBUTES_N2
+ON XX_OM_LINES_ATTRIBUTES_ALL(segment7)
+/
+
+SET TERM ON
+PROMPT Index created successfully
+SET TERM OFF
+
+DROP INDEX XX_OM_LINES_ATTRIBUTES_N3
+/
+
+SET TERM ON
+PROMPT Creating Index on column segment3 of XX_OM_LINES_ATTRIBUTES_ALL Table
+SET TERM OFF
+
+CREATE INDEX XX_OM_LINES_ATTRIBUTES_N3
+ON XX_OM_LINES_ATTRIBUTES_ALL(segment3)
+/
+
+SET TERM ON
+PROMPT Index created successfully
+SET TERM OFF
+
+SHOW ERROR
+

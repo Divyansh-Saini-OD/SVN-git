@@ -1,0 +1,41 @@
+SET VERIFY OFF;
+SET SHOW OFF;
+SET TAB OFF;
+SET ECHO OFF;
+SET FEEDBACK OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+-- +===================================================================+
+-- |                  Office Depot - Project Simplify                  |
+-- |                        WIPRO Technologies                         |
+-- +===================================================================+
+-- | Name             : XX_OM_SUPPLIER_INVFEED_TXN_INT.syn             |
+-- | Rice ID          : I1186 Supplier Inventory Feed                  |
+-- | Description      : This scipt creates synonym for the table       |
+-- |                    XX_OM_SUPPLIER_INVFEED_TXN_INT in APPS schema  |
+-- |                                                                   |
+-- |                                                                   |
+-- |                                                                   |
+-- |                                                                   |
+-- |Change Record:                                                     |
+-- |===============                                                    |
+-- |Version   Date        Author           Remarks                     |
+-- |=======   ==========  =============    ============================|
+-- |DRAFT 1   6-JULY-2007 Aravind A         Initial Version            |
+-- |                                                                   |
+-- |                                                                   |
+-- +===================================================================+
+
+PROMPT
+PROMPT Dropping existing synonym xx_om_supplier_invfeed_txn_int
+PROMPT
+
+DROP SYNONYM xx_om_supplier_invfeed_txn_int;
+
+PROMPT
+PROMPT Creating synonym xx_om_supplier_invfeed_txn_int
+PROMPT
+
+CREATE SYNONYM xx_om_supplier_invfeed_txn_int FOR XXOM.xx_om_supplier_invfeed_txn_int;                                                                                              
+SHOW ERROR

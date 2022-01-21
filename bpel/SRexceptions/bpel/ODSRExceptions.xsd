@@ -1,0 +1,221 @@
+<?xml version="1.0" encoding="windows-1252"?>
+<xsd:schema targetNamespace="ODSRExceptions" xmlns="ODSRExceptions"
+            xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+            elementFormDefault="qualified">
+ <xsd:complexType name="TradingPartnerDetailsType">
+  <xsd:sequence>
+   <xsd:element name="TPFrom" type="xsd:string" minOccurs="0"/>
+   <xsd:element name="TPTo" type="xsd:string" minOccurs="0"/>
+   <xsd:element name="TPDocTypeName" type="xsd:string" minOccurs="0"/>
+   <xsd:element name="TPDocTypeRevision" type="xsd:string" minOccurs="0"/>
+  </xsd:sequence>
+ </xsd:complexType>
+ <xsd:complexType name="Entity_Type">
+  <xsd:sequence>
+   <xsd:element name="EntityType" type="xsd:string" minOccurs="0"/>
+   <xsd:element name="EntityID" type="xsd:string" minOccurs="0"/>
+  </xsd:sequence>
+ </xsd:complexType>
+ <xsd:complexType name="RecipientListType">
+  <xsd:sequence>
+   <xsd:element name="Recipient" type="RecipientType" maxOccurs="unbounded"
+                minOccurs="0"/>
+  </xsd:sequence>
+ </xsd:complexType>
+ <xsd:complexType name="RecipientType">
+  <xsd:sequence>
+   <xsd:element name="RecipientAddress" type="xsd:string" minOccurs="0"/>
+    <xsd:element name="RecipientType" minOccurs="0" default="email">
+    <xsd:simpleType>
+     <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="email"/>
+      <xsd:enumeration value="emailPage"/>
+      <xsd:enumeration value="pager"/>
+      <xsd:enumeration value="SMS"/>
+      <xsd:enumeration value="voice"/>
+     </xsd:restriction>
+    </xsd:simpleType>
+   </xsd:element>
+  </xsd:sequence>
+ </xsd:complexType>
+ <xsd:complexType name="NotificationType">
+  <xsd:sequence>
+   <xsd:element name="sendNotification" minOccurs="0"
+                maxOccurs="1">
+    <xsd:simpleType>
+     <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="Y"/>
+      <xsd:enumeration value="N"/>
+     </xsd:restriction>
+    </xsd:simpleType>
+   </xsd:element>
+   <xsd:element name="RecipientList" type="RecipientListType"
+                minOccurs="0"/>
+   <xsd:element name="Subject" type="xsd:string" minOccurs="0"/>
+   <xsd:element name="Body" type="xsd:string" minOccurs="0"/>
+  </xsd:sequence>
+ </xsd:complexType>
+ <xsd:complexType name="ProcessInfoType">
+  <xsd:sequence>
+   <xsd:element name="BusinessProcessName" type="xsd:string">
+    <xsd:annotation>
+     <xsd:documentation>A globally unique identifier for the BPEL process.</xsd:documentation>
+    </xsd:annotation>
+   </xsd:element>
+   <xsd:element name="BusinessProcessId" type="xsd:string">
+    <xsd:annotation>
+     <xsd:documentation>System generated unique identifier for the process
+                        instance.</xsd:documentation>
+    </xsd:annotation>
+   </xsd:element>
+   <xsd:element name="BusinessProcessStep" type="xsd:string" minOccurs="0">
+    <xsd:annotation>
+     <xsd:documentation>Information that will help developers identify and
+                        localize the place of error in the BPEL code</xsd:documentation>
+    </xsd:annotation>
+   </xsd:element>
+   <xsd:element name="BusinessProcessDomain" type="xsd:string" minOccurs="0">
+    <xsd:annotation>
+     <xsd:documentation>The BPEL server domain under which the process is
+                        deployed</xsd:documentation>
+    </xsd:annotation>
+   </xsd:element>
+   <xsd:element name="SystemName" type="xsd:string" minOccurs="0">
+    <xsd:annotation>
+     <xsd:documentation>The system name where the BPEL server is running.</xsd:documentation>
+    </xsd:annotation>
+   </xsd:element>
+   <xsd:element name="TradingPartnerDetails" type="TradingPartnerDetailsType"
+                minOccurs="0">
+    <xsd:annotation>
+     <xsd:documentation>Trading Partner details pertaining to the business
+                        process</xsd:documentation>
+    </xsd:annotation>
+   </xsd:element>
+  </xsd:sequence>
+ </xsd:complexType>
+ <xsd:complexType name="ExceptionDetailsType">
+  <xsd:sequence>
+   <xsd:element name="ExceptionCode" type="xsd:string">
+    <xsd:annotation>
+     <xsd:documentation>A unique code for a type of error. E.g.,
+                        ERR_RTK_DB_AUTH_FAIL</xsd:documentation>
+    </xsd:annotation>
+   </xsd:element>
+   <xsd:element name="ExceptionDescription" type="xsd:string" minOccurs="0">
+    <xsd:annotation>
+     <xsd:documentation>Human-readable detailed description of the error</xsd:documentation>
+    </xsd:annotation>
+   </xsd:element>
+   <xsd:element name="ExceptionText" type="xsd:string" minOccurs="0">
+    <xsd:annotation>
+     <xsd:documentation>Error information supplied to the process catch block. </xsd:documentation>
+    </xsd:annotation>
+   </xsd:element>
+   <xsd:element name="ExceptionType" default="system" minOccurs="0">
+    <xsd:annotation>
+     <xsd:documentation>Type of error e.g., database connection error, ftp
+                        connection error, etc.</xsd:documentation>
+    </xsd:annotation>
+    <xsd:simpleType>
+     <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="business"/>
+      <xsd:enumeration value="system"/>
+     </xsd:restriction>
+    </xsd:simpleType>
+   </xsd:element>
+   <xsd:element name="ErrorSeverity" default="fatal">
+    <xsd:annotation>
+     <xsd:documentation>One of the specified codes for error severity levels</xsd:documentation>
+    </xsd:annotation>
+    <xsd:simpleType>
+     <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="fatal"/>
+      <xsd:enumeration value="error"/>
+      <xsd:enumeration value="warning"/>
+      <xsd:enumeration value="info"/>
+      <xsd:enumeration value="debug"/>
+     </xsd:restriction>
+    </xsd:simpleType>
+   </xsd:element>
+   <xsd:element name="ExceptionDateTime" type="xsd:dateTime" nillable="true">
+    <xsd:annotation>
+     <xsd:documentation>The date-time stamp of occurence of error</xsd:documentation>
+    </xsd:annotation>
+   </xsd:element>
+  </xsd:sequence>
+ </xsd:complexType>
+ <xsd:complexType name="MessageDetailsType">
+  <xsd:sequence>
+   <xsd:element name="MessageId" type="xsd:string" minOccurs="0">
+    <xsd:annotation>
+     <xsd:documentation>Unique record-level identifier for the message</xsd:documentation>
+    </xsd:annotation>
+   </xsd:element>
+   <xsd:element name="MessageDateTime" type="xsd:dateTime" minOccurs="0"
+                nillable="true">
+    <xsd:annotation>
+     <xsd:documentation>The creation date-time of the message</xsd:documentation>
+    </xsd:annotation>
+   </xsd:element>
+   <xsd:element name="MessageType" type="xsd:string" minOccurs="0">
+    <xsd:annotation>
+     <xsd:documentation>Type of Message Data, e.g., Purchase Order</xsd:documentation>
+    </xsd:annotation>
+   </xsd:element>
+   <xsd:element name="MessageVersion" type="xsd:string" minOccurs="0"/>
+   <xsd:element name="MessageOperation" type="xsd:string" minOccurs="0">
+    <xsd:annotation>
+     <xsd:documentation>Operation being carried out, e.g., Invoice Request</xsd:documentation>
+    </xsd:annotation>
+   </xsd:element>
+   <xsd:element name="MessageSourceSystem" type="xsd:string" minOccurs="0">
+    <xsd:annotation>
+     <xsd:documentation>Source System for Message Data, e.g., Retek</xsd:documentation>
+    </xsd:annotation>
+   </xsd:element>
+   <xsd:element name="MessageSourceSystemComponent" type="xsd:string"
+                minOccurs="0">
+    <xsd:annotation>
+     <xsd:documentation>Source System Component for Message Data, e.g., RMS</xsd:documentation>
+    </xsd:annotation>
+   </xsd:element>
+   <xsd:element name="MessageData" type="xsd:string" minOccurs="0">
+    <xsd:annotation>
+     <xsd:documentation>The payload of the message</xsd:documentation>
+    </xsd:annotation>
+   </xsd:element>
+  </xsd:sequence>
+ </xsd:complexType>
+ <xsd:element name="ExceptionData">
+  <xsd:annotation>
+   <xsd:documentation>Error Data containing Error, Notification, Message,
+                      Business Process, System and Trading Partner details along
+                      with the same passed back from a sub-process</xsd:documentation>
+  </xsd:annotation>
+  <xsd:complexType>
+   <xsd:sequence>
+    <xsd:element name="ProcessInfo" type="ProcessInfoType">
+     <xsd:annotation>
+      <xsd:documentation>Process information pertaining to process errored out </xsd:documentation>
+     </xsd:annotation>
+    </xsd:element>
+    <!--<xsd:element name="Entity" type="Entity_Type" maxOccurs="1" minOccurs="0"/> -->
+    <xsd:element name="ExceptionDetails" type="ExceptionDetailsType" minOccurs="0">
+     <xsd:annotation>
+      <xsd:documentation>Error Details including error code, description, text
+                         and severity</xsd:documentation>
+     </xsd:annotation>
+    </xsd:element>
+    <xsd:element name="Notification" type="NotificationType" minOccurs="0"/>
+    <xsd:element name="MessageDetails" type="MessageDetailsType" minOccurs="0">
+     <xsd:annotation>
+      <xsd:documentation>Message Details including message id, data, date, time
+                         and type</xsd:documentation>
+     </xsd:annotation>
+    </xsd:element>
+   </xsd:sequence>
+  </xsd:complexType>
+ </xsd:element>
+</xsd:schema>
+

@@ -1,0 +1,73 @@
+REM============================================================================================
+REM                                 Start Of Script                                            
+REM============================================================================================
+
+--+=============================================================================================+--
+--|                                                                                             |--
+--| Object Name    : OD E0323 UpdatePriceRetroactively                                          |--
+--|                                                                                             |--
+--| Program Name   : CREATE_XX_PO_PRICE_PROTECTION_HDR.tbl                                      |--        
+--|                                                                                             |--   
+--| Purpose        : Create Custom Tables .                                                     |--
+--|                  The Objects created are:                                                   |--
+--|                  1. XX_PO_PRICE_PROTECTION_HDR                                              |--
+--|                                                                                             |--
+--|                                                                                             |-- 
+--| Change History  :                                                                           |--
+--| Version           Date             Changed By              Description                      |--
+--+=============================================================================================+--
+--| 1.0               09-July-2007     Sriramdas S             Original                         |--
+--| 1.1               20-Nov-2007      Meenu Goyal             Removed Drop statement from the  |--
+--|                                                            script                           |--
+--+=============================================================================================+-- 
+
+SET VERIFY   OFF
+SET TERM     ON
+SET FEEDBACK OFF
+SET SHOW     OFF
+SET ECHO     OFF
+SET TAB      OFF
+                   
+
+WHENEVER SQLERROR CONTINUE
+
+
+PROMPT
+PROMPT Creating the Custom Table XX_PO_PRICE_PROTECTION_HDR......
+PROMPT
+
+CREATE TABLE XX_PO_PRICE_PROTECTION_HDR(
+                                        VENDOR_ID               NUMBER,
+                                        VENDOR_SITE_ID          NUMBER,
+                                        COUNTRY_CODE            VARCHAR(60),
+                                        EFFECTIVE_DATE          DATE,
+                                        TOTAL_QUANTITY_ONHAND   NUMBER,
+                                        TOTAL_VENDOR_BILL       NUMBER,
+                                        CURRENCY_CODE           VARCHAR2(15),      
+                                        INVOICE_NUMBER          VARCHAR2(30),
+                                        TOTAL_PO_COST           NUMBER,
+                                        CONVERSION_RATE         NUMBER,
+                                        CREATED_BY              NUMBER,
+                                        LAST_UPDATED_BY         NUMBER,
+                                        CREATION_DATE           DATE,
+                                        LAST_UPDATE_DATE        DATE
+                                       );
+
+
+
+WHENEVER SQLERROR CONTINUE
+
+PROMPT
+PROMPT Exiting....
+PROMPT
+
+SET FEEDBACK ON
+
+
+EXIT;
+
+
+REM=================================================================================================
+REM                                   End Of Script                                            
+REM=================================================================================================
+

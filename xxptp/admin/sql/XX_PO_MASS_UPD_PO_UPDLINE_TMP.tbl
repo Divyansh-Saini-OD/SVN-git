@@ -1,0 +1,60 @@
+-- +==========================================================================+
+-- |                       Office Depot - Project Simplify                    |
+-- |                         WIPRO Technologies                               |
+-- +==========================================================================+
+-- | Name             : PO Mass Update                                        |
+-- | Description      : Temporary table to store the line details which are   |
+-- |                    to be closed or updated.                              |
+-- |                                                                          |
+-- | SQL Script to create the following object                                |
+-- | Table            : XX_PO_MASS_UPD_PO_UPDLINE_TMP                         |
+-- |                                                                          |
+-- |Change Record:                                                            |
+-- |===============                                                           |
+-- |Version     Date           Author                    Remarks              |
+-- |=======     ==========     =============             =====================|
+-- | V1.0       21-MAY-2007    MadanKumar J              Initial version      |
+-- | V1.1       08-JUN-2007    MadanKumar J              Updating of          |
+-- |                                                     description in the   |
+-- |                                                     File Header          |
+-- +==========================================================================+
+ 
+SET SHOW            OFF
+SET VERIFY          OFF
+SET ECHO            OFF
+SET TAB             OFF
+SET FEEDBACK        ON
+ 
+--DROP TABLE xxptp.xx_po_mass_upd_po_updline_tmp;
+ 
+CREATE TABLE xxptp.xx_po_mass_upd_po_updline_tmp(
+     batch_id                NUMBER REFERENCES xxptp.xx_po_mass_upd_batch_all(batch_id)
+    ,item_id                 NUMBER
+    ,item_number             VARCHAR2(20)
+    ,line_close_flag         VARCHAR2(1)
+    ,price                   NUMBER
+    ,quantity                NUMBER
+    ,promised_date           DATE
+    ,created_by              NUMBER(10)
+    ,creation_date           DATE
+    ,last_updated_by         NUMBER
+    ,last_updated_date       DATE
+    ,attribute_category      VARCHAR2(30)
+    ,attribute1              VARCHAR2(150)
+    ,attribute2              VARCHAR2(150)
+    ,attribute3              VARCHAR2(150)
+    ,attribute4              VARCHAR2(150)
+    ,attribute5              VARCHAR2(150)
+    ,attribute6              VARCHAR2(150)
+    ,attribute7              VARCHAR2(150)
+    ,attribute8              VARCHAR2(150)
+    ,attribute9              VARCHAR2(150)
+    ,attribute10             VARCHAR2(150)
+    ,attribute11             VARCHAR2(150)
+    ,attribute12             VARCHAR2(150)
+    ,attribute13             VARCHAR2(150)
+    ,attribute14             VARCHAR2(150)
+    ,attribute15             VARCHAR2(150)
+);
+ 
+SHOW ERROR

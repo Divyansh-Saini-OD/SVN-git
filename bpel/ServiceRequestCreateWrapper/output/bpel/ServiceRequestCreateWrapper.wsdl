@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions name="ServiceRequestCreateWrapper"
+             targetNamespace="http://xmlns.oracle.com/ServiceRequestCreateWrapper"
+           
+             xmlns="http://schemas.xmlsoap.org/wsdl/"
+             xmlns:client="http://xmlns.oracle.com/ServiceRequestCreateWrapper"
+             xmlns:ns1="http://xmlns.oracle.com/pcbpel/adapter/db/APPS/XX_CS_TDS_SR_PKG/CREATE_SERVICEREQUEST/"
+             xmlns:plnk="http://schemas.xmlsoap.org/ws/2003/05/partner-link/"
+             >
+
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	TYPE DEFINITION - List of services participating in this BPEL process
+	The default output of the BPEL designer uses strings as input and 
+	output to the BPEL Process. But you can define or import any XML 
+	Schema type and use them as part of the message types.
+	~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->   
+	<types>
+		<schema xmlns="http://www.w3.org/2001/XMLSchema" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+			<import namespace="http://xmlns.oracle.com/pcbpel/adapter/db/APPS/XX_CS_TDS_SR_PKG/CREATE_SERVICEREQUEST/" schemaLocation="APPS_XX_CS_TDS_SR_PKG_CREATE_SERVICEREQUEST.xsd" />
+                        <import namespace="http://xmlns.oracle.com/ServiceRequestCreateWrapper" schemaLocation="ServiceRequestCreateWrapper.xsd"/>                      
+                       
+		</schema>
+	</types>
+
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	MESSAGE TYPE DEFINITION - Definition of the message types used as 
+	part of the port type defintions
+	~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->      
+	<message name="ServiceRequestCreateWrapperRequestMessage">
+		<part name="InputParameters" element="ns1:InputParameters" />
+	</message>
+	<message name="ServiceRequestCreateWrapperResponseMessage">
+		<part name="OutputParameters" element="ns1:OutputParameters" />
+	</message>
+        <message name="FaultResponseMessage">
+		<!--part name="payload" element="client:FaultMessageType" /-->
+		<part name="OutputParameters" element="ns1:OutputParameters" />                
+	</message>
+
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	PORT TYPE DEFINITION - A port type groups a set of operations into
+	a logical service unit.
+	~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+
+	<!-- portType implemented by the ServiceRequestCreateWrapper BPEL process -->
+	<portType name="ServiceRequestCreateWrapper">
+		<operation name="processServiceRequestCreate">
+			<input  message="client:ServiceRequestCreateWrapperRequestMessage" />
+			<output message="client:ServiceRequestCreateWrapperResponseMessage"/>
+                        <fault name="CustomerNotFoundFault" message="client:FaultResponseMessage"/>                        
+		</operation>
+	</portType>
+
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	PARTNER LINK TYPE DEFINITION
+	~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ --> 
+	<plnk:partnerLinkType name="ServiceRequestCreateWrapper">
+		<plnk:role name="ServiceRequestCreateWrapperProvider">
+			<plnk:portType name="client:ServiceRequestCreateWrapper"/>
+		</plnk:role>
+	</plnk:partnerLinkType>
+</definitions>

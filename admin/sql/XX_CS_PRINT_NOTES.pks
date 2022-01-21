@@ -1,0 +1,18 @@
+CREATE OR REPLACE
+PACKAGE "XX_CS_PRINT_NOTES" AS
+  
+PROCEDURE GET_LOG_DETAILS (P_INCIDENT_ID  IN NUMBER,
+                           P_SR_NOTES_TBL IN OUT NOCOPY XX_CS_SR_NOTES_TBL,
+                           X_STATUS_FLAG  IN OUT NOCOPY VARCHAR2,
+                           X_MSG          IN OUT NOCOPY VARCHAR2);
+                           
+PROCEDURE PRINT_SR_DETAILS (P_INCIDENT_ID IN NUMBER );
+
+PROCEDURE PRINT_SALES_REP(P_RES_ID IN NUMBER);
+
+
+END;
+/
+show errors;
+exit;
+

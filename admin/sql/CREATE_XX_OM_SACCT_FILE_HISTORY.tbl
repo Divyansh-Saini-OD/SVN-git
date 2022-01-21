@@ -1,0 +1,71 @@
+-- +============================================================================================+
+-- |                        Office Depot - Project Simplify                                     |
+-- |                                                                                            |
+-- +============================================================================================+
+-- | Name         : CREATE_XX_OM_SACCT_FILE_HISTORY.tbl                                         |
+-- | Rice Id      : I1272                                                                       | 
+-- | Description  : INT-I1272_SalesOrderFrom LegacySystems(HVOP) Table Creation                 |  
+-- | Purpose      : Create Custom Table XX_OM_SACCT_FILE_HISTORY.tbl.                           |
+-- |                                                                                            |
+-- |                                                                                            |
+-- |Change Record:                                                                              |
+-- |===============                                                                             |
+-- |Version    Date          Author                Remarks                                      | 
+-- |=======    ==========    =================    ==============================================+
+-- |DRAFT 1A   22-MAY-2007   Bapuji Nanapaneni    Initial Version                               |
+-- |                                                                                            |
+-- +============================================================================================+
+
+
+SET VERIFY      OFF
+SET TERM        ON
+SET FEEDBACK    OFF
+SET SHOW        OFF
+SET ECHO        OFF
+SET TAB         OFF
+
+
+PROMPT
+PROMPT Creating the Table xx_om_sacct_file_history.....
+PROMPT
+
+CREATE TABLE xx_om_sacct_file_history 
+    (
+         file_name                   VARCHAR2(80)
+     ,   file_type                   VARCHAR2(80)
+     ,   request_id                  NUMBER
+     ,   process_date                DATE
+     ,   total_orders                NUMBER
+     ,   total_lines                 NUMBER
+     ,   error_flag                  VARCHAR2(1)
+     ,   legacy_header_count         NUMBER
+     ,   legacy_line_count           NUMBER
+     ,   legacy_adj_count            NUMBER
+     ,   legacy_payment_count        NUMBER
+     ,   legacy_header_amount        NUMBER
+     ,   legacy_tax_amount           NUMBER
+     ,   legacy_line_amount          NUMBER
+     ,   legacy_adj_amount           NUMBER
+     ,   legacy_payment_amount       NUMBER
+     ,   creation_date               DATE
+     ,   created_by                  NUMBER
+     ,   last_update_date            DATE
+     ,   last_updated_by             NUMBER
+     ,   master_request_id           NUMBER
+     ,   org_id                      NUMBER
+     ,   acct_order_total            NUMBER
+     ,   CASH_BACK_AMOUNT            NUMBER
+    )
+/
+
+WHENEVER SQLERROR EXIT 1
+
+PROMPT
+PROMPT Exiting....
+PROMPT
+
+SET FEEDBACK ON
+
+EXIT;
+
+

@@ -1,0 +1,51 @@
+REM================================================================================================
+REM                                 Start Of Script
+REM================================================================================================
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     OFF
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+-- +=======================================================================+
+-- |               Office Depot - Project Simplify                         |
+-- +=======================================================================+
+-- | Name        : XX_INV_ITEM_MASTER_INT_N1                               |
+-- | Description : Non-Unique Index for Custom Table XX_INV_ITEM_MASTER_INT|
+-- |                                                                       |
+-- |Change History:                                                        |
+-- |---------------                                                        |
+-- |                                                                       |
+-- |Version  Date        Author             Remarks                        |
+-- |-------  ----------- -----------------  -------------------------------|
+-- |1.0      10-Jun-2008 Paddy Sanjeevi     Initial Version                |
+-- +=======================================================================+
+
+PROMPT
+PROMPT Creating Index....
+PROMPT
+
+-- ----------------------------------------
+-- Creating Index XX_INV_ITEM_MASTER_INT_N1
+-- ----------------------------------------
+
+
+CREATE INDEX XX_INV_ITEM_MASTER_INT_N1 ON  XX_INV_ITEM_MASTER_INT(load_batch_id);
+
+CREATE INDEX XX_INV_ITEM_MASTER_INT_N2 ON  XX_INV_ITEM_MASTER_INT(process_Flag,action_type,inventory_item_id);
+
+CREATE INDEX XX_INV_ITEM_MASTER_INT_N3 ON  XX_INV_ITEM_MASTER_INT(item);
+
+CREATE INDEX XX_INV_ITEM_MASTER_INT_N4 ON  XX_INV_ITEM_MASTER_INT(organization_id,inventory_item_id);
+
+CREATE INDEX XX_INV_ITEM_MASTER_INT_N5 ON  XX_INV_ITEM_MASTER_INT(creation_date);
+
+CREATE UNIQUE INDEX XX_INV_ITEM_MASTER_INT_U1 ON  XX_INV_ITEM_MASTER_INT(control_id);
+
+SHOW ERRORS;
+
+EXIT;
+REM================================================================================================
+REM                                 Start Of Script
+REM================================================================================================

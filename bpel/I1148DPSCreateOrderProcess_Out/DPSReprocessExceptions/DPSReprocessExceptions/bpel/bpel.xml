@@ -1,0 +1,36 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<BPELSuitcase>
+   <BPELProcess id="DPSReprocessExceptions" src="MessageReprocess.bpel">
+      <partnerLinkBindings>
+         <partnerLinkBinding name="DPSReleaseOrder_Child">
+            <property name="wsdlLocation">http://chilsoa02d.na.odcorp.net:7777/orabpel/otc/DPSReleaseOrder_Child/DPSReleaseOrder_Child?wsdl</property>
+         </partnerLinkBinding>
+         <partnerLinkBinding name="DPSJobConfirmation_Child">
+            <property name="wsdlLocation">http://chilsoa02d.na.odcorp.net:7777/orabpel/otc/DPSJobConfirmation_Child/DPSJobConfirmation_Child?wsdl</property>
+         </partnerLinkBinding>
+         <partnerLinkBinding name="DequeueMessege">
+            <property name="wsdlLocation">DequeueMessage.wsdl</property>
+         </partnerLinkBinding>
+         <partnerLinkBinding name="ProcessNowDocsReceive">
+            <property name="wsdlLocation">http://chilsoa02d.na.odcorp.net:7777/orabpel/otc/ProcessNowDocsReceive/ProcessNowDocsReceive?wsdl</property>
+         </partnerLinkBinding>
+         <partnerLinkBinding name="SendNowDocsMsgProcess">
+            <property name="wsdlLocation">http://chilsoa02d.na.odcorp.net:7777/orabpel/otc/SendNowDocsMsgProcess/SendNowDocsMsgProcess?wsdl</property>
+         </partnerLinkBinding>
+         <partnerLinkBinding name="SendSalesOrderInfo">
+            <property name="wsdlLocation">http://chilsoa02d.na.odcorp.net:7777/orabpel/otc/SendSalesOrderInfo/SendSalesOrderInfo?wsdl</property>
+         </partnerLinkBinding>
+         <partnerLinkBinding name="DPSCancel_SendSalesOrderInfo">
+            <property name="wsdlLocation">http://chilsoa02d.na.odcorp.net:7777/orabpel/otc/DPSCancel_SendSalesOrderInfo/DPSCancel_SendSalesOrderInfo?wsdl</property>
+         </partnerLinkBinding>
+         <partnerLinkBinding name="DPSCancel_SendNowDocsMsgProcess">
+            <property name="wsdlLocation">http://chilsoa02d.na.odcorp.net:7777/orabpel/otc/DPSCancel_SendNowDocsMsgProcess/DPSCancel_SendNowDocsMsgProcess?wsdl</property>
+         </partnerLinkBinding>
+      </partnerLinkBindings>
+      <activationAgents>
+         <activationAgent className="oracle.tip.adapter.fw.agent.jca.JCAActivationAgent" partnerLink="DequeueMessege">
+            <property name="portType">Dequeue_ptt</property>
+         </activationAgent>
+      </activationAgents>
+   </BPELProcess>
+</BPELSuitcase>

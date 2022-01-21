@@ -1,0 +1,16 @@
+<definitions
+     name="routeTDS"
+     targetNamespace="http://schemas.officedepot.com/ODTechServices/routeTDS"
+     xmlns="http://schemas.xmlsoap.org/wsdl/"
+     xmlns:tns="http://schemas.officedepot.com/ODTechServices/routeTDS"
+     xmlns:bpws="http://schemas.xmlsoap.org/ws/2003/03/business-process/"
+     xmlns:plnk="http://schemas.xmlsoap.org/ws/2003/05/partner-link/"
+     xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+    >
+    <import namespace="http://schemas.officedepot.com/ODTechServices/routeTDS" location="ODTechServices_routeTDS.wsdl"/>
+    <plnk:partnerLinkType name="routeTDS_PortType_PL">
+        <plnk:role name="routeTDS_PortType_Role">
+            <plnk:portType name="tns:routeTDS_PortType"/>
+        </plnk:role>
+    </plnk:partnerLinkType>
+</definitions>

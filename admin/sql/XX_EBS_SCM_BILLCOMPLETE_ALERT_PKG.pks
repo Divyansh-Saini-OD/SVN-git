@@ -1,0 +1,9 @@
+CREATE OR REPLACE PACKAGE APPS.XX_EBS_SCM_BILLCOMPLETE_ALERT_PKG
+AS
+ PROCEDURE int_interface (
+      retcode        OUT   NUMBER,
+      errbuf         OUT   VARCHAR2
+   )
+   
+END XX_EBS_SCM_BILLCOMPLETE_ALERT_PKG;
+/

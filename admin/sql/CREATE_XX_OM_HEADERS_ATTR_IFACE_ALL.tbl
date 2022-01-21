@@ -1,0 +1,110 @@
+-- +============================================================================================+
+-- |                        Office Depot - Project Simplify                                     |
+-- |                                                                                            |
+-- +============================================================================================+
+-- | Name         : CREATE_XX_OM_HEADERS_ATTR_IFACE_ALL.tbl                                     |
+-- | Rice Id      : I1272                                                                       | 
+-- | Description  : INT-I1272_SalesOrderFrom LegacySystems(HVOP) Table Creation                 |  
+-- | Purpose      : Create Custom Table XX_OM_HEADERS_ATTR_IFACE_ALL.tbl.                       |
+-- |                                                                                            |
+-- |                                                                                            |
+-- |Change Record:                                                                              |
+-- |===============                                                                             |
+-- |Version    Date          Author                Remarks                                      | 
+-- |=======    ==========    =================    ==============================================+
+-- |DRAFT 1A   22-MAY-2007   Bapuji Nanapaneni    Initial Version                               |
+-- |1.0        31-JUL-2007   Manish                Added columns to keep in sync with           |
+-- |                                               base table xx_om_header_attributes_all       |
+-- +============================================================================================+
+
+
+SET VERIFY      OFF
+SET TERM        ON
+SET FEEDBACK    OFF
+SET SHOW        OFF
+SET ECHO        OFF
+SET TAB         OFF
+
+
+PROMPT
+PROMPT Creating the Table xx_om_headers_attr_iface_all .....
+PROMPT
+
+CREATE TABLE xx_om_headers_attr_iface_all 
+    (
+       Orig_sys_document_ref       VARCHAR2(50) 
+     , Order_source_id             NUMBER
+     , request_id                  NUMBER
+     , batch_id                    NUMBER
+     , org_id                      NUMBER
+     , created_by_store_id         NUMBER
+     , Paid_at_store_id            NUMBER
+     , spc_card_number             VARCHAR2(240)
+     , placement_method_code       VARCHAR2(30)
+     , advantage_card_number       VARCHAR2(240)
+     , created_by_id               VARCHAR2(30)
+     , delivery_code               VARCHAR2(30)
+     , delivery_method             VARCHAR2(30)
+     , release_no                  VARCHAR2(240)
+     , cust_dept_no                VARCHAR2(240)
+     , desk_top_no                 VARCHAR2(240)
+     , comments                    VARCHAR2(240)
+     , cust_carr_acct_no           NUMBER
+     , catalog_src_cd              VARCHAR2(240)
+     , brand                       VARCHAR2(80)
+     , bmode                       VARCHAR2(80)
+     , locale                      VARCHAR2(80)
+     , fax_comments                VARCHAR2(240)
+     , track_num                   VARCHAR2(240)
+     , ship_to_flg                 VARCHAR2(1)
+     , alt_delv_address            VARCHAR2(240)
+     , further_ord_info            VARCHAR2(240)
+     , num_cartons                 NUMBER
+     , cust_comm_pref              VARCHAR2(240)
+     , cust_pref_email             VARCHAR2(240)
+     , cust_pref_fax               VARCHAR2(240)
+     , cust_pref_phone             VARCHAR2(240)
+     , cust_pref_phextn            VARCHAR2(240)
+     , cust_contact_name           VARCHAR2(360)
+     , web_user_id                 VARCHAR2(80)
+     , creation_date               DATE
+     , created_by                  NUMBER
+     , last_update_date            DATE
+     , last_updated_by             NUMBER
+     , gift_flag                   VARCHAR2(1)
+     , orig_cust_name              VARCHAR2(360)
+     , od_order_type               VARCHAR2(1)
+     , ship_to_name                VARCHAR2(100)
+     , bill_to_name                VARCHAR2(100)
+     , ship_to_sequence            VARCHAR2(5)
+     , ship_to_address1            VARCHAR2(240)
+     , ship_to_address2            VARCHAR2(240)
+     , ship_to_city                VARCHAR2(60)
+     , ship_to_state               VARCHAR2(60)
+     , ship_to_country             VARCHAR2(60)
+     , ship_to_zip                 VARCHAR2(60)
+     , imp_file_name               VARCHAR2(80)   
+     , tax_rate                    NUMBER  
+     , commisionable_ind           VARCHAR2(1)
+     , order_action_code           VARCHAR2(30)
+     , order_start_time            DATE
+     , order_end_time              DATE
+     , order_taxable_cd            VARCHAR2(30)
+     , override_delivery_chg_cd    VARCHAR2(30)
+     , order_total                 NUMBER
+     , ship_to_geocode             VARCHAR2(30)
+     , cust_dept_description       VARCHAR2(30)
+     , paid_at_store_no            VARCHAR2(10)
+     , ship_to_county              VARCHAR2(60)
+    )
+/
+
+WHENEVER SQLERROR EXIT 1
+
+PROMPT
+PROMPT Exiting....
+PROMPT
+
+SET FEEDBACK ON
+
+EXIT;

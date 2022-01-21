@@ -1,0 +1,21 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<BPELSuitcase>
+   <BPELProcess id="I0311_XXOMROUTENOBPELPROCESS" src="I0311_XXOMROUTENOBPELPROCESS.bpel">
+      <partnerLinkBindings>
+         <partnerLinkBinding name="client">
+            <property name="wsdlLocation">I0311_XXOMROUTENOBPELPROCESS.wsdl</property>
+         </partnerLinkBinding>
+         <partnerLinkBinding name="TransportationWebService">
+            <property name="wsdlLocation">TransportationWebServiceRef.wsdl</property>
+         </partnerLinkBinding>
+         <partnerLinkBinding name="RouteNoService">
+            <property name="wsdlLocation">RouteNoService.wsdl</property>
+            <property name="retryInterval">60</property>
+         </partnerLinkBinding>
+         <partnerLinkBinding name="UpdateRouteNoService">
+            <property name="wsdlLocation">UpdateRouteNoService.wsdl</property>
+            <property name="retryInterval">60</property>
+         </partnerLinkBinding>
+      </partnerLinkBindings>
+   </BPELProcess>
+</BPELSuitcase>

@@ -1,0 +1,28 @@
+-- +==========================================================================+
+-- |                         Office Depot                                    |
+-- |                       Oracle Consulting                                 |
+-- +==========================================================================+
+-- |                                                                          |
+-- | SQL Script to add the columns in the the following object                |
+-- |             Table       : XX_OM_LINE_ATTRIBUTES_ALL                      |
+-- |                                                                          |
+-- |Change Record:                                                            |
+-- |===============                                                           |
+-- |Version   Date         Author               Remarks                       |
+-- |=======   ==========   =============        ==============================|
+-- | V1.0     25-OCT-2012  Deepti S             Initial version               |
+-- |                                            Added for the Defect 20726    |
+-- |                                                                          |
+-- |                                                                          |
+-- |                                                                          |
+-- +==========================================================================+
+
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     ON
+
+alter table xxom.XX_OM_LINE_ATTRIBUTES_ALL add (mps_ext_flag CHAR(3), mps_ext_date DATE);
+
+SHOW ERROR;

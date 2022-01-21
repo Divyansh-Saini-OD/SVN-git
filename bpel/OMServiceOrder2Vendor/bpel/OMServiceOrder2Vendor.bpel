@@ -1,0 +1,103 @@
+<?xml version = "1.0" encoding = "UTF-8" ?>
+<!--
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  Oracle JDeveloper BPEL Designer 
+  
+  Created: Thu Jun 17 10:41:38 EDT 2010
+  Author:  bala-edupuganti
+  Purpose: Synchronous BPEL Process
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+-->
+<process name="OMServiceOrder2Vendor"
+         targetNamespace="http://xmlns.oracle.com/OMServiceOrder2Vendor"
+         xmlns="http://schemas.xmlsoap.org/ws/2003/03/business-process/"
+         xmlns:bpws="http://schemas.xmlsoap.org/ws/2003/03/business-process/"
+         xmlns:xp20="http://www.oracle.com/XSL/Transform/java/oracle.tip.pc.services.functions.Xpath20"
+         xmlns:ns1="http://schemas.officedepot.com/ODTechServices/routeTDS"
+         xmlns:ldap="http://schemas.oracle.com/xpath/extension/ldap"
+         xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+         xmlns:ns2="http://xmlns.oracle.com/ODErrorLogger"
+         xmlns:bpelx="http://schemas.oracle.com/bpel/extension"
+         xmlns:client="http://xmlns.oracle.com/OMServiceOrder2Vendor"
+         xmlns:ora="http://schemas.oracle.com/xpath/extension"
+         xmlns:orcl="http://www.oracle.com/XSL/Transform/java/oracle.tip.pc.services.functions.ExtFunc">
+  <!-- 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+      PARTNERLINKS                                                      
+      List of services participating in this BPEL process               
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  -->
+  <partnerLinks>
+    <!-- 
+      The 'client' role represents the requester of this service. It is 
+      used for callback. The location and correlation information associated
+      with the client role are automatically set using WS-Addressing.
+    -->
+    <partnerLink name="client" partnerLinkType="client:OMServiceOrder2Vendor"
+                 myRole="OMServiceOrder2VendorProvider"/>
+    <partnerLink myRole="routeTDS_PortType_Role" name="routeTDS"
+                 partnerRole="routeTDS_PortType_Role"
+                 partnerLinkType="ns1:routeTDS_PortType_PL"/>
+  </partnerLinks>
+  <!-- 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+      VARIABLES                                                        
+      List of messages and XML documents used within this BPEL process 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  -->
+  <variables>
+    <!-- Reference to the message passed as input during initiation -->
+    <variable name="inputVariable"
+              messageType="client:OMServiceOrder2VendorRequestMessage"/>
+    <!-- Reference to the message that will be returned to the requester-->
+    <variable name="outputVariable"
+              messageType="client:OMServiceOrder2VendorResponseMessage"/>
+    <variable name="InvokevendorOutbound_InputVariable"
+              messageType="ns1:routeTDS_PortType_routeTDS"/>
+    <variable name="InvokevendorOutbound_OutputVariable"
+              messageType="ns1:routeTDS_PortType_routeTDSResponse"/>
+    <variable name="Invoke_1_routeTDS_InputVariable"
+              messageType="ns1:routeTDS_PortType_routeTDS"/>
+    <variable name="Invoke_1_routeTDS_OutputVariable"
+              messageType="ns1:routeTDS_PortType_routeTDSResponse"/>
+  </variables>
+  <!-- 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+     ORCHESTRATION LOGIC                                               
+     Set of activities coordinating the flow of messages across the    
+     services integrated within this business process                  
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  -->
+  <sequence name="main">
+    <!-- Receive input from requestor. (Note: This maps to operation defined in OMServiceOrder2Vendor.wsdl) -->
+    <receive name="receiveInput" partnerLink="client"
+             portType="client:OMServiceOrder2Vendor" operation="process"
+             variable="inputVariable" createInstance="yes"/>
+    <!-- Generate reply to synchronous request -->
+    <assign name="TransformSO2WS">
+      <bpelx:annotation>
+        <bpelx:pattern>transformation</bpelx:pattern>
+      </bpelx:annotation>
+      <copy>
+        <from expression="ora:processXSLT('TransformSo2VendorOutbound.xsl',bpws:getVariableData('inputVariable','payload'))"/>
+        <to variable="Invoke_1_routeTDS_InputVariable" part="parameters"/>
+      </copy>
+    </assign>
+    <invoke name="InvokeWService" portType="ns1:routeTDS_PortType"
+            inputVariable="Invoke_1_routeTDS_InputVariable"
+            outputVariable="Invoke_1_routeTDS_OutputVariable"
+            partnerLink="routeTDS" operation="routeTDS"/>
+    <assign name="TransformVendorResponse">
+      <bpelx:annotation>
+        <bpelx:pattern>transformation</bpelx:pattern>
+      </bpelx:annotation>
+      <copy>
+        <from expression="ora:processXSLT('TransformVendorResponse_1.xsl',bpws:getVariableData('Invoke_1_routeTDS_OutputVariable','parameters'))"/>
+        <to variable="outputVariable" part="payload"/>
+      </copy>
+    </assign>
+    <reply name="replyOutput" partnerLink="client"
+           portType="client:OMServiceOrder2Vendor" operation="process"
+           variable="outputVariable"/>
+  </sequence>
+</process>

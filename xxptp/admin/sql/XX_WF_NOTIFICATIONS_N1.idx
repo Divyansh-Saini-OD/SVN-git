@@ -1,0 +1,38 @@
+ SET SHOW         OFF
+ SET VERIFY       OFF
+ SET ECHO         OFF
+ SET TAB          OFF
+ SET FEEDBACK     ON
+
+ PROMPT Creating INDEX XX_WF_NOTIFICATIONS_N1
+
+ PROMPT Program exits IF the creation IS NOT SUCCESSFUL
+
+ WHENEVER SQLERROR CONTINUE
+ WHENEVER OSERROR EXIT FAILURE ROLLBACK
+
+ -- +================================================================================+
+ -- |                  Office Depot - Project Simplify                               |
+ -- +================================================================================+
+ -- |Desxription - SQL Script to create XX_WF_NOTIFICATIONS_N1 index                 |
+ -- |Purpose - Index created to improve the performance of iproc approval screens    |
+ -- |          QC Defect # 22188                                                     |
+ -- |                                                                                |
+ -- |Change Record:                                                                  |
+ -- |===============                                                                 |
+ -- |Version      Date               Author               Remarks                    |
+ -- |=======      ===========        =============        ========================== |
+ -- |  1.0        07-MAR-2013        Neeraj Sharma           Initial version.        |
+ -- |                                                                                |
+ -- +================================================================================+
+
+CREATE INDEX xxptp.XX_WF_NOTIFICATIONS_N1 
+ON applsys.WF_NOTIFICATIONS (MESSAGE_NAME,MESSAGE_TYPE) 
+TABLESPACE APPS_TS_TX_IDX PARALLEL 4;
+
+ALTER INDEX xxptp.XX_WF_NOTIFICATIONS_N1 
+NOPARALLEL;
+
+SHOW ERRORS;
+
+EXIT;

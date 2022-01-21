@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!--Native format was generated from COBOL copybook : U:\My Documents\Project Simplify\MD50\I1164_DeliveryToRoadNet\RTS_RN5K_ORDER_LOAD_xxxx.txt-->
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:nxsd="http://xmlns.oracle.com/pcbpel/nxsd" xmlns:extn="http://xmlns.oracle.com/pcbpel/nxsd/extensions" targetNamespace="http://TargetNamespace.com/eis/MQ/TransOrderLoad" xmlns:tns="http://TargetNamespace.com/eis/MQ/TransOrderLoad" elementFormDefault="qualified" attributeFormDefault="unqualified" nxsd:version="NXSD" nxsd:encoding="ASCII" nxsd:byteOrder="bigEndian" nxsd:stream="chars">
+   <xsd:element name="Root-Element">
+      <xsd:complexType>
+         <xsd:sequence>
+            <!--COBOL declaration : 01 WS-ORDER-LOAD-MQ-->
+            <xsd:element name="WS-ORDER-LOAD-MQ" minOccurs="1" maxOccurs="unbounded">
+               <xsd:complexType>
+                  <xsd:sequence>
+                     <!--COBOL declaration : 10 WS-LOCATION-ID PIC 9(04)-->
+                     <xsd:element name="WS-LOCATION-ID" type="xsd:long" nxsd:style="fixedLength" nxsd:padStyle="head" nxsd:paddedBy="0" nxsd:length="4"/>
+                     <!--COBOL declaration : 10 WS-ORDER-NBR PIC X(13)-->
+                     <xsd:element name="WS-ORDER-NBR" type="xsd:string" nxsd:style="fixedLength" nxsd:padStyle="tail" nxsd:paddedBy=" " nxsd:length="13"/>
+                     <!--COBOL declaration : 10 WS-ORDER-DELV-DT PIC X(10)-->
+                     <xsd:element name="WS-ORDER-DELV-DT" type="xsd:string" nxsd:style="fixedLength" nxsd:padStyle="tail" nxsd:paddedBy=" " nxsd:length="10"/>
+                     <!--COBOL declaration : 10 WS-CUSTOMER-ID PIC X(15)-->
+                     <xsd:element name="WS-CUSTOMER-ID" type="xsd:string" nxsd:style="fixedLength" nxsd:padStyle="tail" nxsd:paddedBy=" " nxsd:length="15"/>
+                     <!--COBOL declaration : 10 WS-CUSTOMER-TYPE PIC X(01)-->
+                     <xsd:element name="WS-CUSTOMER-TYPE" type="xsd:string" nxsd:style="fixedLength" nxsd:padStyle="tail" nxsd:paddedBy=" " nxsd:length="1"/>
+                     <!--COBOL declaration : 10 WS-LOAD-STATUS PIC X(01)-->
+                     <xsd:element name="WS-LOAD-STATUS" type="xsd:string" nxsd:style="fixedLength" nxsd:padStyle="tail" nxsd:paddedBy=" " nxsd:length="1"/>
+                     <!--COBOL declaration : 10 WS-SELECTOR PIC X(01)-->
+                     <xsd:element name="WS-SELECTOR" type="xsd:string" nxsd:style="fixedLength" nxsd:padStyle="tail" nxsd:paddedBy=" " nxsd:length="1"/>
+                     <!--COBOL declaration : 10 WS-ROUTE PIC X(04)-->
+                     <xsd:element name="WS-ROUTE" type="xsd:string" nxsd:style="fixedLength" nxsd:padStyle="tail" nxsd:paddedBy=" " nxsd:length="4"/>
+                     <!--COBOL declaration : 10 WS-TOTAL-WEIGHT PIC 9(08).999-->
+                     <xsd:element name="WS-TOTAL-WEIGHT" type="xsd:string" nxsd:style="fixedLength" nxsd:length="12"/>
+                     <!--COBOL declaration : 10 WS-WHSLE-INDICATOR PIC X(01)-->
+                     <xsd:element name="WS-WHSLE-INDICATOR" type="xsd:string" nxsd:style="fixedLength" nxsd:padStyle="tail" nxsd:paddedBy=" " nxsd:length="1"/>
+                     <!--COBOL declaration : 10 WS-DELIV-FR-TM PIC 9(04)-->
+                     <xsd:element name="WS-DELIV-FR-TM" type="xsd:long" nxsd:style="fixedLength" nxsd:padStyle="head" nxsd:paddedBy="0" nxsd:length="4"/>
+                     <!--COBOL declaration : 10 WS-DELIV-TO-TM PIC 9(04)-->
+                     <xsd:element name="WS-DELIV-TO-TM" type="xsd:long" nxsd:style="fixedLength" nxsd:padStyle="head" nxsd:paddedBy="0" nxsd:length="4"/>
+                     <!--COBOL declaration : 10 WS-ESTIMATED-CARTONS PIC 9(04)-->
+                     <xsd:element name="WS-ESTIMATED-CARTONS" type="xsd:long" nxsd:style="fixedLength" nxsd:padStyle="head" nxsd:paddedBy="0" nxsd:length="4"/>
+                     <!--COBOL declaration : 10 WS-COGS-SIGN PIC X(01)-->
+                     <xsd:element name="WS-COGS-SIGN" type="xsd:string" nxsd:style="fixedLength" nxsd:padStyle="tail" nxsd:paddedBy=" " nxsd:length="1"/>
+                     <!--COBOL declaration : 10 WS-COGS PIC 9(07).99-->
+                     <xsd:element name="WS-COGS" type="xsd:string" nxsd:style="fixedLength" nxsd:length="10"/>
+                     <!--COBOL declaration : 10 WS-ORDER-TYPE-DESCR PIC X(10)-->
+                     <xsd:element name="WS-ORDER-TYPE-DESCR" type="xsd:string" nxsd:style="fixedLength" nxsd:padStyle="tail" nxsd:paddedBy=" " nxsd:length="10"/>
+                     <!--COBOL declaration : 10 WS-SAME-DAY-IND PIC X(01)-->
+                     <xsd:element name="WS-SAME-DAY-IND" type="xsd:string" nxsd:style="fixedLength" nxsd:padStyle="tail" nxsd:paddedBy=" " nxsd:length="1"/>
+                     <!--COBOL declaration : 10 WS-REDELIVERY-IND PIC X(01)-->
+                     <xsd:element name="WS-REDELIVERY-IND" type="xsd:string" nxsd:style="fixedLength" nxsd:padStyle="tail" nxsd:paddedBy=" " nxsd:length="1"/>
+                     <!--COBOL declaration : 10 WS-RETURN-TYPE-CD PIC X(02)-->
+                     <xsd:element name="WS-RETURN-TYPE-CD" type="xsd:string" nxsd:style="fixedLength" nxsd:padStyle="tail" nxsd:paddedBy=" " nxsd:length="2"/>
+                  </xsd:sequence>
+               </xsd:complexType>
+            </xsd:element>
+         </xsd:sequence>
+      </xsd:complexType>
+   </xsd:element>
+</xsd:schema>

@@ -1,0 +1,79 @@
+/* $Header: xx_om_exception_id_S.SEQ  porting ship $                                       */
+/*+=======================================================================================+*/
+/*|                                                                                       |*/
+/*|           File Name : xx_om_exception_id_S.SEQ                                        |*/
+/*|          Created by : Bapuji Nanapaneni                                               |*/
+/*|       Creation date : 06-MAR-07                                                       |*/
+/*|             Purpose : Sequence creation For Storing Exceptions                        |*/
+/*|                       xx_om_exception_id_S.                                           |*/
+/*|      Restartability :                                                                 |*/
+/*|                                                                                       |*/
+/*|                                                                                       |*/
+/*|     Revision History:                                                                 |*/
+/*|                                                                                       |*/ 
+/*|                                                                                       |*/
+/*+=======================================================================================+*/
+
+
+SET VERIFY      OFF
+SET TERM        OFF
+SET FEEDBACK    OFF
+SET SHOW        OFF
+SET ECHO        OFF
+SET TAB         OFF
+
+COLUMN XXOM_login   NEW_VALUE XXOM_LOGIN   NOPRINT
+COLUMN XXOM_user    NEW_VALUE XXOM_USER    NOPRINT
+
+SET TERM ON
+
+SELECT '&&1' XXOM_LOGIN
+      ,'&&2' XXOM_USER
+FROM  SYS.dual
+WHERE ROWNUM = 1;
+
+WHENEVER SQLERROR EXIT 1
+
+Prompt Connecting TO Custom SCHEMA &&XXOM_USER
+
+CONNECT &&XXOM_LOGIN;
+
+------------------
+-- Sequence creation
+------------------
+PROMPT
+PROMPT Dropping Existing Sequences from &&XXOM_USER...
+PROMPT
+
+WHENEVER SQLERROR CONTINUE;
+
+PROMPT
+PROMPT Dropping SEQUENCE xx_om_exception_id_S 
+PROMPT
+
+DROP SEQUENCE xx_om_exception_id_S ;
+
+WHENEVER SQLERROR CONTINUE;
+
+PROMPT
+PROMPT Creating Custom Sequences......
+PROMPT
+
+WHENEVER SQLERROR CONTINUE;
+
+PROMPT
+PROMPT Creating Sequence xx_om_exception_id_S
+PROMPT
+
+CREATE SEQUENCE xx_om_exception_id_S INCREMENT BY 1 START WITH 1 NOCYCLE NOCACHE NOORDER
+/
+
+WHENEVER SQLERROR EXIT 1
+
+PROMPT
+PROMPT Exiting....
+PROMPT
+
+SET FEEDBACK ON
+
+EXIT;

@@ -1,0 +1,18 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<BPELSuitcase>
+   <BPELProcess id="CreateOrderProcess" src="CreateOrderProcess.bpel">
+      <partnerLinkBindings>
+         <partnerLinkBinding name="BusinessEventRead">
+            <property name="wsdlLocation">BusinessEventRead.wsdl</property>
+         </partnerLinkBinding>
+         <partnerLinkBinding name="SendSalesOrderInfo">
+            <property name="wsdlLocation">http://chilsoa02d.na.odcorp.net:7777/orabpel/otc/SendSalesOrderInfo/SendSalesOrderInfo?wsdl</property>
+         </partnerLinkBinding>
+      </partnerLinkBindings>
+      <activationAgents>
+         <activationAgent className="oracle.tip.adapter.fw.agent.jca.JCAActivationAgent" partnerLink="BusinessEventRead">
+            <property name="portType">DEQUEUE_ptt</property>
+         </activationAgent>
+      </activationAgents>
+   </BPELProcess>
+</BPELSuitcase>

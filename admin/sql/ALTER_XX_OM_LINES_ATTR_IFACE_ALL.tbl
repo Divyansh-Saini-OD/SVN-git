@@ -1,0 +1,46 @@
+-- +============================================================================================+
+-- |                        Office Depot - Project Simplify                                     |
+-- |                                                                                            |
+-- +============================================================================================+
+-- | Name         : ALTER_xx_om_lines_attr_iface_all.tbl                                       |
+-- | Rice Id      : I1272                                                                       | 
+-- | Description  : INT-I1272_SalesOrderFrom LegacySystems(HVOP) Table MODIFICATION             |  
+-- | Purpose      : MODIFY Custom Table XX_OM_LINE_ATTRIBUTES_ALL.                              |
+-- |                                                                                            |
+-- |                                                                                            |
+-- |Change Record:                                                                              |
+-- |===============                                                                             |
+-- |Version    Date          Author                Remarks                                      | 
+-- |=======    ==========    =================    ==============================================+
+-- |DRAFT 1A   19-AUG-2013   Raj Jagarlamudi      Add MPS Retail column                         |
+-- |DRAFT 1B   19-AUG-2013   Shalu George         Add Item description column                   |
+-- +============================================================================================+
+
+
+SET VERIFY      OFF
+SET TERM        ON
+SET FEEDBACK    OFF
+SET SHOW        OFF
+SET ECHO        OFF
+SET TAB         OFF
+
+
+
+PROMPT
+PROMPT MODIFYING the Table XX_OM_LINES_ATTR_IFACE_ALL.....
+PROMPT
+
+/*ALTER TABLE XX_OM_LINES_ATTR_IFACE_ALL ADD ( MPS_TONER_RETAIL  NUMBER)*/
+
+ALTER TABLE XX_OM_LINES_ATTR_IFACE_ALL ADD ( ITEM_DESCRIPTION  VARCHAR2 (240));
+
+
+WHENEVER SQLERROR EXIT 1
+
+PROMPT
+PROMPT Exiting....
+PROMPT
+
+SET FEEDBACK ON
+/
+EXIT;

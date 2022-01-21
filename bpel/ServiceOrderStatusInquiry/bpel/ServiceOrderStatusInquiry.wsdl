@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions name="ServiceOrderStatusInquiry"
+             targetNamespace="http://xmlns.oracle.com/ServiceOrderStatusInquiry"
+             xmlns="http://schemas.xmlsoap.org/wsdl/"
+             xmlns:client="http://xmlns.oracle.com/ServiceOrderStatusInquiry"
+             xmlns:ns1="http://gsidev01/ServiceStatusInquiryWS.wsdl/types/"
+             xmlns:ns2="http://gsidev01/ServiceStatusInquiryWS.wsdl/types/"
+             xmlns:plnk="http://schemas.xmlsoap.org/ws/2003/05/partner-link/">
+
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	TYPE DEFINITION - List of services participating in this BPEL process
+	The default output of the BPEL designer uses strings as input and 
+	output to the BPEL Process. But you can define or import any XML 
+	Schema type and use them as part of the message types.
+	~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->   
+	<types>
+		<schema xmlns="http://www.w3.org/2001/XMLSchema">
+			<import namespace="http://gsidev01/ServiceStatusInquiryWS.wsdl/types/" schemaLocation="serviceStatusInquiry.xsd" />
+		</schema>
+		<schema xmlns="http://www.w3.org/2001/XMLSchema">
+			<import namespace="http://gsidev01/ServiceStatusInquiryWS.wsdl/types/" schemaLocation="serviceStatusOut.xsd" />
+		</schema>
+	</types>
+
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	MESSAGE TYPE DEFINITION - Definition of the message types used as 
+	part of the port type defintions
+	~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->      
+	<message name="ServiceOrderStatusInquiryRequestMessage">
+		<part name="payload" element="ns2:searchServicerequestElement" />
+	</message>
+	<message name="ServiceOrderStatusInquiryResponseMessage">
+		<part name="payload" element="ns2:searchServicerequestElement" />
+	</message>
+
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	PORT TYPE DEFINITION - A port type groups a set of operations into
+	a logical service unit.
+	~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+
+	<!-- portType implemented by the ServiceOrderStatusInquiry BPEL process -->
+	<portType name="ServiceOrderStatusInquiry">
+		<operation name="process">
+			<input  message="client:ServiceOrderStatusInquiryRequestMessage" />
+			<output message="client:ServiceOrderStatusInquiryResponseMessage"/>
+		</operation>
+	</portType>
+
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	PARTNER LINK TYPE DEFINITION
+	~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ --> 
+	<plnk:partnerLinkType name="ServiceOrderStatusInquiry">
+		<plnk:role name="ServiceOrderStatusInquiryProvider">
+			<plnk:portType name="client:ServiceOrderStatusInquiry"/>
+		</plnk:role>
+	</plnk:partnerLinkType>
+</definitions>

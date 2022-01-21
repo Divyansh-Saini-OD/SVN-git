@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+            xmlns="http://www.OfficeDepot.com/TDS/TDSPOSJDABarCodeRequesterABCSImpl/TDSPOSJDABarCodeEBM"
+            xmlns:od="http://www.OfficeDepot.com/TDS/MessageHeader"            
+            targetNamespace="http://www.OfficeDepot.com/TDS/TDSPOSJDABarCodeRequesterABCSImpl/TDSPOSJDABarCodeEBM"
+            elementFormDefault="qualified">
+<xsd:import namespace="http://www.OfficeDepot.com/TDS/MessageHeader" schemaLocation="oramds:/apps/TDS/Common/Schema/MessageHeader.xsd"/>            
+<xsd:element name="TDSPOSJDABarCodeEBM" type="TDSPOSJDABarCodeEBMType"/>
+
+<xsd:complexType name="TDSPOSJDABarCodeEBMType">
+		<xsd:sequence>
+                 <xsd:element name="ApplicationHeader" type="od:BusinessObjectDocument" minOccurs="1" maxOccurs="1"/>    
+                 <xsd:element name="TDSPOSJDABarCodeEBO" type="TDSPOSJDABarCodeEBOType" minOccurs="1" maxOccurs="1"/>
+		</xsd:sequence>
+</xsd:complexType>
+
+   <xsd:complexType name="TDSPOSJDABarCodeEBOType">
+      <xsd:sequence>
+         <xsd:element name="serviceRequestNumber" type="xsd:string"/>   
+      </xsd:sequence>
+   </xsd:complexType>
+</xsd:schema>

@@ -1,0 +1,29 @@
+<schema targetNamespace="http://xmlns.oracle.com/pcbpel/adapter/db/APPS/WSH_OTM_OUTBOUND/UPDATE_ENTITY_INTF_STATUS/" xmlns="http://www.w3.org/2001/XMLSchema" xmlns:db="http://xmlns.oracle.com/pcbpel/adapter/db/APPS/WSH_OTM_OUTBOUND/UPDATE_ENTITY_INTF_STATUS/">
+   <element name="InputParameters">
+      <complexType>
+         <sequence>
+            <element name="P_ENTITY_TYPE" type="string" db:index="2" db:type="VARCHAR2" minOccurs="0" nillable="true"/>
+            <element name="P_NEW_INTF_STATUS" type="string" db:index="3" db:type="VARCHAR2" minOccurs="0" nillable="true"/>
+            <element name="P_USERID" type="decimal" db:index="4" db:type="NUMBER" minOccurs="0" nillable="true"/>
+            <element name="P_RESPID" type="decimal" db:index="5" db:type="NUMBER" minOccurs="0" nillable="true"/>
+            <element name="P_RESP_APPL_ID" type="decimal" db:index="6" db:type="NUMBER" minOccurs="0" nillable="true"/>
+            <element name="P_ENTITY_ID_TAB" type="db:WSH_OTM_ID_TAB" db:index="7" db:type="Array" minOccurs="0" nillable="true"/>
+            <element name="P_ERROR_ID_TAB" type="db:WSH_OTM_ID_TAB" db:index="8" db:type="Array" minOccurs="0" nillable="true"/>
+         </sequence>
+      </complexType>
+   </element>
+   <element name="OutputParameters">
+      <complexType>
+         <sequence>
+            <element name="X_RETURN_STATUS" type="string" db:index="1" db:type="VARCHAR2" minOccurs="0" nillable="true"/>
+            <element name="P_ENTITY_ID_TAB" type="db:WSH_OTM_ID_TAB" db:index="7" db:type="Array" minOccurs="0" nillable="true"/>
+            <element name="P_ERROR_ID_TAB" type="db:WSH_OTM_ID_TAB" db:index="8" db:type="Array" minOccurs="0" nillable="true"/>
+         </sequence>
+      </complexType>
+   </element>
+   <complexType name="WSH_OTM_ID_TAB">
+      <sequence>
+         <element name="P_ENTITY_ID_TAB_ITEM" type="decimal" db:type="NUMBER" minOccurs="0" maxOccurs="unbounded" nillable="true"/>
+      </sequence>
+   </complexType>
+</schema>

@@ -1,0 +1,332 @@
+<?xml version = "1.0" encoding = "UTF-8" ?>
+<!--
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  Oracle JDeveloper BPEL Designer 
+  
+  Created: Mon Jul 02 19:48:07 IST 2007
+  Author:  rgandhe
+  Purpose: Synchronous BPEL Process
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+-->
+<process name="WMOS_DUMMY" targetNamespace="http://xmlns.oracle.com/WMOS_DUMMY"
+         xmlns="http://schemas.xmlsoap.org/ws/2003/03/business-process/"
+         xmlns:xp20="http://www.oracle.com/XSL/Transform/java/oracle.tip.pc.services.functions.Xpath20"
+         xmlns:bpws="http://schemas.xmlsoap.org/ws/2003/03/business-process/"
+         xmlns:ns1="http://www.openapplications.org/oagis/9"
+         xmlns:ldap="http://schemas.oracle.com/xpath/extension/ldap"
+         xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+         xmlns:client="http://xmlns.oracle.com/WMOS_DUMMY"
+         xmlns:bpelx="http://schemas.oracle.com/bpel/extension"
+         xmlns:ora="http://schemas.oracle.com/xpath/extension"
+         xmlns:orcl="http://www.oracle.com/XSL/Transform/java/oracle.tip.pc.services.functions.ExtFunc">
+  <!-- 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+      PARTNERLINKS                                                      
+      List of services participating in this BPEL process               
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  -->
+  <partnerLinks>
+    <!-- 
+      The 'client' role represents the requester of this service. It is 
+      used for callback. The location and correlation information associated
+      with the client role are automatically set using WS-Addressing.
+    -->
+    <partnerLink name="client" partnerLinkType="client:WMOS_DUMMY"
+                 myRole="WMOS_DUMMYProvider"/>
+  </partnerLinks>
+  <!-- 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+      VARIABLES                                                        
+      List of messages and XML documents used within this BPEL process 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  -->
+  <variables>
+    <!-- Reference to the message passed as input during initiation -->
+    <!-- Reference to the message that will be returned to the requester-->
+    <variable name="outputVariable"
+              messageType="client:WMOS_DUMMYResponseMessage"/>
+    <variable name="inputVariable"
+              messageType="client:WMOS_DUMMYRequestMessage"/>
+  </variables>
+  <!-- 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+     ORCHESTRATION LOGIC                                               
+     Set of activities coordinating the flow of messages across the    
+     services integrated within this business process                  
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  -->
+  <sequence name="main">
+    <!-- Receive input from requestor. (Note: This maps to operation defined in WMOS_DUMMY.wsdl) -->
+    <receive name="receiveInput" partnerLink="client"
+             portType="client:WMOS_DUMMY" operation="process"
+             variable="inputVariable" createInstance="yes"/>
+    <!-- Generate reply to synchronous request -->
+    <assign name="Assign_1">
+      <copy>
+        <from>
+          <ShowShipmentUnit releaseID=""
+                            xsi:schemaLocation="http://www.openapplications.org/oagis/9 ShowShipmentUnit.xsd"
+                            xmlns="http://www.openapplications.org/oagis/9"
+                            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+            <DataArea>
+              <ShipmentUnit>
+                <TrackingID>118009</TrackingID>
+                <ShipUnitTotalID>2</ShipUnitTotalID>
+                <LoadingWeightMeasure>20</LoadingWeightMeasure>
+                <ShipmentUnitContainer>
+                  <ContainerID>5011</ContainerID>
+                  <ShipmentUnitItem>
+                    <ItemID>
+                      <ID>2002</ID>
+                      <RevisionID>000</RevisionID>
+                      <VariationID>000</VariationID>
+                    </ItemID>
+                    <OrderQuantity>2</OrderQuantity>
+                    <DocumentReference type="">
+                      <DocumentID>
+                        <ID>443113</ID>
+                        <RevisionID>01234</RevisionID>
+                        <VariationID>1234</VariationID>
+                      </DocumentID>
+                      <AlternateDocumentID>
+                        <ID>1234</ID>
+                        <RevisionID>1234</RevisionID>
+                        <VariationID>1234</VariationID>
+                      </AlternateDocumentID>
+                      <DocumentDateTime>1967-08-13</DocumentDateTime>
+                      <Description>CARTONIZATION TEST</Description>
+                      <Note>CARTON TEST</Note>
+                      <StatusCode>0</StatusCode>
+                      <UserArea/>
+                    </DocumentReference>
+                    <Specification>
+                      <Property>
+                        <Season>2007</Season>
+                        <Season_yr>2007</Season_yr>
+                        <Style>2007</Style>
+                        <StyleSfx>2007</StyleSfx>
+                        <Color>2007</Color>
+                        <ColorSfx>2007</ColorSfx>
+                        <SecDim>2007</SecDim>
+                        <Qual>2007</Qual>
+                        <SizeDesc>2007</SizeDesc>
+                        <UserArea/>
+                      </Property>
+                    </Specification>
+                    <ContainerLineNum>1001</ContainerLineNum>
+                    <SplInstrCode1>Success</SplInstrCode1>
+                    <SplInstrCode2>TEST1</SplInstrCode2>
+                    <SplInstrCode3>TEST2</SplInstrCode3>
+                    <SplInstrCode4>TEST3</SplInstrCode4>
+                    <SplInstrCode5>TEST4</SplInstrCode5>
+                    <SplInstrCode6>TEST5</SplInstrCode6>
+                    <SplInstrCode7>TEST6</SplInstrCode7>
+                    <SplInstrCode8>TEST7</SplInstrCode8>
+                    <SplInstrCode9>TEST8</SplInstrCode9>
+                    <SplInstrCode10>TEST9</SplInstrCode10>
+                    <ProcStatCode>0</ProcStatCode>
+                    <ProcDateTime>1967-08-13</ProcDateTime>
+                    <UserArea/>
+                  </ShipmentUnitItem>
+                  <CartonWeightMeasure>20</CartonWeightMeasure>
+                  <CartonVolumeMeasure>30</CartonVolumeMeasure>
+                  <LengthMeasure>2</LengthMeasure>
+                  <WidthMeasure>4</WidthMeasure>
+                  <HeightMeasure>6</HeightMeasure>
+                  <SplInstrCode1>Success</SplInstrCode1>
+                  <SplInstrCode2>TEST1</SplInstrCode2>
+                  <SplInstrCode3>TEST2</SplInstrCode3>
+                  <SplInstrCode4>TEST3</SplInstrCode4>
+                  <SplInstrCode5>TEST4</SplInstrCode5>
+                  <SplInstrCode6>TEST5</SplInstrCode6>
+                  <SplInstrCode7>TEST6</SplInstrCode7>
+                  <SplInstrCode8>TEST7</SplInstrCode8>
+                  <SplInstrCode9>TEST8</SplInstrCode9>
+                  <SplInstrCode10>TEST9</SplInstrCode10>
+                  <CartonType>Test-2</CartonType>
+                  <CartonSize>EA</CartonSize>
+                  <PostMaster>0000</PostMaster>
+                  <ProcStatCode>0</ProcStatCode>
+                  <ProcDateTime>1967-08-13</ProcDateTime>
+                  <UserArea/>
+                </ShipmentUnitContainer>
+                <ShipmentUnitContainer>
+                  <ContainerID>5012</ContainerID>
+                  <ShipmentUnitItem>
+                    <ItemID>
+                      <ID>2045</ID>
+                      <RevisionID>000</RevisionID>
+                      <VariationID>000</VariationID>
+                    </ItemID>
+                    <OrderQuantity>3</OrderQuantity>
+                    <DocumentReference type="">
+                      <DocumentID>
+                        <ID>443114</ID>
+                        <RevisionID>01234</RevisionID>
+                        <VariationID>1234</VariationID>
+                      </DocumentID>
+                      <AlternateDocumentID>
+                        <ID>1234</ID>
+                        <RevisionID>1234</RevisionID>
+                        <VariationID>1234</VariationID>
+                      </AlternateDocumentID>
+                      <DocumentDateTime>1967-08-13</DocumentDateTime>
+                      <Description>CARTONIZATION TEST</Description>
+                      <Note>CARTON TEST</Note>
+                      <StatusCode>0</StatusCode>
+                      <UserArea/>
+                    </DocumentReference>
+                    <Specification>
+                      <Property>
+                        <Season>2007</Season>
+                        <Season_yr>2007</Season_yr>
+                        <Style>2007</Style>
+                        <StyleSfx>2007</StyleSfx>
+                        <Color>2007</Color>
+                        <ColorSfx>2007</ColorSfx>
+                        <SecDim>2007</SecDim>
+                        <Qual>2007</Qual>
+                        <SizeDesc>2007</SizeDesc>
+                        <UserArea/>
+                      </Property>
+                    </Specification>
+                    <ContainerLineNum>1002</ContainerLineNum>
+                    <SplInstrCode1>Success</SplInstrCode1>
+                    <SplInstrCode2>TEST1</SplInstrCode2>
+                    <SplInstrCode3>TEST2</SplInstrCode3>
+                    <SplInstrCode4>TEST3</SplInstrCode4>
+                    <SplInstrCode5>TEST4</SplInstrCode5>
+                    <SplInstrCode6>TEST5</SplInstrCode6>
+                    <SplInstrCode7>TEST6</SplInstrCode7>
+                    <SplInstrCode8>TEST7</SplInstrCode8>
+                    <SplInstrCode9>TEST8</SplInstrCode9>
+                    <SplInstrCode10>TEST9</SplInstrCode10>
+                    <ProcStatCode>0</ProcStatCode>
+                    <ProcDateTime>1967-08-13</ProcDateTime>
+                    <UserArea/>
+                  </ShipmentUnitItem>
+                  <CartonWeightMeasure>20</CartonWeightMeasure>
+                  <CartonVolumeMeasure>30</CartonVolumeMeasure>
+                  <LengthMeasure>3</LengthMeasure>
+                  <WidthMeasure>4</WidthMeasure>
+                  <HeightMeasure>5</HeightMeasure>
+                  <SplInstrCode1>Success</SplInstrCode1>
+                  <SplInstrCode2>TEST1</SplInstrCode2>
+                  <SplInstrCode3>TEST2</SplInstrCode3>
+                  <SplInstrCode4>TEST3</SplInstrCode4>
+                  <SplInstrCode5>TEST4</SplInstrCode5>
+                  <SplInstrCode6>TEST5</SplInstrCode6>
+                  <SplInstrCode7>TEST6</SplInstrCode7>
+                  <SplInstrCode8>TEST7</SplInstrCode8>
+                  <SplInstrCode9>TEST8</SplInstrCode9>
+                  <SplInstrCode10>TEST9</SplInstrCode10>
+                  <CartonType>Test-2</CartonType>
+                  <CartonSize>EA</CartonSize>
+                  <PostMaster>0000</PostMaster>
+                  <ProcStatCode>0</ProcStatCode>
+                  <ProcDateTime>1967-08-13</ProcDateTime>
+                  <UserArea/>
+                </ShipmentUnitContainer>
+                <ShipmentUnitContainer>
+                  <ContainerID>5013</ContainerID>
+                  <ShipmentUnitItem>
+                    <ItemID>
+                      <ID>2045</ID>
+                      <RevisionID>000</RevisionID>
+                      <VariationID>000</VariationID>
+                    </ItemID>
+                    <OrderQuantity>2</OrderQuantity>
+                    <DocumentReference type="">
+                      <DocumentID>
+                        <ID>443114</ID>
+                        <RevisionID>01234</RevisionID>
+                        <VariationID>1234</VariationID>
+                      </DocumentID>
+                      <AlternateDocumentID>
+                        <ID>1234</ID>
+                        <RevisionID>1234</RevisionID>
+                        <VariationID>1234</VariationID>
+                      </AlternateDocumentID>
+                      <DocumentDateTime>1967-08-13</DocumentDateTime>
+                      <Description>CARTONIZATION TEST</Description>
+                      <Note>CARTON TEST</Note>
+                      <StatusCode>0</StatusCode>
+                      <UserArea/>
+                    </DocumentReference>
+                    <Specification>
+                      <Property>
+                        <Season>2007</Season>
+                        <Season_yr>2007</Season_yr>
+                        <Style>2007</Style>
+                        <StyleSfx>2007</StyleSfx>
+                        <Color>2007</Color>
+                        <ColorSfx>2007</ColorSfx>
+                        <SecDim>2007</SecDim>
+                        <Qual>2007</Qual>
+                        <SizeDesc>2007</SizeDesc>
+                        <UserArea/>
+                      </Property>
+                    </Specification>
+                    <ContainerLineNum>1003</ContainerLineNum>
+                    <SplInstrCode1>Success</SplInstrCode1>
+                    <SplInstrCode2>TEST1</SplInstrCode2>
+                    <SplInstrCode3>TEST2</SplInstrCode3>
+                    <SplInstrCode4>TEST3</SplInstrCode4>
+                    <SplInstrCode5>TEST4</SplInstrCode5>
+                    <SplInstrCode6>TEST5</SplInstrCode6>
+                    <SplInstrCode7>TEST6</SplInstrCode7>
+                    <SplInstrCode8>TEST7</SplInstrCode8>
+                    <SplInstrCode9>TEST8</SplInstrCode9>
+                    <SplInstrCode10>TEST9</SplInstrCode10>
+                    <ProcStatCode>0</ProcStatCode>
+                    <ProcDateTime>1967-08-13</ProcDateTime>
+                    <UserArea/>
+                  </ShipmentUnitItem>
+                  <CartonWeightMeasure>20</CartonWeightMeasure>
+                  <CartonVolumeMeasure>30</CartonVolumeMeasure>
+                  <LengthMeasure>3</LengthMeasure>
+                  <WidthMeasure>4</WidthMeasure>
+                  <HeightMeasure>5</HeightMeasure>
+                  <SplInstrCode1>Success</SplInstrCode1>
+                  <SplInstrCode2>TEST1</SplInstrCode2>
+                  <SplInstrCode3>TEST2</SplInstrCode3>
+                  <SplInstrCode4>TEST3</SplInstrCode4>
+                  <SplInstrCode5>TEST4</SplInstrCode5>
+                  <SplInstrCode6>TEST5</SplInstrCode6>
+                  <SplInstrCode7>TEST6</SplInstrCode7>
+                  <SplInstrCode8>TEST7</SplInstrCode8>
+                  <SplInstrCode9>TEST8</SplInstrCode9>
+                  <SplInstrCode10>TEST9</SplInstrCode10>
+                  <CartonType>Test-2</CartonType>
+                  <CartonSize>EA</CartonSize>
+                  <PostMaster>0000</PostMaster>
+                  <ProcStatCode>0</ProcStatCode>
+                  <ProcDateTime>1967-08-13</ProcDateTime>
+                  <UserArea/>
+                </ShipmentUnitContainer>
+                <LoadingVolumeMeasure>30</LoadingVolumeMeasure>
+                <SplInstrCode1>Success</SplInstrCode1>
+                <SplInstrCode2>TEST1</SplInstrCode2>
+                <SplInstrCode3>TEST2</SplInstrCode3>
+                <SplInstrCode4>TEST3</SplInstrCode4>
+                <SplInstrCode5>TEST4</SplInstrCode5>
+                <SplInstrCode6>TEST5</SplInstrCode6>
+                <SplInstrCode7>TEST6</SplInstrCode7>
+                <SplInstrCode8>TEST7</SplInstrCode8>
+                <SplInstrCode9>TEST8</SplInstrCode9>
+                <SplInstrCode10>TEST9</SplInstrCode10>
+                <ProcStatCode>0</ProcStatCode>
+                <ProcDateTime>1967-08-13</ProcDateTime>
+                <UserArea/>
+              </ShipmentUnit>
+            </DataArea>
+          </ShowShipmentUnit>
+        </from>
+        <to variable="outputVariable" part="payload"
+            query="/ns1:ShowShipmentUnit"/>
+      </copy>
+    </assign>
+    <reply name="replyOutput" partnerLink="client" portType="client:WMOS_DUMMY"
+           operation="process" variable="outputVariable"/>
+  </sequence>
+</process>

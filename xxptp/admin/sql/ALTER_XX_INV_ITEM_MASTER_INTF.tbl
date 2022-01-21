@@ -1,0 +1,60 @@
+REM============================================================================================
+REM                                 Start Of Script                                            
+REM============================================================================================
+
+--+==============================================================================================+--
+--|                                                                                              |--
+--|                                                                                              |--
+--| Program Name   : ALTER_XX_INV_ITEM_MASTER_INTF.tbl                                           |--        
+--|                                                                                              |--   
+--| Purpose        : The Objects to be altered  are:                                             |--
+--|                                                                                              |--
+--|                  1.XX_INV_ITEM_MASTER_ATTRIBUTES         				         |--
+--|                  2.XX_INV_ITEM_MASTER_INT                                                    |--                                                                                               
+--| Change History  :                                                                            |--
+--| Version           Date             Changed By              Description                       |--
+--+==============================================================================================+--
+--| 1.0               23-Apr-2010     Paddy Sanjeevi           Addition of od_srvc_type_cd       |--
+--+==============================================================================================+--                                                                 
+
+
+SET VERIFY   OFF
+SET TERM     ON
+SET FEEDBACK OFF
+SET SHOW     OFF
+SET ECHO     OFF
+SET TAB      OFF
+                   
+WHENEVER SQLERROR CONTINUE
+                   
+PROMPT             
+PROMPT Alter the  Existing Custom  Tables one time ......
+PROMPT             
+
+WHENEVER SQLERROR CONTINUE
+
+
+ALTER TABLE XX_INV_ITEM_MASTER_ATTRIBUTES add OD_SRVC_TYPE_CD varchar2(3);
+
+
+WHENEVER SQLERROR CONTINUE
+
+PROMPT
+PROMPT ALTER   Custom Table XX_INV_ITEM_ORG_ATTRIBUTES......
+PROMPT
+
+ALTER TABLE XX_INV_ITEM_MASTER_INT add OD_SRVC_TYPE_CD varchar2(3);
+
+PROMPT
+PROMPT Exiting....
+PROMPT
+
+SET FEEDBACK ON
+
+
+EXIT;
+
+
+REM=================================================================================================
+REM                                   End Of Script                                            
+REM=================================================================================================

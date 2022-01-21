@@ -1,0 +1,18 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<BPELSuitcase>
+   <BPELProcess id="POAckReprocessExceptions" src="MessageReprocess.bpel">
+      <partnerLinkBindings>
+         <partnerLinkBinding name="DequeueMessage">
+            <property name="wsdlLocation">DequeueMessage.wsdl</property>
+         </partnerLinkBinding>
+         <partnerLinkBinding name="POAcknowledgementProcess">
+            <property name="wsdlLocation">http://L3DFA73.na.odcorp.net:9700/orabpel/default/POAcknowledgementProcess/POAcknowledgementProcess?wsdl</property>
+         </partnerLinkBinding>
+      </partnerLinkBindings>
+      <activationAgents>
+         <activationAgent className="oracle.tip.adapter.fw.agent.jca.JCAActivationAgent" partnerLink="DequeueMessage">
+            <property name="portType">Dequeue_ptt</property>
+         </activationAgent>
+      </activationAgents>
+   </BPELProcess>
+</BPELSuitcase>

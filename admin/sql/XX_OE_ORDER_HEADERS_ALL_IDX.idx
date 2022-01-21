@@ -1,0 +1,107 @@
+-- +===========================================================================+
+-- |                  Office Depot - SAS Modernization                         |
+-- |                                                                           |
+-- +===========================================================================+
+-- | Name        : XX_OE_ORDER_HEADERS_ALL_IDX.idx                             |
+-- | Description : Index for Custom Table XX_OE_ORDER_HEADERS_ALL              |
+-- |                                                                           |
+-- |Change Record:                                                             |
+-- |===============                                                            |
+-- |Version  Date        Author           Remarks                              |
+-- |======== =========== ================ =====================================|
+-- |1.0      28-Apr-2021 Shreyas Thorat   Initial Version                      |
+-- +===========================================================================+
+
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     ON
+WHENEVER SQLERROR CONTINUE
+
+
+PROMPT
+PROMPT Creation of Index on custom table XX_OE_ORDER_HEADERS_ALL.....
+PROMPT
+
+PROMPT
+PROMPT Creating non-unique index XX_OE_ORDER_HEADERS_N1 .....
+PROMPT
+
+CREATE INDEX XX_OE_ORDER_HEADERS_N1 ON XX_OE_ORDER_HEADERS_ALL(BLANKET_NUMBER);
+
+PROMPT
+PROMPT Creating non-unique index XX_OE_ORDER_HEADERS_N2 .....
+PROMPT
+
+CREATE INDEX XX_OE_ORDER_HEADERS_N2 ON XX_OE_ORDER_HEADERS_ALL(SOLD_TO_ORG_ID);
+
+PROMPT
+PROMPT Creating non-unique index XX_OE_ORDER_HEADERS_N3 .....
+PROMPT
+
+CREATE INDEX XX_OE_ORDER_HEADERS_N3 ON XX_OE_ORDER_HEADERS_ALL(SHIP_TO_ORG_ID);
+
+PROMPT
+PROMPT Creating non-unique index XX_OE_ORDER_HEADERS_N4 .....
+PROMPT
+
+CREATE INDEX XX_OE_ORDER_HEADERS_N4 ON XX_OE_ORDER_HEADERS_ALL(INVOICE_TO_ORG_ID);
+
+PROMPT
+PROMPT Creating non-unique index XX_OE_ORDER_HEADERS_N5 .....
+PROMPT
+
+CREATE INDEX XX_OE_ORDER_HEADERS_N5 ON XX_OE_ORDER_HEADERS_ALL(CUST_PO_NUMBER);
+
+PROMPT
+PROMPT Creating non-unique index XX_OE_ORDER_HEADERS_N6 .....
+PROMPT
+
+CREATE INDEX XX_OE_ORDER_HEADERS_N6 ON XX_OE_ORDER_HEADERS_ALL(BATCH_ID);
+
+PROMPT
+PROMPT Creating non-unique index XX_OE_ORDER_HEADERS_N7 .....
+PROMPT
+
+CREATE INDEX XX_OE_ORDER_HEADERS_N7 ON XX_OE_ORDER_HEADERS_ALL(ORIG_SYS_DOCUMENT_REF, ORDER_SOURCE_ID);
+
+PROMPT
+PROMPT Creating non-unique index XX_OE_ORDER_HEADERS_N8 .....
+PROMPT
+
+CREATE INDEX XX_OE_ORDER_HEADERS_N8 ON XX_OE_ORDER_HEADERS_ALL(OPEN_FLAG);
+
+PROMPT
+PROMPT Creating non-unique index XX_OE_ORDER_HEADERS_N9 .....
+PROMPT
+
+CREATE INDEX XX_OE_ORDER_HEADERS_N9 ON XX_OE_ORDER_HEADERS_ALL(QUOTE_NUMBER, ORDER_TYPE_ID);
+
+PROMPT
+PROMPT Creating unique index XX_OE_ORDER_HEADERS_U1 .....
+PROMPT
+
+CREATE UNIQUE INDEX XX_OE_ORDER_HEADERS_U1 ON XX_OE_ORDER_HEADERS_ALL(HEADER_ID);
+
+PROMPT
+PROMPT Creating unique index XX_OE_ORDER_HEADERS_U2 .....
+PROMPT
+
+CREATE UNIQUE INDEX XX_OE_ORDER_HEADERS_U2 ON XX_OE_ORDER_HEADERS_ALL(ORDER_NUMBER, ORDER_TYPE_ID, VERSION_NUMBER);
+
+PROMPT
+PROMPT Creating non-unique index XX_OE_ORDER_HEADERS_N10 .....
+PROMPT
+
+CREATE INDEX XX_OE_ORDER_HEADERS_N10 ON XX_OE_ORDER_HEADERS_ALL(LAST_UPDATE_DATE);
+
+
+WHENEVER SQLERROR EXIT 1
+
+PROMPT
+PROMPT Exiting....
+PROMPT
+
+EXIT;
+

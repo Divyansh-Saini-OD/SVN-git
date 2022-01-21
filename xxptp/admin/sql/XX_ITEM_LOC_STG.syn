@@ -1,0 +1,47 @@
+REM================================================================================================
+REM                                 Start Of Script
+REM================================================================================================
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     OFF
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+-- +=======================================================================+
+-- |               Office Depot - Project Simplify                         |
+-- +=======================================================================+
+-- | Name          :XX_ITEM_MASTER_STG     	                           |
+-- | Description   :Synonym for item loc staging table                     |
+-- |                                                                       |
+-- |                                                                       |
+-- |Change History:                                                        |
+-- |---------------                                                        |
+-- |                                                                       |
+-- |Version  Date        Author             Remarks                        |
+-- |-------  ----------- -----------------  -------------------------------|
+-- |1.0      21-Jul-2007 Paddy Sanjeevi     Initial Version                |
+--| 1.1      09-Feb-2008 Paddy Sanjeevi     Removed drop statement         |--
+-- +=======================================================================+
+
+
+-- ---------------------------------------------------
+-- Creating synonym xx_item_loc_stg
+-- ---------------------------------------------------
+PROMPT
+PROMPT Creating SYNONYM XX_ITEM_LOC_STG
+PROMPT
+
+CREATE OR REPLACE SYNONYM xx_item_loc_stg FOR xxcnv.xx_item_loc_stg;
+                                    
+PROMPT
+PROMPT Exiting....
+PROMPT
+
+/
+SHOW ERRORS;
+
+EXIT;
+REM=================================================================================================
+REM                                   End Of Script
+REM=================================================================================================

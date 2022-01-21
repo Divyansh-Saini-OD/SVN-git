@@ -1,0 +1,392 @@
+<schema targetNamespace="http://xmlns.oracle.com/pcbpel/adapter/db/APPS/WSH_OTM_OUTBOUND/GET_DELIVERY_OBJECTS/" xmlns="http://www.w3.org/2001/XMLSchema" xmlns:db="http://xmlns.oracle.com/pcbpel/adapter/db/APPS/WSH_OTM_OUTBOUND/GET_DELIVERY_OBJECTS/">
+   <element name="InputParameters">
+      <complexType>
+         <sequence>
+            <element name="P_DLV_ID_TAB" type="db:WSH_OTM_ID_TAB" db:index="1" db:type="Array" minOccurs="0" nillable="true"/>
+            <element name="P_USER_ID" type="decimal" db:index="2" db:type="NUMBER" minOccurs="0" nillable="true"/>
+            <element name="P_RESP_ID" type="decimal" db:index="3" db:type="NUMBER" minOccurs="0" nillable="true"/>
+            <element name="P_RESP_APPL_ID" type="decimal" db:index="4" db:type="NUMBER" minOccurs="0" nillable="true"/>
+            <element name="P_CALLER" type="string" db:index="5" db:type="VARCHAR2" minOccurs="0" nillable="true"/>
+         </sequence>
+      </complexType>
+   </element>
+   <element name="OutputParameters">
+      <complexType>
+         <sequence>
+            <element name="P_DLV_ID_TAB" type="db:WSH_OTM_ID_TAB" db:index="1" db:type="Array" minOccurs="0" nillable="true"/>
+            <element name="X_DOMAIN_NAME" type="string" db:index="6" db:type="VARCHAR2" minOccurs="0" nillable="true"/>
+            <element name="X_OTM_USER_NAME" type="string" db:index="7" db:type="VARCHAR2" minOccurs="0" nillable="true"/>
+            <element name="X_OTM_PWD" type="string" db:index="8" db:type="VARCHAR2" minOccurs="0" nillable="true"/>
+            <element name="X_SERVER_TZ_CODE" type="string" db:index="9" db:type="VARCHAR2" minOccurs="0" nillable="true"/>
+            <element name="X_DLV_TAB" type="db:WSH_OTM_DLV_TAB" db:index="10" db:type="Array" minOccurs="0" nillable="true"/>
+            <element name="X_ERROR_DLV_ID_TAB" type="db:WSH_OTM_ID_TAB" db:index="11" db:type="Array" minOccurs="0" nillable="true"/>
+            <element name="X_RETURN_STATUS" type="string" db:index="12" db:type="VARCHAR2" minOccurs="0" nillable="true"/>
+         </sequence>
+      </complexType>
+   </element>
+   <complexType name="WSH_OTM_DET_OBJ">
+      <sequence>
+         <element name="DELIVERY_DETAIL_ID" type="decimal" db:type="NUMBER" minOccurs="0" nillable="true"/>
+         <element name="LOT_NUMBER" db:type="VARCHAR2" minOccurs="0" nillable="true">
+            <simpleType>
+               <restriction base="string">
+                  <maxLength value="32"/>
+               </restriction>
+            </simpleType>
+         </element>
+         <element name="SERIAL_NUMBER" db:type="VARCHAR2" minOccurs="0" nillable="true">
+            <simpleType>
+               <restriction base="string">
+                  <maxLength value="30"/>
+               </restriction>
+            </simpleType>
+         </element>
+         <element name="TO_SERIAL_NUMBER" db:type="VARCHAR2" minOccurs="0" nillable="true">
+            <simpleType>
+               <restriction base="string">
+                  <maxLength value="30"/>
+               </restriction>
+            </simpleType>
+         </element>
+         <element name="GROSS_WEIGHT" type="decimal" db:type="NUMBER" minOccurs="0" nillable="true"/>
+         <element name="WEIGHT_UOM_CODE" db:type="VARCHAR2" minOccurs="0" nillable="true">
+            <simpleType>
+               <restriction base="string">
+                  <maxLength value="150"/>
+               </restriction>
+            </simpleType>
+         </element>
+         <element name="VOLUME" type="decimal" db:type="NUMBER" minOccurs="0" nillable="true"/>
+         <element name="VOLUME_UOM_CODE" db:type="VARCHAR2" minOccurs="0" nillable="true">
+            <simpleType>
+               <restriction base="string">
+                  <maxLength value="150"/>
+               </restriction>
+            </simpleType>
+         </element>
+         <element name="REQUESTED_QUANTITY" type="decimal" db:type="NUMBER" minOccurs="0" nillable="true"/>
+         <element name="SHIPPED_QUANTITY" type="decimal" db:type="NUMBER" minOccurs="0" nillable="true"/>
+         <element name="INVENTORY_ITEM_ID" db:type="VARCHAR2" minOccurs="0" nillable="true">
+            <simpleType>
+               <restriction base="string">
+                  <maxLength value="30"/>
+               </restriction>
+            </simpleType>
+         </element>
+         <element name="CONTAINER_FLAG" db:type="VARCHAR2" minOccurs="0" nillable="true">
+            <simpleType>
+               <restriction base="string">
+                  <maxLength value="1"/>
+               </restriction>
+            </simpleType>
+         </element>
+         <element name="PARENT_DELIVERY_DETAIL_ID" type="decimal" db:type="NUMBER" minOccurs="0" nillable="true"/>
+         <element name="CUST_PO_NUMBER" db:type="VARCHAR2" minOccurs="0" nillable="true">
+            <simpleType>
+               <restriction base="string">
+                  <maxLength value="50"/>
+               </restriction>
+            </simpleType>
+         </element>
+         <element name="SOURCE_HEADER_NUMBER" db:type="VARCHAR2" minOccurs="0" nillable="true">
+            <simpleType>
+               <restriction base="string">
+                  <maxLength value="150"/>
+               </restriction>
+            </simpleType>
+         </element>
+         <element name="CUST_PO_NUMBER_QLFR" db:type="VARCHAR2" minOccurs="0" nillable="true">
+            <simpleType>
+               <restriction base="string">
+                  <maxLength value="20"/>
+               </restriction>
+            </simpleType>
+         </element>
+         <element name="SOURCE_HEADER_NUMBER_QLFR" db:type="VARCHAR2" minOccurs="0" nillable="true">
+            <simpleType>
+               <restriction base="string">
+                  <maxLength value="20"/>
+               </restriction>
+            </simpleType>
+         </element>
+         <element name="DELIVERY_ID" type="decimal" db:type="NUMBER" minOccurs="0" nillable="true"/>
+         <element name="NET_WEIGHT" type="decimal" db:type="NUMBER" minOccurs="0" nillable="true"/>
+      </sequence>
+   </complexType>
+   <complexType name="WSH_OTM_LPN_TAB">
+      <sequence>
+         <element name="LPN_ITEM" type="db:WSH_OTM_LPN_OBJ" db:type="Struct" minOccurs="0" maxOccurs="unbounded" nillable="true"/>
+      </sequence>
+   </complexType>
+   <complexType name="WSH_OTM_DET_TAB">
+      <sequence>
+         <element name="RL_DETAILS_ITEM" type="db:WSH_OTM_DET_OBJ" db:type="Struct" minOccurs="0" maxOccurs="unbounded" nillable="true"/>
+      </sequence>
+   </complexType>
+   <complexType name="WSH_OTM_DLV_TAB">
+      <sequence>
+         <element name="X_DLV_TAB_ITEM" type="db:WSH_OTM_DLV_OBJ" db:type="Struct" minOccurs="0" maxOccurs="unbounded" nillable="true"/>
+      </sequence>
+   </complexType>
+   <complexType name="WSH_OTM_LPN_CONT_OBJ">
+      <sequence>
+         <element name="CONTENT_ID" type="decimal" db:type="NUMBER" minOccurs="0" nillable="true"/>
+         <element name="LINE_NUMBER" type="decimal" db:type="NUMBER" minOccurs="0" nillable="true"/>
+         <element name="ITEM_REF" db:type="VARCHAR2" minOccurs="0" nillable="true">
+            <simpleType>
+               <restriction base="string">
+                  <maxLength value="20"/>
+               </restriction>
+            </simpleType>
+         </element>
+         <element name="ITEM_QUANTITY" type="decimal" db:type="NUMBER" minOccurs="0" nillable="true"/>
+         <element name="SHIP_UNIT_GID" type="decimal" db:type="NUMBER" minOccurs="0" nillable="true"/>
+         <element name="DELIVERY_ID" type="decimal" db:type="NUMBER" minOccurs="0" nillable="true"/>
+         <element name="GROSS_WEIGHT" type="decimal" db:type="NUMBER" minOccurs="0" nillable="true"/>
+         <element name="NET_WEIGHT" type="decimal" db:type="NUMBER" minOccurs="0" nillable="true"/>
+         <element name="WEIGHT_UOM_CODE" db:type="VARCHAR2" minOccurs="0" nillable="true">
+            <simpleType>
+               <restriction base="string">
+                  <maxLength value="150"/>
+               </restriction>
+            </simpleType>
+         </element>
+         <element name="VOLUME" type="decimal" db:type="NUMBER" minOccurs="0" nillable="true"/>
+         <element name="VOLUME_UOM_CODE" db:type="VARCHAR2" minOccurs="0" nillable="true">
+            <simpleType>
+               <restriction base="string">
+                  <maxLength value="150"/>
+               </restriction>
+            </simpleType>
+         </element>
+      </sequence>
+   </complexType>
+   <complexType name="WSH_OTM_ID_TAB">
+      <sequence>
+         <element name="P_DLV_ID_TAB_ITEM" type="decimal" db:type="NUMBER" minOccurs="0" maxOccurs="unbounded" nillable="true"/>
+      </sequence>
+   </complexType>
+   <complexType name="WSH_OTM_DLV_OBJ">
+      <sequence>
+         <element name="TRANSACTION_CODE" db:type="VARCHAR2" minOccurs="0" nillable="true">
+            <simpleType>
+               <restriction base="string">
+                  <maxLength value="3"/>
+               </restriction>
+            </simpleType>
+         </element>
+         <element name="DELIVERY_ID" type="decimal" db:type="NUMBER" minOccurs="0" nillable="true"/>
+         <element name="NAME" db:type="VARCHAR2" minOccurs="0" nillable="true">
+            <simpleType>
+               <restriction base="string">
+                  <maxLength value="30"/>
+               </restriction>
+            </simpleType>
+         </element>
+         <element name="FREIGHT_TERMS" db:type="VARCHAR2" minOccurs="0" nillable="true">
+            <simpleType>
+               <restriction base="string">
+                  <maxLength value="30"/>
+               </restriction>
+            </simpleType>
+         </element>
+         <element name="FOB_CODE" db:type="VARCHAR2" minOccurs="0" nillable="true">
+            <simpleType>
+               <restriction base="string">
+                  <maxLength value="30"/>
+               </restriction>
+            </simpleType>
+         </element>
+         <element name="CARRIER_ID" db:type="VARCHAR2" minOccurs="0" nillable="true">
+            <simpleType>
+               <restriction base="string">
+                  <maxLength value="30"/>
+               </restriction>
+            </simpleType>
+         </element>
+         <element name="SERVICE_LEVEL" db:type="VARCHAR2" minOccurs="0" nillable="true">
+            <simpleType>
+               <restriction base="string">
+                  <maxLength value="30"/>
+               </restriction>
+            </simpleType>
+         </element>
+         <element name="MODE_OF_TRANSPORT" db:type="VARCHAR2" minOccurs="0" nillable="true">
+            <simpleType>
+               <restriction base="string">
+                  <maxLength value="30"/>
+               </restriction>
+            </simpleType>
+         </element>
+         <element name="INITIAL_PICKUP_LOCATION_ID" db:type="VARCHAR2" minOccurs="0" nillable="true">
+            <simpleType>
+               <restriction base="string">
+                  <maxLength value="30"/>
+               </restriction>
+            </simpleType>
+         </element>
+         <element name="ULTIMATE_DROPOFF_LOCATION_ID" db:type="VARCHAR2" minOccurs="0" nillable="true">
+            <simpleType>
+               <restriction base="string">
+                  <maxLength value="30"/>
+               </restriction>
+            </simpleType>
+         </element>
+         <element name="EARLIEST_PICKUP_DATE" type="dateTime" db:type="DATE" minOccurs="0" nillable="true"/>
+         <element name="LATEST_PICKUP_DATE" type="dateTime" db:type="DATE" minOccurs="0" nillable="true"/>
+         <element name="EARLIEST_DROPOFF_DATE" type="dateTime" db:type="DATE" minOccurs="0" nillable="true"/>
+         <element name="LATEST_DROPOFF_DATE" type="dateTime" db:type="DATE" minOccurs="0" nillable="true"/>
+         <element name="GROSS_WEIGHT" type="decimal" db:type="NUMBER" minOccurs="0" nillable="true"/>
+         <element name="WEIGHT_UOM_CODE" db:type="VARCHAR2" minOccurs="0" nillable="true">
+            <simpleType>
+               <restriction base="string">
+                  <maxLength value="150"/>
+               </restriction>
+            </simpleType>
+         </element>
+         <element name="VOLUME" type="decimal" db:type="NUMBER" minOccurs="0" nillable="true"/>
+         <element name="VOLUME_UOM_CODE" db:type="VARCHAR2" minOccurs="0" nillable="true">
+            <simpleType>
+               <restriction base="string">
+                  <maxLength value="150"/>
+               </restriction>
+            </simpleType>
+         </element>
+         <element name="NET_WEIGHT" type="decimal" db:type="NUMBER" minOccurs="0" nillable="true"/>
+         <element name="REVISION" type="decimal" db:type="NUMBER" minOccurs="0" nillable="true"/>
+         <element name="REASON_OF_TRANSPORT" db:type="VARCHAR2" minOccurs="0" nillable="true">
+            <simpleType>
+               <restriction base="string">
+                  <maxLength value="30"/>
+               </restriction>
+            </simpleType>
+         </element>
+         <element name="DESCRIPTION" db:type="VARCHAR2" minOccurs="0" nillable="true">
+            <simpleType>
+               <restriction base="string">
+                  <maxLength value="30"/>
+               </restriction>
+            </simpleType>
+         </element>
+         <element name="ADDITIONAL_SHIPMENT_INFO" db:type="VARCHAR2" minOccurs="0" nillable="true">
+            <simpleType>
+               <restriction base="string">
+                  <maxLength value="500"/>
+               </restriction>
+            </simpleType>
+         </element>
+         <element name="ROUTING_INSTRUCTIONS" db:type="VARCHAR2" minOccurs="0" nillable="true">
+            <simpleType>
+               <restriction base="string">
+                  <maxLength value="120"/>
+               </restriction>
+            </simpleType>
+         </element>
+         <element name="TOTAL_ITEM_COUNT" type="decimal" db:type="NUMBER" minOccurs="0" nillable="true"/>
+         <element name="REVISION_QLFR" db:type="VARCHAR2" minOccurs="0" nillable="true">
+            <simpleType>
+               <restriction base="string">
+                  <maxLength value="20"/>
+               </restriction>
+            </simpleType>
+         </element>
+         <element name="REASON_OF_TRANSPORT_QLFR" db:type="VARCHAR2" minOccurs="0" nillable="true">
+            <simpleType>
+               <restriction base="string">
+                  <maxLength value="20"/>
+               </restriction>
+            </simpleType>
+         </element>
+         <element name="DESCRIPTION_QLFR" db:type="VARCHAR2" minOccurs="0" nillable="true">
+            <simpleType>
+               <restriction base="string">
+                  <maxLength value="20"/>
+               </restriction>
+            </simpleType>
+         </element>
+         <element name="ADDITIONAL_SHIPMENT_INFO_QLFR" db:type="VARCHAR2" minOccurs="0" nillable="true">
+            <simpleType>
+               <restriction base="string">
+                  <maxLength value="20"/>
+               </restriction>
+            </simpleType>
+         </element>
+         <element name="ROUTING_INSTRUCTIONS_QLFR" db:type="VARCHAR2" minOccurs="0" nillable="true">
+            <simpleType>
+               <restriction base="string">
+                  <maxLength value="20"/>
+               </restriction>
+            </simpleType>
+         </element>
+         <element name="RL_DETAILS" type="db:WSH_OTM_DET_TAB" db:type="Array" minOccurs="0" nillable="true"/>
+         <element name="LPN" type="db:WSH_OTM_LPN_TAB" db:type="Array" minOccurs="0" nillable="true"/>
+      </sequence>
+   </complexType>
+   <complexType name="WSH_OTM_LPN_CONT_TAB">
+      <sequence>
+         <element name="PACKED_ITEMS_ITEM" type="db:WSH_OTM_LPN_CONT_OBJ" db:type="Struct" minOccurs="0" maxOccurs="unbounded" nillable="true"/>
+      </sequence>
+   </complexType>
+   <complexType name="WSH_OTM_LPN_OBJ">
+      <sequence>
+         <element name="LPN_ID" type="decimal" db:type="NUMBER" minOccurs="0" nillable="true"/>
+         <element name="LPN_TYPE" db:type="VARCHAR2" minOccurs="0" nillable="true">
+            <simpleType>
+               <restriction base="string">
+                  <maxLength value="100"/>
+               </restriction>
+            </simpleType>
+         </element>
+         <element name="GROSS_WEIGHT" type="decimal" db:type="NUMBER" minOccurs="0" nillable="true"/>
+         <element name="NET_WEIGHT" type="decimal" db:type="NUMBER" minOccurs="0" nillable="true"/>
+         <element name="WEIGHT_UOM_CODE" db:type="VARCHAR2" minOccurs="0" nillable="true">
+            <simpleType>
+               <restriction base="string">
+                  <maxLength value="150"/>
+               </restriction>
+            </simpleType>
+         </element>
+         <element name="VOLUME_UOM_CODE" db:type="VARCHAR2" minOccurs="0" nillable="true">
+            <simpleType>
+               <restriction base="string">
+                  <maxLength value="150"/>
+               </restriction>
+            </simpleType>
+         </element>
+         <element name="SEAL_CODE" db:type="VARCHAR2" minOccurs="0" nillable="true">
+            <simpleType>
+               <restriction base="string">
+                  <maxLength value="30"/>
+               </restriction>
+            </simpleType>
+         </element>
+         <element name="PACKED_ITEMS" type="db:WSH_OTM_LPN_CONT_TAB" db:type="Array" minOccurs="0" nillable="true"/>
+         <element name="PARENT_DELIVERY_DETAIL_ID" type="decimal" db:type="NUMBER" minOccurs="0" nillable="true"/>
+         <element name="CONTAINER_TYPE_CODE" db:type="VARCHAR2" minOccurs="0" nillable="true">
+            <simpleType>
+               <restriction base="string">
+                  <maxLength value="30"/>
+               </restriction>
+            </simpleType>
+         </element>
+         <element name="UNIT_LENGTH" type="decimal" db:type="NUMBER" minOccurs="0" nillable="true"/>
+         <element name="UNIT_HEIGHT" type="decimal" db:type="NUMBER" minOccurs="0" nillable="true"/>
+         <element name="UNIT_WIDTH" type="decimal" db:type="NUMBER" minOccurs="0" nillable="true"/>
+         <element name="DIMENSION_UM_CODE" db:type="VARCHAR2" minOccurs="0" nillable="true">
+            <simpleType>
+               <restriction base="string">
+                  <maxLength value="150"/>
+               </restriction>
+            </simpleType>
+         </element>
+         <element name="VOLUME" type="decimal" db:type="NUMBER" minOccurs="0" nillable="true"/>
+         <element name="EQUIPMENT_XID" db:type="VARCHAR2" minOccurs="0" nillable="true">
+            <simpleType>
+               <restriction base="string">
+                  <maxLength value="200"/>
+               </restriction>
+            </simpleType>
+         </element>
+      </sequence>
+   </complexType>
+</schema>

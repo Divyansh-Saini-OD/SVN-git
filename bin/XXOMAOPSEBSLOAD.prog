@@ -1,0 +1,71 @@
+#!/usr/bin/ksh
+# +===================================================================+
+# |                  Office Depot - Project Simplify                  |
+# |                     Office Depot                                  |
+# +===================================================================+
+# | Name  :       SAS HVOP o Requisition Load (Shell Script)          |
+# | Description : To Load the orders from the AOPS flat file to       |
+# | table XX_OM_AOPS_EBS_ORD_CHK                                      |
+# |                                                                   |
+# |                                                                   |
+# |Change Record:                                                     |
+# |===============                                                    |
+# |Version   Date          Author              Remarks                |
+# |=======   ===========  =============        =======================|
+# |1.0       09-SEP-2008  Visa-Sivasubramanian Initial version        |
+# |1.1       09-Feb-2009  Matthew Craig        Changed data file name |
+# |                                                                   |
+# |-------------------------------------------------------------------|
+# |                                                                   |
+# +===================================================================+
+
+#echo "Input File Path : " [$5]
+#echo "File Name : " [$6]
+FILE_DIR="$XXOM_DATA/ftp/in"
+FILE_ARCHIVE="$XXOM_DATA/ftp/archive/inbound"
+echo " Path  :" [$FILE_DIR]
+#ls -ltr  $5/$6 
+#if [ $? -ne 0 ]
+#then
+#echo "File Not Found "
+#exit 2 
+#fi 
+
+echo "Deleting old files" 
+
+rm ${FILE_DIR}/AOPSEBSORD*.log
+rm ${FILE_DIR}/AOPSEBSORD*.bad
+
+
+ls  ${FILE_DIR}/AOPSEBSORD*.dat
+if [ $? -ne 0 ] 
+then
+echo "Result/Error in Data file Generation "                         
+exit 2
+else
+echo "Data file found"
+fi
+
+for i in `ls ${FILE_DIR}/AOPSEBSORD*.dat`
+do
+sqlldr parfile=$HOME/parfile.apps data=$i control=$XXOM_TOP/bin/XXOMAOPSEBSORD.ctl log=$i.log bad=$i.bad
+
+if [ $? -ne 0 ]
+then
+echo "Error in running sqlloader. Please Check log for Error Details "
+
+else 
+echo "Completed successfully "
+mv $i $i.DONE
+fi
+
+echo "------------ Log File--------------" 
+cat $i.log
+
+echo "-------------Bad Data file----------"
+cat $i.bad
+
+done
+# Exiting from the shell program.
+exit 0
+

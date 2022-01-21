@@ -1,0 +1,74 @@
+<definitions
+     name="EbsScmPodSrvc"
+     targetNamespace="http://xmlns.oracle.com/pcbpel/adapter/db/EbsScmPodSrvc/"
+     xmlns="http://schemas.xmlsoap.org/wsdl/"
+     xmlns:tns="http://xmlns.oracle.com/pcbpel/adapter/db/EbsScmPodSrvc/"
+     xmlns:db="http://xmlns.oracle.com/pcbpel/adapter/db/APPS/XX_CS_CLOSE_LOOP_BPEL_PKG/ENQUEUE_MESSAGE/"
+     xmlns:plt="http://schemas.xmlsoap.org/ws/2003/05/partner-link/"
+     xmlns:jca="http://xmlns.oracle.com/pcbpel/wsdl/jca/"
+     xmlns:hdr="http://xmlns.oracle.com/pcbpel/adapter/db/"
+     xmlns:ns2="http://www.openapplications.org/oagis/9"
+    >
+    <import namespace="http://xmlns.oracle.com/pcbpel/adapter/db/" location="DBAdapterOutboundHeader.wsdl"/>
+    <types>
+     <schema xmlns="http://www.w3.org/2001/XMLSchema">
+       <import namespace="http://xmlns.oracle.com/pcbpel/adapter/db/APPS/XX_CS_CLOSE_LOOP_BPEL_PKG/ENQUEUE_MESSAGE/"
+               schemaLocation="APPS_XX_CS_CLOSE_LOOP_BPEL_PKG_ENQUEUE_MESSAGE.xsd" />
+     </schema>
+     <schema xmlns="http://www.w3.org/2001/XMLSchema" xmlns:ns2="http://www.openapplications.org/oagis/9" >
+        <import namespace="http://www.openapplications.org/oagis/9" schemaLocation="http://chilsoa01d.na.odcorp.net:7778/orabpel/xmllib/eaixml/oagis/v91/message/bod/ShowShipment.xsd" />
+      </schema>
+    </types>
+    <message name="args_in_msg">
+        <part name="InputParameters" element="db:InputParameters"/>
+    </message>
+    <message name="args_out_msg">
+        <part name="OutputParameters" element="db:OutputParameters"/>
+    </message>
+    <message name="ShowShipmentMessage">
+        <part name ="ShowShipment" type="ns2:ShowShipmentType"/> 
+    </message>
+    <portType name="EbsScmPodSrvc_ptt">
+        <operation name="EbsScmPodSrvc">
+            <input message="tns:args_in_msg"/>
+            <output message="tns:args_out_msg"/>
+        </operation>
+    </portType>
+    <binding name="EbsScmPodSrvc_binding" type="tns:EbsScmPodSrvc_ptt">
+    <jca:binding  />
+        <operation name="EbsScmPodSrvc">
+      <jca:operation
+          SchemaName="APPS"
+          PackageName="XX_CS_CLOSE_LOOP_BPEL_PKG"
+          ProcedureName="ENQUEUE_MESSAGE"
+          InteractionSpec="oracle.tip.adapter.db.DBStoredProcedureInteractionSpec" >
+      </jca:operation>
+      <input>
+        <jca:header message="hdr:OutboundHeader_msg" part="outboundHeader"/>
+      </input>
+            <output/>
+        </operation>
+    </binding>
+    <service name="EbsScmPodSrvc">
+        <port name="EbsScmPodSrvc_pt" binding="tns:EbsScmPodSrvc_binding">
+<!--Your runtime connection is declared in 
+J2EE_HOME/application-deployments/default/DbAdapter/oc4j-ra.xml 
+These mcf properties here are from your design time connection and 
+save you from having to edit that file and restart the application server 
+if eis/db/EBSApps is missing. 
+These mcf properties are safe to remove.-->
+        <jca:address location="eis/db/EBSApps" UIConnectionName="GSIDEV02"
+          ManagedConnectionFactory="oracle.tip.adapter.db.DBManagedConnectionFactory"
+          mcf.DriverClassName="oracle.jdbc.OracleDriver"
+          mcf.PlatformClassName="oracle.toplink.internal.databaseaccess.Oracle9Platform" 
+          mcf.ConnectionString="jdbc:oracle:thin:@//choldbr13d:1541/GSIDEV02" 
+          mcf.UserName="apps"
+          mcf.Password="22F7AFE6F6B96724FC970AF706D8C533D62D1A19DF561D1E" />
+      </port>
+    </service>
+  <plt:partnerLinkType name="EbsScmPodSrvc_plt" >
+    <plt:role name="EbsScmPodSrvc_role" >
+      <plt:portType name="tns:EbsScmPodSrvc_ptt" />
+    </plt:role>
+  </plt:partnerLinkType>
+</definitions>

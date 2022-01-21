@@ -1,0 +1,41 @@
+-- +===========================================================================+
+-- |                        Office Depot - Project Simplify                    |
+-- |                                                                           |
+-- +===========================================================================+
+-- | Name         : XX_OM_RETURN_TENDERS_U1.idx                                |
+-- | Rice Id      :                                                            | 
+-- | Description  :                                                            |  
+-- | Purpose      : Alter index removing parallel                              |
+-- |                                                                           |
+-- |Change Record:                                                             |
+-- |===============                                                            |
+-- |Version Date        Author            Remarks                              | 
+-- |======= =========== ================= =====================================+
+-- |1.0     06-APR-2009 Matthew Craig     Initial Version                      |
+-- |                                                                           |
+-- +===========================================================================+
+
+SET VERIFY      OFF
+SET TERM        ON
+SET FEEDBACK    OFF
+SET SHOW        OFF
+SET ECHO        OFF
+SET TAB         OFF
+
+PROMPT
+PROMPT Altering of Index XXOM.XX_OM_RETURN_TENDERS_U1 on table XXOM.XX_OM_RETURN_TENDERS.....
+PROMPT
+
+
+ALTER INDEX  XXOM.XX_OM_RETURN_TENDERS_U1 LOGGING NOPARALLEL;
+
+
+WHENEVER SQLERROR EXIT 1
+
+PROMPT
+PROMPT Exiting....
+PROMPT
+
+SET FEEDBACK ON
+
+EXIT;

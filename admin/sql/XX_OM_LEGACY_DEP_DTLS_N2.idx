@@ -1,0 +1,45 @@
+-- +============================================================================================+
+-- |                        Office Depot - Project Simplify                                     |
+-- |                                                                                            |
+-- +============================================================================================+
+-- | Name         : XX_OM_LEGACY_DEP_DTLS_N2.idx                                                |
+-- | Rice Id      : I1272                                                                       | 
+-- | Description  : INT-I1272_SalesOrderFrom LegacySystems(HVOP) Index Creation                 |  
+-- | Purpose      : Create nonunique index for Table XX_OM_LEGACY_DEP_DTLS table                |
+-- |                                                                                            |
+-- |Change Record:                                                                              |
+-- |===============                                                                             |
+-- |Version    Date          Author                Remarks                                      | 
+-- |=======    ==========    =================    ==============================================+
+-- |DRAFT 1A   07-FEB-2011   Bapuji Nanapaneni    Initial Version                               |
+-- |                                                                                            |
+-- +============================================================================================+
+
+SET VERIFY      OFF
+SET TERM        ON
+SET FEEDBACK    OFF
+SET SHOW        OFF
+SET ECHO        OFF
+SET TAB         OFF
+
+PROMPT
+PROMPT Creation of Index on AR table XX_OM_LEGACY_DEP_DTLS.....
+PROMPT
+
+
+PROMPT
+PROMPT Creating index on  INDEX XX_OM_LEGACY_DEP_DTLS_N2.....
+PROMPT
+
+CREATE INDEX XXOM.XX_OM_LEGACY_DEP_DTLS_N2 ON XXOM.XX_OM_LEGACY_DEP_DTLS(ORIG_SYS_DOCUMENT_REF);
+
+WHENEVER SQLERROR EXIT 1
+
+PROMPT
+PROMPT Exiting....
+PROMPT
+
+SET FEEDBACK ON
+
+EXIT;
+
