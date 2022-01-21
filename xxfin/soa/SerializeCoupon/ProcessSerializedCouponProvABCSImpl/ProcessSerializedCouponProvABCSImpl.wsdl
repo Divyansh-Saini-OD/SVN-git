@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wsdl:definitions name="ProcessSerializedCouponProvABCSImpl"
+             targetNamespace="http://xmlns.officedepot.com/ABCSImpl/POS/Custom/SerializedCouponEBO/V1"
+             xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+             xmlns:client="http://xmlns.officedepot.com/ABCSImpl/POS/Custom/SerializedCouponEBO/V1"
+             xmlns:req="http://xmlns.officedepot.com/EnterpriseMessage/POS/Custom/EBM/SerializedCouponRequestEBM/V1"
+             xmlns:resp="http://xmlns.officedepot.com/EnterpriseMessage/POS/Custom/EBM/SerializedCouponResponseEBM/V1"    
+             xmlns:err="http://xmlns.officedepot.com/EnterpriseMessage/POS/Custom/Common/SerializedCouponFaultMessage/V1"              
+             xmlns:plnk="http://schemas.xmlsoap.org/ws/2003/05/partner-link/">
+
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	TYPE DEFINITION - List of services participating in this BPEL process
+	The default output of the BPEL designer uses strings as input and 
+	output to the BPEL Process. But you can define or import any XML 
+	Schema type and use them as part of the message types.
+	~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->   
+	<wsdl:types>
+		<schema xmlns="http://www.w3.org/2001/XMLSchema">
+    <import namespace="http://xmlns.officedepot.com/EnterpriseMessage/POS/Custom/EBM/SerializedCouponRequestEBM/V1" schemaLocation="xsd/SerializedCouponRequestEBM.xsd" />
+		</schema>
+		<schema xmlns="http://www.w3.org/2001/XMLSchema">
+						<import namespace="http://xmlns.officedepot.com/EnterpriseMessage/POS/Custom/EBM/SerializedCouponResponseEBM/V1" schemaLocation="xsd/SerializedCouponResponseEBM.xsd" />
+		</schema>
+		<schema xmlns="http://www.w3.org/2001/XMLSchema">
+			      <import namespace="http://xmlns.officedepot.com/EnterpriseMessage/POS/Custom/Common/SerializedCouponFaultMessage/V1" schemaLocation="xsd/SerializedCouponFaultMessage.xsd" />      
+		</schema>    
+	</wsdl:types>
+
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	MESSAGE TYPE DEFINITION - Definition of the message types used as 
+	part of the port type defintions
+	~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->      
+ 
+	<wsdl:message name="ProcessSerializedCouponReqMsg">
+		<wsdl:part name="payload" element="req:SerializedCouponRequestEBM"/>
+	</wsdl:message>
+	<wsdl:message name="ProcessSerializedCouponRespMsg">
+		<wsdl:part name="payload" element="resp:SerializedCouponResponseEBM"/>
+	</wsdl:message>
+  
+
+  
+	<wsdl:message name="CouponInformationNotFoundFault">
+		<wsdl:part name="payload" element="err:SerializedCouponFaultMessage"/>
+	</wsdl:message>
+	<wsdl:message name="CouponSerializationFault">
+		<wsdl:part name="payload" element="err:SerializedCouponFaultMessage"/>
+	</wsdl:message>   
+
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	PORT TYPE DEFINITION - A port type groups a set of operations into
+	a logical service unit.
+	~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+
+	<!-- portType implemented by the ProcessSerializedCouponProvABCSImplProcess BPEL process -->
+	<wsdl:portType name="ProcessSerializedCouponProvABCSImplService">
+   
+		<wsdl:operation name="processSerializedCoupon">
+			<wsdl:input  message="client:ProcessSerializedCouponReqMsg" />
+			<wsdl:output message="client:ProcessSerializedCouponRespMsg"/>
+   <wsdl:fault message="client:CouponInformationNotFoundFault"
+               name="CouponInformationNotFound">
+   </wsdl:fault>
+   <wsdl:fault message="client:CouponSerializationFault" name="CouponSerializationFault"/>
+  </wsdl:operation>     
+	</wsdl:portType>
+
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	PARTNER LINK TYPE DEFINITION
+	~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ --> 
+	<plnk:partnerLinkType name="ProcessSerializedCouponProvABCSImpl">
+		<plnk:role name="ProcessSerializedCouponProvABCSImplProcessProvider">
+			<plnk:portType name="client:ProcessSerializedCouponProvABCSImplService"/>
+		</plnk:role>
+	</plnk:partnerLinkType>
+</wsdl:definitions>

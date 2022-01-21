@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding='windows-1252'?>
+<!DOCTYPE ViewObject SYSTEM "jbo_03_01.dtd">
+
+<!-- $Header: BankAccountTypesVO.xml 120.1 2005/01/19 05:45:24 rsinthre noship $ -->
+<!--
+  Author: Sridevi Kondoju
+  Component Id: E1356
+  Script Location: $CUSTOM_JAVA_TOP/od/oracle/apps/xxfin/ar/irec/accountDetails/pay/server
+  Description: retrofitted for r12 upgrade
+  History:
+  Name            Date         Version    Description
+  Sridevi Kondoju 16-Aug-2013   1.0    Retrofitted for R12 Upgrade.
+-->
+
+<ViewObject
+   Name="OD_BankAccountTypesVO"
+   Extends="oracle.apps.ar.irec.accountDetails.pay.server.BankAccountTypesVO"
+   BindingStyle="Oracle"
+   CustomQuery="true"
+    RowClass="od.oracle.apps.xxfin.ar.irec.accountDetails.pay.server.OD_BankAccountTypesVORowImpl"
+   ComponentClass="od.oracle.apps.xxfin.ar.irec.accountDetails.pay.server.OD_BankAccountTypesVOImpl"
+   MsgBundleClass="oracle.jbo.common.JboResourceBundle"
+   UseGlueCode="false" >
+   <SQLQuery><![CDATA[
+select irec.lookup_code account_type_code,
+       irec.meaning account_type
+from ar_lookups irec,
+     fnd_lookup_values_vl iPayment
+where irec.lookup_type = 'AR_IREC_BANK_ACCOUNT_TYPES'
+and irec.enabled_flag = 'Y'
+AND TRUNC(SYSDATE)    
+      BETWEEN TRUNC(NVL(irec.START_DATE_ACTIVE,SYSDATE)) 
+      AND     TRUNC(NVL(irec.END_DATE_ACTIVE,SYSDATE))
+and iPayment.lookup_code = irec.lookup_code
+and iPayment.lookup_type = 'IBY_BANKACCT_TYPES'
+and iPayment.enabled_flag = 'Y'
+AND TRUNC(SYSDATE)    
+      BETWEEN TRUNC(NVL(iPayment.START_DATE_ACTIVE,SYSDATE)) 
+      AND     TRUNC(NVL(iPayment.END_DATE_ACTIVE,SYSDATE)) 
+	  AND irec.lookup_code not in ('CHECKING','SAVINGS','MONEYMRKT') /*Added for R12 Upgrade - E1356 CR868 */
+   ]]></SQLQuery>
+   <DesignTime>
+      <Attr Name="_version" Value="9.0.3.12.53" />
+      <Attr Name="_CodeGenFlagNew" Value="36" />
+   </DesignTime>
+   <ViewAttribute
+      Name="AccountTypeCode"
+      IsQueriable="false"
+      IsPersistent="false"
+      Precision="30"
+      Type="java.lang.String"
+      AliasName="ACCOUNT_TYPE_CODE"
+      ColumnType="VARCHAR2"
+      Expression="ACCOUNT_TYPE_CODE"
+      SQLType="VARCHAR" >
+      <DesignTime>
+    	  <Attr Name="_OverrideAttr" Value="true" />
+         <Attr Name="_DisplaySize" Value="30" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="AccountType"
+      IsQueriable="false"
+      IsPersistent="false"
+      Precision="80"
+      Type="java.lang.String"
+      AliasName="ACCOUNT_TYPE"
+      ColumnType="VARCHAR2"
+      Expression="ACCOUNT_TYPE"
+      SQLType="VARCHAR" >
+      <DesignTime>
+	     <Attr Name="_OverrideAttr" Value="true" />
+         <Attr Name="_DisplaySize" Value="80" />
+      </DesignTime>
+   </ViewAttribute>
+</ViewObject>

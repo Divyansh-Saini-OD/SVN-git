@@ -1,0 +1,56 @@
+REM================================================================================================
+REM                                 Start Of Script
+REM================================================================================================
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     OFF 
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+--+=============================================================================================+--
+--|                                                                                             |--
+--| Program Name   : XX_AR_EBL_POD_INT                                                          |--
+--|                                                                                             |--
+--| Purpose        : Create Custom synonym                                                      |--
+--|                  The Objects created are:                                                   |--
+--|                                                                                             |--
+--|                1. XX_AR_EBL_POD_INT                                                         |--
+--|                                                                                             |--
+--| Change History  :                                                                           |--
+--| Version           Date             Changed By              Description                      |--
+--+=============================================================================================+--
+--| 1.0              25-OCT-2018       Capgemini               Original                         |--
+--+=============================================================================================+--
+
+WHENEVER SQLERROR CONTINUE; 
+
+PROMPT
+PROMPT Creating Synonym in APPS...
+PROMPT
+
+WHENEVER SQLERROR CONTINUE
+
+PROMPT
+PROMPT Creating SYNONYM XX_AR_EBL_POD_INT
+PROMPT
+
+
+create synonym XX_AR_EBL_POD_INT for XXFIN.XX_AR_EBL_POD_INT;
+
+WHENEVER SQLERROR CONTINUE
+
+PROMPT
+PROMPT Exiting....
+PROMPT
+
+SET FEEDBACK ON
+
+
+EXIT;
+
+
+REM=================================================================================================
+REM                                   End Of Script                                            
+REM=================================================================================================

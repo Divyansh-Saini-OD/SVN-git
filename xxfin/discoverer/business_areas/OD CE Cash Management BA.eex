@@ -1,0 +1,314 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<EndUserLayerExport SourceEULId="20061121114954" SourceEULVersion="10.1.2.48.18" MinimumCodeVersion="10.0.0" ExportFileVersion="10.0.0" EULSecurityModel="OracleApplications">
+<BusinessArea Description="" DeveloperKey="ODCECECM" DeveloperKeyFrozen="False" ExternalName="" Id="274388" Name="OD CE Cash Management" UserProperty1="" UserProperty2="">
+<GrantedBusinessArea DeveloperKeyFrozen="False" Id="274391" PrivilegeType="ReadOnly">
+<ElementRef Name="BusinessArea" Type="BusinessArea">
+<UniqueIdent ConstraintName="BA1" DeveloperKey="ODCECECM"/>
+<UniqueIdent ConstraintName="BA2" Name="OD CE Cash Management"/>
+</ElementRef>
+<ElementRef Name="EulUser" Type="EulUser">
+<UniqueIdent ConstraintName="EU2" ResponsibilityKey="XX_CA_CE_SUPERUSER" RoleFlag="True" Username="OD (CA) CE Superuser"/>
+</ElementRef>
+</GrantedBusinessArea>
+<GrantedBusinessArea DeveloperKeyFrozen="False" Id="274393" PrivilegeType="ReadOnly">
+<ElementRef Name="BusinessArea" Type="BusinessArea">
+<UniqueIdent ConstraintName="BA1" DeveloperKey="ODCECECM"/>
+<UniqueIdent ConstraintName="BA2" Name="OD CE Cash Management"/>
+</ElementRef>
+<ElementRef Name="EulUser" Type="EulUser">
+<UniqueIdent ConstraintName="EU2" ResponsibilityKey="XX_OD_CA_CE_TEAM_LEAD" RoleFlag="True" Username="OD (CA) CE Team Lead"/>
+</ElementRef>
+</GrantedBusinessArea>
+<GrantedBusinessArea DeveloperKeyFrozen="False" Id="274394" PrivilegeType="ReadOnly">
+<ElementRef Name="BusinessArea" Type="BusinessArea">
+<UniqueIdent ConstraintName="BA1" DeveloperKey="ODCECECM"/>
+<UniqueIdent ConstraintName="BA2" Name="OD CE Cash Management"/>
+</ElementRef>
+<ElementRef Name="EulUser" Type="EulUser">
+<UniqueIdent ConstraintName="EU2" ResponsibilityKey="XX_US_CE_SUPERUSER" RoleFlag="True" Username="OD (US) CE Superuser"/>
+</ElementRef>
+</GrantedBusinessArea>
+<GrantedBusinessArea DeveloperKeyFrozen="False" Id="274395" PrivilegeType="ReadOnly">
+<ElementRef Name="BusinessArea" Type="BusinessArea">
+<UniqueIdent ConstraintName="BA1" DeveloperKey="ODCECECM"/>
+<UniqueIdent ConstraintName="BA2" Name="OD CE Cash Management"/>
+</ElementRef>
+<ElementRef Name="EulUser" Type="EulUser">
+<UniqueIdent ConstraintName="EU2" ResponsibilityKey="XX_OD_US_CE_TEAM_LEAD" RoleFlag="True" Username="OD (US) CE Team Lead"/>
+</ElementRef>
+</GrantedBusinessArea>
+<GrantedBusinessArea DeveloperKeyFrozen="False" Id="274396" PrivilegeType="ReadOnly">
+<ElementRef Name="BusinessArea" Type="BusinessArea">
+<UniqueIdent ConstraintName="BA1" DeveloperKey="ODCECECM"/>
+<UniqueIdent ConstraintName="BA2" Name="OD CE Cash Management"/>
+</ElementRef>
+<ElementRef Name="EulUser" Type="EulUser">
+<UniqueIdent ConstraintName="EU2" ResponsibilityKey="" RoleFlag="False" Username="OD_DISCO"/>
+</ElementRef>
+</GrantedBusinessArea>
+<GrantedBusinessArea DeveloperKeyFrozen="False" Id="274399" PrivilegeType="ReadOnly">
+<ElementRef Name="BusinessArea" Type="BusinessArea">
+<UniqueIdent ConstraintName="BA1" DeveloperKey="ODCECECM"/>
+<UniqueIdent ConstraintName="BA2" Name="OD CE Cash Management"/>
+</ElementRef>
+<ElementRef Name="EulUser" Type="EulUser">
+<UniqueIdent ConstraintName="EU2" ResponsibilityKey="" RoleFlag="False" Username="SYSADMIN"/>
+</ElementRef>
+</GrantedBusinessArea>
+<GrantedBusinessArea DeveloperKeyFrozen="False" Id="274401" PrivilegeType="ReadOnly">
+<ElementRef Name="BusinessArea" Type="BusinessArea">
+<UniqueIdent ConstraintName="BA1" DeveloperKey="ODCECECM"/>
+<UniqueIdent ConstraintName="BA2" Name="OD CE Cash Management"/>
+</ElementRef>
+<ElementRef Name="EulUser" Type="EulUser">
+<UniqueIdent ConstraintName="EU2" ResponsibilityKey="" RoleFlag="False" Username="489373"/>
+</ElementRef>
+</GrantedBusinessArea>
+<BAOBJLink DeveloperKeyFrozen="False" Id="274390" Sequence="1">
+<ElementRef Name="BusinessArea" Type="BusinessArea">
+<UniqueIdent ConstraintName="BA1" DeveloperKey="ODCECECM"/>
+<UniqueIdent ConstraintName="BA2" Name="OD CE Cash Management"/>
+</ElementRef>
+<ElementRef Name="Object" Type="CustomObject">
+<UniqueIdent ConstraintName="OBJ1" DeveloperKey="OD_CREDIT_CARD_GL_DAILY"/>
+<UniqueIdent ConstraintName="OBJ2" Name="OD GL Credit Card Daily"/>
+</ElementRef>
+</BAOBJLink>
+</BusinessArea>
+<EulUser BatchCommitSize="" BatchExpiry="" BatchJobsLimit="" BatchQueryTimeLimit="" BatchRepositoryUser="" BatchWindowEnd="" BatchWindowStart="" DeveloperKeyFrozen="False" Id="269935" LastBatchAccess="" QueryEstimateLimit="" QueryTimeLimit="" ResponsibilityKey="XX_CA_CE_SUPERUSER" RoleFlag="True" RowFetchLimit="" SecurityModel="OracleApplications" UsePublicPrivileges="True" Username="OD (CA) CE Superuser">
+</EulUser>
+<EulUser BatchCommitSize="" BatchExpiry="" BatchJobsLimit="" BatchQueryTimeLimit="" BatchRepositoryUser="" BatchWindowEnd="" BatchWindowStart="" DeveloperKeyFrozen="False" Id="274392" LastBatchAccess="" QueryEstimateLimit="" QueryTimeLimit="" ResponsibilityKey="XX_OD_CA_CE_TEAM_LEAD" RoleFlag="True" RowFetchLimit="" SecurityModel="OracleApplications" UsePublicPrivileges="False" Username="OD (CA) CE Team Lead">
+</EulUser>
+<EulUser BatchCommitSize="" BatchExpiry="" BatchJobsLimit="" BatchQueryTimeLimit="" BatchRepositoryUser="" BatchWindowEnd="" BatchWindowStart="" DeveloperKeyFrozen="False" Id="258624" LastBatchAccess="" QueryEstimateLimit="" QueryTimeLimit="" ResponsibilityKey="XX_US_CE_SUPERUSER" RoleFlag="True" RowFetchLimit="" SecurityModel="OracleApplications" UsePublicPrivileges="False" Username="OD (US) CE Superuser">
+</EulUser>
+<EulUser BatchCommitSize="" BatchExpiry="" BatchJobsLimit="" BatchQueryTimeLimit="" BatchRepositoryUser="" BatchWindowEnd="" BatchWindowStart="" DeveloperKeyFrozen="False" Id="258630" LastBatchAccess="" QueryEstimateLimit="" QueryTimeLimit="" ResponsibilityKey="XX_OD_US_CE_TEAM_LEAD" RoleFlag="True" RowFetchLimit="" SecurityModel="OracleApplications" UsePublicPrivileges="False" Username="OD (US) CE Team Lead">
+</EulUser>
+<EulUser BatchCommitSize="" BatchExpiry="" BatchJobsLimit="" BatchQueryTimeLimit="" BatchRepositoryUser="" BatchWindowEnd="" BatchWindowStart="" DeveloperKeyFrozen="False" Id="251004" LastBatchAccess="04/08/2008 16:08:12" QueryEstimateLimit="" QueryTimeLimit="" ResponsibilityKey="" RoleFlag="False" RowFetchLimit="" SecurityModel="OracleApplications" UsePublicPrivileges="False" Username="OD_DISCO">
+</EulUser>
+<EulUser BatchCommitSize="" BatchExpiry="" BatchJobsLimit="" BatchQueryTimeLimit="" BatchRepositoryUser="" BatchWindowEnd="" BatchWindowStart="" DeveloperKeyFrozen="False" Id="100018" LastBatchAccess="21/01/2008 21:17:57" QueryEstimateLimit="" QueryTimeLimit="" ResponsibilityKey="" RoleFlag="False" RowFetchLimit="" SecurityModel="OracleApplications" UsePublicPrivileges="False" Username="SYSADMIN">
+</EulUser>
+<EulUser BatchCommitSize="" BatchExpiry="" BatchJobsLimit="" BatchQueryTimeLimit="" BatchRepositoryUser="" BatchWindowEnd="" BatchWindowStart="" DeveloperKeyFrozen="False" Id="252226" LastBatchAccess="26/08/2008 15:09:46" QueryEstimateLimit="" QueryTimeLimit="" ResponsibilityKey="" RoleFlag="False" RowFetchLimit="" SecurityModel="OracleApplications" UsePublicPrivileges="False" Username="489373">
+</EulUser>
+<CustomObject CBOHint="" CustomSQL="-- +=================================================================+&#x000d;&#x000a;-- |                  Office Depot - Project Simplify                                                                   |&#x000d;&#x000a;-- |                      Oracle/Office Depot                                                                              |&#x000d;&#x000a;-- +=================================================================+&#x000d;&#x000a;-- | Name  : OD Credit Card Daily GL Report                                                                    |&#x000d;&#x000a;-- | Description: Custom folder which selects all journals ,created to account credit         |&#x000d;&#x000a;-- |                     card deductions ,due to several reasons.                                               |                                                              &#x000d;&#x000a;--|                                                                                                                                     |&#x000d;&#x000a;-- |                                                                                                                                    |&#x000d;&#x000a;-- |Change Record:                                                                                                          |&#x000d;&#x000a;-- |===============                                                                                                      |&#x000d;&#x000a;-- |Version   Date                Author                    Remarks                                                 |&#x000d;&#x000a;-- |======   =========     =============     ===============================|&#x000d;&#x000a;-- |1.0          31-JUL-2007   Rahul Bagul      Initial version                                               |&#x000d;&#x000a;-- |2.0          26-Feb-2008   Christina S         Modified for defect 4958                               |&#x000d;&#x000a;-- |3.0          11-Sep-2008   Ganesan JV      Added parallel hint on JEL for defect 10204 |&#x000d;&#x000a;-- +==================================================================| &#x000d;&#x000a;SELECT  /*+PARALLEL(JEL 4)*/CC.segment1                          COMPANY    -- Added Hint by Ganesan for defect 10204&#x000d;&#x000a;              , JEH.description                      DESCRIP&#x000d;&#x000a;             -- ,JEH.je_source                        SOURCE Commented by Christina S on 26th Feb 2008 for defect 4958&#x000d;&#x000a;              ,GJS.user_je_source_name     SOURCE&#x000d;&#x000a;             , TRUNC(JEL.effective_date)      EFF_DATE&#x000d;&#x000a;             ,CC.segment4                           LOC&#x000d;&#x000a;             ,CC.segment3                           ACC&#x000d;&#x000a;             , JEL.description                       DESCR&#x000d;&#x000a;             ,JEL.entered_dr                        DR&#x000d;&#x000a;             ,JEL.entered_cr                        CR&#x000d;&#x000a;             ,JC.user_je_category_name              CC_TYPE&#x000d;&#x000a;             ,CC.segment1                           BUS_UNIT&#x000d;&#x000a;             ,CC.segment2                             DEPT&#x000d;&#x000a;             ,CC.segment5                          INTER_COMPANY&#x000d;&#x000a;             ,CC.segment6                          LOB&#x000d;&#x000a;             ,CC.segment7                          FUTURE&#x000d;&#x000a;             ,JEH.set_of_books_id             SOB&#x000d;&#x000a;FROM apps.gl_je_categories           JC&#x000d;&#x000a;          ,apps.gl_je_headers               JEH&#x000d;&#x000a;          ,apps.gl_je_lines                     JEL&#x000d;&#x000a;          ,apps.gl_code_combinations  CC&#x000d;&#x000a;          ,apps.gl_je_sources  GJS&#x000d;&#x000a;WHERE    JEH.je_category = JC.user_je_category_name&#x000d;&#x000a;AND      JEH.je_header_id =JEL.je_header_id&#x000d;&#x000a;AND      JEL.status = &apos;P&apos;&#x000d;&#x000a;AND      JEL.code_combination_id = CC.code_combination_id&#x000d;&#x000a;AND      GJS.je_source_name = JEH.je_source&#x000d;&#x000a;" Description="OD CREDIT CARD GL DAILY" DeveloperKey="OD_CREDIT_CARD_GL_DAILY" DeveloperKeyFrozen="False" DistinctFlag="False" ExternalDatabaseLink="" ExternalObjectName="" ExternalObjectOwner="" Hidden="False" Id="254714" Name="OD GL Credit Card Daily" NonDeterministic="False" SQL="( SELECT SOURCE AS i269971, ACC AS i269947, SOB AS i269970, BUS_UNIT AS i269948, CC_TYPE AS i269949, COMPANY AS i269950, CR AS i269951, DEPT AS i269952, DESCR AS i269953, DESCRIP AS i269954, DR AS i269955, EFF_DATE AS i269956, FUTURE AS i269957, INTER_COMPANY AS i269961, LOB AS i269964, LOC AS i269965 FROM (-- +=================================================================+&#x000d;&#x000a;-- |                  Office Depot - Project Simplify                                                                   |&#x000d;&#x000a;-- |                      Oracle/Office Depot                                                                              |&#x000d;&#x000a;-- +=================================================================+&#x000d;&#x000a;-- | Name  : OD Credit Card Daily GL Report                                                                    |&#x000d;&#x000a;-- | Description: Custom folder which selects all journals ,created to account credit         |&#x000d;&#x000a;-- |                     card deductions ,due to several reasons.                                               |                                                              &#x000d;&#x000a;--|                                                                                                                                     |&#x000d;&#x000a;-- |                                                                                                                                    |&#x000d;&#x000a;-- |Change Record:                                                                                                          |&#x000d;&#x000a;-- |===============                                                                                                      |&#x000d;&#x000a;-- |Version   Date                Author                    Remarks                                                 |&#x000d;&#x000a;-- |======   =========     =============     ===============================|&#x000d;&#x000a;-- |1.0          31-JUL-2007   Rahul Bagul      Initial version                                               |&#x000d;&#x000a;-- |2.0          26-Feb-2008   Christina S         Modified for defect 4958                               |&#x000d;&#x000a;-- |3.0          11-Sep-2008   Ganesan JV      Added parallel hint on JEL for defect 10204 |&#x000d;&#x000a;-- +==================================================================| &#x000d;&#x000a;SELECT  /*+PARALLEL(JEL 4)*/CC.segment1                          COMPANY    -- Added Hint by Ganesan for defect 10204&#x000d;&#x000a;              , JEH.description                      DESCRIP&#x000d;&#x000a;             -- ,JEH.je_source                        SOURCE Commented by Christina S on 26th Feb 2008 for defect 4958&#x000d;&#x000a;              ,GJS.user_je_source_name     SOURCE&#x000d;&#x000a;             , TRUNC(JEL.effective_date)      EFF_DATE&#x000d;&#x000a;             ,CC.segment4                           LOC&#x000d;&#x000a;             ,CC.segment3                           ACC&#x000d;&#x000a;             , JEL.description                       DESCR&#x000d;&#x000a;             ,JEL.entered_dr                        DR&#x000d;&#x000a;             ,JEL.entered_cr                        CR&#x000d;&#x000a;             ,JC.user_je_category_name              CC_TYPE&#x000d;&#x000a;             ,CC.segment1                           BUS_UNIT&#x000d;&#x000a;             ,CC.segment2                             DEPT&#x000d;&#x000a;             ,CC.segment5                          INTER_COMPANY&#x000d;&#x000a;             ,CC.segment6                          LOB&#x000d;&#x000a;             ,CC.segment7                          FUTURE&#x000d;&#x000a;             ,JEH.set_of_books_id             SOB&#x000d;&#x000a;FROM apps.gl_je_categories           JC&#x000d;&#x000a;          ,apps.gl_je_headers               JEH&#x000d;&#x000a;          ,apps.gl_je_lines                     JEL&#x000d;&#x000a;          ,apps.gl_code_combinations  CC&#x000d;&#x000a;          ,apps.gl_je_sources  GJS&#x000d;&#x000a;WHERE    JEH.je_category = JC.user_je_category_name&#x000d;&#x000a;AND      JEH.je_header_id =JEL.je_header_id&#x000d;&#x000a;AND      JEL.status = &apos;P&apos;&#x000d;&#x000a;AND      JEL.code_combination_id = CC.code_combination_id&#x000d;&#x000a;AND      GJS.je_source_name = JEH.je_source&#x000d;&#x000a;) CUO254714 )" UserProperty1="" UserProperty2="">
+<ColumnItem Alignment="Left" CaseDisplay="Unchanged" CaseStorage="Mixed" DataType="Varchar" Description="" DeveloperKey="SOURCE" DeveloperKeyFrozen="False" DisplayNullValue="" ExternalColumnName="SOURCE" FormatMask="" Heading="Source" Hidden="False" Id="269971" MaxDataWidth="25" MaxDisplayWidth="" Name="Source" Nullable="False" Placement="XAxis" Sequence="3" UserDefinedFormat="" UserProperty1="" UserProperty2="" WordWrap="False">
+<ElementRef Name="Domain" Type="Domain">
+<UniqueIdent ConstraintName="DOM1" DeveloperKey="OD_GL_JOURNAL_SOURCE"/>
+<UniqueIdent ConstraintName="DOM2" Name="OD GL Journal Source"/>
+</ElementRef>
+<ElementRef Name="Object" Type="CustomObject">
+<UniqueIdent ConstraintName="OBJ1" DeveloperKey="OD_CREDIT_CARD_GL_DAILY"/>
+<UniqueIdent ConstraintName="OBJ2" Name="OD GL Credit Card Daily"/>
+</ElementRef>
+<ElementRef Name="RollUpFunction" Type="Function">
+<UniqueIdent ConstraintName="FUN1" DeveloperKey="EUL_110"/>
+<UniqueIdent ConstraintName="FUN2" Name="Detail"/>
+</ElementRef>
+</ColumnItem>
+<ColumnItem Alignment="Left" CaseDisplay="Unchanged" CaseStorage="Mixed" DataType="Varchar" Description="" DeveloperKey="ACC" DeveloperKeyFrozen="False" DisplayNullValue="" ExternalColumnName="ACC" FormatMask="" Heading="Acc" Hidden="False" Id="269947" MaxDataWidth="25" MaxDisplayWidth="" Name="Acc" Nullable="True" Placement="XAxis" Sequence="6" UserDefinedFormat="" UserProperty1="" UserProperty2="" WordWrap="False">
+<ElementRef Name="Object" Type="CustomObject">
+<UniqueIdent ConstraintName="OBJ1" DeveloperKey="OD_CREDIT_CARD_GL_DAILY"/>
+<UniqueIdent ConstraintName="OBJ2" Name="OD GL Credit Card Daily"/>
+</ElementRef>
+<ElementRef Name="RollUpFunction" Type="Function">
+<UniqueIdent ConstraintName="FUN1" DeveloperKey="EUL_110"/>
+<UniqueIdent ConstraintName="FUN2" Name="Detail"/>
+</ElementRef>
+</ColumnItem>
+<ColumnItem Alignment="Left" CaseDisplay="Unchanged" CaseStorage="Unknown" DataType="Number" Description="" DeveloperKey="SOB" DeveloperKeyFrozen="False" DisplayNullValue="" ExternalColumnName="SOB" FormatMask="999999999999999" Heading="Sob" Hidden="False" Id="269970" MaxDataWidth="15" MaxDisplayWidth="" Name="Sob" Nullable="False" Placement="XAxis" Sequence="16" UserDefinedFormat="" UserProperty1="" UserProperty2="" WordWrap="False">
+<ElementRef Name="Object" Type="CustomObject">
+<UniqueIdent ConstraintName="OBJ1" DeveloperKey="OD_CREDIT_CARD_GL_DAILY"/>
+<UniqueIdent ConstraintName="OBJ2" Name="OD GL Credit Card Daily"/>
+</ElementRef>
+<ElementRef Name="RollUpFunction" Type="Function">
+<UniqueIdent ConstraintName="FUN1" DeveloperKey="EUL_110"/>
+<UniqueIdent ConstraintName="FUN2" Name="Detail"/>
+</ElementRef>
+</ColumnItem>
+<ColumnItem Alignment="Left" CaseDisplay="Unchanged" CaseStorage="Mixed" DataType="Varchar" Description="" DeveloperKey="BUS_UNIT" DeveloperKeyFrozen="False" DisplayNullValue="" ExternalColumnName="BUS_UNIT" FormatMask="" Heading="Bus Unit" Hidden="False" Id="269948" MaxDataWidth="25" MaxDisplayWidth="" Name="Bus Unit" Nullable="True" Placement="XAxis" Sequence="19" UserDefinedFormat="" UserProperty1="" UserProperty2="" WordWrap="False">
+<ElementRef Name="Object" Type="CustomObject">
+<UniqueIdent ConstraintName="OBJ1" DeveloperKey="OD_CREDIT_CARD_GL_DAILY"/>
+<UniqueIdent ConstraintName="OBJ2" Name="OD GL Credit Card Daily"/>
+</ElementRef>
+<ElementRef Name="RollUpFunction" Type="Function">
+<UniqueIdent ConstraintName="FUN1" DeveloperKey="EUL_110"/>
+<UniqueIdent ConstraintName="FUN2" Name="Detail"/>
+</ElementRef>
+</ColumnItem>
+<ColumnItem Alignment="Left" CaseDisplay="Unchanged" CaseStorage="Mixed" DataType="Varchar" Description="" DeveloperKey="CC_TYPE" DeveloperKeyFrozen="False" DisplayNullValue="" ExternalColumnName="CC_TYPE" FormatMask="" Heading="Cc Type" Hidden="False" Id="269949" MaxDataWidth="25" MaxDisplayWidth="" Name="Cc Type" Nullable="False" Placement="XAxis" Sequence="10" UserDefinedFormat="" UserProperty1="" UserProperty2="" WordWrap="False">
+<ElementRef Name="Domain" Type="Domain">
+<UniqueIdent ConstraintName="DOM1" DeveloperKey="OD_GL_CC_TYPE"/>
+<UniqueIdent ConstraintName="DOM2" Name="OD GL CC Type"/>
+</ElementRef>
+<ElementRef Name="Object" Type="CustomObject">
+<UniqueIdent ConstraintName="OBJ1" DeveloperKey="OD_CREDIT_CARD_GL_DAILY"/>
+<UniqueIdent ConstraintName="OBJ2" Name="OD GL Credit Card Daily"/>
+</ElementRef>
+<ElementRef Name="RollUpFunction" Type="Function">
+<UniqueIdent ConstraintName="FUN1" DeveloperKey="EUL_110"/>
+<UniqueIdent ConstraintName="FUN2" Name="Detail"/>
+</ElementRef>
+</ColumnItem>
+<ColumnItem Alignment="Left" CaseDisplay="Unchanged" CaseStorage="Mixed" DataType="Varchar" Description="" DeveloperKey="COMPANY" DeveloperKeyFrozen="False" DisplayNullValue="" ExternalColumnName="COMPANY" FormatMask="" Heading="Company" Hidden="False" Id="269950" MaxDataWidth="25" MaxDisplayWidth="" Name="Company" Nullable="True" Placement="XAxis" Sequence="1" UserDefinedFormat="" UserProperty1="" UserProperty2="" WordWrap="False">
+<ElementRef Name="Domain" Type="Domain">
+<UniqueIdent ConstraintName="DOM1" DeveloperKey="OD_GL_COMPANY"/>
+<UniqueIdent ConstraintName="DOM2" Name="OD GL Company"/>
+</ElementRef>
+<ElementRef Name="Object" Type="CustomObject">
+<UniqueIdent ConstraintName="OBJ1" DeveloperKey="OD_CREDIT_CARD_GL_DAILY"/>
+<UniqueIdent ConstraintName="OBJ2" Name="OD GL Credit Card Daily"/>
+</ElementRef>
+<ElementRef Name="RollUpFunction" Type="Function">
+<UniqueIdent ConstraintName="FUN1" DeveloperKey="EUL_110"/>
+<UniqueIdent ConstraintName="FUN2" Name="Detail"/>
+</ElementRef>
+</ColumnItem>
+<ColumnItem Alignment="Right" CaseDisplay="Unchanged" CaseStorage="Unknown" DataType="Number" Description="" DeveloperKey="CR" DeveloperKeyFrozen="False" DisplayNullValue="" ExternalColumnName="CR" FormatMask="9999999999" Heading="Cr" Hidden="False" Id="269951" MaxDataWidth="10" MaxDisplayWidth="" Name="Cr" Nullable="True" Placement="Measure" Sequence="9" UserDefinedFormat="" UserProperty1="" UserProperty2="" WordWrap="False">
+<ElementRef Name="Object" Type="CustomObject">
+<UniqueIdent ConstraintName="OBJ1" DeveloperKey="OD_CREDIT_CARD_GL_DAILY"/>
+<UniqueIdent ConstraintName="OBJ2" Name="OD GL Credit Card Daily"/>
+</ElementRef>
+<ElementRef Name="RollUpFunction" Type="Function">
+<UniqueIdent ConstraintName="FUN1" DeveloperKey="EUL_1"/>
+<UniqueIdent ConstraintName="FUN2" Name="SUM"/>
+</ElementRef>
+</ColumnItem>
+<ColumnItem Alignment="Left" CaseDisplay="Unchanged" CaseStorage="Mixed" DataType="Varchar" Description="" DeveloperKey="DEPT" DeveloperKeyFrozen="False" DisplayNullValue="" ExternalColumnName="DEPT" FormatMask="" Heading="Dept" Hidden="False" Id="269952" MaxDataWidth="25" MaxDisplayWidth="" Name="Dept" Nullable="True" Placement="XAxis" Sequence="22" UserDefinedFormat="" UserProperty1="" UserProperty2="" WordWrap="False">
+<ElementRef Name="Object" Type="CustomObject">
+<UniqueIdent ConstraintName="OBJ1" DeveloperKey="OD_CREDIT_CARD_GL_DAILY"/>
+<UniqueIdent ConstraintName="OBJ2" Name="OD GL Credit Card Daily"/>
+</ElementRef>
+<ElementRef Name="RollUpFunction" Type="Function">
+<UniqueIdent ConstraintName="FUN1" DeveloperKey="EUL_110"/>
+<UniqueIdent ConstraintName="FUN2" Name="Detail"/>
+</ElementRef>
+</ColumnItem>
+<ColumnItem Alignment="Left" CaseDisplay="Unchanged" CaseStorage="Mixed" DataType="Varchar" Description="" DeveloperKey="DESCR" DeveloperKeyFrozen="False" DisplayNullValue="" ExternalColumnName="DESCR" FormatMask="" Heading="Descr" Hidden="False" Id="269953" MaxDataWidth="240" MaxDisplayWidth="" Name="Descr" Nullable="True" Placement="XAxis" Sequence="7" UserDefinedFormat="" UserProperty1="" UserProperty2="" WordWrap="False">
+<ElementRef Name="Object" Type="CustomObject">
+<UniqueIdent ConstraintName="OBJ1" DeveloperKey="OD_CREDIT_CARD_GL_DAILY"/>
+<UniqueIdent ConstraintName="OBJ2" Name="OD GL Credit Card Daily"/>
+</ElementRef>
+<ElementRef Name="RollUpFunction" Type="Function">
+<UniqueIdent ConstraintName="FUN1" DeveloperKey="EUL_110"/>
+<UniqueIdent ConstraintName="FUN2" Name="Detail"/>
+</ElementRef>
+</ColumnItem>
+<ColumnItem Alignment="Left" CaseDisplay="Unchanged" CaseStorage="Mixed" DataType="Varchar" Description="" DeveloperKey="DESCRIP" DeveloperKeyFrozen="False" DisplayNullValue="" ExternalColumnName="DESCRIP" FormatMask="" Heading="Descrip" Hidden="False" Id="269954" MaxDataWidth="240" MaxDisplayWidth="" Name="Descrip" Nullable="True" Placement="XAxis" Sequence="2" UserDefinedFormat="" UserProperty1="" UserProperty2="" WordWrap="False">
+<ElementRef Name="Object" Type="CustomObject">
+<UniqueIdent ConstraintName="OBJ1" DeveloperKey="OD_CREDIT_CARD_GL_DAILY"/>
+<UniqueIdent ConstraintName="OBJ2" Name="OD GL Credit Card Daily"/>
+</ElementRef>
+<ElementRef Name="RollUpFunction" Type="Function">
+<UniqueIdent ConstraintName="FUN1" DeveloperKey="EUL_110"/>
+<UniqueIdent ConstraintName="FUN2" Name="Detail"/>
+</ElementRef>
+</ColumnItem>
+<ColumnItem Alignment="Right" CaseDisplay="Unchanged" CaseStorage="Unknown" DataType="Number" Description="" DeveloperKey="DR" DeveloperKeyFrozen="False" DisplayNullValue="" ExternalColumnName="DR" FormatMask="9999999999" Heading="Dr" Hidden="False" Id="269955" MaxDataWidth="10" MaxDisplayWidth="" Name="Dr" Nullable="True" Placement="Measure" Sequence="8" UserDefinedFormat="" UserProperty1="" UserProperty2="" WordWrap="False">
+<ElementRef Name="Object" Type="CustomObject">
+<UniqueIdent ConstraintName="OBJ1" DeveloperKey="OD_CREDIT_CARD_GL_DAILY"/>
+<UniqueIdent ConstraintName="OBJ2" Name="OD GL Credit Card Daily"/>
+</ElementRef>
+<ElementRef Name="RollUpFunction" Type="Function">
+<UniqueIdent ConstraintName="FUN1" DeveloperKey="EUL_1"/>
+<UniqueIdent ConstraintName="FUN2" Name="SUM"/>
+</ElementRef>
+</ColumnItem>
+<ColumnItem Alignment="Left" CaseDisplay="Unchanged" CaseStorage="Unknown" DataType="Date" Description="" DeveloperKey="EFF_DATE" DeveloperKeyFrozen="False" DisplayNullValue="" ExternalColumnName="EFF_DATE" FormatMask="DD-MON-RRRR" Heading="Eff Date" Hidden="False" Id="269956" MaxDataWidth="11" MaxDisplayWidth="" Name="Eff Date" Nullable="False" Placement="XAxis" Sequence="4" UserDefinedFormat="" UserProperty1="" UserProperty2="" WordWrap="False">
+<ElementRef Name="Object" Type="CustomObject">
+<UniqueIdent ConstraintName="OBJ1" DeveloperKey="OD_CREDIT_CARD_GL_DAILY"/>
+<UniqueIdent ConstraintName="OBJ2" Name="OD GL Credit Card Daily"/>
+</ElementRef>
+<ElementRef Name="RollUpFunction" Type="Function">
+<UniqueIdent ConstraintName="FUN1" DeveloperKey="EUL_110"/>
+<UniqueIdent ConstraintName="FUN2" Name="Detail"/>
+</ElementRef>
+</ColumnItem>
+<ColumnItem Alignment="Left" CaseDisplay="Unchanged" CaseStorage="Mixed" DataType="Varchar" Description="" DeveloperKey="FUTURE" DeveloperKeyFrozen="False" DisplayNullValue="" ExternalColumnName="FUTURE" FormatMask="" Heading="Future" Hidden="False" Id="269957" MaxDataWidth="25" MaxDisplayWidth="" Name="Future" Nullable="True" Placement="XAxis" Sequence="15" UserDefinedFormat="" UserProperty1="" UserProperty2="" WordWrap="False">
+<ElementRef Name="Object" Type="CustomObject">
+<UniqueIdent ConstraintName="OBJ1" DeveloperKey="OD_CREDIT_CARD_GL_DAILY"/>
+<UniqueIdent ConstraintName="OBJ2" Name="OD GL Credit Card Daily"/>
+</ElementRef>
+<ElementRef Name="RollUpFunction" Type="Function">
+<UniqueIdent ConstraintName="FUN1" DeveloperKey="EUL_110"/>
+<UniqueIdent ConstraintName="FUN2" Name="Detail"/>
+</ElementRef>
+</ColumnItem>
+<ColumnItem Alignment="Left" CaseDisplay="Unchanged" CaseStorage="Mixed" DataType="Varchar" Description="" DeveloperKey="INTER_COMPANY" DeveloperKeyFrozen="False" DisplayNullValue="" ExternalColumnName="INTER_COMPANY" FormatMask="" Heading="Inter Company" Hidden="False" Id="269961" MaxDataWidth="25" MaxDisplayWidth="" Name="Inter Company" Nullable="True" Placement="XAxis" Sequence="13" UserDefinedFormat="" UserProperty1="" UserProperty2="" WordWrap="False">
+<ElementRef Name="Object" Type="CustomObject">
+<UniqueIdent ConstraintName="OBJ1" DeveloperKey="OD_CREDIT_CARD_GL_DAILY"/>
+<UniqueIdent ConstraintName="OBJ2" Name="OD GL Credit Card Daily"/>
+</ElementRef>
+<ElementRef Name="RollUpFunction" Type="Function">
+<UniqueIdent ConstraintName="FUN1" DeveloperKey="EUL_110"/>
+<UniqueIdent ConstraintName="FUN2" Name="Detail"/>
+</ElementRef>
+</ColumnItem>
+<ColumnItem Alignment="Left" CaseDisplay="Unchanged" CaseStorage="Mixed" DataType="Varchar" Description="" DeveloperKey="LOB" DeveloperKeyFrozen="False" DisplayNullValue="" ExternalColumnName="LOB" FormatMask="" Heading="Lob" Hidden="False" Id="269964" MaxDataWidth="25" MaxDisplayWidth="" Name="Lob" Nullable="True" Placement="XAxis" Sequence="14" UserDefinedFormat="" UserProperty1="" UserProperty2="" WordWrap="False">
+<ElementRef Name="Object" Type="CustomObject">
+<UniqueIdent ConstraintName="OBJ1" DeveloperKey="OD_CREDIT_CARD_GL_DAILY"/>
+<UniqueIdent ConstraintName="OBJ2" Name="OD GL Credit Card Daily"/>
+</ElementRef>
+<ElementRef Name="RollUpFunction" Type="Function">
+<UniqueIdent ConstraintName="FUN1" DeveloperKey="EUL_110"/>
+<UniqueIdent ConstraintName="FUN2" Name="Detail"/>
+</ElementRef>
+</ColumnItem>
+<ColumnItem Alignment="Left" CaseDisplay="Unchanged" CaseStorage="Mixed" DataType="Varchar" Description="" DeveloperKey="LOC" DeveloperKeyFrozen="False" DisplayNullValue="" ExternalColumnName="LOC" FormatMask="" Heading="Loc" Hidden="False" Id="269965" MaxDataWidth="25" MaxDisplayWidth="" Name="Loc" Nullable="True" Placement="XAxis" Sequence="5" UserDefinedFormat="" UserProperty1="" UserProperty2="" WordWrap="False">
+<ElementRef Name="Object" Type="CustomObject">
+<UniqueIdent ConstraintName="OBJ1" DeveloperKey="OD_CREDIT_CARD_GL_DAILY"/>
+<UniqueIdent ConstraintName="OBJ2" Name="OD GL Credit Card Daily"/>
+</ElementRef>
+<ElementRef Name="RollUpFunction" Type="Function">
+<UniqueIdent ConstraintName="FUN1" DeveloperKey="EUL_110"/>
+<UniqueIdent ConstraintName="FUN2" Name="Detail"/>
+</ElementRef>
+</ColumnItem>
+</CustomObject>
+<Domain ArrayFetchSize="100" Cached="True" Cardinality="0" DataType="Varchar" Description="" DeveloperKey="OD_GL_CC_TYPE" DeveloperKeyFrozen="False" FetchFirst="True" Id="253702" LastExecuteTime="0" LogicalItemFlag="False" Name="OD GL CC Type" ShowInItemNavigator="True" SystemGenerated="False" UseDistinctOrderBy="True" UserProperty1="" UserProperty2="">
+<ElementRef Name="ValuesItem" Type="ColumnItem">
+<UniqueIdent ConstraintName="ITE1" DeveloperKey="JE_CATEGORY">
+<ElementRef Name="Object" Type="CustomObject">
+<UniqueIdent ConstraintName="OBJ1" DeveloperKey="CUSTOMFOLDER11"/>
+<UniqueIdent ConstraintName="OBJ2" Name="OD GL CC Type"/>
+</ElementRef>
+</UniqueIdent>
+<UniqueIdent ConstraintName="ITE2" Name="Je Category">
+<ElementRef Name="Object" Type="CustomObject">
+<UniqueIdent ConstraintName="OBJ1" DeveloperKey="CUSTOMFOLDER11"/>
+<UniqueIdent ConstraintName="OBJ2" Name="OD GL CC Type"/>
+</ElementRef>
+</UniqueIdent>
+</ElementRef>
+</Domain>
+<Domain ArrayFetchSize="100" Cached="True" Cardinality="0" DataType="Varchar" Description="This item class displays the GL Companies" DeveloperKey="OD_GL_COMPANY" DeveloperKeyFrozen="False" FetchFirst="True" Id="253703" LastExecuteTime="0" LogicalItemFlag="False" Name="OD GL Company" ShowInItemNavigator="True" SystemGenerated="False" UseDistinctOrderBy="True" UserProperty1="" UserProperty2="">
+<ElementRef Name="ValuesItem" Type="ColumnItem">
+<UniqueIdent ConstraintName="ITE1" DeveloperKey="FLEX_VALUE">
+<ElementRef Name="Object" Type="CustomObject">
+<UniqueIdent ConstraintName="OBJ1" DeveloperKey="OD_GL_COMPANY"/>
+<UniqueIdent ConstraintName="OBJ2" Name="OD GL COMPANY"/>
+</ElementRef>
+</UniqueIdent>
+<UniqueIdent ConstraintName="ITE2" Name="Flex Value">
+<ElementRef Name="Object" Type="CustomObject">
+<UniqueIdent ConstraintName="OBJ1" DeveloperKey="OD_GL_COMPANY"/>
+<UniqueIdent ConstraintName="OBJ2" Name="OD GL COMPANY"/>
+</ElementRef>
+</UniqueIdent>
+</ElementRef>
+</Domain>
+<Domain ArrayFetchSize="100" Cached="True" Cardinality="72" DataType="Varchar" Description="" DeveloperKey="OD_GL_JOURNAL_SOURCE" DeveloperKeyFrozen="False" FetchFirst="True" Id="269946" LastExecuteTime="0" LogicalItemFlag="False" Name="OD GL Journal Source" ShowInItemNavigator="True" SystemGenerated="False" UseDistinctOrderBy="True" UserProperty1="" UserProperty2="">
+<ElementRef Name="ValuesItem" Type="ColumnItem">
+<UniqueIdent ConstraintName="ITE1" DeveloperKey="JE_SOURCE">
+<ElementRef Name="Object" Type="CustomObject">
+<UniqueIdent ConstraintName="OBJ1" DeveloperKey="OD_GL_JOURNAL_SOURCE"/>
+<UniqueIdent ConstraintName="OBJ2" Name="OD GL Journal Source"/>
+</ElementRef>
+</UniqueIdent>
+<UniqueIdent ConstraintName="ITE2" Name="Je Source">
+<ElementRef Name="Object" Type="CustomObject">
+<UniqueIdent ConstraintName="OBJ1" DeveloperKey="OD_GL_JOURNAL_SOURCE"/>
+<UniqueIdent ConstraintName="OBJ2" Name="OD GL Journal Source"/>
+</ElementRef>
+</UniqueIdent>
+</ElementRef>
+</Domain>
+</EndUserLayerExport>

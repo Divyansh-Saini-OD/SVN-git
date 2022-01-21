@@ -1,0 +1,335 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<page xmlns:jrad="http://xmlns.oracle.com/jrad" xmlns:oa="http://xmlns.oracle.com/oa" xmlns:ui="http://xmlns.oracle.com/uix/ui" version="10.1.3_" xml:lang="en-US" xmlns:user="http://xmlns.oracle.com/jrad/user" xmlns="http://xmlns.oracle.com/jrad" file-version="$Header$">
+   <content>
+      <oa:pageLayout id="CustDocPLRN" amDefName="od.oracle.apps.xxcrm.cdh.ebl.custdocs.server.ODCustDocAM" controllerClass="od.oracle.apps.xxcrm.cdh.ebl.custdocs.webui.ODEBillDocumentsCO">
+         <ui:corporateBranding>
+            <oa:image id="corporateBrandingImage" source="/OA_MEDIA/FNDSSCORP.gif"/>
+         </ui:corporateBranding>
+         <ui:contents>
+            <oa:spacer id="Spacer1" height="2"/>
+            <oa:messageComponentLayout id="CustDocHdr" rows="1" columns="5" width="100%">
+               <ui:contents>
+                  <oa:messageStyledText id="CustomerName" dataType="VARCHAR2" prompt="Customer Name" viewName="ODEBillCustDocHeaderVO" viewAttr="CustomerName" maximumLength="240" styleClass="OraDataText" columns="30" cellNoWrapFormat="true"/>
+                  <oa:messageStyledText id="BillingID" dataType="NUMBER" prompt="Billing ID" viewName="ODEBillCustDocHeaderVO" viewAttr="BillingId" maximumLength="15" rendered="true" styleClass="OraDataText"/>
+                  <oa:messageStyledText id="CustAccountId1" dataType="NUMBER" prompt="CustAccountId" viewName="ODEBillCustDocHeaderVO" viewAttr="CustAccountId" maximumLength="15" rendered="false"/>
+                  <oa:messageStyledText id="AopsNumber" dataType="VARCHAR2" prompt="AOPS Number" viewName="ODEBillCustDocHeaderVO" viewAttr="AopsNumber" maximumLength="24" styleClass="OraDataText" columns="8"/>
+                  <oa:messageStyledText id="CustomerType" dataType="VARCHAR2" prompt="Customer Type" viewName="ODEBillCustDocHeaderVO" viewAttr="CustomerType" maximumLength="150" styleClass="OraDataText" columns="10"/>
+                  <oa:messageStyledText id="AbFlag" dataType="VARCHAR2" prompt="AB Flag" viewName="ODEBillCustDocHeaderVO" viewAttr="AbFlag" maximumLength="3" styleClass="OraDataText" columns="3"/>
+               </ui:contents>
+            </oa:messageComponentLayout>
+            <oa:separator id="seperator"/>
+            <oa:spacer id="Spacer2" height="2"/>
+            <oa:advancedTable id="EbillCustDocAdvTblRN" viewName="ODEbillCustDocVO" text="" detailViewAttr="HideShow" alternateText="No Customer Document Found" width="100%" blockSize="200">
+               <ui:contents>
+                  <oa:column id="CustDocCol" cellNoWrapFormat="true">
+                     <ui:columnHeader>
+                        <oa:sortableHeader id="CustDocIDSortHDR" prompt="Customer Doc ID"/>
+                     </ui:columnHeader>
+                     <ui:contents>
+                        <oa:messageStyledText id="CustDocId" viewAttr="NExtAttr2" prompt="Customer Doc ID"/>
+                        <oa:formValue id="CustAccountId" viewAttr="CustAccountId"/>
+                     </ui:contents>
+                  </oa:column>
+                  <oa:column id="DocIdCol">
+                     <ui:columnHeader>
+                        <oa:sortableHeader id="mbsDocIDColHDR" prompt="MBS Doc ID" required="yes"/>
+                     </ui:columnHeader>
+                     <ui:contents>
+                        <oa:messageLovInput id="DocId" viewAttr="NExtAttr1" externalListOfValues="/od/oracle/apps/xxcrm/cdh/ebl/lov/webui/ODEBillDocIdRN" required="no" disabled="${oa.current.Paytermlov}">
+                           <lovMappings>
+                              <lovMap id="DocIDMap" lovItem="DocumentId" resultTo="DocId" criteriaFrom="DocId" useForValidation="default"/>
+                              <lovMap id="DocTypeMap" lovItem="DocType" resultTo="DocType"/>
+                              <lovMap id="DocTypeFVMap" lovItem="DocType" resultTo="DocTypeFV"/>
+                           </lovMappings>
+                        </oa:messageLovInput>
+                     </ui:contents>
+                  </oa:column>
+                  <oa:column id="DocTypeCol">
+                     <ui:columnHeader>
+                        <oa:sortableHeader id="sortableHeader2" prompt="Document Type"/>
+                     </ui:columnHeader>
+                     <ui:contents>
+                        <oa:messageStyledText id="DocType" viewAttr="CExtAttr1" prompt=""/>
+                     </ui:contents>
+                  </oa:column>
+                  <oa:column id="PayDocIndicatorCol">
+                     <ui:columnHeader>
+                        <oa:sortableHeader id="sortableHeader3" prompt="Pay Doc"/>
+                     </ui:columnHeader>
+                     <ui:contents>
+                        <oa:messageCheckBox id="PayDocIndicator" viewAttr="CExtAttr2" text="" prompt="" disabled="${oa.current.Readonlyflag}">
+                           <ui:primaryClientAction>
+                              <ui:firePartialAction event="PayDoc">
+                                 <ui:parameters>
+                                    <ui:parameter key="payDoc" value="${oa.ODEbillCustDocVO.CExtAttr1}"/>
+                                    <ui:parameter key="payDocIndicator" value="${oa.ODEbillCustDocVO.CExtAttr2}"/>
+                                 </ui:parameters>
+                              </ui:firePartialAction>
+                           </ui:primaryClientAction>
+                        </oa:messageCheckBox>
+                     </ui:contents>
+                  </oa:column>
+                  <oa:column id="DelyMethodCol">
+                     <ui:columnHeader>
+                        <oa:sortableHeader id="sortableHeader8" prompt="Delivery Method"/>
+                     </ui:columnHeader>
+                     <ui:contents>
+                        <oa:switcher id="DelyMethodSwitcher" viewAttr="Deliverymethod">
+                           <ui:case name="Case1">
+                              <oa:messageChoice id="Case1" pickListViewDef="" pickListViewName="ODEBillDelyMethodPVO" pickListDispAttr="Description" pickListValAttr="Code" viewAttr="CExtAttr3" allowBlankValue="false" disabled="${oa.current.Readonlyflag}" required="yes" prompt="Delivery Method">
+                                 <ui:primaryClientAction>
+                                    <ui:firePartialAction event="DelyMtdUpdate">
+                                       <ui:parameters>
+                                          <ui:parameter key="DelyMtdUpdate" value="${oa.current.CExtAttr3}"/>
+                                          <ui:parameter key="CustDocId" value="${oa.current.NExtAttr2}"/>
+                                       </ui:parameters>
+                                    </ui:firePartialAction>
+                                 </ui:primaryClientAction>
+                              </oa:messageChoice>
+                           </ui:case>
+                           <ui:case name="Case2">
+                              <oa:messageChoice id="Case2" pickListViewName="ODEBillDelyMethodInvoicePVO" pickListDispAttr="Description" pickListValAttr="Code" allowBlankValue="false" disabled="${oa.current.Readonlyflag}" viewAttr="CExtAttr3" required="yes" prompt="Delivery Method">
+                                 <ui:primaryClientAction>
+                                    <ui:firePartialAction event="DelyMtdUpdate">
+                                       <ui:parameters>
+                                          <ui:parameter key="DelyMtdUpdate" value="${oa.current.CExtAttr3}"/>
+                                          <ui:parameter key="CustDocId" value="${oa.current.NExtAttr2}"/>
+                                       </ui:parameters>
+                                    </ui:firePartialAction>
+                                 </ui:primaryClientAction>
+                              </oa:messageChoice>
+                           </ui:case>
+                           <ui:case name="Case3">
+                              <oa:messageChoice id="Case3" pickListViewName="ODEBillDelyMethodePDFPVO" pickListDispAttr="Meaning" pickListValAttr="Meaning" allowBlankValue="false" disabled="${oa.current.Readonlyflag}" viewAttr="CExtAttr3" required="yes" prompt="Delivery Method"/>
+                           </ui:case>
+                           <ui:case name="Case4">
+                              <oa:messageChoice id="Case4" allowBlankValue="false" pickListViewName="ODEBillCUSTDOCDelyMethodOpstchVO" pickListDispAttr="Code" pickListValAttr="Code" viewAttr="CExtAttr3" prompt="Delivery Method" disabled="${oa.current.Paytermlov}"/>
+                           </ui:case>
+                        </oa:switcher>
+                     </ui:contents>
+                  </oa:column>
+                  <oa:column id="DeleteCol" rendered="false">
+                     <ui:columnHeader>
+                        <oa:sortableHeader id="sortableHeader6" prompt="Delete"/>
+                     </ui:columnHeader>
+                     <ui:contents>
+                        <oa:image id="DeleteCustDoc" source="/OA_MEDIA/deleteicon_enabled.gif" rendered="false"/>
+                     </ui:contents>
+                  </oa:column>
+                  <oa:column id="EBillDetCol">
+                     <ui:columnHeader>
+                        <oa:sortableHeader id="sortableHeader7" prompt="eBill Main"/>
+                     </ui:columnHeader>
+                     <ui:contents>
+                        <oa:switcher id="EBillDetSwitcher" viewAttr="Ebilldet">
+                           <ui:case name="N">
+                              <oa:image id="N" destination="" source="/OA_MEDIA/updateicon_disabled.gif"/>
+                           </ui:case>
+                           <ui:case name="Y">
+                              <oa:image id="Y" destination="OA.jsp?page=/od/oracle/apps/xxcrm/cdh/ebl/eblmain/webui/ODEBillMainPG&amp;custAccountId={@CustAccountId}&amp;custDocId={@NExtAttr2}&amp;deliveryMethod={@CExtAttr3}&amp;retainAM=N&amp;addBreadCrumb=Y" source="/OA_MEDIA/updateicon_enabled.gif">
+                                 <ui:primaryClientAction>
+                                    <ui:fireAction event="Navigate">
+                                       <ui:parameters>
+                                          <ui:parameter key="CustDocID" value="${oa.current.NExtAttr2}"/>
+                                          <ui:parameter key="DlyMtd" value="${oa.current.CExtAttr3}"/>
+                                       </ui:parameters>
+                                    </ui:fireAction>
+                                 </ui:primaryClientAction>
+                              </oa:image>
+                           </ui:case>
+                           <ui:case name="T">
+                              <oa:image id="T" destination="OA.jsp?page=/od/oracle/apps/xxcrm/cdh/ebl/ebltxtmain/webui/ODEBillTxtMainPG&amp;custAccountId={@CustAccountId}&amp;custDocId={@NExtAttr2}&amp;deliveryMethod={@CExtAttr3}&amp;retainAM=N&amp;addBreadCrumb=Y" source="/OA_MEDIA/updateicon_enabled.gif">
+                                 <ui:primaryClientAction>
+                                    <ui:fireAction event="NavigateTxt" id="fireAction3">
+                                       <ui:parameters>
+                                          <ui:parameter key="CustDocID" value="${oa.current.NExtAttr2}"/>
+                                          <ui:parameter key="DlyMtd" value="${oa.current.CExtAttr3}"/>
+                                       </ui:parameters>
+                                    </ui:fireAction>
+                                 </ui:primaryClientAction>
+                              </oa:image>
+                           </ui:case>
+                        </oa:switcher>
+                     </ui:contents>
+                  </oa:column>
+                  <oa:formValue id="DocTypeFV" viewAttr="CExtAttr1"/>
+                  <oa:formValue id="FeeOptionFV" dataType="NUMBER" viewAttr="FeeOption" queryable="false"/>
+                  <oa:formValue id="FeeOptionCriteria" viewAttr="Feeoptioncriteria" selectiveSearchCriteria="false" queryable="false"/>
+                  <oa:formValue id="TermIDFV" dataType="NUMBER" viewAttr="NExtAttr18"/>
+                  <oa:formValue id="ParentDocFV" viewAttr="NExtAttr15" dataType="NUMBER"/>
+                  <oa:formValue id="PayFreqFV" viewAttr="Frequency"/>
+                  <oa:formValue id="ParentCustDocFV" dataType="NUMBER" viewAttr="ParentCustDocID"/>
+                  <oa:formValue id="frequencyFV" viewAttr="Frequency"/>
+                  <oa:formValue id="PaymentTermFV" viewAttr="CExtAttr14"/>
+               </ui:contents>
+               <ui:tableActions>
+                  <oa:flowLayout id="ButtonLayout">
+                     <ui:contents>
+                        <oa:submitButton id="AddRowButton" text="Add Row" prompt="Add Row">
+                           <ui:primaryClientAction>
+                              <ui:fireAction event="AddRow"/>
+                           </ui:primaryClientAction>
+                        </oa:submitButton>
+                        <oa:submitButton id="Save" text="Save" prompt="Save">
+                           <ui:primaryClientAction>
+                              <ui:fireAction event="Save" id="fireAction2">
+                                 <ui:parameters>
+                                    <ui:parameter key="Save" value="Y"/>
+                                 </ui:parameters>
+                              </ui:fireAction>
+                           </ui:primaryClientAction>
+                        </oa:submitButton>
+                        <oa:button id="Cancel" text="Cancel" prompt="Cancel">
+                           <ui:primaryClientAction>
+                              <ui:fireAction event="Cancel" unvalidated="true" id="fireAction1"/>
+                           </ui:primaryClientAction>
+                        </oa:button>
+                        <oa:button id="Exceptions" prompt="Exceptions" destination="" rendered="true">
+                           <ui:primaryClientAction>
+                              <ui:fireAction event="Exception"/>
+                           </ui:primaryClientAction>
+                        </oa:button>
+                        <oa:button id="Contact" destination="OA.jsp?page=/od/oracle/apps/xxcrm/asn/common/customer/webui/ODCtctCreatePG&amp;OAFunc=ASN_CTCTCREATEPG&amp;ASNReqFrmCustName=ARCH+COAL&amp;ASNReqFrmPgMode=CREATE&amp;ASNReqFrmFuncName=ASN_CTCTCREATEPG&amp;ASNReqFrmCustId=2753726&amp;retainAM=N&amp;addBreadCrumb=S" text="Contact" prompt="Contact" rendered="false"/>
+                     </ui:contents>
+                  </oa:flowLayout>
+               </ui:tableActions>
+               <ui:detail>
+                  <oa:stackLayout id="CustDocDtlStkRN" rendered="true">
+                     <ui:contents>
+                        <oa:messageComponentLayout id="CustDocDetailsRN" columns="3" rows="4">
+                           <ui:contents>
+                              <oa:messageChoice id="DirectDoc" viewName="ODEbillCustDocVO" viewAttr="CExtAttr7" prompt="Direct Document" defaultValue="" pickListViewName="ODEBillCharYesNo" pickListDispAttr="Description" pickListValAttr="Code" disabled="${oa.current.Readonlyflag}" allowBlankValue="false"/>
+                              <oa:messageLovInput id="PaymentTerm" viewName="ODEbillCustDocVO" viewAttr="CExtAttr14" prompt="Payment Term String" externalListOfValues="/od/oracle/apps/xxcrm/cdh/ebl/lov/webui/ODEBillPaymentTermLOVRN" required="no" disabled="${oa.current.Paytermlov}">
+                                 <lovMappings>
+                                    <lovMap id="PaymentTermMap" lovItem="TermName" resultTo="PaymentTerm" criteriaFrom="PaymentTerm" useForValidation="default"/>
+                                    <lovMap id="TermIDMap" lovItem="TermId" resultTo="Term" useForValidation="default"/>
+                                    <lovMap id="FreqencyMap" lovItem="Attribute1" resultTo="frequencyFV"/>
+                                    <lovMap id="ReportDayMap" lovItem="Attribute2" resultTo="ReportDay"/>
+                                    <lovMap id="TermIDFVMap" lovItem="TermId" resultTo="TermIDFV"/>
+                                    <lovMap id="FreqFVMap" lovItem="Attribute1" resultTo="PayFreqFV"/>
+                                    <lovMap id="freqComboMap" lovItem="Attribute1" resultTo="FrequencyCombo"/>
+                                    <lovMap id="payTermMap" lovItem="Attribute5" resultTo="PayTerm"/>
+                                    <lovMap id="PaymentTermFVMap" lovItem="TermName" resultTo="PaymentTermFV" useForValidation="yes"/>
+                                 </lovMappings>
+                              </oa:messageLovInput>
+                              <oa:messageStyledText id="PayTerm" prompt="Payment Term" styleClass="OraDataText" viewName="ODEbillCustDocVO" viewAttr="PayTerm"/>
+                              <oa:messageTextInput id="Term" prompt="Payment Term" styleClass="OraDataText" dataType="NUMBER" viewName="ODEbillCustDocVO" viewAttr="NExtAttr18" disabled="${oa.current.Readonlyflag}" readOnly="true" rendered="false"/>
+                              <oa:messageStyledText id="Frequency" prompt="Frequency" styleClass="OraDataText" viewName="ODEbillCustDocVO" viewAttr="Frequency" rendered="false"/>
+                              <oa:messageChoice id="FrequencyCombo" prompt="Frequency" styleClass="OraDataText" viewName="ODEbillCustDocVO" viewAttr="Frequency" pickListViewName="ODEBillPaymentFreqPVO" pickListDispAttr="Description" pickListValAttr="Code" readOnly="true"/>
+                              <oa:messageStyledText id="ReportDay" prompt="Report Day" styleClass="OraDataText" viewName="ODEbillCustDocVO" viewAttr="ReportDay"/>
+                              <oa:messageTextInput id="Comments1" viewName="ODEbillCustDocVO" viewAttr="CExtAttr17" prompt="Comments 1" disabled="false" rendered="false"/>
+                              <oa:messageTextInput id="Comments2" viewName="ODEbillCustDocVO" viewAttr="CExtAttr18" prompt="Comments 2" rendered="false"/>
+                              <oa:messageTextInput id="Comments3" viewName="ODEbillCustDocVO" viewAttr="CExtAttr19" prompt="Comments 3" rendered="false"/>
+                              <oa:messageTextInput id="Comments4" viewName="ODEbillCustDocVO" viewAttr="CExtAttr20" prompt="Comments 4" rendered="false"/>
+                              <oa:messageTextInput id="SpecialHandling" viewName="ODEbillCustDocVO" viewAttr="CExtAttr4" prompt="Special Handling" disabled="${oa.current.Readonlyflag}"/>
+                              <oa:messageChoice id="IsParent" viewName="ODEbillCustDocVO" viewAttr="NExtAttr17" prompt="Is Parent" dataType="NUMBER" defaultValue="0" disabled="${oa.current.Readonlyflag}" pickListViewName="ODEBillNumYesNoPVO" pickListDispAttr="Description" pickListValAttr="Code" allowBlankValue="false"/>
+                              <oa:messageChoice id="SendToParent" viewName="ODEbillCustDocVO" viewAttr="NExtAttr16" prompt="Send To Parent" defaultValue="0" dataType="NUMBER" disabled="${oa.current.Readonlyflag}" pickListViewName="ODEBillNumYesNoPVO" pickListDispAttr="Description" pickListValAttr="Code" allowBlankValue="false">
+                                 <ui:primaryClientAction>
+                                    <ui:firePartialAction/>
+                                 </ui:primaryClientAction>
+                              </oa:messageChoice>
+                              <oa:messageLovInput id="ParentDocument" viewName="ODEbillCustDocVO" viewAttr="NExtAttr15" prompt="Parent Doc ID" rendered="true" dataType="NUMBER" externalListOfValues="/od/oracle/apps/xxcrm/cdh/ebl/lov/webui/ODEBillParentIdLOVRN" disabled="${oa.current.Readonlyflag}" columns="12">
+                                 <lovMappings>
+                                    <lovMap id="ParentDocIDMap" lovItem="CustDocId" resultTo="ParentDocument" criteriaFrom="ParentDocument"/>
+                                    <lovMap id="ParentDocFVmap" lovItem="CustDocId" resultTo="ParentDocFV"/>
+                                    <lovMap id="ParentCustDocFVMap" lovItem="CustAccountId" resultTo="ParentCustDocFV"/>
+                                 </lovMappings>
+                              </oa:messageLovInput>
+                              <oa:messageChoice id="ComboType" viewName="ODEbillCustDocVO" viewAttr="CExtAttr13" prompt="Combo Type" pickListViewName="ODEBillComboPVO" pickListViewDef="" pickListDispAttr="Description" pickListValAttr="Code" disabled="${oa.current.Readonlyflag}"/>
+                              <oa:messageTextInput id="MailToAttention" viewName="ODEbillCustDocVO" viewAttr="CExtAttr15" prompt="Mail To Attention" disabled="${oa.current.Mailattentionmsg}"/>
+                              <oa:messageChoice id="EbillStatus" dataType="VARCHAR2" prompt="Status" viewName="ODEbillCustDocVO" viewAttr="CExtAttr16" rendered="true" pickListViewName="ODEBillDocStatusPVO" pickListDispAttr="Meaning" pickListValAttr="Code" disabled="false" readOnly="true" styleClass="OraDataText"/>
+                              <oa:messageTextInput id="CustReqStartDate" viewName="ODEbillCustDocVO" dataType="DATE" viewAttr="DExtAttr9" prompt="Request Start Date" disabled="${oa.current.Paytermlov}" required="yes"/>
+                              <oa:messageTextInput id="CustReqEndDate" viewName="ODEbillCustDocVO" dataType="DATE" viewAttr="DExtAttr10" prompt="Request End Date" disabled="${oa.current.Paydocind}"/>
+                              <oa:messageTextInput id="EffFromDate" dataType="DATE" viewName="ODEbillCustDocVO" viewAttr="DExtAttr1" prompt="Effective Start Date" readOnly="false" disabled="${oa.current.Supusr}"/>
+                              <oa:messageTextInput id="EffToDate" dataType="DATE" viewName="ODEbillCustDocVO" viewAttr="DExtAttr2" prompt="Effective End Date" readOnly="false" disabled="${oa.current.Supusrend}"/>
+                              <oa:messageLovInput id="FeeOption" prompt="Fee Option" viewName="ODEbillCustDocVO" disabled="${oa.current.Feeflag}" readOnly="false" viewAttr="Feeoptionfv" selectiveSearchCriteria="false" validateOnLovPrepare="false" queryable="false" lookAheadSelectionEventEnabled="false" unvalidated="false">
+                                 <lovContents>
+                                    <oa:listOfValues id="region1">
+                                       <ui:contents>
+                                          <oa:table name="region1" id="feeoptionType1">
+                                             <ui:contents>
+                                                <oa:messageStyledText id="lookup_code" dataType="VARCHAR2" prompt="Option Id" viewName="feeoptionType1" viewAttr="lookup_code" queryable="false" selectiveSearchCriteria="false"/>
+                                                <oa:messageStyledText id="meaning" dataType="VARCHAR2" prompt="Option Name" viewName="feeoptionType1" viewAttr="meaning1" maximumLength="80" queryable="true" selectiveSearchCriteria="false"/>
+                                                <oa:formValue id="Criteria" viewName="feeoptionType1" viewAttr="Criteria" rendered="true" selectiveSearchCriteria="false"/>
+                                             </ui:contents>
+                                          </oa:table>
+                                       </ui:contents>
+                                    </oa:listOfValues>
+                                 </lovContents>
+                                 <lovMappings>
+                                    <lovMap id="lovMap1" lovItem="meaning" resultTo="FeeOption" programmaticQuery="false" criteriaFrom="FeeOption" useForValidation="no"/>
+                                    <lovMap id="lovMap2" lovItem="lookup_code" resultTo="FeeOptionFV" programmaticQuery="false" useForValidation="no"/>
+                                    <lovMap id="lovMap3" lovItem="Criteria" criteriaFrom="FeeOptionCriteria" programmaticQuery="false" requiredForLOV="true"/>
+                                 </lovMappings>
+                              </oa:messageLovInput>
+                           </ui:contents>
+                        </oa:messageComponentLayout>
+                        <oa:labeledFieldLayout id="LabeldlayoutFieldRN">
+                           <ui:contents>
+                              <oa:rowLayout id="rowLayoutRN" hAlign="center">
+                                 <ui:contents>
+                                    <oa:cellFormat id="CellFormatRN">
+                                       <ui:contents>
+                                          <oa:switcher id="SwitcherBCPOD" viewName="ODEbillCustDocVO" viewAttr="Bcpodcase">
+                                             <ui:case name="case1">
+                                                <oa:messageTextInput id="case1" viewName="ODEbillCustDocVO" viewAttr="BcPodFlag" prompt="Bill Complete/POD" tipType="shortTip" tipMessageAppShortName="XXCRM" tipMessageName="XXODBILLCOMPLETEANDPOD" columns="1" readOnly="true"/>
+                                             </ui:case>
+                                             <ui:case name="case2">
+                                                <oa:messageTextInput id="case2" readOnly="true" viewName="ODEbillCustDocVO" viewAttr="BcPodFlag" prompt="Bill Complete/POD" tipType="shortTip" tipMessageAppShortName="XXCRM" tipMessageName="XXODBILLCOMPLETEONLY"/>
+                                             </ui:case>
+                                             <ui:case name="case3">
+                                                <oa:messageTextInput id="case3" prompt="Bill Complete/POD" viewName="ODEbillCustDocVO" viewAttr="BcPodFlag" readOnly="true" tipType="shortTip" tipMessageAppShortName="XXCRM" tipMessageName="XXODPODONLY" queryable="false"/>
+                                             </ui:case>
+                                             <ui:case name="case4">
+                                                <oa:messageTextInput id="case4" readOnly="true" viewName="ODEbillCustDocVO" viewAttr="BcPodFlag" prompt="Bill Complete/POD" tipType="shortTip" tipMessageAppShortName="XXCRM" tipMessageName="XXODBILLCOMPLETEPODNONE"/>
+                                             </ui:case>
+                                             <ui:case name="case5">
+                                                <oa:messageTextInput id="case5" readOnly="true" viewName="ODEbillCustDocVO" viewAttr="BcPodFlag" prompt="Bill Complete/POD"/>
+                                             </ui:case>
+                                          </oa:switcher>
+                                       </ui:contents>
+                                    </oa:cellFormat>
+                                 </ui:contents>
+                              </oa:rowLayout>
+                           </ui:contents>
+                        </oa:labeledFieldLayout>
+                     </ui:contents>
+                  </oa:stackLayout>
+               </ui:detail>
+               <ui:footer>
+                  <oa:tableFooter id="tableFooter1">
+                     <ui:contents>
+                        <oa:rawText id="item1" text="* Indicates Required Field"/>
+                     </ui:contents>
+                  </oa:tableFooter>
+               </ui:footer>
+            </oa:advancedTable>
+            <oa:flowLayout id="ButtonRegion">
+               <ui:contents>
+                  <oa:submitButton id="AddRowButton1" text="Add Row" prompt="Add Row">
+                     <ui:primaryClientAction>
+                        <ui:firePartialAction event="AddRow"/>
+                     </ui:primaryClientAction>
+                  </oa:submitButton>
+                  <oa:submitButton id="Save1" text="Save" prompt="Save">
+                     <ui:primaryClientAction>
+                        <ui:fireAction event="Save"/>
+                     </ui:primaryClientAction>
+                  </oa:submitButton>
+                  <oa:button id="Cancel1" text="Cancel" prompt="Cancel">
+                     <ui:primaryClientAction>
+                        <ui:fireAction event="Cancel"/>
+                     </ui:primaryClientAction>
+                  </oa:button>
+                  <oa:button id="Exceptions1" text="Exceptions" prompt="Exceptions">
+                     <ui:primaryClientAction>
+                        <ui:fireAction event="Exception"/>
+                     </ui:primaryClientAction>
+                  </oa:button>
+                  <oa:button id="Contact1" destination="OA.jsp?page=/od/oracle/apps/xxcrm/asn/common/customer/webui/ODCtctCreatePG&amp;OAFunc=ASN_CTCTCREATEPG&amp;ASNReqFrmCustName=ARCH+COAL&amp;ASNReqFrmPgMode=CREATE&amp;ASNReqFrmFuncName=ASN_CTCTCREATEPG&amp;ASNReqFrmCustId=2753726&amp;retainAM=N&amp;addBreadCrumb=S" text="Contact" prompt="Contact" rendered="false"/>
+               </ui:contents>
+            </oa:flowLayout>
+         </ui:contents>
+      </oa:pageLayout>
+   </content>
+</page>

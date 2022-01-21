@@ -1,0 +1,281 @@
+<?xml version="1.0" encoding='windows-1252'?>
+<!DOCTYPE ViewObject SYSTEM "jbo_03_01.dtd">
+
+<ViewObject
+   Name="ODContractTemplatesVO"
+   BindingStyle="Oracle"
+   CustomQuery="true"
+   RowClass="od.oracle.apps.xxcrm.customer.account.server.ODContractTemplatesVORowImpl"
+   ComponentClass="od.oracle.apps.xxcrm.customer.account.server.ODContractTemplatesVOImpl"
+   MsgBundleClass="oracle.jbo.common.JboResourceBundle"
+   FetchMode="FETCH_AS_NEEDED"
+   UseGlueCode="false" >
+   <SQLQuery><![CDATA[
+SELECT ODCdhContractTemplateEO.CONTRACT_TEMPLATE_ID, 
+       ODCdhContractTemplateEO.TEMPLATE_NAME, 
+       ODCdhContractTemplateEO.REVENUE_BAND_CODE, 
+       ODCdhContractTemplateEO.CONTRACT_DESCRIPTION, 
+       ODCdhContractTemplateEO.PRIORITY, 
+       ODCdhContractTemplateEO.CUSTOM, 
+       ODCdhContractTemplateEO.CREATED_BY, 
+       ODCdhContractTemplateEO.CREATION_DATE, 
+       ODCdhContractTemplateEO.LAST_UPDATED_BY, 
+       ODCdhContractTemplateEO.LAST_UPDATE_DATE, 
+       ODCdhContractTemplateEO.LAST_UPDATE_LOGIN, 
+       ODCdhContractTemplateEO.SALES_ROLE, 
+       ODCdhContractTemplateEO.CONTRACT_NUMBER, 
+       ODCdhContractTemplateEO.CUST_PROD_XREF, 
+       ODCdhContractTemplateEO.OFF_CONTRACT_CODE, 
+       ODCdhContractTemplateEO.OFF_CONTRACT_PERCENT, 
+       ODCdhContractTemplateEO.OFF_WHOLESALE_CODE, 
+       ODCdhContractTemplateEO.OFF_WHOLESALE_PERCENT, 
+       ODCdhContractTemplateEO.GP_FLOOR_PERCENT, 
+       ODCdhContractTemplateEO.FREIGHT_CHARGE, 
+       ODCdhContractTemplateEO.PARENT_ID,
+       ODCdhContractTemplateEO.TEMPLATE_LOCKED_FLAG,
+       ODCdhContractTemplateEO.PRICEPLAN_LOCKED_FLAG,
+       ODCdhContractTemplateEO.ASSNCONTR_LOCKED_FLAG,
+      ODCdhContractTemplateEO.PRICEPLAN_MANDATORY_FLAG,
+	   FFV.FLEX_VALUE REV
+FROM XX_CDH_CONTRACT_TEMPLATE ODCdhContractTemplateEO,
+  FND_FLEX_VALUES FFV,
+  FND_FLEX_VALUE_SETS FFVS
+WHERE FFV.FLEX_VALUE_SET_ID = FFVS.FLEX_VALUE_SET_ID
+  AND UPPER(FFVS.FLEX_VALUE_SET_NAME) in ( UPPER('XXOD_CUST_US_REVENUE_BAND'), 
+      UPPER('XXOD_CUST_CA_REVENUE_BAND'), 
+	  UPPER('XXOD_CUST_EUR_REVENUE_BAND'), 
+	  UPPER('XXOD_CUST_GB_REVENUE_BAND'), 
+	  UPPER('XXOD_CUST_IE_REVENUE_BAND'), 
+	  UPPER('XXOD_CUST_IL_REVENUE_BAND'), 
+	  UPPER('XXOD_CUST_JP_REVENUE_BAND'), 
+	  UPPER('XXOD_CUST_NL_REVENUE_BAND'), 
+	  UPPER('XXOD_CUST_US_REVENUE_BAND'))
+  AND ENABLED_FLAG = 'Y'  
+  AND SYSDATE BETWEEN NVL(START_DATE_ACTIVE,SYSDATE)AND NVL(END_DATE_ACTIVE,SYSDATE + 1)
+  AND FFV.FLEX_VALUE_ID = ODCdhContractTemplateEO.REVENUE_BAND_CODE
+   ]]></SQLQuery>
+   <DesignTime>
+      <Attr Name="_isCodegen" Value="true" />
+      <Attr Name="_version" Value="9.0.3.14.00" />
+      <Attr Name="_CodeGenFlagNew" Value="36" />
+   </DesignTime>
+   <EntityUsage
+      Name="ODCdhContractTemplateEO"
+      Entity="od.oracle.apps.xxcrm.customer.account.schema.server.ODCdhContractTemplateEO" >
+      <DesignTime>
+         <Attr Name="_queryClause" Value="false" />
+      </DesignTime>
+   </EntityUsage>
+   <ViewAttribute
+      Name="ContractTemplateId"
+      EntityAttrName="ContractTemplateId"
+      EntityUsage="ODCdhContractTemplateEO"
+      AliasName="CONTRACT_TEMPLATE_ID" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="TemplateName"
+      Precision="80"
+      EntityAttrName="TemplateName"
+      EntityUsage="ODCdhContractTemplateEO"
+      AliasName="TEMPLATE_NAME" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="RevenueBandCode"
+      EntityAttrName="RevenueBandCode"
+      EntityUsage="ODCdhContractTemplateEO"
+      AliasName="REVENUE_BAND_CODE" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="ContractDescription"
+      Precision="240"
+      EntityAttrName="ContractDescription"
+      EntityUsage="ODCdhContractTemplateEO"
+      AliasName="CONTRACT_DESCRIPTION" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Priority"
+      Precision="30"
+      EntityAttrName="Priority"
+      EntityUsage="ODCdhContractTemplateEO"
+      AliasName="PRIORITY" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Custom"
+      Precision="30"
+      EntityAttrName="Custom"
+      EntityUsage="ODCdhContractTemplateEO"
+      AliasName="CUSTOM" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="CreatedBy"
+      IsNotNull="true"
+      Precision="15"
+      Scale="0"
+      EntityAttrName="CreatedBy"
+      EntityUsage="ODCdhContractTemplateEO"
+      AliasName="CREATED_BY" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="CreationDate"
+      IsNotNull="true"
+      EntityAttrName="CreationDate"
+      EntityUsage="ODCdhContractTemplateEO"
+      AliasName="CREATION_DATE" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="LastUpdatedBy"
+      IsNotNull="true"
+      Precision="15"
+      Scale="0"
+      EntityAttrName="LastUpdatedBy"
+      EntityUsage="ODCdhContractTemplateEO"
+      AliasName="LAST_UPDATED_BY" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="LastUpdateDate"
+      IsNotNull="true"
+      EntityAttrName="LastUpdateDate"
+      EntityUsage="ODCdhContractTemplateEO"
+      AliasName="LAST_UPDATE_DATE" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="LastUpdateLogin"
+      Precision="15"
+      Scale="0"
+      EntityAttrName="LastUpdateLogin"
+      EntityUsage="ODCdhContractTemplateEO"
+      AliasName="LAST_UPDATE_LOGIN" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="SalesRole"
+      Precision="50"
+      EntityAttrName="SalesRole"
+      EntityUsage="ODCdhContractTemplateEO"
+      AliasName="SALES_ROLE" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="ContractNumber"
+      Precision="80"
+      EntityAttrName="ContractNumber"
+      EntityUsage="ODCdhContractTemplateEO"
+      AliasName="CONTRACT_NUMBER" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="CustProdXref"
+      Precision="30"
+      EntityAttrName="CustProdXref"
+      EntityUsage="ODCdhContractTemplateEO"
+      AliasName="CUST_PROD_XREF" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="OffContractCode"
+      Precision="30"
+      EntityAttrName="OffContractCode"
+      EntityUsage="ODCdhContractTemplateEO"
+      AliasName="OFF_CONTRACT_CODE" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="OffContractPercent"
+      Precision="10"
+      Scale="0"
+      EntityAttrName="OffContractPercent"
+      EntityUsage="ODCdhContractTemplateEO"
+      AliasName="OFF_CONTRACT_PERCENT" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="OffWholesaleCode"
+      Precision="30"
+      EntityAttrName="OffWholesaleCode"
+      EntityUsage="ODCdhContractTemplateEO"
+      AliasName="OFF_WHOLESALE_CODE" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="OffWholesalePercent"
+      Precision="10"
+      Scale="0"
+      EntityAttrName="OffWholesalePercent"
+      EntityUsage="ODCdhContractTemplateEO"
+      AliasName="OFF_WHOLESALE_PERCENT" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="GpFloorPercent"
+      Precision="10"
+      Scale="0"
+      EntityAttrName="GpFloorPercent"
+      EntityUsage="ODCdhContractTemplateEO"
+      AliasName="GP_FLOOR_PERCENT" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="FreightCharge"
+      Precision="5"
+      EntityAttrName="FreightCharge"
+      EntityUsage="ODCdhContractTemplateEO"
+      AliasName="FREIGHT_CHARGE" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="ParentId"
+      EntityAttrName="ParentId"
+      EntityUsage="ODCdhContractTemplateEO"
+      AliasName="PARENT_ID" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="TemplateLockedFlag"
+      Precision="1"
+      EntityAttrName="TemplateLockedFlag"
+      EntityUsage="ODCdhContractTemplateEO"
+      AliasName="TEMPLATE_LOCKED_FLAG" > 
+   </ViewAttribute>
+   <ViewAttribute
+      Name="PriceplanLockedFlag"
+      Precision="1"
+      EntityAttrName="PriceplanLockedFlag"
+      EntityUsage="ODCdhContractTemplateEO"
+      AliasName="PRICEPLAN_LOCKED_FLAG" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="AssncontrLockedFlag"
+      Precision="1"
+      EntityAttrName="AssncontrLockedFlag"
+      EntityUsage="ODCdhContractTemplateEO"
+      AliasName="ASSNCONTR_LOCKED_FLAG" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="PriceplanMandatoryFlag"
+      Precision="1"
+      EntityAttrName="PriceplanMandatoryFlag"
+      EntityUsage="ODCdhContractTemplateEO"
+      AliasName="PRICEPLAN_MANDATORY_FLAG" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Rev"
+      IsPersistent="false"
+      IsNotNull="true"
+      Precision="150"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="REV"
+      Expression="REV"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="150" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewLinkAccessor
+      Name="ODContractsPricePlanVO"
+      ViewLink="od.oracle.apps.xxcrm.customer.account.server.ODContTempToPricePlanVL"
+      Type="oracle.jbo.RowIterator"
+      IsUpdateable="false" >
+   </ViewLinkAccessor>
+   <ViewLinkAccessor
+      Name="ODContractsAssignedVO1"
+      ViewLink="od.oracle.apps.xxcrm.customer.account.server.ODContTempToContAssVL"
+      Type="oracle.jbo.RowIterator"
+      IsUpdateable="false" >
+   </ViewLinkAccessor>
+   <ViewLinkAccessor
+      Name="ODCdhContractProgCodesVO"
+      ViewLink="od.oracle.apps.xxcrm.customer.account.server.ODContTempToProgCodesVL"
+      Type="oracle.jbo.RowIterator"
+      IsUpdateable="false" >
+   </ViewLinkAccessor>
+</ViewObject>

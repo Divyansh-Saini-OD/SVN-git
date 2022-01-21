@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="WINDOWS-1252" ?>
+<dataTemplate name="XXFAMAER" description="OD FA Assets Mass Revaluation Exception Report" defaultPackage="XX_FA_MASS_REVAL_PKG" Version="1.0">
+<parameters>
+ <parameter name="p_request_id" datatype="number" />
+</parameters>
+<dataQuery>
+<sqlStatement name="Q_FAMAER">
+<![CDATA[
+   SELECT 
+	Asset_id,
+	Asset_no,
+	Description,
+	Book_type_code,
+	Location,
+	Process_mode,
+	Reval_pct,
+	Company,
+	Building,
+	CostCenter,
+	Lob,
+	Major,
+	Minor,
+	Subminor,
+	date_placed_in_service,
+	life_in_months,
+	FA_period,
+	FA_retired_period,
+	GL_period,
+	Cost,
+	deprn_amount,
+	ytd_deprn,
+	deprn_reserve,
+	NBV,
+	New_cost,
+	New_NBV,
+	imp_cost,
+	error_message
+   FROM xx_fa_reval_assets_stg
+  WHERE request_id=:p_request_id
+    AND error_flag='Y'
+    AND error_message IS NOT NULL
+order by asset_id]]>
+</sqlStatement>
+</dataQuery>
+<dataTrigger name="beforeReportTrigger" source="XX_FA_MASS_REVAL_PKG.BeforeReportTrigger"/>
+<dataStructure>
+<group name="G_FAMAER" source="Q_FAMAER">
+<element name="ASSET_ID" value="ASSET_ID" />
+<element name="ASSET_NO" value="ASSET_NO" />
+<element name="DESCRIPTION" value="DESCRIPTION" />
+<element name="BOOK_TYPE_CODE" value="BOOK_TYPE_CODE" />
+<element name="LOCATION" value="LOCATION" />
+<element name="PROCESS_MODE" value="PROCESS_MODE" />
+<element name="REVAL_PCT" value="REVAL_PCT" />
+<element name="COMPANY" value="COMPANY" />
+<element name="BUILDING" value="BUILDING" />
+<element name="COSTCENTER" value="COSTCENTER" />
+<element name="LOB" value="LOB" />
+<element name="MAJOR" value="MAJOR" />
+<element name="MINOR" value="MINOR" />
+<element name="SUBMINOR" value="SUBMINOR" />
+<element name="DATE_PLACED_IN_SERVICE" value="DATE_PLACED_IN_SERVICE" />
+<element name="LIFE_IN_MONTHS" value="LIFE_IN_MONTHS" />
+<element name="FA_PERIOD" value="FA_PERIOD" />
+<element name="FA_RETIRED_PERIOD" value="FA_RETIRED_PERIOD" />
+<element name="GL_PERIOD" value="GL_PERIOD" />
+<element name="COST" value="COST" />
+<element name="DEPRN_AMOUNT" value="DEPRN_AMOUNT" />
+<element name="YTD_DEPRN" value="YTD_DEPRN" />
+<element name="DEPRN_RESERVE" value="DEPRN_RESERVE" />
+<element name="NBV" value="NBV" />
+<element name="NEW_COST" value="NEW_COST" />
+<element name="NEW_NBV" value="NEW_NBV" />
+<element name="IMP_COST" value="IMP_COST" />
+<element name="ERROR_MESSAGE" value="ERROR_MESSAGE" />
+</group>
+</dataStructure>
+</dataTemplate>

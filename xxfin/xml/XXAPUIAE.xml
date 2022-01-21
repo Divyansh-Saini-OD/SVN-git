@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="WINDOWS-1252" ?> 
+<dataTemplate name="XXAPUIAE" description="OD: AP UI Action Errors Report" Version="1.0">
+ <parameters>
+     <parameter name="p_date" datatype="varchar2" />
+  </parameters>
+<dataQuery>
+<sqlStatement name="Q_UIAE">
+<![CDATA[
+SELECT *
+ FROM xx_ap_uiaction_errors
+WHERE last_update_date BETWEEN to_date(NVL(:p_date,to_char(sysdate))||' 00:00:00','DD-MON-RR HH24:MI:SS') 
+						    AND to_date(NVL(:p_date,to_char(sysdate))||' 23:59:59','DD-MON-RR HH24:MI:SS')
+ORDER BY invoice_id
+]]>
+</sqlStatement>
+</dataQuery>
+<dataStructure>
+<group name="G_UIAE" source="Q_UIAE">
+<element name="INVOICE_NUMBER" value="INVOICE_NUM" />
+<element name="LINE_NUMBER" value="LINE_NO" />
+<element name="ERROR_MESSAGE" value="ERROR_MESSAGE" />
+</group>
+</dataStructure>
+</dataTemplate>

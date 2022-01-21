@@ -1,0 +1,51 @@
+-- +============================================================================================+
+-- |                        Office Depot - Project Simplify                                     |
+-- |                                                                                            |
+-- +============================================================================================+
+-- | Name         : XLA_AE_HEADERS_N9.idx                                                           |
+-- | Rice Id      :                                                                             | 
+-- | Description  :                                                                             |  
+-- | Purpose      :                                                                             |
+-- |                                                                                            |
+-- |Change Record:                                                                              |
+-- |===============                                                                             |
+-- |Version    Date          Author                Remarks                                      | 
+-- |=======    ==========    =================    ==============================================+
+-- |DRAFT 1A   14-FEB-2014   Suresh Ponnambalam    Initial Version                               |
+-- |                                                                                            |
+-- +============================================================================================+
+
+SET VERIFY      OFF
+SET TERM        ON
+SET FEEDBACK    OFF
+SET SHOW        OFF
+SET ECHO        OFF
+SET TAB         OFF
+
+
+drop index xxfin.XLA_AE_HEADERS_N9;
+
+PROMPT
+PROMPT Creation of Index XLA_AE_HEADERS_N9 on XLA table XLA_AE_HEADERS.....
+PROMPT
+
+
+PROMPT
+PROMPT Creating index on  INDEX XLA_AE_HEADERS_N9 .....
+PROMPT
+
+CREATE INDEX XXFIN.XLA_AE_HEADERS_N9 ON XLA.XLA_AE_HEADERS(LAST_UPDATE_DATE) TABLESPACE APPS_TS_TX_DATA NOLOGGING PARALLEL 16;
+
+ALTER INDEX XXFIN.XLA_AE_HEADERS_N9 NOPARALLEL;
+
+
+WHENEVER SQLERROR EXIT 1
+
+PROMPT
+PROMPT Exiting....
+PROMPT
+
+SET FEEDBACK ON
+
+EXIT;
+

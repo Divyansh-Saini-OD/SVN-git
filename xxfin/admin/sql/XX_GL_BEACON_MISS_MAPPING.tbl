@@ -1,0 +1,48 @@
+SET VERIFY OFF;
+SET SHOW OFF;
+SET ECHO OFF;
+SET TAB OFF;
+SET FEEDBACK OFF;
+ 
+WHENEVER SQLERROR CONTINUE;
+ 
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+-- +==================================================================================+  
+-- | Office Depot - Project Simplify                                                  |
+-- |                                                              |
+-- +==================================================================================+
+-- | SQL Script to create the table:  XX_GL_BEACON_MISS_MAPPING              |
+-- |                                                                                  |
+-- |
+-- |                                                                                  |
+-- |                                                                                  |
+-- |Change Record:                                                                    |
+-- |===============                                                                   |
+-- |Version   Date          Author               Remarks                              |
+-- |=======   ===========   =============        =====================================|
+-- |1.0       26-APR-2019   Priyam Parmar       Initial DRAFT version                      |
+-- |                                                                                  |
+-- +==================================================================================+
+
+--+=====================================================================+
+--+               CREATE TABLE XX_GL_BEACON_MISS_MAPPING 
+--+=====================================================================+
+
+
+CREATE TABLE XX_GL_BEACON_MISS_MAPPING 
+   (SOURCE VARCHAR2(50), 
+	TARGET VARCHAR2(50), 
+	TYPE VARCHAR2(50), 
+	CREATION_DATE DATE, 
+	CREATED_BY NUMBER, 
+	ASSET_NUMBER VARCHAR2(200), 
+	IDENTIFIER_QUERY VARCHAR2(100), 
+	BOOK_NAME VARCHAR2(100)
+   );
+ 
+
+Grant  all on XX_GL_BEACON_MISS_MAPPING to APPS;
+
+   /
+Show error

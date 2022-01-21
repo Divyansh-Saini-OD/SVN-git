@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding='windows-1252'?>
+<!DOCTYPE ViewObject SYSTEM "jbo_03_01.dtd">
+
+<ViewObject
+   Name="AllocationQuantityVVO"
+   BindingStyle="Oracle"
+   CustomQuery="true"
+   RowClass="od.oracle.apps.xxmer.schema.server.AllocationQuantityVVORowImpl"
+   ComponentClass="od.oracle.apps.xxmer.schema.server.AllocationQuantityVVOImpl"
+   MsgBundleClass="oracle.jbo.common.JboResourceBundle"
+   UseGlueCode="false" >
+   <SQLQuery><![CDATA[
+SELECT  A.PO_HEADER_ID,
+      A.PO_LINE_ID,	
+      A.LINE_LOCATION_ID,
+      A.QUANTITY ,
+	  COALESCE(B.ALLOCATION_QTY,0)	  
+	  FROM
+(SELECT  
+      POLL.PO_HEADER_ID,
+      POLL.PO_LINE_ID,	
+      POLL.LINE_LOCATION_ID,
+      POLL.QUANTITY 
+    
+	
+FROM PO_LINE_LOCATIONS_ALL POLL
+
+WHERE 
+	POLL.PO_HEADER_ID = :1
+	AND POLL.PO_LINE_ID = :2
+	AND POLL.LINE_LOCATION_ID = :3) A,
+	(SELECT PO_HEADER_ID,
+			PO_LINE_ID,
+			LINE_LOCATION_ID,
+			ALLOCATION_QTY,	
+			ALLOCATION_LINE_ID
+		FROM XX_PO_ALLOCATION_LINES
+		WHERE ALLOCATION_LINE_ID <> :4) B
+	WHERE A.PO_HEADER_ID = B.PO_HEADER_ID(+)
+	  AND A.PO_LINE_ID = B.PO_LINE_ID (+)
+	  AND A.LINE_LOCATION_ID = B.LINE_LOCATION_ID(+)
+   ]]></SQLQuery>
+   <DesignTime>
+      <Attr Name="_isCodegen" Value="true" />
+      <Attr Name="_version" Value="9.0.3.13.75" />
+      <Attr Name="_CodeGenFlagNew" Value="36" />
+   </DesignTime>
+   <ViewAttribute
+      Name="PoHeaderId"
+      IsUpdateable="false"
+      IsPersistent="false"
+      Precision="255"
+      Type="java.lang.String"
+      AliasName="POHEADERID"
+      ColumnType="VARCHAR2"
+      Expression="PoHeaderId"
+      SQLType="VARCHAR" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="PoLineId"
+      IsPersistent="false"
+      IsNotNull="true"
+      Type="oracle.jbo.domain.Number"
+      AliasName="PO_LINE_ID"
+      ColumnType="VARCHAR2"
+      Expression="PO_LINE_ID"
+      SQLType="NUMERIC" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="LineLocationId"
+      IsPersistent="false"
+      IsNotNull="true"
+      Type="oracle.jbo.domain.Number"
+      AliasName="LINE_LOCATION_ID"
+      ColumnType="VARCHAR2"
+      Expression="LINE_LOCATION_ID"
+      SQLType="NUMERIC" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Quantity"
+      IsPersistent="false"
+      Precision="255"
+      Type="oracle.jbo.domain.Number"
+      AliasName="QUANTITY"
+      ColumnType="VARCHAR2"
+      Expression="QUANTITY"
+      SQLType="NUMERIC" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="SumAlAllocationQty"
+      IsPersistent="false"
+      Type="oracle.jbo.domain.Number"
+      ColumnType="VARCHAR2"
+      Expression="SUM(AL.ALLOCATION_QTY)"
+      SQLType="NUMERIC" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </ViewAttribute>
+</ViewObject>

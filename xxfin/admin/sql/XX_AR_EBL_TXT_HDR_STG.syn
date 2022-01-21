@@ -1,0 +1,26 @@
+-- +============================================================================+
+-- |                  Office Depot                                              |
+-- +============================================================================+
+-- | Name        : XX_AR_EBL_TXT_HDR_STG.syn                                    |
+-- | Rice ID     : E2059                                                        |
+-- | Description : Synonym for Table XX_AR_EBL_TXT_HDR_STG                      |
+-- |                                                                            |
+-- |Change Record:                                                              |
+-- |===============                                                             |
+-- |Version   Date        Author           Remarks                              |
+-- |=======  ===========  =============    =====================================|
+-- |1.0      04-MAR-2016  Suresh Naragam   Initial Version                      |
+-- +============================================================================+
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     ON
+
+PROMPT
+PROMPT Creating Synonym XX_AR_EBL_TXT_HDR_STG in APPS.....
+PROMPT
+
+CREATE OR REPLACE SYNONYM XX_AR_EBL_TXT_HDR_STG FOR xxfin.XX_AR_EBL_TXT_HDR_STG;
+
+SHOW ERROR;

@@ -1,0 +1,51 @@
+<definitions
+     name="ChunkReadGSSJournal"
+     targetNamespace="http://xmlns.oracle.com/pcbpel/adapter/file/ChunkReadGSSJournal/"
+     xmlns="http://schemas.xmlsoap.org/wsdl/"
+     xmlns:tns="http://xmlns.oracle.com/pcbpel/adapter/file/ChunkReadGSSJournal/"
+     xmlns:plt="http://schemas.xmlsoap.org/ws/2003/05/partner-link/"
+     xmlns:jca="http://xmlns.oracle.com/pcbpel/wsdl/jca/"
+     xmlns:imp1="http://TargetNamespace.com/FileRead"
+     xmlns:hdr="http://xmlns.oracle.com/pcbpel/adapter/file/"
+    >
+    <import namespace="http://xmlns.oracle.com/pcbpel/adapter/file/" location="fileAdapterOutboundHeader.wsdl"/>
+    <types>
+      <schema targetNamespace="http://xmlns.oracle.com/pcbpel/adapter/file/ChunkReadGSSJournal/"
+              xmlns="http://www.w3.org/2001/XMLSchema" >
+        <import namespace="http://TargetNamespace.com/FileRead" schemaLocation="GL_JournalEntries_NA_GSS.xsd" />
+        <element name="empty"><complexType/></element>
+      </schema>
+    </types>
+    <message name="Empty_msg">
+        <part name="Empty" element="tns:empty"/>
+    </message>
+    <message name="Root-Element_msg">
+        <part name="Root-Element" element="imp1:Root-Element"/>
+    </message>
+    <portType name="SynchChunkedRead_ptt">
+        <operation name="SynchChunkedRead">
+            <input message="tns:Empty_msg"/>
+            <output message="tns:Root-Element_msg"/>
+        </operation>
+    </portType>
+   <binding name="SynchChunkedRead_binding" type="tns:SynchChunkedRead_ptt">
+        <jca:binding/>
+        <operation name="SynchChunkedRead">
+            <jca:operation LogicalDirectory="GLInDir" InteractionSpec="oracle.tip.adapter.file.outbound.ChunkedInteractionSpec"
+                 ChunkSize="500" DeleteFile="true" FileName="InputFile" OpaqueSchema="false"/>
+            <input>
+                <jca:header message="hdr:OutboundHeader_msg" part="outboundHeader"/>
+            </input>
+        </operation>
+    </binding>
+    <service name="ChunkReadGSSJournal">
+        <port name="SynchChunkedRead_pt" binding="tns:SynchChunkedRead_binding">
+      <jca:address location="eis/FileAdapter" />
+        </port>
+    </service>
+  <plt:partnerLinkType name="SynchChunkedRead_plt" >
+    <plt:role name="SynchChunkedRead_role" >
+      <plt:portType name="tns:SynchChunkedRead_ptt" />
+    </plt:role>
+  </plt:partnerLinkType>
+</definitions>

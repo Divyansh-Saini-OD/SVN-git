@@ -1,0 +1,25 @@
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     ON
+
+-- +==========================================================================+
+-- |                  Office Depot - Project Simplify                         |
+-- |                       WIPRO Technologies                                 |
+-- +==========================================================================+
+-- | SQL Script to create the following object                                |
+-- |             Synonym  : xx_iby_store_merchant_stg                         |
+-- |                      For Merchant, Store number loading                  |
+-- |                                                                          |
+-- |Change Record:                                                            |
+-- |===============                                                           |
+-- |Version   Date         Author               Remarks                       |
+-- |=======   ===========  =============        ==============================|
+-- | V1.0     29-JAN-2008  Gowri Shankar        Initial version               |
+-- |                                                                          |
+-- +==========================================================================+
+
+CREATE SYNONYM xx_iby_store_merchant_stg FOR xxfin.xx_iby_store_merchant_stg;
+
+SHOW ERROR;

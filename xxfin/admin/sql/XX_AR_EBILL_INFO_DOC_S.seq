@@ -1,0 +1,32 @@
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     OFF
+SET TERM         ON
+
+PROMPT Creating Sequence XX_AR_EBILL_INFO_DOC_S
+PROMPT Program exits if the creation is not successful
+
+WHENEVER SQLERROR CONTINUE	
+
+-- +===================================================================+
+-- |                  Office Depot - Project Simplify                  |
+-- |                       PROVIDGE Consulting                         |
+-- +===================================================================+
+-- |Name :        XX_AR_EBILL_INFO_DOC_S                               |
+-- |Description : This Script is used for creating billing Id for the  |
+-- |              table xx_ar_gen_bill_temp.                           |
+-- |                                                                   |
+-- |Change Record:                                                     |
+-- |===============                                                    |
+-- |                                                                   |
+-- |Version   Date          Author              Remarks                |
+-- |=======   ==========   =============        =======================|
+-- |1.0       30-May-2008  Sarat Uppalapati     Initial version        |
+-- |                                                                   |
+-- +===================================================================+
+
+--DROP SEQUENCE xxfin.XX_AR_EBILL_INFO_DOC_S;
+CREATE SEQUENCE xxfin.XX_AR_EBILL_INFO_DOC_S START WITH 10000 INCREMENT BY 1 NOCACHE;
+SHOW ERROR

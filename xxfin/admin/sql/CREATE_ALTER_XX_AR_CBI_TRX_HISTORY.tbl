@@ -1,0 +1,35 @@
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     ON
+
+PROMPT Creating TABLE XXFIN.xx_ar_cbi_trx_history
+
+PROMPT Program exits IF the creation IS NOT SUCCESSFUL
+
+WHENEVER SQLERROR CONTINUE
+
+-- +==========================================================================+
+-- |                  Office Depot - Project Simplify                         |
+-- +==========================================================================+
+-- | Name :XXFIN.XX_AR_CBI_TRX_HISTORY                                        |
+-- | Description : Create history table for Certegy trx records.              |
+-- |                                                                          |
+-- |                                                                          |
+-- |                                                                          |
+-- |Change Record:                                                            |
+-- |===============                                                           |
+-- |Version   Date         Author               Remarks                       |
+-- |=======   ==========   =============        ==============================|
+-- | 1.0     05-feb-2009  Sambasiva Reddy D    Initial version                |
+-- |==========================================================================|
+
+
+
+
+DROP TABLE xxfin.XX_AR_CBI_TRX_HISTORY;
+DROP TABLE xxfin.XX_AR_CBI_TRX_LINES_HISTORY;
+DROP TABLE xxfin.XX_AR_CBI_TRX_TOTALS_HISTORY;
+
+SHOW ERROR

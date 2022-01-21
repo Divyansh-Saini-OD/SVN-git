@@ -1,0 +1,38 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<BPELSuitcase>
+   <BPELProcess id="FTPGLHyperion" src="FTPGLHyperion.bpel">
+      <partnerLinkBindings>
+         <partnerLinkBinding name="ServiceFileRead">
+            <property name="wsdlLocation">ServiceFileRead.wsdl</property>
+         </partnerLinkBinding>
+         <partnerLinkBinding name="ODErrorLogger">
+            <property name="wsdlLocation">http://chilsoa01d.na.odcorp.net:7778/orabpel/default/ODErrorLogger/ODErrorLogger?wsdl</property>
+         </partnerLinkBinding>
+         <partnerLinkBinding name="DailyFileWrite">
+            <property name="wsdlLocation">DailyFileWrite.wsdl</property>
+            <property name="DailyOut_Path" type="LogicalDirectory"></property>
+            <property name="retryInterval">60</property>
+         </partnerLinkBinding>
+         <partnerLinkBinding name="MonthlyFileWrite">
+            <property name="wsdlLocation">MonthlyFileWrite.wsdl</property>
+            <property name="MonthlyOut_Path" type="LogicalDirectory"></property>
+            <property name="retryInterval">60</property>
+         </partnerLinkBinding>
+         <partnerLinkBinding name="DailyFlagWrite">
+            <property name="wsdlLocation">DailyFlagWrite.wsdl</property>
+            <property name="retryInterval">60</property>
+            <property name="DailyOut_Path" type="LogicalDirectory"></property>
+         </partnerLinkBinding>
+         <partnerLinkBinding name="ODTransactionLogger">
+            <property name="wsdlLocation">http://chilsoa01d.na.odcorp.net:7778/orabpel/default/ODTransactionLogger/ODTransactionLogger?wsdl</property>
+         </partnerLinkBinding>
+      </partnerLinkBindings>
+      <activationAgents>
+         <activationAgent className="oracle.tip.adapter.fw.agent.jca.JCAActivationAgent" partnerLink="ServiceFileRead">
+            <property name="Inbound_Path" type="LogicalDirectory"></property>
+            <property name="portType">Get_ptt</property>
+            <property name="Archive_Path" type="LogicalArchiveDirectory"></property>
+         </activationAgent>
+      </activationAgents>
+   </BPELProcess>
+</BPELSuitcase>

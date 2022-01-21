@@ -1,0 +1,334 @@
+<?xml version="1.0" encoding='windows-1252'?>
+<!DOCTYPE ViewObject SYSTEM "jbo_03_01.dtd">
+<!--
+  Author: Sridevi Kondoju
+  Component Id: E1356
+  Script Location: $CUSTOM_JAVA_TOP/od/oracle/apps/xxfin/ar/irec/accountDetails/pay/server
+  Description: retrofitted for r12 upgrade
+  History:
+  Name            Date         Version    Description
+  Sridevi Kondoju 17-Aug-2013   1.0    Retrofitted for R12 Upgrade.
+  Sridevi Kondoju 5-Feb-2014    2.0    Modified for Defect27888
+  Sreedhar Mohan  14-Jul-2014   3.0    Modified for Defect27888  
+-->
+<ViewObject
+   Name="OD_ReceiptsVO"
+   BindingStyle="Oracle"
+   CustomQuery="true"
+   RowClass="od.oracle.apps.xxfin.ar.irec.accountDetails.pay.server.OD_ReceiptsVORowImpl"
+   ComponentClass="od.oracle.apps.xxfin.ar.irec.accountDetails.pay.server.OD_ReceiptsVOImpl"
+   MsgBundleClass="oracle.jbo.common.JboResourceBundle"
+   UseGlueCode="false" >
+   <SQLQuery><![CDATA[
+select
+    CR.PAY_FROM_CUSTOMER CUSTOMER_ID
+    ,CR.CASH_RECEIPT_ID
+   ,SUBSTRB ( PARTY.PARTY_NAME,1,50 ) CUSTOMER_NAME
+   ,CUST.ACCOUNT_NUMBER
+   ,CR.RECEIPT_NUMBER
+   ,CR.RECEIPT_DATE
+   ,CR.AMOUNT
+   ,CR.ORG_ID
+   ,CR.CREATED_BY
+   ,FU.USER_NAME
+   ,CR.CREATION_DATE CREATION_DATE
+   ,TO_CHAR(CR.CREATION_DATE,'hh24:mi:ss') CREATION_TIME
+   ,REMIT_BANK_BRANCH.BANK_NAME REMIT_BANK_NAME
+,lpad(substr(to_char(CUST.ACCOUNT_NUMBER),-4),length(CUST.ACCOUNT_NUMBER),'X') as MASKED_ACCOUNT_NUMBER
+,(case
+     when RTRIM(TO_CHAR(CR.RECEIPT_DATE,'DAY')) in ('MONDAY','TUESDAY','WEDNESDAY','THURSDAY') and TO_CHAR(CR.RECEIPT_DATE,'hh24') < 20 then (CR.RECEIPT_DATE+1)
+     when RTRIM(TO_CHAR(CR.RECEIPT_DATE,'DAY')) in ('MONDAY','TUESDAY','WEDNESDAY','THURSDAY') and TO_CHAR(CR.RECEIPT_DATE,'hh24 AM') >= 20 then (CR.RECEIPT_DATE+2)
+     when RTRIM(TO_CHAR(CR.RECEIPT_DATE,'DAY')) = 'FRIDAY' and TO_CHAR(CR.RECEIPT_DATE,'hh24') < 20 then (CR.RECEIPT_DATE+3)---Defect ID: 19186
+     when RTRIM(TO_CHAR(CR.RECEIPT_DATE,'DAY')) = 'FRIDAY' and TO_CHAR(CR.RECEIPT_DATE,'hh24') >=20 then (CR.RECEIPT_DATE+4)
+     when RTRIM(TO_CHAR(CR.RECEIPT_DATE,'DAY')) = 'SATURDAY' then (CR.RECEIPT_DATE+3)
+     when rtrim(TO_CHAR(CR.RECEIPT_DATE,'DAY')) = 'SUNDAY' then (CR.RECEIPT_DATE+2)
+     END ) RECEIPT_DATE_DISP
+,ltrim(to_char(CR.AMOUNT,'9999999999,999,999,999.99')) AMOUNT_DISP
+,lpad(substr(to_char(REMIT_BANK.BANK_ACCOUNT_NUM),-3),8,'X') as MASKED_BANK_ACCOUNT_NUMBER
+,(
+SELECT XFTV.TARGET_VALUE1
+              FROM xx_fin_translatevalues xftv,
+                   xx_fin_translatedefinition xftd
+             WHERE xftv.translate_id = xftd.translate_id
+               AND XFTD.TRANSLATION_NAME = 'ACH_ECHECK_DETAILS'
+               AND UPPER(XFTV.SOURCE_VALUE1) = UPPER('phonenumber')
+               AND SYSDATE BETWEEN xftv.start_date_active
+                               AND NVL (xftv.end_date_active, SYSDATE + 1)
+               AND SYSDATE BETWEEN xftd.start_date_active
+                               AND NVL (xftd.end_date_active, SYSDATE + 1)
+               AND XFTV.ENABLED_FLAG = 'Y'
+               AND XFTD.ENABLED_FLAG = 'Y'
+ ) Customer_Care_Number
+    from 
+     AR_CASH_RECEIPTS_all CR
+    ,HZ_PARTIES PARTY
+    ,HZ_CUST_ACCOUNTS CUST
+    ,FND_USER FU
+    ,CE_BANK_BRANCHES_V REMIT_BANK_BRANCH
+    ,IBY_EXT_BANK_ACCOUNTS REMIT_BANK
+    where
+     CR.PAY_FROM_CUSTOMER = CUST.CUST_ACCOUNT_ID --( + )
+    and CUST.PARTY_ID = PARTY.PARTY_ID --( + )
+    and fu.user_id  = cr.created_by
+    --re-design comment and CR.RECEIPT_NUMBER = :1 --'1000'
+    and CR.CASH_RECEIPT_ID = :1 --45678320
+    and REMIT_BANK.BRANCH_ID = REMIT_BANK_BRANCH.BRANCH_PARTY_ID
+    and REMIT_BANK.EXT_BANK_ACCOUNT_ID = CR.CUSTOMER_BANK_ACCOUNT_ID
+   ]]></SQLQuery>
+   <DesignTime>
+      <Attr Name="_isCodegen" Value="true" />
+      <Attr Name="_version" Value="9.0.3.14.01" />
+      <Attr Name="_CodeGenFlagNew" Value="36" />
+   </DesignTime>
+   <ViewAttribute
+      Name="CustomerId"
+      IsPersistent="false"
+      Precision="15"
+      Scale="0"
+      Type="oracle.jbo.domain.Number"
+      ColumnType="NUMBER"
+      AliasName="CUSTOMER_ID"
+      Expression="CUSTOMER_ID"
+      SQLType="NUMERIC" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="CashReceiptId"
+      IsPersistent="false"
+      IsNotNull="true"
+      Precision="15"
+      Scale="0"
+      Type="oracle.jbo.domain.Number"
+      ColumnType="NUMBER"
+      AliasName="CASH_RECEIPT_ID"
+      Expression="CASH_RECEIPT_ID"
+      SQLType="NUMERIC" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="CustomerName"
+      IsPersistent="false"
+      Precision="50"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="CUSTOMER_NAME"
+      Expression="CUSTOMER_NAME"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="50" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="AccountNumber"
+      IsPersistent="false"
+      IsNotNull="true"
+      Precision="30"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="ACCOUNT_NUMBER"
+      Expression="ACCOUNT_NUMBER"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="30" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="ReceiptNumber"
+      IsPersistent="false"
+      Precision="30"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="RECEIPT_NUMBER"
+      Expression="RECEIPT_NUMBER"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="30" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="ReceiptDate"
+      IsPersistent="false"
+      IsNotNull="true"
+      Type="oracle.jbo.domain.Date"
+      ColumnType="DATE"
+      AliasName="RECEIPT_DATE"
+      Expression="RECEIPT_DATE"
+      SQLType="DATE" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="7" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Amount"
+      IsPersistent="false"
+      IsNotNull="true"
+      Type="oracle.jbo.domain.Number"
+      ColumnType="NUMBER"
+      AliasName="AMOUNT"
+      Expression="AMOUNT"
+      SQLType="NUMERIC" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="OrgId"
+      IsPersistent="false"
+      Precision="15"
+      Scale="0"
+      Type="oracle.jbo.domain.Number"
+      ColumnType="NUMBER"
+      AliasName="ORG_ID"
+      Expression="ORG_ID"
+      SQLType="NUMERIC" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="CreatedBy"
+      IsPersistent="false"
+      IsNotNull="true"
+      Precision="15"
+      Scale="0"
+      Type="oracle.jbo.domain.Number"
+      ColumnType="NUMBER"
+      AliasName="CREATED_BY"
+      Expression="CREATED_BY"
+      SQLType="NUMERIC" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="UserName"
+      IsPersistent="false"
+      IsNotNull="true"
+      Precision="100"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="USER_NAME"
+      Expression="USER_NAME"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="100" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="CreationDate"
+      IsPersistent="false"
+      IsNotNull="true"
+      Type="oracle.jbo.domain.Date"
+      ColumnType="DATE"
+      AliasName="CREATION_DATE"
+      Expression="CREATION_DATE"
+      SQLType="DATE" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="7" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="CreationTime"
+      IsPersistent="false"
+      Precision="8"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="CREATION_TIME"
+      Expression="CREATION_TIME"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="8" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="RemitBankName"
+      IsPersistent="false"
+      IsNotNull="true"
+      Precision="60"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="REMIT_BANK_NAME"
+      Expression="REMIT_BANK_NAME"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="60" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="MaskedAccountNumber"
+      IsPersistent="false"
+      Precision="4000"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="MASKED_ACCOUNT_NUMBER"
+      Expression="MASKED_ACCOUNT_NUMBER"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="4000" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="ReceiptDateDisp"
+      IsPersistent="false"
+      Type="oracle.jbo.domain.Date"
+      ColumnType="DATE"
+      AliasName="RECEIPT_DATE_DISP"
+      Expression="RECEIPT_DATE_DISP"
+      SQLType="DATE" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="7" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="AmountDisp"
+      IsPersistent="false"
+      Precision="26"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="AMOUNT_DISP"
+      Expression="AMOUNT_DISP"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="26" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="MaskedBankAccountNumber"
+      IsPersistent="false"
+      Precision="4000"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="MASKED_BANK_ACCOUNT_NUMBER"
+      Expression="MASKED_BANK_ACCOUNT_NUMBER"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="4000" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="CustomerCareNumber"
+      IsPersistent="false"
+      Precision="240"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="CUSTOMER_CARE_NUMBER"
+      Expression="CUSTOMER_CARE_NUMBER"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="240" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="PaymentNumber"
+      IsPersistent="false"
+      Precision="255"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="PAYMENT_NUMBER"
+      SQLType="VARCHAR" >
+   </ViewAttribute>
+</ViewObject>

@@ -1,0 +1,25 @@
+-- +=====================================================================+
+-- |                  Office Depot - Project Simplify                    |
+-- +=====================================================================+
+-- | Name :  XX_AR_REFUND_TRX_TMP.tbl                                    |
+-- | Description :   Alters XX_AR_REFUND_TRX_TMP table                 |
+-- |                                                                     |
+-- |                                                                     |
+-- |Change Record:                                                       |
+-- |===============                                                      |
+-- |Version   Date              Author              Remarks              |
+-- |======   ==========     =============        ========================|
+-- |1.0      28-APR-2010     Sneha Anand         Created alter for       |
+-- |                                             defect 5306.            |
+-- +=====================================================================+
+
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     ON
+
+ALTER TABLE XXFIN.XX_AR_REFUND_TRX_TMP
+MODIFY AP_INVOICE_NUMBER VARCHAR2(100);
+
+SHOW ERROR

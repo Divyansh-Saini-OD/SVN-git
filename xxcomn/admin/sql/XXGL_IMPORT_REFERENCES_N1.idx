@@ -1,0 +1,28 @@
+-- +===================================================================+
+-- |                  Office Depot - Project Simplify                  |
+-- +===================================================================+
+-- | Name        : XXGL_IMPORT_REFERENCES_N1.idx                         |
+-- | Rice ID     :                                                     |
+-- | Description : XXGL_IMPORT_REFERENCES_N1.idx - Index Creation Script |
+-- |                                                                   |
+-- |              						       |
+-- |Change Record:                                                     |
+-- |===============                                                    |
+-- |Version   Date        Author           Remarks                     |
+-- |=======  ===========  =============    ============================|
+-- |1.0      06-AUG-2008  Enliu Yang       Initial draft version       |
+-- |                                                                   |
+-- |1.1      12-JAN-2009  p Marco          defect 12814                |
+-- +===================================================================+
+
+
+-- commented out per defect 12814
+-- create index gl.XXGL_IMPORT_REFERENCES_N1 on gl.GL_IMPORT_REFERENCES (last_update_date) tablespace APPS_TS_TX_IDX_16M nologging online parallel 4; 
+
+
+
+-- added per defect 12814
+
+create index XXFIN.XXGL_IMPORT_REFERENCES_N1 on gl.GL_IMPORT_REFERENCES (last_update_date) tablespace APPS_TS_TX_IDX_16M nologging online parallel 4;
+
+alter index  XXFIN. XXGL_IMPORT_REFERENCES_N1 noparallel;

@@ -1,0 +1,28 @@
+
+ -- +================================================================+
+ -- |                  Office Depot - Project Simplify                                
+ -- |    Oracle NAIO/WIPRO/Office Depot/Consulting Organization          
+ -- +================================================================+
+ -- | Name  :    XXOMKFFDFFINST.grn                                            
+ -- | Description: This file synonyms required for KFF in DFF                              
+ -- |              set up for OM Headers and lines  
+ -- |              To be executed  from apps schema.                                                                         
+ -- |                                                                                          
+ -- |                                                                                        
+ -- |Change Record:                                                                     
+ -- |===============                                                              
+ -- |Version   Date          Author              Remarks                           
+ -- |=======   ==========  =============    =========================|
+ -- |Draft 1A  17-APR-2007   mohan          Initial draft Version |
+ -- +================================================================+
+
+
+CREATE SYNONYM XX_OM_HEADERS_ATTRIBUTES_ALL FOR XXOM.XX_OM_HEADERS_ATTRIBUTES_ALL;
+
+CREATE SYNONYM XX_OM_HEADERS_ATTRIBUTES_ALL_S FOR XXOM.XX_OM_HEADERS_ATTRIBUTES_ALL_S;
+
+CREATE SYNONYM XX_OM_LINES_ATTRIBUTES_ALL FOR XXOM.XX_OM_LINES_ATTRIBUTES_ALL;
+
+CREATE SYNONYM XX_OM_LINES_ATTRIBUTES_ALL_S FOR XXOM.XX_OM_LINES_ATTRIBUTES_ALL_S
+
+/

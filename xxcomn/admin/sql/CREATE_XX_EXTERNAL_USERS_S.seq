@@ -1,0 +1,38 @@
+
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+/*
+-- +=======================================================================+
+-- |               Office Depot - Project Simplify                         |
+-- |             Oracle NAC Consulting Organization                        |
+-- +=======================================================================+
+-- | Name             : CREATE_XX_EXTERNAL_USERS_S.seq                     |
+-- | Description      : Sequence for E1328_BSD_iReceivables_interface      |
+-- |                                                                       |
+-- |                                                                       |
+-- |Change History:                                                        |
+-- |---------------                                                        |
+-- |                                                                       |
+-- |Version  Date        Author             Remarks                        |
+-- |-------  ----------- -----------------  -------------------------------|
+-- |Draft1a  04-Sep-2007 Ramesh Raghupathi  Initial Draft Version          |
+-- |         30-Jan-2008 Alok Sahay         Moved to xxcomn schema         |
+-- |                                                                       |
+-- +=======================================================================+
+*/
+
+-- --------------------------------------------------------
+--      Create Custom Sequence XXCRM.XX_EXTERNAL_USERS_S --
+-- --------------------------------------------------------
+PROMPT Creating Table XX_EXTERNAL_USERS_S
+
+
+CREATE SEQUENCE XXCOMN.XX_EXTERNAL_USERS_S
+INCREMENT BY 1
+START WITH 1
+NOMAXVALUE
+NOCYCLE NOCACHE NOORDER;
+
+
+EXIT;

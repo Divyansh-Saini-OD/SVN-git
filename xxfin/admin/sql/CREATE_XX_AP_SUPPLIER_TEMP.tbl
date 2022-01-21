@@ -1,0 +1,38 @@
+-- +==========================================================================+
+-- |                  Office Depot - Project Simplify                         |
+-- +==========================================================================+
+-- | Name :XXFIN.XX_AP_SUPPLIER_TEMP                                          |
+-- | Description : Temporary Table to hold the supplier audit records form    |
+-- |               from the audit table                                       |
+-- |                                                                          |
+-- |Change Record:                                                            |
+-- |===============                                                           |
+-- |Version   Date         Author               Remarks                       |
+-- |=======   ==========   =============        ==============================|
+-- | V1.0     22-JAN-2008  Aravind A.            Initial version              |
+-- | V2.0     26-FEB-2008  Ganesan JV		 Added the column SITE_ID FOR |
+-- |                                             purposes	              |
+-- |                                                                          |
+-- +==========================================================================+
+
+   SET SHOW         OFF
+   SET VERIFY       OFF
+   SET ECHO         OFF
+   SET TAB          OFF
+   SET FEEDBACK     ON
+
+   CREATE GLOBAL TEMPORARY TABLE XXFIN.XX_AP_SUPPLIER_TEMP
+     (	     SUPPLIER_NUMBER         VARCHAR2(30)
+		  ,SUPPLIER_NAME          VARCHAR2(240)
+		  ,SITE_ID_NUM            VARCHAR2(15)
+		  ,LEGACY_NUM             VARCHAR2(150)
+		  ,CHANGED_BY             NUMBER
+		  ,DATE_CHANGED           DATE
+		  ,CHANGED_FIELD          VARCHAR2(1000)
+		  ,CHANGED_FROM           VARCHAR2(1000)
+		  ,CHANGED_TO             VARCHAR2(1000)
+		  ,FLAG                   VARCHAR2(100)
+		  ,ORDER_BY_COL           NUMBER
+		  ,SITE_ID                NUMBER
+	  )
+/

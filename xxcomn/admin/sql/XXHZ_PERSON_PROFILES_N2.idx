@@ -1,0 +1,20 @@
+-- +===================================================================+
+-- |                  Office Depot - Project Simplify                  |
+-- +===================================================================+
+-- | Name        : XXHZ_PERSON_PROFILES_N2.idx                         |
+-- | Rice ID     :                                                     |
+-- | Description : XXHZ_PERSON_PROFILES_N2.idx - Index Creation Script |
+-- |                                                                   |
+-- |              						       |
+-- |Change Record:                                                     |
+-- |===============                                                    |
+-- |Version   Date        Author           Remarks                     |
+-- |=======  ===========  =============    ============================|
+-- |1.0      19-Jun-2008  Enliu Yang       Initial draft version       |
+-- |                                                                   |
+-- +===================================================================+
+create index XXCNV.XXHZ_PERSON_PROFILES_N2 on AR.HZ_PERSON_PROFILES(LAST_UPDATE_DATE) tablespace xxod nologging
+parallel 8;
+alter index  XXCNV.XXHZ_PERSON_PROFILES_N2 noparallel;
+
+

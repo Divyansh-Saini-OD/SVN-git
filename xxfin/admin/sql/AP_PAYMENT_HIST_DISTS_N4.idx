@@ -1,0 +1,24 @@
+-- +==========================================================================+
+-- |                  Office Depot - Project Simplify                         |
+-- |                       Oracle India Pvt Ltd                               |
+-- +==========================================================================+
+-- | SQL Script to create                                                     |
+-- |                                                                          |
+-- | INDEXES: ap.AP_PAYMENT_HIST_DISTS_N4                                     |
+-- |                                                                          |
+-- |                                                                          |
+-- |                                                                          |
+-- |Change Record:                                                            |
+-- |===============                                                           |
+-- |Version   Date         Author               Remarks                       |
+-- |=======   ==========   =============        ==============================|
+-- | V1.0     17-JUL-2014  Diwakar Jwala.       Initial version               |
+-- +==========================================================================+
+
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     ON
+
+create index ap.AP_PAYMENT_HIST_DISTS_N4 on ap.AP_PAYMENT_HIST_DISTS(PA_ADDITION_FLAG,PAY_DIST_LOOKUP_CODE) tablespace APPS_TS_TX_IDX nologging parallel 8;

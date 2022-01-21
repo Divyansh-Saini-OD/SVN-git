@@ -1,0 +1,51 @@
+
+-- +==================================================================================+  
+-- | Office Depot - Project Simplify                                                  |
+-- |                                                              |
+-- +==================================================================================+
+-- | SQL Index Script to create the table:  XX_GL_BEACON_MAPPING               |
+-- |                                                                                  |
+-- |
+-- |                                                                                  |
+-- |                                                                                  |
+-- |Change Record:                                                                    |
+-- |===============                                                                   |
+-- |Version   Date          Author               Remarks                              |
+-- |=======   ===========   =============        =====================================|
+-- |1.0       26-APR-2019   Priyam Parmar       Initial DRAFT version                      |
+-- |                                                                                  |
+-- +==================================================================================+
+
+
+
+
+REM================================================================================================
+REM                                 Start Of Script
+REM================================================================================================
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     OFF
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+----------create index for XX_GL_BEACON_MAPPING--------------------
+
+PROMPT
+PROMPT Creating Index....
+PROMPT
+
+
+
+create index XX_GL_BEACON_MAPPING_N1 on XX_GL_BEACON_MAPPING (TYPE);
+
+WHENEVER SQLERROR CONTINUE;
+
+PROMPT
+PROMPT Exiting....
+PROMPT 
+
+SET FEEDBACK ON
+
+EXIT;
+

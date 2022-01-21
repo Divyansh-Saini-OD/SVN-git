@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+            xmlns:nxsd="http://xmlns.oracle.com/pcbpel/nxsd"
+            targetNamespace="http://TargetNamespace.com/Integral"
+            xmlns:tns="http://TargetNamespace.com/Integral"
+            elementFormDefault="qualified"
+            attributeFormDefault="unqualified" nxsd:encoding="ASCII" nxsd:stream="chars" nxsd:version="NXSD">
+<xsd:element name="container">
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element ref="tns:InvoiceHeader" nxsd:startsWith="H" maxOccurs="unbounded" />
+        <xsd:element ref="tns:Trailer" nxsd:startsWith="T"/>
+      </xsd:sequence>
+    </xsd:complexType>
+</xsd:element>
+  <!-- Invoice -->
+<xsd:element name="InvoiceHeader" type="tns:InvoiceHeaderType"/>
+  <xsd:complexType name="InvoiceHeaderType">
+    <xsd:sequence>
+              <xsd:element name="Company" type="xsd:string" nxsd:style="fixedLength" nxsd:length="10"/>
+              <xsd:element name="ODGlobalVendorID" type="xsd:string" nxsd:style="fixedLength" nxsd:length="10"/>
+              <xsd:element name="IntegralVoucherNumber" type="xsd:string" nxsd:style="fixedLength" nxsd:length="6"/>
+              <xsd:element name="InvoiceNumber" type="xsd:string" nxsd:style="fixedLength" nxsd:length="20"/>
+              <xsd:element name="InvoiceSource" type="xsd:string" nxsd:style="fixedLength" nxsd:length="20"/>
+              <xsd:element name="InvoiceVoucherTypeCode" type="xsd:string" nxsd:style="fixedLength" nxsd:length="1"/>
+              <xsd:element name="InvoiceDate" type="xsd:string" nxsd:style="fixedLength" nxsd:length="6"/>
+              <xsd:element name="InvoiceGrossAmount" type="xsd:string" nxsd:style="fixedLength" nxsd:length="11"/>
+              <xsd:element name="InvoiceGrossAmountSign" type="xsd:string" nxsd:style="fixedLength" nxsd:length="1"/>
+              <xsd:element name="DiscountAmount" type="xsd:string" nxsd:style="fixedLength" nxsd:length="11"/>
+              <xsd:element name="DiscountAmountSign" type="xsd:string" nxsd:style="fixedLength" nxsd:length="1"/>
+              <xsd:element name="IntegralPONumber" type="xsd:string" nxsd:style="fixedLength" nxsd:length="9"/>
+              <xsd:element name="InvoiceDueDate" type="xsd:string" nxsd:style="fixedLength" nxsd:length="6"/>
+              <xsd:element name="DiscountDate" type="xsd:string" nxsd:style="fixedLength" nxsd:length="6"/>
+              <xsd:element name="CheckDescription" type="xsd:string" nxsd:style="fixedLength" nxsd:length="32"/>
+              <xsd:element name="DCNNumber" type="xsd:string" nxsd:style="fixedLength" nxsd:length="10"/>
+              <xsd:element name="PayGroup_Id" type="xsd:string" nxsd:style="fixedLength" nxsd:length="25"/>
+              <xsd:element name="Accts_Pay_Code_Combination_Id" type="xsd:string" nxsd:style="fixedLength" nxsd:length="4"/>
+              <xsd:element name="Filler" type="xsd:string" nxsd:style="terminated" nxsd:terminatedBy="${eol}"/>
+      <xsd:element name="Lines">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="Line-Invoice" nxsd:startsWith="D" minOccurs="1" maxOccurs="unbounded">
+              <xsd:complexType>
+                <xsd:group ref="tns:InvoiceLines"/>
+              </xsd:complexType>
+            </xsd:element>
+         </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+      </xsd:sequence>
+  </xsd:complexType>
+  <xsd:group name="InvoiceLines">
+    <xsd:sequence>
+        <xsd:element name="Company" type="xsd:string" nxsd:style="fixedLength" nxsd:length="10"/>
+        <xsd:element name="ODGlobalVendorID" type="xsd:string" nxsd:style="fixedLength" nxsd:length="10"/>
+        <xsd:element name="IntegralVoucherNumber" type="xsd:string" nxsd:style="fixedLength" nxsd:length="6"/>
+        <xsd:element name="InvoiceNumber" type="xsd:string" nxsd:style="fixedLength" nxsd:length="20"/>
+        <xsd:element name="LineNumber" type="xsd:string" nxsd:style="fixedLength" nxsd:length="4"/>
+        <xsd:element name="InvoiceLineAmount" type="xsd:string" nxsd:style="fixedLength" nxsd:length="11"/>
+        <xsd:element name="InvoiceLineAmountSign" type="xsd:string" nxsd:style="fixedLength" nxsd:length="1"/>
+        <xsd:element name="Reasoncode" type="xsd:string" nxsd:style="fixedLength" nxsd:length="2"/>
+        <xsd:element name="GLCompany" type="xsd:string" nxsd:style="fixedLength" nxsd:length="5"/>
+        <xsd:element name="GLLocation" type="xsd:string" nxsd:style="fixedLength" nxsd:length="6"/>
+        <xsd:element name="GLCostCenter" type="xsd:string" nxsd:style="fixedLength" nxsd:length="5"/>
+        <xsd:element name="GLLineOfBusiness" type="xsd:string" nxsd:style="fixedLength" nxsd:length="2"/>
+        <xsd:element name="GLAccount" type="xsd:string" nxsd:style="fixedLength" nxsd:length="8"/>
+        <xsd:element name="InvoiceLineDescription" type="xsd:string" nxsd:style="fixedLength" nxsd:length="20"/>
+<!--    <xsd:element name="Filler" type="xsd:string" nxsd:style="fixedLength" nxsd:length="139" nxsd:terminatedBy="${eol}"/>  -->
+        <xsd:element name="Filler" type="xsd:string" nxsd:style="terminated" nxsd:terminatedBy="${eol}" />  
+    </xsd:sequence>
+  </xsd:group>
+
+<xsd:element name="Trailer" type="tns:TrailerType"/>
+  <xsd:complexType name="TrailerType">
+    <xsd:sequence>
+       <xsd:element name="FileName" type="xsd:string" nxsd:style="fixedLength" nxsd:length="30"/>
+       <xsd:element name="CreationDate" type="xsd:string" nxsd:style="fixedLength" nxsd:length="6"/>
+       <xsd:element name="CreationTime" type="xsd:string" nxsd:style="fixedLength" nxsd:length="8"/>
+       <xsd:element name="NumberOfRecords" type="xsd:string" nxsd:style="fixedLength" nxsd:length="7"/>
+       <xsd:element name="TotalInvoiceAmount" type="xsd:string" nxsd:style="fixedLength" nxsd:length="11"/>
+       <xsd:element name="Filler" type="xsd:string" nxsd:style="terminated" nxsd:terminatedBy="${eol}"/>
+    </xsd:sequence>
+  </xsd:complexType>
+</xsd:schema>

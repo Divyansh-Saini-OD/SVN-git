@@ -1,0 +1,33 @@
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     ON
+
+PROMPT Creating SYNONYM XX_AR_POS_RECEIPTS
+
+PROMPT Program exits IF the creation IS NOT SUCCESSFUL
+
+WHENEVER SQLERROR CONTINUE
+
+-- +===================================================================================+
+-- |                  Office Depot - Project Simplify                                  |
+-- +===================================================================================+
+-- | Name :XX_AR_POS_RECEIPTS                                                          |
+-- | Description : Create the Synonym for the table XX_AR_CONS_BILLS_HISTORY_ALL       |
+-- |                                                                                   |
+-- |                                                                                   |
+-- |                                                                                   |
+-- |Change Record:                                                                     |
+-- |===============                                                                    |
+-- |Version   Date         Author               Remarks                                |
+-- |=======   ==========   =============        =======================================|
+-- | 1.0     05-MAR-2011   Ray Strauss         Initial version                         |
+-- +===================================================================================+
+
+--DROP SYNONYM XX_AR_POS_RECEIPTS;
+
+CREATE OR REPLACE SYNONYM XX_AR_POS_RECEIPTS FOR XXFIN.XX_AR_POS_RECEIPTS;
+
+
+SHOW ERROR

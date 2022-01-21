@@ -1,0 +1,46 @@
+SET VERIFY OFF;
+SET SHOW OFF;
+SET ECHO OFF;
+SET TAB OFF;
+SET FEEDBACK OFF;
+ 
+WHENEVER SQLERROR CONTINUE;
+ 
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+-- +==================================================================================+  
+-- | Office Depot - Project Simplify                                                  |
+-- |                                                              |
+-- +==================================================================================+
+-- | SQL Script to create the table:  XX_GL_CLD2EBS_MAPPING                         |
+-- |                                                                                  |
+-- |
+-- |                                                                                  |
+-- |                                                                                  |
+-- |Change Record:                                                                    |
+-- |===============                                                                   |
+-- |Version   Date          Author               Remarks                              |
+-- |=======   ===========   =============        =====================================|
+-- |1.0       18-JUN-2019   Priyam/Visu          Initial DRAFT version                |
+-- |                                                                                  |
+-- +==================================================================================+
+
+--+=====================================================================+
+--+               CREATE TABLE XX_GL_CLD2EBS_MAPPING
+--+=====================================================================+
+
+
+CREATE TABLE XX_GL_CLD2EBS_MAPPING
+  (
+    SOURCE        VARCHAR2(50),
+    TARGET        VARCHAR2(50),
+    TYPE          VARCHAR2(50),
+    CREATION_DATE DATE,
+    CREATED_BY    NUMBER
+  );
+ 
+
+Grant  all on XX_GL_CLD2EBS_MAPPING to APPS;
+
+   /
+Show error

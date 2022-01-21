@@ -1,0 +1,26 @@
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK; 
+
+-- +============================================================================================+
+-- |                                     Office Depot                                           |
+-- +============================================================================================+
+-- | Name        : XX_AR_SUBSCRIPTION_PAYLOADS_S.syn                                            |
+-- | Description : Script to create synonym for sequences required for Subscriptions Payloads   |
+-- |                                                                                            |
+-- |Change Record:                                                                              |
+-- |===============                                                                             |
+-- |Version     Date           Author               Remarks                                     |
+-- |=======    ==========      ================     ============================================|
+-- |1.0        20-FEB-2018     Dinesh Nagapuri      Initial version                             |
+-- +============================================================================================+
+
+
+PROMPT
+PROMPT Synonym for sequence XX_AR_SUBSCRIPTION_PAYLOADS_S
+PROMPT   
+
+CREATE OR REPLACE SYNONYM XX_AR_SUBSCRIPTION_PAYLOADS_S FOR XXFIN.XX_AR_SUBSCRIPTION_PAYLOADS_S;            
+
+SHOW ERRORS;
+EXIT;

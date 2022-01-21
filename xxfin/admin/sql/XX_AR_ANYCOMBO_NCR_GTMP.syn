@@ -1,0 +1,22 @@
+---+========================================================================================================+        
+---|                                        Office Depot - Project Simplify                                 |
+---|                                            Providge Consulting                                         |
+---+========================================================================================================+
+---|    Application             :       AR                                                                  |
+---|                                                                                                        |
+---|    Name                    :       XX_AR_ANYCOMBO_NCR_GTMP.syn                                         |
+---|                                                                                                        |
+---|    Description             :       This Creates the synonym for the table XX_AR_ANYCOMBO_NCR_GTMP      |
+---|                                                                                                        |
+---|                                                                                                        |
+---|                                                                                                        |
+---|    Change Record                                                                                       |
+---|    ---------------------------------                                                                   |
+---|    Version         DATE              AUTHOR            DESCRIPTION                                     |
+---|    ------------    ----------------- ---------------   ---------------------                           |
+---|    1.0             15-JUL-2008       Brian J Looman    Initial Version                                 |
+---|                                                                                                        |
+---+========================================================================================================+ 
+
+
+CREATE OR REPLACE SYNONYM XX_AR_ANYCOMBO_NCR_GTMP FOR XXFIN.XX_AR_ANYCOMBO_NCR_GTMP;

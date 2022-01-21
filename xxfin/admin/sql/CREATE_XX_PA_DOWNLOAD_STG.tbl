@@ -1,0 +1,48 @@
+-- +===========================================================================+
+-- |                  Office Depot - Project Simplify                          |
+-- +===========================================================================+
+-- | Name :XXFIN.XX_PA_DOWNLOAD_STG                                            |
+-- | Description :   Script to create XX_PA_DOWNLOAD_STG table		       |
+-- |  Rice ID : E3062                                                          |
+-- |                                                                           |
+-- |                                                                           |
+-- |Change Record:                                                             |
+-- |===============                                                            |
+-- |Version      Date           Author                  Remarks                |
+-- |=======    ==========     =============             ====================== |
+-- | DRAFT 1.0 03-JUL-2013    Yamuna S.       		Initial draft version  |
+-- |                                                    Defect#22906           |
+-- +===========================================================================+
+
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     ON
+WHENEVER SQLERROR CONTINUE
+
+
+
+--+=====================================================================+
+--+               CREATE TABLE XXFIN.XX_PA_DOWNLOAD_STG              +
+--+=====================================================================+
+
+CREATE TABLE xxfin.XX_PA_DOWNLOAD_STG ( 
+PROJECT_NUMBER VARCHAR2(50),  
+STATUS VARCHAR2(30) , 
+ERROR_MSG VARCHAR2(250) ,
+LAST_UPDATED_BY NUMBER(15),
+LAST_UPDATE_DATE DATE,   
+LAST_UPDATE_LOGIN NUMBER(15),
+CREATED_BY NUMBER(15),
+CREATION_DATE DATE);
+
+SHOW ERROR
+
+--+=====================================================================+
+--+               GRANT TABLE XXFIN.XX_PA_DOWNLOAD_STG                +
+--+=====================================================================+
+
+GRANT ALL ON xxfin.XX_PA_DOWNLOAD_STG TO APPS;
+
+SHOW ERROR

@@ -1,0 +1,41 @@
+-- +==========================================================================+
+-- |                  Office Depot - Project Simplify                         |
+-- |                                                                          |
+-- +==========================================================================+
+-- | SQL Script to create the following objects                               |
+-- |             INDEX       : XXFIN.XX_GL_INTERFACE_NA_STG_N1                |
+-- |                         For the GL Interface Staging table               |
+-- |                                                                          |
+-- |                                                                          |
+-- |                                                                          |
+-- |Change Record:                                                            |
+-- |===============                                                           |
+-- |Version   Date         Author               Remarks                       |
+-- |=======   ==========   =============        ==============================|
+-- | V1.0     02-JUL-2007    Peter Marco          Initial version             |
+-- |                                                                          |
+-- +==========================================================================+
+
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     ON
+ 
+
+
+
+CREATE INDEX XXFIN.XX_GL_INTERFACE_NA_STG_N1 ON XXFIN.XX_GL_INTERFACE_NA_STG 
+                                   (USER_JE_SOURCE_NAME, SET_OF_BOOKS_ID, GROUP_ID)
+/
+
+
+
+
+
+
+
+
+
+ 
+ 

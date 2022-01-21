@@ -1,0 +1,18 @@
+-- +===================================================================+
+-- |                  Office Depot - Project Simplify                  |
+-- +===================================================================+
+-- | Name        : ar.XXAR_DISTRIBUTIONS_N2                        |
+-- | Rice ID     :                                                     |
+-- | Description : ar.XXAR_DISTRIBUTIONS_N2.idx - Index Creation Script |
+-- |                                                                   |
+-- |              						       |
+-- |Change Record:                                                     |
+-- |===============                                                    |
+-- |Version   Date        Author           Remarks                     |
+-- |=======  ===========  =============    ============================|
+-- |1.0      06-AUG-2008  Enliu Yang       Initial draft version       |
+-- |                                                                   |
+-- +===================================================================+
+create index ar.XXAR_DISTRIBUTIONS_N2 on ar.AR_DISTRIBUTIONS_ALL (last_update_date) tablespace APPS_TS_TX_IDX_16M nologging online parallel 4; 
+
+

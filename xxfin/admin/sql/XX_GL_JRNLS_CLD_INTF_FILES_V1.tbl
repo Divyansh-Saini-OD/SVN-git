@@ -1,0 +1,65 @@
+REM============================================================================================
+REM                                 Start Of Script
+REM============================================================================================
+--+=============================================================================================+--
+--|                                                                                             |--
+--| Program Name   : CREATE_XX_GL_JRNLS_CLD_INTF_FILES.tbl                                        |--
+--| RICE ID        : EXXXX                                                                      |--
+--| Purpose        : Create Custom Tables .                                                     |--
+--|                  The Objects created are:                                                   |--
+--|                                                                                             |--
+--|                1. XX_GL_JRNLS_CLD_INTF_FILES(Oracle Cloud to EBS GL Interface)            |--
+--|                                                                                             |--
+--| Change History  :                                                                           |--
+--| Version           Date             Changed By              Description                      |--
+--+=============================================================================================+--
+--| 1.0               21-DEC-2019      M K Pramod Kumar         Baselined                         |--
+--+=============================================================================================+--
+SET VERIFY OFF
+SET TERM ON
+SET FEEDBACK OFF
+SET SHOW OFF
+SET ECHO OFF
+SET TAB OFF
+WHENEVER SQLERROR CONTINUE;
+PROMPT
+PROMPT Creating the Custom Table ......
+PROMPT
+PROMPT
+PROMPT Creating the Table XX_GL_JRNLS_CLD_INTF_FILES......
+PROMPT
+CREATE TABLE XX_GL_JRNLS_CLD_INTF_FILES (
+FILE_BATCH_ID                  NUMBER        ,
+PROCESS_NAME                    VARCHAR2(50)  , 
+FILE_NAME                       VARCHAR2(100) , 
+BATCH_NAME                      VARCHAR2(50)  , 
+BATCH_DATE                      DATE          , 
+ATTRIBUTE1                      VARCHAR2(150),
+ATTRIBUTE2                      VARCHAR2(150),
+ATTRIBUTE3                      VARCHAR2(150),
+ATTRIBUTE4                      VARCHAR2(150),
+ATTRIBUTE5                      VARCHAR2(150),
+ATTRIBUTE6                      VARCHAR2(150),
+ATTRIBUTE7                      VARCHAR2(150),
+ATTRIBUTE8                      VARCHAR2(150),
+ATTRIBUTE9                      VARCHAR2(150),
+ATTRIBUTE10                     VARCHAR2(150),
+CREATION_DATE                   DATE          , 
+CREATED_BY                      NUMBER        , 
+LAST_UPDATE_DATE                DATE          , 
+LAST_UPDATED_BY                 NUMBER        , 
+ACTION                          VARCHAR2(150),
+RECORD_STATUS                   VARCHAR2(30),
+ERROR_DESCRIPTION               VARCHAR2(2000), 
+REQUEST_ID                      NUMBER        );
+
+
+WHENEVER SQLERROR CONTINUE;
+PROMPT
+PROMPT Exiting....
+PROMPT
+SET FEEDBACK ON
+EXIT;
+REM=================================================================================================
+REM                                   End Of Script
+REM=================================================================================================

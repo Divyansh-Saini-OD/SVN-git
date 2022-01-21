@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding='windows-1252'?>
+<!DOCTYPE ViewObject SYSTEM "jbo_03_01.dtd">
+
+<ViewObject
+   Name="ODEBillCDDetVO"
+   BindingStyle="Oracle"
+   CustomQuery="true"
+   RowClass="od.oracle.apps.xxcrm.cdh.ebl.server.ODEBillCDDetVORowImpl"
+   ComponentClass="oracle.apps.fnd.framework.server.OAViewObjectImpl"
+   MsgBundleClass="oracle.jbo.common.JboResourceBundle"
+   UseGlueCode="false" >
+   <SQLQuery><![CDATA[
+SELECT 'Your Invoice' pre_populated
+     , 'Whitfield county' send_to_address
+     , 'comments' comments
+ FROM dual
+   ]]></SQLQuery>
+   <DesignTime>
+      <Attr Name="_isCodegen" Value="true" />
+      <Attr Name="_version" Value="9.0.3.12.53" />
+      <Attr Name="_CodeGenFlagNew" Value="4" />
+   </DesignTime>
+   <ViewAttribute
+      Name="PrePopulated"
+      IsPersistent="false"
+      Precision="12"
+      Type="java.lang.String"
+      AliasName="PRE_POPULATED"
+      ColumnType="VARCHAR2"
+      Expression="PRE_POPULATED"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="12" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="SendToAddress"
+      IsPersistent="false"
+      Precision="16"
+      Type="java.lang.String"
+      AliasName="SEND_TO_ADDRESS"
+      ColumnType="VARCHAR2"
+      Expression="SEND_TO_ADDRESS"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="16" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Comments"
+      IsPersistent="false"
+      Precision="8"
+      Type="java.lang.String"
+      AliasName="COMMENTS"
+      ColumnType="VARCHAR2"
+      Expression="COMMENTS"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="8" />
+      </DesignTime>
+   </ViewAttribute>
+</ViewObject>

@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding='windows-1252'?>
+<!DOCTYPE JboPackage SYSTEM "jbo_03_01.dtd">
+
+<JboPackage
+   Name="server"
+   SeparateXMLFiles="true"
+   PackageName="od.oracle.apps.xxcrm.scs.fdk.server" >
+   <DesignTime>
+      <Attr Name="_version" Value="9.0.3.13.75" />
+      <Attr Name="_ejbPackage" Value="false" />
+   </DesignTime>
+   <Containee
+      Name="ODSCSOpportunityDtlsVO"
+      FullName="od.oracle.apps.xxcrm.scs.fdk.server.ODSCSOpportunityDtlsVO"
+      ObjectType="ViewObject" >
+   </Containee>
+   <Containee
+      Name="ODSCSDshbdAM"
+      FullName="od.oracle.apps.xxcrm.scs.fdk.server.ODSCSDshbdAM"
+      ObjectType="AppModule" >
+   </Containee>
+   <Containee
+      Name="ODSCSContactsVO"
+      FullName="od.oracle.apps.xxcrm.scs.fdk.server.ODSCSContactsVO"
+      ObjectType="ViewObject" >
+   </Containee>
+   <Containee
+      Name="ODSCSFDKHstryVO"
+      FullName="od.oracle.apps.xxcrm.scs.fdk.server.ODSCSFDKHstryVO"
+      ObjectType="ViewObject" >
+   </Containee>
+   <Containee
+      Name="ODSCSFDKHdrDtlsVO"
+      FullName="od.oracle.apps.xxcrm.scs.fdk.server.ODSCSFDKHdrDtlsVO"
+      ObjectType="ViewObject" >
+   </Containee>
+   <Containee
+      Name="ODSCSFdkDtlsVO"
+      FullName="od.oracle.apps.xxcrm.scs.fdk.server.ODSCSFdkDtlsVO"
+      ObjectType="ViewObject" >
+   </Containee>
+   <Containee
+      Name="ODSCSLeadDtlsVO"
+      FullName="od.oracle.apps.xxcrm.scs.fdk.server.ODSCSLeadDtlsVO"
+      ObjectType="ViewObject" >
+   </Containee>
+   <Containee
+      Name="ODSCSFdbkHdrVO"
+      FullName="od.oracle.apps.xxcrm.scs.fdk.server.ODSCSFdbkHdrVO"
+      ObjectType="ViewObject" >
+   </Containee>
+   <Containee
+      Name="ODSCSFdbkLineDtlVO"
+      FullName="od.oracle.apps.xxcrm.scs.fdk.server.ODSCSFdbkLineDtlVO"
+      ObjectType="ViewObject" >
+   </Containee>
+   <Containee
+      Name="ODSCSActionsVO"
+      FullName="od.oracle.apps.xxcrm.scs.fdk.server.ODSCSActionsVO"
+      ObjectType="ViewObject" >
+   </Containee>
+   <Containee
+      Name="ODSCSFdbkQstnVO"
+      FullName="od.oracle.apps.xxcrm.scs.fdk.server.ODSCSFdbkQstnVO"
+      ObjectType="ViewObject" >
+   </Containee>
+   <Containee
+      Name="ODSCSFdbkRespVO"
+      FullName="od.oracle.apps.xxcrm.scs.fdk.server.ODSCSFdbkRespVO"
+      ObjectType="ViewObject" >
+   </Containee>
+   <Containee
+      Name="ODSCSAdminAM"
+      FullName="od.oracle.apps.xxcrm.scs.fdk.server.ODSCSAdminAM"
+      ObjectType="AppModule" >
+   </Containee>
+   <Containee
+      Name="ODSCSFdkQAVL"
+      FullName="od.oracle.apps.xxcrm.scs.fdk.server.ODSCSFdkQAVL"
+      ObjectType="ViewLink" >
+   </Containee>
+   <Containee
+      Name="ODSCSFdbkQstnMstrVO"
+      FullName="od.oracle.apps.xxcrm.scs.fdk.server.ODSCSFdbkQstnMstrVO"
+      ObjectType="ViewObject" >
+   </Containee>
+   <Containee
+      Name="ODSCSFdbkRespDtlVO"
+      FullName="od.oracle.apps.xxcrm.scs.fdk.server.ODSCSFdbkRespDtlVO"
+      ObjectType="ViewObject" >
+   </Containee>
+</JboPackage>

@@ -1,0 +1,72 @@
+# +===================================================================+
+# |                  Office Depot - Project Simplify                  |
+# |      			             WIPRO 				                  |
+# +===================================================================+
+# | Name  : 	   XXAEBLPDFMERGE                                     |
+# | Description:                                                      |
+# |Change Record:                                                     |
+# |===============                                                    |
+# |Version   Date        Author           Remarks                     |
+# |=======   ==========  =============    ============================|
+# |DRAFT 1A  22-APR-2019 CG			      Merging eligible PDF outputs|
+# |                                       for BC customers            |
+# +===================================================================+
+
+
+# Displaying program arguments
+   
+ echo "1 st argument = username/password"
+ echo "2 nd argument = $2"
+ echo "3 rd argument = $3"
+ echo "4 th argument = $4"
+ echo "5 th argument = $5"
+ echo "6 th argument = $6"
+ echo "7 th argument = $7"
+
+ 
+ export SQLPATH=$APPL_TOP
+ 
+ v_cust_account_id=$6
+ v_cust_doc_id=$7
+  
+ V_RESULT=`sqlplus -s /nolog <<EOF
+   set pagesize 0
+   set linesize 255
+   set sqlprompt " "
+   set serveroutput on 
+   set verify off
+
+   SELECT LISTAGG(REPLACE(file_name,'.PDF','_'||file_id||'.PDF'), ' ') within GROUP (ORDER BY file_name) AS file_names 
+	 FROM xx_ar_ebl_file XAEF
+	WHERE cust_account_id = $v_cust_account_id
+	  AND cust_doc_id = $v_cust_doc_id
+	  AND paydoc_flag = 'Y'
+	  AND file_type = 'PDF'
+	  AND status = 'RENDERED'
+	  AND EXISTS
+		 (SELECT 1
+		    FROM XX_AR_EBL_TRANSMISSION XAET
+		   WHERE status = 'SEND'
+			 AND customer_doc_id = XAEF.cust_doc_id
+			 AND XAET.transmission_id = XAEF.transmission_id);
+	
+   exit
+   EOF`
+
+ file_name_pdf=`echo $V_RESULT | awk '{ split($0,MODULE,"|"); print MODULE[1] }'`
+
+ echo " Files to be merged are $file_name_pdf"
+
+ pwd
+ cd $XXFIN_DATA/outbound/CONS
+ pwd
+
+ echo " debug 30"
+ #gs -dBATCH -dNOPAUSE -q  -sDEVICE=pdfwrite -sOutputFile="Output_FileTest17Apr.PDF" $dest_file_name1
+ gs -dBATCH -dNOPAUSE -q  -sDEVICE=pdfwrite -sOutputFile=$5 $file_name_pdf
+ mv $5 MERGE_BC
+
+ echo " File created and moved to dest folder MERGE_BC"
+
+
+

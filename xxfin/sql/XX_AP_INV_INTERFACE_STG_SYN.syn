@@ -1,0 +1,9 @@
+DROP SYNONYM xx_ap_inv_interface_stg;
+
+DROP SYNONYM xx_ap_inv_lines_interface_stg;
+
+CREATE SYNONYM xx_ap_inv_interface_stg FOR xxfin.xx_ap_inv_interface_stg;
+
+CREATE SYNONYM xx_ap_inv_lines_interface_stg FOR xxfin.xx_ap_inv_lines_interface_stg;
+
+SHOW ERROR

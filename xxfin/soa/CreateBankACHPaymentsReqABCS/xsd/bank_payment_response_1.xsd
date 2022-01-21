@@ -1,0 +1,886 @@
+<?xml version= '1.0' encoding= 'UTF-8' ?>
+<xsd:schema targetNamespace="http://www.princetonecom.com/connect/bankpaymentresponse1" xmlns="http://www.princetonecom.com/connect/bankpaymentresponse1"
+     xmlns:xsd="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" attributeFormDefault="unqualified"
+     version="1">
+
+ <xsd:simpleType name="Alpha">
+    <xsd:restriction base="xsd:string">
+      <xsd:pattern value="[a-zA-Z]*"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+  <xsd:simpleType name="Numeric">
+    <xsd:restriction base="xsd:string">
+      <xsd:pattern value="[0-9]*"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+  <xsd:simpleType name="AlphaNumeric">
+    <xsd:restriction base="xsd:string">
+      <xsd:pattern value="[a-zA-Z0-9]*"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+  <xsd:simpleType name="AllChars">
+    <xsd:restriction base="xsd:string">
+      <xsd:pattern value="[^|~&quot;]*"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
+
+<xsd:simpleType name="BusinessId">
+		<xsd:restriction base="xsd:long">
+			<xsd:minExclusive value="0"/>
+			<xsd:maxInclusive value="9999999999"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:simpleType name="Login">
+		<xsd:restriction base="AlphaNumeric">
+			<xsd:minLength value="8"/>
+			<xsd:maxLength value="32"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:simpleType name="Password">
+		<xsd:restriction base="AlphaNumeric">
+			<xsd:minLength value="8"/>
+			<xsd:maxLength value="32"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:simpleType name="NachaStandardEntryClass">
+		<xsd:restriction base="xsd:token">
+			<xsd:enumeration value="ACK"/>
+			<xsd:enumeration value="ADV"/>
+			<xsd:enumeration value="ATX"/>
+			<xsd:enumeration value="CBR"/>
+			<xsd:enumeration value="CCD"/>
+			<xsd:enumeration value="CIE"/>
+			<xsd:enumeration value="COR"/>
+			<xsd:enumeration value="CTX"/>
+			<xsd:enumeration value="DNE"/>
+			<xsd:enumeration value="ENR"/>
+			<xsd:enumeration value="MTE"/>
+			<xsd:enumeration value="PBR"/>
+			<xsd:enumeration value="POP"/>
+			<xsd:enumeration value="POS"/>
+			<xsd:enumeration value="PPD"/>
+			<xsd:enumeration value="RCK"/>
+			<xsd:enumeration value="RET"/>
+			<xsd:enumeration value="SHR"/>
+			<xsd:enumeration value="TEL"/>
+			<xsd:enumeration value="TRC"/>
+			<xsd:enumeration value="TRX"/>
+			<xsd:enumeration value="WEB"/>
+			<xsd:enumeration value="XCK"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:simpleType name="IndividualIdentifier">
+		<xsd:restriction base="AlphaNumeric">
+			<xsd:maxLength value="22"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:simpleType name="BillingAccountNumber">
+		<xsd:restriction base="AllChars">
+			<xsd:minLength value="1"/>
+			<xsd:maxLength value="60"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:simpleType name="BankAccountType">
+		<xsd:restriction base="xsd:token">
+			<xsd:enumeration value="PERSONAL CHECKING"/>
+			<xsd:enumeration value="PERSONAL SAVINGS"/>
+			<xsd:enumeration value="BUSINESS CHECKING"/>
+			<xsd:enumeration value="BUSINESS SAVINGS"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:simpleType name="RoutingNumber">
+		<xsd:restriction base="xsd:token">
+			<xsd:pattern value="[0-3][0-9]{8}"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:simpleType name="BankAccountNumber">
+		<xsd:restriction base="xsd:token">
+			<xsd:pattern value="[a-zA-Z0-9\-]{4,17}"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:simpleType name="InternationalBankInformation">
+		<xsd:restriction base="xsd:token">
+			<xsd:pattern value="[a-zA-Z0-9\-]{1,9}"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:simpleType name="InternationalBankAccountNumber">
+		<xsd:restriction base="xsd:token">
+			<xsd:pattern value="[a-zA-Z0-9\-]{1,32}"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:simpleType name="InstitutionName">
+		<xsd:restriction base="AllChars">
+			<xsd:maxLength value="45"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:simpleType name="AccountHolderName">
+		<xsd:restriction base="AllChars">
+			<xsd:maxLength value="45"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:simpleType name="ExpirationMonth">
+		<xsd:restriction base="xsd:int">
+			<xsd:pattern value="[1-9]|0[1-9]|1[0-2]"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:simpleType name="ExpirationYear">
+		<xsd:restriction base="xsd:int">
+			<xsd:minInclusive value="2000"/>
+			<xsd:maxInclusive value="9999"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:simpleType name="CreditCardNumber">
+		<xsd:restriction base="Numeric">
+			<xsd:minLength value="14"/>
+			<xsd:maxLength value="19"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:simpleType name="CreditCardType">
+		<xsd:restriction base="xsd:token">
+			<xsd:enumeration value="MC"/>
+			<xsd:enumeration value="VISA"/>
+			<xsd:enumeration value="DISC"/>
+			<xsd:enumeration value="AMEX"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:simpleType name="SecurityCode">
+		<xsd:restriction base="Numeric">
+			<xsd:minLength value="3"/>
+			<xsd:maxLength value="4"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:simpleType name="EcommerceIndicator">
+		<xsd:restriction base="xsd:string">
+			<xsd:enumeration value="ECOMMERCE"/>
+			<xsd:enumeration value="TELEPHONE"/>
+			<xsd:enumeration value="RECURRING"/>
+			<xsd:enumeration value="VOICE RESPONSE UNIT"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:simpleType name="ResponseCode">
+		<xsd:restriction base="xsd:string">
+			<xsd:maxLength value="3"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:simpleType name="AuthorizationCode">
+		<xsd:restriction base="xsd:string">
+			<xsd:maxLength value="6"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:simpleType name="AddressValidationCode">
+		<xsd:restriction base="xsd:string">
+			<xsd:maxLength value="2"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:simpleType name="SecurityResultCode">
+		<xsd:restriction base="xsd:string">
+			<xsd:maxLength value="1"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:simpleType name="TraceCode">
+		<xsd:restriction base="xsd:string">
+			<xsd:maxLength value="12"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:simpleType name="DebitCardNumber">
+		<xsd:restriction base="Numeric">
+			<xsd:minLength value="12"/>
+			<xsd:maxLength value="19"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:simpleType name="DollarAmount">
+		<xsd:restriction base="xsd:double">
+			<xsd:minInclusive value="0"/>
+			<xsd:maxInclusive value="999999999999.99"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:simpleType name="EmailAddress">
+		<xsd:annotation>
+			<xsd:documentation>
+         Allows any character in the username (before the @) and checks
+         that the domain name does not t with a ".", that the 
+         top level domain contains only alphas and is at least 2 characters.
+      </xsd:documentation>
+		</xsd:annotation>
+		<xsd:restriction base="xsd:token">
+			<xsd:pattern value=".+@[^\.].*\.[a-zA-Z]{2,}"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:simpleType name="CreditDebitIndicator">
+		<xsd:restriction base="xsd:token">
+			<xsd:enumeration value="DEBIT"/>
+			<xsd:enumeration value="CREDIT"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:simpleType name="ConfirmationNumber">
+		<xsd:restriction base="xsd:long">
+			<xsd:minInclusive value="0"/>
+			<xsd:maxInclusive value="99999999999999"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:simpleType name="TransactionCode">
+		<xsd:restriction base="AllChars">
+			<xsd:maxLength value="45"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:simpleType name="FeeWaiverReason">
+		<xsd:restriction base="AllChars">
+			<xsd:maxLength value="45"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:simpleType name="RemitFieldValue">
+		<xsd:restriction base="AllChars">
+			<xsd:maxLength value="64"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:simpleType name="BillerName">
+		<xsd:restriction base="AllChars">
+			<xsd:maxLength value="45"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:simpleType name="BillingAccountHolderName">
+		<xsd:restriction base="AllChars">
+			<xsd:maxLength value="45"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:simpleType name="CardRoute">
+		<xsd:restriction base="xsd:token">
+			<xsd:enumeration value="STAR"/>
+			<xsd:enumeration value="NYCE"/>
+			<xsd:enumeration value="PULSE"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:simpleType name="AccountNickName">
+		<xsd:restriction base="AllChars">
+			<xsd:maxLength value="45"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:simpleType name="FundingAccountId">
+		<xsd:restriction base="xsd:long">
+			<xsd:minInclusive value="0"/>
+			<xsd:maxInclusive value="9999999999"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:simpleType name="BusinessCode">
+		<xsd:restriction base="AlphaNumeric">
+			<xsd:minLength value="1"/>
+			<xsd:maxLength value="8"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:simpleType name="MaintenanceIndicator">
+		<xsd:restriction base="xsd:token">
+			<xsd:enumeration value="CREATE"/>
+			<xsd:enumeration value="MODIFY"/>
+			<xsd:enumeration value="DELETE"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:simpleType name="UniqueId">
+		<xsd:restriction base="xsd:long">
+			<xsd:minExclusive value="0"/>
+			<xsd:maxInclusive value="9999999999"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:simpleType name="AccountStatus">
+		<xsd:restriction base="xsd:token">
+			<xsd:enumeration value="ACTIVE"/>
+			<xsd:enumeration value="DELETED"/>
+			<xsd:enumeration value="BLOCKED"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:simpleType name="NSFCount">
+		<xsd:restriction base="xsd:int">
+			<xsd:minInclusive value="0"/>
+			<xsd:maxInclusive value="99"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:simpleType name="Severity">
+		<xsd:restriction base="xsd:token">
+			<xsd:enumeration value="INFO"/>
+			<xsd:enumeration value="ERROR"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:simpleType name="ScanlineStatus">
+		<xsd:restriction base="xsd:token">
+			<xsd:enumeration value="ELECTRONIC"/>
+			<xsd:enumeration value="CHECK"/>
+			<xsd:enumeration value="REJECTED"/>
+			<xsd:enumeration value="ERROR"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:simpleType name="YorN">
+		<xsd:restriction base="xsd:token">
+			<xsd:enumeration value="Y"/>
+			<xsd:enumeration value="N"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:simpleType name="PaymentStatus">
+		<xsd:restriction base="xsd:token">
+			<xsd:enumeration value="Pending"/>
+			<xsd:enumeration value="Completed"/>
+			<xsd:enumeration value="Submitted"/>
+			<xsd:enumeration value="Cancelled"/>
+			<xsd:enumeration value="Returned"/>
+			<xsd:enumeration value="Reimbursed"/>
+			<xsd:enumeration value="Failed"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:simpleType name="FundingAccountType">
+		<xsd:restriction base="xsd:token">
+			<xsd:enumeration value="BANK"/>
+			<xsd:enumeration value="CREDIT CARD"/>
+			<xsd:enumeration value="DEBIT CARD"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:simpleType name="DateTimeType">
+		<xsd:annotation>
+			<xsd:documentation>
+        The OFX element "DTTM" is of type "DateTimeType"
+      </xsd:documentation>
+		</xsd:annotation>
+		<xsd:restriction base="xsd:string">
+			<xsd:whiteSpace value="collapse"/>
+			<xsd:minLength value="8"/>
+			<xsd:pattern value="[0-9]{4}((0[1-9])|(1[0-2]))((0[1-9])|([1-2][0-9])|(3[0-1]))|[0-9]{4}((0[1-9])|(1[0-2]))((0[1-9])|([1-2][0-9])|(3[0-1]))(([0-1][0-9])|(2[0-3]))[0-5][0-9](([0-5][0-9])|(60))|[0-9]{4}((0[1-9])|(1[0-2]))((0[1-9])|([1-2][0-9])|(3[0-1]))(([0-1][0-9])|(2[0-3]))[0-5][0-9](([0-5][0-9])|(60))\.[0-9]{3}|[0-9]{4}((0[1-9])|(1[0-2]))((0[1-9])|([1-2][0-9])|(3[0-1]))(([0-1][0-9])|(2[0-3]))[0-5][0-9](([0-5][0-9])|(60))\.[0-9]{3}(\[[\+\-]?.+(:.+)?\])?"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:simpleType name="CompanyName">
+		<xsd:restriction base="AllChars">
+			<xsd:maxLength value="45"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:simpleType name="ProductType">
+		<xsd:restriction base="xsd:token">
+			<xsd:enumeration value="CONNECT_IVR"/>
+			<xsd:enumeration value="CONNECT_WEB"/>
+			<xsd:enumeration value="CONNECT_CSR"/>
+			<xsd:enumeration value="CONNECT_VCA"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:simpleType name="ModifiedBankAccountNumber">
+		<xsd:restriction base="AllChars">
+			<xsd:minLength value="2"/>
+			<xsd:maxLength value="17"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+
+ <xsd:simpleType name="AddressLine">
+    <xsd:restriction base="AllChars">
+      <xsd:maxLength value="64"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+  <xsd:simpleType name="City">
+    <xsd:restriction base="AllChars">
+      <xsd:maxLength value="32"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+  <xsd:simpleType name="State">
+    <xsd:restriction base="Alpha">
+      <xsd:maxLength value="32"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+  <xsd:simpleType name="PostalCode">
+    <xsd:restriction base="AllChars">
+      <xsd:maxLength value="9"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+  <xsd:simpleType name="CountryCode">
+    <xsd:restriction base="xsd:token">
+      <xsd:enumeration value="AD"/>
+      <xsd:enumeration value="AE"/>
+      <xsd:enumeration value="AF"/>
+      <xsd:enumeration value="AG"/>
+      <xsd:enumeration value="AI"/>
+      <xsd:enumeration value="AL"/>
+      <xsd:enumeration value="AM"/>
+      <xsd:enumeration value="AN"/>
+      <xsd:enumeration value="AO"/>
+      <xsd:enumeration value="AQ"/>
+      <xsd:enumeration value="AR"/>
+      <xsd:enumeration value="AS"/>
+      <xsd:enumeration value="AT"/>
+      <xsd:enumeration value="AU"/>
+      <xsd:enumeration value="AW"/>
+      <xsd:enumeration value="AZ"/>
+      <xsd:enumeration value="BA"/>
+      <xsd:enumeration value="BB"/>
+      <xsd:enumeration value="BD"/>
+      <xsd:enumeration value="BE"/>
+      <xsd:enumeration value="BF"/>
+      <xsd:enumeration value="BG"/>
+      <xsd:enumeration value="BH"/>
+      <xsd:enumeration value="BI"/>
+      <xsd:enumeration value="BJ"/>
+      <xsd:enumeration value="BM"/>
+      <xsd:enumeration value="BN"/>
+      <xsd:enumeration value="BO"/>
+      <xsd:enumeration value="BR"/>
+      <xsd:enumeration value="BS"/>
+      <xsd:enumeration value="BT"/>
+      <xsd:enumeration value="BV"/>
+      <xsd:enumeration value="BW"/>
+      <xsd:enumeration value="BY"/>
+      <xsd:enumeration value="BZ"/>
+      <xsd:enumeration value="CA"/>
+      <xsd:enumeration value="CC"/>
+      <xsd:enumeration value="CF"/>
+      <xsd:enumeration value="CG"/>
+      <xsd:enumeration value="CH"/>
+      <xsd:enumeration value="CI"/>
+      <xsd:enumeration value="CK"/>
+      <xsd:enumeration value="CL"/>
+      <xsd:enumeration value="CM"/>
+      <xsd:enumeration value="CN"/>
+      <xsd:enumeration value="CO"/>
+      <xsd:enumeration value="CR"/>
+      <xsd:enumeration value="CU"/>
+      <xsd:enumeration value="CV"/>
+      <xsd:enumeration value="CX"/>
+      <xsd:enumeration value="CY"/>
+      <xsd:enumeration value="CZ"/>
+      <xsd:enumeration value="DE"/>
+      <xsd:enumeration value="DJ"/>
+      <xsd:enumeration value="DK"/>
+      <xsd:enumeration value="DM"/>
+      <xsd:enumeration value="DO"/>
+      <xsd:enumeration value="DZ"/>
+      <xsd:enumeration value="EC"/>
+      <xsd:enumeration value="EE"/>
+      <xsd:enumeration value="EG"/>
+      <xsd:enumeration value="EH"/>
+      <xsd:enumeration value="ER"/>
+      <xsd:enumeration value="ES"/>
+      <xsd:enumeration value="ET"/>
+      <xsd:enumeration value="FI"/>
+      <xsd:enumeration value="FJ"/>
+      <xsd:enumeration value="FK"/>
+      <xsd:enumeration value="FM"/>
+      <xsd:enumeration value="FO"/>
+      <xsd:enumeration value="FR"/>
+      <xsd:enumeration value="FX"/>
+      <xsd:enumeration value="GA"/>
+      <xsd:enumeration value="GB"/>
+      <xsd:enumeration value="GD"/>
+      <xsd:enumeration value="GE"/>
+      <xsd:enumeration value="GF"/>
+      <xsd:enumeration value="GH"/>
+      <xsd:enumeration value="GI"/>
+      <xsd:enumeration value="GL"/>
+      <xsd:enumeration value="GM"/>
+      <xsd:enumeration value="GN"/>
+      <xsd:enumeration value="GP"/>
+      <xsd:enumeration value="GQ"/>
+      <xsd:enumeration value="GR"/>
+      <xsd:enumeration value="GS"/>
+      <xsd:enumeration value="GT"/>
+      <xsd:enumeration value="GU"/>
+      <xsd:enumeration value="GW"/>
+      <xsd:enumeration value="GY"/>
+      <xsd:enumeration value="HK"/>
+      <xsd:enumeration value="HM"/>
+      <xsd:enumeration value="HN"/>
+      <xsd:enumeration value="HR"/>
+      <xsd:enumeration value="HT"/>
+      <xsd:enumeration value="HU"/>
+      <xsd:enumeration value="ID"/>
+      <xsd:enumeration value="IE"/>
+      <xsd:enumeration value="IL"/>
+      <xsd:enumeration value="IN"/>
+      <xsd:enumeration value="IO"/>
+      <xsd:enumeration value="IQ"/>
+      <xsd:enumeration value="IR"/>
+      <xsd:enumeration value="IS"/>
+      <xsd:enumeration value="IT"/>
+      <xsd:enumeration value="JM"/>
+      <xsd:enumeration value="JO"/>
+      <xsd:enumeration value="JP"/>
+      <xsd:enumeration value="KE"/>
+      <xsd:enumeration value="KG"/>
+      <xsd:enumeration value="KH"/>
+      <xsd:enumeration value="KI"/>
+      <xsd:enumeration value="KM"/>
+      <xsd:enumeration value="KN"/>
+      <xsd:enumeration value="KP"/>
+      <xsd:enumeration value="KR"/>
+      <xsd:enumeration value="KW"/>
+      <xsd:enumeration value="KY"/>
+      <xsd:enumeration value="KZ"/>
+      <xsd:enumeration value="LA"/>
+      <xsd:enumeration value="LB"/>
+      <xsd:enumeration value="LC"/>
+      <xsd:enumeration value="LI"/>
+      <xsd:enumeration value="LK"/>
+      <xsd:enumeration value="LR"/>
+      <xsd:enumeration value="LS"/>
+      <xsd:enumeration value="LT"/>
+      <xsd:enumeration value="LU"/>
+      <xsd:enumeration value="LV"/>
+      <xsd:enumeration value="LY"/>
+      <xsd:enumeration value="MA"/>
+      <xsd:enumeration value="MC"/>
+      <xsd:enumeration value="MD"/>
+      <xsd:enumeration value="MG"/>
+      <xsd:enumeration value="MH"/>
+      <xsd:enumeration value="MK"/>
+      <xsd:enumeration value="ML"/>
+      <xsd:enumeration value="MM"/>
+      <xsd:enumeration value="MN"/>
+      <xsd:enumeration value="MO"/>
+      <xsd:enumeration value="MP"/>
+      <xsd:enumeration value="MQ"/>
+      <xsd:enumeration value="MR"/>
+      <xsd:enumeration value="MS"/>
+      <xsd:enumeration value="MT"/>
+      <xsd:enumeration value="MU"/>
+      <xsd:enumeration value="MV"/>
+      <xsd:enumeration value="MW"/>
+      <xsd:enumeration value="MX"/>
+      <xsd:enumeration value="MY"/>
+      <xsd:enumeration value="MZ"/>
+      <xsd:enumeration value="NA"/>
+      <xsd:enumeration value="NC"/>
+      <xsd:enumeration value="NE"/>
+      <xsd:enumeration value="NF"/>
+      <xsd:enumeration value="NG"/>
+      <xsd:enumeration value="NI"/>
+      <xsd:enumeration value="NL"/>
+      <xsd:enumeration value="NO"/>
+      <xsd:enumeration value="NP"/>
+      <xsd:enumeration value="NR"/>
+      <xsd:enumeration value="NU"/>
+      <xsd:enumeration value="NZ"/>
+      <xsd:enumeration value="OM"/>
+      <xsd:enumeration value="PA"/>
+      <xsd:enumeration value="PE"/>
+      <xsd:enumeration value="PF"/>
+      <xsd:enumeration value="PG"/>
+      <xsd:enumeration value="PH"/>
+      <xsd:enumeration value="PK"/>
+      <xsd:enumeration value="PL"/>
+      <xsd:enumeration value="PM"/>
+      <xsd:enumeration value="PN"/>
+      <xsd:enumeration value="PR"/>
+      <xsd:enumeration value="PT"/>
+      <xsd:enumeration value="PW"/>
+      <xsd:enumeration value="PY"/>
+      <xsd:enumeration value="QA"/>
+      <xsd:enumeration value="RE"/>
+      <xsd:enumeration value="RO"/>
+      <xsd:enumeration value="RU"/>
+      <xsd:enumeration value="RW"/>
+      <xsd:enumeration value="SA"/>
+      <xsd:enumeration value="SB"/>
+      <xsd:enumeration value="SC"/>
+      <xsd:enumeration value="SD"/>
+      <xsd:enumeration value="SE"/>
+      <xsd:enumeration value="SG"/>
+      <xsd:enumeration value="SH"/>
+      <xsd:enumeration value="SI"/>
+      <xsd:enumeration value="SJ"/>
+      <xsd:enumeration value="SK"/>
+      <xsd:enumeration value="SL"/>
+      <xsd:enumeration value="SM"/>
+      <xsd:enumeration value="SN"/>
+      <xsd:enumeration value="SO"/>
+      <xsd:enumeration value="SR"/>
+      <xsd:enumeration value="ST"/>
+      <xsd:enumeration value="SV"/>
+      <xsd:enumeration value="SY"/>
+      <xsd:enumeration value="SZ"/>
+      <xsd:enumeration value="TC"/>
+      <xsd:enumeration value="TD"/>
+      <xsd:enumeration value="TF"/>
+      <xsd:enumeration value="TG"/>
+      <xsd:enumeration value="TH"/>
+      <xsd:enumeration value="TJ"/>
+      <xsd:enumeration value="TK"/>
+      <xsd:enumeration value="TM"/>
+      <xsd:enumeration value="TN"/>
+      <xsd:enumeration value="TO"/>
+      <xsd:enumeration value="TP"/>
+      <xsd:enumeration value="TR"/>
+      <xsd:enumeration value="TT"/>
+      <xsd:enumeration value="TV"/>
+      <xsd:enumeration value="TW"/>
+      <xsd:enumeration value="TZ"/>
+      <xsd:enumeration value="UA"/>
+      <xsd:enumeration value="UG"/>
+      <xsd:enumeration value="UM"/>
+      <xsd:enumeration value="US"/>
+      <xsd:enumeration value="UY"/>
+      <xsd:enumeration value="UZ"/>
+      <xsd:enumeration value="VA"/>
+      <xsd:enumeration value="VC"/>
+      <xsd:enumeration value="VE"/>
+      <xsd:enumeration value="VG"/>
+      <xsd:enumeration value="VI"/>
+      <xsd:enumeration value="VN"/>
+      <xsd:enumeration value="VU"/>
+      <xsd:enumeration value="WF"/>
+      <xsd:enumeration value="WS"/>
+      <xsd:enumeration value="YE"/>
+      <xsd:enumeration value="YT"/>
+      <xsd:enumeration value="YU"/>
+      <xsd:enumeration value="ZA"/>
+      <xsd:enumeration value="ZM"/>
+      <xsd:enumeration value="ZR"/>
+      <xsd:enumeration value="ZW"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
+
+
+  <xsd:complexType name="PaymentRemitField">
+    <xsd:annotation>
+      <xsd:documentation>
+        Optional remit data.
+      </xsd:documentation>
+    </xsd:annotation>
+    <xsd:sequence>
+      <xsd:element name="value" type="RemitFieldValue"/>
+    </xsd:sequence>
+  </xsd:complexType>
+
+	<xsd:complexType name="BillingAccount">
+		<xsd:annotation>
+			<xsd:documentation>
+        A billing account.
+      </xsd:documentation>
+		</xsd:annotation>
+		<xsd:sequence>
+			<xsd:element name="billing-account-number" type="BillingAccountNumber"/>
+			<xsd:element name="billing-account-holder-name" type="BillingAccountHolderName" minOccurs="0"/>
+			<xsd:group ref="BillingDivisionGroup" minOccurs="0"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:group name="BillingDivisionGroup">
+		<xsd:choice>
+			<xsd:element name="billing-division-id" type="BusinessId"/>
+			<xsd:element name="division-code" type="BusinessCode"/>
+		</xsd:choice>
+	</xsd:group>
+
+
+
+
+	<xsd:complexType name="Remittance">
+		<xsd:annotation>
+			<xsd:documentation>
+        The billing account and remittance amount, along with the optional remit data.
+        </xsd:documentation>
+		</xsd:annotation>
+		<xsd:sequence>
+			<xsd:element name="billing-account" type="BillingAccount"/>
+			<xsd:element name="remit-amount" type="DollarAmount"/>
+			<xsd:element name="remit-fee" type="DollarAmount" minOccurs="0"/>
+			<xsd:element name="fee-waiver-reason" type="FeeWaiverReason" minOccurs="0"/>
+			<xsd:element name="payment-remit-field" type="PaymentRemitField" minOccurs="0" maxOccurs="unbounded"/>
+		</xsd:sequence>
+	</xsd:complexType>
+
+
+
+
+
+	<xsd:complexType name="FundingAccount">
+
+		<xsd:sequence>
+			<xsd:element name="funding-account-id" type="UniqueId" minOccurs="0"/>
+			<xsd:element name="account-nickname" type="AccountNickName" minOccurs="0"/>
+			<xsd:element name="create-date" type="xsd:date" minOccurs="0"/>
+			<xsd:element name="last-update-date" type="xsd:date" minOccurs="0"/>
+			<xsd:element name="last-used-date" type="xsd:date" minOccurs="0"/>
+			<xsd:element name="account-status" type="AccountStatus" minOccurs="0"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:group name="FundingAccountAddressGroup">
+		<xsd:sequence>
+			<xsd:element name="account-holder-name" type="AccountHolderName"/>
+			<xsd:element name="account-address-1" type="AddressLine"/>
+			<xsd:element name="account-address-2" type="AddressLine" minOccurs="0"/>
+			<xsd:element name="account-city" type="City"/>
+			<xsd:element name="account-state" type="State"/>
+			<xsd:element name="account-postal-code" type="PostalCode"/>
+			<xsd:element name="account-country-code" type="CountryCode"/>
+		</xsd:sequence>
+	</xsd:group>
+	<xsd:element name="funding-account" type="FundingAccount" abstract="true"/>
+
+
+
+
+	<xsd:complexType name="BankAccount">
+		<xsd:annotation>
+			<xsd:documentation>
+        A bank account.
+      </xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexContent>
+			<xsd:extension base="FundingAccount">
+				<xsd:sequence>
+					<xsd:element name="bank-account-type" type="BankAccountType"/>
+					<xsd:element name="routing-number" type="RoutingNumber"/>
+					<xsd:element name="bank-account-number" type="BankAccountNumber"/>
+					<xsd:element name="institution-name" type="InstitutionName" minOccurs="0"/>
+					<xsd:element name="nsf-count" type="NSFCount" minOccurs="0"/>
+					<xsd:group ref="FundingAccountAddressGroup" minOccurs="0"/>
+				</xsd:sequence>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+
+  <xsd:group name="BankPaymentRequestGroup">
+    <xsd:annotation>
+      <xsd:documentation>
+        A bank account plus the bank account-specific payment information.
+      </xsd:documentation>
+    </xsd:annotation>
+    <xsd:sequence>
+      <xsd:element name="bank-account" type="BankAccount"/>
+      <xsd:element name="nacha-standard-entry-class" type="NachaStandardEntryClass"/>
+      <xsd:element name="individual-identifier" type="IndividualIdentifier" minOccurs="0"/>
+    </xsd:sequence>
+  </xsd:group>
+  <xsd:group name="BankPaymentResponseGroup">
+    <xsd:annotation>
+      <xsd:documentation>
+        A bank account plus the payment-specific bank account information.
+      </xsd:documentation>
+    </xsd:annotation>
+    <xsd:sequence>
+      <xsd:element name="modified-routing-number" type="RoutingNumber"/>
+      <xsd:element name="modified-bank-account-number" type="ModifiedBankAccountNumber"/>
+      <xsd:group ref="PaymentResponseGroup"/>
+    </xsd:sequence>
+  </xsd:group>
+
+   	<xsd:group name="PaymentRequestGroup">
+		<xsd:annotation>
+			<xsd:documentation>
+        Common payment request elements.
+      </xsd:documentation>
+		</xsd:annotation>
+		<xsd:sequence>
+			<xsd:element name="credit-debit-indicator" type="CreditDebitIndicator"/>
+			<xsd:element name="requested-payment-date" type="xsd:date"/>
+			<xsd:element name="remittance" type="Remittance" maxOccurs="unbounded"/>
+			<xsd:element name="product" type="ProductType" minOccurs="0"/>
+			<xsd:element name="transaction-code" type="TransactionCode" minOccurs="0"/>
+			<xsd:element name="email-address" type="EmailAddress" minOccurs="0"/>
+		</xsd:sequence>
+	</xsd:group> 
+
+
+
+
+
+    
+    
+    
+
+	<xsd:group name="ModifyPaymentRequestGroup">
+		<xsd:annotation>
+			<xsd:documentation>
+        Common modify payment request elements.
+      </xsd:documentation>
+		</xsd:annotation>
+		<xsd:sequence>
+			<xsd:element name="requested-payment-date" type="xsd:date"/>
+			<xsd:element name="remittance" type="Remittance"/>
+			<xsd:element name="transaction-code" type="TransactionCode" minOccurs="0"/>
+			<xsd:element name="email-address" type="EmailAddress" minOccurs="0"/>
+		</xsd:sequence>
+	</xsd:group>
+	<xsd:group name="PaymentResponseGroup">
+		<xsd:annotation>
+			<xsd:documentation>
+        Common payment response elements.
+        </xsd:documentation>
+		</xsd:annotation>
+		<xsd:sequence>
+			<xsd:element name="confirmation-number" type="ConfirmationNumber"/>
+			<xsd:element name="payment-amount" type="DollarAmount"/>
+			<xsd:element name="payment-fee" type="DollarAmount"/>
+			<xsd:element name="payment-date" type="xsd:date"/>
+		</xsd:sequence>
+	</xsd:group>
+
+
+
+
+
+
+
+   
+   
+    <xsd:simpleType name="MessageCode">
+    <xsd:restriction base="xsd:int">
+      <xsd:minInclusive value="0"/>
+      <xsd:maxInclusive value="99999"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+  <xsd:simpleType name="MessageText">
+    <xsd:restriction base="xsd:string">
+      <xsd:maxLength value="2048"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+  <xsd:complexType name="Message">
+    <xsd:annotation>
+      <xsd:documentation>
+        Connect response messages.
+      </xsd:documentation>
+    </xsd:annotation>
+    <xsd:sequence>
+      <xsd:element name="message-code" type="MessageCode"/>
+      <xsd:element name="message-text" type="MessageText"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  
+  
+    
+      <xsd:complexType name="ConnectResponse" abstract="true">
+    <xsd:annotation>
+      <xsd:documentation>
+        Abstract request common to all Connect requests.
+      </xsd:documentation>
+    </xsd:annotation>
+    <xsd:sequence>
+      <xsd:element name="message" type="Message" maxOccurs="unbounded"/>
+    </xsd:sequence>
+  </xsd:complexType>
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    <xsd:annotation>
+        <xsd:documentation>$Id: bank_payment_response_1.xsd,v 1.3 2006/11/30 13:55:39 dgarrett Exp $
+      
+      Copyright Princeton eCom, Inc. 2005.  All rights reserved.       
+      This source code file contains the proprietary and confidential 
+      information and trade secrets of Princeton eCom, Inc.</xsd:documentation>
+    </xsd:annotation>
+    <xsd:complexType name="BankPaymentResponse">
+        <xsd:annotation>
+            <xsd:documentation>Bank payment response.</xsd:documentation>
+        </xsd:annotation>
+        <xsd:complexContent>
+            <xsd:extension base="ConnectResponse">
+                <xsd:sequence>
+                    <xsd:group ref="BankPaymentRequestGroup" minOccurs="0"/>
+                    <xsd:group ref="BankPaymentResponseGroup" minOccurs="0"/>
+                    <xsd:group ref="PaymentRequestGroup" minOccurs="0"/>
+                </xsd:sequence>
+            </xsd:extension>
+        </xsd:complexContent>
+    </xsd:complexType>
+    <xsd:element name="bank-payment-response" type="BankPaymentResponse"/>
+</xsd:schema>

@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding='windows-1252'?>
+<!DOCTYPE ViewObject SYSTEM "jbo_03_01.dtd">
+
+<ViewObject
+   Name="ODWRFRefVO"
+   BindingStyle="Oracle"
+   CustomQuery="true"
+   RowClass="od.oracle.apps.xxcrm.asn.common.customer.server.ODWRFRefVORowImpl"
+   ComponentClass="od.oracle.apps.xxcrm.asn.common.customer.server.ODWRFRefVOImpl"
+   MsgBundleClass="oracle.jbo.common.JboResourceBundle"
+   UseGlueCode="false" >
+   <SQLQuery><![CDATA[
+select nvl(substr(c.orig_system_reference,1,8), p.party_id) CUST_NUMBER, 
+(1 * (REGEXP_SUBSTR(c.orig_system_reference,'[[:digit:]]+',1,2))) ADDR_SEQ,
+p.party_name PARTY_NAME,
+p.attribute13 CUST_FLAG,
+fnd_global.user_name EMP_NUM,
+decode(c.orig_system_reference,null,1,2) CFLAG,
+DECODE(M.PARTY_ID,NULL,DECODE(round(sysdate-(p.creation_date)),0,'False','True'),'False') DISABLE
+from hz_cust_accounts c,
+hz_parties p,
+xx_crm_exp_account_master m
+where p.PARTY_ID = :1
+and  p.PARTY_ID = c.party_id(+)
+and p.party_id = m.party_id(+)
+   ]]></SQLQuery>
+   <DesignTime>
+      <Attr Name="_isCodegen" Value="true" />
+      <Attr Name="_version" Value="9.0.3.13.75" />
+      <Attr Name="_CodeGenFlagNew" Value="36" />
+   </DesignTime>
+   <ViewAttribute
+      Name="CustNumber"
+      IsPersistent="false"
+      Precision="40"
+      Type="java.lang.String"
+      AliasName="CUST_NUMBER"
+      ColumnType="VARCHAR2"
+      Expression="CUST_NUMBER"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="40" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="AddrSeq"
+      IsPersistent="false"
+      Type="oracle.jbo.domain.Number"
+      AliasName="ADDR_SEQ"
+      ColumnType="VARCHAR2"
+      Expression="ADDR_SEQ"
+      SQLType="NUMERIC" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="PartyName"
+      IsPersistent="false"
+      IsNotNull="true"
+      Precision="360"
+      Type="java.lang.String"
+      AliasName="PARTY_NAME"
+      ColumnType="VARCHAR2"
+      Expression="PARTY_NAME"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="360" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="CustFlag"
+      IsPersistent="false"
+      Precision="150"
+      Type="java.lang.String"
+      AliasName="CUST_FLAG"
+      ColumnType="VARCHAR2"
+      Expression="CUST_FLAG"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="150" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="EmpNum"
+      IsPersistent="false"
+      Precision="4000"
+      Type="java.lang.String"
+      AliasName="EMP_NUM"
+      ColumnType="VARCHAR2"
+      Expression="EMP_NUM"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="4000" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Cflag"
+      IsPersistent="false"
+      Type="oracle.jbo.domain.Number"
+      AliasName="CFLAG"
+      ColumnType="VARCHAR2"
+      Expression="CFLAG"
+      SQLType="NUMERIC" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Disable"
+      IsPersistent="false"
+      Precision="5"
+      Type="java.lang.String"
+      AliasName="DISABLE"
+      ColumnType="VARCHAR2"
+      Expression="DISABLE"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="5" />
+      </DesignTime>
+   </ViewAttribute>
+</ViewObject>

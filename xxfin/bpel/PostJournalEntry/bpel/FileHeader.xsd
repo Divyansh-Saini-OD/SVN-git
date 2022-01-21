@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+            xmlns:client="http://xmlns.oracle.com/PostJournalEntry"
+            targetNamespace="http://xmlns.oracle.com/PostJournalEntry"
+            elementFormDefault="qualified">
+  <xsd:element name="fileHeader" type="client:InboundFileHeaderType"/>
+  <xsd:complexType name="InboundFileHeaderType">
+    <xsd:sequence>
+      <xsd:element name="fileName" type="xsd:string"/>
+      <xsd:element name="directory" type="xsd:string"/>
+    </xsd:sequence>
+  </xsd:complexType>
+</xsd:schema>

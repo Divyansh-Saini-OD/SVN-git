@@ -1,0 +1,87 @@
+SET VERIFY      OFF
+SET TERM        OFF
+SET FEEDBACK    OFF
+SET SHOW        OFF
+SET ECHO        OFF
+SET TAB         OFF
+
+-- +==================================================================================+  
+-- | Office Depot - Project Simplify                                                  |
+-- |                                                              |
+-- +==================================================================================+
+-- | SQL Script to create the table:  XXFIN.XX_CE_BANK_STAGING                |
+-- |                                                                                  |
+-- | For the Extension E00286_ConsolidatedBillingInvoiceFormatDistribute              |
+-- |  E0286 - Routine to combine all delivery methods using XML publisher API's       |
+-- |                                                                                  |
+-- |                                                                                  |
+-- |Change Record:                                                                    |
+-- |===============                                                                   |
+-- |Version   Date          Author               Remarks                              |
+-- |=======   ===========   =============        =====================================|
+-- |1.0       3-DEC-2017    Jitendra Atale       Initial version                      |
+-- |                                                                                  |
+-- +==================================================================================+
+
+WHENEVER SQLERROR CONTINUE;
+
+SET TERM OFF
+
+SET TERM ON
+
+PROMPT
+PROMPT Creating the Table XXFIN.XX_CE_BANK_STAGING
+PROMPT
+
+CREATE TABLE XX_CE_BANK_STAGING(
+    Country_code           VARCHAR2(2),
+    BANK_ID                NUMBER,
+    BANK_NAME              VARCHAR2(200),
+    BANK_NUMBER            VARCHAR2(30),
+    ALT_BANK_NAME          VARCHAR2(200),
+    SHORT_BANK_NAME        VARCHAR2(30),
+    BANK_DESCRIPTION       VARCHAR2(200),
+    BANK_BRANCH_ID         NUMBER,
+    BRANCH_NAME            VARCHAR2(360),
+    BRANCH_NUMBER          VARCHAR2(30),
+    Account_Name           VARCHAR2(80),
+    BANK_ACCOUNT_NAME_ALT  VARCHAR2(320),
+    BANK_ACCOUNT_NUM       VARCHAR2(100),
+    BANK_ACCOUNT_OWNER     NUMBER,
+    ACCOUNT_OWNER_PARTY_ID NUMBER,
+    ACCOUNT_USE            VARCHAR2(15),
+    PROCESS_FLAG           VARCHAR2(1),
+    CURRENCY               VARCHAR2(15),
+    CASH_CCID              NUMBER,
+    CASH_CLEARING_CCID     NUMBER,
+    BANK_CHARGES_CCID      NUMBER,
+    BANK_ERROR_CCID        NUMBER,
+    creation_date          TIMESTAMP NOT NULL,
+    created_by             VARCHAR2(64) NOT NULL,
+    last_update_date       TIMESTAMP NOT NULL,
+    last_updated_by        VARCHAR2(64) NOT NULL,
+    last_update_login      NUMBER NOT NULL)
+/
+PROMPT
+PROMPT Grant XX_CE_BANK_STAGING to ERP_SYSTEM_TABLE_SELECT_ROLE
+PROMPT    
+GRANT SELECT ON XXFIN.XX_CE_BANK_STAGING TO ERP_SYSTEM_TABLE_SELECT_ROLE
+/
+
+PROMPT
+PROMPT Grant XXFIN.XX_CE_BANK_STAGING to APPS
+PROMPT   
+GRANT ALL ON XXFIN.XX_CE_BANK_STAGING TO APPS 
+/         
+PROMPT
+PROMPT Exiting....
+PROMPT
+
+SET FEEDBACK ON
+
+SHOW ERRORS;
+EXIT;
+
+REM============================================================================================
+REM                                   End Of Script                                            
+REM============================================================================================						 

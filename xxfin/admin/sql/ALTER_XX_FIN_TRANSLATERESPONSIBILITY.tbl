@@ -1,0 +1,31 @@
+-- +==========================================================================+
+-- |                  Office Depot - Project Simplify                         |
+-- |                       WIPRO Technologies                                 |
+-- +==========================================================================+
+-- | RICE ID     :  E1017                                                     |
+-- | Name        :  ODTransTable					      |
+-- |                                                                          |
+-- | SQL Script to delete a column in                                         |
+-- |             Table       : XX_FIN_TRANSLATERESPONSIBILITY                 |
+-- |                                                                          |
+-- |Change Record:                                                            |
+-- |===============                                                           |
+-- |Version   Date         Author               Remarks                       |
+-- |=======   ==========   =============        ==============================|
+-- | V1.0     29-JAN-09    Sowmya               Initial version               |
+-- |                       Mohanasundaram       Added for the Defect# 12941   |
+-- |                                                                          |
+-- |                                                                          |
+-- |                                                                          |
+-- +==========================================================================+
+
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     ON
+
+ALTER TABLE xxfin.xx_fin_translateresponsibility
+        DROP COLUMN read_only_flag;
+
+SHOW ERROR;

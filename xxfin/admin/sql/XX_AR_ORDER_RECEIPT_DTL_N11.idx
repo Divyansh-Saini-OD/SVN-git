@@ -1,0 +1,34 @@
+-- +==========================================================================+
+-- |                  Office Depot - Project Simplify                         |
+-- |                             Oracle                                       |
+-- +==========================================================================+
+-- | SQL Script to create                                                     |
+-- |                                                                          |
+-- |                      INDEX: XX_AR_ORDER_RECEIPT_DTL_N11                  |
+-- |                                                                          |
+-- |                                                                          |
+-- |                                                                          |
+-- |Change Record:                                                            |
+-- |===============                                                           |
+-- |Version   Date         Author               Remarks                       |
+-- |=======   ==========   =============        ==============================|
+-- | V1.0     14-JUL-2014  Kirubha Samuel           Initial version           |
+-- +==========================================================================+
+
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     ON
+
+DROP INDEX xxfin.XX_AR_ORDER_RECEIPT_DTL_N11;
+
+CREATE INDEX xxfin.XX_AR_ORDER_RECEIPT_DTL_N11 ON xxfin.XX_AR_ORDER_RECEIPT_DTL
+  (
+    RECEIPT_METHOD_ID,
+    RECEIPT_DATE,
+    ORG_ID
+  )
+  TABLESPACE APPS_TS_TX_IDX_AR_16M nologging parallel 16;
+  
+ALTER INDEX xxfin.XX_AR_ORDER_RECEIPT_DTL_N11 noparallel;

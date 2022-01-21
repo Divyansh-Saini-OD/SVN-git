@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dataTemplate name="XXVPSTRXDUEDTDISCREPANCY" defaultPackage="XX_VPS_TRX_DUE_DT_DISCREPANCY" dataSourceRef="1.0">
+	<properties>
+		<property name="include_parameters" value="true"/>
+		<property name="include_null_Element" value="true"/>
+		<property name="db_fetch_size" value="300"/>
+	</properties>
+	<parameters>
+		<parameter name="P_FROM_DATE" dataType="varchar2" defaultValue=""/>
+		<parameter name="P_TO_DATE" dataType="varchar2" defaultValue=""/>
+	</parameters>
+<dataQuery>
+<sqlStatement name="Q1" dataSourceRef="">
+<![CDATA[ SELECT /*+ parallel(rct,4) parallel(apa,4)*/
+                 TO_CHAR(rct.creation_date,'DD-MON-YYYY')         TRX_CREATION_DATE
+				,TO_CHAR(rct.last_update_date,'DD-MON-YYYY')      TRX_LAST_UPDATE_DATE
+				,fnd.user_name             LAST_UPDATED_BY
+				,rct.attribute7            SEND_REFUND
+                ,rct.attribute3            REFUND_STATUS
+                ,rct.attribute12           PROGRAM_DUE_DATE
+                ,TO_CHAR(apa.due_date,'DD-MON-YYYY')              ORACLE_DUE_DATE
+	            ,TO_CHAR(rct.trx_date,'DD-MON-YYYY')              TRX_DATE 
+				,TO_CHAR(apa.gl_date,'DD-MON-YYYY')              GL_DATE
+	            ,rct.trx_number            TRX_NUMBER
+				,apa.amount_due_original   AMOUNT_DUE_ORIGINAL
+	            ,apa.amount_due_remaining  AMOUNT_DUE_REMAINING
+				,rct.attribute1            VENDOR_NUM
+				,rct.attribute5            PROGRAM_TYPE
+				,rct.attribute4            PROGRAM_NAME
+				,rct.attribute8            PROGRAM_STATUS
+	            ,rct.attribute14           PROGRAM_ID
+				,rct.attribute9            PAYMENT_METHOD
+				,rct.attribute13           PROGRAM_FREQUENCY
+				,rct.attribute10           TOTAL_PURCHASES_COGS
+				,rct.attribute2            PROGRAM_VALUE
+				,rct.attribute6            PROGRAM_START_DATE
+				,rct.attribute11           PROGRAM_BASIS
+	            ,rct.attribute15           UPLOADED_BY	
+                ,CASE 
+                      WHEN TO_DATE(rct.attribute12,'DD-MON-YYYY') = TRUNC(apa.due_date) THEN 'Match'
+                      ELSE 'Mismatch'
+                 END  MATCH_MISMATCH			
+            FROM fnd_user fnd
+			    ,ra_customer_trx_all rct 
+                ,ar_payment_schedules_all apa
+           WHERE 1 = 1 
+		     AND fnd.user_id = rct.last_updated_by
+             AND rct.customer_trx_id= apa.CUSTOMER_TRX_ID
+             AND rct.attribute_category='US_VPS' 
+			 AND apa.class IN ( 'INV','DM')
+             AND rct.creation_date BETWEEN TO_DATE(:P_FROM_DATE||' 00:00:00','DD-MON-YYYY HH24:MI:SS') 
+                                       AND TO_DATE(:P_TO_DATE||' 23:59:59','DD-MON-YYYY HH24:MI:SS')
+           ORDER BY rct.creation_date
+]]>
+</sqlStatement>
+<sqlStatement name="Q2" dataSourceRef="">
+<![CDATA[ SELECT  (SELECT FND_PROFILE.VALUE('XX_COMN_SMTP_MAIL_SERVER') 
+                     FROM dual)    SMTP_SERVER,
+                  (SELECT XFTV.target_value1
+                     FROM xx_fin_translatedefinition XFTD ,
+                          xx_fin_translatevalues XFTV
+                    WHERE XFTD.translate_id   = xftv.translate_id
+                      AND XFTD.translation_name = 'OD_VPS_TRANSLATION'
+                      AND XFTV.source_value1    = 'DISCREPANCY_REPORT'
+                      AND SYSDATE BETWEEN XFTV.start_date_active AND NVL(XFTV.end_date_active, sysdate+1)
+                      AND SYSDATE BETWEEN XFTD.start_date_active AND NVL(XFTD.end_date_active, sysdate+1)
+                      AND XFTV.enabled_flag = 'Y'
+                      AND XFTD.enabled_flag = 'Y')   MAIL_FROM,
+                  (SELECT XFTV.target_value2
+                     FROM xx_fin_translatedefinition XFTD ,
+                          xx_fin_translatevalues XFTV
+                    WHERE XFTD.translate_id   = xftv.translate_id
+                      AND XFTD.translation_name = 'OD_VPS_TRANSLATION'
+                      AND XFTV.source_value1    = 'DISCREPANCY_REPORT'
+                      AND SYSDATE BETWEEN XFTV.start_date_active AND NVL(XFTV.end_date_active, sysdate+1)
+                      AND SYSDATE BETWEEN XFTD.start_date_active AND NVL(XFTD.end_date_active, sysdate+1)
+                      AND XFTV.enabled_flag = 'Y'
+                      AND XFTD.enabled_flag = 'Y')   MAIL_TO,
+				  (SELECT instance_name 
+				     FROM v$instance) INSTANCE_NAME,
+				  :P_FROM_DATE   FROM_DATE,
+				  :P_TO_DATE  TO_DATE
+            FROM DUAL
+]]>
+</sqlStatement>
+</dataQuery>
+<dataTrigger name="beforeReport" source="XX_VPS_TRX_DUE_DT_DISCREPANCY.beforeReport" /> 
+<dataStructure>
+<group name="G1" source="Q1" groupFilter="">
+	 <element name="TRX_CREATION_DATE" value="TRX_CREATION_DATE" function=""/>
+	 <element name="TRX_LAST_UPDATE_DATE" value="TRX_LAST_UPDATE_DATE" function=""/>
+	 <element name="LAST_UPDATED_BY" value="LAST_UPDATED_BY" function=""/>
+	 <element name="SEND_REFUND" value="SEND_REFUND" function=""/>
+	 <element name="REFUND_STATUS" value="REFUND_STATUS" function=""/>
+	 <element name="PROGRAM_DUE_DATE" value="PROGRAM_DUE_DATE" function=""/>
+	 <element name="ORACLE_DUE_DATE" value="ORACLE_DUE_DATE" function=""/>
+     <element name="TRX_DATE" value="TRX_DATE" function=""/>
+	 <element name="GL_DATE" value="GL_DATE" function=""/>
+	 <element name="TRX_NUMBER" value="TRX_NUMBER" function=""/> 
+     <element name="AMOUNT_DUE_ORIGINAL" value="AMOUNT_DUE_ORIGINAL" function=""/>
+	 <element name="AMOUNT_DUE_REMAINING" value="AMOUNT_DUE_REMAINING" function=""/>
+	 <element name="VENDOR_NUM" value="VENDOR_NUM" function=""/>
+	 <element name="PROGRAM_TYPE" value="PROGRAM_TYPE" function=""/>
+	 <element name="PROGRAM_NAME" value="PROGRAM_NAME" function=""/>
+	 <element name="PROGRAM_STATUS" value="PROGRAM_STATUS" function=""/>
+	 <element name="PROGRAM_ID" value="PROGRAM_ID" function=""/>
+	 <element name="PAYMENT_METHOD" value="PAYMENT_METHOD" function=""/>
+	 <element name="PROGRAM_FREQUENCY" value="PROGRAM_FREQUENCY" function=""/>
+	 <element name="TOTAL_PURCHASES_COGS" value="TOTAL_PURCHASES_COGS" function=""/>
+	 <element name="PROGRAM_VALUE" value="PROGRAM_VALUE" function=""/>
+	 <element name="PROGRAM_START_DATE" value="PROGRAM_START_DATE" function=""/>
+	 <element name="PROGRAM_BASIS" value="PROGRAM_BASIS" function=""/>
+	 <element name="UPLOADED_BY" value="UPLOADED_BY" function=""/>
+	 <element name="MATCH_MISMATCH" value="MATCH_MISMATCH" function=""/>
+</group>
+<group name="G2" source="Q2" groupFilter="">
+     <element name="C_SMTP_SERVER" value="SMTP_SERVER" function=""/>
+     <element name="C_MAIL_FROM"  value="MAIL_FROM" function=""/>
+     <element name="C_MAIL_TO"    value="MAIL_TO" function=""/>
+	 <element name="C_INSTANCE_NAME"    value="INSTANCE_NAME" function=""/>
+	 <element name="C_FROM_DATE"    value="FROM_DATE" function=""/>
+	 <element name="C_TO_DATE"    value="TO_DATE" function=""/>
+</group>
+</dataStructure>
+<dataTrigger name="afterReport" source="XX_VPS_TRX_DUE_DT_DISCREPANCY.afterReport"/>
+</dataTemplate>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

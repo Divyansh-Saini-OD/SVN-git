@@ -1,0 +1,118 @@
+# +=====================================================================+
+# |                  Office Depot - Project Simplify 			        |
+# |      			Oracle					                            |
+# +=====================================================================+
+# | Name  : 	   OD: Common FTP Inbound File Check			        |
+# | Description:   This program checks for any file in the XXFIN FTP	|
+# |		   Inbound location and sends a mail if it finds any	        |
+# |		   file older than 1 hour and less 24 hours residing	        |
+# |		   in the location	 				                            |
+# |									                                    |
+# |Change Record:                                               	    |
+# |===============                                           		    |
+# |Version   Date         Author          Remarks                     	|
+# |=======   ==========   =============   ==============================|
+# |VER 1.0   14-MAR-2016  Rohit Gupta     Initial draft version       	|
+# +=====================================================================+
+
+echo "1 st argument = username/password"
+echo "2 nd argument = $2"
+echo "3 rd argument = $3"
+echo "4 th argument = $4"
+echo "5 th argument = $5"
+APPS_LOGIN=$1
+lc_override_email=$5
+echo "Over ride Email address $lc_override_email"
+
+# Connecting to ORACLE .
+Pattern="tmp*"	
+Instance=`echo "$APPLFENV"`
+rm "$APPLCSF/log/od_ftp_log.tmp"
+rm "$APPLCSF/log/OD_FTP_MAIL_BODY.txt"
+SOURCE=`sqlplus -s $APPS_LOGIN <<EOF
+set sqlprompt "";
+set serveroutput on;
+set verify off;
+set feedback off;
+set heading off;
+SET NEWPAGE NONE;
+set linesize 10000;
+SELECT xftv.SOURCE_VALUE1||'|'||xftv.target_value1||','||xftv.target_value2||','||xftv.target_value3||'|'||xftv.target_value4
+FROM xx_fin_translatedefinition xftd, 
+xx_fin_translatevalues xftv 
+WHERE xftd.translate_id   =xftv.translate_id 
+AND xftd.translation_name ='XX_COM_FTP_DIR_CHECK'
+AND SYSDATE BETWEEN XFTV.start_date_active AND NVL(XFTV.end_date_active,SYSDATE+1) 
+AND SYSDATE BETWEEN XFTD.start_date_active AND NVL(XFTD.end_date_active,SYSDATE+1) 
+AND XFTV.enabled_flag = 'Y' AND XFTD.ENABLED_FLAG = 'Y';
+EXIT;
+EOF`
+ echo "$Instance" 
+ Instance=`echo "$Instance"| cut -d '_' -f1`;
+ echo "$Instance" 
+ echo "$SOURCE"
+ echo "$SOURCE" | while read LINE;
+  do									# Reading folders from the file OD_FTP_DIRECTORY_NAMES.TXT for the FTP location 
+	DIR=`echo "$LINE"| cut -d '|' -f1`;
+	EMAILS=`echo "$LINE"| cut -d '|' -f2`;
+	TIME=`echo "$LINE"|cut -d '|' -f3`;
+	echo "$DIR"
+	echo "$EMAILS"
+	echo "$TIME"
+	echo "Checking Directory: $DIR ..."
+	if [ -z "$lc_override_email" ]; then
+			      echo "No Override Email address"
+			      SEMAILS=$EMAILS
+				  else
+				  SEMAILS=$lc_override_email
+	fi
+	NEW_DIR=`eval echo "$DIR"`
+	SEARCH_STRING=`find "$NEW_DIR" -maxdepth 1 -type f -mmin +$TIME` #-mtime -1`
+
+	echo "$SEARCH_STRING"
+	if [ -z "$SEARCH_STRING" ]; then							# Checking if the Find command returned null
+		echo "No File Found"
+	else									
+		
+        echo "File Found"	
+		find "$NEW_DIR/" -maxdepth 1 -type f -mmin +59  -exec ls {} \; | xargs -n1 basename >> "$APPLCSF/log/od_ftp_log.tmp" #-mtime -1
+		if [ -s "$APPLCSF/log/od_ftp_log.tmp" ]; then				# Checking if the Find command created a temp output file
+			while read Filename; do						# Reading for email-ids from the file OD_FTP_CHECK_EMAIL_IDS
+			echo "File Filename"
+				if [[ "$Filename" != $Pattern ]]; then			# Checking for tmp* files in the output to exclude them
+					ls -ltrah "$NEW_DIR/$Filename" | tee -a "$APPLCSF/log/OD_FTP_MAIL_BODY.txt"
+					
+				fi	
+			done <$APPLCSF/log/od_ftp_log.tmp
+			if [ -s "$APPLCSF/log/OD_FTP_MAIL_BODY.txt" ]; then			# Checkinng if any file was created with any pending FTP file to be processed		
+				MailSub="$Instance"-"Automated Mail - More than an hour old file(s) Found in directory $NEW_DIR"
+											# Sending mails to SEMAILS 
+
+				echo
+				echo "Sending mail to $SEMAILS..."
+				
+				mail -s "$MailSub" -r "no.reply@officedepot.com" $SEMAILS < "$APPLCSF/log/OD_FTP_MAIL_BODY.txt"
+				if [ "$?" -ne 0 ]; then
+					rm "$APPLCSF/log/od_ftp_log.tmp"
+					rm "$APPLCSF/log/OD_FTP_MAIL_BODY.txt"
+					echo "MAIL send Failure"
+					
+				else
+					echo "MAIL SENT to $SEMAILS"
+					rm "$APPLCSF/log/OD_FTP_MAIL_BODY.txt"
+					rm "$APPLCSF/log/od_ftp_log.tmp"
+					
+				fi				
+			else
+					echo "No File Found"
+					rm "$APPLCSF/log/OD_FTP_MAIL_BODY.txt"
+					rm "$APPLCSF/log/od_ftp_log.tmp"
+					
+			fi
+			echo "---------------------------1"
+		else
+			rm "$APPLCSF/log/od_ftp_log.tmp"
+		fi
+	fi
+  done
+exit 

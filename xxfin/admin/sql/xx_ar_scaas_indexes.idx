@@ -1,0 +1,6 @@
+create index xxfin.xx_ar_scaas_files_n1 on xxfin.xx_ar_scaas_files(process_id);
+create index xxfin.xx_ar_scaas_files_hist_n1 on xxfin.xx_ar_scaas_files_hist(file_name);
+
+create index xxfin.xx_ar_scaas_interface_n1 on xxfin.xx_ar_scaas_interface(process_id);
+create index xxfin.xx_ar_scaas_interface_n2 on xxfin.xx_ar_scaas_interface(status,process_id,record_id);
+create index xxfin.xx_ar_scaas_interface_n3 on xxfin.xx_ar_scaas_interface(status,process_id,bill_to_customer_osr);

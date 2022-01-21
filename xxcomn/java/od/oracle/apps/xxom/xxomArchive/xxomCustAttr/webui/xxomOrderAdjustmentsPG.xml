@@ -1,0 +1,57 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<page xmlns:jrad="http://xmlns.oracle.com/jrad" xmlns:oa="http://xmlns.oracle.com/oa" xmlns:ui="http://xmlns.oracle.com/uix/ui" version="10.1.3_1312" xml:lang="en-US" xmlns:user="http://xmlns.oracle.com/jrad/user" xmlns="http://xmlns.oracle.com/jrad" file-version="$Header$">
+   <content>
+      <oa:pageLayout id="pageLayoutRN" amDefName="od.oracle.apps.xxom.xxomArchive.xxomCustAttr.server.xxomCustAttrAM" windowTitle="Order Adjustments" title="Adjustments" controllerClass="od.oracle.apps.xxom.xxomArchive.xxomCustAttr.webui.xxomOrderAdjustmentsCO">
+         <ui:corporateBranding>
+            <oa:image id="corporateBrandingImage" source="/OA_MEDIA/FNDSSCORP.gif"/>
+         </ui:corporateBranding>
+         <ui:contents>
+            <oa:tableLayout id="xxomOrderAdjustTBLLT" hAlign="center">
+               <ui:contents>
+                  <oa:rowLayout id="xxomOrderAdjustROW1">
+                     <ui:contents>
+                        <oa:cellFormat id="xxomOrderAdjustCELL1">
+                           <ui:contents>
+                              <oa:header id="xxomOrderAdjustHDR1" text="Order Details">
+                                 <ui:contents>
+                                    <oa:messageComponentLayout id="xxomOrderAdjustmentsRID">
+                                       <ui:contents>
+                                          <oa:messageStyledText id="OrderNumber" dataType="NUMBER" prompt="Order Number" viewName="xxomOrderAdjustmentsVO1" viewAttr="OrderNumber" styleClass="OraDataText"/>
+                                          <oa:messageStyledText id="OrigSysDocumentRef" dataType="VARCHAR2" prompt="Orig Sys Document Ref" viewName="xxomOrderAdjustmentsVO1" viewAttr="OrigSysDocumentRef" maximumLength="50" styleClass="OraDataText"/>
+                                          <oa:messageStyledText id="OrderedDate" dataType="DATE" prompt="Order Date" viewName="xxomOrderAdjustmentsVO1" viewAttr="OrderedDate" styleClass="OraDataText"/>
+                                          <oa:messageStyledText id="OrderTpye" viewName="xxomOrderHeaderAttrVO1" viewAttr="OrderType" prompt="Order Type" styleClass="OraDataText"/>
+                                          <oa:messageStyledText id="FlowStatusCode" dataType="VARCHAR2" prompt="Status" viewName="xxomOrderAdjustmentsVO1" viewAttr="FlowStatusCode" maximumLength="30" styleClass="OraDataText"/>
+                                          <oa:messageStyledText id="OrderTotal" viewName="xxomOrderHeaderAttrVO1" viewAttr="OrderTotal" prompt="Order Total" styleClass="OraDataText"/>
+                                       </ui:contents>
+                                    </oa:messageComponentLayout>
+                                 </ui:contents>
+                              </oa:header>
+                           </ui:contents>
+                        </oa:cellFormat>
+                     </ui:contents>
+                  </oa:rowLayout>
+               </ui:contents>
+            </oa:tableLayout>
+            <oa:header id="xxomOrderAdjustRN2" text="Adjustment Details">
+               <ui:contents>
+                  <oa:table id="xxomOrderAdjustmentsRID1" width="100%">
+                     <ui:contents>
+                        <oa:messageStyledText id="PriceAdjustmentId" dataType="NUMBER" prompt="Price Adjustment Id" viewName="xxomOrderAdjustmentsVO1" viewAttr="PriceAdjustmentId" rendered="false"/>
+                        <oa:messageStyledText id="CreationDate" dataType="DATE" prompt="Created Date" viewName="xxomOrderAdjustmentsVO1" viewAttr="CreationDate"/>
+                        <oa:messageStyledText id="ModifierLevelCode" dataType="VARCHAR2" prompt="Modifier Level" viewName="xxomOrderAdjustmentsVO1" viewAttr="ModifierLevelCode" maximumLength="30"/>
+                        <oa:messageStyledText id="Attribute9" dataType="VARCHAR2" prompt="Coupon Owner" viewName="xxomOrderAdjustmentsVO1" viewAttr="Attribute9" maximumLength="240"/>
+                        <oa:messageStyledText id="ListLineTypeCode" dataType="VARCHAR2" prompt="List Line Type" viewName="xxomOrderAdjustmentsVO1" viewAttr="ListLineTypeCode" maximumLength="30"/>
+                        <oa:messageStyledText id="OrigSysDiscountRef" dataType="VARCHAR2" prompt="Orig Sys Discount Ref" viewName="xxomOrderAdjustmentsVO1" viewAttr="OrigSysDiscountRef" maximumLength="50"/>
+                        <oa:messageStyledText id="AdjustedAmountPerPqty" dataType="NUMBER" prompt="Adjusted Amount Per Pqty" viewName="xxomOrderAdjustmentsVO1" viewAttr="AdjustedAmountPerPqty"/>
+                        <oa:messageStyledText id="AdjustedAmount" dataType="NUMBER" prompt="Adjusted Amount" viewName="xxomOrderAdjustmentsVO1" viewAttr="AdjustedAmount" totalValue="true"/>
+                     </ui:contents>
+                  </oa:table>
+                  <oa:link id="OrderLinesLink" destination="OA.jsp?page=/od/oracle/apps/xxom/xxomArchive/xxomCustAttr/webui/xxomOrderLinesPG&amp;HeaderId={@HeaderId}&amp;retainAM=Y&amp;addBreadCrumb=Y" text="Order Lines"/>
+                  <oa:spacer id="SpaceItem1" width="5"/>
+                  <oa:link id="ReturnToOrderLink" destination="OA.jsp?page=/od/oracle/apps/xxom/xxomArchive/xxomCustAttr/webui/xxomArchiveCustAttrSearchPG&amp;retainAM=Y" text="Return To Order Search"/>
+               </ui:contents>
+            </oa:header>
+         </ui:contents>
+      </oa:pageLayout>
+   </content>
+</page>

@@ -1,0 +1,32 @@
+SET SHOW         OFF 
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+
+SET TERM         ON
+
+PROMPT Creating Sequence XX_CE_AJB998_S
+PROMPT Program exits if the creation is not successful
+
+WHENEVER SQLERROR CONTINUE
+
+-- +==========================================================================+
+-- |                  Office Depot - Project Simplify                         |
+-- |                       WIPRO Technologies                                 |
+-- +==========================================================================+
+-- | Name :       I0032 AJB CM Interface                                      |
+-- | Description : SQL Script to create the Sequence                          |
+-- | XX_CE_AJB996_S used for the generation of seq_ID in                      | 
+-- | the custom table XX_CE_AJB998                                            | 
+-- |                                                                          |
+-- |Change Record:                                                            |
+-- |===============                                                           |
+-- |Version   Date         Author               Remarks                       |
+-- |=======   ==========   =============        ==============================|
+-- | 1.0      03-OCT-2007  Raji Natarajan        Initial version              |
+-- |                                                                          |
+-- +==========================================================================+
+
+--DROP SEQUENCE xxfin.XX_CE_AJB998_S;
+
+CREATE SEQUENCE xxfin.XX_CE_AJB998_S START WITH 1 INCREMENT BY 1;

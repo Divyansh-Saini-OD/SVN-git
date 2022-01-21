@@ -1,0 +1,24 @@
+-- +===========================================================================+
+-- |                          Office Depot                         |
+-- +===========================================================================+
+-- | Name :XXFIN.XXOM_TENDER_DATA_SEQ                                           |
+-- | Description : Script to create XXOM_TENDER_DATA_SEQ Sequence           |
+-- |                                                                           |
+-- |                                                                           |
+-- |Change Record:                                                             |
+-- |===============                                                            |
+-- |Version      Date           Author                  Remarks                |
+-- |=======    ==========     =============             ====================== |
+-- | 1.0      28-Apr-2021      Shreyas Thorat            Initial draft version  |
+-- +===========================================================================+
+
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     ON
+WHENEVER SQLERROR CONTINUE
+
+CREATE SEQUENCE  XXOM_TENDER_DATA_SEQ  
+MINVALUE 1 MAXVALUE 9999999999999999999999999999 
+INCREMENT BY 1 START WITH 1 CACHE 10 NOORDER  NOCYCLE  NOPARTITION ;

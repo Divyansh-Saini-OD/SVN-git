@@ -1,0 +1,271 @@
+
+-- +==========================================================================+
+-- |                  Office Depot - Project Simplify                         |
+-- |                       PROVIDGE Consulting                                |
+-- +==========================================================================+
+-- | SQL Script to create                                                     |
+-- |                                                                          |
+-- |                      TABLE:  xxcnv.XX_AP_INV_HDR_INTF_CNV_STG            |
+-- |                              xxcnv.XX_AP_INV_LINES_INTF_CNV_STG          |
+-- |                                                                          |
+-- |                                                                          |
+-- |                                                                          |
+-- |                                                                          |
+-- |                                                                          |
+-- |Change Record:                                                            |
+-- |===============                                                           |
+-- |Version   Date         Author               Remarks                       |
+-- |=======   ==========   ================     ==============================|
+-- | V1.0     13-JUN-2007  Sarat Uppalapati     Initial version               |
+-- | V1.0     01-NOV-2207  Sarat Uppalapati     Removed DROP Table Commands   |
+-- +==========================================================================+
+
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     ON
+
+CREATE TABLE xxcnv.XX_AP_INV_HDR_INTF_CNV_STG
+(
+  INVOICE_ID                      NUMBER(15) 
+  ,INVOICE_NUM                    VARCHAR2(50)
+  ,INVOICE_TYPE_LOOKUP_CODE       VARCHAR2(25)
+  ,INVOICE_DATE                   DATE
+  ,PO_NUMBER                      VARCHAR2(20)
+  ,VENDOR_ID                      NUMBER(15)
+  ,VENDOR_NUM                     VARCHAR2(30)
+  ,VENDOR_NAME                    VARCHAR2(240)
+  ,VENDOR_SITE_ID                 NUMBER(15)
+  ,VENDOR_SITE_CODE               VARCHAR2(15)
+  ,INVOICE_AMOUNT                 NUMBER
+  ,INVOICE_CURRENCY_CODE          VARCHAR2(15)
+  ,EXCHANGE_RATE                  NUMBER
+  ,EXCHANGE_RATE_TYPE             VARCHAR2(30)
+  ,EXCHANGE_DATE                  DATE
+  ,TERMS_ID                       NUMBER(15)
+  ,TERMS_NAME                     VARCHAR2(50)
+  ,DESCRIPTION                    VARCHAR2(240)
+  ,AWT_GROUP_ID                   NUMBER(15)
+  ,AWT_GROUP_NAME                 VARCHAR2(25)
+  ,LAST_UPDATE_DATE               DATE
+  ,LAST_UPDATED_BY                NUMBER(15)
+  ,LAST_UPDATE_LOGIN              NUMBER(15)
+  ,CREATION_DATE                  DATE
+  ,CREATED_BY                     NUMBER(15)
+  ,ATTRIBUTE_CATEGORY             VARCHAR2(150)
+  ,ATTRIBUTE1                     VARCHAR2(150)
+  ,ATTRIBUTE2                     VARCHAR2(150)
+  ,ATTRIBUTE3                     VARCHAR2(150)
+  ,ATTRIBUTE4                     VARCHAR2(150)
+  ,ATTRIBUTE5                     VARCHAR2(150)
+  ,ATTRIBUTE6                     VARCHAR2(150)
+  ,ATTRIBUTE7                     VARCHAR2(150)
+  ,ATTRIBUTE8                     VARCHAR2(150)
+  ,ATTRIBUTE9                     VARCHAR2(150)
+  ,ATTRIBUTE10                    VARCHAR2(150)
+  ,ATTRIBUTE11                    VARCHAR2(150)
+  ,ATTRIBUTE12                    VARCHAR2(150)
+  ,ATTRIBUTE13                    VARCHAR2(150)
+  ,ATTRIBUTE14                    VARCHAR2(150)
+  ,ATTRIBUTE15                    VARCHAR2(150)
+  ,GLOBAL_ATTRIBUTE_CATEGORY      VARCHAR2(150)
+  ,GLOBAL_ATTRIBUTE1              VARCHAR2(150)
+  ,GLOBAL_ATTRIBUTE2              VARCHAR2(150)
+  ,GLOBAL_ATTRIBUTE3              VARCHAR2(150)
+  ,GLOBAL_ATTRIBUTE4              VARCHAR2(150)
+  ,GLOBAL_ATTRIBUTE5              VARCHAR2(150)
+  ,GLOBAL_ATTRIBUTE6              VARCHAR2(150)
+  ,GLOBAL_ATTRIBUTE7              VARCHAR2(150)
+  ,GLOBAL_ATTRIBUTE8              VARCHAR2(150)
+  ,GLOBAL_ATTRIBUTE9              VARCHAR2(150)
+  ,GLOBAL_ATTRIBUTE10             VARCHAR2(150)
+  ,GLOBAL_ATTRIBUTE11             VARCHAR2(150)
+  ,GLOBAL_ATTRIBUTE12             VARCHAR2(150)
+  ,GLOBAL_ATTRIBUTE13             VARCHAR2(150)
+  ,GLOBAL_ATTRIBUTE14             VARCHAR2(150)
+  ,GLOBAL_ATTRIBUTE15             VARCHAR2(150)
+  ,GLOBAL_ATTRIBUTE16             VARCHAR2(150)
+  ,GLOBAL_ATTRIBUTE17             VARCHAR2(150)
+  ,GLOBAL_ATTRIBUTE18             VARCHAR2(150)
+  ,GLOBAL_ATTRIBUTE19             VARCHAR2(150)
+  ,GLOBAL_ATTRIBUTE20             VARCHAR2(150)
+  ,STATUS                         VARCHAR2(25)
+  ,SOURCE                         VARCHAR2(80)
+  ,GROUP_ID                       VARCHAR2(80)
+  ,REQUEST_ID                     NUMBER
+  ,PAYMENT_CROSS_RATE_TYPE        VARCHAR2(30)
+  ,PAYMENT_CROSS_RATE_DATE        DATE
+  ,PAYMENT_CROSS_RATE             NUMBER
+  ,PAYMENT_CURRENCY_CODE          VARCHAR2(15)
+  ,WORKFLOW_FLAG                  VARCHAR2(1)
+  ,DOC_CATEGORY_CODE              VARCHAR2(30)
+  ,VOUCHER_NUM                    VARCHAR2(50)
+  ,PAYMENT_METHOD_LOOKUP_CODE     VARCHAR2(25)
+  ,PAY_GROUP_LOOKUP_CODE          VARCHAR2(25)
+  ,GOODS_RECEIVED_DATE            DATE
+  ,INVOICE_RECEIVED_DATE          DATE
+  ,GL_DATE                        DATE
+  ,ACCTS_PAY_CODE_COMBINATION_ID  NUMBER(15)
+  ,USSGL_TRANSACTION_CODE         VARCHAR2(30)
+  ,EXCLUSIVE_PAYMENT_FLAG         VARCHAR2(1)
+  ,ORG_ID                         NUMBER(15)
+  ,AMOUNT_APPLICABLE_TO_DISCOUNT  NUMBER
+  ,PREPAY_NUM                     VARCHAR2(50)
+  ,PREPAY_DIST_NUM                NUMBER(15)
+  ,PREPAY_APPLY_AMOUNT            NUMBER
+  ,PREPAY_GL_DATE                 DATE
+  ,INVOICE_INCLUDES_PREPAY_FLAG   VARCHAR2(1)
+  ,NO_XRATE_BASE_AMOUNT           NUMBER
+  ,VENDOR_EMAIL_ADDRESS           VARCHAR2(2000)
+  ,TERMS_DATE                     DATE
+  ,REQUESTER_ID                   NUMBER(10)
+  ,SHIP_TO_LOCATION               VARCHAR2(40)
+  ,EXTERNAL_DOC_REF               VARCHAR2(240)
+  ,AUDIT_ID                       NUMBER(10) NOT NULL
+  ,RECORD_ID                      NUMBER(10)
+  ,PARENT_RECORD_ID               NUMBER(10)
+  ,CONTROL_ID                     NUMBER
+  ,PROCESS_FLAG                   NUMBER(1) NOT NULL
+  ,CONV_ACTION                    VARCHAR2(10) NOT NULL
+  ,BATCH_ID                       NUMBER
+  ,SOURCE_SYSTEM_CODE             VARCHAR2(100) NOT NULL
+  ,SOURCE_SYSTEM_REF              VARCHAR2(300) NOT NULL
+  ,HOLD_PROCESS_FLAG              VARCHAR2(1)
+);
+
+
+CREATE TABLE xxcnv.XX_AP_INV_LINES_INTF_CNV_STG
+(
+  INVOICE_ID                    NUMBER(15) 
+  ,INVOICE_LINE_ID              NUMBER(15)
+  ,LINE_NUMBER                  NUMBER(15)
+  ,LINE_TYPE_LOOKUP_CODE        VARCHAR2(25)
+  ,LINE_GROUP_NUMBER            NUMBER
+  ,AMOUNT                       NUMBER
+  ,ACCOUNTING_DATE              DATE
+  ,DESCRIPTION                  VARCHAR2(240)
+  ,AMOUNT_INCLUDES_TAX_FLAG     VARCHAR2(1)
+  ,PRORATE_ACROSS_FLAG          VARCHAR2(1)
+  ,TAX_CODE                     VARCHAR2(15)
+  ,FINAL_MATCH_FLAG             VARCHAR2(1)
+  ,PO_HEADER_ID                 NUMBER
+  ,PO_NUMBER                    VARCHAR2(20)
+  ,PO_LINE_ID                   NUMBER
+  ,PO_LINE_NUMBER               NUMBER
+  ,PO_LINE_LOCATION_ID          NUMBER
+  ,PO_SHIPMENT_NUM              NUMBER
+  ,PO_DISTRIBUTION_ID           NUMBER
+  ,PO_DISTRIBUTION_NUM          NUMBER
+  ,PO_UNIT_OF_MEASURE           VARCHAR2(25)
+  ,INVENTORY_ITEM_ID            NUMBER
+  ,ITEM_DESCRIPTION             VARCHAR2(240)
+  ,QUANTITY_INVOICED            NUMBER
+  ,SHIP_TO_LOCATION_CODE        VARCHAR2(60)
+  ,UNIT_PRICE                   NUMBER
+  ,DISTRIBUTION_SET_ID          NUMBER(15)
+  ,DISTRIBUTION_SET_NAME        VARCHAR2(50)
+  ,DIST_CODE_CONCATENATED       VARCHAR2(250)
+  ,DIST_CODE_COMBINATION_ID     NUMBER(15)
+  ,AWT_GROUP_ID                 NUMBER(15)
+  ,AWT_GROUP_NAME               VARCHAR2(25)
+  ,LAST_UPDATED_BY              NUMBER(15)
+  ,LAST_UPDATE_DATE             DATE
+  ,LAST_UPDATE_LOGIN            NUMBER(15)
+  ,CREATED_BY                   NUMBER(15)
+  ,CREATION_DATE                DATE
+  ,ATTRIBUTE_CATEGORY           VARCHAR2(150)
+  ,ATTRIBUTE1                   VARCHAR2(150)
+  ,ATTRIBUTE2                   VARCHAR2(150)
+  ,ATTRIBUTE3                   VARCHAR2(150)
+  ,ATTRIBUTE4                   VARCHAR2(150)
+  ,ATTRIBUTE5                   VARCHAR2(150)
+  ,ATTRIBUTE6                   VARCHAR2(150)
+  ,ATTRIBUTE7                   VARCHAR2(150)
+  ,ATTRIBUTE8                   VARCHAR2(150)
+  ,ATTRIBUTE9                   VARCHAR2(150)
+  ,ATTRIBUTE10                  VARCHAR2(150)
+  ,ATTRIBUTE11                  VARCHAR2(150)
+  ,ATTRIBUTE12                  VARCHAR2(150)
+  ,ATTRIBUTE13                  VARCHAR2(150)
+  ,ATTRIBUTE14                  VARCHAR2(150)
+  ,ATTRIBUTE15                  VARCHAR2(150)
+  ,GLOBAL_ATTRIBUTE_CATEGORY    VARCHAR2(150)
+  ,GLOBAL_ATTRIBUTE1            VARCHAR2(150)
+  ,GLOBAL_ATTRIBUTE2            VARCHAR2(150)
+  ,GLOBAL_ATTRIBUTE3            VARCHAR2(150)
+  ,GLOBAL_ATTRIBUTE4            VARCHAR2(150)
+  ,GLOBAL_ATTRIBUTE5            VARCHAR2(150)
+  ,GLOBAL_ATTRIBUTE6            VARCHAR2(150)
+  ,GLOBAL_ATTRIBUTE7            VARCHAR2(150)
+  ,GLOBAL_ATTRIBUTE8            VARCHAR2(150)
+  ,GLOBAL_ATTRIBUTE9            VARCHAR2(150)
+  ,GLOBAL_ATTRIBUTE10           VARCHAR2(150)
+  ,GLOBAL_ATTRIBUTE11           VARCHAR2(150)
+  ,GLOBAL_ATTRIBUTE12           VARCHAR2(150)
+  ,GLOBAL_ATTRIBUTE13           VARCHAR2(150)
+  ,GLOBAL_ATTRIBUTE14           VARCHAR2(150)
+  ,GLOBAL_ATTRIBUTE15           VARCHAR2(150)
+  ,GLOBAL_ATTRIBUTE16           VARCHAR2(150)
+  ,GLOBAL_ATTRIBUTE17           VARCHAR2(150)
+  ,GLOBAL_ATTRIBUTE18           VARCHAR2(150)
+  ,GLOBAL_ATTRIBUTE19           VARCHAR2(150)
+  ,GLOBAL_ATTRIBUTE20           VARCHAR2(150)
+  ,PO_RELEASE_ID                NUMBER
+  ,RELEASE_NUM                  NUMBER
+  ,ACCOUNT_SEGMENT              VARCHAR2(25)
+  ,BALANCING_SEGMENT            VARCHAR2(25)
+  ,COST_CENTER_SEGMENT          VARCHAR2(25)
+  ,PROJECT_ID                   NUMBER(15)
+  ,TASK_ID                      NUMBER(15)
+  ,EXPENDITURE_TYPE             VARCHAR2(30)
+  ,EXPENDITURE_ITEM_DATE        DATE
+  ,EXPENDITURE_ORGANIZATION_ID  NUMBER(15)
+  ,PROJECT_ACCOUNTING_CONTEXT   VARCHAR2(30)
+  ,PA_ADDITION_FLAG             VARCHAR2(1)
+  ,PA_QUANTITY                  NUMBER(22,5)
+  ,USSGL_TRANSACTION_CODE       VARCHAR2(30)
+  ,STAT_AMOUNT                  NUMBER
+  ,TYPE_1099                    VARCHAR2(10)
+  ,INCOME_TAX_REGION            VARCHAR2(10)
+  ,ASSETS_TRACKING_FLAG         VARCHAR2(1)
+  ,PRICE_CORRECTION_FLAG        VARCHAR2(1)
+  ,ORG_ID                       NUMBER(15)
+  ,RECEIPT_NUMBER               VARCHAR2(30)
+  ,RECEIPT_LINE_NUMBER          VARCHAR2(25)
+  ,MATCH_OPTION                 VARCHAR2(25)
+  ,PACKING_SLIP                 VARCHAR2(25)
+  ,RCV_TRANSACTION_ID           NUMBER
+  ,PA_CC_AR_INVOICE_ID          NUMBER(15)
+  ,PA_CC_AR_INVOICE_LINE_NUM    NUMBER(15)
+  ,REFERENCE_1                  VARCHAR2(30)
+  ,REFERENCE_2                  VARCHAR2(30)
+  ,PA_CC_PROCESSED_CODE         VARCHAR2(1)
+  ,TAX_RECOVERY_RATE            NUMBER
+  ,TAX_RECOVERY_OVERRIDE_FLAG   VARCHAR2(1)
+  ,TAX_RECOVERABLE_FLAG         VARCHAR2(1)
+  ,TAX_CODE_OVERRIDE_FLAG       VARCHAR2(1)
+  ,TAX_CODE_ID                  NUMBER(15)
+  ,CREDIT_CARD_TRX_ID           NUMBER(15)
+  ,AWARD_ID                     NUMBER(15)
+  ,VENDOR_ITEM_NUM              VARCHAR2(25)
+  ,TAXABLE_FLAG                 VARCHAR2(1)
+  ,PRICE_CORRECT_INV_NUM        VARCHAR2(50)
+  ,EXTERNAL_DOC_LINE_REF        VARCHAR2(240)
+  ,AUDIT_ID                     NUMBER(10) NOT NULL
+  ,RECORD_ID                    NUMBER(10)
+  ,PARENT_RECORD_ID             NUMBER(10)
+  ,CONTROL_ID                   NUMBER
+  ,PROCESS_FLAG                 NUMBER(1) NOT NULL
+  ,CONV_ACTION                  VARCHAR2(10) NOT NULL
+  ,BATCH_ID                     NUMBER
+  ,SOURCE_SYSTEM_CODE           VARCHAR2(100) NOT NULL
+  ,SOURCE_SYSTEM_REF            VARCHAR2(300) NOT NULL
+);
+
+
+SHOW ERROR
+
+
+
+

@@ -1,0 +1,45 @@
+-- +==========================================================================+
+-- |                               Office Depot                               |
+-- +==========================================================================+
+-- | SQL Script to create the following index                                 |
+-- |                                                                          |
+-- |             Index  : XX_AR_POSTING_WORKER_GT_U1                          |
+-- |                                                                          |
+-- |             RICE#  : Index   - E2024 Custom Indexes                      |
+-- |                      Used By - E2050 GL Transfer Parallelization Prog.   |
+-- |                                                                          |
+-- |Change Record:                                                            |
+-- |===============                                                           |
+-- |Version   Date         Author               Remarks                       |
+-- |=======   ===========  ===================  ==============================|
+-- | V1.0     23-MAR-2010  R.Aldridge           Initial version - Defect 4889 |
+-- |                                            Performance recommendation    |
+-- +==========================================================================+
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     ON
+
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+CREATE INDEX XXFIN.XX_GL_JE_LINES_N5 ON GL.GL_JE_LINES
+(JE_HEADER_ID, JE_LINE_NUM, CODE_COMBINATION_ID)
+NOLOGGING
+TABLESPACE APPS_TS_TX_IDX_16M
+PCTFREE    10
+INITRANS   2
+MAXTRANS   255
+STORAGE    (INITIAL          16M
+            NEXT             16M
+            MINEXTENTS       1
+            MAXEXTENTS       2147483645
+            PCTINCREASE      0
+            BUFFER_POOL      DEFAULT
+           )
+PARALLEL 8
+COMPUTE STATISTICS
+ONLINE;
+
+ALTER INDEX XXFIN.XX_GL_JE_LINES_N5 NOPARALLEL LOGGING;

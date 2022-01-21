@@ -1,0 +1,41 @@
+<?xml version= '1.0' encoding= 'UTF-8' ?>
+<wsdl:definitions
+     name="ValidateSchoolID"
+     targetNamespace="http://oracle.com/sca/soapservice/BTS/ValidateSchoolIDPOSReqABCSImpl/ValidateSchoolID"
+     xmlns:inp2="http://xmlns.officedepot.com/BTS/ValidateSchoolIDPOSReqABCSImpl/ValidateSchoolIDPOSResponse/V1"
+     xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+     xmlns:inp1="http://xmlns.officedepot.com/BTS/ValidateSchoolIDPOSReqABCSImpl/ValidateSchoolIDPOSRequest/V1"
+     xmlns:tns="http://oracle.com/sca/soapservice/BTS/ValidateSchoolIDPOSReqABCSImpl/ValidateSchoolID"
+     xmlns:inp3="http://xmlns.oracle.com/BTS/ValidateSchoolIDPOSReqABCSImpl/ValidateSchoolIDPOSFault/V1"
+    >
+    <wsdl:types>
+        <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <xsd:import namespace="http://xmlns.officedepot.com/BTS/ValidateSchoolIDPOSReqABCSImpl/ValidateSchoolIDPOSRequest/V1"
+                 schemaLocation="xsd/ValidateSchoolIDPOSRequest.xsd"/>
+        </xsd:schema>
+        <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <xsd:import namespace="http://xmlns.officedepot.com/BTS/ValidateSchoolIDPOSReqABCSImpl/ValidateSchoolIDPOSResponse/V1"
+                 schemaLocation="xsd/ValidateSchoolIDPOSResponse.xsd"/>
+        </xsd:schema>
+        <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <xsd:import namespace="http://xmlns.oracle.com/BTS/ValidateSchoolIDPOSReqABCSImpl/ValidateSchoolIDPOSFault/V1"
+                 schemaLocation="xsd/ValidateSchoolIDPOSFaultMessage.xsd"/>
+        </xsd:schema>
+    </wsdl:types>
+    <wsdl:message name="requestMessage">
+        <wsdl:part name="SchoolID" element="inp1:Request"/>
+    </wsdl:message>
+    <wsdl:message name="replyMessage">
+        <wsdl:part name="replyMessage" element="inp2:OutputParameters"/>
+    </wsdl:message>
+    <wsdl:message name="faultMessage">
+        <wsdl:part name="faultMessage" element="inp3:ValidateSchoolIDPOSFaultMessage"/>
+    </wsdl:message>
+    <wsdl:portType name="execute_ptt">
+        <wsdl:operation name="execute">
+            <wsdl:input message="tns:requestMessage"/>
+            <wsdl:output message="tns:replyMessage"/>
+            <wsdl:fault name="executefault" message="tns:faultMessage"/>
+        </wsdl:operation>
+    </wsdl:portType>
+</wsdl:definitions>

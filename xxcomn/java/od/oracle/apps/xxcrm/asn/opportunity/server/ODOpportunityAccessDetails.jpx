@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding='windows-1252'?>
+<!DOCTYPE JboProject SYSTEM "jbo_03_01.dtd">
+
+<JboProject
+   Name="ODOpportunityAccessDetails"
+   SeparateXMLFiles="true"
+   PackageName="" >
+   <DesignTime>
+      <Attr Name="_version" Value="9.0.3.13.93" />
+      <Attr Name="_jprName" Value="ODOpportunityAccessDetails.jpr" />
+      <Attr Name="_ejbPackage" Value="false" />
+      <Attr Name="_NamedConnection" Value="GSIDEV02" />
+   </DesignTime>
+   <Containee
+      Name="server"
+      FullName="od.oracle.apps.xxcrm.asn.opportunity.server.server"
+      ObjectType="JboPackage" >
+   </Containee>
+   <Containee
+      Name="server"
+      FullName="oracle.apps.asn.opportunity.server.server"
+      ObjectType="JboPackage" >
+   </Containee>
+   <Substitutes>
+      <Substitute OldName ="oracle.apps.asn.opportunity.server.OpportunityAccessDetailsVO" NewName ="od.oracle.apps.xxcrm.asn.opportunity.server.ODOpportunityAccessDetailsVO" />
+   </Substitutes>
+</JboProject>

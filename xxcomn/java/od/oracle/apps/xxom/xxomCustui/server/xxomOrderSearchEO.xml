@@ -1,0 +1,2605 @@
+<?xml version='1.0' encoding='windows-1252' ?>
+<!DOCTYPE Entity SYSTEM "jbo_03_01.dtd">
+
+<Entity
+   Name="xxomOrderSearchEO"
+   DBObjectType="table"
+   DBObjectName="OE_ORDER_HEADERS_V"
+   AliasName="xxomOrderSearchEO"
+   BindingStyle="Oracle"
+   UseGlueCode="false"
+   RowClass="od.oracle.apps.xxom.xxomCustui.server.xxomOrderSearchEOImpl"
+   DefClass="oracle.apps.fnd.framework.server.OAEntityDefImpl"
+   CollClass="oracle.apps.fnd.framework.server.OAEntityCache" >
+   <DesignTime>
+      <Attr Name="_isCodegen" Value="true" />
+      <Attr Name="_version" Value="10.1.3.41.57" />
+      <AttrArray Name="_publishEvents">
+      </AttrArray>
+      <Attr Name="_panelSchema" Value="view" />
+      <Attr Name="_codeGenFlag2" Value="Init|Delete|Access|Val" />
+   </DesignTime>
+   <Attribute
+      Name="RowId1"
+      IsNotNull="true"
+      ColumnName="ROW_ID"
+      Type="oracle.jbo.domain.RowID"
+      ColumnType="ROWID"
+      SQLType="ROWID"
+      TableName="OE_ORDER_HEADERS_V" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="1" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="HeaderId"
+      IsNotNull="true"
+      ColumnName="HEADER_ID"
+      Type="oracle.jbo.domain.Number"
+      ColumnType="NUMBER"
+      SQLType="NUMERIC"
+      TableName="OE_ORDER_HEADERS_V"
+      PrimaryKey="true" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="OrgId"
+      ColumnName="ORG_ID"
+      Type="oracle.jbo.domain.Number"
+      ColumnType="NUMBER"
+      SQLType="NUMERIC"
+      TableName="OE_ORDER_HEADERS_V" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="OrderTypeId"
+      IsNotNull="true"
+      ColumnName="ORDER_TYPE_ID"
+      Type="oracle.jbo.domain.Number"
+      ColumnType="NUMBER"
+      SQLType="NUMERIC"
+      TableName="OE_ORDER_HEADERS_V" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="OrderNumber"
+      IsNotNull="true"
+      ColumnName="ORDER_NUMBER"
+      Type="oracle.jbo.domain.Number"
+      ColumnType="NUMBER"
+      SQLType="NUMERIC"
+      TableName="OE_ORDER_HEADERS_V" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="VersionNumber"
+      IsNotNull="true"
+      ColumnName="VERSION_NUMBER"
+      Type="oracle.jbo.domain.Number"
+      ColumnType="NUMBER"
+      SQLType="NUMERIC"
+      TableName="OE_ORDER_HEADERS_V" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="OrderSourceId"
+      ColumnName="ORDER_SOURCE_ID"
+      Type="oracle.jbo.domain.Number"
+      ColumnType="NUMBER"
+      SQLType="NUMERIC"
+      TableName="OE_ORDER_HEADERS_V" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="SourceDocumentTypeId"
+      ColumnName="SOURCE_DOCUMENT_TYPE_ID"
+      Type="oracle.jbo.domain.Number"
+      ColumnType="NUMBER"
+      SQLType="NUMERIC"
+      TableName="OE_ORDER_HEADERS_V" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="OrigSysDocumentRef"
+      Precision="50"
+      ColumnName="ORIG_SYS_DOCUMENT_REF"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="OE_ORDER_HEADERS_V" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="50" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="SourceDocumentId"
+      ColumnName="SOURCE_DOCUMENT_ID"
+      Type="oracle.jbo.domain.Number"
+      ColumnType="NUMBER"
+      SQLType="NUMERIC"
+      TableName="OE_ORDER_HEADERS_V" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="OrderedDate"
+      ColumnName="ORDERED_DATE"
+      Type="oracle.jbo.domain.Date"
+      ColumnType="DATE"
+      SQLType="TIMESTAMP"
+      TableName="OE_ORDER_HEADERS_V" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="7" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="RequestDate"
+      ColumnName="REQUEST_DATE"
+      Type="oracle.jbo.domain.Date"
+      ColumnType="DATE"
+      SQLType="TIMESTAMP"
+      TableName="OE_ORDER_HEADERS_V" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="7" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="PricingDate"
+      ColumnName="PRICING_DATE"
+      Type="oracle.jbo.domain.Date"
+      ColumnType="DATE"
+      SQLType="TIMESTAMP"
+      TableName="OE_ORDER_HEADERS_V" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="7" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="ShipmentPriorityCode"
+      Precision="30"
+      ColumnName="SHIPMENT_PRIORITY_CODE"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="OE_ORDER_HEADERS_V" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="30" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="DemandClassCode"
+      Precision="30"
+      ColumnName="DEMAND_CLASS_CODE"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="OE_ORDER_HEADERS_V" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="30" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="PriceListId"
+      ColumnName="PRICE_LIST_ID"
+      Type="oracle.jbo.domain.Number"
+      ColumnType="NUMBER"
+      SQLType="NUMERIC"
+      TableName="OE_ORDER_HEADERS_V" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="TaxExemptFlag"
+      Precision="1"
+      ColumnName="TAX_EXEMPT_FLAG"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="OE_ORDER_HEADERS_V" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="1" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="TaxExemptNumber"
+      Precision="80"
+      ColumnName="TAX_EXEMPT_NUMBER"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="OE_ORDER_HEADERS_V" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="80" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="TaxExemptReasonCode"
+      Precision="30"
+      ColumnName="TAX_EXEMPT_REASON_CODE"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="OE_ORDER_HEADERS_V" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="30" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="ConversionRate"
+      ColumnName="CONVERSION_RATE"
+      Type="oracle.jbo.domain.Number"
+      ColumnType="NUMBER"
+      SQLType="NUMERIC"
+      TableName="OE_ORDER_HEADERS_V" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="ConversionRateDate"
+      ColumnName="CONVERSION_RATE_DATE"
+      Type="oracle.jbo.domain.Date"
+      ColumnType="DATE"
+      SQLType="TIMESTAMP"
+      TableName="OE_ORDER_HEADERS_V" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="7" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="ConversionTypeCode"
+      Precision="30"
+      ColumnName="CONVERSION_TYPE_CODE"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="OE_ORDER_HEADERS_V" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="30" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="PartialShipmentsAllowed"
+      Precision="1"
+      ColumnName="PARTIAL_SHIPMENTS_ALLOWED"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="OE_ORDER_HEADERS_V" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="1" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="ShipToleranceAbove"
+      ColumnName="SHIP_TOLERANCE_ABOVE"
+      Type="oracle.jbo.domain.Number"
+      ColumnType="NUMBER"
+      SQLType="NUMERIC"
+      TableName="OE_ORDER_HEADERS_V" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="ShipToleranceBelow"
+      ColumnName="SHIP_TOLERANCE_BELOW"
+      Type="oracle.jbo.domain.Number"
+      ColumnType="NUMBER"
+      SQLType="NUMERIC"
+      TableName="OE_ORDER_HEADERS_V" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="TransactionalCurrCode"
+      Precision="15"
+      ColumnName="TRANSACTIONAL_CURR_CODE"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="OE_ORDER_HEADERS_V" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="15" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="AgreementId"
+      ColumnName="AGREEMENT_ID"
+      Type="oracle.jbo.domain.Number"
+      ColumnType="NUMBER"
+      SQLType="NUMERIC"
+      TableName="OE_ORDER_HEADERS_V" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="TaxPointCode"
+      Precision="30"
+      ColumnName="TAX_POINT_CODE"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="OE_ORDER_HEADERS_V" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="30" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="CustPoNumber"
+      Precision="50"
+      ColumnName="CUST_PO_NUMBER"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="OE_ORDER_HEADERS_V" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="50" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="InvoicingRuleId"
+      Precision="15"
+      Scale="0"
+      ColumnName="INVOICING_RULE_ID"
+      Type="oracle.jbo.domain.Number"
+      ColumnType="NUMBER"
+      SQLType="NUMERIC"
+      TableName="OE_ORDER_HEADERS_V" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="AccountingRuleId"
+      Precision="15"
+      Scale="0"
+      ColumnName="ACCOUNTING_RULE_ID"
+      Type="oracle.jbo.domain.Number"
+      ColumnType="NUMBER"
+      SQLType="NUMERIC"
+      TableName="OE_ORDER_HEADERS_V" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="AccountingRuleDuration"
+      Precision="15"
+      Scale="0"
+      ColumnName="ACCOUNTING_RULE_DURATION"
+      Type="oracle.jbo.domain.Number"
+      ColumnType="NUMBER"
+      SQLType="NUMERIC"
+      TableName="OE_ORDER_HEADERS_V" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="PaymentTermId"
+      Precision="15"
+      Scale="0"
+      ColumnName="PAYMENT_TERM_ID"
+      Type="oracle.jbo.domain.Number"
+      ColumnType="NUMBER"
+      SQLType="NUMERIC"
+      TableName="OE_ORDER_HEADERS_V" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="ShippingMethodCode"
+      Precision="30"
+      ColumnName="SHIPPING_METHOD_CODE"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="OE_ORDER_HEADERS_V" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="30" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="FobPointCode"
+      Precision="30"
+      ColumnName="FOB_POINT_CODE"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="OE_ORDER_HEADERS_V" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="30" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="FreightTermsCode"
+      Precision="30"
+      ColumnName="FREIGHT_TERMS_CODE"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="OE_ORDER_HEADERS_V" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="30" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="SoldToOrgId"
+      ColumnName="SOLD_TO_ORG_ID"
+      Type="oracle.jbo.domain.Number"
+      ColumnType="NUMBER"
+      SQLType="NUMERIC"
+      TableName="OE_ORDER_HEADERS_V" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="SoldToPhoneId"
+      ColumnName="SOLD_TO_PHONE_ID"
+      Type="oracle.jbo.domain.Number"
+      ColumnType="NUMBER"
+      SQLType="NUMERIC"
+      TableName="OE_ORDER_HEADERS_V" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="ShipFromOrgId"
+      ColumnName="SHIP_FROM_ORG_ID"
+      Type="oracle.jbo.domain.Number"
+      ColumnType="NUMBER"
+      SQLType="NUMERIC"
+      TableName="OE_ORDER_HEADERS_V" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="ShipToOrgId"
+      ColumnName="SHIP_TO_ORG_ID"
+      Type="oracle.jbo.domain.Number"
+      ColumnType="NUMBER"
+      SQLType="NUMERIC"
+      TableName="OE_ORDER_HEADERS_V" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="InvoiceToOrgId"
+      ColumnName="INVOICE_TO_ORG_ID"
+      Type="oracle.jbo.domain.Number"
+      ColumnType="NUMBER"
+      SQLType="NUMERIC"
+      TableName="OE_ORDER_HEADERS_V" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="DeliverToOrgId"
+      ColumnName="DELIVER_TO_ORG_ID"
+      Type="oracle.jbo.domain.Number"
+      ColumnType="NUMBER"
+      SQLType="NUMERIC"
+      TableName="OE_ORDER_HEADERS_V" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="SoldToContactId"
+      ColumnName="SOLD_TO_CONTACT_ID"
+      Type="oracle.jbo.domain.Number"
+      ColumnType="NUMBER"
+      SQLType="NUMERIC"
+      TableName="OE_ORDER_HEADERS_V" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="ShipToContactId"
+      ColumnName="SHIP_TO_CONTACT_ID"
+      Type="oracle.jbo.domain.Number"
+      ColumnType="NUMBER"
+      SQLType="NUMERIC"
+      TableName="OE_ORDER_HEADERS_V" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="InvoiceToContactId"
+      ColumnName="INVOICE_TO_CONTACT_ID"
+      Type="oracle.jbo.domain.Number"
+      ColumnType="NUMBER"
+      SQLType="NUMERIC"
+      TableName="OE_ORDER_HEADERS_V" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="DeliverToContactId"
+      ColumnName="DELIVER_TO_CONTACT_ID"
+      Type="oracle.jbo.domain.Number"
+      ColumnType="NUMBER"
+      SQLType="NUMERIC"
+      TableName="OE_ORDER_HEADERS_V" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="CreationDate"
+      IsNotNull="true"
+      ColumnName="CREATION_DATE"
+      Type="oracle.jbo.domain.Date"
+      ColumnType="DATE"
+      SQLType="TIMESTAMP"
+      TableName="OE_ORDER_HEADERS_V" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="7" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="CreatedBy"
+      IsNotNull="true"
+      ColumnName="CREATED_BY"
+      Type="oracle.jbo.domain.Number"
+      ColumnType="NUMBER"
+      SQLType="NUMERIC"
+      TableName="OE_ORDER_HEADERS_V" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="LastUpdateDate"
+      IsNotNull="true"
+      ColumnName="LAST_UPDATE_DATE"
+      Type="oracle.jbo.domain.Date"
+      ColumnType="DATE"
+      SQLType="TIMESTAMP"
+      TableName="OE_ORDER_HEADERS_V" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="7" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="LastUpdatedBy"
+      IsNotNull="true"
+      ColumnName="LAST_UPDATED_BY"
+      Type="oracle.jbo.domain.Number"
+      ColumnType="NUMBER"
+      SQLType="NUMERIC"
+      TableName="OE_ORDER_HEADERS_V" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="LastUpdateLogin"
+      ColumnName="LAST_UPDATE_LOGIN"
+      Type="oracle.jbo.domain.Number"
+      ColumnType="NUMBER"
+      SQLType="NUMERIC"
+      TableName="OE_ORDER_HEADERS_V" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="ExpirationDate"
+      ColumnName="EXPIRATION_DATE"
+      Type="oracle.jbo.domain.Date"
+      ColumnType="DATE"
+      SQLType="TIMESTAMP"
+      TableName="OE_ORDER_HEADERS_V" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="7" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="RequestId"
+      ColumnName="REQUEST_ID"
+      Type="oracle.jbo.domain.Number"
+      ColumnType="NUMBER"
+      SQLType="NUMERIC"
+      TableName="OE_ORDER_HEADERS_V" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="ProgramApplicationId"
+      ColumnName="PROGRAM_APPLICATION_ID"
+      Type="oracle.jbo.domain.Number"
+      ColumnType="NUMBER"
+      SQLType="NUMERIC"
+      TableName="OE_ORDER_HEADERS_V" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="ProgramId"
+      ColumnName="PROGRAM_ID"
+      Type="oracle.jbo.domain.Number"
+      ColumnType="NUMBER"
+      SQLType="NUMERIC"
+      TableName="OE_ORDER_HEADERS_V" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="ProgramUpdateDate"
+      ColumnName="PROGRAM_UPDATE_DATE"
+      Type="oracle.jbo.domain.Date"
+      ColumnType="DATE"
+      SQLType="TIMESTAMP"
+      TableName="OE_ORDER_HEADERS_V" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="7" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="Context"
+      Precision="30"
+      ColumnName="CONTEXT"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="OE_ORDER_HEADERS_V" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="30" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="Attribute1"
+      Precision="240"
+      ColumnName="ATTRIBUTE1"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="OE_ORDER_HEADERS_V" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="240" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="Attribute2"
+      Precision="240"
+      ColumnName="ATTRIBUTE2"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="OE_ORDER_HEADERS_V" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="240" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="Attribute3"
+      Precision="240"
+      ColumnName="ATTRIBUTE3"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="OE_ORDER_HEADERS_V" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="240" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="Attribute4"
+      Precision="240"
+      ColumnName="ATTRIBUTE4"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="OE_ORDER_HEADERS_V" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="240" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="Attribute5"
+      Precision="240"
+      ColumnName="ATTRIBUTE5"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="OE_ORDER_HEADERS_V" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="240" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="Attribute6"
+      Precision="240"
+      ColumnName="ATTRIBUTE6"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="OE_ORDER_HEADERS_V" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="240" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="Attribute7"
+      Precision="240"
+      ColumnName="ATTRIBUTE7"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="OE_ORDER_HEADERS_V" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="240" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="Attribute8"
+      Precision="240"
+      ColumnName="ATTRIBUTE8"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="OE_ORDER_HEADERS_V" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="240" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="Attribute9"
+      Precision="240"
+      ColumnName="ATTRIBUTE9"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="OE_ORDER_HEADERS_V" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="240" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="Attribute10"
+      Precision="240"
+      ColumnName="ATTRIBUTE10"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="OE_ORDER_HEADERS_V" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="240" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="Attribute11"
+      Precision="240"
+      ColumnName="ATTRIBUTE11"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="OE_ORDER_HEADERS_V" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="240" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="Attribute12"
+      Precision="240"
+      ColumnName="ATTRIBUTE12"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="OE_ORDER_HEADERS_V" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="240" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="Attribute13"
+      Precision="240"
+      ColumnName="ATTRIBUTE13"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="OE_ORDER_HEADERS_V" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="240" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="Attribute14"
+      Precision="240"
+      ColumnName="ATTRIBUTE14"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="OE_ORDER_HEADERS_V" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="240" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="Attribute15"
+      Precision="240"
+      ColumnName="ATTRIBUTE15"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="OE_ORDER_HEADERS_V" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="240" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="Attribute16"
+      Precision="240"
+      ColumnName="ATTRIBUTE16"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="OE_ORDER_HEADERS_V" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="240" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="Attribute17"
+      Precision="240"
+      ColumnName="ATTRIBUTE17"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="OE_ORDER_HEADERS_V" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="240" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="Attribute18"
+      Precision="240"
+      ColumnName="ATTRIBUTE18"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="OE_ORDER_HEADERS_V" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="240" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="Attribute19"
+      Precision="240"
+      ColumnName="ATTRIBUTE19"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="OE_ORDER_HEADERS_V" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="240" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="Attribute20"
+      Precision="240"
+      ColumnName="ATTRIBUTE20"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="OE_ORDER_HEADERS_V" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="240" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="GlobalAttributeCategory"
+      Precision="30"
+      ColumnName="GLOBAL_ATTRIBUTE_CATEGORY"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="OE_ORDER_HEADERS_V" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="30" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="GlobalAttribute1"
+      Precision="240"
+      ColumnName="GLOBAL_ATTRIBUTE1"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="OE_ORDER_HEADERS_V" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="240" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="GlobalAttribute2"
+      Precision="240"
+      ColumnName="GLOBAL_ATTRIBUTE2"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="OE_ORDER_HEADERS_V" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="240" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="GlobalAttribute3"
+      Precision="240"
+      ColumnName="GLOBAL_ATTRIBUTE3"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="OE_ORDER_HEADERS_V" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="240" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="GlobalAttribute4"
+      Precision="240"
+      ColumnName="GLOBAL_ATTRIBUTE4"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="OE_ORDER_HEADERS_V" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="240" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="GlobalAttribute5"
+      Precision="240"
+      ColumnName="GLOBAL_ATTRIBUTE5"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="OE_ORDER_HEADERS_V" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="240" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="GlobalAttribute6"
+      Precision="240"
+      ColumnName="GLOBAL_ATTRIBUTE6"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="OE_ORDER_HEADERS_V" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="240" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="GlobalAttribute7"
+      Precision="240"
+      ColumnName="GLOBAL_ATTRIBUTE7"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="OE_ORDER_HEADERS_V" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="240" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="GlobalAttribute8"
+      Precision="240"
+      ColumnName="GLOBAL_ATTRIBUTE8"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="OE_ORDER_HEADERS_V" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="240" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="GlobalAttribute9"
+      Precision="240"
+      ColumnName="GLOBAL_ATTRIBUTE9"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="OE_ORDER_HEADERS_V" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="240" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="GlobalAttribute10"
+      Precision="240"
+      ColumnName="GLOBAL_ATTRIBUTE10"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="OE_ORDER_HEADERS_V" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="240" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="GlobalAttribute11"
+      Precision="240"
+      ColumnName="GLOBAL_ATTRIBUTE11"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="OE_ORDER_HEADERS_V" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="240" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="GlobalAttribute12"
+      Precision="240"
+      ColumnName="GLOBAL_ATTRIBUTE12"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="OE_ORDER_HEADERS_V" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="240" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="GlobalAttribute13"
+      Precision="240"
+      ColumnName="GLOBAL_ATTRIBUTE13"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="OE_ORDER_HEADERS_V" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="240" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="GlobalAttribute14"
+      Precision="240"
+      ColumnName="GLOBAL_ATTRIBUTE14"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="OE_ORDER_HEADERS_V" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="240" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="GlobalAttribute15"
+      Precision="240"
+      ColumnName="GLOBAL_ATTRIBUTE15"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="OE_ORDER_HEADERS_V" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="240" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="GlobalAttribute16"
+      Precision="240"
+      ColumnName="GLOBAL_ATTRIBUTE16"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="OE_ORDER_HEADERS_V" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="240" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="GlobalAttribute17"
+      Precision="240"
+      ColumnName="GLOBAL_ATTRIBUTE17"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="OE_ORDER_HEADERS_V" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="240" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="GlobalAttribute18"
+      Precision="240"
+      ColumnName="GLOBAL_ATTRIBUTE18"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="OE_ORDER_HEADERS_V" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="240" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="GlobalAttribute19"
+      Precision="240"
+      ColumnName="GLOBAL_ATTRIBUTE19"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="OE_ORDER_HEADERS_V" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="240" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="GlobalAttribute20"
+      Precision="240"
+      ColumnName="GLOBAL_ATTRIBUTE20"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="OE_ORDER_HEADERS_V" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="240" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="TpContext"
+      Precision="30"
+      ColumnName="TP_CONTEXT"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="OE_ORDER_HEADERS_V" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="30" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="TpAttribute1"
+      Precision="240"
+      ColumnName="TP_ATTRIBUTE1"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="OE_ORDER_HEADERS_V" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="240" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="TpAttribute2"
+      Precision="240"
+      ColumnName="TP_ATTRIBUTE2"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="OE_ORDER_HEADERS_V" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="240" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="TpAttribute3"
+      Precision="240"
+      ColumnName="TP_ATTRIBUTE3"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="OE_ORDER_HEADERS_V" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="240" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="TpAttribute4"
+      Precision="240"
+      ColumnName="TP_ATTRIBUTE4"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="OE_ORDER_HEADERS_V" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="240" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="TpAttribute5"
+      Precision="240"
+      ColumnName="TP_ATTRIBUTE5"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="OE_ORDER_HEADERS_V" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="240" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="TpAttribute6"
+      Precision="240"
+      ColumnName="TP_ATTRIBUTE6"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="OE_ORDER_HEADERS_V" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="240" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="TpAttribute7"
+      Precision="240"
+      ColumnName="TP_ATTRIBUTE7"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="OE_ORDER_HEADERS_V" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="240" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="TpAttribute8"
+      Precision="240"
+      ColumnName="TP_ATTRIBUTE8"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="OE_ORDER_HEADERS_V" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="240" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="TpAttribute9"
+      Precision="240"
+      ColumnName="TP_ATTRIBUTE9"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="OE_ORDER_HEADERS_V" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="240" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="TpAttribute10"
+      Precision="240"
+      ColumnName="TP_ATTRIBUTE10"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="OE_ORDER_HEADERS_V" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="240" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="TpAttribute11"
+      Precision="240"
+      ColumnName="TP_ATTRIBUTE11"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="OE_ORDER_HEADERS_V" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="240" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="TpAttribute12"
+      Precision="240"
+      ColumnName="TP_ATTRIBUTE12"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="OE_ORDER_HEADERS_V" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="240" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="TpAttribute13"
+      Precision="240"
+      ColumnName="TP_ATTRIBUTE13"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="OE_ORDER_HEADERS_V" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="240" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="TpAttribute14"
+      Precision="240"
+      ColumnName="TP_ATTRIBUTE14"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="OE_ORDER_HEADERS_V" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="240" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="TpAttribute15"
+      Precision="240"
+      ColumnName="TP_ATTRIBUTE15"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="OE_ORDER_HEADERS_V" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="240" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="FreightCarrierCode"
+      Precision="30"
+      ColumnName="FREIGHT_CARRIER_CODE"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="OE_ORDER_HEADERS_V" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="30" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="CustomerNumber"
+      Precision="30"
+      ColumnName="CUSTOMER_NUMBER"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="OE_ORDER_HEADERS_V" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="30" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="CurrencyPrecision"
+      Precision="1"
+      Scale="0"
+      ColumnName="CURRENCY_PRECISION"
+      Type="oracle.jbo.domain.Number"
+      ColumnType="NUMBER"
+      SQLType="NUMERIC"
+      TableName="OE_ORDER_HEADERS_V" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="OrderSource"
+      ColumnName="ORDER_SOURCE"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="OE_ORDER_HEADERS_V" >
+   </Attribute>
+   <Attribute
+      Name="OrderType"
+      IsNotNull="true"
+      Precision="30"
+      ColumnName="ORDER_TYPE"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="OE_ORDER_HEADERS_V" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="30" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="SourceDocumentType"
+      ColumnName="SOURCE_DOCUMENT_TYPE"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="OE_ORDER_HEADERS_V" >
+   </Attribute>
+   <Attribute
+      Name="Agreement"
+      ColumnName="AGREEMENT"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="OE_ORDER_HEADERS_V" >
+   </Attribute>
+   <Attribute
+      Name="PriceList"
+      Precision="240"
+      ColumnName="PRICE_LIST"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="OE_ORDER_HEADERS_V" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="240" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="ConversionType"
+      ColumnName="CONVERSION_TYPE"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="OE_ORDER_HEADERS_V" >
+   </Attribute>
+   <Attribute
+      Name="AccountingRule"
+      Precision="30"
+      ColumnName="ACCOUNTING_RULE"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="OE_ORDER_HEADERS_V" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="30" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="InvoicingRule"
+      Precision="30"
+      ColumnName="INVOICING_RULE"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="OE_ORDER_HEADERS_V" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="30" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="Terms"
+      Precision="15"
+      ColumnName="TERMS"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="OE_ORDER_HEADERS_V" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="15" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="SoldTo"
+      Precision="360"
+      ColumnName="SOLD_TO"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="OE_ORDER_HEADERS_V" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="360" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="ShipFrom"
+      Precision="3"
+      ColumnName="SHIP_FROM"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="OE_ORDER_HEADERS_V" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="3" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="ShipFromLocation"
+      ColumnName="SHIP_FROM_LOCATION"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="OE_ORDER_HEADERS_V" >
+   </Attribute>
+   <Attribute
+      Name="ShipFromAddress1"
+      ColumnName="SHIP_FROM_ADDRESS1"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="OE_ORDER_HEADERS_V" >
+   </Attribute>
+   <Attribute
+      Name="ShipFromAddress2"
+      ColumnName="SHIP_FROM_ADDRESS2"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="OE_ORDER_HEADERS_V" >
+   </Attribute>
+   <Attribute
+      Name="ShipFromAddress3"
+      ColumnName="SHIP_FROM_ADDRESS3"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="OE_ORDER_HEADERS_V" >
+   </Attribute>
+   <Attribute
+      Name="ShipFromAddress4"
+      ColumnName="SHIP_FROM_ADDRESS4"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="OE_ORDER_HEADERS_V" >
+   </Attribute>
+   <Attribute
+      Name="ShipTo"
+      Precision="40"
+      ColumnName="SHIP_TO"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="OE_ORDER_HEADERS_V" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="40" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="ShipToLocation"
+      Precision="40"
+      ColumnName="SHIP_TO_LOCATION"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="OE_ORDER_HEADERS_V" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="40" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="ShipToAddress1"
+      Precision="240"
+      ColumnName="SHIP_TO_ADDRESS1"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="OE_ORDER_HEADERS_V" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="240" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="ShipToAddress2"
+      Precision="240"
+      ColumnName="SHIP_TO_ADDRESS2"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="OE_ORDER_HEADERS_V" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="240" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="ShipToAddress3"
+      Precision="240"
+      ColumnName="SHIP_TO_ADDRESS3"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="OE_ORDER_HEADERS_V" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="240" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="ShipToAddress4"
+      Precision="240"
+      ColumnName="SHIP_TO_ADDRESS4"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="OE_ORDER_HEADERS_V" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="240" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="ShipToAddress5"
+      Precision="246"
+      ColumnName="SHIP_TO_ADDRESS5"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="OE_ORDER_HEADERS_V" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="246" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="DeliverTo"
+      ColumnName="DELIVER_TO"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="OE_ORDER_HEADERS_V" >
+   </Attribute>
+   <Attribute
+      Name="DeliverToLocation"
+      ColumnName="DELIVER_TO_LOCATION"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="OE_ORDER_HEADERS_V" >
+   </Attribute>
+   <Attribute
+      Name="DeliverToAddress1"
+      ColumnName="DELIVER_TO_ADDRESS1"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="OE_ORDER_HEADERS_V" >
+   </Attribute>
+   <Attribute
+      Name="DeliverToAddress2"
+      ColumnName="DELIVER_TO_ADDRESS2"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="OE_ORDER_HEADERS_V" >
+   </Attribute>
+   <Attribute
+      Name="DeliverToAddress3"
+      ColumnName="DELIVER_TO_ADDRESS3"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="OE_ORDER_HEADERS_V" >
+   </Attribute>
+   <Attribute
+      Name="DeliverToAddress4"
+      ColumnName="DELIVER_TO_ADDRESS4"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="OE_ORDER_HEADERS_V" >
+   </Attribute>
+   <Attribute
+      Name="InvoiceTo"
+      Precision="40"
+      ColumnName="INVOICE_TO"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="OE_ORDER_HEADERS_V" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="40" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="InvoiceToLocation"
+      Precision="40"
+      ColumnName="INVOICE_TO_LOCATION"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="OE_ORDER_HEADERS_V" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="40" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="InvoiceToAddress1"
+      Precision="240"
+      ColumnName="INVOICE_TO_ADDRESS1"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="OE_ORDER_HEADERS_V" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="240" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="InvoiceToAddress2"
+      Precision="240"
+      ColumnName="INVOICE_TO_ADDRESS2"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="OE_ORDER_HEADERS_V" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="240" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="InvoiceToAddress3"
+      Precision="240"
+      ColumnName="INVOICE_TO_ADDRESS3"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="OE_ORDER_HEADERS_V" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="240" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="InvoiceToAddress4"
+      Precision="240"
+      ColumnName="INVOICE_TO_ADDRESS4"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="OE_ORDER_HEADERS_V" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="240" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="InvoiceToAddress5"
+      Precision="246"
+      ColumnName="INVOICE_TO_ADDRESS5"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="OE_ORDER_HEADERS_V" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="246" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="SoldToContact"
+      Precision="383"
+      ColumnName="SOLD_TO_CONTACT"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="OE_ORDER_HEADERS_V" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="383" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="ShipToContact"
+      Precision="383"
+      ColumnName="SHIP_TO_CONTACT"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="OE_ORDER_HEADERS_V" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="383" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="InvoiceToContact"
+      Precision="383"
+      ColumnName="INVOICE_TO_CONTACT"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="OE_ORDER_HEADERS_V" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="383" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="DeliverToContact"
+      ColumnName="DELIVER_TO_CONTACT"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="OE_ORDER_HEADERS_V" >
+   </Attribute>
+   <Attribute
+      Name="SalesrepId"
+      Precision="15"
+      Scale="0"
+      ColumnName="SALESREP_ID"
+      Type="oracle.jbo.domain.Number"
+      ColumnType="NUMBER"
+      SQLType="NUMERIC"
+      TableName="OE_ORDER_HEADERS_V" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="ReturnReasonCode"
+      Precision="30"
+      ColumnName="RETURN_REASON_CODE"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="OE_ORDER_HEADERS_V" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="30" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="ReturnReason"
+      ColumnName="RETURN_REASON"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="OE_ORDER_HEADERS_V" >
+   </Attribute>
+   <Attribute
+      Name="OrderDateTypeCode"
+      Precision="30"
+      ColumnName="ORDER_DATE_TYPE_CODE"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="OE_ORDER_HEADERS_V" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="30" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="EarliestScheduleLimit"
+      ColumnName="EARLIEST_SCHEDULE_LIMIT"
+      Type="oracle.jbo.domain.Number"
+      ColumnType="NUMBER"
+      SQLType="NUMERIC"
+      TableName="OE_ORDER_HEADERS_V" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="LatestScheduleLimit"
+      ColumnName="LATEST_SCHEDULE_LIMIT"
+      Type="oracle.jbo.domain.Number"
+      ColumnType="NUMBER"
+      SQLType="NUMERIC"
+      TableName="OE_ORDER_HEADERS_V" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="PaymentTypeCode"
+      Precision="30"
+      ColumnName="PAYMENT_TYPE_CODE"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="OE_ORDER_HEADERS_V" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="30" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="PaymentAmount"
+      ColumnName="PAYMENT_AMOUNT"
+      Type="oracle.jbo.domain.Number"
+      ColumnType="NUMBER"
+      SQLType="NUMERIC"
+      TableName="OE_ORDER_HEADERS_V" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="CheckNumber"
+      Precision="50"
+      ColumnName="CHECK_NUMBER"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="OE_ORDER_HEADERS_V" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="50" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="CreditCardCode"
+      Precision="80"
+      ColumnName="CREDIT_CARD_CODE"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="OE_ORDER_HEADERS_V" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="80" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="CreditCardHolderName"
+      Precision="80"
+      ColumnName="CREDIT_CARD_HOLDER_NAME"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="OE_ORDER_HEADERS_V" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="80" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="CreditCardNumber"
+      Precision="80"
+      ColumnName="CREDIT_CARD_NUMBER"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="OE_ORDER_HEADERS_V" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="80" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="CreditCardExpirationDate"
+      ColumnName="CREDIT_CARD_EXPIRATION_DATE"
+      Type="oracle.jbo.domain.Date"
+      ColumnType="DATE"
+      SQLType="TIMESTAMP"
+      TableName="OE_ORDER_HEADERS_V" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="7" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="CreditCardApprovalCode"
+      Precision="80"
+      ColumnName="CREDIT_CARD_APPROVAL_CODE"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="OE_ORDER_HEADERS_V" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="80" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="CreditCardApprovalDate"
+      ColumnName="CREDIT_CARD_APPROVAL_DATE"
+      Type="oracle.jbo.domain.Date"
+      ColumnType="DATE"
+      SQLType="TIMESTAMP"
+      TableName="OE_ORDER_HEADERS_V" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="7" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="FirstAckCode"
+      Precision="30"
+      ColumnName="FIRST_ACK_CODE"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="OE_ORDER_HEADERS_V" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="30" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="FirstAckDate"
+      ColumnName="FIRST_ACK_DATE"
+      Type="oracle.jbo.domain.Date"
+      ColumnType="DATE"
+      SQLType="TIMESTAMP"
+      TableName="OE_ORDER_HEADERS_V" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="7" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="LastAckCode"
+      Precision="30"
+      ColumnName="LAST_ACK_CODE"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="OE_ORDER_HEADERS_V" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="30" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="LastAckDate"
+      ColumnName="LAST_ACK_DATE"
+      Type="oracle.jbo.domain.Date"
+      ColumnType="DATE"
+      SQLType="TIMESTAMP"
+      TableName="OE_ORDER_HEADERS_V" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="7" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="BookedFlag"
+      IsNotNull="true"
+      Precision="1"
+      ColumnName="BOOKED_FLAG"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="OE_ORDER_HEADERS_V" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="1" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="BookedDate"
+      ColumnName="BOOKED_DATE"
+      Type="oracle.jbo.domain.Date"
+      ColumnType="DATE"
+      SQLType="TIMESTAMP"
+      TableName="OE_ORDER_HEADERS_V" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="7" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="CancelledFlag"
+      Precision="1"
+      ColumnName="CANCELLED_FLAG"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="OE_ORDER_HEADERS_V" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="1" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="OpenFlag"
+      IsNotNull="true"
+      Precision="1"
+      ColumnName="OPEN_FLAG"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="OE_ORDER_HEADERS_V" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="1" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="SoldFromOrgId"
+      ColumnName="SOLD_FROM_ORG_ID"
+      Type="oracle.jbo.domain.Number"
+      ColumnType="NUMBER"
+      SQLType="NUMERIC"
+      TableName="OE_ORDER_HEADERS_V" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="ShippingInstructions"
+      Precision="2000"
+      ColumnName="SHIPPING_INSTRUCTIONS"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="OE_ORDER_HEADERS_V" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="2000" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="PackingInstructions"
+      Precision="2000"
+      ColumnName="PACKING_INSTRUCTIONS"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="OE_ORDER_HEADERS_V" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="2000" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="OrderCategoryCode"
+      IsNotNull="true"
+      Precision="30"
+      ColumnName="ORDER_CATEGORY_CODE"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="OE_ORDER_HEADERS_V" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="30" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="FlowStatusCode"
+      Precision="30"
+      ColumnName="FLOW_STATUS_CODE"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="OE_ORDER_HEADERS_V" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="30" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="FreightCarrier"
+      ColumnName="FREIGHT_CARRIER"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="OE_ORDER_HEADERS_V" >
+   </Attribute>
+   <Attribute
+      Name="CustomerPreferenceSetCode"
+      Precision="7"
+      ColumnName="CUSTOMER_PREFERENCE_SET_CODE"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="OE_ORDER_HEADERS_V" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="7" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="SalesChannelCode"
+      Precision="30"
+      ColumnName="SALES_CHANNEL_CODE"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="OE_ORDER_HEADERS_V" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="30" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="UpgradedFlag"
+      Precision="1"
+      ColumnName="UPGRADED_FLAG"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="OE_ORDER_HEADERS_V" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="1" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="LockControl"
+      ColumnName="LOCK_CONTROL"
+      Type="oracle.jbo.domain.Number"
+      ColumnType="NUMBER"
+      SQLType="NUMERIC"
+      TableName="OE_ORDER_HEADERS_V" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="SoldToEmailAddress"
+      Precision="2000"
+      ColumnName="SOLD_TO_EMAIL_ADDRESS"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="OE_ORDER_HEADERS_V" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="2000" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="GsaIndicator"
+      Precision="1"
+      ColumnName="GSA_INDICATOR"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="OE_ORDER_HEADERS_V" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="1" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="BlanketNumber"
+      ColumnName="BLANKET_NUMBER"
+      Type="oracle.jbo.domain.Number"
+      ColumnType="NUMBER"
+      SQLType="NUMERIC"
+      TableName="OE_ORDER_HEADERS_V" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="DefaultFulfillmentSet"
+      Precision="1"
+      ColumnName="DEFAULT_FULFILLMENT_SET"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="OE_ORDER_HEADERS_V" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="1" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="LineSetName"
+      Precision="30"
+      ColumnName="LINE_SET_NAME"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="OE_ORDER_HEADERS_V" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="30" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="FulfillmentSetName"
+      Precision="30"
+      ColumnName="FULFILLMENT_SET_NAME"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="OE_ORDER_HEADERS_V" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="30" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="QuoteDate"
+      ColumnName="QUOTE_DATE"
+      Type="oracle.jbo.domain.Date"
+      ColumnType="DATE"
+      SQLType="TIMESTAMP"
+      TableName="OE_ORDER_HEADERS_V" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="7" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="QuoteNumber"
+      ColumnName="QUOTE_NUMBER"
+      Type="oracle.jbo.domain.Number"
+      ColumnType="NUMBER"
+      SQLType="NUMERIC"
+      TableName="OE_ORDER_HEADERS_V" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="SalesDocumentName"
+      Precision="240"
+      ColumnName="SALES_DOCUMENT_NAME"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="OE_ORDER_HEADERS_V" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="240" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="TransactionPhaseCode"
+      Precision="30"
+      ColumnName="TRANSACTION_PHASE_CODE"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="OE_ORDER_HEADERS_V" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="30" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="UserStatusCode"
+      Precision="30"
+      ColumnName="USER_STATUS_CODE"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="OE_ORDER_HEADERS_V" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="30" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="DraftSubmittedFlag"
+      Precision="1"
+      ColumnName="DRAFT_SUBMITTED_FLAG"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="OE_ORDER_HEADERS_V" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="1" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="SourceDocumentVersionNumber"
+      ColumnName="SOURCE_DOCUMENT_VERSION_NUMBER"
+      Type="oracle.jbo.domain.Number"
+      ColumnType="NUMBER"
+      SQLType="NUMERIC"
+      TableName="OE_ORDER_HEADERS_V" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="SoldToSiteUseId"
+      ColumnName="SOLD_TO_SITE_USE_ID"
+      Type="oracle.jbo.domain.Number"
+      ColumnType="NUMBER"
+      SQLType="NUMERIC"
+      TableName="OE_ORDER_HEADERS_V" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="SupplierSignature"
+      Precision="240"
+      ColumnName="SUPPLIER_SIGNATURE"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="OE_ORDER_HEADERS_V" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="240" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="SupplierSignatureDate"
+      ColumnName="SUPPLIER_SIGNATURE_DATE"
+      Type="oracle.jbo.domain.Date"
+      ColumnType="DATE"
+      SQLType="TIMESTAMP"
+      TableName="OE_ORDER_HEADERS_V" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="7" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="CustomerSignature"
+      Precision="240"
+      ColumnName="CUSTOMER_SIGNATURE"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="OE_ORDER_HEADERS_V" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="240" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="CustomerSignatureDate"
+      ColumnName="CUSTOMER_SIGNATURE_DATE"
+      Type="oracle.jbo.domain.Date"
+      ColumnType="DATE"
+      SQLType="TIMESTAMP"
+      TableName="OE_ORDER_HEADERS_V" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="7" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="MinisiteId"
+      ColumnName="MINISITE_ID"
+      Type="oracle.jbo.domain.Number"
+      ColumnType="NUMBER"
+      SQLType="NUMERIC"
+      TableName="OE_ORDER_HEADERS_V" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="EndCustomerId"
+      ColumnName="END_CUSTOMER_ID"
+      Type="oracle.jbo.domain.Number"
+      ColumnType="NUMBER"
+      SQLType="NUMERIC"
+      TableName="OE_ORDER_HEADERS_V" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="EndCustomerContactId"
+      ColumnName="END_CUSTOMER_CONTACT_ID"
+      Type="oracle.jbo.domain.Number"
+      ColumnType="NUMBER"
+      SQLType="NUMERIC"
+      TableName="OE_ORDER_HEADERS_V" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="EndCustomerSiteUseId"
+      ColumnName="END_CUSTOMER_SITE_USE_ID"
+      Type="oracle.jbo.domain.Number"
+      ColumnType="NUMBER"
+      SQLType="NUMERIC"
+      TableName="OE_ORDER_HEADERS_V" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="EndCustomerName"
+      ColumnName="END_CUSTOMER_NAME"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="OE_ORDER_HEADERS_V" >
+   </Attribute>
+   <Attribute
+      Name="EndCustomerNumber"
+      ColumnName="END_CUSTOMER_NUMBER"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="OE_ORDER_HEADERS_V" >
+   </Attribute>
+   <Attribute
+      Name="EndCustomerContact"
+      ColumnName="END_CUSTOMER_CONTACT"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="OE_ORDER_HEADERS_V" >
+   </Attribute>
+   <Attribute
+      Name="EndCustomerLocation"
+      ColumnName="END_CUSTOMER_LOCATION"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="OE_ORDER_HEADERS_V" >
+   </Attribute>
+   <Attribute
+      Name="EndCustomerAddress1"
+      ColumnName="END_CUSTOMER_ADDRESS1"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="OE_ORDER_HEADERS_V" >
+   </Attribute>
+   <Attribute
+      Name="EndCustomerAddress2"
+      ColumnName="END_CUSTOMER_ADDRESS2"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="OE_ORDER_HEADERS_V" >
+   </Attribute>
+   <Attribute
+      Name="EndCustomerAddress3"
+      ColumnName="END_CUSTOMER_ADDRESS3"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="OE_ORDER_HEADERS_V" >
+   </Attribute>
+   <Attribute
+      Name="EndCustomerAddress4"
+      ColumnName="END_CUSTOMER_ADDRESS4"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="OE_ORDER_HEADERS_V" >
+   </Attribute>
+   <Attribute
+      Name="EndCustomerAddress5"
+      ColumnName="END_CUSTOMER_ADDRESS5"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="OE_ORDER_HEADERS_V" >
+   </Attribute>
+   <Attribute
+      Name="IbOwner"
+      Precision="60"
+      ColumnName="IB_OWNER"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="OE_ORDER_HEADERS_V" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="60" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="IbCurrentLocation"
+      Precision="60"
+      ColumnName="IB_CURRENT_LOCATION"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="OE_ORDER_HEADERS_V" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="60" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="IbInstalledAtLocation"
+      Precision="60"
+      ColumnName="IB_INSTALLED_AT_LOCATION"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="OE_ORDER_HEADERS_V" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="60" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="OrderFirmedDate"
+      ColumnName="ORDER_FIRMED_DATE"
+      Type="oracle.jbo.domain.Date"
+      ColumnType="DATE"
+      SQLType="TIMESTAMP"
+      TableName="OE_ORDER_HEADERS_V" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="7" />
+      </DesignTime>
+   </Attribute>
+   <AccessorAttribute
+      Name="xxomOrderHeaderAttEO"
+      Association="od.oracle.apps.xxom.xxomCustui.server.xxomOrderHeaderAttAO"
+      AssociationEnd="od.oracle.apps.xxom.xxomCustui.server.xxomOrderHeaderAttAO.xxomOrderHeaderAttEO"
+      AssociationOtherEnd="od.oracle.apps.xxom.xxomCustui.server.xxomOrderHeaderAttAO.xxomOrderSearchEO"
+      Type="od.oracle.apps.xxom.xxomCustui.server.xxomOrderHeaderAttEOImpl" >
+   </AccessorAttribute>
+   <AccessorAttribute
+      Name="xxomOrderPaymentsEO"
+      Association="od.oracle.apps.xxom.xxomCustui.server.xxomOrderPaymentsAO"
+      AssociationEnd="od.oracle.apps.xxom.xxomCustui.server.xxomOrderPaymentsAO.xxomOrderPaymentsEO"
+      AssociationOtherEnd="od.oracle.apps.xxom.xxomCustui.server.xxomOrderPaymentsAO.xxomOrderSearchEO"
+      Type="od.oracle.apps.xxom.xxomCustui.server.xxomOrderPaymentsEOImpl" >
+   </AccessorAttribute>
+   <AccessorAttribute
+      Name="xxomOrderLinesEO"
+      Association="od.oracle.apps.xxom.xxomCustui.server.xxomOrderLinesAO"
+      AssociationEnd="od.oracle.apps.xxom.xxomCustui.server.xxomOrderLinesAO.xxomOrderLinesEO"
+      AssociationOtherEnd="od.oracle.apps.xxom.xxomCustui.server.xxomOrderLinesAO.xxomOrderSearchEO"
+      Type="od.oracle.apps.xxom.xxomCustui.server.xxomOrderLinesEOImpl" >
+   </AccessorAttribute>
+   <Key
+      Name="XxomordersearcheoPrimaryKey" >
+      <AttrArray Name="Attributes">
+         <Item Value="od.oracle.apps.xxom.xxomCustui.server.xxomOrderSearchEO.HeaderId" />
+      </AttrArray>
+      <DesignTime>
+         <Attr Name="_isPrimary" Value="true" />
+         <Attr Name="_DBObjectName" Value="XXOMORDERSEARCHEO_PRIMARY_KEY" />
+      </DesignTime>
+   </Key>
+</Entity>

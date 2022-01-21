@@ -1,0 +1,25 @@
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+-- +=======================================================================+
+-- |               Office Depot - Project Simplify                         |
+-- |             Oracle NAIO Consulting Organization                       |
+-- +=======================================================================+
+-- | Name             :XX_COMN_ERROR_RESOLUTION.syn                        |
+-- | Description      :Account Request                                     |
+-- |                                                                       |
+-- |Change History:                                                        |
+-- |---------------                                                        |
+-- |                                                                       |
+-- |Version  Date        Author             Remarks                        |
+-- |-------  ----------- ------------------ -------------------------------|
+-- |Draft1a  25-Oct-2007 Ambarish Mukherjee Initial Draft Version          |
+-- +=======================================================================+
+------------------------------------------------------
+-- Dropping the existing synonym and creating new.  --
+------------------------------------------------------
+
+CREATE OR REPLACE SYNONYM APPS.XX_COMN_ERROR_RESOLUTION FOR XXCOMN.XX_COMN_ERROR_RESOLUTION;
+
+SHOW ERRORS;

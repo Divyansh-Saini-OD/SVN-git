@@ -1,0 +1,396 @@
+<?xml version="1.0" encoding='windows-1252'?>
+<!DOCTYPE ViewObject SYSTEM "jbo_03_01.dtd">
+
+<ViewObject
+   Name="ODEBillMailVO1"
+   BindingStyle="Oracle"
+   CustomQuery="true"
+   RowClass="oracle.apps.fnd.framework.server.OAViewRowImpl"
+   ComponentClass="od.oracle.apps.xxcrm.cdh.ebl.server.ODEBillMailVO1Impl"
+   MsgBundleClass="oracle.jbo.common.JboResourceBundle"
+   UseGlueCode="false" >
+   <SQLQuery><![CDATA[
+SELECT 1000              ebill_id
+     , 'S'               ebill_type
+     , 'PDF'             ebill_file_type
+     , 'william.nojaim@officedepot.com '             ebill_associate
+     , 'EMAIL'           ebill_transmission
+     , 1                 FILE_PROCESSING_METHOD
+     , '2048'            MAX_FILE_SIZE
+     , '1024'            MAX_TRANSMISSION_SIZE
+     , 'Y'               ZIP_REQUIRED
+     , 'ZIP'             ZIPPING_UTILITY
+     , 'ddd'             ebill_contact
+     , 'fsdf@dfdf.com'   ebill_contact_email
+     , '123456789'       ebill_contact_phone
+     , 'A'               ebill_status
+     , 'abc'             CLIENT_TECH_CONTACT
+     , 'abc@gm.com'      CLIENT_TECH_CONTACT_EMAIL
+     , '123456789'       CLIENT_TECH_CONTACT_PHONE
+     , 'YES'             SEND_TO_PARENT
+     , 1                 FILE_NAME_SEQ_RESET
+     , 1                 FILE_SEQ_NUMBER
+     , '01-02-2010'      FILE_SEQ_RESET_DATE
+     , 5                 FILE_NAME_SEQ_TOT_LENGTH
+     , 1                 SELECT_FIELD
+     , null              EBILL_FILE_CREATION_TYPE 
+     , null              DELIMITER_CHAR
+     , null              INCLUDE_HEADER
+     , null              LOGO_FILE_NAME 
+     , null              SPLIT_TYPE
+     , null              SPLIT_VALUE
+  FROM dual
+   ]]></SQLQuery>
+   <DesignTime>
+      <Attr Name="_version" Value="9.0.3.12.53" />
+      <Attr Name="_CodeGenFlagNew" Value="36" />
+   </DesignTime>
+   <ViewAttribute
+      Name="EbillId"
+      IsPersistent="false"
+      Precision="255"
+      Type="oracle.jbo.domain.Number"
+      AliasName="EBILL_ID"
+      ColumnType="VARCHAR2"
+      Expression="EBILL_ID"
+      SQLType="NUMERIC" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="EbillType"
+      IsPersistent="false"
+      Precision="255"
+      Type="java.lang.String"
+      AliasName="EBILL_TYPE"
+      ColumnType="VARCHAR2"
+      Expression="EBILL_TYPE"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="1" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="EbillFileType"
+      IsPersistent="false"
+      Precision="255"
+      Type="java.lang.String"
+      AliasName="EBILL_FILE_TYPE"
+      ColumnType="VARCHAR2"
+      Expression="EBILL_FILE_TYPE"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="3" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="EbillAssociate"
+      IsPersistent="false"
+      Precision="255"
+      Type="java.lang.String"
+      AliasName="EBILL_ASSOCIATE"
+      ColumnType="VARCHAR2"
+      Expression="EBILL_ASSOCIATE"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="3" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="EbillTransmission"
+      IsPersistent="false"
+      Precision="255"
+      Type="java.lang.String"
+      AliasName="EBILL_TRANSMISSION"
+      ColumnType="VARCHAR2"
+      Expression="EBILL_TRANSMISSION"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="5" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="FileProcessingMethod"
+      IsPersistent="false"
+      Precision="255"
+      Type="java.lang.String"
+      AliasName="FILE_PROCESSING_METHOD"
+      ColumnType="VARCHAR2"
+      Expression="FILE_PROCESSING_METHOD"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="4" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="MaxFileSize"
+      IsPersistent="false"
+      Precision="255"
+      Type="java.lang.String"
+      AliasName="MAX_FILE_SIZE"
+      ColumnType="VARCHAR2"
+      Expression="MAX_FILE_SIZE"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="4" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="MaxTransmissionSize"
+      IsPersistent="false"
+      Precision="255"
+      Type="java.lang.String"
+      AliasName="MAX_TRANSMISSION_SIZE"
+      ColumnType="VARCHAR2"
+      Expression="MAX_TRANSMISSION_SIZE"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="4" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="ZipRequired"
+      IsPersistent="false"
+      Precision="255"
+      Type="java.lang.String"
+      AliasName="ZIP_REQUIRED"
+      ColumnType="VARCHAR2"
+      Expression="ZIP_REQUIRED"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="1" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="ZippingUtility"
+      IsPersistent="false"
+      Precision="255"
+      Type="java.lang.String"
+      AliasName="ZIPPING_UTILITY"
+      ColumnType="VARCHAR2"
+      Expression="ZIPPING_UTILITY"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="3" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="EbillContact"
+      IsPersistent="false"
+      Precision="255"
+      Type="java.lang.String"
+      AliasName="EBILL_CONTACT"
+      ColumnType="VARCHAR2"
+      Expression="EBILL_CONTACT"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="3" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="EbillContactEmail"
+      IsPersistent="false"
+      Precision="255"
+      Type="java.lang.String"
+      AliasName="EBILL_CONTACT_EMAIL"
+      ColumnType="VARCHAR2"
+      Expression="EBILL_CONTACT_EMAIL"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="13" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="EbillContactPhone"
+      IsPersistent="false"
+      Precision="255"
+      Type="java.lang.String"
+      AliasName="EBILL_CONTACT_PHONE"
+      ColumnType="VARCHAR2"
+      Expression="EBILL_CONTACT_PHONE"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="9" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="EbillStatus"
+      IsPersistent="false"
+      Precision="255"
+      Type="java.lang.String"
+      AliasName="EBILL_STATUS"
+      ColumnType="VARCHAR2"
+      Expression="EBILL_STATUS"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="1" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="ClientTechContact"
+      IsPersistent="false"
+      Precision="255"
+      Type="java.lang.String"
+      AliasName="CLIENT_TECH_CONTACT"
+      ColumnType="VARCHAR2"
+      Expression="CLIENT_TECH_CONTACT"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="3" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="ClientTechContactEmail"
+      IsPersistent="false"
+      Precision="255"
+      Type="java.lang.String"
+      AliasName="CLIENT_TECH_CONTACT_EMAIL"
+      ColumnType="VARCHAR2"
+      Expression="CLIENT_TECH_CONTACT_EMAIL"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="10" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="ClientTechContactPhone"
+      IsPersistent="false"
+      Precision="255"
+      Type="java.lang.String"
+      AliasName="CLIENT_TECH_CONTACT_PHONE"
+      ColumnType="VARCHAR2"
+      Expression="CLIENT_TECH_CONTACT_PHONE"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="9" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="SendToParent"
+      IsPersistent="false"
+      Precision="255"
+      Type="java.lang.String"
+      AliasName="SEND_TO_PARENT"
+      ColumnType="VARCHAR2"
+      Expression="SEND_TO_PARENT"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="3" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="FileNameSeqReset"
+      IsPersistent="false"
+      Type="oracle.jbo.domain.Number"
+      AliasName="FILE_NAME_SEQ_RESET"
+      ColumnType="VARCHAR2"
+      Expression="FILE_NAME_SEQ_RESET"
+      SQLType="NUMERIC" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="FileSeqNumber"
+      IsPersistent="false"
+      Type="oracle.jbo.domain.Number"
+      AliasName="FILE_SEQ_NUMBER"
+      ColumnType="VARCHAR2"
+      Expression="FILE_SEQ_NUMBER"
+      SQLType="NUMERIC" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="FileSeqResetDate"
+      IsPersistent="false"
+      Precision="10"
+      Type="java.lang.String"
+      AliasName="FILE_SEQ_RESET_DATE"
+      ColumnType="VARCHAR2"
+      Expression="FILE_SEQ_RESET_DATE"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="10" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="FileNameSeqTotLength"
+      IsPersistent="false"
+      Type="oracle.jbo.domain.Number"
+      AliasName="FILE_NAME_SEQ_TOT_LENGTH"
+      ColumnType="VARCHAR2"
+      Expression="FILE_NAME_SEQ_TOT_LENGTH"
+      SQLType="NUMERIC" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="SelectField"
+      IsUpdateable="false"
+      IsPersistent="false"
+      Precision="255"
+      Type="java.lang.String"
+      AliasName="SELECTFIELD"
+      ColumnType="VARCHAR2"
+      Expression="SelectField"
+      SQLType="VARCHAR" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="EbillFileCreationType"
+      IsPersistent="false"
+      Type="java.lang.String"
+      AliasName="EBILL_FILE_CREATION_TYPE"
+      ColumnType="VARCHAR2"
+      Expression="EBILL_FILE_CREATION_TYPE"
+      SQLType="VARCHAR" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="DelimiterChar"
+      IsPersistent="false"
+      Type="java.lang.String"
+      AliasName="DELIMITER_CHAR"
+      ColumnType="VARCHAR2"
+      Expression="DELIMITER_CHAR"
+      SQLType="VARCHAR" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="IncludeHeader"
+      IsPersistent="false"
+      Type="java.lang.String"
+      AliasName="INCLUDE_HEADER"
+      ColumnType="VARCHAR2"
+      Expression="INCLUDE_HEADER"
+      SQLType="VARCHAR" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="LogoFileName"
+      IsPersistent="false"
+      Type="java.lang.String"
+      AliasName="LOGO_FILE_NAME"
+      ColumnType="VARCHAR2"
+      Expression="LOGO_FILE_NAME"
+      SQLType="VARCHAR" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="SplitType"
+      IsPersistent="false"
+      Type="java.lang.String"
+      AliasName="SPLIT_TYPE"
+      ColumnType="VARCHAR2"
+      Expression="SPLIT_TYPE"
+      SQLType="VARCHAR" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="SplitValue"
+      IsPersistent="false"
+      Type="java.lang.String"
+      AliasName="SPLIT_VALUE"
+      ColumnType="VARCHAR2"
+      Expression="SPLIT_VALUE"
+      SQLType="VARCHAR" >
+   </ViewAttribute>
+</ViewObject>

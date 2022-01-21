@@ -1,0 +1,27 @@
+-- +==========================================================================+
+-- |                  Office Depot - Project Simplify                         |
+-- |                                                                          |
+-- +==========================================================================+
+-- | Name : XX_PA_PROJ_EJM_DATA                                               |
+-- | Description :SQL Script to create the SynonymName for                    |
+-- |              EBS_PA@EJM.NA.ODCORP.NET                                    |
+-- |              Holds source data from EJM system.                          |
+-- |                                                                          |
+-- | Change Record:                                                           |
+-- | ===============                                                          |
+-- | Version   Date          Author               Remarks                     |
+-- | =======   ===========   =============        ============================|
+-- | V1.0      01-Jan-2008   Daniel Ligas         Initial version             |
+-- |                                                                          |
+-- +==========================================================================+
+
+   SET SHOW         OFF
+   SET VERIFY       OFF
+   SET ECHO         OFF
+   SET TAB          OFF
+   SET FEEDBACK     ON
+
+
+   CREATE OR REPLACE SYNONYM XX_PA_PROJ_EJM_DATA FOR vw_EBS_PA@EJM.NA.ODCORP.NET;
+
+   SHOW ERROR

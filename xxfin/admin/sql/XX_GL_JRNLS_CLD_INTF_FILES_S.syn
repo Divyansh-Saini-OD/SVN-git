@@ -1,0 +1,40 @@
+REM============================================================================================
+REM                                 Start Of Script
+REM============================================================================================
+--+=============================================================================================+--
+--|                                                                                             |--
+--| Program Name   : CREATE_XX_GL_JRNLS_CLD_INTF_FILES.tbl                                        |--
+--| RICE ID        : EXXXX                                                                      |--
+--| Purpose        : Create Custom Tables .                                                     |--
+--|                  The Objects created are:                                                   |--
+--|                                                                                             |--
+--|                1. XX_GL_JRNLS_CLD_INTF_FILES(Oracle Cloud to EBS GL Interface)            |--
+--|                                                                                             |--
+--| Change History  :                                                                           |--
+--| Version           Date             Changed By              Description                      |--
+--+=============================================================================================+--
+--| 1.0               21-DEC-2019      M K Pramod Kumar         Baselined                         |--
+--+=============================================================================================+--
+
+PROMPT
+PROMPT Synonym for sequence XX_GL_JRNLS_CLD_INTF_FILES_S
+PROMPT   
+
+ 
+
+CREATE OR REPLACE SYNONYM XX_GL_JRNLS_CLD_INTF_FILES_S FOR XXFIN.XX_GL_JRNLS_CLD_INTF_FILES_S;      
+
+
+
+PROMPT
+PROMPT Exiting....
+PROMPT
+
+SET FEEDBACK ON
+
+SHOW ERRORS;
+EXIT;
+
+REM============================================================================================
+REM                                   End Of Script                                            
+REM============================================================================================

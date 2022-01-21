@@ -1,0 +1,23 @@
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     ON
+
+-- +==========================================================================+
+-- |                  Office Depot - Project Simplify                         |
+-- |                       WIPRO Technologies                                 |
+-- +==========================================================================+
+-- | Table Script to drop the following object                                |
+-- |             Table  : xx_om_twe_usetax_glb_tmp                            |
+-- |                      For I2036 ,Usetax Accrual On Inventory Movement     |
+-- |                                                                          |
+-- |Change Record:                                                            |
+-- |===============                                                           |
+-- |Version   Date         Author               Remarks                       |
+-- |=======   ==========   =============        ==============================|
+-- | V1.0     26-FEB-2009  Harini Gopalswamy        Initial version           |
+-- |                                                                          |
+-- +==========================================================================+
+
+DROP TABLE  APPS.XX_OM_TWE_USETAX_GLB_TMP ;

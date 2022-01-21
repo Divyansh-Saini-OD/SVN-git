@@ -1,0 +1,38 @@
+--+========================================================================================+
+--|      Office Depot - Project FIT                                                        |
+--|   Capgemini/Office Depot/Consulting Organization                                       |
+--+========================================================================================+
+--|Name        :XX_IEX_DIARYNOTES_EXTRACT_PKG                                              |
+--|Description :Creation of staging table  for  diary notes                                |
+--|                                                                                        |
+--|Change Record:                                                                          |
+--|==============                                                                          |
+--|Version   Date            Author                      Remarks                           |
+--|=======   ===========     ====================        ===============                   |
+--|1.00      18-OCT-2011     Gangi Reddy M               Initial Version                   |
+--+========================================================================================+
+
+SET VERIFY OFF
+WHENEVER SQLERROR CONTINUE
+
+CREATE TABLE XXFIN.XX_IEX_DIARY_NOTES_STG
+(
+  NOTE_ID              NUMBER                   NOT NULL,
+  CUST_ACCOUNT_ID      NUMBER(15)               NOT NULL,
+  NOTE_DATE            DATE                     NOT NULL,
+  STATUS               VARCHAR2(80 BYTE),
+  SOURCE_NAME          VARCHAR2(360 BYTE),
+  BILL_TO_SITE_USE_ID  NUMBER(15),
+  CONTACT_FIRST_NAME   VARCHAR2(150 BYTE),
+  CONTACT_LAST_NAME    VARCHAR2(150 BYTE),
+  ACTION_CODE          VARCHAR2(80 BYTE),
+  NOTE_TEXT            VARCHAR2(2000 BYTE),
+  ATTACHEMENTS         VARCHAR2(100 BYTE),
+  CREATION_DATE        DATE,
+  LAST_UPDATED_BY      NUMBER(15)               NOT NULL,
+  REQUEST_ID           NUMBER(15),
+  CREATED_BY           NUMBER(15)               NOT NULL,
+  LAST_UPADTE_DATE     DATE,
+  CYCLE_DATE           DATE,
+  BATCH_NUM            NUMBER
+);

@@ -1,0 +1,30 @@
+-- +===================================================================+
+-- |                  Office Depot - Project Simplify                  |
+-- +===================================================================+
+-- | Name        : XX_CE_CHARGEBACK_DM_N1.idx                          |
+-- |              						                                         |
+-- | Rice ID     : E2075                                               |
+-- |              						                                         |
+-- | Description : Index Creation Script                               |
+-- |                                                                   |
+-- |              						                                         |
+-- |Change Record:                                                     |
+-- |===============                                                    |
+-- |Version   Date        Author           Remarks                     |
+-- |=======  ===========  =============    ============================|
+-- |1.0      28-FEB-2011  K.Dhillon        Initial Version Defect 8950 |
+-- +===================================================================+
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     ON
+
+
+CREATE INDEX "XXFIN"."XX_CE_CHARGEBACK_DM_N1" ON "XXFIN"."XX_CE_CHARGEBACK_DM"
+  (
+    "CASH_RECEIPT_ID"
+  )
+  TABLESPACE "APPS_TS_TX_IDX" ;
+
+SHOW ERROR

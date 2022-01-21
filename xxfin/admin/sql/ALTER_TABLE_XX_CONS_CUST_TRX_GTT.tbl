@@ -1,0 +1,22 @@
+-- +========================================================================+
+-- |                  Office Depot                                          |
+-- +========================================================================+
+-- | Name        : ALTER_TABLE_XX_CONS_CUST_TRX_GTT.tbl                     |
+-- | Description : Added new field in the existing XX_CONS_CUST_TRX_GTT     |
+-- |               table                                                    |
+-- |                                                                        |
+-- |Change Record:                                                          |
+-- |===============                                                         |
+-- |Version   Date        Author           Remarks                          |
+-- |=======  ===========  =============    =================================|
+-- |1.0      21-Nov-2018  Dinesh Nagapuri   Initial Version                 |
+-- +========================================================================+
+
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     ON
+
+ALTER TABLE XXFIN.XX_CONS_CUST_TRX_GTT 
+ADD trx_number VARCHAR2(20);

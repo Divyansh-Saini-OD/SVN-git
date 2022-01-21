@@ -1,0 +1,9 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<customization xmlns="http://xmlns.oracle.com/jrad" version="9.0.5.4.89_560" xml:lang="en-US" customizes="/oracle/apps/ar/irec/accountDetails/inv/disp/webui/ARISECTIONDISPUTEDETAILSPAGE" developerMode="true" xmlns:oa="http://xmlns.oracle.com/oa" package="/oracle/apps/ar/irec/accountDetails/inv/disp/webui/customizations/site/0">
+   <modifications>
+      <modify element="Ariamount" rendered="false"/>
+      <insert after="Ariamount">
+         <oa:messageStyledText id="XXAriamount" adminCustomizable="true" cellNoWrapFormat="false" dataType="VARCHAR2" initSortSeq="none" maximumLength="20" prompt="Unit Price Formatted" queryable="false" rendered="true" required="no" scope="." selectiveSearchCriteria="false" serverUnvalidated="false" sortState="no" tipType="none" totalValue="false" userCustomizable="false" vAlign="middle" viewAttr="UnitSellingPriceFormatted" viewName="InvoiceLinesVO" warnAboutChanges="true" xmlns:oa="http://xmlns.oracle.com/oa"/>
+      </insert>
+   </modifications>
+</customization>

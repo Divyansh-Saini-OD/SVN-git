@@ -1,0 +1,161 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<page xmlns:jrad="http://xmlns.oracle.com/jrad" xmlns:oa="http://xmlns.oracle.com/oa" xmlns:ui="http://xmlns.oracle.com/uix/ui" version="10.1.3_1312" xml:lang="en-US" xmlns:user="http://xmlns.oracle.com/jrad/user" xmlns="http://xmlns.oracle.com/jrad" file-version="$Header$">
+   <content>
+      <oa:pageLayout id="region1" windowTitle="Credit Card Settlement Report" title="Credit Card Settlement Report" controllerClass="od.oracle.apps.xxfin.iby.schema.webui.XxIbySettlement101DetailsCO" amDefName="od.oracle.apps.xxfin.iby.settlement.server.SettlementAM" amStateRequired="false">
+         <ui:corporateBranding>
+            <oa:image id="corporateBrandingImage" source="/OA_MEDIA/FNDSSCORP.gif"/>
+         </ui:corporateBranding>
+         <ui:contents>
+            <oa:header id="region2">
+               <ui:contents>
+                  <oa:link id="201DetailsLink" destination="OA.jsp?page=/od/oracle/apps/xxfin/iby/schema/webui/XxIbySettlementDtlsPG&amp;ReceiptNum={@XxIbyBatchTrxHistDetailsVO1.Ixreceiptnumber}&amp;BatchtNum={@XxIbyBatchTrxHistDetailsVO1.Ixipaymentbatchnumber}&amp;" text="201 Record Info" styleClass="OraHeader">
+                     <ui:primaryClientAction>
+                        <ui:fireAction event="show201Details"/>
+                     </ui:primaryClientAction>
+                  </oa:link>
+               </ui:contents>
+            </oa:header>
+            <oa:defaultSingleColumn id="XxIbyBatchTrxHistDetailsVO1">
+               <ui:contents>
+                  <oa:messageStyledText id="Ixrecordtype" dataType="VARCHAR2" prompt="Ixrecordtype" viewName="XxIbyBatchTrxHistDetailsVO1" viewAttr="Ixrecordtype" maximumLength="240" styleClass="OraDataText"/>
+                  <oa:messageStyledText id="DecryptedAccount" prompt="Decrypted Account" viewName="XxIbyBatchTrxHistDetailsVO1" viewAttr="DecrpytedAcctNum" styleClass="OraDataText"/>
+                  <oa:messageStyledText id="Ixreserved2" dataType="VARCHAR2" prompt="Ixreserved2" viewName="XxIbyBatchTrxHistDetailsVO1" viewAttr="Ixreserved2" maximumLength="240" styleClass="OraDataText"/>
+                  <oa:messageStyledText id="Ixreserved3" dataType="VARCHAR2" prompt="Ixreserved3" viewName="XxIbyBatchTrxHistDetailsVO1" viewAttr="Ixreserved3" maximumLength="240" styleClass="OraDataText"/>
+                  <oa:messageStyledText id="Ixactioncode" dataType="VARCHAR2" prompt="Ixactioncode" viewName="XxIbyBatchTrxHistDetailsVO1" viewAttr="Ixactioncode" maximumLength="240" styleClass="OraDataText"/>
+                  <oa:messageStyledText id="Ixreserved5" dataType="VARCHAR2" prompt="Ixreserved5" viewName="XxIbyBatchTrxHistDetailsVO1" viewAttr="Ixreserved5" maximumLength="240" styleClass="OraDataText"/>
+                  <oa:messageStyledText id="Ixmessagetype" dataType="VARCHAR2" prompt="Ixmessagetype" viewName="XxIbyBatchTrxHistDetailsVO1" viewAttr="Ixmessagetype" maximumLength="240" styleClass="OraDataText"/>
+                  <oa:messageStyledText id="Ixreserved7" dataType="VARCHAR2" prompt="Ixreserved7" viewName="XxIbyBatchTrxHistDetailsVO1" viewAttr="Ixreserved7" maximumLength="240" styleClass="OraDataText"/>
+                  <oa:messageStyledText id="Ixstorenumber" dataType="VARCHAR2" prompt="Ixstorenumber" viewName="XxIbyBatchTrxHistDetailsVO1" viewAttr="Ixstorenumber" maximumLength="240" styleClass="OraDataText"/>
+                  <oa:messageStyledText id="Ixregisternumber" dataType="VARCHAR2" prompt="Ixregisternumber" viewName="XxIbyBatchTrxHistDetailsVO1" viewAttr="Ixregisternumber" maximumLength="240" styleClass="OraDataText"/>
+                  <oa:messageStyledText id="Ixtransactiontype" dataType="VARCHAR2" prompt="Ixtransactiontype" viewName="XxIbyBatchTrxHistDetailsVO1" viewAttr="Ixtransactiontype" maximumLength="240" styleClass="OraDataText"/>
+                  <oa:messageStyledText id="Ixreserved11" dataType="VARCHAR2" prompt="Ixreserved11" viewName="XxIbyBatchTrxHistDetailsVO1" viewAttr="Ixreserved11" maximumLength="240" styleClass="OraDataText"/>
+                  <oa:messageStyledText id="Ixreserved12" dataType="VARCHAR2" prompt="Ixreserved12" viewName="XxIbyBatchTrxHistDetailsVO1" viewAttr="Ixreserved12" maximumLength="240" styleClass="OraDataText"/>
+                  <oa:messageStyledText id="Ixaccount" dataType="VARCHAR2" prompt="IxAccount" viewName="XxIbyBatchTrxHistDetailsVO1" viewAttr="Ixaccount" maximumLength="240" shortDesc="IxAccount" styleClass="OraDataText"/>
+                  <oa:messageStyledText id="Ixexpdate" dataType="VARCHAR2" prompt="Ixexpdate" viewName="XxIbyBatchTrxHistDetailsVO1" viewAttr="Ixexpdate" maximumLength="240" styleClass="OraDataText"/>
+                  <oa:messageStyledText id="Ixswipe" dataType="VARCHAR2" prompt="Ixswipe" viewName="XxIbyBatchTrxHistDetailsVO1" viewAttr="Ixswipe" maximumLength="240" styleClass="OraDataText"/>
+                  <oa:messageStyledText id="Ixamount" dataType="VARCHAR2" prompt="Ixamount" viewName="XxIbyBatchTrxHistDetailsVO1" viewAttr="Ixamount" maximumLength="240" styleClass="OraDataText"/>
+                  <oa:messageStyledText id="Ixinvoice" dataType="VARCHAR2" prompt="Ixinvoice" viewName="XxIbyBatchTrxHistDetailsVO1" viewAttr="Ixinvoice" maximumLength="240" styleClass="OraDataText"/>
+                  <oa:messageStyledText id="Ixreserved18" dataType="VARCHAR2" prompt="Ixreserved18" viewName="XxIbyBatchTrxHistDetailsVO1" viewAttr="Ixreserved18" maximumLength="240" styleClass="OraDataText"/>
+                  <oa:messageStyledText id="Ixreserved19" dataType="VARCHAR2" prompt="Ixreserved19" viewName="XxIbyBatchTrxHistDetailsVO1" viewAttr="Ixreserved19" maximumLength="240" styleClass="OraDataText"/>
+                  <oa:messageStyledText id="Ixreserved20" dataType="VARCHAR2" prompt="Ixreserved20" viewName="XxIbyBatchTrxHistDetailsVO1" viewAttr="Ixreserved20" maximumLength="240" styleClass="OraDataText"/>
+                  <oa:messageStyledText id="Ixoptions" dataType="VARCHAR2" prompt="Ixoptions" viewName="XxIbyBatchTrxHistDetailsVO1" viewAttr="Ixoptions" maximumLength="240" styleClass="OraDataText"/>
+                  <oa:messageStyledText id="Ixbankuserdata" dataType="VARCHAR2" prompt="Ixbankuserdata" viewName="XxIbyBatchTrxHistDetailsVO1" viewAttr="Ixbankuserdata" maximumLength="240" styleClass="OraDataText"/>
+                  <oa:messageStyledText id="Ixreserved23" dataType="VARCHAR2" prompt="Ixreserved23" viewName="XxIbyBatchTrxHistDetailsVO1" viewAttr="Ixreserved23" maximumLength="240" styleClass="OraDataText"/>
+                  <oa:messageStyledText id="Ixreserved24" dataType="VARCHAR2" prompt="Ixreserved24" viewName="XxIbyBatchTrxHistDetailsVO1" viewAttr="Ixreserved24" maximumLength="240" styleClass="OraDataText"/>
+                  <oa:messageStyledText id="Ixissuenumber" dataType="VARCHAR2" prompt="Ixissuenumber" viewName="XxIbyBatchTrxHistDetailsVO1" viewAttr="Ixissuenumber" maximumLength="240" styleClass="OraDataText"/>
+                  <oa:messageStyledText id="Ixtotalsalestaxamount" dataType="VARCHAR2" prompt="Ixtotalsalestaxamount" viewName="XxIbyBatchTrxHistDetailsVO1" viewAttr="Ixtotalsalestaxamount" maximumLength="240" styleClass="OraDataText"/>
+                  <oa:messageStyledText id="Ixtotalsalestaxcollind" dataType="VARCHAR2" prompt="Ixtotalsalestaxcollind" viewName="XxIbyBatchTrxHistDetailsVO1" viewAttr="Ixtotalsalestaxcollind" maximumLength="240" styleClass="OraDataText"/>
+                  <oa:messageStyledText id="Ixreserved28" dataType="VARCHAR2" prompt="Ixreserved28" viewName="XxIbyBatchTrxHistDetailsVO1" viewAttr="Ixreserved28" maximumLength="240" styleClass="OraDataText"/>
+                  <oa:messageStyledText id="Ixreserved29" dataType="VARCHAR2" prompt="Ixreserved29" viewName="XxIbyBatchTrxHistDetailsVO1" viewAttr="Ixreserved29" maximumLength="240" styleClass="OraDataText"/>
+                  <oa:messageStyledText id="Ixreserved30" dataType="VARCHAR2" prompt="Ixreserved30" viewName="XxIbyBatchTrxHistDetailsVO1" viewAttr="Ixreserved30" maximumLength="240" styleClass="OraDataText"/>
+                  <oa:messageStyledText id="Ixreserved31" dataType="VARCHAR2" prompt="Ixreserved31" viewName="XxIbyBatchTrxHistDetailsVO1" viewAttr="Ixreserved31" maximumLength="240" styleClass="OraDataText"/>
+                  <oa:messageStyledText id="Ixreserved32" dataType="VARCHAR2" prompt="Ixreserved32" viewName="XxIbyBatchTrxHistDetailsVO1" viewAttr="Ixreserved32" maximumLength="240" styleClass="OraDataText"/>
+                  <oa:messageStyledText id="Ixreserved33" dataType="VARCHAR2" prompt="Ixreserved33" viewName="XxIbyBatchTrxHistDetailsVO1" viewAttr="Ixreserved33" maximumLength="240" styleClass="OraDataText"/>
+                  <oa:messageStyledText id="Ixreceiptnumber" dataType="VARCHAR2" prompt="Ixreceiptnumber" viewName="XxIbyBatchTrxHistDetailsVO1" viewAttr="Ixreceiptnumber" maximumLength="240" styleClass="OraDataText"/>
+                  <oa:messageStyledText id="Ixreserved35" dataType="VARCHAR2" prompt="Ixreserved35" viewName="XxIbyBatchTrxHistDetailsVO1" viewAttr="Ixreserved35" maximumLength="240" styleClass="OraDataText"/>
+                  <oa:messageStyledText id="Ixreserved36" dataType="VARCHAR2" prompt="Ixreserved36" viewName="XxIbyBatchTrxHistDetailsVO1" viewAttr="Ixreserved36" maximumLength="240" styleClass="OraDataText"/>
+                  <oa:messageStyledText id="Ixauthorizationnumber" dataType="VARCHAR2" prompt="Ixauthorizationnumber" viewName="XxIbyBatchTrxHistDetailsVO1" viewAttr="Ixauthorizationnumber" maximumLength="240" styleClass="OraDataText"/>
+                  <oa:messageStyledText id="Ixreserved38" dataType="VARCHAR2" prompt="Ixreserved38" viewName="XxIbyBatchTrxHistDetailsVO1" viewAttr="Ixreserved38" maximumLength="240" styleClass="OraDataText"/>
+                  <oa:messageStyledText id="Ixreserved39" dataType="VARCHAR2" prompt="Ixreserved39" viewName="XxIbyBatchTrxHistDetailsVO1" viewAttr="Ixreserved39" maximumLength="240" styleClass="OraDataText"/>
+                  <oa:messageStyledText id="Ixreserved40" dataType="VARCHAR2" prompt="Ixreserved40" viewName="XxIbyBatchTrxHistDetailsVO1" viewAttr="Ixreserved40" maximumLength="240" styleClass="OraDataText"/>
+                  <oa:messageStyledText id="Ixreserved41" dataType="VARCHAR2" prompt="Ixreserved41" viewName="XxIbyBatchTrxHistDetailsVO1" viewAttr="Ixreserved41" maximumLength="240" styleClass="OraDataText"/>
+                  <oa:messageStyledText id="Ixreserved42" dataType="VARCHAR2" prompt="Ixreserved42" viewName="XxIbyBatchTrxHistDetailsVO1" viewAttr="Ixreserved42" maximumLength="240" styleClass="OraDataText"/>
+                  <oa:messageStyledText id="Ixreserved43" dataType="VARCHAR2" prompt="Ixreserved43" viewName="XxIbyBatchTrxHistDetailsVO1" viewAttr="Ixreserved43" maximumLength="240" styleClass="OraDataText"/>
+                  <oa:messageStyledText id="Ixps2000" dataType="VARCHAR2" prompt="Ixps2000" viewName="XxIbyBatchTrxHistDetailsVO1" viewAttr="Ixps2000" maximumLength="240" styleClass="OraDataText"/>
+                  <oa:messageStyledText id="Ixreference" dataType="VARCHAR2" prompt="Ixreference" viewName="XxIbyBatchTrxHistDetailsVO1" viewAttr="Ixreference" maximumLength="240" styleClass="OraDataText"/>
+                  <oa:messageStyledText id="Ixreserved46" dataType="VARCHAR2" prompt="Ixreserved46" viewName="XxIbyBatchTrxHistDetailsVO1" viewAttr="Ixreserved46" maximumLength="240" styleClass="OraDataText"/>
+                  <oa:messageStyledText id="Ixipaymentbatchnumber" dataType="VARCHAR2" prompt="Ixipaymentbatchnumber" viewName="XxIbyBatchTrxHistDetailsVO1" viewAttr="Ixipaymentbatchnumber" maximumLength="240" styleClass="OraDataText"/>
+                  <oa:messageStyledText id="Ixreserved48" dataType="VARCHAR2" prompt="Ixreserved48" viewName="XxIbyBatchTrxHistDetailsVO1" viewAttr="Ixreserved48" maximumLength="240" styleClass="OraDataText"/>
+                  <oa:messageStyledText id="Ixreserved49" dataType="VARCHAR2" prompt="Ixreserved49" viewName="XxIbyBatchTrxHistDetailsVO1" viewAttr="Ixreserved49" maximumLength="240" styleClass="OraDataText"/>
+                  <!--<oa:messageStyledText id="Ixdate" dataType="VARCHAR2" prompt="Ixdate" viewName="XxIbyBatchTrxHistDetailsVO1" viewAttr="Ixdate" maximumLength="240"/>
+                  <oa:messageStyledText id="Ixtime" dataType="VARCHAR2" prompt="Ixtime" viewName="XxIbyBatchTrxHistDetailsVO1" viewAttr="Ixtime" maximumLength="240"/>-->
+                  <oa:messageStyledText id="Ixreserved52" dataType="VARCHAR2" prompt="Ixreserved52" viewName="XxIbyBatchTrxHistDetailsVO1" viewAttr="Ixreserved52" maximumLength="240" styleClass="OraDataText"/>
+                  <oa:messageStyledText id="Ixreserved53" dataType="VARCHAR2" prompt="Ixreserved53" viewName="XxIbyBatchTrxHistDetailsVO1" viewAttr="Ixreserved53" maximumLength="240" styleClass="OraDataText"/>
+                  <oa:messageStyledText id="Ixreserved54" dataType="VARCHAR2" prompt="Ixreserved54" viewName="XxIbyBatchTrxHistDetailsVO1" viewAttr="Ixreserved54" maximumLength="240" styleClass="OraDataText"/>
+                  <oa:messageStyledText id="Ixreserved55" dataType="VARCHAR2" prompt="Ixreserved55" viewName="XxIbyBatchTrxHistDetailsVO1" viewAttr="Ixreserved55" maximumLength="240" styleClass="OraDataText"/>
+                  <oa:messageStyledText id="Ixreserved56" dataType="VARCHAR2" prompt="Ixreserved56" viewName="XxIbyBatchTrxHistDetailsVO1" viewAttr="Ixreserved56" maximumLength="240" styleClass="OraDataText"/>
+                  <oa:messageStyledText id="Ixreserved57" dataType="VARCHAR2" prompt="Ixreserved57" viewName="XxIbyBatchTrxHistDetailsVO1" viewAttr="Ixreserved57" maximumLength="240" styleClass="OraDataText"/>
+                  <oa:messageStyledText id="Ixreserved58" dataType="VARCHAR2" prompt="Ixreserved58" viewName="XxIbyBatchTrxHistDetailsVO1" viewAttr="Ixreserved58" maximumLength="240" styleClass="OraDataText"/>
+                  <oa:messageStyledText id="Ixreserved59" dataType="VARCHAR2" prompt="Ixreserved59" viewName="XxIbyBatchTrxHistDetailsVO1" viewAttr="Ixreserved59" maximumLength="240" styleClass="OraDataText"/>
+                  <oa:messageStyledText id="Ixcustomerreferenceid" dataType="VARCHAR2" prompt="Ixcustomerreferenceid" viewName="XxIbyBatchTrxHistDetailsVO1" viewAttr="Ixcustomerreferenceid" maximumLength="240" styleClass="OraDataText"/>
+                  <oa:messageStyledText id="Ixnationaltaxcollindicator" dataType="VARCHAR2" prompt="Ixnationaltaxcollindicator" viewName="XxIbyBatchTrxHistDetailsVO1" viewAttr="Ixnationaltaxcollindicator" maximumLength="240" styleClass="OraDataText"/>
+                  <oa:messageStyledText id="Ixnationaltaxamount" dataType="VARCHAR2" prompt="Ixnationaltaxamount" viewName="XxIbyBatchTrxHistDetailsVO1" viewAttr="Ixnationaltaxamount" maximumLength="240" styleClass="OraDataText"/>
+                  <oa:messageStyledText id="Ixothertaxamount" dataType="VARCHAR2" prompt="Ixothertaxamount" viewName="XxIbyBatchTrxHistDetailsVO1" viewAttr="Ixothertaxamount" maximumLength="240" styleClass="OraDataText"/>
+                  <oa:messageStyledText id="Ixdiscountamount" dataType="VARCHAR2" prompt="Ixdiscountamount" viewName="XxIbyBatchTrxHistDetailsVO1" viewAttr="Ixdiscountamount" maximumLength="240" styleClass="OraDataText"/>
+                  <oa:messageStyledText id="Ixshippingamount" dataType="VARCHAR2" prompt="Ixshippingamount" viewName="XxIbyBatchTrxHistDetailsVO1" viewAttr="Ixshippingamount" maximumLength="240" styleClass="OraDataText"/>
+                  <oa:messageStyledText id="Ixtaxableamount" dataType="VARCHAR2" prompt="Ixtaxableamount" viewName="XxIbyBatchTrxHistDetailsVO1" viewAttr="Ixtaxableamount" maximumLength="240" styleClass="OraDataText"/>
+                  <oa:messageStyledText id="Ixdutyamount" dataType="VARCHAR2" prompt="Ixdutyamount" viewName="XxIbyBatchTrxHistDetailsVO1" viewAttr="Ixdutyamount" maximumLength="240" styleClass="OraDataText"/>
+                  <oa:messageStyledText id="Ixshipfromzipcode" dataType="VARCHAR2" prompt="Ixshipfromzipcode" viewName="XxIbyBatchTrxHistDetailsVO1" viewAttr="Ixshipfromzipcode" maximumLength="240" styleClass="OraDataText"/>
+                  <oa:messageStyledText id="Ixshiptocompany" dataType="VARCHAR2" prompt="Ixshiptocompany" viewName="XxIbyBatchTrxHistDetailsVO1" viewAttr="Ixshiptocompany" maximumLength="240" styleClass="OraDataText"/>
+                  <oa:messageStyledText id="Ixshiptoname" dataType="VARCHAR2" prompt="Ixshiptoname" viewName="XxIbyBatchTrxHistDetailsVO1" viewAttr="Ixshiptoname" maximumLength="240" styleClass="OraDataText"/>
+                  <oa:messageStyledText id="Ixshiptostreet" dataType="VARCHAR2" prompt="Ixshiptostreet" viewName="XxIbyBatchTrxHistDetailsVO1" viewAttr="Ixshiptostreet" maximumLength="240" styleClass="OraDataText"/>
+                  <oa:messageStyledText id="Ixshiptocity" dataType="VARCHAR2" prompt="Ixshiptocity" viewName="XxIbyBatchTrxHistDetailsVO1" viewAttr="Ixshiptocity" maximumLength="240" styleClass="OraDataText"/>
+                  <oa:messageStyledText id="Ixshiptostate" dataType="VARCHAR2" prompt="Ixshiptostate" viewName="XxIbyBatchTrxHistDetailsVO1" viewAttr="Ixshiptostate" maximumLength="240" styleClass="OraDataText"/>
+                  <oa:messageStyledText id="Ixshiptocountry" dataType="VARCHAR2" prompt="Ixshiptocountry" viewName="XxIbyBatchTrxHistDetailsVO1" viewAttr="Ixshiptocountry" maximumLength="240" styleClass="OraDataText"/>
+                  <oa:messageStyledText id="Ixshiptozipcode" dataType="VARCHAR2" prompt="Ixshiptozipcode" viewName="XxIbyBatchTrxHistDetailsVO1" viewAttr="Ixshiptozipcode" maximumLength="240" styleClass="OraDataText"/>
+                  <oa:messageStyledText id="Ixpurchasername" dataType="VARCHAR2" prompt="Ixpurchasername" viewName="XxIbyBatchTrxHistDetailsVO1" viewAttr="Ixpurchasername" maximumLength="240" styleClass="OraDataText"/>
+                  <!--<oa:messageStyledText id="Ixorderdate" dataType="VARCHAR2" prompt="Ixorderdate" viewName="XxIbyBatchTrxHistDetailsVO1" viewAttr="Ixorderdate" maximumLength="240"/>-->
+                  <oa:messageStyledText id="Ixmerchantvatnumber" dataType="VARCHAR2" prompt="Ixmerchantvatnumber" viewName="XxIbyBatchTrxHistDetailsVO1" viewAttr="Ixmerchantvatnumber" maximumLength="240" styleClass="OraDataText"/>
+                  <oa:messageStyledText id="Ixcustomervatnumber" dataType="VARCHAR2" prompt="Ixcustomervatnumber" viewName="XxIbyBatchTrxHistDetailsVO1" viewAttr="Ixcustomervatnumber" maximumLength="240" styleClass="OraDataText"/>
+                  <oa:messageStyledText id="Ixvatinvoice" dataType="VARCHAR2" prompt="Ixvatinvoice" viewName="XxIbyBatchTrxHistDetailsVO1" viewAttr="Ixvatinvoice" maximumLength="240" styleClass="OraDataText"/>
+                  <oa:messageStyledText id="Ixvatamount" dataType="VARCHAR2" prompt="Ixvatamount" viewName="XxIbyBatchTrxHistDetailsVO1" viewAttr="Ixvatamount" maximumLength="240" styleClass="OraDataText"/>
+                  <oa:messageStyledText id="Ixvatrate" dataType="VARCHAR2" prompt="Ixvatrate" viewName="XxIbyBatchTrxHistDetailsVO1" viewAttr="Ixvatrate" maximumLength="240" styleClass="OraDataText"/>
+                  <oa:messageStyledText id="Ixmerchandiseshipped" dataType="VARCHAR2" prompt="Ixmerchandiseshipped" viewName="XxIbyBatchTrxHistDetailsVO1" viewAttr="Ixmerchandiseshipped" maximumLength="240" styleClass="OraDataText"/>
+                  <oa:messageStyledText id="Ixcustcountrycode" dataType="VARCHAR2" prompt="Ixcustcountrycode" viewName="XxIbyBatchTrxHistDetailsVO1" viewAttr="Ixcustcountrycode" maximumLength="240" styleClass="OraDataText"/>
+                  <oa:messageStyledText id="Ixcustaccountno" dataType="VARCHAR2" prompt="Ixcustaccountno" viewName="XxIbyBatchTrxHistDetailsVO1" viewAttr="Ixcustaccountno" maximumLength="240" styleClass="OraDataText"/>
+                  <oa:messageStyledText id="Ixcostcenter" dataType="VARCHAR2" prompt="Ixcostcenter" viewName="XxIbyBatchTrxHistDetailsVO1" viewAttr="Ixcostcenter" maximumLength="240" styleClass="OraDataText"/>
+                  <oa:messageStyledText id="Ixdesktoplocation" dataType="VARCHAR2" prompt="Ixdesktoplocation" viewName="XxIbyBatchTrxHistDetailsVO1" viewAttr="Ixdesktoplocation" maximumLength="240" styleClass="OraDataText"/>
+                  <oa:messageStyledText id="Ixreleasenumber" dataType="VARCHAR2" prompt="Ixreleasenumber" viewName="XxIbyBatchTrxHistDetailsVO1" viewAttr="Ixreleasenumber" maximumLength="240" styleClass="OraDataText"/>
+                  <oa:messageStyledText id="Ixoriginalinvoiceno" dataType="VARCHAR2" prompt="Ixoriginalinvoiceno" viewName="XxIbyBatchTrxHistDetailsVO1" viewAttr="Ixoriginalinvoiceno" maximumLength="240" styleClass="OraDataText"/>
+                  <oa:messageStyledText id="Ixothertaxamount2" dataType="VARCHAR2" prompt="Ixothertaxamount2" viewName="XxIbyBatchTrxHistDetailsVO1" viewAttr="Ixothertaxamount2" maximumLength="240" styleClass="OraDataText"/>
+                  <oa:messageStyledText id="Ixothertaxamount3" dataType="VARCHAR2" prompt="Ixothertaxamount3" viewName="XxIbyBatchTrxHistDetailsVO1" viewAttr="Ixothertaxamount3" maximumLength="240" styleClass="OraDataText"/>
+                  <oa:messageStyledText id="Ixmisccharge" dataType="VARCHAR2" prompt="Ixmisccharge" viewName="XxIbyBatchTrxHistDetailsVO1" viewAttr="Ixmisccharge" maximumLength="240" styleClass="OraDataText"/>
+                  <oa:messageStyledText id="Ixccnumber" dataType="VARCHAR2" prompt="Ixccnumber" viewName="XxIbyBatchTrxHistDetailsVO1" viewAttr="Ixccnumber" maximumLength="240" styleClass="OraDataText"/>
+                  <oa:messageStyledText id="Ixinstrsubtype" dataType="VARCHAR2" prompt="Ixinstrsubtype" viewName="XxIbyBatchTrxHistDetailsVO1" viewAttr="Ixinstrsubtype" maximumLength="255" styleClass="OraDataText"/>
+                  <oa:messageStyledText id="Attribute1" dataType="VARCHAR2" prompt="Attribute1" viewName="XxIbyBatchTrxHistDetailsVO1" viewAttr="Attribute1" maximumLength="255" styleClass="OraDataText"/>
+                  <oa:messageStyledText id="Attribute2" dataType="VARCHAR2" prompt="Attribute2" viewName="XxIbyBatchTrxHistDetailsVO1" viewAttr="Attribute2" maximumLength="255" styleClass="OraDataText"/>
+                  <oa:messageStyledText id="Attribute3" dataType="VARCHAR2" prompt="Attribute3" viewName="XxIbyBatchTrxHistDetailsVO1" viewAttr="Attribute3" maximumLength="255" styleClass="OraDataText"/>
+                  <oa:messageStyledText id="Attribute4" dataType="VARCHAR2" prompt="Attribute4" viewName="XxIbyBatchTrxHistDetailsVO1" viewAttr="Attribute4" maximumLength="255" styleClass="OraDataText"/>
+                  <oa:messageStyledText id="Attribute5" dataType="VARCHAR2" prompt="Attribute5" viewName="XxIbyBatchTrxHistDetailsVO1" viewAttr="Attribute5" maximumLength="255" styleClass="OraDataText"/>
+                  <oa:messageStyledText id="Attribute6" dataType="VARCHAR2" prompt="Attribute6" viewName="XxIbyBatchTrxHistDetailsVO1" viewAttr="Attribute6" maximumLength="255" styleClass="OraDataText"/>
+                  <oa:messageStyledText id="Attribute7" dataType="VARCHAR2" prompt="Attribute7" viewName="XxIbyBatchTrxHistDetailsVO1" viewAttr="Attribute7" maximumLength="255" styleClass="OraDataText"/>
+                  <oa:messageStyledText id="Attribute8" dataType="VARCHAR2" prompt="Attribute8" viewName="XxIbyBatchTrxHistDetailsVO1" viewAttr="Attribute8" maximumLength="255" styleClass="OraDataText"/>
+                  <oa:messageStyledText id="Attribute9" dataType="VARCHAR2" prompt="Attribute9" viewName="XxIbyBatchTrxHistDetailsVO1" viewAttr="Attribute9" maximumLength="255" styleClass="OraDataText"/>
+                  <oa:messageStyledText id="Attribute10" dataType="VARCHAR2" prompt="Attribute10" viewName="XxIbyBatchTrxHistDetailsVO1" viewAttr="Attribute10" maximumLength="255" styleClass="OraDataText"/>
+                  <oa:messageStyledText id="Attribute11" dataType="VARCHAR2" prompt="Attribute11" viewName="XxIbyBatchTrxHistDetailsVO1" viewAttr="Attribute11" maximumLength="255" styleClass="OraDataText"/>
+                  <oa:messageStyledText id="Attribute12" dataType="VARCHAR2" prompt="Attribute12" viewName="XxIbyBatchTrxHistDetailsVO1" viewAttr="Attribute12" maximumLength="255" styleClass="OraDataText"/>
+                  <oa:messageStyledText id="Attribute13" dataType="VARCHAR2" prompt="Attribute13" viewName="XxIbyBatchTrxHistDetailsVO1" viewAttr="Attribute13" maximumLength="255" styleClass="OraDataText"/>
+                  <oa:messageStyledText id="Attribute14" dataType="VARCHAR2" prompt="Attribute14" viewName="XxIbyBatchTrxHistDetailsVO1" viewAttr="Attribute14" maximumLength="255" styleClass="OraDataText"/>
+                  <oa:messageStyledText id="Attribute15" dataType="VARCHAR2" prompt="Attribute15" viewName="XxIbyBatchTrxHistDetailsVO1" viewAttr="Attribute15" maximumLength="255" styleClass="OraDataText"/>
+                  <oa:messageStyledText id="Ixmerchantnumber" dataType="VARCHAR2" prompt="Ixmerchantnumber" viewName="XxIbyBatchTrxHistDetailsVO1" viewAttr="Ixmerchantnumber" maximumLength="255" styleClass="OraDataText"/>
+                  <!--<oa:messageStyledText id="Ixsettlementdate" dataType="VARCHAR2" prompt="Ixsettlementdate" viewName="XxIbyBatchTrxHistDetailsVO1" viewAttr="Ixsettlementdate" maximumLength="25"/>-->
+                  <oa:messageStyledText id="Ixtransnumber" dataType="VARCHAR2" prompt="Ixtransnumber" viewName="XxIbyBatchTrxHistDetailsVO1" viewAttr="Ixtransnumber" maximumLength="100" styleClass="OraDataText"/>
+                  <oa:messageStyledText id="Ixrecptnumber" dataType="VARCHAR2" prompt="Ixrecptnumber" viewName="XxIbyBatchTrxHistDetailsVO1" viewAttr="Ixrecptnumber" maximumLength="100" styleClass="OraDataText"/>
+                  <oa:messageStyledText id="OrgId" dataType="NUMBER" prompt="OrgId" viewName="XxIbyBatchTrxHistDetailsVO1" viewAttr="OrgId" styleClass="OraDataText"/>
+                  <oa:messageStyledText id="IsDeposit" dataType="VARCHAR2" prompt="IsDeposit" viewName="XxIbyBatchTrxHistDetailsVO1" viewAttr="IsDeposit" maximumLength="30" styleClass="OraDataText"/>
+                  <oa:messageStyledText id="IsCustomRefund" dataType="VARCHAR2" prompt="IsCustomRefund" viewName="XxIbyBatchTrxHistDetailsVO1" viewAttr="IsCustomRefund" maximumLength="30" styleClass="OraDataText"/>
+                  <oa:messageStyledText id="IsAmex" dataType="VARCHAR2" prompt="IsAmex" viewName="XxIbyBatchTrxHistDetailsVO1" viewAttr="IsAmex" maximumLength="30" styleClass="OraDataText"/>
+                  <!--<oa:messageStyledText id="ProcessIndicator" dataType="NUMBER" prompt="ProcessIndicator" viewName="XxIbyBatchTrxHistDetailsVO1" viewAttr="ProcessIndicator"/>-->
+                  <oa:messageStyledText id="Attribute16" dataType="VARCHAR2" prompt="Attribute16" viewName="XxIbyBatchTrxHistDetailsVO1" viewAttr="Attribute16" maximumLength="255" styleClass="OraDataText"/>
+                  <oa:messageStyledText id="Attribute17" dataType="VARCHAR2" prompt="Attribute17" viewName="XxIbyBatchTrxHistDetailsVO1" viewAttr="Attribute17" maximumLength="255" styleClass="OraDataText"/>
+                  <oa:messageStyledText id="Attribute18" dataType="VARCHAR2" prompt="Attribute18" viewName="XxIbyBatchTrxHistDetailsVO1" viewAttr="Attribute18" maximumLength="255" styleClass="OraDataText"/>
+                  <oa:messageStyledText id="Attribute19" dataType="VARCHAR2" prompt="Attribute19" viewName="XxIbyBatchTrxHistDetailsVO1" viewAttr="Attribute19" maximumLength="255" styleClass="OraDataText"/>
+                  <oa:messageStyledText id="Attribute20" dataType="VARCHAR2" prompt="Attribute20" viewName="XxIbyBatchTrxHistDetailsVO1" viewAttr="Attribute20" maximumLength="255" styleClass="OraDataText"/>
+                  <oa:messageStyledText id="Attribute21" dataType="VARCHAR2" prompt="Attribute21" viewName="XxIbyBatchTrxHistDetailsVO1" viewAttr="Attribute21" maximumLength="255" styleClass="OraDataText"/>
+                  <oa:messageStyledText id="Attribute22" dataType="VARCHAR2" prompt="Attribute22" viewName="XxIbyBatchTrxHistDetailsVO1" viewAttr="Attribute22" maximumLength="255" styleClass="OraDataText"/>
+                  <oa:messageStyledText id="Attribute23" dataType="VARCHAR2" prompt="Attribute23" viewName="XxIbyBatchTrxHistDetailsVO1" viewAttr="Attribute23" maximumLength="255" styleClass="OraDataText"/>
+                  <oa:messageStyledText id="Attribute24" dataType="VARCHAR2" prompt="Attribute24" viewName="XxIbyBatchTrxHistDetailsVO1" viewAttr="Attribute24" maximumLength="255" styleClass="OraDataText"/>
+                  <oa:messageStyledText id="Attribute25" dataType="VARCHAR2" prompt="Attribute25" viewName="XxIbyBatchTrxHistDetailsVO1" viewAttr="Attribute25" maximumLength="255" styleClass="OraDataText"/>
+                  <oa:messageStyledText id="Attribute26" dataType="VARCHAR2" prompt="Attribute26" viewName="XxIbyBatchTrxHistDetailsVO1" viewAttr="Attribute26" maximumLength="255" styleClass="OraDataText"/>
+                  <oa:messageStyledText id="Attribute27" dataType="VARCHAR2" prompt="Attribute27" viewName="XxIbyBatchTrxHistDetailsVO1" viewAttr="Attribute27" maximumLength="255" styleClass="OraDataText"/>
+                  <oa:messageStyledText id="Attribute28" dataType="VARCHAR2" prompt="Attribute28" viewName="XxIbyBatchTrxHistDetailsVO1" viewAttr="Attribute28" maximumLength="255" styleClass="OraDataText"/>
+                  <oa:messageStyledText id="Attribute29" dataType="VARCHAR2" prompt="Attribute29" viewName="XxIbyBatchTrxHistDetailsVO1" viewAttr="Attribute29" maximumLength="255" styleClass="OraDataText"/>
+                  <oa:messageStyledText id="Attribute30" dataType="VARCHAR2" prompt="Attribute30" viewName="XxIbyBatchTrxHistDetailsVO1" viewAttr="Attribute30" maximumLength="255" styleClass="OraDataText"/>
+                  <!--<oa:messageStyledText id="OrderPaymentId" dataType="NUMBER" prompt="OrderPaymentId" viewName="XxIbyBatchTrxHistDetailsVO1" viewAttr="OrderPaymentId"/>-->
+                  <oa:messageStyledText id="OrderPaymentId" viewName="XxIbyBatchTrxHistDetailsVO1" viewAttr="OrderPaymentId" prompt="OrderPaymentId" styleClass="OraDataText"/>
+               </ui:contents>
+            </oa:defaultSingleColumn>
+         </ui:contents>
+      </oa:pageLayout>
+   </content>
+</page>

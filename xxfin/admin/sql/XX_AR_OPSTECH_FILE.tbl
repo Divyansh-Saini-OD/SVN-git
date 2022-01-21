@@ -1,0 +1,53 @@
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     ON
+
+-- +==========================================================================+
+-- |                  Office Depot - Project Simplify                         |
+-- |                       WIPRO Technologies                                 |
+-- +==========================================================================+
+-- | Table Script to create the following object                              |
+-- |             Table  : XX_AR_OPSTECH_FILE                                  |
+-- |                      OPS TECH Customer Processed Information details     |
+-- |                                                                          |
+-- |Change Record:                                                            |
+-- |===============                                                           |
+-- |Version   Date         Author               Remarks                       |
+-- |=======   ==========   =============        ==============================|
+-- | V1.0     05-SEPT-2018 Aniket Jadhav        Initial version               |
+-- |                                                                          |
+-- +==========================================================================+
+
+
+CREATE TABLE XXFIN.XX_AR_OPSTECH_FILE
+  (
+    PROCESS_ID              NUMBER,
+    CUST_DOC_ID             NUMBER,
+    CONS_BILLING_NUMBER     NUMBER,
+    CUST_ACCOUNT_ID         NUMBER,
+    AOPS_CUSTOMER_NUMBER    VARCHAR2(30),
+	CUSTOMER_NAME 			VARCHAR2(90),	
+    BILLING_TERM VARCHAR2(40 BYTE),
+    DELIVERY_METHOD         VARCHAR2(40 BYTE),
+    BILLING_DATE            DATE,
+    FILE_TYPE               VARCHAR2(80),
+    P_FILE_NAME             VARCHAR2(150),
+    ORG_ID                  NUMBER,
+    STATUS                  VARCHAR2(40 BYTE),
+    PROCESSED_FLAG          VARCHAR2(10 BYTE),
+    ERROR_MESSAGE           VARCHAR2(1000 BYTE),
+    REQUEST_ID              NUMBER,
+    REPROCESS_FLAG          VARCHAR2(10 BYTE),
+    REPROCESS_REQUEST_ID    NUMBER,
+    REPROCESS_STATUS        VARCHAR2(40 BYTE),
+    REPROCESS_ERROR_MESSAGE VARCHAR2(1000 BYTE),
+    LAST_UPDATE_DATE        DATE NOT NULL,
+    LAST_UPDATED_BY         NUMBER(15) NOT NULL,
+    CREATION_DATE           DATE NOT NULL,
+    CREATED_BY              NUMBER(15) NOT NULL,
+    LAST_UPDATE_LOGIN       NUMBER(15)
+  );
+  
+  SHOW ERROR; 

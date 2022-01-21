@@ -1,0 +1,36 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<!-- dbdrv: exec java oracle/jrad/tools/xml/importer XMLImporter.class java &phase=dat+24 checkfile:~PROD:~PATH:~FILE &fullpath:~PROD:~PATH:~FILE -username &un_apps -password &pw_apps -dbconnection &jdbc_db_addr  -userId "1" -rootPackage /oracle/apps/~PROD  -rootdir &fullpath:~PROD:mds:directory  -->
+<page xmlns:jrad="http://xmlns.oracle.com/jrad" xmlns:oa="http://xmlns.oracle.com/oa" xmlns:ui="http://xmlns.oracle.com/uix/ui" version="9.0.3.8.12_1330" xml:lang="en-US" xmlns:user="http://xmlns.oracle.com/jrad/user" xmlns="http://xmlns.oracle.com/jrad" file-version="$Header$">
+   <content>
+      <oa:pageLayout id="PageLayoutRN" amDefName="od.oracle.apps.xxmer.newstoresetup.server.NewStoreSetupAM" windowTitle="New Stores" title="New Store Setup" adminCustomizable="false" regionName="">
+         <ui:corporateBranding>
+            <oa:image id="corporateBrandingImage" source="/OA_MEDIA/FNDSSCORP.gif" adminCustomizable="false"/>
+         </ui:corporateBranding>
+         <ui:productBranding>
+            <oa:image id="ProdBrand" source="FNDAPPBRAND.gif" shortDesc="Text Here" adminCustomizable="false"/>
+         </ui:productBranding>
+         <ui:contents>
+            <oa:query id="NewStoresList2RN" mode="resultsBasedSearch" dispSimple="false" dispAdvanced="true" defaultPanel="advanced" controllerClass="od.oracle.apps.xxmer.newstoresetup.server.webui.NewStoreSetupCO" adminCustomizable="false" regionName="" showCustomizePanelControls="false" dispCustomized="false">
+               <ui:contents>
+                  <oa:table id="NewStoreSetupVO1" adminCustomizable="false">
+                     <ui:contents>
+                        <oa:messageStyledText id="LocId" dataType="VARCHAR2" prompt="Org. Code" viewName="NewStoreSetupVO1" viewAttr="OrganizationCode" maximumLength="6" queryable="true" selectiveSearchCriteria="true" sortState="yes" adminCustomizable="true" userCustomizable="true"/>
+                        <oa:messageStyledText id="LegacyID" dataType="VARCHAR2" viewName="NewStoreSetupVO1" viewAttr="LegacyId" queryable="true" sortState="yes" prompt="Location ID" totalValue="false"/>
+                        <oa:messageStyledText id="LocName" dataType="VARCHAR2" prompt="Location Name" viewName="NewStoreSetupVO1" viewAttr="LocName" maximumLength="150" queryable="true" selectiveSearchCriteria="false" adminCustomizable="true" sortState="yes" userCustomizable="true"/>
+                        <oa:messageStyledText id="OpenDate" queryable="true" sortState="yes" dataType="DATE" viewName="NewStoreSetupVO1" viewAttr="OpenDate" prompt="Open Date" adminCustomizable="true" userCustomizable="true"/>
+                        <oa:messageStyledText id="StoreDirRcvDate" dataType="DATE" prompt="Store Direct Receiving Date" viewName="NewStoreSetupVO1" viewAttr="StoreDirRcvDate" queryable="true" selectiveSearchCriteria="false" adminCustomizable="true" sortState="yes" maximumLength="11" columns="11" userCustomizable="true"/>
+                     </ui:contents>
+                  </oa:table>
+               </ui:contents>
+            </oa:query>
+         </ui:contents>
+         <ui:pageStatus>
+            <oa:flowLayout id="PageStatusRN" adminCustomizable="false">
+               <ui:contents>
+                  <oa:staticStyledText id="PageHelp" styleClass="OraInstructionText" messageAppShortName="XXMER" adminCustomizable="false"/>
+               </ui:contents>
+            </oa:flowLayout>
+         </ui:pageStatus>
+      </oa:pageLayout>
+   </content>
+</page>

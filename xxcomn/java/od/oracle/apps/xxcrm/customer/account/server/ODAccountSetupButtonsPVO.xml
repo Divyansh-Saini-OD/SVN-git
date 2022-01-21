@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding='windows-1252'?>
+<!DOCTYPE ViewObject SYSTEM "jbo_03_01.dtd">
+
+<ViewObject
+   Name="ODAccountSetupButtonsPVO"
+   BindingStyle="Oracle"
+   CustomQuery="true"
+   RowClass="od.oracle.apps.xxcrm.customer.account.server.ODAccountSetupButtonsPVORowImpl"
+   ComponentClass="od.oracle.apps.xxcrm.customer.account.server.ODAccountSetupButtonsPVOImpl"
+   MsgBundleClass="oracle.jbo.common.JboResourceBundle"
+   UseGlueCode="false" >
+   <DesignTime>
+      <Attr Name="_isCodegen" Value="true" />
+      <Attr Name="_version" Value="9.0.3.13.93" />
+      <Attr Name="_CodeGenFlagNew" Value="36" />
+   </DesignTime>
+   <ViewAttribute
+      Name="CopyRequestRowRendered"
+      IsPersistent="false"
+      DefaultValue="true"
+      Type="java.lang.Boolean"
+      ColumnType="$none$"
+      AliasName="COPYREQUESTROWRENDERED"
+      SQLType="BIT" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="AddCustomDocumentRendered"
+      IsPersistent="false"
+      DefaultValue="true"
+      Type="java.lang.Boolean"
+      ColumnType="$none$"
+      AliasName="ADDCUSTOMDOCUMENTRENDERED"
+      SQLType="BIT" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="DeleteDocumentRendered"
+      IsPersistent="false"
+      DefaultValue="false"
+      Type="java.lang.Boolean"
+      ColumnType="$none$"
+      AliasName="DELETEDOCUMENTRENDERED"
+      SQLType="BIT" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="AddCustomContractRendered"
+      IsPersistent="false"
+      Type="java.lang.Boolean"
+      ColumnType="$none$"
+      AliasName="ADDCUSTOMCONTRACTRENDERED"
+      SQLType="BIT" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="DeleteContractRendered"
+      IsPersistent="false"
+      Type="java.lang.Boolean"
+      ColumnType="$none$"
+      AliasName="DELETECONTRACTRENDERED"
+      SQLType="BIT" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="ValidateAndSaveRendered"
+      IsPersistent="false"
+      Type="java.lang.Boolean"
+      ColumnType="$none$"
+      AliasName="VALIDATEANDSAVERENDERED"
+      SQLType="BIT" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="SubmitRequestRendered"
+      IsPersistent="false"
+      Type="java.lang.Boolean"
+      ColumnType="$none$"
+      AliasName="SUBMITREQUESTRENDERED"
+      SQLType="BIT" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="DeleteRequestRendered"
+      IsPersistent="false"
+      Type="java.lang.Boolean"
+      ColumnType="$none$"
+      AliasName="DELETEREQUESTRENDERED"
+      SQLType="BIT" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="AddNewRequestRowRendered"
+      IsPersistent="false"
+      DefaultValue="true"
+      Type="java.lang.Boolean"
+      ColumnType="$none$"
+      AliasName="ADDNEWREQUESTROWRENDERED"
+      SQLType="BIT" >
+   </ViewAttribute>
+</ViewObject>

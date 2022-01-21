@@ -1,0 +1,37 @@
+REM================================================================================================
+REM                                 Start Of Script
+REM================================================================================================
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     OFF
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+-- +========================================================================+
+-- |               Office Depot - Project Simplify                          |
+-- +========================================================================+
+-- | Name        :XX_FA_TAX_INTERFACE_STG_U1                                |
+-- | Description : Non-Unique Index for Custom Table XX_FA_TAX_INTERFACE_STG|
+-- |Change History:                                                         |
+-- |---------------                                                         |
+-- |                                                                        |
+-- |Version  Date        Author             Remarks                         |
+-- |-------  ----------- -----------------  --------------------------------|
+-- | 1.0     22-JAN-2015 Mark Schmit        Original                        |
+-- +========================================================================+
+
+PROMPT
+PROMPT Creating Index....
+PROMPT
+
+create index XXFIN.XX_FA_TAX_INTERFACE_STG_N1 on XXFIN.XX_FA_TAX_INTERFACE_STG(CALC_ASSET_NUMBER) tablespace APPS_TS_TX_DATA parallel 4;
+
+alter index XXFIN.XX_FA_TAX_INTERFACE_STG_N1 noparallel;
+
+SHOW ERRORS;
+
+
+REM================================================================================================
+REM                                 Start Of Script
+REM================================================================================================

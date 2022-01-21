@@ -1,0 +1,815 @@
+<?xml version="1.0" encoding='windows-1252'?>
+<!DOCTYPE Entity SYSTEM "jbo_03_01.dtd">
+
+<Entity
+   Name="ODEBillTransmissionEO"
+   DBObjectType="synonym"
+   DBObjectName="XX_CDH_EBL_TRANSMISSION_DTL"
+   AliasName="ODEBillTransmissionEO"
+   BindingStyle="Oracle"
+   UseGlueCode="false"
+   CodeGenFlag="79"
+   RowClass="od.oracle.apps.xxcrm.cdh.ebl.eblmain.schema.server.ODEBillTransmissionEOImpl"
+   DefClass="oracle.apps.fnd.framework.server.OAEntityDefImpl"
+   CollClass="oracle.apps.fnd.framework.server.OAEntityCache" >
+   <DesignTime>
+      <Attr Name="_isCodegen" Value="true" />
+      <Attr Name="_version" Value="9.0.3.12.53" />
+      <AttrArray Name="_publishEvents">
+      </AttrArray>
+   </DesignTime>
+   <Attribute
+      Name="CustDocId"
+      IsNotNull="true"
+      Precision="15"
+      Scale="0"
+      Type="oracle.jbo.domain.Number"
+      ColumnName="CUST_DOC_ID"
+      ColumnType="NUMBER"
+      SQLType="NUMERIC"
+      TableName="XX_CDH_EBL_TRANSMISSION_DTL"
+      PrimaryKey="true" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="EmailSubject"
+      Precision="256"
+      Type="java.lang.String"
+      ColumnName="EMAIL_SUBJECT"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XX_CDH_EBL_TRANSMISSION_DTL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="256" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="EmailStdMessage"
+      Precision="4000"
+      Type="java.lang.String"
+      ColumnName="EMAIL_STD_MESSAGE"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XX_CDH_EBL_TRANSMISSION_DTL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="4000" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="EmailCustomMessage"
+      Precision="4000"
+      Type="java.lang.String"
+      ColumnName="EMAIL_CUSTOM_MESSAGE"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XX_CDH_EBL_TRANSMISSION_DTL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="4000" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="EmailStdDisclaimer"
+      Precision="2000"
+      Type="java.lang.String"
+      ColumnName="EMAIL_STD_DISCLAIMER"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XX_CDH_EBL_TRANSMISSION_DTL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="2000" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="EmailSignature"
+      Precision="2000"
+      Type="java.lang.String"
+      ColumnName="EMAIL_SIGNATURE"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XX_CDH_EBL_TRANSMISSION_DTL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="2000" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="EmailLogoRequired"
+      Precision="1"
+      Type="java.lang.String"
+      ColumnName="EMAIL_LOGO_REQUIRED"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XX_CDH_EBL_TRANSMISSION_DTL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="1" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="EmailLogoFileName"
+      Precision="256"
+      Type="java.lang.String"
+      ColumnName="EMAIL_LOGO_FILE_NAME"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XX_CDH_EBL_TRANSMISSION_DTL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="256" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="FtpDirection"
+      Precision="30"
+      Type="java.lang.String"
+      ColumnName="FTP_DIRECTION"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XX_CDH_EBL_TRANSMISSION_DTL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="30" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="FtpTransferType"
+      Precision="30"
+      Type="java.lang.String"
+      ColumnName="FTP_TRANSFER_TYPE"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XX_CDH_EBL_TRANSMISSION_DTL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="30" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="FtpDestinationSite"
+      Precision="256"
+      Type="java.lang.String"
+      ColumnName="FTP_DESTINATION_SITE"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XX_CDH_EBL_TRANSMISSION_DTL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="256" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="FtpDestinationFolder"
+      Precision="256"
+      Type="java.lang.String"
+      ColumnName="FTP_DESTINATION_FOLDER"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XX_CDH_EBL_TRANSMISSION_DTL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="256" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="FtpUserName"
+      Precision="30"
+      Type="java.lang.String"
+      ColumnName="FTP_USER_NAME"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XX_CDH_EBL_TRANSMISSION_DTL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="30" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="FtpPassword"
+      Precision="30"
+      Type="java.lang.String"
+      ColumnName="FTP_PASSWORD"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XX_CDH_EBL_TRANSMISSION_DTL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="30" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="FtpPickupServer"
+      Precision="256"
+      Type="java.lang.String"
+      ColumnName="FTP_PICKUP_SERVER"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XX_CDH_EBL_TRANSMISSION_DTL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="256" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="FtpPickupFolder"
+      Precision="256"
+      Type="java.lang.String"
+      ColumnName="FTP_PICKUP_FOLDER"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XX_CDH_EBL_TRANSMISSION_DTL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="256" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="FtpCustContactName"
+      Precision="256"
+      Type="java.lang.String"
+      ColumnName="FTP_CUST_CONTACT_NAME"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XX_CDH_EBL_TRANSMISSION_DTL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="256" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="FtpCustContactEmail"
+      Precision="256"
+      Type="java.lang.String"
+      ColumnName="FTP_CUST_CONTACT_EMAIL"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XX_CDH_EBL_TRANSMISSION_DTL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="256" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="FtpCustContactPhone"
+      Precision="256"
+      Type="java.lang.String"
+      ColumnName="FTP_CUST_CONTACT_PHONE"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XX_CDH_EBL_TRANSMISSION_DTL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="256" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="FtpNotifyCustomer"
+      Precision="1"
+      Type="java.lang.String"
+      ColumnName="FTP_NOTIFY_CUSTOMER"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XX_CDH_EBL_TRANSMISSION_DTL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="1" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="FtpCcEmails"
+      Precision="4000"
+      Type="java.lang.String"
+      ColumnName="FTP_CC_EMAILS"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XX_CDH_EBL_TRANSMISSION_DTL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="4000" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="FtpEmailSub"
+      Precision="256"
+      Type="java.lang.String"
+      ColumnName="FTP_EMAIL_SUB"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XX_CDH_EBL_TRANSMISSION_DTL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="256" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="FtpEmailContent"
+      Precision="4000"
+      Type="java.lang.String"
+      ColumnName="FTP_EMAIL_CONTENT"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XX_CDH_EBL_TRANSMISSION_DTL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="4000" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="FtpSendZeroByteFile"
+      Precision="1"
+      Type="java.lang.String"
+      ColumnName="FTP_SEND_ZERO_BYTE_FILE"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XX_CDH_EBL_TRANSMISSION_DTL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="1" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="FtpZeroByteFileText"
+      Precision="2000"
+      Type="java.lang.String"
+      ColumnName="FTP_ZERO_BYTE_FILE_TEXT"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XX_CDH_EBL_TRANSMISSION_DTL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="2000" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="FtpZeroByteNotificationTxt"
+      Precision="4000"
+      Type="java.lang.String"
+      ColumnName="FTP_ZERO_BYTE_NOTIFICATION_TXT"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XX_CDH_EBL_TRANSMISSION_DTL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="4000" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="CdFileLocation"
+      Precision="2000"
+      Type="java.lang.String"
+      ColumnName="CD_FILE_LOCATION"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XX_CDH_EBL_TRANSMISSION_DTL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="2000" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="CdSendToAddress"
+      Precision="1000"
+      Type="java.lang.String"
+      ColumnName="CD_SEND_TO_ADDRESS"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XX_CDH_EBL_TRANSMISSION_DTL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="1000" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="Comments"
+      Precision="4000"
+      Type="java.lang.String"
+      ColumnName="COMMENTS"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XX_CDH_EBL_TRANSMISSION_DTL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="4000" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="Attribute1"
+      Precision="150"
+      Type="java.lang.String"
+      ColumnName="ATTRIBUTE1"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XX_CDH_EBL_TRANSMISSION_DTL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="150" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="Attribute2"
+      Precision="150"
+      Type="java.lang.String"
+      ColumnName="ATTRIBUTE2"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XX_CDH_EBL_TRANSMISSION_DTL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="150" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="Attribute3"
+      Precision="150"
+      Type="java.lang.String"
+      ColumnName="ATTRIBUTE3"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XX_CDH_EBL_TRANSMISSION_DTL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="150" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="Attribute4"
+      Precision="150"
+      Type="java.lang.String"
+      ColumnName="ATTRIBUTE4"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XX_CDH_EBL_TRANSMISSION_DTL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="150" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="Attribute5"
+      Precision="150"
+      Type="java.lang.String"
+      ColumnName="ATTRIBUTE5"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XX_CDH_EBL_TRANSMISSION_DTL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="150" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="Attribute6"
+      Precision="150"
+      Type="java.lang.String"
+      ColumnName="ATTRIBUTE6"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XX_CDH_EBL_TRANSMISSION_DTL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="150" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="Attribute7"
+      Precision="150"
+      Type="java.lang.String"
+      ColumnName="ATTRIBUTE7"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XX_CDH_EBL_TRANSMISSION_DTL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="150" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="Attribute8"
+      Precision="150"
+      Type="java.lang.String"
+      ColumnName="ATTRIBUTE8"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XX_CDH_EBL_TRANSMISSION_DTL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="150" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="Attribute9"
+      Precision="150"
+      Type="java.lang.String"
+      ColumnName="ATTRIBUTE9"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XX_CDH_EBL_TRANSMISSION_DTL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="150" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="Attribute10"
+      Precision="150"
+      Type="java.lang.String"
+      ColumnName="ATTRIBUTE10"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XX_CDH_EBL_TRANSMISSION_DTL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="150" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="Attribute11"
+      Precision="150"
+      Type="java.lang.String"
+      ColumnName="ATTRIBUTE11"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XX_CDH_EBL_TRANSMISSION_DTL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="150" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="Attribute12"
+      Precision="150"
+      Type="java.lang.String"
+      ColumnName="ATTRIBUTE12"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XX_CDH_EBL_TRANSMISSION_DTL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="150" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="Attribute13"
+      Precision="150"
+      Type="java.lang.String"
+      ColumnName="ATTRIBUTE13"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XX_CDH_EBL_TRANSMISSION_DTL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="150" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="Attribute14"
+      Precision="150"
+      Type="java.lang.String"
+      ColumnName="ATTRIBUTE14"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XX_CDH_EBL_TRANSMISSION_DTL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="150" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="Attribute15"
+      Precision="150"
+      Type="java.lang.String"
+      ColumnName="ATTRIBUTE15"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XX_CDH_EBL_TRANSMISSION_DTL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="150" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="Attribute16"
+      Precision="150"
+      Type="java.lang.String"
+      ColumnName="ATTRIBUTE16"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XX_CDH_EBL_TRANSMISSION_DTL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="150" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="Attribute17"
+      Precision="150"
+      Type="java.lang.String"
+      ColumnName="ATTRIBUTE17"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XX_CDH_EBL_TRANSMISSION_DTL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="150" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="Attribute18"
+      Precision="150"
+      Type="java.lang.String"
+      ColumnName="ATTRIBUTE18"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XX_CDH_EBL_TRANSMISSION_DTL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="150" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="Attribute19"
+      Precision="150"
+      Type="java.lang.String"
+      ColumnName="ATTRIBUTE19"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XX_CDH_EBL_TRANSMISSION_DTL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="150" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="Attribute20"
+      Precision="150"
+      Type="java.lang.String"
+      ColumnName="ATTRIBUTE20"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XX_CDH_EBL_TRANSMISSION_DTL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="150" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="LastUpdateDate"
+      IsNotNull="true"
+      Type="oracle.jbo.domain.Date"
+      ColumnName="LAST_UPDATE_DATE"
+      ColumnType="DATE"
+      SQLType="TIMESTAMP"
+      TableName="XX_CDH_EBL_TRANSMISSION_DTL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="7" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="LastUpdatedBy"
+      IsNotNull="true"
+      Precision="15"
+      Scale="0"
+      Type="oracle.jbo.domain.Number"
+      ColumnName="LAST_UPDATED_BY"
+      ColumnType="NUMBER"
+      SQLType="NUMERIC"
+      TableName="XX_CDH_EBL_TRANSMISSION_DTL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="CreationDate"
+      IsNotNull="true"
+      Type="oracle.jbo.domain.Date"
+      ColumnName="CREATION_DATE"
+      ColumnType="DATE"
+      SQLType="TIMESTAMP"
+      TableName="XX_CDH_EBL_TRANSMISSION_DTL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="7" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="CreatedBy"
+      IsNotNull="true"
+      Precision="15"
+      Scale="0"
+      Type="oracle.jbo.domain.Number"
+      ColumnName="CREATED_BY"
+      ColumnType="NUMBER"
+      SQLType="NUMERIC"
+      TableName="XX_CDH_EBL_TRANSMISSION_DTL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="LastUpdateLogin"
+      IsNotNull="true"
+      Precision="15"
+      Scale="0"
+      Type="oracle.jbo.domain.Number"
+      ColumnName="LAST_UPDATE_LOGIN"
+      ColumnType="NUMBER"
+      SQLType="NUMERIC"
+      TableName="XX_CDH_EBL_TRANSMISSION_DTL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="RequestId"
+      Precision="15"
+      Scale="0"
+      Type="oracle.jbo.domain.Number"
+      ColumnName="REQUEST_ID"
+      ColumnType="NUMBER"
+      SQLType="NUMERIC"
+      TableName="XX_CDH_EBL_TRANSMISSION_DTL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="ProgramApplicationId"
+      Precision="15"
+      Scale="0"
+      Type="oracle.jbo.domain.Number"
+      ColumnName="PROGRAM_APPLICATION_ID"
+      ColumnType="NUMBER"
+      SQLType="NUMERIC"
+      TableName="XX_CDH_EBL_TRANSMISSION_DTL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="ProgramId"
+      Precision="15"
+      Scale="0"
+      Type="oracle.jbo.domain.Number"
+      ColumnName="PROGRAM_ID"
+      ColumnType="NUMBER"
+      SQLType="NUMERIC"
+      TableName="XX_CDH_EBL_TRANSMISSION_DTL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="ProgramUpdateDate"
+      Type="oracle.jbo.domain.Date"
+      ColumnName="PROGRAM_UPDATE_DATE"
+      ColumnType="DATE"
+      SQLType="TIMESTAMP"
+      TableName="XX_CDH_EBL_TRANSMISSION_DTL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="7" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="WhUpdateDate"
+      Type="oracle.jbo.domain.Date"
+      ColumnName="WH_UPDATE_DATE"
+      ColumnType="DATE"
+      SQLType="TIMESTAMP"
+      TableName="XX_CDH_EBL_TRANSMISSION_DTL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="7" />
+      </DesignTime>
+   </Attribute>
+   <Key
+      Name="SysC00333453" >
+      <AttrArray Name="Attributes">
+         <Item Value="od.oracle.apps.xxcrm.cdh.ebl.eblmain.schema.server.ODEBillTransmissionEO.CreationDate" />
+      </AttrArray>
+      <DesignTime>
+         <Attr Name="_DBObjectName" Value="SYS_C00333453" />
+         <Attr Name="_checkCondition" Value="&#34;CREATION_DATE&#34; IS NOT NULL" />
+         <Attr Name="_isCheck" Value="true" />
+      </DesignTime>
+   </Key>
+   <Key
+      Name="SysC00333452" >
+      <AttrArray Name="Attributes">
+         <Item Value="od.oracle.apps.xxcrm.cdh.ebl.eblmain.schema.server.ODEBillTransmissionEO.LastUpdatedBy" />
+      </AttrArray>
+      <DesignTime>
+         <Attr Name="_DBObjectName" Value="SYS_C00333452" />
+         <Attr Name="_checkCondition" Value="&#34;LAST_UPDATED_BY&#34; IS NOT NULL" />
+         <Attr Name="_isCheck" Value="true" />
+      </DesignTime>
+   </Key>
+   <Key
+      Name="SysC00333455" >
+      <AttrArray Name="Attributes">
+         <Item Value="od.oracle.apps.xxcrm.cdh.ebl.eblmain.schema.server.ODEBillTransmissionEO.LastUpdateLogin" />
+      </AttrArray>
+      <DesignTime>
+         <Attr Name="_DBObjectName" Value="SYS_C00333455" />
+         <Attr Name="_checkCondition" Value="&#34;LAST_UPDATE_LOGIN&#34; IS NOT NULL" />
+         <Attr Name="_isCheck" Value="true" />
+      </DesignTime>
+   </Key>
+   <Key
+      Name="SysC00333451" >
+      <AttrArray Name="Attributes">
+         <Item Value="od.oracle.apps.xxcrm.cdh.ebl.eblmain.schema.server.ODEBillTransmissionEO.LastUpdateDate" />
+      </AttrArray>
+      <DesignTime>
+         <Attr Name="_DBObjectName" Value="SYS_C00333451" />
+         <Attr Name="_checkCondition" Value="&#34;LAST_UPDATE_DATE&#34; IS NOT NULL" />
+         <Attr Name="_isCheck" Value="true" />
+      </DesignTime>
+   </Key>
+   <Key
+      Name="SysC00333450" >
+      <AttrArray Name="Attributes">
+         <Item Value="od.oracle.apps.xxcrm.cdh.ebl.eblmain.schema.server.ODEBillTransmissionEO.CustDocId" />
+      </AttrArray>
+      <DesignTime>
+         <Attr Name="_DBObjectName" Value="SYS_C00333450" />
+         <Attr Name="_checkCondition" Value="&#34;CUST_DOC_ID&#34; IS NOT NULL" />
+         <Attr Name="_isCheck" Value="true" />
+      </DesignTime>
+   </Key>
+   <Key
+      Name="SysC00333454" >
+      <AttrArray Name="Attributes">
+         <Item Value="od.oracle.apps.xxcrm.cdh.ebl.eblmain.schema.server.ODEBillTransmissionEO.CreatedBy" />
+      </AttrArray>
+      <DesignTime>
+         <Attr Name="_DBObjectName" Value="SYS_C00333454" />
+         <Attr Name="_checkCondition" Value="&#34;CREATED_BY&#34; IS NOT NULL" />
+         <Attr Name="_isCheck" Value="true" />
+      </DesignTime>
+   </Key>
+   <Key
+      Name="OdebilltransmissioneoPrimaryKey" >
+      <AttrArray Name="Attributes">
+         <Item Value="od.oracle.apps.xxcrm.cdh.ebl.eblmain.schema.server.ODEBillTransmissionEO.CustDocId" />
+      </AttrArray>
+      <DesignTime>
+         <Attr Name="_DBObjectName" Value="ODEBILLTRANSMISSIONEO_PRIMARY_" />
+         <Attr Name="_isPrimary" Value="true" />
+      </DesignTime>
+   </Key>
+</Entity>

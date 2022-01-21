@@ -1,0 +1,34 @@
+-- +==========================================================================+
+-- |                  Office Depot - Project Simplify                         |
+-- |                                                                          |
+-- +==========================================================================+
+-- | SQL Script to create the following objects                               |
+-- |             INDEX       : XX_AR_CASH_RECEIPTS_N16                        |
+-- |                           For AR_CASH_RECEIPTS_ALL table                 |
+-- |                                                                          |
+-- |                                                                          |
+-- |                                                                          |
+-- |Change Record:                                                            |
+-- |===============                                                           |
+-- |Version   Date         Author               Remarks                       |
+-- |=======   ===========  =============        ==============================|
+-- | V1.0     17-AUG-2016  Rakesh Polepalli     Defect# 38409	              |
+-- +==========================================================================+
+
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     ON
+
+CREATE INDEX xxfin.XX_AR_CASH_RECEIPTS_N16 ON ar.AR_CASH_RECEIPTS_ALL
+  (
+    LPAD(RECEIPT_NUMBER,240)
+  ) TABLESPACE APPS_TS_TX_IDX_AR_16M
+  parallel 8;
+
+ALTER INDEX xxfin.XX_AR_CASH_RECEIPTS_N16 noparallel;
+  
+COMMIT;
+
+SHOW ERRORS;

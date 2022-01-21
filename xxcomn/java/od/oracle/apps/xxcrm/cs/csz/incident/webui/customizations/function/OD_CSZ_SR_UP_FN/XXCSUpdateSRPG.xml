@@ -1,0 +1,27 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<customization xmlns="http://xmlns.oracle.com/jrad" version="9.0.6.0.0_64" xml:lang="en-US" customizes="/od/oracle/apps/xxcrm/cs/csz/incident/webui/XXCSUpdateSRPG" MDSActiveDoc="true">
+   <modifications>
+      <move element="GlobalActionsxRN.lstActions" after="GlobalActionsxRN.CancelButton"/>
+      <move element="GlobalActionsxRN.GoButton" after="GlobalActionsxRN.lstActions"/>
+      <move element="GlobalActionsxRN.SaveButton" after="GlobalActionsxRN.GoButton"/>
+      <move element="GlobalActionsxRN.ApplyButton" after="GlobalActionsxRN.SaveButton"/>
+      <move element="GlobalActionsxRN.ApplyNextButton" after="GlobalActionsxRN.ApplyButton"/>
+      <move element="GlobalActionsxRN.ERecordButton" after="GlobalActionsxRN.ApplyNextButton"/>
+      <move element="GlobalActionsxRN.SREscBtn" after="GlobalActionsxRN.ERecordButton"/>
+      <move element="GlobalActionsxRN.MakeAvailable" after="GlobalActionsxRN.SREscBtn"/>
+      <move element="GlobalActionsxRN.posearch1" after="GlobalActionsxRN.MakeAvailable"/>
+      <move element="GlobalActionsxRN.posearch" after="GlobalActionsxRN.posearch1"/>
+      <move element="GlobalActionsxRN.jscript" after="GlobalActionsxRN.posearch"/>
+      <modify element="QuickLinkContanerRN.QuickLinksxRN.Service_details" destination="OA.jsp?page=/od/oracle/apps/xxcrm/cs/csz/incident/webui/XXCSQuestionAnswersPG&amp;OAFunc=OD_CSZ_SR_QA_FN&amp;IncidentId={@IncidentId}"/>
+      <modify element="SRSuperTab6Link" rendered="false"/>
+      <modify element="SRWarningxFC" rendered="false"/>
+      <modify element="KMSearchRN" rendered="false"/>
+      <modify element="CustomerContactBinRN.CustTimezoneSel" rendered="false"/>
+      <modify element="CustomerContactBinRN.CustomerAccount" rendered="false"/>
+      <modify element="CustomerContactBinRN.CreditHoldCustAccount" rendered="false"/>
+      <modify element="CustomerContactBinRN.incSalesOrder" rendered="false"/>
+      <modify element="HistoryTabRN.CsLogsRN" rendered="true"/>
+      <modify element="HistoryTabRN.TasksSummaryHideShowxRN.TaskEventsStackRN" postDefault="true"/>
+      <modify element="CustomerContactBinRN.UpdateContact" rendered="false"/>
+   </modifications>
+</customization>

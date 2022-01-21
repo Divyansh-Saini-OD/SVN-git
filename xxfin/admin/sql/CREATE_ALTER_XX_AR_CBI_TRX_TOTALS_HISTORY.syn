@@ -1,0 +1,33 @@
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     ON
+
+PROMPT Creating SYNONYM XX_AR_CBI_TRX_TOTALS_HISTORY
+
+PROMPT Program exits IF the creation IS NOT SUCCESSFUL
+
+WHENEVER SQLERROR CONTINUE
+
+-- +===================================================================================+
+-- |                  Office Depot - Project Simplify                                  |
+-- +===================================================================================+
+-- | Name :XX_AR_CBI_TRX_TOTALS_HISTORY                                                |
+-- | Description : Create the Synonym for the table XX_AR_CBI_TRX_TOTALS_HISTORY       |
+-- |                                                                                   |
+-- |                                                                                   |
+-- |                                                                                   |
+-- |Change Record:                                                                     |
+-- |===============                                                                    |
+-- |Version   Date         Author               Remarks                                |
+-- |=======   ==========   =============        =======================================|
+-- | 1.0     05-feb-2009  Sambasiva Reddy D    Initial version                         |
+-- +===================================================================================+
+
+--DROP SYNONYM XX_AR_CBI_TRX_TOTALS_HISTORY;
+
+CREATE SYNONYM XX_AR_CBI_TRX_TOTALS_HISTORY FOR XXFIN.XX_AR_CBI_TRX_TOTALS_HISTORY;
+
+
+SHOW ERROR

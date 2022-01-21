@@ -1,0 +1,43 @@
+-- +===========================================================================+
+-- |                  Office Depot                                             |
+-- +===========================================================================+
+-- |Description : Create Table XX_FIN_VPS_STMT_BACKUP_DATA                     |
+-- |                                                                           |
+-- |                                                                           |
+-- |Change Record:                                                             |
+-- |===============                                                            |
+-- |Version      Date           Author                  Remarks                |
+-- |=======    ==========     =============             ====================== |
+-- | 1.0       09-JUL-17      Sreedhar Mohan            Initial draft version  |
+-- +===========================================================================+
+
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     ON
+WHENEVER SQLERROR CONTINUE
+
+BEGIN
+  EXECUTE IMMEDIATE 'DROP TABLE XXFIN.XX_FIN_VPS_STMT_BACKUP_DATA';
+EXCEPTION
+  WHEN OTHERS THEN NULL;
+END;
+/
+CREATE TABLE XXFIN.XX_FIN_VPS_STMT_BACKUP_DATA (STMT_BACKUP_ID     NUMBER
+                                               ,PROGRAM_ID         NUMBER
+                                               ,VENDOR_NUMBER      VARCHAR2(20)
+                                               ,VPS_DATA           CLOB
+                                               ,BACKUP_TYPE        VARCHAR2(15)
+                                               ,CREATION_DATE      DATE 
+                                               ,CREATED_BY         NUMBER 
+                                               ,LAST_UPDATE_DATE   DATE 
+                                               ,LAST_UPDATED_BY    NUMBER 
+                                               ,CONSTRAINT VPS_STMT_BACKUP_PK PRIMARY KEY (STMT_BACKUP_ID)
+                                               ,CONSTRAINT VPS_STMT_BACKUP_DATA_JSON CHECK (vps_data IS JSON (STRICT)) 
+                                               );
+
+
+GRANT ALL ON XXFIN.XX_FIN_VPS_STMT_BACKUP_DATA TO APPS WITH GRANT OPTION;
+
+GRANT SELECT ON XXFIN.XX_FIN_VPS_STMT_BACKUP_DATA TO ERP_SYSTEM_TABLE_SELECT_ROLE;

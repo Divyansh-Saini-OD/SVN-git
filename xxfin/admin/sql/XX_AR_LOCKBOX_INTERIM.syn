@@ -1,0 +1,24 @@
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     ON
+
+-- +==========================================================================+
+-- |                  Office Depot - Project Simplify                         |
+-- +==========================================================================+
+-- | SQL Script to create the following object                                |
+-- |             Synonym  : XX_AR_LOCKBOX_INTERIM                             |
+-- |                                                                          |
+-- |Change Record:                                                            |
+-- |===============                                                           |
+-- |Version   Date         Author               Remarks                       |
+-- |=======   ==========   =============        ==============================|
+-- | V1.0     28-OCT-2011  P.Sankaran           Initial version               |
+-- |                                                                          |
+-- +==========================================================================+
+
+
+CREATE SYNONYM XX_AR_LOCKBOX_INTERIM FOR XXFIN.XX_AR_LOCKBOX_INTERIM;
+
+SHOW ERROR

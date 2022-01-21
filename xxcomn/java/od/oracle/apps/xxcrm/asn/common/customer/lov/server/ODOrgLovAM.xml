@@ -1,0 +1,25 @@
+<?xml version='1.0' encoding='windows-1252' ?>
+<!DOCTYPE AppModule SYSTEM "jbo_03_01.dtd">
+<!--
+Subversion Info:
+$HeadURL$
+$Rev$
+Date: $
+-->
+<AppModule
+   Name="ODOrgLovAM"
+   ComponentClass="od.oracle.apps.xxcrm.asn.common.customer.lov.server.ODOrgLovAMImpl" >
+   <DesignTime>
+      <Attr Name="_isCodegen" Value="true" />
+      <Attr Name="_version" Value="10.1.3.41.57" />
+      <Attr Name="_deployType" Value="0" />
+   </DesignTime>
+   <ViewUsage
+      Name="ODSicCodeLovVO1"
+      ViewObjectName="od.oracle.apps.xxcrm.asn.common.customer.lov.server.ODSicCodeLovVO" >
+   </ViewUsage>
+   <ViewUsage
+      Name="ODSalesrepsLovVO1"
+      ViewObjectName="od.oracle.apps.xxcrm.asn.common.customer.lov.server.ODSalesrepsLovVO" >
+   </ViewUsage>
+</AppModule>

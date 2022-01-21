@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding='windows-1252'?>
+<!DOCTYPE AppModule SYSTEM "jbo_03_01.dtd">
+
+<AppModule
+   Name="ODHzPuiDQMSrchResultsAM"   ComponentClass="od.oracle.apps.xxcrm.ar.custsrch.hz.components.search.server.ODHzPuiDQMSrchResultsAMImpl"
+   LoadComponentsLazily="true" >
+   <DesignTime>
+      <Attr Name="_isCodegen" Value="true" />
+      <Attr Name="_version" Value="9.0.3.13.93" />
+      <Attr Name="_deployType" Value="0" />
+   </DesignTime>
+   <ViewUsage
+      Name="HzPuiDQMSrchResultsVO"
+      ViewObjectName="oracle.apps.ar.hz.components.search.server.HzPuiDQMSrchResultsVO" >
+   </ViewUsage>
+   <ViewUsage
+      Name="HzPuiDQMContactsLovVO"
+      ViewObjectName="oracle.apps.ar.hz.components.search.server.HzPuiDQMContactsLovVO" >
+   </ViewUsage>
+   <ViewUsage
+      Name="ODHzPuiDQMSrchResultsVO1"      ViewObjectName="od.oracle.apps.xxcrm.ar.custsrch.hz.components.search.server.ODHzPuiDQMSrchResultsVO" >
+   </ViewUsage>
+</AppModule>

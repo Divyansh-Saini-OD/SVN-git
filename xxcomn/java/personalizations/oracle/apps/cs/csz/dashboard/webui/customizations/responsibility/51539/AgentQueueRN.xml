@@ -1,0 +1,10 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<customization xmlns="http://xmlns.oracle.com/jrad" version="9.0.6.0.0_64" xml:lang="en-US" customizes="/oracle/apps/cs/csz/dashboard/webui/AgentQueueRN" xmlns:user="http://xmlns.oracle.com/jrad/user" user:responsibilityKey="xx_us_cust_service_agent" user:responsibilityAppShortName="CSS">
+   <modifications>
+      <modify element="Resolutionsummary" prompt="Vendor" rendered="true"/>
+      <modify element="Escalated" rendered="false"/>
+      <modify element="Timezonename" prompt="Timezone" rendered="true"/>
+      <modify element="Incidenttype" rendered="true"/>
+      <modify element="Problemcode" rendered="true"/>
+   </modifications>
+</customization>

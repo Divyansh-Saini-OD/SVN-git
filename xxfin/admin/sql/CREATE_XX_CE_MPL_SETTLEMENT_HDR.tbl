@@ -1,0 +1,89 @@
+REM============================================================================================
+REM                                 Start Of Script
+REM============================================================================================
+--+========================================================================================================+--
+--|                                                                                                        |--
+--| Program Name   : CREATE_XX_CE_MTP_SETTLEMENT_HDR.tbl                                                   |--
+--| RICE ID        : EXXXX                                                                                 |--
+--| Purpose        : Create Custom Tables .                                                                |--
+--|                  The Objects created are:                                                              |--
+--|                                                                                                        |--
+--|                1. XX_CE_MTP_SETTLEMENT_HDR(OD CE MPL Settlement Hdr)                                   |--
+--|                                                                                                        |--
+--| Change History  :                                                                                      |--
+--| Version           Date             Changed By              Description                                 |--
+--+========================================================================================================+--
+--| 1.0              18-MAY-2018       Paddy Sanjeevi          Original                                    |--
+--| 1.1              11-JUN-2018       M K Pramod Kumar        Modified as per changes in Design           |--
+--|                                                            Removed AOPS#,Store#,Order Payment Id etc.  |--
+--+========================================================================================================+--
+SET VERIFY OFF
+SET TERM ON
+SET FEEDBACK OFF
+SET SHOW OFF
+SET ECHO OFF
+SET TAB OFF
+WHENEVER SQLERROR CONTINUE;
+PROMPT
+PROMPT Creating the Custom Table ......
+PROMPT
+PROMPT
+PROMPT Creating the Table XX_CE_MTP_SETTLEMENT_HDR......
+PROMPT
+CREATE TABLE XX_CE_MPL_SETTLEMENT_HDR
+  (
+    MPL_header_id         NUMBER,
+    marketplace_name      VARCHAR2(30),
+    order_id              VARCHAR2(100),
+    PROVIDER_TYPE         VARCHAR2(150),
+    settlement_id         NUMBER,
+    settlement_start_date DATE,
+    settlement_end_date   DATE,
+    deposit_date          DATE,
+    merchant_order_id     VARCHAR2(100),
+    total_amount          NUMBER,
+    currency              VARCHAR2(30),
+    transaction_type      VARCHAR2(100),
+    split_order           VARCHAR2(1),
+    posted_date           VARCHAR2(50),
+    ajb_998_amount        NUMBER,
+    ajb_999_amount        NUMBER,
+    ajb_996_amount        NUMBER,
+    terminal_number       VARCHAR2(150),
+    card_number           VARCHAR2(150),
+    auth_number           VARCHAR2(150),
+    action                VARCHAR2(150),
+    record_status         VARCHAR2(30),
+    record_status_stage   VARCHAR2(30),
+    ajb_file_name         VARCHAR2(200),
+    PROCESSOR_ID          VARCHAR2(150),
+    error_description     VARCHAR2(1000),
+    attribute1            VARCHAR2(150),
+    attribute2            VARCHAR2(150),
+    attribute3            VARCHAR2(150),
+    attribute4            VARCHAR2(150),
+    attribute5            VARCHAR2(150),
+    attribute6            VARCHAR2(150),
+    attribute7            VARCHAR2(150),
+    attribute8            VARCHAR2(150),
+    attribute9            VARCHAR2(150),
+    attribute10           VARCHAR2(150),
+    request_id            NUMBER,
+    created_by            NUMBER,
+    creation_date         DATE,
+    last_updated_by       NUMBER,
+    last_update_date      DATE,
+    last_update_login     NUMBER
+  );
+
+Grant  all on XX_CE_MPL_SETTLEMENT_HDR to APPS;
+
+WHENEVER SQLERROR CONTINUE;
+PROMPT
+PROMPT Exiting....
+PROMPT
+SET FEEDBACK ON
+EXIT;
+REM=================================================================================================
+REM                                   End Of Script
+REM=================================================================================================

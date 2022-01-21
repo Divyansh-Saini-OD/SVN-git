@@ -1,0 +1,748 @@
+<?xml version='1.0' encoding='windows-1252' ?>
+<!DOCTYPE ViewObject SYSTEM "jbo_03_01.dtd">
+
+<ViewObject
+   Name="ODEbillCustDocVO"
+   OrderBy="N_EXT_ATTR2"
+   BindingStyle="Oracle"
+   CustomQuery="true"
+   RowClass="od.oracle.apps.xxcrm.cdh.ebl.custdocs.server.ODEbillCustDocVORowImpl"
+   ComponentClass="od.oracle.apps.xxcrm.cdh.ebl.custdocs.server.ODEbillCustDocVOImpl"
+   FetchMode="FETCH_AS_NEEDED"
+   UseGlueCode="false" >
+   <SQLQuery><![CDATA[
+SELECT ODEbillCustDocEO.EXTENSION_ID, 
+       ODEbillCustDocEO.CUST_ACCOUNT_ID, 
+       ODEbillCustDocEO.ATTR_GROUP_ID, 
+       ODEbillCustDocEO.CREATED_BY, 
+       ODEbillCustDocEO.CREATION_DATE, 
+       ODEbillCustDocEO.LAST_UPDATED_BY, 
+       ODEbillCustDocEO.LAST_UPDATE_DATE, 
+       ODEbillCustDocEO.LAST_UPDATE_LOGIN, 
+       ODEbillCustDocEO.C_EXT_ATTR1, 
+       ODEbillCustDocEO.C_EXT_ATTR2, 
+       ODEbillCustDocEO.C_EXT_ATTR3, 
+       ODEbillCustDocEO.C_EXT_ATTR4, 
+       ODEbillCustDocEO.C_EXT_ATTR5, 
+       ODEbillCustDocEO.C_EXT_ATTR6, 
+       ODEbillCustDocEO.C_EXT_ATTR7, 
+       ODEbillCustDocEO.C_EXT_ATTR8, 
+       ODEbillCustDocEO.C_EXT_ATTR9, 
+       ODEbillCustDocEO.C_EXT_ATTR10, 
+       ODEbillCustDocEO.C_EXT_ATTR11, 
+       ODEbillCustDocEO.C_EXT_ATTR12, 
+       ODEbillCustDocEO.C_EXT_ATTR13, 
+       ODEbillCustDocEO.C_EXT_ATTR14, 
+       ODEbillCustDocEO.C_EXT_ATTR15, 
+       ODEbillCustDocEO.C_EXT_ATTR16, 
+       ODEbillCustDocEO.C_EXT_ATTR17, 
+       ODEbillCustDocEO.C_EXT_ATTR18, 
+       ODEbillCustDocEO.C_EXT_ATTR19, 
+       ODEbillCustDocEO.C_EXT_ATTR20, 
+       ODEbillCustDocEO.N_EXT_ATTR1, 
+       ODEbillCustDocEO.N_EXT_ATTR2, 
+       ODEbillCustDocEO.N_EXT_ATTR3, 
+       ODEbillCustDocEO.N_EXT_ATTR4, 
+       ODEbillCustDocEO.N_EXT_ATTR5, 
+       ODEbillCustDocEO.N_EXT_ATTR6, 
+       ODEbillCustDocEO.N_EXT_ATTR7, 
+       ODEbillCustDocEO.N_EXT_ATTR8, 
+       ODEbillCustDocEO.N_EXT_ATTR9, 
+       ODEbillCustDocEO.N_EXT_ATTR10, 
+       ODEbillCustDocEO.N_EXT_ATTR11, 
+       ODEbillCustDocEO.N_EXT_ATTR12, 
+       ODEbillCustDocEO.N_EXT_ATTR13, 
+       ODEbillCustDocEO.N_EXT_ATTR14, 
+       ODEbillCustDocEO.N_EXT_ATTR15, 
+       ODEbillCustDocEO.N_EXT_ATTR16, 
+       ODEbillCustDocEO.N_EXT_ATTR17, 
+       ODEbillCustDocEO.N_EXT_ATTR18, 
+       CASE WHEN fnd_profile.value('APPS_DATABASE_ID') = 'GSIPRDGB' THEN ODEbillCustDocEO.N_EXT_ATTR19 ELSE 1 END N_EXT_ATTR19,
+       ODEbillCustDocEO.N_EXT_ATTR20, 
+       ODEbillCustDocEO.D_EXT_ATTR1, 
+       ODEbillCustDocEO.D_EXT_ATTR2, 
+       ODEbillCustDocEO.D_EXT_ATTR3, 
+       ODEbillCustDocEO.D_EXT_ATTR4, 
+       ODEbillCustDocEO.D_EXT_ATTR5, 
+       ODEbillCustDocEO.D_EXT_ATTR6, 
+       ODEbillCustDocEO.D_EXT_ATTR7, 
+       ODEbillCustDocEO.D_EXT_ATTR8, 
+       ODEbillCustDocEO.D_EXT_ATTR9, 
+       ODEbillCustDocEO.D_EXT_ATTR10, 
+       ODEbillCustDocEO.ROWID,
+--DECODE(C_EXT_ATTR1,'Consolidated Bill', 'Case1' ,'Case2') DeliveryMethod,-- Commented By Rafi on 31-Aug-2018 for SKU Level ePDF Defect #NAIT-58403
+DECODE(N_EXT_ATTR1,fnd_profile.value('XXOD_EBL_SKU_LEVEL_CONS_EPDF'),'Case3',DECODE(N_EXT_ATTR1,fnd_profile.value('XXOD_EBL_SKU_LEVEL_INV_EPDF'),'Case3',
+DECODE(N_EXT_ATTR1,fnd_profile.value('XXOD_EBL_CENTRAL_OPSTECH'),'Case4',DECODE(C_EXT_ATTR1,'Consolidated Bill', 'Case1','Case2')))) DeliveryMethod, -- Added  By Rafi on 31-Aug-2018 for SKU Level ePDF Defect #NAIT-58403 and Added by Reddy Sekhar K on 11-Sept-2018 for the eBill Central Requirement NAIT-56624
+--DECODE(C_EXT_ATTR3,'EDI','N','PRINT','N','ELEC','N', 'eTXT','T', DECODE(N_EXT_ATTR15,NULL,'Y','N')) EBillDet,--Commented by Reddy Sekhar K
+DECODE(C_EXT_ATTR3,'EDI','N','PRINT','N','ELEC','N','OPSTECH','N','eTXT','T', DECODE(N_EXT_ATTR15,NULL,'Y','N')) EBillDet,--Added by Reddy Sekhar K on 11-Sept-2018 for the eBill Central Requirement NAIT-56624
+DECODE(fnd_profile.value('APPS_DATABASE_ID'),'GSIPRDGB', 1, 
+        DECODE(fnd_profile.value('XXOD_EBL_SUPER_USER'),'Y',0,1)
+        ) SupUsr,
+decode(C_EXT_ATTR16,'COMPLETE',1,0) ReadOnlyFlag,
+--decode(C_EXT_ATTR2,'Y',1,0) PayDocInd,--Commented by Reddy Sekhar K for the eBill Central Requirement NAIT-56624
+decode(N_EXT_ATTR1,fnd_profile.value('XXOD_EBL_CENTRAL_OPSTECH'),0,decode(C_EXT_ATTR2,'Y',1,0)) PayDocInd,--Added by Reddy Sekhar K on 11-Sept-2018 for the eBill Central Requirement NAIT-56624
+'QUERY' IntRecStatus,
+(SELECT ATTRIBUTE1 FROM RA_TERMS RT where RT.NAME=ODEbillCustDocEO.C_EXT_ATTR14) FREQUENCY,
+(SELECT ATTRIBUTE2 FROM RA_TERMS RT where RT.NAME=ODEbillCustDocEO.C_EXT_ATTR14) REPORT_DAY,
+(SELECT ATTRIBUTE5 FROM RA_TERMS RT where RT.NAME=ODEbillCustDocEO.C_EXT_ATTR14) PAY_TERM,
+DECODE(fnd_profile.value('APPS_DATABASE_ID'),'GSIPRDGB',
+      DECODE(fnd_profile.value('XXOD_EBL_SUPER_USER'),'Y',DECODE(d_ext_attr2,NULL,1,0),1),0) SupUsrEnd,
+CASE WHEN C_EXT_ATTR1 = 'Consolidated Bill' THEN 0
+                               ELSE 1 END  BillLevelRequiredFlag,
+fnd_profile.value('APPS_DATABASE_ID') INSTANCE_NAME,
+decode(N_EXT_ATTR1,fnd_profile.value('XXOD_EBL_CENTRAL_OPSTECH'),1,0) mailAttentionMsg,--Added by Reddy Sekhar K on 11-Sept-2018 for the eBill Central Requirement NAIT-56624
+decode(C_EXT_ATTR16,'COMPLETE',1,0) paytermLov, --Added by Reddy Sekhar K on 11-Sept-2018 for the eBill Central Requirement NAIT-56624
+ODEbillCustDocEO.BC_POD_FLAG,--Added by Reddy Sekhar K on 13-NOv-2018 for the Bill Complete Requirement NAIT-61952
+DECODE(BC_POD_FLAG,'Y','case1','B','case2','P','case3','N','case4','case5') bcpodcase----Added by Reddy Sekhar K on 13-NOv-2018 for the Bill Complete Requirement NAIT-61952 and POD NAIT-66520
+,fee_option
+, decode(C_EXT_ATTR16,'COMPLETE',1,0) FeeFlag
+,(SELECT xftv.target_value1
+FROM xx_fin_translatedefinition xftd ,xx_fin_translatevalues xftv
+ WHERE xftd.translate_id = xftv.translate_id
+AND xftd.translation_name ='OD_IREC_BILL_DOC_DEFAULTS'
+and source_value1 = fee_option 
+and xftv.source_value2 = c_ext_attr3
+and xftv.source_value3 = c_ext_attr1
+and sysdate between xftv.START_DATE_ACTIVE and NVL(xftv.end_date_active,sysdate+1) and xftv.enabled_flag = 'Y' and rownum =1 ) FeeOptionFV
+,c_ext_attr1||'-'||c_ext_attr3  FeeOptionCriteria
+
+FROM XX_CDH_CUST_ACCT_EXT_B ODEbillCustDocEO
+WHERE attr_group_id = (SELECT attr_group_id 
+                       FROM   ego_attr_groups_v 
+                       WHERE  attr_group_type ='XX_CDH_CUST_ACCOUNT'
+AND attr_group_name = 'BILLDOCS')
+   ]]></SQLQuery>
+   <DesignTime>
+      <Attr Name="_isCodegen" Value="true" />
+      <Attr Name="_isExpertMode" Value="true" />
+      <Attr Name="_version" Value="10.1.3.43.6" />
+      <Attr Name="_codeGenFlag2" Value="Access|Coll" />
+   </DesignTime>
+   <EntityUsage
+      Name="ODEbillCustDocEO"
+      Entity="od.oracle.apps.xxcrm.cdh.ebl.custdocs.schema.server.ODEbillCustDocEO" >
+      <DesignTime>
+         <Attr Name="_queryClause" Value="false" />
+      </DesignTime>
+   </EntityUsage>
+   <ViewAttribute
+      Name="ExtensionId"
+      IsNotNull="true"
+      EntityAttrName="ExtensionId"
+      EntityUsage="ODEbillCustDocEO"
+      AliasName="EXTENSION_ID" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="CustAccountId"
+      IsNotNull="true"
+      EntityAttrName="CustAccountId"
+      EntityUsage="ODEbillCustDocEO"
+      AliasName="CUST_ACCOUNT_ID" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="AttrGroupId"
+      IsNotNull="true"
+      EntityAttrName="AttrGroupId"
+      EntityUsage="ODEbillCustDocEO"
+      AliasName="ATTR_GROUP_ID" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="CreatedBy"
+      IsNotNull="true"
+      EntityAttrName="CreatedBy"
+      EntityUsage="ODEbillCustDocEO"
+      AliasName="CREATED_BY" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="CreationDate"
+      IsNotNull="true"
+      EntityAttrName="CreationDate"
+      EntityUsage="ODEbillCustDocEO"
+      AliasName="CREATION_DATE" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="LastUpdatedBy"
+      IsNotNull="true"
+      EntityAttrName="LastUpdatedBy"
+      EntityUsage="ODEbillCustDocEO"
+      AliasName="LAST_UPDATED_BY" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="LastUpdateDate"
+      IsNotNull="true"
+      EntityAttrName="LastUpdateDate"
+      EntityUsage="ODEbillCustDocEO"
+      AliasName="LAST_UPDATE_DATE" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="LastUpdateLogin"
+      EntityAttrName="LastUpdateLogin"
+      EntityUsage="ODEbillCustDocEO"
+      AliasName="LAST_UPDATE_LOGIN" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="CExtAttr1"
+      EntityAttrName="CExtAttr1"
+      EntityUsage="ODEbillCustDocEO"
+      AliasName="C_EXT_ATTR1" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="CExtAttr2"
+      EntityAttrName="CExtAttr2"
+      EntityUsage="ODEbillCustDocEO"
+      AliasName="C_EXT_ATTR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="CExtAttr3"
+      EntityAttrName="CExtAttr3"
+      EntityUsage="ODEbillCustDocEO"
+      AliasName="C_EXT_ATTR3" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="CExtAttr4"
+      EntityAttrName="CExtAttr4"
+      EntityUsage="ODEbillCustDocEO"
+      AliasName="C_EXT_ATTR4" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="CExtAttr5"
+      EntityAttrName="CExtAttr5"
+      EntityUsage="ODEbillCustDocEO"
+      AliasName="C_EXT_ATTR5" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="CExtAttr6"
+      EntityAttrName="CExtAttr6"
+      EntityUsage="ODEbillCustDocEO"
+      AliasName="C_EXT_ATTR6" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="CExtAttr7"
+      EntityAttrName="CExtAttr7"
+      EntityUsage="ODEbillCustDocEO"
+      AliasName="C_EXT_ATTR7" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="CExtAttr8"
+      EntityAttrName="CExtAttr8"
+      EntityUsage="ODEbillCustDocEO"
+      AliasName="C_EXT_ATTR8" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="CExtAttr9"
+      EntityAttrName="CExtAttr9"
+      EntityUsage="ODEbillCustDocEO"
+      AliasName="C_EXT_ATTR9" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="CExtAttr10"
+      EntityAttrName="CExtAttr10"
+      EntityUsage="ODEbillCustDocEO"
+      AliasName="C_EXT_ATTR10" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="CExtAttr11"
+      EntityAttrName="CExtAttr11"
+      EntityUsage="ODEbillCustDocEO"
+      AliasName="C_EXT_ATTR11" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="CExtAttr12"
+      EntityAttrName="CExtAttr12"
+      EntityUsage="ODEbillCustDocEO"
+      AliasName="C_EXT_ATTR12" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="CExtAttr13"
+      EntityAttrName="CExtAttr13"
+      EntityUsage="ODEbillCustDocEO"
+      AliasName="C_EXT_ATTR13" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="CExtAttr14"
+      EntityAttrName="CExtAttr14"
+      EntityUsage="ODEbillCustDocEO"
+      AliasName="C_EXT_ATTR14" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="CExtAttr15"
+      EntityAttrName="CExtAttr15"
+      EntityUsage="ODEbillCustDocEO"
+      AliasName="C_EXT_ATTR15" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="CExtAttr16"
+      EntityAttrName="CExtAttr16"
+      EntityUsage="ODEbillCustDocEO"
+      AliasName="C_EXT_ATTR16" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="CExtAttr17"
+      EntityAttrName="CExtAttr17"
+      EntityUsage="ODEbillCustDocEO"
+      AliasName="C_EXT_ATTR17" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="CExtAttr18"
+      EntityAttrName="CExtAttr18"
+      EntityUsage="ODEbillCustDocEO"
+      AliasName="C_EXT_ATTR18" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="CExtAttr19"
+      EntityAttrName="CExtAttr19"
+      EntityUsage="ODEbillCustDocEO"
+      AliasName="C_EXT_ATTR19" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="CExtAttr20"
+      EntityAttrName="CExtAttr20"
+      EntityUsage="ODEbillCustDocEO"
+      AliasName="C_EXT_ATTR20" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="NExtAttr1"
+      EntityAttrName="NExtAttr1"
+      EntityUsage="ODEbillCustDocEO"
+      AliasName="N_EXT_ATTR1" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="NExtAttr2"
+      EntityAttrName="NExtAttr2"
+      EntityUsage="ODEbillCustDocEO"
+      AliasName="N_EXT_ATTR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="NExtAttr3"
+      EntityAttrName="NExtAttr3"
+      EntityUsage="ODEbillCustDocEO"
+      AliasName="N_EXT_ATTR3" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="NExtAttr4"
+      EntityAttrName="NExtAttr4"
+      EntityUsage="ODEbillCustDocEO"
+      AliasName="N_EXT_ATTR4" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="NExtAttr5"
+      EntityAttrName="NExtAttr5"
+      EntityUsage="ODEbillCustDocEO"
+      AliasName="N_EXT_ATTR5" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="NExtAttr6"
+      EntityAttrName="NExtAttr6"
+      EntityUsage="ODEbillCustDocEO"
+      AliasName="N_EXT_ATTR6" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="NExtAttr7"
+      EntityAttrName="NExtAttr7"
+      EntityUsage="ODEbillCustDocEO"
+      AliasName="N_EXT_ATTR7" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="NExtAttr8"
+      EntityAttrName="NExtAttr8"
+      EntityUsage="ODEbillCustDocEO"
+      AliasName="N_EXT_ATTR8" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="NExtAttr9"
+      EntityAttrName="NExtAttr9"
+      EntityUsage="ODEbillCustDocEO"
+      AliasName="N_EXT_ATTR9" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="NExtAttr10"
+      EntityAttrName="NExtAttr10"
+      EntityUsage="ODEbillCustDocEO"
+      AliasName="N_EXT_ATTR10" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="NExtAttr11"
+      EntityAttrName="NExtAttr11"
+      EntityUsage="ODEbillCustDocEO"
+      AliasName="N_EXT_ATTR11" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="NExtAttr12"
+      EntityAttrName="NExtAttr12"
+      EntityUsage="ODEbillCustDocEO"
+      AliasName="N_EXT_ATTR12" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="NExtAttr13"
+      EntityAttrName="NExtAttr13"
+      EntityUsage="ODEbillCustDocEO"
+      AliasName="N_EXT_ATTR13" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="NExtAttr14"
+      EntityAttrName="NExtAttr14"
+      EntityUsage="ODEbillCustDocEO"
+      AliasName="N_EXT_ATTR14" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="NExtAttr15"
+      EntityAttrName="NExtAttr15"
+      EntityUsage="ODEbillCustDocEO"
+      AliasName="N_EXT_ATTR15" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="NExtAttr16"
+      EntityAttrName="NExtAttr16"
+      EntityUsage="ODEbillCustDocEO"
+      AliasName="N_EXT_ATTR16" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="NExtAttr17"
+      EntityAttrName="NExtAttr17"
+      EntityUsage="ODEbillCustDocEO"
+      AliasName="N_EXT_ATTR17" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="NExtAttr18"
+      EntityAttrName="NExtAttr18"
+      EntityUsage="ODEbillCustDocEO"
+      AliasName="N_EXT_ATTR18" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="NExtAttr19"
+      EntityAttrName="NExtAttr19"
+      EntityUsage="ODEbillCustDocEO"
+      AliasName="N_EXT_ATTR19" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="NExtAttr20"
+      EntityAttrName="NExtAttr20"
+      EntityUsage="ODEbillCustDocEO"
+      AliasName="N_EXT_ATTR20" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="DExtAttr1"
+      EntityAttrName="DExtAttr1"
+      EntityUsage="ODEbillCustDocEO"
+      AliasName="D_EXT_ATTR1" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="DExtAttr2"
+      EntityAttrName="DExtAttr2"
+      EntityUsage="ODEbillCustDocEO"
+      AliasName="D_EXT_ATTR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="DExtAttr3"
+      EntityAttrName="DExtAttr3"
+      EntityUsage="ODEbillCustDocEO"
+      AliasName="D_EXT_ATTR3" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="DExtAttr4"
+      EntityAttrName="DExtAttr4"
+      EntityUsage="ODEbillCustDocEO"
+      AliasName="D_EXT_ATTR4" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="DExtAttr5"
+      EntityAttrName="DExtAttr5"
+      EntityUsage="ODEbillCustDocEO"
+      AliasName="D_EXT_ATTR5" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="DExtAttr6"
+      EntityAttrName="DExtAttr6"
+      EntityUsage="ODEbillCustDocEO"
+      AliasName="D_EXT_ATTR6" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="DExtAttr7"
+      EntityAttrName="DExtAttr7"
+      EntityUsage="ODEbillCustDocEO"
+      AliasName="D_EXT_ATTR7" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="DExtAttr8"
+      EntityAttrName="DExtAttr8"
+      EntityUsage="ODEbillCustDocEO"
+      AliasName="D_EXT_ATTR8" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="DExtAttr9"
+      EntityAttrName="DExtAttr9"
+      EntityUsage="ODEbillCustDocEO"
+      AliasName="D_EXT_ATTR9" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="DExtAttr10"
+      EntityAttrName="DExtAttr10"
+      EntityUsage="ODEbillCustDocEO"
+      AliasName="D_EXT_ATTR10" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="RowID"
+      IsUpdateable="false"
+      EntityAttrName="RowID"
+      EntityUsage="ODEbillCustDocEO"
+      AliasName="ROWID" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Deliverymethod"
+      IsPersistent="false"
+      Precision="1"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="DELIVERYMETHOD"
+      Expression="DELIVERYMETHOD"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="1" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Ebilldet"
+      IsPersistent="false"
+      Precision="1"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="Ebilldet"
+      Expression="Ebilldet"
+      SQLType="VARCHAR" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Supusr"
+      IsPersistent="false"
+      DefaultValue="1"
+      Precision="255"
+      Type="java.lang.Boolean"
+      ColumnType="VARCHAR2"
+      AliasName="Supusr"
+      Expression="Supusr"
+      SQLType="BIT" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Readonlyflag"
+      IsPersistent="false"
+      DefaultValue="0"
+      Precision="255"
+      Type="java.lang.Boolean"
+      ColumnType="VARCHAR2"
+      AliasName="Readonlyflag"
+      Expression="Readonlyflag"
+      SQLType="BIT" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Paydocind"
+      IsPersistent="false"
+      Precision="255"
+      Type="java.lang.Boolean"
+      ColumnType="VARCHAR2"
+      AliasName="Paydocind"
+      Expression="Paydocind"
+      SQLType="BIT" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Intrecstatus"
+      IsPersistent="false"
+      Precision="5"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="Intrecstatus"
+      Expression="Intrecstatus"
+      SQLType="VARCHAR" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Frequency"
+      IsPersistent="false"
+      Precision="150"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="Frequency"
+      Expression="Frequency"
+      SQLType="VARCHAR" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="ReportDay"
+      IsPersistent="false"
+      Precision="150"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="REPORT_DAY"
+      Expression="ReportDay"
+      SQLType="VARCHAR" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="PayTerm"
+      IsPersistent="false"
+      Precision="150"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="PAY_TERM"
+      Expression="PayTerm"
+      SQLType="VARCHAR" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Supusrend"
+      IsPersistent="false"
+      Precision="255"
+      Type="java.lang.Boolean"
+      ColumnType="VARCHAR2"
+      AliasName="Supusrend"
+      Expression="Supusrend"
+      SQLType="BIT" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="HideShow"
+      IsPersistent="false"
+      DefaultValue="true"
+      Precision="255"
+      Type="java.lang.Boolean"
+      ColumnType="VARCHAR2"
+      AliasName="VIEW_ATTR"
+      SQLType="BIT" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="isSuperUser"
+      IsPersistent="false"
+      DefaultValue="false"
+      Precision="255"
+      Type="java.lang.Boolean"
+      ColumnType="VARCHAR2"
+      AliasName="VIEW_ATTR"
+      SQLType="BIT" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="ParentCustDocID"
+      IsPersistent="false"
+      Precision="255"
+      Type="oracle.jbo.domain.Number"
+      ColumnType="VARCHAR2"
+      AliasName="VIEW_ATTR"
+      SQLType="NUMERIC" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="EnableParentDoc"
+      IsSelected="false"
+      IsPersistent="false"
+      DefaultValue="0"
+      Type="java.lang.Boolean"
+      ColumnType="NUMBER"
+      AliasName="VIEW_ATTR"
+      SQLType="BIT" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Billlevelrequiredflag"
+      IsPersistent="false"
+      Precision="255"
+      Type="java.lang.Boolean"
+      ColumnType="VARCHAR2"
+      AliasName="Billlevelrequiredflag"
+      Expression="Billlevelrequiredflag"
+      SQLType="BIT" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="InstanceName"
+      IsPersistent="false"
+      Precision="10"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="INSTANCE_NAME"
+      Expression="InstanceName"
+      SQLType="VARCHAR" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Mailattentionmsg"
+      IsPersistent="false"
+      DefaultValue="0"
+      Precision="255"
+      Type="java.lang.Boolean"
+      ColumnType="VARCHAR2"
+      AliasName="MAILATTENTIONMSG"
+      Expression="MAILATTENTIONMSG"
+      SQLType="BIT" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Paytermlov"
+      IsPersistent="false"
+      DefaultValue="0"
+      Precision="255"
+      Type="java.lang.Boolean"
+      ColumnType="VARCHAR2"
+      AliasName="PAYTERMLOV"
+      Expression="PAYTERMLOV"
+      SQLType="BIT" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="BcPodFlag"
+      EntityAttrName="BcPodFlag"
+      EntityUsage="ODEbillCustDocEO"
+      AliasName="BC_POD_FLAG" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Bcpodcase"
+      IsPersistent="false"
+      Precision="5"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="BCPODCASE"
+      Expression="BCPODCASE"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="5" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="FeeOption"
+      EntityAttrName="FeeOption"
+      EntityUsage="ODEbillCustDocEO"
+      AliasName="FEE_OPTION" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Feeflag"
+      IsPersistent="false"
+      Type="java.lang.Boolean"
+      ColumnType="NUMBER"
+      AliasName="FEEFLAG"
+      Expression="FEEFLAG"
+      SQLType="BIT" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Feeoptionfv"
+      IsPersistent="false"
+      Precision="240"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="FEEOPTIONFV"
+      Expression="FEEOPTIONFV"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="240" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Feeoptioncriteria"
+      IsPersistent="false"
+      Precision="301"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="FEEOPTIONCRITERIA"
+      Expression="FEEOPTIONCRITERIA"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="301" />
+      </DesignTime>
+   </ViewAttribute>
+</ViewObject>

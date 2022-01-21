@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xapi:requestset type="bursting" xmlns:xapi="http://xmlns.oracle.com/oxp/xapi">
+<xapi:request select="/XXARSELFSERVICE/LIST_G_PARAMS/G_PARAMS">
+<xapi:delivery>
+<xapi:email reply-to="" from="${FROM_EMAIL}" port="25" server="${SMTP_SERVER}" id="123">
+<xapi:message id="123" subject="${SUBJECT}" attachment="true" to="${MAIL_TO}">
+ ${MSGBODY}
+ </xapi:message>
+</xapi:email>
+</xapi:delivery>
+<xapi:document delivery="123" output-type="excel" output="${FILENAME}">
+<xapi:template type="rtf" location="xdo://XXFIN.XXARSELFSERVICE.en.US/?getSource=true" filter=".//G_PARAMS[REQ_TYPE='Address']"> </xapi:template>
+<xapi:template type="rtf" location="xdo://XXFIN.XXARSELFSERVICECON.en.US/?getSource=true" filter=".//G_PARAMS[REQ_TYPE='Contact']"> </xapi:template>
+<xapi:template type="rtf" location="xdo://XXFIN.XXARSELFSERVICEEMAIL.en.US/?getSource=true" filter=".//G_PARAMS[REQ_TYPE='Email']"> </xapi:template>
+</xapi:document>
+</xapi:request>
+</xapi:requestset>

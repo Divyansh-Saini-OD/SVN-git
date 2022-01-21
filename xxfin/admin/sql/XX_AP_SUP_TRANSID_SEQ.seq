@@ -1,0 +1,24 @@
+--+=============================================================================================+--
+--|                                                                                             |--
+--| Program Name   : XX_AP_SUP_TRANS_SEQ                                                        |--
+--|                                                                                             |--
+--| Purpose        : Create Custom sequence                                                     |--
+--|                  The Objects created are:                                                   |--
+--|                                                                                             |--
+--|                1. XX_AP_SUP_TRANS_SEQ                                                       |--
+--|                                                                                             |--
+--| Change History  :                                                                           |--
+--| Version           Date             Changed By              Description                      |--
+--+=============================================================================================+--
+--| 1.0              08-JAN-2018       Sunil Kalal             Original                         |--
+--+=============================================================================================+--
+
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF 
+SET TAB          OFF
+SET FEEDBACK     ON
+
+create sequence XX_AP_SUP_TRANS_SEQ START WITH 1 INCREMENT BY 1; 
+
+SHOW ERROR

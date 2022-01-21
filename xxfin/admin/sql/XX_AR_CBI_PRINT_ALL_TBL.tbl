@@ -1,0 +1,115 @@
+---+========================================================================================================+        
+---|                                        Office Depot - Project Simplify                                 |
+---|                             Oracle NAIO/WIPRO/Office Depot/Consulting Organization                     |
+---+========================================================================================================+
+---|    Application             :       AR                                                                  |
+---|                                                                                                        |
+---|    Name                    :       xx_ar_print_summbill.pkb                                      |
+---|                                                                                                        |
+---|    Description             :                                                                           |
+---|                                                                                                        |
+---|                                                                                                        |
+---|                                                                                                        |
+---|    Change Record                                                                                       |
+---|    ---------------------------------                                                                   |
+---|    Version         DATE              AUTHOR             DESCRIPTION                                     |
+---|    ------------    ----------------- ---------------    ---------------------                           |
+---|    1.0             02-AUG-2007       Balaguru Seshadri  Initial Version                                 |
+---|                                                                                                        |
+---+========================================================================================================+
+--DROP TABLE XXFIN.XX_AR_CBI_PRINT_ALL
+--/
+CREATE TABLE XX_AR_CBI_PRINT_ALL
+(
+  PAYDOC                 VARCHAR2(1 BYTE),
+  BILL_TO_SITE_ID        NUMBER,
+  CONS_ID                NUMBER,
+  TRX_ID                 NUMBER,
+  TRX_LINE_ID            NUMBER,
+  PRINT_DATE             DATE,
+  CBI_NUMBER             VARCHAR2(30 BYTE),
+  ISSUE_DATE             DATE,
+  CUTOFF_DATE            DATE,
+  DUE_DATE               DATE,
+  BEGINNING_BALANCE      NUMBER,
+  ENDING_BALANCE         NUMBER,
+  PERIOD_RECEIPTS        NUMBER,
+  PERIOD_BILLED          NUMBER,
+  PERIOD_TAX             NUMBER,
+  CUSTOMER_ID            NUMBER,
+  CUSTOMER_NUMBER        VARCHAR2(30 BYTE),
+  CUSTOMER_NAME          VARCHAR2(240 BYTE),
+  LEGACY_CUSTOMER        VARCHAR2(30 BYTE),
+  DELIVERY               VARCHAR2(30 BYTE),
+  FORMAT                 VARCHAR2(30 BYTE),
+  LAYOUT                 VARCHAR2(30 BYTE),
+  SORT_BY                VARCHAR2(30 BYTE),
+  TOTAL_COPIES           NUMBER,
+  TAX_ID                 VARCHAR2(30 BYTE),
+  TAX_ID_DESC            VARCHAR2(30 BYTE),
+  ACCOUNT_CONTACT        VARCHAR2(30 BYTE),
+  ORDER_CONTACT          VARCHAR2(30 BYTE),
+  CURRENCY               VARCHAR2(15 BYTE),
+  BILLTO_ADDRESS1        VARCHAR2(240 BYTE),
+  BILLTO_ADDRESS2        VARCHAR2(240 BYTE),
+  BILLTO_ADDRESS3        VARCHAR2(240 BYTE),
+  BILLTO_CITY            VARCHAR2(60 BYTE),
+  BILLTO_STATE           VARCHAR2(60 BYTE),
+  BILLTO_POSTAL_CODE     VARCHAR2(60 BYTE),
+  BILLTO_PROVINCE        VARCHAR2(60 BYTE),
+  BILLTO_COUNTRY         VARCHAR2(60 BYTE),
+  REMIT_TO_ADDRESS1      VARCHAR2(240 BYTE),
+  REMIT_TO_ADDRESS2      VARCHAR2(240 BYTE),
+  REMIT_TO_ADDRESS3      VARCHAR2(240 BYTE),
+  REMIT_TO_CITY          VARCHAR2(60 BYTE),
+  REMIT_TO_STATE         VARCHAR2(60 BYTE),
+  REMIT_TO_POSTAL_CODE   VARCHAR2(60 BYTE),
+  REMIT_TO_COUNTRY       VARCHAR2(60 BYTE),
+  PRINT_INSTANCE         VARCHAR2(60 BYTE),
+  TRX_NUMBER             VARCHAR2(40 BYTE),
+  TRX_DATE               DATE,
+  TRX_TYPE               VARCHAR2(30 BYTE),
+  LEGACY_ORDER_TEXT      VARCHAR2(30 BYTE),
+  LEGACY_ORDER           VARCHAR2(30 BYTE),
+  PO_TEXT                VARCHAR2(60 BYTE),
+  PO_NUMBER              VARCHAR2(40 BYTE),
+  RELEASE_TEXT           VARCHAR2(60 BYTE),
+  RELEASE_NUM            VARCHAR2(60 BYTE),
+  DEPT_TEXT              VARCHAR2(60 BYTE),
+  DEPT_NAME              VARCHAR2(60 BYTE),
+  DESKTOP_TEXT           VARCHAR2(60 BYTE),
+  DESKTOP_NAME           VARCHAR2(60 BYTE),
+  SHIP_LOCN_TEXT         VARCHAR2(60 BYTE),
+  SHIP_LOCN_NAME         VARCHAR2(60 BYTE),
+  ITEM_NUMBER            VARCHAR2(60 BYTE),
+  ITEM_DESCRIPTION       VARCHAR2(240 BYTE),
+  ITEM_UOM               VARCHAR2(30 BYTE),
+  ITEM_QTY               NUMBER,
+  ITEM_PRICE             NUMBER,
+  ITEM_EXT_AMOUNT        NUMBER,
+  ITEM_TAX               NUMBER,
+  CAD_COUNTY_TAX_CODE    VARCHAR2(10 BYTE),
+  CAD_COUNTY_TAX_AMOUNT  NUMBER,
+  CAD_STATE_TAX_CODE     VARCHAR2(10 BYTE),
+  CAD_STATE_TAX_AMOUNT   NUMBER,
+  SCANLINE               VARCHAR2(80 BYTE),
+  ORG_ID                 NUMBER                 DEFAULT TO_NUMBER(DECODE(SUBSTRB(USERENV('CLIENT_INFO'),1,1),' ',NULL,SUBSTRB(USERENV('CLIENT_INFO'),1,10)))
+)
+TABLESPACE XXOD
+PCTUSED    0
+PCTFREE    10
+INITRANS   1
+MAXTRANS   255
+STORAGE    (
+            INITIAL          64K
+            MINEXTENTS       1
+            MAXEXTENTS       2147483645
+            PCTINCREASE      0
+            BUFFER_POOL      DEFAULT
+           )
+NOLOGGING 
+NOCOMPRESS 
+NOCACHE
+NOPARALLEL
+MONITORING
+/

@@ -1,0 +1,29 @@
+<?xml version='1.0' encoding='windows-1252' ?>
+<!DOCTYPE AppModule SYSTEM "jbo_03_01.dtd">
+
+<AppModule
+   Name="ODDashboardQuickLinksAM"
+   ComponentClass="od.oracle.apps.xxcrm.bis.custom.server.ODDashboardQuickLinksAMImpl"
+   LoadComponentsLazily="true" >
+   <DesignTime>
+      <Attr Name="_isCodegen" Value="true" />
+      <Attr Name="_version" Value="10.1.3.41.57" />
+      <Attr Name="_deployType" Value="0" />
+   </DesignTime>
+   <ViewUsage
+      Name="ODRelativeActualPathVO1"
+      ViewObjectName="od.oracle.apps.xxcrm.bis.custom.poplist.server.ODRelativeActualPathVO" >
+   </ViewUsage>
+   <ViewUsage
+      Name="ODLinkCategoriesVO1"
+      ViewObjectName="od.oracle.apps.xxcrm.bis.custom.poplist.server.ODLinkCategoriesVO" >
+   </ViewUsage>
+   <ViewUsage
+      Name="ODDashboardQuickLinksDisplayVO1"
+      ViewObjectName="od.oracle.apps.xxcrm.bis.custom.server.ODDashboardQuickLinksDisplayVO" >
+   </ViewUsage>
+   <ViewUsage
+      Name="ODRespLovVO1"
+      ViewObjectName="od.oracle.apps.xxcrm.bis.custom.lov.server.ODRespLovVO" >
+   </ViewUsage>
+</AppModule>

@@ -1,0 +1,32 @@
+SET SHOW         OFF 
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+
+SET TERM         ON
+
+PROMPT Creating Synonym for the Sequence XX_CE_AJB999a_S
+PROMPT Program exits if the creation is not successful
+
+WHENEVER SQLERROR CONTINUE
+
+-- +==========================================================================+
+-- |                  Office Depot - Project Simplify                         |
+-- |                       WIPRO Technologies                                 |
+-- +==========================================================================+
+-- | Name :       I0032 AJB CM Interface                                      |
+-- | Description : SQL Script to create the Synonym for the Sequence          |
+-- | XX_CE_AJB999a_S used for the generation of seq_ID                         | 
+-- | the custom table XX_CE_AJB999a                                           |
+-- |                                                                          |
+-- |Change Record:                                                            |
+-- |===============                                                           |
+-- |Version   Date         Author               Remarks                       |
+-- |=======   ==========   =============        ==============================|
+-- | 1.0      26-JUL-2007  Raji Natarajan        Initial version              |
+-- |                                                                          |
+-- +==========================================================================+
+
+--DROP SYNONYM XX_CE_AJB999a_S;
+
+CREATE SYNONYM XX_CE_AJB999a_S FOR xxfin.XX_CE_AJB999a_S;

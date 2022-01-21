@@ -1,0 +1,57 @@
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     ON
+
+        -- +================================================================================+
+        -- |                  Office Depot - Project Simplify                               |
+        -- |                       WIPRO Technologies                                       |
+        -- +================================================================================+
+        -- | SQL Script to create the Sequence                                              |
+        -- |                                                                                |
+        -- |Change Record:                                                                  |
+        -- |===============                                                                 |
+        -- |Version   Date         Author              Remarks                              |
+        -- |=======   ==========   =============       ==================================== |
+        -- | V1.0     27-FEB-2008  Samitha U M         Creating a table  for the getting the|
+        -- |                                           valid records inserted in the Staging|
+        -- |                                           table  by the COGS Interface Program |
+        -- |                                                                                |
+        -- +================================================================================+
+
+         create table xxfin.xx_ra_custom_import_ref
+           (
+                            AR_distribution_line_id                   VARCHAR2(240)  
+                ,           AR_invoice_id                             NUMBER(15)              
+                ,           order_number                              VARCHAR2(30)            
+                ,           order_header_id                           NUMBER                  
+                ,           order_line_number                         NUMBER                  
+                ,           group_id                                  NUMBER                  
+                ,           actual_flag                               VARCHAR2(1)             
+                ,           journal_source                            VARCHAR2(25)            
+                ,           journal_category                          VARCHAR2(25)            
+                ,           segment1                                  VARCHAR2(25)            
+                ,           segment2                                  VARCHAR2(25)            
+                ,           segment3                                  VARCHAR2(25)            
+                ,           segment4                                  VARCHAR2(25)            
+                ,           segment5                                  VARCHAR2(25)            
+                ,           segment6                                  VARCHAR2(25)            
+                ,           segment7                                  VARCHAR2(25)            
+                ,           entered_debit                             NUMBER                     
+                ,           entered_credit                            NUMBER                  
+                ,           batch_name                                VARCHAR2(100)           
+                ,           SOB_id                                    NUMBER                  
+                ,           accounting_date                           DATE                    
+                ,           currency_code                             VARCHAR2(15)            
+                ,           creation_date                             DATE                    
+                ,           created_by                                NUMBER                  
+                ,           attribute1                                VARCHAR2(150)           
+                ,           attribute2                                VARCHAR2(150)           
+                ,           attribute3                                VARCHAR2(150)           
+                ,           attribute4                                VARCHAR2(150)           
+                ,           attribute5                                VARCHAR2(150)	        
+           );            
+
+
+SHOW ERROR

@@ -1,0 +1,51 @@
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     OFF
+WHENEVER SQLERROR CONTINUE
+
+-- +============================================================================================+
+-- |                        Office Depot - SCM Modernization                                    |
+-- |                                                                                            |
+-- +============================================================================================+
+-- | Name         : XX_PO_LINES_DATA_SYN_APPS.syn                                              |
+-- | Rice Id      : I2193_OM_Attributes_Setup                                                   | 
+-- | Description  : Synonym Creation Script for APPS                                            |
+-- | Purpose      : Synonym for the Custom Objects                                              |
+-- |                                                                                            |
+-- |                                                                                            |
+-- |Change Record:                                                                              |
+-- |===============                                                                             |
+-- |Version    Date          Author                Remarks                                      | 
+-- |=======    ==========    =================    ==============================================+
+-- |1 .0       18-Sep-2020   Shalu George        Initial Version                               |
+-- +============================================================================================+
+
+WHENEVER SQLERROR CONTINUE
+
+PROMPT
+PROMPT Dropping SYNONYM XX_PO_SCM_LINES_TAB
+PROMPT Dropping SYNONYM XX_PO_SCM_LINES_OBJ
+PROMPT 
+
+WHENEVER SQLERROR CONTINUE
+
+DROP SYNONYM APPS.XX_PO_SCM_LINES_TAB FORCE;
+WHENEVER SQLERROR CONTINUE
+DROP SYNONYM APPS.XX_PO_SCM_LINES_OBJ FORCE;
+WHENEVER SQLERROR CONTINUE
+
+PROMPT
+PROMPT Creating SYNONYM OBJECTS FOR XX_PO_SCM_LINES
+PROMPT
+
+
+CREATE OR REPLACE SYNONYM APPS.xx_po_scm_lines_obj FOR XXFIN.xx_po_scm_lines_obj;
+CREATE OR REPLACE SYNONYM APPS.xx_po_scm_lines_tab FOR XXFIN.xx_po_scm_lines_tab;
+WHENEVER SQLERROR CONTINUE
+
+
+WHENEVER SQLERROR CONTINUE
+SET FEEDBACK ON
+EXIT;

@@ -1,0 +1,72 @@
+<?xml version='1.0' encoding='windows-1252' ?>
+<!DOCTYPE AppModule SYSTEM "jbo_03_01.dtd">
+
+<!--
+Subversion Info:
+$HeadURL$
+$Rev$
+$Date$
+-->
+
+<AppModule
+   Name="ODCustDocAM"
+   ComponentClass="od.oracle.apps.xxcrm.cdh.ebl.custdocs.server.ODCustDocAMImpl"
+   LoadComponentsLazily="true" >
+   <DesignTime>
+      <Attr Name="_isCodegen" Value="true" />
+      <Attr Name="_version" Value="10.1.3.43.6" />
+      <Attr Name="_deployType" Value="0" />
+   </DesignTime>
+   <ViewUsage
+      Name="ODEBillDocStatusPVO"
+      ViewObjectName="od.oracle.apps.xxcrm.cdh.ebl.poplist.server.ODEBillDocStatusPVO" >
+   </ViewUsage>
+   <ViewUsage
+      Name="ODEBillComboPVO"
+      ViewObjectName="od.oracle.apps.xxcrm.cdh.ebl.poplist.server.ODEBillComboPVO" >
+   </ViewUsage>
+   <ViewUsage
+      Name="ODEBillCharYesNo"
+      ViewObjectName="od.oracle.apps.xxcrm.cdh.ebl.poplist.server.ODEBillCharYesNo" >
+   </ViewUsage>
+   <ViewUsage
+      Name="ODEBillNumYesNoPVO"
+      ViewObjectName="od.oracle.apps.xxcrm.cdh.ebl.poplist.server.ODEBillNumYesNoPVO" >
+   </ViewUsage>
+   <ViewUsage
+      Name="ODEBillPaymentFreqPVO"
+      ViewObjectName="od.oracle.apps.xxcrm.cdh.ebl.poplist.server.ODEBillPaymentFreqPVO" >
+   </ViewUsage>
+   <ViewUsage
+      Name="ODEbillCustDocVO"
+      ViewObjectName="od.oracle.apps.xxcrm.cdh.ebl.custdocs.server.ODEbillCustDocVO" >
+   </ViewUsage>
+   <ViewUsage
+      Name="ODEBillCustDocHeaderVO"
+      ViewObjectName="od.oracle.apps.xxcrm.cdh.ebl.custdocs.server.ODEBillCustDocHeaderVO" >
+   </ViewUsage>
+   <ViewUsage
+      Name="ODEBillDelyMethodPVO"
+      ViewObjectName="od.oracle.apps.xxcrm.cdh.ebl.poplist.server.ODEBillDelyMethodPVO" >
+   </ViewUsage>
+   <ViewUsage
+      Name="ODEBillDelyMethodInvoicePVO"
+      ViewObjectName="od.oracle.apps.xxcrm.cdh.ebl.poplist.server.ODEBillDelyMethodInvoicePVO" >
+   </ViewUsage>
+   <ViewUsage
+      Name="ODEBillDelyMethodePDFPVO"
+      ViewObjectName="od.oracle.apps.xxcrm.cdh.ebl.poplist.server.ODEBillDelyMethodePDFPVO" >
+   </ViewUsage>
+   <ViewUsage
+      Name="ODEBillCUSTDOCDelyMethodOpstchVO"
+      ViewObjectName="od.oracle.apps.xxcrm.cdh.ebl.poplist.server.ODEBillCUSTDOCDelyMethodOpstchVO" >
+   </ViewUsage>
+   <ViewUsage
+      Name="ODEBillingCompletePVO"
+      ViewObjectName="od.oracle.apps.xxcrm.cdh.ebl.custdocs.server.ODEBillingCompletePVO" >
+   </ViewUsage>
+   <ViewUsage
+      Name="feeoptionType1"
+      ViewObjectName="od.oracle.apps.xxcrm.cdh.ebl.custdocs.server.feeoptionType" >
+   </ViewUsage>
+</AppModule>

@@ -1,0 +1,54 @@
+-- +===========================================================================+
+-- |                  Office Depot - Project Simplify                          |
+-- +===========================================================================+
+-- | Name :XXFIN.XX_AP_CLD_SITE_DFF_STG                                        |
+-- | Description :   Script to create XX_AP_CLD_SITE_DFF_STG index             |
+-- |                                                                           |
+-- |                                                                           |
+-- |Change Record:                                                             |
+-- |===============                                                            |
+-- |Version      Date           Author                  Remarks                |
+-- |=======    ==========     =============             ====================== |
+-- | 1.0       06-JUN-2019    Dinesh Nagapuri           Initial draft version  |
+-- +===========================================================================+
+
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     ON
+
+--DROP INDEX XXFIN.XX_INT_AB_ACCOUNTS_N1;
+
+CREATE  INDEX  xxfin.XX_AP_CLD_SITE_DFF_STG_N1
+ON             xxfin.XX_AP_CLD_SITE_DFF_STG(
+                                        process_Flag
+                                       );
+
+CREATE  INDEX  xxfin.XX_AP_CLD_SITE_DFF_STG_N2
+ON             xxfin.XX_AP_CLD_SITE_DFF_STG(
+                                        request_id,
+										error_flag
+                                       );
+
+
+CREATE  INDEX  xxfin.XX_AP_CLD_SITE_DFF_STG_N3
+ON             xxfin.XX_AP_CLD_SITE_DFF_STG(
+                                        request_id,
+										dff_process_Flag
+                                       );
+
+CREATE  INDEX  xxfin.XX_AP_CLD_SITE_DFF_STG_N4
+ON             xxfin.XX_AP_CLD_SITE_DFF_STG(
+                                        vendor_site_code,
+										request_id
+                                       );
+
+									   
+CREATE  INDEX  xxfin.XX_AP_CLD_SITE_DFF_STG_N5
+ON             xxfin.XX_AP_CLD_SITE_DFF_STG(
+                                        supplier_number,
+										request_id
+                                       );
+									   
+SHOW ERRORS;

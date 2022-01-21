@@ -1,0 +1,24 @@
+-- +===========================================================================+
+-- |                  Office Depot                                             |
+-- +===========================================================================+
+-- |Description : Create index XX_PO_HDRS_CONV_STG_NU_IDX4                     |
+-- |                                                                           |
+-- |                                                                           |
+-- |Change Record:                                                             |
+-- |===============                                                            |
+-- |Version      Date           Author                  Remarks                |
+-- |=======    ==========     =============             ====================== |
+-- | 1.0       19-JUL-17      Antonio Morales           Initial draft version  |
+-- +===========================================================================+
+
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     ON
+WHENEVER SQLERROR CONTINUE
+
+CREATE INDEX XXFIN.XX_PO_HDRS_CONV_STG_NU_IDX4 ON XXFIN.XX_PO_HDRS_CONV_STG
+(REQUEST_ID)
+LOGGING
+NOPARALLEL;

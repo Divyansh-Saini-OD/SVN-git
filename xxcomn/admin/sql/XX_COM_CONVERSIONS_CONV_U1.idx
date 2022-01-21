@@ -1,0 +1,43 @@
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+-- +=======================================================================+
+-- |               Office Depot - Project Simplify                         |
+-- |      Oracle NAIO/Office Depot/Consulting Organization                 |
+-- +=======================================================================+
+-- | Name             :XX_COM_CONVERSIONS_CONV_U1.idx                      |
+-- | Description      :Unique Index for Custom Table                       |
+---|                   XX_COM_CONVERSIONS_CONV                             |
+-- |                   as part of E0200_ConvCommonElements_EBS             |
+-- |                                                                       |
+-- |Change History:                                                        |
+-- |---------------                                                        |
+-- |                                                                       |
+-- |Version  Date        Author             Remarks                        |
+-- |-------  ----------- -----------------  -------------------------------|
+-- |Draft1a  26-JUN-2007 Ashok Kumar T J    Initial Draft Version          |
+-- |Draft1b  06-Nov-2007 Abhradip Ghosh     Removed the DROP Command       |
+-- |1.0      09-Jun-2007 Rajeev Kamath      Added unique constraint        |
+-- +=======================================================================+
+
+-- -------------------------------------------------
+-- Creating Index XX_COM_CONVERSIONS_CONV_U1
+-- -------------------------------------------------
+declare
+ct number;
+sql_stmt varchar2 (1000);
+begin
+  sql_stmt := 'drop INDEX XXCOMN.XX_COM_CONVERSIONS_CONV_U1';
+  select count(1) into ct
+  from all_indexes where index_name = 'XX_COM_CONVERSIONS_CONV_U1';
+  if (ct >= 1) then
+      execute immediate sql_stmt;
+  end if;
+end;
+/
+
+CREATE UNIQUE INDEX XXCOMN.xx_com_conversions_conv_u1
+ON XXCOMN.xx_com_conversions_conv(conversion_id);
+
+EXIT;

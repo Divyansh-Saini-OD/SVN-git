@@ -1,0 +1,21 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<BPELSuitcase>
+   <BPELProcess id="PostJournalEntryGLSI" src="PostJournalEntryGLSI.bpel">
+      <partnerLinkBindings>
+         <partnerLinkBinding name="ReadFileNoPayload">
+            <property name="wsdlLocation">ReadFileNoPayload.wsdl</property>
+         </partnerLinkBinding>
+         <partnerLinkBinding name="ChunkReadGLSIJournal">
+            <property name="wsdlLocation">ChunkReadGLSIJournal.wsdl</property>
+            <property name="retryInterval">60</property>
+            <property name="GLInDir" type="LogicalDirectory">C:\dev\workspaces\jdevWorkspace\FinanceBPELApplication\PostJournalEntryGLSI\in</property>                        
+         </partnerLinkBinding>
+      </partnerLinkBindings>
+      <activationAgents>
+         <activationAgent className="oracle.tip.adapter.fw.agent.jca.JCAActivationAgent" partnerLink="ReadFileNoPayload">
+            <property name="GLInDir" type="LogicalDirectory">C:\dev\workspaces\jdevWorkspace\FinanceBPELApplication\PostJournalEntryGLSI\in</property>
+            <property name="portType">Read_ptt</property>
+         </activationAgent>
+      </activationAgents>
+   </BPELProcess>
+</BPELSuitcase>

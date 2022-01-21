@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+<JOBS>
+<JOB><NAME>EFCE1010.USPGMC17</NAME><APP>XXFIN</APP><PROGRAM>XXCEAJBMATCH</PROGRAM><USER_PROGRAM>OD: CE Creditcard AJB Statement Match</USER_PROGRAM><ARGS>AMX3RD,,</ARGS>
+    <ARG><num>1</num><aname>Provider</aname><vset>XXOD_CM_PROVIDER_CODE</vset><type>Char</type><val>AMX3RD</val><comment>*** UNVALIDATED</comment></ARG>
+    <ARG><num>2</num><aname>From Date</aname><vset>FND_STANDARD_DATE</vset><type>Standard Date</type><comment>Not Required</comment></ARG>
+    <ARG><num>3</num><aname>Through Date</aname><vset>FND_STANDARD_DATE</vset><type>Standard Date</type><comment>Not Required</comment></ARG>
+</JOB>
+<JOB><NAME>EFCE1010.USPGMC18</NAME><APP>XXFIN</APP><PROGRAM>XXCEAJBRECON</PROGRAM><USER_PROGRAM>OD: CE Creditcard AJB Fee Reconciliation</USER_PROGRAM><ARGS>AMX3RD,,,</ARGS>
+    <ARG><num>1</num><aname>Provider</aname><vset>XXOD_CM_PROVIDER_CODE</vset><type>Char</type><val>AMX3RD</val><comment>*** UNVALIDATED</comment></ARG>
+    <ARG><num>2</num><aname>From Date</aname><vset>FND_STANDARD_DATE</vset><type>Standard Date</type><val></val><comment>Not Required</comment></ARG>
+    <ARG><num>3</num><aname>Through Date</aname><vset>FND_STANDARD_DATE</vset><type>Standard Date</type><val></val><comment>Not Required</comment></ARG>
+    <ARG><num>4</num><aname>p_email_id</aname><vset>240 Characters</vset><type>Char</type><val></val><comment>Not Required</comment></ARG>
+</JOB>
+</JOBS>

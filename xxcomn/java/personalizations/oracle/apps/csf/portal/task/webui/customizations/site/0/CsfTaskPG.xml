@@ -1,0 +1,42 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<customization xmlns="http://xmlns.oracle.com/jrad" version="9.0.6.0.0_64" xml:lang="en-US" customizes="/oracle/apps/csf/portal/task/webui/CsfTaskPG" MDSActiveDoc="true">
+   <modifications>
+      <modify element="AssigneeFL" rendered="false"/>
+      <modify element="AddInfoRN" rendered="false"/>
+      <modify element="PartsRN" rendered="false"/>
+      <move element="TaskDetailsRN" after="PartsRN"/>
+      <move element="debriefRN" after="TaskDetailsRN"/>
+      <move element="AddInfoRN" after="debriefRN"/>
+      <move element="region1" after="PageButtonBar"/>
+      <move element="TaskSubTabLayout" after="region1"/>
+      <modify element="subject" prompt="Item"/>
+      <modify element="visibility" rendered="false"/>
+      <modify element="AddressMsgLayout" rendered="false"/>
+      <modify element="plannedEffortML" rendered="false"/>
+      <modify element="actualEffortML" rendered="false"/>
+      <modify element="durationML" rendered="false"/>
+      <modify element="priority" rendered="false"/>
+      <modify element="taskClouserReq" rendered="false"/>
+      <modify element="escalation" rendered="false"/>
+      <modify element="plannedDateML" rendered="false"/>
+      <modify element="parent" rendered="false"/>
+      <modify element="region1" rendered="false"/>
+      <modify element="type" prompt="Category"/>
+      <move element="subject" after="taskNumberRN"/>
+      <move element="type" after="subject"/>
+      <move element="status" after="type"/>
+      <move element="visibility" after="status"/>
+      <move element="AddressMsgLayout" after="visibility"/>
+      <move element="plannedEffortML" after="AddressMsgLayout"/>
+      <move element="actualEffortML" after="plannedEffortML"/>
+      <move element="durationML" after="actualEffortML"/>
+      <move element="parent" after="durationML"/>
+      <move element="priority" after="parent"/>
+      <move element="confirmation" after="priority"/>
+      <move element="custInitiated" after="confirmation"/>
+      <move element="custConfirmationCounter" after="custInitiated"/>
+      <move element="taskClouserReq" after="custConfirmationCounter"/>
+      <move element="escalation" after="taskClouserReq"/>
+      <modify element="taskNumberRN" rendered="false"/>
+   </modifications>
+</customization>

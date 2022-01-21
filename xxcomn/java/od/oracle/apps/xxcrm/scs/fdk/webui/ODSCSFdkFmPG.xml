@@ -1,0 +1,113 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<!-- dbdrv: exec java oracle/jrad/tools/xml/importer XMLImporter.class java &phase=dat+24 checkfile:~PROD:~PATH:~FILE &fullpath:~PROD:~PATH:~FILE -username &un_apps -password &pw_apps -dbconnection &jdbc_db_addr  -userId "1" -rootPackage /oracle/apps/~PROD  -rootdir &fullpath:~PROD:mds:directory  -->
+<page xmlns:jrad="http://xmlns.oracle.com/jrad" xmlns:oa="http://xmlns.oracle.com/oa" xmlns:ui="http://xmlns.oracle.com/uix/ui" version="9.0.5.4.89_555" xml:lang="en-US" xmlns:user="http://xmlns.oracle.com/jrad/user" xmlns="http://xmlns.oracle.com/jrad" file-version="$Header$">
+   <content>
+      <oa:pageLayout id="MainRN" controllerClass="od.oracle.apps.xxcrm.scs.fdk.webui.ODSCSFdkFmCO" windowTitle="FeedBack Form" title="FeedBack" amDefName="od.oracle.apps.xxcrm.scs.fdk.server.ODSCSDshbdAM">
+         <ui:corporateBranding>
+            <oa:image id="corporateBrandingImage" source="/OA_MEDIA/FNDSSCORP.gif"/>
+         </ui:corporateBranding>
+         <ui:contents>
+            <oa:pageButtonBar id="PageButtonRN">
+               <ui:contents>
+             <oa:submitButton id="Apply" text="Apply" prompt="Apply" shortDesc="Select to save"/>
+               </ui:contents>
+            </oa:pageButtonBar>
+            <oa:tableLayout id="TBLRN" hAlign="center"/>
+            <oa:stackLayout id="ContShuttleRN1" rendered="false">
+               <ui:contents>
+                  <oa:rowLayout id="region3" cellNoWrapFormat="true">
+                     <ui:contents>
+                        <oa:header id="HDRShuttleRN1" text=""/>
+                     </ui:contents>
+                  </oa:rowLayout>
+                  <oa:rowLayout id="region1" hAlign="center">
+                     <ui:contents>
+                        <oa:shuttle id="ShuttleRN1" rendered="true">
+                           <ui:leading>
+                              <oa:list id="LLShuttleRN1" pickListDispAttr="Value" pickListValAttr="Code"/>
+                           </ui:leading>
+                           <ui:trailing>
+                              <oa:list id="TLShuttleRN1"/>
+                           </ui:trailing>
+                        </oa:shuttle>
+                     </ui:contents>
+                  </oa:rowLayout>
+                  <oa:rowLayout id="region313" hAlign="left">
+                     <ui:contents>
+                        <oa:spacer id="item1"/>
+                     </ui:contents>
+                  </oa:rowLayout>
+               </ui:contents>
+            </oa:stackLayout>
+            <oa:tableLayout id="TBLRN1" hAlign="center"/>
+            <oa:stackLayout id="ContShuttleRN2" rendered="false">
+               <ui:contents>
+                  <oa:rowLayout id="region31" cellNoWrapFormat="true">
+                     <ui:contents>
+                        <oa:header id="HDRShuttleRN2" text=""/>
+                     </ui:contents>
+                  </oa:rowLayout>
+                  <oa:rowLayout id="region11" hAlign="center">
+                     <ui:contents>
+                        <oa:shuttle id="ShuttleRN2" rendered="true">
+                           <ui:leading>
+                              <oa:list id="LLShuttleRN2" pickListDispAttr="Value" pickListValAttr="Code"/>
+                           </ui:leading>
+                           <ui:trailing>
+                              <oa:list id="TLShuttleRN2"/>
+                           </ui:trailing>
+                        </oa:shuttle>
+                     </ui:contents>
+                  </oa:rowLayout>
+               </ui:contents>
+            </oa:stackLayout>
+            <oa:tableLayout id="TBLRN2" hAlign="center"/>
+            <oa:stackLayout id="ContShuttleRN3" rendered="false">
+               <ui:contents>
+                  <oa:rowLayout id="region311" cellNoWrapFormat="true">
+                     <ui:contents>
+                        <oa:header id="HDRShuttleRN3" text=""/>
+                     </ui:contents>
+                  </oa:rowLayout>
+                  <oa:rowLayout id="region111" hAlign="center">
+                     <ui:contents>
+                        <oa:shuttle id="ShuttleRN3" rendered="true">
+                           <ui:leading>
+                              <oa:list id="LLShuttleRN3" pickListDispAttr="Value" pickListValAttr="Code"/>
+                           </ui:leading>
+                           <ui:trailing>
+                              <oa:list id="TLShuttleRN3"/>
+                           </ui:trailing>
+                        </oa:shuttle>
+                     </ui:contents>
+                  </oa:rowLayout>
+               </ui:contents>
+            </oa:stackLayout>
+            <oa:tableLayout id="TBLRN3" hAlign="center"/>
+            <oa:stackLayout id="ContShuttleRN4" rendered="false">
+               <ui:contents>
+                  <oa:rowLayout id="region312" cellNoWrapFormat="true">
+                     <ui:contents>
+                        <oa:header id="HDRShuttleRN4" text=""/>
+                     </ui:contents>
+                  </oa:rowLayout>
+                  <oa:rowLayout id="region112" hAlign="center">
+                     <ui:contents>
+                        <oa:shuttle id="ShuttleRN4" rendered="true">
+                           <ui:leading>
+                              <oa:list id="LLShuttleRN4" pickListDispAttr="Value" pickListValAttr="Code"/>
+                           </ui:leading>
+                           <ui:trailing>
+                              <oa:list id="TLShuttleRN4"/>
+                           </ui:trailing>
+                        </oa:shuttle>
+                     </ui:contents>
+                  </oa:rowLayout>
+               </ui:contents>
+            </oa:stackLayout>
+            <oa:tableLayout id="TBLRN4" hAlign="center"/>
+            <oa:formValue id="CustId"/>
+         </ui:contents>
+      </oa:pageLayout>
+   </content>
+</page>

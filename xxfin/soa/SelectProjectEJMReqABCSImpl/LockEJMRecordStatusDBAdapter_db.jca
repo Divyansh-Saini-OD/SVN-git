@@ -1,0 +1,14 @@
+<adapter-config name="LockEJMRecordStatusDBAdapter" adapter="Database Adapter" wsdlLocation="LockEJMRecordStatusDBAdapter.wsdl" xmlns="http://platform.integration.oracle/blocks/adapter/fw/metadata">
+  
+  <connection-factory location="eis/db/SQLServerEJM" UIConnectionName="EJMDevSQLServer" UIStrongXSD="false" adapterRef=""/>
+  <endpoint-interaction portType="LockEJMRecordStatusDBAdapter_ptt" operation="LockEJMRecordStatusDBAdapter">
+    <interaction-spec className="oracle.tip.adapter.db.DBStoredProcedureInteractionSpec">
+      <property name="SchemaName" value="DS_EJM"/>
+      <property name="PackageName" value="dbo"/>
+      <property name="ProcedureName" value="pc_EBSPA_SetTransport"/>
+      <property name="GetActiveUnitOfWork" value="false"/>
+    </interaction-spec>
+    <output/>
+  </endpoint-interaction>
+
+</adapter-config>

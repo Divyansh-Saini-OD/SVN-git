@@ -1,0 +1,46 @@
+-- +============================================================================================+
+-- |                        Office Depot - Project Simplify                                     |
+-- |                                                                                            |
+-- +============================================================================================+
+-- | Name         : XX_C2T_CC_TOKEN_STG_IBY_HIST_IDX.idx                                        |
+-- | Rice Id      :                                                                             | 
+-- | Description  : XX_C2T_CC_TOKEN_STG_IBY_HIST Table Creation Script                              |  
+-- | Purpose      :                                                                             |
+-- |                                                                                            |
+-- |                                                                                            |
+-- |Change Record:                                                                              |
+-- |===============                                                                             |
+-- |Version    Date          Author                Remarks                                      | 
+-- |=======    ==========    =================    ==============================================+
+-- |1.0        13-OCT-2015  Harvinder Rakhra      Initial Version                               |
+-- |1.1        21-OCT-2015  Harvinder Rakhra      Indexes created in XXFIN                      |
+-- |                                                                                            |
+-- +============================================================================================+
+
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     ON
+
+PROMPT
+PROMPT CREATING INDEX XX_C2T_CC_TOKEN_STG_IBY_HST_U1 for the Table XX_C2T_CC_TOKEN_STG_IBY_HIST.....
+PROMPT
+CREATE UNIQUE INDEX XXFIN.XX_C2T_CC_TOKEN_STG_IBY_HST_U1
+ON XX_C2T_CC_TOKEN_STG_IBY_HIST (HIST_ID);
+
+PROMPT CREATING INDEX XX_C2T_CC_TOKEN_STG_IBY_HST_N1.....
+CREATE INDEX XXFIN.XX_C2T_CC_TOKEN_STG_IBY_HST_N1
+ON XX_C2T_CC_TOKEN_STG_IBY_HIST (CONVERT_STATUS);
+  
+
+PROMPT CREATING INDEX XX_C2T_CC_TOKEN_STG_IBY_HST_N2.....
+CREATE INDEX XXFIN.XX_C2T_CC_TOKEN_STG_IBY_HST_N2
+ON XX_C2T_CC_TOKEN_STG_IBY_HIST (RE_ENCRYPT_STATUS);
+  
+PROMPT CREATING INDEX XX_C2T_CC_TOKEN_STG_IBY_HST_N3.....
+CREATE INDEX XXFIN.XX_C2T_CC_TOKEN_STG_IBY_HST_N3
+ON XX_C2T_CC_TOKEN_STG_IBY_HIST (IXRECEIPTNUMBER, IXIPAYMENTBATCHNUMBER);
+  
+
+SHOW ERROR;

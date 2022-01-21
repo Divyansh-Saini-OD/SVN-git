@@ -1,0 +1,44 @@
+CREATE TABLE XXFIN.xx_ap_vendors_hist
+-- +===================================================================+
+-- |                  Office Depot - Project Simplify                  |
+-- |                    Wipro/Office Depot                             |
+-- +===================================================================+
+-- | Name             :  xx_ap_vendors_hist                        |
+-- | RICE ID          :  R0023	        			       |
+-- | Description      :  This temporary table stores all the           |
+-- |                     Changed column information for vendor         |
+-- |                     and Needs to run in XXFIN schema              |
+-- |                                                                   |
+-- |Change Record:                                                     |
+-- |===============                                                    |
+-- |Version   Date        Author            Remarks                    |
+-- |=======   ==========  =============    ============================|
+-- |DRAFT 1A 30-AUG-2007  Dorairaj R       Initial draft version       |
+-- |								       |								               |
+-- +===================================================================+
+(VENDOR_ID                               NUMBER,                                                                                                                                                                                        
+SUPPLIER_NUMBER                         VARCHAR2(15),                                                                                                                                                                                  
+LAST_UPDATED_BY                         VARCHAR2(40),                                                                                                                                                                                  
+LAST_UPDATE_DATE                        DATE        ,                                                                                                                                                                                  
+CREATED_BY                              NUMBER      ,                                                                                                                                                                                  
+LAST_UPDATE_LOGIN                       NUMBER      ,                                                                                                                                                                                  
+CREATION_DATE                           DATE        ,                                                                                                                                                                                 
+VENDOR_NAME                             VARCHAR2(240),                                                                                                                                                                                 
+NUM_1099                                VARCHAR2(30) ,                                                                                                                                                                                 
+VAT_REGISTRATION_NUM                    VARCHAR2(10) ,                                                                                                                                                                                 
+TYPE_1099                               VARCHAR2(10) ,                                                                                                                                                                                 
+EMPLOYEE_ID                             NUMBER)       
+/
+
+                                                                                                                                                                           
+                                                                                                                                                                           
+                                                                                                                                                                           
+                                                                                                                                                                           
+                                                                                                                                                                           
+                                                                                                                                                                           
+                                                                                                                                                                           
+                                                                                                                                                                           
+                                                                                                                                                                           
+                                                                                                                                                                           
+                                                                                                                                                                           
+                                                                                                                                                                           

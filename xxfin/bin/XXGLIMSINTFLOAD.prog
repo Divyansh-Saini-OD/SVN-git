@@ -1,0 +1,170 @@
+
+# +===================================================================+
+# |                  Office Depot - Project Optimize                  |
+# |      			 				      |
+# +===================================================================+
+# | Name  : 	   XXGLIMSINTFLOAD.prog   	                          |
+# | RICE ID    :   I3131-GL Inventory Journals IMS to EBS  
+# | Description:   This program does the following                    |
+# |             1) Call GL Journals load program for IMS INV Journals |
+# |                                                                   |
+# |                .                                       			  |
+# |                                                                   |
+# |                                                                   |
+# |                                                                   |
+# |Change Record:                                                     |
+# |===============                                                    |
+# |Version   Date        	Author           Remarks                  |
+# |=======  ==========  	==========    ============================|
+# |1.0  	02-02-2021  	Amit Kumar      Initial draft version     |
+# +===================================================================+
+
+ echo "1 st argument = username/password"
+ echo "2 nd argument = $2"
+ echo "3 rd argument = $3"
+ echo "4 th argument = $4"
+ echo "5 th argument = $5"
+ export SQLPATH=$APPL_TOP
+ 
+
+debugflag=$5
+  
+inbound_path=`sqlplus -s /nolog <<EOF
+set pagesize 0
+set linesize 255
+set sqlprompt " "
+set serveroutput on 
+set verify off
+SELECT XFTV.TARGET_VALUE1
+  FROM XX_FIN_TRANSLATEDEFINITION XFTD,
+  XX_FIN_TRANSLATEVALUES XFTV
+WHERE XFTD.TRANSLATION_NAME ='XX_GL_IMS_INTERFACE'
+AND XFTV.SOURCE_VALUE1      ='INBOUND_DIRECTORY'
+AND XFTD.TRANSLATE_ID       = XFTV.TRANSLATE_ID
+AND XFTD.ENABLED_FLAG       ='Y'
+AND SYSDATE BETWEEN XFTV.START_DATE_ACTIVE AND NVL(XFTV.END_DATE_ACTIVE,SYSDATE);	
+exit
+EOF`
+
+inbound_dba_dir=`sqlplus -s /nolog <<EOF
+set pagesize 0
+set linesize 255
+set sqlprompt " "
+set serveroutput on 
+set verify off
+SELECT XFTV.TARGET_VALUE2
+  FROM XX_FIN_TRANSLATEDEFINITION XFTD,
+  XX_FIN_TRANSLATEVALUES XFTV
+WHERE XFTD.TRANSLATION_NAME ='XX_GL_IMS_INTERFACE'
+AND XFTV.SOURCE_VALUE1      ='INBOUND_DIRECTORY'
+AND XFTD.TRANSLATE_ID       = XFTV.TRANSLATE_ID
+AND XFTD.ENABLED_FLAG       ='Y'
+AND SYSDATE BETWEEN XFTV.START_DATE_ACTIVE AND NVL(XFTV.END_DATE_ACTIVE,SYSDATE);	
+exit
+EOF`
+
+archival_path=`sqlplus -s /nolog <<EOF
+set pagesize 0
+set linesize 255
+set sqlprompt " "
+set serveroutput on 
+set verify off
+SELECT XFTV.TARGET_VALUE1
+  FROM XX_FIN_TRANSLATEDEFINITION XFTD,
+  XX_FIN_TRANSLATEVALUES XFTV
+WHERE XFTD.TRANSLATION_NAME ='XX_GL_IMS_INTERFACE'
+AND XFTV.SOURCE_VALUE1      ='ARCHIVE_DIRECTORY'
+AND XFTD.TRANSLATE_ID       = XFTV.TRANSLATE_ID
+AND XFTD.ENABLED_FLAG       ='Y'
+AND SYSDATE BETWEEN XFTV.START_DATE_ACTIVE AND NVL(XFTV.END_DATE_ACTIVE,SYSDATE);	
+exit
+EOF`
+
+file_name=`sqlplus -s /nolog <<EOF
+set pagesize 0
+set linesize 255
+set sqlprompt " "
+set serveroutput on 
+set verify off
+SELECT XFTV.TARGET_VALUE1
+  FROM XX_FIN_TRANSLATEDEFINITION XFTD,
+  XX_FIN_TRANSLATEVALUES XFTV
+WHERE XFTD.TRANSLATION_NAME ='XX_GL_IMS_INTERFACE'
+AND XFTV.SOURCE_VALUE1      ='FILE_NAME_PATTERN'
+AND XFTD.TRANSLATE_ID       = XFTV.TRANSLATE_ID
+AND XFTD.ENABLED_FLAG       ='Y'
+AND SYSDATE BETWEEN XFTV.START_DATE_ACTIVE AND NVL(XFTV.END_DATE_ACTIVE,SYSDATE);	
+exit
+EOF`
+
+
+
+echo " "
+echo "Translation set-up Name				: XX_GL_IMS_INTERFACE "
+echo " "
+echo "Debug Flag					= $debugflag"
+echo "Inbound path 					= $inbound_path"
+echo "Archival path					= $archival_path"
+echo "File Name    					= $file_name"
+echo "DBA Directory Name				= $inbound_dba_dir"
+eval inbounddirectory=$inbound_path
+cd ${inbounddirectory}
+
+V_EXITSTATUS_MAIN=0
+for i in `ls $file_name*.*  | sort -u`
+do echo "$i"  
+
+eval archival_file=$archival_path/$i
+eval inbounddirectory=$inbound_path/$i 
+	 
+V_RESULT2=`sqlplus -s /nolog <<EOF
+set pagesize 10000
+set linesize 9999
+set serveroutput on 
+set verify off
+set echo on
+EXECUTE XX_GL_IMS_IFACE_PKG.MAIN_LOAD_PROCESS('$i','$inbound_dba_dir','$debugflag','$4','$2');
+COMMIT;
+exit
+EOF` 
+
+echo "$V_RESULT2"
+
+echo " "
+echo " "
+
+V_EXITSTATUS=`sqlplus -s /nolog <<EOF
+set pagesize 0
+set linesize 255
+set sqlprompt " "
+set serveroutput on 
+set verify off
+SELECT details|| '|'
+FROM   XXFIN.XX_GL_INTERFACE_NA_ERROR WHERE TYPE = '$i';	
+exit
+EOF`
+
+V_EXITSTATUS=`echo $V_EXITSTATUS | awk '{ split($0,MODULE,"|"); print MODULE[1] }'`
+
+#echo "$V_EXITSTATUS"
+if [ -z "$V_EXITSTATUS" ]
+then
+echo "File Processed Successfull"
+else
+echo "File Processed with Errors"
+V_EXITSTATUS_MAIN=1
+fi
+
+echo " "
+echo "File is being Archived" 
+echo "The Inbound File Name "${inbounddirectory}
+echo "The Archival File Name "${archival_file}
+cp ${inbounddirectory} ${archival_file}
+rm ${inbounddirectory}
+echo " "
+echo " "
+echo " "
+echo "+===========================================================================+"
+
+done
+exit $V_EXITSTATUS_MAIN

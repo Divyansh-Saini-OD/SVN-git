@@ -1,0 +1,45 @@
+-- +===================================================================================+
+-- |                              Office Depot Inc.                                    |
+-- +===================================================================================+
+-- | Name        : XX_AR_PS_TMP_STG                                                    |
+-- | Description : Create the Synonym for the table XX_AR_PS_TMP_STG                   |  
+-- |                                                                                   |
+-- |                                                                                   |
+-- |                                                                                   |
+-- |Version   Date         Author               Remarks                                |
+-- |=======   ==========   =============        =======================================|
+-- | 1.0      20-JUL-2015  Manikant Kasu        Initial version                        |
+-- |===================================================================================|
+
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     ON
+
+PROMPT Creating SYNONYM XX_AR_PS_TMP_STG
+
+PROMPT Program exits IF the creation IS NOT SUCCESSFUL
+
+WHENEVER SQLERROR CONTINUE
+/
+
+PROMPT
+PROMPT Creating SYNONYM XX_AR_PS_TMP_STG FOR XXFIN.XX_AR_PS_TMP_STG
+PROMPT 
+CREATE SYNONYM APPS.XX_AR_PS_TMP_STG FOR XXFIN.XX_AR_PS_TMP_STG
+/
+           
+PROMPT
+PROMPT Exiting....
+PROMPT
+
+SET FEEDBACK ON
+
+SHOW ERRORS;
+
+EXIT;
+
+REM============================================================================================
+REM                                   End Of Script                                            
+REM============================================================================================

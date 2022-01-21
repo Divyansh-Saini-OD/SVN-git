@@ -1,0 +1,646 @@
+<?xml version='1.0' encoding='windows-1252' ?>
+<!DOCTYPE ViewObject SYSTEM "jbo_03_01.dtd">
+
+<!--
+  Author: Sridevi Kondoju
+  Component Id: E1066 
+  Script Location: $CUSTOM_JAVA_TOP/od/oracle/apps/xxcrm/ar/hz/components/account/site/server
+  Description: Modified for Defect29036 
+  History:
+  Name            Date         Version    Description
+  Sridevi Kondoju 17-sep-2014   1.0       Modified for Defect29228 
+                                          Added row_number for orig_system_reference 
+-->
+
+<ViewObject
+   Name="ODHzPuiAcctSitesTableVO"
+   Extends="oracle.apps.ar.hz.components.account.site.server.HzPuiAcctSitesTableVO"
+   BindingStyle="Oracle"
+   CustomQuery="true"
+   ComponentClass="od.oracle.apps.xxcrm.ar.hz.components.account.site.server.ODHzPuiAcctSitesTableVOImpl"
+   UseGlueCode="false" >
+   <SQLQuery><![CDATA[
+SELECT 
+       HzCustAccountSitesEOEx.CUST_ACCT_SITE_ID,
+       HzCustAccountSitesEOEx.CUST_ACCOUNT_ID,
+       HzCustAccountSitesEOEx.PARTY_SITE_ID,
+       HzCustAccountSitesEOEx.LAST_UPDATE_DATE,
+       HzCustAccountSitesEOEx.LAST_UPDATED_BY,
+       HzCustAccountSitesEOEx.CREATION_DATE,
+       HzCustAccountSitesEOEx.CREATED_BY,
+       HzCustAccountSitesEOEx.LAST_UPDATE_LOGIN,
+       HzCustAccountSitesEOEx.REQUEST_ID,
+       HzCustAccountSitesEOEx.PROGRAM_APPLICATION_ID,
+       HzCustAccountSitesEOEx.PROGRAM_ID,
+       HzCustAccountSitesEOEx.PROGRAM_UPDATE_DATE,
+       HzCustAccountSitesEOEx.WH_UPDATE_DATE,
+       HzCustAccountSitesEOEx.ATTRIBUTE_CATEGORY,
+       HzCustAccountSitesEOEx.ATTRIBUTE1,
+       HzCustAccountSitesEOEx.ATTRIBUTE2,
+       HzCustAccountSitesEOEx.ATTRIBUTE3,
+       HzCustAccountSitesEOEx.ATTRIBUTE4,
+       HzCustAccountSitesEOEx.ATTRIBUTE5,
+       HzCustAccountSitesEOEx.ATTRIBUTE6,
+       HzCustAccountSitesEOEx.ATTRIBUTE7,
+       HzCustAccountSitesEOEx.ATTRIBUTE8,
+       HzCustAccountSitesEOEx.ATTRIBUTE9,
+       HzCustAccountSitesEOEx.ATTRIBUTE10,
+       HzCustAccountSitesEOEx.ATTRIBUTE11,
+       HzCustAccountSitesEOEx.ATTRIBUTE12,
+       HzCustAccountSitesEOEx.ATTRIBUTE13,
+       HzCustAccountSitesEOEx.ATTRIBUTE14,
+       HzCustAccountSitesEOEx.ATTRIBUTE15,
+       HzCustAccountSitesEOEx.ATTRIBUTE16,
+       HzCustAccountSitesEOEx.ATTRIBUTE17,
+       HzCustAccountSitesEOEx.ATTRIBUTE18,
+       HzCustAccountSitesEOEx.ATTRIBUTE19,
+       HzCustAccountSitesEOEx.ATTRIBUTE20,
+       HzCustAccountSitesEOEx.GLOBAL_ATTRIBUTE_CATEGORY,
+       HzCustAccountSitesEOEx.GLOBAL_ATTRIBUTE1,
+       HzCustAccountSitesEOEx.GLOBAL_ATTRIBUTE2,
+       HzCustAccountSitesEOEx.GLOBAL_ATTRIBUTE3,
+       HzCustAccountSitesEOEx.GLOBAL_ATTRIBUTE4,
+       HzCustAccountSitesEOEx.GLOBAL_ATTRIBUTE5,
+       HzCustAccountSitesEOEx.GLOBAL_ATTRIBUTE6,
+       HzCustAccountSitesEOEx.GLOBAL_ATTRIBUTE7,
+       HzCustAccountSitesEOEx.GLOBAL_ATTRIBUTE8,
+       HzCustAccountSitesEOEx.GLOBAL_ATTRIBUTE9,
+       HzCustAccountSitesEOEx.GLOBAL_ATTRIBUTE10,
+       HzCustAccountSitesEOEx.GLOBAL_ATTRIBUTE11,
+       HzCustAccountSitesEOEx.GLOBAL_ATTRIBUTE12,
+       HzCustAccountSitesEOEx.GLOBAL_ATTRIBUTE13,
+       HzCustAccountSitesEOEx.GLOBAL_ATTRIBUTE14,
+       HzCustAccountSitesEOEx.GLOBAL_ATTRIBUTE15,
+       HzCustAccountSitesEOEx.GLOBAL_ATTRIBUTE16,
+       HzCustAccountSitesEOEx.GLOBAL_ATTRIBUTE17,
+       HzCustAccountSitesEOEx.GLOBAL_ATTRIBUTE18,
+       HzCustAccountSitesEOEx.GLOBAL_ATTRIBUTE19,
+       HzCustAccountSitesEOEx.GLOBAL_ATTRIBUTE20,
+       HzCustAccountSitesEOEx.ORIG_SYSTEM_REFERENCE,
+       HzCustAccountSitesEOEx.STATUS,
+       HzCustAccountSitesEOEx.ORG_ID,
+       HzCustAccountSitesEOEx.BILL_TO_FLAG,
+       HzCustAccountSitesEOEx.MARKET_FLAG,
+       HzCustAccountSitesEOEx.SHIP_TO_FLAG,
+       HzCustAccountSitesEOEx.CUSTOMER_CATEGORY_CODE,
+       HzCustAccountSitesEOEx.LANGUAGE,
+       HzCustAccountSitesEOEx.KEY_ACCOUNT_FLAG,
+       HzCustAccountSitesEOEx.TP_HEADER_ID,
+       HzCustAccountSitesEOEx.ECE_TP_LOCATION_CODE,
+       HzCustAccountSitesEOEx.SERVICE_TERRITORY_ID,
+       HzCustAccountSitesEOEx.PRIMARY_SPECIALIST_ID,
+       HzCustAccountSitesEOEx.SECONDARY_SPECIALIST_ID,
+       HzCustAccountSitesEOEx.TERRITORY_ID,
+       HzCustAccountSitesEOEx.ADDRESS_TEXT,
+       HzCustAccountSitesEOEx.TERRITORY,
+       HzCustAccountSitesEOEx.TRANSLATED_CUSTOMER_NAME,
+       HzCustAccountSitesEOEx.OBJECT_VERSION_NUMBER,
+       HzCustAccountSitesEOEx.CREATED_BY_MODULE,
+       HzCustAccountSitesEOEx.APPLICATION_ID,
+       ps.MAILSTOP,
+       lc.COUNTRY,
+       ps.PARTY_SITE_NAME,
+       lc.ADDRESS_LINES_PHONETIC,
+       ps.IDENTIFYING_ADDRESS_FLAG,
+	   (select listagg (trim(site_use_code), ',') WITHIN GROUP (order by site_use_code) site_use_code FROM apps.hz_cust_site_uses_all where cust_acct_site_id=HzCustAccountSitesEOEx.CUST_ACCT_SITE_ID GROUP BY cust_acct_site_id) PURPOSES,
+       --hz_utility_v2pub.get_acct_site_purposes(HzCustAccountSitesEOEx.CUST_ACCT_SITE_ID) PURPOSES,
+       lc.LOCATION_ID,
+     HZ_UTILITY_V2PUB.GET_YAHOO_MAP_URL(lc.address1, lc.address2, lc.address3, lc.address4, lc.city,         lc.country, lc.state, lc.postal_code) mapURL,
+     lc.COUNTRY as country_name,
+     fnd_global.ORG_NAME as operating_unit,
+     ps.party_site_number,
+	 HZ_UTILITY_V2PUB.get_lookupmeaning ( 'FND_LOOKUP_VALUES' , 'HZ_CPUI_REGISTRY_STATUS' , HzCustAccountSitesEOEx.status ) as SITE_STATUS_MEANING,
+ lc.address1,
+ lc.address2,
+ lc.address3,
+ lc.address4,
+ lc.city,
+ lc.state,
+ lc.postal_code,
+ lc.county,
+ lc.province,
+ lc.address1 || ', ' || lc.city || ', ' || decode(lc.country, 'US', lc.state, 'CA', lc.province, lc.state) || ', ' || lc.postal_code Address, 
+ --HZ_FORMAT_PUB.format_address(lc.LOCATION_ID,null,null,', ')Address,
+ (select listagg (trim(location), '; ') WITHIN GROUP (order by site_use_code) location FROM apps.hz_cust_site_uses_all where cust_acct_site_id=HzCustAccountSitesEOEx.CUST_ACCT_SITE_ID GROUP BY    cust_acct_site_id) as location
+ --XX_OD_HZ_UTILITY.get_cust_site_locations(HzCustAccountSitesEOEx.CUST_ACCT_SITE_ID) location
+FROM HZ_CUST_ACCT_SITES HzCustAccountSitesEOEx,
+     hz_party_sites ps,
+     hz_locations lc
+WHERE HzCustAccountSitesEOEx.CUST_ACCOUNT_ID = :1
+ and HzCustAccountSitesEOEx.party_site_id = ps.party_site_id
+ and ps.location_id = lc.location_id
+   ]]></SQLQuery>
+   <DesignTime>
+      <Attr Name="_isExpertMode" Value="true" />
+      <Attr Name="_version" Value="10.1.3.43.6" />
+      <Attr Name="_codeGenFlag2" Value="Access|Coll|VarAccess" />
+   </DesignTime>
+   <ViewAttribute
+      Name="IsPrivilegeChecked"
+      IsPersistent="false"
+      Precision="255"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="IS_PRIVILEGE_CHECKED"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="UpdateImage"
+      IsSelected="false"
+      IsPersistent="false"
+      Precision="30"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="UPDATE_IMAGE"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="DeleteImage"
+      IsPersistent="false"
+      Precision="30"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="DELETE_IMAGE"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="RestoreImage"
+      IsSelected="false"
+      IsPersistent="false"
+      Precision="30"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="RESTORE_IMAGE"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="IsFormatted"
+      IsSelected="false"
+      IsPersistent="false"
+      Precision="1"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="IS_FORMATTED"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="FormattedPhone"
+      IsPersistent="false"
+      Precision="600"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="FORMATTED_PHONE"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="FormattedAddress"
+      IsPersistent="false"
+      Precision="2000"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="FORMATTED_ADDRESS"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="OrgContactRoles"
+      IsSelected="false"
+      IsPersistent="false"
+      Precision="400"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="ORG_CONTACT_ROLES"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="SelectFlag"
+      IsSelected="false"
+      IsPersistent="false"
+      Precision="1"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="SELECT_FLAG"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="ActContactRoles"
+      IsPersistent="false"
+      Precision="400"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="ACT_CONTACT_ROLES"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="DoNotCallIndicator"
+      IsPersistent="false"
+      Precision="30"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="DO_NOT_CALL_INDICATOR"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="IsRoleInRelationshipGroup"
+      IsPersistent="false"
+      Precision="30"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="IS_ROLE_IN_RELATIONSHIP_GROUP"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="BillTo_primary"
+      IsSelected="false"
+      IsPersistent="false"
+      Precision="360"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="BillTo_primary"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Mailstop"
+      IsPersistent="false"
+      Precision="60"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="Mailstop"
+      Expression="Mailstop"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Country"
+      IsPersistent="false"
+      Precision="60"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="Country"
+      Expression="Country"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="PartySiteName"
+      IsPersistent="false"
+      Precision="240"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="PARTY_SITE_NAME"
+      Expression="PartySiteName"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="AddressLinesPhonetic"
+      IsPersistent="false"
+      Precision="560"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="ADDRESS_LINES_PHONETIC"
+      Expression="AddressLinesPhonetic"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="IdentifyingAddressFlag"
+      IsPersistent="false"
+      Precision="1"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="IDENTIFYING_ADDRESS_FLAG"
+      Expression="IdentifyingAddressFlag"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Purposes"
+      IsPersistent="false"
+      Precision="242"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="Purposes"
+      Expression="Purposes"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="LocationId"
+      IsPersistent="false"
+      Precision="15"
+      Scale="0"
+      Type="oracle.jbo.domain.Number"
+      ColumnType="NUMBER"
+      AliasName="LOCATION_ID"
+      Expression="LocationId"
+      SQLType="NUMERIC" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="MapURL"
+      IsPersistent="false"
+      Precision="4000"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="MapURL"
+      Expression="MapURL"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="CountryName"
+      IsPersistent="false"
+      Precision="80"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="COUNTRY_NAME"
+      Expression="CountryName"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="OperatingUnit"
+      IsPersistent="false"
+      Precision="240"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="OPERATING_UNIT"
+      Expression="OperatingUnit"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="SiteSourceContactName"
+      IsUpdateable="false"
+      IsPersistent="false"
+      Precision="255"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="SITE_SOURCE_CONTACT_NAME"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="PartySiteNumber"
+      IsPersistent="false"
+      Precision="30"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="PARTY_SITE_NUMBER"
+      Expression="PARTY_SITE_NUMBER"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="SiteStatusMeaning"
+      IsUpdateable="false"
+      IsPersistent="false"
+      Precision="80"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="SITE_STATUS_MEANING"
+      Expression="SITE_STATUS_MEANING"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Address1"
+      IsPersistent="false"
+      IsNotNull="true"
+      Precision="240"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="ADDRESS1"
+      Expression="ADDRESS1"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+         <Attr Name="_DisplaySize" Value="240" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Address2"
+      IsPersistent="false"
+      Precision="240"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="ADDRESS2"
+      Expression="ADDRESS2"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+         <Attr Name="_DisplaySize" Value="240" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Address3"
+      IsPersistent="false"
+      Precision="240"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="ADDRESS3"
+      Expression="ADDRESS3"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+         <Attr Name="_DisplaySize" Value="240" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Address4"
+      IsPersistent="false"
+      Precision="240"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="ADDRESS4"
+      Expression="ADDRESS4"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+         <Attr Name="_DisplaySize" Value="240" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="City"
+      IsPersistent="false"
+      Precision="60"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="CITY"
+      Expression="CITY"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+         <Attr Name="_DisplaySize" Value="60" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="State"
+      IsPersistent="false"
+      Precision="60"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="STATE"
+      Expression="STATE"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+         <Attr Name="_DisplaySize" Value="60" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="PostalCode"
+      IsPersistent="false"
+      Precision="60"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="POSTAL_CODE"
+      Expression="POSTAL_CODE"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+         <Attr Name="_DisplaySize" Value="60" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="County"
+      IsPersistent="false"
+      Precision="60"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="COUNTY"
+      Expression="COUNTY"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+         <Attr Name="_DisplaySize" Value="60" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Province"
+      IsPersistent="false"
+      Precision="60"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="PROVINCE"
+      Expression="PROVINCE"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+         <Attr Name="_DisplaySize" Value="60" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Address"
+      IsPersistent="false"
+      Precision="4000"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="ADDRESS"
+      Expression="ADDRESS"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+         <Attr Name="_DisplaySize" Value="4000" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="ViewImage"
+      IsPersistent="false"
+      Precision="30"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="VIEW_IMAGE"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="MapURL1_1"
+      IsPersistent="false"
+      Precision="4000"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="MapURL"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Location"
+      IsPersistent="false"
+      Precision="40"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="LOCATION"
+      Expression="Location"
+      SQLType="VARCHAR" >
+   </ViewAttribute>
+</ViewObject>

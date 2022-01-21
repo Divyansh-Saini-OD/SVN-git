@@ -1,0 +1,18 @@
+-- +===================================================================+
+-- |                  Office Depot - Project Simplify                  |
+-- +===================================================================+
+-- | Name        : XXHZ_CUST_ACCOUNT_ROLES_N1.idx                         |
+-- | Rice ID     :                                                     |
+-- | Description : XXHZ_CUST_ACCOUNT_ROLES_N1.idx - Index Creation Script |
+-- |                                                                   |
+-- |              						       |
+-- |Change Record:                                                     |
+-- |===============                                                    |
+-- |Version   Date        Author           Remarks                     |
+-- |=======  ===========  =============    ============================|
+-- |1.0      06-AUG-2008  Enliu Yang       Initial draft version       |
+-- |                                                                   |
+-- +===================================================================+
+create index ar.XXHZ_CUST_ACCOUNT_ROLES_N1 on ar.HZ_CUST_ACCOUNT_ROLES(last_update_date) tablespace APPS_TS_TX_IDX_16M nologging online parallel 4; 
+
+

@@ -1,0 +1,25 @@
+-- +==========================================================================+
+-- |                  Office Depot - Project Simplify                         |
+-- +==========================================================================+
+-- | Name        : XX_EBL_TRANS_SEQ                                           |
+-- | Description : Sequence is used for generating sequence number            |
+-- |               for the transmission ID                                    |
+-- |                                                                          |
+-- |                                                                          |
+-- |                                                                          |
+-- |Change Record:                                                            |
+-- |===============                                                           |
+-- | Version     Date           Author               Remarks                  |
+-- |=========  ==========   =============      ========================       |
+-- | 1.0     14-May-2010     Ranjith Thangasamy       Initial version         |
+-- |==========================================================================|
+
+
+   CREATE SEQUENCE  "XXFIN"."XX_EBL_TRANS_SEQ"  
+   MINVALUE 1 
+   MAXVALUE 999999999999999999999999999 
+   INCREMENT BY 1 
+   START WITH 3401 
+   CACHE 20 
+   NOORDER  NOCYCLE ;
+ 

@@ -1,0 +1,36 @@
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     ON
+
+PROMPT Creating SYNONYM XX_DBA_WF_ROLE_ASSIGN
+
+PROMPT Program exits IF the creation IS NOT SUCCESSFUL
+
+WHENEVER SQLERROR CONTINUE
+
+-- +==========================================================================+
+-- |                  Office Depot - Project Simplify                         |
+-- |                       WIPRO Technologies                                 |
+-- +==========================================================================+
+-- | Name        : APPS.XX_DBA_WF_ROLE_ASSIGN                                 |
+-- | Description : Synonym for XX_DBA_WF_ROLE_ASSIGN                          |
+-- | RICE             :    E3078                                              |
+-- |===============                                                           |
+-- |Change Record:                                                            |
+-- |===============                                                           |
+-- |Version      Date           Author                  Remarks               |
+-- |=======    ==========     =============             ===================== |
+-- | 1.0       3-Nov-2013     Paddy Sanjeevi            Initial Creation      |
+-- +==========================================================================+
+
+WHENEVER SQLERROR CONTINUE;
+
+PROMPT
+PROMPT Creating Synonym XX_DBA_WF_ROLE_ASSIGN  in APPS...
+PROMPT
+
+CREATE SYNONYM apps.XX_DBA_WF_ROLE_ASSIGN   FOR xxfin.XX_DBA_WF_ROLE_ASSIGN;
+
+SHOW ERROR

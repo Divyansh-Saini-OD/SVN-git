@@ -1,0 +1,31 @@
+-- +==========================================================================+
+-- |                  Office Depot - Project Simplify                         |
+-- |                                                                          |
+-- +==========================================================================+
+-- | SQL Script to create                                                     |
+-- |                                                                          |
+-- |                      INDEXES: XX_CE_MPL_SETTLEMENT_STG_N3                |
+-- |                                                                          |
+-- |                                                                          |
+-- |                                                                          |
+-- |Change Record:                                                            |
+-- |===============                                                           |
+-- |Version   Date         Author               Remarks                       |
+-- |=======   ==========   =============        ==============================|
+-- | V1.0     03-Nov-2017  Digamber S           Initial version               |
+-- +==========================================================================+
+
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     ON
+
+
+CREATE INDEX XXFIN.XX_CE_MPL_SETTLEMENT_STG_N3 ON XXFIN.XX_CE_MPL_SETTLEMENT_STG (settlement_id,order_id,transaction_type,split_order,aops_order_number) 
+  PCTFREE 10 INITRANS 2 MAXTRANS 255 COMPUTE STATISTICS 
+  STORAGE(INITIAL 131072 NEXT 131072 MINEXTENTS 1 MAXEXTENTS 2147483645
+  PCTINCREASE 0 FREELISTS 1 FREELIST GROUPS 1
+  buffer_pool default flash_cache default cell_flash_cache default)
+  TABLESPACE APPS_TS_TX_DATA ;  
+

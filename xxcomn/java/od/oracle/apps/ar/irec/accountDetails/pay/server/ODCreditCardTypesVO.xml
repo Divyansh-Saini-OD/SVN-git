@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding='windows-1252'?>
+<!DOCTYPE ViewObject SYSTEM "jbo_03_01.dtd">
+<!--
+  Author: Sridevi Kondoju
+  Component Id: E1356
+  Script Location: $CUSTOM_JAVA_TOP/od/oracle/apps/ar/irec/accountDetails/pay/server
+  Description: retrofitted for r12 upgrade
+  History:
+  Name            Date         Version    Description
+  Sridevi Kondoju 16-Aug-2013   1.0    Retrofitted for R12 Upgrade.
+-->
+<ViewObject
+   Name="ODCreditCardTypesVO"
+   Extends="oracle.apps.ar.irec.accountDetails.pay.server.CreditCardTypesVO"
+   BindingStyle="Oracle"
+   CustomQuery="true"
+   RowClass="oracle.apps.fnd.framework.server.OAViewRowImpl"
+   ComponentClass="od.oracle.apps.ar.irec.accountDetails.pay.server.ODCreditCardTypesVOImpl"
+   MsgBundleClass="oracle.jbo.common.JboResourceBundle"
+   UseGlueCode="false" >
+   <SQLQuery><![CDATA[
+SELECT lookup_code card_type, meaning card_name
+FROM AR_LOOKUPS L, FND_FLEX_VSET_V S, FND_FLEX_VALUES V, hr_operating_units OU
+/*HR_ALL_ORGANIZATION_UNITS OU -- R12 upgrade retrofit */
+WHERE S.dep_value_set_name='XX_AR_IREC_CREDIT_CARD_TYPES'
+AND S.flex_value=OU.name
+AND V.flex_value_set_id=S.dep_value_set_id
+AND V.parent_flex_value_low=OU.name
+AND V.enabled_flag='Y'
+AND TRUNC(SYSDATE) 
+	BETWEEN TRUNC(NVL(V.start_date_active,SYSDATE)) AND TRUNC(NVL(V.end_date_active,SYSDATE))
+AND L.lookup_type = 'AR_IREC_CREDIT_CARD_TYPES'
+AND L.enabled_flag = 'Y'
+AND TRUNC(SYSDATE) 
+ 	BETWEEN TRUNC(NVL(L.START_DATE_ACTIVE,SYSDATE)) AND TRUNC(NVL(L.END_DATE_ACTIVE,SYSDATE))
+AND L.lookup_code=V.flex_value
+AND OU.organization_id=FND_PROFILE.VALUE('ORG_ID') 
+/*AND OU.organization_id=NVL(TO_NUMBER(DECODE(SUBSTRB(USERENV('CLIENT_INFO'),1,1), ' ', NULL,        SUBSTRB(USERENV('CLIENT_INFO'),1,10))),-99)*/
+   ]]></SQLQuery>
+   <DesignTime>
+      <Attr Name="_version" Value="9.0.3.14.00" />
+      <Attr Name="_CodeGenFlagNew" Value="36" />
+   </DesignTime>
+   <ViewAttribute
+      Name="CardType"
+      IsQueriable="false"
+      IsPersistent="false"
+      Precision="30"
+      Type="java.lang.String"
+      ColumnType="$none$"
+      AliasName="CARD_TYPE"
+      Expression="CARD_TYPE"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+         <Attr Name="_DisplaySize" Value="30" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="CardName"
+      IsQueriable="false"
+      IsPersistent="false"
+      Precision="80"
+      Type="java.lang.String"
+      ColumnType="$none$"
+      AliasName="CARD_NAME"
+      Expression="CARD_NAME"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+         <Attr Name="_DisplaySize" Value="80" />
+      </DesignTime>
+   </ViewAttribute>
+</ViewObject>

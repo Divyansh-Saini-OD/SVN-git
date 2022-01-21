@@ -1,0 +1,25 @@
+SET VERIFY OFF;
+SET TERM ON
+PROMPT Creating Synonym XX_EXTERNAL_USERS_S
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+-- +=======================================================================+
+-- |               Office Depot - Project Simplify                         |
+-- |                       Oracle Consulting                               |
+-- +=======================================================================+
+-- | Name  :        XX_CRM_CONTACT_SHIP_TO_REL                             |
+-- | Description:   Sequence for common error handling routines            |
+-- |                                                                       |
+-- |                                                                       |
+-- |                                                                       |
+-- |Change Record:                                                         |
+-- |===============                                                        |
+-- |Version   Date        Author           Remarks                         |
+-- |=======   ==========  =============    ================================|
+-- |1.0       22-FEB-2007 A Sahay          Initial version                 |
+-- +=======================================================================+
+
+CREATE OR REPLACE SYNONYM  APPS.XX_EXTERNAL_USERS_S for XXCOMN.XX_EXTERNAL_USERS_S;
+
+EXIT;

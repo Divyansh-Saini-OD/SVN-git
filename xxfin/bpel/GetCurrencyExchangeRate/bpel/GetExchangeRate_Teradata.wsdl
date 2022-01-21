@@ -1,0 +1,60 @@
+<definitions
+     name="GetExchangeRate_Teradata"
+     targetNamespace="http://xmlns.oracle.com/pcbpel/adapter/db/GetExchangeRate_Teradata/"
+     xmlns="http://schemas.xmlsoap.org/wsdl/"
+     xmlns:tns="http://xmlns.oracle.com/pcbpel/adapter/db/GetExchangeRate_Teradata/"
+     xmlns:db="http://xmlns.oracle.com/pcbpel/adapter/db/GetExchangeRate_Teradata"
+     xmlns:plt="http://schemas.xmlsoap.org/ws/2003/05/partner-link/"
+     xmlns:jca="http://xmlns.oracle.com/pcbpel/wsdl/jca/"
+    >
+    <types>
+      <schema xmlns="http://www.w3.org/2001/XMLSchema" >
+        <import namespace="http://xmlns.oracle.com/pcbpel/adapter/db/GetExchangeRate_Teradata" schemaLocation="GetExchangeRate_Teradata.xsd" />
+      </schema>
+    </types>
+    <message name="GetExchangeRate_TeradataInput_msg">
+        <part name="GetExchangeRate_TeradataInput_msg" element="db:GetExchangeRate_TeradataInput"/>
+    </message>
+    <message name="GetExchangeRate_TeradataOutputCollection_msg">
+        <part name="GetExchangeRate_TeradataOutputCollection" element="db:GetExchangeRate_TeradataOutputCollection"/>
+    </message>
+    <portType name="GetExchangeRate_Teradata_ptt">
+        <operation name="GetExchangeRate_Teradata">
+            <input message="tns:GetExchangeRate_TeradataInput_msg"/>
+            <output message="tns:GetExchangeRate_TeradataOutputCollection_msg"/>
+        </operation>
+    </portType>
+    <binding name="GetExchangeRate_Teradata_binding" type="tns:GetExchangeRate_Teradata_ptt">
+    <jca:binding  />
+        <operation name="GetExchangeRate_Teradata">
+      <jca:operation
+          SqlString="select cast(f.&quot;DLY_CONVERSION_RT&quot; as char(50)) &quot;DLY_CONVERSION_RT&quot;, cast(&quot;DLY_RT_TO_USD&quot; as char(50)) &quot;DLY_RT_TO_USD&quot;, f.&quot;TO_CURRENCY_CD&quot; &quot;TO_CURRENCY_CD&quot;, cast(f.&quot;APA_RT_TO_USD&quot; as char(50)) &quot;APA_RT_TO_USD&quot;, cast(f.&quot;APA_CONVERSION_RT&quot; as char(50)) &quot;APA_CONVERSION_RT&quot;, cast(f.&quot;EPA_RT_TO_USD&quot; as char(50)) &quot;EPA_RT_TO_USD&quot;, CAST(f.&quot;EPA_CONVERSION_RT&quot; as CHAR(50)) &quot;EPA_CONVERSION_RT&quot;, f.&quot;DT&quot; &quot;DT&quot;, f.&quot;FISCAL_PERIOD_ID&quot; &quot;FISCAL_PERIOD_ID&quot;, f.&quot;MONTHYEAR&quot; MONTHYEAR from finance_v.gdw_fxrates_actual_final f where f.&quot;DT&quot; between #start_date and #end_date"
+          InteractionSpec="oracle.tip.adapter.db.DBPureSQLInteractionSpec" >
+      </jca:operation>
+            <input/>
+            <output/>
+        </operation>
+    </binding>
+    <service name="GetExchangeRate_Teradata">
+        <port name="GetExchangeRate_Teradata_pt" binding="tns:GetExchangeRate_Teradata_binding">
+<!--Your runtime connection is declared in 
+J2EE_HOME/application-deployments/default/DbAdapter/oc4j-ra.xml 
+These mcf properties here are from your design time connection and 
+save you from having to edit that file and restart the application server 
+if eis/db/TdaSvc_fin_user is missing. 
+These mcf properties are safe to remove.-->
+      <jca:address location="eis/db/TdaSvc_fin_user" UIConnectionName="TeraDataCon"
+          ManagedConnectionFactory="oracle.tip.adapter.db.DBManagedConnectionFactory"
+          mcf.DriverClassName="com.ncr.teradata.TeraDriver"
+          mcf.PlatformClassName="oracle.toplink.internal.databaseaccess.Oracle9Platform"
+          mcf.ConnectionString="jdbc:teradata://Teradev/CHARSET=UTF8,TMODE=ANSI"
+          mcf.UserName="d501083"
+          mcf.Password="038F9C2A7D4629629D21EB1465FB6918" />
+        </port>
+    </service>
+  <plt:partnerLinkType name="GetExchangeRate_Teradata_plt" >
+    <plt:role name="GetExchangeRate_Teradata_role" >
+      <plt:portType name="tns:GetExchangeRate_Teradata_ptt" />
+    </plt:role>
+  </plt:partnerLinkType>
+</definitions>

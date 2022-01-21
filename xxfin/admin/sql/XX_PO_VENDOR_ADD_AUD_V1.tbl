@@ -1,0 +1,37 @@
+-- +==========================================================================+
+-- |                  Office Depot - Project Simplify                         |
+-- +==========================================================================+
+-- | Name :XXFIN.XX_PO_VENDOR_ADD_AUD_V1                                         |
+-- | Description :   This table is used to store all the Vendor information   |
+-- |                 for audit.                                               |
+-- |                                                                          |
+-- |Change Record:                                                            |
+-- |===============                                                           |
+-- |Version      Date           Author               Remarks                  |
+-- |=======    ==========     =============        ===========================|
+-- | DRAFT 1.0 09-FEB-2020     Bhargavi Ankolekar Initial draft version       |
+-- |                                                                          |
+-- +==========================================================================+
+SET SHOW OFF
+SET VERIFY OFF
+SET ECHO OFF
+SET TAB OFF
+SET FEEDBACK ON
+CREATE TABLE XXFIN.XX_PO_VENDOR_ADD_AUD_V1
+  (
+    PO_VENDOR_AUDIT_ID            NUMBER DEFAULT XXFIN.XX_PO_VENDOR_ADD_AUD_SEQ_V1.nextval ,
+    VERSIONS_OPERATION            VARCHAR2(1) ,
+    VERSION_TIMESTAMP             TIMESTAMP(6),
+    VENDOR_ID                     NUMBER,
+    LAST_UPDATE_DATE              DATE,
+    LAST_UPDATED_BY               NUMBER,
+    LAST_UPDATE_LOGIN             NUMBER,
+    CREATION_DATE                 DATE,
+    CREATED_BY                    NUMBER,
+    TAX_REPORTING_NAME            VARCHAR2(80),
+    TAX_VERIFICATION_DATE         DATE ,
+    ORGANIZATION_TYPE_LOOKUP_CODE VARCHAR2(25),
+	INDIVIDUAL_1099	        	  VARCHAR2(30)
+);
+
+GRANT SELECT ON XXFIN.XX_PO_VENDOR_ADD_AUD_V1 TO APPS;

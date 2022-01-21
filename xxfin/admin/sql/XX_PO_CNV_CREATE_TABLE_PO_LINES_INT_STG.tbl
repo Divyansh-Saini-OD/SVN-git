@@ -1,0 +1,84 @@
+-- +===========================================================================+
+-- |                  Office Depot                                             |
+-- +===========================================================================+
+-- |Description : Create Table XX_PO_LINES_CONV_STG for PO/Receipts Conversion|
+-- |                                                                           |
+-- |                                                                           |
+-- |Change Record:                                                             |
+-- |===============                                                            |
+-- |Version      Date           Author                  Remarks                |
+-- |=======    ==========     =============             ====================== |
+-- | 1.0       19-JUL-17      Antonio Morales           Initial draft version  |
+-- +===========================================================================+
+
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     ON
+WHENEVER SQLERROR CONTINUE
+
+BEGIN
+  EXECUTE IMMEDIATE 'DROP TABLE XXFIN.XX_PO_LINES_CONV_STG';
+EXCEPTION
+  WHEN OTHERS THEN NULL;
+END;
+/
+
+CREATE TABLE XXFIN.XX_PO_LINES_CONV_STG
+(
+  CONTROL_ID                      NUMBER,
+  PROCESS_FLAG                    NUMBER DEFAULT 1,
+  CONV_ACTION                     VARCHAR2(20),
+  BATCH_ID                        NUMBER,
+  SOURCE_SYSTEM_CODE              VARCHAR2(40),
+  SOURCE_SYSTEM_REF               VARCHAR2(40),
+  AUDIT_ID                        NUMBER,
+  RECORD_ID                       NUMBER,
+  PARENT_RECORD_ID                NUMBER,
+  INTERFACE_LINE_ID               NUMBER,
+  INTERFACE_HEADER_ID             NUMBER,
+  LINE_NUM                        NUMBER,
+  SHIPMENT_NUM                    NUMBER,
+  DOCUMENT_NUM                    NUMBER,
+  ITEM                            VARCHAR2(1000),
+  ITEM_ID                         NUMBER,
+  VENDOR_PRODUCT_NUM              VARCHAR2(25),
+  UOM_CODE                        VARCHAR2(10),
+  UNIT_OF_MEASURE                 VARCHAR2(25),
+  QUANTITY                        NUMBER,
+  UNIT_PRICE                      NUMBER,
+  NOTE_TO_VENDOR                  VARCHAR2(480),
+  CLOSED_CODE                     VARCHAR2(25),
+  CLOSED_DATE                     DATE,
+  SHIP_TO_LOCATION                VARCHAR2(60),
+  SHIP_TO_LOCATION_ID             NUMBER,
+  NEED_BY_DATE                    DATE,
+  PROMISED_DATE                   DATE,
+  FOB                             VARCHAR2(25),
+  FREIGHT_TERMS                   VARCHAR2(25),
+  LINE_ATTRIBUTE6                 VARCHAR2(150),
+  LAST_UPDATE_DATE                DATE DEFAULT SYSDATE,
+  LAST_UPDATED_BY                 NUMBER,
+  LAST_UPDATE_LOGIN               NUMBER,
+  CREATION_DATE                   DATE DEFAULT SYSDATE,
+  CREATED_BY                      NUMBER,
+  REQUEST_ID                      NUMBER,
+  ORGANIZATION_ID                 NUMBER,
+  LINE_REFERENCE_NUM              VARCHAR2(25),
+  NOTE_TO_RECEIVER                VARCHAR2(480),
+  DEPT                            NUMBER,        --12
+  CLASS                           NUMBER,        --13
+  VENDOR_PRODUCT_CODE             VARCHAR2(100), --14
+  EXTENDED_COST                   NUMBER,        --15
+  QTY_SHIPPED                     NUMBER,        --16
+  QTY_RECEIVED                    NUMBER,        --17      
+  SEASONAL_LARGE_ORDER            NUMBER,        --18
+  OPEN_BALANCE                    NUMBER,
+  RECORD_TYPE                     VARCHAR2(1) 
+);
+
+
+GRANT ALL ON XXFIN.XX_PO_LINES_CONV_STG TO APPS WITH GRANT OPTION;
+
+GRANT SELECT ON XXFIN.XX_PO_LINES_CONV_STG TO ERP_SYSTEM_TABLE_SELECT_ROLE;

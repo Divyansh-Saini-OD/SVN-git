@@ -1,0 +1,190 @@
+#!/bin/ksh
+# ----------------------------------------------------------------------------------------
+# Filename:   XXODROEMAILER
+
+#  Concurrent Program Definitions Parameters
+
+#  var1  is --> Job name 
+#  var2  is --> Concurrent Program Request ID.
+#  var3  is --> Login Credentials
+
+#  User defined Parameters
+
+#  var9  is --> Concurrent Program Short Name
+#  var10 is --> Email Address(es)
+#  var11 is --> Email Subject
+#  var12 is --> Email Body Text
+#  var13 is --> Email Attachment Flag
+#  var14 is  --> Request ID
+
+# |VERSION  AUTHOR                        COMMENTS           DATE            |
+# |--------------------------------------------------------------------------|
+# |1.0     Samitha U M                    Emailer Program   17-MAR-08        |
+# |                                       For COGS                           |
+# | 2.0      09-SEP-2016    Praveen Vanga          Defect 39261     |
+# |                                                                          |
+# --------------------------------------------------------------------------|
+
+# Parsing System Defined Parameters.
+
+# Comment for the defect 2482..
+#var1=`echo $1| awk '{print $1}'| tr -d '"'`
+#var2=`echo $1| awk '{print $2}'| tr -d '"'`
+#var3=`echo $1| awk '{print $3}'| tr -d '"'`
+
+# Defining User Defined Parameters.
+# Comment for the defect 2482
+
+#var9=`echo $1 | cut -f8 -d '"'`
+#var10=`echo $1 | cut -f10 -d '"'`
+#var11=`echo $1 | cut -f12 -d '"'`
+#var12=`echo $1 | cut -f14 -d '"'`
+#var13=`echo $1 | cut -f16 -d '"'`
+#var14=`echo $1 | cut -f18 -d '"'`
+
+#Added for the defect 2482
+
+var9=${5}
+var10=${6}
+var11=${7}
+var12=${8}
+var13=${9}
+var14=${10}
+var15=${11}
+var16=${12}
+
+echo "File   " ${11}
+
+echo "Concurrent Program Short Name  : "${var9}
+echo "Email Address(es)              : "${var10}
+echo "Email Subject                  : "${var11}
+echo "Email Body Text                : "${var12}
+echo "Email Attachment Flag          : "${var13}
+echo "Request ID                     : "${var14}
+echo "Filename                       : "${var15}
+
+# Assigning Required Parameters to the Shell variables.
+
+program_name=${var9}
+to_email_address=${var10}
+email_sub=`echo $var11 |sed 's/ /_/g'`
+email_body=${var12}
+email_attachment=${var13}
+req_id=0
+file_name=${var15}
+extension=${var16}
+lc_phase="X"
+# Defining Constants.
+
+u_mail_subject=${email_sub}
+filepath=$APPLCSF/$APPLOUT/
+cust_path=$XXFIN_DATA/inbound/
+#commented for the defect 6057
+#file_name="XXGLCOGSEXC_"
+#commented for the defect 6057
+#file_extension="_1.EXCEL"
+mesg=" did not fetch any data hence no file attached."
+
+
+# Printing User Defined Parameters in the Request Log File.
+
+echo "extension ="$extension
+if [ "$var14" != "" ]
+then
+
+p_req_id=$var14
+
+# Constructing the names of the request output and email attachment files.
+#commented for the defect6057
+#filename=${file_name}${p_req_id}${file_extension}
+
+file=$filepath${file_name}
+
+
+
+echo "File Name  File with path :"$file
+echo "File Path  :"$filepath
+#echo "File NAme  $(file_name)
+
+export SQLPATH=$APPL_TOP
+ 
+
+# Connecting to ORACLE .
+#req_id=`sqlplus -s ${connect} <<EOF
+stat_code=`sqlplus -s /nolog <<EOF
+set pagesize 0
+set linesize 255
+set sqlprompt " "
+set serveroutput on 
+set verify off
+DECLARE
+   lb_req_status        BOOLEAN;
+   lc_phase             VARCHAR2(50);
+   lc_status            VARCHAR2(50);
+   lc_devphase          VARCHAR2(50);
+   lc_devstatus         VARCHAR2(50);
+   lc_message           VARCHAR2(50);
+BEGIN
+lb_req_status := fnd_concurrent.wait_for_request (
+                                              '$p_req_id'
+                                             ,'10'
+                                             ,''
+                                             ,lc_phase
+                                             ,lc_status
+                                             ,lc_devphase
+                                             ,lc_devstatus
+                                             ,lc_message );
+END;
+/
+SET FEEDBACK OFF
+EOF`
+echo "phase_code="$lc_phase
+echo "status_code="$lc_status
+
+echo "file:"$file
+
+if [ ! -f $file ]
+then
+echo "file name:"$file
+echo "No Request Output file found.   Email not sent."
+else
+attachment=${email_sub}_${p_req_id}${extension}
+cp $file $cust_path$attachment
+
+if [ "${email_attachment}" = "Y" ]
+then
+
+# Send an email the user with the attachment.
+
+(/usr/bin/uuencode $cust_path$attachment $cust_path$attachment   > /dev/null 2>&1)| mailx -s ${u_mail_subject}_${p_req_id} -a $cust_path$attachment ${to_email_address} <<-EOF
+${email_body}
+----------------------------------------------------
+This is a system generated mail.Please do not reply.
+----------------------------------------------------
+EOF
+echo "Email Sent with Request Output as Attachment."
+chmod 777 $cust_path$attachment
+rm $cust_path$attachment
+else
+#elif [ "${email_attachment}" = "N" ] 
+#cat $file|mailx -s ${u_mail_subject}_${p_req_id} ${to_email_address}
+email_body=${u_mail_subject}${mesg}
+
+echo "No data found in the report so no attachment sent in the email"
+# Send an email the user with the attachment.
+attachment=""
+mailx -s ${u_mail_subject}_${p_req_id} ${to_email_address} <<-EOF
+${email_body}
+----------------------------------------------------
+This is a system generated mail.Please do not reply.
+----------------------------------------------------
+EOF
+echo "Email Sent without Request Output as Attachment."
+fi
+fi
+
+fi
+
+
+# Exiting from the shell program.
+exit 0   # Success.

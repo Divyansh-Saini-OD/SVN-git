@@ -1,0 +1,26 @@
+-- +===========================================================================+
+-- |                  Office Depot                                             |
+-- +===========================================================================+
+-- |Description : Create index XXFIN.AP_SELF_ASSESSED_TAX_DIST_ALL_C1          |
+-- |              (On Kalpit Parikh's suggestion.                              |
+-- |                                                                           |
+-- |                                                                           |
+-- |Change Record:                                                             |
+-- |===============                                                            |
+-- |Version      Date           Author                  Remarks                |
+-- |=======    ==========     =============             ====================== |
+-- | 1.0       19-OCT-17      Antonio Morales           Kalpit Parikh request  |
+-- +===========================================================================+
+
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     ON
+WHENEVER SQLERROR CONTINUE
+
+CREATE INDEX XXFIN.AP_SELF_ASSES_TAX_DIST_ALL_C1 ON AP.AP_SELF_ASSESSED_TAX_DIST_ALL
+(PO_DISTRIBUTION_ID)
+LOGGING
+TABLESPACE APPS_TS_TX_IDX;
+

@@ -1,0 +1,31 @@
+-- +===================================================================================+
+-- |                  Office Depot - Project Simplify                                  |
+-- |                       WIPRO Technologies                                          |
+-- +===================================================================================+
+-- | SQL Script to create the following objects                                        |
+-- |                Synonym  : xx_ap_cc_1099_invoice_s                                 |
+-- |                                                                                   |
+-- |                           For the extension E1037, 1099 from CreditCard           |
+-- |                                                                                   |
+-- |                                                                                   |
+-- |                                                                                   |
+-- |Change Record:                                                                     |
+-- |===============                                                                    |
+-- |Version   Date         Author               Remarks                                |
+-- |=======   ==========   =============        =======================================|
+-- | V1.0     27-MAR-2007  Anusha Ramanujam     Initial version                        |
+-- | V1.1     17-NOV-2007  Anitha Devarajulu    Drop statement and slash are removed   |
+-- +===================================================================================+
+
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     ON
+
+
+--DROP SYNONYM xx_ap_cc_1099_invoice_s;
+
+CREATE SYNONYM xx_ap_cc_1099_invoice_s FOR xxfin.xx_ap_cc_1099_invoice_s;
+
+SHOW ERROR

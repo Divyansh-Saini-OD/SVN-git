@@ -1,0 +1,47 @@
+--+=====================================================================+
+--|                   Office Depot - Project FIT                        |
+--|          Capgemini/Office Depot/Consulting Organization             |
+--+=====================================================================+
+--|                                                                     |
+--|Rice        : 106313                                                 |
+--|File Name   : XX_AR_CR_WC_STG.tbl                                    |
+--|File Path   : $XXFIN_TOP/admin/sql                                   |
+--|Schema      : XXFIN                                                  |
+--|                                                                     |
+--|Version    Date           Author                       Remarks       |
+--|=======   ======        ====================          =========      |
+--| 1.0      15-DEC-11    Purushothaman.Narmatha                        |
+--|                                                                     |
+--+=====================================================================+
+
+SET VERIFY OFF
+WHENEVER SQLERROR CONTINUE
+
+PROMPT "Creating Table XXFIN.XX_AR_CR_WC_STG..."
+CREATE TABLE XXFIN.XX_AR_CR_WC_STG
+(
+   CASH_RECEIPT_ID                NUMBER(15)  NOT NULL
+,CUSTOMER_ACCOUNT_ID                     NUMBER(15)
+,CUSTOMER_SITE_USE_ID                    NUMBER(15)
+,RECEIPT_NUMBER                          VARCHAR2(30)
+,RECEIPT_DATE                    DATE     NOT NULL
+,AMOUNT                          NUMBER     NOT NULL
+,CURRENCY_CODE                  VARCHAR2(15)  NOT NULL
+,STATUS                                  VARCHAR2(30)
+,REVERSAL_DATE                           DATE
+,COMMENTS                                VARCHAR2(2000)
+,STATE                          VARCHAR2(30)  NOT NULL
+,RECEIPT_METHOD                  NUMBER(15)   NOT NULL
+,POSTED_DTE                              DATE
+,REVERSAL_REASON_CODES                   VARCHAR2(30)
+,REVERSAL_COMMENTS                       VARCHAR2(240)
+,SEND_REFUND                             VARCHAR2(150)
+,REFUND_STATUS                           VARCHAR2(150)
+,CREATION_DATE                           DATE
+,CREATED_BY                              NUMBER(15)
+,REQUEST_ID                      NUMBER(15) NOT NULL
+,REC_CREATION_DATE               DATE       NOT NULL
+,EXT_TYPE                        VARCHAR2(1)  NOT NULL
+,CYCLE_DATE                      DATE         NOT NULL
+,BATCH_NUM                       NUMBER   NOT NULL
+);

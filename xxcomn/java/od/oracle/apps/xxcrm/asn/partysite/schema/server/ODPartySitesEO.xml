@@ -1,0 +1,1054 @@
+<?xml version="1.0" encoding='windows-1252'?>
+<!-- $Header: ODPartySitesEO.xml $ -->
+<!DOCTYPE Entity SYSTEM "jbo_03_01.dtd">
+
+<Entity
+   Name="ODPartySitesEO"
+   DBObjectType="table"
+   DBObjectName="HZ_PARTY_SITES"
+   AliasName="ODPartySitesEO"
+   BindingStyle="Oracle"
+   UseGlueCode="false"
+   CodeGenFlag="79"
+   RowClass="od.oracle.apps.xxcrm.asn.partysite.schema.server.ODPartySitesEOImpl"
+   DefClass="oracle.apps.fnd.framework.server.OAEntityDefImpl"
+   CollClass="oracle.apps.fnd.framework.server.OAEntityCache" >
+   <DesignTime>
+      <Attr Name="_isCodegen" Value="true" />
+      <Attr Name="_version" Value="9.0.3.13.93" />
+      <AttrArray Name="_publishEvents">
+      </AttrArray>
+   </DesignTime>
+   <Attribute
+      Name="PartySiteId"
+      IsNotNull="true"
+      Precision="15"
+      Scale="0"
+      Type="oracle.jbo.domain.Number"
+      ColumnName="PARTY_SITE_ID"
+      ColumnType="NUMBER"
+      SQLType="NUMERIC"
+      TableName="HZ_PARTY_SITES"
+      PrimaryKey="true" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="PartyId"
+      IsNotNull="true"
+      Precision="15"
+      Scale="0"
+      Type="oracle.jbo.domain.Number"
+      ColumnName="PARTY_ID"
+      ColumnType="NUMBER"
+      SQLType="NUMERIC"
+      TableName="HZ_PARTY_SITES" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="LocationId"
+      IsNotNull="true"
+      Precision="15"
+      Scale="0"
+      Type="oracle.jbo.domain.Number"
+      ColumnName="LOCATION_ID"
+      ColumnType="NUMBER"
+      SQLType="NUMERIC"
+      TableName="HZ_PARTY_SITES" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="LastUpdateDate"
+      IsNotNull="true"
+      Type="oracle.jbo.domain.Date"
+      ColumnName="LAST_UPDATE_DATE"
+      ColumnType="DATE"
+      SQLType="TIMESTAMP"
+      TableName="HZ_PARTY_SITES" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="7" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="PartySiteNumber"
+      IsNotNull="true"
+      Precision="30"
+      Type="java.lang.String"
+      ColumnName="PARTY_SITE_NUMBER"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="HZ_PARTY_SITES" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="30" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="LastUpdatedBy"
+      IsNotNull="true"
+      Precision="15"
+      Scale="0"
+      Type="oracle.jbo.domain.Number"
+      ColumnName="LAST_UPDATED_BY"
+      ColumnType="NUMBER"
+      SQLType="NUMERIC"
+      TableName="HZ_PARTY_SITES" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="CreationDate"
+      IsNotNull="true"
+      Type="oracle.jbo.domain.Date"
+      ColumnName="CREATION_DATE"
+      ColumnType="DATE"
+      SQLType="TIMESTAMP"
+      TableName="HZ_PARTY_SITES" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="7" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="CreatedBy"
+      IsNotNull="true"
+      Precision="15"
+      Scale="0"
+      Type="oracle.jbo.domain.Number"
+      ColumnName="CREATED_BY"
+      ColumnType="NUMBER"
+      SQLType="NUMERIC"
+      TableName="HZ_PARTY_SITES" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="LastUpdateLogin"
+      Precision="15"
+      Scale="0"
+      Type="oracle.jbo.domain.Number"
+      ColumnName="LAST_UPDATE_LOGIN"
+      ColumnType="NUMBER"
+      SQLType="NUMERIC"
+      TableName="HZ_PARTY_SITES" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="RequestId"
+      Precision="15"
+      Scale="0"
+      Type="oracle.jbo.domain.Number"
+      ColumnName="REQUEST_ID"
+      ColumnType="NUMBER"
+      SQLType="NUMERIC"
+      TableName="HZ_PARTY_SITES" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="ProgramApplicationId"
+      Precision="15"
+      Scale="0"
+      Type="oracle.jbo.domain.Number"
+      ColumnName="PROGRAM_APPLICATION_ID"
+      ColumnType="NUMBER"
+      SQLType="NUMERIC"
+      TableName="HZ_PARTY_SITES" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="ProgramId"
+      Precision="15"
+      Scale="0"
+      Type="oracle.jbo.domain.Number"
+      ColumnName="PROGRAM_ID"
+      ColumnType="NUMBER"
+      SQLType="NUMERIC"
+      TableName="HZ_PARTY_SITES" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="ProgramUpdateDate"
+      Type="oracle.jbo.domain.Date"
+      ColumnName="PROGRAM_UPDATE_DATE"
+      ColumnType="DATE"
+      SQLType="TIMESTAMP"
+      TableName="HZ_PARTY_SITES" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="7" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="WhUpdateDate"
+      Type="oracle.jbo.domain.Date"
+      ColumnName="WH_UPDATE_DATE"
+      ColumnType="DATE"
+      SQLType="TIMESTAMP"
+      TableName="HZ_PARTY_SITES" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="7" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="AttributeCategory"
+      Precision="30"
+      Type="java.lang.String"
+      ColumnName="ATTRIBUTE_CATEGORY"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="HZ_PARTY_SITES" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="30" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="Attribute1"
+      Precision="150"
+      Type="java.lang.String"
+      ColumnName="ATTRIBUTE1"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="HZ_PARTY_SITES" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="150" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="Attribute2"
+      Precision="150"
+      Type="java.lang.String"
+      ColumnName="ATTRIBUTE2"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="HZ_PARTY_SITES" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="150" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="Attribute3"
+      Precision="150"
+      Type="java.lang.String"
+      ColumnName="ATTRIBUTE3"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="HZ_PARTY_SITES" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="150" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="Attribute4"
+      Precision="150"
+      Type="java.lang.String"
+      ColumnName="ATTRIBUTE4"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="HZ_PARTY_SITES" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="150" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="Attribute5"
+      Precision="150"
+      Type="java.lang.String"
+      ColumnName="ATTRIBUTE5"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="HZ_PARTY_SITES" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="150" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="Attribute6"
+      Precision="150"
+      Type="java.lang.String"
+      ColumnName="ATTRIBUTE6"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="HZ_PARTY_SITES" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="150" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="Attribute7"
+      Precision="150"
+      Type="java.lang.String"
+      ColumnName="ATTRIBUTE7"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="HZ_PARTY_SITES" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="150" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="Attribute8"
+      Precision="150"
+      Type="java.lang.String"
+      ColumnName="ATTRIBUTE8"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="HZ_PARTY_SITES" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="150" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="Attribute9"
+      Precision="150"
+      Type="java.lang.String"
+      ColumnName="ATTRIBUTE9"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="HZ_PARTY_SITES" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="150" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="Attribute10"
+      Precision="150"
+      Type="java.lang.String"
+      ColumnName="ATTRIBUTE10"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="HZ_PARTY_SITES" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="150" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="Attribute11"
+      Precision="150"
+      Type="java.lang.String"
+      ColumnName="ATTRIBUTE11"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="HZ_PARTY_SITES" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="150" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="Attribute12"
+      Precision="150"
+      Type="java.lang.String"
+      ColumnName="ATTRIBUTE12"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="HZ_PARTY_SITES" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="150" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="Attribute13"
+      Precision="150"
+      Type="java.lang.String"
+      ColumnName="ATTRIBUTE13"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="HZ_PARTY_SITES" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="150" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="Attribute14"
+      Precision="150"
+      Type="java.lang.String"
+      ColumnName="ATTRIBUTE14"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="HZ_PARTY_SITES" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="150" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="Attribute15"
+      Precision="150"
+      Type="java.lang.String"
+      ColumnName="ATTRIBUTE15"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="HZ_PARTY_SITES" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="150" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="Attribute16"
+      Precision="150"
+      Type="java.lang.String"
+      ColumnName="ATTRIBUTE16"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="HZ_PARTY_SITES" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="150" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="Attribute17"
+      Precision="150"
+      Type="java.lang.String"
+      ColumnName="ATTRIBUTE17"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="HZ_PARTY_SITES" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="150" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="Attribute18"
+      Precision="150"
+      Type="java.lang.String"
+      ColumnName="ATTRIBUTE18"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="HZ_PARTY_SITES" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="150" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="Attribute19"
+      Precision="150"
+      Type="java.lang.String"
+      ColumnName="ATTRIBUTE19"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="HZ_PARTY_SITES" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="150" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="Attribute20"
+      Precision="150"
+      Type="java.lang.String"
+      ColumnName="ATTRIBUTE20"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="HZ_PARTY_SITES" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="150" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="GlobalAttributeCategory"
+      Precision="30"
+      Type="java.lang.String"
+      ColumnName="GLOBAL_ATTRIBUTE_CATEGORY"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="HZ_PARTY_SITES" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="30" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="GlobalAttribute1"
+      Precision="150"
+      Type="java.lang.String"
+      ColumnName="GLOBAL_ATTRIBUTE1"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="HZ_PARTY_SITES" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="150" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="GlobalAttribute2"
+      Precision="150"
+      Type="java.lang.String"
+      ColumnName="GLOBAL_ATTRIBUTE2"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="HZ_PARTY_SITES" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="150" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="GlobalAttribute3"
+      Precision="150"
+      Type="java.lang.String"
+      ColumnName="GLOBAL_ATTRIBUTE3"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="HZ_PARTY_SITES" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="150" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="GlobalAttribute4"
+      Precision="150"
+      Type="java.lang.String"
+      ColumnName="GLOBAL_ATTRIBUTE4"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="HZ_PARTY_SITES" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="150" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="GlobalAttribute5"
+      Precision="150"
+      Type="java.lang.String"
+      ColumnName="GLOBAL_ATTRIBUTE5"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="HZ_PARTY_SITES" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="150" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="GlobalAttribute6"
+      Precision="150"
+      Type="java.lang.String"
+      ColumnName="GLOBAL_ATTRIBUTE6"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="HZ_PARTY_SITES" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="150" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="GlobalAttribute7"
+      Precision="150"
+      Type="java.lang.String"
+      ColumnName="GLOBAL_ATTRIBUTE7"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="HZ_PARTY_SITES" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="150" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="GlobalAttribute8"
+      Precision="150"
+      Type="java.lang.String"
+      ColumnName="GLOBAL_ATTRIBUTE8"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="HZ_PARTY_SITES" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="150" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="GlobalAttribute9"
+      Precision="150"
+      Type="java.lang.String"
+      ColumnName="GLOBAL_ATTRIBUTE9"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="HZ_PARTY_SITES" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="150" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="GlobalAttribute10"
+      Precision="150"
+      Type="java.lang.String"
+      ColumnName="GLOBAL_ATTRIBUTE10"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="HZ_PARTY_SITES" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="150" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="GlobalAttribute11"
+      Precision="150"
+      Type="java.lang.String"
+      ColumnName="GLOBAL_ATTRIBUTE11"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="HZ_PARTY_SITES" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="150" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="GlobalAttribute12"
+      Precision="150"
+      Type="java.lang.String"
+      ColumnName="GLOBAL_ATTRIBUTE12"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="HZ_PARTY_SITES" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="150" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="GlobalAttribute13"
+      Precision="150"
+      Type="java.lang.String"
+      ColumnName="GLOBAL_ATTRIBUTE13"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="HZ_PARTY_SITES" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="150" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="GlobalAttribute14"
+      Precision="150"
+      Type="java.lang.String"
+      ColumnName="GLOBAL_ATTRIBUTE14"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="HZ_PARTY_SITES" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="150" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="GlobalAttribute15"
+      Precision="150"
+      Type="java.lang.String"
+      ColumnName="GLOBAL_ATTRIBUTE15"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="HZ_PARTY_SITES" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="150" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="GlobalAttribute16"
+      Precision="150"
+      Type="java.lang.String"
+      ColumnName="GLOBAL_ATTRIBUTE16"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="HZ_PARTY_SITES" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="150" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="GlobalAttribute17"
+      Precision="150"
+      Type="java.lang.String"
+      ColumnName="GLOBAL_ATTRIBUTE17"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="HZ_PARTY_SITES" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="150" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="GlobalAttribute18"
+      Precision="150"
+      Type="java.lang.String"
+      ColumnName="GLOBAL_ATTRIBUTE18"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="HZ_PARTY_SITES" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="150" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="GlobalAttribute19"
+      Precision="150"
+      Type="java.lang.String"
+      ColumnName="GLOBAL_ATTRIBUTE19"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="HZ_PARTY_SITES" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="150" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="GlobalAttribute20"
+      Precision="150"
+      Type="java.lang.String"
+      ColumnName="GLOBAL_ATTRIBUTE20"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="HZ_PARTY_SITES" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="150" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="OrigSystemReference"
+      Precision="240"
+      Type="java.lang.String"
+      ColumnName="ORIG_SYSTEM_REFERENCE"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="HZ_PARTY_SITES" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="240" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="StartDateActive"
+      Type="oracle.jbo.domain.Date"
+      ColumnName="START_DATE_ACTIVE"
+      ColumnType="DATE"
+      SQLType="TIMESTAMP"
+      TableName="HZ_PARTY_SITES" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="7" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="EndDateActive"
+      Type="oracle.jbo.domain.Date"
+      ColumnName="END_DATE_ACTIVE"
+      ColumnType="DATE"
+      SQLType="TIMESTAMP"
+      TableName="HZ_PARTY_SITES" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="7" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="Region"
+      Precision="30"
+      Type="java.lang.String"
+      ColumnName="REGION"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="HZ_PARTY_SITES" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="30" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="Mailstop"
+      Precision="60"
+      Type="java.lang.String"
+      ColumnName="MAILSTOP"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="HZ_PARTY_SITES" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="60" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="CustomerKeyOsm"
+      Precision="255"
+      Type="java.lang.String"
+      ColumnName="CUSTOMER_KEY_OSM"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="HZ_PARTY_SITES" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="255" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="PhoneKeyOsm"
+      Precision="255"
+      Type="java.lang.String"
+      ColumnName="PHONE_KEY_OSM"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="HZ_PARTY_SITES" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="255" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="ContactKeyOsm"
+      Precision="255"
+      Type="java.lang.String"
+      ColumnName="CONTACT_KEY_OSM"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="HZ_PARTY_SITES" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="255" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="IdentifyingAddressFlag"
+      IsNotNull="true"
+      Precision="1"
+      Type="java.lang.String"
+      ColumnName="IDENTIFYING_ADDRESS_FLAG"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="HZ_PARTY_SITES" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="1" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="Language"
+      Precision="30"
+      Type="java.lang.String"
+      ColumnName="LANGUAGE"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="HZ_PARTY_SITES" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="30" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="Status"
+      IsNotNull="true"
+      Precision="1"
+      Type="java.lang.String"
+      ColumnName="STATUS"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="HZ_PARTY_SITES" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="1" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="PartySiteName"
+      Precision="240"
+      Type="java.lang.String"
+      ColumnName="PARTY_SITE_NAME"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="HZ_PARTY_SITES" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="240" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="Addressee"
+      Precision="360"
+      Type="java.lang.String"
+      ColumnName="ADDRESSEE"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="HZ_PARTY_SITES" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="360" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="ObjectVersionNumber"
+      Type="oracle.jbo.domain.Number"
+      ColumnName="OBJECT_VERSION_NUMBER"
+      ColumnType="NUMBER"
+      SQLType="NUMERIC"
+      TableName="HZ_PARTY_SITES" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="CreatedByModule"
+      Precision="150"
+      Type="java.lang.String"
+      ColumnName="CREATED_BY_MODULE"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="HZ_PARTY_SITES" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="150" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="ApplicationId"
+      Type="oracle.jbo.domain.Number"
+      ColumnName="APPLICATION_ID"
+      ColumnType="NUMBER"
+      SQLType="NUMERIC"
+      TableName="HZ_PARTY_SITES" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="ActualContentSource"
+      IsNotNull="true"
+      Precision="30"
+      Type="java.lang.String"
+      ColumnName="ACTUAL_CONTENT_SOURCE"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="HZ_PARTY_SITES" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="30" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="GlobalLocationNumber"
+      Precision="40"
+      Type="java.lang.String"
+      ColumnName="GLOBAL_LOCATION_NUMBER"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="HZ_PARTY_SITES" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="40" />
+      </DesignTime>
+   </Attribute>
+   <Key
+      Name="SysC00134797" >
+      <AttrArray Name="Attributes">
+         <Item Value="od.oracle.apps.xxcrm.asn.partysite.schema.server.ODPartySitesEO.ActualContentSource" />
+      </AttrArray>
+      <DesignTime>
+         <Attr Name="_DBObjectName" Value="SYS_C00134797" />
+         <Attr Name="_checkCondition" Value="&#34;ACTUAL_CONTENT_SOURCE&#34; IS NOT NULL" />
+         <Attr Name="_isCheck" Value="true" />
+      </DesignTime>
+   </Key>
+   <Key
+      Name="SysC003095" >
+      <AttrArray Name="Attributes">
+         <Item Value="od.oracle.apps.xxcrm.asn.partysite.schema.server.ODPartySitesEO.PartyId" />
+      </AttrArray>
+      <DesignTime>
+         <Attr Name="_DBObjectName" Value="SYS_C003095" />
+         <Attr Name="_checkCondition" Value="&#34;PARTY_ID&#34; IS NOT NULL" />
+         <Attr Name="_isCheck" Value="true" />
+      </DesignTime>
+   </Key>
+   <Key
+      Name="SysC003097" >
+      <AttrArray Name="Attributes">
+         <Item Value="od.oracle.apps.xxcrm.asn.partysite.schema.server.ODPartySitesEO.LastUpdateDate" />
+      </AttrArray>
+      <DesignTime>
+         <Attr Name="_DBObjectName" Value="SYS_C003097" />
+         <Attr Name="_checkCondition" Value="&#34;LAST_UPDATE_DATE&#34; IS NOT NULL" />
+         <Attr Name="_isCheck" Value="true" />
+      </DesignTime>
+   </Key>
+   <Key
+      Name="SysC003099" >
+      <AttrArray Name="Attributes">
+         <Item Value="od.oracle.apps.xxcrm.asn.partysite.schema.server.ODPartySitesEO.LastUpdatedBy" />
+      </AttrArray>
+      <DesignTime>
+         <Attr Name="_DBObjectName" Value="SYS_C003099" />
+         <Attr Name="_checkCondition" Value="&#34;LAST_UPDATED_BY&#34; IS NOT NULL" />
+         <Attr Name="_isCheck" Value="true" />
+      </DesignTime>
+   </Key>
+   <Key
+      Name="SysC003101" >
+      <AttrArray Name="Attributes">
+         <Item Value="od.oracle.apps.xxcrm.asn.partysite.schema.server.ODPartySitesEO.CreatedBy" />
+      </AttrArray>
+      <DesignTime>
+         <Attr Name="_DBObjectName" Value="SYS_C003101" />
+         <Attr Name="_checkCondition" Value="&#34;CREATED_BY&#34; IS NOT NULL" />
+         <Attr Name="_isCheck" Value="true" />
+      </DesignTime>
+   </Key>
+   <Key
+      Name="SysC003103" >
+      <AttrArray Name="Attributes">
+         <Item Value="od.oracle.apps.xxcrm.asn.partysite.schema.server.ODPartySitesEO.Status" />
+      </AttrArray>
+      <DesignTime>
+         <Attr Name="_DBObjectName" Value="SYS_C003103" />
+         <Attr Name="_checkCondition" Value="&#34;STATUS&#34; IS NOT NULL" />
+         <Attr Name="_isCheck" Value="true" />
+      </DesignTime>
+   </Key>
+   <Key
+      Name="SysC003094" >
+      <AttrArray Name="Attributes">
+         <Item Value="od.oracle.apps.xxcrm.asn.partysite.schema.server.ODPartySitesEO.PartySiteId" />
+      </AttrArray>
+      <DesignTime>
+         <Attr Name="_DBObjectName" Value="SYS_C003094" />
+         <Attr Name="_checkCondition" Value="&#34;PARTY_SITE_ID&#34; IS NOT NULL" />
+         <Attr Name="_isCheck" Value="true" />
+      </DesignTime>
+   </Key>
+   <Key
+      Name="SysC003098" >
+      <AttrArray Name="Attributes">
+         <Item Value="od.oracle.apps.xxcrm.asn.partysite.schema.server.ODPartySitesEO.PartySiteNumber" />
+      </AttrArray>
+      <DesignTime>
+         <Attr Name="_DBObjectName" Value="SYS_C003098" />
+         <Attr Name="_checkCondition" Value="&#34;PARTY_SITE_NUMBER&#34; IS NOT NULL" />
+         <Attr Name="_isCheck" Value="true" />
+      </DesignTime>
+   </Key>
+   <Key
+      Name="SysC003102" >
+      <AttrArray Name="Attributes">
+         <Item Value="od.oracle.apps.xxcrm.asn.partysite.schema.server.ODPartySitesEO.IdentifyingAddressFlag" />
+      </AttrArray>
+      <DesignTime>
+         <Attr Name="_DBObjectName" Value="SYS_C003102" />
+         <Attr Name="_checkCondition" Value="&#34;IDENTIFYING_ADDRESS_FLAG&#34; IS NOT NULL" />
+         <Attr Name="_isCheck" Value="true" />
+      </DesignTime>
+   </Key>
+   <Key
+      Name="SysC003096" >
+      <AttrArray Name="Attributes">
+         <Item Value="od.oracle.apps.xxcrm.asn.partysite.schema.server.ODPartySitesEO.LocationId" />
+      </AttrArray>
+      <DesignTime>
+         <Attr Name="_DBObjectName" Value="SYS_C003096" />
+         <Attr Name="_checkCondition" Value="&#34;LOCATION_ID&#34; IS NOT NULL" />
+         <Attr Name="_isCheck" Value="true" />
+      </DesignTime>
+   </Key>
+   <Key
+      Name="HzPartySitesPk" >
+      <AttrArray Name="Attributes">
+         <Item Value="od.oracle.apps.xxcrm.asn.partysite.schema.server.ODPartySitesEO.PartySiteId" />
+      </AttrArray>
+      <DesignTime>
+         <Attr Name="_DBObjectName" Value="HZ_PARTY_SITES_PK" />
+         <Attr Name="_isPrimary" Value="true" />
+      </DesignTime>
+   </Key>
+   <Key
+      Name="SysC003100" >
+      <AttrArray Name="Attributes">
+         <Item Value="od.oracle.apps.xxcrm.asn.partysite.schema.server.ODPartySitesEO.CreationDate" />
+      </AttrArray>
+      <DesignTime>
+         <Attr Name="_DBObjectName" Value="SYS_C003100" />
+         <Attr Name="_checkCondition" Value="&#34;CREATION_DATE&#34; IS NOT NULL" />
+         <Attr Name="_isCheck" Value="true" />
+      </DesignTime>
+   </Key>
+</Entity>

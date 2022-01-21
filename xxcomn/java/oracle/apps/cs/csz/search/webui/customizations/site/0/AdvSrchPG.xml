@@ -1,0 +1,51 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<customization xmlns="http://xmlns.oracle.com/jrad" version="9.0.6.0.0_64" xml:lang="en-US" customizes="/oracle/apps/cs/csz/search/webui/AdvSrchPG" xmlns:oa="http://xmlns.oracle.com/oa">
+   <modifications>
+      <modify element="ColumnPropxRN.ColumnPerzRN.Status" rendered="true"/>
+      <modify element="ColumnPropxRN.ColumnPerzRN.OwnerName" rendered="true"/>
+      <modify element="ColumnPropxRN.ColumnPerzRN.ResolCode" rendered="true"/>
+      <modify element="ColumnPropxRN.ColumnPerzRN.GroupName" rendered="true"/>
+      <modify element="ColumnPropxRN.ColumnPerzRN.ProblemCode" rendered="true"/>
+      <move element="ColumnPropxRN.ColumnPerzRN.SumNotesKywd" after="ColumnPropxRN.ColumnPerzRN.SRNumber"/>
+      <move element="ColumnPropxRN.ColumnPerzRN.OwnerName" after="ColumnPropxRN.ColumnPerzRN.SumNotesKywd"/>
+      <move element="ColumnPropxRN.ColumnPerzRN.CustName" after="ColumnPropxRN.ColumnPerzRN.OwnerName"/>
+      <move element="ColumnPropxRN.ColumnPerzRN.RequestType" after="ColumnPropxRN.ColumnPerzRN.CustName"/>
+      <move element="ColumnPropxRN.ColumnPerzRN.Status" after="ColumnPropxRN.ColumnPerzRN.RequestType"/>
+      <move element="ColumnPropxRN.ColumnPerzRN.ProblemCode" after="ColumnPropxRN.ColumnPerzRN.Status"/>
+      <move element="ColumnPropxRN.ColumnPerzRN.ResolCode" after="ColumnPropxRN.ColumnPerzRN.ProblemCode"/>
+      <move element="ColumnPropxRN.ColumnPerzRN.CreateDateStart" after="ColumnPropxRN.ColumnPerzRN.ResolCode"/>
+      <move element="ColumnPropxRN.ColumnPerzRN.GroupName" after="ColumnPropxRN.ColumnPerzRN.CreateDateStart"/>
+      <move element="ColumnPropxRN.ColumnPerzRN.CustNum" after="ColumnPropxRN.ColumnPerzRN.GroupName"/>
+      <move element="ColumnPropxRN.ColumnPerzRN.Urgency" after="ColumnPropxRN.ColumnPerzRN.CustNum"/>
+      <move element="ColumnPropxRN.ColumnPerzRN.Severity" after="ColumnPropxRN.ColumnPerzRN.Urgency"/>
+      <move element="ColumnPropxRN.ColumnPerzRN.Channel" after="ColumnPropxRN.ColumnPerzRN.Severity"/>
+      <move element="ColumnPropxRN.ColumnPerzRN.ProductName" after="ColumnPropxRN.ColumnPerzRN.Channel"/>
+      <move element="ColumnPropxRN.ColumnPerzRN.InstSerialNum" after="ColumnPropxRN.ColumnPerzRN.ProductName"/>
+      <move element="ColumnPropxRN.ColumnPerzRN.InstSysName" after="ColumnPropxRN.ColumnPerzRN.InstSerialNum"/>
+      <move element="ColumnPropxRN.ColumnPerzRN.InstTag" after="ColumnPropxRN.ColumnPerzRN.InstSysName"/>
+      <move element="ColumnPropxRN.ColumnPerzRN.PlatformName" after="ColumnPropxRN.ColumnPerzRN.InstTag"/>
+      <move element="ColumnPropxRN.ColumnPerzRN.ContractNum" after="ColumnPropxRN.ColumnPerzRN.PlatformName"/>
+      <move element="ColumnPropxRN.ColumnPerzRN.CustAcct" after="ColumnPropxRN.ColumnPerzRN.ContractNum"/>
+      <move element="ColumnPropxRN.ColumnPerzRN.CustContName" after="ColumnPropxRN.ColumnPerzRN.CustAcct"/>
+      <move element="ColumnPropxRN.ColumnPerzRN.MaintenanceOrg" after="ColumnPropxRN.ColumnPerzRN.CustContName"/>
+      <move element="ColumnPropxRN.ColumnPerzRN.PublishFlag" after="ColumnPropxRN.ColumnPerzRN.MaintenanceOrg"/>
+      <move element="ColumnPropxRN.ColumnPerzRN.ResolSummary" after="ColumnPropxRN.ColumnPerzRN.PublishFlag"/>
+      <move element="ColumnPropxRN.ColumnPerzRN.SLADate1" after="ColumnPropxRN.ColumnPerzRN.ResolSummary"/>
+      <move element="ColumnPropxRN.ColumnPerzRN.SLADate2" after="ColumnPropxRN.ColumnPerzRN.SLADate1"/>
+      <move element="ColumnPropxRN.ColumnPerzRN.SLADate3" after="ColumnPropxRN.ColumnPerzRN.SLADate2"/>
+      <move element="ColumnPropxRN.ColumnPerzRN.SLADate4" after="ColumnPropxRN.ColumnPerzRN.SLADate3"/>
+      <move element="ColumnPropxRN.ColumnPerzRN.SLADate5" after="ColumnPropxRN.ColumnPerzRN.SLADate4"/>
+      <move element="ColumnPropxRN.ColumnPerzRN.SLADate6" after="ColumnPropxRN.ColumnPerzRN.SLADate5"/>
+      <move element="ColumnPropxRN.ColumnPerzRN.SLADuration1" after="ColumnPropxRN.ColumnPerzRN.SLADate6"/>
+      <move element="ColumnPropxRN.ColumnPerzRN.SLADuration2" after="ColumnPropxRN.ColumnPerzRN.SLADuration1"/>
+      <move element="ColumnPropxRN.ColumnPerzRN.ProjectNumber" after="ColumnPropxRN.ColumnPerzRN.SLADuration2"/>
+      <move element="ColumnPropxRN.ColumnPerzRN.ProjectTaskNumber" after="ColumnPropxRN.ColumnPerzRN.ProjectNumber"/>
+      <move element="ColumnPropxRN.ColumnPerzRN.CreatedBy" after="ColumnPropxRN.ColumnPerzRN.ProjectTaskNumber"/>
+      <modify element="FreqAttrxRN.CustContName" rendered="true"/>
+      <modify element="FreqAttrxRN.CustContPhone" rendered="true"/>
+      <modify element="FreqAttrxRN.CustContEmail" rendered="true"/>
+      <insert after="FreqAttrxRN">
+         <oa:messageChoice id="xxMCContactMethod" adminCustomizable="true" allowBlankValue="true" cellNoWrapFormat="false" dataType="VARCHAR2" disabled="false" initSortSeq="none" pickListDispAttr="DispVal" pickListValAttr="RetVal" pickListViewDef="od.oracle.apps.xxcrm.cs.csz.search.server.xxContactMethodVO" prompt="Contact Method" queryable="true" readOnly="false" rendered="true" required="no" scope="." securityMode="standard" selectiveSearchCriteria="false" serverUnvalidated="false" sortState="no" tipType="none" totalValue="false" userCustomizable="false" vAlign="middle" warnAboutChanges="true" xmlns:oa="http://xmlns.oracle.com/oa"/>
+      </insert>
+   </modifications>
+</customization>

@@ -1,0 +1,213 @@
+<?xml version="1.0" encoding='windows-1252'?>
+<!DOCTYPE ViewObject SYSTEM "jbo_03_01.dtd">
+
+<ViewObject
+   Name="ODSKCustNameLOVVO"
+   Extends="oracle.apps.cs.csz.searchkey.lov.server.SKCustNameLOVVO"
+   BindingStyle="Oracle"
+   CustomQuery="true"
+   RowClass="oracle.apps.fnd.framework.server.OAViewRowImpl"
+   ComponentClass="od.oracle.apps.xxcrm.cs.csz.searchkey.lov.server.ODSKCustNameLOVVOImpl"
+   MsgBundleClass="oracle.jbo.common.JboResourceBundle"
+   UseGlueCode="false" >
+   <Properties>
+      <Property Name ="DISPLAY" Value ="SEARCHNUMBER:CSZSKCUSTNAME;Customeralias:CSZSKCUSTALIAS;PartyType:CSZSKCUSTTYPE;Address:CSZSKCUSTADDR;Email:CSZSKCUSTEMAIL" />
+      <Property Name ="QUERY" Value ="SEARCHNUMBER;Customeralias" />
+   </Properties>
+   <SQLQuery><![CDATA[
+select
+party.PARTY_NUMBER CustomerId,
+party.party_name SEARCHNUMBER,
+party.party_type,
+   party.address1
+||decode(party.address2,null,null,';'||party.address2)
+||decode(party.address3,null,null,';'||party.address3)
+||decode(party.address4,null,null,';'||party.address4)
+|| decode(party.city, null, null, '; '|| party.city)
+|| decode(party.state,null,null,'; ' || party.state)
+|| decode(party.province,null,null,'; ' || party.province)
+|| decode(party.postal_code,null,null,'; ' || party.postal_code)
+|| decode(party.county,null,null,'; ' || party.county)
+|| decode(party.country,null,null,'; ' || party.country) address,
+party.email_address,
+party.party_id searchId,
+party.orig_system_reference Customeralias
+from 
+    hz_parties party,
+      fnd_responsibility resp
+    WHERE party_type = 'ORGANIZATION'
+    AND exists (SELECT 'X' 
+                 FROM xx_tm_nam_terr_curr_assign_v terr,
+                  jtf_rs_resource_extns res,
+                  hz_party_sites partysites
+                WHERE partysites.party_id = party.party_id
+                AND res.user_id = fnd_global.user_id
+                AND terr.entity_type = 'PARTY_SITE'
+                AND terr.entity_id = partysites.party_site_id
+                AND terr.resource_id = res.resource_id
+                AND TRUNC(sysdate) BETWEEN nvl(res.start_date_active, sysdate -1)
+                AND nvl(res.end_date_active, sysdate + 1)
+                AND partysites.status = 'A')
+    AND party.status = 'A'
+    AND fnd_global.application_short_name = 'ASN'
+    AND fnd_global.resp_id = resp.responsibility_id
+    AND resp.responsibility_key IN ('XX_US_ASN_SALES_REP','XX_CA_ASN_SALES_REP')
+
+UNION ALL
+select
+party.PARTY_NUMBER CustomerId,
+party.party_name SEARCHNUMBER,
+party.party_type,
+   party.address1
+||decode(party.address2,null,null,';'||party.address2)
+||decode(party.address3,null,null,';'||party.address3)
+||decode(party.address4,null,null,';'||party.address4)
+|| decode(party.city, null, null, '; '|| party.city)
+|| decode(party.state,null,null,'; ' || party.state)
+|| decode(party.province,null,null,'; ' || party.province)
+|| decode(party.postal_code,null,null,'; ' || party.postal_code)
+|| decode(party.county,null,null,'; ' || party.county)
+|| decode(party.country,null,null,'; ' || party.country) address,
+party.email_address,
+party.party_id searchId,
+party.orig_system_reference osr
+from 
+hz_parties party,
+hz_cust_accounts accts,
+fnd_responsibility resp
+where party.party_id = accts.party_id
+and accts.attribute18 = 'CONTRACT'
+and party.status = 'A'
+and fnd_global.application_short_name = 'ASN'
+and fnd_global.resp_id = resp.responsibility_id
+and resp.responsibility_key not in ('XX_US_ASN_SALES_REP','XX_CA_ASN_SALES_REP')
+UNION ALL
+select
+party.PARTY_NUMBER CustomerId,
+party.party_name SEARCHNUMBER,
+party.party_type,
+   party.address1
+||decode(party.address2,null,null,';'||party.address2)
+||decode(party.address3,null,null,';'||party.address3)
+||decode(party.address4,null,null,';'||party.address4)
+|| decode(party.city, null, null, '; '|| party.city)
+|| decode(party.state,null,null,'; ' || party.state)
+|| decode(party.province,null,null,'; ' || party.province)
+|| decode(party.postal_code,null,null,'; ' || party.postal_code)
+|| decode(party.county,null,null,'; ' || party.county)
+|| decode(party.country,null,null,'; ' || party.country) address,
+party.email_address,
+party.party_id searchId,
+party.orig_system_reference osr
+from 
+hz_parties party
+where 
+(PARTY_TYPE = 'ORGANIZATION' OR PARTY_TYPE = 'PERSON')
+and party.status = 'A'
+and nvl(fnd_global.application_short_name,'CS') in ('CS','CSS')
+   ]]></SQLQuery>
+   <DesignTime>
+      <Attr Name="_version" Value="9.0.3.12.53" />
+      <Attr Name="_CodeGenFlagNew" Value="36" />
+   </DesignTime>
+   <ViewAttribute
+      Name="Customerid"
+      IsQueriable="false"
+      IsPersistent="false"
+      IsNotNull="true"
+      Precision="30"
+      Type="java.lang.String"
+      AliasName="CUSTOEMRID"
+      ColumnType="VARCHAR2"
+      Expression="CUSTOEMRID"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="30" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="SEARCHNUMBER"
+      IsQueriable="false"
+      IsPersistent="false"
+      IsNotNull="true"
+      Precision="360"
+      Type="java.lang.String"
+      AliasName="SEARCHNUMBER"
+      ColumnType="VARCHAR2"
+      Expression="SEARCHNUMBER"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="360" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="PartyType"
+      IsQueriable="false"
+      IsPersistent="false"
+      IsNotNull="true"
+      Precision="30"
+      Type="java.lang.String"
+      AliasName="PARTY_TYPE"
+      ColumnType="VARCHAR2"
+      Expression="PARTY_TYPE"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="30" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="searchType"
+      IsQueriable="false"
+      IsPersistent="false"
+      Type="java.lang.String"
+      AliasName="VIEW_ATTR"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Address"
+      IsQueriable="false"
+      IsPersistent="false"
+      Precision="240"
+      Type="java.lang.String"
+      AliasName="EMAIL_ADDRESS"
+      ColumnType="VARCHAR2"
+      Expression="ADDRESS1"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="2000" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Email"
+      IsQueriable="false"
+      IsPersistent="false"
+      Precision="2000"
+      Type="java.lang.String"
+      AliasName="EmailAddress1"
+      ColumnType="VARCHAR2"
+      Expression="EmailAddress1"
+      SQLType="VARCHAR" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Searchid"
+      IsQueriable="false"
+      IsPersistent="false"
+      Precision="30"
+      Type="java.lang.String"
+      AliasName="Searchid"
+      ColumnType="VARCHAR2"
+      Expression="Searchid"
+      SQLType="VARCHAR" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Customeralias"
+      IsPersistent="false"
+      Precision="240"
+      Type="java.lang.String"
+      AliasName="Customeralias"
+      ColumnType="VARCHAR2"
+      Expression="Customeralias"
+      SQLType="VARCHAR" >
+   </ViewAttribute>
+</ViewObject>

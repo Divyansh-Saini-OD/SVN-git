@@ -1,0 +1,38 @@
+SET VERIFY      OFF
+SET TERM        OFF
+SET FEEDBACK    OFF
+SET SHOW        OFF
+SET ECHO        OFF
+SET TAB         OFF
+
+-- +========================================================================+
+-- |                  Office Depot                                          |
+-- +========================================================================+
+-- | Name        : ALTER_XX_EXTERNAL_USERS.tbl 				                      |
+-- | Rice ID     :                                                          |
+-- | Description : Added new field in the existing ALTER_XX_EXTERNAL_USERS 	|
+-- |               table                                                    |
+-- |                                                                        |
+-- |Change Record:                                                          |
+-- |===============                                                         |
+-- |Version   Date        Author           Remarks                          |
+-- |=======  ===========  =============    =================================|
+-- |1.0      11-AUG-2015  manikant Kasu    Initial Version                  |
+-- +========================================================================+
+
+WHENEVER SQLERROR CONTINUE;
+
+PROMPT
+PROMPT 'Altering the Table XX_EXTERNAL_USERS .....'
+PROMPT
+
+ALTER TABLE XXCOMN.XX_EXTERNAL_USERS ADD SUBSCRIPTION_EXISTS VARCHAR2(1) DEFAULT 'N';
+
+PROMPT
+PROMPT Exiting....
+PROMPT
+
+SET FEEDBACK ON
+
+SHOW ERRORS;
+EXIT;

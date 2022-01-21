@@ -1,0 +1,59 @@
+-- +============================================================================================+
+-- |                        Office Depot - Project Simplify                                     |
+-- |                                                                                            |
+-- +============================================================================================+
+-- | Name         : XX_AP_TRADE_INV_HDR_IDX.idx                                                 |
+-- | Rice Id      :                                                                             | 
+-- | Description  :                                                                             |  
+-- | Purpose      : Create Indexes for Table XX_AP_TRADE_INV_HDR.tbl on columns                 |
+-- |                (record_status, source and invoice_id)                                      |
+-- |                                                                                            |
+-- |Change Record:                                                                              |
+-- |===============                                                                             |
+-- |Version    Date          Author                Remarks                                      | 
+-- |=======    ==========    =================    ==============================================+
+-- |DRAFT 1A   25-MAY-2017   Havish Kasina        Initial Version                               |
+-- |                                                                                            |
+-- +============================================================================================+
+
+SET VERIFY      OFF
+SET TERM        ON
+SET FEEDBACK    OFF
+SET SHOW        OFF
+SET ECHO        OFF
+SET TAB         OFF
+
+PROMPT
+PROMPT Creation of Index on custom table.....
+PROMPT
+
+PROMPT
+PROMPT Creating non-unique index on INDEX XX_AP_TRADE_INV_HDR_N1 .....
+PROMPT
+CREATE INDEX XXFIN.XX_AP_TRADE_INV_HDR_N1 ON XXFIN.XX_AP_TRADE_INV_HDR(RECORD_STATUS);
+
+PROMPT
+PROMPT Creating non-unique index on INDEX XX_AP_TRADE_INV_HDR_N2 .....
+PROMPT
+CREATE INDEX XXFIN.XX_AP_TRADE_INV_HDR_N2 ON XXFIN.XX_AP_TRADE_INV_HDR(SOURCE);
+
+PROMPT
+PROMPT Creating non-unique index on INDEX XX_AP_TRADE_INV_HDR_N3 .....
+PROMPT
+CREATE INDEX XXFIN.XX_AP_TRADE_INV_HDR_N3 ON XXFIN.XX_AP_TRADE_INV_HDR(FREQUENCY_CODE);
+
+PROMPT
+PROMPT Creating unique index on INDEX XX_AP_TRADE_INV_HDR_U1 .....
+PROMPT
+CREATE UNIQUE INDEX XXFIN.XX_AP_TRADE_INV_HDR_U1 ON XXFIN.XX_AP_TRADE_INV_HDR(INVOICE_ID); 
+
+WHENEVER SQLERROR EXIT 1
+
+PROMPT
+PROMPT Exiting....
+PROMPT
+
+SET FEEDBACK ON
+
+EXIT;
+

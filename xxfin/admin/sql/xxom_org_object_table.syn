@@ -1,0 +1,16 @@
+-- +==========================================================================+
+-- |                               Office Depot                               |
+-- +==========================================================================+
+-- | Script to create the following synonym                                   |
+-- |                                                                          |
+-- |             Synonym: xxom_org_object_table                         |
+-- |Change Record:                                                            |
+-- |===============                                                           |
+-- |Version   Date         Author               Remarks                       |
+-- |=======   ===========  =============        ==============================|
+-- |1.0      23-Aug-2021 Shreyas Thorat   Initial Version                      |
+-- +==========================================================================+
+
+CREATE OR REPLACE  SYNONYM APPS.xxom_org_object_table FOR XXFIN.xxom_org_object_table;
+/
+SHOW ERRORS;

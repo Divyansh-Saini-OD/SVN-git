@@ -1,0 +1,292 @@
+# +===================================================================+
+# |		     Office Depot - Project Beacon                            |
+# +===================================================================+
+# | Name  :	  XXCLDSUPPLOAD (Shell Script)	                          |
+# | Description : To Load the Supplier Data from the Cloud to On-Prem |
+# |   EBS tables	                                                  |
+# |								                                      |
+# |Change Record:						                              |
+# |===============						                              |
+# |Version   Date	      Author	          Remarks                 |
+# |=======   ===========  ================    ========================|
+# |1.0	     27-JUN-2019  Havish Kasina	      Initial version         |
+# |-------------------------------------------------------------------|
+# +===================================================================+
+#
+#Shell Script for fetching the data files and loading them into the staging table.
+
+#Apps default parameters
+export APPSLOGIN=$FCP_LOGIN
+FCP_USERID=$2
+FCP_USERNAME=$3
+FCP_REQID=$4
+p_process_name=$5
+
+echo "================================================================================" 
+lc_run_top=$RUN_BASE
+echo $lc_run_top
+file_name1='l'
+file_name2='.req'
+log_file_name=$file_name1$FCP_REQID$file_name2
+
+p_request_id=$FCP_REQID
+FILE_DIR="$XXFIN_DATA/ftp/in/cloudsupplier"
+FILE_ARCHIVE="$XXFIN_DATA/archive/inbound"
+DATE_YYYYMMDD=`date +%Y%m%d`; 
+echo " DATE_YYYYMMDD :"$DATE_YYYYMMDD
+DAT=`date '+_%y%m%d%H%M%S_%N'`
+
+echo "Process Name:"$p_process_name
+echo "Request ID:"$p_request_id 
+
+echo "================================================================================" 
+echo "Start Time          : `date`"                        
+echo "Program Name        : OD: Cloud to EBS Supplier Interface"
+echo "================================================================================" 
+echo " ==============Concurrent Program Parameters===================================="
+
+lc_custom_top="$XXFIN_DATA/ftp/in/cloudsupplier"
+echo "File Path: "$lc_custom_top
+FILE_ARCHIVE="$XXFIN_DATA/archive/inbound"
+echo "Archive Path: "$FILE_ARCHIVE
+
+echo "Process to Load : "$p_process_name
+#Supplier
+if [ "${p_process_name}" = "SUPPLIERS" ]
+then
+   lc_process="Suppliers"
+   lc_check_file="$lc_custom_top"
+   p_filename="XX_AP_CLOUD_SUPP_XTRCT_$DATE_YYYYMMDD.dat"
+   echo "File Name : "$p_filename
+   p_control_file="XX_AP_CLD_SUPPLIERS_STG.ctl"
+   echo "Control File name is  :"$p_control_file
+   lc_data_file="$lc_custom_top/$p_filename"
+   echo "Data File Location : "$lc_data_file
+   dos2unix -n $lc_data_file $lc_data_file
+   echo "dos2unix is completed"
+   
+   echo "=========================================================================="
+   echo "Check to see if at least one Data file exist in the source path ${lc_custom_top} "
+   if [ -f  ${lc_data_file} ]
+   then
+       echo "Data Files Exist"
+       echo "*****************************************************************************"  
+	   sqlldr parfile=$HOME/parfile.apps data=$lc_data_file control=$XXFIN_TOP/bin/$p_control_file log=$p_filename.log bad=$p_filename.bad errors=9999
+	   
+	   mv $lc_data_file $FILE_ARCHIVE/$p_filename$DAT
+       echo "------------ Log File--------------"
+       cat $p_filename.log
+       echo "-------------Bad Data file----------"
+       cat $p_filename.bad
+   else
+       echo "No Data File to process" 
+       echo "program aborting .."
+       exit 1
+   fi
+#SupplierSites
+elif [ "${p_process_name}" = "SUPPLIERSITES" ]
+then
+   lc_process="Supplier Sites"
+   lc_check_file="$lc_custom_top"
+   p_filename="XX_AP_CLOUD_SUPP_SITE_XTRCT_$DATE_YYYYMMDD.pgp"
+   echo "File Name : "$p_filename
+   p_control_file="XX_AP_CLD_SUPP_SITES_STG.ctl"
+   echo "Control File name is  : "$p_control_file
+   lc_data_file="$lc_custom_top/$p_filename"
+   echo "Data File Location : "$lc_data_file
+   dos2unix -n $lc_data_file $lc_data_file
+   echo "dos2unix is completed"
+   
+   echo "=========================================================================="
+   echo "Check to see if at least one Data file exist in the source path ${lc_custom_top} "
+   if [ -f  ${lc_data_file} ]
+   then
+       echo "Data Files Exist"
+       echo "*****************************************************************************"  
+	   sqlldr parfile=$HOME/parfile.apps data=$lc_data_file control=$XXFIN_TOP/bin/$p_control_file log=$p_filename.log bad=$p_filename.bad errors=9999
+	   mv $lc_data_file $FILE_ARCHIVE/$p_filename$DAT
+       echo "------------ Log File--------------"
+       cat $p_filename.log
+       echo "-------------Bad Data file----------"
+       cat $p_filename.bad
+   else
+       echo "No Data File to process" 
+       echo "program aborting .."
+       exit 1
+   fi 
+#SupplierContacts
+elif [ "${p_process_name}" = "SUPPLIERCONTACTS" ]
+then
+   lc_process="Supplier Contacts"
+   lc_check_file="$lc_custom_top"
+   p_filename="XX_AP_CLOUD_SUPP_CONTACTS_XTRCT_$DATE_YYYYMMDD.dat"
+   echo "File Name : " $p_filename
+   p_control_file="XX_AP_CLD_SUPP_CONTACT_STG.ctl"
+   echo "Control File name is  :" $p_control_file
+   lc_data_file="$lc_custom_top/$p_filename"
+   echo "Data File Location : " $lc_data_file
+   dos2unix -n $lc_data_file $lc_data_file
+   echo "dos2unix is completed"
+   
+   echo "=========================================================================="
+   echo "Check to see if at least one Data file exist in the source path ${lc_custom_top} "
+   if [ -f  ${lc_data_file} ]
+   then
+       echo "Data Files Exist"
+       echo "*****************************************************************************"  
+	   sqlldr parfile=$HOME/parfile.apps data=$lc_data_file control=$XXFIN_TOP/bin/$p_control_file log=$p_filename.log bad=$p_filename.bad errors=9999
+	   mv $lc_data_file $FILE_ARCHIVE/$p_filename$DAT
+       echo "------------ Log File--------------"
+       cat $p_filename.log
+       echo "-------------Bad Data file----------"
+       cat $p_filename.bad
+     else
+       echo "No Data File to process" 
+       echo "program aborting .."   
+	 fi 
+#BankAccounts
+elif [ "${p_process_name}" = "BANKACCOUNTS" ]
+then
+   lc_process="Bank Accounts"
+   lc_check_file="$lc_custom_top"
+   p_filename="XX_AP_CLOUD_SUPP_BANK_ACCTS_XTRCT_$DATE_YYYYMMDD.dat"
+   echo "File Name : "$p_filename
+   p_control_file="XX_AP_CLD_SUPP_BNKACT_STG.ctl"
+   echo "Control File name is  :"$p_control_file
+   lc_data_file="$lc_custom_top/$p_filename"
+   echo "Data File Location : "$lc_data_file
+   dos2unix -n $lc_data_file $lc_data_file
+   echo "dos2unix is completed"
+   
+   echo "=========================================================================="
+   echo "Check to see if at least one Data file exist in the source path ${lc_custom_top} "
+   if [ -f  ${lc_data_file} ]
+   then
+       echo "Data File Exist"
+       echo "*****************************************************************************"  
+	   sqlldr parfile=$HOME/parfile.apps data=$lc_data_file control=$XXFIN_TOP/bin/$p_control_file log=$p_filename.log bad=$p_filename.bad errors=9999
+	   mv $lc_data_file $FILE_ARCHIVE/$p_filename$DAT
+       echo "------------ Log File--------------"
+       cat $p_filename.log
+       echo "-------------Bad Data file----------"
+       cat $p_filename.bad
+   else
+       echo "No Data File to process" 
+       echo "program aborting .."
+   fi 
+#CustomDFF
+elif [ "${p_process_name}" = "SUPPLIERDFF" ]
+then
+   lc_process="Custom DFF"
+   lc_check_file="$lc_custom_top"
+   p_filename="XX_AP_CLOUD_SUPP_CUSTOM_DFF_XTRCT_$DATE_YYYYMMDD.dat"
+   echo "File Name : "$p_filename
+   p_control_file="XX_AP_CLD_SITE_DFF_STG.ctl"
+   echo "Control File name is  :" $p_control_file
+   lc_data_file="$lc_custom_top/$p_filename"
+   echo "Data File Location : "$lc_data_file
+   dos2unix -n $lc_data_file $lc_data_file
+   echo "dos2unix is completed"
+   
+   echo "=========================================================================="
+   echo "Check to see if at least one Data file exist in the source path ${lc_custom_top} "
+   if [ -f  ${lc_data_file} ]
+   then
+       echo "Data File Exist"
+       echo "*****************************************************************************"  
+	   sqlldr parfile=$HOME/parfile.apps data=$lc_data_file control=$XXFIN_TOP/bin/$p_control_file log=$p_filename.log bad=$p_filename.bad errors=9999
+	   mv $lc_data_file $FILE_ARCHIVE/$p_filename$DAT
+       echo "------------ Log File--------------"
+       cat $p_filename.log
+       echo "-------------Bad Data file----------"
+       cat $p_filename.bad
+   else
+       echo "No Data File to process" 
+       echo "program aborting .."
+   fi 
+#BusinessClassification
+elif [ "${p_process_name}" = "BUSCLASS" ]
+then
+   lc_process="Business Classifications"
+   lc_check_file="$lc_custom_top"
+   p_filename="XX_AP_CLOUD_SUPP_BUS_CLASS_XTRCT_$DATE_YYYYMMDD.dat"
+   echo "File Name : "$p_filename
+   p_control_file="XX_AP_CLD_SUPP_BCLS_STG.ctl"
+   echo "Control File name is  :" $p_control_file
+   lc_data_file="$lc_custom_top/$p_filename"
+   echo "Data File Location : "$lc_data_file
+   dos2unix -n $lc_data_file $lc_data_file
+   echo "dos2unix is completed"
+   
+   echo "=========================================================================="
+   echo "Check to see if at least one Data file exist in the source path ${lc_custom_top} "
+   if [ -f  ${lc_data_file} ]
+   then
+       echo "Data File Exist"
+       echo "*****************************************************************************"  
+	   sqlldr parfile=$HOME/parfile.apps data=$lc_data_file control=$XXFIN_TOP/bin/$p_control_file log=$p_filename.log bad=$p_filename.bad errors=9999
+	   mv $lc_data_file $FILE_ARCHIVE/$p_filename$DAT
+       echo "------------ Log File--------------"
+       cat $p_filename.log
+       echo "-------------Bad Data file----------"
+       cat $p_filename.bad
+   else
+       echo "No Data File to process" 
+       echo "program aborting .."
+   fi
+fi
+
+export SQLPATH=$APPL_TOP
+echo $SQLPATH
+
+echo " Getting the Email List"
+email_alert_list=`sqlplus -s $1 <<EOF_SQL
+whenever sqlerror exit 1
+SET feedback off echo off verify off heading off
+set pagesize 0
+set feedback off
+set serveroutput on size 1000000
+SET linesize  32000
+SET long  50000
+SELECT target_value2 FROM xx_fin_translatevalues
+ WHERE 1 =1 
+   AND source_value1 = 'SUPPLIER_ERROR_REPORT'
+   AND translate_id IN ( SELECT translate_id FROM xx_fin_translatedefinition
+                                WHERE translation_name = 'XX_AP_CLOUD_SUPP_ERR_RPT');
+exit;
+EOF_SQL`
+
+db_name=`sqlplus -s $1 <<EOF_SQL
+whenever sqlerror exit 1
+SET feedback off echo off verify off heading off
+set pagesize 0
+set feedback off
+set serveroutput on size 1000000
+SET linesize  32000
+SET long  50000
+SELECT SUBSTR(UPPER(SYS_CONTEXT('USERENV','DB_NAME') ), 4,8)
+  FROM DUAL;
+exit;
+EOF_SQL`
+
+echo $email_alert_list
+data_issues=`grep 'Rejected - Error on table' $p_filename.log|wc -l`;
+
+echo "Error Count :"$data_issues
+
+if [ ${data_issues} -gt 1 ]; then
+  echo "Data issue found in the Data File"
+echo "Hi,
+
+Cloud Supplier Interface , encountered erorrs during loading into EBS Staging table for $lc_process 
+
+Please find the attached log and bad files for details
+
+IT Team" | mailx -s "$db_name - Cloud Supplier Interface , encountered errors during loading into EBS Staging table for $lc_process " -a $p_filename.log -a $p_filename.bad $email_alert_list
+echo "Program Failed "
+exit 1
+else
+echo "Completed successfully "
+# Exiting from the shell program.
+exit 0
+fi

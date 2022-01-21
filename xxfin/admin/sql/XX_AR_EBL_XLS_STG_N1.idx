@@ -1,0 +1,19 @@
+-- +=========================================================================+
+-- |                     Office Depot - Project Simplify                     |
+-- +=========================================================================+
+-- | Name        : XX_AR_EBL_XLS_STG_N1.idx                                  |
+-- | Rice ID     :                                                           |
+-- | Description : - Index Creation Script for eBilling project              |
+-- |                                                                         |
+-- |              					                     |
+-- |Change Record:                                                           |
+-- |===============                                                          |
+-- |Version   Date        Author           Remarks                           |
+-- |=======  ===========  =============    ==================================|
+-- |1.0      11-Mar-2010  Bushrod Thomas   Initial draft version             |
+-- |                                                                         |
+-- +=========================================================================+
+
+  CREATE INDEX "XXFIN"."XX_AR_EBL_XLS_STG_N1" ON "XXFIN"."XX_AR_EBL_XLS_STG" ("FILE_ID") TABLESPACE "XXOD_EBL_TS_DATA";
+
+

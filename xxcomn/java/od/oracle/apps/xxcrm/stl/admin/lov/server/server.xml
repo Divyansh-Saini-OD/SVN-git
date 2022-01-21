@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding='windows-1252'?>
+<!DOCTYPE JboPackage SYSTEM "jbo_03_01.dtd">
+
+<JboPackage
+   Name="server"
+   SeparateXMLFiles="true"
+   PackageName="od.oracle.apps.xxcrm.stl.admin.lov.server" >
+   <DesignTime>
+      <Attr Name="_version" Value="9.0.3.13.75" />
+      <Attr Name="_ejbPackage" Value="false" />
+   </DesignTime>
+   <Containee
+      Name="ODAdminLovAM"
+      FullName="od.oracle.apps.xxcrm.stl.admin.lov.server.ODAdminLovAM"
+      ObjectType="AppModule" >
+   </Containee>
+   <Containee
+      Name="ODRepSrchLOV"
+      FullName="od.oracle.apps.xxcrm.stl.admin.lov.server.ODRepSrchLOV"
+      ObjectType="ViewObject" >
+   </Containee>
+   <Containee
+      Name="ODStoreSrchLOV"
+      FullName="od.oracle.apps.xxcrm.stl.admin.lov.server.ODStoreSrchLOV"
+      ObjectType="ViewObject" >
+   </Containee>
+</JboPackage>

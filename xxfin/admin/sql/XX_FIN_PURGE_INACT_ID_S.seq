@@ -1,0 +1,29 @@
+-- +===========================================================================+
+-- |                          Office Depot                         |
+-- +===========================================================================+
+-- | Name :XXFIN.XX_FIN_PURGE_INACT_ID_S                                           |
+-- | Description : Script to create XX_FIN_PURGE_INACT_ID_S Sequence           |
+-- |                                                                           |
+-- |                                                                           |
+-- |Change Record:                                                             |
+-- |===============                                                            |
+-- |Version      Date           Author                  Remarks                |
+-- |=======    ==========     =============             ====================== |
+-- | 1.0      23-FEB-2021      Ankit Jaiswal            Initial draft version  |
+-- +===========================================================================+
+
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     ON
+WHENEVER SQLERROR CONTINUE
+
+CREATE SEQUENCE  "XXFIN"."XX_FIN_PURGE_INACT_ID_S"  
+   MINVALUE 1 
+   MAXVALUE 999999999999999999999999999 
+   INCREMENT BY 1 
+   START WITH 1 
+   CACHE 20 
+   NOORDER  
+   NOCYCLE ;

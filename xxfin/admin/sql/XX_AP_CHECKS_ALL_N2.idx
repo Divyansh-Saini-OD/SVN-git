@@ -1,0 +1,40 @@
+-- +====================================================================================+
+-- |                  Office Depot - Project Simplify                                   |
+-- +====================================================================================+
+-- | SQL Script to create                                                               |
+-- |                                                                                    |
+-- |                      INDEXES: XX_AP_CHECKS_ALL_N2                                  |
+-- |                                                                                    |
+-- |                                                                                    |
+-- |                                                                                    |
+-- |Change Record:                                                                      |
+-- |===============                                                                     |
+-- |Version   Date         Author               Remarks                                 |
+-- |=======   ===========  ================     ========================================|
+-- |  1.0     05-MAR-2014  Arun gannarapu       Defect 28253 to fix the performance issue |
+-- +====================================================================================+
+
+DROP INDEX XXFIN.XX_AP_CHECKS_ALL_N2;
+
+CREATE INDEX XXFIN.XX_AP_CHECKS_ALL_N2 ON AP.AP_CHECKS_ALL
+(CE_BANK_ACCT_USE_ID,CHECK_DATE)
+LOGGING
+TABLESPACE XXOD_TS_DATA
+PCTFREE    10
+INITRANS   2
+MAXTRANS   255
+STORAGE    (
+            INITIAL          64K
+            NEXT             1M
+            MINEXTENTS       1
+            MAXEXTENTS       UNLIMITED
+            PCTINCREASE      0
+            BUFFER_POOL      DEFAULT
+            FLASH_CACHE      DEFAULT
+            CELL_FLASH_CACHE DEFAULT
+           )
+NOPARALLEL;
+
+
+
+EXIT;

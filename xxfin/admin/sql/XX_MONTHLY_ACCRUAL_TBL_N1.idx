@@ -1,0 +1,25 @@
+-- +==========================================================================+
+-- |                  Office Depot - Project Simplify                         |
+-- +==========================================================================+
+-- | SQL Script to create                                                     |
+-- |                                                                          |
+-- |                      INDEXES: XX_MONTHLY_ACCRUAL_TBL_N1                  |
+-- |                                                                          |
+-- |                                                                          |
+-- |                                                                          |
+-- |Change Record:                                                            |
+-- |===============                                                           |
+-- |Version   Date         Author               Remarks                       |
+-- |=======   ==========   ================     ==============================|
+-- | V1.0     16-SEP-2016  Avinash Baddam       Initial version               |
+-- +==========================================================================+
+
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     ON
+
+CREATE INDEX "XXFIN"."XX_MONTHLY_ACCRUAL_TBL_N1" ON "XXFIN"."XX_MONTHLY_ACCRUAL_TBL" ("AJB_CARD_TYPE", "PROVIDER_CODE", "STORE_NUMBER");
+
+SHOW ERROR

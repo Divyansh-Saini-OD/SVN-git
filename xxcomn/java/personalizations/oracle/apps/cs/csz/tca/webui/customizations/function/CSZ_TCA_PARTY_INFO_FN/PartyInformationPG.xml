@@ -1,0 +1,24 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<customization xmlns="http://xmlns.oracle.com/jrad" version="9.0.6.0.0_50" xml:lang="en-US" customizes="/oracle/apps/cs/csz/tca/webui/PartyInformationPG" file-version="$Header: PartyInformationPG.xml 120.1 2006/04/24 12:40 jedward noship $" package="/oracle/apps/cs/csz/tca/webui/customizations/function/CSZ_TCA_PARTY_INFO_FN">
+   <modifications>
+      <modify element="CasesTabLink" rendered="false"/>
+      <modify element="RelationshipTabLink" text="Contacts and Relationships"/>
+      <modify element="NotesxTLRN.NoteTablexRN.JntsNoteStatusRN" rendered="false"/>
+      <modify element="AddNotexTLRN.AddNotexRN.CacNtsCreateStatus" rendered="false"/>
+      <modify element="SwitchToFL" rendered="false"/>
+      <modify element="AddressxTLRN.TCAAddressTablexRN.HzPuiSelectPrimaryUseButton" rendered="false"/>
+      <modify element="OrgRelataionshipxRN.TCAOrgRelationshipTablexRN.HzPuiContRelTableSelPrimaryEvent" rendered="false"/>
+      <modify element="ClassificationTableFC" rendered="false"/>
+      <modify element="OrgRelataionshipxRN.TCAOrgRelationshipTablexRN.HzPuiContTableCreateRelRole" rendered="false"/>
+      <modify element="OrgRelataionshipxRN.TCAOrgRelationshipTablexRN.HzPuiContRelTableCreateEvent" rendered="false"/>
+      <modify element="PerRelataionshipxRN.TCAPerRelationshipTablexRN.HzPuiPartyRelTableCreateEvent" rendered="false"/>
+      <modify element="ProfilexTLRN.TCAContactProfilexRN.HzPuiShowContact" rendered="false"/>
+      <modify element="EmailxTLRN.TCAEmailTablexRN.EmailAddress" destination=""/>
+      <modify element="OrgRelataionshipxRN.TCAOrgRelationshipTablexRN.email" destination=""/>
+      <modify element="PerRelataionshipxRN.TCAPerRelationshipTablexRN.HzPuiPartyTableCreateRelRole" rendered="false"/>
+      <modify element="PerRelataionshipxRN.TCAPerRelationshipTablexRN.phone" rendered="false"/>
+      <modify element="PerRelataionshipxRN.TCAPerRelationshipTablexRN.email" destination="" rendered="false"/>
+      <modify element="PerRelataionshipxRN.TCAPerRelationshipTablexRN.address" rendered="false"/>
+      <modify element="ClassificationTablexRN.TCAClassificationTablexRN" text="Classifications"/>
+   </modifications>
+</customization>

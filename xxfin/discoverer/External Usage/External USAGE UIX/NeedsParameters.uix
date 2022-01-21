@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="windows-1252"?>
+<page xmlns="http://xmlns.oracle.com/uix/controller"
+      xmlns:ui="http://xmlns.oracle.com/uix/ui"
+      xmlns:ctrl="http://xmlns.oracle.com/uix/controller"
+      xmlns:bibeans="http://xmlns.oracle.com/bibeans"
+      xmlns:template="http://xmlns.oracle.com/discoverer/templates"
+      xmlns:html="http://www.w3.org/TR/REC-html40"
+      expressionLanguage="el">
+  <templates xmlns="http://xmlns.oracle.com/uix/ui">
+    <templateImport source="/templates/CommonPage.uit"/>
+    <templateImport source="/templates/Document.uit"/>
+  </templates>
+  <content>
+    <dataScope xmlns="http://xmlns.oracle.com/uix/ui" xmlns:data="http://xmlns.oracle.com/uix/ui">
+      <provider>
+        <data name="nls">
+          <bundle class="oracle.discoverer.applications.viewer.resources.ApplicationResources" />
+        </data>
+        <data name="constants">
+          <method class="oracle.discoverer.applications.viewer.view.dataprovider.ConstantsMapping" method="getConstants" />
+        </data>
+      </provider>
+      <contents>
+        <template:documentTemplate pageTitle="${uix.data.nls['text.enterParameter']}" allowCaching="true">
+          <contents>
+            <body>
+              <contents>
+                <template:commonPageLayout helpID="disco_vw_params" prefReturnDestination="worksheet">
+                  <boundAttribute name="title">
+                    <concat>
+                      <dataObject default="${uix.eventResult.workbookName}" />
+                      &nbsp;-&nbsp;
+                      <dataObject default="${uix.eventResult.worksheetName}" />
+                    </concat>
+                  </boundAttribute>
+                  
+                  <pageStatus>
+                    <flowLayout rendered="${uix.eventResult.lastRunLabelRendered}">
+                      <contents>
+                        <styledText styleClass="OraPageStampText" text="${uix.data.nls['worksheet.text.lastRun']}" />
+                        <styledText styleClass="OraPageStampLabel" text="${uix.eventResult.queryLastRunTime}"/>
+                      </contents>
+                    </flowLayout>
+                  </pageStatus>
+                  <userInfo>
+                    <flowLayout rendered="${uix.eventResult.connectedUserRendered}">
+                      <contents>
+                        <styledText styleClass="OraPageStampText" text="${uix.data.nls['logged.in']}" />
+                        <styledText styleClass="OraPageStampLabel" text="${uix.eventResult.connectedUser}" />
+                      </contents>
+                    </flowLayout>
+                  </userInfo>
+                  <contents>
+                    <html:noscript>
+                      <styledText styleClass="OraInstructionText" text="${uix.data.nls['text.noscript']}" />
+                    </html:noscript>
+                    <rowLayout width="100%">
+                      <contents>
+                        <cellFormat width="15%" vAlign="top">
+                          <contents>
+                            <form id="aForm" name="aForm" method="POST">
+                              <contents>
+                                <rawText   text="${uix.eventResult.concatScript}" />
+                                <formValue  name="${uix.data.constants.STATE_STRING_PARAM}"   rendered="${uix.eventResult.stateExists}" value="${uix.eventResult.stateStr}"/>
+                                <formValue  name="${uix.data.constants.STATE_STORE_ID_PARAM}"   rendered="${uix.eventResult.stateIDExists}" value="${uix.eventResult.stateID}"/>
+                              </contents>
+                            </form>
+                            <contentContainer width="100%" rendered="${uix.eventResult.worksheetsRendered}" text="${uix.data.nls['worksheet.text.worksheets']}">
+                              <contents>
+                                <form id="WorkbookListForm" name="WorkbookListForm" method="POST">
+                                  <contents>
+                                    <tableLayout summary="">
+                                      <contents childData="${uix.eventResult.worksheets}">
+                                        <rowLayout>
+                                          <contents>
+                                            <cellFormat wrappingDisabled="true">
+                                              <contents>
+                                                <styledText shortDesc="${uix.current.overlayText}" styleClass="OraInstructionText" rendered="${uix.current.currWorksheet}" text="${uix.current.text}"/>
+                                                <link shortDesc="${uix.current.overlayText}" rendered="${uix.current.currWorksheet ne 'true'}" destination="${uix.current.destination}" text="${uix.current.text}"/>
+                                              </contents>
+                                            </cellFormat>
+                                          </contents>
+                                        </rowLayout>
+                                      </contents>
+                                    </tableLayout>
+                                    <formValue id="stateStrID3" name="${uix.data.constants.STATE_STRING_PARAM}"   rendered="${uix.eventResult.stateExists}" value="${uix.eventResult.stateStr}"/>
+                                    <formValue id="stateID3" name="${uix.data.constants.STATE_STORE_ID_PARAM}"   rendered="${uix.eventResult.stateIDExists}" value="${uix.eventResult.stateID}"/>
+                                  </contents>
+                                </form>
+                              </contents>
+                            </contentContainer>
+                          </contents>
+                        </cellFormat>
+                        <cellFormat width="75%" vAlign="top">
+                          <contents>
+                            <tableLayout width="100%" summary="">
+                              <contents>
+                                <rowLayout>
+                                  <contents>
+                                    <header text="${uix.data.nls['worksheet.text.parametersNeeded']}">
+                                      <contents>
+                                        <form destination="/discoverer/app/parameters" name="parametersForm" method="POST">
+                                          <boundAttribute name="destination">
+                                            <concat>
+                                              <contextProperty select="ui:contextURI" />
+                                              <dataObject select="ACTION_SERVLET" source="constants" />
+                                              parameters
+                                            </concat>
+                                          </boundAttribute>
+                                          <contents>
+                                            <bibeans:parameters   biParameters="${uix.eventResult.params}"/>
+                                            <button textAndAccessKey="${uix.data.nls['button.go']}" shortDesc="${uix.data.nls['text.go']}" onClick="paramsbi_selectParams();" />
+                                            <formValue  name="${uix.data.constants.STATE_STRING_PARAM}"   rendered="${uix.eventResult.stateExists}" value="${uix.eventResult.stateStr}"/>
+                                            <formValue  name="${uix.data.constants.STATE_STORE_ID_PARAM}"   rendered="${uix.eventResult.stateIDExists}" value="${uix.eventResult.stateID}"/>
+                                          </contents>
+                                        </form>
+                                      </contents>
+                                    </header>
+                                  </contents>
+                                </rowLayout>
+                              </contents>
+                            </tableLayout>
+                          </contents>
+                        </cellFormat>
+                      </contents>
+                    </rowLayout>
+                  </contents>
+                </template:commonPageLayout>
+              </contents>
+            </body>
+          </contents>
+        </template:documentTemplate>
+      </contents>
+    </dataScope>
+  </content>
+  <handlers>
+    <event name="*">
+      <method class="oracle.discoverer.applications.viewer.view.dataprovider.WorksheetProxy" method="retrieveWorksheetData" />
+    </event>
+  </handlers>
+</page>

@@ -1,0 +1,34 @@
+-- +==========================================================================+
+-- |                  Office Depot - Project Simplify                         |
+-- |                       WIPRO Technologies                                 |
+-- +==========================================================================+
+-- | Name : XXFIN.XX_PA_KEYPROJ_MEM_STG                                       |
+-- | Description : Create the staging ( xxfin.xx_pa_keuproj_mem_stg )table to |
+-- |               store data from SQL table for process.                     |
+-- |                                                                          |
+-- |                                                                          |
+-- |                                                                          |
+-- | Change Record:                                                           |
+-- | ===============                                                          |
+-- | Version   Date         Author               Remarks                      |
+-- | =======   ==========   =============        =============================|
+-- | V1.0      27-Apr-2007  Raj Patel            Initial version              |
+-- |                                                                          |
+-- +==========================================================================+
+
+   SET SHOW         OFF
+   SET VERIFY       OFF
+   SET ECHO         OFF
+   SET TAB          OFF
+   SET FEEDBACK     ON
+
+
+   CREATE TABLE xxfin.xx_pa_keyproj_mem_stg
+      (
+        PANEx		VARCHAR2(25)
+        ,ProjectID	NUMBER	NOT NULL	
+        ,Role    	VARCHAR2(20)	
+        ,PersonID	NUMBER(10)	
+      );
+
+SHOW ERROR

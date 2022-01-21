@@ -1,0 +1,28 @@
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     ON
+
+PROMPT drop TABLE XX_MONTHLY_ACCRUAL_TBL
+
+PROMPT Program exits IF the creation IS NOT SUCCESSFUL
+
+WHENEVER SQLERROR CONTINUE
+
+-- +==========================================================================+
+-- |                  Office Depot - Project Simplify                         |
+-- +==========================================================================+
+-- | Name :XXFIN.XX_MONTHLY_ACCRUAL_TBL                                       |
+-- |Change Record:                                                            |
+-- |===============                                                           |
+-- |Version   Date         Author               Remarks                       |
+-- |=======   ==========   =============        ==============================|
+-- | 1.0      16-Sep-2016  Avinash Baddam       Initial version               |
+-- |                                                                          |
+-- +==========================================================================+
+
+drop table XX_MONTHLY_ACCRUAL_TBL; 
+
+SHOW ERROR
+

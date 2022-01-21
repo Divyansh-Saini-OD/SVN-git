@@ -1,0 +1,383 @@
+#!/bin/ksh
+# ----------------------------------------------------------------------------------------
+# Filename:   XXARCSEMAILDOC
+# ----------------------------------------------------------------------------------------
+
+#-- +====================================================================================+
+#-- |                  Office Depot - Project Simplify                                   |
+#-- |                          Wipro-Office Depot                                        |
+#-- +====================================================================================+
+#-- | Name             :  XXARCSEMAILDOC  E2048(Defect 3261)                             |
+#-- | Description      :  This Program is used to fetch all the Excel                    |
+#-- |                     Statements and mail the Customer statements                    |
+#-- |                     in  the Excel format                                           |
+#-- |                                                                                    |
+#-- |Change Record:                                                                      |
+#-- |===============                                                                     |
+#-- |Version   Date         Author           Remarks                                     |
+#-- |=======   ==========   =============    ======================                      |
+#-- |DRAFT 1.0 05-NOV-2009  Vinaykumar S   Initial draft version(CR 622)                 |
+#-- |  1.1     09-FEB-2010  Vinaykumar S   Made changes to the code as                   |
+#-- |                                      per comments from UATGB                       |
+#-- |                                      Testing Team                                  |
+#-- | 1.2      07-jul-2010   Saravanan     Made Changes due to OS changes to 10.3        |
+#-- | 1.3      22-Jul-2010   Saravanan     Made Changes for File Size Issue Defect# 6705 | 
+#-- | 1.4      14-Jul-2015  Manikant Kasu  Made Changes for statements to be sent to     |
+#-- |                                      default Email - Defect# 1562                  |
+#-- | 1.5      09-sep-2015  Manikant Kasu  Made Changes to fix "FILE grep" limitation    |
+#-- |                                       - Defect# 1648                               |
+#-- | 1.6       13-SEP-2016 Suresh Naragam  Changes related to defect#39261              |
+#-- | 1.7       15-MAR-2017 Suresh Naragam  Changes related to defect#41241              |
+#-- | 1.8       31-may-2017 Suresh Ponnambalam Defect 42124. Replaced ls.                |
+#-- +====================================================================================+
+
+#  Concurrent Program Definitions Parameters
+#  var1  is --> Job name 
+#  var2  is --> Concurrent Program Request ID.
+#  var3  is --> Login Credentials
+
+#  User defined Parameters
+
+#  var9  is --> Statement Date
+#  var10 is --> Source Path
+#  var11 is --> Archive Path
+#  var12 is --> HTML File Path
+#  var13 is --> Customer Flag
+#  var14 is --> Send Email
+#  var15 is --> User Email Address
+#  var16 is --> Resend Flag
+#  var17 is --> From Email Address
+#  var18 is --> org_id
+#  var19 is --> HTML File Path - Part1(File Issue)
+#  var20 is --> HTML File Path - Part2(File Issue)
+#  var21 is --> Unix FTP Path for Moving the File.
+#  var22 is --> FTP Path to Print in Mail Body
+#  var23 is --> Max File Size(KB) allowed to Transmit
+#  var24 is --> Business User Mail ID to Inform incase file is not transmitted.
+
+# Defining User Defined Parameters.
+
+
+FCP_REQID=$4
+var9=${5}
+var10=${6}
+var11=${7}
+var12=${8}
+var13=${9}
+var14=${10}
+var15=${11}
+var16=${12}
+var17=${13}
+var18=${14}
+var19=${15}
+var20=${16}
+var21=${17}
+var22=${18}
+var23=${19}
+var24=${20}
+
+MAILFILE="mailmsg_$FCP_REQID"
+WRKFILE="wrkfile_$FCP_REQID"
+
+#(warn= -1)
+
+# Assigning Required Parameters to the Shell variables.
+
+lc_stmt_date=${var9}
+lc_source_path=${var10}
+lc_arch_path=${var11}
+lc_html_file_path=${var12}
+lc_customer_flag=${var13}
+lc_send_email=${var14}
+lc_user_emailid=${var15}
+lc_resend_flag=${var16}
+lc_from_email_add=${var17}
+lc_org_id=${var18}
+lc_html_file_path_user_p1=${var19}
+lc_html_file_path_user_p2=${var20}
+lc_ftp_path=${var21}
+lc_print_ftp_path=`echo -E ${var22}`
+lc_max_file_size=${var23}
+lc_filesize_userid=${var24}
+
+# Printing User Defined Parameters in the Request Log File.
+
+echo "Statement Date          : "${var9}
+echo "Source Path             : "${var10}
+echo "Archive Path            : "${var11}
+echo "Html File Path          : "${var12}
+echo "Customer Flag           : "${var13}
+echo "Send Email              : "${var14}
+echo "User Emailid            : "${var15}
+echo "Resend Flag             : "${var16}
+echo "From Email Address      : "${var17}
+echo "ORG_ID                  : "${var18}
+echo "Html File Path(user-P1) : "${var19}
+echo "Html File Path(user-P2) : "${var20}
+echo "FTP Path                : "${var21}
+echo -E "Print FTP Path          : "${var22}
+echo "Max File Size(KB)       : "${var23}
+echo "File Size User ID       : "${var24}
+
+
+ # Evaluating source and destination filenames.
+
+eval lc_source_path=$lc_source_path
+eval lc_arch_path=$lc_arch_path
+eval lc_ftp_path=$lc_ftp_path
+return_status=0
+#echo $lc_source_path
+cd $lc_source_path
+
+# Defect 42124 ls | grep '\.xls$' 1> /dev/null
+
+if stat --printf='' *.xls 2>/dev/null
+then
+    for FILE in *.xls; do
+          echo ""
+          echo "Delivery File                         : "$FILE
+          attachment=$lc_source_path/$FILE
+
+          p_site_use_id=`echo $FILE|awk '{print $1}'| tr -d '.xls'`
+          #echo "Customer ID/Site Use ID               : "$p_site_use_id
+
+          # Setting up database connection credentials.
+          # Connecting to Oracle Application Database. 
+
+export SQLPATH=$APPL_TOP
+echo $SQLPATH
+
+lc_check=`sqlplus -s /nolog <<EOF
+
+SET FEEDBACK OFF
+SET SERVEROUTPUT ON SIZE 10000
+DECLARE
+o_mail_add        VARCHAR2(5000);
+o_cust_acct_no    VARCHAR2(30);
+o_location        VARCHAR2(100);
+o_aops_cust_no    VARCHAR2(10);
+o_bill_sequence   VARCHAR2(10);
+o_stmt_date       DATE;
+
+BEGIN
+ xx_ar_cust_stmtxl_wrap_pkg.get_delivery_emailid('$p_site_use_id','$lc_customer_flag','$lc_resend_flag','$lc_stmt_date','$lc_org_id',o_mail_add,o_cust_acct_no,o_aops_cust_no,o_location,o_bill_sequence,o_stmt_date);
+EXCEPTION
+WHEN OTHERS THEN
+DBMS_OUTPUT.PUT_LINE('Error :'||SQLERRM);
+END;
+/
+SET FEEDBACK OFF
+EOF`
+
+           #echo "lc_Check                              :"$lc_check
+
+          # Determining the Email Address of the Site Use ID.
+          lc_check_3=`echo $lc_check | tr -d " "`
+          lc_check_2=`echo $lc_check_3 | tr "^" " "`
+          lc_check_1=$lc_check_2
+          #echo "lc_Check                              :"  $lc_check_1
+          o_mail_add=`echo $lc_check_1 | cut -f2 -d '~'`
+          o_cust_acct_no=`echo $lc_check_1 | cut -f3 -d '~'`
+          o_aops_cust_no=`echo $lc_check_1 | cut -f4 -d '~'`
+          o_location=`echo $lc_check_1 | cut -f5 -d '~'`
+          o_bill_sequence=`echo $lc_check_1 | cut -f6 -d '~'`
+          o_stmt_date=`echo $lc_check_1 | cut -f7 -d '~'`
+
+
+          #echo "o_cust_acct_no   :  $o_cust_acct_no"
+          #echo "o_aops_cust_no   :  $o_aops_cust_no"
+          #echo "o_location       :  $o_location"
+          #echo "o_bill_sequence  :  $o_bill_sequence"
+          #echo "o_stmt_date      :  $o_stmt_date"
+
+          #Added code changes to email statements to default email address
+          #echo " Email ID                         : "$o_mail_add
+          if [ "${o_mail_add}" = "No_Email_Addr" ]
+          then
+              #echo " in IF Condn Email ID                         : "$o_mail_add
+              #echo " Default Email ID                             : "$lc_filesize_userid
+              o_mail_add=$lc_filesize_userid
+              #echo " Updated Email ID                             : "$o_mail_add
+          fi
+
+          if [ "${o_mail_add}" = "No_Email_Addr" ] && [ "${lc_send_email}" = "Customer" ]
+          then
+
+                 echo " Email ID                             : "$o_mail_add
+                 echo "Email Address                         : Not Found for the Site Use ID : " $p_site_use_id
+                 echo "Result/Error                          : File Not Delivered."
+                 echo " "
+
+                 if (test -r $FILE )
+                 then
+                       mv $lc_source_path/$FILE $lc_arch_path/${o_aops_cust_no}${o_bill_sequence}_${o_stmt_date}'.xls'
+                       echo "Result                        : File "$FILE " moved to archive folder as "${o_aops_cust_no}${o_bill_sequence}_${o_stmt_date}".xls"
+                 else
+                       return_status=1
+                       echo "Error                         : File "$FILE "has no READ privileges.   Hence cannot be mailed or archived."
+                 fi
+
+          elif [ "${lc_send_email}" != "" ]
+          then
+                #o_mail_add=$lc_user_emailid
+                #echo " User Email ID                        : "$o_mail_add
+
+                if [ "$lc_send_email" = "Customer" ] 
+                then
+                
+                       echo " Email ID                             : "$o_mail_add
+ 
+                elif [ "$lc_send_email" = "User" ] 
+                then
+
+                        o_mail_add=$lc_user_emailid
+                        echo " User Email ID                        : "$o_mail_add
+                
+                elif [ "$lc_send_email" = "Both" ] 
+                then
+
+                        o_mail_add=$o_mail_add,$lc_user_emailid
+                        echo " Customer & User Email IDs            : "$o_mail_add
+
+                fi
+          fi
+
+          if [ "${o_mail_add}" != "No_Email_Addr" ]
+          then
+
+                filesize=`du -ks $lc_source_path/$FILE | cut -f1`
+                echo "File Size(KB)   :  $filesize"
+
+                if [ $filesize -ge $lc_max_file_size ]
+                then
+
+                     SUBJECT="Customer Statement Failure Notification for Acct #: ${o_aops_cust_no} Billing ID: ${o_cust_acct_no} Stmt Date: $lc_stmt_date ${o_location}"
+
+                     echo "From: $lc_from_email_add" > $MAILFILE
+                     echo "To: $lc_filesize_userid" >> $MAILFILE
+                     echo "Subject: $SUBJECT" >> $MAILFILE
+                     echo "Mime-Version: 1.0" >> $MAILFILE
+                     echo "Content-Type: multipart/mixed; boundary=\"boundary-line\"" >> $MAILFILE
+                     echo "--boundary-line" > $WRKFILE
+                     echo "Content-Type: text/html;" >> $WRKFILE
+                     echo "Content-Transfer-Encoding: 7bit" >> $WRKFILE
+                     echo "Content-Disposition: inline;" >> $WRKFILE
+                     echo >> $WRKFILE
+                     cat $lc_html_file_path_user_p1 >> $WRKFILE
+                     #echo "<br>"  >> $WRKFILE
+
+                     if [ "${lc_customer_flag}" != "Y" ]
+                     then
+                          lc_folder_path=${lc_print_ftp_path}'\custsite'
+                     else
+                         lc_folder_path=${lc_print_ftp_path}'\customer'
+                     fi
+
+                     echo -E "Folder        :"$lc_folder_path "<br>" >> $WRKFILE
+                     echo  "File Name       :"${o_aops_cust_no}${o_bill_sequence}_$o_stmt_date'.xls' "<br>"  >> $WRKFILE
+                     echo  "Customer Email Address :"$o_mail_add "<br>" >> $WRKFILE
+                          
+                     echo >> $WRKFILE
+                     cat $lc_html_file_path_user_p2 >> $WRKFILE
+
+                     cat $WRKFILE >> $MAILFILE
+
+                     cp $lc_source_path/$FILE $lc_ftp_path/${o_aops_cust_no}${o_bill_sequence}_${o_stmt_date}'.xls'
+
+                     echo "sending Failure mail"
+                     sendmail -r $lc_from_email_add -t  $lc_filesize_userid < $MAILFILE
+
+                     if [ $? -ne 0 ] 
+                     then
+                          echo "Mail not sent" 
+                          return_status=1
+                     else
+                          echo "Mail sent"
+                     fi
+
+                else
+
+                     SUBJECT="Statement for Acct #: ${o_aops_cust_no} Billing ID: ${o_cust_acct_no} Stmt Date: $lc_stmt_date ${o_location}"
+
+                     #echo "Mail file name : $MAILFILE"
+                     #echo "Work file name : $WRKFILE"
+                     #echo "From: $FROM"
+                     #echo "To:  $o_mail_add"
+                     #echo "Subject: $SUBJECT"
+                     #echo "From: $FROM" > $MAILFILE
+
+                     echo "From: $lc_from_email_add" > $MAILFILE
+                     echo "To: $o_mail_add" >> $MAILFILE
+                     echo "Subject: $SUBJECT" >> $MAILFILE
+                     echo "Mime-Version: 1.0" >> $MAILFILE
+                     echo "Content-Type: multipart/mixed; boundary=\"boundary-line\"" >> $MAILFILE
+                     echo "--boundary-line" > $WRKFILE
+                     echo "Content-Type: text/html;" >> $WRKFILE
+                     echo "Content-Transfer-Encoding: 7bit" >> $WRKFILE
+                     echo "Content-Disposition: inline;" >> $WRKFILE
+                     echo >> $WRKFILE
+                     cat $lc_html_file_path >> $WRKFILE
+
+                     FILEPATH=$attachment
+                     ATTACHNAME="${o_aops_cust_no}${o_bill_sequence}_${o_stmt_date}.xls"
+                     FILENAME=$FILE 
+
+                     echo "--boundary-line" >> $WRKFILE
+                     echo "Content-Type: application/vnd.ms-excel;" >> $WRKFILE
+
+                     echo "        name=\"$ATTACHNAME\"" >> $WRKFILE
+                     echo "Content-Disposition: attachment;" >> $WRKFILE
+                     echo "        filename=\"$ATTACHNAME\"" >> $WRKFILE
+                     echo "Content-Transfer-Encoding: base64" >> $WRKFILE
+                     echo >> $WRKFILE
+                     #awk '{ print $0"\r" }' <$FILEPATH >X_$FILENAME
+					 awk '{ printf $0"\n" }' <$FILEPATH >X_$FILENAME
+                     openssl base64 -in X_$FILENAME -out b64$FILENAME
+                     cat b64$FILENAME >> $WRKFILE
+                     rm b64$FILENAME
+                     rm X_$FILENAME
+
+                     cat $WRKFILE >> $MAILFILE
+
+                     #echo "sending mail"
+                     sendmail -r $lc_from_email_add -t  $o_mail_add < $MAILFILE
+                     if [ $? -ne 0 ] 
+                     then
+                          echo "Mail not sent" 
+                          return_status=1
+                     else
+                          echo "Mail sent"
+                     fi
+
+                fi
+
+                rm $MAILFILE
+                rm $WRKFILE
+
+                if (test -r $FILE )
+                then
+                       mv $lc_source_path/$FILE $lc_arch_path/${o_aops_cust_no}${o_bill_sequence}_${o_stmt_date}'.xls'
+                       echo "Result                        : File "$FILE "delivered and moved to archive folder as "${o_aops_cust_no}${o_bill_sequence}_${o_stmt_date}".xls"
+                else
+                       return_status=1
+                       echo "Error                         : File "$FILE "has no READ privileges.   Hence cannot be mailed or archived."
+                fi
+          fi
+       done
+# Defect 42124
+else 
+    echo "Result/Error                          : No Excel Files exist in "$lc_source_path 
+    return_status=1
+	   
+fi
+
+echo "Deleting Temporary Files from: ${lc_source_path}"
+#cd $lc_source_path
+find $lc_source_path/* -print0 | xargs -0 rm -rfv
+
+
+# Exiting from Shell.
+
+echo " "
+echo "Exiting from Shell."
+exit 0   # Success.

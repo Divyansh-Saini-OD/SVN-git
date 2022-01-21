@@ -1,0 +1,32 @@
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     ON
+
+PROMPT Creating SYNONYM XX_AR_INVOICE_FREQ_HISTORY
+
+PROMPT Program exits IF the creation IS NOT SUCCESSFUL
+
+WHENEVER SQLERROR CONTINUE
+
+-- +=======================================================================================+
+-- |                  Office Depot - Project Simplify                                      |
+-- +=======================================================================================+
+-- | Name :XXFIN.XX_AR_INVOICE_FREQUENCY_HISTORY                                           |
+-- | Description : Create the frequency table history for AR Invoice Billing               |
+-- |               extension I0381                                                         |
+-- |                                                                                       |
+-- |                                                                                       |
+-- |                                                                                       |
+-- |Change Record:                                                                         |
+-- |===============                                                                        |
+-- |Version   Date         Author             Remarks                                      |
+-- |=======   ==========   =============      =============================================|
+-- | V1.0     27-MAY-2007  Gowri Shankar      Synonym for XX_AR_INVOICE_FREQ_HISTORY       |
+-- |                                                                                       |
+-- +=======================================================================================+ 
+
+CREATE SYNONYM xx_ar_invoice_freq_history FOR xxfin.xx_ar_invoice_freq_history;
+
+SHOW ERROR

@@ -1,0 +1,27 @@
+-- +============================================================================+
+-- |                  Office Depot                                              |
+-- +============================================================================+
+-- | Name        : XX_AR_OD_CBI_S.syn                                           |
+-- | Rice ID     : E2059                                                        |
+-- | Description : Synonym for Sequence XX_AR_OD_CBI_S                          |
+-- |                                                                            |
+-- |Change Record:                                                              |
+-- |===============                                                             |
+-- |Version   Date        Author           Remarks                              |
+-- |=======  ===========  =============    =====================================|
+-- |1.0      15-OCT-2015  Suresh Naragam   Initial Version                      |
+-- |                                       (R12.2 Global standards)             |
+-- +============================================================================+
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     ON
+
+PROMPT
+PROMPT Creating Synonym XX_AR_OD_CBI_S in APPS.....
+PROMPT
+
+CREATE OR REPLACE SYNONYM XX_AR_OD_CBI_S FOR "XXFIN"."XX_AR_OD_CBI_S";  
+
+SHOW ERROR;

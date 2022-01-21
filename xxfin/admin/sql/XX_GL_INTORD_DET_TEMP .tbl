@@ -1,0 +1,45 @@
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     ON
+
+PROMPT Creating TABLE XX_GL_INTORD_DET_TEMP
+
+PROMPT Program exits IF the creation IS NOT SUCCESSFUL
+
+WHENEVER SQLERROR CONTINUE
+
+-- +===================================================================+
+-- |                  Office Depot - Project Simplify                  |
+-- |                      Wipro Technologies                           |
+-- +===================================================================+
+-- | Name  : XX_GL_INTORD_DET_TEMP                                     |
+-- | Description: Custom global temporary table for the report         |
+-- |              R0493 - OD: GL In-Transit Orders Detail By Books     |
+-- |                                                                   |
+-- |                                                                   |
+-- |Change Record:                                                     |
+-- |===============                                                    |
+-- |Version   Date         Author            Remarks                   |
+-- |=======   ==========   =============     ==========================|
+-- |1.0       22-JAN-09    Manovinayak       Initial version           |
+-- |                       Ayyappan                                    |
+-- +===================================================================+
+
+   CREATE GLOBAL TEMPORARY TABLE XXFIN.XX_GL_INTORD_DET_TEMP
+   (order_number NUMBER
+   ,order_date   DATE
+   ,ship_date    DATE
+   ,gl_date           DATE
+   ,period            VARCHAR2(15)
+   ,account_class     VARCHAR2(20)
+   ,dist_account      VARCHAR2(100)
+   ,cogs_account      VARCHAR2(100)
+   ,liab_account      VARCHAR2(100)
+   ,amount_dr         NUMBER
+   ,amount_cr         NUMBER
+   ,cogs_liab_amount  NUMBER
+   ) ON COMMIT DELETE ROWS;
+/
+SHO ERR;

@@ -1,0 +1,28 @@
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF 
+SET TAB          OFF
+SET FEEDBACK     ON
+
+PROMPT ALTERING TABLE XXFIN.XX_FA_RVL_BY_ASSET
+
+WHENEVER SQLERROR CONTINUE
+
+-- +===============================================================================+
+-- |                  Office Depot - Project Simplify                              |
+-- +===============================================================================+
+-- | Name        : XX_FA_RVL_BY_ASSET.tbl                                          |
+-- | Description : Altering the table XX_FA_TAX_INTERFACE_STG                      |
+-- |                                                                               |
+-- |                                                                               |
+-- |Change Record:                                                                 |
+-- |===============                                                                |
+-- | Version      Date           Author                   Remarks                  |
+-- |=========   =========      =============          ======================       |
+-- | V1.0        23-Mar-15      Paddy Sanjeevi        Defectr 914                  |
+-- |                                                                               |
+-- +===============================================================================+
+
+ALTER TABLE xxfin.XX_FA_RVL_BY_ASSET modify process_Flag Varchar2(1);
+
+SHOW ERROR

@@ -1,0 +1,27 @@
+-- +=====================================================================+
+-- |                  Office Depot - Project Simplify                    |
+-- |                       WIPRO Technologies                            |
+-- +=====================================================================+
+-- | Name :  XX_AR_PROMO_CARD_ID_S.seq                                   |
+-- | Description : Creates sequence on xx_ar_promo_card_types.           |
+-- |                                                                     |
+-- |                                                                     |
+-- |Change Record:                                                       |
+-- |===============                                                      |
+-- |Version   Date              Author              Remarks              |
+-- |======   ==========     =============        ======================= |
+-- |1.0       05-MAR-2007  Raji Natarajan,       Created base version    |
+-- |                       Wipro Technologies                            |
+-- |                                                                     |
+-- +=====================================================================+
+
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     ON
+
+CREATE SEQUENCE xxfin.xx_ar_promo_card_id_s START WITH 10000 INCREMENT BY 1;
+
+
+SHOW ERROR

@@ -1,0 +1,101 @@
+
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+-- +===========================================================================+
+-- |                  Office Depot - TZ Subcriptions Project                   |
+-- |                                                                           |                         
+-- +===========================================================================+
+-- | Name        : XX_AR_SUBSCRIPTIONS.tbl                                     |
+-- | Description :                                                             |
+-- | File to create Table for XX_AR_SUBSCRIPTIONS                              |
+-- |                                                                           |
+-- |Change Record:                                                             |
+-- |===============                                                            |
+-- |Version  Date        Author        Remarks            	                   |
+-- |======== =========== ============= ========================================|
+-- |DRAFT 1 11-DEC-2017 Sreedhar Mohan Initial draft version                   |
+-- +===========================================================================+
+
+BEGIN
+  EXECUTE IMMEDIATE 'DROP TABLE XXFIN.XX_AR_SUBSCRIPTIONS';
+EXCEPTION
+  WHEN OTHERS THEN NULL;
+END;
+/
+
+CREATE TABLE XXFIN.XX_AR_SUBSCRIPTIONS
+  (
+    SUBSCRIPTIONS_ID                  NUMBER        
+   ,CONTRACT_NUMBER                   VARCHAR2(60)  
+   ,CONTRACT_ID                       NUMBER        
+   ,CONTRACT_NAME                     VARCHAR2(256) 
+   ,CONTRACT_START_DATE               DATE          
+   ,CONTRACT_END_DATE                 DATE          
+   ,TOTAL_CONTRACT_AMOUNT             NUMBER        
+   ,PAYMENT_TERMS                     VARCHAR2(60)  
+   ,SERVICE_ITEM_NUMBER               VARCHAR2(120)  
+   ,SERVICE_PERIOD_START_DATE         DATE          
+   ,SERVICE_PERIOD_END_DATE           DATE          
+   ,BILLING_AMOUNT                    NUMBER        
+   ,BILLING_SEQUENCE_NUMBER           NUMBER        
+   ,BILLING_DATE                      DATE          
+   ,NEXT_BILLING_DATE                 DATE          
+   ,BILLING_FREQUENCY                 VARCHAR2(15)  
+   ,STORE                             VARCHAR2(120)
+   ,BILLING_INTERVAL_UNIT_PRICE       NUMBER        
+   ,CONTRACT_LINE_NUMBER              VARCHAR2(60)  
+   ,CONTRACT_LINE_AMOUNT              NUMBER        
+   ,CONTRACT_LINE_START_DATE          DATE          
+   ,CONTRACT_LINE_END_DATE            DATE          
+   ,CONTRACT_LINE_BILL_FREQUENCY      VARCHAR2(15)  
+   ,CURRENCY_CODE                     VARCHAR2(15)  
+   ,QUANTITY                          NUMBER
+   ,CARD_ID                           VARCHAR2(60)
+   ,AUTHORIZATION_CODE                VARCHAR2(15)  
+   ,INVOICE_NUMBER                    VARCHAR2(60)  
+   ,INVOICE_LINE_NUMBER               VARCHAR2(20)  
+   ,RECEIPT_NUMBER                    VARCHAR2(60) 
+   ,ORDER_PAYMENT_ID                  NUMBER   
+   ,INVOICE_INTERFACED_FLAG           VARCHAR2(1)   
+   ,INVOICE_INTERFACING_ERROR         VARCHAR2(256)   
+   ,INVOICE_CREATED_FLAG              VARCHAR2(1)   
+   ,INVOICE_CREATION_ERROR            VARCHAR2(256)  
+   ,AUTH_COMPLETED_FLAG               VARCHAR2(1) 
+   ,AUTHORIZATION_ERROR               VARCHAR2(256)
+   ,AUTH_TRANSACTIONID                VARCHAR2(60)
+   ,AUTH_TRANSACTION_MESSAGE          VARCHAR2(30)
+   ,AUTH_STATUS                       VARCHAR2(30)
+   ,AUTH_MESSAGE                      VARCHAR2(30)
+   ,AUTH_AVS_CODE                     VARCHAR2(30)
+   ,AUTH_DATETIME                     VARCHAR2(30)
+   ,CLEAR_TOKEN                       VARCHAR2(60)
+   ,RECEIPT_CREATED_FLAG              VARCHAR2(1) 
+   ,RECEIPT_CREATION_ERROR            VARCHAR2(256)     
+   ,ORDT_STAGED_FLAG                  VARCHAR2(1) 
+   ,ORDT_STAGING_ERROR                VARCHAR2(256)   
+   ,SETTLEMENT_STAGED_FLAG            VARCHAR2(1)
+   ,SETTLEMENT_STAGING_ERROR          VARCHAR2(256)
+   ,SUBSCRIPTION_ERROR                VARCHAR2(256)   
+   ,TAX_AMOUNT                        NUMBER        
+   ,TAX_FLAG                          VARCHAR2(1)   
+   ,ITEM_UNIT_COST                    NUMBER        
+   ,ITEM_DESCRIPTION                  VARCHAR2(256)
+   ,CONTACT_PERSON_EMAIL              VARCHAR2(60) 
+   ,CONTACT_PERSON_PHONE              VARCHAR2(30) 
+   ,CONTACT_PERSON_FAX                VARCHAR2(30) 
+   ,UOM_CODE                          VARCHAR2(25)  
+   ,CREATION_DATE                     DATE          
+   ,LAST_UPDATE_DATE                  DATE          
+   ,CREATED_BY                        NUMBER(15)    
+   ,LAST_UPDATED_BY                   NUMBER(15)    
+   ,LAST_UPDATE_LOGIN                 NUMBER(15)    
+   ,PROGRAM_ID                        NUMBER(15)
+   );           
+
+SHOW ERRORS;
+   
+GRANT ALL ON XXFIN.XX_AR_SUBSCRIPTIONS TO APPS WITH GRANT OPTION;
+
+GRANT SELECT ON XXFIN.XX_AR_SUBSCRIPTIONS TO ERP_SYSTEM_TABLE_SELECT_ROLE;
+EXIT;

@@ -1,0 +1,47 @@
+SET VERIFY OFF;
+SET SHOW OFF;
+SET ECHO OFF;
+SET TAB OFF;
+SET FEEDBACK OFF;
+ 
+WHENEVER SQLERROR CONTINUE;
+ 
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+-- +==================================================================================+  
+-- | Office Depot - Project Simplify                                                  |
+-- |                                                              |
+-- +==================================================================================+
+-- | SQL Script to create the table:  xx_ce_mktplc_prestg_files_arch                       |
+-- | RICE_ID:I3123                                                                    |                                                                                 |
+-- |Change Record:                                                                    |
+-- |===============                                                                   |
+-- |Version   Date          Author               Remarks                              |
+-- |=======   ===========   =============        =====================================|
+-- |1.0       27-MAR-2019    Priyam P          Initial DRAFT version                |
+-- |                                                                                  |
+-- +==================================================================================+
+
+--+=====================================================================+
+--+               CREATE TABLE xx_ce_mktplc_prestg_files_arch
+--+=====================================================================+
+
+
+  CREATE TABLE xx_ce_mktplc_prestg_files_arch 
+   (REC_ID    NUMBER NOT NULL ENABLE,
+    FILE_NAME VARCHAR2(4000) NOT NULL ENABLE,
+    FILE_DATA SYS.XMLTYPE ,
+    STATUS            VARCHAR2(25) DEFAULT 'NEW' NOT NULL ENABLE,
+    SQLLDR_REQUEST_ID NUMBER NOT NULL ENABLE,
+    CREATED_BY        NUMBER,
+    CREATION_DATE     DATE DEFAULT SYSDATE NOT NULL ENABLE,
+    LAST_UPDATED_BY   NUMBER,
+    LAST_UPDATE_LOGIN NUMBER,
+    LAST_UPDATE_DATE  DATE,
+    ERROR_MESSAGE     VARCHAR2(4000)	
+   ) ;
+
+ Grant  all on xx_ce_mktplc_prestg_files_arch to APPS;
+
+   /
+Show error

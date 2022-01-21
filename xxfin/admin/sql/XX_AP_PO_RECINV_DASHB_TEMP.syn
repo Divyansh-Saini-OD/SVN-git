@@ -1,0 +1,31 @@
+SET VERIFY OFF;
+SET SHOW OFF;
+SET ECHO OFF;
+SET TAB OFF;
+SET FEEDBACK OFF;
+ 
+WHENEVER SQLERROR CONTINUE;
+ 
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+-- +===========================================================================+
+-- |                  Office Depot - Project Simplify                          |
+-- +===========================================================================+
+-- | Name :          APPS.XX_AP_PO_RECINV_DASHB_GTEMP                           |
+-- | Description :   Script to create synonym for 
+-- |                                   XXFIN.XX_AP_PO_RECINV_DASHB_GTEMP  table |
+-- |                                                                           |
+-- |                                                                           |
+-- |Change Record:                                                             |
+-- |===============                                                            |
+-- |Version      Date           Author                  Remarks                |
+-- |=======    ==========     =============             ====================== |
+-- | DRAFT 1.0 18-Aug-2016   Priyam Parmar          Initial draft version       |
+-- +===========================================================================+
+
+ 
+
+Create  or replace public synonym XX_AP_PO_RECINV_DASHB_GTEMP for XXFIN.XX_AP_PO_RECINV_DASHB_GTEMP;
+
+ 
+Show error

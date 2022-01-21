@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding='windows-1252'?>
+<!DOCTYPE AppModule SYSTEM "jbo_03_01.dtd">
+<!--
+Subversion Info:
+$HeadURL$
+$Rev$
+$Date$
+-->
+<AppModule
+   Name="ODEBillDocExceptionAM"
+   ComponentClass="od.oracle.apps.xxcrm.cdh.ebl.exec.server.ODEBillDocExceptionAMImpl"
+   LoadComponentsLazily="true" >
+   <DesignTime>
+      <Attr Name="_isCodegen" Value="true" />
+      <Attr Name="_version" Value="9.0.3.12.53" />
+      <Attr Name="_deployType" Value="0" />
+   </DesignTime>
+   <ViewUsage
+      Name="ODEBillDocExceptionVO"
+      ViewObjectName="od.oracle.apps.xxcrm.cdh.ebl.exec.server.ODEBillDocExceptionVO" >
+   </ViewUsage>
+   <ViewUsage
+      Name="ODEBillPayDocVO"
+      ViewObjectName="od.oracle.apps.xxcrm.cdh.ebl.exec.server.ODEBillPayDocVO" >
+   </ViewUsage>
+   <ViewUsage
+      Name="ODEBillDocExcepHRVO"
+      ViewObjectName="od.oracle.apps.xxcrm.cdh.ebl.exec.server.ODEBillDocExcepHRVO" >
+   </ViewUsage>
+</AppModule>

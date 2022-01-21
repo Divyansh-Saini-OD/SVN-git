@@ -1,0 +1,44 @@
+-- +===========================================================================+
+-- |                  Office Depot - SAS Modernization                         |
+-- |                                                                           |
+-- +===========================================================================+
+-- | Name        : XXOM_CSAS_FILE_NAMES_HIST_IDX.idx                                      |
+-- | Description : Index for Custom Table XXOM_CSAS_FILE_NAMES_HIST                       |
+-- |                                                                           |
+-- |Change Record:                                                             |
+-- |===============                                                            |
+-- |Version  Date        Author           Remarks                              |
+-- |======== =========== ================ =====================================|
+-- |1.0      23-Aug-2021 Shreyas Thorat   Initial Version                      |
+-- +===========================================================================+
+
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     ON
+WHENEVER SQLERROR CONTINUE
+
+PROMPT
+PROMPT Creation of Index on custom table XXOM_CSAS_FILE_NAMES_HIST.....
+PROMPT
+
+PROMPT
+PROMPT Creating non-unique index XXOM_CSAS_FILE_NAMES_HIST_N1 .....
+PROMPT
+
+CREATE INDEX XXOM_CSAS_FILE_NAMES_HIST_N1 ON XXOM_CSAS_FILE_NAMES_HIST(FILE_ID);
+
+PROMPT
+PROMPT Creating non-unique index XXOM_CSAS_FILE_NAMES_HIST_N2 .....
+PROMPT
+
+CREATE INDEX XXOM_CSAS_FILE_NAMES_HIST_N2 ON XXOM_CSAS_FILE_NAMES_HIST(FILE_NAME);
+
+WHENEVER SQLERROR EXIT 1
+
+PROMPT
+PROMPT Exiting....
+PROMPT
+
+EXIT;

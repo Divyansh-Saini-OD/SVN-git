@@ -1,0 +1,1288 @@
+<?xml version="1.0" encoding='windows-1252'?>
+<!DOCTYPE ViewObject SYSTEM "jbo_03_01.dtd">
+
+<ViewObject
+   Name="xxGsoPO_hdrNdtl_VO"
+   SelectList="xxGsoPoHdr_EO.PO_HEADER_ID, 
+       xxGsoPoHdr_EO.VENDOR_NO, 
+
+       xxGsoPoHdr_EO.VENDOR_NAME, 
+       xxGsoPoHdr_EO.PO_NUMBER, 
+
+       xxGsoPoHdr_EO.PO_TYPE, 
+       xxGsoPoHdr_EO.VERSION, 
+
+       xxGsoPoHdr_EO.MANUFACTURER_NAME, 
+       xxGsoPoHdr_EO.PO_DATE, 
+
+       xxGsoPoHdr_EO.PO_STATUS_CD, 
+       xxGsoPoHdr_EO.EDI_STATUS, 
+
+       xxGsoPoHdr_EO.BUYING_AGENT, 
+       xxGsoPoHdr_EO.OD_MERCHANT, 
+
+       xxGsoPoHdr_EO.PO_SHIP_DATE, 
+       xxGsoPoHdr_EO.VEND_COMT_SHIP_DATE, 
+
+       xxGsoPoHdr_EO.PO_RECD_JDA_DATE, 
+       xxGsoPoHdr_EO.PO_SENT_VENDOR_DATE, 
+
+       xxGsoPoHdr_EO.PO_CONFM_VEND_DATE, 
+       xxGsoPoHdr_EO.PO_CONF_ODCTODA_DATE, 
+
+       xxGsoPoHdr_EO.PO_CONF_ODA_DATE, 
+       xxGsoPoHdr_EO.LEAD_TIME_PO_CONF, 
+
+       xxGsoPoHdr_EO.COMPANY_SOURCE_CODE, 
+       xxGsoPoHdr_EO.COUNTRY_CODE, 
+
+       xxGsoPoHdr_EO.ORIGIN_COUNTRY_CD, 
+       xxGsoPoHdr_EO.REMARKS, 
+
+       xxGsoPoHdr_EO.LATE_CODE, 
+       xxGsoPoHdr_EO.LATE_REASON, 
+
+       xxGsoPoHdr_EO.NEED_BV, 
+       xxGsoPoHdr_EO.INSPECTION_PARTY, 
+
+       xxGsoPoHdr_EO.PO_CONFRM_ALERT, 
+       xxGsoPoHdr_EO.BOOKING_ALERT, 
+
+       xxGsoPoHdr_EO.ATTRIBUTE1, 
+       xxGsoPoHdr_EO.ATTRIBUTE2, 
+
+       xxGsoPoHdr_EO.ATTRIBUTE3, 
+       xxGsoPoHdr_EO.ATTRIBUTE4, 
+
+       xxGsoPoHdr_EO.ATTRIBUTE5, 
+       xxGsoPoHdr_EO.ATTRIBUTE6, 
+
+       xxGsoPoHdr_EO.ATTRIBUTE7, 
+       xxGsoPoHdr_EO.ATTRIBUTE8, 
+
+       xxGsoPoHdr_EO.ATTRIBUTE9, 
+       xxGsoPoHdr_EO.ATTRIBUTE10, 
+
+       xxGsoPoHdr_EO.ATTRIBUTE11, 
+       xxGsoPoHdr_EO.ATTRIBUTE12, 
+
+       xxGsoPoHdr_EO.ATTRIBUTE13, 
+       xxGsoPoHdr_EO.ATTRIBUTE14, 
+
+       xxGsoPoHdr_EO.ATTRIBUTE15, 
+       xxGsoPoHdr_EO.ROWID, 
+
+       xxGsoPoDtl_EO.PO_HEADER_ID AS PO_HEADER_ID1, 
+       
+xxGsoPoDtl_EO.PO_LINE_ID, 
+       xxGsoPoDtl_EO.PO_LINE_NO, 
+ 
+      xxGsoPoDtl_EO.LINE_STATUS, 
+       xxGsoPoDtl_EO.BV_STATUS, 
+
+       xxGsoPoDtl_EO.ITEM, 
+       xxGsoPoDtl_EO.DESCRIPTION, 
+
+       xxGsoPoDtl_EO.UOM, 
+       xxGsoPoDtl_EO.VPC, 
+      
+ xxGsoPoDtl_EO.CATEGORY, 
+       xxGsoPoDtl_EO.OD_MERCHANT AS 
+OD_MERCHANT1, 
+       xxGsoPoDtl_EO.DIVISION, 
+       xxGsoPoDtl_EO.DEPT, 
+
+       xxGsoPoDtl_EO.CLASS AS CLASS11, 
+       xxGsoPoDtl_EO.ORDERED_QTY, 
+
+       xxGsoPoDtl_EO.SHIPMENT_DATE, 
+       xxGsoPoDtl_EO.BATCH_ID, 
+
+       xxGsoPoDtl_EO.STD_PACK, 
+       xxGsoPoDtl_EO.CARTON_PACK, 
+
+       xxGsoPoDtl_EO.CARTON_CUBE, 
+       xxGsoPoDtl_EO.CARTON_WEIGHT, 
+
+       xxGsoPoDtl_EO.MASTER_CARTON, 
+       xxGsoPoDtl_EO.RETAIL_COST, 
+
+       xxGsoPoDtl_EO.MASTER_FOB_COST, 
+       xxGsoPoDtl_EO.FOB_ORIGIN_COST, 
+
+       xxGsoPoDtl_EO.EST_LAND_COST, 
+       xxGsoPoDtl_EO.ACT_LAND_COST, 
+
+       xxGsoPoDtl_EO.MERCH_DEC_COST, 
+       xxGsoPoDtl_EO.SOURCE_PORT_NAME, 
+
+       xxGsoPoDtl_EO.DESTN_PORT_NAME, 
+       xxGsoPoDtl_EO.ORIGINAL_PO_SHIPDATE, 
+
+       xxGsoPoDtl_EO.CHANGED_PO_SHIPDATE, 
+       xxGsoPoDtl_EO.REASON_CODE, 
+
+       xxGsoPoDtl_EO.REMARKS AS REMARKS1, 
+       xxGsoPoDtl_EO.PARTIAL_LINE_FLAG, 
+
+       xxGsoPoDtl_EO.LATEST_LINE_FLAG, 
+       xxGsoPoDtl_EO.NEW_ITEM_FLAG, 
+
+       xxGsoPoDtl_EO.OVER_SHIPPED_FLAG, 
+       xxGsoPoDtl_EO.LATE_SHIPMENT_ALERT, 
+
+       xxGsoPoDtl_EO.KN_BOOKING_ALERT, 
+       xxGsoPoDtl_EO.KN_RECEIVING_ALERT, 
+
+       xxGsoPoDtl_EO.BV_BOOKING_ALERT, 
+       xxGsoPoDtl_EO.INSP_BOOK_ALERT, 
+
+       xxGsoPoDtl_EO.ATTRIBUTE1 AS ATTRIBUTE16, 
+       xxGsoPoDtl_EO.ATTRIBUTE2 
+AS ATTRIBUTE21, 
+       xxGsoPoDtl_EO.ATTRIBUTE3 AS ATTRIBUTE31, 
+
+       xxGsoPoDtl_EO.ATTRIBUTE4 AS ATTRIBUTE41, 
+       xxGsoPoDtl_EO.ATTRIBUTE5 
+AS ATTRIBUTE51, 
+       xxGsoPoDtl_EO.ATTRIBUTE6 AS ATTRIBUTE61, 
+
+       xxGsoPoDtl_EO.ATTRIBUTE7 AS ATTRIBUTE71, 
+       xxGsoPoDtl_EO.ATTRIBUTE8 
+AS ATTRIBUTE81, 
+       xxGsoPoDtl_EO.ATTRIBUTE9 AS ATTRIBUTE91, 
+
+       xxGsoPoDtl_EO.ATTRIBUTE10 AS ATTRIBUTE101, 
+       xxGsoPoDtl_EO.ATTRIBUTE11 
+AS ATTRIBUTE111, 
+       xxGsoPoDtl_EO.ATTRIBUTE12 AS ATTRIBUTE121, 
+
+       xxGsoPoDtl_EO.ATTRIBUTE13 AS ATTRIBUTE131, 
+       xxGsoPoDtl_EO.ATTRIBUTE14 
+AS ATTRIBUTE141, 
+       xxGsoPoDtl_EO.ATTRIBUTE15 AS ATTRIBUTE151, 
+
+       xxGsoPoDtl_EO.ROWID AS ROW_ID1, 
+       xxGsoPoHdr_EO.ROWID 
+AS ROW_ID2, 
+       xxGsoPoDtl_EO.ROWID AS ROW_ID3, 
+       xxGsoPoDtl_EO.DELAY_CODE, 
+
+       xxGsoPoDtl_EO.DELAY_REASON, 
+       xxGsoPoDtl_EO.FOB_USD_COST, 
+
+       xxGsoPoDtl_EO.BV_CODE, 
+       xxGsoPoDtl_EO.BV_REASON, 
+
+       xxGsoPoDtl_EO.GSO_DEPT_ID, 
+       xxGsoPoDtl_EO.ORIGIN, 
+
+       xxGsoPoDtl_EO.NB_FLAG, 
+       xxGsoPoDtl_EO.INLINE_FLAG, 
+
+       xxGsoPoDtl_EO.SAFETY_STOCK_FLAG, 
+       xxGsoPoDtl_EO.BV_FLAG, 
+
+       xxGsoPoDtl_EO.FIRST_SHIPMENT_FLAG, 
+       xxGsoPoDtl_EO.GSO_MO, 
+
+       xxGsoPoHdr_EO.BATCH_ID AS BATCH_ID1, 
+       xxGsoPoHdr_EO.REQD_DELIVER_DATE, 
+
+       xxGsoPoHdr_EO.CURRENCY_CODE, 
+       xxGsoPoHdr_EO.PO_SOURCE, 
+
+       xxGsoPoHdr_EO.PORT, 
+       xxGsoPoHdr_EO.LOC, 
+     
+  xxGsoPoHdr_EO.CHANGED_SHIP_DATE, 
+       xxGsoPoHdr_EO.LAST_UPDATE_DATE, 
+
+       xxGsoPoHdr_EO.LAST_UPDATED_BY, 
+       xxGsoPoHdr_EO.LAST_UPDATE_LOGIN, 
+
+       xxGsoPoDtl_EO.LAST_UPDATE_DATE AS LAST_UPDATE_DATE1, 
+
+       xxGsoPoDtl_EO.LAST_UPDATED_BY AS LAST_UPDATED_BY1, 
+ 
+      xxGsoPoDtl_EO.LAST_UPDATE_LOGIN AS LAST_UPDATE_LOGIN1, 
+
+       xxGsoPoDtl_EO.INSP_QTY, 
+       xxGsoPoDtl_EO.SHIPPED_QTY, 
+
+       xxGsoPoDtl_EO.BOOKED_QTY, 
+       xxGsoPoDtl_EO.RECEIVED_QTY, 
+
+       xxGsoPoDtl_EO.DIFF_PRICE, 
+       xxGsoPoDtl_EO.SHIPMENT_STATUS, 
+
+       FOB_ORIGIN_COST * ORDERED_QTY AS LineTotal, 
+       xxGsoPoHdr_EO.CREATED_BY, 
+
+       xxGsoPoHdr_EO.INSP_AMNT, 
+       xxGsoPoHdr_EO.INSP_QTY 
+AS INSP_QTY1, 
+       xxGsoPoHdr_EO.PO_AMNT, 
+       xxGsoPoHdr_EO.PO_QTY, 
+
+       xxGsoPoHdr_EO.SHIP_AMNT, 
+       xxGsoPoHdr_EO.SHIP_QTY, 
+
+       xxGsoPoDtl_EO.CREATION_DATE, 
+       xxGsoPoDtl_EO.CREATED_BY 
+AS CREATED_BY1, 
+       master_carton*carton_cube AS TotalCartonCube, 
+
+       master_carton*carton_weight AS TotalCartonWeight, 
+  
+     ordered_qty*RETAIL_COST AS TotalRetail, 
+       ordered_qty*EST_LAND_COST 
+AS TotalEstLanded, 
+       ordered_qty*merch_dec_cost AS TotalMerchDec, 
+
+       ordered_qty*ACT_LAND_COST AS TotalActLanded, 
+       
+xxGsoPoDtl_EO.LINE_TOTAL AS LINE_TOTAL1"
+   FromList="XX_GSO_PO_HDR xxGsoPoHdr_EO, XX_GSO_PO_DTL xxGsoPoDtl_EO"
+   Where="(xxGsoPoHdr_EO.PO_HEADER_ID = xxGsoPoDtl_EO.PO_HEADER_ID)"
+   BindingStyle="Oracle"
+   CustomQuery="false"
+   RowClass="od.oracle.apps.xxmer.xxGsoPlmPOTracking.server.xxGsoPO_hdrNdtl_VORowImpl"
+   ComponentClass="od.oracle.apps.xxmer.xxGsoPlmPOTracking.server.xxGsoPO_hdrNdtl_VOImpl"
+   MsgBundleClass="oracle.jbo.common.JboResourceBundle"
+   FetchMode="FETCH_ALL"
+   FetchSize="50"
+   Passivate="All"
+   UseGlueCode="false" >
+   <DesignTime>
+      <Attr Name="_isCodegen" Value="true" />
+      <Attr Name="_version" Value="9.0.3.14.01" />
+      <Attr Name="_CodeGenFlagNew" Value="36" />
+   </DesignTime>
+   <EntityUsage
+      Name="xxGsoPoHdr_EO"
+      Entity="od.oracle.apps.xxmer.xxGsoPlmPOTracking.server.xxGsoPoHdr_EO" >
+      <DesignTime>
+         <Attr Name="_queryClause" Value="true" />
+         <Attr Name="_queryWhere" Value="(xxGsoPoHdr_EO.PO_HEADER_ID = xxGsoPoDtl_EO.PO_HEADER_ID)" />
+      </DesignTime>
+   </EntityUsage>
+   <EntityUsage
+      Name="xxGsoPoDtl_EO"
+      Entity="od.oracle.apps.xxmer.xxGsoPlmPOTracking.server.xxGsoPoDtl_EO"
+      SourceUsage="od.oracle.apps.xxmer.xxGsoPlmPOTracking.server.xxGsoPO_hdrNdtl_VO.xxGsoPoHdr_EO"
+      Reference="true" >
+      <DesignTime>
+         <Attr Name="_queryClause" Value="false" />
+         <AttrArray Name="_srcAttributes">
+            <Item Value="od.oracle.apps.xxmer.xxGsoPlmPOTracking.server.xxGsoPoHdr_EO.PoHeaderId" />
+            <Item Value="od.oracle.apps.xxmer.xxGsoPlmPOTracking.server.xxGsoPoHdr_EO.OdMerchant" />
+            <Item Value="od.oracle.apps.xxmer.xxGsoPlmPOTracking.server.xxGsoPoHdr_EO.Remarks" />
+         </AttrArray>
+         <AttrArray Name="_dstAttributes">
+            <Item Value="od.oracle.apps.xxmer.xxGsoPlmPOTracking.server.xxGsoPoDtl_EO.PoHeaderId" />
+            <Item Value="od.oracle.apps.xxmer.xxGsoPlmPOTracking.server.xxGsoPoDtl_EO.OdMerchant" />
+            <Item Value="od.oracle.apps.xxmer.xxGsoPlmPOTracking.server.xxGsoPoDtl_EO.Remarks" />
+         </AttrArray>
+      </DesignTime>
+   </EntityUsage>
+   <ViewAttribute
+      Name="PoHeaderId"
+      IsNotNull="true"
+      EntityAttrName="PoHeaderId"
+      EntityUsage="xxGsoPoHdr_EO"
+      AliasName="PO_HEADER_ID" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="VendorNo"
+      IsNotNull="true"
+      EntityAttrName="VendorNo"
+      EntityUsage="xxGsoPoHdr_EO"
+      AliasName="VENDOR_NO" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="VendorName"
+      EntityAttrName="VendorName"
+      EntityUsage="xxGsoPoHdr_EO"
+      AliasName="VENDOR_NAME" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="PoNumber"
+      IsNotNull="true"
+      EntityAttrName="PoNumber"
+      EntityUsage="xxGsoPoHdr_EO"
+      AliasName="PO_NUMBER" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="PoType"
+      EntityAttrName="PoType"
+      EntityUsage="xxGsoPoHdr_EO"
+      AliasName="PO_TYPE" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Version"
+      EntityAttrName="Version"
+      EntityUsage="xxGsoPoHdr_EO"
+      AliasName="VERSION" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="ManufacturerName"
+      EntityAttrName="ManufacturerName"
+      EntityUsage="xxGsoPoHdr_EO"
+      AliasName="MANUFACTURER_NAME" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="PoDate"
+      IsNotNull="true"
+      EntityAttrName="PoDate"
+      EntityUsage="xxGsoPoHdr_EO"
+      AliasName="PO_DATE" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="PoStatusCd"
+      EntityAttrName="PoStatusCd"
+      EntityUsage="xxGsoPoHdr_EO"
+      AliasName="PO_STATUS_CD" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="EdiStatus"
+      EntityAttrName="EdiStatus"
+      EntityUsage="xxGsoPoHdr_EO"
+      AliasName="EDI_STATUS" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="BuyingAgent"
+      EntityAttrName="BuyingAgent"
+      EntityUsage="xxGsoPoHdr_EO"
+      AliasName="BUYING_AGENT" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="OdMerchant"
+      EntityAttrName="OdMerchant"
+      EntityUsage="xxGsoPoHdr_EO"
+      AliasName="OD_MERCHANT" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="PoShipDate"
+      EntityAttrName="PoShipDate"
+      EntityUsage="xxGsoPoHdr_EO"
+      AliasName="PO_SHIP_DATE" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="VendComtShipDate"
+      EntityAttrName="VendComtShipDate"
+      EntityUsage="xxGsoPoHdr_EO"
+      AliasName="VEND_COMT_SHIP_DATE" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="PoRecdJdaDate"
+      EntityAttrName="PoRecdJdaDate"
+      EntityUsage="xxGsoPoHdr_EO"
+      AliasName="PO_RECD_JDA_DATE" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="PoSentVendorDate"
+      EntityAttrName="PoSentVendorDate"
+      EntityUsage="xxGsoPoHdr_EO"
+      AliasName="PO_SENT_VENDOR_DATE" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="PoConfmVendDate"
+      EntityAttrName="PoConfmVendDate"
+      EntityUsage="xxGsoPoHdr_EO"
+      AliasName="PO_CONFM_VEND_DATE" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="PoConfOdctodaDate"
+      EntityAttrName="PoConfOdctodaDate"
+      EntityUsage="xxGsoPoHdr_EO"
+      AliasName="PO_CONF_ODCTODA_DATE" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="PoConfOdaDate"
+      EntityAttrName="PoConfOdaDate"
+      EntityUsage="xxGsoPoHdr_EO"
+      AliasName="PO_CONF_ODA_DATE" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="LeadTimePoConf"
+      EntityAttrName="LeadTimePoConf"
+      EntityUsage="xxGsoPoHdr_EO"
+      AliasName="LEAD_TIME_PO_CONF" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="CompanySourceCode"
+      EntityAttrName="CompanySourceCode"
+      EntityUsage="xxGsoPoHdr_EO"
+      AliasName="COMPANY_SOURCE_CODE" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="CountryCode"
+      EntityAttrName="CountryCode"
+      EntityUsage="xxGsoPoHdr_EO"
+      AliasName="COUNTRY_CODE" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="OriginCountryCd"
+      EntityAttrName="OriginCountryCd"
+      EntityUsage="xxGsoPoHdr_EO"
+      AliasName="ORIGIN_COUNTRY_CD" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Remarks"
+      EntityAttrName="Remarks"
+      EntityUsage="xxGsoPoHdr_EO"
+      AliasName="REMARKS" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="LateCode"
+      EntityAttrName="LateCode"
+      EntityUsage="xxGsoPoHdr_EO"
+      AliasName="LATE_CODE" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="LateReason"
+      EntityAttrName="LateReason"
+      EntityUsage="xxGsoPoHdr_EO"
+      AliasName="LATE_REASON" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="NeedBv"
+      EntityAttrName="NeedBv"
+      EntityUsage="xxGsoPoHdr_EO"
+      AliasName="NEED_BV" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="InspectionParty"
+      EntityAttrName="InspectionParty"
+      EntityUsage="xxGsoPoHdr_EO"
+      AliasName="INSPECTION_PARTY" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="PoConfrmAlert"
+      EntityAttrName="PoConfrmAlert"
+      EntityUsage="xxGsoPoHdr_EO"
+      AliasName="PO_CONFRM_ALERT" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="BookingAlert"
+      EntityAttrName="BookingAlert"
+      EntityUsage="xxGsoPoHdr_EO"
+      AliasName="BOOKING_ALERT" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Attribute1"
+      EntityAttrName="Attribute1"
+      EntityUsage="xxGsoPoHdr_EO"
+      AliasName="ATTRIBUTE1" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Attribute2"
+      EntityAttrName="Attribute2"
+      EntityUsage="xxGsoPoHdr_EO"
+      AliasName="ATTRIBUTE2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Attribute3"
+      EntityAttrName="Attribute3"
+      EntityUsage="xxGsoPoHdr_EO"
+      AliasName="ATTRIBUTE3" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Attribute4"
+      EntityAttrName="Attribute4"
+      EntityUsage="xxGsoPoHdr_EO"
+      AliasName="ATTRIBUTE4" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Attribute5"
+      EntityAttrName="Attribute5"
+      EntityUsage="xxGsoPoHdr_EO"
+      AliasName="ATTRIBUTE5" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Attribute6"
+      EntityAttrName="Attribute6"
+      EntityUsage="xxGsoPoHdr_EO"
+      AliasName="ATTRIBUTE6" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Attribute7"
+      EntityAttrName="Attribute7"
+      EntityUsage="xxGsoPoHdr_EO"
+      AliasName="ATTRIBUTE7" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Attribute8"
+      EntityAttrName="Attribute8"
+      EntityUsage="xxGsoPoHdr_EO"
+      AliasName="ATTRIBUTE8" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Attribute9"
+      EntityAttrName="Attribute9"
+      EntityUsage="xxGsoPoHdr_EO"
+      AliasName="ATTRIBUTE9" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Attribute10"
+      EntityAttrName="Attribute10"
+      EntityUsage="xxGsoPoHdr_EO"
+      AliasName="ATTRIBUTE10" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Attribute11"
+      EntityAttrName="Attribute11"
+      EntityUsage="xxGsoPoHdr_EO"
+      AliasName="ATTRIBUTE11" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Attribute12"
+      EntityAttrName="Attribute12"
+      EntityUsage="xxGsoPoHdr_EO"
+      AliasName="ATTRIBUTE12" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Attribute13"
+      EntityAttrName="Attribute13"
+      EntityUsage="xxGsoPoHdr_EO"
+      AliasName="ATTRIBUTE13" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Attribute14"
+      EntityAttrName="Attribute14"
+      EntityUsage="xxGsoPoHdr_EO"
+      AliasName="ATTRIBUTE14" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Attribute15"
+      EntityAttrName="Attribute15"
+      EntityUsage="xxGsoPoHdr_EO"
+      AliasName="ATTRIBUTE15" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="RowID"
+      IsUpdateable="false"
+      EntityAttrName="RowID"
+      EntityUsage="xxGsoPoHdr_EO"
+      AliasName="ROWID" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="PoHeaderId1"
+      IsNotNull="true"
+      EntityAttrName="PoHeaderId"
+      EntityUsage="xxGsoPoDtl_EO"
+      AliasName="PO_HEADER_ID1" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="PoLineId"
+      IsNotNull="true"
+      EntityAttrName="PoLineId"
+      EntityUsage="xxGsoPoDtl_EO"
+      AliasName="PO_LINE_ID" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="PoLineNo"
+      IsNotNull="true"
+      EntityAttrName="PoLineNo"
+      EntityUsage="xxGsoPoDtl_EO"
+      AliasName="PO_LINE_NO" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="LineStatus"
+      EntityAttrName="LineStatus"
+      EntityUsage="xxGsoPoDtl_EO"
+      AliasName="LINE_STATUS" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="BvStatus"
+      EntityAttrName="BvStatus"
+      EntityUsage="xxGsoPoDtl_EO"
+      AliasName="BV_STATUS" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Item"
+      EntityAttrName="Item"
+      EntityUsage="xxGsoPoDtl_EO"
+      AliasName="ITEM" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Description"
+      EntityAttrName="Description"
+      EntityUsage="xxGsoPoDtl_EO"
+      AliasName="DESCRIPTION" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Uom"
+      EntityAttrName="Uom"
+      EntityUsage="xxGsoPoDtl_EO"
+      AliasName="UOM" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Vpc"
+      EntityAttrName="Vpc"
+      EntityUsage="xxGsoPoDtl_EO"
+      AliasName="VPC" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Category"
+      EntityAttrName="Category"
+      EntityUsage="xxGsoPoDtl_EO"
+      AliasName="CATEGORY" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="OdMerchant1"
+      EntityAttrName="OdMerchant"
+      EntityUsage="xxGsoPoDtl_EO"
+      AliasName="OD_MERCHANT1" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Division"
+      EntityAttrName="Division"
+      EntityUsage="xxGsoPoDtl_EO"
+      AliasName="DIVISION" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Dept"
+      EntityAttrName="Dept"
+      EntityUsage="xxGsoPoDtl_EO"
+      AliasName="DEPT" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Class11"
+      EntityAttrName="Class1"
+      EntityUsage="xxGsoPoDtl_EO"
+      AliasName="CLASS11" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="OrderedQty"
+      EntityAttrName="OrderedQty"
+      EntityUsage="xxGsoPoDtl_EO"
+      AliasName="ORDERED_QTY" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="ShipmentDate"
+      EntityAttrName="ShipmentDate"
+      EntityUsage="xxGsoPoDtl_EO"
+      AliasName="SHIPMENT_DATE" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="BatchId"
+      EntityAttrName="BatchId"
+      EntityUsage="xxGsoPoDtl_EO"
+      AliasName="BATCH_ID" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="StdPack"
+      EntityAttrName="StdPack"
+      EntityUsage="xxGsoPoDtl_EO"
+      AliasName="STD_PACK" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="CartonPack"
+      EntityAttrName="CartonPack"
+      EntityUsage="xxGsoPoDtl_EO"
+      AliasName="CARTON_PACK" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="CartonCube"
+      EntityAttrName="CartonCube"
+      EntityUsage="xxGsoPoDtl_EO"
+      AliasName="CARTON_CUBE" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="CartonWeight"
+      EntityAttrName="CartonWeight"
+      EntityUsage="xxGsoPoDtl_EO"
+      AliasName="CARTON_WEIGHT" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="MasterCarton"
+      EntityAttrName="MasterCarton"
+      EntityUsage="xxGsoPoDtl_EO"
+      AliasName="MASTER_CARTON" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="RetailCost"
+      EntityAttrName="RetailCost"
+      EntityUsage="xxGsoPoDtl_EO"
+      AliasName="RETAIL_COST" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="MasterFobCost"
+      EntityAttrName="MasterFobCost"
+      EntityUsage="xxGsoPoDtl_EO"
+      AliasName="MASTER_FOB_COST" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="FobOriginCost"
+      EntityAttrName="FobOriginCost"
+      EntityUsage="xxGsoPoDtl_EO"
+      AliasName="FOB_ORIGIN_COST" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="EstLandCost"
+      EntityAttrName="EstLandCost"
+      EntityUsage="xxGsoPoDtl_EO"
+      AliasName="EST_LAND_COST" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="ActLandCost"
+      EntityAttrName="ActLandCost"
+      EntityUsage="xxGsoPoDtl_EO"
+      AliasName="ACT_LAND_COST" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="MerchDecCost"
+      EntityAttrName="MerchDecCost"
+      EntityUsage="xxGsoPoDtl_EO"
+      AliasName="MERCH_DEC_COST" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="SourcePortName"
+      EntityAttrName="SourcePortName"
+      EntityUsage="xxGsoPoDtl_EO"
+      AliasName="SOURCE_PORT_NAME" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="DestnPortName"
+      EntityAttrName="DestnPortName"
+      EntityUsage="xxGsoPoDtl_EO"
+      AliasName="DESTN_PORT_NAME" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="OriginalPoShipdate"
+      EntityAttrName="OriginalPoShipdate"
+      EntityUsage="xxGsoPoDtl_EO"
+      AliasName="ORIGINAL_PO_SHIPDATE" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="ChangedPoShipdate"
+      EntityAttrName="ChangedPoShipdate"
+      EntityUsage="xxGsoPoDtl_EO"
+      AliasName="CHANGED_PO_SHIPDATE" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="ReasonCode"
+      EntityAttrName="ReasonCode"
+      EntityUsage="xxGsoPoDtl_EO"
+      AliasName="REASON_CODE" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Remarks1"
+      EntityAttrName="Remarks"
+      EntityUsage="xxGsoPoDtl_EO"
+      AliasName="REMARKS1" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="PartialLineFlag"
+      EntityAttrName="PartialLineFlag"
+      EntityUsage="xxGsoPoDtl_EO"
+      AliasName="PARTIAL_LINE_FLAG" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="LatestLineFlag"
+      EntityAttrName="LatestLineFlag"
+      EntityUsage="xxGsoPoDtl_EO"
+      AliasName="LATEST_LINE_FLAG" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="NewItemFlag"
+      EntityAttrName="NewItemFlag"
+      EntityUsage="xxGsoPoDtl_EO"
+      AliasName="NEW_ITEM_FLAG" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="OverShippedFlag"
+      EntityAttrName="OverShippedFlag"
+      EntityUsage="xxGsoPoDtl_EO"
+      AliasName="OVER_SHIPPED_FLAG" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="LateShipmentAlert"
+      EntityAttrName="LateShipmentAlert"
+      EntityUsage="xxGsoPoDtl_EO"
+      AliasName="LATE_SHIPMENT_ALERT" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="KnBookingAlert"
+      EntityAttrName="KnBookingAlert"
+      EntityUsage="xxGsoPoDtl_EO"
+      AliasName="KN_BOOKING_ALERT" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="KnReceivingAlert"
+      EntityAttrName="KnReceivingAlert"
+      EntityUsage="xxGsoPoDtl_EO"
+      AliasName="KN_RECEIVING_ALERT" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="BvBookingAlert"
+      EntityAttrName="BvBookingAlert"
+      EntityUsage="xxGsoPoDtl_EO"
+      AliasName="BV_BOOKING_ALERT" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="InspBookAlert"
+      EntityAttrName="InspBookAlert"
+      EntityUsage="xxGsoPoDtl_EO"
+      AliasName="INSP_BOOK_ALERT" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Attribute16"
+      EntityAttrName="Attribute1"
+      EntityUsage="xxGsoPoDtl_EO"
+      AliasName="ATTRIBUTE16" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Attribute21"
+      EntityAttrName="Attribute2"
+      EntityUsage="xxGsoPoDtl_EO"
+      AliasName="ATTRIBUTE21" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Attribute31"
+      EntityAttrName="Attribute3"
+      EntityUsage="xxGsoPoDtl_EO"
+      AliasName="ATTRIBUTE31" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Attribute41"
+      EntityAttrName="Attribute4"
+      EntityUsage="xxGsoPoDtl_EO"
+      AliasName="ATTRIBUTE41" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Attribute51"
+      EntityAttrName="Attribute5"
+      EntityUsage="xxGsoPoDtl_EO"
+      AliasName="ATTRIBUTE51" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Attribute61"
+      EntityAttrName="Attribute6"
+      EntityUsage="xxGsoPoDtl_EO"
+      AliasName="ATTRIBUTE61" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Attribute71"
+      EntityAttrName="Attribute7"
+      EntityUsage="xxGsoPoDtl_EO"
+      AliasName="ATTRIBUTE71" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Attribute81"
+      EntityAttrName="Attribute8"
+      EntityUsage="xxGsoPoDtl_EO"
+      AliasName="ATTRIBUTE81" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Attribute91"
+      EntityAttrName="Attribute9"
+      EntityUsage="xxGsoPoDtl_EO"
+      AliasName="ATTRIBUTE91" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Attribute101"
+      EntityAttrName="Attribute10"
+      EntityUsage="xxGsoPoDtl_EO"
+      AliasName="ATTRIBUTE101" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Attribute111"
+      EntityAttrName="Attribute11"
+      EntityUsage="xxGsoPoDtl_EO"
+      AliasName="ATTRIBUTE111" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Attribute121"
+      EntityAttrName="Attribute12"
+      EntityUsage="xxGsoPoDtl_EO"
+      AliasName="ATTRIBUTE121" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Attribute131"
+      EntityAttrName="Attribute13"
+      EntityUsage="xxGsoPoDtl_EO"
+      AliasName="ATTRIBUTE131" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Attribute141"
+      EntityAttrName="Attribute14"
+      EntityUsage="xxGsoPoDtl_EO"
+      AliasName="ATTRIBUTE141" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Attribute151"
+      EntityAttrName="Attribute15"
+      EntityUsage="xxGsoPoDtl_EO"
+      AliasName="ATTRIBUTE151" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="RowID1"
+      IsUpdateable="false"
+      EntityAttrName="RowID"
+      EntityUsage="xxGsoPoDtl_EO"
+      AliasName="ROW_ID1" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="RowID2"
+      IsUpdateable="false"
+      EntityAttrName="RowID"
+      EntityUsage="xxGsoPoHdr_EO"
+      AliasName="ROW_ID2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="RowID3"
+      IsUpdateable="false"
+      EntityAttrName="RowID"
+      EntityUsage="xxGsoPoDtl_EO"
+      AliasName="ROW_ID3" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="poSelectFlag"
+      IsPersistent="false"
+      DefaultValue="N"
+      Precision="255"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="VIEW_ATTR"
+      Passivate="true"
+      SQLType="VARCHAR" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="setFlag"
+      IsPersistent="false"
+      DefaultValue="Y"
+      Precision="255"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="VIEW_ATTR"
+      SQLType="VARCHAR" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="DelayCode"
+      EntityAttrName="DelayCode"
+      EntityUsage="xxGsoPoDtl_EO"
+      AliasName="DELAY_CODE" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="DelayReason"
+      EntityAttrName="DelayReason"
+      EntityUsage="xxGsoPoDtl_EO"
+      AliasName="DELAY_REASON" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="FobUsdCost"
+      EntityAttrName="FobUsdCost"
+      EntityUsage="xxGsoPoDtl_EO"
+      AliasName="FOB_USD_COST" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="BvCode"
+      EntityAttrName="BvCode"
+      EntityUsage="xxGsoPoDtl_EO"
+      AliasName="BV_CODE" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="BvReason"
+      EntityAttrName="BvReason"
+      EntityUsage="xxGsoPoDtl_EO"
+      AliasName="BV_REASON" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="GsoDeptId"
+      EntityAttrName="GsoDeptId"
+      EntityUsage="xxGsoPoDtl_EO"
+      AliasName="GSO_DEPT_ID" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Origin"
+      EntityAttrName="Origin"
+      EntityUsage="xxGsoPoDtl_EO"
+      AliasName="ORIGIN" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="NbFlag"
+      EntityAttrName="NbFlag"
+      EntityUsage="xxGsoPoDtl_EO"
+      AliasName="NB_FLAG" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="InlineFlag"
+      EntityAttrName="InlineFlag"
+      EntityUsage="xxGsoPoDtl_EO"
+      AliasName="INLINE_FLAG" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="SafetyStockFlag"
+      EntityAttrName="SafetyStockFlag"
+      EntityUsage="xxGsoPoDtl_EO"
+      AliasName="SAFETY_STOCK_FLAG" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="BvFlag"
+      EntityAttrName="BvFlag"
+      EntityUsage="xxGsoPoDtl_EO"
+      AliasName="BV_FLAG" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="FirstShipmentFlag"
+      EntityAttrName="FirstShipmentFlag"
+      EntityUsage="xxGsoPoDtl_EO"
+      AliasName="FIRST_SHIPMENT_FLAG" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="GsoMo"
+      EntityAttrName="GsoMo"
+      EntityUsage="xxGsoPoDtl_EO"
+      AliasName="GSO_MO" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="BatchId1"
+      EntityAttrName="BatchId"
+      EntityUsage="xxGsoPoHdr_EO"
+      AliasName="BATCH_ID1" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="ReqdDeliverDate"
+      EntityAttrName="ReqdDeliverDate"
+      EntityUsage="xxGsoPoHdr_EO"
+      AliasName="REQD_DELIVER_DATE" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="CurrencyCode"
+      EntityAttrName="CurrencyCode"
+      EntityUsage="xxGsoPoHdr_EO"
+      AliasName="CURRENCY_CODE" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="PoSource"
+      EntityAttrName="PoSource"
+      EntityUsage="xxGsoPoHdr_EO"
+      AliasName="PO_SOURCE" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Port"
+      EntityAttrName="Port"
+      EntityUsage="xxGsoPoHdr_EO"
+      AliasName="PORT" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Loc"
+      EntityAttrName="Loc"
+      EntityUsage="xxGsoPoHdr_EO"
+      AliasName="LOC" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="ChangedShipDate"
+      EntityAttrName="ChangedShipDate"
+      EntityUsage="xxGsoPoHdr_EO"
+      AliasName="CHANGED_SHIP_DATE" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="LastUpdateDate"
+      IsNotNull="true"
+      EntityAttrName="LastUpdateDate"
+      EntityUsage="xxGsoPoHdr_EO"
+      AliasName="LAST_UPDATE_DATE" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="LastUpdatedBy"
+      IsNotNull="true"
+      EntityAttrName="LastUpdatedBy"
+      EntityUsage="xxGsoPoHdr_EO"
+      AliasName="LAST_UPDATED_BY" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="LastUpdateLogin"
+      EntityAttrName="LastUpdateLogin"
+      EntityUsage="xxGsoPoHdr_EO"
+      AliasName="LAST_UPDATE_LOGIN" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="LastUpdateDate1"
+      IsNotNull="true"
+      EntityAttrName="LastUpdateDate"
+      EntityUsage="xxGsoPoDtl_EO"
+      AliasName="LAST_UPDATE_DATE1" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="LastUpdatedBy1"
+      IsNotNull="true"
+      EntityAttrName="LastUpdatedBy"
+      EntityUsage="xxGsoPoDtl_EO"
+      AliasName="LAST_UPDATED_BY1" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="LastUpdateLogin1"
+      EntityAttrName="LastUpdateLogin"
+      EntityUsage="xxGsoPoDtl_EO"
+      AliasName="LAST_UPDATE_LOGIN1" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="InspQty"
+      EntityAttrName="InspQty"
+      EntityUsage="xxGsoPoDtl_EO"
+      AliasName="INSP_QTY" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="ShippedQty"
+      EntityAttrName="ShippedQty"
+      EntityUsage="xxGsoPoDtl_EO"
+      AliasName="SHIPPED_QTY" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="BookedQty"
+      EntityAttrName="BookedQty"
+      EntityUsage="xxGsoPoDtl_EO"
+      AliasName="BOOKED_QTY" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="ReceivedQty"
+      EntityAttrName="ReceivedQty"
+      EntityUsage="xxGsoPoDtl_EO"
+      AliasName="RECEIVED_QTY" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="DiffPrice"
+      Precision="1"
+      EntityAttrName="DiffPrice"
+      EntityUsage="xxGsoPoDtl_EO"
+      AliasName="DIFF_PRICE" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="ShipmentStatus"
+      Precision="30"
+      EntityAttrName="ShipmentStatus"
+      EntityUsage="xxGsoPoDtl_EO"
+      AliasName="SHIPMENT_STATUS" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="LineTotal"
+      IsPersistent="false"
+      Type="oracle.jbo.domain.Number"
+      ColumnType="NUMBER"
+      AliasName="LineTotal"
+      Expression="FOB_ORIGIN_COST * ORDERED_QTY"
+      SQLType="NUMERIC" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="CreatedBy"
+      IsNotNull="true"
+      EntityAttrName="CreatedBy"
+      EntityUsage="xxGsoPoHdr_EO"
+      AliasName="CREATED_BY" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="InspAmnt"
+      EntityAttrName="InspAmnt"
+      EntityUsage="xxGsoPoHdr_EO"
+      AliasName="INSP_AMNT" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="InspQty1"
+      EntityAttrName="InspQty"
+      EntityUsage="xxGsoPoHdr_EO"
+      AliasName="INSP_QTY1" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="PoAmnt"
+      EntityAttrName="PoAmnt"
+      EntityUsage="xxGsoPoHdr_EO"
+      AliasName="PO_AMNT" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="PoQty"
+      EntityAttrName="PoQty"
+      EntityUsage="xxGsoPoHdr_EO"
+      AliasName="PO_QTY" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="ShipAmnt"
+      EntityAttrName="ShipAmnt"
+      EntityUsage="xxGsoPoHdr_EO"
+      AliasName="SHIP_AMNT" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="ShipQty"
+      EntityAttrName="ShipQty"
+      EntityUsage="xxGsoPoHdr_EO"
+      AliasName="SHIP_QTY" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="CreationDate"
+      IsNotNull="true"
+      EntityAttrName="CreationDate"
+      EntityUsage="xxGsoPoDtl_EO"
+      AliasName="CREATION_DATE" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="CreatedBy1"
+      IsNotNull="true"
+      EntityAttrName="CreatedBy"
+      EntityUsage="xxGsoPoDtl_EO"
+      AliasName="CREATED_BY1" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="TotalCartonCube"
+      IsPersistent="false"
+      Type="oracle.jbo.domain.Number"
+      ColumnType="NUMBER"
+      AliasName="TotalCartonCube"
+      Expression="master_carton*carton_cube"
+      SQLType="NUMERIC" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="TotalCartonWeight"
+      IsPersistent="false"
+      Type="oracle.jbo.domain.Number"
+      ColumnType="NUMBER"
+      AliasName="TotalCartonWeight"
+      Expression="master_carton*carton_weight"
+      SQLType="NUMERIC" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="TotalRetail"
+      IsUpdateable="false"
+      IsPersistent="false"
+      Type="oracle.jbo.domain.Number"
+      ColumnType="NUMBER"
+      AliasName="TotalRetail"
+      Expression="ordered_qty*RETAIL_COST"
+      SQLType="NUMERIC" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="TotalEstLanded"
+      IsPersistent="false"
+      Type="oracle.jbo.domain.Number"
+      ColumnType="NUMBER"
+      AliasName="TotalEstLanded"
+      Expression="ordered_qty*EST_LAND_COST"
+      SQLType="NUMERIC" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="TotalMerchDec"
+      IsPersistent="false"
+      Type="oracle.jbo.domain.Number"
+      ColumnType="NUMBER"
+      AliasName="TotalMerchDec"
+      Expression="ordered_qty*merch_dec_cost"
+      SQLType="NUMERIC" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="TotalActLanded"
+      IsPersistent="false"
+      Type="oracle.jbo.domain.Number"
+      ColumnType="NUMBER"
+      AliasName="TotalActLanded"
+      Expression="ordered_qty*ACT_LAND_COST"
+      SQLType="NUMERIC" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="LineTotal1"
+      EntityAttrName="LineTotal"
+      EntityUsage="xxGsoPoDtl_EO"
+      AliasName="LINE_TOTAL1" >
+   </ViewAttribute>
+</ViewObject>

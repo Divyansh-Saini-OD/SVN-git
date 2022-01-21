@@ -1,0 +1,28 @@
+-- +====================================================================================+
+-- |                  Office Depot - Project Simplify                                   |
+-- +====================================================================================+
+-- | SQL Script to create                                                               |
+-- |                                                                                    |
+-- |                      INDEXES: XX_HZ_CUST_ACCT_SITES_ALL_N2                         |
+-- |                                                                                    |
+-- |                                                                                    |
+-- |                                                                                    |
+-- |Change Record:                                                                      |
+-- |===============                                                                     |
+-- |Version   Date         Author               Remarks                                 |
+-- |=======   ===========  ================     ========================================|
+-- |  1.0     19-FEB-2014  R.Aldridge           Defect 28360 - HVOP Performance         |
+-- +====================================================================================+
+
+DROP INDEX xxcnv.XX_HZ_CUST_ACCT_SITES_ALL_N2;
+
+CREATE INDEX xxcnv.XX_HZ_CUST_ACCT_SITES_ALL_N2 ON 
+   AR.HZ_CUST_ACCT_SITES_ALL (CUST_ACCOUNT_ID,ORG_ID,CUST_ACCT_SITE_ID,STATUS) 
+TABLESPACE APPS_TS_TX_IDX_MISC_16M 
+NOLOGGING 
+PARALLEL 8
+ONLINE;
+
+ALTER INDEX xxcnv.XX_HZ_CUST_ACCT_SITES_ALL_N2 NOPARALLEL LOGGING;
+
+EXIT;

@@ -1,0 +1,23 @@
+--+=====================================================================+
+--|                   Office Depot - Project FIT                        |
+--|          Capgemini/Office Depot/Consulting Organization             |
+--+=====================================================================+
+--|                                                                     |
+--|Rice        : I2158                                                  |
+--|File Name   : ALTER_XX_AR_CR_WC_STG.tbl                              |
+--|File Path   : $XXFIN_TOP/admin/sql                                   |
+--|Schema      : XXFIN                                                  |
+--|                                                                     |
+--|Version  Date         Author            Remarks                      |
+--|=======  ===========  ================  =============================|
+--| 1.0     07-MAR-2012  R.Aldridge        Defect 17213 - Changes for   |
+--|                                        customer_id difference       |
+--+=====================================================================+
+
+SET VERIFY OFF
+WHENEVER SQLERROR CONTINUE
+
+PROMPT "Altering Table XXFIN.xx_ar_cr_wc_stg..."
+ALTER TABLE XXFIN.xx_ar_cr_wc_stg
+        ADD (orig_customer_id            NUMBER(15)
+            ,orig_customer_site_use_id   NUMBER(15));

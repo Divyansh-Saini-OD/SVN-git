@@ -1,0 +1,46 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<!-- dbdrv: exec java oracle/jrad/tools/xml/importer XMLImporter.class java &phase=dat+24 checkfile:~PROD:~PATH:~FILE &fullpath:~PROD:~PATH:~FILE -username &un_apps -password &pw_apps -dbconnection &jdbc_db_addr  -userId "1" -rootPackage /oracle/apps/~PROD  -rootdir &fullpath:~PROD:mds:directory  -->
+<page xmlns:jrad="http://xmlns.oracle.com/jrad" xmlns:oa="http://xmlns.oracle.com/oa" xmlns:ui="http://xmlns.oracle.com/uix/ui" version="9.0.3.8.12_1330" xml:lang="en-US" xmlns:user="http://xmlns.oracle.com/jrad/user" xmlns="http://xmlns.oracle.com/jrad" file-version="$Header$">
+   <content>
+      <oa:pageLayout id="MainRN" controllerClass="od.oracle.apps.xxcrm.scs.fdk.webui.ODSCSFdkRespnsCO" amDefName="od.oracle.apps.xxcrm.scs.fdk.server.ODSCSAdminAM" title="Feedback Responses" windowTitle="Feedback Responses">
+         <ui:corporateBranding>
+            <oa:image id="corporateBrandingImage" source="/OA_MEDIA/FNDSSCORP.gif"/>
+         </ui:corporateBranding>
+         <ui:contents>
+            <oa:pageButtonBar id="PageButtonRN">
+               <ui:contents>
+                  <oa:submitButton id="Cancel" use="/oracle/apps/fnd/attributesets/Buttons/Cancel" serverUnvalidated="true" unvalidated="true" shortDesc="Select to cancel this transaction."/>
+                  <oa:submitButton id="Apply" text="Apply" prompt="Apply" shortDesc="Select to save"/>
+               </ui:contents>
+            </oa:pageButtonBar>
+            <oa:messageComponentLayout id="ODSCSFdbkRespDtlVO">
+               <ui:contents>
+                  <oa:messageTextInput id="FdbkRespId" dataType="NUMBER" prompt="FdbkRespId" viewName="ODSCSFdbkRespDtlVO" viewAttr="FdbkRespId"/>
+                  <oa:messageTextInput id="FdbkQstnId" dataType="NUMBER" prompt="FdbkQstnId" viewName="ODSCSFdbkRespDtlVO" viewAttr="FdbkQstnId"/>
+                  <oa:messageTextInput id="FdkCode" dataType="VARCHAR2" prompt="FdkCode" viewName="ODSCSFdbkRespDtlVO" viewAttr="FdkCode" maximumLength="30"/>
+                  <oa:messageTextInput id="FdkValue" dataType="VARCHAR2" prompt="FdkValue" viewName="ODSCSFdbkRespDtlVO" viewAttr="FdkValue" maximumLength="30"/>
+                  <oa:messageTextInput id="FdkValueDesc" dataType="VARCHAR2" prompt="FdkValueDesc" viewName="ODSCSFdbkRespDtlVO" viewAttr="FdkValueDesc" maximumLength="1000"/>
+                  <oa:messageTextInput id="FdkGdwCode" dataType="VARCHAR2" prompt="FdkGdwCode" viewName="ODSCSFdbkRespDtlVO" viewAttr="FdkGdwCode" maximumLength="30"/>
+                  <oa:messageTextInput id="FdkGdwValue" dataType="VARCHAR2" prompt="FdkGdwValue" viewName="ODSCSFdbkRespDtlVO" viewAttr="FdkGdwValue" maximumLength="30"/>
+                  <oa:messageTextInput id="FdkGdwValueDesc" dataType="VARCHAR2" prompt="FdkGdwValueDesc" viewName="ODSCSFdbkRespDtlVO" viewAttr="FdkGdwValueDesc" maximumLength="1000"/>
+                  <oa:messageTextInput id="EffectiveStartDt" dataType="DATE" prompt="EffectiveStartDt" viewName="ODSCSFdbkRespDtlVO" viewAttr="EffectiveStartDt"/>
+                  <oa:messageTextInput id="EffectiveEndDt" dataType="DATE" prompt="EffectiveEndDt" viewName="ODSCSFdbkRespDtlVO" viewAttr="EffectiveEndDt"/>
+                  <oa:messageTextInput id="OraPickFlag" dataType="VARCHAR2" prompt="OraPickFlag" viewName="ODSCSFdbkRespDtlVO" viewAttr="OraPickFlag" maximumLength="1"/>
+                  <oa:messageTextInput id="GdwPickFlag" dataType="VARCHAR2" prompt="GdwPickFlag" viewName="ODSCSFdbkRespDtlVO" viewAttr="GdwPickFlag" maximumLength="1"/>
+                  <oa:messageTextInput id="ActionCode" dataType="VARCHAR2" prompt="ActionCode" viewName="ODSCSFdbkRespDtlVO" viewAttr="ActionCode" maximumLength="50"/>
+                  <oa:messageTextInput id="Opportunity" dataType="VARCHAR2" prompt="Opportunity" viewName="ODSCSFdbkRespDtlVO" viewAttr="Opportunity" maximumLength="1"/>
+                  <oa:messageTextInput id="Lead" dataType="VARCHAR2" prompt="Lead" viewName="ODSCSFdbkRespDtlVO" viewAttr="Lead" maximumLength="1"/>
+                  <oa:messageTextInput id="ActionStatus" dataType="VARCHAR2" prompt="ActionStatus" viewName="ODSCSFdbkRespDtlVO" viewAttr="ActionStatus" maximumLength="30"/>
+                  <oa:messageTextInput id="ActionType" dataType="VARCHAR2" prompt="ActionType" viewName="ODSCSFdbkRespDtlVO" viewAttr="ActionType" maximumLength="50"/>
+                  <oa:messageTextInput id="OraSeq" dataType="NUMBER" prompt="OraSeq" viewName="ODSCSFdbkRespDtlVO" viewAttr="OraSeq"/>
+                  <oa:messageTextInput id="EntityStatus" dataType="VARCHAR2" prompt="EntityStatus" viewName="ODSCSFdbkRespDtlVO" viewAttr="EntityStatus" maximumLength="30"/>
+                  <oa:messageTextInput id="EntityReason" dataType="VARCHAR2" prompt="EntityReason" viewName="ODSCSFdbkRespDtlVO" viewAttr="EntityReason" maximumLength="100"/>
+                  <oa:messageTextInput id="FdkValueCode" viewName="ODSCSFdbkRespDtlVO" viewAttr="FdkValueCode" prompt="Value Code"/>
+                  <oa:messageTextInput id="EntityRank" viewName="ODSCSFdbkRespDtlVO" viewAttr="EntityRank" prompt="Entity Rank"/>
+                  <oa:messageTextInput id="Precedence" viewName="ODSCSFdbkRespDtlVO" viewAttr="Precedence" prompt="Precedence"/>
+               </ui:contents>
+            </oa:messageComponentLayout>
+         </ui:contents>
+      </oa:pageLayout>
+   </content>
+</page>

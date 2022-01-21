@@ -1,0 +1,382 @@
+<?xml version="1.0" encoding='windows-1252'?>
+<!DOCTYPE ViewObject SYSTEM "jbo_03_01.dtd">
+
+<ViewObject
+   Name="ODEBillNonStdVO"
+   SelectList="ODEBillNonStdEO.EBL_TEMPL_ID, 
+       ODEBillNonStdEO.CUST_DOC_ID, 
+
+       ODEBillNonStdEO.RECORD_TYPE, 
+       ODEBillNonStdEO.SEQ, 
+
+       ODEBillNonStdEO.FIELD_ID, 
+       ODEBillNonStdEO.LABEL, 
+
+       ODEBillNonStdEO.START_POS, 
+       ODEBillNonStdEO.FIELD_LEN, 
+
+       ODEBillNonStdEO.DATA_FORMAT, 
+       ODEBillNonStdEO.STRING_FUN, 
+
+       ODEBillNonStdEO.SORT_ORDER, 
+       ODEBillNonStdEO.SORT_TYPE, 
+
+       ODEBillNonStdEO.MANDATORY, 
+       ODEBillNonStdEO.SEQ_START_VAL, 
+
+       ODEBillNonStdEO.SEQ_INC_VAL, 
+       ODEBillNonStdEO.SEQ_RESET_FIELD, 
+
+       ODEBillNonStdEO.CONSTANT_VALUE, 
+       ODEBillNonStdEO.ALIGNMENT, 
+
+       ODEBillNonStdEO.PADDING_CHAR, 
+       ODEBillNonStdEO.DEFAULT_IF_NULL, 
+
+       ODEBillNonStdEO.COMMENTS, 
+       ODEBillNonStdEO.ATTRIBUTE1, 
+
+       ODEBillNonStdEO.ATTRIBUTE2, 
+       ODEBillNonStdEO.ATTRIBUTE3, 
+
+       ODEBillNonStdEO.ATTRIBUTE4, 
+       ODEBillNonStdEO.ATTRIBUTE5, 
+
+       ODEBillNonStdEO.ATTRIBUTE6, 
+       ODEBillNonStdEO.ATTRIBUTE7, 
+
+       ODEBillNonStdEO.ATTRIBUTE8, 
+       ODEBillNonStdEO.ATTRIBUTE9, 
+
+       ODEBillNonStdEO.ATTRIBUTE10, 
+       ODEBillNonStdEO.ATTRIBUTE11, 
+
+       ODEBillNonStdEO.ATTRIBUTE12, 
+       ODEBillNonStdEO.ATTRIBUTE13, 
+
+       ODEBillNonStdEO.ATTRIBUTE14, 
+       ODEBillNonStdEO.ATTRIBUTE15, 
+
+       ODEBillNonStdEO.ATTRIBUTE16, 
+       ODEBillNonStdEO.ATTRIBUTE17, 
+
+       ODEBillNonStdEO.ATTRIBUTE18, 
+       ODEBillNonStdEO.ATTRIBUTE19, 
+
+       ODEBillNonStdEO.ATTRIBUTE20"
+   FromList="xx_cdh_ebl_templ_dtl ODEBillNonStdEO"
+   OrderBy="SEQ"
+   BindingStyle="Oracle"
+   CustomQuery="false"
+   RowClass="od.oracle.apps.xxcrm.cdh.ebl.eblmain.server.ODEBillNonStdVORowImpl"
+   ComponentClass="oracle.apps.fnd.framework.server.OAViewObjectImpl"
+   MsgBundleClass="oracle.jbo.common.JboResourceBundle"
+   UseGlueCode="false" >
+   <DesignTime>
+      <Attr Name="_isCodegen" Value="true" />
+      <Attr Name="_version" Value="9.0.3.12.53" />
+      <Attr Name="_CodeGenFlagNew" Value="4" />
+   </DesignTime>
+   <EntityUsage
+      Name="ODEBillNonStdEO"
+      Entity="od.oracle.apps.xxcrm.cdh.ebl.eblmain.schema.server.ODEBillNonStdEO" >
+      <DesignTime>
+         <Attr Name="_EntireObjectTable" Value="false" />
+         <Attr Name="_queryClause" Value="true" />
+         <Attr Name="_queryOrderBy" Value="SEQ" />
+      </DesignTime>
+   </EntityUsage>
+   <ViewAttribute
+      Name="EblTemplId"
+      IsNotNull="true"
+      EntityAttrName="EblTemplId"
+      EntityUsage="ODEBillNonStdEO"
+      AliasName="EBL_TEMPL_ID"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="CustDocId"
+      IsNotNull="true"
+      EntityAttrName="CustDocId"
+      EntityUsage="ODEBillNonStdEO"
+      AliasName="CUST_DOC_ID"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="RecordType"
+      IsNotNull="true"
+      EntityAttrName="RecordType"
+      EntityUsage="ODEBillNonStdEO"
+      AliasName="RECORD_TYPE"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Seq"
+      IsNotNull="true"
+      EntityAttrName="Seq"
+      EntityUsage="ODEBillNonStdEO"
+      AliasName="SEQ"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="FieldId"
+      IsNotNull="true"
+      EntityAttrName="FieldId"
+      EntityUsage="ODEBillNonStdEO"
+      AliasName="FIELD_ID"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Label"
+      IsNotNull="true"
+      EntityAttrName="Label"
+      EntityUsage="ODEBillNonStdEO"
+      AliasName="LABEL"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="StartPos"
+      EntityAttrName="StartPos"
+      EntityUsage="ODEBillNonStdEO"
+      AliasName="START_POS"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="FieldLen"
+      EntityAttrName="FieldLen"
+      EntityUsage="ODEBillNonStdEO"
+      AliasName="FIELD_LEN"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="DataFormat"
+      EntityAttrName="DataFormat"
+      EntityUsage="ODEBillNonStdEO"
+      AliasName="DATA_FORMAT"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="StringFun"
+      EntityAttrName="StringFun"
+      EntityUsage="ODEBillNonStdEO"
+      AliasName="STRING_FUN"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="SortOrder"
+      EntityAttrName="SortOrder"
+      EntityUsage="ODEBillNonStdEO"
+      AliasName="SORT_ORDER"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="SortType"
+      EntityAttrName="SortType"
+      EntityUsage="ODEBillNonStdEO"
+      AliasName="SORT_TYPE"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Mandatory"
+      EntityAttrName="Mandatory"
+      EntityUsage="ODEBillNonStdEO"
+      AliasName="MANDATORY"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="SeqStartVal"
+      EntityAttrName="SeqStartVal"
+      EntityUsage="ODEBillNonStdEO"
+      AliasName="SEQ_START_VAL"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="SeqIncVal"
+      EntityAttrName="SeqIncVal"
+      EntityUsage="ODEBillNonStdEO"
+      AliasName="SEQ_INC_VAL"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="SeqResetField"
+      EntityAttrName="SeqResetField"
+      EntityUsage="ODEBillNonStdEO"
+      AliasName="SEQ_RESET_FIELD"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="ConstantValue"
+      EntityAttrName="ConstantValue"
+      EntityUsage="ODEBillNonStdEO"
+      AliasName="CONSTANT_VALUE"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Alignment"
+      EntityAttrName="Alignment"
+      EntityUsage="ODEBillNonStdEO"
+      AliasName="ALIGNMENT"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="PaddingChar"
+      EntityAttrName="PaddingChar"
+      EntityUsage="ODEBillNonStdEO"
+      AliasName="PADDING_CHAR"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="DefaultIfNull"
+      EntityAttrName="DefaultIfNull"
+      EntityUsage="ODEBillNonStdEO"
+      AliasName="DEFAULT_IF_NULL"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Comments"
+      EntityAttrName="Comments"
+      EntityUsage="ODEBillNonStdEO"
+      AliasName="COMMENTS"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Attribute1"
+      EntityAttrName="Attribute1"
+      EntityUsage="ODEBillNonStdEO"
+      AliasName="ATTRIBUTE1"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Attribute2"
+      EntityAttrName="Attribute2"
+      EntityUsage="ODEBillNonStdEO"
+      AliasName="ATTRIBUTE2"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Attribute3"
+      EntityAttrName="Attribute3"
+      EntityUsage="ODEBillNonStdEO"
+      AliasName="ATTRIBUTE3"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Attribute4"
+      EntityAttrName="Attribute4"
+      EntityUsage="ODEBillNonStdEO"
+      AliasName="ATTRIBUTE4"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Attribute5"
+      EntityAttrName="Attribute5"
+      EntityUsage="ODEBillNonStdEO"
+      AliasName="ATTRIBUTE5"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Attribute6"
+      EntityAttrName="Attribute6"
+      EntityUsage="ODEBillNonStdEO"
+      AliasName="ATTRIBUTE6"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Attribute7"
+      EntityAttrName="Attribute7"
+      EntityUsage="ODEBillNonStdEO"
+      AliasName="ATTRIBUTE7"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Attribute8"
+      EntityAttrName="Attribute8"
+      EntityUsage="ODEBillNonStdEO"
+      AliasName="ATTRIBUTE8"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Attribute9"
+      EntityAttrName="Attribute9"
+      EntityUsage="ODEBillNonStdEO"
+      AliasName="ATTRIBUTE9"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Attribute10"
+      EntityAttrName="Attribute10"
+      EntityUsage="ODEBillNonStdEO"
+      AliasName="ATTRIBUTE10"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Attribute11"
+      EntityAttrName="Attribute11"
+      EntityUsage="ODEBillNonStdEO"
+      AliasName="ATTRIBUTE11"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Attribute12"
+      EntityAttrName="Attribute12"
+      EntityUsage="ODEBillNonStdEO"
+      AliasName="ATTRIBUTE12"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Attribute13"
+      EntityAttrName="Attribute13"
+      EntityUsage="ODEBillNonStdEO"
+      AliasName="ATTRIBUTE13"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Attribute14"
+      EntityAttrName="Attribute14"
+      EntityUsage="ODEBillNonStdEO"
+      AliasName="ATTRIBUTE14"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Attribute15"
+      EntityAttrName="Attribute15"
+      EntityUsage="ODEBillNonStdEO"
+      AliasName="ATTRIBUTE15"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Attribute16"
+      EntityAttrName="Attribute16"
+      EntityUsage="ODEBillNonStdEO"
+      AliasName="ATTRIBUTE16"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Attribute17"
+      EntityAttrName="Attribute17"
+      EntityUsage="ODEBillNonStdEO"
+      AliasName="ATTRIBUTE17"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Attribute18"
+      EntityAttrName="Attribute18"
+      EntityUsage="ODEBillNonStdEO"
+      AliasName="ATTRIBUTE18"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Attribute19"
+      EntityAttrName="Attribute19"
+      EntityUsage="ODEBillNonStdEO"
+      AliasName="ATTRIBUTE19"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Attribute20"
+      EntityAttrName="Attribute20"
+      EntityUsage="ODEBillNonStdEO"
+      AliasName="ATTRIBUTE20"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+</ViewObject>

@@ -1,0 +1,1044 @@
+<?xml version="1.0" encoding='windows-1252'?>
+<!DOCTYPE ViewObject SYSTEM "jbo_03_01.dtd">
+
+<ViewObject
+   Name="ODFlexfieldInfoVO"
+   SelectList="ODFlexfieldInfoEO.SITE_USE_ID, 
+       ODFlexfieldInfoEO.CUST_ACCT_SITE_ID, 
+
+       ODFlexfieldInfoEO.LAST_UPDATE_DATE, 
+       ODFlexfieldInfoEO.LAST_UPDATED_BY, 
+
+       ODFlexfieldInfoEO.CREATION_DATE, 
+       ODFlexfieldInfoEO.CREATED_BY, 
+
+       ODFlexfieldInfoEO.SITE_USE_CODE, 
+       ODFlexfieldInfoEO.PRIMARY_FLAG, 
+
+       ODFlexfieldInfoEO.STATUS, 
+       ODFlexfieldInfoEO.LOCATION, 
+
+       ODFlexfieldInfoEO.LAST_UPDATE_LOGIN, 
+       ODFlexfieldInfoEO.CONTACT_ID, 
+
+       ODFlexfieldInfoEO.BILL_TO_SITE_USE_ID, 
+       ODFlexfieldInfoEO.ORIG_SYSTEM_REFERENCE, 
+
+       ODFlexfieldInfoEO.SIC_CODE, 
+       ODFlexfieldInfoEO.PAYMENT_TERM_ID, 
+
+       ODFlexfieldInfoEO.GSA_INDICATOR, 
+       ODFlexfieldInfoEO.SHIP_PARTIAL, 
+
+       ODFlexfieldInfoEO.SHIP_VIA, 
+       ODFlexfieldInfoEO.FOB_POINT, 
+
+       ODFlexfieldInfoEO.ORDER_TYPE_ID, 
+       ODFlexfieldInfoEO.PRICE_LIST_ID, 
+
+       ODFlexfieldInfoEO.FREIGHT_TERM, 
+       ODFlexfieldInfoEO.WAREHOUSE_ID, 
+
+       ODFlexfieldInfoEO.TERRITORY_ID, 
+       ODFlexfieldInfoEO.ATTRIBUTE_CATEGORY, 
+
+       ODFlexfieldInfoEO.ATTRIBUTE1, 
+       ODFlexfieldInfoEO.ATTRIBUTE2, 
+
+       ODFlexfieldInfoEO.ATTRIBUTE3, 
+       ODFlexfieldInfoEO.ATTRIBUTE4, 
+
+       ODFlexfieldInfoEO.ATTRIBUTE5, 
+       ODFlexfieldInfoEO.ATTRIBUTE6, 
+
+       ODFlexfieldInfoEO.ATTRIBUTE7, 
+       ODFlexfieldInfoEO.ATTRIBUTE8, 
+
+       ODFlexfieldInfoEO.ATTRIBUTE9, 
+       ODFlexfieldInfoEO.ATTRIBUTE10, 
+
+       ODFlexfieldInfoEO.REQUEST_ID, 
+       ODFlexfieldInfoEO.PROGRAM_APPLICATION_ID, 
+
+       ODFlexfieldInfoEO.PROGRAM_ID, 
+       ODFlexfieldInfoEO.PROGRAM_UPDATE_DATE, 
+
+       ODFlexfieldInfoEO.TAX_REFERENCE, 
+       ODFlexfieldInfoEO.SORT_PRIORITY, 
+
+       ODFlexfieldInfoEO.TAX_CODE, 
+       ODFlexfieldInfoEO.ATTRIBUTE11, 
+
+       ODFlexfieldInfoEO.ATTRIBUTE12, 
+       ODFlexfieldInfoEO.ATTRIBUTE13, 
+
+       ODFlexfieldInfoEO.ATTRIBUTE14, 
+       ODFlexfieldInfoEO.ATTRIBUTE15, 
+
+       ODFlexfieldInfoEO.ATTRIBUTE16, 
+       ODFlexfieldInfoEO.ATTRIBUTE17, 
+
+       ODFlexfieldInfoEO.ATTRIBUTE18, 
+       ODFlexfieldInfoEO.ATTRIBUTE19, 
+
+       ODFlexfieldInfoEO.ATTRIBUTE20, 
+       ODFlexfieldInfoEO.ATTRIBUTE21, 
+
+       ODFlexfieldInfoEO.ATTRIBUTE22, 
+       ODFlexfieldInfoEO.ATTRIBUTE23, 
+
+       ODFlexfieldInfoEO.ATTRIBUTE24, 
+       ODFlexfieldInfoEO.ATTRIBUTE25, 
+
+       ODFlexfieldInfoEO.LAST_ACCRUE_CHARGE_DATE, 
+       ODFlexfieldInfoEO.SECOND_LAST_ACCRUE_CHARGE_DATE, 
+
+       ODFlexfieldInfoEO.LAST_UNACCRUE_CHARGE_DATE, 
+       
+ODFlexfieldInfoEO.SECOND_LAST_UNACCRUE_CHRG_DATE, 
+       ODFlexfieldInfoEO.DEMAND_CLASS_CODE, 
+
+       ODFlexfieldInfoEO.ORG_ID, 
+       ODFlexfieldInfoEO.TAX_HEADER_LEVEL_FLAG, 
+
+       ODFlexfieldInfoEO.TAX_ROUNDING_RULE, 
+       ODFlexfieldInfoEO.WH_UPDATE_DATE, 
+
+       ODFlexfieldInfoEO.GLOBAL_ATTRIBUTE1, 
+       ODFlexfieldInfoEO.GLOBAL_ATTRIBUTE2, 
+
+       ODFlexfieldInfoEO.GLOBAL_ATTRIBUTE3, 
+       ODFlexfieldInfoEO.GLOBAL_ATTRIBUTE4, 
+
+       ODFlexfieldInfoEO.GLOBAL_ATTRIBUTE5, 
+       ODFlexfieldInfoEO.GLOBAL_ATTRIBUTE6, 
+
+       ODFlexfieldInfoEO.GLOBAL_ATTRIBUTE7, 
+       ODFlexfieldInfoEO.GLOBAL_ATTRIBUTE8, 
+
+       ODFlexfieldInfoEO.GLOBAL_ATTRIBUTE9, 
+       ODFlexfieldInfoEO.GLOBAL_ATTRIBUTE10, 
+
+       ODFlexfieldInfoEO.GLOBAL_ATTRIBUTE11, 
+       ODFlexfieldInfoEO.GLOBAL_ATTRIBUTE12, 
+
+       ODFlexfieldInfoEO.GLOBAL_ATTRIBUTE13, 
+       ODFlexfieldInfoEO.GLOBAL_ATTRIBUTE14, 
+
+       ODFlexfieldInfoEO.GLOBAL_ATTRIBUTE15, 
+       ODFlexfieldInfoEO.GLOBAL_ATTRIBUTE16, 
+
+       ODFlexfieldInfoEO.GLOBAL_ATTRIBUTE17, 
+       ODFlexfieldInfoEO.GLOBAL_ATTRIBUTE18, 
+
+       ODFlexfieldInfoEO.GLOBAL_ATTRIBUTE19, 
+       ODFlexfieldInfoEO.GLOBAL_ATTRIBUTE20, 
+
+       ODFlexfieldInfoEO.GLOBAL_ATTRIBUTE_CATEGORY, 
+       
+ODFlexfieldInfoEO.PRIMARY_SALESREP_ID, 
+       ODFlexfieldInfoEO.FINCHRG_RECEIVABLES_TRX_ID, 
+
+       ODFlexfieldInfoEO.DATES_NEGATIVE_TOLERANCE, 
+       ODFlexfieldInfoEO.DATES_POSITIVE_TOLERANCE, 
+
+       ODFlexfieldInfoEO.DATE_TYPE_PREFERENCE, 
+       ODFlexfieldInfoEO.OVER_SHIPMENT_TOLERANCE, 
+
+       ODFlexfieldInfoEO.UNDER_SHIPMENT_TOLERANCE, 
+       ODFlexfieldInfoEO.ITEM_CROSS_REF_PREF, 
+
+       ODFlexfieldInfoEO.OVER_RETURN_TOLERANCE, 
+       ODFlexfieldInfoEO.UNDER_RETURN_TOLERANCE, 
+
+       ODFlexfieldInfoEO.SHIP_SETS_INCLUDE_LINES_FLAG, 
+    
+   ODFlexfieldInfoEO.ARRIVALSETS_INCLUDE_LINES_FLAG, 
+       
+ODFlexfieldInfoEO.SCHED_DATE_PUSH_FLAG, 
+       ODFlexfieldInfoEO.INVOICE_QUANTITY_RULE, 
+
+       ODFlexfieldInfoEO.PRICING_EVENT, 
+       ODFlexfieldInfoEO.GL_ID_REC, 
+
+       ODFlexfieldInfoEO.GL_ID_REV, 
+       ODFlexfieldInfoEO.GL_ID_TAX, 
+
+       ODFlexfieldInfoEO.GL_ID_FREIGHT, 
+       ODFlexfieldInfoEO.GL_ID_CLEARING, 
+
+       ODFlexfieldInfoEO.GL_ID_UNBILLED, 
+       ODFlexfieldInfoEO.GL_ID_UNEARNED, 
+
+       ODFlexfieldInfoEO.GL_ID_UNPAID_REC, 
+       ODFlexfieldInfoEO.GL_ID_REMITTANCE, 
+
+       ODFlexfieldInfoEO.GL_ID_FACTOR, 
+       ODFlexfieldInfoEO.TAX_CLASSIFICATION, 
+
+       ODFlexfieldInfoEO.OBJECT_VERSION_NUMBER, 
+       ODFlexfieldInfoEO.CREATED_BY_MODULE, 
+
+       ODFlexfieldInfoEO.APPLICATION_ID"
+   FromList="HZ_CUST_SITE_USES_ALL ODFlexfieldInfoEO"
+   BindingStyle="Oracle"
+   CustomQuery="false"
+   RowClass="od.oracle.apps.xxcrm.imc.softacct.server.ODFlexfieldInfoVORowImpl"
+   ComponentClass="od.oracle.apps.xxcrm.imc.softacct.server.ODFlexfieldInfoVOImpl"
+   MsgBundleClass="oracle.jbo.common.JboResourceBundle"
+   UseGlueCode="false" >
+   <DesignTime>
+      <Attr Name="_isCodegen" Value="true" />
+      <Attr Name="_version" Value="9.0.3.13.93" />
+      <Attr Name="_CodeGenFlagNew" Value="36" />
+   </DesignTime>
+   <EntityUsage
+      Name="ODFlexfieldInfoEO"
+      Entity="od.oracle.apps.xxcrm.imc.softacct.schema.server.ODFlexfieldInfoEO" >
+      <DesignTime>
+         <Attr Name="_queryClause" Value="false" />
+      </DesignTime>
+   </EntityUsage>
+   <ViewAttribute
+      Name="SiteUseId"
+      IsNotNull="true"
+      Precision="15"
+      Scale="0"
+      EntityAttrName="SiteUseId"
+      EntityUsage="ODFlexfieldInfoEO"
+      AliasName="SITE_USE_ID" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="CustAcctSiteId"
+      IsNotNull="true"
+      Precision="15"
+      Scale="0"
+      EntityAttrName="CustAcctSiteId"
+      EntityUsage="ODFlexfieldInfoEO"
+      AliasName="CUST_ACCT_SITE_ID" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="LastUpdateDate"
+      IsNotNull="true"
+      EntityAttrName="LastUpdateDate"
+      EntityUsage="ODFlexfieldInfoEO"
+      AliasName="LAST_UPDATE_DATE" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="LastUpdatedBy"
+      IsNotNull="true"
+      Precision="15"
+      Scale="0"
+      EntityAttrName="LastUpdatedBy"
+      EntityUsage="ODFlexfieldInfoEO"
+      AliasName="LAST_UPDATED_BY" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="CreationDate"
+      IsNotNull="true"
+      EntityAttrName="CreationDate"
+      EntityUsage="ODFlexfieldInfoEO"
+      AliasName="CREATION_DATE" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="CreatedBy"
+      IsNotNull="true"
+      Precision="15"
+      Scale="0"
+      EntityAttrName="CreatedBy"
+      EntityUsage="ODFlexfieldInfoEO"
+      AliasName="CREATED_BY" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="SiteUseCode"
+      IsNotNull="true"
+      Precision="30"
+      EntityAttrName="SiteUseCode"
+      EntityUsage="ODFlexfieldInfoEO"
+      AliasName="SITE_USE_CODE" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="PrimaryFlag"
+      IsNotNull="true"
+      Precision="1"
+      EntityAttrName="PrimaryFlag"
+      EntityUsage="ODFlexfieldInfoEO"
+      AliasName="PRIMARY_FLAG" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Status"
+      IsNotNull="true"
+      Precision="1"
+      EntityAttrName="Status"
+      EntityUsage="ODFlexfieldInfoEO"
+      AliasName="STATUS" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Location"
+      IsNotNull="true"
+      Precision="40"
+      EntityAttrName="Location"
+      EntityUsage="ODFlexfieldInfoEO"
+      AliasName="LOCATION" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="LastUpdateLogin"
+      Precision="15"
+      Scale="0"
+      EntityAttrName="LastUpdateLogin"
+      EntityUsage="ODFlexfieldInfoEO"
+      AliasName="LAST_UPDATE_LOGIN" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="ContactId"
+      Precision="15"
+      Scale="0"
+      EntityAttrName="ContactId"
+      EntityUsage="ODFlexfieldInfoEO"
+      AliasName="CONTACT_ID" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="BillToSiteUseId"
+      Precision="15"
+      Scale="0"
+      EntityAttrName="BillToSiteUseId"
+      EntityUsage="ODFlexfieldInfoEO"
+      AliasName="BILL_TO_SITE_USE_ID" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="OrigSystemReference"
+      Precision="240"
+      EntityAttrName="OrigSystemReference"
+      EntityUsage="ODFlexfieldInfoEO"
+      AliasName="ORIG_SYSTEM_REFERENCE" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="SicCode"
+      Precision="30"
+      EntityAttrName="SicCode"
+      EntityUsage="ODFlexfieldInfoEO"
+      AliasName="SIC_CODE" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="PaymentTermId"
+      Precision="15"
+      Scale="0"
+      EntityAttrName="PaymentTermId"
+      EntityUsage="ODFlexfieldInfoEO"
+      AliasName="PAYMENT_TERM_ID" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="GsaIndicator"
+      Precision="1"
+      EntityAttrName="GsaIndicator"
+      EntityUsage="ODFlexfieldInfoEO"
+      AliasName="GSA_INDICATOR" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="ShipPartial"
+      Precision="1"
+      EntityAttrName="ShipPartial"
+      EntityUsage="ODFlexfieldInfoEO"
+      AliasName="SHIP_PARTIAL" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="ShipVia"
+      Precision="30"
+      EntityAttrName="ShipVia"
+      EntityUsage="ODFlexfieldInfoEO"
+      AliasName="SHIP_VIA" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="FobPoint"
+      Precision="30"
+      EntityAttrName="FobPoint"
+      EntityUsage="ODFlexfieldInfoEO"
+      AliasName="FOB_POINT" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="OrderTypeId"
+      Precision="15"
+      Scale="0"
+      EntityAttrName="OrderTypeId"
+      EntityUsage="ODFlexfieldInfoEO"
+      AliasName="ORDER_TYPE_ID" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="PriceListId"
+      Precision="15"
+      Scale="0"
+      EntityAttrName="PriceListId"
+      EntityUsage="ODFlexfieldInfoEO"
+      AliasName="PRICE_LIST_ID" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="FreightTerm"
+      Precision="30"
+      EntityAttrName="FreightTerm"
+      EntityUsage="ODFlexfieldInfoEO"
+      AliasName="FREIGHT_TERM" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="WarehouseId"
+      Precision="15"
+      Scale="0"
+      EntityAttrName="WarehouseId"
+      EntityUsage="ODFlexfieldInfoEO"
+      AliasName="WAREHOUSE_ID" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="TerritoryId"
+      Precision="15"
+      Scale="0"
+      EntityAttrName="TerritoryId"
+      EntityUsage="ODFlexfieldInfoEO"
+      AliasName="TERRITORY_ID" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="AttributeCategory"
+      Precision="30"
+      EntityAttrName="AttributeCategory"
+      EntityUsage="ODFlexfieldInfoEO"
+      AliasName="ATTRIBUTE_CATEGORY" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Attribute1"
+      Precision="150"
+      EntityAttrName="Attribute1"
+      EntityUsage="ODFlexfieldInfoEO"
+      AliasName="ATTRIBUTE1" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Attribute2"
+      Precision="150"
+      EntityAttrName="Attribute2"
+      EntityUsage="ODFlexfieldInfoEO"
+      AliasName="ATTRIBUTE2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Attribute3"
+      Precision="150"
+      EntityAttrName="Attribute3"
+      EntityUsage="ODFlexfieldInfoEO"
+      AliasName="ATTRIBUTE3" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Attribute4"
+      Precision="150"
+      EntityAttrName="Attribute4"
+      EntityUsage="ODFlexfieldInfoEO"
+      AliasName="ATTRIBUTE4" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Attribute5"
+      Precision="150"
+      EntityAttrName="Attribute5"
+      EntityUsage="ODFlexfieldInfoEO"
+      AliasName="ATTRIBUTE5" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Attribute6"
+      Precision="150"
+      EntityAttrName="Attribute6"
+      EntityUsage="ODFlexfieldInfoEO"
+      AliasName="ATTRIBUTE6" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Attribute7"
+      Precision="150"
+      EntityAttrName="Attribute7"
+      EntityUsage="ODFlexfieldInfoEO"
+      AliasName="ATTRIBUTE7" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Attribute8"
+      Precision="150"
+      EntityAttrName="Attribute8"
+      EntityUsage="ODFlexfieldInfoEO"
+      AliasName="ATTRIBUTE8" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Attribute9"
+      Precision="150"
+      EntityAttrName="Attribute9"
+      EntityUsage="ODFlexfieldInfoEO"
+      AliasName="ATTRIBUTE9" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Attribute10"
+      Precision="150"
+      EntityAttrName="Attribute10"
+      EntityUsage="ODFlexfieldInfoEO"
+      AliasName="ATTRIBUTE10" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="RequestId"
+      Precision="15"
+      Scale="0"
+      EntityAttrName="RequestId"
+      EntityUsage="ODFlexfieldInfoEO"
+      AliasName="REQUEST_ID" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="ProgramApplicationId"
+      Precision="15"
+      Scale="0"
+      EntityAttrName="ProgramApplicationId"
+      EntityUsage="ODFlexfieldInfoEO"
+      AliasName="PROGRAM_APPLICATION_ID" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="ProgramId"
+      Precision="15"
+      Scale="0"
+      EntityAttrName="ProgramId"
+      EntityUsage="ODFlexfieldInfoEO"
+      AliasName="PROGRAM_ID" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="ProgramUpdateDate"
+      EntityAttrName="ProgramUpdateDate"
+      EntityUsage="ODFlexfieldInfoEO"
+      AliasName="PROGRAM_UPDATE_DATE" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="TaxReference"
+      Precision="50"
+      EntityAttrName="TaxReference"
+      EntityUsage="ODFlexfieldInfoEO"
+      AliasName="TAX_REFERENCE" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="SortPriority"
+      Precision="5"
+      Scale="0"
+      EntityAttrName="SortPriority"
+      EntityUsage="ODFlexfieldInfoEO"
+      AliasName="SORT_PRIORITY" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="TaxCode"
+      Precision="50"
+      EntityAttrName="TaxCode"
+      EntityUsage="ODFlexfieldInfoEO"
+      AliasName="TAX_CODE" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Attribute11"
+      Precision="150"
+      EntityAttrName="Attribute11"
+      EntityUsage="ODFlexfieldInfoEO"
+      AliasName="ATTRIBUTE11" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Attribute12"
+      Precision="150"
+      EntityAttrName="Attribute12"
+      EntityUsage="ODFlexfieldInfoEO"
+      AliasName="ATTRIBUTE12" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Attribute13"
+      Precision="150"
+      EntityAttrName="Attribute13"
+      EntityUsage="ODFlexfieldInfoEO"
+      AliasName="ATTRIBUTE13" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Attribute14"
+      Precision="150"
+      EntityAttrName="Attribute14"
+      EntityUsage="ODFlexfieldInfoEO"
+      AliasName="ATTRIBUTE14" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Attribute15"
+      Precision="150"
+      EntityAttrName="Attribute15"
+      EntityUsage="ODFlexfieldInfoEO"
+      AliasName="ATTRIBUTE15" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Attribute16"
+      Precision="150"
+      EntityAttrName="Attribute16"
+      EntityUsage="ODFlexfieldInfoEO"
+      AliasName="ATTRIBUTE16" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Attribute17"
+      Precision="150"
+      EntityAttrName="Attribute17"
+      EntityUsage="ODFlexfieldInfoEO"
+      AliasName="ATTRIBUTE17" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Attribute18"
+      Precision="150"
+      EntityAttrName="Attribute18"
+      EntityUsage="ODFlexfieldInfoEO"
+      AliasName="ATTRIBUTE18" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Attribute19"
+      Precision="150"
+      EntityAttrName="Attribute19"
+      EntityUsage="ODFlexfieldInfoEO"
+      AliasName="ATTRIBUTE19" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Attribute20"
+      Precision="150"
+      EntityAttrName="Attribute20"
+      EntityUsage="ODFlexfieldInfoEO"
+      AliasName="ATTRIBUTE20" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Attribute21"
+      Precision="150"
+      EntityAttrName="Attribute21"
+      EntityUsage="ODFlexfieldInfoEO"
+      AliasName="ATTRIBUTE21" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Attribute22"
+      Precision="150"
+      EntityAttrName="Attribute22"
+      EntityUsage="ODFlexfieldInfoEO"
+      AliasName="ATTRIBUTE22" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Attribute23"
+      Precision="150"
+      EntityAttrName="Attribute23"
+      EntityUsage="ODFlexfieldInfoEO"
+      AliasName="ATTRIBUTE23" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Attribute24"
+      Precision="150"
+      EntityAttrName="Attribute24"
+      EntityUsage="ODFlexfieldInfoEO"
+      AliasName="ATTRIBUTE24" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Attribute25"
+      Precision="150"
+      EntityAttrName="Attribute25"
+      EntityUsage="ODFlexfieldInfoEO"
+      AliasName="ATTRIBUTE25" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="LastAccrueChargeDate"
+      EntityAttrName="LastAccrueChargeDate"
+      EntityUsage="ODFlexfieldInfoEO"
+      AliasName="LAST_ACCRUE_CHARGE_DATE" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="SecondLastAccrueChargeDate"
+      EntityAttrName="SecondLastAccrueChargeDate"
+      EntityUsage="ODFlexfieldInfoEO"
+      AliasName="SECOND_LAST_ACCRUE_CHARGE_DATE" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="LastUnaccrueChargeDate"
+      EntityAttrName="LastUnaccrueChargeDate"
+      EntityUsage="ODFlexfieldInfoEO"
+      AliasName="LAST_UNACCRUE_CHARGE_DATE" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="SecondLastUnaccrueChrgDate"
+      EntityAttrName="SecondLastUnaccrueChrgDate"
+      EntityUsage="ODFlexfieldInfoEO"
+      AliasName="SECOND_LAST_UNACCRUE_CHRG_DATE" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="DemandClassCode"
+      Precision="30"
+      EntityAttrName="DemandClassCode"
+      EntityUsage="ODFlexfieldInfoEO"
+      AliasName="DEMAND_CLASS_CODE" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="OrgId"
+      Precision="15"
+      Scale="0"
+      EntityAttrName="OrgId"
+      EntityUsage="ODFlexfieldInfoEO"
+      AliasName="ORG_ID" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="TaxHeaderLevelFlag"
+      Precision="1"
+      EntityAttrName="TaxHeaderLevelFlag"
+      EntityUsage="ODFlexfieldInfoEO"
+      AliasName="TAX_HEADER_LEVEL_FLAG" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="TaxRoundingRule"
+      Precision="30"
+      EntityAttrName="TaxRoundingRule"
+      EntityUsage="ODFlexfieldInfoEO"
+      AliasName="TAX_ROUNDING_RULE" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="WhUpdateDate"
+      EntityAttrName="WhUpdateDate"
+      EntityUsage="ODFlexfieldInfoEO"
+      AliasName="WH_UPDATE_DATE" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="GlobalAttribute1"
+      Precision="150"
+      EntityAttrName="GlobalAttribute1"
+      EntityUsage="ODFlexfieldInfoEO"
+      AliasName="GLOBAL_ATTRIBUTE1" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="GlobalAttribute2"
+      Precision="150"
+      EntityAttrName="GlobalAttribute2"
+      EntityUsage="ODFlexfieldInfoEO"
+      AliasName="GLOBAL_ATTRIBUTE2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="GlobalAttribute3"
+      Precision="150"
+      EntityAttrName="GlobalAttribute3"
+      EntityUsage="ODFlexfieldInfoEO"
+      AliasName="GLOBAL_ATTRIBUTE3" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="GlobalAttribute4"
+      Precision="150"
+      EntityAttrName="GlobalAttribute4"
+      EntityUsage="ODFlexfieldInfoEO"
+      AliasName="GLOBAL_ATTRIBUTE4" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="GlobalAttribute5"
+      Precision="150"
+      EntityAttrName="GlobalAttribute5"
+      EntityUsage="ODFlexfieldInfoEO"
+      AliasName="GLOBAL_ATTRIBUTE5" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="GlobalAttribute6"
+      Precision="150"
+      EntityAttrName="GlobalAttribute6"
+      EntityUsage="ODFlexfieldInfoEO"
+      AliasName="GLOBAL_ATTRIBUTE6" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="GlobalAttribute7"
+      Precision="150"
+      EntityAttrName="GlobalAttribute7"
+      EntityUsage="ODFlexfieldInfoEO"
+      AliasName="GLOBAL_ATTRIBUTE7" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="GlobalAttribute8"
+      Precision="150"
+      EntityAttrName="GlobalAttribute8"
+      EntityUsage="ODFlexfieldInfoEO"
+      AliasName="GLOBAL_ATTRIBUTE8" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="GlobalAttribute9"
+      Precision="150"
+      EntityAttrName="GlobalAttribute9"
+      EntityUsage="ODFlexfieldInfoEO"
+      AliasName="GLOBAL_ATTRIBUTE9" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="GlobalAttribute10"
+      Precision="150"
+      EntityAttrName="GlobalAttribute10"
+      EntityUsage="ODFlexfieldInfoEO"
+      AliasName="GLOBAL_ATTRIBUTE10" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="GlobalAttribute11"
+      Precision="150"
+      EntityAttrName="GlobalAttribute11"
+      EntityUsage="ODFlexfieldInfoEO"
+      AliasName="GLOBAL_ATTRIBUTE11" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="GlobalAttribute12"
+      Precision="150"
+      EntityAttrName="GlobalAttribute12"
+      EntityUsage="ODFlexfieldInfoEO"
+      AliasName="GLOBAL_ATTRIBUTE12" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="GlobalAttribute13"
+      Precision="150"
+      EntityAttrName="GlobalAttribute13"
+      EntityUsage="ODFlexfieldInfoEO"
+      AliasName="GLOBAL_ATTRIBUTE13" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="GlobalAttribute14"
+      Precision="150"
+      EntityAttrName="GlobalAttribute14"
+      EntityUsage="ODFlexfieldInfoEO"
+      AliasName="GLOBAL_ATTRIBUTE14" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="GlobalAttribute15"
+      Precision="150"
+      EntityAttrName="GlobalAttribute15"
+      EntityUsage="ODFlexfieldInfoEO"
+      AliasName="GLOBAL_ATTRIBUTE15" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="GlobalAttribute16"
+      Precision="150"
+      EntityAttrName="GlobalAttribute16"
+      EntityUsage="ODFlexfieldInfoEO"
+      AliasName="GLOBAL_ATTRIBUTE16" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="GlobalAttribute17"
+      Precision="150"
+      EntityAttrName="GlobalAttribute17"
+      EntityUsage="ODFlexfieldInfoEO"
+      AliasName="GLOBAL_ATTRIBUTE17" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="GlobalAttribute18"
+      Precision="150"
+      EntityAttrName="GlobalAttribute18"
+      EntityUsage="ODFlexfieldInfoEO"
+      AliasName="GLOBAL_ATTRIBUTE18" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="GlobalAttribute19"
+      Precision="150"
+      EntityAttrName="GlobalAttribute19"
+      EntityUsage="ODFlexfieldInfoEO"
+      AliasName="GLOBAL_ATTRIBUTE19" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="GlobalAttribute20"
+      Precision="150"
+      EntityAttrName="GlobalAttribute20"
+      EntityUsage="ODFlexfieldInfoEO"
+      AliasName="GLOBAL_ATTRIBUTE20" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="GlobalAttributeCategory"
+      Precision="30"
+      EntityAttrName="GlobalAttributeCategory"
+      EntityUsage="ODFlexfieldInfoEO"
+      AliasName="GLOBAL_ATTRIBUTE_CATEGORY" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="PrimarySalesrepId"
+      Precision="15"
+      Scale="0"
+      EntityAttrName="PrimarySalesrepId"
+      EntityUsage="ODFlexfieldInfoEO"
+      AliasName="PRIMARY_SALESREP_ID" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="FinchrgReceivablesTrxId"
+      Precision="15"
+      Scale="0"
+      EntityAttrName="FinchrgReceivablesTrxId"
+      EntityUsage="ODFlexfieldInfoEO"
+      AliasName="FINCHRG_RECEIVABLES_TRX_ID" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="DatesNegativeTolerance"
+      EntityAttrName="DatesNegativeTolerance"
+      EntityUsage="ODFlexfieldInfoEO"
+      AliasName="DATES_NEGATIVE_TOLERANCE" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="DatesPositiveTolerance"
+      EntityAttrName="DatesPositiveTolerance"
+      EntityUsage="ODFlexfieldInfoEO"
+      AliasName="DATES_POSITIVE_TOLERANCE" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="DateTypePreference"
+      Precision="20"
+      EntityAttrName="DateTypePreference"
+      EntityUsage="ODFlexfieldInfoEO"
+      AliasName="DATE_TYPE_PREFERENCE" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="OverShipmentTolerance"
+      EntityAttrName="OverShipmentTolerance"
+      EntityUsage="ODFlexfieldInfoEO"
+      AliasName="OVER_SHIPMENT_TOLERANCE" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="UnderShipmentTolerance"
+      EntityAttrName="UnderShipmentTolerance"
+      EntityUsage="ODFlexfieldInfoEO"
+      AliasName="UNDER_SHIPMENT_TOLERANCE" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="ItemCrossRefPref"
+      Precision="30"
+      EntityAttrName="ItemCrossRefPref"
+      EntityUsage="ODFlexfieldInfoEO"
+      AliasName="ITEM_CROSS_REF_PREF" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="OverReturnTolerance"
+      EntityAttrName="OverReturnTolerance"
+      EntityUsage="ODFlexfieldInfoEO"
+      AliasName="OVER_RETURN_TOLERANCE" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="UnderReturnTolerance"
+      EntityAttrName="UnderReturnTolerance"
+      EntityUsage="ODFlexfieldInfoEO"
+      AliasName="UNDER_RETURN_TOLERANCE" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="ShipSetsIncludeLinesFlag"
+      Precision="1"
+      EntityAttrName="ShipSetsIncludeLinesFlag"
+      EntityUsage="ODFlexfieldInfoEO"
+      AliasName="SHIP_SETS_INCLUDE_LINES_FLAG" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="ArrivalsetsIncludeLinesFlag"
+      Precision="1"
+      EntityAttrName="ArrivalsetsIncludeLinesFlag"
+      EntityUsage="ODFlexfieldInfoEO"
+      AliasName="ARRIVALSETS_INCLUDE_LINES_FLAG" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="SchedDatePushFlag"
+      Precision="1"
+      EntityAttrName="SchedDatePushFlag"
+      EntityUsage="ODFlexfieldInfoEO"
+      AliasName="SCHED_DATE_PUSH_FLAG" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="InvoiceQuantityRule"
+      Precision="30"
+      EntityAttrName="InvoiceQuantityRule"
+      EntityUsage="ODFlexfieldInfoEO"
+      AliasName="INVOICE_QUANTITY_RULE" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="PricingEvent"
+      Precision="30"
+      EntityAttrName="PricingEvent"
+      EntityUsage="ODFlexfieldInfoEO"
+      AliasName="PRICING_EVENT" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="GlIdRec"
+      Precision="15"
+      Scale="0"
+      EntityAttrName="GlIdRec"
+      EntityUsage="ODFlexfieldInfoEO"
+      AliasName="GL_ID_REC" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="GlIdRev"
+      Precision="15"
+      Scale="0"
+      EntityAttrName="GlIdRev"
+      EntityUsage="ODFlexfieldInfoEO"
+      AliasName="GL_ID_REV" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="GlIdTax"
+      Precision="15"
+      Scale="0"
+      EntityAttrName="GlIdTax"
+      EntityUsage="ODFlexfieldInfoEO"
+      AliasName="GL_ID_TAX" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="GlIdFreight"
+      Precision="15"
+      Scale="0"
+      EntityAttrName="GlIdFreight"
+      EntityUsage="ODFlexfieldInfoEO"
+      AliasName="GL_ID_FREIGHT" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="GlIdClearing"
+      Precision="15"
+      Scale="0"
+      EntityAttrName="GlIdClearing"
+      EntityUsage="ODFlexfieldInfoEO"
+      AliasName="GL_ID_CLEARING" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="GlIdUnbilled"
+      Precision="15"
+      Scale="0"
+      EntityAttrName="GlIdUnbilled"
+      EntityUsage="ODFlexfieldInfoEO"
+      AliasName="GL_ID_UNBILLED" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="GlIdUnearned"
+      Precision="15"
+      Scale="0"
+      EntityAttrName="GlIdUnearned"
+      EntityUsage="ODFlexfieldInfoEO"
+      AliasName="GL_ID_UNEARNED" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="GlIdUnpaidRec"
+      Precision="15"
+      Scale="0"
+      EntityAttrName="GlIdUnpaidRec"
+      EntityUsage="ODFlexfieldInfoEO"
+      AliasName="GL_ID_UNPAID_REC" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="GlIdRemittance"
+      Precision="15"
+      Scale="0"
+      EntityAttrName="GlIdRemittance"
+      EntityUsage="ODFlexfieldInfoEO"
+      AliasName="GL_ID_REMITTANCE" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="GlIdFactor"
+      Precision="15"
+      Scale="0"
+      EntityAttrName="GlIdFactor"
+      EntityUsage="ODFlexfieldInfoEO"
+      AliasName="GL_ID_FACTOR" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="TaxClassification"
+      Precision="30"
+      EntityAttrName="TaxClassification"
+      EntityUsage="ODFlexfieldInfoEO"
+      AliasName="TAX_CLASSIFICATION" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="ObjectVersionNumber"
+      EntityAttrName="ObjectVersionNumber"
+      EntityUsage="ODFlexfieldInfoEO"
+      AliasName="OBJECT_VERSION_NUMBER" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="CreatedByModule"
+      Precision="150"
+      EntityAttrName="CreatedByModule"
+      EntityUsage="ODFlexfieldInfoEO"
+      AliasName="CREATED_BY_MODULE" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="ApplicationId"
+      EntityAttrName="ApplicationId"
+      EntityUsage="ODFlexfieldInfoEO"
+      AliasName="APPLICATION_ID" >
+   </ViewAttribute>
+</ViewObject>

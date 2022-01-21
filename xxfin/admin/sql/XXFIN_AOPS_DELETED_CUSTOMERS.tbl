@@ -1,0 +1,29 @@
+-- +===========================================================================+
+-- |                            Office Depot                                   |
+-- +===========================================================================+
+-- | Name :  XXFIN_AOPS_DELETED_CUSTOMERS                                      |
+-- | Description : Script to create custom table XXFIN_AOPS_DELETED_CUSTOMERS  |
+-- |                                                                           |
+-- |                                                                           |
+-- |Change Record:                                                             |
+-- |===============                                                            |
+-- |Version      Date           Author                  Remarks                |
+-- |=======    ==========     =============             ====================== |
+-- | 1.0       23-FEB-2021    Ankit Jaiswal            Initial draft version  |
+-- +===========================================================================+
+
+create table XXFIN.XXFIN_AOPS_DELETED_CUSTOMERS
+( 
+    "OSR" VARCHAR2(33 BYTE)
+);
+
+WHENEVER SQLERROR CONTINUE;
+PROMPT
+PROMPT Exiting....
+PROMPT
+SET FEEDBACK ON
+EXIT;
+REM=================================================================================================
+REM                                   End Of Script
+REM=================================================================================================
+

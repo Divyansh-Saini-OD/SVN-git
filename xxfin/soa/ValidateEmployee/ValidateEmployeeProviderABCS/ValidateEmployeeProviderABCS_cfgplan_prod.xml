@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<SOAConfigPlan xmlns:jca="http://platform.integration.oracle/blocks/adapter/fw/metadata" xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy" xmlns:orawsp="http://schemas.oracle.com/ws/2006/01/policy" xmlns:edl="http://schemas.oracle.com/events/edl" xmlns="http://schemas.oracle.com/soa/configplan">
+   <composite name="ValidateEmployeeProviderABCS">
+      <!--Add search and replace rules for the import section of a composite
+	Example:
+	<searchReplace>
+		<search>http://my-dev-server</search>
+		<replace>http://my-test-server</replace>
+	<searchReplace>
+	<searchReplace>
+		<search>8888</search>
+		<replace>8889</replace>
+	<searchReplace>-->
+      <import>
+         <searchReplace>
+            <search/>
+            <replace/>
+         </searchReplace>
+      </import>
+      <service name="validateemployeeproviderabcsimpl_client_ep">
+         <binding type="ws">
+            <attribute name="port">
+               <replace>http://xmlns.officedepot.com/ValidateEmployee/ValidateEmployeeProviderABCS/ValidateEmployeeProviderABCSImpl#wsdl.endpoint(validateemployeeproviderabcsimpl_client_ep/ValidateEmployeeProviderABCSImpl_pt)</replace>
+            </attribute>
+         </binding>
+      </service>
+      <!--Add search and replace rules for the component properties
+	For components and service/reference bindings, you can add policy references.
+	Example:
+	<component name="*">
+		<wsp:PolicyReference orawsp:category="management" orawsp:status="enabled" URI="oracle/log_policy"/>
+	</component>-->
+      <component name="ValidateEmployeeProviderABCSImpl">
+         <property name="bpel.config.inMemoryOptimization">
+            <replace>true</replace>
+         </property>
+         <property name="bpel.config.completionPersistPolicy">
+            <replace>off</replace>
+         </property>
+         <property name="bpel.preference.SOURCE_SYSTEM_NAME">
+            <replace>eCommerce</replace>
+         </property>
+         <property name="bpel.preference.SYSTEM_NAME">
+            <replace>ValidateEmployee</replace>
+         </property>
+         <property name="bpel.preference.ERROR_DESCRIPTION_TEXT">
+            <replace>There was an error while calling the EmployeeValidation Service for the EmployeeID :</replace>
+         </property>
+         <property name="bpel.preference.MESSAGE_TYPE">
+            <replace>ValidateEmployeeRequestEBM</replace>
+         </property>
+         <property name="bpel.preference.MESSAGE_VERSION">
+            <replace>1</replace>
+         </property>
+         <property name="bpel.preference.ERROR_TYPE">
+            <replace>System</replace>
+         </property>
+         <property name="bpel.preference.ERROR_SEVERITY">
+            <replace>fatal</replace>
+         </property>
+         <property name="bpel.preference.CATCH_ALL_PROCESS_STEP">
+            <replace>Catch All on the Main Sequence</replace>
+         </property>
+         <property name="bpel.preference.MESSAGE_OPERATION">
+            <replace>validateEmployeeDetails</replace>
+         </property>
+         <property name="bpel.preference.OTHER_FAULT_ERROR">
+            <replace>Unable to call the EmployeeValidation Service</replace>
+         </property>
+         <property name="bpel.preference.EMPLOYEE_DATA_NOT_FOUND_FAULT_RESPONSE">
+            <replace>FALSE</replace>
+         </property>
+         <property name="bpel.preference.EMPLOYEE_DATA_NOT_FOUND_FAULT_ERROR_TEXT">
+            <replace>Employee Validation Service could NOT find the details of the Employee with Employee ID :</replace>
+         </property>
+         <property name="bpel.preference.DATA_NOT_FOUND_PEOPLESOFT_RESPONSE">
+            <replace>Component Interface API</replace>
+         </property>
+      </component>
+      <reference name="CommonErrorLoggingService">
+         <binding type="jca"/>
+      </reference>
+      <reference name="EmployeeValidationService">
+         <!--Add search and replace rules for the binding properties-->
+         <binding type="ws">
+            <attribute name="port">
+               <replace>http://xmlns.oracle.com/Enterprise/Tools/services/CI_OD_CI_EMP_PWD_VAL.1#wsdl.endpoint(CI_OD_CI_EMP_PWD_VAL/CI_OD_CI_EMP_PWD_VAL_Port)</replace>
+            </attribute>
+            <attribute name="location">
+               <replace>CI_OD_CI_EMP_PWD_VAL.1.wsdl</replace>
+            </attribute>
+            <property name="weblogic.wsee.wsat.transaction.flowOption">
+               <replace>WSDLDriven</replace>
+            </property>
+            <property name="oracle.webservices.auth.username">
+               <replace>OD_IB_TEST</replace>
+            </property>
+            <property name="oracle.webservices.auth.password">
+               <replace>Welcome1</replace>
+            </property>
+         </binding>
+      </reference>
+   </composite>
+   <!--To configure monitor.config: 
+	<property name="enabled"><replace>true</replace></property>
+	<property name="dataObjectsFolder"><searchReplace><search>mydev</search><replace>myproduction</replace></searchReplace></property>
+	
+	sample properties to configure for JMS adapter: 
+	<jca:property name="DestinationName"><replace>jms/DemoSupplierTopic</replace></jca:property>
+	<jca:property name="TimeToLive"><replace>0</replace></jca:property>
+	
+	To add search and replace rules for wsdls, xsd and jca files
+	Example:
+	<searchReplace>
+		<search>http://my-dev-server</search>
+		<replace>http://my-test-server</replace>
+	<searchReplace>
+	<searchReplace>
+		<search>8888</search>
+		<replace>8889</replace>
+	<searchReplace>
+	-->
+   <wsdlAndSchema name="CI_OD_CI_EMP_PWD_VAL.1.wsdl|CommonErrorLoggingService.wsdl|CommonErrorLoggingService_jms.jca|ValidateEmployeeProviderABCSImpl.wsdl|xsd/M1068738.V1.xsd|xsd/M241439.V1.xsd|xsd/M974361.V1.xsd|xsd/ValidateEmployeeRequestEBM.xsd|xsd/ValidateEmployeeResponseEBM.xsd">
+      <searchReplace>
+         <search>https://pshrdev.na.odcorp.net/PSIGW/PeopleSoftServiceListeningConnector/CI_OD_CI_EMP_PWD_VAL.1</search>
+         <replace>https://pshrdev.na.odcorp.net/PSIGW/PeopleSoftServiceListeningConnector/CI_OD_CI_EMP_PWD_VAL.1</replace>
+      </searchReplace>
+   </wsdlAndSchema>
+</SOAConfigPlan>

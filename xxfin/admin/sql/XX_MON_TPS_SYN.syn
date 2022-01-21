@@ -1,0 +1,44 @@
+-- +===================================================================================+
+-- |                                Office Depot Inc.                                  |
+-- +===================================================================================+
+-- | Name        : XX_MON_TPS                                                          |
+-- | Description : Create the Synonym for the table XX_MON_TPS                         |  
+-- |                                                                                   |
+-- |                                                                                   |
+-- |                                                                                   |
+-- |Version   Date         Author               Remarks                                |
+-- |=======   ==========   =============        =======================================|
+-- | 1.0      23-APR-2015  Manikant Kasu        Initial version                        |
+-- |===================================================================================|
+
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     ON
+
+PROMPT Creating SYNONYM XX_MON_TPS
+
+PROMPT Program exits IF the creation IS NOT SUCCESSFUL
+
+WHENEVER SQLERROR CONTINUE;
+
+
+PROMPT
+PROMPT 'CREATE SYNONYM XX_MON_TPS FOR XXFIN.XX_MON_TPS'
+PROMPT 
+CREATE SYNONYM apps.XX_MON_TPS FOR XXFIN.XX_MON_TPS;
+
+           
+PROMPT
+PROMPT Exiting....
+PROMPT
+
+SET FEEDBACK ON
+
+SHOW ERRORS;
+EXIT;
+
+REM============================================================================================
+REM                                   End Of Script                                            
+REM============================================================================================

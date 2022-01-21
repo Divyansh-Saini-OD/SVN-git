@@ -1,0 +1,26 @@
+-- +========================================================================+
+-- |                  Office Depot                                          |
+-- +========================================================================+
+-- | Name        : ALTER_TBL_XX_AR_CONTRACTS.tbl                            |
+-- | Description : Added new field in the existing XX_AR_CONTRACTS          |
+-- |               table                                                    |
+-- |                                                                        |
+-- |Change Record:                                                          |
+-- |===============                                                         |
+-- |Version   Date        Author           Remarks                          |
+-- |=======  ===========  =============    =================================|
+-- |1.0      12-Dec-2018  Sahithi Kunuru    Initial Version                 |
+-- +========================================================================+
+
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     ON
+
+alter table xxfin.xx_ar_contracts
+add (contract_user_status VARCHAR2(30)
+    );
+
+
+/

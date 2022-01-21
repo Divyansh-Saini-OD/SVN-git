@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<dataTemplate name ="CEUNMTCHTransData" description="CE Unmatch Transactions Data" defaultPackage="XX_CE_UNMTCHD_TRANS_RECON_PKG" Version="1.0" >
+<parameters>
+<parameter name="P_PROVIDER_TYPE" dataType="varchar2"/>
+<parameter name="P_DEPOSIT_FROM_DATE" dataType="varchar2"/>
+<parameter name="P_DEPOSIT_TO_DATE" dataType="varchar2"/>
+</parameters>
+<dataQuery>
+<sqlStatement name="Q1">
+	<![CDATA[select PROVIDER_TYPE      
+,INVOICE_NUM        
+,RECEIPT_NUM        
+,BANK_REC_ID        
+,PROCESSOR_ID       
+,TRX_TYPE           
+,ORDER_SOURCE       
+,ORDER_TYPE         
+,ORDER_NUMBER       
+,STORE_NUMBER       
+,PAYMENT_TYPE_CODE  
+,CREDIT_CARD_CODE   
+,RECEIPT_NUMBER     
+,HEADER_ID          
+,ORDT_PAYMENT_AMOUNT
+,AJB998_TRX_AMOUNT 
+,VARIANCE_AMOUNT    
+,ERROR_CODE         
+,ERROR_DESCRIPTION   
+FROM TABLE (XX_CE_UNMTCHD_TRANS_RECON_PKG.XX_CE_UNMATCH_TRANS_DETAILS(
+      :P_PROVIDER_TYPE,
+      :P_DEPOSIT_FROM_DATE,
+      :P_DEPOSIT_TO_DATE))]]>
+</sqlStatement>
+</dataQuery>
+<dataStructure>
+<group name="XX_CE_UNMATCH_TRANS" source="Q1">
+<element name="PROVIDER_TYPE" value="PROVIDER_TYPE" />
+<element name="INVOICE_NUM" value="INVOICE_NUM" />
+<element name="RECEIPT_NUM" value="RECEIPT_NUM" />
+<element name="BANK_REC_ID" value="BANK_REC_ID" />
+<element name="PROCESSOR_ID" value="PROCESSOR_ID" />
+<element name="TRX_TYPE" value="TRX_TYPE" />
+<element name="ORDER_SOURCE" value="ORDER_SOURCE" />
+<element name="ORDER_TYPE" value="ORDER_TYPE" />
+<element name="ORDER_NUMBER" value="ORDER_NUMBER" />
+<element name="STORE_NUMBER" value="STORE_NUMBER" />
+<element name="PAYMENT_TYPE_CODE" value="PAYMENT_TYPE_CODE" />
+<element name="CREDIT_CARD_CODE" value="CREDIT_CARD_CODE" />
+<element name="RECEIPT_NUMBER" value="RECEIPT_NUMBER" />
+<element name="HEADER_ID" value="HEADER_ID" />
+<element name="ORDT_PAYMENT_AMOUNT" value="ORDT_PAYMENT_AMOUNT" />
+<element name="AJB998_TRX_AMOUNT" value="AJB998_TRX_AMOUNT" />
+<element name="VARIANCE_AMOUNT" value="VARIANCE_AMOUNT" />
+<element name="ERROR_DESCRIPTION" value="ERROR_DESCRIPTION" />
+</group>
+</dataStructure>
+</dataTemplate>

@@ -1,0 +1,44 @@
+
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+-- +===========================================================================+
+-- |                  Office Depot - TZ Subcriptions Project                   |
+-- |                                                                           |                         
+-- +===========================================================================+
+-- | Name        : XX_AR_SUBSCRIPTION_PAYLOADS_S.seq                           |
+-- | Description :                                                             |
+-- | File to create sequence for XX_AR_SUBSCRIPTION_PAYLOADS_S                 |
+-- |                                                                           |
+-- |Change Record:                                                             |
+-- |===============                                                            |
+-- |Version  Date        Author        Remarks            	                   |
+-- |======== =========== ============= ========================================|
+-- |DRAFT 1 11-DEC-2017 Sreedhar Mohan Initial draft version                   |
+-- +===========================================================================+
+
+-- ----------------------------------------------------------------------------
+-- Create Custom Sequence XX_AR_SUBSCRIPTION_PAYLOADS_S
+-- ----------------------------------------------------------------------------
+
+BEGIN
+  EXECUTE IMMEDIATE 'DROP SEQUENCE XXFIN.XX_AR_SUBSCRIPTION_PAYLOADS_S';
+EXCEPTION
+  WHEN OTHERS THEN NULL;
+END;
+/
+
+CREATE SEQUENCE XXFIN.XX_AR_SUBSCRIPTION_PAYLOADS_S 
+INCREMENT BY 1 
+START WITH 1500 
+NOMAXVALUE
+NOCYCLE NOCACHE NOORDER;
+
+
+GRANT ALL ON XXFIN.XX_AR_SUBSCRIPTION_PAYLOADS_S TO APPS WITH GRANT OPTION;
+
+GRANT SELECT ON XXFIN.XX_AR_SUBSCRIPTION_PAYLOADS_S TO ERP_SYSTEM_TABLE_SELECT_ROLE;
+ 
+
+SHOW ERRORS;

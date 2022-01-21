@@ -1,0 +1,33 @@
+  -- +============================================================================================+
+  -- |  Office Depot                                                                              |
+  -- +============================================================================================+
+  -- |  Name          : XX_AR_SELF_SERV_BAD_CONTACT                                               |
+  -- |  Description   : bad Contact data from web collect is stored in the table                  |
+  -- |  Change Record :                                                                           |
+  -- +============================================================================================+
+  -- | Version     Date         Author           Remarks                                          |
+  -- | =========   ===========  =============    ===============================================  |
+  -- | 1.0         01-Oct-2020  Divyansh Saini   Initial version                                  |
+  -- +============================================================================================+
+
+  CREATE TABLE "XXFIN"."XX_AR_SELF_SERV_BAD_CONTACT" 
+   (	"RECORD_ID" NUMBER, 
+	"PROCESS_ID" NUMBER, 
+	"CUSTOMER_NAME" VARCHAR2(200 BYTE), 
+	"AOPS_ACCOUNT" VARCHAR2(100 BYTE), 
+	"ACCOUNT_NUMBER" VARCHAR2(100 BYTE), 
+	"LAST_NAME" VARCHAR2(200 BYTE), 
+	"FIRST_NAME" VARCHAR2(200 BYTE), 
+	"PHONE_NUMBER" NUMBER, 
+	"FAX_NUMBER" VARCHAR2(200 BYTE), 
+	"EMAIL_ADDRESS" VARCHAR2(200 BYTE), 
+	"REQUEST_ID" NUMBER, 
+	"DIRECT_BILL_FLAG" VARCHAR2(2 BYTE), 
+	"STATUS" VARCHAR2(10 BYTE), 
+	"CREATION_DATE" DATE, 
+	"CREATED_BY" NUMBER, 
+	"LAST_UPDATE_DATE" DATE, 
+	"LAST_UPDATED_BY" NUMBER, 
+	"LAST_UPDATE_LOGIN" NUMBER, 
+	 PRIMARY KEY ("RECORD_ID")
+     );

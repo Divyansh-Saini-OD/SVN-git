@@ -1,0 +1,33 @@
+-- +==========================================================================+
+-- |                               Office Depot                               |
+-- +==========================================================================+
+-- | SQL Script to create the following table                                 |
+-- |                                                                          |
+-- |             Table  : XX_AR_POSTING_WORKER_GT                             |
+-- |                                                                          |
+-- |             RICE#  : E2050 - GL Transfer Parallelization Program         |
+-- |                                                                          |
+-- |             Purpose: Used for identifying receipts to be transfered to   |
+-- |                      General Ledger                                      |
+-- |Change Record:                                                            |
+-- |===============                                                           |
+-- |Version   Date         Author               Remarks                       |
+-- |=======   ===========  ===================  ==============================|
+-- | V1.0     20-NOV-2009  Sreelatha Givvimani  Initial version - Defect 3260 |
+-- |                                                                          |
+-- +==========================================================================+
+
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     ON
+
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+CREATE GLOBAL TEMPORARY TABLE xxfin.xx_ar_posting_worker_gt
+  (source_id NUMBER, worker_number NUMBER)
+  ON COMMIT DELETE ROWS;
+
+SHOW ERRORS

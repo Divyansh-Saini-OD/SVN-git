@@ -1,0 +1,19 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<wsdl:definitions name="UpdateEmployeeErrorCallBackPSFTProvABCS" targetNamespace="http://xmlns.oracle.com/PeopleSoftMigration/UpdateEmployeeErrorCallBackPSFTProvABCS/UpdateEmployeeErrorCallBackPSFTProvABCS" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:client="http://xmlns.oracle.com/PeopleSoftMigration/UpdateEmployeeErrorCallBackPSFTProvABCS/UpdateEmployeeErrorCallBackPSFTProvABCS" xmlns:ns1="http://xmlns.officedepot.com/PeopleSoftMigration/UpdateEmployeeErrorCallBackPSFTProvABCS/UpdateEmployeeErrorToPSFTEBM" xmlns:plnk="http://docs.oasis-open.org/wsbpel/2.0/plnktype">
+   <wsdl:types>
+      <schema xmlns="http://www.w3.org/2001/XMLSchema">
+         <import namespace="http://xmlns.officedepot.com/PeopleSoftMigration/UpdateEmployeeErrorCallBackPSFTProvABCS/UpdateEmployeeErrorToPSFTEBM" schemaLocation="xsd/UpdateEmployeeErrorToPeopleSoftEBM.xsd"/>
+      </schema>
+   </wsdl:types>
+   <wsdl:message name="UpdateEmployeeErrorCallBackPSFTProvABCSRequestMessage">
+      <wsdl:part name="payload" element="ns1:UpdateEmployeeErrorToPSFTEBM"/>
+   </wsdl:message>
+   <wsdl:portType name="UpdateEmployeeErrorCallBackPSFTProvABCS">
+      <wsdl:operation name="updateEmployeeErrorDetailsToPSFT">
+         <wsdl:input message="client:UpdateEmployeeErrorCallBackPSFTProvABCSRequestMessage"/>
+      </wsdl:operation>
+   </wsdl:portType>
+   <plnk:partnerLinkType name="UpdateEmployeeErrorCallBackPSFTProvABCS">
+      <plnk:role name="UpdateEmployeeErrorCallBackPSFTProvABCSProvider" portType="client:UpdateEmployeeErrorCallBackPSFTProvABCS"/>
+   </plnk:partnerLinkType>
+</wsdl:definitions>

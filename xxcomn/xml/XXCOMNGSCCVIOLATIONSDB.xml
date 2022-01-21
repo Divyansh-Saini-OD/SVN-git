@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dataTemplate name="XXCOMNGSCCVIOLATIONSDB" defaultPackage="XX_COMN_GSCC_VIOLATIONS_PKG" dataSourceRef="1.0">
+	<properties>
+		<property name="include_parameters" value="true"/>
+		<property name="include_null_Element" value="true"/>
+		<property name="db_fetch_size" value="300"/>
+	</properties>
+	<parameters>
+	</parameters>
+<dataQuery>
+<sqlStatement name="Q1" dataSourceRef="">
+<![CDATA[ SELECT  dep.owner              OWNER
+                 ,dep.name               OBJECT_NAME
+                 ,dep.type               OBJECT_TYPE
+                 ,dep.referenced_owner   REFERENCED_OWNER
+                 ,dep.referenced_name    REFERENCED_NAME
+            FROM  dba_dependencies dep
+                 ,dba_tables tab
+           WHERE dep.referenced_type = 'TABLE'
+             AND dep.referenced_owner IN ( SELECT oracle_username 
+			                                 FROM fnd_oracle_userid
+                                            WHERE read_only_flag in ('A', 'B', 'E') )
+             AND dep.owner IN ( SELECT oracle_username 
+			                      FROM fnd_oracle_userid
+                                 WHERE read_only_flag IN ('A', 'B', 'C', 'E', 'U') )
+             AND NOT dep.referenced_name LIKE 'AQ$%'
+             AND NOT dep.type IN ('UNDEFINED', 'SYNONYM')
+             AND NOT ( dep.type = 'MATERIALIZED VIEW' AND EXISTS ( SELECT null 
+			                                                         FROM dba_users
+                                                                    WHERE username = user
+                                                                      AND editions_enabled = 'Y' ) )
+             AND NOT ( dep.type = 'VIEW' 
+			           AND dep.owner = dep.referenced_owner 
+					   AND dep.name  = substrb(dep.referenced_name, 1, 29)||'#' )
+             AND NOT ( dep.type = 'TRIGGER' AND ( NOT EXISTS ( SELECT null 
+			                                                     FROM dba_editioning_views ev
+                                                                WHERE ev.owner     = dep.referenced_owner
+                                                                  AND ev.view_name = substrb(dep.referenced_name, 1, 29)||'#' ) 
+															OR (dep.owner, dep.name) IN ( SELECT owner, trigger_name 
+															                                FROM dba_triggers
+                                                                                           WHERE crossedition <> 'NO'
+                                                                                              OR trigger_name like '%_WHO'
+                                                                                              OR trigger_name like 'DR$%') ) )
+             AND NOT EXISTS ( SELECT null 
+			                    FROM dba_queue_tables qt
+                               WHERE qt.owner = dep.referenced_owner
+                                 AND qt.queue_table = dep.referenced_name )
+             AND tab.owner = dep.referenced_owner
+             AND tab.table_name = dep.referenced_name
+             AND tab.temporary = 'N'
+             AND tab.secondary = 'N'
+             AND tab.iot_type IS null
+             AND EXISTS ( SELECT null 
+			                FROM user_synonyms
+                           WHERE table_owner = dep.referenced_owner
+                             AND table_name IN (dep.referenced_name, substrb(dep.referenced_name, 1, 29)||'#' ) )
+           ORDER BY 1, 2, 3, 4, 5
+]]>
+</sqlStatement>
+<sqlStatement name="Q2" dataSourceRef="">
+<![CDATA[ SELECT  (SELECT FND_PROFILE.VALUE('XX_COMN_SMTP_MAIL_SERVER') 
+                     FROM DUAL)                      SMTP_SERVER,
+                  'noreply@officedepot.com'          MAIL_FROM,
+				  (SELECT target_value1 
+				     FROM xx_fin_translatevalues
+                    WHERE 1 =1 
+                      AND source_value1 = 'XXOD_COMN_GSCC_VIOLATIONS'
+                      AND translate_id IN ( SELECT translate_id 
+					                          FROM xx_fin_translatedefinition
+                                             WHERE translation_name = 'OD_MAIL_GROUPS'))  MAIL_TO,
+				  (SELECT instance_name 
+				     FROM v$instance)   INSTANCE_NAME
+            FROM DUAL
+]]>
+</sqlStatement>
+</dataQuery>
+<dataTrigger name="beforeReport" source="XX_COMN_GSCC_VIOLATIONS_PKG.beforeReport" /> 
+<dataStructure>
+<group name="G1" source="Q1" groupFilter="">
+	 <element name="OWNER" value="OWNER" function=""/>
+	 <element name="OBJECT_NAME" value="OBJECT_NAME" function=""/>
+	 <element name="OBJECT_TYPE" value="OBJECT_TYPE" function=""/>
+	 <element name="REFERENCED_OWNER" value="REFERENCED_OWNER" function=""/>
+	 <element name="REFERENCED_NAME" value="REFERENCED_NAME" function=""/>
+</group>
+<group name="G2" source="Q2" groupFilter="">
+     <element name="C_SMTP_SERVER" value="SMTP_SERVER" function=""/>
+     <element name="C_MAIL_FROM"  value="MAIL_FROM" function=""/>
+     <element name="C_MAIL_TO"    value="MAIL_TO" function=""/>
+	 <element name="C_INSTANCE_NAME"    value="INSTANCE_NAME" function=""/>
+</group>
+</dataStructure>
+<dataTrigger name="afterReport" source="XX_COMN_GSCC_VIOLATIONS_PKG.afterReport"/>
+</dataTemplate>

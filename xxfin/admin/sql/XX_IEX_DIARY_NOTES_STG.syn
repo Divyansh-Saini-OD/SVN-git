@@ -1,0 +1,20 @@
+--+========================================================================================+
+--|      Office Depot - Project FIT                                                        |
+--|   Capgemini/Office Depot/Consulting Organization                                       |
+--+========================================================================================+
+--|Name        :XX_IEX_DIARY_NOTES_STG.syn                                                 |
+--|RICE        :                                                                           |
+--|Description :Synonym creation script                                                    |
+--|                                                                                        |
+--|                                                                                        |
+--|Change Record:                                                                          |
+--|==============                                                                          |
+--|Version   Date            Author                      Remarks                           |
+--|=======   ===========     ====================        ===============                   |
+--|1.00      18-OCT-2011     Gangi Reddy M               Initial Version                   |
+--+========================================================================================+
+
+SET VERIFY OFF
+WHENEVER SQLERROR CONTINUE
+
+CREATE OR REPLACE SYNONYM   XX_IEX_DIARY_NOTES_STG FOR XXFIN.XX_IEX_DIARY_NOTES_STG;

@@ -1,0 +1,53 @@
+SET VERIFY OFF;
+SET SHOW OFF;
+SET ECHO OFF;
+SET TAB OFF;
+SET FEEDBACK OFF;
+ 
+WHENEVER SQLERROR CONTINUE;
+ 
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+
+-- +==========================================================================+
+-- |                      Office Depot - IDMS                                 |
+-- |                      Capgemini Technology Services                       |
+-- +==========================================================================+
+-- | SQL Script to create the following objects                               |
+-- |             Table       : XXFIN.XX_AP_SUP_ADDL_ATTRIBUTES                |
+-- |             Schema      : XXFIN                                          |
+-- |  Rice ID:   C0709                                                                       |
+-- |Create Record:                                                            |
+-- |===============                                                           |
+-- |Version   Date         Author               Remarks                       |
+-- |=======   ==========   =============        ==============================|
+-- | 1.0     20-FEB-2018   Sunil Kalal          New Table to store Additional |
+-- |                                            Attributes from RMS.          | 
+-- |                                                                          |
+-- +==========================================================================+
+
+
+ CREATE TABLE xx_ap_sup_addl_attributes
+  (
+    supplier              NUMBER,
+    od_contract_signature VARCHAR2(150),
+    od_contract_title     VARCHAR2(150),
+    od_ven_sig_name       VARCHAR2(150),
+    od_ven_sig_title      VARCHAR2(150),
+    attribute1            VARCHAR2(60),
+    attribute2            VARCHAR2(60),
+    attribute3            VARCHAR2(60),
+    attribute4            VARCHAR2(60),
+    creation_date         DATE NOT NULL,
+    created_by            NUMBER NOT NULL,
+    last_update_date      DATE,
+    last_updated_by       NUMBER,
+    last_update_login     NUMBER
+  );
+  
+  
+GRANT ALL ON xx_ap_sup_addl_attributes TO apps;
+
+   /
+Show error
+	

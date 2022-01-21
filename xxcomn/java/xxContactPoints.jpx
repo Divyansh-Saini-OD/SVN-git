@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding='windows-1252'?>
+<!DOCTYPE JboProject SYSTEM "jbo_03_01.dtd">
+
+<JboProject
+   Name="xxContactPoints"
+   SeparateXMLFiles="true"
+   PackageName="" >
+   <DesignTime>
+      <Attr Name="_version" Value="9.0.3.14.01" />
+      <Attr Name="_jprName" Value="xxContactPoints.jpr" />
+      <Attr Name="_ejbPackage" Value="false" />
+      <Attr Name="_NamedConnection" Value="GSIDEV02" />
+   </DesignTime>
+   <Containee
+      Name="server"
+      FullName="oracle.apps.ar.hz.components.contactpoints.server.server"
+      ObjectType="JboPackage" >
+   </Containee>
+   <Containee
+      Name="server"
+      FullName="od.oracle.apps.ar.hz.components.contactpoints.server.server"
+      ObjectType="JboPackage" >
+   </Containee>
+   <Substitutes>
+      <Substitute OldName ="oracle.apps.ar.hz.components.contactpoints.server.HzPuiContactPointEmailTableVO" NewName ="od.oracle.apps.ar.hz.components.contactpoints.server.xxHzPuiContactPointEmailTableVO" />
+   </Substitutes>
+</JboProject>

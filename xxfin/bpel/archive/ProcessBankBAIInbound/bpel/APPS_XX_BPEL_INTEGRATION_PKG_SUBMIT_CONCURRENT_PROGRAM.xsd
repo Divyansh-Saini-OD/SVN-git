@@ -1,0 +1,121 @@
+<schema targetNamespace="http://xmlns.oracle.com/pcbpel/adapter/db/APPS/XX_BPEL_INTEGRATION_PKG/SUBMIT_CONCURRENT_PROGRAM/" xmlns="http://www.w3.org/2001/XMLSchema" xmlns:db="http://xmlns.oracle.com/pcbpel/adapter/db/APPS/XX_BPEL_INTEGRATION_PKG/SUBMIT_CONCURRENT_PROGRAM/">
+   <element name="InputParameters">
+      <complexType>
+         <sequence>
+            <element name="P_USER_NAME" type="string" db:index="3" db:type="VARCHAR2" minOccurs="0" nillable="true"/>
+            <element name="P_RESP_NAME" type="string" db:index="4" db:type="VARCHAR2" minOccurs="0" nillable="true"/>
+            <element name="P_APPL_SHORT_NAME" type="string" db:index="5" db:type="VARCHAR2" minOccurs="0" nillable="true"/>
+            <element name="P_CONC_SHORT_NAME" type="string" db:index="6" db:type="VARCHAR2" minOccurs="0" nillable="true"/>
+            <element name="P_SUB_REQUEST" type="string" db:index="7" db:type="VARCHAR2" minOccurs="0" nillable="true"/>
+            <element name="P_ARGUMENT1" type="string" db:index="8" db:default="true" db:type="VARCHAR2" minOccurs="0" nillable="true"/>
+            <element name="P_ARGUMENT2" type="string" db:index="9" db:default="true" db:type="VARCHAR2" minOccurs="0" nillable="true"/>
+            <element name="P_ARGUMENT3" type="string" db:index="10" db:default="true" db:type="VARCHAR2" minOccurs="0" nillable="true"/>
+            <element name="P_ARGUMENT4" type="string" db:index="11" db:default="true" db:type="VARCHAR2" minOccurs="0" nillable="true"/>
+            <element name="P_ARGUMENT5" type="string" db:index="12" db:default="true" db:type="VARCHAR2" minOccurs="0" nillable="true"/>
+            <element name="P_ARGUMENT6" type="string" db:index="13" db:default="true" db:type="VARCHAR2" minOccurs="0" nillable="true"/>
+            <element name="P_ARGUMENT7" type="string" db:index="14" db:default="true" db:type="VARCHAR2" minOccurs="0" nillable="true"/>
+            <element name="P_ARGUMENT8" type="string" db:index="15" db:default="true" db:type="VARCHAR2" minOccurs="0" nillable="true"/>
+            <element name="P_ARGUMENT9" type="string" db:index="16" db:default="true" db:type="VARCHAR2" minOccurs="0" nillable="true"/>
+            <element name="P_ARGUMENT10" type="string" db:index="17" db:default="true" db:type="VARCHAR2" minOccurs="0" nillable="true"/>
+            <element name="P_ARGUMENT11" type="string" db:index="18" db:default="true" db:type="VARCHAR2" minOccurs="0" nillable="true"/>
+            <element name="P_ARGUMENT12" type="string" db:index="19" db:default="true" db:type="VARCHAR2" minOccurs="0" nillable="true"/>
+            <element name="P_ARGUMENT13" type="string" db:index="20" db:default="true" db:type="VARCHAR2" minOccurs="0" nillable="true"/>
+            <element name="P_ARGUMENT14" type="string" db:index="21" db:default="true" db:type="VARCHAR2" minOccurs="0" nillable="true"/>
+            <element name="P_ARGUMENT15" type="string" db:index="22" db:default="true" db:type="VARCHAR2" minOccurs="0" nillable="true"/>
+            <element name="P_ARGUMENT16" type="string" db:index="23" db:default="true" db:type="VARCHAR2" minOccurs="0" nillable="true"/>
+            <element name="P_ARGUMENT17" type="string" db:index="24" db:default="true" db:type="VARCHAR2" minOccurs="0" nillable="true"/>
+            <element name="P_ARGUMENT18" type="string" db:index="25" db:default="true" db:type="VARCHAR2" minOccurs="0" nillable="true"/>
+            <element name="P_ARGUMENT19" type="string" db:index="26" db:default="true" db:type="VARCHAR2" minOccurs="0" nillable="true"/>
+            <element name="P_ARGUMENT20" type="string" db:index="27" db:default="true" db:type="VARCHAR2" minOccurs="0" nillable="true"/>
+            <element name="P_ARGUMENT21" type="string" db:index="28" db:default="true" db:type="VARCHAR2" minOccurs="0" nillable="true"/>
+            <element name="P_ARGUMENT22" type="string" db:index="29" db:default="true" db:type="VARCHAR2" minOccurs="0" nillable="true"/>
+            <element name="P_ARGUMENT23" type="string" db:index="30" db:default="true" db:type="VARCHAR2" minOccurs="0" nillable="true"/>
+            <element name="P_ARGUMENT24" type="string" db:index="31" db:default="true" db:type="VARCHAR2" minOccurs="0" nillable="true"/>
+            <element name="P_ARGUMENT25" type="string" db:index="32" db:default="true" db:type="VARCHAR2" minOccurs="0" nillable="true"/>
+            <element name="P_ARGUMENT26" type="string" db:index="33" db:default="true" db:type="VARCHAR2" minOccurs="0" nillable="true"/>
+            <element name="P_ARGUMENT27" type="string" db:index="34" db:default="true" db:type="VARCHAR2" minOccurs="0" nillable="true"/>
+            <element name="P_ARGUMENT28" type="string" db:index="35" db:default="true" db:type="VARCHAR2" minOccurs="0" nillable="true"/>
+            <element name="P_ARGUMENT29" type="string" db:index="36" db:default="true" db:type="VARCHAR2" minOccurs="0" nillable="true"/>
+            <element name="P_ARGUMENT30" type="string" db:index="37" db:default="true" db:type="VARCHAR2" minOccurs="0" nillable="true"/>
+            <element name="P_ARGUMENT31" type="string" db:index="38" db:default="true" db:type="VARCHAR2" minOccurs="0" nillable="true"/>
+            <element name="P_ARGUMENT32" type="string" db:index="39" db:default="true" db:type="VARCHAR2" minOccurs="0" nillable="true"/>
+            <element name="P_ARGUMENT33" type="string" db:index="40" db:default="true" db:type="VARCHAR2" minOccurs="0" nillable="true"/>
+            <element name="P_ARGUMENT34" type="string" db:index="41" db:default="true" db:type="VARCHAR2" minOccurs="0" nillable="true"/>
+            <element name="P_ARGUMENT35" type="string" db:index="42" db:default="true" db:type="VARCHAR2" minOccurs="0" nillable="true"/>
+            <element name="P_ARGUMENT36" type="string" db:index="43" db:default="true" db:type="VARCHAR2" minOccurs="0" nillable="true"/>
+            <element name="P_ARGUMENT37" type="string" db:index="44" db:default="true" db:type="VARCHAR2" minOccurs="0" nillable="true"/>
+            <element name="P_ARGUMENT38" type="string" db:index="45" db:default="true" db:type="VARCHAR2" minOccurs="0" nillable="true"/>
+            <element name="P_ARGUMENT39" type="string" db:index="46" db:default="true" db:type="VARCHAR2" minOccurs="0" nillable="true"/>
+            <element name="P_ARGUMENT40" type="string" db:index="47" db:default="true" db:type="VARCHAR2" minOccurs="0" nillable="true"/>
+            <element name="P_ARGUMENT41" type="string" db:index="48" db:default="true" db:type="VARCHAR2" minOccurs="0" nillable="true"/>
+            <element name="P_ARGUMENT42" type="string" db:index="49" db:default="true" db:type="VARCHAR2" minOccurs="0" nillable="true"/>
+            <element name="P_ARGUMENT43" type="string" db:index="50" db:default="true" db:type="VARCHAR2" minOccurs="0" nillable="true"/>
+            <element name="P_ARGUMENT44" type="string" db:index="51" db:default="true" db:type="VARCHAR2" minOccurs="0" nillable="true"/>
+            <element name="P_ARGUMENT45" type="string" db:index="52" db:default="true" db:type="VARCHAR2" minOccurs="0" nillable="true"/>
+            <element name="P_ARGUMENT46" type="string" db:index="53" db:default="true" db:type="VARCHAR2" minOccurs="0" nillable="true"/>
+            <element name="P_ARGUMENT47" type="string" db:index="54" db:default="true" db:type="VARCHAR2" minOccurs="0" nillable="true"/>
+            <element name="P_ARGUMENT48" type="string" db:index="55" db:default="true" db:type="VARCHAR2" minOccurs="0" nillable="true"/>
+            <element name="P_ARGUMENT49" type="string" db:index="56" db:default="true" db:type="VARCHAR2" minOccurs="0" nillable="true"/>
+            <element name="P_ARGUMENT50" type="string" db:index="57" db:default="true" db:type="VARCHAR2" minOccurs="0" nillable="true"/>
+            <element name="P_ARGUMENT51" type="string" db:index="58" db:default="true" db:type="VARCHAR2" minOccurs="0" nillable="true"/>
+            <element name="P_ARGUMENT52" type="string" db:index="59" db:default="true" db:type="VARCHAR2" minOccurs="0" nillable="true"/>
+            <element name="P_ARGUMENT53" type="string" db:index="60" db:default="true" db:type="VARCHAR2" minOccurs="0" nillable="true"/>
+            <element name="P_ARGUMENT54" type="string" db:index="61" db:default="true" db:type="VARCHAR2" minOccurs="0" nillable="true"/>
+            <element name="P_ARGUMENT55" type="string" db:index="62" db:default="true" db:type="VARCHAR2" minOccurs="0" nillable="true"/>
+            <element name="P_ARGUMENT56" type="string" db:index="63" db:default="true" db:type="VARCHAR2" minOccurs="0" nillable="true"/>
+            <element name="P_ARGUMENT57" type="string" db:index="64" db:default="true" db:type="VARCHAR2" minOccurs="0" nillable="true"/>
+            <element name="P_ARGUMENT58" type="string" db:index="65" db:default="true" db:type="VARCHAR2" minOccurs="0" nillable="true"/>
+            <element name="P_ARGUMENT59" type="string" db:index="66" db:default="true" db:type="VARCHAR2" minOccurs="0" nillable="true"/>
+            <element name="P_ARGUMENT60" type="string" db:index="67" db:default="true" db:type="VARCHAR2" minOccurs="0" nillable="true"/>
+            <element name="P_ARGUMENT61" type="string" db:index="68" db:default="true" db:type="VARCHAR2" minOccurs="0" nillable="true"/>
+            <element name="P_ARGUMENT62" type="string" db:index="69" db:default="true" db:type="VARCHAR2" minOccurs="0" nillable="true"/>
+            <element name="P_ARGUMENT63" type="string" db:index="70" db:default="true" db:type="VARCHAR2" minOccurs="0" nillable="true"/>
+            <element name="P_ARGUMENT64" type="string" db:index="71" db:default="true" db:type="VARCHAR2" minOccurs="0" nillable="true"/>
+            <element name="P_ARGUMENT65" type="string" db:index="72" db:default="true" db:type="VARCHAR2" minOccurs="0" nillable="true"/>
+            <element name="P_ARGUMENT66" type="string" db:index="73" db:default="true" db:type="VARCHAR2" minOccurs="0" nillable="true"/>
+            <element name="P_ARGUMENT67" type="string" db:index="74" db:default="true" db:type="VARCHAR2" minOccurs="0" nillable="true"/>
+            <element name="P_ARGUMENT68" type="string" db:index="75" db:default="true" db:type="VARCHAR2" minOccurs="0" nillable="true"/>
+            <element name="P_ARGUMENT69" type="string" db:index="76" db:default="true" db:type="VARCHAR2" minOccurs="0" nillable="true"/>
+            <element name="P_ARGUMENT70" type="string" db:index="77" db:default="true" db:type="VARCHAR2" minOccurs="0" nillable="true"/>
+            <element name="P_ARGUMENT71" type="string" db:index="78" db:default="true" db:type="VARCHAR2" minOccurs="0" nillable="true"/>
+            <element name="P_ARGUMENT72" type="string" db:index="79" db:default="true" db:type="VARCHAR2" minOccurs="0" nillable="true"/>
+            <element name="P_ARGUMENT73" type="string" db:index="80" db:default="true" db:type="VARCHAR2" minOccurs="0" nillable="true"/>
+            <element name="P_ARGUMENT74" type="string" db:index="81" db:default="true" db:type="VARCHAR2" minOccurs="0" nillable="true"/>
+            <element name="P_ARGUMENT75" type="string" db:index="82" db:default="true" db:type="VARCHAR2" minOccurs="0" nillable="true"/>
+            <element name="P_ARGUMENT76" type="string" db:index="83" db:default="true" db:type="VARCHAR2" minOccurs="0" nillable="true"/>
+            <element name="P_ARGUMENT77" type="string" db:index="84" db:default="true" db:type="VARCHAR2" minOccurs="0" nillable="true"/>
+            <element name="P_ARGUMENT78" type="string" db:index="85" db:default="true" db:type="VARCHAR2" minOccurs="0" nillable="true"/>
+            <element name="P_ARGUMENT79" type="string" db:index="86" db:default="true" db:type="VARCHAR2" minOccurs="0" nillable="true"/>
+            <element name="P_ARGUMENT80" type="string" db:index="87" db:default="true" db:type="VARCHAR2" minOccurs="0" nillable="true"/>
+            <element name="P_ARGUMENT81" type="string" db:index="88" db:default="true" db:type="VARCHAR2" minOccurs="0" nillable="true"/>
+            <element name="P_ARGUMENT82" type="string" db:index="89" db:default="true" db:type="VARCHAR2" minOccurs="0" nillable="true"/>
+            <element name="P_ARGUMENT83" type="string" db:index="90" db:default="true" db:type="VARCHAR2" minOccurs="0" nillable="true"/>
+            <element name="P_ARGUMENT84" type="string" db:index="91" db:default="true" db:type="VARCHAR2" minOccurs="0" nillable="true"/>
+            <element name="P_ARGUMENT85" type="string" db:index="92" db:default="true" db:type="VARCHAR2" minOccurs="0" nillable="true"/>
+            <element name="P_ARGUMENT86" type="string" db:index="93" db:default="true" db:type="VARCHAR2" minOccurs="0" nillable="true"/>
+            <element name="P_ARGUMENT87" type="string" db:index="94" db:default="true" db:type="VARCHAR2" minOccurs="0" nillable="true"/>
+            <element name="P_ARGUMENT88" type="string" db:index="95" db:default="true" db:type="VARCHAR2" minOccurs="0" nillable="true"/>
+            <element name="P_ARGUMENT89" type="string" db:index="96" db:default="true" db:type="VARCHAR2" minOccurs="0" nillable="true"/>
+            <element name="P_ARGUMENT90" type="string" db:index="97" db:default="true" db:type="VARCHAR2" minOccurs="0" nillable="true"/>
+            <element name="P_ARGUMENT91" type="string" db:index="98" db:default="true" db:type="VARCHAR2" minOccurs="0" nillable="true"/>
+            <element name="P_ARGUMENT92" type="string" db:index="99" db:default="true" db:type="VARCHAR2" minOccurs="0" nillable="true"/>
+            <element name="P_ARGUMENT93" type="string" db:index="100" db:default="true" db:type="VARCHAR2" minOccurs="0" nillable="true"/>
+            <element name="P_ARGUMENT94" type="string" db:index="101" db:default="true" db:type="VARCHAR2" minOccurs="0" nillable="true"/>
+            <element name="P_ARGUMENT95" type="string" db:index="102" db:default="true" db:type="VARCHAR2" minOccurs="0" nillable="true"/>
+            <element name="P_ARGUMENT96" type="string" db:index="103" db:default="true" db:type="VARCHAR2" minOccurs="0" nillable="true"/>
+            <element name="P_ARGUMENT97" type="string" db:index="104" db:default="true" db:type="VARCHAR2" minOccurs="0" nillable="true"/>
+            <element name="P_ARGUMENT98" type="string" db:index="105" db:default="true" db:type="VARCHAR2" minOccurs="0" nillable="true"/>
+            <element name="P_ARGUMENT99" type="string" db:index="106" db:default="true" db:type="VARCHAR2" minOccurs="0" nillable="true"/>
+            <element name="P_ARGUMENT100" type="string" db:index="107" db:default="true" db:type="VARCHAR2" minOccurs="0" nillable="true"/>
+         </sequence>
+      </complexType>
+   </element>
+   <element name="OutputParameters">
+      <complexType>
+         <sequence>
+            <element name="X_ERRBUFF" type="string" db:index="1" db:type="VARCHAR2" minOccurs="0" nillable="true"/>
+            <element name="X_REQUESTID" type="decimal" db:index="2" db:type="NUMBER" minOccurs="0" nillable="true"/>
+         </sequence>
+      </complexType>
+   </element>
+</schema>

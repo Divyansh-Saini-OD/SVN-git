@@ -1,0 +1,71 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<!--
+Subversion Info: 
+$HeadURL$
+$Rev$
+$Date$ 
+-->
+<customization xmlns="http://xmlns.oracle.com/jrad" version="9.0.5.4.89_560" xml:lang="en-US" customizes="/oracle/apps/asn/lead/webui/LeadUwqPG" developerMode="true" MDSActiveDoc="true" package="/oracle/apps/asn/lead/webui/customizations/site/0" xmlns:oa="http://xmlns.oracle.com/oa">
+   <modifications>
+      <move element="ASNLeadQryRN.ASNLeadLstCtctJob" after="ASNLeadQryRN.ASNLeadLstNm"/>
+      <move element="ASNLeadQryRN.ASNLeadLstCustNm" after="ASNLeadQryRN.ASNLeadLstCtctJob"/>
+      <move element="ASNLeadQryRN.ASNLeadLstCtctNm" after="ASNLeadQryRN.ASNLeadLstCustNm"/>
+      <insert before="ASNLeadQryRN.ASNLeadLstCtctNm">
+         <oa:messageStyledText id="ProsCust" adminCustomizable="true" cellNoWrapFormat="false" dataType="VARCHAR2" initSortSeq="none" prompt="Org Type" queryable="false" rendered="true" required="no" scope="." selectiveSearchCriteria="false" serverUnvalidated="false" sortState="no" tipType="none" totalValue="false" userCustomizable="true" vAlign="middle" viewAttr="ProspectCust" viewName="LeadSearchVO" warnAboutChanges="true" xmlns:oa="http://xmlns.oracle.com/oa"/>
+      </insert>
+      <move element="ASNLeadQryRN.ASNLeadLstCtctPhone" after="ASNLeadQryRN.ASNLeadLstCtctNm"/>
+      <move element="ASNLeadQryRN.ASNLeadLstSrcNm" after="ASNLeadQryRN.ASNLeadLstCtctPhone"/>
+      <move element="ASNLeadQryRN.ASNLeadLstRank" after="ASNLeadQryRN.ASNLeadLstSrcNm"/>
+      <move element="ASNLeadQryRN.ASNLeadLstStatus" after="ASNLeadQryRN.ASNLeadLstRank"/>
+      <move element="ASNLeadQryRN.ASNLeadLstAge" after="ASNLeadQryRN.ASNLeadLstStatus"/>
+      <move element="ASNLeadQryRN.ASNLeadLstCtctLclTm" after="ASNLeadQryRN.ASNLeadLstAge"/>
+      <move element="ASNLeadQryRN.ASNLeadLstCtctLclTmZn" after="ASNLeadQryRN.ASNLeadLstCtctLclTm"/>
+      <move element="ASNLeadQryRN.ASNLeadLstCnvToOppty" after="ASNLeadQryRN.ASNLeadLstCtctLclTmZn"/>
+      <move element="ASNLeadQryRN.ASNLeadLstCtctCity" after="ASNLeadQryRN.ASNLeadLstCnvToOppty"/>
+      <move element="ASNLeadQryRN.ASNLeadLstCtctProv" after="ASNLeadQryRN.ASNLeadLstCtctCity"/>
+      <move element="ASNLeadQryRN.ASNLeadLstCtctState" after="ASNLeadQryRN.ASNLeadLstCtctProv"/>
+      <move element="ASNLeadQryRN.ASNLeadLstCtctCntry" after="ASNLeadQryRN.ASNLeadLstCtctState"/>
+      <move element="ASNLeadQryRN.ASNLeadLstCtctZip" after="ASNLeadQryRN.ASNLeadLstCtctCntry"/>
+      <move element="ASNLeadQryRN.ASNLeadLstCtctEmail" after="ASNLeadQryRN.ASNLeadLstCtctZip"/>
+      <move element="ASNLeadQryRN.ASNLeadLstCtctAddr" after="ASNLeadQryRN.ASNLeadLstCtctEmail"/>
+      <move element="ASNLeadQryRN.ASNLeadLstNbr" after="ASNLeadQryRN.ASNLeadLstCtctAddr"/>
+      <move element="ASNLeadQryRN.ASNLeadLstLastUpdDate" after="ASNLeadQryRN.ASNLeadLstNbr"/>
+      <move element="ASNLeadQryRN.ASNLeadLstCrteDate" after="ASNLeadQryRN.ASNLeadLstLastUpdDate"/>
+      <move element="ASNLeadQryRN.ASNLeadLstCurrNm" after="ASNLeadQryRN.ASNLeadLstCrteDate"/>
+      <move element="ASNLeadQryRN.ASNLeadLstMeth" after="ASNLeadQryRN.ASNLeadLstCurrNm"/>
+      <move element="ASNLeadQryRN.ASNLeadLstStg" after="ASNLeadQryRN.ASNLeadLstMeth"/>
+      <move element="ASNLeadQryRN.ASNLeadLstChnl" after="ASNLeadQryRN.ASNLeadLstStg"/>
+      <move element="ASNLeadQryRN.ASNleadLstRspChnl" after="ASNLeadQryRN.ASNLeadLstChnl"/>
+      <move element="ASNLeadQryRN.ASNLeadLstClsRsn" after="ASNLeadQryRN.ASNleadLstRspChnl"/>
+      <move element="ASNLeadQryRN.ASNLeadLstCrteBy" after="ASNLeadQryRN.ASNLeadLstClsRsn"/>
+      <move element="ASNLeadQryRN.ASNLeadLstUpdBy" after="ASNLeadQryRN.ASNLeadLstCrteBy"/>
+      <move element="ASNLeadQryRN.ASNLeadLstBdgtAmt" after="ASNLeadQryRN.ASNLeadLstUpdBy"/>
+      <move element="ASNLeadQryRN.ASNLeadLstCtctRole" after="ASNLeadQryRN.ASNLeadLstBdgtAmt"/>
+      <move element="ASNLeadQryRN.ASNLeadLstCustAddr" after="ASNLeadQryRN.ASNLeadLstCtctRole"/>
+      <move element="ASNLeadQryRN.ASNLeadLstCustCity" after="ASNLeadQryRN.ASNLeadLstCustAddr"/>
+      <move element="ASNLeadQryRN.ASNLeadLstCustState" after="ASNLeadQryRN.ASNLeadLstCustCity"/>
+      <move element="ASNLeadQryRN.ASNLeadLstCustProv" after="ASNLeadQryRN.ASNLeadLstCustState"/>
+      <move element="ASNLeadQryRN.ASNLeadLstCustZip" after="ASNLeadQryRN.ASNLeadLstCustProv"/>
+      <move element="ASNLeadQryRN.ASNLeadLstCustCntry" after="ASNLeadQryRN.ASNLeadLstCustZip"/>
+      <move element="ASNLeadQryRN.ASNLeadLstSrcSystem" after="ASNLeadQryRN.ASNLeadLstCustCntry"/>
+      <move element="ASNLeadQryRN.ASNLeadLstOwId" after="ASNLeadQryRN.ASNLeadLstSrcSystem"/>
+      <move element="ASNLeadQryRN.ASNLeadLstSlsRscId" after="ASNLeadQryRN.ASNLeadLstOwId"/>
+      <move element="ASNLeadQryRN.ASNLeadLstSlsGrpId" after="ASNLeadQryRN.ASNLeadLstSlsRscId"/>
+      <move element="ASNLeadQryRN.ASNLeadLstPrdtCtgId" after="ASNLeadQryRN.ASNLeadLstSlsGrpId"/>
+      <move element="ASNLeadQryRN.ASNLeadLstSrcId" after="ASNLeadQryRN.ASNLeadLstPrdtCtgId"/>
+      <move element="ASNLeadQryRN.ASNLeadLstPrdtInvItmId" after="ASNLeadQryRN.ASNLeadLstSrcId"/>
+      <move element="ASNLeadQryRN.ASNLeadLstPrdtInvOrgId" after="ASNLeadQryRN.ASNLeadLstPrdtInvItmId"/>
+      <move element="ASNLeadQryRN.ASNLeadLstStsCtg" after="ASNLeadQryRN.ASNLeadLstPrdtInvOrgId"/>
+      <move element="ASNLeadQryRN.ASNLeadLstCtctFstNm" after="ASNLeadQryRN.ASNLeadLstStsCtg"/>
+      <move element="ASNLeadQryRN.ASNLeadLstCtctLstNm" after="ASNLeadQryRN.ASNLeadLstCtctFstNm"/>
+      <move element="ASNLeadQryRN.ASNLeadLstSlsRscNm" after="ASNLeadQryRN.ASNLeadLstCtctLstNm"/>
+      <move element="ASNLeadQryRN.ASNLeadLstPrdtCtgNm" after="ASNLeadQryRN.ASNLeadLstSlsRscNm"/>
+      <move element="ASNLeadQryRN.ASNLeadLstSlsGrpNm" after="ASNLeadQryRN.ASNLeadLstPrdtCtgNm"/>
+      <modify element="ASNLeadQryRN.ASNLeadLstCnvToOppty" rendered="false"/>
+      <modify element="ASNLeadQryRN.ASNLeadLstCustCntry" rendered="false"/>
+      <modify element="ASNLeadQryRN.ASNLeadLstCustNm" prompt="Org Name" shortDesc="Org Name"/>
+      <modify element="ASNLeadQryRN.ASNLeadSmpSrchCustNm" prompt="Org Name" shortDesc="Org Name"/>
+      <modify element="ASNLeadQryRN.item16" prompt="Org Name"/>
+      <modify element="ASNLeadQryRN.ASNLeadAdvSrchCustNm" prompt="Org Name" shortDesc="Org Name"/>
+   </modifications>
+</customization>

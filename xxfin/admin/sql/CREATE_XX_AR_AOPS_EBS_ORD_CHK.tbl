@@ -1,0 +1,64 @@
+-- +===========================================================================+
+-- |                  Office Depot - Project Simplify                          |
+-- +===========================================================================+
+-- | Name :XXFIN.XX_AR_AOPS_EBS_ORD_CHK                                        |
+-- | Description : Script to create XX_AR_AOPS_EBS_ORD_CHK table	       |
+-- | RICE        : R0458                                                       |
+-- |                                                                           |
+-- |Change Record:                                                             |
+-- |===============                                                            |
+-- |Version      Date           Author                  Remarks                |
+-- |=======    ==========     =============             ====================== |
+-- | DRAFT 1.0 14-MAR-2013   Adithya       		Initial draft versio   |
+-- |                                                    Defect#21781           |
+-- | 1.1       22-Oct-2013   Paddy Sanjeevi             Removed drop statement |
+-- +===========================================================================+
+
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     ON
+WHENEVER SQLERROR CONTINUE
+
+SHOW ERROR
+
+--+=====================================================================+
+--+               CREATE TABLE XXFIN.XX_AR_AOPS_EBS_ORD_CHK                +
+--+=====================================================================+
+
+CREATE TABLE XXFIN.XX_AR_AOPS_EBS_ORD_CHK
+  (
+     ORDER_NUMBER   VARCHAR2(20 BYTE),
+     AOPS_DATE_TIME VARCHAR2(50 BYTE),
+     PROCESS_STATUS VARCHAR2(1 BYTE) NOT NULL ENABLE,
+     AOPS_POLL_DATE DATE,
+     ATTRIBUTE1  VARCHAR2(250 BYTE),
+     ATTRIBUTE2  VARCHAR2(250 BYTE),
+     ATTRIBUTE3  VARCHAR2(250 BYTE),
+     ATTRIBUTE4  VARCHAR2(250 BYTE),
+     ATTRIBUTE5  VARCHAR2(250 BYTE),
+     ATTRIBUTE6  VARCHAR2(250 BYTE),
+     ATTRIBUTE7  VARCHAR2(250 BYTE),
+     ATTRIBUTE8  VARCHAR2(250 BYTE),
+     ATTRIBUTE9  VARCHAR2(250 BYTE),
+     ATTRIBUTE10 VARCHAR2(250 BYTE),
+     ATTRIBUTE11 VARCHAR2(250 BYTE),
+     ATTRIBUTE12 VARCHAR2(250 BYTE),
+     ATTRIBUTE13 VARCHAR2(250 BYTE),
+     CREATION_DATE DATE,
+     CREATED_BY      NUMBER,
+     LAST_UPDATED_BY NUMBER,
+     LAST_UPDATE_DATE DATE,
+     LAST_UPDATE_LOGIN NUMBER
+  );
+
+SHOW ERROR
+
+--+=====================================================================+
+--+               GRANT TABLE XXFIN.XX_AR_AOPS_EBS_ORD_CHK                 +
+--+=====================================================================+
+
+GRANT ALL ON XXFIN.XX_AR_AOPS_EBS_ORD_CHK TO APPS;
+
+SHOW ERROR

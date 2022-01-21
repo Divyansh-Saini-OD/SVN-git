@@ -1,0 +1,29 @@
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     ON
+    -- +==========================================================================+
+    -- |                  Office Depot - Project Simplify                         |
+    -- +==========================================================================+
+    -- | SQL Script to create the Synonym                                         |
+    -- |                                                                          |
+    -- | XX_AP_DCN_STG_SYN.syn                                                  |
+    -- |                                                                          |
+    -- |                                                                          |
+    -- |                                                                          |
+    -- |                                                                          |
+    -- |Change Record:                                                            |
+    -- |===============                                                           |
+    -- |Version   Date         Author               Remarks                       |
+    -- |=======   ==========   =============        ==============================|
+    -- | V1.0     29-OCT-2015  Harvinder Rakhra     Initial version               |
+    -- |                                                                          |
+    -- +==========================================================================+
+
+--CREATE SYNONYM XX_AP_DCN_STG;
+
+PROMPT CREATING SYNONYM FOR XX_AP_DCN_STG.....
+CREATE OR REPLACE SYNONYM XX_AP_DCN_STG FOR XXFIN.XX_AP_DCN_STG;
+
+SHOW ERROR

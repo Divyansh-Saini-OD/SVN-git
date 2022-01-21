@@ -1,0 +1,35 @@
+SET VERIFY OFF;
+SET TERM ON
+PROMPT Creating Table XX_COM_JOB_RUN_DATE
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+-- +=======================================================================+
+-- |               Office Depot - Project Simplify                         |
+-- |                       Oracle Consulting                               |
+-- +=======================================================================+
+-- | Name  :        XX_CRM_CONTACT_SHIP_TO_REL                             |
+-- | Description:   Table Storing AOPS Ship to and Bill To Permissions     |
+-- |                                                                       |
+-- |Change Record:                                                         |
+-- |===============                                                        |
+-- |Version   Date        Author           Remarks                         |
+-- |=======   ==========  =============    ================================|
+-- |1.0       11-Jan-2008 A Sahay          Initial version                 |
+-- +=======================================================================+
+
+CREATE TABLE XXCOMN.XX_COM_JOB_RUN_DATE
+(
+   JOB_RUN_DATE_ID              NUMBER(15, 0) NOT NULL,
+   PROGRAM_NAME                 VARCHAR2(150) NOT NULL,
+   ORG_ID                       NUMBER(30, 0),
+   RESP_ID                      NUMBER(30, 0),
+   RUN_DATETIME                 TIMESTAMP DEFAULT SYSTIMESTAMP,
+	CREATION_DATE                DATE,
+	CREATED_BY                   NUMBER,
+	LAST_UPDATE_DATE             DATE,
+	LAST_UPDATE_LOGIN            NUMBER,
+	LAST_UPDATED_BY              NUMBER
+);
+
+

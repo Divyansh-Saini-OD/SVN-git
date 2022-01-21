@@ -1,0 +1,23 @@
+-- +==========================================================================+
+-- |                               Office Depot                               |
+-- +==========================================================================+
+-- | Script to create the following synonym                                   |
+-- |                                                                          |
+-- |             Synonym: XXOM_ADJUST_DATA_SEQ                         |
+-- |Change Record:                                                            |
+-- |===============                                                           |
+-- |Version   Date         Author               Remarks                       |
+-- |=======   ===========  =============        ==============================|
+-- |1.0      28-Apr-2021 Shreyas Thorat   Initial Version                      |
+-- +==========================================================================+
+
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     ON
+WHENEVER SQLERROR CONTINUE
+
+CREATE SYNONYM APPS.XXOM_ADJUST_DATA_SEQ FOR XXFIN.XXOM_ADJUST_DATA_SEQ;
+
+SHOW ERRORS

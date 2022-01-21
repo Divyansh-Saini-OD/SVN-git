@@ -1,0 +1,32 @@
+<?xml version='1.0' encoding='windows-1252' ?>
+<!DOCTYPE JboPackage SYSTEM "jbo_03_01.dtd">
+
+<JboPackage
+   Name="server"
+   SeparateXMLFiles="true"
+   PackageName="od.oracle.apps.xxcrm.addattr.tempcl.server" >
+   <DesignTime>
+      <Attr Name="_ejbPackage" Value="false" />
+      <Attr Name="_version" Value="10.1.3.41.57" />
+   </DesignTime>
+   <Containee
+      Name="ODCurrencyVO"
+      FullName="od.oracle.apps.xxcrm.addattr.tempcl.server.ODCurrencyVO"
+      ObjectType="ViewObject" >
+   </Containee>
+   <Containee
+      Name="ODTempCreditLimitAM"
+      FullName="od.oracle.apps.xxcrm.addattr.tempcl.server.ODTempCreditLimitAM"
+      ObjectType="AppModule" >
+   </Containee>
+   <Containee
+      Name="ODTempCreditLimitPPRVO"
+      FullName="od.oracle.apps.xxcrm.addattr.tempcl.server.ODTempCreditLimitPPRVO"
+      ObjectType="ViewObject" >
+   </Containee>
+   <Containee
+      Name="ODTempCreditLimitVO"
+      FullName="od.oracle.apps.xxcrm.addattr.tempcl.server.ODTempCreditLimitVO"
+      ObjectType="ViewObject" >
+   </Containee>
+</JboPackage>

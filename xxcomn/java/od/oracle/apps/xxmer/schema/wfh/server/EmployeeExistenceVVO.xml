@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding='windows-1252'?>
+<!DOCTYPE ViewObject SYSTEM "jbo_03_01.dtd">
+
+<ViewObject
+   Name="EmployeeExistenceVVO"
+   BindingStyle="Oracle"
+   CustomQuery="true"
+   RowClass="od.oracle.apps.xxmer.schema.wfh.server.EmployeeExistenceVVORowImpl"
+   ComponentClass="od.oracle.apps.xxmer.schema.wfh.server.EmployeeExistenceVVOImpl"
+   MsgBundleClass="oracle.jbo.common.JboResourceBundle"
+   UseGlueCode="false" >
+   <SQLQuery><![CDATA[
+SELECT EMPLOYEE_ID
+  FROM XX_TEMP_WFH_EMPLOYEE_V
+ WHERE EMPLOYEE_ID = :1
+   ]]></SQLQuery>
+   <DesignTime>
+      <Attr Name="_isCodegen" Value="true" />
+      <Attr Name="_version" Value="9.0.3.13.75" />
+      <Attr Name="_CodeGenFlagNew" Value="36" />
+   </DesignTime>
+   <ViewAttribute
+      Name="EmployeeId"
+      IsPersistent="false"
+      IsNotNull="true"
+      Type="oracle.jbo.domain.Number"
+      AliasName="EMPLOYEE_ID"
+      ColumnType="VARCHAR2"
+      Expression="EMPLOYEE_ID"
+      SQLType="NUMERIC" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </ViewAttribute>
+</ViewObject>

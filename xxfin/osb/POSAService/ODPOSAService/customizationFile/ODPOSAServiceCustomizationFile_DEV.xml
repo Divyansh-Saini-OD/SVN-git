@@ -1,0 +1,363 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<cus:Customizations xmlns:cus="http://www.bea.com/wli/config/customizations" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xt="http://www.bea.com/wli/config/xmltypes">
+  <cus:customization xsi:type="cus:EnvValueCustomizationType">
+    <cus:description/>
+    <cus:envValueAssignments>
+      <xt:envValueType>Service URI Weight</xt:envValueType>
+      <xt:location>0</xt:location>
+      <xt:owner>
+        <xt:type>BusinessService</xt:type>
+        <xt:path>ODPOSAService/businessService/ODPOSAServiceBS</xt:path>
+      </xt:owner>
+      <xt:value xsi:type="xs:string" xmlns:xs="http://www.w3.org/2001/XMLSchema">0</xt:value>
+    </cus:envValueAssignments>
+    <cus:envValueAssignments>
+      <xt:envValueType>Service URI</xt:envValueType>
+      <xt:location>0</xt:location>
+      <xt:owner>
+        <xt:type>BusinessService</xt:type>
+        <xt:path>ODPOSAService/businessService/ODPOSAServiceBS</xt:path>
+      </xt:owner>
+      <xt:value xsi:type="xs:string" xmlns:xs="http://www.w3.org/2001/XMLSchema">https://posadirectsand.microsoft.com/POSADService.svc</xt:value>
+    </cus:envValueAssignments>
+    <cus:envValueAssignments>
+      <xt:envValueType>Service URI Table</xt:envValueType>
+      <xt:location xsi:nil="true"/>
+      <xt:owner>
+        <xt:type>BusinessService</xt:type>
+        <xt:path>ODPOSAService/businessService/ODPOSAServiceBS</xt:path>
+      </xt:owner>
+      <xt:value>
+        <tran:tableElement xmlns:tran="http://www.bea.com/wli/sb/transports">
+          <tran:URI>https://posadirectsand.microsoft.com/POSADService.svc</tran:URI>
+          <tran:weight>0</tran:weight>
+        </tran:tableElement>
+      </xt:value>
+    </cus:envValueAssignments>
+    <cus:envValueAssignments>
+      <xt:envValueType>Service Retry Count</xt:envValueType>
+      <xt:location xsi:nil="true"/>
+      <xt:owner>
+        <xt:type>BusinessService</xt:type>
+        <xt:path>ODPOSAService/businessService/ODPOSAServiceBS</xt:path>
+      </xt:owner>
+      <xt:value xsi:type="xs:string" xmlns:xs="http://www.w3.org/2001/XMLSchema">0</xt:value>
+    </cus:envValueAssignments>
+    <cus:envValueAssignments>
+      <xt:envValueType>Service Retry Iteration Interval</xt:envValueType>
+      <xt:location xsi:nil="true"/>
+      <xt:owner>
+        <xt:type>BusinessService</xt:type>
+        <xt:path>ODPOSAService/businessService/ODPOSAServiceBS</xt:path>
+      </xt:owner>
+      <xt:value xsi:type="xs:string" xmlns:xs="http://www.w3.org/2001/XMLSchema">30</xt:value>
+    </cus:envValueAssignments>
+    <cus:envValueAssignments>
+      <xt:envValueType>UDDI Auto Publish</xt:envValueType>
+      <xt:location xsi:nil="true"/>
+      <xt:owner>
+        <xt:type>ProxyService</xt:type>
+        <xt:path>ODPOSAService/proxyService/ODPOSAServicePS</xt:path>
+      </xt:owner>
+      <xt:value xsi:type="xs:string" xmlns:xs="http://www.w3.org/2001/XMLSchema">false</xt:value>
+    </cus:envValueAssignments>
+    <cus:envValueAssignments>
+      <xt:envValueType>Service URI</xt:envValueType>
+      <xt:location xsi:nil="true"/>
+      <xt:owner>
+        <xt:type>ProxyService</xt:type>
+        <xt:path>ODPOSAService/proxyService/ODPOSAServicePS</xt:path>
+      </xt:owner>
+      <xt:value xsi:type="xs:string" xmlns:xs="http://www.w3.org/2001/XMLSchema">/ODPOSAServicePrj/ProxyServices/ODPOSAServicePS</xt:value>
+    </cus:envValueAssignments>
+  </cus:customization>
+  <cus:customization xsi:type="cus:FindAndReplaceCustomizationType">
+    <cus:description/>
+    <cus:query>
+      <xt:resourceTypes>ProxyService</xt:resourceTypes>
+      <xt:resourceTypes>BusinessService</xt:resourceTypes>
+      <xt:envValueTypes>Service Retry Iteration Interval</xt:envValueTypes>
+      <xt:envValueTypes>UDDI Auto Publish</xt:envValueTypes>
+      <xt:envValueTypes>Service URI Weight</xt:envValueTypes>
+      <xt:envValueTypes>Service Retry Count</xt:envValueTypes>
+      <xt:envValueTypes>Service URI</xt:envValueTypes>
+      <xt:refsToSearch xsi:type="xt:ResourceRefType">
+        <xt:type>ProxyService</xt:type>
+        <xt:path>ODPOSAService/proxyService/ODPOSAServicePS</xt:path>
+      </xt:refsToSearch>
+      <xt:refsToSearch xsi:type="xt:ResourceRefType">
+        <xt:type>BusinessService</xt:type>
+        <xt:path>ODPOSAService/businessService/ODPOSAServiceBS</xt:path>
+      </xt:refsToSearch>
+      <xt:includeOnlyModifiedResources>false</xt:includeOnlyModifiedResources>
+      <xt:searchString>Search String</xt:searchString>
+      <xt:isCompleteMatch>false</xt:isCompleteMatch>
+    </cus:query>
+    <cus:replacement>Replacement String</cus:replacement>
+  </cus:customization>
+  <cus:customization xsi:type="cus:ReferenceCustomizationType">
+    <cus:description/>
+    <cus:refsToBeConsidered xsi:type="xt:ResourceRefType">
+      <xt:type>WSDL</xt:type>
+      <xt:path>ODPOSAService/resource/wsdl/ODPOSAServiceWSDL</xt:path>
+    </cus:refsToBeConsidered>
+    <cus:refsToBeConsidered xsi:type="xt:ResourceRefType">
+      <xt:type>ProxyService</xt:type>
+      <xt:path>ODPOSAService/proxyService/ODPOSAServicePS</xt:path>
+    </cus:refsToBeConsidered>
+    <cus:refsToBeConsidered xsi:type="xt:ResourceRefType">
+      <xt:type>XMLSchema</xt:type>
+      <xt:path>ODPOSAService/resource/schema/ODPOSAService</xt:path>
+    </cus:refsToBeConsidered>
+    <cus:refsToBeConsidered xsi:type="xt:ResourceRefType">
+      <xt:type>WSDL</xt:type>
+      <xt:path>ODPOSAService/resource/wsdl/POSADServiceWSDLBkp</xt:path>
+    </cus:refsToBeConsidered>
+    <cus:refsToBeConsidered xsi:type="xt:ResourceRefType">
+      <xt:type>WSDL</xt:type>
+      <xt:path>ODPOSAService/resource/wsdl/WSDL_565659311</xt:path>
+    </cus:refsToBeConsidered>
+    <cus:refsToBeConsidered xsi:type="xt:ResourceRefType">
+      <xt:type>WSDL</xt:type>
+      <xt:path>ODPOSAService/resource/wsdl/POSADServiceWSDL</xt:path>
+    </cus:refsToBeConsidered>
+    <cus:refsToBeConsidered xsi:type="xt:ResourceRefType">
+      <xt:type>XMLSchema</xt:type>
+      <xt:path>ODPOSAService/resource/schema/XMLSchema_-1628437961</xt:path>
+    </cus:refsToBeConsidered>
+    <cus:refsToBeConsidered xsi:type="xt:ResourceRefType">
+      <xt:type>BusinessService</xt:type>
+      <xt:path>ODPOSAService/businessService/ODPOSAServiceBS</xt:path>
+    </cus:refsToBeConsidered>
+    <cus:externalReferenceMap>
+      <xt:oldRef>
+        <xt:type>Xquery</xt:type>
+        <xt:path>ODPOSAService/resource/transformation/XqueryODActivateResFromPOSAServiceResponse</xt:path>
+      </xt:oldRef>
+      <xt:newRef>
+        <xt:type>Xquery</xt:type>
+        <xt:path>ODPOSAService/resource/transformation/XqueryODActivateResFromPOSAServiceResponse</xt:path>
+      </xt:newRef>
+    </cus:externalReferenceMap>
+    <cus:externalReferenceMap>
+      <xt:oldRef>
+        <xt:type>Xquery</xt:type>
+        <xt:path>ODPOSAService/resource/transformation/FaultMapping</xt:path>
+      </xt:oldRef>
+      <xt:newRef>
+        <xt:type>Xquery</xt:type>
+        <xt:path>ODPOSAService/resource/transformation/FaultMapping</xt:path>
+      </xt:newRef>
+    </cus:externalReferenceMap>
+    <cus:externalReferenceMap>
+      <xt:oldRef>
+        <xt:type>WSDL</xt:type>
+        <xt:path>ODPOSAService/resource/wsdl/WSDL_565659311</xt:path>
+      </xt:oldRef>
+      <xt:newRef>
+        <xt:type>WSDL</xt:type>
+        <xt:path>ODPOSAService/resource/wsdl/WSDL_565659311</xt:path>
+      </xt:newRef>
+    </cus:externalReferenceMap>
+    <cus:externalReferenceMap>
+      <xt:oldRef>
+        <xt:type>Xquery</xt:type>
+        <xt:path>ODPOSAService/resource/transformation/XqueryCheckStatusRespFromPOSAServiceResp</xt:path>
+      </xt:oldRef>
+      <xt:newRef>
+        <xt:type>Xquery</xt:type>
+        <xt:path>ODPOSAService/resource/transformation/XqueryCheckStatusRespFromPOSAServiceResp</xt:path>
+      </xt:newRef>
+    </cus:externalReferenceMap>
+    <cus:externalReferenceMap>
+      <xt:oldRef>
+        <xt:type>Xquery</xt:type>
+        <xt:path>ODPOSAService/resource/transformation/soapFaultToODPOSAClientFault1</xt:path>
+      </xt:oldRef>
+      <xt:newRef>
+        <xt:type>Xquery</xt:type>
+        <xt:path>ODPOSAService/resource/transformation/soapFaultToODPOSAClientFault1</xt:path>
+      </xt:newRef>
+    </cus:externalReferenceMap>
+    <cus:externalReferenceMap>
+      <xt:oldRef>
+        <xt:type>XMLSchema</xt:type>
+        <xt:path>ODPOSAService/resource/schema/XMLSchema_-1628437961</xt:path>
+      </xt:oldRef>
+      <xt:newRef>
+        <xt:type>XMLSchema</xt:type>
+        <xt:path>ODPOSAService/resource/schema/XMLSchema_-1628437961</xt:path>
+      </xt:newRef>
+    </cus:externalReferenceMap>
+    <cus:externalReferenceMap>
+      <xt:oldRef>
+        <xt:type>BusinessService</xt:type>
+        <xt:path>ODPOSAService/businessService/ODPOSAServiceBS</xt:path>
+      </xt:oldRef>
+      <xt:newRef>
+        <xt:type>BusinessService</xt:type>
+        <xt:path>ODPOSAService/businessService/ODPOSAServiceBS</xt:path>
+      </xt:newRef>
+    </cus:externalReferenceMap>
+    <cus:externalReferenceMap>
+      <xt:oldRef>
+        <xt:type>Xquery</xt:type>
+        <xt:path>ODPOSAService/resource/transformation/soapFaultToODPOSAClientFault</xt:path>
+      </xt:oldRef>
+      <xt:newRef>
+        <xt:type>Xquery</xt:type>
+        <xt:path>ODPOSAService/resource/transformation/soapFaultToODPOSAClientFault</xt:path>
+      </xt:newRef>
+    </cus:externalReferenceMap>
+    <cus:externalReferenceMap>
+      <xt:oldRef>
+        <xt:type>WSDL</xt:type>
+        <xt:path>ODPOSAService/resource/wsdl/ODPOSAServiceWSDL</xt:path>
+      </xt:oldRef>
+      <xt:newRef>
+        <xt:type>WSDL</xt:type>
+        <xt:path>ODPOSAService/resource/wsdl/ODPOSAServiceWSDL</xt:path>
+      </xt:newRef>
+    </cus:externalReferenceMap>
+    <cus:externalReferenceMap>
+      <xt:oldRef>
+        <xt:type>XMLSchema</xt:type>
+        <xt:path>ODPOSAService/resource/schema/Dictionary</xt:path>
+      </xt:oldRef>
+      <xt:newRef>
+        <xt:type>XMLSchema</xt:type>
+        <xt:path>ODPOSAService/resource/schema/Dictionary</xt:path>
+      </xt:newRef>
+    </cus:externalReferenceMap>
+    <cus:externalReferenceMap>
+      <xt:oldRef>
+        <xt:type>XMLSchema</xt:type>
+        <xt:path>ODPOSAService/resource/schema/ODPOSAService</xt:path>
+      </xt:oldRef>
+      <xt:newRef>
+        <xt:type>XMLSchema</xt:type>
+        <xt:path>ODPOSAService/resource/schema/ODPOSAService</xt:path>
+      </xt:newRef>
+    </cus:externalReferenceMap>
+    <cus:externalReferenceMap>
+      <xt:oldRef>
+        <xt:type>Xquery</xt:type>
+        <xt:path>ODPOSAService/resource/transformation/validationFaultToODPOSAClientFault</xt:path>
+      </xt:oldRef>
+      <xt:newRef>
+        <xt:type>Xquery</xt:type>
+        <xt:path>ODPOSAService/resource/transformation/validationFaultToODPOSAClientFault</xt:path>
+      </xt:newRef>
+    </cus:externalReferenceMap>
+    <cus:externalReferenceMap>
+      <xt:oldRef>
+        <xt:type>XMLSchema</xt:type>
+        <xt:path>ODPOSAService/resource/schema/XMLSchema_-242234567</xt:path>
+      </xt:oldRef>
+      <xt:newRef>
+        <xt:type>XMLSchema</xt:type>
+        <xt:path>ODPOSAService/resource/schema/XMLSchema_-242234567</xt:path>
+      </xt:newRef>
+    </cus:externalReferenceMap>
+    <cus:externalReferenceMap>
+      <xt:oldRef>
+        <xt:type>XMLSchema</xt:type>
+        <xt:path>ODPOSAService/resource/schema/XMLSchema_450867130</xt:path>
+      </xt:oldRef>
+      <xt:newRef>
+        <xt:type>XMLSchema</xt:type>
+        <xt:path>ODPOSAService/resource/schema/XMLSchema_450867130</xt:path>
+      </xt:newRef>
+    </cus:externalReferenceMap>
+    <cus:externalReferenceMap>
+      <xt:oldRef>
+        <xt:type>Xquery</xt:type>
+        <xt:path>ODPOSAService/resource/transformation/SOAfaultToCommonError</xt:path>
+      </xt:oldRef>
+      <xt:newRef>
+        <xt:type>Xquery</xt:type>
+        <xt:path>ODPOSAService/resource/transformation/SOAfaultToCommonError</xt:path>
+      </xt:newRef>
+    </cus:externalReferenceMap>
+    <cus:externalReferenceMap>
+      <xt:oldRef>
+        <xt:type>BusinessService</xt:type>
+        <xt:path>CommonErrorHandler/businessService/commonErrorHandlerBS</xt:path>
+      </xt:oldRef>
+      <xt:newRef>
+        <xt:type>BusinessService</xt:type>
+        <xt:path>CommonErrorHandler/businessService/commonErrorHandlerBS</xt:path>
+      </xt:newRef>
+    </cus:externalReferenceMap>
+    <cus:externalReferenceMap>
+      <xt:oldRef>
+        <xt:type>Xquery</xt:type>
+        <xt:path>ODPOSAService/resource/transformation/XqueryODDeactivateReqToPOSAServiceReq</xt:path>
+      </xt:oldRef>
+      <xt:newRef>
+        <xt:type>Xquery</xt:type>
+        <xt:path>ODPOSAService/resource/transformation/XqueryODDeactivateReqToPOSAServiceReq</xt:path>
+      </xt:newRef>
+    </cus:externalReferenceMap>
+    <cus:externalReferenceMap>
+      <xt:oldRef>
+        <xt:type>Xquery</xt:type>
+        <xt:path>ODPOSAService/resource/transformation/XqueryODCheckStatusReqToPOSAServiceReq</xt:path>
+      </xt:oldRef>
+      <xt:newRef>
+        <xt:type>Xquery</xt:type>
+        <xt:path>ODPOSAService/resource/transformation/XqueryODCheckStatusReqToPOSAServiceReq</xt:path>
+      </xt:newRef>
+    </cus:externalReferenceMap>
+    <cus:externalReferenceMap>
+      <xt:oldRef>
+        <xt:type>XMLSchema</xt:type>
+        <xt:path>ODPOSAService/resource/schema/POSAExceptions</xt:path>
+      </xt:oldRef>
+      <xt:newRef>
+        <xt:type>XMLSchema</xt:type>
+        <xt:path>ODPOSAService/resource/schema/POSAExceptions</xt:path>
+      </xt:newRef>
+    </cus:externalReferenceMap>
+    <cus:externalReferenceMap>
+      <xt:oldRef>
+        <xt:type>WSDL</xt:type>
+        <xt:path>ODPOSAService/resource/wsdl/POSADServiceWSDL</xt:path>
+      </xt:oldRef>
+      <xt:newRef>
+        <xt:type>WSDL</xt:type>
+        <xt:path>ODPOSAService/resource/wsdl/POSADServiceWSDL</xt:path>
+      </xt:newRef>
+    </cus:externalReferenceMap>
+    <cus:externalReferenceMap>
+      <xt:oldRef>
+        <xt:type>XMLSchema</xt:type>
+        <xt:path>ODPOSAService/resource/schema/XMLSchema_-935336264</xt:path>
+      </xt:oldRef>
+      <xt:newRef>
+        <xt:type>XMLSchema</xt:type>
+        <xt:path>ODPOSAService/resource/schema/XMLSchema_-935336264</xt:path>
+      </xt:newRef>
+    </cus:externalReferenceMap>
+    <cus:externalReferenceMap>
+      <xt:oldRef>
+        <xt:type>Xquery</xt:type>
+        <xt:path>ODPOSAService/resource/transformation/XqueryODDeactivateResFromPOSAServiceResp</xt:path>
+      </xt:oldRef>
+      <xt:newRef>
+        <xt:type>Xquery</xt:type>
+        <xt:path>ODPOSAService/resource/transformation/XqueryODDeactivateResFromPOSAServiceResp</xt:path>
+      </xt:newRef>
+    </cus:externalReferenceMap>
+    <cus:externalReferenceMap>
+      <xt:oldRef>
+        <xt:type>Xquery</xt:type>
+        <xt:path>ODPOSAService/resource/transformation/XqueryODActivateReqToPOSAServiceReq</xt:path>
+      </xt:oldRef>
+      <xt:newRef>
+        <xt:type>Xquery</xt:type>
+        <xt:path>ODPOSAService/resource/transformation/XqueryODActivateReqToPOSAServiceReq</xt:path>
+      </xt:newRef>
+    </cus:externalReferenceMap>
+  </cus:customization>
+</cus:Customizations>

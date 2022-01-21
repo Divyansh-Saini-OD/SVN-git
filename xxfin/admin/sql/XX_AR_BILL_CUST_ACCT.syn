@@ -1,0 +1,28 @@
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     ON
+
+
+-- +===================================================================+
+-- |                  Office Depot - Project Simplify                  |
+-- |                      Wipro Technologies                           |
+-- +===================================================================+
+-- | Name  : XX_AR_BILL_CUST_ACCT                                      |
+-- | Description: Synonym for the table XX_AR_BILL_CUST_ACCT           |
+-- |              R0539 - OD: AR Billing Exceptions Report             |
+-- |                                                                   |
+-- |                                                                   |
+-- |Change Record:                                                     |
+-- |===============                                                    |
+-- |Version   Date         Author            Remarks                   |
+-- |=======   ==========   =============     ==========================|
+-- |DRAFT 1A  9-MAR-09    Manovinayak        Initial version           |
+-- |                      Ayyappan                                     |
+-- +===================================================================+
+
+CREATE SYNONYM  APPS.XX_AR_BILL_CUST_ACCT FOR XXFIN.XX_AR_BILL_CUST_ACCT;
+
+
+SHO ERR;

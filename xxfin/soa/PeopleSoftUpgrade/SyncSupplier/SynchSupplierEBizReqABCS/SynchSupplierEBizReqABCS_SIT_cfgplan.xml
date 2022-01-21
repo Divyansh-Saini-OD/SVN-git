@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<SOAConfigPlan xmlns:jca="http://platform.integration.oracle/blocks/adapter/fw/metadata" xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy" xmlns:orawsp="http://schemas.oracle.com/ws/2006/01/policy" xmlns:edl="http://schemas.oracle.com/events/edl" xmlns="http://schemas.oracle.com/soa/configplan">
+   <composite name="SynchSupplierEBizReqABCS">
+      <!--Add search and replace rules for the import section of a composite
+	Example:
+	<searchReplace>
+		<search>http://my-dev-server</search>
+		<replace>http://my-test-server</replace>
+	<searchReplace>
+	<searchReplace>
+		<search>8888</search>
+		<replace>8889</replace>
+	<searchReplace>-->
+      <import>
+         <searchReplace>
+            <search>http://velambil-lap.idc.oracle.com:7001/soa-infra/services/default/SupplierEBS/SupplierEBSService?WSDL</search>
+            <replace>http://soadev01.na.odcorp.net:80/soa-infra/services/hr_rt/SupplierEBS/SupplierEBSService?WSDL</replace>
+         </searchReplace>
+      </import>
+      <!--Add search and replace rules for the service properties-->
+      <service name="SynchTriggerSupplierEBizFileAdaptorV1">
+         <property name="Archive_Path">
+            <replace>/app/ebs/ctgsisit01/xxfin/ftp/archive/supplier</replace>
+         </property>
+         <property name="Incoming_Path">
+            <replace>/app/ebs/ctgsisit01/xxfin/ftp/out/supplier</replace>
+         </property>
+         <binding type="jca"/>
+      </service>
+      <!--Add search and replace rules for the component properties
+	For components and service/reference bindings, you can add policy references.
+	Example:
+	<component name="*">
+		<wsp:PolicyReference orawsp:category="management" orawsp:status="enabled" URI="oracle/log_policy"/>
+	</component>-->
+      <component name="SynchSupplierEBizReqABCSImpl">
+         <property name="bpel.preference.SYSTEM_NAME">
+            <replace>Supplier Synchronization</replace>
+         </property>
+         <property name="bpel.preference.SOA_ADMIN_APP_NAME">
+            <replace>SOA_ADMIN</replace>
+         </property>
+         <property name="bpel.preference.SOURCE_SYSTEM_NAME">
+            <replace>EBS</replace>
+         </property>
+         <property name="bpel.preference.MESSAGE_TYPE">
+            <replace>SyncSupplierFileEBM</replace>
+         </property>
+         <property name="bpel.preference.MESSAGE_OPERATION_PUT">
+            <replace>PUT</replace>
+         </property>
+         <property name="bpel.preference.MESSAGE_VERSION">
+            <replace>1</replace>
+         </property>
+         <property name="bpel.preference.ERROR_TYPE">
+            <replace>System</replace>
+         </property>
+         <property name="bpel.preference.ERROR_SEVERITY">
+            <replace>1</replace>
+         </property>
+         <property name="bpel.preference.CATCH_ALL_PROCESS_STEP">
+            <replace>Catch All on the Main Sequence</replace>
+         </property>
+         <property name="bpel.preference.SOA_ADMIN_ERROR_MESSAGE">
+            <replace>There was an Runtime Exception while executing SyncSupplierGSSProvABCS service for file :</replace>
+         </property>
+         <property name="bpel.preference.APPLICATION_EMAIL_SUBJECT">
+            <replace>There was an issue while synchronizing data from EBS for file :</replace>
+         </property>
+         <property name="bpel.preference.APPLICATION_ERROR_MESSAGE">
+            <replace>There was an issue while synchronizing data from EBS for following number of suppliers:</replace>
+         </property>
+      </component>
+      <reference name="SupplierEBSService">
+         <!--Add search and replace rules for the binding properties-->
+         <binding type="ws">
+            <attribute name="port">
+               <replace>http://xmlns.officedepot.org/EnterpriseObjects/Core/EBO/Supplier/V1#wsdl.endpoint(SupplierEBS/SynchSupplierEBS_pt)</replace>
+            </attribute>
+            <attribute name="location">
+               <replace>http://soasit01.na.odcorp.net:80/soa-infra/services/hr_rt/SupplierEBS/SupplierEBSService?WSDL</replace>
+            </attribute>
+            <property name="weblogic.wsee.wsat.transaction.flowOption">
+               <replace>WSDLDriven</replace>
+            </property>
+         </binding>
+      </reference>
+      <reference name="CommonErrorLoggingService">
+         <binding type="jca"/>
+      </reference>
+   </composite>
+   <!--To configure monitor.config: 
+	<property name="enabled"><replace>true</replace></property>
+	<property name="dataObjectsFolder"><searchReplace><search>mydev</search><replace>myproduction</replace></searchReplace></property>
+	
+	sample properties to configure for file/ftp adapter: 
+	<jca:property name="PhysicalDirectory"><replace>c:\temp</replace></jca:property>
+	<jca:property name="DeleteFile"><replace>true</replace></jca:property>
+	<jca:property name="PollingFrequency"><replace>3</replace></jca:property>
+	
+	sample properties to configure for JMS adapter: 
+	<jca:property name="DestinationName"><replace>jms/DemoSupplierTopic</replace></jca:property>
+	<jca:property name="TimeToLive"><replace>0</replace></jca:property>
+	
+	To add search and replace rules for wsdls, xsd and jca files
+	Example:
+	<searchReplace>
+		<search>http://my-dev-server</search>
+		<replace>http://my-test-server</replace>
+	<searchReplace>
+	<searchReplace>
+		<search>8888</search>
+		<replace>8889</replace>
+	<searchReplace>
+	-->
+   <wsdlAndSchema name="SupplierEBSV1Wrapper.wsdl">
+      <searchReplace>
+         <search>http://velambil-lap.idc.oracle.com:7001/soa-infra/services/default/SupplierEBS/SupplierEBSService?WSDL</search>
+         <replace>http://soasit01.na.odcorp.net:80/soa-infra/services/hr_rt/SupplierEBS/SupplierEBSService?WSDL</replace>
+      </searchReplace>
+   </wsdlAndSchema>
+   <wsdlAndSchema name="CommonErrorLoggingService.wsdl|CommonErrorLoggingService_jms.jca|SupplierEBSV1.wsdl|SupplierEBSV1Wrapper.wsdl|SynchSupplierEBizReqABCSImpl.wsdl|SynchTriggerSupplierEBizFileAdaptorV1.wsdl|SynchTriggerSupplierEBizFileAdaptorV1_file.jca|xsd/FilleMetaData.xsd|xsd/SupplierEBM.xsd|xsd/SynchSupplierEBizReqABCSImpl.xsd">
+      <searchReplace>
+         <search/>
+         <replace/>
+      </searchReplace>
+   </wsdlAndSchema>
+</SOAConfigPlan>

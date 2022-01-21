@@ -1,0 +1,9 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<customization xmlns="http://xmlns.oracle.com/jrad" version="9.0.6.0.0_64" xml:lang="en-US" customizes="/oracle/apps/cs/csz/dashboard/webui/GroupQueueRN" xmlns:user="http://xmlns.oracle.com/jrad/user" user:responsibilityKey="xx_cs_mps_dashboard" user:responsibilityAppShortName="CSS">
+   <modifications>
+      <modify element="GrpIncidenttype" rendered="true"/>
+      <modify element="Escalated" rendered="false"/>
+      <modify element="GrpDueDate" rendered="false"/>
+      <modify element="GrpSrgroup" rendered="false"/>
+   </modifications>
+</customization>

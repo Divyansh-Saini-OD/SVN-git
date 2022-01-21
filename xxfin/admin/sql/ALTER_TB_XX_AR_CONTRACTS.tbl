@@ -1,0 +1,27 @@
+-- +========================================================================+
+-- |                  Office Depot                                          |
+-- +========================================================================+
+-- | Name        : ALTER_TB_XX_AR_CONTRACTS.tbl                             |
+-- | Description : Added new field in the existing XX_AR_CONTRACTS          |
+-- |               table                                                    |
+-- |                                                                        |
+-- |Change Record:                                                          |
+-- |===============                                                         |
+-- |Version   Date        Author           Remarks                          |
+-- |=======  ===========  =============    =================================|
+-- |1.0      13-MAR-2019  Sahithi Kunuru    Initial Version                 |
+-- +========================================================================+
+
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     ON
+
+alter table xx_ar_contracts
+add (cc_trans_id           VARCHAR2(256)
+    ,cc_trans_id_source    VARCHAR2(26)
+    ,cof_trans_id_scm_flag VARCHAR2(2) DEFAULT 'N');
+
+
+/

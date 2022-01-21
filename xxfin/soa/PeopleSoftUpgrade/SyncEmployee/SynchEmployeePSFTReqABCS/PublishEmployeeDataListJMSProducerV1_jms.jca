@@ -1,0 +1,12 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<adapter-config name="PublishEmployeeDataListJMSProducerV1" adapter="JMS Adapter" wsdlLocation="PublishEmployeeDataListJMSProducerV1.wsdl" xmlns="http://platform.integration.oracle/blocks/adapter/fw/metadata">
+   <connection-factory UIJmsProvider="THIRDPARTY" location="eis/jms/Topic"/>
+   <endpoint-interaction portType="Produce_Message_ptt" operation="Produce_Message">
+      <interaction-spec className="oracle.tip.adapter.jms.outbound.JmsProduceInteractionSpec">
+         <property name="TimeToLive" value="0"/>
+         <property name="PayloadType" value="TextMessage"/>
+         <property name="DeliveryMode" value="Persistent"/>
+         <property name="DestinationName" value="jms/xxod_hr_emplyoee_topic"/>
+      </interaction-spec>
+   </endpoint-interaction>
+</adapter-config>

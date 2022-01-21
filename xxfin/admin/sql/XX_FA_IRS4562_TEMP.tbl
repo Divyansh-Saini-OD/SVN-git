@@ -1,0 +1,51 @@
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     ON
+
+PROMPT Creating TABLE XXFIN.XX_FA_IRS4562_TEMP
+
+PROMPT Program exits IF the creation IS NOT SUCCESSFUL
+
+WHENEVER SQLERROR CONTINUE
+
+-- +==========================================================================+
+-- |                  Office Depot - Project Simplify                         |
+-- |                       WIPRO Technologies                                 |
+-- +==========================================================================+
+-- | Name  : XXFIN.XX_FA_IRS4562_TEMP Table Script to create                  |
+-- |                        the following object                              |
+-- | Description: Custom table for report OD: FA IRS4562 Form report 	      |
+-- |                                                                          |
+-- |Change Record:                                                            |
+-- |===============                                                           |
+-- |Version   Date         Author               Remarks                       |
+-- |=======   ==========   =============        ==============================|
+-- | V1.0     23-Sep-2009  Priyanka Nagesh        Initial version             |
+-- |                                                                          |
+-- +==========================================================================+
+
+CREATE GLOBAL TEMPORARY TABLE XXFIN.XX_FA_IRS4562_TEMP
+ (  
+   	COMPANY 			VARCHAR2(60), 
+	FISCAL_YEAR 		VARCHAR2(10), 
+	PIS_DATE 			DATE, 
+	DEPRN_METHOD 		VARCHAR2(50), 
+	ASSET_CATEGORY 		VARCHAR2(50), 
+	ASSET_NUMBER 		VARCHAR2(50), 
+	ASSET_ID 			NUMBER(20,0), 
+	ADJUSTED_RATE 		NUMBER(20,0), 
+	BONUS_RATE 			NUMBER(20,0), 
+	DESCRIPTION 		VARCHAR2(50), 
+	COST 				NUMBER(20,0), 
+	LIFE_IN_MONTHS 		NUMBER(20,0), 
+	PRODUCTION 			VARCHAR2(40), 
+	PRORATE_CONVENTION 	VARCHAR2(20), 
+	YTD_DEPRN			NUMBER(20,0), 
+	SPECIAL_DEPRN 		NUMBER(20,0), 
+	TAX_RECONCILE 		NUMBER(20,0), 
+	BASIS_CY_DEPRN 		NUMBER(20,0), 
+	CY_EXP_EXCL_DEPRN 	NUMBER(20,0), 
+	LINE_ITEM			VARCHAR2(50)
+   )ON COMMIT PRESERVE ROWS;

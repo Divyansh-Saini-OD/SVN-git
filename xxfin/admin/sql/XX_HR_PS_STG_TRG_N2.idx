@@ -1,0 +1,34 @@
+-- +================================================================================+
+-- |                  Office Depot - Project Simplify                    	    |
+-- |                  Office Depot                                         	    |
+-- +=================================================================================+
+-- | Name  	   : XX_HR_PS_STG_TRG_N1		                            |
+-- | Description   : I0099 Employee with PSHR upgrade 				    |
+-- |                                  	    				            |	
+-- |                                                                       	    |
+-- |Change Record:                                                         	    |
+-- |===============                                                        	    |
+-- |Version Date        Author     Remarks        Description         	            |
+-- |======= ========   =========== ===========   ===============      	            |
+-- |      		     							    |
+-- |1.0    19-SEP-14   Saritha M   Defect # 31846 Created to improve the performance|
+-- |						  of the program.		    | 
+-- |		                                  		    		    |
+-- |                                                                         	    |
+-- +=================================================================================+
+
+WHENEVER SQLERROR CONTINUE
+
+---------------------------------------------------
+Dropping existing index XX_HR_PS_STG_TRG_N1
+---------------------------------------------------
+
+ DROP INDEX xxfin.XX_HR_PS_STG_TRG_N1;
+
+
+
+
+SHOW ERRORS;
+
+EXIT;
+/

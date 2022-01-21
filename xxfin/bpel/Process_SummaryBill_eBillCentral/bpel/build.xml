@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="windows-1252"?>
+<project default="compile" basedir=".">
+ <target name="compile">
+  <echo> -------------------------------------------------------------- | Compiling bpel process ${process.name}, revision ${rev} --------------------------------------------------------------         </echo>
+  <bpelc rev="${rev}" input="${process.dir}/bpel/bpel.xml"
+         out="${process.dir}/output" home="${bpel.home}">
+   <customize>
+    <partnerLinkBinding name="ODErrorLogger">
+     <property name="wsdlLocation">http://${hostname}:${http.port}/orabpel/${ODErrorLogger.domain}/ODErrorLogger/ODErrorLogger?wsdl</property>
+    </partnerLinkBinding>
+    <partnerLinkBinding name="ReadDONEFile">
+     <property name="wsdlLocation">ReadDONEFile.wsdl</property>
+    </partnerLinkBinding>
+    <partnerLinkBinding name="ODTransactionLogger">
+     <property name="wsdlLocation">http://${hostname}:${http.port}/orabpel/${ODTransactionLogger.domain}/ODTransactionLogger/ODTransactionLogger?wsdl</property>
+    </partnerLinkBinding>
+    <partnerLinkBinding name="BPELInvokeESP">
+     <property name="wsdlLocation">http://${hostname}:${http.port}/orabpel/${BPELInvokeESP.domain}/BPELInvokeESP/BPELInvokeESP?wsdl</property>
+    </partnerLinkBinding>
+    <activationAgent classname="oracle.tip.adapter.fw.agent.jca.JCAActivationAgent"
+                     partnerlink="ReadDONEFile">
+     <property name="rejectedMessageHandlers" >file://${rejectedMessage.basedirectory}/${process.name}                bpel://${default.domain.locator}|${rejectedMessage.processname}|${rejectedMessage.operation}|message</property>
+     <property name="fatalErrorFailoverProcess">bpel://${default.domain.locator}|${fatalErrorMessage.processname}|${fatalErrorMessage.operation}|message</property>
+     <property name="EBSSummaryBillArchive">${ebs.archive.directory}xxfin/outbound</property>
+     <property name="portType">Read_ptt</property>
+     <property name="EBSSummaryBillIn">xxfin/ftp/out/arinvoice/ebilling</property>
+            <!--Added for defect 3606 cluster properties-->
+            <property name="clusterGroupId">${process.name}_${cluster.group.id}</property>
+            <property name="useJgroupConfigFile">${useJgroupConfigFile}</property>
+    </activationAgent>
+   </customize>
+  </bpelc>
+ </target>
+</project>

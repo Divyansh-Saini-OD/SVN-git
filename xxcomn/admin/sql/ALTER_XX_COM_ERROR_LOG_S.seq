@@ -1,0 +1,36 @@
+SET VERIFY OFF;
+SET TERM ON
+PROMPT Altering Sequence XX_COM_ERROR_LOG_S
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+-- +=======================================================================+
+-- |               Office Depot - Project Simplify                         |
+-- |                       Oracle Consulting                               |
+-- +=======================================================================+
+-- | Name  :        ALTER_XX_COM_ERROR_LOG_S                               |
+-- | Description:   Sequence for common error handling routines            |
+-- |                                                                       |
+$Date$
+$Revision$
+$Author$
+$HeadURL$ 
+$Id$
+-- |                                                                       |
+-- |                                                                       |
+-- |Change Record:                                                         |
+-- |===============                                                        |
+-- |Version   Date        Author           Remarks                         |
+-- |=======   ==========  =============    ================================|
+-- |1.1       14-FEB-2008 Rajeev Kamath    Initial version                 |
+-- +=======================================================================+
+
+ALTER SEQUENCE XXCOMN.XX_COM_ERROR_LOG_S
+CACHE 1000;
+
+SHOW ERRORS;
+
+EXIT;
+
+
+

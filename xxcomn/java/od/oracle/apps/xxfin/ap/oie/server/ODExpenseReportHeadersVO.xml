@@ -1,0 +1,533 @@
+<?xml version='1.0' encoding='windows-1252' ?>
+<!DOCTYPE ViewObject SYSTEM "jbo_03_01.dtd">
+
+<!-- $Header: ExpenseReportHeadersVO.xml 120.17.12020000.2 2013/09/16 07:23:10 preshukl ship $ -->
+<!--
+ Author: Sridevi Kondoju
+ Component Id: E3030
+ Script Location: $CUSTOM_JAVA_TOP/od/oracle/apps/xxfin/ap/oie/server
+ Description: Considered R12 ExpenseReportHeadersVO.xmlO.xml and added custom code.
+ History:
+ Name            Date         Version    Description
+ Sridevi Kondoju 16-Jul-2013   Draft1a    Retrofitted for R12 Upgrade.
+ Madhu Bolli     29-Jul-2016   1.1        Retrofitted for 12.2.5 above the seeded version (120.17.12020000.2)
+-->
+
+<ViewObject
+   Name="ODExpenseReportHeadersVO"
+   BindingStyle="Oracle"
+   CustomQuery="true"
+   RowClass="od.oracle.apps.xxfin.ap.oie.server.ODExpenseReportHeadersVORowImpl"
+   ComponentClass="od.oracle.apps.xxfin.ap.oie.server.ODExpenseReportHeadersVOImpl"
+   UseGlueCode="false" >
+   <SQLQuery><![CDATA[
+SELECT ExpenseReportHeaderEO.REPORT_HEADER_ID, 
+       ExpenseReportHeaderEO.EMPLOYEE_ID, 
+       ExpenseReportHeaderEO.TOTAL, 
+       ExpenseReportHeaderEO.EXPENSE_REPORT_ID, 
+       ExpenseReportHeaderEO.DESCRIPTION, 
+       ExpenseReportHeaderEO.DEFAULT_CURRENCY_CODE, 
+       ExpenseReportHeaderEO.CREATION_DATE, 
+       ExpenseReportHeaderEO.WEEK_END_DATE, 
+       ExpenseReportHeaderEO.FLEX_CONCATENATED, 
+       ExpenseReportHeaderEO.INVOICE_NUM, 
+       ExpenseReportHeaderEO.SET_OF_BOOKS_ID, 
+       ExpenseReportHeaderEO.SOURCE, 
+       ExpenseReportHeaderEO.OVERRIDE_APPROVER_ID, 
+       ExpenseReportHeaderEO.PAYMENT_CURRENCY_CODE, 
+       ExpenseReportHeaderEO.OVERRIDE_APPROVER_NAME, 
+       ExpenseReportHeaderEO.AMT_DUE_CCARD_COMPANY, 
+       ExpenseReportHeaderEO.AMT_DUE_EMPLOYEE, 
+       ExpenseReportHeaderEO.WORKFLOW_APPROVED_FLAG, 
+       ExpenseReportHeaderEO.VOUCHNO, 
+       ExpenseReportHeaderEO.CREATED_BY, 
+       ExpenseReportHeaderEO.LAST_UPDATE_DATE, 
+       ExpenseReportHeaderEO.LAST_UPDATED_BY, 
+       ExpenseReportHeaderEO.ORG_ID, 
+       ExpenseReportHeaderEO.LAST_UPDATE_LOGIN, 
+       ExpenseReportHeaderEO.DEFAULT_RECEIPT_CURRENCY_CODE, 
+       ExpenseReportHeaderEO.BOTHPAY_PARENT_ID, 
+       ExpenseReportHeaderEO.REPORT_SUBMITTED_DATE,
+       ExpenseReportHeaderEO.SHORTPAY_PARENT_ID,
+       ExpenseReportHeaderEO.VENDOR_ID,
+       ExpenseReportHeaderEO.VENDOR_SITE_ID,
+       ExpenseReportHeaderEO.PAID_ON_BEHALF_EMPLOYEE_ID,
+       ExpenseReportHeaderEO.DEFAULT_EXCHANGE_RATE_TYPE,
+ExpenseReportHeaderEO.ATTRIBUTE_CATEGORY,
+ExpenseReportHeaderEO.ATTRIBUTE1,
+ExpenseReportHeaderEO.ATTRIBUTE2,
+ExpenseReportHeaderEO.ATTRIBUTE3,
+ExpenseReportHeaderEO.ATTRIBUTE4,
+ExpenseReportHeaderEO.ATTRIBUTE5,
+ExpenseReportHeaderEO.ATTRIBUTE6,
+ExpenseReportHeaderEO.ATTRIBUTE7,
+ExpenseReportHeaderEO.ATTRIBUTE8,
+ExpenseReportHeaderEO.ATTRIBUTE9,
+ExpenseReportHeaderEO.ATTRIBUTE10,
+ExpenseReportHeaderEO.ATTRIBUTE11,
+ExpenseReportHeaderEO.ATTRIBUTE12,
+ExpenseReportHeaderEO.ATTRIBUTE13,
+ExpenseReportHeaderEO.ATTRIBUTE14,
+ExpenseReportHeaderEO.ATTRIBUTE15,
+ExpenseReportHeaderEO.RECEIPTS_STATUS,
+ExpenseReportHeaderEO.MAXIMUM_AMOUNT_TO_APPLY,
+ExpenseReportHeaderEO.ADVANCE_INVOICE_TO_APPLY,
+ExpenseReportHeaderEO.APPLY_ADVANCES_DEFAULT,
+ExpenseReportHeaderEO.PREPAY_NUM,
+ExpenseReportHeaderEO.PREPAY_DIST_NUM,
+ExpenseReportHeaderEO.PREPAY_GL_DATE,
+ExpenseReportHeaderEO.ADVANCES_JUSTIFICATION,
+ExpenseReportHeaderEO.MULTIPLE_CURRENCIES_FLAG,
+ExpenseReportHeaderEO.IMAGE_RECEIPTS_STATUS,
+ExpenseReportHeaderEO.IMAGE_RECEIPTS_RECEIVED_DATE,
+ExpenseReportHeaderEO.MISSING_IMG_JUST,
+ExpenseReportHeaderEO.EXPENSE_CHECK_ADDRESS_FLAG,
+XX_AP_OIE_UTIL_PKG.missing_receipts(ExpenseReportHeaderEO.REPORT_HEADER_ID) MISSING_RECEIPTS
+FROM AP_EXPENSE_REPORT_HEADERS_ALL ExpenseReportHeaderEO
+   ]]></SQLQuery>
+   <DesignTime>
+      <Attr Name="_rowSuperClassName" Value="oracle.apps.fnd.framework.server.OAViewRowImpl" />
+      <Attr Name="_isCodegen" Value="true" />
+      <Attr Name="_isExpertMode" Value="true" />
+      <Attr Name="_version" Value="10.1.3.41.57" />
+      <Attr Name="_objectSuperClassName" Value="oracle.apps.fnd.framework.server.OAViewObjectImpl" />
+      <Attr Name="_codeGenFlag2" Value="Access|Coll" />
+   </DesignTime>
+   <EntityUsage
+      Name="ExpenseReportHeaderEO"
+      Entity="oracle.apps.ap.oie.server.ExpenseReportHeaderEO" >
+      <DesignTime>
+         <Attr Name="_queryClause" Value="true" />
+      </DesignTime>
+   </EntityUsage>
+   <ViewAttribute
+      Name="ReportHeaderId"
+      EntityAttrName="ReportHeaderId"
+      EntityUsage="ExpenseReportHeaderEO"
+      AliasName="REPORT_HEADER_ID" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="EmployeeId"
+      EntityAttrName="EmployeeId"
+      EntityUsage="ExpenseReportHeaderEO"
+      AliasName="EMPLOYEE_ID" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Total"
+      EntityAttrName="Total"
+      EntityUsage="ExpenseReportHeaderEO"
+      AliasName="TOTAL" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="ExpenseReportId"
+      EntityAttrName="ExpenseReportId"
+      EntityUsage="ExpenseReportHeaderEO"
+      AliasName="EXPENSE_REPORT_ID" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Description"
+      EntityAttrName="Description"
+      EntityUsage="ExpenseReportHeaderEO"
+      AliasName="DESCRIPTION" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="DefaultCurrencyCode"
+      EntityAttrName="DefaultCurrencyCode"
+      EntityUsage="ExpenseReportHeaderEO"
+      AliasName="DEFAULT_CURRENCY_CODE" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="CreationDate"
+      EntityAttrName="CreationDate"
+      EntityUsage="ExpenseReportHeaderEO"
+      AliasName="CREATION_DATE" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="WeekEndDate"
+      EntityAttrName="WeekEndDate"
+      EntityUsage="ExpenseReportHeaderEO"
+      AliasName="WEEK_END_DATE" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="FlexConcatenated"
+      EntityAttrName="FlexConcatenated"
+      EntityUsage="ExpenseReportHeaderEO"
+      AliasName="FLEX_CONCATENATED" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="InvoiceNum"
+      EntityAttrName="InvoiceNum"
+      EntityUsage="ExpenseReportHeaderEO"
+      AliasName="INVOICE_NUM" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="SetOfBooksId"
+      EntityAttrName="SetOfBooksId"
+      EntityUsage="ExpenseReportHeaderEO"
+      AliasName="SET_OF_BOOKS_ID" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Source"
+      EntityAttrName="Source"
+      EntityUsage="ExpenseReportHeaderEO"
+      AliasName="SOURCE" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="OverrideApproverId"
+      EntityAttrName="OverrideApproverId"
+      EntityUsage="ExpenseReportHeaderEO"
+      AliasName="OVERRIDE_APPROVER_ID" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="PaymentCurrencyCode"
+      EntityAttrName="PaymentCurrencyCode"
+      EntityUsage="ExpenseReportHeaderEO"
+      AliasName="PAYMENT_CURRENCY_CODE" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="OverrideApproverName"
+      EntityAttrName="OverrideApproverName"
+      EntityUsage="ExpenseReportHeaderEO"
+      AliasName="OVERRIDE_APPROVER_NAME" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="AmtDueCcardCompany"
+      EntityAttrName="AmtDueCcardCompany"
+      EntityUsage="ExpenseReportHeaderEO"
+      AliasName="AMT_DUE_CCARD_COMPANY" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="AmtDueEmployee"
+      EntityAttrName="AmtDueEmployee"
+      EntityUsage="ExpenseReportHeaderEO"
+      AliasName="AMT_DUE_EMPLOYEE" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="WorkflowApprovedFlag"
+      EntityAttrName="WorkflowApprovedFlag"
+      EntityUsage="ExpenseReportHeaderEO"
+      AliasName="WORKFLOW_APPROVED_FLAG" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Vouchno"
+      EntityAttrName="Vouchno"
+      EntityUsage="ExpenseReportHeaderEO"
+      AliasName="VOUCHNO" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="CreatedBy"
+      EntityAttrName="CreatedBy"
+      EntityUsage="ExpenseReportHeaderEO"
+      AliasName="CREATED_BY" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="LastUpdateDate"
+      EntityAttrName="LastUpdateDate"
+      EntityUsage="ExpenseReportHeaderEO"
+      AliasName="LAST_UPDATE_DATE" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="LastUpdatedBy"
+      EntityAttrName="LastUpdatedBy"
+      EntityUsage="ExpenseReportHeaderEO"
+      AliasName="LAST_UPDATED_BY" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="OrgId"
+      EntityAttrName="OrgId"
+      EntityUsage="ExpenseReportHeaderEO"
+      AliasName="ORG_ID" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="LastUpdateLogin"
+      EntityAttrName="LastUpdateLogin"
+      EntityUsage="ExpenseReportHeaderEO"
+      AliasName="LAST_UPDATE_LOGIN" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="DefaultReceiptCurrencyCode"
+      EntityAttrName="DefaultReceiptCurrencyCode"
+      EntityUsage="ExpenseReportHeaderEO"
+      AliasName="DEFAULT_RECEIPT_CURRENCY_CODE" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="BothpayParentId"
+      EntityAttrName="BothpayParentId"
+      EntityUsage="ExpenseReportHeaderEO"
+      AliasName="BOTHPAY_PARENT_ID" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="ReportSubmittedDate"
+      EntityAttrName="ReportSubmittedDate"
+      EntityUsage="ExpenseReportHeaderEO"
+      AliasName="REPORT_SUBMITTED_DATE" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="ShortpayParentId"
+      IsQueriable="false"
+      IsPersistent="false"
+      Precision="15"
+      Scale="0"
+      Type="oracle.jbo.domain.Number"
+      ColumnType="$none$"
+      AliasName="SHORTPAY_PARENT_ID"
+      Expression="ShortpayParentId"
+      SQLType="NUMERIC" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="VendorId"
+      EntityAttrName="VendorId"
+      EntityUsage="ExpenseReportHeaderEO"
+      AliasName="VENDOR_ID" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="VendorSiteId"
+      EntityAttrName="VendorSiteId"
+      EntityUsage="ExpenseReportHeaderEO"
+      AliasName="VENDOR_SITE_ID" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="PaidOnBehalfEmployeeId"
+      EntityAttrName="PaidOnBehalfEmployeeId"
+      EntityUsage="ExpenseReportHeaderEO"
+      AliasName="PAID_ON_BEHALF_EMPLOYEE_ID" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="DefaultExchangeRateType"
+      EntityAttrName="DefaultExchangeRateType"
+      EntityUsage="ExpenseReportHeaderEO"
+      AliasName="DEFAULT_EXCHANGE_RATE_TYPE" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="AttributeCategory"
+      EntityAttrName="AttributeCategory"
+      EntityUsage="ExpenseReportHeaderEO"
+      AliasName="ATTRIBUTE_CATEGORY" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Attribute1"
+      EntityAttrName="Attribute1"
+      EntityUsage="ExpenseReportHeaderEO"
+      AliasName="Attribute1" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Attribute2"
+      EntityAttrName="Attribute2"
+      EntityUsage="ExpenseReportHeaderEO"
+      AliasName="Attribute2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Attribute3"
+      EntityAttrName="Attribute3"
+      EntityUsage="ExpenseReportHeaderEO"
+      AliasName="Attribute3" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Attribute4"
+      EntityAttrName="Attribute4"
+      EntityUsage="ExpenseReportHeaderEO"
+      AliasName="Attribute4" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Attribute5"
+      EntityAttrName="Attribute5"
+      EntityUsage="ExpenseReportHeaderEO"
+      AliasName="Attribute5" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Attribute6"
+      EntityAttrName="Attribute6"
+      EntityUsage="ExpenseReportHeaderEO"
+      AliasName="Attribute6" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Attribute7"
+      EntityAttrName="Attribute7"
+      EntityUsage="ExpenseReportHeaderEO"
+      AliasName="Attribute7" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Attribute8"
+      EntityAttrName="Attribute8"
+      EntityUsage="ExpenseReportHeaderEO"
+      AliasName="Attribute8" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Attribute9"
+      EntityAttrName="Attribute9"
+      EntityUsage="ExpenseReportHeaderEO"
+      AliasName="Attribute9" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Attribute10"
+      EntityAttrName="Attribute10"
+      EntityUsage="ExpenseReportHeaderEO"
+      AliasName="Attribute10" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Attribute11"
+      EntityAttrName="Attribute11"
+      EntityUsage="ExpenseReportHeaderEO"
+      AliasName="Attribute11" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Attribute12"
+      EntityAttrName="Attribute12"
+      EntityUsage="ExpenseReportHeaderEO"
+      AliasName="Attribute12" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Attribute13"
+      EntityAttrName="Attribute13"
+      EntityUsage="ExpenseReportHeaderEO"
+      AliasName="Attribute13" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Attribute14"
+      EntityAttrName="Attribute14"
+      EntityUsage="ExpenseReportHeaderEO"
+      AliasName="Attribute14" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Attribute15"
+      EntityAttrName="Attribute15"
+      EntityUsage="ExpenseReportHeaderEO"
+      AliasName="Attribute15" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="ReceiptsStatus"
+      EntityAttrName="ReceiptsStatus"
+      EntityUsage="ExpenseReportHeaderEO"
+      AliasName="RECEIPTS_STATUS" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="MaximumAmountToApply"
+      EntityAttrName="MaximumAmountToApply"
+      EntityUsage="ExpenseReportHeaderEO"
+      AliasName="MAXIMUM_AMOUNT_TO_APPLY" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="AdvanceInvoiceToApply"
+      EntityAttrName="AdvanceInvoiceToApply"
+      EntityUsage="ExpenseReportHeaderEO"
+      AliasName="ADVANCE_INVOICE_TO_APPLY" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="ApplyAdvancesDefault"
+      EntityAttrName="ApplyAdvancesDefault"
+      EntityUsage="ExpenseReportHeaderEO"
+      AliasName="APPLY_ADVANCES_DEFAULT" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="PrepayNum"
+      EntityAttrName="PrepayNum"
+      EntityUsage="ExpenseReportHeaderEO"
+      AliasName="PREPAY_NUM" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="PrepayDistNum"
+      EntityAttrName="PrepayDistNum"
+      EntityUsage="ExpenseReportHeaderEO"
+      AliasName="PREPAY_DIST_NUM" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="PrepayGlDate"
+      EntityAttrName="PrepayGlDate"
+      EntityUsage="ExpenseReportHeaderEO"
+      AliasName="PREPAY_GL_DATE" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="AdvancesJustification"
+      EntityAttrName="AdvancesJustification"
+      EntityUsage="ExpenseReportHeaderEO"
+      AliasName="ADVANCES_JUSTIFICATION" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="MultipleCurrenciesFlag"
+      EntityAttrName="MultipleCurrenciesFlag"
+      EntityUsage="ExpenseReportHeaderEO"
+      AliasName="MULTIPLE_CURRENCIES_FLAG" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="ExpenseDates"
+      IsQueriable="false"
+      IsPersistent="false"
+      Type="java.lang.String"
+      ColumnType="$none$"
+      AliasName="VIEW_ATTR"
+      SQLType="VARCHAR" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="EmployeeName"
+      IsQueriable="false"
+      IsPersistent="false"
+      Type="java.lang.String"
+      ColumnType="$none$"
+      AliasName="VIEW_ATTR"
+      SQLType="VARCHAR" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="AttachmentsPrimaryKey"
+      IsUpdateable="false"
+      IsPersistent="false"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="ATTACHMENTS_PRIMARY_KEY"
+      SQLType="VARCHAR" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="ImageReceiptsStatus"
+      EntityAttrName="ImageReceiptsStatus"
+      EntityUsage="ExpenseReportHeaderEO"
+      AliasName="IMAGE_RECEIPTS_STATUS" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="ImageReceiptsReceivedDate"
+      EntityAttrName="ImageReceiptsReceivedDate"
+      EntityUsage="ExpenseReportHeaderEO"
+      AliasName="IMAGE_RECEIPTS_RECEIVED_DATE" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="MissingImgJust"
+      EntityAttrName="MissingImgJust"
+      EntityUsage="ExpenseReportHeaderEO"
+      AliasName="MISSING_IMG_JUST" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="ExpenseCheckAddressFlag"
+	  EntityAttrName="ExpenseCheckAddressFlag"
+	  EntityUsage="ExpenseReportHeaderEO"
+      AliasName="EXPENSE_CHECK_ADDRESS_FLAG" >
+   </ViewAttribute>
+    <ViewAttribute
+      Name="PreferredSupplierSite"
+      IsSelected="false"
+      IsPersistent="false"
+      Precision="255"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="VIEW_ATTR"
+      SQLType="VARCHAR" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="sMissingReceipts"
+      IsUpdateable="false"
+      IsPersistent="false"
+      Precision="255"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="MISSING_RECEIPTS"
+      Expression="See the SQL"
+      SQLType="VARCHAR" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="bMissingReceipts"
+      IsUpdateable="false"
+      IsPersistent="false"
+      Precision="255"
+      Type="java.lang.Boolean"
+      ColumnType="VARCHAR2"
+      AliasName="VIEW_ATTR"
+      SQLType="BIT" >
+   </ViewAttribute>
+</ViewObject>

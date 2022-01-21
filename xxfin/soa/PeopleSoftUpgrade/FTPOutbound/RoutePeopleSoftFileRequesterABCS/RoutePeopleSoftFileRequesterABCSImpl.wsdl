@@ -1,0 +1,21 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<wsdl:definitions name="RoutePeopleSoftFileRequesterABCSImpl" targetNamespace="http://xmlns.oracle.com/PeopleSoftMigration/RoutePeopleSoftFileRequesterABCS/RoutePeopleSoftFileRequesterABCSImpl" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:client="http://xmlns.oracle.com/PeopleSoftMigration/RoutePeopleSoftFileRequesterABCS/RoutePeopleSoftFileRequesterABCSImpl" xmlns:plnk="http://schemas.xmlsoap.org/ws/2003/05/partner-link/">
+   <wsdl:types>
+      <schema xmlns="http://www.w3.org/2001/XMLSchema">
+         <import namespace="http://xmlns.oracle.com/PeopleSoftMigration/RoutePeopleSoftFileRequesterABCS/RoutePeopleSoftFileRequesterABCSImpl" schemaLocation="xsd/RoutePeopleSoftFileRequesterABCSImpl.xsd"/>
+      </schema>
+   </wsdl:types>
+   <wsdl:message name="RoutePeopleSoftFileRequesterABCSImplRequestMessage">
+      <wsdl:part name="payload" element="client:process"/>
+   </wsdl:message>
+   <wsdl:portType name="RoutePeopleSoftFileRequesterABCSImpl">
+      <wsdl:operation name="process">
+         <wsdl:input message="client:RoutePeopleSoftFileRequesterABCSImplRequestMessage"/>
+      </wsdl:operation>
+   </wsdl:portType>
+   <plnk:partnerLinkType name="RoutePeopleSoftFileRequesterABCSImpl">
+      <plnk:role name="RoutePeopleSoftFileRequesterABCSImplProvider">
+         <plnk:portType name="client:RoutePeopleSoftFileRequesterABCSImpl"/>
+      </plnk:role>
+   </plnk:partnerLinkType>
+</wsdl:definitions>

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding='windows-1252'?>
+<!DOCTYPE AppModule SYSTEM "jbo_03_01.dtd">
+
+<AppModule
+   Name="ODExtAttributeGenericAM"
+   ComponentClass="od.oracle.apps.xxcrm.cdh.extension.server.ODExtAttributeGenericAMImpl"
+   LoadComponentsLazily="true" >
+   <DesignTime>
+      <Attr Name="_isCodegen" Value="true" />
+      <Attr Name="_version" Value="9.0.3.12.53" />
+      <Attr Name="_deployType" Value="0" />
+   </DesignTime>
+   <ViewUsage
+      Name="HzExtPageListVO"
+      ViewObjectName="oracle.apps.ar.hz.components.extension.server.HzExtPageListVO" >
+   </ViewUsage>
+   <AppModuleUsage
+      Name="EgoExtFwkAM"
+      FullName="oracle.apps.ego.extfwk.user.presentation.server.EgoExtFwkAM" >
+   </AppModuleUsage>
+</AppModule>

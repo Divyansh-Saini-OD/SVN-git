@@ -1,0 +1,124 @@
+
+#!/usr/bin/ksh
+# +===================================================================+
+# |		     Office Depot - Project Simplify		      |
+# |			 Office Depot				      |
+# +===================================================================+
+# | Name  :	  XXAPRBCL (Shell Script)		      |
+# | Description : To Load the Inovoice data flat file to     	      |
+# | tables XX_AP_BULK_CHECK_INVOICE_STG	   		              |
+# |								      |
+# |							              |  
+# |Change Record:						      |
+# |===============						      |
+# |Version   Date	       Author	       Remarks		      |
+# |=======   ===========  ================    ========================|
+# |1.0	     12-Aug-2016  Radhika Patnala     Initial version	      |
+# |2.0       09-Nov-2016  Avinash Baddam      Defect#40049            |
+# |3.0       11-Apr-2017  Praveen Vanga       Defect#41655            |
+# |-------------------------------------------------------------------|
+# |								      |
+# +===================================================================+
+
+APPS_LOGIN=$1
+echo "Input File Path : " [$5]
+echo "File Name : " [$6]
+
+FILE_DIR="$XXFIN_DATA/ftp/in/rbinvoice"
+FILE_ARCH1="/app/ebs/ebsfinance/"
+
+export SQLPATH=$APPL_TOP
+
+#defect40049  
+instance=`sqlplus -s $APPS_LOGIN <<EOF
+set pagesize 0
+set linesize 255
+set sqlprompt " "
+set serveroutput on 
+set verify off
+      select lower(substr(ora_database_name,1,8)) 
+       from dual;
+exit
+EOF`
+
+#instance=`echo $ORACLE_SID`
+
+echo $instance
+FILE_ARCH2="/apinvoice" 
+
+FILE_ARCHIVE=$FILE_ARCH1$instance$FILE_ARCH2
+ 
+echo "$File Archive path:"[$FILE_ARCHIVE]
+
+
+FILE=$FILE_DIR/$6
+echo " Path  :" [$FILE_DIR]
+
+echo "Deleting old files"
+
+# commented for Defeect 41655 fix
+#rm ${FILE_DIR}/AP_CUSTOMER_REBATE*.log
+#rm ${FILE_DIR}/AP_CUSTOMER_REBATE*.bad
+
+rm ${FILE_DIR}/$6.log
+rm ${FILE_DIR}/$6.bad
+
+
+ls  ${FILE_DIR}/$6
+if [ $? -ne 0 ]
+then
+echo "No Data FIle Found"
+exit 2
+else
+echo "Data file found"
+echo $6
+fi
+
+echo $control_file
+
+sqlldr parfile=$HOME/parfile.apps data=$FILE control=$XXFIN_TOP/bin/XXAPRBCL.ctl log=$FILE.log bad=$FILE.bad
+if [ $? -ne 0 ]
+then
+echo "Error in running sqlloader. Please Check log for Error Details "
+
+if sqlplus -s $APPS_LOGIN  <<-! >/dev/null 2>&1
+ WHENEVER SQLERROR EXIT 1;
+ 	delete from xx_ap_bulk_check_invoice_stg where process_flag=1;
+ 	commit;
+ 	EXIT;
+	!
+then
+     echo "Deleted all records of this request from the table xx_ap_bulk_check_invoice_stg"
+
+#defect40049
+#DAT=`date '+_%Y%m%d_%H%M%S'`
+#mv $6 $FILE_ARCHIVE/$6$DAT
+rm $FILE
+
+echo "------------ Log File--------------"
+cat $FILE.log
+
+echo "-------------Bad Data file----------"
+cat $FILE.bad
+
+else
+     echo "Failed to delete all records of this request from the table xx_ap_bulk_check_invoice_stg"
+fi
+exit 2
+
+else
+echo "Completed successfully "
+
+fi
+
+echo "------------ Log File--------------"
+cat $FILE.log
+
+echo "-------------Bad Data file----------"
+cat $FILE.bad
+
+DAT=`date '+_%Y%m%d_%H%M%S'`
+mv $FILE $FILE_ARCHIVE/$6$DAT
+
+# Exiting from the shell program.
+exit 0

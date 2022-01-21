@@ -1,0 +1,34 @@
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     ON
+
+PROMPT drop TABLE XX_FA_ASSS_ADDITIONS_STG
+
+PROMPT Program exits IF the creation IS NOT SUCCESSFUL
+
+WHENEVER SQLERROR CONTINUE
+
+-- +==========================================================================+
+-- |                  Office Depot - Project Simplify                         |
+-- +==========================================================================+
+-- | Name :XXCNV.XX_FA_MASS_ADDITIONS_STG                                     |
+-- | Description : Drop the FA Conversion Staging table                       |
+-- |               Conversion 0626 OMX FA Conversion                          |
+-- |                                                                          |
+-- |                                                                          |
+-- |                                                                          |
+-- |Change Record:                                                            |
+-- |===============                                                           |
+-- |Version   Date         Author               Remarks                       |
+-- |=======   ==========   =============        ==============================|
+-- | 1.0      22-Jan-2015  Mark Schmit          Initial version               |
+-- |                                                                          |
+-- +==========================================================================+
+
+
+drop table xx_fa_mass_additions_stg; 
+
+SHOW ERROR
+

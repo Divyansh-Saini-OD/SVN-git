@@ -1,0 +1,52 @@
+REM============================================================================================
+REM                                 Start Of Script
+REM============================================================================================
+--+=============================================================================================+--
+--|                                                                                             |--
+--| Object Name    : E1365_AuditCapture Synonym Creation                                        |--
+--|                                                                                             |--
+--| Program Name   : XX_COM_AUDIT_SET_TABLES.syn                                                |--
+--|                                                                                             |--
+--| Purpose        : Create Custom Table .                                                      |--
+--|                  The Objects created are:                                                   |--
+--|                1. XX_COM_AUDIT_SET_TABLES(E1365_AuditCapture Synonym )                      |--
+--|                                                                                             |--
+--| Version   Date        Changed By      Description                                           |--
+--+=========  =========== =============== ======================================================+--
+--| Draft 1a  18-Sep-2007 Lalitha Budithi Draft Version                                         |--
+--| Draft 1b  12-Nov-2007 Lalitha budithi Removed the command to drop the table                 |--
+--+=============================================================================================+--
+SET VERIFY      OFF
+SET TERM        OFF
+SET FEEDBACK    OFF
+SET SHOW        OFF
+SET ECHO        OFF
+SET TAB         OFF
+
+SET TERM ON
+
+WHENEVER SQLERROR CONTINUE;
+
+
+PROMPT
+PROMPT Creating SYNONYM XX_COM_AUDIT_SET_TABLES
+PROMPT
+
+CREATE SYNONYM XX_COM_AUDIT_SET_TABLES FOR XXCOMN.XX_COM_AUDIT_SET_TABLES;
+
+WHENEVER SQLERROR CONTINUE;
+
+SHOW ERRORS;
+
+PROMPT
+PROMPT Exiting....
+PROMPT
+
+SET FEEDBACK ON
+
+EXIT;
+
+REM=================================================================================================
+REM                                   End Of Script
+REM=================================================================================================
+

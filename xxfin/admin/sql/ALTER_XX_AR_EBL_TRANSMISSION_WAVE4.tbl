@@ -1,0 +1,31 @@
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+-- +============================================================================================+
+-- |                                     Office Depot                                           |
+-- +============================================================================================+
+-- | Name        : ALTER_XX_AR_EBL_TRANSMISSION.tbl                                             |
+-- | Description : Indirect merge docs transmission Defect#27146                                |
+-- | Rice Id     : E2059                                                                        |
+-- |                                                                                            |
+-- |Change Record:                                                                              |
+-- |===============                                                                             |
+-- |Version     Date           Author               Remarks                                     |
+-- |=======    ==========      ================     ============================================|
+-- |1.0        04-SEP-2018     Thilak CG             Initial version                            |
+-- +============================================================================================+
+
+PROMPT
+PROMPT Altering the Table XX_AR_EBL_TRANSMISSION.....
+PROMPT
+
+ALTER TABLE XXFIN.XX_AR_EBL_TRANSMISSION 
+ADD(CUST_ACCT_SITE_ID NUMBER);
+
+PROMPT
+PROMPT Altering the Table XX_AR_EBL_TRANSMISSION done.
+PROMPT
+
+SHOW ERRORS;
+EXIT;

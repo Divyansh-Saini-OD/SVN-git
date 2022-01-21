@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+            xmlns:nxsd="http://xmlns.oracle.com/pcbpel/nxsd"
+            targetNamespace="http://TargetNamespace.com/ZeroByte"
+            xmlns:tns="http://TargetNamespace.com/ZeroByte"
+            elementFormDefault="qualified"
+            attributeFormDefault="unqualified" nxsd:encoding="ASCII" nxsd:stream="chars" nxsd:version="NXSD">
+  <xsd:element name="ZeroByte">
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element name="Filler" type="xsd:string" nxsd:style="array" nxsd:cellSeparatedBy="${eol}">
+        </xsd:element>
+      </xsd:sequence>
+    </xsd:complexType>
+  </xsd:element>
+</xsd:schema>
+<!--NXSDWIZ:D:\\ZeroByte.txt:-->
+<!--USE-HEADER:false:-->

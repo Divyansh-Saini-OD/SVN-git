@@ -1,0 +1,37 @@
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+PROMPT Creating Table XX_COMN_DEBUG
+
+/*
+-- +=======================================================================================+
+-- |               Office Depot - Project Simplify                                         |
+-- |             Oracle NAC Consulting Organization                                        |
+-- +=======================================================================================+
+-- | Name             : CREATE_XX_COMN_DEBUG.tbl                                       |
+-- | Description      : Custom table for E1328_BSD_iReceivables_interface                  |
+-- |                                                                                       |
+-- |                                                                                       |
+-- |Change History:                                                                        |
+-- |---------------                                                                        |
+-- |                                                                                       |
+-- |Version  Date        Author             Remarks                                        |
+-- |-------  ----------- -----------------  -----------------------------------------------|
+-- |Draft1a  12-FEB-2008 ALOK SAHAY         Initial Draft Version                          |
+-- |                                                                                       |
+-- +=======================================================================================+
+*/
+
+-- -------------------------------------------------------
+--      Create Custom Table XXCRM.XX_COMN_DEBUG     --
+-- -------------------------------------------------------
+
+CREATE TABLE XXCOMN.XX_COMN_DEBUG
+( SESSION_ID                 NUMBER
+, TIME                       TIMESTAMP
+, MESSAGE                    VARCHAR2(4000)
+)
+/
+
+EXIT;
+

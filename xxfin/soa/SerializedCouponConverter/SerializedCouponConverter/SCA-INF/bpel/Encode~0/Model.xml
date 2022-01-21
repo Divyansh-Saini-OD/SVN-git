@@ -1,0 +1,206 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<process name="EncodeBPELProcess" targetNamespace="http://xmlns.oracle.com/SerializedCouponApplication/SerializedCouponConverter/EncodeBPELProcess" xmlns="http://schemas.xmlsoap.org/ws/2003/03/business-process/" xmlns:client="http://xmlns.oracle.com/SerializedCouponApplication/SerializedCouponConverter/EncodeBPELProcess" xmlns:ora="http://schemas.oracle.com/xpath/extension" xmlns:bpelx="http://schemas.oracle.com/bpel/extension" xmlns:bpws="http://schemas.xmlsoap.org/ws/2003/03/business-process/" xmlns:bpel2="http://docs.oasis-open.org/wsbpel/2.0/process/executable" xmlns:ns1="http://www.officedepot.com/SerializableCouponConverter" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xp20="http://www.oracle.com/XSL/Transform/java/oracle.tip.pc.services.functions.Xpath20" xmlns:oraext="http://www.oracle.com/XSL/Transform/java/oracle.tip.pc.services.functions.ExtFunc" xmlns:dvm="http://www.oracle.com/XSL/Transform/java/oracle.tip.dvm.LookupValue" xmlns:hwf="http://xmlns.oracle.com/bpel/workflow/xpath" xmlns:ids="http://xmlns.oracle.com/bpel/services/IdentityService/xpath" xmlns:bpm="http://xmlns.oracle.com/bpmn20/extensions" xmlns:xdk="http://schemas.oracle.com/bpel/extension/xpath/function/xdk" xmlns:xref="http://www.oracle.com/XSL/Transform/java/oracle.tip.xref.xpath.XRefXPathFunctions" xmlns:ldap="http://schemas.oracle.com/xpath/extension/ldap" xmlns:ns2="http://xmlns.oracle.com/pcbpel/adapter/jms/CouponSerialization/SerializedCouponConverter/CommonErrorLoggingService" xmlns:ns3="http://www.officedepot.com/officedepot/ODComnErrorStructure/1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ns4="http://xmlns.oracle.com/CouponSerialization/SerializedCouponConverter/CommonErrorLoggerBPEL" xmlns:ns5="http://www.example.org" id="BpPrc0">
+
+    <!-- 
+      ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        PARTNERLINKS                                                      
+        List of services participating in this BPEL process               
+      ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    --> 
+  <partnerLinks>
+    <!-- 
+      The 'client' role represents the requester of this service. It is 
+      used for callback. The location and correlation information associated
+      with the client role are automatically set using WS-Addressing.
+    -->
+    <partnerLink name="encode" partnerLinkType="client:EncodeBPELProcess" myRole="EncodeBPELProcessProvider"/>
+    <partnerLink name="CommonErrorLoggerBPELProcess" partnerLinkType="ns4:CommonErrorLoggerBPEL" partnerRole="CommonErrorLoggerBPELProvider"/>
+  </partnerLinks>
+
+  <!-- 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+      VARIABLES                                                        
+      List of messages and XML documents used within this BPEL process 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  -->
+  <variables>
+    <!-- Reference to the message passed as input during initiation -->
+    <variable name="inputVariable" messageType="client:EncodeBPELProcessRequestMessage"/>
+
+    <!-- Reference to the message that will be returned to the requester-->
+    <variable name="outputVariable" messageType="client:EncodeBPELProcessResponseMessage"/>
+    <variable name="serializedCoupon" messageType="client:EncodeBPELProcessRequestMessage"/>
+    <variable name="status" element="ns1:status"/>
+    <variable name="invokeErrorLoggerBPELProcessInputVariable" messageType="ns4:CommonErrorLoggerBPELRequestMessage"/>
+    <variable name="replyErrorOutputVariable" messageType="client:EncodeBPELProcessResponseMessage"/>
+  </variables>
+  <faultHandlers id="BpFhs0">
+    <catchAll id="BpCAl0">
+     <sequence name="SequenceSendNotification" id="BpSeq0">
+        <switch name="DetermineCauseOfError" id="BpSwt0">
+          <case condition="contains(ora:getFaultName(),ora:getPreference(&quot;COUPON_CONVERSION_FAULT&quot;))">
+            <bpelx:annotation>
+              <bpelx:general>
+                <bpelx:property name="userLabel">InCaseOfCouponConversionFault</bpelx:property>
+              </bpelx:general>
+            </bpelx:annotation>
+            <assign name="AssignErrorTextReturnedByJavaCode" id="BpAss0">
+              <copy>
+                <from variable="status" query="/ns1:status"/>
+                <to variable="invokeErrorLoggerBPELProcessInputVariable" part="payload" query="/ns5:CommonErrorLoggerBPELInput/ns5:errorText"/>
+              </copy>
+            </assign>
+          </case>
+          <otherwise>
+            <sequence name="SequenceOtherwise" id="BpSeq1">
+              <assign name="AssignErrorTextFromSystemFault" id="BpAss1">
+                <copy>
+                  <from expression="substring(ora:getFaultAsString(),1,500)"/>
+                  <to variable="invokeErrorLoggerBPELProcessInputVariable" part="payload" query="/ns5:CommonErrorLoggerBPELInput/ns5:errorText"/>
+                </copy>
+                <copy>
+                  <from expression="string(&quot;&quot;)"/>
+                  <to variable="replyErrorOutputVariable" part="payload" query="/ns1:encodedSerializedCoupon/ns1:code"/>
+                </copy>                
+              </assign>
+              <reply name="replyErrorOutput" variable="replyErrorOutputVariable" partnerLink="encode" portType="client:EncodeBPELProcess" operation="process" id="BpRpl0"/>
+            </sequence>
+          </otherwise>
+        </switch>     
+        <assign name="AssignEncodeSpecificErrorDetails" id="BpAss2">
+          <copy>
+            <from expression="concat(ora:getPreference(&quot;SOA_ADMIN_ERROR_MESSAGE&quot;),&quot; &quot;, ora:getCompositeInstanceId())"/>
+            <to variable="invokeErrorLoggerBPELProcessInputVariable" part="payload" query="/ns5:CommonErrorLoggerBPELInput/ns5:errorMessage"/>
+          </copy>
+          <copy>
+            <from expression="concat( ora:getCompositeName(), &quot;/&quot;, ora:getProcessId())"/>
+            <to variable="invokeErrorLoggerBPELProcessInputVariable" part="payload" query="/ns5:CommonErrorLoggerBPELInput/ns5:processName"/>
+          </copy>
+          <copy>
+            <from expression="ora:getPreference(&quot;MESSAGE_TYPE&quot;)"/>
+            <to variable="invokeErrorLoggerBPELProcessInputVariable" part="payload" query="/ns5:CommonErrorLoggerBPELInput/ns5:messageType"/>
+          </copy>
+          <copy>
+            <from expression="ora:getPreference(&quot;MESSAGE_OPERATION&quot;)"/>
+            <to variable="invokeErrorLoggerBPELProcessInputVariable" part="payload" query="/ns5:CommonErrorLoggerBPELInput/ns5:messageOperation"/>
+          </copy>
+          <copy>
+            <from expression="ora:getFaultName()"/>
+            <to variable="invokeErrorLoggerBPELProcessInputVariable" part="payload" query="/ns5:CommonErrorLoggerBPELInput/ns5:faultName"/>
+          </copy>
+        </assign>
+        <invoke name="InvokeErrorLoggerBPELProcess" inputVariable="invokeErrorLoggerBPELProcessInputVariable" partnerLink="CommonErrorLoggerBPELProcess" portType="ns4:CommonErrorLoggerBPEL" operation="process" bpelx:invokeAsDetail="no" id="BpInv0"/>
+      </sequence>
+    </catchAll>    
+  </faultHandlers>
+  <!-- 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+     ORCHESTRATION LOGIC                                               
+     Set of activities coordinating the flow of messages across the    
+     services integrated within this business process                  
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  -->
+  <sequence name="main" id="BpSeq2">
+
+    <!-- Receive input from requestor. (Note: This maps to operation defined in EncodeBPELProcess.wsdl) -->
+    <receive name="receiveInput" partnerLink="encode" portType="client:EncodeBPELProcess" operation="process" variable="inputVariable" createInstance="yes" id="BpRcv0"/>
+
+    <!-- Generate reply to synchronous request -->
+    <switch name="AgentIdMissing" id="BpSwt1">
+      <case condition="string-length(bpws:getVariableData('inputVariable','payload','/ns1:decodedSerializedCoupon/ns1:agentId')) = 0">
+        <bpelx:annotation>
+          <bpelx:general>
+            <bpelx:property name="userLabel">Missing Agent ID</bpelx:property>
+          </bpelx:general>
+        </bpelx:annotation>
+        <assign name="AssignDefaultAgentID" id="BpAss3">
+          <copy>
+            <from variable="inputVariable" part="payload" query="/ns1:decodedSerializedCoupon/ns1:couponCode"/>
+            <to variable="serializedCoupon" part="payload" query="/ns1:decodedSerializedCoupon/ns1:couponCode"/>
+          </copy>
+          <copy>
+            <from expression="'0000000000'"/>
+            <to variable="serializedCoupon" part="payload" query="/ns1:decodedSerializedCoupon/ns1:agentId"/>
+          </copy>
+          <copy>
+            <from expression="0"/>
+            <to variable="outputVariable" part="payload" query="/ns1:encodedSerializedCoupon/ns1:code"/>
+          </copy>
+        </assign>
+      </case>
+      <otherwise>
+        <assign name="AssignSerializedCoupon" id="BpAss4">
+          <copy>
+            <from expression="0"/>
+            <to variable="outputVariable" part="payload" query="/ns1:encodedSerializedCoupon/ns1:code"/>
+          </copy>
+          <copy>
+            <from variable="inputVariable" part="payload" query="/ns1:decodedSerializedCoupon/ns1:agentId"/>
+            <to variable="serializedCoupon" part="payload" query="/ns1:decodedSerializedCoupon/ns1:agentId"/>
+          </copy>
+          <copy>
+            <from variable="inputVariable" part="payload" query="/ns1:decodedSerializedCoupon/ns1:couponCode"/>
+            <to variable="serializedCoupon" part="payload" query="/ns1:decodedSerializedCoupon/ns1:couponCode"/>
+          </copy>
+        </assign>
+      </otherwise>
+    </switch>
+    <bpelx:exec import="oracle.xml.parser.v2.XMLElement" id="BxExe0"/>
+    <bpelx:exec import="com.od.security.SerializedCouponConverter" id="BxExe1"/> 
+    
+     <bpelx:exec name="SerializedCouponConverter" version="1.5" language="java" id="BxExe2">
+      <![CDATA[try {     
+         
+  XMLElement agentIdInput = (XMLElement) getVariableData("serializedCoupon", "payload", "/ns1:decodedSerializedCoupon/ns1:agentId");     
+  XMLElement couponCodeInput = (XMLElement) getVariableData("serializedCoupon", "payload", "/ns1:decodedSerializedCoupon/ns1:couponCode");     
+       
+  String agentId = agentIdInput.getTextContent();     
+  String couponCode = couponCodeInput.getTextContent();     
+	      
+  String msg = "I: "+ agentId + couponCode;     
+  addAuditTrailEntry(msg);     
+  setCompositeInstanceTitle(msg);     
+     
+  SerializedCouponConverter scc = new SerializedCouponConverter();     
+  String encodedSerializedCoupon = scc.encode(couponCode+agentId);     
+        
+  String msgWithEncodedCoupon = msg + "+O:" + encodedSerializedCoupon;     
+       
+  addAuditTrailEntry(msgWithEncodedCoupon);     
+  setCompositeInstanceTitle(msgWithEncodedCoupon);     
+       
+  setVariableData("outputVariable", "payload", "/ns1:encodedSerializedCoupon/ns1:code", encodedSerializedCoupon);     
+  setVariableData("status", "/ns1:status", "success");    
+   
+      
+} catch (Exception e) {     
+  System.out.println("exception "+e.getMessage());     
+  setVariableData("status", "/ns1:status", "Error in SerializedCouponConverter :"+e.getMessage());     
+  setVariableData("outputVariable", "payload", "/ns1:encodedSerializedCoupon/ns1:code", "");     
+  addAuditTrailEntry(e);     
+}]]>
+    </bpelx:exec>   
+
+    <reply name="replyOutput" partnerLink="encode" portType="client:EncodeBPELProcess" operation="process" variable="outputVariable" id="BpRpl1"/>
+    
+    <switch name="DetermineIfThereWasCouponConversionError" id="BpSwt2">
+      <case condition="starts-with(bpws:getVariableData('status','/ns1:status'),ora:getPreference(&quot;JAVA_ERROR_START_TEXT&quot;))">
+        <bpelx:annotation>
+          <bpelx:general>
+            <bpelx:property name="userLabel">InCaseOfError</bpelx:property>
+          </bpelx:general>
+        </bpelx:annotation>
+        <throw name="ThrowCouponConversionFault" faultName="bpelx:couponConversionFault" id="BpThw0"/>
+      </case>
+    </switch>    
+  </sequence>
+</process><!--
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  Oracle JDeveloper BPEL Designer 
+  
+  Created: Tue Mar 06 09:38:27 EST 2012
+  Author:  Cecilia-Macean
+  Type: BPEL 1.1 Process
+  Purpose: Synchronous BPEL Process
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+-->

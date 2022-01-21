@@ -1,0 +1,18 @@
+-- +=========================================================================+
+-- |                     Office Depot - Project Simplify                     |
+-- +=========================================================================+
+-- | Name        : XXRA_CUST_TRX_LINE_GL_DIST_N1.idx                         |
+-- | Rice ID     :                                                           |
+-- | Description : XXRA_CUST_TRX_LINE_GL_DIST_N1.idx - Index Creation Script |
+-- |                                                                         |
+-- |              					                     |
+-- |Change Record:                                                           |
+-- |===============                                                          |
+-- |Version   Date        Author           Remarks                           |
+-- |=======  ===========  =============    ==================================|
+-- |1.0      19-Jun-2008  Enliu Yang       Initial draft version             |
+-- |                                                                         |
+-- +=========================================================================+
+create index XXCNV.XXRA_CUST_TRX_LINE_GL_DIST_N1 on AR.RA_CUST_TRX_LINE_GL_DIST_ALL(LAST_UPDATE_DATE) tablespace xxod 
+nologging parallel 8;
+alter index XXCNV.XXRA_CUST_TRX_LINE_GL_DIST_N1 noparallel;

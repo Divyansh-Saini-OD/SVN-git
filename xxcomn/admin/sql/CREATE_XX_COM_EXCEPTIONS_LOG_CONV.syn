@@ -1,0 +1,26 @@
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+-- +=======================================================================+
+-- |               Office Depot - Project Simplify                         |
+-- |             Oracle NAIO Consulting Organization                       |
+-- +=======================================================================+
+-- | Name             :CREATE_XX_COM_EXCEPTIONS_LOG_CONV.tbl               |
+-- | Description      :Custom table for E0200_ConvCommonElements_EBS       |
+-- |                                                                       |
+-- |                                                                       |
+-- |Change History:                                                        |
+-- |---------------                                                        |
+-- |                                                                       |
+-- |Version  Date        Author             Remarks                        |
+-- |-------  ----------- -----------------  -------------------------------|
+-- |Draft1a  14-Jun-2007 Rajeev Kamath      Initial Draft Version          |
+-- +=======================================================================+
+
+------------------------------------------------------
+-- Dropping the existing synonym and creating new.  --
+------------------------------------------------------
+CREATE OR REPLACE SYNONYM apps.xx_com_exceptions_log_conv FOR xxcomn.xx_com_exceptions_log_conv;
+
+SHOW ERRORS;

@@ -1,0 +1,42 @@
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     ON
+
+PROMPT Creating Materialized View XX_CE_BANK_ACCOUNTS_MV;
+
+PROMPT Program exits IF the creation IS NOT SUCCESSFUL
+
+WHENEVER SQLERROR CONTINUE
+
+-- +==========================================================================+
+-- |                  Office Depot - Project Simplify                         |
+-- +==========================================================================+
+-- | Name : XX_CE_BANK_ACCOUNTS_MV                                            |
+-- | Description : Create Materialized View on CE_BANK_ACCOUNTS               |
+-- |               for all rows with                                          |
+-- |               UPPER(CBA.account_classification) = 'INTERNAL'             |
+-- |               AND UPPER (CBA.Bank_account_type)= 'DEPOSIT'               |
+-- |                                                                          |
+-- |                                                                          |
+-- |                                                                          |
+-- |Change Record:                                                            |
+-- |===============                                                           |
+-- |Version   Date         Author               Remarks                       |
+-- |=======   ==========   =============        ==============================|
+-- | V1.0     24-MAR-2015  Shaik Ghouse         Initial version               |
+-- | V2.0     25-MAR-2015  Shaik Ghouse         Removed Schema XXFIN          |
+-- +==========================================================================+
+
+
+CREATE MATERIALIZED VIEW XX_CE_BANK_ACCOUNTS_MV
+BUILD IMMEDIATE
+REFRESH COMPLETE
+ON DEMAND
+AS SELECT * FROM CE_BANK_ACCOUNTS CBA
+WHERE UPPER(CBA.account_classification) = 'INTERNAL'
+AND UPPER (CBA.Bank_account_type)= 'DEPOSIT';
+
+
+SHOW ERROR

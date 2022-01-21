@@ -1,0 +1,28 @@
+-- +===========================================================================+
+-- |                  Office Depot - Project Simplify                          |
+-- +===========================================================================+
+-- | Name :XXCOMN.XX_COM_BATCH_VARIABLES                                       |
+-- | Description : Create a table to hold variable values for batch jobs       |
+-- |                                                                           |
+-- |Change Record:                                                             |
+-- |===============                                                            |
+-- |Version   Date         Author               Remarks                        |
+-- |=======   ==========   =============        ===============================|
+-- | V1.0     01/08/2009   Joe Klein            Initial version                |
+-- |                                                                           |
+-- +===========================================================================+
+
+   SET SHOW         OFF
+   SET VERIFY       OFF
+   SET ECHO         OFF
+   SET TAB          OFF
+   SET FEEDBACK     ON
+
+
+   CREATE TABLE XXCOMN.XX_COM_BATCH_VARIABLES
+     (SUBTRACK						VARCHAR2(30),
+      VARIABLE_NAME					VARCHAR2(240),
+      VALUE						VARCHAR2(240)
+      );
+
+SHOW ERROR

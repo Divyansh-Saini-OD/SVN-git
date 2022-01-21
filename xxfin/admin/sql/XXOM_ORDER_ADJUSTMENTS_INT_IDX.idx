@@ -1,0 +1,38 @@
+-- +===========================================================================+
+-- |                  Office Depot - SAS Modernization                         |
+-- |                                                                           |
+-- +===========================================================================+
+-- | Name        : XXOM_ORDER_ADJUSTMENTS_INT_IDX.idx                                      |
+-- | Description : Index for Custom Table XXOM_ORDER_ADJUSTMENTS_INT_INT                       |
+-- |                                                                           |
+-- |Change Record:                                                             |
+-- |===============                                                            |
+-- |Version  Date        Author           Remarks                              |
+-- |======== =========== ================ =====================================|
+-- |1.0      23-Aug-2021 Shreyas Thorat   Initial Version                      |
+-- +===========================================================================+
+
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     ON
+WHENEVER SQLERROR CONTINUE
+
+PROMPT
+PROMPT Creation of Index on custom table XXOM_ORDER_ADJUSTMENTS_INT.....
+PROMPT
+
+PROMPT
+PROMPT Creating non-unique index XXOM_ORDER_ADJUSTMENTS_INT_N1 .....
+PROMPT
+
+CREATE INDEX XXOM_ORDER_ADJUSTMENTS_INT_N1 ON XXOM_ORDER_ADJUSTMENTS_INT(HEADER_ID);
+
+WHENEVER SQLERROR EXIT 1
+
+PROMPT
+PROMPT Exiting....
+PROMPT
+
+EXIT;

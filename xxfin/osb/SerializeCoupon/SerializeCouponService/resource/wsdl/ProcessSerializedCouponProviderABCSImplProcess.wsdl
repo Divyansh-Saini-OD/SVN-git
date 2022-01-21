@@ -1,0 +1,65 @@
+<wsdl:definitions name="ProcessSerializedCouponProviderABCSImplProcess" targetNamespace="http://xmlns.officedepot.com/CouponSerialization/ProcessSerializedCouponProviderABCSImpl/ProcessSerializedCouponProviderABCSImplProcess" xmlns:ns2="http://xmlns.officedepot.com/EnterpriseMessage/POS/Custom/EBM/SerializedCouponResponseEBM/V1" xmlns:ns1="http://xmlns.officedepot.com/EnterpriseMessage/POS/Custom/EBM/SerializedCouponRequestEBM/V1" xmlns:plnk="http://schemas.xmlsoap.org/ws/2003/05/partner-link/" xmlns:cor="http://xmlns.officedepot.com/CouponSerialization/ProcessSerializedCouponProviderABCSImpl/ProcessSerializedCouponProviderABCSImplProcess/correlationset" xmlns:client="http://xmlns.officedepot.com/CouponSerialization/ProcessSerializedCouponProviderABCSImpl/ProcessSerializedCouponProviderABCSImplProcess" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:bpws="http://schemas.xmlsoap.org/ws/2003/03/business-process/" xmlns:err="http://xmlns.officedepot.com/EnterpriseMessage/POS/Custom/Common/SerializedCouponFaultMessage/V1" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/">
+	<plnk:partnerLinkType name="ProcessSerializedCouponProviderABCSImplProcess">
+		<plnk:role name="ProcessSerializedCouponProviderABCSImplProcessProvider">
+			<plnk:portType name="client:ProcessSerializedCouponProviderABCSImplProcess"/>
+		</plnk:role>
+	</plnk:partnerLinkType>
+	<bpws:propertyAlias propertyName="cor:SerializedCouponMQProperty" messageType="ns15:Dequeue_msg" part="body" query="/ns3:SerializedCouponMQResponseABM/ns3:OriginalPOSTransaction" xmlns:ns15="http://xmlns.oracle.com/pcbpel/adapter/mq/CouponSerialization/ProcessSerializedCouponProviderABCSImpl/SerializedCouponGetMQAdapter" xmlns:ns3="http://xmlns.officedepot.com/ApplicationMessage/POS/Custom/ABM/SerializedCouponMQResponseABM/V1"/>
+	<bpws:propertyAlias propertyName="cor:SerializedCouponMQProperty" messageType="ns14:Enqueue_msg" part="body" query="/ns3:SerializedCouponMQRequestABM/ns3:OriginalPOSTransaction" xmlns:ns14="http://xmlns.oracle.com/pcbpel/adapter/mq/CouponSerialization/ProcessSerializedCouponProviderABCSImpl/SerializedCouponPutMQAdapter" xmlns:ns3="http://xmlns.officedepot.com/ApplicationMessage/POS/Custom/ABM/SerializedCouponMQRequestABM/V1"/>
+	<wsdl:import namespace="http://xmlns.officedepot.com/CouponSerialization/ProcessSerializedCouponProviderABCSImpl/ProcessSerializedCouponProviderABCSImplProcess/correlationset" location="ProcessSerializedCouponProviderABCSImplProcess_Properties.wsdl"/>
+	<wsdl:types>
+		<schema xmlns="http://www.w3.org/2001/XMLSchema">
+			<import namespace="http://xmlns.officedepot.com/EnterpriseMessage/POS/Custom/EBM/SerializedCouponRequestEBM/V1" schemaLocation="../schema/SerializedCouponRequestEBM.xsd"/>
+		</schema>
+		<schema xmlns="http://www.w3.org/2001/XMLSchema">
+			<import namespace="http://xmlns.officedepot.com/EnterpriseMessage/POS/Custom/EBM/SerializedCouponResponseEBM/V1" schemaLocation="../schema/SerializedCouponResponseEBM.xsd"/>
+		</schema>
+		<schema xmlns="http://www.w3.org/2001/XMLSchema">
+			<import namespace="http://xmlns.officedepot.com/EnterpriseMessage/POS/Custom/Common/SerializedCouponFaultMessage/V1" schemaLocation="../schema/SerializedCouponFaultMessage.xsd"/>
+		</schema>
+	</wsdl:types>
+	<wsdl:message name="ProcessSerializedCouponProviderABCSImplProcessRequestMessage">
+		<wsdl:part name="payload" element="ns1:SerializedCouponRequestEBM"/>
+	</wsdl:message>
+	<wsdl:message name="ProcessSerializedCouponProviderABCSImplProcessResponseMessage">
+		<wsdl:part name="payload" element="ns2:SerializedCouponResponseEBM"/>
+	</wsdl:message>
+	<wsdl:message name="CouponInformationNotFoundFault">
+		<wsdl:part name="payload" element="err:SerializedCouponFaultMessage"/>
+	</wsdl:message>
+	<wsdl:message name="CouponSerializationFault">
+		<wsdl:part name="payload" element="err:SerializedCouponFaultMessage"/>
+	</wsdl:message>
+	<wsdl:portType name="ProcessSerializedCouponProviderABCSImplProcess">
+		<wsdl:operation name="processSerializedCoupon">
+			<wsdl:input message="client:ProcessSerializedCouponProviderABCSImplProcessRequestMessage"/>
+			<wsdl:output message="client:ProcessSerializedCouponProviderABCSImplProcessResponseMessage"/>
+			<wsdl:fault name="CouponInformationNotFound" message="client:CouponInformationNotFoundFault"/>
+			<wsdl:fault name="CouponSerializationFault" message="client:CouponSerializationFault"/>
+		</wsdl:operation>
+	</wsdl:portType>
+
+	<wsdl:binding name="processSerializedCouponBinding" type="client:ProcessSerializedCouponProviderABCSImplProcess">
+		<soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+		<wsdl:operation name="processSerializedCoupon">
+			<soap:operation soapAction="http://xmlns.officedepot.com/CouponSerialization/ProcessSerializedCouponProviderABCSImpl/ProcessSerializedCouponProviderABCSImplProcess/processSerializedCoupon"/>
+			<wsdl:input>
+				<soap:body use="literal"/>
+			</wsdl:input>
+			<wsdl:output>
+				<soap:body use="literal"/>
+			</wsdl:output>
+			<wsdl:fault name="CouponInformationNotFound">
+				<soap:fault use="literal" name="CouponInformationNotFound"/>
+			</wsdl:fault>
+			<wsdl:fault name="CouponSerializationFault">
+				<soap:fault use="literal" name="CouponSerializationFault"/>
+			</wsdl:fault>
+		</wsdl:operation>
+	</wsdl:binding>
+	<wsdl:service name="ProcessSerializedCouponService">
+		<wsdl:port name="ProcessSerializedCouponPort" binding="client:processSerializedCouponBinding">
+			<soap:address location="http://www.od.com/"/>
+		</wsdl:port>
+	</wsdl:service>
+</wsdl:definitions>

@@ -1,0 +1,31 @@
+SET VERIFY OFF;
+SET SHOW OFF;
+SET ECHO OFF;
+SET TAB OFF;
+SET FEEDBACK OFF;
+ 
+WHENEVER SQLERROR CONTINUE;
+ 
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+-- +===========================================================================+
+-- |                  Office Depot - Project Simplify                          |
+-- +===========================================================================+
+-- | Name :          xx_ap_inv_match_sum_219                           |
+-- | Description :   Script to create synonym for 
+-- |                                   xx_ap_inv_match_sum_219  table |
+-- |                                                                           |
+-- |                                                                           |
+-- |Change Record:                                                             |
+-- |===============                                                            |
+-- |Version      Date           Author                  Remarks                |
+-- |=======    ==========     =============             ====================== |
+-- | DRAFT 1.0 01-JAN-2018   Priyam Parmar          Initial draft version       |
+-- +===========================================================================+
+
+ 
+
+Create  or replace public synonym xx_ap_inv_match_sum_219 for XXFIN.xx_ap_inv_match_sum_219;
+
+ 
+Show error

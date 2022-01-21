@@ -1,0 +1,31 @@
+REM================================================================================================
+REM                                 Start Of Script
+REM================================================================================================
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     OFF
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+---------- create index for AP_HOLDS_ALL--------------------
+
+PROMPT
+PROMPT Creating Index....
+PROMPT
+
+CREATE INDEX XX_AP_HOLDS_N2 ON AP.AP_HOLDS_ALL (LAST_UPDATE_DATE)
+TABLESPACE APPS_TS_TX_DATA ;
+
+
+
+WHENEVER SQLERROR CONTINUE;
+
+PROMPT
+PROMPT Exiting....
+PROMPT 
+
+SET FEEDBACK ON
+
+EXIT;
+

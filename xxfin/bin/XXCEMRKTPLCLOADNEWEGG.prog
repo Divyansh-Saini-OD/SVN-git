@@ -1,0 +1,162 @@
+
+# +===================================================================+
+# |                  Office Depot - Project Simplify                  |
+# |      			 				      |
+# +===================================================================+
+# | Name  : 	   XXCEMRKTPLCLOAD.prog   	                              |
+# | RICE ID    :   I3091
+# | Description:   This program does the following                    |
+# |             1) Call ebay load program                                 |
+# |                                                                   |
+# |                .                                       |
+# |                                                                   |
+# |                                                                   |
+# |                                                                   |
+# |Change Record:                                                     |
+# |===============                                                    |
+# |Version   Date        Author           Remarks                     |
+# |=======   ==========  =============    ============================|
+# |DRAFT 1A 17-JUL-2018  Priyam P       Initial draft version       |
+# +===================================================================+
+
+ echo "1 st argument = username/password"
+ echo "2 nd argument = $2"
+ echo "3 rd argument = $3"
+ echo "4 th argument = $4"
+ echo "5 th argument = $5"
+
+export SQLPATH=$APPL_TOP
+ 
+translationsource=$5 
+  
+V_RESULT=`sqlplus -s /nolog <<EOF
+set pagesize 0
+set linesize 255
+set sqlprompt " "
+set serveroutput on 
+set verify off
+
+SELECT XFTV.TARGET_VALUE7
+  || '|'||XFTV.TARGET_VALUE8
+  || '|'||XFTV.TARGET_VALUE10
+  || '|'||XFTV.TARGET_VALUE1
+  || '|'|| XX_ENCRYPT_DECRYPTION_TOOLKIT.DECRYPT(NVL(XFTV.TARGET_VALUE2,XX_ENCRYPT_DECRYPTION_TOOLKIT.ENCRYPT('X')))
+  || '|'|| XX_ENCRYPT_DECRYPTION_TOOLKIT.DECRYPT(NVL(XFTV.TARGET_VALUE3,XX_ENCRYPT_DECRYPTION_TOOLKIT.ENCRYPT('X')))
+  || '|'|| XFTV.TARGET_VALUE4
+  || '|'|| XFTV.TARGET_VALUE5
+  || '|'|| XX_ENCRYPT_DECRYPTION_TOOLKIT.DECRYPT(NVL(XFTV.TARGET_VALUE6,XX_ENCRYPT_DECRYPTION_TOOLKIT.ENCRYPT('X')))
+  || '|'|| XFTV.TARGET_VALUE9
+  || '|'|| REPLACE(TO_CHAR(TO_TIMESTAMP_TZ(TO_CHAR(CAST(SYSTIMESTAMP AT TIME ZONE 'UTC' AS DATE),'yyyy-mm-dd"T"hh24:mi:ss'), 'yyyy-mm-dd"T"hh24:mi:ss TZH:TZM'),'YYYY-MM-DD"T"HH24:MI:SS" Z"'),' ','')
+  || '|'|| XFTV.TARGET_VALUE20
+  || '|'|| to_char(XX_CE_MRKTPLC_PRESTG_PKG.GET_START_DATE('$translationsource'),'YYYY-MM-DD') 
+  || '|'|| to_char(sysdate,'YYYY-MM-DD')
+  || '|'|| XX_ENCRYPT_DECRYPTION_TOOLKIT.ENCRYPT(to_char(sysdate,'DDMMYYYYHH24MISS')) 
+  || '|'||XFTV.TARGET_VALUE22
+  || '|'||XFTV.TARGET_VALUE23
+  || '|'||XX_ENCRYPT_DECRYPTION_TOOLKIT.DECRYPT(NVL(XFTV.TARGET_VALUE24,XX_ENCRYPT_DECRYPTION_TOOLKIT.ENCRYPT('X')))
+  || '|'||XFTV.TARGET_VALUE16 TT
+  FROM XX_FIN_TRANSLATEDEFINITION XFTD,
+  XX_FIN_TRANSLATEVALUES XFTV
+WHERE XFTD.TRANSLATION_NAME ='OD_SETTLEMENT_PROCESSES'
+AND XFTV.SOURCE_VALUE1      ='NEWEGG_MPL'
+AND XFTD.TRANSLATE_ID       =XFTV.TRANSLATE_ID
+AND XFTD.ENABLED_FLAG       ='Y'
+AND SYSDATE BETWEEN XFTV.START_DATE_ACTIVE AND NVL(XFTV.END_DATE_ACTIVE,SYSDATE);
+	
+exit
+EOF`
+
+file_type=`echo $V_RESULT | awk '{ split($0,MODULE,"|"); print MODULE[1] }'`
+inbound_path=`echo $V_RESULT | awk '{ split($0,MODULE,"|"); print MODULE[2] }'`
+archival_path=`echo $V_RESULT | awk '{ split($0,MODULE,"|"); print MODULE[3] }'`
+url=`echo $V_RESULT | awk '{ split($0,MODULE,"|"); print MODULE[4] }'`
+accesskeyid=`echo $V_RESULT | awk '{ split($0,MODULE,"|"); print MODULE[5] }'`
+secretaccesskey=`echo $V_RESULT | awk '{ split($0,MODULE,"|"); print MODULE[6] }'`
+appname=`echo $V_RESULT | awk '{ split($0,MODULE,"|"); print MODULE[7] }'`
+appversion=`echo $V_RESULT | awk '{ split($0,MODULE,"|"); print MODULE[8] }'`
+merchantid=`echo $V_RESULT | awk '{ split($0,MODULE,"|"); print MODULE[9] }'`
+filename=`echo $V_RESULT | awk '{ split($0,MODULE,"|"); print MODULE[10] }'`
+timestamp=`echo $V_RESULT | awk '{ split($0,MODULE,"|"); print MODULE[11] }'`
+seperator=`echo $V_RESULT | awk '{ split($0,MODULE,"|"); print MODULE[12] }'`
+start_date=`echo $V_RESULT | awk '{ split($0,MODULE,"|"); print MODULE[13] }'`
+end_date=`echo $V_RESULT | awk '{ split($0,MODULE,"|"); print MODULE[14] }'`
+walmartcorrelid=`echo $V_RESULT | awk '{ split($0,MODULE,"|"); print MODULE[15] }'`
+url2=`echo $V_RESULT | awk '{ split($0,MODULE,"|"); print MODULE[16] }'`
+url3=`echo $V_RESULT | awk '{ split($0,MODULE,"|"); print MODULE[17] }'`
+google_refresh_token=`echo $V_RESULT | awk '{ split($0,MODULE,"|"); print MODULE[18] }'`
+filename2=`echo $V_RESULT | awk '{ split($0,MODULE,"|"); print MODULE[19] }'`
+
+
+
+echo " "
+echo "Translation set-up Name : OD_SETTLEMENT_PROCESSES "
+
+eval seperator=${seperator// /}
+
+
+
+
+
+file1=`echo $file_type | awk '{ split($0,MODULE,"~"); print MODULE[1] }'`
+file2=`echo $file_type | awk '{ split($0,MODULE,"~"); print MODULE[2] }'`
+
+
+dat=`date '+_%y%m%d%H%M%S.xml'`
+
+file1=$file1$dat
+file2=$file2$dat
+
+
+echo "file1=$file1"
+
+
+echo "file2=$file2"
+
+file_newegg=($file2 $file1)
+
+
+for i in "${file_newegg[@]}" 
+
+  do echo "$i"  
+
+
+
+
+
+     V_RESULT2=`sqlplus -s /nolog <<EOF
+     set pagesize 0
+     set linesize 255
+     set sqlprompt " "
+     set serveroutput on 
+     set verify off
+
+EXECUTE xx_ce_mrktplc_load_pkg.main_mpl_load_proc('$translationsource','$i','Y','$4');
+     COMMIT;
+
+     exit
+     EOF` 
+
+    echo "$V_RESULT2"
+
+
+ 
+
+done;
+
+#eval archival_path=$archival_path
+#eval inbound_path=$inbound_path
+
+#cd ${inbound_path}
+
+#echo "Below files are getting archived"
+
+#ls NEGG*.*
+
+
+#echo "The Inbound File Name "${inbound_path}
+#echo "The Archival File Name "${archival_path}
+#cp NEGG*.* ${archival_path}
+#rm -f NEGG*
+
+
+exit 0

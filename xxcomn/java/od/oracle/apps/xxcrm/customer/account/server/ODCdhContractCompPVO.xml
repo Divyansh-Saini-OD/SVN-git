@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding='windows-1252'?>
+<!DOCTYPE ViewObject SYSTEM "jbo_03_01.dtd">
+
+<ViewObject
+   Name="ODCdhContractCompPVO"
+   BindingStyle="Oracle"
+   CustomQuery="true"
+   RowClass="od.oracle.apps.xxcrm.customer.account.server.ODCdhContractCompPVORowImpl"
+   ComponentClass="od.oracle.apps.xxcrm.customer.account.server.ODCdhContractCompPVOImpl"
+   MsgBundleClass="oracle.jbo.common.JboResourceBundle"
+   UseGlueCode="false" >
+   <DesignTime>
+      <Attr Name="_isCodegen" Value="true" />
+      <Attr Name="_version" Value="9.0.3.14.00" />
+      <Attr Name="_CodeGenFlagNew" Value="36" />
+   </DesignTime>
+   <ViewAttribute
+      Name="TemplateLockedFlag"
+      IsPersistent="false"
+      DefaultValue="false"
+      Type="java.lang.Boolean"
+      ColumnType="$none$"
+      AliasName="TEMPLATELOCKEDFLAG"
+      SQLType="BIT" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="PriceplanLockedFlag"
+      IsPersistent="false"
+      DefaultValue="false"
+      Type="java.lang.Boolean"
+      ColumnType="$none$"
+      AliasName="PRICEPLANLOCKEDFLAG"
+      SQLType="BIT" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="AssncontrLockedFlag"
+      IsPersistent="false"
+      DefaultValue="false"
+      Type="java.lang.Boolean"
+      ColumnType="$none$"
+      AliasName="ASSNCONTRLOCKEDFLAG"
+      SQLType="BIT" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="PriceplanMandatoryFlag"
+      IsPersistent="false"
+      DefaultValue="false"
+      Type="java.lang.Boolean"
+      ColumnType="$none$"
+      AliasName="PRICEPLANMANDATORYFLAG"
+      SQLType="BIT" >
+   </ViewAttribute>
+</ViewObject>

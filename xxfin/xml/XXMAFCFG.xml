@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="WINDOWS-1252" ?>
+<dataTemplate name="XXMAFCFG" description="OD : MAF Configuration Report" Version="1.0">
+<dataQuery>
+<sqlStatement name="Q_APPLIST">
+<![CDATA[
+ SELECT  FMAT.application_name
+  	,FMA.application_bundle_id
+  	,FMA.application_short_name
+  	,FMA.parent_application_short_name
+  	,FMA.push_enabled
+  	,FMD.mobile_os
+  	,FMD.application_version
+  	,TO_CHAR(FMA.last_update_date,'DD-MON-YYYY')  APP_LAST_UPDATE_DATE
+  	,TO_CHAR(FMD.last_update_date,'DD-MON-YYYY')  DIST_LAST_UPDATE_DATE
+  	,TO_CHAR(FMD.creation_date,'DD-MON-YYYY')     DIST_CREATION_DATE
+   FROM  fnd_mbl_application     FMA
+  	,fnd_mbl_application_tl  FMAT
+  	,fnd_mbl_distributions   FMD
+  WHERE FMA.status = 'ENABLED'
+    AND FMA.application_id = FMAT.application_id
+    AND FMA.application_id = FMD.application_id
+  ORDER BY FMAT.application_name,FMD.mobile_os
+]]>
+</sqlStatement>
+<sqlStatement name="Q_CFG">
+<![CDATA[
+ SELECT FMAT.application_name
+       ,FMPT.display_name parameter_name 
+       ,FMPV.parameter_value
+       ,FMPV.parameter_type
+       ,FMC.config_template
+       ,FMC.config_file
+       ,TO_CHAR(FMPV.last_update_date,'DD-MON-YYYY') last_update_date
+       ,TO_CHAR(FMPV.creation_date,'DD-MON-YYYY') creation_date
+   FROM fnd_mbl_application          FMA
+       ,fnd_mbl_application_tl       FMAT
+       ,fnd_mbl_configurations       FMC
+       ,fnd_mbl_config_param_values  FMPV
+       ,fnd_mbl_config_params_tl     FMPT
+  WHERE FMA.status = 'ENABLED'
+    AND FMA.application_id   = FMAT.application_id
+    AND FMA.application_id   = FMC.application_id
+    AND FMC.configuration_id = FMPV.configuration_id
+    AND FMPV.parameter_id = FMPT.parameter_id
+  ORDER BY FMAT.application_name,FMPV.parameter_id
+]]>
+</sqlStatement>
+</dataQuery>
+<dataStructure>
+<group name="G_APPLIST" source="Q_APPLIST">
+  <element name="APPLICATION_NAME" value="APPLICATION_NAME"/>
+  <element name="APPLICATION_BUNDLE_ID" value="APPLICATION_BUNDLE_ID"/>
+  <element name="APPLICATION_SHORT_NAME" value="APPLICATION_SHORT_NAME"/>  
+  <element name="PARENT_APPLICATION_SHORT_NAME" value="PARENT_APPLICATION_SHORT_NAME"/>
+  <element name="PUSH_ENABLED" value="PUSH_ENABLED"/>
+  <element name="MOBILE_OS" value="MOBILE_OS"/>
+  <element name="APPLICATION_VERSION" value="APPLICATION_VERSION"/>  
+  <element name="APP_LAST_UPDATE_DATE" value="APP_LAST_UPDATE_DATE"/>
+  <element name="DIST_LAST_UPDATE_DATE" value="DIST_LAST_UPDATE_DATE"/>
+  <element name="DIST_CREATION_DATE" value="DIST_CREATION_DATE"/>
+</group>
+<group name="G_CFG" source="Q_CFG">
+  <element name="APPLICATION_NAME" value="APPLICATION_NAME"/>
+  <element name="PARAMETER_NAME" value="PARAMETER_NAME"/>
+  <element name="PARAMETER_TYPE" value="PARAMETER_TYPE"/>  
+  <element name="PARAMETER_VALUE" value="PARAMETER_VALUE"/>
+  <element name="CONFIG_TEMPLATE" value="CONFIG_TEMPLATE"/>  
+  <element name="CONFIG_FILE" value="CONFIG_FILE"/>  
+  <element name="CREATION_DATE" value="CREATION_DATE"/>
+  <element name="LAST_UPDATE_DATE" value="LAST_UPDATE_DATE"/>
+</group>
+</dataStructure>
+</dataTemplate>

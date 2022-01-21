@@ -1,0 +1,390 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xml-fragment xmlns:ser="http://www.bea.com/wli/sb/services" xmlns:tran="http://www.bea.com/wli/sb/transports" xmlns:env="http://www.bea.com/wli/config/env" xmlns:http="http://www.bea.com/wli/sb/transports/http" xmlns:con="http://www.bea.com/wli/sb/pipeline/config" xmlns:con1="http://www.bea.com/wli/sb/stages/logging/config" xmlns:con2="http://www.bea.com/wli/sb/stages/config" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:con3="http://www.bea.com/wli/sb/stages/transform/config" xmlns:con4="http://www.bea.com/wli/sb/services/security/config" xmlns:con5="http://www.bea.com/wli/sb/stages/publish/config">
+  <ser:coreEntry isProxy="true" isEnabled="true" isTracingEnabled="false">
+    <ser:security>
+      <con4:inboundWss processWssHeader="true"/>
+    </ser:security>
+    <ser:binding type="SOAP" isSoap12="false" xsi:type="con3:SoapBindingType" xmlns:con3="http://www.bea.com/wli/sb/services/bindings/config">
+      <con3:wsdl ref="SerializeCouponService/resource/wsdl/ProcessSerializedCouponProviderABCSImplProcess"/>
+      <con3:port>
+        <con3:name>ProcessSerializedCouponPort</con3:name>
+        <con3:namespace>http://xmlns.officedepot.com/CouponSerialization/ProcessSerializedCouponProviderABCSImpl/ProcessSerializedCouponProviderABCSImplProcess</con3:namespace>
+      </con3:port>
+      <con3:selector type="SOAP body"/>
+    </ser:binding>
+    <ser:monitoring isEnabled="false">
+      <ser:aggregationInterval>10</ser:aggregationInterval>
+      <ser:pipelineMonitoringLevel>Pipeline</ser:pipelineMonitoringLevel>
+    </ser:monitoring>
+    <ser:reporting>true</ser:reporting>
+    <ser:logging isEnabled="true">
+      <ser:logLevel>debug</ser:logLevel>
+    </ser:logging>
+    <ser:sla-alerting isEnabled="true">
+      <ser:alertLevel>normal</ser:alertLevel>
+    </ser:sla-alerting>
+    <ser:pipeline-alerting isEnabled="true">
+      <ser:alertLevel>normal</ser:alertLevel>
+    </ser:pipeline-alerting>
+    <ser:ws-policy>
+      <ser:binding-mode>owsm-policy-bindings</ser:binding-mode>
+      <ser:policies>
+        <ser:service-policy>
+          <ser:owsm-policy-ref ID="oracle/wss_username_token_service_policy"/>
+        </ser:service-policy>
+      </ser:policies>
+    </ser:ws-policy>
+  </ser:coreEntry>
+  <ser:endpointConfig>
+    <tran:provider-id>http</tran:provider-id>
+    <tran:inbound>true</tran:inbound>
+    <tran:URI>
+      <env:value>/SerializeCouponService/proxyService/processSerializedCouponPS</env:value>
+    </tran:URI>
+    <tran:inbound-properties/>
+    <tran:all-headers>false</tran:all-headers>
+    <tran:provider-specific>
+      <http:inbound-properties/>
+    </tran:provider-specific>
+  </ser:endpointConfig>
+  <ser:router errorHandler="_onErrorHandler-6354816931142683058--1bb1d5fa.136726a5324.-7f74">
+    <con:pipeline type="request" name="processSerializedCouponPipeline_request">
+      <con:stage name="initialLoggingStage">
+        <con:context/>
+        <con:actions>
+          <con1:report>
+            <con2:id>_ActionId-151947193564661120--4de3e249.1369654c576.-7fe4</con2:id>
+            <con1:expr>
+              <con2:xqueryText>$body</con2:xqueryText>
+            </con1:expr>
+            <con1:labels>
+              <con1:key>SourceID_BEGIN</con1:key>
+              <con1:varName>body</con1:varName>
+              <con1:value>
+                <con2:xpathText>//*:SourceID/text()</con2:xpathText>
+              </con1:value>
+            </con1:labels>
+          </con1:report>
+          <con3:validate>
+            <con2:id>_ActionId-5152517013876126443-74c9de66.136bfa7c036.-7fe4</con2:id>
+            <con3:schema ref="SerializeCouponService/resource/schema/SerializedCouponRequestEBM"/>
+            <con3:schemaElement xmlns:v1="http://xmlns.officedepot.com/EnterpriseMessage/POS/Custom/EBM/SerializedCouponRequestEBM/V1">v1:SerializedCouponRequestEBM</con3:schemaElement>
+            <con3:varName>body</con3:varName>
+            <con3:location>
+              <con2:xpathText>./*</con2:xpathText>
+            </con3:location>
+          </con3:validate>
+          <con3:assign varName="inputRequest">
+            <con2:id>_ActionId-2920899604143966144--5fc72a77.1367c3477f5.-7f8c</con2:id>
+            <con3:expr>
+              <con2:xqueryText>$body</con2:xqueryText>
+            </con3:expr>
+          </con3:assign>
+        </con:actions>
+      </con:stage>
+      <con:stage name="transformToMQRequestStage">
+        <con:context>
+          <con2:varNsDecl namespace="http://xmlns.officedepot.com/EnterpriseMessage/POS/Custom/EBM/SerializedCouponRequestEBM/V1" prefix="v1"/>
+          <con2:varNsDecl namespace="http://xmlns.officedepot.com/EnterpriseMessage/POS/Custom/EBM/SerializedCouponResponseEBM/V1" prefix="v11"/>
+        </con:context>
+        <con:actions>
+          <con3:replace varName="body" contents-only="true">
+            <con2:id>_ActionId-7660415201489453299--508265a4.136634f2a48.-7e74</con2:id>
+            <con3:location>
+              <con2:xpathText>.</con2:xpathText>
+            </con3:location>
+            <con3:expr>
+              <con2:xqueryTransform>
+                <con2:resource ref="SerializeCouponService/resource/transformation/ProcessSerilaizedCouponReqToMQReq"/>
+                <con2:param name="serializedCouponRequestEBM1">
+                  <con2:path>$body/*</con2:path>
+                </con2:param>
+              </con2:xqueryTransform>
+            </con3:expr>
+          </con3:replace>
+          <con3:assign varName="plainMQText">
+            <con2:id>_ActionId-4161907044453055007--132e09c5.13682d82544.-7fc8</con2:id>
+            <con3:expr>
+              <con2:xqueryTransform>
+                <con2:resource ref="SerializeCouponService/resource/transformation/MQReqToPlainTextMQReq"/>
+                <con2:param name="serializedCouponMQRequestABM1">
+                  <con2:path>$body/*</con2:path>
+                </con2:param>
+              </con2:xqueryTransform>
+            </con3:expr>
+          </con3:assign>
+        </con:actions>
+      </con:stage>
+      <con:stage name="calloutToMQ">
+        <con:context>
+          <con2:varNsDecl namespace="http://xmlns.officedepot.com/EnterpriseMessage/POS/Custom/EBM/SerializedCouponRequestEBM/V1" prefix="v1"/>
+          <con2:varNsDecl namespace="http://xmlns.officedepot.com/EnterpriseMessage/POS/Custom/EBM/SerializedCouponResponseEBM/V1" prefix="v11"/>
+          <con2:varNsDecl namespace="http://xmlns.officedepot.com/EnterpriseObjects/POS/Custom/Common/SerializedCouponCommon/V1" prefix="v12"/>
+        </con:context>
+        <con:actions>
+          <con3:wsCallout>
+            <con2:id>_ActionId-6354816931142683058--1bb1d5fa.136726a5324.-7d12</con2:id>
+            <con3:service xsi:type="ref:BusinessServiceRef" ref="SerializeCouponService/businessService/MQConnBS" xmlns:ref="http://www.bea.com/wli/sb/reference"/>
+            <con3:request>
+              <con3:payload>$plainMQText</con3:payload>
+            </con3:request>
+            <con3:response>
+              <con3:payload>mqResp</con3:payload>
+            </con3:response>
+            <con3:requestTransform>
+              <con1:transport-headers xmlns:con3="http://www.bea.com/wli/sb/stages/logging/config" xmlns:con1="http://www.bea.com/wli/sb/stages/transform/config">
+                <con2:id>_ActionId-4161907044453055007--132e09c5.13682d82544.-7f74</con2:id>
+                <con1:header-set>outbound-request</con1:header-set>
+                <con1:header name="Format" value="expression">
+                  <con2:xqueryText>'MQSTR'</con2:xqueryText>
+                </con1:header>
+                <con1:header name="UserId" value="expression">
+                  <con2:xqueryText>'QMQM'</con2:xqueryText>
+                </con1:header>
+                <con1:header name="MessageId" value="expression">
+                  <con2:xqueryText>$body/*:SerializedCouponMQRequestABM/*:OriginalPOSTransaction/text()</con2:xqueryText>
+                </con1:header>
+              </con1:transport-headers>
+            </con3:requestTransform>
+            <con3:responseTransform/>
+          </con3:wsCallout>
+        </con:actions>
+      </con:stage>
+    </con:pipeline>
+    <con:pipeline type="response" name="processSerializedCouponPipeline_response">
+      <con:stage name="transformToserializeCouponRespStage">
+        <con:context>
+          <con2:userNsDecl namespace="http://xmlns.officedepot.com/ApplicationMessage/POS/Custom/ABM/SerializedCouponMQResponseABM/V1" prefix="ns3"/>
+          <con2:varNsDecl namespace="http://xmlns.officedepot.com/EnterpriseMessage/POS/Custom/EBM/SerializedCouponRequestEBM/V1" prefix="v1"/>
+          <con2:varNsDecl namespace="http://xmlns.officedepot.com/EnterpriseMessage/POS/Custom/EBM/SerializedCouponResponseEBM/V1" prefix="v11"/>
+          <con2:varNsDecl namespace="http://xmlns.officedepot.com/EnterpriseObjects/POS/Custom/EBO/SerializedCouponResponseEBO/V1" prefix="v12"/>
+        </con:context>
+        <con:actions>
+          <con3:assign varName="lengthresp">
+            <con2:id>_ActionId-2987102491644801459--5b54bdff.13871623050.-7f93</con2:id>
+            <con3:expr>
+              <con2:xqueryText>fn:string-length(fn-bea:trim($mqResp))</con2:xqueryText>
+            </con3:expr>
+          </con3:assign>
+          <con3:assign varName="xmlMQResp">
+            <con2:id>_ActionId-4854787294917732316-a726851.136871127fa.-7ece</con2:id>
+            <con3:expr>
+              <con2:xqueryTransform>
+                <con2:resource ref="SerializeCouponService/resource/transformation/PlainTextMQRespToXMLMQResp"/>
+                <con2:param name="MQResp">
+                  <con2:path>$mqResp</con2:path>
+                </con2:param>
+              </con2:xqueryTransform>
+            </con3:expr>
+          </con3:assign>
+          <con3:ifThenElse>
+            <con2:id>_ActionId-6354816931142683058--1bb1d5fa.136726a5324.-7e28</con2:id>
+            <con3:case>
+              <con3:condition>
+                <con2:xqueryText>$xmlMQResp/ns3:POSReturnCode/text() = '0' or $xmlMQResp/ns3:POSReturnCode/text() = '1'</con2:xqueryText>
+              </con3:condition>
+              <con3:actions>
+                <con3:replace contents-only="true" varName="body">
+                  <con2:id>_ActionId-4669131070254690558--453c59e7.136c93c8bd0.-7fc9</con2:id>
+                  <con3:location>
+                    <con2:xpathText>.</con2:xpathText>
+                  </con3:location>
+                  <con3:expr>
+                    <con2:xqueryTransform>
+                      <con2:resource ref="SerializeCouponService/resource/transformation/MQRespToprocessSerializedCoupon"/>
+                      <con2:param name="serializedCouponMQResponseABM1">
+                        <con2:path>$xmlMQResp</con2:path>
+                      </con2:param>
+                    </con2:xqueryTransform>
+                  </con3:expr>
+                </con3:replace>
+              </con3:actions>
+            </con3:case>
+            <con3:case>
+              <con3:condition>
+                <con2:xqueryText>$xmlMQResp/ns3:POSReturnCode/text() = '2'</con2:xqueryText>
+              </con3:condition>
+              <con3:actions>
+                <con3:Error>
+                  <con2:id>_ActionId-4669131070254690558--453c59e7.136c93c8bd0.-7fc7</con2:id>
+                  <con3:errCode>CouponInformationNotFoundFault</con3:errCode>
+                  <con3:message>The coupon ID given is not found</con3:message>
+                </con3:Error>
+              </con3:actions>
+            </con3:case>
+            <con3:default>
+              <con3:Error>
+                <con2:id>_ActionId-4669131070254690558--453c59e7.136c93c8bd0.-7f8f</con2:id>
+                <con3:errCode>UnknownReturnCode</con3:errCode>
+                <con3:message>Unknown Return code received</con3:message>
+              </con3:Error>
+            </con3:default>
+          </con3:ifThenElse>
+          <con1:report>
+            <con2:id>_ActionId-4006780907450475259--f3b31d8.136a154bb54.-7d4a</con2:id>
+            <con1:expr>
+              <con2:xqueryText>$body</con2:xqueryText>
+            </con1:expr>
+            <con1:labels>
+              <con1:key>SourceID_END</con1:key>
+              <con1:varName>body</con1:varName>
+              <con1:value>
+                <con2:xpathText>//*:SourceID</con2:xpathText>
+              </con1:value>
+            </con1:labels>
+          </con1:report>
+        </con:actions>
+      </con:stage>
+    </con:pipeline>
+    <con:pipeline type="error" name="_onErrorHandler-6354816931142683058--1bb1d5fa.136726a5324.-7f74">
+      <con:stage name="errorHandler">
+        <con:context>
+          <con2:varNsDecl namespace="http://xmlns.officedepot.com/EnterpriseMessage/POS/Custom/EBM/SerializedCouponRequestEBM/V1" prefix="v1"/>
+          <con2:varNsDecl namespace="http://xmlns.officedepot.com/EnterpriseMessage/POS/Custom/EBM/SerializedCouponResponseEBM/V1" prefix="v11"/>
+          <con2:varNsDecl namespace="http://xmlns.officedepot.com/EnterpriseObjects/POS/Custom/Common/SerializedCouponCommon/V1" prefix="v12"/>
+        </con:context>
+        <con:actions>
+          <con1:report>
+            <con2:id>_ActionId-151947193564661120--4de3e249.1369654c576.-7fa9</con2:id>
+            <con1:expr>
+              <con2:xqueryText>$fault</con2:xqueryText>
+            </con1:expr>
+            <con1:labels>
+              <con1:key>SourceID_ERROR</con1:key>
+              <con1:varName>body</con1:varName>
+              <con1:value>
+                <con2:xpathText>if(//*:SourceID) then
+.//*:SourceID/text()
+else
+.//*:OriginalPOSTransaction/text()</con2:xpathText>
+              </con1:value>
+            </con1:labels>
+          </con1:report>
+          <con3:ifThenElse>
+            <con2:id>_ActionId-3513989588656106623--7bfd93c4.139c38e5687.-7f19</con2:id>
+            <con3:case>
+              <con3:condition>
+                <con2:xqueryText>$fault/ctx:errorCode/text()="CouponInformationNotFoundFault"</con2:xqueryText>
+              </con3:condition>
+              <con3:actions/>
+            </con3:case>
+            <con3:default>
+              <con3:assign varName="errorMessage">
+                <con2:id>_ActionId-2088991989405778215--6313a820.139c8b48dd9.-7fff</con2:id>
+                <con3:expr>
+                  <con2:xqueryTransform>
+                    <con2:resource ref="SendNotificationService/resource/transformation/CreateFaultMessage"/>
+                    <con2:param name="errorNotificationFields1">
+                      <con2:path><![CDATA[<efm:ErrorNotification xmlns:efm="http://officedepot.com/EmailFaultMessage" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://officedepot.com/EmailFaultMessage EmailFaultMessage.xsd ">
+  <efm:errorCode>{$fault//*:errorCode/text()}</efm:errorCode>
+  <efm:domain>OSBOfficeDepot</efm:domain>
+  <efm:transactionId>{$inputRequest/v1:SerializedCouponRequestEBM/SerializedCouponHeader/v12:SourceID/text()}</efm:transactionId>
+  <efm:errorType>system</efm:errorType>
+  <efm:systemName>OSB</efm:systemName>
+  <efm:serviceName>SerializeCouponService</efm:serviceName>
+  <efm:errorDescription>{$fault//*:reason/text()}</efm:errorDescription>
+  <efm:errorSeverity>fatal</efm:errorSeverity>
+  <efm:messagePayload></efm:messagePayload>
+  <efm:errorDateTime>{fn:current-dateTime()}</efm:errorDateTime>
+</efm:ErrorNotification>]]></con2:path>
+                    </con2:param>
+                  </con2:xqueryTransform>
+                </con3:expr>
+              </con3:assign>
+              <con3:assign varName="emailConfig">
+                <con2:id>_ActionId-3967952185773397598-6a455e93.139d366ddf7.-7e25</con2:id>
+                <con3:expr>
+                  <con2:xqueryTransform>
+                    <con2:resource ref="SerializeCouponService/resource/config/EmailConfig_DEV"/>
+                  </con2:xqueryTransform>
+                </con3:expr>
+              </con3:assign>
+              <con5:route>
+                <con2:id>_ActionId-3513989588656106623--7bfd93c4.139c38e5687.-7f15</con2:id>
+                <con5:service ref="SendNotificationService/businessService/CallEmailNotificationBS" xsi:type="ref:BusinessServiceRef" xmlns:ref="http://www.bea.com/wli/sb/reference"/>
+                <con5:operation>sendEmail</con5:operation>
+                <con5:outboundTransform>
+                  <con3:replace contents-only="true" varName="body">
+                    <con2:id>_ActionId-3513989588656106623--7bfd93c4.139c38e5687.-7edd</con2:id>
+                    <con3:location>
+                      <con2:xpathText>.</con2:xpathText>
+                    </con3:location>
+                    <con3:expr>
+                      <con2:xqueryTransform>
+                        <con2:resource ref="SendNotificationService/resource/transformation/SOAPFaultToEmailNotification"/>
+                        <con2:param name="toEmailID">
+                          <con2:path>$emailConfig/emailParam[@name='SerializedCouponFault']/toEmailID/text()</con2:path>
+                        </con2:param>
+                        <con2:param name="emailMessage">
+                          <con2:path>fn-bea:serialize($errorMessage)</con2:path>
+                        </con2:param>
+                        <con2:param name="subject">
+                          <con2:path>concat($emailConfig/emailParam[@name='SerializedCouponFault']/subject/text(),$inputRequest/v1:SerializedCouponRequestEBM/SerializedCouponData/Identification/v12:CouponCode/text())</con2:path>
+                        </con2:param>
+                        <con2:param name="format">
+                          <con2:path>$emailConfig/emailParam[@name='SerializedCouponFault']/format/text()</con2:path>
+                        </con2:param>
+                        <con2:param name="fromEmailID">
+                          <con2:path>$emailConfig/emailParam[@name='SerializedCouponFault']/fromEmailID/text()</con2:path>
+                        </con2:param>
+                      </con2:xqueryTransform>
+                    </con3:expr>
+                  </con3:replace>
+                </con5:outboundTransform>
+              </con5:route>
+            </con3:default>
+          </con3:ifThenElse>
+          <con3:assign varName="faultMap">
+            <con2:id>_ActionId-7097500117528353310--7f23244b.136cef3c85d.-7ed3</con2:id>
+            <con3:expr>
+              <con2:xqueryTransform>
+                <con2:resource ref="SerializeCouponService/resource/transformation/FaultMapping"/>
+              </con2:xqueryTransform>
+            </con3:expr>
+          </con3:assign>
+          <con3:replace contents-only="true" varName="body">
+            <con2:id>_ActionId-7097500117528353310--7f23244b.136cef3c85d.-7ed2</con2:id>
+            <con3:location>
+              <con2:xpathText>.</con2:xpathText>
+            </con3:location>
+            <con3:expr>
+              <con2:xqueryTransform>
+                <con2:resource ref="SerializeCouponService/resource/transformation/SoapFaultToserilaizedCouponFault"/>
+                <con2:param name="soapFault">
+                  <con2:path>$fault</con2:path>
+                </con2:param>
+                <con2:param name="faultMapping">
+                  <con2:path>$faultMap</con2:path>
+                </con2:param>
+              </con2:xqueryTransform>
+            </con3:expr>
+          </con3:replace>
+          <con3:replace varName="body" contents-only="true">
+            <con2:id>_ActionId-7097500117528353310--7f23244b.136cef3c85d.-7d33</con2:id>
+            <con3:location>
+              <con2:xpathText>.</con2:xpathText>
+            </con3:location>
+            <con3:expr>
+              <con2:xqueryText><![CDATA[<soapenv:Fault xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/">
+         <faultcode>soapenv:Server</faultcode>
+         <faultstring>{$body/*/*[2]/text()}</faultstring>
+         <detail>
+         	{$body/*}
+		 </detail>
+</soapenv:Fault>]]></con2:xqueryText>
+            </con3:expr>
+          </con3:replace>
+          <con2:reply isError="true">
+            <con2:id>_ActionId-7097500117528353310--7f23244b.136cef3c85d.-7c6e</con2:id>
+          </con2:reply>
+        </con:actions>
+      </con:stage>
+    </con:pipeline>
+    <con:flow>
+      <con:pipeline-node name="processSerializedCouponPipeline">
+        <con:request>processSerializedCouponPipeline_request</con:request>
+        <con:response>processSerializedCouponPipeline_response</con:response>
+      </con:pipeline-node>
+    </con:flow>
+  </ser:router>
+</xml-fragment>

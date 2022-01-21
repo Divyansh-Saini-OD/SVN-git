@@ -1,0 +1,40 @@
+-- +==========================================================================+
+-- |                  Office Depot - Project Simplify                         |
+-- |                       					              |
+-- +==========================================================================+
+-- | SQL Script to create the following objects                               |
+-- |             Table       : XX_VPS_NETTING_GT                              |
+-- |                                                                          |
+-- |                         To Store US VPS AP/AR Netting Program Logs	      |
+-- |                                                                          |
+-- |                                                                          |
+-- |                                                                          |
+-- |Change Record:                                                            |
+-- |===============                                                           |
+-- |Version   Date         Author               Remarks                       |
+-- |=======   ==========   =============        ==============================|
+-- | V1.0     08-MAR-2017  Uday Jadhav	        Initial version               |
+-- |                                                                          |
+-- +==========================================================================+
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     ON
+WHENEVER SQLERROR CONTINUE
+
+BEGIN
+  EXECUTE IMMEDIATE 'DROP TABLE XXFIN.XX_VPS_NETTING_GT';
+EXCEPTION
+  WHEN OTHERS THEN NULL;
+END;
+/
+CREATE TABLE XXFIN.XX_VPS_NETTING_GT (	LOG_TYPE VARCHAR2(1), 
+					TRX_NUMBER VARCHAR2(100), 
+					LOG_MSG VARCHAR2(4000), 
+					STATUS VARCHAR2(1)
+					) ON COMMIT PRESERVE ROWS;
+
+GRANT ALL ON XXFIN.XX_VPS_NETTING_GT TO APPS WITH GRANT OPTION;
+
+GRANT SELECT ON XXFIN.XX_VPS_NETTING_GT TO ERP_SYSTEM_TABLE_SELECT_ROLE; 

@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding='windows-1252'?>
+<!DOCTYPE JboPackage SYSTEM "jbo_03_01.dtd">
+
+<JboPackage
+   Name="server"
+   SeparateXMLFiles="true"
+   PackageName="od.oracle.apps.xxom.TDSrexceptions.server" >
+   <DesignTime>
+      <Attr Name="_version" Value="9.0.3.12.53" />
+      <Attr Name="_ejbPackage" Value="false" />
+   </DesignTime>
+   <Containee
+      Name="XxCsSrExceptions"
+      FullName="od.oracle.apps.xxom.TDSrexceptions.server.XxCsSrExceptions"
+      ObjectType="Entity" >
+   </Containee>
+   <Containee
+      Name="TDSrexceptions"
+      FullName="od.oracle.apps.xxom.TDSrexceptions.server.TDSrexceptions"
+      ObjectType="ViewObject" >
+   </Containee>
+   <Containee
+      Name="TDSrexceptionsAM"
+      FullName="od.oracle.apps.xxom.TDSrexceptions.server.TDSrexceptionsAM"
+      ObjectType="AppModule" >
+   </Containee>
+   <Containee
+      Name="xxTDSrexceptionsEO"
+      FullName="od.oracle.apps.xxom.TDSrexceptions.server.xxTDSrexceptionsEO"
+      ObjectType="Entity" >
+   </Containee>
+   <Containee
+      Name="xxTDSrexceptionsVO"
+      FullName="od.oracle.apps.xxom.TDSrexceptions.server.xxTDSrexceptionsVO"
+      ObjectType="ViewObject" >
+   </Containee>
+</JboPackage>

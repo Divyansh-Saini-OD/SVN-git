@@ -1,0 +1,66 @@
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     ON
+
+PROMPT Creating TABLE XXFIN.XX_AR_EBL_CONS_TRX_ROWS_HIST
+
+PROMPT Program exits IF the creation IS NOT SUCCESSFUL
+
+WHENEVER SQLERROR CONTINUE
+
+-- +==========================================================================+
+-- |                  Office Depot - Project Simplify                         |
+-- +==========================================================================+
+-- | Name        : XXFIN.XX_AR_EBL_CONS_TRX_ROWS_HIST                         |
+-- | Description : History table used to store the transaction details for    |
+-- |               SUMMARY and ONE format.                                    |
+-- |                                                                          |
+-- |                                                                          |
+-- |Change Record:                                                            |
+-- |===============                                                           |
+-- |Version   Date          Author               Remarks                      |
+-- |=======   ===========   =============        =============================|
+-- | V1.0     14-Jun-2010   Gokila Tamilselvam   Initial version              |
+-- +==========================================================================+
+
+ CREATE TABLE XXFIN.XX_AR_EBL_CONS_TRX_ROWS_HIST ( REQUEST_ID             NUMBER
+                                                  ,CONS_INV_ID            NUMBER
+                                                  ,CUST_DOC_ID            NUMBER
+                                                  ,LINE_TYPE              VARCHAR2(20)
+                                                  ,LINE_SEQ               NUMBER
+                                                  ,SF_TEXT                VARCHAR2(240 BYTE)
+                                                  ,SFDATA1                VARCHAR2(40)
+                                                  ,SFDATA2                VARCHAR2(40)
+                                                  ,SFDATA3                VARCHAR2(40)
+                                                  ,SFDATA4                VARCHAR2(40)
+                                                  ,SFDATA5                VARCHAR2(40)
+                                                  ,SUBTOTAL               NUMBER
+                                                  ,DELIVERY               NUMBER
+                                                  ,DISCOUNTS              NUMBER
+                                                  ,TAX                    NUMBER
+                                                  ,TOTAL                  NUMBER
+                                                  ,PAGE_BREAK             VARCHAR2(1)
+                                                  ,ATTRIBUTE1             VARCHAR2(80)
+                                                  ,ATTRIBUTE2             VARCHAR2(80)
+                                                  ,ATTRIBUTE3             VARCHAR2(80)
+                                                  ,ATTRIBUTE4             VARCHAR2(80)
+                                                  ,ATTRIBUTE5             VARCHAR2(80)
+                                                  ,ATTRIBUTE6             VARCHAR2(80)
+                                                  ,ATTRIBUTE7             VARCHAR2(80)
+                                                  ,ATTRIBUTE8             VARCHAR2(80)
+                                                  ,ATTRIBUTE9             VARCHAR2(80)
+                                                  ,ATTRIBUTE10            VARCHAR2(80)
+                                                  ,BILL_TO_SITE_USE_ID    NUMBER
+                                                  ,ORG_ID                 NUMBER DEFAULT TO_NUMBER(DECODE(SUBSTRB(USERENV('client_info'),1,1)
+                                                                                                          ,' ',NULL
+                                                                                                          ,SUBSTRB(USERENV('client_info'),1,10)
+                                                                                                          )
+                                                                                                   )
+                                                  ,CREATION_DATE          DATE
+                                                  ,CHILD_REQUEST_ID       NUMBER
+                                                  )
+ TABLESPACE "XXOD_EBL_TS_DATA";
+
+ SHO ERROR

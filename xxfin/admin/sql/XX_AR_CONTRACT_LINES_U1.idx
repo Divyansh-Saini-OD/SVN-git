@@ -1,0 +1,25 @@
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+-- +===========================================================================+
+-- |                  Office Depot - VPS Project                               |
+-- |                                                                           |                         
+-- +===========================================================================+
+-- | Name        : XX_AR_CONTRACT_LINES_U1                                     |
+-- | Description :                                                             |
+-- | File to create UNIQUE INDEX for XX_AR_CONTRACT_LINES                      |
+-- |                                                                           |
+-- |                                                                           |
+-- |                                                                           |
+-- |Change Record:                                                             |
+-- |===============                                                            |
+-- |Version  Date        Author        Remarks            	                   |
+-- |======== =========== ============= ========================================|
+-- |DRAFT 1 03-MAR-2019 Sahithi K Initial draft version                        |
+-- +===========================================================================+
+
+ CREATE UNIQUE INDEX XX_AR_CONTRACT_LINES_U1 
+      ON XXFIN.XX_AR_CONTRACT_LINES ( CONTRACT_ID
+                                   , CONTRACT_LINE_NUMBER
+                                    );

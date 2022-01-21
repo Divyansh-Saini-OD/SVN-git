@@ -1,0 +1,262 @@
+<?xml version="1.0" encoding='windows-1252'?>
+<!DOCTYPE ViewObject SYSTEM "jbo_03_01.dtd">
+
+<ViewObject
+   Name="xxGsoReasonCd_VO"
+   BindingStyle="Oracle"
+   CustomQuery="true"
+   RowClass="oracle.apps.fnd.framework.server.OAViewRowImpl"
+   ComponentClass="od.oracle.apps.xxmer.xxGsoPlmPOTracking.server.xxGsoReasonCd_VOImpl"
+   MsgBundleClass="oracle.jbo.common.JboResourceBundle"
+   UseGlueCode="false" >
+   <SQLQuery><![CDATA[
+SELECT qr.ROWID row_id, qr.plan_id, qp.NAME plan_name, qr.organization_id,
+       hou.NAME organization_name, qr.collection_id, qr.occurrence,
+       qr.qa_last_update_date last_update_date,
+       qr.qa_last_updated_by last_updated_by_id,
+       fu2.user_name last_updated_by, qr.qa_creation_date creation_date,
+       qr.qa_created_by created_by_id, fu.user_name created_by,
+       qr.last_update_login, qr.character1 "OD_PB_REASON_TYPE",
+       qr.character2 "OD_PB_REASON_CODE", qr.comment1 "OD_PB_COMMENTS"
+  FROM qa_results qr,
+       qa_plans qp,
+       fnd_user_view fu,
+       fnd_user_view fu2,
+       hr_organization_units hou
+ WHERE qp.name = 'OD_GSO_REASON_CODES'
+   AND qp.plan_id = qr.plan_id
+   AND qr.qa_created_by = fu.user_id
+   AND qr.qa_last_updated_by = fu2.user_id
+   AND qr.organization_id = hou.organization_id
+   AND (qr.status IS NULL OR qr.status = 2)
+   AND qr.character1 = 'BV'
+   ]]></SQLQuery>
+   <DesignTime>
+      <Attr Name="_version" Value="9.0.3.12.53" />
+      <Attr Name="_CodeGenFlagNew" Value="36" />
+   </DesignTime>
+   <ViewAttribute
+      Name="RowId1"
+      IsPersistent="false"
+      IsNotNull="true"
+      Type="oracle.jbo.domain.RowID"
+      AliasName="ROW_ID"
+      ColumnType="VARCHAR2"
+      Expression="ROW_ID"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="1" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="PlanId"
+      IsPersistent="false"
+      IsNotNull="true"
+      Type="oracle.jbo.domain.Number"
+      AliasName="PLAN_ID"
+      ColumnType="VARCHAR2"
+      Expression="PLAN_ID"
+      SQLType="NUMERIC" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="PlanName"
+      IsPersistent="false"
+      IsNotNull="true"
+      Precision="30"
+      Type="java.lang.String"
+      AliasName="PLAN_NAME"
+      ColumnType="VARCHAR2"
+      Expression="PLAN_NAME"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="30" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="OrganizationId"
+      IsPersistent="false"
+      IsNotNull="true"
+      Type="oracle.jbo.domain.Number"
+      AliasName="ORGANIZATION_ID"
+      ColumnType="VARCHAR2"
+      Expression="ORGANIZATION_ID"
+      SQLType="NUMERIC" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="OrganizationName"
+      IsPersistent="false"
+      IsNotNull="true"
+      Precision="240"
+      Type="java.lang.String"
+      AliasName="ORGANIZATION_NAME"
+      ColumnType="VARCHAR2"
+      Expression="ORGANIZATION_NAME"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="240" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="CollectionId"
+      IsPersistent="false"
+      IsNotNull="true"
+      Type="oracle.jbo.domain.Number"
+      AliasName="COLLECTION_ID"
+      ColumnType="VARCHAR2"
+      Expression="COLLECTION_ID"
+      SQLType="NUMERIC" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Occurrence"
+      IsPersistent="false"
+      IsNotNull="true"
+      Type="oracle.jbo.domain.Number"
+      AliasName="OCCURRENCE"
+      ColumnType="VARCHAR2"
+      Expression="OCCURRENCE"
+      SQLType="NUMERIC" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="LastUpdateDate"
+      IsPersistent="false"
+      IsNotNull="true"
+      Type="oracle.jbo.domain.Date"
+      AliasName="LAST_UPDATE_DATE"
+      ColumnType="VARCHAR2"
+      Expression="LAST_UPDATE_DATE"
+      SQLType="DATE" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="7" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="LastUpdatedById"
+      IsPersistent="false"
+      IsNotNull="true"
+      Type="oracle.jbo.domain.Number"
+      AliasName="LAST_UPDATED_BY_ID"
+      ColumnType="VARCHAR2"
+      Expression="LAST_UPDATED_BY_ID"
+      SQLType="NUMERIC" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="LastUpdatedBy"
+      IsPersistent="false"
+      IsNotNull="true"
+      Precision="100"
+      Type="java.lang.String"
+      AliasName="LAST_UPDATED_BY"
+      ColumnType="VARCHAR2"
+      Expression="LAST_UPDATED_BY"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="100" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="CreationDate"
+      IsPersistent="false"
+      IsNotNull="true"
+      Type="oracle.jbo.domain.Date"
+      AliasName="CREATION_DATE"
+      ColumnType="VARCHAR2"
+      Expression="CREATION_DATE"
+      SQLType="DATE" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="7" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="CreatedById"
+      IsPersistent="false"
+      IsNotNull="true"
+      Type="oracle.jbo.domain.Number"
+      AliasName="CREATED_BY_ID"
+      ColumnType="VARCHAR2"
+      Expression="CREATED_BY_ID"
+      SQLType="NUMERIC" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="CreatedBy"
+      IsPersistent="false"
+      IsNotNull="true"
+      Precision="100"
+      Type="java.lang.String"
+      AliasName="CREATED_BY"
+      ColumnType="VARCHAR2"
+      Expression="CREATED_BY"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="100" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="LastUpdateLogin"
+      IsPersistent="false"
+      Type="oracle.jbo.domain.Number"
+      AliasName="LAST_UPDATE_LOGIN"
+      ColumnType="VARCHAR2"
+      Expression="LAST_UPDATE_LOGIN"
+      SQLType="NUMERIC" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="OdPbReasonType"
+      IsPersistent="false"
+      Precision="150"
+      Type="java.lang.String"
+      AliasName="OD_PB_REASON_TYPE"
+      ColumnType="VARCHAR2"
+      Expression="OD_PB_REASON_TYPE"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="150" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="OdPbReasonCode"
+      IsPersistent="false"
+      Precision="150"
+      Type="java.lang.String"
+      AliasName="OD_PB_REASON_CODE"
+      ColumnType="VARCHAR2"
+      Expression="OD_PB_REASON_CODE"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="150" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="OdPbComments"
+      IsPersistent="false"
+      Precision="2000"
+      Type="java.lang.String"
+      AliasName="OD_PB_COMMENTS"
+      ColumnType="VARCHAR2"
+      Expression="OD_PB_COMMENTS"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="2000" />
+      </DesignTime>
+   </ViewAttribute>
+</ViewObject>

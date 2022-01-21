@@ -1,0 +1,36 @@
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     ON
+
+PROMPT Creating SYNONYM XX_AR_AOPS_EBS_ORD_CHK  
+
+PROMPT Program exits IF the creation IS NOT SUCCESSFUL
+
+WHENEVER SQLERROR CONTINUE
+
+-- +==========================================================================+
+-- |                  Office Depot - Project Simplify                         |
+-- |                       WIPRO Technologies                                 |
+-- +==========================================================================+
+-- | Name        : APPS.XX_AR_AOPS_EBS_ORD_CHK                                |
+-- | Description : Synonym for XX_AR_AOPS_EBS_ORD_CHK                         |
+-- | RICE        : R0458                                                      |
+-- |===============                                                           |
+-- |Version      Date              Author               Remarks               |
+-- |=======      ==========        =============        ===================== |
+-- | V1.0        14-MAR-2013       Adithya		Initial version       |
+-- |                                                    Defect#21781          |
+-- | 1.1       22-Oct-2013   Paddy Sanjeevi             Removed drop statement|
+-- +==========================================================================+
+
+WHENEVER SQLERROR CONTINUE;
+
+PROMPT
+PROMPT Creating Synonym XX_AR_AOPS_EBS_ORD_CHK  in APPS...
+PROMPT
+
+CREATE SYNONYM apps.XX_AR_AOPS_EBS_ORD_CHK   FOR xxfin.XX_AR_AOPS_EBS_ORD_CHK  ;
+
+SHOW ERROR

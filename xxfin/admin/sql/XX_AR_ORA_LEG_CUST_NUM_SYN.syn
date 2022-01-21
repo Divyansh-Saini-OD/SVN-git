@@ -1,0 +1,26 @@
+-- +=====================================================================+
+-- |                  Office Depot - Project Simplify                    |
+-- |                       Providge Consulting                           |
+-- +=====================================================================+
+-- | Name :  XX_AR_ORA_LEG_CUST_NUM                                      |
+-- | Description : Synonym for View XX_AR_ORA_LEG_CUST_NUM               |
+-- |                                                                     |
+-- |                                                                     |
+-- |Change Record:                                                       |
+-- |===============                                                      |
+-- |Version   Date              Author              Remarks              |
+-- |======   ==========     =============        ======================= |
+-- |1.0       07-JAN-2010   Tamil Vendhan L  ,   Created Base version    |
+-- |                        Wipro Technologies   for R1.2 CR 466 Defect  |
+-- |                                             1210                    |
+-- +=====================================================================+
+
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     ON
+
+CREATE OR REPLACE SYNONYM xxfin.XX_AR_ORA_LEG_CUST_NUMBER for apps.XX_AR_ORA_LEG_CUST_NUMBER;
+
+SHOW ERROR

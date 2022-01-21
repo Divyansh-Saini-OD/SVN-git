@@ -1,0 +1,51 @@
+<definitions
+     name="DailyFlagWrite"
+     targetNamespace="http://xmlns.oracle.com/pcbpel/adapter/ftp/DailyFlagWrite/"
+     xmlns="http://schemas.xmlsoap.org/wsdl/"
+     xmlns:tns="http://xmlns.oracle.com/pcbpel/adapter/ftp/DailyFlagWrite/"
+     xmlns:plt="http://schemas.xmlsoap.org/ws/2003/05/partner-link/"
+     xmlns:jca="http://xmlns.oracle.com/pcbpel/wsdl/jca/"
+     xmlns:imp1="http://TargetNamespace.com/DailyFlagWrite"
+     xmlns:hdr="http://xmlns.oracle.com/pcbpel/adapter/ftp/"
+    >
+    <import namespace="http://xmlns.oracle.com/pcbpel/adapter/ftp/" location="ftpAdapterOutboundHeader.wsdl"/>
+    <types>
+      <schema xmlns="http://www.w3.org/2001/XMLSchema" >
+        <import namespace="http://TargetNamespace.com/DailyFlagWrite" schemaLocation="Sysdate.xsd" />
+      </schema>
+    </types>
+    <message name="Root_msg">
+        <part name="Root" element="imp1:Root"/>
+    </message>
+    <portType name="Put_ptt">
+        <operation name="Put">
+            <input message="tns:Root_msg"/>
+        </operation>
+    </portType>
+    <binding name="Put_binding" type="tns:Put_ptt">
+    <jca:binding  />
+        <operation name="Put">
+      <jca:operation
+          FileType="binary"
+          LogicalDirectory="DailyOut_Path"
+          InteractionSpec="oracle.tip.adapter.ftp.outbound.FTPInteractionSpec"
+          FileNamingConvention="ORCL.FLG"
+          NumberMessages="1"
+          OpaqueSchema="false" >
+      </jca:operation>
+      <input>
+        <jca:header message="hdr:OutboundHeader_msg" part="outboundHeader"/>
+      </input>
+        </operation>
+    </binding>
+    <service name="DailyFlagWrite">
+        <port name="Put_pt" binding="tns:Put_binding">
+      <jca:address location="eis/ftp/HyperionApplication" />
+        </port>
+    </service>
+  <plt:partnerLinkType name="Put_plt" >
+    <plt:role name="Put_role" >
+      <plt:portType name="tns:Put_ptt" />
+    </plt:role>
+  </plt:partnerLinkType>
+</definitions>

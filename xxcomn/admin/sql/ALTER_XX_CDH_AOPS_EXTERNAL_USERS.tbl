@@ -1,0 +1,33 @@
+SET VERIFY      OFF
+SET TERM        OFF
+SET FEEDBACK    OFF
+SET SHOW        OFF
+SET ECHO        OFF
+SET TAB         OFF
+
+-- +==========================================================================+
+-- |                  Office Depot                                            |
+-- +==========================================================================+
+-- | Name        : ALTER_XX_CDH_AOPS_EXTERNAL_USERS.tbl                       |
+-- | Rice ID     :                                                            |
+-- | Description : Modify fields in XX_CDH_AOPS_EXTERNAL_USERS table          |
+-- |                                                                          |
+-- |Change Record:                                                            |
+-- |===============                                                           |
+-- |Version   Date        Author           Remarks                            |
+-- |=======  ===========  =============    ===================================|
+-- |1.0      14-AUG-2019  Havish Kasina    Initial Version                    |
+-- +==========================================================================+
+
+WHENEVER SQLERROR CONTINUE;
+
+PROMPT
+PROMPT 'Altering the Table XX_CDH_AOPS_EXTERNAL_USERS .....'
+PROMPT
+alter table XXCOMN.XX_CDH_AOPS_EXTERNAL_USERS MODIFY PWD_LAST_CHANGE TIMESTAMP;
+
+PROMPT
+PROMPT Exiting....
+PROMPT
+
+SHOW ERROR;

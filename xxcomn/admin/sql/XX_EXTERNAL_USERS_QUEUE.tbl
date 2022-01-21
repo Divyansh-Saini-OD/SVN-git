@@ -1,0 +1,55 @@
+
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+PROMPT Creating Table XX_EXTERNAL_USERS_QUEUE
+
+-- +=======================================================================================+
+-- |               Office Depot - Project Simplify                                         |
+-- +=======================================================================================+
+-- | Name             : XX_EXTERNAL_USERS_QUEUE.tbl                                        |
+-- | Description      : Custom table for E1328_BSD_iReceivables_interface                  |
+-- |                    for flagging whether the GUID has been updated in FND_USERS        |
+-- |                    table after the FND_USER has been created by the custom process.   |
+-- |Change History:                                                                        |
+-- |---------------                                                                        |
+-- |                                                                                       |
+-- |Version  Date        Author             Remarks                                        |
+-- |-------  ----------- -----------------  -----------------------------------------------|
+-- |Draft    11-OCT-2014 Sreedhar Mohan     Initial Draft Version                          |
+-- |                                                                                       |
+-- +=======================================================================================+
+
+--drop table XXCOMN.XX_EXTERNAL_USERS_QUEUE;
+CREATE TABLE XXCOMN.XX_EXTERNAL_USERS_QUEUE 
+(
+      FND_USER_NAME                VARCHAR2(100)  PRIMARY KEY
+    , GUID_UPDATED_FLAG            VARCHAR2(1)    DEFAULT 'N'
+    , CREATION_DATE                DATE           NOT NULL
+    , CREATED_BY                   NUMBER         NOT NULL
+    , LAST_UPDATE_DATE             DATE           NOT NULL
+    , LAST_UPDATED_BY              NUMBER         NOT NULL
+    , ATTRIBUTE1                   VARCHAR2(150)
+    , ATTRIBUTE2                   VARCHAR2(150)
+    , ATTRIBUTE3                   VARCHAR2(150)
+    , ATTRIBUTE4                   VARCHAR2(150)
+    , ATTRIBUTE5                   VARCHAR2(150)
+    , ATTRIBUTE6                   VARCHAR2(150)
+    , ATTRIBUTE7                   VARCHAR2(150)
+    , ATTRIBUTE8                   VARCHAR2(150)
+    , ATTRIBUTE9                   VARCHAR2(150)
+    , ATTRIBUTE10                  VARCHAR2(150)
+    , ATTRIBUTE11                  VARCHAR2(150)
+    , ATTRIBUTE12                  VARCHAR2(150)
+    , ATTRIBUTE13                  VARCHAR2(150)
+    , ATTRIBUTE14                  VARCHAR2(150)
+    , ATTRIBUTE15                  VARCHAR2(150)
+    , ATTRIBUTE16                  VARCHAR2(150)
+    , ATTRIBUTE17                  VARCHAR2(150)
+    , ATTRIBUTE18                  VARCHAR2(150)
+    , ATTRIBUTE19                  VARCHAR2(150)
+    , ATTRIBUTE20                  VARCHAR2(150)
+);
+
+CREATE INDEX XXCOMN.XX_EXTERNAL_USERS_AUDIT_N2 ON XXCOMN.XX_EXTERNAL_USERS_QUEUE (CREATION_DATE);
+CREATE INDEX XXCOMN.XX_EXTERNAL_USERS_AUDIT_N3 ON XXCOMN.XX_EXTERNAL_USERS_QUEUE (LAST_UPDATE_DATE);

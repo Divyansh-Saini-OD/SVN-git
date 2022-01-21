@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="WINDOWS-1252" ?> 
+ <dataTemplate name="PSHRErrorLogExtract" description="PSHRErrorLogExtract" defaultPackage="" Version="1.0">
+ <parameters>
+     <parameter name="no_of_days" datatype="number" />
+  </parameters>
+  <dataQuery>   
+   <sqlStatement name="PSHRAllMsgs">
+    <![CDATA[
+     select  distinct 
+             xeg.object_id,
+             b.last_name||','||b.first_name full_name,
+             xeg.program_name,
+             xeg.error_location,
+             xeg.error_message_severity,
+             xeg.error_message
+       FROM  xx_hr_ps_stg b, 
+             xx_com_error_log xeg
+      WHERE  xeg.module_name = 'PER'
+	  and  xeg.creation_date > SYSDATE-:no_of_days
+        and  b.emplid=xeg.object_id
+      ORDER BY xeg.object_id
+      ]]>
+   </sqlStatement>
+  </dataQuery>
+
+ <dataStructure>
+ <group name ="PSHRALLMSGS" source="PSHRALLMSGS">
+  <element name="OBJECT_ID" value="object_id"/>
+  <element name="FULL_NAME" value="full_name"/>
+  <element name="PROGNAME" value="program_name"/>
+  <element name="ERRLOC" value="error_location"/>
+  <element name="ERRSVR" value="error_message_severity"/>
+  <element name="ERRMSG" value="error_message"/>
+ </group>
+ </dataStructure>
+</dataTemplate>

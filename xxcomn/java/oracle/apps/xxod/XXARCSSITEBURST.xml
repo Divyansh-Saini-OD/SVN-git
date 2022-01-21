@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<xapi:requestset xmlns:xapi="http://xmlns.oracle.com/oxp/xapi/">
+   <xapi:request select="/XXARCSEXT/LIST_G_CUSTOMER_SITE_ID/G_CUSTOMER_SITE_ID">
+      <xapi:delivery>
+         <xapi:filesystem output="${OUTPUTTOP}/outbound/arstatements/custsite/${CUSTOMER_SITE_ID}"/>
+      </xapi:delivery>
+      <xapi:document output-type= "excel">
+         <xapi:template type="rtf" location="${CUSTTOP}/xxcomn/java/oracle/apps/xxod/XXARCSEXT.rtf">
+         </xapi:template>
+      </xapi:document>
+   </xapi:request>
+</xapi:requestset>

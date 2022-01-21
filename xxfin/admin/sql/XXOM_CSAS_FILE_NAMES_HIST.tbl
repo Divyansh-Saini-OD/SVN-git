@@ -1,0 +1,41 @@
+
+-- +===========================================================================+
+-- |                  Office Depot - SAS Modernization                         |
+-- |                                                                           |
+-- +===========================================================================+
+-- | Name        : XXOM_CSAS_FILE_NAMES_HIST.tbl                                 |
+-- | Description : create Table for XXOM_CSAS_FILE_NAMES_HIST                    |
+-- |                                                                           |
+-- |Change Record:                                                             |
+-- |===============                                                            |
+-- |Version  Date        Author           Remarks                              |
+-- |======== =========== ================ =====================================|
+-- |1.0      28-Apr-2021 Shreyas Thorat   Initial Version                      |
+-- +===========================================================================+
+
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     ON
+WHENEVER SQLERROR CONTINUE
+
+  CREATE TABLE XXOM_CSAS_FILE_NAMES_HIST 
+   ( 
+    REQUEST_ID NUMBER, 
+	FILE_ID NUMBER, 
+	FILE_NAME VARCHAR2(150),
+	PROCESS_FLAG VARCHAR2(1), 
+	STATUS VARCHAR2(10), 
+	CREATION_DATE DATE, 
+	CREATED_BY NUMBER, 
+	LAST_UPDATED_BY NUMBER, 
+	LAST_UPDATE_DATE DATE
+   ) ;
+   
+   
+GRANT ALL ON XXOM_CSAS_FILE_NAMES_HIST TO APPS WITH GRANT OPTION;
+
+GRANT SELECT ON XXOM_CSAS_FILE_NAMES_HIST TO ERP_SYSTEM_TABLE_SELECT_ROLE;
+
+GRANT SELECT ON XXOM_CSAS_FILE_NAMES_HIST TO XXDATA_STAGE_ROLE;   

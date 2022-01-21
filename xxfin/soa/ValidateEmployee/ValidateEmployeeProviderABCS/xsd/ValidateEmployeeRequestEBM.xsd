@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="windows-1252" ?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+            xmlns="http://xmlns.officedepot.com/ValidateEmployee/ValidateEmployeeProviderABCS/ValidateEmployeeRequestEBM"
+            targetNamespace="http://xmlns.officedepot.com/ValidateEmployee/ValidateEmployeeProviderABCS/ValidateEmployeeRequestEBM"
+            elementFormDefault="qualified">
+<xsd:element name="ValidateEmployeeRequestEBM" type="ValidateEmployeeRequestEBMType"/>
+ <xsd:complexType name="ValidateEmployeeRequestEBMType">
+      <xsd:sequence>
+         <xsd:element name="ValidateEmployeeRequestEBO" type="ValidateEmployeeRequestEB0Type" minOccurs="1" maxOccurs="1"/>       
+      </xsd:sequence>
+   </xsd:complexType>   
+   
+      <xsd:complexType name="ValidateEmployeeRequestEB0Type">
+        <xsd:sequence>
+          <xsd:element name="ODEmployeeID" type="xsd:string"/>
+          <xsd:element name="ODEmployeePassword" type="xsd:string"/>
+        </xsd:sequence>
+      </xsd:complexType>   
+   
+ 
+</xsd:schema>

@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="windows-1252" ?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+            xmlns="http://www.oracle.com/xsd/Invoice.xsd"
+            targetNamespace="http://www.oracle.com/xsd/Invoice.xsd"
+            elementFormDefault="qualified">
+  <xsd:element name="Invoice">
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element name="Reference" type="xsd:string"/>
+        <xsd:element name="Actions">
+          <xsd:complexType>
+            <xsd:sequence>
+              <xsd:element name="Action">
+                <xsd:complexType>
+                  <xsd:sequence>
+                    <xsd:element name="User" type="xsd:string"/>
+                    <xsd:element name="Date">
+                      <xsd:complexType>
+                        <xsd:attribute name="nil" type="xsd:string"/>
+                      </xsd:complexType>
+                    </xsd:element>
+                  </xsd:sequence>
+                </xsd:complexType>
+              </xsd:element>
+            </xsd:sequence>
+          </xsd:complexType>
+        </xsd:element>
+        <xsd:element name="Reject"/>
+        <xsd:element name="Requestor" type="xsd:string"/>
+        <xsd:element name="CostCenter" type="xsd:string"/>
+        <xsd:element name="ShippingInstructions">
+          <xsd:complexType>
+            <xsd:sequence>
+              <xsd:element name="name" type="xsd:string"/>
+              <xsd:element name="address" type="xsd:string"/>
+              <xsd:element name="telephone" type="xsd:string"/>
+            </xsd:sequence>
+          </xsd:complexType>
+        </xsd:element>
+        <xsd:element name="SpecialInstructions" type="xsd:string"/>
+        <xsd:element name="LineItems">
+          <xsd:complexType>
+            <xsd:sequence>
+              <xsd:element name="LineItem" maxOccurs="unbounded">
+                <xsd:complexType>
+                  <xsd:sequence>
+                    <xsd:element name="Description" type="xsd:string"/>
+                    <xsd:element name="Part">
+                      <xsd:complexType>
+                        <xsd:attribute name="Id" type="xsd:integer"/>
+                        <xsd:attribute name="UnitPrice" type="xsd:float"/>
+                        <xsd:attribute name="Quantity" type="xsd:integer"/>
+                      </xsd:complexType>
+                    </xsd:element>
+                  </xsd:sequence>
+                  <xsd:attribute name="ItemNumber" type="xsd:integer"/>
+                </xsd:complexType>
+              </xsd:element>
+            </xsd:sequence>
+          </xsd:complexType>
+        </xsd:element>
+      </xsd:sequence>
+      <xsd:attribute name="xsi" type="xsd:string"/>
+      <xsd:attribute name="schemaLocation" type="xsd:string"/>
+    </xsd:complexType>
+  </xsd:element>
+</xsd:schema>

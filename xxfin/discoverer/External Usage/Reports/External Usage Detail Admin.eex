@@ -1,0 +1,557 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<EndUserLayerExport SourceEULId="20070828135845" SourceEULVersion="10.1.2.48.18" MinimumCodeVersion="10.0.0" ExportFileVersion="10.0.0" EULSecurityModel="Database">
+<BusinessArea Description="External Usage Detail" DeveloperKey="EXTERNAL_USAGE_DETAIL" DeveloperKeyFrozen="False" ExternalName="" Id="103958" Name="External Usage Detail" UserProperty1="" UserProperty2="">
+<GrantedBusinessArea DeveloperKeyFrozen="False" Id="103959" PrivilegeType="Administrative">
+<ElementRef Name="BusinessArea" Type="BusinessArea">
+<UniqueIdent ConstraintName="BA1" DeveloperKey="EXTERNAL_USAGE_DETAIL"/>
+<UniqueIdent ConstraintName="BA2" Name="External Usage Detail"/>
+</ElementRef>
+<ElementRef Name="EulUser" Type="EulUser">
+<UniqueIdent ConstraintName="EU2" ResponsibilityKey="" RoleFlag="False" Username="EUL01"/>
+</ElementRef>
+</GrantedBusinessArea>
+<BAOBJLink DeveloperKeyFrozen="False" Id="106241" Sequence="3">
+<ElementRef Name="BusinessArea" Type="BusinessArea">
+<UniqueIdent ConstraintName="BA1" DeveloperKey="EXTERNAL_USAGE_DETAIL"/>
+<UniqueIdent ConstraintName="BA2" Name="External Usage Detail"/>
+</ElementRef>
+<ElementRef Name="Object" Type="CustomObject">
+<UniqueIdent ConstraintName="OBJ1" DeveloperKey="EXTERNAL_USAGE_DETAIL"/>
+<UniqueIdent ConstraintName="OBJ2" Name="External Usage Detail"/>
+</ElementRef>
+</BAOBJLink>
+</BusinessArea>
+<EulUser BatchCommitSize="" BatchExpiry="" BatchJobsLimit="" BatchQueryTimeLimit="" BatchRepositoryUser="" BatchWindowEnd="" BatchWindowStart="" DeveloperKeyFrozen="False" Id="100000" LastBatchAccess="28/01/2008 10:43:53" QueryEstimateLimit="" QueryTimeLimit="" ResponsibilityKey="" RoleFlag="False" RowFetchLimit="" SecurityModel="NativeDatabase" UsePublicPrivileges="False" Username="EUL01">
+</EulUser>
+<BusinessArea Description="" DeveloperKey="NEWBUSINESSAREA2" DeveloperKeyFrozen="False" ExternalName="" Id="104320" Name="Usage Item Classes" UserProperty1="" UserProperty2="">
+<GrantedBusinessArea DeveloperKeyFrozen="False" Id="104321" PrivilegeType="Administrative">
+<ElementRef Name="BusinessArea" Type="BusinessArea">
+<UniqueIdent ConstraintName="BA1" DeveloperKey="NEWBUSINESSAREA2"/>
+<UniqueIdent ConstraintName="BA2" Name="Usage Item Classes"/>
+</ElementRef>
+<ElementRef Name="EulUser" Type="EulUser">
+<UniqueIdent ConstraintName="EU2" ResponsibilityKey="" RoleFlag="False" Username="EUL01"/>
+</ElementRef>
+</GrantedBusinessArea>
+<BAOBJLink DeveloperKeyFrozen="False" Id="104341" Sequence="1">
+<ElementRef Name="BusinessArea" Type="BusinessArea">
+<UniqueIdent ConstraintName="BA1" DeveloperKey="NEWBUSINESSAREA2"/>
+<UniqueIdent ConstraintName="BA2" Name="Usage Item Classes"/>
+</ElementRef>
+<ElementRef Name="Object" Type="CustomObject">
+<UniqueIdent ConstraintName="OBJ1" DeveloperKey="SHIPTOLOV"/>
+<UniqueIdent ConstraintName="OBJ2" Name="Ship-To-LOV"/>
+</ElementRef>
+</BAOBJLink>
+<BAOBJLink DeveloperKeyFrozen="False" Id="105201" Sequence="2">
+<ElementRef Name="BusinessArea" Type="BusinessArea">
+<UniqueIdent ConstraintName="BA1" DeveloperKey="NEWBUSINESSAREA2"/>
+<UniqueIdent ConstraintName="BA2" Name="Usage Item Classes"/>
+</ElementRef>
+<ElementRef Name="Object" Type="CustomObject">
+<UniqueIdent ConstraintName="OBJ1" DeveloperKey="POLOV"/>
+<UniqueIdent ConstraintName="OBJ2" Name="PO-LOV"/>
+</ElementRef>
+</BAOBJLink>
+<BAOBJLink DeveloperKeyFrozen="False" Id="105221" Sequence="3">
+<ElementRef Name="BusinessArea" Type="BusinessArea">
+<UniqueIdent ConstraintName="BA1" DeveloperKey="NEWBUSINESSAREA2"/>
+<UniqueIdent ConstraintName="BA2" Name="Usage Item Classes"/>
+</ElementRef>
+<ElementRef Name="Object" Type="CustomObject">
+<UniqueIdent ConstraintName="OBJ1" DeveloperKey="COST_CENTER_LOV"/>
+<UniqueIdent ConstraintName="OBJ2" Name="Cost Center LOV"/>
+</ElementRef>
+</BAOBJLink>
+</BusinessArea>
+<CustomObject CBOHint="" CustomSQL="Select *&#x000d;&#x000a;From XXOD_Usage_ShipTo_Lov&#x000d;&#x000a;" Description="Ship-To-LOV" DeveloperKey="SHIPTOLOV" DeveloperKeyFrozen="False" DistinctFlag="False" ExternalDatabaseLink="" ExternalObjectName="" ExternalObjectOwner="" Hidden="False" Id="104340" Name="Ship-To-LOV" NonDeterministic="False" SQL="( SELECT COLUMN_VALUE AS i105180 FROM (Select *&#x000d;&#x000a;From XXOD_Usage_ShipTo_Lov&#x000d;&#x000a;) CUO104340 )" UserProperty1="" UserProperty2="">
+<ColumnItem Alignment="Left" CaseDisplay="Unchanged" CaseStorage="Mixed" DataType="Varchar" Description="" DeveloperKey="COLUMN_VALUE" DeveloperKeyFrozen="False" DisplayNullValue="" ExternalColumnName="COLUMN_VALUE" FormatMask="" Heading="Column Value" Hidden="False" Id="105180" MaxDataWidth="100" MaxDisplayWidth="" Name="Column Value" Nullable="True" Placement="XAxis" Sequence="1" UserDefinedFormat="" UserProperty1="" UserProperty2="" WordWrap="False">
+<ElementRef Name="Domain" Type="Domain">
+<UniqueIdent ConstraintName="DOM1" DeveloperKey="SHIP_TO_LOV"/>
+<UniqueIdent ConstraintName="DOM2" Name="Ship To Lov"/>
+</ElementRef>
+<ElementRef Name="Object" Type="CustomObject">
+<UniqueIdent ConstraintName="OBJ1" DeveloperKey="SHIPTOLOV"/>
+<UniqueIdent ConstraintName="OBJ2" Name="Ship-To-LOV"/>
+</ElementRef>
+<ElementRef Name="RollUpFunction" Type="Function">
+<UniqueIdent ConstraintName="FUN1" DeveloperKey="EUL_110"/>
+<UniqueIdent ConstraintName="FUN2" Name="Detail"/>
+</ElementRef>
+</ColumnItem>
+</CustomObject>
+<CustomObject CBOHint="" CustomSQL="Select *&#x000d;&#x000a;From XXOD_Usage_PO_Lov&#x000d;&#x000a;" Description="PO-LOV" DeveloperKey="POLOV" DeveloperKeyFrozen="False" DistinctFlag="False" ExternalDatabaseLink="" ExternalObjectName="" ExternalObjectOwner="" Hidden="False" Id="105200" Name="PO-LOV" NonDeterministic="False" SQL="( SELECT COLUMN_VALUE AS i105203 FROM (Select *&#x000d;&#x000a;From XXOD_Usage_PO_Lov&#x000d;&#x000a;) CUO105200 )" UserProperty1="" UserProperty2="">
+<ColumnItem Alignment="Left" CaseDisplay="Unchanged" CaseStorage="Mixed" DataType="Varchar" Description="" DeveloperKey="COLUMN_VALUE" DeveloperKeyFrozen="False" DisplayNullValue="" ExternalColumnName="COLUMN_VALUE" FormatMask="" Heading="Column Value" Hidden="False" Id="105203" MaxDataWidth="100" MaxDisplayWidth="" Name="Column Value" Nullable="True" Placement="XAxis" Sequence="1" UserDefinedFormat="" UserProperty1="" UserProperty2="" WordWrap="False">
+<ElementRef Name="Domain" Type="Domain">
+<UniqueIdent ConstraintName="DOM1" DeveloperKey="PO_LOV"/>
+<UniqueIdent ConstraintName="DOM2" Name="PO Lov"/>
+</ElementRef>
+<ElementRef Name="Object" Type="CustomObject">
+<UniqueIdent ConstraintName="OBJ1" DeveloperKey="POLOV"/>
+<UniqueIdent ConstraintName="OBJ2" Name="PO-LOV"/>
+</ElementRef>
+<ElementRef Name="RollUpFunction" Type="Function">
+<UniqueIdent ConstraintName="FUN1" DeveloperKey="EUL_110"/>
+<UniqueIdent ConstraintName="FUN2" Name="Detail"/>
+</ElementRef>
+</ColumnItem>
+</CustomObject>
+<CustomObject CBOHint="" CustomSQL="Select *&#x000d;&#x000a;From XXOD_Usage_CC_Lov&#x000d;&#x000a;" Description="Cost Center LOV" DeveloperKey="COST_CENTER_LOV" DeveloperKeyFrozen="False" DistinctFlag="False" ExternalDatabaseLink="" ExternalObjectName="" ExternalObjectOwner="" Hidden="False" Id="105220" Name="Cost Center LOV" NonDeterministic="False" SQL="( SELECT COLUMN_VALUE AS i105223 FROM (Select *&#x000d;&#x000a;From XXOD_Usage_CC_Lov&#x000d;&#x000a;) CUO105220 )" UserProperty1="" UserProperty2="">
+<ColumnItem Alignment="Left" CaseDisplay="Unchanged" CaseStorage="Mixed" DataType="Varchar" Description="" DeveloperKey="COLUMN_VALUE" DeveloperKeyFrozen="False" DisplayNullValue="" ExternalColumnName="COLUMN_VALUE" FormatMask="" Heading="Column Value" Hidden="False" Id="105223" MaxDataWidth="100" MaxDisplayWidth="" Name="Column Value" Nullable="True" Placement="XAxis" Sequence="1" UserDefinedFormat="" UserProperty1="" UserProperty2="" WordWrap="False">
+<ElementRef Name="Domain" Type="Domain">
+<UniqueIdent ConstraintName="DOM1" DeveloperKey="COST_CENTER_LOV"/>
+<UniqueIdent ConstraintName="DOM2" Name="Cost Center Lov"/>
+</ElementRef>
+<ElementRef Name="Object" Type="CustomObject">
+<UniqueIdent ConstraintName="OBJ1" DeveloperKey="COST_CENTER_LOV"/>
+<UniqueIdent ConstraintName="OBJ2" Name="Cost Center LOV"/>
+</ElementRef>
+<ElementRef Name="RollUpFunction" Type="Function">
+<UniqueIdent ConstraintName="FUN1" DeveloperKey="EUL_110"/>
+<UniqueIdent ConstraintName="FUN2" Name="Detail"/>
+</ElementRef>
+</ColumnItem>
+</CustomObject>
+<CustomObject CBOHint="" CustomSQL="Select Usg.Customer_Id&#x000d;&#x000a;,      Usg.Customer_Name Business_Name&#x000d;&#x000a;,      Usg.Product_Desc Product_Description&#x000d;&#x000a;,      Usg.OD_SKU Product_Code&#x000d;&#x000a;,      Usg.Wholesale_Product_Code&#x000d;&#x000a;,      Usg.Customer_Product_Code&#x000d;&#x000a;,      Usg.EDI_Sell_Code UOM&#x000d;&#x000a;,      To_Char(Usg.Delivery_Date,&apos;MM-DD-YYYY&apos;) Shipped&#x000d;&#x000a;,      Usg.Order_Number&#x000d;&#x000a;,      To_Char(Usg.Order_Create_Date,&apos;MM-DD-YYYY&apos;) Order_Create_Date&#x000d;&#x000a;,      Usg.Quantity&#x000d;&#x000a;,      Usg.Quantity_Shipped&#x000d;&#x000a;,      Usg.retail_price Unit_Price&#x000d;&#x000a;,      Usg.Extended_Price&#x000d;&#x000a;,      Usg.Customer_Currency&#x000d;&#x000a;,      To_CHAR(Usg.Reconciled_Date,&apos;MM-DD-YYYY&apos;) Reconciled_Date1&#x000d;&#x000a;,      Usg.Reconciled_Date&#x000d;&#x000a;,      Usg.Ship_To_Key&#x000d;&#x000a;,      Usg.Ship_To_Id&#x000d;&#x000a;,      Usg.Ship_To_Customer_Id&#x000d;&#x000a;,      Usg.Ship_To_Customer_Name&#x000d;&#x000a;,      Usg.Ship_To_Address_Line1&#x000d;&#x000a;,      Usg.Ship_To_Address_Line2&#x000d;&#x000a;,      Usg.Ship_To_City&#x000d;&#x000a;,      Usg.Ship_To_State&#x000d;&#x000a;,      Usg.Ship_To_Zip&#x000d;&#x000a;,      Usg.Order_Number_Fullfillment&#x000d;&#x000a;,     decode(Usg.Customer_Dept,&apos;0&apos;,&apos; &apos;,Usg.Customer_Dept) Customer_Dept_Display&#x000d;&#x000a;,      Nvl(cust_dept_label,&apos;Cost Center&apos;)  Customer_Dept_desc&#x000d;&#x000a;,      decode(Usg.Cust_PO_Number, &apos;0&apos;, &apos; &apos;,Usg.Cust_PO_Number) Cust_PO_Number_Display&#x000d;&#x000a;,      Nvl(l.cust_po_nbr_label,&apos;PO Number&apos;) ||&apos; - &apos;|| decode(Usg.Cust_PO_Number, &apos;0&apos;, &apos; &apos;,Usg.Cust_PO_Number) Cust_PO_Number&#x000d;&#x000a;,      Nvl(cust_dept_label,&apos;Cost Center&apos;) ||&apos; - &apos;|| decode(Usg.Customer_Dept,&apos;0&apos;,&apos; &apos;,Usg.Customer_Dept) Customer_Dept&#x000d;&#x000a;,      Nvl(l.cust_po_nbr_label,&apos;PO Number&apos;) Cust_PO_Number_Desc&#x000d;&#x000a;,      Usg.Cust_Release_Number&#x000d;&#x000a;,      Usg.Cust_Release_Number_Desc&#x000d;&#x000a;,      Usg.Desktop_Locator&#x000d;&#x000a;,      Usg.Desktop_Locator_Desc&#x000d;&#x000a;,      case   &#x000d;&#x000a;       When Usg.Extended_Price &lt; 0 And  Usg.Quantity_Shipped = 0 Then Usg.Quantity&#x000d;&#x000a;       Else Usg.Quantity_Shipped&#x000d;&#x000a;       End Case &#x000d;&#x000a;From OD_EXT_USAGE_RPT Usg&#x000d;&#x000a;,    Usage_Profile_Header  uph&#x000d;&#x000a;,    Usage_labels l&#x000d;&#x000a;Where Usg.bill_to_customer_id = uph.billto&#x000d;&#x000a;And   l.customer_id = uph.billto&#x000d;&#x000a;/*And   Usg.Cust_PO_Number In (&#x000d;&#x000a;Select substr(column_value,(Instr(column_value,&apos;-&apos;)+1))&#x000d;&#x000a;From XXOD_Usage_PO_Lov)*/&#x000d;&#x000a;And   Usg.Ship_To_Id In (&#x000d;&#x000a;Select *&#x000d;&#x000a;From XXOD_Usage_ShipTo_Lov)&#x000d;&#x000a;/*And  Usg.Customer_Dept In(Select substr(column_value,(Instr(column_value,&apos;-&apos;)+1))&#x000d;&#x000a;From XXOD_Usage_CC_Lov)*/&#x000d;&#x000a;" Description="External Usage Detail" DeveloperKey="EXTERNAL_USAGE_DETAIL" DeveloperKeyFrozen="False" DistinctFlag="False" ExternalDatabaseLink="" ExternalObjectName="" ExternalObjectOwner="" Hidden="False" Id="106240" Name="External Usage Detail" NonDeterministic="False" SQL="( SELECT BUSINESS_NAME AS i155083, CASE AS i155084, CUSTOMER_CURRENCY AS i155085, CUSTOMER_DEPT AS i155086, CUSTOMER_DEPT_DESC AS i155087, CUSTOMER_DEPT_DISPLAY AS i155088, CUSTOMER_ID AS i155089, CUSTOMER_PRODUCT_CODE AS i155090, CUST_PO_NUMBER AS i155091, CUST_PO_NUMBER_DESC AS i155092, CUST_PO_NUMBER_DISPLAY AS i155093, CUST_RELEASE_NUMBER AS i155094, CUST_RELEASE_NUMBER_DESC AS i155095, DESKTOP_LOCATOR AS i155096, DESKTOP_LOCATOR_DESC AS i155097, EXTENDED_PRICE AS i155098, ORDER_CREATE_DATE AS i155099, ORDER_NUMBER AS i155100, ORDER_NUMBER_FULLFILLMENT AS i155101, PRODUCT_CODE AS i155102, PRODUCT_DESCRIPTION AS i155103, QUANTITY AS i155104, QUANTITY_SHIPPED AS i155105, RECONCILED_DATE AS i155106, RECONCILED_DATE1 AS i155107, SHIPPED AS i155108, SHIP_TO_ADDRESS_LINE1 AS i155109, SHIP_TO_ADDRESS_LINE2 AS i155110, SHIP_TO_CITY AS i155111, SHIP_TO_CUSTOMER_ID AS i155112, SHIP_TO_CUSTOMER_NAME AS i155113, SHIP_TO_ID AS i155114, SHIP_TO_KEY AS i155115, SHIP_TO_STATE AS i155116, SHIP_TO_ZIP AS i155117, UNIT_PRICE AS i155118, UOM AS i155119, WHOLESALE_PRODUCT_CODE AS i155120 FROM (Select Usg.Customer_Id&#x000d;&#x000a;,      Usg.Customer_Name Business_Name&#x000d;&#x000a;,      Usg.Product_Desc Product_Description&#x000d;&#x000a;,      Usg.OD_SKU Product_Code&#x000d;&#x000a;,      Usg.Wholesale_Product_Code&#x000d;&#x000a;,      Usg.Customer_Product_Code&#x000d;&#x000a;,      Usg.EDI_Sell_Code UOM&#x000d;&#x000a;,      To_Char(Usg.Delivery_Date,&apos;MM-DD-YYYY&apos;) Shipped&#x000d;&#x000a;,      Usg.Order_Number&#x000d;&#x000a;,      To_Char(Usg.Order_Create_Date,&apos;MM-DD-YYYY&apos;) Order_Create_Date&#x000d;&#x000a;,      Usg.Quantity&#x000d;&#x000a;,      Usg.Quantity_Shipped&#x000d;&#x000a;,      Usg.retail_price Unit_Price&#x000d;&#x000a;,      Usg.Extended_Price&#x000d;&#x000a;,      Usg.Customer_Currency&#x000d;&#x000a;,      To_CHAR(Usg.Reconciled_Date,&apos;MM-DD-YYYY&apos;) Reconciled_Date1&#x000d;&#x000a;,      Usg.Reconciled_Date&#x000d;&#x000a;,      Usg.Ship_To_Key&#x000d;&#x000a;,      Usg.Ship_To_Id&#x000d;&#x000a;,      Usg.Ship_To_Customer_Id&#x000d;&#x000a;,      Usg.Ship_To_Customer_Name&#x000d;&#x000a;,      Usg.Ship_To_Address_Line1&#x000d;&#x000a;,      Usg.Ship_To_Address_Line2&#x000d;&#x000a;,      Usg.Ship_To_City&#x000d;&#x000a;,      Usg.Ship_To_State&#x000d;&#x000a;,      Usg.Ship_To_Zip&#x000d;&#x000a;,      Usg.Order_Number_Fullfillment&#x000d;&#x000a;,     decode(Usg.Customer_Dept,&apos;0&apos;,&apos; &apos;,Usg.Customer_Dept) Customer_Dept_Display&#x000d;&#x000a;,      Nvl(cust_dept_label,&apos;Cost Center&apos;)  Customer_Dept_desc&#x000d;&#x000a;,      decode(Usg.Cust_PO_Number, &apos;0&apos;, &apos; &apos;,Usg.Cust_PO_Number) Cust_PO_Number_Display&#x000d;&#x000a;,      Nvl(l.cust_po_nbr_label,&apos;PO Number&apos;) ||&apos; - &apos;|| decode(Usg.Cust_PO_Number, &apos;0&apos;, &apos; &apos;,Usg.Cust_PO_Number) Cust_PO_Number&#x000d;&#x000a;,      Nvl(cust_dept_label,&apos;Cost Center&apos;) ||&apos; - &apos;|| decode(Usg.Customer_Dept,&apos;0&apos;,&apos; &apos;,Usg.Customer_Dept) Customer_Dept&#x000d;&#x000a;,      Nvl(l.cust_po_nbr_label,&apos;PO Number&apos;) Cust_PO_Number_Desc&#x000d;&#x000a;,      Usg.Cust_Release_Number&#x000d;&#x000a;,      Usg.Cust_Release_Number_Desc&#x000d;&#x000a;,      Usg.Desktop_Locator&#x000d;&#x000a;,      Usg.Desktop_Locator_Desc&#x000d;&#x000a;,      case   &#x000d;&#x000a;       When Usg.Extended_Price &lt; 0 And  Usg.Quantity_Shipped = 0 Then Usg.Quantity&#x000d;&#x000a;       Else Usg.Quantity_Shipped&#x000d;&#x000a;       End Case &#x000d;&#x000a;From OD_EXT_USAGE_RPT Usg&#x000d;&#x000a;,    Usage_Profile_Header  uph&#x000d;&#x000a;,    Usage_labels l&#x000d;&#x000a;Where Usg.bill_to_customer_id = uph.billto&#x000d;&#x000a;And   l.customer_id = uph.billto&#x000d;&#x000a;/*And   Usg.Cust_PO_Number In (&#x000d;&#x000a;Select substr(column_value,(Instr(column_value,&apos;-&apos;)+1))&#x000d;&#x000a;From XXOD_Usage_PO_Lov)*/&#x000d;&#x000a;And   Usg.Ship_To_Id In (&#x000d;&#x000a;Select *&#x000d;&#x000a;From XXOD_Usage_ShipTo_Lov)&#x000d;&#x000a;/*And  Usg.Customer_Dept In(Select substr(column_value,(Instr(column_value,&apos;-&apos;)+1))&#x000d;&#x000a;From XXOD_Usage_CC_Lov)*/&#x000d;&#x000a;) CUO106240 )" UserProperty1="" UserProperty2="">
+<ColumnItem Alignment="Left" CaseDisplay="Unchanged" CaseStorage="Mixed" DataType="Varchar" Description="" DeveloperKey="BUSINESS_NAME" DeveloperKeyFrozen="False" DisplayNullValue="" ExternalColumnName="BUSINESS_NAME" FormatMask="" Heading="Business Name" Hidden="False" Id="155083" MaxDataWidth="368" MaxDisplayWidth="" Name="Business Name" Nullable="True" Placement="XAxis" Sequence="2" UserDefinedFormat="" UserProperty1="" UserProperty2="" WordWrap="False">
+<ElementRef Name="Object" Type="CustomObject">
+<UniqueIdent ConstraintName="OBJ1" DeveloperKey="EXTERNAL_USAGE_DETAIL"/>
+<UniqueIdent ConstraintName="OBJ2" Name="External Usage Detail"/>
+</ElementRef>
+<ElementRef Name="RollUpFunction" Type="Function">
+<UniqueIdent ConstraintName="FUN1" DeveloperKey="EUL_110"/>
+<UniqueIdent ConstraintName="FUN2" Name="Detail"/>
+</ElementRef>
+</ColumnItem>
+<ColumnItem Alignment="Right" CaseDisplay="Unchanged" CaseStorage="Unknown" DataType="Number" Description="" DeveloperKey="CASE" DeveloperKeyFrozen="False" DisplayNullValue="" ExternalColumnName="CASE" FormatMask="9999999999" Heading="Actual_Quantity" Hidden="False" Id="155084" MaxDataWidth="10" MaxDisplayWidth="" Name="Actual_Quantity" Nullable="True" Placement="Measure" Sequence="38" UserDefinedFormat="" UserProperty1="" UserProperty2="" WordWrap="False">
+<ElementRef Name="Object" Type="CustomObject">
+<UniqueIdent ConstraintName="OBJ1" DeveloperKey="EXTERNAL_USAGE_DETAIL"/>
+<UniqueIdent ConstraintName="OBJ2" Name="External Usage Detail"/>
+</ElementRef>
+<ElementRef Name="RollUpFunction" Type="Function">
+<UniqueIdent ConstraintName="FUN1" DeveloperKey="EUL_1"/>
+<UniqueIdent ConstraintName="FUN2" Name="SUM"/>
+</ElementRef>
+</ColumnItem>
+<ColumnItem Alignment="Left" CaseDisplay="Unchanged" CaseStorage="Mixed" DataType="Varchar" Description="" DeveloperKey="CUSTOMER_CURRENCY" DeveloperKeyFrozen="False" DisplayNullValue="" ExternalColumnName="CUSTOMER_CURRENCY" FormatMask="" Heading="Customer Currency" Hidden="False" Id="155085" MaxDataWidth="3" MaxDisplayWidth="" Name="Customer Currency" Nullable="True" Placement="XAxis" Sequence="22" UserDefinedFormat="" UserProperty1="" UserProperty2="" WordWrap="False">
+<ElementRef Name="Object" Type="CustomObject">
+<UniqueIdent ConstraintName="OBJ1" DeveloperKey="EXTERNAL_USAGE_DETAIL"/>
+<UniqueIdent ConstraintName="OBJ2" Name="External Usage Detail"/>
+</ElementRef>
+<ElementRef Name="RollUpFunction" Type="Function">
+<UniqueIdent ConstraintName="FUN1" DeveloperKey="EUL_110"/>
+<UniqueIdent ConstraintName="FUN2" Name="Detail"/>
+</ElementRef>
+</ColumnItem>
+<ColumnItem Alignment="Left" CaseDisplay="Unchanged" CaseStorage="Mixed" DataType="Varchar" Description="" DeveloperKey="CUSTOMER_DEPT" DeveloperKeyFrozen="False" DisplayNullValue="" ExternalColumnName="CUSTOMER_DEPT" FormatMask="" Heading="Customer Dept" Hidden="False" Id="155086" MaxDataWidth="413" MaxDisplayWidth="" Name="Customer Dept" Nullable="True" Placement="XAxis" Sequence="33" UserDefinedFormat="" UserProperty1="" UserProperty2="" WordWrap="False">
+<ElementRef Name="Domain" Type="Domain">
+<UniqueIdent ConstraintName="DOM1" DeveloperKey="COST_CENTER_LOV"/>
+<UniqueIdent ConstraintName="DOM2" Name="Cost Center Lov"/>
+</ElementRef>
+<ElementRef Name="Object" Type="CustomObject">
+<UniqueIdent ConstraintName="OBJ1" DeveloperKey="EXTERNAL_USAGE_DETAIL"/>
+<UniqueIdent ConstraintName="OBJ2" Name="External Usage Detail"/>
+</ElementRef>
+<ElementRef Name="RollUpFunction" Type="Function">
+<UniqueIdent ConstraintName="FUN1" DeveloperKey="EUL_110"/>
+<UniqueIdent ConstraintName="FUN2" Name="Detail"/>
+</ElementRef>
+</ColumnItem>
+<ColumnItem Alignment="Left" CaseDisplay="Unchanged" CaseStorage="Mixed" DataType="Varchar" Description="" DeveloperKey="CUSTOMER_DEPT_DESC" DeveloperKeyFrozen="False" DisplayNullValue="" ExternalColumnName="CUSTOMER_DEPT_DESC" FormatMask="" Heading="Customer Dept Desc" Hidden="False" Id="155087" MaxDataWidth="150" MaxDisplayWidth="" Name="Customer Dept Desc" Nullable="True" Placement="XAxis" Sequence="34" UserDefinedFormat="" UserProperty1="" UserProperty2="" WordWrap="False">
+<ElementRef Name="Object" Type="CustomObject">
+<UniqueIdent ConstraintName="OBJ1" DeveloperKey="EXTERNAL_USAGE_DETAIL"/>
+<UniqueIdent ConstraintName="OBJ2" Name="External Usage Detail"/>
+</ElementRef>
+<ElementRef Name="RollUpFunction" Type="Function">
+<UniqueIdent ConstraintName="FUN1" DeveloperKey="EUL_110"/>
+<UniqueIdent ConstraintName="FUN2" Name="Detail"/>
+</ElementRef>
+</ColumnItem>
+<ColumnItem Alignment="Left" CaseDisplay="Unchanged" CaseStorage="Mixed" DataType="Varchar" Description="" DeveloperKey="CUSTOMER_DEPT_DISPLAY" DeveloperKeyFrozen="False" DisplayNullValue="" ExternalColumnName="CUSTOMER_DEPT_DISPLAY" FormatMask="" Heading="Customer Dept Display" Hidden="False" Id="155088" MaxDataWidth="260" MaxDisplayWidth="" Name="Customer Dept Display" Nullable="True" Placement="XAxis" Sequence="28" UserDefinedFormat="" UserProperty1="" UserProperty2="" WordWrap="False">
+<ElementRef Name="Object" Type="CustomObject">
+<UniqueIdent ConstraintName="OBJ1" DeveloperKey="EXTERNAL_USAGE_DETAIL"/>
+<UniqueIdent ConstraintName="OBJ2" Name="External Usage Detail"/>
+</ElementRef>
+<ElementRef Name="RollUpFunction" Type="Function">
+<UniqueIdent ConstraintName="FUN1" DeveloperKey="EUL_110"/>
+<UniqueIdent ConstraintName="FUN2" Name="Detail"/>
+</ElementRef>
+</ColumnItem>
+<ColumnItem Alignment="Left" CaseDisplay="Unchanged" CaseStorage="Mixed" DataType="Varchar" Description="" DeveloperKey="CUSTOMER_ID" DeveloperKeyFrozen="False" DisplayNullValue="" ExternalColumnName="CUSTOMER_ID" FormatMask="" Heading="Customer Id" Hidden="False" Id="155089" MaxDataWidth="75" MaxDisplayWidth="" Name="Customer Id" Nullable="True" Placement="XAxis" Sequence="1" UserDefinedFormat="" UserProperty1="" UserProperty2="" WordWrap="False">
+<ElementRef Name="Object" Type="CustomObject">
+<UniqueIdent ConstraintName="OBJ1" DeveloperKey="EXTERNAL_USAGE_DETAIL"/>
+<UniqueIdent ConstraintName="OBJ2" Name="External Usage Detail"/>
+</ElementRef>
+<ElementRef Name="RollUpFunction" Type="Function">
+<UniqueIdent ConstraintName="FUN1" DeveloperKey="EUL_110"/>
+<UniqueIdent ConstraintName="FUN2" Name="Detail"/>
+</ElementRef>
+</ColumnItem>
+<ColumnItem Alignment="Left" CaseDisplay="Unchanged" CaseStorage="Mixed" DataType="Varchar" Description="" DeveloperKey="CUSTOMER_PRODUCT_CODE" DeveloperKeyFrozen="False" DisplayNullValue="" ExternalColumnName="CUSTOMER_PRODUCT_CODE" FormatMask="" Heading="Customer Product Code" Hidden="False" Id="155090" MaxDataWidth="60" MaxDisplayWidth="" Name="Customer Product Code" Nullable="True" Placement="XAxis" Sequence="6" UserDefinedFormat="" UserProperty1="" UserProperty2="" WordWrap="False">
+<ElementRef Name="Object" Type="CustomObject">
+<UniqueIdent ConstraintName="OBJ1" DeveloperKey="EXTERNAL_USAGE_DETAIL"/>
+<UniqueIdent ConstraintName="OBJ2" Name="External Usage Detail"/>
+</ElementRef>
+<ElementRef Name="RollUpFunction" Type="Function">
+<UniqueIdent ConstraintName="FUN1" DeveloperKey="EUL_110"/>
+<UniqueIdent ConstraintName="FUN2" Name="Detail"/>
+</ElementRef>
+</ColumnItem>
+<ColumnItem Alignment="Left" CaseDisplay="Unchanged" CaseStorage="Mixed" DataType="Varchar" Description="" DeveloperKey="CUST_PO_NUMBER" DeveloperKeyFrozen="False" DisplayNullValue="" ExternalColumnName="CUST_PO_NUMBER" FormatMask="" Heading="Cust Po Number" Hidden="False" Id="155091" MaxDataWidth="183" MaxDisplayWidth="" Name="Cust Po Number" Nullable="True" Placement="XAxis" Sequence="42" UserDefinedFormat="" UserProperty1="" UserProperty2="" WordWrap="False">
+<ElementRef Name="Domain" Type="Domain">
+<UniqueIdent ConstraintName="DOM1" DeveloperKey="PO_LOV"/>
+<UniqueIdent ConstraintName="DOM2" Name="PO Lov"/>
+</ElementRef>
+<ElementRef Name="Object" Type="CustomObject">
+<UniqueIdent ConstraintName="OBJ1" DeveloperKey="EXTERNAL_USAGE_DETAIL"/>
+<UniqueIdent ConstraintName="OBJ2" Name="External Usage Detail"/>
+</ElementRef>
+<ElementRef Name="RollUpFunction" Type="Function">
+<UniqueIdent ConstraintName="FUN1" DeveloperKey="EUL_110"/>
+<UniqueIdent ConstraintName="FUN2" Name="Detail"/>
+</ElementRef>
+</ColumnItem>
+<ColumnItem Alignment="Left" CaseDisplay="Unchanged" CaseStorage="Mixed" DataType="Varchar" Description="" DeveloperKey="CUST_PO_NUMBER_DESC" DeveloperKeyFrozen="False" DisplayNullValue="" ExternalColumnName="CUST_PO_NUMBER_DESC" FormatMask="" Heading="Cust Po Number Desc" Hidden="False" Id="155092" MaxDataWidth="150" MaxDisplayWidth="" Name="Cust Po Number Desc" Nullable="True" Placement="XAxis" Sequence="35" UserDefinedFormat="" UserProperty1="" UserProperty2="" WordWrap="False">
+<ElementRef Name="Object" Type="CustomObject">
+<UniqueIdent ConstraintName="OBJ1" DeveloperKey="EXTERNAL_USAGE_DETAIL"/>
+<UniqueIdent ConstraintName="OBJ2" Name="External Usage Detail"/>
+</ElementRef>
+<ElementRef Name="RollUpFunction" Type="Function">
+<UniqueIdent ConstraintName="FUN1" DeveloperKey="EUL_110"/>
+<UniqueIdent ConstraintName="FUN2" Name="Detail"/>
+</ElementRef>
+</ColumnItem>
+<ColumnItem Alignment="Left" CaseDisplay="Unchanged" CaseStorage="Mixed" DataType="Varchar" Description="" DeveloperKey="CUST_PO_NUMBER_DISPLAY" DeveloperKeyFrozen="False" DisplayNullValue="" ExternalColumnName="CUST_PO_NUMBER_DISPLAY" FormatMask="" Heading="Cust Po Number Display" Hidden="False" Id="155093" MaxDataWidth="30" MaxDisplayWidth="" Name="Cust Po Number Display" Nullable="True" Placement="XAxis" Sequence="30" UserDefinedFormat="" UserProperty1="" UserProperty2="" WordWrap="False">
+<ElementRef Name="Object" Type="CustomObject">
+<UniqueIdent ConstraintName="OBJ1" DeveloperKey="EXTERNAL_USAGE_DETAIL"/>
+<UniqueIdent ConstraintName="OBJ2" Name="External Usage Detail"/>
+</ElementRef>
+<ElementRef Name="RollUpFunction" Type="Function">
+<UniqueIdent ConstraintName="FUN1" DeveloperKey="EUL_110"/>
+<UniqueIdent ConstraintName="FUN2" Name="Detail"/>
+</ElementRef>
+</ColumnItem>
+<ColumnItem Alignment="Left" CaseDisplay="Unchanged" CaseStorage="Mixed" DataType="Varchar" Description="" DeveloperKey="CUST_RELEASE_NUMBER" DeveloperKeyFrozen="False" DisplayNullValue="" ExternalColumnName="CUST_RELEASE_NUMBER" FormatMask="" Heading="Cust Release Number" Hidden="False" Id="155094" MaxDataWidth="60" MaxDisplayWidth="" Name="Cust Release Number" Nullable="True" Placement="XAxis" Sequence="36" UserDefinedFormat="" UserProperty1="" UserProperty2="" WordWrap="False">
+<ElementRef Name="Object" Type="CustomObject">
+<UniqueIdent ConstraintName="OBJ1" DeveloperKey="EXTERNAL_USAGE_DETAIL"/>
+<UniqueIdent ConstraintName="OBJ2" Name="External Usage Detail"/>
+</ElementRef>
+<ElementRef Name="RollUpFunction" Type="Function">
+<UniqueIdent ConstraintName="FUN1" DeveloperKey="EUL_110"/>
+<UniqueIdent ConstraintName="FUN2" Name="Detail"/>
+</ElementRef>
+</ColumnItem>
+<ColumnItem Alignment="Left" CaseDisplay="Unchanged" CaseStorage="Mixed" DataType="Varchar" Description="" DeveloperKey="CUST_RELEASE_NUMBER_DESC" DeveloperKeyFrozen="False" DisplayNullValue="" ExternalColumnName="CUST_RELEASE_NUMBER_DESC" FormatMask="" Heading="Cust Release Number Desc" Hidden="False" Id="155095" MaxDataWidth="150" MaxDisplayWidth="" Name="Cust Release Number Desc" Nullable="True" Placement="XAxis" Sequence="37" UserDefinedFormat="" UserProperty1="" UserProperty2="" WordWrap="False">
+<ElementRef Name="Object" Type="CustomObject">
+<UniqueIdent ConstraintName="OBJ1" DeveloperKey="EXTERNAL_USAGE_DETAIL"/>
+<UniqueIdent ConstraintName="OBJ2" Name="External Usage Detail"/>
+</ElementRef>
+<ElementRef Name="RollUpFunction" Type="Function">
+<UniqueIdent ConstraintName="FUN1" DeveloperKey="EUL_110"/>
+<UniqueIdent ConstraintName="FUN2" Name="Detail"/>
+</ElementRef>
+</ColumnItem>
+<ColumnItem Alignment="Left" CaseDisplay="Unchanged" CaseStorage="Mixed" DataType="Varchar" Description="" DeveloperKey="DESKTOP_LOCATOR" DeveloperKeyFrozen="False" DisplayNullValue="" ExternalColumnName="DESKTOP_LOCATOR" FormatMask="" Heading="Desktop Locator" Hidden="False" Id="155096" MaxDataWidth="50" MaxDisplayWidth="" Name="Desktop Locator" Nullable="True" Placement="XAxis" Sequence="39" UserDefinedFormat="" UserProperty1="" UserProperty2="" WordWrap="False">
+<ElementRef Name="Object" Type="CustomObject">
+<UniqueIdent ConstraintName="OBJ1" DeveloperKey="EXTERNAL_USAGE_DETAIL"/>
+<UniqueIdent ConstraintName="OBJ2" Name="External Usage Detail"/>
+</ElementRef>
+<ElementRef Name="RollUpFunction" Type="Function">
+<UniqueIdent ConstraintName="FUN1" DeveloperKey="EUL_110"/>
+<UniqueIdent ConstraintName="FUN2" Name="Detail"/>
+</ElementRef>
+</ColumnItem>
+<ColumnItem Alignment="Left" CaseDisplay="Unchanged" CaseStorage="Mixed" DataType="Varchar" Description="" DeveloperKey="DESKTOP_LOCATOR_DESC" DeveloperKeyFrozen="False" DisplayNullValue="" ExternalColumnName="DESKTOP_LOCATOR_DESC" FormatMask="" Heading="Desktop Locator Desc" Hidden="False" Id="155097" MaxDataWidth="150" MaxDisplayWidth="" Name="Desktop Locator Desc" Nullable="True" Placement="XAxis" Sequence="40" UserDefinedFormat="" UserProperty1="" UserProperty2="" WordWrap="False">
+<ElementRef Name="Object" Type="CustomObject">
+<UniqueIdent ConstraintName="OBJ1" DeveloperKey="EXTERNAL_USAGE_DETAIL"/>
+<UniqueIdent ConstraintName="OBJ2" Name="External Usage Detail"/>
+</ElementRef>
+<ElementRef Name="RollUpFunction" Type="Function">
+<UniqueIdent ConstraintName="FUN1" DeveloperKey="EUL_110"/>
+<UniqueIdent ConstraintName="FUN2" Name="Detail"/>
+</ElementRef>
+</ColumnItem>
+<ColumnItem Alignment="Right" CaseDisplay="Unchanged" CaseStorage="Unknown" DataType="Number" Description="" DeveloperKey="EXTENDED_PRICE" DeveloperKeyFrozen="False" DisplayNullValue="" ExternalColumnName="EXTENDED_PRICE" FormatMask="9999999999" Heading="Extended Price" Hidden="False" Id="155098" MaxDataWidth="10" MaxDisplayWidth="" Name="Extended Price" Nullable="True" Placement="Measure" Sequence="21" UserDefinedFormat="" UserProperty1="" UserProperty2="" WordWrap="False">
+<ElementRef Name="Object" Type="CustomObject">
+<UniqueIdent ConstraintName="OBJ1" DeveloperKey="EXTERNAL_USAGE_DETAIL"/>
+<UniqueIdent ConstraintName="OBJ2" Name="External Usage Detail"/>
+</ElementRef>
+<ElementRef Name="RollUpFunction" Type="Function">
+<UniqueIdent ConstraintName="FUN1" DeveloperKey="EUL_110"/>
+<UniqueIdent ConstraintName="FUN2" Name="Detail"/>
+</ElementRef>
+</ColumnItem>
+<ColumnItem Alignment="Left" CaseDisplay="Unchanged" CaseStorage="Mixed" DataType="Varchar" Description="" DeveloperKey="ORDER_CREATE_DATE" DeveloperKeyFrozen="False" DisplayNullValue="" ExternalColumnName="ORDER_CREATE_DATE" FormatMask="" Heading="Order Create Date" Hidden="False" Id="155099" MaxDataWidth="10" MaxDisplayWidth="" Name="Order Create Date" Nullable="True" Placement="XAxis" Sequence="10" UserDefinedFormat="" UserProperty1="" UserProperty2="" WordWrap="False">
+<ElementRef Name="Object" Type="CustomObject">
+<UniqueIdent ConstraintName="OBJ1" DeveloperKey="EXTERNAL_USAGE_DETAIL"/>
+<UniqueIdent ConstraintName="OBJ2" Name="External Usage Detail"/>
+</ElementRef>
+<ElementRef Name="RollUpFunction" Type="Function">
+<UniqueIdent ConstraintName="FUN1" DeveloperKey="EUL_110"/>
+<UniqueIdent ConstraintName="FUN2" Name="Detail"/>
+</ElementRef>
+</ColumnItem>
+<ColumnItem Alignment="Right" CaseDisplay="Unchanged" CaseStorage="Unknown" DataType="Number" Description="" DeveloperKey="ORDER_NUMBER" DeveloperKeyFrozen="False" DisplayNullValue="" ExternalColumnName="ORDER_NUMBER" FormatMask="9999999999" Heading="Order Number" Hidden="False" Id="155100" MaxDataWidth="10" MaxDisplayWidth="" Name="Order Number" Nullable="True" Placement="Measure" Sequence="13" UserDefinedFormat="" UserProperty1="" UserProperty2="" WordWrap="False">
+<ElementRef Name="Object" Type="CustomObject">
+<UniqueIdent ConstraintName="OBJ1" DeveloperKey="EXTERNAL_USAGE_DETAIL"/>
+<UniqueIdent ConstraintName="OBJ2" Name="External Usage Detail"/>
+</ElementRef>
+<ElementRef Name="RollUpFunction" Type="Function">
+<UniqueIdent ConstraintName="FUN1" DeveloperKey="EUL_110"/>
+<UniqueIdent ConstraintName="FUN2" Name="Detail"/>
+</ElementRef>
+</ColumnItem>
+<ColumnItem Alignment="Left" CaseDisplay="Unchanged" CaseStorage="Mixed" DataType="Varchar" Description="" DeveloperKey="ORDER_NUMBER_FULLFILLMENT" DeveloperKeyFrozen="False" DisplayNullValue="" ExternalColumnName="ORDER_NUMBER_FULLFILLMENT" FormatMask="" Heading="Order Number Fullfillment" Hidden="False" Id="155101" MaxDataWidth="60" MaxDisplayWidth="" Name="Order Number Fullfillment" Nullable="True" Placement="XAxis" Sequence="41" UserDefinedFormat="" UserProperty1="" UserProperty2="" WordWrap="False">
+<ElementRef Name="Object" Type="CustomObject">
+<UniqueIdent ConstraintName="OBJ1" DeveloperKey="EXTERNAL_USAGE_DETAIL"/>
+<UniqueIdent ConstraintName="OBJ2" Name="External Usage Detail"/>
+</ElementRef>
+<ElementRef Name="RollUpFunction" Type="Function">
+<UniqueIdent ConstraintName="FUN1" DeveloperKey="EUL_110"/>
+<UniqueIdent ConstraintName="FUN2" Name="Detail"/>
+</ElementRef>
+</ColumnItem>
+<ColumnItem Alignment="Left" CaseDisplay="Unchanged" CaseStorage="Mixed" DataType="Varchar" Description="" DeveloperKey="PRODUCT_CODE" DeveloperKeyFrozen="False" DisplayNullValue="" ExternalColumnName="PRODUCT_CODE" FormatMask="" Heading="Product Code" Hidden="False" Id="155102" MaxDataWidth="10" MaxDisplayWidth="" Name="Product Code" Nullable="True" Placement="XAxis" Sequence="4" UserDefinedFormat="" UserProperty1="" UserProperty2="" WordWrap="False">
+<ElementRef Name="Object" Type="CustomObject">
+<UniqueIdent ConstraintName="OBJ1" DeveloperKey="EXTERNAL_USAGE_DETAIL"/>
+<UniqueIdent ConstraintName="OBJ2" Name="External Usage Detail"/>
+</ElementRef>
+<ElementRef Name="RollUpFunction" Type="Function">
+<UniqueIdent ConstraintName="FUN1" DeveloperKey="EUL_110"/>
+<UniqueIdent ConstraintName="FUN2" Name="Detail"/>
+</ElementRef>
+</ColumnItem>
+<ColumnItem Alignment="Left" CaseDisplay="Unchanged" CaseStorage="Mixed" DataType="Varchar" Description="" DeveloperKey="PRODUCT_DESCRIPTION" DeveloperKeyFrozen="False" DisplayNullValue="" ExternalColumnName="PRODUCT_DESCRIPTION" FormatMask="" Heading="Product Description" Hidden="False" Id="155103" MaxDataWidth="240" MaxDisplayWidth="" Name="Product Description" Nullable="True" Placement="XAxis" Sequence="3" UserDefinedFormat="" UserProperty1="" UserProperty2="" WordWrap="False">
+<ElementRef Name="Object" Type="CustomObject">
+<UniqueIdent ConstraintName="OBJ1" DeveloperKey="EXTERNAL_USAGE_DETAIL"/>
+<UniqueIdent ConstraintName="OBJ2" Name="External Usage Detail"/>
+</ElementRef>
+<ElementRef Name="RollUpFunction" Type="Function">
+<UniqueIdent ConstraintName="FUN1" DeveloperKey="EUL_110"/>
+<UniqueIdent ConstraintName="FUN2" Name="Detail"/>
+</ElementRef>
+</ColumnItem>
+<ColumnItem Alignment="Right" CaseDisplay="Unchanged" CaseStorage="Unknown" DataType="Number" Description="" DeveloperKey="QUANTITY" DeveloperKeyFrozen="False" DisplayNullValue="" ExternalColumnName="QUANTITY" FormatMask="9999999999" Heading="Quantity" Hidden="False" Id="155104" MaxDataWidth="10" MaxDisplayWidth="" Name="Quantity" Nullable="True" Placement="Measure" Sequence="14" UserDefinedFormat="" UserProperty1="" UserProperty2="" WordWrap="False">
+<ElementRef Name="Object" Type="CustomObject">
+<UniqueIdent ConstraintName="OBJ1" DeveloperKey="EXTERNAL_USAGE_DETAIL"/>
+<UniqueIdent ConstraintName="OBJ2" Name="External Usage Detail"/>
+</ElementRef>
+<ElementRef Name="RollUpFunction" Type="Function">
+<UniqueIdent ConstraintName="FUN1" DeveloperKey="EUL_1"/>
+<UniqueIdent ConstraintName="FUN2" Name="SUM"/>
+</ElementRef>
+</ColumnItem>
+<ColumnItem Alignment="Right" CaseDisplay="Unchanged" CaseStorage="Unknown" DataType="Number" Description="" DeveloperKey="QUANTITY_SHIPPED" DeveloperKeyFrozen="False" DisplayNullValue="" ExternalColumnName="QUANTITY_SHIPPED" FormatMask="9999999999" Heading="Quantity Shipped" Hidden="False" Id="155105" MaxDataWidth="10" MaxDisplayWidth="" Name="Quantity Shipped" Nullable="True" Placement="Measure" Sequence="17" UserDefinedFormat="" UserProperty1="" UserProperty2="" WordWrap="False">
+<ElementRef Name="Object" Type="CustomObject">
+<UniqueIdent ConstraintName="OBJ1" DeveloperKey="EXTERNAL_USAGE_DETAIL"/>
+<UniqueIdent ConstraintName="OBJ2" Name="External Usage Detail"/>
+</ElementRef>
+<ElementRef Name="RollUpFunction" Type="Function">
+<UniqueIdent ConstraintName="FUN1" DeveloperKey="EUL_1"/>
+<UniqueIdent ConstraintName="FUN2" Name="SUM"/>
+</ElementRef>
+</ColumnItem>
+<ColumnItem Alignment="Left" CaseDisplay="Unchanged" CaseStorage="Unknown" DataType="Date" Description="" DeveloperKey="RECONCILED_DATE" DeveloperKeyFrozen="False" DisplayNullValue="" ExternalColumnName="RECONCILED_DATE" FormatMask="DD-MON-RRRR" Heading="Reconciled Date" Hidden="False" Id="155106" MaxDataWidth="11" MaxDisplayWidth="" Name="Reconciled Date" Nullable="True" Placement="XAxis" Sequence="23" UserDefinedFormat="" UserProperty1="" UserProperty2="" WordWrap="False">
+<ElementRef Name="Object" Type="CustomObject">
+<UniqueIdent ConstraintName="OBJ1" DeveloperKey="EXTERNAL_USAGE_DETAIL"/>
+<UniqueIdent ConstraintName="OBJ2" Name="External Usage Detail"/>
+</ElementRef>
+<ElementRef Name="RollUpFunction" Type="Function">
+<UniqueIdent ConstraintName="FUN1" DeveloperKey="EUL_110"/>
+<UniqueIdent ConstraintName="FUN2" Name="Detail"/>
+</ElementRef>
+</ColumnItem>
+<ColumnItem Alignment="Left" CaseDisplay="Unchanged" CaseStorage="Mixed" DataType="Varchar" Description="" DeveloperKey="RECONCILED_DATE1" DeveloperKeyFrozen="False" DisplayNullValue="" ExternalColumnName="RECONCILED_DATE1" FormatMask="" Heading="Reconciled Date1" Hidden="False" Id="155107" MaxDataWidth="10" MaxDisplayWidth="" Name="Reconciled Date1" Nullable="True" Placement="XAxis" Sequence="16" UserDefinedFormat="" UserProperty1="" UserProperty2="" WordWrap="False">
+<ElementRef Name="Object" Type="CustomObject">
+<UniqueIdent ConstraintName="OBJ1" DeveloperKey="EXTERNAL_USAGE_DETAIL"/>
+<UniqueIdent ConstraintName="OBJ2" Name="External Usage Detail"/>
+</ElementRef>
+<ElementRef Name="RollUpFunction" Type="Function">
+<UniqueIdent ConstraintName="FUN1" DeveloperKey="EUL_110"/>
+<UniqueIdent ConstraintName="FUN2" Name="Detail"/>
+</ElementRef>
+</ColumnItem>
+<ColumnItem Alignment="Left" CaseDisplay="Unchanged" CaseStorage="Mixed" DataType="Varchar" Description="" DeveloperKey="SHIPPED" DeveloperKeyFrozen="False" DisplayNullValue="" ExternalColumnName="SHIPPED" FormatMask="" Heading="Shipped" Hidden="False" Id="155108" MaxDataWidth="10" MaxDisplayWidth="" Name="Shipped" Nullable="True" Placement="XAxis" Sequence="8" UserDefinedFormat="" UserProperty1="" UserProperty2="" WordWrap="False">
+<ElementRef Name="Object" Type="CustomObject">
+<UniqueIdent ConstraintName="OBJ1" DeveloperKey="EXTERNAL_USAGE_DETAIL"/>
+<UniqueIdent ConstraintName="OBJ2" Name="External Usage Detail"/>
+</ElementRef>
+<ElementRef Name="RollUpFunction" Type="Function">
+<UniqueIdent ConstraintName="FUN1" DeveloperKey="EUL_110"/>
+<UniqueIdent ConstraintName="FUN2" Name="Detail"/>
+</ElementRef>
+</ColumnItem>
+<ColumnItem Alignment="Left" CaseDisplay="Unchanged" CaseStorage="Mixed" DataType="Varchar" Description="" DeveloperKey="SHIP_TO_ADDRESS_LINE1" DeveloperKeyFrozen="False" DisplayNullValue="" ExternalColumnName="SHIP_TO_ADDRESS_LINE1" FormatMask="" Heading="Ship To Address Line1" Hidden="False" Id="155109" MaxDataWidth="30" MaxDisplayWidth="" Name="Ship To Address Line1" Nullable="True" Placement="XAxis" Sequence="26" UserDefinedFormat="" UserProperty1="" UserProperty2="" WordWrap="False">
+<ElementRef Name="Object" Type="CustomObject">
+<UniqueIdent ConstraintName="OBJ1" DeveloperKey="EXTERNAL_USAGE_DETAIL"/>
+<UniqueIdent ConstraintName="OBJ2" Name="External Usage Detail"/>
+</ElementRef>
+<ElementRef Name="RollUpFunction" Type="Function">
+<UniqueIdent ConstraintName="FUN1" DeveloperKey="EUL_110"/>
+<UniqueIdent ConstraintName="FUN2" Name="Detail"/>
+</ElementRef>
+</ColumnItem>
+<ColumnItem Alignment="Left" CaseDisplay="Unchanged" CaseStorage="Mixed" DataType="Varchar" Description="" DeveloperKey="SHIP_TO_ADDRESS_LINE2" DeveloperKeyFrozen="False" DisplayNullValue="" ExternalColumnName="SHIP_TO_ADDRESS_LINE2" FormatMask="" Heading="Ship To Address Line2" Hidden="False" Id="155110" MaxDataWidth="30" MaxDisplayWidth="" Name="Ship To Address Line2" Nullable="True" Placement="XAxis" Sequence="27" UserDefinedFormat="" UserProperty1="" UserProperty2="" WordWrap="False">
+<ElementRef Name="Object" Type="CustomObject">
+<UniqueIdent ConstraintName="OBJ1" DeveloperKey="EXTERNAL_USAGE_DETAIL"/>
+<UniqueIdent ConstraintName="OBJ2" Name="External Usage Detail"/>
+</ElementRef>
+<ElementRef Name="RollUpFunction" Type="Function">
+<UniqueIdent ConstraintName="FUN1" DeveloperKey="EUL_110"/>
+<UniqueIdent ConstraintName="FUN2" Name="Detail"/>
+</ElementRef>
+</ColumnItem>
+<ColumnItem Alignment="Left" CaseDisplay="Unchanged" CaseStorage="Mixed" DataType="Varchar" Description="" DeveloperKey="SHIP_TO_CITY" DeveloperKeyFrozen="False" DisplayNullValue="" ExternalColumnName="SHIP_TO_CITY" FormatMask="" Heading="Ship To City" Hidden="False" Id="155111" MaxDataWidth="30" MaxDisplayWidth="" Name="Ship To City" Nullable="True" Placement="XAxis" Sequence="29" UserDefinedFormat="" UserProperty1="" UserProperty2="" WordWrap="False">
+<ElementRef Name="Object" Type="CustomObject">
+<UniqueIdent ConstraintName="OBJ1" DeveloperKey="EXTERNAL_USAGE_DETAIL"/>
+<UniqueIdent ConstraintName="OBJ2" Name="External Usage Detail"/>
+</ElementRef>
+<ElementRef Name="RollUpFunction" Type="Function">
+<UniqueIdent ConstraintName="FUN1" DeveloperKey="EUL_110"/>
+<UniqueIdent ConstraintName="FUN2" Name="Detail"/>
+</ElementRef>
+</ColumnItem>
+<ColumnItem Alignment="Left" CaseDisplay="Unchanged" CaseStorage="Mixed" DataType="Varchar" Description="" DeveloperKey="SHIP_TO_CUSTOMER_ID" DeveloperKeyFrozen="False" DisplayNullValue="" ExternalColumnName="SHIP_TO_CUSTOMER_ID" FormatMask="" Heading="Ship To Customer Id" Hidden="False" Id="155112" MaxDataWidth="30" MaxDisplayWidth="" Name="Ship To Customer Id" Nullable="True" Placement="XAxis" Sequence="24" UserDefinedFormat="" UserProperty1="" UserProperty2="" WordWrap="False">
+<ElementRef Name="Domain" Type="Domain">
+<UniqueIdent ConstraintName="DOM1" DeveloperKey="SHIP_TO_LOV"/>
+<UniqueIdent ConstraintName="DOM2" Name="Ship To Lov"/>
+</ElementRef>
+<ElementRef Name="Object" Type="CustomObject">
+<UniqueIdent ConstraintName="OBJ1" DeveloperKey="EXTERNAL_USAGE_DETAIL"/>
+<UniqueIdent ConstraintName="OBJ2" Name="External Usage Detail"/>
+</ElementRef>
+<ElementRef Name="RollUpFunction" Type="Function">
+<UniqueIdent ConstraintName="FUN1" DeveloperKey="EUL_110"/>
+<UniqueIdent ConstraintName="FUN2" Name="Detail"/>
+</ElementRef>
+</ColumnItem>
+<ColumnItem Alignment="Left" CaseDisplay="Unchanged" CaseStorage="Mixed" DataType="Varchar" Description="" DeveloperKey="SHIP_TO_CUSTOMER_NAME" DeveloperKeyFrozen="False" DisplayNullValue="" ExternalColumnName="SHIP_TO_CUSTOMER_NAME" FormatMask="" Heading="Ship To Customer Name" Hidden="False" Id="155113" MaxDataWidth="360" MaxDisplayWidth="" Name="Ship To Customer Name" Nullable="True" Placement="XAxis" Sequence="25" UserDefinedFormat="" UserProperty1="" UserProperty2="" WordWrap="False">
+<ElementRef Name="Object" Type="CustomObject">
+<UniqueIdent ConstraintName="OBJ1" DeveloperKey="EXTERNAL_USAGE_DETAIL"/>
+<UniqueIdent ConstraintName="OBJ2" Name="External Usage Detail"/>
+</ElementRef>
+<ElementRef Name="RollUpFunction" Type="Function">
+<UniqueIdent ConstraintName="FUN1" DeveloperKey="EUL_110"/>
+<UniqueIdent ConstraintName="FUN2" Name="Detail"/>
+</ElementRef>
+</ColumnItem>
+<ColumnItem Alignment="Left" CaseDisplay="Unchanged" CaseStorage="Mixed" DataType="Varchar" Description="" DeveloperKey="SHIP_TO_ID" DeveloperKeyFrozen="False" DisplayNullValue="" ExternalColumnName="SHIP_TO_ID" FormatMask="" Heading="Ship To Id" Hidden="False" Id="155114" MaxDataWidth="50" MaxDisplayWidth="" Name="Ship To Id" Nullable="True" Placement="XAxis" Sequence="19" UserDefinedFormat="" UserProperty1="" UserProperty2="" WordWrap="False">
+<ElementRef Name="Object" Type="CustomObject">
+<UniqueIdent ConstraintName="OBJ1" DeveloperKey="EXTERNAL_USAGE_DETAIL"/>
+<UniqueIdent ConstraintName="OBJ2" Name="External Usage Detail"/>
+</ElementRef>
+<ElementRef Name="RollUpFunction" Type="Function">
+<UniqueIdent ConstraintName="FUN1" DeveloperKey="EUL_110"/>
+<UniqueIdent ConstraintName="FUN2" Name="Detail"/>
+</ElementRef>
+</ColumnItem>
+<ColumnItem Alignment="Left" CaseDisplay="Unchanged" CaseStorage="Mixed" DataType="Varchar" Description="" DeveloperKey="SHIP_TO_KEY" DeveloperKeyFrozen="False" DisplayNullValue="" ExternalColumnName="SHIP_TO_KEY" FormatMask="" Heading="Ship To Key" Hidden="False" Id="155115" MaxDataWidth="200" MaxDisplayWidth="" Name="Ship To Key" Nullable="True" Placement="XAxis" Sequence="18" UserDefinedFormat="" UserProperty1="" UserProperty2="" WordWrap="False">
+<ElementRef Name="Object" Type="CustomObject">
+<UniqueIdent ConstraintName="OBJ1" DeveloperKey="EXTERNAL_USAGE_DETAIL"/>
+<UniqueIdent ConstraintName="OBJ2" Name="External Usage Detail"/>
+</ElementRef>
+<ElementRef Name="RollUpFunction" Type="Function">
+<UniqueIdent ConstraintName="FUN1" DeveloperKey="EUL_110"/>
+<UniqueIdent ConstraintName="FUN2" Name="Detail"/>
+</ElementRef>
+</ColumnItem>
+<ColumnItem Alignment="Left" CaseDisplay="Unchanged" CaseStorage="Mixed" DataType="Varchar" Description="" DeveloperKey="SHIP_TO_STATE" DeveloperKeyFrozen="False" DisplayNullValue="" ExternalColumnName="SHIP_TO_STATE" FormatMask="" Heading="Ship To State" Hidden="False" Id="155116" MaxDataWidth="2" MaxDisplayWidth="" Name="Ship To State" Nullable="True" Placement="XAxis" Sequence="31" UserDefinedFormat="" UserProperty1="" UserProperty2="" WordWrap="False">
+<ElementRef Name="Object" Type="CustomObject">
+<UniqueIdent ConstraintName="OBJ1" DeveloperKey="EXTERNAL_USAGE_DETAIL"/>
+<UniqueIdent ConstraintName="OBJ2" Name="External Usage Detail"/>
+</ElementRef>
+<ElementRef Name="RollUpFunction" Type="Function">
+<UniqueIdent ConstraintName="FUN1" DeveloperKey="EUL_110"/>
+<UniqueIdent ConstraintName="FUN2" Name="Detail"/>
+</ElementRef>
+</ColumnItem>
+<ColumnItem Alignment="Left" CaseDisplay="Unchanged" CaseStorage="Mixed" DataType="Varchar" Description="" DeveloperKey="SHIP_TO_ZIP" DeveloperKeyFrozen="False" DisplayNullValue="" ExternalColumnName="SHIP_TO_ZIP" FormatMask="" Heading="Ship To Zip" Hidden="False" Id="155117" MaxDataWidth="11" MaxDisplayWidth="" Name="Ship To Zip" Nullable="True" Placement="XAxis" Sequence="32" UserDefinedFormat="" UserProperty1="" UserProperty2="" WordWrap="False">
+<ElementRef Name="Object" Type="CustomObject">
+<UniqueIdent ConstraintName="OBJ1" DeveloperKey="EXTERNAL_USAGE_DETAIL"/>
+<UniqueIdent ConstraintName="OBJ2" Name="External Usage Detail"/>
+</ElementRef>
+<ElementRef Name="RollUpFunction" Type="Function">
+<UniqueIdent ConstraintName="FUN1" DeveloperKey="EUL_110"/>
+<UniqueIdent ConstraintName="FUN2" Name="Detail"/>
+</ElementRef>
+</ColumnItem>
+<ColumnItem Alignment="Right" CaseDisplay="Unchanged" CaseStorage="Unknown" DataType="Number" Description="" DeveloperKey="UNIT_PRICE" DeveloperKeyFrozen="False" DisplayNullValue="" ExternalColumnName="UNIT_PRICE" FormatMask="9999999999" Heading="Unit Price" Hidden="False" Id="155118" MaxDataWidth="10" MaxDisplayWidth="" Name="Unit Price" Nullable="True" Placement="Measure" Sequence="20" UserDefinedFormat="" UserProperty1="" UserProperty2="" WordWrap="False">
+<ElementRef Name="Object" Type="CustomObject">
+<UniqueIdent ConstraintName="OBJ1" DeveloperKey="EXTERNAL_USAGE_DETAIL"/>
+<UniqueIdent ConstraintName="OBJ2" Name="External Usage Detail"/>
+</ElementRef>
+<ElementRef Name="RollUpFunction" Type="Function">
+<UniqueIdent ConstraintName="FUN1" DeveloperKey="EUL_110"/>
+<UniqueIdent ConstraintName="FUN2" Name="Detail"/>
+</ElementRef>
+</ColumnItem>
+<ColumnItem Alignment="Left" CaseDisplay="Unchanged" CaseStorage="Mixed" DataType="Varchar" Description="" DeveloperKey="UOM" DeveloperKeyFrozen="False" DisplayNullValue="" ExternalColumnName="UOM" FormatMask="" Heading="Uom" Hidden="False" Id="155119" MaxDataWidth="10" MaxDisplayWidth="" Name="Uom" Nullable="True" Placement="XAxis" Sequence="7" UserDefinedFormat="" UserProperty1="" UserProperty2="" WordWrap="False">
+<ElementRef Name="Object" Type="CustomObject">
+<UniqueIdent ConstraintName="OBJ1" DeveloperKey="EXTERNAL_USAGE_DETAIL"/>
+<UniqueIdent ConstraintName="OBJ2" Name="External Usage Detail"/>
+</ElementRef>
+<ElementRef Name="RollUpFunction" Type="Function">
+<UniqueIdent ConstraintName="FUN1" DeveloperKey="EUL_110"/>
+<UniqueIdent ConstraintName="FUN2" Name="Detail"/>
+</ElementRef>
+</ColumnItem>
+<ColumnItem Alignment="Left" CaseDisplay="Unchanged" CaseStorage="Mixed" DataType="Varchar" Description="" DeveloperKey="WHOLESALE_PRODUCT_CODE" DeveloperKeyFrozen="False" DisplayNullValue="" ExternalColumnName="WHOLESALE_PRODUCT_CODE" FormatMask="" Heading="Wholesale Product Code" Hidden="False" Id="155120" MaxDataWidth="60" MaxDisplayWidth="" Name="Wholesale Product Code" Nullable="True" Placement="XAxis" Sequence="5" UserDefinedFormat="" UserProperty1="" UserProperty2="" WordWrap="False">
+<ElementRef Name="Object" Type="CustomObject">
+<UniqueIdent ConstraintName="OBJ1" DeveloperKey="EXTERNAL_USAGE_DETAIL"/>
+<UniqueIdent ConstraintName="OBJ2" Name="External Usage Detail"/>
+</ElementRef>
+<ElementRef Name="RollUpFunction" Type="Function">
+<UniqueIdent ConstraintName="FUN1" DeveloperKey="EUL_110"/>
+<UniqueIdent ConstraintName="FUN2" Name="Detail"/>
+</ElementRef>
+</ColumnItem>
+</CustomObject>
+<Domain ArrayFetchSize="100" Cached="True" Cardinality="0" DataType="Varchar" Description="Ship To Lov" DeveloperKey="SHIP_TO_LOV" DeveloperKeyFrozen="False" FetchFirst="True" Id="107740" LastExecuteTime="0" LogicalItemFlag="False" Name="Ship To Lov" ShowInItemNavigator="True" SystemGenerated="False" UseDistinctOrderBy="True" UserProperty1="" UserProperty2="">
+<ElementRef Name="ValuesItem" Type="ColumnItem">
+<UniqueIdent ConstraintName="ITE1" DeveloperKey="COLUMN_VALUE">
+<ElementRef Name="Object" Type="CustomObject">
+<UniqueIdent ConstraintName="OBJ1" DeveloperKey="SHIPTOLOV"/>
+<UniqueIdent ConstraintName="OBJ2" Name="Ship-To-LOV"/>
+</ElementRef>
+</UniqueIdent>
+<UniqueIdent ConstraintName="ITE2" Name="Column Value">
+<ElementRef Name="Object" Type="CustomObject">
+<UniqueIdent ConstraintName="OBJ1" DeveloperKey="SHIPTOLOV"/>
+<UniqueIdent ConstraintName="OBJ2" Name="Ship-To-LOV"/>
+</ElementRef>
+</UniqueIdent>
+</ElementRef>
+</Domain>
+<Domain ArrayFetchSize="100" Cached="True" Cardinality="0" DataType="Varchar" Description="PO Lov" DeveloperKey="PO_LOV" DeveloperKeyFrozen="False" FetchFirst="True" Id="107760" LastExecuteTime="0" LogicalItemFlag="False" Name="PO Lov" ShowInItemNavigator="True" SystemGenerated="False" UseDistinctOrderBy="True" UserProperty1="" UserProperty2="">
+<ElementRef Name="ValuesItem" Type="ColumnItem">
+<UniqueIdent ConstraintName="ITE1" DeveloperKey="COLUMN_VALUE">
+<ElementRef Name="Object" Type="CustomObject">
+<UniqueIdent ConstraintName="OBJ1" DeveloperKey="POLOV"/>
+<UniqueIdent ConstraintName="OBJ2" Name="PO-LOV"/>
+</ElementRef>
+</UniqueIdent>
+<UniqueIdent ConstraintName="ITE2" Name="Column Value">
+<ElementRef Name="Object" Type="CustomObject">
+<UniqueIdent ConstraintName="OBJ1" DeveloperKey="POLOV"/>
+<UniqueIdent ConstraintName="OBJ2" Name="PO-LOV"/>
+</ElementRef>
+</UniqueIdent>
+</ElementRef>
+</Domain>
+<Domain ArrayFetchSize="100" Cached="True" Cardinality="0" DataType="Varchar" Description="" DeveloperKey="COST_CENTER_LOV" DeveloperKeyFrozen="False" FetchFirst="True" Id="107780" LastExecuteTime="0" LogicalItemFlag="False" Name="Cost Center Lov" ShowInItemNavigator="True" SystemGenerated="False" UseDistinctOrderBy="True" UserProperty1="" UserProperty2="">
+<ElementRef Name="ValuesItem" Type="ColumnItem">
+<UniqueIdent ConstraintName="ITE1" DeveloperKey="COLUMN_VALUE">
+<ElementRef Name="Object" Type="CustomObject">
+<UniqueIdent ConstraintName="OBJ1" DeveloperKey="COST_CENTER_LOV"/>
+<UniqueIdent ConstraintName="OBJ2" Name="Cost Center LOV"/>
+</ElementRef>
+</UniqueIdent>
+<UniqueIdent ConstraintName="ITE2" Name="Column Value">
+<ElementRef Name="Object" Type="CustomObject">
+<UniqueIdent ConstraintName="OBJ1" DeveloperKey="COST_CENTER_LOV"/>
+<UniqueIdent ConstraintName="OBJ2" Name="Cost Center LOV"/>
+</ElementRef>
+</UniqueIdent>
+</ElementRef>
+</Domain>
+</EndUserLayerExport>

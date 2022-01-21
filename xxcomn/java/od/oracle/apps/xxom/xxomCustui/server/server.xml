@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding='windows-1252'?>
+<!DOCTYPE JboPackage SYSTEM "jbo_03_01.dtd">
+
+<JboPackage
+   Name="server"
+   SeparateXMLFiles="true"
+   PackageName="od.oracle.apps.xxom.xxomCustui.server" >
+   <DesignTime>
+      <Attr Name="_version" Value="9.0.3.13.75" />
+      <Attr Name="_ejbPackage" Value="false" />
+   </DesignTime>
+   <Containee
+      Name="xxomOrderSearchEO"
+      FullName="od.oracle.apps.xxom.xxomCustui.server.xxomOrderSearchEO"
+      ObjectType="Entity" >
+   </Containee>
+   <Containee
+      Name="xxomOrderSerchVO"
+      FullName="od.oracle.apps.xxom.xxomCustui.server.xxomOrderSerchVO"
+      ObjectType="ViewObject" >
+   </Containee>
+   <Containee
+      Name="xxomCustuiAM"
+      FullName="od.oracle.apps.xxom.xxomCustui.server.xxomCustuiAM"
+      ObjectType="AppModule" >
+   </Containee>
+   <Containee
+      Name="xxomOrderHeaderAttEO"
+      FullName="od.oracle.apps.xxom.xxomCustui.server.xxomOrderHeaderAttEO"
+      ObjectType="Entity" >
+   </Containee>
+   <Containee
+      Name="xxomOrderHeaderAttVO"
+      FullName="od.oracle.apps.xxom.xxomCustui.server.xxomOrderHeaderAttVO"
+      ObjectType="ViewObject" >
+   </Containee>
+   <Containee
+      Name="xxomOrderHeaderAttAO"
+      FullName="od.oracle.apps.xxom.xxomCustui.server.xxomOrderHeaderAttAO"
+      ObjectType="Association" >
+   </Containee>
+   <Containee
+      Name="xxomOrderPaymentsEO"
+      FullName="od.oracle.apps.xxom.xxomCustui.server.xxomOrderPaymentsEO"
+      ObjectType="Entity" >
+   </Containee>
+   <Containee
+      Name="xxomOrderPaymentsVO"
+      FullName="od.oracle.apps.xxom.xxomCustui.server.xxomOrderPaymentsVO"
+      ObjectType="ViewObject" >
+   </Containee>
+   <Containee
+      Name="xxomOrderPaymentsAO"
+      FullName="od.oracle.apps.xxom.xxomCustui.server.xxomOrderPaymentsAO"
+      ObjectType="Association" >
+   </Containee>
+   <Containee
+      Name="xxomOrderLinesEO"
+      FullName="od.oracle.apps.xxom.xxomCustui.server.xxomOrderLinesEO"
+      ObjectType="Entity" >
+   </Containee>
+   <Containee
+      Name="xxomOrderLinesVO"
+      FullName="od.oracle.apps.xxom.xxomCustui.server.xxomOrderLinesVO"
+      ObjectType="ViewObject" >
+   </Containee>
+   <Containee
+      Name="xxomOrderLinesAO"
+      FullName="od.oracle.apps.xxom.xxomCustui.server.xxomOrderLinesAO"
+      ObjectType="Association" >
+   </Containee>
+   <Containee
+      Name="xxomOrderLinesAttEO"
+      FullName="od.oracle.apps.xxom.xxomCustui.server.xxomOrderLinesAttEO"
+      ObjectType="Entity" >
+   </Containee>
+   <Containee
+      Name="xxomOrderLinesAttVO"
+      FullName="od.oracle.apps.xxom.xxomCustui.server.xxomOrderLinesAttVO"
+      ObjectType="ViewObject" >
+   </Containee>
+   <Containee
+      Name="xxomInventoryEO"
+      FullName="od.oracle.apps.xxom.xxomCustui.server.xxomInventoryEO"
+      ObjectType="Entity" >
+   </Containee>
+   <Containee
+      Name="xxomOrderAdjustmentsEO"
+      FullName="od.oracle.apps.xxom.xxomCustui.server.xxomOrderAdjustmentsEO"
+      ObjectType="Entity" >
+   </Containee>
+   <Containee
+      Name="xxomOrderAdjustmentsVO"
+      FullName="od.oracle.apps.xxom.xxomCustui.server.xxomOrderAdjustmentsVO"
+      ObjectType="ViewObject" >
+   </Containee>
+   <Containee
+      Name="xxomLineAdjustmentsEO"
+      FullName="od.oracle.apps.xxom.xxomCustui.server.xxomLineAdjustmentsEO"
+      ObjectType="Entity" >
+   </Containee>
+   <Containee
+      Name="xxomLineAdjustmentsVO"
+      FullName="od.oracle.apps.xxom.xxomCustui.server.xxomLineAdjustmentsVO"
+      ObjectType="ViewObject" >
+   </Containee>
+   <Containee
+      Name="xxomLineAdjustmentsAO"
+      FullName="od.oracle.apps.xxom.xxomCustui.server.xxomLineAdjustmentsAO"
+      ObjectType="Association" >
+   </Containee>
+</JboPackage>

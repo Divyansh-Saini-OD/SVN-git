@@ -1,0 +1,27 @@
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     ON
+WHENEVER SQLERROR CONTINUE
+WHENEVER OSERROR EXIT FAILURE ROLLBACK
+
+-- +=====================================================================+
+-- |                  Office Depot - Project Simplify                    |
+-- |                       WIPRO Technologies                            |
+-- +=====================================================================+
+-- | Name :        XX_AR_CS_DOCID_CHD_HISTORY_N1                         |
+-- | Description : Index suggested by Office Depot Team for performance  |
+-- |                                                                     |
+-- |                                                                     |
+-- |Change Record:                                                       |
+-- |===============                                                      |
+-- |Version   Date           Author              Remarks                 |
+-- |======    ==========     =============       ======================= |
+-- |1.0       04-DEC-2009    Vinaykumar S        Initial version         |
+-- |                                                                     |
+-- |                                                                     |
+-- +=====================================================================+
+CREATE INDEX XXFIN.XX_AR_CS_DOCID_CHD_HISTORY_N1 ON XXFIN.XX_AR_CS_DOCID_STR_CHD_HISTORY(CUSTOMER_ID, CUSTOMER_SITE_ID, STATEMENT_DATE );
+
+SHOW ERROR

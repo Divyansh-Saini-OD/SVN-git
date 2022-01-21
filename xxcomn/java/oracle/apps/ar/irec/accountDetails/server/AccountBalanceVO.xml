@@ -1,0 +1,57 @@
+<?xml version='1.0' encoding='windows-1252' ?>
+<!DOCTYPE ViewObject SYSTEM "jbo_03_01.dtd">
+
+<!-- $Header: AccountBalanceVO.xml 120.6 2010/12/21 11:52:17 nkanchan ship $ -->
+
+<ViewObject
+   Name="AccountBalanceVO"
+   BindingStyle="Oracle"
+   CustomQuery="true"
+   RowClass="oracle.apps.ar.irec.accountDetails.server.AccountBalanceVORowImpl"
+   ComponentClass="oracle.apps.ar.irec.accountDetails.server.AccountBalanceVOImpl"
+   FetchMode="FETCH_AS_NEEDED"
+   UseGlueCode="false" >
+   <SQLQuery><![CDATA[
+SELECT nvl(SUM (amount_due_remaining ), 0) AS SUM_AMOUNT
+FROM AR_PAYMENT_SCHEDULES ArPaymentSchedules, ra_customer_trx ct
+WHERE class IN ('INV', 'CB', 'DM', 'DEP','CM','PMT')
+AND ArPaymentSchedules.customer_trx_id = ct.customer_trx_id(+)
+   ]]></SQLQuery>
+   <DesignTime>
+      <Attr Name="_rowSuperClassName" Value="oracle.apps.ar.irec.framework.IROAViewRowImpl" />
+      <Attr Name="_isCodegen" Value="true" />
+      <Attr Name="_isExpertMode" Value="true" />
+      <Attr Name="_version" Value="10.1.3.41.57" />
+      <Attr Name="_objectSuperClassName" Value="oracle.apps.ar.irec.accountDetails.server.TransactionTableVOImpl" />
+      <Attr Name="_codeGenFlag2" Value="Access|Coll" />
+   </DesignTime>
+   <ViewAttribute
+      Name="SumAmount"
+      IsUpdateable="false"
+      IsQueriable="false"
+      IsPersistent="false"
+      Type="oracle.jbo.domain.Number"
+      ColumnType="NUMBER"
+      AliasName="SUM_AMOUNT"
+      Expression="nvl(SUM ( amount_due_remaining ), 0)"
+      SQLType="NUMERIC" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="SumAmountFormatted"
+      IsQueriable="false"
+      IsPersistent="false"
+      Type="java.lang.String"
+      ColumnType="$none$"
+      AliasName="SUM_AMOUNT_FORMATTED"
+      SQLType="VARCHAR" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="CurrencyCode"
+      IsQueriable="false"
+      IsPersistent="false"
+      Type="java.lang.String"
+      ColumnType="$none$"
+      AliasName="CURRENCY_CODE"
+      SQLType="VARCHAR" >
+   </ViewAttribute>
+</ViewObject>

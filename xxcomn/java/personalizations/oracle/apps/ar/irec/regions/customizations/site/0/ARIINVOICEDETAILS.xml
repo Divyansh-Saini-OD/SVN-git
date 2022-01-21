@@ -1,0 +1,39 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<customization xmlns="http://xmlns.oracle.com/jrad" version="9.0.5.4.89_560" xml:lang="en-US" customizes="/oracle/apps/ar/irec/regions/ARIINVOICEDETAILS" developerMode="false" package="/oracle/apps/ar/irec/regions/customizations/site/0" xmlns:oa="http://xmlns.oracle.com/oa" xmlns:ui="http://xmlns.oracle.com/uix/ui">
+   <modifications>
+      <modify element="Aricustnumber" prompt="Account Number"/>
+      <modify element="Irnestedregion4" rendered="true"/>
+      <move element="Aridate" after="Irtransaction"/>
+      <move element="Arirelateddate" after="Aridate"/>
+      <move element="Irpurchaseorder" after="Arirelateddate"/>
+      <move element="Irsalesorder" after="Irpurchaseorder"/>
+      <move element="Irproject" after="Irsalesorder"/>
+      <move element="Irshipreference" after="Irproject"/>
+      <move element="Arishipvia" after="Irshipreference"/>
+      <move element="Aricustnumber" after="Arishipvia"/>
+      <move element="Arirelatednumber" after="Aricustnumber"/>
+      <move element="InvoiceAttachments" after="Arirelatednumber"/>
+      <move element="XXBillingID" after="InvoiceAttachments"/>
+      <move element="XXSPCStoreDateRegTrans" after="XXBillingID"/>
+      <insert after="Ariamount">
+         <oa:messageStyledText id="XXAriamount" adminCustomizable="true" cellNoWrapFormat="false" dataType="VARCHAR2" initSortSeq="none" maximumLength="20" prompt="Unit Price Formatted" queryable="false" rendered="true" required="no" scope="."
+                               selectiveSearchCriteria="false" serverUnvalidated="false" sortState="no" tipType="none" totalValue="false" userCustomizable="false" vAlign="middle" viewAttr="UnitSellingPriceFormatted" viewName="InvoiceLinesVO"
+                               warnAboutChanges="true" xmlns:oa="http://xmlns.oracle.com/oa"/>
+      </insert>
+      <modify element="Ariamount" rendered="false"/>
+      <modify element="Arinestedregion2____1" prompt="" rendered="false"/>
+      <modify element="Irnestedregion2" controllerClass="od.oracle.apps.ar.irec.accountDetails.webui.ODShipToAddressCO"/>
+      <modify element="ArinumberHeader" prompt="Line Num"/>
+      <insert before="AridescriptionCol">
+         <oa:column id="XXItemNumberCol" adminCustomizable="true" bandingShade="none" cellNoWrapFormat="false" columnDataFormat="textFormat" displayGrid="true" rendered="true" scope="." totalValue="false" userCustomizable="false" xmlns:oa="http://xmlns.oracle.com/oa">
+            <ui:columnHeader xmlns:ui="http://xmlns.oracle.com/uix/ui">
+               <oa:sortableHeader id="XXItemNumberHeader" adminCustomizable="true" cellNoWrapFormat="false" initSortSeq="none" prompt="Catalog Item Num" rendered="true" required="no" scope="." sortState="no" userCustomizable="false"/>
+            </ui:columnHeader>
+            <ui:contents xmlns:ui="http://xmlns.oracle.com/uix/ui">
+               <oa:messageStyledText id="XXItemNumber" adminCustomizable="true" cellNoWrapFormat="false" dataType="VARCHAR2" initSortSeq="none" prompt="Catalog Item Num" queryable="false" rendered="true" required="no" scope="." selectiveSearchCriteria="false" serverUnvalidated="false" sortState="no" tipType="none" totalValue="false" userCustomizable="false" vAlign="middle" viewAttr="XXItemNumber" viewName="InvoiceLinesVO" warnAboutChanges="true"/>
+            </ui:contents>
+         </oa:column>
+      </insert>
+      <modify element="AritaxableCol" rendered="false"/>
+   </modifications>
+</customization>

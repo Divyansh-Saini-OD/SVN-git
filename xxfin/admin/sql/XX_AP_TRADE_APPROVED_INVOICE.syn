@@ -1,0 +1,31 @@
+SET VERIFY OFF;
+SET SHOW OFF;
+SET ECHO OFF;
+SET TAB OFF;
+SET FEEDBACK OFF;
+ 
+WHENEVER SQLERROR CONTINUE;
+ 
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+-- +===========================================================================+
+-- |                  Office Depot - Project Simplify                          |
+-- +===========================================================================+
+-- | Name :          APPS.XX_AP_TRADE_APPROVED_INVOICE                           |
+-- | Description :   Script to create synonym for 
+-- |                                   XXFIN.XX_AP_TRADE_APPROVED_INVOICE  table |
+-- |                                                                           |
+-- |                                                                           |
+-- |Change Record:                                                             |
+-- |===============                                                            |
+-- |Version      Date           Author                  Remarks                |
+-- |=======    ==========     =============             ====================== |
+-- | DRAFT 1.0 18-JAN-2018   Priyam Parmar            Initial draft version       |
+-- +===========================================================================+
+
+ 
+
+Create  or replace public synonym XX_AP_TRADE_APPROVED_INVOICE for XXFIN.XX_AP_TRADE_APPROVED_INVOICE;
+
+ 
+Show error

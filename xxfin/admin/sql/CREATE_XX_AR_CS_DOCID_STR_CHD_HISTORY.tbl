@@ -1,0 +1,50 @@
+-- +==========================================================================+
+-- |                  Office Depot - Project Simplify                         |
+-- +==========================================================================+
+-- | Name :XXFIN.XX_AR_CS_DOCID_STR_CHD_HISTORY                               |
+-- | Description :   This table is used to hold statement Date, Customers Site|
+-- |                 Number and Customer Number and it will be referred       |
+-- |                 while resending the customer statement                   |
+-- |Change Record:                                                            |
+-- |===============                                                           |
+-- |Version      Date           Author               Remarks                  |
+-- |=======    ==========     =============        ===========================|
+-- | DRAFT 1.0 05-NOV-2009     Vinaykumar S      Initial draft version(CR 622)|
+-- |                                                                          |
+-- +==========================================================================+
+
+   SET SHOW         OFF
+   SET VERIFY       OFF
+   SET ECHO         OFF
+   SET TAB          OFF
+   SET FEEDBACK     ON
+
+        CREATE TABLE XX_AR_CS_DOCID_STR_CHD_HISTORY(
+        STATEMENT_DATE           DATE             NOT NULL,
+        CUSTOMER_ID              NUMBER           NOT NULL, 
+        CUSTOMER_SITE_ID         NUMBER           NOT NULL,
+        CONS_BILL_NUMBER         VARCHAR2(30),
+        TRX_NUMBER               VARCHAR2(20)     NOT NULL,
+        TRX_DATE                 DATE             NOT NULL,
+        TRX_CLASS                VARCHAR2(25)     NOT NULL,
+        SOFT_ATTRIBUTE1          VARCHAR2(100),
+        SOFT_ATTRIBUTE2          VARCHAR2(100),
+        SOFT_ATTRIBUTE3          VARCHAR2(100),
+        SOFT_ATTRIBUTE4          VARCHAR2(100),
+        ORIGINAL_AMOUNT          NUMBER           NOT NULL,
+        BALANCE_DUE              NUMBER,
+        DUE_DATE                 DATE,
+        CURRENT_AMT              NUMBER,
+        PAST_DUE_1               NUMBER,
+        PAST_DUE_2               NUMBER,
+        PAST_DUE_3               NUMBER,
+        PAST_DUE_4               NUMBER,
+        CREATION_DATE            DATE             NOT NULL,
+        CREATED_BY               NUMBER,
+        LAST_UPDATE_DATE         DATE             NOT NULL,
+        LAST_UPDATED_BY          NUMBER           NOT NULL,
+        BATCH_ID                 NUMBER           NOT NULL,
+        LOCATION                 VARCHAR2(40),
+        CUSTOMER_NUMBER          VARCHAR2(30),
+        STATEMENT_CYCLE          VARCHAR2(15)     NOT NULL);
+SHOW ERROR

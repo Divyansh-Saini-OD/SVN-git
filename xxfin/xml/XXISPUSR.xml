@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="WINDOWS-1252" ?>
+<dataTemplate name="XXISPUSR" description="OD: iSupplier Registered Users Report" Version="1.0">
+<parameters>
+ <parameter name="p_vend_no" datatype="character" /> 
+ <parameter name="p_vend_name" datatype="character" />
+ <parameter name="p_from_date" datatype="character" />
+ <parameter name="p_to_date" datatype="character" />
+ <parameter name="p_reg_by" datatype="character" />
+</parameters>
+<dataQuery>
+<sqlStatement name="Q_ISUP">
+<![CDATA[
+    SELECT a.user_name user_name,
+	      a.email_address email_address,
+		a.start_date date_setup,
+		a.end_date term_date,
+		sup.segment1 vendor_no,
+		sup.vendor_name vendor_name,
+		site.vendor_site_code vendor_site_code,
+           cr.user_name created_by,
+           DECODE(sign(trunc(NVL(a.end_date,(sysdate+1))-sysdate)),1,'Active',0,'Active',-1,'Inactive') User_status
+     FROM fnd_user cr,
+	     ap_supplier_sites_all site,
+          ap_suppliers sup,
+          AK_WEB_USER_SEC_ATTR_VALUES ssite, 
+          AK_WEB_USER_SEC_ATTR_VALUES suser,
+          fnd_user a
+    WHERE TRUNC(a.creation_date) BETWEEN TRUNC(apps.fnd_conc_date.string_to_date(NVL(:p_from_date,a.creation_date)))
+			AND  TRUNC(apps.fnd_conc_date.string_to_date(NVL(:p_to_date,a.creation_date)))
+      AND sup.segment1=nvl(:p_vend_no,sup.segment1)
+      AND sup.vendor_name=nvl(:p_vend_name,sup.vendor_name)
+      AND suser.web_user_id=a.user_id
+      AND suser.attribute_code='ICX_SUPPLIER_ORG_ID'
+      AND ssite.web_user_id=a.user_id
+	 AND suser.attribute_application_id=177
+      AND ssite.attribute_code='ICX_SUPPLIER_SITE_ID'
+      AND ssite.attribute_application_id=177
+      AND sup.vendor_id=suser.number_value
+      AND site.vendor_site_id=ssite.number_value
+      AND a.created_by=NVL(:p_reg_by,a.created_by)
+      AND cr.user_id=a.created_by
+    ORDER BY a.user_name,site.vendor_site_code
+]]>
+</sqlStatement>
+</dataQuery>
+<dataStructure>
+<group name="G_ISUP" source="Q_ISUP">
+<element name="USER_NAME" value="USER_NAME" />
+<element name="EMAIL_ADDRESS" value="EMAIL_ADDRESS" />
+<element name="DATE_SETUP" value="DATE_SETUP" />
+<element name="CREATED_BY" value="CREATED_BY" />
+<element name="TERM_DATE" value="TERM_DATE" />
+<element name="USER_STATUS" value="USER_STATUS" />
+<element name="VENDOR_NO" value="VENDOR_NO" />
+<element name="VENDOR_NAME" value="VENDOR_NAME" />
+<group name="G_ISUP_D" source="Q_ISUP">
+<element name="VENDOR_SITE_CODE" value="VENDOR_SITE_CODE" />
+</group>
+</group>
+</dataStructure>
+</dataTemplate>

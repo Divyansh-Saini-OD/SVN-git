@@ -1,0 +1,53 @@
+-- +=====================================================================+
+-- |                  Office Depot - Project Simplify                    |
+-- |                       	ORACLE                            	 |
+-- +=====================================================================+
+-- | Name :  XX_TEMP_CERTEGY_CUST_MASTER.tbl                             |
+-- | Description :   XX_TEMP_CERTEGY_CUST_MASTER                      	 |
+-- |                                                                     |
+-- |                                                                     |
+-- |Change Record:                                                       |
+-- |===============                                                      |
+-- |Version   Date              Author              Remarks              |
+-- |======   ==========     =============        ======================= |
+-- |1.0      15-JAN-2015   Deepak Viswanathan    Created Base version    |
+-- |        	         			                         |
+-- +=====================================================================+
+
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     ON
+
+   DROP TABLE "XXFIN"."XX_TEMP_CERTEGY_CUST_MASTER";
+
+    CREATE TABLE "XXFIN"."XX_TEMP_CERTEGY_CUST_MASTER" 
+   (	"DIRECT_FLAG" VARCHAR2(3 BYTE), 
+	"CUST_DOC_ID" NUMBER(22,5), 
+	"DOCUMENT_ID" NUMBER(22,5), 
+	"SORT_BY" VARCHAR2(12 BYTE), 
+	"DOC_FLAG" VARCHAR2(150 BYTE), 
+	"TOTAL_COPIES" NUMBER(22,5), 
+	"LAYOUT" VARCHAR2(9 BYTE), 
+	"FORMAT" CHAR(17 BYTE), 
+	"DELIVERY" VARCHAR2(150 BYTE), 
+	"TOTAL_BY" VARCHAR2(37 BYTE), 
+	"PAGE_BREAK" VARCHAR2(37 BYTE), 
+	"BILLING_TERM" VARCHAR2(150 BYTE), 
+	"EXTENSION_ID" NUMBER(15,0) NOT NULL ENABLE, 
+	"CUSTOMER_ID" NUMBER(15,0) NOT NULL ENABLE, 
+	"CREATION_DATE" DATE, 
+	"EFFEC_START_DATE" DATE, 
+	"BILLING_ID" VARCHAR2(30 BYTE) NOT NULL ENABLE, 
+	"SALES_CHANNEL" VARCHAR2(150 BYTE), 
+	"CUSTOMER_NAME" VARCHAR2(120 BYTE), 
+	"LEGACY_CUST" VARCHAR2(24 BYTE), 
+	"INFO_BILL_TERM" VARCHAR2(45 BYTE),
+	"ORG_ID" NUMBER
+   ); 
+
+   GRANT SELECT ON XXFIN.XX_TEMP_CERTEGY_CUST_MASTER TO ERP_SYSTEM_TABLE_SELECT_ROLE;
+   
+SHOW ERROR
+/

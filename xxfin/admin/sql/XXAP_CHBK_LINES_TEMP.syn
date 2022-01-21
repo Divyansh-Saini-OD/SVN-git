@@ -1,0 +1,20 @@
+REM============================================================================================
+REM                                 Start Of Script
+REM============================================================================================
+
+--+=============================================================================================+--
+--|                                                                                             |--
+--| Program Name   : CREATE synonym for XXAP_CHBK_LINES_TEMPSUPPLIER_STG.tbl                    |--
+--|                                                                                             |--
+--| Purpose        : Create Custom Tables .                                                     |--
+--|                  The Objects created are:                                                   |--
+--|                                                                                             |--
+--|                1. Synonym for XXAP_CHBK_LINES_TEMP                              			|--
+--| RICE ID : R1050                                                                             |--
+--| Change History  :                                                                           |--
+--| Version           Date             Changed By              Description                      |--
+--+=============================================================================================+--
+--| 1.0              21-SEP-2017       Ragni Gupta         Intial                         		|--
+--+=============================================================================================+--
+
+CREATE SYNONYM XXAP_CHBK_LINES_TEMP FOR XXFIN.XXAP_CHBK_LINES_TEMP;

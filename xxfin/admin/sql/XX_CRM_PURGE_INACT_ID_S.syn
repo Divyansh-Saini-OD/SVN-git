@@ -1,0 +1,27 @@
+-- +==========================================================================+
+-- |                               Office Depot                               |
+-- +==========================================================================+
+-- | Script to create the following synonym                                   |
+-- |                                                                          |
+-- |             Synonym: XX_CRM_PURGE_INACT_ID_S                             |
+-- |Change Record:                                                            |
+-- |===============                                                           |
+-- |Version   Date         Author               Remarks                       |
+-- |=======   ===========  =============        ==============================|
+-- | V1.0     12-FEB-2021  Ankit Jaiswal       Initial version                |
+-- +==========================================================================+
+
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     ON
+
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+
+CREATE SYNONYM APPS.XX_CRM_PURGE_INACT_ID_S FOR XXFIN.XX_CRM_PURGE_INACT_ID_S;
+
+SHOW ERRORS
+

@@ -1,0 +1,23 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<customization xmlns="http://xmlns.oracle.com/jrad" version="9.0.6.0.0_64" xml:lang="en-US" customizes="/oracle/apps/cs/csz/task/webui/TasksSummaryHideShowRN">
+   <modifications>
+      <move element="SummTaskType" after="SummSubject"/>
+      <move element="SummStatus" after="SummTaskType"/>
+      <move element="SummUpdateIcon" after="SummStatus"/>
+      <move element="SummTaskNumber" after="SummUpdateIcon"/>
+      <move element="SummPriority" after="SummTaskNumber"/>
+      <move element="SummDueDate" after="SummPriority"/>
+      <move element="SummDebriefIcon" after="SummDueDate"/>
+      <move element="SummPartsIcon" after="SummDebriefIcon"/>
+      <move element="SummScheduleIcon" after="SummPartsIcon"/>
+      <modify element="SummTaskNumber" rendered="false"/>
+      <modify element="SummPriority" rendered="false"/>
+      <modify element="SummDueDate" rendered="false"/>
+      <modify element="SummDebriefIcon" rendered="false"/>
+      <modify element="SummPartsIcon" rendered="false"/>
+      <modify element="SummScheduleIcon" rendered="false"/>
+      <modify element="TasksRowLayoutRN" rendered="false"/>
+      <modify element="TemplChkBoxRowLayout" rendered="false"/>
+      <modify element="TaskTypeHdr" prompt="Type"/>
+   </modifications>
+</customization>

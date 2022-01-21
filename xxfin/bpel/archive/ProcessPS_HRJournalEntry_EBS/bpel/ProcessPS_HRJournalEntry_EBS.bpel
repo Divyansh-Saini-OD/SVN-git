@@ -1,0 +1,348 @@
+<?xml version = "1.0" encoding = "UTF-8" ?>
+<!--
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  Oracle JDeveloper BPEL Designer 
+  
+  Created: Tue Jul 31 09:33:08 EDT 2007
+  Author:  ravi-kiran
+  Purpose: Empty BPEL Process
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+-->
+<process name="ProcessPS_HRJournalEntry_EBS"
+         targetNamespace="http://xmlns.oracle.com/ProcessPS_HRJournalEntry_EBS"
+         xmlns="http://schemas.xmlsoap.org/ws/2003/03/business-process/"
+         xmlns:xp20="http://www.oracle.com/XSL/Transform/java/oracle.tip.pc.services.functions.Xpath20"
+         xmlns:bpws="http://schemas.xmlsoap.org/ws/2003/03/business-process/"
+         xmlns:ns4="http://xmlns.oracle.com/PostJournalEntryGLInsert"
+         xmlns:ns7="http://xmlns.oracle.com/ODErrorLogger"
+         xmlns:ids="http://xmlns.oracle.com/bpel/services/IdentityService/xpath"
+         xmlns:ldap="http://schemas.oracle.com/xpath/extension/ldap"
+         xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+         xmlns:ns5="http://www.openapplications.org/oagis/9"
+         xmlns:client="http://xmlns.oracle.com/ProcessPS_HRJournalEntry_EBS"
+         xmlns:ora="http://schemas.oracle.com/xpath/extension"
+         xmlns:ns6="http://www.openapplications.org/oagis/9/officedepot/1"
+         xmlns:ns9="http://schemas.oracle.com/service/bpel/common"
+         xmlns:hwf="http://xmlns.oracle.com/bpel/workflow/xpath"
+         xmlns:ns1="http://xmlns.oracle.com/pcbpel/adapter/ftp/PSGLFTPRead/"
+         xmlns:ehdr="http://www.oracle.com/XSL/Transform/java/oracle.tip.esb.server.headers.ESBHeaderFunctions"
+         xmlns:ns3="http://xmlns.oracle.com/pcbpel/adapter/ftp/"
+         xmlns:ns2="http://TargetNamespace.com/PSGLFTPRead"
+         xmlns:bpelx="http://schemas.oracle.com/bpel/extension"
+         xmlns:orcl="http://www.oracle.com/XSL/Transform/java/oracle.tip.pc.services.functions.ExtFunc"
+         xmlns:ns8="ODError">
+  <!-- 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+      PARTNERLINKS                                                      
+      List of services participating in this BPEL process               
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  -->
+  <partnerLinks>
+    <partnerLink myRole="Get_role" name="PSGLFTPRead"
+                 partnerLinkType="ns1:Get_plt"/>
+    <partnerLink myRole="PostJournalEntryGLInsertProvider"
+                 name="PostJournalEntryGLInsert"
+                 partnerRole="PostJournalEntryGLInsertProvider"
+                 partnerLinkType="ns4:PostJournalEntryGLInsert"/>
+    <partnerLink myRole="ODErrorLoggerRequester" name="ODErrorLogger"
+                 partnerRole="ODErrorLoggerProvider"
+                 partnerLinkType="ns7:ODErrorLogger"/>
+  </partnerLinks>
+  <!-- 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+      VARIABLES                                                        
+      List of messages and XML documents used within this BPEL process 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  -->
+  <variables>
+    <variable name="RcvGL_PS_Pay_Get_In" messageType="ns1:PSJournalEntry_msg"/>
+    <variable name="VarFTPHeader" messageType="ns3:InboundHeader_msg"/>
+    <variable name="InvkPostJournalEntryGLInsert_initiate_In"
+              messageType="ns4:PostJournalEntryGLInsertRequestMessage"/>
+    <variable name="InvokeODErrorAll_initiate_In"
+              messageType="ns7:ODErrorLoggerRequestMessage"/>
+    <variable name="InvokeODErrorSelection_initiate_In"
+              messageType="ns7:ODErrorLoggerRequestMessage"/>
+    <variable name="InvokeODErrorBinding_initiate_In"
+              messageType="ns7:ODErrorLoggerRequestMessage"/>
+    <variable name="InvokeODErrorRemote_initiate_In"
+              messageType="ns7:ODErrorLoggerRequestMessage"/>
+    <variable name="Exception" messageType="bpelx:RuntimeFaultMessage"/>
+    <variable name="XSLT_Param" element="ns9:parameters"/>
+  </variables>
+  <faultHandlers>
+    <catch faultName="bpws:selectionFailure" faultVariable="Exception">
+      <sequence name="Sequence_Selection_Failure">
+        <assign name="AssignODErrorSelection">
+          <copy>
+            <from expression="concat(ora:getProcessId(),'-',ora:getProcessVersion())"/>
+            <to variable="InvokeODErrorSelection_initiate_In" part="payload"
+                query="/ns8:ErrorData/ns8:ProcessInfo/ns8:BusinessProcessName"/>
+          </copy>
+          <copy>
+            <from expression="ora:getInstanceId()"/>
+            <to variable="InvokeODErrorSelection_initiate_In" part="payload"
+                query="/ns8:ErrorData/ns8:ProcessInfo/ns8:BusinessProcessId"/>
+          </copy>
+          <copy>
+            <from expression='"ProcessPS_HRJournalEntry_EBS.bpel"'/>
+            <to variable="InvokeODErrorSelection_initiate_In" part="payload"
+                query="/ns8:ErrorData/ns8:ProcessInfo/ns8:BusinessProcessStep"/>
+          </copy>
+          <copy>
+            <from expression="ora:getDomainId()"/>
+            <to variable="InvokeODErrorSelection_initiate_In" part="payload"
+                query="/ns8:ErrorData/ns8:ProcessInfo/ns8:BusinessProcessDomain"/>
+          </copy>
+          <copy>
+            <from expression="ora:getProcessURL()"/>
+            <to variable="InvokeODErrorSelection_initiate_In" part="payload"
+                query="/ns8:ErrorData/ns8:ProcessInfo/ns8:SystemName"/>
+          </copy>
+          <copy>
+            <from variable="Exception" part="code"/>
+            <to variable="InvokeODErrorSelection_initiate_In" part="payload"
+                query="/ns8:ErrorData/ns8:ErrorDetails/ns8:ErrorCode"/>
+          </copy>
+          <copy>
+            <from variable="Exception" part="summary"/>
+            <to variable="InvokeODErrorSelection_initiate_In" part="payload"
+                query="/ns8:ErrorData/ns8:ErrorDetails/ns8:ErrorDescription"/>
+          </copy>
+          <copy>
+            <from variable="Exception" part="detail"/>
+            <to variable="InvokeODErrorSelection_initiate_In" part="payload"
+                query="/ns8:ErrorData/ns8:ErrorDetails/ns8:ErrorText"/>
+          </copy>
+          <copy>
+            <from expression='"Selection Failure Exception"'/>
+            <to variable="InvokeODErrorSelection_initiate_In" part="payload"
+                query="/ns8:ErrorData/ns8:ErrorDetails/ns8:ErrorType"/>
+          </copy>
+          <copy>
+            <from expression="xp20:current-date()"/>
+            <to variable="InvokeODErrorSelection_initiate_In" part="payload"
+                query="/ns8:ErrorData/ns8:ErrorDetails/ns8:ErrorDateTime"/>
+          </copy>
+        </assign>
+        <invoke name="InvokeODErrorSelection" partnerLink="ODErrorLogger"
+                portType="ns7:ODErrorLogger" operation="initiate"
+                inputVariable="InvokeODErrorSelection_initiate_In"/>
+      </sequence>
+    </catch>
+    <catch faultName="bpelx:remoteFault" faultVariable="Exception">
+      <sequence name="Sequence_Remote">
+        <assign name="AssignODErrorRemote">
+          <copy>
+            <from expression="concat(ora:getProcessId(),'-',ora:getProcessVersion())"/>
+            <to variable="InvokeODErrorRemote_initiate_In" part="payload"
+                query="/ns8:ErrorData/ns8:ProcessInfo/ns8:BusinessProcessName"/>
+          </copy>
+          <copy>
+            <from expression="ora:getInstanceId()"/>
+            <to variable="InvokeODErrorRemote_initiate_In" part="payload"
+                query="/ns8:ErrorData/ns8:ProcessInfo/ns8:BusinessProcessId"/>
+          </copy>
+          <copy>
+            <from expression='"ProcessPS_HRJournalEntry_EBS.bpel"'/>
+            <to variable="InvokeODErrorRemote_initiate_In" part="payload"
+                query="/ns8:ErrorData/ns8:ProcessInfo/ns8:BusinessProcessStep"/>
+          </copy>
+          <copy>
+            <from expression="ora:getDomainId()"/>
+            <to variable="InvokeODErrorRemote_initiate_In" part="payload"
+                query="/ns8:ErrorData/ns8:ProcessInfo/ns8:BusinessProcessDomain"/>
+          </copy>
+          <copy>
+            <from expression="ora:getProcessURL()"/>
+            <to variable="InvokeODErrorRemote_initiate_In" part="payload"
+                query="/ns8:ErrorData/ns8:ProcessInfo/ns8:SystemName"/>
+          </copy>
+          <copy>
+            <from variable="Exception" part="code"/>
+            <to variable="InvokeODErrorRemote_initiate_In" part="payload"
+                query="/ns8:ErrorData/ns8:ErrorDetails/ns8:ErrorCode"/>
+          </copy>
+          <copy>
+            <from variable="Exception" part="summary"/>
+            <to variable="InvokeODErrorRemote_initiate_In" part="payload"
+                query="/ns8:ErrorData/ns8:ErrorDetails/ns8:ErrorDescription"/>
+          </copy>
+          <copy>
+            <from variable="Exception" part="detail"/>
+            <to variable="InvokeODErrorRemote_initiate_In" part="payload"
+                query="/ns8:ErrorData/ns8:ErrorDetails/ns8:ErrorText"/>
+          </copy>
+          <copy>
+            <from expression='"Remote Exception"'/>
+            <to variable="InvokeODErrorRemote_initiate_In" part="payload"
+                query="/ns8:ErrorData/ns8:ErrorDetails/ns8:ErrorType"/>
+          </copy>
+          <copy>
+            <from expression="xp20:current-date()"/>
+            <to variable="InvokeODErrorRemote_initiate_In" part="payload"
+                query="/ns8:ErrorData/ns8:ErrorDetails/ns8:ErrorDateTime"/>
+          </copy>
+        </assign>
+        <invoke name="InvokeODErrorRemote" partnerLink="ODErrorLogger"
+                portType="ns7:ODErrorLogger" operation="initiate"
+                inputVariable="InvokeODErrorRemote_initiate_In"/>
+      </sequence>
+    </catch>
+    <catch faultName="bpelx:bindingFault" faultVariable="Exception">
+      <sequence name="Sequence_Binding">
+        <assign name="AssignODErrorBinding">
+          <copy>
+            <from expression="concat(ora:getProcessId(),'-',ora:getProcessVersion())"/>
+            <to variable="InvokeODErrorBinding_initiate_In" part="payload"
+                query="/ns8:ErrorData/ns8:ProcessInfo/ns8:BusinessProcessName"/>
+          </copy>
+          <copy>
+            <from expression="ora:getInstanceId()"/>
+            <to variable="InvokeODErrorBinding_initiate_In" part="payload"
+                query="/ns8:ErrorData/ns8:ProcessInfo/ns8:BusinessProcessId"/>
+          </copy>
+          <copy>
+            <from expression='"ProcessPS_HRJournalEntry_EBS.bpel"'/>
+            <to variable="InvokeODErrorBinding_initiate_In" part="payload"
+                query="/ns8:ErrorData/ns8:ProcessInfo/ns8:BusinessProcessStep"/>
+          </copy>
+          <copy>
+            <from expression="ora:getDomainId()"/>
+            <to variable="InvokeODErrorBinding_initiate_In" part="payload"
+                query="/ns8:ErrorData/ns8:ProcessInfo/ns8:BusinessProcessDomain"/>
+          </copy>
+          <copy>
+            <from expression="ora:getProcessURL()"/>
+            <to variable="InvokeODErrorBinding_initiate_In" part="payload"
+                query="/ns8:ErrorData/ns8:ProcessInfo/ns8:SystemName"/>
+          </copy>
+          <copy>
+            <from variable="Exception" part="code"/>
+            <to variable="InvokeODErrorBinding_initiate_In" part="payload"
+                query="/ns8:ErrorData/ns8:ErrorDetails/ns8:ErrorCode"/>
+          </copy>
+          <copy>
+            <from variable="Exception" part="summary"/>
+            <to variable="InvokeODErrorBinding_initiate_In" part="payload"
+                query="/ns8:ErrorData/ns8:ErrorDetails/ns8:ErrorDescription"/>
+          </copy>
+          <copy>
+            <from variable="Exception" part="detail"/>
+            <to variable="InvokeODErrorBinding_initiate_In" part="payload"
+                query="/ns8:ErrorData/ns8:ErrorDetails/ns8:ErrorText"/>
+          </copy>
+          <copy>
+            <from expression='"Binding Exception"'/>
+            <to variable="InvokeODErrorBinding_initiate_In" part="payload"
+                query="/ns8:ErrorData/ns8:ErrorDetails/ns8:ErrorType"/>
+          </copy>
+          <copy>
+            <from expression="xp20:current-date()"/>
+            <to variable="InvokeODErrorBinding_initiate_In" part="payload"
+                query="/ns8:ErrorData/ns8:ErrorDetails/ns8:ErrorDateTime"/>
+          </copy>
+        </assign>
+        <invoke name="InvokeODErrorBinding" partnerLink="ODErrorLogger"
+                portType="ns7:ODErrorLogger" operation="initiate"
+                inputVariable="InvokeODErrorBinding_initiate_In"/>
+      </sequence>
+    </catch>
+    <catchAll>
+      <sequence name="Sequence_ErrorAll">
+        <assign name="AssignODErrorAll">
+          <copy>
+            <from expression="concat(ora:getProcessId(),'-',ora:getProcessVersion())"/>
+            <to variable="InvokeODErrorAll_initiate_In" part="payload"
+                query="/ns8:ErrorData/ns8:ProcessInfo/ns8:BusinessProcessName"/>
+          </copy>
+          <copy>
+            <from expression="ora:getInstanceId()"/>
+            <to variable="InvokeODErrorAll_initiate_In" part="payload"
+                query="/ns8:ErrorData/ns8:ProcessInfo/ns8:BusinessProcessId"/>
+          </copy>
+          <copy>
+            <from expression='"ProcessPS_HRJournalEntry_EBS.bpel"'/>
+            <to variable="InvokeODErrorAll_initiate_In" part="payload"
+                query="/ns8:ErrorData/ns8:ProcessInfo/ns8:BusinessProcessStep"/>
+          </copy>
+          <copy>
+            <from expression="ora:getDomainId()"/>
+            <to variable="InvokeODErrorAll_initiate_In" part="payload"
+                query="/ns8:ErrorData/ns8:ProcessInfo/ns8:BusinessProcessDomain"/>
+          </copy>
+          <copy>
+            <from expression="ora:getProcessURL()"/>
+            <to variable="InvokeODErrorAll_initiate_In" part="payload"
+                query="/ns8:ErrorData/ns8:ProcessInfo/ns8:SystemName"/>
+          </copy>
+          <copy>
+            <from variable="Exception" part="code"/>
+            <to variable="InvokeODErrorAll_initiate_In" part="payload"
+                query="/ns8:ErrorData/ns8:ErrorDetails/ns8:ErrorCode"/>
+          </copy>
+          <copy>
+            <from variable="Exception" part="summary"/>
+            <to variable="InvokeODErrorAll_initiate_In" part="payload"
+                query="/ns8:ErrorData/ns8:ErrorDetails/ns8:ErrorDescription"/>
+          </copy>
+          <copy>
+            <from variable="Exception" part="detail"/>
+            <to variable="InvokeODErrorAll_initiate_In" part="payload"
+                query="/ns8:ErrorData/ns8:ErrorDetails/ns8:ErrorText"/>
+          </copy>
+          <copy>
+            <from expression='"Unhandled Exception"'/>
+            <to variable="InvokeODErrorAll_initiate_In" part="payload"
+                query="/ns8:ErrorData/ns8:ErrorDetails/ns8:ErrorType"/>
+          </copy>
+          <copy>
+            <from expression="xp20:current-date()"/>
+            <to variable="InvokeODErrorAll_initiate_In" part="payload"
+                query="/ns8:ErrorData/ns8:ErrorDetails/ns8:ErrorDateTime"/>
+          </copy>
+        </assign>
+        <invoke name="InvokeODErrorAll" partnerLink="ODErrorLogger"
+                portType="ns7:ODErrorLogger" operation="initiate"
+                inputVariable="InvokeODErrorAll_initiate_In"/>
+      </sequence>
+    </catchAll>
+  </faultHandlers>
+  <!-- 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+     ORCHESTRATION LOGIC                                               
+     Set of activities coordinating the flow of messages across the    
+     services integrated within this business process                  
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  -->
+  <sequence name="main">
+    <receive name="RcvGL_PS_Pay" partnerLink="PSGLFTPRead"
+             portType="ns1:Get_ptt" operation="Get"
+             variable="RcvGL_PS_Pay_Get_In" createInstance="yes"
+             bpelx:headerVariable="VarFTPHeader"/>
+    <assign name="AssignFileName">
+      <copy>
+        <from expression="'XSLFileName'"/>
+        <to variable="XSLT_Param" query="/ns9:parameters/ns9:item/ns9:name"/>
+      </copy>
+      <copy>
+        <from variable="VarFTPHeader" part="inboundHeader"
+              query="/ns3:InboundFTPHeaderType/ns3:fileName"/>
+        <to variable="XSLT_Param" query="/ns9:parameters/ns9:item/ns9:value"/>
+      </copy>
+    </assign>
+    <assign name="Transform_JournalEntry">
+      <bpelx:annotation>
+        <bpelx:pattern>transformation</bpelx:pattern>
+      </bpelx:annotation>
+      <copy>        
+        <from expression="ora:processXSLT('Transformation_JournalEntry_PS_OAGIS.xsl',bpws:getVariableData('RcvGL_PS_Pay_Get_In','PSJournalEntry'),bpws:getVariableData('XSLT_Param'))"/>
+        <to variable="InvkPostJournalEntryGLInsert_initiate_In" part="payload"/>
+      </copy>
+    </assign>
+    <invoke name="InvokePostJournalEntryGLInsert"
+            partnerLink="PostJournalEntryGLInsert"
+            portType="ns4:PostJournalEntryGLInsert" operation="initiate"
+            inputVariable="InvkPostJournalEntryGLInsert_initiate_In"/>
+  </sequence>
+</process>

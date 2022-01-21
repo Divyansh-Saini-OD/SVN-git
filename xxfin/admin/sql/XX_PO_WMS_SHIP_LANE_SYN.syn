@@ -1,0 +1,27 @@
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     ON
+    -- +==========================================================================+
+    -- |                  Office Depot - Project Simplify                         |
+    -- +==========================================================================+
+    -- | SQL Script to create the Synonym                                         |
+    -- |                                                                          |
+    -- | XX_PO_WMS_SHIP_LANE_SYN.syn                                              |
+    -- |                                                                          |
+    -- |                                                                          |
+    -- |                                                                          |
+    -- |                                                                          |
+    -- |Change Record:                                                            |
+    -- |===============                                                           |
+    -- |Version   Date         Author               Remarks                       |
+    -- |=======   ==========   =============        ==============================|
+    -- | V1.0     25-NOV-2015  Harvinder Rakhra     Initial version               |
+    -- |                                                                          |
+    -- +==========================================================================+
+
+PROMPT CREATING SYNONYM FOR XX_PO_WMS_SHIP_LANE..... 
+CREATE OR REPLACE SYNONYM  XX_PO_WMS_SHIP_LANE FOR XXFIN.XX_PO_WMS_SHIP_LANE;
+
+SHOW ERROR

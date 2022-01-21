@@ -1,0 +1,125 @@
+<?xml version='1.0' encoding='windows-1252' ?>
+<!DOCTYPE ViewObject SYSTEM "jbo_03_01.dtd">
+
+<ViewObject
+   Name="xxTDSRetriggerNoConnectVO"
+   BindingStyle="OracleName"
+   CustomQuery="true"
+   RowClass="oracle.apps.fnd.framework.server.OAViewRowImpl"
+   ComponentClass="od.oracle.apps.xxcrm.tds.server.xxTDSRetriggerNoConnectVOImpl"
+   FetchMode="FETCH_AS_NEEDED"
+   UseGlueCode="false" >
+   <SQLQuery><![CDATA[
+SELECT CIAB.INCIDENT_NUMBER,CIAB.INCIDENT_date ,jtv.task_id,jtv.task_number,jtv.object_version_number,jtv.description
+FROM JTF_TASKS_VL jtv,
+  jtf_task_statuses_vl jtsv,
+  JTF_TASK_TYPES_tL jttv,
+  cs_incidents_all_b ciab,
+  CS_INCIDENT_TYPES_VL  citv
+WHERE jtv.SOURCE_OBJECT_TYPE_CODE = 'SR'
+AND jtv.ATTRIBUTE1                = 'Support.com'
+AND jtv.attribute5                ='R'
+AND jtsv.TASK_STATUS_ID           = jtv.TASK_STATUS_ID
+AND jttv.task_type_id             =jtv.task_type_id
+AND jttv.name                     = 'In Store Remote'
+AND jtsv.task_status_id           = 14
+AND ciab.incident_id              = jtv.source_object_id
+AND (ciab.incident_status_id NOT  IN (2,9100) or ciab.incident_status_id =4100)
+and citv.INCIDENT_TYPE_ID = CIAB.INCIDENT_TYPE_ID
+AND citv.INCIDENT_SUBTYPE     = 'INC'
+AND citv.END_DATE_ACTIVE     IS NULL
+AND citv.NAME LIKE 'TDS%'
+and CIAB.external_attribute_14 is null
+AND ciab.creation_date >to_date(:1, 'DD-MON-YYYY HH24:MI:SS')
+   ]]></SQLQuery>
+   <DesignTime>
+      <Attr Name="_isExpertMode" Value="true" />
+      <Attr Name="_version" Value="10.1.3.41.57" />
+      <Attr Name="_codeGenFlag2" Value="Access|Coll|VarAccess" />
+   </DesignTime>
+   <ViewAttribute
+      Name="IncidentNumber"
+      IsUpdateable="false"
+      IsPersistent="false"
+      IsNotNull="true"
+      Precision="64"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="INCIDENT_NUMBER"
+      Expression="INCIDENT_NUMBER"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="64" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="IncidentDate"
+      IsUpdateable="false"
+      IsPersistent="false"
+      Type="oracle.jbo.domain.Date"
+      ColumnType="DATE"
+      AliasName="INCIDENT_DATE"
+      Expression="INCIDENT_DATE"
+      SQLType="DATE" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="7" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="TaskId"
+      IsUpdateable="false"
+      IsPersistent="false"
+      IsNotNull="true"
+      Type="oracle.jbo.domain.Number"
+      ColumnType="NUMBER"
+      AliasName="TASK_ID"
+      Expression="TASK_ID"
+      SQLType="NUMERIC" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="TaskNumber"
+      IsUpdateable="false"
+      IsPersistent="false"
+      IsNotNull="true"
+      Precision="30"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="TASK_NUMBER"
+      Expression="TASK_NUMBER"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="30" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="ObjectVersionNumber"
+      IsUpdateable="false"
+      IsPersistent="false"
+      IsNotNull="true"
+      Type="oracle.jbo.domain.Number"
+      ColumnType="NUMBER"
+      AliasName="OBJECT_VERSION_NUMBER"
+      Expression="OBJECT_VERSION_NUMBER"
+      SQLType="NUMERIC" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Description"
+      IsUpdateable="false"
+      IsPersistent="false"
+      Precision="4000"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="DESCRIPTION"
+      Expression="DESCRIPTION"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="4000" />
+      </DesignTime>
+   </ViewAttribute>
+</ViewObject>

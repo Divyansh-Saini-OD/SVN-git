@@ -1,0 +1,27 @@
+<schema targetNamespace="http://xmlns.oracle.com/pcbpel/adapter/db/APPS/XX_AR_CREDIT_CHECK_PKG/GET_VK_CREDIT_STATUS/" xmlns="http://www.w3.org/2001/XMLSchema" xmlns:db="http://xmlns.oracle.com/pcbpel/adapter/db/APPS/XX_AR_CREDIT_CHECK_PKG/GET_VK_CREDIT_STATUS/" elementFormDefault="qualified">
+   <element name="InputParameters">
+      <complexType>
+         <sequence>
+            <element name="P_ACCOUNT_NUM" type="string" db:index="1" db:type="VARCHAR2" minOccurs="0" nillable="true"/>
+         </sequence>
+      </complexType>
+   </element>
+   <element name="OutputParameters">
+      <complexType>
+         <sequence>
+            <element name="P_BUC_AMT_0" type="decimal" db:index="2" db:type="DECIMAL" minOccurs="0" nillable="true"/>
+            <element name="P_BUC_AMT_1" type="decimal" db:index="3" db:type="DECIMAL" minOccurs="0" nillable="true"/>
+            <element name="P_BUC_AMT_2" type="decimal" db:index="4" db:type="DECIMAL" minOccurs="0" nillable="true"/>
+            <element name="P_BUC_AMT_3" type="decimal" db:index="5" db:type="DECIMAL" minOccurs="0" nillable="true"/>
+            <element name="P_BUC_AMT_4" type="decimal" db:index="6" db:type="DECIMAL" minOccurs="0" nillable="true"/>
+            <element name="P_BUC_AMT_5" type="decimal" db:index="7" db:type="DECIMAL" minOccurs="0" nillable="true"/>
+            <element name="P_OUT_BAL" type="decimal" db:index="8" db:type="DECIMAL" minOccurs="0" nillable="true"/>
+            <element name="P_RCPT_DATE" type="dateTime" db:index="9" db:type="DATE" minOccurs="0" nillable="true"/>
+            <element name="P_COLLECTOR_ID" type="decimal" db:index="10" db:type="DECIMAL" minOccurs="0" nillable="true"/>
+            <element name="P_COLLECTOR_NAME" type="string" db:index="11" db:type="VARCHAR2" minOccurs="0" nillable="true"/>
+            <element name="P_RESPONSE_CODE" type="string" db:index="12" db:type="VARCHAR2" minOccurs="0" nillable="true"/>
+            <element name="P_RESPONSE_MESSAGE" type="string" db:index="13" db:type="VARCHAR2" minOccurs="0" nillable="true"/>
+         </sequence>
+      </complexType>
+   </element>
+</schema>

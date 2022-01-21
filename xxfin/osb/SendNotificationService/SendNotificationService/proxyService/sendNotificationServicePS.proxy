@@ -1,0 +1,203 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xml-fragment xmlns:ser="http://www.bea.com/wli/sb/services" xmlns:tran="http://www.bea.com/wli/sb/transports" xmlns:env="http://www.bea.com/wli/config/env" xmlns:http="http://www.bea.com/wli/sb/transports/http" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:con="http://www.bea.com/wli/sb/stages/config" xmlns:con1="http://www.bea.com/wli/sb/stages/routing/config" xmlns:con2="http://www.bea.com/wli/sb/stages/transform/config" xmlns:con3="http://www.bea.com/wli/sb/pipeline/config" xmlns:con4="http://www.bea.com/wli/sb/stages/logging/config">
+  <ser:coreEntry isProxy="true" isEnabled="true">
+    <ser:binding type="SOAP" isSoap12="false" xsi:type="con3:SoapBindingType" xmlns:con3="http://www.bea.com/wli/sb/services/bindings/config">
+      <con3:wsdl ref="SendNotificationService/resource/wsdl/SendNotificationService"/>
+      <con3:binding>
+        <con3:name>EmailBinding</con3:name>
+        <con3:namespace>http://officedepot.com/SendNotificationService</con3:namespace>
+      </con3:binding>
+      <con3:selector type="SOAP body"/>
+      <con3:WSI-compliant>false</con3:WSI-compliant>
+    </ser:binding>
+    <ser:monitoring isEnabled="false">
+      <ser:aggregationInterval>10</ser:aggregationInterval>
+      <ser:pipelineMonitoringLevel>Pipeline</ser:pipelineMonitoringLevel>
+    </ser:monitoring>
+    <ser:reporting>true</ser:reporting>
+    <ser:logging isEnabled="true">
+      <ser:logLevel>debug</ser:logLevel>
+    </ser:logging>
+    <ser:sla-alerting isEnabled="true">
+      <ser:alertLevel>normal</ser:alertLevel>
+    </ser:sla-alerting>
+    <ser:pipeline-alerting isEnabled="true">
+      <ser:alertLevel>normal</ser:alertLevel>
+    </ser:pipeline-alerting>
+    <ser:ws-policy>
+      <ser:binding-mode>wsdl-policy-attachments</ser:binding-mode>
+    </ser:ws-policy>
+  </ser:coreEntry>
+  <ser:endpointConfig>
+    <tran:provider-id>http</tran:provider-id>
+    <tran:inbound>true</tran:inbound>
+    <tran:URI>
+      <env:value>/SendNotificationService/proxyService/SendNotificationServicePS</env:value>
+    </tran:URI>
+    <tran:inbound-properties/>
+    <tran:all-headers>false</tran:all-headers>
+    <tran:provider-specific>
+      <http:inbound-properties/>
+    </tran:provider-specific>
+  </ser:endpointConfig>
+  <ser:router errorHandler="_onErrorHandler-5501755049187781174--186da3b8.13a0725913d.-7f53">
+    <con3:pipeline type="request" name="EmailPipelinePairNode_request">
+      <con3:stage name="reportBeginStage">
+        <con3:context>
+          <con:varNsDecl namespace="http://officedepot.com/SendNotificationService" prefix="sen"/>
+        </con3:context>
+        <con3:actions>
+          <con4:report>
+            <con:id>_ActionId-3967952185773397598-6a455e93.139d366ddf7.-7eb0</con:id>
+            <con4:expr>
+              <con:xqueryText>$body</con:xqueryText>
+            </con4:expr>
+            <con4:labels>
+              <con4:key>BEGIN</con4:key>
+              <con4:varName>body</con4:varName>
+              <con4:value>
+                <con:xpathText>./sen:sendEmail/sen:subject</con:xpathText>
+              </con4:value>
+            </con4:labels>
+          </con4:report>
+        </con3:actions>
+      </con3:stage>
+    </con3:pipeline>
+    <con3:pipeline type="response" name="EmailPipelinePairNode_response">
+      <con3:stage name="reportEndStage">
+        <con3:context>
+          <con:varNsDecl namespace="http://officedepot.com/SendNotificationService" prefix="sen"/>
+        </con3:context>
+        <con3:actions>
+          <con4:report>
+            <con:id>_ActionId-5774706811019687135-7831f78f.13a0c06c92a.-7fff</con:id>
+            <con4:expr>
+              <con:xqueryText>$body</con:xqueryText>
+            </con4:expr>
+            <con4:labels>
+              <con4:key>END</con4:key>
+              <con4:varName>body</con4:varName>
+              <con4:value>
+                <con:xpathText>./sen:sendEmail/sen:subject</con:xpathText>
+              </con4:value>
+            </con4:labels>
+          </con4:report>
+        </con3:actions>
+      </con3:stage>
+      <con3:stage name="constructResponseStage">
+        <con3:context/>
+        <con3:actions>
+          <con2:replace contents-only="true" varName="body">
+            <con:id>_ActionId-922636521276979492-6b68cb77.139f7164a0e.-7e78</con:id>
+            <con2:location>
+              <con:xpathText>.</con:xpathText>
+            </con2:location>
+            <con2:expr>
+              <con:xqueryText>&lt;emd:sendEmailResponse xmlns:emd="http://officedepot.com/SendNotificationService" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://officedepot.com/SendNotificationService SendNotificationService.xsd ">
+  &lt;emd:status>SUCCESS&lt;/emd:status>
+&lt;/emd:sendEmailResponse></con:xqueryText>
+            </con2:expr>
+          </con2:replace>
+        </con3:actions>
+      </con3:stage>
+    </con3:pipeline>
+    <con3:pipeline type="error" name="_onErrorHandler-5501755049187781174--186da3b8.13a0725913d.-7f53">
+      <con3:stage name="reportEndStage">
+        <con3:context>
+          <con:varNsDecl namespace="http://officedepot.com/SendNotificationService" prefix="sen"/>
+        </con3:context>
+        <con3:actions>
+          <con4:report>
+            <con:id>_ActionId-5774706811019687135-7831f78f.13a0c06c92a.-7f90</con:id>
+            <con4:expr>
+              <con:xqueryText>$fault</con:xqueryText>
+            </con4:expr>
+            <con4:labels>
+              <con4:key>SourceID_ERROR</con4:key>
+              <con4:varName>body</con4:varName>
+              <con4:value>
+                <con:xpathText>./sen:sendEmail/sen:subject</con:xpathText>
+              </con4:value>
+            </con4:labels>
+          </con4:report>
+        </con3:actions>
+      </con3:stage>
+    </con3:pipeline>
+    <con:flow xmlns:con="http://www.bea.com/wli/sb/pipeline/config">
+      <con:branch-node type="operation" name="BranchNode">
+        <con:context/>
+        <con:branch-table>
+          <con:branch name="sendEmail">
+            <con:operator>equals</con:operator>
+            <con:value/>
+            <con:flow>
+              <con:pipeline-node name="EmailPipelinePairNode">
+                <con:request>EmailPipelinePairNode_request</con:request>
+                <con:response>EmailPipelinePairNode_response</con:response>
+              </con:pipeline-node>
+              <con:route-node name="RouteEMailNode">
+                <con:context>
+                  <con3:varNsDecl namespace="http://xmlns.oracle.com/ias/pcbpel/NotificationService" prefix="not" xmlns:con3="http://www.bea.com/wli/sb/stages/config"/>
+                  <con3:varNsDecl namespace="http://officedepot.com/SendNotificationService" prefix="sen" xmlns:con3="http://www.bea.com/wli/sb/stages/config"/>
+                </con:context>
+                <con:actions>
+                  <con1:route>
+                    <con3:id xmlns:con3="http://www.bea.com/wli/sb/stages/config">_ActionId-5849410199104332378--7018fe74.139bed6b535.-7e25</con3:id>
+                    <con1:service ref="SendNotificationService/businessService/SendEmailBS" xsi:type="ref:BusinessServiceRef" xmlns:ref="http://www.bea.com/wli/sb/reference"/>
+                    <con1:outboundTransform>
+                      <con2:transport-headers copy-all="true">
+                        <con3:id xmlns:con3="http://www.bea.com/wli/sb/stages/config">_ActionId-5849410199104332378--7018fe74.139bed6b535.-7e23</con3:id>
+                        <con2:header-set>outbound-request</con2:header-set>
+                        <con2:header name="To" value="expression">
+                          <con3:xqueryText xmlns:con3="http://www.bea.com/wli/sb/stages/config">$body/sen:sendEmail/sen:toAddress/sen:emailAddress/text()</con3:xqueryText>
+                        </con2:header>
+                        <con2:header name="From" value="expression">
+                          <con3:xqueryText xmlns:con3="http://www.bea.com/wli/sb/stages/config">$body/sen:sendEmail/sen:senderAddress/sen:emailAddress/text()</con3:xqueryText>
+                        </con2:header>
+                        <con2:header name="Subject" value="expression">
+                          <con3:xqueryText xmlns:con3="http://www.bea.com/wli/sb/stages/config">$body/sen:sendEmail/sen:subject/text()</con3:xqueryText>
+                        </con2:header>
+                        <con2:header name="Content-Type" value="expression">
+                          <con3:xqueryText xmlns:con3="http://www.bea.com/wli/sb/stages/config">fn:concat("text/",data($body/sen:sendEmail/sen:format))</con3:xqueryText>
+                        </con2:header>
+                      </con2:transport-headers>
+                      <con2:replace varName="body" contents-only="true">
+                        <con3:id xmlns:con3="http://www.bea.com/wli/sb/stages/config">_ActionId-3513989588656106623--7bfd93c4.139c38e5687.-7fc2</con3:id>
+                        <con2:location>
+                          <con3:xpathText xmlns:con3="http://www.bea.com/wli/sb/stages/config">.</con3:xpathText>
+                        </con2:location>
+                        <con2:expr>
+                          <con3:xqueryText xmlns:con3="http://www.bea.com/wli/sb/stages/config"><![CDATA[if(data($body/sen:sendEmail/sen:format)= "html" and not(fn:contains(data($body/sen:sendEmail/sen:message),"<html>"))) then
+	if($body/sen:sendEmail/sen:disclaimerMessage) then
+		concat(
+			"<html><body>",
+			data($body/sen:sendEmail/sen:message),
+			"<br><br><br>",
+			data($body/sen:sendEmail/sen:disclaimerMessage),
+			"</body></html>")
+	else	
+		concat(
+			"<html><body>",
+			data($body/sen:sendEmail/sen:message),
+			"</body></html>")
+else
+	concat(
+		data($body/sen:sendEmail/sen:message),
+		fn:codepoints-to-string(10),fn:codepoints-to-string(10),data($body/sen:sendEmail/sen:disclaimerMessage))]]></con3:xqueryText>
+                        </con2:expr>
+                      </con2:replace>
+                    </con1:outboundTransform>
+                    <con1:responseTransform/>
+                  </con1:route>
+                </con:actions>
+              </con:route-node>
+            </con:flow>
+          </con:branch>
+          <con:default-branch>
+            <con:flow/>
+          </con:default-branch>
+        </con:branch-table>
+      </con:branch-node>
+    </con:flow>
+  </ser:router>
+</xml-fragment>

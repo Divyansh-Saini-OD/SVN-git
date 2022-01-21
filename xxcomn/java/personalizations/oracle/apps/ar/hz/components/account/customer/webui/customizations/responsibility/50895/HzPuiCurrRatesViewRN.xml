@@ -1,0 +1,14 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<customization xmlns="http://xmlns.oracle.com/jrad" version="9.0.6.0.0_50" xml:lang="en-US" customizes="/oracle/apps/ar/hz/components/account/customer/webui/HzPuiCurrRatesViewRN" developerMode="true" xmlns:user="http://xmlns.oracle.com/jrad/user" user:responsibilityKey="od_us_ar_cash_app_mgr" user:responsibilityAppShortName="AR">
+   <modifications>
+      <modify element="currDff" readOnly="true"/>
+      <modify element="MinRecAmt" readOnly="true"/>
+      <modify element="CredLim" readOnly="true"/>
+      <modify element="OrdCredLim" readOnly="true"/>
+      <modify element="MinStmtAmt" readOnly="true"/>
+      <modify element="MinDunAmt" readOnly="true"/>
+      <modify element="MinDunInvAmt" readOnly="true"/>
+      <modify element="AdvTableC3" rendered="false"/>
+      <modify element="AddCurrLovBtn" rendered="false"/>
+   </modifications>
+</customization>

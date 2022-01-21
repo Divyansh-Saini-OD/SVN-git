@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding='windows-1252'?>
+<!DOCTYPE ViewObject SYSTEM "jbo_03_01.dtd">
+
+<ViewObject
+   Name="XXIbyAllPaymentMthdAssignmentsVO"
+   Extends="oracle.apps.iby.disbursement.setup.component.server.AllPaymentMthdAssignmentsVO"
+   BindingStyle="Oracle"
+   CustomQuery="true"
+   RowClass="od.oracle.apps.xxfin.iby.disbursement.setup.component.server.XXIbyAllPaymentMthdAssignmentsVORowImpl"
+   ComponentClass="od.oracle.apps.xxfin.iby.disbursement.setup.component.server.XXIbyAllPaymentMthdAssignmentsVOImpl"
+   MsgBundleClass="oracle.jbo.common.JboResourceBundle"
+   UseGlueCode="false" >
+   <SQLQuery><![CDATA[
+SELECT  pmthds.Payment_Method_Name,
+        pmthds.Payment_Method_Code,
+        pmthds.inactive_date inactive_date,
+        'N' primary_flag,
+        'Y' global,
+        'N' changed,
+        1 order1 
+   FROM IBY_APPLICABLE_PMT_MTHDS apmthds,
+        IBY_PAYMENT_METHODS_VL pmthds
+  WHERE apmthds.payment_method_Code = pmthds.payment_method_code
+    AND apmthds.Payment_flow = 'DISBURSEMENTS' 
+    AND NVL(pmthds.inactive_date,trunc(sysdate+1)) > trunc(sysdate) 
+    AND apmthds.APPLICATION_ID = :1
+    AND (apmthds.applicable_type_code = 'PAYEE')
+ AND (apmthds.applicable_value_to is null)
+	AND NOT EXISTS(
+	        SELECT 1
+	          FROM IBY_EXT_PARTY_PMT_MTHDS PmtMthdAssignmentsEO
+	         WHERE apmthds.payment_method_Code = PmtMthdAssignmentsEO.payment_method_code
+	           AND apmthds.Payment_flow = PmtMthdAssignmentsEO.Payment_flow
+	           AND PmtMthdAssignmentsEO.EXT_Pmt_party_ID = :2
+               AND PmtMthdAssignmentsEO.payment_function = :3
+               )
+            union
+               -- payee assigned
+               SELECT  pmthds.Payment_Method_Name,
+        PmtMthdAssignmentsEO.Payment_Method_code,
+        PmtMthdAssignmentsEO.inactive_date,
+        PmtMthdAssignmentsEO.primary_flag,
+        'N' Global,
+        'N' Changed,
+        nvl((select 1 from dual
+             where to_char(nvl(PmtMthdAssignmentsEO.inactive_date,sysdate+1),'J')
+                   > to_char(sysdate,'J')), 2) order1
+   FROM  IBY_PAYMENT_METHODS_VL pmthds,
+        IBY_EXT_PARTY_PMT_MTHDS PmtMthdAssignmentsEO
+  WHERE  pmthds.payment_method_code = PmtMthdAssignmentsEO.payment_method_code(+)
+    AND PmtMthdAssignmentsEO.Payment_flow = 'DISBURSEMENTS'
+    AND NVL(pmthds.inactive_date,trunc(sysdate+1)) > trunc(sysdate)
+    /* AND NVL(PmtMthdAssignmentsEO.inactive_date,trunc(sysdate)) >= trunc(sysdate) */
+    and PmtMthdAssignmentsEO.payment_function=:3
+    and PmtMthdAssignmentsEO.ext_pmt_party_id=:2
+   ]]></SQLQuery>
+   <DesignTime>
+      <Attr Name="_isCodegen" Value="true" />
+      <Attr Name="_version" Value="9.0.3.14.01" />
+      <Attr Name="_CodeGenFlagNew" Value="36" />
+   </DesignTime>
+   <ViewAttribute
+      Name="PaymentMethodName"
+      IsPersistent="false"
+      IsNotNull="true"
+      Precision="100"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="PAYMENT_METHOD_NAME"
+      Expression="PAYMENT_METHOD_NAME"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+         <Attr Name="_DisplaySize" Value="100" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="PaymentMethodCode"
+      IsPersistent="false"
+      IsNotNull="true"
+      Precision="80"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="PAYMENT_METHOD_CODE"
+      Expression="PAYMENT_METHOD_CODE"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="InactiveDate"
+      IsPersistent="false"
+      Type="oracle.jbo.domain.Date"
+      ColumnType="VARCHAR2"
+      AliasName="INACTIVE_DATE"
+      Expression="INACTIVE_DATE"
+      SQLType="DATE" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+         <Attr Name="_DisplaySize" Value="7" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="PrimaryFlag"
+      IsPersistent="false"
+      Precision="1"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="PRIMARY_FLAG"
+      Expression="PRIMARY_FLAG"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+         <Attr Name="_DisplaySize" Value="1" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Global1"
+      IsPersistent="false"
+      Precision="1"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="Global1"
+      Expression="Global1"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Changed1"
+      IsPersistent="false"
+      Precision="1"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="Changed1"
+      Expression="Changed1"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Order1"
+      IsPersistent="false"
+      Type="oracle.jbo.domain.Number"
+      ColumnType="NUMBER"
+      AliasName="ORDER1"
+      Expression="ORDER1"
+      SQLType="NUMERIC" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </ViewAttribute>
+</ViewObject>

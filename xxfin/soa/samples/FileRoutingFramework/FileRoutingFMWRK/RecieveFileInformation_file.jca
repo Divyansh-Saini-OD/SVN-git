@@ -1,0 +1,16 @@
+<adapter-config name="RecieveFileInformation" adapter="File Adapter" wsdlLocation="RecieveFileInformation.wsdl" xmlns="http://platform.integration.oracle/blocks/adapter/fw/metadata">
+  
+  <connection-factory location="eis/FileAdapter" UIincludeWildcard="*.*"/>
+  <endpoint-activation portType="Read_ptt" operation="Read">
+    <activation-spec className="oracle.tip.adapter.file.inbound.FileActivationSpec">
+      <property name="DeleteFile" value="false"/>
+      <property name="MinimumAge" value="0"/>
+      <property name="Recursive" value="true"/>
+      <property name="PollingFrequency" value="30"/>
+      <property name="LogicalDirectory" value="LOGICAL_FILE_PATH"/>
+      <property name="IncludeFiles" value=".*\..*"/>
+      <property name="UseHeaders" value="true"/>
+    </activation-spec>
+  </endpoint-activation>
+
+</adapter-config>

@@ -1,0 +1,136 @@
+<?xml version = "1.0" encoding = "UTF-8" ?>
+<!--
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  Oracle JDeveloper BPEL Designer 
+  
+  Created: Sat Oct 03 23:00:31 EDT 2009
+  Author:  Cecilia-Macean
+  Purpose: Synchronous BPEL Process
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+-->
+<process name="GetFiscalPeriodRates"
+         targetNamespace="http://xmlns.oracle.com/GetFiscalPeriodRates"
+         xmlns="http://schemas.xmlsoap.org/ws/2003/03/business-process/"
+         xmlns:xp20="http://www.oracle.com/XSL/Transform/java/oracle.tip.pc.services.functions.Xpath20"
+         xmlns:bpws="http://schemas.xmlsoap.org/ws/2003/03/business-process/"
+         xmlns:ids="http://xmlns.oracle.com/bpel/services/IdentityService/xpath"
+         xmlns:ldap="http://schemas.oracle.com/xpath/extension/ldap"
+         xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+         xmlns:client="http://xmlns.oracle.com/GetFiscalPeriodRates"
+         xmlns:ora="http://schemas.oracle.com/xpath/extension"
+         xmlns:xref="http://www.oracle.com/XSL/Transform/java/oracle.tip.xref.xpath.XRefXPathFunctions"
+         xmlns:hwf="http://xmlns.oracle.com/bpel/workflow/xpath"
+         xmlns:ns1="http://xmlns.oracle.com/pcbpel/adapter/db/GetFiscalPeriodRate_Teradata/"
+         xmlns:ehdr="http://www.oracle.com/XSL/Transform/java/oracle.tip.esb.server.headers.ESBHeaderFunctions"
+         xmlns:ns2="http://xmlns.oracle.com/pcbpel/adapter/db/GetFiscalPeriodRate_Teradata"
+         xmlns:bpelx="http://schemas.oracle.com/bpel/extension"
+         xmlns:orcl="http://www.oracle.com/XSL/Transform/java/oracle.tip.pc.services.functions.ExtFunc">
+  <!-- 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+      PARTNERLINKS                                                      
+      List of services participating in this BPEL process               
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  -->
+  <partnerLinks>
+    <!-- 
+      The 'client' role represents the requester of this service. It is 
+      used for callback. The location and correlation information associated
+      with the client role are automatically set using WS-Addressing.
+    -->
+    <partnerLink name="client" partnerLinkType="client:GetFiscalPeriodRates"
+                 myRole="GetFiscalPeriodRatesProvider"
+                 partnerRole="GetFiscalPeriodRatesRequester"/>
+    <partnerLink name="GetFiscalPeriodRate_Teradata"
+                 partnerRole="GetFiscalPeriodRate_Teradata_role"
+                 partnerLinkType="ns1:GetFiscalPeriodRate_Teradata_plt"/>
+  </partnerLinks>
+  <!-- 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+      VARIABLES                                                        
+      List of messages and XML documents used within this BPEL process 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  -->
+  <variables>
+    <!-- Reference to the message passed as input during initiation -->
+    <variable name="inputVariable"
+              messageType="client:GetFiscalPeriodRatesRequestMessage"/>
+    <!-- Reference to the message that will be returned to the requester-->
+    <variable name="outputVariable"
+              messageType="client:GetFiscalPeriodRatesResponseMessage"/>
+    <variable name="Invoke_GetFiscalPeriodRate_Teradata_GetFiscalPeriodRate_Teradata_InputVariable"
+              messageType="ns1:GetFiscalPeriodRate_TeradataInput_msg"/>
+    <variable name="Invoke_GetFiscalPeriodRate_Teradata_GetFiscalPeriodRate_Teradata_OutputVariable"
+              messageType="ns1:GetFiscalPeriodRate_TeradataOutputCollection_msg"/>
+    <variable name="ProcessHeader" type="xsd:string"/>
+  </variables>
+  <!-- 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+     ORCHESTRATION LOGIC                                               
+     Set of activities coordinating the flow of messages across the    
+     services integrated within this business process                  
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  -->
+  <sequence name="main">
+    <!-- Receive input from requestor. (Note: This maps to operation defined in GetFiscalPeriodRates.wsdl) -->
+    <receive name="receiveInput" partnerLink="client"
+             portType="client:GetFiscalPeriodRates" operation="initiate"
+             variable="inputVariable" createInstance="yes"/>
+    <scope name="setProcessHeader">
+      <sequence name="Sequence_1">
+        <assign name="initializeInstanceTitle">
+          <copy>
+            <from expression="substring( concat( 'DateTime: ', bpws:getVariableData('inputVariable','payload','/client:GetFiscalPeriodRatesProcessRequest/client:DateTime')),1,50)"/>
+            <to variable="ProcessHeader"/>
+          </copy>
+        </assign>
+        <bpelx:exec name="setTitle" language="java" version="1.5">
+          <![CDATA[try {              
+  String title = (String)getVariableData("ProcessHeader");              
+  setTitle(title);              
+  addAuditTrailEntry(title) ;              
+} catch (Exception ex) {              
+  addAuditTrailEntry(ex.toString());              
+  ex.printStackTrace();              
+}]]>
+        </bpelx:exec>
+      </sequence>
+    </scope>
+    <!-- Generate reply to synchronous request -->
+    <assign name="Input_to_FiscalPeriodRate_Transform">
+      <bpelx:annotation>
+        <bpelx:pattern>transformation</bpelx:pattern>
+      </bpelx:annotation>
+      <copy>
+        <from expression="ora:processXSLT('Input_to_FiscalPeriodRate_Transformation.xsl',bpws:getVariableData('inputVariable','payload'))"/>
+        <to variable="Invoke_GetFiscalPeriodRate_Teradata_GetFiscalPeriodRate_Teradata_InputVariable"
+            part="GetFiscalPeriodRate_TeradataInput_msg"/>
+      </copy>
+    </assign>
+    <invoke name="Invoke_GetFiscalPeriodRate_Teradata"
+            partnerLink="GetFiscalPeriodRate_Teradata"
+            portType="ns1:GetFiscalPeriodRate_Teradata_ptt"
+            operation="GetFiscalPeriodRate_Teradata"
+            inputVariable="Invoke_GetFiscalPeriodRate_Teradata_GetFiscalPeriodRate_Teradata_InputVariable"
+            outputVariable="Invoke_GetFiscalPeriodRate_Teradata_GetFiscalPeriodRate_Teradata_OutputVariable"/>
+    <assign name="FiscalPeriodRate_to_Output_Transform">
+      <bpelx:annotation>
+        <bpelx:pattern>transformation</bpelx:pattern>
+      </bpelx:annotation>
+      <copy>
+        <from expression="ora:processXSLT('FiscalPeriodRate_to_output.xsl',bpws:getVariableData('Invoke_GetFiscalPeriodRate_Teradata_GetFiscalPeriodRate_Teradata_OutputVariable','GetFiscalPeriodRate_TeradataOutputCollection'))"/>
+        <to variable="outputVariable" part="payload"/>
+      </copy>
+    </assign>
+     <!-- Commented for defect 4980-->
+
+    <!--<reply name="replyOutput" partnerLink="client"
+           portType="client:GetFiscalPeriodRates" operation="process"
+           variable="outputVariable"/>-->
+           
+     <!-- Added for defect 4980-->
+        <invoke name="callbackClient" partnerLink="client"
+            portType="client:GetFiscalPeriodRatesCallback"
+            operation="onResult" inputVariable="outputVariable"/>
+    <!-- End -->            
+  </sequence>
+</process>

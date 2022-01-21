@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dataTemplate name="XXODUNBILLEDRTP" description="Unbilled Trx Report" defaultPackage="XXOD_UNBILLED_RPT_BURST_PKG" version="1.0">
+   <parameters>
+     <parameter name="P_DATE" datatype="character"/>
+   </parameters>
+  <dataQuery>
+    <sqlStatement name="DATA_QUERY">
+         <![CDATA[ 
+		 SELECT  
+	   b.FROM_MAIL
+	 , b.TO_MAIL
+	 , b.CC 
+	 , b.MAIL_SUBJECT
+	 , b.MAIL_TEXT
+	 , b.SMTP_DETAIL
+	 , a.CUST_NAME
+     , a.LEGACY_CUST_NAME
+     , a.CUST_DOC_ID
+     , a.MBS_DOC_ID
+     , a.BILLING_FREQUENCY 
+     , a.DOC_TYPE
+	 , a.ORI_PAY_DOC
+     , a.DELIVERY_METHOD
+     , a.TRX_NUMBER
+     , a.TRX_DATE
+     , a.ORDERED_DATE
+     , a.BILLING_DATE
+     , a.TRX_TYPE_NAME 
+     , a.TRX_CLASS
+     , a.BATCH_SOURCE_NAME
+	 , a.AMOUNT_DUE_ORIGINAL
+	 , a.AMOUNT_DUE_REMAINING
+	 , a.PARENT_ORDER_NUM
+FROM
+(SELECT 
+  CUST_NAME 			
+, LEGACY_CUST_NAME 	
+, CUST_DOC_ID 			
+, MBS_DOC_ID 			
+, BILLING_FREQUENCY  	
+, DOC_TYPE 			
+, ORI_PAY_DOC 			
+, DELIVERY_METHOD		
+, TRX_NUMBER 	TRX_NUMBER	 	
+, TO_CHAR(TRX_DATE,'DD-MON-YY') TRX_DATE			
+, TO_CHAR(ORDERED_DATE,'DD-MON-YY') ORDERED_DATE		
+, TO_CHAR(BILLING_DATE,'DD/MM/YYYY') BILLING_DATE		
+, TRX_TYPE_NAME 		
+, TRX_CLASS 			
+, BATCH_SOURCE_NAME 	
+, AMOUNT_DUE_ORIGINAL  
+, AMOUNT_DUE_REMAINING 
+, PARENT_ORDER_NUM 	
+, X 					
+	FROM TABLE (XXOD_UNBILLED_RPT_BURST_PKG.UNBILLED_GET_RPT_DATA(
+      :P_DATE  ))  -- corrected under NAIT-114496
+	  ) a 
+  , (SELECT  
+			 target_value1 FROM_MAIL
+			, target_value2 TO_MAIL
+			, target_value3 CC 
+			, target_value4 MAIL_SUBJECT
+			, target_value5 MAIL_TEXT
+			, NVL(target_value6,'localhost') SMTP_DETAIL
+			, 1 Y
+		FROM  XX_FIN_TRANSLATEVALUES VALS
+			,XX_FIN_TRANSLATEDEFINITION DEFN
+	   WHERE 1=1
+		 AND DEFN.TRANSLATE_ID=VALS.TRANSLATE_ID
+		 AND DEFN.TRANSLATION_NAME = 'XX_AR_BC_UNBILLED_EMAIL'
+		 AND SOURCE_VALUE1 = 'BC_UNBILLED_RPT_EMAIL'
+		 AND VALS.ENABLED_FLAG = 'Y'
+		 AND SYSDATE between VALS.START_DATE_ACTIVE and nvl(VALS.END_DATE_ACTIVE, SYSDATE+1)
+) b
+where a.x = b.y
+ORDER BY 
+ FROM_MAIL
+ ,TO_MAIL
+ ,CC 
+ ,MAIL_SUBJECT
+ ,MAIL_TEXT
+ ,CUST_NAME , TRX_NUMBER
+ ]]>
+    </sqlStatement>
+  </dataQuery>
+  <dataStructure>
+  <group name="DATA_GROUP" source="DATA_QUERY">
+	    <element name="FROM_MAIL" value="FROM_MAIL"/>
+		<element name="TO_MAIL" value="TO_MAIL"/>
+		<element name="CC" value="CC"/>
+		<element name="MAIL_SUBJECT" value="MAIL_SUBJECT"/>
+		<element name="MAIL_TEXT" value="MAIL_TEXT"/>
+		<element name="SMTP_DETAIL" value="SMTP_DETAIL"/>
+		<element name="CUST_NAME" value="CUST_NAME"/>
+		<element name="LEGACY_CUST_NAME" value="LEGACY_CUST_NAME"/>
+		<element name="CUST_DOC_ID" value="CUST_DOC_ID"/>
+		<element name="MBS_DOC_ID" value="MBS_DOC_ID"/>
+		<element name="BILLING_FREQUENCY" value="BILLING_FREQUENCY"/>
+		<element name="ORI_PAY_DOC" value="ORI_PAY_DOC"/>
+		<element name="PARENT_ORDER_NUM" value="PARENT_ORDER_NUM"/>
+		<element name="DELIVERY_METHOD" value="DELIVERY_METHOD"/>
+		<element name="TRX_NUMBER" value="TRX_NUMBER"/>
+		<element name="TRX_DATE" value="TRX_DATE"/>
+		<element name="ORDERED_DATE" value="ORDERED_DATE"/>
+		<element name="AMOUNT_DUE_ORIGINAL" value="AMOUNT_DUE_ORIGINAL"/>
+		<element name="AMOUNT_DUE_REMAINING" value="AMOUNT_DUE_REMAINING"/>
+		<element name="BILLING_DATE" value="BILLING_DATE"/>
+		<element name="TRX_TYPE_NAME" value="TRX_TYPE_NAME"/>
+		<element name="TRX_CLASS" value="TRX_CLASS"/>
+		<element name="BATCH_SOURCE_NAME" value="BATCH_SOURCE_NAME"/>
+	</group>
+  </dataStructure>
+  <dataTrigger name="afterReport" source="XXOD_UNBILLED_RPT_BURST_PKG.AfterReport"/>
+</dataTemplate>

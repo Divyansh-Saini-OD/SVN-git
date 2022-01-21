@@ -1,0 +1,61 @@
+<?xml version='1.0' encoding='windows-1252' ?>
+<!DOCTYPE ViewObject SYSTEM "jbo_03_01.dtd">
+
+<ViewObject
+   Name="XxIbyTransTypeLovVO"
+   BindingStyle="OracleName"
+   CustomQuery="true"
+   RowClass="oracle.apps.fnd.framework.server.OAViewRowImpl"
+   ComponentClass="od.oracle.apps.xxfin.iby.settlement.lov.XxIbyTransTypeLovVOImpl"
+   UseGlueCode="false" >
+   <SQLQuery><![CDATA[
+select 'Refund' TransType
+from dual
+UNION
+SELECT 'Sale' TransType
+from dual
+   ]]></SQLQuery>
+   <DesignTime>
+      <Attr Name="_isExpertMode" Value="true" />
+      <Attr Name="_version" Value="10.1.3.41.57" />
+      <Attr Name="_codeGenFlag2" Value="Access|Coll|VarAccess" />
+   </DesignTime>
+   <ViewAttribute
+      Name="Transtype"
+      IsUpdateable="false"
+      IsPersistent="false"
+      Precision="6"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="TRANSTYPE"
+      Expression="TRANSTYPE"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="6" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="A"
+      IsUpdateable="false"
+      IsPersistent="false"
+      Precision="6"
+      Type="java.lang.String"
+      ColumnType="CHAR"
+      AliasName="A"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="6" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="J1"
+      IsUpdateable="false"
+      IsPersistent="false"
+      Type="oracle.jbo.domain.Number"
+      ColumnType="NUMBER"
+      SQLType="NUMERIC" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </ViewAttribute>
+</ViewObject>

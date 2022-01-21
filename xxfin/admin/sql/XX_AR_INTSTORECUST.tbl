@@ -1,0 +1,30 @@
+-- +==========================================================================+
+-- |                  Office Depot - Project Simplify                         |
+-- |                         WIPRO Technologies                               |
+-- +==========================================================================+
+-- | SQL Script to create                                                     |
+-- |                                                                          |
+-- |                      TABLE: XX_AR_INTSTORECUST                           |
+-- |                                                                          |
+-- |                                                                          |
+-- |                                                                          |
+-- |Change Record:                                                            |
+-- |===============                                                           |
+-- |Version   Date          Author               Remarks                      |
+-- |=======   ===========   ================     =============================|
+-- | V1.0     10-JAN-2011   K.Dhillon            Initial version              |
+-- |                                             Created for Defect 8950      |
+-- +==========================================================================+
+
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     ON
+
+CREATE TABLE xxfin.xx_ar_intstorecust(
+  cust_account_id               NUMBER(15)     NOT NULL
+ ,account_number                VARCHAR2(30)   NOT NULL
+ )
+ TABLESPACE XXOD_TS_DATA;
+

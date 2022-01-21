@@ -1,0 +1,11 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<customization xmlns="http://xmlns.oracle.com/jrad" version="9.0.6.0.0_64" xml:lang="en-US" customizes="/od/oracle/apps/xxcrm/cs/csz/dashboard/webui/XXCSDashboardPG" xmlns:oa="http://xmlns.oracle.com/oa">
+   <modifications>
+      <move element="xGetNextWorkRN.ButtonsSpacer" after="xGetNextWorkRN.GetNextWorkButton"/>
+      <insert before="xGetNextWorkRN.ButtonsSpacer">
+         <oa:button id="Quotation" adminCustomizable="true" dataType="VARCHAR2" disabled="false" hAlign="start" popupEnabled="false" popupRenderEvent="onClick" rendered="true" scope="." serverUnvalidated="false" targetFrame="_blank" warnAboutChanges="true" xmlns:oa="http://xmlns.oracle.com/oa"/>
+      </insert>
+      <move element="xGetNextWorkRN.FullPageRefreshButton" after="xGetNextWorkRN.ButtonsSpacer"/>
+      <modify element="xGetNextWorkRN.FullPageRefreshButton" rendered="true"/>
+   </modifications>
+</customization>

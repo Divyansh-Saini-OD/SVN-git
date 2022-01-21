@@ -1,0 +1,75 @@
+
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+PROMPT Creating Table XX_EXTERNAL_USERS
+
+/*
+-- +=======================================================================================+
+-- |               Office Depot - Project Simplify                                         |
+-- |             Oracle NAC Consulting Organization                                        |
+-- +=======================================================================================+
+-- | Name             : CREATE_XX_EXTERNAL_USERS.tbl                                       |
+-- | Description      : Custom table for E1328_BSD_iReceivables_interface                  |
+-- |                                                                                       |
+-- |                                                                                       |
+-- |Change History:                                                                        |
+-- |---------------                                                                        |
+-- |                                                                                       |
+-- |Version  Date        Author             Remarks                                        |
+-- |-------  ----------- -----------------  -----------------------------------------------|
+-- |Draft1a  22-AUG-2007 Ramesh Raghupathi  Initial Draft Version                          |
+-- |	       10-DEC-2007 Yusuf Ali	        Added column PERMISSION_FLAG                   |
+-- |	       30-JAN-2008 Alok Sahay	        Added column ORG_ID                            |
+-- |	                                      Added column ORIG_SYSTEM                       |
+-- |	                                      Added column PARTY_TYPE                        |
+-- |	                                      Added column FND_USER_NAME                     |
+-- |	                                      changed column BSD_ACCESS_CODE to ACCESS_CODE  |
+-- |	                                      changed column IREC_RESPONSIBILITY_ID          |
+-- |                                                    to RESPONSIBILITY_ID               |
+-- |	                                      changed column PERMISSION_FLAG LENGTH to 30    |
+-- |	                                      changed column EMAIL LENGTH to 255             |
+-- |	                                      changed column CONTACT_OSR LENGTH to 255       |
+-- |	                                      changed column ACCT_SITE_OSR LENGTH to 255     |
+-- |                                                                                       |
+-- +=======================================================================================+
+*/
+
+-- -------------------------------------------------------
+--      Create Custom Table XXCRM.XX_EXTERNAL_USERS     --
+-- -------------------------------------------------------
+
+CREATE TABLE XXCOMN.XX_EXTERNAL_USERS
+( EXT_USER_ID             NUMBER(10)    PRIMARY KEY
+, USERID                  VARCHAR2(100) NOT NULL
+, PASSWORD                VARCHAR2(255)
+, PERSON_FIRST_NAME       VARCHAR2(150)
+, PERSON_MIDDLE_NAME      VARCHAR2(60)
+, PERSON_LAST_NAME        VARCHAR2(150)
+, EMAIL                   VARCHAR2(255)
+, ORIG_SYSTEM             VARCHAR2(30)
+, CONTACT_OSR             VARCHAR2(255)
+, ACCT_SITE_OSR           VARCHAR2(255)
+, WEBUSER_OSR             VARCHAR2(255)
+, ACCESS_CODE             VARCHAR2(30)
+, PERMISSION_FLAG	        VARCHAR2(30)
+, STATUS                  VARCHAR2(1)
+, SITE_KEY                VARCHAR2(100)
+, ORG_ID                  NUMBER(15)
+, PARTY_TYPE              VARCHAR2(30)
+, PARTY_ID                NUMBER(15)
+, RESPONSIBILITY_ID       NUMBER(15)
+, FND_USER_NAME           VARCHAR2(100)
+, END_DATE                DATE
+, LOAD_STATUS             VARCHAR2(30)
+, USER_LOCKED             VARCHAR2(1)
+, CREATED_BY              NUMBER
+, CREATION_DATE           DATE
+, LAST_UPDATE_DATE        DATE
+, OID_UPDATE_DATE         DATE DEFAULT SYSDATE
+, LAST_UPDATED_BY         NUMBER
+, LAST_UPDATE_LOGIN       NUMBER
+);
+
+EXIT;
+

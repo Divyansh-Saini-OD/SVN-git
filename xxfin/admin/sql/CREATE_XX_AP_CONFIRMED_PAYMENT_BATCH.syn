@@ -1,0 +1,32 @@
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     ON
+
+PROMPT Creating SYNONYM XX_AP_CONFIRMED_PAYMENT_BATCH
+
+PROMPT Program exits IF the creation IS NOT SUCCESSFUL
+
+WHENEVER SQLERROR CONTINUE
+
+-- +==========================================================================+
+-- |                  Office Depot - Project Simplify                         |
+-- |                       WIPRO Technologies                                 |
+-- +==========================================================================+
+-- | Name        : XXFIN.XX_AP_CONFIRMED_PAYMENT_BATCH                        |
+-- | Description : Synonym for XX_AP_CONFIRMED_PAYMENT_BATCH                  |
+-- |               1. Contains the Confirmed Payment Batch.                   |
+-- |               2. Status of the batches corresponding to the RTV and      |
+-- |                  chargeback APDM report has been submitted or not.       |
+-- |Change Record:                                                            |
+-- |===============                                                           |
+-- |Version      Date              Author               Remarks               |
+-- |=======      ==========        =============        ===================== |
+-- | V1.0        29-SEP-2009       Gokila Tamilselvam   Initial version       |
+-- |                                                    R1.1 Defect# 1431     |
+-- +==========================================================================+
+
+CREATE SYNONYM xx_ap_confirmed_payment_batch FOR xxfin.xx_ap_confirmed_payment_batch;
+
+SHOW ERROR

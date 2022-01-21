@@ -1,0 +1,52 @@
+#-- +=======================================================================+
+#-- | Name            : XX_OD_UPDATE_PROFILES_SCRIPT.prog                   |
+#-- | Rice ID         : E3094                         			    |
+#-- | Description     : Shell Script for updating the Profile option values |
+#-- |                   and Translation values.                             |
+#-- |Change History:                                                        |
+#-- |---------------                                                        |
+#-- |Version    Date          Author                Remarks                 |
+#-- |-------    -----------  --------------        -------------------------|
+#-- |Draft 1.0  30-NOV-2016  Havish Kasina         Initial Draft version    |
+#-- +=======================================================================+
+
+#Shell Script for updating the Profile option values and Translation values. 
+
+#Apps default parameters
+APPS_LOGIN=$1
+FCP_USERID=$2
+FCP_USERNAME=$3
+FCP_REQID=$4
+echo $FCP_REQID 
+
+echo "================================================================================" 
+echo "Start Time          : `date`"                        
+echo "Program Name        : OD: Update Profile Options with Absolute path"
+echo "================================================================================" 
+echo " ==============Concurrent Program Parameters===================================="
+
+echo "================================================================================" 
+echo " Setting Environment Variable "
+. $HOME/r122profile.sh
+echo "================================================================================" 
+
+lc_run_top=$RUN_BASE
+echo $lc_run_top
+echo "=========================================================================="
+echo "Calling Package XX_OD_UPDATE_PROFILES_PKG.xx_update_profile_values to update the Profile option values and Translation values"
+echo "Below is the parameter "
+echo "Run Edition Top :="$lc_run_top;
+echo "=========================================================================="
+
+sqlplus -s $APPS_LOGIN<<EOF_SQL
+whenever sqlerror exit 1
+SET feedback off echo off verify off heading off
+set pagesize 0
+set feedback off
+set serveroutput on size 1000000
+SET linesize  32000
+SET long  50000
+exec XX_OD_UPDATE_PROFILES_PKG.xx_update_profile_values('$lc_run_top');
+exit;
+EOF_SQL
+

@@ -1,0 +1,436 @@
+<?xml version="1.0" encoding='windows-1252'?>
+<!DOCTYPE ViewObject SYSTEM "jbo_03_01.dtd">
+
+<ViewObject
+   Name="ODAccountSiteContactsVO"
+   BindingStyle="Oracle"
+   CustomQuery="true"
+   RowClass="od.oracle.apps.xxcrm.hz.account.customer.server.ODAccountSiteContactsVORowImpl"
+   ComponentClass="od.oracle.apps.xxcrm.hz.account.customer.server.ODAccountSiteContactsVOImpl"
+   MsgBundleClass="oracle.jbo.common.JboResourceBundle"
+   UseGlueCode="false" >
+   <SQLQuery><![CDATA[
+SELECT 
+  acct_role.rowid row_id,
+  acct_role.cust_account_role_id contact_id,
+  acct_role.cust_account_id customer_id,
+  acct_role.cust_acct_site_id address_id,
+  party.person_pre_name_adjunct title,
+  arpt_sql_func_util.get_lookup_meaning('CONTACT_TITLE',   party.person_pre_name_adjunct) title_meaning,
+  substrb(party.person_first_name,   1,   40) first_name,
+  substrb(party.person_last_name,   1,   50) last_name,
+  NULL first_name_alt,
+  NULL last_name_alt,
+  acct_role.status,
+  org_cont.job_title job_title,
+  org_cont.job_title_code job_title_code,
+  nvl(arpt_sql_func_util.get_lookup_meaning('RESPONSIBILITY',   org_cont.job_title_code),   org_cont.job_title),
+  org_cont.mail_stop mail_stop,
+  acct_role.orig_system_reference orig_system_reference,
+  party.customer_key contact_key,
+  rel_party.email_address,
+  party.party_id,
+  org_cont.org_contact_id,
+  cont_point.contact_point_id,
+  org_cont.contact_number,
+  rel.relationship_id,
+  rel_party.party_id as rel_party_d,
+  hrr.responsibility_type,
+  decode(party.person_first_name,null,substrb(party.person_last_name,   1,   50),
+         party.person_last_name,null,substrb(party.person_first_name,   1,   40),
+	    (substrb(party.person_last_name,   1,   50)||' '||substrb(party.person_first_name,   1,   40))) Name,
+hz_format_phone_v2pub.GET_FORMATTED_PHONE(cont_point.CONTACT_POINT_ID,null) formattedPhone
+FROM hz_contact_points cont_point,
+  hz_cust_account_roles acct_role,
+  hz_parties party,
+  hz_parties rel_party,
+  hz_relationships rel,
+  hz_org_contacts org_cont,
+  hz_cust_accounts role_acct,
+  hz_contact_restrictions cont_res,
+  hz_person_language per_lang,
+  hz_role_responsibility hrr
+WHERE acct_role.party_id = rel.party_id
+ AND acct_role.role_type = 'CONTACT'
+ AND org_cont.party_relationship_id = rel.relationship_id
+ AND rel.subject_id = party.party_id
+ AND rel_party.party_id = rel.party_id
+ AND cont_point.owner_table_id(+) = rel_party.party_id
+ AND cont_point.contact_point_type IN ('EMAIL','PHONE')
+ AND cont_point.primary_flag(+) = 'Y'
+ AND acct_role.cust_account_id = role_acct.cust_account_id
+ AND role_acct.party_id = rel.object_id
+ AND party.party_id = per_lang.party_id(+)
+ AND per_lang.native_language(+) = 'Y'
+ AND party.party_id = cont_res.subject_id(+)
+ AND cont_res.subject_table(+) = 'HZ_PARTIES'
+ AND cont_point.owner_table_name(+) = 'HZ_PARTIES'
+ --AND acct_role.cust_acct_site_id IS NULL
+ AND hrr.cust_account_role_id(+) = acct_role.cust_account_role_id
+ AND hrr.primary_flag(+) = 'Y'
+ AND acct_role.cust_acct_site_id = :1
+   ]]></SQLQuery>
+   <DesignTime>
+      <Attr Name="_isCodegen" Value="true" />
+      <Attr Name="_version" Value="9.0.3.13.93" />
+      <Attr Name="_CodeGenFlagNew" Value="36" />
+   </DesignTime>
+   <ViewAttribute
+      Name="RowId1"
+      IsPersistent="false"
+      IsNotNull="true"
+      Type="oracle.jbo.domain.RowID"
+      ColumnType="ROWID"
+      AliasName="ROW_ID"
+      Expression="ROW_ID"
+      SQLType="ROWID" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="1" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="ContactId"
+      IsPersistent="false"
+      IsNotNull="true"
+      Precision="15"
+      Scale="0"
+      Type="oracle.jbo.domain.Number"
+      ColumnType="NUMBER"
+      AliasName="CONTACT_ID"
+      Expression="CONTACT_ID"
+      SQLType="NUMERIC" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="CustomerId"
+      IsPersistent="false"
+      IsNotNull="true"
+      Precision="15"
+      Scale="0"
+      Type="oracle.jbo.domain.Number"
+      ColumnType="NUMBER"
+      AliasName="CUSTOMER_ID"
+      Expression="CUSTOMER_ID"
+      SQLType="NUMERIC" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="AddressId"
+      IsPersistent="false"
+      Precision="15"
+      Scale="0"
+      Type="oracle.jbo.domain.Number"
+      ColumnType="NUMBER"
+      AliasName="ADDRESS_ID"
+      Expression="ADDRESS_ID"
+      SQLType="NUMERIC" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Title"
+      IsPersistent="false"
+      Precision="30"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="TITLE"
+      Expression="TITLE"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="30" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="TitleMeaning"
+      IsPersistent="false"
+      Precision="4000"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="TITLE_MEANING"
+      Expression="TITLE_MEANING"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="4000" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="FirstName"
+      IsPersistent="false"
+      Precision="40"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="FIRST_NAME"
+      Expression="FIRST_NAME"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="40" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="LastName"
+      IsPersistent="false"
+      Precision="50"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="LAST_NAME"
+      Expression="LAST_NAME"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="50" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="FirstNameAlt"
+      IsPersistent="false"
+      Precision="255"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="FIRST_NAME_ALT"
+      Expression="FIRST_NAME_ALT"
+      SQLType="VARCHAR" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="LastNameAlt"
+      IsPersistent="false"
+      Precision="255"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="LAST_NAME_ALT"
+      Expression="LAST_NAME_ALT"
+      SQLType="VARCHAR" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Status"
+      IsPersistent="false"
+      Precision="1"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="STATUS"
+      Expression="STATUS"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="1" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="JobTitle"
+      IsPersistent="false"
+      Precision="100"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="JOB_TITLE"
+      Expression="JOB_TITLE"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="100" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="JobTitleCode"
+      IsPersistent="false"
+      Precision="30"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="JOB_TITLE_CODE"
+      Expression="JOB_TITLE_CODE"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="30" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="NvlArptSqlFuncUtilGetLookupMeaningResponsibilityOrgContJobTitleCodeOrgContJobTitle"
+      IsPersistent="false"
+      Precision="4000"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      Expression="NVL(ARPT_SQL_FUNC_UTIL.GET_LOOKUP_MEANING(RESPONSIBILITY,ORG_CONT.JOB_TITLE_CODE),ORG_CONT.JOB_TITLE)"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="4000" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="MailStop"
+      IsPersistent="false"
+      Precision="60"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="MAIL_STOP"
+      Expression="MAIL_STOP"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="60" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="OrigSystemReference"
+      IsPersistent="false"
+      Precision="240"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="ORIG_SYSTEM_REFERENCE"
+      Expression="ORIG_SYSTEM_REFERENCE"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="240" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="ContactKey"
+      IsPersistent="false"
+      Precision="500"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="CONTACT_KEY"
+      Expression="CONTACT_KEY"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="500" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="EmailAddress"
+      IsPersistent="false"
+      Precision="2000"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="EMAIL_ADDRESS"
+      Expression="EMAIL_ADDRESS"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="2000" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="PartyId"
+      IsPersistent="false"
+      IsNotNull="true"
+      Precision="15"
+      Scale="0"
+      Type="oracle.jbo.domain.Number"
+      ColumnType="NUMBER"
+      AliasName="PARTY_ID"
+      Expression="PARTY_ID"
+      SQLType="NUMERIC" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="OrgContactId"
+      IsPersistent="false"
+      IsNotNull="true"
+      Precision="15"
+      Scale="0"
+      Type="oracle.jbo.domain.Number"
+      ColumnType="NUMBER"
+      AliasName="ORG_CONTACT_ID"
+      Expression="ORG_CONTACT_ID"
+      SQLType="NUMERIC" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="ContactPointId"
+      IsPersistent="false"
+      Precision="15"
+      Scale="0"
+      Type="oracle.jbo.domain.Number"
+      ColumnType="NUMBER"
+      AliasName="CONTACT_POINT_ID"
+      Expression="CONTACT_POINT_ID"
+      SQLType="NUMERIC" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="ContactNumber"
+      IsPersistent="false"
+      Precision="30"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="CONTACT_NUMBER"
+      Expression="CONTACT_NUMBER"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="30" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="RelationshipId"
+      IsPersistent="false"
+      IsNotNull="true"
+      Precision="15"
+      Scale="0"
+      Type="oracle.jbo.domain.Number"
+      ColumnType="NUMBER"
+      AliasName="RELATIONSHIP_ID"
+      Expression="RELATIONSHIP_ID"
+      SQLType="NUMERIC" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="RelPartyD"
+      IsPersistent="false"
+      IsNotNull="true"
+      Precision="15"
+      Scale="0"
+      Type="oracle.jbo.domain.Number"
+      ColumnType="NUMBER"
+      AliasName="REL_PARTY_D"
+      Expression="REL_PARTY_D"
+      SQLType="NUMERIC" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="ResponsibilityType"
+      IsPersistent="false"
+      Precision="30"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="RESPONSIBILITY_TYPE"
+      Expression="RESPONSIBILITY_TYPE"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="30" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Name"
+      IsPersistent="false"
+      Precision="91"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="NAME"
+      Expression="NAME"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="91" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Formattedphone"
+      IsPersistent="false"
+      Precision="4000"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="FORMATTEDPHONE"
+      Expression="FORMATTEDPHONE"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="4000" />
+      </DesignTime>
+   </ViewAttribute>
+</ViewObject>

@@ -1,0 +1,10 @@
+<adapter-config name="SerializedCouponGetMQAdapter" adapter="MQ Series Adapter" wsdlLocation="SerializedCouponGetMQAdapter.wsdl" xmlns="http://platform.integration.oracle/blocks/adapter/fw/metadata">
+  
+  <connection-factory location="eis/mq/AS400POS"/>
+  <endpoint-activation portType="Dequeue_ptt" operation="Dequeue" UITransmissionPrimitive="Dequeue">
+    <activation-spec className="oracle.tip.adapter.mq.inbound.ActivationSpecImpl">
+      <property name="QueueName" value="SERVICE_SOA_RESPONSE_QUEUE_TEMP"/>
+    </activation-spec>
+  </endpoint-activation>
+
+</adapter-config>

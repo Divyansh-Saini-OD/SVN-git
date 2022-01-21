@@ -1,0 +1,39 @@
+REM================================================================================================
+REM                                 Start Of Script
+REM================================================================================================
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     OFF
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+-- +=======================================================================+
+-- |               Office Depot - Project Simplify                         |
+-- +=======================================================================+
+-- | Name        :XX_AP_INVOICE_DISTRIB_N2                                 |
+-- | Description : Non-Unique Index for last_update_date in                |            
+-- |                                         ap_invoice_distributions_all  |
+-- |Change History:                                                        |
+-- |---------------                                                        |
+-- | RICE ID : E3523                                                       |
+-- |Version  Date        Author             Remarks                        |
+-- |-------  ----------- -----------------  -------------------------------|
+-- | 1.0     9-Oct-2017 Digamber S         Baselined                       |
+-- +=======================================================================+
+
+PROMPT
+PROMPT Creating Index....
+PROMPT
+
+create index XX_AP_INVOICE_DISTRIB_N2 on AP.ap_invoice_distributions_all(last_update_date) NOLOGGING PARALLEL 8;
+
+alter index XX_AP_INVOICE_DISTRIB_N2 NOPARALLEL;
+
+
+SHOW ERRORS;
+
+
+REM================================================================================================
+REM                                 End Of Script
+REM================================================================================================

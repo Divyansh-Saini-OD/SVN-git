@@ -1,0 +1,31 @@
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     ON
+
+PROMPT Creating SYNONYM XX_AR_EBL_CONS_LINES_STG
+
+PROMPT Program exits IF the creation IS NOT SUCCESSFUL
+
+WHENEVER SQLERROR CONTINUE
+
+-- +===================================================================================+
+-- |                  Office Depot - Project Simplify                                  |
+-- +===================================================================================+
+-- | Name :XX_AR_EBL_CONS_LINES_STG                                                    |
+-- | Description : Create the Synonym for the table XX_AR_EBL_CONS_LINES_STG           |
+-- |                                                                                   |
+-- |                                                                                   |
+-- |                                                                                   |
+-- |                                                                                   |
+-- |Change Record:                                                                     |
+-- |===============                                                                    |
+-- |Version   Date         Author               Remarks                                |
+-- |=======   ==========   =============        =======================================|
+-- | V1.0     15-Mar-2010  Parameswaran SN        Initial version                      |
+-- +===================================================================================+
+
+CREATE SYNONYM APPS.XX_AR_EBL_CONS_LINES_STG FOR XXFIN.XX_AR_EBL_CONS_LINES_STG;
+
+SHOW ERROR

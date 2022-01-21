@@ -1,0 +1,30 @@
+-- +==========================================================================+
+-- |                  Office Depot - Project Simplify                         |
+-- +==========================================================================+
+-- | Name        : XX_AR_BATCH_SEQUENCE                                       |
+-- | Description : Sequence is used for generating sequence number            |
+-- |               for the BATCH ID                                           |
+-- |                                                                          |
+-- |                                                                          |
+-- |                                                                          |
+-- |Change Record:                                                            |
+-- |===============                                                           |
+-- | Version     Date           Author               Remarks                  |
+-- |=========  ==========   =============      ========================       |
+-- | 1.0     14-May-2010     Ranjith Thangasamy       Initial version         |
+-- |==========================================================================|
+
+
+
+
+   CREATE SEQUENCE  "XXFIN"."XX_AR_BATCH_SEQUENCE"
+   MINVALUE 1 
+   MAXVALUE 999999999999999999999999999 
+   INCREMENT BY 1 
+   START WITH 654 
+   NOCACHE  
+   NOORDER 
+   NOCYCLE ;
+ 
+
+ 

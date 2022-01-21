@@ -1,0 +1,31 @@
+SET SHOW         OFF 
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     ON
+SET TERM         ON
+
+WHENEVER SQLERROR CONTINUE
+
+	-- +==========================================================================+
+-- |                  Office Depot - Project Simplify                         |
+-- +==========================================================================+
+-- | Name :XXFIN.XX_AP_TOLERANCE_TEMP_SEQ                                 |
+-- | Description :   Script to create sequence  							  |
+-- |                                                                          |
+-- |                                                                          |
+-- |Change Record:                                                            |
+-- |===============                                                           |
+-- |Version      Date           Author               Remarks                  |
+-- |=======    ==========     =============        ===========================|
+-- | DRAFT 1.0 09-FEB-2020     Bhargavi Ankolekar Initial draft version       |
+-- |                                                                          |
+-- +==========================================================================+
+
+
+
+CREATE SEQUENCE XXFIN.XX_AP_TOLERANCE_TEMP_SEQ
+    INCREMENT BY 1
+    START WITH 1
+    CACHE 1000;
+/

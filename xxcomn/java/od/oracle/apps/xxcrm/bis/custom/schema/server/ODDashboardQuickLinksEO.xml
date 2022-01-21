@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding='windows-1252'?>
+<!DOCTYPE Entity SYSTEM "jbo_03_01.dtd">
+
+<Entity
+   Name="ODDashboardQuickLinksEO"
+   DBObjectType="table"
+   DBObjectName="XXBI_QUICK_LINKS"
+   AliasName="ODDashboardQuickLinksEO"
+   BindingStyle="Oracle"
+   UseGlueCode="false"
+   CodeGenFlag="0"
+   RowClass="od.oracle.apps.xxcrm.bis.custom.schema.server.ODDashboardQuickLinksEOImpl"
+   DefClass="oracle.apps.fnd.framework.server.OAEntityDefImpl"
+   CollClass="oracle.apps.fnd.framework.server.OAEntityCache" >
+   <DesignTime>
+      <Attr Name="_isCodegen" Value="true" />
+      <Attr Name="_version" Value="9.0.3.12.53" />
+      <AttrArray Name="_publishEvents">
+      </AttrArray>
+   </DesignTime>
+   <Attribute
+      Name="Label"
+      Precision="100"
+      Type="java.lang.String"
+      ColumnName="LABEL"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XXBI_QUICK_LINKS" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="100" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="Description"
+      Precision="100"
+      Type="java.lang.String"
+      ColumnName="DESCRIPTION"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XXBI_QUICK_LINKS" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="100" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="OrderOfDisplay"
+      IsUnique="true"
+      Type="oracle.jbo.domain.Number"
+      ColumnName="ORDER_OF_DISPLAY"
+      ColumnType="NUMBER"
+      SQLType="NUMERIC"
+      TableName="XXBI_QUICK_LINKS" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="ResponsibilityKey"
+      Precision="50"
+      Type="java.lang.String"
+      ColumnName="RESPONSIBILITY_KEY"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XXBI_QUICK_LINKS" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="50" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="CreationDate"
+      Type="oracle.jbo.domain.Date"
+      ColumnName="CREATION_DATE"
+      ColumnType="DATE"
+      SQLType="TIMESTAMP"
+      TableName="XXBI_QUICK_LINKS" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="7" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="CreatedBy"
+      Type="oracle.jbo.domain.Number"
+      ColumnName="CREATED_BY"
+      ColumnType="NUMBER"
+      SQLType="NUMERIC"
+      TableName="XXBI_QUICK_LINKS" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="LastUpdateDate"
+      Type="oracle.jbo.domain.Date"
+      ColumnName="LAST_UPDATE_DATE"
+      ColumnType="DATE"
+      SQLType="TIMESTAMP"
+      TableName="XXBI_QUICK_LINKS" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="7" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="LastUpdatedBy"
+      Type="oracle.jbo.domain.Number"
+      ColumnName="LAST_UPDATED_BY"
+      ColumnType="NUMBER"
+      SQLType="NUMERIC"
+      TableName="XXBI_QUICK_LINKS" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="LastUpdateLogin"
+      Type="oracle.jbo.domain.Number"
+      ColumnName="LAST_UPDATE_LOGIN"
+      ColumnType="NUMBER"
+      SQLType="NUMERIC"
+      TableName="XXBI_QUICK_LINKS" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="QuicklinkId"
+      IsNotNull="true"
+      Type="oracle.jbo.domain.Number"
+      ColumnName="QUICKLINK_ID"
+      ColumnType="NUMBER"
+      SQLType="NUMERIC"
+      TableName="XXBI_QUICK_LINKS"
+      PrimaryKey="true" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="Path"
+      Precision="10"
+      Type="java.lang.String"
+      ColumnName="PATH"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XXBI_QUICK_LINKS" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="10" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="FullPath"
+      Precision="2000"
+      Type="java.lang.String"
+      ColumnName="FULL_PATH"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XXBI_QUICK_LINKS" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="100" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="CategoryId"
+      Precision="30"
+      Type="java.lang.String"
+      ColumnName="CATEGORY_ID"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XXBI_QUICK_LINKS" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="30" />
+      </DesignTime>
+   </Attribute>
+</Entity>

@@ -1,0 +1,24 @@
+-- +=========================================================================+
+-- |                  Office Depot                                           |
+-- +=========================================================================+
+-- | Name        : ALTER_FLAG_XX_AR_SUBSCRIPTIONS.tbl                        |
+-- | Description : Added new field in the existing xx_Ar_subscriptions       |
+-- |               table                                                     |
+-- |                                                                         |
+-- |Change Record:                                                           |
+-- |===============                                                          |
+-- |Version   Date         Author           Remarks                          |
+-- |=======  ===========   =============    =================================|
+-- |1.0      13-July-2018  Sahithi Kunuru    Initial Version                 |
+-- +=========================================================================+
+
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     ON
+
+ALTER TABLE xxfin.xx_Ar_subscriptions
+ADD CONTRACT_CONFIRMATION_FLAG  VARCHAR2(2);
+
+/

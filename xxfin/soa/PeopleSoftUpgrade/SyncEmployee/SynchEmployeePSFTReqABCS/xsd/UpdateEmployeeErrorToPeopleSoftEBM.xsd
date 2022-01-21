@@ -1,0 +1,17 @@
+<?xml version='1.0' encoding='windows-1252'?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://xmlns.officedepot.com/PeopleSoftMigration/UpdateEmployeeErrorCallBackPSFTProvABCS/UpdateEmployeeErrorToPSFTEBM" targetNamespace="http://xmlns.officedepot.com/PeopleSoftMigration/UpdateEmployeeErrorCallBackPSFTProvABCS/UpdateEmployeeErrorToPSFTEBM" elementFormDefault="qualified">
+   <xsd:element name="UpdateEmployeeErrorToPSFTEBM">
+      <xsd:complexType>
+         <xsd:sequence>
+            <xsd:element name="EmployeeIDList" type="EmployeeIDListType"/>
+            <xsd:element name="ProcessFlag" type="xsd:string"/>
+            <xsd:element name="ProcessDateTime" type="xsd:dateTime"/>
+         </xsd:sequence>
+      </xsd:complexType>
+   </xsd:element>
+   <xsd:complexType name="EmployeeIDListType">
+      <xsd:sequence>
+         <xsd:element name="EmployeeID" type="xsd:string" maxOccurs="unbounded"/>
+      </xsd:sequence>
+   </xsd:complexType>
+</xsd:schema>

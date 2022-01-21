@@ -1,0 +1,30 @@
+#!/usr/bin/ksh
+# +===================================================================+
+# |                  Office Depot - Project Simplify                  |
+# |                     Office Depot                                  |
+# +===================================================================+
+# | Name  :       OD Iexpenses Custom Report output Purge             |
+# | Description : To purge notified report output from filesystem     |
+# |                                                                   |
+# |                                                                   |
+# |Change Record:                                                     |
+# |===============                                                    |
+# |Version   Date          Author              Remarks                |
+# |=======   ===========  =============        =======================|
+# |1.0       14-Jan-2015 Paddy Sanjeevi       Initial version        |
+# |-------------------------------------------------------------------|
+# |                                                                   |
+# +===================================================================+
+
+
+echo "Deleting old sent report files" 
+
+echo "       "
+
+cd $XXMER_DATA/outbound
+
+find . -name \*.pdf -mtime +7 | xargs rm -rf
+find . -name \*.xls -mtime +7 | xargs rm -rf
+find . -name \*.PDF -mtime +7 | xargs rm -rf
+
+exit 0

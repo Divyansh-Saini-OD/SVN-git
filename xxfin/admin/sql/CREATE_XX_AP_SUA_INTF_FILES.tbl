@@ -1,0 +1,46 @@
+-- +===========================================================================+
+-- |                  Office Depot - Project Simplify                          |
+-- +===========================================================================+
+-- | Name :  xx_ap_sua_intf_files                                              |
+-- | Description :   Script to create custom table xx_ap_sua_intf_file         |
+-- |                                                                           |
+-- |                                                                           |
+-- |Change Record:                                                             |
+-- |===============                                                            |
+-- |Version      Date           Author                  Remarks                |
+-- |=======    ==========     =============             ====================== |
+-- | 1.0       25-JAN-2021    Paddy Sanjeevi            Initial draft version  |
+-- +===========================================================================+
+SET VERIFY OFF
+SET TERM ON
+SET FEEDBACK OFF
+SET SHOW OFF
+SET ECHO OFF
+SET TAB OFF
+WHENEVER SQLERROR CONTINUE;
+PROMPT
+PROMPT Creating the Custom Table ......
+PROMPT
+PROMPT
+PROMPT Creating the Table xx_ap_sua_intf_files......
+PROMPT
+
+CREATE TABLE xx_ap_sua_intf_files (
+process_name				    VARCHAR2(15),
+file_name                       VARCHAR2(100) , 
+creation_date                   DATE          , 
+created_by                      NUMBER        , 
+last_update_date                DATE          , 
+last_updated_by                 NUMBER        , 
+error_description               VARCHAR2(2000), 
+request_id                      NUMBER        );
+
+WHENEVER SQLERROR CONTINUE;
+PROMPT
+PROMPT Exiting....
+PROMPT
+SET FEEDBACK ON
+EXIT;
+REM=================================================================================================
+REM                                   End Of Script
+REM=================================================================================================

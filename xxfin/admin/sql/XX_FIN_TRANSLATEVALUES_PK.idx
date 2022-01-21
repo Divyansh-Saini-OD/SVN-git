@@ -1,0 +1,15 @@
+-- +==================================================================================+
+-- | Office Depot - Project Simplify                                                  |
+-- +==================================================================================+
+-- |                                                                                  |
+-- | For JIRA Rice item: E1017_OD Trans Table                                         |
+-- |                                                                                  |
+-- |Change Record:                                                                    |
+-- |===============                                                                   |
+-- |Version   Date          Author               Remarks                              |
+-- |=======   ===========   =============        =====================================|
+-- |1.0       26-DEC-2008   PSANKARAN            Initial version                      |
+-- |                                                                                  |
+-- +==================================================================================+
+
+CREATE UNIQUE INDEX XXFIN.XX_FIN_TRANSLATEVALUES_PK ON XXFIN.XX_FIN_TRANSLATEVALUES(TRANSLATE_VALUE_ID);

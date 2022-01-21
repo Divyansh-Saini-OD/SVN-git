@@ -1,0 +1,33 @@
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     ON
+	
+-- +==========================================================================+
+-- |                  Office Depot - Project Simplify                         |
+-- |                       PROVIDGE Consulting                                |
+-- +==========================================================================+
+-- | SQL Script to create the Sequences                                       |
+-- | xx_ap_scr_batch_id_s  -- BATCH_ID  of xx_ap_scr_headers_all              |
+-- | xx_ap_scr_header_id_s -- Header_ID of xx_ap_scr_headers_all              |
+-- | xx_ap_scr_line_id_s   -- LINE_ID   of xx_ap_scr_lines_all
+-- |                                                                          |
+-- |Change Record:                                                            |
+-- |===============                                                           |
+-- |Version   Date         Author               Remarks                       |
+-- |=======   ==========   =============        ==============================|
+-- | 1.0      05-JUN-2007  Sarat Uppalapati     Initial version               |
+-- | V1.0     01-NOV-2207  Sarat Uppalapati     Removed DROP Commands         |
+-- | V1.0     06-NOV-2207  Sarat Uppalapati     Changed Batch_id Sequence     |
+-- |                                            starting from 1000            | 
+-- +==========================================================================+
+
+
+CREATE SEQUENCE xxfin.XX_AP_SCR_BATCH_ID_S START WITH 1000 INCREMENT BY 1 NOCACHE;
+
+CREATE SEQUENCE xxfin.XX_AP_SCR_HEADER_ID_S START WITH 1 INCREMENT BY 1 NOCACHE;
+
+CREATE SEQUENCE xxfin.XX_AP_SCR_LINE_ID_S START WITH 1 INCREMENT BY 1 NOCACHE;
+
+SHOW ERROR

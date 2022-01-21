@@ -1,0 +1,33 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<customization xmlns="http://xmlns.oracle.com/jrad" version="9.0.6.0.0_50" xml:lang="en-US" customizes="/oracle/apps/ar/irec/regions/ARICUSTSEARCH" developerMode="true" controllerClass="od.oracle.apps.ar.irec.common.webui.ODCustomerSearchCO" package="/oracle/apps/ar/irec/regions/customizations/site/0">
+   <modifications>
+      <modify element="Ircustnumber" prompt="Billing ID"/>
+      <move element="CustNameCol" after="TrxNumberCol"/>
+      <move element="CustNumberCol" after="CustNameCol"/>
+      <move element="CustAddressCol" after="CustNumberCol"/>
+      <move element="AddressTypeCol" after="CustAddressCol"/>
+      <move element="ContactNameCol" after="AddressTypeCol"/>
+      <move element="ContactPhoneCol" after="ContactNameCol"/>
+      <move element="Attribute1Col" after="ContactPhoneCol"/>
+      <move element="Attribute2Col" after="Attribute1Col"/>
+      <move element="Attribute3Col" after="Attribute2Col"/>
+      <move element="Attribute4Col" after="Attribute3Col"/>
+      <move element="Attribute5Col" after="Attribute4Col"/>
+      <move element="CustLocationCol" after="Attribute5Col"/>
+      <move element="CustDetailLinkCol" after="CustLocationCol"/>
+      <move element="OrgNameCol" after="CustDetailLinkCol"/>
+      <modify element="Attribute1Header" sortState="yes"/>
+      <modify element="Attribute2Header" sortState="yes"/>
+      <modify element="Attribute3Header" sortState="yes"/>
+      <modify element="Attribute4Header" sortState="yes"/>
+      <modify element="Attribute5Header" sortState="yes"/>
+      <modify element="Ircustdetaillink" prompt="Account Detail"/>
+      <modify element="Aricustdetail____1" destination="/OA_HTML/OA.jsp?akRegionCode=ARIACCOUNTDETAILS&amp;akRegionApplicationId=222&amp;Ircustomerid={!CustomerId}&amp;Ircustomersiteuseid={!BillToSiteUseId}" text="Account Detail"/>
+      <modify element="CustDetailLinkHeader" prompt="Account Detail"/>
+      <modify element="CustDetailLink" prompt="Account Detail"/>
+      <modify element="Aricustdetail" text="Account Detail"/>
+      <modify element="AricustdetailImg" rendered="false"/>
+      <modify element="Attribute1" destination="OA.jsp?OAFunc=ARIACCOUNTDETAILS&amp;OAHP=ARIMENUAPPLICATION&amp;OASF=ARIACCOUNTDETAILS&amp;fromHomePage=Y&amp;srcType=AL&amp;retainAM=Y&amp;Ircustomerid={!Attribute4}&amp;Ircustomerid1={!Attribute4}"/>
+      <modify element="Attribute2" destination="javascript:window.open('OA.jsp?page=/od/oracle/apps/xxfin/ar/irec/homepage/webui/ODARIHOMEPAGE&amp;srcType=AL&amp;retainAM=Y&amp;Ircustomerid={!Attribute4}&amp;Ircustomerid1={!Attribute4}', '_blank', 'menubar=no,scrollbars=yes,resizable=yes', '');void(0);"/>
+   </modifications>
+</customization>

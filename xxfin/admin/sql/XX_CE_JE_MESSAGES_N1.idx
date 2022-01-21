@@ -1,0 +1,29 @@
+-- +==========================================================================+
+-- |                  Office Depot - Project Simplify                         |
+-- |                       Oracle India Pvt Ltd                               |
+-- +==========================================================================+
+-- | SQL Script to create                                                     |
+-- |                                                                          |
+-- | INDEXES: XXFIN.XXCE_JE_MESSAGES_N1                                       |   
+-- |                                                                          |
+-- |                                                                          |
+-- |                                                                          |
+-- |Change Record:                                                            |
+-- |===============                                                           |
+-- |Version   Date         Author               Remarks                       |
+-- |=======   ==========   =============        ==============================|
+-- | V1.0     11-OCT-2014  Diwakar Jwala.       Initial version               |
+-- +==========================================================================+
+
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     ON
+
+CREATE  INDEX "XXFIN"."XX_CE_JE_MESSAGES_N1" ON "CE"."CE_JE_MESSAGES" ("STATEMENT_LINE_ID") 
+TABLESPACE "XXOD_TS_DATA" 
+NOLOGGING 
+parallel 8;
+
+alter index XXFIN.XX_CE_JE_MESSAGES_N1 noparallel;

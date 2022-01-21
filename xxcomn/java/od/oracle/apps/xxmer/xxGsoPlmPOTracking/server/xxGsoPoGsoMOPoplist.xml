@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding='windows-1252'?>
+<!DOCTYPE ViewObject SYSTEM "jbo_03_01.dtd">
+
+<ViewObject
+   Name="xxGsoPoGsoMOPoplist"
+   BindingStyle="Oracle"
+   CustomQuery="true"
+   RowClass="oracle.apps.fnd.framework.server.OAViewRowImpl"
+   ComponentClass="od.oracle.apps.xxmer.xxGsoPlmPOTracking.server.xxGsoPoGsoMOPoplistImpl"
+   MsgBundleClass="oracle.jbo.common.JboResourceBundle"
+   UseGlueCode="false" >
+   <SQLQuery><![CDATA[
+select short_code GSO_MO_NAME
+from QA_PLAN_CHAR_VALUE_LOOKUPS
+where (plan_id,char_id) in (select a.plan_id,b.char_id 
+                              from  apps.qa_chars c,
+                                    apps.qa_plan_chars b,
+                                    apps.qa_plans a
+                             where  a.name='OD_GSO_DEPT_CATEGORY'
+                               and  b.plan_id=a.plan_id
+                               and  c.char_id=b.char_id
+                               and  c.name='OD_PB_ABM_NAME')
+   ]]></SQLQuery>
+   <DesignTime>
+      <Attr Name="_version" Value="9.0.3.12.53" />
+      <Attr Name="_CodeGenFlagNew" Value="36" />
+   </DesignTime>
+   <ViewAttribute
+      Name="GsoMoName"
+      IsPersistent="false"
+      IsNotNull="true"
+      Precision="150"
+      Type="java.lang.String"
+      AliasName="GSO_MO_NAME"
+      ColumnType="VARCHAR2"
+      Expression="GSO_MO_NAME"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="150" />
+      </DesignTime>
+   </ViewAttribute>
+</ViewObject>

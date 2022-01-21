@@ -1,0 +1,26 @@
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     ON
+
+-- +==========================================================================+
+-- |                  Office Depot - Project Simplify                         |
+-- |                          Capgemini                                       |
+-- +==========================================================================+
+-- | Table Script to create the following object                              |
+-- |             Table  : STG table index                                     |
+-- |                      Remit BC/POD change Defect#NAIT-70500               |
+-- |                                                                          |
+-- |Change Record:                                                            |
+-- |===============                                                           |
+-- |Version   Date         Author               Remarks                       |
+-- |=======   ==========   =============        ==============================|
+-- | V1.0     24-JAN-2019  Thilak CG            Initial version               |
+-- |                                                                          |
+-- +==========================================================================+  
+
+
+CREATE INDEX XX_AR_EBL_CONS_HDR_HIST_N4 ON XXFIN.XX_AR_EBL_CONS_HDR_HIST(TRANSMISSION_ID,CONSOLIDATED_BILL_NUMBER,CUST_ACCOUNT_ID);
+  
+SHOW ERROR; 

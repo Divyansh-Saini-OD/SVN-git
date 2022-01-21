@@ -1,0 +1,24 @@
+-- +===========================================================================+
+-- |                  Office Depot                                             |
+-- +===========================================================================+
+-- |Description : Create index ON XX_FIN_VPS_STMT_BACKUP_DATA                  |
+-- |                                                                           |
+-- |                                                                           |
+-- |Change Record:                                                             |
+-- |===============                                                            |
+-- |Version      Date           Author                  Remarks                |
+-- |=======    ==========     =============             ====================== |
+-- | 1.0       09-JUL-17      Sreedhar Mohan            Initial draft version  |
+-- +===========================================================================+
+
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     ON
+WHENEVER SQLERROR CONTINUE
+                                               
+create  index XX_FIN_VPS_STMT_BACKUP_DATA_N1 on XXFIN.XX_FIN_VPS_STMT_BACKUP_DATA(PROGRAM_ID);
+create  index XX_FIN_VPS_STMT_BACKUP_DATA_N2 on XXFIN.XX_FIN_VPS_STMT_BACKUP_DATA(VENDOR_NUMBER);
+create  index XX_FIN_VPS_STMT_BACKUP_DATA_N3 on XXFIN.XX_FIN_VPS_STMT_BACKUP_DATA(PROGRAM_ID, VENDOR_NUMBER);
+                                               

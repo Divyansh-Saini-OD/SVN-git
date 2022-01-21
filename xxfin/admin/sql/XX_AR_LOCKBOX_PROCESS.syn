@@ -1,0 +1,30 @@
+---+========================================================================================================+        
+---|                                        Office Depot - Project Simplify                                 |
+---|                             Oracle NAIO/WIPRO/Office Depot/Consulting Organization                     |
+---+========================================================================================================+
+---|    Application             :       AR                                                                  |
+---|                                                                                                        |
+---|    Name                    :       XX_AR_LOCKBOX_PROCESS.syn                                           |
+---|                                                                                                        |
+---|    Description             :       This Creates the synonyms for the table xx_ar_payment_interface     |
+---|                                                                                                        |
+---|                                                                                                        |
+---|                                                                                                        |
+---|    Change Record                                                                                       |
+---|    ---------------------------------                                                                   |
+---|    Version         DATE              AUTHOR            DESCRIPTION                                     |
+---|    ------------    ----------------- ---------------   ---------------------                           |
+---|    1.0             14-AUG-2007       Shiva Rao         Initial Version                                 |
+---|    1.1             15-JUL-2008       Brian J Looman    Defect 7605 - removed unused tables             |
+---|                                                                                                        |
+---+========================================================================================================+ 
+
+
+CREATE SYNONYM XX_AR_PAYMENTS_INTERFACE FOR XXFIN.XX_AR_PAYMENTS_INTERFACE;
+
+/*
+-- B.Looman, none of these tables are used any more, defect 7605
+--CREATE synonym xx_ar_autocash_glb_tmp for xxfin.xx_ar_autocash_glb_tmp ;
+--CREATE synonym XX_AR_AUTOCASH2_GLB_TMP for xxfin.XX_AR_AUTOCASH2_GLB_TMP ;
+--CREATE SYNONYM APPS.XX_AR_ANYCOMBO_NCR FOR XXFIN.XX_AR_ANYCOMBO_NCR ;
+*/

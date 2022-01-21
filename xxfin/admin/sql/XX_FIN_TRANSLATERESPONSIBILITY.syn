@@ -1,0 +1,38 @@
+SET VERIFY      OFF
+SET TERM        OFF
+SET FEEDBACK    OFF
+SET SHOW        OFF 
+SET ECHO        OFF
+SET TAB         OFF
+-- +===================================================================+
+-- |                        Office Depot                               |
+-- |                                                                   |
+-- +===================================================================+
+-- | Synonym Name:  XX_FIN_TRANSLATERESPONSIBILITY.syn                 |
+-- |                                                                   |
+-- |Change Record:                                                     |
+-- |===============                                                    |
+-- |Version   Date         Author             Remarks                  |
+-- |=======   ==========   =============      =========================|
+-- | V1.0     03-10-2018   Punit Gupta        Initial version          |
+-- +===================================================================+
+
+PROMPT
+PROMPT Synonym for table XX_FIN_TRANSLATERESPONSIBILITY
+PROMPT   
+
+CREATE OR REPLACE SYNONYM APPS.XX_FIN_TRANSLATERESPONSIBILITY FOR XXFIN.XX_FIN_TRANSLATERESPONSIBILITY;
+            
+
+PROMPT
+PROMPT Exiting....
+PROMPT
+
+SET FEEDBACK ON
+
+SHOW ERRORS;
+EXIT;
+
+REM============================================================================================
+REM                                   End Of Script                                            
+REM============================================================================================

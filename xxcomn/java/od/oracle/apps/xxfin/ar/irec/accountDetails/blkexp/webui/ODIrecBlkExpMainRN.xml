@@ -1,0 +1,23 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<oa:stackLayout version="10.1.3_" xml:lang="en-US" xmlns:oa="http://xmlns.oracle.com/oa" xmlns:jrad="http://xmlns.oracle.com/jrad" xmlns:ui="http://xmlns.oracle.com/uix/ui" xmlns:user="http://xmlns.oracle.com/jrad/user" xmlns="http://xmlns.oracle.com/jrad" file-version="$Header$" standalone="true" amDefName="od.oracle.apps.xxfin.ar.irec.accountDetails.blkexp.server.ODIrecBlkExpTransAM" controllerClass="od.oracle.apps.xxfin.ar.irec.accountDetails.blkexp.webui.ODIrecBlkExpMainCO">
+   <ui:contents>
+      <oa:defaultFormStack id="ODIrecBlkExpDefFormStk">
+         <ui:contents>
+            <oa:subTabLayout id="ODIrBlExpStbLyt" orientation="horizontal" displayType="textOnly" selectedIndex="0">
+               <ui:subTabs>
+                  <oa:subTabBar id="subTabBar1">
+                     <ui:contents>
+                        <oa:link id="ODIrBlExpSrchRnSubTbLn" destination="" icon="" text="Submit Bulk Export"/>
+                        <oa:link id="ODIrExpViewReqSubTbLn" icon="/OA_MEDIA/brown_diamond.gif" text="View Requests" destination="OA.jsp?akRegionApplicationId=0&amp;akRegionCode=FNDCPREQUESTVIEWPAGE&amp;addBreadCrumb=Y"/>
+                     </ui:contents>
+                  </oa:subTabBar>
+               </ui:subTabs>
+               <ui:contents>
+                  <oa:stackLayout id="ODIrBkExpSrchSubRn" extends="/od/oracle/apps/xxfin/ar/irec/accountDetails/blkexp/webui/ODIrecBlkExpSrchRN"/>
+                  <oa:flowLayout id="ODIrBkExpViewReqSubRn" extends="/oracle/apps/fnd/cp/viewreq/webui/CPViewRequestPG.FNDCPREQUESTVIEWREGION"/>
+               </ui:contents>
+            </oa:subTabLayout>
+         </ui:contents>
+      </oa:defaultFormStack>
+   </ui:contents>
+</oa:stackLayout>

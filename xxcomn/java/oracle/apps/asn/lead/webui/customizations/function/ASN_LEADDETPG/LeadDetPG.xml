@@ -1,0 +1,26 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<customization xmlns="http://xmlns.oracle.com/jrad" version="9.0.5.4.89_560" xml:lang="en-US" customizes="/oracle/apps/asn/lead/webui/LeadDetPG" developerMode="true">
+   <modifications>
+      <modify element="ASNLeadDetMeth" rendered="false"/>
+      <modify element="ASNLeadDetStage" rendered="false"/>
+      <modify element="ASNSubtabCustAnlHdrTable.ASNCustOpptyLstRN.ASNCustOpptyLstOw" rendered="false"/>
+      <modify element="ASNSubtabCustAnlHdrTable.ASNCustOpptyLstRN.ASNCustOpptyLstOwPhone" rendered="false"/>
+      <modify element="ASNSubtabPrdtTable.ASNPrdtUomCol" rendered="false"/>
+      <modify element="ASNSubtabPrdtTable.ASNPrdtQuanCol" rendered="false"/>
+      <modify element="ASNLeadIntSTHdrRN" text="Sales Team"/>
+      <modify element="ASNPrpHdrRN" rendered="false"/>
+      <modify element="ASNAnlCustSvcRN" rendered="true"/>
+      <modify element="ASNSTGroup" readOnly="true"/>
+      <modify element="ASNCtctAddInfoFF" rendered="true"/>
+      <move element="ASNPageRankButton" after="ASNPageHistButton"/>
+      <move element="ASNPageCnvToOpptyButton" after="ASNPageRankButton"/>
+      <move element="ASNPageNavBar" after="ASNPageCnvToOpptyButton"/>
+      <move element="ASNPageSvButton" after="ASNPageNavBar"/>
+      <move element="ASNPageFshButton" after="ASNPageSvButton"/>
+      <modify element="ASNInfoHdrRN" rendered="true"/>
+      <modify element="ASNSTAccCol" rendered="false"/>
+      <modify element="ASNPageRankButton" rendered="false"/>
+      <modify element="ASNLeadDetChnl" rendered="false"/>
+   </modifications>
+</customization>
+

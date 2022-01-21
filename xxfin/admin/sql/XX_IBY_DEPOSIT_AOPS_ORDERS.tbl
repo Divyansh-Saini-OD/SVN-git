@@ -1,0 +1,29 @@
+-- +==================================================================================+  
+-- | Office Depot - Project Simplify                                                  |
+-- | Providge Consulting                                                              |
+-- +==================================================================================+
+-- | SQL Script to create the table:  XXFIN.XX_IBY_DEPOSIT_AOPS_ORDERS                |
+-- |                                                                                  |
+-- | For the Extension I1025 Create and Apply Receipts                                |
+-- |                                                                                  |
+-- |Change Record:                                                                    |
+-- |===============                                                                   |
+-- |Version   Date          Author               Remarks                              |
+-- |=======   ===========   =============        =====================================|
+-- |1.0       12-JUL-2007   BLooman              Initial version                      |
+-- |                                                                                  |
+-- +==================================================================================+
+
+--DROP TABLE XXFIN.XX_IBY_DEPOSIT_AOPS_ORDERS;
+  
+CREATE TABLE XXFIN.XX_IBY_DEPOSIT_AOPS_ORDERS
+( AOPS_ORDER_NUMBER       VARCHAR2(50)          NOT NULL,
+  RECEIPT_NUMBER          VARCHAR2(30)          ,
+  CREATION_DATE           DATE                  NOT NULL,
+  CREATED_BY              NUMBER                NOT NULL,
+  LAST_UPDATE_DATE        DATE                  NOT NULL,
+  LAST_UPDATED_BY         NUMBER                NOT NULL,
+  LAST_UPDATE_LOGIN       NUMBER                ,
+  PROGRAM_APPLICATION_ID  NUMBER                ,
+  PROGRAM_ID              NUMBER                ,
+  PROGRAM_UPDATE_DATE     DATE                  );

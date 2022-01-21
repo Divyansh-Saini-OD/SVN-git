@@ -1,0 +1,54 @@
+-- +============================================================================================+
+-- |                        Office Depot - Project Simplify                                     |
+-- |                                                                                            |
+-- +============================================================================================+
+-- | Name         : CREATE_XX_IBY_AUTH_RESPONSE.tbl                                             |
+-- | Rice Id      : I0349                                                                       | 
+-- | Description  : INT-I0348 Table to capture auth response from payment processor (AJB)       |  
+-- |                Redesign                                                                    |
+-- | Purpose      : Create Custom Table XX_IBY_AUTH_RESPONSE.tbl.                               |
+-- |                                                                                            |
+-- |                                                                                            |
+-- |Change Record:                                                                              |
+-- |===============                                                                             |
+-- |Version    Date          Author                Remarks                                      | 
+-- |=======    ==========    =================    ==============================================+
+-- |DRAFT 1A   17-DEC-2013   EDSON MORALES        Initial Version                               |
+-- |                                                                                            |
+-- +============================================================================================+
+
+
+SET VERIFY      OFF
+SET TERM        ON
+SET FEEDBACK    OFF
+SET SHOW        OFF
+SET ECHO        OFF
+SET TAB         OFF
+
+
+PROMPT
+PROMPT Creating the Table xx_iby_auth_response .....
+PROMPT
+
+CREATE TABLE xx_iby_auth_response (payment_transaction_id NUMBER NOT NULL,
+                                   payment_system_order_number VARCHAR2(80),
+                                   instrument_sub_type  VARCHAR2(40),
+                                   auth_code  VARCHAR2(100),
+                                   status VARCHAR2(30),
+                                   ret_code_value VARCHAR2(150),
+                                   ps2000_value VARCHAR2(150),
+                                   creation_date DATE NOT NULL,
+                                   created_by  NUMBER NOT NULL,
+                                   last_update_date DATE NOT NULL,
+                                   last_updated_by NUMBER NOT NULL)
+/
+
+WHENEVER SQLERROR EXIT 1
+
+PROMPT
+PROMPT Exiting....
+PROMPT
+
+SET FEEDBACK ON
+
+EXIT;

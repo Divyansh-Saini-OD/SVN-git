@@ -1,0 +1,339 @@
+<?xml version='1.0' encoding='windows-1252' ?>
+<!DOCTYPE Entity SYSTEM "jbo_03_01.dtd">
+
+<Entity
+   Name="XXSuppMatrixEO"
+   DBObjectType="synonym"
+   DBObjectName="XX_AP_SUP_TRAITS_MATRIX"
+   AliasName="XXSuppMatrixEO"
+   BindingStyle="OracleName"
+   UseGlueCode="false"
+   RowClass="od.oracle.apps.xxfin.ap.idms.traitmatrix.schema.server.XXSuppMatrixEOImpl"
+   DefClass="oracle.apps.fnd.framework.server.OAEntityDefImpl"
+   CollClass="oracle.apps.fnd.framework.server.OAEntityCache" >
+   <DesignTime>
+      <Attr Name="_isCodegen" Value="true" />
+      <Attr Name="_version" Value="10.1.3.43.6" />
+      <AttrArray Name="_publishEvents">
+      </AttrArray>
+      <Attr Name="_panelSchema" Value="table|alias" />
+      <Attr Name="_codeGenFlag2" Value="Init|Delete|Access|DML|Val" />
+   </DesignTime>
+   <Attribute
+      Name="Supplier"
+      IsNotNull="true"
+      Precision="10"
+      Scale="0"
+      ColumnName="SUPPLIER"
+      Type="oracle.jbo.domain.Number"
+      ColumnType="NUMBER"
+      SQLType="NUMERIC"
+      TableName="XX_AP_SUP_TRAITS_MATRIX" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="Attribute1"
+      Precision="60"
+      ColumnName="ATTRIBUTE1"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XX_AP_SUP_TRAITS_MATRIX" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="60" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="Attribute2"
+      Precision="60"
+      ColumnName="ATTRIBUTE2"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XX_AP_SUP_TRAITS_MATRIX" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="60" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="Attribute3"
+      Precision="60"
+      ColumnName="ATTRIBUTE3"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XX_AP_SUP_TRAITS_MATRIX" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="60" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="Attribute4"
+      Precision="60"
+      ColumnName="ATTRIBUTE4"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XX_AP_SUP_TRAITS_MATRIX" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="60" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="CreationDate"
+      IsNotNull="true"
+      ColumnName="CREATION_DATE"
+      Type="oracle.jbo.domain.Date"
+      ColumnType="DATE"
+      SQLType="TIMESTAMP"
+      TableName="XX_AP_SUP_TRAITS_MATRIX" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="7" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="CreatedBy"
+      IsNotNull="true"
+      Precision="60"
+      ColumnName="CREATED_BY"
+      Type="oracle.jbo.domain.Number"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XX_AP_SUP_TRAITS_MATRIX" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="60" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="LastUpdateDate"
+      ColumnName="LAST_UPDATE_DATE"
+      Type="oracle.jbo.domain.Date"
+      ColumnType="DATE"
+      SQLType="TIMESTAMP"
+      TableName="XX_AP_SUP_TRAITS_MATRIX" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="7" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="LastUpdatedBy"
+      Precision="60"
+      ColumnName="LAST_UPDATED_BY"
+      Type="oracle.jbo.domain.Number"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XX_AP_SUP_TRAITS_MATRIX" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="60" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="LastUpdateLogin"
+      ColumnName="LAST_UPDATE_LOGIN"
+      Type="oracle.jbo.domain.Number"
+      ColumnType="NUMBER"
+      SQLType="NUMERIC"
+      TableName="XX_AP_SUP_TRAITS_MATRIX" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="RowID"
+      IsUpdateable="false"
+      ColumnName="ROWID"
+      Type="oracle.jbo.domain.RowID"
+      ColumnType="ROWID"
+      SQLType="ROWID"
+      PrimaryKey="true" >
+   </Attribute>
+   <Attribute
+      Name="EnableFlag"
+      Precision="1"
+      ColumnName="ENABLE_FLAG"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XX_AP_SUP_TRAITS_MATRIX" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="1" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="SupTraitId"
+      ColumnName="SUP_TRAIT_ID"
+      Type="oracle.jbo.domain.Number"
+      ColumnType="NUMBER"
+      SQLType="NUMERIC"
+      TableName="XX_AP_SUP_TRAITS_MATRIX" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </Attribute>
+   <Key
+      Name="SysC00781128" >
+      <AttrArray Name="Attributes">
+         <Item Value="od.oracle.apps.xxfin.ap.idms.traitmatrix.schema.server.XXSuppMatrixEO.Supplier" />
+      </AttrArray>
+      <DesignTime>
+         <Attr Name="_checkCondition" Value="&#34;SUPPLIER&#34; IS NOT NULL" />
+         <Attr Name="_isCheck" Value="true" />
+         <Attr Name="_DBObjectName" Value="SYS_C00781128" />
+      </DesignTime>
+   </Key>
+   <Key
+      Name="SysC00781129" >
+      <AttrArray Name="Attributes">
+         <Item Value="od.oracle.apps.xxfin.ap.idms.traitmatrix.schema.server.XXSuppMatrixEO.CreationDate" />
+      </AttrArray>
+      <DesignTime>
+         <Attr Name="_checkCondition" Value="&#34;CREATION_DATE&#34; IS NOT NULL" />
+         <Attr Name="_isCheck" Value="true" />
+         <Attr Name="_DBObjectName" Value="SYS_C00781129" />
+      </DesignTime>
+   </Key>
+   <Key
+      Name="SysC00781130" >
+      <AttrArray Name="Attributes">
+         <Item Value="od.oracle.apps.xxfin.ap.idms.traitmatrix.schema.server.XXSuppMatrixEO.CreatedBy" />
+      </AttrArray>
+      <DesignTime>
+         <Attr Name="_checkCondition" Value="&#34;CREATED_BY&#34; IS NOT NULL" />
+         <Attr Name="_isCheck" Value="true" />
+         <Attr Name="_DBObjectName" Value="SYS_C00781130" />
+      </DesignTime>
+   </Key>
+   <Key
+      Name="SysC00787907" >
+      <AttrArray Name="Attributes">
+         <Item Value="od.oracle.apps.xxfin.ap.idms.traitmatrix.schema.server.XXSuppMatrixEO.Supplier" />
+      </AttrArray>
+      <DesignTime>
+         <Attr Name="_checkCondition" Value="&#34;SUPPLIER&#34; IS NOT NULL" />
+         <Attr Name="_isCheck" Value="true" />
+         <Attr Name="_DBObjectName" Value="SYS_C00787907" />
+      </DesignTime>
+   </Key>
+   <Key
+      Name="SysC00787908" >
+      <AttrArray Name="Attributes">
+         <Item Value="od.oracle.apps.xxfin.ap.idms.traitmatrix.schema.server.XXSuppMatrixEO.CreationDate" />
+      </AttrArray>
+      <DesignTime>
+         <Attr Name="_checkCondition" Value="&#34;CREATION_DATE&#34; IS NOT NULL" />
+         <Attr Name="_isCheck" Value="true" />
+         <Attr Name="_DBObjectName" Value="SYS_C00787908" />
+      </DesignTime>
+   </Key>
+   <Key
+      Name="SysC00787909" >
+      <AttrArray Name="Attributes">
+         <Item Value="od.oracle.apps.xxfin.ap.idms.traitmatrix.schema.server.XXSuppMatrixEO.CreatedBy" />
+      </AttrArray>
+      <DesignTime>
+         <Attr Name="_checkCondition" Value="&#34;CREATED_BY&#34; IS NOT NULL" />
+         <Attr Name="_isCheck" Value="true" />
+         <Attr Name="_DBObjectName" Value="SYS_C00787909" />
+      </DesignTime>
+   </Key>
+   <Key
+      Name="SysC00794750" >
+      <AttrArray Name="Attributes">
+         <Item Value="od.oracle.apps.xxfin.ap.idms.traitmatrix.schema.server.XXSuppMatrixEO.Supplier" />
+      </AttrArray>
+      <DesignTime>
+         <Attr Name="_checkCondition" Value="&#34;SUPPLIER&#34; IS NOT NULL" />
+         <Attr Name="_isCheck" Value="true" />
+         <Attr Name="_DBObjectName" Value="SYS_C00794750" />
+      </DesignTime>
+   </Key>
+   <Key
+      Name="SysC00794751" >
+      <AttrArray Name="Attributes">
+         <Item Value="od.oracle.apps.xxfin.ap.idms.traitmatrix.schema.server.XXSuppMatrixEO.CreationDate" />
+      </AttrArray>
+      <DesignTime>
+         <Attr Name="_checkCondition" Value="&#34;CREATION_DATE&#34; IS NOT NULL" />
+         <Attr Name="_isCheck" Value="true" />
+         <Attr Name="_DBObjectName" Value="SYS_C00794751" />
+      </DesignTime>
+   </Key>
+   <Key
+      Name="SysC00794752" >
+      <AttrArray Name="Attributes">
+         <Item Value="od.oracle.apps.xxfin.ap.idms.traitmatrix.schema.server.XXSuppMatrixEO.CreatedBy" />
+      </AttrArray>
+      <DesignTime>
+         <Attr Name="_checkCondition" Value="&#34;CREATED_BY&#34; IS NOT NULL" />
+         <Attr Name="_isCheck" Value="true" />
+         <Attr Name="_DBObjectName" Value="SYS_C00794752" />
+      </DesignTime>
+   </Key>
+   <Key
+      Name="SysC00794753" >
+      <AttrArray Name="Attributes">
+         <Item Value="od.oracle.apps.xxfin.ap.idms.traitmatrix.schema.server.XXSuppMatrixEO.SupTraitId" />
+      </AttrArray>
+      <DesignTime>
+         <Attr Name="_checkCondition" Value="&#34;SUP_TRAIT_ID&#34; IS NOT NULL" />
+         <Attr Name="_isCheck" Value="true" />
+         <Attr Name="_DBObjectName" Value="SYS_C00794753" />
+      </DesignTime>
+   </Key>
+   <Key
+      Name="SysC00795062" >
+      <AttrArray Name="Attributes">
+         <Item Value="od.oracle.apps.xxfin.ap.idms.traitmatrix.schema.server.XXSuppMatrixEO.Supplier" />
+      </AttrArray>
+      <DesignTime>
+         <Attr Name="_checkCondition" Value="&#34;SUPPLIER&#34; IS NOT NULL" />
+         <Attr Name="_isCheck" Value="true" />
+         <Attr Name="_DBObjectName" Value="SYS_C00795062" />
+      </DesignTime>
+   </Key>
+   <Key
+      Name="SysC00795063" >
+      <AttrArray Name="Attributes">
+         <Item Value="od.oracle.apps.xxfin.ap.idms.traitmatrix.schema.server.XXSuppMatrixEO.CreationDate" />
+      </AttrArray>
+      <DesignTime>
+         <Attr Name="_checkCondition" Value="&#34;CREATION_DATE&#34; IS NOT NULL" />
+         <Attr Name="_isCheck" Value="true" />
+         <Attr Name="_DBObjectName" Value="SYS_C00795063" />
+      </DesignTime>
+   </Key>
+   <Key
+      Name="SysC00795064" >
+      <AttrArray Name="Attributes">
+         <Item Value="od.oracle.apps.xxfin.ap.idms.traitmatrix.schema.server.XXSuppMatrixEO.CreatedBy" />
+      </AttrArray>
+      <DesignTime>
+         <Attr Name="_checkCondition" Value="&#34;CREATED_BY&#34; IS NOT NULL" />
+         <Attr Name="_isCheck" Value="true" />
+         <Attr Name="_DBObjectName" Value="SYS_C00795064" />
+      </DesignTime>
+   </Key>
+   <Key
+      Name="SysC00795065" >
+      <AttrArray Name="Attributes">
+         <Item Value="od.oracle.apps.xxfin.ap.idms.traitmatrix.schema.server.XXSuppMatrixEO.SupTraitId" />
+      </AttrArray>
+      <DesignTime>
+         <Attr Name="_checkCondition" Value="&#34;SUP_TRAIT_ID&#34; IS NOT NULL" />
+         <Attr Name="_isCheck" Value="true" />
+         <Attr Name="_DBObjectName" Value="SYS_C00795065" />
+      </DesignTime>
+   </Key>
+   <Key
+      Name="XxsuppmatrixeoPrimaryKey" >
+      <AttrArray Name="Attributes">
+         <Item Value="od.oracle.apps.xxfin.ap.idms.traitmatrix.schema.server.XXSuppMatrixEO.RowID" />
+      </AttrArray>
+      <DesignTime>
+         <Attr Name="_isPrimary" Value="true" />
+         <Attr Name="_DBObjectName" Value="XXSUPPMATRIXEO_PRIMARY_KEY" />
+      </DesignTime>
+   </Key>
+</Entity>

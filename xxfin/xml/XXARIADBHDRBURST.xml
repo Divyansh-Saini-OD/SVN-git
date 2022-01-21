@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+<xapi:requestset xmlns:xapi="http://xmlns.oracle.com/oxp/xapi" type="bursting">
+<xapi:request select="/XXARIADBHDR/LIST_G_DATA1/G_DATA1">
+<xapi:delivery>
+<xapi:email id="123" server="${SMTP_SERVER}" port="25" from="${MAIL_FROM}" reply-to="">
+<xapi:message id="123" to="${MAIL_TO}" cc="" attachment="true" subject="Office Depot Account Export - ${ACCOUNT_NAME}, ${AOPS_NUMBER}">
+Attached please find export of data requested.
+Thank you for your continued business.
+</xapi:message> 
+</xapi:email>
+</xapi:delivery>
+<xapi:document output="${ACCOUNT_NAME}_${AOPS_NUMBER}" output-type="excel" delivery="123">
+<xapi:template type="rtf" location="xdo://XXFIN.XXARIADBHDR.en.US/?getSource=true" filter=""> 
+</xapi:template>
+</xapi:document>
+</xapi:request>
+</xapi:requestset>

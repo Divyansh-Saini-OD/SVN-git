@@ -1,0 +1,61 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<!-- dbdrv: exec java oracle/jrad/tools/xml/importer XMLImporter.class java &phase=dat+24 checkfile:~PROD:~PATH:~FILE &fullpath:~PROD:~PATH:~FILE -username &un_apps -password &pw_apps -dbconnection &jdbc_db_addr  -userId "1" -rootPackage /oracle/apps/~PROD  -rootdir &fullpath:~PROD:mds:directory  -->
+<page xmlns:jrad="http://xmlns.oracle.com/jrad" xmlns:oa="http://xmlns.oracle.com/oa" xmlns:ui="http://xmlns.oracle.com/uix/ui" version="9.0.3.8.13_1550" xml:lang="en-US" xmlns:user="http://xmlns.oracle.com/jrad/user" xmlns="http://xmlns.oracle.com/jrad" file-version="$Header$">
+   <content>
+      <!--*[Enter Javadoc like developer documentation, delete this line once you fill the included template.] [Put a one line description of the region here.] [Put a brief description of the usage of the region here.] @param [Parameter_name] [Put parameter use here.] @param [Parameter_name] [Put parameter use here.] @see [Put any additional links apart from controller class and BC4J objects directly referenced by this region]-->
+      <oa:pageLayout id="pageLayoutRN" controllerClass="od.oracle.apps.xxfin.icx.webui.ICXOUCO" amDefName="od.oracle.apps.xxfin.icx.server.ICXOUAttsAM" windowTitle="OD Operating Unit Attributes" title="OD Operating Unit Attributes">
+         <ui:corporateBranding>
+            <oa:image id="corporateBrandingImage" source="/OA_MEDIA/FNDSSCORP.gif"/>
+         </ui:corporateBranding>
+         <ui:contents>
+            <oa:query id="QueryRN" mode="autoCustomizationCriteria" dispSimple="true" dispCustomized="false" dispAdvanced="false" showCustomizePanelControls="false">
+               <ui:contents>
+                  <oa:table id="ResultsTable" shortDesc="Category Attributes Table" width="100%" userCustomizable="false" blockSize="10">
+                     <ui:contents>
+                        <oa:messageStyledText id="OrgName" viewName="OUAttributesVO1" prompt="Operating Unit" viewAttr="OrgName" maximumLength="240" queryable="true" sortState="yes" initSortSeq="first" columns="15" selectiveSearchCriteria="true"/>
+                        <oa:messageTextInput id="ApproverName" dataType="VARCHAR2" prompt="Approver" viewName="OUAttributesVO1" viewAttr="ApproverName" queryable="true" sortState="yes" selectiveSearchCriteria="true" userCustomizable="false" maximumLength="240" unvalidated="true" warnAboutChanges="false"/>
+                     </ui:contents>
+                  </oa:table>
+               </ui:contents>
+               <oa:simpleSearchPanel>
+                  <oa:header text="Search" id="SimpleSearchHdr">
+                     <ui:contents>
+                        <oa:messageComponentLayout id="SearchRN">
+                           <ui:contents>
+                              <oa:messageLovInput id="SearchOperatingUnit" queryable="true" sortState="yes" externalListOfValues="/od/oracle/apps/xxfin/icx/lov/server/OperatingUnitsLOVRN" prompt="Operating Unit" selectiveSearchCriteria="true" initSortSeq="first" unvalidated="true" maximumLength="240" columns="40" styleClass="OraFieldText">
+                                 <lovMappings>
+                                    <lovMap id="ToFromSearchOperatingUnit" lovItem="org_name" resultTo="SearchOperatingUnit" criteriaFrom="SearchOperatingUnit"/>
+                                 </lovMappings>
+                              </oa:messageLovInput>
+                              <oa:messageLovInput id="SearchApprover" externalListOfValues="/od/oracle/apps/xxfin/icx/lov/server/BuyersLOVRN" selectiveSearchCriteria="true" prompt="Approver" sortState="yes" queryable="true" unvalidated="true" maximumLength="240" styleClass="OraFieldText" columns="40">
+                                 <lovMappings>
+                                    <lovMap id="ToFromSearchApprover" lovItem="full_name" resultTo="SearchApprover" criteriaFrom="SearchApprover"/>
+                                 </lovMappings>
+                              </oa:messageLovInput>
+                           </ui:contents>
+                        </oa:messageComponentLayout>
+                     </ui:contents>
+                  </oa:header>
+               </oa:simpleSearchPanel>
+               <oa:simpleSearchMappings>
+                  <oa:queryCriteriaMap id="OperatingUnitMap" criteriaItem="SearchOperatingUnit" resultsItem="OrgName"/>
+                  <oa:queryCriteriaMap id="ApproverMap" criteriaItem="SearchApprover" resultsItem="ApproverName"/>
+               </oa:simpleSearchMappings>
+            </oa:query>
+            <oa:tableLayout id="ButtonTableRN" width="100%" hAlign="center">
+               <ui:contents>
+                  <oa:rowLayout id="ButtonTableRowRN" width="100%">
+                     <ui:contents>
+                        <oa:cellFormat id="ButtonTableRowCellFormatRN" width="100%" vAlign="top" hAlign="right">
+                           <ui:contents>
+                              <oa:submitButton id="Save" use="/oracle/apps/fnd/attributesets/Buttons/Save" hAlign="end"/>
+                           </ui:contents>
+                        </oa:cellFormat>
+                     </ui:contents>
+                  </oa:rowLayout>
+               </ui:contents>
+            </oa:tableLayout>
+         </ui:contents>
+      </oa:pageLayout>
+   </content>
+</page>

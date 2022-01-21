@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding='windows-1252'?>
+<!DOCTYPE ViewObject SYSTEM "jbo_03_01.dtd">
+
+<ViewObject
+   Name="ODContTempCUPVO"
+   BindingStyle="Oracle"
+   CustomQuery="true"
+   RowClass="od.oracle.apps.xxcrm.customer.account.server.ODContTempCUPVORowImpl"
+   ComponentClass="od.oracle.apps.xxcrm.customer.account.server.ODContTempCUPVOImpl"
+   MsgBundleClass="oracle.jbo.common.JboResourceBundle"
+   UseGlueCode="false" >
+   <DesignTime>
+      <Attr Name="_isCodegen" Value="true" />
+      <Attr Name="_version" Value="9.0.3.13.93" />
+      <Attr Name="_CodeGenFlagNew" Value="36" />
+   </DesignTime>
+   <ViewAttribute
+      Name="ReadOnly"
+      IsQueriable="false"
+      IsPersistent="false"
+      DefaultValue="FALSE"
+      Type="java.lang.Boolean"
+      ColumnType="$none$"
+      AliasName="READONLY"
+      SQLType="BIT" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Rendered"
+      IsQueriable="false"
+      IsPersistent="false"
+      Type="java.lang.Boolean"
+      ColumnType="$none$"
+      AliasName="RENDERED"
+      SQLType="BIT" >
+   </ViewAttribute>
+</ViewObject>

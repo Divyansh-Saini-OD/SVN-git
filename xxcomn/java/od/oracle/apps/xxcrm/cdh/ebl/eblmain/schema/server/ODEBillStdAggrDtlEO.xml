@@ -1,0 +1,668 @@
+<?xml version="1.0" encoding='windows-1252'?>
+<!DOCTYPE Entity SYSTEM "jbo_03_01.dtd">
+
+<Entity
+   Name="ODEBillStdAggrDtlEO"
+   DBObjectType="synonym"
+   DBObjectName="XX_CDH_EBL_STD_AGGR_DTL"
+   AliasName="ODEBillStdAggrDtlEO"
+   BindingStyle="Oracle"
+   UseGlueCode="false"
+   CodeGenFlag="79"
+   RowClass="od.oracle.apps.xxcrm.cdh.ebl.eblmain.schema.server.ODEBillStdAggrDtlEOImpl"
+   DefClass="oracle.apps.fnd.framework.server.OAEntityDefImpl"
+   CollClass="oracle.apps.fnd.framework.server.OAEntityCache" >
+   <DesignTime>
+      <Attr Name="_isCodegen" Value="true" />
+      <Attr Name="_version" Value="9.0.3.12.53" />
+      <AttrArray Name="_publishEvents">
+      </AttrArray>
+   </DesignTime>
+   <Attribute
+      Name="EblAggrId"
+      Precision="15"
+      Scale="0"
+      Type="oracle.jbo.domain.Number"
+      ColumnName="EBL_AGGR_ID"
+      ColumnType="NUMBER"
+      SQLType="NUMERIC"
+      TableName="XX_CDH_EBL_STD_AGGR_DTL"
+      PrimaryKey="true" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="CustDocId"
+      Precision="15"
+      Scale="0"
+      Type="oracle.jbo.domain.Number"
+      ColumnName="CUST_DOC_ID"
+      ColumnType="NUMBER"
+      SQLType="NUMERIC"
+      TableName="XX_CDH_EBL_STD_AGGR_DTL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="AggrFun"
+      Precision="10"
+      Type="java.lang.String"
+      ColumnName="AGGR_FUN"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XX_CDH_EBL_STD_AGGR_DTL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="10" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="AggrFieldId"
+      Precision="15"
+      Scale="0"
+      Type="oracle.jbo.domain.Number"
+      ColumnName="AGGR_FIELD_ID"
+      ColumnType="NUMBER"
+      SQLType="NUMERIC"
+      TableName="XX_CDH_EBL_STD_AGGR_DTL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="ChangeFieldId"
+      Precision="15"
+      Scale="0"
+      Type="oracle.jbo.domain.Number"
+      ColumnName="CHANGE_FIELD_ID"
+      ColumnType="NUMBER"
+      SQLType="NUMERIC"
+      TableName="XX_CDH_EBL_STD_AGGR_DTL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="LabelOnFile"
+      Precision="2000"
+      Type="java.lang.String"
+      ColumnName="LABEL_ON_FILE"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XX_CDH_EBL_STD_AGGR_DTL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="2000" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="Attribute1"
+      Precision="150"
+      Type="java.lang.String"
+      ColumnName="ATTRIBUTE1"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XX_CDH_EBL_STD_AGGR_DTL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="150" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="Attribute2"
+      Precision="150"
+      Type="java.lang.String"
+      ColumnName="ATTRIBUTE2"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XX_CDH_EBL_STD_AGGR_DTL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="150" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="Attribute3"
+      Precision="150"
+      Type="java.lang.String"
+      ColumnName="ATTRIBUTE3"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XX_CDH_EBL_STD_AGGR_DTL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="150" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="Attribute4"
+      Precision="150"
+      Type="java.lang.String"
+      ColumnName="ATTRIBUTE4"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XX_CDH_EBL_STD_AGGR_DTL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="150" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="Attribute5"
+      Precision="150"
+      Type="java.lang.String"
+      ColumnName="ATTRIBUTE5"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XX_CDH_EBL_STD_AGGR_DTL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="150" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="Attribute6"
+      Precision="150"
+      Type="java.lang.String"
+      ColumnName="ATTRIBUTE6"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XX_CDH_EBL_STD_AGGR_DTL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="150" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="Attribute7"
+      Precision="150"
+      Type="java.lang.String"
+      ColumnName="ATTRIBUTE7"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XX_CDH_EBL_STD_AGGR_DTL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="150" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="Attribute8"
+      Precision="150"
+      Type="java.lang.String"
+      ColumnName="ATTRIBUTE8"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XX_CDH_EBL_STD_AGGR_DTL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="150" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="Attribute9"
+      Precision="150"
+      Type="java.lang.String"
+      ColumnName="ATTRIBUTE9"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XX_CDH_EBL_STD_AGGR_DTL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="150" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="Attribute10"
+      Precision="150"
+      Type="java.lang.String"
+      ColumnName="ATTRIBUTE10"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XX_CDH_EBL_STD_AGGR_DTL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="150" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="Attribute11"
+      Precision="150"
+      Type="java.lang.String"
+      ColumnName="ATTRIBUTE11"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XX_CDH_EBL_STD_AGGR_DTL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="150" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="Attribute12"
+      Precision="150"
+      Type="java.lang.String"
+      ColumnName="ATTRIBUTE12"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XX_CDH_EBL_STD_AGGR_DTL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="150" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="Attribute13"
+      Precision="150"
+      Type="java.lang.String"
+      ColumnName="ATTRIBUTE13"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XX_CDH_EBL_STD_AGGR_DTL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="150" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="Attribute14"
+      Precision="150"
+      Type="java.lang.String"
+      ColumnName="ATTRIBUTE14"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XX_CDH_EBL_STD_AGGR_DTL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="150" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="Attribute15"
+      Precision="150"
+      Type="java.lang.String"
+      ColumnName="ATTRIBUTE15"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XX_CDH_EBL_STD_AGGR_DTL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="150" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="Attribute16"
+      Precision="150"
+      Type="java.lang.String"
+      ColumnName="ATTRIBUTE16"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XX_CDH_EBL_STD_AGGR_DTL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="150" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="Attribute17"
+      Precision="150"
+      Type="java.lang.String"
+      ColumnName="ATTRIBUTE17"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XX_CDH_EBL_STD_AGGR_DTL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="150" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="Attribute18"
+      Precision="150"
+      Type="java.lang.String"
+      ColumnName="ATTRIBUTE18"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XX_CDH_EBL_STD_AGGR_DTL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="150" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="Attribute19"
+      Precision="150"
+      Type="java.lang.String"
+      ColumnName="ATTRIBUTE19"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XX_CDH_EBL_STD_AGGR_DTL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="150" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="Attribute20"
+      Precision="150"
+      Type="java.lang.String"
+      ColumnName="ATTRIBUTE20"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XX_CDH_EBL_STD_AGGR_DTL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="150" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="LastUpdateDate"
+      Type="oracle.jbo.domain.Date"
+      ColumnName="LAST_UPDATE_DATE"
+      ColumnType="DATE"
+      SQLType="TIMESTAMP"
+      TableName="XX_CDH_EBL_STD_AGGR_DTL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="7" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="LastUpdatedBy"
+      Precision="15"
+      Scale="0"
+      Type="oracle.jbo.domain.Number"
+      ColumnName="LAST_UPDATED_BY"
+      ColumnType="NUMBER"
+      SQLType="NUMERIC"
+      TableName="XX_CDH_EBL_STD_AGGR_DTL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="CreationDate"
+      Type="oracle.jbo.domain.Date"
+      ColumnName="CREATION_DATE"
+      ColumnType="DATE"
+      SQLType="TIMESTAMP"
+      TableName="XX_CDH_EBL_STD_AGGR_DTL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="7" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="CreatedBy"
+      Precision="15"
+      Scale="0"
+      Type="oracle.jbo.domain.Number"
+      ColumnName="CREATED_BY"
+      ColumnType="NUMBER"
+      SQLType="NUMERIC"
+      TableName="XX_CDH_EBL_STD_AGGR_DTL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="LastUpdateLogin"
+      Precision="15"
+      Scale="0"
+      Type="oracle.jbo.domain.Number"
+      ColumnName="LAST_UPDATE_LOGIN"
+      ColumnType="NUMBER"
+      SQLType="NUMERIC"
+      TableName="XX_CDH_EBL_STD_AGGR_DTL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="RequestId"
+      Precision="15"
+      Scale="0"
+      Type="oracle.jbo.domain.Number"
+      ColumnName="REQUEST_ID"
+      ColumnType="NUMBER"
+      SQLType="NUMERIC"
+      TableName="XX_CDH_EBL_STD_AGGR_DTL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="ProgramApplicationId"
+      Precision="15"
+      Scale="0"
+      Type="oracle.jbo.domain.Number"
+      ColumnName="PROGRAM_APPLICATION_ID"
+      ColumnType="NUMBER"
+      SQLType="NUMERIC"
+      TableName="XX_CDH_EBL_STD_AGGR_DTL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="ProgramId"
+      Precision="15"
+      Scale="0"
+      Type="oracle.jbo.domain.Number"
+      ColumnName="PROGRAM_ID"
+      ColumnType="NUMBER"
+      SQLType="NUMERIC"
+      TableName="XX_CDH_EBL_STD_AGGR_DTL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="ProgramUpdateDate"
+      Type="oracle.jbo.domain.Date"
+      ColumnName="PROGRAM_UPDATE_DATE"
+      ColumnType="DATE"
+      SQLType="TIMESTAMP"
+      TableName="XX_CDH_EBL_STD_AGGR_DTL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="7" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="WhUpdateDate"
+      Type="oracle.jbo.domain.Date"
+      ColumnName="WH_UPDATE_DATE"
+      ColumnType="DATE"
+      SQLType="TIMESTAMP"
+      TableName="XX_CDH_EBL_STD_AGGR_DTL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="7" />
+      </DesignTime>
+   </Attribute>
+   <Key
+      Name="SysC00333422" >
+      <AttrArray Name="Attributes">
+         <Item Value="od.oracle.apps.xxcrm.cdh.ebl.eblmain.schema.server.ODEBillStdAggrDtlEO.EblAggrId" />
+      </AttrArray>
+      <DesignTime>
+         <Attr Name="_DBObjectName" Value="SYS_C00333422" />
+         <Attr Name="_checkCondition" Value="&#34;EBL_AGGR_ID&#34; IS NOT NULL" />
+         <Attr Name="_isCheck" Value="true" />
+      </DesignTime>
+   </Key>
+   <Key
+      Name="SysC00331601" >
+      <AttrArray Name="Attributes">
+         <Item Value="od.oracle.apps.xxcrm.cdh.ebl.eblmain.schema.server.ODEBillStdAggrDtlEO.LastUpdateLogin" />
+      </AttrArray>
+      <DesignTime>
+         <Attr Name="_DBObjectName" Value="SYS_C00331601" />
+         <Attr Name="_checkCondition" Value="&#34;LAST_UPDATE_LOGIN&#34; IS NOT NULL" />
+         <Attr Name="_isCheck" Value="true" />
+      </DesignTime>
+   </Key>
+   <Key
+      Name="SysC00333426" >
+      <AttrArray Name="Attributes">
+         <Item Value="od.oracle.apps.xxcrm.cdh.ebl.eblmain.schema.server.ODEBillStdAggrDtlEO.LastUpdateDate" />
+      </AttrArray>
+      <DesignTime>
+         <Attr Name="_DBObjectName" Value="SYS_C00333426" />
+         <Attr Name="_checkCondition" Value="&#34;LAST_UPDATE_DATE&#34; IS NOT NULL" />
+         <Attr Name="_isCheck" Value="true" />
+      </DesignTime>
+   </Key>
+   <Key
+      Name="SysC00331596" >
+      <AttrArray Name="Attributes">
+         <Item Value="od.oracle.apps.xxcrm.cdh.ebl.eblmain.schema.server.ODEBillStdAggrDtlEO.AggrFieldId" />
+      </AttrArray>
+      <DesignTime>
+         <Attr Name="_DBObjectName" Value="SYS_C00331596" />
+         <Attr Name="_checkCondition" Value="&#34;AGGR_FIELD_ID&#34; IS NOT NULL" />
+         <Attr Name="_isCheck" Value="true" />
+      </DesignTime>
+   </Key>
+   <Key
+      Name="OdebillstdaggrdtleoPrimaryKey" >
+      <AttrArray Name="Attributes">
+         <Item Value="od.oracle.apps.xxcrm.cdh.ebl.eblmain.schema.server.ODEBillStdAggrDtlEO.EblAggrId" />
+      </AttrArray>
+      <DesignTime>
+         <Attr Name="_DBObjectName" Value="ODEBILLSTDAGGRDTLEO_PRIMARY_KE" />
+         <Attr Name="_isPrimary" Value="true" />
+      </DesignTime>
+   </Key>
+   <Key
+      Name="SysC00331597" >
+      <AttrArray Name="Attributes">
+         <Item Value="od.oracle.apps.xxcrm.cdh.ebl.eblmain.schema.server.ODEBillStdAggrDtlEO.LastUpdateDate" />
+      </AttrArray>
+      <DesignTime>
+         <Attr Name="_DBObjectName" Value="SYS_C00331597" />
+         <Attr Name="_checkCondition" Value="&#34;LAST_UPDATE_DATE&#34; IS NOT NULL" />
+         <Attr Name="_isCheck" Value="true" />
+      </DesignTime>
+   </Key>
+   <Key
+      Name="SysC00333425" >
+      <AttrArray Name="Attributes">
+         <Item Value="od.oracle.apps.xxcrm.cdh.ebl.eblmain.schema.server.ODEBillStdAggrDtlEO.AggrFieldId" />
+      </AttrArray>
+      <DesignTime>
+         <Attr Name="_DBObjectName" Value="SYS_C00333425" />
+         <Attr Name="_checkCondition" Value="&#34;AGGR_FIELD_ID&#34; IS NOT NULL" />
+         <Attr Name="_isCheck" Value="true" />
+      </DesignTime>
+   </Key>
+   <Key
+      Name="SysC00331593" >
+      <AttrArray Name="Attributes">
+         <Item Value="od.oracle.apps.xxcrm.cdh.ebl.eblmain.schema.server.ODEBillStdAggrDtlEO.EblAggrId" />
+      </AttrArray>
+      <DesignTime>
+         <Attr Name="_DBObjectName" Value="SYS_C00331593" />
+         <Attr Name="_checkCondition" Value="&#34;EBL_AGGR_ID&#34; IS NOT NULL" />
+         <Attr Name="_isCheck" Value="true" />
+      </DesignTime>
+   </Key>
+   <Key
+      Name="SysC00333423" >
+      <AttrArray Name="Attributes">
+         <Item Value="od.oracle.apps.xxcrm.cdh.ebl.eblmain.schema.server.ODEBillStdAggrDtlEO.CustDocId" />
+      </AttrArray>
+      <DesignTime>
+         <Attr Name="_DBObjectName" Value="SYS_C00333423" />
+         <Attr Name="_checkCondition" Value="&#34;CUST_DOC_ID&#34; IS NOT NULL" />
+         <Attr Name="_isCheck" Value="true" />
+      </DesignTime>
+   </Key>
+   <Key
+      Name="SysC00333427" >
+      <AttrArray Name="Attributes">
+         <Item Value="od.oracle.apps.xxcrm.cdh.ebl.eblmain.schema.server.ODEBillStdAggrDtlEO.LastUpdatedBy" />
+      </AttrArray>
+      <DesignTime>
+         <Attr Name="_DBObjectName" Value="SYS_C00333427" />
+         <Attr Name="_checkCondition" Value="&#34;LAST_UPDATED_BY&#34; IS NOT NULL" />
+         <Attr Name="_isCheck" Value="true" />
+      </DesignTime>
+   </Key>
+   <Key
+      Name="SysC00331599" >
+      <AttrArray Name="Attributes">
+         <Item Value="od.oracle.apps.xxcrm.cdh.ebl.eblmain.schema.server.ODEBillStdAggrDtlEO.CreationDate" />
+      </AttrArray>
+      <DesignTime>
+         <Attr Name="_DBObjectName" Value="SYS_C00331599" />
+         <Attr Name="_checkCondition" Value="&#34;CREATION_DATE&#34; IS NOT NULL" />
+         <Attr Name="_isCheck" Value="true" />
+      </DesignTime>
+   </Key>
+   <Key
+      Name="SysC00331594" >
+      <AttrArray Name="Attributes">
+         <Item Value="od.oracle.apps.xxcrm.cdh.ebl.eblmain.schema.server.ODEBillStdAggrDtlEO.CustDocId" />
+      </AttrArray>
+      <DesignTime>
+         <Attr Name="_DBObjectName" Value="SYS_C00331594" />
+         <Attr Name="_checkCondition" Value="&#34;CUST_DOC_ID&#34; IS NOT NULL" />
+         <Attr Name="_isCheck" Value="true" />
+      </DesignTime>
+   </Key>
+   <Key
+      Name="SysC00333424" >
+      <AttrArray Name="Attributes">
+         <Item Value="od.oracle.apps.xxcrm.cdh.ebl.eblmain.schema.server.ODEBillStdAggrDtlEO.AggrFun" />
+      </AttrArray>
+      <DesignTime>
+         <Attr Name="_DBObjectName" Value="SYS_C00333424" />
+         <Attr Name="_checkCondition" Value="&#34;AGGR_FUN&#34; IS NOT NULL" />
+         <Attr Name="_isCheck" Value="true" />
+      </DesignTime>
+   </Key>
+   <Key
+      Name="SysC00333428" >
+      <AttrArray Name="Attributes">
+         <Item Value="od.oracle.apps.xxcrm.cdh.ebl.eblmain.schema.server.ODEBillStdAggrDtlEO.CreationDate" />
+      </AttrArray>
+      <DesignTime>
+         <Attr Name="_DBObjectName" Value="SYS_C00333428" />
+         <Attr Name="_checkCondition" Value="&#34;CREATION_DATE&#34; IS NOT NULL" />
+         <Attr Name="_isCheck" Value="true" />
+      </DesignTime>
+   </Key>
+   <Key
+      Name="SysC00333429" >
+      <AttrArray Name="Attributes">
+         <Item Value="od.oracle.apps.xxcrm.cdh.ebl.eblmain.schema.server.ODEBillStdAggrDtlEO.CreatedBy" />
+      </AttrArray>
+      <DesignTime>
+         <Attr Name="_DBObjectName" Value="SYS_C00333429" />
+         <Attr Name="_checkCondition" Value="&#34;CREATED_BY&#34; IS NOT NULL" />
+         <Attr Name="_isCheck" Value="true" />
+      </DesignTime>
+   </Key>
+   <Key
+      Name="SysC00331595" >
+      <AttrArray Name="Attributes">
+         <Item Value="od.oracle.apps.xxcrm.cdh.ebl.eblmain.schema.server.ODEBillStdAggrDtlEO.AggrFun" />
+      </AttrArray>
+      <DesignTime>
+         <Attr Name="_DBObjectName" Value="SYS_C00331595" />
+         <Attr Name="_checkCondition" Value="&#34;AGGR_FUN&#34; IS NOT NULL" />
+         <Attr Name="_isCheck" Value="true" />
+      </DesignTime>
+   </Key>
+   <Key
+      Name="SysC00333430" >
+      <AttrArray Name="Attributes">
+         <Item Value="od.oracle.apps.xxcrm.cdh.ebl.eblmain.schema.server.ODEBillStdAggrDtlEO.LastUpdateLogin" />
+      </AttrArray>
+      <DesignTime>
+         <Attr Name="_DBObjectName" Value="SYS_C00333430" />
+         <Attr Name="_checkCondition" Value="&#34;LAST_UPDATE_LOGIN&#34; IS NOT NULL" />
+         <Attr Name="_isCheck" Value="true" />
+      </DesignTime>
+   </Key>
+   <Key
+      Name="SysC00331600" >
+      <AttrArray Name="Attributes">
+         <Item Value="od.oracle.apps.xxcrm.cdh.ebl.eblmain.schema.server.ODEBillStdAggrDtlEO.CreatedBy" />
+      </AttrArray>
+      <DesignTime>
+         <Attr Name="_DBObjectName" Value="SYS_C00331600" />
+         <Attr Name="_checkCondition" Value="&#34;CREATED_BY&#34; IS NOT NULL" />
+         <Attr Name="_isCheck" Value="true" />
+      </DesignTime>
+   </Key>
+   <Key
+      Name="SysC00331598" >
+      <AttrArray Name="Attributes">
+         <Item Value="od.oracle.apps.xxcrm.cdh.ebl.eblmain.schema.server.ODEBillStdAggrDtlEO.LastUpdatedBy" />
+      </AttrArray>
+      <DesignTime>
+         <Attr Name="_DBObjectName" Value="SYS_C00331598" />
+         <Attr Name="_checkCondition" Value="&#34;LAST_UPDATED_BY&#34; IS NOT NULL" />
+         <Attr Name="_isCheck" Value="true" />
+      </DesignTime>
+   </Key>
+</Entity>

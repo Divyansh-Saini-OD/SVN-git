@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding='windows-1252'?>
+<!DOCTYPE Entity SYSTEM "jbo_03_01.dtd">
+
+<Entity
+   Name="MerchClassEO"
+   DBObjectType="synonym"
+   DBObjectName="XX_WFH_CLASS_ALL"
+   AliasName="MerchClassEO"
+   BindingStyle="Oracle"
+   UseGlueCode="false"
+   CodeGenFlag="71"
+   RowClass="od.oracle.apps.xxmer.schema.wfh.server.MerchClassEOImpl"
+   DefClass="oracle.apps.fnd.framework.server.OAEntityDefImpl"
+   CollClass="oracle.apps.fnd.framework.server.OAEntityCache" >
+   <DesignTime>
+      <Attr Name="_isCodegen" Value="true" />
+      <Attr Name="_version" Value="9.0.3.13.75" />
+      <AttrArray Name="_publishEvents">
+      </AttrArray>
+   </DesignTime>
+   <Attribute
+      Name="OrgId"
+      IsNotNull="true"
+      Type="oracle.jbo.domain.Number"
+      ColumnName="ORG_ID"
+      ColumnType="NUMBER"
+      SQLType="NUMERIC"
+      TableName="XX_WFH_CLASS_ALL"
+      PrimaryKey="true" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="MerchClassId"
+      IsNotNull="true"
+      Type="oracle.jbo.domain.Number"
+      ColumnName="MERCH_CLASS_ID"
+      ColumnType="NUMBER"
+      SQLType="NUMERIC"
+      TableName="XX_WFH_CLASS_ALL"
+      PrimaryKey="true" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="EmployeeId"
+      Type="oracle.jbo.domain.Number"
+      ColumnName="EMPLOYEE_ID"
+      ColumnType="NUMBER"
+      SQLType="NUMERIC"
+      TableName="XX_WFH_CLASS_ALL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="LastUpdateDate"
+      IsNotNull="true"
+      Type="oracle.jbo.domain.Date"
+      ColumnName="LAST_UPDATE_DATE"
+      ColumnType="DATE"
+      SQLType="TIMESTAMP"
+      TableName="XX_WFH_CLASS_ALL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="7" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="LastUpdatedBy"
+      IsNotNull="true"
+      Type="oracle.jbo.domain.Number"
+      ColumnName="LAST_UPDATED_BY"
+      ColumnType="NUMBER"
+      SQLType="NUMERIC"
+      TableName="XX_WFH_CLASS_ALL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="CreationDate"
+      IsNotNull="true"
+      Type="oracle.jbo.domain.Date"
+      ColumnName="CREATION_DATE"
+      ColumnType="DATE"
+      SQLType="TIMESTAMP"
+      TableName="XX_WFH_CLASS_ALL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="7" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="CreatedBy"
+      IsNotNull="true"
+      Type="oracle.jbo.domain.Number"
+      ColumnName="CREATED_BY"
+      ColumnType="NUMBER"
+      SQLType="NUMERIC"
+      TableName="XX_WFH_CLASS_ALL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="LastUpdateLogin"
+      Type="oracle.jbo.domain.Number"
+      ColumnName="LAST_UPDATE_LOGIN"
+      ColumnType="NUMBER"
+      SQLType="NUMERIC"
+      TableName="XX_WFH_CLASS_ALL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </Attribute>
+   <Key
+      Name="SysC00288791" >
+      <AttrArray Name="Attributes">
+         <Item Value="od.oracle.apps.xxmer.schema.wfh.server.MerchClassEO.OrgId" />
+      </AttrArray>
+      <DesignTime>
+         <Attr Name="_DBObjectName" Value="SYS_C00288791" />
+         <Attr Name="_checkCondition" Value="&#34;ORG_ID&#34; IS NOT NULL" />
+         <Attr Name="_isCheck" Value="true" />
+      </DesignTime>
+   </Key>
+   <Key
+      Name="SysC00288793" >
+      <AttrArray Name="Attributes">
+         <Item Value="od.oracle.apps.xxmer.schema.wfh.server.MerchClassEO.LastUpdateDate" />
+      </AttrArray>
+      <DesignTime>
+         <Attr Name="_DBObjectName" Value="SYS_C00288793" />
+         <Attr Name="_checkCondition" Value="&#34;LAST_UPDATE_DATE&#34; IS NOT NULL" />
+         <Attr Name="_isCheck" Value="true" />
+      </DesignTime>
+   </Key>
+   <Key
+      Name="SysC00288795" >
+      <AttrArray Name="Attributes">
+         <Item Value="od.oracle.apps.xxmer.schema.wfh.server.MerchClassEO.CreationDate" />
+      </AttrArray>
+      <DesignTime>
+         <Attr Name="_DBObjectName" Value="SYS_C00288795" />
+         <Attr Name="_checkCondition" Value="&#34;CREATION_DATE&#34; IS NOT NULL" />
+         <Attr Name="_isCheck" Value="true" />
+      </DesignTime>
+   </Key>
+   <Key
+      Name="PkXxWfhClassAll" >
+      <AttrArray Name="Attributes">
+         <Item Value="od.oracle.apps.xxmer.schema.wfh.server.MerchClassEO.OrgId" />
+         <Item Value="od.oracle.apps.xxmer.schema.wfh.server.MerchClassEO.MerchClassId" />
+      </AttrArray>
+      <DesignTime>
+         <Attr Name="_DBObjectName" Value="PK_XX_WFH_CLASS_ALL" />
+         <Attr Name="_isPrimary" Value="true" />
+      </DesignTime>
+   </Key>
+   <Key
+      Name="SysC00288794" >
+      <AttrArray Name="Attributes">
+         <Item Value="od.oracle.apps.xxmer.schema.wfh.server.MerchClassEO.LastUpdatedBy" />
+      </AttrArray>
+      <DesignTime>
+         <Attr Name="_DBObjectName" Value="SYS_C00288794" />
+         <Attr Name="_checkCondition" Value="&#34;LAST_UPDATED_BY&#34; IS NOT NULL" />
+         <Attr Name="_isCheck" Value="true" />
+      </DesignTime>
+   </Key>
+   <Key
+      Name="SysC00288792" >
+      <AttrArray Name="Attributes">
+         <Item Value="od.oracle.apps.xxmer.schema.wfh.server.MerchClassEO.MerchClassId" />
+      </AttrArray>
+      <DesignTime>
+         <Attr Name="_DBObjectName" Value="SYS_C00288792" />
+         <Attr Name="_checkCondition" Value="&#34;MERCH_CLASS_ID&#34; IS NOT NULL" />
+         <Attr Name="_isCheck" Value="true" />
+      </DesignTime>
+   </Key>
+   <Key
+      Name="SysC00288796" >
+      <AttrArray Name="Attributes">
+         <Item Value="od.oracle.apps.xxmer.schema.wfh.server.MerchClassEO.CreatedBy" />
+      </AttrArray>
+      <DesignTime>
+         <Attr Name="_DBObjectName" Value="SYS_C00288796" />
+         <Attr Name="_checkCondition" Value="&#34;CREATED_BY&#34; IS NOT NULL" />
+         <Attr Name="_isCheck" Value="true" />
+      </DesignTime>
+   </Key>
+</Entity>

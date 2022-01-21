@@ -1,0 +1,62 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<page xmlns:jrad="http://xmlns.oracle.com/jrad" xmlns:oa="http://xmlns.oracle.com/oa" xmlns:ui="http://xmlns.oracle.com/uix/ui" version="10.1.3_1312" xml:lang="en-US" xmlns:user="http://xmlns.oracle.com/jrad/user" xmlns="http://xmlns.oracle.com/jrad" file-version="$Header$">
+   <content>
+      <oa:pageLayout id="pageLayoutRN" amDefName="od.oracle.apps.xxcrm.tds.server.XXTDSAutoReprocessMainAM" windowTitle="TDS Auto Reprocess Page" title="TDS Auto Reprocess Page" controllerClass="od.oracle.apps.xxcrm.tds.webui.xxTDSAutoReprocessMainCO">
+         <ui:corporateBranding>
+            <oa:image id="corporateBrandingImage" source="/OA_MEDIA/FNDSSCORP.gif"/>
+         </ui:corporateBranding>
+         <ui:contents>
+            <oa:spacer id="spacer1" width="20"/>
+            <oa:messageComponentLayout id="mainHeaderRN">
+               <ui:contents>
+                  <oa:messageChoice id="chooseAction" pickListViewDef="od.oracle.apps.xxcrm.tds.server.xxTDSFlexValueVO" pickListViewName="xxTDSFlexValueVO" pickListDispAttr="Type" pickListValAttr="Value" prompt="Choose Action" required="yes" allowBlankValue="false" shortDesc="Choose Action"/>
+                  <oa:messageChoice id="chooseReprocess" prompt="Reprocess Type" shortDesc="Reprocess Type" pickListViewDef="od.oracle.apps.xxcrm.tds.server.xxTDSReprocessVO" pickListViewName="xxTDSReprocessVO" pickListDispAttr="Val1" pickListValAttr="Val2" allowBlankValue="false" required="yes"/>
+                  <oa:messageTextInput id="chooseDateFrom" required="yes" translatableDefaultValue="YYYY/MM/DD" prompt="Date From(YYYY/MM/DD)" shortDesc="Date From"/>
+                  <oa:messageLayout id="btnHolder">
+                     <ui:contents>
+                        <oa:submitButton id="go" text="Go" prompt="Go" shortDesc="Go"/>
+                     </ui:contents>
+                  </oa:messageLayout>
+               </ui:contents>
+            </oa:messageComponentLayout>
+            <oa:spacer id="spacer2" width="20"/>
+            <oa:submitButton id="reprocessAllBtn" text="Reprocess All" prompt="Reprocess All" shortDesc="Reprocess All" hAlign="right" rendered="false"/>
+            <oa:table id="resultsTbl1" text="" blockSize="100" width="100%" shortDesc="TDS Listing" rendered="false">
+               <ui:contents>
+                  <oa:messageStyledText id="incidentNum1" viewName="xxTDSNCQuery" viewAttr="IncidentNumber" prompt="SR Number" shortDesc="SR Number"/>
+                  <oa:messageStyledText id="incidentDate1" viewName="xxTDSNCQuery" viewAttr="IncidentDate" prompt="SR Date" shortDesc="SR Date"/>
+                  <oa:messageStyledText id="taskNum1" viewName="xxTDSNCQuery" viewAttr="TaskNumber" prompt="Task Number" shortDesc="Task Number"/>
+                  <oa:messageStyledText id="taskDesc1" viewName="xxTDSNCQuery" viewAttr="Description" prompt="Task Description" shortDesc="Task Description"/>
+                  <oa:submitButton id="reprocessOrderBtn" text="Reprocess" prompt="Reprocess" shortDesc="Reprocess">
+                     <ui:primaryClientAction>
+                        <ui:fireAction event="reprocessOrderNC">
+                           <ui:parameters>
+                              <ui:parameter key="incNum" value="${oa.xxTDSNCQuery.IncidentNumber}"/>
+                              <ui:parameter key="taskId" value="${oa.xxTDSNCQuery.TaskId}"/>
+                              <ui:parameter key="taskDesc" value="${oa.xxTDSNCQuery.Description}"/>
+                              <ui:parameter key="taskObjNum" value="${oa.xxTDSNCQuery.ObjectVersionNumber}"/>
+                           </ui:parameters>
+                        </ui:fireAction>
+                     </ui:primaryClientAction>
+                  </oa:submitButton>
+               </ui:contents>
+            </oa:table>
+            <oa:table id="resultsTbl2" text="" blockSize="100" width="100%" shortDesc="TDS Listing" rendered="false">
+               <ui:contents>
+                  <oa:messageStyledText id="incidentNum2" viewName="xxTDSNTQuery" viewAttr="IncidentNumber" prompt="SR Number" shortDesc="SR Number"/>
+                  <oa:messageStyledText id="incidentDate2" viewName="xxTDSNTQuery" viewAttr="CreationDate" prompt="SR Date" shortDesc="SR Date"/>
+                  <oa:submitButton id="reprocessOrderBtn2" text="Reprocess" prompt="Reprocess" shortDesc="Reprocess">
+                     <ui:primaryClientAction>
+                        <ui:fireAction event="reprocessOrderNT">
+                           <ui:parameters>
+                              <ui:parameter key="incNum" value="${oa.xxTDSNTQuery.IncidentNumber}"/>
+                           </ui:parameters>
+                        </ui:fireAction>
+                     </ui:primaryClientAction>
+                  </oa:submitButton>
+               </ui:contents>
+            </oa:table>
+         </ui:contents>
+      </oa:pageLayout>
+   </content>
+</page>

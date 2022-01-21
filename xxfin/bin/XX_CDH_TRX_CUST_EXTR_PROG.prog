@@ -1,0 +1,1481 @@
+#! /usr/bin/ksh
+#-- +=======================================================================+
+#-- |               Office Depot - Project Simplify                         |
+#-- +=======================================================================+
+#-- | Name            : XXOD_HZ_IMP_PARTIES_INT.prog                        |
+#-- | Rice ID         : Customer Extarct for R12                            |
+#-- | Description     : Shell script to load the Customer Transaction       |
+#-- |                   tables                                              |
+#-- |                                                                       |
+#-- |Change History:                                                        |
+#-- |---------------                                                        |
+#-- |                                                                       |
+#-- |Version  Date        Author                Remarks                     |
+#-- |-------  ----------- -----------------     --------------------------  |
+#-- |Draft 1A 12-OCT-2013 Sathish Danda         Initial Draft version       |
+#-- |                                                                       |
+#-- +=======================================================================+
+
+#Shell Script for fetching the data files and loading them into the staging table.
+
+
+#Apps default parameters
+export APPSLOGIN=$FCP_LOGIN
+FCP_USERID=$2
+FCP_USERNAME=$3
+FCP_REQID=$4
+P_BATCH_ID=$5
+
+lc_batch_name="DELTA_TRX_"$P_BATCH_ID
+
+
+#First File loading to staging table
+#Data File and Control File Name
+lc_data_file="XXOD_HZ_IMP_PARTIES_INT_"$P_BATCH_ID".dat"
+lc_control_file="XXOD_HZ_IMP_PARTIES_INT.ctl"
+lc_log_file="XXOD_HZ_IMP_PARTIES_INT.log"
+lc_bad_file="XXOD_HZ_IMP_PARTIES_INT.bad"
+
+
+echo "================================================================================" 
+echo "Start Time          : `date`"                        
+echo "Program Name        : OD: Load Customer Transaction Details"
+echo "Data File Name      : " ${lc_data_file}               
+echo "Control File Name   : " ${lc_control_file}           
+echo "================================================================================" 
+
+
+
+lc_custom_top="$XXFIN_DATA"
+
+source_path="$lc_custom_top/outbound/"
+archive_path="$lc_custom_top/archive/"
+error_path="$lc_custom_top/archive/"
+
+
+#validating the source file
+if [ -f  ${source_path}${lc_data_file} ]
+then
+  echo ""
+  echo "The Data File Exist" ${lc_data_file}
+  echo ""
+  
+else
+  echo "The Data File does not Exist" 
+  echo "Program aborting...." 
+  exit 1
+fi
+
+lc_ctl_file="$XXFIN_TOP"
+
+control_path="$lc_ctl_file/bin/"
+echo "Control File Path : " 
+
+#validating the control file
+if [ -f  ${control_path}${lc_control_file} ]
+then
+  echo "" 
+  echo "The Control File Exist" 
+  echo "" 
+  
+else
+  echo "The Control File does not Exist" 
+  echo "Program aborting...." 
+  exit 1
+fi
+
+#Start SQL*Loader script
+
+sqlldr parfile=$HOME/parfile.apps control=${control_path}${lc_control_file} data=${source_path}${lc_data_file} log=${error_path}${lc_log_file} bad=${error_path}${lc_bad_file} silent=HEADER,FEEDBACK,DISCARDS,PARTITIONS errors=20000
+
+rc="$?"
+
+if [ "rc" -ne "0" ] && [ "rc" -ne "2" ]; then
+  echo "sqlldr failed! - return code = " ${rc} 
+  exit 1
+fi
+
+#Move the data file from the incoming directory to the archive directory
+echo " " 
+echo "Moving file from Source Directory to Archive Directory" 
+echo "Moving ${lc_data_file} from ${source_path} to ${archive_path}" 
+mv ${source_path}${lc_data_file} ${archive_path}
+
+
+#Second File loading to staging table
+#Data File and Control File Name
+lc_data_file2="XXOD_HZ_IMP_ADDRESSES_INT_"$P_BATCH_ID".dat"
+lc_control_file2="XXOD_HZ_IMP_ADDRESSES_INT.ctl"
+lc_log_file2="XXOD_HZ_IMP_ADDRESSES_INT.log"
+lc_bad_file2="XXOD_HZ_IMP_ADDRESSES_INT.bad"
+
+
+echo "================================================================================" 
+echo "Start Time          : `date`"                        
+echo "Program Name        : OD: Load Customer Transaction Details"
+echo "Data File Name      : " ${lc_data_file2}               
+echo "Control File Name   : " ${lc_control_file2}           
+echo "================================================================================" 
+
+
+
+lc_custom_top2="$XXFIN_DATA"
+
+source_path2="$lc_custom_top2/outbound/"
+archive_path2="$lc_custom_top2/archive/"
+error_path2="$lc_custom_top2/archive/"
+
+#validating the source file
+if [ -f  ${source_path2}${lc_data_file2} ]
+then
+  echo ""
+  echo "The Data File Exist" ${lc_data_file2}
+  echo ""  
+else
+  echo "The Data File does not Exist" 
+  echo "Program aborting...." 
+  exit 1
+fi
+
+lc_ctl_file2="$XXFIN_TOP"
+
+control_path2="$lc_ctl_file2/bin/"
+echo "Control File Path : " 
+
+#validating the control file
+if [ -f  ${control_path2}${lc_control_file2} ]
+then
+  echo "" 
+  echo "The Control File Exist" 
+  echo "" 
+  
+else
+  echo "The Control File does not Exist" 
+  echo "Program aborting...." 
+  exit 1
+fi
+
+#Start SQL*Loader script
+
+sqlldr parfile=$HOME/parfile.apps control=${control_path2}${lc_control_file2} data=${source_path2}${lc_data_file2} log=${error_path2}${lc_log_file2} bad=${error_path2}${lc_bad_file2} silent=HEADER,FEEDBACK,DISCARDS,PARTITIONS errors=20000
+
+rc="$?"
+
+if [ "rc" -ne "0" ] && [ "rc" -ne "2" ]; then
+  echo "sqlldr failed! - return code = " ${rc} 
+  exit 1
+fi
+
+#Move the data file from the incoming directory to the archive directory
+echo " " 
+echo "Moving file from Source Directory to Archive Directory" 
+echo "Moving ${lc_data_file2} from ${source_path2} to ${archive_path2}" 
+mv ${source_path2}${lc_data_file2} ${archive_path2}
+
+
+
+#3rd File loading to staging table
+#Data File and Control File Name
+lc_data_file3="XXOD_HZ_IMP_ADDRESSUSES_INT_"$P_BATCH_ID".dat"
+lc_control_file3="XXOD_HZ_IMP_ADDRESSUSES_INT.ctl"
+lc_log_file3="XXOD_HZ_IMP_ADDRESSUSES_INT.log"
+lc_bad_file3="XXOD_HZ_IMP_ADDRESSUSES_INT.bad"
+
+
+echo "================================================================================" 
+echo "Start Time          : `date`"                        
+echo "Program Name        : OD: Load Customer Transaction Details"
+echo "Data File Name      : " ${lc_data_file3}               
+echo "Control File Name   : " ${lc_control_file3}           
+echo "================================================================================" 
+
+
+
+lc_custom_top3="$XXFIN_DATA"
+
+source_path3="$lc_custom_top3/outbound/"
+archive_path3="$lc_custom_top3/archive/"
+error_path3="$lc_custom_top3/archive/"
+
+#validating the source file
+if [ -f  ${source_path3}${lc_data_file3} ]
+then
+  echo ""
+  echo "The Data File Exist" ${lc_data_file3}
+  echo ""  
+else
+  echo "The Data File does not Exist" 
+  echo "Program aborting...." 
+  exit 1
+fi
+
+lc_ctl_file3="$XXFIN_TOP"
+
+control_path3="$lc_ctl_file3/bin/"
+echo "Control File Path : " 
+
+#validating the control file
+if [ -f  ${control_path3}${lc_control_file3} ]
+then
+  echo "" 
+  echo "The Control File Exist" ${lc_control_file3} 
+  echo "" 
+  
+else
+  echo "The Control File does not Exist" 
+  echo "Program aborting...." 
+  exit 1
+fi
+
+#Start SQL*Loader script
+
+sqlldr parfile=$HOME/parfile.apps control=${control_path3}${lc_control_file3} data=${source_path3}${lc_data_file3} log=${error_path3}${lc_log_file3} bad=${error_path3}${lc_bad_file3} silent=HEADER,FEEDBACK,DISCARDS,PARTITIONS errors=20000
+
+rc="$?"
+
+if [ "rc" -ne "0" ] && [ "rc" -ne "2" ]; then
+  echo "sqlldr failed! - return code = " ${rc} 
+  exit 1
+fi
+
+#Move the data file from the incoming directory to the archive directory
+echo " " 
+echo "Moving file from Source Directory to Archive Directory" 
+echo "Moving ${lc_data_file3} from ${source_path3} to ${archive_path3}" 
+mv ${source_path3}${lc_data_file3} ${archive_path3}
+
+
+
+#4th File loading to staging table
+#Data File and Control File Name
+lc_data_file4="XXOD_HZ_IMP_ACCOUNTS_INT_"$P_BATCH_ID".dat"
+lc_control_file4="XXOD_HZ_IMP_ACCOUNTS_INT.ctl"
+lc_log_file4="XXOD_HZ_IMP_ACCOUNTS_INT.log"
+lc_bad_file4="XXOD_HZ_IMP_ACCOUNTS_INT.bad"
+
+
+echo "================================================================================" 
+echo "Start Time          : `date`"                        
+echo "Program Name        : OD: Load Customer Transaction Details"
+echo "Data File Name      : " ${lc_data_file4}               
+echo "Control File Name   : " ${lc_control_file4}           
+echo "================================================================================" 
+
+
+
+lc_custom_top4="$XXFIN_DATA"
+
+source_path4="$lc_custom_top4/outbound/"
+archive_path4="$lc_custom_top4/archive/"
+error_path4="$lc_custom_top4/archive/"
+
+#validating the source file
+if [ -f  ${source_path4}${lc_data_file4} ]
+then
+  echo ""
+  echo "The Data File Exist" ${lc_data_file4}
+  echo ""  
+else
+  echo "The Data File does not Exist" 
+  echo "Program aborting...." 
+  exit 1
+fi
+
+lc_ctl_file4="$XXFIN_TOP"
+
+control_path4="$lc_ctl_file4/bin/"
+echo "Control File Path : " 
+
+#validating the control file
+if [ -f  ${control_path4}${lc_control_file4} ]
+then
+  echo "" 
+  echo "The Control File Exist" ${lc_control_file4}
+  echo "" 
+  
+else
+  echo "The Control File does not Exist" 
+  echo "Program aborting...." 
+  exit 1
+fi
+
+#Start SQL*Loader script
+
+sqlldr parfile=$HOME/parfile.apps control=${control_path4}${lc_control_file4} data=${source_path4}${lc_data_file4} log=${error_path4}${lc_log_file4} bad=${error_path4}${lc_bad_file4} silent=HEADER,FEEDBACK,DISCARDS,PARTITIONS errors=20000
+
+rc="$?"
+
+if [ "rc" -ne "0" ] && [ "rc" -ne "2" ]; then
+  echo "sqlldr failed! - return code = " ${rc} 
+  exit 1
+fi
+
+#Move the data file from the incoming directory to the archive directory
+echo " " 
+echo "Moving file from Source Directory to Archive Directory" 
+echo "Moving ${lc_data_file4} from ${source_path4} to ${archive_path4}" 
+mv ${source_path4}${lc_data_file4} ${archive_path4}
+
+#5th File loading to staging table
+#Data File and Control File Name
+lc_data_file5="XXOD_HZ_IMP_ACCOUNT_SITES_INT_"$P_BATCH_ID".dat"
+lc_control_file5="XXOD_HZ_IMP_ACCOUNT_SITES_INT.ctl"
+lc_log_file5="XXOD_HZ_IMP_ACCOUNT_SITES_INT.log"
+lc_bad_file5="XXOD_HZ_IMP_ACCOUNT_SITES_INT.bad"
+
+
+echo "================================================================================" 
+echo "Start Time          : `date`"                        
+echo "Program Name        : OD: Load Customer Transaction Details"
+echo "Data File Name      : " ${lc_data_file5}               
+echo "Control File Name   : " ${lc_control_file5}           
+echo "================================================================================" 
+
+
+
+lc_custom_top5="$XXFIN_DATA"
+
+source_path5="$lc_custom_top5/outbound/"
+archive_path5="$lc_custom_top5/archive/"
+error_path5="$lc_custom_top5/archive/"
+
+#validating the source file
+if [ -f  ${source_path5}${lc_data_file5} ]
+then
+  echo ""
+  echo "The Data File Exist" ${lc_data_file5}
+  echo ""  
+else
+  echo "The Data File does not Exist" 
+  echo "Program aborting...." 
+  exit 1
+fi
+
+lc_ctl_file5="$XXFIN_TOP"
+
+control_path5="$lc_ctl_file5/bin/"
+echo "Control File Path : " 
+
+#validating the control file
+if [ -f  ${control_path5}${lc_control_file5} ]
+then
+  echo "" 
+  echo "The Control File Exist" ${lc_control_file5}
+  echo "" 
+  
+else
+  echo "The Control File does not Exist" 
+  echo "Program aborting...." 
+  exit 1
+fi
+
+#Start SQL*Loader script
+
+sqlldr parfile=$HOME/parfile.apps control=${control_path5}${lc_control_file5} data=${source_path5}${lc_data_file5} log=${error_path5}${lc_log_file5} bad=${error_path5}${lc_bad_file5} silent=HEADER,FEEDBACK,DISCARDS,PARTITIONS errors=20000
+
+rc="$?"
+
+if [ "rc" -ne "0" ] && [ "rc" -ne "2" ]; then
+  echo "sqlldr failed! - return code = " ${rc} 
+  exit 1
+fi
+
+#Move the data file from the incoming directory to the archive directory
+echo " " 
+echo "Moving file from Source Directory to Archive Directory" 
+echo "Moving ${lc_data_file5} from ${source_path5} to ${archive_path5}" 
+mv ${source_path5}${lc_data_file5} ${archive_path5}
+
+#6th File loading to staging table
+#Data File and Control File Name
+lc_data_file6="XXOD_HZ_IMP_ACCT_SITEUSES_INT_"$P_BATCH_ID".dat"
+lc_control_file6="XXOD_HZ_IMP_ACCT_SITEUSES_INT.ctl"
+lc_log_file6="XXOD_HZ_IMP_ACCT_SITEUSES_INT.log"
+lc_bad_file6="XXOD_HZ_IMP_ACCT_SITEUSES_INT.bad"
+
+
+echo "================================================================================" 
+echo "Start Time          : `date`"                        
+echo "Program Name        : OD: Load Customer Transaction Details"
+echo "Data File Name      : " ${lc_data_file6}               
+echo "Control File Name   : " ${lc_control_file6}           
+echo "================================================================================" 
+
+
+
+lc_custom_top6="$XXFIN_DATA"
+
+source_path6="$lc_custom_top6/outbound/"
+archive_path6="$lc_custom_top6/archive/"
+error_path6="$lc_custom_top6/archive/"
+
+#validating the source file
+if [ -f  ${source_path6}${lc_data_file6} ]
+then
+  echo ""
+  echo "The Data File Exist" ${lc_data_file6}
+  echo ""  
+else
+  echo "The Data File does not Exist" 
+  echo "Program aborting...." 
+  exit 1
+fi
+
+lc_ctl_file6="$XXFIN_TOP"
+
+control_path6="$lc_ctl_file6/bin/"
+echo "Control File Path : " 
+
+#validating the control file
+if [ -f  ${control_path6}${lc_control_file6} ]
+then
+  echo "" 
+  echo "The Control File Exist" ${lc_control_file6}
+  echo "" 
+  
+else
+  echo "The Control File does not Exist" 
+  echo "Program aborting...." 
+  exit 1
+fi
+
+#Start SQL*Loader script
+
+sqlldr parfile=$HOME/parfile.apps control=${control_path6}${lc_control_file6} data=${source_path6}${lc_data_file6} log=${error_path6}${lc_log_file6} bad=${error_path6}${lc_bad_file6} silent=HEADER,FEEDBACK,DISCARDS,PARTITIONS errors=20000
+
+rc="$?"
+
+if [ "rc" -ne "0" ] && [ "rc" -ne "2" ]; then
+  echo "sqlldr failed! - return code = " ${rc} 
+  exit 1
+fi
+
+#Move the data file from the incoming directory to the archive directory
+echo " " 
+echo "Moving file from Source Directory to Archive Directory" 
+echo "Moving ${lc_data_file6} from ${source_path6} to ${archive_path6}" 
+mv ${source_path6}${lc_data_file6} ${archive_path6}
+
+#7th File loading to staging table
+#Data File and Control File Name
+lc_data_file7="XXOD_HZ_IMP_RELSHIPS_INT_"$P_BATCH_ID".dat"
+lc_control_file7="XXOD_HZ_IMP_RELSHIPS_INT.ctl"
+lc_log_file7="XXOD_HZ_IMP_RELSHIPS_INT.log"
+lc_bad_file7="XXOD_HZ_IMP_RELSHIPS_INT.bad"
+
+
+echo "================================================================================" 
+echo "Start Time          : `date`"                        
+echo "Program Name        : OD: Load Customer Transaction Details"
+echo "Data File Name      : " ${lc_data_file7}               
+echo "Control File Name   : " ${lc_control_file7}           
+echo "================================================================================" 
+
+
+
+lc_custom_top7="$XXFIN_DATA"
+
+source_path7="$lc_custom_top7/outbound/"
+archive_path7="$lc_custom_top7/archive/"
+error_path7="$lc_custom_top7/archive/"
+
+#validating the source file
+if [ -f  ${source_path7}${lc_data_file7} ]
+then
+  echo ""
+  echo "The Data File Exist" ${lc_data_file7}
+  echo ""  
+else
+  echo "The Data File does not Exist" 
+  echo "Program aborting...." 
+  exit 1
+fi
+
+lc_ctl_file7="$XXFIN_TOP"
+
+control_path7="$lc_ctl_file7/bin/"
+echo "Control File Path : " 
+
+#validating the control file
+if [ -f  ${control_path7}${lc_control_file7} ]
+then
+  echo "" 
+  echo "The Control File Exist" ${lc_control_file7}
+  echo "" 
+  
+else
+  echo "The Control File does not Exist" 
+  echo "Program aborting...." 
+  exit 1
+fi
+
+#Start SQL*Loader script
+
+sqlldr parfile=$HOME/parfile.apps control=${control_path7}${lc_control_file7} data=${source_path7}${lc_data_file7} log=${error_path7}${lc_log_file7} bad=${error_path7}${lc_bad_file7} silent=HEADER,FEEDBACK,DISCARDS,PARTITIONS errors=20000
+
+rc="$?"
+
+if [ "rc" -ne "0" ] && [ "rc" -ne "2" ]; then
+  echo "sqlldr failed! - return code = " ${rc} 
+  exit 1
+fi
+
+#Move the data file from the incoming directory to the archive directory
+echo " " 
+echo "Moving file from Source Directory to Archive Directory" 
+echo "Moving ${lc_data_file7} from ${source_path7} to ${archive_path7}" 
+mv ${source_path7}${lc_data_file7} ${archive_path7}
+
+
+#8th File loading to staging table
+#Data File and Control File Name
+lc_data_file8="XXOD_HZ_IMP_ACCT_PROFILES_INT_"$P_BATCH_ID".dat"
+lc_control_file8="XXOD_HZ_IMP_ACCT_PROFILES_INT.ctl"
+lc_log_file8="XXOD_HZ_IMP_ACCT_PROFILES_INT.log"
+lc_bad_file8="XXOD_HZ_IMP_ACCT_PROFILES_INT.bad"
+
+
+echo "================================================================================" 
+echo "Start Time          : `date`"                        
+echo "Program Name        : OD: Load Customer Transaction Details"
+echo "Data File Name      : " ${lc_data_file8}               
+echo "Control File Name   : " ${lc_control_file8}           
+echo "================================================================================" 
+
+
+
+lc_custom_top8="$XXFIN_DATA"
+
+source_path8="$lc_custom_top8/outbound/"
+archive_path8="$lc_custom_top8/archive/"
+error_path8="$lc_custom_top8/archive/"
+
+#validating the source file
+if [ -f  ${source_path8}${lc_data_file8} ]
+then
+  echo ""
+  echo "The Data File Exist" ${lc_data_file8}
+  echo ""  
+else
+  echo "The Data File does not Exist" 
+  echo "Program aborting...." 
+  exit 1
+fi
+
+lc_ctl_file8="$XXFIN_TOP"
+
+control_path8="$lc_ctl_file8/bin/"
+echo "Control File Path : " 
+
+#validating the control file
+if [ -f  ${control_path8}${lc_control_file8} ]
+then
+  echo "" 
+  echo "The Control File Exist" ${lc_control_file8}
+  echo "" 
+  
+else
+  echo "The Control File does not Exist" 
+  echo "Program aborting...." 
+  exit 1
+fi
+
+#Start SQL*Loader script
+
+sqlldr parfile=$HOME/parfile.apps control=${control_path8}${lc_control_file8} data=${source_path8}${lc_data_file8} log=${error_path8}${lc_log_file8} bad=${error_path8}${lc_bad_file8} silent=HEADER,FEEDBACK,DISCARDS,PARTITIONS errors=20000
+
+rc="$?"
+
+if [ "rc" -ne "0" ] && [ "rc" -ne "2" ]; then
+  echo "sqlldr failed! - return code = " ${rc} 
+  exit 1
+fi
+
+#Move the data file from the incoming directory to the archive directory
+echo " " 
+echo "Moving file from Source Directory to Archive Directory" 
+echo "Moving ${lc_data_file8} from ${source_path8} to ${archive_path8}" 
+mv ${source_path8}${lc_data_file8} ${archive_path8}
+
+
+#9th File loading to staging table
+#Data File and Control File Name
+lc_data_file9="XXOD_HZ_IMP_CONTACTS_INT_"$P_BATCH_ID".dat"
+lc_control_file9="XXOD_HZ_IMP_CONTACTS_INT.ctl"
+lc_log_file9="XXOD_HZ_IMP_CONTACTS_INT.log"
+lc_bad_file9="XXOD_HZ_IMP_CONTACTS_INT.bad"
+
+
+echo "================================================================================" 
+echo "Start Time          : `date`"                        
+echo "Program Name        : OD: Load Customer Transaction Details"
+echo "Data File Name      : " ${lc_data_file9}               
+echo "Control File Name   : " ${lc_control_file9}           
+echo "================================================================================" 
+
+
+
+lc_custom_top9="$XXFIN_DATA"
+
+source_path9="$lc_custom_top9/outbound/"
+archive_path9="$lc_custom_top9/archive/"
+error_path9="$lc_custom_top9/archive/"
+
+#validating the source file
+if [ -f  ${source_path9}${lc_data_file9} ]
+then
+  echo ""
+  echo "The Data File Exist" ${lc_data_file9}
+  echo ""  
+else
+  echo "The Data File does not Exist" 
+  echo "Program aborting...." 
+  exit 1
+fi
+
+lc_ctl_file9="$XXFIN_TOP"
+
+control_path9="$lc_ctl_file9/bin/"
+echo "Control File Path : " 
+
+#validating the control file
+if [ -f  ${control_path9}${lc_control_file9} ]
+then
+  echo "" 
+  echo "The Control File Exist" ${lc_control_file9}
+  echo "" 
+  
+else
+  echo "The Control File does not Exist" 
+  echo "Program aborting...." 
+  exit 1
+fi
+
+#Start SQL*Loader script
+
+sqlldr parfile=$HOME/parfile.apps control=${control_path9}${lc_control_file9} data=${source_path9}${lc_data_file9} log=${error_path9}${lc_log_file9} bad=${error_path9}${lc_bad_file9} silent=HEADER,FEEDBACK,DISCARDS,PARTITIONS errors=20000
+
+rc="$?"
+
+if [ "rc" -ne "0" ] && [ "rc" -ne "2" ]; then
+  echo "sqlldr failed! - return code = " ${rc} 
+  exit 1
+fi
+
+#Move the data file from the incoming directory to the archive directory
+echo " " 
+echo "Moving file from Source Directory to Archive Directory" 
+echo "Moving ${lc_data_file9} from ${source_path9} to ${archive_path9}" 
+mv ${source_path9}${lc_data_file9} ${archive_path9}
+
+#10th File loading to staging table
+#Data File and Control File Name
+lc_data_file10="XXOD_HZ_IMP_CONTACTROLES_INT_"$P_BATCH_ID".dat"
+lc_control_file10="XXOD_HZ_IMP_CONTACTROLES_INT.ctl"
+lc_log_file10="XXOD_HZ_IMP_CONTACTROLES_INT.log"
+lc_bad_file10="XXOD_HZ_IMP_CONTACTROLES_INT.bad"
+
+
+echo "================================================================================" 
+echo "Start Time          : `date`"                        
+echo "Program Name        : OD: Load Customer Transaction Details"
+echo "Data File Name      : " ${lc_data_file10}               
+echo "Control File Name   : " ${lc_control_file10}           
+echo "================================================================================" 
+
+
+
+lc_custom_top10="$XXFIN_DATA"
+
+source_path10="$lc_custom_top10/outbound/"
+archive_path10="$lc_custom_top10/archive/"
+error_path10="$lc_custom_top10/archive/"
+
+#validating the source file
+if [ -f  ${source_path10}${lc_data_file10} ]
+then
+  echo ""
+  echo "The Data File Exist" ${lc_data_file10}
+  echo ""  
+else
+  echo "The Data File does not Exist" 
+  echo "Program aborting...." 
+  exit 1
+fi
+
+lc_ctl_file10="$XXFIN_TOP"
+
+control_path10="$lc_ctl_file10/bin/"
+echo "Control File Path : " 
+
+#validating the control file
+if [ -f  ${control_path10}${lc_control_file10} ]
+then
+  echo "" 
+  echo "The Control File Exist" ${lc_control_file10}
+  echo "" 
+  
+else
+  echo "The Control File does not Exist" 
+  echo "Program aborting...." 
+  exit 1
+fi
+
+#Start SQL*Loader script
+
+sqlldr parfile=$HOME/parfile.apps control=${control_path10}${lc_control_file10} data=${source_path10}${lc_data_file10} log=${error_path10}${lc_log_file10} bad=${error_path10}${lc_bad_file10} silent=HEADER,FEEDBACK,DISCARDS,PARTITIONS errors=20000
+
+rc="$?"
+
+if [ "rc" -ne "0" ] && [ "rc" -ne "2" ]; then
+  echo "sqlldr failed! - return code = " ${rc} 
+  exit 1
+fi
+
+#Move the data file from the incoming directory to the archive directory
+echo " " 
+echo "Moving file from Source Directory to Archive Directory" 
+echo "Moving ${lc_data_file10} from ${source_path10} to ${archive_path10}" 
+mv ${source_path10}${lc_data_file10} ${archive_path10}
+
+
+#11th File loading to staging table
+#Data File and Control File Name
+lc_data_file11="XXOD_HZ_IMP_CONTACTPTS_INT_"$P_BATCH_ID".dat"
+lc_control_file11="XXOD_HZ_IMP_CONTACTPTS_INT.ctl"
+lc_log_file11="XXOD_HZ_IMP_CONTACTPTS_INT.log"
+lc_bad_file11="XXOD_HZ_IMP_CONTACTPTS_INT.bad"
+
+
+echo "================================================================================" 
+echo "Start Time          : `date`"                        
+echo "Program Name        : OD: Load Customer Transaction Details"
+echo "Data File Name      : " ${lc_data_file11}               
+echo "Control File Name   : " ${lc_control_file11}           
+echo "================================================================================" 
+
+
+
+lc_custom_top11="$XXFIN_DATA"
+
+source_path11="$lc_custom_top11/outbound/"
+archive_path11="$lc_custom_top11/archive/"
+error_path11="$lc_custom_top11/archive/"
+
+#validating the source file
+if [ -f  ${source_path11}${lc_data_file11} ]
+then
+  echo ""
+  echo "The Data File Exist" ${lc_data_file11}
+  echo ""  
+else
+  echo "The Data File does not Exist" 
+  echo "Program aborting...." 
+  exit 1
+fi
+
+lc_ctl_file11="$XXFIN_TOP"
+
+control_path11="$lc_ctl_file11/bin/"
+echo "Control File Path : " 
+
+#validating the control file
+if [ -f  ${control_path11}${lc_control_file11} ]
+then
+  echo "" 
+  echo "The Control File Exist" ${lc_control_file11}
+  echo "" 
+  
+else
+  echo "The Control File does not Exist" 
+  echo "Program aborting...." 
+  exit 1
+fi
+
+#Start SQL*Loader script
+
+sqlldr parfile=$HOME/parfile.apps control=${control_path11}${lc_control_file11} data=${source_path11}${lc_data_file11} log=${error_path11}${lc_log_file11} bad=${error_path11}${lc_bad_file11} silent=HEADER,FEEDBACK,DISCARDS,PARTITIONS errors=20000
+
+rc="$?"
+
+if [ "rc" -ne "0" ] && [ "rc" -ne "2" ]; then
+  echo "sqlldr failed! - return code = " ${rc} 
+  exit 1
+fi
+
+#Move the data file from the incoming directory to the archive directory
+echo " " 
+echo "Moving file from Source Directory to Archive Directory" 
+echo "Moving ${lc_data_file11} from ${source_path11} to ${archive_path11}" 
+mv ${source_path11}${lc_data_file11} ${archive_path11}
+
+#12th File loading to staging table
+#Data File and Control File Name
+lc_data_file12="XXOD_HZ_IMP_ACCT_CONTACTS_INT_"$P_BATCH_ID".dat"
+lc_control_file12="XXOD_HZ_IMP_ACCT_CONTACTS_INT.ctl"
+lc_log_file12="XXOD_HZ_IMP_ACCT_CONTACTS_INT.log"
+lc_bad_file12="XXOD_HZ_IMP_ACCT_CONTACTS_INT.bad"
+
+
+echo "================================================================================" 
+echo "Start Time          : `date`"                        
+echo "Program Name        : OD: Load Customer Transaction Details"
+echo "Data File Name      : " ${lc_data_file12}               
+echo "Control File Name   : " ${lc_control_file12}           
+echo "================================================================================" 
+
+
+
+lc_custom_top12="$XXFIN_DATA"
+
+source_path12="$lc_custom_top12/outbound/"
+archive_path12="$lc_custom_top12/archive/"
+error_path12="$lc_custom_top12/archive/"
+
+#validating the source file
+if [ -f  ${source_path12}${lc_data_file12} ]
+then
+  echo ""
+  echo "The Data File Exist" ${lc_data_file12}
+  echo ""  
+else
+  echo "The Data File does not Exist" 
+  echo "Program aborting...." 
+  exit 1
+fi
+
+lc_ctl_file12="$XXFIN_TOP"
+
+control_path12="$lc_ctl_file12/bin/"
+echo "Control File Path : " 
+
+#validating the control file
+if [ -f  ${control_path12}${lc_control_file12} ]
+then
+  echo "" 
+  echo "The Control File Exist" ${lc_control_file12}
+  echo "" 
+  
+else
+  echo "The Control File does not Exist" 
+  echo "Program aborting...." 
+  exit 1
+fi
+
+#Start SQL*Loader script
+
+sqlldr parfile=$HOME/parfile.apps control=${control_path12}${lc_control_file12} data=${source_path12}${lc_data_file12} log=${error_path12}${lc_log_file12} bad=${error_path12}${lc_bad_file12} silent=HEADER,FEEDBACK,DISCARDS,PARTITIONS errors=20000
+
+rc="$?"
+
+if [ "rc" -ne "0" ] && [ "rc" -ne "2" ]; then
+  echo "sqlldr failed! - return code = " ${rc} 
+  exit 1
+fi
+
+#Move the data file from the incoming directory to the archive directory
+echo " " 
+echo "Moving file from Source Directory to Archive Directory" 
+echo "Moving ${lc_data_file12} from ${source_path12} to ${archive_path12}" 
+mv ${source_path12}${lc_data_file12} ${archive_path12}
+
+
+#13th File loading to staging table
+#Data File and Control File Name
+lc_data_file13="XXOD_HZ_IMP_ACCT_CNTROLES_INT_"$P_BATCH_ID".dat"
+lc_control_file13="XXOD_HZ_IMP_ACCT_CNTROLES_INT.ctl"
+lc_log_file13="XXOD_HZ_IMP_ACCT_CNTROLES_INT.log"
+lc_bad_file13="XXOD_HZ_IMP_ACCT_CNTROLES_INT.bad"
+
+
+echo "================================================================================" 
+echo "Start Time          : `date`"                        
+echo "Program Name        : OD: Load Customer Transaction Details"
+echo "Data File Name      : " ${lc_data_file13}               
+echo "Control File Name   : " ${lc_control_file13}           
+echo "================================================================================" 
+
+
+
+lc_custom_top13="$XXFIN_DATA"
+
+source_path13="$lc_custom_top13/outbound/"
+archive_path13="$lc_custom_top13/archive/"
+error_path13="$lc_custom_top13/archive/"
+
+#validating the source file
+if [ -f  ${source_path13}${lc_data_file13} ]
+then
+  echo ""
+  echo "The Data File Exist" ${lc_data_file13}
+  echo ""  
+else
+  echo "The Data File does not Exist" 
+  echo "Program aborting...." 
+  exit 1
+fi
+
+lc_ctl_file13="$XXFIN_TOP"
+
+control_path13="$lc_ctl_file13/bin/"
+echo "Control File Path : " 
+
+#validating the control file
+if [ -f  ${control_path13}${lc_control_file13} ]
+then
+  echo "" 
+  echo "The Control File Exist" ${lc_control_file13}
+  echo "" 
+  
+else
+  echo "The Control File does not Exist" 
+  echo "Program aborting...." 
+  exit 1
+fi
+
+#Start SQL*Loader script
+
+sqlldr parfile=$HOME/parfile.apps control=${control_path13}${lc_control_file13} data=${source_path13}${lc_data_file13} log=${error_path13}${lc_log_file13} bad=${error_path13}${lc_bad_file13} silent=HEADER,FEEDBACK,DISCARDS,PARTITIONS errors=20000
+
+rc="$?"
+
+if [ "rc" -ne "0" ] && [ "rc" -ne "2" ]; then
+  echo "sqlldr failed! - return code = " ${rc} 
+  exit 1
+fi
+
+#Move the data file from the incoming directory to the archive directory
+echo " " 
+echo "Moving file from Source Directory to Archive Directory" 
+echo "Moving ${lc_data_file13} from ${source_path13} to ${archive_path13}" 
+mv ${source_path13}${lc_data_file13} ${archive_path13}
+
+#14th File loading to staging table
+#Data File and Control File Name
+lc_data_file14="XXOD_HZ_IMP_EXT_ATTRIBS_INT_"$P_BATCH_ID".dat"
+lc_control_file14="XXOD_HZ_IMP_EXT_ATTRIBS_INT.ctl"
+lc_log_file14="XXOD_HZ_IMP_EXT_ATTRIBS_INT.log"
+lc_bad_file14="XXOD_HZ_IMP_EXT_ATTRIBS_INT.bad"
+
+
+echo "================================================================================" 
+echo "Start Time          : `date`"                        
+echo "Program Name        : OD: Load Customer Transaction Details"
+echo "Data File Name      : " ${lc_data_file14}               
+echo "Control File Name   : " ${lc_control_file14}           
+echo "================================================================================" 
+
+
+
+lc_custom_top14="$XXFIN_DATA"
+
+source_path14="$lc_custom_top14/outbound/"
+archive_path14="$lc_custom_top14/archive/"
+error_path14="$lc_custom_top14/archive/"
+
+#validating the source file
+if [ -f  ${source_path14}${lc_data_file14} ]
+then
+  echo ""
+  echo "The Data File Exist" ${lc_data_file14}
+  echo ""  
+else
+  echo "The Data File does not Exist" 
+  echo "Program aborting...." 
+  exit 1
+fi
+
+lc_ctl_file14="$XXFIN_TOP"
+
+control_path14="$lc_ctl_file14/bin/"
+echo "Control File Path : " 
+
+#validating the control file
+if [ -f  ${control_path14}${lc_control_file14} ]
+then
+  echo "" 
+  echo "The Control File Exist" ${lc_control_file14}
+  echo "" 
+  
+else
+  echo "The Control File does not Exist" 
+  echo "Program aborting...." 
+  exit 1
+fi
+
+#Start SQL*Loader script
+
+sqlldr parfile=$HOME/parfile.apps control=${control_path14}${lc_control_file14} data=${source_path14}${lc_data_file14} log=${error_path14}${lc_log_file14} bad=${error_path14}${lc_bad_file14} silent=HEADER,FEEDBACK,DISCARDS,PARTITIONS errors=20000
+
+rc="$?"
+
+if [ "rc" -ne "0" ] && [ "rc" -ne "2" ]; then
+  echo "sqlldr failed! - return code = " ${rc} 
+  exit 1
+fi
+
+#Move the data file from the incoming directory to the archive directory
+echo " " 
+echo "Moving file from Source Directory to Archive Directory" 
+echo "Moving ${lc_data_file14} from ${source_path14} to ${archive_path14}" 
+mv ${source_path14}${lc_data_file14} ${archive_path14}
+
+#15th File loading to staging table
+#Data File and Control File Name
+lc_data_file15="XXOD_HZ_IMP_CLASSIFICS_INT_"$P_BATCH_ID".dat"
+lc_control_file15="XXOD_HZ_IMP_CLASSIFICS_INT.ctl"
+lc_log_file15="XXOD_HZ_IMP_CLASSIFICS_INT.log"
+lc_bad_file15="XXOD_HZ_IMP_CLASSIFICS_INT.bad"
+
+
+echo "================================================================================" 
+echo "Start Time          : `date`"                        
+echo "Program Name        : OD: Load Customer Transaction Details"
+echo "Data File Name      : " ${lc_data_file15}               
+echo "Control File Name   : " ${lc_control_file15}           
+echo "================================================================================" 
+
+
+
+lc_custom_top15="$XXFIN_DATA"
+
+source_path15="$lc_custom_top15/outbound/"
+archive_path15="$lc_custom_top15/archive/"
+error_path15="$lc_custom_top15/archive/"
+
+#validating the source file
+if [ -f  ${source_path15}${lc_data_file15} ]
+then
+  echo ""
+  echo "The Data File Exist" ${lc_data_file15}
+  echo ""  
+else
+  echo "The Data File does not Exist" 
+  echo "Program aborting...." 
+  exit 1
+fi
+
+lc_ctl_file15="$XXFIN_TOP"
+
+control_path15="$lc_ctl_file15/bin/"
+echo "Control File Path : " 
+
+#validating the control file
+if [ -f  ${control_path15}${lc_control_file15} ]
+then
+  echo "" 
+  echo "The Control File Exist" ${lc_control_file15}
+  echo "" 
+  
+else
+  echo "The Control File does not Exist" 
+  echo "Program aborting...." 
+  exit 1
+fi
+
+#Start SQL*Loader script
+
+sqlldr parfile=$HOME/parfile.apps control=${control_path15}${lc_control_file15} data=${source_path15}${lc_data_file15} log=${error_path15}${lc_log_file15} bad=${error_path15}${lc_bad_file15} silent=HEADER,FEEDBACK,DISCARDS,PARTITIONS errors=20000
+
+rc="$?"
+
+if [ "rc" -ne "0" ] && [ "rc" -ne "2" ]; then
+  echo "sqlldr failed! - return code = " ${rc} 
+  exit 1
+fi
+
+#Move the data file from the incoming directory to the archive directory
+echo " " 
+echo "Moving file from Source Directory to Archive Directory" 
+echo "Moving ${lc_data_file15} from ${source_path15} to ${archive_path15}" 
+mv ${source_path15}${lc_data_file15} ${archive_path15}
+
+
+#16th File loading to staging table
+#Data File and Control File Name
+lc_data_file16="XXOD_HZ_IMP_ACCT_PAYMTHD_INT_"$P_BATCH_ID".dat"
+lc_control_file16="XXOD_HZ_IMP_ACCT_PAYMTHD_INT.ctl"
+lc_log_file16="XXOD_HZ_IMP_ACCT_PAYMTHD_INT.log"
+lc_bad_file16="XXOD_HZ_IMP_ACCT_PAYMTHD_INT.bad"
+
+
+echo "================================================================================" 
+echo "Start Time          : `date`"                        
+echo "Program Name        : OD: Load Customer Transaction Details"
+echo "Data File Name      : " ${lc_data_file16}               
+echo "Control File Name   : " ${lc_control_file16}           
+echo "================================================================================" 
+
+
+
+lc_custom_top16="$XXFIN_DATA"
+
+source_path16="$lc_custom_top16/outbound/"
+archive_path16="$lc_custom_top16/archive/"
+error_path16="$lc_custom_top16/archive/"
+
+#validating the source file
+if [ -f  ${source_path16}${lc_data_file16} ]
+then
+  echo ""
+  echo "The Data File Exist" ${lc_data_file16}
+  echo ""  
+else
+  echo "The Data File does not Exist" 
+  echo "Program aborting...." 
+  exit 1
+fi
+
+lc_ctl_file16="$XXFIN_TOP"
+
+control_path16="$lc_ctl_file16/bin/"
+echo "Control File Path : " 
+
+#validating the control file
+if [ -f  ${control_path16}${lc_control_file16} ]
+then
+  echo "" 
+  echo "The Control File Exist" ${lc_control_file16}
+  echo "" 
+  
+else
+  echo "The Control File does not Exist" 
+  echo "Program aborting...." 
+  exit 1
+fi
+
+#Start SQL*Loader script
+
+sqlldr parfile=$HOME/parfile.apps control=${control_path16}${lc_control_file16} data=${source_path16}${lc_data_file16} log=${error_path16}${lc_log_file16} bad=${error_path16}${lc_bad_file16} silent=HEADER,FEEDBACK,DISCARDS,PARTITIONS errors=20000
+
+rc="$?"
+
+if [ "rc" -ne "0" ] && [ "rc" -ne "2" ]; then
+  echo "sqlldr failed! - return code = " ${rc} 
+  exit 1
+fi
+
+#Move the data file from the incoming directory to the archive directory
+echo " " 
+echo "Moving file from Source Directory to Archive Directory" 
+echo "Moving ${lc_data_file16} from ${source_path16} to ${archive_path16}" 
+mv ${source_path16}${lc_data_file16} ${archive_path16}
+
+#17th File loading to staging table
+#Data File and Control File Name
+lc_data_file17="XXOD_HZ_IMP_TRX_CUST_STG_"$P_BATCH_ID".dat"
+lc_control_file17="XXOD_HZ_IMP_TRX_CUST_STG.ctl"
+lc_log_file17="XXOD_HZ_IMP_TRX_CUST_STG.log"
+lc_bad_file17="XXOD_HZ_IMP_TRX_CUST_STG.bad"
+
+
+echo "================================================================================" 
+echo "Start Time          : `date`"                        
+echo "Program Name        : OD: Load Customer Transaction Details"
+echo "Data File Name      : " ${lc_data_file17}               
+echo "Control File Name   : " ${lc_control_file17}           
+echo "================================================================================" 
+
+
+
+lc_custom_top17="$XXFIN_DATA"
+
+source_path17="$lc_custom_top17/outbound/"
+archive_path17="$lc_custom_top17/archive/"
+error_path17="$lc_custom_top17/archive/"
+
+#validating the source file
+if [ -f  ${source_path17}${lc_data_file17} ]
+then
+  echo ""
+  echo "The Data File Exist" ${lc_data_file17}
+  echo ""  
+else
+  echo "The Data File does not Exist" 
+  echo "Program aborting...." 
+  exit 1
+fi
+
+lc_ctl_file17="$XXFIN_TOP"
+
+control_path17="$lc_ctl_file17/bin/"
+echo "Control File Path : " 
+
+#validating the control file
+if [ -f  ${control_path17}${lc_control_file17} ]
+then
+  echo "" 
+  echo "The Control File Exist" ${lc_control_file17}
+  echo "" 
+  
+else
+  echo "The Control File does not Exist" 
+  echo "Program aborting...." 
+  exit 1
+fi
+
+#Start SQL*Loader script
+
+sqlldr parfile=$HOME/parfile.apps control=${control_path17}${lc_control_file17} data=${source_path17}${lc_data_file17} log=${error_path17}${lc_log_file17} bad=${error_path17}${lc_bad_file17} silent=HEADER,FEEDBACK,DISCARDS,PARTITIONS errors=20000
+
+rc="$?"
+
+if [ "rc" -ne "0" ] && [ "rc" -ne "2" ]; then
+  echo "sqlldr failed! - return code = " ${rc} 
+  exit 1
+fi
+
+#Move the data file from the incoming directory to the archive directory
+echo " " 
+echo "Moving file from Source Directory to Archive Directory" 
+echo "Moving ${lc_data_file17} from ${source_path17} to ${archive_path17}" 
+mv ${source_path17}${lc_data_file17} ${archive_path17}
+
+
+
+#18th File Moving to Archive Directory
+#Data File and Control File Name
+lc_data_file18="XXOD_HZ_IMP_TRXCUST_BATCH_STG.dat"
+
+echo "================================================================================" 
+echo "Start Time          : `date`"                        
+echo "Program Name        : OD: Load Customer Transaction Details"
+echo "Data File Name      : " ${lc_data_file18}                       
+echo "================================================================================" 
+
+
+
+lc_custom_top18="$XXFIN_DATA"
+
+source_path18="$lc_custom_top18/outbound/"
+archive_path18="$lc_custom_top18/archive/"
+
+#validating the source file
+if [ -f  ${source_path18}${lc_data_file18} ]
+then
+  echo ""
+  echo "The Data File Exist" ${lc_data_file18}
+  echo ""  
+  echo "Moving file from Source Directory to Archive Directory" 
+  echo "Moving ${lc_data_file18} from ${source_path18} to ${archive_path18}" 
+  #chmod 777 ${source_path18}${lc_data_file18}
+  mv ${source_path18}${lc_data_file18} ${archive_path18}
+
+else
+  echo "The Data File does not Exist" 
+fi
+
+
+duplicate=`sqlplus -s <<EOSQL $APPSLOGIN
+             SET SERVEROUTPUT ON
+             SET FEEDBACK OFF
+             whenever sqlerror exit sql.sqlcode
+             DECLARE
+             l_val NUMBER;
+      	 BEGIN	
+                 SELECT hz_imp_batch_summary_s.nextval 
+                 INTO l_val 
+                 FROM dual;
+
+                 dbms_output.put_line(l_val);
+
+             EXCEPTION
+             WHEN NO_DATA_FOUND THEN
+                 dbms_output.put_line('N');
+                 RETURN;
+             WHEN OTHERS THEN
+                 dbms_output.put_line('Y');
+                 RETURN;                     
+             END;
+/
+EXIT
+EOSQL`
+
+echo $duplicate
+
+
+
+duplicate2=`sqlplus -s <<EOSQL $APPSLOGIN
+             SET SERVEROUTPUT ON
+             SET FEEDBACK OFF
+             whenever sqlerror exit sql.sqlcode
+             DECLARE
+             l_val2 varchar2(10);
+      	 BEGIN	
+                 select source_batch_load_type into l_val2
+				  from   xxcrm.XXOD_HZ_IMP_TRXCUST_BATCH_STG WHERE source_batch_id = '$P_BATCH_ID';
+
+                 dbms_output.put_line(l_val2);
+
+             EXCEPTION
+             WHEN NO_DATA_FOUND THEN
+                 dbms_output.put_line('N');
+                 RETURN;
+             WHEN OTHERS THEN
+                 dbms_output.put_line('Y');
+                 RETURN;                     
+             END;
+/
+EXIT
+EOSQL`
+
+echo $duplicate2
+
+
+
+duplicate3=`sqlplus -s <<EOSQL $APPSLOGIN
+             SET SERVEROUTPUT ON
+             SET FEEDBACK OFF
+             whenever sqlerror exit sql.sqlcode
+             DECLARE
+             l_val3 date;
+      	 BEGIN	
+                 select creation_date into l_val3
+				  from   xxcrm.XXOD_HZ_IMP_TRXCUST_BATCH_STG WHERE source_batch_id = '$P_BATCH_ID';
+
+                 dbms_output.put_line(l_val3);
+
+             EXCEPTION
+             WHEN NO_DATA_FOUND THEN
+                 dbms_output.put_line('N');
+                 RETURN;
+             WHEN OTHERS THEN
+                 dbms_output.put_line('Y');
+                 RETURN;                     
+             END;
+/
+EXIT
+EOSQL`
+
+echo $duplicate4
+
+duplicate4=`sqlplus -s <<EOSQL $APPSLOGIN
+             SET SERVEROUTPUT ON
+             SET FEEDBACK OFF
+             whenever sqlerror exit sql.sqlcode
+             DECLARE
+             l_val4 VARCHAR2(255);
+      	 BEGIN	
+                 select source_batch_description into l_val4
+				  from   xxcrm.XXOD_HZ_IMP_TRXCUST_BATCH_STG WHERE source_batch_id = '$P_BATCH_ID';
+
+                 dbms_output.put_line(l_val4);
+
+             EXCEPTION
+             WHEN NO_DATA_FOUND THEN
+                 dbms_output.put_line('N');
+                 RETURN;
+             WHEN OTHERS THEN
+                 dbms_output.put_line('Y');
+                 RETURN;                     
+             END;
+/
+EXIT
+EOSQL`
+
+echo $duplicate4
+
+sqlplus -s <<EOSQL 
+$APPSLOGIN
+SET SERVEROUTPUT ON
+SET FEEDBACK OFF
+whenever sqlerror exit sql.sqlcode
+VARIABLE exit_status NUMBER;
+BEGIN
+    :exit_status:=0;
+    INSERT INTO hz_imp_batch_summary (
+          batch_id,
+          batch_name,
+          description,
+          original_system,
+          load_type,
+          est_no_of_records,
+          batch_status,
+          created_by,
+          creation_date,
+          last_updated_by,
+          last_update_date,
+          last_update_login
+        )
+        VALUES (
+           '$duplicate',
+           '$lc_batch_name',
+           '$duplicate4',
+           'A0',
+           '$duplicate2',
+           '200000',
+           'ACTIVE',
+           $FCP_USERID,
+           '$duplicate3',
+           $FCP_USERID,
+           '$duplicate3',
+           -1
+        ) ;
+EXCEPTION
+WHEN OTHERS THEN
+    :exit_status :=1;
+    RETURN;
+END;
+/
+EXIT :exit_status 
+EOSQL
+
+if [ $? != 0 ] 
+then
+    echo "Error occured during insert into batch summary table"
+    exit 1
+else
+    echo "Data file Successfully inserted batch summary table"
+fi
+
+sqlplus -s <<EOSQL 
+$APPSLOGIN
+SET SERVEROUTPUT ON
+SET FEEDBACK OFF
+whenever sqlerror exit sql.sqlcode
+VARIABLE exit_status NUMBER;
+BEGIN
+    :exit_status:=0;
+    update xxcnv.XXOD_HZ_IMP_PARTIES_INT        set created_by_module='BO_API' , batch_id = '$duplicate' where batch_id = '$P_BATCH_ID';
+    update xxcnv.XXOD_HZ_IMP_RELSHIPS_INT       set created_by_module='BO_API' , batch_id = '$duplicate' where batch_id = '$P_BATCH_ID';
+    update xxcnv.XXOD_HZ_IMP_EXT_ATTRIBS_INT    set created_by_module='BO_API' , batch_id = '$duplicate' where batch_id = '$P_BATCH_ID';
+    update xxcnv.XXOD_HZ_IMP_CONTACTS_INT       set created_by_module='BO_API' , batch_id = '$duplicate' where batch_id = '$P_BATCH_ID';
+    update xxcnv.XXOD_HZ_IMP_CONTACTROLES_INT   set created_by_module='BO_API' , batch_id = '$duplicate' where batch_id = '$P_BATCH_ID';
+    update xxcnv.XXOD_HZ_IMP_CONTACTPTS_INT     set created_by_module='BO_API' , batch_id = '$duplicate' where batch_id = '$P_BATCH_ID';
+    update xxcnv.XXOD_HZ_IMP_CLASSIFICS_INT     set created_by_module='BO_API' , batch_id = '$duplicate' where batch_id = '$P_BATCH_ID';
+    update xxcnv.XXOD_HZ_IMP_ADDRESSUSES_INT    set created_by_module='BO_API' , batch_id = '$duplicate' where batch_id = '$P_BATCH_ID';
+    update xxcnv.XXOD_HZ_IMP_ADDRESSES_INT      set created_by_module='BO_API' , batch_id = '$duplicate' where batch_id = '$P_BATCH_ID';
+    update xxcnv.XXOD_HZ_IMP_ACCT_SITEUSES_INT  set created_by_module='BO_API' , batch_id = '$duplicate' where batch_id = '$P_BATCH_ID';
+    update xxcnv.XXOD_HZ_IMP_ACCT_PROFILES_INT  set created_by_module='BO_API' , batch_id = '$duplicate' where batch_id = '$P_BATCH_ID';
+    update xxcnv.XXOD_HZ_IMP_ACCT_PAYMTHD_INT   set created_by_module='BO_API' , batch_id = '$duplicate' where batch_id = '$P_BATCH_ID';
+    update xxcnv.XXOD_HZ_IMP_ACCT_CONTACTS_INT  set created_by_module='BO_API' , batch_id = '$duplicate' where batch_id = '$P_BATCH_ID';
+    update xxcnv.XXOD_HZ_IMP_ACCT_CNTROLES_INT  set created_by_module='BO_API' , batch_id = '$duplicate' where batch_id = '$P_BATCH_ID';
+    update xxcnv.XXOD_HZ_IMP_ACCOUNT_SITES_INT  set created_by_module='BO_API' , batch_id = '$duplicate' where batch_id = '$P_BATCH_ID';
+    update xxcnv.XXOD_HZ_IMP_ACCOUNTS_INT       set created_by_module='BO_API' , batch_id = '$duplicate' where batch_id = '$P_BATCH_ID';
+    update XXCRM.XXOD_HZ_IMP_TRX_CUST_STG       set batch_id = '$duplicate' where batch_id = '$P_BATCH_ID';
+    update xxcrm.XXOD_HZ_IMP_TRXCUST_BATCH_STG  set target_batch_id = '$duplicate',status = 'IMPORTED' where source_batch_id = '$P_BATCH_ID';
+	
+    update apps.XXOD_HZ_IMP_PARTIES_INT hpint
+    set    party_id = null
+    where  batch_id = '$duplicate';
+		   
+    commit;
+EXCEPTION
+WHEN OTHERS THEN
+    :exit_status :=1;
+    RETURN;
+END;
+/
+EXIT :exit_status 
+EOSQL
+
+if [ $? != 0 ] 
+then
+    echo "Error occured during Update batch Number on Staging Table"
+    exit 1
+else
+    echo "Data file Successfully Update batch Number on Staging Table"
+fi
+
+
+exit 0

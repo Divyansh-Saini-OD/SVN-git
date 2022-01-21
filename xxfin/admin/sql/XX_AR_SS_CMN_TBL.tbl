@@ -1,0 +1,30 @@
+  -- +============================================================================================+
+  -- |  Office Depot                                                                              |
+  -- +============================================================================================+
+  -- |  Name          : XX_AR_SS_CMN_TBL                                                          |
+  -- |  Description   : Common table for Self Service project                                     |
+  -- |  Change Record :                                                                           |
+  -- +============================================================================================+
+  -- | Version     Date         Author           Remarks                                          |
+  -- | =========   ===========  =============    ===============================================  |
+  -- | 1.0         01-Oct-2020  Divyansh Saini   Initial version                                  |
+  -- +============================================================================================+
+
+ CREATE TABLE "XXFIN"."XX_AR_SS_CMN_TBL" 
+   ("PROCESS_ID" NUMBER, 
+	"COLUMN1" VARCHAR2(200 BYTE), 
+	"COLUMN2" VARCHAR2(200 BYTE), 
+	"COLUMN3" VARCHAR2(200 BYTE), 
+	"COLUMN4" VARCHAR2(200 BYTE), 
+	"COLUMN5" VARCHAR2(200 BYTE), 
+	"COLUMN6" VARCHAR2(200 BYTE), 
+	"COLUMN7" VARCHAR2(200 BYTE), 
+	"COLUMN8" VARCHAR2(200 BYTE), 
+	"COLUMN9" VARCHAR2(200 BYTE), 
+	"COLUMN10" VARCHAR2(200 BYTE), 
+	"COLUMN11" VARCHAR2(200 BYTE), 
+	"COLUMN12" VARCHAR2(200 BYTE), 
+	"COLUMN13" VARCHAR2(200 BYTE), 
+	"COLUMN14" VARCHAR2(200 BYTE), 
+	"DIRECT_CUST_FLAG" VARCHAR2(2 BYTE)
+   );

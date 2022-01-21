@@ -1,0 +1,26 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<customization xmlns="http://xmlns.oracle.com/jrad" version="9.0.6.0.0_64" xml:lang="en-US" customizes="/oracle/apps/ar/hz/components/party/relationship/webui/HzPuiRelUpdateableTableRN" xmlns:oa="http://xmlns.oracle.com/oa" xmlns:ui="http://xmlns.oracle.com/uix/ui">
+   <modifications>
+      <move element="RelationshipRoleSwitcherCol" after="PartyNameSwitcherCol"/>
+      <move element="HzPuiRelationshipStartDateCol" after="RelationshipRoleSwitcherCol"/>
+      <insert before="HzPuiRelationshipStartDateCol">
+         <oa:column id="lbSubjectPartyNumber" adminCustomizable="true" bandingShade="none" cellNoWrapFormat="false" columnDataFormat="textFormat" displayGrid="true" rendered="true" scope="." totalValue="false" userCustomizable="false" xmlns:oa="http://xmlns.oracle.com/oa">
+            <ui:columnHeader xmlns:ui="http://xmlns.oracle.com/uix/ui">
+               <oa:sortableHeader id="HSubjectPartyNumber" adminCustomizable="true" cellNoWrapFormat="false" initSortSeq="none" prompt="Registry ID" rendered="true" required="no" scope="." sortState="no" userCustomizable="false"/>
+            </ui:columnHeader>
+            <ui:contents xmlns:ui="http://xmlns.oracle.com/uix/ui">
+               <oa:messageStyledText id="SubjectPartyNumber" adminCustomizable="true" cellNoWrapFormat="false" dataType="VARCHAR2" initSortSeq="none" popupEnabled="false" popupRenderEvent="onClick" prompt="Registry ID" queryable="false" rendered="true" required="no" scope="." selectiveSearchCriteria="false" serverUnvalidated="false" sortState="no" tipType="none" totalValue="false" userCustomizable="false" vAlign="middle" viewAttr="SubjectPartyNumber" viewName="HzPuiRelationshipTableVO" warnAboutChanges="true"/>
+            </ui:contents>
+         </oa:column>
+      </insert>
+      <move element="HzPuiRelationshipEndDateCol" after="HzPuiRelationshipStartDateCol"/>
+      <move element="HzPuiRelationshipCommentCol" after="HzPuiRelationshipEndDateCol"/>
+      <move element="UpdateSwitcherCol" after="HzPuiRelationshipCommentCol"/>
+      <move element="RemoveSwitcherCol" after="UpdateSwitcherCol"/>
+      <move element="RestoreSwitcherCol" after="RemoveSwitcherCol"/>
+      <move element="SubjectPartyId" after="RestoreSwitcherCol"/>
+      <move element="SubjectPartyType" after="SubjectPartyId"/>
+      <move element="RelationshipType" after="SubjectPartyType"/>
+      <move element="RelationshipCode" after="RelationshipType"/>
+   </modifications>
+</customization>

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding='windows-1252'?>
+<!DOCTYPE AppModule SYSTEM "jbo_03_01.dtd">
+
+<AppModule
+   Name="ODSiteBusActOpenOpprAM"
+   Extends="od.oracle.apps.xxcrm.asn.common.fwk.server.ODASNApplicationModule"
+   ComponentClass="od.oracle.apps.xxcrm.asn.partysite.common.server.ODSiteBusActOpenOpprAMImpl" >
+   <Properties>
+      <Property Name ="RETENTION_LEVEL" Value ="MANAGE_STATE" />
+   </Properties>
+   <DesignTime>
+      <Attr Name="_isCodegen" Value="true" />
+      <Attr Name="_version" Value="9.0.3.13.93" />
+      <Attr Name="_deployType" Value="0" />
+   </DesignTime>
+   <ViewUsage
+      Name="BusActOpportunitiesPVO"
+      ViewObjectName="oracle.apps.asn.common.customer.server.BusActOpportunitiesPVO" >
+   </ViewUsage>
+   <ViewUsage
+      Name="ODSiteOpenOpprVO"
+      ViewObjectName="od.oracle.apps.xxcrm.asn.partysite.common.server.ODSiteOpenOpprVO" >
+   </ViewUsage>
+</AppModule>

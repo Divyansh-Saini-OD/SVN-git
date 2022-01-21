@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding='windows-1252'?>
+<!DOCTYPE ViewObject SYSTEM "jbo_03_01.dtd">
+
+<ViewObject
+   Name="OD_PaymentTypesVO"
+   Extends="oracle.apps.ar.irec.accountDetails.pay.server.PaymentTypesVO"
+   BindingStyle="Oracle"
+   CustomQuery="true"
+   RowClass="od.oracle.apps.xxfin.ar.irec.accountDetails.pay.server.OD_PaymentTypesVORowImpl"
+   ComponentClass="od.oracle.apps.xxfin.ar.irec.accountDetails.pay.server.OD_PaymentTypesVOImpl"
+   MsgBundleClass="oracle.jbo.common.JboResourceBundle"
+   UseGlueCode="false" >
+   <SQLQuery><![CDATA[
+select meaning, lookup_code
+from ar_lookups,
+     ar_system_parameters
+WHERE
+  lookup_type    = 'AR_IREC_PAYMENT_TYPES'
+and enabled_flag = 'Y'
+  --and meaning not like 'Previously Saved Credit Card'
+and ((decode(:1,1,1,0,null) is not null and lookup_code in ('NEW_CC'--,'EXISTING_CC'
+)) or
+    (DECODE(:2,1,1,0,NULL) IS NOT NULL AND lookup_code IN ('EXISTING_BA','NEW_BA')))
+and trunc(sysdate) between trunc(nvl(start_date_active,sysdate)) and trunc(nvl(
+  end_date_active,sysdate+1))
+AND lookup_code LIKE DECODE ((
+  SELECT upper(xftv.source_value2)
+    FROM xx_fin_translatevalues xftv,
+    xx_fin_translatedefinition xftd ,
+    fnd_responsibility_vl resp    
+WHERE xftv.translate_id = xftd.translate_id
+  AND xftd.translation_name     = 'ACH_ECHECK_DETAILS'
+  and upper(xftv.source_value1) = 'ACH_ONLY_RESP'
+  and upper(trim(xftv.target_value1))   = upper(trim(resp.responsibility_name ))
+  AND resp.responsibility_id = fnd_global.resp_id --51236 , 54303-Boca
+  AND SYSDATE BETWEEN xftv.start_date_active AND NVL (xftv.end_date_active, SYSDATE + 1)
+  AND SYSDATE BETWEEN xftd.start_date_active AND NVL (xftd.end_date_active, SYSDATE + 1)
+  and xftv.enabled_flag = 'Y'
+  AND xftd.enabled_flag = 'Y'),'ACH','%BA','BOTH','%','%CC')
+ order by decode( lookup_code,'NEW_BA',1,'EXISTING_BA',2,'NEW_CC',3,3)
+   ]]></SQLQuery>
+   <DesignTime>
+      <Attr Name="_isCodegen" Value="true" />
+      <Attr Name="_version" Value="9.0.3.14.01" />
+      <Attr Name="_CodeGenFlagNew" Value="36" />
+   </DesignTime>
+   <ViewAttribute
+      Name="Meaning"
+      IsQueriable="false"
+      IsPersistent="false"
+      Precision="80"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="MEANING"
+      Expression="MEANING"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+         <Attr Name="_DisplaySize" Value="80" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="LookupCode"
+      IsQueriable="false"
+      IsPersistent="false"
+      Precision="30"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="LOOKUP_CODE"
+      Expression="LOOKUP_CODE"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+         <Attr Name="_DisplaySize" Value="30" />
+      </DesignTime>
+   </ViewAttribute>
+</ViewObject>

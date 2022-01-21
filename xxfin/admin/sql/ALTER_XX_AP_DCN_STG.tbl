@@ -1,0 +1,28 @@
+-- +=====================================================================+
+-- |                  Office Depot - Project Simplify                    |
+-- +=====================================================================+
+-- | Name :  XX_AP_DCN_STG.tbl                                           |
+-- | Description :   Alters XX_AP_DCN_STG                                |
+-- |                                                                     |
+-- |                                                                     |
+-- |Change Record:                                                       |
+-- |===============                                                      |
+-- |Version   Date              Author              Remarks              |
+-- |======   ==========     =============        ========================|
+-- |1.0      2009-12-18     Joe Klein            Created alter for       |
+-- |                                             defect 2908.            |
+-- |2.0      2021-04-13     Pratik Gadia         Created alter for       |
+-- |                                             defect NAIT-176470      |
+-- +=====================================================================+
+
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     ON
+
+ALTER TABLE XXFIN.XX_AP_DCN_STG
+		  --add(CREATION_DATE     DATE DEFAULT SYSDATE NOT NULL)  --(Defect# 2908)
+          modify(DCN     VARCHAR2(50) NOT NULL);                  --(NAIT-176470 )
+            
+SHOW ERROR;

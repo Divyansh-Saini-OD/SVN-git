@@ -1,0 +1,46 @@
+
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+PROMPT Altering Table XX_EXTERNAL_USERS
+
+/*
+-- +=======================================================================================+
+-- |               Office Depot - Project Simplify                                         |
+-- |             Oracle NAC Consulting Organization                                        |
+-- +=======================================================================================+
+-- | Name             : CREATE_XX_EXTERNAL_USERS.tbl                                       |
+-- | Description      : Custom table for E1328_BSD_iReceivables_interface                  |
+-- |                                                                                       |
+-- |                                                                                       |
+-- |Change History:                                                                        |
+-- |---------------                                                                        |
+-- |                                                                                       |
+-- |Version  Date        Author             Remarks                                        |
+-- |-------  ----------- -----------------  -----------------------------------------------|
+-- |Draft1a  22-AUG-2007 Ramesh Raghupathi  Initial Draft Version                          |
+-- |	       10-DEC-2007 Yusuf Ali	        Added column PERMISSION_FLAG                   |
+-- |	       30-JAN-2008 Alok Sahay	        Added column ORG_ID                            |
+-- |	                                      Added column ORIG_SYSTEM                       |
+-- |	                                      Added column PARTY_TYPE                        |
+-- |	                                      Added column FND_USER_NAME                     |
+-- |	                                      changed column BSD_ACCESS_CODE to ACCESS_CODE  |
+-- |	                                      changed column IREC_RESPONSIBILITY_ID          |
+-- |                                                    to RESPONSIBILITY_ID               |
+-- |	                                      changed column PERMISSION_FLAG LENGTH to 30    |
+-- |	                                      changed column EMAIL LENGTH to 255             |
+-- |	                                      changed column CONTACT_OSR LENGTH to 255       |
+-- |	                                      changed column ACCT_SITE_OSR LENGTH to 255     |
+-- |                                                                                       |
+-- +=======================================================================================+
+*/
+
+-- -------------------------------------------------------
+--      Create Custom Table XXCRM.XX_EXTERNAL_USERS     --
+-- -------------------------------------------------------
+
+ALTER TABLE XXCOMN.XX_EXTERNAL_USERS
+      ADD ("OID_UPDATE_DATE" DATE DEFAULT SYSDATE);
+
+EXIT;
+

@@ -1,0 +1,35 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<xs:schema targetNamespace="http://xmlns.oracle.com/pcbpel/adapter/db/top/SelectUpdateSupplierCPEbizDBAdaptorV1" xmlns="http://xmlns.oracle.com/pcbpel/adapter/db/top/SelectUpdateSupplierCPEbizDBAdaptorV1" elementFormDefault="qualified" attributeFormDefault="qualified" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+   <xs:element name="XxApSuppExtractCollection" type="XxApSuppExtractCollection"/>
+   <xs:complexType name="XxApSuppExtractCollection">
+      <xs:sequence>
+         <xs:element name="XxApSuppExtract" type="XxApSuppExtract" minOccurs="0" maxOccurs="unbounded"/>
+      </xs:sequence>
+   </xs:complexType>
+   <xs:complexType name="XxApSuppExtract">
+      <xs:sequence>
+         <xs:element name="extSystem">
+            <xs:simpleType>
+               <xs:restriction base="xs:string">
+                  <xs:maxLength value="5"/>
+               </xs:restriction>
+            </xs:simpleType>
+         </xs:element>
+         <xs:element name="lastUpdateDate" type="xs:dateTime" minOccurs="0" nillable="true"/>
+         <xs:element name="extractTime" type="xs:dateTime" minOccurs="0" nillable="true"/>
+         <xs:element name="bpelRunningFlag" minOccurs="0" nillable="true">
+            <xs:simpleType>
+               <xs:restriction base="xs:string">
+                  <xs:maxLength value="1"/>
+               </xs:restriction>
+            </xs:simpleType>
+         </xs:element>
+      </xs:sequence>
+   </xs:complexType>
+   <xs:element name="SelectUpdateSupplierCPEbizDBAdaptorV1Select_EXT_SYSTEMInputParameters" type="SelectUpdateSupplierCPEbizDBAdaptorV1Select_EXT_SYSTEM"/>
+   <xs:complexType name="SelectUpdateSupplierCPEbizDBAdaptorV1Select_EXT_SYSTEM">
+      <xs:sequence>
+         <xs:element name="EXT_SYSTEM" type="xs:string" minOccurs="1" maxOccurs="1"/>
+      </xs:sequence>
+   </xs:complexType>
+</xs:schema>

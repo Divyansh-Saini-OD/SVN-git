@@ -1,0 +1,41 @@
+ SET SHOW         OFF
+ SET VERIFY       OFF
+ SET ECHO         OFF
+ SET TAB          OFF
+ SET FEEDBACK     ON
+
+ PROMPT Creating INDEX XXFIN.XXIBY_PMT_INSTR_USES_ALL_N1
+
+ PROMPT Program exits if the creation is not successful
+
+ WHENEVER SQLERROR CONTINUE
+ WHENEVER OSERROR EXIT FAILURE ROLLBACK
+
+-- +===========================================================================+
+-- |                            Office Depot                                   |
+-- |                                                                           |
+-- +===========================================================================+
+-- | Name         : XXIBY_PMT_INSTR_USES_ALL_N1.idx                            |
+-- | Rice Id      : E0062                                                      | 
+-- | Description  : Resolve Custom Lockbox R12 Performance issue               |  
+-- |                                                                           |
+-- |Change Record:                                                             |
+-- |===============                                                            |
+-- |Version   Date         Author             Remarks                          | 
+-- |========  ===========  =================  =================================+
+-- |1.0       11-DEC-2013  R.Aldridge         R12 Defect # 26188               |
+-- |                                                                           |
+-- +===========================================================================+
+
+CREATE INDEX XXFIN.XXIBY_PMT_INSTR_USES_ALL_N1 ON IBY.IBY_PMT_INSTR_USES_ALL
+  (INSTRUMENT_ID)
+  PCTFREE 10 INITRANS 11 MAXTRANS 255
+  TABLESPACE APPS_TS_TX_DATA
+  COMPUTE STATISTICS
+  PARALLEL 16;
+
+ALTER INDEX XXFIN.XXIBY_PMT_INSTR_USES_ALL_N1 NOPARALLEL;
+                            
+EXIT;
+
+SHOW ERROR;

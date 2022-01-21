@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<toplink:object-persistence version="Oracle TopLink - 10g Release 3 (10.1.3.3.0) (Build 070608)" xmlns:opm="http://xmlns.oracle.com/ias/xsds/opm" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:toplink="http://xmlns.oracle.com/ias/xsds/toplink" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+   <opm:name>GL_DAILY_RATES_INTERFACE</opm:name>
+   <opm:class-mapping-descriptors>
+      <opm:class-mapping-descriptor xsi:type="toplink:relational-class-mapping-descriptor">
+         <opm:class>GLDAILYRATESINTERFACE.GlDailyRatesInterface</opm:class>
+         <opm:alias>GlDailyRatesInterface</opm:alias>
+         <opm:primary-key>
+            <opm:field table="GL_DAILY_RATES_INTERFACE" name="FROM_CONVERSION_DATE" xsi:type="opm:column"/>
+            <opm:field table="GL_DAILY_RATES_INTERFACE" name="FROM_CURRENCY" xsi:type="opm:column"/>
+            <opm:field table="GL_DAILY_RATES_INTERFACE" name="MODE_FLAG" xsi:type="opm:column"/>
+            <opm:field table="GL_DAILY_RATES_INTERFACE" name="TO_CONVERSION_DATE" xsi:type="opm:column"/>
+            <opm:field table="GL_DAILY_RATES_INTERFACE" name="TO_CURRENCY" xsi:type="opm:column"/>
+            <opm:field table="GL_DAILY_RATES_INTERFACE" name="USER_CONVERSION_TYPE" xsi:type="opm:column"/>
+         </opm:primary-key>
+         <opm:events xsi:type="toplink:event-policy"/>
+         <opm:querying xsi:type="toplink:query-policy">
+            <opm:queries>
+               <opm:query name="findAllGlDailyRatesInterface" xsi:type="toplink:read-all-query">
+                  <toplink:timeout>0</toplink:timeout>
+                  <toplink:reference-class>GLDAILYRATESINTERFACE.GlDailyRatesInterface</toplink:reference-class>
+                  <toplink:cache-usage>primary-key</toplink:cache-usage>
+                  <toplink:lock-mode>none</toplink:lock-mode>
+                  <toplink:container xsi:type="toplink:list-container-policy">
+                     <toplink:collection-type>java.util.Vector</toplink:collection-type>
+                  </toplink:container>
+               </opm:query>
+            </opm:queries>
+            <toplink:does-exist-query xsi:type="toplink:does-exist-query">
+               <toplink:existence-check>check-database</toplink:existence-check>
+            </toplink:does-exist-query>
+         </opm:querying>
+         <opm:attribute-mappings>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>fromCurrency</opm:attribute-name>
+               <opm:field table="GL_DAILY_RATES_INTERFACE" name="FROM_CURRENCY" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.lang.String</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>toCurrency</opm:attribute-name>
+               <opm:field table="GL_DAILY_RATES_INTERFACE" name="TO_CURRENCY" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.lang.String</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>fromConversionDate</opm:attribute-name>
+               <opm:field table="GL_DAILY_RATES_INTERFACE" name="FROM_CONVERSION_DATE" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.sql.Timestamp</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>toConversionDate</opm:attribute-name>
+               <opm:field table="GL_DAILY_RATES_INTERFACE" name="TO_CONVERSION_DATE" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.sql.Timestamp</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>userConversionType</opm:attribute-name>
+               <opm:field table="GL_DAILY_RATES_INTERFACE" name="USER_CONVERSION_TYPE" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.lang.String</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>conversionRate</opm:attribute-name>
+               <opm:field table="GL_DAILY_RATES_INTERFACE" name="CONVERSION_RATE" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.math.BigDecimal</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>modeFlag</opm:attribute-name>
+               <opm:field table="GL_DAILY_RATES_INTERFACE" name="MODE_FLAG" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.lang.String</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>inverseConversionRate</opm:attribute-name>
+               <opm:field table="GL_DAILY_RATES_INTERFACE" name="INVERSE_CONVERSION_RATE" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.math.BigDecimal</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>userId</opm:attribute-name>
+               <opm:field table="GL_DAILY_RATES_INTERFACE" name="USER_ID" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.lang.Long</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>launchRateChange</opm:attribute-name>
+               <opm:field table="GL_DAILY_RATES_INTERFACE" name="LAUNCH_RATE_CHANGE" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.lang.String</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>errorCode</opm:attribute-name>
+               <opm:field table="GL_DAILY_RATES_INTERFACE" name="ERROR_CODE" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.lang.String</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>context</opm:attribute-name>
+               <opm:field table="GL_DAILY_RATES_INTERFACE" name="CONTEXT" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.lang.String</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>attribute1</opm:attribute-name>
+               <opm:field table="GL_DAILY_RATES_INTERFACE" name="ATTRIBUTE1" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.lang.String</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>attribute2</opm:attribute-name>
+               <opm:field table="GL_DAILY_RATES_INTERFACE" name="ATTRIBUTE2" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.lang.String</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>attribute3</opm:attribute-name>
+               <opm:field table="GL_DAILY_RATES_INTERFACE" name="ATTRIBUTE3" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.lang.String</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>attribute4</opm:attribute-name>
+               <opm:field table="GL_DAILY_RATES_INTERFACE" name="ATTRIBUTE4" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.lang.String</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>attribute5</opm:attribute-name>
+               <opm:field table="GL_DAILY_RATES_INTERFACE" name="ATTRIBUTE5" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.lang.String</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>attribute6</opm:attribute-name>
+               <opm:field table="GL_DAILY_RATES_INTERFACE" name="ATTRIBUTE6" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.lang.String</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>attribute7</opm:attribute-name>
+               <opm:field table="GL_DAILY_RATES_INTERFACE" name="ATTRIBUTE7" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.lang.String</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>attribute8</opm:attribute-name>
+               <opm:field table="GL_DAILY_RATES_INTERFACE" name="ATTRIBUTE8" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.lang.String</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>attribute9</opm:attribute-name>
+               <opm:field table="GL_DAILY_RATES_INTERFACE" name="ATTRIBUTE9" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.lang.String</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>attribute10</opm:attribute-name>
+               <opm:field table="GL_DAILY_RATES_INTERFACE" name="ATTRIBUTE10" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.lang.String</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>attribute11</opm:attribute-name>
+               <opm:field table="GL_DAILY_RATES_INTERFACE" name="ATTRIBUTE11" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.lang.String</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>attribute12</opm:attribute-name>
+               <opm:field table="GL_DAILY_RATES_INTERFACE" name="ATTRIBUTE12" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.lang.String</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>attribute13</opm:attribute-name>
+               <opm:field table="GL_DAILY_RATES_INTERFACE" name="ATTRIBUTE13" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.lang.String</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>attribute14</opm:attribute-name>
+               <opm:field table="GL_DAILY_RATES_INTERFACE" name="ATTRIBUTE14" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.lang.String</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>attribute15</opm:attribute-name>
+               <opm:field table="GL_DAILY_RATES_INTERFACE" name="ATTRIBUTE15" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.lang.String</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>usedForAbTranslation</opm:attribute-name>
+               <opm:field table="GL_DAILY_RATES_INTERFACE" name="USED_FOR_AB_TRANSLATION" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.lang.String</opm:attribute-classification>
+            </opm:attribute-mapping>
+         </opm:attribute-mappings>
+         <toplink:descriptor-type>independent</toplink:descriptor-type>
+         <toplink:caching>
+            <toplink:cache-type>weak-reference</toplink:cache-type>
+            <toplink:always-refresh>true</toplink:always-refresh>
+         </toplink:caching>
+         <toplink:remote-caching>
+            <toplink:cache-type>weak-reference</toplink:cache-type>
+         </toplink:remote-caching>
+         <toplink:instantiation/>
+         <toplink:copying xsi:type="toplink:instantiation-copy-policy"/>
+         <toplink:change-policy xsi:type="toplink:deferred-detection-change-policy"/>
+         <toplink:tables>
+            <toplink:table name="GL.GL_DAILY_RATES_INTERFACE"/>
+         </toplink:tables>
+      </opm:class-mapping-descriptor>
+   </opm:class-mapping-descriptors>
+</toplink:object-persistence>

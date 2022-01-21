@@ -1,0 +1,20 @@
+-- +=====================================================================+
+-- |                  Office Depot - Project Simplify                    |
+-- |                       WIPRO Technologies                            |
+-- +=====================================================================+
+-- | Name :        XX_AR_RECEIVABLE_APPL_ALL_N1                          |
+-- | Description : Index suggested by Oracle to fix the performance issue|
+-- |               with the 'Receipt Register' report                    |
+-- |                                                                     |
+-- |                                                                     |
+-- |Change Record:                                                       |
+-- |===============                                                      |
+-- |Version   Date           Author              Remarks                 |
+-- |======    ==========     =============       ======================= |
+-- |1.0       09-AUG-2008    Anusha Ramanujam    Initial version         |
+-- |                                                                     |
+-- |                                                                     |
+-- +=====================================================================+
+CREATE INDEX XXFIN.XX_AR_RECEIVABLE_APPL_ALL_N1 ON AR.AR_RECEIVABLE_APPLICATIONS_ALL(CASH_RECEIPT_ID, GL_DATE, ORG_ID);
+
+SHOW ERROR

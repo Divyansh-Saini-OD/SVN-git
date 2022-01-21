@@ -1,0 +1,15 @@
+<adapter-config name="IExpenseConcurrentProgram" adapter="Oracle Applications Adapter" wsdlLocation="IExpenseConcurrentProgram.wsdl" xmlns="http://platform.integration.oracle/blocks/adapter/fw/metadata">
+  
+  <connection-factory location="eis/apps/OraXxsoa_svcFin" UIConnectionName="TDSDev01Database" UIOracleAppType="DBOBJECT" adapterRef=""/>
+  <endpoint-interaction portType="IExpenseConcurrentProgram_ptt" operation="IExpenseConcurrentProgram">
+    <interaction-spec className="oracle.tip.adapter.apps.AppsStoredProcedureInteractionSpec">
+      <property name="IRepInternalName" value="PLSQL:XX_MASTER_CARD_TRAN_VALID_PKG:CALL_MAIN"/>
+      <property name="SchemaName" value="APPS"/>
+      <property name="PackageName" value="XX_MASTER_CARD_TRAN_VALID_PKG"/>
+      <property name="ProcedureName" value="CALL_MAIN"/>
+      <property name="Username" value="sysadmin"/>
+      <property name="Responsibility" value="System Administrator"/>
+    </interaction-spec>
+  </endpoint-interaction>
+
+</adapter-config>

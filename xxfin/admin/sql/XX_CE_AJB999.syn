@@ -1,0 +1,27 @@
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     ON
+	-- +==========================================================================+
+	-- |                  Office Depot - Project Simplify                         |
+	-- |                       WIPRO Technologies                                 |
+	-- +==========================================================================+
+	-- | SQL Script to create the Synonym                                         |
+        -- |                                                                          |
+	-- | XX_CE_AJB999                                                             |
+        -- |                                                                          |
+	-- |                                                                          |
+	-- |                                                                          |
+	-- |                                                                          |
+	-- |Change Record:                                                            |
+	-- |===============                                                           |
+	-- |Version   Date         Author               Remarks                       |
+	-- |=======   ==========   =============        ==============================|
+	-- | V1.0     096-JUL-2007 Raji Natarajan        Initial version              |
+	-- |                                                                          |
+	-- +==========================================================================+
+
+--DROP SYNONYM xx_ce_ajb999;
+
+CREATE SYNONYM xx_ce_ajb999 FOR xxfin.xx_ce_ajb999;

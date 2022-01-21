@@ -1,0 +1,32 @@
+-- +=============================================================================+
+-- |                  Office Depot - Project Simplify                            |
+-- +=============================================================================+
+-- | Name        : XX_HVOP_ACCOUNT_VALIDATION_U1.idx                         |
+-- | Description : XXCOMN.XX_HVOP_ACCOUNT_VALIDATION_U1 - Index Creation Script     |
+-- |                                                                             |
+-- |               Columns :                                                     |
+-- |                         FND_USER_NAME                                       |
+-- |                                                                             |
+-- |Change Record:                                                               |
+-- |===============                                                              |
+-- |Version   Date        Author           Remarks                               |
+-- |=======  ===========  =============    ============================          |
+-- |1.0      10-Jun-2008  Yusuf Ali        Initial draft version                 |
+-- |                                                                             |
+-- +=============================================================================+
+
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+PROMPT
+PROMPT Creating Unique INDEX XXCOMN_XX_HVOP_ACCOUNT_VALIDATION_U1
+PROMPT
+
+CREATE UNIQUE INDEX XXCOMN.XX_HVOP_ACCOUNT_VALIDATION_U1 ON XXCOMN.XX_HVOP_ACCOUNT_VALIDATION( ORIG_SYSTEM_REFERENCE );
+
+PROMPT
+PROMPT Exiting....
+PROMPT
+
+EXIT;

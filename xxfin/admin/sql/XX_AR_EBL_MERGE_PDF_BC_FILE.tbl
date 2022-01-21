@@ -1,0 +1,79 @@
+REM============================================================================================
+REM                                 Start Of Script
+REM============================================================================================
+
+--+=============================================================================================+--
+--|                                                                                             |--
+--| Program Name   : XX_AR_EBL_MERGE_PDF_BC_FILE.tbl                                            |--
+--|                                                                                             |--
+--| Purpose        : Create Custom Table  .                                                     |--
+--|                  The Objects created are:                                                   |--
+--|                                                                                             |--
+--|                1. XX_AR_EBL_MERGE_PDF_BC_FILE                                               |--
+--|                                                                                             |--
+--| Change History  :                                                                           |--
+--| Version           Date             Changed By              Description                      |--
+--+=============================================================================================+--
+--| 1.0              22-APR-2019       Capgemini               Original                         |--
+--+=============================================================================================+--
+
+SET VERIFY      OFF
+SET TERM        ON
+SET FEEDBACK    OFF
+SET SHOW        OFF
+SET ECHO        OFF
+SET TAB         OFF
+
+WHENEVER SQLERROR CONTINUE;
+
+PROMPT
+PROMPT Creating the Custom Table ...... 
+PROMPT
+
+PROMPT
+PROMPT Creating the Table XX_AR_EBL_MERGE_PDF_BC_FILE.....
+PROMPT
+CREATE TABLE XX_AR_EBL_MERGE_PDF_BC_FILE
+  (
+    MERGE_FILE_ID         NUMBER,
+    CUST_DOC_ID           NUMBER,
+    CUST_ACCOUNT_ID       NUMBER,
+    SOURCE_FILES          VARCHAR2 (4000),
+	MERGE_FILE_NAME       VARCHAR2 (240),
+	MERGE_FILE_DATA       BLOB,
+    ERROR_MESSAGE         VARCHAR2 (4000),
+	TRANSMISSION_DT       DATE,
+	TRANSMISSION_TYPE     VARCHAR2(20 BYTE),
+	STATUS                VARCHAR2(20 BYTE),
+	STATUS_DETAIL         VARCHAR2(4000 BYTE), 
+	DEST_EMAIL_ADDR       VARCHAR2(2000 BYTE),
+	BILLING_DT_FROM       DATE,
+	BILLING_DT            DATE,
+	NOTIFICATION_SENT_TO  VARCHAR2(256 BYTE), 
+	NOTIFICATION_SENT_DT  DATE,
+    ZERO_BYTE_FLAG        VARCHAR2(1),
+	PAY_TERMS             VARCHAR2(240 BYTE),
+	BILL_DUE_DT           DATE, 
+    REQUEST_ID            NUMBER,
+    CREATED_BY            NUMBER,
+    CREATION_DATE         DATE,
+    LAST_UPDATED_BY       NUMBER,
+    LAST_UPDATE_DATE      DATE,
+    LAST_UPDATE_LOGIN     NUMBER
+  );  
+ 
+GRANT ALL on XX_AR_EBL_MERGE_PDF_BC_FILE to APPS;
+
+WHENEVER SQLERROR CONTINUE;
+
+PROMPT
+PROMPT Exiting....
+PROMPT
+
+SET FEEDBACK ON
+
+EXIT;
+
+REM=================================================================================================
+REM                                   End Of Script
+REM=================================================================================================

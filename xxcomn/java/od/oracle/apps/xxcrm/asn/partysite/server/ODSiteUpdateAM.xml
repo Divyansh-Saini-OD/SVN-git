@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding='windows-1252'?>
+<!DOCTYPE AppModule SYSTEM "jbo_03_01.dtd">
+
+<!-- $Header: ODSiteUpdateAM.xml $ -->
+
+<AppModule
+   Name="ODSiteUpdateAM"
+   Extends="od.oracle.apps.xxcrm.asn.common.fwk.server.ODASNApplicationModule"
+   ComponentClass="od.oracle.apps.xxcrm.asn.partysite.server.ODSiteUpdateAMImpl"
+   LoadComponentsLazily="true" >
+   <DesignTime>
+      <Attr Name="_isCodegen" Value="true" />
+      <Attr Name="_version" Value="9.0.3.13.93" />
+      <Attr Name="_deployType" Value="0" />
+   </DesignTime>
+   <ViewUsage
+      Name="ODPartySitesAddrVO1"
+      ViewObjectName="od.oracle.apps.xxcrm.asn.partysite.server.ODPartySitesAddrVO" >
+   </ViewUsage>
+   <ViewUsage
+      Name="ODSalesTeamVO1"
+      ViewObjectName="od.oracle.apps.xxcrm.asn.partysite.server.ODSalesTeamVO" >
+   </ViewUsage>
+   <ViewUsage
+      Name="ODTasksVO1"
+      ViewObjectName="od.oracle.apps.xxcrm.asn.partysite.server.ODTasksVO" >
+   </ViewUsage>
+   <ViewUsage
+      Name="ODPhoneNumbersVO1"
+      ViewObjectName="od.oracle.apps.xxcrm.asn.partysite.server.ODPhoneNumbersVO" >
+   </ViewUsage>
+   <ViewUsage
+      Name="ODActionsPoplistVO1"
+      ViewObjectName="oracle.apps.asn.common.poplist.server.LookupsVO" >
+   </ViewUsage>
+   <ViewUsage
+      Name="ODAccessRightPVO1"
+      ViewObjectName="od.oracle.apps.xxcrm.asn.partysite.server.ODAccessRightPVO" >
+   </ViewUsage>
+   <ViewUsage
+      Name="ODAddrBkTypePoplistVO1"
+      ViewObjectName="oracle.apps.asn.common.poplist.server.LookupsVO" >
+   </ViewUsage>
+   <ViewUsage
+      Name="ODOwnerTypePoplistVO1"
+      ViewObjectName="od.oracle.apps.xxcrm.poplist.server.ODOwnerTypePoplistVO" >
+   </ViewUsage>
+   <ViewUsage
+      Name="ODAttachPartySiteVO"
+      ViewObjectName="od.oracle.apps.xxcrm.asn.partysite.server.ODAttachPartySiteVO" >
+   </ViewUsage>
+</AppModule>

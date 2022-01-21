@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dataTemplate name="XXARSDRR" description="Subscriptions Deferred Revenue Recognition Report" version="1.0">
+   <parameters>
+     <parameter name="p_contract_number"   datatype="character"/>
+   </parameters>
+   <dataQuery>
+    <sqlStatement name="Q_SUBSCRIPTION_DATA">
+         <![CDATA[ SELECT xac.contract_status,
+						  hca.account_number,
+						  xac.bill_to_customer_name,
+						  to_char(xac.initial_order_number) initial_order_number,
+						  xac.contract_number,
+						  xacl.contract_line_number,
+						  to_char(xacl.contract_line_start_date,'dd-mon-rrrr') contract_line_start_date,
+						  to_char(xacl.contract_line_end_date,'dd-mon-rrrr') contract_line_end_date,
+						  xacl.contract_line_billing_freq,
+						  xacl.item_name,
+						  xacl.item_description,
+						  xacl.quantity,
+						  xacl.uom_code,
+						  xacl.contract_line_amount,
+						  gcc.segment1||'.'||gcc.segment2||'.'||gcc.segment3||'.'||gcc.segment4||'.'||gcc.segment5||'.'||gcc.segment6||'.'||gcc.segment7 RevAct,
+						  rctlgda.attribute9 COGSAmt,
+						  rctlgda.attribute7 COGSAct
+					 FROM xx_ar_contracts xac,
+					      xx_ar_contract_lines xacl,
+						  xx_ar_subscriptions xas,
+						  hz_cust_accounts hca,
+						  ra_customer_trx_all rcta,
+						  ra_customer_trx_lines_all rctla,
+						  ra_cust_trx_line_gl_dist_all rctlgda,
+						  gl_code_combinations gcc,
+                          ra_rules rr
+					WHERE xac.contract_id = xacl.contract_id
+					  AND xac.contract_id = xas.contract_id
+					  AND xacl.contract_line_number = xas.contract_line_number
+					  and xac.bill_to_osr||'-00001-A0' = hca.orig_system_reference
+					  AND xas.invoice_number = rcta.trx_number 
+					  AND rcta.customer_trx_id = rctla.customer_trx_id
+					  AND xacl.contract_line_number = rctla.line_number
+					  AND rctla.customer_trx_line_id = rctlgda.customer_trx_line_id
+					  AND rctlgda.code_combination_id = gcc.code_combination_id
+                      AND rcta.invoicing_rule_id = rr.rule_id
+                      AND rr.name = 'Advance Invoice'
+					  AND xac.contract_status = 'ACTIVE'
+					  AND xacl.contract_line_billing_freq != 'MON'
+					  AND xac.contract_number = nvl(:p_contract_number, xac.contract_number)
+					]]>
+    </sqlStatement>
+  </dataQuery>
+  <dataStructure>
+    <group name="G_SUBSCRIPTION_DATA" source="Q_SUBSCRIPTION_DATA">
+      <element name="CONTRACT_STATUS" value="contract_status"/>
+      <element name="CUSTOMER_NUMBER" value="account_number"/>
+      <element name="CUSTOMER_NAME" value="bill_to_customer_name"/>
+	  <element name="INITIAL_ORDER_NUM" value="initial_order_number"/>
+      <element name="CONTRACT_NUM" value="contract_number"/>
+      <element name="CONTRACT_LINE_NUM" value="contract_line_number"/>
+	  <element name="CONTRACT_LINE_S_DATE" value="contract_line_start_date"/>
+      <element name="CONTRACT_LINE_E_DATE" value="contract_line_end_date"/>
+      <element name="CONTRACT_LINE_B_FREQ" value="contract_line_billing_freq"/>
+      <element name="ITEM_NAME" value="item_name"/>
+      <element name="ITEM_DESC" value="item_description"/>
+	  <element name="QUANTITY" value="quantity"/>
+      <element name="UOM_CODE" value="uom_code"/>
+      <element name="CONTRACT_LINE_AMT" value="contract_line_amount"/>
+      <element name="REVENUE_ACT" value="RevAct"/>
+      <element name="COGS_AMT" value="COGSAmt"/>
+	  <element name="COGS_ACT" value="COGSAct"/>
+    </group>
+  </dataStructure>
+</dataTemplate>

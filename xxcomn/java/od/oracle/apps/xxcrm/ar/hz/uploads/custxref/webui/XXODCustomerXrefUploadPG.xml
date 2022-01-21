@@ -1,0 +1,26 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<page xmlns:jrad="http://xmlns.oracle.com/jrad" xmlns:oa="http://xmlns.oracle.com/oa" xmlns:ui="http://xmlns.oracle.com/uix/ui" version="10.1.3_1312" xml:lang="en-US" xmlns:user="http://xmlns.oracle.com/jrad/user" xmlns="http://xmlns.oracle.com/jrad" file-version="$Header$">
+   <content>
+      <oa:pageLayout id="PageLayoutRN" amDefName="od.oracle.apps.xxcrm.ar.hz.uploads.custxref.server.XXODCustomerXrefUploadAM" controllerClass="od.oracle.apps.xxcrm.ar.hz.uploads.custxref.webui.XXODCustomerXrefUploadCO">
+         <ui:corporateBranding>
+            <oa:image id="corporateBrandingImage" source="/OA_MEDIA/FNDSSCORP.gif"/>
+         </ui:corporateBranding>
+         <ui:contents>
+            <oa:header id="UploadRegion" text="Upload Customer Cross References">
+               <ui:contents>
+                  <oa:spacer id="item1" height="5"/>
+                  <oa:messageFileUpload id="fileSelector" prompt="Upload CSV File" required="yes" dataType="CLOB"/>
+                  <oa:spacer id="item11" height="5"/>
+                  <oa:submitButton id="btnSubmit" prompt="Upload Customer Cross References" text="Upload Customer Cross References"/>
+                  <oa:spacer id="item12" height="5"/>
+               </ui:contents>
+            </oa:header>
+            <oa:header id="ViewRequestsRegion">
+               <ui:contents>
+                  <oa:submitButton id="btnViewRequests" prompt="ViewRequests"/>
+               </ui:contents>
+            </oa:header>
+         </ui:contents>
+      </oa:pageLayout>
+   </content>
+</page>

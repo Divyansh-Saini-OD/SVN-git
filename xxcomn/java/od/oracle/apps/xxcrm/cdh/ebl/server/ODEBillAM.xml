@@ -1,0 +1,240 @@
+<?xml version='1.0' encoding='windows-1252' ?>
+<!DOCTYPE AppModule SYSTEM "jbo_03_01.dtd">
+
+<AppModule
+   Name="ODEBillAM"
+   ComponentClass="od.oracle.apps.xxcrm.cdh.ebl.server.ODEBillAMImpl"
+   LoadComponentsLazily="true" >
+   <Properties>
+      <Property Name ="MULTIORG_ENABLED" Value ="S" />
+   </Properties>
+   <DesignTime>
+      <Attr Name="_isCodegen" Value="true" />
+      <Attr Name="_version" Value="10.1.3.43.6" />
+      <Attr Name="_deployType" Value="0" />
+   </DesignTime>
+   <ViewUsage
+      Name="ODEBillStdAggrDtlVO"
+      ViewObjectName="od.oracle.apps.xxcrm.cdh.ebl.eblmain.server.ODEBillStdAggrDtlVO" >
+   </ViewUsage>
+   <ViewUsage
+      Name="ODEBillAggrFunPVO"
+      ViewObjectName="od.oracle.apps.xxcrm.cdh.ebl.poplist.server.ODEBillAggrFunPVO" >
+   </ViewUsage>
+   <ViewUsage
+      Name="ODEBillAssociatePVO"
+      ViewObjectName="od.oracle.apps.xxcrm.cdh.ebl.poplist.server.ODEBillAssociatePVO" >
+   </ViewUsage>
+   <ViewUsage
+      Name="ODEBillCompUtilPVO"
+      ViewObjectName="od.oracle.apps.xxcrm.cdh.ebl.poplist.server.ODEBillCompUtilPVO" >
+   </ViewUsage>
+   <ViewUsage
+      Name="ODEBillDelimitCharPVO"
+      ViewObjectName="od.oracle.apps.xxcrm.cdh.ebl.poplist.server.ODEBillDelimitCharPVO" >
+   </ViewUsage>
+   <ViewUsage
+      Name="ODEBillDocStatusPVO"
+      ViewObjectName="od.oracle.apps.xxcrm.cdh.ebl.poplist.server.ODEBillDocStatusPVO" >
+   </ViewUsage>
+   <ViewUsage
+      Name="ODEBillFTPDirectPVO"
+      ViewObjectName="od.oracle.apps.xxcrm.cdh.ebl.poplist.server.ODEBillFTPDirectPVO" >
+   </ViewUsage>
+   <ViewUsage
+      Name="ODEBillFieldAlignPVO"
+      ViewObjectName="od.oracle.apps.xxcrm.cdh.ebl.poplist.server.ODEBillFieldAlignPVO" >
+   </ViewUsage>
+   <ViewUsage
+      Name="ODEBillFieldPaddCharPVO"
+      ViewObjectName="od.oracle.apps.xxcrm.cdh.ebl.poplist.server.ODEBillFieldPaddCharPVO" >
+   </ViewUsage>
+   <ViewUsage
+      Name="ODEBillFileCreatTypePVO"
+      ViewObjectName="od.oracle.apps.xxcrm.cdh.ebl.poplist.server.ODEBillFileCreatTypePVO" >
+   </ViewUsage>
+   <ViewUsage
+      Name="ODEBillFileProcMtdPVO"
+      ViewObjectName="od.oracle.apps.xxcrm.cdh.ebl.poplist.server.ODEBillFileProcMtdPVO" >
+   </ViewUsage>
+   <ViewUsage
+      Name="ODEBillLogoFilePVO"
+      ViewObjectName="od.oracle.apps.xxcrm.cdh.ebl.poplist.server.ODEBillLogoFilePVO" >
+   </ViewUsage>
+   <ViewUsage
+      Name="ODEBillRecordTypePVO"
+      ViewObjectName="od.oracle.apps.xxcrm.cdh.ebl.poplist.server.ODEBillRecordTypePVO" >
+   </ViewUsage>
+   <ViewUsage
+      Name="ODEBillSortOrderPVO"
+      ViewObjectName="od.oracle.apps.xxcrm.cdh.ebl.poplist.server.ODEBillSortTypePVO" >
+   </ViewUsage>
+   <ViewUsage
+      Name="ODEBillStdContLvlPVO"
+      ViewObjectName="od.oracle.apps.xxcrm.cdh.ebl.poplist.server.ODEBillStdContLvlPVO" >
+   </ViewUsage>
+   <ViewUsage
+      Name="ODEBillTransTypePVO"
+      ViewObjectName="od.oracle.apps.xxcrm.cdh.ebl.poplist.server.ODEBillTransTypePVO" >
+   </ViewUsage>
+   <ViewUsage
+      Name="ODEBillFileSeqResetVO"
+      ViewObjectName="od.oracle.apps.xxcrm.cdh.ebl.poplist.server.ODEBillFileSeqResetVO" >
+   </ViewUsage>
+   <ViewUsage
+      Name="ODEBillFileFieldParamPVO"
+      ViewObjectName="od.oracle.apps.xxcrm.cdh.ebl.poplist.server.ODEBillFileFieldParamPVO" >
+   </ViewUsage>
+   <ViewUsage
+      Name="ODEBillDocSearchVO"
+      ViewObjectName="od.oracle.apps.xxcrm.cdh.ebl.search.server.ODEBillDocSearchVO" >
+   </ViewUsage>
+   <ViewUsage
+      Name="ODEbillCustDocVO"
+      ViewObjectName="od.oracle.apps.xxcrm.cdh.ebl.custdocs.server.ODEbillCustDocVO" >
+   </ViewUsage>
+   <ViewUsage
+      Name="ODEBillDocTypePVO"
+      ViewObjectName="od.oracle.apps.xxcrm.cdh.ebl.poplist.server.ODEBillDocTypePVO" >
+   </ViewUsage>
+   <ViewUsage
+      Name="ODEBillDelyMethodPVO"
+      ViewObjectName="od.oracle.apps.xxcrm.cdh.ebl.poplist.server.ODEBillDelyMethodPVO" >
+   </ViewUsage>
+   <ViewUsage
+      Name="ODEBillComboPVO"
+      ViewObjectName="od.oracle.apps.xxcrm.cdh.ebl.poplist.server.ODEBillComboPVO" >
+   </ViewUsage>
+   <ViewUsage
+      Name="ODEBillCharYesNo"
+      ViewObjectName="od.oracle.apps.xxcrm.cdh.ebl.poplist.server.ODEBillCharYesNo" >
+   </ViewUsage>
+   <ViewUsage
+      Name="ODEBillNSFieldNamesPVO"
+      ViewObjectName="od.oracle.apps.xxcrm.cdh.ebl.poplist.server.ODEBillNSFieldNamesPVO" >
+   </ViewUsage>
+   <ViewUsage
+      Name="ODEBillNumYesNoPVO"
+      ViewObjectName="od.oracle.apps.xxcrm.cdh.ebl.poplist.server.ODEBillNumYesNoPVO" >
+   </ViewUsage>
+   <ViewUsage
+      Name="ODEBillCustHeaderVO"
+      ViewObjectName="od.oracle.apps.xxcrm.cdh.ebl.eblmain.server.ODEBillCustHeaderVO" >
+   </ViewUsage>
+   <ViewUsage
+      Name="ODEBillStdFieldsVO"
+      ViewObjectName="od.oracle.apps.xxcrm.cdh.ebl.eblmain.server.ODEBillStdFieldsVO" >
+   </ViewUsage>
+   <ViewUsage
+      Name="ODEBillSortTypePVO"
+      ViewObjectName="od.oracle.apps.xxcrm.cdh.ebl.poplist.server.ODEBillSortTypePVO" >
+   </ViewUsage>
+   <ViewUsage
+      Name="ODEBillSplitTypePVO"
+      ViewObjectName="od.oracle.apps.xxcrm.cdh.ebl.poplist.server.ODEBillSplitTypePVO" >
+   </ViewUsage>
+   <ViewUsage
+      Name="ODEBillNonStdVO"
+      ViewObjectName="od.oracle.apps.xxcrm.cdh.ebl.eblmain.server.ODEBillNonStdVO" >
+   </ViewUsage>
+   <ViewUsage
+      Name="ODEBillTempHeaderVO"
+      ViewObjectName="od.oracle.apps.xxcrm.cdh.ebl.eblmain.server.ODEBillTempHeaderVO" >
+   </ViewUsage>
+   <ViewUsage
+      Name="ODEBillContactsVO"
+      ViewObjectName="od.oracle.apps.xxcrm.cdh.ebl.eblmain.server.ODEBillContactsVO" >
+   </ViewUsage>
+   <ViewUsage
+      Name="ODEBillFileNameVO"
+      ViewObjectName="od.oracle.apps.xxcrm.cdh.ebl.eblmain.server.ODEBillFileNameVO" >
+   </ViewUsage>
+   <ViewUsage
+      Name="ODEBillTransmissionVO"
+      ViewObjectName="od.oracle.apps.xxcrm.cdh.ebl.eblmain.server.ODEBillTransmissionVO" >
+   </ViewUsage>
+   <ViewUsage
+      Name="ODEBillAggrFieldPVO"
+      ViewObjectName="od.oracle.apps.xxcrm.cdh.ebl.poplist.server.ODEBillAggrFieldPVO" >
+   </ViewUsage>
+   <ViewUsage
+      Name="ODEBillLineFeedPVO"
+      ViewObjectName="od.oracle.apps.xxcrm.cdh.ebl.poplist.server.ODEBillLineFeedPVO" >
+   </ViewUsage>
+   <ViewUsage
+      Name="XxcrmEblContUploadsVO"
+      ViewObjectName="od.oracle.apps.xxcrm.cdh.uploads.eblContacts.server.XxcrmEblContUploadsVO" >
+   </ViewUsage>
+   <ViewUsage
+      Name="ODEBillSplitTabsByPVO"
+      ViewObjectName="od.oracle.apps.xxcrm.cdh.ebl.poplist.server.ODEBillSplitTabsByPVO" >
+   </ViewUsage>
+   <ViewUsage
+      Name="ODEBillConcatenateVO"
+      ViewObjectName="od.oracle.apps.xxcrm.cdh.ebl.eblmain.server.ODEBillConcatenateVO" >
+   </ViewUsage>
+   <ViewUsage
+      Name="ODEBillConcatFieldsPVO"
+      ViewObjectName="od.oracle.apps.xxcrm.cdh.ebl.poplist.server.ODEBillConcatFieldsPVO" >
+   </ViewUsage>
+   <ViewUsage
+      Name="ODEBillSplitFieldsPVO"
+      ViewObjectName="od.oracle.apps.xxcrm.cdh.ebl.poplist.server.ODEBillSplitFieldsPVO" >
+   </ViewUsage>
+   <ViewUsage
+      Name="ODEBillSplitVO"
+      ViewObjectName="od.oracle.apps.xxcrm.cdh.ebl.eblmain.server.ODEBillSplitVO" >
+   </ViewUsage>
+   <ViewUsage
+      Name="ODEBillSplitDelimiterByPVO"
+      ViewObjectName="od.oracle.apps.xxcrm.cdh.ebl.poplist.server.ODEBillSplitDelimiterByPVO" >
+   </ViewUsage>
+   <ViewUsage
+      Name="ODEBillDynConcFieldsVO"
+      ViewObjectName="od.oracle.apps.xxcrm.cdh.ebl.poplist.server.ODEBillDynConcFieldsVO" >
+   </ViewUsage>
+   <ViewUsage
+      Name="ODEBillDynSplitFieldsVO"
+      ViewObjectName="od.oracle.apps.xxcrm.cdh.ebl.poplist.server.ODEBillDynSplitFieldsVO" >
+   </ViewUsage>
+   <ViewUsage
+      Name="ODEBillSubTotalFieldsVO"
+      ViewObjectName="od.oracle.apps.xxcrm.cdh.ebl.eblmain.server.ODEBillSubTotalFieldsVO" >
+   </ViewUsage>
+   <ViewUsage
+      Name="ODEBillConfigDetailsFieldNamesPVO"
+      ViewObjectName="od.oracle.apps.xxcrm.cdh.ebl.poplist.server.ODEBillConfigDetailsFieldNamesPVO" >
+   </ViewUsage>
+   <ViewUsage
+      Name="ODEBillTemplDtlVO"
+      ViewObjectName="od.oracle.apps.xxcrm.cdh.ebl.eblmain.server.ODEBillTemplDtlVO" >
+   </ViewUsage>
+   <ViewUsage
+      Name="ODEBillMainVO"
+      ViewObjectName="od.oracle.apps.xxcrm.cdh.ebl.eblmain.server.ODEBillMainVO" >
+   </ViewUsage>
+   <ViewUsage
+      Name="ODEBillDataXlsFmtPVO"
+      ViewObjectName="od.oracle.apps.xxcrm.cdh.ebl.poplist.server.ODEBillDataXlsFmtPVO" >
+   </ViewUsage>
+   <ViewUsage
+      Name="ODEBillEXLSwitcherVO"
+      ViewObjectName="od.oracle.apps.xxcrm.cdh.ebl.eblmain.server.ODEBillEXLSwitcherVO" >
+   </ViewUsage>
+   <ViewUsage
+      Name="ODEBillParentCustDocId"
+      ViewObjectName="od.oracle.apps.xxcrm.cdh.ebl.ebltxtmain.poplist.server.ODEBillParentCustDocId" >
+   </ViewUsage>
+   <ViewUsage
+      Name="ODEBillPPRVO"
+      ViewObjectName="od.oracle.apps.xxcrm.cdh.ebl.eblmain.server.ODEBillPPRVO" >
+   </ViewUsage>
+   <ViewUsage
+      Name="ODEBillDocExceptionVO"
+      ViewObjectName="od.oracle.apps.xxcrm.cdh.ebl.exec.server.ODEBillDocExceptionVO" >
+   </ViewUsage>
+   <ViewUsage
+      Name="ODEBillPayDocVO"
+      ViewObjectName="od.oracle.apps.xxcrm.cdh.ebl.exec.server.ODEBillPayDocVO" >
+   </ViewUsage>
+</AppModule>

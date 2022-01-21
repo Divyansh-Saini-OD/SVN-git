@@ -1,0 +1,41 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<xs:schema targetNamespace="http://xmlns.oracle.com/pcbpel/adapter/db/top/InsertUpdateDepartmentDB2Data" xmlns="http://xmlns.oracle.com/pcbpel/adapter/db/top/InsertUpdateDepartmentDB2Data" elementFormDefault="qualified" attributeFormDefault="qualified" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+   <xs:element name="PsDeptTblCollection" type="PsDeptTblCollection"/>
+   <xs:complexType name="PsDeptTblCollection">
+      <xs:sequence>
+         <xs:element name="PsDeptTbl" type="PsDeptTbl" minOccurs="0" maxOccurs="unbounded"/>
+      </xs:sequence>
+   </xs:complexType>
+   <xs:complexType name="PsDeptTbl">
+      <xs:sequence>
+         <xs:element name="setid">
+            <xs:simpleType>
+               <xs:restriction base="xs:string">
+                  <xs:maxLength value="5"/>
+               </xs:restriction>
+            </xs:simpleType>
+         </xs:element>
+         <xs:element name="deptid">
+            <xs:simpleType>
+               <xs:restriction base="xs:string">
+                  <xs:maxLength value="10"/>
+               </xs:restriction>
+            </xs:simpleType>
+         </xs:element>
+         <xs:element name="effdt" type="xs:date"/>
+         <xs:element name="descr" minOccurs="0">
+            <xs:simpleType>
+               <xs:restriction base="xs:string">
+                  <xs:maxLength value="30"/>
+               </xs:restriction>
+            </xs:simpleType>
+         </xs:element>
+      </xs:sequence>
+   </xs:complexType>
+   <xs:element name="InsertUpdateDepartmentDB2DataSelect_InputParamDeptIdInputParameters" type="InsertUpdateDepartmentDB2DataSelect_InputParamDeptId"/>
+   <xs:complexType name="InsertUpdateDepartmentDB2DataSelect_InputParamDeptId">
+      <xs:sequence>
+         <xs:element name="InputParamDeptId" type="xs:string" minOccurs="1" maxOccurs="1"/>
+      </xs:sequence>
+   </xs:complexType>
+</xs:schema>
