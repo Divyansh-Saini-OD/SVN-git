@@ -1,0 +1,30 @@
+-- +==========================================================================+
+-- |                  Office Depot - Project Simplify                         |
+-- |                                                        |
+-- +==========================================================================+
+-- | RICE ID     :      I0380                                                 |
+-- | Name        :      Supplier Outbound realtime                            |
+-- | Description : To alter the WHO columns for KFF.									        |
+-- |                                                 													|
+-- |                                                                          |
+-- | SQL Script to ALTER the following object                                 |
+-- |             Table       : XX_PO_VENDOR_SITES_KFF                         |
+-- |                                                                          |
+-- |Change Record:                                                            |
+-- |===============                                                           |
+-- |Version   Date         Author               Remarks                       |
+-- |=======   ==========   =============        ==============================|
+-- | V1.0     04-JAN-2008  Sandeep/Greg Dill    Initial version 							|
+-- |                                                                          |
+-- +==========================================================================+
+
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     ON
+
+ALTER TABLE xxfin.xx_po_vendor_sites_kff MODIFY (created_by NULL);
+ALTER TABLE xxfin.xx_po_vendor_sites_kff MODIFY (creation_date NULL);
+ALTER TABLE xxfin.xx_po_vendor_sites_kff MODIFY (last_updated_by NULL);
+ALTER TABLE xxfin.xx_po_vendor_sites_kff MODIFY (last_update_date NULL);

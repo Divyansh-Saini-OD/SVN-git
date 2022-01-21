@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="windows-1252"?>
+<page xmlns="http://xmlns.oracle.com/uix/controller"
+      xmlns:ui="http://xmlns.oracle.com/uix/ui"
+      xmlns:ctrl="http://xmlns.oracle.com/uix/controller"
+      xmlns:template="http://xmlns.oracle.com/discoverer/templates"
+      xmlns:html="http://www.w3.org/TR/REC-html40"
+      expressionLanguage="el">
+  <templates xmlns="http://xmlns.oracle.com/uix/ui">
+    <templateImport source="/templates/CommonPage.uit"/>
+    <templateImport source="/templates/Document.uit"/>
+  </templates>
+  <content>
+    <dataScope xmlns="http://xmlns.oracle.com/uix/ui" xmlns:data="http://xmlns.oracle.com/uix/ui">
+      <provider>
+        <data name="nls">
+          <bundle class="oracle.discoverer.applications.viewer.resources.ApplicationResources" />
+        </data>
+        <data name="constants">
+          <method class="oracle.discoverer.applications.viewer.view.dataprovider.ConstantsMapping" method="getConstants" />
+        </data>
+      </provider>
+      <contents>
+        <template:documentTemplate pageTitle="${uix.data.nls['worksheetlist.text.header']}" allowCaching="true">
+          <contents>
+          <body>
+          <contents>
+            <template:commonPageLayout helpID="disco_vw_explorer" title="${uix.data.nls['worksheetlist.text.header']}" prefReturnDestination="worksheet_list">
+              
+              <userInfo>
+                <flowLayout rendered="${uix.eventResult.connectedUserRendered}">
+                  <contents>
+                    <styledText styleClass="OraPageStampText" text="${uix.data.nls['logged.in']}" />
+                    <styledText styleClass="OraPageStampLabel" text="${uix.eventResult.connectedUser}" />
+                  </contents>
+                </flowLayout>
+              </userInfo>
+              <contents>
+                <html:noscript>
+                  <styledText styleClass="OraInstructionText" text="${uix.data.nls['text.noscript']}" />
+                </html:noscript>
+                
+                <spacer height="12" width="0" />
+                <form id="WorkbookListForm" name="WorkbookListForm" method="POST">
+                  <boundAttribute name="destination">
+                    <concat>
+                      <contextProperty select="ui:contextURI" />
+                      <dataObject select="ACTION_SERVLET" source="constants" />
+                      explorer
+                    </concat>
+                  </boundAttribute>
+                  <contents>
+                    <header text="${uix.data.nls['workbookList.resultList.header']}" >
+                      <contents>
+                        <hGrid
+                          formSubmitted="true"
+                          id="${uix.data.constants.EXPLORER}"
+                          proxy="${uix.eventResult.hGridProxy}"
+                          treeData="${uix.eventResult.nodes}">
+                           <tableActions>
+                            <button textAndAccessKey="${uix.data.nls['workbookList.refreshList']}">
+                                                              <boundAttribute name="onClick">
+							                                    <concat>
+							                                      javascript:discoSWP('aForm','
+							                                      <contextProperty select="ui:contextURI" />
+							                                      <dataObject select="ACTION_SERVLET" source="constants" />
+							                                      explorer?event=refreshWorkbookList');
+							                                    </concat>
+							                                  </boundAttribute>
+							</button>
+                           </tableActions>
+                           <nodeStamp>
+                              <column>
+                                <columnFormat />
+                                <columnHeader>
+                                  <text  text="${uix.data.nls['cec.text.name']}"/>
+                                </columnHeader>
+                              <contents>
+                              	<flowLayout>
+                                  <contents>
+                                    <spacer width="2" height="1" rendered="${ui:cond(uix.current.workbookType eq '', 'false', 'true')}"/>
+                                    <image source="/discoverer/images/scheduled_workbook.gif" rendered="${ui:cond(uix.current.workbookType eq 'scheduled', 'true', 'false')}"/>
+                                    <image source="/discoverer/images/nonschduled_workbook.gif" rendered="${ui:cond(uix.current.workbookType eq 'workbook', 'true', 'false')}"/>
+                                    <image source="/discoverer/images/closed_folder.gif" rendered="${ui:cond(uix.current.workbookType eq 'folder', 'true', 'false')}"/>
+                                    <image source="/discoverer/images/open_wkb.gif" rendered="${ui:cond(uix.current.workbookType eq 'open_workbook', 'true', 'false')}"/>
+                                    <image source="/discoverer/images/open_scheduled_workbook.gif" rendered="${ui:cond(uix.current.workbookType eq 'open_scheduled', 'true', 'false')}"/>
+                                    <image source="/discoverer/images/open_folder.gif" rendered="${ui:cond(uix.current.workbookType eq 'open_folder', 'true', 'false')}"/>
+                                    <image source="/discoverer/images/erroricon_status.gif" rendered="${ui:cond(uix.current.workbookType eq 'error', 'true', 'false')}" />
+                                    <link id="${uix.current.elementID}" destination="${uix.current.destination}" text="${uix.current.text}"/>
+                                    <spacer width="150" height="1" />
+                                  </contents>
+                                </flowLayout>
+                              </contents>
+                              </column>
+                           </nodeStamp>
+                           <columnHeaderStamp>
+                            <text  text="${uix.current.text}"/>
+                           </columnHeaderStamp>
+                           <columnHeaderData>
+                            <col text="${uix.data.nls['workbookList.resultListTable.descriptionColumn']}"/>
+                            <col text="${uix.data.nls['workbookList.resultListTable.ownerColumn']}"/>
+                            <col text="${uix.data.nls['workbookList.resultListTable.modifiedColumn']}"/>
+                           </columnHeaderData>
+                           <contents>
+                            <column>
+                              <contents>
+                                <text  text="${uix.current.desc}"/>
+                              </contents>
+                            </column>
+                            
+                             
+                           </contents>
+                        </hGrid>
+                      </contents>
+                    </header>
+                    <formValue id="stateStrID"  name="${uix.data.constants.STATE_STRING_PARAM}"   rendered="${uix.eventResult.stateExists}" value="${uix.eventResult.stateStr}"/>
+                    <formValue id="stateID" name="${uix.data.constants.STATE_STORE_ID_PARAM}"   rendered="${uix.eventResult.stateIDExists}" value="${uix.eventResult.stateID}"/>
+                  </contents>
+                </form>
+              </contents>
+            </template:commonPageLayout>
+            <rawText   text="${uix.eventResult.scrollScript}">
+            </rawText>
+            <form id="aForm" name="aForm" method="POST">
+              <contents>
+                <rawText   text="${uix.eventResult.concatScript}">
+                </rawText>
+                <formValue id="stateStrID4" name="${uix.data.constants.STATE_STRING_PARAM}"   rendered="${uix.eventResult.stateExists}" value="${uix.eventResult.stateStr}"/>
+                <formValue id="stateID4" name="${uix.data.constants.STATE_STORE_ID_PARAM}"   rendered="${uix.eventResult.stateIDExists}" value="${uix.eventResult.stateID}"/>
+              </contents>
+            </form>
+            </contents>
+            </body>
+          </contents>
+        </template:documentTemplate>
+      </contents>
+    </dataScope>
+  </content>
+  <handlers>
+    <event name="*">
+      <method class="oracle.discoverer.applications.viewer.view.dataprovider.WorkbookListProxy" method="getListData" />
+    </event>
+  </handlers>
+</page>

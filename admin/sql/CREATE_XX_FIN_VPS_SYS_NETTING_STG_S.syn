@@ -1,0 +1,29 @@
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+-- +===========================================================================+
+-- |                  Office Depot - VPS Project                               |
+-- +===========================================================================+
+-- | Name        : CREATE_XX_FIN_VPS_SYS_NETTING_STG_S.syn                        |
+-- | Description : Synonym for Sequence and this is used in Vps cust Creation. |
+-- |                                                                           |
+-- |                                                                           |
+-- |Change Record:                                                             |
+-- |===============                                                            |
+-- |Version  Date        Author        		Remarks            	       		   |
+-- |======== =========== ============= 		===============================    |
+-- |DRAFT 1A 04-OCT-2017 Uday Jadhav   Initial draft version          		   |
+-- |                                                                           |
+-- |                                                                           |
+-- |                                                                           |
+-- +===========================================================================+
+
+-- ----------------------------------------------------------------------------
+--      Create Custom Synonym XX_FIN_VPS_SYS_NETTING_STG_S.
+-- ----------------------------------------------------------------------------
+
+CREATE OR REPLACE SYNONYM XX_FIN_VPS_SYS_NETTING_STG_S FOR XXFIN.XX_FIN_VPS_SYS_NETTING_STG_S
+/
+
+SHOW ERRORS;

@@ -1,0 +1,44 @@
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     ON
+
+PROMPT Creating TABLE XX_AR_BILL_EXCEPT_BILL
+
+PROMPT Program exits IF the creation IS NOT SUCCESSFUL
+
+WHENEVER SQLERROR CONTINUE
+
+-- +===================================================================+
+-- |                  Office Depot - Project Simplify                  |
+-- |                      Wipro Technologies                           |
+-- +===================================================================+
+-- | Name  : XX_AR_BILL_EXCEPT_BILL                                    |
+-- | Description: Custom temporary table for the report                |
+-- |              R0539 - OD: AR Billing Exceptions Report             |
+-- |                                                                   |
+-- |                                                                   |
+-- |Change Record:                                                     |
+-- |===============                                                    |
+-- |Version   Date         Author            Remarks                   |
+-- |=======   ==========   =============     ==========================|
+-- |1.0       3-FEB-09    Kantharaja        Initial version            |
+-- |                      Velayutham                                   |
+-- +===================================================================+
+
+CREATE TABLE XXFIN.XX_AR_BILL_EXCEPT_BILL
+ (
+   DELIVERY_METHOD                         VARCHAR2(150),
+   CUSTOMER_NUMBER                         VARCHAR2(30),
+   CUSTOMER_NAME                           VARCHAR2(360),
+   LEGACY_CUSTOMER_NUMBER                  VARCHAR2(240),
+   PAYDOC_INDICATOR                        VARCHAR2(150),
+   CUST_DOCID                              NUMBER,
+   CUSTOMER_SITE                           VARCHAR2(150),
+   CODE                                    VARCHAR2(10),
+   ORG_ID                                  NUMBER,
+   REQUEST_ID                              NUMBER
+   );
+
+SHO ERR;

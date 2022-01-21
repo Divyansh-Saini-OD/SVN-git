@@ -1,0 +1,29 @@
+-- +==========================================================================+
+-- |                               Office Depot                               |
+-- +==========================================================================+
+-- | SQL Script to create the following index                                 |
+-- |                                                                          |
+-- |             Index  : XX_AR_POSTING_WORKER_GT_U1                          |
+-- |                                                                          |
+-- |             RICE#  : Index   - E2024 Custom Indexes                      |
+-- |                      Used By - E2050 - GL Transfer Parallelization Prog. |
+-- |                                                                          |
+-- |Change Record:                                                            |
+-- |===============                                                           |
+-- |Version   Date         Author               Remarks                       |
+-- |=======   ===========  ===================  ==============================|
+-- | V1.0     20-NOV-2009  Sreelatha Givvimani  Initial version - Defect 3260 |
+-- |                                                                          |
+-- +==========================================================================+
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     ON
+
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+CREATE UNIQUE INDEX xx_ar_posting_worker_gt_u1 ON xxfin.xx_ar_posting_worker_gt (source_id, worker_number);
+
+SHOW ERRORS

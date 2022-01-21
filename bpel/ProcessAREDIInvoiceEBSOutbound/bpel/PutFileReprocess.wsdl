@@ -1,0 +1,51 @@
+<definitions
+     name="PutFileReprocess"
+     targetNamespace="http://xmlns.oracle.com/pcbpel/adapter/ftp/PutFileReprocess/"
+     xmlns="http://schemas.xmlsoap.org/wsdl/"
+     xmlns:tns="http://xmlns.oracle.com/pcbpel/adapter/ftp/PutFileReprocess/"
+     xmlns:plt="http://schemas.xmlsoap.org/ws/2003/05/partner-link/"
+     xmlns:jca="http://xmlns.oracle.com/pcbpel/wsdl/jca/"
+     xmlns:imp1="http://www.openapplications.org/oagis/9/officedepot/1"
+     xmlns:hdr="http://xmlns.oracle.com/pcbpel/adapter/ftp/"
+    >
+    <import namespace="http://xmlns.oracle.com/pcbpel/adapter/ftp/" location="ftpAdapterOutboundHeader.wsdl"/>
+    <types>
+      <schema xmlns="http://www.w3.org/2001/XMLSchema" >
+        <import namespace="http://www.openapplications.org/oagis/9/officedepot/1" schemaLocation="XXARINVPRNTSLCTEDI.xsd" />
+      </schema>
+    </types>
+    <message name="XXARINVPRNEDI_msg">
+        <part name="XXARINVPRNEDI" element="imp1:XXARINVPRNEDI"/>
+    </message>
+    <portType name="Put_ptt">
+        <operation name="Put">
+            <input message="tns:XXARINVPRNEDI_msg"/>
+        </operation>
+    </portType>
+    <binding name="Put_binding" type="tns:Put_ptt">
+    <jca:binding  />
+        <operation name="Put">
+      <jca:operation
+          FileType="ascii"
+          LogicalDirectory="input_path"
+          InteractionSpec="oracle.tip.adapter.ftp.outbound.FTPInteractionSpec"
+          FileNamingConvention="XX_AR_EDI_%yyMMddHHmmssSS%.xml"
+          NumberMessages="1"
+          OpaqueSchema="false" >
+      </jca:operation>
+      <input>
+        <jca:header message="hdr:OutboundHeader_msg" part="outboundHeader"/>
+      </input>
+        </operation>
+    </binding>
+    <service name="PutFileReprocess">
+        <port name="Put_pt" binding="tns:Put_binding">
+      <jca:address location="eis/ftp/EBSCentralExternal" />
+        </port>
+    </service>
+  <plt:partnerLinkType name="Put_plt" >
+    <plt:role name="Put_role" >
+      <plt:portType name="tns:Put_ptt" />
+    </plt:role>
+  </plt:partnerLinkType>
+</definitions>

@@ -1,0 +1,42 @@
+-- +============================================================================================+
+-- |                        Office Depot - Project Simplify                                     |
+-- |                                                                                            |
+-- +============================================================================================+
+-- | Name         : XX_C2T_PREP_THREADS_ORDT.tbl                                        |
+-- | Rice Id      :                                                                             | 
+-- | Description  : XX_C2T_PREP_THREADS_ORDT Table Creation Script                              |  
+-- | Purpose      :                                                                             |
+-- |                                                                                            |
+-- |                                                                                            |
+-- |Change Record:                                                                              |
+-- |===============                                                                             |
+-- |Version    Date          Author                Remarks                                      | 
+-- |=======    ==========    =================    ==============================================+
+-- |1.0        13-OCT-2015  Harvinder Rakhra      Initial Version                               |
+-- |                                                                                            |
+-- +============================================================================================+
+
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     ON
+			
+PROMPT
+PROMPT CREATING the Table XX_C2T_PREP_THREADS_ORDT.....
+PROMPT
+
+CREATE TABLE XXFIN.XX_C2T_PREP_THREADS_ORDT
+(
+  MIN_ORDER_PAYMENT_ID       NUMBER(15)
+, MAX_ORDER_PAYMENT_ID       NUMBER(15)
+, THREAD_NUM                 NUMBER(15)
+, TOTAL_COUNT                NUMBER(15)
+, CREATION_DATE              DATE
+, LAST_UPDATE_DATE           DATE
+, LAST_ORDER_PAYMENT_ID      NUMBER(15)
+);	
+
+COMMIT;
+
+SHOW ERROR;

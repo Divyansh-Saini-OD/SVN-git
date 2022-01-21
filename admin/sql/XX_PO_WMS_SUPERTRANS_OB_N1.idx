@@ -1,0 +1,26 @@
+-- +==========================================================================+
+-- |                  Office Depot - Project Simplify                         |
+-- |                                                                          |
+-- +==========================================================================+
+-- | SQL Script to create the following objects                               |
+-- |             INDEX   : XX_PO_WMS_SUPERTRANS_OB_N1                     	  |
+-- |             RICE ID : E3522_PO Supertrans outbound from EBS Interface 	  |
+-- |                                                                          |
+-- |                                                                          |
+-- |                                                                          |
+-- |Change Record:                                                            |
+-- |===============                                                           |
+-- |Version   Date         Author               Remarks                       |
+-- |=======   ===========  =============        ==============================|
+-- | V1.0     10-OCT-2017   Madhu Bolli       	Initial version               |
+-- |                                                                          |
+-- +==========================================================================+
+
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     ON
+
+CREATE INDEX XX_PO_WMS_SUPERTRANS_OB_N1 ON XXFIN.XX_PO_WMS_SUPERTRANS_OB
+(BATCH_ID);

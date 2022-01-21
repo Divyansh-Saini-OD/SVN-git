@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dataTemplate name="XX_FIN_VPS_INV_STMT_BACKUP" defaultPackage="XX_AR_FIN_VPS_BKUP_BURST" description="OD US AR VPS Invoice Statement Backup" Version="1.0">
+<parameters>
+<parameter name="p_program_id" dataType="character" defaultValue=""/>
+<parameter name="p_vendor_num" dataType="character" defaultValue=""/>
+</parameters>
+<dataQuery>
+<sqlStatement name="Q_HEADER">
+ <![CDATA[SELECT bkdata.program_id PROGRAM_ID
+      ,bkdata.vendor_number VENDOR_NUMBER
+      ,(SELECT sup.vendor_name
+        FROM ap_suppliers sup,
+             ap_supplier_sites_all ssa
+       WHERE 1=1
+        AND    ltrim(ssa.vendor_site_code_alt,'0') = :p_vendor_num
+        AND    ssa.vendor_id = sup.vendor_id
+        AND    ssa.attribute8 like 'TR%'
+        AND    ssa.pay_site_flag='Y'
+        AND  	( ssa.inactive_date IS NULL
+                OR  ssa.inactive_date > SYSDATE)) VENDOR_NAME
+        ,FND_PROFILE.VALUE('XX_COMN_SMTP_MAIL_SERVER') SMTP_SERVER
+        ,'vendorprograms@officedepot.com' FROM_MAIL
+        ,(SELECT listagg(hcp.email_address,', ')
+            within group (order by hca.party_id) as list    
+        FROM hz_cust_accounts hca
+              ,hz_parties obj
+              ,hz_relationships rel
+              ,hz_org_contacts hoc
+              ,hz_contact_points hcp
+              ,hz_parties sub
+        WHERE 1=1
+        AND bkdata.vendor_number || '-VPS' = hca.ORIG_SYSTEM_REFERENCE
+        AND hca.party_id          = rel.object_id
+        AND hca.party_id          = obj.party_id
+        AND rel.subject_id        = sub.party_id
+        AND rel.relationship_type = 'CONTACT'
+        AND rel.directional_flag  = 'F'
+        AND rel.relationship_id   =hoc.party_relationship_id
+        AND UPPER(hoc.job_title) like 'CORE%NON%BACKUP%BILLING%'
+        AND rel.party_id          = hcp.owner_table_id
+        AND hcp.owner_table_name  = 'HZ_PARTIES'
+        )TO_EMAIL_ADDRESS
+		,(SELECT distinct attribute11
+          FROM ra_customer_trx_all
+        WHERE 1=1
+          AND attribute14=:p_program_id
+          AND attribute_category='US_VPS'
+          AND rownum=1)PROGRAM_BASIS,
+		fnd_global.conc_request_id CONC_REQUEST_ID,
+		(select directory_path
+            from dba_directories
+           where directory_name = 'XXVPS_OUTBOUND_EMAIL') DIRECTORY_PATH
+FROM XX_FIN_VPS_STMT_BACKUP_DATA bkdata
+where  bkdata.program_id=:p_program_id
+and    bkdata.vendor_number = :p_vendor_num
+and    bkdata.backup_type in ('SKUS', 'INVOICES')
+and    rownum=1
+]]>
+</sqlStatement>
+<sqlStatement name="Q_INVOICE">
+ <![CDATA[SELECT jt.*
+FROM XX_FIN_VPS_STMT_BACKUP_DATA bkdata
+       ,JSON_TABLE ( bkdata.vps_data, '$' COLUMNS ( 
+           nested path '$.INVOICES[*]' columns (
+             "INVOICE"  varchar2(20) path '$.INVOICE' null on error,
+             "INVOICE_DT"  varchar2(20) path '$.INVOICE_DT' null on error,
+             "INV_AMT_T"  NUMBER path '$.AMT_T' null on error,
+             "INV_AMT_R"  NUMBER path '$.AMT_R' null on error,
+             "INV_AMT_N"  NUMBER path '$.AMT_N' null on error
+           )
+       )) "JT"
+where  bkdata.program_id=:PROGRAM_ID
+and    bkdata.vendor_number = :VENDOR_NUMBER
+and    bkdata.backup_type='INVOICES'
+]]>
+</sqlStatement>
+<sqlStatement name="Q_SKU">
+ <![CDATA[SELECT jt.*
+FROM   XX_FIN_VPS_STMT_BACKUP_DATA bkdata
+       ,JSON_TABLE ( bkdata.vps_data, '$' COLUMNS ( 
+           nested path '$.SKUS[*]' columns (
+             "SKU"  varchar2(50) path '$.SKU' null on error
+             ,"SKUN"  varchar2(250) path '$.SKUN' null on error
+             ,"DPT"  varchar2(20) path '$.DPT' null on error
+             ,"DPTN"  varchar2(40) path '$.DPTN' null on error
+             ,"CLS"  varchar2(20) path '$.CLS' null on error
+             ,"CLSN"  varchar2(40) path '$.CLSN' null on error
+             ,"SBC"  varchar2(20) path '$.SBC' null on error
+             ,"SBCN"  varchar2(250) path '$.SBCN' null on error
+             ,"AMT_T"  varchar2(20) path '$.AMT_T' null on error
+             ,"QTY_T"  NUMBER path '$.QTY_T' null on error
+             ,"AMT_R"  varchar2(20) path '$.AMT_R' null on error
+             ,"QTY_R"  NUMBER path '$.QTY_R' null on error
+			 ,"QTY_N"  NUMBER path '$.QTY_N' null on error
+             ,"AMT_N"  varchar2(20) path '$.AMT_N' null on error
+           )
+       )) "JT"
+where  bkdata.program_id=:PROGRAM_ID
+and    bkdata.vendor_number = :VENDOR_NUMBER
+and    bkdata.backup_type='SKUS'
+]]>
+</sqlStatement>
+</dataQuery>
+<dataStructure>
+<group name="G_HEADER" source="Q_HEADER">
+ <element name="PROGRAM_ID" value="PROGRAM_ID"/>
+ <element name="VENDOR_NUMBER" value="VENDOR_NUMBER"/>
+ <element name="VENDOR_NAME" value="VENDOR_NAME"/>
+ <element name="SMTP_SERVER" value="SMTP_SERVER"/>
+ <element name="FROM_MAIL" value="FROM_MAIL"/>
+ <element name="TO_EMAIL_ADDRESS" value="TO_EMAIL_ADDRESS"/>
+ <element name="PROGRAM_BASIS" value="PROGRAM_BASIS"/>
+ <element name="CONC_REQUEST_ID" value="CONC_REQUEST_ID"/>
+ <element name="DIRECTORY_PATH" value="DIRECTORY_PATH"/>
+		<group name="G_INVOICE" source="Q_INVOICE">
+		 <element name="INVOICE" value="INVOICE"/>
+		 <element name="INVOICE_DT" value="INVOICE_DT"/>
+		 <element name="INV_AMT_T" value="INV_AMT_T"/>
+		 <element name="INV_AMT_R" value="INV_AMT_R"/>
+		 <element name="INV_AMT_N" value="INV_AMT_N"/>
+		</group>
+		<group name="G_SKU" source="Q_SKU">
+		 <element name="SKU" value="SKU"/>
+		 <element name="SKUN" value="SKUN"/>
+		 <element name="DPT" value="DPT"/>
+		 <element name="DPTN" value="DPTN"/>
+		 <element name="CLS" value="CLS"/>
+		 <element name="CLSN" value="CLSN"/>
+		 <element name="SBC" value="SBC"/>
+		 <element name="SBCN" value="SBCN"/>
+		 <element name="AMT_T" value="AMT_T"/>
+		 <element name="QTY_T" value="QTY_T"/>
+		 <element name="AMT_R" value="AMT_R"/>
+		 <element name="QTY_R" value="QTY_R"/>
+		 <element name="QTY_N" value="QTY_N"/>
+		 <element name="AMT_N" value="AMT_N"/>
+		</group>
+</group>
+</dataStructure>
+<dataTrigger name="afterReport" source="XX_AR_FIN_VPS_BKUP_BURST.Bkup_Burst()"/>
+</dataTemplate>

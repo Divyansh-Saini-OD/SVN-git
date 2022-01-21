@@ -1,0 +1,33 @@
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF 
+SET TAB          OFF
+SET FEEDBACK     ON
+
+PROMPT ALTERING TABLE XXFIN.XX_FA_TAX_INTERFACE_STG
+
+PROMPT PROGRAM EXITS IF THE CREATION IS NOT SUCCESSFUL
+
+WHENEVER SQLERROR CONTINUE
+
+-- +===============================================================================+
+-- |                  Office Depot - Project Simplify                              |
+-- +===============================================================================+
+-- | Name        : XX_FA_TAX_INTERFACE_STG.tbl                                     |
+-- | Description : Altering the table XX_FA_TAX_INTERFACE_STG                      |
+-- |                                                                               |
+-- |                                                                               |
+-- |Change Record:                                                                 |
+-- |===============                                                                |
+-- | Version      Date           Author                   Remarks                  |
+-- |=========   =========      =============          ======================       |
+-- | V1.0        12-Jun-15      Mark Schmit            For C0626                   |
+-- |                                                                               |
+-- +===============================================================================+
+
+ALTER TABLE XX_FA_TAX_INTERFACE_STG
+        ADD ( CALC_ASSET_ID   NUMBER,
+              PWC_DESCRIPTION VARCHAR2(80)
+            );
+
+SHOW ERROR

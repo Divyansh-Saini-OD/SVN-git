@@ -1,0 +1,34 @@
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     ON
+
+PROMPT Altering TABLE RA_CUSTOMER_TRX_ALL
+
+PROMPT Program exits IF the creation IS NOT SUCCESSFUL
+
+WHENEVER SQLERROR CONTINUE
+
+-- +=======================================================================================+
+-- |                  Office Depot - Project Simplify                                      |
+-- +=======================================================================================+
+-- | Name :RA_CUSTOMER_TRX_ALL.tbl                                                         |
+-- | Description : Altering the  table RA_CUSTOMER_TRX_ALL for defect 12227                |
+-- |                                                                                       |
+-- |                                                                                       |
+-- |                                                                                       |
+-- |                                                                                       |
+-- |Change Record:                                                                         |
+-- |===============                                                                        |
+-- |Version   Date         Author               Remarks                                    |
+-- |=======   ==========   =============        ===========================================|
+-- | V1.0     01-Dec-08     Mohan               For Defect 12227                           |
+-- |                                                                                       |
+-- +=======================================================================================+ 
+
+ALTER TABLE AR.RA_CUSTOMER_TRX_ALL
+  MODIFY(ATTRIBUTE15  DEFAULT 'N');
+
+
+SHOW ERROR

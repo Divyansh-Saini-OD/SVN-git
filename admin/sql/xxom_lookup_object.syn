@@ -1,0 +1,17 @@
+-- +==========================================================================+
+-- |                               Office Depot                               |
+-- +==========================================================================+
+-- | Script to create the following synonym                                   |
+-- |                                                                          |
+-- |             Synonym: xxom_lookup_object                         |
+-- |Change Record:                                                            |
+-- |===============                                                           |
+-- |Version   Date         Author               Remarks                       |
+-- |=======   ===========  =============        ==============================|
+-- |1.0      23-Aug-2021 Shreyas Thorat   Initial Version                      |
+-- +==========================================================================+
+
+CREATE OR REPLACE  SYNONYM APPS.xxom_lookup_object FOR XXFIN.xxom_lookup_object;
+/
+SHOW ERRORS;
+

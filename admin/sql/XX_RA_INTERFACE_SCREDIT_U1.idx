@@ -1,0 +1,64 @@
+REM================================================================================================
+REM                                 Start Of Script
+REM================================================================================================
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     ON
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+-- +=======================================================================+
+-- |               Office Depot - Project Simplify                         |
+-- |      Oracle NAIO/Office Depot/Consulting Organization                 |
+-- +=======================================================================+
+-- | Name             :XX_RA_INTERFACE_SCREDIT_U1                          |
+-- | Description      :Index for RA_INTERFACE_SALESCREDITS_ALL Table       |
+-- |                   XX_RA_INTERFACE_SCREDIT_U1.                         |
+-- |                                                                       |
+-- |Change History:                                                        |
+-- |---------------                                                        |
+-- |                                                                       |
+-- |Version  Date        Author             Remarks                        |
+-- |-------  ----------- -----------------  -------------------------------|
+-- |Draft1a  29-Aug-2008 K.Pinaaki          Initial Draft Version          |
+-- +=======================================================================+
+WHENEVER SQLERROR CONTINUE
+
+PROMPT
+PROMPT Creating Index....
+PROMPT
+-- -------------------------------------------------
+-- Creating Index XX_RA_INTERFACE_SCREDIT_U1
+-- -------------------------------------------------
+
+CREATE UNIQUE INDEX xxfin.XX_RA_INTERFACE_SCREDIT_U1 
+ON                  RA_INTERFACE_SALESCREDITS_ALL(
+                                                  interface_line_context
+                                                 ,interface_line_attribute1
+                                                 ,interface_line_attribute2
+                                                 ,interface_line_attribute3
+                                                 ,interface_line_attribute4
+                                                 ,interface_line_attribute5
+                                                 ,interface_line_attribute6
+                                                 ,interface_line_attribute7
+                                                 ,interface_line_attribute8
+                                                 ,interface_line_attribute9
+                                                 ,interface_line_attribute10
+                                                 ,interface_line_attribute11
+                                                 ,interface_line_attribute12
+                                                 ,interface_line_attribute13
+                                                 ,interface_line_attribute14
+                                                 )
+TABLESPACE APPS_TS_TX_IDX_16M ;
+
+SHOW ERRORS;
+
+EXIT;
+REM================================================================================================
+REM                                 End Of Script
+REM================================================================================================
+
+
+
+

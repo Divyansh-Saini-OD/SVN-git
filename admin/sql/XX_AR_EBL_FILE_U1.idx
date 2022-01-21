@@ -1,0 +1,18 @@
+-- +=========================================================================+
+-- |                     Office Depot - Project Simplify                     |
+-- +=========================================================================+
+-- | Name        : XX_AR_EBL_FILE_U1.idx                                     |
+-- | Rice ID     :                                                           |
+-- | Description : - Index Creation Script for eBilling project              |
+-- |                                                                         |
+-- |              					                     |
+-- |Change Record:                                                           |
+-- |===============                                                          |
+-- |Version   Date        Author           Remarks                           |
+-- |=======  ===========  =============    ==================================|
+-- |1.0      11-Mar-2010  Bushrod Thomas   Initial draft version             |
+-- |                                                                         |
+-- +=========================================================================+
+
+CREATE UNIQUE INDEX "XXFIN"."XX_AR_EBL_FILE_U1" ON "XXFIN"."XX_AR_EBL_FILE" ("FILE_ID") TABLESPACE "XXOD_EBL_TS_DATA";
+

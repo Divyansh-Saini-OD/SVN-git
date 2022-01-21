@@ -1,0 +1,26 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<BPELSuitcase>
+   <BPELProcess id="ProcessCreditSettlement" src="ProcessCreditSettlement.bpel">
+      <partnerLinkBindings>
+         <partnerLinkBinding name="B2BAmexCreditSettlementOutbound">
+            <property name="wsdlLocation">http://chilsoa01d.na.odcorp.net:7778/orabpel/b2b/B2BAmexCreditSettlementOutbound/1.0/B2BAmexCreditSettlementOutbound?wsdl</property>
+         </partnerLinkBinding>
+         <partnerLinkBinding name="ODErrorLogger">
+            <property name="wsdlLocation">http://chilsoa01d.na.odcorp.net:7778/orabpel/default/ODErrorLogger/ODErrorLogger?wsdl</property>
+         </partnerLinkBinding>
+         <partnerLinkBinding name="TDSettlementFTPRead">
+            <property name="wsdlLocation">TDSettlementFTPRead.wsdl</property>
+         </partnerLinkBinding>
+         <partnerLinkBinding name="ODTransactionLogger">
+            <property name="wsdlLocation">http://chilsoa01d.na.odcorp.net:7778/orabpel/default/ODTransactionLogger/ODTransactionLogger?wsdl</property>
+         </partnerLinkBinding>
+      </partnerLinkBindings>
+      <activationAgents>
+         <activationAgent className="oracle.tip.adapter.fw.agent.jca.JCAActivationAgent" partnerLink="TDSettlementFTPRead">
+            <property name="TDSettlementInbound" type="LogicalDirectory"></property>
+            <property name="TDSettlementArchive" type="LogicalArchiveDirectory"></property>
+            <property name="portType">Get_ptt</property>
+         </activationAgent>
+      </activationAgents>
+   </BPELProcess>
+</BPELSuitcase>

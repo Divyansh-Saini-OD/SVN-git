@@ -1,0 +1,38 @@
+REM================================================================================================
+REM                                 Start Of Script
+REM================================================================================================
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     OFF
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+-- +=======================================================================+
+-- |               Office Depot - Project Simplify                         |
+-- +=======================================================================+
+-- | Name        :xx_ce_ebay_ca_dtl_stg_c1                                       |
+-- | Description : Non-Unique Index for Custom Table xx_ce_ebay_ca_dtl_stg       |
+-- |Change History:                                                        |
+-- |---------------                                                        |
+-- | RICE ID : I3123                                                       |
+-- |Version  Date        Author             Remarks                        |
+-- |-------  ----------- -----------------  -------------------------------|
+-- | 1.0     17-Jul-2018  Paddy Sanjeevi     Baselined                     |
+-- +=======================================================================+
+
+PROMPT
+PROMPT Creating Index....
+PROMPT
+
+CREATE INDEX xx_ce_ebay_ca_dtl_stg_c1 ON XXFIN.xx_ce_ebay_ca_dtl_stg
+  (
+    filename,report_date
+  );
+
+SHOW ERRORS;
+
+
+REM================================================================================================
+REM                                 Start Of Script
+REM================================================================================================

@@ -1,0 +1,38 @@
+-- +============================================================================================+
+-- |  Office Depot - CR#872                                                                     |
+-- |  Oracle GSD Consulting                                                                     |
+-- +============================================================================================+
+-- | Name         : ALTER_xx_ar_payments_intf_history                                           |
+-- | Rice Id      : E0062                                                                       |
+-- | Description  : Add a new colum SENDING_COMPANY_ID to the Custom Table                      |
+-- |                xx_ar_payments_intf_history                                                 |
+-- |Change Record:                                                                              |
+-- |===============                                                                             |
+-- |Version    Date          Author                Remarks                                      |
+-- |=======    ==========    =================    ==============================================+
+-- |DRAFT 1A   31-MAY-2011   Gaurav                 Initial Version                             |
+-- |                                                                                            |
+-- +============================================================================================+
+
+SET VERIFY      OFF
+SET TERM        ON
+SET FEEDBACK    OFF
+SET SHOW        OFF
+SET ECHO        OFF
+SET TAB         OFF
+
+PROMPT
+PROMPT MODIFYING the Table xx_ar_payments_intf_history
+PROMPT
+
+Alter table xxfin.xx_ar_payments_intf_history ADD (SENDING_COMPANY_ID VARCHAR2(10) );
+
+WHENEVER SQLERROR EXIT 1
+
+PROMPT
+PROMPT Exiting....
+PROMPT
+
+SET FEEDBACK ON
+
+EXIT;

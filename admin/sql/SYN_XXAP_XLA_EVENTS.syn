@@ -1,0 +1,33 @@
+SET VERIFY OFF;
+SET SHOW OFF;
+SET ECHO OFF;
+SET TAB OFF;
+SET FEEDBACK OFF;
+ 
+WHENEVER SQLERROR CONTINUE;
+ 
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+ -- +============================================================================================+
+  --   Office Depot - Project Simplify
+  --
+  -- +============================================================================================+
+  --   Name        : xx_ap_inv_trade_dashboard_pkg
+  --   RICE ID     : 3522 AP Dashboard Report Package
+  --   Solution ID : 213 Invoice Lines section
+  --   Description : Dash board Query are build using pipeline Function for performance
+  --   Change Record
+  -- +============================================================================================+
+  --  Version     Date         Author           Remarks
+  --  =========   ===========  =============    ===============================================
+  --  1.0         15-Nov-17    Priyam Parmar       Initial version
+  -- 1.0           03-Feb-18   Digamber
+  --
+  -- +============================================================================================+
+
+ 
+
+Create  or replace public synonym XXAP_XLA_EVENTS for XLA.XLA_EVENTS;
+
+ 
+Show error

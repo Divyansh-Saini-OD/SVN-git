@@ -1,0 +1,43 @@
+---+========================================================================================================+        
+---|                                        Office Depot - Project Simplify                                 |
+---|                             Oracle NAIO/WIPRO/Office Depot/Consulting Organization                     |
+---+========================================================================================================+
+---|    Application             :       AR                                                                  |
+---|                                                                                                        |
+---|    Name                    :       XX_AR_CBI_TOTALS.tbl                                                |
+---|                                                                                                        |
+---|    Description             :                                                                           |
+---|                                                                                                        |
+---|                                                                                                        |
+---|                                                                                                        |
+---|    Change Record                                                                                       |
+---|    ---------------------------------                                                                   |
+---|    Version         DATE              AUTHOR             DESCRIPTION                                    |
+---|    ------------    ----------------- ---------------    ---------------------                          |
+---|    1.0             16-JAN-2008       Balaguru Seshadri  Initial Version                                |
+---|                                                                                                        |
+---+========================================================================================================+
+--DROP TABLE XXFIN.XX_AR_CBI_TOTALS
+--/
+CREATE TABLE XXFIN.XX_AR_CBI_TOTALS
+(
+  REQUEST_ID        NUMBER,
+  CUSTOMER_NUMBER   VARCHAR2(30)                NOT NULL,
+  CBI_NUMBER        VARCHAR2(30)                NOT NULL,
+  CBI_AMOUNT        NUMBER                      DEFAULT 0                     NOT NULL,
+  DOC_FLAG          VARCHAR2(1)                 NOT NULL,
+  ORG_ID            NUMBER                      DEFAULT TO_NUMBER(DECODE(SUBSTRB(USERENV('CLIENT_INFO'),1,1),' ',NULL,SUBSTRB(USERENV('CLIENT_INFO'),1,10))) NOT NULL,
+  CREATED_BY        NUMBER,
+  CREATION_DATE     DATE,
+  LAST_UPDATED_BY   NUMBER,
+  LAST_UPDATE_DATE  DATE
+)
+
+LOGGING 
+NOCOMPRESS 
+NOCACHE
+NOPARALLEL
+NOMONITORING
+/
+
+

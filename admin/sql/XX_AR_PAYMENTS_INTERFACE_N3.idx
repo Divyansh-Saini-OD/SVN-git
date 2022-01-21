@@ -1,0 +1,21 @@
+-- +==================================================================================+  
+-- | Office Depot - Project Simplify                                                  |
+-- | Providge Consulting                                                              |
+-- +==================================================================================+
+-- | SQL Script to create index N3 on the table:  XXFIN.XX_AR_PAYMENTS_INTERFACE      |
+-- |                                                                                  |
+-- | For the Extension E0062 AR Lockbox Custom AutoCash Rules                         |
+-- |                                                                                  |
+-- |Change Record:                                                                    |
+-- |===============                                                                   |
+-- |Version   Date          Author               Remarks                              |
+-- |=======   ===========   =============        =====================================|
+-- |1.0       01-JUL-2008   BLooman              Initial version                      |
+-- |                                                                                  |
+-- +==================================================================================+
+       
+--DROP INDEX XXFIN.XX_AR_PAYMENTS_INTERFACE_N3; 
+        
+CREATE INDEX XXFIN.XX_AR_PAYMENTS_INTERFACE_N3
+ ON XX_AR_PAYMENTS_INTERFACE (CREATION_DATE)
+  NOLOGGING;

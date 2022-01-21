@@ -1,0 +1,55 @@
+-- +==========================================================================+
+-- |                  Office Depot - Project Simplify                         |
+-- +==========================================================================+
+-- | RICE ID     :  E3023                                                     |
+-- | Name        :  AP Trade Match Dashboard                                  |
+-- |                                                                          |
+-- | SQL Script to create the following object                                |
+-- |             Table       : XX_CE_BANK_STG                          |
+-- |                                                                          |
+-- |Change Record:                                                            |
+-- |===============                                                           |
+-- |Version   Date         Author               Remarks                       |
+-- |=======   ==========   =============        ==============================|
+-- | 1.0      07-Feb-2018  Jitendra		Added new column             |
+-- |          |
+-- +==========================================================================+
+
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     ON
+
+--alter table XXFIN.XX_CE_BANK_STG
+--modify 
+--( 
+--   agency_location_code    NUMBER(8)
+--);
+
+--ALTER TABLE XXFIN.XX_CE_BANK_STG
+--DROP ( PAYMENT_MULTI_CURRENCY_FLAG ,
+--      RECEIPT_MULTI_CURRENCY_FLAG,
+--	  ZERO_AMOUNT_ALLOWED,
+--	  POOLED_FLAG,
+--	  AP_DEFAULT_SETTLEMENT_FLAG,
+--	  AUTHORIZED_FLAG,
+--	  DEFAULT_ACCOUNT_FLAG );
+
+--alter table XXFIN.XX_CE_BANK_STG
+--modify 
+--( 
+--   AGENCY_LOCATION_CODE    VARCHAR2(30)
+--);
+
+Alter Table xxfin.xx_ce_bank_stg
+modify 
+( 
+   cash_ccid    varchar2(200),
+   cash_clearing_ccid varchar2(200),
+   bank_charges_ccid varchar2(200),
+   bank_error_ccid varchar2(200)
+);
+	  
+	   
+SHOW ERROR;

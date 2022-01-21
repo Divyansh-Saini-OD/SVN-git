@@ -1,0 +1,34 @@
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     ON
+
+PROMPT Creating SYNONYM XX_OM_HEADER_ATTRIBUTES_ALL_H
+
+PROMPT Program exits IF the creation IS NOT SUCCESSFUL
+
+WHENEVER SQLERROR CONTINUE
+
+-- +===================================================================================+
+-- |                  Office Depot - Project Simplify                                  |
+-- +===================================================================================+
+-- | Name :XX_OM_HEADER_ATTRIBUTES_ALL_H                                               |
+-- | Description : Create the Synonym for the table XX_OM_HEADER_ATTRIBUTES_ALL_H      |
+-- |                                                                                   |
+-- |                                                                                   |
+-- |                                                                                   |
+-- |Change Record:                                                                     |
+-- |===============                                                                    |
+-- |Version   Date         Author               Remarks                                |
+-- |=======   ==========   =============        =======================================|
+-- | 1.0     09-NOV-2020  Arvind K              initial version                       |
+-- +===================================================================================+
+
+--DROP SYNONYM XX_OM_HEADER_ATTRIBUTES_ALL_H;
+
+CREATE SYNONYM XX_OM_HEADER_ATTRIBUTES_ALL_H FOR xxapps_history_query.XX_OM_HEADER_ATTRIBUTES_ALL;
+
+
+SHOW ERROR
+

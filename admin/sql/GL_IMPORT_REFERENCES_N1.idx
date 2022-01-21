@@ -1,0 +1,54 @@
+-- +============================================================================================+
+-- |                        Office Depot - Project Simplify                                     |
+-- |                                                                                            |
+-- +============================================================================================+
+-- | Name         : GL_IMPORT_REFERENCES_N1                                                           |
+-- | Rice Id      :                                                                             | 
+-- | Description  :                                                                             |  
+-- | Purpose      :                                                                             |
+-- |                                                                                            |
+-- |Change Record:                                                                              |
+-- |===============                                                                             |
+-- |Version    Date          Author                Remarks                                      | 
+-- |=======    ==========    =================    ==============================================+
+-- |DRAFT 1A   14-FEB-2014   Suresh Ponnambalam    Initial Version                               |
+-- |                                                                                            |
+-- +============================================================================================+
+
+SET VERIFY      OFF
+SET TERM        ON
+SET FEEDBACK    OFF
+SET SHOW        OFF
+SET ECHO        OFF
+SET TAB         OFF
+
+
+drop index GL.GL_IMPORT_REFERENCES_N1;
+
+PROMPT
+PROMPT Creation of Index GL_IMPORT_REFERENCES_N1 on GL table GL_IMPORT_REFERENCES.....
+PROMPT
+
+
+PROMPT
+PROMPT Creating index on  INDEX GL_IMPORT_REFERENCES_N1 .....
+PROMPT
+
+CREATE INDEX GL.GL_IMPORT_REFERENCES_N1 ON GL.GL_IMPORT_REFERENCES (JE_HEADER_ID, JE_LINE_NUM,GL_SL_LINK_ID) 
+  PARALLEL
+  PCTFREE 10 INITRANS 11 MAXTRANS 255  LOGGING 
+    TABLESPACE APPS_TS_TX_IDX_GL_16M  LOCAL;
+	
+
+	
+ALTER INDEX GL.GL_IMPORT_REFERENCES_N1 NOPARALLEL;
+WHENEVER SQLERROR EXIT 1
+
+PROMPT
+PROMPT Exiting....
+PROMPT
+
+SET FEEDBACK ON
+
+EXIT;
+

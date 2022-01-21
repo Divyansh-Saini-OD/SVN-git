@@ -1,0 +1,65 @@
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+-- +=======================================================================+
+-- |               Office Depot - VPS                                      |
+-- +=======================================================================+
+-- | Name             :XX_FIN_VPS_SYS_NETTING_STG.tbl              	   |
+-- | Description      :Custom table for TCA Entities statistics            |
+-- |                                                                       |
+-- |                    Note:This script should be executed from           |
+-- |                    XXCRM schema                                       |
+-- |                                                                       |
+-- |Change History:                                                        |
+-- |---------------                                                        |
+-- |                                                                       |
+-- |Version  Date        Author             Remarks                        |
+-- |-------  ----------- -----------------  -------------------------------|
+-- |DRAFT 1a 10-OCT-2017 Uday Jadhav        Initial draft version          |
+-- +=======================================================================+
+
+-- ------------------------------------------------------
+--      Create Custom Table XX_FIN_VPS_SYS_NETTING_STG --
+-- ------------------------------------------------------
+BEGIN
+  EXECUTE IMMEDIATE 'DROP TABLE XXFIN.XX_FIN_VPS_SYS_NETTING_STG';
+EXCEPTION
+  WHEN OTHERS THEN NULL;
+END;
+/
+ 
+CREATE TABLE XXFIN.XX_FIN_VPS_SYS_NETTING_STG 
+   (NETTING_INTERFACE_ID   NUMBER, 
+    RECEIPT_NUMBER         VARCHAR2(150),
+	CUSTOMER_TRX_ID        NUMBER, 
+	TRX_NUMBER             VARCHAR2(150), 
+    terms_sequence_number  NUMBER(15), 
+    payment_schedule_id    NUMBER(15),
+    CUSTOMER_TRX_TYPE_ID   NUMBER,
+    VPS_PROGRAM_ID         VARCHAR2(150),
+    CUST_ACCOUNT_ID        NUMBER(15),
+    RECEIPT_AMOUNT         NUMBER(15,2),
+    AMOUNT_DUE_REMAINING   NUMBER(15,2),
+    AP_INVOICE_NUMBER      VARCHAR2(150),
+	STATUS                 VARCHAR2(1), 
+	EMAIL_STATUS           VARCHAR2(1), 
+	ERROR_MESSAGE          VARCHAR2(256), 
+	CREATION_DATE          DATE, 
+	CREATED_BY             NUMBER, 
+	PROGRAM_ID             NUMBER, 
+    REQUEST_ID             NUMBER,
+	LAST_UPDATE_DATE       DATE, 
+	LAST_UPDATED_BY        NUMBER 
+   );
+   
+------------------------------------------------------
+-- Adding Grants to APPS.                           --
+------------------------------------------------------   
+   
+GRANT ALL ON XXFIN.XX_FIN_VPS_SYS_NETTING_STG TO APPS WITH GRANT OPTION;
+
+GRANT SELECT ON XXFIN.XX_FIN_VPS_SYS_NETTING_STG TO ERP_SYSTEM_TABLE_SELECT_ROLE;
+/
+
+SHOW ERRORS;

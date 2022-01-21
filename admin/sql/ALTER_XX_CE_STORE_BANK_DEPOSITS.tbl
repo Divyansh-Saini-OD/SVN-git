@@ -1,0 +1,30 @@
+-- +==========================================================================+
+-- |                  Office Depot - Project Simplify                         |
+-- |                       WIPRO Technologies                                 |
+-- +==========================================================================+
+-- | RICE ID     :  E1318                                                     |
+-- | Name        :  OD CM Store Deposit Over/Short and Cash Concentration     |
+-- |                                                                          |
+-- | SQL Script to alter the following object                                 |
+-- |             Table       : XX_CE_STORE_BANK_DEPOSITS                      |
+-- |                                                                          |
+-- |Change Record:                                                            |
+-- |===============                                                           |
+-- |Version   Date         Author               Remarks                       |
+-- |=======   ==========   =============        ==============================|
+-- | V1.0     06-JAN-2010  Anitha D             Initial version               |
+-- |                                            Created for CR 559            |
+-- |                                                                          |
+-- +==========================================================================+
+
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     ON
+
+ALTER TABLE XXFIN.XX_CE_STORE_BANK_DEPOSITS 
+MODIFY STATUS_CD  VARCHAR2(2) DEFAULT 'N' NOT NULL
+ADD    COMMENTS VARCHAR2(250);
+
+SHOW ERROR;

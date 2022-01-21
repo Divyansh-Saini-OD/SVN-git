@@ -1,0 +1,36 @@
+-- +==========================================================================+
+-- |                  Office Depot - Project Simplify                         |
+-- |                       Providge Consulting                                |
+-- +==========================================================================+
+-- | Name :XXFIN.XX_CE_CHARGEBACK_DM_S                                        |
+-- | Description : Create the Cash Management (CE) Chargeback                 |
+-- |               Debit Memo table sequence used by Cash Management          |
+-- |               extensions.                                                |
+-- |                                                                          |
+-- |                                                                          |
+-- |                                                                          |
+-- |Change Record:                                                            |
+-- |===============                                                           |
+-- |Version   Date         Author               Remarks                       |
+-- |=======   ==========   =============        ==============================|
+-- | V1.0     02-Oct-2007  Terry Banks          Initial version               |
+-- |                                                                          |
+-- +==========================================================================+
+
+   SET SHOW         OFF
+   SET VERIFY       OFF
+   SET ECHO         OFF
+   SET TAB          OFF
+   SET FEEDBACK     ON
+
+
+--DROP SEQUENCE XXFIN.XX_CE_CHARGEBACK_DM_S
+--/
+
+
+CREATE SEQUENCE XX_CE_CHARGEBACK_DM_S
+	START WITH 1
+	INCREMENT BY 1 
+	NOCACHE NOORDER NOCYCLE ;
+
+SHOW ERROR

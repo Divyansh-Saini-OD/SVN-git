@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--For Defect 43410--> 
+<xapi:requestset xmlns:xapi="http://xmlns.oracle.com/oxp/xapi" type="bursting">
+<xapi:request select="/POXPOSMH/LIST_G_REPORT/G_REPORT/LIST_G_COMPANY/G_COMPANY">
+<xapi:delivery>
+	<xapi:email id="100" server="${SMTP_SERVER}" port="25" from="${FROM_EMAIL}" reply-to="">
+		<xapi:message id="100" to="${EMAIL3},${EMAIL4},${EMAIL5},${EMAIL6}" cc="" attachment="true" subject="${INSTANCE_NAME1} OD: Matching Holds by Buyer Report for ${CURRENT_DATE}">
+Please find the OD: Matching Holds by Buyer Report for ${CURRENT_DATE} attached to the email
+		</xapi:message>
+	</xapi:email>
+</xapi:delivery>
+	<xapi:document output="Matching Holds by Buyer Report" output-type="excel" delivery="100">
+		<xapi:template type="rtf" location="xdo://XXFIN.XXPOXPOSMH_XML.en.US/?getSource=true" filter=""> 
+		</xapi:template>
+	</xapi:document>
+
+	<xapi:email id="101" server="${SMTP_SERVER}" port="25" from="${FROM_EMAIL}" reply-to="">
+		<xapi:message id="101" to="${EMAIL1},${EMAIL2}" cc="" attachment="true" subject="${INSTANCE_NAME1} OD: Matching Holds by Buyer Report for ${CURRENT_DATE}">
+Please find the OD: Matching Holds by Buyer Report for ${CURRENT_DATE} attached to the email
+		</xapi:message>
+	</xapi:email>
+	<xapi:document output="Matching Holds by Buyer Report" output-type="excel" delivery="101">
+		<xapi:template type="rtf" location="xdo://XXFIN.XXPOXPOSMH_XML.en.US/?getSource=true" filter=""> 
+		</xapi:template>
+	</xapi:document>
+
+</xapi:request>
+</xapi:requestset>

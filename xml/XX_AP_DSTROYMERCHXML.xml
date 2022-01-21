@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dataTemplate name="XX_AP_DSTROYMERCHXML"  defaultPackage="XX_AP_DSTROYMERCH_PKG" Version="1.0">
+<parameters>
+  <parameter name="P_START_DATE" dataType="string" />
+  <parameter name="P_END_DATE" dataType="string" /> 
+  <parameter name="P_FREQUENCY" dataType="string" /> 
+  </parameters>
+ <dataQuery>
+ <sqlStatement name="Q1">
+ <![CDATA[ SELECT distinct   
+  xarh.vendor_num ,
+  asp.vendor_name ,
+  xarh.location HLOC,
+  xarh.return_code,
+  xarh.return_description,
+  aspa.address_line1 LOCATION_ADDRESS1,
+  aspa.address_line2 LOCATION_ADDRESS2,
+  aspa.address_line3 LOCATION_ADDRESS3,
+  aspa.city LOCATION_ADDRESS4,
+  aspa.state LOCATION_ADDRESS5,
+  aspa.zip LOCATION_ADDRESS6,
+  xarh.invoice_num hdr_inv,
+  to_char(aia.invoice_date,'DD-MON-YYYY') invoice_date
+FROM ap_supplier_sites_all aspa,
+     ap_suppliers  asp
+     ,xx_ap_rtv_hdr_attr xarh
+     , ap_invoices_all aia
+where xarh.record_status !='N'
+AND xarh.return_description ='DESTROY-OPTION 73'
+AND asp.vendor_id=aspa.vendor_id
+AND xarh.invoice_num = aia.invoice_num
+  AND aspa.pay_site_flag = 'Y'
+  AND NVL(aspa.inactive_date,sysdate) >= trunc(sysdate)
+AND ltrim(NVL(aspa.attribute9,(NVL(aspa.attribute7,NVL(aspa.vendor_site_code_alt,aspa.vendor_site_id)))),'0')
+  = ltrim(xarh.vendor_num,'0')
+&G_where_clause
+AND xarh.invoice_num like 'RTV730%']]> 
+</sqlStatement>
+ <sqlStatement name="Q2">  
+ <![CDATA[ SELECT 
+  xarl.rtv_number,
+  xarl.location loc,
+  xarl.rga_number,
+  xarl.sku,
+  xarl.vendor_product_code,
+  xarl.item_description,
+  xarl.qty,
+  xarl.cost,
+  xarl.line_amount,
+  xarl.frequency_code,
+  xarl.header_id,
+  xarl.invoice_num
+FROM xx_ap_rtv_lines_attr xarl,
+     xx_ap_rtv_hdr_attr xarh
+WHERE xarh.header_id = xarl.header_id 
+AND xarh.rtv_number = xarl.rtv_number
+AND xarh.vendor_num = :vendor_num
+--AND xarh.location = :HLOC
+--AND xarh.return_description = :return_description
+AND xarh.invoice_num = :hdr_inv
+]]> 
+  </sqlStatement>  
+  </dataQuery>
+  <dataTrigger name="beforeReport" source="XX_AP_DSTROYMERCH_PKG.beforeReport()" /> 
+ <dataStructure>
+ <group name="G_DSTROYMERCH_HEADER" source="Q1">
+   <element name="VENDOR_NUM" value="VENDOR_NUM" /> 
+  <element name="VENDOR_NAME" value="VENDOR_NAME" /> 
+  <element name="LOCATION" value="HLOC"/>
+  <element name="RETURN_CODE" value="RETURN_CODE" />
+  <element name="RETURN_DESCRIPTION" value="RETURN_DESCRIPTION" />
+  <element name="LOCATION_ADDRESS1" value="LOCATION_ADDRESS1"/> 
+  <element name="LOCATION_ADDRESS2" value="LOCATION_ADDRESS2"/> 
+  <element name="LOCATION_ADDRESS3" value="LOCATION_ADDRESS3"/> 
+  <element name="LOCATION_ADDRESS4" value="LOCATION_ADDRESS4"/> 
+  <element name="LOCATION_ADDRESS5" value="LOCATION_ADDRESS5"/> 
+  <element name="LOCATION_ADDRESS6" value="LOCATION_ADDRESS6"/>
+  <group name="G_DSTROYMERCH_LINES" source="Q2">
+  <element name="RGA_NUMBER" value="RGA_NUMBER" /> 
+  <element name="LOCATION" value="loc"/>
+  <element name="RTV_NUMBER" value="RTV_NUMBER" />
+  <element name="SKU" value="SKU" /> 
+  <element name="VENDOR_PRODUCT_CODE" value="VENDOR_PRODUCT_CODE"/> 
+  <element name="SKU_DESCRIPTION" value="ITEM_DESCRIPTION" /> 
+  <element name="QTY" value="QTY" /> 
+  <element name="COST" value="COST" /> 
+  <element name="LINE_AMOUNT" value="LINE_AMOUNT" /> 
+  <element name="INVOICE_NUM" value="INVOICE_NUM" />
+  <element name="INVOICE_DATE" value="INVOICE_DATE" />
+ </group>
+</group>
+  </dataStructure>
+  </dataTemplate>  

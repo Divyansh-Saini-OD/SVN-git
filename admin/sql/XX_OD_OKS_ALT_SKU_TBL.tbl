@@ -1,0 +1,61 @@
+SET VERIFY OFF;
+SET SHOW OFF;
+SET ECHO OFF;
+SET TAB OFF;
+SET FEEDBACK OFF;
+ 
+WHENEVER SQLERROR CONTINUE;
+ 
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+-- +==================================================================================+  
+-- | Office Depot -  ALT Subcriptions Project                                         |
+-- |                                                                                  |
+-- +==================================================================================+
+-- | SQL Script to create the table:  XX_OD_OKS_ALT_SKU_TBL                           |
+-- |                                                                                  |
+-- |                                                                                  |
+-- |                                                                                  |
+-- |                                                                                  |
+-- |Change Record:                                                                    |
+-- |===============                                                                   |
+-- |Version   Date          Author               Remarks                              |
+-- |=======   ===========   =============        =====================================|
+-- |1.0       26-APR-2019   Kayeed Ahmed        Initial DRAFT version for NAIT-119893 |
+-- |                                                                                  |
+-- +==================================================================================+
+
+--+=====================================================================+
+--+               CREATE TABLE XX_OD_OKS_ALT_SKU_TBL
+--+=====================================================================+
+
+
+CREATE TABLE XX_OD_OKS_ALT_SKU_TBL
+(
+  ORG_SKU                VARCHAR2(100),
+  ORG_DESC               VARCHAR2(100),
+  CODE                   VARCHAR2(100),
+  TYPE                   VARCHAR2(100),
+  ALT_SKU                VARCHAR2(100),
+  ALT_DESC               VARCHAR2(100),  
+  ALTPRICE               NUMBER(9,2),
+  ALTFREQ                VARCHAR2(30),
+  ALTTERM                VARCHAR2(30),
+  LAST_UPDATE_DATE       DATE,
+  LAST_UPDATED_BY        NUMBER,
+  LAST_UPDATE_LOGIN      NUMBER,
+  CREATION_DATE          DATE,
+  CREATED_BY             NUMBER,  
+  ATTRIBUTE1             VARCHAR2(100),
+  ATTRIBUTE2             VARCHAR2(100),
+  ATTRIBUTE3             VARCHAR2(100),
+  ATTRIBUTE4             VARCHAR2(100),
+  ATTRIBUTE5             VARCHAR2(100)
+);
+  
+  
+
+GRANT  ALL ON XX_OD_OKS_ALT_SKU_TBL TO APPS;
+
+/
+Show error

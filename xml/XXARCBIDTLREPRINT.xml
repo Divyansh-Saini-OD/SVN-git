@@ -1,0 +1,836 @@
+<?xml version="1.0" encoding="WINDOWS-1252" ?>
+<dataTemplate name="XXARCBIDTLREPRINT" description="Reprint Summary Billing -DETAIL" defaultPackage="xx_ar_reprint_summbill" Version="1.0">
+<properties>
+<property name="scalable_mode" value="on" />
+<property name="rtf-output-default-font">Arial:8</property>
+</properties>
+<parameters>
+ <parameter name="P_SUMM_BILL_NUM" datatype="character" />
+ <parameter name="P_SUMM_BILL_NUM_TO" datatype="character" />
+ <parameter name="P_CUST_ACCOUNT_ID" datatype="number" />
+ <parameter name="P_MBS_DOCUMENT_ID" datatype="number" />
+ <parameter name="P_MBS_EXTENSION_ID" datatype="number" />
+ <parameter name="P_SPEC_HANDLING_FLAG" datatype="character" />
+ <parameter name="p_request_id" datatype="number" /> 
+ <parameter name="P_ORIGIN" datatype="character" />  
+ <parameter name="P_DOC_DETAIL" datatype="character" />
+ <parameter name="P_AS_OF_DATE1" datatype="character" />
+ <parameter name="P_SEND_TO" datatype="character" />
+ <parameter name="P_CM_TEXT1" datatype="character" />
+ <parameter name="P_CM_TEXT2" datatype="character" />
+ <parameter name="P_GIFT_CARD_TEXT1" dataType="character"/>                 <!--Added for R1.1 Defect # 1451 (CR 626)-->
+ <parameter name="P_GIFT_CARD_TEXT2" dataType="character"/>                 <!--Added for R1.1 Defect # 1451 (CR 626)-->
+ <parameter name="P_GIFT_CARD_TEXT3" dataType="character"/>                 <!--Added for R1.1 Defect # 1451 (CR 626)-->
+ <parameter name="P_CUST_DOC_ID" dataType="number"/>                        <!--Added for R1.2 Defect # 1210 (CR 466)-->
+ <parameter name="P_INFOCOPY_FLAG" dataType="character"/>                   <!--Added for R1.2 Defect # 1210 (CR 466)-->
+ <parameter name="P_VIRTUAL_BILL_FLAG" dataType="character"/>               <!--Added for R1.2 Defect # 1210 (CR 466)-->
+ <parameter name="P_VIRTUAL_BILL_NUM" dataType="character"/>                <!--Added for R1.2 Defect # 1210 (CR 466)-->
+ <parameter name="P_MULTIPLE_BILL" dataType="character"/>                   <!--Added for R1.2 Defect # 1210 (CR 466)-->
+ <parameter name="P_DATE_FROM" dataType="character"/>                       <!--Added for R1.2 Defect # 1210 (CR 466)-->
+ <parameter name="P_DATE_TO" dataType="character"/>                         <!--Added for R1.2 Defect # 1210 (CR 466)-->
+ <parameter name="P_EMAIL_OPTION" dataType="character"/>                    <!--Added for R1.2 Defect # 1210 (CR 466)-->
+ <parameter name="P_EMAIL_ADDRESS" dataType="character"/>                   <!--Added for R1.2 Defect # 1210 (CR 466)-->
+ <parameter name="DataTemplateCode" dataType="character"/>                  <!--Added for R1.2 Defect # 1210 (CR 466)-->
+</parameters>
+<dataQuery>
+<sqlStatement name="Q_BILL_TO_SITES">
+<![CDATA[
+SELECT  DISTINCT UPPER(xx_ar_reprint_summbill.xx_bill_to_address(XACRT.attribute3))       BILL_TO
+       ,UPPER(xx_ar_reprint_summbill.xx_remit_to_address(XACRT.attribute3))               REMIT_TO
+       ,xx_ar_reprint_summbill.xx_return_address()                                        RETURN_ADDRESS
+       ,XASI.tax_id                                                                       TAX_ID
+       ,XASI.tax_id_desc                                                                  TAX_ID_DESC
+       ,HCA.account_number                                                                BILLING_ID
+       ,TRIM (SUBSTR (HCA.orig_system_reference, 1, 8))                                   ACCOUNT_NUMBER
+       ,SUBSTR(NVL(HL.address_lines_phonetic,HP.party_name),1,40)                         CUSTOMER_NAME
+       ,xx_ar_print_summbill.get_od_contact_info( HCA.attribute18
+                                                 ,HL.country
+                                                 ,'ACCOUNT'
+                                                 )                                        ACCOUNT_CONTACT
+       ,xx_ar_print_summbill.get_od_contact_info( HCA.attribute18
+                                                 ,HL.country
+                                                 ,'ORDER'
+                                                 )                                        ORDER_CONTACT
+       ,HL.county                                                                         BILL_TO_COUNTRY
+       ,REPLACE (HL.postal_code, '-', '')                                                 BILL_TO_POSTAL_CODE
+       ,'N'                                                                               SPL_HANDLING
+       ,XCMDM.doc_desc                                                                    DOC_DESCRIPTION
+       ,NULL                                                                              SPL_HANDLING_COMMENTS
+       ,:P_MBS_DOCUMENT_ID                                                                DOC_ID
+       ,DECODE( RCT.org_id
+               ,ASP.org_id,ASP.tax_currency_code
+               )                                                                          CURRENCY_CODE
+       -- defect 30885 removed terms from here to avoid printing duplicates        
+       --,SUBSTR(RT.description ,1 ,15)                                                   TERMS
+       ,HL.province                                                                       BILL_TO_PROVINCE
+       ,HCA.cust_account_id                                                               CUST_ACCOUNT_ID
+       ,XACRT.attribute3                                                                  BILL_TO_ID
+       ,xx_ar_print_summbill.get_mail_to_attn( HCA.cust_account_id
+                                              ,:P_CUST_DOC_ID
+                                              ,XACRT.attribute3
+                                              )                                           MAIL_TO_ATTN   -- Added as part of R1.4 CR# 547 DEfect# 2424
+FROM    ra_customer_trx_all          RCT
+       ,xx_ar_cbi_rprn_trx           XACRT
+       ,hz_cust_accounts             HCA
+       ,xx_cdh_mbs_document_master   XCMDM
+       ,ar_system_parameters         ASP
+       ,hz_locations                 HL
+       ,hz_cust_site_uses            HCASU
+       ,hz_party_sites               HPS
+       ,hz_cust_acct_sites           HCAS
+       --,ra_terms                     RT --Defect 30885 to avoid duplicate
+       ,hz_parties                   HP
+       ,xx_ar_sys_info               XASI
+WHERE   XACRT.request_id             = :p_request_id
+AND     XCMDM.document_id            = :P_MBS_DOCUMENT_ID
+AND     ASP.org_id                   = FND_PROFILE.VALUE('ORG_ID')
+AND     XACRT.customer_trx_id        = RCT.customer_trx_id
+AND     RCT.bill_to_customer_id      = HCA.cust_account_id
+--AND     RCT.term_id                  = RT.term_id(+)--Defect#16828,Defect#16991,added outer join in the RA_TERMS to get data for Credit Memo transactions as term_id is null for CM transactions
+AND     XACRT.attribute3             = HCASU.site_use_id
+AND     HCASU.cust_acct_site_id      = HCAS.cust_acct_site_id
+AND     HCAS.party_site_id           = HPS.party_site_id
+AND     HPS.location_id              = HL.location_id
+AND     HCAS.cust_account_id         = HCA.cust_account_id
+AND     HCA.party_id                 = HP.party_id
+AND     HP.party_id                  = HPS.party_id
+AND     XACRT.inv_type               NOT IN ('SOFTHDR_TOTALS' ,'BILLTO_TOTALS' ,'GRAND_TOTAL')
+]]>
+</sqlStatement>
+<sqlStatement name="Q_CONSOLIDATED_BILLS">
+<![CDATA[
+WITH XACRT AS  (                                                                             -- Added for Defect # 19937
+SELECT   :BILL_TO_PROVINCE                                        BILL_TO_PROVINCE
+        ,XACRT.cons_inv_id                                        cbi_id
+        ,XACRT.attribute2                                         BILLING_NUMBER
+        ,:CURRENCY_CODE                                           CURRENCY
+        ,TO_CHAR(xx_ar_reprint_summbill.get_bill_from_date( :CUST_ACCOUNT_ID
+                                                            ,XACRT.attribute3
+                                                            ,XACRT.attribute4
+                                                            ,XACRT.attribute1
+                                                            ,'N'
+                                                            )
+                 ,'DD-MON-YY'
+                 )                                                  BILL_FROM_DATE
+        ,TO_CHAR(xx_ar_reprint_summbill.get_bill_to_date( :CUST_ACCOUNT_ID
+                                                         ,XACRT.attribute4
+                                                         ,XACRT.attribute1
+                                                         )
+                 ,'DD-MON-YY'
+                 )                                                  BILL_TO_DATE
+        ,(SELECT TO_CHAR(ACI.due_date,'DD-MON-YY')
+          FROM   ar_cons_inv ACI
+          WHERE  ACI.cons_inv_id    = XACRT.cons_inv_id
+          AND    :P_INFOCOPY_FLAG   = 'N'
+          )                                                         PAYMENT_DUE
+        --For defect 30885   
+        --,:TERMS                                                   TERMS
+        ,MAX((SELECT substr(RT.DESCRIPTION,1,15)
+            FROM RA_TERMS RT,
+                 RA_CUSTOMER_TRX RCT
+          WHERE RT.TERM_ID = RCT.TERM_ID
+            AND RCT.CUSTOMER_TRX_ID = XACRT.CUSTOMER_TRX_ID))       TERMS
+        ,SUM(xx_ar_cbi_infocopy_order_stmnt( XACRT.customer_trx_id
+                                            ,'EXTAMT_PLUS_DELVY'
+                                            )
+            )                                                        CBI_EXTAMT_PLUS_DELVY
+        ,SUM(xx_ar_cbi_infocopy_order_stmnt( XACRT.customer_trx_id
+                                            ,'DISCOUNT'
+                                            )
+             )                                                       CBI_DISCOUNTS
+        ,SUM(xx_ar_cbi_infocopy_order_stmnt( XACRT.customer_trx_id
+                                            ,'TAX'
+                                            )
+             )                                                       CBI_TAX
+		,SUM( NVL(XX_AR_EBL_COMMON_UTIL_PKG.get_line_fee_amount(XACRT.customer_trx_id) +
+				                   XX_AR_EBL_COMMON_UTIL_PKG.get_hea_fee_amount(XACRT.customer_trx_id),0))                   CBI_FEE_AMT
+        ,SUM(xx_ar_cbi_infocopy_order_stmnt( XACRT.customer_trx_id
+                                            ,'TOTAL'
+                                            )
+             )                                                       CBI_AMOUNT_DUE
+        ,DECODE( :P_INFOCOPY_FLAG
+                ,'Y','**DO NOT PAY**'
+                ,'N',DECODE(SIGN(SUM(xx_ar_cbi_infocopy_order_stmnt( XACRT.customer_trx_id
+                                                                    ,'TOTAL'
+                                                                   )
+                                     )
+                                 )
+                            ,1,'**BAL DUE**'
+                            ,'**DO NOT PAY**'
+                            )
+                )                                                    NO_PAYMENT_TEXT
+        ,DECODE( :P_INFOCOPY_FLAG
+                ,'Y','Reprint of Informational Copy'
+                ,'N','Reprint of Original Consolidated Bill'
+                )                                                    DOC_TITLE
+        --,DECODE(:P_INFOCOPY_FLAG,'N',xx_ar_ebl_common_util_pkg.get_header_discount(XACRT.customer_trx_id),NULL) DISCOUNT_INFO -- Added for Defect 36434	--Commented for defect #37640
+		--,NULL														DISCOUNT_INFO 		--Added for Defect 37640  --Commented for defect #37807
+FROM     xx_ar_cbi_rprn_trx           XACRT
+WHERE    XACRT.request_id        = :p_request_id 
+AND      XACRT.inv_type          NOT IN ('SOFTHDR_TOTALS' ,'BILLTO_TOTALS' ,'GRAND_TOTAL')
+AND      XACRT.attribute3        = :BILL_TO_ID
+GROUP BY :BILL_TO_PROVINCE
+        ,XACRT.cons_inv_id
+        ,XACRT.attribute2
+        ,:CURRENCY_CODE
+        ,TO_CHAR(xx_ar_reprint_summbill.get_bill_from_date( :CUST_ACCOUNT_ID
+                                                            ,XACRT.attribute3
+                                                            ,XACRT.attribute4
+                                                            ,XACRT.attribute1
+                                                            ,'N'
+                                                            )
+                 ,'DD-MON-YY'
+                 )
+        ,TO_CHAR(xx_ar_reprint_summbill.get_bill_to_date( :CUST_ACCOUNT_ID
+                                                         ,XACRT.attribute4
+                                                         ,XACRT.attribute1
+                                                         )
+                 ,'DD-MON-YY'
+                 )
+        ,:P_INFOCOPY_FLAG
+        -- For defect 30885
+        --,:TERMS
+        ,DECODE( :P_INFOCOPY_FLAG
+                ,'Y','Reprint of Informational Copy'
+                ,'N','Reprint of Original Consolidated Bill'
+                )
+		--,DECODE(:P_INFOCOPY_FLAG,'N',xx_ar_ebl_common_util_pkg.get_header_discount(XACRT.customer_trx_id),NULL)    -- Added for Defect 36434   --Commented for defect #37640
+),
+xx_disc_info AS (																			--Added for defect 37807
+SELECT 	  max(RCT.customer_trx_id) customer_trx_id, XACRT.cons_inv_id
+	FROM     xx_ar_cbi_rprn_trx           XACRT,
+             ra_customer_trx              rct
+	WHERE   XACRT.request_id        = :p_request_id
+	AND     XACRT.inv_type          = 'INV'         
+	AND     XACRT.attribute3        = :BILL_TO_ID
+    AND     XACRT.customer_trx_id   = rct.customer_trx_id
+    AND     RCT.billing_date		= (select max(rct1.billing_date) 
+                                        FROM    ra_customer_trx         rct1,
+                                                xx_ar_cbi_rprn_trx      XACRT1
+                                        where   rct1.customer_trx_id    = XACRT1.customer_trx_id
+                                        AND     XACRT1.request_id       = :p_request_id
+                                        AND     XACRT1.inv_type         = 'INV'         
+                                        AND     XACRT1.attribute3       = :BILL_TO_ID)
+	group by XACRT.cons_inv_id
+)	                 
+SELECT BILL_TO_PROVINCE,CBI_ID,BILLING_NUMBER,CURRENCY,BILL_FROM_DATE,BILL_TO_DATE,                       -- Added for Defect # 19937
+PAYMENT_DUE,TERMS,CBI_EXTAMT_PLUS_DELVY, CBI_DISCOUNTS,CBI_TAX,CBI_FEE_AMT,CBI_AMOUNT_DUE,
+DECODE( :P_INFOCOPY_FLAG
+                ,'Y',NULL
+                ,xx_ar_reprint_summbill.xx_fin_check_digit( :ACCOUNT_NUMBER
+                                                           ,cbi_id
+                                                           ,(xx_ar_reprint_summbill.get_cbi_amount_due(cbi_id ,'TOTAL') *100)
+                                                           )
+                )                                                    SCAN_LINE
+,NO_PAYMENT_TEXT,DOC_TITLE	
+--,DISCOUNT_INFO  								 --Commented for defect #37807
+,DECODE(:P_INFOCOPY_FLAG,'N',xx_ar_ebl_common_util_pkg.get_header_discount(xx_disc_info.customer_trx_id),NULL) DISCOUNT_INFO    -- Added for Defect 37807
+,NVL(XX_AR_EBL_COMMON_UTIL_PKG.get_fee_option(:P_CUST_DOC_ID,'Consolidated Bill',:cust_account_id,'ePDF',null,XACRT.cbi_id),0) FEE_OPTION
+from XACRT
+	,xx_disc_info	--Added for defect 37807
+where XACRT.cbi_id = xx_disc_info.cons_inv_id(+)			--Added for defect 37807
+ORDER BY XACRT.CBI_ID 
+]]>
+</sqlStatement>
+<sqlStatement name="Q_INVOICE">
+<![CDATA[
+SELECT DISTINCT XAECTS.customer_trx_id                  trx_id
+      ,XAECTS.inv_number                       order_no
+      ,TO_CHAR(XAECTS.order_date ,'DD-MON-YY') order_dt
+      ,TO_CHAR(XAECTS.ship_date ,'DD-MON-YY')  ship_dt
+      ,TRIM(XAECTS.sfhdr1)                     sfhdr1
+      ,TRIM(XAECTS.sfhdr2)                     sfhdr2
+      ,TRIM(XAECTS.sfhdr3)                     sfhdr3
+      ,TRIM(XAECTS.sfhdr4)                     sfhdr4
+      ,TRIM(XAECTS.sfhdr5)                     sfhdr5
+      ,'ORDERED BY:'                    sfhdr6
+      ,'SHIP TO:'                       sfhdr7
+      ,TRIM(XAECTS.sfdata1)                    sfdata1
+      ,TRIM(XAECTS.sfdata2)                    sfdata2
+      ,TRIM(XAECTS.sfdata3)                    sfdata3
+      ,TRIM(XAECTS.sfdata4)                    sfdata4
+      ,TRIM(XAECTS.sfdata5)                    sfdata5
+      ,TRIM(XAECHM.cust_contact_name)          sfdata6
+                ,trim(XAECHM.ship_to_address1||DECODE(trim(XAECHM.ship_to_address2),'','',', '||trim(XAECHM.ship_to_address2))||DECODE(trim(XAECHM.ship_to_city),'','',', '||trim(XAECHM.ship_to_city))||DECODE(trim(XAECHM.ship_to_state),'','',', '||trim(XAECHM.ship_to_state))||DECODE(trim(XAECHM.ship_to_zip),'','',' '||trim((CASE WHEN ((LENGTH(XAECHM.ship_to_zip) > 5) and XAECHM.ship_to_country IN('US','USA'))
+                        THEN (SUBSTR(XAECHM.ship_to_zip,1,5)||'-'||SUBSTR(XAECHM.ship_to_zip,6))
+                        ELSE (XAECHM.ship_to_zip)
+                        END)))	
+              ) sfdata7
+			  ,XAECTS.insert_seq
+	  ,DECODE(XAECTS.inv_type,'CM',DECODE((SELECT '1' 
+                                             FROM xx_om_line_attributes_all a,
+                                                  oe_order_lines_all b
+                                            WHERE a.line_id = b.line_id
+                                              AND b.header_id = XAECHM.header_id
+                                              AND a.return_act_cat_code IN (SELECT  source_value1
+                                                                             FROM  xx_fin_translatevalues xftv
+                                                                                  ,xx_fin_translatedefinition xftd
+                                                                            WHERE xftv.translate_id = xftd.translate_id
+                                                                              AND xftd.translation_name = 'XX_AR_REBATE_CODE'
+                                                                              AND SYSDATE BETWEEN xftv.start_date_active AND NVL (xftv.end_date_active, SYSDATE + 1)
+                                                                              AND SYSDATE BETWEEN xftd.start_date_active AND NVL (xftd.end_date_active, SYSDATE + 1)
+                                                                              AND xftv.enabled_flag = 'Y'
+                                                                              AND xftd.enabled_flag = 'Y')
+                                              AND ROWNUM < 2),'1',XAECHM.COMMENTS,NULL),NULL)  REBATE_INFO   -- Added for Defect 36434
+FROM   xx_ar_cbi_rprn_trx XAECTS,
+       XX_OM_HEADER_ATTRIBUTES_ALL  XAECHM
+WHERE  XAECTS.request_id  =:p_request_id 
+  AND  XAECTS.cons_inv_id =:cbi_id 
+  AND XAECTS.order_header_id = XAECHM.header_id(+)
+  AND  XAECTS.inv_type NOT IN ('SOFTHDR_TOTALS' ,'BILLTO_TOTALS' ,'GRAND_TOTAL')
+ORDER BY XAECTS.insert_seq, XAECTS.inv_number
+]]>
+</sqlStatement>
+<sqlStatement name="Q_INV_STATEMENT">
+<![CDATA[
+SELECT * FROM 
+(
+SELECT 1                                       view_seq
+      ,'Order# '||a.inv_number                 sf_text1
+      ,'SUB-TOTAL'                             sf_text2
+      ,NVL(a.subtotal_amount ,0)               sf_amount 
+      ,a.insert_seq                            insert_seq
+      ,TO_CHAR(NULL)                           pg_break
+      , 'N'                                    show_line
+FROM   xx_ar_cbi_rprn_trx a 
+WHERE  request_id  =:p_request_id 
+  AND  cons_inv_id =:cbi_id 
+  AND  customer_trx_id =:trx_id
+  AND  inv_type NOT IN ('SOFTHDR_TOTALS' ,'BILLTO_TOTALS' ,'GRAND_TOTAL')
+UNION ALL
+SELECT 2                                       view_seq
+      ,TO_CHAR(NULL)                           sf_text1
+      ,'PROMOTIONS AND DISCOUNTS'              sf_text2      
+      ,NVL(a.promo_and_disc ,0)                sf_amount  
+      ,a.insert_seq                            insert_seq    
+      ,TO_CHAR(NULL)                           pg_break      
+      , 'N'                                    show_line	  
+FROM   xx_ar_cbi_rprn_trx a 
+WHERE  request_id  =:p_request_id 
+  AND  cons_inv_id =:cbi_id 
+  AND  customer_trx_id =:trx_id  
+  AND  a.promo_and_disc <>0
+  AND  inv_type NOT IN ('SOFTHDR_TOTALS' ,'BILLTO_TOTALS' ,'GRAND_TOTAL')
+UNION ALL
+SELECT 3                                       view_seq
+      ,TO_CHAR(NULL)                           sf_text1
+      ,'SALES TAX'                             sf_text2
+      ,NVL(a.tax_amount ,0)                    sf_amount 
+      ,a.insert_seq                            insert_seq  
+      ,TO_CHAR(NULL)                           pg_break      
+      , 'N'                                    show_line	  
+FROM   xx_ar_cbi_rprn_trx a 
+WHERE  request_id  =:p_request_id 
+  AND  cons_inv_id =:cbi_id 
+  AND  customer_trx_id =:trx_id  
+  AND  xx_fin_country_defaults_pkg.f_org_id('US') =FND_PROFILE.VALUE('ORG_ID') 
+  AND  inv_type NOT IN ('SOFTHDR_TOTALS' ,'BILLTO_TOTALS' ,'GRAND_TOTAL')    
+UNION ALL
+SELECT 4                                       view_seq
+      ,TO_CHAR(NULL)                           sf_text1
+      ,'TAX - PST'                             sf_text2      
+      --,'TAX - '||a.cad_county_tax_code         sf_text2      
+      ,NVL(a.cad_county_tax_amount ,0)         sf_amount 
+      ,a.insert_seq                            insert_seq
+      ,TO_CHAR(NULL)                           pg_break      
+      , 'N'                                    show_line	  
+FROM   xx_ar_cbi_rprn_trx a 
+WHERE  request_id  =:p_request_id 
+  AND  cons_inv_id =:cbi_id  
+  AND  customer_trx_id =:trx_id    
+  AND  xx_fin_country_defaults_pkg.f_org_id('CA') =FND_PROFILE.VALUE('ORG_ID') 
+  AND  inv_type NOT IN ('SOFTHDR_TOTALS' ,'BILLTO_TOTALS' ,'GRAND_TOTAL')
+UNION ALL
+SELECT 5                                       view_seq
+      ,TO_CHAR(NULL)                           sf_text1
+      ,'TAX - GST'                             sf_text2      
+      --,'TAX - '||a.cad_state_tax_code          sf_text2      
+      ,NVL(a.cad_state_tax_amount ,0)          sf_amount 
+      ,a.insert_seq                            insert_seq  
+      ,TO_CHAR(NULL)                           pg_break      
+      , 'N'                                    show_line	  
+FROM   xx_ar_cbi_rprn_trx a 
+WHERE  request_id  =:p_request_id 
+  AND  cons_inv_id =:cbi_id 
+  AND  customer_trx_id =:trx_id   
+  AND  xx_fin_country_defaults_pkg.f_org_id('CA') =FND_PROFILE.VALUE('ORG_ID')  
+  AND  inv_type NOT IN ('SOFTHDR_TOTALS' ,'BILLTO_TOTALS' ,'GRAND_TOTAL')       
+UNION ALL
+SELECT 8                                       view_seq
+      ,sf_text                                 sf_text1
+      ,'SUB-TOTAL'                             sf_text2      
+      ,NVL(a.sf_amount ,0)                     sf_amount                    
+      ,a.line_seq                              insert_seq 
+      ,TO_CHAR(NULL)                           pg_break      
+      , 'N'                                    show_line	  
+FROM   xx_ar_cbi_rprn_trx_totals a 
+WHERE  request_id  =:p_request_id 
+  AND  cons_inv_id =:cbi_id
+  AND  customer_trx_id =:trx_id  
+  AND  line_type    ='SOFTHDR_SUBTOTAL'  
+UNION ALL
+SELECT 9                                       view_seq
+      ,TO_CHAR(NULL)                           sf_text1
+      ,'PROMOTIONS AND DISCOUNTS'              sf_text2      
+      ,NVL(a.sf_amount ,0)                     sf_amount 
+      ,a.line_seq                              insert_seq 
+      ,TO_CHAR(NULL)                           pg_break      
+      , 'N'                                    show_line	  
+FROM   xx_ar_cbi_rprn_trx_totals a 
+WHERE  request_id  =:p_request_id 
+  AND  cons_inv_id =:cbi_id
+  AND  customer_trx_id =:trx_id  
+  AND  sf_amount <>0
+  AND  line_type    ='SOFTHDR_DISCOUNTS'
+UNION ALL
+SELECT 10                                      view_seq
+      ,TO_CHAR(NULL)                           sf_text1
+      ,'SALES TAX'                             sf_text2      
+      ,NVL(a.sf_amount ,0)                     sf_amount 
+      ,a.line_seq                              insert_seq 
+      ,TO_CHAR(NULL)                           pg_break      
+      , 'N'                                    show_line	  
+FROM   xx_ar_cbi_rprn_trx_totals a 
+WHERE  request_id  =:p_request_id 
+  AND  cons_inv_id =:cbi_id
+  AND  customer_trx_id =:trx_id  
+  AND  xx_fin_country_defaults_pkg.f_org_id('US') =FND_PROFILE.VALUE('ORG_ID')  
+  AND  line_type    ='SOFTHDR_TAX'     
+UNION ALL
+SELECT 11                                      view_seq
+      ,TO_CHAR(NULL)                           sf_text1
+      ,'TAX - PST'                             sf_text2      
+      --,'TAX - '||ca_prov_tax_code              sf_text2      
+      ,NVL(a.sf_amount ,0)                     sf_amount
+      ,a.line_seq                              insert_seq 
+      ,TO_CHAR(NULL)                           pg_break      
+      , 'N'                                    show_line	  
+FROM   xx_ar_cbi_rprn_trx_totals a 
+WHERE  request_id  =:p_request_id 
+  AND  cons_inv_id =:cbi_id
+  AND  customer_trx_id =:trx_id  
+  AND  xx_fin_country_defaults_pkg.f_org_id('CA') =FND_PROFILE.VALUE('ORG_ID')  
+  AND  line_type    ='SOFTHDR_PROV_TAX'
+UNION ALL
+SELECT 12                                      view_seq
+      ,TO_CHAR(NULL)                           sf_text1
+      ,'TAX - GST'                             sf_text2      
+      ,NVL(a.sf_amount ,0)                     sf_amount
+      ,a.line_seq                              insert_seq 
+      ,TO_CHAR(NULL)                           pg_break      
+      , 'N'                                    show_line	  
+FROM   xx_ar_cbi_rprn_trx_totals a 
+WHERE  request_id  =:p_request_id 
+  AND  cons_inv_id =:cbi_id
+  AND  customer_trx_id =:trx_id    
+  AND  xx_fin_country_defaults_pkg.f_org_id('CA') =FND_PROFILE.VALUE('ORG_ID')  
+  AND  line_type    ='SOFTHDR_STATE_TAX'
+UNION ALL
+SELECT 14                                      view_seq
+      ,sf_text                                 sf_text1
+      ,'SUB-TOTAL'                             sf_text2      
+      ,NVL(a.sf_amount ,0)                     sf_amount
+      ,a.line_seq                              insert_seq   
+      ,TO_CHAR(NULL)                           pg_break      
+      , 'N'                                    show_line	  
+FROM   xx_ar_cbi_rprn_trx_totals a 
+WHERE  request_id  =:p_request_id 
+  AND  cons_inv_id =:cbi_id
+  AND  customer_trx_id =:trx_id  
+  AND  line_type    ='BILLTO_SUBTOTAL'
+UNION ALL
+SELECT 15                                      view_seq
+      ,TO_CHAR(NULL)                           sf_text1
+      ,'PROMOTIONS AND DISCOUNTS'              sf_text2      
+      ,NVL(a.sf_amount ,0)                     sf_amount
+      ,a.line_seq                              insert_seq
+      ,TO_CHAR(NULL)                           pg_break      
+      , 'N'                                    show_line	  
+FROM   xx_ar_cbi_rprn_trx_totals a 
+WHERE  request_id  =:p_request_id 
+  AND  cons_inv_id =:cbi_id
+  AND  customer_trx_id =:trx_id  
+  AND  sf_amount <>0  
+  AND  line_type    ='BILLTO_DISCOUNTS'
+UNION ALL
+SELECT 16                                      view_seq
+      ,TO_CHAR(NULL)                           sf_text1
+      ,'SALES TAX'                             sf_text2     
+      ,NVL(a.sf_amount ,0)                     sf_amount
+      ,a.line_seq                              insert_seq
+      ,TO_CHAR(NULL)                           pg_break      
+      , 'N'                                    show_line	  
+FROM   xx_ar_cbi_rprn_trx_totals a 
+WHERE  request_id  =:p_request_id 
+  AND  cons_inv_id =:cbi_id
+  AND  customer_trx_id =:trx_id  
+  AND  line_type    ='BILLTO_TAX'  
+  AND  xx_fin_country_defaults_pkg.f_org_id('US') =FND_PROFILE.VALUE('ORG_ID')
+UNION ALL
+SELECT 17                                      view_seq
+      ,TO_CHAR(NULL)                           sf_text1
+      ,'TAX - PST'                             sf_text2      
+      --,'TAX - '||ca_prov_tax_code              sf_text2      
+      ,NVL(a.sf_amount ,0)                     sf_amount 
+      ,a.line_seq                              insert_seq 
+      ,TO_CHAR(NULL)                           pg_break      
+      , 'N'                                    show_line	  
+FROM   xx_ar_cbi_rprn_trx_totals a 
+WHERE  request_id  =:p_request_id 
+  AND  cons_inv_id =:cbi_id
+  AND  customer_trx_id =:trx_id    
+  AND  xx_fin_country_defaults_pkg.f_org_id('CA') =FND_PROFILE.VALUE('ORG_ID')  
+  AND  line_type    ='BILLTO_PROV_TAX'  
+UNION ALL
+SELECT 18                                      view_seq
+      ,TO_CHAR(NULL)                           sf_text1
+      ,'TAX - GST'                             sf_text2      
+      ,NVL(a.sf_amount ,0)                     sf_amount
+      ,a.line_seq                              insert_seq 
+      ,TO_CHAR(NULL)                           pg_break      
+      , 'N'                                    show_line	  
+FROM   xx_ar_cbi_rprn_trx_totals a 
+WHERE  request_id  =:p_request_id 
+  AND  cons_inv_id =:cbi_id
+  AND  customer_trx_id =:trx_id    
+  AND  xx_fin_country_defaults_pkg.f_org_id('CA') =FND_PROFILE.VALUE('ORG_ID')  
+  AND  line_type    ='BILLTO_STATE_TAX'
+UNION ALL
+SELECT 20                                      view_seq
+      ,REPLACE(sf_text ,'_' ,' ')              sf_text1
+      ,TO_CHAR(NULL)                           sf_text2      
+      ,NVL(a.sf_amount ,0)                     sf_amount
+      ,a.line_seq                              insert_seq 
+      ,TO_CHAR(NULL)                           pg_break      
+      , 'N'                                    show_line	  
+FROM   xx_ar_cbi_rprn_trx_totals a 
+WHERE  request_id  =:p_request_id 
+  AND  cons_inv_id =:cbi_id
+  AND  customer_trx_id =:trx_id  
+  AND  line_type    ='GRAND_TOTAL'
+UNION ALL
+SELECT view_seq,
+       sf_text1,
+       sf_text2,
+       sf_amount,
+       insert_seq,
+       pg_break,
+       DECODE (lead(insert_seq,1,0) OVER (PARTITION BY sf_text2 ORDER BY  insert_seq,view_seq ),0,'N','Y') show_line
+FROM (
+SELECT 6                                       view_seq
+      ,TO_CHAR(NULL)                           sf_text1
+      ,'TOTAL'                                 sf_text2
+      ,( 
+         NVL(subtotal_amount ,0) +
+    --     NVL(delivery_charges ,0) +    -- commented for defect 13937
+         NVL(promo_and_disc ,0) +
+         NVL(tax_amount ,0)
+       )                                       sf_amount 
+      ,a.insert_seq                            insert_seq 
+      ,TO_CHAR(NULL)                           pg_break      
+FROM   xx_ar_cbi_rprn_trx a 
+WHERE  request_id  =:p_request_id 
+  AND  cons_inv_id =:cbi_id  
+  AND  customer_trx_id =:trx_id  
+  AND  xx_fin_country_defaults_pkg.f_org_id('US') =FND_PROFILE.VALUE('ORG_ID')  
+  AND  inv_type NOT IN ('SOFTHDR_TOTALS' ,'BILLTO_TOTALS' ,'GRAND_TOTAL') 
+UNION ALL
+SELECT 7                                       view_seq
+      ,TO_CHAR(NULL)                           sf_text1
+      ,'TOTAL'                                 sf_text2
+      ,( 
+         NVL(subtotal_amount ,0) +
+         NVL(delivery_charges ,0) +
+         NVL(promo_and_disc ,0) +
+         NVL(cad_county_tax_amount ,0) +
+         NVL(cad_state_tax_amount ,0)
+       )                                       sf_amount 
+      ,a.insert_seq                            insert_seq 
+      ,TO_CHAR(NULL)                           pg_break      
+FROM   xx_ar_cbi_rprn_trx a 
+WHERE  request_id  =:p_request_id 
+  AND  cons_inv_id =:cbi_id  
+  AND  customer_trx_id =:trx_id  
+  AND  xx_fin_country_defaults_pkg.f_org_id('CA') =FND_PROFILE.VALUE('ORG_ID')  
+  AND  inv_type NOT IN ('SOFTHDR_TOTALS' ,'BILLTO_TOTALS' ,'GRAND_TOTAL')  
+UNION ALL
+SELECT 13                                      view_seq
+      ,TO_CHAR(NULL)                           sf_text1
+      ,'TOTAL'                                 sf_text2      
+      ,NVL(a.sf_amount ,0)                     sf_amount
+      ,a.line_seq                              insert_seq 
+      ,nvl(a.page_break, 'N')                  pg_break      
+FROM   xx_ar_cbi_rprn_trx_totals a 
+WHERE  request_id  =:p_request_id 
+  AND  cons_inv_id =:cbi_id
+  AND  customer_trx_id =:trx_id  
+  AND  line_type    ='SOFTHDR_TOTAL'
+UNION ALL
+SELECT 19                                      view_seq
+      ,TO_CHAR(NULL)                           sf_text1
+      ,'TOTAL'                                 sf_text2     
+      ,NVL(a.sf_amount ,0)                     sf_amount       
+      ,a.line_seq                              insert_seq
+      ,TO_CHAR(NULL)                           pg_break      
+FROM   xx_ar_cbi_rprn_trx_totals a 
+WHERE  request_id  =:p_request_id 
+  AND  cons_inv_id =:cbi_id
+  AND  customer_trx_id =:trx_id  
+  AND  line_type    ='BILLTO_TOTAL'    
+)
+) trx_totals  
+ORDER BY insert_seq, view_seq
+]]>
+</sqlStatement>
+<sqlStatement name="Q_SPC">
+<![CDATA[
+SELECT '        Note:'||item_description||'        '                spc_text
+FROM   xx_ar_cbi_rprn_trx_lines a
+WHERE a.request_id      =:p_request_id
+  AND a.cons_inv_id     =:cbi_id
+  AND a.customer_trx_id =:trx_id
+  AND a.item_code       ='SPC_CARD_INFO'
+]]>
+</sqlStatement>  
+<sqlStatement name="Q_DETAIL">
+<![CDATA[
+SELECT item_code                                     item_no
+      ,customer_product_code                         cust_prod_cd
+      ,item_description                              item_desc
+      ,manuf_code                                    manuf_code
+      ,qty                                           qty
+      ,uom                                           uom
+      ,unit_price                                    unit_price
+      ,extended_price                                ext_price     
+      ,line_comments                                 line_comments              -- Added for R1.2 Defect 1744 (CR 743)
+	  , NVL2(ltrim(rtrim(cost_center_dept||cost_center_desc)),
+	     NVL(( SELECT c_ext_attr1
+               FROM   xx_cdh_cust_acct_ext_b  
+              WHERE  1 = 1
+                AND    n_ext_attr2     = :P_CUST_DOC_ID
+                AND    attr_group_id   = (SELECT attr_group_id
+                                            FROM   ego_attr_groups_v 
+                                           WHERE  attr_group_type = 'XX_CDH_CUST_ACCOUNT' 
+                                             AND    attr_group_name = 'REPORTING_SOFTH')
+                AND    cust_account_id = :CUST_ACCOUNT_ID
+			)
+            ,'Department'
+           )
+         ||' : '
+         ||rtrim(ltrim(cost_center_dept))||nvl2(rtrim(ltrim(cost_center_desc)),' - '||cost_center_desc,null),
+		 null
+	      ) dept_desc  -- Added for Defect 36434 
+      ,kit_sku  KIT_SKU  -- Added for Kitting, Defect# 37670
+FROM   xx_ar_cbi_rprn_trx_lines a
+WHERE a.request_id      =:p_request_id
+  AND a.cons_inv_id     =:cbi_id
+  AND a.customer_trx_id =:trx_id      
+  AND (a.item_code IS NULL OR a.item_code NOT IN ('SPC_CARD_INFO' ,'TD','ACM','GIFT_CARD_CM','GIFT_CARD_INV'))   --Added 'GIFT_CARD_CM' and 'GIFT_CARD_INV' for R1.1 CR(626)
+  ORDER BY CUSTOMER_TRX_ID,LINE_SEQ
+]]>
+</sqlStatement>   
+<sqlStatement name="Q_TD">
+<![CDATA[
+SELECT '        Note: A Tiered Discount of '||
+--       TRIM(TO_CHAR(extended_price ,'9G999D99PR'))||    -- Commented for R1.2 Defect 1143 (CR 621)
+       TRIM(TO_CHAR(extended_price ,'9G999D99'))||        -- Added for R1.2 Defect 1143 (CR 621)
+       ' has been applied to your order        '             td_text      
+FROM   xx_ar_cbi_rprn_trx_lines a
+WHERE a.request_id      =:p_request_id
+  AND a.cons_inv_id     =:cbi_id
+  AND a.customer_trx_id =:trx_id
+  AND a.item_code       ='TD'
+  UNION ALL
+  SELECT '        '||:P_CM_TEXT1||' '||
+--       TRIM(TO_CHAR(a.extended_price ,'$9G999G999D99PR'))||   -- Commented for R1.2 Defect 1143 (CR 621)
+       TRIM(TO_CHAR(a.extended_price ,'$9G999G999D99'))||       -- Added for R1.2 Defect 1143 (CR 621)
+       ' '||:P_CM_TEXT2||' '||
+       a.customer_product_code||'.'    td_text
+FROM   xx_ar_cbi_rprn_trx_lines a
+WHERE a.request_id      =:p_request_id
+  AND a.cons_inv_id     =:cbi_id
+  AND a.customer_trx_id =:trx_id
+  AND a.item_code       ='ACM'
+  UNION ALL
+  -- Added the below two queries for R1.1 Defect # 1451 (CR 626)
+--  SELECT '        '||:P_GIFT_CARD_TEXT1||a.extended_price||:P_GIFT_CARD_TEXT2    td_text   -- Commented for R1.2 Defect 1143 (CR 621)
+  SELECT '        '||:P_GIFT_CARD_TEXT1||TRIM(TO_CHAR(a.extended_price*-1 ,'9G999G999D99'))||:P_GIFT_CARD_TEXT2    td_text     -- Added for R1.2 Defect 1143 (CR 621)
+FROM   xx_ar_cbi_rprn_trx_lines a
+WHERE a.request_id      =:p_request_id
+  AND a.cons_inv_id     =:cbi_id
+  AND a.customer_trx_id =:trx_id
+  AND a.item_code       ='GIFT_CARD_INV'
+  UNION ALL
+--  SELECT '        '||:P_GIFT_CARD_TEXT3||TRIM(TO_CHAR(a.extended_price ,'9G999G999D99PR'))    td_text  -- Commented for R1.2 Defect 1143 (CR 621)
+  SELECT '        '||:P_GIFT_CARD_TEXT3||TRIM(TO_CHAR(a.extended_price ,'9G999G999D99'))    td_text      -- Added for R1.2 Defect 1143 (CR 621)
+FROM   xx_ar_cbi_rprn_trx_lines a
+WHERE a.request_id      =:p_request_id
+  AND a.cons_inv_id     =:cbi_id
+  AND a.customer_trx_id =:trx_id
+  AND a.item_code       ='GIFT_CARD_CM'
+]]>
+</sqlStatement>
+<sqlStatement name="Q_POD_MSG">  <!--Added this sqlStatement for POD NAIT-80452-->
+       <![CDATA[
+          SELECT xx_ar_reprint_summbill.get_pod_msg(:cust_account_id ,:trx_id,:p_cust_doc_id) PD_CUST_MSG
+		  FROM DUAL
+       ]]>
+</sqlStatement>	
+<sqlStatement name="Q_POD_IMAGE"> <!--Added this sqlStatement for POD NAIT-80452-->		
+       <![CDATA[  
+		  SELECT TO_CHAR(dtl.delivery_date,'DD-MON-YYYY HH24:MI:SS') DEL_DT_TM,
+			     dtl.carrier_name CR_NM,
+			     trim(dtl.consignee)  CNSNEE,
+			     NVL( (select xx_ar_ebl_pod_invoices_pkg.resize_image(:trx_id) from dual),POD_IMAGE)  PD_IMG				 
+		  FROM  XX_AR_EBL_POD_DTL dtl
+		  WHERE customer_trx_id = :trx_id
+				AND 'Y' =  xx_ar_reprint_summbill.get_paydoc_flag(:p_cust_doc_id,:cust_account_id)
+				
+	   ]]>
+</sqlStatement>
+<sqlStatement name="Q_CONS_MSG_BCC">  <!--Added this sqlStatement for NAIT-80452-->
+       <![CDATA[
+          SELECT xx_ar_reprint_summbill.get_cons_msg_bcc(:cbi_id,:p_cust_doc_id,:cust_account_id,:billing_number) CONS_MSG_BCC 		  
+		  FROM DUAL
+       ]]>
+</sqlStatement>	
+<sqlStatement name="Q_CONS_FEE">
+       <![CDATA[
+SELECT 
+      flv.lookup_code FEE_CODE
+     ,upper(flv.meaning)  FEE_DESCRIPTION
+     ,flv.attribute7
+     ,TO_CHAR(sum(RCTL.unit_selling_price*
+	 CASE WHEN aps.class = 'CM' THEN
+	  quantity_credited
+	 ELSE 
+	  NVL(quantity_ordered,quantity_invoiced)
+	  END
+	  ),'9999999999.999')       FEE_AMT      
+FROM
+     ra_customer_trx_lines_All RCTL
+     ,fnd_lookup_values flv
+	 ,ar_payment_schedules aps
+WHERE 1=1
+  AND flv.lookup_type = 'OD_FEES_ITEMS'
+  AND flv.LANGUAGE='US'
+  AND flv.attribute6= rctl.INVENTORY_ITEM_ID
+  AND FLV.enabled_flag = 'Y'                                   
+  AND SYSDATE BETWEEN NVL(FLV.start_date_active,SYSDATE) AND NVL(FLV.end_date_active,SYSDATE+1)  
+  AND FLV.attribute7 NOT IN ('DELIVERY','MISCELLANEOUS')  
+  AND RCTL.customer_trx_id = aps.customer_trx_id
+  AND RCTL.customer_trx_id    IN (SELECT XAECTRS.customer_trx_id
+                                   FROM xx_ar_cbi_rprn_trx  XAECTRS
+								  WHERE XAECTRS.request_id      =:p_request_id
+								  AND XAECTRS.cons_inv_id     =:cbi_id)
+GROUP BY flv.lookup_code,flv.meaning,flv.attribute7
+order by flv.attribute7 desc,flv.lookup_code
+       ]]>
+    </sqlStatement>	
+</dataQuery>
+<dataTrigger name="beforeReportTrigger" source="xx_ar_reprint_summbill.beforereport"/>
+<dataStructure>
+<group name="G_BILL_TO_SITES" source="Q_BILL_TO_SITES">
+<element name="BILL_TO_COUNTRY" value="BILL_TO_COUNTRY" />
+<element name="DOC_DESCRIPTION" value="DOC_DESCRIPTION" />
+<element name="POSTAL_CODE" value="BILL_TO_POSTAL_CODE" />
+<element name="RETURN_ADDRESS" value="RETURN_ADDRESS" />
+<element name="REMIT_TO" value="REMIT_TO" />
+<element name="BILL_TO" value="BILL_TO" />
+<element name="MAIL_TO_ATTN" value="MAIL_TO_ATTN" />       <!--Added for R1.4 Defect # 2424 (CR 547)-->
+<element name="TAX_ID_DESC" value="TAX_ID_DESC" />
+<element name="TAX_ID" value="TAX_ID" />
+<element name="ACCOUNT_CONTACT" value="ACCOUNT_CONTACT" />
+<element name="ORDER_CONTACT" value="ORDER_CONTACT" />
+<element name="CUSTOMER_NAME" value="CUSTOMER_NAME" />
+<element name="ACCOUNT_NUMBER" value="ACCOUNT_NUMBER" />
+<element name="BILLING_ID" value="BILLING_ID" />
+<element name="SPL_HANDLING" value="SPL_HANDLING" />
+<element name="COMMENTS" value="SPL_HANDLING_COMMENTS" />
+<element name="DOC_ID" value="DOC_ID" />                 <!--Added for R1.2 Defect # 1237 (CR 621)-->
+<group name="G_CONS_BILLS" source="Q_CONSOLIDATED_BILLS">
+<element name="SCANLINE" value="SCAN_LINE" />
+<element name="BILLING_NUMBER" value="BILLING_NUMBER" />
+<element name="TERMS" value="TERMS" />
+<element name="CURRENCY" value="CURRENCY" />
+<element name="BILL_FROM_DATE" value="BILL_FROM_DATE" />
+<element name="BILL_TO_DATE" value="BILL_TO_DATE" />
+<element name="PAYMENT_DUE" value="PAYMENT_DUE" />
+<element name="DOC_TITLE" value="DOC_TITLE" />
+<element name="CBI_EXTAMT_PLUS_DELVY" value="CBI_EXTAMT_PLUS_DELVY" />
+<element name="CBI_DISCOUNTS" value="CBI_DISCOUNTS" />
+<element name="CBI_TAX" value="CBI_TAX" />
+<element name = "CBI_FEE_AMT" value = "CBI_FEE_AMT"/>
+<element name = "FEE_OPTION" value = "FEE_OPTION"/>
+<element name="CBI_AMOUNT_DUE" value="CBI_AMOUNT_DUE" />
+<element name="NO_PAYMENT_TEXT" value="NO_PAYMENT_TEXT" />   <!--Added for R1.2 Defect # 1210 (CR 466)-->
+<element name="DISCOUNT_INFO" value="DISCOUNT_INFO" />   <!--Added for Defect # 36434 -->
+<group name="G_INVOICE" source="Q_INVOICE">
+<element name="ORDER_NO" value="ORDER_NO" />
+<element name="ORDER_DT" value="ORDER_DT" />
+<element name="SHIP_DT" value="SHIP_DT" />
+<element name="SFHDR1" value="SFHDR1" />
+<element name="SFDATA1" value="SFDATA1" />
+<element name="SFHDR2" value="SFHDR2" />
+<element name="SFDATA2" value="SFDATA2" />
+<element name="SFHDR3" value="SFHDR3" />
+<element name="SFDATA3" value="SFDATA3" />
+<element name="SFHDR4" value="SFHDR4" />
+<element name="SFDATA4" value="SFDATA4" />
+<element name="SFHDR5" value="SFHDR5" />
+<element name="SFDATA5" value="SFDATA5" />
+<element name = "SFHDR6" value = "SFHDR6"/>
+<element name = "SFDATA6"  value = "SFDATA6"/>
+<element name = "SFHDR7" value = "SFHDR7"/>
+<element name = "SFDATA7" value = "SFDATA7"/>
+<element name = "REBATE_INFO" value = "REBATE_INFO"/> <!--Added for Defect # 36434-->
+<element name="TRX_ID" value="TRX_ID" /> <!--Added for NAIT-65564-->
+<group name="G_SPC" source="Q_SPC">
+<element name="SPC_TEXT" value="SPC_TEXT" />
+</group>
+<group name="G_DETAIL" source="Q_DETAIL">
+<element name="ITEM_NO" value="ITEM_NO" />
+<element name="CUST_PROD_CD" value="CUST_PROD_CD" />
+<element name="ITEM_DESC" value="ITEM_DESC" />
+<element name="MANUF_CODE" value="MANUF_CODE" />
+<element name="QTY" value="QTY" />
+<element name="UOM" value="UOM" />
+<element name="UNIT_PRICE" value="UNIT_PRICE" />
+<element name="EXT_PRICE" value="EXT_PRICE" />
+<element name="LINE_COMMENTS" value="LINE_COMMENTS" />          <!--Added for R1.1 Defect # 1744 (CR 743)-->
+<element name="DEPT_DESC" value="DEPT_DESC" />    <!--Added for Defect # 36434 -->
+<element name="KIT_SKU" value="KIT_SKU" />        <!--Added for Kitting Defect# 37670 -->
+</group>
+<group name="G_TD" source="Q_TD">
+<element name="TD_TEXT" value="TD_TEXT" />
+</group>
+<group name="G_INV_STATEMENT" source="Q_INV_STATEMENT">
+<element name="SF_TEXT1" value="SF_TEXT1" />
+<element name="SF_TEXT2" value="SF_TEXT2" />
+<element name="SUBTOTAL_AMOUNT" value="SF_AMOUNT" />
+<element name="PG_BREAK" value="PG_BREAK" />
+<element name="DISPLAY_SEQ" value="VIEW_SEQ" />
+<element name = "SHOW_LINE"  value = "SHOW_LINE"/>
+</group>
+<group name = "G_POD_MSG" source = "Q_POD_MSG">	<!--Added this Group for POD NAIT-80452-->
+			<element name = "PD_CUST_MSG"              value = "PD_CUST_MSG"/>
+</group>
+<group name = "G_POD_DETAILS" source = "Q_POD_IMAGE"> <!--Added this Group for POD NAIT-80452-->
+            <element name = "PD_IMG"    value = "PD_IMG"/>
+			<element name = "DEL_DT_TM" value = "DEL_DT_TM"/>  
+            <element name = "CR_NM"     value = "CR_NM"/>
+            <element name = "CNSNEE"    value = "CNSNEE"/>
+</group>
+</group>
+<group name = "G_CONS_MSG_BCC" source = "Q_CONS_MSG_BCC">   <!--Added this group for NAIT-80452-->
+<element name = "CONS_MSG_BCC" value = "CONS_MSG_BCC"/>
+</group>
+		  <group name="G_INV_FEE" source="Q_CONS_FEE">
+			<element name = "FEE_NAME"                value = "FEE_DESCRIPTION" />
+			<element name = "AMOUNT"                  value = "FEE_AMT" />
+		  </group>	
+</group>
+</group>
+</dataStructure>
+<dataTrigger name="afterReportTrigger" source="xx_ar_reprint_summbill.afterreport"/>
+</dataTemplate>

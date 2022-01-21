@@ -1,0 +1,453 @@
+CREATE OR REPLACE FORCE VIEW "APPS"."PO_RELEASE_XML" ("SEGMENT1", "REVISION_NUM", "PRINT_COUNT", "CREATION_DATE", "PRINTED_DATE", 
+"REVISED_DATE", "DOCUMENT_BUYER_FIRST_NAME", "DOCUMENT_BUYER_LAST_NAME", "DOCUMENT_BUYER_TITLE", "DOCUMENT_BUYER_AGENT_ID", "ARCHIVE_BUYER_AGENT_ID", 
+"ARCHIVE_BUYER_FIRST_NAME", "ARCHIVE_BUYER_LAST_NAME", "ARCHIVE_BUYER_TITLE", "CANCEL_FLAG", "ACCEPTANCE_REQUIRED_FLAG", "ACCEPTANCE_DUE_DATE", 
+"CURRENCY_CODE", "CURRENCY_NAME", "RATE", "SHIP_VIA", "FOB", "FREIGHT_TERMS", "PAYMENT_TERMS", "CUSTOMER_NUM", "VENDOR_NUM", "VENDOR_NAME", "VENDOR_ADDRESS_LINE1", 
+"VENDOR_ADDRESS_LINE2", "VENDOR_ADDRESS_LINE3", "VENDOR_CITY", "VENDOR_STATE", "VENDOR_POSTAL_CODE", "VENDOR_COUNTRY", "VENDOR_PHONE", 
+"VENDOR_CONTACT_FIRST_NAME", "VENDOR_CONTACT_LAST_NAME", "VENDOR_CONTACT_TITLE", "VENDOR_FAX", "SUPPLIER_NOTIF_METHOD", "VENDOR_EMAIL", 
+"ATTRIBUTE1", "ATTRIBUTE2", "ATTRIBUTE3", "ATTRIBUTE4", "ATTRIBUTE5", "ATTRIBUTE6", "ATTRIBUTE7", "ATTRIBUTE8", "ATTRIBUTE9", "ATTRIBUTE10", 
+"ATTRIBUTE11", "ATTRIBUTE12", "ATTRIBUTE13", "ATTRIBUTE14", "ATTRIBUTE15", "VENDOR_SITE_ID", "PO_HEADER_ID", "PO_RELEASE_ID", "APPROVED_FLAG", 
+"LANGUAGE", "VENDOR_ID", "CONSIGNED_CONSUMPTION_FLAG", "SHIP_TO_LOCATION_ID", "SHIP_TO_LOCATION_NAME", "SHIP_TO_ADDRESS_LINE1", "SHIP_TO_ADDRESS_LINE2", 
+"SHIP_TO_ADDRESS_LINE3", "SHIP_TO_ADDRESS_LINE4", "SHIP_TO_ADDRESS_INFO", "SHIP_TO_COUNTRY", "SHIP_TO_TOWNORCITY", "SHIP_TO_STATEPORROVINCE", "SHIP_TO_POSTALCODE",
+ "BILL_TO_LOCATION_ID", "BILL_TO_LOCATION_NAME", "BILL_TO_ADDRESS_LINE1", "BILL_TO_ADDRESS_LINE2", "BILL_TO_ADDRESS_LINE3", "BILL_TO_ADDRESS_LINE4", 
+"BILL_TO_ADDRESS_INFO", "BILL_TO_COUNTRY", "BILL_TO_TOWNORCITY", "BILL_TO_STATEORPROVINCE", "BILL_TO_POSTALCODE", "AUTHORIZATION_STATUS", 
+"USSGL_TRANSACTION_CODE", "GOVERNMENT_CONTEXT", "REQUEST_ID", "PROGRAM_APPLICATION_ID", "PROGRAM_ID", "PROGRAM_UPDATE_DATE", "CLOSED_CODE", 
+"FROZEN_FLAG", "RELEASE_TYPE", "NOTE_TO_VENDOR", "ORG_ID", "LAST_UPDATE_DATE", "LAST_UPDATED_BY", "RELEASE_NUM", "AGENT_ID", "RELEASE_DATE", 
+"LAST_UPDATE_LOGIN", "CREATED_BY", "APPROVED_DATE", "HOLD_BY", "HOLD_DATE", "HOLD_REASON", "HOLD_FLAG", "CANCELLED_BY", "CANCEL_DATE", "CANCEL_REASON", 
+"FIRM_STATUS_LOOKUP_CODE", "FIRM_DATE", "ATTRIBUTE_CATEGORY", "EDI_PROCESSED_FLAG", "GLOBAL_ATTRIBUTE_CATEGORY", "GLOBAL_ATTRIBUTE1", "GLOBAL_ATTRIBUTE2", 
+"GLOBAL_ATTRIBUTE3", "GLOBAL_ATTRIBUTE4", "GLOBAL_ATTRIBUTE5", "GLOBAL_ATTRIBUTE6", "GLOBAL_ATTRIBUTE7", "GLOBAL_ATTRIBUTE8", "GLOBAL_ATTRIBUTE9",
+ "GLOBAL_ATTRIBUTE10", "GLOBAL_ATTRIBUTE11", "GLOBAL_ATTRIBUTE12", "GLOBAL_ATTRIBUTE13", "GLOBAL_ATTRIBUTE14", "GLOBAL_ATTRIBUTE15", "GLOBAL_ATTRIBUTE16", 
+"GLOBAL_ATTRIBUTE17", "GLOBAL_ATTRIBUTE18", "GLOBAL_ATTRIBUTE19", "GLOBAL_ATTRIBUTE20", "WF_ITEM_TYPE", "WF_ITEM_KEY", "PCARD_ID", "PAY_ON_CODE", 
+"XML_FLAG", "XML_SEND_DATE", "XML_CHANGE_SEND_DATE", "CBC_ACCOUNTING_DATE", "CHANGE_REQUESTED_BY", "SHIPPING_CONTROL", "OU_NAME", "OU_ADDR1", 
+"OU_ADDR2", "OU_ADDR3", "OU_TOWN_CITY", "OU_REGION2", "OU_POSTALCODE", "OU_COUNTRY", "REL_BUYER_LOCATION_ID", "REL_BUYER_ADDRESS_LINE1",
+ "REL_BUYER_ADDRESS_LINE2", "REL_BUYER_ADDRESS_LINE3", "REL_BUYER_ADDRESS_LINE4", "REL_BUYER_CITY_STATE_ZIP", "REL_BUYER_CONTACT_PHONE", "REL_BUYER_CONTACT_EMAIL",
+ "REL_BUYER_CONTACT_FAX", "REL_BUYER_COUNTRY", "TOTAL_AMOUNT", "VENDOR_ADDRESS_LINE4", "VENDOR_AREA_CODE", "VENDOR_CONTACT_AREA_CODE", "VENDOR_CONTACT_PHONE", "LE_NAME",
+ "LE_ADDR1", "LE_ADDR2", "LE_ADDR3", "LE_TOWN_CITY", "LE_STAE_PROVINCE", "LE_POSTALCODE", "LE_COUNTRY", "START_DATE", "END_DATE", "AMOUNT_AGREED", "CHANGE_SUMMARY", 
+"DOCUMENT_CREATION_METHOD", "VENDOR_ORDER_NUM", "PLANNER", "PLANNER_EMAIL", "PLANNER_PHONE", "REVISED_BY", "REVISED_BY_EMAIL", "REVISED_BY_PHONE_NUMBER", "PO_TYPE", 
+"DROP_SHIP_ADDRESS1", "DROP_SHIP_ADDRESS2", "DROP_SHIP_ADDRESS3", "DROP_SHIP_ADDRESS4", "DROP_SHIP_ADDRESS5", "DROP_SHIP_LOCATION", "TOTAL_AMOUNT_MINUS_TAX", "TOTAL_TAX", 
+"TOTAL_AMOUNT_WITH_TAX", "BPA_REVISION_NUM", "TERMS_CONDITIONS", "TOTAL_TAX_RELEASE") AS 
+  SELECT ph.segment1, pr.revision_num, pr.print_count,
+					   TO_CHAR (pr.creation_date, 'DD-MON-YYYY HH24:MI:SS') creation_date,
+					   TO_CHAR (pr.printed_date, 'DD-MON-YYYY HH24:MI:SS') printed_date,
+					   TO_CHAR (pr.revised_date, 'DD-MON-YYYY HH24:MI:SS') revised_date,
+					   hre.first_name document_buyer_first_name,
+					   hre.last_name document_buyer_last_name, hre.title document_buyer_title,
+					   pr.agent_id document_buyer_agent_id,
+					   DECODE
+						  (NVL (pr.revision_num, 0),
+						   0, NULL,
+						   po_communication_pvt.getarcbuyeragentid (pr.po_header_id)
+						  ) archive_buyer_agent_id,
+					   DECODE
+						   (NVL (pr.revision_num, 0),
+							0, NULL,
+							po_communication_pvt.getarcbuyerfname ()
+						   ) archive_buyer_first_name,
+					   DECODE
+							(NVL (pr.revision_num, 0),
+							 0, NULL,
+							 po_communication_pvt.getarcbuyerlname ()
+							) archive_buyer_last_name,
+					   DECODE (NVL (pr.revision_num, 0),
+							   0, NULL,
+							   po_communication_pvt.getarcbuyertitle ()
+							  ) archive_buyer_title,
+					   pr.cancel_flag, NVL (pr.acceptance_required_flag, 'N'),
+					   TO_CHAR (pr.acceptance_due_date,
+								'DD-MON-YYYY HH24:MI:SS'
+							   ) acceptance_due_date,
+					   fcc.currency_code, fcc.NAME currency_name,
+					   TO_CHAR (ph.rate, po_communication_pvt.getformatmask) rate,
+					   NVL (ofc.freight_code_tl, ph.ship_via_lookup_code) ship_via,
+					   plc1.meaning fob, plc2.meaning freight_terms, t.NAME payment_terms,
+					   NVL (pvs.customer_num, vn.customer_num) customer_num,
+					   vn.segment1 vendor_num, vn.vendor_name,
+					   pvs.address_line1 vendor_address_line1,
+					   pvs.address_line2 vendor_address_line2,
+					   pvs.address_line3 vendor_address_line3, pvs.city vendor_city,
+					   DECODE (pvs.state,
+							   NULL, DECODE (pvs.province, NULL, pvs.county, pvs.province),
+							   pvs.state
+							  ) vendor_state,
+					   pvs.zip vendor_postal_code, fte3.territory_short_name vendor_country,
+					   pvs.phone vendor_phone, pvc.first_name vendor_contact_first_name,
+					   pvc.last_name vendor_contact_last_name, pvc.title vendor_contact_title,
+					   pvs.fax vendor_fax, pvs.supplier_notif_method supplier_notif_method,
+					   pvs.email_address vendor_email,
+                       pr.attribute1,
+					   --pr.attribute2,  --commented and added for defect#26317
+					   (SELECT   SUM (NVL (pda.nonrecoverable_tax, 0))
+							   + SUM (NVL (pda.recoverable_tax, 0))
+						  FROM po_distributions_all pda
+						 WHERE pr.po_release_id = pda.po_release_id) attribute2,
+					   pr.attribute3, pr.attribute4, pr.attribute5, pr.attribute6,
+					   pr.attribute7, pr.attribute8, pr.attribute9, pr.attribute10,
+					   pr.attribute11, pr.attribute12, pr.attribute13, pr.attribute14,
+					   pr.attribute15, ph.vendor_site_id, ph.po_header_id, pr.po_release_id,
+					   DECODE (pr.approved_flag, 'Y', 'Y', 'N') approved_flag, pvs.LANGUAGE,
+					   ph.vendor_id, pr.consigned_consumption_flag,
+					   DECODE
+						  (NVL (ph.ship_to_location_id, -1),
+						   -1, NULL,
+						   po_communication_pvt.getlocationinfo (ph.ship_to_location_id)
+						  ) ship_to_location_id,
+					   DECODE (NVL (ph.ship_to_location_id, -1),
+							   -1, NULL,
+							   po_communication_pvt.getlocationname ()
+							  ) ship_to_location_name,
+					   DECODE (NVL (ph.ship_to_location_id, -1),
+							   -1, NULL,
+							   po_communication_pvt.getaddressline1 ()
+							  ) ship_to_address_line1,
+					   DECODE (NVL (ph.ship_to_location_id, -1),
+							   -1, NULL,
+							   po_communication_pvt.getaddressline2 ()
+							  ) ship_to_address_line2,
+					   DECODE (NVL (ph.ship_to_location_id, -1),
+							   -1, NULL,
+							   po_communication_pvt.getaddressline3 ()
+							  ) ship_to_address_line3,
+					   DECODE (NVL (ph.ship_to_location_id, -1),
+							   -1, NULL,
+							   po_communication_pvt.getaddressline4 ()
+							  ) ship_to_address_line4,
+					   DECODE (NVL (ph.ship_to_location_id, -1),
+							   -1, NULL,
+							   po_communication_pvt.getaddressinfo ()
+							  ) ship_to_address_info,
+					   DECODE (NVL (ph.ship_to_location_id, -1),
+							   -1, NULL,
+							   po_communication_pvt.getterritoryshortname ()
+							  ) ship_to_country,
+					   --added for r12 upgrade retrofit
+					   DECODE (NVL (ph.ship_to_location_id, -1),
+							   -1, NULL,
+							   po_communication_pvt.gettownorcity ()
+							  ) ship_to_townorcity,
+					   DECODE
+						  (NVL (ph.ship_to_location_id, -1),
+						   -1, NULL,
+						   po_communication_pvt.getstateorprovince ()
+						  ) ship_to_stateorprovince,
+					   DECODE (NVL (ph.ship_to_location_id, -1),
+							   -1, NULL,
+							   po_communication_pvt.getpostalcode ()
+							  ) ship_to_postalcode,
+					   --end
+					   DECODE
+						  (NVL (ph.bill_to_location_id, -1),
+						   -1, NULL,
+						   po_communication_pvt.getlocationinfo (ph.bill_to_location_id)
+						  ) bill_to_location_id,
+					   DECODE (NVL (ph.bill_to_location_id, -1),
+							   -1, NULL,
+							   po_communication_pvt.getlocationname ()
+							  ) bill_to_location_name,
+					   DECODE (NVL (ph.bill_to_location_id, -1),
+							   -1, NULL,
+							   po_communication_pvt.getaddressline1 ()
+							  ) bill_to_address_line1,
+					   DECODE (NVL (ph.bill_to_location_id, -1),
+							   -1, NULL,
+							   po_communication_pvt.getaddressline2 ()
+							  ) bill_to_address_line2,
+					   DECODE (NVL (ph.bill_to_location_id, -1),
+							   -1, NULL,
+							   po_communication_pvt.getaddressline3 ()
+							  ) bill_to_address_line3,
+					   DECODE (NVL (ph.bill_to_location_id, -1),
+							   -1, NULL,
+							   po_communication_pvt.getaddressline4 ()
+							  ) bill_to_address_line4,
+					   DECODE (NVL (ph.bill_to_location_id, -1),
+							   -1, NULL,
+							   po_communication_pvt.getaddressinfo ()
+							  ) bill_to_address_info,
+					   DECODE (NVL (ph.bill_to_location_id, -1),
+							   -1, NULL,
+							   po_communication_pvt.getterritoryshortname ()
+							  ) bill_to_country,
+					   --added for r12 upgrade retrofit
+					   DECODE (NVL (ph.bill_to_location_id, -1),
+							   -1, NULL,
+							   po_communication_pvt.gettownorcity ()
+							  ) bill_to_townorcity,
+					   DECODE
+						  (NVL (ph.bill_to_location_id, -1),
+						   -1, NULL,
+						   po_communication_pvt.getstateorprovince ()
+						  ) bill_to_stateorprovince,
+					   DECODE (NVL (ph.bill_to_location_id, -1),
+							   -1, NULL,
+							   po_communication_pvt.getpostalcode ()
+							  ) bill_to_postalcode,
+					   --end
+					   pr.authorization_status, pr.ussgl_transaction_code,
+					   pr.government_context, pr.request_id, pr.program_application_id,
+					   pr.program_id, pr.program_update_date, pr.closed_code, pr.frozen_flag,
+					   pr.release_type, pr.note_to_vendor, pr.org_id,
+					   TO_CHAR (pr.last_update_date,
+								'DD-MON-YYYY HH24:MI:SS'
+							   ) last_update_date,
+					   pr.last_updated_by, pr.release_num, pr.agent_id,
+					   TO_CHAR (pr.release_date, 'DD-MON-YYYY HH24:MI:SS') release_date,
+					   pr.last_update_login, pr.created_by,
+					   TO_CHAR (pr.approved_date, 'DD-MON-YYYY HH24:MI:SS') approved_date,
+					   pr.hold_by, TO_CHAR (pr.hold_date, 'DD-MON-YYYY HH24:MI:SS') hold_date,
+					   pr.hold_reason, pr.hold_flag, pr.cancelled_by,
+					   TO_CHAR (pr.cancel_date, 'DD-MON-YYYY HH24:MI:SS') cancel_date,
+					   pr.cancel_reason, pr.firm_status_lookup_code,
+					   TO_CHAR (pr.firm_date, 'DD-MON-YYYY HH24:MI:SS') firm_date,
+					   pr.attribute_category, pr.edi_processed_flag,
+					   pr.global_attribute_category, pr.global_attribute1,
+					   pr.global_attribute2, pr.global_attribute3, pr.global_attribute4,
+					   pr.global_attribute5, pr.global_attribute6, pr.global_attribute7,
+					   pr.global_attribute8, pr.global_attribute9, pr.global_attribute10,
+					   pr.global_attribute11, pr.global_attribute12, pr.global_attribute13,
+					   pr.global_attribute14, pr.global_attribute15, pr.global_attribute16,
+					   pr.global_attribute17, pr.global_attribute18, pr.global_attribute19,
+					   pr.global_attribute20, pr.wf_item_type, pr.wf_item_key, pr.pcard_id,
+					   pr.pay_on_code, pr.xml_flag,
+					   TO_CHAR (pr.xml_send_date, 'DD-MON-YYYY HH24:MI:SS') xml_send_date,
+					   TO_CHAR (pr.xml_change_send_date,
+								'DD-MON-YYYY HH24:MI:SS'
+							   ) xml_change_send_date,
+					   TO_CHAR (pr.cbc_accounting_date,
+								'DD-MON-YYYY HH24:MI:SS'
+							   ) cbc_accounting_date,
+					   pr.change_requested_by, plc3.meaning shipping_control,
+					   DECODE (NVL (pr.org_id, -1),
+							   -1, NULL,
+							   po_communication_pvt.getoperationinfo (pr.org_id)
+							  ) ou_name,
+					   DECODE (NVL (pr.org_id, -1),
+							   -1, NULL,
+							   po_communication_pvt.getouaddressline1 ()
+							  ) ou_addr1,
+					   DECODE (NVL (pr.org_id, -1),
+							   -1, NULL,
+							   po_communication_pvt.getouaddressline2 ()
+							  ) ou_addr2,
+					   DECODE (NVL (pr.org_id, -1),
+							   -1, NULL,
+							   po_communication_pvt.getouaddressline3 ()
+							  ) ou_addr3,
+					   DECODE (NVL (pr.org_id, -1),
+							   -1, NULL,
+							   po_communication_pvt.getoutowncity ()
+							  ) ou_town_city,
+					   DECODE (NVL (pr.org_id, -1),
+							   -1, NULL,
+							   po_communication_pvt.getouregion2 ()
+							  ) ou_region2,
+					   DECODE (NVL (pr.org_id, -1),
+							   -1, NULL,
+							   po_communication_pvt.getoupostalcode ()
+							  ) ou_postalcode,
+					   DECODE (NVL (pr.org_id, -1),
+							   -1, NULL,
+							   po_communication_pvt.getoucountry ()
+							  ) ou_country,
+					   po_communication_pvt.getlocationinfo
+														(pa.location_id)
+																		rel_buyer_location_id,
+					   po_communication_pvt.getaddressline1 () rel_buyer_address_line1,
+					   po_communication_pvt.getaddressline2 () rel_buyer_address_line2,
+					   po_communication_pvt.getaddressline3 () rel_buyer_address_line3,
+					   po_communication_pvt.getaddressline4 () rel_buyer_address_line4,
+					   po_communication_pvt.getaddressinfo () rel_buyer_city_state_zip,
+					   po_communication_pvt.getphone (pa.agent_id) rel_buyer_contact_phone,
+					   po_communication_pvt.getemail () rel_buyer_contact_email,
+					   po_communication_pvt.getfax () rel_buyer_contact_fax,
+					   po_communication_pvt.getterritoryshortname () rel_buyer_country,
+					   TO_CHAR (po_core_s.get_total ('R', pr.po_release_id),
+								po_communication_pvt.getformatmask
+							   ) total_amount,
+					   pvs.address_line4 vendor_address_line4, pvs.area_code vendor_area_code,
+					   pvc.area_code vendor_contact_area_code, pvc.phone vendor_contact_phone,
+					   DECODE (NVL (pr.org_id, -1),
+							   -1, NULL,
+							   po_communication_pvt.getlegalentitydetails (pr.org_id)
+							  ) le_name,
+					   DECODE (NVL (pr.org_id, -1),
+							   -1, NULL,
+							   po_communication_pvt.getleaddressline1 ()
+							  ) le_addr1,
+					   DECODE (NVL (pr.org_id, -1),
+							   -1, NULL,
+							   po_communication_pvt.getleaddressline2 ()
+							  ) le_addr2,
+					   DECODE (NVL (pr.org_id, -1),
+							   -1, NULL,
+							   po_communication_pvt.getleaddressline3 ()
+							  ) le_addr3,
+					   DECODE (NVL (pr.org_id, -1),
+							   -1, NULL,
+							   po_communication_pvt.getletownorcity ()
+							  ) le_town_city,
+					   DECODE (NVL (pr.org_id, -1),
+							   -1, NULL,
+							   po_communication_pvt.getlestateorprovince ()
+							  ) le_stae_province,
+					   DECODE (NVL (pr.org_id, -1),
+							   -1, NULL,
+							   po_communication_pvt.getlepostalcode ()
+							  ) le_postalcode,
+					   DECODE (NVL (pr.org_id, -1),
+							   -1, NULL,
+							   po_communication_pvt.getlecountry ()
+							  ) le_country,
+					   TO_CHAR (ph.start_date, 'DD-MON-YYYY HH24:MI:SS') start_date,
+					   TO_CHAR (ph.end_date, 'DD-MON-YYYY HH24:MI:SS') end_date,
+					   TO_CHAR (NVL (ph.blanket_total_amount, ''),
+								po_communication_pvt.getformatmask
+							   ) amount_agreed,
+					   pr.change_summary, pr.document_creation_method, pr.vendor_order_num,
+					   --added for r12 upgrade retrofit
+					   hre.full_name AS planner, hre.email_address AS planner_email,
+					   (SELECT phone_number
+						  FROM per_phones
+						 WHERE parent_id = hre.person_id
+						   AND parent_table = 'PER_ALL_PEOPLE_F'
+						   AND SYSDATE BETWEEN date_from AND NVL
+															   (date_to, SYSDATE + 1)
+						   AND phone_type = 'W1'                  -- included for defect 28201
+						   AND ROWNUM = 1                         -- included for defect 28201
+										 ) AS planner_phone,
+					   -- added check effective date to avoid multiple records for an employee
+					   (SELECT revised_hre.full_name
+						  FROM per_all_people_f revised_hre, fnd_user u
+						 WHERE ph.last_updated_by = u.user_id
+						   AND u.employee_id = revised_hre.person_id
+						   AND SYSDATE BETWEEN revised_hre.effective_start_date
+										   AND revised_hre.effective_end_date) AS revised_by,
+					   -- added check effective date to avoid multiple records for an employee
+					   (SELECT revised_hre.email_address
+						  FROM per_all_people_f revised_hre, fnd_user u
+						 WHERE ph.last_updated_by = u.user_id
+						   AND u.employee_id = revised_hre.person_id
+						   AND SYSDATE BETWEEN revised_hre.effective_start_date
+										   AND revised_hre.effective_end_date)
+																		  AS revised_by_email,
+					   -- added check effective date to avoid multiple records for an employee
+					   (SELECT revised_pph.phone_number
+						  FROM per_all_people_f revised_hre,
+							   per_phones revised_pph,
+							   fnd_user u
+						 WHERE revised_hre.person_id = revised_pph.parent_id
+						   AND ph.last_updated_by = u.user_id
+						   AND u.employee_id = revised_hre.person_id
+						   AND revised_pph.parent_table = 'PER_ALL_PEOPLE_F'
+						   AND SYSDATE BETWEEN revised_hre.effective_start_date
+										   AND revised_hre.effective_end_date
+						   AND SYSDATE BETWEEN revised_pph.date_from
+										   AND NVL
+												 (revised_pph.date_to, SYSDATE + 1)
+						   AND revised_pph.phone_type = 'W1'      -- included for defect 28201
+						   AND ROWNUM = 1                         -- included for defect 28201
+										 ) AS revised_by_phone_number,
+					   ph.attribute_category AS po_type, NULL AS drop_ship_address1,
+					   NULL AS drop_ship_address2, NULL AS drop_ship_address3,
+					   NULL AS drop_ship_address4, NULL AS drop_ship_address5,
+					   NULL AS drop_ship_location,
+					   NVL
+						  (po_releases_sv2.get_rel_total (pr.po_release_id),
+						   0
+						  ) AS total_amount_minus_tax,
+					   --nvl (ph.attribute2, 0) as total_tax, --commented and added for defect# 26317
+					   NVL ((SELECT   SUM (NVL (pda.nonrecoverable_tax, 0))
+									+ SUM (NVL (pda.recoverable_tax, 0))
+							   FROM po_distributions_all pda
+							  WHERE ph.po_header_id = pda.po_header_id),
+							0
+						   ) AS total_tax,
+						 NVL
+							(po_releases_sv2.get_rel_total (pr.po_release_id),
+							 0
+							)
+					   --+ nvl (ph.attribute2, 0) as total_amount_with_tax, --commented and added for defect# 26317
+					   + NVL ((SELECT   SUM (NVL (pda.nonrecoverable_tax, 0))
+									  + SUM (NVL (pda.recoverable_tax, 0))
+								 FROM po_distributions_all pda
+								WHERE ph.po_header_id = pda.po_header_id),
+							  0
+							 ) AS total_amount_with_tax,
+					   ph.revision_num AS bpa_revision,
+					   fnd_profile.VALUE ('XX_PO_RPT_TERMS_CONDITIONS') AS terms_conditions,
+					   --commented and added for defect# 26317
+					   /*-- added to fix defect # 5933
+					   (select sum (nvl (attribute2, 0))
+					   from po_line_locations_all
+					   where po_release_id = pr.po_release_id) total_tax_release
+					   --end*/
+					   (SELECT   SUM (NVL (pda.nonrecoverable_tax, 0))
+							   + SUM (NVL (pda.recoverable_tax, 0))
+						  FROM po_distributions_all pda
+						 WHERE pda.po_release_id = pr.po_release_id) total_tax_release
+				  FROM fnd_lookup_values plc1,
+					   fnd_lookup_values plc2,
+					   fnd_currencies_tl fcc,
+					   po_vendors vn,
+					   po_vendor_sites_all pvs,
+					   po_vendor_contacts pvc,
+					   per_all_people_f hre,
+					   ap_terms t,
+					   po_releases_all pr,
+					   po_agents pa,
+					   po_headers_all ph,
+					   fnd_territories_tl fte3,
+					   fnd_lookup_values plc3,
+					   org_freight ofc
+				 WHERE ph.type_lookup_code = 'BLANKET'
+				   AND ph.po_header_id = pr.po_header_id
+				   AND vn.vendor_id(+) = ph.vendor_id
+				   AND pvs.vendor_site_id(+) = ph.vendor_site_id
+				   AND ph.vendor_contact_id = pvc.vendor_contact_id(+)
+				   AND (ph.vendor_contact_id IS NULL OR ph.vendor_contact_id = pvc.vendor_contact_id    --QC 35127
+					   )
+				   AND hre.person_id = pr.agent_id
+				   AND TRUNC (SYSDATE) BETWEEN hre.effective_start_date AND hre.effective_end_date
+				   AND ph.terms_id = t.term_id(+)
+				   AND fcc.currency_code = ph.currency_code
+				   AND fcc.LANGUAGE = USERENV ('LANG')
+				   AND plc1.lookup_code(+) = ph.fob_lookup_code
+				   AND plc1.lookup_type(+) = 'FOB'
+				   AND plc1.view_application_id(+) = 201
+				   AND plc1.LANGUAGE(+) = USERENV ('LANG')
+				   AND DECODE (plc1.lookup_code, NULL, 1, plc1.security_group_id) =
+						  DECODE (plc1.lookup_code,
+								  NULL, 1,
+								  fnd_global.lookup_security_group (plc1.lookup_type,
+																	plc1.view_application_id
+																   )
+								 )
+				   AND plc2.lookup_code(+) = ph.freight_terms_lookup_code
+				   AND plc2.lookup_type(+) = 'FREIGHT TERMS'
+				   AND plc2.view_application_id(+) = 201
+				   AND plc2.LANGUAGE(+) = USERENV ('LANG')
+				   AND DECODE (plc2.lookup_code, NULL, 1, plc2.security_group_id) =
+						  DECODE (plc2.lookup_code,
+								  NULL, 1,
+								  fnd_global.lookup_security_group (plc2.lookup_type,
+																	plc2.view_application_id
+																   )
+								 )
+				   AND pvs.country = fte3.territory_code(+)
+				   AND DECODE (fte3.territory_code, NULL, '1', fte3.LANGUAGE) =
+									 DECODE (fte3.territory_code,
+											 NULL, '1',
+											 USERENV ('LANG')
+											)
+				   AND plc3.lookup_code(+) = pr.shipping_control
+				   AND plc3.lookup_type(+) = 'SHIPPING CONTROL'
+				   AND plc3.LANGUAGE(+) = USERENV ('LANG')
+				   AND plc3.view_application_id(+) = 201
+				   AND DECODE (plc3.lookup_code, NULL, 1, plc3.security_group_id) =
+						  DECODE (plc3.lookup_code,
+								  NULL, 1,
+								  fnd_global.lookup_security_group (plc3.lookup_type,
+																	plc3.view_application_id
+																   )
+								 )
+				   AND ofc.freight_code(+) = ph.ship_via_lookup_code
+				   AND ofc.organization_id(+) = ph.org_id
+				   AND pa.agent_id = pr.agent_id;

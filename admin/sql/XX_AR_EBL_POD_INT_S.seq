@@ -1,0 +1,48 @@
+SET VERIFY      OFF
+SET TERM        OFF
+SET FEEDBACK    OFF
+SET SHOW        OFF
+SET ECHO        OFF
+SET TAB         OFF
+
+-- +===========================================================================+
+-- |                               Office Depot                                |
+-- |                         
+-- +===========================================================================+
+-- | Name        : XX_AR_EBL_POD_INT_S.seq                                     |
+-- | Description :                                                             |
+-- | File to create sequence for XX_AR_EBL_POD_INT table                       |
+-- | Table: XX_AR_EBL_POD_INT.                                                 |
+-- |                                                                           |
+-- |                                                                           |
+-- |                                                                           |
+-- |Change Record:                                                             |
+-- |===============                                                            |
+-- |Version  Date        Author        Remarks            	               	   |
+-- |======== =========== ============= ========================================|
+-- |DRAFT 1A 26-OCT-2018 Capgemini     Initial draft version                   |
+-- |                                                                           |
+-- +===========================================================================+
+
+-- ----------------------------------------------------------------------------
+-- Create Custom Sequence XX_AR_EBL_POD_INT_S
+-- ----------------------------------------------------------------------------
+
+WHENEVER SQLERROR CONTINUE;
+
+SET TERM ON
+PROMPT
+PROMPT Creating the Sequence XX_AR_EBL_POD_INT_S 
+PROMPT
+
+CREATE SEQUENCE XX_AR_EBL_POD_INT_S
+  MINVALUE 1
+  START WITH 1
+  INCREMENT BY 1
+  NOMAXVALUE
+  NOCYCLE NOCACHE NOORDER;
+
+   
+PROMPT
+PROMPT Exiting....
+PROMPT

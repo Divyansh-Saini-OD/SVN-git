@@ -1,0 +1,31 @@
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     OFF
+SET TERM         ON
+
+PROMPT Creating SEQUENCE XX_AR_EBL_CONS_TRX_STG_S
+PROMPT Program exits IF the creation IS NOT SUCCESSFUL
+
+WHENEVER SQLERROR CONTINUE
+
+-- +===================================================================================+
+-- |                  Office Depot - Project Simplify                                  |
+-- |                       WIPRO Technologies                                          |
+-- +===================================================================================+
+-- | Name        : XX_AR_EBL_CONS_TRX_STG_S                                            |
+-- | Description : This sequence is used by the ePDF custom tables                     |
+-- |               XX_AR_EBL_CONS_TRX_STG, XX_AR_EBL_CONS_LINES_STG,                   |
+-- |               XX_AR_EBL_CONS_TRX_TOTAL_STG                                        |
+-- |                                                                                   |
+-- |Change Record:                                                                     |
+-- |===============                                                                    |
+-- |Version   Date          Author                 Remarks                             |
+-- |=======   ==========   =============           ====================================|
+-- |DRAFT 1.0 01-APR-2010  Gokila Tamilselvam      Initial draft version               |
+-- +===================================================================================+
+
+CREATE SEQUENCE xxfin.xx_ar_ebl_cons_trx_stg_s START WITH 1 INCREMENT BY 1;
+
+SHOW ERROR

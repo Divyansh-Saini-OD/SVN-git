@@ -1,0 +1,51 @@
+-- +==========================================================================+
+-- |                  Office Depot - Project Simplify                         |
+-- |                       WIPRO Technologies                                 |
+-- +==========================================================================+
+-- | SQL Script to create the following objects                               |
+-- |             Table       : xx_iby_deposit_aops_order_dtls                 |
+-- |                                                                          |
+-- |                         For the extension E1325 Line Level Dtls table    |
+-- |                                                                          |
+-- |                                                                          |
+-- |                                                                          |
+-- |Change Record:                                                            |
+-- |===============                                                           |
+-- |Version   Date         Author               Remarks                       |
+-- |=======   ==========   =============        ==============================|
+-- | V1.0     18-JUL-2007  Rama Krishna K       Initial version               |
+-- |                                                                          |
+-- +==========================================================================+
+
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     ON
+
+-- DROP TABLE xxfin.xx_iby_deposit_aops_order_dtls;
+
+CREATE TABLE xxfin.xx_iby_deposit_aops_order_dtls
+(
+AOPS_ORDER_NUMBER              VARCHAR2(50)
+,RECEIPT_NUMBER                VARCHAR2(30)
+,WS_SEQ_NUMBER                 VARCHAR2(30)
+,WS_MERCH_DEPT                 VARCHAR2(30)
+,WS_SKU                        VARCHAR2(30)
+,WS_PRICE_RETAIL               VARCHAR2(30)
+,WS_SKU_QTY                    VARCHAR2(30)
+,WS_SKU_DESC                   VARCHAR2(30)
+,CREATION_DATE                 DATE NOT NULL 
+,CREATED_BY                    NUMBER NOT NULL 
+,LAST_UPDATE_DATE              DATE NOT NULL 
+,LAST_UPDATED_BY               NUMBER NOT NULL 
+,LAST_UPDATE_LOGIN             NUMBER NOT NULL 
+,PROGRAM_APPLICATION_ID        NUMBER
+,PROGRAM_ID                    NUMBER
+,PROGRAM_UPDATE_DATE           DATE
+,CONSTRAINT XX_PR_KEY PRIMARY KEY (AOPS_ORDER_NUMBER, RECEIPT_NUMBER, WS_SEQ_NUMBER)
+);
+
+SHOW ERROR
+
+

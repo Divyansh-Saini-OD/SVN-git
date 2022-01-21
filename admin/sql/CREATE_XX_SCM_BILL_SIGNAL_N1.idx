@@ -1,0 +1,31 @@
+-- +===========================================================================+
+-- |                  Office Depot - Project Simplify                          |
+-- +===========================================================================+
+-- | Name :XXFIN.XX_SCM_BILL_SIGNAL_N1                                         |
+-- | Description :   Script to create XX_SCM_BILL_SIGNAL_N1 index              |
+-- |                                                                           |
+-- |                                                                           |
+-- |Change Record:                                                             |
+-- |===============                                                            |
+-- |Version      Date           Author                  Remarks                |
+-- |=======    ==========     =============             ====================== |
+-- | 1.0       21-JAN-2019    Dinesh Nagapuri           Initial draft version  |
+-- +===========================================================================+
+
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     ON
+
+--DROP INDEX XXFIN.XX_SCM_BILL_SIGNAL_N1;
+
+CREATE INDEX XXFIN.XX_SCM_BILL_SIGNAL_N1 ON XXFIN.XX_SCM_BILL_SIGNAL
+  (
+    CUSTOMER_ID,
+    BILL_FORWARD_FLAG
+  )
+  TABLESPACE APPS_TS_TX_DATA;
+
+  SHOW ERRORS; 
+  

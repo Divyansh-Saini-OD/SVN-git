@@ -1,0 +1,48 @@
+-- +==========================================================================+
+-- |                  Office Depot - Project Simplify                         |
+-- |                       WIPRO Technologies                                 |
+-- +==========================================================================+
+-- | RICE ID     :  I0349                                                     |
+-- | Name        :  Settlement and Payment Processing                         |
+-- |                                                                          |
+-- | SQL Script to drop some columns in the following object                  |
+-- |             Table       : XX_IBY_BATCH_TRXNS_HISTORY                     |
+-- |                                                                          |
+-- |Change Record:                                                            |
+-- |===============                                                           |
+-- |Version   Date         Author               Remarks                       |
+-- |=======   ==========   =============        ==============================|
+-- | V1.0     23-FEB-2009  Anitha D             Initial version               |
+-- |                                            Added for the Defect 11482    |
+-- |                                                                          |
+-- +==========================================================================+
+
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     ON
+
+ALTER TABLE xxfin.xx_iby_batch_trxns_history
+        DROP ( is_deposit
+              ,is_custom_refund
+              ,is_amex
+              ,process_indicator
+              ,attribute16
+              ,attribute17
+              ,attribute18
+              ,attribute19
+              ,attribute20
+              ,attribute21
+              ,attribute22
+              ,attribute23
+              ,attribute24
+              ,attribute25
+              ,attribute26
+              ,attribute27
+              ,attribute28
+              ,attribute29
+              ,attribute30
+              );
+
+SHOW ERROR;

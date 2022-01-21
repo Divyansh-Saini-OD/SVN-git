@@ -1,0 +1,48 @@
+<adapter-config name="InsertUpdateDepartmentDB2Data" adapter="Database Adapter" wsdlLocation="InsertUpdateDepartmentDB2Data.wsdl" xmlns="http://platform.integration.oracle/blocks/adapter/fw/metadata">
+  
+  <connection-factory location="eis/db/MfrDb2HR" UIConnectionName="ODPDB2T" adapterRef=""/>
+   
+  <endpoint-interaction portType="InsertUpdateDepartmentDB2Data_ptt" operation="merge">
+    <interaction-spec className="oracle.tip.adapter.db.DBWriteInteractionSpec">
+      <property name="DescriptorName" value="InsertUpdateDepartmentDB2Data.PsDeptTbl"/>
+      <property name="DmlType" value="merge"/>
+      <property name="MappingsMetaDataURL" value="InsertUpdateDepartmentDB2Data-or-mappings.xml"/>
+      <property name="OptimizeMerge" value="true"/>
+      <property name="DetectOmissions" value="true"/>
+      <property name="GetActiveUnitOfWork" value="false"/>
+    </interaction-spec>
+  </endpoint-interaction>
+
+  <endpoint-interaction portType="InsertUpdateDepartmentDB2Data_ptt" operation="insert">
+    <interaction-spec className="oracle.tip.adapter.db.DBWriteInteractionSpec">
+      <property name="DescriptorName" value="InsertUpdateDepartmentDB2Data.PsDeptTbl"/>
+      <property name="DmlType" value="insert"/>
+      <property name="MappingsMetaDataURL" value="InsertUpdateDepartmentDB2Data-or-mappings.xml"/>
+      <property name="OptimizeMerge" value="true"/>
+      <property name="DetectOmissions" value="true"/>
+      <property name="GetActiveUnitOfWork" value="false"/>
+    </interaction-spec>
+  </endpoint-interaction>
+
+  <endpoint-interaction portType="InsertUpdateDepartmentDB2Data_ptt" operation="update">
+    <interaction-spec className="oracle.tip.adapter.db.DBWriteInteractionSpec">
+      <property name="DescriptorName" value="InsertUpdateDepartmentDB2Data.PsDeptTbl"/>
+      <property name="DmlType" value="update"/>
+      <property name="MappingsMetaDataURL" value="InsertUpdateDepartmentDB2Data-or-mappings.xml"/>
+      <property name="OptimizeMerge" value="true"/>
+      <property name="DetectOmissions" value="true"/>
+      <property name="GetActiveUnitOfWork" value="false"/>
+    </interaction-spec>
+  </endpoint-interaction>
+
+  <endpoint-interaction portType="InsertUpdateDepartmentDB2Data_ptt" operation="InsertUpdateDepartmentDB2DataSelect">
+    <interaction-spec className="oracle.tip.adapter.db.DBReadInteractionSpec">
+      <property name="DescriptorName" value="InsertUpdateDepartmentDB2Data.PsDeptTbl"/>
+      <property name="QueryName" value="InsertUpdateDepartmentDB2DataSelect"/>
+      <property name="MappingsMetaDataURL" value="InsertUpdateDepartmentDB2Data-or-mappings.xml"/>
+      <property name="ReturnSingleResultSet" value="false"/>
+      <property name="GetActiveUnitOfWork" value="false"/>
+    </interaction-spec>
+  </endpoint-interaction>
+
+</adapter-config>

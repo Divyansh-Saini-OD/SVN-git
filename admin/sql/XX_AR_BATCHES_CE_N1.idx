@@ -1,0 +1,25 @@
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     OFF
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+-- +=======================================================================+
+-- |               Office Depot - Project Simplify                         |
+-- +=======================================================================+
+-- | Name        :XX_AR_BATCHES_CE_N1                                      |
+-- | Description : Index for Custom Table AR_BATCHES_ALL                   |
+-- |Change History:                                                        |
+-- |---------------                                                        |
+-- |                                                                       |
+-- |Version  Date        Author             Remarks                        |
+-- |-------  ----------- -----------------  -------------------------------|
+-- |1.0      09-JAN-2014 Deepak V           Initial  Version (Defect 26310)|
+-- +=======================================================================+
+
+
+create index xxfin.xx_ar_batches_ce_n1 on ar.ar_batches_all ( type, remit_bank_acct_use_id, name, batch_applied_status ) compress parallel 8;
+alter index xxfin.xx_ar_batches_ce_n1 noparallel;
+
+/

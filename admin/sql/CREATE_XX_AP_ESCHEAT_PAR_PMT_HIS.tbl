@@ -1,0 +1,48 @@
+
+-- +==========================================================================+
+-- |                  Office Depot - Project Simplify                         |
+-- +==========================================================================+
+-- | Name :XXFIN.XX_AP_ESCHEAT_PAR_PMT_HIS                                    |
+-- | Description : Create history table for Escheat and PAR Checks            |
+-- |               Rice id : E2056                                            |
+-- |                                                                          |
+-- |                                                                          |
+-- |                                                                          |
+-- |Change Record:                                                            |
+-- |===============                                                           |
+-- |Version   Date         Author               Remarks                       |
+-- |=======   ==========   =============        ==============================|
+-- | 1.0      25-MAR-2010  P. Marco            Initial version                |
+-- |==========================================================================|
+
+
+CREATE TABLE XXFIN.XX_AP_ESCHEAT_PAR_PMT_HIS 
+   ( ORG_DOC_NUM        NUMBER
+     ,ORG_CHECK_ID      NUMBER
+     ,ORG_PMT_DATE      DATE
+     ,ORG_PAY_AMT       NUMBER
+     ,ORG_FUNC_AMT      NUMBER
+     ,SUPPLIER_NUM      VARCHAR2(30)
+     ,SUPPLIER_SITE     VARCHAR2(15)
+     ,SUPPLIER_NAME     VARCHAR2(240)
+     ,VOID_TYPE         VARCHAR2(150)
+     ,ADDRESS1          VARCHAR2(240)
+     ,ADDRESS2          VARCHAR2(240)
+     ,CITY              VARCHAR2(25)
+     ,STATE             VARCHAR2(150)
+     ,COUNTRY           VARCHAR2(25)
+     ,ZIP_CODE          VARCHAR2(20)
+     ,org_id            NUMBER
+     ,CLR_PAY_DOC_NUM   NUMBER
+     ,CLR_PAY_DATE      DATE
+     ,PAY_CURRENCY      VARCHAR2(15)
+     ,EXTRACT_FILE_NAME VARCHAR2(50)
+     ,CREATION_DATE     DATE
+     ,CREATED_BY        NUMBER
+     ,LAST_UPDATE_DATE  DATE 
+     ,LAST_UPDATED_BY   NUMBER
+     ,ERROR_MESSAGE     VARCHAR2(250)
+     ,PROCESS_DATE      DATE
+     ,PROCESS_STATUS    VARCHAR2(50) 
+   );
+

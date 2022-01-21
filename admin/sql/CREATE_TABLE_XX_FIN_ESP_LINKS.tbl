@@ -1,0 +1,66 @@
+-- +===========================================================================+
+-- |                  Office Depot - Project Simplify                          |
+-- +===========================================================================+
+-- | Name :XXFIN.XX_FIN_ESP_LINK                                               |
+-- | Description :   Script to create XX_FIN_ESP_LINK table                    |
+-- |                                                                           |
+-- |                                                                           |
+-- |Change Record:                                                             |
+-- |===============                                                            |
+-- |Version      Date           Author                  Remarks                |
+-- |=======    ==========     =============             ====================== |
+-- | 1.0      9-MAY-2013      Ray Strauss               Initial draft version  |
+-- +===========================================================================+
+
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     ON
+WHENEVER SQLERROR CONTINUE
+
+--+=====================================================================+
+--+               DROP TABLE XXFIN.XX_FIN_ESP_LINK
+--+=====================================================================+
+
+--DROP TABLE XXFIN.XX_FIN_ESP_LINK;
+
+SHOW ERROR
+
+--+=====================================================================+
+--+               CREATE TABLE XXFIN.XX_FIN_ESP_LINK
+--+=====================================================================+
+
+CREATE TABLE XXFIN.XX_FIN_ESP_LINK
+  (
+     ESP_DETAIL_ID   NUMBER,
+     ESP_PGM_LINK_TYPE    VARCHAR2(2 BYTE),
+     ESP_PGM_LINK_APPL    VARCHAR2(80 BYTE),
+     ESP_PGM_LINK_JOB     VARCHAR2(80 BYTE),
+     ATTRIBUTE1           VARCHAR2(250 BYTE),
+     ATTRIBUTE2           VARCHAR2(250 BYTE),
+     ATTRIBUTE3           VARCHAR2(250 BYTE),
+     ATTRIBUTE4           VARCHAR2(250 BYTE),
+     ATTRIBUTE5           VARCHAR2(250 BYTE),
+     ATTRIBUTE6           VARCHAR2(250 BYTE),
+     ATTRIBUTE7           VARCHAR2(250 BYTE),
+     ATTRIBUTE8           VARCHAR2(250 BYTE),
+     ATTRIBUTE9           VARCHAR2(250 BYTE),
+     ATTRIBUTE10          VARCHAR2(250 BYTE),
+     CREATION_DATE        DATE,
+     CREATED_BY           NUMBER,
+     LAST_UPDATED_BY      NUMBER,
+     LAST_UPDATE_DATE     DATE,
+     LAST_UPDATE_LOGIN    NUMBER
+  );
+
+SHOW ERROR
+
+--+=====================================================================+
+--+               GRANT TABLE XXFIN.XX_FIN_ESP_LINK
+--+=====================================================================+
+
+GRANT SELECT ON XXFIN.XX_FIN_ESP_LINK TO APPS;
+GRANT SELECT ON XXFIN.XX_FIN_ESP_LINK TO ERP_SYSTEM_TABLE_SELECT_ROLE;
+
+SHOW ERROR

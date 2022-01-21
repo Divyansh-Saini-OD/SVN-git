@@ -1,0 +1,45 @@
+-- +============================================================================================+
+-- |                        Office Depot - Project Simplify                                     |
+-- |                                                                                            |
+-- +============================================================================================+
+-- | Name         : XX_IBY_SECURITY_SEGMENTS_IDX.idx                                            |
+-- | Rice Id      :                                                                             | 
+-- | Description  : IBY_SECURITY_SEGMENTS Table Indexes Creation Script                         |  
+-- | Purpose      :                                                                             |
+-- |                                                                                            |
+-- |                                                                                            |
+-- |Change Record:                                                                              |
+-- |===============                                                                             |
+-- |Version    Date          Author                Remarks                                      | 
+-- |=======    ==========    =================    ==============================================+
+-- |1.0        09-MAY-2016   Avinash Baddam       Initial Version                               |
+-- +============================================================================================+
+
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     ON
+
+PROMPT CREATING INDEX XX_IBY_SECURITY_SEGMENTS_N1.....
+CREATE INDEX "XXFIN"."XX_IBY_SECURITY_SEGMENTS_N1" ON "IBY"."IBY_SECURITY_SEGMENTS" 
+("CC_NUMBER_HASH1", "CC_NUMBER_HASH2", "SEC_SEGMENT_ID")
+ PCTFREE 10 INITRANS 11 MAXTRANS 255 COMPUTE STATISTICS COMPRESS 3
+ STORAGE(INITIAL 16777216 NEXT 16777216 MINEXTENTS 1 MAXEXTENTS 2147483645
+ PCTINCREASE 0 FREELISTS 1 FREELIST GROUPS 1
+ BUFFER_POOL DEFAULT FLASH_CACHE DEFAULT CELL_FLASH_CACHE DEFAULT)
+ TABLESPACE "APPS_TS_TX_IDX_MISC_16M" parallel 64;
+alter index "XXFIN"."XX_IBY_SECURITY_SEGMENTS_N1" noparallel;
+ 
+PROMPT CREATING INDEX IBY_SECURITY_SEGMENTS_U1..... 
+CREATE UNIQUE INDEX "IBY"."IBY_SECURITY_SEGMENTS_U1" ON "IBY"."IBY_SECURITY_SEGMENTS" ("SEC_SEGMENT_ID")
+ PCTFREE 10 INITRANS 11 MAXTRANS 255 COMPUTE STATISTICS
+ STORAGE(INITIAL 16777216 NEXT 16777216 MINEXTENTS 1 MAXEXTENTS 2147483645
+ PCTINCREASE 0 FREELISTS 1 FREELIST GROUPS 1
+ BUFFER_POOL DEFAULT FLASH_CACHE DEFAULT CELL_FLASH_CACHE DEFAULT)
+ TABLESPACE "APPS_TS_TX_IDX_MISC_16M" parallel 64;
+alter index "IBY"."IBY_SECURITY_SEGMENTS_U1"  noparallel;
+ 
+COMMIT;
+
+SHOW ERROR;

@@ -1,0 +1,39 @@
+-- +==========================================================================+
+-- |                  Office Depot - Project Simplify                         |
+-- |                       WIPRO Technologies                                 |
+-- +==========================================================================+
+-- | SQL Script to create                                                     |
+-- |                                                                          |
+-- |                      INDEXES: XX_AR_CUSTOMER_TRX_N1                      |
+-- |                                                                          |
+-- |                                                                          |
+-- |                                                                          |
+-- |Change Record:                                                            |
+-- |===============                                                           |
+-- |Version   Date         Author               Remarks                       |
+-- |=======   ==========   =============        ==============================|
+-- | V1.0     25-MAR-2009  Aravind A.           Initial version               |
+-- +==========================================================================+
+
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     ON
+
+CREATE INDEX XXFIN.XX_AR_CUSTOMER_TRX_N1 ON AR.RA_CUSTOMER_TRX_ALL
+(INTERFACE_HEADER_CONTEXT,
+INTERFACE_HEADER_ATTRIBUTE1,
+INTERFACE_HEADER_ATTRIBUTE2,
+INTERFACE_HEADER_ATTRIBUTE3,
+INTERFACE_HEADER_ATTRIBUTE4,
+INTERFACE_HEADER_ATTRIBUTE5,
+INTERFACE_HEADER_ATTRIBUTE6,
+INTERFACE_HEADER_ATTRIBUTE7,
+INTERFACE_HEADER_ATTRIBUTE8,
+INTERFACE_HEADER_ATTRIBUTE9,
+INTERFACE_HEADER_ATTRIBUTE10,
+INTERFACE_HEADER_ATTRIBUTE11,
+INTERFACE_HEADER_ATTRIBUTE12,
+INTERFACE_HEADER_ATTRIBUTE13,
+INTERFACE_HEADER_ATTRIBUTE14);

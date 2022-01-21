@@ -1,0 +1,30 @@
+CREATE TABLE XXFIN.XX_IBY_BATCH_TRXNS_201_HISTORY(Pre1				NUMBER		NOT NULL,Pre2				VARCHAR2(120)	NOT NULL,Pre3				VARCHAR2(1)		NOT NULL,IxRecordType				NUMBER			,
+IxReserved2                             VARCHAR2(120)
+,IxReserved3                             VARCHAR2(120)
+,IxActionCode				NUMBER			
+,IxReserved5                            VARCHAR2(120)
+,IxMessageType				VARCHAR2(120)		
+,IxTerminalId				VARCHAR2(120)		
+,IxStoreNumber				NUMBER		NOT NULL
+,IxRegisterNumber			NUMBER			
+,IxTransactionType   	                VARCHAR2(120)		
+,IxProductCode                          NUMBER
+,IxSKUNumber                            NUMBER
+,IxItemDescription                      VARCHAR2(120)
+,IxItemQuantity                         NUMBER
+,IxUnitCost                             NUMBER
+,IxUnitMeasure                          VARCHAR2(120)
+,IxUnitVATAmount                        NUMBER
+,IxUnitVATRate                          NUMBER
+,IxUnitDiscount                         NUMBER
+,IxUnitDepartmentCode                   VARCHAR2(120)
+,IxInvoiceLineNum                       VARCHAR2(120)
+,IxCustPOLineNum                        VARCHAR2(120)
+,IxCustItemNum                          VARCHAR2(120)
+,IxCustItemDesc                         VARCHAR2(120)
+,IxCustUnitPrice                        VARCHAR2(120)
+,IxCustUOM                              VARCHAR2(120)
+,IxBatchName                            VARCHAR2(100)
+);
+
+SHOW ERROR

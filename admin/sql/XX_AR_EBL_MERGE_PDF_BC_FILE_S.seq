@@ -1,0 +1,48 @@
+SET VERIFY      OFF
+SET TERM        OFF
+SET FEEDBACK    OFF
+SET SHOW        OFF
+SET ECHO        OFF
+SET TAB         OFF
+
+-- +===========================================================================+
+-- |                               Office Depot                                |
+-- |                         
+-- +===========================================================================+
+-- | Name        : XX_AR_EBL_MERGE_PDF_BC_FILE_S.seq                           |
+-- | Description :                                                             |
+-- | File to create sequence for XX_AR_EBL_MERGE_PDF_BC_FILE table             |
+-- | Table: XX_AR_EBL_POD_INT.                                                 |
+-- |                                                                           |
+-- |                                                                           |
+-- |                                                                           |
+-- |Change Record:                                                             |
+-- |===============                                                            |
+-- |Version  Date        Author        Remarks            	               |
+-- |======== =========== ============= ========================================|
+-- |DRAFT 1A 22-APR-2019 Capgemini     Initial draft version NAIT-91483        |
+-- |                                                                           |
+-- +===========================================================================+
+
+-- ----------------------------------------------------------------------------
+-- Create Custom Sequence XX_AR_EBL_MERGE_PDF_BC_FILE_S
+-- ----------------------------------------------------------------------------
+
+WHENEVER SQLERROR CONTINUE;
+
+SET TERM ON
+PROMPT
+PROMPT Creating the Sequence XX_AR_EBL_MERGE_PDF_BC_FILE_S 
+PROMPT
+
+CREATE SEQUENCE XX_AR_EBL_MERGE_PDF_BC_FILE_S
+  MINVALUE 1
+  START WITH 1
+  INCREMENT BY 1
+  NOMAXVALUE
+  NOCYCLE NOCACHE NOORDER;
+/
+   
+PROMPT
+PROMPT Exiting....
+PROMPT

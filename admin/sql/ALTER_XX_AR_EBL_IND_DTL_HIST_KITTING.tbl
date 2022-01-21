@@ -1,0 +1,32 @@
+-- +========================================================================+
+-- |                  Office Depot                                          |
+-- +========================================================================+
+-- | Name        : ALTER_XX_AR_EBL_IND_DTL_HIST_KITTING.tbl                 |
+-- | Rice ID     : E2059                                                    |
+-- | Description : Added new field in the existing XX_AR_EBL_IND_DTL_HIST   |
+-- |               table                                                    |
+-- |                                                                        |
+-- |Change Record:                                                          |
+-- |===============                                                         |
+-- |Version   Date        Author           Remarks                          |
+-- |=======  ===========  =============    =================================|
+-- |1.0      17-MAY-2016  Havish Kasina    Initial Version                  |
+-- +========================================================================+
+
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     ON
+
+PROMPT
+PROMPT Altering the Table XX_AR_EBL_IND_DTL_HIST .....
+PROMPT
+
+ALTER TABLE XXFIN.XX_AR_EBL_IND_DTL_HIST  
+        ADD(
+            KIT_SKU               VARCHAR2(120),
+			KIT_SKU_DESC          VARCHAR2(240)
+          );
+
+SHOW ERROR;

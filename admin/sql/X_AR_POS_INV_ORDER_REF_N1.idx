@@ -1,0 +1,26 @@
+-- +===================================================================+
+-- |                  Office Depot - Project Simplify                  |
+-- +===================================================================+
+-- | Name        : xx_ar_pos_inv_order_ref_N1.idx                      |
+-- |              		                                       |
+-- | Rice ID     : E0080   (SDR)                                       |
+-- |              			                               |
+-- | Description : Index Creation Script                               |
+-- |                                                                   |
+-- |              			                               |
+-- |Change Record:                                                     |
+-- |===============                                                    |
+-- |Version   Date        Author           Remarks                     |
+-- |=======  ===========  =============    ============================|
+-- |1.0      09-DEC-2010  P.Marco          Initial Version             |
+-- +===================================================================+
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     ON
+
+CREATE INDEX XXFIN.xx_ar_pos_inv_order_ref_N1 ON XXFIN.xx_ar_pos_inv_order_ref (related_trx_number)  
+COMPUTE STATISTICS TABLESPACE APPS_TS_TX_IDX_16M;
+
+SHOW ERROR

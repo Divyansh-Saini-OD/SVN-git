@@ -1,0 +1,40 @@
+
+-- +==========================================================================+
+-- |                  Office Depot - Project Simplify                         |
+-- |                       PROVIDGE Consulting                                |
+-- +==========================================================================+
+-- | SQL Script to create indexes                                             |
+-- |                                                                          |
+-- |                                                                          |
+-- |                                                                          |
+-- |                                                                          |
+-- |                                                                          |
+-- |Change Record:                                                            |
+-- |===============                                                           |
+-- |Version   Date         Author               Remarks                       |
+-- |=======   ==========   ================     ==============================|
+-- | V1.0     12-JUN-2008  Sarat Uppalapati     Initial version               |
+-- |                                                                          |
+-- +==========================================================================+
+
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     ON
+
+CREATE INDEX xxfin.XX_CE_AJB998_N1 ON xxfin.XX_CE_AJB998(BANK_REC_ID);
+
+CREATE INDEX xxfin.XX_CE_AJB998_N2 ON xxfin.XX_CE_AJB998(PROCESSOR_ID);
+
+CREATE INDEX xxfin.XX_CE_AJB998_N3 ON xxfin.XX_CE_AJB998(PROVIDER_TYPE);
+
+CREATE INDEX xxfin.XX_CE_AJB998_N4 ON xxfin.XX_CE_AJB998(RECEIPT_NUM);
+
+CREATE INDEX xxfin.XX_CE_999_INTERFACE_N1 ON xxfin.XX_CE_999_INTERFACE (PROCESSOR_ID,BANK_REC_ID);
+
+SHOW ERROR
+
+
+
+

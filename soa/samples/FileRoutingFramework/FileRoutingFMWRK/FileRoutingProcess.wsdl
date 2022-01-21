@@ -1,0 +1,40 @@
+<?xml version= '1.0' encoding= 'UTF-8' ?>
+<wsdl:definitions
+     name="FileRoutingProcess"
+     targetNamespace="http://xmlns.oracle.com/MyPOC/FileRoutingFMWRK/FileRoutingProcess"
+     xmlns:ns2="http://TargetNamespace.com/FileSyncRead"
+     xmlns:ns1="http://schemas.xmlsoap.org/ws/2003/03/addressing"
+     xmlns:plnk="http://schemas.xmlsoap.org/ws/2003/05/partner-link/"
+     xmlns:ns3="http://www.example.org"
+     xmlns:client="http://xmlns.oracle.com/MyPOC/FileRoutingFMWRK/FileRoutingProcess"
+     xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+    >
+    <plnk:partnerLinkType name="FileRoutingProcess">
+        <plnk:role name="FileRoutingProcessProvider">
+            <plnk:portType name="client:FileRoutingProcess"/>
+        </plnk:role>
+    </plnk:partnerLinkType>
+    <wsdl:types>
+        <schema xmlns="http://www.w3.org/2001/XMLSchema">
+            <import namespace="http://xmlns.oracle.com/MyPOC/FileRoutingFMWRK/FileRoutingProcess"
+                 schemaLocation="xsd/FileRoutingProcess.xsd"/>
+        </schema>
+        <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <xsd:import namespace="http://schemas.xmlsoap.org/ws/2003/03/addressing" schemaLocation="oramds:/soa/shared/common/ws-addressing.xsd"/>
+        </xsd:schema>
+        <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <xsd:import namespace="http://TargetNamespace.com/FileSyncRead" schemaLocation="oramds:/apps/ODCommon/FileRoutingFrameWork/common/xsd/FilePath.xsd"/>
+        </xsd:schema>
+        <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <xsd:import namespace="http://www.example.org" schemaLocation="xsd/EndpointURLSchema.xsd"/>
+        </xsd:schema>
+    </wsdl:types>
+    <wsdl:message name="FileRoutingProcessRequestMessage">
+        <wsdl:part name="payload" element="client:process"/>
+    </wsdl:message>
+    <wsdl:portType name="FileRoutingProcess">
+        <wsdl:operation name="process">
+            <wsdl:input message="client:FileRoutingProcessRequestMessage"/>
+        </wsdl:operation>
+    </wsdl:portType>
+</wsdl:definitions>

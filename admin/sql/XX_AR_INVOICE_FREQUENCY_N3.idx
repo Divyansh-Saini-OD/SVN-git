@@ -1,0 +1,55 @@
+REM================================================================================================
+REM                                 Start Of Script
+REM================================================================================================
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     ON
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+-- +=======================================================================+
+-- |               Office Depot - Project Simplify                         |
+-- |      Oracle NAIO/Office Depot/Consulting Organization                 |
+-- +=======================================================================+
+-- | Name             :XX_AR_INVOICE_FREQUENCY_N3                          |
+-- | Description      :Unique Index for Custom Table                       |
+-- |                   XX_AR_INVOICE_FREQUENCY.                            |
+-- |                                                                       |
+-- |Change History:                                                        |
+-- |---------------                                                        |
+-- |                                                                       |
+-- |Version  Date        Author             Remarks                        |
+-- |-------  ----------- -----------------  -------------------------------|
+-- |Draft1a  13-Jun-2008 Wipro Technologies Initial Draft Version          |
+-- |Ver 1.1  13-Mar-2009 Sambasiva Reddy    Modified the index             |
+-- +=======================================================================+
+WHENEVER SQLERROR CONTINUE
+
+-- ---------------------------------------------------
+-- Dropping existing index XX_AR_INVOICE_FREQUENCY_N3
+-- ---------------------------------------------------
+
+--DROP INDEX XXFIN.XX_AR_INVOICE_FREQUENCY_N3;
+
+WHENEVER SQLERROR CONTINUE
+
+PROMPT
+PROMPT Creating Index....
+PROMPT
+-- -------------------------------------------------
+-- Creating Index XX_AR_INVOICE_FREQUENCY_N3
+-- -------------------------------------------------
+
+CREATE INDEX XXFIN.XX_AR_INVOICE_FREQUENCY_N3 
+ON           XXFIN.XX_AR_INVOICE_FREQUENCY (
+                                            INVOICE_ID
+                                           ,CUSTOMER_DOCUMENT_ID  -- Added by samba
+                                            ) TABLESPACE XXOD;
+
+SHOW ERRORS;
+
+EXIT;
+REM================================================================================================
+REM                                 Start Of Script
+REM================================================================================================

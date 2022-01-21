@@ -1,0 +1,49 @@
+
+-- +==================================================================================+  
+-- | Office Depot - Project Simplify                                                  |
+-- |                                                              |
+-- +==================================================================================+
+-- | SQL Index Script to create the table:  xx_fa_status               |
+-- |                                                                                  |
+-- |
+-- |                                                                                  |
+-- |                                                                                  |
+-- |Change Record:                                                                    |
+-- |===============                                                                   |
+-- |Version   Date          Author               Remarks                              |
+-- |=======   ===========   =============        =====================================|
+-- |1.0       15-MAR-2019   Priyam Parmar       Initial DRAFT version                      |
+-- |                                                                                  |
+-- +==================================================================================+
+
+
+
+
+REM================================================================================================
+REM                                 Start Of Script
+REM================================================================================================
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     OFF
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+----------create index for xx_fa_status--------------------
+
+PROMPT
+PROMPT Creating Index....
+PROMPT
+
+create index xx_fa_status_n2 on xxfin.xx_fa_status(book_type_code);
+
+WHENEVER SQLERROR CONTINUE;
+
+PROMPT
+PROMPT Exiting....
+PROMPT 
+
+SET FEEDBACK ON
+
+EXIT;
+

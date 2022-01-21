@@ -1,0 +1,25 @@
+-- +==================================================================================+  
+-- | Office Depot - Project Simplify                                                  |
+-- | Providge Consulting                                                              |
+-- +==================================================================================+
+-- | SQL Script to create indexes on the table:  XXFIN.XX_AR_PAYMENTS_INTF_HISTORY    |
+-- |                                                                                  |
+-- | For the Extension E0062 AR Lockbox Custom AutoCash Rules                         |
+-- |                                                                                  |
+-- |Change Record:                                                                    |
+-- |===============                                                                   |
+-- |Version   Date          Author               Remarks                              |
+-- |=======   ===========   =============        =====================================|
+-- |1.0       21-APR-2010   RamyaPriya M         Initial version                      |
+-- |                                                                                  |
+-- +==================================================================================+
+
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     ON
+
+CREATE INDEX XXFIN.XX_AR_PAYMENTS_INTF_HISTORY_N3
+ ON XX_AR_PAYMENTS_INTF_HISTORY (CREATION_DATE)
+  NOLOGGING;

@@ -1,0 +1,12 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<!-- dbdrv: exec java oracle/jrad/tools/xml/importer XMLImporter.class java &phase=dat+24 checkfile:~PROD:~PATH:~FILE &fullpath:~PROD:~PATH:~FILE -username &un_apps -password &pw_apps -dbconnection &jdbc_db_addr  -userId "1" -rootPackage /oracle/apps/~PROD  -rootdir &fullpath:~PROD:mds:directory  -->
+<oa:listOfValues version="9.0.3.8.13_1550" xml:lang="en-US" xmlns:oa="http://xmlns.oracle.com/oa" xmlns:jrad="http://xmlns.oracle.com/jrad" xmlns:ui="http://xmlns.oracle.com/uix/ui" xmlns:user="http://xmlns.oracle.com/jrad/user" xmlns="http://xmlns.oracle.com/jrad" file-version="$Header$" scope="/" amDefName="od.oracle.apps.xxfin.icx.lov.server.CategoryAttributesLOVAM">
+   <ui:contents>
+      <oa:table name="CategoryDescriptionsRN" id="CategoryDescriptionsLOVRN" text="" shortDesc="Category">
+         <ui:contents>
+            <oa:formValue id="category_id" dataType="NUMBER" prompt="Category_ID" viewName="CategoryDescriptionsLOVVO1" viewAttr="Category_ID"/>
+            <oa:messageStyledText id="description" dataType="VARCHAR2" prompt="Description" viewName="CategoryDescriptionsLOVVO1" viewAttr="Description" queryable="true"/>
+         </ui:contents>
+      </oa:table>
+   </ui:contents>
+</oa:listOfValues>

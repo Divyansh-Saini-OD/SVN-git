@@ -1,0 +1,64 @@
+-- $HeadURL$
+
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+CREATE MATERIALIZED VIEW XXCRM.XXBI_SLS_LDS_SMRY_MV 
+BUILD DEFERRED
+REFRESH FORCE
+ON DEMAND 
+WITH  PRIMARY KEY AS
+-- +===================================================================+
+-- |                  Office Depot - Project Simplify                  |
+-- +===================================================================+
+-- | Name        :  XXBI_SLS_LDS_SMRY_MV.vw                          |
+-- | Description :  MV for Sales Leads                            |
+-- |                                                                   |
+-- |Change Record:                                                     |
+-- |===============                                                    |
+-- |Version   Date          Author           Remarks                   |
+-- |=======   ==========    =============    ==========================|
+-- |1.0       06-Apr-2010   Luis Mazuera     Initial version           |
+-- |2.0       14-Jul-2010   Lokesh Kumar     Replaced rank code with ID|
+-- |                                                                   | 
+-- +===================================================================+
+SELECT
+  mv.STATUS_CODE,
+  mv.customer_type,
+  trunc(mv.LEAD_CREATION_DATE) LEAD_CREATION_DATE,
+  mv.LEAD_RANK_ID,
+  mv.CLOSE_REASON,
+  mv.SOURCE_PROMOTION_ID,
+  mv.resource_id,
+  mv.role_id,
+  mv.group_id,
+  sum(mv.TOTAL_AMOUNT) TOTAL_AMOUNT,
+  count(SALES_LEAD_ID) sales_leads_count,
+  MV.store_number
+FROM XXBI_SALES_LEADS_FCT_MV mv
+WHERE 
+    mv.TERR_DEFN_START_DATE <= sysdate
+AND nvl(mv.TERR_DEFN_END_DATE, sysdate+1) > sysdate
+AND mv.TERR_RSC_START_DATE <= sysdate
+AND nvl(mv.TERR_RSC_END_DATE, sysdate+1) > sysdate
+AND mv.TERR_ENT_START_DATE <= sysdate
+AND nvl(mv.TERR_ENT_END_DATE, sysdate+1) > sysdate
+GROUP BY
+  mv.STATUS_CODE,
+  mv.customer_type,
+  trunc(mv.LEAD_CREATION_DATE),
+  mv.LEAD_RANK_ID,
+  mv.CLOSE_REASON,
+  mv.SOURCE_PROMOTION_ID,
+  mv.resource_id,
+  mv.role_id,
+  mv.group_id,
+  MV.store_number;
+----------------------------------------------------------
+-- Grant to APPS
+----------------------------------------------------------
+GRANT ALL ON XXCRM.XXBI_SLS_LDS_SMRY_MV TO APPS;
+
+SHOW ERRORS;
+EXIT;

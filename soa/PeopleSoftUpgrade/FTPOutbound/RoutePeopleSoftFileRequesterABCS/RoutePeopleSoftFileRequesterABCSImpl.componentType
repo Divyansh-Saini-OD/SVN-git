@@ -1,0 +1,14 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<componentType xmlns="http://xmlns.oracle.com/sca/1.0" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:ui="http://xmlns.oracle.com/soa/designer/">
+   <service name="ReadPeopleSoftOutboundDir" ui:wsdlLocation="ReadPeopleSoftOutboundDir.wsdl">
+      <interface.wsdl interface="http://xmlns.oracle.com/pcbpel/adapter/file/PeopleSoftMigration/RoutePeopleSoftFileRequesterABCS/ReadPeopleSoftOutboundDir#wsdl.interface(Read_ptt)"/>
+   </service>
+   <reference name="MoveToPeopleSoftOutboundDir"
+              ui:wsdlLocation="MoveToPeopleSoftOutboundDir.wsdl">
+      <interface.wsdl interface="http://xmlns.oracle.com/pcbpel/adapter/file/PSHR/RoutePeopleSoftFileRequesterABCS/MoveToPeopleSoftOutboundDir#wsdl.interface(FileMove_ptt)"/>
+   </reference>
+   <reference name="InsertErrorLoggerJMSPublisher"
+              ui:wsdlLocation="InsertErrorLoggerJMSPublisher.wsdl">
+      <interface.wsdl interface="http://xmlns.oracle.com/pcbpel/adapter/jms/10GTo11G/OTMCOSOrderReleaseABCS/InsertErrorLoggerJMSPublisher#wsdl.interface(Produce_Message_ptt)"/>
+   </reference>
+</componentType>

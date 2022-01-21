@@ -1,0 +1,127 @@
+SET VERIFY OFF
+WHENEVER SQLERROR CONTINUE
+                  
+CREATE TABLE XXFIN.XX_AR_TRANS_WC_STG
+(
+  CUSTOMER_TRX_ID              NUMBER(15)       NOT NULL,
+  BILL_TO_CUSTOMER_ID          VARCHAR2(30) NOT NULL,
+  BILL_TO_SITE_USE_ID          NUMBER(15),
+  INVOICE_CLASS                VARCHAR2(20),
+  INVOICE_TYPE                 VARCHAR2(20),
+  TRX_NUMBER                   VARCHAR2(20) NOT NULL,
+  CONSOLIDATED_BILL_NUMBER     VARCHAR2(70),
+  TRX_DATE                     DATE             NOT NULL,
+  PRINT_DATE                   DATE,
+  TERM_CODE                    VARCHAR2(15),
+  PURCHASE_ORDER_DATE          DATE             NOT NULL,
+  SPECIAL_INSTRUCTIONS         VARCHAR2(240),
+  COMMENTS                     VARCHAR2(240),
+  INVOICE_CURRENCY_CODE        VARCHAR2(15),
+  SEND_REFUND                  VARCHAR2(150),
+  REFUND_STATUS                VARCHAR2(150),
+  BILLING_EXTENSION            VARCHAR2(150),
+  ORIG_SYSTEM_ORDER_REFERENCE  VARCHAR2(150),
+  SALES_PERSON                 NUMBER(15),
+  PO                           VARCHAR2(50))
+  /
+                  
+CREATE TABLE XXFIN.XX_AR_CR_WC_STG
+(
+  CASH_RECEIPT_ID        NUMBER(15)             NOT NULL,
+  CUSTOMER_ACCOUNT_ID    NUMBER(15)             NOT NULL,
+  BILL_TO_SITE_USE_ID    NUMBER(15),
+  RECEIPT_NUMBER         VARCHAR2(30),
+  RECEIPT_DATE           DATE                   NOT NULL,
+  AMOUNT                 NUMBER                 NOT NULL,
+  CURRENCY_CODE          VARCHAR2(15)      NOT NULL,
+  STATUS                 VARCHAR2(30),
+  REVERSAL_DATE          DATE,
+  COMMENTS               VARCHAR2(240),
+  STATE                  VARCHAR2(30),
+  RECEIPT_METHOD         NUMBER(15),
+  POSTED_DTE             DATE,
+  REVERSAL_REASON_CODES  VARCHAR2(30),
+  REVERSAL_COMMENTS      VARCHAR2(240),
+  SEND_REFUND            VARCHAR2(30),
+  REFUND_STATUS          VARCHAR2(30))
+  /
+
+CREATE TABLE XXFIN.XX_AR_ADJ_WC_STG
+(
+  ADJUSTMENT_ID                 NUMBER(15),
+  ADJUSTMENT_NUMBER             VARCHAR2(20),
+  ACCOUNT_NUMBER                VARCHAR2(30),
+  TYPE                          VARCHAR2(15),
+  CUSTOMER_TRX_ID               NUMBER(15),
+  TRX_NUMBER                    VARCHAR2(20),
+  APPLY_DATE                    DATE,
+  AMOUNT                        NUMBER,
+  TAX_ADJUSTED                  NUMBER,
+  RECEIVABLES_CHARGES_ADJUSTED  NUMBER,
+  REASON_CODE                   VARCHAR2(30),
+  COMMENTS                      VARCHAR2(2000),
+  NAME                          VARCHAR2(50),
+  ADJUSTMENT_TYPE               VARCHAR2(3),
+  STATUS                        VARCHAR2(30))
+  /
+
+CREATE TABLE XXFIN.XX_AR_PS_WC_STG
+(
+  CUSTOMER_NUMBER          VARCHAR2(30)    NOT NULL,
+  PAYMENT_SCHEDULE_ID      NUMBER(15)           NOT NULL,
+  CUSTOMER_TRX_ID          NUMBER(15),
+  TRX_NUMBER               VARCHAR2(30),
+  DUE_DATE                 DATE                 NOT NULL,
+  AMOUNT_DUE_ORIGINAL      NUMBER               NOT NULL,
+  AMOUNT_DUE_REMAINING     NUMBER               NOT NULL,
+  INVOICE_CURRENCY_CODE    VARCHAR2(15)    NOT NULL,
+  CLASS                    VARCHAR2(20)    NOT NULL,
+  AMOUNT_APPLIED           NUMBER,
+  AMOUNT_CREDITED          NUMBER,
+  AMOUNT_ADJUSTED          NUMBER,
+  AMOUNT_IN_DISPUTE        NUMBER,
+  DISCOUNT_TAKEN_EARNED    NUMBER,
+  DISCOUNT_TAKEN_UNEARNED  NUMBER,
+  TAX_AMOUNT               NUMBER,
+  TAX_AMOUNT_REMAINING     NUMBER,
+  GL_DATE_CLOSED           DATE                 NOT NULL)
+  /
+  
+CREATE TABLE XXFIN.XX_AR_RECAPPL_WC_STG
+  (
+    APPLICATION_TYPE           VARCHAR2(20),
+    RECEIVABLE_APPLICATION_ID  NUMBER(15)         NOT NULL,
+    CUSTOMER_TRX_ID            NUMBER(15),
+    TRX_NUMBER                 VARCHAR2(20)  NOT NULL,
+    CASH_RECEIPT_ID            NUMBER(15)         NOT NULL,
+    FROM_CLASS                 VARCHAR2(20)  NOT NULL,
+    TO_CLASS                   VARCHAR2(20)  NOT NULL,
+    APPLIED_CUSTOMER_TRX_ID    NUMBER(15),
+    APPLIED_TRX_NUMBER         VARCHAR2(20)  NOT NULL,
+    APPLY_DATE                 DATE               NOT NULL,
+    AMOUNT_APPLIED             NUMBER             NOT NULL,
+    DISCOUNT_TAKEN             NUMBER,
+    COMMENTS                   VARCHAR2(240))
+    /
+    
+CREATE TABLE XXFIN.XX_AR_EXT_WC_MASTER_DETAILS
+    (
+      SEQ                   NUMBER,
+      BATCH_ID              NUMBER(15),
+      PARENT_PROGRAM_ID     NUMBER(15),
+      PARENT_REQUEST_ID     NUMBER(15),
+      THREAD_NUM            NUMBER(15),
+      CHILD_PROGRAM_NAME    VARCHAR2(60),
+      CHILD_PROGRAM_ID      NUMBER(15),
+      CHILD_REQUEST_ID      NUMBER(15),
+      FROM_CUST_ACCOUNT_ID  NUMBER(15),
+      TO_CUST_ACCOUNT_ID    NUMBER(15),
+      FROM_RUN_DATE         VARCHAR2(20),
+      TO_RUN_DATE           VARCHAR2(20),
+      STATUS                VARCHAR2(20),
+      LAST_UPDATED_BY       NUMBER(15),
+      CREATION_DATE         DATE,
+      CREATED_BY            NUMBER(15),
+      LAST_UPDATE_DATE      DATE )
+      /
+	

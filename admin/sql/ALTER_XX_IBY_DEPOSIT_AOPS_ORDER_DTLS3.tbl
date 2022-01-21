@@ -1,0 +1,32 @@
+-- +==========================================================================+
+-- |                  Office Depot - Project Simplify                         |
+-- |                       WIPRO Technologies                                 |
+-- +==========================================================================+
+-- | RICE ID     :  E1325                                                     |
+-- | SQL Script to alter the following table                                  |
+-- |             Table       : XX_IBY_DEPOSIT_AOPS_ORDER_DTLS                 |
+-- |                                                                          |
+-- |                         For the extension E1325 Line Level Dtls table    |
+-- |                                                                          |
+-- |Change Record:                                                            |
+-- |===============                                                           |
+-- |Version   Date         Author               Remarks                       |
+-- |=======   ==========   =============        ==============================|
+-- | V1.0     10-APR-2007  Gowri Shankar        Initial version               |
+-- |                                            Added for defect 5462         |
+-- |                                                                          |
+-- |                                                                          |
+-- |                                                                          |
+-- +==========================================================================+
+
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     ON
+
+ALTER TABLE xxfin.xx_iby_deposit_aops_order_dtls
+      ADD (ws_discount_amount NUMBER
+          );
+
+SHOW ERROR;

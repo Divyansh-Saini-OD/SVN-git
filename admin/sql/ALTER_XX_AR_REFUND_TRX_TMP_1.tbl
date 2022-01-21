@@ -1,0 +1,30 @@
+-- +=====================================================================+
+-- |                  Office Depot - Project Simplify                    |
+-- |                       Providge Consulting                           |
+-- +=====================================================================+
+-- |                                                                     |
+-- | Rice Name   :E0055_AUTOMATED_REFUNDS                                |
+-- | Description :Following columns has been modified in                 |
+-- |              XX_AR_REFUND_TRX_TMP table  temporarily                |
+-- |              ADJUSTMENT _NUMBER                                     |
+-- |                                                                     |
+-- |                                                                     |
+-- |Change Record:                                                       |
+-- |===============                                                      |
+-- |Version   Date              Author              Remarks              |
+-- |======   ==========     =============        ======================= |
+-- |1.1       22-JAN-10	     Ranjith Thangasamy  Changes for CR 698      |
+-- +=====================================================================+
+
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     ON
+
+ALTER TABLE 
+  XXFIN.XX_AR_REFUND_TRX_TMP 
+MODIFY 
+( ADJUSTMENT_NUMBER                       VARCHAR2(250)
+);
+SHOW ERROR

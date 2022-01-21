@@ -1,0 +1,59 @@
+REM================================================================================================
+REM                                 Start Of Script
+REM================================================================================================
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     ON
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+-- +=======================================================================+
+-- |               Office Depot - Project Simplify                         |
+-- |                                                                       |
+-- +=======================================================================+
+-- | Name        : XX_AP_DCN_STG_N1                                        |
+-- | Description : Non-Unique Index for Custom Table                       |
+-- |               XX_AP_DCN_STG                                           |
+-- |                                                                       |
+-- |Change History:                                                        |
+-- |---------------                                                        |
+-- |                                                                       |
+-- |Version  Date        Author             Remarks                        |
+-- |-------  ----------- -----------------  -------------------------------|
+-- |Draft    24-Aug-2008 Pradeep Krishnan   Initial Draft Version          |
+-- +=======================================================================+
+WHENEVER SQLERROR CONTINUE
+
+PROMPT
+PROMPT Dropping Existing Index....
+PROMPT
+-- ---------------------------------------------------
+-- Dropping existing index XX_AP_DCN_STG_N1
+-- ---------------------------------------------------
+
+-- DROP INDEX xxfin.XX_AP_DCN_STG_N1;
+
+WHENEVER SQLERROR CONTINUE
+
+PROMPT
+PROMPT Creating Index....
+PROMPT
+-- -------------------------------------------------
+-- Creating Index XX_AP_DCN_STG_N1
+-- -------------------------------------------------
+
+
+CREATE INDEX    xxfin.XX_AP_DCN_STG_N1
+ON              xxfin.XX_AP_DCN_STG(
+                                  INVOICE_NUM, 
+								  INVOICE_DATE
+                                  );
+
+
+SHOW ERRORS;
+
+EXIT;
+REM================================================================================================
+REM                                 END Of Script
+REM================================================================================================

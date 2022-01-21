@@ -1,0 +1,27 @@
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     ON
+
+
+-- +===================================================================+
+-- |                  Office Depot - Project Simplify                  |
+-- |                      Wipro Technologies                           |
+-- +===================================================================+
+-- | Name  : XX_AR_BILL_EXCEPT_BILL                                    |
+-- | Description: Synonym for the table XX_AR_BILL_EXCEPT_BILL         |
+-- |              R0539 - OD: AR Billing Exceptions Report             |
+-- |                                                                   |
+-- |                                                                   |
+-- |Change Record:                                                     |
+-- |===============                                                    |
+-- |Version   Date         Author            Remarks                   |
+-- |=======   ==========   =============     ==========================|
+-- |1.0       3-FEB-09    Kantharaja        Initial version            |
+-- |                      Velayutham                                   |
+-- +===================================================================+
+
+CREATE SYNONYM  APPS.XX_AR_BILL_EXCEPT_BILL FOR XXFIN.XX_AR_BILL_EXCEPT_BILL;
+
+SHO ERR;

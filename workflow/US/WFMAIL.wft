@@ -1,0 +1,4314 @@
+# Oracle Workflow Process Definition
+# dbdrv: exec fnd bin WFLOAD bin &phase=daa+52 checkfile:~PROD:~PATH:~FILE \
+# dbdrv: &ui_apps 0 Y UPGRADE @~PROD:~PATH/~FILE
+# $Header$
+
+
+VERSION_MAJOR = "2"
+VERSION_MINOR = "6"
+LANGUAGE = "AMERICAN"
+
+ACCESS_LEVEL = "100"
+
+DEFINE ITEM_TYPE
+  KEY NAME VARCHAR2(8)
+  TRANS DISPLAY_NAME VARCHAR2(80)
+  TRANS DESCRIPTION VARCHAR2(240)
+  BASE PROTECT_LEVEL NUMBER
+  BASE CUSTOM_LEVEL NUMBER
+  BASE WF_SELECTOR VARCHAR2(240)
+  BASE READ_ROLE REFERENCES ROLE
+  BASE WRITE_ROLE REFERENCES ROLE
+  BASE EXECUTE_ROLE REFERENCES ROLE
+  BASE PERSISTENCE_TYPE VARCHAR2(8)
+  BASE PERSISTENCE_DAYS NUMBER
+
+  DEFINE ITEM_ATTRIBUTE
+    KEY NAME VARCHAR2(30)
+    TRANS DISPLAY_NAME VARCHAR2(80)
+    TRANS DESCRIPTION VARCHAR2(240)
+    BASE PROTECT_LEVEL NUMBER
+    BASE CUSTOM_LEVEL NUMBER
+    BASE TYPE VARCHAR2(8)
+    BASE FORMAT VARCHAR2(240)
+    BASE VALUE_TYPE VARCHAR2(8)
+    BASE DEFAULT VARCHAR2(4000)
+  END ITEM_ATTRIBUTE
+END ITEM_TYPE
+
+DEFINE LOOKUP_TYPE
+  KEY NAME VARCHAR2(30)
+  TRANS DISPLAY_NAME VARCHAR2(80)
+  TRANS DESCRIPTION VARCHAR2(240)
+  BASE PROTECT_LEVEL NUMBER
+  BASE CUSTOM_LEVEL NUMBER
+  BASE ITEM_TYPE REFERENCES ITEM_TYPE
+
+  DEFINE LOOKUP_CODE
+    KEY NAME VARCHAR2(30)
+    TRANS MEANING VARCHAR2(80)
+    TRANS DESCRIPTION VARCHAR2(240)
+  END LOOKUP_CODE
+END LOOKUP_TYPE
+
+DEFINE MESSAGE
+  KEY ITEM_TYPE REFERENCES ITEM_TYPE
+  KEY NAME VARCHAR2(30)
+  TRANS DISPLAY_NAME VARCHAR2(80)
+  TRANS DESCRIPTION VARCHAR2(240)
+  BASE PROTECT_LEVEL NUMBER
+  BASE CUSTOM_LEVEL NUMBER
+  TRANS SUBJECT VARCHAR2(240)
+  TRANS BODY VARCHAR2(4000)
+  TRANS HTML_BODY VARCHAR2(4000)
+  BASE DEFAULT_PRIORITY NUMBER
+  BASE READ_ROLE REFERENCES ROLE
+  BASE WRITE_ROLE REFERENCES ROLE
+
+  DEFINE MESSAGE_ATTRIBUTE
+    KEY NAME VARCHAR2(30)
+    TRANS DISPLAY_NAME VARCHAR2(80)
+    TRANS DESCRIPTION VARCHAR2(240)
+    BASE TYPE VARCHAR2(8)
+    BASE SUBTYPE VARCHAR2(8)
+    BASE FORMAT VARCHAR2(240)
+    BASE VALUE_TYPE VARCHAR2(8)
+    BASE DEFAULT VARCHAR2(4000)
+    BASE ATTACH VARCHAR2(1)
+  END MESSAGE_ATTRIBUTE
+END MESSAGE
+
+DEFINE ACTIVITY
+  KEY ITEM_TYPE REFERENCES ITEM_TYPE
+  KEY NAME VARCHAR2(30)
+  TRANS DISPLAY_NAME VARCHAR2(80)
+  TRANS DESCRIPTION VARCHAR2(240)
+  BASE PROTECT_LEVEL NUMBER
+  BASE CUSTOM_LEVEL NUMBER
+  BASE TYPE VARCHAR2(8)
+  BASE FUNCTION VARCHAR2(240)
+  BASE FUNCTION_TYPE VARCHAR2(30)
+  BASE RESULT_TYPE VARCHAR2(30)
+  BASE RERUN VARCHAR2(8)
+  BASE COST NUMBER
+  BASE READ_ROLE REFERENCES ROLE
+  BASE WRITE_ROLE REFERENCES ROLE
+  BASE EXECUTE_ROLE REFERENCES ROLE
+  BASE ICON_NAME VARCHAR2(30)
+  BASE MESSAGE VARCHAR2(30)
+  BASE ERROR_PROCESS VARCHAR2(30)
+  BASE ERROR_ITEM_TYPE VARCHAR2(8)
+  BASE EXPAND_ROLE VARCHAR2(1)
+  BASE RUNNABLE VARCHAR2(1)
+  BASE EVENT_FILTER VARCHAR2(240)
+  BASE EVENT_TYPE VARCHAR2(30)
+
+  DEFINE ACTIVITY_ATTRIBUTE
+    KEY NAME VARCHAR2(30)
+    TRANS DISPLAY_NAME VARCHAR2(80)
+    TRANS DESCRIPTION VARCHAR2(240)
+    BASE TYPE VARCHAR2(8)
+    BASE FORMAT VARCHAR2(240)
+    BASE VALUE_TYPE VARCHAR2(8)
+    BASE DEFAULT VARCHAR2(4000)
+  END ACTIVITY_ATTRIBUTE
+
+  DEFINE PROCESS_ACTIVITY
+    KEY LABEL VARCHAR2(30)
+    BASE ACTIVITY_ITEM_TYPE REFERENCES ITEM_TYPE
+    BASE ACTIVITY_NAME VARCHAR2(30)
+    BASE START_END VARCHAR2(8)
+    BASE DEFAULT_RESULT VARCHAR2(30)
+    BASE ICON_GEOMETRY VARCHAR2(2000)
+    BASE VALUE_TYPE VARCHAR2(8)
+    BASE PERFORM_ROLE REFERENCES ROLE
+    BASE USER_COMMENT VARCHAR2(4000)
+
+    DEFINE ACTIVITY_ATTRIBUTE_VALUE
+      KEY NAME VARCHAR2(30)
+      BASE VALUE_TYPE VARCHAR2(8)
+      BASE VALUE VARCHAR2(4000)
+    END ACTIVITY_ATTRIBUTE_VALUE
+
+    DEFINE ACTIVITY_TRANSITION
+      KEY FROM REFERENCES PROCESS_ACTIVITY
+      KEY TO REFERENCES PROCESS_ACTIVITY
+      BASE ARROW_GEOMETRY VARCHAR2(2000)
+    END ACTIVITY_TRANSITION
+  END PROCESS_ACTIVITY
+END ACTIVITY
+
+DEFINE ROLE
+  KEY NAME VARCHAR2(320)
+  BASE DISPLAY_NAME VARCHAR2(360)
+  BASE DESCRIPTION VARCHAR2(1000)
+  BASE NOTIFICATION_PREFERENCE VARCHAR2(8)
+  BASE LANGUAGE VARCHAR2(30)
+  BASE TERRITORY VARCHAR2(30)
+  BASE EMAIL_ADDRESS VARCHAR2(320)
+  BASE FAX VARCHAR2(240)
+  BASE STATUS VARCHAR2(8)
+  BASE EXPIRATION_DATE DATE
+END ROLE
+
+BEGIN ITEM_TYPE "WFMAIL"
+  PROTECT_LEVEL = "0"
+  CUSTOM_LEVEL = "0"
+  DISPLAY_NAME = "System: Mailer"
+  DESCRIPTION = "$Header: wfmail.wft 115.63 2005/04/27 12:10:11 vshanmug ship \
+$\n\
+Mailer templates"
+  PERSISTENCE_TYPE = "TEMP"
+  PERSISTENCE_DAYS = "0"
+END ITEM_TYPE
+
+BEGIN MESSAGE "WFMAIL" "ATTACHED_URLS"
+  PROTECT_LEVEL = "1000"
+  CUSTOM_LEVEL = "0"
+  DISPLAY_NAME = "Workflow URL Attachment"
+  DESCRIPTION = "This is the template for the atached URLs."
+  SUBJECT = "Workflow URL Attachment"
+  HTML_BODY = "<HTML> <HEAD> <TITLE> Oracle Workflow Notification References <\
+/TITLE>\n\
+<STYLE>\n\
+<!--\n\
+&TEMPLATE_STYLE\n\
+-->\n\
+</STYLE> </HEAD> \n\
+<BODY BGCOLOR=\"#FFFFFF\" > \n\
+<P><h2 class=\"OraHeader\">Notification References</h2> \n\
+\n\
+<HR WIDTH=\"100%\">\n\
+<BR>\n\
+&URLLIST\n\
+<BR>\n\
+<HR WIDTH=\"100%\">\n\
+<BR>&nbsp;\n\
+</BODY>\n\
+</HTML>\n"
+  DEFAULT_PRIORITY = "50"
+
+  BEGIN MESSAGE_ATTRIBUTE "URLLIST"
+    DISPLAY_NAME = "URL List"
+    DESCRIPTION = "List of URLs to be included in the attachment"
+    TYPE = "VARCHAR2"
+    SUBTYPE = "SEND"
+    FORMAT = "2000"
+    VALUE_TYPE = "CONSTANT"
+  END MESSAGE_ATTRIBUTE
+
+  BEGIN MESSAGE_ATTRIBUTE "TEMPLATE_STYLE"
+    DISPLAY_NAME = "Template style sheet definitions"
+    DESCRIPTION = "Defines the CSS style sheet class and element attributes"
+    TYPE = "VARCHAR2"
+    SUBTYPE = "SEND"
+    VALUE_TYPE = "CONSTANT"
+  END MESSAGE_ATTRIBUTE
+END MESSAGE
+
+BEGIN MESSAGE "WFMAIL" "CANCELED"
+  PROTECT_LEVEL = "1000"
+  CUSTOM_LEVEL = "0"
+  DISPLAY_NAME = "Workflow Canceled Mail"
+  DESCRIPTION = "Mail template for canceled notification messages"
+  SUBJECT = "Canceled: &SUBJECT"
+  BODY = "&TIMEZONE\n\
+\n\
+You earlier received the notification shown below.  That notification is now c\
+anceled, and no longer requires your response.  You may simply delete it along\
+ with this message.\n\
+________________________________________________________________________\n\
+\n\
+&HEADER\n\
+&BODY"
+  HTML_BODY = "<html><Head><STYLE>\n\
+<!--\n\
+&TEMPLATE_STYLE\n\
+-->\n\
+</STYLE>\n\
+</Head>\n\
+<body>\n\
+<SPAN class=\"OraTipLabel\">&TIMEZONE</SPAN>\n\
+<P>You earlier received the notification shown below.  That notification is no\
+w canceled, and no longer requires your response.  You may simply delete it al\
+ong with this message.\n\
+<hr>\n\
+&HEADER\n\
+<P>&BODY\n\
+</body></html>"
+  DEFAULT_PRIORITY = "50"
+
+  BEGIN MESSAGE_ATTRIBUTE "START_DATE"
+    DISPLAY_NAME = "Start Date"
+    DESCRIPTION = "Date message was sent"
+    TYPE = "DATE"
+    SUBTYPE = "SEND"
+    VALUE_TYPE = "CONSTANT"
+  END MESSAGE_ATTRIBUTE
+
+  BEGIN MESSAGE_ATTRIBUTE "TO"
+    DISPLAY_NAME = "Recipient"
+    DESCRIPTION = "Role the notification was sent to"
+    TYPE = "VARCHAR2"
+    SUBTYPE = "SEND"
+    FORMAT = "2000"
+    VALUE_TYPE = "CONSTANT"
+  END MESSAGE_ATTRIBUTE
+
+  BEGIN MESSAGE_ATTRIBUTE "SUBJECT"
+    DISPLAY_NAME = "Subject"
+    DESCRIPTION = "Substituted message subject line"
+    TYPE = "VARCHAR2"
+    SUBTYPE = "SEND"
+    FORMAT = "2000"
+    VALUE_TYPE = "CONSTANT"
+  END MESSAGE_ATTRIBUTE
+
+  BEGIN MESSAGE_ATTRIBUTE "BODY"
+    DISPLAY_NAME = "Body"
+    DESCRIPTION = "Substituted message body"
+    TYPE = "VARCHAR2"
+    SUBTYPE = "SEND"
+    FORMAT = "2000"
+    VALUE_TYPE = "CONSTANT"
+  END MESSAGE_ATTRIBUTE
+
+  BEGIN MESSAGE_ATTRIBUTE "COMMENT"
+    DISPLAY_NAME = "Comment"
+    DESCRIPTION = "Sender or Forwarder comments"
+    TYPE = "VARCHAR2"
+    SUBTYPE = "SEND"
+    FORMAT = "2000"
+    VALUE_TYPE = "CONSTANT"
+  END MESSAGE_ATTRIBUTE
+
+  BEGIN MESSAGE_ATTRIBUTE "PRIORITY"
+    DISPLAY_NAME = "Priority"
+    DESCRIPTION = "Notification priority"
+    TYPE = "NUMBER"
+    SUBTYPE = "SEND"
+    VALUE_TYPE = "CONSTANT"
+  END MESSAGE_ATTRIBUTE
+
+  BEGIN MESSAGE_ATTRIBUTE "DUE_DATE"
+    DISPLAY_NAME = "Due Date"
+    DESCRIPTION = "Date by which a response is required"
+    TYPE = "DATE"
+    SUBTYPE = "SEND"
+    VALUE_TYPE = "CONSTANT"
+  END MESSAGE_ATTRIBUTE
+
+  BEGIN MESSAGE_ATTRIBUTE "NOTIFICATION"
+    DISPLAY_NAME = "Notification Code"
+    DESCRIPTION = "Identifying information for this notification (required)"
+    TYPE = "VARCHAR2"
+    SUBTYPE = "SEND"
+    FORMAT = "2000"
+    VALUE_TYPE = "CONSTANT"
+  END MESSAGE_ATTRIBUTE
+
+  BEGIN MESSAGE_ATTRIBUTE "HEADER"
+    DISPLAY_NAME = "Header"
+    DESCRIPTION = "Substituted notification header details"
+    TYPE = "VARCHAR2"
+    SUBTYPE = "SEND"
+    VALUE_TYPE = "CONSTANT"
+  END MESSAGE_ATTRIBUTE
+
+  BEGIN MESSAGE_ATTRIBUTE "TIMEZONE"
+    DISPLAY_NAME = "Server Time Zone"
+    DESCRIPTION = "Server time zone description"
+    TYPE = "VARCHAR2"
+    SUBTYPE = "SEND"
+    VALUE_TYPE = "CONSTANT"
+  END MESSAGE_ATTRIBUTE
+
+  BEGIN MESSAGE_ATTRIBUTE "TEMPLATE_STYLE"
+    DISPLAY_NAME = "Template style sheet definitions"
+    DESCRIPTION = "Defines the CSS style sheet class and element attributes"
+    TYPE = "VARCHAR2"
+    SUBTYPE = "SEND"
+    VALUE_TYPE = "CONSTANT"
+  END MESSAGE_ATTRIBUTE
+END MESSAGE
+
+BEGIN MESSAGE "WFMAIL" "CLOSED"
+  PROTECT_LEVEL = "1000"
+  CUSTOM_LEVEL = "0"
+  DISPLAY_NAME = "Workflow Closed Mail"
+  DESCRIPTION = "Mail template for closed notification messages"
+  SUBJECT = "Closed: &SUBJECT"
+  BODY = "&TIMEZONE\n\
+\n\
+You earlier received the notification shown below.  That notification is now c\
+losed, and no longer requires your response.  You may simply delete it along w\
+ith this message.\n\
+________________________________________________________________________\n\
+\n\
+&HEADER\n\
+&BODY"
+  HTML_BODY = "<html><Head><STYLE>\n\
+<!--\n\
+&TEMPLATE_STYLE\n\
+-->\n\
+</STYLE>\n\
+</Head>\n\
+<body><SPAN class=\"OraTipLabel\">&TIMEZONE</SPAN>\n\
+<P>You earlier received the notification shown below.  That notification is no\
+w closed, and no longer requires your response.  You may simply delete it alon\
+g with this message.\n\
+<hr>\n\
+&HEADER\n\
+<P>&BODY\n\
+</body></html>"
+  DEFAULT_PRIORITY = "50"
+
+  BEGIN MESSAGE_ATTRIBUTE "START_DATE"
+    DISPLAY_NAME = "Start Date"
+    DESCRIPTION = "Date message was sent"
+    TYPE = "DATE"
+    SUBTYPE = "SEND"
+    VALUE_TYPE = "CONSTANT"
+  END MESSAGE_ATTRIBUTE
+
+  BEGIN MESSAGE_ATTRIBUTE "TO"
+    DISPLAY_NAME = "Recipient"
+    DESCRIPTION = "Role the notification was sent to"
+    TYPE = "VARCHAR2"
+    SUBTYPE = "SEND"
+    FORMAT = "2000"
+    VALUE_TYPE = "CONSTANT"
+  END MESSAGE_ATTRIBUTE
+
+  BEGIN MESSAGE_ATTRIBUTE "SUBJECT"
+    DISPLAY_NAME = "Subject"
+    DESCRIPTION = "Substituted message subject line"
+    TYPE = "VARCHAR2"
+    SUBTYPE = "SEND"
+    FORMAT = "2000"
+    VALUE_TYPE = "CONSTANT"
+  END MESSAGE_ATTRIBUTE
+
+  BEGIN MESSAGE_ATTRIBUTE "BODY"
+    DISPLAY_NAME = "Body"
+    DESCRIPTION = "Substituted message body"
+    TYPE = "VARCHAR2"
+    SUBTYPE = "SEND"
+    FORMAT = "2000"
+    VALUE_TYPE = "CONSTANT"
+  END MESSAGE_ATTRIBUTE
+
+  BEGIN MESSAGE_ATTRIBUTE "COMMENT"
+    DISPLAY_NAME = "Comment"
+    DESCRIPTION = "Sender or Forwarder comments"
+    TYPE = "VARCHAR2"
+    SUBTYPE = "SEND"
+    FORMAT = "2000"
+    VALUE_TYPE = "CONSTANT"
+  END MESSAGE_ATTRIBUTE
+
+  BEGIN MESSAGE_ATTRIBUTE "PRIORITY"
+    DISPLAY_NAME = "Priority"
+    DESCRIPTION = "Notification priority"
+    TYPE = "NUMBER"
+    SUBTYPE = "SEND"
+    VALUE_TYPE = "CONSTANT"
+  END MESSAGE_ATTRIBUTE
+
+  BEGIN MESSAGE_ATTRIBUTE "DUE_DATE"
+    DISPLAY_NAME = "Due Date"
+    DESCRIPTION = "Date by which a response is required"
+    TYPE = "DATE"
+    SUBTYPE = "SEND"
+    VALUE_TYPE = "CONSTANT"
+  END MESSAGE_ATTRIBUTE
+
+  BEGIN MESSAGE_ATTRIBUTE "NOTIFICATION"
+    DISPLAY_NAME = "Notification Code"
+    DESCRIPTION = "Identifying information for this notification (required)"
+    TYPE = "VARCHAR2"
+    SUBTYPE = "SEND"
+    FORMAT = "2000"
+    VALUE_TYPE = "CONSTANT"
+  END MESSAGE_ATTRIBUTE
+
+  BEGIN MESSAGE_ATTRIBUTE "HEADER"
+    DISPLAY_NAME = "Header"
+    DESCRIPTION = "Substituted notification header details"
+    TYPE = "VARCHAR2"
+    SUBTYPE = "SEND"
+    VALUE_TYPE = "CONSTANT"
+  END MESSAGE_ATTRIBUTE
+
+  BEGIN MESSAGE_ATTRIBUTE "TIMEZONE"
+    DISPLAY_NAME = "Server Time Zone"
+    DESCRIPTION = "Server time zone description"
+    TYPE = "VARCHAR2"
+    SUBTYPE = "SEND"
+    VALUE_TYPE = "CONSTANT"
+  END MESSAGE_ATTRIBUTE
+
+  BEGIN MESSAGE_ATTRIBUTE "TEMPLATE_STYLE"
+    DISPLAY_NAME = "Template style sheet definitions"
+    DESCRIPTION = "Defines the CSS style sheet class and element attributes"
+    TYPE = "VARCHAR2"
+    SUBTYPE = "SEND"
+    VALUE_TYPE = "CONSTANT"
+  END MESSAGE_ATTRIBUTE
+END MESSAGE
+
+BEGIN MESSAGE "WFMAIL" "MORE_INFO_ANSWERED"
+  PROTECT_LEVEL = "1000"
+  CUSTOM_LEVEL = "0"
+  DISPLAY_NAME = "Workflow More Info Answered Mail"
+  DESCRIPTION = "Mail template for more information response warning that has \
+already been answered or not asked."
+  SUBJECT = "Warning : Request has already been answered or not asked for NID \
+&NOTIFICATION"
+  BODY = "You earlier received a more information request for notification men\
+tioned below. That request is now answered, and no longer requires your respon\
+se. You may simply delete it along with this message.\n\
+\n\
+Error Message: &MAIL_ERROR_MESSAGE\n\
+________________________________________________________________________\n\
+\n\
+Notification Details:\n\
+Notification ID : &NOTIFICATION\n\
+Question : &QUESTION\n\
+From : &FROM\n\
+\n"
+  HTML_BODY = "<html><Head><STYLE>\n\
+<!--\n\
+&TEMPLATE_STYLE\n\
+-->\n\
+</STYLE>\n\
+</Head>\n\
+<body><SPAN class=\"OraTipLabel\"></SPAN>\n\
+<p>You earlier received a more information request for notification mentioned \
+below. That request is now answered, and no longer requires your response. You\
+ may simply delete it along with this message.\n\
+<P>Error Message: &MAIL_ERROR_MESSAGE\n\
+<BR>\n\
+<P>Notification Details:\n\
+<BR>\n\
+<P>Notification ID: &NOTIFICATION\n\
+<P>Question : &QUESTION\n\
+<P>From: &FROM\n\
+<BR>\n\
+</BODY> \n\
+</HTML>\n"
+  DEFAULT_PRIORITY = "50"
+
+  BEGIN MESSAGE_ATTRIBUTE "MAIL_ERROR_MESSAGE"
+    DISPLAY_NAME = "Error Message"
+    DESCRIPTION = "Error Message"
+    TYPE = "VARCHAR2"
+    SUBTYPE = "SEND"
+    FORMAT = "2000"
+    VALUE_TYPE = "CONSTANT"
+  END MESSAGE_ATTRIBUTE
+
+  BEGIN MESSAGE_ATTRIBUTE "NOTIFICATION"
+    DISPLAY_NAME = "Notification Code"
+    DESCRIPTION = "Identifying information for this notification (required)"
+    TYPE = "VARCHAR2"
+    SUBTYPE = "SEND"
+    FORMAT = "2000"
+    VALUE_TYPE = "CONSTANT"
+  END MESSAGE_ATTRIBUTE
+
+  BEGIN MESSAGE_ATTRIBUTE "FROM"
+    DISPLAY_NAME = "From Role"
+    DESCRIPTION = "From Role"
+    TYPE = "VARCHAR2"
+    SUBTYPE = "SEND"
+    FORMAT = "320"
+    VALUE_TYPE = "CONSTANT"
+  END MESSAGE_ATTRIBUTE
+
+  BEGIN MESSAGE_ATTRIBUTE "QUESTION"
+    DISPLAY_NAME = "Question"
+    DESCRIPTION = "Question Asked"
+    TYPE = "VARCHAR2"
+    SUBTYPE = "SEND"
+    VALUE_TYPE = "CONSTANT"
+  END MESSAGE_ATTRIBUTE
+END MESSAGE
+
+BEGIN MESSAGE "WFMAIL" "OPEN_INVALID"
+  PROTECT_LEVEL = "1000"
+  CUSTOM_LEVEL = "0"
+  DISPLAY_NAME = "Workflow Invalid Mail"
+  DESCRIPTION = "Mail template for invalid response errors"
+  SUBJECT = "Invalid: &SUBJECT"
+  BODY = "Oracle Workflow Notification\n\
+&TIMEZONE\n\
+\n\
+Warning: Your previous response to this message was invalid (see error message\
+ below).  Please resubmit your response.\n\
+\n\
+Important: Some mail clients, notably early releases of Microsoft Outlook Expr\
+ess, may not copy the 'NID' line properly in your response. Please verify that\
+ the 'NID' line is included in full and contains the prefix 'NID' and all the \
+details between the square brackets when responding.\n\
+\n\
+Error Message: &MAIL_ERROR_MESSAGE\n\
+\n\
+Value Found: &MAIL_VALUE_FOUND\n\
+\n\
+Remarks: &MAIL_EXP_VALUES\n\
+\n\
+________________________________________________________________________\n\
+\n\
+Response Instructions for &NOTIFICATION\n\
+\n\
+To submit your response, reply to this message, including this original with y\
+our reply.  This note contains a special 'NID' string that is required to proc\
+ess the reponse.  The first lines of your reply must be your responses to the \
+notification questions.  You should enter one line for each response required \
+by the notfication; any additional lines will be ignored.  You may leave a lin\
+e blank to accept the default value for that specific response.  You must supp\
+ly a value or a blank line for each question asked.  Instructions below detail\
+ exactly what should be placed on each line of your reply.\n\
+\n\
+&RESPONSE\n\
+________________________________________________________________________\n\
+\n\
+Notification Details:\n\
+&HEADER\n\
+&BODY\n\
+\n\
+Due Date: &DUE_DATE\n\
+\n\
+&HISTORY"
+  HTML_BODY = "<html>\n\
+<Head>\n\
+<STYLE>\n\
+<!--\n\
+&TEMPLATE_STYLE\n\
+-->\n\
+</STYLE>\n\
+</Head>\n\
+<body>\n\
+<SPAN class=\"OraTipLabel\">&TIMEZONE</SPAN>\n\
+<p>Warning: Your previous response to this message was invalid (see error mess\
+age below).  Please resubmit your response.      \n\
+<P>Error Message: &MAIL_ERROR_MESSAGE\n\
+<BR>\n\
+<BR>Value Found: &MAIL_VALUE_FOUND\n\
+<BR>\n\
+<BR>Remarks: &MAIL_EXP_VALUES\n\
+<HR>\n\
+<P>&HEADER\n\
+<P>&BODY\n\
+<P><B>Please click on one of the following choices to automatically generate a\
+n E-mail response.  Before sending the E-mail response to close this notificat\
+ion, ensure all response prompts include a desired response value within quote\
+s.</B>\n\
+<P><B>Important:</B> Some mail clients, notably early releases of Microsoft Ou\
+tlook Express, may not copy the 'NID' line properly in your response. Please v\
+erify that the 'NID' line is included in full and contains the prefix 'NID' an\
+d all the details between the square brackets when responding. \n\
+<P>&MAILTO\n\
+<P>&HISTORY\n\
+</BODY> \n\
+</HTML>"
+  DEFAULT_PRIORITY = "50"
+
+  BEGIN MESSAGE_ATTRIBUTE "START_DATE"
+    DISPLAY_NAME = "Start Date"
+    DESCRIPTION = "Date message was sent"
+    TYPE = "DATE"
+    SUBTYPE = "SEND"
+    VALUE_TYPE = "CONSTANT"
+  END MESSAGE_ATTRIBUTE
+
+  BEGIN MESSAGE_ATTRIBUTE "TO"
+    DISPLAY_NAME = "Recipient"
+    DESCRIPTION = "Role the notification was sent to"
+    TYPE = "VARCHAR2"
+    SUBTYPE = "SEND"
+    FORMAT = "2000"
+    VALUE_TYPE = "CONSTANT"
+  END MESSAGE_ATTRIBUTE
+
+  BEGIN MESSAGE_ATTRIBUTE "SUBJECT"
+    DISPLAY_NAME = "Subject"
+    DESCRIPTION = "Substituted message subject line"
+    TYPE = "VARCHAR2"
+    SUBTYPE = "SEND"
+    FORMAT = "2000"
+    VALUE_TYPE = "CONSTANT"
+  END MESSAGE_ATTRIBUTE
+
+  BEGIN MESSAGE_ATTRIBUTE "BODY"
+    DISPLAY_NAME = "Body"
+    DESCRIPTION = "Substituted message body"
+    TYPE = "VARCHAR2"
+    SUBTYPE = "SEND"
+    FORMAT = "2000"
+    VALUE_TYPE = "CONSTANT"
+  END MESSAGE_ATTRIBUTE
+
+  BEGIN MESSAGE_ATTRIBUTE "COMMENT"
+    DISPLAY_NAME = "Comment"
+    DESCRIPTION = "Sender or Forwarder comments"
+    TYPE = "VARCHAR2"
+    SUBTYPE = "SEND"
+    FORMAT = "2000"
+    VALUE_TYPE = "CONSTANT"
+  END MESSAGE_ATTRIBUTE
+
+  BEGIN MESSAGE_ATTRIBUTE "PRIORITY"
+    DISPLAY_NAME = "Priority"
+    DESCRIPTION = "Notification priority"
+    TYPE = "NUMBER"
+    SUBTYPE = "SEND"
+    VALUE_TYPE = "CONSTANT"
+  END MESSAGE_ATTRIBUTE
+
+  BEGIN MESSAGE_ATTRIBUTE "DUE_DATE"
+    DISPLAY_NAME = "Due Date"
+    DESCRIPTION = "Date by which a response is required"
+    TYPE = "DATE"
+    SUBTYPE = "SEND"
+    VALUE_TYPE = "CONSTANT"
+  END MESSAGE_ATTRIBUTE
+
+  BEGIN MESSAGE_ATTRIBUTE "NOTIFICATION"
+    DISPLAY_NAME = "Notification Code"
+    DESCRIPTION = "Identifying information for this notification (required)"
+    TYPE = "VARCHAR2"
+    SUBTYPE = "SEND"
+    FORMAT = "2000"
+    VALUE_TYPE = "CONSTANT"
+  END MESSAGE_ATTRIBUTE
+
+  BEGIN MESSAGE_ATTRIBUTE "RESPONSE"
+    DISPLAY_NAME = "Response section"
+    DESCRIPTION = "User response section"
+    TYPE = "VARCHAR2"
+    SUBTYPE = "SEND"
+    FORMAT = "2000"
+    VALUE_TYPE = "CONSTANT"
+  END MESSAGE_ATTRIBUTE
+
+  BEGIN MESSAGE_ATTRIBUTE "MAIL_ERROR_MESSAGE"
+    DISPLAY_NAME = "Error Message"
+    DESCRIPTION = "Error Message"
+    TYPE = "VARCHAR2"
+    SUBTYPE = "SEND"
+    FORMAT = "2000"
+    VALUE_TYPE = "CONSTANT"
+  END MESSAGE_ATTRIBUTE
+
+  BEGIN MESSAGE_ATTRIBUTE "MAIL_ERROR_STACK"
+    DISPLAY_NAME = "Error Stack"
+    DESCRIPTION = "Error Stack"
+    TYPE = "VARCHAR2"
+    SUBTYPE = "SEND"
+    FORMAT = "2000"
+    VALUE_TYPE = "CONSTANT"
+  END MESSAGE_ATTRIBUTE
+
+  BEGIN MESSAGE_ATTRIBUTE "CLICK_HERE_RESPONSE"
+    DISPLAY_NAME = "Click here to respond"
+    DESCRIPTION = "Please click here to Respond"
+    TYPE = "URL"
+    SUBTYPE = "SEND"
+    FORMAT = "_top"
+    VALUE_TYPE = "CONSTANT"
+  END MESSAGE_ATTRIBUTE
+
+  BEGIN MESSAGE_ATTRIBUTE "MAIL_VALUE_FOUND"
+    DISPLAY_NAME = "Invalid Value Found"
+    DESCRIPTION = "Invalid Value Found"
+    TYPE = "VARCHAR2"
+    SUBTYPE = "SEND"
+    FORMAT = "100"
+    VALUE_TYPE = "CONSTANT"
+  END MESSAGE_ATTRIBUTE
+
+  BEGIN MESSAGE_ATTRIBUTE "MAIL_EXP_VALUES"
+    DISPLAY_NAME = "Expected Response Values"
+    DESCRIPTION = "Expected Response Values"
+    TYPE = "VARCHAR2"
+    SUBTYPE = "SEND"
+    FORMAT = "100"
+    VALUE_TYPE = "CONSTANT"
+  END MESSAGE_ATTRIBUTE
+
+  BEGIN MESSAGE_ATTRIBUTE "HEADER"
+    DISPLAY_NAME = "Header"
+    DESCRIPTION = "Substituted notification header details"
+    TYPE = "VARCHAR2"
+    SUBTYPE = "SEND"
+    VALUE_TYPE = "CONSTANT"
+  END MESSAGE_ATTRIBUTE
+
+  BEGIN MESSAGE_ATTRIBUTE "TIMEZONE"
+    DISPLAY_NAME = "Server Time Zone"
+    DESCRIPTION = "Server time zone description"
+    TYPE = "VARCHAR2"
+    SUBTYPE = "SEND"
+    VALUE_TYPE = "CONSTANT"
+  END MESSAGE_ATTRIBUTE
+
+  BEGIN MESSAGE_ATTRIBUTE "HISTORY"
+    DISPLAY_NAME = "Action History"
+    DESCRIPTION = "History of actions on the notification"
+    TYPE = "VARCHAR2"
+    SUBTYPE = "SEND"
+    VALUE_TYPE = "CONSTANT"
+  END MESSAGE_ATTRIBUTE
+
+  BEGIN MESSAGE_ATTRIBUTE "TEMPLATE_STYLE"
+    DISPLAY_NAME = "Template style sheet definitions"
+    DESCRIPTION = "Defines the CSS style sheet class and element attributes"
+    TYPE = "VARCHAR2"
+    SUBTYPE = "SEND"
+    VALUE_TYPE = "CONSTANT"
+  END MESSAGE_ATTRIBUTE
+END MESSAGE
+
+BEGIN MESSAGE "WFMAIL" "OPEN_INVALID_MORE_INFO"
+  PROTECT_LEVEL = "1000"
+  CUSTOM_LEVEL = "0"
+  DISPLAY_NAME = "Workflow Invalid Open Mail (More Information Request)"
+  DESCRIPTION = "Mail template for open notifications requesting for more info\
+rmation, where the previoius response was invalid"
+  SUBJECT = "Invalid: More Information Request: &SUBJECT"
+  BODY = "Oracle Workflow Notification\n\
+\n\
+Warning: Your previous response to this message was invalid (see error message\
+ below).  Please resubmit your response.\n\
+\n\
+Important: Some mail clients, notably early releases of Microsoft Outlook Expr\
+ess, may not copy the 'NID' line properly in your response. Please verify that\
+ the 'NID' line is included in full and contains the prefix 'NID' and all the \
+details between the square brackets when responding.\n\
+\n\
+Error Message: &MAIL_ERROR_MESSAGE\n\
+\n\
+Value Found: &MAIL_VALUE_FOUND\n\
+\n\
+Remarks: &MAIL_EXP_VALUES\n\
+______________________Start of Response Template______________________\n\
+\n\
+More Information Template for &NOTIFICATION\n\
+\n\
+User &SENDER has requested more information for the notification. Please reply\
+ to this message, including this response template with your reply.  Copy and \
+paste from this message if necessary to obtain an editable copy of the templat\
+e. Insert your comments between the quotes against the prompt.\n\
+\n\
+Question: &QUESTION\n\
+\n\
+&RESPONSE\n\
+______________________End of Response Template______________________\n\
+\n\
+Notification Details:\n\
+&HEADER\n\
+&BODY\n\
+\n\
+Due Date: &DUE_DATE\n\
+\n\
+&HISTORY"
+  HTML_BODY = "<HTML> <HEAD> <TITLE> Oracle Workflow Notification </TITLE> \n\
+<STYLE>\n\
+<!--\n\
+&TEMPLATE_STYLE\n\
+-->\n\
+</STYLE>\n\
+<P>&HEADER</P>\n\
+</HEAD> \n\
+<BODY BGCOLOR=\"#FFFFFF\" > \n\
+<P><SPAN class=\"OraTipLabel\">&TIMEZONE</SPAN>\n\
+\n\
+\n\
+<P>\n\
+Click or paste this link in your web browser to access Oracle. https://gsiprdg\
+b. Login using your six-digit employee ID & network password. \n\
+<BR><BR>\n\
+Do not reply to this Office Depot Workflow Mailer as this is a system generate\
+d email and you will not receive a response.\n\
+<BR>"
+  DEFAULT_PRIORITY = "50"
+
+  BEGIN MESSAGE_ATTRIBUTE "DUE_DATE"
+    DISPLAY_NAME = "Due Date"
+    DESCRIPTION = "Date by which a response is required"
+    TYPE = "DATE"
+    SUBTYPE = "SEND"
+    VALUE_TYPE = "CONSTANT"
+  END MESSAGE_ATTRIBUTE
+
+  BEGIN MESSAGE_ATTRIBUTE "BODY"
+    DISPLAY_NAME = "Body"
+    DESCRIPTION = "Substituted message body"
+    TYPE = "VARCHAR2"
+    SUBTYPE = "SEND"
+    FORMAT = "2000"
+    VALUE_TYPE = "CONSTANT"
+  END MESSAGE_ATTRIBUTE
+
+  BEGIN MESSAGE_ATTRIBUTE "SUBJECT"
+    DISPLAY_NAME = "Subject"
+    DESCRIPTION = "Substituted message subject line"
+    TYPE = "VARCHAR2"
+    SUBTYPE = "SEND"
+    FORMAT = "2000"
+    VALUE_TYPE = "CONSTANT"
+  END MESSAGE_ATTRIBUTE
+
+  BEGIN MESSAGE_ATTRIBUTE "COMMENT"
+    DISPLAY_NAME = "Comment"
+    DESCRIPTION = "Sender or Forwarder comments"
+    TYPE = "VARCHAR2"
+    SUBTYPE = "SEND"
+    FORMAT = "2000"
+    VALUE_TYPE = "CONSTANT"
+  END MESSAGE_ATTRIBUTE
+
+  BEGIN MESSAGE_ATTRIBUTE "SENDER"
+    DISPLAY_NAME = "Sender"
+    DESCRIPTION = "Sender's name"
+    TYPE = "VARCHAR2"
+    SUBTYPE = "SEND"
+    FORMAT = "320"
+    VALUE_TYPE = "CONSTANT"
+  END MESSAGE_ATTRIBUTE
+
+  BEGIN MESSAGE_ATTRIBUTE "HISTORY"
+    DISPLAY_NAME = "Action History"
+    DESCRIPTION = "History of actions on the notification"
+    TYPE = "VARCHAR2"
+    SUBTYPE = "SEND"
+    VALUE_TYPE = "CONSTANT"
+  END MESSAGE_ATTRIBUTE
+
+  BEGIN MESSAGE_ATTRIBUTE "QUESTION"
+    DISPLAY_NAME = "Question"
+    DESCRIPTION = "More Info request question"
+    TYPE = "VARCHAR2"
+    SUBTYPE = "SEND"
+    FORMAT = "2000"
+    VALUE_TYPE = "CONSTANT"
+  END MESSAGE_ATTRIBUTE
+
+  BEGIN MESSAGE_ATTRIBUTE "RESPONSE"
+    DISPLAY_NAME = "Response section"
+    DESCRIPTION = "User response section"
+    TYPE = "VARCHAR2"
+    SUBTYPE = "SEND"
+    FORMAT = "2000"
+    VALUE_TYPE = "CONSTANT"
+  END MESSAGE_ATTRIBUTE
+
+  BEGIN MESSAGE_ATTRIBUTE "NOTIFICATION"
+    DISPLAY_NAME = "Notification Code"
+    DESCRIPTION = "Identifying information for this notification (required)"
+    TYPE = "VARCHAR2"
+    SUBTYPE = "SEND"
+    FORMAT = "2000"
+    VALUE_TYPE = "CONSTANT"
+  END MESSAGE_ATTRIBUTE
+
+  BEGIN MESSAGE_ATTRIBUTE "HEADER"
+    DISPLAY_NAME = "Header"
+    DESCRIPTION = "Substituted notification header details"
+    TYPE = "VARCHAR2"
+    SUBTYPE = "SEND"
+    VALUE_TYPE = "CONSTANT"
+  END MESSAGE_ATTRIBUTE
+
+  BEGIN MESSAGE_ATTRIBUTE "MAIL_EXP_VALUES"
+    DISPLAY_NAME = "Expected Response Values"
+    DESCRIPTION = "Expected Response Values"
+    TYPE = "VARCHAR2"
+    SUBTYPE = "SEND"
+    FORMAT = "100"
+    VALUE_TYPE = "CONSTANT"
+  END MESSAGE_ATTRIBUTE
+
+  BEGIN MESSAGE_ATTRIBUTE "MAIL_VALUE_FOUND"
+    DISPLAY_NAME = "Invalid Value Found"
+    DESCRIPTION = "Invalid Value Found"
+    TYPE = "VARCHAR2"
+    SUBTYPE = "SEND"
+    FORMAT = "100"
+    VALUE_TYPE = "CONSTANT"
+  END MESSAGE_ATTRIBUTE
+
+  BEGIN MESSAGE_ATTRIBUTE "MAIL_ERROR_MESSAGE"
+    DISPLAY_NAME = "Error Message"
+    DESCRIPTION = "Error Message"
+    TYPE = "VARCHAR2"
+    SUBTYPE = "SEND"
+    FORMAT = "2000"
+    VALUE_TYPE = "CONSTANT"
+  END MESSAGE_ATTRIBUTE
+
+  BEGIN MESSAGE_ATTRIBUTE "TEMPLATE_STYLE"
+    DISPLAY_NAME = "Template style sheet definitions"
+    DESCRIPTION = "Defines the CSS style sheet class and element attributes"
+    TYPE = "VARCHAR2"
+    SUBTYPE = "SEND"
+    VALUE_TYPE = "CONSTANT"
+  END MESSAGE_ATTRIBUTE
+END MESSAGE
+
+BEGIN MESSAGE "WFMAIL" "OPEN_MAIL"
+  PROTECT_LEVEL = "1000"
+  CUSTOM_LEVEL = "0"
+  DISPLAY_NAME = "Workflow Open Mail (Templated)"
+  DESCRIPTION = "Mail template for open notifications (templated response)"
+  SUBJECT = "Action Required: &SUBJECT"
+  BODY = "Oracle Workflow Notification\n\
+&TIMEZONE\n\
+______________________Start of Response Template______________________\n\
+\n\
+Response Template for &NOTIFICATION\n\
+\n\
+To submit your response, reply to this message, including this response templa\
+te with your reply.  Copy and paste from this message if necessary to obtain a\
+n editable copy of the template. Insert your response value between the quotes\
+ following each response prompt.\n\
+\n\
+\n\
+&RESPONSE\n\
+\n\
+______________________End of Response Template_______________________\n\
+\n\
+Notification Details:\n\
+&HEADER\n\
+&BODY\n\
+\n\
+Due Date: &DUE_DATE\n\
+\n\
+&HISTORY"
+  HTML_BODY = "<HTML> <HEAD> <TITLE> Oracle Workflow Notification </TITLE> \n\
+<STYLE>\n\
+<!--\n\
+&TEMPLATE_STYLE\n\
+-->\n\
+</STYLE>\n\
+</HEAD> \n\
+<BODY BGCOLOR=\"#FFFFFF\" > \n\
+<P><SPAN class=\"OraTipLabel\">&TIMEZONE</SPAN>\n\
+<P>&HEADER\n\
+<P>&BODY\n\
+<P>Please click on one of the following choices to automatically generate an E\
+-mail response.  Before sending the E-mail response to close this notification\
+, ensure all response prompts include a desired response value within quotes.\
+\n\
+<P>&MAILTO\n\
+<P>&HISTORY\n\
+</BODY> \n\
+</HTML>"
+  DEFAULT_PRIORITY = "50"
+
+  BEGIN MESSAGE_ATTRIBUTE "START_DATE"
+    DISPLAY_NAME = "Start Date"
+    DESCRIPTION = "Date message was sent"
+    TYPE = "DATE"
+    SUBTYPE = "SEND"
+    VALUE_TYPE = "CONSTANT"
+  END MESSAGE_ATTRIBUTE
+
+  BEGIN MESSAGE_ATTRIBUTE "TO"
+    DISPLAY_NAME = "Recipient"
+    DESCRIPTION = "Role the notification was sent to"
+    TYPE = "VARCHAR2"
+    SUBTYPE = "SEND"
+    FORMAT = "2000"
+    VALUE_TYPE = "CONSTANT"
+  END MESSAGE_ATTRIBUTE
+
+  BEGIN MESSAGE_ATTRIBUTE "SUBJECT"
+    DISPLAY_NAME = "Subject"
+    DESCRIPTION = "Substituted message subject line"
+    TYPE = "VARCHAR2"
+    SUBTYPE = "SEND"
+    FORMAT = "2000"
+    VALUE_TYPE = "CONSTANT"
+  END MESSAGE_ATTRIBUTE
+
+  BEGIN MESSAGE_ATTRIBUTE "BODY"
+    DISPLAY_NAME = "Body"
+    DESCRIPTION = "Substituted message body"
+    TYPE = "VARCHAR2"
+    SUBTYPE = "SEND"
+    FORMAT = "2000"
+    VALUE_TYPE = "CONSTANT"
+  END MESSAGE_ATTRIBUTE
+
+  BEGIN MESSAGE_ATTRIBUTE "COMMENT"
+    DISPLAY_NAME = "Comment"
+    DESCRIPTION = "Sender or Forwarder comments"
+    TYPE = "VARCHAR2"
+    SUBTYPE = "SEND"
+    FORMAT = "2000"
+    VALUE_TYPE = "CONSTANT"
+  END MESSAGE_ATTRIBUTE
+
+  BEGIN MESSAGE_ATTRIBUTE "PRIORITY"
+    DISPLAY_NAME = "Priority"
+    DESCRIPTION = "Notification priority"
+    TYPE = "NUMBER"
+    SUBTYPE = "SEND"
+    VALUE_TYPE = "CONSTANT"
+  END MESSAGE_ATTRIBUTE
+
+  BEGIN MESSAGE_ATTRIBUTE "DUE_DATE"
+    DISPLAY_NAME = "Due Date"
+    DESCRIPTION = "Date by which a response is required"
+    TYPE = "DATE"
+    SUBTYPE = "SEND"
+    VALUE_TYPE = "CONSTANT"
+  END MESSAGE_ATTRIBUTE
+
+  BEGIN MESSAGE_ATTRIBUTE "NOTIFICATION"
+    DISPLAY_NAME = "Notification Code"
+    DESCRIPTION = "Identifying information for this notification (required)"
+    TYPE = "VARCHAR2"
+    SUBTYPE = "SEND"
+    FORMAT = "2000"
+    VALUE_TYPE = "CONSTANT"
+  END MESSAGE_ATTRIBUTE
+
+  BEGIN MESSAGE_ATTRIBUTE "RESPONSE"
+    DISPLAY_NAME = "Response section"
+    DESCRIPTION = "User response section"
+    TYPE = "VARCHAR2"
+    SUBTYPE = "SEND"
+    FORMAT = "2000"
+    VALUE_TYPE = "CONSTANT"
+  END MESSAGE_ATTRIBUTE
+
+  BEGIN MESSAGE_ATTRIBUTE "MAILTO"
+    DISPLAY_NAME = "MailTo"
+    DESCRIPTION = "Substituted mailto"
+    TYPE = "VARCHAR2"
+    SUBTYPE = "SEND"
+    FORMAT = "2000"
+    VALUE_TYPE = "CONSTANT"
+  END MESSAGE_ATTRIBUTE
+
+  BEGIN MESSAGE_ATTRIBUTE "CLICK_HERE_RESPONSE"
+    DISPLAY_NAME = "Click here to respond"
+    DESCRIPTION = "Please click here to Respond"
+    TYPE = "URL"
+    SUBTYPE = "SEND"
+    FORMAT = "_top"
+    VALUE_TYPE = "CONSTANT"
+  END MESSAGE_ATTRIBUTE
+
+  BEGIN MESSAGE_ATTRIBUTE "SENDER"
+    DISPLAY_NAME = "Sender"
+    DESCRIPTION = "Sender's name"
+    TYPE = "VARCHAR2"
+    SUBTYPE = "SEND"
+    FORMAT = "320"
+    VALUE_TYPE = "CONSTANT"
+  END MESSAGE_ATTRIBUTE
+
+  BEGIN MESSAGE_ATTRIBUTE "HEADER"
+    DISPLAY_NAME = "Header"
+    DESCRIPTION = "Substituted notification header details"
+    TYPE = "VARCHAR2"
+    SUBTYPE = "SEND"
+    VALUE_TYPE = "CONSTANT"
+  END MESSAGE_ATTRIBUTE
+
+  BEGIN MESSAGE_ATTRIBUTE "HISTORY"
+    DISPLAY_NAME = "Action History"
+    DESCRIPTION = "History of actions on the notification"
+    TYPE = "VARCHAR2"
+    SUBTYPE = "SEND"
+    VALUE_TYPE = "CONSTANT"
+  END MESSAGE_ATTRIBUTE
+
+  BEGIN MESSAGE_ATTRIBUTE "TIMEZONE"
+    DISPLAY_NAME = "Server Time Zone"
+    DESCRIPTION = "Server time zone description"
+    TYPE = "VARCHAR2"
+    SUBTYPE = "SEND"
+    VALUE_TYPE = "CONSTANT"
+  END MESSAGE_ATTRIBUTE
+
+  BEGIN MESSAGE_ATTRIBUTE "TEMPLATE_STYLE"
+    DISPLAY_NAME = "Template style sheet definitions"
+    DESCRIPTION = "Defines the CSS style sheet class and element attributes"
+    TYPE = "VARCHAR2"
+    SUBTYPE = "SEND"
+    VALUE_TYPE = "CONSTANT"
+  END MESSAGE_ATTRIBUTE
+END MESSAGE
+
+BEGIN MESSAGE "WFMAIL" "OPEN_MAIL_DIRECT"
+  PROTECT_LEVEL = "1000"
+  CUSTOM_LEVEL = "0"
+  DISPLAY_NAME = "Workflow Open Mail (Direct)"
+  DESCRIPTION = "Mail template for open notifications (direct response)"
+  SUBJECT = "Action Required: &SUBJECT"
+  BODY = "Oracle Workflow Notification\n\
+&TIMEZONE\n\
+________________________________________________________________________\n\
+\n\
+Response Instructions for &NOTIFICATION\n\
+\n\
+To submit your response, reply to this message, including this note with your \
+reply.  The first lines of your reply must be your responses to the notificati\
+on questions.  Instructions below detail exactly what should be placed on each\
+ line of your reply.\n\
+\n\
+&RESPONSE\n\
+\n\
+________________________________________________________________________\n\
+\n\
+Notification Details:\n\
+&HEADER\n\
+&BODY\n\
+\n\
+Due Date: &DUE_DATE\n\
+\n\
+&HISTORY"
+  HTML_BODY = "<HTML> \n\
+<HEAD> \n\
+<TITLE> Oracle Workflow Notification </TITLE>\n\
+<STYLE>\n\
+<!--\n\
+&TEMPLATE_STYLE\n\
+-->\n\
+</STYLE> \n\
+</HEAD> \n\
+<BODY BGCOLOR=\"#FFFFFF\" > \n\
+<P><SPAN class=\"OraTipLabel\">&TIMEZONE</SPAN>\n\
+<P>&HEADER\n\
+<P>&BODY\n\
+<P>Please click on one of the following choices to automatically generate an E\
+-mail response.  Before sending the E-mail response to close this notification\
+, ensure all response prompts include a desired response value within quotes.\
+\n\
+<P>&MAILTO\n\
+<P>&HISTORY\n\
+</BODY> \n\
+</HTML>"
+  DEFAULT_PRIORITY = "50"
+
+  BEGIN MESSAGE_ATTRIBUTE "START_DATE"
+    DISPLAY_NAME = "Start Date"
+    DESCRIPTION = "Date message was sent"
+    TYPE = "DATE"
+    SUBTYPE = "SEND"
+    VALUE_TYPE = "CONSTANT"
+  END MESSAGE_ATTRIBUTE
+
+  BEGIN MESSAGE_ATTRIBUTE "TO"
+    DISPLAY_NAME = "Recipient"
+    DESCRIPTION = "Role the notification was sent to"
+    TYPE = "VARCHAR2"
+    SUBTYPE = "SEND"
+    FORMAT = "2000"
+    VALUE_TYPE = "CONSTANT"
+  END MESSAGE_ATTRIBUTE
+
+  BEGIN MESSAGE_ATTRIBUTE "SUBJECT"
+    DISPLAY_NAME = "Subject"
+    DESCRIPTION = "Substituted message subject line"
+    TYPE = "VARCHAR2"
+    SUBTYPE = "SEND"
+    FORMAT = "2000"
+    VALUE_TYPE = "CONSTANT"
+  END MESSAGE_ATTRIBUTE
+
+  BEGIN MESSAGE_ATTRIBUTE "BODY"
+    DISPLAY_NAME = "Body"
+    DESCRIPTION = "Substituted message body"
+    TYPE = "VARCHAR2"
+    SUBTYPE = "SEND"
+    FORMAT = "2000"
+    VALUE_TYPE = "CONSTANT"
+  END MESSAGE_ATTRIBUTE
+
+  BEGIN MESSAGE_ATTRIBUTE "COMMENT"
+    DISPLAY_NAME = "Comment"
+    DESCRIPTION = "Sender or Forwarder comments"
+    TYPE = "VARCHAR2"
+    SUBTYPE = "SEND"
+    FORMAT = "2000"
+    VALUE_TYPE = "CONSTANT"
+  END MESSAGE_ATTRIBUTE
+
+  BEGIN MESSAGE_ATTRIBUTE "PRIORITY"
+    DISPLAY_NAME = "Priority"
+    DESCRIPTION = "Notification priority"
+    TYPE = "NUMBER"
+    SUBTYPE = "SEND"
+    VALUE_TYPE = "CONSTANT"
+  END MESSAGE_ATTRIBUTE
+
+  BEGIN MESSAGE_ATTRIBUTE "DUE_DATE"
+    DISPLAY_NAME = "Due Date"
+    DESCRIPTION = "Date by which a response is required"
+    TYPE = "DATE"
+    SUBTYPE = "SEND"
+    VALUE_TYPE = "CONSTANT"
+  END MESSAGE_ATTRIBUTE
+
+  BEGIN MESSAGE_ATTRIBUTE "NOTIFICATION"
+    DISPLAY_NAME = "Notification Code"
+    DESCRIPTION = "Identifying information for this notification (required)"
+    TYPE = "VARCHAR2"
+    SUBTYPE = "SEND"
+    FORMAT = "2000"
+    VALUE_TYPE = "CONSTANT"
+  END MESSAGE_ATTRIBUTE
+
+  BEGIN MESSAGE_ATTRIBUTE "RESPONSE"
+    DISPLAY_NAME = "Response section"
+    DESCRIPTION = "User response section"
+    TYPE = "VARCHAR2"
+    SUBTYPE = "SEND"
+    FORMAT = "2000"
+    VALUE_TYPE = "CONSTANT"
+  END MESSAGE_ATTRIBUTE
+
+  BEGIN MESSAGE_ATTRIBUTE "MAILTO"
+    DISPLAY_NAME = "MailTo"
+    DESCRIPTION = "Substituted mailto"
+    TYPE = "VARCHAR2"
+    SUBTYPE = "SEND"
+    FORMAT = "2000"
+    VALUE_TYPE = "CONSTANT"
+  END MESSAGE_ATTRIBUTE
+
+  BEGIN MESSAGE_ATTRIBUTE "CLICK_HERE_RESPONSE"
+    DISPLAY_NAME = "Click here to respond"
+    DESCRIPTION = "Please click here to Respond"
+    TYPE = "URL"
+    SUBTYPE = "SEND"
+    FORMAT = "_top"
+    VALUE_TYPE = "CONSTANT"
+  END MESSAGE_ATTRIBUTE
+
+  BEGIN MESSAGE_ATTRIBUTE "SENDER"
+    DISPLAY_NAME = "Sender"
+    DESCRIPTION = "Sender's name"
+    TYPE = "VARCHAR2"
+    SUBTYPE = "SEND"
+    FORMAT = "320"
+    VALUE_TYPE = "CONSTANT"
+  END MESSAGE_ATTRIBUTE
+
+  BEGIN MESSAGE_ATTRIBUTE "HEADER"
+    DISPLAY_NAME = "Header"
+    DESCRIPTION = "Substituted notification header details"
+    TYPE = "VARCHAR2"
+    SUBTYPE = "SEND"
+    VALUE_TYPE = "CONSTANT"
+  END MESSAGE_ATTRIBUTE
+
+  BEGIN MESSAGE_ATTRIBUTE "HISTORY"
+    DISPLAY_NAME = "Action History"
+    DESCRIPTION = "History of actions on the notification"
+    TYPE = "VARCHAR2"
+    SUBTYPE = "SEND"
+    VALUE_TYPE = "CONSTANT"
+  END MESSAGE_ATTRIBUTE
+
+  BEGIN MESSAGE_ATTRIBUTE "TIMEZONE"
+    DISPLAY_NAME = "Server Time Zone"
+    DESCRIPTION = "Server time zone description"
+    TYPE = "VARCHAR2"
+    SUBTYPE = "SEND"
+    VALUE_TYPE = "CONSTANT"
+  END MESSAGE_ATTRIBUTE
+
+  BEGIN MESSAGE_ATTRIBUTE "TEMPLATE_STYLE"
+    DISPLAY_NAME = "Template style sheet definitions"
+    DESCRIPTION = "Defines the CSS style sheet class and element attributes"
+    TYPE = "VARCHAR2"
+    SUBTYPE = "SEND"
+    VALUE_TYPE = "CONSTANT"
+  END MESSAGE_ATTRIBUTE
+END MESSAGE
+
+BEGIN MESSAGE "WFMAIL" "OPEN_MAIL_FYI"
+  PROTECT_LEVEL = "1000"
+  CUSTOM_LEVEL = "0"
+  DISPLAY_NAME = "Workflow Open FYI Mail"
+  DESCRIPTION = "Mail template for FYI notifications"
+  SUBJECT = "FYI: &SUBJECT"
+  BODY = "Oracle Workflow Notification (FYI)\n\
+\n\
+&TIMEZONE\n\
+________________________________________________________________________\n\
+\n\
+&HEADER\n\
+&BODY\n\
+\n\
+&HISTORY"
+  HTML_BODY = "<HTML><HEAD><TITLE>Oracle Workflow Notification (FYI)</TITLE><S\
+TYLE>\n\
+<!--\n\
+&TEMPLATE_STYLE\n\
+-->\n\
+</STYLE></HEAD>\n\
+<BODY BGCOLOR=\"#FFFFFF\">\n\
+<SPAN class=\"OraTipLabel\">&TIMEZONE</SPAN>\n\
+<P>&HEADER\n\
+<P>&BODY \n\
+<P>&HISTORY\n\
+</BODY>\n\
+</HTML>"
+  DEFAULT_PRIORITY = "0"
+
+  BEGIN MESSAGE_ATTRIBUTE "START_DATE"
+    DISPLAY_NAME = "Start Date"
+    DESCRIPTION = "Date message was sent"
+    TYPE = "DATE"
+    SUBTYPE = "SEND"
+    VALUE_TYPE = "CONSTANT"
+  END MESSAGE_ATTRIBUTE
+
+  BEGIN MESSAGE_ATTRIBUTE "TO"
+    DISPLAY_NAME = "Recipient"
+    DESCRIPTION = "Role the notification was sent to"
+    TYPE = "VARCHAR2"
+    SUBTYPE = "SEND"
+    FORMAT = "2000"
+    VALUE_TYPE = "CONSTANT"
+  END MESSAGE_ATTRIBUTE
+
+  BEGIN MESSAGE_ATTRIBUTE "SUBJECT"
+    DISPLAY_NAME = "Subject"
+    DESCRIPTION = "Substituted message subject line"
+    TYPE = "VARCHAR2"
+    SUBTYPE = "SEND"
+    FORMAT = "2000"
+    VALUE_TYPE = "CONSTANT"
+  END MESSAGE_ATTRIBUTE
+
+  BEGIN MESSAGE_ATTRIBUTE "BODY"
+    DISPLAY_NAME = "Body"
+    DESCRIPTION = "Substituted message body"
+    TYPE = "VARCHAR2"
+    SUBTYPE = "SEND"
+    FORMAT = "2000"
+    VALUE_TYPE = "CONSTANT"
+  END MESSAGE_ATTRIBUTE
+
+  BEGIN MESSAGE_ATTRIBUTE "COMMENT"
+    DISPLAY_NAME = "Comment"
+    DESCRIPTION = "Sender or Forwarder comments"
+    TYPE = "VARCHAR2"
+    SUBTYPE = "SEND"
+    FORMAT = "2000"
+    VALUE_TYPE = "CONSTANT"
+  END MESSAGE_ATTRIBUTE
+
+  BEGIN MESSAGE_ATTRIBUTE "PRIORITY"
+    DISPLAY_NAME = "Priority"
+    DESCRIPTION = "Notification priority"
+    TYPE = "NUMBER"
+    SUBTYPE = "SEND"
+    VALUE_TYPE = "CONSTANT"
+  END MESSAGE_ATTRIBUTE
+
+  BEGIN MESSAGE_ATTRIBUTE "DUE_DATE"
+    DISPLAY_NAME = "Due Date"
+    DESCRIPTION = "Date by which a response is required"
+    TYPE = "DATE"
+    SUBTYPE = "SEND"
+    VALUE_TYPE = "CONSTANT"
+  END MESSAGE_ATTRIBUTE
+
+  BEGIN MESSAGE_ATTRIBUTE "NOTIFICATION"
+    DISPLAY_NAME = "Notification Code"
+    DESCRIPTION = "Identifying information for this notification (required)"
+    TYPE = "VARCHAR2"
+    SUBTYPE = "SEND"
+    FORMAT = "2000"
+    VALUE_TYPE = "CONSTANT"
+  END MESSAGE_ATTRIBUTE
+
+  BEGIN MESSAGE_ATTRIBUTE "SENDER"
+    DISPLAY_NAME = "Sender"
+    DESCRIPTION = "Sender's name"
+    TYPE = "VARCHAR2"
+    SUBTYPE = "SEND"
+    FORMAT = "320"
+    VALUE_TYPE = "CONSTANT"
+  END MESSAGE_ATTRIBUTE
+
+  BEGIN MESSAGE_ATTRIBUTE "HEADER"
+    DISPLAY_NAME = "Header"
+    DESCRIPTION = "Substituted notification header details"
+    TYPE = "VARCHAR2"
+    SUBTYPE = "SEND"
+    VALUE_TYPE = "CONSTANT"
+  END MESSAGE_ATTRIBUTE
+
+  BEGIN MESSAGE_ATTRIBUTE "TIMEZONE"
+    DISPLAY_NAME = "Server Time Zone"
+    DESCRIPTION = "Server time zone description"
+    TYPE = "VARCHAR2"
+    SUBTYPE = "SEND"
+    VALUE_TYPE = "CONSTANT"
+  END MESSAGE_ATTRIBUTE
+
+  BEGIN MESSAGE_ATTRIBUTE "HISTORY"
+    DISPLAY_NAME = "Action History"
+    DESCRIPTION = "History of actions on the notification"
+    TYPE = "VARCHAR2"
+    SUBTYPE = "SEND"
+    VALUE_TYPE = "CONSTANT"
+  END MESSAGE_ATTRIBUTE
+
+  BEGIN MESSAGE_ATTRIBUTE "TEMPLATE_STYLE"
+    DISPLAY_NAME = "Template style sheet definitions"
+    DESCRIPTION = "Defines the CSS style sheet class and element attributes"
+    TYPE = "VARCHAR2"
+    SUBTYPE = "SEND"
+    VALUE_TYPE = "CONSTANT"
+  END MESSAGE_ATTRIBUTE
+END MESSAGE
+
+BEGIN MESSAGE "WFMAIL" "OPEN_MAIL_OUTLOOK"
+  PROTECT_LEVEL = "1000"
+  CUSTOM_LEVEL = "0"
+  DISPLAY_NAME = "Workflow Open Mail (Outlook Express)"
+  DESCRIPTION = "Mail template for open notifications\n\
+Work around a problem in Outlook Express"
+  SUBJECT = "Action Required: &SUBJECT"
+  BODY = "Oracle Workflow Notification\n\
+&TIMEZONE\n\
+\n\
+---------- Start of Response Template ----------------------------------------\
+--\n\
+\n\
+Response Template for &NOTIFICATION\n\
+\n\
+To submit your response, reply to this message including this response templat\
+e in your reply.  Insert your response value between the quotes following each\
+ response prompt.\n\
+\n\
+\n\
+&RESPONSE\n\
+\n\
+---------- End of Response Template ------------------------------------------\
+--\n\
+\n\
+Notification Details:\n\
+&HEADER\n\
+&BODY\n\
+\n\
+Due Date: &DUE_DATE\n\
+\n\
+&HISTORY"
+  HTML_BODY = "<HTML> <HEAD> <TITLE> Oracle Workflow Notification </TITLE>\n\
+<STYLE>\n\
+<!--\n\
+&TEMPLATE_STYLE\n\
+-->\n\
+</STYLE> </HEAD> \n\
+<BODY BGCOLOR=\"#FFFFFF\" > \n\
+<P><SPAN class=\"OraTipLabel\">&TIMEZONE</SPAN>\n\
+<P>&HEADER\n\
+<P>&BODY\n\
+<P>&CLICK_HERE_RESPONSE\n\
+<P>&HISTORY\n\
+</BODY> \n\
+</HTML>"
+  DEFAULT_PRIORITY = "50"
+
+  BEGIN MESSAGE_ATTRIBUTE "START_DATE"
+    DISPLAY_NAME = "Start Date"
+    DESCRIPTION = "Date message was sent"
+    TYPE = "DATE"
+    SUBTYPE = "SEND"
+    VALUE_TYPE = "CONSTANT"
+  END MESSAGE_ATTRIBUTE
+
+  BEGIN MESSAGE_ATTRIBUTE "TO"
+    DISPLAY_NAME = "Recipient"
+    DESCRIPTION = "Role the notification was sent to"
+    TYPE = "VARCHAR2"
+    SUBTYPE = "SEND"
+    FORMAT = "2000"
+    VALUE_TYPE = "CONSTANT"
+  END MESSAGE_ATTRIBUTE
+
+  BEGIN MESSAGE_ATTRIBUTE "SUBJECT"
+    DISPLAY_NAME = "Subject"
+    DESCRIPTION = "Substituted message subject line"
+    TYPE = "VARCHAR2"
+    SUBTYPE = "SEND"
+    FORMAT = "2000"
+    VALUE_TYPE = "CONSTANT"
+  END MESSAGE_ATTRIBUTE
+
+  BEGIN MESSAGE_ATTRIBUTE "BODY"
+    DISPLAY_NAME = "Body"
+    DESCRIPTION = "Substituted message body"
+    TYPE = "VARCHAR2"
+    SUBTYPE = "SEND"
+    FORMAT = "2000"
+    VALUE_TYPE = "CONSTANT"
+  END MESSAGE_ATTRIBUTE
+
+  BEGIN MESSAGE_ATTRIBUTE "COMMENT"
+    DISPLAY_NAME = "Comment"
+    DESCRIPTION = "Sender or Forwarder comments"
+    TYPE = "VARCHAR2"
+    SUBTYPE = "SEND"
+    FORMAT = "2000"
+    VALUE_TYPE = "CONSTANT"
+  END MESSAGE_ATTRIBUTE
+
+  BEGIN MESSAGE_ATTRIBUTE "PRIORITY"
+    DISPLAY_NAME = "Priority"
+    DESCRIPTION = "Notification priority"
+    TYPE = "NUMBER"
+    SUBTYPE = "SEND"
+    VALUE_TYPE = "CONSTANT"
+  END MESSAGE_ATTRIBUTE
+
+  BEGIN MESSAGE_ATTRIBUTE "DUE_DATE"
+    DISPLAY_NAME = "Due Date"
+    DESCRIPTION = "Date by which a response is required"
+    TYPE = "DATE"
+    SUBTYPE = "SEND"
+    VALUE_TYPE = "CONSTANT"
+  END MESSAGE_ATTRIBUTE
+
+  BEGIN MESSAGE_ATTRIBUTE "NOTIFICATION"
+    DISPLAY_NAME = "Notification Code"
+    DESCRIPTION = "Identifying information for this notification (required)"
+    TYPE = "VARCHAR2"
+    SUBTYPE = "SEND"
+    FORMAT = "2000"
+    VALUE_TYPE = "CONSTANT"
+  END MESSAGE_ATTRIBUTE
+
+  BEGIN MESSAGE_ATTRIBUTE "RESPONSE"
+    DISPLAY_NAME = "Response section"
+    DESCRIPTION = "User response section"
+    TYPE = "VARCHAR2"
+    SUBTYPE = "SEND"
+    FORMAT = "2000"
+    VALUE_TYPE = "CONSTANT"
+  END MESSAGE_ATTRIBUTE
+
+  BEGIN MESSAGE_ATTRIBUTE "MAILTO"
+    DISPLAY_NAME = "MailTo"
+    DESCRIPTION = "Substituted mailto"
+    TYPE = "VARCHAR2"
+    SUBTYPE = "SEND"
+    FORMAT = "2000"
+    VALUE_TYPE = "CONSTANT"
+  END MESSAGE_ATTRIBUTE
+
+  BEGIN MESSAGE_ATTRIBUTE "CLICK_HERE_RESPONSE"
+    DISPLAY_NAME = "Click here to respond"
+    DESCRIPTION = "Please click here to Respond"
+    TYPE = "URL"
+    SUBTYPE = "SEND"
+    FORMAT = "_top"
+    VALUE_TYPE = "CONSTANT"
+  END MESSAGE_ATTRIBUTE
+
+  BEGIN MESSAGE_ATTRIBUTE "SENDER"
+    DISPLAY_NAME = "Sender"
+    DESCRIPTION = "Sender's name"
+    TYPE = "VARCHAR2"
+    SUBTYPE = "SEND"
+    FORMAT = "320"
+    VALUE_TYPE = "CONSTANT"
+  END MESSAGE_ATTRIBUTE
+
+  BEGIN MESSAGE_ATTRIBUTE "HEADER"
+    DISPLAY_NAME = "Header"
+    DESCRIPTION = "Substituted notification header details"
+    TYPE = "VARCHAR2"
+    SUBTYPE = "SEND"
+    VALUE_TYPE = "CONSTANT"
+  END MESSAGE_ATTRIBUTE
+
+  BEGIN MESSAGE_ATTRIBUTE "HISTORY"
+    DISPLAY_NAME = "Action History"
+    DESCRIPTION = "History of actions on the notification"
+    TYPE = "VARCHAR2"
+    SUBTYPE = "SEND"
+    VALUE_TYPE = "CONSTANT"
+  END MESSAGE_ATTRIBUTE
+
+  BEGIN MESSAGE_ATTRIBUTE "TIMEZONE"
+    DISPLAY_NAME = "Server Time Zone"
+    DESCRIPTION = "Server time zone description"
+    TYPE = "VARCHAR2"
+    SUBTYPE = "SEND"
+    VALUE_TYPE = "CONSTANT"
+  END MESSAGE_ATTRIBUTE
+
+  BEGIN MESSAGE_ATTRIBUTE "TEMPLATE_STYLE"
+    DISPLAY_NAME = "Template style sheet definitions"
+    DESCRIPTION = "Defines the CSS style sheet class and element attributes"
+    TYPE = "VARCHAR2"
+    SUBTYPE = "SEND"
+    VALUE_TYPE = "CONSTANT"
+  END MESSAGE_ATTRIBUTE
+END MESSAGE
+
+BEGIN MESSAGE "WFMAIL" "OPEN_MAIL_PSIG_ONLY"
+  PROTECT_LEVEL = "1000"
+  CUSTOM_LEVEL = "0"
+  DISPLAY_NAME = "Workflow Password Signature Mail"
+  DESCRIPTION = "Mail template for open notifications that require password ba\
+sed signature"
+  SUBJECT = "Action Required: &SUBJECT"
+  BODY = "Oracle Workflow Notification\n\
+&TIMEZONE\n\
+________________________________________________________________________\n\
+\n\
+Response Instructions for &NOTIFICATION\n\
+\n\
+This notification requires a password-based signature in your response. You ca\
+nnot respond to this notification through e-mail. Please access the online ver\
+sion of the notification to submit your response.\n\
+________________________________________________________________________\n\
+\n\
+Notification Details:\n\
+&HEADER\n\
+&BODY\n\
+\n\
+Due Date: &DUE_DATE\n\
+\n\
+&HISTORY"
+  HTML_BODY = "<HTML> <HEAD> <TITLE> Oracle Workflow Notification </TITLE> <ST\
+YLE>\n\
+<!--\n\
+&TEMPLATE_STYLE\n\
+-->\n\
+</STYLE></HEAD> \n\
+<BODY BGCOLOR=\"#FFFFFF\" > \n\
+<P><SPAN class=\"OraTipLabel\">&TIMEZONE</SPAN>\n\
+<P>&HEADER\n\
+<P><B>This notification requires a password-based signature in your response. \
+You cannot respond to this notification through e-mail. Please access the onli\
+ne version of the notification to submit your response.</B>\n\
+<P>&BODY\n\
+<P>&HISTORY\n\
+</BODY> \n\
+</HTML>"
+  DEFAULT_PRIORITY = "50"
+
+  BEGIN MESSAGE_ATTRIBUTE "DUE_DATE"
+    DISPLAY_NAME = "Due Date"
+    DESCRIPTION = "Date by which a response is required"
+    TYPE = "DATE"
+    SUBTYPE = "SEND"
+    VALUE_TYPE = "CONSTANT"
+  END MESSAGE_ATTRIBUTE
+
+  BEGIN MESSAGE_ATTRIBUTE "BODY"
+    DISPLAY_NAME = "Body"
+    DESCRIPTION = "Substituted message body"
+    TYPE = "VARCHAR2"
+    SUBTYPE = "SEND"
+    FORMAT = "2000"
+    VALUE_TYPE = "CONSTANT"
+  END MESSAGE_ATTRIBUTE
+
+  BEGIN MESSAGE_ATTRIBUTE "NOTIFICATION"
+    DISPLAY_NAME = "Notification Code"
+    DESCRIPTION = "Identifying information for this notification (required)"
+    TYPE = "VARCHAR2"
+    SUBTYPE = "SEND"
+    FORMAT = "2000"
+    VALUE_TYPE = "CONSTANT"
+  END MESSAGE_ATTRIBUTE
+
+  BEGIN MESSAGE_ATTRIBUTE "COMMENT"
+    DISPLAY_NAME = "Comment"
+    DESCRIPTION = "Sender or Forwarder comments"
+    TYPE = "VARCHAR2"
+    SUBTYPE = "SEND"
+    FORMAT = "2000"
+    VALUE_TYPE = "CONSTANT"
+  END MESSAGE_ATTRIBUTE
+
+  BEGIN MESSAGE_ATTRIBUTE "SENDER"
+    DISPLAY_NAME = "Sender"
+    DESCRIPTION = "Sender's name"
+    TYPE = "VARCHAR2"
+    SUBTYPE = "SEND"
+    FORMAT = "320"
+    VALUE_TYPE = "CONSTANT"
+  END MESSAGE_ATTRIBUTE
+
+  BEGIN MESSAGE_ATTRIBUTE "SUBJECT"
+    DISPLAY_NAME = "Subject"
+    DESCRIPTION = "Substituted message subject line"
+    TYPE = "VARCHAR2"
+    SUBTYPE = "SEND"
+    FORMAT = "2000"
+    VALUE_TYPE = "CONSTANT"
+  END MESSAGE_ATTRIBUTE
+
+  BEGIN MESSAGE_ATTRIBUTE "HEADER"
+    DISPLAY_NAME = "Header"
+    DESCRIPTION = "Substituted notification header details"
+    TYPE = "VARCHAR2"
+    SUBTYPE = "SEND"
+    VALUE_TYPE = "CONSTANT"
+  END MESSAGE_ATTRIBUTE
+
+  BEGIN MESSAGE_ATTRIBUTE "HISTORY"
+    DISPLAY_NAME = "Action History"
+    DESCRIPTION = "History of actions on the notification"
+    TYPE = "VARCHAR2"
+    SUBTYPE = "SEND"
+    VALUE_TYPE = "CONSTANT"
+  END MESSAGE_ATTRIBUTE
+
+  BEGIN MESSAGE_ATTRIBUTE "TIMEZONE"
+    DISPLAY_NAME = "Server Time Zone"
+    DESCRIPTION = "Server time zone description"
+    TYPE = "VARCHAR2"
+    SUBTYPE = "SEND"
+    VALUE_TYPE = "CONSTANT"
+  END MESSAGE_ATTRIBUTE
+
+  BEGIN MESSAGE_ATTRIBUTE "TEMPLATE_STYLE"
+    DISPLAY_NAME = "Template style sheet definitions"
+    DESCRIPTION = "Defines the CSS style sheet class and element attributes"
+    TYPE = "VARCHAR2"
+    SUBTYPE = "SEND"
+    VALUE_TYPE = "CONSTANT"
+  END MESSAGE_ATTRIBUTE
+END MESSAGE
+
+BEGIN MESSAGE "WFMAIL" "OPEN_MAIL_SECURE"
+  PROTECT_LEVEL = "1000"
+  CUSTOM_LEVEL = "0"
+  DISPLAY_NAME = "Workflow Secure Mail Content"
+  DESCRIPTION = "Mail template to specify that the notification message conten\
+t is secure and cannot be sent by e-mail."
+  SUBJECT = "Action Required: &SUBJECT"
+  BODY = "Oracle Workflow Notification\n\
+________________________________________________________________________\n\
+\n\
+Notification &NOTIFICATION\n\
+\n\
+This notification contains secure content which cannot be sent through e-mail.\
+ Please access the online version of the notification to see the details.\n\
+________________________________________________________________________"
+  HTML_BODY = "<HTML> <HEAD> <TITLE> Oracle Workflow Notification </TITLE> \n\
+<STYLE>\n\
+<!--\n\
+&TEMPLATE_STYLE\n\
+-->\n\
+</STYLE>\n\
+</HEAD> \n\
+<BODY BGCOLOR=\"#FFFFFF\" > \n\
+<P>\n\
+<P>Notification: &NOTIFICATION <br><br>\n\
+<B>This notification contains secure content which cannot be sent through e-ma\
+il. Please access the online version of the notification to see the details.</\
+B>\n\
+</BODY> \n\
+</HTML>"
+  DEFAULT_PRIORITY = "50"
+
+  BEGIN MESSAGE_ATTRIBUTE "NOTIFICATION"
+    DISPLAY_NAME = "Notification Code"
+    DESCRIPTION = "Identifying information for this notification (required)"
+    TYPE = "VARCHAR2"
+    SUBTYPE = "SEND"
+    FORMAT = "2000"
+    VALUE_TYPE = "CONSTANT"
+  END MESSAGE_ATTRIBUTE
+
+  BEGIN MESSAGE_ATTRIBUTE "SUBJECT"
+    DISPLAY_NAME = "Subject"
+    DESCRIPTION = "Substituted message subject line"
+    TYPE = "VARCHAR2"
+    SUBTYPE = "SEND"
+    FORMAT = "2000"
+    VALUE_TYPE = "CONSTANT"
+  END MESSAGE_ATTRIBUTE
+
+  BEGIN MESSAGE_ATTRIBUTE "TEMPLATE_STYLE"
+    DISPLAY_NAME = "Template style sheet definitions"
+    DESCRIPTION = "Defines the CSS style sheet class and element attributes"
+    TYPE = "VARCHAR2"
+    SUBTYPE = "SEND"
+    VALUE_TYPE = "CONSTANT"
+  END MESSAGE_ATTRIBUTE
+END MESSAGE
+
+BEGIN MESSAGE "WFMAIL" "OPEN_MAIL_SIGNATURE"
+  PROTECT_LEVEL = "1000"
+  CUSTOM_LEVEL = "0"
+  DISPLAY_NAME = "Workflow Signature Required Mail"
+  DESCRIPTION = "Mail template for open notifications that require signature"
+  SUBJECT = "Action Required: &SUBJECT"
+  BODY = "Oracle Workflow Notification\n\
+&TIMEZONE\n\
+\n\
+This notification requires a signature in your response. You cannot respond to\
+ this notification through e-mail. Please access the online version of the not\
+ification to submit your response.\n\
+\n\
+Notification Details:\n\
+&HEADER\n\
+&BODY\n\
+\n\
+Due Date: &DUE_DATE\n\
+\n\
+&HISTORY"
+  HTML_BODY = "<HTML> <HEAD> <TITLE> Oracle Workflow Notification </TITLE> <ST\
+YLE>\n\
+<!--\n\
+&TEMPLATE_STYLE\n\
+-->\n\
+</STYLE>\n\
+</HEAD> \n\
+<BODY BGCOLOR=\"#FFFFFF\" > \n\
+<P><SPAN class=\"OraTipLabel\">&TIMEZONE</SPAN>\n\
+<P>&HEADER\n\
+<P>&BODY\n\
+<P><B>This notification requires a signature in your response. You cannot resp\
+ond to this notification through e-mail. Please access the online version of t\
+he notification to submit your response.</B> \n\
+<P>&CLICK_HERE_RESPONSE\n\
+<P>&HISTORY\n\
+</BODY> \n\
+</HTML>"
+  DEFAULT_PRIORITY = "50"
+
+  BEGIN MESSAGE_ATTRIBUTE "DUE_DATE"
+    DISPLAY_NAME = "Due Date"
+    DESCRIPTION = "Date by which a response is required"
+    TYPE = "DATE"
+    SUBTYPE = "SEND"
+    VALUE_TYPE = "CONSTANT"
+  END MESSAGE_ATTRIBUTE
+
+  BEGIN MESSAGE_ATTRIBUTE "BODY"
+    DISPLAY_NAME = "Body"
+    DESCRIPTION = "Substituted message body"
+    TYPE = "VARCHAR2"
+    SUBTYPE = "SEND"
+    FORMAT = "2000"
+    VALUE_TYPE = "CONSTANT"
+  END MESSAGE_ATTRIBUTE
+
+  BEGIN MESSAGE_ATTRIBUTE "NOTIFICATION"
+    DISPLAY_NAME = "Notification Code"
+    DESCRIPTION = "Identifying information for this notification (required)"
+    TYPE = "VARCHAR2"
+    SUBTYPE = "SEND"
+    FORMAT = "2000"
+    VALUE_TYPE = "CONSTANT"
+  END MESSAGE_ATTRIBUTE
+
+  BEGIN MESSAGE_ATTRIBUTE "SENDER"
+    DISPLAY_NAME = "Sender"
+    DESCRIPTION = "Sender's name"
+    TYPE = "VARCHAR2"
+    SUBTYPE = "SEND"
+    FORMAT = "320"
+    VALUE_TYPE = "CONSTANT"
+  END MESSAGE_ATTRIBUTE
+
+  BEGIN MESSAGE_ATTRIBUTE "SUBJECT"
+    DISPLAY_NAME = "Subject"
+    DESCRIPTION = "Substituted message subject line"
+    TYPE = "VARCHAR2"
+    SUBTYPE = "SEND"
+    FORMAT = "2000"
+    VALUE_TYPE = "CONSTANT"
+  END MESSAGE_ATTRIBUTE
+
+  BEGIN MESSAGE_ATTRIBUTE "HEADER"
+    DISPLAY_NAME = "Header"
+    DESCRIPTION = "Substituted notification header details"
+    TYPE = "VARCHAR2"
+    SUBTYPE = "SEND"
+    VALUE_TYPE = "CONSTANT"
+  END MESSAGE_ATTRIBUTE
+
+  BEGIN MESSAGE_ATTRIBUTE "HISTORY"
+    DISPLAY_NAME = "Action History"
+    DESCRIPTION = "History of actions on the notification"
+    TYPE = "VARCHAR2"
+    SUBTYPE = "SEND"
+    VALUE_TYPE = "CONSTANT"
+  END MESSAGE_ATTRIBUTE
+
+  BEGIN MESSAGE_ATTRIBUTE "COMMENT"
+    DISPLAY_NAME = "Comment"
+    DESCRIPTION = "Sender or Forwarder comments"
+    TYPE = "VARCHAR2"
+    SUBTYPE = "SEND"
+    FORMAT = "2000"
+    VALUE_TYPE = "CONSTANT"
+  END MESSAGE_ATTRIBUTE
+
+  BEGIN MESSAGE_ATTRIBUTE "TIMEZONE"
+    DISPLAY_NAME = "Server Time Zone"
+    DESCRIPTION = "Server time zone description"
+    TYPE = "VARCHAR2"
+    SUBTYPE = "SEND"
+    VALUE_TYPE = "CONSTANT"
+  END MESSAGE_ATTRIBUTE
+
+  BEGIN MESSAGE_ATTRIBUTE "CLICK_HERE_RESPONSE"
+    DISPLAY_NAME = "Click here to respond"
+    DESCRIPTION = "Please click here to Respond"
+    TYPE = "URL"
+    SUBTYPE = "SEND"
+    FORMAT = "_top"
+    VALUE_TYPE = "CONSTANT"
+  END MESSAGE_ATTRIBUTE
+
+  BEGIN MESSAGE_ATTRIBUTE "TEMPLATE_STYLE"
+    DISPLAY_NAME = "Template style sheet definitions"
+    DESCRIPTION = "Defines the CSS style sheet class and element attributes"
+    TYPE = "VARCHAR2"
+    SUBTYPE = "SEND"
+    VALUE_TYPE = "CONSTANT"
+  END MESSAGE_ATTRIBUTE
+END MESSAGE
+
+BEGIN MESSAGE "WFMAIL" "OPEN_MORE_INFO"
+  PROTECT_LEVEL = "1000"
+  CUSTOM_LEVEL = "0"
+  DISPLAY_NAME = "Workflow Open Mail (More Information Request)"
+  DESCRIPTION = "Mail template for open notifications requesting for more info\
+rmation"
+  SUBJECT = "More Information Request: &SUBJECT"
+  BODY = "Oracle Workflow Notification\n\
+&TIMEZONE\n\
+______________________Start of Response Template______________________\n\
+\n\
+More Information Template for &NOTIFICATION\n\
+\n\
+User &SENDER has requested more information for the notification. Please reply\
+ to this message, including this response template with your reply.  Copy and \
+paste from this message if necessary to obtain an editable copy of the templat\
+e. Insert your comments between the quotes against the prompt.\n\
+\n\
+Question: &QUESTION\n\
+\n\
+&RESPONSE\n\
+______________________End of Response Template______________________\n\
+\n\
+Notification Details:\n\
+&HEADER\n\
+&BODY\n\
+\n\
+Due Date: &DUE_DATE\n\
+\n\
+&HISTORY"
+  HTML_BODY = "<HTML> <HEAD> <TITLE> Oracle Workflow Notification </TITLE><STY\
+LE>\n\
+<!--\n\
+&TEMPLATE_STYLE\n\
+-->\n\
+</STYLE> </HEAD> \n\
+<BODY BGCOLOR=\"#FFFFFF\" > \n\
+<P><SPAN class=\"OraTipLabel\">&TIMEZONE</SPAN>\n\
+\n\
+<P>\n\
+<P>Question: <B>&QUESTION</B>\n\
+<P><B>Please click on the following link to automatically generate an E-mail r\
+esponse for this question.  Before sending the E-mail response, ensure desired\
+ comments within quotes.</B>\n\
+<P>&MAILTO\n\
+<P><B>Notification Details:</B>\n\
+<P>&HEADER\n\
+<P>&BODY\n\
+<BR>\n\
+Question: <B>&QUESTION</B>\n\
+<P><B>Please click on the following link to automatically generate an E-mail r\
+esponse for this question.  Before sending the E-mail response, ensure desired\
+ comments within quotes.</B>\n\
+<P>&MAILTO\n\
+<P>&HISTORY\n\
+</BODY> \n\
+</HTML>"
+  DEFAULT_PRIORITY = "50"
+
+  BEGIN MESSAGE_ATTRIBUTE "DUE_DATE"
+    DISPLAY_NAME = "Due Date"
+    DESCRIPTION = "Date by which a response is required"
+    TYPE = "DATE"
+    SUBTYPE = "SEND"
+    VALUE_TYPE = "CONSTANT"
+  END MESSAGE_ATTRIBUTE
+
+  BEGIN MESSAGE_ATTRIBUTE "BODY"
+    DISPLAY_NAME = "Body"
+    DESCRIPTION = "Substituted message body"
+    TYPE = "VARCHAR2"
+    SUBTYPE = "SEND"
+    FORMAT = "2000"
+    VALUE_TYPE = "CONSTANT"
+  END MESSAGE_ATTRIBUTE
+
+  BEGIN MESSAGE_ATTRIBUTE "SUBJECT"
+    DISPLAY_NAME = "Subject"
+    DESCRIPTION = "Substituted message subject line"
+    TYPE = "VARCHAR2"
+    SUBTYPE = "SEND"
+    FORMAT = "2000"
+    VALUE_TYPE = "CONSTANT"
+  END MESSAGE_ATTRIBUTE
+
+  BEGIN MESSAGE_ATTRIBUTE "COMMENT"
+    DISPLAY_NAME = "Comment"
+    DESCRIPTION = "Sender or Forwarder comments"
+    TYPE = "VARCHAR2"
+    SUBTYPE = "SEND"
+    FORMAT = "2000"
+    VALUE_TYPE = "CONSTANT"
+  END MESSAGE_ATTRIBUTE
+
+  BEGIN MESSAGE_ATTRIBUTE "SENDER"
+    DISPLAY_NAME = "Sender"
+    DESCRIPTION = "Sender's name"
+    TYPE = "VARCHAR2"
+    SUBTYPE = "SEND"
+    FORMAT = "320"
+    VALUE_TYPE = "CONSTANT"
+  END MESSAGE_ATTRIBUTE
+
+  BEGIN MESSAGE_ATTRIBUTE "HISTORY"
+    DISPLAY_NAME = "Action History"
+    DESCRIPTION = "History of actions on the notification"
+    TYPE = "VARCHAR2"
+    SUBTYPE = "SEND"
+    VALUE_TYPE = "CONSTANT"
+  END MESSAGE_ATTRIBUTE
+
+  BEGIN MESSAGE_ATTRIBUTE "QUESTION"
+    DISPLAY_NAME = "Question"
+    DESCRIPTION = "More Info request question"
+    TYPE = "VARCHAR2"
+    SUBTYPE = "SEND"
+    FORMAT = "2000"
+    VALUE_TYPE = "CONSTANT"
+  END MESSAGE_ATTRIBUTE
+
+  BEGIN MESSAGE_ATTRIBUTE "RESPONSE"
+    DISPLAY_NAME = "Response section"
+    DESCRIPTION = "User response section"
+    TYPE = "VARCHAR2"
+    SUBTYPE = "SEND"
+    FORMAT = "2000"
+    VALUE_TYPE = "CONSTANT"
+  END MESSAGE_ATTRIBUTE
+
+  BEGIN MESSAGE_ATTRIBUTE "NOTIFICATION"
+    DISPLAY_NAME = "Notification Code"
+    DESCRIPTION = "Identifying information for this notification (required)"
+    TYPE = "VARCHAR2"
+    SUBTYPE = "SEND"
+    FORMAT = "2000"
+    VALUE_TYPE = "CONSTANT"
+  END MESSAGE_ATTRIBUTE
+
+  BEGIN MESSAGE_ATTRIBUTE "HEADER"
+    DISPLAY_NAME = "Header"
+    DESCRIPTION = "Substituted notification header details"
+    TYPE = "VARCHAR2"
+    SUBTYPE = "SEND"
+    VALUE_TYPE = "CONSTANT"
+  END MESSAGE_ATTRIBUTE
+
+  BEGIN MESSAGE_ATTRIBUTE "TIMEZONE"
+    DISPLAY_NAME = "Server Time Zone"
+    DESCRIPTION = "Server time zone description"
+    TYPE = "VARCHAR2"
+    SUBTYPE = "SEND"
+    VALUE_TYPE = "CONSTANT"
+  END MESSAGE_ATTRIBUTE
+
+  BEGIN MESSAGE_ATTRIBUTE "TEMPLATE_STYLE"
+    DISPLAY_NAME = "Template style sheet definitions"
+    DESCRIPTION = "Defines the CSS style sheet class and element attributes"
+    TYPE = "VARCHAR2"
+    SUBTYPE = "SEND"
+    VALUE_TYPE = "CONSTANT"
+  END MESSAGE_ATTRIBUTE
+END MESSAGE
+
+BEGIN MESSAGE "WFMAIL" "OPEN_MORE_INFO_OUTLOOK"
+  PROTECT_LEVEL = "1000"
+  CUSTOM_LEVEL = "0"
+  DISPLAY_NAME = "Workflow More Information Request (Outlook Express)"
+  DESCRIPTION = "Mail template for open notifications requesting for more info\
+rmation. Work around a problem in Outlook Express"
+  SUBJECT = "More Information Request: &SUBJECT"
+  BODY = "Oracle Workflow Notification\n\
+&TIMEZONE\n\
+______________________Start of Response Template______________________\n\
+\n\
+More Information Template for &NOTIFICATION\n\
+\n\
+User &SENDER has requested more information for the notification. Please reply\
+ to this message, including this response template with your reply.  Copy and \
+paste from this message if necessary to obtain an editable copy of the templat\
+e. Insert your comments between the quotes against the prompt.\n\
+\n\
+Question: &QUESTION\n\
+\n\
+&RESPONSE\n\
+______________________End of Response Template______________________\n\
+\n\
+Notification Details:\n\
+&HEADER\n\
+&BODY\n\
+\n\
+Due Date: &DUE_DATE\n\
+\n\
+&HISTORY"
+  HTML_BODY = "<HTML> <HEAD> \n\
+<TITLE> Oracle Workflow Notification </TITLE>\n\
+<STYLE>\n\
+<!--\n\
+&TEMPLATE_STYLE\n\
+-->\n\
+</STYLE> \n\
+</HEAD> \n\
+<BODY BGCOLOR=\"#FFFFFF\" > \n\
+<P><SPAN class=\"OraTipLabel\">&TIMEZONE</SPAN>\n\
+<P>From: &SENDER\n\
+<P>Question: <B>&QUESTION</B>\n\
+<P><B>Please click on the following link to respond to this request for more i\
+nformation</B>\n\
+<P>&CLICK_HERE_RESPONSE\n\
+<P><B>Notification Detail:</B>\n\
+<P>&HEADER\n\
+<P>&BODY\n\
+<BR>\n\
+Question: <B>&QUESTION</B>\n\
+<P><B>Please click on the following link to respond to this request for more i\
+nformation</B>\n\
+<P>&CLICK_HERE_RESPONSE\n\
+<P>&HISTORY\n\
+</BODY> \n\
+</HTML>"
+  DEFAULT_PRIORITY = "50"
+
+  BEGIN MESSAGE_ATTRIBUTE "DUE_DATE"
+    DISPLAY_NAME = "Due Date"
+    DESCRIPTION = "Date by which a response is required"
+    TYPE = "DATE"
+    SUBTYPE = "SEND"
+    VALUE_TYPE = "CONSTANT"
+  END MESSAGE_ATTRIBUTE
+
+  BEGIN MESSAGE_ATTRIBUTE "BODY"
+    DISPLAY_NAME = "Body"
+    DESCRIPTION = "Substituted message body"
+    TYPE = "VARCHAR2"
+    SUBTYPE = "SEND"
+    FORMAT = "2000"
+    VALUE_TYPE = "CONSTANT"
+  END MESSAGE_ATTRIBUTE
+
+  BEGIN MESSAGE_ATTRIBUTE "SUBJECT"
+    DISPLAY_NAME = "Subject"
+    DESCRIPTION = "Substituted message subject line"
+    TYPE = "VARCHAR2"
+    SUBTYPE = "SEND"
+    FORMAT = "2000"
+    VALUE_TYPE = "CONSTANT"
+  END MESSAGE_ATTRIBUTE
+
+  BEGIN MESSAGE_ATTRIBUTE "COMMENT"
+    DISPLAY_NAME = "Comment"
+    DESCRIPTION = "Sender or Forwarder comments"
+    TYPE = "VARCHAR2"
+    SUBTYPE = "SEND"
+    FORMAT = "2000"
+    VALUE_TYPE = "CONSTANT"
+  END MESSAGE_ATTRIBUTE
+
+  BEGIN MESSAGE_ATTRIBUTE "SENDER"
+    DISPLAY_NAME = "Sender"
+    DESCRIPTION = "Sender's name"
+    TYPE = "VARCHAR2"
+    SUBTYPE = "SEND"
+    FORMAT = "320"
+    VALUE_TYPE = "CONSTANT"
+  END MESSAGE_ATTRIBUTE
+
+  BEGIN MESSAGE_ATTRIBUTE "HISTORY"
+    DISPLAY_NAME = "Action History"
+    DESCRIPTION = "History of actions on the notification"
+    TYPE = "VARCHAR2"
+    SUBTYPE = "SEND"
+    VALUE_TYPE = "CONSTANT"
+  END MESSAGE_ATTRIBUTE
+
+  BEGIN MESSAGE_ATTRIBUTE "QUESTION"
+    DISPLAY_NAME = "Question"
+    DESCRIPTION = "More Info request question"
+    TYPE = "VARCHAR2"
+    SUBTYPE = "SEND"
+    FORMAT = "2000"
+    VALUE_TYPE = "CONSTANT"
+  END MESSAGE_ATTRIBUTE
+
+  BEGIN MESSAGE_ATTRIBUTE "RESPONSE"
+    DISPLAY_NAME = "Response section"
+    DESCRIPTION = "User response section"
+    TYPE = "VARCHAR2"
+    SUBTYPE = "SEND"
+    FORMAT = "2000"
+    VALUE_TYPE = "CONSTANT"
+  END MESSAGE_ATTRIBUTE
+
+  BEGIN MESSAGE_ATTRIBUTE "NOTIFICATION"
+    DISPLAY_NAME = "Notification Code"
+    DESCRIPTION = "Identifying information for this notification (required)"
+    TYPE = "VARCHAR2"
+    SUBTYPE = "SEND"
+    FORMAT = "2000"
+    VALUE_TYPE = "CONSTANT"
+  END MESSAGE_ATTRIBUTE
+
+  BEGIN MESSAGE_ATTRIBUTE "HEADER"
+    DISPLAY_NAME = "Header"
+    DESCRIPTION = "Substituted notification header details"
+    TYPE = "VARCHAR2"
+    SUBTYPE = "SEND"
+    VALUE_TYPE = "CONSTANT"
+  END MESSAGE_ATTRIBUTE
+
+  BEGIN MESSAGE_ATTRIBUTE "TIMEZONE"
+    DISPLAY_NAME = "Server Time Zone"
+    DESCRIPTION = "Server time zone description"
+    TYPE = "VARCHAR2"
+    SUBTYPE = "SEND"
+    VALUE_TYPE = "CONSTANT"
+  END MESSAGE_ATTRIBUTE
+
+  BEGIN MESSAGE_ATTRIBUTE "CLICK_HERE_RESPONSE"
+    DISPLAY_NAME = "Click here to respond"
+    DESCRIPTION = "Please click here to Respond"
+    TYPE = "URL"
+    SUBTYPE = "SEND"
+    FORMAT = "_top"
+    VALUE_TYPE = "CONSTANT"
+  END MESSAGE_ATTRIBUTE
+
+  BEGIN MESSAGE_ATTRIBUTE "TEMPLATE_STYLE"
+    DISPLAY_NAME = "Template style sheet definitions"
+    DESCRIPTION = "Defines the CSS style sheet class and element attributes"
+    TYPE = "VARCHAR2"
+    SUBTYPE = "SEND"
+    VALUE_TYPE = "CONSTANT"
+  END MESSAGE_ATTRIBUTE
+END MESSAGE
+
+BEGIN MESSAGE "WFMAIL" "OPEN_SIGN"
+  PROTECT_LEVEL = "1000"
+  CUSTOM_LEVEL = "0"
+  DISPLAY_NAME = "Workflow Signature Warning Mail"
+  DESCRIPTION = "Mail template for warning mail sent when an e-mail response i\
+s received for a notification requiring signature."
+  SUBJECT = "Signature: &SUBJECT"
+  BODY = "Oracle Workflow Notification\n\
+&TIMEZONE\n\
+&COMMENT\n\
+\n\
+Warning: You earlier received the notification shown below. This notification \
+requires a signature in your response. You cannot respond to this notification\
+ through e-mail. Please access the online version of the notification to submi\
+t your response.\n\
+________________________________________________________________________\n\
+\n\
+&HEADER\n\
+&BODY"
+  HTML_BODY = "<html><Head><STYLE>\n\
+<!--\n\
+&TEMPLATE_STYLE\n\
+-->\n\
+</STYLE>\n\
+</Head>\n\
+<body><P><SPAN class=\"OraTipLabel\">&TIMEZONE</SPAN>\n\
+<P>Warning: You earlier received the notification shown below. This notificati\
+on requires a signature in your response. You cannot respond to this notificat\
+ion through e-mail. Please access the online version of the notification to su\
+bmit your response.\n\
+<hr>\n\
+<P><B><FONT SIZE=+1>&COMMENT</FONT> </B>\n\
+<P>&HEADER\n\
+<P>&HISTORY\n\
+<P>&BODY \n\
+</body></html>"
+  DEFAULT_PRIORITY = "50"
+
+  BEGIN MESSAGE_ATTRIBUTE "SUBJECT"
+    DISPLAY_NAME = "Subject"
+    DESCRIPTION = "Substituted message subject line"
+    TYPE = "VARCHAR2"
+    SUBTYPE = "SEND"
+    FORMAT = "2000"
+    VALUE_TYPE = "CONSTANT"
+  END MESSAGE_ATTRIBUTE
+
+  BEGIN MESSAGE_ATTRIBUTE "COMMENT"
+    DISPLAY_NAME = "Comment"
+    DESCRIPTION = "Sender or Forwarder comments"
+    TYPE = "VARCHAR2"
+    SUBTYPE = "SEND"
+    FORMAT = "2000"
+    VALUE_TYPE = "CONSTANT"
+  END MESSAGE_ATTRIBUTE
+
+  BEGIN MESSAGE_ATTRIBUTE "BODY"
+    DISPLAY_NAME = "Body"
+    DESCRIPTION = "Substituted message body"
+    TYPE = "VARCHAR2"
+    SUBTYPE = "SEND"
+    FORMAT = "2000"
+    VALUE_TYPE = "CONSTANT"
+  END MESSAGE_ATTRIBUTE
+
+  BEGIN MESSAGE_ATTRIBUTE "HEADER"
+    DISPLAY_NAME = "Header"
+    DESCRIPTION = "Substituted notification header details"
+    TYPE = "VARCHAR2"
+    SUBTYPE = "SEND"
+    VALUE_TYPE = "CONSTANT"
+  END MESSAGE_ATTRIBUTE
+
+  BEGIN MESSAGE_ATTRIBUTE "TIMEZONE"
+    DISPLAY_NAME = "Server Time Zone"
+    DESCRIPTION = "Server time zone description"
+    TYPE = "VARCHAR2"
+    SUBTYPE = "SEND"
+    VALUE_TYPE = "CONSTANT"
+  END MESSAGE_ATTRIBUTE
+
+  BEGIN MESSAGE_ATTRIBUTE "TEMPLATE_STYLE"
+    DISPLAY_NAME = "Template style sheet definitions"
+    DESCRIPTION = "Defines the CSS style sheet class and element attributes"
+    TYPE = "VARCHAR2"
+    SUBTYPE = "SEND"
+    VALUE_TYPE = "CONSTANT"
+  END MESSAGE_ATTRIBUTE
+END MESSAGE
+
+BEGIN MESSAGE "WFMAIL" "O_CANCELED"
+  PROTECT_LEVEL = "1000"
+  CUSTOM_LEVEL = "0"
+  DISPLAY_NAME = "Orig. Workflow Canceled Mail"
+  DESCRIPTION = "Original Mail template for canceled notification messages"
+  SUBJECT = "Canceled: &SUBJECT"
+  BODY = "You earlier received the notification shown below.  That notificatio\
+n is now canceled, and no longer requires your response.  You may simply delet\
+e it along with this message.\n\
+________________________________________________________________________\n\
+\n\
+&BODY"
+  HTML_BODY = "<html><Head></Head><body>You earlier received the notification \
+shown below.  That notification is now canceled, and no longer requires your r\
+esponse.  You may simply delete it along with this message.\n\
+<hr>\n\
+&BODY\n\
+</body></html>"
+  DEFAULT_PRIORITY = "50"
+
+  BEGIN MESSAGE_ATTRIBUTE "START_DATE"
+    DISPLAY_NAME = "Start Date"
+    DESCRIPTION = "Date message was sent"
+    TYPE = "DATE"
+    SUBTYPE = "SEND"
+    VALUE_TYPE = "CONSTANT"
+  END MESSAGE_ATTRIBUTE
+
+  BEGIN MESSAGE_ATTRIBUTE "TO"
+    DISPLAY_NAME = "Recipient"
+    DESCRIPTION = "Role the notification was sent to"
+    TYPE = "VARCHAR2"
+    SUBTYPE = "SEND"
+    FORMAT = "2000"
+    VALUE_TYPE = "CONSTANT"
+  END MESSAGE_ATTRIBUTE
+
+  BEGIN MESSAGE_ATTRIBUTE "SUBJECT"
+    DISPLAY_NAME = "Subject"
+    DESCRIPTION = "Substituted message subject line"
+    TYPE = "VARCHAR2"
+    SUBTYPE = "SEND"
+    FORMAT = "2000"
+    VALUE_TYPE = "CONSTANT"
+  END MESSAGE_ATTRIBUTE
+
+  BEGIN MESSAGE_ATTRIBUTE "BODY"
+    DISPLAY_NAME = "Body"
+    DESCRIPTION = "Substituted message body"
+    TYPE = "VARCHAR2"
+    SUBTYPE = "SEND"
+    FORMAT = "2000"
+    VALUE_TYPE = "CONSTANT"
+  END MESSAGE_ATTRIBUTE
+
+  BEGIN MESSAGE_ATTRIBUTE "COMMENT"
+    DISPLAY_NAME = "Comment"
+    DESCRIPTION = "Sender or Forwarder comments"
+    TYPE = "VARCHAR2"
+    SUBTYPE = "SEND"
+    FORMAT = "2000"
+    VALUE_TYPE = "CONSTANT"
+  END MESSAGE_ATTRIBUTE
+
+  BEGIN MESSAGE_ATTRIBUTE "PRIORITY"
+    DISPLAY_NAME = "Priority"
+    DESCRIPTION = "Notification priority"
+    TYPE = "NUMBER"
+    SUBTYPE = "SEND"
+    VALUE_TYPE = "CONSTANT"
+  END MESSAGE_ATTRIBUTE
+
+  BEGIN MESSAGE_ATTRIBUTE "DUE_DATE"
+    DISPLAY_NAME = "Due Date"
+    DESCRIPTION = "Date by which a response is required"
+    TYPE = "DATE"
+    SUBTYPE = "SEND"
+    VALUE_TYPE = "CONSTANT"
+  END MESSAGE_ATTRIBUTE
+
+  BEGIN MESSAGE_ATTRIBUTE "NOTIFICATION"
+    DISPLAY_NAME = "Notification Code"
+    DESCRIPTION = "Identifying information for this notification (required)"
+    TYPE = "VARCHAR2"
+    SUBTYPE = "SEND"
+    FORMAT = "2000"
+    VALUE_TYPE = "CONSTANT"
+  END MESSAGE_ATTRIBUTE
+END MESSAGE
+
+BEGIN MESSAGE "WFMAIL" "O_CLOSED"
+  PROTECT_LEVEL = "1000"
+  CUSTOM_LEVEL = "0"
+  DISPLAY_NAME = "Orig. Workflow Closed Mail"
+  DESCRIPTION = "Original Mail template for closed notification messages"
+  SUBJECT = "Closed: &SUBJECT"
+  BODY = "You earlier received the notification shown below.  That notificatio\
+n is now closed, and no longer requires your response.  You may simply delete \
+it along with this message.\n\
+________________________________________________________________________\n\
+\n\
+&BODY"
+  HTML_BODY = "<html><Head></Head><body>You earlier received the notification \
+shown below.  That notification is now closed, and no longer requires your res\
+ponse.  You may simply delete it along with this message.\n\
+<hr>\n\
+&BODY\n\
+</body></html>"
+  DEFAULT_PRIORITY = "50"
+
+  BEGIN MESSAGE_ATTRIBUTE "START_DATE"
+    DISPLAY_NAME = "Start Date"
+    DESCRIPTION = "Date message was sent"
+    TYPE = "DATE"
+    SUBTYPE = "SEND"
+    VALUE_TYPE = "CONSTANT"
+  END MESSAGE_ATTRIBUTE
+
+  BEGIN MESSAGE_ATTRIBUTE "TO"
+    DISPLAY_NAME = "Recipient"
+    DESCRIPTION = "Role the notification was sent to"
+    TYPE = "VARCHAR2"
+    SUBTYPE = "SEND"
+    FORMAT = "2000"
+    VALUE_TYPE = "CONSTANT"
+  END MESSAGE_ATTRIBUTE
+
+  BEGIN MESSAGE_ATTRIBUTE "SUBJECT"
+    DISPLAY_NAME = "Subject"
+    DESCRIPTION = "Substituted message subject line"
+    TYPE = "VARCHAR2"
+    SUBTYPE = "SEND"
+    FORMAT = "2000"
+    VALUE_TYPE = "CONSTANT"
+  END MESSAGE_ATTRIBUTE
+
+  BEGIN MESSAGE_ATTRIBUTE "BODY"
+    DISPLAY_NAME = "Body"
+    DESCRIPTION = "Substituted message body"
+    TYPE = "VARCHAR2"
+    SUBTYPE = "SEND"
+    FORMAT = "2000"
+    VALUE_TYPE = "CONSTANT"
+  END MESSAGE_ATTRIBUTE
+
+  BEGIN MESSAGE_ATTRIBUTE "COMMENT"
+    DISPLAY_NAME = "Comment"
+    DESCRIPTION = "Sender or Forwarder comments"
+    TYPE = "VARCHAR2"
+    SUBTYPE = "SEND"
+    FORMAT = "2000"
+    VALUE_TYPE = "CONSTANT"
+  END MESSAGE_ATTRIBUTE
+
+  BEGIN MESSAGE_ATTRIBUTE "PRIORITY"
+    DISPLAY_NAME = "Priority"
+    DESCRIPTION = "Notification priority"
+    TYPE = "NUMBER"
+    SUBTYPE = "SEND"
+    VALUE_TYPE = "CONSTANT"
+  END MESSAGE_ATTRIBUTE
+
+  BEGIN MESSAGE_ATTRIBUTE "DUE_DATE"
+    DISPLAY_NAME = "Due Date"
+    DESCRIPTION = "Date by which a response is required"
+    TYPE = "DATE"
+    SUBTYPE = "SEND"
+    VALUE_TYPE = "CONSTANT"
+  END MESSAGE_ATTRIBUTE
+
+  BEGIN MESSAGE_ATTRIBUTE "NOTIFICATION"
+    DISPLAY_NAME = "Notification Code"
+    DESCRIPTION = "Identifying information for this notification (required)"
+    TYPE = "VARCHAR2"
+    SUBTYPE = "SEND"
+    FORMAT = "2000"
+    VALUE_TYPE = "CONSTANT"
+  END MESSAGE_ATTRIBUTE
+END MESSAGE
+
+BEGIN MESSAGE "WFMAIL" "O_OPEN_INVALID"
+  PROTECT_LEVEL = "1000"
+  CUSTOM_LEVEL = "0"
+  DISPLAY_NAME = "Orig. Workflow Invalid Mail"
+  DESCRIPTION = "Original Mail template for invalid response errors"
+  SUBJECT = "Invalid: &SUBJECT"
+  BODY = "Oracle Workflow Notification\n\
+&COMMENT\n\
+\n\
+Warning: Your previous response to this message was invalid (see error message\
+ below).  Please resubmit your response.\n\
+\n\
+Important: Some mail clients, notably early releases of Microsoft Outlook Expr\
+ess, may not copy the 'NID' line properly in your response. Please verify that\
+ the 'NID' line is inlcuded in full and contains the prefix 'NID' and all the \
+details between the square brackets when responding.\n\
+\n\
+Error Message: &MAIL_ERROR_MESSAGE\n\
+\n\
+Value Found: &MAIL_VALUE_FOUND\n\
+\n\
+Remarks: &MAIL_EXP_VALUES\n\
+\n\
+________________________________________________________________________\n\
+\n\
+Response Instructions for &NOTIFICATION\n\
+\n\
+To submit your response, reply to this message, including this original with y\
+our reply.  This note contains a special 'NID' string that is required to proc\
+ess the reponse.  The first lines of your reply must be your responses to the \
+notification questions.  You should enter one line for each response required \
+by the notfication; any additional lines will be ignored.  You may leave a lin\
+e blank to accept the default value for that specific response.  You must supp\
+ly a value or a blank line for each question asked.  Instructions below detail\
+ exactly what should be placed on each line of your reply.\n\
+\n\
+&RESPONSE\n\
+________________________________________________________________________\n\
+\n\
+Notification Details:\n\
+&BODY\n\
+\n\
+Due Date: &DUE_DATE\n"
+  HTML_BODY = "<html><Head></Head><body>Warning: Your previous response to thi\
+s message was invalid (see error message below).  Please resubmit your respons\
+e.      \n\
+<P>Error Message: &MAIL_ERROR_MESSAGE\n\
+<BR>\n\
+<BR>Value Found: &MAIL_VALUE_FOUND\n\
+<BR>\n\
+<BR>Remarks: &MAIL_EXP_VALUES\n\
+<HR><P><B><FONT SIZE=+1>&COMMENT</FONT> </B> \n\
+<P>&BODY\n\
+<P><B>Please click on one of the following choices to automatically generate a\
+n E-mail response.  Before sending the E-mail response to close this notificat\
+ion, ensure all response prompts include a desired response value within quote\
+s.</B>\n\
+<P><B>Important:</B> Some mail clients, notably early releases of Microsoft Ou\
+tlook Express, may not copy the 'NID' line properly in your response. Please v\
+erify that the 'NID' line is inlcuded in full and contains the prefix 'NID' an\
+d all the details between the square brackets when responding. \n\
+<P>&MAILTO\n\
+</BODY> </HTML>"
+  DEFAULT_PRIORITY = "50"
+
+  BEGIN MESSAGE_ATTRIBUTE "START_DATE"
+    DISPLAY_NAME = "Start Date"
+    DESCRIPTION = "Date message was sent"
+    TYPE = "DATE"
+    SUBTYPE = "SEND"
+    VALUE_TYPE = "CONSTANT"
+  END MESSAGE_ATTRIBUTE
+
+  BEGIN MESSAGE_ATTRIBUTE "TO"
+    DISPLAY_NAME = "Recipient"
+    DESCRIPTION = "Role the notification was sent to"
+    TYPE = "VARCHAR2"
+    SUBTYPE = "SEND"
+    FORMAT = "2000"
+    VALUE_TYPE = "CONSTANT"
+  END MESSAGE_ATTRIBUTE
+
+  BEGIN MESSAGE_ATTRIBUTE "SUBJECT"
+    DISPLAY_NAME = "Subject"
+    DESCRIPTION = "Substituted message subject line"
+    TYPE = "VARCHAR2"
+    SUBTYPE = "SEND"
+    FORMAT = "2000"
+    VALUE_TYPE = "CONSTANT"
+  END MESSAGE_ATTRIBUTE
+
+  BEGIN MESSAGE_ATTRIBUTE "BODY"
+    DISPLAY_NAME = "Body"
+    DESCRIPTION = "Substituted message body"
+    TYPE = "VARCHAR2"
+    SUBTYPE = "SEND"
+    FORMAT = "2000"
+    VALUE_TYPE = "CONSTANT"
+  END MESSAGE_ATTRIBUTE
+
+  BEGIN MESSAGE_ATTRIBUTE "COMMENT"
+    DISPLAY_NAME = "Comment"
+    DESCRIPTION = "Sender or Forwarder comments"
+    TYPE = "VARCHAR2"
+    SUBTYPE = "SEND"
+    FORMAT = "2000"
+    VALUE_TYPE = "CONSTANT"
+  END MESSAGE_ATTRIBUTE
+
+  BEGIN MESSAGE_ATTRIBUTE "PRIORITY"
+    DISPLAY_NAME = "Priority"
+    DESCRIPTION = "Notification priority"
+    TYPE = "NUMBER"
+    SUBTYPE = "SEND"
+    VALUE_TYPE = "CONSTANT"
+  END MESSAGE_ATTRIBUTE
+
+  BEGIN MESSAGE_ATTRIBUTE "DUE_DATE"
+    DISPLAY_NAME = "Due Date"
+    DESCRIPTION = "Date by which a response is required"
+    TYPE = "DATE"
+    SUBTYPE = "SEND"
+    VALUE_TYPE = "CONSTANT"
+  END MESSAGE_ATTRIBUTE
+
+  BEGIN MESSAGE_ATTRIBUTE "NOTIFICATION"
+    DISPLAY_NAME = "Notification Code"
+    DESCRIPTION = "Identifying information for this notification (required)"
+    TYPE = "VARCHAR2"
+    SUBTYPE = "SEND"
+    FORMAT = "2000"
+    VALUE_TYPE = "CONSTANT"
+  END MESSAGE_ATTRIBUTE
+
+  BEGIN MESSAGE_ATTRIBUTE "RESPONSE"
+    DISPLAY_NAME = "Response section"
+    DESCRIPTION = "User response section"
+    TYPE = "VARCHAR2"
+    SUBTYPE = "SEND"
+    FORMAT = "2000"
+    VALUE_TYPE = "CONSTANT"
+  END MESSAGE_ATTRIBUTE
+
+  BEGIN MESSAGE_ATTRIBUTE "MAIL_ERROR_MESSAGE"
+    DISPLAY_NAME = "Error Message"
+    DESCRIPTION = "Error Message"
+    TYPE = "VARCHAR2"
+    SUBTYPE = "SEND"
+    FORMAT = "2000"
+    VALUE_TYPE = "CONSTANT"
+  END MESSAGE_ATTRIBUTE
+
+  BEGIN MESSAGE_ATTRIBUTE "MAIL_ERROR_STACK"
+    DISPLAY_NAME = "Error Stack"
+    DESCRIPTION = "Error Stack"
+    TYPE = "VARCHAR2"
+    SUBTYPE = "SEND"
+    FORMAT = "2000"
+    VALUE_TYPE = "CONSTANT"
+  END MESSAGE_ATTRIBUTE
+
+  BEGIN MESSAGE_ATTRIBUTE "CLICK_HERE_RESPONSE"
+    DISPLAY_NAME = "Click here to respond"
+    DESCRIPTION = "Please click here to Respond"
+    TYPE = "URL"
+    SUBTYPE = "SEND"
+    FORMAT = "_top"
+    VALUE_TYPE = "CONSTANT"
+  END MESSAGE_ATTRIBUTE
+
+  BEGIN MESSAGE_ATTRIBUTE "MAIL_VALUE_FOUND"
+    DISPLAY_NAME = "Invalid Value Found"
+    DESCRIPTION = "Invalid Value Found"
+    TYPE = "VARCHAR2"
+    SUBTYPE = "SEND"
+    FORMAT = "100"
+    VALUE_TYPE = "CONSTANT"
+  END MESSAGE_ATTRIBUTE
+
+  BEGIN MESSAGE_ATTRIBUTE "MAIL_EXP_VALUES"
+    DISPLAY_NAME = "Expected Response Values"
+    DESCRIPTION = "Expected Response Values"
+    TYPE = "VARCHAR2"
+    SUBTYPE = "SEND"
+    FORMAT = "100"
+    VALUE_TYPE = "CONSTANT"
+  END MESSAGE_ATTRIBUTE
+END MESSAGE
+
+BEGIN MESSAGE "WFMAIL" "O_OPEN_MAIL"
+  PROTECT_LEVEL = "1000"
+  CUSTOM_LEVEL = "0"
+  DISPLAY_NAME = "Orig. Workflow Open Mail (Templated)"
+  DESCRIPTION = "Original Mail template for open notifications (templated resp\
+onse)"
+  SUBJECT = "&SUBJECT"
+  BODY = "Oracle Workflow Notification\n\
+From: &SENDER\n\
+&COMMENT\n\
+______________________Start of Response Template______________________\n\
+\n\
+Response Template for &NOTIFICATION\n\
+\n\
+To submit your response, reply to this message, including this response templa\
+te with your reply.  Copy and paste from this message if necessary to obtain a\
+n editable copy of the template. Insert your response value between the quotes\
+ following each response prompt.\n\
+\n\
+\n\
+&RESPONSE\n\
+\n\
+______________________End of Response Template_______________________\n\
+\n\
+Notification Details:\n\
+&BODY\n\
+\n\
+Due Date: &DUE_DATE\n"
+  HTML_BODY = "<HTML> <HEAD> <TITLE> Oracle Workflow Notification </TITLE> </H\
+EAD> \n\
+<BODY BGCOLOR=\"#FFFFFF\" > \n\
+<P>\n\
+<P>From: <B>&SENDER</B>\n\
+<P><B><FONT SIZE=+1>&COMMENT</FONT> </B> \n\
+<P>&BODY\n\
+<P><B>Please click on one of the following choices to automatically generate a\
+n E-mail response.  Before sending the E-mail response to close this notificat\
+ion, ensure all response prompts include a desired response value within quote\
+s.</B>\n\
+<P>&MAILTO \n\
+</BODY> \n\
+</HTML>"
+  DEFAULT_PRIORITY = "50"
+
+  BEGIN MESSAGE_ATTRIBUTE "START_DATE"
+    DISPLAY_NAME = "Start Date"
+    DESCRIPTION = "Date message was sent"
+    TYPE = "DATE"
+    SUBTYPE = "SEND"
+    VALUE_TYPE = "CONSTANT"
+  END MESSAGE_ATTRIBUTE
+
+  BEGIN MESSAGE_ATTRIBUTE "TO"
+    DISPLAY_NAME = "Recipient"
+    DESCRIPTION = "Role the notification was sent to"
+    TYPE = "VARCHAR2"
+    SUBTYPE = "SEND"
+    FORMAT = "2000"
+    VALUE_TYPE = "CONSTANT"
+  END MESSAGE_ATTRIBUTE
+
+  BEGIN MESSAGE_ATTRIBUTE "SUBJECT"
+    DISPLAY_NAME = "Subject"
+    DESCRIPTION = "Substituted message subject line"
+    TYPE = "VARCHAR2"
+    SUBTYPE = "SEND"
+    FORMAT = "2000"
+    VALUE_TYPE = "CONSTANT"
+  END MESSAGE_ATTRIBUTE
+
+  BEGIN MESSAGE_ATTRIBUTE "BODY"
+    DISPLAY_NAME = "Body"
+    DESCRIPTION = "Substituted message body"
+    TYPE = "VARCHAR2"
+    SUBTYPE = "SEND"
+    FORMAT = "2000"
+    VALUE_TYPE = "CONSTANT"
+  END MESSAGE_ATTRIBUTE
+
+  BEGIN MESSAGE_ATTRIBUTE "COMMENT"
+    DISPLAY_NAME = "Comment"
+    DESCRIPTION = "Sender or Forwarder comments"
+    TYPE = "VARCHAR2"
+    SUBTYPE = "SEND"
+    FORMAT = "2000"
+    VALUE_TYPE = "CONSTANT"
+  END MESSAGE_ATTRIBUTE
+
+  BEGIN MESSAGE_ATTRIBUTE "PRIORITY"
+    DISPLAY_NAME = "Priority"
+    DESCRIPTION = "Notification priority"
+    TYPE = "NUMBER"
+    SUBTYPE = "SEND"
+    VALUE_TYPE = "CONSTANT"
+  END MESSAGE_ATTRIBUTE
+
+  BEGIN MESSAGE_ATTRIBUTE "DUE_DATE"
+    DISPLAY_NAME = "Due Date"
+    DESCRIPTION = "Date by which a response is required"
+    TYPE = "DATE"
+    SUBTYPE = "SEND"
+    VALUE_TYPE = "CONSTANT"
+  END MESSAGE_ATTRIBUTE
+
+  BEGIN MESSAGE_ATTRIBUTE "NOTIFICATION"
+    DISPLAY_NAME = "Notification Code"
+    DESCRIPTION = "Identifying information for this notification (required)"
+    TYPE = "VARCHAR2"
+    SUBTYPE = "SEND"
+    FORMAT = "2000"
+    VALUE_TYPE = "CONSTANT"
+  END MESSAGE_ATTRIBUTE
+
+  BEGIN MESSAGE_ATTRIBUTE "RESPONSE"
+    DISPLAY_NAME = "Response section"
+    DESCRIPTION = "User response section"
+    TYPE = "VARCHAR2"
+    SUBTYPE = "SEND"
+    FORMAT = "2000"
+    VALUE_TYPE = "CONSTANT"
+  END MESSAGE_ATTRIBUTE
+
+  BEGIN MESSAGE_ATTRIBUTE "MAILTO"
+    DISPLAY_NAME = "MailTo"
+    DESCRIPTION = "Substituted mailto"
+    TYPE = "VARCHAR2"
+    SUBTYPE = "SEND"
+    FORMAT = "2000"
+    VALUE_TYPE = "CONSTANT"
+  END MESSAGE_ATTRIBUTE
+
+  BEGIN MESSAGE_ATTRIBUTE "CLICK_HERE_RESPONSE"
+    DISPLAY_NAME = "Click here to respond"
+    DESCRIPTION = "Please click here to Respond"
+    TYPE = "URL"
+    SUBTYPE = "SEND"
+    FORMAT = "_top"
+    VALUE_TYPE = "CONSTANT"
+  END MESSAGE_ATTRIBUTE
+
+  BEGIN MESSAGE_ATTRIBUTE "SENDER"
+    DISPLAY_NAME = "Sender"
+    DESCRIPTION = "Sender's name"
+    TYPE = "VARCHAR2"
+    SUBTYPE = "SEND"
+    FORMAT = "320"
+    VALUE_TYPE = "CONSTANT"
+  END MESSAGE_ATTRIBUTE
+END MESSAGE
+
+BEGIN MESSAGE "WFMAIL" "O_OPEN_MAIL_DIRECT"
+  PROTECT_LEVEL = "1000"
+  CUSTOM_LEVEL = "0"
+  DISPLAY_NAME = "Orig. Workflow Open Mail (Direct)"
+  DESCRIPTION = "Original Mail template for open notifications (direct respons\
+e)"
+  SUBJECT = "&SUBJECT"
+  BODY = "Oracle Workflow Notification\n\
+From: &SENDER\n\
+&COMMENT\n\
+________________________________________________________________________\n\
+\n\
+Response Instructions for &NOTIFICATION\n\
+\n\
+To submit your response, reply to this message, including this note with your \
+reply.  The first lines of your reply must be your responses to the notificati\
+on questions.  Instructions below detail exactly what should be placed on each\
+ line of your reply.\n\
+\n\
+&RESPONSE\n\
+\n\
+________________________________________________________________________\n\
+\n\
+Notification Details:\n\
+&BODY\n\
+\n\
+Due Date: &DUE_DATE\n"
+  HTML_BODY = "<HTML> <HEAD> <TITLE> Oracle Workflow Notification </TITLE> </H\
+EAD> \n\
+<BODY BGCOLOR=\"#FFFFFF\" > \n\
+<P>\n\
+<P>From: <B>&SENDER</B>\n\
+<P><B><FONT SIZE=+1>&COMMENT</FONT> </B> \n\
+<P>&BODY\n\
+<P><B>Please click on one of the following choices to automatically generate a\
+n E-mail response.  Before sending the E-mail response to close this notificat\
+ion, ensure all response prompts include a desired response value within quote\
+s.</B>\n\
+<P>&MAILTO \n\
+</BODY> \n\
+</HTML>"
+  DEFAULT_PRIORITY = "50"
+
+  BEGIN MESSAGE_ATTRIBUTE "START_DATE"
+    DISPLAY_NAME = "Start Date"
+    DESCRIPTION = "Date message was sent"
+    TYPE = "DATE"
+    SUBTYPE = "SEND"
+    VALUE_TYPE = "CONSTANT"
+  END MESSAGE_ATTRIBUTE
+
+  BEGIN MESSAGE_ATTRIBUTE "TO"
+    DISPLAY_NAME = "Recipient"
+    DESCRIPTION = "Role the notification was sent to"
+    TYPE = "VARCHAR2"
+    SUBTYPE = "SEND"
+    FORMAT = "2000"
+    VALUE_TYPE = "CONSTANT"
+  END MESSAGE_ATTRIBUTE
+
+  BEGIN MESSAGE_ATTRIBUTE "SUBJECT"
+    DISPLAY_NAME = "Subject"
+    DESCRIPTION = "Substituted message subject line"
+    TYPE = "VARCHAR2"
+    SUBTYPE = "SEND"
+    FORMAT = "2000"
+    VALUE_TYPE = "CONSTANT"
+  END MESSAGE_ATTRIBUTE
+
+  BEGIN MESSAGE_ATTRIBUTE "BODY"
+    DISPLAY_NAME = "Body"
+    DESCRIPTION = "Substituted message body"
+    TYPE = "VARCHAR2"
+    SUBTYPE = "SEND"
+    FORMAT = "2000"
+    VALUE_TYPE = "CONSTANT"
+  END MESSAGE_ATTRIBUTE
+
+  BEGIN MESSAGE_ATTRIBUTE "COMMENT"
+    DISPLAY_NAME = "Comment"
+    DESCRIPTION = "Sender or Forwarder comments"
+    TYPE = "VARCHAR2"
+    SUBTYPE = "SEND"
+    FORMAT = "2000"
+    VALUE_TYPE = "CONSTANT"
+  END MESSAGE_ATTRIBUTE
+
+  BEGIN MESSAGE_ATTRIBUTE "PRIORITY"
+    DISPLAY_NAME = "Priority"
+    DESCRIPTION = "Notification priority"
+    TYPE = "NUMBER"
+    SUBTYPE = "SEND"
+    VALUE_TYPE = "CONSTANT"
+  END MESSAGE_ATTRIBUTE
+
+  BEGIN MESSAGE_ATTRIBUTE "DUE_DATE"
+    DISPLAY_NAME = "Due Date"
+    DESCRIPTION = "Date by which a response is required"
+    TYPE = "DATE"
+    SUBTYPE = "SEND"
+    VALUE_TYPE = "CONSTANT"
+  END MESSAGE_ATTRIBUTE
+
+  BEGIN MESSAGE_ATTRIBUTE "NOTIFICATION"
+    DISPLAY_NAME = "Notification Code"
+    DESCRIPTION = "Identifying information for this notification (required)"
+    TYPE = "VARCHAR2"
+    SUBTYPE = "SEND"
+    FORMAT = "2000"
+    VALUE_TYPE = "CONSTANT"
+  END MESSAGE_ATTRIBUTE
+
+  BEGIN MESSAGE_ATTRIBUTE "RESPONSE"
+    DISPLAY_NAME = "Response section"
+    DESCRIPTION = "User response section"
+    TYPE = "VARCHAR2"
+    SUBTYPE = "SEND"
+    FORMAT = "2000"
+    VALUE_TYPE = "CONSTANT"
+  END MESSAGE_ATTRIBUTE
+
+  BEGIN MESSAGE_ATTRIBUTE "MAILTO"
+    DISPLAY_NAME = "MailTo"
+    DESCRIPTION = "Substituted mailto"
+    TYPE = "VARCHAR2"
+    SUBTYPE = "SEND"
+    FORMAT = "2000"
+    VALUE_TYPE = "CONSTANT"
+  END MESSAGE_ATTRIBUTE
+
+  BEGIN MESSAGE_ATTRIBUTE "CLICK_HERE_RESPONSE"
+    DISPLAY_NAME = "Click here to respond"
+    DESCRIPTION = "Please click here to Respond"
+    TYPE = "URL"
+    SUBTYPE = "SEND"
+    FORMAT = "_top"
+    VALUE_TYPE = "CONSTANT"
+  END MESSAGE_ATTRIBUTE
+
+  BEGIN MESSAGE_ATTRIBUTE "SENDER"
+    DISPLAY_NAME = "Sender"
+    DESCRIPTION = "Sender's name"
+    TYPE = "VARCHAR2"
+    SUBTYPE = "SEND"
+    FORMAT = "320"
+    VALUE_TYPE = "CONSTANT"
+  END MESSAGE_ATTRIBUTE
+END MESSAGE
+
+BEGIN MESSAGE "WFMAIL" "O_OPEN_MAIL_FYI"
+  PROTECT_LEVEL = "1000"
+  CUSTOM_LEVEL = "0"
+  DISPLAY_NAME = "Orig. Workflow Open FYI Mail"
+  DESCRIPTION = "Original Mail template for FYI notifications"
+  SUBJECT = "&SUBJECT"
+  BODY = "Oracle Workflow Notification (FYI)\n\
+From: &SENDER\n\
+&COMMENT\n\
+________________________________________________________________________\n\
+\n\
+&BODY"
+  HTML_BODY = "<HTML><HEAD></HEAD>\n\
+<BODY BGCOLOR=\"#FFFFFF\"><b>Oracle Workflow Notification (FYI)</b> \n\
+<br>\n\
+From: <B>&SENDER</B>\n\
+<br>&COMMENT\n\
+<hr>\n\
+<P>&BODY\n\
+</BODY>\n\
+</HTML>"
+  DEFAULT_PRIORITY = "0"
+
+  BEGIN MESSAGE_ATTRIBUTE "START_DATE"
+    DISPLAY_NAME = "Start Date"
+    DESCRIPTION = "Date message was sent"
+    TYPE = "DATE"
+    SUBTYPE = "SEND"
+    VALUE_TYPE = "CONSTANT"
+  END MESSAGE_ATTRIBUTE
+
+  BEGIN MESSAGE_ATTRIBUTE "TO"
+    DISPLAY_NAME = "Recipient"
+    DESCRIPTION = "Role the notification was sent to"
+    TYPE = "VARCHAR2"
+    SUBTYPE = "SEND"
+    FORMAT = "2000"
+    VALUE_TYPE = "CONSTANT"
+  END MESSAGE_ATTRIBUTE
+
+  BEGIN MESSAGE_ATTRIBUTE "SUBJECT"
+    DISPLAY_NAME = "Subject"
+    DESCRIPTION = "Substituted message subject line"
+    TYPE = "VARCHAR2"
+    SUBTYPE = "SEND"
+    FORMAT = "2000"
+    VALUE_TYPE = "CONSTANT"
+  END MESSAGE_ATTRIBUTE
+
+  BEGIN MESSAGE_ATTRIBUTE "BODY"
+    DISPLAY_NAME = "Body"
+    DESCRIPTION = "Substituted message body"
+    TYPE = "VARCHAR2"
+    SUBTYPE = "SEND"
+    FORMAT = "2000"
+    VALUE_TYPE = "CONSTANT"
+  END MESSAGE_ATTRIBUTE
+
+  BEGIN MESSAGE_ATTRIBUTE "COMMENT"
+    DISPLAY_NAME = "Comment"
+    DESCRIPTION = "Sender or Forwarder comments"
+    TYPE = "VARCHAR2"
+    SUBTYPE = "SEND"
+    FORMAT = "2000"
+    VALUE_TYPE = "CONSTANT"
+  END MESSAGE_ATTRIBUTE
+
+  BEGIN MESSAGE_ATTRIBUTE "PRIORITY"
+    DISPLAY_NAME = "Priority"
+    DESCRIPTION = "Notification priority"
+    TYPE = "NUMBER"
+    SUBTYPE = "SEND"
+    VALUE_TYPE = "CONSTANT"
+  END MESSAGE_ATTRIBUTE
+
+  BEGIN MESSAGE_ATTRIBUTE "DUE_DATE"
+    DISPLAY_NAME = "Due Date"
+    DESCRIPTION = "Date by which a response is required"
+    TYPE = "DATE"
+    SUBTYPE = "SEND"
+    VALUE_TYPE = "CONSTANT"
+  END MESSAGE_ATTRIBUTE
+
+  BEGIN MESSAGE_ATTRIBUTE "NOTIFICATION"
+    DISPLAY_NAME = "Notification Code"
+    DESCRIPTION = "Identifying information for this notification (required)"
+    TYPE = "VARCHAR2"
+    SUBTYPE = "SEND"
+    FORMAT = "2000"
+    VALUE_TYPE = "CONSTANT"
+  END MESSAGE_ATTRIBUTE
+
+  BEGIN MESSAGE_ATTRIBUTE "SENDER"
+    DISPLAY_NAME = "Sender"
+    DESCRIPTION = "Sender's name"
+    TYPE = "VARCHAR2"
+    SUBTYPE = "SEND"
+    FORMAT = "320"
+    VALUE_TYPE = "CONSTANT"
+  END MESSAGE_ATTRIBUTE
+END MESSAGE
+
+BEGIN MESSAGE "WFMAIL" "O_OPEN_MAIL_OUTLOOK"
+  PROTECT_LEVEL = "1000"
+  CUSTOM_LEVEL = "0"
+  DISPLAY_NAME = "Orig. Workflow Open Mail (Outlook Express)"
+  DESCRIPTION = "Original Mail template for open notifications\n\
+Work around a problem in Outlook Express"
+  SUBJECT = "&SUBJECT"
+  BODY = "Oracle Workflow Notification\n\
+From: &SENDER\n\
+&COMMENT\n\
+---------- Start of Response Template ----------------------------------------\
+--\n\
+\n\
+Response Template for &NOTIFICATION\n\
+\n\
+To submit your response, reply to this message including this response templat\
+e in your reply.  Insert your response value between the quotes following each\
+ response prompt.\n\
+\n\
+\n\
+&RESPONSE\n\
+\n\
+---------- End of Response Template ------------------------------------------\
+--\n\
+\n\
+Notification Details:\n\
+&BODY\n\
+\n\
+Due Date: &DUE_DATE\n"
+  HTML_BODY = "<HTML> <HEAD> <TITLE> Oracle Workflow Notification </TITLE> </H\
+EAD> \n\
+<BODY BGCOLOR=\"#FFFFFF\" > \n\
+<P>\n\
+<P>From: <B>&SENDER</B>\n\
+<P><B><FONT SIZE=+1>&COMMENT</FONT> </B> \n\
+<P>&BODY\n\
+<P>&CLICK_HERE_RESPONSE \n\
+</BODY> \n\
+</HTML>"
+  DEFAULT_PRIORITY = "50"
+
+  BEGIN MESSAGE_ATTRIBUTE "START_DATE"
+    DISPLAY_NAME = "Start Date"
+    DESCRIPTION = "Date message was sent"
+    TYPE = "DATE"
+    SUBTYPE = "SEND"
+    VALUE_TYPE = "CONSTANT"
+  END MESSAGE_ATTRIBUTE
+
+  BEGIN MESSAGE_ATTRIBUTE "TO"
+    DISPLAY_NAME = "Recipient"
+    DESCRIPTION = "Role the notification was sent to"
+    TYPE = "VARCHAR2"
+    SUBTYPE = "SEND"
+    FORMAT = "2000"
+    VALUE_TYPE = "CONSTANT"
+  END MESSAGE_ATTRIBUTE
+
+  BEGIN MESSAGE_ATTRIBUTE "SUBJECT"
+    DISPLAY_NAME = "Subject"
+    DESCRIPTION = "Substituted message subject line"
+    TYPE = "VARCHAR2"
+    SUBTYPE = "SEND"
+    FORMAT = "2000"
+    VALUE_TYPE = "CONSTANT"
+  END MESSAGE_ATTRIBUTE
+
+  BEGIN MESSAGE_ATTRIBUTE "BODY"
+    DISPLAY_NAME = "Body"
+    DESCRIPTION = "Substituted message body"
+    TYPE = "VARCHAR2"
+    SUBTYPE = "SEND"
+    FORMAT = "2000"
+    VALUE_TYPE = "CONSTANT"
+  END MESSAGE_ATTRIBUTE
+
+  BEGIN MESSAGE_ATTRIBUTE "COMMENT"
+    DISPLAY_NAME = "Comment"
+    DESCRIPTION = "Sender or Forwarder comments"
+    TYPE = "VARCHAR2"
+    SUBTYPE = "SEND"
+    FORMAT = "2000"
+    VALUE_TYPE = "CONSTANT"
+  END MESSAGE_ATTRIBUTE
+
+  BEGIN MESSAGE_ATTRIBUTE "PRIORITY"
+    DISPLAY_NAME = "Priority"
+    DESCRIPTION = "Notification priority"
+    TYPE = "NUMBER"
+    SUBTYPE = "SEND"
+    VALUE_TYPE = "CONSTANT"
+  END MESSAGE_ATTRIBUTE
+
+  BEGIN MESSAGE_ATTRIBUTE "DUE_DATE"
+    DISPLAY_NAME = "Due Date"
+    DESCRIPTION = "Date by which a response is required"
+    TYPE = "DATE"
+    SUBTYPE = "SEND"
+    VALUE_TYPE = "CONSTANT"
+  END MESSAGE_ATTRIBUTE
+
+  BEGIN MESSAGE_ATTRIBUTE "NOTIFICATION"
+    DISPLAY_NAME = "Notification Code"
+    DESCRIPTION = "Identifying information for this notification (required)"
+    TYPE = "VARCHAR2"
+    SUBTYPE = "SEND"
+    FORMAT = "2000"
+    VALUE_TYPE = "CONSTANT"
+  END MESSAGE_ATTRIBUTE
+
+  BEGIN MESSAGE_ATTRIBUTE "RESPONSE"
+    DISPLAY_NAME = "Response section"
+    DESCRIPTION = "User response section"
+    TYPE = "VARCHAR2"
+    SUBTYPE = "SEND"
+    FORMAT = "2000"
+    VALUE_TYPE = "CONSTANT"
+  END MESSAGE_ATTRIBUTE
+
+  BEGIN MESSAGE_ATTRIBUTE "MAILTO"
+    DISPLAY_NAME = "MailTo"
+    DESCRIPTION = "Substituted mailto"
+    TYPE = "VARCHAR2"
+    SUBTYPE = "SEND"
+    FORMAT = "2000"
+    VALUE_TYPE = "CONSTANT"
+  END MESSAGE_ATTRIBUTE
+
+  BEGIN MESSAGE_ATTRIBUTE "CLICK_HERE_RESPONSE"
+    DISPLAY_NAME = "Click here to respond"
+    DESCRIPTION = "Please click here to Respond"
+    TYPE = "URL"
+    SUBTYPE = "SEND"
+    FORMAT = "_top"
+    VALUE_TYPE = "CONSTANT"
+  END MESSAGE_ATTRIBUTE
+
+  BEGIN MESSAGE_ATTRIBUTE "SENDER"
+    DISPLAY_NAME = "Sender"
+    DESCRIPTION = "Sender's name"
+    TYPE = "VARCHAR2"
+    SUBTYPE = "SEND"
+    FORMAT = "320"
+    VALUE_TYPE = "CONSTANT"
+  END MESSAGE_ATTRIBUTE
+END MESSAGE
+
+BEGIN MESSAGE "WFMAIL" "O_OPEN_MAIL_PSIG_ONLY"
+  PROTECT_LEVEL = "1000"
+  CUSTOM_LEVEL = "0"
+  DISPLAY_NAME = "Orig. Workflow Password Signature Mail"
+  DESCRIPTION = "Original Mail template for open notifications that require pa\
+ssword based signature"
+  SUBJECT = "&SUBJECT"
+  BODY = "Oracle Workflow Notification\n\
+From: &SENDER\n\
+&COMMENT\n\
+________________________________________________________________________\n\
+\n\
+Response Instructions for &NOTIFICATION\n\
+\n\
+This notification requires a password-based signature in your response. You ca\
+nnot respond to this notification through e-mail. Please access the online ver\
+sion of the notification to submit your response.\n\
+________________________________________________________________________\n\
+\n\
+Notification Details:\n\
+&BODY\n\
+\n\
+Due Date: &DUE_DATE\n"
+  HTML_BODY = "<HTML> <HEAD> <TITLE> Oracle Workflow Notification </TITLE> </H\
+EAD> \n\
+<BODY BGCOLOR=\"#FFFFFF\" > \n\
+<P>\n\
+<P>From: <B>&SENDER</B>\n\
+<P><B><FONT SIZE=+1>&COMMENT</FONT> </B> \n\
+<P><B>This notification requires a password-based signature in your response. \
+You cannot respond to this notification through e-mail. Please access the onli\
+ne version of the notification to submit your response.</B>\n\
+<P>&BODY\n\
+<P>\n\
+</BODY> \n\
+</HTML>"
+  DEFAULT_PRIORITY = "50"
+
+  BEGIN MESSAGE_ATTRIBUTE "DUE_DATE"
+    DISPLAY_NAME = "Due Date"
+    DESCRIPTION = "Date by which a response is required"
+    TYPE = "DATE"
+    SUBTYPE = "SEND"
+    VALUE_TYPE = "CONSTANT"
+  END MESSAGE_ATTRIBUTE
+
+  BEGIN MESSAGE_ATTRIBUTE "BODY"
+    DISPLAY_NAME = "Body"
+    DESCRIPTION = "Substituted message body"
+    TYPE = "VARCHAR2"
+    SUBTYPE = "SEND"
+    FORMAT = "2000"
+    VALUE_TYPE = "CONSTANT"
+  END MESSAGE_ATTRIBUTE
+
+  BEGIN MESSAGE_ATTRIBUTE "NOTIFICATION"
+    DISPLAY_NAME = "Notification Code"
+    DESCRIPTION = "Identifying information for this notification (required)"
+    TYPE = "VARCHAR2"
+    SUBTYPE = "SEND"
+    FORMAT = "2000"
+    VALUE_TYPE = "CONSTANT"
+  END MESSAGE_ATTRIBUTE
+
+  BEGIN MESSAGE_ATTRIBUTE "COMMENT"
+    DISPLAY_NAME = "Comment"
+    DESCRIPTION = "Sender or Forwarder comments"
+    TYPE = "VARCHAR2"
+    SUBTYPE = "SEND"
+    FORMAT = "2000"
+    VALUE_TYPE = "CONSTANT"
+  END MESSAGE_ATTRIBUTE
+
+  BEGIN MESSAGE_ATTRIBUTE "SENDER"
+    DISPLAY_NAME = "Sender"
+    DESCRIPTION = "Sender's name"
+    TYPE = "VARCHAR2"
+    SUBTYPE = "SEND"
+    FORMAT = "320"
+    VALUE_TYPE = "CONSTANT"
+  END MESSAGE_ATTRIBUTE
+
+  BEGIN MESSAGE_ATTRIBUTE "SUBJECT"
+    DISPLAY_NAME = "Subject"
+    DESCRIPTION = "Substituted message subject line"
+    TYPE = "VARCHAR2"
+    SUBTYPE = "SEND"
+    FORMAT = "2000"
+    VALUE_TYPE = "CONSTANT"
+  END MESSAGE_ATTRIBUTE
+END MESSAGE
+
+BEGIN MESSAGE "WFMAIL" "O_OPEN_MORE_INFO"
+  PROTECT_LEVEL = "1000"
+  CUSTOM_LEVEL = "0"
+  DISPLAY_NAME = "Orig. Workflow Open Mail (More Information Request)"
+  DESCRIPTION = "Original Mail template for open notifications requesting for \
+more information"
+  SUBJECT = "More Information Request: &SUBJECT"
+  BODY = "Oracle Workflow Notification\n\
+______________________Start of Response Template______________________\n\
+\n\
+More Information Template for &NOTIFICATION\n\
+\n\
+User &SENDER has requested more information for the notification. Please reply\
+ to this message, including this response template with your reply.  Copy and \
+paste from this message if necessary to obtain an editable copy of the templat\
+e. Insert your comments between the quotes against the prompt.\n\
+\n\
+Question: &QUESTION\n\
+\n\
+&RESPONSE\n\
+______________________End of Response Template______________________\n\
+\n\
+Notification Details:\n\
+&BODY\n\
+\n\
+Due Date: &DUE_DATE\n\
+\n\
+&HISTORY"
+  HTML_BODY = "<HTML> <HEAD> <TITLE> Oracle Workflow Notification </TITLE> </H\
+EAD> \n\
+<BODY BGCOLOR=\"#FFFFFF\" > \n\
+<P>\n\
+<P>User &SENDER has requested more information for the following notification.\
+\n\
+<P>&BODY\n\
+<P>Question: <B>&QUESTION</B>\n\
+<P><B>Please click on the following link to automatically generate an E-mail r\
+esponse for this question.  Before sending the E-mail response, ensure desired\
+ comments within quotes.</B>\n\
+<P>&MAILTO\n\
+<P>&HISTORY\n\
+</BODY> \n\
+</HTML>"
+  DEFAULT_PRIORITY = "50"
+
+  BEGIN MESSAGE_ATTRIBUTE "DUE_DATE"
+    DISPLAY_NAME = "Due Date"
+    DESCRIPTION = "Date by which a response is required"
+    TYPE = "DATE"
+    SUBTYPE = "SEND"
+    VALUE_TYPE = "CONSTANT"
+  END MESSAGE_ATTRIBUTE
+
+  BEGIN MESSAGE_ATTRIBUTE "BODY"
+    DISPLAY_NAME = "Body"
+    DESCRIPTION = "Substituted message body"
+    TYPE = "VARCHAR2"
+    SUBTYPE = "SEND"
+    FORMAT = "2000"
+    VALUE_TYPE = "CONSTANT"
+  END MESSAGE_ATTRIBUTE
+
+  BEGIN MESSAGE_ATTRIBUTE "SUBJECT"
+    DISPLAY_NAME = "Subject"
+    DESCRIPTION = "Substituted message subject line"
+    TYPE = "VARCHAR2"
+    SUBTYPE = "SEND"
+    FORMAT = "2000"
+    VALUE_TYPE = "CONSTANT"
+  END MESSAGE_ATTRIBUTE
+
+  BEGIN MESSAGE_ATTRIBUTE "COMMENT"
+    DISPLAY_NAME = "Comment"
+    DESCRIPTION = "Sender or Forwarder comments"
+    TYPE = "VARCHAR2"
+    SUBTYPE = "SEND"
+    FORMAT = "2000"
+    VALUE_TYPE = "CONSTANT"
+  END MESSAGE_ATTRIBUTE
+
+  BEGIN MESSAGE_ATTRIBUTE "SENDER"
+    DISPLAY_NAME = "Sender"
+    DESCRIPTION = "Sender's name"
+    TYPE = "VARCHAR2"
+    SUBTYPE = "SEND"
+    FORMAT = "320"
+    VALUE_TYPE = "CONSTANT"
+  END MESSAGE_ATTRIBUTE
+
+  BEGIN MESSAGE_ATTRIBUTE "HISTORY"
+    DISPLAY_NAME = "Action History"
+    DESCRIPTION = "History of actions on the notification"
+    TYPE = "VARCHAR2"
+    SUBTYPE = "SEND"
+    VALUE_TYPE = "CONSTANT"
+  END MESSAGE_ATTRIBUTE
+
+  BEGIN MESSAGE_ATTRIBUTE "QUESTION"
+    DISPLAY_NAME = "Question"
+    DESCRIPTION = "More Info request question"
+    TYPE = "VARCHAR2"
+    SUBTYPE = "SEND"
+    FORMAT = "2000"
+    VALUE_TYPE = "CONSTANT"
+  END MESSAGE_ATTRIBUTE
+
+  BEGIN MESSAGE_ATTRIBUTE "RESPONSE"
+    DISPLAY_NAME = "Response section"
+    DESCRIPTION = "User response section"
+    TYPE = "VARCHAR2"
+    SUBTYPE = "SEND"
+    FORMAT = "2000"
+    VALUE_TYPE = "CONSTANT"
+  END MESSAGE_ATTRIBUTE
+
+  BEGIN MESSAGE_ATTRIBUTE "NOTIFICATION"
+    DISPLAY_NAME = "Notification Code"
+    DESCRIPTION = "Identifying information for this notification (required)"
+    TYPE = "VARCHAR2"
+    SUBTYPE = "SEND"
+    FORMAT = "2000"
+    VALUE_TYPE = "CONSTANT"
+  END MESSAGE_ATTRIBUTE
+END MESSAGE
+
+BEGIN MESSAGE "WFMAIL" "O_OPEN_SIGN"
+  PROTECT_LEVEL = "1000"
+  CUSTOM_LEVEL = "0"
+  DISPLAY_NAME = "Orig. Workflow Password Signature Warning Mail"
+  DESCRIPTION = "Original Mail template for warning mail sent when a email res\
+ponse is received for a notification requiring password based signature."
+  SUBJECT = "Signature: &SUBJECT"
+  BODY = "Oracle Workflow Notification\n\
+&COMMENT\n\
+\n\
+Warning: You earlier received the notification shown below. This notification \
+requires a password-based signature in your response. You cannot respond to th\
+is notification through e-mail. Please access the online version of the notifi\
+cation to submit your response.\n\
+________________________________________________________________________\n\
+\n\
+&BODY"
+  HTML_BODY = "<html><Head></Head><body>Warning: You earlier received the noti\
+fication shown below. This notification requires a password-based signature in\
+ your response. You cannot respond to this notification through e-mail. Please\
+ access the online version of the notification to submit your response.\n\
+<hr>\n\
+&BODY\n\
+</body></html>"
+  DEFAULT_PRIORITY = "50"
+
+  BEGIN MESSAGE_ATTRIBUTE "SUBJECT"
+    DISPLAY_NAME = "Subject"
+    DESCRIPTION = "Substituted message subject line"
+    TYPE = "VARCHAR2"
+    SUBTYPE = "SEND"
+    FORMAT = "2000"
+    VALUE_TYPE = "CONSTANT"
+  END MESSAGE_ATTRIBUTE
+
+  BEGIN MESSAGE_ATTRIBUTE "COMMENT"
+    DISPLAY_NAME = "Comment"
+    DESCRIPTION = "Sender or Forwarder comments"
+    TYPE = "VARCHAR2"
+    SUBTYPE = "SEND"
+    FORMAT = "2000"
+    VALUE_TYPE = "CONSTANT"
+  END MESSAGE_ATTRIBUTE
+
+  BEGIN MESSAGE_ATTRIBUTE "BODY"
+    DISPLAY_NAME = "Body"
+    DESCRIPTION = "Substituted message body"
+    TYPE = "VARCHAR2"
+    SUBTYPE = "SEND"
+    FORMAT = "2000"
+    VALUE_TYPE = "CONSTANT"
+  END MESSAGE_ATTRIBUTE
+END MESSAGE
+
+BEGIN MESSAGE "WFMAIL" "SUMHTML"
+  PROTECT_LEVEL = "1000"
+  CUSTOM_LEVEL = "0"
+  DISPLAY_NAME = "Workflow Summary Mail (HTML)"
+  DESCRIPTION = "Mail template for summary messages"
+  SUBJECT = "Open Notifications Summary: &USER_NAME"
+  BODY = "&TIMEZONE\n\
+&SUMMARY"
+  HTML_BODY = "<HTML><HEAD>\n\
+<STYLE>\n\
+&TEMPLATE_STYLE\n\
+</STYLE>\n\
+<TITLE>Summary Notification</TITLE>\n\
+</HEAD>\n\
+<BODY><SPAN class=\"OraTipLabel\">&TIMEZONE</SPAN>\n\
+<P>&SUMMARY\n\
+</BODY>\n\
+</HTML>"
+  DEFAULT_PRIORITY = "50"
+
+  BEGIN MESSAGE_ATTRIBUTE "SUMMARY"
+    DISPLAY_NAME = "Summary"
+    DESCRIPTION = "Summary report"
+    TYPE = "VARCHAR2"
+    SUBTYPE = "SEND"
+    FORMAT = "2000"
+    VALUE_TYPE = "CONSTANT"
+  END MESSAGE_ATTRIBUTE
+
+  BEGIN MESSAGE_ATTRIBUTE "USER_NAME"
+    DISPLAY_NAME = "User Name"
+    DESCRIPTION = "Name of the user who the summary report is for"
+    TYPE = "VARCHAR2"
+    SUBTYPE = "SEND"
+    FORMAT = "2000"
+    VALUE_TYPE = "CONSTANT"
+  END MESSAGE_ATTRIBUTE
+
+  BEGIN MESSAGE_ATTRIBUTE "SYSDATE"
+    DISPLAY_NAME = "System Date"
+    DESCRIPTION = "Current date"
+    TYPE = "DATE"
+    SUBTYPE = "SEND"
+    VALUE_TYPE = "CONSTANT"
+  END MESSAGE_ATTRIBUTE
+
+  BEGIN MESSAGE_ATTRIBUTE "TIMEZONE"
+    DISPLAY_NAME = "Server Time Zone"
+    DESCRIPTION = "Server time zone description"
+    TYPE = "VARCHAR2"
+    SUBTYPE = "SEND"
+    VALUE_TYPE = "CONSTANT"
+  END MESSAGE_ATTRIBUTE
+
+  BEGIN MESSAGE_ATTRIBUTE "TEMPLATE_STYLE"
+    DISPLAY_NAME = "Template style sheet definitions"
+    DESCRIPTION = "Defines the CSS style sheet class and element attributes"
+    TYPE = "VARCHAR2"
+    SUBTYPE = "SEND"
+    VALUE_TYPE = "CONSTANT"
+  END MESSAGE_ATTRIBUTE
+END MESSAGE
+
+BEGIN MESSAGE "WFMAIL" "SUMMARY"
+  PROTECT_LEVEL = "1000"
+  CUSTOM_LEVEL = "0"
+  DISPLAY_NAME = "Workflow Summary Mail"
+  DESCRIPTION = "Mail template for summary messages"
+  SUBJECT = "Notification Summary"
+  BODY = "Summary of Notifications for '&USER_NAME'\n\
+(Please use the Notifications web page to see details or respond.)\n\
+&TIMEZONE\n\
+_______________________________________________________________\n\
+\n\
+&SUMMARY"
+  HTML_BODY = "<HTML><HEAD><STYLE>\n\
+<!--\n\
+&TEMPLATE_STYLE\n\
+-->\n\
+</STYLE></HEAD><BODY>\n\
+<P><FONT size=+1>Summary of Notifications for '&USER_NAME'</FONT>\n\
+<BR><i>Please use the Notifications web page to see details or respond.</i>\n\
+<SPAN class=\"OraTipLabel\">&TIMEZONE</SPAN>\n\
+<HR>\n\
+\n\
+&SUMMARY\n\
+</BODY>\n\
+</HTML>"
+  DEFAULT_PRIORITY = "50"
+
+  BEGIN MESSAGE_ATTRIBUTE "SUMMARY"
+    DISPLAY_NAME = "Summary"
+    DESCRIPTION = "Summary report"
+    TYPE = "VARCHAR2"
+    SUBTYPE = "SEND"
+    FORMAT = "2000"
+    VALUE_TYPE = "CONSTANT"
+  END MESSAGE_ATTRIBUTE
+
+  BEGIN MESSAGE_ATTRIBUTE "USER_NAME"
+    DISPLAY_NAME = "User Name"
+    DESCRIPTION = "Name of the user who the summary report is for"
+    TYPE = "VARCHAR2"
+    SUBTYPE = "SEND"
+    FORMAT = "2000"
+    VALUE_TYPE = "CONSTANT"
+  END MESSAGE_ATTRIBUTE
+
+  BEGIN MESSAGE_ATTRIBUTE "SYSDATE"
+    DISPLAY_NAME = "System Date"
+    DESCRIPTION = "Current date"
+    TYPE = "DATE"
+    SUBTYPE = "SEND"
+    VALUE_TYPE = "CONSTANT"
+  END MESSAGE_ATTRIBUTE
+
+  BEGIN MESSAGE_ATTRIBUTE "TIMEZONE"
+    DISPLAY_NAME = "Server Time Zone"
+    DESCRIPTION = "Server time zone description"
+    TYPE = "VARCHAR2"
+    SUBTYPE = "SEND"
+    VALUE_TYPE = "CONSTANT"
+  END MESSAGE_ATTRIBUTE
+
+  BEGIN MESSAGE_ATTRIBUTE "TEMPLATE_STYLE"
+    DISPLAY_NAME = "Template style sheet definitions"
+    DESCRIPTION = "Defines the CSS style sheet class and element attributes"
+    TYPE = "VARCHAR2"
+    SUBTYPE = "SEND"
+    VALUE_TYPE = "CONSTANT"
+  END MESSAGE_ATTRIBUTE
+
+  BEGIN MESSAGE_ATTRIBUTE "BODY"
+    DISPLAY_NAME = "@Summary"
+    DESCRIPTION = "Summary report"
+    TYPE = "VARCHAR2"
+    SUBTYPE = "SEND"
+    FORMAT = "2000"
+    VALUE_TYPE = "CONSTANT"
+  END MESSAGE_ATTRIBUTE
+END MESSAGE
+
+BEGIN MESSAGE "WFMAIL" "USER_PREF_UPDATE_REPORT"
+  PROTECT_LEVEL = "1000"
+  CUSTOM_LEVEL = "0"
+  DISPLAY_NAME = "User Notification Preference Update Report"
+  DESCRIPTION = "Mail template for FYI notifications"
+  SUBJECT = "User Notification Preference Update Report for NID &NOTIFICATION_\
+ID"
+  BODY = "The notification with the ID of &NOTIFICATION_ID experienced problem\
+s when attempting to dispatch an email notification to the role &ROLE. Subsequ\
+ently the notification preference for the following users has been set to DISA\
+BLED. Please correct the issue and re-enable their notification preference.\n\
+\n\
+------------------------------------------------------------------------------\
+--\n\
+\n\
+&UPDATED_USER_REPORT\n"
+  HTML_BODY = "<html>\n\
+<head>\n\
+<STYLE>\n\
+<!--\n\
+&TEMPLATE_STYLE\n\
+-->\n\
+</STYLE>\n\
+</head>\n\
+<body>\n\
+<p>The notification with the ID of <b>&NOTIFICATION_ID</b> experienced problem\
+s when attempting to dispatch an email notification to the role <b>&ROLE</b>. \
+Subsequently the notification preference for the following users has been set \
+to <b>DISABLED</b>. Please correct the issue and re-enable their notification \
+preference.\n\
+<p>\n\
+<hr>\n\
+<p>\n\
+<span style=\"font-family:monospace,courier\">&UPDATED_USER_REPORT</span>\n\
+</body></html>\n"
+  DEFAULT_PRIORITY = "0"
+
+  BEGIN MESSAGE_ATTRIBUTE "NOTIFICATION_ID"
+    DISPLAY_NAME = "Notification ID"
+    DESCRIPTION = "The identifier of the notification that has recipients that\
+ have been updated"
+    TYPE = "VARCHAR2"
+    SUBTYPE = "SEND"
+    VALUE_TYPE = "CONSTANT"
+  END MESSAGE_ATTRIBUTE
+
+  BEGIN MESSAGE_ATTRIBUTE "ROLE"
+    DISPLAY_NAME = "Recipient Role"
+    DESCRIPTION = "The Notification Recipient Role to which the notification i\
+s addressed"
+    TYPE = "VARCHAR2"
+    SUBTYPE = "SEND"
+    VALUE_TYPE = "CONSTANT"
+  END MESSAGE_ATTRIBUTE
+
+  BEGIN MESSAGE_ATTRIBUTE "UPDATED_USER_REPORT"
+    DISPLAY_NAME = "Updated User Report"
+    DESCRIPTION = "The report that is generated during the processing of the l\
+ist of recipients that failed delivery"
+    TYPE = "VARCHAR2"
+    SUBTYPE = "SEND"
+    VALUE_TYPE = "CONSTANT"
+  END MESSAGE_ATTRIBUTE
+
+  BEGIN MESSAGE_ATTRIBUTE "TEMPLATE_STYLE"
+    DISPLAY_NAME = "Template style sheet definitions"
+    DESCRIPTION = "Defines the CSS style sheet class and element attributes"
+    TYPE = "VARCHAR2"
+    SUBTYPE = "SEND"
+    VALUE_TYPE = "CONSTANT"
+  END MESSAGE_ATTRIBUTE
+END MESSAGE
+
+BEGIN MESSAGE "WFMAIL" "VERIFY"
+  PROTECT_LEVEL = "1000"
+  CUSTOM_LEVEL = "0"
+  DISPLAY_NAME = "Notification Mailer Override Address Verification"
+  SUBJECT = "Notification Mailer Override Address Verification"
+  BODY = "An override email address has been requested. The override address m\
+ust be verified before the Mailer can use this address. This ensures that the \
+use of this email address is authorized and can be accessed correctly.  Please\
+ enter the following code into the Override Address Verification page.\n\
+\n\
+Verification Code: &VCODE\n\
+\n\
+Access the Override Address Verification page:\n\
+\n\
+&URL"
+  HTML_BODY = "<HTML> <HEAD> <TITLE> Notification Mailer Override Address Veri\
+fication </TITLE>\n\
+<STYLE>\n\
+<!--\n\
+&TEMPLATE_STYLE\n\
+-->\n\
+</STYLE> </HEAD> \n\
+<BODY BGCOLOR=\"#FFFFFF\" >\n\
+<P>An override email address has been requested. The override address must be \
+verified before the Mailer can use this address. This ensures that the use of \
+this email address is authorized and can be accessed correctly. <A class=\"Ora\
+Link\" HREF=\"&URL\"><B>Please click here</B></A> to access the Override Addre\
+ss Verification page and enter the following code.\n\
+<P>Verification Code: <B>&VCODE</B>\n\
+</BODY> \n\
+</HTML>"
+  DEFAULT_PRIORITY = "50"
+
+  BEGIN MESSAGE_ATTRIBUTE "VCODE"
+    DISPLAY_NAME = "Verification Code"
+    TYPE = "VARCHAR2"
+    SUBTYPE = "SEND"
+    VALUE_TYPE = "CONSTANT"
+  END MESSAGE_ATTRIBUTE
+
+  BEGIN MESSAGE_ATTRIBUTE "URL"
+    DISPLAY_NAME = "Verification URL"
+    TYPE = "URL"
+    SUBTYPE = "SEND"
+    FORMAT = "_top"
+    VALUE_TYPE = "CONSTANT"
+  END MESSAGE_ATTRIBUTE
+
+  BEGIN MESSAGE_ATTRIBUTE "TEMPLATE_STYLE"
+    DISPLAY_NAME = "Template style sheet definitions"
+    DESCRIPTION = "Defines the CSS style sheet class and element attributes"
+    TYPE = "VARCHAR2"
+    SUBTYPE = "SEND"
+    VALUE_TYPE = "CONSTANT"
+  END MESSAGE_ATTRIBUTE
+END MESSAGE
+
+BEGIN MESSAGE "WFMAIL" "VIEW_FROMUI"
+  PROTECT_LEVEL = "1000"
+  CUSTOM_LEVEL = "0"
+  DISPLAY_NAME = "Workflow View From UI"
+  DESCRIPTION = "Mail template for open notifications to be viewed from the UI"
+  SUBJECT = "Action Required: &SUBJECT"
+  BODY = "Oracle Workflow Notification\n\
+&TIMEZONE\n\
+\n\
+Notification Details:\n\
+&HEADER\n\
+\n\
+This notification is best viewed from the Notification Detail page.\n\
+Please access the online version of this notification.\n\
+\n\
+&HISTORY"
+  HTML_BODY = "<HTML> <HEAD> <TITLE> Oracle Workflow Notification </TITLE> \n\
+<STYLE>\n\
+<!--\n\
+&TEMPLATE_STYLE\n\
+-->\n\
+</STYLE>\n\
+<P>&HEADER</P>\n\
+</HEAD> \n\
+<BODY BGCOLOR=\"#FFFFFF\" > \n\
+<P><SPAN class=\"OraTipLabel\">&TIMEZONE</SPAN>\n\
+\n\
+\n\
+<P>\n\
+Paste this link in your web browser to access Oracle. https://gsiprdgb.na.odco\
+rp.net/\n\
+Login using your six-digit employee ID & network password. \n\
+<BR><BR>\n\
+Do not reply to this Office Depot Workflow Mailer as this is a system generate\
+d email and you will not receive a response. \n\
+<BR>"
+  DEFAULT_PRIORITY = "50"
+
+  BEGIN MESSAGE_ATTRIBUTE "START_DATE"
+    DISPLAY_NAME = "Start Date"
+    DESCRIPTION = "Date message was sent"
+    TYPE = "DATE"
+    SUBTYPE = "SEND"
+    VALUE_TYPE = "CONSTANT"
+  END MESSAGE_ATTRIBUTE
+
+  BEGIN MESSAGE_ATTRIBUTE "TO"
+    DISPLAY_NAME = "Recipient"
+    DESCRIPTION = "Role the notification was sent to"
+    TYPE = "VARCHAR2"
+    SUBTYPE = "SEND"
+    FORMAT = "2000"
+    VALUE_TYPE = "CONSTANT"
+  END MESSAGE_ATTRIBUTE
+
+  BEGIN MESSAGE_ATTRIBUTE "SUBJECT"
+    DISPLAY_NAME = "Subject"
+    DESCRIPTION = "Substituted message subject line"
+    TYPE = "VARCHAR2"
+    SUBTYPE = "SEND"
+    FORMAT = "2000"
+    VALUE_TYPE = "CONSTANT"
+  END MESSAGE_ATTRIBUTE
+
+  BEGIN MESSAGE_ATTRIBUTE "COMMENT"
+    DISPLAY_NAME = "Comment"
+    DESCRIPTION = "Sender or Forwarder comments"
+    TYPE = "VARCHAR2"
+    SUBTYPE = "SEND"
+    FORMAT = "2000"
+    VALUE_TYPE = "CONSTANT"
+  END MESSAGE_ATTRIBUTE
+
+  BEGIN MESSAGE_ATTRIBUTE "PRIORITY"
+    DISPLAY_NAME = "Priority"
+    DESCRIPTION = "Notification priority"
+    TYPE = "NUMBER"
+    SUBTYPE = "SEND"
+    VALUE_TYPE = "CONSTANT"
+  END MESSAGE_ATTRIBUTE
+
+  BEGIN MESSAGE_ATTRIBUTE "DUE_DATE"
+    DISPLAY_NAME = "Due Date"
+    DESCRIPTION = "Date by which a response is required"
+    TYPE = "DATE"
+    SUBTYPE = "SEND"
+    VALUE_TYPE = "CONSTANT"
+  END MESSAGE_ATTRIBUTE
+
+  BEGIN MESSAGE_ATTRIBUTE "NOTIFICATION"
+    DISPLAY_NAME = "Notification Code"
+    DESCRIPTION = "Identifying information for this notification (required)"
+    TYPE = "VARCHAR2"
+    SUBTYPE = "SEND"
+    FORMAT = "2000"
+    VALUE_TYPE = "CONSTANT"
+  END MESSAGE_ATTRIBUTE
+
+  BEGIN MESSAGE_ATTRIBUTE "SENDER"
+    DISPLAY_NAME = "Sender"
+    DESCRIPTION = "Sender's name"
+    TYPE = "VARCHAR2"
+    SUBTYPE = "SEND"
+    FORMAT = "320"
+    VALUE_TYPE = "CONSTANT"
+  END MESSAGE_ATTRIBUTE
+
+  BEGIN MESSAGE_ATTRIBUTE "HEADER"
+    DISPLAY_NAME = "Header"
+    DESCRIPTION = "Substituted notification header details"
+    TYPE = "VARCHAR2"
+    SUBTYPE = "SEND"
+    VALUE_TYPE = "CONSTANT"
+  END MESSAGE_ATTRIBUTE
+
+  BEGIN MESSAGE_ATTRIBUTE "HISTORY"
+    DISPLAY_NAME = "Action History"
+    DESCRIPTION = "History of actions on the notification"
+    TYPE = "VARCHAR2"
+    SUBTYPE = "SEND"
+    VALUE_TYPE = "CONSTANT"
+  END MESSAGE_ATTRIBUTE
+
+  BEGIN MESSAGE_ATTRIBUTE "TIMEZONE"
+    DISPLAY_NAME = "Server Time Zone"
+    DESCRIPTION = "Server time zone description"
+    TYPE = "VARCHAR2"
+    SUBTYPE = "SEND"
+    VALUE_TYPE = "CONSTANT"
+  END MESSAGE_ATTRIBUTE
+
+  BEGIN MESSAGE_ATTRIBUTE "TEMPLATE_STYLE"
+    DISPLAY_NAME = "Template style sheet definitions"
+    DESCRIPTION = "Defines the CSS style sheet class and element attributes"
+    TYPE = "VARCHAR2"
+    SUBTYPE = "SEND"
+    VALUE_TYPE = "CONSTANT"
+  END MESSAGE_ATTRIBUTE
+END MESSAGE
+
+BEGIN MESSAGE "WFMAIL" "VIEW_FROMUI_FYI"
+  PROTECT_LEVEL = "1000"
+  CUSTOM_LEVEL = "0"
+  DISPLAY_NAME = "Workflow View FYI From UI"
+  DESCRIPTION = "Mail template for open FYI notifications to be viewed from th\
+e UI"
+  SUBJECT = "FYI: &SUBJECT"
+  BODY = "Oracle Workflow Notification\n\
+&TIMEZONE\n\
+\n\
+Notification Details:\n\
+&HEADER\n\
+\n\
+This notification is best viewed from the Notification Detail page.\n\
+Please access the online version of this notification.\n\
+\n\
+&HISTORY"
+  HTML_BODY = "<HTML> <HEAD> <TITLE> Oracle Workflow Notification </TITLE> \n\
+<STYLE>\n\
+<!--\n\
+&TEMPLATE_STYLE\n\
+-->\n\
+</STYLE>\n\
+</HEAD> \n\
+<BODY BGCOLOR=\"#FFFFFF\" > \n\
+<P><SPAN class=\"OraTipLabel\">&TIMEZONE</SPAN>\n\
+<P>&HEADER\n\
+<P>This notification is best viewed from the Notification Detail page.<BR>\n\
+Please access the online version of this notification.\n\
+<P>&HISTORY\n\
+</BODY> \n\
+</HTML>"
+  DEFAULT_PRIORITY = "50"
+
+  BEGIN MESSAGE_ATTRIBUTE "START_DATE"
+    DISPLAY_NAME = "Start Date"
+    DESCRIPTION = "Date message was sent"
+    TYPE = "DATE"
+    SUBTYPE = "SEND"
+    VALUE_TYPE = "CONSTANT"
+  END MESSAGE_ATTRIBUTE
+
+  BEGIN MESSAGE_ATTRIBUTE "TO"
+    DISPLAY_NAME = "Recipient"
+    DESCRIPTION = "Role the notification was sent to"
+    TYPE = "VARCHAR2"
+    SUBTYPE = "SEND"
+    FORMAT = "2000"
+    VALUE_TYPE = "CONSTANT"
+  END MESSAGE_ATTRIBUTE
+
+  BEGIN MESSAGE_ATTRIBUTE "SUBJECT"
+    DISPLAY_NAME = "Subject"
+    DESCRIPTION = "Substituted message subject line"
+    TYPE = "VARCHAR2"
+    SUBTYPE = "SEND"
+    FORMAT = "2000"
+    VALUE_TYPE = "CONSTANT"
+  END MESSAGE_ATTRIBUTE
+
+  BEGIN MESSAGE_ATTRIBUTE "COMMENT"
+    DISPLAY_NAME = "Comment"
+    DESCRIPTION = "Sender or Forwarder comments"
+    TYPE = "VARCHAR2"
+    SUBTYPE = "SEND"
+    FORMAT = "2000"
+    VALUE_TYPE = "CONSTANT"
+  END MESSAGE_ATTRIBUTE
+
+  BEGIN MESSAGE_ATTRIBUTE "PRIORITY"
+    DISPLAY_NAME = "Priority"
+    DESCRIPTION = "Notification priority"
+    TYPE = "NUMBER"
+    SUBTYPE = "SEND"
+    VALUE_TYPE = "CONSTANT"
+  END MESSAGE_ATTRIBUTE
+
+  BEGIN MESSAGE_ATTRIBUTE "DUE_DATE"
+    DISPLAY_NAME = "Due Date"
+    DESCRIPTION = "Date by which a response is required"
+    TYPE = "DATE"
+    SUBTYPE = "SEND"
+    VALUE_TYPE = "CONSTANT"
+  END MESSAGE_ATTRIBUTE
+
+  BEGIN MESSAGE_ATTRIBUTE "NOTIFICATION"
+    DISPLAY_NAME = "Notification Code"
+    DESCRIPTION = "Identifying information for this notification (required)"
+    TYPE = "VARCHAR2"
+    SUBTYPE = "SEND"
+    FORMAT = "2000"
+    VALUE_TYPE = "CONSTANT"
+  END MESSAGE_ATTRIBUTE
+
+  BEGIN MESSAGE_ATTRIBUTE "SENDER"
+    DISPLAY_NAME = "Sender"
+    DESCRIPTION = "Sender's name"
+    TYPE = "VARCHAR2"
+    SUBTYPE = "SEND"
+    FORMAT = "320"
+    VALUE_TYPE = "CONSTANT"
+  END MESSAGE_ATTRIBUTE
+
+  BEGIN MESSAGE_ATTRIBUTE "HEADER"
+    DISPLAY_NAME = "Header"
+    DESCRIPTION = "Substituted notification header details"
+    TYPE = "VARCHAR2"
+    SUBTYPE = "SEND"
+    VALUE_TYPE = "CONSTANT"
+  END MESSAGE_ATTRIBUTE
+
+  BEGIN MESSAGE_ATTRIBUTE "HISTORY"
+    DISPLAY_NAME = "Action History"
+    DESCRIPTION = "History of actions on the notification"
+    TYPE = "VARCHAR2"
+    SUBTYPE = "SEND"
+    VALUE_TYPE = "CONSTANT"
+  END MESSAGE_ATTRIBUTE
+
+  BEGIN MESSAGE_ATTRIBUTE "TIMEZONE"
+    DISPLAY_NAME = "Server Time Zone"
+    DESCRIPTION = "Server time zone description"
+    TYPE = "VARCHAR2"
+    SUBTYPE = "SEND"
+    VALUE_TYPE = "CONSTANT"
+  END MESSAGE_ATTRIBUTE
+
+  BEGIN MESSAGE_ATTRIBUTE "TEMPLATE_STYLE"
+    DISPLAY_NAME = "Template style sheet definitions"
+    DESCRIPTION = "Defines the CSS style sheet class and element attributes"
+    TYPE = "VARCHAR2"
+    SUBTYPE = "SEND"
+    VALUE_TYPE = "CONSTANT"
+  END MESSAGE_ATTRIBUTE
+END MESSAGE
+
+BEGIN MESSAGE "WFMAIL" "WARNING"
+  PROTECT_LEVEL = "1000"
+  CUSTOM_LEVEL = "0"
+  DISPLAY_NAME = "Workflow Warning Mail"
+  DESCRIPTION = "Mail template for warning messages"
+  SUBJECT = "Warning For Unsolicited Mail"
+  BODY = "Messages sent to this account are processed automatically by the Ora\
+cle Workflow Notification Mailer.  The message you sent did not appear to be i\
+n response to a notification.  If you are responding to a notification, please\
+ use the response template that was included with your notification.  Take car\
+e to include the 'NID' line of the template in your reply.  If you are not res\
+ponding to a notification, please do not send mail to this account.\n\
+\n\
+Important: Some mail clients, notably early releases of Microsoft Outlook Expr\
+ess, may not copy the 'NID' line properly in your response. Please verify that\
+ the 'NID' line is included in full and contains the prefix 'NID' and all the \
+details between the square brackets when responding. \n\
+\n\
+________________________________________________________________________\n\
+\n\
+From: &UFROM\n\
+Subject: &USUBJECT\n\
+\n\
+&UBODY"
+  HTML_BODY = "<html><head>\n\
+<STYLE>\n\
+<!--\n\
+&TEMPLATE_STYLE\n\
+-->\n\
+</STYLE>\n\
+</head><body>\n\
+<B>Messages sent to this account are processed automatically by the Oracle Wor\
+kflow Notification Mailer.  The message you sent did not appear to be in respo\
+nse to a notification.  If you are responding to a notification, please use th\
+e auto-generated reply created when responding to the original message. This c\
+ontains the 'NID' line which is necessary for identification.  If you are not \
+responding to a notification, please do not send mail to this account.\n\
+<P><B>Important:</B> Some mail clients, notably early releases of Microsoft Ou\
+tlook Express, may not copy the 'NID' line properly in your response. Please v\
+erify that the 'NID' line is included in full and contains the prefix 'NID' an\
+d all the details between the square brackets when responding. \n\
+<hr>\n\
+<P>From: &UFROM \n\
+<BR>Subject: &USUBJECT\n\
+\n\
+<P>&UBODY\n\
+\n\
+</body></html>"
+  DEFAULT_PRIORITY = "50"
+
+  BEGIN MESSAGE_ATTRIBUTE "UBODY"
+    DISPLAY_NAME = "Unsolicited Mail Body"
+    DESCRIPTION = "Unsolicited Mail Body"
+    TYPE = "VARCHAR2"
+    SUBTYPE = "SEND"
+    FORMAT = "2000"
+    VALUE_TYPE = "CONSTANT"
+  END MESSAGE_ATTRIBUTE
+
+  BEGIN MESSAGE_ATTRIBUTE "USUBJECT"
+    DISPLAY_NAME = "Unsolicited Mail Subject"
+    DESCRIPTION = "Unsolicited Mail Subject"
+    TYPE = "VARCHAR2"
+    SUBTYPE = "SEND"
+    FORMAT = "2000"
+    VALUE_TYPE = "CONSTANT"
+  END MESSAGE_ATTRIBUTE
+
+  BEGIN MESSAGE_ATTRIBUTE "UFROM"
+    DISPLAY_NAME = "Unsolicited Mail From"
+    DESCRIPTION = "Unsolicited Mail From"
+    TYPE = "VARCHAR2"
+    SUBTYPE = "SEND"
+    FORMAT = "2000"
+    VALUE_TYPE = "CONSTANT"
+  END MESSAGE_ATTRIBUTE
+
+  BEGIN MESSAGE_ATTRIBUTE "TEMPLATE_STYLE"
+    DISPLAY_NAME = "Template style sheet definitions"
+    DESCRIPTION = "Defines the CSS style sheet class and element attributes"
+    TYPE = "VARCHAR2"
+    SUBTYPE = "SEND"
+    VALUE_TYPE = "CONSTANT"
+  END MESSAGE_ATTRIBUTE
+
+  BEGIN MESSAGE_ATTRIBUTE "SYSDATE"
+    DISPLAY_NAME = "SYSDATE"
+    DESCRIPTION = "Current date"
+    TYPE = "DATE"
+    SUBTYPE = "SEND"
+    VALUE_TYPE = "CONSTANT"
+  END MESSAGE_ATTRIBUTE
+END MESSAGE
+
+BEGIN MESSAGE "WFMAIL" "INVALID_EMAIL_WARNING"
+  PROTECT_LEVEL = "1000"
+  CUSTOM_LEVEL = "0"
+  DISPLAY_NAME = "Invalid Email Address Warning message template"
+  SUBJECT = "Invalid Email Address Warning message for NID &NOTIFICATION_ID"
+  BODY = "The notification with the ID of &NOTIFICATION_ID experienced problem\
+s when attempting to dispatch an email notification to the role &ROLE of the b\
+elow specified email address or addresses. Please correct these email addresse\
+s or remove them from the role's email address list if they are invalid, and t\
+hen stop and restart the notification mailer. Oracle Workflow will not attempt\
+ to send any further notifications to these addresses until the notification m\
+ailer is restarted.\n\
+\n\
+------------------------------------------------------------------------------\
+--\n\
+\n\
+&USER_INVALID_EMAIL\n\
+\n"
+  HTML_BODY = "<html>\n\
+<head>\n\
+<STYLE>\n\
+<!--\n\
+&TEMPLATE_STYLE\n\
+-->\n\
+</STYLE>\n\
+</head>\n\
+<body>\n\
+<p>The notification with the ID of <b>&NOTIFICATION_ID</b> experienced problem\
+s when attempting to dispatch an email notification to the role <b>&ROLE</b> o\
+f the below specified email address or addresses. Please correct these email a\
+ddresses or remove them from the role's email address list if they are invalid\
+, and then stop and restart the notification mailer. Oracle Workflow will not \
+attempt to send any further notifications to these addresses until the notific\
+ation mailer is restarted.\n\
+<p>\n\
+<hr>\n\
+<p>\n\
+<span style=\"font-family:monospace,courier\">&USER_INVALID_EMAIL</span>\n\
+</body></html>\n"
+  DEFAULT_PRIORITY = "50"
+
+  BEGIN MESSAGE_ATTRIBUTE "NOTIFICATION_ID"
+    DISPLAY_NAME = "Notification Id"
+    TYPE = "VARCHAR2"
+    SUBTYPE = "SEND"
+    VALUE_TYPE = "CONSTANT"
+  END MESSAGE_ATTRIBUTE
+
+  BEGIN MESSAGE_ATTRIBUTE "ROLE"
+    DISPLAY_NAME = "Recipient Role"
+    DESCRIPTION = "The Notification Recipient Role to which the notification i\
+s addressed"
+    TYPE = "VARCHAR2"
+    SUBTYPE = "SEND"
+    VALUE_TYPE = "CONSTANT"
+  END MESSAGE_ATTRIBUTE
+
+  BEGIN MESSAGE_ATTRIBUTE "USER_INVALID_EMAIL"
+    DISPLAY_NAME = "User Invalid Email Addresses"
+    TYPE = "VARCHAR2"
+    SUBTYPE = "SEND"
+    VALUE_TYPE = "CONSTANT"
+  END MESSAGE_ATTRIBUTE
+
+  BEGIN MESSAGE_ATTRIBUTE "TEMPLATE_STYLE"
+    DISPLAY_NAME = "Template style sheet definitions"
+    DESCRIPTION = "Defines the CSS style sheet class and element attributes"
+    TYPE = "VARCHAR2"
+    SUBTYPE = "SEND"
+    VALUE_TYPE = "CONSTANT"
+  END MESSAGE_ATTRIBUTE
+END MESSAGE
+

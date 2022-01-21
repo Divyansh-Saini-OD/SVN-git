@@ -1,0 +1,32 @@
+-- +==========================================================================+
+-- |                  Office Depot - Project Simplify                         |
+-- |                       WIPRO Technologies                                 |
+-- +==========================================================================+
+-- | RICE ID     :  E1325                                                     |
+-- | Name        :  Line Level 3 Detail for Deposits                          |
+-- |                                                                          |
+-- | SQL Script to create the following object                                |
+-- |             Table       : XX_IBY_BATCH_TRXNS_HISTORY                     |
+-- |                                                                          |
+-- |Change Record:                                                            |
+-- |===============                                                           |
+-- |Version   Date         Author               Remarks                       |
+-- |=======   ==========   =============        ==============================|
+-- | V1.0     07-FEB-2008  Subbarao B           Initial version               |
+-- |                                            Added for the Defect 3819     |
+-- |                                                                          |
+-- |                                                                          |
+-- |                                                                          |
+-- +==========================================================================+
+
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     ON
+
+ALTER TABLE xxfin.xx_iby_deposit_aops_order_dtls
+        MODIFY (WS_SKU_DESC     VARCHAR2(255)
+               );
+
+SHOW ERROR;

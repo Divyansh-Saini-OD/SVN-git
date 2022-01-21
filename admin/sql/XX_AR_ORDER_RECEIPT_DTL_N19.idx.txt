@@ -1,0 +1,46 @@
+-- +============================================================================================+
+-- |                        Office Depot - Project Simplify                                     |
+-- |                                                                                            |
+-- +============================================================================================+
+-- | Name         : XX_AR_ORDER_RECEIPT_DTL_N19.idx                                              |
+-- | Rice Id      :                                                                             | 
+-- | Description  :                                                                             |  
+-- | Purpose      :                                                                             |
+-- |                                                                                            |
+-- |Change Record:                                                                              |
+-- |===============                                                                             |
+-- |Version    Date          Author                Remarks                                      | 
+-- |=======    ==========    =================    ==============================================+
+-- |DRAFT 1A   22-APR-2016   Praveen Vanga        Initial Version from Data base as there is no |
+-- |						   Fles exists in SVN folders                   |
+-- |                                                                                            |
+-- +============================================================================================+
+
+SET VERIFY      OFF
+SET TERM        ON
+SET FEEDBACK    OFF
+SET SHOW        OFF
+SET ECHO        OFF
+SET TAB         OFF
+
+PROMPT
+PROMPT Creation of Index on AR table XX_AR_ORDER_RECEIPT_DTL.....
+PROMPT
+
+
+PROMPT
+PROMPT Creating index   XX_AR_ORDER_RECEIPT_DTL_N19.....
+PROMPT
+
+CREATE INDEX XXFIN.XX_AR_ORDER_RECEIPT_DTL_N19 ON XXFIN.XX_AR_ORDER_RECEIPT_DTL(TO_CHAR(ORDER_PAYMENT_ID));
+
+WHENEVER SQLERROR EXIT 1
+
+PROMPT
+PROMPT Exiting....
+PROMPT
+
+SET FEEDBACK ON
+
+EXIT;
+

@@ -1,0 +1,56 @@
+
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+-- +===========================================================================+
+-- |                  Office Depot - TZ Subcriptions Project                   |
+-- |                                                                           |                         
+-- +===========================================================================+
+-- | Name        : XX_AR_SUBSCRIPTIONS_GTT.tbl                                 |
+-- | Description :                                                             |
+-- | File to create Table for XX_AR_SUBSCRIPTIONS_GTT                          |
+-- |                                                                           |
+-- |Change Record:                                                             |
+-- |===============                                                            |
+-- |Version  Date        Author          Remarks          	                   |
+-- |======== =========== =============   ======================================|
+-- |DRAFT 1 04-MAR-2018 Jaishankar Kumar Initial draft version                 |
+-- +===========================================================================+
+
+BEGIN
+  EXECUTE IMMEDIATE 'DROP TABLE XXFIN.XX_AR_SUBSCRIPTIONS_GTT';
+EXCEPTION
+  WHEN OTHERS THEN NULL;
+END;
+/
+
+CREATE TABLE XXFIN.XX_AR_SUBSCRIPTIONS_GTT
+  (
+    SUBSCRIPTIONS_ID                  NUMBER        
+   ,CONTRACT_NUMBER                   VARCHAR2(60)  
+   ,CONTRACT_ID                       NUMBER        
+   ,CONTRACT_NAME                     VARCHAR2(256)        
+   ,CONTRACT_LINE_NUMBER              VARCHAR2(60)        
+   ,BILLING_DATE                      DATE   
+   ,CONTRACT_LINE_AMOUNT              NUMBER        
+   ,BILLING_SEQUENCE_NUMBER           NUMBER       
+   ,PAYMENT_TERMS                     VARCHAR2(60) 
+   ,UOM_CODE                          VARCHAR2(25) 
+   ,SERVICE_PERIOD_START_DATE         DATE          
+   ,SERVICE_PERIOD_END_DATE           DATE        
+   ,NEXT_BILLING_DATE                 DATE  
+   ,INVOICE_INTERFACED_FLAG           VARCHAR2(1)     
+   ,CREATION_DATE                     DATE          
+   ,LAST_UPDATE_DATE                  DATE          
+   ,CREATED_BY                        NUMBER(15)    
+   ,LAST_UPDATED_BY                   NUMBER(15)    
+   ,LAST_UPDATE_LOGIN                 NUMBER(15)    
+   ,PROGRAM_ID                        NUMBER(15)
+   );           
+
+SHOW ERRORS;
+   
+GRANT ALL ON XXFIN.XX_AR_SUBSCRIPTIONS_GTT TO APPS WITH GRANT OPTION;
+
+GRANT SELECT ON XXFIN.XX_AR_SUBSCRIPTIONS_GTT TO ERP_SYSTEM_TABLE_SELECT_ROLE;
+EXIT;

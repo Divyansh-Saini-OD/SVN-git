@@ -1,0 +1,36 @@
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     ON
+
+PROMPT Creating sEQUENCE created for XX_SPLIT_LOCKBOX_PKG                                                  
+
+PROMPT Program exits IF the creation IS NOT SUCCESSFUL
+
+WHENEVER SQLERROR CONTINUE
+WHENEVER OSERROR EXIT FAILURE ROLLBACK
+
+-- +============================================================================================+
+-- |  Office Depot - Project Simplify                                                           |
+-- |                                                                                            |
+-- +============================================================================================+
+-- |  Name: SEQUENCE: XX_AR_TRANSMISSIONS_S                                                     |
+-- |  Description:  sEQUENCE created for XX_SPLIT_LOCKBOX_PKG                        |                                                                      |
+-- |                                                                                            |
+-- |  Change Record:                                                                            |
+-- +============================================================================================+
+-- | Version     Date         Author           Remarks                                          |
+-- | =========   ===========  =============    ===============================================  |
+-- | 1.0         28-DEC-2012  Divya       Initial version                                       |
+-- +============================================================================================+
+
+DROP SEQUENCE XXFIN.XX_AR_TRANSMISSIONS_S;
+--------------------------------------------------------
+--  DDL for Sequence XX_AR_TRANSMISSIONS_S
+--------------------------------------------------------
+CREATE SEQUENCE XXFIN.XX_AR_TRANSMISSIONS_S MINVALUE 2147483648 MAXVALUE 999999999999999999999999999 INCREMENT BY 1 START WITH 2147483688 CACHE 20 NOORDER NOCYCLE ;
+
+EXIT;
+
+SHOW ERROR

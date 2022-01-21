@@ -1,0 +1,20 @@
+-- +==========================================================================+
+-- |                  Office Depot - Project Simplify                         |
+-- +==========================================================================+
+-- | SQL Script to create the following objects                               |
+-- |                Synonym  :  XX_FA_DEPR_PROJ_STG                           |
+-- |                          CR646- Projection Depreciation                  |
+-- |                                                                          |
+-- |                                                                          |
+-- |                                                                          |
+-- |Change Record:                                                            |
+-- |===============                                                           |
+-- |Version   Date         Author               Remarks                       |
+-- |=======   ==========   =============        ==============================|
+-- | V1.0     15-JAN-2010  Peter Marco          Initial version               |
+-- |                                                                          |
+-- +==========================================================================+
+
+
+CREATE SYNONYM XX_FA_DEPR_PROJ_STG FOR XXFIN.XX_FA_DEPR_PROJ_STG;
+

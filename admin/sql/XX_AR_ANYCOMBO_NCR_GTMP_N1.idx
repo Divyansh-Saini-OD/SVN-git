@@ -1,0 +1,22 @@
+---+========================================================================================================+        
+---|                                        Office Depot - Project Simplify                                 |
+---|                                            Providge Consulting                                         |
+---+========================================================================================================+
+---|    Application             :       AR                                                                  |
+---|                                                                                                        |
+---|    Name                    :       XX_AR_ANYCOMBO_NCR_GTMP_N1.idx                                      |
+---|                                                                                                        |
+---|    Description             :       Creates index on global temporary table XX_AR_ANYCOMBO_NCR_GTMP     |
+---|                                                                                                        |
+---|                                                                                                        |
+---|                                                                                                        |
+---|    Change Record                                                                                       |
+---|    ---------------------------------                                                                   |
+---|    Version         DATE              AUTHOR            DESCRIPTION                                     |
+---|    ------------    ----------------- ---------------   ---------------------                           |
+---|    1.0             15-JUL-2008       Brian J Looman    Initial Version                                 |
+---+========================================================================================================+        
+
+
+CREATE INDEX XXFIN.XX_AR_ANYCOMBO_NCR_GTMP_N1
+ ON XX_AR_ANYCOMBO_NCR_GTMP (NCR_STRING);

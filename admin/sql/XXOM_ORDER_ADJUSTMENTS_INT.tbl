@@ -1,0 +1,42 @@
+
+-- +===========================================================================+
+-- |                  Office Depot - SAS Modernization                         |
+-- |                                                                           |
+-- +===========================================================================+
+-- | Name        : XXOM_ORDER_ADJUSTMENTS_INT.tbl                                 |
+-- | Description : create Table for XXOM_ORDER_ADJUSTMENTS_INT                    |
+-- |                                                                           |
+-- |Change Record:                                                             |
+-- |===============                                                            |
+-- |Version  Date        Author           Remarks                              |
+-- |======== =========== ================ =====================================|
+-- |1.0      28-Apr-2021 Shreyas Thorat   Initial Version                      |
+-- +===========================================================================+
+
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     ON
+WHENEVER SQLERROR CONTINUE
+  CREATE TABLE XXOM_ORDER_ADJUSTMENTS_INT 
+   (	ACCTINGCOUPONAMOUNT NUMBER, 
+	ADJUSTMENTCODE VARCHAR2(10), 
+	ADJUSTMENTSEQNUM NUMBER, 
+	COUPONID NUMBER, 
+	DISPLAYCOUPONAMOUNT NUMBER, 
+	EMPLOYEEID NUMBER, 
+	LINENUM NUMBER, 
+	ADJUSTMENT_ID NUMBER, 
+	HEADER_ID NUMBER, 
+	LINE_ID NUMBER, 
+	STATUS VARCHAR2(20), 
+	ERROR_DESCRIPTION VARCHAR2(300)
+   )   ;
+   
+   
+ GRANT ALL ON XXOM_ORDER_ADJUSTMENTS_INT TO APPS WITH GRANT OPTION;
+
+GRANT SELECT ON XXOM_ORDER_ADJUSTMENTS_INT TO ERP_SYSTEM_TABLE_SELECT_ROLE;
+
+GRANT SELECT ON XXOM_ORDER_ADJUSTMENTS_INT TO XXDATA_STAGE_ROLE;   

@@ -1,0 +1,95 @@
+REM============================================================================================
+REM                                 Start Of Script
+REM============================================================================================
+
+--+=============================================================================================+--
+--|                                                                                             |--
+--| Program Name   : CREATE_XX_FA_TAX_INTERFACE_STG.tbl                                         |--
+--|                                                                                             |--
+--| Purpose        : Create Custom Tables .                                                     |--
+--|                  The Objects created are:                                                   |--
+--|                                                                                             |--
+--|                1. XX_FA_TAX_INTERFACE_STG (FA Conversion )                                  |--
+--|                                                                                             |--
+--| Change History  :                                                                           |--
+--| Version           Date             Changed By              Description                      |--
+--+=============================================================================================+--
+--| 1.0              22-JAN-2015       Mark Schmit             Original                         |--
+--+=============================================================================================+--
+
+SET VERIFY      OFF
+SET TERM        ON
+SET FEEDBACK    OFF
+SET SHOW        OFF
+SET ECHO        OFF
+SET TAB         OFF
+
+WHENEVER SQLERROR CONTINUE;
+
+PROMPT
+PROMPT Creating the Custom Table ......
+PROMPT
+
+PROMPT
+PROMPT Creating the Table XX_FA_TAX_INTERFACE_STG......
+PROMPT
+
+
+  CREATE TABLE "XX_FA_TAX_INTERFACE_STG" 
+   (	"PWC_BOOK_DESC" VARCHAR2(45 BYTE), 
+	"PWC_ASSET_NBR" VARCHAR2(15 BYTE), 
+	"PWC_ASSET_CLASS_DESC" VARCHAR2(80 BYTE), 
+	"PWC_RATE" VARCHAR2(10 BYTE), 
+	"PWC_LIFE" NUMBER(6,2), 
+	"PWC_CONVENTION" VARCHAR2(40 BYTE), 
+	"PWC_IN_SERVICE_DATE" VARCHAR2(20 BYTE), 
+	"PWC_INITIAL_TAX_COST" NUMBER, 
+	"PWC_ACCUM_DEPRN" NUMBER, 
+	"CALC_BOOK_TYPE_CODE" VARCHAR2(45 BYTE), 
+	"CALC_ASSET_NUMBER" VARCHAR2(15 BYTE), 
+	"CALC_COMP_CODE" VARCHAR2(4 BYTE), 
+	"CALC_DPIS" DATE, 
+	"CALC_COST" NUMBER(10,2), 
+	"CALC_LIFE" NUMBER, 
+	"CALC_PRORATE_CC" VARCHAR2(150 BYTE), 
+	"CALC_DEPRECIATE_FLAG" VARCHAR2(3 BYTE), 
+	"CALC_DEPRN_METHOD_CODE" VARCHAR2(12 BYTE), 
+	"CALC_DEPRN_RESERVE" NUMBER(10,2), 
+	"BATCH_ID" NUMBER, 
+	"CONV_ACTION" VARCHAR2(10 BYTE), 
+	"PROCESS_FLAG" NUMBER, 
+	"RECORD_ID" NUMBER, 
+	"CREATED_BY" NUMBER(15,0), 
+	"CREATION_DATE" DATE, 
+	"LAST_UPDATE_DATE" DATE, 
+	"LAST_UPDATE_LOGIN" NUMBER, 
+	"LAST_UPDATED_BY" NUMBER, 
+	"BOOK" VARCHAR2(3 BYTE), 
+	"AUDIT_ID" NUMBER(10,0), 
+	"CONTROL_ID" NUMBER(20,0), 
+	"SOURCE_SYSTEM_CODE" VARCHAR2(5 BYTE), 
+	"SOURCE_SYSTEM_REF" VARCHAR2(20 BYTE), 
+	"TAX_INTERFACE_ID" NUMBER(15,0), 
+	"CALC_YTD_DEPRN" NUMBER(10,2), 
+	"REQUEST_ID" NUMBER, 
+	"STATUS" VARCHAR2(2 BYTE), 
+	"ASSET_IN_SAP" VARCHAR2(1 BYTE), 
+	"ERROR_MESSAGE" VARCHAR2(2000 BYTE), 
+	"OLD_PWC_LIFE" NUMBER, 
+	"CALC_CLASS" VARCHAR2(4 BYTE)
+   );
+
+WHENEVER SQLERROR CONTINUE;
+
+PROMPT
+PROMPT Exiting....
+PROMPT
+
+SET FEEDBACK ON
+
+EXIT;
+
+REM=================================================================================================
+REM                                   End Of Script
+REM=================================================================================================
+

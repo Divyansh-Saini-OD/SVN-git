@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="windows-1252" ?>
+<SyncEmployeeEBM xmlns:ns1="http://xmlns.officedepot.com/EnterpriseObjects/EBO/Employee/V1" xmlns="http://xmlns.officedepot.com/EnterpriseObjects/EBO/Employee/V1">
+ <comm:EBMHeader xmlns:comm="http://xmlns.officedepot.com/EnterpriseObjects/Common/V1">
+<comm:CreationDateTime>2012-06-27T02:34:46-04:00</comm:CreationDateTime>
+<comm:VerbCode>Sync</comm:VerbCode>
+ <comm:Sender>
+<comm:ID>PSFT</comm:ID>
+</comm:Sender>
+</comm:EBMHeader>
+ <ns1:DataArea>
+<ns1:BatchId>383</ns1:BatchId>
+<ns1:ChunkID>384</ns1:ChunkID>
+<ns1:DateTimeCreated>2012-06-12T20:36:26.750</ns1:DateTimeCreated>
+ <ns1:EmployeeList>
+ <ns1:Employee>
+ <ns1:EmployeeIdentification>
+<ns1:EmployeeID>385</ns1:EmployeeID>
+<ns1:BadgeNumber>386</ns1:BadgeNumber>
+</ns1:EmployeeIdentification>
+ <ns1:EmploymentDetails>
+<ns1:EmployeeType>406</ns1:EmployeeType>
+<ns1:Status>EmployementStatus407</ns1:Status>
+<ns1:Action>Action410</ns1:Action>
+<ns1:VendorID>436</ns1:VendorID>
+<ns1:HireDate>2012-06-12</ns1:HireDate>
+<ns1:TerminationDate>2012-06-12</ns1:TerminationDate>
+<ns1:LastWorkedDate>2012-06-12</ns1:LastWorkedDate>
+<ns1:SalaryAdminPlan>SalaryAdminPlan426</ns1:SalaryAdminPlan>
+<ns1:BonusCode>ODBonusCode432</ns1:BonusCode>
+<ns1:ExtendedEEOCode>ODExtendedOEE433</ns1:ExtendedEEOCode>
+ <ns1:JobDetail>
+<ns1:JobCode>JobCode412</ns1:JobCode>
+<ns1:JobCodeDescription>JobCodeDescription413</ns1:JobCodeDescription>
+<ns1:JobFunction>JobFunction430</ns1:JobFunction>
+<ns1:JobDescription>JobDescription431</ns1:JobDescription>
+<ns1:SetIDJobCode>SetIDJobCode411</ns1:SetIDJobCode>
+<ns1:SetIDSalary>415</ns1:SetIDSalary>
+<ns1:RegulatoryRegion>RegulatoryRegion421</ns1:RegulatoryRegion>
+ <ns1:JobTimePeriod>
+<comm:StartDateTime xmlns:comm="http://xmlns.officedepot.com/EnterpriseObjects/Common/V1">2012-06-12T20:32:20.906</comm:StartDateTime>
+</ns1:JobTimePeriod>
+ <ns1:DepartmentIdentification>
+<comm:Company xmlns:comm="http://xmlns.officedepot.com/EnterpriseObjects/Common/V1">Company417</comm:Company>
+<comm:DeptID xmlns:comm="http://xmlns.officedepot.com/EnterpriseObjects/Common/V1">419</comm:DeptID>
+<comm:DeptName xmlns:comm="http://xmlns.officedepot.com/EnterpriseObjects/Common/V1">DepartmentName420</comm:DeptName>
+<comm:DeptSetID xmlns:comm="http://xmlns.officedepot.com/EnterpriseObjects/Common/V1">SetIDDepartment418</comm:DeptSetID>
+<comm:CostCenter xmlns:comm="http://xmlns.officedepot.com/EnterpriseObjects/Common/V1">CostCenter422</comm:CostCenter>
+</ns1:DepartmentIdentification>
+ <ns1:BusinessUnitIdentification>
+<comm:BusinessUnitID xmlns:comm="http://xmlns.officedepot.com/EnterpriseObjects/Common/V1">BusinessUnit414</comm:BusinessUnitID>
+</ns1:BusinessUnitIdentification>
+ <ns1:LocationIdentification>
+<comm:LocatioinID xmlns:comm="http://xmlns.officedepot.com/EnterpriseObjects/Common/V1">Location416</comm:LocatioinID>
+<comm:LocationSetID xmlns:comm="http://xmlns.officedepot.com/EnterpriseObjects/Common/V1">SetIDLocation415</comm:LocationSetID>
+</ns1:LocationIdentification>
+ <ns1:JobGrade>
+<ns1:Grade>Grade425</ns1:Grade>
+</ns1:JobGrade>
+ <ns1:JobAssignmentSupervision>
+<ns1:SupervisorID>427</ns1:SupervisorID>
+<ns1:ManagerLevel>ManagerLevel428</ns1:ManagerLevel>
+</ns1:JobAssignmentSupervision>
+</ns1:JobDetail>
+</ns1:EmploymentDetails>
+ <comm:Person xmlns:comm="http://xmlns.officedepot.com/EnterpriseObjects/Common/V1">
+<comm:GenderCode>Gender394</comm:GenderCode>
+<comm:BirthDate>1212</comm:BirthDate>
+<comm:NationalityID>396</comm:NationalityID>
+ <comm:PersonName>
+<comm:FirstName>FirstName387</comm:FirstName>
+<comm:MiddleName>MiddleName388</comm:MiddleName>
+<comm:LastName>LastName389</comm:LastName>
+<comm:SecondLastName>SecondLastName390</comm:SecondLastName>
+<comm:Prefix>NamePrefix391</comm:Prefix>
+<comm:Suffix>NameSuffix392</comm:Suffix>
+<comm:CommonName>CommonName393</comm:CommonName>
+</comm:PersonName>
+ <comm:PersonAddressCommunication>
+ <comm:Address>
+<comm:AddressLineOne>Address1398</comm:AddressLineOne>
+<comm:AddressLineTwo>Address2399</comm:AddressLineTwo>
+<comm:AddressLineThree>Address3400</comm:AddressLineThree>
+<comm:CityName>City401</comm:CityName>
+<comm:StateName>State404</comm:StateName>
+<comm:CountyName>County403</comm:CountyName>
+<comm:CountryCode>Country405</comm:CountryCode>
+<comm:MailCode>ODMailCode434</comm:MailCode>
+</comm:Address>
+ <comm:AddressCommunicationTimePeriod>
+<comm:StartDateTime>2012-06-12T20:32:20.906</comm:StartDateTime>
+</comm:AddressCommunicationTimePeriod>
+</comm:PersonAddressCommunication>
+ <comm:PersonCommunicationDevices>
+ <comm:CommunicationDevice>
+<comm:CompleteNumber>ODPhoneBusiness437</comm:CompleteNumber>
+<comm:Usage>Business</comm:Usage>
+<comm:DeviceTypeCode>Landline</comm:DeviceTypeCode>
+ <comm:Preference>
+<comm:PreferredIndicator>1</comm:PreferredIndicator>
+</comm:Preference>
+</comm:CommunicationDevice>
+ <comm:CommunicationDevice>
+<comm:CompleteNumber>ODPhoneFaxPersonal439</comm:CompleteNumber>
+<comm:Usage>Personal</comm:Usage>
+<comm:DeviceTypeCode>Fax</comm:DeviceTypeCode>
+ <comm:Preference>
+<comm:PreferredIndicator>1</comm:PreferredIndicator>
+</comm:Preference>
+</comm:CommunicationDevice>
+ <comm:CommunicationDevice>
+<comm:CompleteNumber>ODPhoneMain440</comm:CompleteNumber>
+<comm:Usage>Business</comm:Usage>
+<comm:DeviceTypeCode>Landline</comm:DeviceTypeCode>
+ <comm:Preference>
+<comm:PreferredIndicator>1</comm:PreferredIndicator>
+</comm:Preference>
+</comm:CommunicationDevice>
+ <comm:CommunicationDevice>
+<comm:CompleteNumber>ODPhoneMobileBusiness442</comm:CompleteNumber>
+<comm:Usage>Business</comm:Usage>
+<comm:DeviceTypeCode>Mobile</comm:DeviceTypeCode>
+ <comm:Preference>
+<comm:PreferredIndicator>1</comm:PreferredIndicator>
+</comm:Preference>
+</comm:CommunicationDevice>
+ <comm:CommunicationDevice>
+<comm:CompleteNumber>ODPhoneMobilePersonal444</comm:CompleteNumber>
+<comm:Usage>Personal</comm:Usage>
+<comm:DeviceTypeCode>Mobile</comm:DeviceTypeCode>
+ <comm:Preference>
+<comm:PreferredIndicator>1</comm:PreferredIndicator>
+</comm:Preference>
+</comm:CommunicationDevice>
+ <comm:CommunicationDevice>
+<comm:CompleteNumber>ODPhonePager446</comm:CompleteNumber>
+<comm:Usage>Business</comm:Usage>
+<comm:DeviceTypeCode>Pager</comm:DeviceTypeCode>
+ <comm:Preference>
+<comm:PreferredIndicator>1</comm:PreferredIndicator>
+</comm:Preference>
+</comm:CommunicationDevice>
+ <comm:CommunicationDevice>
+<comm:CompleteNumber>ODPhonePager446</comm:CompleteNumber>
+<comm:Usage>Business</comm:Usage>
+<comm:DeviceTypeCode>Pager</comm:DeviceTypeCode>
+ <comm:Preference>
+<comm:PreferredIndicator>1</comm:PreferredIndicator>
+</comm:Preference>
+</comm:CommunicationDevice>
+</comm:PersonCommunicationDevices>
+ <comm:PersonEmailCommunication>
+<comm:EmailID>EmailID435</comm:EmailID>
+</comm:PersonEmailCommunication>
+</comm:Person>
+</ns1:Employee>
+</ns1:EmployeeList>
+</ns1:DataArea>
+</SyncEmployeeEBM>

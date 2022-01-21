@@ -1,0 +1,43 @@
+-- +============================================================================================+
+-- |                        Office Depot - Project Simplify                                     |
+-- |                                                                                            |
+-- +============================================================================================+
+-- | Name         : ZX_TRANSACTION_LINES_GT.idx                                                 |
+-- | Rice Id      :                                                                             | 
+-- | Description  :                                                                             |  
+-- | Purpose      : Create Indexe for Table ZX_TRANSACTION_LINES_GT on columns                  |
+-- |                (TRX_ID and TRX_LINE_ID)                                                    |
+-- |                                                                                            |
+-- |Change Record:                                                                              |
+-- |===============                                                                             |
+-- |Version    Date          Author                Remarks                                      | 
+-- |=======    ==========    =================    ==============================================+
+-- |DRAFT 1A   19-OCT-2017   Havish Kasina        Initial Version                               |
+-- +============================================================================================+
+
+SET VERIFY      OFF
+SET TERM        ON
+SET FEEDBACK    OFF
+SET SHOW        OFF
+SET ECHO        OFF
+SET TAB         OFF
+
+PROMPT
+PROMPT Creation of Index on ZX_TRANSACTION_LINES_GT table.....
+PROMPT
+
+PROMPT
+PROMPT Creating non-unique index on INDEX ZX_TRANSACTION_LINES_GT_C1 .....
+PROMPT
+CREATE INDEX XXFIN.ZX_TRANSACTION_LINES_GT_C1 ON ZX.ZX_TRANSACTION_LINES_GT (TRX_ID , TRX_LINE_ID); 
+
+WHENEVER SQLERROR EXIT 1
+
+PROMPT
+PROMPT Exiting....
+PROMPT
+
+SET FEEDBACK ON
+
+EXIT;
+

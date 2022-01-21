@@ -1,0 +1,25 @@
+-- +==========================================================================+
+-- |                  Office Depot - Project Simplify                         |
+-- |                           Capgemini                                      |
+-- +==========================================================================+
+-- |SQL Script to recreate the following synonyms                             |  
+-- |Synonyms    : XX_AR_EBL_TXT_DTL_STG                                       |
+-- |              XX_CDH_EBL_MAIN                                             |
+-- |              XX_CDH_EBL_TEMPL_DTL_TXT                                    |
+-- |Description : For Requirement#2282 & 2302                                 |
+-- |Change Record:                                                            |
+-- |===============                                                           |
+-- |Version      Date             Author               Remarks                |
+-- |=======      ==========    =============           =====================  |
+-- |1.0          16-FEB-2017   Punit Gupta             Requirement#2282 & 2302|
+-- +==========================================================================+
+------------------------------------------------------
+-- Dropping the existing synonym and creating new.  --
+------------------------------------------------------
+CREATE OR REPLACE SYNONYM XX_CDH_EBL_TEMPL_DTL_TXT FOR XXCRM.XX_CDH_EBL_TEMPL_DTL_TXT
+/
+CREATE OR REPLACE SYNONYM XX_AR_EBL_TXT_DTL_STG FOR XXFIN.XX_AR_EBL_TXT_DTL_STG
+/
+CREATE OR REPLACE SYNONYM XX_CDH_EBL_MAIN FOR XXCRM.XX_CDH_EBL_MAIN
+/
+SHOW ERRORS;

@@ -1,0 +1,87 @@
+-- +============================================================================================+
+-- |                        Office Depot - Project Simplify                                     |
+-- |                                                                                            |
+-- +============================================================================================+
+-- | Name         : XX_AR_VPS_ADJ_DTLS_STG_IDX.idx                                              |
+-- | Rice Id      :                                                                             | 
+-- | Description  :                                                                             |  
+-- | Purpose      : Create Indexes for Table XX_AR_VPS_ADJ_DTLS_STG on columns                  |
+-- |                                                                                            |
+-- |Change Record:                                                                              |
+-- |===============                                                                             |
+-- |Version    Date          Author                Remarks                                      | 
+-- |=======    ==========    =================    ==============================================+
+-- |DRAFT 1A   28-JUN-2018   Havish Kasina        Initial Version                               |
+-- +============================================================================================+
+
+SET VERIFY      OFF
+SET TERM        ON
+SET FEEDBACK    OFF
+SET SHOW        OFF
+SET ECHO        OFF
+SET TAB         OFF
+
+PROMPT
+PROMPT Creation of Index on custom table.....
+PROMPT
+
+PROMPT
+PROMPT Creating non-unique index on INDEX XX_AR_VPS_ADJ_DTLS_STG_N1 .....
+PROMPT
+CREATE INDEX XXFIN.XX_AR_VPS_ADJ_DTLS_STG_N1 ON XXFIN.XX_AR_VPS_ADJ_DTLS_STG(TRANSACTION_NUMBER);
+
+PROMPT
+PROMPT Creating non-unique index on INDEX XX_AR_VPS_ADJ_DTLS_STG_N2 .....
+PROMPT
+CREATE INDEX XXFIN.XX_AR_VPS_ADJ_DTLS_STG_N2 ON XXFIN.XX_AR_VPS_ADJ_DTLS_STG(ADJ_ACTIVITY_NAME);
+
+PROMPT
+PROMPT Creating non-unique index on INDEX XX_AR_VPS_ADJ_DTLS_STG_N3 .....
+PROMPT
+CREATE INDEX XXFIN.XX_AR_VPS_ADJ_DTLS_STG_N3 ON XXFIN.XX_AR_VPS_ADJ_DTLS_STG(TRX_CATEGORY);
+
+PROMPT
+PROMPT Creating non-unique index on INDEX XX_AR_VPS_ADJ_DTLS_STG_N4 .....
+PROMPT
+CREATE INDEX XXFIN.XX_AR_VPS_ADJ_DTLS_STG_N4 ON XXFIN.XX_AR_VPS_ADJ_DTLS_STG(CUST_ACCT_NUMBER);
+
+PROMPT
+PROMPT Creating non-unique index on INDEX XX_AR_VPS_ADJ_DTLS_STG_N5 .....
+PROMPT
+CREATE INDEX XXFIN.XX_AR_VPS_ADJ_DTLS_STG_N5 ON XXFIN.XX_AR_VPS_ADJ_DTLS_STG(REQUEST_ID);
+
+PROMPT
+PROMPT Creating non-unique index on INDEX XX_AR_VPS_ADJ_DTLS_STG_N6 .....
+PROMPT
+CREATE INDEX XXFIN.XX_AR_VPS_ADJ_DTLS_STG_N6 ON XXFIN.XX_AR_VPS_ADJ_DTLS_STG(CREATION_DATE);
+
+PROMPT
+PROMPT Creating non-unique index on INDEX XX_AR_VPS_ADJ_DTLS_STG_N7 .....
+PROMPT
+CREATE INDEX XXFIN.XX_AR_VPS_ADJ_DTLS_STG_N7 ON XXFIN.XX_AR_VPS_ADJ_DTLS_STG(PROCESS_FLAG);
+
+PROMPT
+PROMPT Creating non-unique index on INDEX XX_AR_VPS_ADJ_DTLS_STG_N8 .....
+PROMPT
+CREATE INDEX XXFIN.XX_AR_VPS_ADJ_DTLS_STG_N8 ON XXFIN.XX_AR_VPS_ADJ_DTLS_STG(ERROR_MESSAGE);
+
+PROMPT
+PROMPT Creating non-unique index on INDEX XX_AR_VPS_ADJ_DTLS_STG_N9 .....
+PROMPT
+CREATE INDEX XXFIN.XX_AR_VPS_ADJ_DTLS_STG_N9 ON XXFIN.XX_AR_VPS_ADJ_DTLS_STG(ADJUSTMENT_ID);
+
+PROMPT
+PROMPT Creating unique index on INDEX XX_AR_VPS_ADJ_DTLS_STG_U1 .....
+PROMPT
+CREATE UNIQUE INDEX XXFIN.XX_AR_VPS_ADJ_DTLS_STG_U1 ON XXFIN.XX_AR_VPS_ADJ_DTLS_STG(CUSTOMER_TRX_ID); 
+
+WHENEVER SQLERROR EXIT 1
+
+PROMPT
+PROMPT Exiting....
+PROMPT
+
+SET FEEDBACK ON
+
+EXIT;
+

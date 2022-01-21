@@ -1,0 +1,47 @@
+-- +==========================================================================+
+-- |                  Office Depot - Project Simplify                         |
+-- |                       WIPRO Technologies                                 |
+-- +==========================================================================+
+-- | RICE ID     :  E1325                                                     |
+-- | Name        :  Line Level 3 Detail for Deposits                          |
+-- |                                                                          |
+-- | SQL Script to create the following object                                |
+-- |             Table       : XX_IBY_BATCH_TRXNS_HISTORY                     |
+-- |                                                                          |
+-- |Change Record:                                                            |
+-- |===============                                                           |
+-- |Version   Date         Author               Remarks                       |
+-- |=======   ==========   =============        ==============================|
+-- | V1.0     07-FEB-2008  Subbarao B           Initial version               |
+-- |                                            Added for the Defect 3819     |
+-- |                                                                          |
+-- |                                                                          |
+-- |                                                                          |
+-- +==========================================================================+
+
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     ON
+
+ALTER TABLE xxfin.xx_iby_deposit_aops_order_dtls
+        ADD(WS_SKU_UOM     VARCHAR2(100)
+          ,attribute1      VARCHAR2(255)
+          ,attribute2      VARCHAR2(255)
+          ,attribute3      VARCHAR2(255)
+          ,attribute4      VARCHAR2(255)
+          ,attribute5      VARCHAR2(255)
+          ,attribute6      VARCHAR2(255)
+          ,attribute7      VARCHAR2(255)
+          ,attribute8      VARCHAR2(255)
+          ,attribute9      VARCHAR2(255)
+          ,attribute10     VARCHAR2(255)
+          ,attribute11     VARCHAR2(255)
+          ,attribute12     VARCHAR2(255)
+          ,attribute13     VARCHAR2(255)
+          ,attribute14     VARCHAR2(255)
+          ,attribute15     VARCHAR2(255)
+          );
+
+SHOW ERROR;

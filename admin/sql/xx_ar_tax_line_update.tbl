@@ -1,0 +1,38 @@
+-- +==========================================================================+
+-- |                  Office Depot - Project Simplify                         |
+-- |                       WIPRO Technologies                                 |
+-- +==========================================================================+
+-- | SQL Script to create the following objects                               |
+-- |             Table     :  XX_AR_TAX_LINE_UPDATE                           |
+-- |                                                                          |
+-- |                         For the Extension E0080                          |
+-- |                                                                          |
+-- |                                                                          |
+-- |Change Record:                                                            |
+-- |===============                                                           |
+-- |Version   Date         Author               Remarks                       |
+-- |=======   ==========   =============        ==============================|
+-- | V1.0     13-Jun-2008  Chetan.K             Initial version               |
+-- |                                                                          |
+-- +==========================================================================+
+
+
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     ON
+
+-- DROP TABLE xxfin.xx_ar_tax_line_update;
+
+CREATE TABLE xxfin.xx_ar_tax_line_update (
+       sales_order      VARCHAR2(50) NOT NULL,
+       processed_flag   VARCHAR2(1),
+       creation_date    DATE NOT NULL,
+       created_by       NUMBER NOT NULL,
+       last_update_date DATE NOT NULL,
+       last_updated_by  NUMBER NOT NULL,
+       request_id       NUMBER 
+       );
+
+SHOW ERRORk

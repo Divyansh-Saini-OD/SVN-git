@@ -1,0 +1,69 @@
+-- +===========================================================================+
+-- |                  Office Depot - Project Simplify                          |
+-- +===========================================================================+
+-- | Name :XXFIN.XX_FIN_ESP_PARAMETERS                                         |
+-- | Description :   Script to create XX_FIN_ESP_PARAMETERS table	       |
+-- |                                                                           |
+-- |                                                                           |
+-- |Change Record:                                                             |
+-- |===============                                                            |
+-- |Version      Date           Author                  Remarks                |
+-- |=======    ==========     =============             ====================== |
+-- | 1.0      9-MAY-2013      Ray Strauss               Initial draft version  |
+-- +===========================================================================+
+
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     ON
+WHENEVER SQLERROR CONTINUE
+
+--+=====================================================================+
+--+               DROP TABLE XXFIN.XX_FIN_ESP_PARAMETERS
+--+=====================================================================+
+
+--DROP TABLE XXFIN.XX_FIN_ESP_PARAMETERS;
+
+SHOW ERROR
+
+--+=====================================================================+
+--+               CREATE TABLE XXFIN.XX_FIN_ESP_PARAMETERS
+--+=====================================================================+
+
+CREATE TABLE XXFIN.XX_FIN_ESP_PARAMETERS
+  (  ESP_DETAIL_ID        NUMBER,
+     ESP_PARAMETER_ID     NUMBER,
+     ESP_APPLICATION      VARCHAR2(10 BYTE),
+     ESP_JOB_NAME_1       VARCHAR2(10 BYTE),
+     ESP_JOB_NAME_2       VARCHAR2(10 BYTE),
+     ESP_PGM_PARM_SEQ     NUMBER,
+     ESP_PGM_PARM_NAME    VARCHAR2(100 BYTE),
+     ESP_PGM_PARM_VALUE   VARCHAR2(100 BYTE),
+     ESP_PGM_PARM_VAR     VARCHAR2(100 BYTE),
+     ATTRIBUTE1           VARCHAR2(250 BYTE),
+     ATTRIBUTE2           VARCHAR2(250 BYTE),
+     ATTRIBUTE3           VARCHAR2(250 BYTE),
+     ATTRIBUTE4           VARCHAR2(250 BYTE),
+     ATTRIBUTE5           VARCHAR2(250 BYTE),
+     ATTRIBUTE6           VARCHAR2(250 BYTE),
+     ATTRIBUTE7           VARCHAR2(250 BYTE),
+     ATTRIBUTE8           VARCHAR2(250 BYTE),
+     ATTRIBUTE9           VARCHAR2(250 BYTE),
+     CREATION_DATE        DATE,
+     CREATED_BY           NUMBER,
+     LAST_UPDATED_BY      NUMBER,
+     LAST_UPDATE_DATE     DATE,
+     LAST_UPDATE_LOGIN    NUMBER
+  );
+
+SHOW ERROR
+
+--+=====================================================================+
+--+               GRANT TABLE XXFIN.XX_FIN_ESP_PARAMETERS
+--+=====================================================================+
+
+GRANT SELECT ON XXFIN.XX_FIN_ESP_PARAMETERS TO APPS;
+GRANT SELECT ON XXFIN.XX_FIN_ESP_PARAMETERS TO ERP_SYSTEM_TABLE_SELECT_ROLE;
+
+SHOW ERROR

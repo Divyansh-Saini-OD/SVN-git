@@ -1,0 +1,52 @@
+REM================================================================================================
+REM                                 Start Of Script
+REM================================================================================================
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     OFF
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+-- +=======================================================================+
+-- |               Office Depot - Project Simplify                         |
+-- +=======================================================================+
+-- | Name        :XX_FA_REVAL_ASSETS_STG_N4                                |
+-- | Description : Non-Unique Index for Custom Table XX_FA_REVAL_ASSETS_STG|
+-- |Change History:                                                        |
+-- |---------------                                                        |
+-- |                                                                       |
+-- |Version  Date        Author             Remarks                        |
+-- |-------  ----------- -----------------  -------------------------------|
+-- |1.0      19-Oct-2012 Paddy Sanjeevi     Initial  Version               |
+-- |1.1      02-Nov-2012 Paddy Sanjeevi	  Changed tablespacename         |
+-- |1.2      02-Nov-2012 Paddy Sanjeevi	  Changed tablespacename         |
+-- +=======================================================================+
+
+PROMPT
+PROMPT Creating Index....
+PROMPT
+
+CREATE INDEX XX_FA_MASS_REVAL_REP_ITF_N1 ON fa.FA_MASS_REVAL_REP_ITF
+(ASSET_ID)
+NOLOGGING
+TABLESPACE APPS_TS_INTERFACE
+PCTFREE    0
+INITRANS   11
+MAXTRANS   255
+STORAGE    (
+            INITIAL          128K
+            NEXT             16M
+            MINEXTENTS       1
+            MAXEXTENTS       2147483645
+            PCTINCREASE      0
+            BUFFER_POOL      DEFAULT
+           )
+NOPARALLEL;
+
+SHOW ERRORS;
+
+
+REM================================================================================================
+REM                                 Start Of Script
+REM================================================================================================

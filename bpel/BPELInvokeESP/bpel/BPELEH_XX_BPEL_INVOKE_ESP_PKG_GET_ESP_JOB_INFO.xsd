@@ -1,0 +1,20 @@
+<schema targetNamespace="http://xmlns.oracle.com/pcbpel/adapter/db/BPELEH/XX_BPEL_INVOKE_ESP_PKG/GET_ESP_JOB_INFO/" xmlns="http://www.w3.org/2001/XMLSchema" xmlns:db="http://xmlns.oracle.com/pcbpel/adapter/db/BPELEH/XX_BPEL_INVOKE_ESP_PKG/GET_ESP_JOB_INFO/" elementFormDefault="qualified">
+   <element name="InputParameters">
+      <complexType>
+         <sequence>
+            <element name="P_PROCESS_DOMAIN" type="string" db:index="1" db:type="VARCHAR2" minOccurs="0" nillable="true"/>
+            <element name="P_PROCESS_NAME" type="string" db:index="2" db:type="VARCHAR2" minOccurs="0" nillable="true"/>
+            <element name="P_FILE_PATTERN" type="string" db:index="3" db:type="VARCHAR2" minOccurs="0" nillable="true"/>
+         </sequence>
+      </complexType>
+   </element>
+   <element name="OutputParameters">
+      <complexType>
+         <sequence>
+            <element name="X_JOB_NAME" type="string" db:index="4" db:type="VARCHAR2" minOccurs="0" nillable="true"/>
+            <element name="X_ESP_APPLICATION" type="string" db:index="5" db:type="VARCHAR2" minOccurs="0" nillable="true"/>
+            <element name="X_ESP_VERB" type="string" db:index="6" db:type="VARCHAR2" minOccurs="0" nillable="true"/>
+         </sequence>
+      </complexType>
+   </element>
+</schema>

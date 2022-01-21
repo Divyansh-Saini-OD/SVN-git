@@ -1,0 +1,18 @@
+-- +==========================================================================+
+-- |                  Office Depot - Project Simplify                         |
+-- +==========================================================================+
+-- | Name :XXFIN.XX_AP_SUPPLIER_TEMP                                          |
+-- | Description : To drop the table and synonym                              |
+-- |                                                                          |
+-- |Change Record:                                                            |
+-- |===============                                                           |
+-- |Version   Date         Author               Remarks                       |
+-- |=======   ==========   =============        ==============================|
+-- | V1.0     25-JAN-2008  Sudha Seetharaman     Initial version              |
+-- |                                                                          |
+-- +==========================================================================+
+
+
+Drop table XXFIN.XX_AP_SUPPLIER_TEMP;
+
+/

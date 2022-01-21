@@ -1,0 +1,31 @@
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     ON
+
+PROMPT Creating SYNONYM XX_RA_INT_SALESCREDITS_ALL
+
+PROMPT Program exits IF the creation IS NOT SUCCESSFUL
+
+WHENEVER SQLERROR CONTINUE
+
+-- +===================================================================================+
+-- |                  Office Depot - Project Simplify                                  |
+-- +===================================================================================+
+-- | Name :XX_RA_INT_LINES_ALL                                                         |
+-- | Description : Create the Synonym for the table XX_RA_INT_SALESCREDITS_ALL         |
+-- |                                                                                   |
+-- |                                                                                   |
+-- |                                                                                   |
+-- |                                                                                   |
+-- |Change Record:                                                                     |
+-- |===============                                                                    |
+-- |Version   Date         Author               Remarks                                |
+-- |=======   ==========   =============        =======================================|
+-- | V1.0     29-Mar-2011  P. MARCO             Initial version                      |
+-- +===================================================================================+
+
+CREATE SYNONYM APPS.XX_RA_INT_SALESCREDITS_ALL FOR XXFIN.XX_RA_INT_SALESCREDITS_ALL;
+
+SHOW ERROR

@@ -1,0 +1,78 @@
+SET VERIFY OFF;
+SET SHOW OFF;
+SET ECHO OFF;
+SET TAB OFF;
+SET FEEDBACK OFF;
+ 
+WHENEVER SQLERROR CONTINUE;
+ 
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+-- +==========================================================================+
+-- |                      Office Depot - IDMS                                 |
+-- |                      Capgemini Technology Services                       |
+-- +==========================================================================+
+-- | SQL Script to create the following objects                               |
+-- |             Table       : XX_AP_SUP_VENDOR_CONTACT_STG                   |
+-- |             Schema      : XXFIN                                          |
+-- |   Rice ID:   C0709                                                       |
+-- |Create Record:                                                            |
+-- |===============                                                           |
+-- |Version   Date         Author               Remarks                       |
+-- |=======   ==========   =============        ==============================|
+-- | 1.0     08-JAN-2018   Sunil Kalal          New Staging Table to store    |
+-- |                                            Vendor Contact Information.   | 
+-- |                                                                          |
+-- +==========================================================================+
+
+
+CREATE TABLE xx_ap_sup_vendor_contact_stg
+  (
+    addr_key              NUMBER(11) NOT NULL PRIMARY KEY,
+    module                VARCHAR2(4) NOT NULL,
+    key_value_1           NUMBER NOT NULL,
+    key_value_2           VARCHAR2(20),
+    seq_no                NUMBER(4) NOT NULL,
+    addr_type             NUMBER NOT NULL,
+    primary_addr_ind      VARCHAR2(1) NOT NULL,
+    add_1                 VARCHAR2(150) NOT NULL,
+    add_2                 VARCHAR2(150),
+    add_3                 VARCHAR2(150),
+    city                  VARCHAR2(50) NOT NULL,
+    state                 VARCHAR2(3),
+    country_id            VARCHAR2(3) NOT NULL,
+    post                  VARCHAR2(10),
+    contact_name          VARCHAR2(150),
+    contact_phone         VARCHAR2(20),
+    contact_telex         VARCHAR2(20),
+    contact_fax           VARCHAR2(20),
+    contact_email         VARCHAR2(100),
+    oracle_vendor_site_id NUMBER(15),
+    od_phone_nbr_ext      NUMBER(4),
+    od_phone_800_nbr      VARCHAR2(20),
+    od_comment_1          VARCHAR2(60),
+    od_comment_2          VARCHAR2(60),
+    od_comment_3          VARCHAR2(60),
+    od_comment_4          VARCHAR2(60),
+    od_email_ind_flg      VARCHAR2(2) DEFAULT 'N' NOT NULL,
+    od_ship_from_addr_id varchar2(80),
+    attribute1            VARCHAR2(60),
+    attribute2            VARCHAR2(60),
+    attribute3            VARCHAR2(60),
+    attribute4            VARCHAR2(60),
+    attribute5            VARCHAR2(60),
+    creation_date         DATE NOT NULL,
+    created_by            NUMBER NOT NULL,
+    last_update_date      DATE,
+    last_updated_by       NUMBER,
+    last_update_login     NUMBER,
+    enable_flag           VARCHAR2(1),
+    addr_type_id          NUMBER DEFAULT 1 NOT NULL
+  );
+
+   
+   GRANT ALL ON XX_AP_SUP_VENDOR_CONTACT_STG TO apps;
+
+   /
+Show error
+	

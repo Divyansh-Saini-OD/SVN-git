@@ -1,0 +1,53 @@
+-- +============================================================================================+
+-- |                        Office Depot - Project Simplify                                     |
+-- |                                                                                            |
+-- +============================================================================================+
+-- | Name         : ALTER_XX_AR_ORDER_RECEIPT_DTL.tbl                                           |
+-- | Rice Id      : I1272                                                                       | 
+-- | Description  : INT-I1272_SalesOrderFrom LegacySystems(HVOP) Table MODIFICATION             |  
+-- | Purpose      : MODIFY Custom Table XX_AR_ORDER_RECEIPT_DTL. to add                         |
+-- |                                                                                            |
+-- |                                                                                            |
+-- |Change Record:                                                                              |
+-- |===============                                                                             |
+-- |Version    Date          Author                Remarks                                      | 
+-- |=======    ==========    =================    ==============================================+
+-- |1.0        13-SEPT-2013  Edson Morales        R12 Credit Card Encryption                    |
+-- |2.0        10-FEB-2014   Edson Morales        R12 BYPASS FIELDS                             |
+-- |                                                                                            |
+-- +============================================================================================+
+
+
+SET VERIFY      OFF
+SET TERM        ON
+SET FEEDBACK    OFF
+SET SHOW        OFF
+SET ECHO        OFF
+SET TAB         OFF
+
+
+
+PROMPT
+PROMPT MODIFYING the Table XX_AR_ORDER_RECEIPT_DTL.....
+PROMPT
+
+WHENEVER SQLERROR CONTINUE
+
+ALTER TABLE XXFIN.XX_AR_ORDER_RECEIPT_DTL ADD IDENTIFIER VARCHAR2(50)
+/
+
+ALTER TABLE XXFIN.XX_AR_ORDER_RECEIPT_DTL ADD SETTLEMENT_ERROR_MESSAGE VARCHAR2(2000)
+/
+
+ALTER TABLE XXFIN.XX_AR_ORDER_RECEIPT_DTL ADD ORIGINAL_CASH_RECEIPT_ID NUMBER
+/
+
+
+
+PROMPT
+PROMPT Exiting....
+PROMPT
+
+SET FEEDBACK ON
+
+EXIT;

@@ -1,0 +1,36 @@
+<dataTemplate name="ARZeroDollorApp" description="" Version="1.0" defaultPackage="XX_AR_ZERO_DOLLAR_PKG">
+  <properties>
+  <property name="scalable_mode" value="on" /> 
+  <property name="rtf-output-default-font">Arial:8</property> 
+  </properties>
+  <parameters>
+  <parameter name="RPT_REQUEST_ID" datatype="NUMBER(20)" />
+  </parameters>
+
+  <dataQuery>
+  <sqlStatement name="Q_ZERO_DOLLAR">
+  <![CDATA[ 
+        SELECT CUSTOMER_NAME ,
+			   CUSTOMER_NUMBER,
+			   RECEIPT_NUMBER ,
+			   to_char(RECEIPT_DATE,'DD-MON-YYYY') RECEIPT_DATE ,
+			   RECEIPT_AMOUNT,
+			   to_char(APPLIED_TRX_NUMBER) APPLIED_TRX_NUMBER
+         FROM XX_AR_ZERO_DOLLAR_APP
+	 WHERE REQUEST_ID = :RPT_REQUEST_ID
+  ]]> 
+  </sqlStatement>
+  </dataQuery>
+
+ <dataStructure>
+  <group name="G_ZERO_DOLLAR" source="Q_ZERO_DOLLAR">
+  <element name="CUSTOMER_NAME" value="CUSTOMER_NAME" function="" /> 
+  <element name="CUSTOMER_NUMBER" value="CUSTOMER_NUMBER" function="" /> 
+  <element name="RECEIPT_NUMBER" value="RECEIPT_NUMBER" function="" /> 
+  <element name="RECEIPT_DATE" value="RECEIPT_DATE" function="" /> 
+  <element name="RECEIPT_AMOUNT" value="RECEIPT_AMOUNT" function="" /> 
+  <element name="APPLIED_TRX_NUMBER" value="APPLIED_TRX_NUMBER" function="" /> 
+  </group>
+   </dataStructure>
+  
+  </dataTemplate>

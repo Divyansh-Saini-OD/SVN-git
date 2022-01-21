@@ -1,0 +1,34 @@
+
+-- +==========================================================================+
+-- |                  Office Depot - Project Simplify                         |
+-- |                              WIPRO                                       |
+-- +==========================================================================+
+-- | Script to create temporary indexes for C0202 Performance tuning.         |
+-- |                                                                          |
+-- |                                                                          |
+-- |                                                                          |
+-- |                                                                          |
+-- |                                                                          |
+-- |Change Record:                                                            |
+-- |===============                                                           |
+-- |Version   Date         Author               Remarks                       |
+-- |=======   ==========   ================     ==============================|
+-- | V1.0     30-AUG-2007  Raghu                Initial version               |
+-- |                                                                          |
+-- +==========================================================================+
+
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     ON
+
+-- INDEX 1
+--DROP INDEX XXFIN.FA_ADDITIONS_B_C1;
+
+CREATE INDEX XXFIN.FA_ADDITIONS_B_C1 ON FA.FA_ADDITIONS_B(ATTRIBUTE13, ATTRIBUTE6);
+
+-- INDEX 2
+--DROP INDEX XXFIN.FA_ADDITIONS_B_C2;
+
+CREATE INDEX XXFIN.FA_ADDITIONS_B_C2 ON FA.FA_ADDITIONS_B(ATTRIBUTE13);

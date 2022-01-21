@@ -1,0 +1,16 @@
+<adapter-config name="SyncEmployeeEBizAppAdaptorV1" adapter="Oracle Applications Adapter" wsdlLocation="SyncEmployeeEBizAppAdaptorV1.wsdl" xmlns="http://platform.integration.oracle/blocks/adapter/fw/metadata">
+  
+  <connection-factory location="eis/apps/OraAppsHR" UIConnectionName="OD_DEV1_APPS" UIOracleAppType="DBOBJECT" adapterRef=""/>
+  <endpoint-interaction portType="SyncEmployeeEBizAppAdaptorV1_ptt" operation="SyncEmployeeEBizAppAdaptorV1">
+    <interaction-spec className="oracle.tip.adapter.apps.AppsStoredProcedureInteractionSpec">
+      <property name="IRepInternalName" value="PLSQL:XX_HR_EMP_PKG:SYNC_CHANGED_EMPLOYEES"/>
+      <property name="SchemaName" value="APPS"/>
+      <property name="PackageName" value="XX_BPEL_INTEGRATION_PKG"/>
+      <property name="ProcedureName" value="SUBMIT_CONCURRENT_PROGRAM"/>
+      <property name="Username" value="sysadmin"/>
+      <property name="Responsibility" value="System Administrator"/>
+    </interaction-spec>
+    <output/>
+  </endpoint-interaction>
+
+</adapter-config>

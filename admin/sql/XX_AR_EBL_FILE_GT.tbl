@@ -1,0 +1,34 @@
+-- +==========================================================================+
+-- |                               Office Depot                               |
+-- +==========================================================================+
+-- | SQL Script to create the following table                                 |
+-- |                                                                          |
+-- |             Table  : XX_AR_EBL_FILE_GT                                   |
+-- |                                                                          |
+-- |             RICE#  : eBilling Resend Portal                              |
+-- |                                                                          |
+-- |             Purpose: Used to retrieve from archive and hold tmp zip file |
+-- |Change Record:                                                            |
+-- |===============                                                           |
+-- |Version   Date         Author               Remarks                       |
+-- |=======   ===========  ===================  ==============================|
+-- | V1.0     09-MAR-2010  Bushrod Thomas       Initial version               |
+-- |                                                                          |
+-- +==========================================================================+
+
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     ON
+
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+  CREATE GLOBAL TEMPORARY TABLE "XXFIN"."XX_AR_EBL_FILE_GT"
+   (	FILE_ID NUMBER
+       ,"FILE_NAME" VARCHAR2(240 BYTE)
+       ,FILE_DATA BLOB
+   ) ON COMMIT DELETE ROWS ;
+
+SHOW ERRORS

@@ -1,0 +1,19 @@
+------------------------------------------------------------------------------------
+-- Program Name: XXAP_INVOICE_DISTRIBUTIONS_U1.idx
+-- Purpose:      Creates custom indexes for Payables Accounting Process
+--
+-- REVISIONS:
+-- Version Date        Author                               Description
+-- ------- ----------- ------------------------------------ ---------------------
+-- 1.0     26-JAN-2009 Subbu Pilai                         Defect 12934
+-- 
+------------------------------------------------------------------------------------
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     ON
+
+alter index xxfin.SYS_C00287328 rename to XX_CE_STORE_BANK_DEPOSITS_U1;
+
+SHOW ERROR

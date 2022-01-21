@@ -1,0 +1,16 @@
+-- +============================================================================+
+-- | Office Depot - Project Simplify                                            |
+-- |                                                                            |
+-- +============================================================================+
+-- | SQL Script to alter table:  XX_AR_ORDER_RECEIPT_DTL                        |
+-- |                                                                            |
+-- |Change Record:                                                              |
+-- |===============                                                             |
+-- |Version   Date          Author         Remarks                              |
+-- |=======   ===========   =============  =====================================|
+-- |          02-18-2016    AvinashBaddam  i3091,Defect#37204 Add new columns  	|
+-- |                                       wallet type id for MasterPass        |
+-- +============================================================================+
+ALTER TABLE xxfin.xx_ar_order_receipt_dtl 
+ADD(WALLET_TYPE VARCHAR2(2),
+    WALLET_ID   VARCHAR2(30));

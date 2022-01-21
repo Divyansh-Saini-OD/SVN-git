@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xapi:requestset xmlns:xapi="http://xmlns.oracle.com/oxp/xapi" type="bursting">
+<xapi:request select="/XXAPRTVCONXML/LIST_G_CONSIGNMENT_RTV/G_CONSIGNMENT_RTV">
+<xapi:delivery>
+<xapi:email id="123" server="${SMTP_SERVER}" port="25" from="AccountsPayable@officedepot.com">
+<xapi:message id="123" to="${EMAIL_ADDRESS}"  attachment="true" 
+subject="${EMAIL_SUBJECT}">"${EMAIL_CONTENT}"
+</xapi:message>
+</xapi:email>	
+</xapi:delivery>
+<xapi:document output="Consignment_RTV_Report_${ORACLE_SUPPLIER_NUMBER}.pdf" output-type="pdf" delivery="123">
+<xapi:template type="rtf" location="xdo://XXFIN.XXAPRTVCONXML.en.US/?getSource=true"  filter="">
+</xapi:template>
+</xapi:document>
+</xapi:request>
+</xapi:requestset>

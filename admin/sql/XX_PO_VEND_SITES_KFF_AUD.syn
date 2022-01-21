@@ -1,0 +1,28 @@
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     ON
+
+PROMPT SYNONYMTABLE XX_PO_VEND_SITES_KFF_AUD
+
+PROMPT Program exits IF the creation IS NOT SUCCESSFUL
+
+WHENEVER SQLERROR CONTINUE
+
+-- +==========================================================================+
+-- |                  Office Depot - Project Simplify                         |
+-- +==========================================================================+
+-- | Name :APPS.XX_PO_VEND_SITES_KFF_AUD                                      |
+-- | Description :   This is for sequence of table XX_PO_VEND_SITES_KFF_AUD   |
+-- |                                                                          |
+-- |Change Record:                                                            |
+-- |===============                                                           |
+-- |Version      Date           Author               Remarks                  |
+-- |=======    ==========     =============        ===========================|
+-- | DRAFT 1.0 09-FEB-2020     Bhargavi Ankolekar   Initial draft version     |
+-- |                                                                          |
+-- +==========================================================================+
+
+create synonym APPS.XX_PO_VEND_SITES_KFF_AUD for XXFIN.XX_PO_VEND_SITES_KFF_AUD;
+/

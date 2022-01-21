@@ -1,0 +1,39 @@
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     ON
+
+PROMPT Creating TABLE XXFIN.XXOD_CM_COST_ANALYSIS_TEMP
+
+PROMPT Program exits IF the creation IS NOT SUCCESSFUL
+
+WHENEVER SQLERROR CONTINUE
+
+-- +==========================================================================+
+-- |                  Office Depot - Project Simplify                         |
+-- |                       WIPRO Technologies                                 |
+-- +==========================================================================+
+-- | Name  : XXFIN.XX_AR_BILL_EXCEPTIONS_TEMPTable Script to create           |
+-- |                        the following object                              |
+-- | Description: Custom table for report OD: AR Billing Exceptions Report    |
+-- |                                                                          |
+-- |Change Record:                                                            |
+-- |===============                                                           |
+-- |Version   Date         Author               Remarks                       |
+-- |=======   ==========   =============        ==============================|
+-- | V1.0     19-Feb-2009  Jennifer Jegam        Initial version              |
+-- |                                                                          |
+-- +==========================================================================+
+
+CREATE GLOBAL TEMPORARY TABLE XXFIN.XX_AR_BILL_EXCEPTIONS_TEMP
+ (  
+   DELIVERY_METHOD                         VARCHAR2(150),                                                                                                                                                                                 
+   CUSTOMER_NUMBER                         VARCHAR2(30),                                                                                                                                                                                  
+   CUSTOMER_NAME                           VARCHAR2(360),                                                                                                                                                                                 
+   LEGACY_CUSTOMER_NUMBER                  VARCHAR2(240),                                                                                                                                                                                 
+   PAYDOC_INDICATOR                        VARCHAR2(150),                                                                                                                                                                                 
+   CUST_DOCID                              NUMBER,                                                                                                                                                                                        
+   CUSTOMER_SITE                           VARCHAR2(150),                                                                                                                                                                                 
+   CODE                                    VARCHAR2(10) 
+   )ON COMMIT PRESERVE ROWS;

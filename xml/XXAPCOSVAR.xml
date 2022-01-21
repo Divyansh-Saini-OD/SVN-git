@@ -1,0 +1,234 @@
+<?xml version ="1.0" encoding ="UTF-8"?>
+
+<dataTemplate name ="XXAPCOSVAR" description="ASW Test" Version="1.0">
+ <properties>
+      
+   </properties>
+<dataQuery>
+<sqlStatement name="Q_EMAIL1">
+<![CDATA[SELECT TV.target_value1 out_email1
+            	 ,TV.target_value2 out_email2             
+       FROM   XX_FIN_TRANSLATEVALUES TV
+          	   ,XX_FIN_TRANSLATEDEFINITION TD
+       WHERE TV.TRANSLATE_ID  = TD.TRANSLATE_ID
+       AND TRANSLATION_NAME = 'XX_AP_TRADE_MATCH_DL'
+       AND   source_value1    = 'COST_VAR_OUTBOUND'
+]]>
+</sqlStatement>
+<sqlStatement name="Q_EMAIL2">
+<![CDATA[SELECT TV.target_value1 merch_email1
+            	 ,TV.target_value2 merch_email2             
+       FROM   XX_FIN_TRANSLATEVALUES TV
+          	   ,XX_FIN_TRANSLATEDEFINITION TD
+       WHERE TV.TRANSLATE_ID  = TD.TRANSLATE_ID
+       AND TRANSLATION_NAME = 'XX_AP_TRADE_MATCH_DL'
+       AND   source_value1    = 'COST_VAR_MERCHANT'
+]]>
+</sqlStatement>
+<sqlStatement name="Q_Headers">
+<![CDATA[select 'ITEM_CONTROL' REPORT_TYPE,
+ (select name 
+from hr_all_organization_units
+where organization_id = b.ORG_ID) ORG_ID,
+to_char(SYSDATE,'MM/DD/YYYY') CURRENT_DATE,
+b.INVOICE_ID,
+b.INVOICE_NUM,
+b.INV_LINE_NUM,
+b.INVOICE_DATE,
+b.PO_HEADER_ID,
+b.PO_NUM,
+to_char(b.PO_DATE,'MM/DD/YYYY') PO_DATE,
+b.PO_TYPE,
+b.LINE_NUM,
+b.PO_LINE_ID,
+b.LOCATION,
+b.VENDOR_ID,
+(select NVL(a.attribute9,NVL(a.vendor_site_code_alt,a.vendor_site_id))
+from ap_supplier_sites_all a
+where a.vendor_site_id = b.VENDOR_SITE_ID) VENDOR_NO,
+b.VENDOR_NAME,
+b.VENDOR_SITE_CODE,
+b.VENDOR_SITE_ID,
+b.SKU,
+b.SKU_DESCRIPTION,
+b.DEPT,
+b.DEPT_NAME,
+b.QUANTITY,
+b.PO_COST,
+b.INVOICE_PRICE,
+b.VARIANCE_AMT,
+b.VARIANCE_PCT,
+b.HOLD_DATE,
+b.VENDOR_ASST,
+b.VENDOR_ASST_NAME,
+b.MERCHANT_NAME,
+b.VPC,
+b.MEMO_COMMENTS,
+b.ANSWER_CODE,
+b.ANSWER_DATE,
+b.SYSTEM_UPDATE_DATE,
+b.COST_EFFECTIVE_DATE,
+b.PAY_OTHER_COST,
+to_char(b.CREATION_DATE,'MM/DD/YYYY') CREATION_DATE,
+b.CREATED_BY,
+b.LAST_UPDATE_DATE,
+b.LAST_UPDATED_BY,
+:out_email1 EMAIL1,
+:out_email2 EMAIL2,
+--Changes started for defect # NAIT-84383: Added below condition, by Shanti Sethuraj
+(select instance_name from v$Instance) INSTANCE_NAME,
+--Changes end for defect # NAIT-84383: Added below condition, by Shanti Sethuraj
+'COST_VAR_OUTBOUND' source,
+FND_PROFILE.VALUE('XX_XDO_SMTP_HOST') SMTP_SERVER,
+(SELECT DECODE(SUBSTR(ai.attribute5,1,1),'D','Y','N') from ap_invoices_all ai where ai.invoice_id = b.INVOICE_ID) DROP_SHIP
+from XX_AP_COST_VARIANCE b
+where 
+b.answer_code is NULL
+--Changes started for defect # NAIT-37786: Modified below condition, by Ragni
+   and (b.invoice_price - b.po_cost) >= 0.01   
+--Changes end for defect # NAIT-37786: Modified above condition, by Ragni
+and not exists (SELECT 'x'
+              FROM   XX_FIN_TRANSLATEVALUES TV
+          	   ,XX_FIN_TRANSLATEDEFINITION TD
+              WHERE TV.TRANSLATE_ID  = TD.TRANSLATE_ID
+              AND TRANSLATION_NAME = 'XX_AP_CST_MERCH_DEPT'
+              AND TV.target_value1 = dept)
+union
+	select 'MERCHANT' REPORT_TYPE,
+	(select name 
+from hr_all_organization_units
+where organization_id = b.ORG_ID) ORG_ID,
+to_char(SYSDATE,'MM/DD/YYYY') CURRENT_DATE,
+b.INVOICE_ID,
+b.INVOICE_NUM,
+b.INV_LINE_NUM,
+b.INVOICE_DATE,
+b.PO_HEADER_ID,
+b.PO_NUM,
+to_char(b.PO_DATE,'MM/DD/YYYY') PO_DATE,
+b.PO_TYPE,
+b.LINE_NUM,
+b.PO_LINE_ID,
+b.LOCATION,
+b.VENDOR_ID,
+(select NVL(a.attribute9,NVL(a.vendor_site_code_alt,a.vendor_site_id))
+from ap_supplier_sites_all a
+where a.vendor_site_id = b.VENDOR_SITE_ID) VENDOR_NO,
+b.VENDOR_NAME,
+b.VENDOR_SITE_CODE,
+b.VENDOR_SITE_ID,
+b.SKU,
+b.SKU_DESCRIPTION,
+b.DEPT,
+b.DEPT_NAME,
+b.QUANTITY,
+b.PO_COST,
+b.INVOICE_PRICE,
+b.VARIANCE_AMT,
+b.VARIANCE_PCT,
+b.HOLD_DATE,
+b.VENDOR_ASST,
+b.VENDOR_ASST_NAME,
+b.MERCHANT_NAME,
+b.VPC,
+b.MEMO_COMMENTS,
+b.ANSWER_CODE,
+b.ANSWER_DATE,
+b.SYSTEM_UPDATE_DATE,
+b.COST_EFFECTIVE_DATE,
+b.PAY_OTHER_COST,
+to_char(b.CREATION_DATE,'MM/DD/YYYY') CREATION_DATE,
+b.CREATED_BY,
+b.LAST_UPDATE_DATE,
+b.LAST_UPDATED_BY,
+:merch_email1 EMAIL1,
+:merch_email2 EMAIL2,
+--Changes started for defect # NAIT-84383: Added below condition, by Shanti Sethuraj
+(select instance_name from v$Instance) INSTANCE_NAME,
+--Changes end for defect # NAIT-84383: Added below condition, by Shanti Sethuraj
+'COST_VAR_MERCHANT' source,
+FND_PROFILE.VALUE('XX_XDO_SMTP_HOST') SMTP_SERVER,
+(SELECT DECODE(SUBSTR(ai.attribute5,1,1),'D','Y','N') from ap_invoices_all ai where ai.invoice_id = b.INVOICE_ID) DROP_SHIP
+from XX_AP_COST_VARIANCE b
+where 
+b.answer_code is NULL
+--Changes started for defect # NAIT-37786: Modified below condition, by Ragni
+   and (b.invoice_price - b.po_cost) >= 0.01	   
+--Changes end for defect # NAIT-37786: Modified above condition, by Ragni
+and exists (SELECT 'x'
+              FROM   XX_FIN_TRANSLATEVALUES TV
+          	   ,XX_FIN_TRANSLATEDEFINITION TD
+              WHERE TV.TRANSLATE_ID  = TD.TRANSLATE_ID
+              AND TRANSLATION_NAME = 'XX_AP_CST_MERCH_DEPT'
+              AND TV.target_value1 = dept)
+order by source			  
+]]>
+</sqlStatement>
+</dataQuery>
+<dataStructure>
+<group name="G_EMAIL1" source="Q_EMAIL1">
+	<element name="out_email1" value="out_email1"/>	
+	<element name="out_email2" value="out_email2"/>		
+</group>
+<group name="G_EMAIL2" source="Q_EMAIL2">
+	<element name="merch_email1" value="merch_email1"/>	
+	<element name="merch_email2" value="merch_email2"/>	
+</group>
+<group name="G_Headers" source="Q_Headers">
+	<element name="REPORT_TYPE" value="REPORT_TYPE"/>		
+	<element name="EMAIL1" value="EMAIL1"/>	
+	<element name="EMAIL2" value="EMAIL2"/>	
+--Changes started for defect # NAIT-84383: Added below condition, by Shanti Sethuraj
+        <element name="INSTANCE_NAME" value="INSTANCE_NAME"/>
+--Changes end for defect # NAIT-84383: Added below condition, by Shanti Sethuraj
+	<element name="SOURCE" value="SOURCE"/>	
+	<element name="SMTP_SERVER" value="SMTP_SERVER"/>
+	<element name="CURRENT_DATE" value="CURRENT_DATE"/>
+	<group name="G_Data" source="Q_Headers">
+		<element name="ORG_ID" value="ORG_ID"/>			
+		<element name="INVOICE_ID" value="INVOICE_ID"/>
+		<element name="INVOICE_NUM" value="INVOICE_NUM"/>
+		<element name="INV_LINE_NUM" value="INV_LINE_NUM"/>
+		<element name="INVOICE_DATE" value="INVOICE_DATE"/>
+		<element name="PO_HEADER_ID" value="PO_HEADER_ID"/>
+		<element name="PO_NUM" value="PO_NUM"/>		
+		<element name="PO_DATE" value="PO_DATE"/>		
+		<element name="PO_TYPE" value="PO_TYPE"/>		
+		<element name="LINE_NUM" value="LINE_NUM"/>		
+		<element name="PO_LINE_ID" value="PO_LINE_ID"/>		
+		<element name="LOCATION" value="LOCATION"/>		
+		<element name="VENDOR_ID" value="VENDOR_ID"/>		
+		<element name="VENDOR_NO" value="VENDOR_NO"/>		
+		<element name="VENDOR_NAME" value="VENDOR_NAME"/>		
+		<element name="VENDOR_SITE_CODE" value="VENDOR_SITE_CODE"/>		
+		<element name="VENDOR_SITE_ID" value="VENDOR_SITE_ID"/>		
+		<element name="SKU" value="SKU"/>		
+		<element name="SKU_DESCRIPTION" value="SKU_DESCRIPTION"/>		
+		<element name="DEPT" value="DEPT"/>		
+		<element name="DEPT_NAME" value="DEPT_NAME"/>		
+		<element name="QUANTITY" value="QUANTITY"/>		
+		<element name="PO_COST" value="PO_COST"/>		
+		<element name="INVOICE_PRICE" value="INVOICE_PRICE"/>		
+		<element name="VARIANCE_AMT" value="VARIANCE_AMT"/>		
+		<element name="VARIANCE_PCT" value="VARIANCE_PCT"/>		
+		<element name="HOLD_DATE" value="HOLD_DATE"/>		
+		<element name="VENDOR_ASST" value="VENDOR_ASST"/>		
+		<element name="VENDOR_ASST_NAME" value="VENDOR_ASST_NAME"/>		
+		<element name="INV_STATUS" value="INV_STATUS"/>		
+		<element name="MERCHANT_NAME" value="MERCHANT_NAME"/>		
+		<element name="VPC" value="VPC"/>		
+		<element name="MEMO_COMMENTS" value="MEMO_COMMENTS"/>		
+		<element name="ANSWER_CODE" value="ANSWER_CODE"/>		
+		<element name="ANSWER_DATE" value="ANSWER_DATE"/>		
+		<element name="SYSTEM_UPDATE_DATE" value="SYSTEM_UPDATE_DATE"/>		
+		<element name="COST_EFFECTIVE_DATE" value="COST_EFFECTIVE_DATE"/>		
+		<element name="PAY_OTHER_COST" value="PAY_OTHER_COST"/>		
+		<element name="CREATION_DATE" value="CREATION_DATE"/>		
+		<element name="CREATED_BY" value="CREATED_BY"/>		
+		<element name="LAST_UPDATE_DATE" value="LAST_UPDATE_DATE"/>		
+		<element name="LAST_UPDATED_BY" value="LAST_UPDATED_BY"/>
+		<element name="DROP_SHIP" value="DROP_SHIP"/>
+	</group>			
+</group>
+</dataStructure>
+</dataTemplate>

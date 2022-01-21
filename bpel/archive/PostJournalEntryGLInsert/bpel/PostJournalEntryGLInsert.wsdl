@@ -1,0 +1,30 @@
+<definitions
+     name="PostJournalEntryGLInsert"
+     targetNamespace="http://xmlns.oracle.com/PostJournalEntryGLInsert"
+     xmlns="http://schemas.xmlsoap.org/wsdl/"
+     xmlns:tns="http://xmlns.oracle.com/PostJournalEntryGLInsert"
+     xmlns:ns1="http://www.openapplications.org/oagis/9"
+     xmlns:plnk="http://schemas.xmlsoap.org/ws/2003/05/partner-link/"
+     xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
+    >
+    <types>
+        <schema xmlns="http://www.w3.org/2001/XMLSchema" xmlns:tns="http://xmlns.oracle.com/PostJournalEntryGLInsert"
+             xmlns:ns1="http://www.openapplications.org/oagis/9" xmlns:plnk="http://schemas.xmlsoap.org/ws/2003/05/partner-link/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/">
+            <import namespace="http://www.openapplications.org/oagis/9" schemaLocation="http://chilsoa01d.na.odcorp.net:7778/orabpel/xmllib/eaixml/oagis/v91/message/bod/PostJournalEntry.xsd"/>
+             
+        </schema>
+    </types>
+    <message name="PostJournalEntryGLInsertRequestMessage">
+        <part name="payload" element="ns1:PostJournalEntry"/>
+    </message>
+    <portType name="PostJournalEntryGLInsert">
+        <operation name="initiate">
+            <input message="tns:PostJournalEntryGLInsertRequestMessage"/>
+        </operation>
+    </portType>
+    <plnk:partnerLinkType name="PostJournalEntryGLInsert">
+        <plnk:role name="PostJournalEntryGLInsertProvider">
+            <plnk:portType name="tns:PostJournalEntryGLInsert"/>
+        </plnk:role>
+    </plnk:partnerLinkType>
+</definitions>

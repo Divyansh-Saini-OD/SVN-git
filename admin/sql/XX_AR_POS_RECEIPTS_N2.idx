@@ -1,0 +1,29 @@
+-- +==========================================================================+
+-- |                  Office Depot - Project Simplify                         |
+-- +==========================================================================+
+-- | SQL Script to create                                                     |
+-- |                                                                          |
+-- |                      INDEXES: XX_AR_POS_RECEIPTS                         |
+-- |                                                                          |
+-- |                                                                          |
+-- |                                                                          |
+-- |Change Record:                                                            |
+-- |===============                                                           |
+-- |Version   Date         Author               Remarks                       |
+-- |=======   ==========   ================     ==============================|
+-- | V1.0     05-MAR-2011  Ray Strauss          Initial version               |
+-- +==========================================================================+
+
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     ON
+
+CREATE INDEX XXFIN.XX_AR_POS_RECEIPTS_N2 ON XXFIN.XX_AR_POS_RECEIPTS(store_number, receipt_date, receipt_method, receipt_type, cash_receipt_id);
+
+SHOW ERROR
+
+
+
+

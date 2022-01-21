@@ -1,0 +1,57 @@
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK; 
+
+-- +============================================================================================+
+-- |                                     Office Depot                                           |
+-- +============================================================================================+
+-- | Name        : XX_AR_CONTRACT_LINES.tbl                                               	    |
+-- | Description : Script to create XX_AR_CONTRACT_LINES table and synonym                      |
+-- |                                                                                            |
+-- |Change Record:                                                                              |
+-- |===============                                                                             |
+-- |Version     Date           Author               Remarks                                     |
+-- |=======    ==========      ================     ============================================|
+-- |1.0        19-JAN-2018     Sridhar Mohan        Initial version                             |
+-- +============================================================================================+
+
+BEGIN
+  EXECUTE IMMEDIATE 'DROP TABLE XXFIN.XX_AR_CONTRACT_LINES';
+EXCEPTION
+  WHEN OTHERS THEN NULL;
+END;
+/
+
+PROMPT
+PROMPT Creating table for XXFIN.XX_AR_CONTRACT_LINES......
+PROMPT
+
+CREATE TABLE XXFIN.XX_AR_CONTRACT_LINES
+( CONTRACT_ID                       NUMBER 
+, CONTRACT_LINE_NUMBER              VARCHAR2(60)
+, INITIAL_ORDER_LINE                VARCHAR2(60)
+, ITEM_NAME                         VARCHAR2(60)
+, ITEM_DESCRIPTION                  VARCHAR2(256)
+, QUANTITY                          NUMBER
+, CONTRACT_LINE_START_DATE          DATE  
+, CONTRACT_LINE_END_DATE            DATE  
+, CONTRACT_LINE_BILLING_FREQ        VARCHAR2(15)
+, PAYMENT_TERM                      VARCHAR2(60)
+, UOM_CODE                          VARCHAR2(30)
+, CONTRACT_LINE_AMOUNT              NUMBER 
+, PROGRAM                           VARCHAR2(120)
+, LINE_TYPE                   VARCHAR2(120)
+, CANCELLATION_DATE                 DATE
+, CREATION_DATE                     DATE          
+, LAST_UPDATE_DATE                  DATE          
+, CREATED_BY                        NUMBER(15)    
+, LAST_UPDATED_BY                   NUMBER(15)    
+, LAST_UPDATE_LOGIN                 NUMBER(15)    
+, PROGRAM_ID                        NUMBER(15)     
+);
+
+SHOW ERRORS;
+
+GRANT ALL ON XXFIN.XX_AR_CONTRACT_LINES TO APPS WITH GRANT OPTION;
+GRANT SELECT ON XXFIN.XX_AR_CONTRACT_LINES TO ERP_SYSTEM_TABLE_SELECT_ROLE;
+EXIT;

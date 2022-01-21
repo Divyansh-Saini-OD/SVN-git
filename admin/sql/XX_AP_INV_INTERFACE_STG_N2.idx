@@ -1,0 +1,43 @@
+-- +============================================================================================+
+-- |                        Office Depot - Project Simplify                                     |
+-- |                                                                                            |
+-- +============================================================================================+
+-- | Name         : XX_AP_INV_INTERFACE_STG_N2.idx                                              |
+-- | Rice Id      :                                                                             | 
+-- | Description  :                                                                             |  
+-- | Purpose      : Create Indexes for Table XX_AP_INV_INTERFACE_STG.tbl on column              |
+-- |                (invoice_num)                                                               |
+-- |                                                                                            |
+-- |Change Record:                                                                              |
+-- |===============                                                                             |
+-- |Version    Date          Author                Remarks                                      | 
+-- |=======    ==========    =================    ==============================================+
+-- |DRAFT 1A   14-MAR-2018    Havish Kasina        Initial Version                              |
+-- +============================================================================================+
+
+SET VERIFY      OFF
+SET TERM        ON
+SET FEEDBACK    OFF
+SET SHOW        OFF
+SET ECHO        OFF
+SET TAB         OFF
+
+PROMPT
+PROMPT Creation of Index on custom table.....
+PROMPT
+
+PROMPT
+PROMPT Creating non-unique index on INDEX XX_AP_INV_INTERFACE_STG_N2 .....
+PROMPT
+CREATE INDEX XXFIN.XX_AP_INV_INTERFACE_STG_N2 ON XXFIN.XX_AP_INV_INTERFACE_STG(INVOICE_NUM);
+
+WHENEVER SQLERROR EXIT 1
+
+PROMPT
+PROMPT Exiting....
+PROMPT
+
+SET FEEDBACK ON
+
+EXIT;
+

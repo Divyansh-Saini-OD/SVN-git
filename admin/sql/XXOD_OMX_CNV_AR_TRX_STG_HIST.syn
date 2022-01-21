@@ -1,0 +1,38 @@
+SET VERIFY      OFF
+SET TERM        OFF
+SET FEEDBACK    OFF
+SET SHOW        OFF 
+SET ECHO        OFF
+SET TAB         OFF
+-- +===================================================================+
+-- |                        Office Depot                               |
+-- |                                                                   |
+-- +===================================================================+
+-- | Synonym Name:  XXOD_OMX_CNV_AR_TRX_STG_HIST.syn                               |
+-- |                                                                   |
+-- |Change Record:                                                     |
+-- |===============                                                    |
+-- |Version   Date         Author             Remarks                  |
+-- |=======   ==========   =============      =========================|
+-- | V1.0     20-01-2018   Punit Gupta          Initial version        |
+-- +===================================================================+
+
+PROMPT
+PROMPT Synonym for table XXOD_OMX_CNV_AR_TRX_STG_HIST
+PROMPT   
+
+CREATE OR REPLACE SYNONYM APPS.XXOD_OMX_CNV_AR_TRX_STG_HIST FOR XXFIN.XXOD_OMX_CNV_AR_TRX_STG_HIST;
+            
+
+PROMPT
+PROMPT Exiting....
+PROMPT
+
+SET FEEDBACK ON
+
+SHOW ERRORS;
+EXIT;
+
+REM============================================================================================
+REM                                   End Of Script                                            
+REM============================================================================================

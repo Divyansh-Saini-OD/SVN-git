@@ -1,0 +1,33 @@
+-- +============================================================================================+
+-- |                        Office Depot - Project Simplify                                     |
+-- |                                                                                            |
+-- +============================================================================================+
+-- | Name         : XX_C2T_CC_TOKEN_CV_N1_IBY_IDX.idx                                           |
+-- | Rice Id      :                                                                             | 
+-- | Description  : XX_C2T_CC_TOKEN_CRYPTO_VAULT Table Indexes Creation Script                  |  
+-- | Purpose      :                                                                             |
+-- |                                                                                            |
+-- |                                                                                            |
+-- |Change Record:                                                                              |
+-- |===============                                                                             |
+-- |Version    Date          Author                Remarks                                      | 
+-- |=======    ==========    =================    ==============================================+
+-- |1.0        08-JAN-2016  Harvinder Rakhra      Initial Version                               |
+-- +============================================================================================+
+
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     ON
+
+
+PROMPT CREATING INDEX XX_C2T_CC_TOKEN_CRYPTOVAULT_N1....
+CREATE INDEX XXFIN.XX_C2T_CC_TOKEN_CRYPTOVAULT_N1 on XX_C2T_CC_TOKEN_CRYPTO_VAULT(CREDIT_CARD_NUMBER_NEW, TOKEN_NUMBER_NEW, TOKEN_KEY_LABEL_NEW) 
+TABLESPACE APPS_TS_TX_DATA PARALLEL 16 NOLOGGING;
+
+ALTER INDEX XXFIN.XX_C2T_CC_TOKEN_CRYPTOVAULT_N1 NOPARALLEL;
+
+COMMIT;
+
+SHOW ERROR;

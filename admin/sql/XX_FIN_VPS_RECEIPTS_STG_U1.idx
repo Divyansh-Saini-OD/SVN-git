@@ -1,0 +1,27 @@
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+-- +=======================================================================+
+-- |               Office Depot - VPS Project		                   	   |
+-- +=======================================================================+
+-- | Name             :XX_FIN_VPS_RECEIPTS_STG_U1.idx                      |
+-- | Description      :Index on XX_FIN_VPS_RECEIPTS_STG_U1          	   | 
+-- |                                                                       |
+-- |Change History:                                                        |
+-- |---------------                                                        |
+-- |                                                                       |
+-- |Version  Date        Author             Remarks                        |
+-- |-------  ----------- -----------------  -------------------------------|
+-- |Draft1a  07-AUG-2017 Thejaswini Rajula Initial Draft Version           |
+-- +=======================================================================+
+
+
+-- -------------------------------------------------
+-- Creating Index XX_FIN_VPS_RECEIPTS_STG_U1
+-- -------------------------------------------------
+
+CREATE UNIQUE INDEX XXFIN.XX_FIN_VPS_RECEIPTS_STG_U1 ON XXFIN.XX_FIN_VPS_RECEIPTS_STG (INTERFACE_ID)
+/
+
+SHOW ERRORS;

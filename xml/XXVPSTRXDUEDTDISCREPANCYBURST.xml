@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+<xapi:requestset xmlns:xapi="http://xmlns.oracle.com/oxp/xapi" type="bursting">
+<xapi:request select="/XXVPSTRXDUEDTDISCREPANCY/LIST_G2/G2">
+<xapi:delivery>
+<xapi:email id="123" server="${C_SMTP_SERVER}" port="25" from="${C_MAIL_FROM}" reply-to="">
+<xapi:message id="123" to="${C_MAIL_TO}" attachment="true" subject="VPS Transaction Due Date Discrepancy Report from ${C_FROM_DATE} to ${C_TO_DATE} - ${C_INSTANCE_NAME}">
+Please find the attached VPS Transactions that have due date discrepancy.
+Transaction Creation Date from ${C_FROM_DATE} to ${C_TO_DATE}.
+</xapi:message> 
+</xapi:email>
+</xapi:delivery>
+<xapi:document output="VPS Transaction Due Date Discrepancy Report" output-type="excel" delivery="123">
+<xapi:template type="excel" location="xdo://XXFIN.XXVPSTRXDUEDTDISCREPANCY.en.US/?getSource=true" filter=""> 
+</xapi:template>
+</xapi:document>
+</xapi:request>
+</xapi:requestset>

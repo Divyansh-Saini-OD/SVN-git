@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!--Native format was generated from COBOL copybook : SASC3800.TXT-->
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:nxsd="http://xmlns.oracle.com/pcbpel/nxsd" xmlns:extn="http://xmlns.oracle.com/pcbpel/nxsd/extensions" targetNamespace="http://TargetNamespace.com/ServiceName" xmlns:tns="http://TargetNamespace.com/ServiceName" elementFormDefault="qualified" attributeFormDefault="unqualified" nxsd:version="NXSD" nxsd:encoding="ASCII" nxsd:byteOrder="bigEndian" nxsd:stream="chars">
+   <xsd:element name="Root-Element">
+      <xsd:complexType>
+         <xsd:sequence>
+            <!--COBOL declaration : 01 C3800-MAILCHECK-RECORD-->
+            <xsd:element name="C3800-MAILCHECK-RECORD" minOccurs="1" maxOccurs="unbounded">
+               <xsd:complexType>
+                  <xsd:sequence>
+                     <!--COBOL declaration : 05 C3800-MAILCHECK-ID PIC X(09)-->
+                     <xsd:element name="C3800-MAILCHECK-ID" type="xsd:integer" nxsd:style="fixedLength" nxsd:padStyle="tail" nxsd:paddedBy=" " nxsd:length="9"/>
+                     <!--COBOL declaration : 05 FILLER PIC X(01) VALUE '|':-->
+                     <xsd:element name="FILLER" type="xsd:string" nxsd:style="fixedLength" nxsd:padStyle="tail" nxsd:paddedBy=" " nxsd:length="1"/>
+                     <!--COBOL declaration : 05 C3800-POS-TRANSACTION-->
+                     <xsd:element name="C3800-POS-TRANSACTION">
+                        <xsd:complexType>
+                           <xsd:sequence>
+                              <!--COBOL declaration : 10 C3800-POS-SALE-LOC PIC X(04)-->
+                              <xsd:element name="C3800-POS-SALE-LOC" type="xsd:string" nxsd:style="fixedLength" nxsd:padStyle="tail" nxsd:paddedBy=" " nxsd:length="4"/>
+                              <!--COBOL declaration : 10 C3800-POS-SALE-DT PIC X(08)-->
+                              <xsd:element name="C3800-POS-SALE-DT" type="xsd:string" nxsd:style="fixedLength" nxsd:padStyle="tail" nxsd:paddedBy=" " nxsd:length="8"/>
+                              <!--COBOL declaration : 10 C3800-POS-REG PIC X(03)-->
+                              <xsd:element name="C3800-POS-REG" type="xsd:string" nxsd:style="fixedLength" nxsd:padStyle="tail" nxsd:paddedBy=" " nxsd:length="3"/>
+                              <!--COBOL declaration : 10 C3800-POS-TRAN PIC X(05)-->
+                              <xsd:element name="C3800-POS-TRAN" type="xsd:string" nxsd:style="fixedLength" nxsd:padStyle="tail" nxsd:paddedBy=" " nxsd:length="5"/>
+                           </xsd:sequence>
+                        </xsd:complexType>
+                     </xsd:element>
+                     <!--COBOL declaration : 05 FILLER PIC X(01) VALUE '|':-->
+                     <xsd:element name="FILLER" type="xsd:string" nxsd:style="fixedLength" nxsd:padStyle="tail" nxsd:paddedBy=" " nxsd:length="1"/>
+                     <!--COBOL declaration : 05 C3800-AOPS-ORDER-NBR-->
+                     <xsd:element name="C3800-AOPS-ORDER-NBR">
+                        <xsd:complexType>
+                           <xsd:sequence>
+                              <!--COBOL declaration : 10 C3800-AOPS-ORDER-NBR PIC X(09)-->
+                              <xsd:element name="C3800-AOPS-ORDER-NBR" type="xsd:string" nxsd:style="fixedLength" nxsd:padStyle="tail" nxsd:paddedBy=" " nxsd:length="9"/>
+                              <!--COBOL declaration : 10 C3800-AOPS-ORDER-SUB PIC X(03)-->
+                              <xsd:element name="C3800-AOPS-ORDER-SUB" type="xsd:string" nxsd:style="fixedLength" nxsd:padStyle="tail" nxsd:paddedBy=" " nxsd:length="3"/>
+                              <!--COBOL declaration : 10 C3800-AOPS-ORDER-VERSION PIC X(03)-->
+ <!-- For defect 5110 -->
+ <!--                        <xsd:element name="C3800-AOPS-ORDER-VERSION" type="xsd:string" nxsd:style="fixedLength" nxsd:padStyle="tail" nxsd:paddedBy=" " nxsd:length="3"/>  -->
+                           </xsd:sequence>
+                        </xsd:complexType>
+                     </xsd:element>
+                     <!--COBOL declaration : 05 FILLER PIC X(01) VALUE '|':-->
+                     <xsd:element name="FILLER" type="xsd:string" nxsd:style="fixedLength" nxsd:padStyle="tail" nxsd:paddedBy=" " nxsd:length="1"/>
+                     <!--COBOL declaration : 05 C3800-CHECK-AMOUNT PIC 9(9)V9(2)-->
+                     <!--xsd:element name="C3800-CHECK-AMOUNT" type="xsd:decimal" nxsd:style="virtualDecimal" extn:assumeDecimal ="9"
+                                  extn:picSize="11"/ -->
+                     <xsd:element name="C3800-CHECK-AMOUNT" type="xsd:decimal" nxsd:style="fixedLength" nxsd:length="12"/>
+                     <!--COBOL declaration : 05 FILLER PIC X(01) VALUE '|':-->
+                     <xsd:element name="FILLER" type="xsd:string" nxsd:style="fixedLength" nxsd:padStyle="tail" nxsd:paddedBy=" " nxsd:length="1"/>
+                     <!--COBOL declaration : 05 C3800-CUSTOMER-ID PIC 9(09)-->
+                     <xsd:element name="C3800-CUSTOMER-ID" type="xsd:integer" nxsd:style="fixedLength" nxsd:length="9"/>
+                     <!--COBOL declaration : 05 FILLER PIC X(01) VALUE '|':-->
+                     <xsd:element name="FILLER" type="xsd:string" nxsd:style="fixedLength" nxsd:padStyle="tail" nxsd:paddedBy=" " nxsd:length="1"/>
+                     <!--COBOL declaration : 05 C3800-CUST-NAME PIC X(30)-->
+                     <xsd:element name="C3800-CUST-NAME" type="xsd:string" nxsd:style="fixedLength" nxsd:padStyle="tail" nxsd:paddedBy=" " nxsd:length="30"/>
+                     <!--COBOL declaration : 05 FILLER PIC X(01) VALUE '|':-->
+                     <xsd:element name="FILLER" type="xsd:string" nxsd:style="fixedLength" nxsd:padStyle="tail" nxsd:paddedBy=" " nxsd:length="1"/>
+                     <!--COBOL declaration : 05 C3800-ADDR-LINE-1 PIC X(30)-->
+                     <xsd:element name="C3800-ADDR-LINE-1" type="xsd:string" nxsd:style="fixedLength" nxsd:padStyle="tail" nxsd:paddedBy=" " nxsd:length="30"/>
+                     <!--COBOL declaration : 05 FILLER PIC X(01) VALUE '|':-->
+                     <xsd:element name="FILLER" type="xsd:string" nxsd:style="fixedLength" nxsd:padStyle="tail" nxsd:paddedBy=" " nxsd:length="1"/>
+                     <!--COBOL declaration : 05 C3800-ADDR-LINE-2 PIC X(30)-->
+                     <xsd:element name="C3800-ADDR-LINE-2" type="xsd:string" nxsd:style="fixedLength" nxsd:padStyle="tail" nxsd:paddedBy=" " nxsd:length="30"/>
+                     <!--COBOL declaration : 05 FILLER PIC X(01) VALUE '|':-->
+                     <xsd:element name="FILLER" type="xsd:string" nxsd:style="fixedLength" nxsd:padStyle="tail" nxsd:paddedBy=" " nxsd:length="1"/>
+                     <!--COBOL declaration : 05 C3800-CITY PIC X(30)-->
+                     <xsd:element name="C3800-CITY" type="xsd:string" nxsd:style="fixedLength" nxsd:padStyle="tail" nxsd:paddedBy=" " nxsd:length="30"/>
+                     <!--COBOL declaration : 05 FILLER PIC X(01) VALUE '|':-->
+                     <xsd:element name="FILLER" type="xsd:string" nxsd:style="fixedLength" nxsd:padStyle="tail" nxsd:paddedBy=" " nxsd:length="1"/>
+                     <!--COBOL declaration : 05 C3800-STATE PIC X(02)-->
+                     <xsd:element name="C3800-STATE" type="xsd:string" nxsd:style="fixedLength" nxsd:padStyle="tail" nxsd:paddedBy=" " nxsd:length="2"/>
+                     <!--COBOL declaration : 05 FILLER PIC X(01) VALUE '|':-->
+                     <xsd:element name="FILLER" type="xsd:string" nxsd:style="fixedLength" nxsd:padStyle="tail" nxsd:paddedBy=" " nxsd:length="1"/>
+                     <!--COBOL declaration : 05 C3800-POSTAL-CODE PIC X(11)-->
+                     <xsd:element name="C3800-POSTAL-CODE" type="xsd:string" nxsd:style="fixedLength" nxsd:padStyle="tail" nxsd:paddedBy=" " nxsd:length="11"/>
+                     <!--COBOL declaration : 05 FILLER PIC X(01) VALUE '|':-->
+                     <xsd:element name="FILLER" type="xsd:string" nxsd:style="fixedLength" nxsd:padStyle="tail" nxsd:paddedBy=" " nxsd:length="1"/>
+                     <!--COBOL declaration : 05 C3800-COUNTRY-CD PIC X(03)-->
+                     <xsd:element name="C3800-COUNTRY-CD" type="xsd:string" nxsd:style="fixedLength" nxsd:padStyle="tail" nxsd:paddedBy=" " nxsd:length="3"/>
+                     <!--COBOL declaration : 05 FILLER PIC X(01) VALUE '|':-->
+                     <xsd:element name="FILLER" type="xsd:string" nxsd:style="fixedLength" nxsd:padStyle="tail" nxsd:paddedBy=" " nxsd:length="1"/>
+                     <!--COBOL declaration : 05 C3800-PHONE-->
+                     <xsd:element name="C3800-PHONE">
+                        <xsd:complexType>
+                           <xsd:sequence>
+                              <!--COBOL declaration : 10 C3800-PHONE-NBR PIC X(11)-->
+                              <xsd:element name="C3800-PHONE-NBR" type="xsd:string" nxsd:style="fixedLength" nxsd:padStyle="tail" nxsd:paddedBy=" " nxsd:length="11"/>
+                              <!--COBOL declaration : 10 C3800-PHONE-EXT PIC X(04)-->
+                              <xsd:element name="C3800-PHONE-EXT" type="xsd:string" nxsd:style="fixedLength" nxsd:padStyle="tail" nxsd:paddedBy=" " nxsd:length="4"/>
+                           </xsd:sequence>
+                        </xsd:complexType>
+                     </xsd:element>
+                     <!--COBOL declaration : 05 FILLER PIC X(01) VALUE '|':-->
+                     <xsd:element name="FILLER" type="xsd:string" nxsd:style="fixedLength" nxsd:padStyle="tail" nxsd:paddedBy=" " nxsd:length="1"/>
+                     <!--COBOL declaration : 05 C3800-HOLD-STATUS PIC X(01)-->
+                     <xsd:element name="C3800-HOLD-STATUS" type="xsd:string" nxsd:style="fixedLength" nxsd:padStyle="tail" nxsd:paddedBy=" " nxsd:length="1"/>
+                     <!--COBOL declaration : 05 FILLER PIC X(01) VALUE '|':-->
+                     <xsd:element name="FILLER" type="xsd:string" nxsd:style="fixedLength" nxsd:padStyle="tail" nxsd:paddedBy=" " nxsd:length="1"/>
+                     <!--COBOL declaration : 05 C3800-DELETE-STATUS PIC X(01)-->
+                     <xsd:element name="C3800-DELETE-STATUS" type="xsd:string" nxsd:style="fixedLength" nxsd:padStyle="tail" nxsd:paddedBy=" " nxsd:length="1"/>
+                     <!--COBOL declaration : 05 FILLER PIC X(01) VALUE '|':-->
+                     <xsd:element name="FILLER" type="xsd:string" nxsd:style="terminated" nxsd:terminatedBy="${eol}" nxsd:padStyle="tail" nxsd:paddedBy=" " nxsd:length="1" />
+                  </xsd:sequence>
+               </xsd:complexType>
+            </xsd:element>
+         </xsd:sequence>
+      </xsd:complexType>
+   </xsd:element>
+</xsd:schema>
+

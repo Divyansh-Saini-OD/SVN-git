@@ -1,0 +1,34 @@
+-- +==================================================================================+
+-- | Office Depot - Project Simplify                                                  |
+-- | Providge Consulting                                                              |
+-- +==================================================================================+
+-- | SQL Script to create the table:   XX_CE_LOCKBOX_TRANSMISSIONS                    |
+-- |                                                                                  |
+-- |Change Record:                                                                    |
+-- |===============                                                                   |
+-- |Version   Date          Author               Remarks                              |
+-- |=======   ===========   =============        =====================================|
+-- |1.0       07-MAR-2008   BLooman              Initial version                      |
+-- |                                                                                  |
+-- +==================================================================================+
+
+--DROP TABLE XXFIN.XX_CE_LOCKBOX_TRANSMISSIONS;
+
+CREATE TABLE XXFIN.XX_CE_LOCKBOX_TRANSMISSIONS
+( LOCKBOX_TRANSMISSION_ID   NUMBER            NOT NULL,
+  STATEMENT_HEADER_ID       NUMBER(15)        NOT NULL,
+  BANK_ACCOUNT_ID           NUMBER(15)        ,
+  LOCKBOX_NUMBER            VARCHAR2(30)      ,
+  RECEIPT_METHOD_ID         NUMBER(15)        ,
+  DEPOSIT_DATE              DATE              ,
+  TRANSMISSION_ID           NUMBER(15)        ,
+  DEPOSITS_MATCHED          VARCHAR2(1)       DEFAULT 'N'   NOT NULL,
+  AMOUNT                    NUMBER            ,
+  CREATION_DATE             DATE              NOT NULL,
+  CREATED_BY                NUMBER            NOT NULL,
+  LAST_UPDATE_DATE          DATE              NOT NULL,
+  LAST_UPDATED_BY           NUMBER            NOT NULL,
+  CONSTRAINT XX_CE_LOCKBOX_TRANS_PK
+   PRIMARY KEY (LOCKBOX_TRANSMISSION_ID),
+  CONSTRAINT XX_CE_LOCKBOX_TRANS_UK1
+   UNIQUE (STATEMENT_HEADER_ID, TRANSMISSION_ID) );

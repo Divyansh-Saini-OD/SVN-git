@@ -1,0 +1,63 @@
+-- +=====================================================================+
+-- |                   Office Depot - Supplu Chain as A Service          |
+-- +=====================================================================+
+-- | Name :  XX_AR_SCAAS_INTERFACE_hist.tbl                              |
+-- | Description :   XX_AR_SCAAS_INTERFACE_hist                          |
+-- |                                                                     |
+-- |                                                                     |
+-- |Change Record:                                                       |
+-- |===============                                                      |
+-- |Version   Date              Author              Remarks              |
+-- |======   ==========     =============        ========================|
+-- |1.0      19-Jul-2021     Divyansh Saini      Initial Version         |
+-- +=====================================================================+
+
+create table xxfin.XX_AR_SCAAS_INTERFACE_hist
+(	"RECORD_ID" NUMBER , 
+	"SUBSCRIPTION_ID" VARCHAR2(34 BYTE), 
+	"SUBSCRIPTION_NUMBER" VARCHAR2(34 BYTE), 
+	"AOPS_NUMBER" VARCHAR2(50 BYTE), 
+	"TRX_DATE" DATE, 
+	"CURRENCY_CODE" VARCHAR2(10 BYTE), 
+	"BILL_TO_CUSTOMER_OSR" VARCHAR2(50 BYTE), 
+	"ACCOUNT_NUMBER" VARCHAR2(50 BYTE), 
+	"ITEM_NAME" VARCHAR2(50 BYTE), 
+	"ITEM_DESCRIPTION" VARCHAR2(240 BYTE), 
+	"QUANTITY" VARCHAR2(50 BYTE), 
+	"AMOUNT" VARCHAR2(50 BYTE), 
+	"UNIT_OF_MEASURE" VARCHAR2(50 BYTE), 
+	"PAYMENT_TERM" VARCHAR2(50 BYTE), 
+	"PROCESS_ID" NUMBER, 
+  INVOICE_NUMBER NUMBER,
+	"STATUS" VARCHAR2(100 BYTE),
+  c_ext_attr1 VARCHAR2(240),
+  c_ext_attr2 VARCHAR2(240),
+  c_ext_attr3 VARCHAR2(240),
+  c_ext_attr4 VARCHAR2(240),
+  c_ext_attr5 VARCHAR2(240),
+  c_ext_attr6 VARCHAR2(240),
+  c_ext_attr7 VARCHAR2(240),
+  c_ext_attr8 VARCHAR2(240),
+  c_ext_attr9 VARCHAR2(240),
+  c_ext_attr10 VARCHAR2(240),
+  c_ext_attr11 VARCHAR2(240),
+  c_ext_attr12 VARCHAR2(240),
+  c_ext_attr13 VARCHAR2(240),
+  c_ext_attr14 VARCHAR2(240),
+  c_ext_attr15 VARCHAR2(240),
+  n_ext_attr1 NUMBER,
+  n_ext_attr2 NUMBER,
+  n_ext_attr3 NUMBER,
+  n_ext_attr4 NUMBER,
+  n_ext_attr5 NUMBER,
+  n_ext_attr6 NUMBER,
+  n_ext_attr7 NUMBER,
+  n_ext_attr8 NUMBER,
+  n_ext_attr9 NUMBER,
+  n_ext_attr10 NUMBER,
+  d_ext_attr1 date,
+  d_ext_attr2 date,
+  d_ext_attr3 date,
+  d_ext_attr4 date,
+  d_ext_attr5 date
+);

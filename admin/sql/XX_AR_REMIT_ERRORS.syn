@@ -1,0 +1,30 @@
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     ON
+
+        -- +===================================================================================+
+        -- |                  Office Depot - Project Simplify                                  |
+        -- |                       WIPRO Technologies                                          |
+        -- +===================================================================================+
+        -- | Name :      AR Remit to Address Synonym                                           |
+        -- | Description : To Create Synonym for Custom table XX_AR_REMIT_ERRORS in            |
+        -- |               APPS schema.                                                        |
+        -- |                                                                                   |
+        -- | SQL Script to create                                                              |
+        -- |                                                                                   |
+        -- |                      SYNONYM:                                                     |
+        -- |                            XX_AR_REMIT_ERRORS                                     |
+        -- |                                                                                   |
+        -- |Change Record:                                                                     |
+        -- |===============                                                                    |
+        -- |Version   Date         Author               Remarks                                |
+        -- |=======   ==========   ==============       =======================================|
+        -- | 1.0      28-FEB-2007  Shivkumar Iyer       Initial Version                        |
+        -- | V1.1     17-NOV-2007  Anitha Devarajulu    Drop statement and slash are removed   |
+        -- +===================================================================================+
+
+--DROP SYNONYM XX_AR_REMIT_ERRORS;
+CREATE SYNONYM XX_AR_REMIT_ERRORS FOR XXFIN.XX_AR_REMIT_ERRORS;
+SHOW ERROR

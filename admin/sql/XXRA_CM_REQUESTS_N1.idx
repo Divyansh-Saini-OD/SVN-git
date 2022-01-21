@@ -1,0 +1,35 @@
+-- +==========================================================================+
+-- |                  Office Depot - Project Simplify                         |
+-- |                       WIPRO Technologies                                 |
+-- +==========================================================================+
+-- | RICE ID     :  E2057                                                     |
+-- | Name        :  E2057 Auto Application of CM to INV                       |
+-- | Description :                                                            |
+-- |                                                                          |
+-- | SQL Script to create indexes                                             |
+-- |                                                                          |
+-- |     Index name:  XXFIN.XXRA_CM_REQUESTS_N1                               |
+-- |                                                                          |
+-- |                                                                          |
+-- |                                                                          |
+-- |Change Record:                                                            |
+-- |===============                                                           |
+-- |Version   Date         Author               Remarks                       |
+-- |=======   ==========   ================     ==============================|
+-- |Draft 1A 09-APR-2010    Cindhu Nagarajan      Initial version             |
+-- |                                            Defect 4019 CR 733  R 1.3     |
+-- +==========================================================================+
+
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     ON
+
+CREATE INDEX XXFIN.XXRA_CM_REQUESTS_N1 ON AR.RA_CM_REQUESTS_ALL (CUSTOMER_TRX_ID,STATUS)
+PCTFREE 10 INITRANS 11 MAXTRANS 255 COMPUTE STATISTICS
+STORAGE(INITIAL 131072 NEXT 131072 MINEXTENTS 1 MAXEXTENTS 2147483645
+PCTINCREASE 0 FREELISTS 4 FREELIST GROUPS 4 BUFFER_POOL DEFAULT)
+TABLESPACE APPS_TS_TX_IDX;
+
+SHOW ERROR

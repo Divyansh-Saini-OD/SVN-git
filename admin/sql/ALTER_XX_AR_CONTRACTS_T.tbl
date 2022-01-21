@@ -1,0 +1,22 @@
+-- +========================================================================+
+-- |                  Office Depot                                          |
+-- +========================================================================+
+-- | Name        : ALTER_XX_AR_CONTRACTS_T.tbl                              |
+-- | Description : Added new fields to XX_AR_CONTRACTS table                |
+-- |                                                                        |
+-- |Change Record:                                                          |
+-- |===============                                                         |
+-- |Version   Date        Author           Remarks                          |
+-- |=======  ===========  =============    =================================|
+-- |1.0      23-Jan-2019  Sahithi Kunuru    Initial Version                 |
+-- +========================================================================+
+
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     ON
+
+alter table XXFIN.xx_Ar_contracts
+MODIFY EXTERNAL_SOURCE VARCHAR2(60);
+/

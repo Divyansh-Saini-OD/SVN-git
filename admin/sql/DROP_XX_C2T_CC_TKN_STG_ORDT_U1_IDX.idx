@@ -1,0 +1,30 @@
+-- +============================================================================================+
+-- |                        Office Depot - Project Simplify                                     |
+-- |                                                                                            |
+-- +============================================================================================+
+-- | Name         : XX_C2T_CC_TOKEN_STG_ORDT_U1_IDX.idx                                            |
+-- | Rice Id      :                                                                             | 
+-- | Description  : XX_C2T_CC_TOKEN_STG_ORDT Index Creation Script                              |  
+-- | Purpose      :                                                                             |
+-- |                                                                                            |
+-- |                                                                                            |
+-- |Change Record:                                                                              |
+-- |===============                                                                             |
+-- |Version    Date          Author                Remarks                                      | 
+-- |=======    ==========    =================    ==============================================+
+-- |1.0        08-JAN-2016  Harvinder Rakhra      Initial Version                               |
+-- |1.1        08-JAN-2016  Harvinder Rakhra      Changed tablespace                            |
+-- +============================================================================================+
+
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     ON
+
+PROMPT
+PROMPT DROP INDEX XX_C2T_CC_TOKEN_STG_ORDT_U1.....
+DROP INDEX XXFIN.XX_C2T_CC_TOKEN_STG_ORDT_U1;
+  
+COMMIT;
+SHOW ERROR;

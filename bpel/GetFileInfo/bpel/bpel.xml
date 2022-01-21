@@ -1,0 +1,10 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<BPELSuitcase>
+   <BPELProcess id="GetFileInfo" src="GetFileInfo.bpel">
+      <partnerLinkBindings>
+         <partnerLinkBinding name="client">
+            <property name="wsdlLocation">GetFileInfo.wsdl</property>
+         </partnerLinkBinding>
+      </partnerLinkBindings>
+   </BPELProcess>
+</BPELSuitcase>

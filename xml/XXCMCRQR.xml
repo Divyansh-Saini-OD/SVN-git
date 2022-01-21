@@ -1,0 +1,115 @@
+<?xml version="1.0"?>
+<dataTemplate name="XXCMCRQR" description="OD: Concurrent Request Report" Version="1.0">
+<properties>
+  <property name="include_parameters" value="true"/>
+</properties>
+<parameters>
+ <parameter name="P_APP_ID" datatype="number" />
+ <parameter name="P_PRG_ID" datatype="number" />
+ <parameter name="P_RESP_ID" datatype="character" />
+ <parameter name="P_STATUS" datatype="character" />
+ <parameter name="P_START_TIME" datatype="date" />
+ <parameter name="P_END_TIME" datatype="date" />
+</parameters>
+<dataQuery>
+<sqlStatement name="Q_app_name">
+<![CDATA[ 
+SELECT application_short_name AS V_app_name
+FROM   fnd_application
+WHERE application_id = :P_APP_ID
+]]> 
+</sqlStatement>
+<sqlStatement name="Q_prg_name">
+<![CDATA[ 
+Select  user_concurrent_program_name AS V_prg_name 
+from  fnd_concurrent_programs_tl  
+Where concurrent_program_id =:P_PRG_ID
+]]>
+</sqlStatement>
+<sqlStatement name="Q_resp_name">
+<![CDATA[ 
+SELECT responsibility_name AS  V_resp_name
+FROM   fnd_responsibility_vl
+WHERE  responsibility_id =:P_RESP_ID
+]]>
+</sqlStatement>
+<sqlStatement name="Q_start_time">
+<![CDATA[ 
+Select to_char(to_date(:P_START_TIME,'YYYY/MM/DD HH24:MI:SS'),'DD-MON-YYYY HH24:MI:SS') AS  V_start_time
+from dual 
+]]>
+</sqlStatement>
+<sqlStatement name="Q_end_time">
+<![CDATA[ 
+Select to_char(to_date(:P_END_TIME,'YYYY/MM/DD HH24:MI:SS'),'DD-MON-YYYY HH24:MI:SS')  AS  V_end_time
+from dual 
+]]>
+</sqlStatement>  
+<sqlStatement name="Q_CMCRQR">
+<![CDATA[
+Select   
+fa.application_short_name  Application,
+fcpv.user_concurrent_program_name  "Concurrent_Program_name",
+fcpv.concurrent_program_name  "Short_name",
+frt.responsibility_name,
+fcr.Request_id,
+fu.user_name , 
+fcr.requested_by,
+TO_CHAR (fcr.actual_start_date,'DD-MON-YYYY HH:MI:SS')     start_time,
+TO_CHAR (fcr.actual_completion_date,'DD-MON-YYYY HH:MI:SS')   end_time,   
+flv1.meaning  "STATUS"
+FROM    fnd_concurrent_requests      fcr, 
+        fnd_concurrent_programs_vl  fcpv,
+        fnd_responsibility_tl        frt,
+        fnd_lookup_values           flv1,
+        fnd_application  fa,
+        fnd_user fu
+Where   fcpv.concurrent_program_id     = fcr.concurrent_program_id
+   AND  fcr.requested_by              = fu.user_id 
+   AND  fcpv.application_id           = fa.application_id
+   AND  frt.responsibility_id         = fcr.responsibility_id
+   AND  flv1.lookup_code              = fcr.status_code
+   AND  flv1.lookup_type              = 'CP_STATUS_CODE'
+   AND  flv1.language                 = 'US'
+   AND  flv1.enabled_flag             = 'Y'
+   AND  flv1.view_application_id      <> 0
+   AND  (fcr.status_CODE='E' OR  fcr.status_code='G')    
+   AND  (fa.application_id = :P_APP_ID  OR  :P_APP_ID is null)     
+   AND  (FCPV.concurrent_program_id  = :P_PRG_ID  OR  :P_PRG_ID is null )
+   AND  (frt.responsibility_id = :P_RESP_ID  OR  :P_RESP_ID is null)   
+   AND  (flv1.meaning = :P_STATUS OR :P_STATUS is NULL)
+   AND  trunc(fcr.actual_start_date) >=  nvl(to_date(:P_START_TIME,'YYYY/MM/DD HH24:MI:SS'),TRUNC(sysdate-1))
+   AND  trunc(fcr.actual_completion_date) <=  nvl(to_date(:P_END_TIME,'YYYY/MM/DD HH24:MI:SS'),TRUNC(sysdate))
+Order by Request_id
+]]>
+</sqlStatement>
+</dataQuery>
+<dataStructure>
+<group name="G_app_name" source="Q_app_name">
+<element name="V_app_name" value="V_app_name" /> 
+</group>
+<group name="G_prg_name" source="Q_prg_name">
+<element name="V_prg_name" value="V_prg_name" /> 
+</group>
+<group name="G_resp_name" source="Q_resp_name">
+<element name="V_resp_name" value="V_resp_name" /> 
+</group>
+<group name="G_start_time" source="Q_start_time">
+<element name="V_start_time" value="V_start_time" /> 
+</group>
+<group name="G_end_time" source="Q_end_time">
+<element name="V_end_time" value="V_end_time" /> 
+</group>
+<group name="G_CMCRQR" source="Q_CMCRQR">
+<element name="APPLICATION" value="APPLICATION" />
+<element name="CONCURRENT_PROGRAM_NAME" value="CONCURRENT_PROGRAM_NAME" />
+<element name="SHORT_NAME" value="SHORT_NAME" />
+<element name="RESPONSIBILITY_NAME" value="RESPONSIBILITY_NAME" />
+<element name="REQUEST_ID" value="REQUEST_ID" />
+<element name="USER_NAME" value="USER_NAME" />
+<element name="STATUS" value="STATUS" />
+<element name="START_TIME" value="START_TIME" />
+<element name="END_TIME" value="END_TIME" />
+</group>
+</dataStructure>
+</dataTemplate>

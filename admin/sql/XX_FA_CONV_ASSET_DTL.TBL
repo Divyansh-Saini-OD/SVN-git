@@ -1,0 +1,59 @@
+REM============================================================================================
+REM                                 Start Of Script
+REM============================================================================================
+--+=============================================================================================+--
+--|                                                                                             |--
+--| Program Name   : XX_FA_CONV_ASSET_DTL.tbl                                        |--
+--| RICE ID        : EXXXX                                                                      |--
+--| Purpose        : Create Custom Tables .                                                     |--
+--|                  The Objects created are:                                                   |--
+--|                                                                                             |--
+--|                1. XX_FA_CONV_ASSET_DTL(Oracle EBS FA Conversion)            |--
+--|                                                                                             |--
+--| Change History  :                                                                           |--
+--| Version           Date             Changed By              Description                      |--
+--+=============================================================================================+--
+--| 1.0               16-Jul-2019      M K Pramod Kumar         Baselined                         |--
+--+=============================================================================================+--
+SET VERIFY OFF
+SET TERM ON
+SET FEEDBACK OFF
+SET SHOW OFF
+SET ECHO OFF
+SET TAB OFF
+WHENEVER SQLERROR CONTINUE;
+PROMPT
+PROMPT Creating the Custom Table ......
+PROMPT
+PROMPT
+PROMPT Creating the Table XX_FA_CONV_ASSET_DTL......
+PROMPT
+
+  
+   CREATE TABLE "XXFIN"."XX_FA_CONV_ASSET_DTL" 
+   ("ASSET_ID" NUMBER , 
+	"BOOK_TYPE_CODE" VARCHAR2(15) ,	
+	"ASSET_ATTRIBUTE_CATEGORY" VARCHAR2(30),
+	"UNITS_ASSIGNED" NUMBER , 
+	"EMPLOYEE_EMAIL_ADDRESS" VARCHAR2(100) ,	
+	"ASSET_LOCATION_SEGMENT1" VARCHAR2(30), 
+	"ASSET_LOCATION_SEGMENT2" VARCHAR2(30), 
+	"ASSET_LOCATION_SEGMENT3" VARCHAR2(30), 
+	"ASSET_LOCATION_SEGMENT4" VARCHAR2(30), 
+	"ASSET_LOCATION_SEGMENT5" VARCHAR2(30), 
+	"ASSET_LOCATION_SEGMENT6" VARCHAR2(30), 
+	"ASSET_LOCATION_SEGMENT7" VARCHAR2(30),
+	"EXPENSE_ACCOUNT_SEGMENT" VARCHAR2(500),
+	"STATUS"    VARCHAR2(10),
+	"ERROR_DESCRIPTION" VARCHAR2(2000),
+	"REQUEST_ID"  NUMBER,
+	"CREATED_BY"                                         NUMBER,
+ "CREATION_DATE"                                      DATE,
+ "LAST_UPDATED_BY"                                    NUMBER,
+ "LAST_UPDATE_DATE"                                   DATE,
+ "LAST_UPDATE_LOGIN"                                 NUMBER	
+   );
+   
+   Grant  all on XX_FA_CONV_ASSET_DTL to APPS;
+
+WHENEVER SQLERROR CONTINUE;

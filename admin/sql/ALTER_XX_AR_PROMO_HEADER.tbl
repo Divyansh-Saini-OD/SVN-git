@@ -1,0 +1,28 @@
+-- +=====================================================================+
+-- |                  Office Depot - Project Simplify                    |
+-- |                       WIPRO Technologies                            |
+-- +=====================================================================+
+-- | Name :  XX_AR_PROMO_HEADER.tbl                                      |
+-- | Description :   Creates XX_AR_PROMO_HEADER                          |
+-- |                                                                     |
+-- |                                                                     |
+-- |Change Record:                                                       |
+-- |===============                                                      |
+-- |Version   Date              Author              Remarks              |
+-- |======   ==========     =============        ======================= |
+-- |1.0       05-MAR-2007   Raji Natarajan,     Created Base version     |
+-- |                        Wipro Technologies                           |
+-- |                                                                     |
+-- +=====================================================================+
+
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     ON
+
+ALTER TABLE XXFIN.XX_AR_PROMO_HEADER
+ADD(
+    returns_enabled_flag  VARCHAR2(1 BYTE));
+
+SHOW ERROR

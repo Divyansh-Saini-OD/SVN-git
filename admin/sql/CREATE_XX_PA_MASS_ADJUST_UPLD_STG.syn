@@ -1,0 +1,36 @@
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     ON
+
+PROMPT Creating SYNONYM XX_PA_MASS_ADJUST_UPLD_STG               
+
+PROMPT Program exits IF the creation IS NOT SUCCESSFUL
+
+WHENEVER SQLERROR CONTINUE
+
+-- +==========================================================================+
+-- |                  Office Depot - Project Simplify                         |
+-- |                       ORACLE                                             |
+-- +==========================================================================+
+-- | Name        : APPS.XX_PA_MASS_ADJUST_UPLD_STG                            |
+-- | Description : Synonym for XX_PA_MASS_ADJUST_UPLD_STG                     |
+-- | Rice ID : E3072												  		  |
+-- |===============                                                           |
+-- |Version      Date              Author               Remarks               |
+-- |=======      ==========        =============        ===================== |
+-- | V1.0        24-SEP-2013       Archana N.			 Initial version      |
+-- |                                                                          |
+-- +==========================================================================+
+PROMPT
+
+WHENEVER SQLERROR CONTINUE;
+
+PROMPT
+PROMPT Creating Synonym XX_PA_MASS_ADJUST_UPLD_STG in APPS...
+PROMPT
+
+CREATE SYNONYM apps.XX_PA_MASS_ADJUST_UPLD_STG   FOR xxfin.XX_PA_MASS_ADJUST_UPLD_STG  ;
+
+SHOW ERROR

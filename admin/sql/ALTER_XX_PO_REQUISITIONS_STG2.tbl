@@ -1,0 +1,28 @@
+-- +==========================================================================+
+-- |                  Office Depot - Project Simplify                         |
+-- |                       WIPRO Technologies                                 |
+-- +==========================================================================+
+-- | RICE ID     : E0980                                                      |
+-- | Name        : PO Auto Requisition Import                                 |
+-- |                                                                          |
+-- | SQL Script to ALTER the following object                                 |
+-- |             Table       : XX_PO_REQUISITIONS_STG                         |
+-- |                                                                          |
+-- | Description : Alter the table to rename the column preparer name         |
+-- |                                                                          |
+-- |Change Record:                                                            |
+-- |===============                                                           |
+-- |Version   Date         Author               Remarks                       |
+-- |=======   ==========   =============        ==============================|
+-- | V1.0     03-DEC-2007  Radhika Raman        Defect 2845                   |
+-- |                                                                          |
+-- +==========================================================================+
+
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     ON
+
+ALTER TABLE xxfin.xx_po_requisitions_stg
+ RENAME COLUMN preparer_name TO preparer_emp_nbr;

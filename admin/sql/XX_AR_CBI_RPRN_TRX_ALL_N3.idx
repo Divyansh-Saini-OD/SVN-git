@@ -1,0 +1,31 @@
+
+-- +============================================================================================+
+-- |                        Office Depot - Project Simplify                                     |
+-- |                                                                                            |
+-- +============================================================================================+
+-- | Name         : XX_AR_CBI_RPRN_TRX_ALL_N3.idx                                               |
+-- | Description  : Index on XX_AR_CBI_RPRN_TRX_ALL                                             |  
+-- | Purpose      : Performance                                                                 |
+-- |                                                                                            |
+-- |Change Record:                                                                              |
+-- |===============                                                                             |
+-- |Version    Date          Author                Remarks                                      | 
+-- |=======    ==========    =================    ==============================================+
+-- |DRAFT 1A   05-OCT-2012   Rajeshkumar M R      Initial Version                               |
+-- |                                                                                            |
+-- +============================================================================================+
+
+SET VERIFY      OFF
+SET TERM        ON
+SET FEEDBACK    OFF
+SET SHOW        OFF
+SET ECHO        OFF
+SET TAB         OFF
+
+CREATE INDEX XXFIN.XX_AR_CBI_RPRN_TRX_ALL_N3 ON XXFIN.XX_AR_CBI_RPRN_TRX_ALL (REQUEST_ID, CONS_INV_ID, ATTRIBUTE1, ORG_ID) PARALLEL ;
+
+ALTER INDEX XXFIN.XX_AR_CBI_RPRN_TRX_ALL_N3 NOPARALLEL ;
+
+SET FEEDBACK ON
+
+EXIT;

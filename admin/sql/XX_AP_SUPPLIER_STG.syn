@@ -1,0 +1,58 @@
+REM================================================================================================
+REM                                 Start Of Script
+REM================================================================================================
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     OFF
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+--+==============================================================================================+--
+--|                                                                                              |--
+--| Object Name    : Supplier Import Header Stg Synonym                                          |--
+--|                                                                                              |--
+--| Program Name   : XX_AP_SUPPLIER_STG.syn                                                      |--        
+--|                                                                                              |--   
+--| Purpose        : Create Custom synonyms                                                      |--
+--|                                                                                              |--
+--|                                                                                              |-- 
+--| Change History  :                                                                            |--
+--| Version           Date             Changed By              Description                       |--
+--+==============================================================================================+--
+--| 1.0            12-Nov-2014        Paddy Sanjeevi           Baselined                         |
+--+==============================================================================================+-- 
+                                     
+WHENEVER SQLERROR CONTINUE;
+
+PROMPT
+PROMPT Creating Synonym in APPS...
+PROMPT
+
+WHENEVER SQLERROR CONTINUE
+
+PROMPT
+PROMPT Creating SYNONYM XX_AP_SUPPLIER_STG
+PROMPT
+
+
+CREATE SYNONYM XX_AP_SUPPLIER_STG FOR xxfin.XX_AP_SUPPLIER_STG;
+
+
+WHENEVER SQLERROR CONTINUE
+
+PROMPT
+PROMPT Exiting....
+PROMPT
+
+SET FEEDBACK ON
+
+
+EXIT;
+
+
+REM=================================================================================================
+REM                                   End Of Script                                            
+REM=================================================================================================
+

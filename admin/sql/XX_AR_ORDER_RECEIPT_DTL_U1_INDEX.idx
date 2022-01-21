@@ -1,0 +1,51 @@
+-- +============================================================================================+
+-- |                        Office Depot - Project Simplify                                     |
+-- |                                                                                            |
+-- +============================================================================================+
+-- | Name         : XX_AR_ORDER_RECEIPT_DTL_U1_INDEX.idx                                        |
+-- | Rice Id      :                                                                             | 
+-- | Description  :                                                                             |  
+-- | Purpose      :                                                                             |
+-- |                                                                                            |
+-- |Change Record:                                                                              |
+-- |===============                                                                             |
+-- |Version    Date          Author                Remarks                                      | 
+-- |=======    ==========    =================    ==============================================+
+-- |DRAFT 1A   02-MAY-2016   Havish Kasina        Initial Version                               |
+-- +============================================================================================+
+
+SET VERIFY      OFF
+SET TERM        ON
+SET FEEDBACK    OFF
+SET SHOW        OFF
+SET ECHO        OFF
+SET TAB         OFF
+
+PROMPT
+PROMPT Dropping Index XX_AR_ORDER_RECEIPT_DTL_U1 on AR table XX_AR_ORDER_RECEIPT_DTL.....
+PROMPT
+
+DROP INDEX XXFIN.XX_AR_ORDER_RECEIPT_DTL_U1;
+
+PROMPT
+PROMPT Creation of Unique Index XX_AR_ORDER_RECEIPT_DTL_U1 on AR table XX_AR_ORDER_RECEIPT_DTL.....
+PROMPT
+
+CREATE UNIQUE INDEX XXFIN.XX_AR_ORDER_RECEIPT_DTL_U1 ON XXFIN.XX_AR_ORDER_RECEIPT_DTL(order_payment_id) parallel 24;
+
+PROMPT
+PROMPT Alter Index XX_AR_ORDER_RECEIPT_DTL_U1 on AR table XX_AR_ORDER_RECEIPT_DTL.....
+PROMPT
+
+ALTER INDEX XXFIN.XX_AR_ORDER_RECEIPT_DTL_U1 noparallel;
+
+WHENEVER SQLERROR EXIT 1
+
+PROMPT
+PROMPT Exiting....
+PROMPT
+
+SET FEEDBACK ON
+
+EXIT;
+

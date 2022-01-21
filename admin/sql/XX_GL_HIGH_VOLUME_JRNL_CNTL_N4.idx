@@ -1,0 +1,28 @@
+-- +==========================================================================+
+-- |                  Office Depot - Project Simplify                         |
+-- |                         WIPRO Technologies                               |
+-- |                                                                          |
+-- +==========================================================================+
+-- | SQL Script to create the following objects                               |
+-- |             INDEX       : XX_GL_HIGH_VOLUME_JRNL_CNTL_N4                 |
+-- |                           For XX_GL_HIGH_VOLUME_JRNL_CONTROL table       |
+-- |                           Created for Defect 4816                        |
+-- |                                                                          |
+-- |                                                                          |
+-- |                                                                          |
+-- |Change Record:                                                            |
+-- |===============                                                           |
+-- |Version   Date         Author               Remarks                       |
+-- |=======   ===========  =============        ==============================|
+-- | V1.0     12-JUL-2010  R.Aldridge           Initial version               |
+-- |                                                                          |
+-- +==========================================================================+
+
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     ON
+
+CREATE INDEX XXFIN.XX_GL_HIGH_VOLUME_JRNL_CNTL_N4 ON XXFIN.XX_GL_HIGH_VOLUME_JRNL_CONTROL
+(HV_STG_REQ_ID);

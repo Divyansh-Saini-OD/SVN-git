@@ -1,0 +1,29 @@
+-- +==================================================================================+  
+-- | Office Depot - Project Simplify                                                  |
+-- | Providge Consulting                                                              |
+-- +==================================================================================+
+-- | Script to modify record history columns on table: XXFIN.XX_AR_PAYMENTS_INTERFACE |
+-- |    We must also execute the update script for any existing records, in order     |
+-- |      to execute the alter table script.                                          |
+-- |                                                                                  |
+-- | For the Extension E0062 AR Lockbox Custom Auto Cash Rules                        |
+-- |                                                                                  |
+-- |Change Record:                                                                    |
+-- |===============                                                                   |
+-- |Version   Date          Author               Remarks                              |
+-- |=======   ===========   =============        =====================================|
+-- |1.0       24-JUN-2008   BLooman              Initial version                      |
+-- |                                                                                  |
+-- +==================================================================================+
+
+UPDATE XXFIN.XX_AR_PAYMENTS_INTERFACE
+   SET CREATION_DATE = NVL(CREATION_DATE,SYSDATE),
+       CREATED_BY = NVL(CREATED_BY,-1),
+       LAST_UPDATE_DATE = NVL(LAST_UPDATE_DATE,SYSDATE),
+       LAST_UPDATED_BY = NVL(LAST_UPDATED_BY,-1);
+       
+ALTER TABLE XXFIN.XX_AR_PAYMENTS_INTERFACE MODIFY
+( CREATION_DATE           DATE        DEFAULT SYSDATE  NOT NULL,
+  CREATED_BY              NUMBER      DEFAULT -1       NOT NULL,
+  LAST_UPDATE_DATE        DATE        DEFAULT SYSDATE  NOT NULL,
+  LAST_UPDATED_BY         NUMBER      DEFAULT -1       NOT NULL );

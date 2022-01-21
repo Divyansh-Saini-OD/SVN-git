@@ -1,0 +1,28 @@
+-- +=====================================================================+
+-- |                  Office Depot - Project Simplify                    |
+-- |                       WIPRO Technologies                            |
+-- +=====================================================================+
+-- | Name :  XX_AR_PROMO_DETAIL.tbl                                      |
+-- | Description :   Creates XX_AR_PROMO_DETAIL                          |
+-- |                                                                     |
+-- |                                                                     |
+-- |Change Record:                                                       |
+-- |===============                                                      |
+-- |Version   Date              Author              Remarks              |
+-- |======   ==========     =============        ======================= |
+-- |1.0       05-MAR-2007   Raji Natarajan,     Created Base version     |
+-- |                        Wipro Technologies                           |
+-- |                                                                     |
+-- +=====================================================================+
+
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     ON
+
+ALTER TABLE XXFIN.XX_AR_PROMO_DETAIL
+ADD(
+    promo_value_desc  VARCHAR2(200 BYTE));
+
+SHOW ERROR

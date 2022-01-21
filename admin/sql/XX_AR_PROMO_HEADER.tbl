@@ -1,0 +1,43 @@
+-- +=====================================================================+
+-- |                  Office Depot - Project Simplify                    |
+-- |                       WIPRO Technologies                            |
+-- +=====================================================================+
+-- | Name :  XX_AR_PROMO_HEADER.tbl                                      |
+-- | Description :   Creates XX_AR_PROMO_HEADER                          |
+-- |                                                                     |
+-- |                                                                     |
+-- |Change Record:                                                       |
+-- |===============                                                      |
+-- |Version   Date              Author              Remarks              |
+-- |======   ==========     =============        ======================= |
+-- |1.0       05-MAR-2007   Raji Natarajan,     Created Base version     |
+-- |                        Wipro Technologies                           |
+-- |1.1       14-Dec-2007   Sowmya ,Wipro     Added returns_enabled_flag | 
+-- |                                                                     |
+-- +=====================================================================+
+
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     ON
+
+
+ CREATE TABLE xxfin.xx_ar_promo_header
+(
+  promo_id              NUMBER                  NOT NULL,
+  card_type             VARCHAR2(30 BYTE)       NOT NULL,
+  promo_plan_code       NUMBER                  NOT NULL,
+  effective_start_date  DATE                    DEFAULT SYSDATE,
+  effective_end_date    DATE                    DEFAULT SYSDATE,
+  description           VARCHAR2(50 BYTE),
+  comments              VARCHAR2(50 BYTE),
+  minimum_amount        NUMBER(15)              NOT NULL,
+  creation_date         DATE                    DEFAULT SYSDATE,
+  created_by            NUMBER(7),
+  last_update_date      DATE                    DEFAULT SYSDATE,
+  last_updated_by       NUMBER(7),
+  returns_enabled_flag  VARCHAR2(1 BYTE)
+);
+
+SHOW ERROR

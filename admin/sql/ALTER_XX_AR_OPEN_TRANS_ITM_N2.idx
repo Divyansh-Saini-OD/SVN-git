@@ -1,0 +1,24 @@
+ 
+ SET SHOW         OFF
+ SET VERIFY       OFF
+ SET ECHO         OFF
+ SET TAB          OFF
+ SET FEEDBACK     ON
+
+ -- +==========================================================================+
+ -- |                  Office Depot - Project Simplify                         |
+ -- |                       WIPRO Technologies                                 |
+ -- +==========================================================================+
+ -- | SQL Script to move the tablespace                                        |
+ -- |Index   : XX_AR_OPEN_TRANS_ITM_N2                                         |
+ -- |Change Record:                                                            |
+ -- |===============                                                           |
+ -- |Version      Date              Author               Remarks               |
+ -- |=======      ==========        =============        ===================== |
+ -- | V1.0        05-APR-2010      Usha R                Initial version       |
+ -- |                                                   Modified for defect 4901
+ -- +==========================================================================+
+
+ALTER INDEX XX_AR_OPEN_TRANS_ITM_N2 REBUILD TABLESPACE APPS_TS_TX_IDX_16M;
+
+ SHOW ERROR

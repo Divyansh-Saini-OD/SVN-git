@@ -1,0 +1,22 @@
+-- +============================================================================+
+-- | Office Depot - Project Simplify                                            |
+-- | Providge Consulting                                                        |
+-- +============================================================================+
+-- | SQL Script to alter table:  XX_CE_CHARGEBACK_DM                            |
+-- |                                                                            |
+-- |Change Record:                                                              |
+-- |===============                                                             |
+-- |Version   Date          Author         Remarks                              |
+-- |=======   ===========   =============  =====================================|
+-- |1.0       23-MAY-2008   DGowda	   Initial version - CR382/Defect 6182  |
+-- |                                                                            |
+-- +============================================================================+
+
+ALTER TABLE XXFIN.XX_CE_CHARGEBACK_DM
+ ADD (RECEIPT_NUMBER  VARCHAR2(100));
+
+ALTER TABLE XXFIN.XX_CE_CHARGEBACK_DM
+ ADD (DEBIT_MEMO_NUMBER  VARCHAR2(100));
+
+ALTER TABLE XXFIN.XX_CE_CHARGEBACK_DM
+ ADD (CUSTOMER_ID  NUMBER);

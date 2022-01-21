@@ -1,0 +1,30 @@
+-- +==========================================================================+
+-- |                  Office Depot - Project Simplify                         |
+-- +==========================================================================+
+-- | RICE ID     :  I3123                                                     |
+-- | Name        :  Alter for Table xx_ce_mpl_files                         |
+-- |                                                                          |
+-- | SQL Script to create the following object                                |
+-- |             Table       : xx_ce_mpl_files                          |
+-- |                                                                          |
+-- |Change Record:                                                            |
+-- |===============                                                           |
+-- |Version   Date         Author               Remarks                       |
+-- |=======   ==========   =============        ==============================|
+-- | 1.0      02-DEC-2018  Priyam         Added new columns  TO XX_CE_MPL_FILES            |
+-- |          |
+-- +==========================================================================+
+
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     ON
+
+ALTER TABLE XX_CE_MPL_FILES 
+ADD (
+ERR_MSG VARCHAR2(1000),
+PROCESS_FLAG VARCHAR2(1),
+REQUEST_ID NUMBER);     
+	   
+SHOW ERROR;

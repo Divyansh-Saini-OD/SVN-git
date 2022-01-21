@@ -1,0 +1,46 @@
+REM================================================================================================
+REM                                 Start Of Script
+REM================================================================================================
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     OFF
+-- +==========================================================================+
+-- |                  Office Depot - Project Simplify                         |
+-- +==========================================================================+
+-- | SQL Script to create                                                     |
+-- |                                                                          |
+-- |                      INDEXES: XX_AP_DI_SUPP_SITE_STG_N1                  |
+-- |                                                                          |
+-- |                                                                          |
+-- |                                                                          |
+-- |Change Record:                                                            |
+-- |===============                                                           |
+-- |Version   Date         Author               Remarks                       |
+-- |=======   ===========  ================     ==============================|
+-- |  1.0     05-JUL-2016  Madhu Bolli          Initial version               |
+-- +==========================================================================+
+
+PROMPT
+PROMPT Creating Index....
+PROMPT
+
+CREATE INDEX xxfin.XX_AP_DI_SUPP_SITE_STG_N1
+ON XXFIN.XX_AP_DI_SUPP_SITE_STG(REQUEST_ID)
+LOGGING
+TABLESPACE XXOD_TS_DATA
+PCTFREE    10
+INITRANS   2
+MAXTRANS   255
+STORAGE    (
+            INITIAL          64K
+            NEXT             1M
+            MINEXTENTS       1
+            MAXEXTENTS       2147483645
+            PCTINCREASE      0
+            BUFFER_POOL      DEFAULT
+           )
+NOPARALLEL;
+
+SHOW ERRORS;

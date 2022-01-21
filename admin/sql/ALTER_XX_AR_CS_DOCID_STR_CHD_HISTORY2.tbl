@@ -1,0 +1,31 @@
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     ON
+
+PROMPT Altering TABLE XX_AR_CS_DOCID_STR_CHD_HISTORY
+
+PROMPT Program exits IF the creation IS NOT SUCCESSFUL
+
+WHENEVER SQLERROR CONTINUE
+
+-- +==========================================================================+
+-- |                  Office Depot - Project Simplify                         |
+-- +==========================================================================+
+-- | Name :XXFIN.XX_AR_CS_DOCID_STR_CHD_HISTORY                               |
+-- | Description :   This table is used to hold statement Date, Customers Site|
+-- |                 Number and Customer Number and it will be referred       |
+-- |                 while resending the customer statement                   |
+-- |Change Record:                                                            |
+-- |===============                                                           |
+-- |Version      Date           Author               Remarks                  |
+-- |=======    ==========     =============        ===========================|
+-- | DRAFT 1.0 06-APR-2010     Vinaykumar S      Initial draft version(CR 622)|
+-- |                                                                          |
+-- +==========================================================================+
+
+ALTER TABLE XXFIN.xx_ar_cs_docid_str_chd_history
+MODIFY trx_number VARCHAR2(50);
+
+SHOW ERROR

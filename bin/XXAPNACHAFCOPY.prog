@@ -1,0 +1,58 @@
+# +===================================================================+PNACHAFCOPY.prog
+# |                  Office Depot - Project Simplify                  |
+# |                       WIPRO Technologies                          |
+# +===================================================================+
+# | Name :      AP NACHA EFT File Transfer for BOA                    |
+# | Description : To transfer the output file of                      |
+# |                  'OD: NACHA EFT Payment Format for BOA'           |
+# |                        to XXFIN_OUTBOUND directory                |
+# |                                                                   |
+# |Change Record:                                                     |
+# |===============                                                    |
+# |Version   Date          Author              Remarks                |
+# |=======   ==========   =============        =======================|
+# |1.0       18-APR-2007  Gowri Shankar        Initial version        |
+# |1.1       22-OCT-2007  Samitha U M          Variable changed       |
+# |                                            for the soft link      |
+# |                                            (Defect 2482)          |
+# |1.2       13-FEB-2007  Prakash Shankaran    Removed intermidate    |
+# |                                            path and write file    |
+# |                                            directly to the nacha  |
+# |                                            folder                 |
+# |1.3       28-MAR-2008  Sarat Uppalapati     Added Destination file |
+# |                                            name parameter         |
+# |                                            (Defect 5835)          | 
+# |                                                                   |
+# +===================================================================+
+#!/bin/ksh
+#
+#commented for Defect 2482 
+#var9=`echo $1 | awk '{print $9}' | tr -d '"'`
+
+#Added fro defect 2482
+var9=$5
+#Added for defect 5835
+var8=$6
+
+echo "Request id = " ${var9}
+echo "Destination File Name = " ${var8}
+echo 
+
+# -------------
+# Set variables
+# -------------
+FILE_DIR="$APPLCSF/$APPLOUT"
+OUT_FILE="o"${var9}".out"
+SOURCE_FILE=$FILE_DIR/$OUT_FILE
+
+
+DATE_TIME_STAMP=`date +"%Y%m%d_%H%M%S"`
+DEST_FILE="$XXFIN_DATA/ftp/out/nacha/${var8}_$DATE_TIME_STAMP.dat"
+
+echo ' '
+echo "SOURCE_FILE        = $SOURCE_FILE"
+echo "DEST_FILE          = $DEST_FILE"
+
+tr '\r' '\n' <$SOURCE_FILE >$DEST_FILE
+
+exit 0   # Success

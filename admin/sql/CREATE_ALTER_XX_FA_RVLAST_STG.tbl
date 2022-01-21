@@ -1,0 +1,56 @@
+REM============================================================================================
+REM                                 Start Of Script
+REM============================================================================================
+
+--+=============================================================================================+--
+--|                                                                                             |--
+--| Program Name   : CREATE_XX_FA_REVAL_ASSETS_STG.tbl                                          |--
+--|                                                                                             |--
+--| Purpose        : Create Custom Tables .                                                     |--
+--|                  The Objects created are:                                                   |--
+--|                                                                                             |--
+--|                1. XX_FA_REVAL_ASSETS_STG   (OD FA Mass Revaluation Staging table)           |--
+--|                                                                                             |--
+--| Change History  :                                                                           |--
+--| Version           Date             Changed By              Description                      |--
+--+=============================================================================================+--
+--| 1.0              25-Oct-2012       Paddy Sanjeevi          Original                         |--
+--+=============================================================================================+--
+
+SET VERIFY      OFF
+SET TERM        ON
+SET FEEDBACK    OFF
+SET SHOW        OFF
+SET ECHO        OFF
+SET TAB         OFF
+
+WHENEVER SQLERROR CONTINUE;
+
+PROMPT
+PROMPT Creating the Custom Table ......
+PROMPT
+
+PROMPT
+PROMPT Creating the Table XX_FA_REVAL_ASSETS_STG......
+PROMPT
+
+alter table xxfin.xx_fa_reval_loc_stg modify reval_pct varchar2(25);
+
+alter table xxfin.XX_FA_REVAL_ASSETS_STG add imp_cost number;
+
+
+
+WHENEVER SQLERROR CONTINUE;
+
+PROMPT
+PROMPT Exiting....
+PROMPT
+
+SET FEEDBACK ON
+
+EXIT;
+
+REM=================================================================================================
+REM                                   End Of Script
+REM=================================================================================================
+

@@ -1,0 +1,130 @@
+-- +==========================================================================+
+-- |                  Office Depot - Project Simplify                         |
+-- |                       WIPRO Technologies                                 |
+-- +==========================================================================+
+-- | SQL Script to create the following objects                               |
+-- |             Table       :XX_CE_AJB996                                   |
+-- |                         For the Interface I0032                          |
+-- |                                                                          |
+-- |                                                                          |
+-- |                                                                          |
+-- |Change Record:                                                            |
+-- |===============                                                           |
+-- |Version   Date         Author               Remarks                       |
+-- |=======   ==========   =============        ==============================|
+-- | V1.0     06-JUL-2007  Raji Natarajan       Initial version               |
+-- |                                                                          |
+-- | V1.1     19-NOV-2007  Nandini Bhimana       slash removed                |
+-- |                          Boina                                           |
+-- +==========================================================================+
+
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     ON
+
+--DROP TABLE  XXFIN.XX_CE_AJB996 CASCADE CONSTRAINTS;
+
+CREATE TABLE XXFIN.XX_CE_AJB996
+(
+  RECORD_TYPE        VARCHAR2(15 BYTE)          NOT NULL,
+  VSET_FILE          VARCHAR2(50 BYTE)                  ,
+  SDATE              DATE                               ,
+  ACTION_CODE        NUMBER                     NOT NULL,
+  ATTRIBUTE1         VARCHAR2(50 BYTE),
+  PROVIDER_TYPE      VARCHAR2(50 BYTE)          NOT NULL,
+  ATTRIBUTE2         VARCHAR2(50 BYTE),
+  STORE_NUM          VARCHAR2(30 BYTE)          NOT NULL,
+  TERMINAL_NUM       NUMBER,
+  TRX_TYPE           VARCHAR2(50 BYTE)          NOT NULL,
+  ATTRIBUTE3         VARCHAR2(50 BYTE),
+  ATTRIBUTE4         VARCHAR2(50 BYTE),
+  CARD_NUM           VARCHAR2(100 BYTE)         NOT NULL,
+  ATTRIBUTE5         VARCHAR2(50 BYTE),
+  ATTRIBUTE6         VARCHAR2(50 BYTE),
+  TRX_AMOUNT         NUMBER                     NOT NULL,
+  INVOICE_NUM        VARCHAR2(100 BYTE),
+  COUNTRY_CODE       VARCHAR2(6 BYTE)           NOT NULL,
+  CURRENCY_CODE      VARCHAR2(10 BYTE)          NOT NULL,
+  ATTRIBUTE7         VARCHAR2(50 BYTE),
+  ATTRIBUTE8         VARCHAR2(50 BYTE),
+  ATTRIBUTE9         VARCHAR2(50 BYTE),
+  ATTRIBUTE10        VARCHAR2(50 BYTE),
+  ATTRIBUTE11        VARCHAR2(50 BYTE),
+  ATTRIBUTE12        VARCHAR2(50 BYTE),
+  ATTRIBUTE13        VARCHAR2(50 BYTE),
+  ATTRIBUTE14        VARCHAR2(50 BYTE),
+  ATTRIBUTE15        VARCHAR2(50 BYTE),
+  ATTRIBUTE16        VARCHAR2(50 BYTE),
+  ATTRIBUTE17        VARCHAR2(50 BYTE),
+  ATTRIBUTE18        VARCHAR2(50 BYTE),
+  ATTRIBUTE19        VARCHAR2(50 BYTE),
+  ATTRIBUTE20        VARCHAR2(50 BYTE),
+  RECEIPT_NUM        VARCHAR2(70 BYTE)          NOT NULL,
+  ATTRIBUTE21        VARCHAR2(50 BYTE),
+  ATTRIBUTE22        VARCHAR2(50 BYTE),
+  AUTH_NUM           VARCHAR2(50 BYTE),
+  ATTRIBUTE23        VARCHAR2(50 BYTE),
+  ATTRIBUTE24        VARCHAR2(50 BYTE),
+  ATTRIBUTE25        VARCHAR2(50 BYTE),
+  ATTRIBUTE26        VARCHAR2(50 BYTE),
+  ATTRIBUTE27        VARCHAR2(50 BYTE),
+  ATTRIBUTE28        VARCHAR2(50 BYTE),
+  ATTRIBUTE29        VARCHAR2(50 BYTE),
+  ATTRIBUTE30        VARCHAR2(50 BYTE),
+  BANK_REC_ID        VARCHAR2(50 BYTE),
+  IPAY_BATCH_NUM     NUMBER                             ,
+  ATTRIBUTE31        VARCHAR2(50 BYTE),
+  ATTRIBUTE32        VARCHAR2(50 BYTE),
+  TRX_DATE           DATE                       NOT NULL,
+  ATTRIBUTE33        VARCHAR2(50 BYTE),
+  ATTRIBUTE34        VARCHAR2(50 BYTE),
+  ATTRIBUTE35        VARCHAR2(50 BYTE),
+  PROCESSOR_ID       VARCHAR2(100 BYTE)         NOT NULL,
+  MASTER_NOAUTH_FEE  NUMBER,
+  CHBK_RATE          NUMBER,
+  CHBK_AMT           NUMBER,
+  CHBK_ACTION_CODE   VARCHAR2(50 BYTE),
+  CHBK_ACTION_DATE   VARCHAR2(50 BYTE),
+  CHBK_REF_NUM       VARCHAR2(50 BYTE),
+  RET_REF_NUM        NUMBER,
+  OTHER_RATE1        NUMBER,
+  OTHER_RATE2        NUMBER,
+  CREATION_DATE      DATE,
+  CREATED_BY         NUMBER,
+  LAST_UPDATE_DATE   DATE,
+  LAST_UPDATED_BY    NUMBER,
+  ATTRIBUTE36        VARCHAR2(50 BYTE),
+  ATTRIBUTE37        VARCHAR2(50 BYTE),
+  ATTRIBUTE38        VARCHAR2(50 BYTE),
+  ATTRIBUTE39        VARCHAR2(50 BYTE),
+  ATTRIBUTE40        VARCHAR2(50 BYTE),
+  ATTRIBUTE41        VARCHAR2(50 BYTE),
+  ATTRIBUTE42        VARCHAR2(50 BYTE),
+  ATTRIBUTE43        VARCHAR2(50 BYTE),
+  STATUS             VARCHAR2(30 BYTE),
+  STATUS_1310        VARCHAR2(30 BYTE),
+  STATUS_1295        VARCHAR2(30 BYTE),
+  CHBK_ALPHA_CODE    VARCHAR2(60 BYTE),
+  CHBK_NUMERIC_CODE  NUMBER,
+  SEQUENCE_ID_996    NUMBER                     NOT NULL
+)
+TABLESPACE XXOD
+PCTUSED    0
+PCTFREE    10
+INITRANS   1
+MAXTRANS   255
+STORAGE    (
+            INITIAL          64K
+            MINEXTENTS       1
+            MAXEXTENTS       2147483645
+            PCTINCREASE      0
+            BUFFER_POOL      DEFAULT
+           )
+LOGGING 
+NOCOMPRESS 
+NOCACHE
+NOPARALLEL
+MONITORING
+;

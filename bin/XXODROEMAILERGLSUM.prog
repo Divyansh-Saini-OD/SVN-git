@@ -1,0 +1,105 @@
+# +===================================================================+
+# |                  Office Depot - Project Simplify                  |
+# |                       WIPRO Technologies                          |
+# +===================================================================+
+# | Name        : Published Output E-mail Program                     |
+# | Description : To e-mail the published output.                     |
+# |                                                                   |
+# |Change Record:                                                     |
+# |===============                                                    |
+# |Version   Date          Author              Remarks                |
+# |=======   ==========   =============        =======================|
+# |1.0       26-NOV-2008   Aravind A.          Initial Version CR 516 |
+# | 2.0      09-SEP-2016    Praveen Vanga          Defect 39261     |
+# +===================================================================+
+# Assigning arguments to local variables
+l_prog_short_name=${5}
+l_req_id=${6}
+l_email_id=${7}
+l_email_sub=${8}
+l_email_body=${9}
+l_file_name=${10}
+echo "Parameters of the Program are:"
+echo "Program Short Name         : $l_prog_short_name"
+echo "Request ID                 : $l_req_id"
+echo "E-Mail ID(s)               : $l_email_id"
+echo "E-Mail Subject             : $l_email_sub"
+echo "E-Mail Body                : $l_email_body"
+echo "File Name                  : $l_file_name"
+l_file_path=$APPLCSF/$APPLOUT/
+l_cust_path=$XXFIN_DATA/inbound/
+
+export SQLPATH=$APPL_TOP
+ 
+
+if [ "${l_req_id}" != "0" ] && [ "${l_req_id}" != "" ]
+then
+   # Wait for the Parent Request
+	l_stat_code=`sqlplus -s /nolog <<EOF
+	SET PAGESIZE 0
+	SET LINESIZE 255
+	SET SQLPROMPT " "
+	SET SERVEROUTPUT ON 
+	SET VERIFY OFF
+	SET FEEDBACK OFF
+	DECLARE
+		lb_req_status        BOOLEAN;
+		lc_phase             VARCHAR2(50);
+		lc_status            VARCHAR2(50);
+		lc_devphase          VARCHAR2(50);
+		lc_devstatus         VARCHAR2(50);
+		lc_message           VARCHAR2(50);
+	BEGIN
+   lb_req_status := FND_CONCURRENT.WAIT_FOR_REQUEST(
+                                                    request_id   => ${l_req_id}
+                                                    ,interval    => '10'
+                                                    ,max_wait    => ''
+                                                    ,phase       => lc_phase
+                                                    ,status      => lc_status
+                                                    ,dev_phase   => lc_devphase
+                                                    ,dev_status  => lc_devstatus
+                                                    ,message     => lc_message
+                                                   );
+	DBMS_OUTPUT.PUT_LINE(lc_phase||'$'||lc_status||'$');
+	END;
+/
+EOF`
+
+	echo "Stat Code is ${l_stat_code}"
+	l_phase_code=`echo ${l_stat_code}|cut -d$ -f1`
+	l_status_code=`echo ${l_stat_code}|cut -d$ -f2`
+	echo "phase_code="${l_phase_code}
+	echo "status_code="${l_status_code}
+
+	if [ "${l_phase_code}" != "Completed" ] || [ "${l_status_code}" != "Normal" ]
+   then 
+	   echo "Report has not Completed Normal. E-Mail not sent"
+		exit 1
+	fi
+
+	# Move to out folder and check for the published output file
+	cd $l_file_path
+	l_out_file=`echo|ls ${l_prog_short_name}_${l_req_id}* `
+	l_ext=`echo $l_out_file|cut -f2 -d. `
+	echo "Output File for the Request ID is $l_out_file"
+	# Copy the published out file to custom path
+	l_final_file=`echo ${l_cust_path}${l_file_name}_${l_req_id}.${l_ext} `
+	cp $l_out_file $l_final_file
+	echo "Copied the output file to custom path $l_final_file"
+	(/usr/bin/uuencode $l_final_file $l_final_file > /dev/null 2>&1) | mailx -s "${l_email_sub} : Request ID - ${l_req_id}" -a $l_final_file ${l_email_id} <<-EOF	
+	${l_email_body} : Request ID $l_req_id
+	
+	
+	
+	----------------------------------------------------
+	This is a system generated mail.Please do not reply.
+	----------------------------------------------------
+	EOF
+	echo "Email Sent with Request Output as Attachment."
+	chmod 777 $l_final_file
+	rm $l_final_file
+	exit 0
+else
+   echo "Request ID is NULL or 0. Process Exited"
+	exit 1
+fi

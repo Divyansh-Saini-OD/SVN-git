@@ -1,0 +1,57 @@
+SET DEFINE       OFF
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     ON
+
+PROMPT Creating TABLE XXFIN.XX_CE_ORDT_SAS_ITM
+
+PROMPT Program exits IF the creation IS NOT SUCCESSFUL
+
+WHENEVER SQLERROR CONTINUE
+
+-- +=====================================================================================================+
+-- |                                Office Depot - Project Simplify                                      |
+-- |                                     Oracle AMS Support                                              |
+-- +=====================================================================================================+
+-- |  Name:  Script to create table : XX_CE_ORDT_SAS_ITM (RICE ID : R1392)                               |
+-- |                                                                                                     |
+-- |  Description: Interim table to store master data for report generation. This table will be truncated|
+-- |               and repopulated for each execution of the report.                                     |
+-- |                                                                                                     |
+-- |  Change Record:                                                                                     |
+-- +=====================================================================================================+
+-- | Version     Date         Author               Remarks                                               |
+-- | =========   ===========  ===================  ======================================================|
+-- | 1.0         14-Nov-2013  Abdul Khan           Initial version - QC Defect # 25401                   |
+-- +=====================================================================================================+
+
+
+CREATE TABLE "XXFIN"."XX_CE_ORDT_SAS_ITM"  
+   ("RECEIPT_DATE"              DATE,
+    "STORE_NUMBER"              VARCHAR2(30), 
+    "TENDER_TYPE"               VARCHAR2(80),  
+    "TOTAL_AMOUNT"              NUMBER, 
+    "ORDER_SOURCE_ID"           NUMBER, 
+    "SHIP_FROM_ORG_ID"          NUMBER, 
+    "SOLD_TO_ORG_ID"            NUMBER,
+    "CREATED_BY_STORE_ID"       NUMBER, 
+    "HEADER_ID"                 NUMBER,
+    "CASH_RECEIPT_ID"           NUMBER, 
+    "ORG_ID"                    NUMBER,
+    "SINGLE_PAY_IND"            VARCHAR2(3),
+    "ORDER_NUMBER"              NUMBER, 
+    "ORIG_SYS_DOCUMENT_REF"     VARCHAR2(50), 
+    "ORIG_SYS_DOC_REF_SUB"      VARCHAR2(50),
+    "CREDIT_CARD_CODE"          VARCHAR2(80),
+    "PAYMENT_NUMBER"            NUMBER,
+    "ORIG_SYS_PAYMENT_REF"      VARCHAR2(50),
+    "CREATION_DATE"             DATE NOT NULL ENABLE, 
+    "CREATED_BY"                NUMBER NOT NULL ENABLE, 
+    "PARENT_REQ_ID"             NUMBER, 
+    "CHILD_REQ_ID"              NUMBER, 
+    "THREAD_NUMBER"             NUMBER
+   );
+   
+SHOW ERROR

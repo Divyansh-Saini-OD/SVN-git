@@ -1,0 +1,27 @@
+SET SHOW         OFF 
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     ON
+SET TERM         ON
+
+WHENEVER SQLERROR CONTINUE
+
+	-- +===========================================================================+
+	-- |                  Office Depot - Project Simplify                          |
+	-- +===========================================================================+
+	-- | Name        : XX_C2T_CC_ORDT_UPD_CCCODE_PHASE_1_3.sql                     |
+	-- | Description : Script to create sequence for IBY History Staging table     |
+	-- |                                                                           |
+	-- |Change Record:                                                             |
+	-- |===============                                                            |
+	-- |Version  Date         Author                Remarks                        |
+	-- |=======  ===========  ==================    ===============================|
+	-- |v1.0     13-OCT-2015  Harvinder Rakhra      Initial version                |  
+	-- +===========================================================================+
+
+
+CREATE SEQUENCE XXFIN.XX_C2T_CC_STG_IBY_HIST_SEQ START WITH 1000 INCREMENT BY 1;
+
+COMMIT;
+SHOW ERROR

@@ -1,0 +1,21 @@
+-- +==================================================================================+  
+-- | Office Depot - Project Simplify                                                  |
+-- | Providge Consulting                                                              |
+-- +==================================================================================+
+-- | SQL Script to create the synonym:  XX_XDO_REQ_DATA_PARAM_ID_SEQ                  |
+-- |                                                                                  |
+-- | For the Extension E00286_ConsolidatedBillingInvoiceFormatDistribute              |
+-- |  E0286 - Routine to combine all delivery methods using XML publisher API's       |
+-- |                                                                                  |
+-- |                                                                                  |
+-- |Change Record:                                                                    |
+-- |===============                                                                   |
+-- |Version   Date          Author               Remarks                              |
+-- |=======   ===========   =============        =====================================|
+-- |1.0       12-JUN-2007   BLooman              Initial version                      |
+-- |                                                                                  |
+-- +==================================================================================+
+
+--DROP SYNONYM XX_XDO_REQ_DATA_PARAM_ID_SEQ;
+
+CREATE OR REPLACE SYNONYM XX_XDO_REQ_DATA_PARAM_ID_SEQ FOR XXFIN.XX_XDO_REQ_DATA_PARAM_ID_SEQ;  

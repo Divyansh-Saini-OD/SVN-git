@@ -1,0 +1,29 @@
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     OFF
+SET TERM         ON
+
+PROMPT Creating SYNONYM APPS.XX_AR_EBL_CONS_TRX_ROWS_STG_S
+PROMPT Program exits IF the creation IS NOT SUCCESSFUL
+
+WHENEVER SQLERROR CONTINUE
+
+-- +===================================================================================+
+-- |                  Office Depot - Project Simplify                                  |
+-- |                       WIPRO Technologies                                          |
+-- +===================================================================================+
+-- | Name        : APPS.XX_AR_EBL_CONS_TRX_ROWS_STG_S                                  |
+-- | Description : Synonym for xxfin.XX_AR_EBL_CONS_TRX_ROWS_STG_S                     |
+-- |                                                                                   |
+-- |Change Record:                                                                     |
+-- |===============                                                                    |
+-- |Version   Date          Author                 Remarks                             |
+-- |=======   ==========   =============           ====================================|
+-- |DRAFT 1.0 01-APR-2010  Gokila Tamilselvam      Initial draft version               |
+-- +===================================================================================+
+
+CREATE SYNONYM apps.XX_AR_EBL_CONS_TRX_ROWS_STG_S FOR xxfin.XX_AR_EBL_CONS_TRX_ROWS_STG_S;
+
+SHOW ERROR

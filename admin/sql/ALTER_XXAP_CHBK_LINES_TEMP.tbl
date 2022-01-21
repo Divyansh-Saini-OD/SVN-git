@@ -1,0 +1,27 @@
+-- +==========================================================================+
+-- |                  Office Depot - Project Simplify                         |
+-- +==========================================================================+
+-- | RICE ID     :  E3023                                                     |
+-- | Name        :  AP Trade Match Dashboard                                  |
+-- |                                                                          |
+-- | SQL Script to create the following object                                |
+-- |             Table       : xxap_chbk_lines_temp                          |
+-- |                                                                          |
+-- |Change Record:                                                            |
+-- |===============                                                           |
+-- |Version   Date         Author               Remarks                       |
+-- |=======   ==========   =============        ==============================|
+-- | 1.0      07-Feb-2018  Jitendra		A       Added new column for line desp|
+-- |          |
+-- +==========================================================================+
+
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     ON
+
+alter table xxap_chbk_lines_temp
+add Inv_line_description VARCHAR2(250); 	   
+	   
+SHOW ERROR;

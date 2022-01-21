@@ -1,0 +1,30 @@
+REM================================================================================================
+REM                                 Start Of Script
+REM================================================================================================
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     OFF
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+-- +=======================================================================+
+-- |               Office Depot - Project Simplify                         |
+-- +=======================================================================+
+-- | Name        : XX_AP_MATCH_RATE_N1                          	        |
+-- | Description : Index for Table XX_AP_INV_MATCH_DETAIL_219 	           |
+-- | Rice ID     :  E3523                                                  |
+-- |---------------                                                        |
+-- |                                                                       |
+-- |Version  Date        Author             Remarks                        |
+-- |-------  ----------- -----------------  -------------------------------|
+-- |1.0      31-Jan-2018 Jitendra Atale     Initial  Version               |
+-- +=======================================================================+
+
+PROMPT
+PROMPT Creating Index....
+PROMPT
+
+CREATE INDEX XX_AP_MATCH_RATE_N1 ON XX_AP_INV_MATCH_DETAIL_219 (run_date);
+/
+SHOW ERRORS;

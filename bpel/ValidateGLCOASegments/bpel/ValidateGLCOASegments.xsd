@@ -1,0 +1,26 @@
+<schema targetNamespace="http://www.officedepot.com/glcoa/validation/" 
+	xmlns="http://www.w3.org/2001/XMLSchema">
+   <element name="InputParameters">
+      <complexType>
+         <sequence>
+            <element name="COA_NAME" type="string" />
+            <element name="COMPANY" type="string" />
+            <element name="COST_CENTER" type="string" />
+            <element name="ACCOUNT" type="string" />
+            <element name="LOCATION" type="string" />
+            <element name="INTERCOMPANY" type="string" />
+            <element name="LOB" type="string" />
+            <element name="FUTURE" type="string" />
+         </sequence>
+      </complexType>
+   </element>
+   <element name="OutputParameters">
+      <complexType>
+         <sequence>
+            <element name="RETURN_MSG" type="string" />
+            <element name="VALID_COMBO" type="string" />
+            <element name="COMPANY" type="string" />
+         </sequence>
+      </complexType>
+   </element>
+</schema>

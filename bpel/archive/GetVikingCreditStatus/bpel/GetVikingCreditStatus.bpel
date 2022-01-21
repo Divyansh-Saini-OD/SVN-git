@@ -1,0 +1,271 @@
+<?xml version = "1.0" encoding = "UTF-8" ?>
+<!--
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  Oracle JDeveloper BPEL Designer 
+  
+  Created: Thu Nov 15 22:21:32 EST 2007
+  Author:  Cecilia-Macean
+  Purpose: Empty BPEL Process
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+-->
+<process name="GetVikingCreditStatus"
+         targetNamespace="http://xmlns.oracle.com/GetVikingCreditStatus"
+         xmlns="http://schemas.xmlsoap.org/ws/2003/03/business-process/"
+         xmlns:bpws="http://schemas.xmlsoap.org/ws/2003/03/business-process/"
+         xmlns:xp20="http://www.oracle.com/XSL/Transform/java/oracle.tip.pc.services.functions.Xpath20"
+         xmlns:ns13="http://xmlns.oracle.com/pcbpel/adapter/db/APPS/XX_AR_CREDIT_CHECK_PKG/GET_VK_CREDIT_STATUS/"
+         xmlns:ns4="http://TargetNamespace.com/EnqueRequest"
+         xmlns:ns7="http://xmlns.oracle.com/ODErrorLogger"
+         xmlns:ldap="http://schemas.oracle.com/xpath/extension/ldap"
+         xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:ns12="ODError"
+         xmlns:ns5="http://xmlns.oracle.com/pcbpel/adapter/mq/headerEnqueueResponse/"
+         xmlns:client="http://xmlns.oracle.com/GetVikingCreditStatus"
+         xmlns:ns6="http://TargetNamespace.com/EnqueueResponse"
+         xmlns:ora="http://schemas.oracle.com/xpath/extension"
+         xmlns:ns11="http://www.oracle.com/XSL/Transform/java/oracle.tip.xref.xpath.XRefXPathFunctions"
+         xmlns:ns9="http://xmlns.oracle.com/bpel/services/IdentityService/xpath"
+         xmlns:ns1="http://xmlns.oracle.com/pcbpel/adapter/mq/headerDequeueRequest/"
+         xmlns:ns14="http://xmlns.oracle.com/pcbpel/adapter/db/GetVKCreditCheckDB/"
+         xmlns:ns3="http://xmlns.oracle.com/pcbpel/adapter/db/APPS/XX_AR_CREDIT_CHECK_PKG/GET_AOPS_VK_CREDIT_CHECK/"
+         xmlns:ns2="http://xmlns.oracle.com/pcbpel/adapter/db/GetAOPSVKCreditStoredProcedure/"
+         xmlns:bpelx="http://schemas.oracle.com/bpel/extension"
+         xmlns:orcl="http://www.oracle.com/XSL/Transform/java/oracle.tip.pc.services.functions.ExtFunc"
+         xmlns:ns15="http://TargetNamespace.com/ServiceName"
+         xmlns:ns8="http://xmlns.oracle.com/bpel/workflow/xpath"
+         xmlns:ns10="http://www.oracle.com/XSL/Transform/java/oracle.tip.esb.server.headers.ESBHeaderFunctions">
+  <!-- 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+      PARTNERLINKS                                                      
+      List of services participating in this BPEL process               
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  -->
+  <partnerLinks>
+    <partnerLink myRole="Dequeue_role" name="DequeueRequest"
+                 partnerLinkType="ns1:Dequeue_plt"/>
+    <partnerLink name="EnqueueResponse" partnerRole="Enqueue_role"
+                 partnerLinkType="ns5:Enqueue_plt"/>
+    <partnerLink myRole="ODErrorLoggerRequester" name="ODErrorLogger"
+                 partnerRole="ODErrorLoggerProvider"
+                 partnerLinkType="ns7:ODErrorLogger"/>
+    <partnerLink name="GetVKCreditCheckDB" partnerRole="GetVKCreditCheckDB_role"
+                 partnerLinkType="ns14:GetVKCreditCheckDB_plt"/>
+  </partnerLinks>
+  <!-- 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+      VARIABLES                                                        
+      List of messages and XML documents used within this BPEL process 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  -->
+  <variables>
+    <variable name="ReceiveMQMessage_Dequeue_InputVariable"
+              messageType="ns1:Root-Element_msg"/>
+    <variable name="Exception" messageType="bpelx:RuntimeFaultMessage"/>
+    <variable name="InvokeODErrorLogger_initiate"
+              messageType="ns7:ODErrorLoggerRequestMessage"/>
+    <variable name="InvokeDB_GetVKCreditCheckDB_InputVariable"
+              messageType="ns14:args_in_msg"/>
+    <variable name="InvokeDB_GetVKCreditCheckDB_OutputVariable"
+              messageType="ns14:args_out_msg"/>
+    <variable name="WriteMQMessage_Enqueue_InputVariable"
+              messageType="ns5:Root-Element_msg"/>
+  </variables>
+  <faultHandlers>
+    <catchAll>
+      <sequence name="Sequence_1">
+        <assign name="InitializeODErrorLogger">
+          <copy>
+            <from expression="concat(ora:getProcessId(),ora:getProcessVersion())"/>
+            <to variable="InvokeODErrorLogger_initiate" part="payload"
+                query="/ns12:ErrorData/ns12:ProcessInfo/ns12:BusinessProcessName"/>
+          </copy>
+          <copy>
+            <from expression="ora:getProcessId()"/>
+            <to variable="InvokeODErrorLogger_initiate" part="payload"
+                query="/ns12:ErrorData/ns12:ProcessInfo/ns12:BusinessProcessId"/>
+          </copy>
+          <copy>
+            <from expression="ora:getDomainId()"/>
+            <to variable="InvokeODErrorLogger_initiate" part="payload"
+                query="/ns12:ErrorData/ns12:ProcessInfo/ns12:BusinessProcessDomain"/>
+          </copy>
+          <copy>
+            <from expression="ora:getProcessURL()"/>
+            <to variable="InvokeODErrorLogger_initiate" part="payload"
+                query="/ns12:ErrorData/ns12:ProcessInfo/ns12:SystemName"/>
+          </copy>
+          <copy>
+            <from expression="xp20:current-dateTime()"/>
+            <to variable="InvokeODErrorLogger_initiate" part="payload"
+                query="/ns12:ErrorData/ns12:ErrorDetails/ns12:ErrorDateTime"/>
+          </copy>
+        </assign>
+        <invoke name="InvokeODErrorLogger" partnerLink="ODErrorLogger"
+                portType="ns7:ODErrorLogger" operation="initiate"
+                inputVariable="InvokeODErrorLogger_initiate"/>
+      </sequence>
+    </catchAll>
+  </faultHandlers>
+  <!-- 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+     ORCHESTRATION LOGIC                                               
+     Set of activities coordinating the flow of messages across the    
+     services integrated within this business process                  
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  -->
+  <sequence name="main">
+    <scope name="QueryVKCreditStatus">
+      <faultHandlers>
+        <catchAll>
+          <sequence name="Sequence_6">
+            <assign name="InitializeODErrorLogger">
+              <copy>
+                <from expression="concat(ora:getProcessId(),ora:getProcessVersion())"/>
+                <to variable="InvokeODErrorLogger_initiate" part="payload"
+                    query="/ns12:ErrorData/ns12:ProcessInfo/ns12:BusinessProcessName"/>
+              </copy>
+              <copy>
+                <from expression="ora:getProcessId()"/>
+                <to variable="InvokeODErrorLogger_initiate" part="payload"
+                    query="/ns12:ErrorData/ns12:ProcessInfo/ns12:BusinessProcessId"/>
+              </copy>
+              <copy>
+                <from expression="ora:getDomainId()"/>
+                <to variable="InvokeODErrorLogger_initiate" part="payload"
+                    query="/ns12:ErrorData/ns12:ProcessInfo/ns12:BusinessProcessDomain"/>
+              </copy>
+              <copy>
+                <from expression="ora:getProcessURL()"/>
+                <to variable="InvokeODErrorLogger_initiate" part="payload"
+                    query="/ns12:ErrorData/ns12:ProcessInfo/ns12:SystemName"/>
+              </copy>
+              <copy>
+                <from expression="xp20:current-dateTime()"/>
+                <to variable="InvokeODErrorLogger_initiate" part="payload"
+                    query="/ns12:ErrorData/ns12:ErrorDetails/ns12:ErrorDateTime"/>
+              </copy>
+            </assign>
+            <invoke name="InvokeODErrorLogger" partnerLink="ODErrorLogger"
+                    portType="ns7:ODErrorLogger" operation="initiate"
+                    inputVariable="InvokeODErrorLogger_initiate"/>
+            <assign name="InitializeSPErrorResult">
+              <copy>
+                <from expression="'10'"/>
+                <to variable="InvokeDB_GetVKCreditCheckDB_OutputVariable"
+                    part="OutputParameters"
+                    query="/ns13:OutputParameters/ns13:P_RESPONSE_CODE"/>
+              </copy>
+              <copy>
+                <from expression="'Exception caught during the DB stored procedure invocation'"/>
+                <to variable="InvokeDB_GetVKCreditCheckDB_OutputVariable"
+                    part="OutputParameters"
+                    query="/ns13:OutputParameters/ns13:P_RESPONSE_MESSAGE"/>
+              </copy>
+            </assign>
+          </sequence>
+        </catchAll>
+      </faultHandlers>
+      <sequence name="Sequence_5">
+        <receive name="ReceiveMQMessage" partnerLink="DequeueRequest"
+                 portType="ns1:Dequeue_ptt" operation="Dequeue"
+                 variable="ReceiveMQMessage_Dequeue_InputVariable"
+                 createInstance="yes"/>
+        <assign name="AssignSPInputParameters">
+          <copy>
+            <from variable="ReceiveMQMessage_Dequeue_InputVariable"
+                  part="Root-Element"
+                  query="/ns4:Root-Element/ns4:REQUEST-AREA/ns4:CUSTOMER_ACCT_NUMBER"/>
+            <to variable="InvokeDB_GetVKCreditCheckDB_InputVariable"
+                part="InputParameters"
+                query="/ns13:InputParameters/ns13:P_ACCOUNT_NUM"/>
+          </copy>
+        </assign>
+        <invoke name="InvokeDB" partnerLink="GetVKCreditCheckDB"
+                portType="ns14:GetVKCreditCheckDB_ptt"
+                operation="GetVKCreditCheckDB"
+                inputVariable="InvokeDB_GetVKCreditCheckDB_InputVariable"
+                outputVariable="InvokeDB_GetVKCreditCheckDB_OutputVariable"/>
+      </sequence>
+    </scope>
+    <assign name="InitializeMQResponse">
+      <copy>
+        <from expression="bpws:getVariableData('InvokeDB_GetVKCreditCheckDB_OutputVariable','OutputParameters','/ns13:OutputParameters/ns13:P_BUC_AMT_0')"/>
+        <to variable="WriteMQMessage_Enqueue_InputVariable" part="Root-Element"
+            query="/ns15:Root-Element/ns15:RESPONSE-AREA/ns15:BUC_AMT_0"/>
+      </copy>
+      <copy>
+        <from variable="InvokeDB_GetVKCreditCheckDB_OutputVariable"
+              part="OutputParameters"
+              query="/ns13:OutputParameters/ns13:P_BUC_AMT_1"/>
+        <to variable="WriteMQMessage_Enqueue_InputVariable" part="Root-Element"
+            query="/ns15:Root-Element/ns15:RESPONSE-AREA/ns15:BUC_AMT_1"/>
+      </copy>
+      <copy>
+        <from variable="InvokeDB_GetVKCreditCheckDB_OutputVariable"
+              part="OutputParameters"
+              query="/ns13:OutputParameters/ns13:P_BUC_AMT_2"/>
+        <to variable="WriteMQMessage_Enqueue_InputVariable" part="Root-Element"
+            query="/ns15:Root-Element/ns15:RESPONSE-AREA/ns15:BUC_AMT_2"/>
+      </copy>
+      <copy>
+        <from variable="InvokeDB_GetVKCreditCheckDB_OutputVariable"
+              part="OutputParameters"
+              query="/ns13:OutputParameters/ns13:P_BUC_AMT_3"/>
+        <to variable="WriteMQMessage_Enqueue_InputVariable" part="Root-Element"
+            query="/ns15:Root-Element/ns15:RESPONSE-AREA/ns15:BUC_AMT_3"/>
+      </copy>
+      <copy>
+        <from variable="InvokeDB_GetVKCreditCheckDB_OutputVariable"
+              part="OutputParameters"
+              query="/ns13:OutputParameters/ns13:P_BUC_AMT_4"/>
+        <to variable="WriteMQMessage_Enqueue_InputVariable" part="Root-Element"
+            query="/ns15:Root-Element/ns15:RESPONSE-AREA/ns15:BUC_AMT_4"/>
+      </copy>
+      <copy>
+        <from variable="InvokeDB_GetVKCreditCheckDB_OutputVariable"
+              part="OutputParameters"
+              query="/ns13:OutputParameters/ns13:P_OUT_BAL"/>
+        <to variable="WriteMQMessage_Enqueue_InputVariable" part="Root-Element"
+            query="/ns15:Root-Element/ns15:RESPONSE-AREA/ns15:OUT_BAL"/>
+      </copy>
+      <copy>
+        <from expression="string(bpws:getVariableData('InvokeDB_GetVKCreditCheckDB_OutputVariable','OutputParameters','/ns13:OutputParameters/ns13:P_RCPT_DATE'))"/>
+        <to variable="WriteMQMessage_Enqueue_InputVariable" part="Root-Element"
+            query="/ns15:Root-Element/ns15:RESPONSE-AREA/ns15:RCPT_DATE"/>
+      </copy>
+      <copy>
+        <from expression="string(bpws:getVariableData('InvokeDB_GetVKCreditCheckDB_OutputVariable','OutputParameters','/ns13:OutputParameters/ns13:P_COLLECTOR_ID'))"/>
+        <to variable="WriteMQMessage_Enqueue_InputVariable" part="Root-Element"
+            query="/ns15:Root-Element/ns15:RESPONSE-AREA/ns15:COLLECTOR_ID"/>
+      </copy>
+      <copy>
+        <from expression="string(bpws:getVariableData('InvokeDB_GetVKCreditCheckDB_OutputVariable','OutputParameters','/ns13:OutputParameters/ns13:P_COLLECTOR_NAME'))"/>
+        <to variable="WriteMQMessage_Enqueue_InputVariable" part="Root-Element"
+            query="/ns15:Root-Element/ns15:RESPONSE-AREA/ns15:COLLECTOR_NAME"/>
+      </copy>
+      <copy>
+        <from variable="InvokeDB_GetVKCreditCheckDB_OutputVariable"
+              part="OutputParameters"
+              query="/ns13:OutputParameters/ns13:P_RESPONSE_CODE"/>
+        <to variable="WriteMQMessage_Enqueue_InputVariable" part="Root-Element"
+            query="/ns15:Root-Element/ns15:RESPONSE-AREA/ns15:RESPONSE_CODE"/>
+      </copy>
+      <copy>
+        <from variable="InvokeDB_GetVKCreditCheckDB_OutputVariable"
+              part="OutputParameters"
+              query="/ns13:OutputParameters/ns13:P_RESPONSE_MESSAGE"/>
+        <to variable="WriteMQMessage_Enqueue_InputVariable" part="Root-Element"
+            query="/ns15:Root-Element/ns15:RESPONSE-AREA/ns15:RESPONSE_MESSAGE"/>
+      </copy>
+      <copy>
+        <from variable="InvokeDB_GetVKCreditCheckDB_OutputVariable"
+              part="OutputParameters"
+              query="/ns13:OutputParameters/ns13:P_BUC_AMT_5"/>
+        <to variable="WriteMQMessage_Enqueue_InputVariable" part="Root-Element"
+            query="/ns15:Root-Element/ns15:RESPONSE-AREA/ns15:BUC_AMT_5"/>
+      </copy>
+    </assign>
+    <invoke name="WriteMQMessage" partnerLink="EnqueueResponse"
+            portType="ns5:Enqueue_ptt" operation="Enqueue"
+            inputVariable="WriteMQMessage_Enqueue_InputVariable"/>
+  </sequence>
+</process>

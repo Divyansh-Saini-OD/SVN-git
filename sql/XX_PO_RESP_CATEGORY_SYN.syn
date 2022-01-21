@@ -1,0 +1,5 @@
+DROP SYNONYM xx_po_resp_category;
+
+CREATE SYNONYM xx_po_resp_category FOR xxfin.xx_po_resp_category;
+
+SHOW ERROR

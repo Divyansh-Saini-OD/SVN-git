@@ -1,0 +1,54 @@
+-- +==========================================================================+
+-- |                  Office Depot - Project Simplify                         |
+-- +==========================================================================+
+-- | 		Name  :   XX_PO_POM_LINES_INT_STG.tbl                         |
+-- |                      Script to create the table for                      |
+-- |                      POM Staging table                                   |
+-- | 	     RICE ID  :   I2193_PO to EBS Interface                           |
+-- |                                                                          |
+-- |Change Record:                                                            |
+-- |===============                                                           |
+-- |Version   Date         Author               Remarks                       |
+-- |=======   ==========   =============        ==============================|
+-- | V1.0     04-10-2017   Avinash Baddam       Initial version               |
+-- +==========================================================================+
+CREATE TABLE XXFIN.XX_PO_POM_LINES_INT_STG
+(RECORD_LINE_ID         NUMBER
+,RECORD_ID				NUMBER
+,PROCESS_CODE			VARCHAR2(2)
+,PO_NUMBER				VARCHAR2(30)
+,LINE_NUM               NUMBER
+,ITEM                   NUMBER
+,QUANTITY               NUMBER
+,SHIP_TO_LOCATION       NUMBER
+,NEED_BY_DATE           DATE           
+,PROMISED_DATE          DATE           
+,LINE_REFERENCE_NUM     NUMBER
+,UOM_CODE               VARCHAR2(30)
+,UNIT_PRICE             NUMBER
+,SHIPMENTNUMBER         NUMBER
+,DEPT                   NUMBER         
+,CLASS                  NUMBER         
+,VENDOR_PRODUCT_CODE    VARCHAR2(30)  
+,EXTENDED_COST          NUMBER         
+,QTY_SHIPPED            NUMBER         
+,QTY_RECEIVED           NUMBER         
+,SEASONAL_LARGE_ORDER   VARCHAR2(30)
+,BATCH_ID               NUMBER
+,RECORD_STATUS			VARCHAR2(30)
+,ERROR_COLUMN 			VARCHAR2(100)
+,ERROR_VALUE 			VARCHAR2(200)
+,ERROR_DESCRIPTION		VARCHAR2(2000)
+,REQUEST_ID				NUMBER
+,ATTRIBUTE1             VARCHAR2(150)  
+,ATTRIBUTE2             VARCHAR2(150)  
+,ATTRIBUTE3             VARCHAR2(150)  
+,ATTRIBUTE4             VARCHAR2(150)  
+,ATTRIBUTE5             VARCHAR2(150)  
+,ATTRIBUTE_CATEGORY     VARCHAR2(150)  
+,CREATED_BY          	NUMBER
+,CREATION_DATE       	DATE 
+,LAST_UPDATED_BY     	NUMBER
+,LAST_UPDATE_DATE    	DATE
+,LAST_UPDATE_LOGIN   	NUMBER
+,CONSTRAINT XX_PO_POM_LINES_INT_STG_PK PRIMARY KEY(RECORD_LINE_ID));

@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dataTemplate name="XXAPCCOPENNOTIF" defaultPackage="XX_AP_OPINACCC_BURST" description="" version="1.0">
+  <properties>
+    <property name="include_parameters" value="true"/>
+  </properties>
+  <dataQuery>
+    <sqlStatement name="Q1">
+       <![CDATA[SELECT
+    papf.employee_number,
+    papf.full_name,
+    wn.message_type,
+    wn.recipient_role,
+    wn.to_user,
+    wn.subject,
+    wn.message_name,
+    wn.status,
+    max(wn.context) wf_context,
+    TO_CHAR(MAX(ppfs.actual_termination_date), 'MM/DD/YYYY') actual_termination_date,
+    TO_CHAR(MAX(ppfs.final_process_date), 'MM/DD/YYYY') final_process_date,
+MAX(ppfs.period_of_service_id) period_of_service_id,
+MAX(wn.notification_id) notification_id,
+MAX(wn.item_key) item_key,
+nvl(TO_CHAR(MAX(SENT_DATE), 'MM/DD/YYYY'), NULL) sent_date
+FROM
+    per_all_people_f            papf,
+    per_periods_of_service      ppfs,
+    ap_Cards_all                aca,
+    ap_credit_card_trxns_all    accta,
+    wf_notifications            wn,
+    wf_item_activity_statuses   wias,
+    wf_item_attribute_values    wiav
+WHERE
+    papf.person_id = ppfs.person_id
+    AND papf.person_id = aca.employee_id
+        AND aca.card_id = accta.card_id
+            AND aca.card_program_id = accta.card_program_id
+                AND trunc(SYSDATE) BETWEEN papf.effective_start_date AND papf.effective_end_date
+                    AND wn.item_key = wias.item_key
+                        AND wias.item_key = wiav.item_key
+                            AND wias.item_type = wiav.item_type
+                                AND wn.message_name IN (
+        'OIE_MSG_MGR_INACTIVE_EMPL_EX_1'
+    )
+                                    AND wn.message_type = 'APCCARD'
+                                        AND wiav.name = 'INACT_EMP_NAME'
+                                            AND wiav.text_value = papf.employee_number
+                                                AND wn.status NOT IN (
+        'CANCELED',
+        'CLOSED'
+    )
+GROUP BY
+    papf.employee_number,
+    papf.full_name,
+    wn.message_type,
+    wn.recipient_role,
+    wn.to_user,
+    wn.subject,
+    wn.message_name,
+     wn.status]]>
+    </sqlStatement>
+<sqlStatement name="Q2" dataSourceRef="">
+<![CDATA[ SELECT  (SELECT FND_PROFILE.VALUE('XX_COMN_SMTP_MAIL_SERVER') 
+                     FROM dual)    SMTP_SERVER,
+                  (SELECT instance_name 
+				     FROM v$instance) INSTANCE_NAME,
+				  (SELECT to_char(SYSDATE,'MM/DD/YYYY') FROM dual) CURRENT_DATE
+            FROM DUAL
+]]>
+</sqlStatement>
+  </dataQuery>
+  <dataStructure>
+    <group name="G_RESULTS" source="Q1">
+	   <element name="EMPLOYEE_NUMBER"   value="employee_number"/>
+	   <element name="FULL_NAME"   value="full_name"/>
+	   <element name="MESSAGE_TYPE"       value="message_type"/>
+	   <element name="RECIPIENT_ROLE"   value="recipient_role"/>
+	   <element name="TO_USER"     value="to_user"/>
+       <element name="SUBJECT"   value="subject"/>
+       <element name="MESSAGE_NAME"       value="message_name"/>
+	   <element name="STATUS"       value="status"/>
+	   <element name="CONTEXT" value="wf_context"/>
+	   <element name="ACTUAL_TERMINATION_DATE"   value="actual_termination_date"/>
+	   <element name="FINAL_PROCESS_DATE"   value="final_process_date"/> 
+	   <element name="PERIOD_OF_SERVICE_ID"     value="period_of_service_id"/>
+	   <element name="NOTIFICATION_ID"     value="notification_id"/>
+	   <element name="ITEM_KEY"  value="item_key"/>
+       <element name="SENT_DATE"         value="sent_date"/>
+	 </group>
+<group name="G2" source="Q2" groupFilter="">
+     <element name="C_SMTP_SERVER" value="SMTP_SERVER" function=""/>
+     <element name="C_INSTANCE_NAME"    value="INSTANCE_NAME" function=""/>
+	 <element name="C_CURRENT_DATE"    value="CURRENT_DATE" function=""/>
+</group>
+  </dataStructure> 
+  <dataTrigger name="afterReport"  source="XX_AP_OPINACCC_BURST.afterReport()"/>
+</dataTemplate>

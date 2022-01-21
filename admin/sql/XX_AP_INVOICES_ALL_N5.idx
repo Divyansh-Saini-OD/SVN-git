@@ -1,0 +1,44 @@
+ -- +============================================================================================+
+  -- |  Office Depot - Project Simplify                                                           |
+  -- |                                                                                            |
+  -- +============================================================================================+
+  -- |  Name      :  ap_invoices_all                                                |
+  -- |  RICE ID   :  E3523                                                                        |                                                                         
+  -- |  Change Record:   
+  -- +============================================================================================+
+  -- | Version     Date         Author           Remarks                                          |
+  -- | =========   ===========  =============    ===============================================  |
+  ---|  1.0        10-JUN-18     Priyam Parmar     Index on ap_invoices_all
+  -- +============================================================================================+
+
+
+
+
+REM================================================================================================
+REM                                 Start Of Script
+REM================================================================================================
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     OFF
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+----------create index for ap_invoices_all--------------------
+
+PROMPT
+PROMPT Creating Index....
+PROMPT
+
+CREATE INDEX XX_AP_INVOICES_ALL_N5 ON ap.ap_invoices_all(to_date(attribute4,'DD-MON-YYYY'));
+
+WHENEVER SQLERROR CONTINUE;
+
+PROMPT
+PROMPT Exiting....
+PROMPT 
+
+SET FEEDBACK ON
+
+EXIT;
+

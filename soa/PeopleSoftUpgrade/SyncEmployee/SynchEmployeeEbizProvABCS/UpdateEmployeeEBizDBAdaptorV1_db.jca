@@ -1,0 +1,13 @@
+<adapter-config name="UpdateEmployeeEBizDBAdaptorV1" adapter="Database Adapter" wsdlLocation="UpdateEmployeeEBizDBAdaptorV1.wsdl" xmlns="http://platform.integration.oracle/blocks/adapter/fw/metadata">
+  
+  <connection-factory location="eis/db/OraAppsHR" UIConnectionName="OD_EBS_DEV01" adapterRef=""/>
+  <endpoint-interaction portType="UpdateEmployeeEBizDBAdaptorV1_ptt" operation="UpdateEmployeeEBizDBAdaptorV1">
+    <interaction-spec className="oracle.tip.adapter.db.DBStoredProcedureInteractionSpec">
+      <property name="PackageName" value="XX_HR_PS_STG_INSERT_PKG"/>
+      <property name="ProcedureName" value="INSERT_PROC"/>
+      <property name="GetActiveUnitOfWork" value="false"/>
+    </interaction-spec>
+    <output/>
+  </endpoint-interaction>
+
+</adapter-config>

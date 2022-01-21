@@ -1,0 +1,37 @@
+REM================================================================================================
+REM                                 Start Of Script
+REM================================================================================================
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     OFF
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+-- +=======================================================================+
+-- |               Office Depot - Project Simplify                         |
+-- +=======================================================================+
+-- | Name        : XXGL_BALANCES_N2                                        |
+-- | Description : Non-Unique Index for Table GL.GL_BALANCES               |
+-- |Change History:                                                        |
+-- |---------------                                                        |
+-- |                                                                       |
+-- |Version  Date        Author             Remarks                        |
+-- |-------  ----------- -----------------  -------------------------------|
+-- |1.0      09-Mar-2014 Paddy Sanjeevi     Initial  Version Defect 28652  |
+-- +=======================================================================+
+
+PROMPT
+PROMPT Creating Index....
+PROMPT
+
+CREATE INDEX xxfin.XXGL_BALANCES_N2 on GL.GL_BALANCES(translated_flag,period_name||'') tablespace APPS_TS_TX_IDX_GL_16M parallel 16;
+
+alter index xxfin.XXGL_BALANCES_N2 noparallel;
+
+SHOW ERRORS;
+
+
+REM================================================================================================
+REM                                 Start Of Script
+REM================================================================================================

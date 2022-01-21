@@ -1,0 +1,30 @@
+-- +==========================================================================+
+-- |                  Office Depot - Project Simplify                         |
+-- |                       WIPRO Technologies                                 |
+-- +==========================================================================+
+-- | RICE ID     :  I0349                                                     |
+-- | Name        :  Settlement  and Payment Processing                        |
+-- |                                                                          |
+-- | SQL Script to alter the following object                                 |
+-- |             Table       : XX_IBY_BATCH_TRXNS                             |
+-- |                                                                          |
+-- |Change Record:                                                            |
+-- |===============                                                           |
+-- |Version   Date         Author               Remarks                       |
+-- |=======   ==========   =============        ==============================|
+-- | V1.0     28-JUN-2008  Aravind A.           Initial version               |
+-- +==========================================================================+
+
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     ON
+
+ALTER TABLE xxfin.xx_iby_batch_trxns 
+        ADD(ixsettlementdate VARCHAR2(25)
+           ,ixtransnumber VARCHAR2(100)
+           ,ixrecptnumber VARCHAR2(100)
+          );
+
+SHOW ERROR;

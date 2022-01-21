@@ -1,0 +1,103 @@
+# +=========================================================================+
+# |                  Office Depot                        |
+# +=========================================================================+
+# | Name  :        XXOMCSASMOVEFILES                                             |
+# | Description:  Moving file to destination directory                      |
+# |===============                                                          |
+# |Version   Date         Author           Remarks                    |
+# |=======   ==========   =============    ===========================|
+# |DRAFT 1A  01-Jun-2021  Shreyas Thorat   Initial draft version      |
+# +===================================================================+
+
+
+ echo "1 st argument = username/password"
+ echo "2 nd argument = $2"
+ echo "3 rd argument = $3"
+ echo "4 th argument = $4"
+export SQLPATH=$APPL_TOP
+
+suffix=`date '+_%y%m%d%H%M%S_%N'`
+echo "Program starts"
+echo  $suffix
+V_RESULT=`sqlplus -s /nolog <<EOF
+set pagesize 0
+set linesize 255
+set serveroutput on 
+set verify off
+
+SELECT XFTV.TARGET_VALUE1|| '|'||XFTV.TARGET_VALUE2|| '|'||XFTV.TARGET_VALUE4||'|'||XFTV.TARGET_VALUE5
+  FROM XX_FIN_TRANSLATEDEFINITION XFTD,
+       XX_FIN_TRANSLATEVALUES XFTV
+ WHERE XFTD.TRANSLATION_NAME ='XXOM_CSAS_FILE_PROCESS'
+   AND XFTV.SOURCE_VALUE1      ='FILE'
+   AND XFTD.TRANSLATE_ID       =XFTV.TRANSLATE_ID
+   AND XFTD.ENABLED_FLAG       ='Y'
+   AND SYSDATE BETWEEN XFTV.START_DATE_ACTIVE AND NVL(XFTV.END_DATE_ACTIVE,SYSDATE)
+   /
+exit
+EOF`
+
+file_path=`echo $V_RESULT | awk '{ split($0,MODULE,"|"); print MODULE[1] }'`
+arch_file_path=`echo $V_RESULT | awk '{ split($0,MODULE,"|"); print MODULE[2] }'`
+file_ext=`echo $V_RESULT | awk '{ split($0,MODULE,"|"); print MODULE[3] }'`
+file_limit=`echo $V_RESULT | awk '{ split($0,MODULE,"|"); print MODULE[4] }'`
+
+echo "Source Path"
+echo $file_path
+echo "Archive Path"
+echo $arch_file_path
+echo "File Limit"
+echo $file_limit
+
+V_FILE_NAMES=`sqlplus -s /nolog <<EOF
+     set pagesize 0
+     set linesize 255
+     set serveroutput on 
+     set verify off
+     SELECT NVL((select listagg(file_name,' ') within Group (order by file_id)
+       FROM XXOM_CSAS_FILE_NAMES_HIST
+      WHERE process_flag = 'Y' and status = 'New'
+	  AND ROWNUM <= $file_limit),'NA')||'|'
+       FROM DUAL;
+     exit
+     EOF`
+     
+echo $V_FILE_NAMES
+filenames=`echo $V_FILE_NAMES | awk '{ split($0,MODULE,"|"); print MODULE[1] }'`
+echo $filenames
+if [ "${filenames}" = "NA" ] 
+   then
+    echo "No file to process"
+else
+   echo "move to source folder"
+   cd $file_path
+   echo `pwd`
+   for file in $filenames
+   do
+    filen=`echo $file | awk '{ split($0,MODULE,"."); print MODULE[1] }'`
+    d_file=$filen$suffix.$file_ext
+    echo $file
+    echo $d_file
+   # Moving file to destination folder
+    echo "Moving file to destination folder"
+    mv $file_path/$file $arch_file_path/$d_file
+    #rm $s_file
+    V_COUNT=`sqlplus -s /nolog <<EOF
+     set pagesize 0
+     set linesize 255
+     set serveroutput on 
+     set verify off
+	 
+     UPDATE XXOM_CSAS_FILE_NAMES_HIST 
+     SET STATUS = 'Processed'
+     WHERE FILE_NAME = '$file'
+     AND PROCESS_FLAG = 'Y'
+     AND STATUS = 'New';
+     
+    COMMIT;
+     exit
+     EOF`
+echo $V_COUNT
+   done
+fi
+

@@ -1,0 +1,77 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<xs:schema targetNamespace="http://xmlns.oracle.com/pcbpel/adapter/db/top/UpdateEmpMiscMFDBAdaptorV1" xmlns="http://xmlns.oracle.com/pcbpel/adapter/db/top/UpdateEmpMiscMFDBAdaptorV1" elementFormDefault="qualified" attributeFormDefault="qualified" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+   <xs:element name="EmpmiscCollection" type="EmpmiscCollection"/>
+   <xs:complexType name="EmpmiscCollection">
+      <xs:sequence>
+         <xs:element name="Empmisc" type="Empmisc" minOccurs="0" maxOccurs="unbounded"/>
+      </xs:sequence>
+   </xs:complexType>
+   <xs:complexType name="Empmisc">
+      <xs:sequence>
+         <xs:element name="employeeNbr" type="xs:integer"/>
+         <xs:element name="dtChg" type="xs:date" minOccurs="0"/>
+         <xs:element name="userIdChgBy" minOccurs="0">
+            <xs:simpleType>
+               <xs:restriction base="xs:string">
+                  <xs:maxLength value="8"/>
+               </xs:restriction>
+            </xs:simpleType>
+         </xs:element>
+         <xs:element name="pagerNbr" minOccurs="0">
+            <xs:simpleType>
+               <xs:restriction base="xs:string">
+                  <xs:maxLength value="50"/>
+               </xs:restriction>
+            </xs:simpleType>
+         </xs:element>
+         <xs:element name="cellNbr" minOccurs="0">
+            <xs:simpleType>
+               <xs:restriction base="xs:string">
+                  <xs:maxLength value="19"/>
+               </xs:restriction>
+            </xs:simpleType>
+         </xs:element>
+         <xs:element name="faxNbr" minOccurs="0">
+            <xs:simpleType>
+               <xs:restriction base="xs:string">
+                  <xs:maxLength value="19"/>
+               </xs:restriction>
+            </xs:simpleType>
+         </xs:element>
+         <xs:element name="adminAsstName" minOccurs="0">
+            <xs:simpleType>
+               <xs:restriction base="xs:string">
+                  <xs:maxLength value="40"/>
+               </xs:restriction>
+            </xs:simpleType>
+         </xs:element>
+         <xs:element name="adminAsstPhone" minOccurs="0">
+            <xs:simpleType>
+               <xs:restriction base="xs:string">
+                  <xs:maxLength value="19"/>
+               </xs:restriction>
+            </xs:simpleType>
+         </xs:element>
+         <xs:element name="adminAsstExt" minOccurs="0">
+            <xs:simpleType>
+               <xs:restriction base="xs:string">
+                  <xs:maxLength value="8"/>
+               </xs:restriction>
+            </xs:simpleType>
+         </xs:element>
+         <xs:element name="emailId" minOccurs="0">
+            <xs:simpleType>
+               <xs:restriction base="xs:string">
+                  <xs:maxLength value="100"/>
+               </xs:restriction>
+            </xs:simpleType>
+         </xs:element>
+      </xs:sequence>
+   </xs:complexType>
+   <xs:element name="UpdateEmpMiscMFDBAdaptorV1Select_InputParamMiscEmpIDInputParameters" type="UpdateEmpMiscMFDBAdaptorV1Select_InputParamMiscEmpID"/>
+   <xs:complexType name="UpdateEmpMiscMFDBAdaptorV1Select_InputParamMiscEmpID">
+      <xs:sequence>
+         <xs:element name="InputParamMiscEmpID" type="xs:integer" minOccurs="1" maxOccurs="1"/>
+      </xs:sequence>
+   </xs:complexType>
+</xs:schema>

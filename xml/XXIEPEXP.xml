@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="WINDOWS-1252" ?> 
+<dataTemplate name="XXIEPEXP" description="OD: Personal Expenses Submitted in Iexpenses Report" Version="1.0">
+<parameters>
+ <parameter name="p_request_id" datatype="character" />
+</parameters>
+<dataQuery>
+<sqlStatement name="Q_PEXP">
+<![CDATA[
+SELECT employee_name
+	 ,employee_number
+	 ,report_no
+	 ,personal_txn_amt
+	 ,txn_date
+	 ,merchant_name
+	 ,location
+ FROM xx_iexp_purge_txns
+WHERE request_id=:p_request_id
+ORDER BY employee_name
+]]>
+</sqlStatement>
+</dataQuery>
+<dataStructure>
+<group name="G_RPT" source="Q_PEXP">
+<element name="RPT_TOTAL" value="G_PEXP.AMOUNT" function="SUM()" />
+<group name="G_PEXP" source="Q_PEXP">
+<element name="EMPLOYEE_NO" value="EMPLOYEE_NUMBER" />
+<element name="EMPLOYEE_NAME" value="EMPLOYEE_NAME" />
+<element name="REPORT_NO" value="REPORT_NO" />
+<element name="TXN_DATE" value="TXN_DATE" />
+<element name="AMOUNT" value="PERSONAL_TXN_AMT" />
+<element name="MERCHANT" value="MERCHANT_NAME" />
+<element name="LOCATION" value="LOCATION" />
+</group>
+</group>
+</dataStructure>
+</dataTemplate>

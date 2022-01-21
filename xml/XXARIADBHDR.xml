@@ -1,0 +1,236 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dataTemplate name="XXARIADBHDR" defaultPackage="" dataSourceRef="">
+	<properties>
+		<property name="include_parameters" value="true"/>
+		<property name="include_null_Element" value="true"/>
+		<property name="db_fetch_size" value="300"/>
+	</properties>
+	<parameters>
+		<parameter name="P_TRX_DATE_FROM" dataType="character" defaultValue=""/>
+		<parameter name="P_TRX_DATE_TO" dataType="character" defaultValue=""/>
+		<parameter name="P_DUE_DATE_FROM" dataType="character" defaultValue=""/>
+		<parameter name="P_DUE_DATE_TO" dataType="character" defaultValue=""/>
+		<parameter name="P_AMOUNT_DUE_ORIGINAL_FROM" dataType="number" defaultValue=""/>
+		<parameter name="P_AMOUNT_DUE_ORIGINAL_TO" dataType="number" defaultValue=""/>
+		<parameter name="P_SESSION_ID" dataType="number" defaultValue=""/>
+		<parameter name="P_SHIP_TO_SITE_USE_ID" dataType="number" defaultValue=""/>
+		<parameter name="P_CUSTOMER_NUMBER" dataType="varchar2" defaultValue=""/>
+		<parameter name="P_CUST_ACCOUNT_ID" dataType="number" defaultValue=""/>
+		<parameter name="P_STATUS" dataType="varchar2" defaultValue=""/>
+		<parameter name="P_SMTP_SERVER" dataType="varchar2" defaultValue=""/>
+		<parameter name="P_MAIL_FROM" dataType="varchar2" defaultValue=""/>
+		<parameter name="P_MAIL_TO" dataType="varchar2" defaultValue=""/>       
+        <parameter name="P_MAIL_CC" dataType="varchar2" defaultValue=""/>
+	</parameters>
+<dataQuery>
+<sqlStatement name="Q_DATA" dataSourceRef="">
+<![CDATA[ 
+SELECT ArPaymentSchedulesV.TRX_NUMBER, 
+			   ArPaymentSchedulesV.TRX_DATE,
+			   to_char(ArPaymentSchedulesV.TRX_DATE, 'YYYY-MM-DD') StrTrxDate,
+			   ArPaymentSchedulesV.INVOICE_CURRENCY_CODE, 
+			   ArPaymentSchedulesV.CUSTOMER_ID, 
+			   ArPaymentSchedulesV.CUSTOMER_SITE_USE_ID, 
+			   ArPaymentSchedulesV.CUSTOMER_TRX_ID, 
+			   ArPaymentSchedulesV.CUST_TRX_TYPE_ID, 
+			   ArPaymentSchedulesV.CLASS AS CLASS1, 
+			   ArPaymentSchedulesV.STATUS, 
+			   ArPaymentSchedulesV.TERM_ID, 
+			   ct.PURCHASE_ORDER AS CT_PURCHASE_ORDER,      	 	 
+			   ct.previous_customer_trx_id as CT_PREVIOUS_CUSTOMER_TRX_ID,
+			   ArPaymentSchedulesV.AMOUNT_DUE_ORIGINAL, 
+			   ArPaymentSchedulesV.AMOUNT_DUE_REMAINING, 
+			   ArPaymentSchedulesV.PAYMENT_SCHEDULE_ID, 
+			   ArPaymentSchedulesV.TERMS_SEQUENCE_NUMBER, 
+			   ArPaymentSchedulesV.DUE_DATE,
+			   to_char(ArPaymentSchedulesV.DUE_DATE,'YYYY-MM-DD') StrDueDate,
+			   ArPaymentSchedulesV.CLASS AS CLASS2,
+		(
+		SELECT nvl
+		(
+		( 
+		SELECT fnd_message.get_string('AR', 'ARI_STATUS_OVERDUE') FROM dual WHERE ( trunc(sysdate) > ArPaymentSchedulesV.due_date ) AND ArPaymentSchedulesV.STATUS = 'OP'
+		)
+		, ARI_UTILITIES.get_lookup_meaning('PAYMENT_SCHEDULE_STATUS', ArPaymentSchedulesV.STATUS)
+		)
+		FROM DUAL
+		) as AR_LOOKUP_CODE_STATUS_MEANING,
+		  ct.INTERFACE_HEADER_CONTEXT,
+		  ct.INTERFACE_HEADER_ATTRIBUTE1,
+		  ct.INTERFACE_HEADER_ATTRIBUTE2,
+		  ct.INTERFACE_HEADER_ATTRIBUTE3,
+		  ct.INTERFACE_HEADER_ATTRIBUTE4,
+		  ct.INTERFACE_HEADER_ATTRIBUTE5,
+		  ct.INTERFACE_HEADER_ATTRIBUTE6,
+		  ct.INTERFACE_HEADER_ATTRIBUTE7,
+		  ct.INTERFACE_HEADER_ATTRIBUTE8,
+		  ct.INTERFACE_HEADER_ATTRIBUTE9,
+		  ct.INTERFACE_HEADER_ATTRIBUTE10,
+		  ct.INTERFACE_HEADER_ATTRIBUTE11,
+		  ct.INTERFACE_HEADER_ATTRIBUTE12,
+		  ct.INTERFACE_HEADER_ATTRIBUTE13,
+		  ct.INTERFACE_HEADER_ATTRIBUTE14,
+		  ct.INTERFACE_HEADER_ATTRIBUTE15,
+		  ct.ATTRIBUTE_CATEGORY,
+		  ct.ATTRIBUTE1,
+		  ct.ATTRIBUTE2,
+		  ct.ATTRIBUTE3,
+		  ct.ATTRIBUTE4,
+		  ct.ATTRIBUTE5,
+		  ct.ATTRIBUTE6,
+		  ct.ATTRIBUTE7,
+		  ct.ATTRIBUTE8,
+		  ct.ATTRIBUTE9,
+		  ct.ATTRIBUTE10,
+		  ct.ATTRIBUTE11,
+		  ct.ATTRIBUTE12,
+		  ct.ATTRIBUTE13,
+		  ct.ATTRIBUTE14,
+		  ct.ATTRIBUTE15,
+		  acct.account_number,
+		  acct.account_name,
+		  null selected_flag,
+		  null ERROR_EXISTS,
+		  ct.printing_option PRINTING_OPTION,
+		  to_char(ArPaymentSchedulesV.AMOUNT_IN_DISPUTE) AMOUNT_IN_DISPUTE,
+		  to_char(ArPaymentSchedulesV.AMOUNT_ADJUSTED_PENDING) AMOUNT_ADJUSTED_PENDING,
+		  decode(ct.PRINTING_PENDING, 'N', fnd_message.get_string('AR', 'AR_ALL_YES'), fnd_message.get_string('AR', 'AR_ALL_NO')) PRINTED,
+		MO_GLOBAL.get_ou_name(ArPaymentSchedulesV.org_id) as ORG_NAME,
+		  to_char(ct.paying_customer_id) PAYING_CUSTOMER_ID,
+		  to_char(ct.paying_site_use_id) PAYING_SITE_USE_ID,
+		  ct.SHIP_DATE_ACTUAL SHIP_DATE,
+		  to_char(ct.SHIP_DATE_ACTUAL,'YYYY-MM-DD') StrShipDate,
+		  ArPaymentSchedulesV.FREIGHT_ORIGINAL FREIGHT_AMOUNT,
+		  ArPaymentSchedulesV.TAX_ORIGINAL TAX_AMOUNT,
+		  ArPaymentSchedulesV.PAYMENT_APPROVAL,
+		  al.meaning APPROVAL_STATUS,
+		ct.BILL_TO_SITE_USE_ID,
+		ct.SHIP_TO_SITE_USE_ID,
+		billto_uses.Location bill_to_location,
+		shipto_uses.Location ship_to_location,
+		ARI_UTILITIES.get_lookup_meaning('INV/CM/ADJ', ArPaymentSchedulesV.class) as ACCT_DTLS_VIEW_TRX_TYPE
+		/* Start - Added for R12 upgrade retrofit AllDebTrxTableVO */
+			  ,ADDRESSES.address                                               SHIP_TO_NAME             -- Bushrod (E1327)
+			  ,ADDRESSES.site_use_id                                           SHIP_TO_ID
+			  ,oha.RELEASE_NUMBER                                              XX_RELEASE_NUMBER        -- Bushrod (R1.1 CR619)
+			  --,oha.COST_CENTER_DEPT||'  '                                      XX_COST_CENTER_DEPT      -- Added for defect 5019 Commented on 3-Aug
+			  ,'  '||oha.COST_CENTER_DEPT                                      XX_COST_CENTER_DEPT      -- Modified for defect 5019 on 3-Aug-10
+			  ,oha.DESK_DEL_ADDR                                               XX_DESK_DEL_ADDR
+			  ,NVL2(bs.batch_source_id, cbd.cons_billing_number, null) XX_CONS_INV_ID		--Replaced from cons_inv_id to cons_billing_number for Bill Complete NAIT-67186
+		/* End - Added for R12 upgrade retrofit */
+		FROM AR_PAYMENT_SCHEDULES ArPaymentSchedulesV, 
+		     ra_customer_trx ct, 
+			 hz_cust_accounts acct, 
+			 ar_lookups al,
+		--ar_irec_user_acct_sites_all auasa,
+		hz_cust_site_uses billto_uses,
+		hz_cust_site_uses shipto_uses
+		 ,XX_AR_SHIP_ADDRESS_V ADDRESSES                     -- Bushrod (E1327)
+			  ,XX_OM_HEADER_ATTRIBUTES_ALL oha                    -- Bushrod (R1.1 CR619)
+			  ,XX_AR_CONSBILL_BATCH_SOURCES_V bs
+			  ,XX_AR_CONSBILL_DELIVERED_V cbd
+		WHERE ( ArPaymentSchedulesV.CLASS = 'INV' OR ArPaymentSchedulesV.CLASS = 'CB' OR ArPaymentSchedulesV.CLASS = 'DM' OR ArPaymentSchedulesV.CLASS = 'DEP')
+		AND ArPaymentSchedulesV.customer_trx_id = ct.customer_trx_id
+		AND billto_uses.site_use_id = ct.bill_to_site_use_id
+		AND shipto_uses.site_use_id (+)=ct.ship_to_site_use_id
+		AND shipto_uses.site_use_code(+)='SHIP_TO'
+		AND acct.cust_account_id = ArPaymentSchedulesV.customer_id
+		--AND ArPaymentSchedulesV.customer_id = auasa.customer_id
+		--AND ArPaymentSchedulesV.CUSTOMER_SITE_USE_ID = auasa.CUSTOMER_SITE_USE_ID
+		--AND auasa.USER_ID = FND_GLOBAL.USER_ID
+		AND(TRUNC(ArPaymentSchedulesV.trx_date)) >= trunc(decode( nvl(FND_PROFILE.VALUE('ARI_FILTER_TRXDATE_OLDER'), 0), 0, ArPaymentSchedulesV.trx_date, (sysdate-FND_PROFILE.VALUE('ARI_FILTER_TRXDATE_OLDER'))))
+		AND ct.printing_option =  decode(nvl(FND_PROFILE.VALUE('ARI_FILTER_DONOTPRINT_TRX'), 'NOT'), 'Y', 'PRI', ct.printing_option)
+		AND trunc( ArPaymentSchedulesV.TRX_DATE) BETWEEN TRUNC(fnd_conc_date.string_to_date(NVL(:P_TRX_DATE_FROM,ArPaymentSchedulesV.TRX_DATE)))
+                                                    AND TRUNC(fnd_conc_date.string_to_date(NVL(:P_TRX_DATE_TO,ArPaymentSchedulesV.TRX_DATE)))
+	    AND trunc( ArPaymentSchedulesV.DUE_DATE) BETWEEN TRUNC(fnd_conc_date.string_to_date(NVL(:P_DUE_DATE_FROM,ArPaymentSchedulesV.DUE_DATE)))
+                                                    AND TRUNC(fnd_conc_date.string_to_date(NVL(:P_DUE_DATE_TO,ArPaymentSchedulesV.DUE_DATE)))
+	    AND ArPaymentSchedulesV.AMOUNT_DUE_ORIGINAL BETWEEN NVL(:P_AMOUNT_DUE_ORIGINAL_FROM,ArPaymentSchedulesV.AMOUNT_DUE_ORIGINAL)
+	                                                  AND NVL(:P_AMOUNT_DUE_ORIGINAL_TO,ArPaymentSchedulesV.AMOUNT_DUE_ORIGINAL)													
+		AND al.lookup_type='ARI_PMT_APPROVAL_STATUS' 
+		and al.lookup_code=nvl(ArPaymentSchedulesV.PAYMENT_APPROVAL,'PENDING') 
+		--AND auasa.session_id = :P_SESSION_ID
+		AND ct.attribute14                   = oha.header_id(+)                                     -- Bushrod (R1.1 CR619)
+		AND bs.batch_source_id (+)           = ct.batch_source_id
+		AND cbd.cons_inv_id (+)              = ArPaymentSchedulesV.cons_inv_id
+		AND ADDRESSES.site_use_id (+)        = ct.ship_to_site_use_id                               -- Bushrod (E1327)
+		AND NVL(ct.ship_to_site_use_id,'-1') = NVL( :P_SHIP_TO_SITE_USE_ID , NVL(ct.ship_to_site_use_id,'-1'))
+		AND ArPaymentSchedulesV.customer_id = :P_CUST_ACCOUNT_ID
+        AND ArPaymentSchedulesV.invoice_currency_code = 'USD'
+        AND  ArPaymentSchedulesV.status = NVL(:P_STATUS,ArPaymentSchedulesV.status)
+ ORDER BY ArPaymentSchedulesV.DUE_DATE ASC, ArPaymentSchedulesV.TRX_DATE ASC
+]]>
+</sqlStatement>
+<sqlStatement name="Q_DATA1" dataSourceRef="">
+<![CDATA[ SELECT :P_SMTP_SERVER    SMTP_SERVER,
+                 :P_MAIL_FROM      MAIL_FROM,
+                 :P_MAIL_TO        MAIL_TO,
+				 :P_MAIL_CC        MAIL_CC,
+				 account_name      ACCOUNT_NAME,
+                 account_number    ACCOUNT_NUMBER,
+				 substr(orig_system_reference,1,8) AOPS_NUMBER
+            FROM hz_cust_accounts
+           WHERE cust_account_id = :P_CUST_ACCOUNT_ID
+]]>
+</sqlStatement>
+</dataQuery>
+<dataStructure>
+<group name="G_DATA" source="Q_DATA" groupFilter="">
+	 <element name="XX_CONS_INV_ID" value="XX_CONS_INV_ID" function=""/>
+     <element name="TRX_NUMBER" value="TRX_NUMBER" function=""/>
+	 <element name="ACCT_DTLS_VIEW_TRX_TYPE" value="ACCT_DTLS_VIEW_TRX_TYPE" function=""/> 
+	 <element name="AR_LOOKUP_CODE_STATUS_MEANING" value="AR_LOOKUP_CODE_STATUS_MEANING" function=""/> 
+     <element name="SHIP_TO_NAME" value="SHIP_TO_NAME" function=""/>
+	 <element name="STRTRXDATE" value="STRTRXDATE" function=""/>
+	 <element name="STRSHIPDATE" value="STRSHIPDATE" function=""/>
+	 <element name="STRDUEDATE" value="STRDUEDATE" function=""/>
+	 <element name="CT_PURCHASE_ORDER" value="CT_PURCHASE_ORDER" function=""/>
+	 <element name="XX_RELEASE_NUMBER" value="XX_RELEASE_NUMBER" function=""/>
+	 <element name="XX_COST_CENTER_DEPT" value="XX_COST_CENTER_DEPT" function=""/>
+	 <element name="XX_DESK_DEL_ADDR" value="XX_DESK_DEL_ADDR" function=""/>
+	 <element name="FREIGHT_AMOUNT" value="FREIGHT_AMOUNT" function=""/>
+	 <element name="TAX_AMOUNT" value="TAX_AMOUNT" function=""/>
+	 <element name="AMOUNT_DUE_ORIGINAL" value="AMOUNT_DUE_ORIGINAL" function=""/>
+	 <element name="AMOUNT_DUE_REMAINING" value="AMOUNT_DUE_REMAINING" function=""/>
+</group>
+<group name="G_DATA1" source="Q_DATA1" groupFilter="">
+     <element name="SMTP_SERVER"  value="SMTP_SERVER" function=""/>
+     <element name="MAIL_FROM"    value="MAIL_FROM" function=""/>
+     <element name="MAIL_TO"      value="MAIL_TO" function=""/>
+	 <element name="MAIL_CC"      value="MAIL_CC" function=""/>
+	 <element name="ACCOUNT_NAME" value="ACCOUNT_NAME" function=""/>
+     <element name="ACCOUNT_NUMBER" value="ACCOUNT_NUMBER" function=""/>
+	 <element name="AOPS_NUMBER" value="AOPS_NUMBER" function=""/>
+</group>
+</dataStructure>
+</dataTemplate>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

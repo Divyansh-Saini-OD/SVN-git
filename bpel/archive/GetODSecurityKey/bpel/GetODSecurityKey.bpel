@@ -1,0 +1,362 @@
+<?xml version = "1.0" encoding = "UTF-8" ?>
+<!--
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  Oracle JDeveloper BPEL Designer 
+  
+  Created: Wed Oct 31 18:50:07 EDT 2007
+  Author:  Rajesh-Iyangar
+  Purpose: Synchronous BPEL Process
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+-->
+<process name="GetODSecurityKey"
+         targetNamespace="http://xmlns.oracle.com/GetODSecurityKey"
+         xmlns="http://schemas.xmlsoap.org/ws/2003/03/business-process/"
+         xmlns:bpws="http://schemas.xmlsoap.org/ws/2003/03/business-process/"
+         xmlns:xp20="http://www.oracle.com/XSL/Transform/java/oracle.tip.pc.services.functions.Xpath20"
+         xmlns:ns4="http://xmlns.oracle.com/pcbpel/adapter/db/APPS/XX_OD_SECURITY_KEY_PKG/GET_KEYS_BASE64/"
+         xmlns:ids="http://xmlns.oracle.com/bpel/services/IdentityService/xpath"
+         xmlns:ldap="http://schemas.oracle.com/xpath/extension/ldap"
+         xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+         xmlns:client="http://xmlns.oracle.com/GetODSecurityKey"
+         xmlns:ora="http://schemas.oracle.com/xpath/extension"
+         xmlns:xref="http://www.oracle.com/XSL/Transform/java/oracle.tip.xref.xpath.XRefXPathFunctions"
+         xmlns:ns9="http://xmlns.oracle.com/ODErrorLogger"
+         xmlns:hwf="http://xmlns.oracle.com/bpel/workflow/xpath"
+         xmlns:ns1="http://xmlns.oracle.com/pcbpel/adapter/db/GetKeyValue/"
+         xmlns:ehdr="http://www.oracle.com/XSL/Transform/java/oracle.tip.esb.server.headers.ESBHeaderFunctions"
+         xmlns:ns3="http://www.officedepot.com/gODSecurity/validation/"
+         xmlns:ns2="http://xmlns.oracle.com/pcbpel/adapter/db/APPS/XX_OD_SECURITY_KEY_PKG/GET_KEYS/"
+         xmlns:bpelx="http://schemas.oracle.com/bpel/extension"
+         xmlns:orcl="http://www.oracle.com/XSL/Transform/java/oracle.tip.pc.services.functions.ExtFunc"
+         xmlns:ns10="ODError">
+  <!-- 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+      PARTNERLINKS                                                      
+      List of services participating in this BPEL process               
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  -->
+  <partnerLinks>
+    <!-- 
+      The 'client' role represents the requester of this service. It is 
+      used for callback. The location and correlation information associated
+      with the client role are automatically set using WS-Addressing.
+    -->
+    <partnerLink name="GetODSecurityKey"
+                 partnerLinkType="client:GetODSecurityKey"
+                 myRole="GetODSecurityKeyProvider"/>
+    <partnerLink myRole="ODErrorLoggerRequester" name="ODErrorLogger"
+                 partnerRole="ODErrorLoggerProvider"
+                 partnerLinkType="ns9:ODErrorLogger"/>
+    <partnerLink name="GetKeyValue" partnerRole="GetKeyValue_role"
+                 partnerLinkType="ns1:GetKeyValue_plt"/>
+  </partnerLinks>
+  <!-- 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+      VARIABLES                                                        
+      List of messages and XML documents used within this BPEL process 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  -->
+  <variables>
+    <!-- Reference to the message passed as input during initiation -->
+    <variable name="inputVariable"
+              messageType="client:GetODSecurityKeyRequestMessage"/>
+    <!-- Reference to the message that will be returned to the requester-->
+    <variable name="outputVariable"
+              messageType="client:GetODSecurityKeyResponseMessage"/>
+    <variable name="Exception" messageType="bpelx:RuntimeFaultMessage"/>
+    <variable name="invkSelectionFailure_initiate"
+              messageType="ns9:ODErrorLoggerRequestMessage"/>
+    <variable name="invkRemoteFault_initiate"
+              messageType="ns9:ODErrorLoggerRequestMessage"/>
+    <variable name="invkCatchAll_initiate"
+              messageType="ns9:ODErrorLoggerRequestMessage"/>
+    <variable name="invkBindingFault_initiate"
+              messageType="ns9:ODErrorLoggerRequestMessage"/>
+    <variable name="GetKeyValue_InputVariable" messageType="ns1:args_in_msg"/>
+    <variable name="Fault" messageType="client:GetODSecurityKeyFault"/>
+    <variable name="GetKeyValue_OutputVariable" messageType="ns1:args_out_msg"/>
+  </variables>
+  <faultHandlers>
+    <catch faultName="bpws:selectionFailure" faultVariable="Exception">
+      <sequence name="Sequence_3">
+        <assign name="asnSelectionFailure">
+          <copy>
+            <from expression="concat(ora:getProcessId(), ora:getProcessVersion())"/>
+            <to variable="invkSelectionFailure_initiate" part="payload"
+                query="/ns10:ErrorData/ns10:ProcessInfo/ns10:BusinessProcessName"/>
+          </copy>
+          <copy>
+            <from expression="ora:getInstanceId()"/>
+            <to variable="invkSelectionFailure_initiate" part="payload"
+                query="/ns10:ErrorData/ns10:ProcessInfo/ns10:BusinessProcessId"/>
+          </copy>
+          <copy>
+            <from expression="ora:getDomainId()"/>
+            <to variable="invkSelectionFailure_initiate" part="payload"
+                query="/ns10:ErrorData/ns10:ProcessInfo/ns10:BusinessProcessDomain"/>
+          </copy>
+          <copy>
+            <from expression="ora:getProcessURL()"/>
+            <to variable="invkSelectionFailure_initiate" part="payload"
+                query="/ns10:ErrorData/ns10:ProcessInfo/ns10:SystemName"/>
+          </copy>
+          <copy>
+            <from expression="xp20:current-dateTime()"/>
+            <to variable="invkSelectionFailure_initiate" part="payload"
+                query="/ns10:ErrorData/ns10:ErrorDetails/ns10:ErrorDateTime"/>
+          </copy>
+          <copy>
+            <from expression="'GetODSecurityKey BPEL Process'"/>
+            <to variable="invkSelectionFailure_initiate" part="payload"
+                query="/ns10:ErrorData/ns10:ProcessInfo/ns10:BusinessProcessStep"/>
+          </copy>
+          <copy>
+            <from variable="Exception" part="code"/>
+            <to variable="invkSelectionFailure_initiate" part="payload"
+                query="/ns10:ErrorData/ns10:ErrorDetails/ns10:ErrorCode"/>
+          </copy>
+          <copy>
+            <from variable="Exception" part="summary"/>
+            <to variable="invkSelectionFailure_initiate" part="payload"
+                query="/ns10:ErrorData/ns10:ErrorDetails/ns10:ErrorDescription"/>
+          </copy>
+          <copy>
+            <from variable="Exception" part="detail"/>
+            <to variable="invkSelectionFailure_initiate" part="payload"
+                query="/ns10:ErrorData/ns10:ErrorDetails/ns10:ErrorText"/>
+          </copy>
+        </assign>
+        <invoke name="invkSelectionFailure" partnerLink="ODErrorLogger"
+                portType="ns9:ODErrorLogger" operation="initiate"
+                inputVariable="invkSelectionFailure_initiate"/>
+      </sequence>
+    </catch>
+    <catch faultName="bpelx:bindingFault" faultVariable="Exception">
+      <sequence name="Sequence_2">
+        <assign name="asnBindingFault">
+          <copy>
+            <from expression="concat(ora:getProcessId(), ora:getProcessVersion())"/>
+            <to variable="invkBindingFault_initiate" part="payload"
+                query="/ns10:ErrorData/ns10:ProcessInfo/ns10:BusinessProcessName"/>
+          </copy>
+          <copy>
+            <from expression="ora:getInstanceId()"/>
+            <to variable="invkBindingFault_initiate" part="payload"
+                query="/ns10:ErrorData/ns10:ProcessInfo/ns10:BusinessProcessId"/>
+          </copy>
+          <copy>
+            <from expression="ora:getDomainId()"/>
+            <to variable="invkBindingFault_initiate" part="payload"
+                query="/ns10:ErrorData/ns10:ProcessInfo/ns10:BusinessProcessDomain"/>
+          </copy>
+          <copy>
+            <from expression="ora:getProcessURL()"/>
+            <to variable="invkBindingFault_initiate" part="payload"
+                query="/ns10:ErrorData/ns10:ProcessInfo/ns10:SystemName"/>
+          </copy>
+          <copy>
+            <from expression="xp20:current-dateTime()"/>
+            <to variable="invkBindingFault_initiate" part="payload"
+                query="/ns10:ErrorData/ns10:ErrorDetails/ns10:ErrorDateTime"/>
+          </copy>
+          <copy>
+            <from expression="'GetODSecurityKey BPEL Process'"/>
+            <to variable="invkBindingFault_initiate" part="payload"
+                query="/ns10:ErrorData/ns10:ProcessInfo/ns10:BusinessProcessStep"/>
+          </copy>
+          <copy>
+            <from variable="Exception" part="code"/>
+            <to variable="invkBindingFault_initiate" part="payload"
+                query="/ns10:ErrorData/ns10:ErrorDetails/ns10:ErrorCode"/>
+          </copy>
+          <copy>
+            <from variable="Exception" part="summary"/>
+            <to variable="invkBindingFault_initiate" part="payload"
+                query="/ns10:ErrorData/ns10:ErrorDetails/ns10:ErrorDescription"/>
+          </copy>
+          <copy>
+            <from variable="Exception" part="detail"/>
+            <to variable="invkBindingFault_initiate" part="payload"
+                query="/ns10:ErrorData/ns10:ErrorDetails/ns10:ErrorText"/>
+          </copy>
+        </assign>
+        <invoke name="invkBindingFault" partnerLink="ODErrorLogger"
+                portType="ns9:ODErrorLogger" operation="initiate"
+                inputVariable="invkBindingFault_initiate"/>
+      </sequence>
+    </catch>
+    <catch faultName="bpelx:remoteFault" faultVariable="Exception">
+      <sequence name="Sequence_5">
+        <assign name="asnRemoteFault">
+          <copy>
+            <from expression="concat(ora:getProcessId(), ora:getProcessVersion())"/>
+            <to variable="invkRemoteFault_initiate" part="payload"
+                query="/ns10:ErrorData/ns10:ProcessInfo/ns10:BusinessProcessName"/>
+          </copy>
+          <copy>
+            <from expression="ora:getInstanceId()"/>
+            <to variable="invkRemoteFault_initiate" part="payload"
+                query="/ns10:ErrorData/ns10:ProcessInfo/ns10:BusinessProcessId"/>
+          </copy>
+          <copy>
+            <from expression="ora:getDomainId()"/>
+            <to variable="invkRemoteFault_initiate" part="payload"
+                query="/ns10:ErrorData/ns10:ProcessInfo/ns10:BusinessProcessDomain"/>
+          </copy>
+          <copy>
+            <from expression="ora:getProcessURL()"/>
+            <to variable="invkSelectionFailure_initiate" part="payload"
+                query="/ns10:ErrorData/ns10:ProcessInfo/ns10:SystemName"/>
+          </copy>
+          <copy>
+            <from expression="xp20:current-dateTime()"/>
+            <to variable="invkRemoteFault_initiate" part="payload"
+                query="/ns10:ErrorData/ns10:ErrorDetails/ns10:ErrorDateTime"/>
+          </copy>
+          <copy>
+            <from expression="'GetODSecurityKey BPEL Process'"/>
+            <to variable="invkRemoteFault_initiate" part="payload"
+                query="/ns10:ErrorData/ns10:ProcessInfo/ns10:BusinessProcessStep"/>
+          </copy>
+          <copy>
+            <from variable="Exception" part="code"/>
+            <to variable="invkRemoteFault_initiate" part="payload"
+                query="/ns10:ErrorData/ns10:ErrorDetails/ns10:ErrorCode"/>
+          </copy>
+          <copy>
+            <from variable="Exception" part="summary"/>
+            <to variable="invkRemoteFault_initiate" part="payload"
+                query="/ns10:ErrorData/ns10:ErrorDetails/ns10:ErrorDescription"/>
+          </copy>
+          <copy>
+            <from variable="Exception" part="detail"/>
+            <to variable="invkRemoteFault_initiate" part="payload"
+                query="/ns10:ErrorData/ns10:ErrorDetails/ns10:ErrorText"/>
+          </copy>
+        </assign>
+        <invoke name="invkRemoteFault" partnerLink="ODErrorLogger"
+                portType="ns9:ODErrorLogger" operation="initiate"
+                inputVariable="invkRemoteFault_initiate"/>
+        <assign name="Assign_Falult_Message">
+          <copy>
+            <from expression="'Resource Not Available'"/>
+            <to variable="Fault" part="Fault"/>
+          </copy>
+        </assign>
+        <reply name="Reply_Fault_Message" partnerLink="GetODSecurityKey"
+               portType="client:GetODSecurityKey" operation="process"
+               variable="Fault" faultName="client:ResourceNotAvailable"/>
+      </sequence>
+    </catch>
+    <catchAll>
+      <sequence name="Sequence_4">
+        <assign name="asnCatchAll">
+          <copy>
+            <from expression="concat(ora:getProcessId(), ora:getProcessVersion())"/>
+            <to variable="invkCatchAll_initiate" part="payload"
+                query="/ns10:ErrorData/ns10:ProcessInfo/ns10:BusinessProcessName"/>
+          </copy>
+          <copy>
+            <from expression="ora:getInstanceId()"/>
+            <to variable="invkCatchAll_initiate" part="payload"
+                query="/ns10:ErrorData/ns10:ProcessInfo/ns10:BusinessProcessId"/>
+          </copy>
+          <copy>
+            <from expression="ora:getDomainId()"/>
+            <to variable="invkCatchAll_initiate" part="payload"
+                query="/ns10:ErrorData/ns10:ProcessInfo/ns10:BusinessProcessDomain"/>
+          </copy>
+          <copy>
+            <from expression="ora:getProcessURL()"/>
+            <to variable="invkCatchAll_initiate" part="payload"
+                query="/ns10:ErrorData/ns10:ProcessInfo/ns10:SystemName"/>
+          </copy>
+          <copy>
+            <from expression="xp20:current-dateTime()"/>
+            <to variable="invkCatchAll_initiate" part="payload"
+                query="/ns10:ErrorData/ns10:ErrorDetails/ns10:ErrorDateTime"/>
+          </copy>
+          <copy>
+            <from expression="'GetODSecurityKey BPEL Process'"/>
+            <to variable="invkCatchAll_initiate" part="payload"
+                query="/ns10:ErrorData/ns10:ProcessInfo/ns10:BusinessProcessStep"/>
+          </copy>
+          <copy>
+            <from variable="Exception" part="code"/>
+            <to variable="invkCatchAll_initiate" part="payload"
+                query="/ns10:ErrorData/ns10:ErrorDetails/ns10:ErrorCode"/>
+          </copy>
+          <copy>
+            <from variable="Exception" part="summary"/>
+            <to variable="invkCatchAll_initiate" part="payload"
+                query="/ns10:ErrorData/ns10:ErrorDetails/ns10:ErrorDescription"/>
+          </copy>
+          <copy>
+            <from variable="Exception" part="detail"/>
+            <to variable="invkCatchAll_initiate" part="payload"
+                query="/ns10:ErrorData/ns10:ErrorDetails/ns10:ErrorText"/>
+          </copy>
+        </assign>
+        <invoke name="invkCatchAll" partnerLink="ODErrorLogger"
+                portType="ns9:ODErrorLogger" operation="initiate"
+                inputVariable="invkCatchAll_initiate"/>
+      </sequence>
+    </catchAll>
+  </faultHandlers>
+  <!-- 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+     ORCHESTRATION LOGIC                                               
+     Set of activities coordinating the flow of messages across the    
+     services integrated within this business process                  
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  -->
+  <sequence name="main">
+    <!-- Receive input from requestor. (Note: This maps to operation defined in GetODSecurityKey.wsdl) -->
+    <receive name="receiveInput" partnerLink="GetODSecurityKey"
+             portType="client:GetODSecurityKey" operation="process"
+             variable="inputVariable" createInstance="yes"/>
+    <!-- Generate reply to synchronous request -->
+    <assign name="TransformInputToDBRequest">
+      <bpelx:annotation>
+        <bpelx:pattern>transformation</bpelx:pattern>
+      </bpelx:annotation>
+      <copy>
+        <from expression="ora:processXSLT('Transformation_1.xsl',bpws:getVariableData('inputVariable','input'))"/>
+        <to variable="GetKeyValue_InputVariable" part="InputParameters"/>
+      </copy>
+    </assign>
+    <invoke name="InvokeGetSecurityKeys" partnerLink="GetKeyValue"
+            portType="ns1:GetKeyValue_ptt" operation="GetKeyValue"
+            inputVariable="GetKeyValue_InputVariable"
+            outputVariable="GetKeyValue_OutputVariable"/>
+    <switch name="Switch_1">
+      <case condition="bpws:getVariableData('GetKeyValue_OutputVariable','OutputParameters','/ns4:OutputParameters/ns4:X_KEY_VALUE') = ''">
+        <sequence name="Sequence_6">
+          <assign name="Assign_Data_Not_Found_Message">
+            <copy>
+              <from expression="'Data Not Found'"/>
+              <to variable="Fault" part="Fault"/>
+            </copy>
+          </assign>
+          <reply name="Reply_3" partnerLink="GetODSecurityKey"
+                 portType="client:GetODSecurityKey" operation="process"
+                 variable="Fault" faultName="client:DataNotAvailable"/>
+        </sequence>
+      </case>
+      <otherwise>
+        <assign name="TransformOut">
+          <bpelx:annotation>
+            <bpelx:pattern>transformation</bpelx:pattern>
+          </bpelx:annotation>
+          <copy>
+            <from expression="ora:processXSLT('TransformationOut1.xsl',bpws:getVariableData('GetKeyValue_OutputVariable','OutputParameters'))"/>
+            <to variable="outputVariable" part="output"/>
+          </copy>
+        </assign>
+      </otherwise>
+    </switch>
+    <reply name="replyOutput" partnerLink="GetODSecurityKey"
+           portType="client:GetODSecurityKey" operation="process"
+           variable="outputVariable"/>
+  </sequence>
+</process>

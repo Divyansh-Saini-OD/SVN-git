@@ -1,0 +1,793 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xml-fragment xmlns:ser="http://www.bea.com/wli/sb/services" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:tran="http://www.bea.com/wli/sb/transports" xmlns:env="http://www.bea.com/wli/config/env" xmlns:con="http://www.bea.com/wli/sb/pipeline/config" xmlns:con1="http://www.bea.com/wli/sb/stages/config" xmlns:con2="http://www.bea.com/wli/sb/stages/transform/config" xmlns:http="http://www.bea.com/wli/sb/transports/http" xmlns:con3="http://www.bea.com/wli/sb/stages/logging/config" xmlns:con4="http://www.bea.com/wli/sb/services/security/config" xmlns:con5="http://www.bea.com/wli/sb/typesystem/config">
+  <ser:coreEntry isProxy="true" isEnabled="true" isAutoPublish="false" isTracingEnabled="true">
+    <ser:description/>
+    <ser:security>
+      <con4:inboundWss processWssHeader="true"/>
+    </ser:security>
+    <ser:binding type="SOAP" isSoap12="false" xsi:type="con3:SoapBindingType" xmlns:con3="http://www.bea.com/wli/sb/services/bindings/config">
+      <con3:wsdl ref="ODPOSAService/resource/wsdl/ODPOSAServiceWSDL"/>
+      <con3:port>
+        <con3:name>POSAServicePort</con3:name>
+        <con3:namespace>http://www.officedepot.com/officedepot/V1/ODPOSAServicewsdl</con3:namespace>
+      </con3:port>
+      <con3:selector type="SOAP body"/>
+      <con3:WSI-compliant>false</con3:WSI-compliant>
+    </ser:binding>
+    <ser:monitoring isEnabled="false">
+      <ser:aggregationInterval>10</ser:aggregationInterval>
+      <ser:pipelineMonitoringLevel>Pipeline</ser:pipelineMonitoringLevel>
+    </ser:monitoring>
+    <ser:reporting>true</ser:reporting>
+    <ser:logging isEnabled="true">
+      <ser:logLevel>debug</ser:logLevel>
+    </ser:logging>
+    <ser:sla-alerting isEnabled="true">
+      <ser:alertLevel>normal</ser:alertLevel>
+    </ser:sla-alerting>
+    <ser:pipeline-alerting isEnabled="true">
+      <ser:alertLevel>normal</ser:alertLevel>
+    </ser:pipeline-alerting>
+    <ser:ws-policy>
+      <ser:binding-mode>owsm-policy-bindings</ser:binding-mode>
+      <ser:policies>
+        <ser:service-policy>
+          <ser:owsm-policy-ref ID="oracle/wss_username_token_service_policy"/>
+        </ser:service-policy>
+      </ser:policies>
+    </ser:ws-policy>
+    <ser:throttling enabled="false">
+      <ser:capacity>0</ser:capacity>
+      <ser:maxQueueLength>0</ser:maxQueueLength>
+      <ser:timeToLive>0</ser:timeToLive>
+    </ser:throttling>
+    <ser:messageTracing enabled="true">
+      <ser:detailsLevel>Terse</ser:detailsLevel>
+      <ser:maxSize>8192</ser:maxSize>
+    </ser:messageTracing>
+    <ser:pageAttachments isEnabled="false"/>
+    <ser:transactions isRequired="false" sameTxForResponse="false"/>
+  </ser:coreEntry>
+  <ser:endpointConfig>
+    <tran:provider-id>http</tran:provider-id>
+    <tran:inbound>true</tran:inbound>
+    <tran:URI>
+      <env:value>/ODPOSAServicePrj/ProxyServices/ODPOSAServicePS</env:value>
+    </tran:URI>
+    <tran:inbound-properties/>
+    <tran:all-headers>true</tran:all-headers>
+    <tran:provider-specific>
+      <http:inbound-properties/>
+    </tran:provider-specific>
+  </ser:endpointConfig>
+  <ser:router errorHandler="_onErrorHandler-5328847924053951412-4ad1fa4a.136a79d1202.-7fe2">
+    <con:pipeline name="activateTokenPipelinePairNode1_response" type="response">
+      <con:stage name="ResponseLoggingStage">
+        <con:comment/>
+        <con:context>
+          <con1:varNsDecl prefix="arr" namespace="http://www.officedepot.com/officedepot/V1/Serialization/Arrays"/>
+          <con1:varNsDecl prefix="odp" namespace="http://www.officedepot.com/officedepot/V1/ODPOSAServiceSchema"/>
+        </con:context>
+        <con:actions>
+          <con3:report>
+            <con1:id>_ActionId-4476323124642511909-b8f41e3.13728c29703.-7fd8</con1:id>
+            <con3:expr>
+              <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$POSActivateTokenRequest</con:xqueryText>
+            </con3:expr>
+            <con3:labels>
+              <con3:key>Operation=activateToken:End_With_Serial#</con3:key>
+              <con3:varName>POSActivateTokenRequest</con3:varName>
+              <con3:value>
+                <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">//*:serialNumber/text()</con:xpathText>
+              </con3:value>
+            </con3:labels>
+          </con3:report>
+        </con:actions>
+      </con:stage>
+    </con:pipeline>
+    <con:pipeline name="deactivateTokenPipelinePairNode1_response" type="response">
+      <con:stage name="ResponseLoggingStage">
+        <con:comment/>
+        <con:context>
+          <con1:varNsDecl prefix="arr" namespace="http://www.officedepot.com/officedepot/V1/Serialization/Arrays"/>
+          <con1:varNsDecl prefix="odp" namespace="http://www.officedepot.com/officedepot/V1/ODPOSAServiceSchema"/>
+        </con:context>
+        <con:actions>
+          <con1:report xmlns:con1="http://www.bea.com/wli/sb/stages/logging/config">
+            <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-4476323124642511909-b8f41e3.13728c29703.-7fd7</con2:id>
+            <con1:expr>
+              <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$POSDeactivateTokenRequest</con:xqueryText>
+            </con1:expr>
+            <con1:labels>
+              <con1:key>Operation=deactivateToken:End_With_Serial#</con1:key>
+              <con1:varName>POSDeactivateTokenRequest</con1:varName>
+              <con1:value>
+                <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">//*:serialNumber/text()</con:xpathText>
+              </con1:value>
+            </con1:labels>
+          </con1:report>
+        </con:actions>
+      </con:stage>
+    </con:pipeline>
+    <con:pipeline name="checkStatusPipelinePairNode1_response" type="response">
+      <con:stage name="ResponseLoggingStage">
+        <con:comment/>
+        <con:context>
+          <con1:varNsDecl prefix="arr" namespace="http://www.officedepot.com/officedepot/V1/Serialization/Arrays"/>
+          <con1:varNsDecl prefix="odp" namespace="http://www.officedepot.com/officedepot/V1/ODPOSAServiceSchema"/>
+        </con:context>
+        <con:actions>
+          <con1:report xmlns:con1="http://www.bea.com/wli/sb/stages/logging/config">
+            <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-4476323124642511909-b8f41e3.13728c29703.-7fd6</con2:id>
+            <con1:expr>
+              <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$POSCheckStatusRequest</con:xqueryText>
+            </con1:expr>
+            <con1:labels>
+              <con1:key>Operation=checkStatus:End_With_Serial#</con1:key>
+              <con1:varName>POSCheckStatusRequest</con1:varName>
+              <con1:value>
+                <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">//*:serialNumber/text()</con:xpathText>
+              </con1:value>
+            </con1:labels>
+          </con1:report>
+        </con:actions>
+      </con:stage>
+    </con:pipeline>
+    <con:pipeline name="deactivateTokenPipelinePairNode1_request" type="request">
+      <con:stage name="ReportAndValidationStage">
+        <con:comment/>
+        <con:context>
+          <con1:varNsDecl prefix="odp" namespace="http://schemas.officedepot.com/V1/ODPOSAServiceSchema"/>
+          <con1:varNsDecl prefix="arr" namespace="http://schemas.officedepot.com/V1/Serialization/Arrays"/>
+          <con1:varNsDecl prefix="arr1" namespace="http://www.officedepot.com/officedepot/V1/Serialization/Arrays"/>
+          <con1:varNsDecl prefix="odp1" namespace="http://www.officedepot.com/officedepot/V1/ODPOSAServiceSchema"/>
+        </con:context>
+        <con:actions>
+          <con3:report>
+            <con1:id>_ActionId-4476323124642511909-b8f41e3.13728c29703.-7fdd</con1:id>
+            <con3:expr>
+              <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$body</con:xqueryText>
+            </con3:expr>
+            <con3:labels>
+              <con3:key>Operation=deactivateToken:Start_With_Serial#</con3:key>
+              <con3:varName>body</con3:varName>
+              <con3:value>
+                <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">//*:serialNumber/text()</con:xpathText>
+              </con3:value>
+            </con3:labels>
+            <con3:labels>
+              <con3:key>Operation=deactivateToken:StoreId</con3:key>
+              <con3:varName>body</con3:varName>
+              <con3:value>
+                <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">//*:storeId/text()</con:xpathText>
+              </con3:value>
+            </con3:labels>
+          </con3:report>
+          <con2:validate>
+            <con1:id>_ActionId-4476323124642511909-b8f41e3.13728c29703.-7fdb</con1:id>
+            <con2:schema ref="ODPOSAService/resource/schema/ODPOSAService"/>
+            <con2:schemaElement xmlns:odp="http://www.officedepot.com/officedepot/V1/ODPOSAServiceSchema">odp:deactivateToken</con2:schemaElement>
+            <con2:varName>body</con2:varName>
+            <con2:location>
+              <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">./*</con:xpathText>
+            </con2:location>
+            <con2:resultVarName/>
+          </con2:validate>
+          <con2:assign varName="inputRequest">
+            <con1:id>_ActionId-5867641892473288403--20ffb9fa.13af35c13b6.-7f88</con1:id>
+            <con2:expr>
+              <con1:xqueryText>$body</con1:xqueryText>
+            </con2:expr>
+          </con2:assign>
+        </con:actions>
+      </con:stage>
+      <con:stage name="TransformStage">
+        <con:comment/>
+        <con:context>
+          <con1:userNsDecl prefix="odp" namespace="http://schemas.officedepot.com/V1/ODPOSAServiceSchema"/>
+          <con1:userNsDecl prefix="arr" namespace="http://schemas.officedepot.com/V1/Serialization/Arrays"/>
+          <con1:userNsDecl prefix="arr1" namespace="http://www.officedepot.com/officedepot/V1/Serialization/Arrays"/>
+          <con1:userNsDecl prefix="odp1" namespace="http://www.officedepot.com/officedepot/V1/ODPOSAServiceSchema"/>
+        </con:context>
+        <con:actions>
+          <con2:assign varName="POSDeactivateTokenRequest">
+            <con1:id>_ActionId-7449411366328906942--47b4772f.137be6edfc3.-7faa</con1:id>
+            <con2:expr>
+              <con:xqueryTransform xmlns:con="http://www.bea.com/wli/sb/stages/config">
+                <con:resource ref="ODPOSAService/resource/transformation/XqueryODDeactivateReqToPOSAServiceReq"/>
+                <con:param name="deactivateToken1">
+                  <con:path>$body/odp1:deactivateToken</con:path>
+                </con:param>
+              </con:xqueryTransform>
+            </con2:expr>
+          </con2:assign>
+        </con:actions>
+      </con:stage>
+    </con:pipeline>
+    <con:pipeline name="_onErrorHandler-5328847924053951412-4ad1fa4a.136a79d1202.-7fe2" type="error">
+      <con:stage name="ErrorHandlerStage">
+        <con:context>
+          <con1:userNsDecl prefix="s" namespace="http://schemas.xmlsoap.org/soap/envelope"/>
+          <con1:varNsDecl prefix="arr" namespace="http://www.officedepot.com/officedepot/V1/Serialization/Arrays"/>
+          <con1:varNsDecl prefix="odp" namespace="http://www.officedepot.com/officedepot/V1/ODPOSAServiceSchema"/>
+        </con:context>
+        <con:actions>
+          <con3:report>
+            <con1:id>_ActionId-7449411366328906942--47b4772f.137be6edfc3.-7fca</con1:id>
+            <con3:expr>
+              <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$body</con:xqueryText>
+            </con3:expr>
+            <con3:labels>
+              <con3:key>ERROR HANDLER MESSAGE</con3:key>
+              <con3:varName>bodyvar</con3:varName>
+              <con3:value>
+                <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">*</con:xpathText>
+              </con3:value>
+            </con3:labels>
+          </con3:report>
+          <con2:assign varName="faultMap">
+            <con1:id>_ActionId-4476323124642511909-b8f41e3.13728c29703.-7fbc</con1:id>
+            <con2:expr>
+              <con:xqueryTransform xmlns:con="http://www.bea.com/wli/sb/stages/config">
+                <con:resource ref="ODPOSAService/resource/transformation/FaultMapping"/>
+              </con:xqueryTransform>
+            </con2:expr>
+          </con2:assign>
+          <con2:ifThenElse>
+            <con1:id>_ActionId-4476323124642511909-b8f41e3.13728c29703.-7fc8</con1:id>
+            <con2:case>
+              <con2:condition>
+                <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$body/*:Fault/detail/*:ExceptionDetail/*:Message</con:xqueryText>
+              </con2:condition>
+              <con2:actions>
+                <con3:report>
+                  <con1:id>_ActionId-4476323124642511909-b8f41e3.13728c29703.-7fc0</con1:id>
+                  <con3:expr>
+                    <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$body/*:Fault/detail/*:ExceptionDetail/*:Message/text()</con:xqueryText>
+                  </con3:expr>
+                  <con3:labels>
+                    <con3:key>ERROR_MESSAGE</con3:key>
+                    <con3:varName>bodyVar</con3:varName>
+                    <con3:value>
+                      <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">*</con:xpathText>
+                    </con3:value>
+                  </con3:labels>
+                </con3:report>
+                <con2:replace varName="body" contents-only="true">
+                  <con1:id>_ActionId-4476323124642511909-b8f41e3.13728c29703.-7fc7</con1:id>
+                  <con2:location>
+                    <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">.</con:xpathText>
+                  </con2:location>
+                  <con2:expr>
+                    <con1:xqueryTransform>
+                      <con1:resource ref="ODPOSAService/resource/transformation/soapFaultToODPOSAClientFault"/>
+                      <con1:param name="soapFault">
+                        <con1:path>$body</con1:path>
+                      </con1:param>
+                      <con1:param name="faultMapping">
+                        <con1:path>$faultMap</con1:path>
+                      </con1:param>
+                    </con1:xqueryTransform>
+                  </con2:expr>
+                </con2:replace>
+                <con2:delete varName="header">
+                  <con1:id>_ActionId-7449411366328906942--47b4772f.137be6edfc3.-7fc4</con1:id>
+                  <con2:location>
+                    <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">.</con:xpathText>
+                  </con2:location>
+                </con2:delete>
+                <con2:replace varName="body" contents-only="true">
+                  <con1:id>_ActionId-7449411366328906942--47b4772f.137be6edfc3.-7fae</con1:id>
+                  <con2:location>
+                    <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">.</con:xpathText>
+                  </con2:location>
+                  <con2:expr>
+                    <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config"><![CDATA[<soapenv:Fault xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/">
+         <faultcode>soapenv:Server</faultcode>
+         <faultstring>{$body/*/*[2]/text()}</faultstring>
+         <detail>
+         	{$body/*}
+		 </detail>
+</soapenv:Fault>]]></con:xqueryText>
+                  </con2:expr>
+                </con2:replace>
+                <con1:reply isError="true">
+                  <con1:id>_ActionId-7449411366328906942--47b4772f.137be6edfc3.-7fc1</con1:id>
+                </con1:reply>
+              </con2:actions>
+            </con2:case>
+          </con2:ifThenElse>
+          <con2:ifThenElse>
+            <con1:id>_ActionId-4476323124642511909-b8f41e3.13728c29703.-7fc5</con1:id>
+            <con2:case>
+              <con2:condition>
+                <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$body/*:Fault/*:detail/*:PartnerServiceFault/*:Message</con:xqueryText>
+              </con2:condition>
+              <con2:actions>
+                <con3:report>
+                  <con1:id>_ActionId-4476323124642511909-b8f41e3.13728c29703.-7fbf</con1:id>
+                  <con3:expr>
+                    <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$body/*:Fault/*:detail/*:PartnerServiceFault/*:Message/text()</con:xqueryText>
+                  </con3:expr>
+                  <con3:labels>
+                    <con3:key>ERROR_MESSAGE</con3:key>
+                    <con3:varName>bodyVar</con3:varName>
+                    <con3:value>
+                      <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">*</con:xpathText>
+                    </con3:value>
+                  </con3:labels>
+                </con3:report>
+                <con2:replace varName="body" contents-only="true">
+                  <con1:id>_ActionId-4476323124642511909-b8f41e3.13728c29703.-7fc4</con1:id>
+                  <con2:location>
+                    <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">.</con:xpathText>
+                  </con2:location>
+                  <con2:expr>
+                    <con1:xqueryTransform>
+                      <con1:resource ref="ODPOSAService/resource/transformation/microsoftSoapFaultToODPOSAClientFault"/>
+                      <con1:param name="soapFault">
+                        <con1:path>$body</con1:path>
+                      </con1:param>
+                      <con1:param name="faultMapping">
+                        <con1:path>$faultMap</con1:path>
+                      </con1:param>
+                    </con1:xqueryTransform>
+                  </con2:expr>
+                </con2:replace>
+                <con2:delete varName="header">
+                  <con1:id>_ActionId-7449411366328906942--47b4772f.137be6edfc3.-7fc3</con1:id>
+                  <con2:location>
+                    <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">.</con:xpathText>
+                  </con2:location>
+                </con2:delete>
+                <con2:replace varName="body" contents-only="true">
+                  <con1:id>_ActionId-7449411366328906942--47b4772f.137be6edfc3.-7faf</con1:id>
+                  <con2:location>
+                    <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">.</con:xpathText>
+                  </con2:location>
+                  <con2:expr>
+                    <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config"><![CDATA[<soapenv:Fault xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/">
+         <faultcode>soapenv:Server</faultcode>
+         <faultstring>{$body/*/*[2]/text()}</faultstring>
+         <detail>
+         	{$body/*}
+		 </detail>
+</soapenv:Fault>]]></con:xqueryText>
+                  </con2:expr>
+                </con2:replace>
+                <con1:reply isError="true">
+                  <con1:id>_ActionId-7449411366328906942--47b4772f.137be6edfc3.-7fc2</con1:id>
+                </con1:reply>
+              </con2:actions>
+            </con2:case>
+          </con2:ifThenElse>
+          <con2:ifThenElse>
+            <con1:id>_ActionId-7449411366328906942--47b4772f.137be6edfc3.-7fc0</con1:id>
+            <con2:case>
+              <con2:condition>
+                <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$fault</con:xqueryText>
+              </con2:condition>
+              <con2:actions>
+                <con2:assign varName="errorMessage">
+                  <con1:id>_ActionId-5867641892473288403--20ffb9fa.13af35c13b6.-7fa8</con1:id>
+                  <con2:expr>
+                    <con1:xqueryTransform>
+                      <con1:resource ref="SendNotificationService/resource/transformation/CreateFaultMessage"/>
+                      <con1:param name="errorNotificationFields1">
+                        <con1:path><![CDATA[<efm:ErrorNotification xmlns:efm="http://officedepot.com/EmailFaultMessage" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://officedepot.com/EmailFaultMessage EmailFaultMessage.xsd ">
+  <efm:errorCode>{$fault//*:errorCode/text()}</efm:errorCode>
+  <efm:domain>OSBOfficeDepot</efm:domain>
+  <efm:transactionId>{$inputRequest//*:serialNumber/text()}</efm:transactionId>
+  <efm:errorType>system</efm:errorType>
+  <efm:systemName>OSB</efm:systemName>
+  <efm:serviceName>ODPOSAService</efm:serviceName>
+  <efm:errorDescription>{$fault//*:reason/text()}</efm:errorDescription>
+  <efm:errorSeverity>fatal</efm:errorSeverity>
+  <efm:messagePayload></efm:messagePayload>
+  <efm:errorDateTime>{fn:current-dateTime()}</efm:errorDateTime>
+</efm:ErrorNotification>]]></con1:path>
+                      </con1:param>
+                    </con1:xqueryTransform>
+                  </con2:expr>
+                </con2:assign>
+                <con2:assign varName="emailConfig">
+                  <con1:id>_ActionId-5867641892473288403--20ffb9fa.13af35c13b6.-7f64</con1:id>
+                  <con2:expr>
+                    <con1:xqueryTransform>
+                      <con1:resource ref="ODPOSAService/resource/config/EmailConfig_DEV"/>
+                    </con1:xqueryTransform>
+                  </con2:expr>
+                </con2:assign>
+                <con5:route xmlns:con3="http://www.bea.com/wli/sb/stages/transform/config" xmlns:con2="http://www.bea.com/wli/sb/stages/config" xmlns:con5="http://www.bea.com/wli/sb/stages/publish/config" xmlns:con1="http://www.bea.com/wli/sb/stages/logging/config">
+                  <con6:id xmlns:con6="http://www.bea.com/wli/sb/stages/config">_ActionId-5867641892473288403--20ffb9fa.13af35c13b6.-7eaf</con6:id>
+                  <con5:service ref="SendNotificationService/businessService/CallEmailNotificationBS" xsi:type="ref:BusinessServiceRef" xmlns:ref="http://www.bea.com/wli/sb/reference"/>
+                  <con5:operation>sendEmail</con5:operation>
+                  <con5:outboundTransform>
+                    <con3:replace contents-only="true" varName="body" xmlns:con6="http://www.bea.com/wli/sb/stages/transform/config">
+                      <con7:id xmlns:con7="http://www.bea.com/wli/sb/stages/config">_ActionId-5867641892473288403--20ffb9fa.13af35c13b6.-7eae</con7:id>
+                      <con3:location>
+                        <con2:xpathText xmlns:con7="http://www.bea.com/wli/sb/stages/config">.</con2:xpathText>
+                      </con3:location>
+                      <con3:expr>
+                        <con7:xqueryTransform xmlns:con7="http://www.bea.com/wli/sb/stages/config">
+                          <con2:resource ref="SendNotificationService/resource/transformation/SOAPFaultToEmailNotification"/>
+                          <con2:param name="toEmailID">
+                            <con2:path>$emailConfig/emailParam[@name='ODPOSAFault']/toEmailID/text()</con2:path>
+                          </con2:param>
+                          <con2:param name="emailMessage">
+                            <con2:path>fn-bea:serialize($errorMessage)</con2:path>
+                          </con2:param>
+                          <con2:param name="subject">
+                            <con2:path>concat($emailConfig/emailParam[@name='ODPOSAFault']/subject/text(),$inputRequest//*:serialNumber/text())</con2:path>
+                          </con2:param>
+                          <con2:param name="format">
+                            <con2:path>$emailConfig/emailParam[@name='ODPOSAFault']/format/text()</con2:path>
+                          </con2:param>
+                          <con2:param name="fromEmailID">
+                            <con2:path>$emailConfig/emailParam[@name='ODPOSAFault']/fromEmailID/text()</con2:path>
+                          </con2:param>
+                        </con7:xqueryTransform>
+                      </con3:expr>
+                    </con3:replace>
+                  </con5:outboundTransform>
+                </con5:route>
+                <con2:replace varName="body" contents-only="true">
+                  <con1:id>_ActionId-5867641892473288403--20ffb9fa.13af35c13b6.-7e3d</con1:id>
+                  <con2:location>
+                    <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">.</con:xpathText>
+                  </con2:location>
+                  <con2:expr>
+                    <con:xqueryTransform xmlns:con="http://www.bea.com/wli/sb/stages/config">
+                      <con:resource ref="ODPOSAService/resource/transformation/soapFaultToODPOSAClientFault"/>
+                      <con:param name="faultMapping">
+                        <con:path>$faultMap</con:path>
+                      </con:param>
+                      <con:param name="soapFault">
+                        <con:path>$fault</con:path>
+                      </con:param>
+                    </con:xqueryTransform>
+                  </con2:expr>
+                </con2:replace>
+                <con2:replace varName="body" contents-only="true">
+                  <con1:id>_ActionId-7449411366328906942--47b4772f.137be6edfc3.-7fb0</con1:id>
+                  <con2:location>
+                    <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">.</con:xpathText>
+                  </con2:location>
+                  <con2:expr>
+                    <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config"><![CDATA[<soapenv:Fault xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/">
+         <faultcode>soapenv:Server</faultcode>
+         <faultstring>{$body/*/*[2]/text()}</faultstring>
+         <detail>
+         	{$body/*}
+		 </detail>
+</soapenv:Fault>]]></con:xqueryText>
+                  </con2:expr>
+                </con2:replace>
+                <con1:reply isError="true">
+                  <con1:id>_ActionId-7449411366328906942--47b4772f.137be6edfc3.-7fba</con1:id>
+                </con1:reply>
+              </con2:actions>
+            </con2:case>
+          </con2:ifThenElse>
+          <con1:reply isError="true">
+            <con1:id>_ActionId-4476323124642511909-b8f41e3.13728c29703.-7fd1</con1:id>
+          </con1:reply>
+        </con:actions>
+      </con:stage>
+    </con:pipeline>
+    <con:pipeline name="checkStatusPipelinePairNode1_request" type="request">
+      <con:stage name="ReportAndValidationStage">
+        <con:comment/>
+        <con:context>
+          <con1:varNsDecl prefix="odp" namespace="http://schemas.officedepot.com/V1/ODPOSAServiceSchema"/>
+          <con1:varNsDecl prefix="arr" namespace="http://schemas.officedepot.com/V1/Serialization/Arrays"/>
+          <con1:varNsDecl prefix="arr1" namespace="http://www.officedepot.com/officedepot/V1/Serialization/Arrays"/>
+          <con1:varNsDecl prefix="odp1" namespace="http://www.officedepot.com/officedepot/V1/ODPOSAServiceSchema"/>
+        </con:context>
+        <con:actions>
+          <con3:report>
+            <con1:id>_ActionId-4476323124642511909-b8f41e3.13728c29703.-7fdc</con1:id>
+            <con3:expr>
+              <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$body</con:xqueryText>
+            </con3:expr>
+            <con3:labels>
+              <con3:key>Operation=checkStatus:Start_With_Serial#</con3:key>
+              <con3:varName>body</con3:varName>
+              <con3:value>
+                <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">//*:serialNumber/text()</con:xpathText>
+              </con3:value>
+            </con3:labels>
+          </con3:report>
+          <con2:validate>
+            <con1:id>_ActionId-4476323124642511909-b8f41e3.13728c29703.-7fda</con1:id>
+            <con2:schema ref="ODPOSAService/resource/schema/ODPOSAService"/>
+            <con2:schemaElement xmlns:odp="http://www.officedepot.com/officedepot/V1/ODPOSAServiceSchema">odp:checkStatus</con2:schemaElement>
+            <con2:varName>body</con2:varName>
+            <con2:location>
+              <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">./*</con:xpathText>
+            </con2:location>
+            <con2:resultVarName/>
+          </con2:validate>
+          <con2:assign varName="inputRequest">
+            <con1:id>_ActionId-5867641892473288403--20ffb9fa.13af35c13b6.-7f86</con1:id>
+            <con2:expr>
+              <con1:xqueryText>$body</con1:xqueryText>
+            </con2:expr>
+          </con2:assign>
+        </con:actions>
+      </con:stage>
+      <con:stage name="Transformstage">
+        <con:comment/>
+        <con:context>
+          <con1:varNsDecl prefix="odp" namespace="http://schemas.officedepot.com/V1/ODPOSAServiceSchema"/>
+          <con1:varNsDecl prefix="arr" namespace="http://schemas.officedepot.com/V1/Serialization/Arrays"/>
+          <con1:varNsDecl prefix="arr1" namespace="http://www.officedepot.com/officedepot/V1/Serialization/Arrays"/>
+          <con1:varNsDecl prefix="odp1" namespace="http://www.officedepot.com/officedepot/V1/ODPOSAServiceSchema"/>
+        </con:context>
+        <con:actions>
+          <con2:assign varName="POSCheckStatusRequest">
+            <con1:id>_ActionId-7449411366328906942--47b4772f.137be6edfc3.-7fa7</con1:id>
+            <con2:expr>
+              <con:xqueryTransform xmlns:con="http://www.bea.com/wli/sb/stages/config">
+                <con:resource ref="ODPOSAService/resource/transformation/XqueryODCheckStatusReqToPOSAServiceReq"/>
+                <con:param name="checkStatus1">
+                  <con:path>$body/odp1:checkStatus</con:path>
+                </con:param>
+              </con:xqueryTransform>
+            </con2:expr>
+          </con2:assign>
+        </con:actions>
+      </con:stage>
+    </con:pipeline>
+    <con:pipeline name="activateTokenPipelinePairNode1_request" type="request">
+      <con:stage name="ReportAndValidationStage">
+        <con:comment/>
+        <con:context>
+          <con1:varNsDecl prefix="odp" namespace="http://schemas.officedepot.com/V1/ODPOSAServiceSchema"/>
+          <con1:varNsDecl prefix="arr" namespace="http://schemas.officedepot.com/V1/Serialization/Arrays"/>
+          <con1:varNsDecl prefix="arr1" namespace="http://www.officedepot.com/officedepot/V1/Serialization/Arrays"/>
+          <con1:varNsDecl prefix="odp1" namespace="http://www.officedepot.com/officedepot/V1/ODPOSAServiceSchema"/>
+        </con:context>
+        <con:actions>
+          <con3:report>
+            <con1:id>_ActionId-4476323124642511909-b8f41e3.13728c29703.-7fdf</con1:id>
+            <con3:expr>
+              <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$body</con:xqueryText>
+            </con3:expr>
+            <con3:labels>
+              <con3:key>Operation=activateToken:Start_With_Serial#</con3:key>
+              <con3:varName>body</con3:varName>
+              <con3:value>
+                <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">//*:serialNumber/text()</con:xpathText>
+              </con3:value>
+            </con3:labels>
+            <con3:labels>
+              <con3:key>Operation=activateToken:StoreId</con3:key>
+              <con3:varName>body</con3:varName>
+              <con3:value>
+                <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">//*:storeId/text()</con:xpathText>
+              </con3:value>
+            </con3:labels>
+          </con3:report>
+          <con2:validate>
+            <con1:id>_ActionId-4476323124642511909-b8f41e3.13728c29703.-7fde</con1:id>
+            <con2:schema ref="ODPOSAService/resource/schema/ODPOSAService"/>
+            <con2:schemaElement xmlns:odp="http://www.officedepot.com/officedepot/V1/ODPOSAServiceSchema">odp:activateToken</con2:schemaElement>
+            <con2:varName>body</con2:varName>
+            <con2:location>
+              <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">./*</con:xpathText>
+            </con2:location>
+            <con2:resultVarName/>
+          </con2:validate>
+          <con2:assign varName="inputRequest">
+            <con1:id>_ActionId-5867641892473288403--20ffb9fa.13af35c13b6.-7f8b</con1:id>
+            <con2:expr>
+              <con1:xqueryText>$body</con1:xqueryText>
+            </con2:expr>
+          </con2:assign>
+        </con:actions>
+      </con:stage>
+      <con:stage name="TransformStage">
+        <con:comment/>
+        <con:context>
+          <con1:userNsDecl prefix="odp" namespace="http://schemas.officedepot.com/V1/ODPOSAServiceSchema"/>
+          <con1:userNsDecl prefix="arr" namespace="http://schemas.officedepot.com/V1/Serialization/Arrays"/>
+          <con1:userNsDecl prefix="arr1" namespace="http://www.officedepot.com/officedepot/V1/Serialization/Arrays"/>
+          <con1:userNsDecl prefix="odp1" namespace="http://www.officedepot.com/officedepot/V1/ODPOSAServiceSchema"/>
+        </con:context>
+        <con:actions>
+          <con2:assign varName="POSActivateTokenRequest">
+            <con1:id>_ActionId-7449411366328906942--47b4772f.137be6edfc3.-7fac</con1:id>
+            <con2:expr>
+              <con:xqueryTransform xmlns:con="http://www.bea.com/wli/sb/stages/config">
+                <con:resource ref="ODPOSAService/resource/transformation/XqueryODActivateReqToPOSAServiceReq"/>
+                <con:param name="activateToken1">
+                  <con:path>$body/odp1:activateToken</con:path>
+                </con:param>
+              </con:xqueryTransform>
+            </con2:expr>
+          </con2:assign>
+        </con:actions>
+      </con:stage>
+    </con:pipeline>
+    <con:flow>
+      <con:branch-node type="operation" name="OperationalBranchNode">
+        <con:comment/>
+        <con:branch-table>
+          <con:branch name="activateToken">
+            <con:operator>equals</con:operator>
+            <con:value>activateToken</con:value>
+            <con:flow>
+              <con:pipeline-node name="activateTokenPipelinePairNode1">
+                <con:comment/>
+                <con:request>activateTokenPipelinePairNode1_request</con:request>
+                <con:response>activateTokenPipelinePairNode1_response</con:response>
+              </con:pipeline-node>
+              <con:route-node name="ActivateTokenRouteNode">
+                <con:comment/>
+                <con:context>
+                  <con1:userNsDecl prefix="msc" namespace="http://Microsoft.com/mscis/"/>
+                  <con1:varNsDecl prefix="odp" namespace="http://schemas.officedepot.com/V1/ODPOSAServiceSchema"/>
+                  <con1:varNsDecl prefix="arr" namespace="http://schemas.officedepot.com/V1/Serialization/Arrays"/>
+                  <con1:varNsDecl prefix="arr1" namespace="http://www.officedepot.com/officedepot/V1/Serialization/Arrays"/>
+                  <con1:varNsDecl prefix="odp1" namespace="http://www.officedepot.com/officedepot/V1/ODPOSAServiceSchema"/>
+                </con:context>
+                <con:actions>
+                  <con1:route xmlns:con1="http://www.bea.com/wli/sb/stages/routing/config">
+                    <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-4036805854530384400--16ea19c8.1365b4157a3.-7f81</con2:id>
+                    <con1:service ref="ODPOSAService/businessService/ODPOSAServiceBS" xsi:type="ref:BusinessServiceRef" xmlns:ref="http://www.bea.com/wli/sb/reference"/>
+                    <con1:operation>ActivateToken</con1:operation>
+                    <con1:outboundTransform>
+                      <con2:replace varName="body" contents-only="true">
+                        <con3:id xmlns:con3="http://www.bea.com/wli/sb/stages/config">_ActionId-4036805854530384400--16ea19c8.1365b4157a3.-7f7c</con3:id>
+                        <con2:location>
+                          <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">.</con:xpathText>
+                        </con2:location>
+                        <con2:expr>
+                          <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$POSActivateTokenRequest</con:xqueryText>
+                        </con2:expr>
+                      </con2:replace>
+                    </con1:outboundTransform>
+                    <con1:responseTransform>
+                      <con2:replace varName="body" contents-only="true">
+                        <con3:id xmlns:con3="http://www.bea.com/wli/sb/stages/config">_ActionId-5328847924053951412-4ad1fa4a.136a79d1202.-7fe3</con3:id>
+                        <con2:location>
+                          <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">.</con:xpathText>
+                        </con2:location>
+                        <con2:expr>
+                          <con:xqueryTransform xmlns:con="http://www.bea.com/wli/sb/stages/config">
+                            <con:resource ref="ODPOSAService/resource/transformation/XqueryODActivateResFromPOSAServiceResponse"/>
+                            <con:param name="activateTokenResponse1">
+                              <con:path>$body/*:ActivateTokenResponse</con:path>
+                            </con:param>
+                          </con:xqueryTransform>
+                        </con2:expr>
+                      </con2:replace>
+                    </con1:responseTransform>
+                  </con1:route>
+                </con:actions>
+              </con:route-node>
+            </con:flow>
+          </con:branch>
+          <con:branch name="deactivateToken">
+            <con:operator>equals</con:operator>
+            <con:value>deactivateToken</con:value>
+            <con:flow>
+              <con:pipeline-node name="deactivateTokenPipelinePairNode1">
+                <con:comment/>
+                <con:request>deactivateTokenPipelinePairNode1_request</con:request>
+                <con:response>deactivateTokenPipelinePairNode1_response</con:response>
+              </con:pipeline-node>
+              <con:route-node name="DeactivateTokenRouteNode">
+                <con:comment/>
+                <con:context>
+                  <con1:userNsDecl prefix="msc" namespace="http://Microsoft.com/mscis"/>
+                  <con1:varNsDecl prefix="odp" namespace="http://schemas.officedepot.com/V1/ODPOSAServiceSchema"/>
+                  <con1:varNsDecl prefix="arr" namespace="http://schemas.officedepot.com/V1/Serialization/Arrays"/>
+                  <con1:varNsDecl prefix="arr1" namespace="http://www.officedepot.com/officedepot/V1/Serialization/Arrays"/>
+                  <con1:varNsDecl prefix="odp1" namespace="http://www.officedepot.com/officedepot/V1/ODPOSAServiceSchema"/>
+                </con:context>
+                <con:actions>
+                  <con3:route xmlns:con3="http://www.bea.com/wli/sb/stages/routing/config">
+                    <con1:id>_ActionId-5328847924053951412-4ad1fa4a.136a79d1202.-7fed</con1:id>
+                    <con3:service ref="ODPOSAService/businessService/ODPOSAServiceBS" xsi:type="ref:BusinessServiceRef" xmlns:ref="http://www.bea.com/wli/sb/reference"/>
+                    <con3:operation>DeactivateToken</con3:operation>
+                    <con3:outboundTransform>
+                      <con2:replace varName="body" contents-only="true">
+                        <con1:id>_ActionId-5328847924053951412-4ad1fa4a.136a79d1202.-7fec</con1:id>
+                        <con2:location>
+                          <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">.</con:xpathText>
+                        </con2:location>
+                        <con2:expr>
+                          <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$POSDeactivateTokenRequest</con:xqueryText>
+                        </con2:expr>
+                      </con2:replace>
+                    </con3:outboundTransform>
+                    <con3:responseTransform>
+                      <con2:replace varName="body" contents-only="true">
+                        <con1:id>_ActionId-5328847924053951412-4ad1fa4a.136a79d1202.-7fe6</con1:id>
+                        <con2:location>
+                          <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">.</con:xpathText>
+                        </con2:location>
+                        <con2:expr>
+                          <con:xqueryTransform xmlns:con="http://www.bea.com/wli/sb/stages/config">
+                            <con:resource ref="ODPOSAService/resource/transformation/XqueryODDeactivateResFromPOSAServiceResp"/>
+                            <con:param name="deactivateTokenResponse1">
+                              <con:path>$body/*:DeactivateTokenResponse</con:path>
+                            </con:param>
+                          </con:xqueryTransform>
+                        </con2:expr>
+                      </con2:replace>
+                    </con3:responseTransform>
+                  </con3:route>
+                </con:actions>
+              </con:route-node>
+            </con:flow>
+          </con:branch>
+          <con:branch name="checkStatus">
+            <con:operator>equals</con:operator>
+            <con:value>checkStatus</con:value>
+            <con:flow>
+              <con:pipeline-node name="checkStatusPipelinePairNode1">
+                <con:comment/>
+                <con:request>checkStatusPipelinePairNode1_request</con:request>
+                <con:response>checkStatusPipelinePairNode1_response</con:response>
+              </con:pipeline-node>
+              <con:route-node name="CheckStatusRouteNode">
+                <con:comment/>
+                <con:context>
+                  <con1:userNsDecl prefix="msc" namespace="http://Microsoft.com/mscis"/>
+                  <con1:varNsDecl prefix="odp" namespace="http://schemas.officedepot.com/V1/ODPOSAServiceSchema"/>
+                  <con1:varNsDecl prefix="arr" namespace="http://schemas.officedepot.com/V1/Serialization/Arrays"/>
+                  <con1:varNsDecl prefix="arr1" namespace="http://www.officedepot.com/officedepot/V1/Serialization/Arrays"/>
+                  <con1:varNsDecl prefix="odp1" namespace="http://www.officedepot.com/officedepot/V1/ODPOSAServiceSchema"/>
+                  <con1:varNsDecl prefix="msc1" namespace="http://Microsoft.com/mscis/"/>
+                  <con5:variable name="POSACheckStatusResponse" path="$ODPOSAService/resource/schema/XMLSchema_-1628437961/CheckStatusResponse" asChild="false">
+                    <con5:schema ref="ODPOSAService/resource/schema/XMLSchema_-1628437961" element="CheckStatusResponse"/>
+                  </con5:variable>
+                </con:context>
+                <con:actions>
+                  <con3:route xmlns:con3="http://www.bea.com/wli/sb/stages/routing/config">
+                    <con1:id>_ActionId-5328847924053951412-4ad1fa4a.136a79d1202.-7fea</con1:id>
+                    <con3:service ref="ODPOSAService/businessService/ODPOSAServiceBS" xsi:type="ref:BusinessServiceRef" xmlns:ref="http://www.bea.com/wli/sb/reference"/>
+                    <con3:operation>CheckStatus</con3:operation>
+                    <con3:outboundTransform>
+                      <con2:replace varName="body" contents-only="true">
+                        <con1:id>_ActionId-5328847924053951412-4ad1fa4a.136a79d1202.-7fe9</con1:id>
+                        <con2:location>
+                          <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">.</con:xpathText>
+                        </con2:location>
+                        <con2:expr>
+                          <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$POSCheckStatusRequest</con:xqueryText>
+                        </con2:expr>
+                      </con2:replace>
+                    </con3:outboundTransform>
+                    <con3:responseTransform>
+                      <con2:replace varName="body" contents-only="true">
+                        <con1:id>_ActionId-5328847924053951412-4ad1fa4a.136a79d1202.-7fe8</con1:id>
+                        <con2:location>
+                          <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">.</con:xpathText>
+                        </con2:location>
+                        <con2:expr>
+                          <con:xqueryTransform xmlns:con="http://www.bea.com/wli/sb/stages/config">
+                            <con:resource ref="ODPOSAService/resource/transformation/XqueryCheckStatusRespFromPOSAServiceResp"/>
+                            <con:param name="checkStatusResponse1">
+                              <con:path>$body/*:CheckStatusResponse</con:path>
+                            </con:param>
+                          </con:xqueryTransform>
+                        </con2:expr>
+                      </con2:replace>
+                    </con3:responseTransform>
+                  </con3:route>
+                </con:actions>
+              </con:route-node>
+            </con:flow>
+          </con:branch>
+          <con:default-branch>
+            <con:flow/>
+          </con:default-branch>
+        </con:branch-table>
+      </con:branch-node>
+    </con:flow>
+  </ser:router>
+</xml-fragment>

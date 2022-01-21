@@ -1,0 +1,39 @@
+-- +====================================================================================+
+-- |                  Office Depot - Project Simplify                                   |
+-- +====================================================================================+
+-- | SQL Script to create                                                               |
+-- |                                                                                    |
+-- |                      INDEXES: XX_AR_CASH_RECEIPTS_N9                               |
+-- |                                                                                    |
+-- |                                                                                    |
+-- |                                                                                    |
+-- |Change Record:                                                                      |
+-- |===============                                                                     |
+-- |Version   Date         Author               Remarks                                 |
+-- |=======   ===========  ================     ========================================|
+-- |  1.0     05-MAR-2014  Arun gannarapu       Defect 28253 to fix the performance issue |
+-- +====================================================================================+
+
+DROP INDEX XXFIN.XX_AR_CASH_RECEIPTS_N9;
+
+CREATE INDEX XXFIN.XX_AR_CASH_RECEIPTS_N9 ON AR.AR_CASH_RECEIPTS_ALL
+(REMIT_BANK_ACCT_USE_ID,RECEIPT_DATE)
+LOGGING
+TABLESPACE APPS_TS_TX_IDX_AR_16M
+PCTFREE    10
+INITRANS   2
+MAXTRANS   255
+STORAGE    (
+            INITIAL          16M
+            NEXT             16M
+            MINEXTENTS       1
+            MAXEXTENTS       UNLIMITED
+            PCTINCREASE      0
+            BUFFER_POOL      DEFAULT
+            FLASH_CACHE      DEFAULT
+            CELL_FLASH_CACHE DEFAULT
+           )
+NOPARALLEL;
+
+
+EXIT;

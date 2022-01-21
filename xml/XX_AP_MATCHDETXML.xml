@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dataTemplate name="XX_AP_MATCHDETXML" Version="1.0">
+<parameters>
+  <parameter name="P_Start_Run_Date" dataType="date" /> 
+   <parameter name="P_End_Run_Date" dataType="date" />
+	<parameter name="P_Match_Type" dataType="string" />
+	<parameter name="P_PO_Type" dataType="string" />  
+  </parameters>
+ <dataQuery>
+  <sqlStatement name="Q1">
+ <![CDATA[ SELECT Invoice_id,
+b.suppliernum Supplier_Number,
+b.vendor_name Supplier_Name,
+b.Supplier_Site,
+b.PO_Type,
+b.PO_Match_Type,
+b.invoice_source,
+b.invoice_num,
+b.invoice_date,
+b.gl_date,
+b.pay_due_date due_date,
+b.release_date ,
+MIN (DECODE(SIGN(TRUNC(b.run_date)-TRUNC(b.validation_date)),1,b.validation_date,b.run_date) ) matched_date,
+b.inv_creation_date creation_date,
+decode(b.validation_flag,'Y','Matched','N','Unmatched') validation_status,
+b.matched_by Match_Type,
+decode(nvl(sum(decode(first_pass_flag,'Y',1,0)),0),0,'N','Y') First_Pass_Flag,
+decode(nvl(sum(decode(ALL_FINALIZED_FLAG,'Y',1,0)),0),0,'N','Y') All_Finalized_Flag,
+decode(nvl(sum(decode(payment_due_tdy_flag,'Y',1,0)),0),0,'N','Y') Payment_Due_Tdy_flag,
+decode(nvl(sum(decode(DUE_8_DAYS_FLAG,'Y',1,0)),0),0,'N','Y') Due_8_Days_Flag,
+decode(nvl(sum(decode(true_match_flag,'Y',1,0)),0),0,'N','Y') True_Match_Flag
+FROM xx_ap_inv_match_detail_219 b
+WHERE b.run_date between NVL(:P_Start_Run_Date,b.run_date) and NVL(:P_End_Run_Date,b.run_date)
+and b.PO_Match_Type = NVL(:P_Match_Type,b.PO_Match_Type)
+And b.Po_Type = Nvl(:P_Po_Type,b.Po_Type)
+group by Invoice_id,
+b.suppliernum,
+b.vendor_name,
+b.supplier_site,
+b.po_type,
+b.PO_Match_Type,
+b.invoice_source,
+b.invoice_num,
+b.invoice_date,
+b.gl_date,
+b.pay_due_date,
+b.release_date ,
+b.inv_creation_date,
+b.validation_flag,
+b.matched_by 
+]]> 
+</sqlStatement>
+  </dataQuery>
+ <dataStructure>
+    <group name="G_MATCHRATE_DETAILS" source="Q1">
+	  <element name="Supplier_Number" value= "Supplier_Number" />
+	  <element name="Supplier_Name" value= "Supplier_Name" />
+	  <element name="Supplier_Site" value= "Supplier_Site" />
+	  <element name="PO_Type" value= "po_type" />
+	  <element name="PO_Match_Type" value="PO_Match_Type" /> 
+	  <element name="First_Pass_Flag" value="First_Pass_Flag"/>
+	  <element name="True_Match_Flag" value="True_Match_Flag" />
+	  <element name="All_Finalized_Flag" value="All_Finalized_Flag" /> 
+	  <element name="Payment_Due_Tdy_flag" value="Payment_Due_Tdy_Flag"/> 
+	  <element name="Due_8_Days_Flag" value="Due_8_Days_Flag" />
+	  <element name="invoice_source" value="invoice_source" />
+	  <element name="invoice_num" value="invoice_num" />
+	  <element name="invoice_date" value="invoice_date" />
+	  <element name="gl_date" value="gl_date" />
+	  <element name="due_date" value="due_date" />
+	  <element name="release_date" value="release_date" />
+	  <element name="matched_date" value="matched_date" />
+	  <element name="creation_date" value="creation_date" />
+	  <element name="validation_status" value="validation_status" />
+	  <element name="Match_Type" value="Match_Type" />
+	</group>
+</dataStructure>
+</dataTemplate>

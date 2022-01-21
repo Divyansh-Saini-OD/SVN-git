@@ -1,0 +1,67 @@
+-- +==========================================================================+
+-- |                  Office Depot - Project Simplify                         |
+-- |                       WIPRO Technologies                                 |
+-- +==========================================================================+
+-- | SQL Script to create the following objects                               |
+-- |             Table       : XX_AP_CREDITCARD_1099_STG                      |
+-- |                         For the extension E1037, 1099 from CreditCard    |
+-- |                                                                          |
+-- |                                                                          |
+-- |                                                                          |
+-- |Change Record:                                                            |
+-- |===============                                                           |
+-- |Version   Date         Author               Remarks                       |
+-- |=======   ==========   =============        ==============================|
+-- | V1.0     27-MAR-2007  Anusha Ramanujam     Initial version               |
+-- |                                                                          |
+-- | V1.1     19-NOV-2007  Nandini Bhimana      Drop statement commented      |
+-- |                           Boina                                          |
+-- +==========================================================================+
+
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     ON
+
+--DROP TABLE XXFIN.XX_AP_CREDITCARD_1099_STG;
+
+CREATE TABLE XXFIN.XX_AP_CREDITCARD_1099_STG  
+   (
+   file_name                  VARCHAR2(150)
+   ,batch_id                  NUMBER
+   ,vendor_name               VARCHAR2(240)
+   ,tax_type                  VARCHAR2(100)
+   ,tax_id                    VARCHAR2(100)
+   ,address_line1             VARCHAR2(100)
+   ,address_line2             VARCHAR2(240)
+   ,city                      VARCHAR2(25)
+   ,state                     VARCHAR2(150)
+   ,postal                    VARCHAR2(20)
+   ,withholding_amount        VARCHAR2(100)
+   ,request_id                NUMBER
+   ,status                    VARCHAR2(240)
+   ,error_description         VARCHAR2(4000)
+   ,attribute1                VARCHAR2(150)
+   ,attribute2                VARCHAR2(150)
+   ,attribute3                VARCHAR2(150)
+   ,attribute4                VARCHAR2(150)
+   ,attribute5                VARCHAR2(150)
+   ,attribute6                VARCHAR2(150)
+   ,attribute7                VARCHAR2(150)
+   ,attribute8                VARCHAR2(150)
+   ,attribute9                VARCHAR2(150)
+   ,attribute10               VARCHAR2(150)
+   ,attribute11               VARCHAR2(150)
+   ,attribute12               VARCHAR2(150)
+   ,attribute13               VARCHAR2(150)
+   ,attribute14               VARCHAR2(150)
+   ,attribute15               VARCHAR2(150)
+   ,type_1099                 VARCHAR2(50)
+   ,last_updated_by           NUMBER
+   ,last_update_date          DATE
+   ,last_update_login         NUMBER
+   ,created_by                NUMBER
+   ,creation_date             DATE DEFAULT SYSDATE
+   );
+SHOW ERROR

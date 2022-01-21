@@ -1,0 +1,5 @@
+alter table xxfin.XX_AR_SCAAS_INTERFACE
+add  (created_by number,creation_date date,last_updated_by number,last_update_date date);
+
+alter table xxfin.XX_AR_SCAAS_INTERFACE_hist
+add  (created_by number,creation_date date,last_updated_by number,last_update_date date);

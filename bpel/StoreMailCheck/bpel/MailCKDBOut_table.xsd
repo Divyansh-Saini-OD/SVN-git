@@ -1,0 +1,141 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<xs:schema targetNamespace="http://xmlns.oracle.com/pcbpel/adapter/db/top/MailCKDBOut" xmlns="http://xmlns.oracle.com/pcbpel/adapter/db/top/MailCKDBOut" elementFormDefault="qualified" attributeFormDefault="qualified" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+   <xs:element name="XxArMailCheckHoldsCollection" type="XxArMailCheckHoldsCollection"/>
+   <xs:complexType name="XxArMailCheckHoldsCollection">
+      <xs:sequence>
+         <xs:element name="XxArMailCheckHolds" type="XxArMailCheckHolds" minOccurs="0" maxOccurs="unbounded"/>
+      </xs:sequence>
+   </xs:complexType>
+   <xs:complexType name="XxArMailCheckHolds">
+      <xs:sequence>
+         <xs:element name="refMailcheckId" type="xs:decimal" nillable="true"/>
+         <xs:element name="posTransactionNumber" minOccurs="0" nillable="true">
+            <xs:simpleType>
+               <xs:restriction base="xs:string">
+                  <xs:maxLength value="20"/>
+               </xs:restriction>
+            </xs:simpleType>
+         </xs:element>
+         <xs:element name="aopsOrderNumber" minOccurs="0" nillable="true">
+            <xs:simpleType>
+               <xs:restriction base="xs:string">
+                  <xs:maxLength value="20"/>
+               </xs:restriction>
+            </xs:simpleType>
+         </xs:element>
+         <xs:element name="checkAmount" type="xs:decimal" minOccurs="0" nillable="true"/>
+         <xs:element name="customerId" type="xs:decimal" minOccurs="0" nillable="true"/>
+         <xs:element name="storeCustomerName" minOccurs="0" nillable="true">
+            <xs:simpleType>
+               <xs:restriction base="xs:string">
+                  <xs:maxLength value="20"/>
+               </xs:restriction>
+            </xs:simpleType>
+         </xs:element>
+         <xs:element name="addressLine1" minOccurs="0" nillable="true">
+            <xs:simpleType>
+               <xs:restriction base="xs:string">
+                  <xs:maxLength value="20"/>
+               </xs:restriction>
+            </xs:simpleType>
+         </xs:element>
+         <xs:element name="addressLine2" minOccurs="0" nillable="true">
+            <xs:simpleType>
+               <xs:restriction base="xs:string">
+                  <xs:maxLength value="20"/>
+               </xs:restriction>
+            </xs:simpleType>
+         </xs:element>
+         <xs:element name="addressLine3" minOccurs="0" nillable="true">
+            <xs:simpleType>
+               <xs:restriction base="xs:string">
+                  <xs:maxLength value="20"/>
+               </xs:restriction>
+            </xs:simpleType>
+         </xs:element>
+         <xs:element name="addressLine4" minOccurs="0" nillable="true">
+            <xs:simpleType>
+               <xs:restriction base="xs:string">
+                  <xs:maxLength value="20"/>
+               </xs:restriction>
+            </xs:simpleType>
+         </xs:element>
+         <xs:element name="city" minOccurs="0" nillable="true">
+            <xs:simpleType>
+               <xs:restriction base="xs:string">
+                  <xs:maxLength value="20"/>
+               </xs:restriction>
+            </xs:simpleType>
+         </xs:element>
+         <xs:element name="stateProvince" minOccurs="0" nillable="true">
+            <xs:simpleType>
+               <xs:restriction base="xs:string">
+                  <xs:maxLength value="20"/>
+               </xs:restriction>
+            </xs:simpleType>
+         </xs:element>
+         <xs:element name="postalCode" minOccurs="0" nillable="true">
+            <xs:simpleType>
+               <xs:restriction base="xs:string">
+                  <xs:maxLength value="20"/>
+               </xs:restriction>
+            </xs:simpleType>
+         </xs:element>
+         <xs:element name="country" minOccurs="0" nillable="true">
+            <xs:simpleType>
+               <xs:restriction base="xs:string">
+                  <xs:maxLength value="20"/>
+               </xs:restriction>
+            </xs:simpleType>
+         </xs:element>
+         <xs:element name="phoneNumber" minOccurs="0" nillable="true">
+            <xs:simpleType>
+               <xs:restriction base="xs:string">
+                  <xs:maxLength value="20"/>
+               </xs:restriction>
+            </xs:simpleType>
+         </xs:element>
+         <xs:element name="phoneExtension" minOccurs="0" nillable="true">
+            <xs:simpleType>
+               <xs:restriction base="xs:string">
+                  <xs:maxLength value="20"/>
+               </xs:restriction>
+            </xs:simpleType>
+         </xs:element>
+         <xs:element name="holdStatus" minOccurs="0" nillable="true">
+            <xs:simpleType>
+               <xs:restriction base="xs:string">
+                  <xs:maxLength value="20"/>
+               </xs:restriction>
+            </xs:simpleType>
+         </xs:element>
+         <xs:element name="deleteStatus" minOccurs="0" nillable="true">
+            <xs:simpleType>
+               <xs:restriction base="xs:string">
+                  <xs:maxLength value="20"/>
+               </xs:restriction>
+            </xs:simpleType>
+         </xs:element>
+         <xs:element name="creationDate" type="xs:dateTime" minOccurs="0" nillable="true"/>
+         <xs:element name="createdBy" type="xs:decimal" minOccurs="0" nillable="true"/>
+         <xs:element name="lastUpdateDate" type="xs:dateTime" minOccurs="0" nillable="true"/>
+         <xs:element name="lastUpdateBy" type="xs:decimal" minOccurs="0" nillable="true"/>
+         <xs:element name="lastUpdateLogin" type="xs:decimal" minOccurs="0" nillable="true"/>
+         <xs:element name="programApplicationId" type="xs:decimal" minOccurs="0" nillable="true"/>
+         <xs:element name="programId" type="xs:decimal" minOccurs="0" nillable="true"/>
+         <xs:element name="programUpdateDate" type="xs:dateTime" minOccurs="0" nillable="true"/>
+         <xs:element name="requestId" type="xs:decimal" minOccurs="0" nillable="true"/>
+         <xs:element name="processCode" minOccurs="0" nillable="true">
+            <xs:simpleType>
+               <xs:restriction base="xs:string">
+                  <xs:maxLength value="20"/>
+               </xs:restriction>
+            </xs:simpleType>
+         </xs:element>
+         <xs:element name="apVendorId" type="xs:decimal" minOccurs="0" nillable="true"/>
+         <xs:element name="apInvoiceId" type="xs:decimal" minOccurs="0" nillable="true"/>
+         <xs:element name="arCashReceiptId" type="xs:decimal" minOccurs="0" nillable="true"/>
+         <xs:element name="arCustomerTrxId" type="xs:decimal" minOccurs="0" nillable="true"/>
+      </xs:sequence>
+   </xs:complexType>
+</xs:schema>

@@ -1,0 +1,84 @@
+SET VERIFY OFF;
+SET SHOW OFF;
+SET ECHO OFF;
+SET TAB OFF;
+SET FEEDBACK OFF;
+ 
+WHENEVER SQLERROR CONTINUE;
+ 
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+-- +==================================================================================+  
+-- | Office Depot - Project Simplify                                                  |
+-- |                                                              |
+-- +==================================================================================+
+-- | SQL Script to create the table:  XX_AP_CLD_SUPP_CONTACT_STG                         |
+-- |                                                                                  |
+-- |
+-- |                                                                                  |
+-- |                                                                                  |
+-- |Change Record:                                                                    |
+-- |===============                                                                   |
+-- |Version   Date          Author               Remarks                              |
+-- |=======   ===========   =============        =====================================|
+-- |1.0       18-JUN-2019   Priyam/Visu          Initial DRAFT version                |
+-- |                                                                                  |
+-- +==================================================================================+
+
+--+=====================================================================+
+--+               CREATE TABLE XX_AP_CLD_SUPP_CONTACT_STG
+--+=====================================================================+
+
+
+CREATE TABLE XX_AP_CLD_SUPP_CONTACT_STG
+  (
+    SUPPLIER_NUMBER      NUMBER,
+    SUPPLIER_NAME        VARCHAR2(200),
+    VENDOR_SITE_CODE     VARCHAR2(15),
+    INACTIVE_DATE        DATE,
+    FIRST_NAME           VARCHAR2(15),
+    MIDDLE_NAME          VARCHAR2(15),
+    LAST_NAME            VARCHAR2(60),
+    AREA_CODE            VARCHAR2(10),
+    PHONE                VARCHAR2(40),
+    CONTACT_NAME_ALT     VARCHAR2(320),
+    EMAIL_ADDRESS        VARCHAR2(200),
+    FAX_AREA_CODE        VARCHAR2(10),
+    FAX                  VARCHAR2(40),
+    PRIMARY_ADDR_IND     VARCHAR2(200),
+    ADD_1                VARCHAR2(200),
+    ADD_2                VARCHAR2(200),
+    ADD_3                VARCHAR2(200),
+    CITY                 VARCHAR2(200),
+    STATE                VARCHAR2(200),
+    COUNTRY_ID           VARCHAR2(200),
+    POST                 VARCHAR2(200),
+    CONTACT_TELEX        VARCHAR2(200),
+    OD_PHONE_800_NBR     VARCHAR2(200),
+    OD_COMMENT_1         VARCHAR2(200),
+    OD_COMMENT_2         VARCHAR2(200),
+    OD_EMAIL_IND_FLG     VARCHAR2(200),
+    OD_SHIP_FROM_ADDR_ID VARCHAR2(200),
+    ADDRESS_TYPE         VARCHAR2(200),
+    SEQ_NO               VARCHAR2(200),
+    CONT_TARGET          VARCHAR2(200),
+    CREATE_FLAG          VARCHAR2(1),
+    PROCESS_FLAG         VARCHAR2(1),
+    CONTACT_PROCESS_FLAG NUMBER,
+    ERROR_FLAG           VARCHAR2(1),
+    ERROR_MSG            VARCHAR2(4000),
+    REQUEST_ID           NUMBER,
+    CREATED_BY           NUMBER,
+    CREATION_DATE        DATE,
+    LAST_UPDATED_BY      NUMBER,
+    LAST_UPDATE_DATE     DATE,
+    VENDOR_ID            NUMBER,
+    VENDOR_SITE_ID       NUMBER
+  );
+
+ 
+
+Grant  all on XX_AP_CLD_SUPP_CONTACT_STG to APPS;
+
+   /
+Show error

@@ -1,0 +1,23 @@
+-- +==========================================================================+
+-- |                  Office Depot - Project Simplify                         |
+-- |                                                                          |
+-- +==========================================================================+
+-- | SQL Script to create the following objects                               |
+-- |             INDEX       : XXFIN.XX_AR_INBOUND_LOCKBOX_DATA_N1            |
+-- |                                                                          |
+-- |Change Record:                                                            |
+-- |===============                                                           |
+-- |Version   Date         Author               Remarks                       |
+-- |=======   ===========  =============        ==============================|
+-- | V1.0     07-JUN-2008  Rick Aldridge        Initial version               |
+-- |                                                                          |
+-- +==========================================================================+
+
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     ON
+
+CREATE INDEX XXFIN.XX_AR_INBOUND_LOCKBOX_DATA_N1 ON XXFIN.XX_AR_INBOUND_LOCKBOX_DATA
+(FILE_NAME);

@@ -1,0 +1,40 @@
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     ON
+
+PROMPT Creating INDEX XX_AR_ORDER_RECEIPT_DTL_N10
+
+PROMPT Program exits IF the script IS NOT SUCCESSFUL
+
+WHENEVER SQLERROR CONTINUE
+WHENEVER OSERROR EXIT FAILURE ROLLBACK
+
+ -- +========================================================================================+
+ -- |                          Office Depot - Project Simplify                               |
+ -- +========================================================================================+
+ -- |Desxription - SQL Script to create XX_AR_ORDER_RECEIPT_DTL_N10 index - QC Defect 24597  |
+ -- |Purpose - Index created to improve the performance of following report:                 |
+ -- |          OD: AR POS Tender Summary by Store Report -- RICE ID R1222                    |
+ -- |                                                                                        |
+ -- |Change Record:                                                                          |
+ -- |===============                                                                         |
+ -- |Version      Date               Author               Remarks                            |
+ -- |=======      ===========        =============        ===================================|
+ -- |  1.0        09-Sep-2013        Abdul Khan           Initial version. QC Defect 24597   |
+ -- |                                                                                        |
+ -- +========================================================================================+
+
+CREATE  INDEX xxfin.xx_ar_order_receipt_dtl_n10
+ ON xxfin.xx_ar_order_receipt_dtl (customer_id, process_date)
+ INITRANS 11
+ PARALLEL 16
+ TABLESPACE xxod_ts_data
+ ONLINE;
+
+ALTER  INDEX xxfin.xx_ar_order_receipt_dtl_n10 NOPARALLEL LOGGING;
+
+EXIT;
+
+SHOW ERROR;

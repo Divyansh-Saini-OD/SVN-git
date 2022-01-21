@@ -1,0 +1,27 @@
+-- +============================================================================+
+-- |                  Office Depot                                              |
+-- +============================================================================+
+-- | Name        : XX_XDO_REQUEST_DESTS_N1.idx                                  |
+-- | Rice ID     : E1293                                                        |
+-- | Description : Creating Index on Table XX_XDO_REQUEST_DESTS                 |
+-- |                                                                            |
+-- |Change Record:                                                              |
+-- |===============                                                             |
+-- |Version   Date        Author           Remarks                              |
+-- |=======  ===========  =============    =====================================|
+-- |1.0      21-NOV-2016  Suresh Naragam   Initial Version                      |
+-- +============================================================================+
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     ON
+
+PROMPT
+PROMPT Creating Index on Table XX_XDO_REQUEST_DESTS .....
+PROMPT
+
+CREATE INDEX XXFIN.XX_XDO_REQUEST_DESTS_N1 ON XXFIN.XX_XDO_REQUEST_DESTS(xdo_request_id)
+COMPUTE STATISTICS;
+
+SHOW ERROR;

@@ -1,0 +1,30 @@
+-- +==========================================================================+
+-- |                               Office Depot                               |
+-- +==========================================================================+
+-- | Index Script to create the following synonym                             |
+-- |                                                                          |
+-- |             Synonym: XX_AR_POSTING_WORKER_GT                             |
+-- |                                                                          |
+-- |             RICE#  : E2050 - GL Transfer Parallelization Prog.           |
+-- |                                                                          |
+-- |Change Record:                                                            |
+-- |===============                                                           |
+-- |Version   Date         Author               Remarks                       |
+-- |=======   ===========  =============        ==============================|
+-- | V1.0     09-DEC-2009  Rick Aldridge        Initial version - Defect 3260 |
+-- +==========================================================================+
+
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     ON
+
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+
+CREATE SYNONYM APPS.XX_AR_POSTING_WORKER_GT FOR XXFIN.XX_AR_POSTING_WORKER_GT;
+
+SHOW ERRORS
+

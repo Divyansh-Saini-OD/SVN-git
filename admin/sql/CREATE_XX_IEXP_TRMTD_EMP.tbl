@@ -1,0 +1,75 @@
+REM============================================================================================
+REM                                 Start Of Script
+REM============================================================================================
+
+--+=============================================================================================+--
+--|                                                                                             |--
+--| Program Name   : CREATE_XX_IEXP_TRMTD_EMP.tbl                                               |--
+--|                                                                                             |--
+--| Purpose        : Create Custom Tables .                                                     |--
+--|                  The Objects created are:                                                   |--
+--|                                                                                             |--
+--|                1. XX_IEXP_TRMTD_EMP   (OD Iexp Terminated Employees                         |--
+--|                                                                                             |--
+--| Change History  :                                                                           |--
+--| Version           Date             Changed By              Description                      |--
+--+=============================================================================================+--
+--| 1.0              12-NOV-2014       Paddy Sanjeevi          Original                         |--
+--+=============================================================================================+--
+
+SET VERIFY      OFF
+SET TERM        ON
+SET FEEDBACK    OFF
+SET SHOW        OFF
+SET ECHO        OFF
+SET TAB         OFF
+
+WHENEVER SQLERROR CONTINUE;
+
+PROMPT
+PROMPT Creating the Custom Table ......
+PROMPT
+
+PROMPT
+PROMPT Creating the Table XX_IEXP_TRMTD_EMP......
+PROMPT
+
+Create table XX_IEXP_TRMTD_EMP
+(employee_id			NUMBER,
+ employee_number		VARCHAR2(30),
+ employee_name			VARCHAR2(100),
+ term_date			DATE,
+ final_process_date		DATE,
+ supervisor_id			NUMBER,
+ supervisor_name		VARCHAR2(100),
+ mgr_email_address 		VARCHAR2(100),
+ process_flag 			VARCHAR2(1) DEFAULT 'N',
+ reports_delete_flag		VARCHAR2(1),
+ followup_notify_flag		VARCHAR2(1),
+ initial_notify_flag		VARCHAR2(1),
+ initial_notify_date		DATE,
+ term_mgr_emp_ntfy_flag 	VARCHAR2(1),
+ trmd_mgr_actemp_ntfy_flag	VARCHAR2(1),
+ trmd_mgr_actemp_ntfy_date	DATE,
+ creation_date 			DATE DEFAULT SYSDATE,
+ created_by 			NUMBER,
+ last_update_date		DATE DEFAULT SYSDATE,
+ last_updated_by		NUMBER);
+
+
+WHENEVER SQLERROR CONTINUE;
+
+PROMPT
+PROMPT Exiting....
+PROMPT 
+
+SET FEEDBACK ON
+
+EXIT;
+
+REM=================================================================================================
+REM                                   End Of Script
+REM=================================================================================================
+
+
+

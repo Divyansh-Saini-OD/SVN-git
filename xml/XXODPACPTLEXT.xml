@@ -1,0 +1,127 @@
+<dataTemplate name="ProjectAccountingDownloadAutomationReport" description="" Version="1.0">
+<properties>
+    <property name="scalable_mode" value="on" /> 
+    <property name="rtf-output-default-font">Arial:8</property>  
+</properties>
+<parameters>
+</parameters>
+<dataQuery>
+    <sqlStatement name="Q_PROJ_ASSET_INFO">
+        <![CDATA[
+        SELECT proj.segment1 "PROJECT_NUMBER",
+          ppast.ASSET_NAME "ASSET_NAME",
+          ppast.PROJECT_ASSET_TYPE "PROJECT_ASSET_TYPE",
+          substr(ppast.estimated_in_service_date,1,10) "DATE_IN_SERVICE_ESTIMATED",
+          substr(ppast.date_placed_in_service,1,10) "DATE_IN_SERVICE_ACTUAL",
+          ppast.asset_units "ACTUAL_UNITS",
+          ppast.BOOK_TYPE_CODE "BOOK_TYPE_CODE",
+          fcat.segment1 "MAJOR",
+          fcat.segment2 "MINOR",
+          fcat.segment3 "SUBMINOR",
+          fcat.segment1
+          ||'.'
+          ||fcat.segment2
+          ||'.'
+          ||fcat.segment3 "ASSET_CATEGORY",
+          ppast.parent_asset_id "PARENT_ASSET_NUMBER",
+          ppast.asset_number "ASSET_NUMBER",
+          floc.segment5 "ASSET_LOCATION",
+          gcc.segment1 "COMPANY", 
+          gcc.segment2 "COST_CENTER", 
+          gcc.segment3 "ACCOUNT", 
+          gcc.segment4 "LOCATION", 
+          gcc.segment5 "INTERCOMPANY", 
+          gcc.segment6 "LINE_OF_BUSINESS", 
+          gcc.segment7 "FUTURE",
+          gcc.segment1
+          ||'.'
+          ||gcc.segment2
+          ||'.'
+          ||gcc.segment3
+          ||'.'
+          ||gcc.segment4
+          ||'.'
+          ||gcc.segment5
+          ||'.'
+          ||gcc.segment6
+          ||'.'
+          ||gcc.segment7 "DEPRECIATION_STRING",
+          ppast.asset_description "ASSET_DESCRIPTION",
+          ptask.task_number "TASK_NUMBER"
+        FROM PA_PROJECTS_ALL proj,
+              PA_PROJECT_ASSETS_ALL ppast,
+              FA_CATEGORIES fcat,
+              GL_CODE_COMBINATIONS gcc,
+              PA_PROJECT_ASSET_ASSIGNMENTS ppasg ,
+              PA_TASKS ptask,
+              FA_LOCATIONS floc
+        WHERE 
+        proj.project_id                = ppast.project_id
+        AND ppast.PROJECT_ASSET_ID         = ppasg.PROJECT_ASSET_ID(+)
+        AND ppasg.task_id                  = ptask.task_id(+)
+        AND ppast.location_id               = floc.location_id(+)
+        AND ppast.asset_category_id         = fcat.category_id(+)
+        AND ppast.depreciation_expense_ccid = gcc.code_combination_id(+)
+        AND ppast.project_id                = ppasg.project_id(+)
+        AND ppasg.project_id                  =ptask.project_id(+)
+        AND ppasg.project_id = ptask.project_id(+)
+		AND proj.segment1 IN(SELECT project_number FROM xx_pa_download_stg where status ='P')
+		UNION
+		SELECT PROJECT_NUMBER,
+		  NULL,
+		  NULL,
+		  NULL,
+		  NULL,
+		  NULL,
+		  NULL,
+		  NULL,
+		  NULL,
+		  NULL,
+		  NULL,
+		  NULL,
+		  NULL,
+		  NULL,
+		  NULL,
+		  NULL,
+		  NULL,
+		  NULL,
+		  NULL,
+		  NULL,
+		  NULL,
+		  NULL,
+		  NULL,
+		  NULL
+		FROM xx_pa_download_stg
+		WHERE status ='E'
+        ]]> 
+    </sqlStatement>
+</dataQuery>
+<dataStructure>
+    <group name="G_PROJ_ASSET_INFO" source="Q_PROJ_ASSET_INFO">
+        <element name="PROJECT_NUMBER" value="PROJECT_NUMBER" function="" /> 
+        <element name="ASSET_NAME" value="ASSET_NAME" function="" /> 
+        <element name="PROJECT_ASSET_TYPE" value="PROJECT_ASSET_TYPE" function="" />
+        <element name="DATE_IN_SERVICE_ESTIMATED" value="DATE_IN_SERVICE_ESTIMATED" function="" />
+        <element name="DATE_IN_SERVICE_ACTUAL" value="DATE_IN_SERVICE_ACTUAL" function="" /> 
+		<element name="BOOK_TYPE_CODE" value="BOOK_TYPE_CODE" function="" />
+        <element name="MAJOR" value="MAJOR" function="" />
+        <element name="MINOR" value="MINOR" function="" />
+        <element name="SUBMINOR" value="SUBMINOR" function="" />
+        <element name="ASSET_CATEGORY" value="ASSET_CATEGORY" function="" />
+        <element name="PARENT_ASSET_NUMBER" value="PARENT_ASSET_NUMBER" function="" />
+        <element name="ASSET_NUMBER" value="ASSET_NUMBER" function="" />
+        <element name="ASSET_LOCATION" value="ASSET_LOCATION" function="" />
+        <element name="COMPANY" value="COMPANY" function="" />
+        <element name="COST_CENTER" value="COST_CENTER" function="" />
+        <element name="ACCOUNT" value="ACCOUNT" function="" />
+        <element name="LOCATION" value="LOCATION" function="" />
+        <element name="INTERCOMPANY" value="INTERCOMPANY" function="" />
+        <element name="LINE_OF_BUSINESS" value="LINE_OF_BUSINESS" function="" />
+        <element name="FUTURE" value="FUTURE" function="" />
+        <element name="DEPRECIATION_STRING" value="DEPRECIATION_STRING" function="" />
+        <element name="ACTUAL_UNITS" value="ACTUAL_UNITS" function="" />
+        <element name="ASSET_DESCRIPTION" value="ASSET_DESCRIPTION" function="" />
+        <element name="TASK_NUMBER" value="TASK_NUMBER" function="" />
+	</group>
+</dataStructure>
+</dataTemplate>

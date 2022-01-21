@@ -1,0 +1,29 @@
+-- +==========================================================================+
+-- |                  Office Depot - Project Simplify                         |
+-- +==========================================================================+
+-- | RICE ID     :  E3023                                                     |
+-- | Name        :  AP Trade Match Receiver Write-off                         |
+-- |                                                                          |
+-- | SQL Script to create the following object                                |
+-- |             Table       : XX_AP_RCVWRITE_OFF_STG                         |
+-- |                                                                          |
+-- |Change Record:                                                            |
+-- |===============                                                           |
+-- |Version   Date         Author               Remarks                       |
+-- |=======   ==========   =============        ==============================|
+-- | 1.0      18-Jan-2018   Uday Jadhav	        Added new column              |
+-- |                                                                          |
+-- +==========================================================================+
+
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     ON
+
+ALTER TABLE xx_ap_rcvwrite_off_stg
+        ADD( vendor_site_code varchar2(30)
+           );
+		   
+SHOW ERROR;
+

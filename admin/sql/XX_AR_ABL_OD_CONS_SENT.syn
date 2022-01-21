@@ -1,0 +1,28 @@
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     ON
+    -- +==========================================================================+
+    -- |                  Office Depot - Project Simplify                         |
+    -- +==========================================================================+
+    -- | SQL Script to create the Synonym                                         |
+    -- |                                                                          |
+    -- | XX_AR_ABL_OD_CONS_SENT.syn                                               |
+    -- |                                                                          |
+    -- |                                                                          |
+    -- |                                                                          |
+    -- |                                                                          |
+    -- |Change Record:                                                            |
+    -- |===============                                                           |
+    -- |Version   Date         Author               Remarks                       |
+    -- |=======   ==========   =============        ==============================|
+    -- | V1.0     25-MAY-2016  Rakesh Polepalli     Initial version               |
+    -- |                                                                          |
+    -- +==========================================================================+
+
+
+PROMPT CREATING SYNONYM FOR XX_AR_ABL_OD_CONS_SENT..... 
+CREATE OR REPLACE SYNONYM XX_AR_ABL_OD_CONS_SENT FOR XXFIN.XX_AR_ABL_OD_CONS_SENT;
+
+SHOW ERROR

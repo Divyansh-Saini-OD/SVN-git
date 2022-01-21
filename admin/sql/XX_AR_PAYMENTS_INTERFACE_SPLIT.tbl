@@ -1,0 +1,97 @@
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     ON
+
+PROMPT Creating TABLE XX_AR_PAYMENTS_INTERFACE_SPLIT 
+
+PROMPT Program exits IF the creation IS NOT SUCCESSFUL
+
+WHENEVER SQLERROR CONTINUE
+WHENEVER OSERROR EXIT FAILURE ROLLBACK
+
+-- +============================================================================================+
+-- |  Office Depot - Project Simplify                                                           |
+-- |                                                                                            |
+-- +============================================================================================+
+-- |  Name:         TABLE:XX_AR_PAYMENTS_INTERFACE_SPLIT                                        |
+-- |  Description:  Tables created for XX_SPLIT_LOCKBOX_PKG                                     |                                                                      |
+-- |                                                                                            |
+-- |  Change Record:                                                                            |
+-- +============================================================================================+
+-- | Version     Date         Author           Remarks                                          |
+-- | =========   ===========  =============    ===============================================  |
+-- | 1.0         28-DEC-2012  Divya            Initial version                                  |
+-- +============================================================================================+
+
+DROP TABLE  XXFIN.XX_AR_PAYMENTS_INTERFACE_SPLIT;
+
+--------------------------------------------------------
+--  DDL for Table XX_AR_PAYMENTS_INTERFACE_SPLIT
+--------------------------------------------------------
+CREATE TABLE  XXFIN.XX_AR_PAYMENTS_INTERFACE_SPLIT 
+  (
+     STATUS                     VARCHAR2(30 BYTE),
+     RECORD_TYPE                VARCHAR2(2 BYTE),
+     DESTINATION_ACCOUNT        VARCHAR2(25 BYTE),
+     ORIGINATION                VARCHAR2(25 BYTE),
+     LOCKBOX_NUMBER             VARCHAR2(30 BYTE),
+     DEPOSIT_DATE               DATE,
+     DEPOSIT_TIME               VARCHAR2(8 BYTE),
+     BATCH_NAME                 VARCHAR2(25 BYTE),
+     ITEM_NUMBER                NUMBER,
+     REMITTANCE_AMOUNT          NUMBER,
+     TRANSIT_ROUTING_NUMBER     VARCHAR2(25 BYTE),
+     ACCOUNT                    VARCHAR2(30 BYTE),
+     CHECK_NUMBER               VARCHAR2(30 BYTE),
+     CUSTOMER_NUMBER            VARCHAR2(30 BYTE),
+     OVERFLOW_SEQUENCE          NUMBER,
+     OVERFLOW_INDICATOR         VARCHAR2(1 BYTE),
+     INVOICE1                   VARCHAR2(50 BYTE),
+     INVOICE2                   VARCHAR2(50 BYTE),
+     INVOICE3                   VARCHAR2(50 BYTE),
+     AMOUNT_APPLIED1            NUMBER,
+     AMOUNT_APPLIED2            NUMBER,
+     AMOUNT_APPLIED3            NUMBER,
+     BATCH_RECORD_COUNT         NUMBER(15,0),
+     BATCH_AMOUNT               NUMBER,
+     LOCKBOX_RECORD_COUNT       NUMBER,
+     LOCKBOX_AMOUNT             NUMBER,
+     TRANSMISSION_RECORD_COUNT  NUMBER,
+     TRANSMISSION_AMOUNT        NUMBER,
+     ATTRIBUTE1                 VARCHAR2(150 BYTE),
+     ATTRIBUTE2                 VARCHAR2(150 BYTE),
+     ATTRIBUTE3                 VARCHAR2(150 BYTE),
+     ATTRIBUTE4                 VARCHAR2(150 BYTE),
+     ATTRIBUTE5                 VARCHAR2(150 BYTE),
+     RECORD_STATUS              VARCHAR2(30 BYTE),
+     PROCESS_NUM                VARCHAR2(60 BYTE),
+     FILE_NAME                  VARCHAR2(100 BYTE),
+     ERROR_MESG                 VARCHAR2(100 BYTE),
+     INV_MATCH_STATUS           VARCHAR2(100 BYTE),
+     PROCESS_DATE               DATE,
+     ERROR_FLAG                 VARCHAR2(10 BYTE),
+     CREATION_DATE              DATE NOT NULL,
+     CREATED_BY                 NUMBER NOT NULL,
+     LAST_UPDATE_DATE           DATE NOT NULL,
+     LAST_UPDATED_BY            NUMBER NOT NULL,
+     AUTO_CASH_STATUS           VARCHAR2(60 BYTE),
+     AUTO_CASH_REQUEST          NUMBER,
+     CUSTOMER_ID                NUMBER,
+     TRX_DATE                   DATE,
+     INVOICE1_STATUS            VARCHAR2(60 BYTE),
+     INVOICE2_STATUS            VARCHAR2(60 BYTE),
+     INVOICE3_STATUS            VARCHAR2(60 BYTE),
+     SENDING_COMPANY_ID         VARCHAR2(10 BYTE),
+     TRANSMISSION_REQUEST_ID    NUMBER,
+     TRANSMISSION_ID            NUMBER,
+     GL_DATE                    DATE,
+     ATTRIBUTE_CATEGORY         VARCHAR2(30 BYTE),
+     PICKUP_STATUS              VARCHAR2(50 BYTE),
+     SPLIT_FILE_NAME            VARCHAR2(100 BYTE)
+  ) ;
+
+EXIT;
+
+SHOW ERROR

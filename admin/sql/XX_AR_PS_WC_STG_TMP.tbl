@@ -1,0 +1,51 @@
+--+=====================================================================+
+--|                   Office Depot - Project FIT                        |
+--|          Capgemini/Office Depot/Consulting Organization             |
+--+=====================================================================+
+--|                                                                     |
+--|Rice        : I2158                                                  |
+--|File Name   : XX_AR_PS_WC_STG_TMP.tbl                                |
+--|File Path   : $XXFIN_TOP/admin/sql                                   |
+--|Schema      : XXFIN                                                  |
+--|                                                                     |
+--|Version  Date         Author                Remarks                  |
+--|=======  ===========  ====================  =========================|
+--| 1.0     28-MAR-2012  R. Aldridge           Initial                  |
+--|                                                                     |
+--+=====================================================================+
+
+SET VERIFY OFF
+WHENEVER SQLERROR CONTINUE
+
+PROMPT "Creating Table XXFIN.XX_AR_PS_WC_STG_TMP..."
+ CREATE TABLE "XXFIN"."XX_AR_PS_WC_STG_TMP"
+   (
+      "CUSTOMER_ID"         NUMBER(15, 0)                     ,
+      "PAYMENT_SCHEDULE_ID" NUMBER(15, 0) NOT NULL ENABLE     ,
+      "TRX_REC_ID"          NUMBER(15, 0)                     ,
+      "TRX_REC_NUMBER"      VARCHAR2(30 BYTE)                 ,
+      "DUE_DATE" DATE NOT NULL ENABLE                         ,
+      "AMOUNT_DUE_ORIGINAL"     NUMBER NOT NULL ENABLE           ,
+      "AMOUNT_DUE_REMAINING"    NUMBER NOT NULL ENABLE           ,
+      "STATUS"                  VARCHAR2(30 BYTE) NOT NULL ENABLE,
+      "INVOICE_CURRENCY_CODE"   VARCHAR2(15 BYTE) NOT NULL ENABLE,
+      "CLASS"                   VARCHAR2(20 BYTE) NOT NULL ENABLE,
+      "AMOUNT_APPLIED"          NUMBER                           ,
+      "AMOUNT_CREDITED"         NUMBER                           ,
+      "AMOUNT_ADJUSTED"         NUMBER                           ,
+      "AMOUNT_IN_DISPUTE"       NUMBER                           ,
+      "DISCOUNT_TAKEN_EARNED"   NUMBER                           ,
+      "DISCOUNT_TAKEN_UNEARNED" NUMBER                           ,
+      "TAX_AMOUNT"              NUMBER                           ,
+      "TAX_AMOUNT_REMAINING"    NUMBER                           ,
+      "GL_DATE_CLOSED" DATE                                      ,
+      "CREATION_DATE" DATE                                       ,
+      "CREATED_BY" NUMBER(15, 0)                                 ,
+      "REQUEST_ID" NUMBER(15, 0) NOT NULL ENABLE                 ,
+      "PMT_CREATION_DATE" DATE NOT NULL ENABLE                   ,
+      "EXT_TYPE" VARCHAR2(1 BYTE) NOT NULL ENABLE                ,
+      "CYCLE_DATE" DATE NOT NULL ENABLE                          ,
+      "BATCH_NUM"       NUMBER NOT NULL ENABLE                         ,
+      "CUSTOMER_TRX_ID" NUMBER                                         ,
+      "CASH_RECEIPT_ID" NUMBER
+   );

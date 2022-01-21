@@ -1,0 +1,41 @@
+-- +============================================================================================+
+-- |                        Office Depot - Project Simplify                                     |
+-- |                                                                                            |
+-- +============================================================================================+
+-- | Name         : XX_AR_WC_INBOUND_STG.syn                                                    |
+-- | Rice Id      : I2161                                                                       | 
+-- | Description  : INT-I2161_OD_AR_Webcollect_AR_INBOUND Synonym Creation                      |  
+-- | Purpose      : Create Synonym for Table XX_AR_WC_INBOUND_STG.tbl.                          |
+-- |                                                                                            |
+-- |                                                                                            |
+-- |Change Record:                                                                              |
+-- |===============                                                                             |
+-- |Version    Date          Author                Remarks                                      | 
+-- |=======    ==========    =================    ==============================================+
+-- |DRAFT 1A   07-DEC-2011   Bapuji Nanapaneni    Initial Version                               |
+-- +============================================================================================+
+
+SET VERIFY      OFF
+SET TERM        ON
+SET FEEDBACK    OFF
+SET SHOW        OFF
+SET ECHO        OFF
+SET TAB         OFF
+
+PROMPT
+PROMPT Creating SYNONYM xx_ar_wc_inbound_stg
+PROMPT
+
+CREATE OR REPLACE SYNONYM xx_ar_wc_inbound_stg  FOR xxfin.xx_ar_wc_inbound_stg
+/
+
+WHENEVER SQLERROR EXIT 1
+
+PROMPT
+PROMPT Exiting....
+PROMPT
+
+SET FEEDBACK ON
+
+EXIT;
+

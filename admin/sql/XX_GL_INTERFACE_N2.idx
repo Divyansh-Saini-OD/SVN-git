@@ -1,0 +1,39 @@
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+-- +=======================================================================+
+-- |               Office Depot - Project Simplify                         |
+-- |                                                                       |
+-- +=======================================================================+
+-- | Name             :  gl_interface_n2                                   |
+-- | Description      :  Modified index on GL_INTERFACE per note 198437.1  |
+-- |                                                                       |
+-- |Change History:                                                        |
+-- |---------------                                                        |
+-- |                                                                       |
+-- |Version  Date           Author             Remarks                     |
+-- |-------  ----------- -----------------  -------------------------------|
+-- |Draft1a  04-30-2008  Peter Marco         Initial Draft Version         |
+-- +=======================================================================+
+
+-----------------------------
+-- Drop original index
+-----------------------------
+
+DROP INDEX GL.GL_INTERFACE_N2;
+
+-- -------------------------------------------------
+-- Creating Index gl_interface_n2
+-- -------------------------------------------------
+
+
+CREATE INDEX GL.GL_INTERFACE_N2 ON gl_interface (request_id,je_header_id,status,code_combination_id,je_line_num) 
+PCTFREE 10 INITRANS 2 MAXTRANS 255 COMPUTE STATISTICS 
+STORAGE(INITIAL 65536 NEXT 1048576 MINEXTENTS 1 MAXEXTENTS 2147483645
+PCTINCREASE 0 FREELISTS 1 FREELIST GROUPS 1 BUFFER_POOL DEFAULT)
+TABLESPACE APPS_TS_INTERFACE ;
+
+
+
+EXIT;

@@ -1,0 +1,27 @@
+-- +==========================================================================+
+-- |                  Office Depot - Project Simplify                         |
+-- |                                                                          |
+-- +==========================================================================+
+-- | SQL Script to create the following objects                               |
+-- |             INDEX       : XX_PO_POM_LINES_INT_STG_N2                     |
+-- |                 RICE ID : I2193_PO to EBS Interface                      |
+-- |                                                                          |
+-- |                                                                          |
+-- |                                                                          |
+-- |Change Record:                                                            |
+-- |===============                                                           |
+-- |Version   Date         Author               Remarks                       |
+-- |=======   ===========  =============        ==============================|
+-- | V1.0     13-Apr-2017  Avinash              Initial version               |
+-- |                                                                          |
+-- +==========================================================================+
+
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     ON
+
+CREATE INDEX XXFIN.XX_PO_POM_LINES_INT_STG_N2 ON XXFIN.XX_PO_POM_LINES_INT_STG
+(RECORD_STATUS)
+/

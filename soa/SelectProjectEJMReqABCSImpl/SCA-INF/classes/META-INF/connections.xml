@@ -1,0 +1,189 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<References xmlns="http://xmlns.oracle.com/adf/jndi">
+   <Reference name="soafmwdev01_db" className="oracle.jdeveloper.db.adapter.DatabaseProvider" credentialStoreKey="soafmwdev01_db" xmlns="">
+      <Factory className="oracle.jdeveloper.db.adapter.DatabaseProviderFactory"/>
+      <RefAddresses>
+         <StringRefAddr addrType="sid">
+            <Contents>soadev05</Contents>
+         </StringRefAddr>
+         <StringRefAddr addrType="subtype">
+            <Contents>oraJDBC</Contents>
+         </StringRefAddr>
+         <StringRefAddr addrType="hostname">
+            <Contents>choldbr05d</Contents>
+         </StringRefAddr>
+         <StringRefAddr addrType="user">
+            <Contents>soafmwdev01_mds</Contents>
+         </StringRefAddr>
+         <StringRefAddr addrType="port">
+            <Contents>1544</Contents>
+         </StringRefAddr>
+         <SecureRefAddr addrType="password"/>
+         <StringRefAddr addrType="DeployPassword">
+            <Contents>true</Contents>
+         </StringRefAddr>
+         <StringRefAddr addrType="oraDriverType">
+            <Contents>thin</Contents>
+         </StringRefAddr>
+      </RefAddresses>
+   </Reference>
+   <Reference name="gsidev01" className="oracle.jdeveloper.db.adapter.DatabaseProvider" credentialStoreKey="gsidev01" xmlns="">
+      <Factory className="oracle.jdeveloper.db.adapter.DatabaseProviderFactory"/>
+      <RefAddresses>
+         <StringRefAddr addrType="sid">
+            <Contents>GSIDEV01</Contents>
+         </StringRefAddr>
+         <StringRefAddr addrType="subtype">
+            <Contents>oraJDBC</Contents>
+         </StringRefAddr>
+         <StringRefAddr addrType="user">
+            <Contents>apps</Contents>
+         </StringRefAddr>
+         <StringRefAddr addrType="hostname">
+            <Contents>choldbr18d-vip.na.odcorp.net</Contents>
+         </StringRefAddr>
+         <StringRefAddr addrType="port">
+            <Contents>1531</Contents>
+         </StringRefAddr>
+         <SecureRefAddr addrType="password"/>
+         <StringRefAddr addrType="DeployPassword">
+            <Contents>true</Contents>
+         </StringRefAddr>
+         <StringRefAddr addrType="oraDriverType">
+            <Contents>thin</Contents>
+         </StringRefAddr>
+      </RefAddresses>
+   </Reference>
+   <Reference name="Connection1" className="oracle.jdeveloper.db.adapter.DatabaseProvider" credentialStoreKey="Connection1" xmlns="">
+      <Factory className="oracle.jdeveloper.db.adapter.DatabaseProviderFactory"/>
+      <RefAddresses>
+         <StringRefAddr addrType="subtype">
+            <Contents>ODBCBridge</Contents>
+         </StringRefAddr>
+         <StringRefAddr addrType="user">
+            <Contents>EBS_PA_EJM_INTERFACE</Contents>
+         </StringRefAddr>
+         <StringRefAddr addrType="oracle.lite.poljdbc.POLJDBCDriver">
+            <Contents>sun.jdbc.odbc.JdbcOdbcDriver</Contents>
+         </StringRefAddr>
+         <SecureRefAddr addrType="password"/>
+         <StringRefAddr addrType="parameters">
+            <Contents/>
+         </StringRefAddr>
+         <StringRefAddr addrType="DeployPassword">
+            <Contents>true</Contents>
+         </StringRefAddr>
+         <StringRefAddr addrType="dataSourceName">
+            <Contents>USCHFINAPP01</Contents>
+         </StringRefAddr>
+      </RefAddresses>
+   </Reference>
+   <Reference name="EJBDatabaseDev" className="oracle.jdeveloper.db.adapter.DatabaseProvider" credentialStoreKey="EJBDatabaseDev" xmlns="">
+      <Factory className="oracle.jdeveloper.db.adapter.DatabaseProviderFactory"/>
+      <RefAddresses>
+         <StringRefAddr addrType="subtype">
+            <Contents>ODBCBridge</Contents>
+         </StringRefAddr>
+         <StringRefAddr addrType="oracle.lite.poljdbc.POLJDBCDriver">
+            <Contents>sun.jdbc.odbc.JdbcOdbcDriver</Contents>
+         </StringRefAddr>
+         <StringRefAddr addrType="user">
+            <Contents>EBS_PA_EJM_INTERFACE</Contents>
+         </StringRefAddr>
+         <SecureRefAddr addrType="password"/>
+         <StringRefAddr addrType="parameters">
+            <Contents/>
+         </StringRefAddr>
+         <StringRefAddr addrType="dataSourceName">
+            <Contents>USCHFINAPP01</Contents>
+         </StringRefAddr>
+         <StringRefAddr addrType="DeployPassword">
+            <Contents>true</Contents>
+         </StringRefAddr>
+      </RefAddresses>
+   </Reference>
+   <Reference name="testSQLServer" className="oracle.jdeveloper.db.adapter.DatabaseProvider" credentialStoreKey="testSQLServer" xmlns="">
+      <Factory className="oracle.jdeveloper.db.adapter.DatabaseProviderFactory"/>
+      <RefAddresses>
+         <StringRefAddr addrType="port">
+            <Contents>1433</Contents>
+         </StringRefAddr>
+         <StringRefAddr addrType="DeployPassword">
+            <Contents>true</Contents>
+         </StringRefAddr>
+         <StringRefAddr addrType="dataSourceName">
+            <Contents>DS_EJM</Contents>
+         </StringRefAddr>
+         <StringRefAddr addrType="user">
+            <Contents>EBS_PA_EJM_INTERFACE</Contents>
+         </StringRefAddr>
+         <StringRefAddr addrType="subtype">
+            <Contents>SQLServer</Contents>
+         </StringRefAddr>
+         <StringRefAddr addrType="hostname">
+            <Contents>USCHFINAPP01D</Contents>
+         </StringRefAddr>
+         <StringRefAddr addrType="instanceName">
+            <Contents/>
+         </StringRefAddr>
+         <SecureRefAddr addrType="password"/>
+         <StringRefAddr addrType="driver">
+            <Contents>com.microsoft.sqlserver.jdbc.SQLServerDriver</Contents>
+         </StringRefAddr>
+      </RefAddresses>
+   </Reference>
+   <Reference name="EJMDevSQLServer" className="oracle.jdeveloper.db.adapter.DatabaseProvider" credentialStoreKey="EJMDevSQLServer" xmlns="">
+      <Factory className="oracle.jdeveloper.db.adapter.DatabaseProviderFactory"/>
+      <RefAddresses>
+         <StringRefAddr addrType="port">
+            <Contents>1433</Contents>
+         </StringRefAddr>
+         <StringRefAddr addrType="DeployPassword">
+            <Contents>true</Contents>
+         </StringRefAddr>
+         <StringRefAddr addrType="dataSourceName">
+            <Contents>DS_EJM</Contents>
+         </StringRefAddr>
+         <StringRefAddr addrType="user">
+            <Contents>EBS_PA_EJM_INTERFACE</Contents>
+         </StringRefAddr>
+         <StringRefAddr addrType="subtype">
+            <Contents>SQLServer</Contents>
+         </StringRefAddr>
+         <StringRefAddr addrType="hostname">
+            <Contents>USCHFINAPP01D</Contents>
+         </StringRefAddr>
+         <StringRefAddr addrType="instanceName">
+            <Contents/>
+         </StringRefAddr>
+         <SecureRefAddr addrType="password"/>
+         <StringRefAddr addrType="driver">
+            <Contents>com.microsoft.sqlserver.jdbc.SQLServerDriver</Contents>
+         </StringRefAddr>
+      </RefAddresses>
+   </Reference>
+   <Reference name="MDS_SOAFMWDEV01" className="oracle.tip.tools.ide.common.resourcepalette.adapter.mds.MDSProvider" credentialStoreKey="MDS_SOAFMWDEV01" xmlns="">
+      <Factory className="oracle.tip.tools.ide.common.resourcepalette.adapter.mds.MDSProviderFactory"/>
+      <RefAddresses>
+         <SecureRefAddr addrType="DBMDSJDBCPASSWORD"/>
+         <StringRefAddr addrType="ConnectionName">
+            <Contents>MDS_SOAFMWDEV01</Contents>
+         </StringRefAddr>
+         <StringRefAddr addrType="DBMDS_JDBC_USERID">
+            <Contents>SOAFMWDEV01_MDS</Contents>
+         </StringRefAddr>
+         <StringRefAddr addrType="ConnectionType">
+            <Contents>oracle.mds.persistence.stores.db.DBMetadataStore</Contents>
+         </StringRefAddr>
+         <StringRefAddr addrType="MDS_PARTITION_NAME">
+            <Contents>soa-infra</Contents>
+         </StringRefAddr>
+         <StringRefAddr addrType="DBMDSDBCONNECTIONNAME">
+            <Contents>soafmwdev01_db</Contents>
+         </StringRefAddr>
+         <StringRefAddr addrType="DBMDS_JDBC_URL">
+            <Contents>jdbc:oracle:thin:@choldbr05d:1544:soadev05</Contents>
+         </StringRefAddr>
+      </RefAddresses>
+   </Reference>
+</References>

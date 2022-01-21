@@ -1,0 +1,301 @@
+<?xml version = "1.0" encoding = "UTF-8" ?>
+<!--
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  Oracle JDeveloper BPEL Designer 
+  
+  Created: Wed Aug 15 15:23:46 EDT 2007
+  Author:  Krishnan-Govindaraja
+  Purpose: Empty BPEL Process
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+-->
+<process name="ProcessAJB999aInbound"
+         targetNamespace="http://xmlns.oracle.com/ProcessAJB999aInbound"
+         xmlns="http://schemas.xmlsoap.org/ws/2003/03/business-process/"
+         xmlns:xp20="http://www.oracle.com/XSL/Transform/java/oracle.tip.pc.services.functions.Xpath20"
+         xmlns:bpws="http://schemas.xmlsoap.org/ws/2003/03/business-process/"
+         xmlns:ns4="http://TargetNamespace.com/ServiceFileRead"
+         xmlns:ns7="ODError"
+         xmlns:ldap="http://schemas.oracle.com/xpath/extension/ldap"
+         xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+         xmlns:ns5="http://TargetNamespace.com/InboundService"
+         xmlns:client="http://xmlns.oracle.com/ProcessAJB999aInbound"
+         xmlns:ora="http://schemas.oracle.com/xpath/extension"
+         xmlns:ns1="http://xmlns.oracle.com/pcbpel/adapter/ftp/ServiceFileRead/"
+         xmlns:ns3="http://xmlns.oracle.com/ODErrorLogger"
+         xmlns:ns2="http://xmlns.oracle.com/pcbpel/adapter/db/ServiceTableInsert/"
+         xmlns:bpelx="http://schemas.oracle.com/bpel/extension"
+         xmlns:orcl="http://www.oracle.com/XSL/Transform/java/oracle.tip.pc.services.functions.ExtFunc">
+  <!-- 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+      PARTNERLINKS                                                      
+      List of services participating in this BPEL process               
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  -->
+  <partnerLinks>
+    <partnerLink myRole="ODErrorLoggerRequester" name="ODErrorLogger"
+                 partnerRole="ODErrorLoggerProvider"
+                 partnerLinkType="ns3:ODErrorLogger"/>
+    <partnerLink myRole="Get_role" name="ServiceFileRead"
+                 partnerLinkType="ns1:Get_plt"/>
+    <partnerLink name="ServiceTableInsert" partnerRole="ServiceTableInsert_role"
+                 partnerLinkType="ns2:ServiceTableInsert_plt"/>
+  </partnerLinks>
+  <!-- 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+      VARIABLES                                                        
+      List of messages and XML documents used within this BPEL process 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  -->
+  <variables>
+    <variable name="Exception" messageType="bpelx:RuntimeFaultMessage"/>
+    <variable name="invkODErrorLog_in"
+              messageType="ns3:ODErrorLoggerRequestMessage"/>
+    <variable name="ReceiveFileRead" messageType="ns1:Root-Element_msg"/>
+    <variable name="InvokeTableInsert_insert_In"
+              messageType="ns2:XxCeAjb999aCollection_msg"/>
+  </variables>
+  <faultHandlers>
+    <catch faultName="bpws:selectionFailure" faultVariable="Exception">
+      <sequence name="Sequence_3">
+        <assign name="AJBSelectionException">
+          <copy>
+            <from expression="concat(ora:getProcessId(), ora:getProcessVersion())"/>
+            <to variable="invkODErrorLog_in" part="payload"
+                query="/ns7:ErrorData/ns7:ProcessInfo/ns7:BusinessProcessName"/>
+          </copy>
+          <copy>
+            <from expression="ora:getInstanceId()"/>
+            <to variable="invkODErrorLog_in" part="payload"
+                query="/ns7:ErrorData/ns7:ProcessInfo/ns7:BusinessProcessId"/>
+          </copy>
+          <copy>
+            <from expression="ora:getDomainId()"/>
+            <to variable="invkODErrorLog_in" part="payload"
+                query="/ns7:ErrorData/ns7:ProcessInfo/ns7:BusinessProcessDomain"/>
+          </copy>
+          <copy>
+            <from expression="ora:getProcessURL()"/>
+            <to variable="invkODErrorLog_in" part="payload"
+                query="/ns7:ErrorData/ns7:ProcessInfo/ns7:SystemName"/>
+          </copy>
+          <copy>
+            <from expression="xp20:current-dateTime()"/>
+            <to variable="invkODErrorLog_in" part="payload"
+                query="/ns7:ErrorData/ns7:ErrorDetails/ns7:ErrorDateTime"/>
+          </copy>
+          <copy>
+            <from expression="'ProcessAJB999aInbound'"/>
+            <to variable="invkODErrorLog_in" part="payload"
+                query="/ns7:ErrorData/ns7:ProcessInfo/ns7:BusinessProcessStep"/>
+          </copy>
+          <copy>
+            <from variable="Exception" part="code"/>
+            <to variable="invkODErrorLog_in" part="payload"
+                query="/ns7:ErrorData/ns7:ErrorDetails/ns7:ErrorCode"/>
+          </copy>
+          <copy>
+            <from variable="Exception" part="summary"/>
+            <to variable="invkODErrorLog_in" part="payload"
+                query="/ns7:ErrorData/ns7:ErrorDetails/ns7:ErrorDescription"/>
+          </copy>
+          <copy>
+            <from variable="Exception" part="detail"/>
+            <to variable="invkODErrorLog_in" part="payload"
+                query="/ns7:ErrorData/ns7:ErrorDetails/ns7:ErrorText"/>
+          </copy>
+        </assign>
+        <invoke name="InvokeSelectionFailure" partnerLink="ODErrorLogger"
+                portType="ns3:ODErrorLogger" operation="initiate"
+                inputVariable="invkODErrorLog_in"/>
+      </sequence>
+    </catch>
+    <catch faultName="bpelx:bindingFault" faultVariable="Exception">
+      <sequence name="Sequence_1">
+        <assign name="AJBBindingException">
+          <copy>
+            <from expression="concat(ora:getProcessId(), ora:getProcessVersion())"/>
+            <to variable="invkODErrorLog_in" part="payload"
+                query="/ns7:ErrorData/ns7:ProcessInfo/ns7:BusinessProcessName"/>
+          </copy>
+          <copy>
+            <from expression="ora:getInstanceId()"/>
+            <to variable="invkODErrorLog_in" part="payload"
+                query="/ns7:ErrorData/ns7:ProcessInfo/ns7:BusinessProcessId"/>
+          </copy>
+          <copy>
+            <from expression="ora:getDomainId()"/>
+            <to variable="invkODErrorLog_in" part="payload"
+                query="/ns7:ErrorData/ns7:ProcessInfo/ns7:BusinessProcessDomain"/>
+          </copy>
+          <copy>
+            <from expression="ora:getProcessURL()"/>
+            <to variable="invkODErrorLog_in" part="payload"
+                query="/ns7:ErrorData/ns7:ProcessInfo/ns7:SystemName"/>
+          </copy>
+          <copy>
+            <from expression="xp20:current-dateTime()"/>
+            <to variable="invkODErrorLog_in" part="payload"
+                query="/ns7:ErrorData/ns7:ErrorDetails/ns7:ErrorDateTime"/>
+          </copy>
+          <copy>
+            <from expression="'ProcessAJB999aInbound'"/>
+            <to variable="invkODErrorLog_in" part="payload"
+                query="/ns7:ErrorData/ns7:ProcessInfo/ns7:BusinessProcessStep"/>
+          </copy>
+          <copy>
+            <from variable="Exception" part="code"/>
+            <to variable="invkODErrorLog_in" part="payload"
+                query="/ns7:ErrorData/ns7:ErrorDetails/ns7:ErrorCode"/>
+          </copy>
+          <copy>
+            <from variable="Exception" part="summary"/>
+            <to variable="invkODErrorLog_in" part="payload"
+                query="/ns7:ErrorData/ns7:ErrorDetails/ns7:ErrorDescription"/>
+          </copy>
+          <copy>
+            <from variable="Exception" part="detail"/>
+            <to variable="invkODErrorLog_in" part="payload"
+                query="/ns7:ErrorData/ns7:ErrorDetails/ns7:ErrorText"/>
+          </copy>
+        </assign>
+        <invoke name="InvokeBindingException" partnerLink="ODErrorLogger"
+                portType="ns3:ODErrorLogger" operation="initiate"
+                inputVariable="invkODErrorLog_in"/>
+      </sequence>
+    </catch>
+    <catch faultName="bpelx:remoteFault" faultVariable="Exception">
+      <sequence name="Sequence_2">
+        <assign name="AJBRemoteException">
+          <copy>
+            <from expression="concat(ora:getProcessId(), ora:getProcessVersion())"/>
+            <to variable="invkODErrorLog_in" part="payload"
+                query="/ns7:ErrorData/ns7:ProcessInfo/ns7:BusinessProcessName"/>
+          </copy>
+          <copy>
+            <from expression="ora:getInstanceId()"/>
+            <to variable="invkODErrorLog_in" part="payload"
+                query="/ns7:ErrorData/ns7:ProcessInfo/ns7:BusinessProcessId"/>
+          </copy>
+          <copy>
+            <from expression="ora:getDomainId()"/>
+            <to variable="invkODErrorLog_in" part="payload"
+                query="/ns7:ErrorData/ns7:ProcessInfo/ns7:BusinessProcessDomain"/>
+          </copy>
+          <copy>
+            <from expression="ora:getProcessURL()"/>
+            <to variable="invkODErrorLog_in" part="payload"
+                query="/ns7:ErrorData/ns7:ProcessInfo/ns7:SystemName"/>
+          </copy>
+          <copy>
+            <from expression="xp20:current-dateTime()"/>
+            <to variable="invkODErrorLog_in" part="payload"
+                query="/ns7:ErrorData/ns7:ErrorDetails/ns7:ErrorDateTime"/>
+          </copy>
+          <copy>
+            <from expression="'ProcessAJB999aInbound'"/>
+            <to variable="invkODErrorLog_in" part="payload"
+                query="/ns7:ErrorData/ns7:ProcessInfo/ns7:BusinessProcessStep"/>
+          </copy>
+          <copy>
+            <from variable="Exception" part="code"/>
+            <to variable="invkODErrorLog_in" part="payload"
+                query="/ns7:ErrorData/ns7:ErrorDetails/ns7:ErrorCode"/>
+          </copy>
+          <copy>
+            <from variable="Exception" part="summary"/>
+            <to variable="invkODErrorLog_in" part="payload"
+                query="/ns7:ErrorData/ns7:ErrorDetails/ns7:ErrorDescription"/>
+          </copy>
+          <copy>
+            <from variable="Exception" part="detail"/>
+            <to variable="invkODErrorLog_in" part="payload"
+                query="/ns7:ErrorData/ns7:ErrorDetails/ns7:ErrorText"/>
+          </copy>
+        </assign>
+        <invoke name="InvokeRemoteException" partnerLink="ODErrorLogger"
+                portType="ns3:ODErrorLogger" operation="initiate"
+                inputVariable="invkODErrorLog_in"/>
+      </sequence>
+    </catch>
+    <catchAll>
+      <sequence name="Sequence_4">
+        <assign name="AJBCatchAllException">
+          <copy>
+            <from expression="concat(ora:getProcessId(), ora:getProcessVersion())"/>
+            <to variable="invkODErrorLog_in" part="payload"
+                query="/ns7:ErrorData/ns7:ProcessInfo/ns7:BusinessProcessName"/>
+          </copy>
+          <copy>
+            <from expression="ora:getInstanceId()"/>
+            <to variable="invkODErrorLog_in" part="payload"
+                query="/ns7:ErrorData/ns7:ProcessInfo/ns7:BusinessProcessId"/>
+          </copy>
+          <copy>
+            <from expression="ora:getDomainId()"/>
+            <to variable="invkODErrorLog_in" part="payload"
+                query="/ns7:ErrorData/ns7:ProcessInfo/ns7:BusinessProcessDomain"/>
+          </copy>
+          <copy>
+            <from expression="ora:getProcessURL()"/>
+            <to variable="invkODErrorLog_in" part="payload"
+                query="/ns7:ErrorData/ns7:ProcessInfo/ns7:SystemName"/>
+          </copy>
+          <copy>
+            <from expression="xp20:current-dateTime()"/>
+            <to variable="invkODErrorLog_in" part="payload"
+                query="/ns7:ErrorData/ns7:ErrorDetails/ns7:ErrorDateTime"/>
+          </copy>
+          <copy>
+            <from expression="'ProcessAJB999aInbound'"/>
+            <to variable="invkODErrorLog_in" part="payload"
+                query="/ns7:ErrorData/ns7:ProcessInfo/ns7:BusinessProcessStep"/>
+          </copy>
+          <copy>
+            <from variable="Exception" part="code"/>
+            <to variable="invkODErrorLog_in" part="payload"
+                query="/ns7:ErrorData/ns7:ErrorDetails/ns7:ErrorCode"/>
+          </copy>
+          <copy>
+            <from variable="Exception" part="summary"/>
+            <to variable="invkODErrorLog_in" part="payload"
+                query="/ns7:ErrorData/ns7:ErrorDetails/ns7:ErrorDescription"/>
+          </copy>
+          <copy>
+            <from variable="Exception" part="detail"/>
+            <to variable="invkODErrorLog_in" part="payload"
+                query="/ns7:ErrorData/ns7:ErrorDetails/ns7:ErrorText"/>
+          </copy>
+        </assign>
+        <invoke name="InvokeCatchAll" partnerLink="ODErrorLogger"
+                portType="ns3:ODErrorLogger" operation="initiate"
+                inputVariable="invkODErrorLog_in"/>
+      </sequence>
+    </catchAll>
+  </faultHandlers>
+  <!-- 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+     ORCHESTRATION LOGIC                                               
+     Set of activities coordinating the flow of messages across the    
+     services integrated within this business process                  
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  -->
+  <sequence name="main">
+    <receive name="ReceiveFileRead" partnerLink="ServiceFileRead"
+             portType="ns1:Get_ptt" operation="Get" variable="ReceiveFileRead"
+             createInstance="yes"/>
+    <assign name="TransformToTable">
+      <bpelx:annotation>
+        <bpelx:pattern>transformation</bpelx:pattern>
+      </bpelx:annotation>
+      <copy>
+        <from expression="ora:processXSLT('TransformToTable.xsl',bpws:getVariableData('ReceiveFileRead','Root-Element'))"/>
+        <to variable="InvokeTableInsert_insert_In"
+            part="XxCeAjb999aCollection"/>
+      </copy>
+    </assign>
+    <invoke name="InvokeTableInsert_insert_In"
+            portType="ns2:ServiceTableInsert_ptt"
+            inputVariable="InvokeTableInsert_insert_In"
+            partnerLink="ServiceTableInsert" operation="insert"/>
+  </sequence>
+</process>

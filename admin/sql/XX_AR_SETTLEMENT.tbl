@@ -1,0 +1,31 @@
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     ON
+
+-- +==========================================================================+
+-- |                  Office Depot - Project Simplify                         |
+-- |                       WIPRO Technologies                                 |
+-- +==========================================================================+
+-- | Table Script to create the following object                              |
+-- |             Table  : xx_ar_settlement                                    |
+-- |                      For I1039,Settlement and Payment Processing         |
+-- |                                                                          |
+-- |Change Record:                                                            |
+-- |===============                                                           |
+-- |Version   Date         Author               Remarks                       |
+-- |=======   ==========   =============        ==============================|
+-- | V1.0     01-AUG-2007  Anusha Ramanujam     Initial version               |
+-- |                                                                          |
+-- +==========================================================================+
+
+-- DROP TABLE  XXFIN.xx_ar_settlement;
+
+CREATE TABLE XXFIN.xx_ar_settlement(
+    name                     VARCHAR2(240)
+    ,last_request_date       DATE
+    ,sequence_num            NUMBER
+);
+
+SHOW ERROR;

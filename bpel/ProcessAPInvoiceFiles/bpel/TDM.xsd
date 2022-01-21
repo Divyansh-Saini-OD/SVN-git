@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+            xmlns:nxsd="http://xmlns.oracle.com/pcbpel/nxsd"
+            targetNamespace="http://TargetNamespace.com/ProcessInvoiceInbound_TDM"
+            xmlns:tns="http://TargetNamespace.com/ProcessInvoiceInbound_TDM"
+            elementFormDefault="qualified"
+            attributeFormDefault="unqualified" nxsd:encoding="ASCII" 
+            nxsd:stream="chars" nxsd:version="NXSD">
+<xsd:element name="container">
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element ref="tns:InvoiceHeader" nxsd:startsWith="1" maxOccurs="unbounded" />
+        <xsd:element ref="tns:Trailer" nxsd:startsWith="3"/>
+      </xsd:sequence>
+    </xsd:complexType>
+  </xsd:element>
+  <!-- Invoice -->
+  <xsd:element name="InvoiceHeader" type="tns:InvoiceHeaderType"/>
+  <xsd:complexType name="InvoiceHeaderType">
+    <xsd:sequence>
+              <xsd:element name="Header" type="xsd:string" nxsd:style="terminated" nxsd:terminatedBy="|">
+              </xsd:element>
+              <xsd:element name="ODGlobalVendorID" type="xsd:string" nxsd:style="terminated" nxsd:terminatedBy="|">
+              </xsd:element>
+              <xsd:element name="VendorSource" type="xsd:string" nxsd:style="terminated" nxsd:terminatedBy="|">
+              </xsd:element>
+              <xsd:element name="InvoiceNumber" type="xsd:string" nxsd:style="terminated" nxsd:terminatedBy="|">
+              </xsd:element>
+              <xsd:element name="InvoiceDate" type="xsd:string" nxsd:style="terminated" nxsd:terminatedBy="|">
+              </xsd:element>
+              <xsd:element name="GrossAmount" type="xsd:string" nxsd:style="terminated" nxsd:terminatedBy="|">
+              </xsd:element>
+              <xsd:element name="DefaultPO" type="xsd:string" nxsd:style="terminated" nxsd:terminatedBy="|">
+              </xsd:element>
+              <xsd:element name="Release_Number" type="xsd:string" nxsd:style="terminated" nxsd:terminatedBy="|">
+              </xsd:element>
+                <xsd:element name="ProdTestFlag" type="xsd:string" nxsd:style="terminated" nxsd:terminatedBy="|">
+              </xsd:element>
+              <xsd:element name="DueDate" type="xsd:string" nxsd:style="terminated" nxsd:terminatedBy="|" minOccurs="0">
+              </xsd:element>
+              <xsd:element name="CheckDescription" type="xsd:string" nxsd:style="terminated" nxsd:terminatedBy="|">
+              </xsd:element>
+              <xsd:element name="DCN" type="xsd:string"  nxsd:style="terminated" nxsd:terminatedBy="|">
+              </xsd:element>
+              <xsd:element name="GroupID" type="xsd:string"  nxsd:style="terminated" nxsd:terminatedBy="|">
+              </xsd:element>
+              <xsd:element name="Paygroup" type="xsd:string"  nxsd:style="terminated" nxsd:terminatedBy="|">
+              </xsd:element>
+              <xsd:element name="LegacyPONumber" type="xsd:string" nxsd:style="terminated" nxsd:terminatedBy="|">
+              </xsd:element>
+              <xsd:element name="TermsName" type="xsd:string" nxsd:style="terminated" nxsd:terminatedBy="|">
+              </xsd:element>
+              <xsd:element name="PayAloneFlag" type="xsd:string"  nxsd:style="terminated" nxsd:terminatedBy="${eol}">
+              </xsd:element>
+      <xsd:element name="Lines">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="Line-Invoice" nxsd:startsWith="2" minOccurs="1" maxOccurs="unbounded">
+              <xsd:complexType>
+                <xsd:group ref="tns:InvoiceLines"/>
+              </xsd:complexType>
+            </xsd:element>
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+      </xsd:sequence>
+  </xsd:complexType>
+  <xsd:group name="InvoiceLines">
+    <xsd:sequence>
+             <xsd:element name="Line" type="xsd:string" nxsd:style="terminated" nxsd:terminatedBy="|">
+              </xsd:element>
+              <xsd:element name="ODGlobalVendorID" type="xsd:string" nxsd:style="terminated" nxsd:terminatedBy="|">
+              </xsd:element>
+              <xsd:element name="VendorSource" type="xsd:string" nxsd:style="terminated" nxsd:terminatedBy="|">
+              </xsd:element>
+              <xsd:element name="InvoiceNumber" type="xsd:string" nxsd:style="terminated" nxsd:terminatedBy="|">
+              </xsd:element>
+               <xsd:element name="InvoiceDistributionLineNumber" type="xsd:string" nxsd:style="terminated" nxsd:terminatedBy="|">
+              </xsd:element>
+              <xsd:element name="InvoiceDistributionLineType" type="xsd:string" nxsd:style="terminated" nxsd:terminatedBy="|">
+              </xsd:element>
+              <xsd:element name="MDSEAmount" type="xsd:string" nxsd:style="terminated" nxsd:terminatedBy="|">
+              </xsd:element>
+              <xsd:element name="TaxAmount" type="xsd:string" nxsd:style="terminated" nxsd:terminatedBy="|">
+              </xsd:element>
+              <xsd:element name="TaxCode" type="xsd:string" nxsd:style="terminated" nxsd:terminatedBy="|">
+              </xsd:element>
+              <xsd:element name="FreightAmount" type="xsd:string" nxsd:style="terminated" nxsd:terminatedBy="|">
+              </xsd:element>
+              <xsd:element name="GLCompany" type="xsd:string" nxsd:style="terminated" nxsd:terminatedBy="|">
+              </xsd:element>
+              <xsd:element name="GLCostCenter" type="xsd:string" nxsd:style="terminated" nxsd:terminatedBy="|">
+              </xsd:element>
+              <xsd:element name="GLAccount" type="xsd:string" nxsd:style="terminated" nxsd:terminatedBy="|">
+              </xsd:element>
+              <xsd:element name="GLLocation" type="xsd:string" nxsd:style="terminated" nxsd:terminatedBy="|">
+              </xsd:element>
+              <xsd:element name="GLIntercompany" type="xsd:string" nxsd:style="terminated" nxsd:terminatedBy="|">
+              </xsd:element>
+              <xsd:element name="GLLineofBusiness" type="xsd:string" nxsd:style="terminated" nxsd:terminatedBy="|">
+              </xsd:element>
+              <xsd:element name="LineDescription" type="xsd:string" nxsd:style="terminated" nxsd:terminatedBy="|">
+              </xsd:element>
+              <xsd:element name="OracleProjectNumber" type="xsd:string" nxsd:style="terminated" nxsd:terminatedBy="|">
+              </xsd:element>
+              <xsd:element name="TaskNumber" type="xsd:string" nxsd:style="terminated" nxsd:terminatedBy="|">
+              </xsd:element>
+              <xsd:element name="ExpenditureType" type="xsd:string" nxsd:style="terminated" nxsd:terminatedBy="|">
+              </xsd:element>
+              <xsd:element name="ExpenditureORGID" type="xsd:string" nxsd:style="terminated" nxsd:terminatedBy="${eol}">
+              </xsd:element>
+    </xsd:sequence>
+  </xsd:group>
+<xsd:element name="Trailer" type="tns:TrailerType"/>
+<xsd:complexType name="TrailerType">
+<xsd:sequence>
+   <xsd:element name="Trailer" type="xsd:string" nxsd:style="terminated" nxsd:terminatedBy="|"/>
+   <xsd:element name="FileName" type="xsd:string" nxsd:style="terminated" nxsd:terminatedBy="|"/>
+   <xsd:element name="CreationDate" type="xsd:string" nxsd:style="terminated" nxsd:terminatedBy="|"/>
+   <xsd:element name="CreationTime" type="xsd:string" nxsd:style="terminated" nxsd:terminatedBy="|"/>
+   <xsd:element name="TotalRecords" type="xsd:string" nxsd:style="terminated" nxsd:terminatedBy="|"/>
+   <xsd:element name="TotalAmount" type="xsd:string" nxsd:style="terminated" nxsd:terminatedBy="|"/>
+  <xsd:element name="Email_Address" type="xsd:string" nxsd:style="terminated" nxsd:terminatedBy="${eol}"/>
+</xsd:sequence>
+</xsd:complexType>
+</xsd:schema>

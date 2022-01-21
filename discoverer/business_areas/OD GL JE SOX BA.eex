@@ -1,0 +1,323 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<EndUserLayerExport SourceEULId="20061121114954" SourceEULVersion="10.1.2.48.18" MinimumCodeVersion="10.0.0" ExportFileVersion="10.0.0" EULSecurityModel="OracleApplications">
+<BusinessArea Description="OD Business Area for Journal Entry Sox Audit Report" DeveloperKey="ODGLJESOX" DeveloperKeyFrozen="False" ExternalName="" Id="269658" Name="OD GL JE SOX" UserProperty1="" UserProperty2="">
+<GrantedBusinessArea DeveloperKeyFrozen="False" Id="269660" PrivilegeType="ReadOnly">
+<ElementRef Name="BusinessArea" Type="BusinessArea">
+<UniqueIdent ConstraintName="BA1" DeveloperKey="ODGLJESOX"/>
+<UniqueIdent ConstraintName="BA2" Name="OD GL JE SOX"/>
+</ElementRef>
+<ElementRef Name="EulUser" Type="EulUser">
+<UniqueIdent ConstraintName="EU2" ResponsibilityKey="" RoleFlag="False" Username="489373"/>
+</ElementRef>
+</GrantedBusinessArea>
+<GrantedBusinessArea DeveloperKeyFrozen="False" Id="269661" PrivilegeType="Administrative">
+<ElementRef Name="BusinessArea" Type="BusinessArea">
+<UniqueIdent ConstraintName="BA1" DeveloperKey="ODGLJESOX"/>
+<UniqueIdent ConstraintName="BA2" Name="OD GL JE SOX"/>
+</ElementRef>
+<ElementRef Name="EulUser" Type="EulUser">
+<UniqueIdent ConstraintName="EU2" ResponsibilityKey="" RoleFlag="False" Username="OD_DISCO"/>
+</ElementRef>
+</GrantedBusinessArea>
+<GrantedBusinessArea DeveloperKeyFrozen="False" Id="269793" PrivilegeType="ReadOnly">
+<ElementRef Name="BusinessArea" Type="BusinessArea">
+<UniqueIdent ConstraintName="BA1" DeveloperKey="ODGLJESOX"/>
+<UniqueIdent ConstraintName="BA2" Name="OD GL JE SOX"/>
+</ElementRef>
+<ElementRef Name="EulUser" Type="EulUser">
+<UniqueIdent ConstraintName="EU2" ResponsibilityKey="OD_CA_GL_MANAGER" RoleFlag="True" Username="OD (CA) GL Manager"/>
+</ElementRef>
+</GrantedBusinessArea>
+<GrantedBusinessArea DeveloperKeyFrozen="False" Id="269794" PrivilegeType="ReadOnly">
+<ElementRef Name="BusinessArea" Type="BusinessArea">
+<UniqueIdent ConstraintName="BA1" DeveloperKey="ODGLJESOX"/>
+<UniqueIdent ConstraintName="BA2" Name="OD GL JE SOX"/>
+</ElementRef>
+<ElementRef Name="EulUser" Type="EulUser">
+<UniqueIdent ConstraintName="EU2" ResponsibilityKey="OD_CA_SUPERUSER" RoleFlag="True" Username="OD (CA) GL Superuser"/>
+</ElementRef>
+</GrantedBusinessArea>
+<GrantedBusinessArea DeveloperKeyFrozen="False" Id="269795" PrivilegeType="ReadOnly">
+<ElementRef Name="BusinessArea" Type="BusinessArea">
+<UniqueIdent ConstraintName="BA1" DeveloperKey="ODGLJESOX"/>
+<UniqueIdent ConstraintName="BA2" Name="OD GL JE SOX"/>
+</ElementRef>
+<ElementRef Name="EulUser" Type="EulUser">
+<UniqueIdent ConstraintName="EU2" ResponsibilityKey="OD_CA_GL_SUPERVISOR" RoleFlag="True" Username="OD (CA) GL Supervisor"/>
+</ElementRef>
+</GrantedBusinessArea>
+<GrantedBusinessArea DeveloperKeyFrozen="False" Id="269797" PrivilegeType="ReadOnly">
+<ElementRef Name="BusinessArea" Type="BusinessArea">
+<UniqueIdent ConstraintName="BA1" DeveloperKey="ODGLJESOX"/>
+<UniqueIdent ConstraintName="BA2" Name="OD GL JE SOX"/>
+</ElementRef>
+<ElementRef Name="EulUser" Type="EulUser">
+<UniqueIdent ConstraintName="EU2" ResponsibilityKey="OD_CA_GL_USER" RoleFlag="True" Username="OD (CA) GL User"/>
+</ElementRef>
+</GrantedBusinessArea>
+<GrantedBusinessArea DeveloperKeyFrozen="False" Id="269798" PrivilegeType="ReadOnly">
+<ElementRef Name="BusinessArea" Type="BusinessArea">
+<UniqueIdent ConstraintName="BA1" DeveloperKey="ODGLJESOX"/>
+<UniqueIdent ConstraintName="BA2" Name="OD GL JE SOX"/>
+</ElementRef>
+<ElementRef Name="EulUser" Type="EulUser">
+<UniqueIdent ConstraintName="EU2" ResponsibilityKey="OD_US_GL_MANAGER" RoleFlag="True" Username="OD (US) GL Manager"/>
+</ElementRef>
+</GrantedBusinessArea>
+<GrantedBusinessArea DeveloperKeyFrozen="False" Id="269799" PrivilegeType="ReadOnly">
+<ElementRef Name="BusinessArea" Type="BusinessArea">
+<UniqueIdent ConstraintName="BA1" DeveloperKey="ODGLJESOX"/>
+<UniqueIdent ConstraintName="BA2" Name="OD GL JE SOX"/>
+</ElementRef>
+<ElementRef Name="EulUser" Type="EulUser">
+<UniqueIdent ConstraintName="EU2" ResponsibilityKey="OD_US_SUPERUSER" RoleFlag="True" Username="OD (US) GL Superuser"/>
+</ElementRef>
+</GrantedBusinessArea>
+<GrantedBusinessArea DeveloperKeyFrozen="False" Id="269802" PrivilegeType="ReadOnly">
+<ElementRef Name="BusinessArea" Type="BusinessArea">
+<UniqueIdent ConstraintName="BA1" DeveloperKey="ODGLJESOX"/>
+<UniqueIdent ConstraintName="BA2" Name="OD GL JE SOX"/>
+</ElementRef>
+<ElementRef Name="EulUser" Type="EulUser">
+<UniqueIdent ConstraintName="EU2" ResponsibilityKey="OD_US_GL_SUPERVISOR" RoleFlag="True" Username="OD (US) GL Supervisor"/>
+</ElementRef>
+</GrantedBusinessArea>
+<GrantedBusinessArea DeveloperKeyFrozen="False" Id="269804" PrivilegeType="ReadOnly">
+<ElementRef Name="BusinessArea" Type="BusinessArea">
+<UniqueIdent ConstraintName="BA1" DeveloperKey="ODGLJESOX"/>
+<UniqueIdent ConstraintName="BA2" Name="OD GL JE SOX"/>
+</ElementRef>
+<ElementRef Name="EulUser" Type="EulUser">
+<UniqueIdent ConstraintName="EU2" ResponsibilityKey="OD_US_GL_USER" RoleFlag="True" Username="OD (US) GL User"/>
+</ElementRef>
+</GrantedBusinessArea>
+<BAOBJLink DeveloperKeyFrozen="False" Id="269665" Sequence="1">
+<ElementRef Name="BusinessArea" Type="BusinessArea">
+<UniqueIdent ConstraintName="BA1" DeveloperKey="ODGLJESOX"/>
+<UniqueIdent ConstraintName="BA2" Name="OD GL JE SOX"/>
+</ElementRef>
+<ElementRef Name="Object" Type="CustomObject">
+<UniqueIdent ConstraintName="OBJ1" DeveloperKey="OD_GL_JESOX"/>
+<UniqueIdent ConstraintName="OBJ2" Name="OD GL JE SOX Audit"/>
+</ElementRef>
+</BAOBJLink>
+<BAOBJLink DeveloperKeyFrozen="False" Id="269679" Sequence="2">
+<ElementRef Name="BusinessArea" Type="BusinessArea">
+<UniqueIdent ConstraintName="BA1" DeveloperKey="ODGLJESOX"/>
+<UniqueIdent ConstraintName="BA2" Name="OD GL JE SOX"/>
+</ElementRef>
+<ElementRef Name="Object" Type="CustomObject">
+<UniqueIdent ConstraintName="OBJ1" DeveloperKey="OD_GL_SET_OF_BOOKS"/>
+<UniqueIdent ConstraintName="OBJ2" Name="OD GL Set Of Books"/>
+</ElementRef>
+</BAOBJLink>
+</BusinessArea>
+<EulUser BatchCommitSize="" BatchExpiry="" BatchJobsLimit="" BatchQueryTimeLimit="" BatchRepositoryUser="" BatchWindowEnd="" BatchWindowStart="" DeveloperKeyFrozen="False" Id="252226" LastBatchAccess="20/09/2007 15:34:59" QueryEstimateLimit="" QueryTimeLimit="" ResponsibilityKey="" RoleFlag="False" RowFetchLimit="" SecurityModel="OracleApplications" UsePublicPrivileges="False" Username="489373">
+</EulUser>
+<EulUser BatchCommitSize="" BatchExpiry="" BatchJobsLimit="" BatchQueryTimeLimit="" BatchRepositoryUser="" BatchWindowEnd="" BatchWindowStart="" DeveloperKeyFrozen="False" Id="251004" LastBatchAccess="14/05/2008 14:24:15" QueryEstimateLimit="" QueryTimeLimit="" ResponsibilityKey="" RoleFlag="False" RowFetchLimit="" SecurityModel="OracleApplications" UsePublicPrivileges="False" Username="OD_DISCO">
+</EulUser>
+<EulUser BatchCommitSize="" BatchExpiry="" BatchJobsLimit="" BatchQueryTimeLimit="" BatchRepositoryUser="" BatchWindowEnd="" BatchWindowStart="" DeveloperKeyFrozen="False" Id="254672" LastBatchAccess="" QueryEstimateLimit="" QueryTimeLimit="" ResponsibilityKey="OD_CA_GL_MANAGER" RoleFlag="True" RowFetchLimit="" SecurityModel="OracleApplications" UsePublicPrivileges="True" Username="OD (CA) GL Manager">
+</EulUser>
+<EulUser BatchCommitSize="" BatchExpiry="" BatchJobsLimit="" BatchQueryTimeLimit="" BatchRepositoryUser="" BatchWindowEnd="" BatchWindowStart="" DeveloperKeyFrozen="False" Id="254675" LastBatchAccess="" QueryEstimateLimit="" QueryTimeLimit="" ResponsibilityKey="OD_CA_SUPERUSER" RoleFlag="True" RowFetchLimit="" SecurityModel="OracleApplications" UsePublicPrivileges="True" Username="OD (CA) GL Superuser">
+</EulUser>
+<EulUser BatchCommitSize="" BatchExpiry="" BatchJobsLimit="" BatchQueryTimeLimit="" BatchRepositoryUser="" BatchWindowEnd="" BatchWindowStart="" DeveloperKeyFrozen="False" Id="254673" LastBatchAccess="" QueryEstimateLimit="" QueryTimeLimit="" ResponsibilityKey="OD_CA_GL_SUPERVISOR" RoleFlag="True" RowFetchLimit="" SecurityModel="OracleApplications" UsePublicPrivileges="True" Username="OD (CA) GL Supervisor">
+</EulUser>
+<EulUser BatchCommitSize="" BatchExpiry="" BatchJobsLimit="" BatchQueryTimeLimit="" BatchRepositoryUser="" BatchWindowEnd="" BatchWindowStart="" DeveloperKeyFrozen="False" Id="254674" LastBatchAccess="" QueryEstimateLimit="" QueryTimeLimit="" ResponsibilityKey="OD_CA_GL_USER" RoleFlag="True" RowFetchLimit="" SecurityModel="OracleApplications" UsePublicPrivileges="True" Username="OD (CA) GL User">
+</EulUser>
+<EulUser BatchCommitSize="" BatchExpiry="" BatchJobsLimit="" BatchQueryTimeLimit="" BatchRepositoryUser="" BatchWindowEnd="" BatchWindowStart="" DeveloperKeyFrozen="False" Id="254677" LastBatchAccess="" QueryEstimateLimit="" QueryTimeLimit="" ResponsibilityKey="OD_US_GL_MANAGER" RoleFlag="True" RowFetchLimit="" SecurityModel="OracleApplications" UsePublicPrivileges="True" Username="OD (US) GL Manager">
+</EulUser>
+<EulUser BatchCommitSize="" BatchExpiry="" BatchJobsLimit="" BatchQueryTimeLimit="" BatchRepositoryUser="" BatchWindowEnd="" BatchWindowStart="" DeveloperKeyFrozen="False" Id="254680" LastBatchAccess="" QueryEstimateLimit="" QueryTimeLimit="" ResponsibilityKey="OD_US_SUPERUSER" RoleFlag="True" RowFetchLimit="" SecurityModel="OracleApplications" UsePublicPrivileges="True" Username="OD (US) GL Superuser">
+</EulUser>
+<EulUser BatchCommitSize="" BatchExpiry="" BatchJobsLimit="" BatchQueryTimeLimit="" BatchRepositoryUser="" BatchWindowEnd="" BatchWindowStart="" DeveloperKeyFrozen="False" Id="254678" LastBatchAccess="" QueryEstimateLimit="" QueryTimeLimit="" ResponsibilityKey="OD_US_GL_SUPERVISOR" RoleFlag="True" RowFetchLimit="" SecurityModel="OracleApplications" UsePublicPrivileges="True" Username="OD (US) GL Supervisor">
+</EulUser>
+<EulUser BatchCommitSize="" BatchExpiry="" BatchJobsLimit="" BatchQueryTimeLimit="" BatchRepositoryUser="" BatchWindowEnd="" BatchWindowStart="" DeveloperKeyFrozen="False" Id="254679" LastBatchAccess="" QueryEstimateLimit="" QueryTimeLimit="" ResponsibilityKey="OD_US_GL_USER" RoleFlag="True" RowFetchLimit="" SecurityModel="OracleApplications" UsePublicPrivileges="True" Username="OD (US) GL User">
+</EulUser>
+<CustomObject CBOHint="" CustomSQL="-- +=================================================================+&#x000d;&#x000a;-- |                  Office Depot - Project Simplify                                                                   |&#x000d;&#x000a;-- |                      Office Depot                                                                                         |&#x000d;&#x000a;-- +=================================================================+&#x000d;&#x000a;-- | Name  : OD GL JE Sox Audit                                                                                     |&#x000d;&#x000a;-- | Description: Custom folder for OD GL Journal Entry SOX Audit Report R0508         |&#x000d;&#x000a;-- |                                                                                                                                   |&#x000d;&#x000a;&#x000d;&#x000a;-- |                                                                                                                                   |&#x000d;&#x000a;-- |Change Record:                                                                                                         |&#x000d;&#x000a;-- |===============                                                                                                     |&#x000d;&#x000a;-- |Version   Date                Author                    Remarks                                                |&#x000d;&#x000a;-- |======   =========     =============     ===============================|&#x000d;&#x000a;-- |1.0          23-APR-2008  Michelle Gautier     Initial version                                          |&#x000d;&#x000a;-- | 1.1         16-MAY-2008  Michelle Gautier     Added  column Total Debits                  |&#x000d;&#x000a;-- |                                      requested by QC Def# 6953                                                |&#x000d;&#x000a;-- +================================================================+|&#x000d;&#x000a;SELECT TO_NUMBER(gcc.segment1)  Legal_Entity&#x000d;&#x000a;,               sob.short_name  SOB_NAME&#x000d;&#x000a;,               gjb. name  gl_batch_name  &#x000d;&#x000a;,               gjh.name   gl_journal_name&#x000d;&#x000a;,               gjh.description  journal_description&#x000d;&#x000a;,               gjh.running_total_dr   Total_Debits&#x000d;&#x000a;,               gjc.USER_JE_CATEGORY_NAME  Category&#x000d;&#x000a;,               gjs.USER_JE_SOURCE_NAME     Source&#x000d;&#x000a;,               fnu1.user_name        Created_by&#x000d;&#x000a;,               fnu2.user_name        Updated_by&#x000d;&#x000a;,               fnu3.user_name          Posted_by&#x000d;&#x000a;,               NVL( frt.responsibility_name, &apos;Unavailable&apos;)   Posted_By_Responsibility&#x000d;&#x000a;,           TO_CHAR(gjb.POSTED_DATE, &apos;DD-MON-YYYY&apos;)  Posted_date&#x000d;&#x000a;FROM apps.GL_JE_BATCHES  gjb&#x000d;&#x000a;,           apps.GL_JE_HEADERS gjh&#x000d;&#x000a;,           apps.GL_JE_LINES gjl&#x000d;&#x000a;,           apps.GL_JE_CATEGORIES_TL   gjc&#x000d;&#x000a;,           apps.GL_JE_SOURCES_TL  gjs&#x000d;&#x000a;,           apps.GL_SETS_OF_BOOKS    sob&#x000d;&#x000a;,           apps.gl_code_combinations gcc&#x000d;&#x000a;,           apps.fnd_user   fnu1&#x000d;&#x000a;,           apps.fnd_user   fnu2&#x000d;&#x000a;,           apps.fnd_user   fnu3&#x000d;&#x000a;,           applsys. fnd_concurrent_requests fcr&#x000d;&#x000a;,           applsys.FND_RESPONSIBILITY_TL frt&#x000d;&#x000a;WHERE gjh.status = &apos;P&apos;&#x000d;&#x000a;AND  gjh.je_batch_id = gjb.je_batch_id&#x000d;&#x000a;AND  gjl.je_header_id = gjh.je_header_id&#x000d;&#x000a;AND gjh.JE_CATEGORY = gjc.JE_CATEGORY_NAME&#x000d;&#x000a;AND gjh.JE_SOURCE  = gjs.JE_SOURCE_NAME&#x000d;&#x000a;AND sob.attribute1 = &apos;Y&apos;&#x000d;&#x000a;AND gjl.set_of_books_id = sob.set_of_books_id&#x000d;&#x000a;AND gjh.set_of_books_id =  sob.set_of_books_id&#x000d;&#x000a;AND sob.set_of_books_id = gjb.set_of_books_id&#x000d;&#x000a;AND gcc.chart_of_accounts_id =  sob.chart_of_accounts_id&#x000d;&#x000a;AND gjl.code_combination_id = gcc.code_combination_id&#x000d;&#x000a;AND gjb.created_by = fnu1.user_id&#x000d;&#x000a;AND gjb.last_updated_by  = fnu2.user_id&#x000d;&#x000a;AND  gjb.posted_by   =  fnu3.user_id&#x000d;&#x000a;AND gjb.request_id  = fcr.request_id(+) &#x000d;&#x000a;AND  frt.responsibility_id(+) = fcr.responsibility_id&#x000d;&#x000a;AND  frt.application_id (+) = fcr.responsibility_application_id &#x000d;&#x000a;AND frt.language = userenv(&apos;LANG&apos;)&#x000d;&#x000a;AND gjc.LANGUAGE =  userenv(&apos;LANG&apos;)&#x000d;&#x000a;AND gjs.LANGUAGE  =  userenv(&apos;LANG&apos;)&#x000d;&#x000a;GROUP BY gcc.segment1 &#x000d;&#x000a;,   sob.short_name &#x000d;&#x000a;,               gjb. name  &#x000d;&#x000a;,               gjh.name   &#x000d;&#x000a;,               gjh.description &#x000d;&#x000a;,               gjh.running_total_dr&#x000d;&#x000a;,               gjc.USER_JE_CATEGORY_NAME &#x000d;&#x000a;,               gjs.USER_JE_SOURCE_NAME &#x000d;&#x000a;,               fnu1.user_name        &#x000d;&#x000a;,               fnu2.user_name        &#x000d;&#x000a;,               fnu3.user_name          &#x000d;&#x000a;, NVL( frt.responsibility_name, &apos;Unavailable&apos;) &#x000d;&#x000a;,               gjb.POSTED_DATE&#x000d;&#x000a;" Description="OD GL SOX - Test" DeveloperKey="OD_GL_JESOX" DeveloperKeyFrozen="False" DistinctFlag="False" ExternalDatabaseLink="" ExternalObjectName="" ExternalObjectOwner="" Hidden="False" Id="269662" Name="OD GL JE SOX Audit" NonDeterministic="False" SQL="( SELECT POSTED_DATE AS i269686, CREATED_BY AS i269667, GL_BATCH_NAME AS i269668, GL_JOURNAL_NAME AS i269669, JOURNAL_DESCRIPTION AS i269670, POSTED_BY AS i269671, POSTED_BY_RESPONSIBILITY AS i269672, UPDATED_BY AS i269673, LEGAL_ENTITY AS i269684, SOB_NAME AS i269685, CATEGORY AS i269767, SOURCE AS i269768, TOTAL_DEBITS AS i273140 FROM (-- +=================================================================+&#x000d;&#x000a;-- |                  Office Depot - Project Simplify                                                                   |&#x000d;&#x000a;-- |                      Office Depot                                                                                         |&#x000d;&#x000a;-- +=================================================================+&#x000d;&#x000a;-- | Name  : OD GL JE Sox Audit                                                                                     |&#x000d;&#x000a;-- | Description: Custom folder for OD GL Journal Entry SOX Audit Report R0508         |&#x000d;&#x000a;-- |                                                                                                                                   |&#x000d;&#x000a;&#x000d;&#x000a;-- |                                                                                                                                   |&#x000d;&#x000a;-- |Change Record:                                                                                                         |&#x000d;&#x000a;-- |===============                                                                                                     |&#x000d;&#x000a;-- |Version   Date                Author                    Remarks                                                |&#x000d;&#x000a;-- |======   =========     =============     ===============================|&#x000d;&#x000a;-- |1.0          23-APR-2008  Michelle Gautier     Initial version                                          |&#x000d;&#x000a;-- | 1.1         16-MAY-2008  Michelle Gautier     Added  column Total Debits                  |&#x000d;&#x000a;-- |                                      requested by QC Def# 6953                                                |&#x000d;&#x000a;-- +================================================================+|&#x000d;&#x000a;SELECT TO_NUMBER(gcc.segment1)  Legal_Entity&#x000d;&#x000a;,               sob.short_name  SOB_NAME&#x000d;&#x000a;,               gjb. name  gl_batch_name  &#x000d;&#x000a;,               gjh.name   gl_journal_name&#x000d;&#x000a;,               gjh.description  journal_description&#x000d;&#x000a;,               gjh.running_total_dr   Total_Debits&#x000d;&#x000a;,               gjc.USER_JE_CATEGORY_NAME  Category&#x000d;&#x000a;,               gjs.USER_JE_SOURCE_NAME     Source&#x000d;&#x000a;,               fnu1.user_name        Created_by&#x000d;&#x000a;,               fnu2.user_name        Updated_by&#x000d;&#x000a;,               fnu3.user_name          Posted_by&#x000d;&#x000a;,               NVL( frt.responsibility_name, &apos;Unavailable&apos;)   Posted_By_Responsibility&#x000d;&#x000a;,           TO_CHAR(gjb.POSTED_DATE, &apos;DD-MON-YYYY&apos;)  Posted_date&#x000d;&#x000a;FROM apps.GL_JE_BATCHES  gjb&#x000d;&#x000a;,           apps.GL_JE_HEADERS gjh&#x000d;&#x000a;,           apps.GL_JE_LINES gjl&#x000d;&#x000a;,           apps.GL_JE_CATEGORIES_TL   gjc&#x000d;&#x000a;,           apps.GL_JE_SOURCES_TL  gjs&#x000d;&#x000a;,           apps.GL_SETS_OF_BOOKS    sob&#x000d;&#x000a;,           apps.gl_code_combinations gcc&#x000d;&#x000a;,           apps.fnd_user   fnu1&#x000d;&#x000a;,           apps.fnd_user   fnu2&#x000d;&#x000a;,           apps.fnd_user   fnu3&#x000d;&#x000a;,           applsys. fnd_concurrent_requests fcr&#x000d;&#x000a;,           applsys.FND_RESPONSIBILITY_TL frt&#x000d;&#x000a;WHERE gjh.status = &apos;P&apos;&#x000d;&#x000a;AND  gjh.je_batch_id = gjb.je_batch_id&#x000d;&#x000a;AND  gjl.je_header_id = gjh.je_header_id&#x000d;&#x000a;AND gjh.JE_CATEGORY = gjc.JE_CATEGORY_NAME&#x000d;&#x000a;AND gjh.JE_SOURCE  = gjs.JE_SOURCE_NAME&#x000d;&#x000a;AND sob.attribute1 = &apos;Y&apos;&#x000d;&#x000a;AND gjl.set_of_books_id = sob.set_of_books_id&#x000d;&#x000a;AND gjh.set_of_books_id =  sob.set_of_books_id&#x000d;&#x000a;AND sob.set_of_books_id = gjb.set_of_books_id&#x000d;&#x000a;AND gcc.chart_of_accounts_id =  sob.chart_of_accounts_id&#x000d;&#x000a;AND gjl.code_combination_id = gcc.code_combination_id&#x000d;&#x000a;AND gjb.created_by = fnu1.user_id&#x000d;&#x000a;AND gjb.last_updated_by  = fnu2.user_id&#x000d;&#x000a;AND  gjb.posted_by   =  fnu3.user_id&#x000d;&#x000a;AND gjb.request_id  = fcr.request_id(+) &#x000d;&#x000a;AND  frt.responsibility_id(+) = fcr.responsibility_id&#x000d;&#x000a;AND  frt.application_id (+) = fcr.responsibility_application_id &#x000d;&#x000a;AND frt.language = userenv(&apos;LANG&apos;)&#x000d;&#x000a;AND gjc.LANGUAGE =  userenv(&apos;LANG&apos;)&#x000d;&#x000a;AND gjs.LANGUAGE  =  userenv(&apos;LANG&apos;)&#x000d;&#x000a;GROUP BY gcc.segment1 &#x000d;&#x000a;,   sob.short_name &#x000d;&#x000a;,               gjb. name  &#x000d;&#x000a;,               gjh.name   &#x000d;&#x000a;,               gjh.description &#x000d;&#x000a;,               gjh.running_total_dr&#x000d;&#x000a;,               gjc.USER_JE_CATEGORY_NAME &#x000d;&#x000a;,               gjs.USER_JE_SOURCE_NAME &#x000d;&#x000a;,               fnu1.user_name        &#x000d;&#x000a;,               fnu2.user_name        &#x000d;&#x000a;,               fnu3.user_name          &#x000d;&#x000a;, NVL( frt.responsibility_name, &apos;Unavailable&apos;) &#x000d;&#x000a;,               gjb.POSTED_DATE&#x000d;&#x000a;) CUO269662 )" UserProperty1="" UserProperty2="">
+<ColumnItem Alignment="Left" CaseDisplay="Unchanged" CaseStorage="Mixed" DataType="Varchar" Description="" DeveloperKey="POSTED_DATE" DeveloperKeyFrozen="False" DisplayNullValue="" ExternalColumnName="POSTED_DATE" FormatMask="" Heading="Posted Date" Hidden="False" Id="269686" MaxDataWidth="17" MaxDisplayWidth="" Name="Posted Date" Nullable="True" Placement="XAxis" Sequence="13" UserDefinedFormat="" UserProperty1="" UserProperty2="" WordWrap="False">
+<ElementRef Name="Object" Type="CustomObject">
+<UniqueIdent ConstraintName="OBJ1" DeveloperKey="OD_GL_JESOX"/>
+<UniqueIdent ConstraintName="OBJ2" Name="OD GL JE SOX Audit"/>
+</ElementRef>
+<ElementRef Name="RollUpFunction" Type="Function">
+<UniqueIdent ConstraintName="FUN1" DeveloperKey="EUL_110"/>
+<UniqueIdent ConstraintName="FUN2" Name="Detail"/>
+</ElementRef>
+</ColumnItem>
+<ColumnItem Alignment="Left" CaseDisplay="Unchanged" CaseStorage="Mixed" DataType="Varchar" Description="" DeveloperKey="CREATED_BY" DeveloperKeyFrozen="False" DisplayNullValue="" ExternalColumnName="CREATED_BY" FormatMask="" Heading="Created By" Hidden="False" Id="269667" MaxDataWidth="100" MaxDisplayWidth="" Name="Created By" Nullable="False" Placement="XAxis" Sequence="10" UserDefinedFormat="" UserProperty1="" UserProperty2="" WordWrap="False">
+<ElementRef Name="Object" Type="CustomObject">
+<UniqueIdent ConstraintName="OBJ1" DeveloperKey="OD_GL_JESOX"/>
+<UniqueIdent ConstraintName="OBJ2" Name="OD GL JE SOX Audit"/>
+</ElementRef>
+<ElementRef Name="RollUpFunction" Type="Function">
+<UniqueIdent ConstraintName="FUN1" DeveloperKey="EUL_110"/>
+<UniqueIdent ConstraintName="FUN2" Name="Detail"/>
+</ElementRef>
+</ColumnItem>
+<ColumnItem Alignment="Left" CaseDisplay="Unchanged" CaseStorage="Mixed" DataType="Varchar" Description="" DeveloperKey="GL_BATCH_NAME" DeveloperKeyFrozen="False" DisplayNullValue="" ExternalColumnName="GL_BATCH_NAME" FormatMask="" Heading="Gl Batch Name" Hidden="False" Id="269668" MaxDataWidth="100" MaxDisplayWidth="" Name="Gl Batch Name" Nullable="False" Placement="XAxis" Sequence="4" UserDefinedFormat="" UserProperty1="" UserProperty2="" WordWrap="False">
+<ElementRef Name="Object" Type="CustomObject">
+<UniqueIdent ConstraintName="OBJ1" DeveloperKey="OD_GL_JESOX"/>
+<UniqueIdent ConstraintName="OBJ2" Name="OD GL JE SOX Audit"/>
+</ElementRef>
+<ElementRef Name="RollUpFunction" Type="Function">
+<UniqueIdent ConstraintName="FUN1" DeveloperKey="EUL_110"/>
+<UniqueIdent ConstraintName="FUN2" Name="Detail"/>
+</ElementRef>
+</ColumnItem>
+<ColumnItem Alignment="Left" CaseDisplay="Unchanged" CaseStorage="Mixed" DataType="Varchar" Description="" DeveloperKey="GL_JOURNAL_NAME" DeveloperKeyFrozen="False" DisplayNullValue="" ExternalColumnName="GL_JOURNAL_NAME" FormatMask="" Heading="Gl Journal Name" Hidden="False" Id="269669" MaxDataWidth="100" MaxDisplayWidth="" Name="Gl Journal Name" Nullable="False" Placement="XAxis" Sequence="5" UserDefinedFormat="" UserProperty1="" UserProperty2="" WordWrap="False">
+<ElementRef Name="Object" Type="CustomObject">
+<UniqueIdent ConstraintName="OBJ1" DeveloperKey="OD_GL_JESOX"/>
+<UniqueIdent ConstraintName="OBJ2" Name="OD GL JE SOX Audit"/>
+</ElementRef>
+<ElementRef Name="RollUpFunction" Type="Function">
+<UniqueIdent ConstraintName="FUN1" DeveloperKey="EUL_110"/>
+<UniqueIdent ConstraintName="FUN2" Name="Detail"/>
+</ElementRef>
+</ColumnItem>
+<ColumnItem Alignment="Left" CaseDisplay="Unchanged" CaseStorage="Mixed" DataType="Varchar" Description="" DeveloperKey="JOURNAL_DESCRIPTION" DeveloperKeyFrozen="False" DisplayNullValue="" ExternalColumnName="JOURNAL_DESCRIPTION" FormatMask="" Heading="Journal Description" Hidden="False" Id="269670" MaxDataWidth="240" MaxDisplayWidth="" Name="Journal Description" Nullable="True" Placement="XAxis" Sequence="9" UserDefinedFormat="" UserProperty1="" UserProperty2="" WordWrap="False">
+<ElementRef Name="Object" Type="CustomObject">
+<UniqueIdent ConstraintName="OBJ1" DeveloperKey="OD_GL_JESOX"/>
+<UniqueIdent ConstraintName="OBJ2" Name="OD GL JE SOX Audit"/>
+</ElementRef>
+<ElementRef Name="RollUpFunction" Type="Function">
+<UniqueIdent ConstraintName="FUN1" DeveloperKey="EUL_110"/>
+<UniqueIdent ConstraintName="FUN2" Name="Detail"/>
+</ElementRef>
+</ColumnItem>
+<ColumnItem Alignment="Left" CaseDisplay="Unchanged" CaseStorage="Mixed" DataType="Varchar" Description="" DeveloperKey="POSTED_BY" DeveloperKeyFrozen="False" DisplayNullValue="" ExternalColumnName="POSTED_BY" FormatMask="" Heading="Posted By" Hidden="False" Id="269671" MaxDataWidth="100" MaxDisplayWidth="" Name="Posted By" Nullable="False" Placement="XAxis" Sequence="12" UserDefinedFormat="" UserProperty1="" UserProperty2="" WordWrap="False">
+<ElementRef Name="Object" Type="CustomObject">
+<UniqueIdent ConstraintName="OBJ1" DeveloperKey="OD_GL_JESOX"/>
+<UniqueIdent ConstraintName="OBJ2" Name="OD GL JE SOX Audit"/>
+</ElementRef>
+<ElementRef Name="RollUpFunction" Type="Function">
+<UniqueIdent ConstraintName="FUN1" DeveloperKey="EUL_110"/>
+<UniqueIdent ConstraintName="FUN2" Name="Detail"/>
+</ElementRef>
+</ColumnItem>
+<ColumnItem Alignment="Left" CaseDisplay="Unchanged" CaseStorage="Mixed" DataType="Varchar" Description="" DeveloperKey="POSTED_BY_RESPONSIBILITY" DeveloperKeyFrozen="False" DisplayNullValue="" ExternalColumnName="POSTED_BY_RESPONSIBILITY" FormatMask="" Heading="Posted By Responsibility" Hidden="False" Id="269672" MaxDataWidth="100" MaxDisplayWidth="" Name="Posted By Responsibility" Nullable="False" Placement="XAxis" Sequence="14" UserDefinedFormat="" UserProperty1="" UserProperty2="" WordWrap="False">
+<ElementRef Name="Object" Type="CustomObject">
+<UniqueIdent ConstraintName="OBJ1" DeveloperKey="OD_GL_JESOX"/>
+<UniqueIdent ConstraintName="OBJ2" Name="OD GL JE SOX Audit"/>
+</ElementRef>
+<ElementRef Name="RollUpFunction" Type="Function">
+<UniqueIdent ConstraintName="FUN1" DeveloperKey="EUL_110"/>
+<UniqueIdent ConstraintName="FUN2" Name="Detail"/>
+</ElementRef>
+</ColumnItem>
+<ColumnItem Alignment="Left" CaseDisplay="Unchanged" CaseStorage="Mixed" DataType="Varchar" Description="" DeveloperKey="UPDATED_BY" DeveloperKeyFrozen="False" DisplayNullValue="" ExternalColumnName="UPDATED_BY" FormatMask="" Heading="Updated By" Hidden="False" Id="269673" MaxDataWidth="100" MaxDisplayWidth="" Name="Updated By" Nullable="False" Placement="XAxis" Sequence="11" UserDefinedFormat="" UserProperty1="" UserProperty2="" WordWrap="False">
+<ElementRef Name="Object" Type="CustomObject">
+<UniqueIdent ConstraintName="OBJ1" DeveloperKey="OD_GL_JESOX"/>
+<UniqueIdent ConstraintName="OBJ2" Name="OD GL JE SOX Audit"/>
+</ElementRef>
+<ElementRef Name="RollUpFunction" Type="Function">
+<UniqueIdent ConstraintName="FUN1" DeveloperKey="EUL_110"/>
+<UniqueIdent ConstraintName="FUN2" Name="Detail"/>
+</ElementRef>
+</ColumnItem>
+<ColumnItem Alignment="Right" CaseDisplay="Unchanged" CaseStorage="Unknown" DataType="Number" Description="" DeveloperKey="LEGAL_ENTITY" DeveloperKeyFrozen="False" DisplayNullValue="" ExternalColumnName="LEGAL_ENTITY" FormatMask="9999999999" Heading="Legal Entity" Hidden="False" Id="269684" MaxDataWidth="10" MaxDisplayWidth="" Name="Legal Entity" Nullable="True" Placement="Measure" Sequence="1" UserDefinedFormat="" UserProperty1="" UserProperty2="" WordWrap="False">
+<ElementRef Name="Object" Type="CustomObject">
+<UniqueIdent ConstraintName="OBJ1" DeveloperKey="OD_GL_JESOX"/>
+<UniqueIdent ConstraintName="OBJ2" Name="OD GL JE SOX Audit"/>
+</ElementRef>
+<ElementRef Name="RollUpFunction" Type="Function">
+<UniqueIdent ConstraintName="FUN1" DeveloperKey="EUL_110"/>
+<UniqueIdent ConstraintName="FUN2" Name="Detail"/>
+</ElementRef>
+</ColumnItem>
+<ColumnItem Alignment="Left" CaseDisplay="Unchanged" CaseStorage="Mixed" DataType="Varchar" Description="" DeveloperKey="SOB_NAME" DeveloperKeyFrozen="False" DisplayNullValue="" ExternalColumnName="SOB_NAME" FormatMask="" Heading="Sob Name" Hidden="False" Id="269685" MaxDataWidth="20" MaxDisplayWidth="" Name="Sob Name" Nullable="False" Placement="XAxis" Sequence="2" UserDefinedFormat="" UserProperty1="" UserProperty2="" WordWrap="False">
+<ElementRef Name="Domain" Type="Domain">
+<UniqueIdent ConstraintName="DOM1" DeveloperKey="OD_SOB_SHORT_NAME"/>
+<UniqueIdent ConstraintName="DOM2" Name="OD SOB Short Name"/>
+</ElementRef>
+<ElementRef Name="Object" Type="CustomObject">
+<UniqueIdent ConstraintName="OBJ1" DeveloperKey="OD_GL_JESOX"/>
+<UniqueIdent ConstraintName="OBJ2" Name="OD GL JE SOX Audit"/>
+</ElementRef>
+<ElementRef Name="RollUpFunction" Type="Function">
+<UniqueIdent ConstraintName="FUN1" DeveloperKey="EUL_110"/>
+<UniqueIdent ConstraintName="FUN2" Name="Detail"/>
+</ElementRef>
+</ColumnItem>
+<ColumnItem Alignment="Left" CaseDisplay="Unchanged" CaseStorage="Mixed" DataType="Varchar" Description="" DeveloperKey="CATEGORY" DeveloperKeyFrozen="False" DisplayNullValue="" ExternalColumnName="CATEGORY" FormatMask="" Heading="Category" Hidden="False" Id="269767" MaxDataWidth="25" MaxDisplayWidth="" Name="Category" Nullable="False" Placement="XAxis" Sequence="7" UserDefinedFormat="" UserProperty1="" UserProperty2="" WordWrap="False">
+<ElementRef Name="Object" Type="CustomObject">
+<UniqueIdent ConstraintName="OBJ1" DeveloperKey="OD_GL_JESOX"/>
+<UniqueIdent ConstraintName="OBJ2" Name="OD GL JE SOX Audit"/>
+</ElementRef>
+<ElementRef Name="RollUpFunction" Type="Function">
+<UniqueIdent ConstraintName="FUN1" DeveloperKey="EUL_110"/>
+<UniqueIdent ConstraintName="FUN2" Name="Detail"/>
+</ElementRef>
+</ColumnItem>
+<ColumnItem Alignment="Left" CaseDisplay="Unchanged" CaseStorage="Mixed" DataType="Varchar" Description="" DeveloperKey="SOURCE" DeveloperKeyFrozen="False" DisplayNullValue="" ExternalColumnName="SOURCE" FormatMask="" Heading="Source" Hidden="False" Id="269768" MaxDataWidth="25" MaxDisplayWidth="" Name="Source" Nullable="False" Placement="XAxis" Sequence="8" UserDefinedFormat="" UserProperty1="" UserProperty2="" WordWrap="False">
+<ElementRef Name="Object" Type="CustomObject">
+<UniqueIdent ConstraintName="OBJ1" DeveloperKey="OD_GL_JESOX"/>
+<UniqueIdent ConstraintName="OBJ2" Name="OD GL JE SOX Audit"/>
+</ElementRef>
+<ElementRef Name="RollUpFunction" Type="Function">
+<UniqueIdent ConstraintName="FUN1" DeveloperKey="EUL_110"/>
+<UniqueIdent ConstraintName="FUN2" Name="Detail"/>
+</ElementRef>
+</ColumnItem>
+<ColumnItem Alignment="Right" CaseDisplay="Unchanged" CaseStorage="Unknown" DataType="Number" Description="" DeveloperKey="TOTAL_DEBITS" DeveloperKeyFrozen="False" DisplayNullValue="" ExternalColumnName="TOTAL_DEBITS" FormatMask="9999999999" Heading="Total Debits" Hidden="False" Id="273140" MaxDataWidth="10" MaxDisplayWidth="" Name="Total Debits" Nullable="True" Placement="Measure" Sequence="6" UserDefinedFormat="" UserProperty1="" UserProperty2="" WordWrap="False">
+<ElementRef Name="Object" Type="CustomObject">
+<UniqueIdent ConstraintName="OBJ1" DeveloperKey="OD_GL_JESOX"/>
+<UniqueIdent ConstraintName="OBJ2" Name="OD GL JE SOX Audit"/>
+</ElementRef>
+<ElementRef Name="RollUpFunction" Type="Function">
+<UniqueIdent ConstraintName="FUN1" DeveloperKey="EUL_1"/>
+<UniqueIdent ConstraintName="FUN2" Name="SUM"/>
+</ElementRef>
+</ColumnItem>
+</CustomObject>
+<CustomObject CBOHint="" CustomSQL="-- +=================================================================+&#x000d;&#x000a;-- |                  Office Depot - Project Simplify                                                                   |&#x000d;&#x000a;-- |                      Office Depot                                                                                         |&#x000d;&#x000a;-- +=================================================================+&#x000d;&#x000a;-- | Name  : OD GL Set Of Books                                                                                  |&#x000d;&#x000a;-- | Description: Custom folder for  SOB LOV used by OD GL Journal Entry SOX Audit Report                      |&#x000d;&#x000a;-- |                                                                                                                                   |&#x000d;&#x000a;-- |                                                                                                                                   |&#x000d;&#x000a;-- |Change Record:                                                                                                         |&#x000d;&#x000a;-- |===============                                                                                                     |&#x000d;&#x000a;-- |Version   Date                Author                    Remarks                                                |&#x000d;&#x000a;-- |======   =========     =============     ===============================|&#x000d;&#x000a;-- |1.0          23-APR-2008  Michelle Gautier     Initial version                                          |&#x000d;&#x000a;-- +================================================================+|&#x000d;&#x000a;select set_of_books_id  sob_id&#x000d;&#x000a;,            short_name sob_short&#x000d;&#x000a;,            name          sob_name&#x000d;&#x000a;from apps.gl_sets_of_books&#x000d;&#x000a;WHERE attribute1 = &apos;Y&apos;&#x000d;&#x000a;" Description="OD GL Set Of Books" DeveloperKey="OD_GL_SET_OF_BOOKS" DeveloperKeyFrozen="False" DistinctFlag="False" ExternalDatabaseLink="" ExternalObjectName="" ExternalObjectOwner="" Hidden="False" Id="269678" Name="OD GL Set Of Books" NonDeterministic="False" SQL="( SELECT SOB_ID AS i269681, SOB_SHORT AS i269682, SOB_NAME AS i269683 FROM (-- +=================================================================+&#x000d;&#x000a;-- |                  Office Depot - Project Simplify                                                                   |&#x000d;&#x000a;-- |                      Office Depot                                                                                         |&#x000d;&#x000a;-- +=================================================================+&#x000d;&#x000a;-- | Name  : OD GL Set Of Books                                                                                  |&#x000d;&#x000a;-- | Description: Custom folder for  SOB LOV used by OD GL Journal Entry SOX Audit Report                      |&#x000d;&#x000a;-- |                                                                                                                                   |&#x000d;&#x000a;-- |                                                                                                                                   |&#x000d;&#x000a;-- |Change Record:                                                                                                         |&#x000d;&#x000a;-- |===============                                                                                                     |&#x000d;&#x000a;-- |Version   Date                Author                    Remarks                                                |&#x000d;&#x000a;-- |======   =========     =============     ===============================|&#x000d;&#x000a;-- |1.0          23-APR-2008  Michelle Gautier     Initial version                                          |&#x000d;&#x000a;-- +================================================================+|&#x000d;&#x000a;select set_of_books_id  sob_id&#x000d;&#x000a;,            short_name sob_short&#x000d;&#x000a;,            name          sob_name&#x000d;&#x000a;from apps.gl_sets_of_books&#x000d;&#x000a;WHERE attribute1 = &apos;Y&apos;&#x000d;&#x000a;) CUO269678 )" UserProperty1="" UserProperty2="">
+<ColumnItem Alignment="Left" CaseDisplay="Unchanged" CaseStorage="Unknown" DataType="Number" Description="" DeveloperKey="SOB_ID" DeveloperKeyFrozen="False" DisplayNullValue="" ExternalColumnName="SOB_ID" FormatMask="999999999999999" Heading="Sob Id" Hidden="True" Id="269681" MaxDataWidth="15" MaxDisplayWidth="" Name="Sob Id" Nullable="False" Placement="XAxis" Sequence="1" UserDefinedFormat="" UserProperty1="" UserProperty2="" WordWrap="False">
+<ElementRef Name="Object" Type="CustomObject">
+<UniqueIdent ConstraintName="OBJ1" DeveloperKey="OD_GL_SET_OF_BOOKS"/>
+<UniqueIdent ConstraintName="OBJ2" Name="OD GL Set Of Books"/>
+</ElementRef>
+<ElementRef Name="RollUpFunction" Type="Function">
+<UniqueIdent ConstraintName="FUN1" DeveloperKey="EUL_110"/>
+<UniqueIdent ConstraintName="FUN2" Name="Detail"/>
+</ElementRef>
+</ColumnItem>
+<ColumnItem Alignment="Left" CaseDisplay="Unchanged" CaseStorage="Mixed" DataType="Varchar" Description="" DeveloperKey="SOB_SHORT" DeveloperKeyFrozen="False" DisplayNullValue="" ExternalColumnName="SOB_SHORT" FormatMask="" Heading="Sob Short" Hidden="False" Id="269682" MaxDataWidth="20" MaxDisplayWidth="" Name="Sob Short" Nullable="False" Placement="XAxis" Sequence="2" UserDefinedFormat="" UserProperty1="" UserProperty2="" WordWrap="False">
+<ElementRef Name="Domain" Type="Domain">
+<UniqueIdent ConstraintName="DOM1" DeveloperKey="OD_SOB_SHORT_NAME"/>
+<UniqueIdent ConstraintName="DOM2" Name="OD SOB Short Name"/>
+</ElementRef>
+<ElementRef Name="Object" Type="CustomObject">
+<UniqueIdent ConstraintName="OBJ1" DeveloperKey="OD_GL_SET_OF_BOOKS"/>
+<UniqueIdent ConstraintName="OBJ2" Name="OD GL Set Of Books"/>
+</ElementRef>
+<ElementRef Name="RollUpFunction" Type="Function">
+<UniqueIdent ConstraintName="FUN1" DeveloperKey="EUL_110"/>
+<UniqueIdent ConstraintName="FUN2" Name="Detail"/>
+</ElementRef>
+</ColumnItem>
+<ColumnItem Alignment="Left" CaseDisplay="Unchanged" CaseStorage="Mixed" DataType="Varchar" Description="" DeveloperKey="SOB_NAME" DeveloperKeyFrozen="False" DisplayNullValue="" ExternalColumnName="SOB_NAME" FormatMask="" Heading="Sob Name" Hidden="False" Id="269683" MaxDataWidth="30" MaxDisplayWidth="" Name="Sob Name" Nullable="False" Placement="XAxis" Sequence="3" UserDefinedFormat="" UserProperty1="" UserProperty2="" WordWrap="False">
+<ElementRef Name="Object" Type="CustomObject">
+<UniqueIdent ConstraintName="OBJ1" DeveloperKey="OD_GL_SET_OF_BOOKS"/>
+<UniqueIdent ConstraintName="OBJ2" Name="OD GL Set Of Books"/>
+</ElementRef>
+<ElementRef Name="RollUpFunction" Type="Function">
+<UniqueIdent ConstraintName="FUN1" DeveloperKey="EUL_110"/>
+<UniqueIdent ConstraintName="FUN2" Name="Detail"/>
+</ElementRef>
+</ColumnItem>
+</CustomObject>
+<Domain ArrayFetchSize="100" Cached="True" Cardinality="0" DataType="Varchar" Description="Set Of Books Short Name for LOV" DeveloperKey="OD_SOB_SHORT_NAME" DeveloperKeyFrozen="False" FetchFirst="True" Id="269687" LastExecuteTime="0" LogicalItemFlag="False" Name="OD SOB Short Name" ShowInItemNavigator="True" SystemGenerated="False" UseDistinctOrderBy="True" UserProperty1="" UserProperty2="">
+<ElementRef Name="ValuesItem" Type="ColumnItem">
+<UniqueIdent ConstraintName="ITE1" DeveloperKey="SOB_SHORT">
+<ElementRef Name="Object" Type="CustomObject">
+<UniqueIdent ConstraintName="OBJ1" DeveloperKey="OD_GL_SET_OF_BOOKS"/>
+<UniqueIdent ConstraintName="OBJ2" Name="OD GL Set Of Books"/>
+</ElementRef>
+</UniqueIdent>
+<UniqueIdent ConstraintName="ITE2" Name="Sob Short">
+<ElementRef Name="Object" Type="CustomObject">
+<UniqueIdent ConstraintName="OBJ1" DeveloperKey="OD_GL_SET_OF_BOOKS"/>
+<UniqueIdent ConstraintName="OBJ2" Name="OD GL Set Of Books"/>
+</ElementRef>
+</UniqueIdent>
+</ElementRef>
+</Domain>
+</EndUserLayerExport>

@@ -1,0 +1,32 @@
+-- +========================================================================+
+-- |                  Office Depot                                          |
+-- +========================================================================+
+-- | Name        : ALTER_XX_AR_EBL_IND_DTL_MAIN_SKUTAX.tbl                  |
+-- | Rice ID     : E2059                                                    |
+-- | Description : Added new field in the existing XX_AR_EBL_IND_DTL_MAIN   |
+-- |               table                                                    |
+-- |                                                                        |
+-- |Change Record:                                                          |
+-- |===============                                                         |
+-- |Version   Date        Author           Remarks                          |
+-- |=======  ===========  =============    =================================|
+-- |1.0      17-AUG-2018  Aarthi           Initial Version                  |
+-- +========================================================================+
+
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     ON
+
+PROMPT
+PROMPT Altering the Table XX_AR_EBL_IND_DTL_MAIN .....
+PROMPT
+
+ALTER TABLE XXFIN.XX_AR_EBL_IND_DTL_MAIN  
+        ADD(
+             SKU_LEVEL_TAX NUMBER,
+             SKU_LEVEL_TOTAL NUMBER
+          );
+
+SHOW ERROR;

@@ -1,0 +1,64 @@
+<?xml version="1.0"?>
+<dataTemplate name="XXAPINVSRCSUMREP" description="E0501_11 Accounts Payable Invoice By Source Summary Report" version="1.0">
+  <parameters>
+    <parameter name="p_gl_from_date" dataType="date"/>
+    <parameter name="p_gl_to_date"   dataType="date"/>
+  </parameters>
+  <properties>
+    <property name="include_parameters" value="true"/>
+  </properties>
+  <dataQuery>
+    <sqlStatement name="Q1">
+       <![CDATA[SELECT   mgoat.organization_name,
+                         DECODE (gcc.segment3,
+                                 '20204000', 'Expense',
+                                 '20101000', 'Trade',
+                                 '20114000', 'Consignment'
+                                 ) category,
+                         ai.SOURCE invoice_source,
+                         DECODE (gcc.segment3,
+                                 '20204000', 1,
+                                 '20101000', 2,
+                                 '20114000', 3
+                                 ) sort_order,
+                         COUNT (DISTINCT ai.invoice_id) number_of_invoices,
+                         SUM (ai.invoice_amount) invoice_amount
+                FROM     ap_invoices_all ai,
+                         gl_code_combinations gcc,
+                         mo_glob_org_access_tmp mgoat
+                WHERE    ai.gl_date Between :p_gl_from_date AND :p_gl_to_date
+                AND      ap_invoices_pkg.get_posting_status (ai.invoice_id) = 'Y'
+                AND      ai.accts_pay_code_combination_id = gcc.code_combination_id
+                AND      gcc.segment3 IN('20204000', '20101000', '20114000')
+                ANd      ai.org_id = mgoat.organization_id
+                GROUP BY mgoat.organization_name,
+                         DECODE (gcc.segment3,
+                                '20204000', 'Expense',
+                                '20101000', 'Trade',
+                                '20114000', 'Consignment'
+                                ),
+                         ai.SOURCE,
+                         DECODE (gcc.segment3, '20204000', 1, '20101000', 2, '20114000', 3)
+                ORDER BY mgoat.organization_name,
+                         DECODE (gcc.segment3, '20204000', 1, '20101000', 2, '20114000', 3),
+                         ai.SOURCE]]>
+    </sqlStatement>
+  </dataQuery>
+  <dataStructure>
+    <group name="G_ORG" source="Q1">
+      <element name="ORGANIZATION_NAME"           value="organization_name"/>
+      <group name="G_CATEGORY" source="Q1">
+         <element name="CATEGORY"                 value="category"/>
+         <element name="SUM_NUMBER_OF_INVOICES" function="sum" dataType="number" 
+   value="G_SOURCE.NUMBER_OF_INVOICES"/>
+         <element name="SUM_INVOICE_AMOUNT" function="sum" dataType="number" 
+   value="G_SOURCE.INVOICE_AMOUNT"/>
+         <group name="G_SOURCE" source="Q1">
+           <element name="INVOICE_SOURCE"           value="invoice_source"/>
+           <element name="NUMBER_OF_INVOICES"       value="number_of_invoices"/>
+           <element name="INVOICE_AMOUNT"           value="invoice_amount"/>
+         </group>
+      </group>
+     </group>
+  </dataStructure> 
+</dataTemplate>

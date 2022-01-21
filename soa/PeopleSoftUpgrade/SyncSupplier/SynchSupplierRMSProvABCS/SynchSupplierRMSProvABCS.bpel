@@ -1,0 +1,690 @@
+<?xml version = "1.0" encoding = "UTF-8" ?>
+<!--
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  Oracle JDeveloper BPEL Designer 
+  
+  Created: Thu Aug 02 15:50:27 IST 2012
+  Author:  VELAMBIL
+  Type: BPEL 2.0 Process
+  Purpose: Asynchronous BPEL Process
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+-->
+<process name="SynchSupplierRMSProvABCS"
+         targetNamespace="http://xmlns.officedepot.com/SupplierSynch/SynchSupplierRMSProvABCS/SynchSupplierRMSProvABCS"
+         xmlns="http://docs.oasis-open.org/wsbpel/2.0/process/executable"
+         xmlns:client="http://xmlns.officedepot.com/SupplierSynch/SynchSupplierRMSProvABCS/SynchSupplierRMSProvABCS"
+         xmlns:ora="http://schemas.oracle.com/xpath/extension"
+         xmlns:bpelx="http://schemas.oracle.com/bpel/extension"
+         xmlns:bpel="http://docs.oasis-open.org/wsbpel/2.0/process/executable"
+         xmlns:ns1="http://xmlns.officedepot.org/EnterpriseObjects/Core/EBO/Supplier/V1"
+         xmlns:ns2="http://xmlns.oracle.com/pcbpel/adapter/file/VendorSynch/SynchSupplierRMSProvABCS/SynchSupplierRMSFileAdaptorV1"
+         xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+         xmlns:ns3="http://xmlns.officedepot.com/EnterpriseObjects/Core/Common/V3"
+         xmlns:ns4="http://xmlns.officedepot.com/Merchant/NASupplier_rms_inb/NASupplier_rms_inb"
+         xmlns:ns5="http://xmlns.oracle.com/pcbpel/adapter/jms/VendorSynch/SynchSupplierRMSProvABCS/CommonErrorLoggingService"
+         xmlns:ns6="http://xmlns.oracle.com/pcbpel/adapter/db/VendorSynch/SynchSupplierRMSProvABCS/SelectUpdateSupplierCPEbizDBAdaptorV1"
+         xmlns:ns7="http://xmlns.oracle.com/pcbpel/adapter/db/top/SelectUpdateSupplierCPEbizDBAdaptorV1"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns:bpws="http://schemas.xmlsoap.org/ws/2003/03/business-process/"
+         xmlns:xp20="http://www.oracle.com/XSL/Transform/java/oracle.tip.pc.services.functions.Xpath20"
+         xmlns:bpm="http://xmlns.oracle.com/bpmn20/extensions"
+         xmlns:oraext="http://www.oracle.com/XSL/Transform/java/oracle.tip.pc.services.functions.ExtFunc"
+         xmlns:dvm="http://www.oracle.com/XSL/Transform/java/oracle.tip.dvm.LookupValue"
+         xmlns:hwf="http://xmlns.oracle.com/bpel/workflow/xpath"
+         xmlns:ns9="http://www.openapplications.org/officedepot/finance/foundation/1"
+         xmlns:ids="http://xmlns.oracle.com/bpel/services/IdentityService/xpath"
+         xmlns:xdk="http://schemas.oracle.com/bpel/extension/xpath/function/xdk"
+         xmlns:xref="http://www.oracle.com/XSL/Transform/java/oracle.tip.xref.xpath.XRefXPathFunctions"
+         xmlns:ns8="http://xmlns.officedepot.com/RMS/SynchSupplierRMSFileAdaptorV1"
+         xmlns:ldap="http://schemas.oracle.com/xpath/extension/ldap"
+         xmlns:ns10="http://www.openapplications.org/oagis/9"
+         xmlns:ns11="http://www.openapplications.org/oagis/9/officedepot/1"
+         xmlns:ns12="http://www.officedepot.com/officedepot/ODComnErrorStructure/1.0"
+         xmlns:ns13="http://xmlns.oracle.com/pcbpel/adapter/jms/VendorSynchSIT/SynchSupplierRMSProvABCS/InsertErrorLogger"
+         xmlns:ns14="http://xmlns.oracle.com/pcbpel/adapter/jms/VendorSynchSIT/SynchSupplierRMSProvABCS/InsertTransactionLogger"
+         xmlns:ns15="http://xmlns.oracle.com/TransactionData"
+         xmlns:ns16="ODError">
+    <import namespace="http://xmlns.officedepot.com/SupplierSynch/SynchSupplierRMSProvABCS/SynchSupplierRMSProvABCS"
+            location="SynchSupplierRMSProvABCS.wsdl"
+            importType="http://schemas.xmlsoap.org/wsdl/"/>
+    <partnerLinks>
+        <partnerLink name="SynchSupplierRMSService"
+                     partnerLinkType="ns1:SynchSupplierRMSService"
+                     myRole="SynchSupplierEBS"/>
+        <partnerLink name="SynchSupplierRMSFileAdaptorV1"
+                     partnerLinkType="ns2:SynchRead_plt"
+                     partnerRole="SynchRead_role"/>
+        <partnerLink name="NASupplier_rms_inb"
+                     partnerLinkType="ns4:NASupplier_rms_inb"
+                     partnerRole="NASupplier_rms_inbProvider"
+                     myRole="NASupplier_rms_inbRequester"/>
+        <partnerLink name="SelectUpdateSupplierCPEbizDBAdaptorV1"
+                     partnerLinkType="ns6:SelectUpdateSupplierCPEbizDBAdaptorV1_plt"
+                     partnerRole="SelectUpdateSupplierCPEbizDBAdaptorV1_role"/>
+        <partnerLink name="InsertErrorLogger"
+                     partnerLinkType="ns13:Produce_Message_plt"
+                     partnerRole="Produce_Message_role"/>
+        <partnerLink name="InsertTransactionLogger"
+                     partnerLinkType="ns14:Produce_Message_plt"
+                     partnerRole="Produce_Message_role"/>
+    </partnerLinks>
+    <!-- 
+      ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        PARTNERLINKS                                                      
+        List of services participating in this BPEL process               
+      ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    -->
+    <!-- 
+      ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        VARIABLES                                                        
+        List of messages and XML documents used within this BPEL process 
+      ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    -->
+    <variables>
+        <!-- Reference to the message passed as input during initiation -->
+        <variable name="receiveInput_synchronizeSupplier_InputVariable"
+                  messageType="ns1:SynchSupplierFileReqMsg"/>
+        <variable name="SyncDirName" type="xsd:string"/>
+        <variable name="SyncFileName" type="xsd:string"/>
+        <variable name="Read_File_Data_SynchRead_OutputVariable"
+                  messageType="ns2:SynchRead_msg"/>
+        <variable name="Receive_Ack_InputVariable"
+                  messageType="ns4:NASupplier_rms_inbResponseMessage"/>
+        <variable name="Reply_synchronizeSupplier_OutputVariable"
+                  messageType="ns1:SynchSupplierFileRespMsg"/>
+        <variable name="ErrorLoggerData"
+                  messageType="ns13:Produce_Message_msg"/>
+        <variable name="fileName" type="xsd:string"/>
+        <variable name="fileSize" type="xsd:integer"/>
+        <variable name="GlobalParameterFileName" type="xsd:string"/>
+        <variable name="xmlFragment" type="xsd:string"/>
+        <variable name="logTransactionInput"
+                  messageType="ns14:Produce_Message_msg"/>
+        <variable name="NumberOfRecords" type="xsd:string"/>   
+        <variable name="RMS_ret_code" type="xsd:string"/>        
+        <variable name="RMS_ret_message" type="xsd:string"/>
+    </variables>
+    <faultHandlers>
+        <catchAll>
+            <sequence name="Sequence5">
+                <scope name="Scope3">
+                    <variables>
+                        <variable name="messagePayload" type="xsd:string"/>
+                        <variable name="emailSubject" type="xsd:string"/>
+                        <variable name="errorText" type="xsd:string"/>
+                        <variable name="systemName" type="xsd:string"/>
+                        <variable name="messageOperation" type="xsd:string"/>
+                        <variable name="applicationTeamErrorText"
+                                  type="xsd:string"/>
+                    </variables>
+                    <sequence name="Sequence3">
+                        <assign name="AssignRunTimeErrorRelatedData">
+                            <copy>
+                                <from>concat(ora:getPreference("SOA_ADMIN_ERROR_MESSAGE"),$fileName)</from>
+                                <to>$emailSubject</to>
+                            </copy>
+                            <copy>
+                                <from>substring(ora:getFaultAsString(),1,4000)</from>
+                                <to>$errorText</to>
+                            </copy>
+                            <copy>
+                                <from>string(' ')</from>
+                                <to>$messagePayload</to>
+                            </copy>
+                            <copy>
+                                <from>ora:getPreference('SOA_ADMIN_APP_NAME')</from>
+                                <to>$systemName</to>
+                            </copy>
+                            <copy>
+                                <from>concat(ora:getPreference('APPLICATION_EMAIL_SUBJECT'),$fileName)</from>
+                                <to>$applicationTeamErrorText</to>
+                            </copy>
+                        </assign>
+                        <assign name="AssignPopulateCommonErrorLoggingData">
+                            <copy>
+                                <from>ora:doc(concat('oramds:/apps/ODCommon/xmllib/finance/xml/', $GlobalParameterFileName),'/GlobalParameters/Finance_Domain/PROCESS_DOMAIN')</from>
+                                <to>$ErrorLoggerData.body/ns16:ProcessInfo/ns16:BusinessProcessDomain</to>
+                            </copy>
+                            <copy>
+                                <from>ora:getProcessId()</from>
+                                <to>$ErrorLoggerData.body/ns16:ProcessInfo/ns16:BusinessProcessName</to>
+                            </copy>
+                            <copy>
+                                <from>ora:getCompositeInstanceId()</from>
+                                <to>$ErrorLoggerData.body/ns16:ProcessInfo/ns16:BusinessProcessId</to>
+                            </copy>
+                            <copy>
+                                <from>'I0380 Supplier Interface'</from>
+                                <to>$ErrorLoggerData.body/ns16:ProcessInfo/ns16:SystemName</to>
+                            </copy>
+                            <copy>
+                                <from>ora:getCurrentDateTime()</from>
+                                <to>$ErrorLoggerData.body/ns16:ErrorDetails/ns16:ErrorDateTime</to>
+                            </copy>
+                            <copy>
+                                <from>ora:getPreference('CATCH_ALL_PROCESS_STEP')</from>
+                                <to>$ErrorLoggerData.body/ns16:ProcessInfo/ns16:BusinessProcessStep</to>
+                            </copy>
+                            <copy>
+                                <from>ora:getFaultName()</from>
+                                <to>$ErrorLoggerData.body/ns16:ErrorDetails/ns16:ErrorCode</to>
+                            </copy>
+                            <copy>
+                                <from>$emailSubject</from>
+                                <to>$ErrorLoggerData.body/ns16:ErrorDetails/ns16:ErrorDescription</to>
+                            </copy>
+                            <copy>
+                                <from>$errorText</from>
+                                <to>$ErrorLoggerData.body/ns16:ErrorDetails/ns16:ErrorText</to>
+                            </copy>
+                            <copy>
+                                <from>ora:getPreference('ERROR_TYPE')</from>
+                                <to>$ErrorLoggerData.body/ns16:ErrorDetails/ns16:ErrorType</to>
+                            </copy>
+                            <copy>
+                                <from>ora:getPreference('ERROR_SEVERITY')</from>
+                                <to>$ErrorLoggerData.body/ns16:ErrorDetails/ns16:ErrorSeverity</to>
+                            </copy>
+                            <copy>
+                                <from>ora:getCompositeInstanceId()</from>
+                                <to>$ErrorLoggerData.body/ns16:MessageDetails/ns16:MessageId</to>
+                            </copy>
+                            <copy>
+                                <from>ora:getCurrentDateTime()</from>
+                                <to>$ErrorLoggerData.body/ns16:MessageDetails/ns16:MessageDateTime</to>
+                            </copy>
+                            <copy>
+                                <from>ora:getPreference('MESSAGE_TYPE')</from>
+                                <to>$ErrorLoggerData.body/ns16:MessageDetails/ns16:MessageType</to>
+                            </copy>
+                            <copy>
+                                <from>ora:getPreference('MESSAGE_VERSION')</from>
+                                <to>$ErrorLoggerData.body/ns16:MessageDetails/ns16:MessageVersion</to>
+                            </copy>
+                            <copy>
+                                <from>$messageOperation</from>
+                                <to>$ErrorLoggerData.body/ns16:MessageDetails/ns16:MessageOperation</to>
+                            </copy>
+                            <copy>
+                                <from>ora:getPreference('SOURCE_SYSTEM_NAME')</from>
+                                <to>$ErrorLoggerData.body/ns16:MessageDetails/ns16:MessageSourceSystem</to>
+                            </copy>
+                            <copy>
+                                <from>$messagePayload</from>
+                                <to>$ErrorLoggerData.body/ns16:MessageDetails/ns16:MessageData</to>
+                            </copy>
+                            <copy>
+                                <from>ora:getPreference('SEND_NOTIFICATION')</from>
+                                <to>$ErrorLoggerData.body/ns16:Notification/ns16:sendNotification</to>
+                            </copy>
+                        </assign>
+                        <invoke name="InvokeErrorLoggerToSendErrorData"
+                                partnerLink="InsertErrorLogger"
+                                portType="ns13:Produce_Message_ptt"
+                                operation="Produce_Message"
+                                inputVariable="ErrorLoggerData"
+                                bpelx:invokeAsDetail="no"/>
+                    </sequence>
+                </scope>
+
+                <scope name="LogTransactionErrorScope" exitOnStandardFault="no">
+                    <sequence name="LogTransactionErrorSequence">
+                        <assign name="copyTransactionData">
+                            <copy>
+                                <from>'Error'</from>
+                                <to>$logTransactionInput.body/ns15:ProcessInfo/ns15:ProcessStatus</to>
+                            </copy>
+                            <copy>
+                                <from><literal><EntiltyList xmlns="http://xmlns.oracle.com/TransactionData">
+                      <EntityID EntityType="SourceFileName"/>
+                      <EntityID EntityType="FileSize"/>
+                      <EntityID EntityType="NumberOfRecordsInserted"/>
+                      <EntityID EntityType="RMS_ret_code"/>
+                      <EntityID EntityType="RMS_ret_message"/>
+                      <EntityID EntityType="TargetSystemName"/>
+                      <EntityID EntityType="TableName"/>
+                      <EntityID EntityType="ReleaseESPJob"/>
+      </EntiltyList></literal></from>
+                                <to>$logTransactionInput.body/ns15:EntiltyList</to>
+                            </copy>
+                            <copy>
+                                <from>concat('&amp;lt;EntityID EntityType=&amp;quot;SourceFileName&amp;quot;&gt;',$fileName, '&amp;lt;/EntityID&gt;')</from>
+                                <to>$xmlFragment</to>
+                            </copy>
+                            <copy>
+                                <from>ora:parseEscapedXML($xmlFragment)</from>
+                                <to>$logTransactionInput.body/ns15:EntiltyList/ns15:EntityID[1]</to>
+                            </copy>
+                            <copy>
+                                <from>concat('&amp;lt;EntityID EntityType=&amp;quot;FileSize&amp;quot;&gt;', $fileSize, ' bytes', '&amp;lt;/EntityID&gt;')</from>
+                                <to>$xmlFragment</to>
+                            </copy>
+                            <copy>
+                                <from>ora:parseEscapedXML($xmlFragment)</from>
+                                <to>$logTransactionInput.body/ns15:EntiltyList/ns15:EntityID[2]</to>
+                            </copy>
+                            <copy>
+                                <from>concat('&amp;lt;EntityID EntityType=&amp;quot;RMS_ret_code&amp;quot;&gt;',ora:getFaultName(), '&amp;lt;/EntityID&gt;')</from>
+                                <to>$xmlFragment</to>
+                            </copy>
+                            <copy>
+                                <from>ora:parseEscapedXML($xmlFragment)</from>
+                                <to>$logTransactionInput.body/ns15:EntiltyList/ns15:EntityID[4]</to>
+                            </copy>
+                            <copy>
+                                <from>concat('&amp;lt;EntityID EntityType=&amp;quot;RMS_ret_message&amp;quot;&gt;',ora:getFaultName(), '&amp;lt;/EntityID&gt;')</from>
+                                <to>$xmlFragment</to>
+                            </copy>
+                            <copy>
+                                <from>ora:parseEscapedXML($xmlFragment)</from>
+                                <to>$logTransactionInput.body/ns15:EntiltyList/ns15:EntityID[5]</to>
+                            </copy>
+                            <copy>
+                              <from>concat('&amp;lt;EntityID EntityType=&amp;quot;TargetSystemName&amp;quot;&gt;', 'RMS', '&amp;lt;/EntityID&gt;')</from>
+                              <to>$xmlFragment</to>
+                            </copy>
+                            <copy>
+                              <from>ora:parseEscapedXML($xmlFragment)</from>
+                              <to>$logTransactionInput.body/ns15:EntiltyList/ns15:EntityID[6]</to>
+                            </copy>
+                            <copy>
+                              <from>concat('&amp;lt;EntityID EntityType=&amp;quot;TableName&amp;quot;&gt;', 'NASupplier_rms_inb BPEL process', '&amp;lt;/EntityID&gt;')</from>
+                              <to>$xmlFragment</to>
+                            </copy>
+                            <copy>
+                              <from>ora:parseEscapedXML($xmlFragment)</from>
+                              <to>$logTransactionInput.body/ns15:EntiltyList/ns15:EntityID[7]</to>
+                            </copy>
+                            <copy>
+                              <from>concat('&amp;lt;EntityID EntityType=&amp;quot;ReleaseESPJob&amp;quot;&gt;', 'No', '&amp;lt;/EntityID&gt;')</from>
+                              <to>$xmlFragment</to>
+                            </copy>
+                            <copy>
+                              <from>ora:parseEscapedXML($xmlFragment)</from>
+                              <to>$logTransactionInput.body/ns15:EntiltyList/ns15:EntityID[8]</to>
+                            </copy>
+                        </assign>
+                        <invoke name="logTransaction"
+                                partnerLink="InsertTransactionLogger"
+                                portType="ns14:Produce_Message_ptt"
+                                operation="Produce_Message"
+                                inputVariable="logTransactionInput"
+                                bpelx:invokeAsDetail="no"/>
+                    </sequence>
+                </scope>
+
+                <scope name="Scope5">
+                    <variables>
+                        <variable name="Update_Ebiz_Supplier_Extract_CP_Error_Details_InputVariable"
+                                  messageType="ns6:XxApSuppExtractCollection_msg"/>
+                    </variables>
+                    <sequence name="Sequence6">
+                        <assign name="Prepare_Error_Details">
+                            <copy>
+                                <from>$receiveInput_synchronizeSupplier_InputVariable.body/ns1:TargetSystem</from>
+                                <to>$Update_Ebiz_Supplier_Extract_CP_Error_Details_InputVariable.XxApSuppExtractCollection/ns7:XxApSuppExtract/ns7:extSystem</to>
+                            </copy>
+                            <copy>
+                                <from><literal>E</literal></from>
+                                <to>$Update_Ebiz_Supplier_Extract_CP_Error_Details_InputVariable.XxApSuppExtractCollection/ns7:XxApSuppExtract/ns7:bpelRunningFlag</to>
+                            </copy>
+                        </assign>
+                        <invoke name="Update_Ebiz_Supplier_Extract_CP_Error_Details"
+                                bpelx:invokeAsDetail="no"
+                                partnerLink="SelectUpdateSupplierCPEbizDBAdaptorV1"
+                                portType="ns6:SelectUpdateSupplierCPEbizDBAdaptorV1_ptt"
+                                operation="merge"
+                                inputVariable="Update_Ebiz_Supplier_Extract_CP_Error_Details_InputVariable"/>
+                    </sequence>
+                </scope>
+            </sequence>
+        </catchAll>
+    </faultHandlers>
+    <!-- 
+      ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+       ORCHESTRATION LOGIC                                               
+       Set of activities coordinating the flow of messages across the    
+       services integrated within this business process                  
+      ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    -->
+    <sequence name="main">
+        <!-- Receive input from requestor. (Note: This maps to operation defined in SynchSupplierRMSProvABCS.wsdl) -->
+        <receive name="receiveInput" partnerLink="SynchSupplierRMSService"
+                 portType="ns1:SynchSupplierEBS" operation="synchronizeSupplier"
+                 variable="receiveInput_synchronizeSupplier_InputVariable"
+                 createInstance="yes"/>
+        <!-- 
+          Asynchronous callback to the requester. (Note: the callback location and correlation id is transparently handled using WS-addressing.)
+        -->
+        
+            <scope name="logTransactionStartScope" exitOnStandardFault="no">
+            <bpelx:annotation>
+                <bpelx:general>
+                    <bpelx:property name="userLabel">logTransactionScope</bpelx:property>
+                </bpelx:general>
+            </bpelx:annotation>
+            <sequence name="logTransactionSequence">
+                <assign name="copyTransactionData">
+                    <copy>
+                        <from>ora:getPreference('GlobalParameters_FNAME')</from>
+                        <to>$GlobalParameterFileName</to>
+                    </copy>
+                    <copy>
+                        <from>$receiveInput_synchronizeSupplier_InputVariable.body/ns3:FileMetaData/ns3:FileName</from>
+                        <to>$fileName</to>
+                    </copy>
+                    <copy>
+                        <from>$receiveInput_synchronizeSupplier_InputVariable.body/ns3:FileMetaData/ns3:FileSize</from>
+                        <to>$fileSize</to>
+                    </copy>
+                    <copy>
+                        <from>ora:doc(concat('oramds:/apps/ODCommon/xmllib/finance/xml/', $GlobalParameterFileName),'/GlobalParameters/Finance_Domain/PROCESS_DOMAIN')</from>
+                        <to>$logTransactionInput.body/ns15:ProcessInfo/ns15:Domain</to>
+                    </copy>
+                    <copy>
+                        <from>ora:getProcessId()</from>
+                        <to>$logTransactionInput.body/ns15:ProcessInfo/ns15:ProcessName</to>
+                    </copy>
+                    <copy>
+                        <from>ora:getCompositeInstanceId()</from>
+                        <to>$logTransactionInput.body/ns15:ProcessInfo/ns15:InstanceId</to>
+                    </copy>
+                    <copy>
+                        <from>'Start'</from>
+                        <to>$logTransactionInput.body/ns15:ProcessInfo/ns15:ProcessStatus</to>
+                    </copy>
+                    <copy>
+                        <from>'SyncSupplier File Read'</from>
+                        <to>$logTransactionInput.body/ns15:MessageDetails/ns15:MessageOperation</to>
+                    </copy>
+                    <copy>
+                        <from>'OD: AP GSS/PSFT/RMS Supplier Outbound'</from>
+                        <to>$logTransactionInput.body/ns15:MessageDetails/ns15:MessageSourceSystem</to>
+                    </copy>
+                    <copy>
+                        <from>'Payload'</from>
+                        <to>$logTransactionInput.body/ns15:MessageDetails/ns15:MessageType</to>
+                    </copy>
+                    <copy>
+                        <from>ora:getCurrentDateTime()</from>
+                        <to>$logTransactionInput.body/ns15:MessageDetails/ns15:MessageDateTime</to>
+                    </copy>
+                    <copy>
+                        <from>$fileName</from>
+                        <to>$logTransactionInput.body/ns15:EntiltyList/ns15:EntityID</to>
+                    </copy>
+                    <copy>
+                        <from><literal><EntiltyList xmlns="http://xmlns.oracle.com/TransactionData">
+<EntityID EntityType="SourceFileName"/>
+</EntiltyList></literal></from>
+                        <to>$logTransactionInput.body/ns15:EntiltyList</to>
+                    </copy>
+                    <copy>
+                        <from>concat('&amp;lt;EntityID EntityType=&amp;quot;SourceFileName&amp;quot;&gt;',$fileName , '&amp;lt;/EntityID&gt;')</from>
+                        <to>$xmlFragment</to>
+                    </copy>
+                    <copy>
+                        <from>ora:parseEscapedXML($xmlFragment)</from>
+                        <to>$logTransactionInput.body/ns15:EntiltyList</to>
+                    </copy>
+                    <copy>
+                        <from>'EBS'</from>
+                        <to>$logTransactionInput.body/ns15:ProcessInfo/ns15:TradingPartnerDetails/ns15:TPFrom</to>
+                    </copy>
+                    <copy>
+                        <from>'RMS'</from>
+                        <to>$logTransactionInput.body/ns15:ProcessInfo/ns15:TradingPartnerDetails/ns15:TPTo</to>
+                    </copy>
+                    <copy>
+                        <from>'I0380 Supplier Interface'</from>
+                        <to>$logTransactionInput.body/ns15:ProcessInfo/ns15:SystemName</to>
+                    </copy>
+                </assign>
+                <invoke name="logTransaction"
+                        partnerLink="InsertTransactionLogger"
+                        portType="ns14:Produce_Message_ptt"
+                        operation="Produce_Message"
+                        inputVariable="logTransactionInput"
+                        bpelx:invokeAsDetail="no"/>
+            </sequence>
+        </scope>
+        
+        <assign name="AssignAcknowledgement">
+            <copy>
+                <from><literal>0</literal></from>
+                <to>$Reply_synchronizeSupplier_OutputVariable.body/ns1:ReturnCode</to>
+            </copy>
+            <copy>
+                <from><literal>Sucess</literal></from>
+                <to>$Reply_synchronizeSupplier_OutputVariable.body/ns1:ReturnMessage</to>
+            </copy>
+        </assign>
+        <reply name="Acknowledge"
+               variable="Reply_synchronizeSupplier_OutputVariable"
+               partnerLink="SynchSupplierRMSService"
+               portType="ns1:SynchSupplierEBS" operation="synchronizeSupplier"/>
+        <assign name="Prepare_Sync_Details">
+            <copy>
+                <from>$receiveInput_synchronizeSupplier_InputVariable.body/ns3:FileMetaData/ns3:FileName</from>
+                <to>$SyncFileName</to>
+            </copy>
+            <copy>
+                <from>$receiveInput_synchronizeSupplier_InputVariable.body/ns3:FileMetaData/ns3:DirectoryName</from>
+                <to>$SyncDirName</to>
+            </copy>
+        </assign>
+        <scope name="Scope1">
+            <variables>
+                <variable name="Read_File_Data_SynchRead_InputVariable"
+                          messageType="ns2:Empty_msg"/>
+            </variables>
+            <sequence name="Sequence1">
+                <invoke name="Read_File_Data"
+                        partnerLink="SynchSupplierRMSFileAdaptorV1"
+                        portType="ns2:SynchRead_ptt" operation="SynchRead"
+                        inputVariable="Read_File_Data_SynchRead_InputVariable"
+                        outputVariable="Read_File_Data_SynchRead_OutputVariable"
+                        bpelx:invokeAsDetail="no">
+                    <bpelx:toProperties>
+                        <bpelx:toProperty name="jca.file.Directory"
+                                          variable="SyncDirName"/>
+                        <bpelx:toProperty name="jca.file.FileName"
+                                          variable="SyncFileName"/>
+                    </bpelx:toProperties>
+                </invoke>
+            </sequence>
+        </scope>
+        <extensionActivity>
+            <bpelx:exec name="Initialize" language="java">
+                <![CDATA[/*Write your java code below e.g.  
+	System.out.println("Hello, World"); 
+*/ 
+checkpoint();]]>
+            </bpelx:exec>
+        </extensionActivity>
+        <scope name="Scope2">
+            <variables>
+                <variable name="Synchronize_Supplier_to_RMS_initiate_InputVariable"
+                          messageType="ns4:NASupplier_rms_inbRequestMessage"/>
+            </variables>
+            <faultHandlers>
+                <catchAll>
+                    <rethrow name="Rethrow"/>
+                </catchAll>
+            </faultHandlers>
+            <sequence name="Sequence2">
+                <assign name="Transform_to_OAGIS">
+                    <bpelx:annotation>
+                        <bpelx:pattern patternName="bpelx:transformation"/>
+                    </bpelx:annotation>
+                    <copy>
+                        <from>ora:doXSLTransformForDoc("xsl/TransformationOAGIS.xsl", $Read_File_Data_SynchRead_OutputVariable.body)</from>
+                        <to variable="Synchronize_Supplier_to_RMS_initiate_InputVariable"
+                            part="payload"/>
+                    </copy>
+                </assign>
+                <invoke name="Synchronize_Supplier_to_RMS"
+                        bpelx:invokeAsDetail="no"
+                        partnerLink="NASupplier_rms_inb"
+                        portType="ns4:NASupplier_rms_inb" operation="initiate"
+                        inputVariable="Synchronize_Supplier_to_RMS_initiate_InputVariable"/>
+                <receive name="Receive_Ack" createInstance="no"
+                         partnerLink="NASupplier_rms_inb"
+                         portType="ns4:NASupplier_rms_inbCallback"
+                         operation="onResult"
+                         variable="Receive_Ack_InputVariable"/>
+            </sequence>
+        </scope>
+        <scope name="Scope4">
+            <variables>
+                <variable name="Query_Ebiz_Supplier_Extract_CP_Details_InputVariable"
+                          messageType="ns6:SelectUpdateSupplierCPEbizDBAdaptorV1Select_inputParameters"/>
+                <variable name="Query_Ebiz_Supplier_Extract_CP_Details_OutputVariable"
+                          messageType="ns6:XxApSuppExtractCollection_msg"/>
+                <variable name="Update_Ebiz_Supplier_Extract_CP_Details_InputVariable"
+                          messageType="ns6:XxApSuppExtractCollection_msg"/>
+            </variables>
+            <sequence name="Sequence4">
+                <if name="Determine_Success">
+                    <documentation>Success</documentation>
+                    <condition>$Receive_Ack_InputVariable.payload/ns9:ReturnCode = '0'</condition>
+                    <sequence>
+                        <assign name="Prepare_CP_Query">
+                            <copy>
+                                <from>$receiveInput_synchronizeSupplier_InputVariable.body/ns1:TargetSystem</from>
+                                <to>$Query_Ebiz_Supplier_Extract_CP_Details_InputVariable.SelectUpdateSupplierCPEbizDBAdaptorV1Select_inputParameters/ns7:EXT_SYSTEM</to>
+                            </copy>
+                        </assign>
+                        <invoke name="Query_Ebiz_Supplier_Extract_CP_Details"
+                                partnerLink="SelectUpdateSupplierCPEbizDBAdaptorV1"
+                                portType="ns6:SelectUpdateSupplierCPEbizDBAdaptorV1_ptt"
+                                operation="SelectUpdateSupplierCPEbizDBAdaptorV1Select"
+                                inputVariable="Query_Ebiz_Supplier_Extract_CP_Details_InputVariable"
+                                outputVariable="Query_Ebiz_Supplier_Extract_CP_Details_OutputVariable"
+                                bpelx:invokeAsDetail="no"/>
+                        <assign name="Prepare_Update_Ebiz_Supplier_Extract_CP_Message">
+                            <copy>
+                                <from>$Query_Ebiz_Supplier_Extract_CP_Details_OutputVariable.XxApSuppExtractCollection/ns7:XxApSuppExtract/ns7:extSystem</from>
+                                <to>$Update_Ebiz_Supplier_Extract_CP_Details_InputVariable.XxApSuppExtractCollection/ns7:XxApSuppExtract/ns7:extSystem</to>
+                            </copy>
+                            <copy>
+                                <from>$Query_Ebiz_Supplier_Extract_CP_Details_OutputVariable.XxApSuppExtractCollection/ns7:XxApSuppExtract/ns7:extractTime</from>
+                                <to>$Update_Ebiz_Supplier_Extract_CP_Details_InputVariable.XxApSuppExtractCollection/ns7:XxApSuppExtract/ns7:lastUpdateDate</to>
+                            </copy>
+                            <copy>
+                                <from><literal>N</literal></from>
+                                <to>$Update_Ebiz_Supplier_Extract_CP_Details_InputVariable.XxApSuppExtractCollection/ns7:XxApSuppExtract/ns7:bpelRunningFlag</to>
+                            </copy>
+                        </assign>
+                        <invoke name="Update_Ebiz_Supplier_Extract_CP_Details"
+                                bpelx:invokeAsDetail="no"
+                                partnerLink="SelectUpdateSupplierCPEbizDBAdaptorV1"
+                                portType="ns6:SelectUpdateSupplierCPEbizDBAdaptorV1_ptt"
+                                operation="merge"
+                                inputVariable="Update_Ebiz_Supplier_Extract_CP_Details_InputVariable"/>
+                    </sequence>
+                    <else>
+                        <documentation>Failure</documentation>
+                        <sequence name="Sequence7">
+                            <assign name="AssignFaultDetails">
+                                <copy>
+                                    <from>$Receive_Ack_InputVariable.payload/ns9:ReturnCode</from>
+                                    <to>$RMS_ret_code</to>
+                                </copy>
+                                <copy>
+                                    <from>$Receive_Ack_InputVariable.payload/ns9:ReturnMessage</from>
+                                    <to>$RMS_ret_message</to>
+                                </copy>
+                            </assign>
+                            <throw name="Throw_Fault"
+                                   faultName="bpelx:bindingFault"/>
+                        </sequence>
+                    </else>
+                </if>
+            </sequence>
+        </scope>
+        
+        <scope name="logTranscationEndScope" exitOnStandardFault="no">
+            <sequence name="logTransactionEndSequence">
+                <assign name="copyTransactionData">
+                    <copy>
+                        <from>count($Read_File_Data_SynchRead_OutputVariable.body/ns8:Supplier)</from>
+                        <to>$NumberOfRecords</to>
+                    </copy>
+                    <copy>
+                        <from>'Success'</from>
+                        <to>$logTransactionInput.body/ns15:ProcessInfo/ns15:ProcessStatus</to>
+                    </copy>
+                    <copy>
+                        <from><literal><EntiltyList xmlns="http://xmlns.oracle.com/TransactionData">
+                <EntityID EntityType="SourceFileName"/>
+                <EntityID EntityType="FileSize"/>
+                <EntityID EntityType="NumberOfRecordsInserted"/>
+                <EntityID EntityType="RMS_ret_code"/>
+                <EntityID EntityType="RMS_ret_message"/>
+                <EntityID EntityType="TargetSystemName"/>
+                <EntityID EntityType="TableName"/>
+                <EntityID EntityType="ReleaseESPJob"/>
+</EntiltyList></literal></from>
+                        <to>$logTransactionInput.body/ns15:EntiltyList</to>
+                    </copy>
+                    <copy>
+                        <from>concat('&amp;lt;EntityID EntityType=&amp;quot;SourceFileName&amp;quot;&gt;',$fileName, '&amp;lt;/EntityID&gt;')</from>
+                        <to>$xmlFragment</to>
+                    </copy>
+                    <copy>
+                        <from>ora:parseEscapedXML($xmlFragment)</from>
+                        <to>$logTransactionInput.body/ns15:EntiltyList/ns15:EntityID[1]</to>
+                    </copy>
+                    <copy>
+                        <from>concat('&amp;lt;EntityID EntityType=&amp;quot;FileSize&amp;quot;&gt;', $fileSize, ' bytes', '&amp;lt;/EntityID&gt;')</from>
+                        <to>$xmlFragment</to>
+                    </copy>
+                    <copy>
+                        <from>ora:parseEscapedXML($xmlFragment)</from>
+                        <to>$logTransactionInput.body/ns15:EntiltyList/ns15:EntityID[2]</to>
+                    </copy>
+                    <copy>
+                        <from>concat('&amp;lt;EntityID EntityType=&amp;quot;NumberOfRecordsInserted&amp;quot;&gt;', $NumberOfRecords, '&amp;lt;/EntityID&gt;')</from>
+                        <to>$xmlFragment</to>
+                    </copy>
+                    <copy>
+                        <from>ora:parseEscapedXML($xmlFragment)</from>
+                        <to>$logTransactionInput.body/ns15:EntiltyList/ns15:EntityID[3]</to>
+                    </copy>
+                    <copy>
+                        <from>concat('&amp;lt;EntityID EntityType=&amp;quot;TargetSystemName&amp;quot;&gt;', 'RMS', '&amp;lt;/EntityID&gt;')</from>
+                        <to>$xmlFragment</to>
+                    </copy>
+                    <copy>
+                        <from>ora:parseEscapedXML($xmlFragment)</from>
+                        <to>$logTransactionInput.body/ns15:EntiltyList/ns15:EntityID[6]</to>
+                    </copy>
+                    <copy>
+                        <from>concat('&amp;lt;EntityID EntityType=&amp;quot;TableName&amp;quot;&gt;', 'NASupplier_rms_inb BPEL process', '&amp;lt;/EntityID&gt;')</from>
+                        <to>$xmlFragment</to>
+                    </copy>
+                    <copy>
+                        <from>ora:parseEscapedXML($xmlFragment)</from>
+                        <to>$logTransactionInput.body/ns15:EntiltyList/ns15:EntityID[7]</to>
+                    </copy>
+                    <copy>
+                        <from>concat('&amp;lt;EntityID EntityType=&amp;quot;ReleaseESPJob&amp;quot;&gt;', 'No', '&amp;lt;/EntityID&gt;')</from>
+                        <to>$xmlFragment</to>
+                    </copy>
+                    <copy>
+                        <from>ora:parseEscapedXML($xmlFragment)</from>
+                        <to>$logTransactionInput.body/ns15:EntiltyList/ns15:EntityID[8]</to>
+                    </copy>
+                </assign>
+                <invoke name="logTransaction"
+                        partnerLink="InsertTransactionLogger"
+                        portType="ns14:Produce_Message_ptt"
+                        operation="Produce_Message"
+                        inputVariable="logTransactionInput"
+                        bpelx:invokeAsDetail="no"/>
+            </sequence>
+        </scope>
+
+    </sequence>
+</process>

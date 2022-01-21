@@ -1,0 +1,14 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<componentType xmlns="http://xmlns.oracle.com/sca/1.0" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:ui="http://xmlns.oracle.com/soa/designer/">
+   <service name="UpdateEmployeeErrorCallBackPSFTProvABCSImpl_client_ep" ui:wsdlLocation="UpdateEmployeeErrorCallBackPSFTProvABCS.wsdl">
+      <interface.wsdl interface="http://xmlns.oracle.com/PeopleSoftMigration/UpdateEmployeeErrorCallBackPSFTProvABCS/UpdateEmployeeErrorCallBackPSFTProvABCS#wsdl.interface(UpdateEmployeeErrorCallBackPSFTProvABCS)"/>
+   </service>
+   <reference name="PeopleSoftCallBackService"
+              ui:wsdlLocation="OD_EMPDATA_ASYNC.1.wsdl">
+      <interface.wsdl interface="http://xmlns.oracle.com/Enterprise/Tools/services/OD_EMPDATA_ASYNC.1#wsdl.interface(OD_EMPDATA_ASYNC_PortType)"/>
+   </reference>
+   <reference name="InsertErrorLoggerJMSPublisher"
+              ui:wsdlLocation="InsertErrorLoggerJMSPublisher.wsdl">
+      <interface.wsdl interface="http://xmlns.oracle.com/pcbpel/adapter/jms/10GTo11G/OTMCOSOrderReleaseABCS/InsertErrorLoggerJMSPublisher#wsdl.interface(Produce_Message_ptt)"/>
+   </reference>
+</componentType>

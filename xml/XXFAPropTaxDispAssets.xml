@@ -1,0 +1,146 @@
+<?xml version="1.0"?>
+<dataTemplate name="XXFAPropTaxDispAssets" description="R1261 The OD FA Property Tax Report for Disposed Assets displays the assets that are partially or completely retired based on the book, state and date range." version="1.0">
+  <parameters>
+    <parameter name="p_report_name"      dataType="character"/>
+    <parameter name="p_book_name"        dataType="character"/>
+    <parameter name="p_state"            dataType="character"/>
+    <parameter name="p_from_period_name" dataType="character"/>
+    <parameter name="p_to_period_name"   dataType="character"/>
+  </parameters>
+  <properties>
+    <property name="include_parameters" value="true"/>
+  </properties>
+  <dataQuery>
+    <sqlStatement name="Q1">
+       <![CDATA[SELECT fb.book_type_code           book_name,
+                       gcc.segment1                company,
+                       gcc.segment4                location,
+                       gcc.segment2                cost_center,
+                       gcc.segment6                lob,
+                       fa.asset_number             asset_number,
+                       fa.attribute6               legacy_id,
+                       fb.date_effective           effective_date,
+                       fa.attribute8               hist_acq_date,
+                       fb.date_placed_in_service   date_placed_in_service,
+                       fc.segment1                 major,
+                       fr.date_retired             retire_date,
+                       'minor'                     minor,
+                       fa.description              description,
+                         fr.cost_retired
+                       / fa.current_units
+                       * fdh.units_assigned        cost,
+                         fa.attribute7
+                       / fa.current_units
+                       * fdh.units_assigned        hist_cost,
+                       1 location_no,
+                       fth.transaction_type_code   trans_type,
+                       'building'                  building,
+                       'city'                      city,
+                       'county'                    county,
+                       fl.segment2                 state,
+                       'zip' zip,
+                       'invoice'                   invoice_number,
+                       'voucher'                   voucher_number,
+                       fdp.period_name             period_name,
+                       fb.date_effective           book_effective,
+                       fb.date_ineffective         book_ineffective,
+                       fdh.date_effective          dist_effective,
+                       fdh.date_ineffective        dist_ineffective,
+                       fb.transaction_header_id_in books_header_id,
+                       fa.asset_id asset_id,
+                       fth.date_effective          trans_effective_date
+                FROM   fa_deprn_periods fdp,
+                       fa_deprn_periods ffdp,
+                       fa_deprn_periods tfdp,
+                       fa_asset_history fah,
+                       gl_code_combinations gcc,
+                       fa_additions fa,
+                       fa_books fb,
+                       fa_distribution_history fdh,
+                       fa_locations fl,
+                       fa_retirements fr,
+                       fa_categories fc,
+                       fa_transaction_headers fth
+                WHERE  fa.asset_id = fb.asset_id
+                AND    fb.book_type_code          = fdp.book_type_code
+                AND    fth.date_effective        >= fdp.period_open_date
+                AND    fth.date_effective        <= NVL(fdp.period_close_date,
+                                                        SYSDATE)
+                AND    fc.category_id             = fah.category_id
+                AND    fah.asset_id = fa.asset_id
+                AND    fth.transaction_header_id >= fah.transaction_header_id_in
+                AND    fth.transaction_header_id <  NVL(fah.transaction_header_id_out,
+                                                          fth.transaction_header_id
+                                                        + 1)
+                AND    fdh.code_combination_id    = gcc.code_combination_id
+                AND    fdh.asset_id               = fa.asset_id
+                AND    fdh.book_type_code         = fb.book_type_code
+                AND    fdh.location_id            = fl.location_id
+                AND    fc.category_id             = fa.asset_category_id
+                AND    fr.asset_id                = fa.asset_id
+                AND    fr.book_type_code          = fb.book_type_code
+                AND    fth.asset_id               = fa.asset_id
+                AND    fth.book_type_code         = fb.book_type_code
+                AND    fth.transaction_type_code IN ('FULL RETIREMENT', 'PARTIAL RETIREMENT')
+                AND    fth.transaction_header_id  = fr.transaction_header_id_in
+                AND    fth.transaction_header_id  = fb.transaction_header_id_in
+                AND    fdp.book_type_code         = fb.book_type_code
+                AND    (   fdh.retirement_id = fr.retirement_id
+                        OR (    fr.date_effective >= fdh.date_effective
+                            AND fr.date_effective <= NVL(fdh.date_ineffective,
+                                                         SYSDATE)
+                            AND fr.units IS NULL))
+                AND    fr.status                  IN ('PROCESSED', 'PENDING')
+                AND    fc.category_type           <> 'LEASE'
+                AND    fb.book_type_code           = :p_book_name
+                AND    fl.segment2                 = :p_state
+                AND    ffdp.book_type_code         = fb.book_type_code
+                AND    tfdp.book_type_code         = fb.book_type_code
+                AND    ffdp.period_name            = :p_from_period_name
+                AND    tfdp.period_name            = :p_to_period_name
+                AND    fdp.period_counter between ffdp.period_counter and tfdp.period_counter
+                ORDER BY gcc.segment4]]>
+    </sqlStatement>
+  </dataQuery>
+  <dataStructure>
+    <group name="G_MAIN" source="Q1">
+      <element name="SUM_COST"      function="sum" dataType="number" value="G_ASSETS.COST"/>
+      <element name="SUM_HIST_COST" function="sum" dataType="number" value="G_ASSETS.HIST_COST"/>
+      <group name="G_ASSETS" source="Q1">
+        <element name="BOOK_NAME"              value="book_name"/>
+        <element name="COMPANY"                value="company"/>
+        <element name="LOCATION"               value="location"/>
+        <element name="COST_CENTER"            value="cost_center"/>
+        <element name="LOB"                    value="lob"/>
+        <element name="ASSET_NUMBER"           value="asset_number"/>
+        <element name="LEGACY_ID"              value="legacy_id"/>
+        <element name="EFFECTIVE_DATE"         value="effective_date"/>
+        <element name="HIST_ACQ_DATE"          value="hist_acq_date"/>
+        <element name="DATE_PLACED_IN_SERVICE" value="date_placed_in_service"/>
+        <element name="MAJOR"                  value="major"/>
+        <element name="RETIRE_DATE"            value="retire_date"/>
+        <element name="MINOR"                  value="minor"/>
+        <element name="DESCRIPTION"            value="description"/>
+        <element name="COST"                   value="cost"/>
+        <element name="HIST_COST"              value="hist_cost"/>
+        <element name="LOCATION_NO"            value="location_no"/>
+        <element name="TRANS_TYPE"             value="trans_type"/>
+        <element name="ZIP"                    value="zip"/>
+        <element name="CITY"                   value="city"/>
+        <element name="COUNTY"                 value="county"/>
+        <element name="STATE"                  value="state"/>
+        <element name="BUILDING"               value="building"/>
+        <element name="INVOICE_NUMBER"         value="invoice_number"/>
+        <element name="VOUCHER_NUMBER"         value="voucher_number"/>
+        <element name="PERIOD_NAME"            value="period_name"/>
+        <element name="BOOK_EFFECTIVE"         value="book_effective"/>
+        <element name="BOOK_INEFFECTIVE"       value="book_ineffective"/>
+        <element name="DIST_EFFECTIVE"         value="dist_effective"/>
+        <element name="DIST_INEFFECTIVE"       value="dist_ineffective"/>
+        <element name="BOOKS_HEADER_ID"        value="books_header_id"/>
+        <element name="ASSET_ID"               value="asset_id"/>
+        <element name="TRANS_EFFECTIVE_DATE"   value="trans_effective_date"/> 
+      </group>
+     </group>
+  </dataStructure> 
+</dataTemplate>

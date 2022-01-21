@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dataTemplate name="XX_AP_BYPASSINVXML" defaultPackage="XX_AP_BYPASSINV_PKG"  Version="1.0">
+<parameters>
+<parameter name="P_START_DATE" dataType="string"/>
+<parameter name="P_END_DATE" dataType="string"/>
+</parameters>
+ <dataQuery>
+ <sqlStatement name="Q1">
+ <![CDATA[ SELECT :G_SMTP_SERVER SMTP_SERVER,
+   :G_EMAIL_SUBJECT EMAIL_SUBJECT, :G_EMAIL_CONTENT EMAIL_CONTENT, :G_DISTRIBUTION_LIST DISTRIBUTION_LIST, to_char(to_date(:P_START_DATE,'RRRR/MM/DD 
+
+HH24:MI:SS'),'DD-MON-YY') P_STRT_DATE from dual]]> 
+</sqlStatement>
+ <sqlStatement name="Q2">
+ <![CDATA[ SELECT aii.invoice_id hdr_invoice_id,
+aii.creation_Date transmission_date,
+substr(hla.location_code,1,6) store,
+aii.invoice_num,
+(select max(creation_date)  FROM rcv_transactions where po_header_id = pha.po_header_id) SHIP_DATE,
+aii.invoice_date,
+aii.po_number,
+aii.vendor_id,
+assa.vendor_site_code_alt||' '||asp.vendor_name vendor,
+aii.invoice_amount,
+(SELECT DECODE(SUBSTR(base_currency_code,1,2),'US','USTR','CA','CNTR',SUBSTR(base_currency_code,1,2))
+   FROM   ap_system_parameters) AP_COMPANY   
+FROM ap_invoices_interface aii,
+    po_headers_all pha,    
+    ap_suppliers asp,
+	ap_supplier_sites_all assa,
+    hr_locations_all hla,
+	AP_INTERFACE_REJECTIONS AIR
+WHERE 1 = 1
+AND (aii.po_number like 'E%'
+AND (air.parent_table ='AP_INVOICES_INTERFACE' and air.reject_lookup_code ='INVALID PO NUM'))
+AND aii.SOURCE   = 'US_OD_TRADE_EDI'
+AND aii.status <> 'PROCESSED'
+AND aii.invoice_id =air.parent_id
+AND pha.segment1 (+) = aii.po_number
+AND asp.vendor_id = aii.vendor_id
+AND asp.vendor_id = assa.vendor_id
+AND assa.vendor_site_id  = aii.vendor_site_id
+AND pha.ship_to_location_id= hla.location_id (+)
+--AND to_date(substr(aii.creation_date,1,10),'DD-MON-YY') BETWEEN '01-SEP-17' AND '30-SEP-17'
+AND aii.creation_date BETWEEN to_date(:P_START_DATE,'RRRR/MM/DD HH24:MI:SS') AND to_date(:P_END_DATE,'RRRR/MM/DD HH24:MI:SS')
+]]> 
+</sqlStatement>
+ <sqlStatement name="Q3">  
+ <![CDATA[ SELECT aia.invoice_num,
+      --ail.ship_to_location_code MFG_CODE, 
+      NVL(ail.ship_to_location_code, (XX_AP_BYPASSINV_PKG.GET_MFG_CODE(aia.po_number, ail.po_line_number))) MFG_CODE,
+      XX_AP_BYPASSINV_PKG.GET_SKU(aia.po_number, ail.po_line_number, ail.inventory_item_id) SKU,
+--(SELECT segment1 FROM mtl_system_items_b WHERE inventory_item_id = ail.inventory_item_id and rownum =1) SKU, 
+NVL(ail.description, ail.item_description) ITEM_DESCRIPTION,
+XX_AP_BYPASSINV_PKG.GET_DEPT(ail.inventory_item_id, ail.ship_to_location_id, aia.po_number, ail.po_line_number) DEPT,
+ail.quantity_invoiced QTY,
+--ail.unit_of_meas_lookup_Code UM,
+NVL(ail.unit_of_meas_lookup_Code, (XX_AP_BYPASSINV_PKG.GET_UOM(aia.po_number, ail.po_line_number))) UM,
+ail.unit_price PRICE,
+ail.amount AMT
+FROM ap_invoices_interface aia,
+ap_invoice_lines_interface ail
+WHERE 1=1
+AND aia.invoice_id = ail.invoice_id
+AND aia.invoice_id=:hdr_invoice_id ]]> 
+  </sqlStatement>  
+  </dataQuery>
+<dataTrigger name="beforeReport" 
+source="XX_AP_BYPASSINV_PKG.beforeReport()"/>
+  <dataStructure>
+  <group name="G_EMAIL_DETAILS" source="Q1">
+ <element name="SMTP_SERVER" value= "SMTP_SERVER" />
+ <element name="EMAIL_SUBJECT" value= "EMAIL_SUBJECT" />
+ <element name="EMAIL_CONTENT" value= "EMAIL_CONTENT" />
+ <element name="DISTRIBUTION_LIST" value= "DISTRIBUTION_LIST" /> 
+ <element name="P_STRT_DATE" value= "P_STRT_DATE"/> 
+ <group name="G_BYPASSINV_HEADER" source="Q2">
+ <element name="INVOICE_ID" value= "hdr_invoice_id" />
+  <element name="TRANSMISSION_DATE" value= "TRANSMISSION_DATE" /> 
+  <element name="STORE" value="STORE" />
+  <element name="INVOICE_NUM" value="INVOICE_NUM" /> 
+  <element name="SHIP_DATE" value="SHIP_DATE" /> 
+  <element name="INVOICE_DATE" value="INVOICE_DATE" /> 
+  <element name="COMPANY" value="AP_COMPANY"/>
+  <element name="PO_NUM" value="PO_NUMBER" />
+  <element name="VENDOR" value="VENDOR"/> 
+  <element name="INVOICE_AMT" value="INVOICE_AMOUNT"/>   
+<group name="G_BYPASSINV_LINES" source="Q3">
+  <element name="MFG_CODE" value="MFG_CODE" /> 
+  <element name="SKU" value="SKU" /> 
+  <element name="SKU_DESCRIPTION" value="ITEM_DESCRIPTION" /> 
+  <element name="DEPT" value="DEPT" /> 
+  <element name="QTY" value="QTY" /> 
+  <element name="UM" value="UM" /> 
+  <element name="PRICE" value="PRICE" />    
+  <element name="AMT" value="AMT" /> 
+ </group>
+ </group>
+</group>
+  </dataStructure>
+  <dataTrigger name="afterReport" 
+source="XX_AP_BYPASSINV_PKG.afterReport()"/>
+  </dataTemplate>  

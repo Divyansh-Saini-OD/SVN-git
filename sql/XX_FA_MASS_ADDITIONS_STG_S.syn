@@ -1,0 +1,57 @@
+REM================================================================================================
+REM                                 Start Of Script
+REM================================================================================================
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     OFF
+WHENEVER SQLERROR CONTINUE; 
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+--+=============================================================================================+--
+--|                                                                                             |--
+--| Program Name   : XX_FA_MASS_ADDITIONS_STG_S                                                 |--
+--|                                                                                             |--
+--| Purpose        : Create Custom synonym                                                      |--
+--|                  The Objects created are:                                                   |--
+--|                                                                                             |--
+--|                1. XX_FA_MASS_ADDITIONS_STG_S(FA Conversion )                                |--
+--|                                                                                             |--
+--| Change History  :                                                                           |--
+--| Version           Date             Changed By              Description                      |--
+--+=============================================================================================+--
+--| 1.0              22-JAN-2015       Mark Schmit             Original                         |--
+--+=============================================================================================+--
+
+WHENEVER SQLERROR CONTINUE;
+
+PROMPT
+PROMPT Creating Synonym in APPS... 
+PROMPT
+
+WHENEVER SQLERROR CONTINUE
+
+PROMPT
+PROMPT Creating SYNONYM XX_FA_MASS_ADDITIONS_STG_S
+PROMPT
+
+create synonym xx_fa_mass_additions_stg_s for xxcnv.xx_fa_mass_additions_stg_s;
+
+WHENEVER SQLERROR CONTINUE
+
+PROMPT
+PROMPT Exiting....
+PROMPT
+
+SET FEEDBACK ON
+
+
+EXIT;
+
+
+REM=================================================================================================
+REM                                   End Of Script                                            
+REM=================================================================================================
+
+

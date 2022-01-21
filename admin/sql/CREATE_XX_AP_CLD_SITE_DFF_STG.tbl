@@ -1,0 +1,68 @@
+-- +===========================================================================+
+-- |                  Office Depot - Project Simplify                          |
+-- +===========================================================================+
+-- | Name :XXFIN.XX_AP_SUP_CLOUD_DFF_STG	                                   |
+-- | Description :   Script to create XX_AP_SUP_CLOUD_DFF_STG table     	   |
+-- |                                                                           |
+-- |                                                                           |
+-- |Change Record:                                                             |
+-- |===============                                                            |
+-- |Version      Date           Author                  Remarks                |
+-- |=======    ==========     =============             ====================== |
+-- | 1.0       06-JUN-2019    Dinesh Nagapuri           Initial draft version  |
+-- +===========================================================================+
+
+-- DFF fields
+BEGIN
+EXECUTE IMMEDIATE 'DROP TABLE XXFIN.XX_AP_SUP_CLOUD_DFF_STG';
+EXCEPTION
+ WHEN OTHERS THEN NULL;
+END;
+/
+
+  CREATE TABLE XXFIN.XX_AP_CLD_SITE_DFF_STG  
+   (supplier_number                NUMBER,
+    supplier_name                  VARCHAR2(200),
+    vendor_site_code               VARCHAR2(15),
+    edi_distribution_code          VARCHAR2(200),
+    sup_trait                      VARCHAR2(200),
+    back_order_flag                VARCHAR2(200),
+    od_date_signed                 VARCHAR2(200),
+    vendor_date_signed             VARCHAR2(200),
+    eft_settle_days                VARCHAR2(200),
+    min_prepaid_code               VARCHAR2(200),
+    supplier_ship_to               VARCHAR2(200),
+    deduct_from_invoice_flag       VARCHAR2(200),
+    rtv_freight_payment_method     VARCHAR2(200),
+    payment_frequency              VARCHAR2(200),
+    rtv_instructions               VARCHAR2(200),
+    addl_rtv_instructions          VARCHAR2(200),
+    rga_marked_flag                VARCHAR2(200),
+    remove_price_sticker_flag      VARCHAR2(200),
+    contact_supplier_for_rga_flag  VARCHAR2(200),
+    destroy_flag                   VARCHAR2(200),
+    serial_num_required_flag       VARCHAR2(200),
+    permanent_rga                  VARCHAR2(200),
+    lead_time                      VARCHAR2(200),
+    vendor_min_amount              VARCHAR2(200),
+    master_vendor_id               VARCHAR2(200),
+    rtv_option                     VARCHAR2(200),
+    destroy_allow_amount           VARCHAR2(200),
+    min_return_qty                 VARCHAR2(200),
+    min_return_amount              VARCHAR2(200),
+    damage_destroy_limit           VARCHAR2(200),
+    rtv_related_site               VARCHAR2(2000),
+    create_flag			           VARCHAR2(1),
+    process_flag               	   VARCHAR2(1) DEFAULT 'I',
+    dff_process_flag               VARCHAR2(1) DEFAULT '1',
+    error_flag                     VARCHAR2(5), 
+    error_msg                      VARCHAR2(4000), 
+    request_id                     NUMBER, 
+    created_by                     NUMBER, 
+    creation_date                  TIMESTAMP DEFAULT systimestamp, 
+    last_updated_by                NUMBER, 
+    last_update_date               TIMESTAMP DEFAULT systimestamp,
+	vendor_id			           NUMBER, 
+	vendor_site_id		           NUMBER 	
+	);
+

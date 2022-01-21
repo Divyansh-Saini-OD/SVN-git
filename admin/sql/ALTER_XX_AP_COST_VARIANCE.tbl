@@ -1,0 +1,28 @@
+-- +==========================================================================+
+-- |                  Office Depot - Project Simplify                         |
+-- +==========================================================================+
+-- | RICE ID     :  E3023                                                     |
+-- | Name        :  AP Trade Match Cost Variance                                  |
+-- |                                                                          |
+-- | SQL Script to create the following object                                |
+-- |             Table       : XX_AP_COST_VARIANCE	                          |
+-- |                                                                          |
+-- |Change Record:                                                            |
+-- |===============                                                           |
+-- |Version   Date         Author               Remarks                       |
+-- |=======   ==========   =============        ==============================|
+-- | 1.0      11/07/2017   Uday Jadhav	        Added new column              |
+-- |                                                                          |
+-- +==========================================================================+
+
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     ON
+
+ALTER TABLE xx_ap_cost_variance
+        ADD( inv_line_num 			NUMBER 
+           );
+		   
+SHOW ERROR;

@@ -1,0 +1,271 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<object-persistence xmlns="http://www.eclipse.org/eclipselink/xsds/persistence" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:eclipselink="http://www.eclipse.org/eclipselink/xsds/persistence" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="Eclipse Persistence Services - 2.1.3.v20110304-r9073">
+   <name>UpdateEmpDataMFDBAdaptorV1-OR</name>
+   <class-mapping-descriptors>
+      <class-mapping-descriptor xsi:type="object-relational-class-mapping-descriptor">
+         <class>UpdateEmpDataMFDBAdaptorV1.Empdata</class>
+         <alias>OD.EMPDATA</alias>
+         <primary-key>
+            <field table="EMPDATA" name="EMPLOYEE_NBR" xsi:type="column"/>
+         </primary-key>
+         <events/>
+         <querying>
+            <queries>
+               <query name="UpdateEmpDataMFDBAdaptorV1Select" xsi:type="read-all-query">
+                  <reference-class>UpdateEmpDataMFDBAdaptorV1.Empdata</reference-class>
+                  <container xsi:type="list-container-policy">
+                     <collection-type>java.util.Vector</collection-type>
+                  </container>
+               </query>
+               <query name="UpdateEmpDataMFDBAdaptorV1Select" xsi:type="read-all-query">
+                  <criteria operator="equal" xsi:type="relation-expression">
+                     <left name="employeeNbr" xsi:type="query-key-expression">
+                        <base xsi:type="base-expression"/>
+                     </left>
+                     <right xsi:type="parameter-expression">
+                        <parameter name="InputParamEmpdataEmpID" xsi:type="column"/>
+                     </right>
+                  </criteria>
+                  <arguments>
+                     <argument name="InputParamEmpdataEmpID">
+                        <type>java.lang.String</type>
+                     </argument>
+                  </arguments>
+                  <reference-class>UpdateEmpDataMFDBAdaptorV1.Empdata</reference-class>
+                  <container xsi:type="list-container-policy">
+                     <collection-type>java.util.Vector</collection-type>
+                  </container>
+               </query>
+            </queries>
+         </querying>
+         <attribute-mappings>
+            <attribute-mapping xsi:type="direct-mapping">
+               <attribute-name>employeeNbr</attribute-name>
+               <field table="EMPDATA" name="EMPLOYEE_NBR" xsi:type="column"/>
+               <attribute-classification>java.math.BigInteger</attribute-classification>
+            </attribute-mapping>
+            <attribute-mapping xsi:type="direct-mapping">
+               <attribute-name>fName</attribute-name>
+               <field table="EMPDATA" name="F_NAME" xsi:type="column"/>
+               <attribute-classification>java.lang.String</attribute-classification>
+            </attribute-mapping>
+            <attribute-mapping xsi:type="direct-mapping">
+               <attribute-name>lName</attribute-name>
+               <field table="EMPDATA" name="L_NAME" xsi:type="column"/>
+               <attribute-classification>java.lang.String</attribute-classification>
+            </attribute-mapping>
+            <attribute-mapping xsi:type="direct-mapping">
+               <attribute-name>mInit</attribute-name>
+               <field table="EMPDATA" name="M_INIT" xsi:type="column"/>
+               <attribute-classification>java.lang.String</attribute-classification>
+            </attribute-mapping>
+            <attribute-mapping xsi:type="direct-mapping">
+               <attribute-name>positionCd</attribute-name>
+               <field table="EMPDATA" name="POSITION_CD" xsi:type="column"/>
+               <attribute-classification>java.lang.String</attribute-classification>
+            </attribute-mapping>
+            <attribute-mapping xsi:type="direct-mapping">
+               <attribute-name>locId</attribute-name>
+               <field table="EMPDATA" name="LOC_ID" xsi:type="column"/>
+               <attribute-classification>java.lang.Short</attribute-classification>
+            </attribute-mapping>
+            <attribute-mapping xsi:type="direct-mapping">
+               <attribute-name>termDt</attribute-name>
+               <field table="EMPDATA" name="TERM_DT" xsi:type="column"/>
+               <attribute-classification>java.sql.Date</attribute-classification>
+            </attribute-mapping>
+            <attribute-mapping xsi:type="direct-mapping">
+               <attribute-name>nxtReviewDt</attribute-name>
+               <field table="EMPDATA" name="NXT_REVIEW_DT" xsi:type="column"/>
+               <attribute-classification>java.sql.Date</attribute-classification>
+            </attribute-mapping>
+            <attribute-mapping xsi:type="direct-mapping">
+               <attribute-name>nxtStepReviewDt</attribute-name>
+               <field table="EMPDATA" name="NXT_STEP_REVIEW_DT" xsi:type="column"/>
+               <attribute-classification>java.sql.Date</attribute-classification>
+            </attribute-mapping>
+            <attribute-mapping xsi:type="direct-mapping">
+               <attribute-name>reviewDt</attribute-name>
+               <field table="EMPDATA" name="REVIEW_DT" xsi:type="column"/>
+               <attribute-classification>java.sql.Date</attribute-classification>
+            </attribute-mapping>
+            <attribute-mapping xsi:type="direct-mapping">
+               <attribute-name>leaveCd</attribute-name>
+               <field table="EMPDATA" name="LEAVE_CD" xsi:type="column"/>
+               <attribute-classification>java.lang.String</attribute-classification>
+            </attribute-mapping>
+            <attribute-mapping xsi:type="direct-mapping">
+               <attribute-name>severanceFlg</attribute-name>
+               <field table="EMPDATA" name="SEVERANCE_FLG" xsi:type="column"/>
+               <attribute-classification>java.lang.String</attribute-classification>
+            </attribute-mapping>
+            <attribute-mapping xsi:type="direct-mapping">
+               <attribute-name>jobTitle</attribute-name>
+               <field table="EMPDATA" name="JOB_TITLE" xsi:type="column"/>
+               <attribute-classification>java.lang.String</attribute-classification>
+            </attribute-mapping>
+            <attribute-mapping xsi:type="direct-mapping">
+               <attribute-name>mailCd</attribute-name>
+               <field table="EMPDATA" name="MAIL_CD" xsi:type="column"/>
+               <attribute-classification>java.lang.String</attribute-classification>
+            </attribute-mapping>
+            <attribute-mapping xsi:type="direct-mapping">
+               <attribute-name>phoneNbr</attribute-name>
+               <field table="EMPDATA" name="PHONE_NBR" xsi:type="column"/>
+               <attribute-classification>java.lang.String</attribute-classification>
+            </attribute-mapping>
+            <attribute-mapping xsi:type="direct-mapping">
+               <attribute-name>bldgCd</attribute-name>
+               <field table="EMPDATA" name="BLDG_CD" xsi:type="column"/>
+               <attribute-classification>java.lang.String</attribute-classification>
+            </attribute-mapping>
+            <attribute-mapping xsi:type="direct-mapping">
+               <attribute-name>divisionName</attribute-name>
+               <field table="EMPDATA" name="DIVISION_NAME" xsi:type="column"/>
+               <attribute-classification>java.lang.String</attribute-classification>
+            </attribute-mapping>
+            <attribute-mapping xsi:type="direct-mapping">
+               <attribute-name>deptName</attribute-name>
+               <field table="EMPDATA" name="DEPT_NAME" xsi:type="column"/>
+               <attribute-classification>java.lang.String</attribute-classification>
+            </attribute-mapping>
+            <attribute-mapping xsi:type="direct-mapping">
+               <attribute-name>commonName</attribute-name>
+               <field table="EMPDATA" name="COMMON_NAME" xsi:type="column"/>
+               <attribute-classification>java.lang.String</attribute-classification>
+            </attribute-mapping>
+            <attribute-mapping xsi:type="direct-mapping">
+               <attribute-name>eeoCat</attribute-name>
+               <field table="EMPDATA" name="EEO_CAT" xsi:type="column"/>
+               <attribute-classification>java.lang.String</attribute-classification>
+            </attribute-mapping>
+            <attribute-mapping xsi:type="direct-mapping">
+               <attribute-name>chargingLevel1</attribute-name>
+               <field table="EMPDATA" name="CHARGING_LEVEL_1" xsi:type="column"/>
+               <attribute-classification>java.lang.String</attribute-classification>
+            </attribute-mapping>
+            <attribute-mapping xsi:type="direct-mapping">
+               <attribute-name>chargingLevel2</attribute-name>
+               <field table="EMPDATA" name="CHARGING_LEVEL_2" xsi:type="column"/>
+               <attribute-classification>java.lang.String</attribute-classification>
+            </attribute-mapping>
+            <attribute-mapping xsi:type="direct-mapping">
+               <attribute-name>chargingLevel3</attribute-name>
+               <field table="EMPDATA" name="CHARGING_LEVEL_3" xsi:type="column"/>
+               <attribute-classification>java.lang.String</attribute-classification>
+            </attribute-mapping>
+            <attribute-mapping xsi:type="direct-mapping">
+               <attribute-name>chargingLevel4</attribute-name>
+               <field table="EMPDATA" name="CHARGING_LEVEL_4" xsi:type="column"/>
+               <attribute-classification>java.lang.String</attribute-classification>
+            </attribute-mapping>
+            <attribute-mapping xsi:type="direct-mapping">
+               <attribute-name>last4_Ssn</attribute-name>
+               <field table="EMPDATA" name="LAST_4_SSN" xsi:type="column"/>
+               <attribute-classification>java.lang.Short</attribute-classification>
+            </attribute-mapping>
+            <attribute-mapping xsi:type="direct-mapping">
+               <attribute-name>floorNbr</attribute-name>
+               <field table="EMPDATA" name="FLOOR_NBR" xsi:type="column"/>
+               <attribute-classification>java.lang.String</attribute-classification>
+            </attribute-mapping>
+            <attribute-mapping xsi:type="direct-mapping">
+               <attribute-name>reportsToId</attribute-name>
+               <field table="EMPDATA" name="REPORTS_TO_ID" xsi:type="column"/>
+               <attribute-classification>java.math.BigInteger</attribute-classification>
+            </attribute-mapping>
+            <attribute-mapping xsi:type="direct-mapping">
+               <attribute-name>hireDt</attribute-name>
+               <field table="EMPDATA" name="HIRE_DT" xsi:type="column"/>
+               <attribute-classification>java.sql.Date</attribute-classification>
+            </attribute-mapping>
+            <attribute-mapping xsi:type="direct-mapping">
+               <attribute-name>desktopFlg</attribute-name>
+               <field table="EMPDATA" name="DESKTOP_FLG" xsi:type="column"/>
+               <attribute-classification>java.lang.String</attribute-classification>
+            </attribute-mapping>
+            <attribute-mapping xsi:type="direct-mapping">
+               <attribute-name>bonusType</attribute-name>
+               <field table="EMPDATA" name="BONUS_TYPE" xsi:type="column"/>
+               <attribute-classification>java.lang.String</attribute-classification>
+            </attribute-mapping>
+            <attribute-mapping xsi:type="direct-mapping">
+               <attribute-name>birthMmdd</attribute-name>
+               <field table="EMPDATA" name="BIRTH_MMDD" xsi:type="column"/>
+               <attribute-classification>java.lang.Short</attribute-classification>
+            </attribute-mapping>
+            <attribute-mapping xsi:type="direct-mapping">
+               <attribute-name>costCenter</attribute-name>
+               <field table="EMPDATA" name="COST_CENTER" xsi:type="column"/>
+               <attribute-classification>java.lang.String</attribute-classification>
+            </attribute-mapping>
+            <attribute-mapping xsi:type="direct-mapping">
+               <attribute-name>rptsToChgDt</attribute-name>
+               <field table="EMPDATA" name="RPTS_TO_CHG_DT" xsi:type="column"/>
+               <attribute-classification>java.sql.Date</attribute-classification>
+            </attribute-mapping>
+            <attribute-mapping xsi:type="direct-mapping">
+               <attribute-name>rptsToChgBy</attribute-name>
+               <field table="EMPDATA" name="RPTS_TO_CHG_BY" xsi:type="column"/>
+               <attribute-classification>java.lang.String</attribute-classification>
+            </attribute-mapping>
+            <attribute-mapping xsi:type="direct-mapping">
+               <attribute-name>dtChg</attribute-name>
+               <field table="EMPDATA" name="DT_CHG" xsi:type="column"/>
+               <attribute-classification>java.sql.Date</attribute-classification>
+            </attribute-mapping>
+            <attribute-mapping xsi:type="direct-mapping">
+               <attribute-name>userIdChgBy</attribute-name>
+               <field table="EMPDATA" name="USER_ID_CHG_BY" xsi:type="column"/>
+               <attribute-classification>java.lang.String</attribute-classification>
+            </attribute-mapping>
+            <attribute-mapping xsi:type="direct-mapping">
+               <attribute-name>companyCd</attribute-name>
+               <field table="EMPDATA" name="COMPANY_CD" xsi:type="column"/>
+               <attribute-classification>java.lang.String</attribute-classification>
+            </attribute-mapping>
+            <attribute-mapping xsi:type="direct-mapping">
+               <attribute-name>jobcodeSetid</attribute-name>
+               <field table="EMPDATA" name="JOBCODE_SETID" xsi:type="column"/>
+               <attribute-classification>java.lang.String</attribute-classification>
+            </attribute-mapping>
+            <attribute-mapping xsi:type="direct-mapping">
+               <attribute-name>locationSetid</attribute-name>
+               <field table="EMPDATA" name="LOCATION_SETID" xsi:type="column"/>
+               <attribute-classification>java.lang.String</attribute-classification>
+            </attribute-mapping>
+            <attribute-mapping xsi:type="direct-mapping">
+               <attribute-name>deptSetid</attribute-name>
+               <field table="EMPDATA" name="DEPT_SETID" xsi:type="column"/>
+               <attribute-classification>java.lang.String</attribute-classification>
+            </attribute-mapping>
+            <attribute-mapping xsi:type="direct-mapping">
+               <attribute-name>salarySetid</attribute-name>
+               <field table="EMPDATA" name="SALARY_SETID" xsi:type="column"/>
+               <attribute-classification>java.lang.String</attribute-classification>
+            </attribute-mapping>
+         </attribute-mappings>
+         <descriptor-type>independent</descriptor-type>
+         <caching>
+            <cache-type>weak-reference</cache-type>
+            <cache-size>-1</cache-size>
+            <always-refresh>true</always-refresh>
+         </caching>
+         <remote-caching>
+            <cache-type>weak-reference</cache-type>
+            <cache-size>-1</cache-size>
+         </remote-caching>
+         <instantiation/>
+         <copying xsi:type="instantiation-copy-policy"/>
+         <tables>
+            <table name="OD.EMPDATA"/>
+         </tables>
+         <structure>structureName</structure>
+      </class-mapping-descriptor>
+   </class-mapping-descriptors>
+   <login xsi:type="database-login">
+      <platform-class>org.eclipse.persistence.platform.database.DB2Platform</platform-class>
+      <user-name></user-name>
+      <connection-url></connection-url>
+   </login>
+</object-persistence>

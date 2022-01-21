@@ -1,0 +1,20 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<xs:schema targetNamespace="http://xmlns.oracle.com/pcbpel/adapter/db/GetUserID" xmlns="http://xmlns.oracle.com/pcbpel/adapter/db/GetUserID" elementFormDefault="qualified" attributeFormDefault="qualified" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+   <xs:element name="GetUserIDInput" type="GetUserIDInput"/>
+   <xs:complexType name="GetUserIDInput">
+      <xs:sequence>
+         <xs:element name="p_User_name" type="xs:string" nillable="true"/>
+      </xs:sequence>
+   </xs:complexType>
+   <xs:element name="GetUserIDOutputCollection" type="GetUserIDOutputCollection"/>
+   <xs:complexType name="GetUserIDOutputCollection">
+      <xs:sequence>
+         <xs:element name="GetUserIDOutput" type="GetUserIDOutput" minOccurs="0" maxOccurs="unbounded"/>
+      </xs:sequence>
+   </xs:complexType>
+   <xs:complexType name="GetUserIDOutput">
+      <xs:sequence>
+         <xs:element name="user_id" type="xs:decimal" nillable="true"/>
+      </xs:sequence>
+   </xs:complexType>
+</xs:schema>

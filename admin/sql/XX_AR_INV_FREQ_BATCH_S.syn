@@ -1,0 +1,32 @@
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     OFF
+SET TERM         ON
+
+PROMPT Creating Synonym APPS.XX_AR_INV_FREQ_BATCH_S
+PROMPT Program exits if the creation is not successful
+
+WHENEVER SQLERROR CONTINUE	
+
+-- +===================================================================+
+-- |                  Office Depot - Project Simplify                  |
+-- |                       PROVIDGE Consulting                         |
+-- +===================================================================+
+-- |Name :        APPS.XX_AR_INV_FREQ_BATCH_S                          |
+-- |Description : Synonym for xxfin.XX_AR_INV_FREQ_BATCH_S             |
+-- |                                                                   |
+-- |Change Record:                                                     |
+-- |===============                                                    |
+-- |                                                                   |
+-- |Version   Date          Author              Remarks                |
+-- |=======   ==========   =============        =======================|
+-- |1.0       12-Mar-2010  Tamil Vendhan L      Initial version        |
+-- |                                            R1.3 CR 738            |
+-- |                                            Defect 2766            |
+-- +===================================================================+
+
+CREATE SYNONYM apps.XX_AR_INV_FREQ_BATCH_S FOR xxfin.XX_AR_INV_FREQ_BATCH_S;
+
+SHOW ERROR

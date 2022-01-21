@@ -1,0 +1,144 @@
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     ON
+
+-- +==========================================================================+
+-- |                  Office Depot - Project Simplify                         |
+-- |                       WIPRO Technologies                                 |
+-- +==========================================================================+
+-- | Table Script to create the following object                              |
+-- |             Table  : XX_IBY_BATCH_TRXNS_HIST_BKP                         |
+-- |                      For I1039,Settlement and Payment Processing         |
+-- |                                                                          |
+-- |Change Record:                                                            |
+-- |===============                                                           |
+-- |Version   Date         Author               Remarks                       |
+-- |=======   ==========   =============        ==============================|
+-- | V1.0     29-MAY-2008  Gowri Shankar        Initial version               |
+-- |                                                                          |
+-- +==========================================================================+
+
+CREATE TABLE XXFIN.XX_IBY_BATCH_TRXNS_HIST_BKP(
+ Pre1                                   VARCHAR2(120)  
+,Pre2                                   VARCHAR2(120)
+,Pre3                                   VARCHAR2(120)
+,IxRecordType                           VARCHAR2(240)
+,IxReserved2                             VARCHAR2(240)
+,IxReserved3                             VARCHAR2(240)
+,IxActionCode                           VARCHAR2(240)  
+,IxReserved5                            VARCHAR2(240)
+,IxMessageType                          VARCHAR2(240)  
+,IxReserved7                            VARCHAR2(240)  
+,IxStoreNumber                          VARCHAR2(240) 
+,IxRegisterNumber                       VARCHAR2(240)  
+,IxTransactionType                      VARCHAR2(240)  
+,IxReserved11                            VARCHAR2(240)
+,IxReserved12                            VARCHAR2(240)
+,IxAccount                              VARCHAR2(240)  
+,IxExpDate                              VARCHAR2(240)  
+,IxSwipe                                VARCHAR2(240)  
+,IxAmount                               VARCHAR2(240)  
+,IxInvoice                              VARCHAR2(240)  
+,IxReserved18                            VARCHAR2(240)
+,IxReserved19                            VARCHAR2(240)
+,IxReserved20                            VARCHAR2(240)
+,IxOptions                              VARCHAR2(240)  
+,IxBankUserData                         VARCHAR2(240)  
+,IxReserved23                            VARCHAR2(240)
+,IxReserved24                            VARCHAR2(240)
+,IxIssueNumber                          VARCHAR2(240)  
+,IxTotalSalesTaxAmount                  VARCHAR2(240)  
+,IxTotalSalesTaxCollInd                 VARCHAR2(240)  
+,IxReserved28                            VARCHAR2(240)
+,IxReserved29                            VARCHAR2(240)
+,IxReserved30                            VARCHAR2(240)
+,IxReserved31                            VARCHAR2(240) 
+,IxReserved32                            VARCHAR2(240)
+,IxReserved33                            VARCHAR2(240)
+,IxReceiptNumber                         VARCHAR2(240) 
+,IxReserved35                            VARCHAR2(240)
+,IxReserved36                            VARCHAR2(240)
+,IxAuthorizationNumber                   VARCHAR2(240) 
+,IxReserved38                            VARCHAR2(240)
+,IxReserved39                            VARCHAR2(240)
+,IxReserved40                            VARCHAR2(240)
+,IxReserved41                            VARCHAR2(240)
+,IxReserved42                            VARCHAR2(240)
+,IxReserved43                            VARCHAR2(240)
+,IxPS2000                                VARCHAR2(240) 
+,IxReference                             VARCHAR2(240) 
+,IxReserved46                            VARCHAR2(240) 
+,IxIPaymentBatchNumber                   VARCHAR2(240) 
+,IxReserved48                            VARCHAR2(240)
+,IxReserved49                            VARCHAR2(240)
+,IxDate                                  VARCHAR2(240) 
+,IxTime                                  VARCHAR2(240) 
+,IxReserved52                            VARCHAR2(240) 
+,IxReserved53                            VARCHAR2(240) 
+,IxReserved54                            VARCHAR2(240) 
+,IxReserved55                           VARCHAR2(240)
+,IxReserved56                            VARCHAR2(240)
+,IxReserved57                            VARCHAR2(240)
+,IxReserved58                            VARCHAR2(240)
+,IxReserved59                            VARCHAR2(240) 
+,IxCustomerReferenceID                  VARCHAR2(240)  
+,IxNationalTaxcollIndicator             VARCHAR2(240)  
+,IxNationalTaxAmount                    VARCHAR2(240)  
+,IxOtherTaxAmount                       VARCHAR2(240)  
+,IxDiscountAmount                       VARCHAR2(240)  
+,IxShippingAmount                       VARCHAR2(240)  
+,IxTaxableAmount                        VARCHAR2(240)  
+,IxDutyAmount                           VARCHAR2(240)  
+,IxShipFromZipCode                      VARCHAR2(240)  
+,IxShipToCompany                        VARCHAR2(240)  
+,IxShipToName                           VARCHAR2(240)  
+,IxShipToStreet                         VARCHAR2(240)  
+,IxShipToCity                           VARCHAR2(240)  
+,IxShipToState                          VARCHAR2(240)  
+,IxShipToCountry                        VARCHAR2(240)  
+,IxShipToZipCode                        VARCHAR2(240)  
+,IxPurchaserName                        VARCHAR2(240)  
+,IxOrderDate                            VARCHAR2(240)  
+,IxMerchantVATNumber                    VARCHAR2(240)  
+,IxCustomerVATNumber                    VARCHAR2(240)  
+,IxVATInvoice                           VARCHAR2(240)  
+,IxVATAmount                            VARCHAR2(240)  
+,IxVATRate                              VARCHAR2(240)  
+,IxMerchandiseShipped                   VARCHAR2(240) 
+,IxCustCountryCode                      VARCHAR2(240)
+,IxCustAccountNo                        VARCHAR2(240)
+,IxCostCenter                           VARCHAR2(240)
+,IxDesktopLocation                      VARCHAR2(240)
+,IxReleaseNumber                        VARCHAR2(240)
+,IxOriginalInvoiceNo                    VARCHAR2(240)
+,IxOtherTaxAmount2                      VARCHAR2(240)
+,IxOtherTaxAmount3                      VARCHAR2(240)
+,IxMiscCharge                           VARCHAR2(240)
+,IxCCNumber                             VARCHAR2(240)
+,last_update_date                       DATE          NOT NULL
+,last_updated_by                        NUMBER(15)    NOT NULL
+,creation_date                          DATE          NOT NULL
+,created_by                             NUMBER(15)    NOT NULL
+,last_update_login                      NUMBER(15)
+,ixinstrsubtype VARCHAR2(255)
+,attribute1      VARCHAR2(255)
+,attribute2      VARCHAR2(255)
+,attribute3      VARCHAR2(255)
+,attribute4      VARCHAR2(255)
+,attribute5      VARCHAR2(255)
+,attribute6      VARCHAR2(255)
+,attribute7      VARCHAR2(255)
+,attribute8      VARCHAR2(255)
+,attribute9      VARCHAR2(255)
+,attribute10     VARCHAR2(255)
+,attribute11     VARCHAR2(255)
+,attribute12     VARCHAR2(255)
+,attribute13     VARCHAR2(255)
+,attribute14     VARCHAR2(255)
+,attribute15     VARCHAR2(255)
+,ixmerchantnumber VARCHAR2(255)
+);
+
+SHOW ERROR;

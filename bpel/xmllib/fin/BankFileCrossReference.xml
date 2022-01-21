@@ -1,0 +1,193 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+    <BankFiles>
+        <BankFile AS2Name="BOAOFFICEZX">        
+            <FileType>BAI_RECONCILIATION</FileType>
+            <RenameFile>true</RenameFile>
+            <UseHeaderName>false</UseHeaderName>
+            <NewFileName>BSTMT_BOA_</NewFileName>
+            <ESPFilePattern>BAI_BOAOFFICEZX</ESPFilePattern>
+        </BankFile>
+        <BankFile AS2Name="234379">
+            <FileType>BAI_RECONCILIATION</FileType>
+            <RenameFile>true</RenameFile>
+            <UseHeaderName>false</UseHeaderName>
+            <NewFileName>BSTMT_WACHV_</NewFileName>
+            <ESPFilePattern>BAI_234379_WACHOVIA_AS2</ESPFilePattern>
+        </BankFile>
+        <BankFile AS2Name="FITB">
+            <FileType>BAI_RECONCILIATION</FileType>
+            <RenameFile>true</RenameFile>
+            <UseHeaderName>true</UseHeaderName>
+            <HeaderPosition>2</HeaderPosition>
+            <NewFileName>BSTMT_53_</NewFileName>
+            <ESPFilePattern>BAI_FITB</ESPFilePattern>
+            <HeaderName name="BankStatements">
+            	<NewFileName>BSTMT_53_</NewFileName>
+            	<ESPFilePattern>BAI_FITB</ESPFilePattern>
+            </HeaderName>
+        </BankFile>
+        <BankFile AS2Name="JPMC">
+            <FileType>BAI_RECONCILIATION</FileType>
+            <RenameFile>true</RenameFile>
+            <UseHeaderName>false</UseHeaderName>
+            <NewFileName>BSTMT_JPMC_</NewFileName>
+            <ESPFilePattern>BAI_JPMC</ESPFilePattern>
+        </BankFile> 
+        <!-- production AS2 name changes -->
+        <BankFile AS2Name="006981815">
+            <FileType>BAI_RECONCILIATION</FileType>
+            <RenameFile>true</RenameFile>
+            <UseHeaderName>false</UseHeaderName>
+            <NewFileName>BSTMT_JPMC_</NewFileName>
+            <ESPFilePattern>BAI_JPMC</ESPFilePattern>
+        </BankFile>         
+        <BankFile AS2Name="REGIONS">
+            <FileType>BAI_RECONCILIATION</FileType>
+            <RenameFile>true</RenameFile>
+            <UseHeaderName>false</UseHeaderName>
+            <NewFileName>BSTMT_REGIONS_</NewFileName>
+            <ESPFilePattern>BAI_REGIONS</ESPFilePattern>
+        </BankFile>        
+        <BankFile AS2Name="SCOTIABANK">
+            <FileType>BAI_RECONCILIATION</FileType> 
+            <RenameFile>true</RenameFile>
+            <UseHeaderName>true</UseHeaderName>
+            <HeaderPosition>2</HeaderPosition>
+            <NewFileName>BSTMT_SCOTIA_</NewFileName>
+            <ESPFilePattern>BAI_SCOTIABANK</ESPFilePattern>
+            <HeaderName name="ODPRInternational">
+            	<NewFileName>BS_SCOTIA_PR</NewFileName>
+            	<ESPFilePattern>BAI_SCOTIABANK_ODPR</ESPFilePattern>
+            </HeaderName>
+            <HeaderName name="ODCAInternational">
+            	<NewFileName>BS_SCOTIA_CA</NewFileName>
+            	<ESPFilePattern>BAI_SCOTIABANK_ODCA</ESPFilePattern>
+            </HeaderName> 
+        </BankFile>
+        <BankFile AS2Name="AMSAVINGS">
+            <FileType>BAI_RECONCILIATION</FileType>
+            <RenameFile>true</RenameFile>
+            <UseHeaderName>false</UseHeaderName>
+            <NewFileName>BSTMT_AMSVNGS_</NewFileName>
+            <ESPFilePattern>BAI_AMSAVINGS</ESPFilePattern>
+        </BankFile>        
+        <BankFile AS2Name="CAIMPERIAL">
+            <FileType>BAI_RECONCILIATION</FileType>
+            <RenameFile>true</RenameFile>
+            <UseHeaderName>false</UseHeaderName>
+            <NewFileName>BSTMT_CAIMPRL_</NewFileName>
+            <ESPFilePattern>BAI_CAIMPERIAL</ESPFilePattern>
+        </BankFile>                
+        <BankFile AS2Name="qdxusrf1">
+            <FileType>BAI_RECONCILIATION</FileType>
+            <RenameFile>true</RenameFile>
+            <UseHeaderName>false</UseHeaderName>
+            <NewFileName>BSTMT_WELLSF_</NewFileName>
+            <ESPFilePattern>BAI_qdxusrf1</ESPFilePattern>
+        </BankFile>    
+        <BankFile AS2Name="QDXUSRF1">
+            <FileType>BAI_RECONCILIATION</FileType>
+            <RenameFile>true</RenameFile>
+            <UseHeaderName>false</UseHeaderName>
+            <NewFileName>BSTMT_WELLSF_</NewFileName>
+            <ESPFilePattern>BAI_qdxusrf1</ESPFilePattern>
+        </BankFile>
+		<!-- Defect 15565, AS2 name changes to Wells Fargo -->
+		<BankFile AS2Name="OFFIC952">
+            <FileType>BAI_RECONCILIATION</FileType>
+            <RenameFile>true</RenameFile>
+            <UseHeaderName>false</UseHeaderName>
+            <NewFileName>BSTMT_WELLSF_</NewFileName>
+            <ESPFilePattern>BAI_qdxusrf1</ESPFilePattern>
+        </BankFile>
+        <BankFile AS2Name="BOAOFFICEKX">
+            <FileType>EFT_ACKNOWLEDGEMENT</FileType>
+            <RenameFile>true</RenameFile>
+            <UseHeaderName>false</UseHeaderName>
+            <TargetDirectory>xxfin/ftp/in/eft</TargetDirectory>
+            <NewFileName>EFTAcknowledgement</NewFileName>
+        </BankFile>   
+        <BankFile AS2Name="BOAOFFICEAX">
+            <FileType>EFT_ACKNOWLEDGEMENT</FileType>
+            <RenameFile>true</RenameFile>
+            <UseHeaderName>false</UseHeaderName>
+            <TargetDirectory>xxfin/ftp/in/eft</TargetDirectory>
+            <NewFileName>EFTAcknowledgement_Report</NewFileName>
+        </BankFile>         
+        <BankFile AS2Name="BOAOD70049X">
+            <FileType>LOCKBOX</FileType>
+            <RenameFile>true</RenameFile>
+            <UseHeaderName>false</UseHeaderName>
+            <HeaderName>BOA70049</HeaderName>
+            <NewFileName>LB_</NewFileName>
+            <DateTimestampToken>2</DateTimestampToken>
+            <ESPFilePattern>BAI_BOAOD70049X</ESPFilePattern>
+        </BankFile> 
+        <BankFile AS2Name="BOAOD70001X">
+            <FileType>LOCKBOX</FileType>
+            <RenameFile>true</RenameFile>
+            <UseHeaderName>false</UseHeaderName>
+            <HeaderName>BOA70001</HeaderName>
+            <NewFileName>LB_</NewFileName>
+            <DateTimestampToken>2</DateTimestampToken>
+            <ESPFilePattern>BAI_BOAOD70001X</ESPFilePattern>
+        </BankFile> 
+        <BankFile AS2Name="BOAOD70025X">
+            <FileType>LOCKBOX</FileType>
+            <RenameFile>true</RenameFile>
+            <UseHeaderName>false</UseHeaderName>
+            <HeaderName>BOA70025</HeaderName>
+            <NewFileName>LB_</NewFileName>
+            <DateTimestampToken>2</DateTimestampToken>
+            <ESPFilePattern>BAI_BOAOD70025X</ESPFilePattern>            
+        </BankFile>         
+        <BankFile AS2Name="FITB_LB">
+            <FileType>LOCKBOX</FileType>
+            <RenameFile>true</RenameFile>
+            <UseHeaderName>true</UseHeaderName>
+            <HeaderPosition>3</HeaderPosition>
+            <NewFileName>LB_</NewFileName>
+            <DateTimestampToken>4</DateTimestampToken>
+        </BankFile>
+        <BankFile AS2Name="LB">
+            <FileType>LOCKBOX</FileType>
+            <RenameFile>false</RenameFile>
+            <UseHeaderName>false</UseHeaderName>
+            <NewFileName>LB_</NewFileName>
+        </BankFile>        
+        <BankFile AS2Name="FTBCINCRET3301">
+            <FileType>LOCKBOX</FileType>        
+            <ESPFilePattern>BAI_FITB_LB_FTBCINCRET3301</ESPFilePattern>            
+        </BankFile>
+        <BankFile AS2Name="FTBCINCRET3204">
+            <FileType>LOCKBOX</FileType>        
+            <ESPFilePattern>BAI_FITB_LB_FTBCINCRET3204</ESPFilePattern>            
+        </BankFile>        
+        <BankFile AS2Name="FTBCINCRET3211">
+            <FileType>LOCKBOX</FileType>        
+            <ESPFilePattern>BAI_FITB_LB_FTBCINCRET3211</ESPFilePattern>            
+        </BankFile>        
+        <BankFile AS2Name="FTBCINCWHLS">
+            <FileType>LOCKBOX</FileType>        
+            <ESPFilePattern>BAI_FITB_LB_FTBCINCWHLS</ESPFilePattern>            
+        </BankFile>
+        <BankFile AS2Name="FTBCHICWHLS">
+            <FileType>LOCKBOX</FileType>        
+            <ESPFilePattern>BAI_FITB_LB_FTBCHICWHLS</ESPFilePattern>            
+        </BankFile>
+        <BankFile AS2Name="FTBCHICRET">
+            <FileType>LOCKBOX</FileType>        
+            <ESPFilePattern>BAI_FITB_LB_FTBCHICRET</ESPFilePattern>            
+        </BankFile>
+        <BankFile AS2Name="FTBWIRES">
+            <FileType>LOCKBOX</FileType>        
+            <ESPFilePattern>BAI_FITB_LB_FTBWIRES</ESPFilePattern>            
+        </BankFile>
+        <BankFile AS2Name="FTBACH">
+            <FileType>LOCKBOX</FileType>        
+            <ESPFilePattern>BAI_FITB_LB_FTBACH</ESPFilePattern>            
+        </BankFile>       
+        <LockboxFileType>LOCKBOX</LockboxFileType>
+        <EftAckFileType>EFT_ACKNOWLEDGEMENT</EftAckFileType>
+        <BaiRecFileType>BAI_RECONCILIATION</BaiRecFileType>
+    </BankFiles>

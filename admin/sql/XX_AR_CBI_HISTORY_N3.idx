@@ -1,0 +1,30 @@
+--+============================================================================|
+--|               Office Depot - Project Webcollect                            |
+--|               Oracle GSD                                                   |
+--+============================================================================+
+--| Application : AR                                                           |
+--| Name : XX_AR_CBI_HISTORY_N3.idx                                            |
+--| Description : Index creation Script                                        |
+--|                                                                            |
+--| Change Record                                                              |
+--| ---------------------------------                                          |
+--| Version     DATE            AUTHOR              DESCRIPTION                |
+--| -------     -----------     ---------------     ---------------------      |
+--| 1.0         15-MAR-2012     Jay Gupta           Initial Version            |
+--|                                                                            |
+--+============================================================================+
+
+--DROP INDEX XXFIN.XX_AR_CBI_HISTORY_N3;
+
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     ON
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+CREATE INDEX XXFIN.XX_AR_CBI_HISTORY_N3 ON XXFIN.XX_AR_CONS_BILLS_HISTORY_ALL
+(ATTRIBUTE6) NOLOGGING TABLESPACE APPS_TS_TX_IDX
+
+/

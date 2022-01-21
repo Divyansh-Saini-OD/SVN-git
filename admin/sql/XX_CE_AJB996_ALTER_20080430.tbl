@@ -1,0 +1,23 @@
+-- +============================================================================+
+-- | Office Depot - Project Simplify                                            |
+-- | Providge Consulting                                                        |
+-- +============================================================================+
+-- | SQL Script to alter table:  XX_CE_AJB996                                   |
+-- |                                                                            |
+-- |Change Record:                                                              |
+-- |===============                                                             |
+-- |Version   Date          Author         Remarks                              |
+-- |=======   ===========   =============  =====================================|
+-- |1.0       30-APR-2008   DGowda	   Defects 6395 & 6182(CR 382)          |
+-- |                                                                            |
+-- +============================================================================+
+
+ALTER TABLE XXFIN.XX_CE_AJB996
+ADD ( AJB_FILE_NAME  VARCHAR2(200) 
+    ) ;
+
+ALTER TABLE XXFIN.XX_CE_AJB996
+MODIFY(TRX_AMOUNT  NULL);
+
+ALTER TABLE XXFIN.XX_CE_AJB996
+MODIFY(RECEIPT_NUM  NULL);

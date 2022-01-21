@@ -1,0 +1,69 @@
+REM============================================================================================
+REM                                 Start Of Script
+REM============================================================================================
+
+--+=============================================================================================+--
+--|                                                                                             |--
+--| Program Name   : CREATE_XX_IEXP_PURGE_TXNS.tbl                                              |--
+--|                                                                                             |--
+--| Purpose        : Create Custom Tables .                                                     |--
+--|                  The Objects created are:                                                   |--
+--|                                                                                             |--
+--|                1. XX_IEXP_PURGE_TXNS  (OD Iexp purged transactions                          |--
+--|                                                                                             |--
+--| Change History  :                                                                           |--
+--| Version           Date             Changed By              Description                      |--
+--+=============================================================================================+--
+--| 1.0              12-NOV-2014       Paddy Sanjeevi          Original                         |--
+--+=============================================================================================+--
+
+SET VERIFY      OFF
+SET TERM        ON
+SET FEEDBACK    OFF
+SET SHOW        OFF
+SET ECHO        OFF
+SET TAB         OFF
+
+WHENEVER SQLERROR CONTINUE;
+
+PROMPT
+PROMPT Creating the Custom Table ......
+PROMPT
+
+PROMPT
+PROMPT Creating the Table XX_IEXP_PURGE_TXNS......
+PROMPT
+
+Create table xxfin.XX_IEXP_PURGE_TXNS
+(request_id		NUMBER,
+ employee_number	VARCHAR2(100),
+ employee_name		VARCHAR2(240),
+ approver_name		VARCHAR2(240),
+ report_no		VARCHAR2(50),
+ report_status		VARCHAR2(80),
+ supervisor_id		NUMBER,
+ personal_txn_amt	NUMBER,
+ business_txn_amt	NUMBER,
+ cash_txn_amt		NUMBER,
+ txn_date		DATE,
+ merchant_name		VARCHAR2(240),
+ location		VARCHAR2(240),
+ creation_date 		DATE DEFAULT SYSDATE,
+ created_by 		NUMBER,
+ last_update_date	DATE DEFAULT SYSDATE,
+ last_updated_by	NUMBER);
+
+WHENEVER SQLERROR CONTINUE;
+
+PROMPT
+PROMPT Exiting....
+PROMPT
+
+SET FEEDBACK ON
+
+EXIT;
+
+REM=================================================================================================
+REM                                   End Of Script
+REM=================================================================================================
+

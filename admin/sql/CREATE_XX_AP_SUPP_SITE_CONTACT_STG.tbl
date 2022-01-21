@@ -1,0 +1,206 @@
+REM============================================================================================
+REM                                 Start Of Script
+REM============================================================================================
+
+--+=============================================================================================+--
+--|                                                                                             |--
+--| Program Name   : CREATE XX_AP_SUPP_SITE_CONTACT_STG.tbl                                     |--
+--|                                                                                             |--
+--| Purpose        : Create Custom Tables .                                                     |--
+--|                  The Objects created are:                                                   |--
+--|                                                                                             |--
+--|                1. XX_AP_SUPP_SITE_CONTACT_STG   (OD Supplier site and contact stg table     |--
+--| RICE ID : E3115                                                                             |--
+--| Change History  :                                                                           |--
+--| Version           Date             Changed By              Description                      |--
+--+=============================================================================================+--
+--| 1.0              05-JAN-2015       Amarnath Modium         Original                         |--
+--+=============================================================================================+--
+
+SET VERIFY      OFF
+SET TERM        ON
+SET FEEDBACK    OFF
+SET SHOW        OFF
+SET ECHO        OFF
+SET TAB         OFF
+
+WHENEVER SQLERROR CONTINUE;
+
+PROMPT
+PROMPT Creating the Custom Table ......
+PROMPT
+
+PROMPT
+PROMPT Creating the Table XX_AP_SUPP_SITE_CONTACT_STG......
+PROMPT
+
+CREATE TABLE XX_AP_SUPP_SITE_CONTACT_STG
+( SUPPLIER_NAME                         VARCHAR2(150)
+ ,SITE_NUMBER                           NUMBER
+ ,COUNTRY                               VARCHAR2(50)
+ ,ADDRESS_LINE1                         VARCHAR2(50)
+ ,ADDRESS_LINE2                         VARCHAR2(50)
+ ,CITY                                  VARCHAR2(50)
+ ,STATE  	                        VARCHAR2(5)
+ ,PROVINCE				VARCHAR2(5)
+ ,POSTAL_CODE                           VARCHAR2(15)
+ ,ADDRESS_NAME_PREFIX                   VARCHAR2(10)
+ ,PHONE_AREA_CODE                       VARCHAR2(10)
+ ,PHONE_NUMBER                          VARCHAR2(20)
+ ,FAX_AREA_CODE                         VARCHAR2(10)
+ ,FAX_NUMBER                            VARCHAR2(20)
+ ,EMAIL_ADDRESS                         VARCHAR2(100)
+ ,ADDRESS_PURPOSE                       VARCHAR2(10)
+ ,OPERATING_UNIT                        VARCHAR2(10) 
+ ,CONT_FIRST_NAME                       VARCHAR2(50)
+ ,CONT_LAST_NAME                        VARCHAR2(50)
+ ,CONT_ALTERNATE_NAME                   VARCHAR2(50)
+ ,CONT_DEPARTMENT                       VARCHAR2(50)
+ ,CONT_EMAIL_ADDRESS			VARCHAR2(100)
+ ,CONT_PHONE_AREA_CODE                  VARCHAR2(10)
+ ,CONT_PHONE_NUMBER                     VARCHAR2(20)
+ ,CONT_FAX_AREA_CODE                    VARCHAR2(10)
+ ,CONT_FAX_NUMBER                       VARCHAR2(20)
+ ,CONT_ADDRESS_NAME                     VARCHAR2(50)
+ ,LIABILITY_ACCOUNT                     VARCHAR2(50)
+ ,REPORTING_NAME                        VARCHAR2(150)
+ ,VERFICATION_DATE                      DATE
+ ,ORGANIZATION_TYPE                     VARCHAR2(50)
+ ,INCOME_TAX_REP_SITE                   VARCHAR2(5)
+ ,SHIP_TO_LOCATION                      VARCHAR2(50)
+ ,BILL_TO_LOCATION                      VARCHAR2(50)
+ ,Ship_Via_Code                         VARCHAR2(50)
+ ,CREATE_DEB_MEMO_FRM_RTS               VARCHAR2(5)
+ ,FOB                                   VARCHAR2(30)
+ ,FREIGHT_TERMS                         VARCHAR2(30)
+ ,PAYMENT_METHOD                        VARCHAR2(30)
+ ,INVOICE_TOLERANCE                     VARCHAR2(150)
+ ,INVOICE_MATCH_OPTION                  VARCHAR2(30)
+ ,INVOICE_CURRENCY                      VARCHAR2(15)
+ ,HOLD_FROM_PAYMENT                     VARCHAR2(5)
+ ,PAYMENT_CURRENCY                      VARCHAR2(15)
+ ,PAYMENT_PRIORITY                      NUMBER
+ ,PAY_GROUP                             VARCHAR2(50)
+ ,DEDUCT_FRM_BANK_CHRG                  VARCHAR2(5)
+ ,TERMS_CODE                            VARCHAR2(50)
+ ,TERMS_DATE_BASIS                      VARCHAR2(30)
+ ,PAY_DATE_BASIS                        VARCHAR2(30)
+ ,ALWAYS_TAKE_DISC_FLAG                 VARCHAR2(5)
+ ,PRIMARY_PAY_FLAG			VARCHAR2(5)
+ ,REFERENCE_NUM                         VARCHAR2(30)
+ ,DUNS_NUM                              VARCHAR2(30)
+ ,SITE_CATEGORY                         VARCHAR2(30)
+ ,RELATED_PAY_SITE			VARCHAR2(30)
+ ,FUTURE_USE				VARCHAR2(30)
+ ,LEAD_TIME                             NUMBER
+ ,BACK_ORDER_FLAG                       VARCHAR2(5)
+ ,DELIVERY_POLICY                       VARCHAR2(50)
+ ,MIN_PREPAID_CODE                      VARCHAR2(50)
+ ,VENDOR_MIN_AMT                        NUMBER
+ ,SUPPLIER_SHIP_TO                      VARCHAR2(50)
+ ,INVENTORY_TYPE_CODE                   VARCHAR2(50)
+ ,VERTICAL_MRKT_INDICATOR               VARCHAR2(50)
+ ,ALLOW_AUTO_RECEIPT                    VARCHAR2(5)
+ ,MASTER_VENDOR_ID                      NUMBER
+ ,PI_PACK_YEAR                          NUMBER
+ ,OD_DATE_SIGNED                        DATE
+ ,VENDOR_DATE_SIGNED                    DATE
+ ,DEDUCT_FROM_INV_FLAG                  VARCHAR2(5)
+ ,COMBINE_PICK_TICKET                   VARCHAR2(50)
+ ,NEW_STORE_FLAG                        VARCHAR2(5)
+ ,NEW_STORE_TERMS                       VARCHAR2(50)
+ ,SEASONAL_FLAG                         VARCHAR2(5)
+ ,START_DATE                            DATE
+ ,END_DATE                              DATE
+ ,SEASONAL_TERMS                        VARCHAR2(50)
+ ,LATE_SHIP_FLAG                        VARCHAR2(5)
+ ,EDI_850                               VARCHAR2(5)
+ ,EDI_860                               VARCHAR2(5)
+ ,EDI_855                               VARCHAR2(5)
+ ,EDI_856                               VARCHAR2(5)
+ ,EDI_846                               VARCHAR2(5)
+ ,EDI_810				VARCHAR2(5)
+ ,EDI_832                               VARCHAR2(5)
+ ,EDI_820                               VARCHAR2(5)
+ ,EDI_861                               VARCHAR2(5)
+ ,EDI_852                               VARCHAR2(50)
+ ,EDI_DISTRIBUTION                      VARCHAR2(50)
+ ,RTV_OPTION                            VARCHAR2(50)
+ ,RTV_FRT_PMT_METHOD                    VARCHAR2(50)
+ ,PERMANENT_RGA                         VARCHAR2(50)
+ ,DESTROY_ALLOW_AMT                     VARCHAR2(50)
+ ,PAYMENT_FREQUENCY                     VARCHAR2(50)
+ ,MIN_RETURN_QTY                        NUMBER
+ ,MIN_RETURN_AMOUNT                     NUMBER
+ ,DAMAGE_DESTROY_LIMIT                  NUMBER
+ ,RTV_INSTRUCTIONS                      VARCHAR2(150)
+ ,ADDNL_RTV_INSTRUCTIONS                VARCHAR2(150)
+ ,RGA_MARKED_FLAG                       VARCHAR2(5)
+ ,REMOVE_PRICE_STICKER_FLAG             VARCHAR2(5)
+ ,CONTACT_SUPPLIER_FOR_RGA              VARCHAR2(150)
+ ,DESTROY_FLAG                          VARCHAR2(5)
+ ,SERIAL_REQUIRED_FLAG                  VARCHAR2(5)
+ ,OBSOLETE_ITEM                         VARCHAR2(50)
+ ,OBSOLETE_ALLOW_PERNTG                 NUMBER
+ ,OBSOLETE_DAYS                         NUMBER
+ ,RTV_RELATED_SITE                      VARCHAR2(50)
+ ,VENDOR_ID				NUMBER
+ ,VENDOR_SITE_ID			NUMBER
+ ,VENDOR_SITE_CODE			VARCHAR2(50)
+ ,VENDOR_SITE_CODE_INT			VARCHAR2(50)
+ ,PARTY_SITE_ID				NUMBER
+ ,LOCATION_ID				NUMBER
+ ,ORG_ID				NUMBER
+ ,CCID					NUMBER
+ ,SHIP_TO_LOC_ID			NUMBER
+ ,BILL_TO_LOC_ID			NUMBER
+ ,TOLERANCE_ID				NUMBER
+ ,PAY_GROUP_CODE			VARCHAR2(30)
+ ,TERMS_ID				NUMBER
+ ,delivery_policy_dr			VARCHAR2(50)
+ ,min_prepaid_code_dr			VARCHAR2(50)
+ ,supplier_ship_to_dr			VARCHAR2(50)
+ ,inventory_type_code_dr		VARCHAR2(50)
+ ,vertical_mrkt_ind_dr			VARCHAR2(50)
+ ,new_store_temrs_dr			VARCHAR2(50)
+ ,seasonal_terms_dr			VARCHAR2(50)
+ ,edi_852_dr				VARCHAR2(50)
+ ,edi_distribution_dr			VARCHAR2(50)
+ ,rtv_option_dr				VARCHAR2(50)
+ ,rtv_frt_pmt_method_dr			VARCHAR2(50)
+ ,payment_Frequency_dr			VARCHAR2(50)	
+ ,obsolete_item_dr			VARCHAR2(50)
+ ,vendor_sitecd_upd_flag		VARCHAR2(1)
+ ,country_code				VARCHAR2(60)
+ ,purchasing_site_flag			VARCHAR2(1)
+ ,pay_site_flag				VARCHAR2(1)
+ ,terms_date_basis_code			VARCHAR2(25)
+ ,pay_date_basis_lookup_code		VARCHAR2(25)
+ ,REQUEST_ID                            NUMBER
+ ,DFF_PROCESS_FLAG                      VARCHAR2(1)
+ ,SUPP_SITE_PROCESS_FLAG                NUMBER   	
+ ,SUPP_SITE_ERROR_FLAG                  VARCHAR2(5)
+ ,SUPP_SITE_ERROR_MSG                   VARCHAR2(4000)
+ ,CONT_PROCESS_FLAG                     NUMBER
+ ,CONT_ERROR_FLAG                       VARCHAR2(5)	
+ ,CONT_ERROR_MSG                        VARCHAR2(4000)
+ ,CREATED_BY                            NUMBER
+ ,CREATION_DATE                         DATE
+ ,LAST_UPDATED_BY                       NUMBER
+ ,LAST_UPDATE_DATE                      DATE
+ ,PROCESS_FLAG				VARCHAR2(1)
+);
+
+WHENEVER SQLERROR CONTINUE;
+
+PROMPT
+PROMPT Exiting....
+PROMPT 
+
+SET FEEDBACK ON
+
+EXIT;
+
+REM=================================================================================================
+REM                                   End Of Script
+REM=================================================================================================

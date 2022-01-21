@@ -1,0 +1,23 @@
+--+=====================================================================+
+--|                   Office Depot - Project FIT                        |
+--+=====================================================================+
+--|                                                                     |
+--|Rice        : I2158                                                  |
+--|File Name   : ALTER_XX_AR_PS_WC_STG_2.tbl                            |
+--|File Path   : $XXFIN_TOP/admin/sql                                   |
+--|Schema      : XXFIN                                                  |
+--|                                                                     |
+--|Version    Date           Author             Remarks                 |
+--|=======   =========    ====================  ========================|
+--| 1.0      31-JAN-12    R.Aldridge            Defect 16439 - add      |
+--|                                             columns for perf change |
+--+=====================================================================+
+
+SET VERIFY OFF
+WHENEVER SQLERROR CONTINUE
+
+PROMPT "Altering Table Definition XXFIN.XX_AR_PS_WC_STG..."
+ALTER TABLE xxfin.xx_ar_ps_wc_stg ADD customer_trx_id NUMBER;
+
+ALTER TABLE xxfin.xx_ar_ps_wc_stg ADD cash_receipt_id NUMBER;
+

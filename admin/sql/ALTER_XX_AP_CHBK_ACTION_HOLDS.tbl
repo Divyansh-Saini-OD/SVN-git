@@ -1,0 +1,39 @@
+-- +==========================================================================+
+-- |                  Office Depot - Project Simplify                         |
+-- +==========================================================================+
+-- | RICE ID     :  E3023                                                     |
+-- | Name        :  AP Trade Match Dashboard                                  |
+-- |                                                                          |
+-- | SQL Script to create the following object                                |
+-- |             Table       : XX_AP_CHBK_ACTION_HOLDS                        |
+-- |                                                                          |
+-- |Change Record:                                                            |
+-- |===============                                                           |
+-- |Version   Date         Author               Remarks                       |
+-- |=======   ==========   =============        ==============================|
+-- | 1.0      18-Oct-2017  Naveen Patha         Added new columns             |
+-- | 1.1      11-Nov-2017  Paddy Sanjeevi       Added line_type_lookup_code   |
+-- +==========================================================================+
+
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     ON
+
+--ALTER TABLE xx_ap_chbk_action_holds
+--        ADD( hold_line_id 		NUMBER,
+--             rcv_qty 			NUMBER,
+--			 po_qty 			NUMBER
+--           );
+
+ALTER TABLE xx_ap_chbk_action_holds
+        ADD( line_type_lookup_code VARCHAR2(50),
+			 org_invoice_price  NUMBER,
+			 uom				VARCHAR2(25),
+			 uom_change			VARCHAR2(1),
+			 misc_line_flag		VARCHAR2(10),
+			 org_uom			VARCHAR2(25)
+           );
+   
+SHOW ERROR;

@@ -1,0 +1,32 @@
+-- +===================================================================+
+-- |                  Office Depot - Project Simplify                  |
+-- +===================================================================+
+-- | Name        : XX_AR_ARCHIVE_HEADER_ARCH_N1.idx                    |
+-- |              						                                         |
+-- | Rice ID     : E2075                                               |
+-- |              						                                         |
+-- | Description : Index Creation Script                               |
+-- |                                                                   |
+-- |              						                                         |
+-- |Change Record:                                                     |
+-- |===============                                                    |
+-- |Version   Date        Author           Remarks                     |
+-- |=======  ===========  =============    ============================|
+-- |1.0      10-JAN-2011  K.Dhillon        Initial Version Defect 8950 |
+-- +===================================================================+
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     ON
+
+
+CREATE INDEX "XXFIN"."XX_AR_ARCHIVE_HEADER_ARCH_N1" ON "XXFIN"."XX_AR_ARCHIVE_HEADER_ARCH"
+  (
+    "TRANSACTION_ID",
+    "TRANSACTION_CLASS"
+  )
+  COMPUTE STATISTICS 
+  TABLESPACE "APPS_TS_TX_IDX_16M" ;
+
+SHOW ERROR

@@ -1,0 +1,113 @@
+<?xml version = "1.0" encoding = "UTF-8" ?>
+<!--
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  Oracle JDeveloper BPEL Designer 
+  
+  Created: Tue Jun 05 19:34:19 IST 2012
+  Type: BPEL 1.1 Process
+  Purpose: Synchronous BPEL Process
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+-->
+<process name="HttpBindingSampleBPEL"
+               targetNamespace="http://xmlns.oracle.com/IPaymentPOC/IPaymentHTTPBindingPOC/HttpBindingSampleBPEL"
+               xmlns="http://schemas.xmlsoap.org/ws/2003/03/business-process/"
+               xmlns:client="http://xmlns.oracle.com/IPaymentPOC/IPaymentHTTPBindingPOC/HttpBindingSampleBPEL"
+               xmlns:ora="http://schemas.oracle.com/xpath/extension"
+               xmlns:bpelx="http://schemas.oracle.com/bpel/extension"
+         xmlns:bpws="http://schemas.xmlsoap.org/ws/2003/03/business-process/"
+         xmlns:ns1="http://xmlns.oracle.com/pcbpel/adapter/http/IPaymentPOC/IPaymentHTTPBindingPOC/testhttpbinding"
+         xmlns:ns2="http://xmlns.oracle.com/HttpRequestResponseData"
+         xmlns:bpel2="http://docs.oasis-open.org/wsbpel/2.0/process/executable"
+         xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+         xmlns:ns3="http://xmlns.oracle.com/pcbpel/adapter/http/IPaymentPOC/IPaymentHTTPBindingPOC/testHttpPost"
+         xmlns:xp20="http://www.oracle.com/XSL/Transform/java/oracle.tip.pc.services.functions.Xpath20"
+         xmlns:oraext="http://www.oracle.com/XSL/Transform/java/oracle.tip.pc.services.functions.ExtFunc"
+         xmlns:dvm="http://www.oracle.com/XSL/Transform/java/oracle.tip.dvm.LookupValue"
+         xmlns:hwf="http://xmlns.oracle.com/bpel/workflow/xpath"
+         xmlns:ids="http://xmlns.oracle.com/bpel/services/IdentityService/xpath"
+         xmlns:bpm="http://xmlns.oracle.com/bpmn20/extensions"
+         xmlns:xdk="http://schemas.oracle.com/bpel/extension/xpath/function/xdk"
+         xmlns:xref="http://www.oracle.com/XSL/Transform/java/oracle.tip.xref.xpath.XRefXPathFunctions"
+         xmlns:ldap="http://schemas.oracle.com/xpath/extension/ldap">
+
+    <!-- 
+      ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        PARTNERLINKS                                                      
+        List of services participating in this BPEL process               
+      ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    --> 
+  <partnerLinks>
+    <!-- 
+      The 'client' role represents the requester of this service. It is 
+      used for callback. The location and correlation information associated
+      with the client role are automatically set using WS-Addressing.
+    -->
+    <partnerLink name="HttpBindingSampleBPEL_client" partnerLinkType="client:HttpBindingSampleBPEL" myRole="HttpBindingSampleBPELProvider"/>
+    <partnerLink name="testHttpPost" partnerLinkType="ns3:Request_Response_plt"
+                 partnerRole="Request-Response_role"/>
+  </partnerLinks>
+
+  <!-- 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+      VARIABLES                                                        
+      List of messages and XML documents used within this BPEL process 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  -->
+  <variables>
+    <!-- Reference to the message passed as input during initiation -->
+    <variable name="inputVariable" messageType="client:HttpBindingSampleBPELRequestMessage"/>
+
+    <!-- Reference to the message that will be returned to the requester-->
+    <variable name="outputVariable" messageType="client:HttpBindingSampleBPELResponseMessage"/>
+    <variable name="Invoke2_Post_InputVariable"
+              messageType="ns3:HttpClientBPELProcessProcessRequest_msg_in"/>
+    <variable name="Invoke2_Post_OutputVariable"
+              messageType="ns3:HttpClientBPELProcessProcessResponse_msg_out"/>
+    <variable name="tempInputData" type="xsd:string"/>
+    <variable name="httpBindingOutput" type="xsd:string"/>
+  </variables>
+
+  <!-- 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+     ORCHESTRATION LOGIC                                               
+     Set of activities coordinating the flow of messages across the    
+     services integrated within this business process                  
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  -->
+  <sequence name="main">
+
+    <!-- Receive input from requestor. (Note: This maps to operation defined in HttpBindingSampleBPEL.wsdl) -->
+    <receive name="receiveInput" partnerLink="HttpBindingSampleBPEL_client" portType="client:HttpBindingSampleBPEL" operation="process" variable="inputVariable" createInstance="yes"/>
+
+    <!-- Generate reply to synchronous request -->
+    <assign name="AssignDataToHttpBindingInput">
+      <copy>
+        <from expression="ora:getContentAsString(ora:getChildElement(bpws:getVariableData('inputVariable','payload','/ns2:HttpClientBPELProcessProcessRequest/ns2:xml'),1))"/>
+        <to variable="tempInputData"/>
+      </copy>
+      <copy>
+        <from expression="concat('&lt;?xml version=&quot;2.0&quot; encoding=&quot;UTF-8&quot; ?>',bpws:getVariableData('tempInputData'))"/>
+        <to variable="Invoke2_Post_InputVariable"
+            part="HttpClientBPELProcessProcessRequest"
+            query="/ns2:HttpClientBPELProcessProcessRequest/ns2:xml"/>
+      </copy>
+    </assign>
+    <invoke name="InvokeEndPointURL" bpelx:invokeAsDetail="no"
+            inputVariable="Invoke2_Post_InputVariable"
+            outputVariable="Invoke2_Post_OutputVariable"
+            partnerLink="testHttpPost" portType="ns3:Request_Response_ptt"
+            operation="Request-Response"/>
+    <assign name="AssignHttpReponseToSOAPResponse">
+      <copy>
+        <from expression="ora:getContentAsString(bpws:getVariableData('Invoke2_Post_OutputVariable','HttpClientBPELProcessProcessResponse'))"/>
+        <to variable="httpBindingOutput"/>
+      </copy>
+      <copy>
+        <from variable="httpBindingOutput"/>
+        <to variable="outputVariable" part="payload"
+            query="/ns2:HttpClientBPELProcessProcessResponse/ns2:response"/>
+      </copy>
+    </assign>
+    <reply name="replyOutput" partnerLink="HttpBindingSampleBPEL_client" portType="client:HttpBindingSampleBPEL" operation="process" variable="outputVariable"/>
+  </sequence>
+</process>

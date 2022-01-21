@@ -1,0 +1,33 @@
+
+property loadGetterSetterAsProperties "true"
+property origin "xom:/SubCancFee//SubCancFee - XOM"
+property uuid "35221acc-6448-4fae-bf9b-1a7655e2cf45"
+package od.oracle.apps.xxfin.ar.subscriptions;
+
+
+public class ContractSnapshot
+{
+    public readonly double actualNumberOfPeriods;
+    public string billingFrequency;
+    public readonly double calculatedNumberOfPeriods;
+    public readonly double contractDurationDays;
+    public double lineAmount;
+    public double numberOfPmtsMade;
+    public double numberOfPmtsMissed;
+    public string paymentType;
+    public readonly double remainingUnbilledPeriods;
+    public string serviceTypeCode;
+    public string skuNumber;
+    public string strContractEndDate;
+    public string strContractStartDate;
+    public string terminationFeeFlag;
+    public readonly double totalContractDurationDays;
+    public double totalContractLineAmount;
+    public readonly double unpaidBalance;
+    public string vendorNumber;
+    public ContractSnapshot();
+    public double daysBetween(java.util.Date arg1, java.util.Date arg2);
+    public static void main(java.lang.String[] arg);
+    public double numberOfDaysInAPeriod();
+}
+

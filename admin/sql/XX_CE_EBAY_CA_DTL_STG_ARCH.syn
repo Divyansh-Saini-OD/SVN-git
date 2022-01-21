@@ -1,0 +1,31 @@
+SET VERIFY OFF;
+SET SHOW OFF;
+SET ECHO OFF;
+SET TAB OFF;
+SET FEEDBACK OFF;
+ 
+WHENEVER SQLERROR CONTINUE;
+ 
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+-- +===========================================================================+
+-- |                  Office Depot - Project Simplify                          |
+-- +===========================================================================+
+-- | Name :          XX_CE_EBAY_CA_DTL_STG_ARCH                           |
+-- | Description :   Script to create synonym for 
+-- |                                   XX_CE_EBAY_CA_DTL_STG_ARCH  table |
+-- |                                                                           |
+-- |                                                                           |
+-- |Change Record:                                                             |
+-- |===============                                                            |
+-- |Version      Date           Author                  Remarks                |
+-- |=======    ==========     =============             ====================== |
+-- | DRAFT 1.0 17-DEC-2018   Priyam Parmar          Initial draft version       |
+-- +===========================================================================+
+
+ 
+
+Create  or replace synonym XX_CE_EBAY_CA_DTL_STG_ARCH for XXFIN.XX_CE_EBAY_CA_DTL_STG_ARCH;
+
+ 
+Show error

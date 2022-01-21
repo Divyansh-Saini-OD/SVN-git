@@ -1,0 +1,24 @@
+ -- +==================================================================================================+
+  -- |                  Office Depot - Project Simplify                                                 |
+  -- |                  IT Office Depot                                                                 |
+  -- +==================================================================================================+
+  -- | Name             :  XX_AP_AUDIT_EXTRACT_PKG                                                      |
+  -- | Description      :  This Package is used to Extract Audit data requested from PRG.               |
+  -- | RICE id          :  I1142                                                                        |
+  -- |Change Record:                                                                                    |
+  -- |===============                                                                                   |
+  -- |Version   Date          Author          Remarks                                                   |
+  -- |=======   ==========    =============   ==========================================================|
+  -- | 1.0      14-SEP-2018   Priyam P       code moved as ADJUSTED_LINE_AMOUNT column is missing under XX_AP_RTV_LINES_ATTR .                                      |
+  -- +==================================================================================================+
+
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     ON
+
+alter table XX_AP_RTV_LINES_ATTR 
+add ADJUSTED_LINE_AMOUNT VARCHAR2(30);   
+	   
+SHOW ERROR;

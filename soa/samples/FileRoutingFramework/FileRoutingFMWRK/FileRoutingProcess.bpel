@@ -1,0 +1,160 @@
+<?xml version = "1.0" encoding = "UTF-8" ?>
+<!--
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  Oracle JDeveloper BPEL Designer 
+  
+  Created: Mon Jan 09 22:58:21 IST 2012
+  Type: BPEL 1.1 Process
+  Purpose: One Way BPEL Process
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+-->
+<process name="FileRoutingProcess"
+               targetNamespace="http://xmlns.oracle.com/MyPOC/FileRoutingFMWRK/FileRoutingProcess"
+               xmlns="http://schemas.xmlsoap.org/ws/2003/03/business-process/"
+               xmlns:client="http://xmlns.oracle.com/MyPOC/FileRoutingFMWRK/FileRoutingProcess"
+               xmlns:ora="http://schemas.oracle.com/xpath/extension"
+               xmlns:bpws="http://schemas.xmlsoap.org/ws/2003/03/business-process/"
+         xmlns:ns1="http://schemas.xmlsoap.org/ws/2003/03/addressing"
+         xmlns:bpelx="http://schemas.oracle.com/bpel/extension"
+         xmlns:ns2="http://TargetNamespace.com/FileSyncRead"
+         xmlns:ns3="http://xmlns.oracle.com/pcbpel/adapter/file/MyPOC/FileRoutingFMWRK/RecieveFileInformation"
+         xmlns:ns4="http://xmlns.oracle.com/FileRoutingRules/FileRoutingDecisionService"
+         xmlns:ns5="http://xmlns.oracle.com/bpel"
+         xmlns:bpel2="http://docs.oasis-open.org/wsbpel/2.0/process/executable"
+         xmlns:ns6="http://xmlns.oracle.com/pcbpel/adapter/opaque/"
+         xmlns:ns7="http://www.example.org"
+         xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+         xmlns:ns8="http://xmlns.oracle.com/ProcessFile/ProcessFile">
+
+  <!-- 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+      PARTNERLINKS                                                      
+      List of services participating in this BPEL process               
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  --> 
+  <partnerLinks>
+    <!-- 
+      The 'client' role represents the requester of this service. It is 
+      used for callback. The location and correlation information associated
+      with the client role are automatically set using WS-Addressing.
+    -->
+    <partnerLink name="RecieveFileInformation" partnerLinkType="ns3:Read_plt"
+                 myRole="Read_role"/>
+    <partnerLink name="FileRoutingRules.FileRoutingDecisionService"
+                 partnerRole="IDecisionService_Role"
+                 partnerLinkType="ns4:IDecisionService_PL"/>
+    <partnerLink name="DynamicPartnerLinkReference"
+                 partnerLinkType="ns8:ProcessFile"
+                 partnerRole="ProcessInvoiceFileProvider"/>
+  </partnerLinks>
+
+  <!-- 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+      VARIABLES                                                        
+      List of messages and XML documents used within this BPEL process 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  -->
+  <variables>
+    <!-- Reference to the message passed as input during initiation -->
+    <variable name="partnerReference" element="ns1:EndpointReference"/>
+    <variable name="FileInfo" element="ns2:FilePath"/>
+    <variable name="inputVariable" messageType="ns3:Read_msg"/>
+    <variable name="endPointURL" element="ns7:EndPointURLElement"/>
+    <variable name="sourceDirectory" type="xsd:string"/>
+    <variable name="fileName" type="xsd:string"/>
+    <variable name="InvokeDynamicPartnerLink_processFile_InputVariable"
+              messageType="ns8:ProcessFileRequestMessage"/>
+  </variables>
+
+  <!-- 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+     ORCHESTRATION LOGIC                                               
+     Set of activities coordinating the flow of messages across the    
+     services integrated within this business process                  
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  -->
+  <sequence name="main">
+
+    <!-- Receive input from requestor. (Note: This maps to operation defined in FileRoutingProcess.wsdl) -->
+    <receive name="receiveInput" partnerLink="RecieveFileInformation"
+             portType="ns3:Read_ptt" operation="Read" createInstance="yes"
+             variable="inputVariable">
+      <bpelx:property name="jca.file.FileName" variable="fileName"/>
+      <bpelx:property name="jca.file.Directory" variable="sourceDirectory"/>
+    </receive>
+    <assign name="initialize">
+      <copy>
+        <from variable="sourceDirectory"/>
+        <to variable="FileInfo" query="/ns2:FilePath/ns2:directory"/>
+      </copy>
+      <copy>
+        <from variable="fileName"/>
+        <to variable="FileInfo" query="/ns2:FilePath/ns2:fileName"/>
+      </copy>
+    </assign>
+    <scope name="Rule1" variableAccessSerializable="no">
+      <bpelx:annotation>
+        <bpelx:pattern patternName="bpelx:decide"></bpelx:pattern>
+        <bpelx:general>
+          <bpelx:property name="userLabel">GetEndPointURLFromDecisionService</bpelx:property>
+        </bpelx:general>
+      </bpelx:annotation>
+      <variables>
+        <variable name="dsIn" messageType="ns4:callFunctionStatelessMessage"/>
+        <variable name="dsOut"
+                  messageType="ns4:callFunctionStatelessDecisionMessage"/>
+      </variables>
+      <sequence name="Sequence1">
+        <assign name="Facts_To_Rule_Service">
+          <copy>
+            <from variable="FileInfo" query="/ns2:FilePath"/>
+            <to variable="dsIn" part="payload"
+                query="/ns4:callFunctionStateless/ns4:parameterList/ns2:FilePath"/>
+          </copy>
+        </assign>
+        <assign name="BPEL_Header">
+          <copy>
+            <from expression='"FileRoutingDecisionService"'/>
+            <to variable="dsIn" part="payload" query="@name"/>
+          </copy>
+        </assign>
+        <invoke name="Invoke"
+                partnerLink="FileRoutingRules.FileRoutingDecisionService"
+                portType="ns4:IDecisionService"
+                operation="callFunctionStateless" inputVariable="dsIn"
+                outputVariable="dsOut"/>
+        <assign name="Rule_Service_To_Facts">
+          <copy>
+            <from variable="dsOut" part="payload"
+                  query="/ns4:callFunctionStatelessDecision/ns4:resultList/ns7:EndPointURLElement"/>
+            <to variable="endPointURL" query="/ns7:EndPointURLElement"/>
+          </copy>
+        </assign>
+      </sequence>
+    </scope>
+    <assign name="TransformDynamicPartnerLinkData">
+      <bpelx:annotation>
+        <bpelx:pattern>transformation</bpelx:pattern>
+      </bpelx:annotation>
+      <copy>
+        <from expression="ora:doXSLTransformForDoc('xsl/TransformDynamicPartnerLinkData.xsl', $endPointURL)"/>
+        <to variable="partnerReference"/>
+      </copy>
+    </assign>
+    <assign name="AssignPartnerLinkDataToPartnerLink">
+      <copy>
+        <from variable="partnerReference"/>
+        <to partnerLink="DynamicPartnerLinkReference"/>
+      </copy>
+      <copy>
+        <from variable="FileInfo" query="/ns2:FilePath"/>
+        <to variable="InvokeDynamicPartnerLink_processFile_InputVariable"
+            part="payload" query="/ns2:FilePath"/>
+      </copy>
+    </assign>
+    <invoke name="InvokeDynamicPartnerLink" bpelx:invokeAsDetail="no"
+            inputVariable="InvokeDynamicPartnerLink_processFile_InputVariable"
+            partnerLink="DynamicPartnerLinkReference"
+            portType="ns8:ProcessFile" operation="processFile"/>
+  </sequence>
+</process>

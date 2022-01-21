@@ -1,0 +1,29 @@
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     ON
+
+-- +==========================================================================+
+-- |                  Office Depot - Project Simplify                         |
+-- |                       WIPRO Technologies                                 |
+-- +==========================================================================+
+-- | SQL Script to create indexes                                             |
+-- |                                                                          |
+-- |                                                                          |
+-- |                                                                          |
+-- |                                                                          |
+-- |                                                                          |
+-- |Change Record:                                                            |
+-- |===============                                                           |
+-- |Version   Date         Author               Remarks                       |
+-- |=======   ==========   ================     ==============================|
+-- | V1.0     10-SEP-2008  Anusha Ramanujam     Initial version               |
+-- +==========================================================================+
+
+CREATE INDEX "XXFIN"."XXAP_INVOICES_N1" ON "AP"."AP_INVOICES_ALL" ("INVOICE_ID", "INVOICE_TYPE_LOOKUP_CODE", "ORG_ID")
+TABLESPACE "APPS_TS_TX_IDX_16M" ;
+
+
+
+SHOW ERROR

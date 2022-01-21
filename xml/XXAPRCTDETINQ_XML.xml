@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dataTemplate name ="RCTDETINQ" description="RECEIPT DETAIL INQUIRY" defaultPackage="xx_ap_trade_rct_inq_pkg" version="1.0">
+<parameters>
+<parameter name="G_DATE_FROM" dataType="date" />
+<parameter name="G_DATE_TO" dataType="date" />
+<parameter name="G_INVOICE_ID" dataType="NUMBER"/>
+<parameter name="G_RECEIPT_ID" dataType="NUMBER"/>
+<parameter name="G_PO_HEADER_ID" dataType="NUMBER"/>
+<parameter name="G_INVENTORY_ITEM_ID" dataType="NUMBER"/>
+<parameter name="G_SUPPLIER_SITE_ID" dataType="NUMBER"/>
+<parameter name="G_VENDOR_ID" dataType="NUMBER"/>
+<parameter name="G_USER_ID" dataType="NUMBER"/>
+</parameters>
+<dataQuery>
+<sqlStatement name="Q1">
+<![CDATA[ 
+select distinct a.RECEIPT_NUM,
+to_char(a.RCP_DATE,'MM/DD/YYYY') RCP_DATE,
+a.SUPPLIER_NUM,
+a.SUPPLIER_NAME,
+a.SUPPLIER_SITE,
+a.PO,
+a.PO_LINE_NUM,             
+a.SKU,
+a.LOCATION,
+a.UOM,
+a.REC_LINE_NUM,
+a.RECEIPT_LINE_AMT,
+a.PO_QTY,
+a.RCP_QTY,
+a.INV_QTTY,
+---a.INV_NUM_FIFO,---invoice_num
+a.invoice_num,
+a.INV_VAL,
+a.UNINV_QTTY,
+a.UNINV_AMT,
+a.RCT_AGE
+FROM TABLE (XX_AP_TRADE_RCT_INQ_PKG.XX_AP_TRADE_RCT_INQUIRY_XML)a
+ORDER BY a.RECEIPT_NUM DESC,a.REC_LINE_NUM]]>
+</sqlStatement>
+</dataQuery>
+<dataTrigger name="beforeReport" 
+source="xx_ap_trade_rct_inq_pkg.beforeReport()"/>
+<dataStructure>
+<group name="G_RCT_INQ" source="Q1">
+<element name="RECEIPT_NUM" value="RECEIPT_NUM"/>
+<element name="RCP_DATE" value="RCP_DATE"/>
+<element name="SUPPLIER_NUM" value="SUPPLIER_NUM"/>
+<element name="SUPPLIER_NAME" value="SUPPLIER_NAME"/>
+<element name="SUPPLIER_SITE" value="SUPPLIER_SITE"/>
+<element name="PO" value="PO"/>
+<element name="PO_LINE_NUM" value="PO_LINE_NUM"/>
+<element name="SKU" value="SKU"/>
+<element name="LOCATION" value="LOCATION"/>
+<element name="UOM" value="UOM"/>
+<element name="REC_LINE_NUM" value="REC_LINE_NUM"/>
+<element name="RECEIPT_LINE_AMT" value="RECEIPT_LINE_AMT"/>
+<element name="PO_QTY" value="PO_QTY"/>
+<element name="RCP_QTY" value="RCP_QTY"/>
+<element name="INV_QTTY" value="INV_QTTY"/>
+<element name="INVOICE_NUM" value="INVOICE_NUM"/>
+<element name="INV_VAL" value="INV_VAL"/>
+<element name="UNINV_QTTY" value="UNINV_QTTY"/>
+<element name="UNINV_AMT" value="UNINV_AMT"/>
+<element name="RCT_AGE" value="RCT_AGE"/>
+</group>
+</dataStructure>
+<dataTrigger name="afterreport" 
+source="xx_ap_trade_rct_inq_pkg.afterreport()"/>
+</dataTemplate>

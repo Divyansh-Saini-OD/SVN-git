@@ -1,0 +1,28 @@
+<?binding.jca SelectUpdateSupplierCPEbizDBAdaptorV1_db.jca?>
+<wsdl:definitions name="SelectUpdateSupplierCPEbizDBAdaptorV1" targetNamespace="http://xmlns.oracle.com/pcbpel/adapter/db/VendorSynch/SynchSupplierGSSProvABCS/SelectUpdateSupplierCPEbizDBAdaptorV1" xmlns:tns="http://xmlns.oracle.com/pcbpel/adapter/db/VendorSynch/SynchSupplierGSSProvABCS/SelectUpdateSupplierCPEbizDBAdaptorV1" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:plt="http://schemas.xmlsoap.org/ws/2003/05/partner-link/" xmlns:top="http://xmlns.oracle.com/pcbpel/adapter/db/top/SelectUpdateSupplierCPEbizDBAdaptorV1">
+    <plt:partnerLinkType name="SelectUpdateSupplierCPEbizDBAdaptorV1_plt">
+        <plt:role name="SelectUpdateSupplierCPEbizDBAdaptorV1_role">
+            <plt:portType name="tns:SelectUpdateSupplierCPEbizDBAdaptorV1_ptt"/>
+        </plt:role>
+    </plt:partnerLinkType>
+    <wsdl:types>
+        <schema xmlns="http://www.w3.org/2001/XMLSchema">
+            <import namespace="http://xmlns.oracle.com/pcbpel/adapter/db/top/SelectUpdateSupplierCPEbizDBAdaptorV1" schemaLocation="xsd/SelectUpdateSupplierCPEbizDBAdaptorV1_table.xsd"/>
+        </schema>
+    </wsdl:types>
+    <wsdl:message name="XxApSuppExtractCollection_msg">
+        <wsdl:part name="XxApSuppExtractCollection" element="top:XxApSuppExtractCollection"/>
+    </wsdl:message>
+    <wsdl:message name="SelectUpdateSupplierCPEbizDBAdaptorV1Select_inputParameters">
+        <wsdl:part name="SelectUpdateSupplierCPEbizDBAdaptorV1Select_inputParameters" element="top:SelectUpdateSupplierCPEbizDBAdaptorV1Select_EXT_SYSTEMInputParameters"/>
+    </wsdl:message>
+    <wsdl:portType name="SelectUpdateSupplierCPEbizDBAdaptorV1_ptt">
+        <wsdl:operation name="merge">
+            <wsdl:input message="tns:XxApSuppExtractCollection_msg"/>
+        </wsdl:operation>
+        <wsdl:operation name="SelectUpdateSupplierCPEbizDBAdaptorV1Select">
+            <wsdl:input message="tns:SelectUpdateSupplierCPEbizDBAdaptorV1Select_inputParameters"/>
+            <wsdl:output message="tns:XxApSuppExtractCollection_msg"/>
+        </wsdl:operation>
+    </wsdl:portType>
+</wsdl:definitions>

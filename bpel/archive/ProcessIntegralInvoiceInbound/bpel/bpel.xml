@@ -1,0 +1,23 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<BPELSuitcase>
+   <BPELProcess id="ProcessIntegralInvoiceInbound" src="ProcessIntegralInvoiceInbound.bpel">
+      <partnerLinkBindings>
+         <partnerLinkBinding name="svcFileGet">
+            <property name="wsdlLocation">svcFileGet.wsdl</property>
+         </partnerLinkBinding>
+         <partnerLinkBinding name="ProcessInvoiceInbound_OAGIS">
+            <property name="wsdlLocation">http://chilsoa01d.na.odcorp.net:7778/orabpel/fin/ProcessInvoiceInbound_OAGIS/ProcessInvoiceInbound_OAGIS?wsdl</property>
+         </partnerLinkBinding>
+         <partnerLinkBinding name="PlODErrorLogger">
+            <property name="wsdlLocation">http://chilsoa01d.na.odcorp.net:7778/orabpel/default/ODErrorLogger/ODErrorLogger?wsdl</property>
+         </partnerLinkBinding>
+      </partnerLinkBindings>
+      <activationAgents>
+         <activationAgent className="oracle.tip.adapter.fw.agent.jca.JCAActivationAgent" partnerLink="svcFileGet">
+            <property name="Archival_Path" type="LogicalArchiveDirectory"></property>
+            <property name="portType">Get_ptt</property>
+            <property name="Logical_Path" type="LogicalDirectory"></property>
+         </activationAgent>
+      </activationAgents>
+   </BPELProcess>
+</BPELSuitcase>

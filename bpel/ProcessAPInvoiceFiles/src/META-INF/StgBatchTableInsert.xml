@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<toplink:object-persistence version="Oracle TopLink - 10g Release 3 (10.1.3.1.0) (Build 061004)" xmlns:opm="http://xmlns.oracle.com/ias/xsds/opm" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:toplink="http://xmlns.oracle.com/ias/xsds/toplink" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+   <opm:name>StgBatchTableInsert</opm:name>
+   <opm:class-mapping-descriptors>
+      <opm:class-mapping-descriptor xsi:type="toplink:relational-class-mapping-descriptor">
+         <opm:class>StgBatchTableInsert.XxApInvBatchInterfaceStg</opm:class>
+         <opm:alias>XxApInvBatchInterfaceStg</opm:alias>
+         <opm:primary-key>
+            <opm:field table="XX_AP_INV_BATCH_INTERFACE_STG" name="BATCH_ID" xsi:type="opm:column"/>
+         </opm:primary-key>
+         <opm:events xsi:type="toplink:event-policy"/>
+         <opm:querying xsi:type="toplink:query-policy">
+            <opm:queries>
+               <opm:query name="findAllXxApInvBatchInterfaceStg" xsi:type="toplink:read-all-query">
+                  <toplink:timeout>0</toplink:timeout>
+                  <toplink:reference-class>StgBatchTableInsert.XxApInvBatchInterfaceStg</toplink:reference-class>
+                  <toplink:cache-usage>primary-key</toplink:cache-usage>
+                  <toplink:lock-mode>none</toplink:lock-mode>
+                  <toplink:container xsi:type="toplink:list-container-policy">
+                     <toplink:collection-type>java.util.Vector</toplink:collection-type>
+                  </toplink:container>
+               </opm:query>
+            </opm:queries>
+            <toplink:does-exist-query xsi:type="toplink:does-exist-query">
+               <toplink:existence-check>check-database</toplink:existence-check>
+            </toplink:does-exist-query>
+         </opm:querying>
+         <opm:attribute-mappings>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>batchId</opm:attribute-name>
+               <opm:field table="XX_AP_INV_BATCH_INTERFACE_STG" name="BATCH_ID" xsi:type="opm:column"/>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>fileName</opm:attribute-name>
+               <opm:field table="XX_AP_INV_BATCH_INTERFACE_STG" name="FILE_NAME" xsi:type="opm:column"/>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>creationDate</opm:attribute-name>
+               <opm:field table="XX_AP_INV_BATCH_INTERFACE_STG" name="CREATION_DATE" xsi:type="opm:column"/>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>creationTime</opm:attribute-name>
+               <opm:field table="XX_AP_INV_BATCH_INTERFACE_STG" name="CREATION_TIME" xsi:type="opm:column"/>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>invoiceCount</opm:attribute-name>
+               <opm:field table="XX_AP_INV_BATCH_INTERFACE_STG" name="INVOICE_COUNT" xsi:type="opm:column"/>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>totalBatchAmount</opm:attribute-name>
+               <opm:field table="XX_AP_INV_BATCH_INTERFACE_STG" name="TOTAL_BATCH_AMOUNT" xsi:type="opm:column"/>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>vendorEmailAddress</opm:attribute-name>
+               <opm:field table="XX_AP_INV_BATCH_INTERFACE_STG" name="VENDOR_EMAIL_ADDRESS" xsi:type="opm:column"/>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>attribute1</opm:attribute-name>
+               <opm:field table="XX_AP_INV_BATCH_INTERFACE_STG" name="ATTRIBUTE1" xsi:type="opm:column"/>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>attribute2</opm:attribute-name>
+               <opm:field table="XX_AP_INV_BATCH_INTERFACE_STG" name="ATTRIBUTE2" xsi:type="opm:column"/>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>attribute3</opm:attribute-name>
+               <opm:field table="XX_AP_INV_BATCH_INTERFACE_STG" name="ATTRIBUTE3" xsi:type="opm:column"/>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>attribute4</opm:attribute-name>
+               <opm:field table="XX_AP_INV_BATCH_INTERFACE_STG" name="ATTRIBUTE4" xsi:type="opm:column"/>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>attribute5</opm:attribute-name>
+               <opm:field table="XX_AP_INV_BATCH_INTERFACE_STG" name="ATTRIBUTE5" xsi:type="opm:column"/>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>attribute6</opm:attribute-name>
+               <opm:field table="XX_AP_INV_BATCH_INTERFACE_STG" name="ATTRIBUTE6" xsi:type="opm:column"/>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>attribute7</opm:attribute-name>
+               <opm:field table="XX_AP_INV_BATCH_INTERFACE_STG" name="ATTRIBUTE7" xsi:type="opm:column"/>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>attribute8</opm:attribute-name>
+               <opm:field table="XX_AP_INV_BATCH_INTERFACE_STG" name="ATTRIBUTE8" xsi:type="opm:column"/>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>attribute9</opm:attribute-name>
+               <opm:field table="XX_AP_INV_BATCH_INTERFACE_STG" name="ATTRIBUTE9" xsi:type="opm:column"/>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>attribute10</opm:attribute-name>
+               <opm:field table="XX_AP_INV_BATCH_INTERFACE_STG" name="ATTRIBUTE10" xsi:type="opm:column"/>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>attribute11</opm:attribute-name>
+               <opm:field table="XX_AP_INV_BATCH_INTERFACE_STG" name="ATTRIBUTE11" xsi:type="opm:column"/>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>attribute12</opm:attribute-name>
+               <opm:field table="XX_AP_INV_BATCH_INTERFACE_STG" name="ATTRIBUTE12" xsi:type="opm:column"/>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>attribute13</opm:attribute-name>
+               <opm:field table="XX_AP_INV_BATCH_INTERFACE_STG" name="ATTRIBUTE13" xsi:type="opm:column"/>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>attribute14</opm:attribute-name>
+               <opm:field table="XX_AP_INV_BATCH_INTERFACE_STG" name="ATTRIBUTE14" xsi:type="opm:column"/>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>attribute15</opm:attribute-name>
+               <opm:field table="XX_AP_INV_BATCH_INTERFACE_STG" name="ATTRIBUTE15" xsi:type="opm:column"/>
+            </opm:attribute-mapping>
+         </opm:attribute-mappings>
+         <toplink:descriptor-type>independent</toplink:descriptor-type>
+         <toplink:caching>
+            <toplink:cache-type>weak-reference</toplink:cache-type>
+            <toplink:always-refresh>true</toplink:always-refresh>
+         </toplink:caching>
+         <toplink:remote-caching>
+            <toplink:cache-type>weak-reference</toplink:cache-type>
+         </toplink:remote-caching>
+         <toplink:instantiation/>
+         <toplink:copying xsi:type="toplink:instantiation-copy-policy"/>
+         <toplink:change-policy xsi:type="toplink:deferred-detection-change-policy"/>
+         <toplink:tables>
+            <toplink:table name="XX_AP_INV_BATCH_INTERFACE_STG"/>
+         </toplink:tables>
+      </opm:class-mapping-descriptor>
+   </opm:class-mapping-descriptors>
+   <toplink:login xsi:type="toplink:database-login">
+      <toplink:platform-class>oracle.toplink.platform.database.oracle.Oracle10Platform</toplink:platform-class>
+      <toplink:user-name>apps</toplink:user-name>
+      <toplink:password>22F7AFE6F6B96724FC970AF706D8C533D62D1A19DF561D1E</toplink:password>
+      <toplink:driver-class>oracle.jdbc.OracleDriver</toplink:driver-class>
+      <toplink:connection-url>jdbc:oracle:thin:@205.157.73.65:1541:gsidev02</toplink:connection-url>
+   </toplink:login>
+</toplink:object-persistence>

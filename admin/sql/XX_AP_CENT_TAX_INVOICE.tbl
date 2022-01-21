@@ -1,0 +1,53 @@
+SET VERIFY OFF;
+SET SHOW OFF;
+SET ECHO OFF;
+SET TAB OFF;
+SET FEEDBACK OFF;
+ 
+WHENEVER SQLERROR CONTINUE;
+ 
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+-- +===========================================================================+
+-- |                  Office Depot - Project Simplify                          |
+-- +===========================================================================+
+-- | Name :          XX_AP_CENT_TAX_INVOICE                                |
+-- | Description :   Script to create XX_AP_CENT_TAX_INVOICE  table       |
+-- |                                                                           |
+-- |                                                                           |
+-- |Change Record:                                                             |
+-- |===============                                                            |
+-- |Version      Date           Author                  Remarks                |
+-- |=======    ==========     =============             ====================== |
+-- | DRAFT 1.0 09-May-2018   Priyam Parmar          Initial draft version       |
+-- +===========================================================================+
+
+ 
+--+=====================================================================+
+--+      CREATE TABLE        XX_AP_CENT_TAX_INVOICE                +
+--+=====================================================================+
+
+CREATE TABLE XX_AP_CENT_TAX_INVOICE
+  (
+    INVOICE_ID            NUMBER,
+    INVOICE_NUM           VARCHAR2(100),
+    TOTAL_INV_LINES       NUMBER,
+    TOTAL_TAX_AMOUNT      NUMBER,
+    VALIDATION_REQUEST_ID VARCHAR2(20),
+    REPROCESS_FLAG        VARCHAR2(1),
+    REPROCESS_REQUEST_ID  NUMBER,
+    ORG_ID                NUMBER,
+    INVOICE_DATE          DATE,
+    INVOICE_SOURCE        VARCHAR2(50),
+    LAST_UPDATE_DATE      DATE,
+    LAST_UPDATE_BY        NUMBER,
+    RECORD_CREATION_DATE  DATE,
+    CREATED_BY            NUMBER,
+    VENDOR_ID             NUMBER,
+    VENDOR_SITE_ID        NUMBER
+  );
+   
+   
+Grant  all on XX_AP_CENT_TAX_INVOICE to APPS;
+
+   /
+Show error

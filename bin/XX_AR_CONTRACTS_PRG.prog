@@ -1,0 +1,65 @@
+#!/usr/bin/ksh
+# +========================================================================+
+# |             Office Depot - Project Subscription                        |
+# |            Office Depot                                                |
+# +========================================================================+
+# | Name  :      XX_AR_CONTRACTS_PRG (Shell Script)                        |
+# | Description : Importing service contract information  from             |
+# | Oracle Fusion application to EBS staging table.                        |
+# |                                                                        |
+# |                                                                        |
+# |Change Record:                                                          |
+# |===============                                                         |
+# |Version  Date         Author     Remarks                                |
+# |=======  ===========  =========  =======================================|
+# |1.0      22-JAN-2017  JAI_CG     Initial version                        |
+# |2.0      20-APR-2018  JAI_CG     Updated to load pipe delimited file    |
+# |                                                                        |
+# +========================================================================+
+
+p_request_id=`echo $1|awk '{print(substr($2,11))}'`
+
+FILE_DIR=$XXFIN_DATA/inbound/SCM/OKS
+
+FILE_ARCHIVE="$XXFIN_DATA/archive/inbound"
+
+echo " Data File path is  :" [$FILE_DIR]
+
+control_file="XX_AR_CONTRACTS_CTL.ctl"
+
+echo " Control File name is  :" [$control_file]
+
+cd $XXFIN_DATA/inbound/SCM/OKS
+
+for file in CONTRACTS_DATA_*.dat
+do
+
+sqlldr parfile=$HOME/parfile.apps data=$XXFIN_DATA/inbound/SCM/OKS/$file control=$XXFIN_TOP/bin/$control_file log=$file.log bad=$file.bad
+
+mv $XXFIN_DATA/inbound/SCM/OKS/$file $XXFIN_DATA/archive/inbound/$file
+
+done
+
+if [ $? -ne 0 ]
+then
+
+echo "Error in running sqlloader. Please Check log for Error Details "
+
+else
+
+echo "Completed successfully "
+
+fi
+
+echo "------------ Log File--------------"
+
+cat $file.log
+
+echo "-------------Bad Data file----------"
+
+cat $file.bad
+
+cd $FILE_DIR
+
+# Exiting from the shell program.
+exit 0

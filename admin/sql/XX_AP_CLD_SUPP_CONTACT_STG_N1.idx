@@ -1,0 +1,49 @@
+
+-- +==================================================================================+  
+-- | Office Depot - Project Simplify                                                  |
+-- |                                                              |
+-- +==================================================================================+
+-- | SQL Index Script  table:  XX_AP_CLD_SUPP_CONTACT_STG               |
+-- |                                                                                  |
+-- |
+-- |                                                                                  |
+-- |                                                                                  |
+-- |Change Record:                                                                    |
+-- |===============                                                                   |
+-- |Version   Date          Author               Remarks                              |
+-- |=======   ===========   =============        =====================================|
+-- |1.0       18-JUN-2019   Priyam/Visu       Initial DRAFT version                      |
+-- |                                                                                  |
+-- +==================================================================================+
+
+
+
+
+REM================================================================================================
+REM                                 Start Of Script
+REM================================================================================================
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     OFF
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+----------create index for XX_AP_CLD_SUPP_CONTACT_STG--------------------
+
+PROMPT
+PROMPT Creating Index....
+PROMPT
+
+create index XX_AP_CLD_SUPP_CONTACT_STG_N1 on XX_AP_CLD_SUPP_CONTACT_STG(process_flag);
+
+WHENEVER SQLERROR CONTINUE;
+
+PROMPT
+PROMPT Exiting....
+PROMPT 
+
+SET FEEDBACK ON
+
+EXIT;
+

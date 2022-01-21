@@ -1,0 +1,50 @@
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+-- +=======================================================================+
+-- |               Office Depot - VPS                         		   |
+-- +=======================================================================+
+-- | Name             :CREATE_XX_FIN_VPS_RECEIPTS_INTERIM.tbl              |
+-- | Description      :Custom table for TCA Entities statistics            |
+-- |                                                                       |
+-- |                    Note:This script should be executed from           |
+-- |                    XXCRM schema                                       |
+-- |                                                                       |
+-- |Change History:                                                        |
+-- |---------------                                                        |
+-- |                                                                       |
+-- |Version  Date        Author             Remarks                        |
+-- |-------  ----------- -----------------  -------------------------------|
+-- |DRAFT 1a 13-JUN-2017 Thejaswini Rajula  Initial draft version          |
+-- +=======================================================================+
+
+-- ------------------------------------------------------
+--      Create Custom Table XX_FIN_VPS_RECEIPTS_INTERIM --
+-- ------------------------------------------------------
+
+CREATE TABLE XXFIN.XX_FIN_VPS_RECEIPTS_INTERIM
+  (
+    CUSTOMER_TRX_ID                NUMBER         
+	,CASH_RECEIPT_ID                NUMBER         
+	,RECEIVABLE_APPLICATION_ID      NUMBER         
+	,APPLIED_CUSTOMER_TRX_ID        NUMBER         
+	,RECEIPT_NUMBER                 VARCHAR2(30)   
+	,RECEIPT_DATE                   DATE           
+	,RECEIPT_APPL_DATE              DATE           
+	,RECEIPT_STATUS                 VARCHAR2(30)   
+	,RECEV_APPL_STATUS              VARCHAR2(30)   
+	,AMOUNT_APPLIED                 NUMBER         
+	,INTERFACE_ID                   NUMBER         
+	,REQUEST_ID                     NUMBER         
+	,RECORD_STATUS                  VARCHAR2(1)    
+	,ERROR_MESSAGE                  VARCHAR2(2000) 
+	,VALIDATE_PROCESS_DATA          VARCHAR2(150)  
+	,LAST_UPDATE_DATE               DATE           
+	,LAST_UPDATED_BY                NUMBER(15)     
+	,CREATION_DATE                  DATE           
+	,CREATED_BY                     NUMBER(15)     
+	,VPS_PROGRAM_ID                 VARCHAR2(150)
+  );
+    
+SHOW ERRORS;

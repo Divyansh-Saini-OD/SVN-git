@@ -1,0 +1,159 @@
+<schema targetNamespace="http://xmlns.oracle.com/pcbpel/adapter/db/APPS/XX_PA_CREATE_PKG/SERVICE_EJM_QUEUE/" xmlns="http://www.w3.org/2001/XMLSchema" xmlns:db="http://xmlns.oracle.com/pcbpel/adapter/db/APPS/XX_PA_CREATE_PKG/SERVICE_EJM_QUEUE/" elementFormDefault="qualified">
+   <element name="InputParameters">
+      <complexType>
+         <sequence>
+            <element name="P_PROJ_REC" type="db:APPS.XX_PA_EJM_PROJ_INT_TBL" db:index="1" db:type="Array" minOccurs="0" nillable="true"/>
+            <element name="P_DEBUG_FLAG" type="string" db:index="2" db:type="VARCHAR2" minOccurs="0" nillable="true"/>
+         </sequence>
+      </complexType>
+   </element>
+   <element name="OutputParameters">
+      <complexType>
+         <sequence>
+            <element name="X_EMAIL_STATUS" type="string" db:index="3" db:type="VARCHAR2" minOccurs="0" nillable="true"/>
+            <element name="X_EMAIL_MESSAGE" type="string" db:index="4" db:type="VARCHAR2" minOccurs="0" nillable="true"/>
+            <element name="X_PROJ_OUT_TBL" type="db:APPS.XX_PA_EJM_PROJ_OUT_TBL" db:index="5" db:type="Array" minOccurs="0" nillable="true"/>
+         </sequence>
+      </complexType>
+   </element>
+   <complexType name="APPS.XX_PA_EJM_PROJ_OUT_REC">
+      <sequence>
+         <element name="PA_PROJECT_ID" type="decimal" db:type="NUMBER" minOccurs="0" nillable="true"/>
+         <element name="PA_PROJECT_NUMBER" db:type="VARCHAR2" minOccurs="0" nillable="true">
+            <simpleType>
+               <restriction base="string">
+                  <maxLength value="25"/>
+               </restriction>
+            </simpleType>
+         </element>
+         <element name="RETURN_STATUS" db:type="VARCHAR2" minOccurs="0" nillable="true">
+            <simpleType>
+               <restriction base="string">
+                  <maxLength value="1"/>
+               </restriction>
+            </simpleType>
+         </element>
+         <element name="ERROR_MESSAGE" db:type="VARCHAR2" minOccurs="0" nillable="true">
+            <simpleType>
+               <restriction base="string">
+                  <maxLength value="1000"/>
+               </restriction>
+            </simpleType>
+         </element>
+      </sequence>
+   </complexType>
+   <complexType name="APPS.XX_PA_EJM_MENB_INT_TBL">
+      <sequence>
+         <element name="MEMBER_REC_ITEM" type="db:APPS.XX_PA_EJM_MEMB_INT_REC" db:type="Struct" minOccurs="0" maxOccurs="unbounded" nillable="true"/>
+      </sequence>
+   </complexType>
+   <complexType name="APPS.XX_PA_EJM_MEMB_INT_REC">
+      <sequence>
+         <element name="PROJECTID" type="decimal" db:type="NUMBER" minOccurs="0" nillable="true"/>
+         <element name="ROLE" db:type="VARCHAR2" minOccurs="0" nillable="true">
+            <simpleType>
+               <restriction base="string">
+                  <maxLength value="100"/>
+               </restriction>
+            </simpleType>
+         </element>
+         <element name="EMPLOYEEID" db:type="VARCHAR2" minOccurs="0" nillable="true">
+            <simpleType>
+               <restriction base="string">
+                  <maxLength value="100"/>
+               </restriction>
+            </simpleType>
+         </element>
+      </sequence>
+   </complexType>
+   <complexType name="APPS.XX_PA_EJM_PROJ_INT_REC">
+      <sequence>
+         <element name="PAN" db:type="VARCHAR2" minOccurs="0" nillable="true">
+            <simpleType>
+               <restriction base="string">
+                  <maxLength value="5"/>
+               </restriction>
+            </simpleType>
+         </element>
+         <element name="EX" db:type="VARCHAR2" minOccurs="0" nillable="true">
+            <simpleType>
+               <restriction base="string">
+                  <maxLength value="9"/>
+               </restriction>
+            </simpleType>
+         </element>
+         <element name="PANEX" db:type="VARCHAR2" minOccurs="0" nillable="true">
+            <simpleType>
+               <restriction base="string">
+                  <maxLength value="50"/>
+               </restriction>
+            </simpleType>
+         </element>
+         <element name="PROJECTID" type="decimal" db:type="NUMBER" minOccurs="0" nillable="true"/>
+         <element name="PROJMAN" db:type="VARCHAR2" minOccurs="0" nillable="true">
+            <simpleType>
+               <restriction base="string">
+                  <maxLength value="100"/>
+               </restriction>
+            </simpleType>
+         </element>
+         <element name="TEMPLATE" db:type="VARCHAR2" minOccurs="0" nillable="true">
+            <simpleType>
+               <restriction base="string">
+                  <maxLength value="100"/>
+               </restriction>
+            </simpleType>
+         </element>
+         <element name="PROJORG" db:type="VARCHAR2" minOccurs="0" nillable="true">
+            <simpleType>
+               <restriction base="string">
+                  <maxLength value="100"/>
+               </restriction>
+            </simpleType>
+         </element>
+         <element name="PROJNAME" db:type="VARCHAR2" minOccurs="0" nillable="true">
+            <simpleType>
+               <restriction base="string">
+                  <maxLength value="30"/>
+               </restriction>
+            </simpleType>
+         </element>
+         <element name="PROJLONGNAME" db:type="VARCHAR2" minOccurs="0" nillable="true">
+            <simpleType>
+               <restriction base="string">
+                  <maxLength value="240"/>
+               </restriction>
+            </simpleType>
+         </element>
+         <element name="PROJDESC" db:type="VARCHAR2" minOccurs="0" nillable="true">
+            <simpleType>
+               <restriction base="string">
+                  <maxLength value="250"/>
+               </restriction>
+            </simpleType>
+         </element>
+         <element name="STARTDATE" type="dateTime" db:type="DATE" minOccurs="0" nillable="true"/>
+         <element name="COMPLETIONDATE" type="dateTime" db:type="DATE" minOccurs="0" nillable="true"/>
+         <element name="COUNTRYID" db:type="VARCHAR2" minOccurs="0" nillable="true">
+            <simpleType>
+               <restriction base="string">
+                  <maxLength value="2"/>
+               </restriction>
+            </simpleType>
+         </element>
+         <element name="EXPENSE" type="decimal" db:type="NUMBER" minOccurs="0" nillable="true"/>
+         <element name="CAPITAL" type="decimal" db:type="NUMBER" minOccurs="0" nillable="true"/>
+         <element name="MEMBER_REC" type="db:APPS.XX_PA_EJM_MENB_INT_TBL" db:type="Array" minOccurs="0" nillable="true"/>
+      </sequence>
+   </complexType>
+   <complexType name="APPS.XX_PA_EJM_PROJ_OUT_TBL">
+      <sequence>
+         <element name="X_PROJ_OUT_TBL_ITEM" type="db:APPS.XX_PA_EJM_PROJ_OUT_REC" db:type="Struct" minOccurs="0" maxOccurs="unbounded" nillable="true"/>
+      </sequence>
+   </complexType>
+   <complexType name="APPS.XX_PA_EJM_PROJ_INT_TBL">
+      <sequence>
+         <element name="P_PROJ_REC_ITEM" type="db:APPS.XX_PA_EJM_PROJ_INT_REC" db:type="Struct" minOccurs="0" maxOccurs="unbounded" nillable="true"/>
+      </sequence>
+   </complexType>
+</schema>

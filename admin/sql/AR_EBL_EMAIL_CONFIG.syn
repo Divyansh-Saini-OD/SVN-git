@@ -1,0 +1,40 @@
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+SET scan off;
+
+-- +============================================================================================+
+-- |                  Office Depot - ePDF enhancement						|
+-- +============================================================================================+
+-- | Name        : AR_EBL_EMAIL_CONFIG.syn							|
+-- | Description : ePDF enhancement                                                             |
+-- |                                                                                            |
+-- |                                                                                            |
+-- |Change Record:                                                                              |
+-- |===============                                                                             |
+-- |Version     Date           Author               Remarks                                     |
+-- |=======    ==========      ================     ============================================|
+-- |1.0        07/07/12       Devendra Petkar        Initial version                            |
+-- +============================================================================================+
+
+---------------------------------------------------------
+-- Update  				               --
+---------------------------------------------------------
+
+UPDATE XX_FIN_TRANSLATEvalues SET target_value4 = 'Your requested reprint for account &AOPSNUMBER.', target_value8 = 'Your requested reprint.'
+WHERE translate_id IN (SELECT translate_id FROM XX_FIN_TRANSLATEDEFINITION WHERE translation_name = 'AR_EBL_EMAIL_CONFIG');
+
+COMMIT;
+
+
+UPDATE XX_FIN_TRANSLATEvalues SET target_value6 = '<html></head><body><img src=http://static.www.odcdn.com/images/us/od/brand.gif><br><br><br> Requested Reprint of Statements from Office Depot.<br><br> -------------------------------------------------------<br>'
+				, target_value7 = 'This is a system generated email.  Please do not reply. <br>------------------------------------------------------- <br><br> Thank you for choosing <b>Office Depot</b> to take care of your business!</body></html>'
+WHERE translate_id IN (SELECT translate_id FROM XX_FIN_TRANSLATEDEFINITION WHERE translation_name = 'AR_EBL_EMAIL_CONFIG');
+
+COMMIT;
+
+SHOW ERRORS;
+
+EXIT;
+

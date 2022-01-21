@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions name="ExtensityInvoiceProcess"
+             targetNamespace="http://xmlns.oracle.com/ExtensityInvoiceProcess"
+             xmlns="http://schemas.xmlsoap.org/wsdl/"
+             xmlns:client="http://xmlns.oracle.com/ExtensityInvoiceProcess"
+             xmlns:plnk="http://schemas.xmlsoap.org/ws/2003/05/partner-link/">
+
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	TYPE DEFINITION - List of services participating in this BPEL process
+	The default output of the BPEL designer uses strings as input and 
+	output to the BPEL Process. But you can define or import any XML 
+	Schema type and use them as part of the message types.
+	~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->   
+	<types>
+		<schema xmlns="http://www.w3.org/2001/XMLSchema">
+			<import namespace="http://xmlns.oracle.com/ExtensityInvoiceProcess" schemaLocation="ExtensityInvoiceProcess.xsd" />
+		</schema>
+	</types>
+
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	MESSAGE TYPE DEFINITION - Definition of the message types used as 
+	part of the port type defintions
+	~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->      
+	<message name="ExtensityInvoiceProcessRequestMessage">
+		<part name="payload" element="client:ExtensityInvoiceProcessProcessRequest"/>
+	</message>
+
+	<message name="ExtensityInvoiceProcessResponseMessage">
+		<part name="payload" element="client:ExtensityInvoiceProcessProcessResponse"/>
+	</message>
+
+
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	PORT TYPE DEFINITION - A port type groups a set of operations into
+	a logical service unit.
+	~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<!-- portType implemented by the ExtensityInvoiceProcess BPEL process -->
+	<portType name="ExtensityInvoiceProcess">
+		<operation name="initiate">
+			<input message="client:ExtensityInvoiceProcessRequestMessage"/>
+		</operation>
+	</portType>
+
+	<!-- portType implemented by the requester of ExtensityInvoiceProcess BPEL process
+	for asynchronous callback purposes
+	-->
+	<portType name="ExtensityInvoiceProcessCallback">
+		<operation name="onResult">
+			<input message="client:ExtensityInvoiceProcessResponseMessage"/>
+		</operation>
+	</portType>
+
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	PARTNER LINK TYPE DEFINITION
+	the ExtensityInvoiceProcess partnerLinkType binds the provider and
+	requester portType into an asynchronous conversation.
+	~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<plnk:partnerLinkType name="ExtensityInvoiceProcess">
+		<plnk:role name="ExtensityInvoiceProcessProvider">
+			<plnk:portType name="client:ExtensityInvoiceProcess"/>
+		</plnk:role>
+		<plnk:role name="ExtensityInvoiceProcessRequester">
+			<plnk:portType name="client:ExtensityInvoiceProcessCallback"/>
+		</plnk:role>
+	</plnk:partnerLinkType>
+</definitions>

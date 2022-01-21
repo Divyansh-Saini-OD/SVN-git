@@ -1,0 +1,43 @@
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+-- +=======================================================================+
+-- |               Office Depot - VPS                                      |
+-- +=======================================================================+
+-- | Name             :CREATE_XX_FIN_VPS_TRX_STG.tbl              	   |
+-- | Description      :Custom table for TCA Entities statistics            |
+-- |                                                                       |
+-- |                    Note:This script should be executed from           |
+-- |                    XXCRM schema                                       |
+-- |                                                                       |
+-- |Change History:                                                        |
+-- |---------------                                                        |
+-- |                                                                       |
+-- |Version  Date        Author             Remarks                        |
+-- |-------  ----------- -----------------  -------------------------------|
+-- |DRAFT 1a 13-JUN-2017 Thejaswini Rajula  Initial draft version          |
+-- +=======================================================================+
+
+-- ------------------------------------------------------
+--      Create Custom Table XX_FIN_VPS_TRX_STG --
+-- ------------------------------------------------------
+BEGIN
+  EXECUTE IMMEDIATE 'DROP TABLE XXFIN.XX_FIN_VPS_TRX_STG';
+EXCEPTION
+  WHEN OTHERS THEN NULL;
+END;
+/
+
+CREATE TABLE XXFIN.XX_FIN_VPS_TRX_STG 
+   (INTERFACE_LINE_ID NUMBER, 
+	TRX_NUMBER VARCHAR2(20 BYTE), 
+	RECORD_STATUS VARCHAR2(1 BYTE), 
+	ERROR_MESSAGE VARCHAR2(256 BYTE), 
+	CREATION_DATE DATE, 
+	CREATED_BY NUMBER, 
+	PROGRAM_ID NUMBER, 
+	LAST_UPDATE_DATE DATE, 
+	LAST_UPDATED_BY NUMBER,
+	RESPONSE_CODE VARCHAR2(256 BYTE) 
+   );

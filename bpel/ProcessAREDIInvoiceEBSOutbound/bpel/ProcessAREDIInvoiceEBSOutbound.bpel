@@ -1,0 +1,254 @@
+<?xml version = "1.0" encoding = "UTF-8" ?>
+<!--
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  Oracle JDeveloper BPEL Designer 
+  
+  Created: Tue Aug 21 11:24:31 EDT 2007
+  Purpose: Empty BPEL Process
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+-->
+<process name="ProcessAREDIInvoiceEBSOutbound"
+         targetNamespace="http://xmlns.oracle.com/ProcessAREDIInvoiceEBSOutbound"
+         xmlns="http://schemas.xmlsoap.org/ws/2003/03/business-process/"
+         xmlns:xp20="http://www.oracle.com/XSL/Transform/java/oracle.tip.pc.services.functions.Xpath20"
+         xmlns:ns4="http://www.openapplications.org/oagis/9/officedepot/1"
+         xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+         xmlns:ns16="http://xmlns.oracle.com/pcbpel/adapter/file/"
+         xmlns:ns5="http://www.openapplications.org/oagis/9"
+         xmlns:ora="http://schemas.oracle.com/xpath/extension"
+         xmlns:ns9="http://xmlns.oracle.com/bpel/services/IdentityService/xpath"
+         xmlns:ns17="http://xmlns.oracle.com/pcbpel/adapter/ftp/PutFileReprocess/"
+         xmlns:ns1="http://xmlns.oracle.com/pcbpel/adapter/ftp/ServiceFileRead/"
+         xmlns:ns2="http://xmlns.oracle.com/B2BCustomerInvoiceOUtbound"
+         xmlns:orcl="http://www.oracle.com/XSL/Transform/java/oracle.tip.pc.services.functions.ExtFunc"
+         xmlns:ns15="http://xmlns.oracle.com/pcbpel/adapter/file/PutReprocessFile/"
+         xmlns:ns10="http://www.oracle.com/XSL/Transform/java/oracle.tip.esb.server.headers.ESBHeaderFunctions"
+         xmlns:bpws="http://schemas.xmlsoap.org/ws/2003/03/business-process/"
+         xmlns:ns7="ODError"
+         xmlns:ldap="http://schemas.oracle.com/xpath/extension/ldap"
+         xmlns:ns12="http://xmlns.oracle.com/TransactionData"
+         xmlns:client="http://xmlns.oracle.com/ProcessAREDIInvoiceEBSOutbound"
+         xmlns:ns18="http://schemas.oracle.com/service/bpel/common"
+         xmlns:ns6="http://xmlns.oracle.com/pcbpel/adapter/ftp/"
+         xmlns:xref="http://www.oracle.com/XSL/Transform/java/oracle.tip.xref.xpath.XRefXPathFunctions"
+         xmlns:xdk="http://schemas.oracle.com/bpel/extension/xpath/function/xdk"
+         xmlns:ns3="http://xmlns.oracle.com/ODErrorLogger"
+         xmlns:ns14="http://xmlns.oracle.com/Test2"
+         xmlns:bpelx="http://schemas.oracle.com/bpel/extension"
+         xmlns:ns8="http://xmlns.oracle.com/bpel/workflow/xpath">
+  <!-- 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+      PARTNERLINKS                                                      
+      List of services participating in this BPEL process               
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  -->
+  <partnerLinks>
+    <partnerLink myRole="Get_role" name="ServiceFileRead"
+                 partnerLinkType="ns1:Get_plt"/>
+    <partnerLink myRole="B2BCustomerInvoiceOUtboundRequester"
+                 name="B2BCustomerInvoiceOUtbound"
+                 partnerRole="B2BCustomerInvoiceOUtboundProvider"
+                 partnerLinkType="ns2:B2BCustomerInvoiceOUtbound"/>
+    <partnerLink myRole="ODErrorLoggerRequester" name="ODErrorLogger"
+                 partnerRole="ODErrorLoggerProvider"
+                 partnerLinkType="ns3:ODErrorLogger"/>
+    <partnerLink name="PutReprocessFile" partnerRole="Write_role"
+                 partnerLinkType="ns15:Write_plt"/>
+    <partnerLink name="PutFileReprocess" partnerRole="Put_role"
+                 partnerLinkType="ns17:Put_plt"/>
+  </partnerLinks>
+  <!-- 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+      VARIABLES                                                        
+      List of messages and XML documents used within this BPEL process 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  -->
+  <variables>
+    <variable name="InvokeB2BProcess_initiate_In"
+              messageType="ns2:B2BCustomerInvoiceOUtboundRequestMessage"/>
+    <variable name="invkCatchAll_initiate"
+              messageType="ns3:ODErrorLoggerRequestMessage"/>
+    <variable name="ReceiveFileRead_Get_In"
+              messageType="ns1:XXARINVPRNEDI_msg"/>
+    <variable name="FileName_In" messageType="ns6:InboundHeader_msg"/>
+    <variable name="ErrorMessageText" type="xsd:string"/>
+    <variable name="ProcessHeader" type="xsd:string"/>
+    <variable name="XSLT_PARAM" element="ns18:parameters"/>
+    <variable name="xmlFragment" type="xsd:string"/>
+    <variable name="EDIFileName" type="xsd:string"/>
+    <variable name="ReceiveB2BResponseIn"
+              messageType="ns2:B2BCustomerInvoiceOUtboundResponseMessage"/>
+    <variable name="InvokeReprocessFile_In"
+              messageType="ns15:XXARINVPRNEDI_msg"/>
+    <variable name="ReprocessFileHeader" element="ns16:OutboundFileHeaderType"/>
+    <variable name="InvokeReprocessFileIn"
+              messageType="ns17:XXARINVPRNEDI_msg"/>
+    <variable name="TimeStamp" type="xsd:string"/>
+  </variables>
+  <faultHandlers>
+    <catchAll>
+      <sequence name="Sequence_4">
+        <assign name="asnCatchAll">
+          <copy>
+            <from expression="concat(&quot;Error encountered in ProcessAREDIInvoiceEBSOutbound, while copying file &quot;,bpws:getVariableData('FileName_In','inboundHeader','/ns6:InboundFTPHeaderType/ns6:fileName'))"/>
+            <to variable="ErrorMessageText"/>
+          </copy>
+          <copy>
+            <from expression="ora:getProcessId()"/>
+            <to variable="invkCatchAll_initiate" part="payload"
+                query="/ns7:ErrorData/ns7:ProcessInfo/ns7:BusinessProcessName"/>
+          </copy>
+          <copy>
+            <from expression="ora:getInstanceId()"/>
+            <to variable="invkCatchAll_initiate" part="payload"
+                query="/ns7:ErrorData/ns7:ProcessInfo/ns7:BusinessProcessId"/>
+          </copy>
+          <copy>
+            <from expression="ora:getDomainId()"/>
+            <to variable="invkCatchAll_initiate" part="payload"
+                query="/ns7:ErrorData/ns7:ProcessInfo/ns7:BusinessProcessDomain"/>
+          </copy>
+          <copy>
+            <from expression="ora:getProcessURL()"/>
+            <to variable="invkCatchAll_initiate" part="payload"
+                query="/ns7:ErrorData/ns7:ProcessInfo/ns7:SystemName"/>
+          </copy>
+          <copy>
+            <from expression="ora:getCurrentDateTime()"/>
+            <to variable="invkCatchAll_initiate" part="payload"
+                query="/ns7:ErrorData/ns7:ErrorDetails/ns7:ErrorDateTime"/>
+          </copy>
+          <copy>
+            <from expression="'Catch All on the Main Sequence'"/>
+            <to variable="invkCatchAll_initiate" part="payload"
+                query="/ns7:ErrorData/ns7:ProcessInfo/ns7:BusinessProcessStep"/>
+          </copy>
+          <copy>
+            <from expression="ora:getFaultName()"/>
+            <to variable="invkCatchAll_initiate" part="payload"
+                query="/ns7:ErrorData/ns7:ErrorDetails/ns7:ErrorCode"/>
+          </copy>
+          <copy>
+            <from variable="ErrorMessageText"/>
+            <to variable="invkCatchAll_initiate" part="payload"
+                query="/ns7:ErrorData/ns7:ErrorDetails/ns7:ErrorDescription"/>
+          </copy>
+          <copy>
+            <from expression="ora:getFaultAsString()"/>
+            <to variable="invkCatchAll_initiate" part="payload"
+                query="/ns7:ErrorData/ns7:ErrorDetails/ns7:ErrorText"/>
+          </copy>
+          <copy>
+            <from expression="'system'"/>
+            <to variable="invkCatchAll_initiate" part="payload"
+                query="/ns7:ErrorData/ns7:ErrorDetails/ns7:ErrorType"/>
+          </copy>
+          <copy>
+            <from expression="'fatal'"/>
+            <to variable="invkCatchAll_initiate" part="payload"
+                query="/ns7:ErrorData/ns7:ErrorDetails/ns7:ErrorSeverity"/>
+          </copy>
+          <copy>
+            <from expression="ora:doc('${server_url}/xmllib/fin/GlobalParameters.xml','/GlobalParameters/FaultNotification/SendNotification')"/>
+            <to variable="invkCatchAll_initiate" part="payload"
+                query="/ns7:ErrorData/ns7:Notification/ns7:sendNotification"/>
+          </copy>
+        </assign>
+        <scope name="ReprocessFile">
+          <sequence name="SeqReprocessFile">
+            <assign name="AssignReprocessFile">
+              <copy>
+                <from expression="xp20:format-dateTime(xp20:current-dateTime(),'[D01][M01][Y][H01][m01][s01][f001]')"/>
+                <to variable="TimeStamp"/>
+              </copy>
+              <copy>
+                <from variable="ReceiveFileRead_Get_In" part="XXARINVPRNEDI"
+                      query="/ns4:XXARINVPRNEDI/ns4:G_INVOICES"/>
+                <to variable="InvokeReprocessFile_In" part="XXARINVPRNEDI"
+                    query="/ns4:XXARINVPRNEDI/ns4:G_INVOICES"/>
+              </copy>
+              <copy>
+                <from expression="concat(substring-before(bpws:getVariableData('FileName_In','inboundHeader','/ns6:InboundFTPHeaderType/ns6:fileName'),'.'),'_REJECTED_',bpws:getVariableData('TimeStamp'),'.xml')"/>
+                <to variable="ReprocessFileHeader"
+                    query="/ns16:OutboundFileHeaderType/ns16:fileName"/>
+              </copy>
+            </assign>
+            <invoke name="InvokeReprocessFile" partnerLink="PutReprocessFile"
+                    portType="ns15:Write_ptt" operation="Write"
+                    inputVariable="InvokeReprocessFile_In"
+                    bpelx:inputHeaderVariable="ReprocessFileHeader"/>
+          </sequence>
+        </scope>
+        <invoke name="invkCatchAll" partnerLink="ODErrorLogger"
+                portType="ns3:ODErrorLogger" operation="initiate"
+                inputVariable="invkCatchAll_initiate"/>
+        <terminate name="Terminate"/>
+      </sequence>
+    </catchAll>
+  </faultHandlers>
+  <!-- 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+     ORCHESTRATION LOGIC                                               
+     Set of activities coordinating the flow of messages across the    
+     services integrated within this business process                  
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  -->
+  <sequence name="main">
+    <receive name="Receive_InvoiceFile" createInstance="yes"
+             partnerLink="ServiceFileRead" portType="ns1:Get_ptt"
+             operation="Get" variable="ReceiveFileRead_Get_In"
+             bpelx:headerVariable="FileName_In"/>
+    <scope name="setProcessHeader">
+      <sequence name="setProcessTitle">
+        <assign name="initializeInstanceTitle">
+          <copy>
+            <from expression="substring( concat( bpws:getVariableData('FileName_In','inboundHeader','/ns6:InboundFTPHeaderType/ns6:fileName'), &quot; Index: &quot;, bpws:getVariableData('FileName_In','inboundHeader','/ns6:InboundFTPHeaderType/ns6:batchIndex')),1,50)"/>
+            <to variable="ProcessHeader"/>
+          </copy>
+          <copy>
+            <from expression="'AREDIInvoiceFileName'"/>
+            <to variable="XSLT_PARAM"
+                query="/ns18:parameters/ns18:item/ns18:name"/>
+          </copy>
+          <copy>
+            <from variable="FileName_In" part="inboundHeader"
+                  query="/ns6:InboundFTPHeaderType/ns6:fileName"/>
+            <to variable="XSLT_PARAM"
+                query="/ns18:parameters/ns18:item/ns18:value"/>
+          </copy>
+          <copy>
+            <from variable="FileName_In" part="inboundHeader"
+                  query="/ns6:InboundFTPHeaderType/ns6:fileName"/>
+            <to variable="EDIFileName"/>
+          </copy>
+        </assign>
+        <bpelx:exec name="setTitle" language="java" version="1.5">
+          <![CDATA[try {                
+                         String title = (String)getVariableData("ProcessHeader");   
+                         setTitle(title);                
+                         addAuditTrailEntry(title) ;                
+                       } catch (Exception ex) {                
+                         addAuditTrailEntry(ex.toString());                
+                         ex.printStackTrace();                
+          }]]>
+        </bpelx:exec>
+      </sequence>
+    </scope>
+    <assign name="TransformToB2B">
+      <bpelx:annotation>
+        <bpelx:pattern>transformation</bpelx:pattern>
+      </bpelx:annotation>
+      <copy>
+        <from expression="ora:processXSLT('TransformationB2B.xsl',bpws:getVariableData('ReceiveFileRead_Get_In','XXARINVPRNEDI'))"/>
+        <to variable="InvokeB2BProcess_initiate_In" part="payload"/>
+      </copy>
+    </assign>
+    <invoke name="InvokeB2BProcess" partnerLink="B2BCustomerInvoiceOUtbound"
+            portType="ns2:B2BCustomerInvoiceOUtbound" operation="initiate"
+            inputVariable="InvokeB2BProcess_initiate_In"/>
+    <receive name="ReceiveB2BResponse" partnerLink="B2BCustomerInvoiceOUtbound"
+             portType="ns2:B2BCustomerInvoiceOUtboundCallback"
+             operation="onResult" variable="ReceiveB2BResponseIn"
+             createInstance="no"/>
+  </sequence>
+</process>

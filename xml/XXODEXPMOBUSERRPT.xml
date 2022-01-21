@@ -1,0 +1,66 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<!--
+*************************************************************************************************
+* PROGRAM NAME
+*  XXODEXPMOBUSERRPT.xml
+*
+* DESCRIPTION
+*  Data Template for OD : Expense Mobile User Report Details
+*
+* USAGE
+*  Data Template to retrieve data from database
+*  
+* HISTORY
+* =======
+*
+* VERSION DATE        AUTHOR(S)         DESCRIPTION
+* ******* *********   **************** *************************************
+* 1.0     24-Nov-2016 Praveen Vanga      Initial Version
+**************************************************************************************************
+-->
+<dataTemplate name="XXODEXPMOBUSERRPT" description="OD : Expense Mobile User Report Details" version="1.0">
+   <properties>
+      <property name="xml_tag_case" value="upper"/>
+      <property name="include_parameters" value="true" />
+   </properties>
+   <parameters>
+    <parameter name="p_date_from"  dataType="varchar2"></parameter>
+    <parameter name="p_date_to"    dataType="varchar2"></parameter>
+    <parameter name="p_employee"   dataType="number"></parameter>
+   </parameters>
+      <lexicals>
+     </lexicals>
+<dataQuery>
+   <sqlStatement name="Q_EXPRPT">
+    <![CDATA[select a.INVOICE_NUM,B.EMPLOYEE_NUMBER,B.FULL_NAME,B.EMAIL_ADDRESS,a.DESCRIPTION,a.TOTAL,a.EXPENSE_STATUS_CODE,a.REPORT_SUBMITTED_DATE,a.REFERENCE_2 MOBILE_APPROVAL
+from  per_all_people_f b,
+      ap_expense_report_headers_all a
+where a.reference_1='EBS_MOBILE'
+  and b.person_id=a.employee_id
+  and TRUNC(sysdate) between TRUNC(B.EFFECTIVE_START_DATE) and TRUNC(B.EFFECTIVE_END_DATE) 
+  and B.EMPLOYEE_NUMBER = NVL(:P_EMPLOYEE,B.EMPLOYEE_NUMBER)
+  and trunc(a.REPORT_SUBMITTED_DATE) between NVL(TO_CHAR(FND_DATE.CANONICAL_TO_DATE (:P_DATE_FROM),'DD-MON-YYYY'),trunc(a.REPORT_SUBMITTED_DATE))
+				AND NVL(to_char(fnd_date.canonical_to_date (:p_date_to),'DD-MON-YYYY'),trunc(a.REPORT_SUBMITTED_DATE))
+	Order by 1,2			
+     ]]>
+   </sqlStatement>
+    
+   
+ </dataQuery>
+   <dataStructure>
+      <group name="G_EXPRPT" dataType="varchar2" source="Q_EXPRPT">
+	     <element name="INVOICE_NUM" dataType="varchar2" value="INVOICE_NUM"/>
+         <element name="EMPLOYEE_NUMBER" dataType="varchar2" value="EMPLOYEE_NUMBER"/>
+		 <element name="FULL_NAME" dataType="varchar2" value="FULL_NAME"/>
+		 <element name="EMAIL_ADDRESS" dataType="varchar2" value="EMAIL_ADDRESS"/>
+		 <element name="DESCRIPTION" dataType="varchar2" value="DESCRIPTION"/>
+         <element name="TOTAL" dataType="number" value="TOTAL"/>
+		 <element name="EXPENSE_STATUS_CODE" dataType="varchar2" value="EXPENSE_STATUS_CODE"/>
+		 <element name="REPORT_SUBMITTED_DATE" dataType="varchar2" value="REPORT_SUBMITTED_DATE"/>
+		 <element name="MOBILE_APPROVAL" dataType="varchar2" value="MOBILE_APPROVAL"/>
+      </group>
+	  
+	
+   </dataStructure>
+</dataTemplate>
+

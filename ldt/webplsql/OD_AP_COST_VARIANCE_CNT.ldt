@@ -1,0 +1,57 @@
+# $Header$
+
+# dbdrv: exec fnd bin FNDLOAD bin &phase=daa+52 checkfile:~PROD:~PATH:~FILE &ui_apps 0 Y UPLOAD @BNE:patch/115/import/bnecont.lct @~PROD:~PATH/~FILE
+LANGUAGE = "US"
+LDRCONFIG = "bnecont.lct 120.1"
+
+#Source Database GSIDEV02
+
+#RELEASE_NAME 12.2.5
+
+# -- Begin Entity Definitions -- 
+
+DEFINE BNE_CONTENTS
+  KEY   CONTENT_ASN                     VARCHAR2(120)
+  KEY   CONTENT_CODE                    VARCHAR2(30)
+  BASE  OBJECT_VERSION_NUMBER           VARCHAR2(50)
+  CTX   OWNER                           VARCHAR2(120)
+  BASE  INTEGRATOR_ASN                  VARCHAR2(120)
+  BASE  INTEGRATOR_CODE                 VARCHAR2(30)
+  BASE  PARAM_LIST_ASN                  VARCHAR2(120)
+  BASE  PARAM_LIST_CODE                 VARCHAR2(30)
+  BASE  CONTENT_CLASS                   VARCHAR2(240)
+  TRANS USER_NAME                       VARCHAR2(240)
+  BASE  LAST_UPDATE_DATE                VARCHAR2(10)
+  BASE  ONCE_ONLY_DOWNLOAD_FLAG         VARCHAR2(1)
+
+  DEFINE BNE_STORED_SQL
+    BASE  OBJECT_VERSION_NUMBER           VARCHAR2(50)
+    BASE  QUERY                           VARCHAR2(2000)
+    CTX   OWNER                           VARCHAR2(120)
+    BASE  LAST_UPDATE_DATE                VARCHAR2(10)
+  END BNE_STORED_SQL
+
+    DEFINE BNE_CONTENT_COLS
+      KEY   SEQUENCE_NUM                    VARCHAR2(50)
+      BASE  OBJECT_VERSION_NUMBER           VARCHAR2(50)
+      CTX   OWNER                           VARCHAR2(120)
+      BASE  COL_NAME                        VARCHAR2(240)
+      TRANS USER_NAME                       VARCHAR2(240)
+      BASE  LAST_UPDATE_DATE                VARCHAR2(10)
+    END BNE_CONTENT_COLS
+END BNE_CONTENTS
+
+# -- End Entity Definitions -- 
+
+
+BEGIN BNE_CONTENTS "XXFIN" "OD_AP_COST_VARIANCE_CNT1"
+  OBJECT_VERSION_NUMBER = "1"
+  OWNER = "744317"
+  INTEGRATOR_ASN = "XXFIN"
+  INTEGRATOR_CODE = "OD_AP_COST_VARIANCE_XINTG"
+  USER_NAME = "NONE"
+  LAST_UPDATE_DATE = "2017/09/16"
+
+
+END BNE_CONTENTS
+

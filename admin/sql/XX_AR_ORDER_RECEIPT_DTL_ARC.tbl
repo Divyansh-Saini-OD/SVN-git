@@ -1,0 +1,112 @@
+--==========================================================================================
+--                            Oracle GSD (India)                                          --
+--==========================================================================================
+--/******************************************************************************
+--   NAME:       XX_AR_ORDER_RECEIPT_DTL_ARC
+--   PURPOSE:    Script to create XX_AR_ORDER_RECEIPT_DTL_ARC table in XXFIN
+--
+--   REVISIONS:
+--   Ver        Date         Author           Description
+--   ---------  ----------  ---------------  ------------------------------------
+--   1.0        20-APR-2010 Sreenivasa T           Initial
+--
+--   PARAMETERS:
+--   INPUT:
+--   OUTPUT:
+--   RETURNED VALUE:
+--   CALLED BY:
+--   CALLS:
+--   EXAMPLE USE:     
+--   ASSUMPTIONS:
+--   LIMITATIONS:
+--   ALGORITHM:
+--   NOTES:
+--******************************************************************************/
+
+
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+SET HEADING      OFF
+SET SHOW         OFF
+SET VERIFY       OFF
+SET SERVEROUTPUT OFF
+SET ECHO         OFF
+SET TAB          OFF
+
+
+WHENEVER SQLERROR CONTINUE
+
+WHENEVER SQLERROR EXIT 1
+
+
+SET TERM ON
+PROMPT Creating the Table XX_AR_ORDER_RECEIPT_DTL_ARC...
+SET TERM OFF
+
+CREATE TABLE XXFIN.XX_AR_ORDER_RECEIPT_DTL_ARC
+  (
+    ORDER_PAYMENT_ID         NUMBER NOT NULL,
+    ORDER_NUMBER             NUMBER,
+    ORIG_SYS_DOCUMENT_REF    VARCHAR2(50),
+    ORIG_SYS_PAYMENT_REF     VARCHAR2(50),
+    PAYMENT_NUMBER           NUMBER,
+    HEADER_ID                NUMBER,
+    ORDER_SOURCE             VARCHAR2(240),
+    ORDER_TYPE               VARCHAR2(240),
+    CASH_RECEIPT_ID          NUMBER,
+    RECEIPT_NUMBER           VARCHAR2(30),
+    CUSTOMER_ID              NUMBER,
+    STORE_NUMBER             VARCHAR2(30),
+    PAYMENT_TYPE_CODE        VARCHAR2(30),
+    CREDIT_CARD_CODE         VARCHAR2(80),
+    CREDIT_CARD_NUMBER       VARCHAR2(80),
+    CREDIT_CARD_HOLDER_NAME  VARCHAR2(80),
+    CREDIT_CARD_EXPIRATION_DATE  DATE,
+    PAYMENT_AMOUNT           NUMBER,
+    RECEIPT_METHOD_ID        NUMBER,
+    CC_AUTH_MANUAL           VARCHAR2(240),
+    MERCHANT_NUMBER          VARCHAR2(240),
+    CC_AUTH_PS2000           VARCHAR2(240),
+    ALLIED_IND               VARCHAR2(240),
+    PAYMENT_SET_ID           NUMBER,
+    PROCESS_CODE             VARCHAR2(80),
+    CC_MASK_NUMBER           VARCHAR2(240),
+    OD_PAYMENT_TYPE          VARCHAR2(30),
+    CHECK_NUMBER             NUMBER,
+    ORG_ID                   NUMBER,
+    REQUEST_ID               NUMBER,
+    IMP_FILE_NAME            VARCHAR2(80),
+    CREATION_DATE            DATE NOT NULL,
+    CREATED_BY               NUMBER NOT NULL,
+    LAST_UPDATE_DATE             DATE NOT NULL,
+    LAST_UPDATED_BY              NUMBER NOT NULL,
+    REMITTED                     VARCHAR2(1),
+    MATCHED                      VARCHAR2(1),
+    SHIP_FROM                    VARCHAR2(30),
+    RECEIPT_STATUS               VARCHAR2(50),
+    CUSTOMER_RECEIPT_REFERENCE   VARCHAR2(80),
+    CREDIT_CARD_APPROVAL_CODE    VARCHAR2(80),
+    CREDIT_CARD_APPROVAL_DATE    DATE,
+    CUSTOMER_SITE_BILLTO_ID      NUMBER,
+    RECEIPT_DATE                 DATE,
+    SALE_TYPE                    VARCHAR2(30),
+    ADDITIONAL_AUTH_CODES        VARCHAR2(240),
+    PROCESS_DATE         DATE,
+    SINGLE_PAY_IND       VARCHAR2(1),
+    CURRENCY_CODE        VARCHAR2(15)
+);
+ 
+SET TERM ON
+PROMPT
+PROMPT Exiting....
+PROMPT
+SET TERM OFF
+
+SET FEEDBACK ON
+
+EXIT;
+
+
+--------------------------------------------------------------------------------------------
+-- End of Script
+--------------------------------------------------------------------------------------------
