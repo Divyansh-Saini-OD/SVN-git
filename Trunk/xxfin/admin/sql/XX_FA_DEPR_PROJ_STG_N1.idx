@@ -1,9 +1,0 @@
-------------------------------------------------
--- Index SCript: XX_FA_DEPR_PROJ_STG_N1
--- Description:  CR646- Projection Depreciation
--- Created By:   Peter Marco
-------------------------------------------------
-
-
-CREATE INDEX XX_FA_DEPR_PROJ_STG_N1 ON XXFIN.XX_FA_DEPR_PROJ_STG  ( book_type_code, code_combination_id)
-TABLESPACE APPS_TS_TX_IDX_16M;

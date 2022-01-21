@@ -1,9 +1,0 @@
-SET SHOW         OFF
-SET VERIFY       OFF
-SET ECHO         OFF
-SET TAB          OFF
-SET FEEDBACK     ON
-
-
-GRANT SELECT,UPDATE,INSERT ON  XXFIN.xx_ar_lockbox_debug TO APPS;
-GRANT SELECT,UPDATE,INSERT ON  XXFIN.xx_ar_lockbox_debug TO U403819;

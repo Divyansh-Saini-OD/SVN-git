@@ -1,6 +1,0 @@
-<?xml version = '1.0' encoding = 'windows-1252'?>
-<!DOCTYPE data-sources PUBLIC "Orion data-sources" "http://xmlns.oracle.com/ias/dtds/data-sources.dtd">
-<data-sources>
-   <data-source class="com.evermind.sql.DriverManagerDataSource" connection-driver="oracle.jdbc.driver.OracleDriver" ejb-location="jdbc/gsidev03DS" inactivity-timeout="30" location="jdbc/gsidev03CoreDS" name="jdev-connection:gsidev03" password="appsp2p" pooled-location="jdbc/gsidev03PooledDS" url="jdbc:oracle:thin:@choldbr18d.na.odcorp.net:1544:gsidev03" username="apps" xa-location="jdbc/xa/gsidev03XADS"/>
-   <data-source class="com.evermind.sql.DriverManagerDataSource" connection-driver="oracle.jdbc.driver.OracleDriver" ejb-location="jdbc/gsitsi01DS" inactivity-timeout="30" location="jdbc/gsitsi01CoreDS" name="jdev-connection:gsitsi01" password="car3ful" pooled-location="jdbc/gsitsi01PooledDS" url="jdbc:oracle:thin:@CHOLDBR15D.na.odcorp.net:1542:gsitsi01" username="apps" xa-location="jdbc/xa/gsitsi01XADS"/>
-</data-sources>

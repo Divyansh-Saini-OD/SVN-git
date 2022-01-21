@@ -1,9 +1,0 @@
-<?xml version = '1.0' encoding = 'windows-1252'?>
-<orion-ejb-jar xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://xmlns.oracle.com/oracleas/schema/orion-ejb-jar-10_0.xsd" schema-major-version="10" schema-minor-version="0">
-    <enterprise-beans>
-        <session-deployment name="SKUSession"/>
-        <session-deployment name="SPSessionEJB">
-            <env-entry-mapping name="ejb/theParam">theValue</env-entry-mapping>    
-        </session-deployment>
-    </enterprise-beans>
-</orion-ejb-jar>

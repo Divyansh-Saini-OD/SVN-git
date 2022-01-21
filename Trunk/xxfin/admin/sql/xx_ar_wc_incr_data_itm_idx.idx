@@ -1,6 +1,0 @@
-
-CREATE INDEX xx_ar_wc_incr_data_itm_idx
-  ON xxfin.xx_ar_wc_incr_data_itm (id,trx_type,cycle_date);
-  
-CREATE INDEX xx_ar_wc_incr_data_itm_ix2
-  ON xxfin.xx_ar_wc_incr_data_itm (trx_type);

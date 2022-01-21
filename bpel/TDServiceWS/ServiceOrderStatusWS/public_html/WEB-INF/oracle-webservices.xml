@@ -1,9 +1,0 @@
-<oracle-webservices xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://xmlns.oracle.com/oracleas/schema/oracle-webservices-10_0.xsd">
-    <webservice-description name="ServiceOrderStatusInquiryService">
-        <port-component name="ServiceOrderStatusInquiryPort">
-            <operations>
-                <operation name="process" input="{http://gsidev01/ServiceStatusInquiryWS.wsdl/types/}searchServicerequestElement"/>
-            </operations>
-        </port-component>
-    </webservice-description>
-</oracle-webservices>

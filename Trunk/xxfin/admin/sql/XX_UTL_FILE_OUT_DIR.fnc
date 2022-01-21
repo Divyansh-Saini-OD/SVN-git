@@ -1,3 +1,0 @@
---DROP DIRECTORY XX_UTL_FILE_OUT_DIR;
-
-CREATE DIRECTORY XX_UTL_FILE_OUT_DIR AS '/app/ebs/ctgsilnk02/utl_file_out';
